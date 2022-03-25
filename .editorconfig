@@ -181,6 +181,10 @@ dotnet_naming_rule.interface_should_be_begins_with_i.severity = warning
 dotnet_naming_rule.interface_should_be_begins_with_i.symbols = interface
 dotnet_naming_rule.interface_should_be_begins_with_i.style = begins_with_i
 
+dotnet_naming_rule.constant_fields_should_be_pascal_case.severity = warning
+dotnet_naming_rule.constant_fields_should_be_pascal_case.symbols = constant_fields
+dotnet_naming_rule.constant_fields_should_be_pascal_case.style = pascal_case
+
 dotnet_naming_rule.types_should_be_pascal_case.severity = suggestion
 dotnet_naming_rule.types_should_be_pascal_case.symbols = types
 dotnet_naming_rule.types_should_be_pascal_case.style = pascal_case
@@ -192,11 +196,14 @@ dotnet_naming_symbols.interface.applicable_accessibilities = public, internal, p
 dotnet_naming_symbols.interface.required_modifiers = 
 
 dotnet_naming_symbols.private_field.applicable_kinds = field
-dotnet_naming_symbols.private_field.applicable_accessibilities = private, protected
+dotnet_naming_symbols.private_field.applicable_accessibilities = private, protected, private_protected
 dotnet_naming_symbols.private_field.required_modifiers = 
 
+dotnet_naming_symbols.constant_fields.applicable_kinds = field
+dotnet_naming_symbols.constant_fields.required_modifiers = const
+
 dotnet_naming_symbols.all_public_field.applicable_kinds = field
-dotnet_naming_symbols.all_public_field.applicable_accessibilities = public, internal, protected, protected_internal, private_protected
+dotnet_naming_symbols.all_public_field.applicable_accessibilities = public, internal, protected_internal
 dotnet_naming_symbols.all_public_field.required_modifiers = 
 
 dotnet_naming_symbols.types.applicable_kinds = class, struct, interface, enum
@@ -224,6 +231,7 @@ dotnet_naming_style.begin_without_underscore.required_prefix =
 dotnet_naming_style.begin_without_underscore.required_suffix = 
 dotnet_naming_style.begin_without_underscore.word_separator = 
 dotnet_naming_style.begin_without_underscore.capitalization = pascal_case
+
 csharp_style_expression_bodied_lambdas = true:silent
 csharp_style_expression_bodied_local_functions = false:silent
 csharp_style_prefer_local_over_anonymous_function = true:suggestion
