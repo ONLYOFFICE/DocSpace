@@ -4,31 +4,28 @@ import React from "react";
 // import Error520 from "studio/Error520";
 // import Error404 from "studio/Error404";
 
-export function loadComponent(scope, module, moduleName = null) {
+export function loadComponent(scope, module) {
   return async () => {
     // Initializes the share scope. This fills it with known provided modules from this build and all remotes
     await __webpack_init_sharing__("default");
     const container = window[scope]; // or get the container somewhere else
     // Initialize the container, it may provide shared modules
     await container.init(__webpack_share_scopes__.default);
-    console.log(container);
     const factory = await window[scope].get(module);
     const Module = factory();
-    if (moduleName)
-      window[moduleName] =
-        moduleName === "filesUtils" ? Module : Module.default;
     return Module;
   };
 }
 
-const useDynamicScript = (args) => {
+export const useDynamicScript = (args) => {
   const [ready, setReady] = React.useState(false);
   const [failed, setFailed] = React.useState(false);
 
   React.useEffect(() => {
-    if (!args.url) {
+    if (!args.url || args.isInit) {
       return;
     }
+
     const exists = document.getElementById(args.id);
 
     if (exists) {
@@ -61,10 +58,10 @@ const useDynamicScript = (args) => {
     document.head.appendChild(element);
 
     //TODO: Comment if you don't want to remove loaded remoteEntry
-    return () => {
-      console.log(`Dynamic Script Removed: ${args.url}`);
-      // document.head.removeChild(element);
-    };
+    // return () => {
+    //   console.log(`Dynamic Script Removed: ${args.url}`);
+    //   document.head.removeChild(element);
+    // };
   }, [args.url]);
 
   return {
@@ -73,13 +70,14 @@ const useDynamicScript = (args) => {
   };
 };
 
-const DynamicComponent = React.memo(({ system, ...rest }) => {
+const DynamicComponent = ({ system, ...rest }) => {
   const [isInitialized, setIsInitialized] = React.useState(false);
   const [LoadedComponent, setLoadedComponent] = React.useState();
 
   const { ready, failed } = useDynamicScript({
     url: system && system.url,
     id: system && system.scope,
+    isInit: isInitialized,
   });
 
   if (!system) {
@@ -97,22 +95,21 @@ const DynamicComponent = React.memo(({ system, ...rest }) => {
     throw Error("failed");
   }
 
+  // console.log("dynamic", rest);
+
   if (ready && !isInitialized) {
+    //console.log("dynamic 2", rest);
     setIsInitialized(true);
-    const Component = React.lazy(
-      loadComponent(system.scope, system.module, system?.name)
-    );
+    const Component = React.lazy(loadComponent(system.scope, system.module));
 
     setLoadedComponent(Component);
   }
-
-  console.log("render dynamic", system);
 
   return (
     <React.Suspense fallback={<div />}>
       <LoadedComponent {...rest} />
     </React.Suspense>
   );
-});
+};
 
 export default DynamicComponent;

@@ -24,9 +24,9 @@ const withDialogs = (WrappedComponent) => {
     const [extension, setExtension] = useState();
     const [openNewTab, setNewOpenTab] = useState(false);
 
-    const { t } = useTranslation();
+    const { t } = useTranslation(["Editor", "Common"]);
 
-    const { fileInfo, fileId } = props;
+    const { fileInfo, fileId, mfReady } = props;
 
     const onSDKRequestSharingSettings = () => {
       setIsVisible(true);
@@ -61,6 +61,7 @@ const withDialogs = (WrappedComponent) => {
     };
 
     const onSDKRequestInsertImage = (event) => {
+      console.log("onSDKRequestInsertImage", event.data, insertImageAction);
       setTypeInsertImageAction(event.data);
       setFilesType(insertImageAction);
       setIsFileDialogVisible(true);
@@ -110,13 +111,32 @@ const withDialogs = (WrappedComponent) => {
     };
 
     const fileTypeDetection = () => {
+      // console.log(
+      //   "------",
+      //   insertImageAction,
+      //   filesType,
+      //   insertImageActionProps,
+      //   "--------"
+      // );
       if (filesType === insertImageAction) {
+        // console.log(
+        //   "filesType === insertImageAction",
+        //   filesType === insertImageAction
+        // );
         return insertImageActionProps;
       }
       if (filesType === mailMergeAction) {
+        // console.log(
+        //   "filesType === mailMergeAction",
+        //   filesType === mailMergeAction
+        // );
         return mailMergeActionProps;
       }
       if (filesType === compareFilesAction) {
+        // console.log(
+        //   "filesType === compareFilesAction",
+        //   filesType === compareFilesAction
+        // );
         return compareFilesActionProps;
       }
     };
@@ -206,89 +226,83 @@ const withDialogs = (WrappedComponent) => {
       setTitleSelectorFolder(e.target.value);
     };
 
-    const sharingDialog = React.useMemo(
-      () => (
-        <DynamicComponent
-          className="dynamic-sharing-dialog"
-          system={{
-            scope: FILES_SCOPE,
-            url: FILES_REMOTE_ENTRY_URL,
-            module: "./SharingDialog",
-            name: "SharingDialog",
-          }}
-          isVisible={isVisible}
-          sharingObject={fileInfo}
-          onCancel={onCancel}
-          onSuccess={loadUsersRightsList}
-        />
-      ),
-      [isVisible]
+    const sharingDialog = mfReady && (
+      <DynamicComponent
+        className="dynamic-sharing-dialog"
+        system={{
+          scope: FILES_SCOPE,
+          url: FILES_REMOTE_ENTRY_URL,
+          module: "./SharingDialog",
+          name: "SharingDialog",
+        }}
+        isVisible={isVisible}
+        sharingObject={fileInfo}
+        onCancel={onCancel}
+        onSuccess={loadUsersRightsList}
+      />
     );
 
-    const selectFileDialog = React.useMemo(
-      () => (
-        <DynamicComponent
-          system={{
-            scope: FILES_SCOPE,
-            url: FILES_REMOTE_ENTRY_URL,
-            module: "./SelectFileDialog",
-          }}
-          resetTreeFolders
-          foldersType="exceptPrivacyTrashFolders"
-          isPanelVisible={isFileDialogVisible}
-          onSelectFile={onSelectFile}
-          onClose={onCloseFileDialog}
-          {...fileTypeDetection()}
-          titleFilesList={selectFilesListTitle()}
-          headerName={t("SelectFileTitle")}
-        />
-      ),
-      [isFileDialogVisible]
+    const typeFilter = fileTypeDetection();
+    // console.log(typeFilter, "-----------------");
+
+    const selectFileDialog = mfReady && (
+      <DynamicComponent
+        system={{
+          scope: FILES_SCOPE,
+          url: FILES_REMOTE_ENTRY_URL,
+          module: "./SelectFileDialog",
+        }}
+        resetTreeFolders
+        foldersType="exceptPrivacyTrashFolders"
+        isPanelVisible={isFileDialogVisible}
+        onSelectFile={onSelectFile}
+        onClose={onCloseFileDialog}
+        {...typeFilter}
+        titleFilesList={selectFilesListTitle()}
+        headerName={t("SelectFileTitle")}
+      />
     );
 
-    const selectFolderDialog = React.useMemo(
-      () => (
-        <DynamicComponent
-          resetTreeFolders
-          showButtons
-          isSetFolderImmediately
-          asideHeightContent="calc(100% - 50px)"
-          foldersType="exceptSortedByTags"
-          system={{
-            scope: FILES_SCOPE,
-            url: FILES_REMOTE_ENTRY_URL,
-            module: "./SelectFolderDialog",
-          }}
-          isPanelVisible={isFolderDialogVisible}
-          onClose={onCloseFolderDialog}
-          onSave={onClickSaveSelectFolder}
-          headerName={t("FolderForSave")}
-          header={
+    const selectFolderDialog = mfReady && (
+      <DynamicComponent
+        resetTreeFolders
+        showButtons
+        isSetFolderImmediately
+        asideHeightContent="calc(100% - 50px)"
+        foldersType="exceptSortedByTags"
+        system={{
+          scope: FILES_SCOPE,
+          url: FILES_REMOTE_ENTRY_URL,
+          module: "./SelectFolderDialog",
+        }}
+        isPanelVisible={isFolderDialogVisible}
+        onClose={onCloseFolderDialog}
+        onSave={onClickSaveSelectFolder}
+        headerName={t("FolderForSave")}
+        header={
+          <StyledSelectFolder>
+            <Text className="editor-select-folder_text">{t("FileName")}</Text>
+            <TextInput
+              className="editor-select-folder_text-input"
+              scale
+              onChange={onChangeInput}
+              value={titleSelectorFolder}
+            />
+          </StyledSelectFolder>
+        }
+        {...(extension !== "fb2" && {
+          footer: (
             <StyledSelectFolder>
-              <Text className="editor-select-folder_text">{t("FileName")}</Text>
-              <TextInput
-                className="editor-select-folder_text-input"
-                scale
-                onChange={onChangeInput}
-                value={titleSelectorFolder}
+              <Checkbox
+                className="editor-select-folder_checkbox"
+                label={t("OpenSavedDocument")}
+                onChange={onClickCheckbox}
+                isChecked={openNewTab}
               />
             </StyledSelectFolder>
-          }
-          {...(extension !== "fb2" && {
-            footer: (
-              <StyledSelectFolder>
-                <Checkbox
-                  className="editor-select-folder_checkbox"
-                  label={t("OpenSavedDocument")}
-                  onChange={onClickCheckbox}
-                  isChecked={openNewTab}
-                />
-              </StyledSelectFolder>
-            ),
-          })}
-        />
-      ),
-      [openNewTab, titleSelectorFolder, isFolderDialogVisible]
+          ),
+        })}
+      />
     );
 
     return (

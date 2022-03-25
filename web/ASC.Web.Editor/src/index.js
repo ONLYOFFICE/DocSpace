@@ -1,10 +1,20 @@
 import express from "express";
-import path from "path";
 import template from "./server/template";
 import render from "./server/render";
 import i18nextMiddleware from "i18next-express-middleware";
 import i18next from "i18next";
-import Backend from "i18next-node-fs-backend";
+import Backend from "i18next-fs-backend";
+import path, { join } from "path";
+
+const loadPath = (lng, ns) => {
+  let resourcePath =
+    path.resolve(process.cwd(), "clientBuild") + `/locales/${lng}/${ns}.json`;
+
+  if (ns === "Common")
+    resourcePath = join(__dirname, `../../../public/locales/${lng}/${ns}.json`);
+
+  return resourcePath;
+};
 
 const app = express();
 const port = process.env.PORT || 5013;
@@ -14,9 +24,7 @@ app.use(useragent.express());
 
 i18next.use(Backend).init({
   backend: {
-    loadPath:
-      path.resolve(process.cwd(), "clientBuild") +
-      "/locales/{{lng}}/{{ns}}.json",
+    loadPath: loadPath,
     allowMultiLoading: true,
     crossDomain: false,
   },
@@ -48,9 +56,11 @@ app.get("/products/files/doceditor", async (req, res) => {
   const { props, content, styleTags, scriptTags } = await render(req);
   const userLng = props?.user?.cultureName || "en";
 
+  const initialI18nStore = {};
+
   i18next.changeLanguage(userLng).then(() => {
     const initialLanguage = userLng;
-    const initialI18nStore = {};
+
     const usedNamespaces = req.i18n.reportNamespaces.getUsedNamespaces();
 
     initialI18nStore[initialLanguage] = {};
