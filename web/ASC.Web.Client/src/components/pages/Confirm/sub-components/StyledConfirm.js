@@ -50,4 +50,13 @@ export const StyledBody = styled.div`
     width: 100%;
     margin-top: 8px;
   }
+
+  .password-change-form {
+    margin-top: 32px;
+    margin-bottom: 16px;
+  }
+
+  .password-change-title {
+    margin-bottom: 8px;
+  }
 `;
