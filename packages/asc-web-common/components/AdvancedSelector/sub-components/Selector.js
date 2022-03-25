@@ -28,7 +28,7 @@ const convertGroup = (group) => {
     key: group.key,
     label: `${group.label} (${group.total})`,
     total: group.total,
-    selected: 0,
+    selectedCount: 0,
   };
 };
 
@@ -94,8 +94,16 @@ const Selector = (props) => {
 
   useEffect(() => {
     if (groups.length === 0) return;
-    if (groups.length === 1) return setGroupHeader(groups[0]);
+
     const newGroupList = [...groups];
+
+    if (
+      groups.length === 1 &&
+      selectedOptions &&
+      selectedOptions.length === 0
+    ) {
+      return setGroupHeader(newGroupList[0]);
+    }
 
     if (selectedOptions && selectedOptions.length === 0) {
       return setGroupList(newGroupList);
@@ -104,6 +112,7 @@ const Selector = (props) => {
     if (selectedOptions) {
       newGroupList[0].selectedCount = selectedOptions.length;
 
+      if (groups.length === 1) return setGroupHeader(newGroupList[0]);
       selectedOptions.forEach((option) => {
         option.groups.forEach((group) => {
           const groupIndex = newGroupList.findIndex(
@@ -115,12 +124,14 @@ const Selector = (props) => {
         });
       });
     }
+    if (groups.length === 1) return setGroupHeader(newGroupList[0]);
     setGroupList(newGroupList);
   }, [groups, selectedOptions]);
 
   useEffect(() => {
     if (total) {
       setGroupHeader({ ...groupHeader, total: total });
+
       const newGroupList = groupList;
 
       newGroupList.find((group) => group.key === groupHeader.key).total = total;
@@ -168,11 +179,15 @@ const Selector = (props) => {
           ? [option, ...newSelected]
           : newSelected.filter((el) => el.key !== option.key);
 
+        if (!option.groups) {
+          setSelectedOptionList(newSelected);
+          setGroupHeader(newGroupHeader);
+          return;
+        }
+
         newGroupList[0].selectedCount = isChecked
           ? newGroupList[0].selectedCount - 1
           : newGroupList[0].selectedCount + 1;
-
-        if (!option.groups) return setSelectedOptionList(newSelected);
 
         option.groups.forEach((group) => {
           const groupIndex = newGroupList.findIndex(
@@ -281,6 +296,7 @@ const Selector = (props) => {
       setCurrentGroup([]);
       return;
     }
+
     onArrowClick && onArrowClick();
   }, [groups, groupHeader && groupHeader.label, onArrowClick, onGroupChanged]);
 
