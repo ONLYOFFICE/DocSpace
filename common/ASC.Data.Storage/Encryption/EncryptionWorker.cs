@@ -31,13 +31,14 @@ public class EncryptionWorker
     private readonly object _locker;
     private readonly FactoryOperation _factoryOperation;
     private readonly DistributedTaskQueue _queue;
+    public const string CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME = "encryption";
 
     public EncryptionWorker(FactoryOperation factoryOperation, 
                             IDistributedTaskQueueFactory queueFactory)
     {
         _locker = new object();
         _factoryOperation = factoryOperation;
-        _queue = queueFactory.CreateQueue<EncryptionOperation>();
+        _queue = queueFactory.CreateQueue(CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME);
     }
 
     public void Start(EncryptionSettingsProto encryptionSettings)
@@ -97,6 +98,5 @@ public static class FactoryOperationExtension
     public static void Register(DIHelper dIHelper)
     {
         dIHelper.TryAdd<EncryptionOperation>();
-        dIHelper.AddDistributedTaskQueue<EncryptionOperation>(1);
     }
 }

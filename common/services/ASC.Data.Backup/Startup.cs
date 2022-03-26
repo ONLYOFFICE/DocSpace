@@ -35,13 +35,7 @@ public class Startup : BaseStartup
 
     public override void ConfigureServices(IServiceCollection services)
     {
-        base.ConfigureServices(services);
-
-        DIHelper.AddDistributedTaskQueue<BaseBackupProgressItem>(1);
-
-        DIHelper.TryAdd<BackupProgressItem>();
-        DIHelper.TryAdd<RestoreProgressItem>();
-        DIHelper.TryAdd<TransferProgressItem>();
+        base.ConfigureServices(services);      
 
         DIHelper.TryAdd<BackupController>();
 

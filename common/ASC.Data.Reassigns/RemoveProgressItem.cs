@@ -316,7 +316,6 @@ namespace ASC.Data.Reassigns
         public static void Register(DIHelper services)
         {
             services.TryAdd<RemoveProgressItemScope>();
-            services.AddDistributedTaskQueue<RemoveProgressItem>(1);
         }
     }
 }

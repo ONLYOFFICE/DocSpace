@@ -28,6 +28,7 @@ namespace ASC.Web.Files.Utils;
 [Singletone]
 public class FileMarkerHelper<T>
 {
+    public const string CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME = "file_marker";
     private readonly IServiceProvider _serviceProvider;
     public ILog Logger { get; }
     public DistributedTaskQueue Tasks { get; set; }
@@ -39,7 +40,7 @@ public class FileMarkerHelper<T>
     {
         _serviceProvider = serviceProvider;
         Logger = optionsMonitor.CurrentValue;
-        Tasks = queueFactory.CreateQueue<AsyncTaskData<T>>();
+        Tasks = queueFactory.CreateQueue(CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME);
     }
 
     internal void Add(AsyncTaskData<T> taskData)
@@ -909,10 +910,8 @@ public static class FileMarkerExtention
     {
         services.TryAdd<AsyncTaskData<int>>();
         services.TryAdd<FileMarkerHelper<int>>();
-        services.AddDistributedTaskQueue<AsyncTaskData<int>>(1);
-
+     
         services.TryAdd<AsyncTaskData<string>>();
         services.TryAdd<FileMarkerHelper<string>>();
-        services.AddDistributedTaskQueue<AsyncTaskData<string>>(1);
     }
 }

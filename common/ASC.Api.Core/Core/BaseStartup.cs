@@ -83,6 +83,8 @@ public abstract class BaseStartup
             config.ConfigurationOptions = redisConfiguration.ConfigurationOptions;
         });
 
+        services.AddDistributedTaskQueue();
+
         if (kafkaConfiguration != null)
         {
             DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCacheNotify<>));

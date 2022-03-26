@@ -80,3 +80,13 @@ global using NLog.Extensions.Logging;
 global using StackExchange.Redis.Extensions.Core.Configuration;
 global using StackExchange.Redis.Extensions.Newtonsoft;
 global using ASC.Api.Core.Extensions;
+
+global using ASC.Common.Threading;
+global using ASC.Core.Common.Hosting;
+global using ASC.Core.Common.Hosting.Interfaces;
+global using ASC.EventBus;
+global using ASC.EventBus.Abstractions;
+global using ASC.EventBus.MemoryCache;
+global using ASC.EventBus.RabbitMQ;
+
+global using RabbitMQ.Client;

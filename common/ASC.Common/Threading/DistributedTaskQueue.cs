@@ -30,13 +30,16 @@ namespace ASC.Common.Threading;
 [Transient]
 public class DistributedTaskQueue
 {
+    const string QUEUE_DEFAULT_PREFIX = "asc_distributed_task_queue_";
+
     private readonly ConcurrentDictionary<string, CancellationTokenSource> _cancelations;
     private readonly IServiceProvider _serviceProvider;
     private readonly ICacheNotify<DistributedTaskCancelation> _cancellationCacheNotify;
     private readonly IDistributedCache _distributedCache;
     private readonly ILog _logger;
 
-    private int _maxThreadsCount = -1;
+
+    private int _maxThreadsCount = 1;
     private string _name;
     private TaskScheduler Scheduler { get; set; } = TaskScheduler.Default;
 
@@ -64,7 +67,7 @@ public class DistributedTaskQueue
     public string Name
     {
         get => _name;
-        set => _name = value + GetType().Name;
+        set => _name = QUEUE_DEFAULT_PREFIX + value;
     }
 
     public int MaxThreadsCount
@@ -266,7 +269,7 @@ public class DistributedTaskQueue
     }
 
     /// <summary>
-    /// Maps the source object to target object.
+    /// Maps the source object to destination object.
     /// </summary>
     /// <typeparam name="T">Type of destination object.</typeparam>
     /// <typeparam name="TU">Type of source object.</typeparam>

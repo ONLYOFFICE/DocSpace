@@ -28,13 +28,15 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations;
 [Singletone(Additional = typeof(FileOperationsManagerHelperExtention))]
 public class FileOperationsManager
 {
+    public const string CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME = "files_operation";
+
     private readonly DistributedTaskQueue _tasks;
     private readonly TempStream _tempStream;
     private readonly IServiceProvider _serviceProvider;
 
     public FileOperationsManager(TempStream tempStream, IDistributedTaskQueueFactory queueFactory, IServiceProvider serviceProvider)
     {
-        _tasks = queueFactory.CreateQueue<FileOperation>();
+        _tasks = queueFactory.CreateQueue(CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME);
         _tempStream = tempStream;
         _serviceProvider = serviceProvider;
     }
@@ -253,6 +255,5 @@ public static class FileOperationsManagerHelperExtention
         services.TryAdd<FileOperationScope>();
         services.TryAdd<FileDownloadOperationScope>();
         services.TryAdd<CompressToArchive>();
-        services.AddDistributedTaskQueue<FileOperation>(10);
     }
 }

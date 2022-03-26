@@ -23,6 +23,8 @@
  *
 */
 
+using ASC.Common.Threading;
+
 namespace ASC.Data.Backup.BackgroundTasks;
 
 public class Startup : BaseStartup
@@ -37,6 +39,16 @@ public class Startup : BaseStartup
     {
         base.ConfigureServices(services);
 
+        services.Configure<DistributedTaskQueueFactoryOptions>(BackupWorker.CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME, x =>
+        {
+            x.MaxThreadsCount = 5;
+        });
+
+
+        DIHelper.TryAdd<BackupProgressItem>();
+        DIHelper.TryAdd<RestoreProgressItem>();
+        DIHelper.TryAdd<TransferProgressItem>();
+
         DIHelper.TryAdd<BackupWorkerService>();
 
         NotifyConfigurationExtension.Register(DIHelper);
@@ -50,5 +62,6 @@ public class Startup : BaseStartup
         services.AddHostedService<BackupWorkerService>();
         services.AddActivePassiveHostedService<BackupCleanerService>();
         services.AddActivePassiveHostedService<BackupSchedulerService>();
+
     }
 }

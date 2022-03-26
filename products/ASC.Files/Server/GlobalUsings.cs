@@ -52,5 +52,5 @@ global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.Extensions.Options;
 
 global using Newtonsoft.Json.Linq;
-
+global using ASC.Common.Threading;
 global using static ASC.Api.Documents.FilesController;

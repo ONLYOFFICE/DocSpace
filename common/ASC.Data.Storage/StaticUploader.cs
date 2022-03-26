@@ -28,6 +28,8 @@ namespace ASC.Data.Storage;
 [Scope(Additional = typeof(StaticUploaderExtension))]
 public class StaticUploader
 {
+    public const string CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME = "static_upload";
+
     protected readonly DistributedTaskQueue Queue;
     private ICache _cache;
     private static readonly TaskScheduler _scheduler;
@@ -58,7 +60,7 @@ public class StaticUploader
         _tenantManager = tenantManager;
         _settingsManager = settingsManager;
         _storageSettingsHelper = storageSettingsHelper;
-        Queue = queueFactory.CreateQueue<UploadOperationProgress>();
+        Queue = queueFactory.CreateQueue(CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME);
     }
 
     public string UploadFile(string relativePath, string mappedPath, Action<string> onComplete = null)
@@ -337,6 +339,5 @@ public static class StaticUploaderExtension
     public static void Register(DIHelper services)
     {
         services.TryAdd<StaticUploaderScope>();
-        services.AddDistributedTaskQueue<UploadOperationProgress>(1);
     }
 }

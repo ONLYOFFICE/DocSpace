@@ -25,9 +25,11 @@
 
 namespace ASC.Data.Backup.Services;
 
-[Singletone(Additional = typeof(BackupWorkerExtension))]
+[Singletone]
 public class BackupWorker
 {
+    public const string CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME = "backup";
+
     internal string TempFolder { get; set; }
 
     private DistributedTaskQueue _progressQueue;
@@ -47,7 +49,7 @@ public class BackupWorker
         TempPath tempPath)
     {
         _logger = options.CurrentValue;
-        _progressQueue = queueFactory.CreateQueue("backupQueue");
+        _progressQueue = queueFactory.CreateQueue(CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME);
         _factoryProgressItem = factoryProgressItem;
         _tempPath = tempPath;
     }
@@ -300,16 +302,5 @@ public class BackupWorker
 
         return true;
 
-    }
-}
-
-public static class BackupWorkerExtension
-{
-    public static void Register(DIHelper services)
-    {
-        services.AddDistributedTaskQueue("backupQueue", x =>
-        {
-            x.MaxThreadsCount = 5;
-        });
     }
 }

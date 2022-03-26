@@ -166,6 +166,8 @@ namespace ASC.Web.Core.Users
     [Scope(Additional = typeof(ResizeWorkerItemExtension))]
     public class UserPhotoManager
     {
+        public const string CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME = "user_photo_manager";
+
         //Regex for parsing filenames into groups with id's
         private static readonly Regex ParseFile =
                 new Regex(@"^(?'module'\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\}{0,1}){0,1}" +
@@ -198,7 +200,7 @@ namespace ASC.Web.Core.Users
             SettingsManager settingsManager,
             IServiceProvider serviceProvider)
         {
-            ResizeQueue = queueFactory.CreateQueue<ResizeWorkerItem>();
+            ResizeQueue = queueFactory.CreateQueue(CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME);
             UserManager = userManager;
             WebImageSupplier = webImageSupplier;
             TenantManager = tenantManager;
@@ -1003,7 +1005,10 @@ namespace ASC.Web.Core.Users
     {
         public static void Register(DIHelper services)
         {
-            services.AddDistributedTaskQueue<ResizeWorkerItem>(2);
+            services.Configure<DistributedTaskQueueFactoryOptions>(UserPhotoManager.CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME, options =>
+            {
+                options.MaxThreadsCount = 2;
+            });
         }
     }
 }
