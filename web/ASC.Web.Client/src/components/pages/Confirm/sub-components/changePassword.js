@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import Text from "@appserver/components/text";
@@ -23,7 +23,6 @@ const ChangePasswordForm = (props) => {
     logout,
     changePassword,
     linkData,
-    isAuthenticated,
   } = props;
 
   const [password, setPassword] = useState("");
@@ -63,7 +62,7 @@ const ChangePasswordForm = (props) => {
       .then(() => {
         setIsLoading(false);
         toastr.success(t("ChangePasswordSuccess"));
-        //tryRedirectTo(defaultPage);
+        tryRedirectTo(defaultPage);
       })
       .catch((error) => {
         toastr.error(t(`${error}`));
