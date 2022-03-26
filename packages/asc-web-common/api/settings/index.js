@@ -380,10 +380,14 @@ export function getTfaConfirmLink() {
   });
 }
 
-export function unlinkTfaApp() {
+export function unlinkTfaApp(id) {
+  const data = {
+    id,
+  };
   return request({
     method: "put",
     url: "/settings/tfaappnewapp",
+    data,
   });
 }
 
