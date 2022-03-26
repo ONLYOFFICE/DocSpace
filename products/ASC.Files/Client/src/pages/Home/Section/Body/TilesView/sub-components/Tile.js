@@ -38,7 +38,7 @@ const checkedStyle = css`
 `;
 
 const bottomFileBorder = css`
-  border: ${(props) => props.theme.filesSection.tilesView.tile.border};
+  border-top: ${(props) => props.theme.filesSection.tilesView.tile.border};
   border-radius: 0 0 6px 6px;
 `;
 
