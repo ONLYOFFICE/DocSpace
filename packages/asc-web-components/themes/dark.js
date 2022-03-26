@@ -1109,7 +1109,7 @@ const Dark = {
 
     slider: {
       width: "100%",
-      margin: "8px 0",
+      margin: "24px 0",
       backgroundColor: "transparent",
 
       runnableTrack: {
