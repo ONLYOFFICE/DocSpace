@@ -14,6 +14,7 @@ import utils from "@appserver/components/utils";
 //import SelectFolderDialog from "../SelectFolderDialog";
 import { getFolder } from "@appserver/common/api/files";
 import { FilterType } from "@appserver/common/constants";
+import isEqual from "lodash/isEqual";
 
 const { desktop } = utils.device;
 
@@ -33,9 +34,9 @@ class SelectFileDialogBody extends React.Component {
       t,
     } = props;
 
-    this.buttonName = creationButtonPrimary
-      ? t("Common:Create")
-      : t("Common:SaveButton");
+    // this.buttonName = creationButtonPrimary
+    //   ? t("Common:Create")
+    //   : t("Common:SaveButton");
 
     this.state = {
       isVisible: false,
@@ -101,7 +102,7 @@ class SelectFileDialogBody extends React.Component {
   };
 
   setFilter = () => {
-    const { filterParams } = this.state;
+    const filterParams = this.getFilterParameters();
     const { withSubfolders = true } = this.props;
 
     this.newFilter.filterType = filterParams.filterType;
@@ -110,11 +111,17 @@ class SelectFileDialogBody extends React.Component {
   };
 
   componentDidMount() {
+    console.log("componentDidMount File Dialog", this.props);
     authStore.init(true); // it will work if authStore is not initialized
 
     window.addEventListener("resize", this.throttledResize);
     this.setFilter();
   }
+
+  componentDidUpdate(prevProps) {
+    if (!isEqual(prevProps, this.props)) this.setFilter();
+  }
+
   componentWillUnmount() {
     const {
       resetTreeFolders,
@@ -265,6 +272,7 @@ class SelectFileDialogBody extends React.Component {
       onSetFileName,
       tReady,
       headerName,
+      creationButtonPrimary,
     } = this.props;
     const {
       isVisible,
@@ -282,6 +290,10 @@ class SelectFileDialogBody extends React.Component {
     const loadingText = loadingLabel
       ? loadingLabel
       : `${t("Common:LoadingProcessing")} ${t("Common:LoadingDescription")}`;
+
+    const buttonName = creationButtonPrimary
+      ? t("Common:Create")
+      : t("Common:SaveButton");
 
     return displayType === "aside" ? (
       <SelectFileDialogAsideView
@@ -313,7 +325,7 @@ class SelectFileDialogBody extends React.Component {
         passedId={passedId}
         titleFilesList={titleFilesList}
         isAvailableFolderList={isAvailableFolderList}
-        primaryButtonName={this.buttonName}
+        primaryButtonName={buttonName}
       />
     ) : (
       <SelectFileDialogModalView
@@ -336,7 +348,7 @@ class SelectFileDialogBody extends React.Component {
         folderId={folderId}
         passedId={passedId}
         titleFilesList={titleFilesList}
-        primaryButtonName={this.buttonName}
+        primaryButtonName={buttonName}
       />
     );
   }
