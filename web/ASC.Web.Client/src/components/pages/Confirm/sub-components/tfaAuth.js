@@ -117,7 +117,7 @@ const TfaAuthForm = withLoader((props) => {
           <Button
             scale
             primary
-            size="normal"
+            size="medium"
             tabIndex={3}
             label={
               isLoading
