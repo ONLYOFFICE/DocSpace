@@ -59,4 +59,12 @@ export const StyledBody = styled.div`
   .password-change-title {
     margin-bottom: 8px;
   }
+
+  .subtitle-delete {
+    margin-bottom: 8px;
+  }
+
+  .info-delete {
+    margin-bottom: 24px;
+  }
 `;
