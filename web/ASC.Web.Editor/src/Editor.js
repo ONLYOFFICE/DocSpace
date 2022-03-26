@@ -123,6 +123,8 @@ function Editor({
   onSDKRequestCompareFile,
   selectFolderDialog,
   onSDKRequestSaveAs,
+  isFileDialogVisible,
+  isFolderDialogVisible,
 }) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [documentTitle, setNewDocumentTitle] = useState("Loading...");
@@ -395,8 +397,6 @@ function Editor({
     try {
       if (!window.DocsAPI) throw new Error("DocsAPI is not defined");
 
-      console.log("Editor config: ", config);
-
       if (isMobile) {
         config.type = "mobile";
       }
@@ -519,7 +519,6 @@ function Editor({
         newConfig
       );
 
-      console.log(docEditor, "docEditor");
       setIsLoaded(true);
     } catch (error) {
       console.log(error, "init error");
@@ -537,6 +536,7 @@ function Editor({
           {!isLoaded && LoaderComponent}
         </>
       )}
+
       {sharingDialog}
       {selectFileDialog}
       {selectFolderDialog}

@@ -22,13 +22,13 @@ export const useDynamicScript = (args) => {
   const [failed, setFailed] = React.useState(false);
 
   React.useEffect(() => {
-    if (!args.url || args.isInit) {
+    if (!args.url) {
       return;
     }
 
     const exists = document.getElementById(args.id);
 
-    if (exists) {
+    if (exists || args?.isInit) {
       setReady(true);
       setFailed(false);
       return;
@@ -95,10 +95,7 @@ const DynamicComponent = ({ system, ...rest }) => {
     throw Error("failed");
   }
 
-  // console.log("dynamic", rest);
-
   if (ready && !isInitialized) {
-    //console.log("dynamic 2", rest);
     setIsInitialized(true);
     const Component = React.lazy(loadComponent(system.scope, system.module));
 
