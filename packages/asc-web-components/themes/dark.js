@@ -1961,6 +1961,11 @@ const Dark = {
 
     downloadAppList: {
       color: "#C4C4C4",
+      winHoverColor: "#3785D3",
+      macHoverColor: white,
+      linuxHoverColor: "#FFB800",
+      androidHoverColor: "#9BD71C",
+      iosHoverColor: white,
     },
 
     thirdPartyList: {
