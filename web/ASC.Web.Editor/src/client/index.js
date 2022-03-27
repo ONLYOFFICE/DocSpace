@@ -13,8 +13,10 @@ delete window.__ASC_INITIAL_STATE__;
 delete window.initialI18nStore;
 delete window.initialLanguage;
 
-const stateJS = document.getElementById("__ASC_INITIAL_STATE__");
-stateJS.parentNode.removeChild(stateJS);
+const stateInit = document.getElementById("__ASC_INITIAL_STATE__");
+const i18nInit = document.getElementById("__ASC_I18N_INIT__");
+stateInit.parentNode.removeChild(stateInit);
+i18nInit.parentNode.removeChild(i18nInit);
 
 const AppWrapper = () => {
   const [isInitialized, isErrorLoading] = useMfScripts();

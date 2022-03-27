@@ -52,7 +52,6 @@ app.use(express.static(path.resolve(__dirname, "../clientBuild")));
 app.get("/products/files/doceditor", async (req, res) => {
   const { props, content, styleTags, scriptTags } = await render(req);
   const userLng = props?.user?.cultureName || "en";
-
   const initialI18nStore = {};
 
   i18next.changeLanguage(userLng).then(() => {
@@ -75,6 +74,7 @@ app.get("/products/files/doceditor", async (req, res) => {
       initialI18nStore,
       initialLanguage
     );
+
     res.setHeader("Cache-Control", "assets, max-age=604800");
 
     res.send(response);

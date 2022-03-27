@@ -23,7 +23,9 @@ export const initDocEditor = async (req) => {
   const { headers, url, query } = req;
   const { version, desktop: isDesktop } = query;
   let error = null;
+
   initSSR(headers);
+
   try {
     //const doc = url.indexOf("doc=") !== -1 ? url.split("doc=")[1] : null;??
     const decodedId = query.fileId || query.fileid || null;
@@ -46,7 +48,6 @@ export const initDocEditor = async (req) => {
 
     const successAuth = !!user;
     const personal = settings?.personal;
-    const cultureName = user.cultureName;
 
     if (!successAuth && !doc) {
       error = {

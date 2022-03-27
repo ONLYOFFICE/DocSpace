@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { isMobile } from "react-device-detect";
+import { isMobile, isIOS, deviceType } from "react-device-detect";
 import FilesFilter from "@appserver/common/api/files/filter";
 import combineUrl from "@appserver/common/utils/combineUrl";
 import { AppServerConfig } from "@appserver/common/constants";
@@ -80,7 +80,6 @@ const initDesktop = (cfg) => {
           callback(data);
         })
         .catch((error) => {
-          console.log(error);
           window.toastr.error(
             typeof error === "string" ? error : error.message,
             null,
@@ -128,14 +127,14 @@ function Editor({
 }) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [documentTitle, setNewDocumentTitle] = useState("Loading...");
-
   const { t } = useTranslation(["Editor", "Common"]);
 
   useEffect(() => {
     if (error) {
-      error?.unAuthorized &&
-        error?.redirectPath &&
-        (window.location.href = error?.redirectPath);
+      if (error?.unAuthorized && error?.redirectPath) {
+        localStorage.setItem("redirectPath", window.location.href);
+        window.location.href = error?.redirectPath;
+      }
     }
   }, []);
 
@@ -144,6 +143,11 @@ function Editor({
     if (config) {
       document.getElementById("scripDocServiceAddress").onload = onLoad();
       setDocumentTitle(config?.document?.title);
+    }
+
+    if (isIOS && deviceType === "tablet") {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
     }
   }, []);
 

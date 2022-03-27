@@ -16,6 +16,8 @@ export default function template(
   const scripts = `   
     <script id="__ASC_INITIAL_STATE__">
       window.__ASC_INITIAL_STATE__ = ${JSON.stringify(initialState)}
+    </script>
+    <script id="__ASC_I18N_INIT__">
       window.initialI18nStore = JSON.parse('${JSON.stringify(
         initialI18nStore
       )}')
