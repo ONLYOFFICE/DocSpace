@@ -90,7 +90,7 @@ public class ThumbnailBuilderService : BackgroundService
                 .OrderByDescending(fileData => Array.IndexOf(premiumTenants, fileData.TenantId))
                 .ToList();
 
-            _builderQueue.BuildThumbnails(filesWithoutThumbnails);
+            await _builderQueue.BuildThumbnails(filesWithoutThumbnails);
         }
 
         _logger.Trace("Procedure: Finish.");
