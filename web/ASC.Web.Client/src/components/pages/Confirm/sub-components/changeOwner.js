@@ -5,7 +5,12 @@ import Text from "@appserver/components/text";
 import Button from "@appserver/components/button";
 import Section from "@appserver/common/components/Section";
 import { inject, observer } from "mobx-react";
-import { StyledPage, StyledBody, StyledHeader } from "./StyledConfirm";
+import {
+  StyledPage,
+  StyledBody,
+  StyledHeader,
+  ButtonsWrapper,
+} from "./StyledConfirm";
 import withLoader from "../withLoader";
 
 const ChangeOwnerForm = (props) => {
@@ -24,22 +29,25 @@ const ChangeOwnerForm = (props) => {
           </Text>
         </StyledHeader>
 
-        <Button
-          className="owner-button"
-          primary
-          size="normal"
-          label={t("Common:SaveButton")}
-          tabIndex={2}
-          isDisabled={false}
-          //onClick={this.onAcceptClick}
-        />
-        <Button
-          size="normal"
-          label={t("Common:CancelButton")}
-          tabIndex={2}
-          isDisabled={false}
-          //onClick={this.onCancelClick}
-        />
+        <ButtonsWrapper>
+          <Button
+            className="button"
+            primary
+            size="normal"
+            label={t("Common:SaveButton")}
+            tabIndex={2}
+            isDisabled={false}
+            //onClick={this.onAcceptClick}
+          />
+          <Button
+            className="button"
+            size="normal"
+            label={t("Common:CancelButton")}
+            tabIndex={2}
+            isDisabled={false}
+            //onClick={this.onCancelClick}
+          />
+        </ButtonsWrapper>
       </StyledBody>
     </StyledPage>
   );

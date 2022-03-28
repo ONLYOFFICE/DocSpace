@@ -64,12 +64,19 @@ export const StyledBody = styled.div`
     margin-bottom: 24px;
   }
 
-  .owner-button {
-    margin-right: 16px;
-  }
-
   .phone-input {
     margin-top: 32px;
     margin-bottom: 16px;
+  }
+`;
+
+export const ButtonsWrapper = styled.div`
+  display: flex;
+  flex: 1fr 1fr;
+  flex-direction: row;
+  gap: 16px;
+
+  .button {
+    width: 100%;
   }
 `;
