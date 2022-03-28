@@ -29,11 +29,11 @@ const StyledSectionHeader = styled.div`
 
   ${isMobile &&
   css`
-    height: ${(props) =>
-      props.maintenanceExist ? "126px" : "61px"} !important;
+    min-height: ${(props) =>
+      props.maintenanceExist ? "61px" : "61px"} !important;
     width: ${(props) => !props.isLoaded && "100%"};
     margin-top: 62px;
-    @media ${tablet} {
+    @media (max-width: 1180px) {
       margin-top: ${(props) => props.marginTop};
     }
   `}
@@ -51,7 +51,8 @@ const StyledSectionHeader = styled.div`
       top: ${(props) => props.top};
       width: ${(props) =>
         props.isArticlePinned ? `calc(100% - 272px)` : "100%"};
-      background-color: #fff;
+      background-color: ${(props) =>
+        props.theme.section.header.backgroundColor};
       z-index: 149;
       padding-right: 16px;
     `}
