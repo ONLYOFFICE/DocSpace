@@ -56,11 +56,7 @@ export const StyledBody = styled.div`
     margin-bottom: 16px;
   }
 
-  .password-change-title {
-    margin-bottom: 8px;
-  }
-
-  .subtitle-delete {
+  .confirm-subtitle {
     margin-bottom: 8px;
   }
 
@@ -70,5 +66,10 @@ export const StyledBody = styled.div`
 
   .owner-button {
     margin-right: 16px;
+  }
+
+  .phone-input {
+    margin-top: 32px;
+    margin-bottom: 16px;
   }
 `;

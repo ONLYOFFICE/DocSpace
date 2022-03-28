@@ -86,9 +86,7 @@ const ChangePasswordForm = (props) => {
         </StyledHeader>
 
         <div className="password-change-form">
-          <Text className="password-change-title">
-            {t("PassworResetTitle")}
-          </Text>
+          <Text className="confirm-subtitle">{t("PassworResetTitle")}</Text>
           <FieldContainer
             className="form-field"
             isVertical={true}

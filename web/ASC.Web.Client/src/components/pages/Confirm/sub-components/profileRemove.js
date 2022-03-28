@@ -38,7 +38,7 @@ const ProfileRemoveForm = (props) => {
             <Text fontSize="23px" fontWeight="700" className="title">
               {t("DeleteProfileSuccessMessage")}
             </Text>
-            <Text fontSize="16px" fontWeight="600" className="subtitle-delete">
+            <Text fontSize="16px" fontWeight="600" className="confirm-subtitle">
               {t("DeleteProfileSuccessMessageInfo")}
             </Text>
           </StyledHeader>
@@ -54,7 +54,7 @@ const ProfileRemoveForm = (props) => {
           <Text fontSize="23px" fontWeight="700" className="title">
             {greetingTitle}
           </Text>
-          <Text fontSize="16px" fontWeight="600" className="subtitle-delete">
+          <Text fontSize="16px" fontWeight="600" className="confirm-subtitle">
             {t("DeleteProfileConfirmation")}
           </Text>
           <Text className="info-delete">
