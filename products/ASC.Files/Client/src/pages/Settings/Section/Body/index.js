@@ -19,17 +19,19 @@ const StyledContainer = styled.div`
   position: absolute;
   top: 3px;
 
-  width: 100%;
+  width: calc(100% - 40px);
 
   height: auto;
 
   @media ${tablet} {
     position: static;
+    width: calc(100% - 32px);
   }
 
   ${isMobile &&
   css`
     position: static;
+    width: calc(100% - 32px);
   `}
 `;
 
