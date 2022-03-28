@@ -4,6 +4,7 @@ import { registerSW } from "@appserver/common/sw/helper";
 import App from "../App.js";
 import { useSSR } from "react-i18next";
 import useMfScripts from "../helpers/useMfScripts";
+import initDesktop from "../helpers/initDesktop";
 
 const propsObj = window.__ASC_INITIAL_STATE__;
 const initialI18nStore = window.initialI18nStore;
@@ -17,6 +18,7 @@ const stateInit = document.getElementById("__ASC_INITIAL_STATE__");
 const i18nInit = document.getElementById("__ASC_I18N_INIT__");
 stateInit.parentNode.removeChild(stateInit);
 i18nInit.parentNode.removeChild(i18nInit);
+const isDesktopEditor = window["AscDesktopEditor"] !== undefined;
 
 const AppWrapper = () => {
   const [isInitialized, isErrorLoading] = useMfScripts();
@@ -24,7 +26,13 @@ const AppWrapper = () => {
 
   return (
     <Suspense fallback={<div />}>
-      <App {...propsObj} mfReady={isInitialized} mfFailed={isErrorLoading} />
+      <App
+        {...propsObj}
+        mfReady={isInitialized}
+        mfFailed={isErrorLoading}
+        isDesktopEditor={isDesktopEditor}
+        initDesktop={initDesktop}
+      />
     </Suspense>
   );
 };

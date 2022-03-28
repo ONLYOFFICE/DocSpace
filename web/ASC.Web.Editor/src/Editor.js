@@ -21,6 +21,8 @@ import { EditorWrapper } from "./StyledEditor";
 import { useTranslation } from "react-i18next";
 import withDialogs from "./helpers/withDialogs";
 
+import { canConvert, convertDocumentUrl } from "./helpers/utils";
+
 const LoaderComponent = (
   <Loader
     type="rombs"
@@ -59,39 +61,6 @@ const onSDKError = (event) => {
   );
 };
 
-const initDesktop = (cfg) => {
-  const encryptionKeys = cfg?.editorConfig?.encryptionKeys;
-
-  regDesktop(
-    user,
-    !!encryptionKeys,
-    encryptionKeys,
-    (keys) => {
-      setEncryptionKeys(keys);
-    },
-    true,
-    (callback) => {
-      getEncryptionAccess(fileId)
-        .then((keys) => {
-          var data = {
-            keys,
-          };
-
-          callback(data);
-        })
-        .catch((error) => {
-          window.toastr.error(
-            typeof error === "string" ? error : error.message,
-            null,
-            0,
-            true
-          );
-        });
-    },
-    t
-  );
-};
-
 const text = "text";
 const presentation = "presentation";
 let documentIsReady = false; // move to state?
@@ -124,6 +93,8 @@ function Editor({
   onSDKRequestSaveAs,
   isFileDialogVisible,
   isFolderDialogVisible,
+  isDesktopEditor,
+  initDesktop,
 }) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [documentTitle, setNewDocumentTitle] = useState("Loading...");
@@ -143,13 +114,50 @@ function Editor({
     if (config) {
       document.getElementById("scripDocServiceAddress").onload = onLoad();
       setDocumentTitle(config?.document?.title);
-    }
 
-    if (isIOS && deviceType === "tablet") {
-      const vh = window.innerHeight * 0.01;
-      document.documentElement.style.setProperty("--vh", `${vh}px`);
+      if (isIOS && deviceType === "tablet") {
+        const vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty("--vh", `${vh}px`);
+      }
     }
   }, []);
+
+  useEffect(() => {
+    if (config) {
+      console.log(isDesktopEditor, config);
+      if (isDesktopEditor) {
+        initDesktop(config, user, fileId, t);
+      }
+    }
+  }, [isDesktopEditor]);
+
+  // useEffect(async () => {
+  //   try {
+  //     if (
+  //       url.indexOf("#message/") > -1 &&
+  //       fileInfo &&
+  //       fileInfo?.fileExst &&
+  //       canConvert(fileInfo.fileExst)
+  //     ) {
+  //       const result = await convertDocumentUrl();
+
+  //       const splitUrl = url.split("#message/");
+
+  //       if (result) {
+  //         const newUrl = `${result.webUrl}#message/${splitUrl[1]}`;
+
+  //         history.pushState({}, null, newUrl);
+
+  //         // fileInfo = result;
+  //         // url = newUrl;
+  //         // fileId = result.id;
+  //         // version = result.version;
+  //       }
+  //     }
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // }, [url, fileInfo?.fileExst]);
 
   const getDefaultFileName = (format) => {
     switch (format) {
