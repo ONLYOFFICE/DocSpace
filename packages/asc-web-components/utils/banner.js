@@ -10,9 +10,9 @@ export const getBannerAttribute = () => {
     ? rects.height + 40 + "px"
     : "48px";
   const sectionHeaderMarginTop = bar
-    ? "62px"
+    ? "106px"
     : rects
-    ? rects.height - 40 + 36 + "px"
+    ? rects.height + 36 + "px"
     : "46px";
 
   return { headerHeight, sectionHeaderTop, sectionHeaderMarginTop };
