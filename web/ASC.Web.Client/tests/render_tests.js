@@ -151,16 +151,10 @@ Scenario("Change owner page render test", async ({ I }) => {
 
   I.seeElement({
     react: "Button",
-    props: {
-      className: "owner-button owner-buttons",
-    },
   });
 
   I.seeElement({
     react: "Button",
-    props: {
-      className: "owner-buttons",
-    },
   });
 
   I.saveScreenshot(`5.change-owner.png`);
@@ -186,7 +180,6 @@ Scenario("Activate user page render test", async ({ I }) => {
   I.seeElement({
     react: "TextInput",
     props: {
-      className: "confirm-row",
       id: "name",
     },
   });
@@ -194,7 +187,6 @@ Scenario("Activate user page render test", async ({ I }) => {
   I.seeElement({
     react: "TextInput",
     props: {
-      className: "confirm-row",
       id: "surname",
     },
   });
@@ -202,16 +194,12 @@ Scenario("Activate user page render test", async ({ I }) => {
   I.seeElement({
     react: "PasswordInput",
     props: {
-      className: "confirm-row",
       id: "password",
     },
   });
 
   I.seeElement({
     react: "Button",
-    props: {
-      className: "confirm-row",
-    },
   });
 
   I.saveScreenshot(`6.activate-user.png`);
@@ -235,16 +223,10 @@ Scenario("Change password page render test", async ({ I }) => {
 
   I.seeElement({
     react: "PasswordInput",
-    props: {
-      className: "password-input",
-    },
   });
 
   I.seeElement({
     react: "Button",
-    props: {
-      className: "password-button",
-    },
   });
 
   I.saveScreenshot(`7.change-password.png`);

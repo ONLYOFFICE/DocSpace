@@ -105,9 +105,6 @@ Scenario("Change password", async ({ I }) => {
   I.fillField("password", "qwerty12");
   I.click({
     react: "Button",
-    props: {
-      className: "password-button",
-    },
   });
 
   I.see("Documents");
