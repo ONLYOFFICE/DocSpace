@@ -46,7 +46,10 @@ const displaySettings = css`
     font-weight: 600;
     width: calc(100% - 32px);
     bottom: 56px;
-    background-color: white;
+    background-color: ${(props) =>
+      props.hasScroll
+        ? props.theme.mainButtonMobile.buttonWrapper.background
+        : "none"};
   }
 
   ${(props) =>

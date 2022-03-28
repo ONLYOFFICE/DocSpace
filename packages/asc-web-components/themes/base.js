@@ -1958,6 +1958,11 @@ const Base = {
     expanderColor: "dimgray",
     downloadAppList: {
       color: "#83888d",
+      winHoverColor: "#3785D3",
+      macHoverColor: black,
+      linuxHoverColor: "#FFB800",
+      androidHoverColor: "#9BD71C",
+      iosHoverColor: black,
     },
     thirdPartyList: {
       color: "#818b91",

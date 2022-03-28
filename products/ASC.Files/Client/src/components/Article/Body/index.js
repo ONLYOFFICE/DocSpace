@@ -35,6 +35,7 @@ const ArticleBodyContent = (props) => {
     isVisitor,
     FirebaseHelper,
     isArticleLoading,
+    theme,
   } = props;
 
   const campaigns = (localStorage.getItem("campaigns") || "")
@@ -103,7 +104,7 @@ const ArticleBodyContent = (props) => {
       {!isDesktopClient && showText && (
         <StyledBlock showText={showText}>
           {enableThirdParty && !isVisitor && <ThirdPartyList />}
-          <DownloadAppList />
+          <DownloadAppList theme={theme} />
           {(isDesktop || isTablet) &&
             personal &&
             !firstLoad &&
@@ -144,6 +145,7 @@ export default inject(
       hideArticle,
       isDesktopClient,
       FirebaseHelper,
+      theme,
     } = auth.settingsStore;
 
     const selectedFolderTitle = selectedFolderStore.title;
@@ -173,6 +175,7 @@ export default inject(
       firstLoad,
       isDesktopClient,
       FirebaseHelper,
+      theme,
     };
   }
 )(observer(withRouter(ArticleBodyContent)));

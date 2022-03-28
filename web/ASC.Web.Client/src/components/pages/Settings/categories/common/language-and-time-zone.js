@@ -72,7 +72,7 @@ const StyledComponent = styled.div`
     line-height: 20px;
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: 599px) {
     ${(props) =>
       props.hasScroll &&
       css`

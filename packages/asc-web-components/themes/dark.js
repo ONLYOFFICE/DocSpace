@@ -1109,7 +1109,7 @@ const Dark = {
 
     slider: {
       width: "100%",
-      margin: "8px 0",
+      margin: "24px 0",
       backgroundColor: "transparent",
 
       runnableTrack: {
@@ -1961,6 +1961,11 @@ const Dark = {
 
     downloadAppList: {
       color: "#C4C4C4",
+      winHoverColor: "#3785D3",
+      macHoverColor: white,
+      linuxHoverColor: "#FFB800",
+      androidHoverColor: "#9BD71C",
+      iosHoverColor: white,
     },
 
     thirdPartyList: {
