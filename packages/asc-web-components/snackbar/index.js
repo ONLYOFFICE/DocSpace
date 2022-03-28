@@ -46,10 +46,6 @@ class SnackBar extends React.Component {
     this.props.clickAction && this.props.clickAction(e);
   };
 
-  componentDidUpdate(nextProps, nextState) {
-    return !equal(this.state, nextState);
-  }
-
   componentDidMount() {
     const { onLoad } = this.props;
     onLoad();
