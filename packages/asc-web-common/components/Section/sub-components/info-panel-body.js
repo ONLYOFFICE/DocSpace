@@ -1,5 +1,4 @@
 import Scrollbar from "@appserver/components/scrollbar";
-import { inject, observer } from "mobx-react";
 import React from "react";
 
 const SubInfoPanelBody = ({ children }) => {
@@ -14,6 +13,4 @@ const SubInfoPanelBody = ({ children }) => {
 
 SubInfoPanelBody.displayName = "SubInfoPanelBody";
 
-export default inject(() => {
-  return {};
-})(observer(SubInfoPanelBody));
+export default SubInfoPanelBody;

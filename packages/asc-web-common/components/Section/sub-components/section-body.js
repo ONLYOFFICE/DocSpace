@@ -45,9 +45,6 @@ const commonStyles = css`
   .section-wrapper-content {
     ${paddingStyles}
     flex: 1 0 auto;
-    //display: flex;
-    //flex-direction: row;
-
     padding-right: 0;
     outline: none;
     ${(props) =>
