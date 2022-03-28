@@ -50,11 +50,12 @@ class TabContainer extends Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     const { activeTab, onScrollHide } = this.state;
-    const { isDisabled } = this.props;
+    const { isDisabled, elements } = this.props;
     if (
       activeTab === nextState.activeTab &&
       isDisabled === nextProps.isDisabled &&
-      onScrollHide === nextState.onScrollHide
+      onScrollHide === nextState.onScrollHide &&
+      elements.length === nextProps.elements.length
     ) {
       return false;
     }
