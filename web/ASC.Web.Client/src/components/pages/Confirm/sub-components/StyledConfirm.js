@@ -67,4 +67,8 @@ export const StyledBody = styled.div`
   .info-delete {
     margin-bottom: 24px;
   }
+
+  .owner-button {
+    margin-right: 16px;
+  }
 `;
