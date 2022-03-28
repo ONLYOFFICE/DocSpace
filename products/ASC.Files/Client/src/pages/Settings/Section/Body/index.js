@@ -11,7 +11,7 @@ import config from "../../../../../package.json";
 import TabsContainer from "@appserver/components/tabs-container";
 import CommonSettings from "./CommonSettings";
 import AdminSettings from "./AdminSettings";
-import { Consumer } from "@appserver/components/utils/context";
+
 import { tablet } from "@appserver/components/utils/device";
 import { isMobile } from "react-device-detect";
 
@@ -19,7 +19,7 @@ const StyledContainer = styled.div`
   position: absolute;
   top: 3px;
 
-  width: ${(props) => props.sectionWidth}px;
+  width: 100%;
 
   height: auto;
 
@@ -114,19 +114,13 @@ const SectionBodyContent = ({
   ) : isErrorSettings ? (
     <Error520 />
   ) : (
-    <Consumer>
-      {(context) => (
-        <>
-          <StyledContainer sectionWidth={context.sectionWidth}>
-            <TabsContainer
-              elements={elements}
-              onSelect={onSelect}
-              selectedItem={selectedTab()}
-            />
-          </StyledContainer>
-        </>
-      )}
-    </Consumer>
+    <StyledContainer>
+      <TabsContainer
+        elements={elements}
+        onSelect={onSelect}
+        selectedItem={selectedTab()}
+      />
+    </StyledContainer>
   );
 };
 
