@@ -79,14 +79,6 @@ class MobileLayout extends Component {
       return;
     }
 
-    // if (currentScrollPosition <= 150 && prevScrollPosition === 0) {
-    //   if (!this.state.visibleContent)
-    //     this.setState({
-    //       visibleContent: true,
-    //     });
-    //   return;
-    // }
-
     if (
       prevScrollPosition - currentScrollPosition > 0 &&
       currentScrollPosition < headerHeight
