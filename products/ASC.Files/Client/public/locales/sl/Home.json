@@ -13,7 +13,6 @@
   "CopyItem": "<strong>{{title}}</strong> kopirano",
   "CopyItems": "<strong>{{qty}}</strong> elementov kopiranih",
   "Document": "Dokument",
-  "Duplicate": "Ustvari kopijo",
   "EmptyFile": "Prazna datoteka",
   "EmptyFilterDescriptionText": "Nobena datoteka ali mapa se ne ujema s tem filtrom. Poskusite z drugim filtrom ali počistite filter za ogled vseh datotek. ",
   "EmptyFilterSubheadingText": "Za ta filter ni datotek za prikaz",

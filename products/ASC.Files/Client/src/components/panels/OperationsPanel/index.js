@@ -119,7 +119,7 @@ const OperationsPanelComponent = (props) => {
       isCopy,
       folderTitle,
       translations: {
-        copy: t("Translations:CopyOperation"),
+        copy: t("Common:CopyOperation"),
         move: t("Translations:MoveToOperation"),
       },
     };
@@ -190,9 +190,11 @@ const OperationsPanelComponent = (props) => {
   );
 };
 
-const OperationsPanel = withTranslation(["OperationsPanel", "Translations"])(
-  OperationsPanelComponent
-);
+const OperationsPanel = withTranslation([
+  "OperationsPanel",
+  "Translations",
+  "Common",
+])(OperationsPanelComponent);
 
 export default inject(
   (

@@ -706,6 +706,16 @@ const Base = {
         large: "43px",
       },
     },
+
+    iconButton: {
+      width: {
+        base: "15px",
+        middle: "15px",
+        big: "16px",
+        huge: "16px",
+        large: "16px",
+      },
+    },
   },
 
   passwordInput: {
@@ -1948,6 +1958,11 @@ const Base = {
     expanderColor: "dimgray",
     downloadAppList: {
       color: "#83888d",
+      winHoverColor: "#3785D3",
+      macHoverColor: black,
+      linuxHoverColor: "#FFB800",
+      androidHoverColor: "#9BD71C",
+      iosHoverColor: black,
     },
     thirdPartyList: {
       color: "#818b91",

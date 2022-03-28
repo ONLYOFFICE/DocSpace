@@ -242,7 +242,7 @@ class ContextOptionsStore {
 
   onDuplicate = (item, t) => {
     this.filesActionsStore
-      .duplicateAction(item, t("Translations:CopyOperation"))
+      .duplicateAction(item, t("Common:CopyOperation"))
       .catch((err) => toastr.error(err));
   };
 
@@ -570,7 +570,7 @@ class ContextOptionsStore {
       ...moveActions,
       {
         key: "restore",
-        label: t("Translations:Restore"),
+        label: t("Common:Restore"),
         icon: "images/move.react.svg",
         onClick: this.onMoveAction,
         disabled: false,

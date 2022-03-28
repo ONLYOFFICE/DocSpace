@@ -235,15 +235,13 @@ class OwnerSettings extends Component {
               </div>
             </div>
           </div>
-          {selectorIsLoaded && (
+          {selectorIsLoaded && !!showSelector && (
             <div className="advanced-selector">
               <PeopleSelector
-                isOpen={showSelector}
+                isOpen={!!showSelector}
                 size={"full"}
                 onSelect={this.onSelect}
                 onCancel={this.onCancelSelector}
-                defaultOption={me}
-                defaultOptionLabel={t("Common:MeLabel")}
                 groupsCaption={groupsCaption}
                 onArrowClick={this.onCancelSelector}
                 headerLabel={t("ChooseOwner")}

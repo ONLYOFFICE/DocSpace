@@ -16,6 +16,7 @@ class PeopleSelector extends React.Component {
     this.state = {
       options: [],
       groups: [],
+      total: 0,
       page: 0,
       hasNextPage: true,
       isNextPageLoading: false,
@@ -35,6 +36,7 @@ class PeopleSelector extends React.Component {
                 id: "all",
                 label: `${t("AllUsers")}`,
                 total: 0,
+                selectedCount: 0,
               },
             ].concat(this.convertGroups(groups)),
           })
@@ -48,6 +50,7 @@ class PeopleSelector extends React.Component {
             id: "all",
             label: `${t("AllUsers")}`,
             total: 0,
+            selectedCount: 0,
           },
         ].concat(groupList),
       });
@@ -62,6 +65,7 @@ class PeopleSelector extends React.Component {
             id: g.id,
             label: g.name,
             total: 0,
+            selectedCount: 0,
           };
         })
       : [];
@@ -162,6 +166,7 @@ class PeopleSelector extends React.Component {
             hasNextPage: newOptions.length < response.total,
             isNextPageLoading: false,
             options: newOptions,
+            total: response.total,
           });
         })
         .catch((error) => console.log(error));
@@ -208,7 +213,13 @@ class PeopleSelector extends React.Component {
   };
 
   render() {
-    const { options, groups, hasNextPage, isNextPageLoading } = this.state;
+    const {
+      options,
+      groups,
+      hasNextPage,
+      isNextPageLoading,
+      total,
+    } = this.state;
 
     const {
       id,
@@ -271,6 +282,7 @@ class PeopleSelector extends React.Component {
         showCounter={showCounter}
         onArrowClick={onArrowClick}
         headerLabel={headerLabel ? headerLabel : `${t("AddUsers")}`}
+        total={total}
       />
     );
   }

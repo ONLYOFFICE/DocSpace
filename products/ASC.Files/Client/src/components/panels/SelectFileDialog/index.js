@@ -265,6 +265,7 @@ class SelectFileDialogBody extends React.Component {
       onSetFileName,
       tReady,
       headerName,
+      foldersList,
       theme,
     } = this.props;
     const {
@@ -340,6 +341,7 @@ class SelectFileDialogBody extends React.Component {
         passedId={passedId}
         titleFilesList={titleFilesList}
         primaryButtonName={this.buttonName}
+        foldersList={foldersList}
       />
     );
   }

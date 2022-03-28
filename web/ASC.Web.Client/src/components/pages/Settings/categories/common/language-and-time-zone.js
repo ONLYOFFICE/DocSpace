@@ -19,8 +19,7 @@ import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../../../../../package.json";
 import history from "@appserver/common/history";
-import { isMobile } from "react-device-detect";
-import { isSmallTablet } from "@appserver/components/utils/device";
+import { isMobileOnly } from "react-device-detect";
 import Scrollbar from "@appserver/components/scrollbar";
 
 const mapTimezonesToArray = (timezones) => {
@@ -37,7 +36,6 @@ const menuHeight = "48px";
 const sectionHeight = "50px";
 const paddingSectionWrapperContent = "22px";
 const saveCancelButtons = "56px";
-//const minHeight = "64px";
 const flex = "4px";
 
 const StyledScrollbar = styled(Scrollbar)`
@@ -74,29 +72,21 @@ const StyledComponent = styled.div`
     line-height: 20px;
   }
 
-  .settings-block {
-    height: calc(
-      100vh -
-        (
-          ${menuHeight} + ${sectionHeight} + ${paddingSectionWrapperContent} +
-            ${saveCancelButtons} + ${flex}
-        )
-    );
+  @media (max-width: 599px) {
+    ${(props) =>
+      props.hasScroll &&
+      css`
+        width: ${isMobileOnly ? "100vw" : "calc(100vw - 52px)"};
+        left: -16px;
+        position: relative;
+
+        .settings-block {
+          width: ${isMobileOnly ? "calc(100vw - 32px)" : "calc(100vw - 84px)"};
+          max-width: none;
+          padding-left: 16px;
+        }
+      `}
   }
-
-  ${(props) =>
-    (isMobile || props.hasScroll) &&
-    css`
-      width: ${isMobile ? "100vw" : "calc(100vw - 52px)"};
-      left: -16px;
-      position: relative;
-
-      .settings-block {
-        width: ${isMobile ? "calc(100vw - 32px)" : "calc(100vw - 84px)"};
-        max-width: none;
-        padding-left: 16px;
-      }
-    `}
 
   @media (min-width: 600px) {
     .settings-block {
@@ -105,8 +95,8 @@ const StyledComponent = styled.div`
     }
   }
 
-  @media (orientation: landscape) and (max-width: 601px) {
-    ${isMobile &&
+  @media (orientation: landscape) and (max-width: 600px) {
+    ${isMobileOnly &&
     css`
       .settings-block {
         height: auto;
@@ -170,6 +160,8 @@ class LanguageAndTimeZone extends React.Component {
       showReminder: false,
       sectionWidth: null,
       hasScroll: false,
+      heightSettingsBlock: null,
+      heightScrollBody: null,
     };
   }
 
@@ -238,10 +230,10 @@ class LanguageAndTimeZone extends React.Component {
       cultureNames,
     } = this.props;
 
-    this.checkHeightSettingsBlock(false);
+    this.checkHeightSettingsBlock();
     window.addEventListener("resize", this.checkHeightSettingsBlock);
 
-    // TODO: Переделать, убрать div c 64 высотой
+    // TODO: Remove div with height 64 and remove settings-mobile class
     const settingsMobile = document.getElementsByClassName(
       "settings-mobile"
     )[0];
@@ -381,7 +373,7 @@ class LanguageAndTimeZone extends React.Component {
   };
 
   checkInnerWidth = () => {
-    if (window.innerWidth > 600 && !isMobile) {
+    if (window.innerWidth > 600) {
       history.push(
         combineUrl(
           AppServerConfig.proxyURL,
@@ -389,28 +381,49 @@ class LanguageAndTimeZone extends React.Component {
           "/settings/common/customization"
         )
       );
-
       return true;
     }
   };
 
-  checkHeightSettingsBlock = (resize) => {
-    if (!this.settingsDiv || resize) {
-      this.settingsDiv = document.getElementsByClassName("settings-block")[0];
+  checkHeightSettingsBlock = () => {
+    if (this.settingsDiv && this.scrollBody) return;
 
-      if (this.settingsDiv) {
-        const height = getComputedStyle(this.settingsDiv).height.slice(0, -2);
+    this.settingsDiv = document.getElementsByClassName("settings-block")[0];
 
-        if (this.settingsDiv.scrollHeight > height) {
-          this.setState({
-            hasScroll: true,
-          });
-        } else {
-          this.setState({
-            hasScroll: false,
-          });
-        }
-      }
+    if (!this.settingsDiv) return;
+
+    this.scrollBody = this.settingsDiv.closest(".scroll-body");
+
+    if (!this.scrollBody) return;
+
+    const height = getComputedStyle(this.settingsDiv).height.slice(0, -2);
+    const heightScrollBody = getComputedStyle(this.scrollBody).height.slice(
+      0,
+      -2
+    );
+
+    if (
+      this.state.heightSettingsBlock === height &&
+      this.state.heightScrollBody === heightScrollBody
+    ) {
+      return;
+    }
+
+    this.setState({
+      heightSettingsBlock: height,
+    });
+    this.setState({
+      heightScrollBody: heightScrollBody,
+    });
+
+    if (parseInt(height, 10) > parseInt(heightScrollBody, 10)) {
+      this.setState({
+        hasScroll: true,
+      });
+    } else {
+      this.setState({
+        hasScroll: false,
+      });
     }
   };
 
@@ -423,7 +436,6 @@ class LanguageAndTimeZone extends React.Component {
       timezones,
       timezone,
       showReminder,
-      hasChanged,
       hasScroll,
     } = this.state;
 
@@ -495,22 +507,12 @@ class LanguageAndTimeZone extends React.Component {
             />
           </div>
         )}
-        {/* {hasScroll ? (
-                <StyledScrollbar stype="smallBlack">
-                  {settingsBlock}
-                </StyledScrollbar>
-              ) : (
-                <> {settingsBlock}</>
-              )} */}
-
-        {/* TODO: Для мобилы только с горизонтальной ориентацией и декстопа  window.innerWidth < 600 */}
-
-        {(isMobile && window.innerWidth < 600) || window.innerWidth < 600 ? (
+        {(isMobileOnly && window.innerWidth < 600) ||
+        window.innerWidth < 600 ? (
           <StyledScrollbar stype="smallBlack">{settingsBlock}</StyledScrollbar>
         ) : (
           <> {settingsBlock}</>
         )}
-
         <SaveCancelButtons
           className="save-cancel-buttons"
           onSaveClick={this.onSaveLngTZSettings}
@@ -520,7 +522,6 @@ class LanguageAndTimeZone extends React.Component {
           saveButtonLabel={t("Common:SaveButton")}
           cancelButtonLabel={t("Common:CancelButton")}
           displaySettings={true}
-          hasChanged={hasChanged}
           hasScroll={hasScroll}
         />
       </StyledComponent>

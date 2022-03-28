@@ -356,6 +356,7 @@ class TreeFolders extends React.Component {
 
       const folderIndex = treeNode.props.pos;
       let i = 0;
+
       for (let item of arrayFolders) {
         item["key"] = `${folderIndex}-${i}`;
         i++;

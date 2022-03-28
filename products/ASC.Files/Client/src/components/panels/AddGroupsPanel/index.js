@@ -105,8 +105,16 @@ class AddGroupsPanelComponent extends React.Component {
   // }
 
   render() {
-    const { t, visible, accessOptions, theme } = this.props;
+    const { t, visible, accessOptions, theme, shareDataItems } = this.props;
     const { accessRight } = this.state;
+
+    const selectedOptions = [];
+    shareDataItems.forEach((item) => {
+      const { sharedTo } = item;
+      if (!sharedTo.groups && !sharedTo.shareLink) {
+        selectedOptions.push({ id: sharedTo.id, key: sharedTo.id });
+      }
+    });
 
     const zIndex = 310;
 
@@ -141,6 +149,7 @@ class AddGroupsPanelComponent extends React.Component {
                 headerLabel={t("AddGroupsForSharingButton")}
                 onArrowClick={this.onArrowClick}
                 showCounter
+                selectedOptions={selectedOptions}
               />
             </StyledBody>
           </StyledContent>

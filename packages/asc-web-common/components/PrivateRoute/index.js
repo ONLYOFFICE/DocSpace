@@ -9,7 +9,7 @@ import AppLoader from "../AppLoader";
 import { inject, observer } from "mobx-react";
 import { isMe } from "../../utils";
 import combineUrl from "../../utils/combineUrl";
-import { AppServerConfig } from "../../constants";
+import { AppServerConfig, TenantStatus } from "../../constants";
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const {
@@ -26,8 +26,9 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     wizardCompleted,
     personal,
     location,
+    tenantStatus,
   } = rest;
-
+  const isPortal = window.location.pathname === "/preparation-portal";
   const { params, path } = computedMatch;
   const { userId } = params;
 
@@ -57,6 +58,25 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
         <Redirect
           to={{
             pathname: "/products/files",
+            state: { from: props.location },
+          }}
+        />
+      );
+    }
+
+    if (
+      isLoaded &&
+      isAuthenticated &&
+      tenantStatus === TenantStatus.PortalRestore &&
+      !isPortal
+    ) {
+      return (
+        <Redirect
+          to={{
+            pathname: combineUrl(
+              AppServerConfig.proxyURL,
+              "/preparation-portal"
+            ),
             state: { from: props.location },
           }}
         />
@@ -160,7 +180,12 @@ export default inject(({ auth }) => {
   } = auth;
   const { user } = userStore;
   const { modules } = moduleStore;
-  const { setModuleInfo, wizardCompleted, personal } = settingsStore;
+  const {
+    setModuleInfo,
+    wizardCompleted,
+    personal,
+    tenantStatus,
+  } = settingsStore;
 
   return {
     modules,
@@ -170,7 +195,7 @@ export default inject(({ auth }) => {
     isLoaded,
     setModuleInfo,
     wizardCompleted,
-
+    tenantStatus,
     personal,
   };
 })(observer(PrivateRoute));
