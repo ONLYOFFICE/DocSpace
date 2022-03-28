@@ -1,5 +1,4 @@
 import Text from "@appserver/components/text";
-import { inject, observer } from "mobx-react";
 import React from "react";
 import { withTranslation } from "react-i18next";
 import { ReactSVG } from "react-svg";
@@ -30,6 +29,4 @@ const SeveralItems = (props) => {
   );
 };
 
-export default inject(({}) => {
-  return {};
-})(withTranslation(["InfoPanel"])(observer(SeveralItems)));
+export default withTranslation(["InfoPanel"])(SeveralItems);

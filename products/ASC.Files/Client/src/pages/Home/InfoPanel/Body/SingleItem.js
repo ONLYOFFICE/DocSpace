@@ -1,5 +1,8 @@
 import RectangleLoader from "@appserver/common/components/Loaders/RectangleLoader";
 import { FileType } from "@appserver/common/constants";
+import { LANGUAGE } from "@appserver/common/constants";
+const moment = require("moment");
+
 import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
 import Tooltip from "@appserver/components/tooltip";
@@ -72,24 +75,9 @@ const SingleItem = (props) => {
       );
 
       const parseAndFormatDate = (date) => {
-        date = new Date(date);
-
-        const normalize = (num) => {
-          if (num > 9) return num;
-          return `0${num}`;
-        };
-
-        let day = normalize(date.getDate()),
-          month = normalize(date.getMonth()),
-          year = date.getFullYear(),
-          hours = date.getHours(),
-          minutes = normalize(date.getMinutes()),
-          a_p = hours > 12 ? "AM" : "PM";
-
-        if (hours === 0) hours = 12;
-        else if (hours > 12) hours = hours - 12;
-
-        return `${day}.${month}.${year} ${hours}:${minutes} ${a_p}`;
+        return moment(date)
+          .locale(localStorage.getItem(LANGUAGE))
+          .format("DD.MM.YY hh:mm A");
       };
 
       const getItemType = (fileType) => {
