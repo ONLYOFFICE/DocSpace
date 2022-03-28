@@ -19,7 +19,7 @@ const AdminSettings = ({
   t,
 }) => {
   const onChangeStoreForceSave = React.useCallback(() => {
-    setStoreForceSave(!storeForceSave, "storeForceSave");
+    setStoreForceSave(!storeForceSave);
   }, [setStoreForceSave, storeForceSave]);
 
   const onChangeThirdParty = React.useCallback(() => {
