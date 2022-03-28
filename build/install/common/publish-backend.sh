@@ -56,9 +56,9 @@ while [ "$1" != "" ]; do
 done
 
 # Array of names server in directory products
-servers_products_name_backend=(ASC.CRM)
+# servers_products_name_backend=(ASC.CRM)
 servers_products_name_backend+=(ASC.Files)
-# servers_products_name_backend+=(ASC.People)
+servers_products_name_backend+=(ASC.People)
 # servers_products_name_backend+=(ASC.Projects)
 # servers_products_name_backend+=(ASC.Calendar)
 # servers_products_name_backend+=(ASC.Mail)
