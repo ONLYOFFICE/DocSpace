@@ -42,6 +42,7 @@ import SharingDialog from "files/SharingDialog";
 import { getDefaultFileName, SaveAs } from "files/utils";
 import SelectFileDialog from "files/SelectFileDialog";
 import SelectFolderDialog from "files/SelectFolderDialog";
+import PreparationPortalDialog from "studio/PreparationPortalDialog";
 import { StyledSelectFolder } from "./StyledEditor";
 import i18n from "./i18n";
 import Text from "@appserver/components/text";
@@ -97,6 +98,11 @@ const Editor = () => {
   const [openNewTab, setNewOpenTab] = useState(false);
   const [typeInsertImageAction, setTypeInsertImageAction] = useState();
   const throttledChangeTitle = throttle(() => changeTitle(), 500);
+
+  const [
+    preparationPortalDialogVisible,
+    setPreparationPortalDialogVisible,
+  ] = useState(false);
 
   let filesSettings;
 
@@ -217,6 +223,16 @@ const Editor = () => {
         if (user) filesSettings = await getSettingsFiles();
         personal = authStore.settingsStore.personal;
         successAuth = !!user;
+
+        const { socketHelper } = authStore.settingsStore;
+        socketHelper.emit({
+          command: "subscribe",
+          data: "backup-restore",
+        });
+        socketHelper.on("restore-backup", () => {
+         
+          setPreparationPortalDialogVisible(true);
+        });
       } catch (e) {
         successAuth = false;
       }
@@ -934,6 +950,10 @@ const Editor = () => {
                 ),
               })}
             />
+          )}
+
+          {preparationPortalDialogVisible && (
+            <PreparationPortalDialog visible={preparationPortalDialogVisible} />
           )}
         </>
       ) : (
