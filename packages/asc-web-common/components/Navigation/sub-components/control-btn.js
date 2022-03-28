@@ -74,19 +74,40 @@ const ControlButtons = ({
 }) => {
   return (
     <StyledContainer isDropBox={isDropBox}>
-      {canCreate && (
+      {!isRootFolder && canCreate ? (
+        <>
+          <ContextMenuButton
+            className="add-button"
+            directionX="right"
+            iconName="images/plus.svg"
+            size={17}
+            isFill
+            getData={getContextOptionsPlus}
+            isDisabled={false}
+          />
+          {!personal && (
+            <ContextMenuButton
+              className="option-button"
+              directionX="right"
+              iconName="images/vertical-dots.react.svg"
+              size={17}
+              isFill
+              getData={getContextOptionsFolder}
+              isDisabled={false}
+            />
+          )}
+        </>
+      ) : canCreate ? (
         <ContextMenuButton
           className="add-button"
-          directionX="left"
+          directionX="right"
           iconName="images/plus.svg"
           size={17}
           isFill
           getData={getContextOptionsPlus}
           isDisabled={false}
         />
-      )}
-
-      {isRecycleBinFolder && !isEmptyFilesList && (
+      ) : isRecycleBinFolder && !isEmptyFilesList ? (
         <IconButton
           iconName="images/clear.active.react.svg"
           size={17}
@@ -94,20 +115,9 @@ const ControlButtons = ({
           onClick={clearTrash}
           className="trash-button"
         />
+      ) : (
+        <></>
       )}
-
-      {!isRootFolder && !personal && (
-        <ContextMenuButton
-          className="option-button"
-          directionX="right"
-          iconName="images/vertical-dots.react.svg"
-          size={17}
-          isFill
-          getData={getContextOptionsFolder}
-          isDisabled={false}
-        />
-      )}
-
       <StyledInfoPanelToggleWrapper
         isRootFolder={isRootFolder}
         isInfoPanelVisible={isInfoPanelVisible}
