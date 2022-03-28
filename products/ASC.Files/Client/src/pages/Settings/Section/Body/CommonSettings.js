@@ -44,7 +44,7 @@ const CommonSettings = ({
   }, [setUpdateIfExist, updateIfExist]);
 
   const onChangeForceSave = React.useCallback(() => {
-    setForceSave(!forceSave, "forceSave");
+    setForceSave(!forceSave);
   }, [setForceSave, forceSave]);
 
   const onChangeFavorites = React.useCallback(

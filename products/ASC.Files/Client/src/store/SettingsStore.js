@@ -167,8 +167,10 @@ class SettingsStore {
     }
   };
 
-  setForceSave = (data, setting) =>
-    api.files.forceSave(data).then((res) => this.setFilesSetting(setting, res));
+  setForceSave = (data) =>
+    api.files.forceSave(data).then((res) => this.setForcesave(res));
+
+  setForcesave = (val) => (this.forcesave = val);
 
   updateRootTreeFolders = (set, rootFolderIndex, folderType) => {
     const {
