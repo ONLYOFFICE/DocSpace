@@ -34,7 +34,6 @@ class TextChangeField extends React.Component {
 
       tooltipContent,
       helpButtonHeaderContent,
-      dataDialog,
       maxLabelWidth,
     } = this.props;
 
@@ -62,7 +61,6 @@ class TextChangeField extends React.Component {
             size="small"
             style={{ marginLeft: "8px" }}
             tabIndex={buttonTabIndex}
-            data-dialog={dataDialog}
           />
         </InputContainer>
       </FieldContainer>
