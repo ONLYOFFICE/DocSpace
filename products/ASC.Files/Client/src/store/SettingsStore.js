@@ -140,10 +140,10 @@ class SettingsStore {
       .changeDeleteConfirm(data)
       .then((res) => this.setFilesSetting(setting, res));
 
-  setStoreForceSave = (data, setting) =>
-    api.files
-      .storeForceSave(data)
-      .then((res) => this.setFilesSetting(setting, res));
+  setStoreForceSave = (data) =>
+    api.files.storeForceSave(data).then((res) => this.setStoreForcesave(res));
+
+  setStoreForcesave = (val) => (this.storeForcesave = val);
 
   setEnableThirdParty = async (data, setting) => {
     const res = await api.files.thirdParty(data);
@@ -167,8 +167,10 @@ class SettingsStore {
     }
   };
 
-  setForceSave = (data, setting) =>
-    api.files.forceSave(data).then((res) => this.setFilesSetting(setting, res));
+  setForceSave = (data) =>
+    api.files.forceSave(data).then((res) => this.setForcesave(res));
+
+  setForcesave = (val) => (this.forcesave = val);
 
   updateRootTreeFolders = (set, rootFolderIndex, folderType) => {
     const {
