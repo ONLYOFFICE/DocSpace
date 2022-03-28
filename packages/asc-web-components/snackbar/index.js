@@ -36,8 +36,8 @@ class SnackBar extends React.Component {
 
   static close() {
     if (window.snackbar && window.snackbar.parentElementId) {
-      const bar = document.querySelector(`#${window.snackbar.parentElementId}`);
-      bar.remove();
+      const snackbar = document.querySelector("#snackbar-container");
+      snackbar.remove();
       //ReactDOM.unmountComponentAtNode(window.snackbar.parentElementId);
     }
   }
@@ -121,7 +121,7 @@ class SnackBar extends React.Component {
         {isCampaigns ? (
           <>{bannerElement}</>
         ) : (
-          <StyledSnackBar style={style} {...rest}>
+          <StyledSnackBar id="snackbar-container" style={style} {...rest}>
             {htmlContent ? (
               <div
                 dangerouslySetInnerHTML={{
