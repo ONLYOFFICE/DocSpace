@@ -1,6 +1,5 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import equal from "fast-deep-equal/react";
 import classnames from "classnames";
 import PropTypes from "prop-types";
 import { LayoutContextConsumer } from "studio/Layout/context";
@@ -94,72 +93,51 @@ const StyledSectionHeader = styled.div`
 
 StyledSectionHeader.defaultProps = { theme: Base };
 
-class SectionHeader extends React.Component {
-  constructor(props) {
-    super(props);
+const SectionHeader = (props) => {
+  const {
+    isArticlePinned,
+    isHeaderVisible,
+    viewAs,
+    maintenanceExist,
+    snackbarExist,
+    ...rest
+  } = props;
 
-    this.state = { orientationChanged: false };
+  let top = "48px";
+  let marginTop = "46px";
+
+  const mainBar = document.getElementById("main-bar");
+
+  if (maintenanceExist) {
+    const { sectionHeaderTop, sectionHeaderMarginTop } = getBannerAttribute();
+
+    top = sectionHeaderTop;
+    marginTop = sectionHeaderMarginTop;
   }
 
-  componentDidMount() {
-    window.addEventListener("orientationchange", this.orientationChangeHandler);
-  }
-
-  orientationChangeHandler = () => {
-    this.setState((state) => ({
-      orientationChanged: !state.orientationChanged,
-    }));
-  };
-
-  render() {
-    // console.log("PageLayout SectionHeader render");
-    // eslint-disable-next-line react/prop-types
-
-    const {
-      isArticlePinned,
-      isHeaderVisible,
-      viewAs,
-      maintenanceExist,
-      snackbarExist,
-      ...rest
-    } = this.props;
-
-    let top = "48px";
-    let marginTop = "46px";
-
-    const mainBar = document.getElementById("main-bar");
-
-    if (maintenanceExist) {
-      const { sectionHeaderTop, sectionHeaderMarginTop } = getBannerAttribute();
-
-      top = sectionHeaderTop;
-      marginTop = sectionHeaderMarginTop;
-    }
-
-    return (
-      <LayoutContextConsumer>
-        {(value) => (
-          <StyledSectionHeader
-            isArticlePinned={isArticlePinned}
-            isSectionHeaderVisible={value.isVisible}
-            viewAs={viewAs}
-            maintenanceExist={maintenanceExist && mainBar}
-            top={top}
-            marginTop={marginTop}
-          >
-            <div
-              className={classnames("section-header hidingHeader", {
-                "section-header--hidden":
-                  value.isVisible === undefined ? false : !value.isVisible,
-              })}
-              {...rest}
-            />
-          </StyledSectionHeader>
-        )}
-      </LayoutContextConsumer>
-    );
-  }
-}
+  return (
+    <LayoutContextConsumer>
+      {(value) => (
+        <StyledSectionHeader
+          isArticlePinned={isArticlePinned}
+          isSectionHeaderVisible={value.isVisible}
+          viewAs={viewAs}
+          maintenanceExist={maintenanceExist && mainBar}
+          top={top}
+          marginTop={marginTop}
+        >
+          <div
+            className={classnames("section-header hidingHeader", {
+              "section-header--hidden":
+                value.isVisible === undefined ? false : !value.isVisible,
+            })}
+            {...rest}
+          />
+        </StyledSectionHeader>
+      )}
+    </LayoutContextConsumer>
+  );
+};
 
 SectionHeader.displayName = "SectionHeader";
 
