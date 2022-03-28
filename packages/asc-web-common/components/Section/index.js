@@ -35,9 +35,14 @@ const StyledSelectoWrapper = styled.div`
 
 const StyledMainBar = styled.div`
   box-sizing: border-box;
+
   @media ${desktop} {
     margin-left: -24px;
     width: 100% + 24px;
+  }
+
+  @media (max-width: 1180px) {
+    margin-left: -20px;
   }
 
   @media ${tablet} {
@@ -223,7 +228,11 @@ class Section extends React.Component {
                     sectionHeight: height,
                   }}
                 >
-                  <SectionContainer widthProp={width} viewAs={viewAs} maintenanceExist={maintenanceExist}>
+                  <SectionContainer
+                    widthProp={width}
+                    viewAs={viewAs}
+                    maintenanceExist={maintenanceExist}
+                  >
                     <LayoutContextConsumer>
                       {(value) => (
                         <StyledMainBar
