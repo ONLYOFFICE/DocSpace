@@ -160,22 +160,22 @@ COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Data.B
 CMD ["ASC.Data.Backup.dll", "ASC.Data.Backup", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
 
 ## ASC.Calendar ##
-FROM builder AS calendar
-WORKDIR ${BUILD_PATH}/products/ASC.Calendar/server/
+# FROM builder AS calendar
+# WORKDIR ${BUILD_PATH}/products/ASC.Calendar/server/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/products/ASC.Calendar/server/ .
+# COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+# COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/products/ASC.Calendar/server/ .
 
-CMD ["ASC.Calendar.dll", "ASC.Calendar"]
+# CMD ["ASC.Calendar.dll", "ASC.Calendar"]
 
 ## ASC.CRM ##
-FROM builder AS crm
-WORKDIR ${BUILD_PATH}/products/ASC.CRM/server/
+# FROM builder AS crm
+# WORKDIR ${BUILD_PATH}/products/ASC.CRM/server/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/products/ASC.CRM/server/ .
+# COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+# COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/products/ASC.CRM/server/ .
 
-CMD ["ASC.CRM.dll", "ASC.CRM"]
+# CMD ["ASC.CRM.dll", "ASC.CRM"]
 
 ## ASC.Data.Storage.Encryption ##
 FROM builder AS data_storage_encryption
@@ -205,13 +205,13 @@ COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Files.
 CMD ["ASC.Files.Service.dll", "ASC.Files.Service", "core:products:folder=/var/www/products/", "core:products:subfolder=server", "disable_elastic=true"]
 
 ## ASC.Mail ##
-FROM builder AS mail
-WORKDIR ${BUILD_PATH}/products/ASC.Mail/server/
+# FROM builder AS mail
+# WORKDIR ${BUILD_PATH}/products/ASC.Mail/server/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/products/ASC.Mail/server/ .
+# COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+# COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/products/ASC.Mail/server/ .
 
-CMD ["ASC.Mail.dll", "ASC.Mail"]
+# CMD ["ASC.Mail.dll", "ASC.Mail"]
 
 ## ASC.Data.Storage.Migration ##
 FROM builder AS data_storage_migration
@@ -241,13 +241,13 @@ COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/products/ASC.People
 CMD ["ASC.People.dll", "ASC.People"]
 
 ## ASC.Projects ##
-FROM builder AS projects_server
-WORKDIR ${BUILD_PATH}/products/ASC.Projects/server/
+# FROM builder AS projects_server
+# WORKDIR ${BUILD_PATH}/products/ASC.Projects/server/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/products/ASC.Projects/server/ .
+# COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+# COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/products/ASC.Projects/server/ .
 
-CMD ["ASC.Projects.dll", "ASC.Projects"]
+# CMD ["ASC.Projects.dll", "ASC.Projects"]
 
 ## ASC.Socket.IO.Svc ##
 FROM builder AS socket
@@ -339,10 +339,10 @@ RUN mkdir -p /app/appserver/ASC.Files/server && \
 COPY bin-share-docker-entrypoint.sh /app/docker-entrypoint.sh
 COPY --from=base /var/www/products/ASC.Files/server/ /app/appserver/ASC.Files/server/
 COPY --from=base /var/www/products/ASC.People/server/ /app/appserver/ASC.People/server/
-COPY --from=base /var/www/products/ASC.CRM/server/ /app/appserver/ASC.CRM/server/
-COPY --from=base /var/www/products/ASC.Projects/server/ /app/appserver/ASC.Projects/server/
-COPY --from=base /var/www/products/ASC.Calendar/server/ /app/appserver/ASC.Calendar/server/
-COPY --from=base /var/www/products/ASC.Mail/server/ /app/appserver/ASC.Mail/server/
+# COPY --from=base /var/www/products/ASC.CRM/server/ /app/appserver/ASC.CRM/server/
+# COPY --from=base /var/www/products/ASC.Projects/server/ /app/appserver/ASC.Projects/server/
+# COPY --from=base /var/www/products/ASC.Calendar/server/ /app/appserver/ASC.Calendar/server/
+# COPY --from=base /var/www/products/ASC.Mail/server/ /app/appserver/ASC.Mail/server/
 ENTRYPOINT ["./app/docker-entrypoint.sh"]
 
 ## image for k8s wait-bin-share ##
