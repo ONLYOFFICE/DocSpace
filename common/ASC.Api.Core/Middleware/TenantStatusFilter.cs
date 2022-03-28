@@ -34,9 +34,9 @@ public class TenantStatusFilter : IResourceFilter
         private readonly string[] passthroughtRequestEndings = new[] { "preparation-portal", "getrestoreprogress", "settings", "settings.json" }; //TODO add or update when "preparation-portal" will be done
 
 
-    public TenantStatusFilter(IOptionsMonitor<ILog> options, TenantManager tenantManager)
+    public TenantStatusFilter(ILog logger, TenantManager tenantManager)
     {
-        _logger = options.CurrentValue;
+        _logger = logger;
         _tenantManager = tenantManager;
     }
 

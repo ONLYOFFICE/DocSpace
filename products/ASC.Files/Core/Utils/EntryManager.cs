@@ -292,7 +292,7 @@ public class EntryManager
         CoreBaseSettings coreBaseSettings,
         FilesSettingsHelper filesSettingsHelper,
         UserManager userManager,
-        IOptionsMonitor<ILog> optionsMonitor,
+        ILog logger,
         FileShareLink fileShareLink,
         DocumentServiceHelper documentServiceHelper,
         ThirdpartyConfiguration thirdpartyConfiguration,
@@ -328,7 +328,7 @@ public class EntryManager
         _tenantManager = tenantManager;
         _settingsManager = settingsManager;
         _serviceProvider = serviceProvider;
-        _logger = optionsMonitor.CurrentValue;
+        _logger = logger;
         _cache = cache;
         _fileTracker = fileTracker;
         _entryStatusManager = entryStatusManager;

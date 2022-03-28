@@ -202,13 +202,38 @@ public abstract class BaseStartup
 
 public static class LogNLogConfigureExtenstion
 {
+    private static LoggingConfiguration GetXmlLoggingConfiguration(IHostEnvironment hostEnvironment,IConfiguration configuration)
+    {
+        var loggerConfiguration = new XmlLoggingConfiguration(CrossPlatform.PathCombine(configuration["pathToConf"], "nlog.config"));
+       
+        var settings = new ConfigurationExtension(configuration).GetSetting<NLogSettings>("log");
+
+        if (!string.IsNullOrEmpty(settings.Name))
+        {
+            loggerConfiguration.Variables["name"] = settings.Name;
+        }
+
+        if (!string.IsNullOrEmpty(settings.Dir))
+        {
+            loggerConfiguration.Variables["dir"] = CrossPlatform.PathCombine(hostEnvironment.ContentRootPath, settings.Dir)
+                .TrimEnd('/').TrimEnd('\\') + Path.DirectorySeparatorChar;
+        }
+
+        return loggerConfiguration;
+    }
+    
     public static IHostBuilder ConfigureNLogLogging(this IHostBuilder hostBuilder)
     {
         return hostBuilder.ConfigureLogging((hostBuildexContext, r) =>
         {
-            _ = new ConfigureLogNLog(hostBuildexContext.Configuration,
-                    new ConfigurationExtension(hostBuildexContext.Configuration), hostBuildexContext.HostingEnvironment);
-            r.AddNLog(LogManager.Configuration);
+            r.Services.ConfigureOptions<ConfigureLogNLog>();
+            r.Services.AddSingleton(resolver => (IOptionsMonitor<ILog>)resolver.GetRequiredService<IOptionsMonitor<LogNLog>>());
+            r.Services.AddSingleton(resolver => (ILog)resolver.GetRequiredService<IOptionsMonitor<LogNLog>>().CurrentValue);
+            r.Services.AddSingleton(typeof(ILog<>), typeof(Common.Logging.LogFactory<>));
+
+            LogManager.ThrowConfigExceptions = false;
+
+            r.AddNLog(GetXmlLoggingConfiguration(hostBuildexContext.HostingEnvironment, hostBuildexContext.Configuration));
         });
     }
 }

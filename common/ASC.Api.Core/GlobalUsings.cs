@@ -26,10 +26,8 @@
 
 global using System.ComponentModel;
 global using System.Globalization;
-
 global using System.Linq.Expressions;
 global using System.Net;
-
 global using System.Reflection;
 global using System.Runtime.InteropServices;
 global using System.Runtime.Serialization;
@@ -39,7 +37,6 @@ global using System.Security.Claims;
 global using System.Text.Encodings.Web;
 global using System.Text.Json;
 global using System.Text.Json.Serialization;
-
 global using System.Web;
 global using System.Xml.Linq;
 
@@ -105,6 +102,7 @@ global using Newtonsoft.Json;
 global using Newtonsoft.Json.Serialization;
 
 global using NLog;
+global using NLog.Config;
 global using NLog.Extensions.Logging;
 
 global using StackExchange.Redis.Extensions.Core.Configuration;

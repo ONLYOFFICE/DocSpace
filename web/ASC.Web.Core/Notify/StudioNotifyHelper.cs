@@ -65,7 +65,7 @@ namespace ASC.Web.Studio.Core.Notify
             CoreBaseSettings coreBaseSettings,
             WebImageSupplier webImageSupplier,
             IConfiguration configuration,
-            IOptionsMonitor<ILog> option)
+            ILog logger)
         {
             Helplink = commonLinkUtility.GetHelpLink(settingsManager, additionalWhiteLabelSettingsHelper, false);
             NotifySource = studioNotifySource;
@@ -79,7 +79,7 @@ namespace ASC.Web.Studio.Core.Notify
             WebImageSupplier = webImageSupplier;
             SubscriptionProvider = NotifySource.GetSubscriptionProvider();
             RecipientsProvider = NotifySource.GetRecipientsProvider();
-            Log = option.CurrentValue;
+            Log = logger;
 
             int.TryParse(configuration["core:notify:countspam"], out CountMailsToNotActivated);
             NotificationImagePath = configuration["web:notification:image:path"];

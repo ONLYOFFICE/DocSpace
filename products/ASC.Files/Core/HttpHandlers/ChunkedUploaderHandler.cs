@@ -59,7 +59,7 @@ public class ChunkedUploaderHandlerService
     private readonly ILog _logger;
 
     public ChunkedUploaderHandlerService(
-        IOptionsMonitor<ILog> optionsMonitor,
+        ILog logger,
         TenantManager tenantManager,
         FileUploader fileUploader,
         FilesMessageService filesMessageService,
@@ -81,7 +81,7 @@ public class ChunkedUploaderHandlerService
         _chunkedUploadSessionHolder = chunkedUploadSessionHolder;
         _chunkedUploadSessionHelper = chunkedUploadSessionHelper;
         _socketManager = socketManager;
-        _logger = optionsMonitor.CurrentValue;
+        _logger = logger;
     }
 
     public async Task Invoke(HttpContext context)

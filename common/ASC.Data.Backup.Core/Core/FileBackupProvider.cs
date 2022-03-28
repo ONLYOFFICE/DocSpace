@@ -36,11 +36,11 @@ public class FileBackupProvider : IBackupProvider
     private readonly StorageFactory _storageFactory;
     private readonly StorageFactoryConfig _storageFactoryConfig;
 
-    public FileBackupProvider(IOptionsMonitor<ILog> options, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig)
+    public FileBackupProvider(ILog logger, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig)
     {
         _storageFactory = storageFactory;
         _storageFactoryConfig = storageFactoryConfig;
-        _logger = options.CurrentValue;
+        _logger = logger;
     }
 
     public FileBackupProvider()

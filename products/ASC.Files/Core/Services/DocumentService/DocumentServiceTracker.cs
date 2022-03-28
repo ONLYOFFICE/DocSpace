@@ -160,7 +160,7 @@ public class DocumentServiceTrackerHelper
         GlobalStore globalStore,
         DisplayUserSettingsHelper displayUserSettingsHelper,
         IDaoFactory daoFactory,
-        IOptionsMonitor<ILog> options,
+        ILog logger,
         DocumentServiceHelper documentServiceHelper,
         EntryManager entryManager,
         FileShareLink fileShareLink,
@@ -189,7 +189,7 @@ public class DocumentServiceTrackerHelper
         _notifyClient = notifyClient;
         _mailMergeTaskRunner = mailMergeTaskRunner;
         _fileTracker = fileTracker;
-        _logger = options.CurrentValue;
+        _logger = logger;
         _clientFactory = clientFactory;
     }
 

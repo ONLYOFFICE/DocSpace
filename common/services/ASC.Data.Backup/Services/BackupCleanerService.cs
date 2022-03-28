@@ -37,11 +37,11 @@ internal sealed class BackupCleanerService : IHostedService, IDisposable
 
     public BackupCleanerService(
         ConfigurationExtension configuration,
-        IOptionsMonitor<ILog> options,
+        ILog logger,
         IServiceScopeFactory scopeFactory)
     {
         _scopeFactory = scopeFactory;
-        _logger = options.CurrentValue;
+        _logger = logger;
         _period = configuration.GetSetting<BackupSettings>("backup").Cleaner.Period;
     }
 

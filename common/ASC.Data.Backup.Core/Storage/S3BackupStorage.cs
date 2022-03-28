@@ -34,9 +34,9 @@ internal class S3BackupStorage : IBackupStorage
     private readonly string _region;
     private readonly ILog _logger;
 
-    public S3BackupStorage(IOptionsMonitor<ILog> options, string accessKeyId, string secretAccessKey, string bucket, string region)
+    public S3BackupStorage(ILog logger, string accessKeyId, string secretAccessKey, string bucket, string region)
     {
-        _logger = options.CurrentValue;
+        _logger = logger;
         _accessKeyId = accessKeyId;
         _secretAccessKey = secretAccessKey;
         _bucket = bucket;
