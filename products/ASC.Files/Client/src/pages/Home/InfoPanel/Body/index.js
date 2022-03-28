@@ -93,16 +93,13 @@ const InfoPanelBodyContent = ({
 
 export default inject(
   ({
-    infoPanelStore,
     filesStore,
     settingsStore,
     filesActionsStore,
     dialogsStore,
     treeFoldersStore,
   }) => {
-    const selectedItems = JSON.parse(JSON.stringify(filesStore.selection));
-
-    const { getFolderInfo, getShareUsers } = filesStore;
+    const { selection, getFolderInfo, getShareUsers } = filesStore;
     const { getIcon, getFolderIcon } = settingsStore;
     const { onSelectItem } = filesActionsStore;
     const { setSharingPanelVisible } = dialogsStore;
@@ -114,7 +111,7 @@ export default inject(
     } = treeFoldersStore;
 
     return {
-      selectedItems,
+      selectedItems: selection,
       getFolderInfo,
       getShareUsers,
       getIcon,
