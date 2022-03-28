@@ -228,7 +228,8 @@ const ArticleMainButtonContent = (props) => {
             !isCommonFolder &&
             !isShareFolder &&
             !isRecycleBinFolder &&
-            !isArticleLoading && (
+            !isArticleLoading &&
+            canCreate && (
               <MobileView
                 titleProp={t("Upload")}
                 actionOptions={actions}

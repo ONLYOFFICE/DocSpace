@@ -929,7 +929,7 @@ const Base = {
         margin: "7px 15px 7px 15px",
         overflow: "hidden",
         color: white,
-        hoverColor: white,
+        hoverColor: black,
         disableColor: grayMid,
       },
     },
@@ -1958,6 +1958,11 @@ const Base = {
     expanderColor: "dimgray",
     downloadAppList: {
       color: "#83888d",
+      winHoverColor: "#3785D3",
+      macHoverColor: black,
+      linuxHoverColor: "#FFB800",
+      androidHoverColor: "#9BD71C",
+      iosHoverColor: black,
     },
     thirdPartyList: {
       color: "#818b91",
@@ -2054,7 +2059,7 @@ const Base = {
       activeIconColor: grayMain,
       hoverIconColor: grayMain,
 
-      borderImageSource: `linear-gradient(to right,${white} 24px,${grayLightMid} 24px,${grayLightMid} calc(100% - 24px),${white} calc(100% - 24px))`,
+      borderImageSource: `linear-gradient(to right,${white} 21px,${grayLightMid} 21px,${grayLightMid} calc(100% - 20px),${white} calc(100% - 20px))`,
     },
 
     tableCell: {
@@ -2107,8 +2112,8 @@ const Base = {
         shareHoverColor: "#3b72a7",
 
         borderImageRight:
-          "linear-gradient(to right, #ffffff 17px,#eceef1 31px)",
-        borderImageLeft: "linear-gradient(to left, #ffffff 17px,#eceef1 31px)",
+          "linear-gradient(to right, #ffffff 25px,#eceef1 24px)",
+        borderImageLeft: "linear-gradient(to left, #ffffff 20px,#eceef1 24px)",
 
         borderColor: "#ECEEf1",
         borderColorTransition: "#f3f4f4",
