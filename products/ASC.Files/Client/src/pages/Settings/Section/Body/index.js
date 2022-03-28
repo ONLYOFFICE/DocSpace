@@ -20,7 +20,7 @@ const StyledContainer = styled.div`
   top: 3px;
 
   width: ${(props) => props.sectionWidth}px;
-  min-width: ${(props) => props.sectionWidth}px;
+
   height: auto;
 
   @media ${tablet} {
