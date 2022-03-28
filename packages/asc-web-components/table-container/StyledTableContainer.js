@@ -79,7 +79,7 @@ const StyledTableGroupMenu = styled.div`
   align-items: center;
   width: 100%;
   z-index: 199;
-  height: 52px;
+  height: 53px;
   box-shadow: ${(props) => props.theme.tableContainer.groupMenu.boxShadow};
   border-radius: 0px 0px 6px 6px;
   margin: 0;
