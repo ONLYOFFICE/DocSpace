@@ -27,7 +27,7 @@
 using Constants = ASC.Core.Users.Constants;
 
 namespace ASC.Web.Api.Controllers.Settings;
-public class SettingsController: BaseSettingsController
+public class SettingsController : BaseSettingsController
 {
     private Tenant Tenant { get { return _apiContext.Tenant; } }
 
@@ -91,7 +91,8 @@ public class SettingsController: BaseSettingsController
         TelegramHelper telegramHelper,
         UrlShortener urlShortener,
         PasswordHasher passwordHasher,
-        Constants constants) : base(apiContext, memoryCache, webItemManager)
+        Constants constants
+        ) : base(apiContext, memoryCache, webItemManager)
     {
         _log = option.Get("ASC.Api");
         _consumerFactory = consumerFactory;
@@ -132,7 +133,8 @@ public class SettingsController: BaseSettingsController
             Culture = Tenant.GetCulture().ToString(),
             GreetingSettings = Tenant.Name,
             Personal = _coreBaseSettings.Personal,
-            Version = _configuration["version:number"] ?? ""
+            Version = _configuration["version:number"] ?? "",
+            TenantStatus = _tenantManager.GetCurrentTenant().Status
         };
 
         if (_authContext.IsAuthenticated)
@@ -145,6 +147,7 @@ public class SettingsController: BaseSettingsController
             settings.UtcHoursOffset = settings.UtcOffset.TotalHours;
             settings.OwnerId = Tenant.OwnerId;
             settings.NameSchemaId = _customNamingPeople.Current.Id;
+            settings.SocketUrl = _configuration["web:hub:url"] ?? "";
 
             settings.Firebase = new FirebaseDto
             {
