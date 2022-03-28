@@ -1,48 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { LANGUAGE } from "@appserver/common/constants";
 import { ADS_TIMEOUT } from "../../../../helpers/constants";
-import { getLanguage } from "@appserver/common/utils";
 import SnackBar from "@appserver/components/snackbar";
 import { Consumer } from "@appserver/components/utils/context";
 import difference from "lodash/difference";
-
-const loadLanguagePath = async () => {
-  if (!window.firebaseHelper) return;
-
-  const lng = localStorage.getItem(LANGUAGE) || "en";
-  const language = getLanguage(lng instanceof Array ? lng[0] : lng);
-
-  const bar = (localStorage.getItem("bar") || "")
-    .split(",")
-    .filter((bar) => bar.length > 0);
-
-  const closed = JSON.parse(localStorage.getItem("barClose"));
-
-  const banner = difference(bar, closed);
-
-  let index = Number(localStorage.getItem("barIndex") || 0);
-  if (index >= banner.length) {
-    index -= 1;
-  }
-  const currentBar = banner[index];
-
-  let htmlUrl =
-    currentBar && window.firebaseHelper.config.authDomain
-      ? `https://${window.firebaseHelper.config.authDomain}/${language}/${currentBar}/index.html`
-      : null;
-
-  await fetch(htmlUrl).then((data) => {
-    if (data.ok) return;
-    htmlUrl = null;
-  });
-  return [htmlUrl, currentBar];
-};
+import { getBannerAttribute } from "@appserver/components/utils/banner";
 
 const bannerHOC = (props) => {
   const { firstLoad, setMaintenanceExist } = props;
 
   const [htmlLink, setHtmlLink] = useState();
   const [campaigns, setCampaigns] = useState();
+
+  const { loadLanguagePath } = getBannerAttribute();
 
   const bar = (localStorage.getItem("bar") || "")
     .split(",")
@@ -73,7 +42,13 @@ const bannerHOC = (props) => {
 
   useEffect(() => {
     setTimeout(() => updateBanner(), 10000);
-    setInterval(updateBanner, ADS_TIMEOUT);
+    const updateInterval = setInterval(updateBanner, ADS_TIMEOUT);
+
+    return () => {
+      if (updateInterval) {
+        clearInterval(updateInterval);
+      }
+    };
   }, []);
 
   const onClose = () => {
