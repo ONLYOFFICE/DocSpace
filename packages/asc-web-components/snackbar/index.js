@@ -9,7 +9,6 @@ import StyledLogoIcon from "./styled-snackbar-logo";
 import Box from "../box";
 import Heading from "../heading";
 import Text from "../text";
-import equal from "fast-deep-equal/react";
 
 class SnackBar extends React.Component {
   constructor(props) {
