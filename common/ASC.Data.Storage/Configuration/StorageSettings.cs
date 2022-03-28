@@ -119,6 +119,7 @@ public class StorageSettingsHelper
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ConsumerFactory _consumerFactory;
     private IDataStore _dataStore;
+        private IServiceProvider ServiceProvider { get; }
 
     public StorageSettingsHelper(
         BaseStorageSettingsListener baseStorageSettingsListener,
@@ -128,7 +129,8 @@ public class StorageSettingsHelper
         IOptionsMonitor<ILog> options,
         TenantManager tenantManager,
         SettingsManager settingsManager,
-        ConsumerFactory consumerFactory)
+            ConsumerFactory consumerFactory,
+            IServiceProvider serviceProvider)
     {
         baseStorageSettingsListener.Subscribe();
         _storageFactoryConfig = storageFactoryConfig;
@@ -138,6 +140,7 @@ public class StorageSettingsHelper
         _tenantManager = tenantManager;
         _settingsManager = settingsManager;
         _consumerFactory = consumerFactory;
+            ServiceProvider = serviceProvider;
     }
 
     public StorageSettingsHelper(
@@ -149,8 +152,9 @@ public class StorageSettingsHelper
         TenantManager tenantManager,
         SettingsManager settingsManager,
         IHttpContextAccessor httpContextAccessor,
-        ConsumerFactory consumerFactory)
-        : this(baseStorageSettingsListener, storageFactoryConfig, pathUtils, cache, options, tenantManager, settingsManager, consumerFactory)
+            ConsumerFactory consumerFactory,
+            IServiceProvider serviceProvider)
+            : this(baseStorageSettingsListener, storageFactoryConfig, pathUtils, cache, options, tenantManager, settingsManager, consumerFactory, serviceProvider)
     {
         _httpContextAccessor = httpContextAccessor;
     }

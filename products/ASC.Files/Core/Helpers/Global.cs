@@ -101,7 +101,7 @@ public class Global
         _customNamingPeople = customNamingPeople;
         _fileSecurityCommon = fileSecurityCommon;
 
-        ThumbnailExtension = configuration["files:thumbnail:exts"] ?? "png";
+            ThumbnailExtension = configuration["files:thumbnail:exts"] ?? "jpg";
     }
 
     #region Property

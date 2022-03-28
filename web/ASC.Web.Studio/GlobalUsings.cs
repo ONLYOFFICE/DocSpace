@@ -27,6 +27,7 @@
 global using System.Runtime.InteropServices;
 
 global using ASC.Api.Core;
+global using ASC.Api.Core.Extensions;
 global using ASC.Common.Utils;
 global using ASC.Data.Storage;
 global using ASC.Data.Storage.DiscStorage;

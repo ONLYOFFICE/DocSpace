@@ -660,15 +660,14 @@ public class EntryManager
         var tagDao = _daoFactory.GetTagDao<int>();
         var tags = await tagDao.GetTagsAsync(_authContext.CurrentAccount.ID, TagType.Recent).ToListAsync();
 
-        var fileIds = tags.Where(tag => tag.EntryType == FileEntryType.File).ToList();
+            var fileIds = tags.Where(tag => tag.EntryType == FileEntryType.File).Select(r => r.EntryId).ToList();
 
-        var filesEnum = await GetRecentByIdsAsync(fileIds.Where(r => r.EntryId is int).Select(r => (int)r.EntryId), filter, subjectGroup, subjectId, searchText, searchInContent);
-        List<FileEntry> files = filesEnum.ToList();
-        files.AddRange(await GetRecentByIdsAsync(fileIds.Where(r => r.EntryId is string).Select(r => (string)r.EntryId), filter, subjectGroup, subjectId, searchText, searchInContent));
+            var files = await GetRecentByIdsAsync(fileIds.OfType<int>(), filter, subjectGroup, subjectId, searchText, searchInContent);
+            files.Concat(await GetRecentByIdsAsync(fileIds.OfType<string>(), filter, subjectGroup, subjectId, searchText, searchInContent));
 
-        var listFileIds = fileIds.Select(tag => tag.EntryId).ToList();
+            var listFileIds = fileIds.Select(tag => tag.ToString()).ToList();
 
-        files = files.OrderBy(file =>
+            return files.OrderBy(file =>
         {
             var fileId = "";
             if (file is File<int> fileInt)
@@ -680,10 +679,8 @@ public class EntryManager
                 fileId = fileString.ID;
             }
 
-            return listFileIds.IndexOf(fileId);
+                return listFileIds.IndexOf(fileId.ToString());
         }).ToList();
-
-        return files;
 
         async Task<IEnumerable<FileEntry>> GetRecentByIdsAsync<T>(IEnumerable<T> fileIds, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent)
         {

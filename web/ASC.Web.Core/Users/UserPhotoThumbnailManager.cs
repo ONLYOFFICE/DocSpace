@@ -66,10 +66,9 @@ namespace ASC.Web.Core.Users
 
         public static Image GetImage(Image mainImg, Size size, UserPhotoThumbnailSettings thumbnailSettings)
         {
-
             var x = thumbnailSettings.Point.X > 0 ? thumbnailSettings.Point.X : 0;
             var y = thumbnailSettings.Point.Y > 0 ? thumbnailSettings.Point.Y : 0;
-            var width =  x + thumbnailSettings.Size.Width > mainImg.Width ? mainImg.Width : thumbnailSettings.Size.Width;
+            var width = x + thumbnailSettings.Size.Width > mainImg.Width ? mainImg.Width : thumbnailSettings.Size.Width;
             var height = y + thumbnailSettings.Size.Height > mainImg.Height ? mainImg.Height : thumbnailSettings.Size.Height;
 
             var rect = new Rectangle(x,
@@ -77,10 +76,9 @@ namespace ASC.Web.Core.Users
                                      width,
                                      height);
 
-            Image destRound = mainImg.Clone(x => x.Crop(rect).Resize(new ResizeOptions
+            var destRound = mainImg.Clone(x => x.Crop(rect).Resize(new ResizeOptions
             {
-                Size = size,
-                Mode = ResizeMode.Stretch
+                Size = size
             }));
 
             return destRound;

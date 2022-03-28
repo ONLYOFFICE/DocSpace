@@ -45,6 +45,7 @@ const PanelStyles = css`
 
 const StyledAsidePanel = styled.div`
   z-index: 310;
+
   .sharing_panel-header {
     font-weight: 700;
     margin: 14px 0;
@@ -875,6 +876,11 @@ const StyledFilesList = styled.div`
   .select-file-dialog_icon {
     margin-right: 8px;
   }
+
+  .radio-button_text{
+    ${(props) => props.displayType === "aside" && "margin: 0 !important;"};
+  }
+
   .entry-title {
     font-weight: 600;
     max-width: 100%;
@@ -929,9 +935,10 @@ const StyledFilesList = styled.div`
     border-radius: 3px;
     padding-right: 12px;
     ${(props) => props.isChecked && `background:#F8F9F9;`}
-    cursor: ${(props) => (props.needRowSelection ? "pointer" : "default")};
+    cursor: pointer;
     border-bottom: 1px solid #eceef1;
     display: grid;
+
     ${(props) =>
       props.displayType === "aside"
         ? css`

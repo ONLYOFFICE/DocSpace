@@ -31,6 +31,8 @@ public class TenantStatusFilter : IResourceFilter
 {
     private readonly TenantManager _tenantManager;
     private readonly ILog _logger;
+        private readonly string[] passthroughtRequestEndings = new[] { "preparation-portal", "getrestoreprogress", "settings", "settings.json" }; //TODO add or update when "preparation-portal" will be done
+
 
     public TenantStatusFilter(ILog logger, TenantManager tenantManager)
     {
@@ -58,5 +60,16 @@ public class TenantStatusFilter : IResourceFilter
 
             return;
         }
-    }
+
+if (tenant.Status == TenantStatus.Transfering || tenant.Status == TenantStatus.Restoring)
+            {
+                if (passthroughtRequestEndings.Any(path => context.HttpContext.Request.Path.ToString().EndsWith(path, StringComparison.InvariantCultureIgnoreCase)))
+                {
+                    return;
+                }
+                context.Result = new StatusCodeResult((int)HttpStatusCode.Forbidden);
+                _logger.WarnFormat("Tenant {0} is {1}", tenant.Id, tenant.Status);
+                return;
+            }
+        }
 }

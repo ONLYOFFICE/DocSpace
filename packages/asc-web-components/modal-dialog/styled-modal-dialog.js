@@ -47,7 +47,7 @@ const Content = styled.div`
   }
 
   ${(props) =>
-    props.removeScroll &&
+    props.withoutBodyScroll &&
     css`
       overflow: hidden;
     `}
@@ -85,7 +85,7 @@ const BodyBox = styled(Box)`
   position: relative;
 
   ${(props) =>
-    props.removeScroll &&
+    props.withoutBodyScroll &&
     css`
       height: 100%;
     `}
