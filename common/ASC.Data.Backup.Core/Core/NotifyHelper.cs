@@ -57,11 +57,13 @@ public class NotifyHelper
         MigrationNotify(tenant, !string.IsNullOrEmpty(targetRegion) ? Actions.MigrationPortalError : Actions.MigrationPortalServerFailure, targetRegion, resultAddress, !notifyOnlyOwner);
     }
 
-    public void SendAboutBackupCompleted(Guid userId)
+    public void SendAboutBackupCompleted(int tenantId, Guid userId)
     {
         using var scope = _serviceScopeFactory.CreateScope();
         var scopeClass = scope.ServiceProvider.GetService<NotifyHelperScope>();
-        var (userManager, studioNotifyHelper, studioNotifySource, displayUserSettingsHelper, _) = scopeClass;
+        var (userManager, studioNotifyHelper, studioNotifySource, displayUserSettingsHelper, tenantManager, _) = scopeClass;
+        tenantManager.SetCurrentTenant(tenantId);
+
         var client = _workContext.NotifyContext.RegisterClient(_notifyEngine, studioNotifySource, scope);
 
         client.SendNoticeToAsync(
@@ -75,7 +77,9 @@ public class NotifyHelper
     {
         using var scope = _serviceScopeFactory.CreateScope();
         var scopeClass = scope.ServiceProvider.GetService<NotifyHelperScope>();
-        var (userManager, studioNotifyHelper, studioNotifySource, displayUserSettingsHelper, _) = scopeClass;
+        var (userManager, studioNotifyHelper, studioNotifySource, displayUserSettingsHelper, tenantManager, _) = scopeClass;
+        tenantManager.SetCurrentTenant(tenant.Id);
+
         var client = _workContext.NotifyContext.RegisterClient(_notifyEngine, studioNotifySource, scope);
 
         var owner = userManager.GetUsers(tenant.OwnerId);
@@ -96,7 +100,7 @@ public class NotifyHelper
         var scopeClass = scope.ServiceProvider.GetService<NotifyHelperScope>();
         var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
         var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
-        var (userManager, studioNotifyHelper, studioNotifySource, displayUserSettingsHelper, authManager) = scopeClass;
+        var (userManager, _, studioNotifySource, _, _, authManager) = scopeClass;
         var client = _workContext.NotifyContext.RegisterClient(_notifyEngine, studioNotifySource, scope);
 
         var users = notifyAllUsers
@@ -123,7 +127,7 @@ public class NotifyHelper
     {
         using var scope = _serviceScopeFactory.CreateScope();
         var scopeClass = scope.ServiceProvider.GetService<NotifyHelperScope>();
-        var (userManager, studioNotifyHelper, studioNotifySource, _, authManager) = scopeClass;
+        var (userManager, studioNotifyHelper, studioNotifySource, _, _, authManager) = scopeClass;
         var client = _workContext.NotifyContext.RegisterClient(_notifyEngine, studioNotifySource, scope);
         var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
 
@@ -194,18 +198,21 @@ public class NotifyHelperScope
     private readonly StudioNotifyHelper _studioNotifyHelper;
     private readonly StudioNotifySource _studioNotifySource;
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
+    private TenantManager TenantManager { get; }
 
     public NotifyHelperScope(
         UserManager userManager,
         StudioNotifyHelper studioNotifyHelper,
         StudioNotifySource studioNotifySource,
         DisplayUserSettingsHelper displayUserSettingsHelper,
+            TenantManager tenantManager,
         AuthManager authManager)
     {
         _userManager = userManager;
         _studioNotifyHelper = studioNotifyHelper;
         _studioNotifySource = studioNotifySource;
         _displayUserSettingsHelper = displayUserSettingsHelper;
+        TenantManager = tenantManager;
         _authManager = authManager;
     }
 
@@ -214,13 +221,14 @@ public class NotifyHelperScope
         out StudioNotifyHelper studioNotifyHelper,
         out StudioNotifySource studioNotifySource,
         out DisplayUserSettingsHelper displayUserSettingsHelper,
-        out AuthManager authManager
-        )
+            out TenantManager tenantManager,
+            out AuthManager authManager)
     {
         userManager = _userManager;
         studioNotifyHelper = _studioNotifyHelper;
         studioNotifySource = _studioNotifySource;
         displayUserSettingsHelper = _displayUserSettingsHelper;
+        tenantManager = TenantManager;
         authManager = _authManager;
     }
 }

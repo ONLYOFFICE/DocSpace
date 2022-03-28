@@ -33,9 +33,9 @@ public class ClearEventsService : IHostedService, IDisposable
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private Timer _timer;
 
-    public ClearEventsService(IOptionsMonitor<ILog> options, IServiceScopeFactory serviceScopeFactory)
+    public ClearEventsService(ILog logger, IServiceScopeFactory serviceScopeFactory)
     {
-        _logger = options.CurrentValue;
+        _logger = logger;
         _serviceScopeFactory = serviceScopeFactory;
     }
 

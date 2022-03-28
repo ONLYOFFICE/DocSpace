@@ -44,13 +44,13 @@ public class SharePointProviderInfo : IProviderInfo
     public string SpRootFolderId { get; set; } = "/Shared Documents";
 
     public SharePointProviderInfo(
-        IOptionsMonitor<ILog> options,
+        ILog logger,
         IServiceProvider serviceProvider,
         TenantUtil tenantUtil,
         SharePointProviderInfoHelper sharePointProviderInfoHelper,
         TempStream tempStream)
     {
-        Logger = options.CurrentValue;
+        Logger = logger;
         _serviceProvider = serviceProvider;
         _tenantUtil = tenantUtil;
         SharePointProviderInfoHelper = sharePointProviderInfoHelper;

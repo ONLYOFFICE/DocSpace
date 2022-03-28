@@ -41,14 +41,14 @@ public class DocuSignToken
 
     public DocuSignToken(
         TokenHelper tokenHelper,
-        IOptionsMonitor<ILog> options,
+        ILog logger,
         AuthContext authContext,
         ConsumerFactory consumerFactory)
     {
         _tokenHelper = tokenHelper;
         _authContext = authContext;
         _consumerFactory = consumerFactory;
-        Logger = options.CurrentValue;
+        Logger = logger;
     }
 
     public OAuth20Token GetToken()

@@ -60,7 +60,7 @@ const SelectFileDialogAsideView = ({
         onClose={onClose}
         contentHeight="100%"
         displayType={DISPLAY_TYPE}
-        removeScroll
+        withoutBodyScroll
       >
         <ModalDialog.Header>
           {headerName ? headerName : t("SelectFile")}

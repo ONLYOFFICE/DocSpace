@@ -37,12 +37,12 @@ public class ThumbnailBuilderService : BackgroundService
     public ThumbnailBuilderService(
         BuilderQueue<int> builderQueue,
         IServiceScopeFactory serviceScopeFactory,
-        IOptionsMonitor<ILog> options,
+        ILog<ThumbnailBuilderService> logger,
         ThumbnailSettings settings)
     {
         _serviceScopeFactory = serviceScopeFactory;
         _thumbnailSettings = settings;
-        _logger = options.Get("ASC.Files.ThumbnailBuilder");
+        _logger = logger;
         _builderQueue = builderQueue;
     }
 
@@ -90,7 +90,7 @@ public class ThumbnailBuilderService : BackgroundService
                 .OrderByDescending(fileData => Array.IndexOf(premiumTenants, fileData.TenantId))
                 .ToList();
 
-            _builderQueue.BuildThumbnails(filesWithoutThumbnails);
+            await _builderQueue.BuildThumbnails(filesWithoutThumbnails);
         }
 
         _logger.Trace("Procedure: Finish.");

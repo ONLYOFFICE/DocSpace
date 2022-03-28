@@ -211,7 +211,7 @@ namespace ASC.Web.Core.WhiteLabel
             WhiteLabelHelper whiteLabelHelper,
             TenantManager tenantManager,
             SettingsManager settingsManager,
-            IOptionsMonitor<ILog> option)
+            ILog logger)
         {
             WebImageSupplier = webImageSupplier;
             UserPhotoManager = userPhotoManager;
@@ -219,7 +219,7 @@ namespace ASC.Web.Core.WhiteLabel
             WhiteLabelHelper = whiteLabelHelper;
             TenantManager = tenantManager;
             SettingsManager = settingsManager;
-            Log = option.CurrentValue;
+            Log = logger;
         }
 
         #region Restore default

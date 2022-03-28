@@ -193,7 +193,7 @@ namespace ASC.Web.Core.Users
             TenantManager tenantManager,
             StorageFactory storageFactory,
             UserPhotoManagerCache userPhotoManagerCache,
-            IOptionsMonitor<ILog> options,
+            ILog<UserPhotoManager> logger,
             DistributedTaskQueueOptionsManager optionsQueue,
             SettingsManager settingsManager)
         {
@@ -204,7 +204,7 @@ namespace ASC.Web.Core.Users
             StorageFactory = storageFactory;
             UserPhotoManagerCache = userPhotoManagerCache;
             SettingsManager = settingsManager;
-            Log = options.Get("ASC.Web.Photo");
+            Log = logger;
         }
 
         private string _defaultAbsoluteWebPath;

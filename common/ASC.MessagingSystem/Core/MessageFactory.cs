@@ -38,11 +38,11 @@ public class MessageFactory
     private readonly AuthContext _authContext;
     private readonly TenantManager _tenantManager;
 
-    public MessageFactory(AuthContext authContext, TenantManager tenantManager, IOptionsMonitor<ILog> options)
+    public MessageFactory(AuthContext authContext, TenantManager tenantManager, ILog logger)
     {
         _authContext = authContext;
         _tenantManager = tenantManager;
-        _logger = options.CurrentValue;
+        _logger = logger;
     }
 
     public EventMessage Create(HttpRequest request, string initiator, MessageAction action, MessageTarget target, params string[] description)

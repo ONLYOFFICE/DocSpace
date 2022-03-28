@@ -91,7 +91,7 @@ const VersionRow = (props) => {
     canEdit && { key: "edit", label: t("EditComment"), onClick: onEditComment },
     canEdit && {
       key: "restore",
-      label: t("Translations:Restore"),
+      label: t("Common:Restore"),
       onClick: onRestoreClick,
     },
     {
