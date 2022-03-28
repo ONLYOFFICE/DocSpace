@@ -28,21 +28,13 @@ namespace ASC.Web.Files.HttpHandlers
 {
     public class ThirdPartyAppHandler
     {
-        private RequestDelegate Next { get; }
-        private IServiceProvider ServiceProvider { get; }
-
-        public ThirdPartyAppHandler(RequestDelegate next, IServiceProvider serviceProvider)
+        public ThirdPartyAppHandler(RequestDelegate next)
         {
-            Next = next;
-            ServiceProvider = serviceProvider;
         }
 
-        public async Task Invoke(HttpContext context)
+        public async Task Invoke(HttpContext context, ThirdPartyAppHandlerService thirdPartyAppHandlerService)
         {
-            using var scope = ServiceProvider.CreateScope();
-            var thirdPartyAppHandlerService = scope.ServiceProvider.GetService<ThirdPartyAppHandlerService>();
             await thirdPartyAppHandlerService.InvokeAsync(context);
-            await Next.Invoke(context);
         }
     }
 

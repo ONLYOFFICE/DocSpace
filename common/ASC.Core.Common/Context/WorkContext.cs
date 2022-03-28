@@ -35,8 +35,6 @@ public class WorkContext
     private static readonly object _syncRoot = new object();
     private readonly IServiceProvider _serviceProvider;
     private readonly IConfiguration _configuration;
-    private readonly ICacheNotify<NotifyMessage> _cacheNotifyMessage;
-    private readonly ICacheNotify<NotifyInvoke> _cacheNotifyInvoke;
     private readonly IOptionsMonitor<ILog> _options;
     private readonly DispatchEngine _dispatchEngine;
     private readonly JabberSender _jabberSender;
@@ -83,8 +81,6 @@ public class WorkContext
     public WorkContext(
         IServiceProvider serviceProvider,
         IConfiguration configuration,
-        ICacheNotify<NotifyMessage> cacheNotifyMessage,
-        ICacheNotify<NotifyInvoke> cacheNotifyInvoke,
         IOptionsMonitor<ILog> options,
         DispatchEngine dispatchEngine,
         NotifyEngine notifyEngine,
@@ -98,8 +94,6 @@ public class WorkContext
     {
         _serviceProvider = serviceProvider;
         _configuration = configuration;
-        _cacheNotifyMessage = cacheNotifyMessage;
-        _cacheNotifyInvoke = cacheNotifyInvoke;
         _options = options;
         _dispatchEngine = dispatchEngine;
         NotifyEngine = notifyEngine;

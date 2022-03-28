@@ -45,16 +45,14 @@ public class CompressToArchive : ICompress
             : compressToZip;
     }
 
-    public static string GetExt(IServiceProvider serviceProvider, string ext)
+    public string GetExt(string ext)
     {
         if (_exts.Contains(ext))
         {
             return ext;
         }
 
-        using var zip = serviceProvider.GetService<CompressToArchive>();
-
-        return zip.ArchiveExtension;
+        return ArchiveExtension;
     }
 
     public void SetStream(Stream stream)

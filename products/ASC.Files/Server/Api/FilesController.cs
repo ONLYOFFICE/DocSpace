@@ -28,21 +28,21 @@ namespace ASC.Files.Api;
 
 public class FilesController : ApiControllerBase
 {
-    private readonly IServiceProvider _serviceProvider;
     private readonly GlobalFolderHelper _globalFolderHelper;
+    private readonly FileStorageService<int> _fileStorageServiceInt;
     private readonly FileStorageService<string> _fileStorageServiceString;
     private readonly FilesControllerHelper<int> _filesControllerHelperInt;
     private readonly FilesControllerHelper<string> _filesControllerHelperString;
 
     public FilesController(
-        IServiceProvider serviceProvider,
         GlobalFolderHelper globalFolderHelper,
+        FileStorageService<int> fileStorageServiceInt,
         FileStorageService<string> fileStorageServiceString,
         FilesControllerHelper<int> filesControllerHelperInt,
         FilesControllerHelper<string> filesControllerHelperString)
     {
-        _serviceProvider = serviceProvider;
         _globalFolderHelper = globalFolderHelper;
+        _fileStorageServiceInt = fileStorageServiceInt;
         _fileStorageServiceString = fileStorageServiceString;
         _filesControllerHelperInt = filesControllerHelperInt;
         _filesControllerHelperString = filesControllerHelperString;
@@ -113,27 +113,27 @@ public class FilesController : ApiControllerBase
     [Create("file/{fileId:int}/copyas", order: int.MaxValue - 1)]
     public object CopyFileAsFromBody(int fileId, [FromBody] CopyAsRequestDto<JsonElement> inDto)
     {
-        return CopyFile(fileId, inDto);
+        return CopyFile(fileId, inDto, _filesControllerHelperInt);
     }
 
     [Create("file/{fileId}/copyas", order: int.MaxValue)]
     public object CopyFileAsFromBody(string fileId, [FromBody] CopyAsRequestDto<JsonElement> inDto)
     {
-        return CopyFile(fileId, inDto);
+        return CopyFile(fileId, inDto, _filesControllerHelperString);
     }
 
     [Create("file/{fileId:int}/copyas", order: int.MaxValue - 1)]
     [Consumes("application/x-www-form-urlencoded")]
     public object CopyFileAsFromForm(int fileId, [FromForm] CopyAsRequestDto<JsonElement> inDto)
     {
-        return CopyFile(fileId, inDto);
+        return CopyFile(fileId, inDto, _filesControllerHelperInt);
     }
 
     [Create("file/{fileId}/copyas", order: int.MaxValue)]
     [Consumes("application/x-www-form-urlencoded")]
     public object CopyFileAsFromForm(string fileId, [FromForm] CopyAsRequestDto<JsonElement> inDto)
     {
-        return CopyFile(fileId, inDto);
+        return CopyFile(fileId, inDto, _filesControllerHelperString);
     }
 
     /// <summary>
@@ -281,7 +281,7 @@ public class FilesController : ApiControllerBase
     [Create("{folderId}/text")]
     public Task<FileDto<string>> CreateTextFileFromBodyAsync(string folderId, [FromBody] CreateTextOrHtmlFileRequestDto inDto)
     {
-        return _filesControllerHelperString.CreateTextFileAsync(folderId, inDto.Title, inDto.Content); 
+        return _filesControllerHelperString.CreateTextFileAsync(folderId, inDto.Title, inDto.Content);
     }
 
     [Create("{folderId:int}/text")]
@@ -596,16 +596,15 @@ public class FilesController : ApiControllerBase
         return _filesControllerHelperInt.UpdateFileStreamAsync(_filesControllerHelperInt.GetFileFromRequest(inDto).OpenReadStream(), fileId, inDto.FileExtension, inDto.Encrypted, inDto.Forcesave);
     }
 
-    private object CopyFile<T>(T fileId, CopyAsRequestDto<JsonElement> inDto)
+    private object CopyFile<T>(T fileId, CopyAsRequestDto<JsonElement> inDto, FilesControllerHelper<T> helper)
     {
-        var helper = _serviceProvider.GetService<FilesControllerHelper<T>>();
         if (inDto.DestFolderId.ValueKind == JsonValueKind.Number)
         {
-            return helper.CopyFileAsAsync(fileId, inDto.DestFolderId.GetInt32(), inDto.DestTitle, inDto.Password);
+            return helper.CopyFileAsAsync(_fileStorageServiceInt, _filesControllerHelperInt, fileId, inDto.DestFolderId.GetInt32(), inDto.DestTitle, inDto.Password);
         }
         else if (inDto.DestFolderId.ValueKind == JsonValueKind.String)
         {
-            return helper.CopyFileAsAsync(fileId, inDto.DestFolderId.GetString(), inDto.DestTitle, inDto.Password);
+            return helper.CopyFileAsAsync(_fileStorageServiceString, _filesControllerHelperString, fileId, inDto.DestFolderId.GetString(), inDto.DestTitle, inDto.Password);
         }
 
         return null;

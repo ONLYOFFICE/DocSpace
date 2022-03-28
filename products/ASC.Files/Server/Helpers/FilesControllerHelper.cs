@@ -32,7 +32,6 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
     private readonly ApiDateTimeHelper _apiDateTimeHelper;
     private readonly UserManager _userManager;
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
-    private readonly IServiceProvider _serviceProvider;
     private readonly FileConverter _fileConverter;
     private readonly FileOperationDtoHelper _fileOperationDtoHelper;
 
@@ -50,9 +49,8 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
         ApiDateTimeHelper apiDateTimeHelper,
         UserManager userManager,
         DisplayUserSettingsHelper displayUserSettingsHelper,
-        IServiceProvider serviceProvider,
         FileConverter fileConverter,
-        FileOperationDtoHelper fileOperationDtoHelper) 
+        FileOperationDtoHelper fileOperationDtoHelper)
         : base(
             filesSettingsHelper,
             fileUploader,
@@ -68,7 +66,6 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
         _apiDateTimeHelper = apiDateTimeHelper;
         _fileConverter = fileConverter;
         _userManager = userManager;
-        _serviceProvider = serviceProvider;
         _displayUserSettingsHelper = displayUserSettingsHelper;
         _fileOperationDtoHelper = fileOperationDtoHelper;
     }
@@ -262,10 +259,8 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
         }
     }
 
-    public async Task<FileDto<TTemplate>> CopyFileAsAsync<TTemplate>(T fileId, TTemplate destFolderId, string destTitle, string password = null)
+    public async Task<FileDto<TTemplate>> CopyFileAsAsync<TTemplate>(FileStorageService<TTemplate> service, FilesControllerHelper<TTemplate> controller, T fileId, TTemplate destFolderId, string destTitle, string password = null)
     {
-        var service = _serviceProvider.GetService<FileStorageService<TTemplate>>();
-        var controller = _serviceProvider.GetService<FilesControllerHelper<TTemplate>>();
         var file = await _fileStorageService.GetFileAsync(fileId, -1);
         var ext = FileUtility.GetFileExtension(file.Title);
         var destExt = FileUtility.GetFileExtension(destTitle);

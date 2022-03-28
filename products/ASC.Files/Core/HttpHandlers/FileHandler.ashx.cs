@@ -31,17 +31,12 @@ namespace ASC.Web.Files
 {
     public class FileHandler
     {
-        private IServiceProvider ServiceProvider { get; }
-
-        public FileHandler(RequestDelegate next, IServiceProvider serviceProvider)
+        public FileHandler(RequestDelegate next)
         {
-            ServiceProvider = serviceProvider;
         }
 
-        public async Task Invoke(HttpContext context)
+        public async Task Invoke(HttpContext context, FileHandlerService fileHandlerService)
         {
-            using var scope = ServiceProvider.CreateScope();
-            var fileHandlerService = scope.ServiceProvider.GetService<FileHandlerService>();
             await fileHandlerService.Invoke(context).ConfigureAwait(false);
         }
     }
@@ -49,6 +44,8 @@ namespace ASC.Web.Files
     [Scope]
     public class FileHandlerService
     {
+        private readonly CompressToArchive _compressToArchive;
+
         public string FileHandlerPath
         {
             get { return FilesLinkUtility.FileHandlerPath; }
@@ -83,7 +80,6 @@ namespace ASC.Web.Files
         public FileHandlerService(
             FilesLinkUtility filesLinkUtility,
             TenantExtra tenantExtra,
-            CookiesManager cookiesManager,
             AuthContext authContext,
             SecurityContext securityContext,
             GlobalStore globalStore,
@@ -107,6 +103,7 @@ namespace ASC.Web.Files
             IServiceProvider serviceProvider,
             TempStream tempStream,
             SocketManager socketManager,
+            CompressToArchive compressToArchive,
             IHttpClientFactory clientFactory)
         {
             FilesLinkUtility = filesLinkUtility;
@@ -131,6 +128,7 @@ namespace ASC.Web.Files
             FFmpegService = fFmpegService;
             ServiceProvider = serviceProvider;
             SocketManager = socketManager;
+            _compressToArchive = compressToArchive;
             TempStream = tempStream;
             UserManager = userManager;
             Logger = optionsMonitor.CurrentValue;
@@ -205,7 +203,7 @@ namespace ASC.Web.Files
                 return;
             }
 
-            var ext = CompressToArchive.GetExt(ServiceProvider, context.Request.Query["ext"]);
+            var ext = _compressToArchive.GetExt(context.Request.Query["ext"]);
             var store = GlobalStore.GetStore();
             var path = string.Format(@"{0}\{1}{2}", SecurityContext.CurrentAccount.ID, FileConstant.DownloadTitle, ext);
 
@@ -1102,25 +1100,25 @@ namespace ASC.Web.Files
 
         private async Task InternalWriteError(HttpContext context, Exception ex, bool responseMessage)
         {
-                Logger.Error(ex);
+            Logger.Error(ex);
 
-                if (responseMessage)
-                {
-                    await context.Response.WriteAsync("error: " + ex.Message);
-                    return;
-                }
-                context.Response.Redirect(PathProvider.StartURL + "#error/" + HttpUtility.UrlEncode(ex.Message), true);
+            if (responseMessage)
+            {
+                await context.Response.WriteAsync("error: " + ex.Message);
                 return;
             }
+            context.Response.Redirect(PathProvider.StartURL + "#error/" + HttpUtility.UrlEncode(ex.Message), true);
+            return;
+        }
 
         private Task InternalWriteOk<T>(HttpContext context, Folder<T> folder, File<T> file)
-            {
-                var message = string.Format(FilesCommonResource.MessageFileCreated, folder.Title);
-                if (FileUtility.CanWebRestrictedEditing(file.Title))
-                    message = string.Format(FilesCommonResource.MessageFileCreatedForm, folder.Title);
+        {
+            var message = string.Format(FilesCommonResource.MessageFileCreated, folder.Title);
+            if (FileUtility.CanWebRestrictedEditing(file.Title))
+                message = string.Format(FilesCommonResource.MessageFileCreatedForm, folder.Title);
 
             return context.Response.WriteAsync("ok: " + message);
-            }
+        }
 
         private async Task<File<T>> CreateFileFromTemplateAsync<T>(Folder<T> folder, string fileTitle, string docType)
         {

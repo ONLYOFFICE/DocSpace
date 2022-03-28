@@ -30,7 +30,8 @@ public class EmailSenderSink : Sink
 {
     private static readonly string _senderName = Configuration.Constants.NotifyEMailSenderSysName;
     private readonly INotifySender _sender;
-
+    private readonly IServiceProvider _serviceProvider;
+    private readonly ILog _logger;
 
     public EmailSenderSink(INotifySender sender, IServiceProvider serviceProvider, IOptionsMonitor<ILog> options)
     {
@@ -38,9 +39,6 @@ public class EmailSenderSink : Sink
         _serviceProvider = serviceProvider;
         _logger = options.Get("ASC.Notify");
     }
-
-    private readonly IServiceProvider _serviceProvider;
-    private readonly ILog _logger;
 
     public override SendResponse ProcessMessage(INoticeMessage message)
     {
@@ -121,7 +119,7 @@ public class EmailSenderSink : Sink
             }
             catch (Exception e)
             {
-                _serviceProvider.GetService<IOptionsMonitor<ILog>>().Get("ASC.Notify").Error("Error creating reply to tag for: " + replyTag.Value, e);
+                _logger.Error("Error creating reply to tag for: " + replyTag.Value, e);
             }
         }
 
