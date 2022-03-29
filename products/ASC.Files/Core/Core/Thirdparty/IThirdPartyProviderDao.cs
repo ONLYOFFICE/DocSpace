@@ -1,4 +1,30 @@
-﻿namespace ASC.Files.Thirdparty;
+﻿// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
+
+namespace ASC.Files.Thirdparty;
 
 internal abstract class ThirdPartyProviderDao
 {
@@ -66,7 +92,7 @@ internal abstract class ThirdPartyProviderDao
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<(File<int>, SmallShareRecord)>> GetFeedsAsync(int tenant, DateTime from, DateTime to)
+    public Task<IEnumerable<FileWithShare>> GetFeedsAsync(int tenant, DateTime from, DateTime to)
     {
         throw new NotImplementedException();
     }
@@ -163,7 +189,7 @@ internal abstract class ThirdPartyProviderDao
         return null;
     }
 
-    public Task<IEnumerable<(Folder<string>, SmallShareRecord)>> GetFeedsForFoldersAsync(int tenant, DateTime from, DateTime to)
+    public Task<IEnumerable<FolderWithShare>> GetFeedsForFoldersAsync(int tenant, DateTime from, DateTime to)
     {
         throw new NotImplementedException();
     }
@@ -278,8 +304,8 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
 
         folder.FolderType = FolderType.DEFAULT;
         folder.Shareable = false;
-        folder.TotalFiles = 0;
-        folder.TotalSubFolders = 0;
+        folder.FilesCount = 0;
+        folder.FoldersCount = 0;
 
         return folder;
     }
@@ -290,7 +316,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
 
         InitFileEntryError(folder, entry);
 
-        folder.FolderID = null;
+        folder.ParentId = null;
 
         return folder;
     }
@@ -322,14 +348,14 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         fileEntry.ModifiedBy = ProviderInfo.Owner;
         fileEntry.ProviderId = ProviderInfo.ID;
         fileEntry.ProviderKey = ProviderInfo.ProviderKey;
-        fileEntry.RootFolderCreator = ProviderInfo.Owner;
+        fileEntry.RootCreateBy = ProviderInfo.Owner;
         fileEntry.RootFolderType = ProviderInfo.RootFolderType;
-        fileEntry.RootFolderId = MakeId();
+        fileEntry.RootId = MakeId();
     }
 
     protected void InitFileEntryError(FileEntry<string> fileEntry, ErrorEntry entry)
     {
-        fileEntry.ID = MakeId(entry.ErrorId);
+        fileEntry.Id = MakeId(entry.ErrorId);
         fileEntry.CreateOn = TenantUtil.DateTimeNow();
         fileEntry.ModifiedOn = TenantUtil.DateTimeNow();
         fileEntry.Error = entry.Error;
@@ -468,11 +494,11 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
 
     public async IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, Folder<string> parentFolder, bool deepSearch)
     {
-        var folderId = DaoSelector.ConvertId(parentFolder.ID);
+        var folderId = DaoSelector.ConvertId(parentFolder.Id);
 
         var entryIDs = await FilesDbContext.ThirdpartyIdMapping
                    .AsQueryable()
-                   .Where(r => r.Id.StartsWith(parentFolder.ID))
+                   .Where(r => r.Id.StartsWith(parentFolder.Id))
                    .Select(r => r.HashId)
                    .ToListAsync()
                    .ConfigureAwait(false);
@@ -484,7 +510,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
 
         var q = from r in FilesDbContext.Tag
                 from l in FilesDbContext.TagLink.AsQueryable().Where(a => a.TenantId == r.TenantId && a.TagId == r.Id).DefaultIfEmpty()
-                where r.TenantId == TenantID && l.TenantId == TenantID && r.Flag == TagType.New && entryIDs.Contains(l.EntryId)
+                where r.TenantId == TenantID && l.TenantId == TenantID && r.Type == TagType.New && entryIDs.Contains(l.EntryId)
                 select new { tag = r, tagLink = l };
 
         if (subject != Guid.Empty)
@@ -499,12 +525,12 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         var tags = qList
             .SelectAwait(async r => new Tag
             {
-                TagName = r.tag.Name,
-                TagType = r.tag.Flag,
+                Name = r.tag.Name,
+                Type = r.tag.Type,
                 Owner = r.tag.Owner,
                 EntryId = await MappingIDAsync(r.tagLink.EntryId).ConfigureAwait(false),
                 EntryType = r.tagLink.EntryType,
-                Count = r.tagLink.TagCount,
+                Count = r.tagLink.Count,
                 Id = r.tag.Id
             });
 
@@ -519,7 +545,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
             yield break;
         }
 
-        var folderFileIds = new[] { parentFolder.ID }
+        var folderFileIds = new[] { parentFolder.Id }
             .Concat(await GetChildrenAsync(folderId).ConfigureAwait(false));
 
         await foreach (var e in tags.Where(tag => folderFileIds.Contains(tag.EntryId.ToString())).ConfigureAwait(false))

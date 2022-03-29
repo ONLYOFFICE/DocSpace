@@ -1,27 +1,28 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2018
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Web.Files.Utils;
 
@@ -113,11 +114,11 @@ public class FileMarker
 
         if (obj.FileEntry.FileEntryType == FileEntryType.File)
         {
-            parentFolderId = ((File<T>)obj.FileEntry).FolderID;
+            parentFolderId = ((File<T>)obj.FileEntry).ParentId;
         }
         else
         {
-            parentFolderId = ((Folder<T>)obj.FileEntry).ID;
+            parentFolderId = ((Folder<T>)obj.FileEntry).Id;
         }
 
         var parentFolders = await folderDao.GetParentFoldersAsync(parentFolderId);
@@ -203,11 +204,11 @@ public class FileMarker
                     Folder<int> rootFolder = null;
                     if (obj.FileEntry.ProviderEntry)
                     {
-                        rootFolder = obj.FileEntry.RootFolderCreator == userID
+                        rootFolder = obj.FileEntry.RootCreateBy == userID
                                          ? await folderDaoInt.GetFolderAsync(userFolderId)
                                          : folderShare;
                     }
-                    else if (!Equals(obj.FileEntry.RootFolderId, userFolderId))
+                    else if (!Equals(obj.FileEntry.RootId, userFolderId))
                     {
                         rootFolder = folderShare;
                     }
@@ -230,7 +231,7 @@ public class FileMarker
                         userEntriesData.Add(userID, new List<FileEntry> { rootFolder });
                     }
 
-                    RemoveFromCahce(rootFolder.ID, userID);
+                    RemoveFromCahce(rootFolder.Id, userID);
                 }
             }
             else if (obj.FileEntry.RootFolderType == FolderType.COMMON)
@@ -281,7 +282,7 @@ public class FileMarker
                         userEntriesData.Add(userID, new List<FileEntry> { rootFolder });
                     }
 
-                    RemoveFromCahce(rootFolder.ID, userID);
+                    RemoveFromCahce(rootFolder.Id, userID);
                 }
             }
 
@@ -335,7 +336,7 @@ public class FileMarker
 
             entries.ForEach(entry =>
             {
-                if (entry != null && exist.All(tag => tag != null && !tag.EntryId.Equals(entry.ID)))
+                if (entry != null && exist.All(tag => tag != null && !tag.EntryId.Equals(entry.Id)))
                 {
                     newTags.Add(Tag.New(userID, entry));
                 }
@@ -369,7 +370,7 @@ public class FileMarker
         if (fileEntry.RootFolderType == FolderType.BUNCH && userIDs.Count == 0)
         {
             var folderDao = _daoFactory.GetFolderDao<T>();
-            var path = await folderDao.GetBunchObjectIDAsync(fileEntry.RootFolderId);
+            var path = await folderDao.GetBunchObjectIDAsync(fileEntry.RootId);
 
             var projectID = path.Split('/').Last();
             if (string.IsNullOrEmpty(projectID))
@@ -429,19 +430,19 @@ public class FileMarker
 
         if (fileEntry.FileEntryType == FileEntryType.File)
         {
-            folderID = ((File<T>)fileEntry).FolderID;
+            folderID = ((File<T>)fileEntry).ParentId;
 
             removeTags.Add(Tag.New(userID, fileEntry));
             valueNew = 1;
         }
         else
         {
-            folderID = fileEntry.ID;
+            folderID = fileEntry.Id;
 
             var listTags = await tagDao.GetNewTagsAsync(userID, (Folder<T>)fileEntry, true).ToListAsync();
-            valueNew = listTags.FirstOrDefault(tag => tag.EntryId.Equals(fileEntry.ID)).Count;
+            valueNew = listTags.FirstOrDefault(tag => tag.EntryId.Equals(fileEntry.Id)).Count;
 
-            if (Equals(fileEntry.ID, userFolderId) || Equals(fileEntry.ID, await _globalFolder.GetFolderCommonAsync(this, _daoFactory)) || Equals(fileEntry.ID, await _globalFolder.GetFolderShareAsync(_daoFactory)))
+            if (Equals(fileEntry.Id, userFolderId) || Equals(fileEntry.Id, await _globalFolder.GetFolderCommonAsync(this, _daoFactory)) || Equals(fileEntry.Id, await _globalFolder.GetFolderShareAsync(_daoFactory)))
             {
                 var folderTags = listTags.Where(tag => tag.EntryType == FileEntryType.Folder);
 
@@ -487,12 +488,12 @@ public class FileMarker
         }
         else if (rootFolder.RootFolderType == FolderType.USER)
         {
-            if (rootFolder.ProviderEntry && rootFolder.RootFolderCreator == userID)
+            if (rootFolder.ProviderEntry && rootFolder.RootCreateBy == userID)
             {
                 cacheFolderId = rootFolderId = userFolderId;
             }
-            else if (!rootFolder.ProviderEntry && !Equals(rootFolder.RootFolderId, userFolderId)
-                     || rootFolder.ProviderEntry && rootFolder.RootFolderCreator != userID)
+            else if (!rootFolder.ProviderEntry && !Equals(rootFolder.RootId, userFolderId)
+                     || rootFolder.ProviderEntry && rootFolder.RootCreateBy != userID)
             {
                 cacheFolderId = rootFolderId = await _globalFolder.GetFolderShareAsync(_daoFactory);
             }
@@ -567,7 +568,7 @@ public class FileMarker
         IAsyncEnumerable<Guid> userIDs;
 
         var tagDao = _daoFactory.GetTagDao<T>();
-        var tags = tagDao.GetTagsAsync(fileEntry.ID, fileEntry.FileEntryType == FileEntryType.File ? FileEntryType.File : FileEntryType.Folder, TagType.New);
+        var tags = tagDao.GetTagsAsync(fileEntry.Id, fileEntry.FileEntryType == FileEntryType.File ? FileEntryType.File : FileEntryType.Folder, TagType.New);
         userIDs = tags.Select(tag => tag.Owner).Distinct();
 
         await foreach (var userID in userIDs)
@@ -616,7 +617,7 @@ public class FileMarker
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ViewFolder);
         }
 
-        if (folder.RootFolderType == FolderType.TRASH && !Equals(folder.ID, await _globalFolder.GetFolderTrashAsync<T>(_daoFactory)))
+        if (folder.RootFolderType == FolderType.TRASH && !Equals(folder.Id, await _globalFolder.GetFolderTrashAsync<T>(_daoFactory)))
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_ViewTrashItem);
         }
@@ -631,9 +632,9 @@ public class FileMarker
             return new List<FileEntry>();
         }
 
-        if (Equals(folder.ID, _globalFolder.GetFolderMy(this, _daoFactory)) ||
-            Equals(folder.ID, await _globalFolder.GetFolderCommonAsync(this, _daoFactory)) ||
-            Equals(folder.ID, await _globalFolder.GetFolderShareAsync(_daoFactory)))
+        if (Equals(folder.Id, _globalFolder.GetFolderMy(this, _daoFactory)) ||
+            Equals(folder.Id, await _globalFolder.GetFolderCommonAsync(this, _daoFactory)) ||
+            Equals(folder.Id, await _globalFolder.GetFolderShareAsync(_daoFactory)))
         {
             var folderTags = tags.Where(tag => tag.EntryType == FileEntryType.Folder && (tag.EntryId is string));
 
@@ -650,7 +651,7 @@ public class FileMarker
         }
 
         tags = tags
-            .Where(r => !Equals(r.EntryId, folder.ID))
+            .Where(r => !Equals(r.EntryId, folder.Id))
             .Distinct();
 
         //TODO: refactoring
@@ -660,7 +661,7 @@ public class FileMarker
         foreach (var entryTag in entryTagsInternal)
         {
             var parentEntry = entryTagsInternal.Keys
-                .FirstOrDefault(entryCountTag => Equals(entryCountTag.ID, entryTag.Key.FolderID));
+                .FirstOrDefault(entryCountTag => Equals(entryCountTag.Id, entryTag.Key.ParentId));
 
             if (parentEntry != null)
             {
@@ -670,10 +671,10 @@ public class FileMarker
 
         foreach (var entryTag in entryTagsProvider)
         {
-            if (int.TryParse(entryTag.Key.FolderID, out var fId))
+            if (int.TryParse(entryTag.Key.ParentId, out var fId))
             {
                 var parentEntryInt = entryTagsInternal.Keys
-                        .FirstOrDefault(entryCountTag => Equals(entryCountTag.ID, fId));
+                        .FirstOrDefault(entryCountTag => Equals(entryCountTag.Id, fId));
 
                 if (parentEntryInt != null)
                 {
@@ -684,7 +685,7 @@ public class FileMarker
             }
 
             var parentEntry = entryTagsProvider.Keys
-                .FirstOrDefault(entryCountTag => Equals(entryCountTag.ID, entryTag.Key.FolderID));
+                .FirstOrDefault(entryCountTag => Equals(entryCountTag.Id, entryTag.Key.ParentId));
 
             if (parentEntry != null)
             {
@@ -749,9 +750,9 @@ public class FileMarker
 
         if (await totalTags.CountAsync() > 0)
         {
-            var parentFolderTag = Equals(await _globalFolder.GetFolderShareAsync<T>(_daoFactory), parent.ID)
+            var parentFolderTag = Equals(await _globalFolder.GetFolderShareAsync<T>(_daoFactory), parent.Id)
                                         ? await tagDao.GetNewTagsAsync(_authContext.CurrentAccount.ID, await folderDao.GetFolderAsync(await _globalFolder.GetFolderShareAsync<T>(_daoFactory))).FirstOrDefaultAsync()
-                                        : await totalTags.FirstOrDefaultAsync(tag => tag.EntryType == FileEntryType.Folder && Equals(tag.EntryId, parent.ID));
+                                        : await totalTags.FirstOrDefaultAsync(tag => tag.EntryType == FileEntryType.Folder && Equals(tag.EntryId, parent.Id));
 
             totalTags = totalTags.Where(e => e != parentFolderTag);
             var countSubNew = 0;
@@ -779,8 +780,8 @@ public class FileMarker
                         tagDao.UpdateNewTags(parentFolderTag);
                     }
 
-                    var cacheFolderId = parent.ID;
-                    var parentsList = await _daoFactory.GetFolderDao<T>().GetParentFoldersAsync(parent.ID);
+                    var cacheFolderId = parent.Id;
+                    var parentsList = await _daoFactory.GetFolderDao<T>().GetParentFoldersAsync(parent.Id);
                     parentsList.Reverse();
                     parentsList.Remove(parent);
 
@@ -788,12 +789,12 @@ public class FileMarker
                     {
                         var rootFolder = parentsList.Last();
                         T rootFolderId = default;
-                        cacheFolderId = rootFolder.ID;
+                        cacheFolderId = rootFolder.Id;
                         if (rootFolder.RootFolderType == FolderType.BUNCH)
                         {
                             cacheFolderId = rootFolderId = await _globalFolder.GetFolderProjectsAsync<T>(_daoFactory);
                         }
-                        else if (rootFolder.RootFolderType == FolderType.USER && !Equals(rootFolder.RootFolderId, _globalFolder.GetFolderMy(this, _daoFactory)))
+                        else if (rootFolder.RootFolderType == FolderType.USER && !Equals(rootFolder.RootId, _globalFolder.GetFolderMy(this, _daoFactory)))
                         {
                             cacheFolderId = rootFolderId = await _globalFolder.GetFolderShareAsync<T>(_daoFactory);
                         }
@@ -847,7 +848,7 @@ public class FileMarker
                 .ForEach(
                 entry =>
                 {
-                    var curTag = tags.FirstOrDefault(tag => tag.EntryType == entry.FileEntryType && tag.EntryId.Equals(entry.ID));
+                    var curTag = tags.FirstOrDefault(tag => tag.EntryType == entry.FileEntryType && tag.EntryId.Equals(entry.Id));
 
                     if (entry.FileEntryType == FileEntryType.Folder)
                     {

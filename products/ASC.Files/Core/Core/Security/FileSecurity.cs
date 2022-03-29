@@ -1,27 +1,28 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2018
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Files.Core.Security;
 
@@ -186,11 +187,11 @@ public class FileSecurity : IFileSecurity
                 defaultShareRecord = new FileShareRecord
                 {
                     Level = int.MaxValue,
-                    EntryId = entry.ID,
+                    EntryId = entry.Id,
                     EntryType = entry.FileEntryType,
                     Share = DefaultCommonShare,
                     Subject = Constants.GroupEveryone.ID,
-                    Tenant = _tenantManager.GetCurrentTenant().Id,
+                    TenantId = _tenantManager.GetCurrentTenant().Id,
                     Owner = _authContext.CurrentAccount.ID
                 };
 
@@ -212,19 +213,19 @@ public class FileSecurity : IFileSecurity
                 defaultShareRecord = new FileShareRecord
                 {
                     Level = int.MaxValue,
-                    EntryId = entry.ID,
+                    EntryId = entry.Id,
                     EntryType = entry.FileEntryType,
                     Share = DefaultMyShare,
-                    Subject = entry.RootFolderCreator,
-                    Tenant = _tenantManager.GetCurrentTenant().Id,
-                    Owner = entry.RootFolderCreator
+                    Subject = entry.RootCreateBy,
+                    TenantId = _tenantManager.GetCurrentTenant().Id,
+                    Owner = entry.RootCreateBy
                 };
 
                 if (!shares.Any())
                 {
                     return new List<Guid>
                         {
-                            entry.RootFolderCreator
+                            entry.RootCreateBy
                         };
                 }
 
@@ -234,19 +235,19 @@ public class FileSecurity : IFileSecurity
                 defaultShareRecord = new FileShareRecord
                 {
                     Level = int.MaxValue,
-                    EntryId = entry.ID,
+                    EntryId = entry.Id,
                     EntryType = entry.FileEntryType,
                     Share = DefaultPrivacyShare,
-                    Subject = entry.RootFolderCreator,
-                    Tenant = _tenantManager.GetCurrentTenant().Id,
-                    Owner = entry.RootFolderCreator
+                    Subject = entry.RootCreateBy,
+                    TenantId = _tenantManager.GetCurrentTenant().Id,
+                    Owner = entry.RootCreateBy
                 };
 
                 if (!shares.Any())
                 {
                     return new List<Guid>
                         {
-                            entry.RootFolderCreator
+                            entry.RootCreateBy
                         };
                 }
 
@@ -256,10 +257,10 @@ public class FileSecurity : IFileSecurity
                 if (action == FilesSecurityActions.Read)
                 {
                     var folderDao = _daoFactory.GetFolderDao<T>();
-                    var root = await folderDao.GetFolderAsync(entry.RootFolderId);
+                    var root = await folderDao.GetFolderAsync(entry.RootId);
                     if (root != null)
                     {
-                        var path = await folderDao.GetBunchObjectIDAsync(root.ID);
+                        var path = await folderDao.GetBunchObjectIDAsync(root.Id);
 
                         var adapter = FilesIntegration.GetFileSecurity(path);
 
@@ -339,7 +340,7 @@ public class FileSecurity : IFileSecurity
     {
         var filtres = await FilterAsync(entry, action, userId);
 
-        return entry.Select(r => new Tuple<FileEntry<T>, bool>(r, filtres.Any(a => a.ID.Equals(r.ID)))).ToList();
+        return entry.Select(r => new Tuple<FileEntry<T>, bool>(r, filtres.Any(a => a.Id.Equals(r.Id)))).ToList();
     }
 
     private Task<IEnumerable<FileEntry<T>>> FilterAsync<T>(IEnumerable<FileEntry<T>> entries, FilesSecurityActions action, Guid userId, IEnumerable<FileShareRecord> shares = null)
@@ -477,14 +478,14 @@ public class FileSecurity : IFileSecurity
                 //    }
                 //}
 
-                if (e.RootFolderType == FolderType.USER && e.RootFolderCreator == userId && !isVisitor)
+                if (e.RootFolderType == FolderType.USER && e.RootCreateBy == userId && !isVisitor)
                 {
                     // user has all right in his folder
                     result.Add(e);
                     continue;
                 }
 
-                if (e.RootFolderType == FolderType.Privacy && e.RootFolderCreator == userId && !isVisitor)
+                if (e.RootFolderType == FolderType.Privacy && e.RootCreateBy == userId && !isVisitor)
                 {
                     // user has all right in his privacy folder
                     result.Add(e);
@@ -560,11 +561,11 @@ public class FileSecurity : IFileSecurity
                     ace = shares
                         .OrderBy(r => r, new SubjectComparer(subjects))
                         .ThenByDescending(r => r.Share, new FileShareRecord.ShareComparer())
-                        .FirstOrDefault(r => Equals(r.EntryId, e.ID) && r.EntryType == FileEntryType.File);
+                        .FirstOrDefault(r => Equals(r.EntryId, e.Id) && r.EntryType == FileEntryType.File);
                     if (ace == null)
                     {
                         // share on parent folders
-                        ace = shares.Where(r => Equals(r.EntryId, file.FolderID) && r.EntryType == FileEntryType.Folder)
+                        ace = shares.Where(r => Equals(r.EntryId, file.ParentId) && r.EntryType == FileEntryType.Folder)
                                     .OrderBy(r => r, new SubjectComparer(subjects))
                                     .ThenBy(r => r.Level)
                                     .ThenByDescending(r => r.Share, new FileShareRecord.ShareComparer())
@@ -573,7 +574,7 @@ public class FileSecurity : IFileSecurity
                 }
                 else
                 {
-                    ace = shares.Where(r => Equals(r.EntryId, e.ID) && r.EntryType == FileEntryType.Folder)
+                    ace = shares.Where(r => Equals(r.EntryId, e.Id) && r.EntryType == FileEntryType.Folder)
                                 .OrderBy(r => r, new SubjectComparer(subjects))
                                 .ThenBy(r => r.Level)
                                 .ThenByDescending(r => r.Share, new FileShareRecord.ShareComparer())
@@ -637,16 +638,16 @@ public class FileSecurity : IFileSecurity
             var folderDao = _daoFactory.GetFolderDao<T>();
             var filteredEntries = entries.Where(filter).ToList();
             var roots = filteredEntries
-                    .Select(r => r.RootFolderId)
+                    .Select(r => r.RootId)
                     .ToList();
 
             var rootsFolders = folderDao.GetFoldersAsync(roots);
-            var bunches = await folderDao.GetBunchObjectIDsAsync(await rootsFolders.Select(r => r.ID).ToListAsync());
+            var bunches = await folderDao.GetBunchObjectIDsAsync(await rootsFolders.Select(r => r.Id).ToListAsync());
             var findedAdapters = FilesIntegration.GetFileSecurity(bunches);
 
             foreach (var e in filteredEntries)
             {
-                findedAdapters.TryGetValue(e.RootFolderId.ToString(), out var adapter);
+                findedAdapters.TryGetValue(e.RootId.ToString(), out var adapter);
 
                 if (adapter == null)
                 {
@@ -719,7 +720,7 @@ public class FileSecurity : IFileSecurity
             var mytrashId = await folderDao.GetFolderIDTrashAsync(false, userId);
             if (!Equals(mytrashId, 0))
             {
-                result.AddRange(entries.Where(filter).Where(e => Equals(e.RootFolderId, mytrashId)));
+                result.AddRange(entries.Where(filter).Where(e => Equals(e.RootId, mytrashId)));
             }
         }
 
@@ -741,7 +742,7 @@ public class FileSecurity : IFileSecurity
         var securityDao = _daoFactory.GetSecurityDao<T>();
         var r = new FileShareRecord
         {
-            Tenant = _tenantManager.GetCurrentTenant().Id,
+            TenantId = _tenantManager.GetCurrentTenant().Id,
             EntryId = entryId,
             EntryType = entryType,
             Subject = @for,
@@ -818,9 +819,9 @@ public class FileSecurity : IFileSecurity
 
             files.ForEach(x =>
             {
-                if (fileIds.TryGetValue(x.ID, out var access))
+                if (fileIds.TryGetValue(x.Id, out var access))
                 {
-                    x.Access = fileIds[x.ID];
+                    x.Access = fileIds[x.Id];
                     x.FolderIdDisplay = share;
                 }
             });
@@ -841,9 +842,9 @@ public class FileSecurity : IFileSecurity
             var share = await _globalFolder.GetFolderShareAsync<T>(_daoFactory);
             folders.ForEach(x =>
             {
-                if (folderIds.TryGetValue(x.ID, out var access))
+                if (folderIds.TryGetValue(x.Id, out var access))
                 {
-                    x.Access = folderIds[x.ID];
+                    x.Access = folderIds[x.Id];
                     x.FolderIdDisplay = share;
                 }
             });
@@ -861,7 +862,7 @@ public class FileSecurity : IFileSecurity
 
         entries = entries.Where(f =>
                                 f.RootFolderType == FolderType.USER // show users files
-                                && f.RootFolderCreator != _authContext.CurrentAccount.ID // don't show my files
+                                && f.RootCreateBy != _authContext.CurrentAccount.ID // don't show my files
             ).ToList();
 
         if (_userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager))
@@ -876,7 +877,7 @@ public class FileSecurity : IFileSecurity
         {
             var entryType = failedEntry.FileEntryType;
 
-            var failedRecord = records.First(x => x.EntryId.Equals(failedEntry.ID) && x.EntryType == entryType);
+            var failedRecord = records.First(x => x.EntryId.Equals(failedEntry.Id) && x.EntryType == entryType);
 
             failedRecord.Share = FileShare.None;
 
@@ -946,7 +947,7 @@ public class FileSecurity : IFileSecurity
 
             files.ForEach(x =>
             {
-                if (fileIds.TryGetValue(x.ID, out var access))
+                if (fileIds.TryGetValue(x.Id, out var access))
                 {
                     x.Access = access;
                     x.FolderIdDisplay = privateFolder;
@@ -969,7 +970,7 @@ public class FileSecurity : IFileSecurity
             var privacyFolder = await _globalFolder.GetFolderPrivacyAsync<T>(_daoFactory);
             folders.ForEach(x =>
             {
-                if (folderIds.TryGetValue(x.ID, out var access))
+                if (folderIds.TryGetValue(x.Id, out var access))
                 {
                     x.Access = access;
                     x.FolderIdDisplay = privacyFolder;
@@ -989,7 +990,7 @@ public class FileSecurity : IFileSecurity
 
         entries = entries.Where(f =>
                                 f.RootFolderType == FolderType.Privacy // show users files
-                                && f.RootFolderCreator != _authContext.CurrentAccount.ID // don't show my files
+                                && f.RootCreateBy != _authContext.CurrentAccount.ID // don't show my files
             ).ToList();
 
         return entries;

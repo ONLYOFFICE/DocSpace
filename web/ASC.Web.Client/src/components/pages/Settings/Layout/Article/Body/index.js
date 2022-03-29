@@ -99,10 +99,13 @@ const getTreeItems = (data, path, t) => {
         return t("ManagementCategoryIntegration");
       case "ThirdPartyAuthorization":
         return t("ThirdPartyAuthorization");
+      case "ManagementCategoryDataManagement":
+        return t("ManagementCategoryDataManagement");
       case "Migration":
         return t("Migration");
       case "Backup":
         return t("Backup");
+
       default:
         throw new Error("Unexpected translation key");
     }
@@ -125,6 +128,7 @@ const getTreeItems = (data, path, t) => {
       );
     }
     const link = path + getSelectedLinkByKey(item.key, settingsTree);
+
     return (
       <TreeNode
         key={item.key}

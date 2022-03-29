@@ -36,27 +36,25 @@ public class TransferProgressItem : BaseBackupProgressItem
     private readonly TransferPortalTask _transferPortalTask;
 
     public TransferProgressItem(
-        IOptionsMonitor<ILog> options,
+        ILog logger,
         TenantManager tenantManager,
         NotifyHelper notifyHelper,
         TransferPortalTask transferPortalTask) : 
-        base(options)
+        base(logger)
     {
         _tenantManager = tenantManager;
         _notifyHelper = notifyHelper;
         _transferPortalTask = transferPortalTask;
+        BackupProgressItemEnum = BackupProgressItemEnum.Transfer;
     }
 
-    public override BackupProgressItemEnum BackupProgressItemEnum { get => BackupProgressItemEnum.Transfer; }
     public string TargetRegion { get; set; }
     public bool TransferMail { get; set; }
     public bool Notify { get; set; }
-    public string Link { get; set; }
     public string TempFolder { get; set; }
     public Dictionary<string, string> ConfigPaths { get; set; }
     public string CurrentRegion { get; set; }
     public int Limit { get; set; }
-
 
     public void Init(
         string targetRegion,

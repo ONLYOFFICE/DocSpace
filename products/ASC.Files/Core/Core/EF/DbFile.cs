@@ -1,4 +1,30 @@
-﻿using Document = ASC.ElasticSearch.Document;
+﻿// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
+
+using Document = ASC.ElasticSearch.Document;
 
 namespace ASC.Files.Core.EF;
 
@@ -17,7 +43,7 @@ public class DbFile : BaseEntity, IDbFile, IDbSearch, ISearchItemDocument
     public int Version { get; set; }
     public int VersionGroup { get; set; }
     public bool CurrentVersion { get; set; }
-    public int FolderId { get; set; }
+    public int ParentId { get; set; }
 
     [Text(Analyzer = "whitespacecustom")]
     public string Title { get; set; }
@@ -34,7 +60,7 @@ public class DbFile : BaseEntity, IDbFile, IDbSearch, ISearchItemDocument
     public string Changes { get; set; }
     public bool Encrypted { get; set; }
     public ForcesaveType Forcesave { get; set; }
-    public Thumbnail Thumb { get; set; }
+    public Thumbnail ThumbnailStatus { get; set; }
 
 
     [Nested]
@@ -84,7 +110,7 @@ public static class DbFileExtension
 
             entity.ToTable("files_file");
 
-            entity.HasIndex(e => e.FolderId)
+            entity.HasIndex(e => e.ParentId)
                 .HasDatabaseName("folder_id");
 
             entity.HasIndex(e => e.Id)
@@ -134,13 +160,13 @@ public static class DbFileExtension
 
             entity.Property(e => e.CurrentVersion).HasColumnName("current_version");
 
-            entity.Property(e => e.Thumb).HasColumnName("thumb");
+            entity.Property(e => e.ThumbnailStatus).HasColumnName("thumb");
 
             entity.Property(e => e.Encrypted).HasColumnName("encrypted");
 
             entity.Property(e => e.FileStatus).HasColumnName("file_status");
 
-            entity.Property(e => e.FolderId).HasColumnName("folder_id");
+            entity.Property(e => e.ParentId).HasColumnName("folder_id");
 
             entity.Property(e => e.Forcesave).HasColumnName("forcesave");
 
@@ -181,7 +207,7 @@ public static class DbFileExtension
 
             entity.ToTable("files_file", "onlyoffice");
 
-            entity.HasIndex(e => e.FolderId)
+            entity.HasIndex(e => e.ParentId)
                 .HasDatabaseName("folder_id");
 
             entity.HasIndex(e => e.Id)
@@ -224,13 +250,13 @@ public static class DbFileExtension
 
             entity.Property(e => e.CurrentVersion).HasColumnName("current_version");
 
-            entity.Property(e => e.Thumb).HasColumnName("thumb");
+            entity.Property(e => e.ThumbnailStatus).HasColumnName("thumb");
 
             entity.Property(e => e.Encrypted).HasColumnName("encrypted");
 
             entity.Property(e => e.FileStatus).HasColumnName("file_status");
 
-            entity.Property(e => e.FolderId).HasColumnName("folder_id");
+            entity.Property(e => e.ParentId).HasColumnName("folder_id");
 
             entity.Property(e => e.Forcesave).HasColumnName("forcesave");
 

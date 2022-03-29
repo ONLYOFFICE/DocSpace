@@ -1,27 +1,28 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2018
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 using File = System.IO.File;
 
@@ -261,10 +262,10 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
 
     public async Task<Stream> GetFileStreamAsync(File<string> file, long offset)
     {
-        var boxFileId = MakeBoxId(file.ID);
+        var boxFileId = MakeBoxId(file.Id);
         await ProviderInfo.CacheResetAsync(boxFileId, true).ConfigureAwait(false);
 
-        var boxFile = await GetBoxFileAsync(file.ID).ConfigureAwait(false);
+        var boxFile = await GetBoxFileAsync(file.Id).ConfigureAwait(false);
         if (boxFile == null)
         {
             throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
@@ -293,14 +294,8 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
 
     public Task<File<string>> SaveFileAsync(File<string> file, Stream fileStream)
     {
-        if (file == null)
-        {
-            throw new ArgumentNullException(nameof(file));
-        }
-        if (fileStream == null)
-        {
-            throw new ArgumentNullException(nameof(fileStream));
-        }
+        ArgumentNullException.ThrowIfNull(file);
+        ArgumentNullException.ThrowIfNull(fileStream);
 
         return InternalSaveFileAsync(file, fileStream);
     }
@@ -310,9 +305,9 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
         BoxFile newBoxFile = null;
         var storage = await ProviderInfo.StorageAsync;
 
-        if (file.ID != null)
+        if (file.Id != null)
         {
-            var fileId = MakeBoxId(file.ID);
+            var fileId = MakeBoxId(file.Id);
             newBoxFile = await storage.SaveStreamAsync(fileId, fileStream).ConfigureAwait(false);
 
             if (!newBoxFile.Name.Equals(file.Title))
@@ -322,9 +317,9 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
                 newBoxFile = await storage.RenameFileAsync(fileId, file.Title).ConfigureAwait(false);
             }
         }
-        else if (file.FolderID != null)
+        else if (file.ParentId != null)
         {
-            var folderId = MakeBoxId(file.FolderID);
+            var folderId = MakeBoxId(file.ParentId);
             file.Title = await GetAvailableTitleAsync(file.Title, folderId, IsExistAsync).ConfigureAwait(false);
             newBoxFile = await storage.CreateFileAsync(fileStream, file.Title, folderId).ConfigureAwait(false);
         }
@@ -433,7 +428,7 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
             true)
             .ConfigureAwait(false);
 
-        return moved.ID;
+        return moved.Id;
     }
 
     public async Task<string> MoveFileAsync(string fileId, string toFolderId)
@@ -514,7 +509,7 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
 
     public async Task<string> FileRenameAsync(File<string> file, string newTitle)
     {
-        var boxFile = await GetBoxFileAsync(file.ID).ConfigureAwait(false);
+        var boxFile = await GetBoxFileAsync(file.Id).ConfigureAwait(false);
         newTitle = await GetAvailableTitleAsync(newTitle, GetParentFolderId(boxFile), IsExistAsync).ConfigureAwait(false);
 
         var storage = await ProviderInfo.StorageAsync;
@@ -559,14 +554,14 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
             return null;
         }
 
-        if (file.ID != null)
+        if (file.Id != null)
         {
-            file.ID = MakeId(file.ID);
+            file.Id = MakeId(file.Id);
         }
 
-        if (file.FolderID != null)
+        if (file.ParentId != null)
         {
-            file.FolderID = MakeId(file.FolderID);
+            file.ParentId = MakeId(file.ParentId);
         }
 
         return file;

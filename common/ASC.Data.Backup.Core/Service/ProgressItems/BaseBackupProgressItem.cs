@@ -27,6 +27,10 @@ namespace ASC.Data.Backup.Services;
 
 public abstract class BaseBackupProgressItem : DistributedTaskProgress
 {
+    private int? _tenantId;
+    private BackupProgressItemEnum? _backupProgressItemEnum;
+    private string _link;
+
     public int TenantId
     {
         get => _tenantId ?? Convert.ToInt32(this[nameof(_tenantId)]);
@@ -36,13 +40,39 @@ public abstract class BaseBackupProgressItem : DistributedTaskProgress
             this[nameof(_tenantId)] = value.ToString();
         }
     }
-    public abstract BackupProgressItemEnum BackupProgressItemEnum { get; }
-    protected ILog Logger { get; set; }
-    private int? _tenantId;
 
-    protected BaseBackupProgressItem(IOptionsMonitor<ILog> options)
+    public string Link
     {
-        Logger = options.CurrentValue;
+        get
+        {
+            return _link ?? this[nameof(_link)];
+        }
+        set
+        {
+            _link = value;
+            this[nameof(_link)] = value;
+        }
+    }
+
+    public BackupProgressItemEnum BackupProgressItemEnum
+    {
+        get
+        {
+            return _backupProgressItemEnum ?? (BackupProgressItemEnum)Convert.ToInt32(this[(nameof(_backupProgressItemEnum))]);
+        }
+        protected set
+        {
+            _backupProgressItemEnum = value;
+
+            this[nameof(_backupProgressItemEnum)] = Convert.ToString((int)value);
+        }
+    }
+
+    protected ILog Logger { get; set; }
+
+    protected BaseBackupProgressItem(ILog logger)
+    {
+        Logger = logger;
     }
 
     public abstract object Clone();

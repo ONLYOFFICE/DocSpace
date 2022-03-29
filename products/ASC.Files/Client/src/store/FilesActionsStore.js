@@ -994,7 +994,7 @@ class FilesActionStore {
       .set("download", download)
       .set("downloadAs", downloadAs)
       .set("restore", {
-        label: t("Translations:Restore"),
+        label: t("Common:Restore"),
         onClick: () => setMoveToPanelVisible(true),
         iconUrl: "/static/images/move.react.svg",
       })

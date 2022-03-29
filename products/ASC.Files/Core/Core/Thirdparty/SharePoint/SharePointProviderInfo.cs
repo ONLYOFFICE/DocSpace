@@ -1,28 +1,28 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2018
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
-
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 using File = Microsoft.SharePoint.Client.File;
 using Folder = Microsoft.SharePoint.Client.Folder;
@@ -44,13 +44,13 @@ public class SharePointProviderInfo : IProviderInfo
     public string SpRootFolderId { get; set; } = "/Shared Documents";
 
     public SharePointProviderInfo(
-        IOptionsMonitor<ILog> options,
+        ILog logger,
         IServiceProvider serviceProvider,
         TenantUtil tenantUtil,
         SharePointProviderInfoHelper sharePointProviderInfoHelper,
         TempStream tempStream)
     {
-        Logger = options.CurrentValue;
+        Logger = logger;
         _serviceProvider = serviceProvider;
         _tenantUtil = tenantUtil;
         SharePointProviderInfoHelper = sharePointProviderInfoHelper;
@@ -288,16 +288,16 @@ public class SharePointProviderInfo : IProviderInfo
 
         if (file is SharePointFileErrorEntry errorFile)
         {
-            result.ID = MakeId(errorFile.ID);
-            result.FolderID = MakeId(GetParentFolderId(errorFile.ID));
+            result.Id = MakeId(errorFile.ID);
+            result.ParentId = MakeId(GetParentFolderId(errorFile.ID));
             result.CreateBy = Owner;
             result.CreateOn = DateTime.UtcNow;
             result.ModifiedBy = Owner;
             result.ModifiedOn = DateTime.UtcNow;
             result.ProviderId = ID;
             result.ProviderKey = ProviderKey;
-            result.RootFolderCreator = Owner;
-            result.RootFolderId = MakeId(RootFolder.ServerRelativeUrl);
+            result.RootCreateBy = Owner;
+            result.RootId = MakeId(RootFolder.ServerRelativeUrl);
             result.RootFolderType = RootFolderType;
             result.Title = MakeTitle(GetTitleById(errorFile.ID));
             result.Error = errorFile.Error;
@@ -305,21 +305,21 @@ public class SharePointProviderInfo : IProviderInfo
             return result;
         }
 
-        result.ID = MakeId(file.ServerRelativeUrl);
+        result.Id = MakeId(file.ServerRelativeUrl);
         result.Access = Core.Security.FileShare.None;
         //ContentLength = file.Length,
         result.CreateBy = Owner;
         result.CreateOn = file.TimeCreated.Kind == DateTimeKind.Utc ? _tenantUtil.DateTimeFromUtc(file.TimeCreated) : file.TimeCreated;
-        result.FolderID = MakeId(GetParentFolderId(file.ServerRelativeUrl));
+        result.ParentId = MakeId(GetParentFolderId(file.ServerRelativeUrl));
         result.ModifiedBy = Owner;
         result.ModifiedOn = file.TimeLastModified.Kind == DateTimeKind.Utc ? _tenantUtil.DateTimeFromUtc(file.TimeLastModified) : file.TimeLastModified;
         result.NativeAccessor = file;
         result.ProviderId = ID;
         result.ProviderKey = ProviderKey;
         result.Title = MakeTitle(file.Name);
-        result.RootFolderId = MakeId(SpRootFolderId);
+        result.RootId = MakeId(SpRootFolderId);
         result.RootFolderType = RootFolderType;
-        result.RootFolderCreator = Owner;
+        result.RootCreateBy = Owner;
         result.Shared = false;
         result.Version = 1;
 
@@ -554,8 +554,8 @@ public class SharePointProviderInfo : IProviderInfo
 
         if (folder is SharePointFolderErrorEntry errorFolder)
         {
-            result.ID = MakeId(errorFolder.ID);
-            result.FolderID = null;
+            result.Id = MakeId(errorFolder.ID);
+            result.ParentId = null;
             result.CreateBy = Owner;
             result.CreateOn = DateTime.UtcNow;
             result.FolderType = FolderType.DEFAULT;
@@ -563,13 +563,13 @@ public class SharePointProviderInfo : IProviderInfo
             result.ModifiedOn = DateTime.UtcNow;
             result.ProviderId = ID;
             result.ProviderKey = ProviderKey;
-            result.RootFolderCreator = Owner;
-            result.RootFolderId = MakeId(SpRootFolderId);
+            result.RootCreateBy = Owner;
+            result.RootId = MakeId(SpRootFolderId);
             result.RootFolderType = RootFolderType;
             result.Shareable = false;
             result.Title = MakeTitle(GetTitleById(errorFolder.ID));
-            result.TotalFiles = 0;
-            result.TotalSubFolders = 0;
+            result.FilesCount = 0;
+            result.FoldersCount = 0;
             result.Error = errorFolder.Error;
 
             return result;
@@ -577,8 +577,8 @@ public class SharePointProviderInfo : IProviderInfo
 
         var isRoot = folder.ServerRelativeUrl == SpRootFolderId;
 
-        result.ID = MakeId(isRoot ? "" : folder.ServerRelativeUrl);
-        result.FolderID = isRoot ? null : MakeId(GetParentFolderId(folder.ServerRelativeUrl));
+        result.Id = MakeId(isRoot ? "" : folder.ServerRelativeUrl);
+        result.ParentId = isRoot ? null : MakeId(GetParentFolderId(folder.ServerRelativeUrl));
         result.CreateBy = Owner;
         result.CreateOn = CreateOn;
         result.FolderType = FolderType.DEFAULT;
@@ -586,13 +586,13 @@ public class SharePointProviderInfo : IProviderInfo
         result.ModifiedOn = CreateOn;
         result.ProviderId = ID;
         result.ProviderKey = ProviderKey;
-        result.RootFolderCreator = Owner;
-        result.RootFolderId = MakeId(RootFolder.ServerRelativeUrl);
+        result.RootCreateBy = Owner;
+        result.RootId = MakeId(RootFolder.ServerRelativeUrl);
         result.RootFolderType = RootFolderType;
         result.Shareable = false;
         result.Title = isRoot ? CustomerTitle : MakeTitle(folder.Name);
-        result.TotalFiles = 0;
-        result.TotalSubFolders = 0;
+        result.FilesCount = 0;
+        result.FoldersCount = 0;
 
         return result;
     }

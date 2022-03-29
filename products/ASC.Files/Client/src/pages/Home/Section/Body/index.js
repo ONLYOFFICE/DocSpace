@@ -67,7 +67,7 @@ const SectionBodyContent = (props) => {
       (e.target.closest(".scroll-body") &&
         !e.target.closest(".files-item") &&
         !e.target.closest(".not-selectable") &&
-      !e.target.closest(".table-container_group-menu")) ||
+        !e.target.closest(".table-container_group-menu")) ||
       e.target.closest(".files-main-button") ||
       e.target.closest(".add-button") ||
       e.target.closest(".search-input-block")
@@ -162,7 +162,7 @@ const SectionBodyContent = (props) => {
   const onMoveTo = (destFolderId, title, providerKey) => {
     const id = isNaN(+destFolderId) ? destFolderId : +destFolderId;
     moveDragItems(id, title, providerKey, {
-      copy: t("Translations:CopyOperation"),
+      copy: t("Common:CopyOperation"),
       move: t("Translations:MoveToOperation"),
     }); //TODO: then catch
   };

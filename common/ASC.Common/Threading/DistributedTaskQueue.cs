@@ -146,14 +146,15 @@ public class DistributedTaskQueue
         var token = cancelation.Token;
         _cancelations[distributedTask.Id] = cancelation;
 
-        var task = new Task(async () =>
+            var task = new Task(() =>
         {
             var t = action(distributedTask, token);
             t.ConfigureAwait(false)
             .GetAwaiter()
             .OnCompleted(() => OnCompleted(t, distributedTask.Id));
-            await t;
         }, token, TaskCreationOptions.LongRunning);
+
+            task.ConfigureAwait(false);
 
         distributedTask.Status = DistributedTaskStatus.Running;
 
@@ -234,8 +235,10 @@ public class DistributedTaskQueue
         if (distributedTask != null)
         {
             distributedTask.Status = DistributedTaskStatus.Completed;
-            distributedTask.Exception = task.Exception;
-
+                if (task.Exception != null)
+                {
+                    distributedTask.Exception = task.Exception;
+                }
             if (task.IsFaulted)
             {
                 distributedTask.Status = DistributedTaskStatus.Failted;

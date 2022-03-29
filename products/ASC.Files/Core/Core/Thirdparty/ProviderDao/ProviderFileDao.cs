@@ -1,27 +1,28 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2018
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Files.Thirdparty.ProviderDao;
 
@@ -210,87 +211,75 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
     /// <returns>Stream</returns>
     public Task<Stream> GetFileStreamAsync(File<string> file, long offset)
     {
-        if (file == null)
-        {
-            throw new ArgumentNullException(nameof(file));
-        }
+        ArgumentNullException.ThrowIfNull(file);
 
         return InternalGetFileStreamAsync(file, offset);
     }
 
     private async Task<Stream> InternalGetFileStreamAsync(File<string> file, long offset)
     {
-        var fileId = file.ID;
+        var fileId = file.Id;
         var selector = GetSelector(fileId);
-        file.ID = selector.ConvertId(fileId);
+        file.Id = selector.ConvertId(fileId);
 
         var fileDao = selector.GetFileDao(fileId);
         var stream = await fileDao.GetFileStreamAsync(file, offset).ConfigureAwait(false);
-        file.ID = fileId; //Restore id
+        file.Id = fileId; //Restore id
 
         return stream;
     }
 
     public Task<bool> IsSupportedPreSignedUriAsync(File<string> file)
     {
-        if (file == null)
-        {
-            throw new ArgumentNullException(nameof(file));
-        }
+        ArgumentNullException.ThrowIfNull(file);
 
         return InternalIsSupportedPreSignedUriAsync(file);
     }
 
     private async Task<bool> InternalIsSupportedPreSignedUriAsync(File<string> file)
     {
-        var fileId = file.ID;
+        var fileId = file.Id;
         var selector = GetSelector(fileId);
-        file.ID = selector.ConvertId(fileId);
+        file.Id = selector.ConvertId(fileId);
 
         var fileDao = selector.GetFileDao(fileId);
         var isSupported = await fileDao.IsSupportedPreSignedUriAsync(file).ConfigureAwait(false);
-        file.ID = fileId; //Restore id
+        file.Id = fileId; //Restore id
 
         return isSupported;
     }
 
     public Task<Uri> GetPreSignedUriAsync(File<string> file, TimeSpan expires)
     {
-        if (file == null)
-        {
-            throw new ArgumentNullException(nameof(file));
-        }
+        ArgumentNullException.ThrowIfNull(file);
 
         return InternalGetPreSignedUriAsync(file, expires);
     }
 
     private async Task<Uri> InternalGetPreSignedUriAsync(File<string> file, TimeSpan expires)
     {
-        var fileId = file.ID;
+        var fileId = file.Id;
         var selector = GetSelector(fileId);
-        file.ID = selector.ConvertId(fileId);
+        file.Id = selector.ConvertId(fileId);
 
         var fileDao = selector.GetFileDao(fileId);
         var streamUri = await fileDao.GetPreSignedUriAsync(file, expires).ConfigureAwait(false);
-        file.ID = fileId; //Restore id
+        file.Id = fileId; //Restore id
 
         return streamUri;
     }
 
     public Task<File<string>> SaveFileAsync(File<string> file, Stream fileStream)
     {
-        if (file == null)
-        {
-            throw new ArgumentNullException(nameof(file));
-        }
+        ArgumentNullException.ThrowIfNull(file);
 
         return InternalSaveFileAsync(file, fileStream);
     }
 
     private async Task<File<string>> InternalSaveFileAsync(File<string> file, Stream fileStream)
     {
-        var fileId = file.ID;
-        var folderId = file.FolderID;
+        var fileId = file.Id;
+        var folderId = file.ParentId;
 
         IDaoSelector selector;
         File<string> fileSaved = null;
@@ -298,10 +287,10 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
         if (fileId != null)
         {
             selector = GetSelector(fileId);
-            file.ID = selector.ConvertId(fileId);
+            file.Id = selector.ConvertId(fileId);
             if (folderId != null)
             {
-                file.FolderID = selector.ConvertId(folderId);
+                file.ParentId = selector.ConvertId(folderId);
             }
 
             var fileDao = selector.GetFileDao(fileId);
@@ -310,7 +299,7 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
         else if (folderId != null)
         {
             selector = GetSelector(folderId);
-            file.FolderID = selector.ConvertId(folderId);
+            file.ParentId = selector.ConvertId(folderId);
             var fileDao = selector.GetFileDao(folderId);
             fileSaved = await fileDao.SaveFileAsync(file, fileStream).ConfigureAwait(false);
         }
@@ -325,25 +314,23 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
 
     public Task<File<string>> ReplaceFileVersionAsync(File<string> file, Stream fileStream)
     {
-        if (file == null)
-        {
-            throw new ArgumentNullException(nameof(file));
-        }
-        if (file.ID == null)
+        ArgumentNullException.ThrowIfNull(file);
+
+        if (file.Id == null)
         {
             throw new ArgumentException("No file id or folder id toFolderId determine provider");
         }
 
-        var fileId = file.ID;
-        var folderId = file.FolderID;
+        var fileId = file.Id;
+        var folderId = file.ParentId;
 
         //Convert
         var selector = GetSelector(fileId);
 
-        file.ID = selector.ConvertId(fileId);
+        file.Id = selector.ConvertId(fileId);
         if (folderId != null)
         {
-            file.FolderID = selector.ConvertId(folderId);
+            file.ParentId = selector.ConvertId(folderId);
         }
 
         var fileDao = selector.GetFileDao(fileId);
@@ -387,7 +374,7 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
     {
         var movedFile = await PerformCrossDaoFileCopyAsync(fileId, toFolderId, true).ConfigureAwait(false);
 
-        return movedFile.ID;
+        return movedFile.Id;
     }
 
     public async Task<string> MoveFileAsync(string fileId, string toFolderId)
@@ -397,7 +384,7 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
         {
             var movedFile = await PerformCrossDaoFileCopyAsync(fileId, toFolderId, true).ConfigureAwait(false);
 
-            return movedFile.ID;
+            return movedFile.Id;
         }
 
         var fileDao = selector.GetFileDao(fileId);
@@ -440,8 +427,8 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
 
     public Task<string> FileRenameAsync(File<string> file, string newTitle)
     {
-        var selector = GetSelector(file.ID);
-        var fileDao = selector.GetFileDao(file.ID);
+        var selector = GetSelector(file.Id);
+        var fileDao = selector.GetFileDao(file.Id);
 
         return fileDao.FileRenameAsync(ConvertId(file), newTitle);
     }
@@ -474,8 +461,8 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
 
     public bool UseTrashForRemove(File<string> file)
     {
-        var selector = GetSelector(file.ID);
-        var fileDao = selector.GetFileDao(file.ID);
+        var selector = GetSelector(file.Id);
+        var fileDao = selector.GetFileDao(file.Id);
 
         return UseTrashForRemove(file);
     }
@@ -508,14 +495,14 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
 
     private IFileDao<string> GetFileDao(File<string> file)
     {
-        if (file.ID != null)
+        if (file.Id != null)
         {
-            return GetSelector(file.ID).GetFileDao(file.ID);
+            return GetSelector(file.Id).GetFileDao(file.Id);
         }
 
-        if (file.FolderID != null)
+        if (file.ParentId != null)
         {
-            return GetSelector(file.FolderID).GetFileDao(file.FolderID);
+            return GetSelector(file.ParentId).GetFileDao(file.ParentId);
         }
 
         throw new ArgumentException("Can't create instance of dao for given file.", nameof(file));
@@ -528,8 +515,8 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
 
     private File<string> ConvertId(File<string> file)
     {
-        file.ID = ConvertId(file.ID);
-        file.FolderID = ConvertId(file.FolderID);
+        file.Id = ConvertId(file.Id);
+        file.ParentId = ConvertId(file.ParentId);
 
         return file;
     }

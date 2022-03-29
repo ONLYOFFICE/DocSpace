@@ -26,7 +26,18 @@ const TeamTemplate = lazy(() => import("./categories/common/team-template"));
 const ThirdPartyServices = lazy(() =>
   import("./categories/integration/thirdPartyServicesSettings")
 );
-
+const DataManagementSettings = lazy(() =>
+  import("./categories/data-management/backup")
+);
+const AutomaticBackup = lazy(() =>
+  import("./categories/data-management/backup/auto-backup")
+);
+const ManualBackup = lazy(() =>
+  import("./categories/data-management/backup/manual-backup")
+);
+const RestoreBackup = lazy(() =>
+  import("./categories/data-management/backup/restore-backup")
+);
 //const WhiteLabel = lazy(() => import("./categories/common/whitelabel"));
 const PROXY_BASE_URL = combineUrl(AppServerConfig.proxyURL, "/settings");
 
@@ -57,6 +68,11 @@ const THIRD_PARTY_URL = combineUrl(
   PROXY_BASE_URL,
   "/integration/third-party-services"
 );
+const DATA_MANAGEMENT_URL = combineUrl(
+  PROXY_BASE_URL,
+  "/datamanagement/backup"
+);
+
 const ERROR_404_URL = combineUrl(AppServerConfig.proxyURL, "/error/404");
 
 const Settings = () => {
@@ -84,6 +100,12 @@ const Settings = () => {
           <Route exact path={TFA_PAGE_URL} component={TfaPage} />
 
           <Route exact path={THIRD_PARTY_URL} component={ThirdPartyServices} />
+          <Route
+            exact
+            path={DATA_MANAGEMENT_URL}
+            component={DataManagementSettings}
+          />
+
           <Redirect
             to={{
               pathname: ERROR_404_URL,

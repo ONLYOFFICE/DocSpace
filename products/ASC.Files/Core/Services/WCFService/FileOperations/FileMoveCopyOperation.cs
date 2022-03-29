@@ -1,27 +1,28 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2018
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Web.Files.Services.WCFService.FileOperations;
 
@@ -130,8 +131,8 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_Create);
         }
 
-        var parentFolders = await folderDao.GetParentFoldersAsync(toFolder.ID);
-        if (parentFolders.Any(parent => Folders.Any(r => r.ToString() == parent.ID.ToString())))
+        var parentFolders = await folderDao.GetParentFoldersAsync(toFolder.Id);
+        if (parentFolders.Any(parent => Folders.Any(r => r.ToString() == parent.Id.ToString())))
         {
             Error = FilesCommonResource.ErrorMassage_FolderCopyError;
 
@@ -190,7 +191,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
         var (filesMessageService, fileMarker, _, _, _) = scopeClass;
         var folderDao = scope.ServiceProvider.GetService<IFolderDao<TTo>>();
 
-        var toFolderId = toFolder.ID;
+        var toFolderId = toFolder.Id;
         var isToFolder = Equals(toFolderId, _daoFolderId);
 
         var sb = new StringBuilder();
@@ -200,7 +201,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             CancellationToken.ThrowIfCancellationRequested();
 
             var folder = await FolderDao.GetFolderAsync(folderId);
-            var taskError = WithErrorAsync(scope, await FileDao.GetFilesAsync(folder.ID, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, string.Empty, false, true).ToListAsync());
+            var taskError = WithErrorAsync(scope, await FileDao.GetFilesAsync(folder.Id, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, string.Empty, false, true).ToListAsync());
 
             if (folder == null)
             {
@@ -215,7 +216,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             {
                 Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
             }
-            else if (!Equals(folder.FolderID ?? default, toFolderId) || _resolveType == FileConflictResolveType.Duplicate)
+            else if (!Equals(folder.ParentId ?? default, toFolderId) || _resolveType == FileConflictResolveType.Duplicate)
             {
                 try
                 {
@@ -238,7 +239,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                         }
                         else
                         {
-                            newFolder = await FolderDao.CopyFolderAsync(folder.ID, toFolderId, CancellationToken);
+                            newFolder = await FolderDao.CopyFolderAsync(folder.Id, toFolderId, CancellationToken);
                             filesMessageService.Send(newFolder, toFolder, _headers, MessageAction.FolderCopied, newFolder.Title, toFolder.Title);
 
                             if (isToFolder)
@@ -248,15 +249,15 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
 
                             if (ProcessedFolder(folderId))
                             {
-                                sb.Append($"folder_{newFolder.ID}{SplitChar}");
+                                sb.Append($"folder_{newFolder.Id}{SplitChar}");
                             }
                         }
 
                         if (toFolder.ProviderId == folder.ProviderId // crossDao operation is always recursive
-                            && FolderDao.UseRecursiveOperation(folder.ID, toFolderId))
+                            && FolderDao.UseRecursiveOperation(folder.Id, toFolderId))
                         {
-                            await MoveOrCopyFilesAsync(scope, await FileDao.GetFilesAsync(folder.ID), newFolder, copy);
-                            await MoveOrCopyFoldersAsync(scope, await FolderDao.GetFoldersAsync(folder.ID).Select(f => f.ID).ToListAsync(), newFolder, copy);
+                            await MoveOrCopyFilesAsync(scope, await FileDao.GetFilesAsync(folder.Id), newFolder, copy);
+                            await MoveOrCopyFoldersAsync(scope, await FolderDao.GetFoldersAsync(folder.Id).Select(f => f.Id).ToListAsync(), newFolder, copy);
 
                             if (!copy)
                             {
@@ -264,13 +265,13 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                 {
                                     Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
                                 }
-                                else if (await FolderDao.IsEmptyAsync(folder.ID))
+                                else if (await FolderDao.IsEmptyAsync(folder.Id))
                                 {
-                                    await FolderDao.DeleteFolderAsync(folder.ID);
+                                    await FolderDao.DeleteFolderAsync(folder.Id);
 
                                     if (ProcessedFolder(folderId))
                                     {
-                                        sb.Append($"folder_{newFolder.ID}{SplitChar}");
+                                        sb.Append($"folder_{newFolder.Id}{SplitChar}");
                                     }
                                 }
                             }
@@ -282,8 +283,8 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                 TTo newFolderId;
                                 if (copy)
                                 {
-                                    newFolder = await FolderDao.CopyFolderAsync(folder.ID, toFolderId, CancellationToken);
-                                    newFolderId = newFolder.ID;
+                                    newFolder = await FolderDao.CopyFolderAsync(folder.Id, toFolderId, CancellationToken);
+                                    newFolderId = newFolder.Id;
                                     filesMessageService.Send(newFolder, toFolder, _headers, MessageAction.FolderCopiedWithOverwriting, newFolder.Title, toFolder.Title);
 
                                     if (isToFolder)
@@ -308,7 +309,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                 {
                                     await fileMarker.RemoveMarkAsNewForAllAsync(folder);
 
-                                    newFolderId = await FolderDao.MoveFolderAsync(folder.ID, toFolderId, CancellationToken);
+                                    newFolderId = await FolderDao.MoveFolderAsync(folder.Id, toFolderId, CancellationToken);
                                     newFolder = await folderDao.GetFolderAsync(newFolderId);
 
                                     if (folder.RootFolderType != FolderType.USER)
@@ -347,7 +348,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                         {
                             await fileMarker.RemoveMarkAsNewForAllAsync(folder);
 
-                            var newFolderId = await FolderDao.MoveFolderAsync(folder.ID, toFolderId, CancellationToken);
+                            var newFolderId = await FolderDao.MoveFolderAsync(folder.Id, toFolderId, CancellationToken);
                             newFolder = await folderDao.GetFolderAsync(newFolderId);
 
                             if (folder.RootFolderType != FolderType.USER)
@@ -401,7 +402,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
         var fileTracker = scope.ServiceProvider.GetService<FileTrackerHelper>();
         var socketManager = scope.ServiceProvider.GetService<SocketManager>();
 
-        var toFolderId = toFolder.ID;
+        var toFolderId = toFolder.Id;
         var sb = new StringBuilder();
         foreach (var fileId in fileIds)
         {
@@ -430,7 +431,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             }
             else
             {
-                var parentFolder = await FolderDao.GetFolderAsync(file.FolderID);
+                var parentFolder = await FolderDao.GetFolderAsync(file.ParentId);
                 try
                 {
                     var conflict = _resolveType == FileConflictResolveType.Duplicate
@@ -444,10 +445,10 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                         {
                             try
                             {
-                                newFile = await FileDao.CopyFileAsync(file.ID, toFolderId); //Stream copy will occur inside dao
+                                newFile = await FileDao.CopyFileAsync(file.Id, toFolderId); //Stream copy will occur inside dao
                                 filesMessageService.Send(newFile, toFolder, _headers, MessageAction.FileCopied, newFile.Title, parentFolder.Title, toFolder.Title);
 
-                                if (Equals(newFile.FolderID.ToString(), _daoFolderId))
+                                if (Equals(newFile.ParentId.ToString(), _daoFolderId))
                                 {
                                     needToMark.Add(newFile);
                                 }
@@ -456,14 +457,14 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
 
                                 if (ProcessedFile(fileId))
                                 {
-                                    sb.Append($"file_{newFile.ID}{SplitChar}");
+                                    sb.Append($"file_{newFile.Id}{SplitChar}");
                                 }
                             }
                             catch
                             {
                                 if (newFile != null)
                                 {
-                                    await fileDao.DeleteFileAsync(newFile.ID);
+                                    await fileDao.DeleteFileAsync(newFile.Id);
                                 }
 
                                 throw;
@@ -479,7 +480,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                             {
                                 await fileMarker.RemoveMarkAsNewForAllAsync(file);
 
-                                var newFileId = await FileDao.MoveFileAsync(file.ID, toFolderId);
+                                var newFileId = await FileDao.MoveFileAsync(file.Id, toFolderId);
                                 newFile = await fileDao.GetFileAsync(newFileId);
 
                                 if (file.RootFolderType != FolderType.USER)
@@ -499,7 +500,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
 
                                 if (newFile.ProviderEntry)
                                 {
-                                    await LinkDao.DeleteAllLinkAsync(file.ID.ToString());
+                                    await LinkDao.DeleteAllLinkAsync(file.Id.ToString());
                                 }
 
                                 if (Equals(toFolderId.ToString(), _daoFolderId))
@@ -526,11 +527,11 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                             {
                                 Error = FilesCommonResource.ErrorMassage_SecurityException;
                             }
-                            else if (await entryManager.FileLockedForMeAsync(conflict.ID))
+                            else if (await entryManager.FileLockedForMeAsync(conflict.Id))
                             {
                                 Error = FilesCommonResource.ErrorMassage_LockedFile;
                             }
-                            else if (fileTracker.IsEditing(conflict.ID))
+                            else if (fileTracker.IsEditing(conflict.Id))
                             {
                                 Error = FilesCommonResource.ErrorMassage_SecurityException_UpdateEditingFile;
                             }
@@ -561,7 +562,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                     newFile.ThumbnailStatus = Thumbnail.Created;
                                 }
 
-                                await LinkDao.DeleteAllLinkAsync(newFile.ID.ToString());
+                                await LinkDao.DeleteAllLinkAsync(newFile.Id.ToString());
 
                                 needToMark.Add(newFile);
 
@@ -572,16 +573,16 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                     filesMessageService.Send(newFile, toFolder, _headers, MessageAction.FileCopiedWithOverwriting, newFile.Title, parentFolder.Title, toFolder.Title);
                                     if (ProcessedFile(fileId))
                                     {
-                                        sb.Append($"file_{newFile.ID}{SplitChar}");
+                                        sb.Append($"file_{newFile.Id}{SplitChar}");
                                     }
                                 }
                                 else
                                 {
-                                    if (Equals(file.FolderID.ToString(), toFolderId.ToString()))
+                                    if (Equals(file.ParentId.ToString(), toFolderId.ToString()))
                                     {
                                         if (ProcessedFile(fileId))
                                         {
-                                            sb.Append($"file_{newFile.ID}{SplitChar}");
+                                            sb.Append($"file_{newFile.Id}{SplitChar}");
                                         }
                                     }
                                     else
@@ -592,9 +593,9 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                         }
                                         else
                                         {
-                                            await FileDao.DeleteFileAsync(file.ID);
+                                            await FileDao.DeleteFileAsync(file.Id);
 
-                                            await LinkDao.DeleteAllLinkAsync(file.ID.ToString());
+                                            await LinkDao.DeleteAllLinkAsync(file.Id.ToString());
 
                                             if (file.RootFolderType != FolderType.USER)
                                             {
@@ -609,7 +610,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
 
                                             if (ProcessedFile(fileId))
                                             {
-                                                sb.Append($"file_{newFile.ID}{SplitChar}");
+                                                sb.Append($"file_{newFile.Id}{SplitChar}");
                                             }
                                         }
                                     }
@@ -650,13 +651,13 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
 
                 return (true, error);
             }
-            if (await entryManager.FileLockedForMeAsync(file.ID))
+            if (await entryManager.FileLockedForMeAsync(file.Id))
             {
                 error = FilesCommonResource.ErrorMassage_LockedFile;
 
                 return (true, error);
             }
-            if (fileTracker.IsEditing(file.ID))
+            if (fileTracker.IsEditing(file.Id))
             {
                 error = FilesCommonResource.ErrorMassage_SecurityException_UpdateEditingFile;
 

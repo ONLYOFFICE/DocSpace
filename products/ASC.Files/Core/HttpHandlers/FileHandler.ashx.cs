@@ -1,28 +1,28 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2018
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
-
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 using JsonException = System.Text.Json.JsonException;
 using MimeMapping = ASC.Common.Web.MimeMapping;
@@ -100,7 +100,6 @@ namespace ASC.Web.Files
             PathProvider pathProvider,
             UserManager userManager,
             DocumentServiceTrackerHelper documentServiceTrackerHelper,
-            DocumentServiceHelper documentServiceHelper,
             FilesMessageService filesMessageService,
             FileShareLink fileShareLink,
             FileConverter fileConverter,
@@ -308,7 +307,7 @@ namespace ASC.Web.Files
 
                 if (!await fileDao.IsExistOnStorageAsync(file))
                 {
-                    Logger.ErrorFormat("Download file error. File is not exist on storage. File id: {0}.", file.ID);
+                    Logger.ErrorFormat("Download file error. File is not exist on storage. File id: {0}.", file.Id);
                     context.Response.StatusCode = (int)HttpStatusCode.NotFound;
 
                     return;
@@ -365,7 +364,7 @@ namespace ASC.Web.Files
                                 {
                                     fileStream = await fileDao.GetFileStreamAsync(file);
 
-                                    Logger.InfoFormat("Converting {0} (fileId: {1}) to mp4", file.Title, file.ID);
+                                    Logger.InfoFormat("Converting {0} (fileId: {1}) to mp4", file.Title, file.Id);
                                     var stream = await FFmpegService.Convert(fileStream, ext);
                                     await store.SaveAsync(string.Empty, mp4Path, stream, mp4Name);
                                 }
@@ -1013,7 +1012,7 @@ namespace ASC.Web.Files
 
         private static string GetEtag<T>(File<T> file)
         {
-            return file.ID + ":" + file.Version + ":" + file.Title.GetHashCode() + ":" + file.ContentLength;
+            return file.Id + ":" + file.Version + ":" + file.Title.GetHashCode() + ":" + file.ContentLength;
         }
 
         private Task CreateFile(HttpContext context)
@@ -1097,8 +1096,8 @@ namespace ASC.Web.Files
 
             context.Response.Redirect(
                 (context.Request.Query["openfolder"].FirstOrDefault() ?? "").Equals("true")
-                    ? await PathProvider.GetFolderUrlByIdAsync(file.FolderID)
-                    : (FilesLinkUtility.GetFileWebEditorUrl(file.ID) + "#message/" + HttpUtility.UrlEncode(string.Format(FilesCommonResource.MessageFileCreated, folder.Title))));
+                    ? await PathProvider.GetFolderUrlByIdAsync(file.ParentId)
+                    : (FilesLinkUtility.GetFileWebEditorUrl(file.Id) + "#message/" + HttpUtility.UrlEncode(string.Format(FilesCommonResource.MessageFileCreated, folder.Title))));
         }
 
         private async Task InternalWriteError(HttpContext context, Exception ex, bool responseMessage)
@@ -1156,7 +1155,7 @@ namespace ASC.Web.Files
 
             var file = ServiceProvider.GetService<File<T>>();
             file.Title = fileTitle;
-            file.FolderID = folder.ID;
+            file.ParentId = folder.Id;
             file.Comment = FilesCommonResource.CommentCreate;
 
             var fileDao = DaoFactory.GetFileDao<T>();
@@ -1172,7 +1171,7 @@ namespace ASC.Web.Files
 
             var file = ServiceProvider.GetService<File<T>>();
             file.Title = fileTitle;
-            file.FolderID = folder.ID;
+            file.ParentId = folder.Id;
             file.Comment = FilesCommonResource.CommentCreate;
 
             var request = new HttpRequestMessage();
@@ -1181,8 +1180,7 @@ namespace ASC.Web.Files
             var fileDao = DaoFactory.GetFileDao<T>();
             var httpClient = ClientFactory.CreateClient();
             using var response = await httpClient.SendAsync(request);
-            using var secondResponse = await httpClient.SendAsync(request);
-            var fileStream = await secondResponse.Content.ReadAsStreamAsync();
+            using var fileStream = await response.Content.ReadAsStreamAsync();
 
             if (fileStream.CanSeek)
             {
@@ -1244,7 +1242,7 @@ namespace ASC.Web.Files
                     return;
                 }
 
-                urlRedirect = FilesLinkUtility.GetFileWebPreviewUrl(FileUtility, file.Title, file.ID);
+                urlRedirect = FilesLinkUtility.GetFileWebPreviewUrl(FileUtility, file.Title, file.Id);
             }
 
             if (string.IsNullOrEmpty(urlRedirect))

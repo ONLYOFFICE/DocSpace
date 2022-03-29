@@ -1,27 +1,28 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2018
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 using Timeout = System.Threading.Timeout;
 
@@ -59,7 +60,7 @@ internal class FileConverterQueue<T> : IDisposable
 
             var queueResult = new ConvertFileOperationResult
             {
-                Source = string.Format("{{\"id\":\"{0}\", \"version\":\"{1}\"}}", file.ID, file.Version),
+                Source = string.Format("{{\"id\":\"{0}\", \"version\":\"{1}\"}}", file.Id, file.Version),
                 OperationType = FileOperationType.Convert,
                 Error = string.Empty,
                 Progress = 0,
@@ -165,7 +166,7 @@ internal class FileConverterQueue<T> : IDisposable
 
                 foreach (var file in filesIsConverting)
                 {
-                    var fileUri = file.ID.ToString();
+                    var fileUri = file.Id.ToString();
                     int operationResultProgress;
 
                     try
@@ -243,7 +244,7 @@ internal class FileConverterQueue<T> : IDisposable
                         var password = exception.InnerException is DocumentService.DocumentServiceException documentServiceException
                                        && documentServiceException.Code == DocumentService.DocumentServiceException.ErrorCode.ConvertPassword;
 
-                        logger.Error(string.Format("Error convert {0} with url {1}", file.ID, fileUri), exception);
+                        logger.Error(string.Format("Error convert {0} with url {1}", file.Id, fileUri), exception);
                         lock (_locker)
                         {
                             if (_conversionQueue.TryGetValue(file, out var operationResult))
@@ -278,7 +279,7 @@ internal class FileConverterQueue<T> : IDisposable
                                 {
                                     operationResult.StopDateTime = DateTime.UtcNow;
                                     operationResult.Error = FilesCommonResource.ErrorMassage_ConvertTimeout;
-                                    logger.ErrorFormat("CheckConvertFilesStatus timeout: {0} ({1})", file.ID, file.ContentLengthString);
+                                    logger.ErrorFormat("CheckConvertFilesStatus timeout: {0} ({1})", file.Id, file.ContentLengthString);
                                 }
                                 else
                                 {
@@ -325,7 +326,7 @@ internal class FileConverterQueue<T> : IDisposable
                                     if (newFile != null)
                                     {
                                         var folderDao = daoFactory.GetFolderDao<T>();
-                                        var folder = folderDao.GetFolderAsync(newFile.FolderID).Result;
+                                        var folder = folderDao.GetFolderAsync(newFile.ParentId).Result;
                                         var folderTitle = fileSecurity.CanReadAsync(folder).Result ? folder.Title : null;
                                         operationResult.Result = FileJsonSerializerAsync(entryManager, newFile, folderTitle).Result;
                                     }
@@ -369,7 +370,7 @@ internal class FileConverterQueue<T> : IDisposable
 
     private string GetKey(File<T> f)
     {
-        return string.Format("fileConvertation-{0}", f.ID);
+        return string.Format("fileConvertation-{0}", f.Id);
     }
 
     internal async Task<string> FileJsonSerializerAsync(EntryStatusManager EntryManager, File<T> file, string folderTitle)
@@ -391,10 +392,10 @@ internal class FileConverterQueue<T> : IDisposable
         return JsonSerializer.Serialize(
             new FileJsonSerializerData<T>()
             {
-                Id = file.ID,
+                Id = file.Id,
                 Title = file.Title,
                 Version = file.Version,
-                FolderID = file.FolderID,
+                FolderID = file.ParentId,
                 FolderTitle = folderTitle ?? "",
                 FileJson = JsonSerializer.Serialize(file, options)
             }, options);
@@ -703,7 +704,7 @@ public class FileConverter
 
         var operationResult = new ConvertFileOperationResult
         {
-            Source = string.Format("{{\"id\":\"{0}\", \"version\":\"{1}\"}}", file.ID, file.Version),
+            Source = string.Format("{{\"id\":\"{0}\", \"version\":\"{1}\"}}", file.Id, file.Version),
             OperationType = FileOperationType.Convert,
             Error = string.Empty,
             Progress = 0,
@@ -725,7 +726,7 @@ public class FileConverter
         if (newFile != null)
         {
             var folderDao = _daoFactory.GetFolderDao<T>();
-            var folder = await folderDao.GetFolderAsync(newFile.FolderID);
+            var folder = await folderDao.GetFolderAsync(newFile.ParentId);
             var folderTitle = await fileSecurity.CanReadAsync(folder) ? folder.Title : null;
             operationResult.Result = await GetFileConverter<T>().FileJsonSerializerAsync(_entryStatusManager, newFile, folderTitle);
         }
@@ -801,11 +802,11 @@ public class FileConverter
         {
             var folderId = _globalFolderHelper.GetFolderMy<T>();
 
-            var parent = await folderDao.GetFolderAsync(file.FolderID);
+            var parent = await folderDao.GetFolderAsync(file.ParentId);
             if (parent != null
                 && await fileSecurity.CanCreateAsync(parent))
             {
-                folderId = parent.ID;
+                folderId = parent.Id;
             }
 
             if (Equals(folderId, 0))
@@ -813,10 +814,10 @@ public class FileConverter
                 throw new SecurityException(FilesCommonResource.ErrorMassage_FolderNotFound);
             }
 
-            if (_filesSettingsHelper.UpdateIfExist && (parent != null && !folderId.Equals(parent.ID) || !file.ProviderEntry))
+            if (_filesSettingsHelper.UpdateIfExist && (parent != null && !folderId.Equals(parent.Id) || !file.ProviderEntry))
             {
                 newFile = await fileDao.GetFileAsync(folderId, newFileTitle);
-                if (newFile != null && await fileSecurity.CanEditAsync(newFile) && !await _entryManager.FileLockedForMeAsync(newFile.ID) && !_fileTracker.IsEditing(newFile.ID))
+                if (newFile != null && await fileSecurity.CanEditAsync(newFile) && !await _entryManager.FileLockedForMeAsync(newFile.Id) && !_fileTracker.IsEditing(newFile.Id))
                 {
                     newFile.Version++;
                 }
@@ -829,7 +830,7 @@ public class FileConverter
             if (newFile == null)
             {
                 newFile = _serviceProvider.GetService<File<T>>();
-                newFile.FolderID = folderId;
+                newFile.ParentId = folderId;
             }
         }
 
@@ -868,15 +869,15 @@ public class FileConverter
         _filesMessageService.Send(newFile, MessageInitiator.DocsService, MessageAction.FileConverted, newFile.Title);
 
         var linkDao = _daoFactory.GetLinkDao();
-        await linkDao.DeleteAllLinkAsync(file.ID.ToString());
+        await linkDao.DeleteAllLinkAsync(file.Id.ToString());
 
         await _fileMarker.MarkAsNewAsync(newFile);
 
         var tagDao = _daoFactory.GetTagDao<T>();
-        var tags = await tagDao.GetTagsAsync(file.ID, FileEntryType.File, TagType.System).ToListAsync();
+        var tags = await tagDao.GetTagsAsync(file.Id, FileEntryType.File, TagType.System).ToListAsync();
         if (tags.Count > 0)
         {
-            tags.ForEach(r => r.EntryId = newFile.ID);
+            tags.ForEach(r => r.EntryId = newFile.Id);
             tagDao.SaveTags(tags);
         }
 
@@ -898,12 +899,12 @@ internal class FileComparer<T> : IEqualityComparer<File<T>>
 {
     public bool Equals(File<T> x, File<T> y)
     {
-        return x != null && y != null && Equals(x.ID, y.ID) && x.Version == y.Version;
+        return x != null && y != null && Equals(x.Id, y.Id) && x.Version == y.Version;
     }
 
     public int GetHashCode(File<T> obj)
     {
-        return obj.ID.GetHashCode() + obj.Version.GetHashCode();
+        return obj.Id.GetHashCode() + obj.Version.GetHashCode();
     }
 }
 

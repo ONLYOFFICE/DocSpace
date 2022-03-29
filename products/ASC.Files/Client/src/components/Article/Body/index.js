@@ -66,7 +66,7 @@ class ArticleBodyContent extends React.Component {
   };
 
   onShowNewFilesPanel = (folderId) => {
-    this.props.setNewFilesPanelVisible(true, [folderId]);
+    this.props.setNewFilesPanelVisible(true, folderId);
   };
 
   render() {

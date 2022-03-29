@@ -30,10 +30,8 @@ public class BackupProgressItem : BaseBackupProgressItem
 {
     public bool BackupMail { get; set; }
     public Dictionary<string, string> StorageParams { get; set; }
-    public string Link { get; private set; }
     public string TempFolder { get; set; }
-    public override BackupProgressItemEnum BackupProgressItemEnum => BackupProgressItemEnum.Backup;
-
+ 
     private const string ArchiveFormat = "tar.gz";
 
     private bool _isScheduled;
@@ -53,14 +51,14 @@ public class BackupProgressItem : BaseBackupProgressItem
     private readonly NotifyHelper _notifyHelper;
 
     public BackupProgressItem(
-        IOptionsMonitor<ILog> options,
+        ILog logger,
         TenantManager tenantManager,
         BackupStorageFactory backupStorageFactory,
         BackupRepository backupRepository,
         BackupPortalTask backupPortalTask,
         CoreBaseSettings coreBaseSettings,
         NotifyHelper notifyHelper)
-        : base(options)
+        : base(logger)
     {
         _tenantManager = tenantManager;
         _backupStorageFactory = backupStorageFactory;
@@ -160,8 +158,9 @@ public class BackupProgressItem : BaseBackupProgressItem
 
             if (_userId != Guid.Empty && !_isScheduled)
             {
-                _notifyHelper.SendAboutBackupCompleted(_userId);
+                _notifyHelper.SendAboutBackupCompleted(TenantId, _userId);
             }
+
 
             IsCompleted = true;
             PublishChanges();

@@ -1,32 +1,30 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2018
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-
-using FileStatus = ASC.Files.Core.FileStatus;
-
-namespace ASC.Api.Documents;
+namespace ASC.Files.Core.ApiModels.ResponseDto;
 
 public class FileDto<T> : FileEntryWrapper<T>
 {
@@ -77,7 +75,7 @@ public class FileDto<T> : FileEntryWrapper<T>
 }
 
 [Scope]
-public class FileWrapperHelper : FileEntryWrapperHelper
+public class FileDtoHelper : FileEntryDtoHelper
 {
     private readonly AuthContext _authContext;
     private readonly IDaoFactory _daoFactory;
@@ -86,7 +84,7 @@ public class FileWrapperHelper : FileEntryWrapperHelper
     private readonly FilesLinkUtility _filesLinkUtility;
     private readonly FileUtility _fileUtility;
 
-    public FileWrapperHelper(
+    public FileDtoHelper(
         ApiDateTimeHelper apiDateTimeHelper,
         EmployeeDtoHelper employeeWrapperHelper,
         AuthContext authContext,
@@ -111,9 +109,9 @@ public class FileWrapperHelper : FileEntryWrapperHelper
     {
         var result = await GetFileWrapperAsync(file);
 
-        result.FolderId = file.FolderID;
+        result.FolderId = file.ParentId;
         if (file.RootFolderType == FolderType.USER
-            && !Equals(file.RootFolderCreator, _authContext.CurrentAccount.ID))
+            && !Equals(file.RootCreateBy, _authContext.CurrentAccount.ID))
         {
             result.RootFolderType = FolderType.SHARE;
             var folderDao = _daoFactory.GetFolderDao<T>();
@@ -121,7 +119,7 @@ public class FileWrapperHelper : FileEntryWrapperHelper
 
             if (folders != null)
             {
-                var folderWithRight = folders.FirstOrDefault(f => f.Item1.ID.Equals(file.FolderID));
+                var folderWithRight = folders.FirstOrDefault(f => f.Item1.Id.Equals(file.ParentId));
                 if (folderWithRight == null || !folderWithRight.Item2)
                 {
                     result.FolderId = await _globalFolderHelper.GetFolderShareAsync<T>();
@@ -129,7 +127,7 @@ public class FileWrapperHelper : FileEntryWrapperHelper
             }
             else
             {
-                parentFolder = await folderDao.GetFolderAsync(file.FolderID);
+                parentFolder = await folderDao.GetFolderAsync(file.ParentId);
                 if (!await _fileSecurity.CanReadAsync(parentFolder))
                 {
                     result.FolderId = await _globalFolderHelper.GetFolderShareAsync<T>();
@@ -162,13 +160,13 @@ public class FileWrapperHelper : FileEntryWrapperHelper
         {
             result.ViewUrl = _commonLinkUtility.GetFullAbsolutePath(file.DownloadUrl);
 
-            result.WebUrl = _commonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.GetFileWebPreviewUrl(_fileUtility, file.Title, file.ID, file.Version));
+            result.WebUrl = _commonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.GetFileWebPreviewUrl(_fileUtility, file.Title, file.Id, file.Version));
 
             result.ThumbnailStatus = file.ThumbnailStatus;
 
             if (file.ThumbnailStatus == Thumbnail.Created)
             {
-                result.ThumbnailUrl = _commonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.GetFileThumbnailUrl(file.ID, file.Version));
+                result.ThumbnailUrl = _commonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.GetFileThumbnailUrl(file.Id, file.Version));
             }
         }
         catch (Exception)

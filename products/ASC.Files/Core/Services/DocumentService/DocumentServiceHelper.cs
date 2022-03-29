@@ -1,27 +1,28 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2018
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Web.Files.Services.DocumentService;
 
@@ -193,7 +194,7 @@ public class DocumentServiceHelper
 
         string strError = null;
         if ((editPossible || reviewPossible || fillFormsPossible || commentPossible)
-            && await _lockerManager.FileLockedForMeAsync(file.ID))
+            && await _lockerManager.FileLockedForMeAsync(file.Id))
         {
             if (tryEdit)
             {
@@ -248,18 +249,18 @@ public class DocumentServiceHelper
 
         var rightChangeHistory = rightToEdit && !file.Encrypted;
 
-        if (_fileTracker.IsEditing(file.ID))
+        if (_fileTracker.IsEditing(file.Id))
         {
             rightChangeHistory = false;
 
             bool coauth;
             if ((editPossible || reviewPossible || fillFormsPossible || commentPossible)
                 && tryCoauth
-                && (!(coauth = _fileUtility.CanCoAuhtoring(file.Title)) || _fileTracker.IsEditingAlone(file.ID)))
+                && (!(coauth = _fileUtility.CanCoAuhtoring(file.Title)) || _fileTracker.IsEditingAlone(file.Id)))
             {
                 if (tryEdit)
                 {
-                    var editingBy = _fileTracker.GetEditingBy(file.ID).FirstOrDefault();
+                    var editingBy = _fileTracker.GetEditingBy(file.Id).FirstOrDefault();
                     strError = string.Format(!coauth
                                                  ? FilesCommonResource.ErrorMassage_EditingCoauth
                                                  : FilesCommonResource.ErrorMassage_EditingMobile,
@@ -273,13 +274,13 @@ public class DocumentServiceHelper
         if (lastVersion && file.Forcesave != ForcesaveType.None && tryEdit)
         {
             var fileDao = _daoFactory.GetFileDao<T>();
-            fileStable = await fileDao.GetFileStableAsync(file.ID, file.Version);
+            fileStable = await fileDao.GetFileStableAsync(file.Id, file.Version);
         }
 
         var docKey = GetDocKey(fileStable);
         var modeWrite = (editPossible || reviewPossible || fillFormsPossible || commentPossible) && tryEdit;
 
-        if (file.FolderID != null)
+        if (file.ParentId != null)
         {
             await _entryStatusManager.SetFileStatusAsync(file);
         }
@@ -329,7 +330,7 @@ public class DocumentServiceHelper
 
     public string GetDocKey<T>(File<T> file)
     {
-        return GetDocKey(file.ID, file.Version, file.ProviderEntry ? file.ModifiedOn : file.CreateOn);
+        return GetDocKey(file.Id, file.Version, file.ProviderEntry ? file.ModifiedOn : file.CreateOn);
     }
 
     public string GetDocKey<T>(T fileId, int fileVersion, DateTime modified)
@@ -356,7 +357,7 @@ public class DocumentServiceHelper
 
         var usersDrop = new List<string>();
 
-        foreach (var uid in _fileTracker.GetEditingBy(file.ID))
+        foreach (var uid in _fileTracker.GetEditingBy(file.Id))
         {
             if (!_userManager.UserExists(uid) && !sharedLink)
             {
@@ -383,12 +384,12 @@ public class DocumentServiceHelper
         if (file.Forcesave != ForcesaveType.None)
         {
             var fileDao = _daoFactory.GetFileDao<T>();
-            fileStable = await fileDao.GetFileStableAsync(file.ID, file.Version);
+            fileStable = await fileDao.GetFileStableAsync(file.Id, file.Version);
         }
 
         var docKey = GetDocKey(fileStable);
 
-        await DropUserAsync(docKey, usersDrop.ToArray(), file.ID);
+        await DropUserAsync(docKey, usersDrop.ToArray(), file.Id);
     }
 
     public Task<bool> DropUserAsync(string docKeyForTrack, string[] users, object fileId = null)
@@ -408,11 +409,11 @@ public class DocumentServiceHelper
             return true;
         }
 
-        var fileStable = file.Forcesave == ForcesaveType.None ? file : await fileDao.GetFileStableAsync(file.ID, file.Version);
+        var fileStable = file.Forcesave == ForcesaveType.None ? file : await fileDao.GetFileStableAsync(file.Id, file.Version);
         var docKeyForTrack = GetDocKey(fileStable);
 
         var meta = new MetaData { Title = file.Title };
 
-        return await _documentServiceConnector.CommandAsync(CommandMethod.Meta, docKeyForTrack, file.ID, meta: meta);
+        return await _documentServiceConnector.CommandAsync(CommandMethod.Meta, docKeyForTrack, file.Id, meta: meta);
     }
 }

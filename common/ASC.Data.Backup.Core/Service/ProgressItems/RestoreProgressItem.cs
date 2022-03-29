@@ -40,22 +40,22 @@ public class RestoreProgressItem : BaseBackupProgressItem
     private Dictionary<string, string> _configPaths;
 
     public RestoreProgressItem(
-        IOptionsMonitor<ILog> options,
+        ILog logger,
         TenantManager tenantManager,
         BackupStorageFactory backupStorageFactory,
         NotifyHelper notifyHelper,
         BackupRepository backupRepository,
         CoreBaseSettings coreBaseSettings)
-        : base(options)
+        : base(logger)
     {
         _tenantManager = tenantManager;
         _backupStorageFactory = backupStorageFactory;
         _notifyHelper = notifyHelper;
         _coreBaseSettings = coreBaseSettings;
         _backupRepository = backupRepository;
+        BackupProgressItemEnum = BackupProgressItemEnum.Restore;
     }
 
-    public override BackupProgressItemEnum BackupProgressItemEnum { get => BackupProgressItemEnum.Restore; }
     public BackupStorageType StorageType { get; set; }
     public string StoragePath { get; set; }
     public bool Notify { get; set; }
@@ -83,12 +83,13 @@ public class RestoreProgressItem : BaseBackupProgressItem
         try
         {
             tenant = _tenantManager.GetTenant(TenantId);
-            
             _tenantManager.SetCurrentTenant(tenant);
             _notifyHelper.SendAboutRestoreStarted(tenant, Notify);
-            
+            tenant.SetStatus(TenantStatus.Restoring);
+            _tenantManager.SaveTenant(tenant);
+
             var storage = _backupStorageFactory.GetBackupStorage(StorageType, TenantId, StorageParams);
-            
+           
             storage.Download(StoragePath, tempFile);
 
             if (!_coreBaseSettings.Standalone)
@@ -104,8 +105,6 @@ public class RestoreProgressItem : BaseBackupProgressItem
 
             Percentage = 10;
 
-            tenant.SetStatus(TenantStatus.Restoring);
-            _tenantManager.SaveTenant(tenant);
 
             var columnMapper = new ColumnMapper();
             columnMapper.SetMapping("tenants_tenants", "alias", tenant.Alias, Guid.Parse(Id).ToString("N"));

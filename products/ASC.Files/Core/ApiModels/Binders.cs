@@ -1,6 +1,32 @@
-﻿#nullable enable
+﻿// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Files.Model;
+#nullable enable
+
+namespace ASC.Files.Core.ApiModels;
 
 public static class ModelBindingContextExtension
 {
@@ -55,6 +81,31 @@ public static class ModelBindingContextExtension
         return ParseQuery(bindingContext, $"{modelName}[]");
     }
 
+    internal static IEnumerable<ItemKeyValuePair<JsonElement, string>> ParseDictionary(this ModelBindingContext bindingContext, string modelName)
+    {
+        var result = new List<ItemKeyValuePair<JsonElement, string>>();
+
+        for (var i = 0; ; i++)
+        {
+            var keyProviderResult = bindingContext.ValueProvider.GetValue($"{modelName}[{i}][key]");
+            var valueProviderResult = bindingContext.ValueProvider.GetValue($"{modelName}[{i}][value]");
+
+            if (keyProviderResult != ValueProviderResult.None && valueProviderResult != ValueProviderResult.None)
+            {
+                bindingContext.ModelState.SetModelValue(modelName, keyProviderResult);
+                bindingContext.ModelState.SetModelValue(modelName, valueProviderResult);
+
+                result.Add(new ItemKeyValuePair<JsonElement, string> { Key = ParseQueryParam(keyProviderResult.FirstValue), Value = valueProviderResult.FirstValue });
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        return result;
+    }
+
     public static JsonElement ParseQueryParam(string? data)
     {
         if (int.TryParse(data, out _))
@@ -71,10 +122,7 @@ public class BaseBatchModelBinder : IModelBinder
 {
     public virtual Task BindModelAsync(ModelBindingContext bindingContext)
     {
-        if (bindingContext == null)
-        {
-            throw new ArgumentNullException(nameof(bindingContext));
-        }
+        ArgumentNullException.ThrowIfNull(bindingContext);
 
         var result = new BaseBatchRequestDto();
 
@@ -92,10 +140,7 @@ public class DeleteBatchModelBinder : BaseBatchModelBinder
     public override Task BindModelAsync(ModelBindingContext bindingContext)
     {
         base.BindModelAsync(bindingContext);
-        if (bindingContext == null)
-        {
-            throw new ArgumentNullException(nameof(bindingContext));
-        }
+        ArgumentNullException.ThrowIfNull(bindingContext);
 
         var result = new DeleteBatchRequestDto();
 
@@ -127,15 +172,40 @@ public class DeleteBatchModelBinder : BaseBatchModelBinder
     }
 }
 
+public class DownloadModelBinder : BaseBatchModelBinder
+{
+    public override Task BindModelAsync(ModelBindingContext bindingContext)
+    {
+        base.BindModelAsync(bindingContext);
+        ArgumentNullException.ThrowIfNull(bindingContext);
+
+        var result = new DownloadRequestDto();
+
+        var baseResult = bindingContext.Result.Model as BaseBatchRequestDto;
+
+        if (baseResult == null)
+        {
+            bindingContext.Result = ModelBindingResult.Success(result);
+
+            return Task.CompletedTask;
+        }
+
+        result.FileIds = baseResult.FileIds;
+        result.FolderIds = baseResult.FolderIds;
+        result.FileConvertIds = bindingContext.ParseDictionary(nameof(result.FileConvertIds));
+
+        bindingContext.Result = ModelBindingResult.Success(result);
+
+        return Task.CompletedTask;
+    }
+}
+
 public class BatchModelBinder : BaseBatchModelBinder
 {
     public override Task BindModelAsync(ModelBindingContext bindingContext)
     {
         base.BindModelAsync(bindingContext);
-        if (bindingContext == null)
-        {
-            throw new ArgumentNullException(nameof(bindingContext));
-        }
+        ArgumentNullException.ThrowIfNull(bindingContext);
 
         var result = new BatchRequestDto();
 
@@ -179,10 +249,7 @@ public class InsertFileModelBinder : IModelBinder
 {
     public async Task BindModelAsync(ModelBindingContext bindingContext)
     {
-        if (bindingContext == null)
-        {
-            throw new ArgumentNullException(nameof(bindingContext));
-        }
+        ArgumentNullException.ThrowIfNull(bindingContext);
 
         var defaultBindingContext = bindingContext as DefaultModelBindingContext;
         var composite = bindingContext.ValueProvider as CompositeValueProvider;
@@ -192,7 +259,7 @@ public class InsertFileModelBinder : IModelBinder
             bindingContext.ValueProvider = defaultBindingContext.OriginalValueProvider;
         }
 
-        var result = new InsertRequestDto();
+        var result = new InsertFileRequestDto();
 
         if (bindingContext.GetBoolValue(nameof(result.CreateNewIfExist), out var createNewIfExist))
         {
@@ -225,10 +292,7 @@ public class UploadModelBinder : IModelBinder
 {
     public Task BindModelAsync(ModelBindingContext bindingContext)
     {
-        if (bindingContext == null)
-        {
-            throw new ArgumentNullException(nameof(bindingContext));
-        }
+        ArgumentNullException.ThrowIfNull(bindingContext);
 
         var defaultBindingContext = bindingContext as DefaultModelBindingContext;
         var composite = bindingContext.ValueProvider as CompositeValueProvider;
@@ -238,7 +302,7 @@ public class UploadModelBinder : IModelBinder
             bindingContext.ValueProvider = defaultBindingContext.OriginalValueProvider;
         }
 
-        var result = new UploadModelRequestDto();
+        var result = new UploadRequestDto();
 
         if (bindingContext.GetBoolValue(nameof(result.CreateNewIfExist), out var createNewIfExist))
         {

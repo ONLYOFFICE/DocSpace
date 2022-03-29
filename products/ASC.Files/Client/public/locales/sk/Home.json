@@ -13,7 +13,6 @@
     "CopyItem": "<strong>{{title}}</strong> skopírované",
     "CopyItems": "<strong>{{qty}}</strong> prvkov bolo skopírovaných",
     "Document": "Dokument",
-    "Duplicate": "Vytvoriť kópiu",
     "EmptyFile": "Prázdny súbor",
     "EmptyFilterDescriptionText": "Tomuto filtru nevyhovujú žiadne súbory ani priečinky. Skúste použiť iný alebo vyčistite filter a zobrazte všetky súbory. ",
     "EmptyFilterSubheadingText": "Pre tento filter sa tu nezobrazujú žiadne súbory",
