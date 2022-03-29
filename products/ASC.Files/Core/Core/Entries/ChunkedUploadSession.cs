@@ -76,10 +76,10 @@ public class ChunkedUploadSessionHelper
     public ILog Logger { get; }
     private readonly EntryManager _entryManager;
 
-    public ChunkedUploadSessionHelper(IOptionsMonitor<ILog> options, EntryManager entryManager)
+    public ChunkedUploadSessionHelper(ILog logger, EntryManager entryManager)
     {
         _entryManager = entryManager;
-        Logger = options.CurrentValue;
+        Logger = logger;
     }
 
     public async Task<object> ToResponseObjectAsync<T>(ChunkedUploadSession<T> session, bool appendBreadCrumbs = false)
@@ -97,12 +97,12 @@ public class ChunkedUploadSessionHelper
 
                 if (f is Folder<string> f1)
                 {
-                    return (T)Convert.ChangeType(f1.ID, typeof(T));
+                    return (T)Convert.ChangeType(f1.Id, typeof(T));
                 }
 
                 if (f is Folder<int> f2)
                 {
-                    return (T)Convert.ChangeType(f2.ID, typeof(T));
+                    return (T)Convert.ChangeType(f2.Id, typeof(T));
                 }
 
                 return (T)Convert.ChangeType(0, typeof(T));

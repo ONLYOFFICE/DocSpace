@@ -41,13 +41,13 @@ public class MessagesRepository : IDisposable
     private readonly Timer _timer;
     private Parser _parser; 
 
-    public MessagesRepository(IServiceScopeFactory serviceScopeFactory, IOptionsMonitor<ILog> options, IMapper mapper)
+    public MessagesRepository(IServiceScopeFactory serviceScopeFactory, ILog logger, IMapper mapper)
     {
         _cacheTime = TimeSpan.FromMinutes(1);
         _cache = new Dictionary<string, EventMessage>();
         _timerStarted = false;
 
-        _logger = options.CurrentValue;
+        _logger = logger;
         _serviceScopeFactory = serviceScopeFactory;
 
         _timer = new Timer(FlushCache);

@@ -173,7 +173,7 @@ class FileDownloadOperation<T> : FileOperation<FileDownloadOperationData<T>, T>
 
         var title = file.Title;
 
-        if (_files.TryGetValue(file.ID, out var convertToExt))
+        if (_files.TryGetValue(file.Id, out var convertToExt))
         {
             if (!string.IsNullOrEmpty(convertToExt))
             {
@@ -182,7 +182,7 @@ class FileDownloadOperation<T> : FileOperation<FileDownloadOperationData<T>, T>
         }
 
         var entriesPathId = new ItemNameValueCollection<T>();
-        entriesPathId.Add(path + title, file.ID);
+        entriesPathId.Add(path + title, file.Id);
 
         return entriesPathId;
     }
@@ -236,7 +236,7 @@ class FileDownloadOperation<T> : FileOperation<FileDownloadOperationData<T>, T>
 
             var folderPath = path + folder.Title + "/";
 
-            var files = await FileDao.GetFilesAsync(folder.ID, null, FilterType.None, false, Guid.Empty, string.Empty, true).ToListAsync();
+            var files = await FileDao.GetFilesAsync(folder.Id, null, FilterType.None, false, Guid.Empty, string.Empty, true).ToListAsync();
             var filteredFiles = await FilesSecurity.FilterReadAsync(files);
             files = filteredFiles.ToList();
 
@@ -247,7 +247,7 @@ class FileDownloadOperation<T> : FileOperation<FileDownloadOperationData<T>, T>
 
             await fileMarker.RemoveMarkAsNewAsync(folder);
 
-            var nestedFolders = await FolderDao.GetFoldersAsync(folder.ID).ToListAsync();
+            var nestedFolders = await FolderDao.GetFoldersAsync(folder.Id).ToListAsync();
             var filteredNestedFolders = await FilesSecurity.FilterReadAsync(nestedFolders);
             nestedFolders = filteredNestedFolders.ToList();
             if (files.Count == 0 && nestedFolders.Count == 0)
@@ -255,7 +255,7 @@ class FileDownloadOperation<T> : FileOperation<FileDownloadOperationData<T>, T>
                 entriesPathId.Add(folderPath, default(T));
             }
 
-            var filesInFolder = await GetFilesInFoldersAsync(scope, nestedFolders.ConvertAll(f => f.ID), folderPath);
+            var filesInFolder = await GetFilesInFoldersAsync(scope, nestedFolders.ConvertAll(f => f.Id), folderPath);
             entriesPathId.Add(filesInFolder);
         }
 
@@ -303,7 +303,7 @@ class FileDownloadOperation<T> : FileOperation<FileDownloadOperationData<T>, T>
                             continue;
                         }
 
-                        if (_files.TryGetValue(file.ID, out convertToExt))
+                        if (_files.TryGetValue(file.Id, out convertToExt))
                         {
                             if (!string.IsNullOrEmpty(convertToExt))
                             {

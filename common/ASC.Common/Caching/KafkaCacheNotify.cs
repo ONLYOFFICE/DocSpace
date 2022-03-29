@@ -43,9 +43,9 @@ public class KafkaCacheNotify<T> : IDisposable, ICacheNotify<T> where T : IMessa
     private readonly ProtobufDeserializer<AscCacheItem> _keyDeserializer = new ProtobufDeserializer<AscCacheItem>();
     private readonly Guid _key;
 
-    public KafkaCacheNotify(ConfigurationExtension configuration, IOptionsMonitor<ILog> options)
+    public KafkaCacheNotify(ConfigurationExtension configuration, ILog logger)
     {
-        _logger = options.CurrentValue;
+        _logger = logger;
         _cancelationToken = new ConcurrentDictionary<string, CancellationTokenSource>();
         _actions = new ConcurrentDictionary<string, Action<T>>();
         _key = Guid.NewGuid();

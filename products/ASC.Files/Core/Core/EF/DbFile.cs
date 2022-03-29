@@ -43,7 +43,7 @@ public class DbFile : BaseEntity, IDbFile, IDbSearch, ISearchItemDocument
     public int Version { get; set; }
     public int VersionGroup { get; set; }
     public bool CurrentVersion { get; set; }
-    public int FolderId { get; set; }
+    public int ParentId { get; set; }
 
     [Text(Analyzer = "whitespacecustom")]
     public string Title { get; set; }
@@ -60,7 +60,7 @@ public class DbFile : BaseEntity, IDbFile, IDbSearch, ISearchItemDocument
     public string Changes { get; set; }
     public bool Encrypted { get; set; }
     public ForcesaveType Forcesave { get; set; }
-    public Thumbnail Thumb { get; set; }
+    public Thumbnail ThumbnailStatus { get; set; }
 
 
     [Nested]
@@ -110,7 +110,7 @@ public static class DbFileExtension
 
             entity.ToTable("files_file");
 
-            entity.HasIndex(e => e.FolderId)
+            entity.HasIndex(e => e.ParentId)
                 .HasDatabaseName("folder_id");
 
             entity.HasIndex(e => e.Id)
@@ -160,13 +160,13 @@ public static class DbFileExtension
 
             entity.Property(e => e.CurrentVersion).HasColumnName("current_version");
 
-            entity.Property(e => e.Thumb).HasColumnName("thumb");
+            entity.Property(e => e.ThumbnailStatus).HasColumnName("thumb");
 
             entity.Property(e => e.Encrypted).HasColumnName("encrypted");
 
             entity.Property(e => e.FileStatus).HasColumnName("file_status");
 
-            entity.Property(e => e.FolderId).HasColumnName("folder_id");
+            entity.Property(e => e.ParentId).HasColumnName("folder_id");
 
             entity.Property(e => e.Forcesave).HasColumnName("forcesave");
 
@@ -207,7 +207,7 @@ public static class DbFileExtension
 
             entity.ToTable("files_file", "onlyoffice");
 
-            entity.HasIndex(e => e.FolderId)
+            entity.HasIndex(e => e.ParentId)
                 .HasDatabaseName("folder_id");
 
             entity.HasIndex(e => e.Id)
@@ -250,13 +250,13 @@ public static class DbFileExtension
 
             entity.Property(e => e.CurrentVersion).HasColumnName("current_version");
 
-            entity.Property(e => e.Thumb).HasColumnName("thumb");
+            entity.Property(e => e.ThumbnailStatus).HasColumnName("thumb");
 
             entity.Property(e => e.Encrypted).HasColumnName("encrypted");
 
             entity.Property(e => e.FileStatus).HasColumnName("file_status");
 
-            entity.Property(e => e.FolderId).HasColumnName("folder_id");
+            entity.Property(e => e.ParentId).HasColumnName("folder_id");
 
             entity.Property(e => e.Forcesave).HasColumnName("forcesave");
 

@@ -90,7 +90,7 @@ public class FileSharingAceHelper<T>
         {
             var subjects = fileSecurity.GetUserSubjects(w.SubjectId);
 
-            var ownerId = entry.RootFolderType == FolderType.USER ? entry.RootFolderCreator : entry.CreateBy;
+            var ownerId = entry.RootFolderType == FolderType.USER ? entry.RootCreateBy : entry.CreateBy;
             if (entry.RootFolderType == FolderType.COMMON && subjects.Contains(Constants.GroupAdmin.ID)
                 || ownerId == w.SubjectId)
             {
@@ -114,7 +114,7 @@ public class FileSharingAceHelper<T>
                 share = w.Share == FileShare.Restrict ? FileShare.None : w.Share;
             }
 
-            await fileSecurity.ShareAsync(entry.ID, entryType, w.SubjectId, share);
+            await fileSecurity.ShareAsync(entry.Id, entryType, w.SubjectId, share);
             changed = true;
 
             if (w.SubjectId == FileConstant.ShareLinkId)
@@ -139,7 +139,7 @@ public class FileSharingAceHelper<T>
 
             if (entryType == FileEntryType.File)
             {
-                listUsersId.ForEach(uid => _fileTracker.ChangeRight(entry.ID, uid, true));
+                listUsersId.ForEach(uid => _fileTracker.ChangeRight(entry.Id, uid, true));
             }
 
             var addRecipient = share == FileShare.Read
@@ -173,7 +173,7 @@ public class FileSharingAceHelper<T>
         if (recipients.Count > 0)
         {
             if (entryType == FileEntryType.File
-                || ((Folder<T>)entry).TotalSubFolders + ((Folder<T>)entry).TotalFiles > 0
+                || ((Folder<T>)entry).FoldersCount + ((Folder<T>)entry).FilesCount > 0
                 || entry.ProviderEntry)
             {
                 await _fileMarker.MarkAsNewAsync(entry, recipients.Keys.ToList());
@@ -200,14 +200,14 @@ public class FileSharingAceHelper<T>
             async entry =>
             {
                 if (entry.RootFolderType != FolderType.USER && entry.RootFolderType != FolderType.Privacy
-                        || Equals(entry.RootFolderId, _globalFolderHelper.FolderMy)
-                        || Equals(entry.RootFolderId, await _globalFolderHelper.FolderPrivacyAsync))
+                        || Equals(entry.RootId, _globalFolderHelper.FolderMy)
+                        || Equals(entry.RootId, await _globalFolderHelper.FolderPrivacyAsync))
                 {
                     return;
                 }
 
                 var entryType = entry.FileEntryType;
-                await fileSecurity.ShareAsync(entry.ID, entryType, _authContext.CurrentAccount.ID,
+                await fileSecurity.ShareAsync(entry.Id, entryType, _authContext.CurrentAccount.ID,
                      entry.RootFolderType == FolderType.USER
                         ? fileSecurity.DefaultMyShare
                         : fileSecurity.DefaultPrivacyShare);
@@ -252,10 +252,10 @@ public class FileSharingHelper
             && (entry.RootFolderType == FolderType.COMMON && _global.IsAdministrator
                 || !_userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager)
                     && (entry.RootFolderType == FolderType.USER
-                        && (Equals(entry.RootFolderId, _globalFolderHelper.FolderMy) || await _fileSecurity.CanEditAsync(entry))
+                        && (Equals(entry.RootId, _globalFolderHelper.FolderMy) || await _fileSecurity.CanEditAsync(entry))
                         || entry.RootFolderType == FolderType.Privacy
                             && entry is File<T>
-                            && (Equals(entry.RootFolderId, await _globalFolderHelper.FolderPrivacyAsync) || await _fileSecurity.CanEditAsync(entry))));
+                            && (Equals(entry.RootId, await _globalFolderHelper.FolderPrivacyAsync) || await _fileSecurity.CanEditAsync(entry))));
     }
 }
 
@@ -309,7 +309,7 @@ public class FileSharing
 
         if (!await CanSetAccessAsync(entry))
         {
-            Logger.ErrorFormat("User {0} can't get shared info for {1} {2}", _authContext.CurrentAccount.ID, entry.FileEntryType == FileEntryType.File ? "file" : "folder", entry.ID);
+            Logger.ErrorFormat("User {0} can't get shared info for {1} {2}", _authContext.CurrentAccount.ID, entry.FileEntryType == FileEntryType.File ? "file" : "folder", entry.Id);
 
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
         }
@@ -375,7 +375,7 @@ public class FileSharing
                 Share = share,
                 Owner =
                         entry.RootFolderType == FolderType.USER
-                            ? entry.RootFolderCreator == r.Subject
+                            ? entry.RootCreateBy == r.Subject
                             : entry.CreateBy == r.Subject,
                 LockedRights = r.Subject == _authContext.CurrentAccount.ID
             };
@@ -401,7 +401,7 @@ public class FileSharing
 
         if (!result.Any(w => w.Owner))
         {
-            var ownerId = entry.RootFolderType == FolderType.USER ? entry.RootFolderCreator : entry.CreateBy;
+            var ownerId = entry.RootFolderType == FolderType.USER ? entry.RootCreateBy : entry.CreateBy;
             var w = new AceWrapper
             {
                 SubjectId = ownerId,

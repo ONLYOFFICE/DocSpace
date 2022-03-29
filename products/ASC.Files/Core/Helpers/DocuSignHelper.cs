@@ -41,14 +41,14 @@ public class DocuSignToken
 
     public DocuSignToken(
         TokenHelper tokenHelper,
-        IOptionsMonitor<ILog> options,
+        ILog logger,
         AuthContext authContext,
         ConsumerFactory consumerFactory)
     {
         _tokenHelper = tokenHelper;
         _authContext = authContext;
         _consumerFactory = consumerFactory;
-        Logger = options.CurrentValue;
+        Logger = logger;
     }
 
     public OAuth20Token GetToken()
@@ -394,7 +394,7 @@ public class DocuSignHelper
         }
 
         var file = _serviceProvider.GetService<File<T>>();
-        file.FolderID = folderId;
+        file.ParentId = folderId;
         file.Comment = FilesCommonResource.CommentCreateByDocuSign;
         file.Title = FileUtility.ReplaceFileExtension(documentName, ".pdf");
 

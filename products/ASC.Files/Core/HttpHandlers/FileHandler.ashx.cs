@@ -100,7 +100,6 @@ namespace ASC.Web.Files
             PathProvider pathProvider,
             UserManager userManager,
             DocumentServiceTrackerHelper documentServiceTrackerHelper,
-            DocumentServiceHelper documentServiceHelper,
             FilesMessageService filesMessageService,
             FileShareLink fileShareLink,
             FileConverter fileConverter,
@@ -308,7 +307,7 @@ namespace ASC.Web.Files
 
                 if (!await fileDao.IsExistOnStorageAsync(file))
                 {
-                    Logger.ErrorFormat("Download file error. File is not exist on storage. File id: {0}.", file.ID);
+                    Logger.ErrorFormat("Download file error. File is not exist on storage. File id: {0}.", file.Id);
                     context.Response.StatusCode = (int)HttpStatusCode.NotFound;
 
                     return;
@@ -365,7 +364,7 @@ namespace ASC.Web.Files
                                 {
                                     fileStream = await fileDao.GetFileStreamAsync(file);
 
-                                    Logger.InfoFormat("Converting {0} (fileId: {1}) to mp4", file.Title, file.ID);
+                                    Logger.InfoFormat("Converting {0} (fileId: {1}) to mp4", file.Title, file.Id);
                                     var stream = await FFmpegService.Convert(fileStream, ext);
                                     await store.SaveAsync(string.Empty, mp4Path, stream, mp4Name);
                                 }
@@ -1013,7 +1012,7 @@ namespace ASC.Web.Files
 
         private static string GetEtag<T>(File<T> file)
         {
-            return file.ID + ":" + file.Version + ":" + file.Title.GetHashCode() + ":" + file.ContentLength;
+            return file.Id + ":" + file.Version + ":" + file.Title.GetHashCode() + ":" + file.ContentLength;
         }
 
         private Task CreateFile(HttpContext context)
@@ -1097,8 +1096,8 @@ namespace ASC.Web.Files
 
             context.Response.Redirect(
                 (context.Request.Query["openfolder"].FirstOrDefault() ?? "").Equals("true")
-                    ? await PathProvider.GetFolderUrlByIdAsync(file.FolderID)
-                    : (FilesLinkUtility.GetFileWebEditorUrl(file.ID) + "#message/" + HttpUtility.UrlEncode(string.Format(FilesCommonResource.MessageFileCreated, folder.Title))));
+                    ? await PathProvider.GetFolderUrlByIdAsync(file.ParentId)
+                    : (FilesLinkUtility.GetFileWebEditorUrl(file.Id) + "#message/" + HttpUtility.UrlEncode(string.Format(FilesCommonResource.MessageFileCreated, folder.Title))));
         }
 
         private async Task InternalWriteError(HttpContext context, Exception ex, bool responseMessage)
@@ -1156,7 +1155,7 @@ namespace ASC.Web.Files
 
             var file = ServiceProvider.GetService<File<T>>();
             file.Title = fileTitle;
-            file.FolderID = folder.ID;
+            file.ParentId = folder.Id;
             file.Comment = FilesCommonResource.CommentCreate;
 
             var fileDao = DaoFactory.GetFileDao<T>();
@@ -1172,7 +1171,7 @@ namespace ASC.Web.Files
 
             var file = ServiceProvider.GetService<File<T>>();
             file.Title = fileTitle;
-            file.FolderID = folder.ID;
+            file.ParentId = folder.Id;
             file.Comment = FilesCommonResource.CommentCreate;
 
             var request = new HttpRequestMessage();
@@ -1181,8 +1180,7 @@ namespace ASC.Web.Files
             var fileDao = DaoFactory.GetFileDao<T>();
             var httpClient = ClientFactory.CreateClient();
             using var response = await httpClient.SendAsync(request);
-            using var secondResponse = await httpClient.SendAsync(request);
-            var fileStream = await secondResponse.Content.ReadAsStreamAsync();
+            using var fileStream = await response.Content.ReadAsStreamAsync();
 
             if (fileStream.CanSeek)
             {
@@ -1244,7 +1242,7 @@ namespace ASC.Web.Files
                     return;
                 }
 
-                urlRedirect = FilesLinkUtility.GetFileWebPreviewUrl(FileUtility, file.Title, file.ID);
+                urlRedirect = FilesLinkUtility.GetFileWebPreviewUrl(FileUtility, file.Title, file.Id);
             }
 
             if (string.IsNullOrEmpty(urlRedirect))

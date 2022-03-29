@@ -52,6 +52,8 @@ const Header = styled.header`
           display: none;
         }
       `}
+      ${(props) =>
+      props.isPreparationPortal && "pointer-events: none; touch-action: none"}
   }
 
   .header-module-title {
@@ -89,6 +91,8 @@ const Header = styled.header`
 
   .header-logo-icon {
     width: ${(props) => (props.isPersonal ? "220px" : "146px")};
+    ${(props) =>
+      (props.isPersonal || props.isPreparationPortal) && `margin-left: 20px;`}
     height: 24px;
     position: relative;
     padding-right: 20px;
@@ -148,6 +152,7 @@ const HeaderComponent = ({
   isAdmin,
   backdropClick,
   isPersonal,
+  isPreparationPortal,
   ...props
 }) => {
   const { t } = useTranslation("Common");
@@ -223,12 +228,13 @@ const HeaderComponent = ({
         module={currentProductName}
         isLoaded={isLoaded}
         isPersonal={isPersonal}
+        isPreparationPortal={isPreparationPortal}
         isAuthenticated={isAuthenticated}
         className="navMenuHeader hidingHeader"
         needNavMenu={needNavMenu}
         isDesktopView={isDesktopView}
       >
-        {!isPersonal && needNavMenu && !isDesktopView && (
+        {!isPersonal && needNavMenu && !isDesktopView && !isPreparationPortal && (
           <NavItem
             badgeNumber={totalNotifications}
             onClick={onClick}

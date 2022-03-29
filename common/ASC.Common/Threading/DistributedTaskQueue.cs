@@ -330,8 +330,10 @@ public class DistributedTaskQueue
         if (distributedTask != null)
         {
             distributedTask.Status = DistributedTaskStatus.Completed;
-            distributedTask.Exception = task.Exception;
-
+                if (task.Exception != null)
+                {
+                    distributedTask.Exception = task.Exception;
+                }
             if (task.IsFaulted)
             {
                 distributedTask.Status = DistributedTaskStatus.Failted;

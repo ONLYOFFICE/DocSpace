@@ -160,7 +160,7 @@ public class DocumentServiceTrackerHelper
         GlobalStore globalStore,
         DisplayUserSettingsHelper displayUserSettingsHelper,
         IDaoFactory daoFactory,
-        IOptionsMonitor<ILog> options,
+        ILog logger,
         DocumentServiceHelper documentServiceHelper,
         EntryManager entryManager,
         FileShareLink fileShareLink,
@@ -189,7 +189,7 @@ public class DocumentServiceTrackerHelper
         _notifyClient = notifyClient;
         _mailMergeTaskRunner = mailMergeTaskRunner;
         _fileTracker = fileTracker;
-        _logger = options.CurrentValue;
+        _logger = logger;
         _clientFactory = clientFactory;
     }
 
@@ -370,7 +370,7 @@ public class DocumentServiceTrackerHelper
 
                 file = await _entryManager.CompleteVersionFileAsync(fileId, 0, false, false);
 
-                await _daoFactory.GetFileDao<T>().UpdateCommentAsync(file.ID, file.Version, string.Join("; ", comments));
+                await _daoFactory.GetFileDao<T>().UpdateCommentAsync(file.Id, file.Version, string.Join("; ", comments));
 
                 file = null;
                 _logger.ErrorFormat("DocService save error. Empty url. File id: '{0}'. UserId: {1}. DocKey '{2}'", fileId, userId, fileData.Key);

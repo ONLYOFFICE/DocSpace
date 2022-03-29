@@ -63,11 +63,11 @@ public class ProductSecurityFilter : IResourceFilter
 
 
     public ProductSecurityFilter(
-        IOptionsMonitor<ILog> options,
+        ILog logger,
         WebItemSecurity webItemSecurity,
         AuthContext authContext)
     {
-        _logger = options.CurrentValue;
+        _logger = logger;
         _webItemSecurity = webItemSecurity;
         _authContext = authContext;
     }

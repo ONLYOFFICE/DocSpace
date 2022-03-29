@@ -103,6 +103,7 @@ global using Newtonsoft.Json;
 global using Newtonsoft.Json.Serialization;
 
 global using NLog;
+global using NLog.Config;
 global using NLog.Extensions.Logging;
 
 global using StackExchange.Redis.Extensions.Core.Configuration;

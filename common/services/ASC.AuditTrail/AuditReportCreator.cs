@@ -37,13 +37,13 @@ public class AuditReportCreator
 
     public AuditReportCreator(
         GlobalFolderHelper globalFolderHelper,
-        IOptionsMonitor<ILog> options,
+        ILog logger,
         FileUploader fileUploader,
         FilesLinkUtility filesLinkUtility,
         CommonLinkUtility commonLinkUtility)
     {
         _globalFolderHelper = globalFolderHelper;
-        _logger = options.CurrentValue;
+        _logger = logger;
         _fileUploader = fileUploader;
         _filesLinkUtility = filesLinkUtility;
         _commonLinkUtility = commonLinkUtility;
@@ -65,7 +65,7 @@ public class AuditReportCreator
             writer.Flush();
 
                     var file = _fileUploader.ExecAsync(_globalFolderHelper.FolderMy, reportName, stream.Length, stream, true).Result;
-                    var fileUrl = _commonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.GetFileWebEditorUrl(file.ID));
+                    var fileUrl = _commonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.GetFileWebEditorUrl(file.Id));
 
             fileUrl += string.Format("&options={{\"codePage\":{0}}}", Encoding.UTF8.CodePage);
 

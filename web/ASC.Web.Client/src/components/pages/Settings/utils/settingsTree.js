@@ -100,6 +100,22 @@ export const settingsTree = [
       },
     ],
   },
+  {
+    key: "4",
+    icon: "/images/data-management.react.svg",
+    link: "datamanagement",
+    tKey: "ManagementCategoryDataManagement",
+    isHeader: true,
+    children: [
+      {
+        key: "4-0",
+        icon: "",
+        link: "backup",
+        tKey: "Backup",
+        isCategory: true,
+      },
+    ],
+  },
 ];
 
 /**
