@@ -47,9 +47,9 @@ class SelectFolderModalDialog extends React.Component {
     } = this.props;
 
     const isNeedFolder = id ? true : isSetFolderImmediately;
-    this.buttonName = selectionButtonPrimary
-      ? t("Common:Select")
-      : t("Common:SaveButton");
+    // this.buttonName = selectionButtonPrimary
+    //   ? t("Common:Select")
+    //   : t("Common:SaveButton");
 
     this.state = {
       isLoadingData: false,
@@ -463,6 +463,7 @@ class SelectFolderModalDialog extends React.Component {
       headerName,
       footer,
       showButtons,
+      selectionButtonPrimary,
     } = this.props;
     const {
       isAvailable,
@@ -473,6 +474,10 @@ class SelectFolderModalDialog extends React.Component {
       canCreate,
       isLoading,
     } = this.state;
+
+    const buttonName = selectionButtonPrimary
+      ? t("Common:Select")
+      : t("Common:SaveButton");
 
     return displayType === "aside" ? (
       <SelectFolderDialogAsideView
@@ -497,7 +502,7 @@ class SelectFolderModalDialog extends React.Component {
         isLoadingData={isLoadingData}
         canCreate={canCreate}
         isLoading={isLoading}
-        primaryButtonName={this.buttonName}
+        primaryButtonName={buttonName}
         noTreeSwitcher={this.noTreeSwitcher}
       />
     ) : (
@@ -522,7 +527,7 @@ class SelectFolderModalDialog extends React.Component {
         canCreate={canCreate}
         isLoadingData={isLoadingData}
         isLoading={isLoading}
-        primaryButtonName={this.buttonName}
+        primaryButtonName={buttonName}
         noTreeSwitcher={this.noTreeSwitcher}
       />
     );

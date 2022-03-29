@@ -8,13 +8,22 @@ import {
   getFileInfo,
   checkFillFormDraft,
   openEdit,
+  convertFile,
+  setEncryptionKeys,
+  getEncryptionAccess,
 } from "@appserver/common/api/files";
+
 import pkg from "../../package.json";
 
 export const canConvert = (extension, filesSettings) => {
   const array = filesSettings?.extsMustConvert || [];
   const result = array.findIndex((item) => item === extension);
   return result === -1 ? false : true;
+};
+
+export const convertDocumentUrl = async () => {
+  const convert = await convertFile(fileId, null, true);
+  return convert && convert[0]?.result;
 };
 
 export const initDocEditor = async (req) => {
@@ -24,6 +33,7 @@ export const initDocEditor = async (req) => {
   const { version, desktop: isDesktop } = query;
   let error = null;
   initSSR(headers);
+
   try {
     //const doc = url.indexOf("doc=") !== -1 ? url.split("doc=")[1] : null;??
     const decodedId = query.fileId || query.fileid || null;
@@ -46,7 +56,6 @@ export const initDocEditor = async (req) => {
 
     const successAuth = !!user;
     const personal = settings?.personal;
-    const cultureName = user.cultureName;
 
     if (!successAuth && !doc) {
       error = {
@@ -69,19 +78,6 @@ export const initDocEditor = async (req) => {
       getFileInfo(fileId),
     ]);
 
-    if (successAuth) {
-      try {
-        // if (url.indexOf("#message/") > -1) {
-        //   if (canConvert(fileInfo.fileExst)) {
-        //     const url = await convertDocumentUrl();
-        //     history.pushState({}, null, url);
-        //   }
-        // } TODO: move to hook?
-      } catch (err) {
-        error = { errorMessage: typeof err === "string" ? err : err.message };
-      }
-    }
-
     let formUrl;
 
     if (
@@ -99,12 +95,6 @@ export const initDocEditor = async (req) => {
       } catch (err) {
         error = err;
       }
-    }
-
-    const needInitDesktop = false;
-    if (isDesktop) {
-      // initDesktop(config); TODO: move to hook
-      needInitDesktop = true;
     }
 
     const isSharingAccess = fileInfo && fileInfo.canShare;
@@ -129,7 +119,6 @@ export const initDocEditor = async (req) => {
         url,
         doc,
         fileId,
-        needInitDesktop,
       },
     };
   } catch (err) {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { isMobile } from "react-device-detect";
+import { isMobile, isIOS, deviceType } from "react-device-detect";
 import FilesFilter from "@appserver/common/api/files/filter";
 import combineUrl from "@appserver/common/utils/combineUrl";
 import { AppServerConfig } from "@appserver/common/constants";
@@ -21,6 +21,8 @@ import { EditorWrapper } from "./StyledEditor";
 import { useTranslation } from "react-i18next";
 import withDialogs from "./helpers/withDialogs";
 import DeepLinkPage from "./DeepLink";
+
+import { canConvert, convertDocumentUrl } from "./helpers/utils";
 
 const LoaderComponent = (
   <Loader
@@ -60,40 +62,6 @@ const onSDKError = (event) => {
   );
 };
 
-const initDesktop = (cfg) => {
-  const encryptionKeys = cfg?.editorConfig?.encryptionKeys;
-
-  regDesktop(
-    user,
-    !!encryptionKeys,
-    encryptionKeys,
-    (keys) => {
-      setEncryptionKeys(keys);
-    },
-    true,
-    (callback) => {
-      getEncryptionAccess(fileId)
-        .then((keys) => {
-          var data = {
-            keys,
-          };
-
-          callback(data);
-        })
-        .catch((error) => {
-          console.log(error);
-          window.toastr.error(
-            typeof error === "string" ? error : error.message,
-            null,
-            0,
-            true
-          );
-        });
-    },
-    t
-  );
-};
-
 const text = "text";
 const presentation = "presentation";
 let documentIsReady = false; // move to state?
@@ -124,17 +92,21 @@ function Editor({
   onSDKRequestCompareFile,
   selectFolderDialog,
   onSDKRequestSaveAs,
+  isFileDialogVisible,
+  isFolderDialogVisible,
+  isDesktopEditor,
+  initDesktop,
 }) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [documentTitle, setNewDocumentTitle] = useState("Loading...");
-
   const { t } = useTranslation(["Editor", "Common"]);
 
   useEffect(() => {
     if (error) {
-      error?.unAuthorized &&
-        error?.redirectPath &&
-        (window.location.href = error?.redirectPath);
+      if (error?.unAuthorized && error?.redirectPath) {
+        localStorage.setItem("redirectPath", window.location.href);
+        window.location.href = error?.redirectPath;
+      }
     }
   }, []);
 
@@ -143,8 +115,50 @@ function Editor({
     if (config) {
       document.getElementById("scripDocServiceAddress").onload = onLoad();
       setDocumentTitle(config?.document?.title);
+
+      if (isIOS && deviceType === "tablet") {
+        const vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty("--vh", `${vh}px`);
+      }
     }
   }, []);
+
+  useEffect(() => {
+    if (config) {
+      console.log(isDesktopEditor, config);
+      if (isDesktopEditor) {
+        initDesktop(config, user, fileId, t);
+      }
+    }
+  }, [isDesktopEditor]);
+
+  // useEffect(async () => {
+  //   try {
+  //     if (
+  //       url.indexOf("#message/") > -1 &&
+  //       fileInfo &&
+  //       fileInfo?.fileExst &&
+  //       canConvert(fileInfo.fileExst)
+  //     ) {
+  //       const result = await convertDocumentUrl();
+
+  //       const splitUrl = url.split("#message/");
+
+  //       if (result) {
+  //         const newUrl = `${result.webUrl}#message/${splitUrl[1]}`;
+
+  //         history.pushState({}, null, newUrl);
+
+  //         // fileInfo = result;
+  //         // url = newUrl;
+  //         // fileId = result.id;
+  //         // version = result.version;
+  //       }
+  //     }
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // }, [url, fileInfo?.fileExst]);
 
   const getDefaultFileName = (format) => {
     switch (format) {
@@ -396,8 +410,6 @@ function Editor({
     try {
       if (!window.DocsAPI) throw new Error("DocsAPI is not defined");
 
-      console.log("Editor config: ", config);
-
       if (isMobile) {
         config.type = "mobile";
       }
@@ -520,7 +532,6 @@ function Editor({
         newConfig
       );
 
-      console.log(docEditor, "docEditor");
       setIsLoaded(true);
     } catch (error) {
       console.log(error, "init error");
@@ -539,6 +550,7 @@ function Editor({
           {!isLoaded && LoaderComponent}
         </>
       )}
+
       {sharingDialog}
       {selectFileDialog}
       {selectFolderDialog}

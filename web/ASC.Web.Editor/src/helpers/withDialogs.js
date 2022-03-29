@@ -111,32 +111,13 @@ const withDialogs = (WrappedComponent) => {
     };
 
     const fileTypeDetection = () => {
-      // console.log(
-      //   "------",
-      //   insertImageAction,
-      //   filesType,
-      //   insertImageActionProps,
-      //   "--------"
-      // );
       if (filesType === insertImageAction) {
-        // console.log(
-        //   "filesType === insertImageAction",
-        //   filesType === insertImageAction
-        // );
         return insertImageActionProps;
       }
       if (filesType === mailMergeAction) {
-        // console.log(
-        //   "filesType === mailMergeAction",
-        //   filesType === mailMergeAction
-        // );
         return mailMergeActionProps;
       }
       if (filesType === compareFilesAction) {
-        // console.log(
-        //   "filesType === compareFilesAction",
-        //   filesType === compareFilesAction
-        // );
         return compareFilesActionProps;
       }
     };
@@ -242,9 +223,6 @@ const withDialogs = (WrappedComponent) => {
       />
     );
 
-    const typeFilter = fileTypeDetection();
-    // console.log(typeFilter, "-----------------");
-
     const selectFileDialog = mfReady && (
       <DynamicComponent
         system={{
@@ -257,13 +235,13 @@ const withDialogs = (WrappedComponent) => {
         isPanelVisible={isFileDialogVisible}
         onSelectFile={onSelectFile}
         onClose={onCloseFileDialog}
-        {...typeFilter}
+        {...fileTypeDetection()}
         titleFilesList={selectFilesListTitle()}
         headerName={t("SelectFileTitle")}
       />
     );
 
-    const selectFolderDialog = mfReady && (
+    const selectFolderDialog = mfReady && isFolderDialogVisible && (
       <DynamicComponent
         resetTreeFolders
         showButtons
@@ -316,8 +294,10 @@ const withDialogs = (WrappedComponent) => {
         onSDKRequestInsertImage={onSDKRequestInsertImage}
         onSDKRequestMailMergeRecipients={onSDKRequestMailMergeRecipients}
         onSDKRequestCompareFile={onSDKRequestCompareFile}
+        isFileDialogVisible={isFileDialogVisible}
         selectFolderDialog={selectFolderDialog}
         onSDKRequestSaveAs={onSDKRequestSaveAs}
+        isFolderDialogVisible={isFolderDialogVisible}
       />
     );
   };
