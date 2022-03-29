@@ -152,8 +152,8 @@ const StyledFileTileTop = styled.div`
     position: absolute;
     height: 100%;
     width: 100%;
-    object-fit: cover;
-    border-radius: 6px 6px 0 0;
+    object-fit: ${(props) => (props.isMedia ? "cover" : "none")};
+    object-position: top;
     z-index: 0;
   }
 
@@ -396,6 +396,8 @@ class Tile extends React.PureComponent {
       title: children[0].props.item.title,
     };
 
+    console.log({ item });
+
     return (
       <StyledTile
         ref={this.tile}
@@ -466,7 +468,11 @@ class Tile extends React.PureComponent {
           </>
         ) : (
           <>
-            <StyledFileTileTop checked={checked} isActive={isActive}>
+            <StyledFileTileTop
+              checked={checked}
+              isActive={isActive}
+              isMedia={item.canOpenPlayer}
+            >
               {icon}
             </StyledFileTileTop>
 
