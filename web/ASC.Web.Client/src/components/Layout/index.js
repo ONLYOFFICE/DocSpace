@@ -17,7 +17,7 @@ import { inject, observer } from "mobx-react";
 const StyledContainer = styled.div`
   width: 100%;
   height: ${(props) =>
-    (props.isTabletView || isMobile) && !isFirefox
+    (props.isTabletView || isMobileOnly) && !isFirefox
       ? `${props.contentHeight}px`
       : "100vh"};
 
@@ -31,22 +31,15 @@ const StyledContainer = styled.div`
     > .scroll-body {
       -webkit-touch-callout: none;
       -webkit-user-select: none;
-      position: ${(props) =>
-        isMobile && !isSmallTablet()
-          ? props.isArticlePinned
-            ? "static"
-            : "absolute"
-          : "absolute"} !important;
+      position: ${isMobileOnly && !isSmallTablet() && "absolute"} !important;
 
-      ${(props) =>
-        isMobile &&
-        props.isArticlePinned &&
-        !isSmallTablet() &&
-        css`
-          overflow-y: hidden !important;
-          overflow-x: hidden !important;
-          width: 192px;
-        `}
+      ${isMobileOnly &&
+      !isSmallTablet() &&
+      css`
+        overflow-y: hidden !important;
+        overflow-x: hidden !important;
+        width: 192px;
+      `}
     }
 
     .nav-thumb-horizontal {
@@ -60,13 +53,7 @@ const StyledContainer = styled.div`
 `;
 
 const Layout = (props) => {
-  const {
-    children,
-    isTabletView,
-    setIsTabletView,
-    isArticlePinned,
-    isArticleVisibleOnUnpin,
-  } = props;
+  const { children, isTabletView, setIsTabletView } = props;
 
   const [contentHeight, setContentHeight] = useState();
   const [isPortrait, setIsPortrait] = useState();
@@ -177,9 +164,8 @@ const Layout = (props) => {
       className="Layout"
       isTabletView={isTabletView}
       contentHeight={contentHeight}
-      isArticlePinned={isArticlePinned}
     >
-      {isMobile ? <MobileLayout {...props} /> : children}
+      {isMobileOnly ? <MobileLayout {...props} /> : children}
     </StyledContainer>
   );
 };
@@ -188,14 +174,12 @@ Layout.propTypes = {
   isTabletView: PropTypes.bool,
   children: PropTypes.any,
   setIsTabletView: PropTypes.func,
-  isArticlePinned: PropTypes.bool,
 };
 
 export default inject(({ auth }) => {
   return {
     isTabletView: auth.settingsStore.isTabletView,
-    isArticlePinned: auth.settingsStore.isArticlePinned,
-    isArticleVisibleOnUnpin: auth.settingsStore.isArticleVisibleOnUnpin,
+
     setIsTabletView: auth.settingsStore.setIsTabletView,
   };
 })(observer(Layout));

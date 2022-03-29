@@ -13,7 +13,7 @@ import { withRouter } from "react-router";
 
 import Loaders from "@appserver/common/components/Loaders";
 import { LayoutContextConsumer } from "../Layout/context";
-import { isMobile } from "react-device-detect";
+import { isMobileOnly } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 import i18n from "./i18n";
 import PreparationPortalDialog from "../dialogs/PreparationPortalDialog";
@@ -25,14 +25,14 @@ const StyledContainer = styled.header`
 
   ${(props) =>
     !props.isLoaded
-      ? isMobile &&
+      ? isMobileOnly &&
         css`
           position: static;
 
           margin-right: -16px; /* It is a opposite value of padding-right of custom scroll bar,
        so that there is no white bar in the header on loading. (padding-right: 16px)*/
         `
-      : isMobile &&
+      : isMobileOnly &&
         css`
           .navMenuHeader,
           .profileMenuIcon,
