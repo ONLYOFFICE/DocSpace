@@ -983,6 +983,7 @@ const Dark = {
   },
 
   avatar: {
+    defaultImage: `url("/static/images/avatar.dark.react.svg")`,
     initialsContainer: {
       color: white,
       left: "50%",
@@ -1592,7 +1593,7 @@ const Dark = {
     contentPadding: "10px 0px 0px 0px",
     arrowMargin: "4px 8px 4px 0px",
     transform: "rotate(180deg)",
-    iconColor: black,
+    iconColor: white,
 
     childrenContent: {
       color: black,
@@ -2063,7 +2064,7 @@ const Dark = {
       activeIconColor: "#858585",
       hoverIconColor: grayMaxLight,
 
-      borderImageSource: `linear-gradient(to right,${black} 24px,#474747 24px,#474747 calc(100% - 24px),${black} calc(100% - 24px))`,
+      borderImageSource: `linear-gradient(to right,${black} 21px,#474747 21px,#474747 calc(100% - 20px),${black} calc(100% - 20px))`,
     },
 
     tableCell: {
@@ -2122,8 +2123,8 @@ const Dark = {
         shareHoverColor: "#eeeeee",
 
         borderImageRight:
-          "linear-gradient(to right, #333333 17px, #474747 31px)",
-        borderImageLeft: "linear-gradient(to left, #333333 17px, #474747 31px)",
+          "linear-gradient(to right, #333333 25px, #474747 24px)",
+        borderImageLeft: "linear-gradient(to left, #333333 20px, #474747 24px)",
 
         borderColor: "#858585",
         borderColorTransition: "#474747",

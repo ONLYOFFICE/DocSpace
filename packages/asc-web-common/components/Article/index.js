@@ -19,7 +19,7 @@ import { StyledArticle } from "./styled-article";
 
 const enable = {
   top: false,
-  right: !isMobile,
+  right: false,
   bottom: false,
   left: false,
 };

@@ -8,20 +8,27 @@ import Loader from "@appserver/components/loader";
 import toastr from "@appserver/components/toast/toastr";
 import HelpButton from "@appserver/components/help-button";
 import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
-import { saveToSessionStorage, getFromSessionStorage } from "../../utils";
-import { setDocumentTitle } from "../../../../../helpers/utils";
+import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
+import { setDocumentTitle } from "../../../../../../helpers/utils";
 import { inject, observer } from "mobx-react";
 import { LANGUAGE } from "@appserver/common/constants";
 import { convertLanguage } from "@appserver/common/utils";
 import withCultureNames from "@appserver/common/hoc/withCultureNames";
-import { LanguageTimeSettingsTooltip } from "./sub-components/common-tooltips";
+import { LanguageTimeSettingsTooltip } from "../sub-components/common-tooltips";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
-import config from "../../../../../../package.json";
+import config from "../../../../../../../package.json";
 import history from "@appserver/common/history";
 import { isMobileOnly } from "react-device-detect";
 import Scrollbar from "@appserver/components/scrollbar";
-
+import Text from "@appserver/components/text";
+import Box from "@appserver/components/box";
+import Link from "@appserver/components/link";
+import ArrowRightIcon from "../../../../../../../public/images/arrow.right.react.svg";
+import { isSmallTablet } from "@appserver/components/utils/device";
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+import { Base } from "@appserver/components/themes";
+import checkScrollSettingsBlock from "../utils";
 const mapTimezonesToArray = (timezones) => {
   return timezones.map((timezone) => {
     return { key: timezone.id, label: timezone.displayName };
@@ -37,6 +44,15 @@ const sectionHeight = "50px";
 const paddingSectionWrapperContent = "22px";
 const saveCancelButtons = "56px";
 const flex = "4px";
+
+const StyledArrowRightIcon = styled(ArrowRightIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: ${(props) => props.theme.studio.settings.common.arrowColor};
+  }
+`;
+
+StyledArrowRightIcon.defaultProps = { theme: Base };
 
 const StyledScrollbar = styled(Scrollbar)`
   height: calc(
@@ -144,6 +160,7 @@ class LanguageAndTimeZone extends React.Component {
     timezoneDefaultFromSessionStorage = getFromSessionStorage(
       "timezoneDefault"
     );
+
     setDocumentTitle(t("Customization"));
 
     this.state = {
@@ -158,10 +175,7 @@ class LanguageAndTimeZone extends React.Component {
       isLoadingGreetingRestore: false,
       hasChanged: false,
       showReminder: false,
-      sectionWidth: null,
       hasScroll: false,
-      heightSettingsBlock: null,
-      heightScrollBody: null,
     };
   }
 
@@ -221,7 +235,13 @@ class LanguageAndTimeZone extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { timezones, timezoneDefault, languageDefault } = this.state;
+    const {
+      timezones,
+      timezoneDefault,
+      languageDefault,
+      hasScroll,
+    } = this.state;
+
     const {
       i18n,
       language,
@@ -230,8 +250,16 @@ class LanguageAndTimeZone extends React.Component {
       cultureNames,
     } = this.props;
 
-    this.checkHeightSettingsBlock();
-    window.addEventListener("resize", this.checkHeightSettingsBlock);
+    const checkScroll = checkScrollSettingsBlock();
+
+    window.addEventListener("resize", checkScroll);
+    const scrollLngTZSettings = checkScroll();
+
+    if (scrollLngTZSettings !== hasScroll) {
+      this.setState({
+        hasScroll: scrollLngTZSettings,
+      });
+    }
 
     // TODO: Remove div with height 64 and remove settings-mobile class
     const settingsMobile = document.getElementsByClassName(
@@ -268,7 +296,7 @@ class LanguageAndTimeZone extends React.Component {
     window.removeEventListener(
       "resize",
       this.checkInnerWidth,
-      this.checkHeightSettingsBlock
+      checkScrollSettingsBlock
     );
   }
 
@@ -373,7 +401,7 @@ class LanguageAndTimeZone extends React.Component {
   };
 
   checkInnerWidth = () => {
-    if (window.innerWidth > 600) {
+    if (!isSmallTablet()) {
       history.push(
         combineUrl(
           AppServerConfig.proxyURL,
@@ -385,50 +413,19 @@ class LanguageAndTimeZone extends React.Component {
     }
   };
 
-  checkHeightSettingsBlock = () => {
-    if (this.settingsDiv && this.scrollBody) return;
-
-    this.settingsDiv = document.getElementsByClassName("settings-block")[0];
-
-    if (!this.settingsDiv) return;
-
-    this.scrollBody = this.settingsDiv.closest(".scroll-body");
-
-    if (!this.scrollBody) return;
-
-    const height = getComputedStyle(this.settingsDiv).height.slice(0, -2);
-    const heightScrollBody = getComputedStyle(this.scrollBody).height.slice(
-      0,
-      -2
-    );
-
-    if (
-      this.state.heightSettingsBlock === height &&
-      this.state.heightScrollBody === heightScrollBody
-    ) {
-      return;
-    }
-
-    this.setState({
-      heightSettingsBlock: height,
-    });
-    this.setState({
-      heightScrollBody: heightScrollBody,
-    });
-
-    if (parseInt(height, 10) > parseInt(heightScrollBody, 10)) {
-      this.setState({
-        hasScroll: true,
-      });
-    } else {
-      this.setState({
-        hasScroll: false,
-      });
-    }
+  onClickLink = (e) => {
+    e.preventDefault();
+    history.push(e.target.pathname);
   };
 
   render() {
-    const { t, theme, cultureNames } = this.props;
+    const {
+      t,
+      theme,
+      cultureNames,
+      isMobileView,
+      helpUrlCommonSettings,
+    } = this.props;
     const {
       isLoadedData,
       language,
@@ -443,6 +440,37 @@ class LanguageAndTimeZone extends React.Component {
       <LanguageTimeSettingsTooltip theme={theme} t={t} />
     );
 
+    const isMobileViewLanguageTimeSettings = (
+      <div className="category-item-wrapper">
+        <div className="category-item-heading">
+          <Link
+            className="inherit-title-link header"
+            onClick={this.onClickLink}
+            truncate={true}
+            href={combineUrl(
+              AppServerConfig.proxyURL,
+              "/settings/common/customization/language-and-time-zone"
+            )}
+          >
+            {t("StudioTimeLanguageSettings")}
+          </Link>
+          <StyledArrowRightIcon size="small" color="#333333" />
+        </div>
+        <Text className="category-item-description">
+          {t("LanguageAndTimeZoneSettingsDescription")}
+        </Text>
+        <Box paddingProp="10px 0 3px 0">
+          <Link
+            color={theme.studio.settings.common.linkColorHelp}
+            target="_blank"
+            isHovered={true}
+            href={helpUrlCommonSettings}
+          >
+            {t("Common:LearnMore")}
+          </Link>
+        </Box>
+      </div>
+    );
     const settingsBlock = (
       <div className="settings-block">
         <FieldContainer
@@ -493,9 +521,12 @@ class LanguageAndTimeZone extends React.Component {
 
     return !isLoadedData ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
+    ) : isMobileView ? (
+      isMobileViewLanguageTimeSettings
     ) : (
       <StyledComponent hasScroll={hasScroll}>
-        {this.checkInnerWidth() && (
+        {/* Added isMobileView */}
+        {this.checkInnerWidth() && !isMobileView && (
           <div className="category-item-heading">
             <div className="category-item-title">
               {t("StudioTimeLanguageSettings")}
@@ -507,8 +538,7 @@ class LanguageAndTimeZone extends React.Component {
             />
           </div>
         )}
-        {(isMobileOnly && window.innerWidth < 600) ||
-        window.innerWidth < 600 ? (
+        {(isMobileOnly && isSmallTablet()) || isSmallTablet() ? (
           <StyledScrollbar stype="smallBlack">{settingsBlock}</StyledScrollbar>
         ) : (
           <> {settingsBlock}</>
@@ -541,6 +571,7 @@ export default inject(({ auth, setup }) => {
     //getPortalCultures,
     getPortalTimezones,
     getCurrentCustomSchema,
+    helpUrlCommonSettings,
   } = auth.settingsStore;
 
   const { user } = auth.userStore;
@@ -562,6 +593,7 @@ export default inject(({ auth, setup }) => {
     setLanguageAndTime,
     getCurrentCustomSchema,
     getPortalTimezones,
+    helpUrlCommonSettings,
   };
 })(
   withCultureNames(

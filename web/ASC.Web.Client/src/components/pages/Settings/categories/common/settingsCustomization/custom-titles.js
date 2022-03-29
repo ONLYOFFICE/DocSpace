@@ -8,10 +8,10 @@ import TextInput from "@appserver/components/text-input";
 import HelpButton from "@appserver/components/help-button";
 import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 import { showLoader, hideLoader } from "@appserver/common/utils";
-import { saveToSessionStorage, getFromSessionStorage } from "../../utils";
-import { setDocumentTitle } from "../../../../../helpers/utils";
+import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
+import { setDocumentTitle } from "../../../../../../helpers/utils";
 import { inject, observer } from "mobx-react";
-import { CustomTitlesTooltip } from "./sub-components/common-tooltips";
+import { CustomTitlesTooltip } from "../sub-components/common-tooltips";
 
 const StyledComponent = styled.div`
   .settings-block {
