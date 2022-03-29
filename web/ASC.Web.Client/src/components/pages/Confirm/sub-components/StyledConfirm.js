@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { mobile, tablet } from "@appserver/components/utils/device";
 
 export const StyledPage = styled.div`
   display: flex;
@@ -7,11 +8,11 @@ export const StyledPage = styled.div`
   margin: 56px auto 0 auto;
   max-width: 960px;
 
-  @media (max-width: 768px) {
+  @media ${tablet} {
     padding: 0 16px;
   }
 
-  @media (max-width: 414px) {
+  @media ${mobile} {
     margin-top: 72px;
   }
 `;
@@ -31,10 +32,11 @@ export const StyledHeader = styled.div`
 export const StyledBody = styled.div`
   width: 320px;
 
-  @media (max-width: 768px) {
-    width: 100%;
+  @media ${tablet} {
+    justify-content: center;
   }
-  @media (max-width: 375px) {
+
+  @media ${mobile} {
     width: 100%;
   }
 
