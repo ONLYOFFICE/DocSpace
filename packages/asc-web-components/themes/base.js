@@ -2129,7 +2129,7 @@ const Base = {
         border: `1px solid ${grayMid}`,
         backgroundColor: white,
 
-        backgroundColorTop: grayLight,
+        backgroundColorTop: white,
       },
 
       sideColor: black,

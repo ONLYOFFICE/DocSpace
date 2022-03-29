@@ -131,7 +131,7 @@ namespace ASC.Web.Files.Classes
             CustomNamingPeople = customNamingPeople;
             FileSecurityCommon = fileSecurityCommon;
 
-            ThumbnailExtension = configuration["files:thumbnail:exts"] ?? "png";
+            ThumbnailExtension = configuration["files:thumbnail:exts"] ?? "jpg";
         }
 
         #region Property
