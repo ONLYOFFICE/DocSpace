@@ -20,10 +20,6 @@ class SelectedFilesStore {
   setFile = (obj) => {
     this.fileInfo = obj;
   };
-
-  get fileInfo() {
-    return this.fileInfo;
-  }
 }
 
 export default new SelectedFilesStore();

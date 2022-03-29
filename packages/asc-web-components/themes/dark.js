@@ -1952,6 +1952,21 @@ const Dark = {
     },
   },
 
+  infoPanel: {
+    backgroundColor: black,
+    borderColor: "#292929",
+    textColor: white,
+    showAccessUsersTextColor: gray,
+    showAccessPanelTextColor: graySilver,
+    headerCrossColor: gray,
+
+    sectionHeaderToggleIcon: "#858585",
+    sectionHeaderToggleIconActive: white,
+
+    sectionHeaderToggleBg: "transparent",
+    sectionHeaderToggleBgActive: "#292929",
+  },
+
   filesArticleBody: {
     background: black,
     panelBackground: "#474747",

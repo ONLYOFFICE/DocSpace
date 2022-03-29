@@ -1,4 +1,5 @@
 import IconButton from "@appserver/components/icon-button";
+import { Base } from "@appserver/components/themes";
 import { isTablet, mobile, tablet } from "@appserver/components/utils/device";
 import { inject } from "mobx-react";
 import PropTypes from "prop-types";
@@ -26,8 +27,8 @@ const StyledInfoPanelWrapper = styled.div.attrs(({ title }) => ({
 const StyledInfoPanel = styled.div`
   height: 100%;
   width: 400px;
-  background-color: #ffffff;
-  border-left: 1px solid #eceef1;
+  background-color: ${(props) => props.theme.infoPanel.backgroundColor};
+  border-left: ${(props) => `1px solid ${props.theme.infoPanel.borderColor}`};
   display: flex;
   flex-direction: column;
 
@@ -107,6 +108,10 @@ InfoPanel.propTypes = {
   ]),
   isVisible: PropTypes.bool,
 };
+
+StyledInfoPanelWrapper.defaultProps = { theme: Base };
+StyledInfoPanel.defaultProps = { theme: Base };
+InfoPanel.defaultProps = { theme: Base };
 
 export default inject(({ infoPanelStore }) => {
   let isVisible = false;

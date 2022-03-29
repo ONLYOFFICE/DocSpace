@@ -1950,6 +1950,21 @@ const Base = {
     },
   },
 
+  infoPanel: {
+    backgroundColor: white,
+    borderColor: grayLightMid,
+    textColor: black,
+    showAccessUsersTextColor: gray,
+    showAccessPanelTextColor: "#3b72a7",
+    headerCrossColor: gray,
+
+    sectionHeaderToggleIcon: gray,
+    sectionHeaderToggleIconActive: "#3B72A7",
+
+    sectionHeaderToggleBg: "transparent",
+    sectionHeaderToggleBgActive: grayLight,
+  },
+
   filesArticleBody: {
     background: lightGrayishStrongBlue,
     panelBackground: lightGrayishStrongBlue,

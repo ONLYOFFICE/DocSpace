@@ -338,9 +338,9 @@ class ContextOptionsStore {
     return options;
   };
 
-  onToggleInfoPanel = () => {
-    const { toggleIsVisible } = this.infoPanelStore;
-    toggleIsVisible();
+  onShowInfoPanel = () => {
+    const { setIsVisible } = this.infoPanelStore;
+    setIsVisible(true);
   };
 
   getFilesContextOptions = (item, t) => {
@@ -452,13 +452,6 @@ class ContextOptionsStore {
         disabled: false,
       },
       {
-        key: "show-info",
-        label: t("InfoPanel:Info"),
-        icon: "/static/images/info.outline.react.svg",
-        onClick: () => this.onToggleInfoPanel(),
-        disabled: false,
-      },
-      {
         key: "fill-form",
         label: t("Common:FillFormButton"),
         icon: "/static/images/form.fill.rect.svg",
@@ -525,6 +518,13 @@ class ContextOptionsStore {
         disabled: true,
       },
       ...versionActions,
+      {
+        key: "show-info",
+        label: t("InfoPanel:ViewDetails"),
+        icon: "/static/images/info.outline.react.svg",
+        onClick: this.onShowInfoPanel,
+        disabled: false,
+      },
       {
         key: "block-unblock-version",
         label: t("UnblockVersion"),

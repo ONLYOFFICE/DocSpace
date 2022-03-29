@@ -1,9 +1,13 @@
 import styled from "styled-components";
 
+import { Base } from "@appserver/components/themes";
+
 const StyledInfoRoomBody = styled.div`
   padding: 0px 0px 0 16px;
   height: auto;
-  //margin-right: -16px;
+  background-color: ${(props) => props.theme.infoPanel.backgroundColor};
+  color: ${(props) => props.theme.infoPanel.textColor};
+
   .no-item {
     text-align: center;
   }
@@ -44,7 +48,7 @@ const StyledTitle = styled.div`
   }
 
   .text {
-    font-family: Open Sans;
+    font-family: "Open Sans";
     line-height: 22px;
     margin: 0 8px;
   }
@@ -57,7 +61,7 @@ const StyledThumbnail = styled.div`
   width: calc(100% + 6px -16px);
   height: 200px;
   padding: 4px;
-  border: solid 1px #eceef1;
+  border: ${(props) => `solid 1px ${props.theme.infoPanel.borderColor}`};
   border-radius: 6px;
   margin: 0 0 24px 0;
   img {
@@ -90,7 +94,6 @@ const StyledProperties = styled.div`
 
     .property-title {
       font-size: 13px;
-      color: #333333;
     }
 
     .property-content {
@@ -99,7 +102,6 @@ const StyledProperties = styled.div`
 
       font-weight: 600;
       font-size: 13px;
-      color: #333333;
     }
   }
 `;
@@ -111,7 +113,7 @@ const StyledAccess = styled.div`
   gap: 8px;
   align-items: center;
   .divider {
-    background: #eceef1;
+    background: ${(props) => props.theme.infoPanel.borderColor};
     margin: 2px 4px;
     width: 1px;
     height: 28px;
@@ -131,7 +133,7 @@ const StyledAccess = styled.div`
     line-height: 16px;
     text-align: right;
 
-    color: #a3a9ae;
+    color: ${(props) => props.theme.infoPanel.showAccessUsersTextColor};
 
     flex: none;
     order: 3;
@@ -171,7 +173,7 @@ const StyledOpenSharingPanel = styled.div`
   font-size: 13px;
   line-height: 15px;
 
-  color: #3b72a7;
+  color: ${(props) => props.theme.infoPanel.showAccessPanelTextColor};
 
   display: flex;
   margin: 16px 0px;
@@ -182,6 +184,11 @@ const StyledOpenSharingPanel = styled.div`
     text-decoration-style: dashed;
   }
 `;
+
+StyledInfoRoomBody.defaultProps = { theme: Base };
+StyledThumbnail.defaultProps = { theme: Base };
+StyledAccess.defaultProps = { theme: Base };
+StyledOpenSharingPanel.defaultProps = { theme: Base };
 
 export {
   StyledInfoRoomBody,

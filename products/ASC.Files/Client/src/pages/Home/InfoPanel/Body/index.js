@@ -6,6 +6,7 @@ import SeveralItems from "./SeveralItems";
 import SingleItem from "./SingleItem";
 import { StyledInfoRoomBody } from "./styles/styles.js";
 import Loader from "@appserver/components/loader";
+import { Base } from "@appserver/components/themes";
 
 const InfoPanelBodyContent = ({
   t,
@@ -30,12 +31,13 @@ const InfoPanelBodyContent = ({
     const folderId = new URL(window.location.href).searchParams.get("folder");
     const folder = await getFolderInfo(folderId);
 
+    if (!folder) console.log("Cant Load Data");
+
     const fileExst = folder.fileExst,
       providerKey = folder.providerKey,
       contentLength = folderId.contentLength;
 
     folder.iconUrl = getIcon(32, fileExst, providerKey, contentLength);
-    //folder.thumbnailUrl = getIcon(96, fileExst, providerKey, contentLength);
     folder.isFolder = true;
 
     setCurrentFolder(folder);
@@ -90,6 +92,8 @@ const InfoPanelBodyContent = ({
     </StyledInfoRoomBody>
   );
 };
+
+InfoPanelBodyContent.defaultProps = { theme: Base };
 
 export default inject(
   ({

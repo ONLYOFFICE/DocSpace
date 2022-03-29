@@ -5,6 +5,7 @@ import ContextMenuButton from "@appserver/components/context-menu-button";
 import IconButton from "@appserver/components/icon-button";
 import { isMobile } from "react-device-detect";
 import { tablet } from "@appserver/components/utils/device";
+import { Base } from "@appserver/components/themes";
 
 const StyledContainer = styled.div`
   margin-left: 20px;
@@ -55,9 +56,19 @@ const StyledInfoPanelToggleWrapper = styled.div`
     justify-content: center;
     border-radius: 50%;
     background-color: ${(props) =>
-      props.isInfoPanelVisible ? "#F8F9F9" : "transparent"};
+      props.isInfoPanelVisible
+        ? props.theme.infoPanel.sectionHeaderToggleBgActive
+        : props.theme.infoPanel.sectionHeaderToggleBg};
+
+    path {
+      fill: ${(props) =>
+        props.isInfoPanelVisible
+          ? props.theme.infoPanel.sectionHeaderToggleIconActive
+          : props.theme.infoPanel.sectionHeaderToggleIcon};
+    }
   }
 `;
+StyledInfoPanelToggleWrapper.defaultProps = { theme: Base };
 
 const ControlButtons = ({
   personal,
@@ -127,7 +138,6 @@ const ControlButtons = ({
             className="info-panel-toggle"
             iconName="images/panel.svg"
             size="16"
-            color={isInfoPanelVisible ? "#3B72A7" : "#A3A9AE"}
             isFill={true}
             onClick={toggleInfoPanel}
           />

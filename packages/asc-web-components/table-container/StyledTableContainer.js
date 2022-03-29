@@ -147,9 +147,19 @@ const StyledInfoPanelToggleWrapper = styled.div`
     justify-content: center;
     border-radius: 50%;
     background-color: ${(props) =>
-      props.isInfoPanelVisible ? "#F8F9F9" : "transparent"};
+      props.isInfoPanelVisible
+        ? props.theme.infoPanel.sectionHeaderToggleBgActive
+        : props.theme.infoPanel.sectionHeaderToggleBg};
+
+    path {
+      fill: ${(props) =>
+        props.isInfoPanelVisible
+          ? props.theme.infoPanel.sectionHeaderToggleIconActive
+          : props.theme.infoPanel.sectionHeaderToggleIcon};
+    }
   }
 `;
+StyledInfoPanelToggleWrapper.defaultProps = { theme: Base };
 
 const StyledTableHeader = styled.div`
   position: fixed;

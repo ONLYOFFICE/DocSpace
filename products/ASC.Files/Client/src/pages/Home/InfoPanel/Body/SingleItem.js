@@ -339,7 +339,7 @@ const SingleItem = (props) => {
       )}
 
       <StyledSubtitle>
-        <Text fontWeight="600" fontSize="14px" color="#000000">
+        <Text fontWeight="600" fontSize="14px">
           {t("SystemProperties")}
         </Text>
       </StyledSubtitle>
@@ -360,7 +360,7 @@ const SingleItem = (props) => {
       {showAccess && (
         <>
           <StyledSubtitle>
-            <Text fontWeight="600" fontSize="14px" color="#000000">
+            <Text fontWeight="600" fontSize="14px">
               {t("WhoHasAccess")}
             </Text>
           </StyledSubtitle>

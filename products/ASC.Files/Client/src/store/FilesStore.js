@@ -708,7 +708,6 @@ class FilesStore {
         "preview",
         "view",
         "make-form",
-        "show-info",
         "separator0",
         "sharing-settings",
         "external-link",
@@ -719,6 +718,7 @@ class FilesStore {
         "version", //category
         "finalize-version",
         "show-version-history",
+        "show-info",
         "block-unblock-version", //need split
         "separator1",
         "open-location",
@@ -1003,10 +1003,10 @@ class FilesStore {
     } else {
       let folderOptions = [
         "open",
-        "show-info",
         "separator0",
         "sharing-settings",
         "owner-change",
+        "show-info",
         "link-for-portal-users",
         "separator1",
         "open-location",
