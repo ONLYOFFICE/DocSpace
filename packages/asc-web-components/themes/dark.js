@@ -1592,7 +1592,7 @@ const Dark = {
     contentPadding: "10px 0px 0px 0px",
     arrowMargin: "4px 8px 4px 0px",
     transform: "rotate(180deg)",
-    iconColor: black,
+    iconColor: white,
 
     childrenContent: {
       color: black,
