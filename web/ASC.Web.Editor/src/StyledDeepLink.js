@@ -4,12 +4,17 @@ import { tablet } from "@appserver/components/utils/device";
 export const StyledBody = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 32px;
+  padding: 32px 16px;
   z-index: 320;
 
   @media ${tablet} {
     margin: 0 auto;
     width: 480px;
+  }
+
+  @media (max-width: 414px) {
+    margin: 0 auto;
+    width: 344px;
   }
 
   .description {
