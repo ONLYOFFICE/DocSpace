@@ -70,6 +70,12 @@ const DeepLinkPage = (props) => {
     return `${iconPath}${fileExst}.svg`;
   };
 
+  const getTitle = () => {
+    return fileInfo.fileExst
+      ? fileInfo.title.split(".").slice(0, -1).join(".")
+      : fileInfo.title;
+  };
+
   const getDeepLink = () => {
     const jsonData = {
       portal: window.location.origin,
@@ -106,7 +112,7 @@ const DeepLinkPage = (props) => {
         <StyledFileTile>
           <img src={getFileIcon()} />
           <Text fontSize="14px" fontWeight="600" truncate>
-            {fileInfo.title}
+            {getTitle()}
           </Text>
         </StyledFileTile>
         <Text className="description" fontSize="13px" fontWeight="400">
