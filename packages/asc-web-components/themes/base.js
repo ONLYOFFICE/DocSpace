@@ -985,6 +985,7 @@ const Base = {
   },
 
   avatar: {
+    defaultImage: `url("/static/images/avatar.base.react.svg")`,
     initialsContainer: {
       color: white,
       left: "50%",
