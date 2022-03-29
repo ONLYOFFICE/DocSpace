@@ -4,6 +4,7 @@ import equal from "fast-deep-equal/react";
 
 const StyledSectionPaging = styled.div`
   margin: 16px 0 0;
+  padding-right: 3px;
 `;
 
 class SectionPaging extends React.Component {
