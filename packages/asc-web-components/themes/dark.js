@@ -983,6 +983,7 @@ const Dark = {
   },
 
   avatar: {
+    defaultImage: `url("/static/images/avatar.dark.react.svg")`,
     initialsContainer: {
       color: white,
       left: "50%",

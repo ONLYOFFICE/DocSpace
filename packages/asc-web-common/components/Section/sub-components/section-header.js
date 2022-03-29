@@ -18,18 +18,17 @@ const StyledSectionHeader = styled.div`
 
   @media ${tablet} {
     height: 61px;
-    margin-right: 16px;
+    margin-right: 0px !important;
   }
 
   ${isMobile &&
   css`
     height: 61px !important;
-    margin-top: 48px !important;
     margin-right: 0px !important;
   `}
 
   @media ${mobile} {
-    max-width: calc(100vw - 32px);
+    width: auto;
     height: 53px;
     margin-top: 0px;
     margin-right: 0px;
@@ -37,7 +36,7 @@ const StyledSectionHeader = styled.div`
 
   ${isMobileOnly &&
   css`
-    max-width: calc(100vw - 32px);
+    width: auto;
     height: 53px !important;
     margin-top: 48px !important;
     margin-right: 0px !important;
@@ -95,26 +94,27 @@ class SectionHeader extends React.Component {
     // console.log("PageLayout SectionHeader render");
     // eslint-disable-next-line react/prop-types
 
-    const { isArticlePinned, isHeaderVisible, viewAs, ...rest } = this.props;
+    const { isHeaderVisible, viewAs, ...rest } = this.props;
 
     return (
-      <LayoutContextConsumer>
-        {(value) => (
-          <StyledSectionHeader
-            isArticlePinned={isArticlePinned}
-            isSectionHeaderVisible={value.isVisible}
-            viewAs={viewAs}
-          >
-            <div
-              className={classnames("section-header hidingHeader", {
-                "section-header--hidden":
-                  value.isVisible === undefined ? false : !value.isVisible,
-              })}
-              {...rest}
-            />
-          </StyledSectionHeader>
-        )}
-      </LayoutContextConsumer>
+      <div className={rest.className}>
+        <LayoutContextConsumer>
+          {(value) => (
+            <StyledSectionHeader
+              isSectionHeaderVisible={value.isVisible}
+              viewAs={viewAs}
+            >
+              <div
+                className={classnames("section-header hidingHeader", {
+                  "section-header--hidden":
+                    value.isVisible === undefined ? false : !value.isVisible,
+                })}
+                {...rest}
+              />
+            </StyledSectionHeader>
+          )}
+        </LayoutContextConsumer>
+      </div>
     );
   }
 }

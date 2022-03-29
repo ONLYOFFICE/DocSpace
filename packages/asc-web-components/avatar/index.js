@@ -55,9 +55,12 @@ Initials.propTypes = {
 const Avatar = (props) => {
   //console.log("Avatar render");
   const { size, source, userName, role, editing, editAction } = props;
+  let isDefault = false;
+
+  if (source.includes("default_user_photo")) isDefault = true;
 
   const avatarContent = source ? (
-    <StyledImage src={source} />
+    <StyledImage src={source} isDefault={isDefault} />
   ) : userName ? (
     <Initials userName={userName} size={size} />
   ) : (

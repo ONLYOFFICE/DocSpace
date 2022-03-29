@@ -20,11 +20,6 @@ const StyledArticle = styled.article`
 
   background: ${(props) => props.theme.catalog.background};
 
-  ${isMobile &&
-  css`
-    margin-top: 48px;
-  `}
-
   @media ${mobile} {
     position: fixed;
     margin-top: 16px;
