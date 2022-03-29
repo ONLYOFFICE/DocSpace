@@ -56,7 +56,7 @@ const SimpleHeader = () => {
 };
 
 const DeepLinkPage = (props) => {
-  const { fileInfo, onStayBrowser } = props;
+  const { settings, fileInfo, userEmail, onStayBrowser } = props;
   const [isChecked, setIsChecked] = useState(false);
   const { t } = useTranslation(["Editor", "Common"]);
 
@@ -68,6 +68,28 @@ const DeepLinkPage = (props) => {
     const fileExst = fileInfo.fileExst.slice(1);
     const iconPath = "/static/images/icons/32/";
     return `${iconPath}${fileExst}.svg`;
+  };
+
+  const getDeepLink = () => {
+    const jsonData = {
+      portal: window.location.origin,
+      email: userEmail,
+      file: {
+        id: fileInfo.fileId,
+      },
+      folder: {
+        id: fileInfo.folderId,
+        parentId: fileInfo.rootFolderId,
+        rootFolderType: fileInfo.rootFolderType,
+      },
+    };
+    const deepLinkData = btoa(JSON.stringify(jsonData));
+
+    return `${settings.url}?data=${deepLinkData}`;
+  };
+
+  const onOpenApp = () => {
+    window.location = getDeepLink();
   };
 
   const onStayWeb = () => {
@@ -98,7 +120,7 @@ const DeepLinkPage = (props) => {
         <Button
           className="button"
           label={t("Common:OpenInApp")}
-          //onClick={onOpenAppClick}
+          onClick={onOpenApp}
           primary
           scale
           size="normal"

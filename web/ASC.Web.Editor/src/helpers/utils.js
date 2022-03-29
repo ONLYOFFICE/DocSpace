@@ -56,6 +56,7 @@ export const initDocEditor = async (req) => {
 
     const successAuth = !!user;
     const personal = settings?.personal;
+    const deepLinkSettings = settings?.deepLink?.documents;
 
     if (!successAuth && !doc) {
       error = {
@@ -119,6 +120,7 @@ export const initDocEditor = async (req) => {
         url,
         doc,
         fileId,
+        deepLinkSettings,
       },
     };
   } catch (err) {

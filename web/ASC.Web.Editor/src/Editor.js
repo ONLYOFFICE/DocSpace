@@ -96,6 +96,7 @@ function Editor({
   isFolderDialogVisible,
   isDesktopEditor,
   initDesktop,
+  deepLinkSettings,
 }) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [documentTitle, setNewDocumentTitle] = useState("Loading...");
@@ -548,7 +549,12 @@ function Editor({
   return (
     <>
       {isMobile && !isShowEditor && (
-        <DeepLinkPage fileInfo={fileInfo} onStayBrowser={onOpenEditor} />
+        <DeepLinkPage
+          fileInfo={fileInfo}
+          onStayBrowser={onOpenEditor}
+          settings={deepLinkSettings}
+          userEmail={user.email}
+        />
       )}
 
       <EditorWrapper
