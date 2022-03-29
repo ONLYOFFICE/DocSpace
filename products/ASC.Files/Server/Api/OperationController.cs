@@ -62,7 +62,7 @@ public class OperationController : ApiControllerBase
 
     [Update("fileops/bulkdownload")]
     [Consumes("application/x-www-form-urlencoded")]
-    public Task<IEnumerable<FileOperationDto>> BulkDownloadFromForm([FromForm] DownloadRequestDto inDto)
+    public Task<IEnumerable<FileOperationDto>> BulkDownloadFromForm([FromForm][ModelBinder(BinderType = typeof(DownloadModelBinder))] DownloadRequestDto inDto)
     {
         return _operationControllerHelperString.BulkDownloadAsync(inDto);
     }
