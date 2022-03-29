@@ -8,41 +8,23 @@ import { withRouter } from "react-router-dom";
 import { isTablet } from "react-device-detect";
 
 import withFileActions from "../../../../../HOCs/withFileActions";
-import withContextOptions from "../../../../../HOCs/withContextOptions";
 import withQuickButtons from "../../../../../HOCs/withQuickButtons";
 import ItemIcon from "../../../../../components/ItemIcon";
+import marginStyles from "./CommonStyles";
+import { Base } from "@appserver/components/themes";
 
 const checkedStyle = css`
-  background: #f3f4f4;
-  margin-left: -24px;
-  margin-right: -24px;
-  padding-left: 24px;
-  padding-right: 24px;
-
-  @media (max-width: 1024px) {
-    margin-left: -16px;
-    margin-right: -16px;
-    padding-left: 16px;
-    padding-right: 16px;
-  }
+  background: ${(props) => props.theme.filesSection.rowView.checkedBackground};
+  ${marginStyles}
 `;
 
 const draggingStyle = css`
-  background: #f8f7bf;
+  background: ${(props) => props.theme.filesSection.rowView.draggingBackground};
   &:hover {
-    background: #efefb2;
+    background: ${(props) =>
+      props.theme.filesSection.rowView.draggingHoverBackground};
   }
-  margin-left: -24px;
-  margin-right: -24px;
-  padding-left: 24px;
-  padding-right: 24px;
-
-  @media (max-width: 1024px) {
-    margin-left: -16px;
-    margin-right: -16px;
-    padding-left: 16px;
-    padding-right: 16px;
-  }
+  ${marginStyles}
 `;
 
 const StyledWrapper = styled.div`
@@ -60,8 +42,38 @@ const StyledSimpleFilesRow = styled(Row)`
   cursor: ${(props) =>
     !props.isThirdPartyFolder &&
     (props.checked || props.isActive) &&
-    "url(images/cursor.palm.svg), auto"};
+    "url(/static/images/cursor.palm.react.svg), auto"};
+  ${(props) =>
+    props.inProgress &&
+    css`
+      pointer-events: none;
+      /* cursor: wait; */
+    `}
+
   margin-top: -2px;
+
+  ${(props) =>
+    props.showHotkeyBorder &&
+    css`
+      border-top: 1px solid #2da7db !important;
+      margin-top: -3px;
+      margin-left: -24px;
+      margin-right: -24px;
+      padding-left: 24px;
+      padding-right: 24px;
+    `}
+
+  ::after {
+    ${(props) =>
+      props.showHotkeyBorder &&
+      css`
+        background: #2da7db;
+        padding-left: 24px;
+        padding-right: 24px;
+        margin-left: -24px;
+        margin-right: -24px;
+      `}
+  }
 
   ${(props) =>
     !props.contextOptions &&
@@ -85,8 +97,8 @@ const StyledSimpleFilesRow = styled(Row)`
   }
 
   .row_content {
-    max-width: min-content;
-    min-width: inherit;
+    ${(props) => props.sectionWidth > 500 && `max-width: fit-content;`}
+    min-width: auto;
   }
 
   .badges {
@@ -100,9 +112,13 @@ const StyledSimpleFilesRow = styled(Row)`
     margin-right: 8px;
   }
 
-  .badge:last-child {
-    margin-right: 0px;
-  }
+  ${(props) =>
+    props.sectionWidth > 500 &&
+    `
+      .badge:last-child {
+        margin-right: 0px;
+      }
+  `}
 
   .lock-file {
     cursor: ${(props) => (props.withAccess ? "pointer" : "default")};
@@ -155,6 +171,8 @@ const StyledSimpleFilesRow = styled(Row)`
   `}
 `;
 
+StyledSimpleFilesRow.defaultProps = { theme: Base };
+
 const SimpleFilesRow = (props) => {
   const {
     item,
@@ -170,27 +188,38 @@ const SimpleFilesRow = (props) => {
     quickButtonsComponent,
     displayShareButton,
     isPrivacy,
-    contextOptionsProps,
     checkedProps,
     onFilesClick,
     onMouseClick,
     isEdit,
     isActive,
+    inProgress,
     isAdmin,
+    getContextModel,
+    showHotkeyBorder,
   } = props;
 
   const withAccess = isAdmin || item.access === 0;
+  const isSmallContainer = sectionWidth <= 500;
 
   const element = (
     <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />
   );
 
   return (
-    <StyledWrapper>
+    <StyledWrapper
+      className={`row-wrapper ${
+        showHotkeyBorder
+          ? "row-hotkey-border"
+          : checkedProps || isActive
+          ? "row-selected"
+          : ""
+      }`}
+    >
       <DragAndDrop
         data-title={item.title}
         value={value}
-        className={`files-item ${className}`}
+        className={`files-item ${className} ${item.id}_${item.file}`}
         onDrop={onDrop}
         onMouseDown={onMouseDown}
         dragging={dragging && isDragging}
@@ -201,24 +230,29 @@ const SimpleFilesRow = (props) => {
           isEdit={isEdit}
           element={element}
           sectionWidth={sectionWidth}
-          contentElement={quickButtonsComponent}
+          contentElement={isSmallContainer ? null : quickButtonsComponent}
           onSelect={onContentFileSelect}
           rowContextClick={fileContextClick}
           isPrivacy={isPrivacy}
           onClick={onMouseClick}
           onDoubleClick={onFilesClick}
           checked={checkedProps}
-          {...contextOptionsProps}
+          contextOptions={item.contextOptions}
           contextButtonSpacerWidth={displayShareButton}
           dragging={dragging && isDragging}
           isActive={isActive}
+          inProgress={inProgress}
           isThirdPartyFolder={item.isThirdPartyFolder}
+          className="files-row"
           withAccess={withAccess}
+          getContextModel={getContextModel}
+          showHotkeyBorder={showHotkeyBorder}
         >
           <FilesRowContent
             item={item}
             sectionWidth={sectionWidth}
             onFilesClick={onFilesClick}
+            quickButtons={isSmallContainer ? quickButtonsComponent : null}
           />
         </StyledSimpleFilesRow>
       </DragAndDrop>
@@ -227,7 +261,5 @@ const SimpleFilesRow = (props) => {
 };
 
 export default withTranslation(["Home", "Translations"])(
-  withFileActions(
-    withRouter(withContextOptions(withQuickButtons(SimpleFilesRow)))
-  )
+  withFileActions(withRouter(withQuickButtons(SimpleFilesRow)))
 );

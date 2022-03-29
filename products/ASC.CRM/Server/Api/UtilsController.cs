@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 using ASC.Api.CRM;
 using ASC.Common.Threading.Progress;
@@ -331,15 +332,20 @@ namespace ASC.CRM.Api
         /// <exception cref="SecurityException"></exception>
         /// <exception cref="Exception"></exception>
         [Update(@"settings/organisation/logo")]
-        public Int32 UpdateOrganisationSettingsLogo(bool reset)
+        public Task<Int32> UpdateOrganisationSettingsLogoAsync(bool reset)
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
 
+            return InternalUpdateOrganisationSettingsLogoAsync(reset);
+        }
+
+        private async Task<Int32> InternalUpdateOrganisationSettingsLogoAsync(bool reset)
+        {
             int companyLogoID;
 
             if (!reset)
             {
-                companyLogoID = _organisationLogoManager.TryUploadOrganisationLogoFromTmp(_daoFactory);
+                companyLogoID = await _organisationLogoManager.TryUploadOrganisationLogoFromTmpAsync(_daoFactory);
                 if (companyLogoID == 0)
                 {
                     throw new Exception("Downloaded image not found");
@@ -510,25 +516,30 @@ namespace ASC.CRM.Api
 
         /// <visible>false</visible>
         [Read(@"import/samplerow")]
-        public String GetImportFromCSVSampleRow(string csvFileURI, int indexRow, string jsonSettings)
+        public Task<String> GetImportFromCSVSampleRowAsync(string csvFileURI, int indexRow, string jsonSettings)
         {
             if (String.IsNullOrEmpty(csvFileURI) || indexRow < 0) throw new ArgumentException();
 
-            if (!_global.GetStore().IsFile("temp", csvFileURI)) throw new ArgumentException();
+            return InternalGetImportFromCSVSampleRowAsync(csvFileURI, indexRow, jsonSettings);
+        }
 
-            var CSVFileStream = _global.GetStore().GetReadStream("temp", csvFileURI);
+        private async Task<String> InternalGetImportFromCSVSampleRowAsync(string csvFileURI, int indexRow, string jsonSettings)
+        {
+            if (!await _global.GetStore().IsFileAsync("temp", csvFileURI)) throw new ArgumentException();
+
+            var CSVFileStream = await _global.GetStore().GetReadStreamAsync("temp", csvFileURI);
 
             return _importFromCSV.GetRow(CSVFileStream, indexRow, jsonSettings);
         }
 
         /// <visible>false</visible>
         [Create(@"import/uploadfake")]
-        public FileUploadResult ProcessUploadFake([FromBody] ProcessUploadFakeRequestDto inDto)
+        public Task<FileUploadResult> ProcessUploadFakeAsync([FromBody] ProcessUploadFakeRequestDto inDto)
         {
             var csvFileURI = inDto.CsvFileURI;
             var jsonSettings = inDto.JsonSettings;
 
-            return _importFromCSVManager.ProcessUploadFake(csvFileURI, jsonSettings);
+            return _importFromCSVManager.ProcessUploadFakeAsync(csvFileURI, jsonSettings);
         }
 
         /// <visible>false</visible>

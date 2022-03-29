@@ -1,11 +1,8 @@
 import authStore from "@appserver/common/store/AuthStore";
-//import store from "../store/store";
-
-//const { getCurrentProduct } = commonStore.auth.selectors;
+import { toCommunityHostname } from "@appserver/common/utils";
+import history from "@appserver/common/history";
 
 export const setDocumentTitle = (subTitle = null) => {
-  // const state = store.getState();
-  // const { auth: commonState } = state;
   const { isAuthenticated, settingsStore, product: currentModule } = authStore;
   const { organizationName } = settingsStore;
 
@@ -23,4 +20,52 @@ export const setDocumentTitle = (subTitle = null) => {
   }
 
   document.title = title;
+};
+
+export const checkIfModuleOld = (link) => {
+  if (
+    !link ||
+    link.includes("files") ||
+    link.includes("people") ||
+    link.includes("settings")
+  ) {
+    return false;
+  } else {
+    return true;
+  }
+};
+
+export const getLink = (link) => {
+  if (!link) return;
+
+  if (!checkIfModuleOld(link)) {
+    return link;
+  }
+
+  if (link.includes("mail") || link.includes("calendar")) {
+    link = link.replace("products", "addons");
+  } else {
+    link = link.replace("products", "Products");
+    link = link.replace("crm", "CRM");
+    link = link.replace("projects", "Projects");
+  }
+
+  const { protocol, hostname } = window.location;
+
+  const communityHostname = toCommunityHostname(hostname);
+
+  return `${protocol}//${communityHostname}${link}?desktop_view=true`;
+};
+
+export const onItemClick = (e) => {
+  if (!e) return;
+  e.preventDefault();
+
+  const link = e.currentTarget.dataset.link;
+
+  if (checkIfModuleOld(link)) {
+    return window.open(link, "_blank");
+  }
+
+  history.push(link);
 };

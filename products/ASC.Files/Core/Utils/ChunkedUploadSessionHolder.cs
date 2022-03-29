@@ -26,6 +26,7 @@
 
 using System;
 using System.IO;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Logging;
@@ -74,54 +75,58 @@ namespace ASC.Web.Files.Utils
             //}
         }
 
-        public void StoreSession<T>(ChunkedUploadSession<T> s)
+        public async Task StoreSessionAsync<T>(ChunkedUploadSession<T> s)
         {
-            CommonSessionHolder(false).Store(s);
+            await CommonSessionHolder(false).StoreAsync(s);
         }
 
-        public void RemoveSession<T>(ChunkedUploadSession<T> s)
+        public async Task RemoveSessionAsync<T>(ChunkedUploadSession<T> s)
         {
-            CommonSessionHolder(false).Remove(s);
+            await CommonSessionHolder(false).RemoveAsync(s);
         }
 
-        public ChunkedUploadSession<T> GetSession<T>(string sessionId)
+        public async Task<ChunkedUploadSession<T>> GetSessionAsync<T>(string sessionId)
         {
-            using var stream = CommonSessionHolder(false).GetStream(sessionId);
-            var chunkedUploadSession =  ChunkedUploadSession<T>.Deserialize(stream, FileHelper);
+            using var stream = await CommonSessionHolder(false).GetStreamAsync(sessionId);
+            var chunkedUploadSession = ChunkedUploadSession<T>.Deserialize(stream, FileHelper);
             return chunkedUploadSession;
         }
 
-
-        public ChunkedUploadSession<T> CreateUploadSession<T>(File<T> file, long contentLength)
+        public async Task<ChunkedUploadSession<T>> CreateUploadSessionAsync<T>(File<T> file, long contentLength)
         {
             var result = new ChunkedUploadSession<T>(file, contentLength);
-            CommonSessionHolder().Init(result);
+            await CommonSessionHolder().InitAsync(result);
             return result;
         }
 
-        public void UploadChunk<T>(ChunkedUploadSession<T> uploadSession, Stream stream, long length)
+        public async Task UploadChunkAsync<T>(ChunkedUploadSession<T> uploadSession, Stream stream, long length)
         {
-            CommonSessionHolder().UploadChunk(uploadSession, stream, length);
+            await CommonSessionHolder().UploadChunkAsync(uploadSession, stream, length);
         }
 
-        public void FinalizeUploadSession<T>(ChunkedUploadSession<T> uploadSession)
+        public async Task FinalizeUploadSessionAsync<T>(ChunkedUploadSession<T> uploadSession)
         {
-            CommonSessionHolder().Finalize(uploadSession);
+            await CommonSessionHolder().FinalizeAsync(uploadSession);
         }
 
-        public void Move<T>(ChunkedUploadSession<T> chunkedUploadSession, string newPath)
+        public async Task MoveAsync<T>(ChunkedUploadSession<T> chunkedUploadSession, string newPath)
         {
-            CommonSessionHolder().Move(chunkedUploadSession, newPath, chunkedUploadSession.CheckQuota);
+            await CommonSessionHolder().MoveAsync(chunkedUploadSession, newPath, chunkedUploadSession.CheckQuota);
         }
 
-        public void AbortUploadSession<T>(ChunkedUploadSession<T> uploadSession)
+        public async Task AbortUploadSessionAsync<T>(ChunkedUploadSession<T> uploadSession)
         {
-            CommonSessionHolder().Abort(uploadSession);
+            await CommonSessionHolder().AbortAsync(uploadSession);
         }
 
         public Stream UploadSingleChunk<T>(ChunkedUploadSession<T> uploadSession, Stream stream, long chunkLength)
         {
             return CommonSessionHolder().UploadSingleChunk(uploadSession, stream, chunkLength);
+        }
+
+        public Task<Stream> UploadSingleChunkAsync<T>(ChunkedUploadSession<T> uploadSession, Stream stream, long chunkLength)
+        {
+            return CommonSessionHolder().UploadSingleChunkAsync(uploadSession, stream, chunkLength);
         }
 
         private CommonChunkedUploadSessionHolder CommonSessionHolder(bool currentTenant = true)

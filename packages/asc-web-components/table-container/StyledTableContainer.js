@@ -7,9 +7,9 @@ import { isMobile } from "react-device-detect";
 const StyledTableContainer = styled.div`
   -moz-user-select: none;
 
-  width: 100%;
+  width: calc(100% - 5px);
   max-width: 100%;
-  margin-top: -18px;
+  margin-top: -19px;
 
   display: grid;
 
@@ -25,26 +25,25 @@ const StyledTableContainer = styled.div`
     height: 10px;
     margin: 14px 8px 0 auto;
     z-index: 1;
-    border-right: 2px solid #d0d5da;
+    border-right: ${(props) => props.theme.tableContainer.borderRight};
     &:hover {
-      border-color: #657077;
+      border-color: ${(props) => props.theme.tableContainer.hoverBorderColor};
     }
   }
 
   .table-container_group-menu,
   .table-container_header {
-    padding: 0 24px;
+    padding: 0 20px;
 
     border-bottom: 1px solid;
     border-image-slice: 1;
-    border-image-source: linear-gradient(
-      to right,
-      #ffffff 21px,
-      #eceef1 21px,
-      #eceef1 calc(100% - 31px),
-      #ffffff calc(100% - 31px)
-    );
+    border-image-source: ${(props) =>
+      props.theme.tableContainer.header.borderImageSource};
     border-top: 0;
+  }
+  .lengthen-header {
+    border-bottom: ${(props) => props.theme.tableContainer.header.borderBottom};
+    border-image-source: none;
   }
 
   .content-container {
@@ -58,7 +57,7 @@ const StyledTableContainer = styled.div`
 
   .table-cell {
     height: 47px;
-    border-bottom: 1px solid #eceef1;
+    border-bottom: ${(props) => props.theme.tableContainer.tableCellBorder};
   }
 
   .table-container_group-menu {
@@ -68,16 +67,20 @@ const StyledTableContainer = styled.div`
   }
 `;
 
+StyledTableContainer.defaultProps = { theme: Base };
+
 const StyledTableGroupMenu = styled.div`
   position: relative;
-  background: #fff;
+  background: ${(props) => props.theme.tableContainer.groupMenu.background};
+  border-bottom: ${(props) =>
+    props.theme.tableContainer.groupMenu.borderBottom};
   display: flex;
   flex-direction: row;
   align-items: center;
   width: 100%;
   z-index: 199;
   height: 52px;
-  box-shadow: 0px 5px 20px rgba(4, 15, 27, 7%);
+  box-shadow: ${(props) => props.theme.tableContainer.groupMenu.boxShadow};
   border-radius: 0px 0px 6px 6px;
   margin: 0;
   width: 100%;
@@ -96,7 +99,8 @@ const StyledTableGroupMenu = styled.div`
   }
 
   .table-container_group-menu-separator {
-    border-right: 1px solid #d0d5da;
+    border-right: ${(props) =>
+      props.theme.tableContainer.groupMenu.borderRight};
     width: 2px;
     height: 20px;
     margin: 0 8px;
@@ -119,13 +123,15 @@ const StyledTableGroupMenu = styled.div`
   }
 `;
 
+StyledTableGroupMenu.defaultProps = { theme: Base };
+
 const StyledTableHeader = styled.div`
   position: fixed;
-  background: #fff;
+  background: ${(props) => props.theme.tableContainer.header.background};
   display: grid;
   z-index: 1;
   height: 39px;
-  border-bottom: 1px solid #eceef1;
+  border-bottom: ${(props) => props.theme.tableContainer.header.borderBottom};
   margin: 0 -20px;
   padding: 0 20px;
 
@@ -138,13 +144,14 @@ const StyledTableHeader = styled.div`
   }
 `;
 
+StyledTableHeader.defaultProps = { theme: Base };
+
 const StyledTableHeaderCell = styled.div`
-  cursor: ${(props) => (props.showIcon ? "pointer" : "default")};
+  cursor: ${(props) =>
+    props.showIcon && props.sortingVisible ? "pointer" : "default"};
 
   .header-container-text-icon {
     padding: 13px 0 0 4px;
-
-    padding: 16px 0 16px 4px;
 
     display: ${(props) =>
       props.isActive && props.showIcon ? "block" : "none"};
@@ -152,8 +159,24 @@ const StyledTableHeaderCell = styled.div`
       props.sorted &&
       css`
         transform: scale(1, -1);
-        padding: 12px 0 0 4px;
+        padding: 14px 0 14px 4px;
       `}
+
+    svg {
+      path {
+        fill: ${(props) =>
+          props.isActive
+            ? props.theme.tableContainer.header.activeIconColor
+            : props.theme.tableContainer.header.iconColor} !important;
+      }
+    }
+
+    &:hover {
+      path {
+        fill: ${(props) =>
+          props.theme.tableContainer.header.hoverIconColor} !important;
+      }
+    }
   }
 
   :hover {
@@ -179,11 +202,19 @@ const StyledTableHeaderCell = styled.div`
     height: 38px;
     display: flex;
     align-items: center;
+    color: ${(props) =>
+      props.isActive
+        ? props.theme.tableContainer.header.activeTextColor
+        : props.theme.tableContainer.header.textColor} !important;
+
     &:hover {
-      color: #657077;
+      color: ${(props) =>
+        props.theme.tableContainer.header.hoverTextColor} !important;
     }
   }
 `;
+
+StyledTableHeaderCell.defaultProps = { theme: Base };
 
 const StyledTableBody = styled.div`
   display: contents;
@@ -204,13 +235,17 @@ const StyledTableRow = styled.div`
         ? `${props.theme.dragAndDrop.acceptBackground} !important`
         : "none"};
   }
+
+  .table-container_row-loader {
+    display: inline-flex;
+  }
 `;
 
 const StyledTableCell = styled.div`
   /* padding-right: 8px; */
   height: 40px;
   max-height: 40px;
-  border-bottom: 1px solid #eceef1;
+  border-bottom: ${(props) => props.theme.tableContainer.tableCell.border};
   overflow: hidden;
 
   display: flex;
@@ -225,6 +260,8 @@ const StyledTableCell = styled.div`
   }
   .table-container_row-checkbox {
     display: ${(props) => (props.checked ? "flex" : "none")};
+    padding: 12px;
+    margin-left: -12px;
   }
 
   ${(props) =>
@@ -240,6 +277,8 @@ const StyledTableCell = styled.div`
       }
     `}
 `;
+
+StyledTableCell.defaultProps = { theme: Base };
 
 const StyledTableSettings = styled.div`
   margin: 14px 0 0px 8px;

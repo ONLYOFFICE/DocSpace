@@ -65,17 +65,17 @@ namespace ASC.Data.Backup.Storage
 
         public List<BackupRecord> GetExpiredBackupRecords()
         {
-            return _backupContext.Value.Backups.AsNoTracking().Where(b => b.ExpiresOn != DateTime.MinValue && b.ExpiresOn <= DateTime.UtcNow).ToList();
+            return _backupContext.Value.Backups.AsNoTracking().AsQueryable().Where(b => b.ExpiresOn != DateTime.MinValue && b.ExpiresOn <= DateTime.UtcNow).ToList();
         }
 
         public List<BackupRecord> GetScheduledBackupRecords()
         {
-            return _backupContext.Value.Backups.AsNoTracking().Where(b => b.IsScheduled == true).ToList();
+            return _backupContext.Value.Backups.AsQueryable().AsNoTracking().Where(b => b.IsScheduled == true).ToList();
         }
 
         public List<BackupRecord> GetBackupRecordsByTenantId(int tenantId)
         {
-            return _backupContext.Value.Backups.AsNoTracking().Where(b => b.TenantId == tenantId).ToList();
+            return _backupContext.Value.Backups.AsQueryable().AsNoTracking().Where(b => b.TenantId == tenantId).ToList();
         }
 
         public void DeleteBackupRecord(Guid id)
@@ -97,7 +97,7 @@ namespace ASC.Data.Backup.Storage
 
         public void DeleteBackupSchedule(int tenantId)
         {
-            var shedule = _backupContext.Value.Schedules.Where(s => s.TenantId == tenantId).ToList();
+            var shedule = _backupContext.Value.Schedules.AsQueryable().Where(s => s.TenantId == tenantId).ToList();
 
             _backupContext.Value.Schedules.RemoveRange(shedule);
             _backupContext.Value.SaveChanges();
@@ -105,7 +105,7 @@ namespace ASC.Data.Backup.Storage
 
         public List<BackupSchedule> GetBackupSchedules()
         {
-            var query = _backupContext.Value.Schedules.Join(_backupContext.Value.Tenants,
+            var query = _backupContext.Value.Schedules.AsQueryable().Join(_backupContext.Value.Tenants,
                 s => s.TenantId,
                 t => t.Id,
                 (s, t) => new { schedule = s, tenant = t })

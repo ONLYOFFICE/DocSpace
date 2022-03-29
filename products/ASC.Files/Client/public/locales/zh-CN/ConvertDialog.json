@@ -4,5 +4,7 @@
   "ConversionTitle": "文档上传",
   "ConvertAndOpenTitle": "转换并打开文档",
   "HideMessage": "不要再次显示此消息",
-  "SaveOriginalFormatMessage": "以原始格式保存文件副本"
+  "SaveOriginalFormatMessage": "以原始格式保存文件副本",
+  "ConvertedFileDestination": "该文件的副本将在文件夹中创建<strong>{{folderTitle}}</strong>",
+  "InfoCreateFileIn": "新的文件“{{fileTitle}}”设置为“{{folderTitle}}”"
 }

@@ -6,7 +6,7 @@ import Button from "@appserver/components/button";
 import TextInput from "@appserver/components/text-input";
 import FieldContainer from "@appserver/components/field-container";
 import Text from "@appserver/components/text";
-import PageLayout from "@appserver/common/components/PageLayout";
+import Section from "@appserver/common/components/Section";
 import { inject, observer } from "mobx-react";
 import Box from "@appserver/components/box";
 import withLoader from "../withLoader";
@@ -54,6 +54,12 @@ const StyledForm = styled(Box)`
   .set-app-text {
     margin-top: 14px;
   }
+
+  @media ${tablet} {
+    #qrcode {
+      display: none;
+    }
+  }
 `;
 const TfaActivationForm = withLoader((props) => {
   const {
@@ -97,8 +103,8 @@ const TfaActivationForm = withLoader((props) => {
   const width = window.innerWidth;
 
   return (
-    <PageLayout>
-      <PageLayout.SectionBody>
+    <Section>
+      <Section.SectionBody>
         <StyledForm className="set-app-container">
           <div>
             <Box className="set-app-description" marginProp="0 0 32px 0">
@@ -170,7 +176,7 @@ const TfaActivationForm = withLoader((props) => {
                 <Button
                   scale
                   primary
-                  size={width <= 1024 ? "large" : "medium"}
+                  size={width <= 1024 ? "medium" : "normal"}
                   tabIndex={3}
                   label={
                     isLoading
@@ -188,8 +194,8 @@ const TfaActivationForm = withLoader((props) => {
             <img src={qrCode} height="180px" width="180px" alt="QR-code"></img>
           </div>
         </StyledForm>
-      </PageLayout.SectionBody>
-    </PageLayout>
+      </Section.SectionBody>
+    </Section>
   );
 });
 

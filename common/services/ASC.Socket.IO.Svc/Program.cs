@@ -47,7 +47,7 @@ using StackExchange.Redis.Extensions.Newtonsoft;
 
 namespace ASC.Socket.IO.Svc
 {
-public class Program
+    public class Program
     {
         public async static Task Main(string[] args)
         {
@@ -93,6 +93,8 @@ public class Program
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddMemoryCache();
+                    services.AddHttpClient();
+
                     var diHelper = new DIHelper(services);
 
                     var redisConfiguration = hostContext.Configuration.GetSection("Redis").Get<RedisConfiguration>();

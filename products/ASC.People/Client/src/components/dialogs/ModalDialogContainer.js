@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { tablet } from "@appserver/components/utils/device";
 import ModalDialog from "@appserver/components/modal-dialog";
+import Base from "@appserver/components/themes/base";
 
 const ModalDialogContainer = styled(ModalDialog)`
   .invite-link-dialog-wrapper {
@@ -59,7 +60,7 @@ const ModalDialogContainer = styled(ModalDialog)`
 
     .modal-dialog-content {
       padding: 8px 16px;
-      border: 1px solid lightgray;
+      border: ${(props) => props.theme.peopleDialogs.modal.border};
 
       .modal-dialog-checkbox:not(:last-child) {
         padding-bottom: 4px;
@@ -67,5 +68,7 @@ const ModalDialogContainer = styled(ModalDialog)`
     }
   }
 `;
+
+ModalDialogContainer.defaultProps = { theme: Base };
 
 export default ModalDialogContainer;

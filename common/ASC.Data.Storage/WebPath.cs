@@ -31,6 +31,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Logging;
@@ -196,18 +197,24 @@ namespace ASC.Data.Storage
             HttpContextAccessor = httpContextAccessor;
         }
 
-        public string GetPath(string relativePath)
+        public Task<string> GetPathAsync(string relativePath)
         {
             if (!string.IsNullOrEmpty(relativePath) && relativePath.IndexOf('~') == 0)
             {
                 throw new ArgumentException($"bad path format {relativePath} remove '~'", nameof(relativePath));
             }
 
+            return InternalGetPathAsync(relativePath);
+        }
+
+        private async Task<string> InternalGetPathAsync(string relativePath)
+        {
             if (CoreBaseSettings.Standalone && ServiceProvider.GetService<StaticUploader>().CanUpload()) //hack for skip resolve DistributedTaskQueueOptionsManager
             {
                 try
                 {
-                    var result = StorageSettingsHelper.DataStore(SettingsManager.Load<CdnStorageSettings>()).GetInternalUri("", relativePath, TimeSpan.Zero, null).AbsoluteUri.ToLower();
+                    var uri = await StorageSettingsHelper.DataStore(SettingsManager.Load<CdnStorageSettings>()).GetInternalUriAsync("", relativePath, TimeSpan.Zero, null);
+                    var result = uri.AbsoluteUri.ToLower();
                     if (!string.IsNullOrEmpty(result)) return result;
                 }
                 catch (Exception)
@@ -219,9 +226,9 @@ namespace ASC.Data.Storage
             return WebPathSettings.GetPath(HttpContextAccessor?.HttpContext, Options, relativePath);
         }
 
-        public bool Exists(string relativePath)
+        public async Task<bool> ExistsAsync(string relativePath)
         {
-            var path = GetPath(relativePath);
+            var path = await GetPathAsync(relativePath);
             if (!Existing.ContainsKey(path))
             {
                 if (Uri.IsWellFormedUriString(path, UriKind.Relative) && HttpContextAccessor?.HttpContext != null)

@@ -26,6 +26,7 @@
 
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 using ASC.Files.Core;
 
@@ -35,15 +36,14 @@ namespace ASC.Web.Files.ThirdPartyApp
 {
     public interface IThirdPartyApp
     {
-        bool Request(HttpContext context);
+        Task<bool> RequestAsync(HttpContext context);
 
         string GetRefreshUrl();
 
         File<string> GetFile(string fileId, out bool editable);
 
         string GetFileStreamUrl(File<string> file);
-
-        void SaveFile(string fileId, string fileType, string downloadUrl, Stream stream);
+        Task SaveFileAsync(string fileId, string fileType, string downloadUrl, Stream stream);
     }
 
     public static class ThirdPartySelector

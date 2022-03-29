@@ -1,17 +1,5 @@
 ﻿{
-  "DomainIpAddress": "Domény ako adresa IP nie sú podporované",
   "EmailActivationDescription": "Pokyny na aktiváciu budú odoslané na zadaný e-mail",
   "EmailChangeTitle": "Zmena e-mailu",
-  "EmptyEmail": "Žiadny e-mail nebol analyzovaný",
-  "EnterEmail": "Zadajte nový e-mail",
-  "IncorrectDomain": "Nesprávna doména",
-  "IncorrectEmail": "Nesprávny e-mail",
-  "IncorrectLocalPart": "Nesprávna miestna časť",
-  "LocalDomain": "Miestne domény nie sú podporované",
-  "ManyEmails": "Analyzovalo sa príliš veľa e -mailov",
-  "MaxLengthExceeded": "Maximálna dĺžka používateľského mena alebo inej miestnej časti je 64 znakov.",
-  "PunycodeDomain": "Domény Punycode nie sú podporované",
-  "PunycodeLocalPart": "Miestna časť Punycode nie je podporovaná",
-  "SameEmail": "Nemôžete použiť ten istý e-mail",
-  "SpacesInLocalPart": "Miestna časť nemôže obsahovať medzery"
+  "EnterEmail": "Zadajte nový e-mail"
 }

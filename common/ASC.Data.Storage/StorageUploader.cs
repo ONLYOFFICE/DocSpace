@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Caching;
@@ -174,25 +175,25 @@ namespace ASC.Data.Storage
                     {
                         //Status = module + domain;
                         Log.DebugFormat("Domain: {0}", domain);
-                        files = oldStore.ListFilesRelative(domain, "\\", "*.*", true);
+                        files = oldStore.ListFilesRelativeAsync(domain, "\\", "*.*", true).ToArrayAsync().Result;
 
                         foreach (var file in files)
                         {
                             Log.DebugFormat("File: {0}", file);
-                            crossModuleTransferUtility.CopyFile(domain, file, domain, file);
+                            crossModuleTransferUtility.CopyFileAsync(domain, file, domain, file).Wait();
                         }
                     }
 
                     Log.Debug("Domain:");
 
-                    files = oldStore.ListFilesRelative(string.Empty, "\\", "*.*", true)
+                    files = oldStore.ListFilesRelativeAsync(string.Empty, "\\", "*.*", true).ToArrayAsync().Result
                         .Where(path => domains.All(domain => !path.Contains(domain + "/")))
                         .ToArray();
 
                     foreach (var file in files)
                     {
                         Log.DebugFormat("File: {0}", file);
-                        crossModuleTransferUtility.CopyFile("", file, "", file);
+                        crossModuleTransferUtility.CopyFileAsync("", file, "", file).Wait();
                     }
 
                     StepDone();
@@ -214,7 +215,7 @@ namespace ASC.Data.Storage
             }
 
             MigrationPublish();
-        }
+        }       
 
         public object Clone()
         {

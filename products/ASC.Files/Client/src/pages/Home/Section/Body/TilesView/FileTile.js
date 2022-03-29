@@ -8,7 +8,6 @@ import FilesTileContent from "./FilesTileContent";
 import { withRouter } from "react-router-dom";
 
 import withFileActions from "../../../../../HOCs/withFileActions";
-import withContextOptions from "../../../../../HOCs/withContextOptions";
 import withQuickButtons from "../../../../../HOCs/withQuickButtons";
 import ItemIcon from "../../../../../components/ItemIcon";
 import withBadges from "../../../../../HOCs/withBadges";
@@ -27,16 +26,18 @@ const FileTile = (props) => {
     value,
     displayShareButton,
     isPrivacy,
-    contextOptionsProps,
     checkedProps,
     getIcon,
     onFilesClick,
     onMouseClick,
     isActive,
     isEdit,
+    inProgress,
     quickButtonsComponent,
+    showHotkeyBorder,
     badgesComponent,
     t,
+    getContextModel,
   } = props;
 
   const temporaryExtension =
@@ -59,11 +60,11 @@ const FileTile = (props) => {
       <DragAndDrop
         data-title={item.title}
         value={value}
-        className={`files-item ${className}`}
+        className={`files-item ${className} ${item.id}_${item.fileExst}`}
         onDrop={onDrop}
         onMouseDown={onMouseDown}
         dragging={dragging && isDragging}
-        {...contextOptionsProps}
+        contextOptions={item.contextOptions}
       >
         <Tile
           key={item.id}
@@ -81,15 +82,19 @@ const FileTile = (props) => {
           thumbnailClick={onFilesClick}
           onDoubleClick={onFilesClick}
           checked={checkedProps}
-          {...contextOptionsProps}
+          contextOptions={item.contextOptions}
           contextButtonSpacerWidth={displayShareButton}
           isActive={isActive}
+          inProgress={inProgress}
           isEdit={isEdit}
+          getContextModel={getContextModel}
+          t={t}
           title={
             item.isFolder
               ? t("Translations:TitleShowFolderActions")
               : t("Translations:TitleShowActions")
           }
+          showHotkeyBorder={showHotkeyBorder}
         >
           <FilesTileContent
             item={item}
@@ -103,15 +108,13 @@ const FileTile = (props) => {
   );
 };
 
-export default inject(({ formatsStore }) => {
-  const { getIcon } = formatsStore.iconFormatsStore;
+export default inject(({ settingsStore }) => {
+  const { getIcon } = settingsStore;
   return { getIcon };
 })(
   withTranslation(["Home", "VersionBadge"])(
     withFileActions(
-      withContextOptions(
-        withRouter(withBadges(withQuickButtons(observer(FileTile))))
-      )
+      withRouter(withBadges(withQuickButtons(observer(FileTile))))
     )
   )
 );

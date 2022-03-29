@@ -108,7 +108,7 @@ namespace ASC.Data.Storage.Encryption
                     }
                     Parallel.ForEach(dictionary, (elem) =>
                     {
-                        EncryptStore(tenant, elem.Key, elem.Value, storageFactoryConfig, log);
+                        EncryptStoreAsync(tenant, elem.Key, elem.Value, storageFactoryConfig, log).Wait();
                     });
                 }
 
@@ -117,7 +117,7 @@ namespace ASC.Data.Storage.Encryption
 
                 if (!HasErrors)
                 {
-                    DeleteProgressFiles(storageFactory);
+                    DeleteProgressFilesAsync(storageFactory).Wait();
                     SaveNewSettings(encryptionSettingsHelper, log);
                 }
 
@@ -136,20 +136,19 @@ namespace ASC.Data.Storage.Encryption
             }
         }
 
-
-        private void EncryptStore(Tenant tenant, string module, DiscDataStore store, StorageFactoryConfig storageFactoryConfig, ILog log)
+        private async Task EncryptStoreAsync(Tenant tenant, string module, DiscDataStore store, StorageFactoryConfig storageFactoryConfig, ILog log)
         {
             var domains = storageFactoryConfig.GetDomainList(ConfigPath, module).ToList();
 
             domains.Add(string.Empty);
 
-            var progress = ReadProgress(store);
+            var progress = await ReadProgressAsync(store);
 
             foreach (var domain in domains)
             {
                 var logParent = $"Tenant: {tenant.TenantAlias}, Module: {module}, Domain: {domain}";
 
-                var files = GetFiles(domains, progress, store, domain);
+                var files = await GetFilesAsync(domains, progress, store, domain);
 
                 EncryptFiles(store, domain, files, logParent, log);
             }
@@ -158,27 +157,32 @@ namespace ASC.Data.Storage.Encryption
 
             log.DebugFormat("Percentage: {0}", Percentage);
         }
+      
+        private Task<List<string>> ReadProgressAsync(DiscDataStore store)
+        {
+            if (!UseProgressFile)
+            {
+                return Task.FromResult(new List<string>());
+            }
 
-        private List<string> ReadProgress(DiscDataStore store)
+            return InternalReadProgressAsync(store);
+        }
+
+        private async Task<List<string>> InternalReadProgressAsync(DiscDataStore store)
         {
             var encryptedFiles = new List<string>();
 
-            if (!UseProgressFile)
+            if (await store.IsFileAsync(string.Empty, ProgressFileName))
             {
-                return encryptedFiles;
-            }
-
-            if (store.IsFile(string.Empty, ProgressFileName))
-            {
-                using var stream = store.GetReadStream(string.Empty, ProgressFileName);
+                using var stream = await store.GetReadStreamAsync(string.Empty, ProgressFileName);
                 using var reader = new StreamReader(stream);
-                        string line;
+                string line;
 
-                        while ((line = reader.ReadLine()) != null)
-                        {
-                            encryptedFiles.Add(line);
-                        }
-                    }
+                while ((line = reader.ReadLine()) != null)
+                {
+                    encryptedFiles.Add(line);
+                }
+            }
             else
             {
                 store.GetWriteStream(string.Empty, ProgressFileName).Close();
@@ -187,9 +191,9 @@ namespace ASC.Data.Storage.Encryption
             return encryptedFiles;
         }
 
-        private IEnumerable<string> GetFiles(List<string> domains, List<string> progress, DiscDataStore targetStore, string targetDomain)
+        private async Task<IEnumerable<string>> GetFilesAsync(List<string> domains, List<string> progress, DiscDataStore targetStore, string targetDomain)
         {
-            IEnumerable<string> files = targetStore.ListFilesRelative(targetDomain, "\\", "*.*", true);
+            IEnumerable<string> files = await targetStore.ListFilesRelativeAsync(targetDomain, "\\", "*.*", true).ToListAsync();
 
             if (progress.Count > 0)
             {
@@ -254,10 +258,10 @@ namespace ASC.Data.Storage.Encryption
 
             using var stream = store.GetWriteStream(string.Empty, ProgressFileName, FileMode.Append);
             using var writer = new StreamWriter(stream);
-                    writer.WriteLine(file);
-                }
+            writer.WriteLine(file);
+        }
 
-        private void DeleteProgressFiles(StorageFactory storageFactory)
+        private async Task DeleteProgressFilesAsync(StorageFactory storageFactory)
         {
             foreach (var tenant in Tenants)
             {
@@ -265,9 +269,9 @@ namespace ASC.Data.Storage.Encryption
                 {
                     var store = (DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.TenantId.ToString(), module);
 
-                    if (store.IsFile(string.Empty, ProgressFileName))
+                    if (await store.IsFileAsync(string.Empty, ProgressFileName))
                     {
-                        store.Delete(string.Empty, ProgressFileName);
+                        await store.DeleteAsync(string.Empty, ProgressFileName);
                     }
                 }
             }

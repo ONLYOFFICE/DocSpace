@@ -39,6 +39,10 @@ class SettingsSetupStore {
     selectedConsumer: {},
   };
 
+  dataManagement = {
+    commonThirdPartyList: [],
+  };
+
   constructor() {
     this.selectionStore = new SelectionStore(this);
     makeAutoObservable(this);
@@ -100,6 +104,13 @@ class SettingsSetupStore {
     this.security.accessRight.selectorIsOpen = isOpen;
   };
 
+  setCommonThirdPartyList = (commonThirdPartyList) => {
+    commonThirdPartyList.map((currentValue, index) => {
+      commonThirdPartyList[index].key = `0-${index}`;
+    });
+
+    this.dataManagement.commonThirdPartyList = commonThirdPartyList;
+  };
   setSelectedConsumer = (selectedConsumerName) => {
     this.integration.selectedConsumer =
       this.integration.consumers.find((c) => c.name === selectedConsumerName) ||
@@ -197,10 +208,55 @@ class SettingsSetupStore {
     this.setLogoUrls(Object.values(res));
   };
 
+  setWhiteLabelSettings = async (data) => {
+    const response = await api.settings.setWhiteLabelSettings(data);
+    return Promise.resolve(response);
+  };
+
+  restoreWhiteLabelSettings = async (isDefault) => {
+    const res = await api.settings.restoreWhiteLabelSettings(isDefault);
+  };
+
   setLanguageAndTime = async (lng, timeZoneID) => {
     const res = await api.settings.setLanguageAndTime(lng, timeZoneID);
     //console.log("setLanguageAndTime", res);
     //if (res) this.setPortalLanguageAndTime({ lng, timeZoneID });
+  };
+
+  setPortalRename = async (alias) => {
+    const res = await api.portal.setPortalRename(alias);
+  };
+
+  setMailDomainSettings = async (data) => {
+    const res = await api.settings.setMailDomainSettings(data);
+  };
+
+  setDNSSettings = async (dnsName, enable) => {
+    const res = await api.settings.setMailDomainSettings(dnsName, enable);
+  };
+
+  setIpRestrictions = async (data) => {
+    const res = await api.settings.setIpRestrictions(data);
+  };
+
+  setIpRestrictionsEnable = async (data) => {
+    const res = await api.settings.setIpRestrictionsEnable(data);
+  };
+
+  setMessageSettings = async (turnOn) => {
+    const res = await api.settings.setMessageSettings(turnOn);
+  };
+
+  setCookieSettings = async (lifeTime) => {
+    const res = await api.settings.setCookieSettings(lifeTime);
+  };
+
+  setLifetimeAuditSettings = async (data) => {
+    const res = await api.settings.setLifetimeAuditSettings(data);
+  };
+
+  getAuditTrailReport = async () => {
+    const res = await api.settings.getAuditTrailReport();
   };
 
   setGreetingTitle = async (greetingTitle) => {
@@ -259,6 +315,12 @@ class SettingsSetupStore {
 
   sendOwnerChange = (id) => {
     return api.settings.sendOwnerChange(id);
+  };
+
+  getCommonThirdPartyList = async () => {
+    const res = await api.settings.getCommonThirdPartyList();
+
+    this.setCommonThirdPartyList(res);
   };
 }
 

@@ -17,6 +17,7 @@ import { combineUrl, convertLanguage } from "@appserver/common/utils";
 import withCultureNames from "@appserver/common/hoc/withCultureNames";
 import config from "../../../../../../package.json";
 import NoUserSelect from "@appserver/components/utils/commonStyles";
+import { Base } from "@appserver/components/themes";
 
 const InfoContainer = styled.div`
   margin-bottom: 24px;
@@ -41,8 +42,10 @@ const InfoItemLabel = styled.div`
   }
 
   white-space: nowrap;
-  color: #83888d;
+  color: ${(props) => props.theme.profileInfo.color};
 `;
+
+InfoItemLabel.defaultProps = { theme: Base };
 
 const InfoItemValue = styled.div`
   width: 260px;
@@ -68,7 +71,7 @@ const InfoItemValue = styled.div`
       margin-top: 6px;
     }
     @media (max-width: 1024px) {
-      padding: 6px 24px 8px 8px;
+      padding: 6px 8px 8px 8px;
       margin-left: -8px;
     }
   }
@@ -205,6 +208,7 @@ class ProfileInfo extends React.PureComponent {
       isSelf,
       culture,
       personal,
+      theme,
     } = this.props;
 
     const {
@@ -252,12 +256,17 @@ class ProfileInfo extends React.PureComponent {
         <Trans t={t} i18nKey="NotFoundLanguage" ns="Common">
           "In case you cannot find your language in the list of the available
           ones, feel free to write to us at
-          <Link href={`mailto:${supportEmail}`} isHovered={true}>
+          <Link
+            href={`mailto:${supportEmail}`}
+            isHovered={true}
+            color={theme.profileInfo.tooltipLinkColor}
+          >
             {{ supportEmail }}
           </Link>
           to take part in the translation and get up to 1 year free of charge."
         </Trans>{" "}
         <Link
+          color={theme.profileInfo.tooltipLinkColor}
           isHovered={true}
           href="https://helpcenter.onlyoffice.com/ru/guides/become-translator.aspx"
           target="_blank"
@@ -272,7 +281,7 @@ class ProfileInfo extends React.PureComponent {
         {!personal && (
           <InfoItem>
             <InfoItemLabel>{t("Common:Type")}:</InfoItemLabel>
-            <InfoItemValue>{type}</InfoItemValue>
+            <InfoItemValue className="profile-info_type">{type}</InfoItemValue>
           </InfoItem>
         )}
         {email && (
@@ -286,7 +295,7 @@ class ProfileInfo extends React.PureComponent {
                     title={t("Translations:PendingTitle")}
                   >
                     <IconButton
-                      color="#C96C27"
+                      color={theme.profileInfo.iconColor}
                       size={16}
                       iconName="images/danger.react.svg"
                       isFill={true}
@@ -317,37 +326,49 @@ class ProfileInfo extends React.PureComponent {
         {sex && (
           <InfoItem>
             <InfoItemLabel>{t("Translations:Sex")}:</InfoItemLabel>
-            <InfoItemValue>{formatedSex}</InfoItemValue>
+            <InfoItemValue className="profile-info_sex">
+              {formatedSex}
+            </InfoItemValue>
           </InfoItem>
         )}
         {birthday && (
           <InfoItem>
             <InfoItemLabel>{t("Translations:Birthdate")}:</InfoItemLabel>
-            <InfoItemValue>{birthDayDate}</InfoItemValue>
+            <InfoItemValue className="profile-info_birthdate">
+              {birthDayDate}
+            </InfoItemValue>
           </InfoItem>
         )}
         {!personal && title && (
           <InfoItem>
             <InfoItemLabel>{userPostCaption}:</InfoItemLabel>
-            <InfoItemValue>{title}</InfoItemValue>
+            <InfoItemValue className="profile-info_title">
+              {title}
+            </InfoItemValue>
           </InfoItem>
         )}
         {!personal && department && (
           <InfoItem>
             <InfoItemLabel>{groupCaption}:</InfoItemLabel>
-            <InfoItemValue>{formatedDepartments}</InfoItemValue>
+            <InfoItemValue className="profile-info_group">
+              {formatedDepartments}
+            </InfoItemValue>
           </InfoItem>
         )}
         {location && (
           <InfoItem>
             <InfoItemLabel>{t("Translations:Location")}:</InfoItemLabel>
-            <InfoItemValue>{location}</InfoItemValue>
+            <InfoItemValue className="profile-info_location">
+              {location}
+            </InfoItemValue>
           </InfoItem>
         )}
         {!personal && workFrom && (
           <InfoItem>
             <InfoItemLabel>{regDateCaption}:</InfoItemLabel>
-            <InfoItemValue>{workFromDate}</InfoItemValue>
+            <InfoItemValue className="profile-info_reg-date">
+              {workFromDate}
+            </InfoItemValue>
           </InfoItem>
         )}
         {isSelf && (
@@ -357,6 +378,7 @@ class ProfileInfo extends React.PureComponent {
               {cultureNames ? (
                 <>
                   <ComboBox
+                    directionY="both"
                     options={cultureNames}
                     selectedOption={selectedLanguage}
                     onSelect={this.onLanguageSelect}
@@ -368,6 +390,7 @@ class ProfileInfo extends React.PureComponent {
                     className="language-combo"
                     showDisabledItems={true}
                     dropDownMaxHeight={364}
+                    manualWidth="240px"
                   />
                   <HelpButton
                     place="bottom"
@@ -392,7 +415,7 @@ class ProfileInfo extends React.PureComponent {
 export default withRouter(
   inject(({ auth, peopleStore }) => {
     const { settingsStore } = auth;
-    const { culture, customNames } = settingsStore;
+    const { culture, customNames, theme } = settingsStore;
     const {
       groupCaption,
       regDateCaption,
@@ -411,6 +434,7 @@ export default withRouter(
     const { setIsLoading, isLoading } = loadingStore;
     const { updateProfileCulture } = targetUserStore;
     return {
+      theme,
       culture,
       groupCaption,
       regDateCaption,

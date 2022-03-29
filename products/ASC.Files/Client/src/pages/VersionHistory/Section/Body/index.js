@@ -20,7 +20,7 @@ class SectionBodyContent extends React.Component {
   }
 
   componentDidMount() {
-    const { match, setFirstLoad, versions } = this.props;
+    const { match, setFirstLoad } = this.props;
     const fileId = match.params.fileId || this.props.fileId;
 
     if (fileId && fileId !== this.props.fileId) {
@@ -138,12 +138,7 @@ class SectionBodyContent extends React.Component {
 
 export default inject(({ auth, filesStore, versionHistoryStore }) => {
   const { setFirstLoad, setIsLoading, isLoading } = filesStore;
-  const {
-    versions,
-    fetchFileVersions,
-    fileId,
-    setVerHistoryFileId,
-  } = versionHistoryStore;
+  const { versions, fetchFileVersions, fileId } = versionHistoryStore;
 
   return {
     culture: auth.settingsStore.culture,
@@ -154,6 +149,5 @@ export default inject(({ auth, filesStore, versionHistoryStore }) => {
     setFirstLoad,
     setIsLoading,
     fetchFileVersions,
-    setVerHistoryFileId,
   };
 })(withRouter(observer(SectionBodyContent)));

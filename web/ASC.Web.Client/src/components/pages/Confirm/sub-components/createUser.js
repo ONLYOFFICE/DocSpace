@@ -1,258 +1,329 @@
-import React from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import axios from "axios";
 import { createUser, signupOAuth } from "@appserver/common/api/people";
 import { inject, observer } from "mobx-react";
+import Avatar from "@appserver/components/avatar";
 import Button from "@appserver/components/button";
 import TextInput from "@appserver/components/text-input";
-import Box from "@appserver/components/box";
 import Text from "@appserver/components/text";
+import Link from "@appserver/components/link";
 import PasswordInput from "@appserver/components/password-input";
+import FieldContainer from "@appserver/components/field-container";
 import toastr from "@appserver/components/toast/toastr";
 import SocialButton from "@appserver/components/social-button";
 import FacebookButton from "@appserver/components/facebook-button";
-import EmailInput from "@appserver/components/email-input";
-import { getAuthProviders } from "@appserver/common/api/settings";
-import PageLayout from "@appserver/common/components/PageLayout";
+import {
+  getAuthProviders,
+  getCapabilities,
+} from "@appserver/common/api/settings";
+import { getUserFromConfirm } from "@appserver/common/api/people";
+import Section from "@appserver/common/components/Section";
 import {
   createPasswordHash,
   getProviderTranslation,
 } from "@appserver/common/utils";
-import {
-  providersData,
-  PasswordLimitSpecialCharacters,
-} from "@appserver/common/constants";
-import { isMobile } from "react-device-detect";
-import { desktop } from "@appserver/components/utils/device";
+import { providersData } from "@appserver/common/constants";
 import withLoader from "../withLoader";
+import MoreLoginModal from "login/moreLogin";
+import AppLoader from "@appserver/common/components/AppLoader";
+import EmailInput from "@appserver/components/email-input";
+import { smallTablet } from "@appserver/components/utils/device";
 
-const inputWidth = "400px";
+export const ButtonsWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 320px;
 
-const ButtonsWrapper = styled.div`
-  display: table;
-  margin: -6px;
-  margin-top: 17px;
-  margin-right: auto;
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+
+  .buttonWrapper {
+    margin-bottom: 8px;
+    width: 100%;
+  }
 `;
 
 const ConfirmContainer = styled.div`
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 70px;
   align-items: center;
-  margin-left: 200px;
+  margin: 80px auto 0 auto;
+  max-width: 960px;
 
-  .buttonWrapper {
-    margin: 6px;
-    min-width: 225px;
-  }
-
-  @media (max-width: 830px) {
-    margin-left: 40px;
-  }
-
-  .start-basis {
-    align-items: flex-start;
-    ${isMobile && `margin-top: 56px;`}
-
-    @media ${desktop} {
-      min-width: 604px;
-    }
-  }
-
-  .margin-left {
-    margin-left: 20px;
-  }
-
-  .full-width {
-    width: ${inputWidth};
-  }
-
-  .confirm-row {
-    margin: 23px 0 0;
-  }
-
-  .break-word {
-    word-break: break-word;
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
   }
 `;
 
-const emailInputName = "email";
-const passwordInputName = "password";
+const GreetingContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  height: 100%;
+  padding-bottom: 32px;
 
-const emailRegex = "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$";
-const validationEmail = new RegExp(emailRegex);
-
-class Confirm extends React.PureComponent {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      email: "",
-      emailValid: true,
-      firstName: "",
-      firstNameValid: true,
-      lastName: "",
-      lastNameValid: true,
-      password: "",
-      passwordValid: true,
-      errorText: "",
-      isLoading: false,
-      passwordEmpty: false,
-      key: props.linkData.confirmHeader,
-      linkType: props.linkData.type,
-    };
+  @media (max-width: 768px) {
+    display: ${(props) => !props.isGreetingMode && "none"};
   }
 
-  /*componentWillMount() {
-      const { isAuthenticated, logout } = this.props;
+  .greeting-title {
+    width: 100%;
+    padding-bottom: 32px;
+  }
 
-      if(isAuthenticated)
-          logout();
-  }*/
+  .greeting-block {
+    display: flex;
+    flex-direction: row;
 
-  onSubmit = () => {
-    this.setState({ isLoading: true }, () => {
-      const { defaultPage, linkData, hashSettings } = this.props;
-      const isVisitor = parseInt(linkData.emplType) === 2;
+    .user-info {
+      display: flex;
+      flex-direction: column;
+      margin-left: 12px;
+      justify-content: center;
+    }
 
-      this.setState({ errorText: "" });
+    .avatar {
+      height: 54px;
+      width: 54px;
+    }
+  }
 
-      let hasError = false;
+  .tooltip {
+    position: relative;
+    display: inline-block;
+    margin-top: 15px;
+  }
 
-      if (!this.state.firstName.trim()) {
-        hasError = true;
-        this.setState({ firstNameValid: !hasError });
-      }
+  .tooltip .tooltiptext {
+    border: 1px solid #eceef1;
+    box-sizing: border-box;
+    border-radius: 6px;
+    position: absolute;
+    padding: 16px;
+    width: 100%;
+  }
+`;
 
-      if (!this.state.lastName.trim()) {
-        hasError = true;
-        this.setState({ lastNameValid: !hasError });
-      }
+const RegisterContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
 
-      if (!validationEmail.test(this.state.email.trim())) {
-        hasError = true;
-        this.setState({ emailValid: !hasError });
-      }
+  .or-label {
+    margin: 0 8px;
+  }
 
-      if (!this.state.passwordValid) {
-        hasError = true;
-        this.setState({ passwordValid: !hasError });
-      }
+  .more-label {
+    padding-top: 18px;
+  }
 
-      !this.state.password.trim() && this.setState({ passwordEmpty: true });
+  .line {
+    display: flex;
+    width: 320px;
+    align-items: center;
+    color: #eceef1;
+    padding-top: 35px;
 
-      if (hasError) {
-        this.setState({ isLoading: false });
-        return false;
-      }
+    @media (max-width: 768px) {
+      width: 480px;
+    }
 
-      const hash = createPasswordHash(this.state.password, hashSettings);
+    @media (max-width: 414px) {
+      width: 311px;
+    }
+  }
 
-      const loginData = {
-        userName: this.state.email,
-        passwordHash: hash,
-      };
+  .line:before,
+  .line:after {
+    content: "";
+    flex-grow: 1;
+    background: #eceef1;
+    height: 1px;
+    font-size: 0px;
+    line-height: 0px;
+    margin: 0px;
+  }
 
-      const personalData = {
-        firstname: this.state.firstName,
-        lastname: this.state.lastName,
-        email: this.state.email,
-      };
-      const registerData = Object.assign(personalData, {
-        isVisitor: isVisitor,
-      });
+  .auth-form-container {
+    margin-top: 32px;
+    width: 320px;
 
-      this.createConfirmUser(registerData, loginData, this.state.key)
-        .then(() => window.location.replace(defaultPage))
-        .catch((error) => {
-          console.error("confirm error", error);
-          this.setState({
-            errorText: error,
-            isLoading: false,
-          });
-        });
+    .form-field {
+      height: 48px;
+    }
+
+    @media (max-width: 768px) {
+      margin: 32px 0 0 0;
+      width: 100%;
+    }
+    @media (max-width: 375px) {
+      margin: 32px 0 0 0;
+      width: 100%;
+    }
+  }
+
+  .auth-form-fields {
+    @media (max-width: 768px) {
+      display: ${(props) => props.isGreetingMode && "none"};
+    }
+  }
+
+  .password-field-wrapper {
+    width: 100%;
+  }
+
+  .is-greeting-mode-button {
+    display: ${(props) => !props.isGreetingMode && "none"};
+
+    @media (min-width: 768px) {
+      display: none;
+    }
+  }
+`;
+
+const Confirm = (props) => {
+  const { settings, t, greetingTitle, providers, isDesktop } = props;
+  const inputRef = React.useRef(null);
+
+  const [moreAuthVisible, setMoreAuthVisible] = useState(false);
+  const [ssoLabel, setSsoLabel] = useState("");
+  const [ssoUrl, setSsoUrl] = useState("");
+  const [email, setEmail] = useState("");
+  const [emailValid, setEmailValid] = useState(true);
+  const [emailErrorText, setEmailErrorText] = useState("");
+
+  const [password, setPassword] = useState("");
+  const [passwordValid, setPasswordValid] = useState(true);
+
+  const [fname, setFname] = useState("");
+  const [fnameValid, setFnameValid] = useState(true);
+  const [sname, setSname] = useState("");
+  const [snameValid, setSnameValid] = useState(true);
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [errorText, setErrorText] = useState("");
+
+  const [user, setUser] = useState("");
+
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  const [isGreetingMode, setIsGreetingMode] = useState(true);
+
+  const [isEmailErrorShow, setIsEmailErrorShow] = useState(false);
+  const [isPasswordErrorShow, setIsPasswordErrorShow] = useState(false);
+
+  const getSso = async () => {
+    const data = await getCapabilities();
+    setSsoLabel(data.ssoLabel);
+    setSsoUrl(data.ssoUrl);
+  };
+
+  const focusInput = () => {
+    if (inputRef) {
+      inputRef.current.focus();
+    }
+  };
+
+  useEffect(() => {
+    const { isAuthenticated, logout } = props;
+    if (isAuthenticated) {
+      const path = window.location;
+      logout(true, path);
+    }
+  }, []);
+
+  useEffect(async () => {
+    const { linkData } = props;
+    const uid = linkData.uid;
+    const confirmKey = linkData.confirmHeader;
+    const user = await getUserFromConfirm(uid, confirmKey);
+    setUser(user);
+
+    window.authCallback = authCallback;
+
+    Promise.all([setProviders(), getSso()]).then(() => {
+      setIsLoaded(true);
+      focusInput();
     });
-  };
+  }, []);
 
-  addFacebookToStart = (facebookIndex, providerButtons) => {
-    const { providers, t } = this.props;
-    const faceBookData = providers[facebookIndex];
-    const { icon, label, iconOptions } = providersData[faceBookData.provider];
-    providerButtons.unshift(
-      <div
-        className="buttonWrapper"
-        key={`${faceBookData.provider}ProviderItem`}
-      >
-        <FacebookButton
-          iconName={icon}
-          label={getProviderTranslation(label, t)}
-          className="socialButton"
-          $iconOptions={iconOptions}
-          data-url={faceBookData.url}
-          data-providername={faceBookData.provider}
-          onClick={this.onSocialButtonClick}
-        />
-      </div>
-    );
-  };
+  const onSubmit = () => {
+    const { defaultPage, linkData, hashSettings } = props;
+    const isVisitor = parseInt(linkData.emplType) === 2;
 
-  providerButtons = () => {
-    const { providers, t } = this.props;
+    setIsLoading(true);
 
-    let facebookIndex = null;
-    const providerButtons =
-      providers &&
-      providers.map((item, index) => {
-        if (!providersData[item.provider]) return;
-        const { icon, label, iconOptions, className } = providersData[
-          item.provider
-        ];
+    setErrorText("");
 
-        if (item.provider === "Facebook") {
-          facebookIndex = index;
-          return;
-        }
-        return (
-          <div className="buttonWrapper" key={`${item.provider}ProviderItem`}>
-            <SocialButton
-              iconName={icon}
-              label={getProviderTranslation(label, t)}
-              className={`socialButton ${className ? className : ""}`}
-              $iconOptions={iconOptions}
-              data-url={item.url}
-              data-providername={item.provider}
-              onClick={this.onSocialButtonClick}
-            />
-          </div>
-        );
-      });
+    let hasError = false;
 
-    if (facebookIndex) this.addFacebookToStart(facebookIndex, providerButtons);
+    if (!fname.trim()) {
+      hasError = true;
+      setFnameValid(!hasError);
+    }
 
-    return providerButtons;
-  };
+    if (!sname.trim()) {
+      hasError = true;
+      setSnameValid(!hasError);
+    }
 
-  oauthDataExists = () => {
-    const { providers } = this.props;
+    const emailRegex = "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$";
+    const validationEmail = new RegExp(emailRegex);
 
-    let existProviders = 0;
-    providers && providers.length > 0;
-    providers.map((item) => {
-      if (!providersData[item.provider]) return;
-      existProviders++;
+    if (!validationEmail.test(email.trim())) {
+      hasError = true;
+      setEmailValid(!hasError);
+    }
+
+    if (!passwordValid || !password.trim()) {
+      hasError = true;
+      setPasswordValid(!hasError);
+    }
+
+    if (hasError) {
+      setIsLoading(false);
+      return false;
+    }
+
+    const hash = createPasswordHash(password, hashSettings);
+
+    const loginData = {
+      userName: email,
+      passwordHash: hash,
+    };
+
+    const personalData = {
+      firstname: fname,
+      lastname: sname,
+      email: email,
+    };
+
+    const registerData = Object.assign(personalData, {
+      isVisitor: isVisitor,
     });
 
-    return !!existProviders;
+    const key = props.linkData.confirmHeader;
+
+    createConfirmUser(registerData, loginData, key)
+      .then(() => window.location.replace(defaultPage))
+      .catch((error) => {
+        console.error("confirm error", error);
+        setEmailErrorText(error);
+        setEmailValid(false);
+        setIsLoading(false);
+      });
   };
 
-  authCallback = (profile) => {
-    const { t, defaultPage } = this.props;
+  const authCallback = (profile) => {
+    const { defaultPage } = props;
     const { FirstName, LastName, EMail, Serialized } = profile;
-
-    console.log(profile);
 
     const signupAccount = {
       EmployeeType: null,
@@ -272,8 +343,8 @@ class Confirm extends React.PureComponent {
       });
   };
 
-  setProviders = async () => {
-    const { setProviders } = this.props;
+  const setProviders = async () => {
+    const { setProviders } = props;
 
     try {
       await getAuthProviders().then((providers) => {
@@ -284,7 +355,9 @@ class Confirm extends React.PureComponent {
     }
   };
 
-  createConfirmUser = async (registerData, loginData, key) => {
+  const createConfirmUser = async (registerData, loginData, key) => {
+    const { login } = props;
+
     const data = Object.assign(
       { fromInviteLink: true },
       registerData,
@@ -293,30 +366,64 @@ class Confirm extends React.PureComponent {
 
     const user = await createUser(data, key);
 
-    console.log("Created user", user);
-
-    const { login } = this.props;
     const { userName, passwordHash } = loginData;
 
     const response = await login(userName, passwordHash);
 
-    console.log("Login", response);
-
     return user;
   };
 
-  onSocialButtonClick = (e) => {
+  const moreAuthOpen = () => {
+    setMoreAuthVisible(true);
+  };
+
+  const moreAuthClose = () => {
+    setMoreAuthVisible(false);
+  };
+
+  const onChangeEmail = (e) => {
+    setEmail(e.target.value);
+    setIsEmailErrorShow(false);
+  };
+
+  const onChangeFname = (e) => {
+    setFname(e.target.value);
+    setFnameValid(true);
+    setErrorText("");
+  };
+
+  const onChangeSname = (e) => {
+    setSname(e.target.value);
+    setSnameValid(true);
+    setErrorText("");
+  };
+
+  const onChangePassword = (e) => {
+    setPassword(e.target.value);
+    setErrorText("");
+    setIsPasswordErrorShow(false);
+  };
+
+  const onKeyPress = (event) => {
+    if (event.key === "Enter") {
+      onSubmit();
+    }
+  };
+
+  const onSocialButtonClick = useCallback((e) => {
     const providerName = e.target.dataset.providername;
     const url = e.target.dataset.url;
 
-    const { getOAuthToken, getLoginLink } = this.props;
+    const { getOAuthToken, getLoginLink } = props;
 
     try {
-      const tokenGetterWin = window.open(
-        url,
-        "login",
-        "width=800,height=500,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=no"
-      );
+      const tokenGetterWin = isDesktop
+        ? (window.location.href = url)
+        : window.open(
+            url,
+            "login",
+            "width=800,height=500,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=no"
+          );
 
       getOAuthToken(tokenGetterWin).then((code) => {
         const token = window.btoa(
@@ -332,215 +439,337 @@ class Confirm extends React.PureComponent {
     } catch (err) {
       console.log(err);
     }
-  };
+  }, []);
 
-  onKeyPress = (event) => {
-    if (event.key === "Enter") {
-      this.onSubmit();
-    }
-  };
+  const providerButtons = () => {
+    const providerButtons =
+      providers &&
+      providers.map((item, index) => {
+        if (!providersData[item.provider]) return;
+        if (index > 1) return;
 
-  onCopyToClipboard = () =>
-    toastr.success(this.props.t("EmailAndPasswordCopiedToClipboard"));
-  validatePassword = (value) => this.setState({ passwordValid: value });
+        const { icon, label, iconOptions, className } = providersData[
+          item.provider
+        ];
 
-  componentDidMount() {
-    this.setProviders();
-    window.authCallback = this.authCallback;
-
-    window.addEventListener("keydown", this.onKeyPress);
-    window.addEventListener("keyup", this.onKeyPress);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("keydown", this.onKeyPress);
-    window.removeEventListener("keyup", this.onKeyPress);
-  }
-
-  onChangeName = (event) => {
-    this.setState({ firstName: event.target.value });
-    !this.state.firstNameValid &&
-      this.setState({ firstNameValid: event.target.value });
-    this.state.errorText && this.setState({ errorText: "" });
-  };
-
-  onChangeSurname = (event) => {
-    this.setState({ lastName: event.target.value });
-    !this.state.lastNameValid && this.setState({ lastNameValid: true });
-    this.state.errorText && this.setState({ errorText: "" });
-  };
-
-  onChangeEmail = (event) => {
-    this.setState({ email: event.target.value });
-    // !this.state.emailValid && this.setState({ emailValid: true });
-    this.state.errorText && this.setState({ errorText: "" });
-  };
-
-  onValidateEmail = (value) => this.setState({ emailValid: value.isValid });
-
-  onChangePassword = (event) => {
-    this.setState({ password: event.target.value });
-    !this.state.passwordValid && this.setState({ passwordValid: true });
-    event.target.value.trim() && this.setState({ passwordEmpty: false });
-    this.state.errorText && this.setState({ errorText: "" });
-    this.onKeyPress(event);
-  };
-
-  render() {
-    //console.log("createUser render");
-
-    const { settings, t, greetingTitle, providers } = this.props;
-    const { email, password } = this.state;
-    const showCopyLink = !!email.trim() || !!password.trim();
-
-    return (
-      <ConfirmContainer>
-        <div className="start-basis">
-          <div className="margin-left">
-            <Text className="confirm-row" as="p" fontSize="18px">
-              {t("InviteTitle")}
-            </Text>
-
-            <div className="confirm-row full-width break-word">
-              <a href="/login">
-                <img src="images/dark_general.png" alt="Logo" />
-              </a>
-              <Text as="p" fontSize="24px" color="#116d9d">
-                {greetingTitle}
-              </Text>
-            </div>
+        return (
+          <div className="buttonWrapper" key={`${item.provider}ProviderItem`}>
+            <SocialButton
+              iconName={icon}
+              label={getProviderTranslation(label, t)}
+              className={`socialButton ${className ? className : ""}`}
+              $iconOptions={iconOptions}
+              data-url={item.url}
+              data-providername={item.provider}
+              onClick={onSocialButtonClick}
+            />
           </div>
+        );
+      });
 
-          <div>
-            <div className="full-width">
+    return providerButtons;
+  };
+
+  const ssoButton = () => {
+    return (
+      <div className="buttonWrapper">
+        <SocialButton
+          iconName="/static/images/sso.react.svg"
+          className="socialButton"
+          label={ssoLabel || getProviderTranslation("sso", t)}
+          onClick={() => (window.location.href = ssoUrl)}
+        />
+      </div>
+    );
+  };
+
+  const oauthDataExists = () => {
+    let existProviders = 0;
+    providers && providers.length > 0;
+    providers.map((item) => {
+      if (!providersData[item.provider]) return;
+      existProviders++;
+    });
+
+    return !!existProviders;
+  };
+
+  const ssoExists = () => {
+    if (ssoUrl) return true;
+    else return false;
+  };
+
+  const onGreetingSubmit = () => {
+    setIsGreetingMode(false);
+    focusInput();
+  };
+
+  const onValidateEmail = (res) => {
+    //console.log("onValidateEmail", res);
+    setEmailValid(res.isValid);
+    setEmailErrorText(res.errors[0]);
+  };
+
+  const onValidatePassword = (res) => {
+    //console.log("onValidatePassword", res);
+    setPasswordValid(res);
+  };
+
+  const onBlurEmail = () => {
+    setIsEmailErrorShow(true);
+  };
+
+  const onBlurPassword = () => {
+    setIsPasswordErrorShow(true);
+  };
+
+  const passwordErrorMessage = `${t("Common:PasswordMinimumLength")} ${
+    settings ? settings.minLength : 8
+  } ${settings.digits ? t("Common:PasswordLimitDigits") : ""} ${
+    settings.upperCase ? t("Common:PasswordLimitUpperCase") : ""
+  } ${settings.specSymbols ? t("Common:PasswordLimitSpecialSymbols") : ""}`;
+
+  if (!isLoaded) return <AppLoader />;
+  return (
+    <ConfirmContainer>
+      <GreetingContainer isGreetingMode={isGreetingMode}>
+        <Text
+          fontSize="23px"
+          fontWeight={700}
+          textAlign="left"
+          className="greeting-title"
+        >
+          {greetingTitle}
+        </Text>
+
+        <div className="greeting-block">
+          <Avatar className="avatar" role="user" source={user.avatar} />
+          <div className="user-info">
+            <Text fontSize="15px" fontWeight={600}>
+              {user.firstName} {user.lastName}
+            </Text>
+            <Text fontSize="12px" fontWeight={600} color="#A3A9AE">
+              {user.department}
+            </Text>
+          </div>
+        </div>
+
+        <div className="tooltip">
+          <span className="tooltiptext">{t("WelcomeUser")}</span>
+        </div>
+      </GreetingContainer>
+
+      <RegisterContainer isGreetingMode={isGreetingMode}>
+        {ssoExists() && <ButtonsWrapper>{ssoButton()}</ButtonsWrapper>}
+
+        {oauthDataExists() && (
+          <>
+            <ButtonsWrapper>{providerButtons()}</ButtonsWrapper>
+            {providers && providers.length > 2 && (
+              <Link
+                isHovered
+                type="action"
+                fontSize="13px"
+                fontWeight="600"
+                color="#3B72A7"
+                className="more-label"
+                onClick={moreAuthOpen}
+              >
+                {t("Common:ShowMore")}
+              </Link>
+            )}
+          </>
+        )}
+
+        {(oauthDataExists() || ssoExists()) && (
+          <div className="line">
+            <Text color="#A3A9AE" className="or-label">
+              {t("Or")}
+            </Text>
+          </div>
+        )}
+
+        <form className="auth-form-container">
+          <div className="auth-form-fields">
+            <FieldContainer
+              className="form-field"
+              isVertical={true}
+              labelVisible={false}
+              hasError={isEmailErrorShow && !emailValid}
+              errorMessage={
+                emailErrorText
+                  ? t(`Common:${emailErrorText}`)
+                  : t("Common:RequiredField")
+              }
+            >
+              <EmailInput
+                id="login"
+                name="login"
+                type="email"
+                hasError={isEmailErrorShow && !emailValid}
+                value={email}
+                placeholder={t("Common:Email")}
+                size="large"
+                scale={true}
+                isAutoFocussed={true}
+                tabIndex={1}
+                isDisabled={isLoading}
+                autoComplete="username"
+                onChange={onChangeEmail}
+                onBlur={onBlurEmail}
+                onValidateInput={onValidateEmail}
+                forwardedRef={inputRef}
+              />
+            </FieldContainer>
+
+            <FieldContainer
+              className="form-field"
+              isVertical={true}
+              labelVisible={false}
+              hasError={!fnameValid}
+              errorMessage={errorText ? errorText : t("Common:RequiredField")}
+            >
               <TextInput
-                className="confirm-row"
-                id="name"
-                name="name"
-                value={this.state.firstName}
+                id="first-name"
+                name="first-name"
+                type="text"
+                hasError={!fnameValid}
+                value={fname}
                 placeholder={t("FirstName")}
-                size="huge"
+                size="large"
                 scale={true}
                 tabIndex={1}
-                isAutoFocussed={true}
-                autoComplete="given-name"
-                isDisabled={this.state.isLoading}
-                hasError={!this.state.firstNameValid}
-                onChange={this.onChangeName}
-                onKeyDown={this.onKeyPress}
+                isDisabled={isLoading}
+                onChange={onChangeFname}
+                onKeyDown={onKeyPress}
               />
+            </FieldContainer>
 
+            <FieldContainer
+              className="form-field"
+              isVertical={true}
+              labelVisible={false}
+              hasError={!snameValid}
+              errorMessage={errorText ? errorText : t("Common:RequiredField")}
+            >
               <TextInput
-                className="confirm-row"
-                id="surname"
-                name="surname"
-                value={this.state.lastName}
+                id="last-name"
+                name="last-name"
+                type="text"
+                hasError={!snameValid}
+                value={sname}
                 placeholder={t("Common:LastName")}
-                size="huge"
+                size="large"
                 scale={true}
-                tabIndex={2}
-                autoComplete="family-name"
-                isDisabled={this.state.isLoading}
-                hasError={!this.state.lastNameValid}
-                onChange={this.onChangeSurname}
-                onKeyDown={this.onKeyPress}
+                tabIndex={1}
+                isDisabled={isLoading}
+                onChange={onChangeSname}
+                onKeyDown={onKeyPress}
               />
+            </FieldContainer>
 
-              <EmailInput
-                className="confirm-row"
-                id="email"
-                name={emailInputName}
-                value={this.state.email}
-                placeholder={t("Common:Email")}
-                size="huge"
+            <FieldContainer
+              className="form-field"
+              isVertical={true}
+              labelVisible={false}
+              hasError={isPasswordErrorShow && !passwordValid}
+              errorMessage={`${t(
+                "Common:PasswordLimitMessage"
+              )}: ${passwordErrorMessage}`}
+            >
+              <PasswordInput
+                simpleView={false}
+                hideNewPasswordButton
+                showCopyLink={false}
+                passwordSettings={settings}
+                id="password"
+                inputName="password"
+                placeholder={t("Common:Password")}
+                type="password"
+                hasError={isPasswordErrorShow && !passwordValid}
+                inputValue={password}
+                size="large"
                 scale={true}
-                tabIndex={3}
-                autoComplete="email"
-                isDisabled={this.state.isLoading}
-                // hasError={!this.state.emailValid}
-                onChange={this.onChangeEmail}
-                onKeyDown={this.onKeyPress}
-                onValidateInput={this.onValidateEmail}
+                tabIndex={1}
+                isDisabled={isLoading}
+                autoComplete="current-password"
+                onChange={onChangePassword}
+                onBlur={onBlurPassword}
+                onKeyDown={onKeyPress}
+                onValidateInput={onValidatePassword}
+                tooltipPasswordTitle={`${t("Common:PasswordLimitMessage")}:`}
+                tooltipPasswordLength={`${t("Common:PasswordMinimumLength")}: ${
+                  settings ? settings.minLength : 8
+                }`}
+                tooltipPasswordDigits={`${t("Common:PasswordLimitDigits")}`}
+                tooltipPasswordCapital={`${t("Common:PasswordLimitUpperCase")}`}
+                tooltipPasswordSpecial={`${t(
+                  "Common:PasswordLimitSpecialSymbols"
+                )}`}
+                generatePasswordTitle={t("Wizard:GeneratePassword")}
               />
-            </div>
-
-            <PasswordInput
-              className="confirm-row"
-              id="password"
-              inputName={passwordInputName}
-              emailInputName={emailInputName}
-              inputValue={this.state.password}
-              placeholder={t("Common:Password")}
-              size="huge"
-              scale={true}
-              tabIndex={4}
-              maxLength={30}
-              inputWidth={inputWidth}
-              hasError={this.state.passwordEmpty}
-              onChange={this.onChangePassword}
-              onCopyToClipboard={this.onCopyToClipboard}
-              onValidateInput={this.validatePassword}
-              clipActionResource={t("Common:CopyEmailAndPassword")}
-              clipEmailResource={`${t("Common:Email")}: `}
-              clipPasswordResource={`${t("Common:Password")}: `}
-              tooltipPasswordTitle={`${t("Common:PasswordLimitMessage")}:`}
-              tooltipPasswordLength={`${t("Common:PasswordLimitLength", {
-                fromNumber: settings ? settings.minLength : 8,
-                toNumber: 30,
-              })}:`}
-              tooltipPasswordDigits={t("Common:PasswordLimitDigits")}
-              tooltipPasswordCapital={t("Common:PasswordLimitUpperCase")}
-              tooltipPasswordSpecial={`${t(
-                "Common:PasswordLimitSpecialSymbols"
-              )} (${PasswordLimitSpecialCharacters})`}
-              generatorSpecial={PasswordLimitSpecialCharacters}
-              passwordSettings={settings}
-              isDisabled={this.state.isLoading}
-              onKeyDown={this.onKeyPress}
-              showCopyLink={showCopyLink}
-            />
+            </FieldContainer>
 
             <Button
-              className="confirm-row"
+              id="submit"
+              className="login-button"
               primary
-              size="big"
-              label={t("LoginRegistryButton")}
-              tabIndex={5}
-              isLoading={this.state.isLoading}
-              onClick={this.onSubmit}
+              size="normal"
+              scale={true}
+              label={
+                isLoading
+                  ? t("Common:LoadingProcessing")
+                  : t("LoginRegistryButton")
+              }
+              tabIndex={1}
+              isDisabled={isLoading}
+              isLoading={isLoading}
+              onClick={onSubmit}
             />
           </div>
-          {this.oauthDataExists && (
-            <Box>
-              <ButtonsWrapper>{this.providerButtons()}</ButtonsWrapper>
-            </Box>
-          )}
 
-          {/*             <Row className='confirm-row'>
+          <Button
+            id="submit"
+            className="login-button is-greeting-mode-button"
+            primary
+            size="normal"
+            scale={true}
+            label={
+              isLoading
+                ? t("Common:LoadingProcessing")
+                : t("LoginRegistryButton")
+            }
+            tabIndex={1}
+            isDisabled={isLoading}
+            isLoading={isLoading}
+            onClick={onGreetingSubmit}
+          />
+        </form>
 
-                    <Text as='p' fontSize='14px'>{t('LoginWithAccount')}</Text>
-
-            </Row>
- */}
-          <Text className="confirm-row" fontSize="14px" color="#c30">
-            {this.state.errorText}
-          </Text>
-        </div>
-      </ConfirmContainer>
-    );
-  }
-}
+        <MoreLoginModal
+          t={t}
+          visible={moreAuthVisible}
+          onClose={moreAuthClose}
+          providers={providers}
+          onSocialLoginClick={onSocialButtonClick}
+          ssoLabel={ssoLabel}
+          ssoUrl={ssoUrl}
+        />
+      </RegisterContainer>
+    </ConfirmContainer>
+  );
+};
 
 Confirm.propTypes = {
   location: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
 };
 const CreateUserForm = (props) => (
-  <PageLayout>
-    <PageLayout.SectionBody>
+  <Section>
+    <Section.SectionBody>
       <Confirm {...props} />
-    </PageLayout.SectionBody>
-  </PageLayout>
+    </Section.SectionBody>
+  </Section>
 );
 
 export default inject(({ auth }) => {
@@ -582,6 +811,8 @@ export default inject(({ auth }) => {
   };
 })(
   withRouter(
-    withTranslation(["Confirm", "Common"])(withLoader(observer(CreateUserForm)))
+    withTranslation(["Confirm", "Common", "Wizard"])(
+      withLoader(observer(CreateUserForm))
+    )
   )
 );

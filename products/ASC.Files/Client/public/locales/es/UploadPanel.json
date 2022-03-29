@@ -1,3 +1,7 @@
 ﻿{
-  "Uploads": "Cargas"
+    "Uploads": "Cargas",
+    "EnterPassword": "Introduzca Contraseña",
+    "HideInput": "Ocultar",
+    "Ready": "Listo",
+    "UploadAndConvert": "Cargar y convertir archivos"
 }

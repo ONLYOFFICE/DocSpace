@@ -16,6 +16,12 @@ import ProfileAction from "./pages/ProfileAction";
 import GroupAction from "./pages/GroupAction";
 import Filter from "@appserver/common/api/people/filter";
 import { AppServerConfig } from "@appserver/common/constants";
+import Article from "@appserver/common/components/Article";
+import {
+  ArticleHeaderContent,
+  ArticleMainButtonContent,
+  ArticleBodyContent,
+} from "./components/Article";
 
 const { proxyURL } = AppServerConfig;
 const homepage = config.homepage;
@@ -35,6 +41,46 @@ const REASSIGN_URL = combineUrl(PROXY_HOMEPAGE_URL, "/reassign/:userId");
 
 const Reassign = React.lazy(() => import("./pages/Reassign"));
 const Error404 = React.lazy(() => import("studio/Error404"));
+
+const PeopleArticle = React.memo(() => {
+  return (
+    <Article>
+      <Article.Header>
+        <ArticleHeaderContent />
+      </Article.Header>
+      <Article.MainButton>
+        <ArticleMainButtonContent />
+      </Article.MainButton>
+      <Article.Body>
+        <ArticleBodyContent />
+      </Article.Body>
+    </Article>
+  );
+});
+
+const PeopleSection = React.memo(() => {
+  return (
+    <Switch>
+      <PrivateRoute exact path={PROFILE_URL} component={Profile} />
+      <PrivateRoute
+        path={PROFILE_EDIT_URL}
+        restricted
+        allowForMe
+        component={ProfileAction}
+      />
+      <PrivateRoute
+        path={PROFILE_CREATE_URL}
+        restricted
+        component={ProfileAction}
+      />
+      <PrivateRoute path={GROUP_URLS} restricted component={GroupAction} />
+      <PrivateRoute path={REASSIGN_URL} restricted component={ReassignRoute} />
+      <PrivateRoute exact path={HOME_URL} component={HomeRedirectToFilter} />
+      <PrivateRoute path={HOME_FILTER_URL} component={Home} />
+      <PrivateRoute component={Error404Route} />
+    </Switch>
+  );
+});
 
 const ReassignRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
@@ -77,25 +123,10 @@ const PeopleContent = (props) => {
   }, [isLoaded]);
 
   return (
-    <Switch>
-      <PrivateRoute exact path={PROFILE_URL} component={Profile} />
-      <PrivateRoute
-        path={PROFILE_EDIT_URL}
-        restricted
-        allowForMe
-        component={ProfileAction}
-      />
-      <PrivateRoute
-        path={PROFILE_CREATE_URL}
-        restricted
-        component={ProfileAction}
-      />
-      <PrivateRoute path={GROUP_URLS} restricted component={GroupAction} />
-      <PrivateRoute path={REASSIGN_URL} restricted component={ReassignRoute} />
-      <PrivateRoute exact path={HOME_URL} component={HomeRedirectToFilter} />
-      <PrivateRoute path={HOME_FILTER_URL} component={Home} />
-      <PrivateRoute component={Error404Route} />
-    </Switch>
+    <>
+      <PeopleArticle />
+      <PeopleSection />
+    </>
   );
 };
 

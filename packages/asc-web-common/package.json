@@ -1,6 +1,6 @@
 {
   "name": "@appserver/common",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "private": true,
   "scripts": {
     "build": "echo 'skip it'",
@@ -39,6 +39,7 @@
     "react-window-infinite-loader": "^1.0.7",
     "screenfull": "^5.1.0",
     "sjcl": "^1.0.8",
+    "socket.io-client": "^4.4.0",
     "styled-components": "^5.3.1",
     "workbox-window": "^6.3.0"
   },

@@ -11,8 +11,6 @@ call start\stop.bat nopause
 dotnet build ..\asc.web.slnf  /fl1 /flp1:logfile=asc.web.log;verbosity=normal
 echo.
 
-call start\start.bat nopause
-
 echo install nodejs projects dependencies...
 echo.
 
@@ -22,6 +20,10 @@ for /R "scripts\" %%f in (*.bat) do (
  echo.
  call scripts\%%~nxf
 )
+
+echo.
+
+call start\start.bat nopause
 
 echo.
 

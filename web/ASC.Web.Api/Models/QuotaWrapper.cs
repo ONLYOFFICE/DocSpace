@@ -128,7 +128,7 @@ namespace ASC.Web.Studio.Core.Quota
                 var webItem = WebItemManager[WebItemManager.DocumentsProductID];
                 if (webItem.Context.SpaceUsageStatManager is IUserSpaceUsage spaceUsageManager)
                 {
-                    UserUsedSize = spaceUsageManager.GetUserSpaceUsage(authContext.CurrentAccount.ID);
+                    UserUsedSize = spaceUsageManager.GetUserSpaceUsageAsync(authContext.CurrentAccount.ID).Result;
                 }
             }
 

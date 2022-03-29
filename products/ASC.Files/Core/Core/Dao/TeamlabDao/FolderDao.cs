@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Caching;
@@ -115,65 +116,72 @@ namespace ASC.Files.Core.Data
             CrossDao = crossDao;
         }
 
-        public Folder<int> GetFolder(int folderId)
+        public async Task<Folder<int>> GetFolderAsync(int folderId)
         {
             var query = GetFolderQuery(r => r.Id == folderId).AsNoTracking();
-            return ToFolder(FromQueryWithShared(query).Take(1).SingleOrDefault());
+            return ToFolder(await FromQueryWithShared(query).Take(1).SingleOrDefaultAsync().ConfigureAwait(false));
         }
 
-        public Folder<int> GetFolder(string title, int parentId)
+        public Task<Folder<int>> GetFolderAsync(string title, int parentId)
         {
             if (string.IsNullOrEmpty(title)) throw new ArgumentNullException(title);
 
+            return InternalGetFolderAsync(title, parentId);
+        }
+
+        private async Task<Folder<int>> InternalGetFolderAsync(string title, int parentId)
+        {
             var query = GetFolderQuery(r => r.Title == title && r.ParentId == parentId).AsNoTracking()
                 .OrderBy(r => r.CreateOn);
 
-            return ToFolder(FromQueryWithShared(query).Take(1).FirstOrDefault());
+            return ToFolder(await FromQueryWithShared(query).Take(1).FirstOrDefaultAsync().ConfigureAwait(false));
         }
 
-        public Folder<int> GetRootFolder(int folderId)
+        public async Task<Folder<int>> GetRootFolderAsync(int folderId)
         {
-            var id = FilesDbContext.Tree
+            var id = await FilesDbContext.Tree
                 .AsNoTracking()
                 .Where(r => r.FolderId == folderId)
                 .OrderByDescending(r => r.Level)
                 .Select(r => r.ParentId)
-                .FirstOrDefault();
+                .FirstOrDefaultAsync().ConfigureAwait(false);
 
             var query = GetFolderQuery(r => r.Id == id).AsNoTracking();
 
-            return ToFolder(FromQueryWithShared(query).SingleOrDefault());
+            return ToFolder(await FromQueryWithShared(query).SingleOrDefaultAsync().ConfigureAwait(false));
         }
 
-        public Folder<int> GetRootFolderByFile(int fileId)
+        public async Task<Folder<int>> GetRootFolderByFileAsync(int fileId)
         {
             var subq = Query(FilesDbContext.Files).AsNoTracking()
                 .Where(r => r.Id == fileId && r.CurrentVersion)
                 .Select(r => r.FolderId)
                 .Distinct();
 
-            var q = FilesDbContext.Tree.AsNoTracking()
+            var q = await FilesDbContext.Tree.AsNoTracking()
                 .Where(r => subq.Contains(r.FolderId))
                 .OrderByDescending(r => r.Level)
                 .Select(r => r.ParentId)
-                .FirstOrDefault();
+                .FirstOrDefaultAsync()
+                .ConfigureAwait(false);
 
             var query = GetFolderQuery(r => r.Id == q).AsNoTracking();
-            return ToFolder(FromQueryWithShared(query).SingleOrDefault());
+
+            return ToFolder(await FromQueryWithShared(query).SingleOrDefaultAsync().ConfigureAwait(false));
         }
 
-        public List<Folder<int>> GetFolders(int parentId)
+        public IAsyncEnumerable<Folder<int>> GetFoldersAsync(int parentId)
         {
-            return GetFolders(parentId, default, default, false, default, string.Empty);
+            return GetFoldersAsync(parentId, default, default, false, default, string.Empty);
         }
 
-        public List<Folder<int>> GetFolders(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
+        public IAsyncEnumerable<Folder<int>> GetFoldersAsync(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
         {
             if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
                 || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
                 || filterType == FilterType.PresentationsOnly || filterType == FilterType.SpreadsheetsOnly
                 || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
-                return new List<Folder<int>>();
+                return AsyncEnumerable.Empty<Folder<int>>();
 
             if (orderBy == null) orderBy = new OrderBy(SortedByType.DateAndTime, false);
 
@@ -220,17 +228,16 @@ namespace ASC.Files.Core.Data
                 }
             }
 
-            return FromQueryWithShared(q).Select(ToFolder).ToList();
+            return FromQueryWithShared(q).AsAsyncEnumerable().Select(ToFolder);
         }
 
-        public List<Folder<int>> GetFolders(IEnumerable<int> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
+        public IAsyncEnumerable<Folder<int>> GetFoldersAsync(IEnumerable<int> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
         {
-            if (!folderIds.Any()
-                || filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
+            if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
                 || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
                 || filterType == FilterType.PresentationsOnly || filterType == FilterType.SpreadsheetsOnly
                 || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
-                return new List<Folder<int>>();
+                return AsyncEnumerable.Empty<Folder<int>>();
 
             var q = GetFolderQuery(r => folderIds.Contains(r.Id)).AsNoTracking();
 
@@ -273,10 +280,10 @@ namespace ASC.Files.Core.Data
                 }
             }
 
-            return (checkShare ? FromQueryWithShared(q) : FromQuery(q)).Select(ToFolder).Distinct().ToList();
+            return (checkShare ? FromQueryWithShared(q) : FromQuery(q)).AsAsyncEnumerable().Select(e => ToFolder(e)).Distinct();
         }
 
-        public List<Folder<int>> GetParentFolders(int folderId)
+        public async Task<List<Folder<int>>> GetParentFoldersAsync(int folderId)
         {
             var q = GetFolderQuery()
                 .AsNoTracking()
@@ -285,18 +292,24 @@ namespace ASC.Files.Core.Data
                 .OrderByDescending(r => r.tree.Level)
                 .Select(r => r.folder);
 
-            return FromQueryWithShared(q).Select(ToFolder).ToList();
+            var query = await FromQueryWithShared(q).ToListAsync().ConfigureAwait(false);
+            return query.ConvertAll(e => ToFolder(e));
         }
 
-        public int SaveFolder(Folder<int> folder)
+        public Task<int> SaveFolderAsync(Folder<int> folder)
         {
-            return SaveFolder(folder, null);
+            return SaveFolderAsync(folder, null);
         }
 
-        public int SaveFolder(Folder<int> folder, IDbContextTransaction transaction)
+        public Task<int> SaveFolderAsync(Folder<int> folder, IDbContextTransaction transaction)
         {
             if (folder == null) throw new ArgumentNullException(nameof(folder));
 
+            return InternalSaveFolderAsync(folder, transaction);
+        }
+
+        public async Task<int> InternalSaveFolderAsync(Folder<int> folder, IDbContextTransaction transaction)
+        {
             folder.Title = Global.ReplaceInvalidCharsAndTruncate(folder.Title);
 
             folder.ModifiedOn = TenantUtil.DateTimeNow();
@@ -309,22 +322,23 @@ namespace ASC.Files.Core.Data
 
             var tx = transaction ?? FilesDbContext.Database.BeginTransaction();
 
-            if (folder.ID != default && IsExist(folder.ID))
+            if (folder.ID != default && await IsExistAsync(folder.ID).ConfigureAwait(false))
             {
-                var toUpdate = Query(FilesDbContext.Folders)
+                var toUpdate = await Query(FilesDbContext.Folders)
                     .Where(r => r.Id == folder.ID)
-                    .FirstOrDefault();
+                    .FirstOrDefaultAsync()
+                    .ConfigureAwait(false);
 
                 toUpdate.Title = folder.Title;
                 toUpdate.CreateBy = folder.CreateBy;
                 toUpdate.ModifiedOn = TenantUtil.DateTimeToUtc(folder.ModifiedOn);
                 toUpdate.ModifiedBy = folder.ModifiedBy;
 
-                FilesDbContext.SaveChanges();
+                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
                 if (folder.FolderType == FolderType.DEFAULT || folder.FolderType == FolderType.BUNCH)
                 {
-                    FactoryIndexer.IndexAsync(toUpdate);
+                    _ = FactoryIndexer.IndexAsync(toUpdate).ConfigureAwait(false);
                 }
             }
             else
@@ -343,11 +357,12 @@ namespace ASC.Files.Core.Data
                     TenantId = TenantID
                 };
 
-                newFolder = FilesDbContext.Folders.Add(newFolder).Entity;
-                FilesDbContext.SaveChanges();
+                var entityEntry = await FilesDbContext.Folders.AddAsync(newFolder).ConfigureAwait(false);
+                newFolder = entityEntry.Entity;
+                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
                 if (folder.FolderType == FolderType.DEFAULT || folder.FolderType == FolderType.BUNCH)
                 {
-                    FactoryIndexer.IndexAsync(newFolder);
+                    _ = FactoryIndexer.IndexAsync(newFolder).ConfigureAwait(false);
                 }
                 folder.ID = newFolder.Id;
 
@@ -359,11 +374,12 @@ namespace ASC.Files.Core.Data
                     Level = 0
                 };
 
-                FilesDbContext.Tree.Add(newTree);
-                FilesDbContext.SaveChanges();
+                await FilesDbContext.Tree.AddAsync(newTree).ConfigureAwait(false);
+                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
                 //full path to root
                 var oldTree = FilesDbContext.Tree
+                    .AsQueryable()
                     .Where(r => r.FolderId == folder.FolderID);
 
                 foreach (var o in oldTree)
@@ -375,149 +391,168 @@ namespace ASC.Files.Core.Data
                         Level = o.Level + 1
                     };
 
-                    FilesDbContext.Tree.Add(treeToAdd);
+                    await FilesDbContext.Tree.AddAsync(treeToAdd).ConfigureAwait(false);
                 }
 
-                FilesDbContext.SaveChanges();
+                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
             }
 
             if (transaction == null)
             {
-                tx.Commit();
+                await tx.CommitAsync().ConfigureAwait(false);
                 tx.Dispose();
             }
 
             if (isnew)
             {
-                RecalculateFoldersCount(folder.ID);
+                await RecalculateFoldersCountAsync(folder.ID).ConfigureAwait(false);
             }
 
             //FactoryIndexer.IndexAsync(FoldersWrapper.GetFolderWrapper(ServiceProvider, folder));
             return folder.ID;
         }
 
-        private bool IsExist(int folderId)
+        private Task<bool> IsExistAsync(int folderId)
         {
             return Query(FilesDbContext.Folders).AsNoTracking()
-                .Any(r => r.Id == folderId);
+                .AnyAsync(r => r.Id == folderId);
         }
 
-        public void DeleteFolder(int id)
+        public Task DeleteFolderAsync(int id)
         {
             if (id == default) throw new ArgumentNullException("folderId");
 
+            return InternalDeleteFolderAsync(id);
+        }
+
+        private async Task InternalDeleteFolderAsync(int id)
+        {
             using var tx = FilesDbContext.Database.BeginTransaction();
             var subfolders =
-                FilesDbContext.Tree
+                await FilesDbContext.Tree
+                .AsQueryable()
                 .Where(r => r.ParentId == id)
                 .Select(r => r.FolderId)
-                .ToList();
+                .ToListAsync().ConfigureAwait(false);
 
             if (!subfolders.Contains(id)) subfolders.Add(id); // chashed folder_tree
 
-            var parent = Query(FilesDbContext.Folders)
+            var parent = await Query(FilesDbContext.Folders)
                 .Where(r => r.Id == id)
                 .Select(r => r.ParentId)
-                .FirstOrDefault();
+                .FirstOrDefaultAsync().ConfigureAwait(false);
 
-            var folderToDelete = Query(FilesDbContext.Folders).Where(r => subfolders.Contains(r.Id));
+            var folderToDelete = await Query(FilesDbContext.Folders).Where(r => subfolders.Contains(r.Id)).ToListAsync();
             FilesDbContext.Folders.RemoveRange(folderToDelete);
 
             foreach (var f in folderToDelete)
             {
-                FactoryIndexer.DeleteAsync(f);
+                await FactoryIndexer.DeleteAsync(f).ConfigureAwait(false);
             }
 
-            var treeToDelete = FilesDbContext.Tree.Where(r => subfolders.Contains(r.FolderId));
+            var treeToDelete = await FilesDbContext.Tree.AsQueryable().Where(r => subfolders.Contains(r.FolderId)).ToListAsync();
             FilesDbContext.Tree.RemoveRange(treeToDelete);
 
             var subfoldersStrings = subfolders.Select(r => r.ToString()).ToList();
-            var linkToDelete = Query(FilesDbContext.TagLink)
+            var linkToDelete = await Query(FilesDbContext.TagLink)
                 .Where(r => subfoldersStrings.Contains(r.EntryId))
-                .Where(r => r.EntryType == FileEntryType.Folder);
+                .Where(r => r.EntryType == FileEntryType.Folder)
+                .ToListAsync();
             FilesDbContext.TagLink.RemoveRange(linkToDelete);
 
-            var tagsToRemove = Query(FilesDbContext.Tag)
-                .Where(r => !Query(FilesDbContext.TagLink).Any(a => a.TagId == r.Id));
+            var tagsToRemove = await Query(FilesDbContext.Tag)
+                .Where(r => !Query(FilesDbContext.TagLink).Any(a => a.TagId == r.Id))
+                .ToListAsync();
 
             FilesDbContext.Tag.RemoveRange(tagsToRemove);
 
-            var securityToDelete = Query(FilesDbContext.Security)
+            var securityToDelete = await Query(FilesDbContext.Security)
                     .Where(r => subfoldersStrings.Contains(r.EntryId))
-                    .Where(r => r.EntryType == FileEntryType.Folder);
+                    .Where(r => r.EntryType == FileEntryType.Folder)
+                    .ToListAsync();
 
             FilesDbContext.Security.RemoveRange(securityToDelete);
-            FilesDbContext.SaveChanges();
+            await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-            var bunchToDelete = Query(FilesDbContext.BunchObjects)
-                .Where(r => r.LeftNode == id.ToString());
+            var bunchToDelete = await Query(FilesDbContext.BunchObjects)
+                .Where(r => r.LeftNode == id.ToString())
+                .ToListAsync();
 
             FilesDbContext.RemoveRange(bunchToDelete);
-            FilesDbContext.SaveChanges();
+            await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-            tx.Commit();
+            await tx.CommitAsync().ConfigureAwait(false);
 
-            RecalculateFoldersCount(parent);
+            await RecalculateFoldersCountAsync(parent).ConfigureAwait(false);
 
             //FactoryIndexer.DeleteAsync(new FoldersWrapper { Id = id });
         }
 
-        public TTo MoveFolder<TTo>(int folderId, TTo toFolderId, CancellationToken? cancellationToken)
+        public async Task<TTo> MoveFolderAsync<TTo>(int folderId, TTo toFolderId, CancellationToken? cancellationToken)
         {
             if (toFolderId is int tId)
             {
-                return (TTo)Convert.ChangeType(MoveFolder(folderId, tId, cancellationToken), typeof(TTo));
+                return (TTo)Convert.ChangeType(await MoveFolderAsync(folderId, tId, cancellationToken).ConfigureAwait(false), typeof(TTo));
             }
 
             if (toFolderId is string tsId)
             {
-                return (TTo)Convert.ChangeType(MoveFolder(folderId, tsId, cancellationToken), typeof(TTo));
+                return (TTo)Convert.ChangeType(await MoveFolderAsync(folderId, tsId, cancellationToken).ConfigureAwait(false), typeof(TTo));
             }
 
             throw new NotImplementedException();
         }
 
-        public int MoveFolder(int folderId, int toFolderId, CancellationToken? cancellationToken)
+        public async Task<int> MoveFolderAsync(int folderId, int toFolderId, CancellationToken? cancellationToken)
         {
             using (var tx = FilesDbContext.Database.BeginTransaction())
             {
-                var folder = GetFolder(folderId);
+                var folder = await GetFolderAsync(folderId).ConfigureAwait(false);
 
                 if (folder.FolderType != FolderType.DEFAULT)
                     throw new ArgumentException("It is forbidden to move the System folder.", nameof(folderId));
 
                 var recalcFolders = new List<int> { toFolderId };
-                var parent = FilesDbContext.Folders
+                var parent = await FilesDbContext.Folders
+                    .AsQueryable()
                     .Where(r => r.Id == folderId)
                     .Select(r => r.ParentId)
-                    .FirstOrDefault();
+                    .FirstOrDefaultAsync()
+                    .ConfigureAwait(false);
 
                 if (parent != 0 && !recalcFolders.Contains(parent)) recalcFolders.Add(parent);
 
-                var toUpdate = Query(FilesDbContext.Folders)
+                var toUpdate = await Query(FilesDbContext.Folders)
                     .Where(r => r.Id == folderId)
-                    .FirstOrDefault();
+                    .FirstOrDefaultAsync()
+                    .ConfigureAwait(false);
 
                 toUpdate.ParentId = toFolderId;
                 toUpdate.ModifiedOn = DateTime.UtcNow;
                 toUpdate.ModifiedBy = AuthContext.CurrentAccount.ID;
 
-                FilesDbContext.SaveChanges();
+                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-                var subfolders = FilesDbContext.Tree
+                var subfolders = await FilesDbContext.Tree
+                    .AsQueryable()
                     .Where(r => r.ParentId == folderId)
-                    .ToDictionary(r => r.FolderId, r => r.Level);
+                    .ToDictionaryAsync(r => r.FolderId, r => r.Level)
+                    .ConfigureAwait(false);
 
-                var toDelete = FilesDbContext.Tree
-                    .Where(r => subfolders.Keys.Contains(r.FolderId) && !subfolders.Keys.Contains(r.ParentId));
+                var toDelete = await FilesDbContext.Tree
+                    .AsQueryable()
+                    .Where(r => subfolders.Keys.Contains(r.FolderId) && !subfolders.Keys.Contains(r.ParentId))
+                    .ToListAsync();
 
                 FilesDbContext.Tree.RemoveRange(toDelete);
-                FilesDbContext.SaveChanges();
+                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-                var toInsert = FilesDbContext.Tree
+                var toInsert = await FilesDbContext.Tree
+                    .AsQueryable()
                     .Where(r => r.FolderId == toFolderId)
                     .OrderBy(r => r.Level)
-                    .ToList();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 foreach (var subfolder in subfolders)
                 {
@@ -529,52 +564,58 @@ namespace ASC.Files.Core.Data
                             ParentId = f.ParentId,
                             Level = subfolder.Value + 1 + f.Level
                         };
-                        FilesDbContext.AddOrUpdate(r => r.Tree, newTree);
+                        await FilesDbContext.AddOrUpdateAsync(r => r.Tree, newTree).ConfigureAwait(false);
                     }
                 }
 
-                FilesDbContext.SaveChanges();
-                tx.Commit();
+                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+                await tx.CommitAsync().ConfigureAwait(false);
 
-                recalcFolders.ForEach(RecalculateFoldersCount);
-                recalcFolders.ForEach(fid => GetRecalculateFilesCountUpdate(fid));
+                foreach (var e in recalcFolders)
+                {
+                    await RecalculateFoldersCountAsync(e);
+                }
+                foreach (var e in recalcFolders)
+                {
+                    await GetRecalculateFilesCountUpdateAsync(e);
+                }
             }
             return folderId;
         }
 
-        public string MoveFolder(int folderId, string toFolderId, CancellationToken? cancellationToken)
+        public async Task<string> MoveFolderAsync(int folderId, string toFolderId, CancellationToken? cancellationToken)
         {
             var toSelector = ProviderFolderDao.GetSelector(toFolderId);
 
-            var moved = CrossDao.PerformCrossDaoFolderCopy(
+            var moved = await CrossDao.PerformCrossDaoFolderCopyAsync(
                 folderId, this, DaoFactory.GetFileDao<int>(), r => r,
                 toFolderId, toSelector.GetFolderDao(toFolderId), toSelector.GetFileDao(toFolderId), toSelector.ConvertId,
-                true, cancellationToken);
+                true, cancellationToken)
+                .ConfigureAwait(false);
 
             return moved.ID;
         }
 
-
-        public Folder<TTo> CopyFolder<TTo>(int folderId, TTo toFolderId, CancellationToken? cancellationToken)
+        public async Task<Folder<TTo>> CopyFolderAsync<TTo>(int folderId, TTo toFolderId, CancellationToken? cancellationToken)
         {
             if (toFolderId is int tId)
             {
-                return CopyFolder(folderId, tId, cancellationToken) as Folder<TTo>;
+                return await CopyFolderAsync(folderId, tId, cancellationToken).ConfigureAwait(false) as Folder<TTo>;
             }
 
             if (toFolderId is string tsId)
             {
-                return CopyFolder(folderId, tsId, cancellationToken) as Folder<TTo>;
+                return await CopyFolderAsync(folderId, tsId, cancellationToken).ConfigureAwait(false) as Folder<TTo>;
             }
 
             throw new NotImplementedException();
         }
 
-        public Folder<int> CopyFolder(int folderId, int toFolderId, CancellationToken? cancellationToken)
+        public async Task<Folder<int>> CopyFolderAsync(int folderId, int toFolderId, CancellationToken? cancellationToken)
         {
-            var folder = GetFolder(folderId);
+            var folder = await GetFolderAsync(folderId).ConfigureAwait(false);
 
-            var toFolder = GetFolder(toFolderId);
+            var toFolder = await GetFolderAsync(toFolderId).ConfigureAwait(false);
 
             if (folder.FolderType == FolderType.BUNCH)
                 folder.FolderType = FolderType.DEFAULT;
@@ -587,92 +628,99 @@ namespace ASC.Files.Core.Data
             copy.Title = folder.Title;
             copy.FolderType = folder.FolderType;
 
-            copy = GetFolder(SaveFolder(copy));
+            copy = await GetFolderAsync(await SaveFolderAsync(copy).ConfigureAwait(false)).ConfigureAwait(false);
 
             //FactoryIndexer.IndexAsync(FoldersWrapper.GetFolderWrapper(ServiceProvider, copy));
             return copy;
         }
 
-        public Folder<string> CopyFolder(int folderId, string toFolderId, CancellationToken? cancellationToken)
+        public async Task<Folder<string>> CopyFolderAsync(int folderId, string toFolderId, CancellationToken? cancellationToken)
         {
             var toSelector = ProviderFolderDao.GetSelector(toFolderId);
 
-            var moved = CrossDao.PerformCrossDaoFolderCopy(
+            var moved = await CrossDao.PerformCrossDaoFolderCopyAsync(
                 folderId, this, DaoFactory.GetFileDao<int>(), r => r,
                 toFolderId, toSelector.GetFolderDao(toFolderId), toSelector.GetFileDao(toFolderId), toSelector.ConvertId,
-                false, cancellationToken);
+                false, cancellationToken)
+                .ConfigureAwait(false);
 
             return moved;
         }
 
-        public IDictionary<int, string> CanMoveOrCopy<TTo>(int[] folderIds, TTo to)
+        public Task<IDictionary<int, string>> CanMoveOrCopyAsync<TTo>(int[] folderIds, TTo to)
         {
             if (to is int tId)
             {
-                return CanMoveOrCopy(folderIds, tId);
+                return CanMoveOrCopyAsync(folderIds, tId);
             }
 
             if (to is string tsId)
             {
-                return CanMoveOrCopy(folderIds, tsId);
+                return CanMoveOrCopyAsync(folderIds, tsId);
             }
 
             throw new NotImplementedException();
         }
 
-        public IDictionary<int, string> CanMoveOrCopy(int[] folderIds, string to)
+        public Task<IDictionary<int, string>> CanMoveOrCopyAsync(int[] folderIds, string to)
         {
-            return new Dictionary<int, string>();
+            return Task.FromResult((IDictionary<int, string>)new Dictionary<int, string>());
         }
 
-        public IDictionary<int, string> CanMoveOrCopy(int[] folderIds, int to)
+        public async Task<IDictionary<int, string>> CanMoveOrCopyAsync(int[] folderIds, int to)
         {
             var result = new Dictionary<int, string>();
 
             foreach (var folderId in folderIds)
             {
-                var exists = FilesDbContext.Tree
+                var exists = await FilesDbContext.Tree
                     .AsNoTracking()
-                    .Any(r => r.ParentId == folderId && r.FolderId == to);
+                    .AnyAsync(r => r.ParentId == folderId && r.FolderId == to)
+                    .ConfigureAwait(false);
 
                 if (exists)
                 {
                     throw new InvalidOperationException(FilesCommonResource.ErrorMassage_FolderCopyError);
                 }
 
-                var title = Query(FilesDbContext.Folders)
+                var title = await Query(FilesDbContext.Folders)
                     .AsNoTracking()
                     .Where(r => r.Id == folderId)
                     .Select(r => r.Title.ToLower())
-                    .FirstOrDefault();
+                    .FirstOrDefaultAsync()
+                    .ConfigureAwait(false);
 
-                var conflict = Query(FilesDbContext.Folders)
+                var conflict = await Query(FilesDbContext.Folders)
                     .AsNoTracking()
                     .Where(r => r.Title.ToLower() == title)
                     .Where(r => r.ParentId == to)
                     .Select(r => r.Id)
-                    .FirstOrDefault();
+                    .FirstOrDefaultAsync()
+                    .ConfigureAwait(false);
 
                 if (conflict != 0)
                 {
-                    var files = FilesDbContext.Files
+                    var files = await FilesDbContext.Files
                         .AsNoTracking()
                         .Join(FilesDbContext.Files, f1 => f1.Title.ToLower(), f2 => f2.Title.ToLower(), (f1, f2) => new { f1, f2 })
                         .Where(r => r.f1.TenantId == TenantID && r.f1.CurrentVersion && r.f1.FolderId == folderId)
                         .Where(r => r.f2.TenantId == TenantID && r.f2.CurrentVersion && r.f2.FolderId == conflict)
-                        .Select(r => r.f1);
+                        .Select(r => r.f1)
+                        .ToListAsync()
+                        .ConfigureAwait(false);
 
                     foreach (var file in files)
                     {
                         result[file.Id] = file.Title;
                     }
 
-                    var childs = Query(FilesDbContext.Folders)
+                    var childs = await Query(FilesDbContext.Folders)
                         .AsNoTracking()
                         .Where(r => r.ParentId == folderId)
-                        .Select(r => r.Id);
+                        .Select(r => r.Id)
+                        .ToArrayAsync();
 
-                    foreach (var pair in CanMoveOrCopy(childs.ToArray(), conflict))
+                    foreach (var pair in await CanMoveOrCopyAsync(childs, conflict).ConfigureAwait(false))
                     {
                         result.Add(pair.Key, pair.Value);
                     }
@@ -682,53 +730,56 @@ namespace ASC.Files.Core.Data
             return result;
         }
 
-        public int RenameFolder(Folder<int> folder, string newTitle)
+        public async Task<int> RenameFolderAsync(Folder<int> folder, string newTitle)
         {
-            var toUpdate = Query(FilesDbContext.Folders)
+            var toUpdate = await Query(FilesDbContext.Folders)
                 .Where(r => r.Id == folder.ID)
-                .FirstOrDefault();
+                .FirstOrDefaultAsync()
+                .ConfigureAwait(false);
 
             toUpdate.Title = Global.ReplaceInvalidCharsAndTruncate(newTitle);
             toUpdate.ModifiedOn = DateTime.UtcNow;
             toUpdate.ModifiedBy = AuthContext.CurrentAccount.ID;
 
-            FilesDbContext.SaveChanges();
+            await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-            FactoryIndexer.IndexAsync(toUpdate);
+            _ = FactoryIndexer.IndexAsync(toUpdate).ConfigureAwait(false);
 
             return folder.ID;
         }
 
-
-        public int GetItemsCount(int folderId)
+        public async Task<int> GetItemsCountAsync(int folderId)
         {
-            return GetFoldersCount(folderId) +
-                   GetFilesCount(folderId);
+            return await GetFoldersCountAsync(folderId).ConfigureAwait(false) +
+                   await GetFilesCountAsync(folderId).ConfigureAwait(false);
         }
 
-        private int GetFoldersCount(int parentId)
+        private async Task<int> GetFoldersCountAsync(int parentId)
         {
-            var count = FilesDbContext.Tree
-                .Count(r => r.ParentId == parentId && r.Level > 0);
+            var count = await FilesDbContext.Tree
+                .AsQueryable()
+                .CountAsync(r => r.ParentId == parentId && r.Level > 0)
+                .ConfigureAwait(false);
 
             return count;
         }
 
-        private int GetFilesCount(int folderId)
+        private async Task<int> GetFilesCountAsync(int folderId)
         {
-            var count = Query(FilesDbContext.Files)
+            var count = await Query(FilesDbContext.Files)
                 .Join(FilesDbContext.Tree, r => r.FolderId, r => r.FolderId, (file, tree) => new { tree, file })
                 .Where(r => r.tree.ParentId == folderId)
                 .Select(r => r.file.Id)
                 .Distinct()
-                .Count();
+                .CountAsync()
+                .ConfigureAwait(false);
 
             return count;
         }
 
-        public bool IsEmpty(int folderId)
+        public async Task<bool> IsEmptyAsync(int folderId)
         {
-            return GetItemsCount(folderId) == 0;
+            return await GetItemsCountAsync(folderId).ConfigureAwait(false) == 0;
         }
 
         public bool UseTrashForRemove(Folder<int> folder)
@@ -756,36 +807,37 @@ namespace ASC.Files.Core.Data
             return true;
         }
 
-        public long GetMaxUploadSize(int folderId, bool chunkedUpload = false)
+        public async Task<long> GetMaxUploadSizeAsync(int folderId, bool chunkedUpload = false)
         {
             var tmp = long.MaxValue;
 
             if (CoreBaseSettings.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
-                tmp = CoreConfiguration.PersonalMaxSpace(SettingsManager) - GlobalSpace.GetUserUsedSpace();
+                tmp = CoreConfiguration.PersonalMaxSpace(SettingsManager) - await GlobalSpace.GetUserUsedSpaceAsync();
 
             return Math.Min(tmp, chunkedUpload ? SetupInfo.MaxChunkedUploadSize(TenantExtra, TenantStatisticProvider) : SetupInfo.MaxUploadSize(TenantExtra, TenantStatisticProvider));
         }
 
-        private void RecalculateFoldersCount(int id)
+        private async Task RecalculateFoldersCountAsync(int id)
         {
-            var toUpdate = Query(FilesDbContext.Folders)
+            var toUpdate = await Query(FilesDbContext.Folders)
                 .Join(FilesDbContext.Tree, r => r.Id, r => r.ParentId, (file, tree) => new { file, tree })
                 .Where(r => r.tree.FolderId == id)
                 .Select(r => r.file)
-                .ToList();
+                .ToListAsync()
+                .ConfigureAwait(false);
 
             foreach (var f in toUpdate)
             {
-                var count = FilesDbContext.Tree.Where(r => r.ParentId == f.Id).Count() - 1;
+                var count = await FilesDbContext.Tree.AsQueryable().Where(r => r.ParentId == f.Id).CountAsync().ConfigureAwait(false) - 1;
                 f.FoldersCount = count;
             }
 
-            FilesDbContext.SaveChanges();
+            await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
         }
 
         #region Only for TMFolderDao
 
-        public void ReassignFolders(int[] folderIds, Guid newOwnerId)
+        public Task ReassignFoldersAsync(int[] folderIds, Guid newOwnerId)
         {
             var toUpdate = Query(FilesDbContext.Folders)
                 .Where(r => folderIds.Contains(r.Id));
@@ -795,42 +847,50 @@ namespace ASC.Files.Core.Data
                 f.CreateBy = newOwnerId;
             }
 
-            FilesDbContext.SaveChanges();
+            return FilesDbContext.SaveChangesAsync();
         }
 
-
-        public IEnumerable<Folder<int>> SearchFolders(string text, bool bunch = false)
+        public IAsyncEnumerable<Folder<int>> SearchFoldersAsync(string text, bool bunch = false)
         {
-            return Search(text).Where(f => bunch
-                                               ? f.RootFolderType == FolderType.BUNCH
-                                               : (f.RootFolderType == FolderType.USER || f.RootFolderType == FolderType.COMMON)).ToList();
+            var folders = SearchAsync(text);
+            return folders.Where(f => bunch
+                                           ? f.RootFolderType == FolderType.BUNCH
+                                           : (f.RootFolderType == FolderType.USER || f.RootFolderType == FolderType.COMMON));
         }
 
-        private IEnumerable<Folder<int>> Search(string text)
+        private IAsyncEnumerable<Folder<int>> SearchAsync(string text)
         {
-            if (string.IsNullOrEmpty(text)) return new List<Folder<int>>();
+            if (string.IsNullOrEmpty(text)) return AsyncEnumerable.Empty<Folder<int>>();
 
             if (FactoryIndexer.TrySelectIds(s => s.MatchAll(text), out var ids))
             {
                 var q1 = GetFolderQuery(r => ids.Contains(r.Id));
-                return FromQueryWithShared(q1).Select(ToFolder).ToList();
+                var fromQuery1 = FromQueryWithShared(q1).AsAsyncEnumerable();
+                return fromQuery1.Select(ToFolder);
             }
 
             var q = BuildSearch(GetFolderQuery(), text, SearhTypeEnum.Any);
-            return FromQueryWithShared(q).Select(ToFolder).ToList();
+            var fromQuery = FromQueryWithShared(q).AsAsyncEnumerable();
+            return fromQuery.Select(ToFolder);
         }
 
-        public IEnumerable<int> GetFolderIDs(string module, string bunch, IEnumerable<string> data, bool createIfNotExists)
+        public Task<IEnumerable<int>> GetFolderIDsAsync(string module, string bunch, IEnumerable<string> data, bool createIfNotExists)
         {
             if (string.IsNullOrEmpty(module)) throw new ArgumentNullException(nameof(module));
             if (string.IsNullOrEmpty(bunch)) throw new ArgumentNullException(nameof(bunch));
 
+            return InternalGetFolderIDsAsync(module, bunch, data, createIfNotExists);
+        }
+
+        private async Task<IEnumerable<int>> InternalGetFolderIDsAsync(string module, string bunch, IEnumerable<string> data, bool createIfNotExists)
+        {
             var keys = data.Select(id => $"{module}/{bunch}/{id}").ToArray();
 
-            var folderIdsDictionary = Query(FilesDbContext.BunchObjects)
+            var folderIdsDictionary = await Query(FilesDbContext.BunchObjects)
                 .AsNoTracking()
                 .Where(r => keys.Length > 1 ? keys.Any(a => a == r.RightNode) : r.RightNode == keys[0])
-                .ToDictionary(r => r.RightNode, r => r.LeftNode);
+                .ToDictionaryAsync(r => r.RightNode, r => r.LeftNode)
+                .ConfigureAwait(false);
 
             var folderIds = new List<int>();
 
@@ -883,9 +943,9 @@ namespace ASC.Files.Core.Data
                             folder.Title = key;
                             break;
                     }
-                    using var tx = FilesDbContext.Database.BeginTransaction();//NOTE: Maybe we shouldn't start transaction here at all
+                    using var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false);//NOTE: Maybe we shouldn't start transaction here at all
 
-                    newFolderId = SaveFolder(folder, tx); //Save using our db manager
+                    newFolderId = await SaveFolderAsync(folder, tx).ConfigureAwait(false); //Save using our db manager
 
                     var newBunch = new DbFilesBunchObjects
                     {
@@ -894,26 +954,32 @@ namespace ASC.Files.Core.Data
                         TenantId = TenantID
                     };
 
-                    FilesDbContext.AddOrUpdate(r => r.BunchObjects, newBunch);
-                    FilesDbContext.SaveChanges();
+                    await FilesDbContext.AddOrUpdateAsync(r => r.BunchObjects, newBunch).ConfigureAwait(false);
+                    await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-                    tx.Commit(); //Commit changes
+                    await tx.CommitAsync().ConfigureAwait(false); //Commit changes
                 }
                 folderIds.Add(newFolderId);
             }
             return folderIds;
         }
 
-        public int GetFolderID(string module, string bunch, string data, bool createIfNotExists)
+        public Task<int> GetFolderIDAsync(string module, string bunch, string data, bool createIfNotExists)
         {
             if (string.IsNullOrEmpty(module)) throw new ArgumentNullException(nameof(module));
             if (string.IsNullOrEmpty(bunch)) throw new ArgumentNullException(nameof(bunch));
 
+            return InternalGetFolderIDAsync(module, bunch, data, createIfNotExists);
+        }
+
+        private async Task<int> InternalGetFolderIDAsync(string module, string bunch, string data, bool createIfNotExists)
+        {
             var key = $"{module}/{bunch}/{data}";
-            var folderId = Query(FilesDbContext.BunchObjects)
+            var folderId = await Query(FilesDbContext.BunchObjects)
                 .Where(r => r.RightNode == key)
                 .Select(r => r.LeftNode)
-                .FirstOrDefault();
+                .FirstOrDefaultAsync()
+                .ConfigureAwait(false);
 
             if (folderId != null)
             {
@@ -971,8 +1037,8 @@ namespace ASC.Files.Core.Data
                         folder.Title = key;
                         break;
                 }
-                using var tx = FilesDbContext.Database.BeginTransaction(); //NOTE: Maybe we shouldn't start transaction here at all
-                newFolderId = SaveFolder(folder, tx); //Save using our db manager
+                using var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false); //NOTE: Maybe we shouldn't start transaction here at all
+                newFolderId = await SaveFolderAsync(folder, tx).ConfigureAwait(false); //Save using our db manager
                 var toInsert = new DbFilesBunchObjects
                 {
                     LeftNode = newFolderId.ToString(),
@@ -980,10 +1046,10 @@ namespace ASC.Files.Core.Data
                     TenantId = TenantID
                 };
 
-                FilesDbContext.AddOrUpdate(r => r.BunchObjects, toInsert);
-                FilesDbContext.SaveChanges();
+                await FilesDbContext.AddOrUpdateAsync(r => r.BunchObjects, toInsert).ConfigureAwait(false);
+                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-                tx.Commit(); //Commit changes
+                await tx.CommitAsync().ConfigureAwait(false); //Commit changes
             }
 
 
@@ -991,49 +1057,49 @@ namespace ASC.Files.Core.Data
             return newFolderId;
         }
 
-        int IFolderDao<int>.GetFolderIDProjects(bool createIfNotExists)
+        Task<int> IFolderDao<int>.GetFolderIDProjectsAsync(bool createIfNotExists)
         {
-            return (this as IFolderDao<int>).GetFolderID(FileConstant.ModuleId, projects, null, createIfNotExists);
+            return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, projects, null, createIfNotExists);
         }
 
-        public int GetFolderIDTrash(bool createIfNotExists, Guid? userId = null)
+        public Task<int> GetFolderIDTrashAsync(bool createIfNotExists, Guid? userId = null)
         {
-            return (this as IFolderDao<int>).GetFolderID(FileConstant.ModuleId, trash, (userId ?? AuthContext.CurrentAccount.ID).ToString(), createIfNotExists);
+            return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, trash, (userId ?? AuthContext.CurrentAccount.ID).ToString(), createIfNotExists);
         }
 
-        public int GetFolderIDCommon(bool createIfNotExists)
+        public Task<int> GetFolderIDCommonAsync(bool createIfNotExists)
         {
-            return (this as IFolderDao<int>).GetFolderID(FileConstant.ModuleId, common, null, createIfNotExists);
+            return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, common, null, createIfNotExists);
         }
 
-        public int GetFolderIDUser(bool createIfNotExists, Guid? userId = null)
+        public Task<int> GetFolderIDUserAsync(bool createIfNotExists, Guid? userId = null)
         {
-            return (this as IFolderDao<int>).GetFolderID(FileConstant.ModuleId, my, (userId ?? AuthContext.CurrentAccount.ID).ToString(), createIfNotExists);
+            return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, my, (userId ?? AuthContext.CurrentAccount.ID).ToString(), createIfNotExists);
         }
 
-        public int GetFolderIDShare(bool createIfNotExists)
+        public Task<int> GetFolderIDShareAsync(bool createIfNotExists)
         {
-            return (this as IFolderDao<int>).GetFolderID(FileConstant.ModuleId, share, null, createIfNotExists);
+            return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, share, null, createIfNotExists);
         }
 
-        public int GetFolderIDRecent(bool createIfNotExists)
+        public Task<int> GetFolderIDRecentAsync(bool createIfNotExists)
         {
-            return (this as IFolderDao<int>).GetFolderID(FileConstant.ModuleId, recent, null, createIfNotExists);
+            return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, recent, null, createIfNotExists);
         }
 
-        public int GetFolderIDFavorites(bool createIfNotExists)
+        public Task<int> GetFolderIDFavoritesAsync(bool createIfNotExists)
         {
-            return (this as IFolderDao<int>).GetFolderID(FileConstant.ModuleId, favorites, null, createIfNotExists);
+            return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, favorites, null, createIfNotExists);
         }
 
-        public int GetFolderIDTemplates(bool createIfNotExists)
+        public Task<int> GetFolderIDTemplatesAsync(bool createIfNotExists)
         {
-            return (this as IFolderDao<int>).GetFolderID(FileConstant.ModuleId, templates, null, createIfNotExists);
+            return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, templates, null, createIfNotExists);
         }
 
-        public int GetFolderIDPrivacy(bool createIfNotExists, Guid? userId = null)
+        public Task<int> GetFolderIDPrivacyAsync(bool createIfNotExists, Guid? userId = null)
         {
-            return (this as IFolderDao<int>).GetFolderID(FileConstant.ModuleId, privacy, (userId ?? AuthContext.CurrentAccount.ID).ToString(), createIfNotExists);
+            return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, privacy, (userId ?? AuthContext.CurrentAccount.ID).ToString(), createIfNotExists);
         }
 
 
@@ -1051,25 +1117,27 @@ namespace ASC.Files.Core.Data
 
         protected IQueryable<DbFolderQuery> FromQueryWithShared(IQueryable<DbFolder> dbFiles)
         {
-            return from r in dbFiles
-                   select new DbFolderQuery
-                   {
-                       Folder = r,
-                       Root = (from f in FilesDbContext.Folders
-                               where f.Id ==
-                               (from t in FilesDbContext.Tree
-                                where t.FolderId == r.ParentId
-                                orderby t.Level descending
-                                select t.ParentId
-                                ).FirstOrDefault()
-                               where f.TenantId == r.TenantId
-                               select f
-                              ).FirstOrDefault(),
-                       Shared = (from f in FilesDbContext.Security
-                                 where f.EntryType == FileEntryType.Folder && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId
-                                 select f
-                                 ).Any()
-                   };
+            var e = from r in dbFiles
+                    select new DbFolderQuery
+                    {
+                        Folder = r,
+                        Root = (from f in FilesDbContext.Folders.AsQueryable()
+                                where f.Id ==
+                                (from t in FilesDbContext.Tree.AsQueryable()
+                                 where t.FolderId == r.ParentId
+                                 orderby t.Level descending
+                                 select t.ParentId
+                                 ).FirstOrDefault()
+                                where f.TenantId == r.TenantId
+                                select f
+                               ).FirstOrDefault(),
+                        Shared = (from f in FilesDbContext.Security.AsQueryable()
+                                  where f.EntryType == FileEntryType.Folder && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId
+                                  select f
+                                  ).Any()
+                    };
+
+            return e;
         }
 
         protected IQueryable<DbFolderQuery> FromQuery(IQueryable<DbFolder> dbFiles)
@@ -1078,9 +1146,9 @@ namespace ASC.Files.Core.Data
                 .Select(r => new DbFolderQuery
                 {
                     Folder = r,
-                    Root = (from f in FilesDbContext.Folders
+                    Root = (from f in FilesDbContext.Folders.AsQueryable()
                             where f.Id ==
-                            (from t in FilesDbContext.Tree
+                            (from t in FilesDbContext.Tree.AsQueryable()
                              where t.FolderId == r.ParentId
                              orderby t.Level descending
                              select t.ParentId
@@ -1171,26 +1239,29 @@ namespace ASC.Files.Core.Data
             return (file, record);
         }
 
-        public string GetBunchObjectID(int folderID)
+        public Task<string> GetBunchObjectIDAsync(int folderID)
         {
             return Query(FilesDbContext.BunchObjects)
                 .Where(r => r.LeftNode == folderID.ToString())
                 .Select(r => r.RightNode)
-                .FirstOrDefault();
+                .FirstOrDefaultAsync()
+;
         }
 
-        public Dictionary<string, string> GetBunchObjectIDs(List<int> folderIDs)
+        public Task<Dictionary<string, string>> GetBunchObjectIDsAsync(List<int> folderIDs)
         {
             var folderSIds = folderIDs.Select(r => r.ToString()).ToList();
 
             return Query(FilesDbContext.BunchObjects)
                 .Where(r => folderSIds.Any(a => a == r.LeftNode))
-                .ToDictionary(r => r.LeftNode, r => r.RightNode);
+                .ToDictionaryAsync(r => r.LeftNode, r => r.RightNode)
+;
         }
 
-        public IEnumerable<(Folder<int>, SmallShareRecord)> GetFeedsForFolders(int tenant, DateTime from, DateTime to)
+        public async Task<IEnumerable<(Folder<int>, SmallShareRecord)>> GetFeedsForFoldersAsync(int tenant, DateTime from, DateTime to)
         {
             var q1 = FilesDbContext.Folders
+                .AsQueryable()
                 .Where(r => r.TenantId == tenant)
                 .Where(r => r.FolderType == FolderType.DEFAULT)
                 .Where(r => r.CreateOn >= from && r.ModifiedOn <= to);
@@ -1199,34 +1270,42 @@ namespace ASC.Files.Core.Data
                 .Select(r => new DbFolderQueryWithSecurity() { DbFolderQuery = r, Security = null });
 
             var q3 = FilesDbContext.Folders
+                .AsQueryable()
                 .Where(r => r.TenantId == tenant)
                 .Where(r => r.FolderType == FolderType.DEFAULT);
 
             var q4 = FromQuery(q3)
-                .Join(FilesDbContext.Security.DefaultIfEmpty(), r => r.Folder.Id.ToString(), s => s.EntryId, (f, s) => new DbFolderQueryWithSecurity { DbFolderQuery = f, Security = s })
+                .Join(FilesDbContext.Security.AsQueryable().DefaultIfEmpty(), r => r.Folder.Id.ToString(), s => s.EntryId, (f, s) => new DbFolderQueryWithSecurity { DbFolderQuery = f, Security = s })
                 .Where(r => r.Security.TenantId == tenant)
                 .Where(r => r.Security.EntryType == FileEntryType.Folder)
                 .Where(r => r.Security.Security == FileShare.Restrict)
                 .Where(r => r.Security.TimeStamp >= from && r.Security.TimeStamp <= to);
 
-            return q2.Select(ToFolderWithShare).ToList().Union(q4.Select(ToFolderWithShare).ToList());
+            var firstQuery = await q2.ToListAsync().ConfigureAwait(false);
+            var secondQuery = await q4.ToListAsync().ConfigureAwait(false);
+
+            return firstQuery.Select(ToFolderWithShare).Union(secondQuery.Select(ToFolderWithShare));
         }
 
-        public IEnumerable<int> GetTenantsWithFeedsForFolders(DateTime fromTime)
+        public async Task<IEnumerable<int>> GetTenantsWithFeedsForFoldersAsync(DateTime fromTime)
         {
-            var q1 = FilesDbContext.Files
+            var q1 = await FilesDbContext.Files
+                .AsQueryable()
                 .Where(r => r.ModifiedOn > fromTime)
                 .GroupBy(r => r.TenantId)
                 .Where(r => r.Any())
                 .Select(r => r.Key)
-                .ToList();
+                .ToListAsync()
+                .ConfigureAwait(false);
 
-            var q2 = FilesDbContext.Security
+            var q2 = await FilesDbContext.Security
+                .AsQueryable()
                 .Where(r => r.TimeStamp > fromTime)
                 .GroupBy(r => r.TenantId)
                 .Where(r => r.Any())
                 .Select(r => r.Key)
-                .ToList();
+                .ToListAsync()
+                .ConfigureAwait(false);
 
             return q1.Union(q2);
         }

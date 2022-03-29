@@ -88,13 +88,63 @@ class FilesTableHeader extends React.Component {
     const tableColumns = columns.map((c) => c.enable && c.key);
     this.setTableColumns(tableColumns);
 
-    this.state = { columns, resetColumnsSize };
+    this.state = {
+      columns,
+      resetColumnsSize,
+    };
+
+    this.isBeginScrolling = false;
   }
 
   setTableColumns = (tableColumns) => {
     localStorage.setItem(`${TABLE_COLUMNS}=${this.props.userId}`, tableColumns);
   };
 
+  componentDidMount() {
+    this.customScrollElm = document.getElementsByClassName("section-scroll")[0];
+
+    this.customScrollElm.addEventListener("scroll", this.onBeginScroll);
+  }
+
+  onBeginScroll = () => {
+    const { firstElemChecked, headerBorder } = this.props;
+
+    const currentScrollPosition = this.customScrollElm.scrollTop;
+
+    const elem = document.getElementById("table-container_caption-header");
+    if (elem && headerBorder) elem.style.borderColor = "#2da7db";
+
+    if (currentScrollPosition === 0) {
+      this.isBeginScrolling = false;
+
+      !firstElemChecked && elem?.classList?.remove("lengthen-header");
+      return;
+    }
+
+    if (elem) elem.style.borderColor = "#ECEEF1";
+    !this.isBeginScrolling && elem?.classList?.add("lengthen-header");
+
+    this.isBeginScrolling = true;
+  };
+  componentDidUpdate(prevProps) {
+    const { columns } = this.state;
+    if (this.props.withContent !== prevProps.withContent) {
+      const columnIndex = columns.findIndex((c) => c.key === "Share");
+      if (columnIndex === -1) return;
+
+      columns[columnIndex].enable = this.props.withContent;
+      this.setState({ columns });
+    }
+
+    if (this.props.firstElemChecked && this.props.headerBorder) {
+      const elem = document.getElementById("table-container_caption-header");
+      if (elem) elem.style.borderColor = "#2da7db";
+    }
+  }
+
+  componentWillUnmount() {
+    this.customScrollElm.removeEventListener("scroll", this.onBeginScroll);
+  }
   getColumns = (defaultColumns, splitColumns) => {
     const columns = [];
 
@@ -140,12 +190,23 @@ class FilesTableHeader extends React.Component {
   };
 
   render() {
-    const { containerRef, filter, sectionWidth, userId } = this.props;
+    const {
+      containerRef,
+      isHeaderChecked,
+      filter,
+      sectionWidth,
+      userId,
+      firstElemChecked,
+      sortingVisible,
+    } = this.props;
+
     const { sortBy, sortOrder } = filter;
     const { columns, resetColumnsSize } = this.state;
 
     return (
       <TableHeader
+        isLengthenHeader={firstElemChecked || isHeaderChecked}
+        checkboxSize="32px"
         sorted={sortOrder === "descending"}
         sortBy={sortBy}
         containerRef={containerRef}
@@ -153,26 +214,46 @@ class FilesTableHeader extends React.Component {
         columnStorageName={`${COLUMNS_SIZE}=${userId}`}
         sectionWidth={sectionWidth}
         resetColumnsSize={resetColumnsSize}
+        sortingVisible={sortingVisible}
       />
     );
   }
 }
 
-export default inject(({ auth, filesStore, selectedFolderStore }) => {
-  const { isHeaderVisible, setIsLoading, filter, fetchFiles } = filesStore;
-  const { personal } = auth.settingsStore;
+export default inject(
+  ({ auth, filesStore, selectedFolderStore, treeFoldersStore }) => {
+    const {
+      isHeaderChecked,
+      setIsLoading,
+      filter,
+      fetchFiles,
+      canShare,
+      firstElemChecked,
+      headerBorder,
+    } = filesStore;
+    const { isPrivacyFolder, isRecentFolder } = treeFoldersStore;
 
-  return {
-    isHeaderVisible,
-    filter,
-    selectedFolderId: selectedFolderStore.id,
-    personal,
+    const withContent = canShare || (canShare && isPrivacyFolder && isDesktop);
+    const sortingVisible = !isRecentFolder;
+    const { personal } = auth.settingsStore;
 
-    setIsLoading,
-    fetchFiles,
-    userId: auth.userStore.user.id,
-  };
-})(
+    return {
+      isHeaderChecked,
+      filter,
+      selectedFolderId: selectedFolderStore.id,
+      withContent,
+      personal,
+      sortingVisible,
+
+      setIsLoading,
+      fetchFiles,
+      userId: auth.userStore.user.id,
+
+      firstElemChecked,
+      headerBorder,
+    };
+  }
+)(
   withTranslation(["Home", "Common", "Translations"])(
     observer(FilesTableHeader)
   )

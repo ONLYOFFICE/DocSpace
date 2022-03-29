@@ -1,10 +1,9 @@
-﻿{
+{
   "AddAccount": "Add account",
   "ArchivingData": "Archiving data",
   "ButtonShareAccess": "Sharing Settings",
   "ConnectingAccount": "Connecting account",
   "Copy": "Copy",
-  "CopyOperation": "Copying",
   "CreateMasterFormFromFile": "Create Form Template from file",
   "DeleteFromTrash": "Selected elements were successfully deleted from Trash",
   "DeleteOperation": "Deleting",
@@ -14,6 +13,7 @@
   "DownloadAs": "Download as",
   "EncryptedFileSaving": "Saving encrypted file",
   "Files": "Files",
+  "FileProtected": "The file is password protected",
   "Folders": "Folders",
   "FolderSelection": "Folder selection",
   "FolderTitleBoxNet": "Box directory",
@@ -38,7 +38,6 @@
   "NewFormFile": "Form from text file",
   "OwnerChange": "Change owner",
   "Presentations": "Presentations",
-  "Restore": "Restore",
   "Spreadsheets": "Spreadsheets",
   "SubNewForm": "Blank",
   "SubNewFormFile": "From text file",

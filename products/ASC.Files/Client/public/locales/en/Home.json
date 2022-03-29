@@ -1,4 +1,4 @@
-﻿{
+{
   "All": "All",
   "AllFiles": "All files",
   "Archives": "Archives",
@@ -13,7 +13,6 @@
   "CopyItem": "<strong>{{title}}</strong> copied",
   "CopyItems": "<strong>{{qty}}</strong> elements copied",
   "Document": "Document",
-  "Duplicate": "Create a copy",
   "EmptyFile": "Empty file",
   "EmptyFilterDescriptionText": "No files or folders match this filter. Try a different one or clear filter to view all files. ",
   "EmptyFilterSubheadingText": "No files to be displayed for this filter here",
@@ -41,7 +40,6 @@
   "New": "New",
   "NewDocument": "New document",
   "NewFolder": "New folder",
-  "NewMasterForm": "New form template",
   "NewPresentation": "New presentation",
   "NewSpreadsheet": "New spreadsheet",
   "NoSubfolders": "No subfolders",
@@ -67,8 +65,11 @@
   "ShowVersionHistory": "Show version history",
   "Spreadsheet": "Spreadsheet",
   "SubheadingEmptyText": "No files to be displayed in this section",
+  "TitleCreated": "Created",
   "TitleDocuments": "Dcs",
+  "TitleModified": "Updated",
   "TitleSubfolders": "Flds",
+  "TitleUploaded": "Uploaded",
   "TooltipElementCopyMessage": "Copy {{element}}",
   "TooltipElementsCopyMessage": "Copy {{element}} elements",
   "TooltipElementsMoveMessage": "Move {{element}} elements",
@@ -76,5 +77,9 @@
   "UnblockVersion": "Unblock/Check-in",
   "UploadToFolder": "Upload to folder",
   "ViewList": "List",
-  "ViewTiles": "Tiles"
+  "ViewTiles": "Tiles",
+  "NewMasterForm": "New form template",
+  "ViewTiles": "Tiles",
+  "VersionHistory": "Version history",
+  "MoveOrCopy": "Move or copy"
 }

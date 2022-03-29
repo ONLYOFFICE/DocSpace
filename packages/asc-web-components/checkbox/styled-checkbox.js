@@ -37,67 +37,35 @@ const StyledLabel = styled.label`
 
   svg {
     ${(props) =>
-      !props.isIndeterminate
+      !props.isIndeterminate && !props.isDisabled
         ? css`
             rect {
-              fill: ${(props) =>
-                props.color === "#FFFF"
-                  ? props.theme.checkbox.fillColor
-                  : props.color};
-              stroke: ${(props) =>
-                props.color === "#FFFF"
-                  ? props.theme.checkbox.borderColor
-                  : props.color};
+              fill: ${(props) => props.theme.checkbox.fillColor};
+              stroke: ${(props) => props.theme.checkbox.borderColor};
             }
             path {
-              fill: ${(props) =>
-                props.color
-                  ? props.color === "#FFFF"
-                    ? props.theme.checkbox.arrowColor
-                    : "white"
-                  : props.theme.checkbox.arrowColor};
+              fill: ${(props) => props.theme.checkbox.arrowColor};
             }
           `
-        : css`
+        : !props.isDisabled &&
+          css`
             rect {
-              fill: ${(props) =>
-                props.color === "#FFFF"
-                  ? props.theme.checkbox.fillColor
-                  : props.color};
-                  stroke: ${(props) =>
-                    props.color === "#FFFF"
-                      ? props.theme.checkbox.borderColor
-                      : props.color};
+              fill: ${(props) => props.theme.checkbox.fillColor};
+              stroke: ${(props) => props.theme.checkbox.borderColor};
             }
             }
             rect:last-child {
-              fill: ${(props) =>
-                props.color
-                  ? props.color === "#FFFF"
-                    ? props.theme.checkbox.indeterminateColor
-                    : "white"
-                  : props.theme.checkbox.indeterminateColor};
-              stroke: ${(props) =>
-                props.color === "#FFFF"
-                  ? props.theme.checkbox.fillColor
-                  : "none"};
+              fill: ${(props) => props.theme.checkbox.indeterminateColor};
+              stroke: ${(props) => props.theme.checkbox.fillColor};
             }
           `}
 
     ${(props) =>
       props.isDisabled && !props.isIndeterminate
         ? css`
-            filter: ${(props) =>
-              props.color !== "#FFFF" ? "opacity(30%)" : "opacity(100%)"};
             rect {
-              fill: ${(props) =>
-                props.color === "#FFFF"
-                  ? props.theme.checkbox.disableFillColor
-                  : props.color};
-              stroke: ${(props) =>
-                props.color === "#FFFF"
-                  ? props.theme.checkbox.disableBorderColor
-                  : props.color};
+              fill: ${(props) => props.theme.checkbox.disableFillColor};
+              stroke: ${(props) => props.theme.checkbox.disableBorderColor};
             }
             path {
               fill: ${(props) => props.theme.checkbox.disableArrowColor};
@@ -105,13 +73,13 @@ const StyledLabel = styled.label`
           `
         : props.isDisabled &&
           css`
-            filter: ${(props) =>
-              props.color !== "#FFFF" ? "opacity(30%)" : "opacity(100%)"};
+            rect {
+              fill: ${(props) => props.theme.checkbox.disableFillColor};
+              stroke: ${(props) => props.theme.checkbox.disableBorderColor};
+            }
             rect:last-child {
               fill: ${(props) =>
-                props.color === "#FFFF"
-                  ? props.theme.checkbox.disableIndeterminateColor
-                  : "rgba(255,255,255,0.7)"};
+                props.theme.checkbox.disableIndeterminateColor};
             }
           `}
   }
@@ -126,29 +94,16 @@ const StyledLabel = styled.label`
             cursor: pointer;
 
             rect:nth-child(2) {
-              stroke: ${(props) =>
-                props.color === "#FFFF"
-                  ? props.theme.checkbox.hoverBorderColor
-                  : "rgba(0,0,0,0.2)"};
+              stroke: ${(props) => props.theme.checkbox.hoverBorderColor};
             }
           `
         : css`
           cursor: pointer;
-           rect:nth-child(2) {
-              stroke: ${(props) =>
-                props.color === "#FFFF"
-                  ? props.theme.checkbox.hoverBorderColor
-                  : "rgba(0,0,0,0.2)"};
+          rect:nth-child(2) {
+              stroke: ${(props) => props.theme.checkbox.hoverBorderColor};
             }
           rect:last-child {
-              fill: ${(props) =>
-                props.color
-                  ? props.isIndeterminate && props.color === "#FFFF"
-                    ? props.theme.checkbox.hoverIndeterminateColor
-                    : props.isIndeterminate
-                    ? "white"
-                    : props.color
-                  : props.theme.checkbox.hoverIndeterminateColor};
+              fill: ${(props) => props.theme.checkbox.hoverIndeterminateColor};
             `}
   }
 

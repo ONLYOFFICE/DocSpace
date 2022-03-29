@@ -25,6 +25,7 @@
 
 
 using System;
+using System.Threading.Tasks;
 
 namespace ASC.Web.Core
 {
@@ -39,11 +40,11 @@ namespace ASC.Web.Core
             public long SpaceUsage { get; set; }
         }
 
-        public abstract System.Collections.Generic.List<UsageSpaceStatItem> GetStatData();
+        public abstract ValueTask<System.Collections.Generic.List<UsageSpaceStatItem>> GetStatDataAsync();
     }
 
     public interface IUserSpaceUsage
     {
-        long GetUserSpaceUsage(Guid userId);
+        Task<long> GetUserSpaceUsageAsync(Guid userId);
     }
 }

@@ -35,7 +35,7 @@ using ASC.Core.Data;
 namespace ASC.Core.Caching
 {
     [Singletone]
-    class SubscriptionServiceCache
+    public class SubscriptionServiceCache
     {
         internal ICache Cache { get; }
         internal ICacheNotify<SubscriptionRecord> NotifyRecord { get; }
@@ -103,7 +103,7 @@ namespace ASC.Core.Caching
     }
 
     [Scope]
-    class CachedSubscriptionService : ISubscriptionService
+    public class CachedSubscriptionService : ISubscriptionService
     {
         private readonly ISubscriptionService service;
         private readonly ICache cache;
@@ -244,7 +244,7 @@ namespace ASC.Core.Caching
         public SubscriptionRecord GetSubscription(string recipientId, string objectId)
         {
             return recordsByRec.ContainsKey(recipientId) ?
-                recordsByRec[recipientId].Where(s => s.ObjectId == objectId).FirstOrDefault() :
+                recordsByRec[recipientId].Where(s => s.ObjectId == (objectId ?? "")).FirstOrDefault() :
                 null;
         }
 
@@ -270,7 +270,7 @@ namespace ASC.Core.Caching
 
         public void RemoveSubscriptions(string objectId)
         {
-            records.RemoveAll(s => s.ObjectId == objectId);
+            records.RemoveAll(s => s.ObjectId == (objectId ?? ""));
             BuildSubscriptionsIndex(records);
         }
 

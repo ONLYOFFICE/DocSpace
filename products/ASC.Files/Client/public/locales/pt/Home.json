@@ -13,7 +13,6 @@
   "CopyItem": "<strong>{{title}}</strong> copiado",
   "CopyItems": "<strong>{{qty}}</strong> elementos copiados",
   "Document": "Documento",
-  "Duplicate": "Criar uma cópia",
   "EmptyFile": "Ficheiro vazio",
   "EmptyFilterDescriptionText": "Nenhum ficheiro ou pasta corresponde a este filtro. Tente um filtro diferente ou limpe-o para ver todos os ficheiros. ",
   "EmptyFilterSubheadingText": "Nenhum ficheiro a ser exibido para este filtro aqui",

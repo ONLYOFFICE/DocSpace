@@ -30,7 +30,6 @@ import { I18nextProvider } from "react-i18next";
 import { isMobile, isMobileOnly } from "react-device-detect";
 import Loaders from "@appserver/common/components/Loaders";
 import withLoader from "../../../HOCs/withLoader";
-import ModalDialogContainer from "../../dialogs/ModalDialogContainer";
 import ModalDialog from "@appserver/components/modal-dialog";
 import EmbeddingBody from "../EmbeddingPanel/EmbeddingBody";
 
@@ -57,6 +56,7 @@ class SharingPanelComponent extends React.Component {
       showEmbeddingContent: false,
       isUpdated: false,
       isLoading: false,
+      baseExternalAccess: null,
     };
 
     this.ref = React.createRef();
@@ -71,18 +71,29 @@ class SharingPanelComponent extends React.Component {
     this.setState({ showActionPanel: !this.state.showActionPanel });
   };
 
+  isUpdateAccessInfo = (selectedAccess) => {
+    const { baseExternalAccess, isUpdated } = this.state;
+
+    if (+baseExternalAccess !== +selectedAccess) {
+      !isUpdated && this.setState({ isUpdated: true });
+    } else {
+      isUpdated && this.setState({ isUpdated: false });
+    }
+  };
   onToggleLink = (item) => {
-    const { shareDataItems, isUpdated } = this.state;
+    const { shareDataItems } = this.state;
+    const { isPersonal } = this.props;
     const { DenyAccess, ReadOnly } = ShareAccessRights;
 
     const rights = item.access !== DenyAccess ? DenyAccess : ReadOnly;
     const newDataItems = JSON.parse(JSON.stringify(shareDataItems));
-
     newDataItems[0].access = rights;
+
+    isPersonal && this.isUpdateAccessInfo(rights);
+
     this.setState({
       shareDataItems: newDataItems,
       showEmbeddingContent: false,
-      isUpdated: !isUpdated,
     });
   };
 
@@ -99,31 +110,8 @@ class SharingPanelComponent extends React.Component {
   };
 
   onSaveClick = () => {
-
-
-    const {
-      baseShareData,
-      isNotifyUsers,
-      message,
-      shareDataItems,
-      filesOwnerId,
-    } = this.state;
-    const {
-      selection,
-      setIsLoading,
-      isPrivacy,
-      replaceFileStream,
-      t,
-      uploadPanelVisible,
-      updateUploadedItem,
-      uploadSelection,
-      isDesktop,
-      setEncryptionAccess,
-      setShareFiles,
-      setIsFolderActions,
-      onSuccess,
-      isFolderActions,
-    } = this.props;
+    const { baseShareData, shareDataItems, filesOwnerId } = this.state;
+    const { selection, isFolderActions } = this.props;
 
     let folderIds = [];
     let fileIds = [];
@@ -199,6 +187,7 @@ class SharingPanelComponent extends React.Component {
       setEncryptionAccess,
       setShareFiles,
       onSuccess,
+      setIsFolderActions,
     } = this.props;
 
     this.onClose();
@@ -212,7 +201,7 @@ class SharingPanelComponent extends React.Component {
       externalAccess,
       ownerId
     )
-      .then((res) => {
+      .then(() => {
         if (!ownerId) {
           this.updateRowData(selection);
         }
@@ -251,7 +240,6 @@ class SharingPanelComponent extends React.Component {
       .catch((err) => toastr.error(err))
       .finally(() => {
         setIsFolderActions(false);
-        setIsLoading(false);
       });
   };
 
@@ -267,14 +255,17 @@ class SharingPanelComponent extends React.Component {
     });
 
   onChangeItemAccess = (e) => {
+    const { isPersonal } = this.props;
     const id = e.currentTarget.dataset.id;
     const access = e.currentTarget.dataset.access;
     const shareDataItems = this.state.shareDataItems;
     const elem = shareDataItems.find((x) => x.sharedTo.id === id && !x.isOwner);
 
     if (elem.access !== +access) {
+      isPersonal && this.isUpdateAccessInfo(access);
+
       elem.access = +access;
-      this.setState({ shareDataItems, isUpdated: true });
+      this.setState({ shareDataItems });
     }
   };
 
@@ -338,31 +329,37 @@ class SharingPanelComponent extends React.Component {
       getExternalAccessOption,
       selection,
       getShareUsers,
+      isPersonal,
     } = this.props;
 
-      getShareUsers(folderId, fileId)
-        .then((shareDataItems) => {
-          const baseShareData = JSON.parse(JSON.stringify(shareDataItems));
-          const accessOptions = getAccessOption(selection);
+    getShareUsers(folderId, fileId)
+      .then((shareDataItems) => {
+        const baseShareData = JSON.parse(JSON.stringify(shareDataItems));
+        const accessOptions = getAccessOption(selection);
 
-          const externalAccessOptions = getExternalAccessOption(selection);
-          const filesOwner = shareDataItems.find((x) => x.isOwner);
-          const filesOwnerId = filesOwner ? filesOwner.sharedTo.id : null;
+        const externalAccessOptions = getExternalAccessOption(selection);
+        const filesOwner = shareDataItems.find((x) => x.isOwner);
+        const filesOwnerId = filesOwner ? filesOwner.sharedTo.id : null;
 
-          this.setState({
-            baseShareData,
-            shareDataItems,
-            accessOptions,
-            externalAccessOptions,
-            //showPanel: true,
-            filesOwnerId,
-          });
-        })
+        const baseExternalAccess = isPersonal
+          ? shareDataItems.find((x) => x.sharedTo.shareLink)?.access
+          : null;
 
-        .catch((err) => {
-          toastr.error(err);
-          this.onClose();
-        })
+        this.setState({
+          baseShareData,
+          shareDataItems,
+          accessOptions,
+          externalAccessOptions,
+          //showPanel: true,
+          filesOwnerId,
+          baseExternalAccess,
+        });
+      })
+
+      .catch((err) => {
+        toastr.error(err);
+        this.onClose();
+      })
       .finally(() =>
         this.setState({
           isLoading: false,
@@ -477,6 +474,7 @@ class SharingPanelComponent extends React.Component {
     //console.log("Sharing panel render");
     const {
       t,
+      theme,
       tReady,
       isPersonal,
       isMyId,
@@ -530,6 +528,7 @@ class SharingPanelComponent extends React.Component {
               shareDataItems.map((item, index) => (
                 <SharingRow
                   t={t}
+                  theme={theme}
                   isPersonal={isPersonal}
                   index={index}
                   key={`${item.sharedTo.id}_${index}`}
@@ -568,7 +567,7 @@ class SharingPanelComponent extends React.Component {
           <Button
             className="sharing_panel-button"
             label={t("Common:SaveButton")}
-            size="big"
+            size="normal"
             primary
             onClick={this.onSaveClick}
             isDisabled={isLoading || !isUpdated}
@@ -608,11 +607,12 @@ class SharingPanelComponent extends React.Component {
                       iconName="/static/images/actions.header.touch.react.svg"
                       className="sharing_panel-plus-icon"
                       {...onPlusClickProp}
-                      color="A3A9AE"
+                      // color="A3A9AE"
                       isDisabled={isLoading}
                     />
 
                     <DropDown
+                      forwardedRef={this.ref}
                       directionX="right"
                       className="sharing_panel-drop-down"
                       open={showActionPanel}
@@ -649,6 +649,7 @@ class SharingPanelComponent extends React.Component {
                 shareDataItems.map((item, index) => (
                   <SharingRow
                     t={t}
+                    theme={theme}
                     isPersonal={isPersonal}
                     index={index}
                     key={`${item.sharedTo.id}_${index}`}
@@ -700,7 +701,7 @@ class SharingPanelComponent extends React.Component {
               <Button
                 className="sharing_panel-button"
                 label={t("Common:SaveButton")}
-                size={isMobile ? "big" : "medium"}
+                size={isMobile ? "normal" : "small"}
                 minwidth="100px"
                 primary
                 onClick={this.onSaveClick}
@@ -805,6 +806,7 @@ const SharingPanel = inject(
     } = uploadDataStore;
 
     return {
+      theme: auth.settingsStore.theme,
       isPersonal: personal,
       isMyId: auth.userStore.user && auth.userStore.user.id,
       groupsCaption: customNames.groupsCaption,

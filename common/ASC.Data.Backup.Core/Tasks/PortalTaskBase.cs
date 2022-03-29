@@ -116,12 +116,12 @@ namespace ASC.Data.Backup.Tasks
                 foreach (var domain in domains)
                 {
                     files.AddRange(
-                        store.ListFilesRelative(domain, "\\", "*.*", true)
+                        store.ListFilesRelativeAsync(domain, "\\", "*.*", true).ToArrayAsync().Result
                         .Select(path => new BackupFileInfo(domain, module, path, tenantId)));
                 }
 
                 files.AddRange(
-                    store.ListFilesRelative(string.Empty, "\\", "*.*", true)
+                    store.ListFilesRelativeAsync(string.Empty, "\\", "*.*", true).ToArrayAsync().Result
                          .Where(path => domains.All(domain => !path.Contains(domain + "/")))
                          .Select(path => new BackupFileInfo(string.Empty, module, path, tenantId)));
             }

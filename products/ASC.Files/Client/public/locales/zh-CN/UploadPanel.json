@@ -1,3 +1,7 @@
-﻿{
-  "Uploads": "上传"
+{
+    "Uploads": "上传",
+    "EnterPassword": "输入密码",
+    "HideInput": "隐藏",
+    "Ready": "完成",
+    "UploadAndConvert": "上传并转换文件"
 }

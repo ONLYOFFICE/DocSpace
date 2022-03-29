@@ -187,7 +187,7 @@ namespace ASC.Files.Model
 
     public class InsertFileModelBinder : IModelBinder
     {
-        public Task BindModelAsync(ModelBindingContext bindingContext)
+        public async Task BindModelAsync(ModelBindingContext bindingContext)
         {
             if (bindingContext == null)
             {
@@ -224,12 +224,10 @@ namespace ASC.Files.Model
             bindingContext.HttpContext.Request.Body.Position = 0;
 
             result.Stream = new MemoryStream();
-            bindingContext.HttpContext.Request.Body.CopyToAsync(result.Stream).Wait();
+            await bindingContext.HttpContext.Request.Body.CopyToAsync(result.Stream);
             result.Stream.Position = 0;
 
             bindingContext.Result = ModelBindingResult.Success(result);
-
-            return Task.CompletedTask;
         }
     }
 

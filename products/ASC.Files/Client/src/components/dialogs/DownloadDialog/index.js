@@ -316,7 +316,7 @@ class DownloadDialogComponent extends React.Component {
   };
 
   render() {
-    const { visible, t, tReady, filesConverts } = this.props;
+    const { visible, t, tReady, extsConvertible } = this.props;
     const {
       documentsTitleFormat,
       spreadsheetsTitleFormat,
@@ -358,7 +358,7 @@ class DownloadDialogComponent extends React.Component {
           {documents.length > 0 && (
             <DownloadContent
               t={t}
-              filesConverts={filesConverts}
+              extsConvertible={extsConvertible}
               checkedTitle={checkedDocTitle}
               indeterminateTitle={indeterminateDocTitle}
               items={documents}
@@ -374,7 +374,7 @@ class DownloadDialogComponent extends React.Component {
           {spreadsheets.length > 0 && (
             <DownloadContent
               t={t}
-              filesConverts={filesConverts}
+              extsConvertible={extsConvertible}
               checkedTitle={checkedSpreadsheetTitle}
               indeterminateTitle={indeterminateSpreadsheetTitle}
               items={spreadsheets}
@@ -390,7 +390,7 @@ class DownloadDialogComponent extends React.Component {
           {presentations.length > 0 && (
             <DownloadContent
               t={t}
-              filesConverts={filesConverts}
+              extsConvertible={extsConvertible}
               checkedTitle={checkedPresentationTitle}
               indeterminateTitle={indeterminatePresentationTitle}
               items={presentations}
@@ -479,7 +479,7 @@ class DownloadDialogComponent extends React.Component {
             className="button-dialog-accept"
             key="DownloadButton"
             label={t("Common:Download")}
-            size="medium"
+            size="small"
             primary
             onClick={this.onDownload}
           />
@@ -487,7 +487,7 @@ class DownloadDialogComponent extends React.Component {
             className="button-dialog"
             key="CancelButton"
             label={t("Common:CancelButton")}
-            size="medium"
+            size="small"
             onClick={this.onClose}
           />
         </ModalDialog.Footer>
@@ -503,10 +503,9 @@ const DownloadDialog = withTranslation([
 ])(DownloadDialogComponent);
 
 export default inject(
-  ({ filesStore, formatsStore, dialogsStore, filesActionsStore }) => {
+  ({ filesStore, dialogsStore, filesActionsStore, settingsStore }) => {
     const { sortedFiles } = filesStore;
-    const { getIcon, getFolderIcon } = formatsStore.iconFormatsStore;
-    const { filesConverts } = formatsStore.docserviceStore;
+    const { extsConvertible, getIcon, getFolderIcon } = settingsStore;
 
     const {
       downloadDialogVisible: visible,
@@ -518,7 +517,7 @@ export default inject(
     return {
       sortedFiles,
       visible,
-      filesConverts,
+      extsConvertible,
 
       getIcon,
       getFolderIcon,

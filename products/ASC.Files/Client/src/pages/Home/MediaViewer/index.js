@@ -27,6 +27,7 @@ const FilesMediaViewer = (props) => {
     setIsLoading,
     setFirstLoad,
     setExpandedKeys,
+    setToPreviewFile,
     expandedKeys,
   } = props;
 
@@ -38,6 +39,25 @@ const FilesMediaViewer = (props) => {
       onMediaFileClick(+previewId);
     }
   }, [removeQuery, onMediaFileClick]);
+
+  useEffect(() => {
+    window.addEventListener("popstate", onButtonBackHandler);
+  }, [onButtonBackHandler]);
+
+  const onButtonBackHandler = () => {
+    const hash = window.location.hash;
+    const id = hash.slice(9);
+    if (!id) {
+      setMediaViewerData({ visible: false, id: null });
+      return;
+    }
+    setMediaViewerData({ visible: true, id });
+  };
+
+  const onChangeUrl = (id) => {
+    const url = "/products/files/#preview/" + id;
+    window.history.pushState(null, null, url);
+  };
 
   const removeQuery = (queryName) => {
     const queryParams = new URLSearchParams(location.search);
@@ -52,6 +72,7 @@ const FilesMediaViewer = (props) => {
 
   const onMediaFileClick = (id) => {
     //const itemId = typeof id !== "object" ? id : this.props.selection[0].id; TODO:
+
     if (typeof id !== "object") {
       const item = { visible: true, id };
       setMediaViewerData(item);
@@ -84,7 +105,7 @@ const FilesMediaViewer = (props) => {
     }
   };
 
-  const onMediaViewerClose = () => {
+  const onMediaViewerClose = (e) => {
     if (previewFile) {
       setIsLoading(true);
       setFirstLoad(true);
@@ -98,9 +119,19 @@ const FilesMediaViewer = (props) => {
         .finally(() => {
           setIsLoading(false);
           setFirstLoad(false);
+          setToPreviewFile(null);
         });
     }
     setMediaViewerData({ visible: false, id: null });
+
+    if (e) {
+      const url = localStorage.getItem("isFirstUrl");
+
+      if (!url) {
+        return;
+      }
+      window.history.replaceState(null, null, url);
+    }
   };
 
   return (
@@ -121,7 +152,8 @@ const FilesMediaViewer = (props) => {
         extsMediaPreviewed={mediaViewerMediaFormats} //TODO:
         extsImagePreviewed={mediaViewerImageFormats} //TODO:
         errorLabel={t("Translations:MediaLoadError")}
-        previewFile={previewFile}
+        isPreviewFile={!!previewFile}
+        onChangeUrl={onChangeUrl}
       />
     )
   );
@@ -132,7 +164,7 @@ export default inject(
     filesStore,
     mediaViewerDataStore,
     filesActionsStore,
-    formatsStore,
+    settingsStore,
     dialogsStore,
     treeFoldersStore,
   }) => {
@@ -149,9 +181,10 @@ export default inject(
       setMediaViewerData,
       playlist,
       previewFile,
+      setToPreviewFile,
     } = mediaViewerDataStore;
     const { deleteItemAction } = filesActionsStore;
-    const { media, images } = formatsStore.mediaViewersFormatsStore;
+    const { extsVideo, extsImage } = settingsStore;
     const { expandedKeys, setExpandedKeys } = treeFoldersStore;
 
     return {
@@ -162,8 +195,8 @@ export default inject(
       currentMediaFileId,
       deleteItemAction,
       setMediaViewerData,
-      mediaViewerImageFormats: images,
-      mediaViewerMediaFormats: media,
+      mediaViewerImageFormats: extsImage,
+      mediaViewerMediaFormats: extsVideo,
       setRemoveMediaItem: dialogsStore.setRemoveMediaItem,
       deleteDialogVisible: dialogsStore.deleteDialogVisible,
       fetchFiles,
@@ -171,6 +204,7 @@ export default inject(
       setIsLoading,
       setFirstLoad,
       setExpandedKeys,
+      setToPreviewFile,
       expandedKeys,
     };
   }

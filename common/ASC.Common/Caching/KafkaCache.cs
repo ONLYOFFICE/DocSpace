@@ -84,6 +84,47 @@ namespace ASC.Common.Caching
             }
         }
 
+        public async Task PublishAsync(T obj, CacheNotifyAction cacheNotifyAction)
+        {
+            try
+            {
+                if (Producer == null)
+                {
+                    Producer = new ProducerBuilder<AscCacheItem, T>(new ProducerConfig(ClientConfig))
+                    .SetErrorHandler((_, e) => Log.Error(e))
+                    .SetKeySerializer(KeySerializer)
+                    .SetValueSerializer(ValueSerializer)
+                    .Build();
+                }
+
+                var channelName = GetChannelName(cacheNotifyAction);
+
+                if (Actions.TryGetValue(channelName, out var onchange))
+                {
+                    onchange(obj);
+                }
+
+                var message = new Message<AscCacheItem, T>
+                {
+                    Value = obj,
+                    Key = new AscCacheItem
+                    {
+                        Id = Key.ToString()
+                    }
+                };
+
+                await Producer.ProduceAsync(channelName, message);
+            }
+            catch (ProduceException<Null, string> e)
+            {
+                Log.Error(e);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
+        }
+
         public void Subscribe(Action<T> onchange, CacheNotifyAction cacheNotifyAction)
         {
             var channelName = GetChannelName(cacheNotifyAction);

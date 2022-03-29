@@ -130,7 +130,7 @@ namespace ASC.Web.CRM.HttpHandlers
                 ContactPhotoManager.PhotoData photoData;
                 if (contactId != 0)
                 {
-                    photoData = contactPhotoManager.UploadPhoto(context.Request.Form.Files[0].OpenReadStream(), contactId, uploadOnly);
+                    photoData = await contactPhotoManager.UploadPhotoAsync(context.Request.Form.Files[0].OpenReadStream(), contactId, uploadOnly);
                 }
                 else
                 {
@@ -138,7 +138,7 @@ namespace ASC.Web.CRM.HttpHandlers
                     {
                         tmpDirName = Guid.NewGuid().ToString();
                     }
-                    photoData = contactPhotoManager.UploadPhotoToTemp(context.Request.Form.Files[0].OpenReadStream(), tmpDirName);
+                    photoData = await contactPhotoManager.UploadPhotoToTempAsync(context.Request.Form.Files[0].OpenReadStream(), tmpDirName);
                 }
 
                 fileUploadResult.Success = true;

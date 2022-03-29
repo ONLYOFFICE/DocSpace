@@ -1,11 +1,12 @@
 import React from "react";
+import { inject, observer } from "mobx-react";
 import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";
 import NoUserSelect from "@appserver/components/utils/commonStyles";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { ReactSVG } from "react-svg";
-import { isDesktop } from "react-device-detect";
+import { isDesktop, isMobile } from "react-device-detect";
 
 const StyledAboutBody = styled.div`
   width: 100%;
@@ -25,9 +26,27 @@ const StyledAboutBody = styled.div`
   .no-select {
     ${NoUserSelect}
   }
+
+  .tel-title,
+  .address-title {
+    display: inline;
+  }
+  .select-el {
+    ${isMobile && `user-select: text`};
+  }
+
+  .logo-theme {
+    #svg_4-4 {
+      fill: ${(props) => props.theme.studio.about.logoColor};
+    }
+
+    #svg_5-5 {
+      fill: ${(props) => props.theme.studio.about.logoColor};
+    }
+  }
 `;
 
-const AboutContent = ({ personal, buildVersionInfo }) => {
+const AboutContent = ({ personal, buildVersionInfo, theme }) => {
   const { t } = useTranslation("About");
   const license = "AGPL-3.0";
   const linkAppServer = "https://github.com/ONLYOFFICE/AppServer";
@@ -43,11 +62,15 @@ const AboutContent = ({ personal, buildVersionInfo }) => {
         {personal ? (
           <ReactSVG
             src="/images/logo_personal_about.svg"
-            className="no-select"
+            className="logo-theme no-select"
           />
         ) : (
           <img
-            src="/images/dark_general.png"
+            src={
+              theme.isBase
+                ? "/images/dark_general.png"
+                : "/images/white_general.png"
+            }
             alt="Logo"
             className="no-select"
           />
@@ -60,7 +83,7 @@ const AboutContent = ({ personal, buildVersionInfo }) => {
         </Text>
         <Link
           className="row-el"
-          color="#2DA7DB"
+          color={theme.studio.about.linkColor}
           fontSize="13px"
           fontWeight="600"
           href={linkAppServer}
@@ -68,7 +91,7 @@ const AboutContent = ({ personal, buildVersionInfo }) => {
         >
           &nbsp;ONLYOFFICE App Server&nbsp;
         </Link>
-        <Text className="row-el" fontSize="13px" fontWeight="600" noSelect>
+        <Text className="row-el select-el" fontSize="13px" fontWeight="600">
           v.{buildVersionInfo.appServer}
         </Text>
       </div>
@@ -79,7 +102,7 @@ const AboutContent = ({ personal, buildVersionInfo }) => {
         </Text>
         <Link
           className="row-el"
-          color="#2DA7DB"
+          color={theme.studio.about.linkColor}
           fontSize="13px"
           fontWeight="600"
           href={linkDocs}
@@ -87,7 +110,7 @@ const AboutContent = ({ personal, buildVersionInfo }) => {
         >
           &nbsp;ONLYOFFICE Docs&nbsp;
         </Link>
-        <Text className="row-el" fontSize="13px" fontWeight="600" noSelect>
+        <Text className="row-el select-el" fontSize="13px" fontWeight="600">
           v.{buildVersionInfo.documentServer}
         </Text>
       </div>
@@ -106,14 +129,20 @@ const AboutContent = ({ personal, buildVersionInfo }) => {
       </Text>
 
       <div className="row">
-        <Text fontSize="13px" noSelect>
-          {t("AboutCompanyAddressTitle")}: {address}
+        <Text className="address-title" fontSize="13px" noSelect>
+          {t("AboutCompanyAddressTitle")}:{" "}
+        </Text>
+        <Text className="address-title select-el" fontSize="13px">
+          {address}
         </Text>
       </div>
 
       <div className="row">
-        <Text fontSize="13px" noSelect>
-          {t("AboutCompanyTelTitle")}: {phone}
+        <Text className="tel-title" fontSize="13px" noSelect>
+          {t("AboutCompanyTelTitle")}:{" "}
+        </Text>
+        <Text className="tel-title select-el" fontSize="13px">
+          {phone}
         </Text>
       </div>
 
@@ -123,7 +152,7 @@ const AboutContent = ({ personal, buildVersionInfo }) => {
         </Text>
         <Link
           className="row-el"
-          color="#2DA7DB"
+          color={theme.studio.about.linkColor}
           fontSize="13px"
           fontWeight="600"
           href={`mailto:${email}`}
@@ -135,4 +164,6 @@ const AboutContent = ({ personal, buildVersionInfo }) => {
   );
 };
 
-export default AboutContent;
+export default inject(({ auth }) => {
+  return { theme: auth.settingsStore.theme };
+})(observer(AboutContent));

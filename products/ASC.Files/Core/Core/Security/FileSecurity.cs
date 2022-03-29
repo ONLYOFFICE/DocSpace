@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Core;
@@ -107,106 +108,104 @@ namespace ASC.Files.Core.Security
             FileSecurityCommon = fileSecurityCommon;
         }
 
-        public List<Tuple<FileEntry<T>, bool>> CanRead<T>(IEnumerable<FileEntry<T>> entry, Guid userId)
+        public Task<List<Tuple<FileEntry<T>, bool>>> CanReadAsync<T>(IEnumerable<FileEntry<T>> entry, Guid userId)
         {
-            return Can(entry, userId, FilesSecurityActions.Read);
+            return CanAsync(entry, userId, FilesSecurityActions.Read);
         }
 
-        public List<Tuple<FileEntry<T>, bool>> CanRead<T>(IEnumerable<FileEntry<T>> entry)
+        public Task<List<Tuple<FileEntry<T>, bool>>> CanReadAsync<T>(IEnumerable<FileEntry<T>> entry)
         {
-            return Can(entry, AuthContext.CurrentAccount.ID, FilesSecurityActions.Read);
+            return CanAsync(entry, AuthContext.CurrentAccount.ID, FilesSecurityActions.Read);
         }
 
-        public bool CanRead<T>(FileEntry<T> entry, Guid userId)
+        public Task<bool> CanReadAsync<T>(FileEntry<T> entry, Guid userId)
         {
-            return Can(entry, userId, FilesSecurityActions.Read);
+            return CanAsync(entry, userId, FilesSecurityActions.Read);
         }
 
-        public bool CanComment<T>(FileEntry<T> entry, Guid userId)
+        public Task<bool> CanCommentAsync<T>(FileEntry<T> entry, Guid userId)
         {
-            return Can(entry, userId, FilesSecurityActions.Comment);
+            return CanAsync(entry, userId, FilesSecurityActions.Comment);
         }
 
-        public bool CanFillForms<T>(FileEntry<T> entry, Guid userId)
+        public Task<bool> CanFillFormsAsync<T>(FileEntry<T> entry, Guid userId)
         {
-            return Can(entry, userId, FilesSecurityActions.FillForms);
+            return CanAsync(entry, userId, FilesSecurityActions.FillForms);
         }
 
-        public bool CanReview<T>(FileEntry<T> entry, Guid userId)
+        public Task<bool> CanReviewAsync<T>(FileEntry<T> entry, Guid userId)
         {
-            return Can(entry, userId, FilesSecurityActions.Review);
+            return CanAsync(entry, userId, FilesSecurityActions.Review);
         }
 
-        public bool CanCustomFilterEdit<T>(FileEntry<T> entry, Guid userId)
+        public Task<bool> CanCustomFilterEditAsync<T>(FileEntry<T> entry, Guid userId)
         {
-            return Can(entry, userId, FilesSecurityActions.CustomFilter);
+            return CanAsync(entry, userId, FilesSecurityActions.CustomFilter);
         }
 
-
-        public bool CanCreate<T>(FileEntry<T> entry, Guid userId)
+        public Task<bool> CanCreateAsync<T>(FileEntry<T> entry, Guid userId)
         {
-            return Can(entry, userId, FilesSecurityActions.Create);
+            return CanAsync(entry, userId, FilesSecurityActions.Create);
         }
 
-        public bool CanEdit<T>(FileEntry<T> entry, Guid userId)
+        public Task<bool> CanEditAsync<T>(FileEntry<T> entry, Guid userId)
         {
-            return Can(entry, userId, FilesSecurityActions.Edit);
+            return CanAsync(entry, userId, FilesSecurityActions.Edit);
         }
 
-        public bool CanDelete<T>(FileEntry<T> entry, Guid userId)
+        public Task<bool> CanDeleteAsync<T>(FileEntry<T> entry, Guid userId)
         {
-            return Can(entry, userId, FilesSecurityActions.Delete);
+            return CanAsync(entry, userId, FilesSecurityActions.Delete);
         }
 
-        public bool CanRead<T>(FileEntry<T> entry)
+        public Task<bool> CanReadAsync<T>(FileEntry<T> entry)
         {
-            return CanRead(entry, AuthContext.CurrentAccount.ID);
+            return CanReadAsync(entry, AuthContext.CurrentAccount.ID);
         }
 
-        public bool CanComment<T>(FileEntry<T> entry)
+        public Task<bool> CanCommentAsync<T>(FileEntry<T> entry)
         {
-            return CanComment(entry, AuthContext.CurrentAccount.ID);
+            return CanCommentAsync(entry, AuthContext.CurrentAccount.ID);
         }
 
-        public bool CanCustomFilterEdit<T>(FileEntry<T> entry)
+        public Task<bool> CanCustomFilterEditAsync<T>(FileEntry<T> entry)
         {
-            return CanCustomFilterEdit(entry, AuthContext.CurrentAccount.ID);
+            return CanCustomFilterEditAsync(entry, AuthContext.CurrentAccount.ID);
         }
 
-        public bool CanFillForms<T>(FileEntry<T> entry)
+        public Task<bool> CanFillFormsAsync<T>(FileEntry<T> entry)
         {
-            return CanFillForms(entry, AuthContext.CurrentAccount.ID);
+            return CanFillFormsAsync(entry, AuthContext.CurrentAccount.ID);
         }
 
-        public bool CanReview<T>(FileEntry<T> entry)
+        public Task<bool> CanReviewAsync<T>(FileEntry<T> entry)
         {
-            return CanReview(entry, AuthContext.CurrentAccount.ID);
+            return CanReviewAsync(entry, AuthContext.CurrentAccount.ID);
         }
 
-        public bool CanCreate<T>(FileEntry<T> entry)
+        public Task<bool> CanCreateAsync<T>(FileEntry<T> entry)
         {
-            return CanCreate(entry, AuthContext.CurrentAccount.ID);
+            return CanCreateAsync(entry, AuthContext.CurrentAccount.ID);
         }
 
-        public bool CanEdit<T>(FileEntry<T> entry)
+        public Task<bool> CanEditAsync<T>(FileEntry<T> entry)
         {
-            return CanEdit(entry, AuthContext.CurrentAccount.ID);
+            return CanEditAsync(entry, AuthContext.CurrentAccount.ID);
         }
 
-        public bool CanDelete<T>(FileEntry<T> entry)
+        public Task<bool> CanDeleteAsync<T>(FileEntry<T> entry)
         {
-            return CanDelete(entry, AuthContext.CurrentAccount.ID);
+            return CanDeleteAsync(entry, AuthContext.CurrentAccount.ID);
         }
 
-        public IEnumerable<Guid> WhoCanRead<T>(FileEntry<T> entry)
+        public Task<IEnumerable<Guid>> WhoCanReadAsync<T>(FileEntry<T> entry)
         {
-            return WhoCan(entry, FilesSecurityActions.Read);
+            return WhoCanAsync(entry, FilesSecurityActions.Read);
         }
 
-        private IEnumerable<Guid> WhoCan<T>(FileEntry<T> entry, FilesSecurityActions action)
+        private async Task<IEnumerable<Guid>> WhoCanAsync<T>(FileEntry<T> entry, FilesSecurityActions action)
         {
-            var copyshares = GetShares(entry);
-            IEnumerable<FileShareRecord> shares = copyshares.ToList();
+            var shares = await GetSharesAsync(entry);
 
             FileShareRecord defaultShareRecord;
 
@@ -280,16 +279,16 @@ namespace ASC.Files.Core.Security
                     if (action == FilesSecurityActions.Read)
                     {
                         var folderDao = daoFactory.GetFolderDao<T>();
-                        var root = folderDao.GetFolder(entry.RootFolderId);
+                        var root = await folderDao.GetFolderAsync(entry.RootFolderId);
                         if (root != null)
                         {
-                            var path = folderDao.GetBunchObjectID(root.ID);
+                            var path = await folderDao.GetBunchObjectIDAsync(root.ID);
 
                             var adapter = FilesIntegration.GetFileSecurity(path);
 
                             if (adapter != null)
                             {
-                                return adapter.WhoCanRead(entry);
+                                return await adapter.WhoCanReadAsync(entry);
                             }
                         }
                     }
@@ -306,63 +305,78 @@ namespace ASC.Files.Core.Security
             if (defaultShareRecord != null)
                 shares = shares.Concat(new[] { defaultShareRecord });
 
-            return shares.SelectMany(x =>
-                                         {
-                                             var groupInfo = UserManager.GetGroupInfo(x.Subject);
+            var manyShares = shares.SelectMany(x =>
+            {
+                var groupInfo = UserManager.GetGroupInfo(x.Subject);
 
-                                             if (groupInfo.ID != Constants.LostGroupInfo.ID)
-                                                 return
-                                                     UserManager.GetUsersByGroup(groupInfo.ID)
-                                                                .Where(p => p.Status == EmployeeStatus.Active)
-                                                                .Select(y => y.ID);
+                if (groupInfo.ID != Constants.LostGroupInfo.ID)
+                    return
+                        UserManager.GetUsersByGroup(groupInfo.ID)
+                                   .Where(p => p.Status == EmployeeStatus.Active)
+                                   .Select(y => y.ID);
 
-                                             return new[] { x.Subject };
-                                         })
-                         .Distinct()
-                         .Where(x => Can(entry, x, action, copyshares))
-                         .ToList();
+                return new[] { x.Subject };
+            })
+            .Distinct();
+
+            var result = new List<Guid>();
+
+            foreach (var x in manyShares)
+            {
+                if (await CanAsync(entry, x, action))
+                {
+                    result.Add(x);
+                }
+            }
+
+            return result;
         }
 
-        public IEnumerable<File<T>> FilterRead<T>(IEnumerable<File<T>> entries)
+        public async Task<IEnumerable<File<T>>> FilterReadAsync<T>(IEnumerable<File<T>> entries)
         {
-            return Filter(entries, FilesSecurityActions.Read, AuthContext.CurrentAccount.ID).Cast<File<T>>();
+            return (await FilterAsync(entries, FilesSecurityActions.Read, AuthContext.CurrentAccount.ID)).Cast<File<T>>();
         }
 
-        public IEnumerable<Folder<T>> FilterRead<T>(IEnumerable<Folder<T>> entries)
+        public async Task<IEnumerable<Folder<T>>> FilterReadAsync<T>(IEnumerable<Folder<T>> entries)
         {
-            return Filter(entries, FilesSecurityActions.Read, AuthContext.CurrentAccount.ID).Cast<Folder<T>>();
+            return (await FilterAsync(entries, FilesSecurityActions.Read, AuthContext.CurrentAccount.ID)).Cast<Folder<T>>();
         }
 
-        public IEnumerable<File<T>> FilterEdit<T>(IEnumerable<File<T>> entries)
+        public async Task<IEnumerable<File<T>>> FilterEditAsync<T>(IEnumerable<File<T>> entries)
         {
-            return Filter(entries.Cast<FileEntry<T>>(), FilesSecurityActions.Edit, AuthContext.CurrentAccount.ID).Cast<File<T>>();
+            return (await FilterAsync(entries.Cast<FileEntry<T>>(), FilesSecurityActions.Edit, AuthContext.CurrentAccount.ID)).Cast<File<T>>();
         }
 
-        public IEnumerable<Folder<T>> FilterEdit<T>(IEnumerable<Folder<T>> entries)
+        public async Task<IEnumerable<Folder<T>>> FilterEditAsync<T>(IEnumerable<Folder<T>> entries)
         {
-            return Filter(entries.Cast<FileEntry<T>>(), FilesSecurityActions.Edit, AuthContext.CurrentAccount.ID).Cast<Folder<T>>();
+            return (await FilterAsync(entries.Cast<FileEntry<T>>(), FilesSecurityActions.Edit, AuthContext.CurrentAccount.ID)).Cast<Folder<T>>();
         }
 
-        private bool Can<T>(FileEntry<T> entry, Guid userId, FilesSecurityActions action, IEnumerable<FileShareRecord> shares = null)
+        private async Task<bool> CanAsync<T>(FileEntry<T> entry, Guid userId, FilesSecurityActions action, IEnumerable<FileShareRecord> shares = null)
         {
-            return Filter(new[] { entry }, action, userId, shares).Any();
+            return (await FilterAsync(new[] { entry }, action, userId, shares)).Any();
         }
 
-        private List<Tuple<FileEntry<T>, bool>> Can<T>(IEnumerable<FileEntry<T>> entry, Guid userId, FilesSecurityActions action)
+        private async Task<List<Tuple<FileEntry<T>, bool>>> CanAsync<T>(IEnumerable<FileEntry<T>> entry, Guid userId, FilesSecurityActions action)
         {
-            var filtres = Filter(entry, action, userId);
+            var filtres = await FilterAsync(entry, action, userId);
             return entry.Select(r => new Tuple<FileEntry<T>, bool>(r, filtres.Any(a => a.ID.Equals(r.ID)))).ToList();
         }
 
-        private IEnumerable<FileEntry<T>> Filter<T>(IEnumerable<FileEntry<T>> entries, FilesSecurityActions action, Guid userId, IEnumerable<FileShareRecord> shares = null)
+        private Task<IEnumerable<FileEntry<T>>> FilterAsync<T>(IEnumerable<FileEntry<T>> entries, FilesSecurityActions action, Guid userId, IEnumerable<FileShareRecord> shares = null)
         {
-            if (entries == null || !entries.Any()) return Enumerable.Empty<FileEntry<T>>();
+            if (entries == null || !entries.Any()) return Task.FromResult(Enumerable.Empty<FileEntry<T>>());
 
             var user = UserManager.GetUsers(userId);
             var isOutsider = user.IsOutsider(UserManager);
 
-            if (isOutsider && action != FilesSecurityActions.Read) return Enumerable.Empty<FileEntry<T>>();
+            if (isOutsider && action != FilesSecurityActions.Read) return Task.FromResult(Enumerable.Empty<FileEntry<T>>());
 
+            return InternalFilterAsync(entries, action, userId, shares, user, isOutsider);
+        }
+
+        private async Task<IEnumerable<FileEntry<T>>> InternalFilterAsync<T>(IEnumerable<FileEntry<T>> entries, FilesSecurityActions action, Guid userId, IEnumerable<FileShareRecord> shares, UserInfo user, bool isOutsider)
+        {
             entries = entries.Where(f => f != null).ToList();
             var result = new List<FileEntry<T>>(entries.Count());
 
@@ -541,7 +555,7 @@ namespace ASC.Files.Core.Security
                         subjects = GetUserSubjects(userId);
                         if (shares == null)
                         {
-                            shares = GetShares(entries);
+                            shares = await GetSharesAsync(entries);
                             // shares ordered by level
                         }
                         shares = shares
@@ -608,8 +622,8 @@ namespace ASC.Files.Core.Security
                         .Select(r => r.RootFolderId)
                         .ToList();
 
-                var rootsFolders = folderDao.GetFolders(roots);
-                var bunches = folderDao.GetBunchObjectIDs(rootsFolders.Select(r => r.ID).ToList());
+                var rootsFolders = folderDao.GetFoldersAsync(roots);
+                var bunches = await folderDao.GetBunchObjectIDsAsync(await rootsFolders.Select(r => r.ID).ToListAsync());
                 var findedAdapters = FilesIntegration.GetFileSecurity(bunches);
 
                 foreach (var e in filteredEntries)
@@ -618,56 +632,56 @@ namespace ASC.Files.Core.Security
 
                     if (adapter == null) continue;
 
-                    if (adapter.CanRead(e, userId) &&
-                        adapter.CanCreate(e, userId) &&
-                        adapter.CanEdit(e, userId) &&
-                        adapter.CanDelete(e, userId))
+                    if (await adapter.CanReadAsync(e, userId) &&
+                        await adapter.CanCreateAsync(e, userId) &&
+                        await adapter.CanEditAsync(e, userId) &&
+                        await adapter.CanDeleteAsync(e, userId))
                     {
                         e.Access = FileShare.None;
                         result.Add(e);
                     }
-                    else if (action == FilesSecurityActions.Comment && adapter.CanComment(e, userId))
+                    else if (action == FilesSecurityActions.Comment && await adapter.CanCommentAsync(e, userId))
                     {
                         e.Access = FileShare.Comment;
                         result.Add(e);
                     }
-                    else if (action == FilesSecurityActions.FillForms && adapter.CanFillForms(e, userId))
+                    else if (action == FilesSecurityActions.FillForms && await adapter.CanFillFormsAsync(e, userId))
                     {
                         e.Access = FileShare.FillForms;
                         result.Add(e);
                     }
-                    else if (action == FilesSecurityActions.Review && adapter.CanReview(e, userId))
+                    else if (action == FilesSecurityActions.Review && await adapter.CanReviewAsync(e, userId))
                     {
                         e.Access = FileShare.Review;
                         result.Add(e);
                     }
-                    else if (action == FilesSecurityActions.CustomFilter && adapter.CanCustomFilterEdit(e, userId))
+                    else if (action == FilesSecurityActions.CustomFilter && await adapter.CanCustomFilterEditAsync(e, userId))
                     {
                         e.Access = FileShare.CustomFilter;
                         result.Add(e);
                     }
-                    else if (action == FilesSecurityActions.Create && adapter.CanCreate(e, userId))
+                    else if (action == FilesSecurityActions.Create && await adapter.CanCreateAsync(e, userId))
                     {
                         e.Access = FileShare.ReadWrite;
                         result.Add(e);
                     }
-                    else if (action == FilesSecurityActions.Delete && adapter.CanDelete(e, userId))
+                    else if (action == FilesSecurityActions.Delete && await adapter.CanDeleteAsync(e, userId))
                     {
                         e.Access = FileShare.ReadWrite;
                         result.Add(e);
                     }
-                    else if (action == FilesSecurityActions.Read && adapter.CanRead(e, userId))
+                    else if (action == FilesSecurityActions.Read && await adapter.CanReadAsync(e, userId))
                     {
-                        if (adapter.CanCreate(e, userId) ||
-                            adapter.CanDelete(e, userId) ||
-                            adapter.CanEdit(e, userId))
+                        if (await adapter.CanCreateAsync(e, userId) ||
+                            await adapter.CanDeleteAsync(e, userId) ||
+                            await adapter.CanEditAsync(e, userId))
                             e.Access = FileShare.ReadWrite;
                         else
                             e.Access = FileShare.Read;
 
                         result.Add(e);
                     }
-                    else if (action == FilesSecurityActions.Edit && adapter.CanEdit(e, userId))
+                    else if (action == FilesSecurityActions.Edit && await adapter.CanEditAsync(e, userId))
                     {
                         e.Access = FileShare.ReadWrite;
 
@@ -681,7 +695,7 @@ namespace ASC.Files.Core.Security
             if ((action == FilesSecurityActions.Read || action == FilesSecurityActions.Delete) && entries.Any(filter))
             {
                 var folderDao = daoFactory.GetFolderDao<T>();
-                var mytrashId = folderDao.GetFolderIDTrash(false, userId);
+                var mytrashId = await folderDao.GetFolderIDTrashAsync(false, userId);
                 if (!Equals(mytrashId, 0))
                 {
                     result.AddRange(entries.Where(filter).Where(e => Equals(e.RootFolderId, mytrashId)));
@@ -700,7 +714,7 @@ namespace ASC.Files.Core.Security
             return result;
         }
 
-        public void Share<T>(T entryId, FileEntryType entryType, Guid @for, FileShare share)
+        public Task ShareAsync<T>(T entryId, FileEntryType entryType, Guid @for, FileShare share)
         {
             var securityDao = daoFactory.GetSecurityDao<T>();
             var r = new FileShareRecord
@@ -712,32 +726,32 @@ namespace ASC.Files.Core.Security
                 Owner = AuthContext.CurrentAccount.ID,
                 Share = share,
             };
-            securityDao.SetShare(r);
+            return securityDao.SetShareAsync(r);
         }
 
-        public IEnumerable<FileShareRecord> GetShares<T>(IEnumerable<FileEntry<T>> entries)
+        public Task<IEnumerable<FileShareRecord>> GetSharesAsync<T>(IEnumerable<FileEntry<T>> entries)
         {
-            return daoFactory.GetSecurityDao<T>().GetShares(entries);
+            return daoFactory.GetSecurityDao<T>().GetSharesAsync(entries);
         }
 
-        public IEnumerable<FileShareRecord> GetShares<T>(FileEntry<T> entry)
+        public Task<IEnumerable<FileShareRecord>> GetSharesAsync<T>(FileEntry<T> entry)
         {
-            return daoFactory.GetSecurityDao<T>().GetShares(entry);
+            return daoFactory.GetSecurityDao<T>().GetSharesAsync(entry);
         }
 
-        public List<FileEntry> GetSharesForMe(FilterType filterType, bool subjectGroup, Guid subjectID, string searchText = "", bool searchInContent = false, bool withSubfolders = false)
+        public async Task<List<FileEntry>> GetSharesForMeAsync(FilterType filterType, bool subjectGroup, Guid subjectID, string searchText = "", bool searchInContent = false, bool withSubfolders = false)
         {
             var securityDao = daoFactory.GetSecurityDao<int>();
             var subjects = GetUserSubjects(AuthContext.CurrentAccount.ID);
-            var records = securityDao.GetShares(subjects);
+            IEnumerable<FileShareRecord> records = await securityDao.GetSharesAsync(subjects);
 
             var result = new List<FileEntry>();
-            result.AddRange(GetSharesForMe<int>(records.Where(r => r.EntryId is int), subjects, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders));
-            result.AddRange(GetSharesForMe<string>(records.Where(r => r.EntryId is string), subjects, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders));
+            result.AddRange(await GetSharesForMeAsync<int>(records.Where(r => r.EntryId is int), subjects, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders));
+            result.AddRange(await GetSharesForMeAsync<string>(records.Where(r => r.EntryId is string), subjects, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders));
             return result;
         }
 
-        private List<FileEntry> GetSharesForMe<T>(IEnumerable<FileShareRecord> records, List<Guid> subjects, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText = "", bool searchInContent = false, bool withSubfolders = false)
+        private async Task<List<FileEntry>> GetSharesForMeAsync<T>(IEnumerable<FileShareRecord> records, List<Guid> subjects, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText = "", bool searchInContent = false, bool withSubfolders = false)
         {
             var folderDao = daoFactory.GetFolderDao<T>();
             var fileDao = daoFactory.GetFileDao<T>();
@@ -771,44 +785,47 @@ namespace ASC.Files.Core.Security
 
             if (filterType != FilterType.FoldersOnly)
             {
-                var files = fileDao.GetFilesFiltered(fileIds.Keys.ToArray(), filterType, subjectGroup, subjectID, searchText, searchInContent);
+                var files = await fileDao.GetFilesFilteredAsync(fileIds.Keys.ToArray(), filterType, subjectGroup, subjectID, searchText, searchInContent).ToListAsync();
+                var share = await GlobalFolder.GetFolderShareAsync<T>(daoFactory);
 
                 files.ForEach(x =>
+                {
+                    if (fileIds.TryGetValue(x.ID, out var access))
                     {
-                        if (fileIds.TryGetValue(x.ID, out var access))
-                        {
-                            x.Access = access;
-                            x.FolderIdDisplay = GlobalFolder.GetFolderShare<T>(daoFactory);
-                        }
-                    });
+                        x.Access = fileIds[x.ID];
+                        x.FolderIdDisplay = share;
+                    }
+                });
 
                 entries.AddRange(files);
             }
 
             if (filterType == FilterType.None || filterType == FilterType.FoldersOnly)
             {
-                var folders = folderDao.GetFolders(folderIds.Keys, filterType, subjectGroup, subjectID, searchText, withSubfolders, false);
+                var folders = await folderDao.GetFoldersAsync(folderIds.Keys, filterType, subjectGroup, subjectID, searchText, withSubfolders, false).ToListAsync();
 
                 if (withSubfolders)
                 {
-                    folders = FilterRead(folders).ToList();
+                    var filteredFolders = await FilterReadAsync(folders);
+                    folders = filteredFolders.ToList();
                 }
+                var share = await GlobalFolder.GetFolderShareAsync<T>(daoFactory);
                 folders.ForEach(x =>
+                {
+                    if (folderIds.TryGetValue(x.ID, out var access))
                     {
-                        if (folderIds.TryGetValue(x.ID, out var access))
-                        {
-                            x.Access = access;
-                            x.FolderIdDisplay = GlobalFolder.GetFolderShare<T>(daoFactory);
-                        }
-                    });
+                        x.Access = folderIds[x.ID];
+                        x.FolderIdDisplay = share;
+                    }
+                });
 
                 entries.AddRange(folders.Cast<FileEntry<T>>());
             }
 
             if (filterType != FilterType.FoldersOnly && withSubfolders)
             {
-                var filesInSharedFolders = fileDao.GetFiles(folderIds.Keys, filterType, subjectGroup, subjectID, searchText, searchInContent);
-                filesInSharedFolders = FilterRead(filesInSharedFolders).ToList();
+                var filesInSharedFolders = await fileDao.GetFilesAsync(folderIds.Keys, filterType, subjectGroup, subjectID, searchText, searchInContent);
+                filesInSharedFolders = (await FilterReadAsync(filesInSharedFolders)).ToList();
                 entries.AddRange(filesInSharedFolders);
                 entries = entries.Distinct().ToList();
             }
@@ -839,25 +856,25 @@ namespace ASC.Files.Core.Security
 
             if (failedRecords.Count > 0)
             {
-                securityDao.DeleteShareRecords(failedRecords);
+                await securityDao.DeleteShareRecordsAsync(failedRecords);
             }
 
             return entries.Where(x => string.IsNullOrEmpty(x.Error)).Cast<FileEntry>().ToList();
         }
 
-        public List<FileEntry> GetPrivacyForMe(FilterType filterType, bool subjectGroup, Guid subjectID, string searchText = "", bool searchInContent = false, bool withSubfolders = false)
+        public async Task<List<FileEntry>> GetPrivacyForMeAsync(FilterType filterType, bool subjectGroup, Guid subjectID, string searchText = "", bool searchInContent = false, bool withSubfolders = false)
         {
             var securityDao = daoFactory.GetSecurityDao<int>();
             var subjects = GetUserSubjects(AuthContext.CurrentAccount.ID);
-            var records = securityDao.GetShares(subjects);
+            IEnumerable<FileShareRecord> records = await securityDao.GetSharesAsync(subjects);
 
             var result = new List<FileEntry>();
-            result.AddRange(GetPrivacyForMe<int>(records.Where(r => r.EntryId is int), subjects, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders));
-            result.AddRange(GetPrivacyForMe<string>(records.Where(r => r.EntryId is string), subjects, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders));
+            result.AddRange(await GetPrivacyForMeAsync<int>(records.Where(r => r.EntryId is int), subjects, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders));
+            result.AddRange(await GetPrivacyForMeAsync<string>(records.Where(r => r.EntryId is string), subjects, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders));
             return result;
         }
 
-        private List<FileEntry<T>> GetPrivacyForMe<T>(IEnumerable<FileShareRecord> records, List<Guid> subjects, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText = "", bool searchInContent = false, bool withSubfolders = false)
+        private async Task<List<FileEntry<T>>> GetPrivacyForMeAsync<T>(IEnumerable<FileShareRecord> records, List<Guid> subjects, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText = "", bool searchInContent = false, bool withSubfolders = false)
         {
             var folderDao = daoFactory.GetFolderDao<T>();
             var fileDao = daoFactory.GetFileDao<T>();
@@ -890,14 +907,15 @@ namespace ASC.Files.Core.Security
 
             if (filterType != FilterType.FoldersOnly)
             {
-                var files = fileDao.GetFilesFiltered(fileIds.Keys.ToArray(), filterType, subjectGroup, subjectID, searchText, searchInContent);
+                var files = await fileDao.GetFilesFilteredAsync(fileIds.Keys.ToArray(), filterType, subjectGroup, subjectID, searchText, searchInContent).ToListAsync();
+                var privateFolder = await GlobalFolder.GetFolderPrivacyAsync<T>(daoFactory);
 
                 files.ForEach(x =>
                 {
                     if (fileIds.TryGetValue(x.ID, out var access))
                     {
                         x.Access = access;
-                        x.FolderIdDisplay = GlobalFolder.GetFolderPrivacy<T>(daoFactory);
+                        x.FolderIdDisplay = privateFolder;
                     }
                 });
 
@@ -906,18 +924,20 @@ namespace ASC.Files.Core.Security
 
             if (filterType == FilterType.None || filterType == FilterType.FoldersOnly)
             {
-                var folders = folderDao.GetFolders(folderIds.Keys, filterType, subjectGroup, subjectID, searchText, withSubfolders, false);
+                var folders = await folderDao.GetFoldersAsync(folderIds.Keys, filterType, subjectGroup, subjectID, searchText, withSubfolders, false).ToListAsync();
 
                 if (withSubfolders)
                 {
-                    folders = FilterRead(folders).ToList();
+                    var filteredFolders = await FilterReadAsync(folders);
+                    folders = filteredFolders.ToList();
                 }
+                var privacyFolder = await GlobalFolder.GetFolderPrivacyAsync<T>(daoFactory);
                 folders.ForEach(x =>
                 {
                     if (folderIds.TryGetValue(x.ID, out var access))
                     {
                         x.Access = access;
-                        x.FolderIdDisplay = GlobalFolder.GetFolderPrivacy<T>(daoFactory);
+                        x.FolderIdDisplay = privacyFolder;
                     }
                 });
 
@@ -926,8 +946,8 @@ namespace ASC.Files.Core.Security
 
             if (filterType != FilterType.FoldersOnly && withSubfolders)
             {
-                var filesInSharedFolders = fileDao.GetFiles(folderIds.Keys, filterType, subjectGroup, subjectID, searchText, searchInContent);
-                filesInSharedFolders = FilterRead(filesInSharedFolders).ToList();
+                var filesInSharedFolders = await fileDao.GetFilesAsync(folderIds.Keys, filterType, subjectGroup, subjectID, searchText, searchInContent);
+                filesInSharedFolders = (await FilterReadAsync(filesInSharedFolders)).ToList();
                 entries.AddRange(filesInSharedFolders);
                 entries = entries.Distinct().ToList();
             }
@@ -940,10 +960,9 @@ namespace ASC.Files.Core.Security
             return entries;
         }
 
-
-        public void RemoveSubject<T>(Guid subject)
+        public Task RemoveSubjectAsync<T>(Guid subject)
         {
-            daoFactory.GetSecurityDao<T>().RemoveSubject(subject);
+            return daoFactory.GetSecurityDao<T>().RemoveSubjectAsync(subject);
         }
 
         public List<Guid> GetUserSubjects(Guid userId)

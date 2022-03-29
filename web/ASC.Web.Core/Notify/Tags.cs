@@ -65,6 +65,7 @@ namespace ASC.Web.Studio.Core.Notify
         public const string BlogLink = "TagBlogLink";
         public const string DueDate = "DueDate";
         public const string DelayDueDate = "DelayDueDate";
+        public const string LinkToRecovery = "LinkToRecovery";
 
         public const string FromUserName = "FromUserName";
         public const string FromUserLink = "FromUserLink";

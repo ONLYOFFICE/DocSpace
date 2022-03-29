@@ -36,6 +36,7 @@ using System.Security;
 using System.ServiceModel.Security;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Web;
 
 using ASC.Api.Collections;
@@ -63,6 +64,7 @@ using ASC.FederatedLogin.LoginProviders;
 using ASC.IPSecurity;
 using ASC.MessagingSystem;
 using ASC.Security.Cryptography;
+using ASC.Web.Api.Core;
 using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core;
@@ -174,6 +176,7 @@ namespace ASC.Api.Settings
         private InstanceCrypto InstanceCrypto { get; }
         private Signature Signature { get; }
         private DbWorker WebhookDbWorker { get; }
+        private DnsSettings DnsSettings { get; }
         public IHttpClientFactory ClientFactory { get; }
 
         public SettingsController(
@@ -240,6 +243,7 @@ namespace ASC.Api.Settings
             InstanceCrypto instanceCrypto,
             Signature signature,
             DbWorker dbWorker,
+            DnsSettings dnsSettings,
             IHttpClientFactory clientFactory)
         {
             Log = option.Get("ASC.Api");
@@ -302,6 +306,7 @@ namespace ASC.Api.Settings
             TelegramHelper = telegramHelper;
             PaymentManager = paymentManager;
             WebhookDbWorker = dbWorker;
+            DnsSettings = dnsSettings;
             Constants = constants;
             InstanceCrypto = instanceCrypto;
             Signature = signature;
@@ -317,7 +322,8 @@ namespace ASC.Api.Settings
                 Culture = Tenant.GetCulture().ToString(),
                 GreetingSettings = Tenant.Name,
                 Personal = CoreBaseSettings.Personal,
-                Version = Configuration["version:number"] ?? ""
+                Version = Configuration["version:number"] ?? "",
+                TenantStatus = TenantManager.GetCurrentTenant().Status
             };
 
             if (AuthContext.IsAuthenticated)
@@ -330,6 +336,8 @@ namespace ASC.Api.Settings
                 settings.UtcHoursOffset = settings.UtcOffset.TotalHours;
                 settings.OwnerId = Tenant.OwnerId;
                 settings.NameSchemaId = CustomNamingPeople.Current.Id;
+
+                settings.SocketUrl = Configuration["web:hub:url"] ?? "";
 
                 settings.Firebase = new FirebaseWrapper
                 {
@@ -403,6 +411,41 @@ namespace ASC.Api.Settings
             SettingsManager.Save(new StudioAdminMessageSettings { Enable = model.TurnOn });
 
             MessageService.Send(MessageAction.AdministratorMessageSettingsUpdated);
+
+            return Resource.SuccessfullySaveSettingsMessage;
+        }
+
+        [Read("cookiesettings")]
+        public int GetCookieSettings()
+        {
+            return CookiesManager.GetLifeTime(TenantManager.GetCurrentTenant().TenantId);
+        }
+
+        [Update("cookiesettings")]
+        public object UpdateCookieSettingsFromBody([FromBody] CookieSettingsModel model)
+        {
+            return UpdateCookieSettings(model);
+        }
+
+        [Update("messagesettings")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public object UpdateCookieSettingsFromForm([FromForm] CookieSettingsModel model)
+        {
+            return UpdateCookieSettings(model);
+        }
+
+        private object UpdateCookieSettings(CookieSettingsModel model)
+        {
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+            if (!SetupInfo.IsVisibleSettings("CookieSettings"))
+            {
+                throw new BillingException(Resource.ErrorNotAllowedOption, "CookieSettings");
+            }
+
+            CookiesManager.SetLifeTime(model.LifeTime);
+
+            MessageService.Send(MessageAction.CookieSettingsUpdated);
 
             return Resource.SuccessfullySaveSettingsMessage;
         }
@@ -730,6 +773,13 @@ namespace ASC.Api.Settings
             return Dns.GetHostName().ToLowerInvariant();
         }
 
+        [Update("dns")]
+        public object SaveDnsSettings(DnsSettingsModel model)
+        {
+            return DnsSettings.SaveDnsSettings(model.DnsName, model.Enable);
+        }
+
+
         [Read("greetingsettings")]
         public ContentResult GetGreetingSettings()
         {
@@ -810,9 +860,9 @@ namespace ASC.Api.Settings
 
         [AllowAnonymous]
         [Read("version/build", false)]
-        public BuildVersion GetBuildVersions()
+        public Task<BuildVersion> GetBuildVersionsAsync()
         {
-            return BuildVersion.GetCurrentBuildVersion();
+            return BuildVersion.GetCurrentBuildVersionAsync();
         }
 
         [Read("version")]
@@ -889,11 +939,29 @@ namespace ASC.Api.Settings
 
         [Read("security/password", Check = false)]
         [Authorize(AuthenticationSchemes = "confirm", Roles = "Everyone")]
-        public object GetPasswordSettings()
+        public PasswordSettings GetPasswordSettings()
         {
-            var UserPasswordSettings = SettingsManager.Load<PasswordSettings>();
+            return SettingsManager.Load<PasswordSettings>();
+        }
 
-            return UserPasswordSettings;
+        [Update("security/password")]
+        public PasswordSettings UpdatePasswordSettings(PasswordSettingsModel model)
+        {
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+            var userPasswordSettings = SettingsManager.Load<PasswordSettings>();
+
+            userPasswordSettings.MinLength = model.MinLength;
+            userPasswordSettings.UpperCase = model.UpperCase;
+            userPasswordSettings.Digits = model.Digits;
+            userPasswordSettings.SpecSymbols = model.SpecSymbols;
+
+            SettingsManager.Save(userPasswordSettings);
+
+            MessageService.Send(MessageAction.PasswordStrengthSettingsUpdated);
+
+            return userPasswordSettings;
+
         }
 
         [Update("security")]
@@ -1113,7 +1181,7 @@ namespace ASC.Api.Settings
             {
                 var logoDict = new Dictionary<int, string>();
 
-                foreach(var l in model.Logo)
+                foreach (var l in model.Logo)
                 {
                     logoDict.Add(Int32.Parse(l.Key), l.Value);
                 }
@@ -1410,6 +1478,12 @@ namespace ASC.Api.Settings
         public bool UpdateTipsSubscription()
         {
             return StudioPeriodicNotify.ChangeSubscription(AuthContext.CurrentAccount.ID, StudioNotifyHelper);
+        }
+
+        [Read("tips/subscription")]
+        public bool GetTipsSubscription()
+        {
+            return StudioNotifyHelper.IsSubscribedToNotify(AuthContext.CurrentAccount.ID, Actions.PeriodicNotify);
         }
 
         [Update("wizard/complete", Check = false)]
@@ -2157,28 +2231,34 @@ namespace ASC.Api.Settings
         }
 
         [Read("statistics/spaceusage/{id}")]
-        public List<UsageSpaceStatItemWrapper> GetSpaceUsageStatistics(Guid id)
+        public Task<List<UsageSpaceStatItemWrapper>> GetSpaceUsageStatistics(Guid id)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-            var webtem = WebItemManagerSecurity.GetItems(WebZoneType.All, ItemAvailableState.All)
+            var webitem = WebItemManagerSecurity.GetItems(WebZoneType.All, ItemAvailableState.All)
                                        .FirstOrDefault(item =>
                                                        item != null &&
                                                        item.ID == id &&
                                                        item.Context != null &&
                                                        item.Context.SpaceUsageStatManager != null);
 
-            if (webtem == null) return new List<UsageSpaceStatItemWrapper>();
+            if (webitem == null) return Task.FromResult(new List<UsageSpaceStatItemWrapper>());
 
-            return webtem.Context.SpaceUsageStatManager.GetStatData()
-                         .ConvertAll(it => new UsageSpaceStatItemWrapper
-                         {
-                             Name = it.Name.HtmlEncode(),
-                             Icon = it.ImgUrl,
-                             Disabled = it.Disabled,
-                             Size = FileSizeComment.FilesSizeToString(it.SpaceUsage),
-                             Url = it.Url
-                         });
+            return InternalGetSpaceUsageStatistics(webitem);
+        }
+
+        private async Task<List<UsageSpaceStatItemWrapper>> InternalGetSpaceUsageStatistics(IWebItem webitem)
+        {
+            var statData = await webitem.Context.SpaceUsageStatManager.GetStatDataAsync();
+
+            return statData.ConvertAll(it => new UsageSpaceStatItemWrapper
+            {
+                Name = it.Name.HtmlEncode(),
+                Icon = it.ImgUrl,
+                Disabled = it.Disabled,
+                Size = FileSizeComment.FilesSizeToString(it.SpaceUsage),
+                Url = it.Url
+            });
         }
 
         [Read("statistics/visit")]

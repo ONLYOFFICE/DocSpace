@@ -40,8 +40,8 @@ const Paging = (props) => {
   return (
     <StyledPaging id={id} className={className} style={style}>
       <Button
-        className="buttonCustomStyle"
-        size="medium"
+        className="buttonCustomStyle not-selectable"
+        size="small"
         scale={true}
         label={previousLabel}
         onClick={previousAction}
@@ -55,15 +55,15 @@ const Paging = (props) => {
             directionY={openDirection}
             options={pageItems}
             onSelect={onSelectPageAction}
-            scaledOptions={pageItems.length > 6}
+            scaledOptions={pageItems.length < 6}
             selectedOption={selectedPageItem}
             {...setDropDownMaxHeight}
           />
         </StyledPage>
       )}
       <Button
-        className="buttonCustomStyle"
-        size="medium"
+        className="buttonCustomStyle not-selectable"
+        size="small"
         scale={true}
         label={nextLabel}
         onClick={nextAction}
@@ -78,6 +78,7 @@ const Paging = (props) => {
                 directionY={openDirection}
                 directionX="right"
                 options={countItems}
+                scaledOptions={true}
                 onSelect={onSelectCountAction}
                 selectedOption={selectedCountItem}
               />
@@ -114,7 +115,7 @@ Paging.propTypes = {
   /** Items per page combo box items */
   countItems: PropTypes.array,
   /** Indicates opening direction of combo box */
-  openDirection: PropTypes.oneOf(["bottom", "top"]),
+  openDirection: PropTypes.oneOf(["bottom", "top", "both"]),
   /** Accepts class */
   className: PropTypes.string,
   /** Accepts id */

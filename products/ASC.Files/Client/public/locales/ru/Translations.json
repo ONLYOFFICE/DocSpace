@@ -1,10 +1,9 @@
-﻿{
+{
   "AddAccount": "Подключить",
   "ArchivingData": "Архивирование данных",
   "ButtonShareAccess": "Настройка доступа",
   "ConnectingAccount": "Подключение аккаунта",
   "Copy": "Копировать",
-  "CopyOperation": "Копирование",
   "CreateMasterFormFromFile": "Создать шаблон формы из файла",
   "DeleteFromTrash": "Выбранные элементы успешно удалены из корзины",
   "DeleteOperation": "Удаление",
@@ -14,6 +13,7 @@
   "DownloadAs": "Скачать как",
   "EncryptedFileSaving": "Сохранение зашифрованного файла",
   "Files": "Файлы",
+  "FileProtected": "Файл защищен с помощью пароля",
   "Folders": "Папки",
   "FolderSelection": "Выбор папки",
   "FolderTitleBoxNet": "Каталог Box",
@@ -38,7 +38,6 @@
   "NewFormFile": "Форма из текстового файла",
   "OwnerChange": "Сменить владельца",
   "Presentations": "Презентации",
-  "Restore": "Восстановить",
   "Spreadsheets": "Таблицы",
   "SubNewForm": "Пустая",
   "SubNewFormFile": " Из текстового файла",

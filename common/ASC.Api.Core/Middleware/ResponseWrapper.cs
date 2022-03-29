@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Security;
+using System.Security.Authentication;
 
 using ASC.Common.Web;
 
@@ -21,6 +22,8 @@ namespace ASC.Api.Core.Middleware
                 status = HttpStatusCode.InternalServerError;
             }
 
+            bool withStackTrace = true;
+
             switch (context.Exception)
             {
                 case ItemNotFoundException:
@@ -35,12 +38,16 @@ namespace ASC.Api.Core.Middleware
                     status = HttpStatusCode.Forbidden;
                     message = "Access denied";
                     break;
+                case AuthenticationException:
+                    status = HttpStatusCode.Unauthorized;
+                    withStackTrace = false;
+                    break;
                 case InvalidOperationException:
                     status = HttpStatusCode.Forbidden;
                     break;
             }
 
-            var result = new ObjectResult(new ErrorApiResponse(status, context.Exception, message))
+            var result = new ObjectResult(new ErrorApiResponse(status, context.Exception, message, withStackTrace))
             {
                 StatusCode = (int)status
             };

@@ -1,130 +1,85 @@
-import React, { useEffect, useState } from "react";
-import { withTranslation } from "react-i18next";
-import i18n from "i18next";
-import Backend from "i18next-http-backend";
-import { getLanguage } from "@appserver/common/utils";
-
+import React, { useState, useEffect } from "react";
 import CampaignsBanner from "@appserver/components/campaigns-banner";
 import { ADS_TIMEOUT } from "../../../helpers/constants";
 import { LANGUAGE } from "@appserver/common/constants";
+import { getLanguage } from "@appserver/common/utils";
 
-const i18nConfig = i18n.createInstance();
+const Banner = () => {
+  const [campaignImage, setCampaignImage] = useState();
+  const [campaignTranslate, setCampaignTranslate] = useState();
 
-let translationUrl;
-
-const loadLanguagePath = async () => {
-  if (!window.firebaseHelper) return;
+  const campaigns = (localStorage.getItem("campaigns") || "")
+    .split(",")
+    .filter((campaign) => campaign.length > 0);
 
   const lng = localStorage.getItem(LANGUAGE) || "en";
   const language = getLanguage(lng instanceof Array ? lng[0] : lng);
 
-  const campaigns = (localStorage.getItem("campaigns") || "")
-    .split(",")
-    .filter((campaign) => campaign.length > 0);
-  const index = Number(localStorage.getItem("bannerIndex") || 0);
-  const campaign = campaigns[index];
-
-  try {
-    translationUrl = await window.firebaseHelper.getCampaignsTranslations(
-      campaign,
-      language
+  const getImage = async (campaign) => {
+    const imageUrl = await window.firebaseHelper.getCampaignsImages(
+      campaign.toLowerCase()
     );
-  } catch (e) {
-    translationUrl = await window.firebaseHelper.getCampaignsTranslations(
+
+    return imageUrl;
+  };
+
+  const getTranslation = async (campaign, lng) => {
+    let translationUrl = await window.firebaseHelper.getCampaignsTranslations(
       campaign,
-      "en"
+      lng
     );
-    //console.error(e);
-  }
-  return translationUrl;
-};
 
-const bannerHOC = (WrappedComponent) => (props) => {
-  const { FirebaseHelper } = props;
+    const res = await fetch(translationUrl);
 
-  const campaigns = (localStorage.getItem("campaigns") || "")
-    .split(",")
-    .filter((campaign) => campaign.length > 0);
+    if (!res.ok) {
+      translationUrl = await window.firebaseHelper.getCampaignsTranslations(
+        campaign,
+        "en"
+      );
+    }
+    return await (await fetch(translationUrl)).json();
+  };
 
-  const [bannerImage, setBannerImage] = useState("");
-  const [bannerTranslation, setBannerTranslation] = useState();
-
-  const updateBanner = async () => {
+  const getBanner = async () => {
     let index = Number(localStorage.getItem("bannerIndex") || 0);
-    const campaign = campaigns[index];
-
+    const currentCampaign = campaigns[index];
     if (campaigns.length < 1 || index + 1 >= campaigns.length) {
       index = 0;
     } else {
       index++;
     }
 
-    try {
-      const translationUrl = await loadLanguagePath();
-      setBannerTranslation(translationUrl);
-
-      i18nConfig.use(Backend).init({
-        lng: localStorage.getItem(LANGUAGE) || "en",
-        fallbackLng: "en",
-        load: "currentOnly",
-        debug: false,
-        defaultNS: "",
-
-        backend: {
-          loadPath: function () {
-            return translationUrl;
-          },
-        },
-      });
-
-      const image = await FirebaseHelper.getCampaignsImages(
-        campaign.toLowerCase()
-      );
-      setBannerImage(image);
-    } catch (e) {
-      updateBanner();
-      //console.error(e);
-    }
-
     localStorage.setItem("bannerIndex", index);
+
+    const image = await getImage(currentCampaign);
+    const translate = await getTranslation(currentCampaign, language);
+
+    setCampaignImage(image);
+    setCampaignTranslate(translate);
   };
 
   useEffect(() => {
-    updateBanner();
-    setInterval(updateBanner, ADS_TIMEOUT);
+    getBanner();
+    const adsInterval = setInterval(getBanner, ADS_TIMEOUT);
+
+    return function cleanup() {
+      clearInterval(adsInterval);
+    };
   }, []);
 
-  if (!bannerTranslation || !bannerImage) return <></>;
-
-  return <WrappedComponent bannerImage={bannerImage} {...props} />;
-};
-
-const Banner = (props) => {
-  //console.log("Banner render", props);
-  const { t, tReady, bannerImage } = props;
-  const campaigns = (localStorage.getItem("campaigns") || "")
-    .split(",")
-    .filter((campaign) => campaign.length > 0);
-
-  if (!campaigns.length || !tReady) {
-    return <></>;
-  }
-
   return (
-    <CampaignsBanner
-      headerLabel={t("Header")}
-      subHeaderLabel={t("SubHeader")}
-      img={bannerImage}
-      btnLabel={t("ButtonLabel")}
-      link={t("Link")}
-    />
+    <>
+      {campaignImage && campaignTranslate && (
+        <CampaignsBanner
+          headerLabel={campaignTranslate.Header}
+          subHeaderLabel={campaignTranslate.SubHeader}
+          img={campaignImage}
+          btnLabel={campaignTranslate.ButtonLabel}
+          link={campaignTranslate.Link}
+        />
+      )}
+    </>
   );
 };
 
-const BannerWithTranslation = withTranslation()(Banner);
-
-const WrapperBanner = (props) => (
-  <BannerWithTranslation i18n={i18nConfig} useSuspense={false} {...props} />
-);
-
-export default bannerHOC(WrapperBanner);
+export default Banner;

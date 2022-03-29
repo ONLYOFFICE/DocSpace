@@ -166,9 +166,9 @@ namespace ASC.Web.Studio.UserControls.CustomNavigation
 
                 var fileName = Path.GetFileName(logoPath);
 
-                if (store.IsFile(fileName))
+                if (store.IsFileAsync(fileName).Result)
                 {
-                    store.Delete(fileName);
+                    store.DeleteAsync(fileName).Wait();
                 }
             }
             catch (Exception e)
@@ -183,7 +183,7 @@ namespace ASC.Web.Studio.UserControls.CustomNavigation
 
             using var stream = new MemoryStream(data);
             stream.Seek(0, SeekOrigin.Begin);
-            return store.Save(fileName, stream).ToString();
+            return store.SaveAsync(fileName, stream).Result.ToString();
         }
     }
 }

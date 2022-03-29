@@ -207,7 +207,7 @@ namespace ASC.Core
         public string AuthenticateMe(IAccount account, List<Claim> additionalClaims = null)
         {
             AuthenticateMeWithoutCookie(account, additionalClaims);
-            
+
             string cookie = null;
 
             if (account is IUserAccount)

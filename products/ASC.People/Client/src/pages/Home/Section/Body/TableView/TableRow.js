@@ -7,6 +7,7 @@ import withContent from "../../../../../HOCs/withContent";
 import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
 import styled from "styled-components";
+import Badges from "../../../../../components/Badges";
 import Checkbox from "@appserver/components/checkbox";
 
 const StyledPeopleRow = styled(TableRow)`
@@ -20,14 +21,22 @@ const StyledPeopleRow = styled(TableRow)`
     min-width: 46px;
 
     .table-container_row-checkbox {
-      margin-left: 8px;
+      margin-left: -4px;
+      padding: 16px 0px 16px 12px;
     }
+  }
+
+  .link-with-dropdown-group {
+    margin-right: 12px;
+  }
+
+  .table-cell_username {
+    margin-right: 12px;
   }
 `;
 
 const PeopleTableRow = (props) => {
   const {
-    t,
     item,
     contextOptionsProps,
     element,
@@ -37,26 +46,18 @@ const PeopleTableRow = (props) => {
     onEmailClick,
     onUserNameClick,
     isAdmin,
+    theme,
   } = props;
-  const { displayName, email, role, statusType, userName } = item;
+  const { displayName, email, statusType, userName, position } = item;
 
-  const getRoleTranslation = () => {
-    switch (role) {
-      case "owner":
-        return t("Common:Owner");
-      case "admin":
-        return t("Administrator");
-      case "guest":
-        return t("Common:Guest");
-      default:
-        return t("Common:User");
-    }
-  };
-
-  const userRole = getRoleTranslation();
-
-  const nameColor = statusType === "pending" ? "#A3A9AE" : "#333333";
-  const sideInfoColor = statusType === "pending" ? "#D0D5DA" : "#A3A9AE";
+  const nameColor =
+    statusType === "pending"
+      ? theme.peopleTableRow.pendingNameColor
+      : theme.peopleTableRow.nameColor;
+  const sideInfoColor =
+    statusType === "pending"
+      ? theme.peopleTableRow.pendingSideInfoColor
+      : theme.peopleTableRow.sideInfoColor;
 
   const onChange = (e) => {
     onContentRowSelect && onContentRowSelect(e.target.checked, item);
@@ -87,28 +88,30 @@ const PeopleTableRow = (props) => {
           isTextOverflow
           href={`/products/people/view/${userName}`}
           onClick={onUserNameClick}
+          className="table-cell_username"
         >
           {displayName}
         </Link>
+        <Badges statusType={statusType} />
       </TableCell>
       <TableCell>{groups}</TableCell>
       <TableCell>
         <Text
           type="page"
-          title={userRole}
+          title={position}
           fontSize="12px"
           fontWeight={400}
           color={sideInfoColor}
           truncate
         >
-          {userRole}
+          {position}
         </Text>
       </TableCell>
       <TableCell>
         <Text
           style={{ display: "none" }} //TODO:
           type="page"
-          title={userRole}
+          //title={userRole}
           fontSize="12px"
           fontWeight={400}
           color={sideInfoColor}

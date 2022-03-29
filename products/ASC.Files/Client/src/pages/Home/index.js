@@ -2,19 +2,19 @@ import React from "react";
 //import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { isMobile } from "react-device-detect";
+import {
+  isMobile as isMobileUtils,
+  isTablet as isTabletUtils,
+} from "@appserver/components/utils/device";
 import axios from "axios";
 import toastr from "@appserver/components/toast/toastr";
-import PageLayout from "@appserver/common/components/PageLayout";
+import Section from "@appserver/common/components/Section";
 import { showLoader, hideLoader } from "@appserver/common/utils";
 import FilesFilter from "@appserver/common/api/files/filter";
 import { getGroup } from "@appserver/common/api/groups";
 import { getUserById } from "@appserver/common/api/people";
 import { withTranslation, Trans } from "react-i18next";
-import {
-  ArticleBodyContent,
-  ArticleHeaderContent,
-  ArticleMainButtonContent,
-} from "../../components/Article";
+
 import {
   SectionBodyContent,
   SectionFilterContent,
@@ -22,11 +22,14 @@ import {
   SectionPagingContent,
 } from "./Section";
 
+import { ArticleMainButtonContent } from "../../components/Article";
+
 import { createTreeFolders } from "../../helpers/files-helpers";
 import MediaViewer from "./MediaViewer";
 import DragTooltip from "../../components/DragTooltip";
 import { observer, inject } from "mobx-react";
 import config from "../../../package.json";
+import { Consumer } from "@appserver/components/utils/context";
 
 class PureHome extends React.Component {
   componentDidMount() {
@@ -38,23 +41,31 @@ class PureHome extends React.Component {
       expandedKeys,
       setExpandedKeys,
       setToPreviewFile,
-      mediaViewersFormatsStore,
+      playlist,
+      isMediaOrImage,
       getFileInfo,
+      setIsPrevSettingsModule,
+      isPrevSettingsModule,
     } = this.props;
+
+    if (!window.location.href.includes("#preview")) {
+      localStorage.removeItem("isFirstUrl");
+    }
 
     const reg = new RegExp(`${homepage}((/?)$|/filter)`, "gmi"); //TODO: Always find?
     const match = window.location.pathname.match(reg);
     let filterObj = null;
 
-    if (window.location.href.indexOf("/files/#preview") > 1) {
+    if (
+      window.location.href.indexOf("/files/#preview") > 1 &&
+      playlist.length < 1
+    ) {
       const pathname = window.location.href;
       const fileId = pathname.slice(pathname.indexOf("#preview") + 9);
 
       getFileInfo(fileId)
         .then((data) => {
-          const canOpenPlayer = mediaViewersFormatsStore.isMediaOrImage(
-            data.fileExst
-          );
+          const canOpenPlayer = isMediaOrImage(data.fileExst);
           const file = { ...data, canOpenPlayer };
           setToPreviewFile(file, true);
         })
@@ -67,6 +78,10 @@ class PureHome extends React.Component {
     }
 
     if (match && match.length > 0) {
+      if (window.location.href.includes("#preview")) {
+        return;
+      }
+
       filterObj = FilesFilter.getFilter(window.location);
 
       if (!filterObj) {
@@ -75,6 +90,11 @@ class PureHome extends React.Component {
 
         return;
       }
+    }
+
+    if (isPrevSettingsModule) {
+      setIsPrevSettingsModule(false);
+      return;
     }
 
     if (!filterObj) return;
@@ -117,7 +137,7 @@ class PureHome extends React.Component {
       .all(requests)
       .catch((err) => {
         Promise.resolve(FilesFilter.getDefault());
-        console.warn("Filter restored by default", err);
+        //console.warn("Filter restored by default", err);
       })
       .then((data) => {
         const filter = data[0];
@@ -266,7 +286,7 @@ class PureHome extends React.Component {
       <>
         <MediaViewer />
         <DragTooltip />
-        <PageLayout
+        <Section
           dragging={dragging}
           withBodyScroll
           withBodyAutoFocus={!isMobile}
@@ -292,33 +312,28 @@ class PureHome extends React.Component {
           onOpenUploadPanel={this.showUploadPanel}
           firstLoad={firstLoad}
         >
-          <PageLayout.ArticleHeader>
-            <ArticleHeaderContent />
-          </PageLayout.ArticleHeader>
-
-          <PageLayout.ArticleMainButton>
-            <ArticleMainButtonContent />
-          </PageLayout.ArticleMainButton>
-
-          <PageLayout.ArticleBody>
-            <ArticleBodyContent onTreeDrop={this.onDrop} />
-          </PageLayout.ArticleBody>
-          <PageLayout.SectionHeader>
+          <Section.SectionHeader>
             <SectionHeaderContent />
-          </PageLayout.SectionHeader>
+          </Section.SectionHeader>
 
-          <PageLayout.SectionFilter>
+          <Section.SectionFilter>
             <SectionFilterContent />
-          </PageLayout.SectionFilter>
+          </Section.SectionFilter>
 
-          <PageLayout.SectionBody>
-            <SectionBodyContent />
-          </PageLayout.SectionBody>
+          <Section.SectionBody>
+            <Consumer>
+              {(context) => (
+                <>
+                  <SectionBodyContent sectionWidth={context.sectionWidth} />
+                </>
+              )}
+            </Consumer>
+          </Section.SectionBody>
 
-          <PageLayout.SectionPaging>
+          <Section.SectionPaging>
             <SectionPagingContent tReady={tReady} />
-          </PageLayout.SectionPaging>
-        </PageLayout>
+          </Section.SectionPaging>
+        </Section>
       </>
     );
   }
@@ -333,7 +348,7 @@ export default inject(
     uploadDataStore,
     treeFoldersStore,
     mediaViewerDataStore,
-    formatsStore,
+    settingsStore,
   }) => {
     const {
       secondaryProgressDataStore,
@@ -352,9 +367,9 @@ export default inject(
       isLoading,
       viewAs,
       getFileInfo,
+      setIsPrevSettingsModule,
+      isPrevSettingsModule,
     } = filesStore;
-
-    const { mediaViewersFormatsStore } = formatsStore;
 
     const { id } = fileActionStore;
     const {
@@ -392,7 +407,7 @@ export default inject(
       ? filesStore.selectionTitle
       : null;
 
-    const { setToPreviewFile } = mediaViewerDataStore;
+    const { setToPreviewFile, playlist } = mediaViewerDataStore;
     if (!firstLoad) {
       if (isLoading) {
         showLoader();
@@ -440,8 +455,12 @@ export default inject(
       isHeaderVisible: auth.settingsStore.isHeaderVisible,
       setHeaderVisible: auth.settingsStore.setHeaderVisible,
       setToPreviewFile,
-      mediaViewersFormatsStore,
+      playlist,
+      isMediaOrImage: settingsStore.isMediaOrImage,
       getFileInfo,
+
+      setIsPrevSettingsModule,
+      isPrevSettingsModule,
     };
   }
 )(withRouter(observer(Home)));

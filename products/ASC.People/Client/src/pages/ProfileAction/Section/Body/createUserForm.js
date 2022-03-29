@@ -583,6 +583,7 @@ class CreateUserForm extends React.Component {
               calendarHeaderContent={`${t("CalendarSelectDate")}:`}
               labelText={`${t("Translations:Birthdate")}:`}
               inputName="birthday"
+              inputClassName="date-picker_input-birthday"
               inputValue={
                 profile.birthday ? new Date(profile.birthday) : undefined
               }
@@ -606,6 +607,7 @@ class CreateUserForm extends React.Component {
               calendarHeaderContent={`${t("CalendarSelectDate")}:`}
               labelText={`${regDateCaption}:`}
               inputName="workFrom"
+              inputClassName="date-picker_input-reg-date"
               inputValue={
                 profile.workFrom ? new Date(profile.workFrom) : undefined
               }
@@ -698,16 +700,18 @@ class CreateUserForm extends React.Component {
             onClick={this.handleSubmit}
             primary
             isDisabled={isLoading}
-            size="big"
+            size="normal"
             tabIndex={10}
+            className="create-user_save-btn"
           />
           <Button
             label={t("Common:CancelButton")}
             onClick={this.onCancelHandler}
             isDisabled={isLoading}
-            size="big"
+            size="normal"
             style={{ marginLeft: "8px" }}
             tabIndex={11}
+            className="create-user_cancel-btn"
           />
         </div>
       </>

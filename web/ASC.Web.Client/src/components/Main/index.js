@@ -1,6 +1,6 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import { isIOS, isFirefox, isMobile } from "react-device-detect";
+import { isIOS, isFirefox, isMobile, isMobileOnly } from "react-device-detect";
 
 const StyledMain = styled.main`
   height: ${(props) =>
@@ -17,6 +17,11 @@ const StyledMain = styled.main`
 
   ${isMobile &&
   css`
+    height: calc(100vh - 48px);
+  `}
+
+  ${isMobileOnly &&
+  css`
     height: auto;
     min-height: 100%;
     width: 100%;
@@ -24,8 +29,10 @@ const StyledMain = styled.main`
 `;
 
 const Main = React.memo((props) => {
-  const vh = (window.innerHeight - 57) * 0.01;
-  document.documentElement.style.setProperty("--vh", `${vh}px`);
+  if (isIOS && !isFirefox) {
+    const vh = (window.innerHeight - 57) * 0.01;
+    document.documentElement.style.setProperty("--vh", `${vh}px`);
+  }
   //console.log("Main render");
   return <StyledMain className="main" {...props} />;
 });

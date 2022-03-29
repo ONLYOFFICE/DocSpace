@@ -30,6 +30,7 @@
     <PackageReference Include="Microsoft.OneDriveSDK" Version="2.1.0" />
     <PackageReference Include="Microsoft.SharePoint.Client" Version="14.0.4762.1000" />
     <PackageReference Include="SharpZipLib" Version="1.3.3" />
+    <PackageReference Include="System.Linq.Async" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>

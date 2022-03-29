@@ -6,8 +6,10 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Mail;
 using System.Security;
+using System.Security.Claims;
 using System.ServiceModel.Security;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Web;
 
 using ASC.Api.Core;
@@ -235,10 +237,17 @@ namespace ASC.Employee.Core.Controllers
             return EmployeeWraperFullHelper.GetFull(user);
         }
 
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Everyone")]
         [Read("{username}", order: int.MaxValue)]
         public EmployeeWraperFull GetById(string username)
         {
             if (CoreBaseSettings.Personal) throw new MethodAccessException("Method not available");
+
+            var isInvite = ApiContext.HttpContextAccessor.HttpContext.User.Claims
+                .Any(role => role.Type == ClaimTypes.Role && Enum.TryParse<ConfirmType>(role.Value, out var confirmType) && confirmType == ConfirmType.LinkInvite);
+
+            ApiContext.AuthByClaim();
+
             var user = UserManager.GetUserByUserName(username);
             if (user.ID == Constants.LostUser.ID)
             {
@@ -255,6 +264,11 @@ namespace ASC.Employee.Core.Controllers
             if (user.ID == Constants.LostUser.ID)
             {
                 throw new ItemNotFoundException("User not found");
+            }
+
+            if (isInvite)
+            {
+                return EmployeeWraperFullHelper.GetSimple(user);
             }
 
             return EmployeeWraperFullHelper.GetFull(user);
@@ -431,10 +445,15 @@ namespace ASC.Employee.Core.Controllers
 
         [AllowAnonymous]
         [Create(@"register")]
-        public string RegisterUserOnPersonal(RegisterPersonalUserModel model)
+        public Task<string> RegisterUserOnPersonalAsync(RegisterPersonalUserModel model)
         {
             if (!CoreBaseSettings.Personal) throw new MethodAccessException("Method is only available on personal.onlyoffice.com");
 
+            return InternalRegisterUserOnPersonalAsync(model);
+        }
+
+        private async Task<string> InternalRegisterUserOnPersonalAsync(RegisterPersonalUserModel model)
+        {
             try
             {
                 if (CoreBaseSettings.CustomMode) model.Lang = "ru-RU";
@@ -456,7 +475,7 @@ namespace ASC.Employee.Core.Controllers
                     var ip = Request.Headers["X-Forwarded-For"].ToString() ?? Request.GetUserHostAddress();
 
                     if (string.IsNullOrEmpty(model.RecaptchaResponse)
-                        || !Recaptcha.ValidateRecaptcha(model.RecaptchaResponse, ip))
+                        || !await Recaptcha.ValidateRecaptchaAsync(model.RecaptchaResponse, ip))
                     {
                         throw new RecaptchaException(Resource.RecaptchaInvalid);
                     }

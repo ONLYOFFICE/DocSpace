@@ -2,16 +2,16 @@ import { makeAutoObservable } from "mobx";
 
 class MediaViewerDataStore {
   filesStore;
-  formatsStore;
+  settingsStore;
 
   id = null;
   visible = false;
   previewFile = null;
 
-  constructor(filesStore, formatsStore) {
+  constructor(filesStore, settingsStore) {
     makeAutoObservable(this);
     this.filesStore = filesStore;
-    this.formatsStore = formatsStore;
+    this.settingsStore = settingsStore;
   }
 
   setMediaViewerData = (mediaData) => {
@@ -20,14 +20,22 @@ class MediaViewerDataStore {
   };
 
   setToPreviewFile = (file, visible) => {
+    if (file === null) {
+      this.previewFile = null;
+      this.id = null;
+      this.visible = false;
+      return;
+    }
+
     if (!file.canOpenPlayer) return;
+
     this.previewFile = file;
     this.id = file.id;
     this.visible = visible;
   };
 
   get playlist() {
-    const { isMediaOrImage } = this.formatsStore.mediaViewersFormatsStore;
+    const { isMediaOrImage } = this.settingsStore;
     const { files } = this.filesStore;
 
     const filesList = [...files];
@@ -55,6 +63,7 @@ class MediaViewerDataStore {
         title: this.previewFile.title,
       });
     }
+
     return playlist;
   }
 }

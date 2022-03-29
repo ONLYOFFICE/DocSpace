@@ -26,6 +26,8 @@
 
 using System;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Logging;
@@ -88,7 +90,7 @@ namespace ASC.Web.CRM.Classes
             return String.Concat(BuildFileDirectory(), OrganisationLogoImgName, imageExtension);
         }
 
-        private String ExecResizeImage(byte[] imageData, Size fotoSize, IDataStore dataStore, String photoPath)
+        private async Task<String> ExecResizeImageAsync(byte[] imageData, Size fotoSize, IDataStore dataStore, String photoPath)
         {
             var data = imageData;
             using (var stream = new MemoryStream(data))
@@ -109,7 +111,8 @@ namespace ASC.Web.CRM.Classes
 
                 using (var fileStream = new MemoryStream(data))
                 {
-                    var photoUri = dataStore.Save(photoPath, fileStream).ToString();
+                    var uri = await dataStore.SaveAsync(photoPath, fileStream);
+                    var photoUri = uri.ToString();
                     photoUri = String.Format("{0}?cd={1}", photoUri, DateTime.UtcNow.Ticks);
                     return photoUri;
                 }
@@ -145,39 +148,39 @@ namespace ASC.Web.CRM.Classes
 
             lock (_synchronizedObj)
             {
-                if (store.IsDirectory(photoDirectory))
+                if (store.IsDirectoryAsync(photoDirectory).Result)
                 {
-                    store.DeleteFiles(photoDirectory, "*", recursive);
+                    store.DeleteFilesAsync(photoDirectory, "*", recursive).Wait();
                     if (recursive)
                     {
-                        store.DeleteDirectory(photoDirectory);
+                        store.DeleteDirectoryAsync(photoDirectory).Wait();
                     }
                 }
             }
         }
 
-        public int TryUploadOrganisationLogoFromTmp(DaoFactory factory)
+        public async Task<int> TryUploadOrganisationLogoFromTmpAsync(DaoFactory factory)
         {
             var directoryPath = BuildFileDirectory();
             var dataStore = _global.GetStore();
 
-            if (!dataStore.IsDirectory(directoryPath))
+            if (!await dataStore.IsDirectoryAsync(directoryPath))
                 return 0;
 
             try
             {
-                var photoPaths = _global.GetStore().ListFilesRelative("", directoryPath, OrganisationLogoImgName + "*", false);
+                var photoPaths = await _global.GetStore().ListFilesRelativeAsync("", directoryPath, OrganisationLogoImgName + "*", false).ToArrayAsync();
                 if (photoPaths.Length == 0)
                     return 0;
 
                 byte[] bytes;
-                using (var photoTmpStream = dataStore.GetReadStream(Path.Combine(directoryPath, photoPaths[0])))
+                using (var photoTmpStream = await dataStore.GetReadStreamAsync(Path.Combine(directoryPath, photoPaths[0])))
                 {
                     bytes = Global.ToByteArray(photoTmpStream);
                 }
 
                 var logoID = factory.GetInvoiceDao().SaveOrganisationLogo(bytes);
-                dataStore.DeleteFiles(directoryPath, "*", false);
+                await dataStore.DeleteFilesAsync(directoryPath, "*", false);
                 return logoID;
             }
 
@@ -189,11 +192,11 @@ namespace ASC.Web.CRM.Classes
             }
         }
 
-        public String UploadLogo(byte[] imageData, IImageFormat imageFormat)
+        public Task<String> UploadLogoAsync(byte[] imageData, IImageFormat imageFormat)
         {
             var photoPath = BuildFilePath("." + Global.GetImgFormatName(imageFormat));
 
-            return ExecResizeImage(imageData, OrganisationLogoSize, _global.GetStore(), photoPath);
+            return ExecResizeImageAsync(imageData, OrganisationLogoSize, _global.GetStore(), photoPath);
         }
     }
 }

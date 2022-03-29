@@ -49,7 +49,7 @@ namespace ASC.Web.CRM.Classes
         {
             var allUsers = _userManager.GetUsers(EmployeeStatus.All).ToList();
 
-            using (var CSVFileStream = _dataStore.GetReadStream("temp", _csvFileURI))
+            using (var CSVFileStream = _dataStore.GetReadStreamAsync("temp", _csvFileURI).Result)
             using (CsvReader csv = _importFromCSV.CreateCsvReaderInstance(CSVFileStream, _importSettings))
             {
                 int currentIndex = 0;

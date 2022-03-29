@@ -142,6 +142,34 @@ export const LoaderStyle = {
   animate: true,
 };
 
+/**
+ * Enum for third-party storages.
+ * @readonly
+ */
+export const ThirdPartyStorages = Object.freeze({
+  GoogleId: "googlecloud",
+  RackspaceId: "rackspace",
+  SelectelId: "selectel",
+  AmazonId: "s3",
+});
+/**
+ * Enum for backup types.
+ * @readonly
+ */
+export const BackupStorageType = Object.freeze({
+  DocumentModuleType: 0,
+  ResourcesModuleType: 1,
+  LocalFileModuleType: 3,
+  TemporaryModuleType: 4,
+  StorageModuleType: 5,
+});
+
+export const AutoBackupPeriod = Object.freeze({
+  EveryDayType: 0,
+  EveryWeekType: 1,
+  EveryMonthType: 2,
+});
+
 import config from "./AppServerConfig";
 
 export const AppServerConfig = config;
@@ -157,3 +185,27 @@ export const TenantTrustedDomainsType = Object.freeze({
 });
 
 export const PasswordLimitSpecialCharacters = "!@#$%^&*";
+
+/**
+ * Enum for file status.
+ * @readonly
+ */
+export const FileStatus = Object.freeze({
+  None: 0,
+  IsEditing: 1,
+  IsNew: 2,
+  IsConverting: 4,
+  IsOriginal: 8,
+  IsEditingAlone: 16,
+  IsFavorite: 32,
+  IsTemplate: 64,
+  IsFillFormDraft: 128,
+});
+
+/**
+ * Enum for tenant status.
+ * @readonly
+ */
+export const TenantStatus = Object.freeze({
+  PortalRestore: 4,
+});

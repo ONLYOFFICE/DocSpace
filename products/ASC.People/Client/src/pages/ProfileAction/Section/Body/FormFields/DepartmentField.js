@@ -47,12 +47,17 @@ class DepartmentField extends React.Component {
           onClick={onShowGroupSelector}
           className="department-add-btn"
         />
-        <GroupSelector
-          isOpen={selectorIsVisible}
-          isMultiSelect={true}
-          onSelect={selectorOnSelectGroups}
-          onCancel={onCloseGroupSelector}
-        />
+        {selectorIsVisible && (
+          <GroupSelector
+            isOpen={selectorIsVisible}
+            isMultiSelect={true}
+            onSelect={selectorOnSelectGroups}
+            onCancel={onCloseGroupSelector}
+            onArrowClick={onCloseGroupSelector}
+            showCounter
+            selectedOptions={selectorSelectedOptions}
+          />
+        )}
         {selectorSelectedOptions.map((option) => (
           <SelectedItem
             key={`department_${option.key}`}

@@ -1,36 +1,37 @@
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const CopyPlugin = require('copy-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ModuleFederationPlugin = require('webpack').container.ModuleFederationPlugin;
-const DefinePlugin = require('webpack').DefinePlugin;
-const ExternalTemplateRemotesPlugin = require('external-remotes-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
-const combineUrl = require('@appserver/common/utils/combineUrl');
-const AppServerConfig = require('@appserver/common/constants/AppServerConfig');
-const sharedDeps = require('@appserver/common/constants/sharedDependencies');
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const ModuleFederationPlugin = require("webpack").container
+  .ModuleFederationPlugin;
+const DefinePlugin = require("webpack").DefinePlugin;
+const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
+const combineUrl = require("@appserver/common/utils/combineUrl");
+const AppServerConfig = require("@appserver/common/constants/AppServerConfig");
+const sharedDeps = require("@appserver/common/constants/sharedDependencies");
 
-const path = require('path');
-const pkg = require('./package.json');
+const path = require("path");
+const pkg = require("./package.json");
 const deps = pkg.dependencies || {};
 const homepage = pkg.homepage; //combineUrl(AppServerConfig.proxyURL, pkg.homepage);
 const title = pkg.title;
 const version = pkg.version;
 
 const config = {
-  entry: './src/index',
-  target: 'web',
-  mode: 'development',
+  entry: "./src/index",
+  target: "web",
+  mode: "development",
 
   devServer: {
     devMiddleware: {
       publicPath: homepage,
     },
     static: {
-      directory: path.join(__dirname, 'dist'),
+      directory: path.join(__dirname, "dist"),
       publicPath: homepage,
     },
     client: {
-      logging: 'info',
+      logging: "info",
       // Can be used only for `errors`/`warnings`
       //
       // overlay: {
@@ -51,32 +52,33 @@ const config = {
     },
     hot: false,
     headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
-      'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization',
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+      "Access-Control-Allow-Headers":
+        "X-Requested-With, content-type, Authorization",
     },
 
     open: {
       target: [`http://localhost:8092`],
       app: {
-        name: 'google-chrome',
-        arguments: ['--incognito', '--new-window'],
+        name: "google-chrome",
+        arguments: ["--incognito", "--new-window"],
       },
     },
   },
   resolve: {
-    extensions: ['.jsx', '.js', '.json'],
+    extensions: [".jsx", ".js", ".json"],
     fallback: {
       crypto: false,
     },
   },
 
   output: {
-    publicPath: 'auto',
-    chunkFilename: 'static/js/[id].[contenthash].js',
+    publicPath: "auto",
+    chunkFilename: "static/js/[id].[contenthash].js",
     //assetModuleFilename: "static/images/[hash][ext][query]",
-    path: path.resolve(process.cwd(), 'dist'),
-    filename: 'static/js/[name].[contenthash].bundle.js',
+    path: path.resolve(process.cwd(), "dist"),
+    filename: "static/js/[name].[contenthash].bundle.js",
   },
 
   performance: {
@@ -88,14 +90,14 @@ const config = {
     rules: [
       {
         test: /\.(png|jpe?g|gif|ico)$/i,
-        type: 'asset/resource',
+        type: "asset/resource",
         generator: {
-          filename: 'static/images/[hash][ext][query]',
+          filename: "static/images/[hash][ext][query]",
         },
       },
       {
         test: /\.m?js/,
-        type: 'javascript/auto',
+        type: "javascript/auto",
         resolve: {
           fullySpecified: false,
         },
@@ -104,7 +106,7 @@ const config = {
         test: /\.react.svg$/,
         use: [
           {
-            loader: '@svgr/webpack',
+            loader: "@svgr/webpack",
             options: {
               svgoConfig: {
                 plugins: [{ removeViewBox: false }],
@@ -113,26 +115,26 @@ const config = {
           },
         ],
       },
-      { test: /\.json$/, loader: 'json-loader' },
+      { test: /\.json$/, loader: "json-loader" },
       {
         test: /\.css$/i,
-        use: ['style-loader', 'css-loader'],
+        use: ["style-loader", "css-loader"],
       },
       {
         test: /\.s[ac]ss$/i,
         use: [
           // Creates `style` nodes from JS strings
-          'style-loader',
+          "style-loader",
           // Translates CSS into CommonJS
           {
-            loader: 'css-loader',
+            loader: "css-loader",
             options: {
               url: {
                 filter: (url, resourcePath) => {
                   // resourcePath - path to css file
 
                   // Don't handle `/static` urls
-                  if (url.startsWith('/static') || url.startsWith('data:')) {
+                  if (url.startsWith("/static") || url.startsWith("data:")) {
                     return false;
                   }
 
@@ -142,7 +144,7 @@ const config = {
             },
           },
           // Compiles Sass to CSS
-          'sass-loader',
+          "sass-loader",
         ],
       },
       {
@@ -150,17 +152,17 @@ const config = {
         exclude: /node_modules/,
         use: [
           {
-            loader: 'babel-loader',
+            loader: "babel-loader",
             options: {
-              presets: ['@babel/preset-react', '@babel/preset-env'],
+              presets: ["@babel/preset-react", "@babel/preset-env"],
               plugins: [
-                '@babel/plugin-transform-runtime',
-                '@babel/plugin-proposal-class-properties',
-                '@babel/plugin-proposal-export-default-from',
+                "@babel/plugin-transform-runtime",
+                "@babel/plugin-proposal-class-properties",
+                "@babel/plugin-proposal-export-default-from",
               ],
             },
           },
-          'source-map-loader',
+          "source-map-loader",
         ],
       },
     ],
@@ -169,23 +171,39 @@ const config = {
   plugins: [
     new CleanWebpackPlugin(),
     new ModuleFederationPlugin({
-      name: 'studio',
-      filename: 'remoteEntry.js',
+      name: "studio",
+      filename: "remoteEntry.js",
       remotes: {
-        studio: `studio@${combineUrl(AppServerConfig.proxyURL, '/remoteEntry.js')}`,
-        people: `people@${combineUrl(AppServerConfig.proxyURL, '/products/people/remoteEntry.js')}`,
+        studio: `studio@${combineUrl(
+          AppServerConfig.proxyURL,
+          "/remoteEntry.js"
+        )}`,
+        people: `people@${combineUrl(
+          AppServerConfig.proxyURL,
+          "/products/people/remoteEntry.js"
+        )}`,
+        login: `login@${combineUrl(
+          AppServerConfig.proxyURL,
+          "/login/remoteEntry.js"
+        )}`,
+        files: `files@${combineUrl(
+          AppServerConfig.proxyURL,
+          "/products/files/remoteEntry.js"
+        )}`,
       },
       exposes: {
-        './shell': './src/Shell',
-        './store': './src/store',
-        './Error404': './src/components/pages/Errors/404/',
-        './Error401': './src/components/pages/Errors/401',
-        './Error403': './src/components/pages/Errors/403',
-        './Error520': './src/components/pages/Errors/520',
-        './Layout': './src/components/Layout',
-        './Layout/context': './src/components/Layout/context.js',
-        './Main': './src/components/Main',
-        './toastr': './src/helpers/toastr',
+        "./shell": "./src/Shell",
+        "./store": "./src/store",
+        "./Error404": "./src/components/pages/Errors/404/",
+        "./Error401": "./src/components/pages/Errors/401",
+        "./Error403": "./src/components/pages/Errors/403",
+        "./Error520": "./src/components/pages/Errors/520",
+        "./Layout": "./src/components/Layout",
+        "./Layout/context": "./src/components/Layout/context.js",
+        "./Main": "./src/components/Main",
+        "./toastr": "./src/helpers/toastr",
+        "./PreparationPortalDialog":
+          "./src/components/dialogs/PreparationPortalDialog/PreparationPortalDialogWrapper.js",
       },
       shared: {
         ...deps,
@@ -194,7 +212,7 @@ const config = {
     }),
     new ExternalTemplateRemotesPlugin(),
     new HtmlWebpackPlugin({
-      template: './public/index.html',
+      template: "./public/index.html",
       publicPath: homepage,
       title: title,
       base: `${homepage}/`,
@@ -202,11 +220,11 @@ const config = {
     new CopyPlugin({
       patterns: [
         {
-          from: 'public',
+          from: "public",
           globOptions: {
             dot: true,
             gitignore: true,
-            ignore: ['**/index.html'],
+            ignore: ["**/index.html"],
           },
         },
       ],
@@ -216,22 +234,22 @@ const config = {
       BUILD_AT: DefinePlugin.runtimeValue(function () {
         const timeElapsed = Date.now();
         const today = new Date(timeElapsed);
-        return JSON.stringify(today.toISOString().split('.')[0] + 'Z');
+        return JSON.stringify(today.toISOString().split(".")[0] + "Z");
       }, true),
     }),
   ],
 };
 
 module.exports = (env, argv) => {
-  if (argv.mode === 'production') {
-    config.mode = 'production';
+  if (argv.mode === "production") {
+    config.mode = "production";
     config.optimization = {
-      splitChunks: { chunks: 'all' },
+      splitChunks: { chunks: "all" },
       minimize: !env.minimize,
       minimizer: [new TerserPlugin()],
     };
   } else {
-    config.devtool = 'cheap-module-source-map';
+    config.devtool = "cheap-module-source-map";
   }
 
   return config;

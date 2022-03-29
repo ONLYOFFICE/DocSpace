@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Logging;
@@ -41,6 +42,7 @@ using ASC.Files.Core.Thirdparty;
 using ASC.Web.Core.Files;
 using ASC.Web.Studio.Core;
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.OneDrive
@@ -75,36 +77,41 @@ namespace ASC.Files.Thirdparty.OneDrive
             FolderDao = folderDao;
         }
 
-        public Folder<string> GetFolder(string folderId)
+        public async Task<Folder<string>> GetFolderAsync(string folderId)
         {
-            return ToFolder(GetOneDriveItem(folderId));
+            return ToFolder(await GetOneDriveItemAsync(folderId).ConfigureAwait(false));
         }
 
-        public Folder<string> GetFolder(string title, string parentId)
+        public async Task<Folder<string>> GetFolderAsync(string title, string parentId)
         {
-            return ToFolder(GetOneDriveItems(parentId, true)
-                                .FirstOrDefault(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase) && item.Folder != null));
+            var items = await GetOneDriveItemsAsync(parentId, true).ConfigureAwait(false);
+            return ToFolder(items.FirstOrDefault(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase) && item.Folder != null));
         }
 
-        public Folder<string> GetRootFolderByFile(string fileId)
+        public Task<Folder<string>> GetRootFolderByFileAsync(string fileId)
         {
-            return GetRootFolder(fileId);
+            return GetRootFolderAsync(fileId);
         }
 
-        public List<Folder<string>> GetFolders(string parentId)
+        public async IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId)
         {
-            return GetOneDriveItems(parentId, true).Select(ToFolder).ToList();
+            var items = await GetOneDriveItemsAsync(parentId, true).ConfigureAwait(false);
+
+            foreach (var i in items)
+            {
+                yield return ToFolder(i);
+            }
         }
 
-        public List<Folder<string>> GetFolders(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
+        public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
         {
             if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
                 || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
                 || filterType == FilterType.PresentationsOnly || filterType == FilterType.SpreadsheetsOnly
                 || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
-                return new List<Folder<string>>();
+                return AsyncEnumerable.Empty<Folder<string>>();
 
-            var folders = GetFolders(parentId).AsEnumerable(); //TODO:!!!
+            var folders = GetFoldersAsync(parentId); //TODO:!!!
             //Filter
             if (subjectID != Guid.Empty)
             {
@@ -126,18 +133,19 @@ namespace ASC.Files.Thirdparty.OneDrive
                 SortedByType.DateAndTimeCreation => orderBy.IsAsc ? folders.OrderBy(x => x.CreateOn) : folders.OrderByDescending(x => x.CreateOn),
                 _ => orderBy.IsAsc ? folders.OrderBy(x => x.Title) : folders.OrderByDescending(x => x.Title),
             };
-            return folders.ToList();
+
+            return folders;
         }
 
-        public List<Folder<string>> GetFolders(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
+        public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
         {
             if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
                 || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
                 || filterType == FilterType.PresentationsOnly || filterType == FilterType.SpreadsheetsOnly
                 || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
-                return new List<Folder<string>>();
+                return AsyncEnumerable.Empty<Folder<string>>();
 
-            var folders = folderIds.Select(GetFolder);
+            var folders = folderIds.ToAsyncEnumerable().SelectAwait(async e => await GetFolderAsync(e).ConfigureAwait(false));
 
             if (subjectID.HasValue && subjectID != Guid.Empty)
             {
@@ -149,16 +157,16 @@ namespace ASC.Files.Thirdparty.OneDrive
             if (!string.IsNullOrEmpty(searchText))
                 folders = folders.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
 
-            return folders.ToList();
+            return folders;
         }
 
-        public List<Folder<string>> GetParentFolders(string folderId)
+        public async Task<List<Folder<string>>> GetParentFoldersAsync(string folderId)
         {
             var path = new List<Folder<string>>();
 
             while (folderId != null)
             {
-                var onedriveFolder = GetOneDriveItem(folderId);
+                var onedriveFolder = await GetOneDriveItemAsync(folderId).ConfigureAwait(false);
 
                 if (onedriveFolder is ErrorItem)
                 {
@@ -175,226 +183,241 @@ namespace ASC.Files.Thirdparty.OneDrive
             return path;
         }
 
-        public string SaveFolder(Folder<string> folder)
+        public Task<string> SaveFolderAsync(Folder<string> folder)
         {
             if (folder == null) throw new ArgumentNullException(nameof(folder));
             if (folder.ID != null)
             {
-                return RenameFolder(folder, folder.Title);
+                return RenameFolderAsync(folder, folder.Title);
             }
 
+            return InternalSaveFolderAsync(folder);
+        }
+
+        private async Task<string> InternalSaveFolderAsync(Folder<string> folder)
+        {
             if (folder.FolderID != null)
             {
                 var onedriveFolderId = MakeOneDriveId(folder.FolderID);
 
-                folder.Title = GetAvailableTitle(folder.Title, onedriveFolderId, IsExist);
+                folder.Title = await GetAvailableTitleAsync(folder.Title, onedriveFolderId, IsExistAsync).ConfigureAwait(false);
 
-                var onedriveFolder = ProviderInfo.Storage.CreateFolder(folder.Title, onedriveFolderId);
+                var storage = await ProviderInfo.StorageAsync;
+                var onedriveFolder = await storage.CreateFolderAsync(folder.Title, onedriveFolderId).ConfigureAwait(false);
 
-                ProviderInfo.CacheReset(onedriveFolder.Id);
+                await ProviderInfo.CacheResetAsync(onedriveFolder.Id).ConfigureAwait(false);
                 var parentFolderId = GetParentFolderId(onedriveFolder);
-                if (parentFolderId != null) ProviderInfo.CacheReset(parentFolderId);
+                if (parentFolderId != null) await ProviderInfo.CacheResetAsync(parentFolderId).ConfigureAwait(false);
 
                 return MakeId(onedriveFolder);
             }
             return null;
         }
 
-        public bool IsExist(string title, string folderId)
+        public async Task<bool> IsExistAsync(string title, string folderId)
         {
-            return GetOneDriveItems(folderId, true)
-                .Any(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase));
+            var items = await GetOneDriveItemsAsync(folderId, true).ConfigureAwait(false);
+            return items.Any(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase));
         }
 
-        public void DeleteFolder(string folderId)
+        public async Task DeleteFolderAsync(string folderId)
         {
-            var onedriveFolder = GetOneDriveItem(folderId);
+            var onedriveFolder = await GetOneDriveItemAsync(folderId).ConfigureAwait(false);
             var id = MakeId(onedriveFolder);
 
-            using (var tx = FilesDbContext.Database.BeginTransaction())
+            using (var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false))
             {
-                var hashIDs = Query(FilesDbContext.ThirdpartyIdMapping)
+                var hashIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
                    .Where(r => r.Id.StartsWith(id))
                    .Select(r => r.HashId)
-                   .ToList();
+                   .ToListAsync()
+                   .ConfigureAwait(false);
 
-                var link = Query(FilesDbContext.TagLink)
+                var link = await Query(FilesDbContext.TagLink)
                     .Where(r => hashIDs.Any(h => h == r.EntryId))
-                    .ToList();
+                    .ToListAsync().ConfigureAwait(false);
 
                 FilesDbContext.TagLink.RemoveRange(link);
-                FilesDbContext.SaveChanges();
+                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
                 var tagsToRemove = from ft in FilesDbContext.Tag
                                    join ftl in FilesDbContext.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new { TenantId = ftl.TenantId, Id = ftl.TagId }
                                    where ftl == null
                                    select ft;
 
-                FilesDbContext.Tag.RemoveRange(tagsToRemove.ToList());
+                FilesDbContext.Tag.RemoveRange(await tagsToRemove.ToListAsync());
 
                 var securityToDelete = Query(FilesDbContext.Security)
                     .Where(r => hashIDs.Any(h => h == r.EntryId));
 
-                FilesDbContext.Security.RemoveRange(securityToDelete);
-                FilesDbContext.SaveChanges();
+                FilesDbContext.Security.RemoveRange(await securityToDelete.ToListAsync());
+                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
                 var mappingToDelete = Query(FilesDbContext.ThirdpartyIdMapping)
                     .Where(r => hashIDs.Any(h => h == r.HashId));
 
-                FilesDbContext.ThirdpartyIdMapping.RemoveRange(mappingToDelete);
-                FilesDbContext.SaveChanges();
+                FilesDbContext.ThirdpartyIdMapping.RemoveRange(await mappingToDelete.ToListAsync());
+                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-                tx.Commit();
+                await tx.CommitAsync().ConfigureAwait(false);
             }
 
             if (!(onedriveFolder is ErrorItem))
-                ProviderInfo.Storage.DeleteItem(onedriveFolder);
+            {
+                var storage = await ProviderInfo.StorageAsync;
+                await storage.DeleteItemAsync(onedriveFolder).ConfigureAwait(false);
+            }
 
-            ProviderInfo.CacheReset(onedriveFolder.Id);
+            await ProviderInfo.CacheResetAsync(onedriveFolder.Id).ConfigureAwait(false);
             var parentFolderId = GetParentFolderId(onedriveFolder);
-            if (parentFolderId != null) ProviderInfo.CacheReset(parentFolderId);
+            if (parentFolderId != null) await ProviderInfo.CacheResetAsync(parentFolderId).ConfigureAwait(false);
         }
 
-        public TTo MoveFolder<TTo>(string folderId, TTo toFolderId, CancellationToken? cancellationToken)
+        public async Task<TTo> MoveFolderAsync<TTo>(string folderId, TTo toFolderId, CancellationToken? cancellationToken)
         {
             if (toFolderId is int tId)
             {
-                return (TTo)Convert.ChangeType(MoveFolder(folderId, tId, cancellationToken), typeof(TTo));
+                return (TTo)Convert.ChangeType(await MoveFolderAsync(folderId, tId, cancellationToken).ConfigureAwait(false), typeof(TTo));
             }
 
             if (toFolderId is string tsId)
             {
-                return (TTo)Convert.ChangeType(MoveFolder(folderId, tsId, cancellationToken), typeof(TTo));
+                return (TTo)Convert.ChangeType(await MoveFolderAsync(folderId, tsId, cancellationToken).ConfigureAwait(false), typeof(TTo));
             }
 
             throw new NotImplementedException();
         }
 
-        public int MoveFolder(string folderId, int toFolderId, CancellationToken? cancellationToken)
+        public async Task<int> MoveFolderAsync(string folderId, int toFolderId, CancellationToken? cancellationToken)
         {
-            var moved = CrossDao.PerformCrossDaoFolderCopy(
+            var moved = await CrossDao.PerformCrossDaoFolderCopyAsync(
                 folderId, this, OneDriveDaoSelector.GetFileDao(folderId), OneDriveDaoSelector.ConvertId,
                 toFolderId, FolderDao, FileDao, r => r,
-                true, cancellationToken);
+                true, cancellationToken)
+                .ConfigureAwait(false);
 
             return moved.ID;
         }
 
-        public string MoveFolder(string folderId, string toFolderId, CancellationToken? cancellationToken)
+        public async Task<string> MoveFolderAsync(string folderId, string toFolderId, CancellationToken? cancellationToken)
         {
-            var onedriveFolder = GetOneDriveItem(folderId);
+            var onedriveFolder = await GetOneDriveItemAsync(folderId).ConfigureAwait(false);
             if (onedriveFolder is ErrorItem errorItem) throw new Exception(errorItem.Error);
 
-            var toOneDriveFolder = GetOneDriveItem(toFolderId);
+            var toOneDriveFolder = await GetOneDriveItemAsync(toFolderId).ConfigureAwait(false);
             if (toOneDriveFolder is ErrorItem errorItem1) throw new Exception(errorItem1.Error);
 
             var fromFolderId = GetParentFolderId(onedriveFolder);
 
-            var newTitle = GetAvailableTitle(onedriveFolder.Name, toOneDriveFolder.Id, IsExist);
-            onedriveFolder = ProviderInfo.Storage.MoveItem(onedriveFolder.Id, newTitle, toOneDriveFolder.Id);
+            var newTitle = await GetAvailableTitleAsync(onedriveFolder.Name, toOneDriveFolder.Id, IsExistAsync).ConfigureAwait(false);
+            var storage = await ProviderInfo.StorageAsync;
+            onedriveFolder = await storage.MoveItemAsync(onedriveFolder.Id, newTitle, toOneDriveFolder.Id).ConfigureAwait(false);
 
-            ProviderInfo.CacheReset(onedriveFolder.Id);
-            ProviderInfo.CacheReset(fromFolderId);
-            ProviderInfo.CacheReset(toOneDriveFolder.Id);
+            await ProviderInfo.CacheResetAsync(onedriveFolder.Id).ConfigureAwait(false);
+            await ProviderInfo.CacheResetAsync(fromFolderId).ConfigureAwait(false);
+            await ProviderInfo.CacheResetAsync(toOneDriveFolder.Id).ConfigureAwait(false);
 
             return MakeId(onedriveFolder.Id);
         }
 
-        public Folder<TTo> CopyFolder<TTo>(string folderId, TTo toFolderId, CancellationToken? cancellationToken)
+        public async Task<Folder<TTo>> CopyFolderAsync<TTo>(string folderId, TTo toFolderId, CancellationToken? cancellationToken)
         {
             if (toFolderId is int tId)
             {
-                return CopyFolder(folderId, tId, cancellationToken) as Folder<TTo>;
+                return await CopyFolderAsync(folderId, tId, cancellationToken).ConfigureAwait(false) as Folder<TTo>;
             }
 
             if (toFolderId is string tsId)
             {
-                return CopyFolder(folderId, tsId, cancellationToken) as Folder<TTo>;
+                return await CopyFolderAsync(folderId, tsId, cancellationToken).ConfigureAwait(false) as Folder<TTo>;
             }
 
             throw new NotImplementedException();
         }
 
-        public Folder<int> CopyFolder(string folderId, int toFolderId, CancellationToken? cancellationToken)
+        public async Task<Folder<int>> CopyFolderAsync(string folderId, int toFolderId, CancellationToken? cancellationToken)
         {
-            var moved = CrossDao.PerformCrossDaoFolderCopy(
+            var moved = await CrossDao.PerformCrossDaoFolderCopyAsync(
                 folderId, this, OneDriveDaoSelector.GetFileDao(folderId), OneDriveDaoSelector.ConvertId,
                 toFolderId, FolderDao, FileDao, r => r,
-                false, cancellationToken);
+                false, cancellationToken)
+                .ConfigureAwait(false);
 
             return moved;
         }
 
-        public Folder<string> CopyFolder(string folderId, string toFolderId, CancellationToken? cancellationToken)
+        public async Task<Folder<string>> CopyFolderAsync(string folderId, string toFolderId, CancellationToken? cancellationToken)
         {
-            var onedriveFolder = GetOneDriveItem(folderId);
+            var onedriveFolder = await GetOneDriveItemAsync(folderId).ConfigureAwait(false);
             if (onedriveFolder is ErrorItem errorItem) throw new Exception(errorItem.Error);
 
-            var toOneDriveFolder = GetOneDriveItem(toFolderId);
+            var toOneDriveFolder = await GetOneDriveItemAsync(toFolderId).ConfigureAwait(false);
             if (toOneDriveFolder is ErrorItem errorItem1) throw new Exception(errorItem1.Error);
 
-            var newTitle = GetAvailableTitle(onedriveFolder.Name, toOneDriveFolder.Id, IsExist);
-            var newOneDriveFolder = ProviderInfo.Storage.CopyItem(onedriveFolder.Id, newTitle, toOneDriveFolder.Id);
+            var newTitle = await GetAvailableTitleAsync(onedriveFolder.Name, toOneDriveFolder.Id, IsExistAsync).ConfigureAwait(false);
+            var storage = await ProviderInfo.StorageAsync;
+            var newOneDriveFolder = await storage.CopyItemAsync(onedriveFolder.Id, newTitle, toOneDriveFolder.Id).ConfigureAwait(false);
 
-            ProviderInfo.CacheReset(newOneDriveFolder.Id);
-            ProviderInfo.CacheReset(toOneDriveFolder.Id);
+            await ProviderInfo.CacheResetAsync(newOneDriveFolder.Id).ConfigureAwait(false);
+            await ProviderInfo.CacheResetAsync(toOneDriveFolder.Id).ConfigureAwait(false);
 
             return ToFolder(newOneDriveFolder);
         }
 
-        public IDictionary<string, string> CanMoveOrCopy<TTo>(string[] folderIds, TTo to)
+        public Task<IDictionary<string, string>> CanMoveOrCopyAsync<TTo>(string[] folderIds, TTo to)
         {
             if (to is int tId)
             {
-                return CanMoveOrCopy(folderIds, tId);
+                return CanMoveOrCopyAsync(folderIds, tId);
             }
 
             if (to is string tsId)
             {
-                return CanMoveOrCopy(folderIds, tsId);
+                return CanMoveOrCopyAsync(folderIds, tsId);
             }
 
             throw new NotImplementedException();
         }
 
-        public IDictionary<string, string> CanMoveOrCopy(string[] folderIds, string to)
+        public Task<IDictionary<string, string>> CanMoveOrCopyAsync(string[] folderIds, string to)
         {
-            return new Dictionary<string, string>();
+            return Task.FromResult((IDictionary<string, string>)new Dictionary<string, string>());
         }
 
-        public IDictionary<string, string> CanMoveOrCopy(string[] folderIds, int to)
+        public Task<IDictionary<string, string>> CanMoveOrCopyAsync(string[] folderIds, int to)
         {
-            return new Dictionary<string, string>();
+            return Task.FromResult((IDictionary<string, string>)new Dictionary<string, string>());
         }
 
-        public string RenameFolder(Folder<string> folder, string newTitle)
+        public async Task<string> RenameFolderAsync(Folder<string> folder, string newTitle)
         {
-            var onedriveFolder = GetOneDriveItem(folder.ID);
+            var onedriveFolder = await GetOneDriveItemAsync(folder.ID).ConfigureAwait(false);
             var parentFolderId = GetParentFolderId(onedriveFolder);
 
             if (IsRoot(onedriveFolder))
             {
                 //It's root folder
-                DaoSelector.RenameProvider(ProviderInfo, newTitle);
+                await DaoSelector.RenameProviderAsync(ProviderInfo, newTitle).ConfigureAwait(false);
                 //rename provider customer title
             }
             else
             {
-                newTitle = GetAvailableTitle(newTitle, parentFolderId, IsExist);
+                newTitle = await GetAvailableTitleAsync(newTitle, parentFolderId, IsExistAsync).ConfigureAwait(false);
 
                 //rename folder
-                onedriveFolder = ProviderInfo.Storage.RenameItem(onedriveFolder.Id, newTitle);
+                var storage = await ProviderInfo.StorageAsync;
+                onedriveFolder = await storage.RenameItemAsync(onedriveFolder.Id, newTitle).ConfigureAwait(false);
             }
 
-            ProviderInfo.CacheReset(onedriveFolder.Id);
-            if (parentFolderId != null) ProviderInfo.CacheReset(parentFolderId);
+            await ProviderInfo.CacheResetAsync(onedriveFolder.Id).ConfigureAwait(false);
+            if (parentFolderId != null) await ProviderInfo.CacheResetAsync(parentFolderId).ConfigureAwait(false);
 
             return MakeId(onedriveFolder.Id);
         }
 
-        public int GetItemsCount(string folderId)
+        public async Task<int> GetItemsCountAsync(string folderId)
         {
-            var onedriveFolder = GetOneDriveItem(folderId);
+            var onedriveFolder = await GetOneDriveItemAsync(folderId).ConfigureAwait(false);
             return (onedriveFolder == null
                     || onedriveFolder.Folder == null
                     || !onedriveFolder.Folder.ChildCount.HasValue)
@@ -402,9 +425,9 @@ namespace ASC.Files.Thirdparty.OneDrive
                        : onedriveFolder.Folder.ChildCount.Value;
         }
 
-        public bool IsEmpty(string folderId)
+        public async Task<bool> IsEmptyAsync(string folderId)
         {
-            var onedriveFolder = GetOneDriveItem(folderId);
+            var onedriveFolder = await GetOneDriveItemAsync(folderId).ConfigureAwait(false);
             return onedriveFolder == null
                    || onedriveFolder.Folder == null
                    || onedriveFolder.Folder.ChildCount == 0;
@@ -435,9 +458,10 @@ namespace ASC.Files.Thirdparty.OneDrive
             return true;
         }
 
-        public long GetMaxUploadSize(string folderId, bool chunkedUpload = false)
+        public async Task<long> GetMaxUploadSizeAsync(string folderId, bool chunkedUpload = false)
         {
-            var storageMaxUploadSize = ProviderInfo.Storage.MaxChunkedUploadFileSize;
+            var storage = await ProviderInfo.StorageAsync;
+            var storageMaxUploadSize = storage.MaxChunkedUploadFileSize;
 
             return chunkedUpload ? storageMaxUploadSize : Math.Min(storageMaxUploadSize, SetupInfo.AvailableFileSize);
         }

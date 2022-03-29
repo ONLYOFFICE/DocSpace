@@ -23,7 +23,7 @@ class FirebaseHelper {
     this.remoteConfig = firebase.remoteConfig();
 
     this.remoteConfig.settings = {
-      fetchTimeMillis: 60000,
+      fetchTimeMillis: 3600000,
       minimumFetchIntervalMillis: 3600000,
     };
 
@@ -94,19 +94,13 @@ class FirebaseHelper {
   }
 
   async getCampaignsImages(banner) {
-    const storageRef = this.firebaseStorage.ref();
-    const tangRef = storageRef.child(
-      `campaigns/images/campaigns.${banner}.png`
-    );
-    return await tangRef.getDownloadURL();
+    const domain = this.config["authDomain"];
+    return `https://${domain}/images/campaigns.${banner}.png`;
   }
 
   async getCampaignsTranslations(banner, lng) {
-    const storageRef = this.firebaseStorage.ref();
-    const tangRef = storageRef.child(
-      `campaigns/locales/${lng}/CampaignPersonal${banner}.json`
-    );
-    return await tangRef.getDownloadURL();
+    const domain = this.config["authDomain"];
+    return `https://${domain}/locales/${lng}/CampaignPersonal${banner}.json`;
   }
 }
 

@@ -9,6 +9,7 @@ import {
   ChangeOwnerPanel,
   NewFilesPanel,
   SelectFileDialog,
+  HotkeyPanel,
 } from "../panels";
 import {
   ThirdPartyMoveDialog,
@@ -21,6 +22,7 @@ import {
   ConflictResolveDialog,
   ConvertDialog,
 } from "../dialogs";
+import ConvertPasswordDialog from "../dialogs/ConvertPasswordDialog";
 
 const Panels = (props) => {
   const {
@@ -43,6 +45,8 @@ const Panels = (props) => {
     createMasterForm,
     selectFileDialogVisible,
     setSelectFileDialogVisible,
+    hotkeyPanelVisible,
+    convertPasswordDialogVisible,
   } = props;
 
   const { t } = useTranslation(["Translations", "SelectFile"]);
@@ -98,6 +102,10 @@ const Panels = (props) => {
         withSubfolders={false}
       />
     ),
+    hotkeyPanelVisible && <HotkeyPanel key="hotkey-panel" />,
+    convertPasswordDialogVisible && (
+      <ConvertPasswordDialog key="convert-password-dialog" />
+    ),
   ];
 };
 
@@ -118,12 +126,13 @@ export default inject(
       newFilesPanelVisible,
       conflictResolveDialogVisible,
       convertDialogVisible,
-
+      convertPasswordDialogVisible,
       connectItem, //TODO:
 
       createMasterForm,
       selectFileDialogVisible,
       setSelectFileDialogVisible,
+      hotkeyPanelVisible,
     } = dialogsStore;
 
     const { uploadPanelVisible } = uploadDataStore;
@@ -146,9 +155,11 @@ export default inject(
       newFilesPanelVisible,
       conflictResolveDialogVisible,
       convertDialogVisible,
+      convertPasswordDialogVisible,
       selectFileDialogVisible,
       createMasterForm,
       setSelectFileDialogVisible,
+      hotkeyPanelVisible,
     };
   }
 )(observer(Panels));

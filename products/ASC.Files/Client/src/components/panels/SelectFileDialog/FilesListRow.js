@@ -16,12 +16,16 @@ const FilesListRow = ({
   iconSrc,
   isMultiSelect, // it will be needed
   isChecked,
+  noCheckBox,
+  theme,
 }) => {
   return (
     <StyledFilesList
       displayType={displayType}
+      theme={theme}
       needRowSelection={needRowSelection}
       isChecked={isChecked}
+      noCheckBox={noCheckBox}
     >
       <div
         data-index={index}
@@ -30,12 +34,14 @@ const FilesListRow = ({
       >
         {isMultiSelect ? ( //  it will be needed
           <Checkbox
+            theme={theme}
             label=""
             isChecked={isChecked}
             className="select-file-dialog_checked"
           />
         ) : (
           <RadioButton
+            theme={theme}
             fontSize="13px"
             fontWeight="400"
             name={`${index}`}
@@ -46,11 +52,17 @@ const FilesListRow = ({
             className="select-file-dialog_checked"
           />
         )}
+
         <ReactSVG src={iconSrc} className="select-file-dialog_icon" />
         <div data-index={index} className="files-list_full-name">
-          <Text data-index={index} className="entry-title">
+          <Text theme={theme} data-index={index} className="entry-title">
             {fileName}
-            <Text data-index={index} className="file-exst" as="span">
+            <Text
+              theme={theme}
+              data-index={index}
+              className="file-exst"
+              as="span"
+            >
               {fileExst}
             </Text>
           </Text>
@@ -62,13 +74,11 @@ const FilesListRow = ({
 };
 
 FilesListRow.defaultProps = {
-  needRowSelection: true,
   isMultiSelect: false,
 };
 
-export default inject(({ formatsStore }, { fileExst }) => {
-  const { iconFormatsStore } = formatsStore;
-  const iconSrc = iconFormatsStore.getIconSrc(fileExst, 24);
+export default inject(({ settingsStore }, { fileExst }) => {
+  const iconSrc = settingsStore.getIconSrc(fileExst, 24);
   return {
     iconSrc,
   };

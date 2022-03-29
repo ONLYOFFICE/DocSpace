@@ -52,13 +52,13 @@ namespace ASC.Data.Backup.Storage
         {
             using var stream = File.OpenRead(localPath);
             var storagePath = Path.GetFileName(localPath);
-            GetDataStore().Save("", storagePath, stream);
+            GetDataStore().SaveAsync("", storagePath, stream).Wait();
             return storagePath;
         }
 
         public void Download(string storagePath, string targetLocalPath)
         {
-            using var source = GetDataStore().GetReadStream("", storagePath);
+            using var source = GetDataStore().GetReadStreamAsync("", storagePath).Result;
             using var destination = File.OpenWrite(targetLocalPath);
             source.CopyTo(destination);
         }
@@ -66,20 +66,20 @@ namespace ASC.Data.Backup.Storage
         public void Delete(string storagePath)
         {
             var dataStore = GetDataStore();
-            if (dataStore.IsFile("", storagePath))
+            if (dataStore.IsFileAsync("", storagePath).Result)
             {
-                dataStore.Delete("", storagePath);
+                dataStore.DeleteAsync("", storagePath).Wait();
             }
         }
 
         public bool IsExists(string storagePath)
         {
-            return GetDataStore().IsFile("", storagePath);
+            return GetDataStore().IsFileAsync("", storagePath).Result;
         }
 
         public string GetPublicLink(string storagePath)
         {
-            return GetDataStore().GetPreSignedUri("", storagePath, TimeSpan.FromDays(1), null).ToString();
+            return GetDataStore().GetPreSignedUriAsync("", storagePath, TimeSpan.FromDays(1), null).Result.ToString();
         }
 
         protected virtual IDataStore GetDataStore()

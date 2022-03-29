@@ -1,10 +1,9 @@
-﻿{
+{
   "AddAccount": "Konto hinzufügen",
   "ArchivingData": "Archivieren der Daten",
   "ButtonShareAccess": "Freigabeeinstellungen",
   "ConnectingAccount": "Konto wird verbunden",
   "Copy": "Kopieren",
-  "CopyOperation": "Kopieren",
   "CreateMasterFormFromFile": "Formularvorlage aus Datei erstellen",
   "DeleteFromTrash": "Die ausgewählten Elemente wurden aus dem Papierkorb gelöscht",
   "DeleteOperation": "Löschen",
@@ -14,6 +13,7 @@
   "DownloadAs": "Herunterladen als",
   "EncryptedFileSaving": "Die verschlüsselte Datei wird gespeichert",
   "Files": "Dateien",
+  "FileProtected": "Diese Datei ist kennwortgeschützt",
   "Folders": "Ordner",
   "FolderSelection": "Ordnerauswahl",
   "FolderTitleBoxNet": "Box-Verzeichnis",
@@ -38,7 +38,6 @@
   "NewFormFile": "Formular aus Textdatei",
   "OwnerChange": "Besitzer ändern",
   "Presentations": "Präsentationen",
-  "Restore": "Wiederherstellen",
   "Spreadsheets": "Tabellenkalkulationen",
   "SubNewForm": "Leer",
   "SubNewFormFile": "Aus Textdatei",

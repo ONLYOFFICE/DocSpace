@@ -7,5 +7,7 @@
         public T DestFolderId { get; set; }
 
         public bool EnableExternalExt { get; set; }
+
+        public string Password { get; set; }
     }
 }
