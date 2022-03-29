@@ -38,6 +38,7 @@ class SelectFileDialogModalView extends React.Component {
       onSelectFolder,
       selectedFolder,
       passedId,
+      foldersList,
     } = this.props;
     switch (foldersType) {
       case "exceptSortedByTags":
@@ -96,7 +97,9 @@ class SelectFileDialogModalView extends React.Component {
         break;
       case "third-party":
         try {
-          this.folderList = await SelectFolderDialog.getCommonThirdPartyList();
+          this.folderList = foldersList
+            ? foldersList
+            : await SelectFolderDialog.getCommonThirdPartyList();
           this.folderList.length !== 0
             ? this.onSetSelectedFolder()
             : this.setState({ isAvailable: false });

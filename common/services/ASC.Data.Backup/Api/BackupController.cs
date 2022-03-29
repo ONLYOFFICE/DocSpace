@@ -250,4 +250,42 @@ public class BackupController
 
         return _backupHandler.GetTmpFolder();
     }
+
+    ///<visible>false</visible>
+    [Read("enablerestore")]
+    public bool EnableRestore()
+    {
+        try
+        {
+            if (_coreBaseSettings.Standalone)
+            {
+                _tenantExtra.DemandControlPanelPermission();
+            }
+            _backupHandler.DemandPermissionsRestore();
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    ///<visible>false</visible>
+    [Read("enableAutoBackup")]
+    public bool EnableAutoBackup()
+    {
+        try
+        {
+            if (_coreBaseSettings.Standalone)
+            {
+                _tenantExtra.DemandControlPanelPermission();
+            }
+            _backupHandler.DemandPermissionsAutoBackup();
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
 }
