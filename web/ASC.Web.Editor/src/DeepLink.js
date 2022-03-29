@@ -61,6 +61,16 @@ const DeepLinkPage = (props) => {
     onStayBrowser();
   };
 
+  const onOpenAppClick = () => {
+    if (isChecked) localStorage.setItem("defaultOpen", "app");
+    onOpenApp();
+  };
+
+  const onOpenBrowserClick = () => {
+    if (isChecked) localStorage.setItem("defaultOpen", "web");
+    onStayWeb();
+  };
+
   return (
     <>
       <SimpleHeader />
@@ -85,7 +95,7 @@ const DeepLinkPage = (props) => {
         <Button
           className="button"
           label={t("Common:OpenInApp")}
-          onClick={onOpenApp}
+          onClick={onOpenAppClick}
           primary
           scale
           size="normal"
@@ -95,7 +105,7 @@ const DeepLinkPage = (props) => {
           className="link"
           color="#316DAA"
           fontWeight="600"
-          onClick={onStayWeb}
+          onClick={onOpenBrowserClick}
           target="_self"
           type="action"
         >

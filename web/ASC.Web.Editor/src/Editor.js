@@ -101,8 +101,18 @@ function Editor({
   const [isLoaded, setIsLoaded] = useState(false);
   const [documentTitle, setNewDocumentTitle] = useState("Loading...");
   const [isShowEditor, setIsShowEditor] = useState(!isMobile);
+  const [defaultOpen, setDefaultOpen] = useState("");
 
   const { t } = useTranslation(["Editor", "Common"]);
+
+  useEffect(() => {
+    const defOpen = localStorage.getItem("defaultOpen") || "";
+    setDefaultOpen(defOpen);
+
+    if (defOpen === "web") {
+      setIsShowEditor(true);
+    }
+  }, []);
 
   useEffect(() => {
     if (error) {
@@ -548,7 +558,7 @@ function Editor({
 
   return (
     <>
-      {isMobile && !isShowEditor && (
+      {isMobile && !isShowEditor && defaultOpen !== "web" && (
         <DeepLinkPage
           fileInfo={fileInfo}
           onStayBrowser={onOpenEditor}
