@@ -1957,7 +1957,7 @@ const Dark = {
     borderColor: "#292929",
     textColor: white,
     showAccessUsersTextColor: gray,
-    showAccessPanelTextColor: graySilver,
+    showAccessPanelTextColor: "#858585",
     headerCrossColor: gray,
 
     sectionHeaderToggleIcon: "#858585",
