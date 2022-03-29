@@ -184,14 +184,14 @@ internal class GoogleDriveFolderDao : GoogleDriveDaoBase, IFolderDao<string>
 
     public async Task<string> InternalSaveFolderAsync(Folder<string> folder)
     {
-        if (folder.ID != null)
+        if (folder.Id != null)
         {
             return await RenameFolderAsync(folder, folder.Title).ConfigureAwait(false);
         }
 
-        if (folder.FolderID != null)
+        if (folder.ParentId != null)
         {
-            var driveFolderId = MakeDriveId(folder.FolderID);
+            var driveFolderId = MakeDriveId(folder.ParentId);
 
             var storage = await ProviderInfo.StorageAsync;
             var driveFolder = await storage.InsertEntryAsync(null, folder.Title, driveFolderId, true).ConfigureAwait(false);
@@ -272,7 +272,7 @@ internal class GoogleDriveFolderDao : GoogleDriveDaoBase, IFolderDao<string>
             true, cancellationToken)
             .ConfigureAwait(false);
 
-        return moved.ID;
+        return moved.Id;
     }
 
     public async Task<TTo> MoveFolderAsync<TTo>(string folderId, TTo toFolderId, CancellationToken? cancellationToken)
@@ -397,7 +397,7 @@ internal class GoogleDriveFolderDao : GoogleDriveDaoBase, IFolderDao<string>
 
     public async Task<string> RenameFolderAsync(Folder<string> folder, string newTitle)
     {
-        var driveFolder = await GetDriveEntryAsync(folder.ID).ConfigureAwait(false);
+        var driveFolder = await GetDriveEntryAsync(folder.Id).ConfigureAwait(false);
 
         if (IsRoot(driveFolder))
         {

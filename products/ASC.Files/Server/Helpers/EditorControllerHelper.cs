@@ -92,7 +92,7 @@ public class EditorControllerHelper<T> : FilesHelperBase<T>
         configuration.EditorType = EditorType.External;
         if (configuration.EditorConfig.ModeWrite)
         {
-            configuration.EditorConfig.CallbackUrl = _documentServiceTrackerHelper.GetCallbackUrl(configuration.Document.Info.GetFile().ID.ToString());
+            configuration.EditorConfig.CallbackUrl = _documentServiceTrackerHelper.GetCallbackUrl(configuration.Document.Info.GetFile().Id.ToString());
         }
 
         if (configuration.Document.Info.GetFile().RootFolderType == FolderType.Privacy && PrivacyRoomSettings.GetEnabled(_settingsManager))

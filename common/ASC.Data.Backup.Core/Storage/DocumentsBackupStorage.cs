@@ -139,7 +139,7 @@ public class DocumentsBackupStorage : IBackupStorage
         using var source = File.OpenRead(localPath);
         var newFile = _serviceProvider.GetService<File<T>>();
         newFile.Title = Path.GetFileName(localPath);
-        newFile.FolderID = folder.ID;
+        newFile.ParentId = folder.Id;
         newFile.ContentLength = source.Length;
 
         File<T> file = null;
@@ -159,7 +159,7 @@ public class DocumentsBackupStorage : IBackupStorage
             }
         }
 
-        return file.ID;
+        return file.Id;
     }
 
     private void DownloadDao<T>(T fileId, string targetLocalPath)

@@ -44,6 +44,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     private readonly IDaoFactory _daoFactory;
     private readonly ProviderFolderDao _providerFolderDao;
     private readonly CrossDao _crossDao;
+    private readonly IMapper _mapper;
 
     public FolderDao(
         FactoryIndexerFolder factoryIndexer,
@@ -63,7 +64,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         GlobalSpace globalSpace,
         IDaoFactory daoFactory,
         ProviderFolderDao providerFolderDao,
-        CrossDao crossDao)
+        CrossDao crossDao,
+        IMapper mapper)
         : base(
               dbContextManager,
               userManager,
@@ -84,13 +86,16 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         _daoFactory = daoFactory;
         _providerFolderDao = providerFolderDao;
         _crossDao = crossDao;
+        _mapper = mapper;
     }
 
     public async Task<Folder<int>> GetFolderAsync(int folderId)
     {
         var query = GetFolderQuery(r => r.Id == folderId).AsNoTracking();
 
-        return ToFolder(await FromQueryWithShared(query).Take(1).SingleOrDefaultAsync().ConfigureAwait(false));
+        var dbFolder = await FromQueryWithShared(query).Take(1).SingleOrDefaultAsync().ConfigureAwait(false);
+
+        return _mapper.Map<DbFolderQuery, Folder<int>>(dbFolder);
     }
 
     public Task<Folder<int>> GetFolderAsync(string title, int parentId)
@@ -105,7 +110,9 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         var query = GetFolderQuery(r => r.Title == title && r.ParentId == parentId).AsNoTracking()
             .OrderBy(r => r.CreateOn);
 
-        return ToFolder(await FromQueryWithShared(query).Take(1).FirstOrDefaultAsync().ConfigureAwait(false));
+        var dbFolder = await FromQueryWithShared(query).Take(1).FirstOrDefaultAsync().ConfigureAwait(false);
+
+        return _mapper.Map<DbFolderQuery, Folder<int>>(dbFolder);
     }
 
     public async Task<Folder<int>> GetRootFolderAsync(int folderId)
@@ -119,14 +126,16 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
         var query = GetFolderQuery(r => r.Id == id).AsNoTracking();
 
-        return ToFolder(await FromQueryWithShared(query).SingleOrDefaultAsync().ConfigureAwait(false));
+        var dbFolder = await FromQueryWithShared(query).SingleOrDefaultAsync().ConfigureAwait(false);
+
+        return _mapper.Map<DbFolderQuery, Folder<int>>(dbFolder);
     }
 
     public async Task<Folder<int>> GetRootFolderByFileAsync(int fileId)
     {
         var subq = Query(FilesDbContext.Files).AsNoTracking()
             .Where(r => r.Id == fileId && r.CurrentVersion)
-            .Select(r => r.FolderId)
+            .Select(r => r.ParentId)
             .Distinct();
 
         var q = await FilesDbContext.Tree.AsNoTracking()
@@ -138,7 +147,9 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
         var query = GetFolderQuery(r => r.Id == q).AsNoTracking();
 
-        return ToFolder(await FromQueryWithShared(query).SingleOrDefaultAsync().ConfigureAwait(false));
+        var dbFolder = await FromQueryWithShared(query).SingleOrDefaultAsync().ConfigureAwait(false);
+
+        return _mapper.Map<DbFolderQuery, Folder<int>>(dbFolder);
     }
 
     public IAsyncEnumerable<Folder<int>> GetFoldersAsync(int parentId)
@@ -204,7 +215,9 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             }
         }
 
-        return FromQueryWithShared(q).AsAsyncEnumerable().Select(ToFolder);
+        var dbFolders = FromQueryWithShared(q).AsAsyncEnumerable();
+
+        return dbFolders.Select(_mapper.Map<DbFolderQuery, Folder<int>>);
     }
 
     public IAsyncEnumerable<Folder<int>> GetFoldersAsync(IEnumerable<int> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
@@ -258,7 +271,9 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             }
         }
 
-        return (checkShare ? FromQueryWithShared(q) : FromQuery(q)).AsAsyncEnumerable().Select(e => ToFolder(e)).Distinct();
+        var dbFolders = (checkShare ? FromQueryWithShared(q) : FromQuery(q)).AsAsyncEnumerable();
+
+        return dbFolders.Select(_mapper.Map<DbFolderQuery, Folder<int>>).Distinct();
     }
 
     public async Task<List<Folder<int>>> GetParentFoldersAsync(int folderId)
@@ -272,7 +287,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
         var query = await FromQueryWithShared(q).ToListAsync().ConfigureAwait(false);
 
-        return query.ConvertAll(e => ToFolder(e));
+        return _mapper.Map<List<DbFolderQuery>, List<Folder<int>>>(query);
     }
 
     public Task<int> SaveFolderAsync(Folder<int> folder)
@@ -307,10 +322,10 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
         var tx = transaction ?? FilesDbContext.Database.BeginTransaction();
 
-        if (folder.ID != default && await IsExistAsync(folder.ID).ConfigureAwait(false))
+        if (folder.Id != default && await IsExistAsync(folder.Id).ConfigureAwait(false))
         {
             var toUpdate = await Query(FilesDbContext.Folders)
-                .Where(r => r.Id == folder.ID)
+                .Where(r => r.Id == folder.Id)
                 .FirstOrDefaultAsync()
                 .ConfigureAwait(false);
 
@@ -332,7 +347,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             var newFolder = new DbFolder
             {
                 Id = 0,
-                ParentId = folder.FolderID,
+                ParentId = folder.ParentId,
                 Title = folder.Title,
                 CreateOn = TenantUtil.DateTimeToUtc(folder.CreateOn),
                 CreateBy = folder.CreateBy,
@@ -351,13 +366,13 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                 _ = _factoryIndexer.IndexAsync(newFolder).ConfigureAwait(false);
             }
 
-            folder.ID = newFolder.Id;
+            folder.Id = newFolder.Id;
 
             //itself link
             var newTree = new DbFolderTree
             {
-                FolderId = folder.ID,
-                ParentId = folder.ID,
+                FolderId = folder.Id,
+                ParentId = folder.Id,
                 Level = 0
             };
 
@@ -367,13 +382,13 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             //full path to root
             var oldTree = FilesDbContext.Tree
                 .AsQueryable()
-                .Where(r => r.FolderId == folder.FolderID);
+                .Where(r => r.FolderId == folder.ParentId);
 
             foreach (var o in oldTree)
             {
                 var treeToAdd = new DbFolderTree
                 {
-                    FolderId = folder.ID,
+                    FolderId = folder.Id,
                     ParentId = o.ParentId,
                     Level = o.Level + 1
                 };
@@ -392,11 +407,11 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
         if (isnew)
         {
-            await RecalculateFoldersCountAsync(folder.ID).ConfigureAwait(false);
+            await RecalculateFoldersCountAsync(folder.Id).ConfigureAwait(false);
         }
 
         //FactoryIndexer.IndexAsync(FoldersWrapper.GetFolderWrapper(ServiceProvider, folder));
-        return folder.ID;
+        return folder.Id;
     }
 
     private Task<bool> IsExistAsync(int folderId)
@@ -592,7 +607,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             true, cancellationToken)
             .ConfigureAwait(false);
 
-        return moved.ID;
+        return moved.Id;
     }
 
     public async Task<Folder<TTo>> CopyFolderAsync<TTo>(int folderId, TTo toFolderId, CancellationToken? cancellationToken)
@@ -622,9 +637,9 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         }
 
         var copy = ServiceProvider.GetService<Folder<int>>();
-        copy.FolderID = toFolderId;
-        copy.RootFolderId = toFolder.RootFolderId;
-        copy.RootFolderCreator = toFolder.RootFolderCreator;
+        copy.ParentId = toFolderId;
+        copy.RootId = toFolder.RootId;
+        copy.RootCreateBy = toFolder.RootCreateBy;
         copy.RootFolderType = toFolder.RootFolderType;
         copy.Title = folder.Title;
         copy.FolderType = folder.FolderType;
@@ -704,8 +719,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                 var files = await FilesDbContext.Files
                     .AsNoTracking()
                     .Join(FilesDbContext.Files, f1 => f1.Title.ToLower(), f2 => f2.Title.ToLower(), (f1, f2) => new { f1, f2 })
-                    .Where(r => r.f1.TenantId == TenantID && r.f1.CurrentVersion && r.f1.FolderId == folderId)
-                    .Where(r => r.f2.TenantId == TenantID && r.f2.CurrentVersion && r.f2.FolderId == conflict)
+                    .Where(r => r.f1.TenantId == TenantID && r.f1.CurrentVersion && r.f1.ParentId == folderId)
+                    .Where(r => r.f2.TenantId == TenantID && r.f2.CurrentVersion && r.f2.ParentId == conflict)
                     .Select(r => r.f1)
                     .ToListAsync()
                     .ConfigureAwait(false);
@@ -734,7 +749,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     public async Task<int> RenameFolderAsync(Folder<int> folder, string newTitle)
     {
         var toUpdate = await Query(FilesDbContext.Folders)
-            .Where(r => r.Id == folder.ID)
+            .Where(r => r.Id == folder.Id)
             .FirstOrDefaultAsync()
             .ConfigureAwait(false);
 
@@ -746,7 +761,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
         _ = _factoryIndexer.IndexAsync(toUpdate).ConfigureAwait(false);
 
-        return folder.ID;
+        return folder.Id;
     }
 
     public async Task<int> GetItemsCountAsync(int folderId)
@@ -768,7 +783,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     private async Task<int> GetFilesCountAsync(int folderId)
     {
         var count = await Query(FilesDbContext.Files)
-            .Join(FilesDbContext.Tree, r => r.FolderId, r => r.FolderId, (file, tree) => new { tree, file })
+            .Join(FilesDbContext.Tree, r => r.ParentId, r => r.FolderId, (file, tree) => new { tree, file })
             .Where(r => r.tree.ParentId == folderId)
             .Select(r => r.file.Id)
             .Distinct()
@@ -873,13 +888,13 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             var q1 = GetFolderQuery(r => ids.Contains(r.Id));
             var fromQuery1 = FromQueryWithShared(q1).AsAsyncEnumerable();
 
-            return fromQuery1.Select(ToFolder);
+            return fromQuery1.Select(_mapper.Map<DbFolderQuery, Folder<int>>);
         }
 
         var q = BuildSearch(GetFolderQuery(), text, SearhTypeEnum.Any);
         var fromQuery = FromQueryWithShared(q).AsAsyncEnumerable();
 
-        return fromQuery.Select(ToFolder);
+        return fromQuery.Select(_mapper.Map<DbFolderQuery, Folder<int>>);
     }
 
     public Task<IEnumerable<int>> GetFolderIDsAsync(string module, string bunch, IEnumerable<string> data, bool createIfNotExists)
@@ -1000,7 +1015,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         if (createIfNotExists)
         {
             var folder = ServiceProvider.GetService<Folder<int>>();
-            folder.FolderID = 0;
+            folder.ParentId = 0;
             switch (bunch)
             {
                 case My:
@@ -1168,100 +1183,6 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             });
     }
 
-    public Folder<int> ToFolder(DbFolderQuery r)
-    {
-        if (r == null)
-        {
-            return null;
-        }
-
-        var result = ServiceProvider.GetService<Folder<int>>();
-        result.ID = r.Folder.Id;
-        result.FolderID = r.Folder.ParentId;
-        result.Title = r.Folder.Title;
-        result.CreateOn = TenantUtil.DateTimeFromUtc(r.Folder.CreateOn);
-        result.CreateBy = r.Folder.CreateBy;
-        result.ModifiedOn = TenantUtil.DateTimeFromUtc(r.Folder.ModifiedOn);
-        result.ModifiedBy = r.Folder.ModifiedBy;
-        result.FolderType = r.Folder.FolderType;
-        result.TotalSubFolders = r.Folder.FoldersCount;
-        result.TotalFiles = r.Folder.FilesCount;
-        result.RootFolderType = r.Root?.FolderType ?? default;
-        result.RootFolderCreator = r.Root?.CreateBy ?? default;
-        result.RootFolderId = r.Root?.Id ?? default;
-        result.Shared = r.Shared;
-
-        switch (result.FolderType)
-        {
-            case FolderType.COMMON:
-                result.Title = FilesUCResource.CorporateFiles;
-                break;
-            case FolderType.USER:
-                result.Title = FilesUCResource.MyFiles;
-                break;
-            case FolderType.SHARE:
-                result.Title = FilesUCResource.SharedForMe;
-                break;
-            case FolderType.Recent:
-                result.Title = FilesUCResource.Recent;
-                break;
-            case FolderType.Favorites:
-                result.Title = FilesUCResource.Favorites;
-                break;
-            case FolderType.TRASH:
-                result.Title = FilesUCResource.Trash;
-                break;
-            case FolderType.Privacy:
-                result.Title = FilesUCResource.PrivacyRoom;
-                break;
-            case FolderType.Projects:
-                result.Title = FilesUCResource.ProjectFiles;
-                break;
-            case FolderType.BUNCH:
-                try
-                {
-                    result.Title = GetProjectTitle(result.ID);
-                }
-                catch (Exception)
-                {
-                    //Global.Logger.Error(e);
-                }
-                break;
-        }
-
-        if (result.FolderType != FolderType.DEFAULT && 0.Equals(result.FolderID))
-        {
-            result.RootFolderType = result.FolderType;
-        }
-
-        if (result.FolderType != FolderType.DEFAULT && result.RootFolderCreator == default)
-        {
-            result.RootFolderCreator = result.CreateBy;
-        }
-
-        if (result.FolderType != FolderType.DEFAULT && 0.Equals(result.RootFolderId))
-        {
-            result.RootFolderId = result.ID;
-        }
-
-        return result;
-    }
-
-    public (Folder<int>, SmallShareRecord) ToFolderWithShare(DbFolderQueryWithSecurity r)
-    {
-        var file = ToFolder(r.DbFolderQuery);
-        var record = r.Security != null
-            ? new SmallShareRecord
-            {
-                ShareOn = r.Security.TimeStamp,
-                ShareBy = r.Security.Owner,
-                ShareTo = r.Security.Subject
-            }
-            : null;
-
-        return (file, record);
-    }
-
     public Task<string> GetBunchObjectIDAsync(int folderID)
     {
         return Query(FilesDbContext.BunchObjects)
@@ -1279,7 +1200,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             .ToDictionaryAsync(r => r.LeftNode, r => r.RightNode);
     }
 
-    public async Task<IEnumerable<(Folder<int>, SmallShareRecord)>> GetFeedsForFoldersAsync(int tenant, DateTime from, DateTime to)
+    public async Task<IEnumerable<FolderWithShare>> GetFeedsForFoldersAsync(int tenant, DateTime from, DateTime to)
     {
         var q1 = FilesDbContext.Folders
             .AsQueryable()
@@ -1299,13 +1220,16 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             .Join(FilesDbContext.Security.AsQueryable().DefaultIfEmpty(), r => r.Folder.Id.ToString(), s => s.EntryId, (f, s) => new DbFolderQueryWithSecurity { DbFolderQuery = f, Security = s })
             .Where(r => r.Security.TenantId == tenant)
             .Where(r => r.Security.EntryType == FileEntryType.Folder)
-            .Where(r => r.Security.Security == FileShare.Restrict)
+            .Where(r => r.Security.Share == FileShare.Restrict)
             .Where(r => r.Security.TimeStamp >= from && r.Security.TimeStamp <= to);
 
         var firstQuery = await q2.ToListAsync().ConfigureAwait(false);
         var secondQuery = await q4.ToListAsync().ConfigureAwait(false);
 
-        return firstQuery.Select(ToFolderWithShare).Union(secondQuery.Select(ToFolderWithShare));
+        //return firstQuery.Select(ToFolderWithShare).Union(secondQuery.Select(ToFolderWithShare));
+
+        return _mapper.Map<IEnumerable<DbFolderQueryWithSecurity>, IEnumerable<FolderWithShare>>(firstQuery)
+            .Union(_mapper.Map<IEnumerable<DbFolderQueryWithSecurity>, IEnumerable<FolderWithShare>>(secondQuery));
     }
 
     public async Task<IEnumerable<int>> GetTenantsWithFeedsForFoldersAsync(DateTime fromTime)
@@ -1383,8 +1307,6 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         //}
         //return projectTitle;
     }
-
-
 }
 
 public class DbFolderQuery

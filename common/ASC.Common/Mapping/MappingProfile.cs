@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Common.Mapping.PrimitiveTypeConverters;
-
 namespace ASC.Common.Mapping;
 
 public class MappingProfile : Profile
@@ -43,16 +41,16 @@ public class MappingProfile : Profile
             return;
         }
 
-        var types = assembly.GetExportedTypes()
-            .Where(t => t.GetInterfaces().Any(i =>
-                    i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IMapFrom<>)));
+        var types = assembly.GetExportedTypes().Where(t => t.IsClosedTypeOf(typeof(IMapFrom<>)));
 
         foreach (var type in types)
         {
-            var instance = Activator.CreateInstance(type);
+            var resolvedType = type.IsGenericType ? type.MakeGenericType(new[] { typeof(int) }) : type;
 
-            var methodInfo = type.GetMethod("Mapping")
-                ?? type.GetInterface("IMapFrom`1").GetMethod("Mapping");
+            var instance = Activator.CreateInstance(resolvedType);
+
+            var methodInfo = resolvedType.GetMethod("Mapping")
+                ?? resolvedType.GetInterface("IMapFrom`1").GetMethod("Mapping");
 
             methodInfo?.Invoke(instance, new object[] { this });
         }

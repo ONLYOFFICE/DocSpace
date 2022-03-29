@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,45 +24,20 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Files.Core.Security;
+namespace ASC.Files.Core.Mapping;
 
-public class FileShareRecord : IMapFrom<DbFilesSecurity>
+[Scope]
+public class TenantDateTimeConverter : IValueConverter<DateTime, DateTime>
 {
-    public int TenantId { get; set; }
-    public object EntryId { get; set; }
-    public FileEntryType EntryType { get; set; }
-    public Guid Subject { get; set; }
-    public Guid Owner { get; set; }
-    public FileShare Share { get; set; }
-    public int Level { get; set; }
+    private readonly TenantUtil _tenantUtil;
 
-    public class ShareComparer : IComparer<FileShare>
+    public TenantDateTimeConverter(TenantUtil tenantUtil)
     {
-        private static readonly int[] ShareOrder = new[]
-        {
-                (int)FileShare.None,
-                (int)FileShare.ReadWrite,
-                (int)FileShare.CustomFilter,
-                (int)FileShare.Review,
-                (int)FileShare.FillForms,
-                (int)FileShare.Comment,
-                (int)FileShare.Read,
-                (int)FileShare.Restrict,
-                (int)FileShare.Varies
-        };
-
-        public int Compare(FileShare x, FileShare y)
-        {
-            return Array.IndexOf(ShareOrder, (int)x).CompareTo(Array.IndexOf(ShareOrder, (int)y));
-        }
+        _tenantUtil = tenantUtil;
     }
-}
 
-public class SmallShareRecord
-{
-    public Guid Subject { get; set; }
-    public Guid ShareParentTo { get; set; }
-    public Guid Owner { get; set; }
-    public DateTime TimeStamp { get; set; }
-    public FileShare Share { get; set; }
+    public DateTime Convert(DateTime sourceMember, ResolutionContext context)
+    {
+        return _tenantUtil.DateTimeFromUtc(sourceMember);
+    }
 }

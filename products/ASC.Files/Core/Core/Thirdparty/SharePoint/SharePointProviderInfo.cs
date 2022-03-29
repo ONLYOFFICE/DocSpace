@@ -288,16 +288,16 @@ public class SharePointProviderInfo : IProviderInfo
 
         if (file is SharePointFileErrorEntry errorFile)
         {
-            result.ID = MakeId(errorFile.ID);
-            result.FolderID = MakeId(GetParentFolderId(errorFile.ID));
+            result.Id = MakeId(errorFile.ID);
+            result.ParentId = MakeId(GetParentFolderId(errorFile.ID));
             result.CreateBy = Owner;
             result.CreateOn = DateTime.UtcNow;
             result.ModifiedBy = Owner;
             result.ModifiedOn = DateTime.UtcNow;
             result.ProviderId = ID;
             result.ProviderKey = ProviderKey;
-            result.RootFolderCreator = Owner;
-            result.RootFolderId = MakeId(RootFolder.ServerRelativeUrl);
+            result.RootCreateBy = Owner;
+            result.RootId = MakeId(RootFolder.ServerRelativeUrl);
             result.RootFolderType = RootFolderType;
             result.Title = MakeTitle(GetTitleById(errorFile.ID));
             result.Error = errorFile.Error;
@@ -305,21 +305,21 @@ public class SharePointProviderInfo : IProviderInfo
             return result;
         }
 
-        result.ID = MakeId(file.ServerRelativeUrl);
+        result.Id = MakeId(file.ServerRelativeUrl);
         result.Access = Core.Security.FileShare.None;
         //ContentLength = file.Length,
         result.CreateBy = Owner;
         result.CreateOn = file.TimeCreated.Kind == DateTimeKind.Utc ? _tenantUtil.DateTimeFromUtc(file.TimeCreated) : file.TimeCreated;
-        result.FolderID = MakeId(GetParentFolderId(file.ServerRelativeUrl));
+        result.ParentId = MakeId(GetParentFolderId(file.ServerRelativeUrl));
         result.ModifiedBy = Owner;
         result.ModifiedOn = file.TimeLastModified.Kind == DateTimeKind.Utc ? _tenantUtil.DateTimeFromUtc(file.TimeLastModified) : file.TimeLastModified;
         result.NativeAccessor = file;
         result.ProviderId = ID;
         result.ProviderKey = ProviderKey;
         result.Title = MakeTitle(file.Name);
-        result.RootFolderId = MakeId(SpRootFolderId);
+        result.RootId = MakeId(SpRootFolderId);
         result.RootFolderType = RootFolderType;
-        result.RootFolderCreator = Owner;
+        result.RootCreateBy = Owner;
         result.Shared = false;
         result.Version = 1;
 
@@ -554,8 +554,8 @@ public class SharePointProviderInfo : IProviderInfo
 
         if (folder is SharePointFolderErrorEntry errorFolder)
         {
-            result.ID = MakeId(errorFolder.ID);
-            result.FolderID = null;
+            result.Id = MakeId(errorFolder.ID);
+            result.ParentId = null;
             result.CreateBy = Owner;
             result.CreateOn = DateTime.UtcNow;
             result.FolderType = FolderType.DEFAULT;
@@ -563,13 +563,13 @@ public class SharePointProviderInfo : IProviderInfo
             result.ModifiedOn = DateTime.UtcNow;
             result.ProviderId = ID;
             result.ProviderKey = ProviderKey;
-            result.RootFolderCreator = Owner;
-            result.RootFolderId = MakeId(SpRootFolderId);
+            result.RootCreateBy = Owner;
+            result.RootId = MakeId(SpRootFolderId);
             result.RootFolderType = RootFolderType;
             result.Shareable = false;
             result.Title = MakeTitle(GetTitleById(errorFolder.ID));
-            result.TotalFiles = 0;
-            result.TotalSubFolders = 0;
+            result.FilesCount = 0;
+            result.FoldersCount = 0;
             result.Error = errorFolder.Error;
 
             return result;
@@ -577,8 +577,8 @@ public class SharePointProviderInfo : IProviderInfo
 
         var isRoot = folder.ServerRelativeUrl == SpRootFolderId;
 
-        result.ID = MakeId(isRoot ? "" : folder.ServerRelativeUrl);
-        result.FolderID = isRoot ? null : MakeId(GetParentFolderId(folder.ServerRelativeUrl));
+        result.Id = MakeId(isRoot ? "" : folder.ServerRelativeUrl);
+        result.ParentId = isRoot ? null : MakeId(GetParentFolderId(folder.ServerRelativeUrl));
         result.CreateBy = Owner;
         result.CreateOn = CreateOn;
         result.FolderType = FolderType.DEFAULT;
@@ -586,13 +586,13 @@ public class SharePointProviderInfo : IProviderInfo
         result.ModifiedOn = CreateOn;
         result.ProviderId = ID;
         result.ProviderKey = ProviderKey;
-        result.RootFolderCreator = Owner;
-        result.RootFolderId = MakeId(RootFolder.ServerRelativeUrl);
+        result.RootCreateBy = Owner;
+        result.RootId = MakeId(RootFolder.ServerRelativeUrl);
         result.RootFolderType = RootFolderType;
         result.Shareable = false;
         result.Title = isRoot ? CustomerTitle : MakeTitle(folder.Name);
-        result.TotalFiles = 0;
-        result.TotalSubFolders = 0;
+        result.FilesCount = 0;
+        result.FoldersCount = 0;
 
         return result;
     }

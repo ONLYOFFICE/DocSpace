@@ -152,7 +152,7 @@ public abstract class BaseStartup
             authBuilder.AddScheme<AuthenticationSchemeOptions, ConfirmAuthHandler>("confirm", a => { });
         }
 
-        services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
+        services.AddAutoMapper(typeof(MappingProfile));
     }
 
     public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment env)

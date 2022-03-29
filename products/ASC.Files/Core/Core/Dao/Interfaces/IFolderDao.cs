@@ -318,7 +318,7 @@ public interface IFolderDao<T>
     /// <returns></returns>
     Task<Dictionary<string, string>> GetBunchObjectIDsAsync(List<T> folderIDs);
 
-    Task<IEnumerable<(Folder<T>, SmallShareRecord)>> GetFeedsForFoldersAsync(int tenant, DateTime from, DateTime to);
+    Task<IEnumerable<FolderWithShare>> GetFeedsForFoldersAsync(int tenant, DateTime from, DateTime to);
 
     Task<IEnumerable<T>> GetTenantsWithFeedsForFoldersAsync(DateTime fromTime);
 
