@@ -99,7 +99,7 @@ function Editor({
 }) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [documentTitle, setNewDocumentTitle] = useState("Loading...");
-  const [isShowEditor, setIsShowEditor] = useState(false);
+  const [isShowEditor, setIsShowEditor] = useState(!isMobile);
 
   const { t } = useTranslation(["Editor", "Common"]);
 
