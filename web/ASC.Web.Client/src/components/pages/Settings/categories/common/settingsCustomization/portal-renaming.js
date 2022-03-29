@@ -23,7 +23,7 @@ const StyledComponent = styled.div`
 `;
 
 const PortalRenaming = ({ t, theme, sectionWidth }) => {
-  // todo: Изменить на false
+  // TODO: Change false
   const [isLoadedData, setIsLoadedData] = useState(true);
 
   const onSavePortalRename = () => {
