@@ -1,10 +1,16 @@
 import styled from "styled-components";
+import { tablet } from "@appserver/components/utils/device";
 
 export const StyledBody = styled.div`
   display: flex;
   flex-direction: column;
   padding: 32px;
   z-index: 320;
+
+  @media ${tablet} {
+    margin: 0 auto;
+    width: 480px;
+  }
 
   .description {
     margin-bottom: 32px;
