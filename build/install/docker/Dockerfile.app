@@ -161,24 +161,6 @@ COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Data.B
 
 CMD ["ASC.Data.Backup.dll", "ASC.Data.Backup", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
 
-## ASC.Calendar ##
-# FROM builder AS calendar
-# WORKDIR ${BUILD_PATH}/products/ASC.Calendar/server/
-
-# COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-# COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/products/ASC.Calendar/server/ .
-
-# CMD ["ASC.Calendar.dll", "ASC.Calendar"]
-
-## ASC.CRM ##
-# FROM builder AS crm
-# WORKDIR ${BUILD_PATH}/products/ASC.CRM/server/
-
-# COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-# COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/products/ASC.CRM/server/ .
-
-# CMD ["ASC.CRM.dll", "ASC.CRM"]
-
 ## ASC.Data.Storage.Encryption ##
 FROM builder AS data_storage_encryption
 WORKDIR ${BUILD_PATH}/services/storage.encryption/
@@ -206,15 +188,6 @@ COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Files.
 
 CMD ["ASC.Files.Service.dll", "ASC.Files.Service", "core:products:folder=/var/www/products/", "core:products:subfolder=server", "disable_elastic=true"]
 
-## ASC.Mail ##
-# FROM builder AS mail
-# WORKDIR ${BUILD_PATH}/products/ASC.Mail/server/
-
-# COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-# COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/products/ASC.Mail/server/ .
-
-# CMD ["ASC.Mail.dll", "ASC.Mail"]
-
 ## ASC.Data.Storage.Migration ##
 FROM builder AS data_storage_migration
 WORKDIR ${BUILD_PATH}/services/storage.migration/service/
@@ -241,15 +214,6 @@ COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/products/ASC.People/server/ .
 
 CMD ["ASC.People.dll", "ASC.People"]
-
-## ASC.Projects ##
-# FROM builder AS projects_server
-# WORKDIR ${BUILD_PATH}/products/ASC.Projects/server/
-
-# COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-# COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/products/ASC.Projects/server/ .
-
-# CMD ["ASC.Projects.dll", "ASC.Projects"]
 
 ## ASC.Socket.IO.Svc ##
 FROM builder AS socket

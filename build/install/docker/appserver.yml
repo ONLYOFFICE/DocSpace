@@ -27,10 +27,6 @@ x-service:
     - app_data:/app/onlyoffice/data
     - files_data:/var/www/products/ASC.Files/server/
     - people_data:/var/www/products/ASC.People/server/
-    # - crm_data:/var/www/products/ASC.CRM/server/
-    # - project_data:/var/www/products/ASC.Projects/server/
-    # - calendar_data:/var/www/products/ASC.Calendar/server/
-    # - mail_data:/var/www/products/ASC.Mail/server/
     
 services: 
   onlyoffice-elasticsearch:
@@ -64,16 +60,6 @@ services:
     image: "${REPO}/${STATUS}appserver-backup:${DOCKER_TAG}"
     container_name: ${BACKUP_HOST}
   
-  # onlyoffice-calendar:
-  #   <<: *x-service-base
-  #   image: "${REPO}/${STATUS}appserver-calendar:${DOCKER_TAG}"
-  #   container_name: ${CALENDAR_HOST}
-
-  # onlyoffice-crm:
-  #   <<: *x-service-base
-  #   image: "${REPO}/${STATUS}appserver-crm:${DOCKER_TAG}"
-  #   container_name: ${CRM_HOST}
-  
   onlyoffice-storage-encryption:
     <<: *x-service-base
     image: "${REPO}/${STATUS}appserver-storage-encryption:${DOCKER_TAG}"
@@ -89,11 +75,6 @@ services:
     image: "${REPO}/${STATUS}appserver-files-services:${DOCKER_TAG}"
     container_name: ${FILES_SERVICES_HOST}
 
-  # onlyoffice-mail:
-  #   <<: *x-service-base
-  #   image: "${REPO}/${STATUS}appserver-mail:${DOCKER_TAG}"
-  #   container_name: ${MAIL_HOST}
-
   onlyoffice-storage-migration:
     <<: *x-service-base
     image: "${REPO}/${STATUS}appserver-storage-migration:${DOCKER_TAG}"
@@ -103,11 +84,6 @@ services:
     <<: *x-service-base
     image: "${REPO}/${STATUS}appserver-people-server:${DOCKER_TAG}"
     container_name: ${PEOPLE_SERVER_HOST}
-
-  # onlyoffice-projects-server:
-  #   <<: *x-service-base
-  #   image: "${REPO}/${STATUS}appserver-projects-server:${DOCKER_TAG}"
-  #   container_name: ${PROJECTS_SERVER_HOST}
 
   onlyoffice-socket:
     <<: *x-service-base
@@ -174,15 +150,11 @@ services:
     depends_on:
       - onlyoffice-api-system
       - onlyoffice-backup
-      # - onlyoffice-calendar
-      # - onlyoffice-crm
       - onlyoffice-storage-encryption
       - onlyoffice-files
       - onlyoffice-files-services
-      # - onlyoffice-mail
       - onlyoffice-storage-migration
       - onlyoffice-people-server
-      # - onlyoffice-projects-server
       - onlyoffice-socket
       - onlyoffice-studio-notify
       - onlyoffice-telegram-service
@@ -194,16 +166,12 @@ services:
     environment:
       - SERVICE_API_SYSTEM=${SERVICE_API_SYSTEM}
       - SERVICE_BACKUP=${SERVICE_BACKUP}
-      - SERVICE_CALENDAR=${SERVICE_CALENDAR}
-      - SERVICE_CRM=${SERVICE_CRM}
       - SERVICE_STORAGE_ENCRYPTION=${SERVICE_STORAGE_ENCRYPTION}
       - SERVICE_FILES=${SERVICE_FILES}
       - SERVICE_FILES_SERVICES=${SERVICE_FILES_SERVICES}
-      - SERVICE_MAIL=${SERVICE_MAIL}
       - SERVICE_STORAGE_MIGRATION=${SERVICE_STORAGE_MIGRATION}
       - SERVICE_NOTIFY=${SERVICE_NOTIFY}
       - SERVICE_PEOPLE_SERVER=${SERVICE_PEOPLE_SERVER}
-      - SERVICE_PROJECTS_SERVER=${SERVICE_PROJECTS_SERVER}
       - SERVICE_SOCKET=${SERVICE_SOCKET}
       - SERVICE_STUDIO_NOTIFY=${SERVICE_STUDIO_NOTIFY}
       - SERVICE_TELEGRAM_SERVICE=${SERVICE_TELEGRAM_SERVICE}
@@ -228,7 +196,3 @@ volumes:
   app_data:
   files_data:
   people_data:
-  # crm_data:
-  # project_data:
-  # calendar_data:
-  # mail_data:
