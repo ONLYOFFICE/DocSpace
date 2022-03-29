@@ -5,6 +5,7 @@ import Link from "@appserver/components/link";
 import Checkbox from "@appserver/components/checkbox";
 import { useTranslation } from "react-i18next";
 import { StyledHeader, StyledBody, StyledFileTile } from "./StyledDeepLink";
+import { getDeepLink } from "./helpers/utils";
 
 const SimpleHeader = () => {
   return (
@@ -35,26 +36,13 @@ const DeepLinkPage = (props) => {
       : fileInfo.title;
   };
 
-  const getDeepLink = () => {
-    const jsonData = {
-      portal: window.location.origin,
-      email: userEmail,
-      file: {
-        id: fileInfo.fileId,
-      },
-      folder: {
-        id: fileInfo.folderId,
-        parentId: fileInfo.rootFolderId,
-        rootFolderType: fileInfo.rootFolderType,
-      },
-    };
-    const deepLinkData = btoa(JSON.stringify(jsonData));
-
-    return `${settings.url}?data=${deepLinkData}`;
-  };
-
   const onOpenApp = () => {
-    window.location = getDeepLink();
+    window.location = getDeepLink(
+      window.location.origin,
+      userEmail,
+      fileInfo,
+      settings
+    );
   };
 
   const onStayWeb = () => {

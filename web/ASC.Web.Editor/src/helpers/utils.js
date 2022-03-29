@@ -154,3 +154,21 @@ export const getFavicon = (documentType) => {
   const favicon = icon ? `${homepage}/images/${icon}` : "/favicon.ico";
   return favicon;
 };
+
+export const getDeepLink = (location, email, file, settings) => {
+  const jsonData = {
+    portal: location,
+    email: email,
+    file: {
+      id: file.fileId,
+    },
+    folder: {
+      id: file.folderId,
+      parentId: file.rootFolderId,
+      rootFolderType: file.rootFolderType,
+    },
+  };
+  const deepLinkData = btoa(JSON.stringify(jsonData));
+
+  return `${settings.url}?data=${deepLinkData}`;
+};

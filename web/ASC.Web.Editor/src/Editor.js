@@ -22,7 +22,7 @@ import { useTranslation } from "react-i18next";
 import withDialogs from "./helpers/withDialogs";
 import DeepLinkPage from "./DeepLink";
 
-import { canConvert, convertDocumentUrl } from "./helpers/utils";
+import { canConvert, convertDocumentUrl, getDeepLink } from "./helpers/utils";
 
 const LoaderComponent = (
   <Loader
@@ -111,6 +111,15 @@ function Editor({
 
     if (defOpen === "web") {
       setIsShowEditor(true);
+    }
+
+    if (defOpen === "app") {
+      window.location = getDeepLink(
+        window.location.origin,
+        user.email,
+        fileInfo,
+        deepLinkSettings
+      );
     }
   }, []);
 
