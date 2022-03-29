@@ -99,6 +99,8 @@ function Editor({
 }) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [documentTitle, setNewDocumentTitle] = useState("Loading...");
+  const [isShowEditor, setIsShowEditor] = useState(false);
+
   const { t } = useTranslation(["Editor", "Common"]);
 
   useEffect(() => {
@@ -539,23 +541,35 @@ function Editor({
     }
   };
 
-  if (isMobile) return <DeepLinkPage fileInfo={fileInfo} />;
+  const onOpenEditor = () => {
+    setIsShowEditor(true);
+  };
+
   return (
-    <EditorWrapper isVisibleSharingDialog={isVisible}>
-      {needLoader ? (
-        LoaderComponent
-      ) : (
-        <>
-          <div id="editor"></div>
-          {!isLoaded && LoaderComponent}
-        </>
+    <>
+      {isMobile && !isShowEditor && (
+        <DeepLinkPage fileInfo={fileInfo} onStayBrowser={onOpenEditor} />
       )}
 
-      {sharingDialog}
-      {selectFileDialog}
-      {selectFolderDialog}
-      <Toast />
-    </EditorWrapper>
+      <EditorWrapper
+        isVisibleSharingDialog={isVisible}
+        isShowEditor={isShowEditor}
+      >
+        {needLoader ? (
+          LoaderComponent
+        ) : (
+          <>
+            <div id="editor"></div>
+            {!isLoaded && LoaderComponent}
+          </>
+        )}
+
+        {sharingDialog}
+        {selectFileDialog}
+        {selectFolderDialog}
+        <Toast />
+      </EditorWrapper>
+    </>
   );
 }
 

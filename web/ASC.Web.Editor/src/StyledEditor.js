@@ -20,6 +20,7 @@ const StyledSelectFile = styled.div`
 `;
 
 const EditorWrapper = styled.div`
+  display: ${(props) => !props.isShowEditor && "none"};
   height: 100vh;
 
   .dynamic-sharing-dialog {

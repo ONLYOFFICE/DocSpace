@@ -10,6 +10,7 @@ const StyledBody = styled.div`
   display: flex;
   flex-direction: column;
   padding: 32px;
+  z-index: 320;
 
   .description {
     margin-bottom: 32px;
@@ -55,7 +56,7 @@ const SimpleHeader = () => {
 };
 
 const DeepLinkPage = (props) => {
-  const { fileInfo } = props;
+  const { fileInfo, onStayBrowser } = props;
   const [isChecked, setIsChecked] = useState(false);
   const { t } = useTranslation(["Editor", "Common"]);
 
@@ -67,6 +68,10 @@ const DeepLinkPage = (props) => {
     const fileExst = fileInfo.fileExst.slice(1);
     const iconPath = "/static/images/icons/32/";
     return `${iconPath}${fileExst}.svg`;
+  };
+
+  const onStayWeb = () => {
+    onStayBrowser();
   };
 
   return (
@@ -103,7 +108,7 @@ const DeepLinkPage = (props) => {
           className="link"
           color="#316DAA"
           fontWeight="600"
-          //onClick={onStayBrowserClick}
+          onClick={onStayWeb}
           target="_self"
           type="action"
         >
