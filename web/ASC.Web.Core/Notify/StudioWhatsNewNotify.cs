@@ -26,57 +26,11 @@
 
 namespace ASC.Web.Studio.Core.Notify
 {
-    [Singletone(Additional = typeof(StudioWhatsNewNotifyExtension))]
+    [Scope]
     public class StudioWhatsNewNotify
     {
-        private readonly IServiceScopeFactory _serviceProvider;
         private readonly ILog _log;
         private readonly WebItemManager _webItemManager;
-
-        public StudioWhatsNewNotify(
-            IServiceScopeFactory serviceProvider,
-            WebItemManager webItemManager,
-            IOptionsMonitor<ILog> optionsMonitor)
-        {
-            _serviceProvider = serviceProvider;
-            _webItemManager = webItemManager;
-            _log = optionsMonitor.Get("ASC.Notify");
-        }
-
-        public void SendMsgWhatsNew(DateTime scheduleDate)
-        {
-            if (_webItemManager.GetItemsAll<IProduct>().Count == 0)
-            {
-                _log.Info("No products. Return from function");
-                return;
-            }
-
-            _log.Info("Start send whats new.");
-
-            var products = _webItemManager.GetItemsAll().ToDictionary(p => p.GetSysName());
-            IEnumerable<int> tenants;
-
-            using (var scope = _serviceProvider.CreateScope())
-            {
-                tenants = GetChangedTenants(scope.ServiceProvider.GetRequiredService<FeedAggregateDataProvider>(), scheduleDate);
-            }
-
-            foreach (var tenantid in tenants)
-            {
-                using var scope = _serviceProvider.CreateScope();
-                var scopeClass = scope.ServiceProvider.GetService<StudioWhatsNewNotifyWorker>();
-                scopeClass.SendMsgWhatsNew(tenantid, scheduleDate, products);
-            }
-        }
-        private static IEnumerable<int> GetChangedTenants(FeedAggregateDataProvider feedAggregateDataProvider, DateTime date)
-        {
-            return feedAggregateDataProvider.GetTenants(new TimeInterval(date.Date.AddDays(-1), date.Date.AddSeconds(-1)));
-        }
-    }
-
-    [Scope]
-    public class StudioWhatsNewNotifyWorker
-    {
         private readonly TenantManager _tenantManager;
         private readonly PaymentManager _paymentManager;
         private readonly TenantUtil _tenantUtil;
@@ -89,14 +43,13 @@ namespace ASC.Web.Studio.Core.Notify
         private readonly FeedAggregateDataProvider _feedAggregateDataProvider;
         private readonly CoreSettings _coreSettings;
         private readonly NotifyEngine _notifyEngine;
-        private readonly ILog _log;
-        private readonly IServiceScope _serviceScope;
+        private readonly IServiceScopeFactory _serviceScope;
         private readonly IConfiguration _confuguration;
         private readonly WorkContext _workContext;
         private readonly IMapper _mapper;
 
-        public StudioWhatsNewNotifyWorker(
-            IServiceScope serviceScope,
+        public StudioWhatsNewNotify(
+            IServiceScopeFactory serviceScope,
             TenantManager tenantManager,
             PaymentManager paymentManager,
             TenantUtil tenantUtil,
@@ -112,9 +65,11 @@ namespace ASC.Web.Studio.Core.Notify
             IConfiguration confuguration,
             WorkContext workContext,
             IOptionsMonitor<ILog> optionsMonitor,
-            IMapper mapper)
+            IMapper mapper,
+            WebItemManager webItemManager)
         {
             _serviceScope = serviceScope;
+            _webItemManager = webItemManager;
             _tenantManager = tenantManager;
             _paymentManager = paymentManager;
             _tenantUtil = tenantUtil;
@@ -133,7 +88,31 @@ namespace ASC.Web.Studio.Core.Notify
             _log = optionsMonitor.Get("ASC.Notify");
         }
 
-        internal void SendMsgWhatsNew(int tenantid, DateTime scheduleDate, Dictionary<string, IWebItem> products)
+        public void SendMsgWhatsNew(DateTime scheduleDate)
+        {
+            if (_webItemManager.GetItemsAll<IProduct>().Count == 0)
+            {
+                _log.Info("No products. Return from function");
+                return;
+            }
+
+            _log.Info("Start send whats new.");
+
+            var products = _webItemManager.GetItemsAll().ToDictionary(p => p.GetSysName());
+            var tenants = GetChangedTenants(scheduleDate);
+
+            foreach (var tenantid in tenants)
+            {
+                SendMsgWhatsNew(tenantid, scheduleDate, products);
+            }
+        }
+
+        private IEnumerable<int> GetChangedTenants(DateTime date)
+        {
+            return _feedAggregateDataProvider.GetTenants(new TimeInterval(date.Date.AddDays(-1), date.Date.AddSeconds(-1)));
+        }
+
+        private void SendMsgWhatsNew(int tenantid, DateTime scheduleDate, Dictionary<string, IWebItem> products)
         {
             try
             {
@@ -147,7 +126,7 @@ namespace ASC.Web.Studio.Core.Notify
                 }
 
                 _tenantManager.SetCurrentTenant(tenant);
-                var client = _workContext.NotifyContext.RegisterClient(_notifyEngine, _studioNotifyHelper.NotifySource, _serviceScope);
+                var client = _workContext.NotifyContext.RegisterClient(_notifyEngine, _studioNotifyHelper.NotifySource, _serviceScope.CreateScope());
 
                 _log.InfoFormat("Start send whats new in {0} ({1}).", tenant.GetTenantDomain(_coreSettings), tenantid);
                 foreach (var user in _userManager.GetUsers())
@@ -310,8 +289,6 @@ namespace ASC.Web.Studio.Core.Notify
             return "";
         }
 
-
-
         private bool TimeToSendWhatsNew(DateTime currentTime)
         {
             var hourToSend = 7;
@@ -340,15 +317,6 @@ namespace ASC.Web.Studio.Core.Notify
             public string UserAbsoluteURL { get; set; }
             public DateTime Date { get; set; }
             public string Action { get; set; }
-        }
-    }
-
-    public static class StudioWhatsNewNotifyExtension
-    {
-        public static void Register(DIHelper services)
-        {
-            services.TryAdd<FeedAggregateDataProvider>();
-            services.TryAdd<StudioWhatsNewNotifyWorker>();
         }
     }
 }

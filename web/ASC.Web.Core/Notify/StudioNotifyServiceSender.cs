@@ -35,11 +35,11 @@ namespace ASC.Web.Studio.Core.Notify
 
         private static string EMailSenderName { get { return Constants.NotifyEMailSenderSysName; } }
 
-        private IServiceProvider ServiceProvider { get; }
+        private IServiceScopeFactory ServiceProvider { get; }
         private IConfiguration Configuration { get; }
         private readonly WorkContext _workContext;
 
-        public StudioNotifyServiceSender(IServiceProvider serviceProvider, IConfiguration configuration, ICacheNotify<NotifyItem> cache, NotifyEngine notifyEngine, WorkContext workContext)
+        public StudioNotifyServiceSender(IServiceScopeFactory serviceProvider, IConfiguration configuration, ICacheNotify<NotifyItem> cache, NotifyEngine notifyEngine, WorkContext workContext)
         {
             cache.Subscribe(this.OnMessage, Common.Caching.CacheNotifyAction.Any);
             ServiceProvider = serviceProvider;
@@ -162,7 +162,7 @@ namespace ASC.Web.Studio.Core.Notify
         public void SendMsgWhatsNew(DateTime scheduleDate)
         {
             using var scope = ServiceProvider.CreateScope();
-            scope.ServiceProvider.GetService<StudioWhatsNewNotify>().SendMsgWhatsNew(scheduleDate);
+            scope.ServiceProvider.GetRequiredService<StudioWhatsNewNotify>().SendMsgWhatsNew(scheduleDate);
         }
     }
 

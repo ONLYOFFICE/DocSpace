@@ -30,7 +30,6 @@ public class WhitelabelController : BaseSettingsController
 {
     private Tenant Tenant { get { return _apiContext.Tenant; } }
 
-    private readonly IServiceProvider _serviceProvider;
     private readonly TenantManager _tenantManager;
     private readonly TenantExtra _tenantExtra;
     private readonly PermissionContext _permissionContext;
@@ -40,8 +39,6 @@ public class WhitelabelController : BaseSettingsController
     private readonly TenantLogoManager _tenantLogoManager;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly CommonLinkUtility _commonLinkUtility;
-    private readonly IConfiguration _configuration;
-    private readonly CoreSettings _coreSettings;
     private readonly StorageFactory _storageFactory;
 
     public WhitelabelController(
@@ -56,13 +53,9 @@ public class WhitelabelController : BaseSettingsController
         TenantLogoManager tenantLogoManager,
         CoreBaseSettings coreBaseSettings,
         CommonLinkUtility commonLinkUtility,
-        IConfiguration configuration,
-        CoreSettings coreSettings,
-        IServiceProvider serviceProvider,
         IMemoryCache memoryCache,
         StorageFactory storageFactory) : base(apiContext, memoryCache, webItemManager)
     {
-        _serviceProvider = serviceProvider;
         _tenantManager = tenantManager;
         _tenantExtra = tenantExtra;
         _permissionContext = permissionContext;
@@ -72,8 +65,6 @@ public class WhitelabelController : BaseSettingsController
         _tenantLogoManager = tenantLogoManager;
         _coreBaseSettings = coreBaseSettings;
         _commonLinkUtility = commonLinkUtility;
-        _configuration = configuration;
-        _coreSettings = coreSettings;
         _storageFactory = storageFactory;
     }
 

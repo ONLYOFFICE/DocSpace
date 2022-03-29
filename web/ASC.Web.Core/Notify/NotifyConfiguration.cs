@@ -38,8 +38,6 @@ namespace ASC.Web.Studio.Core.Notify
         private readonly NotifyEngine _notifyEngine;
         private readonly WorkContext _workContext;
 
-        private IServiceProvider ServiceProvider { get; }
-
         public NotifyConfiguration(NotifyEngine notifyEngine, WorkContext workContext)
         {
             _notifyEngine = notifyEngine;
