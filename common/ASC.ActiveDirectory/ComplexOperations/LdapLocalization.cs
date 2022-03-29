@@ -16,6 +16,7 @@
 
 
 namespace ASC.ActiveDirectory.ComplexOperations;
+[Scope]
 public class LdapLocalization
 {
     private ResourceManager _resourceManager;
