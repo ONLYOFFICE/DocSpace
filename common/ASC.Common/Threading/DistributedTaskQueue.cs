@@ -38,8 +38,10 @@ public class DistributedTaskQueue
     private readonly IDistributedCache _distributedCache;
     private readonly ILog _logger;
 
-
-    private int _maxThreadsCount = 1;
+    /// <summary>
+    /// setup -1 for infinity thread counts
+    /// </summary>
+    private int _maxThreadsCount = 1; 
     private string _name;
     private TaskScheduler Scheduler { get; set; } = TaskScheduler.Default;
 
