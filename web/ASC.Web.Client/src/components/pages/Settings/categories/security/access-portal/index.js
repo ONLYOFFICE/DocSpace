@@ -4,7 +4,7 @@ import { withTranslation } from "react-i18next";
 import Text from "@appserver/components/text";
 import { setDocumentTitle } from "../../../../../../helpers/utils";
 import { MainContainer } from "../StyledSecurity";
-import TfaSection from "../sub-components/tfa";
+import TfaSection from "./tfa";
 import MobileView from "./mobileView";
 import { isMobile } from "react-device-detect";
 import CategoryWrapper from "../sub-components/category-wrapper";
