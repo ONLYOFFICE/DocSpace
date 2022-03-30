@@ -2651,6 +2651,10 @@ const Dark = {
     color: "#eeeeee",
     background: black,
   },
+
+  submenu: {
+    lineColor: "#474747",
+  },
 };
 
 export default Dark;

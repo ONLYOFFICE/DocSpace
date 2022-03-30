@@ -22,7 +22,7 @@ export const StyledSubmenuBottomLine = styled.div`
   height: 1px;
   width: 100%;
   margin: -1px 0 15px 0;
-  background: #eceef1;
+  background: ${(props) => props.theme.submenu.lineColor};
 `;
 
 export const StyledSubmenuContentWrapper = styled.div`

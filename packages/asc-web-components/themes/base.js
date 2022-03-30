@@ -2639,6 +2639,10 @@ const Base = {
     color: "#555f65",
     background: white,
   },
+
+  submenu: {
+    lineColor: "#eceef1",
+  },
 };
 
 export default Base;
