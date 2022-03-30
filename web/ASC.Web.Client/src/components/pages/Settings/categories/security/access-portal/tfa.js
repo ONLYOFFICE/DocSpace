@@ -95,6 +95,8 @@ const TwoFactorAuth = (props) => {
     setType(currentState);
   };
 
+  const balance = "21.30"; //TODO: get from server
+
   if (!isLoading) return <SectionLoader />;
   return (
     <MainContainer>
@@ -104,10 +106,16 @@ const TwoFactorAuth = (props) => {
         fontWeight="400"
         name="group"
         orientation="vertical"
+        spacing="8px"
         options={[
           {
             label: t("Disabled"),
             value: "none",
+          },
+          {
+            type: "text",
+            label: `${t("SMSCBalance")}: ${balance}`,
+            value: "",
           },
           {
             label: t("BySms"),
