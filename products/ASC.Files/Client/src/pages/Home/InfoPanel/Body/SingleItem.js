@@ -55,12 +55,9 @@ const SingleItem = (props) => {
 
   const updateItemsInfo = async (selectedItem) => {
     const getItemIcon = (item, size) => {
-      const extension = item.fileExst;
-      const iconUrl = extension
-        ? getIcon(size, extension)
-        : getFolderIcon(item.providerKey, size);
-
-      return iconUrl;
+      return item.isFolder
+        ? getFolderIcon(item.providerKey, size)
+        : getIcon(size, item.fileExst || ".file");
     };
 
     const getSingleItemProperties = (item) => {
@@ -160,7 +157,9 @@ const SingleItem = (props) => {
       result.splice(3, 0, {
         id: "FileExtension",
         title: t("FileExtension"),
-        content: styledText(item.fileExst?.split(".")[1].toUpperCase()),
+        content: styledText(
+          item.fileExst ? item.fileExst.split(".")[1].toUpperCase() : "-"
+        ),
       });
 
       result.push(

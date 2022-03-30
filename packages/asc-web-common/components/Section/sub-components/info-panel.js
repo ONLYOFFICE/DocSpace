@@ -6,8 +6,8 @@ import PropTypes from "prop-types";
 import React, { useEffect } from "react";
 import styled from "styled-components";
 
-const StyledInfoPanelWrapper = styled.div.attrs(({ title }) => ({
-  title: title,
+const StyledInfoPanelWrapper = styled.div.attrs(({ id }) => ({
+  id: id,
 }))`
   height: auto;
   width: auto;
@@ -73,7 +73,7 @@ const InfoPanel = ({ children, isVisible, setIsVisible }) => {
 
   useEffect(() => {
     const onMouseDown = (e) => {
-      if (e.target.title === "InfoPanelWrapper") closeInfoPanel();
+      if (e.target.id === "InfoPanelWrapper") closeInfoPanel();
     };
 
     if (isTablet()) document.addEventListener("mousedown", onMouseDown);
@@ -81,7 +81,7 @@ const InfoPanel = ({ children, isVisible, setIsVisible }) => {
   }, []);
 
   return (
-    <StyledInfoPanelWrapper className="info-panel" title="InfoPanelWrapper">
+    <StyledInfoPanelWrapper className="info-panel" id="InfoPanelWrapper">
       <StyledInfoPanel>
         <StyledCloseButtonWrapper>
           <IconButton
