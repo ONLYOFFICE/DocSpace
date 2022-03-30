@@ -2570,7 +2570,7 @@ const Dark = {
       },
 
       security: {
-        arrowFill: black,
+        arrowFill: white,
         descriptionColor: "#858585",
 
         admins: {
