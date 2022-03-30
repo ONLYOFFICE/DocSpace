@@ -4,7 +4,6 @@ import { withRouter } from "react-router";
 import Layout from "./Layout";
 import { combineUrl } from "@appserver/common/utils";
 import AppServerConfig from "@appserver/common/constants/AppServerConfig";
-import { isMobile } from "react-device-detect";
 
 const SecuritySettings = lazy(() => import("./categories/security/index.js"));
 const Admins = lazy(() =>
@@ -96,11 +95,7 @@ const Settings = () => {
           /> */}
           <Route exact path={SECURITY_URLS} component={SecuritySettings} />
           <Route path={ADMINS_URL} component={Admins} />
-          <Route
-            exact
-            path={TFA_PAGE_URL}
-            component={isMobile ? TfaPage : SecuritySettings}
-          />
+          <Route exact path={TFA_PAGE_URL} component={TfaPage} />
 
           <Route exact path={THIRD_PARTY_URL} component={ThirdPartyServices} />
           <Route
