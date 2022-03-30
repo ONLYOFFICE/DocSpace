@@ -9,6 +9,7 @@ import {
   isMobileOnly,
   isMobile,
 } from "react-device-detect";
+import { Base } from "@appserver/components/themes";
 
 const tabletProps = css`
   .section-header_header,
@@ -20,12 +21,7 @@ const tabletProps = css`
     display: block;
     position: sticky;
     top: 0;
-    background: linear-gradient(
-      180deg,
-      #ffffff 2.81%,
-      rgba(255, 255, 255, 0.91) 63.03%,
-      rgba(255, 255, 255, 0) 100%
-    );
+    background: ${(props) => props.theme.section.header.background};
     z-index: 200;
     margin-right: -2px;
 
@@ -96,6 +92,8 @@ const StyledSectionContainer = styled.section`
     min-width: 100px;
   `}
 `;
+
+StyledSectionContainer.defaultProps = { theme: Base };
 
 class SectionContainer extends React.Component {
   /*shouldComponentUpdate() {

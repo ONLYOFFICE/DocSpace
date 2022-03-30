@@ -31,7 +31,12 @@ StyledArrowRightIcon.defaultProps = { theme: Base };
 
 const MainContainer = styled.div`
   width: 100%;
+  max-width: 700px;
   position: relative;
+
+  .subtitle {
+    margin-bottom: 20px;
+  }
 
   .page-loader {
     position: absolute;
@@ -129,6 +134,7 @@ class AccessRights extends PureComponent {
       </MainContainer>
     ) : (
       <MainContainer>
+        <Text className="subtitle">{t("AccessRightsSubTitle")} </Text>
         <OwnerSettings />
         {
           <div className="category-item-wrapper">
