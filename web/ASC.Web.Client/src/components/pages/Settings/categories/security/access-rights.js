@@ -94,7 +94,7 @@ class AccessRights extends PureComponent {
       isLoading: false,
     };
 
-    setDocumentTitle(t("AccessRights"));
+    setDocumentTitle(t("PortalAccess"));
   }
 
   async componentDidMount() {

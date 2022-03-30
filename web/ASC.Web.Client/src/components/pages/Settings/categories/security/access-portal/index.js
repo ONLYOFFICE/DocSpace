@@ -13,7 +13,7 @@ const AccessPortal = (props) => {
   const { t } = props;
 
   useEffect(() => {
-    setDocumentTitle(t("PortalAccess"));
+    setDocumentTitle(t("AccessRights"));
   }, []);
 
   if (isMobile) return <MobileView />;
