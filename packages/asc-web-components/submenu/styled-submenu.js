@@ -42,6 +42,7 @@ export const StyledSubmenuItems = styled.div`
     padding: 0 16px;
   }
 
+  overflow: hidden;
   &::-webkit-scrollbar {
     display: none;
   }
