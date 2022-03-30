@@ -85,7 +85,7 @@ const Submenu = ({ data, startSelect = 0, onSelect, ...rest }) => {
                   color={isActive ? "#316DAA" : "#657077"}
                   fontSize="13px"
                   fontWeight="600"
-                  truncate="false"
+                  truncate={false}
                 >
                   {d.name}
                 </Text>
