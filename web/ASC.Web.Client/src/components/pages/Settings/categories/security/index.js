@@ -7,21 +7,21 @@ import { combineUrl } from "@appserver/common/utils";
 import config from "../../../../../../package.json";
 
 import AccessRights from "./access-rights";
-import PortalAccess from "./access-portal";
+import AccessPortal from "./access-portal/index.js";
 
 const SecurityWrapper = (props) => {
   const { t, history } = props;
 
   const data = [
     {
+      id: "access-rights",
+      name: t("AccessRights"),
+      content: <AccessPortal />,
+    },
+    {
       id: "access-portal",
       name: t("PortalAccess"),
       content: <AccessRights />,
-    },
-    {
-      id: "access-rights",
-      name: t("AccessRights"),
-      content: <PortalAccess />,
     },
   ];
 
