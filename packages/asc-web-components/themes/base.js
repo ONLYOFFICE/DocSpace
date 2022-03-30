@@ -1948,6 +1948,7 @@ const Base = {
 
     header: {
       backgroundColor: white,
+      background: `linear-gradient(180deg,#ffffff 2.81%,rgba(255, 255, 255, 0.91) 63.03%,rgba(255, 255, 255, 0) 100%)`,
     },
   },
 
