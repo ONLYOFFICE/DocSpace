@@ -7,6 +7,7 @@
   "AccessRightsProductUsersCan": "{{category}} users can",
   "AccessRightsUsersFromList": "{{users}} from the list",
   "AccessSettings": "Access settings",
+  "AccessRightsSubTitle": "This section allows you to transfer portal owner rights and manage administrator access rights.",
   "AutoBackup": "Automatic backup",
   "AutoBackupDescription": "Use this option for automatic backup of the portal data.",
   "AutoBackupHelp": "The <strong>Automatic backup</strong> option is used to automate the portal data backup process to be able to restore it later to a local server.",
