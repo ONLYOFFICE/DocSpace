@@ -1957,11 +1957,13 @@ const Dark = {
     borderColor: "#292929",
     textColor: white,
     showAccessUsersTextColor: gray,
-    showAccessPanelTextColor: "#858585",
+    showAccessPanelTextColor: "#E06A1B",
     headerCrossColor: gray,
+    closeButtonIcon: black,
+    closeButtonBg: "#a2a2a2",
 
     sectionHeaderToggleIcon: "#858585",
-    sectionHeaderToggleIconActive: white,
+    sectionHeaderToggleIconActive: "#c4c4c4",
 
     sectionHeaderToggleBg: "transparent",
     sectionHeaderToggleBgActive: "#292929",

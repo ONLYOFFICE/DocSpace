@@ -1957,6 +1957,8 @@ const Base = {
     showAccessUsersTextColor: gray,
     showAccessPanelTextColor: "#3b72a7",
     headerCrossColor: gray,
+    closeButtonIcon: gray,
+    closeButtonBg: "transparent",
 
     sectionHeaderToggleIcon: gray,
     sectionHeaderToggleIconActive: "#3B72A7",

@@ -9,7 +9,6 @@ import {
 import ComboBox from "../combobox";
 import GroupMenuItem from "./GroupMenuItem";
 import { useTranslation } from "react-i18next";
-import styled from "styled-components";
 import IconButton from "../icon-button";
 
 const TableGroupMenu = (props) => {
@@ -65,7 +64,6 @@ const TableGroupMenu = (props) => {
               className="info-panel-toggle"
               iconName="images/panel.svg"
               size="16"
-              color={isInfoPanelVisible ? "#3B72A7" : "#A3A9AE"}
               isFill={true}
               onClick={toggleInfoPanel}
             />

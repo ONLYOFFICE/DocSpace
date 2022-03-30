@@ -51,17 +51,27 @@ const StyledInfoPanel = styled.div`
 const StyledCloseButtonWrapper = styled.div`
   position: absolute;
   display: none;
+  background-color: ${(props) => props.theme.infoPanel.closeButtonBg};
+  padding: 6px;
+  border-radius: 50%;
+
+  .info-panel-button {
+    path {
+      fill: ${(props) => props.theme.infoPanel.closeButtonIcon};
+    }
+  }
+
   @media ${tablet} {
     display: block;
     top: 0;
     left: 0;
     margin-top: 18px;
-    margin-left: -27px;
+    margin-left: -34px;
   }
   @media ${mobile} {
     right: 0;
     left: auto;
-    margin-top: -27px;
+    margin-top: -34px;
     margin-right: 10px;
   }
 `;
@@ -87,9 +97,7 @@ const InfoPanel = ({ children, isVisible, setIsVisible }) => {
           <IconButton
             onClick={closeInfoPanel}
             iconName="/static/images/cross.react.svg"
-            size="17"
-            color="#ffffff"
-            hoverColor="#657077"
+            size="12"
             isFill={true}
             className="info-panel-button"
           />
@@ -110,6 +118,7 @@ InfoPanel.propTypes = {
 };
 
 StyledInfoPanelWrapper.defaultProps = { theme: Base };
+StyledCloseButtonWrapper.defaultProps = { theme: Base };
 StyledInfoPanel.defaultProps = { theme: Base };
 InfoPanel.defaultProps = { theme: Base };
 

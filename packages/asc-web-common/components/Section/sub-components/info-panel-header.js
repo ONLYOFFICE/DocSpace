@@ -21,13 +21,6 @@ const StyledInfoPanelHeader = styled.div`
   .header-text {
     margin-left: 20px;
   }
-
-  .close-btn {
-    margin-right: 16px;
-    @media ${tablet} {
-      display: none;
-    }
-  }
 `;
 
 const SubInfoPanelHeader = ({ children, onHeaderCrossClick }) => {
@@ -38,16 +31,6 @@ const SubInfoPanelHeader = ({ children, onHeaderCrossClick }) => {
       <Text className="header-text" fontSize="21px" fontWeight="700">
         {content}
       </Text>
-
-      <IconButton
-        className="close-btn"
-        onClick={onHeaderCrossClick}
-        iconName="/static/images/cross.react.svg"
-        size="17"
-        color="#A3A9AE"
-        hoverColor="#657077"
-        isFill={true}
-      />
     </StyledInfoPanelHeader>
   );
 };

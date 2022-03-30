@@ -125,13 +125,14 @@ const StyledAccess = styled.div`
     height: 16px;
     left: 120px;
     top: 8px;
+    padding-left: 1px;
 
     font-family: Open Sans;
     font-style: normal;
     font-weight: normal;
     font-size: 12px;
     line-height: 16px;
-    text-align: right;
+    text-align: left;
 
     color: ${(props) => props.theme.infoPanel.showAccessUsersTextColor};
 
@@ -179,10 +180,8 @@ const StyledOpenSharingPanel = styled.div`
   margin: 16px 0px;
 
   cursor: pointer;
-  &:hover {
-    text-decoration: underline;
-    text-decoration-style: dashed;
-  }
+  text-decoration: underline;
+  text-decoration-style: dashed;
 `;
 
 StyledInfoRoomBody.defaultProps = { theme: Base };
