@@ -114,12 +114,26 @@ function Editor({
     }
 
     if (defOpen === "app") {
+      const nav = navigator.userAgent;
+      const storeUrl =
+        nav.includes("iPhone;") || nav.includes("iPad;")
+          ? `https://apps.apple.com/app/id${deepLinkSettings.iosPackageId}`
+          : `https://play.google.com/store/apps/details?id=${deepLinkSettings.androidPackageName}`;
+
       window.location = getDeepLink(
         window.location.origin,
         user.email,
         fileInfo,
         deepLinkSettings
       );
+
+      setTimeout(() => {
+        if (document.hasFocus()) {
+          window.location.replace(storeUrl);
+        } else {
+          history.goBack();
+        }
+      }, 3000);
     }
   }, []);
 

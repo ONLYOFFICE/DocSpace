@@ -37,12 +37,26 @@ const DeepLinkPage = (props) => {
   };
 
   const onOpenApp = () => {
+    const nav = navigator.userAgent;
+    const storeUrl =
+      nav.includes("iPhone;") || nav.includes("iPad;")
+        ? `https://apps.apple.com/app/id${settings.iosPackageId}`
+        : `https://play.google.com/store/apps/details?id=${settings.androidPackageName}`;
+
     window.location = getDeepLink(
       window.location.origin,
       userEmail,
       fileInfo,
       settings
     );
+
+    setTimeout(() => {
+      if (document.hasFocus()) {
+        window.location.replace(storeUrl);
+      } else {
+        history.goBack();
+      }
+    }, 3000);
   };
 
   const onStayWeb = () => {
