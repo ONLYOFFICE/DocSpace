@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Submenu from "@appserver/components/submenu";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
@@ -8,9 +8,12 @@ import config from "../../../../../../package.json";
 
 import AccessRights from "./access-rights";
 import AccessPortal from "./access-portal/index.js";
+import AppLoader from "@appserver/common/components/AppLoader";
 
 const SecurityWrapper = (props) => {
   const { t, history } = props;
+  const [currentTab, setCurrentTab] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   const data = [
     {
@@ -25,6 +28,13 @@ const SecurityWrapper = (props) => {
     },
   ];
 
+  useEffect(() => {
+    const path = location.pathname;
+    const currentTab = data.findIndex((item) => path.includes(item.id));
+    if (currentTab !== -1) setCurrentTab(currentTab);
+    setIsLoading(true);
+  }, []);
+
   const onSelect = (e) => {
     history.push(
       combineUrl(
@@ -35,7 +45,14 @@ const SecurityWrapper = (props) => {
     );
   };
 
-  return <Submenu data={data} startSelect={0} onSelect={(e) => onSelect(e)} />;
+  if (!isLoading) return <AppLoader />;
+  return (
+    <Submenu
+      data={data}
+      startSelect={currentTab}
+      onSelect={(e) => onSelect(e)}
+    />
+  );
 };
 
 export default withTranslation("Settings")(withRouter(SecurityWrapper));
