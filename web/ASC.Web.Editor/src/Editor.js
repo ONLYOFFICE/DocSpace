@@ -579,16 +579,21 @@ function Editor({
     setIsShowEditor(true);
   };
 
+  const deepLinkIsEnable = true; //TODO: delete after tests
+
   return (
     <>
-      {isMobile && !isShowEditor && defaultOpen !== "web" && (
-        <DeepLinkPage
-          fileInfo={fileInfo}
-          onStayBrowser={onOpenEditor}
-          settings={deepLinkSettings}
-          userEmail={user.email}
-        />
-      )}
+      {deepLinkIsEnable &&
+        isMobile &&
+        !isShowEditor &&
+        defaultOpen !== "web" && (
+          <DeepLinkPage
+            fileInfo={fileInfo}
+            onStayBrowser={onOpenEditor}
+            settings={deepLinkSettings}
+            userEmail={user.email}
+          />
+        )}
 
       <EditorWrapper
         isVisibleSharingDialog={isVisible}
