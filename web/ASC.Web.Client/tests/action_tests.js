@@ -112,3 +112,105 @@ Scenario("Change password", async ({ I }) => {
 
   I.see("Documents");
 });
+
+Scenario("Change language", async ({ I }) => {
+  I.mockEndpoint(Endpoints.common, "common");
+  I.mockEndpoint(Endpoints.cultures, "cultures");
+  I.mockEndpoint(Endpoints.timezones, "timezones");
+  I.mockEndpoint(Endpoints.settings, "settingsCustomization");
+  I.mockEndpoint(Endpoints.build, "build");
+  I.mockEndpoint(Endpoints.info, "infoSettings");
+  I.mockEndpoint(Endpoints.self, "selfSettings");
+
+  I.amOnPage("/settings/common/customization");
+
+  I.click({
+    react: "ComboBox",
+    props: {
+      id: "comboBoxLanguage",
+    },
+  });
+
+  I.seeElement(".dropdown-container");
+
+  I.click({
+    react: "div",
+    props: {
+      label: "French (France)",
+    },
+  });
+
+  I.seeElement({
+    react: "ComboButton",
+    props: {
+      selectedOption: { key: "fr", label: "French (France)" },
+    },
+  });
+
+  I.see("You have unsaved changes");
+
+  I.click("Save");
+
+  I.seeElement({
+    react: "ComboButton",
+    props: {
+      selectedOption: { key: "fr", label: "French (France)" },
+    },
+  });
+
+  I.dontSee("You have unsaved changes");
+});
+
+Scenario("Change time zone", async ({ I }) => {
+  I.mockEndpoint(Endpoints.common, "common");
+  I.mockEndpoint(Endpoints.cultures, "cultures");
+  I.mockEndpoint(Endpoints.timezones, "timezones");
+  I.mockEndpoint(Endpoints.settings, "settingsCustomization");
+  I.mockEndpoint(Endpoints.build, "build");
+  I.mockEndpoint(Endpoints.info, "infoSettings");
+  I.mockEndpoint(Endpoints.self, "selfSettings");
+
+  I.amOnPage("/settings/common/customization");
+
+  I.click({
+    react: "ComboBox",
+    props: {
+      id: "comboBoxTimezone",
+    },
+  });
+
+  I.seeElement(".dropdown-container");
+
+  I.click({
+    react: "div",
+    props: {
+      label: "(UTC-10:00) Pacific/Tahiti",
+    },
+  });
+
+  I.seeElement({
+    react: "ComboButton",
+    props: {
+      selectedOption: {
+        key: "Pacific/Tahiti",
+        label: "(UTC-10:00) Pacific/Tahiti",
+      },
+    },
+  });
+
+  I.see("You have unsaved changes");
+
+  I.click("Save");
+
+  I.seeElement({
+    react: "ComboButton",
+    props: {
+      selectedOption: {
+        key: "Pacific/Tahiti",
+        label: "(UTC-10:00) Pacific/Tahiti",
+      },
+    },
+  });
+
+  I.dontSee("You have unsaved changes");
+});

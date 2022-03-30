@@ -441,7 +441,7 @@ const Form = (props) => {
               isVertical={true}
               labelVisible={false}
               hasError={!passwordValid}
-              errorMessage={!password.trim() && t("Common:RequiredField")} //TODO: Add wrong password server error
+              errorMessage={!password.trim() ? t("Common:RequiredField") : ""} //TODO: Add wrong password server error
             >
               <PasswordInput
                 simpleView={true}

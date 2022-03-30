@@ -13,18 +13,18 @@ import { tablet, mobile, desktop } from "@appserver/components/utils/device";
 const paddingStyles = css`
   padding: 19px 7px 16px 20px;
   @media ${tablet} {
-    padding: 3px 0 16px 24px;
+    padding: 0px 0 16px 24px;
   }
   @media ${mobile} {
-    padding: 6px 0 16px 24px;
+    padding: 0px 0 16px 24px;
   }
   ${isMobile &&
   css`
-    padding: 3px 0 16px 24px !important;
+    padding: 0 0 16px 24px !important;
   `};
   ${isMobileOnly &&
   css`
-    padding: 6px 0 16px 24px !important;
+    padding: 0px 0 16px 24px !important;
   `};
 `;
 const commonStyles = css`
@@ -76,6 +76,7 @@ const StyledSectionBody = styled.div`
   ${(props) =>
     props.withScroll &&
     `
+    margin-top: -1px;
     margin-left: -20px;
 
     @media ${tablet}{
@@ -177,7 +178,7 @@ class SectionBody extends React.Component {
         className="section-body"
       >
         {withScroll ? (
-          !isMobile ? (
+          !isMobileOnly ? (
             <Scrollbar scrollclass="section-scroll" stype="mediumBlack">
               <div className="section-wrapper">
                 <div className="section-wrapper-content" {...focusProps}>
@@ -210,7 +211,7 @@ class SectionBody extends React.Component {
         isDesktop={isDesktop}
       >
         {withScroll ? (
-          !isMobile ? (
+          !isMobileOnly ? (
             <Scrollbar stype="mediumBlack">
               <div className="section-wrapper">
                 <div className="section-wrapper-content" {...focusProps}>

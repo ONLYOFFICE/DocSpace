@@ -31,7 +31,8 @@ class HotkeyStore {
   }
 
   activateHotkeys = (e) => {
-    if (this.dialogsStore.someDialogIsOpen) return;
+    if (this.dialogsStore.someDialogIsOpen || ev.target?.tagName === "INPUT")
+      return e;
 
     const isDefaultKeys =
       ["PageUp", "PageDown", "Home", "End"].indexOf(e.code) > -1;

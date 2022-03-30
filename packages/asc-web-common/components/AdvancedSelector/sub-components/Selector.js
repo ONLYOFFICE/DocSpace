@@ -118,8 +118,10 @@ const Selector = (props) => {
           const groupIndex = newGroupList.findIndex(
             (newGroup) => group === newGroup.id
           );
-          if (groupIndex) {
-            newGroupList[groupIndex].selectedCount++;
+
+          if (groupIndex > -1) {
+            newGroupList[groupIndex].selectedCount =
+              newGroupList[groupIndex].selectedCount + 1;
           }
         });
       });
