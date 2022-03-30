@@ -326,7 +326,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
     const hasChild = document.getElementById("main-bar").hasChildNodes();
 
-    skipRender = skipRender && hasChild;
+    skipRender = skipRender || hasChild;
 
     if (skipRender) return;
 
