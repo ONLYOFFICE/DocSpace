@@ -7,6 +7,7 @@ import { MainContainer } from "../StyledSecurity";
 import TfaSection from "../sub-components/tfa";
 import MobileView from "./mobileView";
 import { isMobile } from "react-device-detect";
+import CategoryWrapper from "../sub-components/category-wrapper";
 
 const AccessPortal = (props) => {
   const { t } = props;
@@ -18,11 +19,11 @@ const AccessPortal = (props) => {
   if (isMobile) return <MobileView />;
   return (
     <MainContainer className="desktop-view">
-      <Text className="subtitle">{t("PortalAccessSubTitle")} </Text>
-
-      <Text className="category-title" fontSize="16px" fontWeight="700">
-        {t("TwoFactorAuth")}
-      </Text>
+      <Text className="subtitle">{t("PortalAccessSubTitle")}</Text>
+      <CategoryWrapper
+        title={t("TwoFactorAuth")}
+        tooltipContent={t("TwoFactorAuthDescription")}
+      />
       <TfaSection />
     </MainContainer>
   );

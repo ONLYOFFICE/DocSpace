@@ -28,10 +28,6 @@ export const MainContainer = styled.div`
     left: 50%;
   }
 
-  .category-title {
-    margin-bottom: 16px;
-  }
-
   .category-item-wrapper {
     margin-bottom: 40px;
 
@@ -67,3 +63,11 @@ export const MainContainer = styled.div`
 `;
 
 MainContainer.defaultProps = { theme: Base };
+
+export const StyledCategoryWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  margin-bottom: 16px;
+  align-items: center;
+`;
