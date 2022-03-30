@@ -6,7 +6,7 @@ import { AppServerConfig } from "@appserver/common/constants";
 import { combineUrl } from "@appserver/common/utils";
 import config from "../../../../../../package.json";
 
-import AccessRights from "./access-rights";
+import AccessRights from "./access-rights/index.js";
 import AccessPortal from "./access-portal/index.js";
 import AppLoader from "@appserver/common/components/AppLoader";
 
