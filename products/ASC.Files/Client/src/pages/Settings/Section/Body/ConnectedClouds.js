@@ -27,16 +27,6 @@ import { withRouter } from "react-router";
 import { connectedCloudsTypeTitleTranslation } from "../../../../helpers/utils";
 import Loaders from "@appserver/common/components/Loaders";
 
-// TODO: remove when settings pages will be according to layouts 1.2.1
-const StyledButton = styled(Button)`
-  position: absolute;
-  top: 3px;
-`;
-
-const StyledRowContainer = styled(RowContainer)`
-  margin-top: 24px;
-`;
-
 const StyledBoxIcon = styled(BoxIcon)`
   ${commonIconsStyles}
 `;
@@ -218,14 +208,14 @@ class ConnectClouds extends React.Component {
       <>
         {!!providers.length ? (
           <>
-            <StyledButton
+            <Button
               size="small"
               style={{ marginBottom: "8px" }}
               onClick={this.onShowThirdPartyDialog}
               label={t("ConnectedCloud")}
               primary
             />
-            <StyledRowContainer useReactWindow={false}>
+            <RowContainer useReactWindow={false}>
               {providers.map((item, index) => {
                 const element = this.getThirdPartyIcon(item.provider_key);
                 const typeTitle = connectedCloudsTypeTitleTranslation(
@@ -281,7 +271,7 @@ class ConnectClouds extends React.Component {
                   </Row>
                 );
               })}
-            </StyledRowContainer>
+            </RowContainer>
           </>
         ) : (
           <EmptyFolderContainer

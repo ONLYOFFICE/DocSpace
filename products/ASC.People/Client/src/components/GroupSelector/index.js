@@ -100,7 +100,7 @@ class GroupSelector extends React.Component {
         key: "all",
         id: "all",
         label: t("AllGroups"),
-        total: 0,
+        total: options.length,
         selectedCount: 0,
       },
     ];

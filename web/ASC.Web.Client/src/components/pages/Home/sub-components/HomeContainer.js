@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { isMobileOnly, isMobile } from "react-device-detect";
+import { isMobileOnly, isMobile, isTablet } from "react-device-detect";
 
 const HomeContainer = styled.div`
   margin: ${isMobileOnly ? "50px" : "42px"} auto 0;
@@ -32,13 +32,11 @@ const HomeContainer = styled.div`
       grid-template-columns: repeat(3, 1fr);
       grid-gap: 26px ${isMobileOnly ? "31px" : "45px"};
 
-      ${isMobileOnly &&
+      ${(isTablet || isMobile) &&
       css`
-        @media (min-width: 500px) {
-          display: flex;
-          justify-content: center;
-          flex-wrap: wrap;
-        }
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
       `}
 
       .home-module {

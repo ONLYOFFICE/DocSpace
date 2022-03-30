@@ -54,9 +54,13 @@ class AddUsersPanelComponent extends React.Component {
     const { shareDataItems, setShareDataItems, onClose } = this.props;
     const items = shareDataItems;
     for (let item of users) {
+      const groups = item?.groups.map((group) => ({
+        id: group,
+      }));
+
       if (item.key) {
         item.id = item.key;
-        item.groups = item.groups;
+        item.groups = groups;
       }
       const currentItem = shareDataItems.find((x) => x.sharedTo.id === item.id);
       if (!currentItem) {

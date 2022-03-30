@@ -18,7 +18,7 @@ const StyledSectionHeader = styled.div`
 
   @media ${tablet} {
     height: 61px;
-    margin-right: 16px;
+    margin-right: 0px !important;
   }
 
   ${isMobile &&
@@ -116,26 +116,28 @@ const SectionHeader = (props) => {
   }
 
   return (
-    <LayoutContextConsumer>
-      {(value) => (
-        <StyledSectionHeader
-          isArticlePinned={isArticlePinned}
-          isSectionHeaderVisible={value.isVisible}
-          viewAs={viewAs}
-          maintenanceExist={maintenanceExist && mainBar}
-          top={top}
-          marginTop={marginTop}
-        >
-          <div
-            className={classnames("section-header hidingHeader", {
-              "section-header--hidden":
-                value.isVisible === undefined ? false : !value.isVisible,
-            })}
-            {...rest}
-          />
-        </StyledSectionHeader>
-      )}
-    </LayoutContextConsumer>
+    <div className={rest.className}>
+      <LayoutContextConsumer>
+        {(value) => (
+          <StyledSectionHeader
+            isArticlePinned={isArticlePinned}
+            isSectionHeaderVisible={value.isVisible}
+            viewAs={viewAs}
+            maintenanceExist={maintenanceExist && mainBar}
+            top={top}
+            marginTop={marginTop}
+          >
+            <div
+              className={classnames("section-header hidingHeader", {
+                "section-header--hidden":
+                  value.isVisible === undefined ? false : !value.isVisible,
+              })}
+              {...rest}
+            />
+          </StyledSectionHeader>
+        )}
+      </LayoutContextConsumer>
+    </div>
   );
 };
 

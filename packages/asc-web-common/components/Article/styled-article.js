@@ -17,13 +17,8 @@ import CrossIcon from "@appserver/components/public/static/images/cross.react.sv
 
 const StyledArticle = styled.article`
   position: relative;
-
+  overflow: hidden;
   background: ${(props) => props.theme.catalog.background};
-
-  ${isMobile &&
-  css`
-    margin-top: 48px;
-  `}
 
   @media ${mobile} {
     position: fixed;
@@ -43,24 +38,20 @@ const StyledArticle = styled.article`
     props.showText && (isMobileOnly || isMobileUtils()) ? "205" : "100"};
 
   .resizable-block {
+    overflow: hidden;
+
     display: flex;
     flex-direction: column;
 
     min-width: ${(props) => (props.showText ? "256px" : "52px")};
     width: ${(props) => (props.showText ? "256px" : "52px")};
 
-    height: calc(100% - 44px) !important;
+    height: 100% !important;
 
     background: ${(props) => props.theme.catalog.background};
-    overflow-y: auto;
-    overflow-x: hidden;
-    scrollbar-width: none;
+
     padding-bottom: 0px;
 
-    &::-webkit-scrollbar {
-      width: 0;
-      height: 0;
-    }
     .resizable-border {
       div {
         cursor: ew-resize !important;
@@ -103,6 +94,12 @@ const StyledArticle = styled.article`
       padding: 0;
       padding-bottom: 0px;
     `}
+  }
+
+  .article-body__scrollbar {
+    .scroll-body {
+      padding-right: 0px !important;
+    }
   }
 `;
 

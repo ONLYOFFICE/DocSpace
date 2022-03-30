@@ -19,9 +19,11 @@ const CustomizationSettings = lazy(() =>
   import("./categories/common/customization")
 );
 const LanguageAndTimeZoneSettings = lazy(() =>
-  import("./categories/common/language-and-time-zone")
+  import("./categories/common/settingsCustomization/language-and-time-zone")
 );
-const CustomTitles = lazy(() => import("./categories/common/custom-titles"));
+const CustomTitles = lazy(() =>
+  import("./categories/common/settingsCustomization/custom-titles")
+);
 const TeamTemplate = lazy(() => import("./categories/common/team-template"));
 const ThirdPartyServices = lazy(() =>
   import("./categories/integration/thirdPartyServicesSettings")

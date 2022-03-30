@@ -260,6 +260,7 @@ class Section extends React.Component {
                       <SubSectionHeader
                         maintenanceExist={maintenanceExist}
                         snackbarExist={snackbarExist}
+                        className="section-header_header"
                         isHeaderVisible={isHeaderVisible}
                         viewAs={viewAs}
                       >
@@ -291,6 +292,18 @@ class Section extends React.Component {
                           viewAs={viewAs}
                           isHomepage={isHomepage}
                         >
+                          {isSectionHeaderAvailable && (
+                            <SubSectionHeader
+                              className="section-body_header"
+                              isHeaderVisible={isHeaderVisible}
+                              viewAs={viewAs}
+                            >
+                              {sectionHeaderContent
+                                ? sectionHeaderContent.props.children
+                                : null}
+                            </SubSectionHeader>
+                          )}
+
                           {isSectionFilterAvailable && (
                             <SubSectionFilter className="section-body_filter">
                               {sectionFilterContent

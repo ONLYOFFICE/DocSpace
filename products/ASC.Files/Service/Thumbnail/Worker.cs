@@ -64,7 +64,7 @@ namespace ASC.Files.ThumbnailBuilder
         }
 
 
-        private void Procedure(object _)
+        private async void Procedure(object _)
         {
             timer.Change(Timeout.Infinite, Timeout.Infinite);
             logger.Trace("Procedure: Start.");
@@ -98,7 +98,7 @@ namespace ASC.Files.ThumbnailBuilder
                     .OrderByDescending(fileData => Array.IndexOf(premiumTenants, fileData.TenantId))
                     .ToList();
 
-                builder.BuildThumbnails(filesWithoutThumbnails);
+                await builder.BuildThumbnails(filesWithoutThumbnails);
             }
 
             logger.Trace("Procedure: Finish.");
