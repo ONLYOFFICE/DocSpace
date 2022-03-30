@@ -95,6 +95,12 @@ const StyledArticle = styled.article`
       padding-bottom: 0px;
     `}
   }
+
+  .article-body__scrollbar {
+    .scroll-body {
+      padding-right: 0px !important;
+    }
+  }
 `;
 
 StyledArticle.defaultProps = { theme: Base };

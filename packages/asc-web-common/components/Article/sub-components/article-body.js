@@ -1,7 +1,12 @@
 import React from "react";
+import Scrollbar from "@appserver/components/scrollbar";
 
 const ArticleBody = ({ children }) => {
-  return <> {children}</>;
+  return (
+    <Scrollbar className="article-body__scrollbar" stype="mediumBlack">
+      {children}
+    </Scrollbar>
+  );
 };
 
 ArticleBody.displayName = "Body";
