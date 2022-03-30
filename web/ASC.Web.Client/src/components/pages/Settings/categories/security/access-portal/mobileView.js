@@ -12,7 +12,7 @@ const MobileView = (props) => {
   const { t, history } = props;
 
   useEffect(() => {
-    setDocumentTitle(t("AccessRights"));
+    setDocumentTitle(t("PortalAccess"));
   }, []);
 
   const onClickLink = (e) => {

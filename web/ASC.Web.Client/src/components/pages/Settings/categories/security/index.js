@@ -17,13 +17,13 @@ const SecurityWrapper = (props) => {
 
   const data = [
     {
-      id: "access-rights",
-      name: t("AccessRights"),
+      id: "access-portal",
+      name: t("PortalAccess"),
       content: <AccessPortal />,
     },
     {
-      id: "access-portal",
-      name: t("PortalAccess"),
+      id: "access-rights",
+      name: t("AccessRights"),
       content: <AccessRights />,
     },
   ];
