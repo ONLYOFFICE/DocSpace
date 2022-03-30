@@ -46,7 +46,7 @@ const StyledArticle = styled.article`
     min-width: ${(props) => (props.showText ? "256px" : "52px")};
     width: ${(props) => (props.showText ? "256px" : "52px")};
 
-    height: calc(100% - 44px) !important;
+    height: 100% !important;
 
     background: ${(props) => props.theme.catalog.background};
 
