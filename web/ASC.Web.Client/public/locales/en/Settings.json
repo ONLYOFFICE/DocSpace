@@ -89,6 +89,7 @@
   "Path": "Path",
   "PeopleAdministratorsCan": "People module admins can create profiles and groups, import people, and invite users.",
   "PortalAccess": "Portal access",
+  "PortalAccessSubTitle": "This section allows you to provide users with safe and convenient ways to access the portal.",
   "PortalAdmins": "Portal admins",
   "PortalAdminsDescription": "Have the same access rights as the portal owner, except the right to: change portal owner; deactivate or delete portal.",
   "PortalOwner": "Portal Owner",
