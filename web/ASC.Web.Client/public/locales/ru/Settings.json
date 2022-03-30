@@ -108,6 +108,7 @@
   "SendNotificationAboutRestoring": "Оповестить пользователей о восстановлении портала",
   "ServerSideEncryptionMethod": "Метод шифрования на стороне сервера",
   "ServiceUrl": "Url-адрес сервиса",
+  "SMSCBalance": "Баланс SMSC",
   "StudioTimeLanguageSettings": "Настройки языка и часового пояса",
   "SuccessfullySaveGreetingSettingsMessage": "Настройки страницы приветствия успешно сохранены",
   "SuccessfullySaveSettingsMessage": "Настройки успешно обновлены",

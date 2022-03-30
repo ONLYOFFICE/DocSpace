@@ -107,6 +107,7 @@
   "SendNotificationAboutRestoring": "Send notification about portal restoring to users",
   "ServerSideEncryptionMethod": "Server Side Encryption Method",
   "ServiceUrl": "Service Url",
+  "SMSCBalance": "Баланс SMSC",
   "StudioTimeLanguageSettings": "Language and Time Zone Settings",
   "SuccessfullySaveGreetingSettingsMessage": "Welcome Page settings have been successfully saved",
   "SuccessfullySaveSettingsMessage": "Settings have been successfully updated",
