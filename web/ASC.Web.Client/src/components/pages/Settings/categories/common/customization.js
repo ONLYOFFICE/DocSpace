@@ -66,15 +66,16 @@ const Customization = ({ t }) => {
         isMobile ? (
           <SettingsPageMobileView>
             <LanguageAndTimeZone isMobileView={isMobile} />
-            {/* <CustomTitles /> */}
+            <CustomTitles isMobileView={isMobile} />
           </SettingsPageMobileView>
         ) : (
           <StyledComponent>
             <div className="category-description">{`${t(
               "Settings:CustomizationDescription"
             )}`}</div>
+            {/* TODO: Add isMobile = false in component */}
             <LanguageAndTimeZone isMobileView={isMobile} />
-            {/* <CustomTitles /> */}
+            <CustomTitles isMobileView={isMobile} />
           </StyledComponent>
         )
       }

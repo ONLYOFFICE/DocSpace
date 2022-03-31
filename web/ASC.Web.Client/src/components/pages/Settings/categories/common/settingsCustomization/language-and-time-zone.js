@@ -525,7 +525,6 @@ class LanguageAndTimeZone extends React.Component {
       isMobileViewLanguageTimeSettings
     ) : (
       <StyledComponent hasScroll={hasScroll}>
-        {/* Added isMobileView */}
         {this.checkInnerWidth() && !isMobileView && (
           <div className="category-item-heading">
             <div className="category-item-title">
