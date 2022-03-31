@@ -396,8 +396,6 @@ class Tile extends React.PureComponent {
       title: children[0].props.item.title,
     };
 
-    console.log({ item });
-
     return (
       <StyledTile
         ref={this.tile}
