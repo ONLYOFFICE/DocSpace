@@ -80,7 +80,7 @@ const Navigation = ({
     setIsOpen((val) => !val);
     onBackToParentFolder && onBackToParentFolder();
   }, [onBackToParentFolder]);
-
+  console.log(dropBoxWidth);
   return (
     <Consumer>
       {(context) => (
@@ -96,7 +96,6 @@ const Navigation = ({
               onBackToParentFolder={onBackToParentFolderAction}
               title={title}
               personal={personal}
-              isRootFolder={isRootFolder}
               canCreate={canCreate}
               navigationItems={navigationItems}
               getContextOptionsFolder={getContextOptionsFolder}

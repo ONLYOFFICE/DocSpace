@@ -20,7 +20,7 @@ const StyledContainer = styled.div`
   }
 
   @media ${tablet} {
-    width: calc(99vw - 80px);
+    width: 100%;
     padding: ${(props) => (props.isDropBox ? "16px 0 5px" : "16px 0 0px")};
   }
   ${isMobile &&
