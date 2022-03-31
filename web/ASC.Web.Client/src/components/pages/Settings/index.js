@@ -6,10 +6,8 @@ import { combineUrl } from "@appserver/common/utils";
 import AppServerConfig from "@appserver/common/constants/AppServerConfig";
 
 const SecuritySettings = lazy(() => import("./categories/security/index.js"));
-const Admins = lazy(() =>
-  import("./categories/security/sub-components/admins")
-);
-const TfaPage = lazy(() => import("./categories/security/sub-components/tfa"));
+const Admins = lazy(() => import("./categories/security/access-rights/admins"));
+const TfaPage = lazy(() => import("./categories/security/access-portal/tfa"));
 
 const CustomizationSettings = lazy(() =>
   import("./categories/common/customization")

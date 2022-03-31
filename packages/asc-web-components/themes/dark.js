@@ -2570,7 +2570,7 @@ const Dark = {
       },
 
       security: {
-        arrowFill: black,
+        arrowFill: white,
         descriptionColor: "#858585",
 
         admins: {
@@ -2650,6 +2650,10 @@ const Dark = {
   editor: {
     color: "#eeeeee",
     background: black,
+  },
+
+  submenu: {
+    lineColor: "#474747",
   },
 };
 
