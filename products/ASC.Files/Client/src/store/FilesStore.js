@@ -21,6 +21,8 @@ import toastr from "studio/toastr";
 const { FilesFilter } = api;
 const storageViewAs = localStorage.getItem("viewAs");
 
+import OFORMsGallery from "./OFORMsGallery.json";
+
 class FilesStore {
   authStore;
   settingsStore;
@@ -62,6 +64,7 @@ class FilesStore {
   headerBorder = false;
 
   isPrevSettingsModule = false;
+  oformFiles = [];
 
   constructor(
     authStore,
@@ -287,9 +290,32 @@ class FilesStore {
       }
     }
     requests.push(getFilesSettings());
+    //requests.push(this.getOforms());
+    this.getOforms();
 
     return Promise.all(requests).then(() => (this.isInit = true));
   };
+
+  getOforms = async () => {
+    const { getOforms, culture } = this.settingsStore;
+    console.log("culture", culture);
+    //const oformData = await getOforms();
+    const oformData = OFORMsGallery;
+
+    this.oformFiles = oformData.filter((f) =>
+      f["file_country_access"].includes("US")
+    ); //TODO oformCulture
+
+    //   const split = culture.split("-");
+    //   const oformCulture = split[1] ? split[1] : split[0].toUpperCase();
+    //   const oformData = jsonFile.filter(
+    //     (f) => f["file_country_access"].includes("US") //TODO oformCulture
+    //   );
+  };
+
+  get hasOFORMFilesGallery() {
+    return !!this.oformFiles.length;
+  }
 
   setFirstLoad = (firstLoad) => {
     this.firstLoad = firstLoad;

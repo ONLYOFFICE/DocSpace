@@ -10,10 +10,13 @@ import {
   isTablet as isTabletUtils,
 } from "@appserver/components/utils/device";
 import Loaders from "@appserver/common/components/Loaders";
-import { FileAction } from "@appserver/common/constants";
+import { AppServerConfig, FileAction } from "@appserver/common/constants";
 import { encryptionUploadDialog } from "../../../helpers/desktop";
+import { withRouter } from "react-router";
 
 import MobileView from "./MobileView";
+import { combineUrl } from "@appserver/common/utils";
+import config from "../../../../package.json";
 
 const ArticleMainButtonContent = (props) => {
   const {
@@ -33,6 +36,8 @@ const ArticleMainButtonContent = (props) => {
     isRecentFolder,
     isCommonFolder,
     isRecycleBinFolder,
+    history,
+    hasOFORMFilesGallery,
   } = props;
   const inputFilesElement = React.useRef(null);
   const inputFolderElement = React.useRef(null);
@@ -93,6 +98,12 @@ const ArticleMainButtonContent = (props) => {
 
   const onInputClick = React.useCallback((e) => (e.target.value = null), []);
 
+  const onShowGallery = () => {
+    history.push(
+      combineUrl(AppServerConfig.proxyURL, config.homepage, `/form-gallery`)
+    );
+  };
+
   React.useEffect(() => {
     const folderUpload = !isMobile
       ? [
@@ -130,6 +141,13 @@ const ArticleMainButtonContent = (props) => {
                   disabled: isPrivacy,
                   key: "form-file",
                 },
+                hasOFORMFilesGallery && {
+                  className: "main-button_drop-down_sub",
+                  label: t("Common:OFORMsGallery"),
+                  onClick: onShowGallery,
+                  disabled: isPrivacy, //TODO: OFORM
+                  key: "form-gallery",
+                },
               ],
             },
           ]
@@ -149,6 +167,14 @@ const ArticleMainButtonContent = (props) => {
               onClick: onShowSelectFileDialog,
               disabled: isPrivacy,
               key: "form-file",
+            },
+            hasOFORMFilesGallery && {
+              className: "main-button_drop-down_sub",
+              icon: "images/form.react.svg",
+              label: t("Common:OFORMsGallery"),
+              onClick: onShowGallery,
+              disabled: isPrivacy, //TODO: OFORM
+              key: "form-gallery",
             },
           ];
 
@@ -281,6 +307,7 @@ export default inject(
       isLoading,
       fileActionStore,
       canCreate,
+      hasOFORMFilesGallery,
     } = filesStore;
     const {
       isPrivacyFolder,
@@ -315,6 +342,11 @@ export default inject(
       isLoading,
       isLoaded,
       firstLoad,
+      hasOFORMFilesGallery,
     };
   }
-)(withTranslation(["Article", "Common"])(observer(ArticleMainButtonContent)));
+)(
+  withTranslation(["Article", "Common"])(
+    observer(withRouter(ArticleMainButtonContent))
+  )
+);

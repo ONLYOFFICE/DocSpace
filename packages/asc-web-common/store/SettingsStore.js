@@ -49,6 +49,7 @@ class SettingsStore {
   enabledJoin = false;
   urlLicense = "https://gnu.org/licenses/gpl-3.0.html";
   urlSupport = "https://helpdesk.onlyoffice.com/";
+  urlOforms = "https://oforms.onlyoffice.com/data/def.json";
   logoUrl = combineUrl(proxyURL, "/static/images/nav.logo.opened.react.svg");
   customNames = {
     id: "Common",
@@ -421,6 +422,10 @@ class SettingsStore {
   setTheme = (theme) => {
     this.theme = themes[theme];
     localStorage.setItem("theme", theme);
+  };
+
+  getOforms = () => {
+    return api.settings.getOforms(this.urlOforms);
   };
 }
 

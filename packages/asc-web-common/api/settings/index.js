@@ -456,3 +456,11 @@ export function toggleTipsSubscription() {
   };
   return request(options);
 }
+
+export function getOforms(url) {
+  const options = {
+    method: "get",
+    url,
+  };
+  return request(options);
+}
