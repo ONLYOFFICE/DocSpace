@@ -29,7 +29,7 @@ namespace ASC.Web.Studio.Core.Notify
     [Scope]
     public class StudioPeriodicNotify
     {
-        private readonly NotifyEngine _notifyEngine;
+        private readonly NotifyEngineQueue _notifyEngineQueue;
         private readonly WorkContext _workContext;
         private readonly TenantManager _tenantManager;
         private readonly UserManager _userManager;
@@ -52,7 +52,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         public StudioPeriodicNotify(
             IOptionsMonitor<ILog> log,
-            NotifyEngine notifyEngine,
+            NotifyEngineQueue notifyEngineQueue,
             WorkContext workContext,
             TenantManager tenantManager,
             UserManager userManager,
@@ -72,7 +72,7 @@ namespace ASC.Web.Studio.Core.Notify
             AuthManager authManager,
             SecurityContext securityContext)
         {
-            _notifyEngine = notifyEngine;
+            _notifyEngineQueue = notifyEngineQueue;
             _workContext = workContext;
             _tenantManager = tenantManager;
             _userManager = userManager;
@@ -118,7 +118,7 @@ namespace ASC.Web.Studio.Core.Notify
                 try
                 {
                     _tenantManager.SetCurrentTenant(tenant.Id);
-                    var client = _workContext.NotifyContext.RegisterClient(_notifyEngine, _studioNotifyHelper.NotifySource, null);
+                    var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifyHelper.NotifySource);
 
                     var tariff = _paymentManager.GetTariff(tenant.Id);
                     var quota = _tenantManager.GetTenantQuota(tenant.Id);
@@ -509,7 +509,7 @@ namespace ASC.Web.Studio.Core.Notify
                 {
                     var defaultRebranding = MailWhiteLabelSettings.IsDefault(_settingsManager);
                     _tenantManager.SetCurrentTenant(tenant.Id);
-                    var client = _workContext.NotifyContext.RegisterClient(_notifyEngine, _studioNotifyHelper.NotifySource, null);
+                    var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifyHelper.NotifySource);
 
                     var tariff = _paymentManager.GetTariff(tenant.Id);
                     var quota = _tenantManager.GetTenantQuota(tenant.Id);
@@ -897,7 +897,7 @@ namespace ASC.Web.Studio.Core.Notify
                 try
                 {
                     _tenantManager.SetCurrentTenant(tenant.Id);
-                    var client = _workContext.NotifyContext.RegisterClient(_notifyEngine, _studioNotifyHelper.NotifySource, null);
+                    var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifyHelper.NotifySource);
 
                     var createdDate = tenant.CreationDateTime.Date;
 
@@ -954,7 +954,7 @@ namespace ASC.Web.Studio.Core.Notify
                     var sendCount = 0;
 
                     _tenantManager.SetCurrentTenant(tenant.Id);
-                    var client = _workContext.NotifyContext.RegisterClient(_notifyEngine, _studioNotifyHelper.NotifySource, null);
+                    var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifyHelper.NotifySource);
 
                     _log.InfoFormat("Current tenant: {0}", tenant.Id);
 

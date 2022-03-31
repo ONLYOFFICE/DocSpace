@@ -33,7 +33,6 @@ namespace ASC.Files.Core.Services.NotifyService;
 [Scope]
 public class NotifyClient
 {
-    private readonly NotifyEngine _notifyEngine;
     private readonly NotifySource _notifySource;
     private readonly SecurityContext _securityContext;
     private readonly FilesLinkUtility _filesLinkUtility;
@@ -46,10 +45,11 @@ public class NotifyClient
     private readonly StudioNotifyHelper _studioNotifyHelper;
     private readonly IServiceScopeFactory _scope;
     private readonly Context _notifyContext;
+    private readonly NotifyEngineQueue _notifyEngineQueue;
 
     public NotifyClient(
         Context notifyContext,
-        NotifyEngine notifyEngine,
+        NotifyEngineQueue notifyEngineQueue,
         NotifySource notifySource,
         SecurityContext securityContext,
         FilesLinkUtility filesLinkUtility,
@@ -63,7 +63,7 @@ public class NotifyClient
         IServiceScopeFactory serviceScope)
     {
         _notifyContext = notifyContext;
-        _notifyEngine = notifyEngine;
+        _notifyEngineQueue = notifyEngineQueue;
         _notifySource = notifySource;
         _securityContext = securityContext;
         _filesLinkUtility = filesLinkUtility;
@@ -79,7 +79,7 @@ public class NotifyClient
 
     public void SendDocuSignComplete<T>(File<T> file, string sourceTitle)
     {
-        var client = _notifyContext.RegisterClient(_notifyEngine, _notifySource, _scope.CreateScope());
+        var client = _notifyContext.RegisterClient(_notifyEngineQueue, _notifySource);
         var recipient = _notifySource.GetRecipientsProvider().GetRecipient(_securityContext.CurrentAccount.ID.ToString());
 
         client.SendNoticeAsync(
@@ -95,7 +95,7 @@ public class NotifyClient
 
     public void SendDocuSignStatus(string subject, string status)
     {
-        var client = _notifyContext.RegisterClient(_notifyEngine, _notifySource, _scope.CreateScope());
+        var client = _notifyContext.RegisterClient(_notifyEngineQueue, _notifySource);
 
         var recipient = _notifySource.GetRecipientsProvider().GetRecipient(_securityContext.CurrentAccount.ID.ToString());
 
@@ -111,7 +111,7 @@ public class NotifyClient
 
     public void SendMailMergeEnd(Guid userId, int countMails, int countError)
     {
-        var client = _notifyContext.RegisterClient(_notifyEngine, _notifySource, _scope.CreateScope());
+        var client = _notifyContext.RegisterClient(_notifyEngineQueue, _notifySource);
 
         var recipient = _notifySource.GetRecipientsProvider().GetRecipient(userId.ToString());
 
@@ -132,7 +132,7 @@ public class NotifyClient
             return;
         }
 
-        var client = _notifyContext.RegisterClient(_notifyEngine, _notifySource, _scope.CreateScope());
+        var client = _notifyContext.RegisterClient(_notifyEngineQueue, _notifySource);
 
         var folderDao = _daoFactory.GetFolderDao<T>();
         if (fileEntry.FileEntryType == FileEntryType.File && await folderDao.GetFolderAsync(((File<T>)fileEntry).FolderID) == null)
@@ -184,7 +184,7 @@ public class NotifyClient
             return;
         }
 
-        var client = _notifyContext.RegisterClient(_notifyEngine, _notifySource, _scope.CreateScope());
+        var client = _notifyContext.RegisterClient(_notifyEngineQueue, _notifySource);
 
         var recipientsProvider = _notifySource.GetRecipientsProvider();
 

@@ -53,7 +53,7 @@ namespace ASC.Web.Studio.Core.Notify
                     configured = true;
                     _workContext.NotifyStartUp();
                     _workContext.NotifyContext.NotifyClientRegistration += NotifyClientRegisterCallback;
-                    _notifyEngine.BeforeTransferRequest += BeforeTransferRequest;
+                    _notifyEngine.AddAction<NotifyTransferRequest>();
                 }
             }
         }
@@ -219,123 +219,6 @@ namespace ASC.Web.Studio.Core.Notify
 
             #endregion
         }
-
-        private void BeforeTransferRequest(NotifyEngine sender, NotifyRequest request, IServiceScope scope)
-        {
-            var aid = Guid.Empty;
-            var aname = string.Empty;
-            var tenant = scope.ServiceProvider.GetService<TenantManager>().GetCurrentTenant();
-            var authContext = scope.ServiceProvider.GetService<AuthContext>();
-            var userManager = scope.ServiceProvider.GetService<UserManager>();
-            var displayUserSettingsHelper = scope.ServiceProvider.GetService<DisplayUserSettingsHelper>();
-
-            if (authContext.IsAuthenticated)
-            {
-                aid = authContext.CurrentAccount.ID;
-                var user = userManager.GetUsers(aid);
-                if (userManager.UserExists(user))
-                {
-                    aname = user.DisplayUserName(false, displayUserSettingsHelper)
-                        .Replace(">", "&#62")
-                        .Replace("<", "&#60");
-                }
-            }
-            var scopeClass = scope.ServiceProvider.GetService<NotifyConfigurationScope>();
-            var (_, _, _, options, tenantExtra, _, webItemManager, configuration, tenantLogoManager, additionalWhiteLabelSettingsHelper, tenantUtil, coreBaseSettings, commonLinkUtility, settingsManager, studioNotifyHelper) = scopeClass;
-            var log = options.CurrentValue;
-
-            commonLinkUtility.GetLocationByRequest(out var product, out var module);
-            if (product == null && CallContext.GetData("asc.web.product_id") != null)
-            {
-                product = webItemManager[(Guid)CallContext.GetData("asc.web.product_id")] as IProduct;
-            }
-
-            var logoText = TenantWhiteLabelSettings.DefaultLogoText;
-            if ((tenantExtra.Enterprise || coreBaseSettings.CustomMode) && !MailWhiteLabelSettings.IsDefault(settingsManager))
-            {
-                logoText = tenantLogoManager.GetLogoText();
-            }
-
-            request.Arguments.Add(new TagValue(CommonTags.AuthorID, aid));
-            request.Arguments.Add(new TagValue(CommonTags.AuthorName, aname));
-            request.Arguments.Add(new TagValue(CommonTags.AuthorUrl, commonLinkUtility.GetFullAbsolutePath(commonLinkUtility.GetUserProfile(aid))));
-            request.Arguments.Add(new TagValue(CommonTags.VirtualRootPath, commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')));
-            request.Arguments.Add(new TagValue(CommonTags.ProductID, product != null ? product.ID : Guid.Empty));
-            request.Arguments.Add(new TagValue(CommonTags.ModuleID, module != null ? module.ID : Guid.Empty));
-            request.Arguments.Add(new TagValue(CommonTags.ProductUrl, commonLinkUtility.GetFullAbsolutePath(product != null ? product.StartURL : "~")));
-            request.Arguments.Add(new TagValue(CommonTags.DateTime, tenantUtil.DateTimeNow()));
-            request.Arguments.Add(new TagValue(CommonTags.RecipientID, Context.SysRecipient));
-            request.Arguments.Add(new TagValue(CommonTags.ProfileUrl, commonLinkUtility.GetFullAbsolutePath(commonLinkUtility.GetMyStaff())));
-            request.Arguments.Add(new TagValue(CommonTags.RecipientSubscriptionConfigURL, commonLinkUtility.GetUnsubscribe()));
-            request.Arguments.Add(new TagValue(CommonTags.HelpLink, commonLinkUtility.GetHelpLink(settingsManager, additionalWhiteLabelSettingsHelper, false)));
-            request.Arguments.Add(new TagValue(CommonTags.LetterLogoText, logoText));
-            request.Arguments.Add(new TagValue(CommonTags.MailWhiteLabelSettings, MailWhiteLabelSettings.Instance(settingsManager)));
-            request.Arguments.Add(new TagValue(CommonTags.SendFrom, tenant.Name));
-            request.Arguments.Add(new TagValue(CommonTags.ImagePath, studioNotifyHelper.GetNotificationImageUrl("").TrimEnd('/')));
-
-            AddLetterLogo(request, tenantExtra, tenantLogoManager, coreBaseSettings, commonLinkUtility, log);
-        }
-
-        private static void AddLetterLogo(NotifyRequest request, TenantExtra tenantExtra, TenantLogoManager tenantLogoManager, CoreBaseSettings coreBaseSettings, CommonLinkUtility commonLinkUtility, ILog Log)
-        {
-            if (tenantExtra.Enterprise || coreBaseSettings.CustomMode)
-            {
-                try
-                {
-                    var logoData = tenantLogoManager.GetMailLogoDataFromCache();
-
-                    if (logoData == null)
-                    {
-                        var logoStream = tenantLogoManager.GetWhitelabelMailLogo();
-                        logoData = ReadStreamToByteArray(logoStream) ?? GetDefaultMailLogo();
-
-                        if (logoData != null)
-                            tenantLogoManager.InsertMailLogoDataToCache(logoData);
-                    }
-
-                    if (logoData != null)
-                    {
-                        var attachment = new NotifyMessageAttachment
-                        {
-                            FileName = "logo.png",
-                            Content = ByteString.CopyFrom(logoData),
-                            ContentId = MimeUtils.GenerateMessageId()
-                        };
-
-                        request.Arguments.Add(new TagValue(CommonTags.LetterLogo, "cid:" + attachment.ContentId));
-                        request.Arguments.Add(new TagValue(CommonTags.EmbeddedAttachments, new[] { attachment }));
-                        return;
-                    }
-                }
-                catch (Exception error)
-                {
-                    Log.Error(error);
-                }
-            }
-
-            var logoUrl = commonLinkUtility.GetFullAbsolutePath(tenantLogoManager.GetLogoDark(true));
-
-            request.Arguments.Add(new TagValue(CommonTags.LetterLogo, logoUrl));
-        }
-
-        private static byte[] ReadStreamToByteArray(Stream inputStream)
-        {
-            if (inputStream == null) return null;
-
-            using (inputStream)
-            {
-                using var memoryStream = new MemoryStream();
-                inputStream.CopyTo(memoryStream);
-                return memoryStream.ToArray();
-            }
-        }
-
-        public static byte[] GetDefaultMailLogo()
-        {
-            var filePath = CrossPlatform.PathCombine(AppDomain.CurrentDomain.BaseDirectory, "skins", "default", "images", "logo", "dark_general.png");
-
-            return File.Exists(filePath) ? File.ReadAllBytes(filePath) : null;
-        }
     }
 
     [Scope]
@@ -357,7 +240,8 @@ namespace ASC.Web.Studio.Core.Notify
         private SettingsManager SettingsManager { get; }
         private StudioNotifyHelper StudioNotifyHelper { get; }
 
-        public NotifyConfigurationScope(TenantManager tenantManager,
+        public NotifyConfigurationScope(
+            TenantManager tenantManager,
             WebItemSecurity webItemSecurity,
             UserManager userManager,
             IOptionsMonitor<ILog> options,
@@ -429,10 +313,178 @@ namespace ASC.Web.Studio.Core.Notify
     {
         public static void Register(DIHelper services)
         {
+            services.TryAdd<NotifyTransferRequest>();
             services.TryAdd<NotifyConfigurationScope>();
             services.TryAdd<TextileStyler>();
             services.TryAdd<JabberStyler>();
             services.TryAdd<PushStyler>();
+        }
+    }
+
+    [Scope]
+    public class NotifyTransferRequest : INotifyEngineAction
+    {
+        private readonly TenantManager _tenantManager;
+        private readonly AuthContext _authContext;
+        private readonly UserManager _userManager;
+        private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
+        private readonly TenantExtra _tenantExtra;
+        private readonly WebItemManager _webItemManager;
+        private readonly TenantLogoManager _tenantLogoManager;
+        private readonly AdditionalWhiteLabelSettingsHelper _additionalWhiteLabelSettingsHelper;
+        private readonly TenantUtil _tenantUtil;
+        private readonly CoreBaseSettings _coreBaseSettings;
+        private readonly CommonLinkUtility _commonLinkUtility;
+        private readonly SettingsManager _settingsManager;
+        private readonly StudioNotifyHelper _studioNotifyHelper;
+        private readonly ILog _log;
+
+        public NotifyTransferRequest(
+            TenantManager tenantManager,
+            AuthContext authContext,
+            UserManager userManager,
+            DisplayUserSettingsHelper displayUserSettingsHelper,
+            IOptionsMonitor<ILog> options,
+            TenantExtra tenantExtra,
+            WebItemManager webItemManager,
+            TenantLogoManager tenantLogoManager,
+            AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper,
+            TenantUtil tenantUtil,
+            CoreBaseSettings coreBaseSettings,
+            CommonLinkUtility commonLinkUtility,
+            SettingsManager settingsManager,
+            StudioNotifyHelper studioNotifyHelper)
+        {
+            _tenantManager = tenantManager;
+            _authContext = authContext;
+            _userManager = userManager;
+            _displayUserSettingsHelper = displayUserSettingsHelper;
+            _tenantExtra = tenantExtra;
+            _webItemManager = webItemManager;
+            _tenantLogoManager = tenantLogoManager;
+            _additionalWhiteLabelSettingsHelper = additionalWhiteLabelSettingsHelper;
+            _tenantUtil = tenantUtil;
+            _coreBaseSettings = coreBaseSettings;
+            _commonLinkUtility = commonLinkUtility;
+            _settingsManager = settingsManager;
+            _studioNotifyHelper = studioNotifyHelper;
+            _log = options.CurrentValue;
+        }
+
+        public void BeforeTransferRequest(NotifyRequest request)
+        {
+            var aid = Guid.Empty;
+            var aname = string.Empty;
+            var tenant = _tenantManager.GetCurrentTenant();
+
+            if (_authContext.IsAuthenticated)
+            {
+                aid = _authContext.CurrentAccount.ID;
+                var user = _userManager.GetUsers(aid);
+                if (_userManager.UserExists(user))
+                {
+                    aname = user.DisplayUserName(false, _displayUserSettingsHelper)
+                        .Replace(">", "&#62")
+                        .Replace("<", "&#60");
+                }
+            }
+
+            _commonLinkUtility.GetLocationByRequest(out var product, out var module);
+            if (product == null && CallContext.GetData("asc.web.product_id") != null)
+            {
+                product = _webItemManager[(Guid)CallContext.GetData("asc.web.product_id")] as IProduct;
+            }
+
+            var logoText = TenantWhiteLabelSettings.DefaultLogoText;
+            if ((_tenantExtra.Enterprise || _coreBaseSettings.CustomMode) && !MailWhiteLabelSettings.IsDefault(_settingsManager))
+            {
+                logoText = _tenantLogoManager.GetLogoText();
+            }
+
+            request.Arguments.Add(new TagValue(CommonTags.AuthorID, aid));
+            request.Arguments.Add(new TagValue(CommonTags.AuthorName, aname));
+            request.Arguments.Add(new TagValue(CommonTags.AuthorUrl, _commonLinkUtility.GetFullAbsolutePath(_commonLinkUtility.GetUserProfile(aid))));
+            request.Arguments.Add(new TagValue(CommonTags.VirtualRootPath, _commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')));
+            request.Arguments.Add(new TagValue(CommonTags.ProductID, product != null ? product.ID : Guid.Empty));
+            request.Arguments.Add(new TagValue(CommonTags.ModuleID, module != null ? module.ID : Guid.Empty));
+            request.Arguments.Add(new TagValue(CommonTags.ProductUrl, _commonLinkUtility.GetFullAbsolutePath(product != null ? product.StartURL : "~")));
+            request.Arguments.Add(new TagValue(CommonTags.DateTime, _tenantUtil.DateTimeNow()));
+            request.Arguments.Add(new TagValue(CommonTags.RecipientID, Context.SysRecipient));
+            request.Arguments.Add(new TagValue(CommonTags.ProfileUrl, _commonLinkUtility.GetFullAbsolutePath(_commonLinkUtility.GetMyStaff())));
+            request.Arguments.Add(new TagValue(CommonTags.RecipientSubscriptionConfigURL, _commonLinkUtility.GetUnsubscribe()));
+            request.Arguments.Add(new TagValue(CommonTags.HelpLink, _commonLinkUtility.GetHelpLink(_settingsManager, _additionalWhiteLabelSettingsHelper, false)));
+            request.Arguments.Add(new TagValue(CommonTags.LetterLogoText, logoText));
+            request.Arguments.Add(new TagValue(CommonTags.MailWhiteLabelSettings, MailWhiteLabelSettings.Instance(_settingsManager)));
+            request.Arguments.Add(new TagValue(CommonTags.SendFrom, tenant.Name));
+            request.Arguments.Add(new TagValue(CommonTags.ImagePath, _studioNotifyHelper.GetNotificationImageUrl("").TrimEnd('/')));
+
+            AddLetterLogo(request);
+        }
+        public void AfterTransferRequest(NotifyRequest request)
+        {
+        }
+
+        private void AddLetterLogo(NotifyRequest request)
+        {
+            if (_tenantExtra.Enterprise || _coreBaseSettings.CustomMode)
+            {
+                try
+                {
+                    var logoData = _tenantLogoManager.GetMailLogoDataFromCache();
+
+                    if (logoData == null)
+                    {
+                        var logoStream = _tenantLogoManager.GetWhitelabelMailLogo();
+                        logoData = ReadStreamToByteArray(logoStream) ?? GetDefaultMailLogo();
+
+                        if (logoData != null)
+                        {
+                            _tenantLogoManager.InsertMailLogoDataToCache(logoData);
+                        }
+                    }
+
+                    if (logoData != null)
+                    {
+                        var attachment = new NotifyMessageAttachment
+                        {
+                            FileName = "logo.png",
+                            Content = ByteString.CopyFrom(logoData),
+                            ContentId = MimeUtils.GenerateMessageId()
+                        };
+
+                        request.Arguments.Add(new TagValue(CommonTags.LetterLogo, "cid:" + attachment.ContentId));
+                        request.Arguments.Add(new TagValue(CommonTags.EmbeddedAttachments, new[] { attachment }));
+                        return;
+                    }
+                }
+                catch (Exception error)
+                {
+                    _log.Error(error);
+                }
+            }
+
+            var logoUrl = _commonLinkUtility.GetFullAbsolutePath(_tenantLogoManager.GetLogoDark(true));
+
+            request.Arguments.Add(new TagValue(CommonTags.LetterLogo, logoUrl));
+        }
+
+        private static byte[] ReadStreamToByteArray(Stream inputStream)
+        {
+            if (inputStream == null) return null;
+
+            using (inputStream)
+            {
+                using var memoryStream = new MemoryStream();
+                inputStream.CopyTo(memoryStream);
+                return memoryStream.ToArray();
+            }
+        }
+
+        private static byte[] GetDefaultMailLogo()
+        {
+            var filePath = CrossPlatform.PathCombine(AppDomain.CurrentDomain.BaseDirectory, "skins", "default", "images", "logo", "dark_general.png");
+
+            return File.Exists(filePath) ? File.ReadAllBytes(filePath) : null;
         }
     }
 }

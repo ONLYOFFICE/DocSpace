@@ -64,10 +64,10 @@ public sealed class Context : INotifyRegistry
         }
     }
 
-    public INotifyClient RegisterClient(NotifyEngine notifyEngine, INotifySource source, IServiceScope serviceScope)
+    public INotifyClient RegisterClient(NotifyEngineQueue notifyEngineQueue, INotifySource source)
     {
         //ValidateNotifySource(source);
-        var client = new NotifyClientImpl(notifyEngine, source, serviceScope);
+        var client = new NotifyClientImpl(notifyEngineQueue, source);
         NotifyClientRegistration?.Invoke(this, client);
 
         return client;

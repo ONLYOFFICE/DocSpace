@@ -152,8 +152,8 @@ public class WorkContext
             NotifyContext.RegisterSender(_dispatchEngine, Constants.NotifyMessengerSenderSysName, new JabberSenderSink(jabberSender, _serviceProvider));
             NotifyContext.RegisterSender(_dispatchEngine, Constants.NotifyTelegramSenderSysName, new TelegramSenderSink(telegramSender, _serviceProvider));
 
-            NotifyEngine.BeforeTransferRequest += NotifyEngine_BeforeTransferRequest;
-            NotifyEngine.AfterTransferRequest += NotifyEngine_AfterTransferRequest;
+            NotifyEngine.AddAction<NotifyTransferRequest>();
+
             _notifyStarted = true;
         }
     }
@@ -168,18 +168,29 @@ public class WorkContext
         NotifyEngine.UnregisterSendMethod(method);
 
     }
-    private static void NotifyEngine_BeforeTransferRequest(NotifyEngine sender, NotifyRequest request, IServiceScope serviceScope)
+}
+
+[Scope]
+public class NotifyTransferRequest : INotifyEngineAction
+{
+    private readonly TenantManager _tenantManager;
+
+    public NotifyTransferRequest(TenantManager tenantManager)
     {
-        request.Properties.Add("Tenant", serviceScope.ServiceProvider.GetService<TenantManager>().GetCurrentTenant(false));
+        _tenantManager = tenantManager;
     }
 
-    private static void NotifyEngine_AfterTransferRequest(NotifyEngine sender, NotifyRequest request, IServiceScope scope)
+    public void AfterTransferRequest(NotifyRequest request)
     {
         if ((request.Properties.Contains("Tenant") ? request.Properties["Tenant"] : null) is Tenant tenant)
         {
-            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-            tenantManager.SetCurrentTenant(tenant);
+            _tenantManager.SetCurrentTenant(tenant);
         }
+    }
+
+    public void BeforeTransferRequest(NotifyRequest request)
+    {
+        request.Properties.Add("Tenant", _tenantManager.GetCurrentTenant(false));
     }
 }
 
@@ -187,6 +198,7 @@ public static class WorkContextExtension
 {
     public static void Register(DIHelper dIHelper)
     {
+        dIHelper.TryAdd<NotifyTransferRequest>();
         dIHelper.TryAdd<TelegramHelper>();
         dIHelper.TryAdd<EmailSenderSinkScope>();
         dIHelper.TryAdd<JabberSenderSinkScope>();

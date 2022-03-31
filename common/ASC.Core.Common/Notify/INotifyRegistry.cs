@@ -28,7 +28,7 @@ namespace ASC.Notify;
 
 public interface INotifyRegistry
 {
-    INotifyClient RegisterClient(NotifyEngine notifyEngine, INotifySource source, IServiceScope serviceScope);
+    INotifyClient RegisterClient(NotifyEngineQueue notifyEngine, INotifySource source);
     ISenderChannel GetSender(string senderName);
     void RegisterSender(DispatchEngine dispatchEngine, string senderName, ISink senderSink);
     void UnregisterSender(string senderName);

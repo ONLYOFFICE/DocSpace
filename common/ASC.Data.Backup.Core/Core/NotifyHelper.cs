@@ -32,13 +32,11 @@ namespace ASC.Data.Backup;
 public class NotifyHelper
 {
     private readonly IServiceScopeFactory _serviceScopeFactory;
-    private readonly NotifyEngine _notifyEngine;
     private readonly WorkContext _workContext;
 
-    public NotifyHelper(IServiceScopeFactory serviceScopeFactory, NotifyEngine notifyEngine, WorkContext workContext)
+    public NotifyHelper(IServiceScopeFactory serviceScopeFactory, WorkContext workContext)
     {
         _serviceScopeFactory = serviceScopeFactory;
-        _notifyEngine = notifyEngine;
         _workContext = workContext;
     }
 
@@ -63,8 +61,9 @@ public class NotifyHelper
         var scopeClass = scope.ServiceProvider.GetService<NotifyHelperScope>();
         var (userManager, studioNotifyHelper, studioNotifySource, displayUserSettingsHelper, tenantManager, _) = scopeClass;
         tenantManager.SetCurrentTenant(tenantId);
+        var notifyEngineQueue = scope.ServiceProvider.GetService<NotifyEngineQueue>();
 
-        var client = _workContext.NotifyContext.RegisterClient(_notifyEngine, studioNotifySource, scope);
+        var client = _workContext.NotifyContext.RegisterClient(notifyEngineQueue, studioNotifySource);
 
         client.SendNoticeToAsync(
             Actions.BackupCreated,
@@ -79,8 +78,9 @@ public class NotifyHelper
         var scopeClass = scope.ServiceProvider.GetService<NotifyHelperScope>();
         var (userManager, studioNotifyHelper, studioNotifySource, displayUserSettingsHelper, tenantManager, _) = scopeClass;
         tenantManager.SetCurrentTenant(tenant.Id);
+        var notifyEngineQueue = scope.ServiceProvider.GetService<NotifyEngineQueue>();
 
-        var client = _workContext.NotifyContext.RegisterClient(_notifyEngine, studioNotifySource, scope);
+        var client = _workContext.NotifyContext.RegisterClient(notifyEngineQueue, studioNotifySource);
 
         var owner = userManager.GetUsers(tenant.OwnerId);
         var users =
@@ -101,7 +101,10 @@ public class NotifyHelper
         var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
         var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
         var (userManager, _, studioNotifySource, _, _, authManager) = scopeClass;
-        var client = _workContext.NotifyContext.RegisterClient(_notifyEngine, studioNotifySource, scope);
+
+        tenantManager.SetCurrentTenant(tenant);
+        var notifyEngineQueue = scope.ServiceProvider.GetService<NotifyEngineQueue>();
+        var client = _workContext.NotifyContext.RegisterClient(notifyEngineQueue, studioNotifySource);
 
         var users = notifyAllUsers
             ? userManager.GetUsers(EmployeeStatus.Active)
@@ -127,8 +130,12 @@ public class NotifyHelper
     {
         using var scope = _serviceScopeFactory.CreateScope();
         var scopeClass = scope.ServiceProvider.GetService<NotifyHelperScope>();
-        var (userManager, studioNotifyHelper, studioNotifySource, _, _, authManager) = scopeClass;
-        var client = _workContext.NotifyContext.RegisterClient(_notifyEngine, studioNotifySource, scope);
+        var (userManager, studioNotifyHelper, studioNotifySource, _, tenantManager, authManager) = scopeClass;
+
+        tenantManager.SetCurrentTenant(tenant);
+        var notifyEngineQueue = scope.ServiceProvider.GetService<NotifyEngineQueue>();
+
+        var client = _workContext.NotifyContext.RegisterClient(notifyEngineQueue, studioNotifySource);
         var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
 
         var users = userManager.GetUsers()

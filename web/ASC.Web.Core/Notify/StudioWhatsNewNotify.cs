@@ -42,14 +42,12 @@ namespace ASC.Web.Studio.Core.Notify
         private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
         private readonly FeedAggregateDataProvider _feedAggregateDataProvider;
         private readonly CoreSettings _coreSettings;
-        private readonly NotifyEngine _notifyEngine;
-        private readonly IServiceScopeFactory _serviceScope;
+        private readonly NotifyEngineQueue _notifyEngineQueue;
         private readonly IConfiguration _confuguration;
         private readonly WorkContext _workContext;
         private readonly IMapper _mapper;
 
         public StudioWhatsNewNotify(
-            IServiceScopeFactory serviceScope,
             TenantManager tenantManager,
             PaymentManager paymentManager,
             TenantUtil tenantUtil,
@@ -61,14 +59,13 @@ namespace ASC.Web.Studio.Core.Notify
             DisplayUserSettingsHelper displayUserSettingsHelper,
             FeedAggregateDataProvider feedAggregateDataProvider,
             CoreSettings coreSettings,
-            NotifyEngine notifyEngine,
+            NotifyEngineQueue notifyEngineQueue,
             IConfiguration confuguration,
             WorkContext workContext,
             IOptionsMonitor<ILog> optionsMonitor,
             IMapper mapper,
             WebItemManager webItemManager)
         {
-            _serviceScope = serviceScope;
             _webItemManager = webItemManager;
             _tenantManager = tenantManager;
             _paymentManager = paymentManager;
@@ -81,7 +78,7 @@ namespace ASC.Web.Studio.Core.Notify
             _displayUserSettingsHelper = displayUserSettingsHelper;
             _feedAggregateDataProvider = feedAggregateDataProvider;
             _coreSettings = coreSettings;
-            _notifyEngine = notifyEngine;
+            _notifyEngineQueue = notifyEngineQueue;
             _confuguration = confuguration;
             _workContext = workContext;
             _mapper = mapper;
@@ -126,7 +123,7 @@ namespace ASC.Web.Studio.Core.Notify
                 }
 
                 _tenantManager.SetCurrentTenant(tenant);
-                var client = _workContext.NotifyContext.RegisterClient(_notifyEngine, _studioNotifyHelper.NotifySource, _serviceScope.CreateScope());
+                var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifyHelper.NotifySource);
 
                 _log.InfoFormat("Start send whats new in {0} ({1}).", tenant.GetTenantDomain(_coreSettings), tenantid);
                 foreach (var user in _userManager.GetUsers())
