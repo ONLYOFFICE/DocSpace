@@ -49,19 +49,19 @@ const EmailChips = ({
 
   useEffect(() => {
     onChange(
-      chips
-        .filter((it) => it.isValid === true)
-        .map((it) => {
-          if (it?.name === it?.email || it?.name === "") {
-            return {
-              email: it?.email,
-            };
-          }
+      chips.map((it) => {
+        if (it?.name === it?.email || it?.name === "") {
           return {
-            name: it?.name,
             email: it?.email,
+            isValid: it?.isValid,
           };
-        })
+        }
+        return {
+          name: it?.name,
+          email: it?.email,
+          isValid: it?.isValid,
+        };
+      })
     );
   }, [chips]);
 
