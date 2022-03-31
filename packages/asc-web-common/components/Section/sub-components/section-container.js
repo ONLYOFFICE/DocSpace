@@ -64,14 +64,14 @@ const StyledSectionContainer = styled.section`
   `}
 
   @media ${mobile} {
-    width: 100vw;
-    max-width: 100vw;
+    width: 100vw !important;
+    max-width: 100vw !important;
   }
 
   ${isMobileOnly &&
   css`
-    width: 100vw;
-    max-width: 100vw;
+    width: 100vw !important;
+    max-width: 100vw !important;
   `}
 
   .layout-progress-bar {
