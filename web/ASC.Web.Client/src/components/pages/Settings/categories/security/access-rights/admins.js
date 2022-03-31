@@ -688,7 +688,7 @@ class PortalAdmins extends Component {
       : admins;
 
     const selectedAdmins = admins.map((admin) => {
-      const groups = admin.groups.map((group) => group.id);
+      const groups = admin?.groups?.map((group) => group.id);
 
       return {
         label: admin.displayName,

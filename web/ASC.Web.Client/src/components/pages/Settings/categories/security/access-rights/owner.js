@@ -60,12 +60,12 @@ const OwnerContainer = styled.div`
 
     .group-wrapper {
       display: inline-block;
-      margin-right: 3px;
+      margin-right: 5px;
     }
   }
 
   .link_style {
-    margin-right: 3px;
+    margin-right: 8px;
   }
   .advanced-selector {
     position: relative;
@@ -205,6 +205,7 @@ class OwnerSettings extends Component {
                   )})`}</Text>
                 </div>
                 <HelpButton
+                  iconName="/static/images/info.react.svg"
                   displayType="dropdown"
                   place="right"
                   className="option-info"
@@ -230,7 +231,7 @@ class OwnerSettings extends Component {
                   fontSize="12px"
                   color={theme.studio.settings.security.owner.departmentColor}
                 >
-                  {t("AccessRightsChangeOwnerConfirmText")}
+                  ({t("AccessRightsChangeOwnerConfirmText")})
                 </Text>
               </div>
             </div>

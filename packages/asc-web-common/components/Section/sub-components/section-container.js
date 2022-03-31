@@ -9,15 +9,33 @@ import {
   isMobileOnly,
   isMobile,
 } from "react-device-detect";
+import { Base } from "@appserver/components/themes";
 
 const tabletProps = css`
+  .section-header_header,
   .section-header_filter {
     display: none;
   }
 
+  .section-body_header {
+    display: block;
+    position: sticky;
+    top: 0;
+    background: ${(props) => props.theme.section.header.background};
+    z-index: 200;
+    margin-right: -2px;
+
+    ${isMobileOnly &&
+    css`
+      padding: 0 16px;
+      margin: 0 -16px;
+    `}
+  }
   .section-body_filter {
     display: block;
-    margin: ${(props) => (props.viewAs === "tile" ? "0 0 18px" : "0 0 30px")};
+    margin: ${(props) =>
+      props.viewAs === "tile" ? "4px 0 18px" : "4px 0 30px"};
+    margin-right: -1px;
   }
 `;
 
@@ -27,7 +45,6 @@ const StyledSectionContainer = styled.section`
   display: flex;
   flex-direction: column;
 
-  //width: ${(props) => `${props.widthProp}px`};
   .layout-progress-bar {
     position: fixed;
     right: 15px;
@@ -56,10 +73,12 @@ const StyledSectionContainer = styled.section`
       `}
   }
 
+  .section-header_header,
   .section-header_filter {
     display: block;
   }
 
+  .section-body_header,
   .section-body_filter {
     display: none;
   }
@@ -73,6 +92,8 @@ const StyledSectionContainer = styled.section`
     min-width: 100px;
   `}
 `;
+
+StyledSectionContainer.defaultProps = { theme: Base };
 
 class SectionContainer extends React.Component {
   /*shouldComponentUpdate() {

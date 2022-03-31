@@ -13,7 +13,7 @@ import {
   StyledSubmenuItemText,
 } from "./styled-submenu";
 
-const Submenu = ({ data, startSelect = 0, ...rest }) => {
+const Submenu = ({ data, startSelect = 0, onSelect, ...rest }) => {
   if (!data) return null;
 
   const [currentItem, setCurrentItem] = useState(
@@ -27,6 +27,7 @@ const Submenu = ({ data, startSelect = 0, ...rest }) => {
     if (item) setCurrentItem(item);
     const offset = countAutoFocus(item.name, data, submenuItemsRef);
     submenuItemsRef.current.scrollLeft += offset;
+    onSelect && onSelect(item);
   };
 
   useEffect(() => {
@@ -75,7 +76,8 @@ const Submenu = ({ data, startSelect = 0, ...rest }) => {
     <StyledSubmenu {...rest}>
       <StyledSubmenuItems ref={submenuItemsRef} role="list">
         {data.map((d) => {
-          const isActive = d === currentItem;
+          const isActive = d.id === currentItem.id;
+
           return (
             <StyledSubmenuItem key={d.id} id={d.id} onClick={selectSubmenuItem}>
               <StyledSubmenuItemText>
@@ -83,7 +85,7 @@ const Submenu = ({ data, startSelect = 0, ...rest }) => {
                   color={isActive ? "#316DAA" : "#657077"}
                   fontSize="13px"
                   fontWeight="600"
-                  truncate="false"
+                  truncate={false}
                 >
                   {d.name}
                 </Text>
@@ -105,6 +107,7 @@ const Submenu = ({ data, startSelect = 0, ...rest }) => {
 Submenu.propTypes = {
   data: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
   startSelect: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
+  onSelect: PropTypes.func,
 };
 
 export default Submenu;

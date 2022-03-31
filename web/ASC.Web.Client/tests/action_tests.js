@@ -11,6 +11,11 @@ const featureName = isModel
 
 Feature(featureName);
 
+const saveData = {
+  lng: "fr",
+  timeZoneID: "Pacific/Tahiti",
+};
+
 Scenario("Tfa auth success", async ({ I }) => {
   I.mockEndpoint(Endpoints.confirm, "confirm");
   I.mockEndpoint(Endpoints.code, "code");
@@ -111,4 +116,449 @@ Scenario("Change password", async ({ I }) => {
   });
 
   I.see("Documents");
+});
+
+Scenario("Customization change language", async ({ I }) => {
+  I.mockEndpoint(Endpoints.common, "common");
+  I.mockEndpoint(Endpoints.cultures, "cultures");
+  I.mockEndpoint(Endpoints.timezones, "timezones");
+  I.mockEndpoint(Endpoints.settings, "settingsCustomization");
+  I.mockEndpoint(Endpoints.build, "build");
+  I.mockEndpoint(Endpoints.info, "infoSettings");
+  I.mockEndpoint(Endpoints.self, "selfSettings");
+
+  if (deviceType !== "mobile") {
+    if (browser === "webkit") {
+      I.wait(30);
+    }
+    I.amOnPage("/settings/common/customization");
+  }
+
+  if (deviceType === "mobile") {
+    I.amOnPage("/settings/common/customization/language-and-time-zone");
+  }
+
+  const languageCurrent = await I.grabTextFrom("#comboBoxLanguage");
+
+  I.click({
+    react: "ComboBox",
+    props: {
+      id: "comboBoxLanguage",
+    },
+  });
+
+  I.seeElement(".dropdown-container");
+
+  I.click({
+    react: "div",
+    props: {
+      label: "French (France)",
+    },
+  });
+
+  I.seeElement({
+    react: "ComboButton",
+    props: {
+      selectedOption: { key: "fr", label: "French (France)" },
+    },
+  });
+
+  const languageNew = await I.grabTextFrom("#comboBoxLanguage");
+
+  if (languageCurrent === languageNew) {
+    I.dontSee("You have unsaved changes");
+
+    I.seeElement({
+      react: "Button",
+      props: {
+        label: "Save",
+        isDisabled: true,
+      },
+    });
+
+    I.seeElement({
+      react: "Button",
+      props: {
+        label: "Cancel",
+        isDisabled: true,
+      },
+    });
+  }
+
+  if (languageCurrent !== languageNew) {
+    I.see("You have unsaved changes");
+
+    I.seeElement({
+      react: "Button",
+      props: {
+        label: "Save",
+        isDisabled: false,
+      },
+    });
+
+    I.seeElement({
+      react: "Button",
+      props: {
+        label: "Cancel",
+        isDisabled: false,
+      },
+    });
+
+    I.click("Save");
+
+    I.checkRequest(
+      "http://localhost:8092/api/2.0/settings/timeandlanguage.json",
+      saveData,
+      "settings",
+      "timeandlanguage"
+    );
+
+    I.mockEndpoint(Endpoints.timeandlanguage, "timeandlanguage");
+
+    I.seeElement({
+      react: "Button",
+      props: {
+        label: "Save",
+        isDisabled: true,
+      },
+    });
+
+    I.seeElement({
+      react: "Button",
+      props: {
+        label: "Cancel",
+        isDisabled: true,
+      },
+    });
+
+    I.seeElement({
+      react: "ComboButton",
+      props: {
+        selectedOption: { key: "fr", label: "French (France)" },
+      },
+    });
+
+    I.dontSee("You have unsaved changes");
+  }
+});
+
+Scenario("Customization change time zone", async ({ I }) => {
+  I.mockEndpoint(Endpoints.common, "common");
+  I.mockEndpoint(Endpoints.cultures, "cultures");
+  I.mockEndpoint(Endpoints.timezones, "timezones");
+  I.mockEndpoint(Endpoints.settings, "settingsCustomization");
+  I.mockEndpoint(Endpoints.build, "build");
+  I.mockEndpoint(Endpoints.info, "infoSettings");
+  I.mockEndpoint(Endpoints.self, "selfSettings");
+
+  if (deviceType !== "mobile") {
+    if (browser === "webkit") {
+      I.wait(30);
+    }
+    I.amOnPage("/settings/common/customization");
+  }
+
+  if (deviceType === "mobile") {
+    I.amOnPage("/settings/common/customization/language-and-time-zone");
+  }
+
+  I.click({
+    react: "ComboBox",
+    props: {
+      id: "comboBoxTimezone",
+    },
+  });
+
+  const timeZoneCurrent = await I.grabTextFrom("#comboBoxTimezone");
+
+  I.seeElement(".dropdown-container");
+
+  I.click({
+    react: "div",
+    props: {
+      label: "(UTC-10:00) Pacific/Tahiti",
+    },
+  });
+
+  I.seeElement({
+    react: "ComboButton",
+    props: {
+      selectedOption: {
+        key: "Pacific/Tahiti",
+        label: "(UTC-10:00) Pacific/Tahiti",
+      },
+    },
+  });
+
+  const timeZoneNew = await I.grabTextFrom("#comboBoxTimezone");
+
+  if (timeZoneCurrent === timeZoneNew) {
+    I.dontSee("You have unsaved changes");
+
+    I.seeElement({
+      react: "Button",
+      props: {
+        label: "Save",
+        isDisabled: true,
+      },
+    });
+
+    I.seeElement({
+      react: "Button",
+      props: {
+        label: "Cancel",
+        isDisabled: true,
+      },
+    });
+  }
+
+  if (timeZoneCurrent !== timeZoneNew) {
+    I.see("You have unsaved changes");
+
+    I.seeElement({
+      react: "Button",
+      props: {
+        label: "Save",
+        isDisabled: false,
+      },
+    });
+
+    I.seeElement({
+      react: "Button",
+      props: {
+        label: "Cancel",
+        isDisabled: false,
+      },
+    });
+
+    I.click("Save");
+
+    I.checkRequest(
+      "http://localhost:8092/api/2.0/settings/timeandlanguage.json",
+      saveData,
+      "settings",
+      "timeandlanguage"
+    );
+
+    I.mockEndpoint(Endpoints.timeandlanguage, "timeandlanguage");
+
+    I.seeElement({
+      react: "Button",
+      props: {
+        label: "Save",
+        isDisabled: true,
+      },
+    });
+
+    I.seeElement({
+      react: "Button",
+      props: {
+        label: "Cancel",
+        isDisabled: true,
+      },
+    });
+
+    I.seeElement({
+      react: "ComboButton",
+      props: {
+        selectedOption: {
+          key: "Pacific/Tahiti",
+          label: "(UTC-10:00) Pacific/Tahiti",
+        },
+      },
+    });
+
+    I.dontSee("You have unsaved changes");
+  }
+});
+
+Scenario("Customization cancel button test language", async ({ I }) => {
+  I.mockEndpoint(Endpoints.common, "common");
+  I.mockEndpoint(Endpoints.cultures, "cultures");
+  I.mockEndpoint(Endpoints.timezones, "timezones");
+  I.mockEndpoint(Endpoints.settings, "settingsCustomization");
+  I.mockEndpoint(Endpoints.build, "build");
+  I.mockEndpoint(Endpoints.info, "infoSettings");
+  I.mockEndpoint(Endpoints.self, "selfSettings");
+
+  if (deviceType !== "mobile") {
+    if (browser === "webkit") {
+      I.wait(30);
+    }
+    I.amOnPage("/settings/common/customization");
+  }
+
+  if (deviceType === "mobile") {
+    I.amOnPage("/settings/common/customization/language-and-time-zone");
+  }
+
+  I.click({
+    react: "ComboBox",
+    props: {
+      id: "comboBoxLanguage",
+    },
+  });
+
+  const languageCurrent = await I.grabTextFrom("#comboBoxLanguage");
+
+  I.seeElement(".dropdown-container");
+
+  I.click({
+    react: "div",
+    props: {
+      label: "French (France)",
+    },
+  });
+
+  I.seeElement({
+    react: "ComboButton",
+    props: {
+      selectedOption: { key: "fr", label: "French (France)" },
+    },
+  });
+
+  const languageNew = await I.grabTextFrom("#comboBoxLanguage");
+
+  if (languageCurrent !== languageNew) {
+    I.dontSee(languageCurrent);
+
+    I.see("You have unsaved changes");
+
+    I.seeElement({
+      react: "Button",
+      props: {
+        label: "Save",
+        isDisabled: false,
+      },
+    });
+
+    I.seeElement({
+      react: "Button",
+      props: {
+        label: "Cancel",
+        isDisabled: false,
+      },
+    });
+
+    I.click("Cancel");
+
+    I.dontSee("You have unsaved changes");
+
+    I.seeElement({
+      react: "Button",
+      props: {
+        label: "Save",
+        isDisabled: true,
+      },
+    });
+
+    I.seeElement({
+      react: "Button",
+      props: {
+        label: "Cancel",
+        isDisabled: true,
+      },
+    });
+
+    I.dontSee(languageNew);
+
+    I.see(languageCurrent);
+  }
+});
+
+Scenario("Customization cancel button test time zone", async ({ I }) => {
+  I.mockEndpoint(Endpoints.common, "common");
+  I.mockEndpoint(Endpoints.cultures, "cultures");
+  I.mockEndpoint(Endpoints.timezones, "timezones");
+  I.mockEndpoint(Endpoints.settings, "settingsCustomization");
+  I.mockEndpoint(Endpoints.build, "build");
+  I.mockEndpoint(Endpoints.info, "infoSettings");
+  I.mockEndpoint(Endpoints.self, "selfSettings");
+
+  if (deviceType !== "mobile") {
+    if (browser === "webkit") {
+      I.wait(30);
+    }
+    I.amOnPage("/settings/common/customization");
+  }
+
+  if (deviceType === "mobile") {
+    I.amOnPage("/settings/common/customization/language-and-time-zone");
+  }
+
+  I.click({
+    react: "ComboBox",
+    props: {
+      id: "comboBoxTimezone",
+    },
+  });
+
+  const timeZoneCurrent = await I.grabTextFrom("#comboBoxTimezone");
+
+  I.seeElement(".dropdown-container");
+
+  I.click({
+    react: "div",
+    props: {
+      label: "(UTC-10:00) Pacific/Tahiti",
+    },
+  });
+
+  I.seeElement({
+    react: "ComboButton",
+    props: {
+      selectedOption: {
+        key: "Pacific/Tahiti",
+        label: "(UTC-10:00) Pacific/Tahiti",
+      },
+    },
+  });
+
+  const timeZoneNew = await I.grabTextFrom("#comboBoxTimezone");
+
+  if (timeZoneCurrent !== timeZoneNew) {
+    I.dontSee(timeZoneCurrent);
+
+    I.see("You have unsaved changes");
+
+    I.seeElement({
+      react: "Button",
+      props: {
+        label: "Save",
+        isDisabled: false,
+      },
+    });
+
+    I.seeElement({
+      react: "Button",
+      props: {
+        label: "Cancel",
+        isDisabled: false,
+      },
+    });
+
+    I.click("Cancel");
+
+    I.dontSee("You have unsaved changes");
+
+    I.seeElement({
+      react: "Button",
+      props: {
+        label: "Save",
+        isDisabled: true,
+      },
+    });
+
+    I.seeElement({
+      react: "Button",
+      props: {
+        label: "Cancel",
+        isDisabled: true,
+      },
+    });
+
+    I.dontSee(timeZoneNew);
+
+    I.see(timeZoneCurrent);
+  }
 });

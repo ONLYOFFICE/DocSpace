@@ -52,8 +52,20 @@ const StyledContainer = styled.div`
 
     @media ${tablet} {
       margin: 0 -16px;
-      width: calc(100% + 32px);
+      width: calc(100% + 28px);
     }
+
+    ${isMobile &&
+    css`
+      margin: 0 -16px;
+      width: calc(100% + 28px);
+    `}
+
+    ${isMobileOnly &&
+    css`
+      margin: 0 -16px;
+      width: calc(100% + 32px);
+    `}
   }
 `;
 
