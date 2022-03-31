@@ -410,6 +410,7 @@ export function validateTfaCode(code) {
   return request({
     method: "post",
     url: "/settings/tfaapp/validate",
+    skipLogout: true,
     data,
   });
 }
