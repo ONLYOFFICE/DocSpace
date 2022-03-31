@@ -61,6 +61,7 @@ const TwoFactorAuth = (props) => {
     const { getTfaType, getTfaSettings } = props;
     const type = await getTfaType();
     setType(type);
+    setCurrentState(type);
 
     const settings = await getTfaSettings();
     setSmsDisabled(settings[0].avaliable);
@@ -69,7 +70,6 @@ const TwoFactorAuth = (props) => {
 
   useEffect(() => {
     getSettings();
-    setCurrentState(type);
     setIsLoading(true);
   }, []);
 
