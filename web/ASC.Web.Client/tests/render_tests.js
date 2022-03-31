@@ -282,9 +282,9 @@ Scenario(
     I.mockEndpoint(Endpoints.info, "infoSettings");
     I.mockEndpoint(Endpoints.self, "selfSettings");
 
-    if (deviceType === "mobile") {
-      I.amOnPage("/settings/common/customization/language-and-time-zone");
+    I.amOnPage("/settings/common/customization/language-and-time-zone");
 
+    if (deviceType === "mobile") {
       I.see("Language and Time Zone Settings");
 
       I.seeElement("div", ".settings-block");
