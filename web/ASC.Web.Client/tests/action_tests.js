@@ -126,6 +126,7 @@ Scenario("Customization change language", async ({ I }) => {
   I.mockEndpoint(Endpoints.build, "build");
   I.mockEndpoint(Endpoints.info, "infoSettings");
   I.mockEndpoint(Endpoints.self, "selfSettings");
+  I.mockEndpoint(Endpoints.timeandlanguage, "timeandlanguage");
 
   if (deviceType !== "mobile") {
     if (browser === "webkit") {
@@ -213,8 +214,6 @@ Scenario("Customization change language", async ({ I }) => {
       "timeandlanguage"
     );
 
-    I.mockEndpoint(Endpoints.timeandlanguage, "timeandlanguage");
-
     I.seeElement({
       react: "Button",
       props: {
@@ -250,6 +249,7 @@ Scenario("Customization change time zone", async ({ I }) => {
   I.mockEndpoint(Endpoints.build, "build");
   I.mockEndpoint(Endpoints.info, "infoSettings");
   I.mockEndpoint(Endpoints.self, "selfSettings");
+  I.mockEndpoint(Endpoints.timeandlanguage, "timeandlanguage");
 
   if (deviceType !== "mobile") {
     if (browser === "webkit") {
@@ -339,8 +339,6 @@ Scenario("Customization change time zone", async ({ I }) => {
       "settings",
       "timeandlanguage"
     );
-
-    I.mockEndpoint(Endpoints.timeandlanguage, "timeandlanguage");
 
     I.seeElement({
       react: "Button",

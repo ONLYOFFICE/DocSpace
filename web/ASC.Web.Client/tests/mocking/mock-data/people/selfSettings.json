@@ -6,7 +6,7 @@
     "userName": "administrator",
     "email": "test@gmail.com",
     "status": 1,
-    "activationStatus": 0,
+    "activationStatus": 1,
     "department": "",
     "workFrom": "2021-11-23T03:52:57.0000000-12:00",
     "avatarMax": "/images/default_user_photo_size_200-200.png",
