@@ -1948,6 +1948,7 @@ const Base = {
 
     header: {
       backgroundColor: white,
+      background: `linear-gradient(180deg,#ffffff 2.81%,rgba(255, 255, 255, 0.91) 63.03%,rgba(255, 255, 255, 0) 100%)`,
     },
   },
 
@@ -2129,7 +2130,7 @@ const Base = {
         border: `1px solid ${grayMid}`,
         backgroundColor: white,
 
-        backgroundColorTop: grayLight,
+        backgroundColorTop: white,
       },
 
       sideColor: black,
@@ -2637,6 +2638,10 @@ const Base = {
   editor: {
     color: "#555f65",
     background: white,
+  },
+
+  submenu: {
+    lineColor: "#eceef1",
   },
 };
 

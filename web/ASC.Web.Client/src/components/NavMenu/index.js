@@ -20,6 +20,7 @@ import PreparationPortalDialog from "../dialogs/PreparationPortalDialog";
 import { Base } from "@appserver/components/themes";
 
 const StyledContainer = styled.header`
+  position: relative;
   align-items: center;
   background-color: ${(props) => props.theme.header.backgroundColor};
 
@@ -37,9 +38,10 @@ const StyledContainer = styled.header`
           .navMenuHeader,
           .profileMenuIcon,
           .navMenuHeaderUnAuth {
-            position: fixed;
+            position: absolute;
             z-index: 160;
-            top: ${(props) => (props.isVisible ? "0" : "-48px")};
+            top: 0;
+            // top: ${(props) => (props.isVisible ? "0" : "-48px")};
 
             transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
             -moz-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);

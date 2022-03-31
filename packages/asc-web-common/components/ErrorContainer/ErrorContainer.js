@@ -341,7 +341,6 @@ const ErrorContainer = (props) => {
           {headerText}
         </Headline>
       )}
-      {children}
       {bodyText && <Text id="text">{bodyText}</Text>}
       {buttonText && buttonUrl && (
         <div id="button-container">
