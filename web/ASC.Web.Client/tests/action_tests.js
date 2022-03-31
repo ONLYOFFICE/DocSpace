@@ -118,7 +118,7 @@ Scenario("Change password", async ({ I }) => {
   I.see("Documents");
 });
 
-Scenario("Change language", async ({ I }) => {
+Scenario("Customization change language", async ({ I }) => {
   I.mockEndpoint(Endpoints.common, "common");
   I.mockEndpoint(Endpoints.cultures, "cultures");
   I.mockEndpoint(Endpoints.timezones, "timezones");
@@ -127,7 +127,16 @@ Scenario("Change language", async ({ I }) => {
   I.mockEndpoint(Endpoints.info, "infoSettings");
   I.mockEndpoint(Endpoints.self, "selfSettings");
 
-  I.amOnPage("/settings/common/customization");
+  if (deviceType !== "mobile") {
+    if (browser === "webkit") {
+      I.wait(30);
+    }
+    I.amOnPage("/settings/common/customization");
+  }
+
+  if (deviceType === "mobile") {
+    I.amOnPage("/settings/common/customization/language-and-time-zone");
+  }
 
   const languageCurrent = await I.grabTextFrom("#comboBoxLanguage");
 
@@ -233,7 +242,7 @@ Scenario("Change language", async ({ I }) => {
   }
 });
 
-Scenario("Change time zone", async ({ I }) => {
+Scenario("Customization change time zone", async ({ I }) => {
   I.mockEndpoint(Endpoints.common, "common");
   I.mockEndpoint(Endpoints.cultures, "cultures");
   I.mockEndpoint(Endpoints.timezones, "timezones");
@@ -242,9 +251,16 @@ Scenario("Change time zone", async ({ I }) => {
   I.mockEndpoint(Endpoints.info, "infoSettings");
   I.mockEndpoint(Endpoints.self, "selfSettings");
 
-  I.amOnPage("/settings/common/customization");
+  if (deviceType !== "mobile") {
+    if (browser === "webkit") {
+      I.wait(30);
+    }
+    I.amOnPage("/settings/common/customization");
+  }
 
-  const timeZoneCurrent = await I.grabTextFrom("#comboBoxTimezone");
+  if (deviceType === "mobile") {
+    I.amOnPage("/settings/common/customization/language-and-time-zone");
+  }
 
   I.click({
     react: "ComboBox",
@@ -252,6 +268,8 @@ Scenario("Change time zone", async ({ I }) => {
       id: "comboBoxTimezone",
     },
   });
+
+  const timeZoneCurrent = await I.grabTextFrom("#comboBoxTimezone");
 
   I.seeElement(".dropdown-container");
 
@@ -354,7 +372,7 @@ Scenario("Change time zone", async ({ I }) => {
   }
 });
 
-Scenario("Cancel button test language", async ({ I }) => {
+Scenario("Customization cancel button test language", async ({ I }) => {
   I.mockEndpoint(Endpoints.common, "common");
   I.mockEndpoint(Endpoints.cultures, "cultures");
   I.mockEndpoint(Endpoints.timezones, "timezones");
@@ -363,9 +381,16 @@ Scenario("Cancel button test language", async ({ I }) => {
   I.mockEndpoint(Endpoints.info, "infoSettings");
   I.mockEndpoint(Endpoints.self, "selfSettings");
 
-  I.amOnPage("/settings/common/customization");
+  if (deviceType !== "mobile") {
+    if (browser === "webkit") {
+      I.wait(30);
+    }
+    I.amOnPage("/settings/common/customization");
+  }
 
-  const languageCurrent = await I.grabTextFrom("#comboBoxLanguage");
+  if (deviceType === "mobile") {
+    I.amOnPage("/settings/common/customization/language-and-time-zone");
+  }
 
   I.click({
     react: "ComboBox",
@@ -373,6 +398,8 @@ Scenario("Cancel button test language", async ({ I }) => {
       id: "comboBoxLanguage",
     },
   });
+
+  const languageCurrent = await I.grabTextFrom("#comboBoxLanguage");
 
   I.seeElement(".dropdown-container");
 
@@ -439,7 +466,7 @@ Scenario("Cancel button test language", async ({ I }) => {
   }
 });
 
-Scenario("Cancel button test time zone", async ({ I }) => {
+Scenario("Customization cancel button test time zone", async ({ I }) => {
   I.mockEndpoint(Endpoints.common, "common");
   I.mockEndpoint(Endpoints.cultures, "cultures");
   I.mockEndpoint(Endpoints.timezones, "timezones");
@@ -448,9 +475,16 @@ Scenario("Cancel button test time zone", async ({ I }) => {
   I.mockEndpoint(Endpoints.info, "infoSettings");
   I.mockEndpoint(Endpoints.self, "selfSettings");
 
-  I.amOnPage("/settings/common/customization");
+  if (deviceType !== "mobile") {
+    if (browser === "webkit") {
+      I.wait(30);
+    }
+    I.amOnPage("/settings/common/customization");
+  }
 
-  const timeZoneCurrent = await I.grabTextFrom("#comboBoxTimezone");
+  if (deviceType === "mobile") {
+    I.amOnPage("/settings/common/customization/language-and-time-zone");
+  }
 
   I.click({
     react: "ComboBox",
@@ -458,6 +492,8 @@ Scenario("Cancel button test time zone", async ({ I }) => {
       id: "comboBoxTimezone",
     },
   });
+
+  const timeZoneCurrent = await I.grabTextFrom("#comboBoxTimezone");
 
   I.seeElement(".dropdown-container");
 
