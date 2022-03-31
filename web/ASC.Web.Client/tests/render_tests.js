@@ -241,6 +241,9 @@ Scenario("Change password page render test", async ({ I }) => {
 Scenario("TfaActivation page render test", async ({ I }) => {
   I.mockEndpoint(Endpoints.confirm, "confirm");
   I.mockEndpoint(Endpoints.setup, "setup");
+  I.mockEndpoint(Endpoints.settings, "settings");
+  I.mockEndpoint(Endpoints.build, "build");
+
   I.amOnPage("/confirm/TfaActivation");
 
   I.see("Configure your authenticator application");
