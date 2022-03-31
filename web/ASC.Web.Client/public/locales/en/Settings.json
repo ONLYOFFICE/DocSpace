@@ -41,7 +41,7 @@
   "CustomTitlesSettingsTooltip": "<0>{{ welcomeText }}</0> is a way to change the default portal title to be displayed on the <2>{{ text }}</2> of your portal. The same name is also used for the <4>{{ from }}</4> field of your portal email notifications.",
   "CustomTitlesSettingsTooltipDescription": "Enter the name you like in the <1>{{ header }}</1> field.",
   "CustomTitlesText": "Welcome Page",
-  "CustomTitlesWelcome": "Welcome page settings",
+  "CustomTitlesWelcome": "Welcome Page Settings",
   "DeactivateOrDeletePortal": "Deactivate or delete portal.",
   "Disabled": "Disabled",
   "DocumentsAdministratorsCan": "Documents administrators can link Dropbox, Box, and other accounts to Common Documents and set up access rights in this section",
