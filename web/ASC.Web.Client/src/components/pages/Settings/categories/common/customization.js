@@ -28,6 +28,8 @@ const StyledComponent = styled.div`
   .category-item-wrapper:not(:last-child) {
     border-bottom: 1px solid #eceef1;
     margin-bottom: 24px;
+    // Add
+    padding-bottom: 24px;
   }
 
   .category-item-description {

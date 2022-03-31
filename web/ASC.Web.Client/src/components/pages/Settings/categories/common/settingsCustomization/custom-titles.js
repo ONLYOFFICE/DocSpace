@@ -244,6 +244,11 @@ class CustomTitles extends React.Component {
     }
   };
 
+  onClickLink = (e) => {
+    e.preventDefault();
+    history.push(e.target.pathname);
+  };
+
   render() {
     const { t, theme, sectionWidth, isMobileView } = this.props;
     const {
@@ -270,7 +275,7 @@ class CustomTitles extends React.Component {
               "/settings/common/customization/custom-titles"
             )}
           >
-            {t("CustomTitles")}
+            {t("CustomTitlesWelcome")}
           </Link>
           <StyledArrowRightIcon size="small" color="#333333" />
         </div>
@@ -285,7 +290,7 @@ class CustomTitles extends React.Component {
         <FieldContainer
           id="fieldContainerWelcomePage"
           className="field-container-width"
-          labelText={t("Common:Title")}
+          labelText={`${t("Common:Title")}:`}
           isVertical={true}
         >
           <TextInput
@@ -304,10 +309,12 @@ class CustomTitles extends React.Component {
     ) : isMobileView ? (
       isMobileViewLanguageTimeSettings
     ) : (
-      <StyledComponent hasScroll={hasScroll}>
+      <StyledComponent hasScroll={hasScroll} className="category-item-wrapper">
         {this.checkInnerWidth() && !isMobileView && (
           <div className="category-item-heading">
-            <div className="category-item-title">{t("WelcomePageTitle")}</div>
+            <div className="category-item-title">
+              {t("CustomTitlesWelcome")}
+            </div>
             <HelpButton
               iconName="static/images/combined.shape.svg"
               size={12}
