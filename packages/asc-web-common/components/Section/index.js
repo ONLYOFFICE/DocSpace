@@ -265,6 +265,7 @@ class Section extends React.Component {
                         className="section-header_header"
                         isHeaderVisible={isHeaderVisible}
                         viewAs={viewAs}
+                        showText={showText}
                       >
                         {sectionHeaderContent
                           ? sectionHeaderContent.props.children
@@ -299,6 +300,7 @@ class Section extends React.Component {
                               className="section-body_header"
                               isHeaderVisible={isHeaderVisible}
                               viewAs={viewAs}
+                              showText={showText}
                             >
                               {sectionHeaderContent
                                 ? sectionHeaderContent.props.children

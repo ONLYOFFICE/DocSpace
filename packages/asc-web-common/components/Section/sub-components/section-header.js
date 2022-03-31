@@ -6,89 +6,56 @@ import { LayoutContextConsumer } from "studio/Layout/context";
 import { isMobile, isMobileOnly } from "react-device-detect";
 import { tablet, desktop, mobile } from "@appserver/components/utils/device";
 import NoUserSelect from "@appserver/components/utils/commonStyles";
-import { getBannerAttribute } from "@appserver/components/utils/banner";
 
 import Base from "@appserver/components/themes/base";
 
 const StyledSectionHeader = styled.div`
   position: relative;
   height: 53px;
+  min-height: 53px;
   margin-right: 20px;
   ${NoUserSelect}
 
+  width: calc(100vw - 296px);
+  max-width: calc(100vw - 296px);
+
   @media ${tablet} {
+    width: ${(props) =>
+      props.showText ? "calc(100vw - 272px)" : "calc(100vw - 84px)"};
+    max-width: ${(props) =>
+      props.showText ? "calc(100vw - 272px)" : "calc(100vw - 84px)"};
     height: 61px;
+    min-height: 61px;
     margin-right: 0px !important;
   }
 
   ${isMobile &&
   css`
+    width: ${(props) =>
+      props.showText ? "calc(100vw - 272px)" : "calc(100vw - 84px)"};
+    max-width: ${(props) =>
+      props.showText ? "calc(100vw - 272px)" : "calc(100vw - 84px)"};
+    height: 61px;
+    min-height: 61px;
     margin-right: 0px !important;
   `}
 
-  ${isMobile &&
-  css`
-    min-height: ${(props) =>
-      props.maintenanceExist ? "61px" : "61px"} !important;
-    width: ${(props) => !props.isLoaded && "100%"};
-    margin-top: 62px;
-    @media (max-width: 1180px) {
-      margin-top: ${(props) => props.marginTop};
-    }
-  `}
-
-  .section-header {
-    height: 53px;
-    ${isMobile &&
-    css`
-      max-width: calc(100vw - 32px);
-      width: 100%;
-    `}
-    ${isMobile &&
-    css`
-      position: fixed;
-      top: ${(props) => props.top};
-      width: ${(props) =>
-        props.isArticlePinned ? `calc(100% - 272px)` : "100%"};
-      background-color: ${(props) =>
-        props.theme.section.header.backgroundColor};
-      z-index: 149;
-      padding-right: 16px;
-    `}
+  @media ${mobile} {
+    width: calc(100vw - 32px) !important;
+    max-width: calc(100vw - 32px) !important;
+    height: 61px;
+    min-height: 61px;
+    margin-right: 0px !important;
   }
 
-  ${isMobile &&
+  ${isMobileOnly &&
   css`
-    .section-header,
-    .section-header--hidden {
-      &,
-      .group-button-menu-container > div:first-child {
-        transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
-        -moz-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
-        -ms-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
-        -webkit-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
-        -o-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
-      }
-      .group-button-menu-container {
-        padding-bottom: 0;
-        > div:first-child {
-          top: ${(props) => (!props.isSectionHeaderVisible ? "56px" : "0px")};
-          @media ${desktop} {
-            ${isMobile &&
-            css`
-              position: absolute;
-            `}
-          }
-        }
-      }
-    }
+    width: calc(100vw - 32px) !important;
+    max-width: calc(100vw - 32px) !important;
+    height: 61px;
+    min-height: 61px;
+    margin-right: 0px !important;
   `}
-  .section-header--hidden {
-    ${isMobile &&
-    css`
-      top: -61px;
-    `}
-  }
 `;
 
 StyledSectionHeader.defaultProps = { theme: Base };
@@ -100,44 +67,16 @@ const SectionHeader = (props) => {
     viewAs,
     maintenanceExist,
     snackbarExist,
+    className,
     ...rest
   } = props;
 
-  let top = "48px";
-  let marginTop = "46px";
-
-  const mainBar = document.getElementById("main-bar");
-
-  if (maintenanceExist) {
-    const { sectionHeaderTop, sectionHeaderMarginTop } = getBannerAttribute();
-
-    top = sectionHeaderTop;
-    marginTop = sectionHeaderMarginTop;
-  }
-
   return (
-    <div className={rest.className}>
-      <LayoutContextConsumer>
-        {(value) => (
-          <StyledSectionHeader
-            isArticlePinned={isArticlePinned}
-            isSectionHeaderVisible={value.isVisible}
-            viewAs={viewAs}
-            maintenanceExist={maintenanceExist && mainBar}
-            top={top}
-            marginTop={marginTop}
-          >
-            <div
-              className={classnames("section-header hidingHeader", {
-                "section-header--hidden":
-                  value.isVisible === undefined ? false : !value.isVisible,
-              })}
-              {...rest}
-            />
-          </StyledSectionHeader>
-        )}
-      </LayoutContextConsumer>
-    </div>
+    <StyledSectionHeader
+      className={`section-header ${className}`}
+      viewAs={viewAs}
+      {...rest}
+    />
   );
 };
 
