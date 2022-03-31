@@ -322,9 +322,7 @@ const SingleItem = (props) => {
     <>
       <StyledTitle>
         <ReactSVG className="icon" src={item.iconUrl} />
-        <Text className="text" fontWeight={600} fontSize="16px">
-          {item.title}
-        </Text>
+        <Text className="text">{item.title}</Text>
       </StyledTitle>
 
       {selectedItem.thumbnailUrl ? (
@@ -375,10 +373,10 @@ const SingleItem = (props) => {
             <StyledAccessUser>
               <div
                 data-for="access-user-tooltip"
-                data-tip={item.access.owner.name}
+                data-tip={item.access?.owner?.name}
               >
-                <a href={item.access.owner.link}>
-                  <img src={item.access.owner.img} />
+                <a href={item.access?.owner?.link}>
+                  <img src={item.access?.owner?.img} />
                 </a>
               </div>
             </StyledAccessUser>

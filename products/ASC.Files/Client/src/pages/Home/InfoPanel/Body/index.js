@@ -10,6 +10,7 @@ import { Base } from "@appserver/components/themes";
 
 const InfoPanelBodyContent = ({
   t,
+  selectedFolder,
   selectedItems,
   getFolderInfo,
   getIcon,
@@ -22,31 +23,7 @@ const InfoPanelBodyContent = ({
   isRecentFolder,
   isFavoritesFolder,
 }) => {
-  const [currentFolderLoading, setCurrentFolderLoading] = useState(false);
-  const [currentFolder, setCurrentFolder] = useState({});
-
-  const getCurrentFolderInfo = async () => {
-    setCurrentFolderLoading(true);
-
-    const folderId = new URL(window.location.href).searchParams.get("folder");
-    const folder = await getFolderInfo(folderId);
-
-    if (!folder) console.log("Cant Load Data");
-
-    const fileExst = folder.fileExst,
-      providerKey = folder.providerKey,
-      contentLength = folderId.contentLength;
-
-    folder.iconUrl = getIcon(32, fileExst, providerKey, contentLength);
-    folder.isFolder = true;
-
-    setCurrentFolder(folder);
-    setCurrentFolderLoading(false);
-  };
-
-  useEffect(() => {
-    getCurrentFolderInfo();
-  }, [window.location.href]);
+  console.log("--- ||| RENDER INFO PANEL ||| ---");
 
   const singleItem = (item) => {
     const dontShowLocation = item.isFolder && item.parentId === 0;
@@ -74,15 +51,10 @@ const InfoPanelBodyContent = ({
     <StyledInfoRoomBody>
       <>
         {selectedItems.length === 0 ? (
-          <div className="no-item">
-            {currentFolderLoading ? (
-              <div className="current-folder-loader-wrapper">
-                <Loader type="oval" size="48px" />
-              </div>
-            ) : (
-              singleItem(currentFolder)
-            )}
-          </div>
+          singleItem({
+            ...selectedFolder,
+            isFolder: true,
+          })
         ) : selectedItems.length === 1 ? (
           singleItem(selectedItems[0])
         ) : (
@@ -102,6 +74,7 @@ export default inject(
     filesActionsStore,
     dialogsStore,
     treeFoldersStore,
+    selectedFolderStore,
   }) => {
     const { selection, getFolderInfo, getShareUsers } = filesStore;
     const { getIcon, getFolderIcon } = settingsStore;
@@ -115,7 +88,8 @@ export default inject(
     } = treeFoldersStore;
 
     return {
-      selectedItems: selection,
+      selectedFolder: { ...selectedFolderStore },
+      selectedItems: [...selection],
       getFolderInfo,
       getShareUsers,
       getIcon,

@@ -34,13 +34,16 @@ const StyledInfoRoomBody = styled.div`
 
 const StyledTitle = styled.div`
   display: flex;
+  flex-wrap: no-wrap;
   flex-direction: row;
   align-items: center;
   width: 100%;
-  height: auto;
-  padding: 29px 0;
+  height: 44px;
+  padding: 23px 0;
 
   .icon {
+    display: flex;
+    align-items: center;
     svg {
       height: 32px;
       width: 32px;
@@ -48,9 +51,16 @@ const StyledTitle = styled.div`
   }
 
   .text {
-    font-family: "Open Sans";
+    font-weight: 600;
+    font-size: 16px;
     line-height: 22px;
+    max-height: 44px;
     margin: 0 8px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
   }
 `;
 
