@@ -167,6 +167,7 @@ class Section extends React.Component {
       maintenanceExist,
       setMaintenanceExist,
       snackbarExist,
+      showText,
     } = this.props;
 
     let sectionHeaderContent = null;
@@ -230,6 +231,7 @@ class Section extends React.Component {
                 >
                   <SectionContainer
                     widthProp={width}
+                    showText={showText}
                     viewAs={viewAs}
                     maintenanceExist={maintenanceExist}
                   >
@@ -458,6 +460,8 @@ export default inject(({ auth }) => {
     maintenanceExist,
     snackbarExist,
     setMaintenanceExist,
+
+    showText,
   } = settingsStore;
 
   return {
@@ -471,5 +475,7 @@ export default inject(({ auth }) => {
     snackbarExist,
     setMaintenanceExist,
     isDesktop: isDesktopClient,
+
+    showText,
   };
 })(observer(Section));

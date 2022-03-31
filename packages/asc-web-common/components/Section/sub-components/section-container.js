@@ -45,62 +45,35 @@ const StyledSectionContainer = styled.section`
   display: flex;
   flex-direction: column;
 
-  ${(props) =>
-    props.maintenanceExist &&
-    isMobile &&
-    css`
-      .main-bar {
-        animation-name: slideDown;
-        -webkit-animation-name: slideDown;
+  width: calc(100vw - 256px);
+  max-width: calc(100vw - 256px);
 
-        animation-duration: 0.3s;
-        -webkit-animation-duration: 0.3s;
-
-        animation-timing-function: linear;
-        -webkit-animation-timing-function: linear;
-
-        visibility: visible !important;
-      }
-
-      @keyframes slideDown {
-        0% {
-          transform: translateY(-100%);
-        }
-        50% {
-          transform: translateY(-60%);
-        }
-        65% {
-          transform: translateY(-30%);
-        }
-        80% {
-          transform: translateY(-10%);
-        }
-        95% {
-          transform: translateY(-5%);
-        }
-        100% {
-          transform: translateY(0%);
-        }
-      }
-    `}
-
-  .main-bar,
-  .main-bar--hidden {
-    ${isMobile &&
-    css`
-      transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
-      -moz-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
-      -ms-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
-      -webkit-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
-      -o-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
-    `}
+  @media ${tablet} {
+    width: ${(props) =>
+      props.showText ? "calc(100vw - 240px)" : "calc(100vw - 52px)"};
+    max-width: ${(props) =>
+      props.showText ? "calc(100vw - 240px)" : "calc(100vw - 52px)"};
   }
-  .main-bar--hidden {
-    ${isMobile &&
-    css`
-      top: -140px;
-    `}
+
+  ${isMobile &&
+  css`
+    width: ${(props) =>
+      props.showText ? "calc(100vw - 240px)" : "calc(100vw - 52px)"};
+    max-width: ${(props) =>
+      props.showText ? "calc(100vw - 240px)" : "calc(100vw - 52px)"};
+  `}
+
+  @media ${mobile} {
+    width: 100vw;
+    max-width: 100vw;
   }
+
+  ${isMobileOnly &&
+  css`
+    width: 100vw;
+    max-width: 100vw;
+  `}
+
   .layout-progress-bar {
     position: fixed;
     right: 15px;
