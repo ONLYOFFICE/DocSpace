@@ -6,13 +6,21 @@ import { inject, observer } from "mobx-react";
 import RadioButtonGroup from "@appserver/components/radio-button-group";
 import Button from "@appserver/components/button";
 import Text from "@appserver/components/text";
+import Link from "@appserver/components/link";
 import toastr from "@appserver/components/toast/toastr";
 import SectionLoader from "../sub-components/section-loader";
+import { getLanguage } from "@appserver/common/utils";
+import { isMobile } from "react-device-detect";
 
 const MainContainer = styled.div`
   width: 100%;
 
+  .page-subtitle {
+    margin-bottom: 10px;
+  }
+
   .box {
+    margin-top: 20px;
     margin-bottom: 24px;
   }
 `;
@@ -95,9 +103,23 @@ const TwoFactorAuth = (props) => {
     setType(currentState);
   };
 
+  const lng = getLanguage(localStorage.getItem("language") || "en");
   if (!isLoading) return <SectionLoader />;
   return (
     <MainContainer>
+      {isMobile && (
+        <>
+          <Text className="page-subtitle">{t("TwoFactorAuthHelper")}</Text>
+          <Link
+            className="learn-more"
+            target="_blank"
+            href={`https://helpcenter.onlyoffice.com/${lng}/administration/two-factor-authentication.aspx`}
+          >
+            {t("Common:LearnMore")}
+          </Link>
+        </>
+      )}
+
       <RadioButtonGroup
         className="box"
         fontSize="13px"
