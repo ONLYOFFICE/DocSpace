@@ -761,6 +761,16 @@ const Base = {
     },
   },
 
+  phoneInput: {
+    width: "304px",
+    height: "44px",
+    itemTextColor: black,
+    itemBackgroundColor: white,
+    itemHoverColor: grayLightMid,
+    scrollBackground: "rgba(0, 0, 0, 0.1)",
+    placeholderColor: gray,
+  },
+
   searchInput: {
     fontSize: "14px",
     fontWeight: "600",
