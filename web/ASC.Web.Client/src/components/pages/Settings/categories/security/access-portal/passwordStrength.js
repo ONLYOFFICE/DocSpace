@@ -13,6 +13,7 @@ import SectionLoader from "../sub-components/section-loader";
 import { getLanguage } from "@appserver/common/utils";
 import { isMobile } from "react-device-detect";
 import { ButtonsWrapper } from "../StyledSecurity";
+import { getPortalPasswordSettings } from "@appserver/common/api/settings";
 
 const MainContainer = styled.div`
   width: 100%;
@@ -43,7 +44,7 @@ const MainContainer = styled.div`
 `;
 
 const PasswordStrength = (props) => {
-  const { t } = props;
+  const { t, setPortalPasswordSettings } = props;
   const [passwordLen, setPasswordLen] = useState(8);
   const [useUpperCase, setUseUpperCase] = useState(false);
   const [useDigits, setUseDigits] = useState(false);
@@ -54,7 +55,23 @@ const PasswordStrength = (props) => {
   const [showReminder, setShowReminder] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  const getSettings = async () => {
+    const settings = await getPortalPasswordSettings();
+    setCurrentState([
+      settings.minLength,
+      settings.upperCase,
+      settings.digits,
+      settings.specSymbols,
+    ]);
+    setPasswordLen(settings.minLength);
+    setUseUpperCase(settings.upperCase);
+    setUseDigits(settings.digits);
+    setUseSpecialSymbols(settings.specSymbols);
+    return settings;
+  };
+
   useEffect(() => {
+    getSettings();
     setIsLoading(true);
   }, []);
 
@@ -94,10 +111,26 @@ const PasswordStrength = (props) => {
     }
   };
 
-  const onSaveClick = () => {};
+  const onSaveClick = () => {
+    setPortalPasswordSettings(
+      passwordLen,
+      useUpperCase,
+      useDigits,
+      useSpecialSymbols
+    )
+      .then(() => {
+        setShowReminder(false);
+        console.log("Success");
+      })
+      .catch((e) => console.error(e));
+  };
 
   const onCancelClick = () => {
     setShowReminder(false);
+    setPasswordLen(currentState[0]);
+    setUseUpperCase(currentState[1]);
+    setUseDigits(currentState[2]);
+    setUseSpecialSymbols(currentState[3]);
   };
 
   const lng = getLanguage(localStorage.getItem("language") || "en");
@@ -190,10 +223,10 @@ const PasswordStrength = (props) => {
 };
 
 export default inject(({ auth }) => {
-  const { organizationName } = auth.settingsStore;
+  const { setPortalPasswordSettings } = auth.settingsStore;
 
   return {
-    organizationName,
+    setPortalPasswordSettings,
   };
 })(
   withTranslation(["Settings", "Common"])(
