@@ -77,11 +77,17 @@ const StyledSectionBody = styled.div`
   ${(props) =>
     props.withScroll &&
     `
-    margin-top: -1px;
     margin-left: -20px;
 
     @media ${tablet}{
       margin-left: -24px;
+    }
+    
+    ${
+      isMobile &&
+      css`
+        margin-left: -24px;
+      `
     }
   `} 
 
