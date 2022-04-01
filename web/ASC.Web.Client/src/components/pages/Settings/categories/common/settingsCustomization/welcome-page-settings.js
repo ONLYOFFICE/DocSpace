@@ -1,6 +1,5 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
-import styled from "styled-components";
 import FieldContainer from "@appserver/components/field-container";
 import Loader from "@appserver/components/loader";
 import toastr from "@appserver/components/toast/toastr";
@@ -12,26 +11,26 @@ import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 import { setDocumentTitle } from "../../../../../../helpers/utils";
 import { inject, observer } from "mobx-react";
 import { CustomTitlesTooltip } from "../sub-components/common-tooltips";
-
-const StyledComponent = styled.div`
-  .settings-block {
-    margin-bottom: 70px;
-  }
-
-  .settings-block {
-    max-width: 350px;
-  }
-
-  .combo-button-label {
-    max-width: 100%;
-  }
-`;
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
+import config from "../../../../../../../package.json";
+import history from "@appserver/common/history";
+import { isMobileOnly } from "react-device-detect";
+import Text from "@appserver/components/text";
+import Link from "@appserver/components/link";
+import { isSmallTablet } from "@appserver/components/utils/device";
+import checkScrollSettingsBlock from "../utils";
+import {
+  StyledSettingsComponent,
+  StyledScrollbar,
+  StyledArrowRightIcon,
+} from "./StyledSettings";
 
 let greetingTitleFromSessionStorage = "";
 
 const settingNames = ["greetingTitle"];
 
-class CustomTitles extends React.Component {
+class WelcomePageSettings extends React.Component {
   constructor(props) {
     super(props);
 
@@ -50,11 +49,13 @@ class CustomTitles extends React.Component {
       isLoadingGreetingRestore: false,
       hasChanged: false,
       showReminder: false,
+      hasScroll: false,
     };
   }
 
   componentDidMount() {
     const { showReminder } = this.state;
+    window.addEventListener("resize", this.checkInnerWidth);
     showLoader();
     if (greetingTitleFromSessionStorage && !showReminder) {
       this.setState({
@@ -68,6 +69,27 @@ class CustomTitles extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    const { hasScroll } = this.state;
+    const checkScroll = checkScrollSettingsBlock();
+
+    window.addEventListener("resize", checkScroll);
+    const scrollLngTZSettings = checkScroll();
+
+    if (scrollLngTZSettings !== hasScroll) {
+      this.setState({
+        hasScroll: scrollLngTZSettings,
+      });
+    }
+
+    // TODO: Remove div with height 64 and remove settings-mobile class
+    const settingsMobile = document.getElementsByClassName(
+      "settings-mobile"
+    )[0];
+
+    if (settingsMobile) {
+      settingsMobile.style.display = "none";
+    }
+
     if (prevState.isLoadedData !== true) {
       this.setState({
         isLoadedData: true,
@@ -77,6 +99,14 @@ class CustomTitles extends React.Component {
     if (this.state.greetingTitleDefault) {
       this.checkChanges();
     }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener(
+      "resize",
+      this.checkInnerWidth,
+      checkScrollSettingsBlock
+    );
   }
 
   onChangeGreetingTitle = (e) => {
@@ -156,8 +186,26 @@ class CustomTitles extends React.Component {
     }
   };
 
+  checkInnerWidth = () => {
+    if (!isSmallTablet()) {
+      history.push(
+        combineUrl(
+          AppServerConfig.proxyURL,
+          config.homepage,
+          "/settings/common/customization"
+        )
+      );
+      return true;
+    }
+  };
+
+  onClickLink = (e) => {
+    e.preventDefault();
+    history.push(e.target.pathname);
+  };
+
   render() {
-    const { t, theme, sectionWidth } = this.props;
+    const { t, theme, sectionWidth, isMobileView } = this.props;
     const {
       isLoadedData,
       greetingTitle,
@@ -165,52 +213,90 @@ class CustomTitles extends React.Component {
       isLoadingGreetingRestore,
       showReminder,
       hasChanged,
+      hasScroll,
     } = this.state;
 
     const tooltipCustomTitlesTooltip = <CustomTitlesTooltip t={t} />;
 
+    const isMobileViewLanguageTimeSettings = (
+      <div className="category-item-wrapper">
+        <div className="category-item-heading">
+          <Link
+            truncate={true}
+            className="inherit-title-link header"
+            onClick={this.onClickLink}
+            href={combineUrl(
+              AppServerConfig.proxyURL,
+              "/settings/common/customization/welcome-page-settings"
+            )}
+          >
+            {t("CustomTitlesWelcome")}
+          </Link>
+          <StyledArrowRightIcon size="small" color="#333333" />
+        </div>
+        <Text className="category-item-description">
+          {t("CustomTitlesSettingsDescription")}
+        </Text>
+      </div>
+    );
+
+    const settingsBlock = (
+      <div className="settings-block">
+        <FieldContainer
+          id="fieldContainerWelcomePage"
+          className="field-container-width"
+          labelText={`${t("Common:Title")}:`}
+          isVertical={true}
+        >
+          <TextInput
+            scale={true}
+            value={greetingTitle}
+            onChange={this.onChangeGreetingTitle}
+            isDisabled={isLoadingGreetingSave || isLoadingGreetingRestore}
+            placeholder={`${t("Cloud Office Applications")}`}
+          />
+        </FieldContainer>
+      </div>
+    );
+
     return !isLoadedData ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
+    ) : isMobileView ? (
+      isMobileViewLanguageTimeSettings
     ) : (
-      <>
-        <StyledComponent>
+      <StyledSettingsComponent
+        hasScroll={hasScroll}
+        className="category-item-wrapper"
+      >
+        {this.checkInnerWidth() && !isMobileView && (
           <div className="category-item-heading">
-            <div className="category-item-title">{t("WelcomePageTitle")}</div>
+            <div className="category-item-title">
+              {t("CustomTitlesWelcome")}
+            </div>
             <HelpButton
               iconName="static/images/combined.shape.svg"
               size={12}
               tooltipContent={tooltipCustomTitlesTooltip}
             />
           </div>
-          <div className="settings-block">
-            <FieldContainer
-              id="fieldContainerWelcomePage"
-              className="field-container-width"
-              labelText={t("Common:Title")}
-              isVertical={true}
-            >
-              <TextInput
-                scale={true}
-                value={greetingTitle}
-                onChange={this.onChangeGreetingTitle}
-                isDisabled={isLoadingGreetingSave || isLoadingGreetingRestore}
-                placeholder={`${t("Cloud Office Applications")}`}
-              />
-            </FieldContainer>
-          </div>
-          <SaveCancelButtons
-            onSaveClick={this.onSaveGreetingSettings}
-            onCancelClick={this.onRestoreGreetingSettings}
-            showReminder={showReminder}
-            reminderTest={t("YouHaveUnsavedChanges")}
-            saveButtonLabel={t("Common:SaveButton")}
-            cancelButtonLabel={t("Settings:RestoreDefaultButton")}
-            displaySettings={true}
-            hasChanged={hasChanged}
-            sectionWidth={sectionWidth}
-          />
-        </StyledComponent>
-      </>
+        )}
+        {(isMobileOnly && isSmallTablet()) || isSmallTablet() ? (
+          <StyledScrollbar stype="smallBlack">{settingsBlock}</StyledScrollbar>
+        ) : (
+          <> {settingsBlock}</>
+        )}
+        <SaveCancelButtons
+          className="save-cancel-buttons"
+          onSaveClick={this.onSaveGreetingSettings}
+          onCancelClick={this.onRestoreGreetingSettings}
+          showReminder={showReminder}
+          reminderTest={t("YouHaveUnsavedChanges")}
+          saveButtonLabel={t("Common:SaveButton")}
+          cancelButtonLabel={t("Settings:RestoreDefaultButton")}
+          displaySettings={true}
+          hasScroll={hasScroll}
+        />
+      </StyledSettingsComponent>
     );
   }
 }
@@ -225,4 +311,4 @@ export default inject(({ auth, setup }) => {
     setGreetingTitle,
     restoreGreetingTitle,
   };
-})(withTranslation(["Settings", "Common"])(observer(CustomTitles)));
+})(withTranslation(["Settings", "Common"])(observer(WelcomePageSettings)));

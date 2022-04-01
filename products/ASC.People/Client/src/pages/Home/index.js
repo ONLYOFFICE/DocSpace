@@ -10,6 +10,7 @@ import {
   SectionBodyContent,
   SectionFilterContent,
   SectionPagingContent,
+  Bar,
 } from "./Section";
 import { inject, observer } from "mobx-react";
 import { isMobile } from "react-device-detect";
@@ -29,6 +30,9 @@ const PureHome = ({
   firstLoad,
   setFirstLoad,
   viewAs,
+  checkedMaintenance,
+  snackbarExist,
+  setMaintenanceExist,
 }) => {
   const { location } = history;
   const { pathname } = location;
@@ -72,6 +76,11 @@ const PureHome = ({
         <Section.SectionHeader>
           <SectionHeaderContent />
         </Section.SectionHeader>
+        <Section.SectionBar>
+          {checkedMaintenance && !snackbarExist && (
+            <Bar setMaintenanceExist={setMaintenanceExist} />
+          )}
+        </Section.SectionBar>
         <Section.SectionFilter>
           <SectionFilterContent />
         </Section.SectionFilter>
@@ -119,5 +128,8 @@ export default inject(({ auth, peopleStore }) => {
     firstLoad,
     setFirstLoad,
     viewAs,
+    checkedMaintenance: auth.settingsStore.checkedMaintenance,
+    setMaintenanceExist: auth.settingsStore.setMaintenanceExist,
+    snackbarExist: auth.settingsStore.snackbarExist,
   };
 })(observer(withRouter(Home)));

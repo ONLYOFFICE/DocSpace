@@ -3,10 +3,10 @@ import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 
-import OwnerSettings from "./sub-components/owner";
+import OwnerSettings from "./owner";
 // import ModulesSettings from "./sub-components/modules";
 
-import { setDocumentTitle } from "../../../../../helpers/utils";
+import { setDocumentTitle } from "../../../../../../helpers/utils";
 import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
 import toastr from "@appserver/components/toast/toastr";
@@ -17,7 +17,7 @@ import { AppServerConfig } from "@appserver/common/constants";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import ArrowRightIcon from "@appserver/studio/public/images/arrow.right.react.svg";
 import Loader from "@appserver/components/loader";
-import commonSettingsStyles from "../../utils/commonSettingsStyles";
+import commonSettingsStyles from "../../../utils/commonSettingsStyles";
 import { Base } from "@appserver/components/themes";
 
 const StyledArrowRightIcon = styled(ArrowRightIcon)`
@@ -31,7 +31,12 @@ StyledArrowRightIcon.defaultProps = { theme: Base };
 
 const MainContainer = styled.div`
   width: 100%;
+  max-width: 700px;
   position: relative;
+
+  .subtitle {
+    margin-bottom: 20px;
+  }
 
   .page-loader {
     position: absolute;
@@ -129,6 +134,7 @@ class AccessRights extends PureComponent {
       </MainContainer>
     ) : (
       <MainContainer>
+        <Text className="subtitle">{t("AccessRightsSubTitle")} </Text>
         <OwnerSettings />
         {
           <div className="category-item-wrapper">

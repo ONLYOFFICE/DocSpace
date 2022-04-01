@@ -527,7 +527,7 @@ const Dark = {
     },
 
     optionButton: {
-      padding: "8px 0px 9px 7px",
+      padding: "8px 9px 9px 7px",
     },
   },
 
@@ -2570,7 +2570,7 @@ const Dark = {
       },
 
       security: {
-        arrowFill: black,
+        arrowFill: white,
         descriptionColor: "#858585",
 
         admins: {
@@ -2650,6 +2650,10 @@ const Dark = {
   editor: {
     color: "#eeeeee",
     background: black,
+  },
+
+  submenu: {
+    lineColor: "#474747",
   },
 };
 

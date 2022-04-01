@@ -199,10 +199,13 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     language,
     FirebaseHelper,
     personal,
+    setCheckedMaintenance,
     socketHelper,
     setPreparationPortalDialogVisible,
     setTheme,
+    setMaintenanceExist,
     roomsMode,
+    setSnackbarExist,
   } = rest;
 
   useEffect(() => {
@@ -263,6 +266,8 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   const showSnackBar = (campaign) => {
     clearSnackBarTimer();
 
+    let skipMaintenance;
+
     const { fromDate, toDate, desktop } = campaign;
 
     console.log(
@@ -271,16 +276,17 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
     if (!campaign || !fromDate || !toDate) {
       console.log("Skip snackBar by empty campaign params");
-      return;
+      skipMaintenance = true;
     }
 
     const to = moment(toDate).local();
 
     const watchedCampaignDateStr = localStorage.getItem(LS_CAMPAIGN_DATE);
+
     const campaignDateStr = to.format(DATE_FORMAT);
     if (campaignDateStr == watchedCampaignDateStr) {
       console.log("Skip snackBar by already watched");
-      return;
+      skipMaintenance = true;
     }
 
     const from = moment(fromDate).local();
@@ -291,18 +297,23 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
       Snackbar.close();
       console.log(`Show snackBar has been delayed for 1 minute`, now);
-      return;
+      skipMaintenance = true;
     }
 
     if (now.isAfter(to)) {
       console.log("Skip snackBar by current date", now);
       Snackbar.close();
-      return;
+      skipMaintenance = true;
     }
 
     if (isDesktop && !desktop) {
       console.log("Skip snackBar by desktop", desktop);
       Snackbar.close();
+      skipMaintenance = true;
+    }
+
+    if (skipMaintenance) {
+      setCheckedMaintenance(true);
       return;
     }
 
@@ -311,12 +322,11 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     if (!document.getElementById("main-bar")) return;
 
     const campaignStr = JSON.stringify(campaign);
-    let skipRender = lastCampaignStr === campaignStr;
+    // let skipRender = lastCampaignStr === campaignStr;
 
-    skipRender =
-      skipRender && document.getElementById("main-bar").hasChildNodes();
+    const hasChild = document.getElementById("main-bar").hasChildNodes();
 
-    if (skipRender) return;
+    if (hasChild) return;
 
     lastCampaignStr = campaignStr;
 
@@ -324,17 +334,23 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
     const barConfig = {
       parentElementId: "main-bar",
+      headerText: "Atention",
       text: `${t("BarMaintenanceDescription", {
         targetDate: targetDate,
         productName: "ONLYOFFICE Personal",
       })} ${t("BarMaintenanceDisclaimer")}`,
-      onAction: () => {
+      isMaintenance: true,
+      clickAction: () => {
+        setMaintenanceExist(false);
+        setSnackbarExist(false);
         Snackbar.close();
         localStorage.setItem(LS_CAMPAIGN_DATE, to.format(DATE_FORMAT));
       },
       opacity: 1,
-      style: {
-        marginTop: "10px",
+      onLoad: () => {
+        setCheckedMaintenance(true);
+        setSnackbarExist(true);
+        setMaintenanceExist(true);
       },
     };
 
@@ -349,12 +365,13 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
         .then((campaign) => {
           console.log("checkMaintenance", campaign);
           if (!campaign) {
+            setCheckedMaintenance(true);
             clearSnackBarTimer();
             Snackbar.close();
             return;
           }
 
-          showSnackBar(campaign);
+          setTimeout(() => showSnackBar(campaign), 10000);
         })
         .catch((err) => {
           console.error(err);
@@ -366,6 +383,14 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
   const fetchBanners = () => {
     if (!FirebaseHelper.isEnabled) return;
+
+    FirebaseHelper.checkBar()
+      .then((bar) => {
+        localStorage.setItem("bar", bar);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
 
     FirebaseHelper.checkCampaigns()
       .then((campaigns) => {
@@ -382,6 +407,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     updateTempContent();
 
     if (!FirebaseHelper.isEnabled) {
+      setCheckedMaintenance(true);
       localStorage.setItem("campaigns", "");
       return;
     }
@@ -545,6 +571,9 @@ const ShellWrapper = inject(({ auth, backup }) => {
     isDesktopClient,
     firebaseHelper,
     setModuleInfo,
+    setCheckedMaintenance,
+    setMaintenanceExist,
+    setSnackbarExist,
     socketHelper,
     setTheme,
   } = settingsStore;
@@ -566,10 +595,13 @@ const ShellWrapper = inject(({ auth, backup }) => {
     isDesktop: isDesktopClient,
     FirebaseHelper: firebaseHelper,
     personal,
+    setCheckedMaintenance,
+    setMaintenanceExist,
     socketHelper,
     setPreparationPortalDialogVisible,
     setTheme,
     roomsMode,
+    setSnackbarExist,
   };
 })(observer(Shell));
 
