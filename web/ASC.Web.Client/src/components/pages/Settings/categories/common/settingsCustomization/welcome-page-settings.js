@@ -75,7 +75,7 @@ let greetingTitleFromSessionStorage = "";
 
 const settingNames = ["greetingTitle"];
 
-class CustomTitles extends React.Component {
+class WelcomePageSettings extends React.Component {
   constructor(props) {
     super(props);
 
@@ -272,7 +272,7 @@ class CustomTitles extends React.Component {
             onClick={this.onClickLink}
             href={combineUrl(
               AppServerConfig.proxyURL,
-              "/settings/common/customization/custom-titles"
+              "/settings/common/customization/welcome-page-settings"
             )}
           >
             {t("CustomTitlesWelcome")}
@@ -353,4 +353,4 @@ export default inject(({ auth, setup }) => {
     setGreetingTitle,
     restoreGreetingTitle,
   };
-})(withTranslation(["Settings", "Common"])(observer(CustomTitles)));
+})(withTranslation(["Settings", "Common"])(observer(WelcomePageSettings)));
