@@ -1,12 +1,9 @@
 import React, { useEffect } from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
-import Link from "@appserver/components/link";
-import Text from "@appserver/components/text";
-import { combineUrl } from "@appserver/common/utils";
-import { AppServerConfig } from "@appserver/common/constants";
 import { setDocumentTitle } from "../../../../../../helpers/utils";
-import { MainContainer, StyledArrowRightIcon } from "../StyledSecurity";
+import { MainContainer } from "../StyledSecurity";
+import MobileCategoryWrapper from "../sub-components/mobile-category-wrapper";
 
 const MobileView = (props) => {
   const { t, history } = props;
@@ -22,45 +19,18 @@ const MobileView = (props) => {
 
   return (
     <MainContainer>
-      <div className="category-item-wrapper">
-        <div className="category-item-heading">
-          <Link
-            className="inherit-title-link header"
-            onClick={onClickLink}
-            truncate={true}
-            href={combineUrl(
-              AppServerConfig.proxyURL,
-              "/settings/security/access-portal/password"
-            )}
-          >
-            {t("SettingPasswordStrength")}
-          </Link>
-          <StyledArrowRightIcon size="small" />
-        </div>
-        <Text className="category-item-description">
-          {t("SettingPasswordStrengthDescription")}
-        </Text>
-      </div>
-
-      <div className="category-item-wrapper">
-        <div className="category-item-heading">
-          <Link
-            className="inherit-title-link header"
-            onClick={onClickLink}
-            truncate={true}
-            href={combineUrl(
-              AppServerConfig.proxyURL,
-              "/settings/security/access-portal/tfa"
-            )}
-          >
-            {t("TwoFactorAuth")}
-          </Link>
-          <StyledArrowRightIcon size="small" />
-        </div>
-        <Text className="category-item-description">
-          {t("TwoFactorAuthDescription")}
-        </Text>
-      </div>
+      <MobileCategoryWrapper
+        title={t("SettingPasswordStrength")}
+        subtitle={t("SettingPasswordStrengthDescription")}
+        url="/settings/security/access-portal/password"
+        onClickLink={onClickLink}
+      />
+      <MobileCategoryWrapper
+        title={t("TwoFactorAuth")}
+        subtitle={t("TwoFactorAuthDescription")}
+        url="/settings/security/access-portal/tfa"
+        onClickLink={onClickLink}
+      />
     </MainContainer>
   );
 };
