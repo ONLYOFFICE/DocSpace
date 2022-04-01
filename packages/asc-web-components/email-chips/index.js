@@ -15,7 +15,6 @@ import {
 import InputGroup from "./sub-components/input-group";
 import ChipsRender from "./sub-components/chips-render";
 import { EmailSettings, parseAddresses } from "../utils/email";
-import _ from "lodash";
 
 const calcMaxLengthInput = (exceededLimit) =>
   exceededLimit * MAX_EMAIL_LENGTH_WITH_DOTS;
