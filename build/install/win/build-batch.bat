@@ -11,17 +11,19 @@ md build\install\win\Files\nginx\logs
 ren build\install\win\kafka-zookeeper\apache-zookeeper-3.7.0-bin zookeeper
 ren build\install\win\kafka-zookeeper\kafka_2.12-2.8.0 kafka
 md build\install\win\kafka-zookeeper\kafka\tools
+md build\install\win\Files\tools
 copy build\install\win\WinSW.NET4new.exe "build\install\win\kafka-zookeeper\kafka\tools\kafka.exe" /y
 copy build\install\win\WinSW.NET4new.exe "build\install\win\kafka-zookeeper\kafka\tools\zookeeper.exe" /y
 copy build\install\win\tools\zookeeper.xml "build\install\win\kafka-zookeeper\kafka\tools\zookeeper.xml" /y
 copy build\install\win\tools\kafka.xml "build\install\win\kafka-zookeeper\kafka\tools\kafka.xml" /y
 del /f /q build\install\win\apache-zookeeper-3.7.0-bin.*
 del /f /q build\install\win\kafka_2.12-2.8.0.*
-copy "build\install\win\WinSW.NET4.exe" "build\install\win\Files\tools\proxy.exe" /y
+copy build\install\win\WinSW.NET4.exe "build\install\win\Files\tools\proxy.exe" /y
+copy build\install\win\tools\proxy.xml "build\install\win\Files\tools\proxy.xml" /y
 copy "build\install\win\nginx.conf" "build\install\win\Files\nginx\conf\nginx.conf" /y
 copy "build\install\win\kafka-zookeeper\zookeeper\conf\zoo_sample.cfg" "build\install\win\kafka-zookeeper\zookeeper\conf\zoo.cfg" /y
 del /f /q "build\install\win\kafka-zookeeper\zookeeper\conf\zoo_sample.cfg"
-copy build\install\win\tools\proxy.xml "build\install\win\Files\tools\kafka.xml" /y
+rmdir build\install\win\publish /s /q
 
 REM echo ######## Edit zookeeper/kafka cfg and proprties files ########
 %sed% -i "s/\(dataDir\).*/\1=.\/..\/zookeeper\/Data/g" build/install/win/kafka-zookeeper/zookeeper/conf/zoo.cfg
@@ -54,12 +56,13 @@ REM echo ######## Edit json files ########
 %sed% -i "s!\(\"path\":\).\".*\"!\1 \"{APPDIRCONF}services\/ASC.UrlShortener\/service\/index.js\"!g" build/install/win/Files/config/appsettings.services.json
 %sed% -i "s!\(\"log\":\).\".*\"!\1 \"{APPDIRCONF}Logs\/urlshortener.log\"!g" build/install/win/Files/config/appsettings.services.json
 
-REM echo ######## Delete sed temp files ########
+REM echo ######## Delete temp files ########
 del /f /q build\install\win\Files\config\sed*
 del /f /q build\install\win\Files\nginx\conf\sed*
 del /f /q build\install\win\Files\nginx\conf\includes\sed*
 del /f /q build\install\win\kafka-zookeeper\zookeeper\conf\sed*
 del /f /q build\install\win\kafka-zookeeper\kafka\config\sed*
+del /f /q build\install\win\*.back.*
 
 REM echo ######## Build kafka/zookeeper ########
 %AdvancedInstaller% /rebuild "build\install\win\Apache ZooKeeper.aip"
