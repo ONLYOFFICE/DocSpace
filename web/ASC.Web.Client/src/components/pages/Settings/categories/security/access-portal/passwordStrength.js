@@ -45,7 +45,7 @@ const MainContainer = styled.div`
 `;
 
 const PasswordStrength = (props) => {
-  const { t, setPortalPasswordSettings } = props;
+  const { t, history, setPortalPasswordSettings } = props;
   const [passwordLen, setPasswordLen] = useState(8);
   const [useUpperCase, setUseUpperCase] = useState(false);
   const [useDigits, setUseDigits] = useState(false);
@@ -73,8 +73,17 @@ const PasswordStrength = (props) => {
 
   useEffect(() => {
     getSettings();
+    checkWidth();
     setIsLoading(true);
+    window.addEventListener("resize", checkWidth);
+    return () => window.removeEventListener("resize", checkWidth);
   }, []);
+
+  const checkWidth = () => {
+    window.innerWidth > 375 &&
+      history.location.pathname.includes("password") &&
+      history.push("/settings/security/access-portal");
+  };
 
   const onSliderChange = (e) => {
     setPasswordLen(Number(e.target.value));

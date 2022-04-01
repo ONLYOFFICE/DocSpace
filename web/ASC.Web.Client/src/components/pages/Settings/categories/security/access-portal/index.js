@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import Text from "@appserver/components/text";
@@ -7,17 +7,24 @@ import { MainContainer } from "../StyledSecurity";
 import TfaSection from "./tfa";
 import PasswordStrengthSection from "./passwordStrength";
 import MobileView from "./mobileView";
-import { isMobile } from "react-device-detect";
 import CategoryWrapper from "../sub-components/category-wrapper";
 
 const AccessPortal = (props) => {
   const { t } = props;
+  const [isMobileView, setIsMobileView] = useState(false);
 
   useEffect(() => {
     setDocumentTitle(t("PortalAccess"));
+    checkWidth();
+    window.addEventListener("resize", checkWidth);
+    return () => window.removeEventListener("resize", checkWidth);
   }, []);
 
-  if (isMobile) return <MobileView />;
+  const checkWidth = () => {
+    window.innerWidth <= 375 ? setIsMobileView(true) : setIsMobileView(false);
+  };
+
+  if (isMobileView) return <MobileView />;
   return (
     <MainContainer className="desktop-view">
       <Text className="subtitle">{t("PortalAccessSubTitle")}</Text>

@@ -27,7 +27,7 @@ const MainContainer = styled.div`
 `;
 
 const TwoFactorAuth = (props) => {
-  const { t } = props;
+  const { t, history } = props;
   const [type, setType] = useState("none");
   const [currentState, setCurrentState] = useState("");
   const [smsDisabled, setSmsDisabled] = useState(false);
@@ -48,8 +48,17 @@ const TwoFactorAuth = (props) => {
 
   useEffect(() => {
     getSettings();
+    checkWidth();
     setIsLoading(true);
+    window.addEventListener("resize", checkWidth);
+    return () => window.removeEventListener("resize", checkWidth);
   }, []);
+
+  const checkWidth = () => {
+    window.innerWidth > 375 &&
+      history.location.pathname.includes("tfa") &&
+      history.push("/settings/security/access-portal");
+  };
 
   const onSelectTfaType = (e) => {
     if (type !== e.target.value) {
