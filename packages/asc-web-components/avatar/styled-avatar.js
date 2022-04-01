@@ -101,8 +101,8 @@ const StyledImage = styled.img`
   width: ${(props) => props.theme.avatar.image.width};
   height: ${(props) => props.theme.avatar.image.height};
   border-radius: ${(props) => props.theme.avatar.image.borderRadius};
-
-  ${NoUserSelect}
+  content: ${(props) => props.isDefault && props.theme.avatar.defaultImage};
+  ${NoUserSelect};
 `;
 StyledImage.defaultProps = { theme: Base };
 

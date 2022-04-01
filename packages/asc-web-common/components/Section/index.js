@@ -235,6 +235,7 @@ class Section extends React.Component {
                   <SectionContainer widthProp={width} viewAs={viewAs}>
                     {isSectionHeaderAvailable && (
                       <SubSectionHeader
+                        className="section-header_header"
                         isHeaderVisible={isHeaderVisible}
                         viewAs={viewAs}
                       >
@@ -267,6 +268,18 @@ class Section extends React.Component {
                           viewAs={viewAs}
                           isHomepage={isHomepage}
                         >
+                          {isSectionHeaderAvailable && (
+                            <SubSectionHeader
+                              className="section-body_header"
+                              isHeaderVisible={isHeaderVisible}
+                              viewAs={viewAs}
+                            >
+                              {sectionHeaderContent
+                                ? sectionHeaderContent.props.children
+                                : null}
+                            </SubSectionHeader>
+                          )}
+
                           {isSectionFilterAvailable && (
                             <SubSectionFilter className="section-body_filter">
                               {sectionFilterContent

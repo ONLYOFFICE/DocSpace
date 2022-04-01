@@ -105,7 +105,10 @@ namespace ASC.Web.Files.Core
             if (disposing)
             {
                 _stream.Dispose();
-                Response.Dispose();
+                if (Response != null)
+                {
+                    Response.Dispose();
+                }
             }
             base.Dispose(disposing);
         }

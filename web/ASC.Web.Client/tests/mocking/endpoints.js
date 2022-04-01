@@ -11,6 +11,12 @@ module.exports = class Endpoints {
     baseDir: "settings",
   };
 
+  static common = {
+    url: ["http://localhost:8092/api/2.0/settings/customschemas/Common.json"],
+    method: "GET",
+    baseDir: "settings",
+  };
+
   static build = {
     url: ["http://localhost:8092/api/2.0/settings/version/build.json"],
     method: "GET",
@@ -64,6 +70,12 @@ module.exports = class Endpoints {
 
   static cultures = {
     url: ["http://localhost:8092/api/2.0/settings/cultures.json"],
+    method: "GET",
+    baseDir: "settings",
+  };
+
+  static timezones = {
+    url: ["http://localhost:8092/api/2.0/settings/timezones.json"],
     method: "GET",
     baseDir: "settings",
   };

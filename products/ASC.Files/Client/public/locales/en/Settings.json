@@ -1,4 +1,6 @@
 ﻿{
+  "Admin": "Admin",
+  "Common": "Common",
   "CommonSettings": "Common settings",
   "ConnectAccounts": "Connect Accounts",
   "ConnectAccountsSubTitle": "No connected accounts",
