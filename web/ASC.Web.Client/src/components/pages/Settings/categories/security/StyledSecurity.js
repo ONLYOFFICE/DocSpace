@@ -35,7 +35,7 @@ export const MainContainer = styled.div`
   }
 
   .category-item-wrapper {
-    margin-bottom: 40px;
+    margin-bottom: 20px;
 
     .category-item-heading {
       display: flex;

@@ -30,6 +30,26 @@ const MobileView = (props) => {
             truncate={true}
             href={combineUrl(
               AppServerConfig.proxyURL,
+              "/settings/security/access-portal/password"
+            )}
+          >
+            {t("SettingPasswordStrength")}
+          </Link>
+          <StyledArrowRightIcon size="small" />
+        </div>
+        <Text className="category-item-description">
+          {t("SettingPasswordStrengthDescription")}
+        </Text>
+      </div>
+
+      <div className="category-item-wrapper">
+        <div className="category-item-heading">
+          <Link
+            className="inherit-title-link header"
+            onClick={onClickLink}
+            truncate={true}
+            href={combineUrl(
+              AppServerConfig.proxyURL,
               "/settings/security/access-portal/tfa"
             )}
           >
