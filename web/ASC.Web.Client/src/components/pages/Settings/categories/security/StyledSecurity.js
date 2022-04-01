@@ -15,6 +15,12 @@ StyledArrowRightIcon.defaultProps = { theme: Base };
 export const MainContainer = styled.div`
   width: 100%;
 
+  hr {
+    margin: 24px 0;
+    border: none;
+    border-top: 1px solid #eceef1;
+  }
+
   .subtitle {
     margin-bottom: 20px;
   }
@@ -70,4 +76,27 @@ export const StyledCategoryWrapper = styled.div`
   gap: 4px;
   margin-bottom: 16px;
   align-items: center;
+`;
+
+export const ButtonsWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+
+  @media (max-width: 375px) {
+    position: absolute;
+    bottom: 16px;
+    width: calc(100vw - 32px);
+
+    .button {
+      height: 40px;
+      width: 100%;
+    }
+
+    .reminder {
+      position: absolute;
+      bottom: 48px;
+    }
+  }
 `;
