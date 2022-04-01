@@ -34,6 +34,12 @@ const MainContainer = styled.div`
     margin-top: 18px;
     margin-bottom: 24px;
   }
+
+  @media (max-width: 375px) {
+    .length-subtitle {
+      margin-top: 20px;
+    }
+  }
 `;
 
 const PasswordStrength = (props) => {
@@ -113,7 +119,7 @@ const PasswordStrength = (props) => {
         </>
       )}
 
-      <Text fontSize="14px" fontWeight="600">
+      <Text fontSize="14px" fontWeight="600" className="length-subtitle">
         {t("PasswordMinLenght")}
       </Text>
 
