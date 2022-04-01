@@ -38,7 +38,10 @@ Scenario("Tfa auth error", async ({ I }) => {
   I.mockEndpoint(Endpoints.confirm, "confirm");
   I.mockEndpoint(Endpoints.settings, "settings");
   I.mockEndpoint(Endpoints.build, "build");
-  //I.mockEndpoint(Endpoints.code, "codeError");
+  I.mockEndpoint(Endpoints.providers, "providers");
+  I.mockEndpoint(Endpoints.capabilities, "capabilities");
+  I.mockEndpoint(Endpoints.code, "codeError");
+  I.mockEndpoint(Endpoints.validation, "validation");
 
   I.amOnPage("/confirm/TfaAuth");
   I.fillField("code", "123456");
@@ -46,7 +49,7 @@ Scenario("Tfa auth error", async ({ I }) => {
     react: "Button",
   });
 
-  I.see("User authentication failed");
+  I.see("Web Office");
 });
 
 Scenario("Tfa activation success", async ({ I }) => {
@@ -67,6 +70,32 @@ Scenario("Tfa activation success", async ({ I }) => {
   });
 
   I.see("Documents");
+});
+
+Scenario("Tfa on from settings", async ({ I }) => {
+  I.mockEndpoint(Endpoints.common, "common");
+  I.mockEndpoint(Endpoints.settings, "settings");
+  I.mockEndpoint(Endpoints.build, "build");
+  I.mockEndpoint(Endpoints.info, "infoSettings");
+  I.mockEndpoint(Endpoints.self, "selfSettings");
+  I.mockEndpoint(Endpoints.tfaapp, "tfaapp");
+  I.mockEndpoint(Endpoints.tfaconfirm, "tfaconfirm");
+  I.mockEndpoint(Endpoints.confirm, "confirm");
+  I.mockEndpoint(Endpoints.setup, "setup");
+
+  I.amOnPage("/settings/security/access-portal/tfa");
+
+  I.see("Two-factor authentication");
+
+  I.click({
+    react: "RadioButton",
+    props: {
+      value: "app",
+    },
+  });
+
+  I.click("Save");
+  I.see("Configure your authenticator application");
 });
 
 Scenario("Profile remove success", async ({ I }) => {

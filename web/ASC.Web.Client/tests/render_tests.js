@@ -315,3 +315,43 @@ Scenario(
     }
   }
 );
+
+if (deviceType === "mobile") {
+  Scenario("Tfa settings page mobile render test", async ({ I }) => {
+    I.mockEndpoint(Endpoints.common, "common");
+    I.mockEndpoint(Endpoints.settings, "settings");
+    I.mockEndpoint(Endpoints.build, "build");
+    I.mockEndpoint(Endpoints.info, "infoSettings");
+    I.mockEndpoint(Endpoints.self, "selfSettings");
+    I.mockEndpoint(Endpoints.tfaapp, "tfaapp");
+    I.mockEndpoint(Endpoints.tfaconfirm, "tfaconfirm");
+    I.mockEndpoint(Endpoints.confirm, "confirm");
+
+    I.amOnPage("/settings/security/access-portal/tfa");
+
+    I.see("Two-factor authentication");
+
+    I.seeElement({
+      react: "RadioButtonGroup",
+      props: {
+        className: "box",
+      },
+    });
+
+    I.seeElement({
+      react: "Button",
+      props: {
+        label: "Save",
+        isDisabled: true,
+      },
+    });
+
+    I.seeElement({
+      react: "Button",
+      props: {
+        label: "Cancel",
+        isDisabled: true,
+      },
+    });
+  });
+}
