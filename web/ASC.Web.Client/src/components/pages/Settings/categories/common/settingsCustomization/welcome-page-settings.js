@@ -1,6 +1,5 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
-import styled, { css } from "styled-components";
 import FieldContainer from "@appserver/components/field-container";
 import Loader from "@appserver/components/loader";
 import toastr from "@appserver/components/toast/toastr";
@@ -12,64 +11,20 @@ import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 import { setDocumentTitle } from "../../../../../../helpers/utils";
 import { inject, observer } from "mobx-react";
 import { CustomTitlesTooltip } from "../sub-components/common-tooltips";
-import { LANGUAGE } from "@appserver/common/constants";
-import { convertLanguage } from "@appserver/common/utils";
-import withCultureNames from "@appserver/common/hoc/withCultureNames";
-import { LanguageTimeSettingsTooltip } from "../sub-components/common-tooltips";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../../../../../../package.json";
 import history from "@appserver/common/history";
 import { isMobileOnly } from "react-device-detect";
-import Scrollbar from "@appserver/components/scrollbar";
 import Text from "@appserver/components/text";
-import Box from "@appserver/components/box";
 import Link from "@appserver/components/link";
-import ArrowRightIcon from "../../../../../../../public/images/arrow.right.react.svg";
 import { isSmallTablet } from "@appserver/components/utils/device";
-import commonIconsStyles from "@appserver/components/utils/common-icons-style";
-import { Base } from "@appserver/components/themes";
 import checkScrollSettingsBlock from "../utils";
-
-const menuHeight = "48px";
-const sectionHeight = "50px";
-const paddingSectionWrapperContent = "22px";
-const saveCancelButtons = "56px";
-const flex = "4px";
-
-const StyledArrowRightIcon = styled(ArrowRightIcon)`
-  ${commonIconsStyles}
-  path {
-    fill: ${(props) => props.theme.studio.settings.common.arrowColor};
-  }
-`;
-
-StyledArrowRightIcon.defaultProps = { theme: Base };
-
-const StyledScrollbar = styled(Scrollbar)`
-  height: calc(
-    100vh -
-      (
-        ${menuHeight} + ${sectionHeight} + ${paddingSectionWrapperContent} +
-          ${saveCancelButtons} + ${flex}
-      )
-  ) !important;
-  width: 100% !important;
-`;
-
-const StyledComponent = styled.div`
-  .settings-block {
-    margin-bottom: 70px;
-  }
-
-  .settings-block {
-    max-width: 350px;
-  }
-
-  .combo-button-label {
-    max-width: 100%;
-  }
-`;
+import {
+  StyledSettingsComponent,
+  StyledScrollbar,
+  StyledArrowRightIcon,
+} from "./StyledSettings";
 
 let greetingTitleFromSessionStorage = "";
 
@@ -309,7 +264,10 @@ class WelcomePageSettings extends React.Component {
     ) : isMobileView ? (
       isMobileViewLanguageTimeSettings
     ) : (
-      <StyledComponent hasScroll={hasScroll} className="category-item-wrapper">
+      <StyledSettingsComponent
+        hasScroll={hasScroll}
+        className="category-item-wrapper"
+      >
         {this.checkInnerWidth() && !isMobileView && (
           <div className="category-item-heading">
             <div className="category-item-title">
@@ -338,7 +296,7 @@ class WelcomePageSettings extends React.Component {
           displaySettings={true}
           hasScroll={hasScroll}
         />
-      </StyledComponent>
+      </StyledSettingsComponent>
     );
   }
 }

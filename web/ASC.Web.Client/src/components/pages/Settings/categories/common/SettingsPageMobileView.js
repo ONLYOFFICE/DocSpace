@@ -12,6 +12,9 @@ const StyledComponent = styled.div`
 
     .category-item-heading {
       padding-bottom: 8px;
+      svg {
+        padding-bottom: 5px;
+      }
     }
 
     .category-item-description {
