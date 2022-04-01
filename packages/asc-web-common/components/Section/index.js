@@ -254,8 +254,6 @@ class Section extends React.Component {
         isSectionBodyAvailable ||
         isSectionPagingAvailable;
 
-    console.log(isSectionAvailable);
-
     const renderSection = () => {
       return (
         <>
