@@ -11,6 +11,7 @@ import toastr from "@appserver/components/toast/toastr";
 import SectionLoader from "../sub-components/section-loader";
 import { getLanguage } from "@appserver/common/utils";
 import { isMobile } from "react-device-detect";
+import { ButtonsWrapper } from "../StyledSecurity";
 
 const MainContainer = styled.div`
   width: 100%;
@@ -22,29 +23,6 @@ const MainContainer = styled.div`
   .box {
     margin-top: 20px;
     margin-bottom: 24px;
-  }
-`;
-
-const ButtonsWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  gap: 8px;
-  align-items: center;
-
-  @media (max-width: 375px) {
-    position: absolute;
-    bottom: 16px;
-    width: calc(100vw - 32px);
-
-    .button {
-      height: 40px;
-      width: 100%;
-    }
-
-    .reminder {
-      position: absolute;
-      bottom: 48px;
-    }
   }
 `;
 
