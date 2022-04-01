@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
 import MobileLayout from "./MobileLayout";
-import { size, isSmallTablet } from "@appserver/components/utils/device";
+import { size } from "@appserver/components/utils/device";
 import {
   isIOS,
   isFirefox,
@@ -25,29 +25,6 @@ const StyledContainer = styled.div`
     z-index: 0;
     > .scroll-body {
       -webkit-user-select: none;
-    }
-  }
-  #articleScrollBar {
-    > .scroll-body {
-      -webkit-touch-callout: none;
-      -webkit-user-select: none;
-      position: ${isMobileOnly && !isSmallTablet() && "absolute"} !important;
-
-      ${isMobileOnly &&
-      !isSmallTablet() &&
-      css`
-        overflow-y: hidden !important;
-        overflow-x: hidden !important;
-        width: 192px;
-      `}
-    }
-
-    .nav-thumb-horizontal {
-      ${(props) =>
-        props.isTabletView &&
-        css`
-          height: 0 !important;
-        `}
     }
   }
 `;
