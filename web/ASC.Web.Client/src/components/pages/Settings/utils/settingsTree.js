@@ -26,8 +26,8 @@ export const settingsTree = [
           {
             key: "0-0-1",
             icon: "",
-            link: "custom-titles",
-            tKey: "CustomTitles",
+            link: "welcome-page-settings",
+            tKey: "CustomTitlesWelcome",
           },
           {
             key: "0-0-2",

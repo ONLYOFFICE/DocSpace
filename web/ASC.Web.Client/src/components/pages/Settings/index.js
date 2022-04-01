@@ -15,8 +15,8 @@ const CustomizationSettings = lazy(() =>
 const LanguageAndTimeZoneSettings = lazy(() =>
   import("./categories/common/settingsCustomization/language-and-time-zone")
 );
-const CustomTitles = lazy(() =>
-  import("./categories/common/settingsCustomization/custom-titles")
+const WelcomePageSettings = lazy(() =>
+  import("./categories/common/settingsCustomization/welcome-page-settings")
 );
 const TeamTemplate = lazy(() => import("./categories/common/team-template"));
 const ThirdPartyServices = lazy(() =>
@@ -46,9 +46,9 @@ const LTZ_URL = combineUrl(
   PROXY_BASE_URL,
   "/common/customization/language-and-time-zone"
 );
-const CUSTOM_TITLE_URL = combineUrl(
+const WELCOME_PAGE_SETTINGS_URL = combineUrl(
   PROXY_BASE_URL,
-  "/common/customization/custom-titles"
+  "/common/customization/welcome-page-settings"
 );
 const TEAM_TEMPLATE_URL = combineUrl(
   PROXY_BASE_URL,
@@ -84,7 +84,11 @@ const Settings = () => {
             component={CustomizationSettings}
           />
           <Route exact path={LTZ_URL} component={LanguageAndTimeZoneSettings} />
-          <Route exact path={CUSTOM_TITLE_URL} component={CustomTitles} />
+          <Route
+            exact
+            path={WELCOME_PAGE_SETTINGS_URL}
+            component={WelcomePageSettings}
+          />
           <Route exact path={TEAM_TEMPLATE_URL} component={TeamTemplate} />
           {/* <Route
             exact

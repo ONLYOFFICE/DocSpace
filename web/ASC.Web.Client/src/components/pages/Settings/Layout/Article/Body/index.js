@@ -86,8 +86,8 @@ class ArticleBodyContent extends React.Component {
         return t("Customization");
       case "StudioTimeLanguageSettings":
         return t("StudioTimeLanguageSettings");
-      case "CustomTitles":
-        return t("CustomTitles");
+      case "CustomTitlesWelcome":
+        return t("CustomTitlesWelcome");
       case "TeamTemplate":
         return t("TeamTemplate");
       case "ManagementCategorySecurity":

@@ -6,13 +6,21 @@ import { inject, observer } from "mobx-react";
 import RadioButtonGroup from "@appserver/components/radio-button-group";
 import Button from "@appserver/components/button";
 import Text from "@appserver/components/text";
+import Link from "@appserver/components/link";
 import toastr from "@appserver/components/toast/toastr";
 import SectionLoader from "../sub-components/section-loader";
+import { getLanguage } from "@appserver/common/utils";
+import { isMobile } from "react-device-detect";
 
 const MainContainer = styled.div`
   width: 100%;
 
+  .page-subtitle {
+    margin-bottom: 10px;
+  }
+
   .box {
+    margin-top: 20px;
     margin-bottom: 24px;
   }
 `;
@@ -53,6 +61,7 @@ const TwoFactorAuth = (props) => {
     const { getTfaType, getTfaSettings } = props;
     const type = await getTfaType();
     setType(type);
+    setCurrentState(type);
 
     const settings = await getTfaSettings();
     setSmsDisabled(settings[0].avaliable);
@@ -61,7 +70,6 @@ const TwoFactorAuth = (props) => {
 
   useEffect(() => {
     getSettings();
-    setCurrentState(type);
     setIsLoading(true);
   }, []);
 
@@ -95,11 +103,23 @@ const TwoFactorAuth = (props) => {
     setType(currentState);
   };
 
-  const balance = "21.30"; //TODO: get from server
-
+  const lng = getLanguage(localStorage.getItem("language") || "en");
   if (!isLoading) return <SectionLoader />;
   return (
     <MainContainer>
+      {isMobile && (
+        <>
+          <Text className="page-subtitle">{t("TwoFactorAuthHelper")}</Text>
+          <Link
+            className="learn-more"
+            target="_blank"
+            href={`https://helpcenter.onlyoffice.com/${lng}/administration/two-factor-authentication.aspx`}
+          >
+            {t("Common:LearnMore")}
+          </Link>
+        </>
+      )}
+
       <RadioButtonGroup
         className="box"
         fontSize="13px"
@@ -111,11 +131,6 @@ const TwoFactorAuth = (props) => {
           {
             label: t("Disabled"),
             value: "none",
-          },
-          {
-            type: "text",
-            label: `${t("SMSCBalance")}: ${balance}`,
-            value: "",
           },
           {
             label: t("BySms"),

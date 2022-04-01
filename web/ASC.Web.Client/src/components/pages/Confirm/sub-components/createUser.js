@@ -31,6 +31,7 @@ import MoreLoginModal from "login/moreLogin";
 import AppLoader from "@appserver/common/components/AppLoader";
 import EmailInput from "@appserver/components/email-input";
 import { smallTablet } from "@appserver/components/utils/device";
+import { getPasswordErrorMessage } from "../../../../helpers/utils";
 
 export const ButtonsWrapper = styled.div`
   display: flex;
@@ -523,12 +524,6 @@ const Confirm = (props) => {
     setIsPasswordErrorShow(true);
   };
 
-  const passwordErrorMessage = `${t("Common:PasswordMinimumLength")} ${
-    settings ? settings.minLength : 8
-  } ${settings.digits ? t("Common:PasswordLimitDigits") : ""} ${
-    settings.upperCase ? t("Common:PasswordLimitUpperCase") : ""
-  } ${settings.specSymbols ? t("Common:PasswordLimitSpecialSymbols") : ""}`;
-
   if (!isLoaded) return <AppLoader />;
   return (
     <ConfirmContainer>
@@ -675,7 +670,7 @@ const Confirm = (props) => {
               hasError={isPasswordErrorShow && !passwordValid}
               errorMessage={`${t(
                 "Common:PasswordLimitMessage"
-              )}: ${passwordErrorMessage}`}
+              )}: ${getPasswordErrorMessage(t, settings)}`}
             >
               <PasswordInput
                 simpleView={false}

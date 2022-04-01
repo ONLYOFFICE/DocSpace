@@ -26,7 +26,7 @@ const StyledBox = styled.div`
   top: 0px;
   left: ${isMobile ? "-16px" : "-20px"};
 
-  padding: ${isMobile ? "0 12px 0 16px" : "0 20px"};
+  padding: ${isMobile ? "0 16px 0 16px" : "0 20px"};
 
   width: ${(props) => props.dropBoxWidth}px;
 
@@ -44,7 +44,7 @@ const StyledBox = styled.div`
 
   @media ${tablet} {
     left: -16px;
-    padding: 0 12px 0 16px;
+    padding: 0 16px 0 16px;
   }
 
   ${isMobileOnly &&

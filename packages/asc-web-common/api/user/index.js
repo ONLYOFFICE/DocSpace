@@ -59,6 +59,7 @@ export function loginWithTfaCode(userName, passwordHash, code) {
   return request({
     method: "post",
     url: `/authentication/${code}`,
+    skipLogout: true,
     data,
   });
 }

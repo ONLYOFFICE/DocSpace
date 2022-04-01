@@ -13,9 +13,10 @@ class ResetApplicationDialogComponent extends React.Component {
   }
 
   resetApp = async () => {
-    const { resetTfaApp, history } = this.props;
+    const { resetTfaApp, history, id } = this.props;
+
     try {
-      const res = await resetTfaApp();
+      const res = await resetTfaApp(id);
       if (res) history.push(res);
     } catch (e) {
       toastr.error(e);
@@ -69,6 +70,7 @@ ResetApplicationDialog.propTypes = {
   visible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   resetTfaApp: PropTypes.func.isRequired,
+  id: PropTypes.string.isRequired,
 };
 
 export default ResetApplicationDialog;
