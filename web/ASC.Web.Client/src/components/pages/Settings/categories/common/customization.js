@@ -3,7 +3,7 @@ import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import withCultureNames from "@appserver/common/hoc/withCultureNames";
 import LanguageAndTimeZone from "./settingsCustomization/language-and-time-zone";
-import CustomTitles from "./settingsCustomization/custom-titles";
+import WelcomePageSettings from "./settingsCustomization/welcome-page-settings";
 import PortalRenaming from "./settingsCustomization/portal-renaming";
 import SettingsPageLayout from "./SettingsPageLayout";
 import SettingsPageMobileView from "./SettingsPageMobileView";
@@ -68,7 +68,7 @@ const Customization = ({ t }) => {
         isMobile ? (
           <SettingsPageMobileView>
             <LanguageAndTimeZone isMobileView={isMobile} />
-            <CustomTitles isMobileView={isMobile} />
+            <WelcomePageSettings isMobileView={isMobile} />
           </SettingsPageMobileView>
         ) : (
           <StyledComponent>
@@ -77,7 +77,7 @@ const Customization = ({ t }) => {
             )}`}</div>
             {/* TODO: Add isMobile = false in component */}
             <LanguageAndTimeZone isMobileView={isMobile} />
-            <CustomTitles isMobileView={isMobile} />
+            <WelcomePageSettings isMobileView={isMobile} />
           </StyledComponent>
         )
       }

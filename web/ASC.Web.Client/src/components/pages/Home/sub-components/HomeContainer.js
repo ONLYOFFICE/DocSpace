@@ -9,7 +9,8 @@ const HomeContainer = styled.div`
   display: flex;
   justify-content: ${isMobile ? "center" : "space-between"};
   align-items: center;
-
+  margin-top: ${(props) =>
+    props.snackbarExist && isMobile ? "150px" : "50px"};
   @media (max-width: 1024px) {
     flex-direction: column;
   }
