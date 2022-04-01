@@ -14,6 +14,7 @@ import { getLanguage } from "@appserver/common/utils";
 import { isMobile } from "react-device-detect";
 import { ButtonsWrapper } from "../StyledSecurity";
 import { getPortalPasswordSettings } from "@appserver/common/api/settings";
+import toastr from "@appserver/components/toast/toastr";
 
 const MainContainer = styled.div`
   width: 100%;
@@ -120,9 +121,9 @@ const PasswordStrength = (props) => {
     )
       .then(() => {
         setShowReminder(false);
-        console.log("Success");
+        toastr.success(t("SuccessfullySaveSettingsMessage"));
       })
-      .catch((e) => console.error(e));
+      .catch((e) => toastr.error(error));
   };
 
   const onCancelClick = () => {
