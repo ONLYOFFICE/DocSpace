@@ -18,10 +18,10 @@ const StyledComponent = styled.div`
     margin-bottom: 20px;
   }
 
-  .category-item-wrapper:not(:last-child) {
+  /* .category-item-wrapper:not(:last-child) {
     border-bottom: 1px solid #eceef1;
     margin-bottom: 24px;
-  }
+  } */
 
   .category-item-description {
     color: ${(props) => props.theme.studio.settings.common.descriptionColor};
@@ -66,10 +66,11 @@ const SettingsPageLayout = ({ children }) => {
   useEffect(() => {
     window.addEventListener("resize", checkInnerWidth);
     return () => window.removeEventListener("resize", checkInnerWidth);
-  }, [checkInnerWidth]);
+  }, []);
 
   //TODO: Add menu, hide along the route
-  const isMobile = !!(isSmallTablet() || mobileView);
+  const isMobile = !!(isSmallTablet() && mobileView);
+
   return <>{children(isMobile)}</>;
 };
 
