@@ -44,6 +44,7 @@ global using ASC.Api.Core;
 global using ASC.Api.Core.Auth;
 global using ASC.Api.Core.Convention;
 global using ASC.Api.Core.Core;
+global using ASC.Api.Core.Extensions;
 global using ASC.Api.Core.Middleware;
 global using ASC.Api.Core.Routing;
 global using ASC.Common;
@@ -52,12 +53,18 @@ global using ASC.Common.DependencyInjection;
 global using ASC.Common.Logging;
 global using ASC.Common.Mapping;
 global using ASC.Common.Notify.Engine;
+global using ASC.Common.Threading;
 global using ASC.Common.Utils;
 global using ASC.Common.Web;
 global using ASC.Core;
 global using ASC.Core.Common.EF;
+global using ASC.Core.Common.Hosting;
+global using ASC.Core.Common.Hosting.Interfaces;
 global using ASC.Core.Tenants;
 global using ASC.Core.Users;
+global using ASC.EventBus;
+global using ASC.EventBus.Abstractions;
+global using ASC.EventBus.RabbitMQ;
 global using ASC.Security.Cryptography;
 global using ASC.Web.Api.Routing;
 global using ASC.Web.Core;
@@ -106,16 +113,7 @@ global using NLog;
 global using NLog.Config;
 global using NLog.Extensions.Logging;
 
+global using RabbitMQ.Client;
+
 global using StackExchange.Redis.Extensions.Core.Configuration;
 global using StackExchange.Redis.Extensions.Newtonsoft;
-global using ASC.Api.Core.Extensions;
-
-global using ASC.Common.Threading;
-global using ASC.Core.Common.Hosting;
-global using ASC.Core.Common.Hosting.Interfaces;
-global using ASC.EventBus;
-global using ASC.EventBus.Abstractions;
-global using ASC.EventBus.MemoryCache;
-global using ASC.EventBus.RabbitMQ;
-
-global using RabbitMQ.Client;
