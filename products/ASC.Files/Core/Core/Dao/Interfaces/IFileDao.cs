@@ -287,7 +287,7 @@ public interface IFileDao<T>
 
     Task<Stream> GetThumbnailAsync(File<T> file);
 
-    Task<IEnumerable<(File<int>, SmallShareRecord)>> GetFeedsAsync(int tenant, DateTime from, DateTime to);
+    Task<IEnumerable<FileWithShare>> GetFeedsAsync(int tenant, DateTime from, DateTime to);
 
     Task<IEnumerable<int>> GetTenantsWithFeedsAsync(DateTime fromTime);
 

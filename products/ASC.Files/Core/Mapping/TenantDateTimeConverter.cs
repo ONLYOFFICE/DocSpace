@@ -24,42 +24,20 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Files.Api;
+namespace ASC.Files.Core.Mapping;
 
-[ConstraintRoute("int")]
-public class MasterFormControllerInternal : MasterFormController<int>
+[Scope]
+public class TenantDateTimeConverter : IValueConverter<DateTime, DateTime>
 {
-    public MasterFormControllerInternal(FileStorageService<int> fileStorageServiceString) : base(fileStorageServiceString)
-    {
-    }
-}
+    private readonly TenantUtil _tenantUtil;
 
-public class MasterFormControllerThirdparty : MasterFormController<string>
-{
-    public MasterFormControllerThirdparty(FileStorageService<string> fileStorageServiceString) : base(fileStorageServiceString)
+    public TenantDateTimeConverter(TenantUtil tenantUtil)
     {
-    }
-}
-
-public abstract class MasterFormController<T> : ApiControllerBase
-{
-    private readonly FileStorageService<T> _fileStorageService;
-
-    public MasterFormController(FileStorageService<T> fileStorageServiceString)
-    {
-        _fileStorageService = fileStorageServiceString;
+        _tenantUtil = tenantUtil;
     }
 
-    [Create("masterform/{fileId}/checkfillformdraft")]
-    public async Task<object> CheckFillFormDraftFromBodyAsync(T fileId, [FromBody] CheckFillFormDraftRequestDto inDto)
+    public DateTime Convert(DateTime sourceMember, ResolutionContext context)
     {
-        return await _fileStorageService.CheckFillFormDraftAsync(fileId, inDto.Version, inDto.Doc, !inDto.RequestEmbedded, inDto.RequestView);
-    }
-
-    [Create("masterform/{fileId}/checkfillformdraft")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public async Task<object> CheckFillFormDraftFromFormAsync(T fileId, [FromForm] CheckFillFormDraftRequestDto inDto)
-    {
-        return await _fileStorageService.CheckFillFormDraftAsync(fileId, inDto.Version, inDto.Doc, !inDto.RequestEmbedded, inDto.RequestView);
+        return _tenantUtil.DateTimeFromUtc(sourceMember);
     }
 }

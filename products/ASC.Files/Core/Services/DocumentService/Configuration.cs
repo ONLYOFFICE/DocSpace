@@ -215,7 +215,7 @@ public class InfoConfig<T>
             {
                 const string crumbsSeporator = " \\ ";
 
-                var breadCrumbsList = _breadCrumbsManager.GetBreadCrumbsAsync(_file.FolderID).Result;
+                var breadCrumbsList = _breadCrumbsManager.GetBreadCrumbsAsync(_file.ParentId).Result;
                 _breadCrumbs = string.Join(crumbsSeporator, breadCrumbsList.Select(folder => folder.Title).ToArray());
             }
 
@@ -240,7 +240,7 @@ public class InfoConfig<T>
 
             try
             {
-                return _fileSharing.GetSharedInfoShortFileAsync(_file.ID).Result;
+                return _fileSharing.GetSharedInfoShortFileAsync(_file.Id).Result;
             }
             catch
             {
@@ -389,7 +389,7 @@ public class EditorConfiguration<T>
                                         Image = _baseCommonLinkUtility.GetFullAbsolutePath("skins/default/images/filetype/thumb/" + extension + ".png"),
                                         Name = file.Title,
                                         Title = file.Title,
-                                        Url = _baseCommonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.GetFileWebEditorUrl(file.ID))
+                                        Url = _baseCommonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.GetFileWebEditorUrl(file.Id))
                                     };
             return listTemplates.ToList();
         }
@@ -475,13 +475,13 @@ public class EditorConfiguration<T>
             var files = _entryManager.GetRecentAsync(filter, false, Guid.Empty, string.Empty, false).Result.Cast<File<int>>();
 
             var listRecent = from file in files
-                             where !Equals(_configuration.Document.Info.GetFile().ID, file.ID)
+                             where !Equals(_configuration.Document.Info.GetFile().Id, file.Id)
                              select
                                  new RecentConfig
                                  {
-                                     Folder = folderDao.GetFolderAsync(file.FolderID).Result.Title,
+                                     Folder = folderDao.GetFolderAsync(file.ParentId).Result.Title,
                                      Title = file.Title,
-                                     Url = _baseCommonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.GetFileWebEditorUrl(file.ID))
+                                     Url = _baseCommonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.GetFileWebEditorUrl(file.Id))
                                  };
 
             return listRecent.ToList();
@@ -695,7 +695,7 @@ public class CustomizationConfig<T>
         {
             return _fileUtility.CanForcesave
                    && !_configuration.Document.Info.GetFile().ProviderEntry
-                   && ThirdPartySelector.GetAppByFileId(_configuration.Document.Info.GetFile().ID.ToString()) == null
+                   && ThirdPartySelector.GetAppByFileId(_configuration.Document.Info.GetFile().Id.ToString()) == null
                    && _filesSettingsHelper.Forcesave;
         }
     }
@@ -724,10 +724,10 @@ public class CustomizationConfig<T>
             var folderDao = _daoFactory.GetFolderDao<T>();
             try
             {
-                var parent = folderDao.GetFolderAsync(_configuration.Document.Info.GetFile().FolderID).Result;
+                var parent = folderDao.GetFolderAsync(_configuration.Document.Info.GetFile().ParentId).Result;
                 var fileSecurity = _fileSecurity;
                 if (_configuration.Document.Info.GetFile().RootFolderType == FolderType.USER
-                    && !Equals(_configuration.Document.Info.GetFile().RootFolderId, _globalFolderHelper.FolderMy)
+                    && !Equals(_configuration.Document.Info.GetFile().RootId, _globalFolderHelper.FolderMy)
                     && !fileSecurity.CanReadAsync(parent).Result)
                 {
                     if (fileSecurity.CanReadAsync(_configuration.Document.Info.GetFile()).Result)

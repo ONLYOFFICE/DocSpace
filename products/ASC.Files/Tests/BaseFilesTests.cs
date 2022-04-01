@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -10,13 +11,21 @@ using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
 using ASC.Core.Tenants;
+using ASC.Files.Api;
+using ASC.Files.Core.ApiModels.RequestDto;
+using ASC.Files.Core.ApiModels.ResponseDto;
 using ASC.Files.Helpers;
-using ASC.Files.Model;
 using ASC.Files.Tests.Infrastructure;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Services.WCFService;
 using ASC.Web.Files.Services.WCFService.FileOperations;
+using ASC.Web.Files.Utils;
 
+using Autofac;
+
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,6 +36,41 @@ using NUnit.Framework.Internal;
 
 namespace ASC.Files.Tests
 {
+    class FilesApplication : WebApplicationFactory<Program>
+    {
+        private readonly Dictionary<string, string> _args;
+
+        public FilesApplication(Dictionary<string, string> args)
+        {
+            _args = args;
+        }
+
+        protected override void ConfigureWebHost(IWebHostBuilder builder)
+        {
+            foreach (var s in _args)
+            {
+                builder.UseSetting(s.Key, s.Value);
+            }
+
+            builder.ConfigureAppConfiguration((context, a) =>
+            {
+                (a.Sources[0] as ChainedConfigurationSource).Configuration["pathToConf"] = a.Build()["pathToConf"];
+            });
+
+            builder.ConfigureServices(services =>
+            {
+                var DIHelper = new ASC.Common.DIHelper();
+                DIHelper.Configure(services);
+                foreach (var a in Assembly.Load("ASC.Files").GetTypes().Where(r => r.IsAssignableTo<ControllerBase>()))
+                {
+                    DIHelper.TryAdd(a);
+                }
+            });
+
+            base.ConfigureWebHost(builder);
+        }
+    }
+
     [SetUpFixture]
     public class MySetUpClass
     {
@@ -35,11 +79,17 @@ namespace ASC.Files.Tests
         [OneTimeSetUp]
         public void CreateDb()
         {
-            var host = Program.CreateHostBuilder(new string[] {
-                "--pathToConf", Path.Combine("..", "..", "..", "..","..", "..", "config"),
-                "--ConnectionStrings:default:connectionString", BaseFilesTests.TestConnection,
-                "--migration:enabled", "true",
-                "--core:products:folder", Path.Combine("..", "..", "..", "..","..", "..", "products")}).Build();
+            var host = new FilesApplication(new Dictionary<string, string>
+                    {
+                        { "pathToConf", Path.Combine("..","..", "..", "config") },
+                        { "ConnectionStrings:default:connectionString", BaseFilesTests.TestConnection },
+                        { "migration:enabled", "true" },
+                        { "core:products:folder", Path.Combine("..","..", "..", "products") },
+                        { "web:hub::internal", "" }
+                    })
+                .WithWebHostBuilder(builder =>
+                {
+                });
 
             Migrate(host.Services);
             Migrate(host.Services, Assembly.GetExecutingAssembly().GetName().Name);
@@ -72,9 +122,15 @@ namespace ASC.Files.Tests
     public class BaseFilesTests
     {
         protected ILog Log { get; set; }
+        protected TagsController TagsController { get; set; }
+        protected SecurityControllerHelper<int> SecurityControllerHelper { get; set; }
         protected FilesControllerHelper<int> FilesControllerHelper { get; set; }
+        protected OperationControllerHelper<int> OperationControllerHelper { get; set; }
+        protected FoldersControllerHelper<int> FoldersControllerHelper { get; set; }
         protected GlobalFolderHelper GlobalFolderHelper { get; set; }
         protected FileStorageService<int> FileStorageService { get; set; }
+        protected FileDtoHelper FileDtoHelper { get; set; }
+        protected EntryManager EntryManager { get; set; }
         protected UserManager UserManager { get; set; }
         protected Tenant CurrentTenant { get; set; }
         protected SecurityContext SecurityContext { get; set; }
@@ -85,13 +141,14 @@ namespace ASC.Files.Tests
 
         public virtual Task SetUp()
         {
-            var host = Program.CreateHostBuilder(new string[] {
-                "--pathToConf" , Path.Combine("..", "..", "..", "..","..", "..", "config"),
-                "--ConnectionStrings:default:connectionString", TestConnection,
-                 "--migration:enabled", "true",
-                 "--web:hub:internal", "",
-            })
-                .Build();
+            var host = new FilesApplication(new Dictionary<string, string>
+                {
+                    { "pathToConf", Path.Combine("..","..", "..", "config") },
+                    { "ConnectionStrings:default:connectionString", TestConnection },
+                    { "migration:enabled", "true" },
+                    { "web:hub:internal", "" }
+                })
+                 .WithWebHostBuilder(a => { });
 
             scope = host.Services.CreateScope();
 
@@ -100,6 +157,12 @@ namespace ASC.Files.Tests
             tenantManager.SetCurrentTenant(tenant);
             CurrentTenant = tenant;
 
+            FileDtoHelper = scope.ServiceProvider.GetService<FileDtoHelper>();
+            EntryManager = scope.ServiceProvider.GetService<EntryManager>();
+            TagsController = scope.ServiceProvider.GetService<TagsController>();
+            SecurityControllerHelper = scope.ServiceProvider.GetService<SecurityControllerHelper<int>>();
+            OperationControllerHelper = scope.ServiceProvider.GetService<OperationControllerHelper<int>>();
+            FoldersControllerHelper = scope.ServiceProvider.GetService<FoldersControllerHelper<int>>();
             FilesControllerHelper = scope.ServiceProvider.GetService<FilesControllerHelper<int>>();
             GlobalFolderHelper = scope.ServiceProvider.GetService<GlobalFolderHelper>();
             UserManager = scope.ServiceProvider.GetService<UserManager>();
@@ -114,7 +177,7 @@ namespace ASC.Files.Tests
 
         public async Task DeleteFolderAsync(int folder)
         {
-            await FilesControllerHelper.DeleteFolder(folder, false, true);
+            await FoldersControllerHelper.DeleteFolder(folder, false, true);
             while (true)
             {
                 var statuses = FileStorageService.GetTasksStatuses();
@@ -137,7 +200,7 @@ namespace ASC.Files.Tests
             }
         }
 
-        public BatchModel GetBatchModel(string text)
+        public BatchRequestDto GetBatchModel(string text)
         {
             var json = text;
 
@@ -147,7 +210,7 @@ namespace ASC.Files.Tests
             var fileIds = root[1].GetProperty("fileIds").EnumerateArray().ToList();
             var destFolderdId = root[2];
 
-            var batchModel = new BatchModel
+            var batchModel = new BatchRequestDto
             {
                 FolderIds = folderIds,
                 FileIds = fileIds,

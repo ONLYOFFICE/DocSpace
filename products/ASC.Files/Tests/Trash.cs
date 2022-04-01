@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-using ASC.Api.Documents;
+using ASC.Files.Core.ApiModels.ResponseDto;
 using ASC.Web.Files.Services.WCFService.FileOperations;
 
 using NUnit.Framework;
@@ -12,14 +12,14 @@ namespace ASC.Files.Tests
     [TestFixture]
     class Trash : BaseFilesTests
     {
-        private FolderWrapper<int> TestFolder { get; set; }
-        public FileWrapper<int> TestFile { get; private set; }
+        private FolderDto<int> TestFolder { get; set; }
+        public FileDto<int> TestFile { get; private set; }
 
         [OneTimeSetUp]
         public override async Task SetUp()
         {
             await base.SetUp();
-            TestFolder = await FilesControllerHelper.CreateFolderAsync(GlobalFolderHelper.FolderMy, "TestFolder");
+            TestFolder = await FoldersControllerHelper.CreateFolderAsync(GlobalFolderHelper.FolderMy, "TestFolder");
             TestFile = await FilesControllerHelper.CreateFileAsync(GlobalFolderHelper.FolderMy, "TestFile", default);
 
         }
@@ -42,7 +42,7 @@ namespace ASC.Files.Tests
         [Order(1)]
         public void CreateFolderReturnsFolderWrapper(string folderTitle)
         {
-            var folderWrapper = Assert.ThrowsAsync<InvalidOperationException>(async () => await FilesControllerHelper.CreateFolderAsync((int)GlobalFolderHelper.FolderTrash, folderTitle));
+            var folderWrapper = Assert.ThrowsAsync<InvalidOperationException>(async () => await FoldersControllerHelper.CreateFolderAsync((int)GlobalFolderHelper.FolderTrash, folderTitle));
             Assert.That(folderWrapper.Message == "You don't have enough permission to create");
         }
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCreateFileItems))]
@@ -59,7 +59,7 @@ namespace ASC.Files.Tests
         [Order(2)]
         public async Task DeleteFileFromTrash()
         {
-            var Empty = await FilesControllerHelper.EmptyTrashAsync();
+            var Empty = await OperationControllerHelper.EmptyTrashAsync();
 
             List<FileOperationResult> statuses;
 

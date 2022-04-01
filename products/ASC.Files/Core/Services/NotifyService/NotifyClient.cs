@@ -87,7 +87,7 @@ public class NotifyClient
             file.UniqID,
             recipient,
             true,
-            new TagValue(NotifyConstants.TagDocumentUrl, _baseCommonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.GetFileWebPreviewUrl(_fileUtility, file.Title, file.ID))),
+            new TagValue(NotifyConstants.TagDocumentUrl, _baseCommonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.GetFileWebPreviewUrl(_fileUtility, file.Title, file.Id))),
             new TagValue(NotifyConstants.TagDocumentTitle, file.Title),
             new TagValue(NotifyConstants.TagMessage, sourceTitle)
             );
@@ -135,13 +135,13 @@ public class NotifyClient
         var client = _notifyContext.RegisterClient(_notifyEngineQueue, _notifySource);
 
         var folderDao = _daoFactory.GetFolderDao<T>();
-        if (fileEntry.FileEntryType == FileEntryType.File && await folderDao.GetFolderAsync(((File<T>)fileEntry).FolderID) == null)
+        if (fileEntry.FileEntryType == FileEntryType.File && await folderDao.GetFolderAsync(((File<T>)fileEntry).ParentId) == null)
         {
             return;
         }
 
         var url = fileEntry.FileEntryType == FileEntryType.File
-                      ? _filesLinkUtility.GetFileWebPreviewUrl(_fileUtility, fileEntry.Title, fileEntry.ID)
+                      ? _filesLinkUtility.GetFileWebPreviewUrl(_fileUtility, fileEntry.Title, fileEntry.Id)
                       : await _pathProvider.GetFolderUrlAsync((Folder<T>)fileEntry);
 
         var recipientsProvider = _notifySource.GetRecipientsProvider();

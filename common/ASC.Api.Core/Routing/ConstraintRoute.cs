@@ -24,42 +24,25 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Files.Api;
+namespace ASC.Api.Core.Routing;
 
-[ConstraintRoute("int")]
-public class MasterFormControllerInternal : MasterFormController<int>
+public class ConstraintRoute : Attribute
 {
-    public MasterFormControllerInternal(FileStorageService<int> fileStorageServiceString) : base(fileStorageServiceString)
-    {
-    }
-}
+    private readonly string _constraint;
 
-public class MasterFormControllerThirdparty : MasterFormController<string>
-{
-    public MasterFormControllerThirdparty(FileStorageService<string> fileStorageServiceString) : base(fileStorageServiceString)
+    public ConstraintRoute(string constraint)
     {
-    }
-}
-
-public abstract class MasterFormController<T> : ApiControllerBase
-{
-    private readonly FileStorageService<T> _fileStorageService;
-
-    public MasterFormController(FileStorageService<T> fileStorageServiceString)
-    {
-        _fileStorageService = fileStorageServiceString;
+        _constraint = constraint;
     }
 
-    [Create("masterform/{fileId}/checkfillformdraft")]
-    public async Task<object> CheckFillFormDraftFromBodyAsync(T fileId, [FromBody] CheckFillFormDraftRequestDto inDto)
+    public IRouteConstraint GetRouteConstraint()
     {
-        return await _fileStorageService.CheckFillFormDraftAsync(fileId, inDto.Version, inDto.Doc, !inDto.RequestEmbedded, inDto.RequestView);
-    }
+        switch (_constraint)
+        {
+            case "int":
+                return new IntRouteConstraint();
+        }
 
-    [Create("masterform/{fileId}/checkfillformdraft")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public async Task<object> CheckFillFormDraftFromFormAsync(T fileId, [FromForm] CheckFillFormDraftRequestDto inDto)
-    {
-        return await _fileStorageService.CheckFillFormDraftAsync(fileId, inDto.Version, inDto.Doc, !inDto.RequestEmbedded, inDto.RequestView);
+        return null;
     }
 }

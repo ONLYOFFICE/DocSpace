@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using Profile = AutoMapper.Profile;
+
 namespace ASC.Files.Core;
 
 [Flags]
@@ -42,8 +44,8 @@ public enum FileStatus
 
 [Transient]
 [Serializable]
-[DebuggerDisplay("{Title} ({ID} v{Version})")]
-public class File<T> : FileEntry<T>, IFileEntry<T>
+[DebuggerDisplay("{Title} ({Id} v{Version})")]
+public class File<T> : FileEntry<T>, IFileEntry<T>, IMapFrom<DbFileQuery>
 {
     private FileStatus _status;
 
@@ -105,7 +107,7 @@ public class File<T> : FileEntry<T>, IFileEntry<T>
         set => _status = value;
     }
 
-    public override string UniqID => $"file_{ID}";
+    public override string UniqID => $"file_{Id}";
 
     [JsonIgnore]
     public override string Title => FileHelper.GetTitle(this);
@@ -213,4 +215,17 @@ public class File<T> : FileEntry<T>, IFileEntry<T>
     }
 
     public object NativeAccessor { get; set; }
+
+    public void Mapping(Profile profile)
+    {
+        profile.CreateMap<DbFileQuery, File<int>>()
+            .ForMember(r => r.CreateOn, r => r.ConvertUsing<TenantDateTimeConverter, DateTime>(s => s.File.CreateOn))
+            .ForMember(r => r.ModifiedOn, r => r.ConvertUsing<TenantDateTimeConverter, DateTime>(s => s.File.ModifiedOn))
+            .IncludeMembers(r => r.File)
+            .ConstructUsingServiceLocator();
+
+        profile.CreateMap<DbFile, File<int>>();
+    }
 }
+
+
