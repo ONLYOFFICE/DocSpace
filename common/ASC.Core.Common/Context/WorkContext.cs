@@ -148,7 +148,7 @@ public class WorkContext
                 emailSender.Init(properties);
             }
 
-            NotifyContext.RegisterSender(_dispatchEngine, Constants.NotifyEMailSenderSysName, new EmailSenderSink(emailSender, _serviceProvider, _options));
+            NotifyContext.RegisterSender(_dispatchEngine, Constants.NotifyEMailSenderSysName, new EmailSenderSink(emailSender, _serviceProvider));
             NotifyContext.RegisterSender(_dispatchEngine, Constants.NotifyMessengerSenderSysName, new JabberSenderSink(jabberSender, _serviceProvider));
             NotifyContext.RegisterSender(_dispatchEngine, Constants.NotifyTelegramSenderSysName, new TelegramSenderSink(telegramSender, _serviceProvider));
 
@@ -200,7 +200,7 @@ public static class WorkContextExtension
     {
         dIHelper.TryAdd<NotifyTransferRequest>();
         dIHelper.TryAdd<TelegramHelper>();
-        dIHelper.TryAdd<EmailSenderSinkScope>();
-        dIHelper.TryAdd<JabberSenderSinkScope>();
+        dIHelper.TryAdd<TelegramSenderSinkMessageCreator>();
+        dIHelper.TryAdd<JabberSenderSinkMessageCreator>();
     }
 }

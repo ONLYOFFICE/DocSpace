@@ -35,8 +35,14 @@ public sealed class Context : INotifyRegistry
     internal const string SysRecipientAddress = "SYS_RECIPIENT_ADDRESS";
 
     private readonly Dictionary<string, ISenderChannel> _channels = new Dictionary<string, ISenderChannel>(2);
+    private readonly IOptionsMonitor<ILog> _options;
 
     public event Action<Context, INotifyClient> NotifyClientRegistration;
+
+    public Context(IOptionsMonitor<ILog> options)
+    {
+        _options = options;
+    }
 
     public void RegisterSender(DispatchEngine dispatchEngine, string senderName, ISink senderSink)
     {
@@ -67,7 +73,7 @@ public sealed class Context : INotifyRegistry
     public INotifyClient RegisterClient(NotifyEngineQueue notifyEngineQueue, INotifySource source)
     {
         //ValidateNotifySource(source);
-        var client = new NotifyClientImpl(notifyEngineQueue, source);
+        var client = new NotifyClientImpl(_options, notifyEngineQueue, source);
         NotifyClientRegistration?.Invoke(this, client);
 
         return client;
