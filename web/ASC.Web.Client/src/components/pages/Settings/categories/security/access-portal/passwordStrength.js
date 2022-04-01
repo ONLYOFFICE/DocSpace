@@ -120,6 +120,7 @@ const PasswordStrength = (props) => {
       useSpecialSymbols
     )
       .then(() => {
+        getSettings();
         setShowReminder(false);
         toastr.success(t("SuccessfullySaveSettingsMessage"));
       })
