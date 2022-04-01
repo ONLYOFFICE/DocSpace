@@ -1,17 +1,13 @@
-import RectangleLoader from "@appserver/common/components/Loaders/RectangleLoader";
 import { FileType } from "@appserver/common/constants";
 import { LANGUAGE } from "@appserver/common/constants";
-const moment = require("moment");
-
 import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
 import Tooltip from "@appserver/components/tooltip";
 import React, { useEffect, useState } from "react";
 import { ReactSVG } from "react-svg";
-
 import {
   StyledAccess,
-  StyledAccessUser,
+  StyledAccessItem,
   StyledOpenSharingPanel,
   StyledProperties,
   StyledSubtitle,
@@ -19,8 +15,10 @@ import {
   StyledTitle,
 } from "./styles/styles.js";
 
+const moment = require("moment");
+
 const SingleItem = (props) => {
-  let {
+  const {
     t,
     selectedItem,
     onSelectItem,
@@ -50,8 +48,6 @@ const SingleItem = (props) => {
       others: [],
     },
   });
-  const [showAccess, setShowAccess] = useState(false);
-  const [isShowAllAccessUsers, setIsShowAllAccessUsers] = useState(false);
 
   const updateItemsInfo = async (selectedItem) => {
     const getItemIcon = (item, size) => {
@@ -117,11 +113,11 @@ const SingleItem = (props) => {
             item.createdBy?.profileUrl
           ),
         },
-        {
-          id: "Location",
-          title: t("InfoPanel:Location"),
-          content: <RectangleLoader width="150" height="19" />,
-        },
+        // {
+        //   id: "Location",
+        //   title: t("InfoPanel:Location"),
+        //   content: styledText("..."),
+        // },
         {
           id: "Type",
           title: t("Common:Type"),
@@ -243,67 +239,55 @@ const SingleItem = (props) => {
     };
 
     const updateLoadedItemAccess = async (selectedItem) => {
-      const parentFolderId = selectedItem.isFolder
-        ? selectedItem.parentId
-        : selectedItem.folderId;
+      const accesses = await getShareUsers(
+        [selectedItem.isFolder ? selectedItem.parentId : selectedItem.folderId],
+        [selectedItem.id]
+      );
 
-      let result;
-      await getShareUsers([parentFolderId], [selectedItem.id])
-        .catch((e) => {
-          setShowAccess(false);
-        })
-        .then((accesses) => {
-          if (!accesses) {
-            setShowAccess(false);
-            return;
-          }
-          const accessResult = {
-            owner: {},
-            others: [],
-          };
+      const result = {
+        owner: {},
+        others: [],
+      };
 
-          accesses.forEach((access) => {
-            const user = access.sharedTo;
-            const userData = {
-              key: user.id,
-              img: user.avatarSmall,
-              link: user.profileUrl,
-              name: user.displayName,
-              email: user.email,
-            };
+      accesses.forEach((access) => {
+        let key = access.sharedTo.id,
+          img = access.sharedTo.avatarSmall,
+          link = access.sharedTo.profileUrl,
+          name = access.sharedTo.displayName || access.sharedTo.name,
+          { manager } = access.sharedTo;
 
-            if (access.isOwner) accessResult.owner = userData;
-            else if (userData.email !== undefined)
-              accessResult.others.push(userData);
-          });
+        if (access.isOwner) result.owner = { key, img, link, name };
+        else {
+          if (access.sharedTo.email)
+            result.others.push({ key, type: "user", img, link, name });
+          else if (access.sharedTo.manager)
+            result.others.push({ key, type: "group", name, manager });
+        }
+      });
 
-          result = accessResult;
-        });
+      result.others = result.others.sort((a) => (a.type === "group" ? -1 : 1));
       return result;
     };
 
-    const properties = await updateLoadedItemProperties(
-      displayedItem,
-      selectedItem
-    );
+    // const properties = await updateLoadedItemProperties(
+    //   displayedItem,
+    //   selectedItem
+    // );
 
-    let access;
-    if (!dontShowAccess) {
-      access = await updateLoadedItemAccess(selectedItem);
-    }
-
-    if (updateSubscription) {
+    if (dontShowAccess) {
       setItem({
         ...displayedItem,
         properties: properties,
-        access: access,
       });
-      if (access) setShowAccess(true);
+      return;
     }
-  };
 
-  const showAllAccessUsers = () => {
-    setIsShowAllAccessUsers(true);
+    const access = await updateLoadedItemAccess(selectedItem);
+    setItem({
+      ...displayedItem,
+      // properties: properties,
+      access: access,
+    });
   };
 
   const openSharingPanel = () => {
@@ -354,7 +338,7 @@ const SingleItem = (props) => {
         })}
       </StyledProperties>
 
-      {showAccess && (
+      {!dontShowAccess && item.access && (
         <>
           <StyledSubtitle>
             <Text fontWeight="600" fontSize="14px">
@@ -364,62 +348,59 @@ const SingleItem = (props) => {
 
           <StyledAccess>
             <Tooltip
-              id="access-user-tooltip"
+              id="access-item-tooltip"
               getContent={(dataTip) =>
                 dataTip ? <Text fontSize="13px">{dataTip}</Text> : null
               }
             />
 
-            <StyledAccessUser>
+            <StyledAccessItem>
               <div
-                data-for="access-user-tooltip"
-                data-tip={item.access?.owner?.name}
+                data-for="access-item-tooltip"
+                className="access-item-tooltip"
+                data-tip={item.access.owner.name}
               >
-                <a href={item.access?.owner?.link}>
-                  <img src={item.access?.owner?.img} />
-                </a>
+                <div className="item-user">
+                  <a href={item.access.owner.link}>
+                    <img src={item.access.owner.img} />
+                  </a>
+                </div>
               </div>
-            </StyledAccessUser>
+            </StyledAccessItem>
 
-            {item.access.others.length ? <div className="divider"></div> : null}
+            {item.access.others.length > 0 && <div className="divider"></div>}
 
-            {!isShowAllAccessUsers && item.access.others.length > 3 ? (
-              <>
-                {item.access.others.map((user, i) => {
-                  if (i < 3)
-                    return (
-                      <div key={user.key}>
-                        <StyledAccessUser>
-                          <div
-                            data-for="access-user-tooltip"
-                            data-tip={user.name}
-                          >
-                            <a href={user.link}>
-                              <img src={user.img} />
+            {item.access.others.map((item, i) => {
+              if (i < 3)
+                return (
+                  <div key={item.key}>
+                    <StyledAccessItem>
+                      <div
+                        data-for="access-item-tooltip"
+                        data-tip={item.name}
+                        className="access-item-tooltip"
+                      >
+                        {item.type === "user" ? (
+                          <div className="item-user">
+                            <a href={item.link}>
+                              <img src={item.img} />
                             </a>
                           </div>
-                        </StyledAccessUser>
+                        ) : (
+                          <div className="item-group">
+                            <span>{item.name.substr(0, 2).toUpperCase()}</span>
+                          </div>
+                        )}
                       </div>
-                    );
-                })}
-                <div className="show-more-users" onClick={showAllAccessUsers}>
-                  {`+ ${item.access.others.length - 3} ${t("Members")}`}
-                </div>
-              </>
-            ) : (
-              <>
-                {item.access.others.map((user) => (
-                  <div key={user.key}>
-                    <StyledAccessUser>
-                      <div data-for="access-user-tooltip" data-tip={user.name}>
-                        <a href={user.link}>
-                          <img src={user.img} />
-                        </a>
-                      </div>
-                    </StyledAccessUser>
+                    </StyledAccessItem>
                   </div>
-                ))}
-              </>
+                );
+            })}
+
+            {item.access.others.length > 3 && (
+              <div className="show-more-users" onClick={openSharingPanel}>
+                {`+ ${item.access.others.length - 3} ${t("Members")}`}
+              </div>
             )}
           </StyledAccess>
           <StyledOpenSharingPanel onClick={openSharingPanel}>

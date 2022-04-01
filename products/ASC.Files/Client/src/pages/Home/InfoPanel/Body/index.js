@@ -5,7 +5,6 @@ import { withRouter } from "react-router";
 import SeveralItems from "./SeveralItems";
 import SingleItem from "./SingleItem";
 import { StyledInfoRoomBody } from "./styles/styles.js";
-import Loader from "@appserver/components/loader";
 import { Base } from "@appserver/components/themes";
 
 const InfoPanelBodyContent = ({
@@ -19,17 +18,18 @@ const InfoPanelBodyContent = ({
   onSelectItem,
   setSharingPanelVisible,
   isRecycleBinFolder,
-  isCommonFolder,
   isRecentFolder,
   isFavoritesFolder,
 }) => {
-  console.log("--- ||| RENDER INFO PANEL ||| ---");
-
   const singleItem = (item) => {
     const dontShowLocation = item.isFolder && item.parentId === 0;
     const dontShowSize = item.isFolder && (isFavoritesFolder || isRecentFolder);
     const dontShowAccess =
-      isRecycleBinFolder || isCommonFolder || selectedItems.length === 0;
+      isRecycleBinFolder ||
+      (item.isFolder && item.parentId === 0) ||
+      item.rootFolderId === 7 ||
+      (item.isFolder && item.pathParts[0] === 7);
+
     return (
       <SingleItem
         t={t}
@@ -82,7 +82,6 @@ export default inject(
     const { setSharingPanelVisible } = dialogsStore;
     const {
       isRecycleBinFolder,
-      isCommonFolder,
       isRecentFolder,
       isFavoritesFolder,
     } = treeFoldersStore;
@@ -97,7 +96,6 @@ export default inject(
       onSelectItem,
       setSharingPanelVisible,
       isRecycleBinFolder,
-      isCommonFolder,
       isRecentFolder,
       isFavoritesFolder,
     };

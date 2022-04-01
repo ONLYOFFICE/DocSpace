@@ -1953,20 +1953,23 @@ const Dark = {
   },
 
   infoPanel: {
+    sectionHeaderToggleIcon: "#858585",
+    sectionHeaderToggleIconActive: "#c4c4c4",
+    sectionHeaderToggleBg: "transparent",
+    sectionHeaderToggleBgActive: "#292929",
+
     backgroundColor: black,
     borderColor: "#292929",
     textColor: white,
-    showAccessUsersTextColor: gray,
-    showAccessPanelTextColor: "#E06A1B",
-    headerCrossColor: gray,
+
     closeButtonIcon: black,
     closeButtonBg: "#a2a2a2",
 
-    sectionHeaderToggleIcon: "#858585",
-    sectionHeaderToggleIconActive: "#c4c4c4",
+    accessGroupBg: "#242424",
+    accessGroupText: white,
 
-    sectionHeaderToggleBg: "transparent",
-    sectionHeaderToggleBgActive: "#292929",
+    showAccessUsersTextColor: gray,
+    showAccessPanelTextColor: "#E06A1B",
   },
 
   filesArticleBody: {
