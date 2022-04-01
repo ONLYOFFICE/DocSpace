@@ -79,6 +79,22 @@ const StyledMainBar = styled.div`
       min-width: 100vw;
     }
   `}
+
+  ${(props) =>
+    !props.isSectionHeaderAvailable &&
+    css`
+      width: 100vw !important;
+      max-width: 100vw !important;
+
+      ${isMobile &&
+      css`
+        position: fixed;
+        top: 48px;
+        left: 0;
+        margin-left: 0 !important;
+        box-sizing: border-box;
+      `}
+    `}
 `;
 
 function SectionHeader() {
@@ -238,6 +254,8 @@ class Section extends React.Component {
         isSectionBodyAvailable ||
         isSectionPagingAvailable;
 
+    console.log(isSectionAvailable);
+
     const renderSection = () => {
       return (
         <>
@@ -261,12 +279,13 @@ class Section extends React.Component {
                     maintenanceExist={maintenanceExist}
                     isSectionBarAvailable={isSectionBarAvailable}
                   >
-                    {isSectionBarAvailable && !isMobile && (
+                    {!isMobile && (
                       <StyledMainBar
                         width={width}
                         id="main-bar"
                         className={"main-bar"}
                         showText={showText}
+                        isSectionHeaderAvailable={isSectionHeaderAvailable}
                       >
                         <SubSectionBar
                           setMaintenanceExist={setMaintenanceExist}
@@ -314,12 +333,15 @@ class Section extends React.Component {
                           viewAs={viewAs}
                           isHomepage={isHomepage}
                         >
-                          {isSectionBarAvailable && isMobile && (
+                          {isMobile && (
                             <StyledMainBar
                               width={width}
                               id="main-bar"
                               className={"main-bar"}
                               showText={showText}
+                              isSectionHeaderAvailable={
+                                isSectionHeaderAvailable
+                              }
                             >
                               <SubSectionBar
                                 setMaintenanceExist={setMaintenanceExist}
