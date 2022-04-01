@@ -259,46 +259,15 @@ public class BackupWorker
         return progress;
     }
 
-    public bool HaveBackupRestoreRequestWaitingTasks()
+    public bool IsInstanceTooBusy()
     {
-        var countActiveTask = _progressQueue.GetAllTasks<RestoreProgressItem>().Where(x => !x.IsCompleted).Count();
+        var instanceTasks = _progressQueue.GetAllTasks(DistributedTaskQueue.INSTANCE_ID);
 
-        if (_progressQueue.MaxThreadsCount >= countActiveTask)
+        if (_progressQueue.MaxThreadsCount >= instanceTasks.Count())
         {
             return false;
         }
 
         return true;
-
-    }
-
-    public bool HaveBackupTransferRequestWaitingTasks()
-    {
-        if (_progressQueue.MaxThreadsCount == -1) return false;
-
-        var countActiveTask = _progressQueue.GetAllTasks<TransferProgressItem>().Where(x => !x.IsCompleted).Count();
-
-        if (_progressQueue.MaxThreadsCount >= countActiveTask)
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-
-    public bool HaveBackupRequestWaitingTasks()
-    {
-        if (_progressQueue.MaxThreadsCount == -1) return false;
-
-        var countActiveTask = _progressQueue.GetAllTasks<BackupProgressItem>().Where(x => !x.IsCompleted).Count();
-
-        if (_progressQueue.MaxThreadsCount >= countActiveTask)
-        {
-            return false;
-        }
-
-        return true;
-
     }
 }

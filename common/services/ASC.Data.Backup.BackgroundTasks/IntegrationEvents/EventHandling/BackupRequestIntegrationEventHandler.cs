@@ -34,7 +34,7 @@ public class BackupRequestIntegrationEventHandler : IIntegrationEventHandler<Bac
 
         if (!@event.Redelivered)
         {
-            if (_backupWorker.HaveBackupRequestWaitingTasks())
+            if (_backupWorker.IsInstanceTooBusy())
             {
                 throw new IntegrationEventRejectExeption(@event.Id);
             }
