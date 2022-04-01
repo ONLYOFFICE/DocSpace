@@ -28,6 +28,7 @@ namespace ASC.Files.Helpers;
 
 public class FilesControllerHelper<T> : FilesHelperBase<T>
 {
+    private readonly IServiceProvider _serviceProvider;
     private readonly ILog _logger;
     private readonly ApiDateTimeHelper _apiDateTimeHelper;
     private readonly UserManager _userManager;
@@ -36,6 +37,7 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
     private readonly FileOperationDtoHelper _fileOperationDtoHelper;
 
     public FilesControllerHelper(
+        IServiceProvider serviceProvider,
         FilesSettingsHelper filesSettingsHelper,
         FileUploader fileUploader,
         SocketManager socketManager,
@@ -62,6 +64,7 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
             httpContextAccessor,
             folderDtoHelper)
     {
+        _serviceProvider = serviceProvider;
         _logger = logger;
         _apiDateTimeHelper = apiDateTimeHelper;
         _fileConverter = fileConverter;
@@ -259,8 +262,10 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
         }
     }
 
-    public async Task<FileDto<TTemplate>> CopyFileAsAsync<TTemplate>(FileStorageService<TTemplate> service, FilesControllerHelper<TTemplate> controller, T fileId, TTemplate destFolderId, string destTitle, string password = null)
+    public async Task<FileDto<TTemplate>> CopyFileAsAsync<TTemplate>(T fileId, TTemplate destFolderId, string destTitle, string password = null)
     {
+        var service = _serviceProvider.GetService<FileStorageService<TTemplate>>();
+        var controller = _serviceProvider.GetService<FilesControllerHelper<TTemplate>>();
         var file = await _fileStorageService.GetFileAsync(fileId, -1);
         var ext = FileUtility.GetFileExtension(file.Title);
         var destExt = FileUtility.GetFileExtension(destTitle);
