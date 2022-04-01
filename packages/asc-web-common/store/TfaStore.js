@@ -64,8 +64,8 @@ class TfaStore {
     return api.settings.getTfaNewBackupCodes();
   };
 
-  unlinkApp = async () => {
-    return api.settings.unlinkTfaApp();
+  unlinkApp = async (id) => {
+    return api.settings.unlinkTfaApp(id);
   };
 }
 
