@@ -28,6 +28,8 @@ const StyledComponent = styled.div`
   .category-item-wrapper:not(:last-child) {
     border-bottom: 1px solid #eceef1;
     margin-bottom: 24px;
+    // Add
+    padding-bottom: 24px;
   }
 
   .category-item-description {
@@ -66,15 +68,16 @@ const Customization = ({ t }) => {
         isMobile ? (
           <SettingsPageMobileView>
             <LanguageAndTimeZone isMobileView={isMobile} />
-            {/* <CustomTitles /> */}
+            <CustomTitles isMobileView={isMobile} />
           </SettingsPageMobileView>
         ) : (
           <StyledComponent>
             <div className="category-description">{`${t(
               "Settings:CustomizationDescription"
             )}`}</div>
+            {/* TODO: Add isMobile = false in component */}
             <LanguageAndTimeZone isMobileView={isMobile} />
-            {/* <CustomTitles /> */}
+            <CustomTitles isMobileView={isMobile} />
           </StyledComponent>
         )
       }

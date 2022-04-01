@@ -11,6 +11,12 @@ module.exports = class Endpoints {
     baseDir: "settings",
   };
 
+  static timeandlanguage = {
+    url: ["http://localhost:8092/api/2.0/settings/timeandlanguage.json"],
+    method: "PUT",
+    baseDir: "settings",
+  };
+
   static common = {
     url: ["http://localhost:8092/api/2.0/settings/customschemas/Common.json"],
     method: "GET",

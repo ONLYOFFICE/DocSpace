@@ -1950,6 +1950,7 @@ const Dark = {
 
     header: {
       backgroundColor: black,
+      background: `linear-gradient(180deg,#333333 2.81%,rgba(51, 51, 51, 0.91) 63.03%,rgba(255, 255, 255, 0) 100%)`,
     },
   },
 
@@ -2589,7 +2590,7 @@ const Dark = {
       },
 
       security: {
-        arrowFill: black,
+        arrowFill: white,
         descriptionColor: "#858585",
 
         admins: {
@@ -2669,6 +2670,10 @@ const Dark = {
   editor: {
     color: "#eeeeee",
     background: black,
+  },
+
+  submenu: {
+    lineColor: "#474747",
   },
 };
 

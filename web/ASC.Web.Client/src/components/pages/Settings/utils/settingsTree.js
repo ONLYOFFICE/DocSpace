@@ -55,30 +55,30 @@ export const settingsTree = [
       {
         key: "1-0",
         icon: "",
-        link: "access-rights",
-        tKey: "AccessRights",
+        link: "access-portal",
+        tKey: "PortalAccess",
         isCategory: true,
         children: [
           {
             key: "1-0-0",
             icon: "",
-            link: "admins",
-            tKey: "Admins",
+            link: "tfa",
+            tKey: "TwoFactorAuth",
           },
         ],
       },
       {
         key: "1-1",
         icon: "",
-        link: "access-portal",
-        tKey: "PortalAccess",
+        link: "access-rights",
+        tKey: "AccessRights",
         isCategory: true,
         children: [
           {
             key: "1-1-0",
             icon: "",
-            link: "tfa",
-            tKey: "TwoFactorAuth",
+            link: "admins",
+            tKey: "Admins",
           },
         ],
       },

@@ -253,7 +253,6 @@ const Form = (props) => {
       })
       .catch((error) => {
         setErrorText(error);
-        setIdentifierValid(!error);
         setPasswordValid(!error);
         setIsLoading(false);
         focusInput();
@@ -412,7 +411,7 @@ const Form = (props) => {
               className="form-field"
               isVertical={true}
               labelVisible={false}
-              hasError={isEmailErrorShow && !identifierValid}
+              hasError={(isEmailErrorShow && !identifierValid) || errorText}
               errorMessage={
                 errorText ? t(`Common:${errorText}`) : t("Common:RequiredField")
               } //TODO: Add wrong login server error
@@ -421,7 +420,10 @@ const Form = (props) => {
                 id="login"
                 name="login"
                 type="email"
-                hasError={isEmailErrorShow && !identifierValid}
+                hasError={
+                  (isEmailErrorShow && !identifierValid) ||
+                  (errorText && errorText.length > 0)
+                }
                 value={identifier}
                 placeholder={t("RegistrationEmailWatermark")}
                 size="large"

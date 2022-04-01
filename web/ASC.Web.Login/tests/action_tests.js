@@ -95,3 +95,30 @@ Scenario("Test login success", async ({ I }) => {
   });
   I.see("Documents");
 });
+
+Scenario("Test fix wrong login", async ({ I }) => {
+  I.mockEndpoint(Endpoints.people, "self");
+  I.mockEndpoint(Endpoints.modules, "info");
+  I.mockEndpoint(Endpoints.auth, "authError");
+  I.fillField("login", "test@mail.ru");
+  I.fillField("password", secret("12345678!"));
+  I.click({
+    react: "Button",
+    props: {
+      className: "login-button",
+      type: "page",
+    },
+  });
+  I.see("User authentication failed");
+
+  I.mockEndpoint(Endpoints.auth, "authSuccess");
+  I.fillField("password", secret("12345678"));
+  I.click({
+    react: "Button",
+    props: {
+      className: "login-button",
+      type: "page",
+    },
+  });
+  I.see("Documents");
+});
