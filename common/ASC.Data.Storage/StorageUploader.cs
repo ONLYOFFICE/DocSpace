@@ -78,9 +78,9 @@ public class StorageUploader
 
     public void Stop()
     {
-        foreach (var task in Queue.GetAllTasks<MigrateOperation>().Where(r => r.Status == DistributedTaskStatus.Running))
+        foreach (var task in Queue.GetAllTasks(DistributedTaskQueue.INSTANCE_ID).Where(r => r.Status == DistributedTaskStatus.Running))
         {
-            Queue.CancelTask(task.Id);
+            Queue.DequeueTask(task.Id);
         }
     }
 

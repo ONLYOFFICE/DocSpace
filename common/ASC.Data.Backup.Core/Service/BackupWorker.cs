@@ -84,11 +84,11 @@ public class BackupWorker
     {
         if (_progressQueue != null)
         {
-            var tasks = _progressQueue.GetAllTasks();
+            var tasks = _progressQueue.GetAllTasks(DistributedTaskQueue.INSTANCE_ID);
 
             foreach (var t in tasks)
             {
-                _progressQueue.CancelTask(t.Id);
+                _progressQueue.DequeueTask(t.Id);
             }
 
             _progressQueue = null;

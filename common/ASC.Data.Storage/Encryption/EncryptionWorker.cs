@@ -59,7 +59,7 @@ public class EncryptionWorker
 
     public void Stop()
     {
-        _queue.CancelTask(GetCacheId());
+        _queue.DequeueTask(GetCacheId());
     }
 
     public string GetCacheId()

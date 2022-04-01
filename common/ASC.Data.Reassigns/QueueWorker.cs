@@ -71,7 +71,7 @@ namespace ASC.Data.Reassigns
 
             if (item != null)
             {
-                Queue.CancelTask(item.Id);
+                Queue.DequeueTask(item.Id);
             }
         }
 

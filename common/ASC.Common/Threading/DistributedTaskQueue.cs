@@ -30,7 +30,8 @@ namespace ASC.Common.Threading;
 [Transient]
 public class DistributedTaskQueue
 {
-    const string QUEUE_DEFAULT_PREFIX = "asc_distributed_task_queue_";
+    public const string QUEUE_DEFAULT_PREFIX = "asc_distributed_task_queue_";
+    public static readonly int INSTANCE_ID = Process.GetCurrentProcess().Id;
 
     private readonly ConcurrentDictionary<string, CancellationTokenSource> _cancelations;
     private readonly IServiceProvider _serviceProvider;
@@ -41,8 +42,9 @@ public class DistributedTaskQueue
     /// <summary>
     /// setup -1 for infinity thread counts
     /// </summary>
-    private int _maxThreadsCount = 1; 
+    private int _maxThreadsCount = 1;
     private string _name;
+    private readonly int _timeUntilUnregisterInSeconds = 60;
     private TaskScheduler Scheduler { get; set; } = TaskScheduler.Default;
 
     public DistributedTaskQueue(IServiceProvider serviceProvider,
@@ -92,8 +94,6 @@ public class DistributedTaskQueue
         }
     }
 
-    public static readonly int InstanceId = Process.GetCurrentProcess().Id;
-
     public void EnqueueTask(DistributedTaskProgress taskProgress)
     {
         EnqueueTask((a, b) => taskProgress.RunJob(), taskProgress);
@@ -106,7 +106,7 @@ public class DistributedTaskQueue
             distributedTask = new DistributedTask();
         }
 
-        distributedTask.InstanceId = InstanceId;
+        distributedTask.InstanceId = INSTANCE_ID;
 
         var cancelation = new CancellationTokenSource();
         var token = cancelation.Token;
@@ -129,7 +129,7 @@ public class DistributedTaskQueue
 
         task.Start(Scheduler);
 
-        _logger.TraceFormat("EnqueueTask '{DistributedTaskId}' by instanse id '{InstanceId}'", distributedTask.Id, InstanceId);
+        _logger.TraceFormat("EnqueueTask '{DistributedTaskId}' by instanse id '{InstanceId}'", distributedTask.Id, INSTANCE_ID);
 
     }
 
@@ -140,21 +140,21 @@ public class DistributedTaskQueue
             distributedTask = new DistributedTask();
         }
 
-        distributedTask.InstanceId = InstanceId;
+        distributedTask.InstanceId = INSTANCE_ID;
 
         var cancelation = new CancellationTokenSource();
         var token = cancelation.Token;
         _cancelations[distributedTask.Id] = cancelation;
 
-            var task = new Task(() =>
-        {
-            var t = action(distributedTask, token);
-            t.ConfigureAwait(false)
-            .GetAwaiter()
-            .OnCompleted(() => OnCompleted(t, distributedTask.Id));
-        }, token, TaskCreationOptions.LongRunning);
+        var task = new Task(() =>
+    {
+        var t = action(distributedTask, token);
+        t.ConfigureAwait(false)
+        .GetAwaiter()
+        .OnCompleted(() => OnCompleted(t, distributedTask.Id));
+    }, token, TaskCreationOptions.LongRunning);
 
-            task.ConfigureAwait(false);
+        task.ConfigureAwait(false);
 
         distributedTask.Status = DistributedTaskStatus.Running;
 
@@ -166,43 +166,43 @@ public class DistributedTaskQueue
 
         task.Start(Scheduler);
 
-        _logger.TraceFormat("EnqueueTask '{DistributedTaskId}' by instanse id '{InstanceId}'", distributedTask.Id, InstanceId);
+        _logger.TraceFormat("EnqueueTask '{DistributedTaskId}' by instanse id '{InstanceId}'", distributedTask.Id, INSTANCE_ID);
 
     }
 
-    public IEnumerable<DistributedTask> GetAllTasks()
+    public IEnumerable<DistributedTask> GetAllTasks(int? instanceId = null)
     {
-        var serializedObject = _distributedCache.Get(_name);
+        var queueTasks = LoadFromCache();
 
-        if (serializedObject == null) return new List<DistributedTask>();
+        queueTasks = DeleteOrphanCacheItem(queueTasks);
 
-        using var ms = new MemoryStream(serializedObject);
-
-        var queueTasks = Serializer.Deserialize<List<DistributedTask>>(ms);
-
-        queueTasks.ForEach(t =>
+        if (instanceId.HasValue)
         {
-            if (t.Publication == null)
+            queueTasks = queueTasks.Where(x => x.InstanceId == instanceId.Value);
+        }
+
+        foreach (var task in queueTasks)
+        {
+            if (task.Publication == null)
             {
-                t.Publication = GetPublication();
+                task.Publication = GetPublication();
             }
-        });
+        }
 
         return queueTasks;
     }
 
-
     public IEnumerable<T> GetAllTasks<T>() where T : DistributedTask
     {
-       return GetAllTasks().Select(x => Map(x, _serviceProvider.GetService<T>()));                       
+        return GetAllTasks().Select(x => Map(x, _serviceProvider.GetService<T>()));
     }
 
     public T PeekTask<T>(string id) where T : DistributedTask
-    {      
+    {
         var taskById = GetAllTasks().FirstOrDefault(x => x.Id == id);
 
         if (taskById == null) return null;
-               
+
         return Map(taskById, _serviceProvider.GetService<T>());
     }
 
@@ -212,6 +212,8 @@ public class DistributedTaskQueue
 
         if (!queueTasks.Exists(x => x.Id == id)) return;
 
+        _cancellationCacheNotify.Publish(new DistributedTaskCancelation() { Id = id }, CacheNotifyAction.Remove);
+
         queueTasks = queueTasks.FindAll(x => x.Id != id);
 
         if (queueTasks.Count == 0)
@@ -220,20 +222,11 @@ public class DistributedTaskQueue
         }
         else
         {
-            using var ms = new MemoryStream();
-
-            Serializer.Serialize(ms, queueTasks);
-
-            _distributedCache.Set(_name, ms.ToArray());
+            SaveToCache(queueTasks);
         }
 
-        _logger.TraceFormat("DequeueTask '{DistributedTaskId}' by instanse id '{InstanceId}'", id, InstanceId);
+        _logger.TraceFormat("DequeueTask '{DistributedTaskId}' by instanse id '{InstanceId}'", id, INSTANCE_ID);
 
-    }
-
-    public void CancelTask(string id)
-    {
-        _cancellationCacheNotify.Publish(new DistributedTaskCancelation() { Id = id }, CacheNotifyAction.Remove);
     }
 
     private void OnCompleted(Task task, string id)
@@ -242,10 +235,10 @@ public class DistributedTaskQueue
         if (distributedTask != null)
         {
             distributedTask.Status = DistributedTaskStatus.Completed;
-                if (task.Exception != null)
-                {
-                    distributedTask.Exception = task.Exception;
-                }
+            if (task.Exception != null)
+            {
+                distributedTask.Exception = task.Exception;
+            }
             if (task.IsFaulted)
             {
                 distributedTask.Status = DistributedTaskStatus.Failted;
@@ -268,17 +261,61 @@ public class DistributedTaskQueue
         {
             var queueTasks = GetAllTasks().ToList().FindAll(x => x.Id != task.Id);
 
+            task.LastModifiedOn = DateTime.UtcNow;
+
             queueTasks.Add(task);
 
-            using var ms = new MemoryStream();
-
-            Serializer.Serialize(ms, queueTasks);
-
-            _distributedCache.Set(_name, ms.ToArray());
+            SaveToCache(queueTasks);
 
             _logger.TraceFormat("Publication DistributedTask '{DistributedTaskId}' by instanse id '{InstanceId}' ", task.Id, task.InstanceId);
         };
     }
+
+
+    private void SaveToCache(IEnumerable<DistributedTask> queueTasks)
+    {
+        using var ms = new MemoryStream();
+
+        Serializer.Serialize(ms, queueTasks);
+
+        _distributedCache.Set(_name, ms.ToArray(), new DistributedCacheEntryOptions
+        {
+            SlidingExpiration = TimeSpan.FromMinutes(15)
+        });
+
+    }
+
+    private IEnumerable<DistributedTask> LoadFromCache()
+    {
+        var serializedObject = _distributedCache.Get(_name);
+
+        if (serializedObject == null) return new List<DistributedTask>();
+
+        using var ms = new MemoryStream(serializedObject);
+
+        return Serializer.Deserialize<List<DistributedTask>>(ms);
+    }
+
+    private IEnumerable<DistributedTask> DeleteOrphanCacheItem(IEnumerable<DistributedTask> queueTasks)
+    {
+        if (!queueTasks.Any()) return queueTasks;
+
+        var orphans = queueTasks.Where(IsOrphanCacheItem);
+
+        if (!orphans.Any()) return queueTasks;
+
+        queueTasks = queueTasks.Except(queueTasks);
+
+        SaveToCache(queueTasks);
+
+        return queueTasks;
+    }
+
+    private bool IsOrphanCacheItem(DistributedTask obj)
+    {
+        return obj.LastModifiedOn.AddSeconds(_timeUntilUnregisterInSeconds) < DateTime.UtcNow;
+    }
+
 
     /// <summary>
     /// Maps the source object to destination object.

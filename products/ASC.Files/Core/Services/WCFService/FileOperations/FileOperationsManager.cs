@@ -90,7 +90,7 @@ public class FileOperationsManager
 
         foreach (var o in operations)
         {
-            _tasks.CancelTask(o.Id);
+            _tasks.DequeueTask(o.Id);
         }
 
         return GetOperationResults(userId);

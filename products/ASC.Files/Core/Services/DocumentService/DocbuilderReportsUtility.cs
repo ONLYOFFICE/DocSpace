@@ -275,7 +275,7 @@ public class DocbuilderReportsUtility
 
             foreach (var t in result)
             {
-                _tasks.CancelTask(t.Id);
+                _tasks.DequeueTask(t.Id);
             }
         }
     }

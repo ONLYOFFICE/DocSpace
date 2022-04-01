@@ -49,6 +49,9 @@ public class DistributedTask
     [ProtoMember(3)]
     public DistributedTaskStatus Status { get; set; }
 
+    [ProtoMember(4)]
+    public DateTime LastModifiedOn { get; set; }
+
     public Exception Exception
     {
         get => new Exception(_exeption);
