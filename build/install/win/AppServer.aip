@@ -20,7 +20,7 @@
     <ROW Property="ARPSYSTEMCOMPONENT" Value="1"/>
     <ROW Property="ARPURLINFOABOUT" Value="http://www.onlyoffice.com"/>
     <ROW Property="ARPURLUPDATEINFO" Value="http://www.onlyoffice.com/download.aspx"/>
-    <ROW Property="DATABASE_MIGRATION" Value="True"/>
+    <ROW Property="DATABASE_MIGRATION" Value="true"/>
     <ROW Property="DATABASE_PROP" Value="onlyoffice"/>
     <ROW Property="ENVIRONMENT" Value="test"/>
     <ROW Property="INSTALL_ROOT_FOLDER_NAME" Value="[|Manufacturer]"/>
