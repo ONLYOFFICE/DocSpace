@@ -28,10 +28,10 @@ namespace ASC.Data.Backup.Services;
 [Transient]
 public class RestoreProgressItem : BaseBackupProgressItem
 {
-    private readonly TenantManager _tenantManager;
-    private readonly BackupStorageFactory _backupStorageFactory;
+    private TenantManager _tenantManager;
+    private BackupStorageFactory _backupStorageFactory;
     private readonly NotifyHelper _notifyHelper;
-    private readonly BackupRepository _backupRepository;
+    private BackupRepository _backupRepository;
     private readonly RestorePortalTask _restorePortalTask;
     private readonly CoreBaseSettings _coreBaseSettings;
 
@@ -41,18 +41,15 @@ public class RestoreProgressItem : BaseBackupProgressItem
 
     public RestoreProgressItem(
         ILog logger,
-        TenantManager tenantManager,
-        BackupStorageFactory backupStorageFactory,
+        IServiceScopeFactory serviceScopeFactory,
         NotifyHelper notifyHelper,
-        BackupRepository backupRepository,
         CoreBaseSettings coreBaseSettings)
-        : base(logger)
+        : base(logger, serviceScopeFactory)
     {
-        _tenantManager = tenantManager;
-        _backupStorageFactory = backupStorageFactory;
+
         _notifyHelper = notifyHelper;
         _coreBaseSettings = coreBaseSettings;
-        _backupRepository = backupRepository;
+
         BackupProgressItemEnum = BackupProgressItemEnum.Restore;
     }
 
@@ -82,6 +79,13 @@ public class RestoreProgressItem : BaseBackupProgressItem
 
         try
         {
+
+            using var scope = _serviceScopeProvider.CreateScope();
+
+            _tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            _backupStorageFactory = scope.ServiceProvider.GetService<BackupStorageFactory>();
+            _backupRepository = scope.ServiceProvider.GetService<BackupRepository>();
+
             tenant = _tenantManager.GetTenant(TenantId);
             _tenantManager.SetCurrentTenant(tenant);
             _notifyHelper.SendAboutRestoreStarted(tenant, Notify);

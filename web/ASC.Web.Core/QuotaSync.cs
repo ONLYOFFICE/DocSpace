@@ -65,7 +65,7 @@ namespace ASC.Web.Studio.Core.Quota
 
         public virtual DistributedTask GetDistributedTask()
         {
-            TaskInfo[TenantIdKey] = TenantId.ToString();
+            TaskInfo[TenantIdKey] = TenantId;
             return TaskInfo;
         }
     }

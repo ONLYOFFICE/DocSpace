@@ -114,7 +114,7 @@ class FileDownloadOperation : ComposeFileOperation<FileDownloadOperationData<str
             Error = error2;
         }
 
-        SuccessProcessed = Convert.ToInt32(thirdpartyTask[Process]) + Convert.ToInt32(daoTask[Process]);
+        SuccessProcessed = thirdpartyTask[Process] + daoTask[Process];
 
         var progressSteps = ThirdPartyOperation.Total + DaoOperation.Total + 1;
 
@@ -122,7 +122,7 @@ class FileDownloadOperation : ComposeFileOperation<FileDownloadOperationData<str
 
         base.FillDistributedTask();
 
-        TaskInfo[Progress] = progress.ToString();
+        TaskInfo[Progress] = progress;
         TaskInfo.PublishChanges();
     }
 }

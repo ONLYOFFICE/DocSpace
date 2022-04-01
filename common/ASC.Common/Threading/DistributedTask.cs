@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using JsonSerializer = System.Text.Json.JsonSerializer;
+
 namespace ASC.Common.Threading;
 
 [ProtoContract(IgnoreUnknownSubTypes = true)]
@@ -46,7 +48,7 @@ public class DistributedTask
 
     [ProtoMember(3)]
     public DistributedTaskStatus Status { get; set; }
- 
+
     public Exception Exception
     {
         get => new Exception(_exeption);
@@ -61,7 +63,7 @@ public class DistributedTask
         _exeption = String.Empty;
         _props = new Dictionary<string, string>();
     }
-    
+
     public void PublishChanges()
     {
         if (Publication == null)
@@ -72,20 +74,52 @@ public class DistributedTask
         Publication(this);
     }
 
-    public string this[string propName]
+    [Obsolete("GetProperty<T> is deprecated, please use indexer this[propName] instead.")]
+    public T GetProperty<T>(string propName)
+    {        
+        if (!_props.TryGetValue(propName, out var propValue))
+        {
+            return default;
+        }
+        
+        return JsonSerializer.Deserialize<T>(propValue);
+    }
+
+    [Obsolete("SetProperty is deprecated, please use indexer this[propName] = propValue instead.")]
+    public void SetProperty(string propName, object propValue)
+    {
+        _props[propName] = JsonSerializer.Serialize(propValue);
+    }
+
+    public dynamic this[string propName]
     {
         get
         {
+            if (!_props.TryGetValue(propName, out var propValue))
+            {
+                throw new ArgumentException($"Unknown propery {propName}. You must init the property before used.");
+            }
+
+            if (int.TryParse(propValue, out var resultAsInt))
+            {
+                return resultAsInt;
+            }
+
+            if (bool.TryParse(propValue, out var resultAsBool))
+            {
+                return resultAsBool;
+            }
+
             return _props[propName];
         }
         set
         {
-            _props[propName] = value;
+            _props[propName] = Convert.ToString(value);
         }
     }
 
     public override int GetHashCode()
     {
-        return Id.GetHashCode();  
+        return Id.GetHashCode();
     }
 }

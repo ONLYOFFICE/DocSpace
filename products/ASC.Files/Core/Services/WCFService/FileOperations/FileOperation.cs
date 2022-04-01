@@ -60,6 +60,16 @@ public abstract class FileOperation : DistributedTask
         Culture = Thread.CurrentThread.CurrentCulture.Name;
 
         TaskInfo = new DistributedTask();
+
+        TaskInfo[Owner] = (new Guid()).ToString();
+        TaskInfo[OpType] = 0;
+        TaskInfo[Src] = "";
+        TaskInfo[Progress] = 0;
+        TaskInfo[Res] = "";
+        TaskInfo[Err] = "";
+        TaskInfo[Process] = 0;
+        TaskInfo[Finish] = false;
+        TaskInfo[Hold] = false; ;
     }
 
     public virtual DistributedTask GetDistributedTask()
@@ -74,13 +84,13 @@ public abstract class FileOperation : DistributedTask
     {
         var progress = Total != 0 ? 100 * Processed / Total : 0;
 
-        TaskInfo[OpType] = Convert.ToString((int)OperationType);
-        TaskInfo[Owner] =  ((IAccount)(Principal ?? Thread.CurrentPrincipal).Identity).ID.ToString();
-        TaskInfo[Progress] = Convert.ToString(progress < 100 ? progress : 100);
-        TaskInfo[Res] =  Result;
+        TaskInfo[OpType] = (int)OperationType;
+        TaskInfo[Owner] = ((IAccount)(Principal ?? Thread.CurrentPrincipal).Identity).ID.ToString();
+        TaskInfo[Progress] = progress < 100 ? progress : 100;
+        TaskInfo[Res] = Result;
         TaskInfo[Err] = Error;
-        TaskInfo[Process] = SuccessProcessed.ToString();
-        TaskInfo[Hold] = HoldResult.ToString();
+        TaskInfo[Process] = SuccessProcessed;
+        TaskInfo[Hold] = HoldResult;
     }
 
     public abstract Task RunJobAsync(DistributedTask _, CancellationToken cancellationToken);
@@ -154,26 +164,15 @@ internal class ComposeFileOperation<T1, T2> : FileOperation
             Result = status2;
         }
 
-        bool? finished1 = null;
-        bool? finished2 = null;
+        bool finished1 = thirdpartyTask[Finish];
+        bool finished2 = daoTask[Finish];
 
-        if (bool.TryParse(thirdpartyTask[Finish], out var fb1))
+        if (finished1 && finished2)
         {
-            finished1 = fb1;
+            TaskInfo[Finish] = true;
         }
 
-        if (bool.TryParse(daoTask[Finish], out var fb2))
-        {
-            finished2 = fb2;
-        }
-
-
-        if (finished1 != null && finished2 != null)
-        {
-            TaskInfo[Finish] = finished1.ToString();
-        }
-
-        SuccessProcessed = Convert.ToInt32(thirdpartyTask[Process]) + Convert.ToInt32(daoTask[Process]);
+        SuccessProcessed = thirdpartyTask[Process] + daoTask[Process];
 
 
         base.FillDistributedTask();
@@ -182,12 +181,12 @@ internal class ComposeFileOperation<T1, T2> : FileOperation
 
         if (ThirdPartyOperation.Total != 0)
         {
-            progress += Convert.ToInt32(thirdpartyTask[Progress]);
+            progress += thirdpartyTask[Progress];
         }
 
         if (DaoOperation.Total != 0)
         {
-            progress += Convert.ToInt32(daoTask[Progress]);
+            progress += daoTask[Progress];
         }
 
         if (ThirdPartyOperation.Total != 0 && DaoOperation.Total != 0)
@@ -195,7 +194,7 @@ internal class ComposeFileOperation<T1, T2> : FileOperation
             progress /= 2;
         }
 
-        TaskInfo[Progress] = (progress < 100 ? progress : 100).ToString();
+        TaskInfo[Progress] = progress < 100 ? progress : 100;
         TaskInfo.PublishChanges();
     }
 
@@ -304,7 +303,7 @@ abstract class FileOperation<T, TId> : FileOperation where T : FileOperationData
         {
             try
             {
-                TaskInfo[Finish] = "true";
+                TaskInfo[Finish] = true;
                 PublishTaskInfo();
             }
             catch { /* ignore */ }

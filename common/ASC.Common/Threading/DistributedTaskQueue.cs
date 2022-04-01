@@ -214,11 +214,18 @@ public class DistributedTaskQueue
 
         queueTasks = queueTasks.FindAll(x => x.Id != id);
 
-        using var ms = new MemoryStream();
+        if (queueTasks.Count == 0)
+        {
+            _distributedCache.Remove(_name);
+        }
+        else
+        {
+            using var ms = new MemoryStream();
 
-        Serializer.Serialize(ms, queueTasks);
+            Serializer.Serialize(ms, queueTasks);
 
-        _distributedCache.Set(_name, ms.ToArray());
+            _distributedCache.Set(_name, ms.ToArray());
+        }
 
         _logger.TraceFormat("DequeueTask '{DistributedTaskId}' by instanse id '{InstanceId}'", id, InstanceId);
 

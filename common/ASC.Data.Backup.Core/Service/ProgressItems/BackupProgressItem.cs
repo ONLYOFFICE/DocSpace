@@ -42,28 +42,21 @@ public class BackupProgressItem : BaseBackupProgressItem
     private Dictionary<string, string> _configPaths;
     private int _limit;
 
-    private readonly TenantManager _tenantManager;
-    private readonly BackupStorageFactory _backupStorageFactory;
-    private readonly BackupRepository _backupRepository;
-    private readonly BackupPortalTask _backupPortalTask;
+    private TenantManager _tenantManager;
+    private BackupStorageFactory _backupStorageFactory;
+    private BackupRepository _backupRepository;
+    private BackupPortalTask _backupPortalTask;
 
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly NotifyHelper _notifyHelper;
 
     public BackupProgressItem(
         ILog logger,
-        TenantManager tenantManager,
-        BackupStorageFactory backupStorageFactory,
-        BackupRepository backupRepository,
-        BackupPortalTask backupPortalTask,
+        IServiceScopeFactory serviceProvider,
         CoreBaseSettings coreBaseSettings,
         NotifyHelper notifyHelper)
-        : base(logger)
+        : base(logger, serviceProvider)
     {
-        _tenantManager = tenantManager;
-        _backupStorageFactory = backupStorageFactory;
-        _backupRepository = backupRepository;
-        _backupPortalTask = backupPortalTask;
         _coreBaseSettings = coreBaseSettings;
         _notifyHelper = notifyHelper;
     }
@@ -104,6 +97,13 @@ public class BackupProgressItem : BaseBackupProgressItem
         {
             Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
         }
+
+        using var scope = _serviceScopeProvider.CreateScope();
+
+        _tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+        _backupStorageFactory = scope.ServiceProvider.GetService<BackupStorageFactory>(); 
+        _backupRepository = scope.ServiceProvider.GetService<BackupRepository>();
+        _backupPortalTask = scope.ServiceProvider.GetService<BackupPortalTask>(); 
 
         var dateTime = _coreBaseSettings.Standalone ? DateTime.Now : DateTime.UtcNow;
         var backupName = string.Format("{0}_{1:yyyy-MM-dd_HH-mm-ss}.{2}", _tenantManager.GetTenant(TenantId).Alias, dateTime, ArchiveFormat);

@@ -24,6 +24,7 @@
 */
 
 using ASC.Common.Threading;
+using ASC.Data.Backup.Tasks;
 
 namespace ASC.Data.Backup.BackgroundTasks;
 
@@ -48,6 +49,8 @@ public class Startup : BaseStartup
         DIHelper.TryAdd<BackupProgressItem>();
         DIHelper.TryAdd<RestoreProgressItem>();
         DIHelper.TryAdd<TransferProgressItem>();
+
+        DIHelper.TryAdd<BackupPortalTask>();
 
         DIHelper.TryAdd<BackupWorkerService>();
 

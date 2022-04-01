@@ -117,8 +117,8 @@ public class ReportState
             task["fileName"],
             task["tmpFileName"],
             task["script"],
-            Convert.ToInt32(task["reportType"]),
-            (ReportOrigin)Convert.ToInt32(task["reportOrigin"]),
+            task["reportType"],
+            (ReportOrigin)task["reportOrigin"],
             null,
             null,
             tenantId,
@@ -127,8 +127,8 @@ public class ReportState
         return new ReportState(null, data, httpContextAccessor)
         {
             Id = task["id"],
-            FileId = Convert.ToInt32(task["fileId"]),
-            Status = (ReportStatus)Convert.ToInt32(task["status"]),
+            FileId = task["fileId"],
+            Status = (ReportStatus)task["status"],
             Exception = task["exception"]
         };
 
@@ -238,10 +238,10 @@ public class ReportState
         TaskInfo["id"] = Id;
         TaskInfo["fileName"] = FileName;
         TaskInfo["tmpFileName"] = TmpFileName;
-        TaskInfo["reportType"] = Convert.ToString(ReportType);
-        TaskInfo["fileId"] = Convert.ToString(FileId);
-        TaskInfo["status"] = Convert.ToString((int)Status);
-        TaskInfo["reportOrigin"] = Convert.ToString((int)Origin); 
+        TaskInfo["reportType"] = ReportType;
+        TaskInfo["fileId"] = FileId;
+        TaskInfo["status"] = (int)Status;
+        TaskInfo["reportOrigin"] = (int)Origin; 
         TaskInfo["exception"] = Exception;
     }
 }
@@ -291,7 +291,7 @@ public class DocbuilderReportsUtility
             }
 
             var result = ReportState.FromTask(task, httpContextAccessor, tenantId, userId);
-            var status = (ReportStatus)Convert.ToInt32(task["status"]);
+            var status = (ReportStatus)task["status"];
 
             if ((int)status > 1)
             {

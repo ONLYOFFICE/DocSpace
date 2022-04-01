@@ -1,14 +1,6 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using ASC.Core.Common.Hosting.Interfaces;
 
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core.Common.Hosting.Interfaces;
-
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Common.Hosting;
 

@@ -52,7 +52,7 @@ public class FileOperationsManager
         {
             foreach (var o in operations.Where(o => processlist.All(p => p.Id != o.InstanceId)))
             {
-                o[FileOperation.Progress] = "100";
+                o[FileOperation.Progress] = 100;
                 _tasks.DequeueTask(o.Id);
             }
         }
@@ -60,23 +60,23 @@ public class FileOperationsManager
         operations = operations.Where(t => new Guid(t[FileOperation.Owner]) == userId).ToList();
         foreach (var o in operations.Where(o => o.Status > DistributedTaskStatus.Running))
         {
-            o[FileOperation.Progress] = "100";
+            o[FileOperation.Progress] = 100;
 
             _tasks.DequeueTask(o.Id);
         }
 
         var results = operations
-            .Where(o =>  bool.Parse(o[FileOperation.Hold]) || Convert.ToInt32(o[FileOperation.Progress]) != 100)
+            .Where(o => o[FileOperation.Hold] || o[FileOperation.Progress] != 100)
             .Select(o => new FileOperationResult
             {
                 Id = o.Id,
-                OperationType = (FileOperationType)Convert.ToInt32(o[FileOperation.OpType]),
+                OperationType = (FileOperationType)o[FileOperation.OpType],
                 Source = o[FileOperation.Src],
-                Progress = Convert.ToInt32(o[FileOperation.Progress]),
-                Processed = o[FileOperation.Process].ToString(),
+                Progress = o[FileOperation.Progress],
+                Processed = Convert.ToString(o[FileOperation.Process]),
                 Result = o[FileOperation.Res],
                 Error = o[FileOperation.Err],
-                Finished = bool.Parse(o[FileOperation.Finish])
+                Finished = o[FileOperation.Finish]
             })
             .ToList();
 
@@ -113,7 +113,7 @@ public class FileOperationsManager
     {
         var operations = _tasks.GetAllTasks()
             .Where(t => new Guid(t[FileOperation.Owner]) == userId)
-            .Where(t => (FileOperationType)Convert.ToInt32(t[FileOperation.OpType]) == FileOperationType.Download);
+            .Where(t => (FileOperationType)t[FileOperation.OpType] == FileOperationType.Download);
 
         if (operations.Any(o => o.Status <= DistributedTaskStatus.Running))
         {

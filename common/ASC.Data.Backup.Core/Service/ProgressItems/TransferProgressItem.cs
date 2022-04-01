@@ -31,20 +31,17 @@ namespace ASC.Data.Backup.Services;
 [Transient]
 public class TransferProgressItem : BaseBackupProgressItem
 {
-    private readonly TenantManager _tenantManager;
+    private TenantManager _tenantManager;
     private readonly NotifyHelper _notifyHelper;
-    private readonly TransferPortalTask _transferPortalTask;
+    private TransferPortalTask _transferPortalTask;
 
     public TransferProgressItem(
         ILog logger,
-        TenantManager tenantManager,
-        NotifyHelper notifyHelper,
-        TransferPortalTask transferPortalTask) : 
-        base(logger)
+        IServiceScopeFactory serviceScopeFactory,  
+        NotifyHelper notifyHelper) : 
+        base(logger, serviceScopeFactory)
     {
-        _tenantManager = tenantManager;
         _notifyHelper = notifyHelper;
-        _transferPortalTask = transferPortalTask;
         BackupProgressItemEnum = BackupProgressItemEnum.Transfer;
     }
 
@@ -85,6 +82,11 @@ public class TransferProgressItem : BaseBackupProgressItem
 
         try
         {
+            using var scope = _serviceScopeProvider.CreateScope();
+            _tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            _transferPortalTask = scope.ServiceProvider.GetService<TransferPortalTask>();
+
+
             _notifyHelper.SendAboutTransferStart(tenant, TargetRegion, Notify);
             var transferProgressItem = _transferPortalTask;
             transferProgressItem.Init(TenantId, ConfigPaths[CurrentRegion], ConfigPaths[TargetRegion], Limit, TempFolder);
