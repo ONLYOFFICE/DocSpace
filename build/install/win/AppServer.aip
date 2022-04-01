@@ -20,6 +20,7 @@
     <ROW Property="ARPSYSTEMCOMPONENT" Value="1"/>
     <ROW Property="ARPURLINFOABOUT" Value="http://www.onlyoffice.com"/>
     <ROW Property="ARPURLUPDATEINFO" Value="http://www.onlyoffice.com/download.aspx"/>
+    <ROW Property="DATABASE_MIGRATION" Value="True"/>
     <ROW Property="DATABASE_PROP" Value="onlyoffice"/>
     <ROW Property="ENVIRONMENT" Value="test"/>
     <ROW Property="INSTALL_ROOT_FOLDER_NAME" Value="[|Manufacturer]"/>
@@ -204,6 +205,8 @@
     <ROW JsonProperty="Root_1" Name="Root" Condition="1" Order="0" Flags="60"/>
     <ROW JsonProperty="connectionString_1" Parent="default_1" Name="connectionString" Condition="1" Order="0" Flags="57" Value="Server=[SERVER_PROP];Port=3306;Database=[DATABASE_PROP];User ID=[USERNAME_PROP];Password=[PASSWORD_PROP];Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none"/>
     <ROW JsonProperty="default_1" Parent="ConnectionStrings_1" Name="default" Condition="1" Order="0" Flags="60"/>
+    <ROW JsonProperty="enabled" Parent="migration" Name="enabled" Condition="1" Order="0" Flags="57" Value="[DATABASE_MIGRATION]"/>
+    <ROW JsonProperty="migration" Parent="Root_1" Name="migration" Condition="1" Order="1" Flags="60"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiActionTextComponent">
     <ROW Action="AI_ConfigFailActions" Description="Настройка действия при сбое службы" DescriptionLocId="ActionText.Description.AI_ConfigFailActions" Template="Служба: [1]" TemplateLocId="ActionText.Template.AI_ConfigFailActions"/>
@@ -218,12 +221,6 @@
     <ROW Action="AI_JsonRollback" Description="Откат файлов конфигурации JSON." DescriptionLocId="ActionText.Description.AI_JsonRollback" Template="Откат файлов конфигурации JSON." TemplateLocId="ActionText.Template.AI_JsonRollback"/>
     <ROW Action="AI_JsonUninstall" Description="Создание действий для настройки JSON-файлов" DescriptionLocId="ActionText.Description.AI_JsonUninstall"/>
     <ROW Action="AI_ProcessFailActions" Description="Создание действия для настройки действия при сбое службы" DescriptionLocId="ActionText.Description.AI_ProcessFailActions" Template="Служба: [1]" TemplateLocId="ActionText.Template.AI_ProcessFailActions"/>
-    <ROW Action="AI_SqlConfig" Description="Выполнение установки SQL-сценария" DescriptionLocId="ActionText.Description.AI_SqlConfig" Template="Подключение: [1]  Сценарий: [2]" TemplateLocId="ActionText.Template.AI_SqlConfig"/>
-    <ROW Action="AI_SqlInstall" Description="Создание действий для настройки базы данных для установки выполнения сценария SQL" DescriptionLocId="ActionText.Description.AI_SqlInstall"/>
-    <ROW Action="AI_SqlMaint" Description="Выполнение обслуживания SQL-сценариев" DescriptionLocId="ActionText.Description.AI_SqlMaint" Template="Подключение: [1]  Сценарий: [2]" TemplateLocId="ActionText.Template.AI_SqlMaint"/>
-    <ROW Action="AI_SqlRemove" Description="Выполнение удаления SQL-сценариев" DescriptionLocId="ActionText.Description.AI_SqlRemove" Template="Подключение: [1]  Сценарий: [2]" TemplateLocId="ActionText.Template.AI_SqlRemove"/>
-    <ROW Action="AI_SqlRollback" Description="Выполнение отката SQL-сценариев" DescriptionLocId="ActionText.Description.AI_SqlRollback" Template="Подключение: [1]  Сценарий: [2]" TemplateLocId="ActionText.Template.AI_SqlRollback"/>
-    <ROW Action="AI_SqlUninstall" Description="Создание действий для настройки базы данных для удаления выполнения SQL-сценария" DescriptionLocId="ActionText.Description.AI_SqlUninstall"/>
     <ROW Action="AI_TxtUpdaterCommit" Description="Фиксация изменений текстового файла." DescriptionLocId="ActionText.Description.AI_TxtUpdaterCommit" Template="Фиксация изменений текстового файла." TemplateLocId="ActionText.Template.AI_TxtUpdaterCommit"/>
     <ROW Action="AI_TxtUpdaterConfig" Description="Выполнение обновления текстового файла" DescriptionLocId="ActionText.Description.AI_TxtUpdaterConfig" Template="Обновление текстового файла: &quot;[1]&quot;" TemplateLocId="ActionText.Template.AI_TxtUpdaterConfig"/>
     <ROW Action="AI_TxtUpdaterInstall" Description="Создание действий для настройки текстовых файлов обновлений" DescriptionLocId="ActionText.Description.AI_TxtUpdaterInstall"/>
@@ -240,7 +237,6 @@
     <ROW Name="aicustact.dll" SourcePath="&lt;AI_CUSTACTS&gt;aicustact.dll"/>
     <ROW Name="jsonCfg.dll" SourcePath="&lt;AI_CUSTACTS&gt;jsonCfg.dll"/>
     <ROW Name="lzmaextractor.dll" SourcePath="&lt;AI_CUSTACTS&gt;lzmaextractor.dll"/>
-    <ROW Name="sql.dll" SourcePath="&lt;AI_CUSTACTS&gt;sql.dll"/>
     <ROW Name="utils.vbs" SourcePath="utils.vbs"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiControlComponent">
@@ -335,8 +331,6 @@
     <ROW Action="AI_AppSearchEx" Type="1" Source="Prereq.dll" Target="DoAppSearchEx"/>
     <ROW Action="AI_BACKUP_AI_SETUPEXEPATH" Type="51" Source="AI_SETUPEXEPATH_ORIGINAL" Target="[AI_SETUPEXEPATH]"/>
     <ROW Action="AI_ConfigFailActions" Type="11265" Source="aicustact.dll" Target="ConfigureServFailActions" WithoutSeq="true"/>
-    <ROW Action="AI_DATA_SETTER" Type="51" Source="CustomActionData" Target="[~]"/>
-    <ROW Action="AI_DATA_SETTER_1" Type="51" Source="CustomActionData" Target="[~]"/>
     <ROW Action="AI_DATA_SETTER_10" Type="51" Source="CustomActionData" Target="MySQL80"/>
     <ROW Action="AI_DATA_SETTER_11" Type="51" Source="CustomActionData" Target="MySQL80"/>
     <ROW Action="AI_DATA_SETTER_12" Type="51" Source="CustomActionData" Target="Elasticsearch"/>
@@ -376,12 +370,6 @@
     <ROW Action="AI_RestartElevated" Type="1" Source="aicustact.dll" Target="RestartElevated"/>
     <ROW Action="AI_SHOW_LOG" Type="65" Source="aicustact.dll" Target="LaunchLogFile" WithoutSeq="true"/>
     <ROW Action="AI_STORE_LOCATION" Type="51" Source="ARPINSTALLLOCATION" Target="[APPDIR]"/>
-    <ROW Action="AI_SqlConfig" Type="9217" Source="sql.dll" Target="OnSqlConfig" WithoutSeq="true"/>
-    <ROW Action="AI_SqlInstall" Type="1" Source="sql.dll" Target="OnSqlInstall" AdditionalSeq="AI_DATA_SETTER"/>
-    <ROW Action="AI_SqlMaint" Type="9217" Source="sql.dll" Target="OnSqlMaint" WithoutSeq="true"/>
-    <ROW Action="AI_SqlRemove" Type="9217" Source="sql.dll" Target="OnSqlRemove" WithoutSeq="true"/>
-    <ROW Action="AI_SqlRollback" Type="9473" Source="sql.dll" Target="OnSqlRollback" WithoutSeq="true"/>
-    <ROW Action="AI_SqlUninstall" Type="1" Source="sql.dll" Target="OnSqlUninstall" AdditionalSeq="AI_DATA_SETTER_1"/>
     <ROW Action="AI_TxtUpdaterCommit" Type="11777" Source="TxtUpdater.dll" Target="OnTxtUpdaterCommit" WithoutSeq="true"/>
     <ROW Action="AI_TxtUpdaterConfig" Type="11265" Source="TxtUpdater.dll" Target="OnTxtUpdaterConfig" WithoutSeq="true"/>
     <ROW Action="AI_TxtUpdaterInstall" Type="1" Source="TxtUpdater.dll" Target="OnTxtUpdaterInstall"/>
@@ -444,10 +432,6 @@
     <ROW Action="AI_PREPARE_UPGRADE" Condition="AI_UPGRADE=&quot;No&quot; AND (Not Installed)" Sequence="1397"/>
     <ROW Action="AI_ResolveKnownFolders" Sequence="52"/>
     <ROW Action="AI_EnableDebugLog" Sequence="51"/>
-    <ROW Action="AI_SqlInstall" Condition="(VersionNT &gt;= 500) AND (REMOVE &lt;&gt; &quot;ALL&quot;)" Sequence="5502"/>
-    <ROW Action="AI_DATA_SETTER" Condition="(VersionNT &gt;= 500) AND (REMOVE &lt;&gt; &quot;ALL&quot;)" Sequence="5501"/>
-    <ROW Action="AI_SqlUninstall" Condition="(VersionNT &gt;= 500) AND (REMOVE=&quot;ALL&quot;)" Sequence="1702"/>
-    <ROW Action="AI_DATA_SETTER_1" Condition="(VersionNT &gt;= 500) AND (REMOVE=&quot;ALL&quot;)" Sequence="1701"/>
     <ROW Action="AI_AppSearchEx" Sequence="103"/>
     <ROW Action="AI_DetectSoftware" Sequence="102"/>
     <ROW Action="AI_BACKUP_AI_SETUPEXEPATH" Sequence="99" Builds="DefaultBuild"/>
@@ -672,31 +656,7 @@
     <ROW SearchKey="Version_1" Prereq="MySQLInstallerRunn" SearchType="2" SearchString="HKLM\SOFTWARE\MySQL AB\MySQL Server 8.0\Version" Order="2" Property="PreReqSearch_5"/>
     <ROW SearchKey="Version_2" Prereq="MySQLInstallerRunn" SearchType="2" SearchString="HKLM\SOFTWARE\MySQL AB\MySQL Server 5.5\Version" VerMin="5.5" Order="0" Property="PreReqSearch_6"/>
   </COMPONENT>
-  <COMPONENT cid="caphyon.advinst.msicomp.SqlConnectionComponent">
-    <ROW ConnectionName="MySql.Connection" Condition="1" Dbms="1" Flags="20" Order="0" LoginTimeout="20" ConnectionString="Driver={[MYSQLODBCDRIVER]};Server=[SERVER_PROP];Port=[PORT_PROP];User=[USERNAME_PROP];Password=[PASSWORD_PROP];charset=UTF8;GET_SERVER_PUBLIC_KEY=1;"/>
-  </COMPONENT>
-  <COMPONENT cid="caphyon.advinst.msicomp.SqlReplaceComponent">
-    <ROW ScriptName="createdb" Token="DB_NAME" Replacement="[DATABASE_PROP]" Flags="0"/>
-    <ROW ScriptName="onlyoffice.data" Token="DELIMITER DLM00" Flags="0"/>
-    <ROW ScriptName="onlyoffice.data" Token="DELIMITER ;" Flags="0"/>
-    <ROW ScriptName="onlyoffice.upgradev110" Token="DELIMITER DLM00" Flags="0"/>
-    <ROW ScriptName="onlyoffice.upgradev110" Token="DELIMITER ;" Flags="0"/>
-    <ROW ScriptName="onlyoffice.upgradev111" Token="DELIMITER DLM00" Flags="0"/>
-    <ROW ScriptName="onlyoffice.upgradev111" Token="DELIMITER ;" Flags="0"/>
-    <ROW ScriptName="onlyoffice.upgradev115" Token="DELIMITER DLM00" Flags="0"/>
-    <ROW ScriptName="onlyoffice.upgradev115" Token="DELIMITER ;" Flags="0"/>
-    <ROW ScriptName="onlyoffice.upgradev116" Token="DELIMITER DLM00" Flags="0"/>
-    <ROW ScriptName="onlyoffice.upgradev116" Token="DELIMITER ;" Flags="0"/>
-  </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.SqlScriptComponent">
-    <ROW ScriptName="createdb" ConnectionName="MySql.Connection" Condition="1" Separator=";" ScriptText="..\docker\config\createdb.sql" Flags="274" Order="0"/>
-    <ROW ScriptName="onlyoffice" ConnectionName="MySql.Connection" Condition="1" Separator=";" ScriptText="..\docker\config\onlyoffice.sql" Flags="18" Order="1"/>
-    <ROW ScriptName="onlyoffice.data" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\docker\config\onlyoffice.data.sql" Flags="274" Order="2"/>
-    <ROW ScriptName="onlyoffice.resources" ConnectionName="MySql.Connection" Condition="1" Separator=";" ScriptText="..\docker\config\onlyoffice.resources.sql" Flags="18" Order="3"/>
-    <ROW ScriptName="onlyoffice.upgradev110" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\docker\config\onlyoffice.upgradev110.sql" Flags="274" Order="4"/>
-    <ROW ScriptName="onlyoffice.upgradev111" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\docker\config\onlyoffice.upgradev111.sql" Flags="274" Order="5"/>
-    <ROW ScriptName="onlyoffice.upgradev115" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\docker\config\onlyoffice.upgradev115.sql" Flags="274" Order="6"/>
-    <ROW ScriptName="onlyoffice.upgradev116" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\docker\config\onlyoffice.upgradev116.sql" Flags="18" Order="7"/>
     <ATTRIBUTE name="ImpersonateUser" value="true"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.SynchronizedFolderComponent">
