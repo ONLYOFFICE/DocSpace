@@ -4,7 +4,7 @@ import React from "react";
 import ContextMenu from "@appserver/components/context-menu";
 import { isDesktop } from "react-device-detect";
 import Link from "@appserver/components/link";
-
+import { withTranslation } from "react-i18next";
 import { ReactSVG } from "react-svg";
 
 import {
@@ -68,35 +68,42 @@ class Tile extends React.PureComponent {
     onSelect && onSelect(true, item);
   };
 
+  getContextModel = () => {
+    return [
+      {
+        key: "create",
+        label: this.props.t("Common:Create"),
+        onClick: this.onCreateForm,
+      },
+      {
+        key: "template-info",
+        label: this.props.t("TemplateInfo"),
+        onClick: this.onShowTemplateInfo,
+      },
+    ];
+  };
+
+  onCreateForm = () => {
+    console.log("onCreateForm");
+  };
+
+  onShowTemplateInfo = () => {
+    console.log("onShowTemplateInfo");
+  };
+
+  getOptions = () => ["create", "template-info"];
+
   render() {
     const {
       children,
       contextButtonSpacerWidth,
-      contextOptions,
       element,
       tileContextClick,
-
-      item,
       isActive,
 
       title,
-      getContextModel,
       showHotkeyBorder,
     } = this.props;
-
-    const renderElement = Object.prototype.hasOwnProperty.call(
-      this.props,
-      "element"
-    );
-
-    const renderContext =
-      Object.prototype.hasOwnProperty.call(item, "contextOptions") &&
-      contextOptions.length > 0;
-
-    const getOptions = () => {
-      tileContextClick && tileContextClick();
-      return contextOptions;
-    };
 
     const onContextMenu = (e) => {
       tileContextClick && tileContextClick();
@@ -107,11 +114,6 @@ class Tile extends React.PureComponent {
     };
 
     const icon = this.getIconFile();
-
-    // const contextMenuHeader = {
-    //   icon: children[0].props.item.icon,
-    //   title: children[0].props.item.title,
-    // };
 
     return (
       <StyledTile
@@ -133,22 +135,18 @@ class Tile extends React.PureComponent {
 
           <StyledContent>{children}</StyledContent>
           <StyledOptionButton spacerWidth={contextButtonSpacerWidth}>
-            {renderContext ? (
-              <ContextMenuButton
-                className="expandButton"
-                directionX="right"
-                getData={getOptions}
-                isNew={true}
-                onClick={onContextMenu}
-                title={title}
-              />
-            ) : (
-              <div className="expandButton" />
-            )}
+            <ContextMenuButton
+              className="expandButton"
+              directionX="right"
+              getData={this.getOptions}
+              isNew={true}
+              onClick={onContextMenu}
+              title={title}
+            />
+
             <ContextMenu
-              getContextModel={getContextModel}
+              getContextModel={this.getContextModel}
               ref={this.cm}
-              //header={contextMenuHeader}
               withBackdrop={true}
             />
           </StyledOptionButton>
@@ -178,4 +176,4 @@ Tile.defaultProps = {
   item: {},
 };
 
-export default Tile;
+export default withTranslation(["FormGallery", "Common"])(Tile);

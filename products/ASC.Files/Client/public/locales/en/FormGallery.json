@@ -1,4 +1,5 @@
 {
   "EmptyScreenHeader": "Failed to load form templates",
-  "EmptyScreenDescription": "Please check your Internet connection and refresh the page or try later"
+  "EmptyScreenDescription": "Please check your Internet connection and refresh the page or try later",
+  "TemplateInfo": "Template info"
 }
