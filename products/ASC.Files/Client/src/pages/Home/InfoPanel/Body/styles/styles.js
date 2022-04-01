@@ -68,17 +68,14 @@ const StyledThumbnail = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: calc(100% + 6px -16px);
-  height: 200px;
-  padding: 4px;
+  width: 100%;
+  //width: calc(100% - 10px);
+  height: auto;
   border: ${(props) => `solid 1px ${props.theme.infoPanel.borderColor}`};
   border-radius: 6px;
-  margin: 0 0 24px 0;
   img {
-    height: 100%;
-    width: auto;
-    max-height: auto;
-    max-width: 100%;
+    width: 100%;
+    height: auto;
   }
 `;
 
