@@ -120,7 +120,6 @@ class Section extends React.Component {
     this.timeoutHandler = null;
     this.intervalHandler = null;
 
-    console.log(isMobile, isMobileOnly);
     this.scroll = null;
   }
 
