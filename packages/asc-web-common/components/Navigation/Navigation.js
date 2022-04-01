@@ -96,7 +96,6 @@ const Navigation = ({
               onBackToParentFolder={onBackToParentFolderAction}
               title={title}
               personal={personal}
-              isRootFolder={isRootFolder}
               canCreate={canCreate}
               navigationItems={navigationItems}
               getContextOptionsFolder={getContextOptionsFolder}

@@ -20,6 +20,7 @@ import {
   SectionFilterContent,
   SectionHeaderContent,
   SectionPagingContent,
+  Bar,
 } from "./Section";
 
 import { ArticleMainButtonContent } from "../../components/Article";
@@ -281,6 +282,10 @@ class PureHome extends React.Component {
 
       dragging,
       tReady,
+      personal,
+      checkedMaintenance,
+      setMaintenanceExist,
+      snackbarExist,
     } = this.props;
     return (
       <>
@@ -315,6 +320,16 @@ class PureHome extends React.Component {
           <Section.SectionHeader>
             <SectionHeaderContent />
           </Section.SectionHeader>
+
+          <Section.SectionBar>
+            {checkedMaintenance && !snackbarExist && (
+              <Bar
+                firstLoad={firstLoad}
+                personal={personal}
+                setMaintenanceExist={setMaintenanceExist}
+              />
+            )}
+          </Section.SectionBar>
 
           <Section.SectionFilter>
             <SectionFilterContent />
@@ -427,6 +442,9 @@ export default inject(
       isRecycleBinFolder,
       isPrivacyFolder,
       isVisitor: auth.userStore.user.isVisitor,
+      checkedMaintenance: auth.settingsStore.checkedMaintenance,
+      setMaintenanceExist: auth.settingsStore.setMaintenanceExist,
+      snackbarExist: auth.settingsStore.snackbarExist,
       expandedKeys,
 
       primaryProgressDataVisible,
@@ -454,6 +472,7 @@ export default inject(
       startUpload,
       isHeaderVisible: auth.settingsStore.isHeaderVisible,
       setHeaderVisible: auth.settingsStore.setHeaderVisible,
+      personal: auth.settingsStore.personal,
       setToPreviewFile,
       playlist,
       isMediaOrImage: settingsStore.isMediaOrImage,
