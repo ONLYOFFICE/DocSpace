@@ -108,81 +108,8 @@ namespace ASC.Web.Studio.Core.Notify
                  InterceptorLifetime.Global,
                  (r, p, scope) =>
                  {
-                     var scopeClass = scope.ServiceProvider.GetService<NotifyConfigurationScope>();
-                     var coreBaseSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
-                     var (tenantManager, webItemSecurity, userManager, options, _, _, _, _, _, _, _, _, _, _, _) = scopeClass;
-                     try
-                     {
-                         // culture
-                         var u = Constants.LostUser;
-                         if (!(coreBaseSettings.Personal && r.NotifyAction.ID == Actions.PersonalConfirmation.ID))
-                         {
-                             var tenant = tenantManager.GetCurrentTenant();
-
-                             if (32 <= r.Recipient.ID.Length)
-                             {
-                                 var guid = default(Guid);
-                                 try
-                                 {
-                                     guid = new Guid(r.Recipient.ID);
-                                 }
-                                 catch (FormatException) { }
-                                 catch (OverflowException) { }
-
-                                 if (guid != default)
-                                 {
-                                     u = userManager.GetUsers(guid);
-                                 }
-                             }
-
-                             if (Constants.LostUser.Equals(u))
-                             {
-                                 u = userManager.GetUserByEmail(r.Recipient.ID);
-                             }
-
-                             if (Constants.LostUser.Equals(u))
-                             {
-                                 u = userManager.GetUserByUserName(r.Recipient.ID);
-                             }
-
-                             if (!Constants.LostUser.Equals(u))
-                             {
-                                 var culture = !string.IsNullOrEmpty(u.CultureName) ? u.GetCulture() : tenant.GetCulture();
-                                 Thread.CurrentThread.CurrentCulture = culture;
-                                 Thread.CurrentThread.CurrentUICulture = culture;
-
-                                 // security
-                                 var tag = r.Arguments.Find(a => a.Tag == CommonTags.ModuleID);
-                                 var productId = tag != null ? (Guid)tag.Value : Guid.Empty;
-                                 if (productId == Guid.Empty)
-                                 {
-                                     tag = r.Arguments.Find(a => a.Tag == CommonTags.ProductID);
-                                     productId = tag != null ? (Guid)tag.Value : Guid.Empty;
-                                 }
-                                 if (productId == Guid.Empty)
-                                 {
-                                     productId = (Guid)(CallContext.GetData("asc.web.product_id") ?? Guid.Empty);
-                                 }
-                                 if (productId != Guid.Empty && productId != new Guid("f4d98afdd336433287783c6945c81ea0") /* ignore people product */)
-                                 {
-                                     return !webItemSecurity.IsAvailableForUser(productId, u.Id);
-                                 }
-                             }
-                         }
-
-                         var tagCulture = r.Arguments.FirstOrDefault(a => a.Tag == CommonTags.Culture);
-                         if (tagCulture != null)
-                         {
-                             var culture = CultureInfo.GetCultureInfo((string)tagCulture.Value);
-                             Thread.CurrentThread.CurrentCulture = culture;
-                             Thread.CurrentThread.CurrentUICulture = culture;
-                         }
-                     }
-                     catch (Exception error)
-                     {
-                         options.CurrentValue.Error(error);
-                     }
-                     return false;
+                     var scopeClass = scope.ServiceProvider.GetRequiredService<ProductSecurityInterceptor>();
+                     return scopeClass.Intercept(r, p);
                  });
             client.AddInterceptor(securityAndCulture);
 
@@ -222,90 +149,104 @@ namespace ASC.Web.Studio.Core.Notify
     }
 
     [Scope]
-    public class NotifyConfigurationScope
+    public class ProductSecurityInterceptor
     {
-        private TenantManager TenantManager { get; }
-        private WebItemSecurity WebItemSecurity { get; }
-        private UserManager UserManager { get; }
-        private IOptionsMonitor<ILog> Options { get; }
-        private TenantExtra TenantExtra { get; }
-        private WebItemManagerSecurity WebItemManagerSecurity { get; }
-        private WebItemManager WebItemManager { get; }
-        private IConfiguration Configuration { get; }
-        private TenantLogoManager TenantLogoManager { get; }
-        private AdditionalWhiteLabelSettingsHelper AdditionalWhiteLabelSettingsHelper { get; }
-        private TenantUtil TenantUtil { get; }
-        private CoreBaseSettings CoreBaseSettings { get; }
-        private CommonLinkUtility CommonLinkUtility { get; }
-        private SettingsManager SettingsManager { get; }
-        private StudioNotifyHelper StudioNotifyHelper { get; }
+        private readonly TenantManager _tenantManager;
+        private readonly WebItemSecurity _webItemSecurity;
+        private readonly UserManager _userManager;
+        private readonly CoreBaseSettings _coreBaseSettings;
+        private readonly ILog _log;
 
-        public NotifyConfigurationScope(
+        public ProductSecurityInterceptor(
             TenantManager tenantManager,
             WebItemSecurity webItemSecurity,
             UserManager userManager,
-            IOptionsMonitor<ILog> options,
-            TenantExtra tenantExtra,
-            WebItemManagerSecurity webItemManagerSecurity,
-            WebItemManager webItemManager,
-            IConfiguration configuration,
-            TenantLogoManager tenantLogoManager,
-            AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper,
-            TenantUtil tenantUtil,
             CoreBaseSettings coreBaseSettings,
-            CommonLinkUtility commonLinkUtility,
-            SettingsManager settingsManager,
-            StudioNotifyHelper studioNotifyHelper
+            IOptionsMonitor<ILog> options
             )
         {
-            TenantManager = tenantManager;
-            WebItemSecurity = webItemSecurity;
-            UserManager = userManager;
-            Options = options;
-            TenantExtra = tenantExtra;
-            WebItemManagerSecurity = webItemManagerSecurity;
-            WebItemManager = webItemManager;
-            Configuration = configuration;
-            TenantLogoManager = tenantLogoManager;
-            AdditionalWhiteLabelSettingsHelper = additionalWhiteLabelSettingsHelper;
-            TenantUtil = tenantUtil;
-            CoreBaseSettings = coreBaseSettings;
-            CommonLinkUtility = commonLinkUtility;
-            SettingsManager = settingsManager;
-            StudioNotifyHelper = studioNotifyHelper;
+            _tenantManager = tenantManager;
+            _webItemSecurity = webItemSecurity;
+            _userManager = userManager;
+            _coreBaseSettings = coreBaseSettings;
+            _log = options.CurrentValue;
         }
 
-        public void Deconstruct(out TenantManager tenantManager,
-            out WebItemSecurity webItemSecurity,
-            out UserManager userManager,
-            out IOptionsMonitor<ILog> optionsMonitor,
-            out TenantExtra tenantExtra,
-            out WebItemManagerSecurity webItemManagerSecurity,
-            out WebItemManager webItemManager,
-            out IConfiguration configuration,
-            out TenantLogoManager tenantLogoManager,
-            out AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper,
-            out TenantUtil tenantUtil,
-            out CoreBaseSettings coreBaseSettings,
-            out CommonLinkUtility commonLinkUtility,
-            out SettingsManager settingsManager,
-            out StudioNotifyHelper studioNotifyHelper)
+        public bool Intercept(NotifyRequest r, InterceptorPlace p)
         {
-            tenantManager = TenantManager;
-            webItemSecurity = WebItemSecurity;
-            userManager = UserManager;
-            optionsMonitor = Options;
-            tenantExtra = TenantExtra;
-            webItemManagerSecurity = WebItemManagerSecurity;
-            webItemManager = WebItemManager;
-            configuration = Configuration;
-            tenantLogoManager = TenantLogoManager;
-            additionalWhiteLabelSettingsHelper = AdditionalWhiteLabelSettingsHelper;
-            tenantUtil = TenantUtil;
-            coreBaseSettings = CoreBaseSettings;
-            commonLinkUtility = CommonLinkUtility;
-            settingsManager = SettingsManager;
-            studioNotifyHelper = StudioNotifyHelper;
+            try
+            {
+                // culture
+                var u = Constants.LostUser;
+                if (!(_coreBaseSettings.Personal && r.NotifyAction.ID == Actions.PersonalConfirmation.ID))
+                {
+                    var tenant = _tenantManager.GetCurrentTenant();
+
+                    if (32 <= r.Recipient.ID.Length)
+                    {
+                        var guid = default(Guid);
+                        try
+                        {
+                            guid = new Guid(r.Recipient.ID);
+                        }
+                        catch (FormatException) { }
+                        catch (OverflowException) { }
+
+                        if (guid != default)
+                        {
+                            u = _userManager.GetUsers(guid);
+                        }
+                    }
+
+                    if (Constants.LostUser.Equals(u))
+                    {
+                        u = _userManager.GetUserByEmail(r.Recipient.ID);
+                    }
+
+                    if (Constants.LostUser.Equals(u))
+                    {
+                        u = _userManager.GetUserByUserName(r.Recipient.ID);
+                    }
+
+                    if (!Constants.LostUser.Equals(u))
+                    {
+                        var culture = !string.IsNullOrEmpty(u.CultureName) ? u.GetCulture() : tenant.GetCulture();
+                        Thread.CurrentThread.CurrentCulture = culture;
+                        Thread.CurrentThread.CurrentUICulture = culture;
+
+                        // security
+                        var tag = r.Arguments.Find(a => a.Tag == CommonTags.ModuleID);
+                        var productId = tag != null ? (Guid)tag.Value : Guid.Empty;
+                        if (productId == Guid.Empty)
+                        {
+                            tag = r.Arguments.Find(a => a.Tag == CommonTags.ProductID);
+                            productId = tag != null ? (Guid)tag.Value : Guid.Empty;
+                        }
+                        if (productId == Guid.Empty)
+                        {
+                            productId = (Guid)(CallContext.GetData("asc.web.product_id") ?? Guid.Empty);
+                        }
+                        if (productId != Guid.Empty && productId != new Guid("f4d98afdd336433287783c6945c81ea0") /* ignore people product */)
+                        {
+                            return !_webItemSecurity.IsAvailableForUser(productId, u.Id);
+                        }
+                    }
+                }
+
+                var tagCulture = r.Arguments.FirstOrDefault(a => a.Tag == CommonTags.Culture);
+                if (tagCulture != null)
+                {
+                    var culture = CultureInfo.GetCultureInfo((string)tagCulture.Value);
+                    Thread.CurrentThread.CurrentCulture = culture;
+                    Thread.CurrentThread.CurrentUICulture = culture;
+                }
+            }
+            catch (Exception error)
+            {
+                _log.Error(error);
+            }
+
+            return false;
         }
     }
 
@@ -314,7 +255,7 @@ namespace ASC.Web.Studio.Core.Notify
         public static void Register(DIHelper services)
         {
             services.TryAdd<NotifyTransferRequest>();
-            services.TryAdd<NotifyConfigurationScope>();
+            services.TryAdd<ProductSecurityInterceptor>();
             services.TryAdd<TextileStyler>();
             services.TryAdd<JabberStyler>();
             services.TryAdd<PushStyler>();

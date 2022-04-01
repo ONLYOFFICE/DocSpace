@@ -38,14 +38,13 @@ namespace ASC.Web.Core.Utility.Settings
         [JsonPropertyName("Settings")]
         public List<WebItemOption> SettingsCollection { get; set; }
 
-        public WebItemSettings()
-        {
-            SettingsCollection = new List<WebItemOption>();
-        }
-
         public WebItemSettings(WebItemManager webItemManager) : this()
         {
             _webItemManager = webItemManager;
+        }
+        public WebItemSettings()
+        {
+            SettingsCollection = new List<WebItemOption>();
         }
 
         public WebItemSettings GetDefault()

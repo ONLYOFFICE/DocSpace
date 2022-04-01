@@ -49,14 +49,14 @@ namespace ASC.Web.Core.WhiteLabel
         [JsonPropertyName("IsLicensor")]
         public bool IsLicensor { get; set; }
 
-        public CompanyWhiteLabelSettings()
-        {
-
-        }
-
         public CompanyWhiteLabelSettings(CoreSettings coreSettings)
         {
             _coreSettings = coreSettings;
+        }
+
+        public CompanyWhiteLabelSettings()
+        {
+
         }
 
         public bool IsDefault()

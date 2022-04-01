@@ -57,18 +57,20 @@ namespace ASC.Web.Core.Utility
         /// </summary>
         public bool SpecSymbols { get; set; }
 
-        public PasswordSettings() { }
-
         public PasswordSettings(IConfiguration configuration)
         {
             _configuration = configuration;
+        }
+
+        public PasswordSettings()
+        {
         }
 
         public PasswordSettings GetDefault()
         {
             var def = new PasswordSettings(_configuration) { MinLength = 8, UpperCase = false, Digits = false, SpecSymbols = false };
 
-            if (int.TryParse(_configuration["web:password:min"], out var defaultMinLength))
+            if (_configuration != null && int.TryParse(_configuration["web:password:min"], out var defaultMinLength))
             {
                 def.MinLength = Math.Max(1, Math.Min(MaxLength, defaultMinLength));
             }

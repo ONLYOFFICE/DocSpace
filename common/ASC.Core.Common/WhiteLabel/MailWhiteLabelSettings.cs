@@ -42,15 +42,15 @@ public class MailWhiteLabelSettings : ISettings<MailWhiteLabelSettings>
 
     public Guid ID => new Guid("{C3602052-5BA2-452A-BD2A-ADD0FAF8EB88}");
 
-    public MailWhiteLabelSettings()
-    {
-
-    }
-
     public MailWhiteLabelSettings(IConfiguration configuration)
     {
         _mailWhiteLabelSettingsHelper = new MailWhiteLabelSettingsHelper(configuration);
         _configuration = configuration;
+    }
+
+    public MailWhiteLabelSettings()
+    {
+
     }
 
     public MailWhiteLabelSettings GetDefault()

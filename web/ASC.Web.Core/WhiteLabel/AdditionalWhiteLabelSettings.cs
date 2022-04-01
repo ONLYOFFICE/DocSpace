@@ -83,13 +83,12 @@ namespace ASC.Web.Core.WhiteLabel
             get { return new Guid("{0108422F-C05D-488E-B271-30C4032494DA}"); }
         }
 
-        public AdditionalWhiteLabelSettings() { }
-
         public AdditionalWhiteLabelSettings(AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper)
         {
             _additionalWhiteLabelSettingsHelper = additionalWhiteLabelSettingsHelper;
         }
 
+        public AdditionalWhiteLabelSettings() { }
 
         public AdditionalWhiteLabelSettings GetDefault()
         {
