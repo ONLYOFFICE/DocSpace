@@ -28,7 +28,7 @@ const InfoPanelBodyContent = ({
       isRecycleBinFolder ||
       (item.isFolder && item.parentId === 0) ||
       item.rootFolderId === 7 ||
-      (item.isFolder && item.pathParts[0] === 7);
+      (item.isFolder && item.pathParts && item.pathParts[0] === 7);
 
     return (
       <SingleItem
