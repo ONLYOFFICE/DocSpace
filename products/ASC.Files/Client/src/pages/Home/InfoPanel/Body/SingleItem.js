@@ -277,7 +277,7 @@ const SingleItem = (props) => {
     if (dontShowAccess) {
       setItem({
         ...displayedItem,
-        properties: properties,
+        //properties: properties,
       });
       return;
     }
