@@ -98,38 +98,10 @@ public abstract class BaseStartup
         DIHelper.TryAdd<CookieAuthHandler>();
         DIHelper.TryAdd<WebhooksGlobalFilterAttribute>();
 
-        var redisConfiguration = Configuration.GetSection("Redis").Get<RedisConfiguration>();
-        var kafkaConfiguration = Configuration.GetSection("kafka").Get<KafkaSettings>();
-        var rabbitMQConfiguration = Configuration.GetSection("RabbitMQ").Get<RabbitMQSettings>();
-
+        services.AddDistributedCache(Configuration);
         services.AddEventBus(Configuration);
-
-        services.AddStackExchangeRedisCache(config =>
-        {
-            config.ConfigurationOptions = redisConfiguration.ConfigurationOptions;
-        });
-
         services.AddDistributedTaskQueue();
-
-        if (kafkaConfiguration != null)
-        {
-            DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCacheNotify<>));
-        }
-        else if (rabbitMQConfiguration != null)
-        {
-            DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(RabbitMQCache<>));
-        }
-        else if (redisConfiguration != null)
-        {
-           
-            DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCacheNotify<>));
-
-            services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
-        }
-        else
-        {
-            DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(MemoryCacheNotify<>));
-        }
+        services.AddCacheNotify(Configuration);
 
         DIHelper.TryAdd(typeof(IWebhookPublisher), typeof(WebhookPublisher));
 

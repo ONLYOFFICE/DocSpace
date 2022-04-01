@@ -61,29 +61,12 @@ public static class HostBuilderExtension
         {
             services.AddMemoryCache();
 
+            services.AddDistributedCache(hostContext.Configuration);
+            services.AddEventBus(hostContext.Configuration);
+            services.AddDistributedTaskQueue();
+            services.AddCacheNotify(hostContext.Configuration);
+
             var diHelper = new DIHelper(services);
-
-            var redisConfiguration = hostContext.Configuration.GetSection("Redis").Get<RedisConfiguration>();
-            var kafkaConfiguration = hostContext.Configuration.GetSection("kafka").Get<KafkaSettings>();
-            var rabbitMQConfiguration = hostContext.Configuration.GetSection("RabbitMQ").Get<RabbitMQSettings>();
-
-            if (kafkaConfiguration != null)
-            {
-                diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCacheNotify<>));
-            }
-            else if (rabbitMQConfiguration != null)
-            {
-                diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RabbitMQCache<>));
-            }
-            else if (redisConfiguration != null)
-            {
-                diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCacheNotify<>));
-                services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
-            }
-            else
-            {
-                diHelper.TryAdd(typeof(ICacheNotify<>), typeof(MemoryCacheNotify<>));
-            }
 
             configureDelegate?.Invoke(hostContext, services, diHelper);
         });

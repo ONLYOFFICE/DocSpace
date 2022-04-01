@@ -1,6 +1,49 @@
 ﻿namespace ASC.Api.Core.Extensions;
 public static class ServiceCollectionExtension
 {
+    public static void AddCacheNotify(this IServiceCollection services, IConfiguration configuration)
+    {
+        var redisConfiguration = configuration.GetSection("Redis").Get<RedisConfiguration>();
+        var kafkaConfiguration = configuration.GetSection("kafka").Get<KafkaSettings>();
+        var rabbitMQConfiguration = configuration.GetSection("RabbitMQ").Get<RabbitMQSettings>();
+
+        if (redisConfiguration != null)
+        {
+            services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
+
+            services.AddSingleton(typeof(ICacheNotify<>), typeof(RedisCacheNotify<>));
+        }
+        else if (rabbitMQConfiguration != null)
+        {
+            services.AddSingleton(typeof(ICacheNotify<>), typeof(RabbitMQCache<>));
+        }
+        else if (kafkaConfiguration != null)
+        {
+            services.AddSingleton(typeof(ICacheNotify<>), typeof(KafkaCacheNotify<>));
+        }
+        else
+        {
+            services.AddSingleton(typeof(ICacheNotify<>), typeof(MemoryCacheNotify<>));
+        }
+    }
+
+    public static void AddDistributedCache(this IServiceCollection services, IConfiguration configuration)
+    {
+        var redisConfiguration = configuration.GetSection("Redis").Get<RedisConfiguration>();
+
+        if (redisConfiguration != null)
+        {
+            services.AddStackExchangeRedisCache(config =>
+            {
+                config.ConfigurationOptions = redisConfiguration.ConfigurationOptions;
+            });
+        }
+        else
+        {
+            services.AddDistributedMemoryCache();
+        }
+    }
+
     public static void AddEventBus(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddSingleton<IEventBusSubscriptionsManager, InMemoryEventBusSubscriptionsManager>();
@@ -19,7 +62,7 @@ public static class ServiceCollectionExtension
                 var factory = new ConnectionFactory()
                 {
                     HostName = settings.HostName,
-                    DispatchConsumersAsync = true                        
+                    DispatchConsumersAsync = true
                 };
 
                 if (!string.IsNullOrEmpty(settings.UserName))
@@ -72,18 +115,8 @@ public static class ServiceCollectionExtension
         }
         else
         {
-            services.AddSingleton<IEventBus, EventBusMemoryCache>(sp =>
-            {
-                var cfg = sp.GetRequiredService<IConfiguration>();
-
-                var iLifetimeScope = sp.GetRequiredService<ILifetimeScope>();
-                var logger = sp.GetRequiredService<IOptionsMonitor<ILog>>();
-                var eventBusSubcriptionsManager = sp.GetRequiredService<IEventBusSubscriptionsManager>();
-               
-                return new EventBusMemoryCache(logger, iLifetimeScope, eventBusSubcriptionsManager);
-            });
+            throw new NotImplementedException("EventBus: Provider not found.");
         }
-
     }
 
     /// <remarks>
@@ -103,7 +136,7 @@ public static class ServiceCollectionExtension
         services.AddHostedService<T>();
 
     }
-    
+
     public static void AddDistributedTaskQueue(this IServiceCollection services)
     {
         services.AddTransient<DistributedTaskQueue>();
