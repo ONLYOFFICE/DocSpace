@@ -527,7 +527,7 @@ const Dark = {
     },
 
     optionButton: {
-      padding: "8px 0px 9px 7px",
+      padding: "8px 9px 9px 7px",
     },
   },
 

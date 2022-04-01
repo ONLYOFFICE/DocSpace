@@ -529,7 +529,7 @@ const Base = {
     },
 
     optionButton: {
-      padding: "8px 0px 9px 7px",
+      padding: "8px 9px 9px 7px",
     },
   },
 
@@ -2115,7 +2115,7 @@ const Base = {
 
         borderImageRight:
           "linear-gradient(to right, #ffffff 25px,#eceef1 24px)",
-        borderImageLeft: "linear-gradient(to left, #ffffff 20px,#eceef1 24px)",
+        borderImageLeft: "linear-gradient(to left, #ffffff 24px,#eceef1 24px)",
 
         borderColor: "#ECEEf1",
         borderColorTransition: "#f3f4f4",

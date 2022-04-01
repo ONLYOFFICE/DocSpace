@@ -25,7 +25,7 @@ const StyledSnackBar = styled(Box)`
   color: white;
   line-height: 16px;
   padding: 12px;
-  margin: 0 0 8px 0;
+  margin: 0;
   opacity: ${(props) => props.opacity || 0};
   width: 100%;
   background-color: ${(props) => props.backgroundColor};
