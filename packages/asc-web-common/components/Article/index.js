@@ -40,8 +40,6 @@ const Article = ({
   ] = React.useState(null);
   const [articleBodyContent, setArticleBodyContent] = React.useState(null);
 
-  const refTimer = React.useRef(null);
-
   React.useEffect(() => {
     if (isMobileOnly) {
       window.addEventListener("popstate", hideText);
@@ -80,19 +78,15 @@ const Article = ({
   }, [children]);
 
   const sizeChangeHandler = React.useCallback(() => {
-    clearTimeout(refTimer.current);
-
-    refTimer.current = setTimeout(() => {
-      if (isMobileOnly || isMobileUtils() || window.innerWidth === 375)
-        setShowText(true);
-      if (
-        ((isTabletUtils() && window.innerWidth !== 375) || isMobile) &&
-        !isMobileOnly
-      )
-        setShowText(false);
-      if (isDesktopUtils() && !isMobile) setShowText(true);
-    }, 100);
-  }, [refTimer.current, setShowText]);
+    if (isMobileOnly || isMobileUtils() || window.innerWidth === 375)
+      setShowText(true);
+    if (
+      ((isTabletUtils() && window.innerWidth !== 375) || isMobile) &&
+      !isMobileOnly
+    )
+      setShowText(false);
+    if (isDesktopUtils() && !isMobile) setShowText(true);
+  }, [setShowText]);
 
   const hideText = React.useCallback((event) => {
     event.preventDefault;
