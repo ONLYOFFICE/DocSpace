@@ -32,19 +32,19 @@ const StyledSectionHeader = styled.div`
   ${isMobile &&
   css`
     width: ${(props) =>
-      props.showText ? "calc(100vw - 272px)" : "calc(100vw - 84px)"};
+      props.showText ? "calc(100vw - 272px)" : "calc(100vw - 84px)"} !important;
     max-width: ${(props) =>
-      props.showText ? "calc(100vw - 272px)" : "calc(100vw - 84px)"};
-    height: 61px;
-    min-height: 61px;
+      props.showText ? "calc(100vw - 272px)" : "calc(100vw - 84px)"} !important;
+    height: 61px !important;
+    min-height: 61px !important;
     margin-right: 0px !important;
   `}
 
   @media ${mobile} {
     width: calc(100vw - 32px) !important;
     max-width: calc(100vw - 32px) !important;
-    height: 61px;
-    min-height: 61px;
+    height: 53px;
+    min-height: 53px;
     margin-right: 0px !important;
   }
 
@@ -52,8 +52,9 @@ const StyledSectionHeader = styled.div`
   css`
     width: calc(100vw - 32px) !important;
     max-width: calc(100vw - 32px) !important;
-    height: 61px;
-    min-height: 61px;
+    height: 53px;
+    min-height: 53px;
+    margin-top: -2px;
     margin-right: 0px !important;
   `}
 `;
@@ -61,15 +62,7 @@ const StyledSectionHeader = styled.div`
 StyledSectionHeader.defaultProps = { theme: Base };
 
 const SectionHeader = (props) => {
-  const {
-    isArticlePinned,
-    isHeaderVisible,
-    viewAs,
-    maintenanceExist,
-    snackbarExist,
-    className,
-    ...rest
-  } = props;
+  const { viewAs, className, ...rest } = props;
 
   return (
     <StyledSectionHeader

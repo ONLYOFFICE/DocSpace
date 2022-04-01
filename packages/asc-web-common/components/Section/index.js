@@ -5,6 +5,7 @@ import {
   desktop,
   size,
   tablet,
+  mobile,
   isMobile as isMobileUtils,
   isTablet as isTabletUtils,
 } from "@appserver/components/utils/device";
@@ -24,8 +25,6 @@ import FloatingButton from "../FloatingButton";
 import { inject, observer } from "mobx-react";
 import Selecto from "react-selecto";
 import styled, { css } from "styled-components";
-import { LayoutContextConsumer } from "studio/Layout/context";
-import classnames from "classnames";
 
 const StyledSelectoWrapper = styled.div`
   .selecto-selection {
@@ -36,25 +35,50 @@ const StyledSelectoWrapper = styled.div`
 const StyledMainBar = styled.div`
   box-sizing: border-box;
 
-  @media ${desktop} {
-    margin-left: -24px;
-    width: 100% + 24px;
+  margin-left: -20px;
+  width: calc(100vw - 256px);
+  max-width: calc(100vw - 256px);
+
+  #bar-banner {
+    margin-bottom: -3px;
   }
 
-  @media (max-width: 1180px) {
-    margin-left: -20px;
+  #bar-frame {
+    min-width: 100%;
+    max-width: 100%;
   }
 
   @media ${tablet} {
+    width: ${(props) =>
+      props.showText ? "calc(100vw - 240px)" : "calc(100vw - 52px)"};
+    max-width: ${(props) =>
+      props.showText ? "calc(100vw - 240px)" : "calc(100vw - 52px)"};
     margin-left: -16px;
-    width: 100% + 16px;
   }
+
   ${isMobile &&
   css`
-    z-index: 150;
-    position: fixed;
-    top: 48px;
-  `};
+    width: ${(props) =>
+      props.showText ? "calc(100vw - 240px)" : "calc(100vw - 52px)"} !important;
+    max-width: ${(props) =>
+      props.showText ? "calc(100vw - 240px)" : "calc(100vw - 52px)"} !important;
+    margin-left: -16px;
+  `}
+
+  @media ${mobile} {
+    width: 100vw !important;
+    max-width: 100vw !important;
+  }
+
+  ${isMobileOnly &&
+  css`
+    width: 100vw !important;
+    max-width: 100vw !important;
+
+    #bar-frame {
+      min-width: 100vw;
+    }
+  `}
 `;
 
 function SectionHeader() {
@@ -96,6 +120,7 @@ class Section extends React.Component {
     this.timeoutHandler = null;
     this.intervalHandler = null;
 
+    console.log(isMobile, isMobileOnly);
     this.scroll = null;
   }
 
@@ -207,6 +232,7 @@ class Section extends React.Component {
         !!sectionBodyContent ||
         isSectionFilterAvailable ||
         isSectionPagingAvailable,
+      isSectionBarAvailable = !!sectionBarContent,
       isSectionAvailable =
         isSectionHeaderAvailable ||
         isSectionFilterAvailable ||
@@ -234,31 +260,26 @@ class Section extends React.Component {
                     showText={showText}
                     viewAs={viewAs}
                     maintenanceExist={maintenanceExist}
+                    isSectionBarAvailable={isSectionBarAvailable}
                   >
-                    <LayoutContextConsumer>
-                      {(value) => (
-                        <StyledMainBar
-                          width={width}
-                          id="main-bar"
-                          className={classnames("main-bar", {
-                            "main-bar--hidden":
-                              value.isVisible === undefined
-                                ? false
-                                : !value.isVisible,
-                          })}
+                    {isSectionBarAvailable && !isMobile && (
+                      <StyledMainBar
+                        width={width}
+                        id="main-bar"
+                        className={"main-bar"}
+                        showText={showText}
+                      >
+                        <SubSectionBar
+                          setMaintenanceExist={setMaintenanceExist}
                         >
-                          <SubSectionBar
-                            setMaintenanceExist={setMaintenanceExist}
-                          >
-                            {sectionBarContent
-                              ? sectionBarContent.props.children
-                              : null}
-                          </SubSectionBar>
-                        </StyledMainBar>
-                      )}
-                    </LayoutContextConsumer>
+                          {sectionBarContent
+                            ? sectionBarContent.props.children
+                            : null}
+                        </SubSectionBar>
+                      </StyledMainBar>
+                    )}
 
-                    {isSectionHeaderAvailable && (
+                    {isSectionHeaderAvailable && !isMobile && (
                       <SubSectionHeader
                         maintenanceExist={maintenanceExist}
                         snackbarExist={snackbarExist}
@@ -272,8 +293,7 @@ class Section extends React.Component {
                           : null}
                       </SubSectionHeader>
                     )}
-
-                    {isSectionFilterAvailable && (
+                    {isSectionFilterAvailable && !isMobile && (
                       <>
                         <SubSectionFilter
                           className="section-header_filter"
@@ -295,7 +315,24 @@ class Section extends React.Component {
                           viewAs={viewAs}
                           isHomepage={isHomepage}
                         >
-                          {isSectionHeaderAvailable && (
+                          {isSectionBarAvailable && isMobile && (
+                            <StyledMainBar
+                              width={width}
+                              id="main-bar"
+                              className={"main-bar"}
+                              showText={showText}
+                            >
+                              <SubSectionBar
+                                setMaintenanceExist={setMaintenanceExist}
+                              >
+                                {sectionBarContent
+                                  ? sectionBarContent.props.children
+                                  : null}
+                              </SubSectionBar>
+                            </StyledMainBar>
+                          )}
+
+                          {isSectionHeaderAvailable && isMobile && (
                             <SubSectionHeader
                               className="section-body_header"
                               isHeaderVisible={isHeaderVisible}
@@ -308,7 +345,7 @@ class Section extends React.Component {
                             </SubSectionHeader>
                           )}
 
-                          {isSectionFilterAvailable && (
+                          {isSectionFilterAvailable && isMobile && (
                             <SubSectionFilter className="section-body_filter">
                               {sectionFilterContent
                                 ? sectionFilterContent.props.children

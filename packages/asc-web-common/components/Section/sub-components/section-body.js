@@ -13,10 +13,10 @@ import { tablet, mobile, desktop } from "@appserver/components/utils/device";
 const paddingStyles = css`
   padding: 19px 7px 16px 20px;
   @media ${tablet} {
-    padding: 0px 0 16px 24px;
+    padding: 19px 0 16px 24px;
   }
   @media ${mobile} {
-    padding: 0px 0 16px 24px;
+    padding: 19px 0 16px 24px;
   }
   ${isMobile &&
   css`
@@ -34,6 +34,8 @@ const commonStyles = css`
 
   ${(props) => !props.withScroll && `height: 100%;`}
   border-left: none;
+  border-right: none;
+  border-top: none;
 
   .section-wrapper {
     ${(props) =>
@@ -45,7 +47,6 @@ const commonStyles = css`
   .section-wrapper-content {
     ${paddingStyles}
     flex: 1 0 auto;
-    padding-right: 0;
     outline: none;
     ${(props) =>
       props.viewAs == "tile" &&
@@ -109,6 +110,13 @@ const StyledDropZoneBody = styled(DragAndDrop)`
 
     @media ${tablet}{
       margin-left: -24px;
+    }
+    
+    ${
+      isMobile &&
+      css`
+        margin-left: -24px;
+      `
     }
   `}
 `;
