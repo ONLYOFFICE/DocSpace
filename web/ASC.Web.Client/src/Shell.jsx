@@ -322,13 +322,11 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     if (!document.getElementById("main-bar")) return;
 
     const campaignStr = JSON.stringify(campaign);
-    let skipRender = lastCampaignStr === campaignStr;
+    // let skipRender = lastCampaignStr === campaignStr;
 
     const hasChild = document.getElementById("main-bar").hasChildNodes();
 
-    skipRender = skipRender || hasChild;
-
-    if (skipRender) return;
+    if (hasChild) return;
 
     lastCampaignStr = campaignStr;
 
@@ -355,6 +353,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
         setMaintenanceExist(true);
       },
     };
+
     Snackbar.show(barConfig);
   };
 
