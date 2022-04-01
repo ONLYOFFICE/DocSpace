@@ -37,7 +37,7 @@ const Banner = () => {
         "en"
       );
     }
-    return await (await fetch(translationUrl)).json();
+    return await res.json();
   };
 
   const getBanner = async () => {

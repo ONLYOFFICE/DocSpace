@@ -5,7 +5,7 @@ import { isIOS, isFirefox, isMobile, isMobileOnly } from "react-device-detect";
 const StyledMain = styled.main`
   height: ${(props) =>
     isIOS && !isFirefox
-      ? "calc(var(--vh, 1vh) * 100)"
+      ? "calc(100vh - 48px)"
       : props.isDesktop
       ? "100vh"
       : "calc(100vh - 48px)"};

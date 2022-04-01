@@ -53,7 +53,7 @@ const StyledComponent = styled.div`
 StyledComponent.defaultProps = { theme: Base };
 
 const SettingsPageLayout = ({ children }) => {
-  const [mobileView, setMobileView] = useState();
+  const [mobileView, setMobileView] = useState(true);
 
   const checkInnerWidth = () => {
     if (isSmallTablet()) {
@@ -71,6 +71,7 @@ const SettingsPageLayout = ({ children }) => {
   //TODO: Add menu, hide along the route
   const isMobile = !!(isSmallTablet() && mobileView);
 
+  console.log("isMobile", isMobile);
   return <>{children(isMobile)}</>;
 };
 

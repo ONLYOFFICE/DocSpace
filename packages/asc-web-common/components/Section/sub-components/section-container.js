@@ -12,18 +12,12 @@ import {
 import { Base } from "@appserver/components/themes";
 
 const tabletProps = css`
-  .section-header_header,
-  .section-header_filter {
-    display: none;
-  }
-
   .section-body_header {
     display: block;
     position: sticky;
     top: 0;
     background: ${(props) => props.theme.section.header.background};
-    z-index: 200;
-    margin-right: -2px;
+    z-index: 20;
 
     ${isMobileOnly &&
     css`
@@ -35,7 +29,6 @@ const tabletProps = css`
     display: block;
     margin: ${(props) =>
       props.viewAs === "tile" ? "4px 0 18px" : "4px 0 30px"};
-    margin-right: -1px;
   }
 `;
 
@@ -45,52 +38,59 @@ const StyledSectionContainer = styled.section`
   display: flex;
   flex-direction: column;
 
+  width: calc(100vw - 256px);
+  max-width: calc(100vw - 256px);
+
+  @media ${tablet} {
+    width: ${(props) =>
+      props.showText ? "calc(100vw - 240px)" : "calc(100vw - 52px)"};
+    max-width: ${(props) =>
+      props.showText ? "calc(100vw - 240px)" : "calc(100vw - 52px)"};
+    padding: 0 0 0 16px;
+  }
+
+  ${isMobile &&
+  css`
+    width: ${(props) =>
+      props.showText ? "calc(100vw - 240px)" : "calc(100vw - 52px)"} !important;
+    max-width: ${(props) =>
+      props.showText ? "calc(100vw - 240px)" : "calc(100vw - 52px)"} !important;
+    padding: 0 0 0 16px;
+    ${tabletProps};
+    min-width: 100px;
+  `}
+
+  @media ${mobile} {
+    width: 100vw !important;
+    max-width: 100vw !important;
+  }
+
+  ${isMobileOnly &&
+  css`
+    width: 100vw !important;
+    max-width: 100vw !important;
+    margin-top: 48px !important;
+  `}
+
   .layout-progress-bar {
     position: fixed;
     right: 15px;
     bottom: 21px;
-
-    ${(props) =>
-      !props.visible &&
-      css`
-        @media ${tablet} {
-          bottom: 83px;
-        }
-      `}
   }
 
   .layout-progress-second-bar {
     position: fixed;
     right: 15px;
     bottom: 83px;
-
-    ${(props) =>
-      !props.visible &&
-      css`
-        @media ${tablet} {
-          bottom: 145px;
-        }
-      `}
   }
 
-  .section-header_header,
-  .section-header_filter {
-    display: block;
-  }
-
-  .section-body_header,
-  .section-body_filter {
-    display: none;
-  }
-  @media ${tablet} {
-    padding: 0 0 0 16px;
-    ${tabletProps};
-  }
-  ${isMobile &&
-  css`
-    ${tabletProps};
-    min-width: 100px;
-  `}
+  ${(props) =>
+    !props.isSectionHeaderAvailable &&
+    css`
+      width: 100vw !important;
+      max-width: 100vw !important;
+      box-sizing: border-box;
+    `}
 `;
 
 StyledSectionContainer.defaultProps = { theme: Base };
