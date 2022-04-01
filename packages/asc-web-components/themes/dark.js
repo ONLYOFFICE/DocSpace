@@ -1962,6 +1962,7 @@ const Dark = {
 
     backgroundColor: black,
     borderColor: "#292929",
+    thumbnailBorderColor: grayLightMid,
     textColor: white,
 
     closeButtonIcon: black,

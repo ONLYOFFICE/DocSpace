@@ -1960,6 +1960,7 @@ const Base = {
 
     backgroundColor: white,
     borderColor: grayLightMid,
+    thumbnailBorderColor: grayLightMid,
     textColor: black,
 
     closeButtonIcon: gray,

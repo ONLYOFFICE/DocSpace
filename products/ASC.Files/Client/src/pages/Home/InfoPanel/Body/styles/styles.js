@@ -74,6 +74,7 @@ const StyledThumbnail = styled.div`
   border: ${(props) => `solid 1px ${props.theme.infoPanel.borderColor}`};
   border-radius: 6px;
   img {
+    border-radius: 6px;
     width: 100%;
     height: auto;
   }
