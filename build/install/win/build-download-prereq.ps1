@@ -56,47 +56,4 @@ $prerequisites = @(
   }
 )
 
-$path_sql = "${pwd}\build\install\docker\config\"
-
-$url = "https://raw.githubusercontent.com/ONLYOFFICE/CommunityServer/master/build/sql/"
-
-$sql_community = @(
-  @{  
-    download_allways = $true; 
-    name = "onlyoffice.sql"; 
-    link = $url + "onlyoffice.sql";
-  }
-
-  @{  
-    download_allways = $true; 
-    name = "onlyoffice.data.sql"; 
-    link = $url + "onlyoffice.data.sql";
-  }
-  @{  
-    download_allways = $true; 
-    name = "onlyoffice.upgradev110.sql"; 
-    link = $url + "onlyoffice.upgradev110.sql";
-  }
-
-  @{  
-    download_allways = $true; 
-    name = "onlyoffice.upgradev111.sql"; 
-    link = $url + "onlyoffice.upgradev111.sql";
-  }
-
-  @{  
-    download_allways = $true; 
-    name = "onlyoffice.upgradev115.sql"; 
-    link = $url + "onlyoffice.upgradev115.sql";
-  }
-
-  @{  
-    download_allways = $true; 
-    name = "onlyoffice.upgradev116.sql"; 
-    link = $url + "onlyoffice.upgradev116.sql";
-  }
-)
-
 DownloadComponents $prerequisites $path_prereq
-
-DownloadComponents $sql_community $path_sql
