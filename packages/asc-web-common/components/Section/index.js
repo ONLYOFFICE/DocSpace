@@ -276,6 +276,7 @@ class Section extends React.Component {
                     viewAs={viewAs}
                     maintenanceExist={maintenanceExist}
                     isSectionBarAvailable={isSectionBarAvailable}
+                    isSectionHeaderAvailable={isSectionHeaderAvailable}
                   >
                     {!isMobile && (
                       <StyledMainBar

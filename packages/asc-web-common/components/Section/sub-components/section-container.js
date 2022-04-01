@@ -83,6 +83,14 @@ const StyledSectionContainer = styled.section`
     right: 15px;
     bottom: 83px;
   }
+
+  ${(props) =>
+    !props.isSectionHeaderAvailable &&
+    css`
+      width: 100vw !important;
+      max-width: 100vw !important;
+      box-sizing: border-box;
+    `}
 `;
 
 StyledSectionContainer.defaultProps = { theme: Base };
