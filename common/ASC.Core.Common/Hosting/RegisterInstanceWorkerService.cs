@@ -1,8 +1,4 @@
-﻿using ASC.Core.Common.Hosting.Interfaces;
-
-using Microsoft.Extensions.Hosting;
-
-namespace ASC.Core.Common.Hosting;
+﻿namespace ASC.Core.Common.Hosting;
 
 [Singletone]
 public class RegisterInstanceWorkerService<T> : BackgroundService where T : IHostedService

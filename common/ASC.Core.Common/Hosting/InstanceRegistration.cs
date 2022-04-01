@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ASC.Core.Common.Hosting;
+﻿namespace ASC.Core.Common.Hosting;
 
 public class InstanceRegistration
 {

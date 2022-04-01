@@ -1,8 +1,4 @@
-﻿using ASC.Core.Common.Hosting.Interfaces;
-
-using Microsoft.Extensions.Hosting;
-
-namespace ASC.Core.Common.Hosting;
+﻿namespace ASC.Core.Common.Hosting;
 
 [Scope]
 public class RegisterInstanceDao<T> : IRegisterInstanceDao<T> where T : IHostedService

@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Model;
-using ASC.Core.Common.Hosting.Extensions;
-
-using Microsoft.EntityFrameworkCore;
-
-namespace ASC.Core.Common.Hosting;
+﻿namespace ASC.Core.Common.Hosting;
 
 public class MySqlIntegrationEventLogContext : InstanceRegistrationContext { }
 public class PostgreSqlIntegrationEventLogContext : InstanceRegistrationContext { }

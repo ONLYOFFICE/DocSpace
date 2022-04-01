@@ -37,6 +37,7 @@ global using ASC.Data.Backup;
 global using ASC.Data.Backup.ApiModels;
 global using ASC.Data.Backup.Contracts;
 global using ASC.Data.Backup.Controllers;
+global using ASC.Data.Backup.Core.IntegrationEvents.Events;
 global using ASC.EventBus.Abstractions;
 global using ASC.Web.Api.Routing;
 global using ASC.Web.Studio.Core.Backup;
@@ -52,5 +53,5 @@ global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Hosting;
 global using Microsoft.Extensions.Hosting.WindowsServices;
-global using ASC.Data.Backup.Core.IntegrationEvents.Events;
+
 global using static ASC.Data.Backup.BackupAjaxHandler;

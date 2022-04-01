@@ -1,11 +1,4 @@
-﻿using System;
-
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Model;
-
-using Microsoft.EntityFrameworkCore;
-
-namespace ASC.Core.Common.Hosting.Extensions;
+﻿namespace ASC.Core.Common.Hosting.Extensions;
 internal static class InstanceRegistrationExtension
 {
     public static ModelBuilderWrapper AddInstanceRegistration(this ModelBuilderWrapper modelBuilder)
