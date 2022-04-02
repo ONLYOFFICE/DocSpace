@@ -151,16 +151,10 @@ Scenario("Change owner page render test", async ({ I }) => {
 
   I.seeElement({
     react: "Button",
-    props: {
-      className: "owner-button owner-buttons",
-    },
   });
 
   I.seeElement({
     react: "Button",
-    props: {
-      className: "owner-buttons",
-    },
   });
 
   I.saveScreenshot(`5.change-owner.png`);
@@ -186,7 +180,6 @@ Scenario("Activate user page render test", async ({ I }) => {
   I.seeElement({
     react: "TextInput",
     props: {
-      className: "confirm-row",
       id: "name",
     },
   });
@@ -194,7 +187,6 @@ Scenario("Activate user page render test", async ({ I }) => {
   I.seeElement({
     react: "TextInput",
     props: {
-      className: "confirm-row",
       id: "surname",
     },
   });
@@ -202,16 +194,12 @@ Scenario("Activate user page render test", async ({ I }) => {
   I.seeElement({
     react: "PasswordInput",
     props: {
-      className: "confirm-row",
       id: "password",
     },
   });
 
   I.seeElement({
     react: "Button",
-    props: {
-      className: "confirm-row",
-    },
   });
 
   I.saveScreenshot(`6.activate-user.png`);
@@ -235,16 +223,10 @@ Scenario("Change password page render test", async ({ I }) => {
 
   I.seeElement({
     react: "PasswordInput",
-    props: {
-      className: "password-input",
-    },
   });
 
   I.seeElement({
     react: "Button",
-    props: {
-      className: "password-button",
-    },
   });
 
   I.saveScreenshot(`7.change-password.png`);
@@ -259,6 +241,9 @@ Scenario("Change password page render test", async ({ I }) => {
 Scenario("TfaActivation page render test", async ({ I }) => {
   I.mockEndpoint(Endpoints.confirm, "confirm");
   I.mockEndpoint(Endpoints.setup, "setup");
+  I.mockEndpoint(Endpoints.settings, "settings");
+  I.mockEndpoint(Endpoints.build, "build");
+
   I.amOnPage("/confirm/TfaActivation");
 
   I.see("Configure your authenticator application");
@@ -297,9 +282,9 @@ Scenario(
     I.mockEndpoint(Endpoints.info, "infoSettings");
     I.mockEndpoint(Endpoints.self, "selfSettings");
 
-    if (deviceType === "mobile") {
-      I.amOnPage("/settings/common/customization/language-and-time-zone");
+    I.amOnPage("/settings/common/customization/language-and-time-zone");
 
+    if (deviceType === "mobile") {
       I.see("Language and Time Zone Settings");
 
       I.seeElement("div", ".settings-block");
@@ -330,3 +315,43 @@ Scenario(
     }
   }
 );
+
+if (deviceType === "mobile") {
+  Scenario("Tfa settings page mobile render test", async ({ I }) => {
+    I.mockEndpoint(Endpoints.common, "common");
+    I.mockEndpoint(Endpoints.settings, "settings");
+    I.mockEndpoint(Endpoints.build, "build");
+    I.mockEndpoint(Endpoints.info, "infoSettings");
+    I.mockEndpoint(Endpoints.self, "selfSettings");
+    I.mockEndpoint(Endpoints.tfaapp, "tfaapp");
+    I.mockEndpoint(Endpoints.tfaconfirm, "tfaconfirm");
+    I.mockEndpoint(Endpoints.confirm, "confirm");
+
+    I.amOnPage("/settings/security/access-portal/tfa");
+
+    I.see("Two-factor authentication");
+
+    I.seeElement({
+      react: "RadioButtonGroup",
+      props: {
+        className: "box",
+      },
+    });
+
+    I.seeElement({
+      react: "Button",
+      props: {
+        label: "Save",
+        isDisabled: true,
+      },
+    });
+
+    I.seeElement({
+      react: "Button",
+      props: {
+        label: "Cancel",
+        isDisabled: true,
+      },
+    });
+  });
+}

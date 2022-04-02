@@ -97,4 +97,22 @@ module.exports = class Endpoints {
     method: "GET",
     baseDir: "people",
   };
+
+  static tfaapp = {
+    url: ["http://localhost:8092/api/2.0/settings/tfaapp"],
+    method: "GET",
+    baseDir: "settings",
+  };
+
+  static settfaapp = {
+    url: ["http://localhost:8092/api/2.0/settings/tfaapp"],
+    method: "PUT",
+    baseDir: "settings",
+  };
+
+  static tfaconfirm = {
+    url: ["http://localhost:8092/api/2.0/settings/tfaapp/confirm"],
+    method: "GET",
+    baseDir: "settings",
+  };
 };
