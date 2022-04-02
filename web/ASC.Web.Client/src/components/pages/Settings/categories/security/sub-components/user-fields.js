@@ -31,7 +31,8 @@ const StyledAddWrapper = styled.div`
   cursor: pointer;
 `;
 
-const UserFields = () => {
+const UserFields = (props) => {
+  const { t, className } = props;
   const [inputs, setInputs] = useState([]);
 
   const onClickAdd = () => {
@@ -53,7 +54,7 @@ const UserFields = () => {
   };
 
   return (
-    <>
+    <div className={className}>
       {inputs ? (
         inputs.map((input) => {
           return (
@@ -77,10 +78,10 @@ const UserFields = () => {
       <StyledAddWrapper onClick={onClickAdd}>
         <StyledPlusIcon size="small" />
         <Link type="action" isHovered={true}>
-          Add trusted domain
+          {t("AddTrustedDomain")}
         </Link>
       </StyledAddWrapper>
-    </>
+    </div>
   );
 };
 
