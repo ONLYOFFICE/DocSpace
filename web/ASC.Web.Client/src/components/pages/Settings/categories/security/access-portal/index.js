@@ -6,6 +6,7 @@ import { setDocumentTitle } from "../../../../../../helpers/utils";
 import { MainContainer } from "../StyledSecurity";
 import TfaSection from "./tfa";
 import PasswordStrengthSection from "./passwordStrength";
+import TrustedMailSection from "./trustedMail";
 import MobileView from "./mobileView";
 import CategoryWrapper from "../sub-components/category-wrapper";
 
@@ -39,6 +40,12 @@ const AccessPortal = (props) => {
         tooltipContent={t("TwoFactorAuthDescription")}
       />
       <TfaSection />
+      <hr />
+      <CategoryWrapper
+        title={t("TrustedMail")}
+        tooltipContent={t("TrustedMailDescription")}
+      />
+      <TrustedMailSection />
     </MainContainer>
   );
 };

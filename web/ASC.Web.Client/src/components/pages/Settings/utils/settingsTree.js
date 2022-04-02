@@ -71,6 +71,12 @@ export const settingsTree = [
             link: "tfa",
             tKey: "TwoFactorAuth",
           },
+          {
+            key: "1-0-2",
+            icon: "",
+            link: "trusted-mail",
+            tKey: "TrustedMail",
+          },
         ],
       },
       {
