@@ -589,3 +589,27 @@ Scenario("Customization cancel button test time zone", async ({ I }) => {
     I.see(timeZoneCurrent);
   }
 });
+
+Scenario("Setting password strength change test", async ({ I }) => {
+  I.mockEndpoint(Endpoints.settings, "settings");
+  I.mockEndpoint(Endpoints.password, "password");
+  I.mockEndpoint(Endpoints.build, "build");
+  I.mockEndpoint(Endpoints.info, "infoSettings");
+  I.mockEndpoint(Endpoints.self, "selfSettings");
+
+  I.amOnPage("/settings/security/access-portal/password");
+
+  I.see("Minimal password length");
+
+  I.click({
+    react: "Checkbox",
+    props: {
+      value: "digits",
+    },
+  });
+
+  I.see("You have unsaved changes");
+  I.click("Save");
+
+  I.see("Settings have been successfully updated");
+});

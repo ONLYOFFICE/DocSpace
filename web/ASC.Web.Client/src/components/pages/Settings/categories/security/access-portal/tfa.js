@@ -11,6 +11,7 @@ import toastr from "@appserver/components/toast/toastr";
 import SectionLoader from "../sub-components/section-loader";
 import { getLanguage } from "@appserver/common/utils";
 import { isMobile } from "react-device-detect";
+import { ButtonsWrapper } from "../StyledSecurity";
 
 const MainContainer = styled.div`
   width: 100%;
@@ -25,31 +26,8 @@ const MainContainer = styled.div`
   }
 `;
 
-const ButtonsWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  gap: 8px;
-  align-items: center;
-
-  @media (max-width: 375px) {
-    position: absolute;
-    bottom: 16px;
-    width: calc(100vw - 32px);
-
-    .button {
-      height: 40px;
-      width: 100%;
-    }
-
-    .reminder {
-      position: absolute;
-      bottom: 48px;
-    }
-  }
-`;
-
 const TwoFactorAuth = (props) => {
-  const { t } = props;
+  const { t, history } = props;
   const [type, setType] = useState("none");
   const [currentState, setCurrentState] = useState("");
   const [smsDisabled, setSmsDisabled] = useState(false);
@@ -70,8 +48,17 @@ const TwoFactorAuth = (props) => {
 
   useEffect(() => {
     getSettings();
+    checkWidth();
     setIsLoading(true);
+    window.addEventListener("resize", checkWidth);
+    return () => window.removeEventListener("resize", checkWidth);
   }, []);
+
+  const checkWidth = () => {
+    window.innerWidth > 375 &&
+      history.location.pathname.includes("tfa") &&
+      history.push("/settings/security/access-portal");
+  };
 
   const onSelectTfaType = (e) => {
     if (type !== e.target.value) {

@@ -8,6 +8,9 @@ import AppServerConfig from "@appserver/common/constants/AppServerConfig";
 const SecuritySettings = lazy(() => import("./categories/security/index.js"));
 const Admins = lazy(() => import("./categories/security/access-rights/admins"));
 const TfaPage = lazy(() => import("./categories/security/access-portal/tfa"));
+const PasswordStrengthPage = lazy(() =>
+  import("./categories/security/access-portal/passwordStrength")
+);
 
 const CustomizationSettings = lazy(() =>
   import("./categories/common/customization")
@@ -60,6 +63,10 @@ const SECURITY_URLS = [
   combineUrl(PROXY_BASE_URL, "/security/access-portal"),
 ];
 const TFA_PAGE_URL = combineUrl(PROXY_BASE_URL, "/security/access-portal/tfa");
+const PASSWORD_PAGE_URL = combineUrl(
+  PROXY_BASE_URL,
+  "/security/access-portal/password"
+);
 
 const ADMINS_URL = combineUrl(PROXY_BASE_URL, "/security/access-rights/admins");
 const THIRD_PARTY_URL = combineUrl(
@@ -98,6 +105,11 @@ const Settings = () => {
           <Route exact path={SECURITY_URLS} component={SecuritySettings} />
           <Route path={ADMINS_URL} component={Admins} />
           <Route exact path={TFA_PAGE_URL} component={TfaPage} />
+          <Route
+            exact
+            path={PASSWORD_PAGE_URL}
+            component={PasswordStrengthPage}
+          />
 
           <Route exact path={THIRD_PARTY_URL} component={ThirdPartyServices} />
           <Route

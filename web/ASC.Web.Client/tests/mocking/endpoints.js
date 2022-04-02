@@ -31,7 +31,7 @@ module.exports = class Endpoints {
 
   static password = {
     url: ["http://localhost:8092/api/2.0/settings/security/password"],
-    method: "GET",
+    method: ["GET", "PUT"],
     baseDir: "settings",
   };
 

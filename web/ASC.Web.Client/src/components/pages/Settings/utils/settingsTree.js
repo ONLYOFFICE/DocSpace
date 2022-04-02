@@ -62,6 +62,12 @@ export const settingsTree = [
           {
             key: "1-0-0",
             icon: "",
+            link: "password",
+            tKey: "SettingPasswordStrength",
+          },
+          {
+            key: "1-0-1",
+            icon: "",
             link: "tfa",
             tKey: "TwoFactorAuth",
           },
