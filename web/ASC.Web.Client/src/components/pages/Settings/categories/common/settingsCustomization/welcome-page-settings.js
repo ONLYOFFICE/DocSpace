@@ -28,7 +28,7 @@ import {
 
 let greetingTitleFromSessionStorage = "";
 let greetingTitleDefaultFromSessionStorage = "";
-
+let isFirstWelcomePageSettings = "";
 const settingNames = ["greetingTitle"];
 
 class WelcomePageSettings extends React.Component {
@@ -41,6 +41,10 @@ class WelcomePageSettings extends React.Component {
 
     greetingTitleDefaultFromSessionStorage = getFromSessionStorage(
       "greetingTitleDefault"
+    );
+
+    isFirstWelcomePageSettings = localStorage.getItem(
+      "isFirstWelcomePageSettings"
     );
 
     setDocumentTitle(t("Customization"));
@@ -56,11 +60,11 @@ class WelcomePageSettings extends React.Component {
       hasChanged: false,
       showReminder: false,
       hasScroll: false,
+      isFirstWelcomePageSettings: isFirstWelcomePageSettings,
     };
   }
 
   componentDidMount() {
-    const { showReminder } = this.state;
     window.addEventListener("resize", this.checkInnerWidth);
     showLoader();
     this.setState({
@@ -146,6 +150,13 @@ class WelcomePageSettings extends React.Component {
 
     saveToSessionStorage("greetingTitle", greetingTitle);
     saveToSessionStorage("greetingTitleDefault", greetingTitle);
+
+    if (!localStorage.getItem("isFirstWelcomePageSettings")) {
+      localStorage.setItem("isFirstWelcomePageSettings", true);
+      this.setState({
+        isFirstWelcomePageSettings: "true",
+      });
+    }
   };
 
   onRestoreGreetingSettings = () => {
@@ -211,15 +222,15 @@ class WelcomePageSettings extends React.Component {
   };
 
   render() {
-    const { t, theme, sectionWidth, isMobileView } = this.props;
+    const { t, isMobileView } = this.props;
     const {
       isLoadedData,
       greetingTitle,
       isLoadingGreetingSave,
       isLoadingGreetingRestore,
       showReminder,
-      hasChanged,
       hasScroll,
+      isFirstWelcomePageSettings,
     } = this.state;
 
     const tooltipCustomTitlesTooltip = <CustomTitlesTooltip t={t} />;
@@ -302,6 +313,7 @@ class WelcomePageSettings extends React.Component {
           cancelButtonLabel={t("Settings:RestoreDefaultButton")}
           displaySettings={true}
           hasScroll={hasScroll}
+          isFirstWelcomePageSettings={isFirstWelcomePageSettings}
         />
       </StyledSettingsComponent>
     );
