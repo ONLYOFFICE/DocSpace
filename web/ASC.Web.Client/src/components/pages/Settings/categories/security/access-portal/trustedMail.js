@@ -11,6 +11,7 @@ import { isMobile } from "react-device-detect";
 import { getLanguage } from "@appserver/common/utils";
 import { ButtonsWrapper } from "../StyledSecurity";
 import UserFields from "../sub-components/user-fields";
+import Buttons from "../sub-components/buttons";
 
 const MainContainer = styled.div`
   width: 100%;
@@ -43,6 +44,9 @@ const TrustedMail = (props) => {
       setShowReminder(true);
     }
   };
+
+  const onSaveClick = () => {};
+  const onCancelClick = () => {};
 
   const lng = getLanguage(localStorage.getItem("language") || "en");
   return (
@@ -97,33 +101,12 @@ const TrustedMail = (props) => {
       </Text>
       <Text>{t("TrustedMailWarningHelper")}</Text>
 
-      <ButtonsWrapper>
-        <Button
-          label={t("Common:SaveButton")}
-          size="small"
-          primary={true}
-          className="button"
-          //onClick={onSaveClick}
-          isDisabled={!showReminder}
-        />
-        <Button
-          label={t("Common:CancelButton")}
-          size="small"
-          className="button"
-          //onClick={onCancelClick}
-          isDisabled={!showReminder}
-        />
-        {showReminder && (
-          <Text
-            color="#A3A9AE"
-            fontSize="12px"
-            fontWeight="600"
-            className="reminder"
-          >
-            {t("YouHaveUnsavedChanges")}
-          </Text>
-        )}
-      </ButtonsWrapper>
+      <Buttons
+        t={t}
+        showReminder={showReminder}
+        onSaveClick={onSaveClick}
+        onCancelClick={onCancelClick}
+      />
     </MainContainer>
   );
 };

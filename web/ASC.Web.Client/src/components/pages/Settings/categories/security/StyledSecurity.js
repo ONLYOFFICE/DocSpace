@@ -84,6 +84,7 @@ export const ButtonsWrapper = styled.div`
   flex-direction: row;
   gap: 8px;
   align-items: center;
+  margin-top: 24px;
 
   @media (max-width: 375px) {
     position: absolute;

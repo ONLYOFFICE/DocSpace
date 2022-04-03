@@ -4,14 +4,13 @@ import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import RadioButtonGroup from "@appserver/components/radio-button-group";
-import Button from "@appserver/components/button";
 import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";
 import toastr from "@appserver/components/toast/toastr";
 import SectionLoader from "../sub-components/section-loader";
 import { getLanguage } from "@appserver/common/utils";
 import { isMobile } from "react-device-detect";
-import { ButtonsWrapper } from "../StyledSecurity";
+import Buttons from "../sub-components/buttons";
 
 const MainContainer = styled.div`
   width: 100%;
@@ -22,7 +21,6 @@ const MainContainer = styled.div`
 
   .box {
     margin-top: 20px;
-    margin-bottom: 24px;
   }
 `;
 
@@ -134,33 +132,12 @@ const TwoFactorAuth = (props) => {
         onClick={onSelectTfaType}
       />
 
-      <ButtonsWrapper>
-        <Button
-          label={t("Common:SaveButton")}
-          size="small"
-          primary={true}
-          className="button"
-          onClick={onSaveClick}
-          isDisabled={!showReminder}
-        />
-        <Button
-          label={t("Common:CancelButton")}
-          size="small"
-          className="button"
-          onClick={onCancelClick}
-          isDisabled={!showReminder}
-        />
-        {showReminder && (
-          <Text
-            color="#A3A9AE"
-            fontSize="12px"
-            fontWeight="600"
-            className="reminder"
-          >
-            {t("YouHaveUnsavedChanges")}
-          </Text>
-        )}
-      </ButtonsWrapper>
+      <Buttons
+        t={t}
+        showReminder={showReminder}
+        onSaveClick={onSaveClick}
+        onCancelClick={onCancelClick}
+      />
     </MainContainer>
   );
 };
