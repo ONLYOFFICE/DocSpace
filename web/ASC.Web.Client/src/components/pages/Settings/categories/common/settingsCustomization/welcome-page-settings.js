@@ -27,6 +27,7 @@ import {
 } from "./StyledSettings";
 
 let greetingTitleFromSessionStorage = "";
+let greetingTitleDefaultFromSessionStorage = "";
 
 const settingNames = ["greetingTitle"];
 
@@ -38,13 +39,18 @@ class WelcomePageSettings extends React.Component {
 
     greetingTitleFromSessionStorage = getFromSessionStorage("greetingTitle");
 
+    greetingTitleDefaultFromSessionStorage = getFromSessionStorage(
+      "greetingTitleDefault"
+    );
+
     setDocumentTitle(t("Customization"));
 
     this.state = {
       isLoadedData: false,
       isLoading: false,
       greetingTitle: greetingTitleFromSessionStorage || greetingSettings,
-      greetingTitleDefault: greetingSettings,
+      greetingTitleDefault:
+        greetingTitleDefaultFromSessionStorage || greetingSettings,
       isLoadingGreetingSave: false,
       isLoadingGreetingRestore: false,
       hasChanged: false,
@@ -57,11 +63,6 @@ class WelcomePageSettings extends React.Component {
     const { showReminder } = this.state;
     window.addEventListener("resize", this.checkInnerWidth);
     showLoader();
-    if (greetingTitleFromSessionStorage && !showReminder) {
-      this.setState({
-        showReminder: true,
-      });
-    }
     this.setState({
       isLoadedData: true,
     });
@@ -114,6 +115,7 @@ class WelcomePageSettings extends React.Component {
 
     if (this.settingIsEqualInitialValue("greetingTitle", e.target.value)) {
       saveToSessionStorage("greetingTitle", "");
+      saveToSessionStorage("greetingTitleDefault", "");
     } else {
       saveToSessionStorage("greetingTitle", e.target.value);
       this.setState({
@@ -141,6 +143,9 @@ class WelcomePageSettings extends React.Component {
       greetingTitle: greetingTitle,
       greetingTitleDefault: greetingTitle,
     });
+
+    saveToSessionStorage("greetingTitle", greetingTitle);
+    saveToSessionStorage("greetingTitleDefault", greetingTitle);
   };
 
   onRestoreGreetingSettings = () => {
@@ -182,6 +187,7 @@ class WelcomePageSettings extends React.Component {
     if (hasChanged !== this.state.hasChanged) {
       this.setState({
         hasChanged: hasChanged,
+        showReminder: hasChanged,
       });
     }
   };
@@ -218,6 +224,7 @@ class WelcomePageSettings extends React.Component {
 
     const tooltipCustomTitlesTooltip = <CustomTitlesTooltip t={t} />;
 
+    // TODO: Move to a file
     const isMobileViewLanguageTimeSettings = (
       <div className="category-item-wrapper">
         <div className="category-item-heading">
