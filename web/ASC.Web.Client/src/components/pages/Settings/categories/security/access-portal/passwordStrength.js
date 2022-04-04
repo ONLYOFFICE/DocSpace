@@ -131,7 +131,7 @@ const PasswordStrength = (props) => {
         setShowReminder(false);
         toastr.success(t("SuccessfullySaveSettingsMessage"));
       })
-      .catch((e) => toastr.error(error));
+      .catch((e) => toastr.error(e));
   };
 
   const onCancelClick = () => {
@@ -182,19 +182,19 @@ const PasswordStrength = (props) => {
       <Box className="checkboxes">
         <Checkbox
           onChange={onClickCheckbox}
-          label={`${t("Use")} ${t("Common:PasswordLimitUpperCase")}`}
+          label={t("UseUpperCase")}
           isChecked={useUpperCase}
           value="upperCase"
         />
         <Checkbox
           onChange={onClickCheckbox}
-          label={`${t("Use")} ${t("Common:PasswordLimitDigits")}`}
+          label={t("UseDigits")}
           isChecked={useDigits}
           value="digits"
         />
         <Checkbox
           onChange={onClickCheckbox}
-          label={`${t("Use")} ${t("Common:PasswordLimitSpecialSymbols")}`}
+          label={t("UseSpecialChar")}
           isChecked={useSpecialSymbols}
           value="special"
         />

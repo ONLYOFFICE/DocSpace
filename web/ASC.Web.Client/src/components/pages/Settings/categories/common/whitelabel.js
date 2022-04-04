@@ -244,7 +244,7 @@ class WhiteLabel extends React.Component {
     const { setWhiteLabelSettings } = this.props;
     const { logoText } = this.state;
 
-    // TODO: Для всех картинок написать логику
+    // TODO: Add logic to all pictures
     let fd = new FormData();
     fd.append("logoText", logoText);
 
@@ -268,7 +268,7 @@ class WhiteLabel extends React.Component {
   onChangeHandler = (e) => {
     const { setWhiteLabelSettings } = this.props;
 
-    // TODO: Добавить проверку на размер
+    // TODO: Add size check
 
     let file = e.target.files[0];
 
