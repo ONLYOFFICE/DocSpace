@@ -1,127 +1,90 @@
-import React from "react";
+import React, { useState } from "react";
 import { withRouter } from "react-router";
-import styled from "styled-components";
-import PropTypes from "prop-types";
 import { withTranslation } from "react-i18next";
-
-import { inject, observer } from "mobx-react";
-import Button from "@appserver/components/button";
 import Text from "@appserver/components/text";
+import Button from "@appserver/components/button";
 import Section from "@appserver/common/components/Section";
-import { deleteSelf } from "@appserver/common/api/people"; //TODO: Move inside UserStore
+import { inject, observer } from "mobx-react";
+import { deleteSelf } from "@appserver/common/api/people";
+import toastr from "@appserver/components/toast/toastr";
+import { StyledPage, StyledBody, StyledHeader } from "./StyledConfirm";
 import withLoader from "../withLoader";
 
-const ProfileRemoveContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+const ProfileRemoveForm = (props) => {
+  const { t, greetingTitle, linkData, logout } = props;
+  const [isProfileDeleted, setIsProfileDeleted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  .start-basis {
-    align-items: flex-start;
-  }
+  const onDeleteProfile = () => {
+    setIsLoading(true);
 
-  .confirm-row {
-    margin: 23px 0 0;
-  }
-
-  .break-word {
-    word-break: break-word;
-  }
-`;
-
-class ProfileRemove extends React.PureComponent {
-  constructor() {
-    super();
-
-    this.state = {
-      isProfileDeleted: false,
-    };
-  }
-
-  onDeleteProfile = () => {
-    this.setState({ isLoading: true }, function () {
-      const { linkData, logout } = this.props;
-      deleteSelf(linkData.confirmHeader)
-        .then((res) => {
-          this.setState({
-            isLoading: false,
-            isProfileDeleted: true,
-          });
-          console.log("success delete", res);
-          return logout();
-        })
-        .catch((e) => {
-          this.setState({ isLoading: false });
-          console.log("error delete", e);
-        });
-    });
+    deleteSelf(linkData.confirmHeader)
+      .then((res) => {
+        setIsLoading(false);
+        setIsProfileDeleted(true);
+        return logout(false);
+      })
+      .catch((e) => {
+        setIsLoading(false);
+        toastr.error(e);
+      });
   };
 
-  render() {
-    console.log("profileRemove render");
-    const { t, greetingTitle, theme } = this.props;
-    const { isProfileDeleted } = this.state;
+  if (isProfileDeleted) {
     return (
-      <ProfileRemoveContainer>
-        <div className="start-basis">
-          <div className="confirm-row full-width break-word">
-            <a href="/login">
-              <img src="images/dark_general.png" alt="Logo" />
-            </a>
-            <Text
-              as="p"
-              fontSize="24px"
-              color={theme.studio.confirm.change.titleColor}
-            >
-              {greetingTitle}
+      <StyledPage>
+        <StyledBody>
+          <StyledHeader>
+            <Text fontSize="23px" fontWeight="700" className="title">
+              {t("DeleteProfileSuccessMessage")}
             </Text>
-          </div>
-
-          {!isProfileDeleted ? (
-            <>
-              <Text className="confirm-row" as="p" fontSize="18px">
-                {t("DeleteProfileConfirmation")}
-              </Text>
-              <Text className="confirm-row" as="p" fontSize="16px">
-                {t("DeleteProfileConfirmationInfo")}
-              </Text>
-
-              <Button
-                className="confirm-row"
-                primary
-                size="normal"
-                label={t("DeleteProfileBtn")}
-                tabIndex={1}
-                isLoading={this.state.isLoading}
-                onClick={this.onDeleteProfile}
-              />
-            </>
-          ) : (
-            <>
-              <Text className="confirm-row" as="p" fontSize="18px">
-                {t("DeleteProfileSuccessMessage")}
-              </Text>
-              <Text className="confirm-row" as="p" fontSize="16px">
-                {t("DeleteProfileSuccessMessageInfo")}
-              </Text>
-            </>
-          )}
-        </div>
-      </ProfileRemoveContainer>
+            <Text fontSize="16px" fontWeight="600" className="confirm-subtitle">
+              {t("DeleteProfileSuccessMessageInfo")}
+            </Text>
+          </StyledHeader>
+        </StyledBody>
+      </StyledPage>
     );
   }
-}
 
-ProfileRemove.propTypes = {
-  location: PropTypes.object.isRequired,
+  return (
+    <StyledPage>
+      <StyledBody>
+        <StyledHeader>
+          <Text fontSize="23px" fontWeight="700" className="title">
+            {greetingTitle}
+          </Text>
+          <Text fontSize="16px" fontWeight="600" className="confirm-subtitle">
+            {t("DeleteProfileConfirmation")}
+          </Text>
+          <Text className="info-delete">
+            {t("DeleteProfileConfirmationInfo")}
+          </Text>
+        </StyledHeader>
+
+        <Button
+          className="confirm-button"
+          primary
+          size="normal"
+          label={t("DeleteProfileBtn")}
+          tabIndex={1}
+          isDisabled={isLoading}
+          onClick={onDeleteProfile}
+        />
+      </StyledBody>
+    </StyledPage>
+  );
 };
-const ProfileRemoveForm = (props) => (
-  <Section>
-    <Section.SectionBody>
-      <ProfileRemove {...props} />
-    </Section.SectionBody>
-  </Section>
-);
+
+const ProfileRemoveFormWrapper = (props) => {
+  return (
+    <Section>
+      <Section.SectionBody>
+        <ProfileRemoveForm {...props} />
+      </Section.SectionBody>
+    </Section>
+  );
+};
 
 export default inject(({ auth }) => ({
   greetingTitle: auth.settingsStore.greetingSettings,
@@ -129,6 +92,6 @@ export default inject(({ auth }) => ({
   logout: auth.logout,
 }))(
   withRouter(
-    withTranslation("Confirm")(withLoader(observer(ProfileRemoveForm)))
+    withTranslation("Confirm")(withLoader(observer(ProfileRemoveFormWrapper)))
   )
 );
