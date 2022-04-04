@@ -334,6 +334,7 @@ class RestoreBackup extends React.Component {
       history,
       downloadingProgress,
       commonThirdPartyList,
+      buttonSize,
     } = this.props;
     const {
       isChecked,
@@ -490,7 +491,7 @@ class RestoreBackup extends React.Component {
           primary
           isDisabled={checkingRecoveryData || !isMaxProgress || !isChecked}
           isLoading={checkingRecoveryData}
-          size="medium"
+          size={buttonSize}
           tabIndex={10}
         />
       </StyledRestoreBackup>

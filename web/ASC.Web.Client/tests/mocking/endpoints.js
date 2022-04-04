@@ -17,6 +17,20 @@ module.exports = class Endpoints {
     baseDir: "settings",
   };
 
+  static restore = {
+    url: [
+      "http://localhost:8092/api/2.0/settings/greetingsettings/restore.json",
+    ],
+    method: "POST",
+    baseDir: "settings",
+  };
+
+  static greetingsettings = {
+    url: ["http://localhost:8092/api/2.0/settings/greetingsettings.json"],
+    method: "POST",
+    baseDir: "settings",
+  };
+
   static common = {
     url: ["http://localhost:8092/api/2.0/settings/customschemas/Common.json"],
     method: "GET",
