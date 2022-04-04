@@ -12,6 +12,8 @@ const PasswordStrengthPage = lazy(() =>
   import("./categories/security/access-portal/passwordStrength")
 );
 
+const CommonSettings = lazy(() => import("./categories/common/index.js"));
+
 const CustomizationSettings = lazy(() =>
   import("./categories/common/customization")
 );
@@ -37,8 +39,15 @@ const ManualBackup = lazy(() =>
 const RestoreBackup = lazy(() =>
   import("./categories/data-management/backup/restore-backup")
 );
-//const WhiteLabel = lazy(() => import("./categories/common/whitelabel"));
+
+const WhiteLabel = lazy(() => import("./categories/common/whitelabel"));
+
 const PROXY_BASE_URL = combineUrl(AppServerConfig.proxyURL, "/settings");
+
+const COMMON_URLS = [
+  combineUrl(PROXY_BASE_URL, "/common/customization"),
+  combineUrl(PROXY_BASE_URL, "/common/whitelabel"),
+];
 
 const CUSTOMIZATION_URLS = [
   combineUrl(PROXY_BASE_URL, "/common/customization"),
@@ -57,7 +66,7 @@ const TEAM_TEMPLATE_URL = combineUrl(
   PROXY_BASE_URL,
   "/common/customization/team-template"
 );
-//const WHITELABEL_URL = combineUrl(PROXY_BASE_URL, "/common/whitelabel");
+const WHITELABEL_URL = combineUrl(PROXY_BASE_URL, "/common/whitelabel");
 const SECURITY_URLS = [
   combineUrl(PROXY_BASE_URL, "/security/access-rights"),
   combineUrl(PROXY_BASE_URL, "/security/access-portal"),
@@ -85,23 +94,22 @@ const Settings = () => {
     <Layout key="1">
       <Suspense fallback={null}>
         <Switch>
-          <Route
+          <Route exact path={COMMON_URLS} component={CommonSettings} />
+
+          {/* <Route
             exact
             path={CUSTOMIZATION_URLS}
             component={CustomizationSettings}
-          />
+          /> */}
           <Route exact path={LTZ_URL} component={LanguageAndTimeZoneSettings} />
           <Route
             exact
             path={WELCOME_PAGE_SETTINGS_URL}
             component={WelcomePageSettings}
           />
+          <Route exact path={WHITELABEL_URL} component={WhiteLabel} />
           <Route exact path={TEAM_TEMPLATE_URL} component={TeamTemplate} />
-          {/* <Route
-            exact
-            path={WHITELABEL_URL}
-            component={WhiteLabel}
-          /> */}
+
           <Route exact path={SECURITY_URLS} component={SecuritySettings} />
           <Route path={ADMINS_URL} component={Admins} />
           <Route exact path={TFA_PAGE_URL} component={TfaPage} />

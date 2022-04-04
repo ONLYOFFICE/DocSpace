@@ -18,6 +18,7 @@ import MobileView from "./MobileView";
 const ArticleMainButtonContent = (props) => {
   const {
     t,
+    isMobileArticle,
     showText,
     isDisabled,
     canCreate,
@@ -40,12 +41,6 @@ const ArticleMainButtonContent = (props) => {
   const [actions, setActions] = React.useState([]);
   const [uploadActions, setUploadActions] = React.useState([]);
   const [model, setModel] = React.useState([]);
-
-  const [isMobileView, setIsMobileView] = React.useState(false);
-
-  React.useEffect(() => {
-    setIsMobileView(isMobile || isMobileUtils() || isTabletUtils());
-  }, [showText]);
 
   const onCreate = React.useCallback(
     (e) => {
@@ -221,7 +216,7 @@ const ArticleMainButtonContent = (props) => {
 
   return (
     <>
-      {isMobileView ? (
+      {isMobileArticle ? (
         <>
           {!isFavoritesFolder &&
             !isRecentFolder &&
@@ -297,6 +292,7 @@ export default inject(
 
     return {
       showText: auth.settingsStore.showText,
+      isMobileArticle: auth.settingsStore.isMobileArticle,
 
       isArticleLoading,
       isPrivacy: isPrivacyFolder,

@@ -79,6 +79,7 @@ class SettingsStore {
 
   showText = false;
   articleOpen = false;
+  isMobileArticle = false;
 
   folderPath = [];
 
@@ -396,6 +397,10 @@ class SettingsStore {
 
   toggleArticleOpen = () => {
     this.articleOpen = !this.articleOpen;
+  };
+
+  setIsMobileArticle = (isMobileArticle) => {
+    this.isMobileArticle = isMobileArticle;
   };
 
   get firebaseHelper() {
