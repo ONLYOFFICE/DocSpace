@@ -85,8 +85,6 @@ const HeaderNav = ({
   buildVersionInfo,
   debugInfo,
   settingsModule,
-  currentProductId,
-  toggleArticleOpen,
 
   changeTheme,
   isDarkMode,
@@ -190,7 +188,7 @@ const HeaderNav = ({
     }
 
     return actions;
-  }, [onProfileClick, onAboutClick, onLogoutClick, isDarkMode]);
+  }, [onProfileClick, onAboutClick, onLogoutClick, isDarkMode, changeTheme]);
   //console.log("HeaderNav render");
   return (
     <StyledNav className="profileMenuIcon hidingHeader">
