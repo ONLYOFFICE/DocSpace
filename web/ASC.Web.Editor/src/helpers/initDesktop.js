@@ -6,7 +6,6 @@ import { regDesktop } from "@appserver/common/desktop";
 
 const initDesktop = (cfg, user, fileId, t) => {
   const encryptionKeys = cfg?.editorConfig?.encryptionKeys;
-  console.log("here");
   regDesktop(
     user,
     !!encryptionKeys,

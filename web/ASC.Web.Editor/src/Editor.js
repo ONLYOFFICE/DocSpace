@@ -124,7 +124,6 @@ function Editor({
 
   useEffect(() => {
     if (config) {
-      console.log(isDesktopEditor, config);
       if (isDesktopEditor) {
         initDesktop(config, user, fileId, t);
       }

@@ -231,6 +231,7 @@ const withDialogs = (WrappedComponent) => {
           module: "./SelectFileDialog",
         }}
         resetTreeFolders
+        needProxy
         foldersType="exceptPrivacyTrashFolders"
         isPanelVisible={isFileDialogVisible}
         onSelectFile={onSelectFile}
@@ -241,7 +242,7 @@ const withDialogs = (WrappedComponent) => {
       />
     );
 
-    const selectFolderDialog = mfReady && isFolderDialogVisible && (
+    const selectFolderDialog = mfReady && (
       <DynamicComponent
         resetTreeFolders
         showButtons

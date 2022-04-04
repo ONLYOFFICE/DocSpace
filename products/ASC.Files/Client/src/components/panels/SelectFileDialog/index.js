@@ -111,7 +111,6 @@ class SelectFileDialogBody extends React.Component {
   };
 
   componentDidMount() {
-    console.log("componentDidMount File Dialog", this.props);
     authStore.init(true); // it will work if authStore is not initialized
 
     window.addEventListener("resize", this.throttledResize);
@@ -119,7 +118,9 @@ class SelectFileDialogBody extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (!isEqual(prevProps, this.props)) this.setFilter();
+    if (!isEqual(prevProps, this.props)) {
+      this.setFilter();
+    }
   }
 
   componentWillUnmount() {
