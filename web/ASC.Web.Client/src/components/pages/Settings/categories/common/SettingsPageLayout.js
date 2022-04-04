@@ -68,7 +68,6 @@ const SettingsPageLayout = ({ children }) => {
     return () => window.removeEventListener("resize", checkInnerWidth);
   }, []);
 
-  //TODO: Add menu, hide along the route
   const isMobile = !!(isSmallTablet() && mobileView);
 
   console.log("isMobile", isMobile);
