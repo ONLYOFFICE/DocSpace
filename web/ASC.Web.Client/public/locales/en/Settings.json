@@ -135,11 +135,13 @@
   "TwoFactorAuth": "Two-factor authentication",
   "TwoFactorAuthDescription": "Two-factor authentication provides a more secure way to log in. After entering the credentials, the user will have to enter a code from an SMS or the authentication app. ",
   "TwoFactorAuthHelper": "Note: SMS messages can be sent if you have a positive balance only. You can always check your current balance in your SMS provider account. Do not forget to replenish your balance in good time. ",
-  "Use": "Use",
   "UseAsLogoButton": "Use as logo",
+  "UseDigits": "Use digits",
   "Users": "Users",
   "UserAgreement": "I confirm and want to proceed",
   "UseHttp": "Use Http",
+  "UseSpecialChar": "Use special characters",
+  "UseUpperCase": "Use capital letters",
   "WelcomePageTitle": "Welcome page title",
   "YouHaveUnsavedChanges": "You have unsaved changes"
 }
