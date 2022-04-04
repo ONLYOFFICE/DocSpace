@@ -45,6 +45,8 @@ const WhiteLabel = lazy(() => import("./categories/common/whitelabel"));
 const PROXY_BASE_URL = combineUrl(AppServerConfig.proxyURL, "/settings");
 
 const COMMON_URLS = [
+  PROXY_BASE_URL,
+  combineUrl(PROXY_BASE_URL, "/common"),
   combineUrl(PROXY_BASE_URL, "/common/customization"),
   combineUrl(PROXY_BASE_URL, "/common/whitelabel"),
 ];
