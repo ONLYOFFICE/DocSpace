@@ -13,6 +13,11 @@ const FlexBoxStyles = css`
   align-content: center;
 `;
 
+const checkedStyle = css`
+  background: ${(props) =>
+    props.theme.filesSection.tilesView.tile.checkedColor} !important;
+`;
+
 const StyledTile = styled.div`
   box-sizing: border-box;
   width: 100%;
@@ -21,9 +26,16 @@ const StyledTile = styled.div`
   ${(props) => props.showHotkeyBorder && "border-color: #2DA7DB"};
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
+  ${(props) => props.isSelected && checkedStyle}
+
   &:before,
   &:after {
     ${(props) => props.showHotkeyBorder && "border-color: #2DA7DB"};
+  }
+
+  &:before,
+  &:after {
+    ${(props) => props.isSelected && checkedStyle};
   }
 
   .file-icon {
@@ -69,7 +81,15 @@ const StyledFileTileTop = styled.div`
 const StyledFileTileBottom = styled.div`
   ${FlexBoxStyles};
 
+  ${(props) => !props.isEdit && props.isSelected && checkedStyle}
+
   border-top: 1px solid transparent;
+  ${(props) =>
+    props.isSelected &&
+    css`
+      border-top: ${(props) => props.theme.filesSection.tilesView.tile.border};
+      border-radius: 0 0 6px 6px;
+    `}
 
   padding: 9px 0;
   height: 62px;

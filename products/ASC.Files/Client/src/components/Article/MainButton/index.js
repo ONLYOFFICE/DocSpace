@@ -37,7 +37,8 @@ const ArticleMainButtonContent = (props) => {
     isCommonFolder,
     isRecycleBinFolder,
     history,
-    hasOFORMFilesGallery,
+    hasGalleryFiles,
+    currentFolderId,
   } = props;
   const inputFilesElement = React.useRef(null);
   const inputFolderElement = React.useRef(null);
@@ -100,7 +101,11 @@ const ArticleMainButtonContent = (props) => {
 
   const onShowGallery = () => {
     history.push(
-      combineUrl(AppServerConfig.proxyURL, config.homepage, `/form-gallery`)
+      combineUrl(
+        AppServerConfig.proxyURL,
+        config.homepage,
+        `/form-gallery/${currentFolderId}/`
+      )
     );
   };
 
@@ -141,7 +146,7 @@ const ArticleMainButtonContent = (props) => {
                   disabled: isPrivacy,
                   key: "form-file",
                 },
-                hasOFORMFilesGallery && {
+                hasGalleryFiles && {
                   className: "main-button_drop-down_sub",
                   label: t("Common:OFORMsGallery"),
                   onClick: onShowGallery,
@@ -168,7 +173,7 @@ const ArticleMainButtonContent = (props) => {
               disabled: isPrivacy,
               key: "form-file",
             },
-            hasOFORMFilesGallery && {
+            hasGalleryFiles && {
               className: "main-button_drop-down_sub",
               icon: "images/form.react.svg",
               label: t("Common:OFORMsGallery"),
@@ -239,6 +244,7 @@ const ArticleMainButtonContent = (props) => {
   }, [
     t,
     isPrivacy,
+    currentFolderId,
     onCreate,
     onShowSelectFileDialog,
     onUploadFileClick,
@@ -300,14 +306,21 @@ const ArticleMainButtonContent = (props) => {
 };
 
 export default inject(
-  ({ auth, filesStore, dialogsStore, uploadDataStore, treeFoldersStore }) => {
+  ({
+    auth,
+    filesStore,
+    dialogsStore,
+    uploadDataStore,
+    treeFoldersStore,
+    selectedFolderStore,
+  }) => {
     const {
       isLoaded,
       firstLoad,
       isLoading,
       fileActionStore,
       canCreate,
-      hasOFORMFilesGallery,
+      hasGalleryFiles,
     } = filesStore;
     const {
       isPrivacyFolder,
@@ -321,6 +334,8 @@ export default inject(
     const { setSelectFileDialogVisible } = dialogsStore;
 
     const isArticleLoading = (!isLoaded || isLoading) && firstLoad;
+
+    const currentFolderId = selectedFolderStore.id;
 
     return {
       showText: auth.settingsStore.showText,
@@ -342,7 +357,8 @@ export default inject(
       isLoading,
       isLoaded,
       firstLoad,
-      hasOFORMFilesGallery,
+      hasGalleryFiles,
+      currentFolderId,
     };
   }
 )(

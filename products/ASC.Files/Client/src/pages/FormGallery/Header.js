@@ -2,10 +2,28 @@ import React from "react";
 import IconButton from "@appserver/components/icon-button";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router-dom";
+import { AppServerConfig } from "@appserver/common/constants";
 import { StyledHeadline, StyledContainer } from "./StyledGallery";
+import config from "../../../package.json";
+import FilesFilter from "@appserver/common/api/files/filter";
+import { combineUrl } from "@appserver/common/utils";
 
-const SectionHeaderContent = ({ t, history }) => {
-  const onBackToFiles = () => history.goBack();
+const SectionHeaderContent = (props) => {
+  const { t, history, match } = props;
+
+  const onBackToFiles = () => {
+    const filter = FilesFilter.getDefault();
+    filter.folder = match.params.fileId;
+    const urlFilter = filter.toUrlParams();
+
+    history.push(
+      combineUrl(
+        AppServerConfig.proxyURL,
+        config.homepage,
+        `/filter?${urlFilter}`
+      )
+    );
+  };
 
   return (
     <StyledContainer>

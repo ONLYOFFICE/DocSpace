@@ -41,7 +41,10 @@ const HISTORY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/:fileId/history");
 const PRIVATE_ROOMS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/private");
 const FILTER_URL = combineUrl(PROXY_HOMEPAGE_URL, "/filter");
 const MEDIA_VIEW_URL = combineUrl(PROXY_HOMEPAGE_URL, "/#preview");
-const FORM_GALLERY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/form-gallery");
+const FORM_GALLERY_URL = combineUrl(
+  PROXY_HOMEPAGE_URL,
+  "/form-gallery/:fileId"
+);
 
 if (!window.AppServer) {
   window.AppServer = {};

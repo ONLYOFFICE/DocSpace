@@ -6,6 +6,9 @@ import { isDesktop } from "react-device-detect";
 import Link from "@appserver/components/link";
 import { withTranslation } from "react-i18next";
 import { ReactSVG } from "react-svg";
+import { AppServerConfig } from "@appserver/common/constants";
+import { combineUrl } from "@appserver/common/utils";
+import config from "../../../../../package.json";
 
 import {
   StyledTile,
@@ -84,14 +87,32 @@ class Tile extends React.PureComponent {
   };
 
   onCreateForm = () => {
+    // const filter = FilesFilter.getDefault();
+    // filter.folder = match.params.fileId;
+    // const urlFilter = filter.toUrlParams();
+
+    // history.push(
+    //   combineUrl(
+    //     AppServerConfig.proxyURL,
+    //     config.homepage,
+    //     `/filter?${urlFilter}`
+    //   )
+    // );
+
     console.log("onCreateForm");
   };
 
   onShowTemplateInfo = () => {
-    console.log("onShowTemplateInfo");
+    console.log("Open info panel");
   };
 
   getOptions = () => ["create", "template-info"];
+
+  onSelectForm = () => {
+    console.log("onSelectForm");
+    this.props.setGallerySelected(this.props.item.id);
+    this.onShowTemplateInfo();
+  };
 
   render() {
     const {
@@ -100,7 +121,7 @@ class Tile extends React.PureComponent {
       element,
       tileContextClick,
       isActive,
-
+      isSelected,
       title,
       showHotkeyBorder,
     } = this.props;
@@ -115,18 +136,22 @@ class Tile extends React.PureComponent {
 
     const icon = this.getIconFile();
 
+    //TODO: OFORM isActive
+
     return (
       <StyledTile
         ref={this.tile}
-        {...this.props}
+        isSelected={isSelected}
         onContextMenu={onContextMenu}
         isActive={isActive}
         isDesktop={isDesktop}
         showHotkeyBorder={showHotkeyBorder}
+        onDoubleClick={this.onCreateForm}
+        onClick={this.onSelectForm}
       >
         <StyledFileTileTop isActive={isActive}>{icon}</StyledFileTileTop>
 
-        <StyledFileTileBottom isActive={isActive}>
+        <StyledFileTileBottom isSelected={isSelected} isActive={isActive}>
           <div className="file-icon_container">
             <div className="file-icon" onClick={this.onFileIconClick}>
               {element}

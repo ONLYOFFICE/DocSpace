@@ -6,7 +6,7 @@ import Link from "@appserver/components/link";
 import { isDesktop } from "react-device-detect";
 
 const FileTile = (props) => {
-  const { item, getIcon } = props;
+  const { item, getIcon, isSelected, setGallerySelected } = props;
   const { fileExst, title } = item;
 
   const src = getIcon(32, ".docxf");
@@ -23,6 +23,8 @@ const FileTile = (props) => {
         thumbnail={thumbnailUrl}
         element={element}
         temporaryIcon={temporaryIcon}
+        isSelected={isSelected}
+        setGallerySelected={setGallerySelected}
       >
         <SimpleFilesTileContent
           //sideColor={theme.filesSection.tilesView.sideColor}
@@ -48,9 +50,15 @@ const FileTile = (props) => {
   );
 };
 
-export default inject(({ settingsStore }) => {
+export default inject(({ settingsStore, filesStore }, { item }) => {
   const { getIcon } = settingsStore;
+  const { gallerySelected, setGallerySelected } = filesStore;
+
+  const isSelected = item.id === gallerySelected;
+
   return {
     getIcon,
+    isSelected,
+    setGallerySelected,
   };
 })(observer(FileTile));

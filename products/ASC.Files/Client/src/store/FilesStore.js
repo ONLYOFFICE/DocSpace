@@ -65,6 +65,7 @@ class FilesStore {
 
   isPrevSettingsModule = false;
   oformFiles = [];
+  gallerySelected = null;
 
   constructor(
     authStore,
@@ -313,9 +314,13 @@ class FilesStore {
     //   );
   };
 
-  get hasOFORMFilesGallery() {
+  get hasGalleryFiles() {
     return !!this.oformFiles.length;
   }
+
+  setGallerySelected = (gallerySelected) => {
+    this.gallerySelected = gallerySelected;
+  };
 
   setFirstLoad = (firstLoad) => {
     this.firstLoad = firstLoad;
