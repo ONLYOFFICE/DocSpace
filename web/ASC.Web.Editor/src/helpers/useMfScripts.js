@@ -1,5 +1,8 @@
 import React from "react";
-import { loadComponent, useDynamicScript } from "../components/dynamic";
+import {
+  loadComponent,
+  useDynamicScript,
+} from "../components/DynamicComponent";
 import {
   STUDIO_SCOPE,
   FILES_SCOPE,
@@ -27,12 +30,12 @@ function useMfScripts() {
       //   loadComponent(FILES_SCOPE, "./utils")(),
       //   loadComponent(FILES_SCOPE, "./SharingDialog")(),
       // ]);
-
-      const toastr = await loadComponent(STUDIO_SCOPE, "./toastr")();
       const SharingDialog = await loadComponent(
         FILES_SCOPE,
         "./SharingDialog"
       )();
+      const toastr = await loadComponent(STUDIO_SCOPE, "./toastr")();
+
       const filesUtils = await loadComponent(FILES_SCOPE, "./utils")();
 
       window.toastr = toastr.default;

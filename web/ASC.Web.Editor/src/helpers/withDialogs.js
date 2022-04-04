@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import DynamicComponent from "../components/dynamic";
+import DynamicComponent from "../components/DynamicComponent";
 import { getPresignedUri } from "@appserver/common/api/files";
 import { FILES_REMOTE_ENTRY_URL, FILES_SCOPE } from "./constants";
 import Text from "@appserver/components/text";
@@ -246,6 +246,7 @@ const withDialogs = (WrappedComponent) => {
         resetTreeFolders
         showButtons
         isSetFolderImmediately
+        needProxy
         asideHeightContent="calc(100% - 50px)"
         foldersType="exceptSortedByTags"
         system={{
