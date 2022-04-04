@@ -26,8 +26,8 @@ export const settingsTree = [
           {
             key: "0-0-1",
             icon: "",
-            link: "custom-titles",
-            tKey: "CustomTitles",
+            link: "welcome-page-settings",
+            tKey: "CustomTitlesWelcome",
           },
           {
             key: "0-0-2",
@@ -37,12 +37,12 @@ export const settingsTree = [
           },
         ],
       },
-      // {
-      //     key: '0-2',
-      //     icon: '',
-      //     link: 'whitelabel',
-      //     tKey: 'WhiteLabel',
-      // },
+      {
+        key: "0-2",
+        icon: "",
+        link: "whitelabel",
+        tKey: "WhiteLabel",
+      },
     ],
   },
   {
@@ -55,30 +55,30 @@ export const settingsTree = [
       {
         key: "1-0",
         icon: "",
-        link: "access-rights",
-        tKey: "AccessRights",
+        link: "access-portal",
+        tKey: "PortalAccess",
         isCategory: true,
         children: [
           {
             key: "1-0-0",
             icon: "",
-            link: "admins",
-            tKey: "Admins",
+            link: "tfa",
+            tKey: "TwoFactorAuth",
           },
         ],
       },
       {
         key: "1-1",
         icon: "",
-        link: "access-portal",
-        tKey: "PortalAccess",
+        link: "access-rights",
+        tKey: "AccessRights",
         isCategory: true,
         children: [
           {
             key: "1-1-0",
             icon: "",
-            link: "tfa",
-            tKey: "TwoFactorAuth",
+            link: "admins",
+            tKey: "Admins",
           },
         ],
       },
@@ -96,6 +96,22 @@ export const settingsTree = [
         icon: "",
         link: "third-party-services",
         tKey: "ThirdPartyAuthorization",
+        isCategory: true,
+      },
+    ],
+  },
+  {
+    key: "4",
+    icon: "/images/data-management.react.svg",
+    link: "datamanagement",
+    tKey: "ManagementCategoryDataManagement",
+    isHeader: true,
+    children: [
+      {
+        key: "4-0",
+        icon: "",
+        link: "backup",
+        tKey: "Backup",
         isCategory: true,
       },
     ],

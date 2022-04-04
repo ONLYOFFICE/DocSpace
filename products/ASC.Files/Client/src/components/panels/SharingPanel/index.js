@@ -30,7 +30,6 @@ import { I18nextProvider } from "react-i18next";
 import { isMobile, isMobileOnly } from "react-device-detect";
 import Loaders from "@appserver/common/components/Loaders";
 import withLoader from "../../../HOCs/withLoader";
-import ModalDialogContainer from "../../dialogs/ModalDialogContainer";
 import ModalDialog from "@appserver/components/modal-dialog";
 import EmbeddingBody from "../EmbeddingPanel/EmbeddingBody";
 
@@ -111,29 +110,8 @@ class SharingPanelComponent extends React.Component {
   };
 
   onSaveClick = () => {
-    const {
-      baseShareData,
-      isNotifyUsers,
-      message,
-      shareDataItems,
-      filesOwnerId,
-    } = this.state;
-    const {
-      selection,
-      setIsLoading,
-      isPrivacy,
-      replaceFileStream,
-      t,
-      uploadPanelVisible,
-      updateUploadedItem,
-      uploadSelection,
-      isDesktop,
-      setEncryptionAccess,
-      setShareFiles,
-      setIsFolderActions,
-      onSuccess,
-      isFolderActions,
-    } = this.props;
+    const { baseShareData, shareDataItems, filesOwnerId } = this.state;
+    const { selection, isFolderActions } = this.props;
 
     let folderIds = [];
     let fileIds = [];
@@ -210,7 +188,6 @@ class SharingPanelComponent extends React.Component {
       setShareFiles,
       onSuccess,
       setIsFolderActions,
-      setIsLoading,
     } = this.props;
 
     this.onClose();
@@ -224,7 +201,7 @@ class SharingPanelComponent extends React.Component {
       externalAccess,
       ownerId
     )
-      .then((res) => {
+      .then(() => {
         if (!ownerId) {
           this.updateRowData(selection);
         }
@@ -263,7 +240,6 @@ class SharingPanelComponent extends React.Component {
       .catch((err) => toastr.error(err))
       .finally(() => {
         setIsFolderActions(false);
-        setIsLoading(false);
       });
   };
 
@@ -591,7 +567,7 @@ class SharingPanelComponent extends React.Component {
           <Button
             className="sharing_panel-button"
             label={t("Common:SaveButton")}
-            size="big"
+            size="normal"
             primary
             onClick={this.onSaveClick}
             isDisabled={isLoading || !isUpdated}
@@ -725,7 +701,7 @@ class SharingPanelComponent extends React.Component {
               <Button
                 className="sharing_panel-button"
                 label={t("Common:SaveButton")}
-                size={isMobile ? "big" : "medium"}
+                size={isMobile ? "normal" : "small"}
                 minwidth="100px"
                 primary
                 onClick={this.onSaveClick}

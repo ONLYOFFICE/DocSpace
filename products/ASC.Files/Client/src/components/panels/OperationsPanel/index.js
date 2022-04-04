@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { withRouter } from "react-router";
 import ModalDialog from "@appserver/components/modal-dialog";
 import { withTranslation } from "react-i18next";
-import TreeFolders from "../../Article/Body/TreeFolders";
+import TreeFolders from "../../FolderTreeBody/TreeFolders";
 import { inject, observer } from "mobx-react";
 import toastr from "studio/toastr";
 import Button from "@appserver/components/button";
@@ -119,7 +119,7 @@ const OperationsPanelComponent = (props) => {
       isCopy,
       folderTitle,
       translations: {
-        copy: t("Translations:CopyOperation"),
+        copy: t("Common:CopyOperation"),
         move: t("Translations:MoveToOperation"),
       },
     };
@@ -179,7 +179,7 @@ const OperationsPanelComponent = (props) => {
               ? t("Translations:Copy")
               : t("Translations:Move")
           }
-          size="medium"
+          size="small"
           primary
           onClick={onSubmit}
           isLoading={isLoading}
@@ -190,9 +190,11 @@ const OperationsPanelComponent = (props) => {
   );
 };
 
-const OperationsPanel = withTranslation(["OperationsPanel", "Translations"])(
-  OperationsPanelComponent
-);
+const OperationsPanel = withTranslation([
+  "OperationsPanel",
+  "Translations",
+  "Common",
+])(OperationsPanelComponent);
 
 export default inject(
   (

@@ -60,6 +60,7 @@ class HelpButton extends React.Component {
       getContent,
       className,
       dataTip,
+      tooltipMaxWidth,
       style,
       size,
     } = this.props;
@@ -92,6 +93,7 @@ class HelpButton extends React.Component {
             afterShow={this.afterShow}
             afterHide={this.afterHide}
             getContent={getContent}
+            maxWidth={tooltipMaxWidth}
           />
         ) : (
           <Tooltip
@@ -123,7 +125,7 @@ HelpButton.propTypes = {
   offsetLeft: PropTypes.number,
   offsetTop: PropTypes.number,
   offsetBottom: PropTypes.number,
-  tooltipMaxWidth: PropTypes.number,
+  tooltipMaxWidth: PropTypes.string,
   tooltipId: PropTypes.string,
   place: PropTypes.string,
   iconName: PropTypes.string,
@@ -141,7 +143,7 @@ HelpButton.propTypes = {
 HelpButton.defaultProps = {
   iconName: "/static/images/question.react.svg",
   place: "top",
-  offsetRight: 120,
+  offsetRight: 60,
   offsetLeft: 0,
   offsetTop: 0,
   offsetBottom: 0,

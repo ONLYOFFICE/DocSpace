@@ -4,7 +4,7 @@ import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";
 import Button from "@appserver/components/button";
 import Loader from "@appserver/components/loader";
-import PageLayout from "@appserver/common/components/PageLayout";
+import Section from "@appserver/common/components/Section";
 import { smallTablet, tablet } from "@appserver/components/utils/device";
 import { I18nextProvider, Trans, withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
@@ -157,7 +157,7 @@ const PrivacyPageComponent = ({ t, history, tReady }) => {
         </Text>
         <Button
           onClick={onOpenEditorsPopup}
-          size="large"
+          size="medium"
           primary
           isDisabled={isDisabled}
           label={t("PrivacyButton")}
@@ -204,11 +204,11 @@ const PrivacyPageWrapper = withTranslation(["PrivacyPage"])(
 const PrivacyPage = (props) => {
   return (
     <I18nextProvider i18n={i18n}>
-      <PageLayout>
-        <PageLayout.SectionBody>
+      <Section>
+        <Section.SectionBody>
           <PrivacyPageWrapper {...props} />
-        </PageLayout.SectionBody>
-      </PageLayout>
+        </Section.SectionBody>
+      </Section>
     </I18nextProvider>
   );
 };

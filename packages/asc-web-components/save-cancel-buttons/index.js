@@ -43,37 +43,40 @@ class SaveCancelButtons extends React.Component {
       reminderTest,
       saveButtonLabel,
       cancelButtonLabel,
-      sectionWidth,
-      hasChanged,
+      hasScroll,
+      isFirstWelcomePageSettings,
       className,
       id,
     } = this.props;
 
-    const isDisabled = hasChanged !== undefined ? !hasChanged : false;
+    const cancelButtonDisabled =
+      isFirstWelcomePageSettings === "true" ? false : !showReminder;
 
     return (
       <StyledSaveCancelButtons
         className={className}
         id={id}
         displaySettings={displaySettings}
-        sectionWidth={sectionWidth}
         showReminder={showReminder}
+        hasScroll={hasScroll}
       >
         <div className="buttons-flex">
           <Button
             className="save-button"
-            size="big"
-            isDisabled={isDisabled}
+            size="normal"
+            isDisabled={!showReminder}
             primary
             onClick={onSaveClick}
             label={saveButtonLabel}
+            minwidth={displaySettings && "auto"}
           />
           <Button
             className="cancel-button"
-            size="big"
-            isDisabled={isDisabled}
+            size="normal"
+            isDisabled={cancelButtonDisabled}
             onClick={onCancelClick}
             label={cancelButtonLabel}
+            minwidth={displaySettings && "auto"}
           />
         </div>
         {showReminder && (
@@ -101,9 +104,11 @@ SaveCancelButtons.propTypes = {
   onCancelClick: PropTypes.func,
   /** Show message about unsaved changes (Only shown on desktops) */
   showReminder: PropTypes.bool,
+  /** Tells when the button should present a disabled state */
   displaySettings: PropTypes.bool,
-  sectionWidth: PropTypes.number,
-  hasChanged: PropTypes.bool,
+  hasScroll: PropTypes.bool,
+  minwidth: PropTypes.string,
+  isFirstWelcomePageSettings: PropTypes.string,
 };
 
 SaveCancelButtons.defaultProps = {

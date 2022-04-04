@@ -80,7 +80,7 @@ const DeleteThirdPartyDialog = (props) => {
         <Button
           isLoading={isLoading}
           label={t("Common:OKButton")}
-          size="big"
+          size="normal"
           primary
           onClick={onDeleteThirdParty}
         />

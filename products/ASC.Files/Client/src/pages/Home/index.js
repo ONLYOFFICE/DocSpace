@@ -2,37 +2,35 @@ import React from "react";
 //import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { isMobile } from "react-device-detect";
+import {
+  isMobile as isMobileUtils,
+  isTablet as isTabletUtils,
+} from "@appserver/components/utils/device";
 import axios from "axios";
 import toastr from "@appserver/components/toast/toastr";
-import PageLayout from "@appserver/common/components/PageLayout";
+import Section from "@appserver/common/components/Section";
 import { showLoader, hideLoader } from "@appserver/common/utils";
 import FilesFilter from "@appserver/common/api/files/filter";
 import { getGroup } from "@appserver/common/api/groups";
 import { getUserById } from "@appserver/common/api/people";
 import { withTranslation, Trans } from "react-i18next";
-import {
-  ArticleBodyContent,
-  ArticleHeaderContent,
-  ArticleMainButtonContent,
-} from "../../components/Article";
-import {
-  CatalogBodyContent,
-  CatalogHeaderContent,
-  CatalogMainButtonContent,
-} from "../../components/Catalog";
 
 import {
   SectionBodyContent,
   SectionFilterContent,
   SectionHeaderContent,
   SectionPagingContent,
+  Bar,
 } from "./Section";
+
+import { ArticleMainButtonContent } from "../../components/Article";
 
 import { createTreeFolders } from "../../helpers/files-helpers";
 import MediaViewer from "./MediaViewer";
 import DragTooltip from "../../components/DragTooltip";
 import { observer, inject } from "mobx-react";
 import config from "../../../package.json";
+import { Consumer } from "@appserver/components/utils/context";
 
 class PureHome extends React.Component {
   componentDidMount() {
@@ -284,14 +282,16 @@ class PureHome extends React.Component {
 
       dragging,
       tReady,
-
-      showCatalog,
+      personal,
+      checkedMaintenance,
+      setMaintenanceExist,
+      snackbarExist,
     } = this.props;
     return (
       <>
         <MediaViewer />
         <DragTooltip />
-        <PageLayout
+        <Section
           dragging={dragging}
           withBodyScroll
           withBodyAutoFocus={!isMobile}
@@ -316,56 +316,39 @@ class PureHome extends React.Component {
           isHeaderVisible={isHeaderVisible}
           onOpenUploadPanel={this.showUploadPanel}
           firstLoad={firstLoad}
-          dragging={dragging}
         >
-          {!showCatalog && (
-            <PageLayout.ArticleHeader>
-              <ArticleHeaderContent />
-            </PageLayout.ArticleHeader>
-          )}
-          {!showCatalog && (
-            <PageLayout.ArticleMainButton>
-              <ArticleMainButtonContent />
-            </PageLayout.ArticleMainButton>
-          )}
-          {!showCatalog && (
-            <PageLayout.ArticleBody>
-              <ArticleBodyContent onTreeDrop={this.onDrop} />
-            </PageLayout.ArticleBody>
-          )}
-
-          {showCatalog && (
-            <PageLayout.CatalogHeader>
-              <CatalogHeaderContent />
-            </PageLayout.CatalogHeader>
-          )}
-          {showCatalog && (
-            <PageLayout.CatalogMainButton>
-              <CatalogMainButtonContent />
-            </PageLayout.CatalogMainButton>
-          )}
-          {showCatalog && (
-            <PageLayout.CatalogBody>
-              <CatalogBodyContent />
-            </PageLayout.CatalogBody>
-          )}
-
-          <PageLayout.SectionHeader>
+          <Section.SectionHeader>
             <SectionHeaderContent />
-          </PageLayout.SectionHeader>
+          </Section.SectionHeader>
 
-          <PageLayout.SectionFilter>
+          <Section.SectionBar>
+            {checkedMaintenance && !snackbarExist && (
+              <Bar
+                firstLoad={firstLoad}
+                personal={personal}
+                setMaintenanceExist={setMaintenanceExist}
+              />
+            )}
+          </Section.SectionBar>
+
+          <Section.SectionFilter>
             <SectionFilterContent />
-          </PageLayout.SectionFilter>
+          </Section.SectionFilter>
 
-          <PageLayout.SectionBody>
-            <SectionBodyContent />
-          </PageLayout.SectionBody>
+          <Section.SectionBody>
+            <Consumer>
+              {(context) => (
+                <>
+                  <SectionBodyContent sectionWidth={context.sectionWidth} />
+                </>
+              )}
+            </Consumer>
+          </Section.SectionBody>
 
-          <PageLayout.SectionPaging>
+          <Section.SectionPaging>
             <SectionPagingContent tReady={tReady} />
-          </PageLayout.SectionPaging>
-        </PageLayout>
+          </Section.SectionPaging>
+        </Section>
       </>
     );
   }
@@ -459,6 +442,9 @@ export default inject(
       isRecycleBinFolder,
       isPrivacyFolder,
       isVisitor: auth.userStore.user.isVisitor,
+      checkedMaintenance: auth.settingsStore.checkedMaintenance,
+      setMaintenanceExist: auth.settingsStore.setMaintenanceExist,
+      snackbarExist: auth.settingsStore.snackbarExist,
       expandedKeys,
 
       primaryProgressDataVisible,
@@ -486,6 +472,7 @@ export default inject(
       startUpload,
       isHeaderVisible: auth.settingsStore.isHeaderVisible,
       setHeaderVisible: auth.settingsStore.setHeaderVisible,
+      personal: auth.settingsStore.personal,
       setToPreviewFile,
       playlist,
       isMediaOrImage: settingsStore.isMediaOrImage,
@@ -493,7 +480,6 @@ export default inject(
 
       setIsPrevSettingsModule,
       isPrevSettingsModule,
-      showCatalog: auth.settingsStore.showCatalog,
     };
   }
 )(withRouter(observer(Home)));

@@ -220,6 +220,12 @@ namespace ASC.Data.Storage.DiscStorage
         }
 
         #region chunking
+        public override Task<string> InitiateChunkedUploadAsync(string domain, string path)
+        {
+            var target = GetTarget(domain, path);
+            CreateDirectory(target);
+            return Task.FromResult(target);
+        }
 
         public override async Task<string> UploadChunkAsync(string domain, string path, string uploadId, Stream stream, long defaultChunkSize, int chunkNumber, long chunkLength)
         {

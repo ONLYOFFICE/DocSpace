@@ -10,4 +10,8 @@ module.exports = {
     browser: true,
     node: true,
   },
+  plugins: ["jest"],
+  env: {
+    "jest/globals": true,
+  },
 };

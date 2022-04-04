@@ -96,36 +96,43 @@ const Base = {
     paddingRight: "4px",
 
     height: {
-      base: "24px",
-      medium: "32px",
-      big: "36px",
-      large: "44px",
+      extraSmall: "24px",
+      small: "32px",
+      normalDesktop: "36px",
+      normalTouchscreen: "40px",
+      medium: "44px",
     },
 
     lineHeight: {
-      base: "15px",
-      medium: "18px",
-      big: "20px",
-      large: "20px",
+      extraSmall: "15px",
+      small: "20px",
+      normalDesktop: "16px",
+      normalTouchscreen: "16px",
+      medium: "22px",
     },
 
     fontSize: {
-      base: "12px",
-      medium: "13px",
-      big: "14px",
-      large: "16px",
+      extraSmall: "12px",
+      small: "13px",
+      normalDesktop: "14px",
+      normalTouchscreen: "14px",
+      medium: "16px",
     },
 
     padding: {
-      base: "0 14px",
-      medium: "0 18px",
-      big: "0 20px",
+      extraSmall: "0 12px",
+      small: "0 28px",
+      normalDesktop: "0 28px",
+      normalTouchscreen: "0 28px",
+      medium: "0 32px",
     },
 
     minWidth: {
-      base: "65px",
-      medium: "80px",
-      big: "85px",
+      extraSmall: "none",
+      small: "100px",
+      normalDesktop: "100px",
+      normalTouchscreen: "100px",
+      medium: "100px",
     },
 
     color: {
@@ -296,12 +303,12 @@ const Base = {
     background: white,
     disableBackgroundColor: "rgba(0, 0, 0, 0.08)",
     hoverBackground: white,
-    activeBackground: grayMaxLight,
+    activeBackground: "grayMaxLight",
+    hoverBorder: "#1877f2",
 
     boxShadow:
       "0px 1px 1px rgba(0, 0, 0, 0.24),0px 0px 1px rgba(0, 0, 0, 0.12)",
-    hoverBoxShadow:
-      "0px 2px 2px rgba(0, 0, 0, 0.24),0px 0px 2px rgba(0, 0, 0, 0.12)",
+    hoverBoxShadow: "none",
 
     color: "rgba(0, 0, 0, 0.54)",
     disableColor: "rgba(0, 0, 0, 0.4)",
@@ -318,10 +325,11 @@ const Base = {
       textOverflow: "ellipsis",
       whiteSpace: "nowrap",
       color: "#757575",
+      hoverColor: "#1877f2",
     },
 
     svg: {
-      margin: "11px",
+      margin: "11px 16px",
       width: "18px",
       height: "18px",
       minWidth: "18px",
@@ -521,7 +529,7 @@ const Base = {
     },
 
     optionButton: {
-      padding: "8px 0px 9px 7px",
+      padding: "8px 9px 9px 7px",
     },
   },
 
@@ -696,6 +704,16 @@ const Base = {
         big: "36px",
         huge: "37px",
         large: "43px",
+      },
+    },
+
+    iconButton: {
+      width: {
+        base: "15px",
+        middle: "15px",
+        big: "16px",
+        huge: "16px",
+        large: "16px",
       },
     },
   },
@@ -874,9 +892,9 @@ const Base = {
 
   tooltip: {
     borderRadius: "6px",
-    boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.13)",
+    boxShadow: "0px 10px 15px rgba(4, 15, 27, 0.13)",
     opacity: "1",
-    padding: "16px",
+    padding: "8px 12px",
     pointerEvents: "auto",
     maxWidth: "340px",
     color: "#F8F7BF",
@@ -911,7 +929,7 @@ const Base = {
         margin: "7px 15px 7px 15px",
         overflow: "hidden",
         color: white,
-        hoverColor: white,
+        hoverColor: black,
         disableColor: grayMid,
       },
     },
@@ -946,7 +964,7 @@ const Base = {
 
       labelIcon: {
         width: "100%",
-        margin: "0 0 8px 0",
+        margin: "0 0 4px 0",
       },
 
       body: {
@@ -967,6 +985,7 @@ const Base = {
   },
 
   avatar: {
+    defaultImage: `url("/static/images/avatar.base.react.svg")`,
     initialsContainer: {
       color: white,
       left: "50%",
@@ -1515,7 +1534,7 @@ const Base = {
       marginTop: "12px",
       marginRight: "8px",
       marginLeft: "auto",
-      fillColor: gray,
+      fillColor: grayMain,
     },
 
     button: {
@@ -1571,8 +1590,6 @@ const Base = {
     hoverBorderBottom: "1px dashed",
     contentPadding: "10px 0px 0px 0px",
     arrowMargin: "4px 8px 4px 0px",
-    arrowMarginRight: "9px",
-    arrowMarginBottom: "5px",
     transform: "rotate(180deg)",
     iconColor: black,
 
@@ -1913,7 +1930,7 @@ const Base = {
 
   menuContainer: {
     background: "linear-gradient(200.71deg, #2274aa 0%, #0f4071 100%)",
-    arrowTop: "#0f4071",
+    arrowTop: "#206FA4",
     color: white,
   },
 
@@ -1931,6 +1948,7 @@ const Base = {
 
     header: {
       backgroundColor: white,
+      background: `linear-gradient(180deg,#ffffff 2.81%,rgba(255, 255, 255, 0.91) 63.03%,rgba(255, 255, 255, 0) 100%)`,
     },
   },
 
@@ -1942,6 +1960,11 @@ const Base = {
     expanderColor: "dimgray",
     downloadAppList: {
       color: "#83888d",
+      winHoverColor: "#3785D3",
+      macHoverColor: black,
+      linuxHoverColor: "#FFB800",
+      androidHoverColor: "#9BD71C",
+      iosHoverColor: black,
     },
     thirdPartyList: {
       color: "#818b91",
@@ -1965,63 +1988,6 @@ const Base = {
   },
 
   filterInput: {
-    filterButton: {
-      stroke: grayLightMid,
-
-      fill: grayLight,
-
-      fillSecond: "#979797",
-    },
-
-    comboButtonLabelColor: black,
-    comboButtonLabelColorTwo: gray,
-
-    viewSelector: {
-      border: grayMid,
-      disabledBorder: grayLightMid,
-
-      disabledBackground: grayLight,
-
-      activeBackground: gray,
-      activeBorder: gray,
-    },
-
-    filterItem: {
-      border: `1px solid ${grayLightMid}`,
-      backgroundColor: grayLight,
-      color: cyanBlueDarkShade,
-    },
-
-    content: {
-      color: black,
-      background: grayLightMid,
-    },
-
-    closeButton: {
-      borderLeft: `1px solid ${grayLightMid}`,
-      background: grayLight,
-
-      activeBackground: grayLightMid,
-      activeFill: gray,
-
-      hoverFill: cyanBlueDarkShade,
-    },
-
-    hideButton: {
-      expanderFill: gray,
-
-      border: `1px solid ${grayLightMid}`,
-      background: grayLight,
-
-      hoverBorder: gray,
-      disabledHoverBorder: grayLightMid,
-
-      activeBackground: grayLightMid,
-      disabledActiveBackground: grayLight,
-    },
-  },
-
-  newFilterInput: {
     button: {
       border: "1px solid #d0d5da",
       hoverBorder: "1px solid #a3a9ae",
@@ -2095,7 +2061,7 @@ const Base = {
       activeIconColor: grayMain,
       hoverIconColor: grayMain,
 
-      borderImageSource: `linear-gradient(to right,${white} 24px,${grayLightMid} 24px,${grayLightMid} calc(100% - 24px),${white} calc(100% - 24px))`,
+      borderImageSource: `linear-gradient(to right,${white} 21px,${grayLightMid} 21px,${grayLightMid} calc(100% - 20px),${white} calc(100% - 20px))`,
     },
 
     tableCell: {
@@ -2148,8 +2114,8 @@ const Base = {
         shareHoverColor: "#3b72a7",
 
         borderImageRight:
-          "linear-gradient(to right, #ffffff 17px,#eceef1 31px)",
-        borderImageLeft: "linear-gradient(to left, #ffffff 17px,#eceef1 31px)",
+          "linear-gradient(to right, #ffffff 25px,#eceef1 24px)",
+        borderImageLeft: "linear-gradient(to left, #ffffff 24px,#eceef1 24px)",
 
         borderColor: "#ECEEf1",
         borderColorTransition: "#f3f4f4",
@@ -2164,7 +2130,7 @@ const Base = {
         border: `1px solid ${grayMid}`,
         backgroundColor: white,
 
-        backgroundColorTop: grayLight,
+        backgroundColorTop: white,
       },
 
       sideColor: black,
@@ -2188,10 +2154,15 @@ const Base = {
   },
 
   floatingButton: {
-    backgroundColor: white,
-    color: blueMain,
+    backgroundColor: "#3B72A7",
+    color: white,
     boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.13)",
-    fill: gray,
+    fill: white,
+
+    alert: {
+      fill: "#F58D31",
+      path: white,
+    },
   },
 
   mediaViewer: {
@@ -2546,6 +2517,7 @@ const Base = {
     about: {
       linkColor: blueMain,
       border: "1px solid lightgray",
+      logoColor: black,
     },
 
     comingSoon: {
@@ -2646,7 +2618,7 @@ const Base = {
   },
 
   campaignsBanner: {
-    border: "border: 1px solid #d1d1d1",
+    border: "1px solid #d1d1d1",
     color: darkBlack,
 
     btnColor: white,
@@ -2666,6 +2638,10 @@ const Base = {
   editor: {
     color: "#555f65",
     background: white,
+  },
+
+  submenu: {
+    lineColor: "#eceef1",
   },
 };
 

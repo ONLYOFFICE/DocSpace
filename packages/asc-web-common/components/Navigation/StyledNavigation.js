@@ -23,10 +23,9 @@ const StyledContainer = styled.div`
     width: 100%;
     padding: ${(props) => (props.isDropBox ? "16px 0 5px" : "16px 0 0px")};
   }
-
   ${isMobile &&
   css`
-    width: 100% !important;
+    width: 100%;
     padding: ${(props) =>
       props.isDropBox ? "16px 0 5px" : " 16px 0 0px"} !important;
   `}
@@ -40,7 +39,7 @@ const StyledContainer = styled.div`
   css`
     width: 100% !important;
     padding: ${(props) =>
-      props.isDropBox ? "12px 0 5px" : "12px 0 0"} !important;
+      props.isDropBox ? "18px 0 5px" : "18px 0 0"} !important;
   `}
 `;
 

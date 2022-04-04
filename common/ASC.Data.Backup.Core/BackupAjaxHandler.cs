@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 using ASC.Api.Utils;
@@ -14,7 +15,6 @@ using ASC.MessagingSystem;
 using ASC.Notify.Cron;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Studio.Core;
-using ASC.Web.Studio.Core.Backup;
 using ASC.Web.Studio.Utility;
 
 namespace ASC.Data.Backup
@@ -31,8 +31,11 @@ namespace ASC.Data.Backup
         private UserManager UserManager { get; }
         private TenantExtra TenantExtra { get; }
         private ConsumerFactory ConsumerFactory { get; }
-        private BackupFileUploadHandler BackupFileUploadHandler { get; }
         private BackupService BackupService { get; }
+        private TempPath TempPath { get; }
+
+        private const string BackupTempFolder = "backup";
+        private const string BackupFileName = "backup.tmp";
 
         #region backup
 
@@ -47,7 +50,7 @@ namespace ASC.Data.Backup
             UserManager userManager,
             TenantExtra tenantExtra,
             ConsumerFactory consumerFactory,
-            BackupFileUploadHandler backupFileUploadHandler)
+            TempPath tempPath)
         {
             TenantManager = tenantManager;
             MessageService = messageService;
@@ -58,8 +61,8 @@ namespace ASC.Data.Backup
             UserManager = userManager;
             TenantExtra = tenantExtra;
             ConsumerFactory = consumerFactory;
-            BackupFileUploadHandler = backupFileUploadHandler;
             BackupService = backupService;
+            TempPath = tempPath;
         }
 
         public void StartBackup(BackupStorageType storageType, Dictionary<string, string> storageParams, bool backupMail)
@@ -263,7 +266,7 @@ namespace ASC.Data.Backup
 
                 if (restoreRequest.StorageType == BackupStorageType.Local && !CoreBaseSettings.Standalone)
                 {
-                    restoreRequest.FilePathOrId = BackupFileUploadHandler.GetFilePath();
+                    restoreRequest.FilePathOrId = GetTmpFilePath();
                 }
             }
 
@@ -280,13 +283,22 @@ namespace ASC.Data.Backup
             return result;
         }
 
-        private void DemandPermissionsRestore()
+        public void DemandPermissionsRestore()
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
             if (!SetupInfo.IsVisibleSettings("Restore") ||
                 (!CoreBaseSettings.Standalone && !TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().TenantId).Restore))
                 throw new BillingException(Resource.ErrorNotAllowedOption, "Restore");
+        }
+
+        public void DemandPermissionsAutoBackup()
+        {
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+            if (!SetupInfo.IsVisibleSettings("AutoBackup") ||
+                (!CoreBaseSettings.Standalone && !TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().TenantId).AutoBackup))
+                throw new BillingException(Resource.ErrorNotAllowedOption, "AutoBackup");
         }
 
         #endregion
@@ -340,6 +352,18 @@ namespace ASC.Data.Backup
         private int GetCurrentTenantId()
         {
             return TenantManager.GetCurrentTenant().TenantId;
+        }
+
+        public string GetTmpFilePath()
+        {
+            var folder = Path.Combine(TempPath.GetTempPath(), BackupTempFolder, TenantManager.GetCurrentTenant().TenantId.ToString());
+
+            if (!Directory.Exists(folder))
+            {
+                Directory.CreateDirectory(folder);
+            }
+
+            return Path.Combine(folder, BackupFileName);
         }
 
         public class Schedule

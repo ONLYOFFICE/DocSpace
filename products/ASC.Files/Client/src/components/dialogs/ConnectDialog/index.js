@@ -212,7 +212,7 @@ const PureConnectDialogContainer = (props) => {
           <FieldContainer labelVisible labelText={t("Account")} isVertical>
             <Button
               label={t("Reconnect")}
-              size="medium"
+              size="small"
               onClick={onReconnect}
               scale
               isDisabled={isLoading}
@@ -307,7 +307,7 @@ const PureConnectDialogContainer = (props) => {
         <Button
           tabIndex={5}
           label={t("Common:SaveButton")}
-          size="big"
+          size="normal"
           primary
           onClick={onSave}
           isDisabled={isLoading}

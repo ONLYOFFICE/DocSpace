@@ -1,22 +1,14 @@
-import React from "react";
 import styled, { css } from "styled-components";
 
 import Base from "@appserver/components/themes/base";
 
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-const Container = ({
-  options,
-  groups,
-  isMultiSelect,
-  allowGroupSelection,
-  hasSelected,
-  ...props
-}) => <div {...props} />;
+
 /* eslint-enable react/prop-types */
 /* eslint-enable no-unused-vars */
 
-const StyledSelector = styled(Container)`
+const StyledSelector = styled.div`
   display: grid;
 
   height: 100%;
@@ -112,6 +104,12 @@ const StyledSelector = styled(Container)`
       grid-area: body-options;
       margin-top: 8px;
 
+      .options-list {
+        div:nth-child(3) {
+          right: 10px !important;
+        }
+      }
+
       .row-option {
         box-sizing: border-box;
         height: 48px;
@@ -148,7 +146,8 @@ const StyledSelector = styled(Container)`
 
         .option-text__group {
           width: auto;
-          border-bottom: 1px dashed #333333;
+          border-bottom: ${(props) =>
+            props.theme.toggleContent.hoverBorderBottom};
         }
 
         .option-text__header {

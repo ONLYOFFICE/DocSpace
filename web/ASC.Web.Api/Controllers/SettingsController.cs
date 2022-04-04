@@ -322,7 +322,8 @@ namespace ASC.Api.Settings
                 Culture = Tenant.GetCulture().ToString(),
                 GreetingSettings = Tenant.Name,
                 Personal = CoreBaseSettings.Personal,
-                Version = Configuration["version:number"] ?? ""
+                Version = Configuration["version:number"] ?? "",
+                TenantStatus = TenantManager.GetCurrentTenant().Status
             };
 
             if (AuthContext.IsAuthenticated)

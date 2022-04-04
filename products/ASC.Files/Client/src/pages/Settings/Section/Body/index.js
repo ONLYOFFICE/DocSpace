@@ -1,202 +1,113 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-import Heading from "@appserver/components/heading";
-import ToggleButton from "@appserver/components/toggle-button";
+import React from "react";
+import styled, { css } from "styled-components";
+
 import Error403 from "studio/Error403";
 import Error520 from "studio/Error520";
 import ConnectClouds from "./ConnectedClouds";
 import { inject, observer } from "mobx-react";
-import toastr from "@appserver/components/toast/toastr";
-import { runInAction } from "mobx";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
+import config from "../../../../../package.json";
+import TabsContainer from "@appserver/components/tabs-container";
+import CommonSettings from "./CommonSettings";
+import AdminSettings from "./AdminSettings";
 
-const StyledSettings = styled.div`
-  display: grid;
-  grid-gap: 19px;
+import { tablet } from "@appserver/components/utils/device";
+import { isMobile } from "react-device-detect";
 
-  .toggle-btn {
-    position: relative;
+const StyledContainer = styled.div`
+  position: absolute;
+  top: 3px;
+
+  width: calc(100% - 40px);
+
+  height: auto;
+
+  @media ${tablet} {
+    position: static;
+    width: calc(100% - 32px);
   }
 
-  .heading {
-    margin-bottom: 1px;
-    margin-top: 26px;
-  }
-
-  .toggle-button-text {
-    margin-top: -1px;
-  }
+  ${isMobile &&
+  css`
+    position: static;
+    width: calc(100% - 32px);
+  `}
 `;
 
 const SectionBodyContent = ({
   setting,
-  isLoading,
-  storeForceSave,
-  setStoreForceSave,
-  enableThirdParty,
-  setEnableThirdParty,
-  storeOriginalFiles,
-  setStoreOriginal,
-  confirmDelete,
-  setConfirmDelete,
-  updateIfExist,
-  setUpdateIfExist,
-  forceSave,
-  setForceSave,
   isAdmin,
-  isErrorSettings,
+  enableThirdParty,
   settingsIsLoaded,
-  treeFolders,
-  myFolderId,
-  commonFolderId,
+  isErrorSettings,
+  history,
+  setExpandSettingsTree,
+  setSelectedNode,
   t,
-  isVisitor,
-  favoritesSection,
-  recentSection,
-  setFavoritesSetting,
-  setRecentSetting,
-  getSubfolders,
 }) => {
-  const [isLoadingFavorites, setIsLoadingFavorites] = useState(false);
-  const [isLoadingRecent, setIsLoadingRecent] = useState(false);
-
-  const onChangeStoreForceSave = () => {
-    setStoreForceSave(!storeForceSave, "storeForceSave");
+  const commonSettings = {
+    content: <CommonSettings t={t} />,
+    key: "common",
+    title: t("CommonSettings"),
   };
 
-  const onChangeThirdParty = () => {
-    setEnableThirdParty(!enableThirdParty, "enableThirdParty").then(
-      async () => {
-        const myFolders = await getSubfolders(myFolderId);
-        const commonFolders = await getSubfolders(commonFolderId);
-        const myNode = treeFolders.find((x) => x.id === myFolderId);
-        const commonNode = treeFolders.find((x) => x.id === commonFolderId);
-
-        runInAction(() => {
-          myNode.folders = myFolders;
-          commonNode.folders = commonFolders;
-        });
-      }
-    );
+  const adminSettings = {
+    content: <AdminSettings t={t} />,
+    key: "admin",
+    title: t("Common:AdminSettings"),
   };
 
-  const renderAdminSettings = () => {
-    return (
-      <StyledSettings>
-        <ToggleButton
-          className="toggle-btn"
-          label={t("IntermediateVersion")}
-          onChange={onChangeStoreForceSave}
-          isChecked={storeForceSave}
-        />
-        <ToggleButton
-          className="toggle-btn"
-          label={t("ThirdPartyBtn")}
-          onChange={onChangeThirdParty}
-          isChecked={enableThirdParty}
-        />
-      </StyledSettings>
-    );
+  const connectedCloud = {
+    content: <ConnectClouds />,
+    key: "connected-clouds",
+    title: t("ThirdPartySettings"),
   };
 
-  const onChangeOriginalCopy = () => {
-    setStoreOriginal(!storeOriginalFiles, "storeOriginalFiles");
-  };
+  const elements = [];
 
-  const onChangeDeleteConfirm = () => {
-    setConfirmDelete(!confirmDelete, "confirmDelete");
-  };
+  if (isAdmin) {
+    elements.push(adminSettings);
+  }
 
-  const onChangeUpdateIfExist = () => {
-    setUpdateIfExist(!updateIfExist, "updateIfExist");
-  };
+  elements.push(commonSettings);
 
-  const onChangeForceSave = () => {
-    setForceSave(!forceSave, "forceSave");
-  };
+  if (enableThirdParty) {
+    elements.push(connectedCloud);
+  }
 
-  const onChangeFavorites = (e) => {
-    setIsLoadingFavorites(true);
-    setFavoritesSetting(e.target.checked, "favoritesSection")
-      .catch((err) => toastr.error(err))
-      .finally(() => setIsLoadingFavorites(false));
-  };
+  const onSelect = React.useCallback(
+    (data) => {
+      const { key } = data;
 
-  const onChangeRecent = (e) => {
-    setIsLoadingRecent(true);
-    setRecentSetting(e.target.checked, "recentSection")
-      .catch((err) => toastr.error(err))
-      .finally(() => setIsLoadingRecent(false));
-  };
+      if (key === setting) return;
 
-  const renderCommonSettings = () => {
-    return (
-      <StyledSettings>
-        <ToggleButton
-          className="toggle-btn"
-          label={t("OriginalCopy")}
-          onChange={onChangeOriginalCopy}
-          isChecked={storeOriginalFiles}
-        />
-        <ToggleButton
-          className="toggle-btn"
-          label={t("DisplayNotification")}
-          onChange={onChangeDeleteConfirm}
-          isChecked={confirmDelete}
-        />
-        {!isVisitor && (
-          <>
-            <ToggleButton
-              isDisabled={isLoadingRecent}
-              className="toggle-btn"
-              label={t("DisplayRecent")}
-              onChange={onChangeRecent}
-              isChecked={recentSection}
-            />
+      setSelectedNode([key]);
+      setExpandSettingsTree([key]);
 
-            <ToggleButton
-              isDisabled={isLoadingFavorites}
-              className="toggle-btn"
-              label={t("DisplayFavorites")}
-              onChange={onChangeFavorites}
-              isChecked={favoritesSection}
-            />
-            <ToggleButton
-              isDisabled={true}
-              className="toggle-btn"
-              label={t("DisplayTemplates")}
-              onChange={(e) => console.log(e)}
-              isChecked={false}
-            />
-          </>
-        )}
-        {!isVisitor && (
-          <>
-            <Heading className="heading" level={2} size="small">
-              {t("StoringFileVersion")}
-            </Heading>
-            <ToggleButton
-              className="toggle-btn"
-              label={t("UpdateOrCreate")}
-              onChange={onChangeUpdateIfExist}
-              isChecked={updateIfExist}
-            />
-            <ToggleButton
-              className="toggle-btn"
-              label={t("KeepIntermediateVersion")}
-              onChange={onChangeForceSave}
-              isChecked={forceSave}
-            />
-          </>
-        )}
-      </StyledSettings>
-    );
-  };
+      history.push(
+        combineUrl(
+          AppServerConfig.proxyURL,
+          config.homepage,
+          `/settings/${key}`
+        )
+      );
+    },
+    [setting, history, setExpandSettingsTree, setSelectedNode]
+  );
 
-  let content;
-
-  if (setting === "admin" && isAdmin) content = renderAdminSettings();
-  if (setting === "common") content = renderCommonSettings();
-  if (setting === "thirdParty" && enableThirdParty) content = <ConnectClouds />;
+  const selectedTab = React.useCallback(() => {
+    switch (setting) {
+      case "common":
+        return 1;
+      case "admin":
+        return 0;
+      case "connected-clouds":
+        return 2;
+      default:
+        return 1;
+    }
+  }, [setting]);
 
   return !settingsIsLoaded ? null : (!enableThirdParty &&
       setting === "thirdParty") ||
@@ -205,67 +116,30 @@ const SectionBodyContent = ({
   ) : isErrorSettings ? (
     <Error520 />
   ) : (
-    content
+    <StyledContainer>
+      <TabsContainer
+        elements={elements}
+        onSelect={onSelect}
+        selectedItem={selectedTab()}
+      />
+    </StyledContainer>
   );
 };
 
-export default inject(
-  ({ auth, filesStore, settingsStore, treeFoldersStore }) => {
-    const { isLoading } = filesStore;
-    const {
-      storeOriginalFiles,
-      confirmDelete,
-      updateIfExist,
-      forcesave,
-      storeForcesave,
-      enableThirdParty,
-      setUpdateIfExist,
-      setStoreOriginal,
-      setEnableThirdParty,
-      setConfirmDelete,
-      setStoreForceSave,
-      setForceSave,
-      settingsIsLoaded,
+export default inject(({ auth, treeFoldersStore, settingsStore }) => {
+  const {
+    enableThirdParty,
+    settingsIsLoaded,
 
-      favoritesSection,
-      recentSection,
-      setFavoritesSetting,
-      setRecentSetting,
-    } = settingsStore;
+    setExpandSettingsTree,
+  } = settingsStore;
+  const { setSelectedNode } = treeFoldersStore;
+  return {
+    isAdmin: auth.isAdmin,
+    enableThirdParty,
+    settingsIsLoaded,
 
-    const {
-      treeFolders,
-      myFolderId,
-      commonFolderId,
-      getSubfolders,
-    } = treeFoldersStore;
-
-    return {
-      isAdmin: auth.isAdmin,
-      isLoading,
-      storeOriginalFiles,
-      confirmDelete,
-      updateIfExist,
-      forceSave: forcesave,
-      storeForceSave: storeForcesave,
-      enableThirdParty,
-      treeFolders,
-      myFolderId,
-      commonFolderId,
-      isVisitor: auth.userStore.user.isVisitor,
-      favoritesSection,
-      recentSection,
-
-      setUpdateIfExist,
-      setStoreOriginal,
-      setEnableThirdParty,
-      setConfirmDelete,
-      setStoreForceSave,
-      setForceSave,
-      settingsIsLoaded,
-      setFavoritesSetting,
-      setRecentSetting,
-      getSubfolders,
-    };
-  }
-)(observer(SectionBodyContent));
+    setExpandSettingsTree,
+    setSelectedNode,
+  };
+})(observer(SectionBodyContent));

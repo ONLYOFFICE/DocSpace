@@ -47,6 +47,7 @@ const PanelStyles = css`
 
 const StyledAsidePanel = styled.div`
   z-index: 310;
+
   .sharing_panel-header {
     font-weight: 700;
     margin: 14px 0;
@@ -423,11 +424,9 @@ const StyledSharingBody = styled(Scrollbar)`
   }
 
   .sharing-row {
-    margin: 0 16px;
+    padding-left: 16px;
     //width: calc(100% - 16px);
     box-sizing: border-box;
-
-    padding-right: 15px;
     border-bottom: none;
   }
 
@@ -590,7 +589,7 @@ const StyledFooter = styled.div`
 StyledFooter.defaultProps = { theme: Base };
 
 const StyledLinkRow = styled.div`
-  width: calc(100% + 16px);
+  margin-right: -16px;
   padding: 0 16px;
   box-sizing: border-box;
   background-color: ${(props) =>
@@ -907,6 +906,11 @@ const StyledFilesList = styled.div`
   .select-file-dialog_icon {
     margin-right: 8px;
   }
+
+  .radio-button_text{
+    ${(props) => props.displayType === "aside" && "margin: 0 !important;"};
+  }
+
   .entry-title {
     font-weight: 600;
     max-width: 100%;
@@ -964,9 +968,10 @@ const StyledFilesList = styled.div`
     ${(props) =>
       props.isChecked &&
       `background: ${props.theme.filesPanels.filesList.backgroundColor};`}
-    cursor: ${(props) => (props.needRowSelection ? "pointer" : "default")};
+    cursor: pointer;
     border-bottom: ${(props) => props.theme.filesPanels.filesList.borderBottom};
     display: grid;
+
     ${(props) =>
       props.displayType === "aside"
         ? css`

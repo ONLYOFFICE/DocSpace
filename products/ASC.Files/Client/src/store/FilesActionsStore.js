@@ -13,10 +13,17 @@ import {
   getSubfolders,
   emptyTrash,
 } from "@appserver/common/api/files";
-import { ConflictResolveType, FileAction } from "@appserver/common/constants";
+import {
+  ConflictResolveType,
+  FileAction,
+  FileStatus,
+} from "@appserver/common/constants";
 import { TIMEOUT } from "../helpers/constants";
-import { loopTreeFolders } from "../helpers/files-helpers";
+import { loopTreeFolders, checkProtocol } from "../helpers/files-helpers";
 import toastr from "studio/toastr";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
+import config from "../../package.json";
 
 class FilesActionStore {
   authStore;
@@ -390,19 +397,31 @@ class FilesActionStore {
     }
   };
 
-  onSelectItem = ({ id, isFolder }) => {
-    const { setBufferSelection, selected, setSelected } = this.filesStore;
+  onSelectItem = ({ id, isFolder }, isBuffer = false) => {
+    const {
+      setBufferSelection,
+      selected,
+      setSelected,
+      setSelection,
+      setHotkeyCaretStart,
+      setHotkeyCaret,
+      filesList,
+    } = this.filesStore;
     /* selected === "close" &&  */ setSelected("none");
 
     if (!id) return;
 
-    const item = this.filesStore[isFolder ? "folders" : "files"].find(
-      (elm) => elm.id === id
+    const item = filesList.find(
+      (elm) => elm.id === id && elm.isFolder === isFolder
     );
 
     if (item) {
-      item.isFolder = isFolder;
-      setBufferSelection(item);
+      if (isBuffer) setBufferSelection(item);
+      else {
+        setSelection([item]);
+        setHotkeyCaret(null);
+        setHotkeyCaretStart(null);
+      }
     }
   };
 
@@ -576,6 +595,7 @@ class FilesActionStore {
     } = this.filesStore;
     //selected === "close" && setSelected("none");
     setBufferSelection(null);
+
     if (checked) {
       selectFile(file);
     } else {
@@ -997,7 +1017,7 @@ class FilesActionStore {
       .set("download", download)
       .set("downloadAs", downloadAs)
       .set("restore", {
-        label: t("Translations:Restore"),
+        label: t("Common:Restore"),
         onClick: () => setMoveToPanelVisible(true),
         iconUrl: "/static/images/move.react.svg",
       })
@@ -1028,6 +1048,102 @@ class FilesActionStore {
     if (isRecentFolder) return this.getRecentFolderOptions(itemsCollection, t);
 
     return this.getAnotherFolderOptions(itemsCollection, t);
+  };
+
+  openFileAction = (item) => {
+    const {
+      setIsLoading,
+      fetchFiles,
+      openDocEditor,
+      isPrivacyFolder,
+    } = this.filesStore;
+    const {
+      isRecycleBinFolder,
+      setExpandedKeys,
+      createNewExpandedKeys,
+    } = this.treeFoldersStore;
+    const { setMediaViewerData } = this.mediaViewerDataStore;
+    const { setConvertDialogVisible, setConvertItem } = this.dialogsStore;
+
+    const isMediaOrImage = this.settingsStore.isMediaOrImage(item.fileExst);
+    const canConvert = this.settingsStore.canConvert(item.fileExst);
+    const canWebEdit = this.settingsStore.canWebEdit(item.fileExst);
+    const canViewedDocs = this.settingsStore.canViewedDocs(item.fileExst);
+
+    const { id, viewUrl, providerKey, fileStatus, encrypted, isFolder } = item;
+    if (encrypted && isPrivacyFolder) return checkProtocol(item.id, true);
+
+    if (isRecycleBinFolder) return;
+
+    if (isFolder) {
+      setIsLoading(true);
+      //addExpandedKeys(parentFolder + "");
+
+      fetchFiles(id, null, true, false)
+        .then((data) => {
+          const pathParts = data.selectedFolder.pathParts;
+          const newExpandedKeys = createNewExpandedKeys(pathParts);
+          setExpandedKeys(newExpandedKeys);
+
+          this.setNewBadgeCount(item);
+        })
+        .catch((err) => {
+          toastr.error(err);
+          setIsLoading(false);
+        })
+        .finally(() => setIsLoading(false));
+    } else {
+      if (canConvert) {
+        setConvertItem(item);
+        setConvertDialogVisible(true);
+        return;
+      }
+
+      if ((fileStatus & FileStatus.IsNew) === FileStatus.IsNew)
+        this.onMarkAsRead(id);
+
+      if (canWebEdit || canViewedDocs) {
+        let tab =
+          !this.authStore.settingsStore.isDesktopClient && !isFolder
+            ? window.open(
+                combineUrl(
+                  AppServerConfig.proxyURL,
+                  config.homepage,
+                  "/doceditor"
+                ),
+                "_blank"
+              )
+            : null;
+
+        return openDocEditor(id, providerKey, tab);
+      }
+
+      if (isMediaOrImage) {
+        localStorage.setItem("isFirstUrl", window.location.href);
+        setMediaViewerData({ visible: true, id });
+
+        const url = "/products/files/#preview/" + id;
+        history.pushState(null, null, url);
+        return;
+      }
+
+      return window.open(viewUrl, "_self");
+    }
+  };
+
+  backToParentFolder = () => {
+    const { setIsLoading, fetchFiles } = this.filesStore;
+
+    if (!this.selectedFolderStore.parentId) return;
+
+    setIsLoading(true);
+
+    fetchFiles(
+      this.selectedFolderStore.parentId,
+      null,
+      true,
+      false
+    ).finally(() => setIsLoading(false));
   };
 }
 

@@ -31,6 +31,7 @@ class GroupSelector extends React.Component {
             key: g.id,
             label: g.name,
             total: 0,
+            selectedCount: 0,
           };
         })
       : [];
@@ -72,13 +73,7 @@ class GroupSelector extends React.Component {
   };
 
   render() {
-    const {
-      isOpen,
-      options,
-      selectedOptions,
-      hasNextPage,
-      isNextPageLoading,
-    } = this.state;
+    const { isOpen, options, hasNextPage, isNextPageLoading } = this.state;
 
     const {
       id,
@@ -97,6 +92,7 @@ class GroupSelector extends React.Component {
       showCounter,
       smallSectionWidth,
       theme,
+      selectedOptions,
     } = this.props;
 
     const groups = [
@@ -104,7 +100,8 @@ class GroupSelector extends React.Component {
         key: "all",
         id: "all",
         label: t("AllGroups"),
-        total: 0,
+        total: options.length,
+        selectedCount: 0,
       },
     ];
 

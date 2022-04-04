@@ -41,7 +41,7 @@ const SelectFolderDialogAsideView = ({
         contentHeight="100%"
         contentPaddingBottom={footer && showButtons ? "100px" : "40px"}
         onClose={onClose}
-        removeScroll
+        withoutBodyScroll
         displayType="aside"
       >
         <ModalDialog.Header theme={theme}>
@@ -96,14 +96,13 @@ const SelectFolderDialogAsideView = ({
                   theme={theme}
                   className="select-folder-dialog-buttons-save"
                   primary
-                  size="big"
+                  size="normal"
                   label={primaryButtonName}
                   onClick={onSave}
                   isDisabled={isLoadingData || !isAvailable || !canCreate}
                 />
                 <Button
-                  theme={theme}
-                  size="big"
+                  size="normal"
                   label={t("Common:CancelButton")}
                   onClick={onClose}
                   isDisabled={isLoadingData || isLoading}

@@ -2,23 +2,15 @@ import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import Filter from "@appserver/common/api/people/filter";
-import PageLayout from "@appserver/common/components/PageLayout";
+import Section from "@appserver/common/components/Section";
 import { showLoader, hideLoader, isAdmin } from "@appserver/common/utils";
-import {
-  ArticleHeaderContent,
-  ArticleBodyContent,
-  ArticleMainButtonContent,
-} from "../../components/Article";
-import {
-  CatalogHeaderContent,
-  CatalogMainButtonContent,
-  CatalogBodyContent,
-} from "../../components/Catalog";
+
 import {
   SectionHeaderContent,
   SectionBodyContent,
   SectionFilterContent,
   SectionPagingContent,
+  Bar,
 } from "./Section";
 import { inject, observer } from "mobx-react";
 import { isMobile } from "react-device-detect";
@@ -38,6 +30,9 @@ const PureHome = ({
   firstLoad,
   setFirstLoad,
   viewAs,
+  checkedMaintenance,
+  snackbarExist,
+  setMaintenanceExist,
 }) => {
   const { location } = history;
   const { pathname } = location;
@@ -69,60 +64,33 @@ const PureHome = ({
     isLoading ? showLoader() : hideLoader();
   }, [isLoading]);
 
-  useEffect(() => {});
-
   return (
     <>
-      <PageLayout
+      <Section
         withBodyScroll
         withBodyAutoFocus={!isMobile}
         isLoading={isLoading}
         firstLoad={firstLoad}
         viewAs={viewAs}
       >
-        {showCatalog && (
-          <PageLayout.CatalogHeader>
-            <CatalogHeaderContent />
-          </PageLayout.CatalogHeader>
-        )}
-        {showCatalog && isAdmin && (
-          <PageLayout.CatalogMainButton>
-            <CatalogMainButtonContent />
-          </PageLayout.CatalogMainButton>
-        )}
-        {showCatalog && (
-          <PageLayout.CatalogBody>
-            <CatalogBodyContent />
-          </PageLayout.CatalogBody>
-        )}
-        {!showCatalog && (
-          <PageLayout.ArticleHeader>
-            <ArticleHeaderContent />
-          </PageLayout.ArticleHeader>
-        )}
-        {!showCatalog && (
-          <PageLayout.ArticleMainButton>
-            <ArticleMainButtonContent />
-          </PageLayout.ArticleMainButton>
-        )}
-        {!showCatalog && (
-          <PageLayout.ArticleBody>
-            <ArticleBodyContent />
-          </PageLayout.ArticleBody>
-        )}
-        <PageLayout.SectionHeader>
+        <Section.SectionHeader>
           <SectionHeaderContent />
-        </PageLayout.SectionHeader>
-        <PageLayout.SectionFilter>
+        </Section.SectionHeader>
+        <Section.SectionBar>
+          {checkedMaintenance && !snackbarExist && (
+            <Bar setMaintenanceExist={setMaintenanceExist} />
+          )}
+        </Section.SectionBar>
+        <Section.SectionFilter>
           <SectionFilterContent />
-        </PageLayout.SectionFilter>
-        <PageLayout.SectionBody>
+        </Section.SectionFilter>
+        <Section.SectionBody>
           <SectionBodyContent />
-        </PageLayout.SectionBody>
-        <PageLayout.SectionPaging>
+        </Section.SectionBody>
+        <Section.SectionPaging>
           <SectionPagingContent tReady={tReady} />
-        </PageLayout.SectionPaging>
-      </PageLayout>
+        </Section.SectionPaging>
+      </Section>
 
       <Dialogs />
     </>
@@ -160,5 +128,8 @@ export default inject(({ auth, peopleStore }) => {
     firstLoad,
     setFirstLoad,
     viewAs,
+    checkedMaintenance: auth.settingsStore.checkedMaintenance,
+    setMaintenanceExist: auth.settingsStore.setMaintenanceExist,
+    snackbarExist: auth.settingsStore.snackbarExist,
   };
 })(observer(withRouter(Home)));

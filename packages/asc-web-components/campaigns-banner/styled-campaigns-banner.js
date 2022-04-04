@@ -17,10 +17,15 @@ const BannerWrapper = styled.div`
     color: ${(props) => props.theme.campaignsBanner.color};
   }
 
+  .banner-img-wrapper {
+    height: 160px;
+    width: 100%;
+  }
+
   img {
     max-width: 100%;
     height: auto;
-    margin-top: 10px;
+    margin-top: 5px;
   }
 
   .banner-sub-header {
@@ -37,7 +42,6 @@ const BannerWrapper = styled.div`
 
   .banner-btn:active {
     color: ${(props) => props.theme.campaignsBanner.btnColor};
-    background: ${(props) => props.theme.campaignsBanner.btnBackgroundActive};
     border: none;
   }
 `;

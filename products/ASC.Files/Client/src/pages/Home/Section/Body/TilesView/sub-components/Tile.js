@@ -38,7 +38,7 @@ const checkedStyle = css`
 `;
 
 const bottomFileBorder = css`
-  border: ${(props) => props.theme.filesSection.tilesView.tile.border};
+  border-top: ${(props) => props.theme.filesSection.tilesView.tile.border};
   border-radius: 0 0 6px 6px;
 `;
 
@@ -54,6 +54,8 @@ const StyledTile = styled.div`
   width: 100%;
   border: ${(props) => props.theme.filesSection.tilesView.tile.border};
   border-radius: 6px;
+  ${(props) => props.showHotkeyBorder && "border-color: #2DA7DB"};
+  ${(props) => props.isFolder && "border-top-left-radius: 0px;"}
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   ${(props) => props.isFolder && FlexBoxStyles}
@@ -63,6 +65,23 @@ const StyledTile = styled.div`
     props.isFolder &&
     (props.checked || props.isActive) &&
     checkedStyle}
+
+
+  &:before, 
+  &:after {
+    ${(props) => props.isFolder && props.dragging && draggingStyle};
+    ${(props) => props.showHotkeyBorder && "border-color: #2DA7DB"};
+  }
+
+  &:before,
+  &:after {
+    ${(props) => (props.checked || props.isActive) && checkedStyle};
+  }
+
+  &:hover:before,
+  &:hover:after {
+    ${(props) => props.isFolder && props.dragging && draggingHoverStyle};
+  }
 
   .checkbox {
     display: flex;
@@ -121,6 +140,8 @@ const StyledTile = styled.div`
 
 const StyledFileTileTop = styled.div`
   ${FlexBoxStyles};
+  background: ${(props) =>
+    props.theme.filesSection.tilesView.tile.backgroundColorTop};
   justify-content: space-between;
   align-items: baseline;
   height: 156px;
@@ -131,8 +152,8 @@ const StyledFileTileTop = styled.div`
     position: absolute;
     height: 100%;
     width: 100%;
-    object-fit: cover;
-    border-radius: 6px 6px 0 0;
+    object-fit: ${(props) => (props.isMedia ? "cover" : "none")};
+    object-position: top;
     z-index: 0;
   }
 
@@ -335,6 +356,7 @@ class Tile extends React.PureComponent {
       contentElement,
       title,
       getContextModel,
+      showHotkeyBorder,
     } = this.props;
     const { isFolder, id, fileExst } = item;
 
@@ -386,6 +408,7 @@ class Tile extends React.PureComponent {
         isActive={isActive}
         inProgress={inProgress}
         isDesktop={isDesktop}
+        showHotkeyBorder={showHotkeyBorder}
       >
         {isFolder || (!fileExst && id === -1) ? (
           <>
@@ -443,7 +466,11 @@ class Tile extends React.PureComponent {
           </>
         ) : (
           <>
-            <StyledFileTileTop checked={checked} isActive={isActive}>
+            <StyledFileTileTop
+              checked={checked}
+              isActive={isActive}
+              isMedia={item.canOpenPlayer}
+            >
               {icon}
             </StyledFileTileTop>
 

@@ -4,7 +4,6 @@ import { withTranslation } from "react-i18next";
 import Text from "@appserver/components/text";
 import IconButton from "@appserver/components/icon-button";
 
-import withLoader from "../../../HOCs/withLoader";
 import { Base } from "@appserver/components/themes";
 
 const StyledDownloadAppList = styled.div`
@@ -27,7 +26,7 @@ const StyledDownloadAppList = styled.div`
 
 StyledDownloadAppList.defaultProps = { theme: Base };
 
-const DownloadAppListContainer = ({ t }) => {
+const DownloadAppListContainer = React.memo(({ t, theme }) => {
   const desktopLink = "https://www.onlyoffice.com/desktop.aspx";
   const androidLink = "https://www.onlyoffice.com/office-for-android.aspx";
   const iosLink = "https://www.onlyoffice.com/office-for-ios.aspx";
@@ -44,7 +43,7 @@ const DownloadAppListContainer = ({ t }) => {
           iconName="/static/images/windows.react.svg"
           size="25"
           isfill={true}
-          hoverColor="#3785D3"
+          hoverColor={theme.filesArticleBody.downloadAppList.winHoverColor}
           title={t("Translations:MobileWin")}
         />
         <IconButton
@@ -53,7 +52,7 @@ const DownloadAppListContainer = ({ t }) => {
           iconName="/static/images/macOS.react.svg"
           size="25"
           isfill={true}
-          hoverColor="#000000"
+          hoverColor={theme.filesArticleBody.downloadAppList.macHoverColor}
           title={t("Translations:MobileMac")}
         />
         <IconButton
@@ -62,7 +61,7 @@ const DownloadAppListContainer = ({ t }) => {
           iconName="/static/images/linux.react.svg"
           size="25"
           isfill={true}
-          hoverColor="#FFB800"
+          hoverColor={theme.filesArticleBody.downloadAppList.linuxHoverColor}
           title={t("Translations:MobileLinux")}
         />
         <IconButton
@@ -71,7 +70,7 @@ const DownloadAppListContainer = ({ t }) => {
           iconName="/static/images/android.react.svg"
           size="25"
           isfill={true}
-          hoverColor="#9BD71C"
+          hoverColor={theme.filesArticleBody.downloadAppList.androidHoverColor}
           title={t("Translations:MobileAndroid")}
         />
         <IconButton
@@ -80,16 +79,18 @@ const DownloadAppListContainer = ({ t }) => {
           iconName="/static/images/iOS.react.svg"
           size="25"
           isfill={true}
-          hoverColor="#000000"
+          hoverColor={theme.filesArticleBody.downloadAppList.iosHoverColor}
           title={t("Translations:MobileIos")}
         />
       </div>
     </StyledDownloadAppList>
   );
-};
+});
+
+DownloadAppListContainer.defaultProps = { theme: Base };
 
 const DownloadAppList = withTranslation(["Translations"])(
-  withLoader(DownloadAppListContainer)(<></>)
+  DownloadAppListContainer
 );
 
 export default DownloadAppList;

@@ -96,36 +96,43 @@ const Dark = {
     paddingRight: "4px",
 
     height: {
-      base: "24px",
-      medium: "32px",
-      big: "36px",
-      large: "44px",
+      extraSmall: "24px",
+      small: "32px",
+      normalDesktop: "36px",
+      normalTouchscreen: "40px",
+      medium: "44px",
     },
 
     lineHeight: {
-      base: "15px",
-      medium: "18px",
-      big: "20px",
-      large: "20px",
+      extraSmall: "15px",
+      small: "20px",
+      normalDesktop: "16px",
+      normalTouchscreen: "16px",
+      medium: "22px",
     },
 
     fontSize: {
-      base: "12px",
-      medium: "13px",
-      big: "14px",
-      large: "16px",
+      extraSmall: "12px",
+      small: "13px",
+      normalDesktop: "14px",
+      normalTouchscreen: "14px",
+      medium: "16px",
     },
 
     padding: {
-      base: "0 14px",
-      medium: "0 18px",
-      big: "0 20px",
+      extraSmall: "0 12px",
+      small: "0 28px",
+      normalDesktop: "0 28px",
+      normalTouchscreen: "0 28px",
+      medium: "0 32px",
     },
 
     minWidth: {
-      base: "65px",
-      medium: "80px",
-      big: "85px",
+      extraSmall: "none",
+      small: "100px",
+      normalDesktop: "100px",
+      normalTouchscreen: "100px",
+      medium: "100px",
     },
 
     color: {
@@ -299,6 +306,7 @@ const Dark = {
     disableBackgroundColor: "rgba(0, 0, 0, 0.08)",
     hoverBackground: "#292929",
     activeBackground: "#292929",
+    hoverBorder: "#292929",
 
     boxShadow: "none",
     hoverBoxShadow: "none",
@@ -319,10 +327,11 @@ const Dark = {
       textOverflow: "ellipsis",
       whiteSpace: "nowrap",
       color: grayMaxLight,
+      hoverColor: grayMaxLight,
     },
 
     svg: {
-      margin: "11px",
+      margin: "11px 16px",
       width: "18px",
       height: "18px",
       minWidth: "18px",
@@ -518,7 +527,7 @@ const Dark = {
     },
 
     optionButton: {
-      padding: "8px 0px 9px 7px",
+      padding: "8px 9px 9px 7px",
     },
   },
 
@@ -694,6 +703,15 @@ const Dark = {
         big: "36px",
         huge: "37px",
         large: "43px",
+      },
+    },
+    iconButton: {
+      width: {
+        base: "15px",
+        middle: "15px",
+        big: "16px",
+        huge: "16px",
+        large: "16px",
       },
     },
   },
@@ -872,9 +890,9 @@ const Dark = {
 
   tooltip: {
     borderRadius: "6px",
-    boxShadow: "0px 12px 24px rgba(0, 0, 0, 0.12)",
+    boxShadow: "0px 10px 15px rgba(4, 15, 27, 0.13)",
     opacity: "1",
-    padding: "16px",
+    padding: "8px 12px",
     pointerEvents: "auto",
     maxWidth: "340px",
     color: "#F5E9BA",
@@ -944,7 +962,7 @@ const Dark = {
 
       labelIcon: {
         width: "100%",
-        margin: "0 0 8px 0",
+        margin: "0 0 4px 0",
       },
 
       body: {
@@ -965,6 +983,7 @@ const Dark = {
   },
 
   avatar: {
+    defaultImage: `url("/static/images/avatar.dark.react.svg")`,
     initialsContainer: {
       color: white,
       left: "50%",
@@ -1091,7 +1110,7 @@ const Dark = {
 
     slider: {
       width: "100%",
-      margin: "8px 0",
+      margin: "24px 0",
       backgroundColor: "transparent",
 
       runnableTrack: {
@@ -1573,10 +1592,8 @@ const Dark = {
     hoverBorderBottom: "1px dashed",
     contentPadding: "10px 0px 0px 0px",
     arrowMargin: "4px 8px 4px 0px",
-    arrowMarginRight: "9px",
-    arrowMarginBottom: "5px",
     transform: "rotate(180deg)",
-    iconColor: black,
+    iconColor: white,
 
     childrenContent: {
       color: black,
@@ -1915,7 +1932,7 @@ const Dark = {
   menuContainer: {
     background:
       "linear-gradient(226.22deg, #EBB67A 0.24%, #E9AC6B 11.61%, #E8A25D 22.98%, #E69850 34.34%, #E58D42 45.71%, #E38235 57.08%, #E27628 68.44%, #E06A1B 79.81%)",
-    arrowTop: "#E06A1B",
+    arrowTop: "#EAB274",
     color: "#22221f",
   },
 
@@ -1933,6 +1950,7 @@ const Dark = {
 
     header: {
       backgroundColor: black,
+      background: `linear-gradient(180deg,#333333 2.81%,rgba(51, 51, 51, 0.91) 63.03%,rgba(255, 255, 255, 0) 100%)`,
     },
   },
 
@@ -1945,6 +1963,11 @@ const Dark = {
 
     downloadAppList: {
       color: "#C4C4C4",
+      winHoverColor: "#3785D3",
+      macHoverColor: white,
+      linuxHoverColor: "#FFB800",
+      androidHoverColor: "#9BD71C",
+      iosHoverColor: white,
     },
 
     thirdPartyList: {
@@ -1969,61 +1992,6 @@ const Dark = {
   },
 
   filterInput: {
-    filterButton: {
-      stroke: "#474747",
-
-      fill: black,
-
-      fillSecond: grayMaxLight,
-    },
-
-    comboButtonLabelColor: grayMaxLight,
-    comboButtonLabelColorTwo: "#a9a9a9",
-
-    viewSelector: {
-      border: "#474747",
-      disabledBorder: "#474747",
-
-      disabledBackground: "#292929",
-
-      activeBackground: gray,
-      activeBorder: gray,
-    },
-
-    filterItem: {
-      border: "1px solid #474747",
-      backgroundColor: black,
-      color: grayMaxLight,
-    },
-
-    content: {
-      color: grayMaxLight,
-      background: "#292929",
-    },
-
-    closeButton: {
-      borderLeft: "1px solid #474747",
-      background: "#292929",
-
-      activeBackground: black,
-      activeFill: grayMaxLight,
-
-      hoverFill: grayMaxLight,
-    },
-
-    hideButton: {
-      border: "1px solid #474747",
-      background: black,
-
-      hoverBorder: "#858585",
-      disabledHoverBorder: "#858585",
-
-      activeBackground: "#292929",
-      disabledActiveBackground: "#292929",
-    },
-  },
-
-  newFilterInput: {
     button: {
       border: "1px solid #474747",
       hoverBorder: "1px solid #a3a9ae",
@@ -2097,7 +2065,7 @@ const Dark = {
       activeIconColor: "#858585",
       hoverIconColor: grayMaxLight,
 
-      borderImageSource: `linear-gradient(to right,${black} 24px,#474747 24px,#474747 calc(100% - 24px),${black} calc(100% - 24px))`,
+      borderImageSource: `linear-gradient(to right,${black} 21px,#474747 21px,#474747 calc(100% - 20px),${black} calc(100% - 20px))`,
     },
 
     tableCell: {
@@ -2156,8 +2124,8 @@ const Dark = {
         shareHoverColor: "#eeeeee",
 
         borderImageRight:
-          "linear-gradient(to right, #333333 17px, #474747 31px)",
-        borderImageLeft: "linear-gradient(to left, #333333 17px, #474747 31px)",
+          "linear-gradient(to right, #333333 25px, #474747 24px)",
+        borderImageLeft: "linear-gradient(to left, #333333 20px, #474747 24px)",
 
         borderColor: "#858585",
         borderColorTransition: "#474747",
@@ -2196,10 +2164,15 @@ const Dark = {
   },
 
   floatingButton: {
-    backgroundColor: "#e5e5e5",
-    color: darkBlack,
+    backgroundColor: white,
+    color: black,
     boxShadow: "0px 12px 24px rgba(0, 0, 0, 0.12)",
     fill: black,
+
+    alert: {
+      fill: "#F58D31",
+      path: black,
+    },
   },
 
   mediaViewer: {
@@ -2556,6 +2529,7 @@ const Dark = {
     about: {
       linkColor: "#E06A1B",
       border: "1px solid #474747",
+      logoColor: white,
     },
 
     comingSoon: {
@@ -2596,7 +2570,7 @@ const Dark = {
       },
 
       security: {
-        arrowFill: black,
+        arrowFill: white,
         descriptionColor: "#858585",
 
         admins: {
@@ -2628,7 +2602,7 @@ const Dark = {
         linkColor: "#858585",
         linkColorHelp: "#E06A1B",
         tooltipLinkColor: "#e06a1b",
-        arrowColor: black,
+        arrowColor: white,
         descriptionColor: "#858585",
 
         whiteLabel: {
@@ -2656,10 +2630,10 @@ const Dark = {
   },
 
   campaignsBanner: {
-    border: "border: 1px solid #d1d1d1",
+    border: "1px solid #CCCCCC",
     color: darkBlack,
 
-    btnColor: white,
+    btnColor: black,
     btnBackgroundActive: blueMain,
   },
 
@@ -2676,6 +2650,10 @@ const Dark = {
   editor: {
     color: "#eeeeee",
     background: black,
+  },
+
+  submenu: {
+    lineColor: "#474747",
   },
 };
 

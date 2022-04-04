@@ -2,7 +2,6 @@
   "Authorization": "승인",
   "CookieSettingsTitle": "세션 기간",
   "ForgotPassword": "비밀번호를 잊어버리셨나요?",
-  "LoginButton": "로그인",
   "MessageAuthorize": "계속하시려면 로그인해주세요",
   "MessageEmailConfirmed": "이메일이 성공적으로 활성화되었습니다.",
   "MessageSendPasswordRecoveryInstructionsOnEmail": "가입에 사용하신 이메일을 입력해주세요. 해당 이메일로 비밀번호 복원 방법이 발송됩니다.",

@@ -2,18 +2,15 @@ import React, { useEffect } from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { isMobile } from "react-device-detect";
-import {
-  isMobile as isMobileUtils,
-  isTablet as isTabletUtils,
-} from "@appserver/components/utils/device";
+
 import { observer, inject } from "mobx-react";
 import FilesRowContainer from "./RowsView/FilesRowContainer";
 import FilesTileContainer from "./TilesView/FilesTileContainer";
 import EmptyContainer from "../../../../components/EmptyContainer";
 import withLoader from "../../../../HOCs/withLoader";
 import TableView from "./TableView/TableContainer";
+import withHotkeys from "../../../../HOCs/withHotkeys";
 import { Consumer } from "@appserver/components/utils/context";
-import { CatalogMainButtonContent } from "../../../../components/Catalog";
 
 let currentDroppable = null;
 let isDragActive = false;
@@ -37,6 +34,8 @@ const SectionBodyContent = (props) => {
     setBufferSelection,
     tooltipPageX,
     tooltipPageY,
+    setHotkeyCaretStart,
+    setHotkeyCaret,
   } = props;
 
   useEffect(() => {
@@ -79,6 +78,8 @@ const SectionBodyContent = (props) => {
     ) {
       setSelection([]);
       setBufferSelection(null);
+      setHotkeyCaretStart(null);
+      setHotkeyCaret(null);
     }
   };
 
@@ -167,7 +168,7 @@ const SectionBodyContent = (props) => {
   const onMoveTo = (destFolderId, title, providerKey) => {
     const id = isNaN(+destFolderId) ? destFolderId : +destFolderId;
     moveDragItems(id, title, providerKey, {
-      copy: t("Translations:CopyOperation"),
+      copy: t("Common:CopyOperation"),
       move: t("Translations:MoveToOperation"),
     }); //TODO: then catch
   };
@@ -201,23 +202,14 @@ const SectionBodyContent = (props) => {
         (!fileActionId && isEmptyFilesList) || null ? (
           <>
             <EmptyContainer />
-            {(isMobile || isMobileUtils() || isTabletUtils()) && (
-              <CatalogMainButtonContent sectionWidth={context.sectionWidth} />
-            )}
           </>
         ) : viewAs === "tile" ? (
           <>
             <FilesTileContainer sectionWidth={context.sectionWidth} t={t} />
-            {(isMobile || isMobileUtils() || isTabletUtils()) && (
-              <CatalogMainButtonContent sectionWidth={context.sectionWidth} />
-            )}
           </>
         ) : viewAs === "table" ? (
           <>
             <TableView sectionWidth={context.sectionWidth} tReady={tReady} />
-            {(isMobile || isMobileUtils() || isTabletUtils()) && (
-              <CatalogMainButtonContent sectionWidth={context.sectionWidth} />
-            )}
           </>
         ) : (
           <>
@@ -225,9 +217,6 @@ const SectionBodyContent = (props) => {
               sectionWidth={context.sectionWidth}
               tReady={tReady}
             />
-            {(isMobile || isMobileUtils() || isTabletUtils()) && (
-              <CatalogMainButtonContent sectionWidth={context.sectionWidth} />
-            )}
           </>
         )
       }
@@ -255,6 +244,8 @@ export default inject(
       tooltipPageX,
       tooltipPageY,
       setBufferSelection,
+      setHotkeyCaretStart,
+      setHotkeyCaret,
     } = filesStore;
 
     return {
@@ -273,12 +264,14 @@ export default inject(
       setBufferSelection,
       tooltipPageX,
       tooltipPageY,
+      setHotkeyCaretStart,
+      setHotkeyCaret,
     };
   }
 )(
   withRouter(
     withTranslation(["Home", "Common", "Translations"])(
-      withLoader(observer(SectionBodyContent))()
+      withLoader(withHotkeys(observer(SectionBodyContent)))()
     )
   )
 );

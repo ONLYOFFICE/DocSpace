@@ -144,7 +144,6 @@ namespace ASC.Web.Files
             PathProvider pathProvider,
             UserManager userManager,
             DocumentServiceTrackerHelper documentServiceTrackerHelper,
-            DocumentServiceHelper documentServiceHelper,
             FilesMessageService filesMessageService,
             FileShareLink fileShareLink,
             FileConverter fileConverter,
@@ -1225,8 +1224,7 @@ namespace ASC.Web.Files
             var fileDao = DaoFactory.GetFileDao<T>();
             var httpClient = ClientFactory.CreateClient();
             using var response = await httpClient.SendAsync(request);
-            using var secondResponse = await httpClient.SendAsync(request);
-            var fileStream = await secondResponse.Content.ReadAsStreamAsync();
+            using var fileStream = await response.Content.ReadAsStreamAsync();
 
             if (fileStream.CanSeek)
             {

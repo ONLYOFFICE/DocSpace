@@ -315,7 +315,7 @@ class FileRow extends Component {
                 <Button
                   id="conversion-button"
                   className="conversion-password_button"
-                  size={"medium"}
+                  size={"small"}
                   scale
                   primary
                   label={t("Ready")}

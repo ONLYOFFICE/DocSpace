@@ -244,7 +244,7 @@ class WhiteLabel extends React.Component {
     const { setWhiteLabelSettings } = this.props;
     const { logoText } = this.state;
 
-    // TODO: Для всех картинок написать логику
+    // TODO: Add logic to all pictures
     let fd = new FormData();
     fd.append("logoText", logoText);
 
@@ -268,7 +268,7 @@ class WhiteLabel extends React.Component {
   onChangeHandler = (e) => {
     const { setWhiteLabelSettings } = this.props;
 
-    // TODO: Добавить проверку на размер
+    // TODO: Add size check
 
     let file = e.target.files[0];
 
@@ -335,7 +335,7 @@ class WhiteLabel extends React.Component {
                 <Button
                   id="btnUseAsLogo"
                   className="margin-top"
-                  size="medium"
+                  size="small"
                   label={t("UseAsLogoButton")}
                   onClick={this.onUseTextAsLogo}
                   tabIndex={2}
@@ -531,7 +531,7 @@ class WhiteLabel extends React.Component {
               id="btnSaveGreetingSetting"
               className="margin-top"
               primary={true}
-              size="medium"
+              size="small"
               label={t("Common:SaveButton")}
               isLoading={false}
               isDisabled={false}
@@ -542,7 +542,7 @@ class WhiteLabel extends React.Component {
             <Button
               id="btnRestoreToDefault"
               className="margin-top margin-left"
-              size="medium"
+              size="small"
               label={t("RestoreDefaultButton")}
               isLoading={false}
               isDisabled={false}

@@ -52,12 +52,6 @@ import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 import { Base } from "@appserver/components/themes";
 
-const dialogsDataset = {
-  changeEmail: "changeEmail",
-  changePassword: "changePassword",
-  changePhone: "changePhone",
-};
-
 const Table = styled.table`
   width: 100%;
   margin-bottom: 23px;
@@ -188,13 +182,10 @@ class UpdateUserForm extends React.Component {
         defaultWidth: 0,
         defaultHeight: 0,
       },
-      dialogsVisible: {
-        [dialogsDataset.changePassword]: false,
-        [dialogsDataset.changePhone]: false,
-        [dialogsDataset.changeEmail]: false,
-        currentDialog: "",
-      },
       isMobile: isMobile || isTablet,
+      changeEmailDialogVisible: false,
+      changePhoneDialogVisible: false,
+      changePasswordDialogVisible: false,
     };
 
     //Set unique contacts id
@@ -205,6 +196,18 @@ class UpdateUserForm extends React.Component {
     });
 
     return newState;
+  };
+
+  onChangeEmailDialog = (visible) => {
+    this.setState({ changeEmailDialogVisible: visible });
+  };
+
+  onChangePhoneDialog = (visible) => {
+    this.setState({ changePhoneDialogVisible: visible });
+  };
+
+  onChangePasswordDialog = (visible) => {
+    this.setState({ changePasswordDialogVisible: visible });
   };
 
   setIsEdit = () => {
@@ -228,19 +231,6 @@ class UpdateUserForm extends React.Component {
 
     this.setState(stateCopy);
     this.setIsEdit();
-  };
-
-  toggleDialogsVisible = (e) => {
-    const stateCopy = Object.assign({}, {}, this.state.dialogsVisible);
-    const selectedDialog = e ? e.target.dataset.dialog : e;
-    if (selectedDialog) {
-      stateCopy[selectedDialog] = true;
-      stateCopy.currentDialog = selectedDialog;
-    } else {
-      stateCopy[stateCopy.currentDialog] = false;
-      stateCopy.currentDialog = "";
-    }
-    this.setState({ dialogsVisible: stateCopy });
   };
 
   onUserTypeChange = (event) => {
@@ -763,7 +753,7 @@ class UpdateUserForm extends React.Component {
               inputValue={profile.email}
               buttonText={t("ChangeButton")}
               buttonIsDisabled={isLoading}
-              buttonOnClick={this.toggleDialogsVisible}
+              buttonOnClick={() => this.onChangeEmailDialog(true)}
               buttonTabIndex={1}
               helpButtonHeaderContent={t("Common:Mail")}
               tooltipContent={
@@ -790,7 +780,6 @@ class UpdateUserForm extends React.Component {
                   </Trans>
                 </Text>
               }
-              dataDialog={dialogsDataset.changeEmail}
               maxLabelWidth={maxLabelWidth}
             />
             <TextChangeField
@@ -799,9 +788,8 @@ class UpdateUserForm extends React.Component {
               inputValue={"********"}
               buttonText={t("ChangeButton")}
               buttonIsDisabled={isLoading}
-              buttonOnClick={this.toggleDialogsVisible}
+              buttonOnClick={() => this.onChangePasswordDialog(true)}
               buttonTabIndex={2}
-              dataDialog={dialogsDataset.changePassword}
               maxLabelWidth={maxLabelWidth}
             />
             {/*TODO: uncomment this after added phone form */}
@@ -811,9 +799,8 @@ class UpdateUserForm extends React.Component {
               inputValue={profile.mobilePhone}
               buttonText={t("ChangeButton")}
               buttonIsDisabled={isLoading}
-              buttonOnClick={this.toggleDialogsVisible}
+              buttonOnClick={() => this.onChangePhoneDialog(true)}
               buttonTabIndex={3}
-              dataDialog={dialogsDataset.changePhone}
               maxLabelWidth={maxLabelWidth}
             /> */}
             <TextField
@@ -999,39 +986,39 @@ class UpdateUserForm extends React.Component {
             onClick={this.handleSubmit}
             primary
             isDisabled={isLoading}
-            size="big"
+            size="normal"
             tabIndex={11}
           />
           <Button
             label={t("Common:CancelButton")}
             onClick={this.onCancelHandler}
             isDisabled={isLoading}
-            size="big"
+            size="normal"
             style={{ marginLeft: "8px" }}
             tabIndex={12}
           />
         </div>
 
-        {dialogsVisible.changeEmail && (
+        {this.state.changeEmailDialogVisible && (
           <ChangeEmailDialog
-            visible={dialogsVisible.changeEmail}
-            onClose={this.toggleDialogsVisible}
+            visible={this.state.changeEmailDialogVisible}
+            onClose={() => this.onChangeEmailDialog(false)}
             user={profile}
           />
         )}
 
-        {dialogsVisible.changePassword && (
+        {this.state.changePasswordDialogVisible && (
           <ChangePasswordDialog
-            visible={dialogsVisible.changePassword}
-            onClose={this.toggleDialogsVisible}
+            visible={this.state.changePasswordDialogVisible}
+            onClose={() => this.onChangePasswordDialog(false)}
             email={profile.email}
           />
         )}
 
-        {dialogsVisible.changePhone && (
+        {this.state.changePhoneDialogVisible && (
           <ChangePhoneDialog
-            visible={dialogsVisible.changePhone}
-            onClose={this.toggleDialogsVisible}
+            visible={this.state.changePhoneDialogVisible}
+            onClose={() => this.onChangePhoneDialog(false)}
             user={profile}
           />
         )}

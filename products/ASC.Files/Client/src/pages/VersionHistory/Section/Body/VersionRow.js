@@ -95,7 +95,7 @@ const VersionRow = (props) => {
     canEdit && { key: "edit", label: t("EditComment"), onClick: onEditComment },
     canEdit && {
       key: "restore",
-      label: t("Translations:Restore"),
+      label: t("Common:Restore"),
       onClick: onRestoreClick,
     },
     {
@@ -200,7 +200,7 @@ const VersionRow = (props) => {
                         isDisabled={isSavingComment}
                         className="version_save-button"
                         label={t("Common:SaveButton")}
-                        size="big"
+                        size="normal"
                         primary
                         onClick={onSaveClick}
                       />
@@ -249,7 +249,7 @@ const VersionRow = (props) => {
             >
               <Button
                 isDisabled={isSavingComment}
-                size="base"
+                size="extraSmall"
                 scale={true}
                 primary
                 onClick={onSaveClick}
@@ -262,7 +262,7 @@ const VersionRow = (props) => {
             >
               <Button
                 isDisabled={isSavingComment}
-                size="base"
+                size="extraSmall"
                 scale={true}
                 onClick={onCancelClick}
                 label={t("Common:CancelButton")}

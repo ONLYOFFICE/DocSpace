@@ -3,6 +3,9 @@ import Circle from "./CircleLoader";
 import Header from "./HeaderLoader";
 import SectionHeader from "./SectionHeaderLoader";
 import ArticleHeader from "./ArticleHeaderLoader";
+import ArticleButton from "./ArticleButtonLoader";
+import ArticleFolder from "./ArticleFolderLoader";
+import ArticleGroup from "./ArticleGroupsLoader";
 import TreeFolders from "./TreeFolderLoader";
 import TreeSettingsLoader from "./TreeSettingsLoader";
 import Row from "./RowLoader";
@@ -17,9 +20,7 @@ import Tile from "./TileLoader";
 import Tiles from "./TilesLoader";
 import DialogLoader from "./DialogLoader";
 import DialogAsideLoader from "./DialogAsideLoader";
-import MainButton from "./MainButtonLoader";
-import DocumentCatalogFolderLoader from "./DocumentCatalogFolderLoader";
-import PeopleCatalogLoader from "./PeopleCatalogLoader";
+import ListLoader from "./ListLoader";
 
 export default {
   Rectangle,
@@ -41,7 +42,8 @@ export default {
   Tiles,
   DialogLoader,
   DialogAsideLoader,
-  MainButton,
-  DocumentCatalogFolderLoader,
-  PeopleCatalogLoader,
+  ArticleButton,
+  ArticleFolder,
+  ArticleGroup,
+  ListLoader,
 };

@@ -30,6 +30,7 @@ import {
   onItemClick,
 } from "@appserver/studio/src/helpers/utils";
 import StyledExternalLinkIcon from "@appserver/studio/src/components/StyledExternalLinkIcon";
+import HeaderCatalogBurger from "./header-catalog-burger";
 import { Base } from "@appserver/components/themes";
 
 const { proxyURL } = AppServerConfig;
@@ -56,6 +57,8 @@ const Header = styled.header`
   }
 
   .header-logo-icon {
+    ${(props) =>
+      (props.isPersonal || props.isPreparationPortal) && `margin-left: 20px;`}
     height: 24px;
     position: relative;
     padding-right: 20px;
@@ -66,7 +69,7 @@ const Header = styled.header`
     cursor: pointer;
 
     @media ${tablet} {
-      margin-left: 16px;
+      padding-left: 16px;
     }
   }
   .mobile-short-logo {
@@ -108,7 +111,7 @@ const versionBadgeProps = {
 const StyledNavigationIconsWrapper = styled.div`
   height: 20px;
   position: absolute;
-  left: ${isMobile ? "254px" : "280px"};
+  left: ${isMobile ? "254px" : "275px"};
   display: ${isMobileOnly ? "none" : "flex"};
   justify-content: flex-start;
   align-items: center;
@@ -139,7 +142,9 @@ const HeaderComponent = ({
   isAdmin,
   backdropClick,
   isPersonal,
+  isPreparationPortal,
   theme,
+  toggleArticleOpen,
   ...props
 }) => {
   const { t } = useTranslation("Common");
@@ -215,11 +220,15 @@ const HeaderComponent = ({
         module={currentProductName}
         isLoaded={isLoaded}
         isPersonal={isPersonal}
+        isPreparationPortal={isPreparationPortal}
         isAuthenticated={isAuthenticated}
         className="navMenuHeader hidingHeader"
         needNavMenu={needNavMenu}
         isDesktopView={isDesktopView}
       >
+        {currentProductId !== "home" && (
+          <HeaderCatalogBurger onClick={toggleArticleOpen} />
+        )}
         <LinkWithoutRedirect className="header-logo-wrapper" to={defaultPage}>
           {!isPersonal ? (
             <img alt="logo" src={props.logoUrl} className="header-logo-icon" />
@@ -234,7 +243,6 @@ const HeaderComponent = ({
             />
           )}
         </LinkWithoutRedirect>
-
         {isNavAvailable && isDesktopView && !isPersonal && (
           <StyledNavigationIconsWrapper>
             {mainModules.map((item) => {
@@ -343,6 +351,7 @@ export default inject(({ auth }) => {
     currentProductId,
     personal: isPersonal,
     theme,
+    toggleArticleOpen,
   } = settingsStore;
   const { totalNotifications } = moduleStore;
 
@@ -360,6 +369,7 @@ export default inject(({ auth }) => {
     version,
     isAuthenticated,
     currentProductId,
+    toggleArticleOpen,
     currentProductName: (product && product.title) || "",
   };
 })(observer(HeaderComponent));

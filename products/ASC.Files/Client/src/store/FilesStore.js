@@ -45,6 +45,7 @@ class FilesStore {
   startDrag = false;
 
   firstLoad = true;
+
   files = [];
   folders = [];
   selection = [];
@@ -52,10 +53,13 @@ class FilesStore {
   selected = "close";
   filter = FilesFilter.getDefault(); //TODO: FILTER
   loadTimeout = null;
+  hotkeyCaret = null;
+  hotkeyCaretStart = null;
   activeFiles = [];
   activeFolders = [];
 
   firstElemChecked = false;
+  headerBorder = false;
 
   isPrevSettingsModule = false;
 
@@ -381,12 +385,27 @@ class FilesStore {
   };
 
   setSelected = (selected) => {
-    if (selected === "close" || selected === "none")
+    if (selected === "close" || selected === "none") {
       this.setBufferSelection(null);
+      this.setHotkeyCaretStart(null);
+      this.setHotkeyCaret(null);
+    }
 
     this.selected = selected;
     const files = this.files.concat(this.folders);
     this.selection = this.getFilesBySelected(files, selected);
+  };
+
+  setHotkeyCaret = (hotkeyCaret) => {
+    if (hotkeyCaret) {
+      this.hotkeyCaret = hotkeyCaret;
+    } else if (this.hotkeyCaret) {
+      this.hotkeyCaret = hotkeyCaret;
+    }
+  };
+
+  setHotkeyCaretStart = (hotkeyCaretStart) => {
+    this.hotkeyCaretStart = hotkeyCaretStart;
   };
 
   setSelection = (selection) => {
@@ -1306,6 +1325,10 @@ class FilesStore {
 
   setFirsElemChecked = (checked) => {
     this.firstElemChecked = checked;
+  };
+
+  setHeaderBorder = (headerBorder) => {
+    this.headerBorder = headerBorder;
   };
 
   get canCreate() {

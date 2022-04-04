@@ -869,6 +869,8 @@ class UploadDataStore {
   };
 
   finishUploadFiles = () => {
+    const { fetchFiles, filter } = this.filesStore;
+
     const totalErrorsCount = sumBy(this.files, (f) => (f.error ? 1 : 0));
 
     if (totalErrorsCount > 0) console.log("Errors: ", totalErrorsCount);
@@ -885,6 +887,8 @@ class UploadDataStore {
 
     if (this.files.length > 0) {
       const toFolderId = this.files[0]?.toFolderId;
+      fetchFiles(toFolderId, filter);
+
       if (toFolderId) {
         const { socketHelper } = this.filesStore.settingsStore;
 
@@ -1165,7 +1169,7 @@ class UploadDataStore {
     return promise;
   };
 
-  clearActiveOperations = (fileIds, folderIds) => {
+  clearActiveOperations = (fileIds = [], folderIds = []) => {
     const {
       activeFiles,
       activeFolders,
@@ -1173,7 +1177,7 @@ class UploadDataStore {
       setActiveFolders,
     } = this.filesStore;
 
-    const newActiveFiles = activeFiles.filter((el) => !fileIds.includes(el));
+    const newActiveFiles = activeFiles.filter((el) => !fileIds?.includes(el));
     const newActiveFolders = activeFolders.filter(
       (el) => !folderIds.includes(el)
     );

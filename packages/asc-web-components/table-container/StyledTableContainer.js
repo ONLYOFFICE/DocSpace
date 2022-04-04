@@ -7,9 +7,9 @@ import { isMobile } from "react-device-detect";
 const StyledTableContainer = styled.div`
   -moz-user-select: none;
 
-  width: 100%;
+  width: calc(100% - 5px);
   max-width: 100%;
-  margin-top: -18px;
+  margin-top: -19px;
 
   display: grid;
 

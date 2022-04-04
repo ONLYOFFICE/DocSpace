@@ -61,7 +61,7 @@ const SelectFileDialogAsideView = ({
         onClose={onClose}
         contentHeight="100%"
         displayType={DISPLAY_TYPE}
-        removeScroll
+        withoutBodyScroll
       >
         <ModalDialog.Header>
           {headerName ? headerName : t("SelectFile")}
@@ -134,8 +134,8 @@ const SelectFileDialogAsideView = ({
                       />
                     </div>
                   )}
+                </div>
               </div>
-            </div>
             </div>
           </StyledSelectFilePanel>
         </ModalDialog.Body>
@@ -149,14 +149,14 @@ const SelectFileDialogAsideView = ({
                 theme={theme}
                 className="select-file-dialog-buttons-save"
                 primary
-                size="big"
+                size="normal"
                 label={primaryButtonName}
                 onClick={onClickSave}
                 isDisabled={selectedFile.length === 0}
               />
               <Button
+                size="normal"
                 theme={theme}
-                size="big"
                 label={t("Common:CancelButton")}
                 onClick={onClose}
               />
