@@ -12,6 +12,7 @@ import SectionLoader from "../sub-components/section-loader";
 import { getLanguage } from "@appserver/common/utils";
 import { isMobile } from "react-device-detect";
 import { ButtonsWrapper } from "../StyledSecurity";
+import { size } from "@appserver/components/utils/device";
 
 const MainContainer = styled.div`
   width: 100%;
@@ -55,7 +56,7 @@ const TwoFactorAuth = (props) => {
   }, []);
 
   const checkWidth = () => {
-    window.innerWidth > 375 &&
+    window.innerWidth > size.smallTablet &&
       history.location.pathname.includes("tfa") &&
       history.push("/settings/security/access-portal");
   };

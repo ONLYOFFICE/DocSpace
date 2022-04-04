@@ -15,6 +15,7 @@ import { isMobile } from "react-device-detect";
 import { ButtonsWrapper } from "../StyledSecurity";
 import { getPortalPasswordSettings } from "@appserver/common/api/settings";
 import toastr from "@appserver/components/toast/toastr";
+import { size } from "@appserver/components/utils/device";
 
 const MainContainer = styled.div`
   width: 100%;
@@ -80,7 +81,7 @@ const PasswordStrength = (props) => {
   }, []);
 
   const checkWidth = () => {
-    window.innerWidth > 375 &&
+    window.innerWidth > size.smallTablet &&
       history.location.pathname.includes("password") &&
       history.push("/settings/security/access-portal");
   };
