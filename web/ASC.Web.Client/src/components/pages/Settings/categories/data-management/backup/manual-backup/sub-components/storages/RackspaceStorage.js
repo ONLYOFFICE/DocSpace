@@ -50,7 +50,13 @@ class RackspaceStorage extends React.Component {
   };
   render() {
     const { formSettings, formErrors } = this.state;
-    const { t, isLoadingData, isMaxProgress, selectedStorage } = this.props;
+    const {
+      t,
+      isLoadingData,
+      isMaxProgress,
+      selectedStorage,
+      buttonSize,
+    } = this.props;
 
     return (
       <>
@@ -69,13 +75,13 @@ class RackspaceStorage extends React.Component {
             onClick={this.onMakeCopy}
             primary
             isDisabled={!isMaxProgress || this.isDisabled}
-            size="medium"
+            size={buttonSize}
           />
           {!isMaxProgress && (
             <Button
               label={t("Common:CopyOperation") + "..."}
               isDisabled
-              size="medium"
+              size={buttonSize}
               style={{ marginLeft: "8px" }}
             />
           )}
