@@ -191,7 +191,6 @@ class PreparationPortal extends React.Component {
       <StyledPreparationPortal>
         <ErrorContainer
           headerText={withoutHeader ? "" : t("PreparationPortalTitle")}
-          bodyText={t("PreparationPortalDescription")}
           style={style}
         >
           <StyledBodyPreparationPortal
@@ -206,13 +205,18 @@ class PreparationPortal extends React.Component {
               >{`${errorMessage}`}</Text>
             ) : (
               <>
-                <div className="preparation-portal_progress-bar">
-                  <div className="preparation-portal_progress-line"></div>
+                <div className="preparation-portal_progress">
+                  <div className="preparation-portal_progress-bar">
+                    <div className="preparation-portal_progress-line"></div>
+                  </div>
+                  <Text
+                    className="preparation-portal_percent"
+                    color="#a3a9ae"
+                  >{`${percent}%`}</Text>
                 </div>
-                <Text
-                  className="preparation-portal_percent"
-                  color="#a3a9ae"
-                >{`${percent}%`}</Text>
+                <Text className="preparation-portal_text">
+                  {t("PreparationPortalDescription")}
+                </Text>
               </>
             )}
           </StyledBodyPreparationPortal>

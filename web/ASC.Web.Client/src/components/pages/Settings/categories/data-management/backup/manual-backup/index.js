@@ -184,6 +184,7 @@ class ManualBackup extends React.Component {
       temporaryLink,
       downloadingProgress,
       commonThirdPartyList,
+      buttonSize,
     } = this.props;
     const {
       isInitialLoading,
@@ -208,6 +209,7 @@ class ManualBackup extends React.Component {
     const commonModulesProps = {
       isMaxProgress,
       onMakeCopy: this.onMakeCopy,
+      buttonSize,
     };
 
     return isInitialLoading ? (
@@ -233,14 +235,14 @@ class ManualBackup extends React.Component {
                 onClick={this.onMakeTemporaryBackup}
                 primary
                 isDisabled={!isMaxProgress}
-                size="medium"
+                size={buttonSize}
               />
               {temporaryLink?.length > 0 && isMaxProgress && (
                 <Button
                   label={t("DownloadCopy")}
                   onClick={this.onClickDownloadBackup}
                   isDisabled={false}
-                  size="medium"
+                  size={buttonSize}
                   style={{ marginLeft: "8px" }}
                 />
               )}
@@ -248,7 +250,7 @@ class ManualBackup extends React.Component {
                 <Button
                   label={t("Common:CopyOperation") + "..."}
                   isDisabled={true}
-                  size="medium"
+                  size={buttonSize}
                   style={{ marginLeft: "8px" }}
                 />
               )}
