@@ -172,7 +172,7 @@ class ManualBackup extends React.Component {
       setTemporaryLink("");
       getIntervalProgress(t);
     } catch (err) {
-      toastr.error(`${t("BackupCreatedError")}`);
+      toastr.error(t("BackupCreatedError"));
       console.error(err);
 
       clearSessionStorage();
