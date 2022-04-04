@@ -70,7 +70,6 @@ const SettingsPageLayout = ({ children }) => {
 
   const isMobile = !!(isSmallTablet() && mobileView);
 
-  console.log("isMobile", isMobile);
   return <>{children(isMobile)}</>;
 };
 
