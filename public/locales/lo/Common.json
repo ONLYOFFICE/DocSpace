@@ -11,6 +11,7 @@
   "BarMaintenanceDisclaimer": "ກະລຸນາ, ກວດເພື່ອໃຫ້ແນ່ໃຈວ່າການປ່ຽນແປງທັງຫມົດໄດ້ຖືກບັນທຶກສໍາເລັດໃນລະຫວ່າງວັນນີ້.",
   "ByFirstNameSorting": "ຕາມຊື່ແທ້",
   "ByLastNameSorting": "ຕາມນາມສະກຸນ",
+  "Sorting": "ການລຽງລຳດັບ",
   "CancelButton": "ຍົກເລີກ",
   "ClearButton": "ຮີເຊັດ filter",
   "CloseButton": "ປິດ",
