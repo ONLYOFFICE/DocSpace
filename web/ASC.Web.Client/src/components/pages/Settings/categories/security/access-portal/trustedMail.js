@@ -1,15 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";
-import Button from "@appserver/components/button";
 import RadioButtonGroup from "@appserver/components/radio-button-group";
 import { isMobile } from "react-device-detect";
 import { getLanguage } from "@appserver/common/utils";
-import { ButtonsWrapper } from "../StyledSecurity";
+import toastr from "@appserver/components/toast/toastr";
 import UserFields from "../sub-components/user-fields";
 import Buttons from "../sub-components/buttons";
 
@@ -34,9 +33,23 @@ const MainContainer = styled.div`
 `;
 
 const TrustedMail = (props) => {
-  const { t } = props;
-  const [type, setType] = useState("none");
+  const {
+    t,
+    trustedDomainsType,
+    trustedDomains,
+    setMailDomainSettings,
+  } = props;
+
+  const [type, setType] = useState("0");
   const [showReminder, setShowReminder] = useState(false);
+
+  const getSettings = async () => {
+    setType(String(trustedDomainsType));
+  };
+
+  useEffect(() => {
+    getSettings();
+  }, []);
 
   const onSelectDomainType = (e) => {
     if (type !== e.target.value) {
@@ -45,7 +58,17 @@ const TrustedMail = (props) => {
     }
   };
 
-  const onSaveClick = () => {};
+  const onSaveClick = () => {
+    const data = {
+      type: Number(type),
+      domains: [],
+      inviteUsersAsVisitors: true,
+    };
+    setMailDomainSettings(data);
+    setShowReminder(false);
+    toastr.success(t("SuccessfullySaveSettingsMessage"));
+  };
+
   const onCancelClick = () => {};
 
   const lng = getLanguage(localStorage.getItem("language") || "en");
@@ -74,22 +97,22 @@ const TrustedMail = (props) => {
         options={[
           {
             label: t("Disabled"),
-            value: "none",
+            value: "0",
           },
           {
             label: t("AllDomains"),
-            value: "any",
+            value: "2",
           },
           {
             label: t("CustomDomains"),
-            value: "custom",
+            value: "1",
           },
         ]}
         selected={type}
         onClick={onSelectDomainType}
       />
 
-      {type === "custom" && <UserFields t={t} className="user-fields" />}
+      {type === "1" && <UserFields t={t} className="user-fields" />}
 
       <Text
         color="#F21C0E"
@@ -97,7 +120,7 @@ const TrustedMail = (props) => {
         fontWeight="700"
         className="warning-text"
       >
-        {t("Common:Warning")}
+        {t("Common:Warning")}!
       </Text>
       <Text>{t("TrustedMailWarningHelper")}</Text>
 
@@ -111,10 +134,13 @@ const TrustedMail = (props) => {
   );
 };
 
-export default inject(({ auth }) => {
-  const { setPortalPasswordSettings } = auth.settingsStore;
+export default inject(({ auth, setup }) => {
+  const { trustedDomainsType, trustedDomains } = auth.settingsStore;
+  const { setMailDomainSettings } = setup;
 
   return {
-    setPortalPasswordSettings,
+    trustedDomainsType,
+    trustedDomains,
+    setMailDomainSettings,
   };
 })(withTranslation(["Settings", "Common"])(withRouter(observer(TrustedMail))));
