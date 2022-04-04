@@ -1,16 +1,16 @@
 import React, { useCallback, useState } from "react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import NavItem from "./nav-item";
 import ProfileActions from "./profile-actions";
 import { useTranslation } from "react-i18next";
-import { tablet } from "@appserver/components/utils/device";
+import { tablet, mobile } from "@appserver/components/utils/device";
 import { combineUrl, deleteCookie } from "@appserver/common/utils";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
 import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../../../package.json";
-import { isDesktop, isMobile } from "react-device-detect";
+import { isDesktop, isMobile, isMobileOnly } from "react-device-detect";
 import AboutDialog from "../../pages/About/AboutDialog";
 import DebugInfoDialog from "../../pages/DebugInfo";
 import HeaderCatalogBurger from "./header-catalog-burger";
@@ -57,6 +57,20 @@ const StyledNav = styled.nav`
   .icon-profile-menu {
     cursor: pointer;
   }
+
+  ${isMobile &&
+  css`
+    padding: 0 16px 0 16px !important;
+  `}
+
+  @media ${mobile} {
+    padding: 0 0 0 16px;
+  }
+
+  ${isMobileOnly &&
+  css`
+    padding: 0 0 0 16px !important;
+  `}
 `;
 const HeaderNav = ({
   history,
@@ -187,12 +201,11 @@ const HeaderNav = ({
             user={user}
             userIsUpdate={userIsUpdate}
             setUserIsUpdate={setUserIsUpdate}
-            isProduct={currentProductId !== "home"}
           />
-          <HeaderCatalogBurger
+          {/* <HeaderCatalogBurger
             isProduct={currentProductId !== "home"}
             onClick={toggleArticleOpen}
-          />
+          /> */}
         </>
       ) : (
         <></>
