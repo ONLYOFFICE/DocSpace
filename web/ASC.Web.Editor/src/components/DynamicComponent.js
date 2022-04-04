@@ -70,7 +70,7 @@ export const useDynamicScript = (args) => {
   };
 };
 
-const DynamicComponent = ({ system, ...rest }) => {
+const DynamicComponent = ({ system, needProxy, ...rest }) => {
   const [isInitialized, setIsInitialized] = React.useState(false);
   const [LoadedComponent, setLoadedComponent] = React.useState();
 
@@ -102,9 +102,11 @@ const DynamicComponent = ({ system, ...rest }) => {
     setLoadedComponent(Component);
   }
 
+  const Component = React.lazy(loadComponent(system.scope, system.module));
+
   return (
     <React.Suspense fallback={<div />}>
-      <LoadedComponent {...rest} />
+      {needProxy ? <LoadedComponent {...rest} /> : <Component {...rest} />}
     </React.Suspense>
   );
 };
