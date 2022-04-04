@@ -1,8 +1,14 @@
 ﻿{
+  "ButtonAddBoxNet": "Dodaj Box račun",
+  "ButtonAddDropBox": "Dodaj Dropbox račun",
+  "ButtonAddGoogle": "Dodaj Google račun",
+  "ButtonAddNextcloud": "Dodaj Nextcloud račun",
+  "ButtonAddSkyDrive": "Dodaj OneDrive račun",
   "NewDocument": "Nov dokument",
   "NewFolder": "Nova mapa",
   "NewPresentation": "Nova predstavitev",
   "NewSpreadsheet": "Nova tabela",
   "UploadFiles": "Naloži datoteke",
-  "UploadFolder": "Naloži mapo"
+  "UploadFolder": "Naloži mapo",
+  "Upload": "Naloži"
 }
