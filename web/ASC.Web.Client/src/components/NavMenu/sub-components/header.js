@@ -30,6 +30,7 @@ import {
   onItemClick,
 } from "@appserver/studio/src/helpers/utils";
 import StyledExternalLinkIcon from "@appserver/studio/src/components/StyledExternalLinkIcon";
+import HeaderCatalogBurger from "./header-catalog-burger";
 import { Base } from "@appserver/components/themes";
 
 const { proxyURL } = AppServerConfig;
@@ -143,6 +144,7 @@ const HeaderComponent = ({
   isPersonal,
   isPreparationPortal,
   theme,
+  toggleArticleOpen,
   ...props
 }) => {
   const { t } = useTranslation("Common");
@@ -224,6 +226,9 @@ const HeaderComponent = ({
         needNavMenu={needNavMenu}
         isDesktopView={isDesktopView}
       >
+        {currentProductId !== "home" && (
+          <HeaderCatalogBurger onClick={toggleArticleOpen} />
+        )}
         <LinkWithoutRedirect className="header-logo-wrapper" to={defaultPage}>
           {!isPersonal ? (
             <img alt="logo" src={props.logoUrl} className="header-logo-icon" />
@@ -238,7 +243,6 @@ const HeaderComponent = ({
             />
           )}
         </LinkWithoutRedirect>
-
         {isNavAvailable && isDesktopView && !isPersonal && (
           <StyledNavigationIconsWrapper>
             {mainModules.map((item) => {
@@ -347,6 +351,7 @@ export default inject(({ auth }) => {
     currentProductId,
     personal: isPersonal,
     theme,
+    toggleArticleOpen,
   } = settingsStore;
   const { totalNotifications } = moduleStore;
 
@@ -364,6 +369,7 @@ export default inject(({ auth }) => {
     version,
     isAuthenticated,
     currentProductId,
+    toggleArticleOpen,
     currentProductName: (product && product.title) || "",
   };
 })(observer(HeaderComponent));
