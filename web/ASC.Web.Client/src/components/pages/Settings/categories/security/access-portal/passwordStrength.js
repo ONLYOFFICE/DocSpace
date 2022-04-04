@@ -67,13 +67,13 @@ const PasswordStrength = (props) => {
     setUseUpperCase(settings.upperCase);
     setUseDigits(settings.digits);
     setUseSpecialSymbols(settings.specSymbols);
+    setIsLoading(true);
     return settings;
   };
 
   useEffect(() => {
-    getSettings();
     checkWidth();
-    setIsLoading(true);
+    getSettings();
     window.addEventListener("resize", checkWidth);
     return () => window.removeEventListener("resize", checkWidth);
   }, []);

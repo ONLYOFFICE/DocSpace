@@ -48,12 +48,12 @@ const TwoFactorAuth = (props) => {
     const settings = await getTfaSettings();
     setSmsDisabled(settings[0].avaliable);
     setAppDisabled(settings[1].avaliable);
+    setIsLoading(true);
   };
 
   useEffect(() => {
-    getSettings();
     checkWidth();
-    setIsLoading(true);
+    getSettings();
     window.addEventListener("resize", checkWidth);
     return () => window.removeEventListener("resize", checkWidth);
   }, []);
