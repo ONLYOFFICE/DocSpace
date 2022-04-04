@@ -75,6 +75,7 @@ class ArticleMainButtonContent extends React.Component {
       groupCaption,
       sectionWidth,
       isArticleLoading,
+      isMobileArticle,
     } = this.props;
 
     const { dialogVisible } = this.state;
@@ -148,8 +149,7 @@ class ArticleMainButtonContent extends React.Component {
 
     return isAdmin ? (
       <>
-        {(isMobile || isMobileUtils() || isTabletUtils()) &&
-        !isArticleLoading ? (
+        {isMobileArticle && !isArticleLoading ? (
           <MobileView
             labelProps={t("OtherOperations")}
             actionOptions={menuModel}
@@ -203,6 +203,7 @@ export default withRouter(
       guestCaption,
       groupCaption,
       toggleShowText: auth.settingsStore.toggleShowText,
+      isMobileArticle: auth.settingsStore.isMobileArticle,
       showText: auth.settingsStore.showText,
       isArticleLoading,
     };
