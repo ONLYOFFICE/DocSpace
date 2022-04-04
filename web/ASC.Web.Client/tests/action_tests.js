@@ -16,6 +16,10 @@ const saveData = {
   timeZoneID: "Pacific/Tahiti",
 };
 
+const saveDataWelcomePageSettings = {
+  title: "Hello",
+};
+
 Scenario("Tfa auth success", async ({ I }) => {
   I.mockEndpoint(Endpoints.confirm, "confirm");
   I.mockEndpoint(Endpoints.code, "code");
@@ -589,3 +593,150 @@ Scenario("Customization cancel button test time zone", async ({ I }) => {
     I.see(timeZoneCurrent);
   }
 });
+
+Scenario("Welcome Page Settings Save button test", async ({ I }) => {
+  I.mockEndpoint(Endpoints.common, "common");
+  I.mockEndpoint(Endpoints.cultures, "cultures");
+  I.mockEndpoint(Endpoints.timezones, "timezones");
+  I.mockEndpoint(Endpoints.settings, "settingsCustomization");
+  I.mockEndpoint(Endpoints.build, "build");
+  I.mockEndpoint(Endpoints.info, "infoSettings");
+  I.mockEndpoint(Endpoints.self, "selfSettings");
+  I.mockEndpoint(Endpoints.greetingsettings, "greetingsettings");
+
+  if (deviceType !== "mobile") {
+    if (browser === "webkit") {
+      I.wait(30);
+    }
+    I.amOnPage("/settings/common/customization");
+  }
+
+  if (deviceType === "mobile") {
+    I.amOnPage("/settings/common/customization/welcome-page-settings");
+  }
+
+  const titleCurrent = await I.grabValueFrom("#textInputContainerWelcomePage");
+
+  I.fillField("#textInputContainerWelcomePage", "Hello");
+
+  I.seeElement({
+    react: "TextInput",
+    props: {
+      value: "Hello",
+    },
+  });
+
+  const titleNew = await I.grabValueFrom("#textInputContainerWelcomePage");
+
+  if (titleCurrent === titleNew) {
+    I.dontSee("You have unsaved changes");
+
+    I.seeElement({
+      react: "Button",
+      props: {
+        label: "Save",
+        isDisabled: true,
+      },
+    });
+  }
+
+  if (titleCurrent !== titleNew) {
+    I.see("You have unsaved changes");
+
+    I.seeElement({
+      react: "Button",
+      props: {
+        label: "Save",
+        isDisabled: false,
+      },
+    });
+
+    I.click({
+      react: "Button",
+      props: {
+        label: "Save",
+        id: "buttonsWelcomePage",
+      },
+    });
+
+    I.checkRequest(
+      "http://localhost:8092/api/2.0/settings/greetingsettings.json",
+      saveDataWelcomePageSettings,
+      "settings",
+      "greetingsettings"
+    );
+
+    I.seeElement({
+      react: "Button",
+      props: {
+        label: "Save",
+        isDisabled: true,
+      },
+    });
+
+    I.seeElement({
+      react: "TextInput",
+      props: {
+        value: "Hello",
+      },
+    });
+
+    I.dontSee("You have unsaved changes");
+  }
+});
+
+Scenario(
+  "Welcome Page Settings Restore to Default button test",
+  async ({ I }) => {
+    I.mockEndpoint(Endpoints.common, "common");
+    I.mockEndpoint(Endpoints.cultures, "cultures");
+    I.mockEndpoint(Endpoints.timezones, "timezones");
+    I.mockEndpoint(Endpoints.settings, "settingsCustomization");
+    I.mockEndpoint(Endpoints.build, "build");
+    I.mockEndpoint(Endpoints.info, "infoSettings");
+    I.mockEndpoint(Endpoints.self, "selfSettings");
+    I.mockEndpoint(Endpoints.restore, "restore");
+
+    if (deviceType !== "mobile") {
+      if (browser === "webkit") {
+        I.wait(30);
+      }
+      I.amOnPage("/settings/common/customization");
+    }
+
+    if (deviceType === "mobile") {
+      I.amOnPage("/settings/common/customization/welcome-page-settings");
+    }
+
+    I.fillField("#textInputContainerWelcomePage", "Hello");
+
+    I.seeElement({
+      react: "TextInput",
+      props: {
+        value: "Hello",
+      },
+    });
+
+    I.click({
+      react: "Button",
+      props: {
+        label: "Restore to Default",
+        id: "buttonsWelcomePage",
+      },
+    });
+
+    I.checkRequest(
+      "http://localhost:8092/api/2.0/settings/greetingsettings/restore.json",
+      "",
+      "settings",
+      "restore"
+    );
+
+    I.seeElement({
+      react: "TextInput",
+      props: {
+        value: "Cloud Office Applications",
+      },
+    });
+  }
+);
