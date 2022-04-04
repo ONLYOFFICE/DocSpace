@@ -1965,7 +1965,9 @@ const Dark = {
     thumbnailBorderColor: grayLightMid,
     textColor: white,
 
+    closeButtonWrapperPadding: "6px",
     closeButtonIcon: black,
+    closeButtonSize: "12px",
     closeButtonBg: "#a2a2a2",
 
     accessGroupBg: "#242424",

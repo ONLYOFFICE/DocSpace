@@ -1963,7 +1963,9 @@ const Base = {
     thumbnailBorderColor: grayLightMid,
     textColor: black,
 
-    closeButtonIcon: gray,
+    closeButtonWrapperPadding: "0px",
+    closeButtonIcon: white,
+    closeButtonSize: "17px",
     closeButtonBg: "transparent",
 
     accessGroupBg: grayLightMid,

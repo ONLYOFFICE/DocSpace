@@ -52,10 +52,14 @@ const StyledCloseButtonWrapper = styled.div`
   position: absolute;
   display: none;
   background-color: ${(props) => props.theme.infoPanel.closeButtonBg};
-  padding: 6px;
+  padding: ${(props) => props.theme.infoPanel.closeButtonWrapperPadding};
   border-radius: 50%;
 
   .info-panel-button {
+    svg {
+      width: ${(props) => props.theme.infoPanel.closeButtonSize};
+      height: ${(props) => props.theme.infoPanel.closeButtonSize};
+    }
     path {
       fill: ${(props) => props.theme.infoPanel.closeButtonIcon};
     }
@@ -97,8 +101,6 @@ const InfoPanel = ({ children, isVisible, setIsVisible }) => {
           <IconButton
             onClick={closeInfoPanel}
             iconName="/static/images/cross.react.svg"
-            size="12"
-            isFill={true}
             className="info-panel-button"
           />
         </StyledCloseButtonWrapper>
