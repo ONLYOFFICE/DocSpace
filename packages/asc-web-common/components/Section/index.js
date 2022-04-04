@@ -233,7 +233,7 @@ class Section extends React.Component {
                   }}
                 >
                   <SectionContainer widthProp={width} viewAs={viewAs}>
-                    {isSectionHeaderAvailable && (
+                    {isSectionHeaderAvailable && !isMobile && (
                       <SubSectionHeader
                         className="section-header_header"
                         isHeaderVisible={isHeaderVisible}

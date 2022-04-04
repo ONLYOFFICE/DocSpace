@@ -14,15 +14,33 @@ const StyledContainer = styled.div`
     min-width: 17px;
   }
 
-  height: 53px;
+  /* height: 53px;
 
   @media ${tablet} {
     height: 61px;
+  } */
+
+  @media ${tablet} {
+    width: 100%;
+    padding: ${(props) => (props.isDropBox ? "16px 0 5px" : "16px 0 0px")};
   }
+  ${isMobile &&
+  css`
+    width: 100%;
+    padding: ${(props) =>
+      props.isDropBox ? "16px 0 5px" : " 16px 0 0px"} !important;
+  `}
 
   @media ${mobile} {
     height: 53px;
   }
+
+  ${isMobileOnly &&
+  css`
+    width: 100% !important;
+    padding: ${(props) =>
+      props.isDropBox ? "18px 0 5px" : "18px 0 0"} !important;
+  `}
 `;
 
 export default StyledContainer;
