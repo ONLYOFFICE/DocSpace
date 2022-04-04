@@ -133,7 +133,7 @@ const PasswordStrength = (props) => {
         setShowReminder(false);
         toastr.success(t("SuccessfullySaveSettingsMessage"));
       })
-      .catch((e) => toastr.error(error));
+      .catch((e) => toastr.error(e));
   };
 
   const onCancelClick = () => {
