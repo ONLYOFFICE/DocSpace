@@ -14,12 +14,6 @@ const StyledContainer = styled.div`
     min-width: 17px;
   }
 
-  /* height: 53px;
-
-  @media ${tablet} {
-    height: 61px;
-  } */
-
   @media ${tablet} {
     width: 100%;
     padding: ${(props) => (props.isDropBox ? "16px 0 5px" : "16px 0 0px")};

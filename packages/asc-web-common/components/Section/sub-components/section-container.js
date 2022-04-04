@@ -38,8 +38,10 @@ const StyledSectionContainer = styled.section`
   display: flex;
   flex-direction: column;
 
-  width: calc(100vw - 256px);
-  max-width: calc(100vw - 256px);
+  width: ${(props) =>
+    props.infoPanelIsVisible ? "calc(100vw - 677px)" : "calc(100vw - 256px)"};
+  max-width: ${(props) =>
+    props.infoPanelIsVisible ? "calc(100vw - 677px)" : "calc(100vw - 256px)"};
 
   @media ${tablet} {
     width: ${(props) =>

@@ -18,7 +18,7 @@ import TableGroupMenu from "@appserver/components/table-container/TableGroupMenu
 import Navigation from "@appserver/common/components/Navigation";
 
 const StyledContainer = styled.div`
-  padding: 0 0 15px;
+  /* padding: 0 0 15px;
 
   @media ${tablet} {
     padding: 0 0 17px;
@@ -36,7 +36,7 @@ const StyledContainer = styled.div`
   ${isMobileOnly &&
   css`
     padding: 0 0 13px;
-  `}
+  `} */
 
   .table-container_group-menu {
     ${(props) =>

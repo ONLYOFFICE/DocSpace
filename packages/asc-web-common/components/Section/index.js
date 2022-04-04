@@ -224,6 +224,7 @@ class Section extends React.Component {
       setMaintenanceExist,
       snackbarExist,
       showText,
+      infoPanelIsVisible,
     } = this.props;
 
     let sectionHeaderContent = null;
@@ -302,6 +303,7 @@ class Section extends React.Component {
                     maintenanceExist={maintenanceExist}
                     isSectionBarAvailable={isSectionBarAvailable}
                     isSectionHeaderAvailable={isSectionHeaderAvailable}
+                    infoPanelIsVisible={infoPanelIsVisible}
                   >
                     {!isMobile && (
                       <StyledMainBar
@@ -327,6 +329,7 @@ class Section extends React.Component {
                         snackbarExist={snackbarExist}
                         className="section-header_header"
                         isHeaderVisible={isHeaderVisible}
+                        infoPanelIsVisible={infoPanelIsVisible}
                         viewAs={viewAs}
                         showText={showText}
                       >
@@ -384,6 +387,7 @@ class Section extends React.Component {
                               isHeaderVisible={isHeaderVisible}
                               viewAs={viewAs}
                               showText={showText}
+                              infoPanelIsVisible={infoPanelIsVisible}
                             >
                               {sectionHeaderContent
                                 ? sectionHeaderContent.props.children
@@ -543,7 +547,7 @@ Section.SectionFilter = SectionFilter;
 Section.SectionBody = SectionBody;
 Section.SectionPaging = SectionPaging;
 
-export default inject(({ auth }) => {
+export default inject(({ auth, infoPanelStore }) => {
   const { isLoaded, settingsStore } = auth;
   const {
     isHeaderVisible,
@@ -560,6 +564,9 @@ export default inject(({ auth }) => {
     showText,
   } = settingsStore;
 
+  let infoPanelIsVisible = false;
+  if (infoPanelStore) infoPanelIsVisible = infoPanelStore.isVisible;
+
   return {
     isLoaded,
     isTabletView,
@@ -573,5 +580,7 @@ export default inject(({ auth }) => {
     isDesktop: isDesktopClient,
 
     showText,
+
+    infoPanelIsVisible: infoPanelIsVisible,
   };
 })(observer(Section));
