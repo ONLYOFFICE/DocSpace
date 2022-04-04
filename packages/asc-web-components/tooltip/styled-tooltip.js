@@ -16,6 +16,7 @@ const StyledTooltip = styled.div`
     pointer-events: ${(props) => props.theme.tooltip.pointerEvents};
     max-width: ${(props) =>
       props.maxWidth ? props.maxWidth : props.theme.tooltip.maxWidth};
+    color: ${(props) => props.theme.tooltip.textColor} !important;
 
     p {
       color: ${(props) => props.theme.tooltip.textColor} !important;

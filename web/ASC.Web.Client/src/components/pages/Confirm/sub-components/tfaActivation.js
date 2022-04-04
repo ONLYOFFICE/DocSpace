@@ -17,15 +17,18 @@ import Link from "@appserver/components/link";
 
 const StyledForm = styled(Box)`
   margin: 63px auto auto 216px;
-  width: 570px;
+  width: 960px;
   display: flex;
   flex: 1fr 1fr;
-  gap: 50px;
+  gap: 80px;
   flex-direction: row;
 
   @media ${tablet} {
     margin: 120px auto;
     width: 480px;
+    flex: 1fr;
+    flex-direction: column;
+    gap: 32px;
   }
 
   @media ${mobile} {
@@ -33,17 +36,12 @@ const StyledForm = styled(Box)`
     width: 311px;
     flex: 1fr;
     flex-direction: column;
+    gap: 0px;
   }
 
   .app-code-wrapper {
     @media ${tablet} {
       flex-direction: column;
-    }
-  }
-
-  .app-code-continue-btn {
-    @media ${tablet} {
-      margin: 32px 0 0 0;
     }
   }
 
@@ -55,8 +53,16 @@ const StyledForm = styled(Box)`
     margin-top: 14px;
   }
 
-  @media ${tablet} {
-    #qrcode {
+  .qrcode-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 80px;
+    background: #f8f9f9;
+    border-radius: 6px;
+    margin-bottom: 32px;
+
+    @media ${mobile} {
       display: none;
     }
   }
@@ -144,7 +150,21 @@ const TfaActivationForm = withLoader((props) => {
                 </Trans>
               </Text>
             </Box>
-            <Box displayProp="flex" className="app-code-wrapper">
+          </div>
+          <div>
+            <Box
+              displayProp="flex"
+              flexDirection="column"
+              className="app-code-wrapper"
+            >
+              <div className="qrcode-wrapper">
+                <img
+                  src={qrCode}
+                  height="180px"
+                  width="180px"
+                  alt="QR-code"
+                ></img>
+              </div>
               <Box className="app-code-input">
                 <FieldContainer
                   labelVisible={false}
@@ -155,7 +175,7 @@ const TfaActivationForm = withLoader((props) => {
                     id="code"
                     name="code"
                     type="text"
-                    size={width <= 1024 ? "large" : "base"}
+                    size="large"
                     scale
                     isAutoFocussed
                     tabIndex={1}
@@ -172,11 +192,11 @@ const TfaActivationForm = withLoader((props) => {
                   />
                 </FieldContainer>
               </Box>
-              <Box className="app-code-continue-btn" marginProp="0 0 0 8px">
+              <Box className="app-code-continue-btn">
                 <Button
                   scale
                   primary
-                  size={width <= 1024 ? "medium" : "normal"}
+                  size="medium"
                   tabIndex={3}
                   label={
                     isLoading
@@ -189,9 +209,6 @@ const TfaActivationForm = withLoader((props) => {
                 />
               </Box>
             </Box>
-          </div>
-          <div id="qrcode">
-            <img src={qrCode} height="180px" width="180px" alt="QR-code"></img>
           </div>
         </StyledForm>
       </Section.SectionBody>
