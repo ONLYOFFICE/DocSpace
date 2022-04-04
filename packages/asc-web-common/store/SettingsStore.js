@@ -20,6 +20,9 @@ class SettingsStore {
   isLoading = false;
   isLoaded = false;
 
+  checkedMaintenance = false;
+  maintenanceExist = false;
+  snackbarExist = false;
   currentProductId = "";
   culture = "en";
   cultures = [];
@@ -77,6 +80,7 @@ class SettingsStore {
 
   showText = false;
   articleOpen = false;
+  isMobileArticle = false;
 
   folderPath = [];
 
@@ -144,6 +148,18 @@ class SettingsStore {
 
   setValue = (key, value) => {
     this[key] = value;
+  };
+
+  setCheckedMaintenance = (checkedMaintenance) => {
+    this.checkedMaintenance = checkedMaintenance;
+  };
+
+  setMaintenanceExist = (maintenanceExist) => {
+    this.maintenanceExist = maintenanceExist;
+  };
+
+  setSnackbarExist = (snackbar) => {
+    this.snackbarExist = snackbar;
   };
 
   setDefaultPage = (defaultPage) => {
@@ -382,6 +398,10 @@ class SettingsStore {
 
   toggleArticleOpen = () => {
     this.articleOpen = !this.articleOpen;
+  };
+
+  setIsMobileArticle = (isMobileArticle) => {
+    this.isMobileArticle = isMobileArticle;
   };
 
   get firebaseHelper() {

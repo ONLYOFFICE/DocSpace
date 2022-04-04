@@ -380,10 +380,14 @@ export function getTfaConfirmLink() {
   });
 }
 
-export function unlinkTfaApp() {
+export function unlinkTfaApp(id) {
+  const data = {
+    id,
+  };
   return request({
     method: "put",
     url: "/settings/tfaappnewapp",
+    data,
   });
 }
 
@@ -406,6 +410,7 @@ export function validateTfaCode(code) {
   return request({
     method: "post",
     url: "/settings/tfaapp/validate",
+    skipLogout: true,
     data,
   });
 }

@@ -20,19 +20,49 @@ const StyledArticle = styled.article`
   overflow: hidden;
   background: ${(props) => props.theme.catalog.background};
 
+  min-width: 256px;
+  max-width: 256px;
+
+  @media ${tablet} {
+    min-width: ${(props) => (props.showText ? "240px" : "52px")};
+    max-width: ${(props) => (props.showText ? "240px" : "52px")};
+  }
+
+  ${isMobile &&
+  css`
+    min-width: ${(props) => (props.showText ? "240px" : "52px")};
+    max-width: ${(props) => (props.showText ? "240px" : "52px")};
+  `}
+
+  @media ${mobile} {
+    display: ${(props) => (props.articleOpen ? "flex" : "none")};
+    min-width: 100vw;
+    width: 100vw;
+    height: calc(100vh - 64px) !important;
+    margin: 0;
+    padding: 0;
+    padding-bottom: 0px;
+  }
+
+  ${isMobileOnly &&
+  css`
+    display: ${(props) => (props.articleOpen ? "flex" : "none")} !important;
+    min-width: 100vw !important;
+    width: 100vw;
+    position: fixed;
+    margin-top: 64px !important;
+    height: calc(100vh - 64px) !important;
+    margin: 0;
+    padding: 0;
+    padding-bottom: 0px;
+  `}
+
   @media ${mobile} {
     position: fixed;
     margin-top: 16px;
     height: calc(100vh - 64px) !important;
     z-index: 400;
   }
-
-  ${isMobileOnly &&
-  css`
-    position: fixed;
-    margin-top: 64px !important;
-    height: calc(100vh - 64px) !important;
-  `}
 
   z-index: ${(props) =>
     props.showText && (isMobileOnly || isMobileUtils()) ? "205" : "100"};
@@ -75,7 +105,7 @@ const StyledArticle = styled.article`
       padding-bottom: 0px;
     }
 
-    ${isTablet &&
+    ${isMobile &&
     css`
       min-width: ${(props) => (props.showText ? "240px" : "52px")};
       max-width: ${(props) => (props.showText ? "240px" : "52px")};

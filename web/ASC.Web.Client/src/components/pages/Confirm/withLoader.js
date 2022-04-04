@@ -24,7 +24,9 @@ export default function withLoader(WrappedComponent) {
 
     useEffect(() => {
       if (
-        (type === "PasswordChange" || type === "LinkInvite") &&
+        (type === "PasswordChange" ||
+          type === "LinkInvite" ||
+          type === "Activation") &&
         !passwordSettings
       ) {
         axios
@@ -41,7 +43,9 @@ export default function withLoader(WrappedComponent) {
     const isLoaded =
       type === "TfaActivation" || type === "TfaAuth"
         ? props.isLoaded
-        : type === "PasswordChange" || type === "LinkInvite"
+        : type === "PasswordChange" ||
+          type === "LinkInvite" ||
+          type === "Activation"
         ? !!passwordSettings
         : true;
 
