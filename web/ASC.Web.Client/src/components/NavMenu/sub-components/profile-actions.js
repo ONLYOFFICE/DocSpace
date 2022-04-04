@@ -6,17 +6,12 @@ import DropDownItem from "@appserver/components/drop-down-item";
 import Link from "@appserver/components/link";
 import ProfileMenu from "./profile-menu";
 import api from "@appserver/common/api";
-import { mobile } from "@appserver/components/utils/device";
-import { isMobileOnly } from "react-device-detect";
+
 import ToggleButton from "@appserver/components/toggle-button";
 
 const StyledDiv = styled.div`
   width: 32px;
   height: 32px;
-  @media ${mobile} {
-    display: ${(props) => (props.isProduct ? "none !important" : "block")};
-  }
-  display: ${(props) => (props.isProduct && isMobileOnly ? "none" : "block")};
 `;
 
 const StyledDropdownItem = styled(DropDownItem)`
