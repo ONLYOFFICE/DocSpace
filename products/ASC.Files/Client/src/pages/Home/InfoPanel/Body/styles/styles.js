@@ -69,13 +69,13 @@ const StyledThumbnail = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  //width: calc(100% - 10px);
   height: auto;
-  border: ${(props) => `solid 1px ${props.theme.infoPanel.borderColor}`};
-  border-radius: 6px;
   img {
+    border: ${(props) => `solid 1px ${props.theme.infoPanel.borderColor}`};
     border-radius: 6px;
-    width: 100%;
+    //width: 100%;
+    width: auto;
+    max-width: 100%;
     height: auto;
   }
 `;

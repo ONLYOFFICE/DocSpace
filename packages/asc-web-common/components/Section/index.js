@@ -40,8 +40,13 @@ const StyledMainBar = styled.div`
   box-sizing: border-box;
 
   margin-left: -20px;
-  width: calc(100vw - 256px);
-  max-width: calc(100vw - 256px);
+  /* width: calc(100vw - 256px);
+  max-width: calc(100vw - 256px); */
+
+  width: ${(props) =>
+    props.infoPanelIsVisible ? "calc(100vw - 657px)" : "calc(100vw - 256px)"};
+  max-width: ${(props) =>
+    props.infoPanelIsVisible ? "calc(100vw - 657px)" : "calc(100vw - 256px)"};
 
   #bar-banner {
     margin-bottom: -3px;
@@ -312,6 +317,7 @@ class Section extends React.Component {
                         className={"main-bar"}
                         showText={showText}
                         isSectionHeaderAvailable={isSectionHeaderAvailable}
+                        infoPanelIsVisible={infoPanelIsVisible}
                       >
                         <SubSectionBar
                           setMaintenanceExist={setMaintenanceExist}
@@ -370,6 +376,7 @@ class Section extends React.Component {
                               isSectionHeaderAvailable={
                                 isSectionHeaderAvailable
                               }
+                              infoPanelIsVisible={infoPanelIsVisible}
                             >
                               <SubSectionBar
                                 setMaintenanceExist={setMaintenanceExist}
