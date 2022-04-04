@@ -173,11 +173,14 @@ const PasswordStrength = (props) => {
           min="8"
           max="30"
           step="1"
+          withPouring={true}
           value={passwordLen}
           onChange={onSliderChange}
         />
         <Text>
-          {passwordLen} {t("Characters")}
+          {t("Characters", {
+            length: passwordLen,
+          })}
         </Text>
       </Box>
 

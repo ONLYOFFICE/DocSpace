@@ -30,7 +30,7 @@
   "ClearBackupList": "Delete all backups",
   "ChangeLogoButton": "Change Logo",
   "ChangeOwner": "Change portal owner",
-  "Characters": "characters",
+  "Characters": "{{length}} characters",
   "ChooseOwner": "Choose owner",
   "CompanyNameForCanvasLogo": "Company name",
   "ConfirmEmailSended": "Confirmation e-mail has been sent to {{ownerName}}",
