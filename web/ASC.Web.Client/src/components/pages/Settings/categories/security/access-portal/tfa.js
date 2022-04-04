@@ -22,8 +22,11 @@ const MainContainer = styled.div`
   }
 
   .box {
-    margin-top: 20px;
     margin-bottom: 24px;
+  }
+
+  .learn-more {
+    margin-bottom: 20px;
   }
 `;
 
@@ -96,16 +99,17 @@ const TwoFactorAuth = (props) => {
   return (
     <MainContainer>
       {isMobile && (
-        <>
+        <div className="learn-more">
           <Text className="page-subtitle">{t("TwoFactorAuthHelper")}</Text>
           <Link
-            className="learn-more"
+            color="#316DAA"
             target="_blank"
+            isHovered
             href={`https://helpcenter.onlyoffice.com/${lng}/administration/two-factor-authentication.aspx`}
           >
             {t("Common:LearnMore")}
           </Link>
-        </>
+        </div>
       )}
 
       <RadioButtonGroup

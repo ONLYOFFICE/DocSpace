@@ -38,10 +38,8 @@ const MainContainer = styled.div`
     margin-bottom: 24px;
   }
 
-  @media (max-width: 375px) {
-    .length-subtitle {
-      margin-top: 20px;
-    }
+  .learn-more {
+    margin-bottom: 20px;
   }
 `;
 
@@ -150,18 +148,19 @@ const PasswordStrength = (props) => {
   return (
     <MainContainer>
       {isMobile && (
-        <>
+        <div className="learn-more">
           <Text className="page-subtitle">
             {t("SettingPasswordStrengthHelper")}
           </Text>
           <Link
-            className="learn-more"
+            color="#316DAA"
             target="_blank"
+            isHovered
             href={`https://helpcenter.onlyoffice.com/${lng}/administration/configuration.aspx#ChangingSecuritySettings_block`}
           >
             {t("Common:LearnMore")}
           </Link>
-        </>
+        </div>
       )}
 
       <Text fontSize="14px" fontWeight="600" className="length-subtitle">
