@@ -8,6 +8,7 @@ import ProfileMenu from "./profile-menu";
 import api from "@appserver/common/api";
 import { mobile } from "@appserver/components/utils/device";
 import { isMobileOnly } from "react-device-detect";
+import ToggleButton from "@appserver/components/toggle-button";
 
 const StyledDiv = styled.div`
   width: 32px;
@@ -17,6 +18,18 @@ const StyledDiv = styled.div`
   }
   display: ${(props) => (props.isProduct && isMobileOnly ? "none" : "block")};
 `;
+
+const StyledDropdownItem = styled(DropDownItem)`
+  justify-content: space-between;
+
+  .toggle-button {
+    position: relative;
+    align-items: center;
+
+    grid-gap: 0px;
+  }
+`;
+
 class ProfileActions extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -119,18 +132,26 @@ class ProfileActions extends React.PureComponent {
           forwardedRef={this.ref}
         >
           <div style={{ paddingTop: "8px" }}>
-            {this.props.userActions.map(
-              (action) =>
-                action && (
-                  <Link
-                    noHover={true}
-                    key={action.key}
-                    href={action.url}
-                    onClick={this.onClickItemLink}
-                  >
-                    <DropDownItem {...action} />
-                  </Link>
-                )
+            {this.props.userActions.map((action) =>
+              action && !action?.withToggle ? (
+                <Link
+                  noHover={true}
+                  key={action.key}
+                  href={action.url}
+                  onClick={this.onClickItemLink}
+                >
+                  <DropDownItem {...action} />
+                </Link>
+              ) : (
+                <StyledDropdownItem noHover={true} key={action.key}>
+                  {action.label}
+                  <ToggleButton
+                    className="toggle-button"
+                    onChange={action.onClick}
+                    isChecked={action.isChecked}
+                  />
+                </StyledDropdownItem>
+              )
             )}
           </div>
         </ProfileMenu>

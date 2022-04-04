@@ -75,6 +75,7 @@ const HeaderNav = ({
   toggleArticleOpen,
 
   changeTheme,
+  isDarkMode,
 }) => {
   const { t } = useTranslation(["NavMenu", "Common", "About"]);
   const [visibleAboutDialog, setVisibleAboutDialog] = useState(false);
@@ -147,8 +148,11 @@ const HeaderNav = ({
         }),
       },
       {
-        key: "ChangeTheme",
-        ...(!isPersonal && { label: "Change theme", onClick: changeTheme }),
+        key: "DarkMode",
+        label: t("Common:DarkMode"),
+        onClick: changeTheme,
+        withToggle: true,
+        isChecked: isDarkMode,
       },
       {
         key: "AboutBtn",
@@ -172,7 +176,7 @@ const HeaderNav = ({
     }
 
     return actions;
-  }, [onProfileClick, onAboutClick, onLogoutClick]);
+  }, [onProfileClick, onAboutClick, onLogoutClick, isDarkMode]);
   //console.log("HeaderNav render");
   return (
     <StyledNav className="profileMenuIcon hidingHeader">
@@ -243,11 +247,14 @@ export default withRouter(
       toggleArticleOpen,
       buildVersionInfo,
       debugInfo,
+      theme,
       changeTheme,
     } = settingsStore;
     const { user, userIsUpdate, setUserIsUpdate } = userStore;
     const modules = auth.availableModules;
     const settingsModule = modules.find((module) => module.id === "settings");
+
+    const isDarkMode = !theme.isBase;
 
     return {
       isPersonal,
@@ -268,6 +275,7 @@ export default withRouter(
       debugInfo,
       settingsModule,
       changeTheme,
+      isDarkMode,
     };
   })(observer(HeaderNav))
 );
