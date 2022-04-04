@@ -15,6 +15,7 @@ import {
   getEditDiff,
   getEditHistory,
   updateFile,
+  checkFillFormDraft,
 } from "@appserver/common/api/files";
 
 import { EditorWrapper } from "./StyledEditor";
@@ -69,15 +70,12 @@ let docTitle = null;
 let docEditor;
 
 function Editor({
-  fileInfo,
   config,
   personal,
   successAuth,
   isSharingAccess,
   user,
-  url,
   doc,
-  fileId,
   actionLink,
   error,
   needLoader,
@@ -95,9 +93,17 @@ function Editor({
   isFolderDialogVisible,
   isDesktopEditor,
   initDesktop,
+  view,
+  ...rest
 }) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [documentTitle, setNewDocumentTitle] = useState("Loading...");
+
+  const [fileInfo, setFileInfo] = useState(rest.fileInfo);
+  const [url, setUrl] = useState(rest.url);
+  const [fileId, setFileId] = useState(rest.fileId);
+  const [version, setVersion] = useState(rest.version);
+
   const { t } = useTranslation(["Editor", "Common"]);
 
   useEffect(() => {
@@ -109,7 +115,7 @@ function Editor({
     }
   }, []);
 
-  useEffect(() => {
+  useEffect(async () => {
     console.log("useEffect config", config);
     if (config) {
       document.getElementById("scripDocServiceAddress").onload = onLoad();
@@ -118,6 +124,27 @@ function Editor({
       if (isIOS && deviceType === "tablet") {
         const vh = window.innerHeight * 0.01;
         document.documentElement.style.setProperty("--vh", `${vh}px`);
+      }
+
+      if (
+        !view &&
+        fileInfo &&
+        fileInfo.canWebRestrictedEditing &&
+        fileInfo.canFillForms &&
+        !fileInfo.canEdit
+      ) {
+        try {
+          const formUrl = await checkFillFormDraft(fileId);
+          history.pushState({}, null, formUrl);
+
+          document.location.reload();
+        } catch (err) {
+          console.error(err);
+        }
+      }
+
+      if (view) {
+        config.editorConfig.mode = "view";
       }
     }
   }, []);
@@ -130,46 +157,47 @@ function Editor({
     }
   }, [isDesktopEditor]);
 
-  // useEffect(async () => {
-  //   try {
-  //     if (
-  //       url.indexOf("#message/") > -1 &&
-  //       fileInfo &&
-  //       fileInfo?.fileExst &&
-  //       canConvert(fileInfo.fileExst)
-  //     ) {
-  //       const result = await convertDocumentUrl();
+  useEffect(async () => {
+    try {
+      if (
+        successAuth &&
+        url.indexOf("#message/") > -1 &&
+        fileInfo &&
+        fileInfo?.fileExst &&
+        canConvert(fileInfo.fileExst)
+      ) {
+        const result = await convertDocumentUrl();
 
-  //       const splitUrl = url.split("#message/");
+        const splitUrl = url.split("#message/");
 
-  //       if (result) {
-  //         const newUrl = `${result.webUrl}#message/${splitUrl[1]}`;
+        if (result) {
+          const newUrl = `${result.webUrl}#message/${splitUrl[1]}`;
 
-  //         history.pushState({}, null, newUrl);
+          history.pushState({}, null, newUrl);
 
-  //         // fileInfo = result;
-  //         // url = newUrl;
-  //         // fileId = result.id;
-  //         // version = result.version;
-  //       }
-  //     }
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // }, [url, fileInfo?.fileExst]);
+          setFileInfo(result);
+          setUrl(newUrl);
+          setFileId(fileId);
+          setVersion(version);
+        }
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }, [url, fileInfo?.fileExst]);
 
   const getDefaultFileName = (format) => {
     switch (format) {
       case "docx":
-        return 't("NewDocument")';
+        return t("NewDocument");
       case "xlsx":
-        return 't("NewSpreadsheet")';
+        return t("NewSpreadsheet");
       case "pptx":
-        return 't("NewPresentation")';
+        return t("NewPresentation");
       case "docxf":
-        return 't("NewMasterForm")';
+        return t("NewMasterForm");
       default:
-        return 't("NewFolder")';
+        return t("NewFolder");
     }
   };
 
@@ -186,10 +214,12 @@ function Editor({
     if (index) {
       let convertUrl = url.substring(0, index);
 
-      // if (canConvert(fileInfo.fileExst)) {
-      //   convertUrl = await convertDocumentUrl();
-      // } // TODO: need move can canConvert from docsevicestore
-
+      if (canConvert(fileInfo.fileExst)) {
+        const newUrl = await convertDocumentUrl();
+        if (newUrl) {
+          convertUrl = newUrl.webUrl;
+        }
+      }
       history.pushState({}, null, convertUrl);
       document.location.reload();
     }
@@ -379,11 +409,11 @@ function Editor({
     }
     document.title = title;
     setNewDocumentTitle(title);
-  }; //+++
+  };
 
   const changeTitle = () => {
     docSaved ? setDocumentTitle(docTitle) : setDocumentTitle(`*${docTitle}`);
-  }; // +++
+  };
 
   const onDocumentStateChange = (event) => {
     if (!documentIsReady) return;

@@ -6,11 +6,8 @@ import { AppServerConfig } from "@appserver/common/constants";
 import {
   getDocServiceUrl,
   getFileInfo,
-  checkFillFormDraft,
   openEdit,
   convertFile,
-  setEncryptionKeys,
-  getEncryptionAccess,
 } from "@appserver/common/api/files";
 
 import pkg from "../../package.json";
@@ -78,25 +75,6 @@ export const initDocEditor = async (req) => {
       getFileInfo(fileId),
     ]);
 
-    let formUrl;
-
-    if (
-      !view &&
-      fileInfo &&
-      fileInfo.canWebRestrictedEditing &&
-      fileInfo.canFillForms &&
-      !fileInfo.canEdit
-    ) {
-      try {
-        formUrl = await checkFillFormDraft(fileId);
-        // TODO: move to hook?
-        // history.pushState({}, null, formUrl);
-        //   url = window.location.href;
-      } catch (err) {
-        error = err;
-      }
-    }
-
     const isSharingAccess = fileInfo && fileInfo.canShare;
 
     if (view) {
@@ -119,6 +97,7 @@ export const initDocEditor = async (req) => {
         url,
         doc,
         fileId,
+        view,
       },
     };
   } catch (err) {
