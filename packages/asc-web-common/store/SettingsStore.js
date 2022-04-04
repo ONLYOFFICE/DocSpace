@@ -49,7 +49,7 @@ class SettingsStore {
   enabledJoin = false;
   urlLicense = "https://gnu.org/licenses/gpl-3.0.html";
   urlSupport = "https://helpdesk.onlyoffice.com/";
-  urlOforms = "https://oforms.onlyoffice.com/data/def.json";
+  urlOforms = "https://oforms.onlyoffice.com/data/reqdata.json";
   logoUrl = combineUrl(proxyURL, "/static/images/nav.logo.opened.react.svg");
   customNames = {
     id: "Common",

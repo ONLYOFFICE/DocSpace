@@ -38,29 +38,23 @@ class Tile extends React.PureComponent {
   };
 
   getIconFile = () => {
-    const { thumbnailClick, item, temporaryIcon } = this.props;
+    const { thumbnailClick, item } = this.props;
 
-    //const src = item.file_image;
-    const src = temporaryIcon;
-    //const svgLoader = () => <div style={{ width: "96px" }} />;
+    //const src = item.attributes.card_prewiew.data.attributes.formats.thumbnail.url;
+    const src = item.attributes.card_prewiew.data.attributes.url;
+    const svgLoader = () => <div style={{ width: "96px" }} />;
 
-    return (
-      <ReactSVG
-        className="temporary-icon"
-        src={src} /* loading={svgLoader} */
-      />
-    );
-
-    return (
+    return src ? (
       <Link type="page" onClick={thumbnailClick}>
         <img
           src={src}
-          //className="thumbnail-image"
-          className="temporary-icon"
+          className="thumbnail-image"
           alt="Thumbnail-img"
           onError={this.onError}
         />
       </Link>
+    ) : (
+      <ReactSVG className="temporary-icon" src={src} loading={svgLoader} />
     );
   };
 

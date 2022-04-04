@@ -150,7 +150,7 @@ const ArticleMainButtonContent = (props) => {
                   className: "main-button_drop-down_sub",
                   label: t("Common:OFORMsGallery"),
                   onClick: onShowGallery,
-                  disabled: isPrivacy, //TODO: OFORM
+                  disabled: isPrivacy,
                   key: "form-gallery",
                 },
               ],
@@ -178,7 +178,7 @@ const ArticleMainButtonContent = (props) => {
               icon: "images/form.react.svg",
               label: t("Common:OFORMsGallery"),
               onClick: onShowGallery,
-              disabled: isPrivacy, //TODO: OFORM
+              disabled: isPrivacy,
               key: "form-gallery",
             },
           ];

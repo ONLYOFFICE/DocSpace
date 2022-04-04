@@ -10,7 +10,6 @@ const FileTile = (props) => {
   const { fileExst, title } = item;
 
   const src = getIcon(32, ".docxf");
-  const temporaryIcon = getIcon(96, ".oform");
 
   const { thumbnailUrl } = item;
   const element = <img className="react-svg-icon" src={src} />;
@@ -22,7 +21,6 @@ const FileTile = (props) => {
         item={item}
         thumbnail={thumbnailUrl}
         element={element}
-        temporaryIcon={temporaryIcon}
         isSelected={isSelected}
         setGallerySelected={setGallerySelected}
       >
@@ -38,11 +36,11 @@ const FileTile = (props) => {
             fontWeight="600"
             fontSize={isDesktop ? "13px" : "14px"}
             target="_blank"
-            //{...linkStyles} //TODO
+            //{...linkStyles} //TODO: OFORM
             //color={theme.filesSection.tilesView.color}
             isTextOverflow
           >
-            {item.name}
+            {item.attributes.name_form}
           </Link>
         </SimpleFilesTileContent>
       </Tile>

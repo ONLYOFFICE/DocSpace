@@ -298,20 +298,15 @@ class FilesStore {
   };
 
   getOforms = async () => {
-    const { getOforms, culture } = this.settingsStore;
-    console.log("culture", culture);
+    const { culture, getOforms } = this.settingsStore;
+
     //const oformData = await getOforms();
-    const oformData = OFORMsGallery;
+    const oformData = OFORMsGallery.data;
+    console.log("oformData", oformData);
 
-    this.oformFiles = oformData.filter((f) =>
-      f["file_country_access"].includes("US")
-    ); //TODO oformCulture
-
-    //   const split = culture.split("-");
-    //   const oformCulture = split[1] ? split[1] : split[0].toUpperCase();
-    //   const oformData = jsonFile.filter(
-    //     (f) => f["file_country_access"].includes("US") //TODO oformCulture
-    //   );
+    this.oformFiles = oformData.filter(
+      (f) => f["attributes"]["locale"] === culture
+    );
   };
 
   get hasGalleryFiles() {
