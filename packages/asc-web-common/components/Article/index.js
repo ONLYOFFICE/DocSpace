@@ -30,6 +30,7 @@ const Article = ({
   articleOpen,
   toggleShowText,
   toggleArticleOpen,
+  setIsMobileArticle,
   children,
   ...rest
 }) => {
@@ -39,8 +40,6 @@ const Article = ({
     setArticleMainButtonContent,
   ] = React.useState(null);
   const [articleBodyContent, setArticleBodyContent] = React.useState(null);
-
-  const refTimer = React.useRef(null);
 
   React.useEffect(() => {
     if (isMobileOnly) {
@@ -80,24 +79,30 @@ const Article = ({
   }, [children]);
 
   const sizeChangeHandler = React.useCallback(() => {
-    clearTimeout(refTimer.current);
+    if (isMobileOnly || isMobileUtils() || window.innerWidth === 375) {
+      setShowText(true);
+      setIsMobileArticle(true);
+    }
+    if (
+      ((isTabletUtils() && window.innerWidth !== 375) || isMobile) &&
+      !isMobileOnly
+    ) {
+      setShowText(false);
+      setIsMobileArticle(true);
+    }
+    if (isDesktopUtils() && !isMobile) {
+      setShowText(true);
+      setIsMobileArticle(false);
+    }
+  }, [setShowText, setIsMobileArticle]);
 
-    refTimer.current = setTimeout(() => {
-      if (isMobileOnly || isMobileUtils() || window.innerWidth === 375)
-        setShowText(true);
-      if (
-        ((isTabletUtils() && window.innerWidth !== 375) || isMobile) &&
-        !isMobileOnly
-      )
-        setShowText(false);
-      if (isDesktopUtils() && !isMobile) setShowText(true);
-    }, 100);
-  }, [refTimer.current, setShowText]);
-
-  const hideText = React.useCallback((event) => {
-    event.preventDefault;
-    setShowText(false);
-  }, []);
+  const hideText = React.useCallback(
+    (event) => {
+      event.preventDefault;
+      setShowText(false);
+    },
+    [setShowText]
+  );
 
   return (
     <>
@@ -142,6 +147,7 @@ Article.propTypes = {
   setShowText: PropTypes.func,
   articleOpen: PropTypes.bool,
   toggleArticleOpen: PropTypes.func,
+  setIsMobileArticle: PropTypes.func,
   children: PropTypes.any,
 };
 
@@ -167,6 +173,7 @@ export default inject(({ auth }) => {
     showText,
     setShowText,
     articleOpen,
+    setIsMobileArticle,
     toggleShowText,
     toggleArticleOpen,
   } = settingsStore;
@@ -175,6 +182,7 @@ export default inject(({ auth }) => {
     showText,
     setShowText,
     articleOpen,
+    setIsMobileArticle,
     toggleShowText,
     toggleArticleOpen,
   };
