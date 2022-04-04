@@ -32,41 +32,28 @@ const StyledAddWrapper = styled.div`
 `;
 
 const UserFields = (props) => {
-  const { t, className } = props;
-  const [inputs, setInputs] = useState([]);
-
-  const onClickAdd = () => {
-    setInputs([...inputs, { key: inputs.length.toString(), value: "" }]);
-  };
-
-  const onChangeInput = (e) => {
-    const index = inputs.findIndex((el) => el.key === e.target.id);
-    let newInputs = Array.from(inputs);
-    newInputs[index].value = e.target.value;
-    setInputs(newInputs);
-  };
-
-  const onDeleteInput = (key) => {
-    const index = inputs.findIndex((el) => el.key === key);
-    let newInputs = Array.from(inputs);
-    newInputs.splice(index, 1);
-    setInputs(newInputs);
-  };
+  const {
+    className,
+    buttonLabel,
+    onChangeInput,
+    onDeleteInput,
+    onClickAdd,
+    inputs,
+  } = props;
 
   return (
     <div className={className}>
       {inputs ? (
-        inputs.map((input) => {
+        inputs.map((input, index) => {
           return (
-            <StyledInputWrapper key={input.key}>
+            <StyledInputWrapper key={`domain-input-${index}`}>
               <TextInput
-                id={input.key}
-                value={input.value}
-                onChange={onChangeInput}
+                value={input}
+                onChange={(e) => onChangeInput(e, index)}
               />
               <StyledTrashIcon
                 size="medium"
-                onClick={() => onDeleteInput(input.key)}
+                onClick={() => onDeleteInput(index)}
               />
             </StyledInputWrapper>
           );
@@ -78,7 +65,7 @@ const UserFields = (props) => {
       <StyledAddWrapper onClick={onClickAdd}>
         <StyledPlusIcon size="small" />
         <Link type="action" isHovered={true}>
-          {t("AddTrustedDomain")}
+          {buttonLabel}
         </Link>
       </StyledAddWrapper>
     </div>

@@ -41,10 +41,12 @@ const TrustedMail = (props) => {
   } = props;
 
   const [type, setType] = useState("0");
+  const [domains, setDomains] = useState([]);
   const [showReminder, setShowReminder] = useState(false);
 
   const getSettings = async () => {
     setType(String(trustedDomainsType));
+    setDomains(trustedDomains);
   };
 
   useEffect(() => {
@@ -58,10 +60,28 @@ const TrustedMail = (props) => {
     }
   };
 
+  const onClickAdd = () => {
+    setDomains([...domains, ""]);
+    setShowReminder(true);
+  };
+
+  const onChangeInput = (e, index) => {
+    let newInputs = Array.from(domains);
+    newInputs[index] = e.target.value;
+    setDomains(newInputs);
+  };
+
+  const onDeleteInput = (index) => {
+    let newInputs = Array.from(domains);
+    newInputs.splice(index, 1);
+    setDomains(newInputs);
+    setShowReminder(true);
+  };
+
   const onSaveClick = () => {
     const data = {
       type: Number(type),
-      domains: [],
+      domains: domains,
       inviteUsersAsVisitors: true,
     };
     setMailDomainSettings(data);
@@ -112,7 +132,16 @@ const TrustedMail = (props) => {
         onClick={onSelectDomainType}
       />
 
-      {type === "1" && <UserFields t={t} className="user-fields" />}
+      {type === "1" && (
+        <UserFields
+          className="user-fields"
+          inputs={domains}
+          buttonLabel={t("AddTrustedDomain")}
+          onChangeInput={onChangeInput}
+          onDeleteInput={onDeleteInput}
+          onClickAdd={onClickAdd}
+        />
+      )}
 
       <Text
         color="#F21C0E"
