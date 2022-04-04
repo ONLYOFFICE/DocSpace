@@ -30,6 +30,7 @@ const Article = ({
   articleOpen,
   toggleShowText,
   toggleArticleOpen,
+  setIsMobileArticle,
   children,
   ...rest
 }) => {
@@ -78,20 +79,30 @@ const Article = ({
   }, [children]);
 
   const sizeChangeHandler = React.useCallback(() => {
-    if (isMobileOnly || isMobileUtils() || window.innerWidth === 375)
+    if (isMobileOnly || isMobileUtils() || window.innerWidth === 375) {
       setShowText(true);
+      setIsMobileArticle(true);
+    }
     if (
       ((isTabletUtils() && window.innerWidth !== 375) || isMobile) &&
       !isMobileOnly
-    )
+    ) {
       setShowText(false);
-    if (isDesktopUtils() && !isMobile) setShowText(true);
-  }, [setShowText]);
+      setIsMobileArticle(true);
+    }
+    if (isDesktopUtils() && !isMobile) {
+      setShowText(true);
+      setIsMobileArticle(false);
+    }
+  }, [setShowText, setIsMobileArticle]);
 
-  const hideText = React.useCallback((event) => {
-    event.preventDefault;
-    setShowText(false);
-  }, []);
+  const hideText = React.useCallback(
+    (event) => {
+      event.preventDefault;
+      setShowText(false);
+    },
+    [setShowText]
+  );
 
   return (
     <>
@@ -136,6 +147,7 @@ Article.propTypes = {
   setShowText: PropTypes.func,
   articleOpen: PropTypes.bool,
   toggleArticleOpen: PropTypes.func,
+  setIsMobileArticle: PropTypes.func,
   children: PropTypes.any,
 };
 
@@ -161,6 +173,7 @@ export default inject(({ auth }) => {
     showText,
     setShowText,
     articleOpen,
+    setIsMobileArticle,
     toggleShowText,
     toggleArticleOpen,
   } = settingsStore;
@@ -169,6 +182,7 @@ export default inject(({ auth }) => {
     showText,
     setShowText,
     articleOpen,
+    setIsMobileArticle,
     toggleShowText,
     toggleArticleOpen,
   };
