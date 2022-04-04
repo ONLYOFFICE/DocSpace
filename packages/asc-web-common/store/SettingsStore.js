@@ -31,7 +31,6 @@ class SettingsStore {
     : Base;
   trustedDomains = [];
   trustedDomainsType = 0;
-  trustedDomains = [];
   timezone = "UTC";
   timezones = [];
   utcOffset = "00:00:00";
