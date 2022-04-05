@@ -301,10 +301,14 @@ class WhiteLabel extends React.Component {
       isCanvasProcessing,
     } = this.state;
     console.log("WhiteLabelSettings render");
+
+    return <> В разработке</>;
+
     return !isLoadedData ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
       <>
+        В разработке
         <StyledComponent>
           <div className="settings-block">
             <Text fontSize="16px">{t("LogoSettings")}</Text>
