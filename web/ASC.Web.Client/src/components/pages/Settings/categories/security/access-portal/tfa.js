@@ -33,15 +33,13 @@ const TwoFactorAuth = (props) => {
   const [showReminder, setShowReminder] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const getSettings = async () => {
-    const { getTfaType, getTfaSettings } = props;
-    const type = await getTfaType();
-    setType(type);
-    setCurrentState(type);
+  const getSettings = () => {
+    const { tfaSettings, smsAvailable, appAvailable } = props;
 
-    const settings = await getTfaSettings();
-    setSmsDisabled(settings[0].avaliable);
-    setAppDisabled(settings[1].avaliable);
+    setType(tfaSettings);
+    setCurrentState(tfaSettings);
+    setSmsDisabled(smsAvailable);
+    setAppDisabled(appAvailable);
     setIsLoading(true);
   };
 
@@ -142,20 +140,20 @@ const TwoFactorAuth = (props) => {
 };
 
 export default inject(({ auth }) => {
-  const { organizationName } = auth.settingsStore;
   const {
-    getTfaType,
-    getTfaSettings,
     setTfaSettings,
     getTfaConfirmLink,
+    tfaSettings,
+    smsAvailable,
+    appAvailable,
   } = auth.tfaStore;
 
   return {
-    organizationName,
-    getTfaType,
-    getTfaSettings,
     setTfaSettings,
     getTfaConfirmLink,
+    tfaSettings,
+    smsAvailable,
+    appAvailable,
   };
 })(
   withTranslation(["Settings", "Common"])(withRouter(observer(TwoFactorAuth)))
