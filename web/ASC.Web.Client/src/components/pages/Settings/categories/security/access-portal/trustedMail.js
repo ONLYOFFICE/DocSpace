@@ -12,6 +12,8 @@ import toastr from "@appserver/components/toast/toastr";
 import UserFields from "../sub-components/user-fields";
 import Buttons from "../sub-components/buttons";
 import { size } from "@appserver/components/utils/device";
+import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
+import isEqual from "lodash/isEqual";
 
 const MainContainer = styled.div`
   width: 100%;
@@ -47,8 +49,25 @@ const TrustedMail = (props) => {
   const [showReminder, setShowReminder] = useState(false);
 
   const getSettings = async () => {
-    setType(String(trustedDomainsType));
-    setDomains(trustedDomains);
+    const currentSettings = getFromSessionStorage("currentTrustedMailSettings");
+
+    if (currentSettings) {
+      setType(currentSettings.type);
+      setDomains(currentSettings.domains);
+    } else {
+      setType(String(trustedDomainsType));
+      setDomains(trustedDomains);
+    }
+
+    const defaultSettings = getFromSessionStorage("defaultTrustedMailSettings");
+    const defaultData = {
+      type: String(trustedDomainsType),
+      domains: trustedDomains,
+    };
+    saveToSessionStorage(
+      "defaultTrustedMailSettings",
+      defaultSettings || defaultData
+    );
   };
 
   useEffect(() => {
@@ -57,6 +76,21 @@ const TrustedMail = (props) => {
     window.addEventListener("resize", checkWidth);
     return () => window.removeEventListener("resize", checkWidth);
   }, []);
+
+  useEffect(() => {
+    const defaultSettings = getFromSessionStorage("defaultTrustedMailSettings");
+    const newSettings = {
+      type: type,
+      domains: domains,
+    };
+    saveToSessionStorage("currentTrustedMailSettings", newSettings);
+
+    if (isEqual(defaultSettings, newSettings)) {
+      setShowReminder(false);
+    } else {
+      setShowReminder(true);
+    }
+  }, [type, domains]);
 
   const checkWidth = () => {
     window.innerWidth > size.smallTablet &&
@@ -67,13 +101,11 @@ const TrustedMail = (props) => {
   const onSelectDomainType = (e) => {
     if (type !== e.target.value) {
       setType(e.target.value);
-      setShowReminder(true);
     }
   };
 
   const onClickAdd = () => {
     setDomains([...domains, ""]);
-    setShowReminder(true);
   };
 
   const onChangeInput = (e, index) => {
@@ -86,7 +118,6 @@ const TrustedMail = (props) => {
     let newInputs = Array.from(domains);
     newInputs.splice(index, 1);
     setDomains(newInputs);
-    setShowReminder(true);
   };
 
   const onSaveClick = () => {
@@ -96,11 +127,20 @@ const TrustedMail = (props) => {
       inviteUsersAsVisitors: true,
     };
     setMailDomainSettings(data);
+    saveToSessionStorage("defaultTrustedMailSettings", {
+      type: type,
+      domains: domains,
+    });
     setShowReminder(false);
     toastr.success(t("SuccessfullySaveSettingsMessage"));
   };
 
-  const onCancelClick = () => {};
+  const onCancelClick = () => {
+    const defaultSettings = getFromSessionStorage("defaultTrustedMailSettings");
+    setType(defaultSettings.type);
+    setDomains(defaultSettings.domains);
+    setShowReminder(false);
+  };
 
   const lng = getLanguage(localStorage.getItem("language") || "en");
   return (
