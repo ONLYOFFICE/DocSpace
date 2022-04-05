@@ -1,48 +1,11 @@
 import React from "react";
 
-import styled from "styled-components";
-
 import IconButton from "@appserver/components/icon-button";
 import Heading from "@appserver/components/heading";
 import DropDown from "@appserver/components/drop-down";
 import DropDownItem from "@appserver/components/drop-down-item";
 
-const StyledHeaderContent = styled.div`
-  width: calc(100% - 16px);
-  max-width: calc(100% - 16px);
-  height: 52px;
-
-  border-bottom: 1px solid #eceef1;
-
-  padding: 0 16px;
-
-  margin-bottom: 24px;
-  margin-right: -16px;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  .sharing_panel-header-info {
-    max-width: calc(100% - 33px);
-
-    display: flex;
-    align-items: center;
-    justify-content: start;
-
-    .sharing_panel-arrow {
-      margin-right: 16px;
-    }
-
-    .sharing_panel-header {
-    }
-  }
-
-  .sharing_panel-icons-container {
-    display: flex;
-    margin-left: 16px;
-  }
-`;
+import { StyledHeaderContent } from "./StyledSharingPanel";
 
 const Header = React.forwardRef(
   (
