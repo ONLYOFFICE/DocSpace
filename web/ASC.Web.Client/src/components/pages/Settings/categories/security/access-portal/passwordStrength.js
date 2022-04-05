@@ -46,8 +46,6 @@ const PasswordStrength = (props) => {
   const [useDigits, setUseDigits] = useState(false);
   const [useSpecialSymbols, setUseSpecialSymbols] = useState(false);
 
-  const [currentState, setCurrentState] = useState([8, false, false, false]);
-
   const [showReminder, setShowReminder] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -67,17 +65,18 @@ const PasswordStrength = (props) => {
     }
 
     const defaultSettings = getFromSessionStorage("defaultPasswordSettings");
-    const defaultData = {
-      minLength: passwordSettings.minLength,
-      upperCase: passwordSettings.upperCase,
-      digits: passwordSettings.digits,
-      specSymbols: passwordSettings.specSymbols,
-    };
 
-    saveToSessionStorage(
-      "defaultPasswordSettings",
-      defaultSettings || defaultData
-    );
+    if (defaultSettings) {
+      saveToSessionStorage("defaultPasswordSettings", defaultSettings);
+    } else {
+      const defaultData = {
+        minLength: passwordSettings.minLength,
+        upperCase: passwordSettings.upperCase,
+        digits: passwordSettings.digits,
+        specSymbols: passwordSettings.specSymbols,
+      };
+      saveToSessionStorage("defaultPasswordSettings", defaultData);
+    }
 
     setIsLoading(true);
   };
@@ -97,11 +96,11 @@ const PasswordStrength = (props) => {
       digits: useDigits,
       specSymbols: useSpecialSymbols,
     };
-    saveToSessionStorage("currentPasswordSettings", newSettings);
 
     if (isEqual(defaultSettings, newSettings)) {
       setShowReminder(false);
     } else {
+      saveToSessionStorage("currentPasswordSettings", newSettings);
       setShowReminder(true);
     }
   }, [passwordLen, useUpperCase, useDigits, useSpecialSymbols]);
@@ -152,6 +151,7 @@ const PasswordStrength = (props) => {
 
   const onCancelClick = () => {
     const defaultSettings = getFromSessionStorage("defaultPasswordSettings");
+    saveToSessionStorage("currentPasswordSettings", defaultSettings);
     setPasswordLen(defaultSettings.minLength);
     setUseUpperCase(defaultSettings.upperCase);
     setUseDigits(defaultSettings.digits);
