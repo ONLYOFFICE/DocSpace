@@ -11,6 +11,7 @@ import { getLanguage } from "@appserver/common/utils";
 import toastr from "@appserver/components/toast/toastr";
 import UserFields from "../sub-components/user-fields";
 import Buttons from "../sub-components/buttons";
+import { size } from "@appserver/components/utils/device";
 
 const MainContainer = styled.div`
   width: 100%;
@@ -35,6 +36,7 @@ const MainContainer = styled.div`
 const TrustedMail = (props) => {
   const {
     t,
+    history,
     trustedDomainsType,
     trustedDomains,
     setMailDomainSettings,
@@ -50,8 +52,17 @@ const TrustedMail = (props) => {
   };
 
   useEffect(() => {
+    checkWidth();
     getSettings();
+    window.addEventListener("resize", checkWidth);
+    return () => window.removeEventListener("resize", checkWidth);
   }, []);
+
+  const checkWidth = () => {
+    window.innerWidth > size.smallTablet &&
+      history.location.pathname.includes("trusted-mail") &&
+      history.push("/settings/security/access-portal");
+  };
 
   const onSelectDomainType = (e) => {
     if (type !== e.target.value) {
