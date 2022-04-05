@@ -355,3 +355,44 @@ if (deviceType === "mobile") {
     });
   });
 }
+
+Scenario("Welcome Page Settings mobile render test", async ({ I }) => {
+  I.mockEndpoint(Endpoints.common, "common");
+  I.mockEndpoint(Endpoints.cultures, "cultures");
+  I.mockEndpoint(Endpoints.timezones, "timezones");
+  I.mockEndpoint(Endpoints.settings, "settingsCustomization");
+  I.mockEndpoint(Endpoints.build, "build");
+  I.mockEndpoint(Endpoints.info, "infoSettings");
+  I.mockEndpoint(Endpoints.self, "selfSettings");
+
+  I.amOnPage("/settings/common/customization/welcome-page-settings");
+
+  if (deviceType === "mobile") {
+    I.see("Welcome Page Settings");
+
+    I.seeElement("div", ".settings-block");
+
+    I.seeElement({
+      react: "Button",
+      props: {
+        label: "Save",
+        isDisabled: true,
+      },
+    });
+
+    I.seeElement({
+      react: "Button",
+      props: {
+        label: "Restore to Default",
+      },
+    });
+
+    I.saveScreenshot(`10.welcome-page-settings-mobile.png`);
+    if (!isModel) {
+      I.seeVisualDiff(`10.welcome-page-settings-mobile.png`, {
+        tolerance: 1,
+        prepareBaseImage: false,
+      });
+    }
+  }
+});

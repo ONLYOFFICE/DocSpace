@@ -86,10 +86,10 @@ export const ButtonsWrapper = styled.div`
   align-items: center;
   margin-top: 24px;
 
-  @media (max-width: 375px) {
+  @media (max-width: 600px) {
     position: absolute;
     bottom: 16px;
-    width: calc(100vw - 32px);
+    width: calc(100vw - 84px);
 
     .button {
       height: 40px;
@@ -100,5 +100,19 @@ export const ButtonsWrapper = styled.div`
       position: absolute;
       bottom: 48px;
     }
+  }
+
+  @media (max-width: 375px) {
+    width: calc(100vw - 32px);
+  }
+`;
+
+export const LearnMoreWrapper = styled.div`
+  display: none;
+
+  @media (max-width: 600px) {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
   }
 `;

@@ -9,8 +9,9 @@ import Link from "@appserver/components/link";
 import toastr from "@appserver/components/toast/toastr";
 import SectionLoader from "../sub-components/section-loader";
 import { getLanguage } from "@appserver/common/utils";
-import { isMobile } from "react-device-detect";
 import Buttons from "../sub-components/buttons";
+import { ButtonsWrapper, LearnMoreWrapper } from "../StyledSecurity";
+import { size } from "@appserver/components/utils/device";
 
 const MainContainer = styled.div`
   width: 100%;
@@ -20,7 +21,6 @@ const MainContainer = styled.div`
   }
 
   .box {
-    margin-top: 20px;
   }
 `;
 
@@ -42,18 +42,18 @@ const TwoFactorAuth = (props) => {
     const settings = await getTfaSettings();
     setSmsDisabled(settings[0].avaliable);
     setAppDisabled(settings[1].avaliable);
+    setIsLoading(true);
   };
 
   useEffect(() => {
-    getSettings();
     checkWidth();
-    setIsLoading(true);
+    getSettings();
     window.addEventListener("resize", checkWidth);
     return () => window.removeEventListener("resize", checkWidth);
   }, []);
 
   const checkWidth = () => {
-    window.innerWidth > 375 &&
+    window.innerWidth > size.smallTablet &&
       history.location.pathname.includes("tfa") &&
       history.push("/settings/security/access-portal");
   };
@@ -92,18 +92,17 @@ const TwoFactorAuth = (props) => {
   if (!isLoading) return <SectionLoader />;
   return (
     <MainContainer>
-      {isMobile && (
-        <>
-          <Text className="page-subtitle">{t("TwoFactorAuthHelper")}</Text>
-          <Link
-            className="learn-more"
-            target="_blank"
-            href={`https://helpcenter.onlyoffice.com/${lng}/administration/two-factor-authentication.aspx`}
-          >
-            {t("Common:LearnMore")}
-          </Link>
-        </>
-      )}
+      <LearnMoreWrapper>
+        <Text className="page-subtitle">{t("TwoFactorAuthHelper")}</Text>
+        <Link
+          color="#316DAA"
+          target="_blank"
+          isHovered
+          href={`https://helpcenter.onlyoffice.com/${lng}/administration/two-factor-authentication.aspx`}
+        >
+          {t("Common:LearnMore")}
+        </Link>
+      </LearnMoreWrapper>
 
       <RadioButtonGroup
         className="box"

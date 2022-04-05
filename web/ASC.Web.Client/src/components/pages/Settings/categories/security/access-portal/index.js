@@ -9,6 +9,7 @@ import PasswordStrengthSection from "./passwordStrength";
 import TrustedMailSection from "./trustedMail";
 import MobileView from "./mobileView";
 import CategoryWrapper from "../sub-components/category-wrapper";
+import { size } from "@appserver/components/utils/device";
 
 const AccessPortal = (props) => {
   const { t } = props;
@@ -22,7 +23,9 @@ const AccessPortal = (props) => {
   }, []);
 
   const checkWidth = () => {
-    window.innerWidth <= 375 ? setIsMobileView(true) : setIsMobileView(false);
+    window.innerWidth <= size.smallTablet
+      ? setIsMobileView(true)
+      : setIsMobileView(false);
   };
 
   if (isMobileView) return <MobileView />;

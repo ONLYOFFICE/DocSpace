@@ -25,6 +25,7 @@ const StyledComponent = styled.div`
 const PortalRenaming = ({ t, theme, sectionWidth }) => {
   // TODO: Change false
   const [isLoadedData, setIsLoadedData] = useState(true);
+  const [portalName, setPortalName] = useState();
 
   const onSavePortalRename = () => {
     // setPortalRename("waw");
@@ -53,7 +54,7 @@ const PortalRenaming = ({ t, theme, sectionWidth }) => {
             <TextInput
               scale={true}
               // value={greetingTitle}
-              //onChange={this.onChangeGreetingTitle}
+              // onChange={onChangePortalName}
               // isDisabled={isLoadingGreetingSave || isLoadingGreetingRestore}
               placeholder={`${t("room")}`}
             />
@@ -64,7 +65,6 @@ const PortalRenaming = ({ t, theme, sectionWidth }) => {
           saveButtonLabel={t("Common:SaveButton")}
           cancelButtonLabel={t("Common:CancelButton")}
           displaySettings={true}
-          sectionWidth={sectionWidth}
         />
       </StyledComponent>
     </>

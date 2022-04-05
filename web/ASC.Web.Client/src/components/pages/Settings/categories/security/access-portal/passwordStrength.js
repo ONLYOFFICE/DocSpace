@@ -10,10 +10,10 @@ import Slider from "@appserver/components/slider";
 import Checkbox from "@appserver/components/checkbox";
 import SectionLoader from "../sub-components/section-loader";
 import { getLanguage } from "@appserver/common/utils";
-import { isMobile } from "react-device-detect";
-import { getPortalPasswordSettings } from "@appserver/common/api/settings";
+import { ButtonsWrapper, LearnMoreWrapper } from "../StyledSecurity";
 import toastr from "@appserver/components/toast/toastr";
 import Buttons from "../sub-components/buttons";
+import { size } from "@appserver/components/utils/device";
 
 const MainContainer = styled.div`
   width: 100%;
@@ -34,16 +34,10 @@ const MainContainer = styled.div`
     gap: 8px;
     margin-top: 18px;
   }
-
-  @media (max-width: 375px) {
-    .length-subtitle {
-      margin-top: 20px;
-    }
-  }
 `;
 
 const PasswordStrength = (props) => {
-  const { t, history, setPortalPasswordSettings } = props;
+  const { t, history, setPortalPasswordSettings, passwordSettings } = props;
   const [passwordLen, setPasswordLen] = useState(8);
   const [useUpperCase, setUseUpperCase] = useState(false);
   const [useDigits, setUseDigits] = useState(false);
@@ -54,31 +48,29 @@ const PasswordStrength = (props) => {
   const [showReminder, setShowReminder] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const getSettings = async () => {
-    const settings = await getPortalPasswordSettings();
+  const getSettings = () => {
     setCurrentState([
-      settings.minLength,
-      settings.upperCase,
-      settings.digits,
-      settings.specSymbols,
+      passwordSettings.minLength,
+      passwordSettings.upperCase,
+      passwordSettings.digits,
+      passwordSettings.specSymbols,
     ]);
-    setPasswordLen(settings.minLength);
-    setUseUpperCase(settings.upperCase);
-    setUseDigits(settings.digits);
-    setUseSpecialSymbols(settings.specSymbols);
-    return settings;
+    setPasswordLen(passwordSettings.minLength);
+    setUseUpperCase(passwordSettings.upperCase);
+    setUseDigits(passwordSettings.digits);
+    setUseSpecialSymbols(passwordSettings.specSymbols);
+    setIsLoading(true);
   };
 
   useEffect(() => {
-    getSettings();
     checkWidth();
-    setIsLoading(true);
+    getSettings();
     window.addEventListener("resize", checkWidth);
     return () => window.removeEventListener("resize", checkWidth);
   }, []);
 
   const checkWidth = () => {
-    window.innerWidth > 375 &&
+    window.innerWidth > size.smallTablet &&
       history.location.pathname.includes("password") &&
       history.push("/settings/security/access-portal");
   };
@@ -127,7 +119,6 @@ const PasswordStrength = (props) => {
       useSpecialSymbols
     )
       .then(() => {
-        getSettings();
         setShowReminder(false);
         toastr.success(t("SuccessfullySaveSettingsMessage"));
       })
@@ -146,20 +137,19 @@ const PasswordStrength = (props) => {
   if (!isLoading) return <SectionLoader />;
   return (
     <MainContainer>
-      {isMobile && (
-        <>
-          <Text className="page-subtitle">
-            {t("SettingPasswordStrengthHelper")}
-          </Text>
-          <Link
-            className="learn-more"
-            target="_blank"
-            href={`https://helpcenter.onlyoffice.com/${lng}/administration/configuration.aspx#ChangingSecuritySettings_block`}
-          >
-            {t("Common:LearnMore")}
-          </Link>
-        </>
-      )}
+      <LearnMoreWrapper>
+        <Text className="page-subtitle">
+          {t("SettingPasswordStrengthHelper")}
+        </Text>
+        <Link
+          color="#316DAA"
+          target="_blank"
+          isHovered
+          href={`https://helpcenter.onlyoffice.com/${lng}/administration/configuration.aspx#ChangingSecuritySettings_block`}
+        >
+          {t("Common:LearnMore")}
+        </Link>
+      </LearnMoreWrapper>
 
       <Text fontSize="14px" fontWeight="600" className="length-subtitle">
         {t("PasswordMinLenght")}
@@ -171,11 +161,14 @@ const PasswordStrength = (props) => {
           min="8"
           max="30"
           step="1"
+          withPouring={true}
           value={passwordLen}
           onChange={onSliderChange}
         />
         <Text>
-          {passwordLen} {t("Characters")}
+          {t("Characters", {
+            length: passwordLen,
+          })}
         </Text>
       </Box>
 
@@ -211,10 +204,11 @@ const PasswordStrength = (props) => {
 };
 
 export default inject(({ auth }) => {
-  const { setPortalPasswordSettings } = auth.settingsStore;
+  const { setPortalPasswordSettings, passwordSettings } = auth.settingsStore;
 
   return {
     setPortalPasswordSettings,
+    passwordSettings,
   };
 })(
   withTranslation(["Settings", "Common"])(

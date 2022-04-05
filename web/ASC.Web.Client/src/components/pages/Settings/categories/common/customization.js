@@ -5,6 +5,7 @@ import withCultureNames from "@appserver/common/hoc/withCultureNames";
 import LanguageAndTimeZone from "./settingsCustomization/language-and-time-zone";
 import WelcomePageSettings from "./settingsCustomization/welcome-page-settings";
 import PortalRenaming from "./settingsCustomization/portal-renaming";
+
 import SettingsPageLayout from "./SettingsPageLayout";
 import SettingsPageMobileView from "./SettingsPageMobileView";
 
@@ -69,6 +70,7 @@ const Customization = ({ t }) => {
           <SettingsPageMobileView>
             <LanguageAndTimeZone isMobileView={isMobile} />
             <WelcomePageSettings isMobileView={isMobile} />
+            <PortalRenaming isMobileView={isMobile} />
           </SettingsPageMobileView>
         ) : (
           <StyledComponent>
@@ -78,6 +80,7 @@ const Customization = ({ t }) => {
             {/* TODO: Add isMobile = false in component */}
             <LanguageAndTimeZone isMobileView={isMobile} />
             <WelcomePageSettings isMobileView={isMobile} />
+            <PortalRenaming isMobileView={isMobile} />
           </StyledComponent>
         )
       }

@@ -72,8 +72,8 @@ const commonStyles = css`
 `;
 
 const StyledSectionBody = styled.div`
+  max-width: 100vw !important;
   ${commonStyles}
-
   ${(props) =>
     props.withScroll &&
     `
@@ -89,9 +89,8 @@ const StyledSectionBody = styled.div`
         margin-left: -24px;
       `
     }
-  `} 
-
-  .additional-scroll-height {
+  `}
+    .additional-scroll-height {
     ${(props) =>
       !props.withScroll &&
       !props.pinned &&
@@ -102,9 +101,8 @@ const StyledSectionBody = styled.div`
 `;
 
 const StyledDropZoneBody = styled(DragAndDrop)`
-  ${commonStyles}
-
-  .drag-and-drop {
+  max-width: 100vw !important;
+  ${commonStyles} .drag-and-drop {
     user-select: none;
     height: 100%;
   }

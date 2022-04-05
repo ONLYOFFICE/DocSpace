@@ -267,6 +267,7 @@ class WelcomePageSettings extends React.Component {
           isVertical={true}
         >
           <TextInput
+            id="textInputContainerWelcomePage"
             scale={true}
             value={greetingTitle}
             onChange={this.onChangeGreetingTitle}
@@ -304,6 +305,7 @@ class WelcomePageSettings extends React.Component {
           <> {settingsBlock}</>
         )}
         <SaveCancelButtons
+          id="buttonsWelcomePage"
           className="save-cancel-buttons"
           onSaveClick={this.onSaveGreetingSettings}
           onCancelClick={this.onRestoreGreetingSettings}

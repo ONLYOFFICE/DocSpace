@@ -89,7 +89,7 @@ class ThirdPartyModule extends React.Component {
     });
   };
   render() {
-    const { isMaxProgress, t, commonThirdPartyList } = this.props;
+    const { isMaxProgress, t, commonThirdPartyList, buttonSize } = this.props;
     const {
       isPanelVisible,
       isLoadingData,
@@ -123,13 +123,13 @@ class ThirdPartyModule extends React.Component {
             onClick={this.onMakeCopy}
             primary
             isDisabled={isModuleDisabled}
-            size="medium"
+            size={buttonSize}
           />
           {!isMaxProgress && (
             <Button
               label={t("Common:CopyOperation") + "..."}
               isDisabled={true}
-              size="medium"
+              size={buttonSize}
               style={{ marginLeft: "8px" }}
             />
           )}

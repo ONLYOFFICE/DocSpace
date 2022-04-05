@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { StyledSlider } from "./styled-slider";
 
@@ -16,16 +16,9 @@ const Slider = ({
 }) => {
   const [size, setSize] = useState("0%");
 
-  const handleChange = (e) => {
-    let target = e.target;
-
-    const max = target.max;
-    const min = target.min;
-    const val = target.value;
-
-    setSize(((val - min) * 100) / (max - min) + "%");
-    onChange && onChange(e);
-  };
+  useEffect(() => {
+    setSize(((value - min) * 100) / (max - min) + "%");
+  }, [value]);
 
   return (
     <StyledSlider
@@ -39,7 +32,7 @@ const Slider = ({
       value={value}
       size={value && withPouring ? size : "0%"}
       withPouring={withPouring}
-      onChange={handleChange}
+      onChange={onChange}
     />
   );
 };

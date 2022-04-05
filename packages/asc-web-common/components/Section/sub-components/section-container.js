@@ -38,23 +38,19 @@ const StyledSectionContainer = styled.section`
   display: flex;
   flex-direction: column;
 
-  width: calc(100vw - 256px);
-  max-width: calc(100vw - 256px);
+  width: 100%;
+  max-width: 100vw;
 
   @media ${tablet} {
-    width: ${(props) =>
-      props.showText ? "calc(100vw - 240px)" : "calc(100vw - 52px)"};
-    max-width: ${(props) =>
-      props.showText ? "calc(100vw - 240px)" : "calc(100vw - 52px)"};
+    width: 100%;
+    max-width: 100vw !important;
     padding: 0 0 0 16px;
   }
 
   ${isMobile &&
   css`
-    width: ${(props) =>
-      props.showText ? "calc(100vw - 240px)" : "calc(100vw - 52px)"} !important;
-    max-width: ${(props) =>
-      props.showText ? "calc(100vw - 240px)" : "calc(100vw - 52px)"} !important;
+    width: 100% !important;
+    max-width: 100vw !important
     padding: 0 0 0 16px;
     ${tabletProps};
     min-width: 100px;
