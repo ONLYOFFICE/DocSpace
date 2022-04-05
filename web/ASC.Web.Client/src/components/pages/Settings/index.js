@@ -20,6 +20,9 @@ const LanguageAndTimeZoneSettings = lazy(() =>
 const WelcomePageSettings = lazy(() =>
   import("./categories/common/settingsCustomization/welcome-page-settings")
 );
+const PortalRenaming = lazy(() =>
+  import("./categories/common/settingsCustomization/portal-renaming")
+);
 const TeamTemplate = lazy(() => import("./categories/common/team-template"));
 const ThirdPartyServices = lazy(() =>
   import("./categories/integration/thirdPartyServicesSettings")
@@ -58,6 +61,10 @@ const LTZ_URL = combineUrl(
 const WELCOME_PAGE_SETTINGS_URL = combineUrl(
   PROXY_BASE_URL,
   "/common/customization/welcome-page-settings"
+);
+const PORTAL_RENAMING = combineUrl(
+  PROXY_BASE_URL,
+  "/common/customization/portal-renaming"
 );
 const TEAM_TEMPLATE_URL = combineUrl(
   PROXY_BASE_URL,
@@ -100,6 +107,7 @@ const Settings = () => {
             path={WELCOME_PAGE_SETTINGS_URL}
             component={WelcomePageSettings}
           />
+          <Route exact path={PORTAL_RENAMING} component={PortalRenaming} />
           <Route exact path={WHITELABEL_URL} component={WhiteLabel} />
           <Route exact path={TEAM_TEMPLATE_URL} component={TeamTemplate} />
 
