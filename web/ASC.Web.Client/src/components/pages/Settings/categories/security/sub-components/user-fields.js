@@ -4,10 +4,17 @@ import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import { PlusIcon, TrashIcon } from "./svg";
 import Link from "@appserver/components/link";
 import TextInput from "@appserver/components/text-input";
+import { Base } from "@appserver/components/themes";
 
 const StyledPlusIcon = styled(PlusIcon)`
   ${commonIconsStyles}
+
+  path {
+    fill: ${(props) => props.theme.studio.settings.iconFill};
+  }
 `;
+
+StyledPlusIcon.defaultProps = { theme: Base };
 
 const StyledTrashIcon = styled(TrashIcon)`
   ${commonIconsStyles}
