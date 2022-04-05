@@ -6,7 +6,7 @@ import { inject, observer } from "mobx-react";
 import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";
 import RadioButtonGroup from "@appserver/components/radio-button-group";
-import { isMobile } from "react-device-detect";
+import { LearnMoreWrapper } from "../StyledSecurity";
 import { getLanguage } from "@appserver/common/utils";
 import toastr from "@appserver/components/toast/toastr";
 import UserFields from "../sub-components/user-fields";
@@ -94,18 +94,17 @@ const TrustedMail = (props) => {
   const lng = getLanguage(localStorage.getItem("language") || "en");
   return (
     <MainContainer>
-      {isMobile && (
-        <>
-          <Text className="page-subtitle">{t("TrustedMailHelper")}</Text>
-          <Link
-            className="learn-more"
-            target="_blank"
-            href={`https://helpcenter.onlyoffice.com/${lng}/administration/configuration.aspx#ChangingSecuritySettings_block`}
-          >
-            {t("Common:LearnMore")}
-          </Link>
-        </>
-      )}
+      <LearnMoreWrapper>
+        <Text className="page-subtitle">{t("TrustedMailHelper")}</Text>
+        <Link
+          color="#316DAA"
+          target="_blank"
+          isHovered
+          href={`https://helpcenter.onlyoffice.com/${lng}/administration/configuration.aspx#ChangingSecuritySettings_block`}
+        >
+          {t("Common:LearnMore")}
+        </Link>
+      </LearnMoreWrapper>
 
       <RadioButtonGroup
         className="box"
