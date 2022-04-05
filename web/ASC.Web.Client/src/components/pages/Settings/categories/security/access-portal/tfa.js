@@ -10,7 +10,8 @@ import Link from "@appserver/components/link";
 import toastr from "@appserver/components/toast/toastr";
 import SectionLoader from "../sub-components/section-loader";
 import { getLanguage } from "@appserver/common/utils";
-import { isMobile } from "react-device-detect";
+import { ButtonsWrapper, LearnMoreWrapper } from "../StyledSecurity";
+import { size } from "@appserver/components/utils/device";
 
 const MainContainer = styled.div`
   width: 100%;
@@ -20,36 +21,12 @@ const MainContainer = styled.div`
   }
 
   .box {
-    margin-top: 20px;
     margin-bottom: 24px;
   }
 `;
 
-const ButtonsWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  gap: 8px;
-  align-items: center;
-
-  @media (max-width: 375px) {
-    position: absolute;
-    bottom: 16px;
-    width: calc(100vw - 32px);
-
-    .button {
-      height: 40px;
-      width: 100%;
-    }
-
-    .reminder {
-      position: absolute;
-      bottom: 48px;
-    }
-  }
-`;
-
 const TwoFactorAuth = (props) => {
-  const { t } = props;
+  const { t, history } = props;
   const [type, setType] = useState("none");
   const [currentState, setCurrentState] = useState("");
   const [smsDisabled, setSmsDisabled] = useState(false);
@@ -66,12 +43,21 @@ const TwoFactorAuth = (props) => {
     const settings = await getTfaSettings();
     setSmsDisabled(settings[0].avaliable);
     setAppDisabled(settings[1].avaliable);
+    setIsLoading(true);
   };
 
   useEffect(() => {
+    checkWidth();
     getSettings();
-    setIsLoading(true);
+    window.addEventListener("resize", checkWidth);
+    return () => window.removeEventListener("resize", checkWidth);
   }, []);
+
+  const checkWidth = () => {
+    window.innerWidth > size.smallTablet &&
+      history.location.pathname.includes("tfa") &&
+      history.push("/settings/security/access-portal");
+  };
 
   const onSelectTfaType = (e) => {
     if (type !== e.target.value) {
@@ -107,18 +93,17 @@ const TwoFactorAuth = (props) => {
   if (!isLoading) return <SectionLoader />;
   return (
     <MainContainer>
-      {isMobile && (
-        <>
-          <Text className="page-subtitle">{t("TwoFactorAuthHelper")}</Text>
-          <Link
-            className="learn-more"
-            target="_blank"
-            href={`https://helpcenter.onlyoffice.com/${lng}/administration/two-factor-authentication.aspx`}
-          >
-            {t("Common:LearnMore")}
-          </Link>
-        </>
-      )}
+      <LearnMoreWrapper>
+        <Text className="page-subtitle">{t("TwoFactorAuthHelper")}</Text>
+        <Link
+          color="#316DAA"
+          target="_blank"
+          isHovered
+          href={`https://helpcenter.onlyoffice.com/${lng}/administration/two-factor-authentication.aspx`}
+        >
+          {t("Common:LearnMore")}
+        </Link>
+      </LearnMoreWrapper>
 
       <RadioButtonGroup
         className="box"
