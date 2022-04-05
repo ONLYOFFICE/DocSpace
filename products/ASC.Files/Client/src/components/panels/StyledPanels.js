@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
 import Scrollbar from "@appserver/components/scrollbar";
-import { desktop, tablet } from "@appserver/components/utils/device";
-import { isMobile } from "react-device-detect";
+import { desktop, mobile, tablet } from "@appserver/components/utils/device";
+import { isMobile, isMobileOnly } from "react-device-detect";
 import { Base } from "@appserver/components/themes";
 
 const PanelStyles = css`
@@ -93,18 +93,35 @@ const StyledAsidePanel = styled.div`
 
   .header_aside-panel {
     transition: unset;
-    transform: translateX(${(props) => (props.visible ? "0" : "500px")});
-    width: 500px;
+    transform: translateX(${(props) => (props.visible ? "0" : "480px")});
+    width: 480px;
     overflow-y: hidden;
 
-    @media (max-width: 550px) {
-      width: 320px;
-      transform: translateX(${(props) => (props.visible ? "0" : "320px")});
+    @media (max-width: 480px) {
+      width: 100vw;
+      transform: translateX(${(props) => (props.visible ? "0" : "100vw")});
     }
 
-    .sharing_panel-header-container {
-      padding-right: 0;
+    @media ${mobile} {
+      position: fixed;
+      top: 64px;
+      bottom: 0;
+      left: 0;
+
+      width: 100vw;
+      height: calc(100vh - 64px);
     }
+
+    ${isMobileOnly &&
+    css`
+      position: fixed;
+      top: 64px;
+      bottom: 0;
+      left: 0;
+
+      width: 100vw;
+      height: calc(100vh - 64px);
+    `}
   }
   ${PanelStyles}
 `;
@@ -257,21 +274,6 @@ const StyledHeaderContent = styled.div`
   display: flex;
   align-items: center;
   padding: 0 16px;
-
-  .sharing_panel-icons-container {
-    display: flex;
-    margin-left: auto;
-    .sharing_panel-drop-down-wrapper {
-      position: relative;
-
-      .sharing_panel-drop-down {
-        padding: 4px 0;
-      }
-      .sharing_panel-plus-icon {
-        //margin-right: 12px;
-      }
-    }
-  }
 
   .upload_panel-icons-container {
     display: flex;
@@ -907,7 +909,7 @@ const StyledFilesList = styled.div`
     margin-right: 8px;
   }
 
-  .radio-button_text{
+  .radio-button_text {
     ${(props) => props.displayType === "aside" && "margin: 0 !important;"};
   }
 

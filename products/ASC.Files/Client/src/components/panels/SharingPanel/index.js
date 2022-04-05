@@ -17,7 +17,6 @@ import {
   StyledAsidePanel,
   StyledContent,
   StyledFooter,
-  StyledHeaderContent,
   StyledSharingBody,
   StyledModalRowContainer,
 } from "../StyledPanels";
@@ -32,6 +31,8 @@ import Loaders from "@appserver/common/components/Loaders";
 import withLoader from "../../../HOCs/withLoader";
 import ModalDialog from "@appserver/components/modal-dialog";
 import EmbeddingBody from "../EmbeddingPanel/EmbeddingBody";
+
+import Header from "./Header";
 
 const SharingBodyStyle = { height: `calc(100vh - 156px)` };
 
@@ -584,62 +585,24 @@ class SharingPanelComponent extends React.Component {
         />
         <Aside className="header_aside-panel" visible={visible}>
           <StyledContent isDisabled={isLoading}>
-            <StyledHeaderContent className="sharing_panel-header-container">
-              {uploadPanelVisible && (
-                <IconButton
-                  size="16"
-                  iconName="/static/images/arrow.path.react.svg"
-                  onClick={this.onClose}
-                  color="A3A9AE"
-                />
-              )}
-              <Heading className="sharing_panel-header" size="medium" truncate>
-                {t("SharingSettingsTitle")}
-              </Heading>
-              {!isPersonal && (
-                <div className="sharing_panel-icons-container">
-                  <div
-                    ref={this.ref}
-                    className="sharing_panel-drop-down-wrapper"
-                  >
-                    <IconButton
-                      size="17"
-                      iconName="/static/images/actions.header.touch.react.svg"
-                      className="sharing_panel-plus-icon"
-                      {...onPlusClickProp}
-                      // color="A3A9AE"
-                      isDisabled={isLoading}
-                    />
+            <Header
+              headerText={t("SharingSettingsTitle")}
+              addUsers={t("LinkText")}
+              addGroups={t("AddGroupsForSharingButton")}
+              uploadPanelVisible={uploadPanelVisible}
+              isPersonal={isPersonal}
+              onPlusClickProp={onPlusClickProp}
+              isLoading={isLoading}
+              isEncrypted={isEncrypted}
+              showActionPanel={showActionPanel}
+              onClose={this.onClose}
+              onCloseActionPanel={this.onCloseActionPanel}
+              onShowUsersPanel={this.onShowUsersPanel}
+              onShowGroupsPanel={this.onShowGroupsPanel}
+              forwardRef={this.ref}
+              ref={this.ref}
+            />
 
-                    <DropDown
-                      forwardedRef={this.ref}
-                      directionX="right"
-                      className="sharing_panel-drop-down"
-                      open={showActionPanel}
-                      manualY="30px"
-                      clickOutsideAction={this.onCloseActionPanel}
-                    >
-                      <DropDownItem
-                        label={t("LinkText")}
-                        onClick={this.onShowUsersPanel}
-                      />
-                      {!isEncrypted && (
-                        <DropDownItem
-                          label={t("AddGroupsForSharingButton")}
-                          onClick={this.onShowGroupsPanel}
-                        />
-                      )}
-                    </DropDown>
-                  </div>
-
-                  {/*<IconButton
-                  size="16"
-                  iconName="images/key.react.svg"
-                  onClick={this.onKeyClick}
-                />*/}
-                </div>
-              )}
-            </StyledHeaderContent>
             <StyledSharingBody
               ref={this.scrollRef}
               stype="mediumBlack"
@@ -688,6 +651,7 @@ class SharingPanelComponent extends React.Component {
                 </div>
               )}
             </StyledSharingBody>
+
             <StyledFooter>
               {!isPersonal && (
                 <Checkbox
