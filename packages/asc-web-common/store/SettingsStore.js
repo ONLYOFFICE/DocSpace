@@ -442,6 +442,13 @@ class SettingsStore {
     this.theme = themes[theme];
     localStorage.setItem("theme", theme);
   };
+
+  setMailDomainSettings = async (data) => {
+    const res = await api.settings.setMailDomainSettings(data);
+    this.trustedDomainsType = data.type;
+    this.trustedDomains = data.domains;
+    return res;
+  };
 }
 
 export default SettingsStore;
