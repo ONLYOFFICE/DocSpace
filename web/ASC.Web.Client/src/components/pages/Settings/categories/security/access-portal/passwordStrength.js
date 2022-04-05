@@ -13,7 +13,6 @@ import SectionLoader from "../sub-components/section-loader";
 import { getLanguage } from "@appserver/common/utils";
 import { isMobile } from "react-device-detect";
 import { ButtonsWrapper } from "../StyledSecurity";
-import { getPortalPasswordSettings } from "@appserver/common/api/settings";
 import toastr from "@appserver/components/toast/toastr";
 import { size } from "@appserver/components/utils/device";
 
@@ -44,7 +43,7 @@ const MainContainer = styled.div`
 `;
 
 const PasswordStrength = (props) => {
-  const { t, history, setPortalPasswordSettings } = props;
+  const { t, history, setPortalPasswordSettings, passwordSettings } = props;
   const [passwordLen, setPasswordLen] = useState(8);
   const [useUpperCase, setUseUpperCase] = useState(false);
   const [useDigits, setUseDigits] = useState(false);
@@ -55,20 +54,18 @@ const PasswordStrength = (props) => {
   const [showReminder, setShowReminder] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const getSettings = async () => {
-    const settings = await getPortalPasswordSettings();
+  const getSettings = () => {
     setCurrentState([
-      settings.minLength,
-      settings.upperCase,
-      settings.digits,
-      settings.specSymbols,
+      passwordSettings.minLength,
+      passwordSettings.upperCase,
+      passwordSettings.digits,
+      passwordSettings.specSymbols,
     ]);
-    setPasswordLen(settings.minLength);
-    setUseUpperCase(settings.upperCase);
-    setUseDigits(settings.digits);
-    setUseSpecialSymbols(settings.specSymbols);
+    setPasswordLen(passwordSettings.minLength);
+    setUseUpperCase(passwordSettings.upperCase);
+    setUseDigits(passwordSettings.digits);
+    setUseSpecialSymbols(passwordSettings.specSymbols);
     setIsLoading(true);
-    return settings;
   };
 
   useEffect(() => {
@@ -128,7 +125,6 @@ const PasswordStrength = (props) => {
       useSpecialSymbols
     )
       .then(() => {
-        getSettings();
         setShowReminder(false);
         toastr.success(t("SuccessfullySaveSettingsMessage"));
       })
@@ -237,10 +233,11 @@ const PasswordStrength = (props) => {
 };
 
 export default inject(({ auth }) => {
-  const { setPortalPasswordSettings } = auth.settingsStore;
+  const { setPortalPasswordSettings, passwordSettings } = auth.settingsStore;
 
   return {
     setPortalPasswordSettings,
+    passwordSettings,
   };
 })(
   withTranslation(["Settings", "Common"])(
