@@ -45,8 +45,6 @@ const PasswordStrength = (props) => {
   const [useDigits, setUseDigits] = useState(false);
   const [useSpecialSymbols, setUseSpecialSymbols] = useState(false);
 
-  const [currentState, setCurrentState] = useState([8, false, false, false]);
-
   const [showReminder, setShowReminder] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 

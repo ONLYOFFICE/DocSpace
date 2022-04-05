@@ -12,6 +12,8 @@ import { getLanguage } from "@appserver/common/utils";
 import Buttons from "../sub-components/buttons";
 import { LearnMoreWrapper } from "../StyledSecurity";
 import { size } from "@appserver/components/utils/device";
+import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
+import isEqual from "lodash/isEqual";
 
 const MainContainer = styled.div`
   width: 100%;
@@ -27,7 +29,7 @@ const MainContainer = styled.div`
 const TwoFactorAuth = (props) => {
   const { t, history } = props;
   const [type, setType] = useState("none");
-  const [currentState, setCurrentState] = useState("");
+
   const [smsDisabled, setSmsDisabled] = useState(false);
   const [appDisabled, setAppDisabled] = useState(false);
   const [showReminder, setShowReminder] = useState(false);
@@ -35,9 +37,17 @@ const TwoFactorAuth = (props) => {
 
   const getSettings = () => {
     const { tfaSettings, smsAvailable, appAvailable } = props;
+    const currentSettings = getFromSessionStorage("currentTfaSettings");
 
-    setType(tfaSettings);
-    setCurrentState(tfaSettings);
+    if (currentSettings) {
+      setType(currentSettings);
+    } else {
+      setType(tfaSettings);
+    }
+
+    const defaultSettings = getFromSessionStorage("defaultTfaSettings");
+    saveToSessionStorage("defaultTfaSettings", defaultSettings || tfaSettings);
+
     setSmsDisabled(smsAvailable);
     setAppDisabled(appAvailable);
     setIsLoading(true);
@@ -50,6 +60,17 @@ const TwoFactorAuth = (props) => {
     return () => window.removeEventListener("resize", checkWidth);
   }, []);
 
+  useEffect(() => {
+    const defaultSettings = getFromSessionStorage("defaultTfaSettings");
+    saveToSessionStorage("currentTfaSettings", type);
+
+    if (defaultSettings === type) {
+      setShowReminder(false);
+    } else {
+      setShowReminder(true);
+    }
+  }, [type]);
+
   const checkWidth = () => {
     window.innerWidth > size.smallTablet &&
       history.location.pathname.includes("tfa") &&
@@ -59,10 +80,6 @@ const TwoFactorAuth = (props) => {
   const onSelectTfaType = (e) => {
     if (type !== e.target.value) {
       setType(e.target.value);
-      setShowReminder(true);
-    }
-    if (e.target.value === currentState) {
-      setShowReminder(false);
     }
   };
 
@@ -77,13 +94,16 @@ const TwoFactorAuth = (props) => {
         );
       }
       setType(type);
+      saveToSessionStorage("defaultTfaSettings", type);
+
       setShowReminder(false);
     });
   };
 
   const onCancelClick = () => {
+    const defaultSettings = getFromSessionStorage("defaultTfaSettings");
+    setType(defaultSettings);
     setShowReminder(false);
-    setType(currentState);
   };
 
   const lng = getLanguage(localStorage.getItem("language") || "en");
