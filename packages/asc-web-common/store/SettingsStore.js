@@ -167,7 +167,6 @@ class SettingsStore {
 
   getSettings = async () => {
     const newSettings = await api.settings.getSettings();
-    this.getPortalPasswordSettings();
 
     if (window["AscDesktopEditor"] !== undefined || this.personal) {
       const dp = combineUrl(proxyURL, "/products/files/");

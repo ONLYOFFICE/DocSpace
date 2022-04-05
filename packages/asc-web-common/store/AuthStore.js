@@ -52,6 +52,10 @@ class AuthStore {
       this.userStore.user && requests.push(this.moduleStore.init());
     }
 
+    if (this.isAuthenticated) {
+      this.settingsStore.getPortalPasswordSettings();
+    }
+
     return Promise.all(requests);
   };
   setLanguage() {
