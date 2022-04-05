@@ -54,6 +54,7 @@ class AuthStore {
 
     if (this.isAuthenticated) {
       this.settingsStore.getPortalPasswordSettings();
+      this.tfaStore.getTfaType();
     }
 
     return Promise.all(requests);
