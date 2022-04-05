@@ -1,0 +1,15 @@
+<service>
+	<id>kafka</id>
+	<name>kafka</name>
+	<description>This service runs kafka</description>
+	<priority>RealTime</priority>
+	<startmode>Automatic</startmode>
+	<onfailure action="restart" delay="1 sec"/>
+	<executable>{WindowsVolume}Apache\kafka\bin\windows\kafka-server-start.bat</executable>
+	<arguments>{WindowsVolume}Apache\kafka\config\server.properties</arguments>
+	<workingdirectory>{WindowsVolume}Apache\kafka</workingdirectory>
+	<log mode="roll-by-size">
+  		<sizeThreshold>10240</sizeThreshold>
+  		<keepFiles>8</keepFiles>
+	</log>
+</service>
