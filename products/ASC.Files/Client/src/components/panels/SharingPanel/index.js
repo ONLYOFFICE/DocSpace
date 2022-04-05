@@ -1,22 +1,16 @@
 import React from "react";
 import Backdrop from "@appserver/components/backdrop";
-import Heading from "@appserver/components/heading";
+
 import Aside from "@appserver/components/aside";
-import IconButton from "@appserver/components/icon-button";
-import Checkbox from "@appserver/components/checkbox";
-import Button from "@appserver/components/button";
-import DropDown from "@appserver/components/drop-down";
-import DropDownItem from "@appserver/components/drop-down-item";
-import Textarea from "@appserver/components/textarea";
-import Loader from "@appserver/components/loader";
+import Scrollbar from "@appserver/components/scrollbar";
 import Text from "@appserver/components/text";
+import Loader from "@appserver/components/loader";
+
 import { withTranslation, Trans } from "react-i18next";
 import toastr from "studio/toastr";
 import { ShareAccessRights } from "@appserver/common/constants";
 import {
   StyledAsidePanel,
-  StyledContent,
-  StyledFooter,
   StyledSharingBody,
   StyledModalRowContainer,
 } from "../StyledPanels";
@@ -32,9 +26,13 @@ import withLoader from "../../../HOCs/withLoader";
 import ModalDialog from "@appserver/components/modal-dialog";
 import EmbeddingBody from "../EmbeddingPanel/EmbeddingBody";
 
-import Header from "./Header";
+import { StyledContent, StyledBodyContent } from "./StyledSharingPanel";
 
-const SharingBodyStyle = { height: `calc(100vh - 156px)` };
+import Header from "./Header";
+import Footer from "./Footer";
+import ExternalLink from "./ExternalLink";
+
+// const SharingBodyStyle = { height: `calc(100vh - 156px)` };
 
 class SharingPanelComponent extends React.Component {
   constructor(props) {
@@ -515,67 +513,7 @@ class SharingPanelComponent extends React.Component {
     const internalLink =
       selection.length === 1 && !isEncrypted && this.getInternalLink();
 
-    return isPersonal && !isMobileOnly ? (
-      <ModalDialog
-        isLoading={!tReady}
-        visible={visible}
-        displayType="modal"
-        onClose={this.onClose}
-      >
-        <ModalDialog.Header>{t("SharingSettingsTitle")}</ModalDialog.Header>
-        <ModalDialog.Body>
-          <StyledModalRowContainer>
-            {!isLoading ? (
-              shareDataItems.map((item, index) => (
-                <SharingRow
-                  t={t}
-                  theme={theme}
-                  isPersonal={isPersonal}
-                  index={index}
-                  key={`${item.sharedTo.id}_${index}`}
-                  selection={selection}
-                  item={item}
-                  isMyId={isMyId}
-                  accessOptions={accessOptions}
-                  externalAccessOptions={externalAccessOptions}
-                  canShareOwnerChange={canShareOwnerChange}
-                  onChangeItemAccess={this.onChangeItemAccess}
-                  internalLink={internalLink}
-                  onRemoveUserClick={this.onRemoveUserItemClick}
-                  onShowEmbeddingPanel={this.onShowEmbeddingContainer}
-                  onToggleLink={this.onToggleLink}
-                  onShowChangeOwnerPanel={this.onShowChangeOwnerPanel}
-                  isLoading={isLoading}
-                  documentTitle={documentTitle}
-                />
-              ))
-            ) : (
-              <Loaders.Rectangle
-                height="47px"
-                animate={0}
-                foregroundColor="#f8f9f9"
-                backgroundColor="#f8f9f9"
-                backgroundOpacity={1}
-                foregroundOpacity={1}
-              />
-            )}
-            {showEmbeddingContent && (
-              <EmbeddingBody embeddingLink={shareLink} />
-            )}
-          </StyledModalRowContainer>
-        </ModalDialog.Body>
-        <ModalDialog.Footer>
-          <Button
-            className="sharing_panel-button"
-            label={t("Common:SaveButton")}
-            size="normal"
-            primary
-            onClick={this.onSaveClick}
-            isDisabled={isLoading || !isUpdated}
-          />
-        </ModalDialog.Footer>
-      </ModalDialog>
-    ) : (
+    return (
       <StyledAsidePanel visible={visible}>
         <Backdrop
           onClick={this.onClose}
@@ -584,7 +522,7 @@ class SharingPanelComponent extends React.Component {
           isAside={true}
         />
         <Aside className="header_aside-panel" visible={visible}>
-          <StyledContent isDisabled={isLoading}>
+          <StyledContent>
             <Header
               headerText={t("SharingSettingsTitle")}
               addUsers={t("LinkText")}
@@ -602,76 +540,55 @@ class SharingPanelComponent extends React.Component {
               forwardRef={this.ref}
               ref={this.ref}
             />
+            <StyledBodyContent>
+              <Scrollbar ref={this.scrollRef} stype="mediumBlack">
+                {!isLoading ? (
+                  shareDataItems.map((item, index) => (
+                    <SharingRow
+                      t={t}
+                      theme={theme}
+                      isPersonal={isPersonal}
+                      index={index}
+                      key={`${item.sharedTo.id}_${index}`}
+                      selection={selection}
+                      item={item}
+                      isMyId={isMyId}
+                      accessOptions={accessOptions}
+                      externalAccessOptions={externalAccessOptions}
+                      canShareOwnerChange={canShareOwnerChange}
+                      onChangeItemAccess={this.onChangeItemAccess}
+                      internalLink={internalLink}
+                      onRemoveUserClick={this.onRemoveUserItemClick}
+                      onShowEmbeddingPanel={this.onShowEmbeddingPanel}
+                      onToggleLink={this.onToggleLink}
+                      onShowChangeOwnerPanel={this.onShowChangeOwnerPanel}
+                      isLoading={isLoading}
+                      documentTitle={documentTitle}
+                    />
+                  ))
+                ) : (
+                  <div key="loader" className="panel-loader-wrapper">
+                    <Loader type="oval" size="16px" className="panel-loader" />
+                    <Text as="span">{`${t("Common:LoadingProcessing")} ${t(
+                      "Common:LoadingDescription"
+                    )}`}</Text>
+                  </div>
+                )}
+              </Scrollbar>
+            </StyledBodyContent>
 
-            <StyledSharingBody
-              ref={this.scrollRef}
-              stype="mediumBlack"
-              style={SharingBodyStyle}
-            >
-              {!isLoading ? (
-                shareDataItems.map((item, index) => (
-                  <SharingRow
-                    t={t}
-                    theme={theme}
-                    isPersonal={isPersonal}
-                    index={index}
-                    key={`${item.sharedTo.id}_${index}`}
-                    selection={selection}
-                    item={item}
-                    isMyId={isMyId}
-                    accessOptions={accessOptions}
-                    externalAccessOptions={externalAccessOptions}
-                    canShareOwnerChange={canShareOwnerChange}
-                    onChangeItemAccess={this.onChangeItemAccess}
-                    internalLink={internalLink}
-                    onRemoveUserClick={this.onRemoveUserItemClick}
-                    onShowEmbeddingPanel={this.onShowEmbeddingPanel}
-                    onToggleLink={this.onToggleLink}
-                    onShowChangeOwnerPanel={this.onShowChangeOwnerPanel}
-                    isLoading={isLoading}
-                    documentTitle={documentTitle}
-                  />
-                ))
-              ) : (
-                <div key="loader" className="panel-loader-wrapper">
-                  <Loader type="oval" size="16px" className="panel-loader" />
-                  <Text as="span">{`${t("Common:LoadingProcessing")} ${t(
-                    "Common:LoadingDescription"
-                  )}`}</Text>
-                </div>
-              )}
-              {isNotifyUsers && (
-                <div className="sharing_panel-text-area">
-                  <Textarea
-                    placeholder={t("AddShareMessage")}
-                    onChange={this.onChangeMessage}
-                    value={message}
-                    isDisabled={isLoading}
-                  />
-                </div>
-              )}
-            </StyledSharingBody>
-
-            <StyledFooter>
-              {!isPersonal && (
-                <Checkbox
-                  isChecked={isNotifyUsers}
-                  label={t("Notify users")}
-                  onChange={this.onNotifyUsersChange}
-                  className="sharing_panel-checkbox"
-                  isDisabled={isLoading}
-                />
-              )}
-              <Button
-                className="sharing_panel-button"
-                label={t("Common:SaveButton")}
-                size={isMobile ? "normal" : "small"}
-                minwidth="100px"
-                primary
-                onClick={this.onSaveClick}
-                isDisabled={isLoading}
-              />
-            </StyledFooter>
+            <Footer
+              buttonLabel={t("Common:SaveButton")}
+              checkboxLabel={t("Notify users")}
+              textareaPlaceholder={t("AddShareMessage")}
+              message={message}
+              onChangeMessage={this.onChangeMessage}
+              isPersonal={isPersonal}
+              isNotifyUsers={isNotifyUsers}
+              isLoading={isLoading}
+              onNotifyUsersChange={this.onNotifyUsersChange}
+              onSaveClick={this.onSaveClick}
+            />
           </StyledContent>
         </Aside>
 
