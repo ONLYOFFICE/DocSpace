@@ -12,8 +12,16 @@ const StyledButton = styled(Button)`
   height: 50px;
   min-width: fit-content;
 
-  background-color: ${(props) =>
-    props.theme.button.backgroundColor.primary} !important;
+  background-color: ${(props) => props.theme.button.backgroundColor.base};
+
+  :hover {
+    background-color: ${(props) =>
+      props.theme.button.backgroundColor.baseHover};
+  }
+  :active {
+    background-color: ${(props) =>
+      props.theme.button.backgroundColor.baseActive};
+  }
 
   svg {
     path {
