@@ -10,7 +10,7 @@ import Slider from "@appserver/components/slider";
 import Checkbox from "@appserver/components/checkbox";
 import SectionLoader from "../sub-components/section-loader";
 import { getLanguage } from "@appserver/common/utils";
-import { ButtonsWrapper, LearnMoreWrapper } from "../StyledSecurity";
+import { LearnMoreWrapper } from "../StyledSecurity";
 import toastr from "@appserver/components/toast/toastr";
 import Buttons from "../sub-components/buttons";
 import { size } from "@appserver/components/utils/device";

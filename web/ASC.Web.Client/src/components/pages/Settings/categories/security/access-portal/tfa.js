@@ -10,7 +10,7 @@ import toastr from "@appserver/components/toast/toastr";
 import SectionLoader from "../sub-components/section-loader";
 import { getLanguage } from "@appserver/common/utils";
 import Buttons from "../sub-components/buttons";
-import { ButtonsWrapper, LearnMoreWrapper } from "../StyledSecurity";
+import { LearnMoreWrapper } from "../StyledSecurity";
 import { size } from "@appserver/components/utils/device";
 
 const MainContainer = styled.div`
