@@ -11,8 +11,7 @@ import Slider from "@appserver/components/slider";
 import Checkbox from "@appserver/components/checkbox";
 import SectionLoader from "../sub-components/section-loader";
 import { getLanguage } from "@appserver/common/utils";
-import { isMobile } from "react-device-detect";
-import { ButtonsWrapper } from "../StyledSecurity";
+import { ButtonsWrapper, LearnMoreWrapper } from "../StyledSecurity";
 import toastr from "@appserver/components/toast/toastr";
 import { size } from "@appserver/components/utils/device";
 
@@ -35,10 +34,6 @@ const MainContainer = styled.div`
     gap: 8px;
     margin-top: 18px;
     margin-bottom: 24px;
-  }
-
-  .learn-more {
-    margin-bottom: 20px;
   }
 `;
 
@@ -143,21 +138,19 @@ const PasswordStrength = (props) => {
   if (!isLoading) return <SectionLoader />;
   return (
     <MainContainer>
-      {isMobile && (
-        <div className="learn-more">
-          <Text className="page-subtitle">
-            {t("SettingPasswordStrengthHelper")}
-          </Text>
-          <Link
-            color="#316DAA"
-            target="_blank"
-            isHovered
-            href={`https://helpcenter.onlyoffice.com/${lng}/administration/configuration.aspx#ChangingSecuritySettings_block`}
-          >
-            {t("Common:LearnMore")}
-          </Link>
-        </div>
-      )}
+      <LearnMoreWrapper>
+        <Text className="page-subtitle">
+          {t("SettingPasswordStrengthHelper")}
+        </Text>
+        <Link
+          color="#316DAA"
+          target="_blank"
+          isHovered
+          href={`https://helpcenter.onlyoffice.com/${lng}/administration/configuration.aspx#ChangingSecuritySettings_block`}
+        >
+          {t("Common:LearnMore")}
+        </Link>
+      </LearnMoreWrapper>
 
       <Text fontSize="14px" fontWeight="600" className="length-subtitle">
         {t("PasswordMinLenght")}

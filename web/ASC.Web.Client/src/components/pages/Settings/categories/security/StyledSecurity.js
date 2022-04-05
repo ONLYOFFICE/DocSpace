@@ -105,3 +105,13 @@ export const ButtonsWrapper = styled.div`
     width: calc(100vw - 32px);
   }
 `;
+
+export const LearnMoreWrapper = styled.div`
+  display: none;
+
+  @media (max-width: 600px) {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+  }
+`;
