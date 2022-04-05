@@ -174,8 +174,11 @@ const TrustedMail = (props) => {
 };
 
 export default inject(({ auth, setup }) => {
-  const { trustedDomainsType, trustedDomains } = auth.settingsStore;
-  const { setMailDomainSettings } = setup;
+  const {
+    trustedDomainsType,
+    trustedDomains,
+    setMailDomainSettings,
+  } = auth.settingsStore;
 
   return {
     trustedDomainsType,

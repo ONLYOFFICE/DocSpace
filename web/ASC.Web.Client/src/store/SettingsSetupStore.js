@@ -227,10 +227,6 @@ class SettingsSetupStore {
     const res = await api.portal.setPortalRename(alias);
   };
 
-  setMailDomainSettings = async (data) => {
-    const res = await api.settings.setMailDomainSettings(data);
-  };
-
   setDNSSettings = async (dnsName, enable) => {
     const res = await api.settings.setMailDomainSettings(dnsName, enable);
   };
