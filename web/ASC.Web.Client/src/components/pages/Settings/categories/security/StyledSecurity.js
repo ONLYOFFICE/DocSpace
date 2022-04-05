@@ -101,7 +101,7 @@ export const ButtonsWrapper = styled.div`
     }
   }
 
-  @media (max-width: 375px) {
+  @media (max-width: 430px) {
     width: calc(100vw - 32px);
   }
 `;
