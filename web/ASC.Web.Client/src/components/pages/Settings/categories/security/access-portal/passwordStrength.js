@@ -14,6 +14,8 @@ import { LearnMoreWrapper } from "../StyledSecurity";
 import toastr from "@appserver/components/toast/toastr";
 import Buttons from "../sub-components/buttons";
 import { size } from "@appserver/components/utils/device";
+import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
+import isEqual from "lodash/isEqual";
 
 const MainContainer = styled.div`
   width: 100%;
@@ -49,16 +51,33 @@ const PasswordStrength = (props) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const getSettings = () => {
-    setCurrentState([
-      passwordSettings.minLength,
-      passwordSettings.upperCase,
-      passwordSettings.digits,
-      passwordSettings.specSymbols,
-    ]);
-    setPasswordLen(passwordSettings.minLength);
-    setUseUpperCase(passwordSettings.upperCase);
-    setUseDigits(passwordSettings.digits);
-    setUseSpecialSymbols(passwordSettings.specSymbols);
+    const currentSettings = getFromSessionStorage("currentPasswordSettings");
+
+    if (currentSettings) {
+      setPasswordLen(currentSettings.minLength);
+      setUseUpperCase(currentSettings.upperCase);
+      setUseDigits(currentSettings.digits);
+      setUseSpecialSymbols(currentSettings.specSymbols);
+    } else {
+      setPasswordLen(passwordSettings.minLength);
+      setUseUpperCase(passwordSettings.upperCase);
+      setUseDigits(passwordSettings.digits);
+      setUseSpecialSymbols(passwordSettings.specSymbols);
+    }
+
+    const defaultSettings = getFromSessionStorage("defaultPasswordSettings");
+    const defaultData = {
+      minLength: passwordSettings.minLength,
+      upperCase: passwordSettings.upperCase,
+      digits: passwordSettings.digits,
+      specSymbols: passwordSettings.specSymbols,
+    };
+
+    saveToSessionStorage(
+      "defaultPasswordSettings",
+      defaultSettings || defaultData
+    );
+
     setIsLoading(true);
   };
 
@@ -69,6 +88,23 @@ const PasswordStrength = (props) => {
     return () => window.removeEventListener("resize", checkWidth);
   }, []);
 
+  useEffect(() => {
+    const defaultSettings = getFromSessionStorage("defaultPasswordSettings");
+    const newSettings = {
+      minLength: passwordLen,
+      upperCase: useUpperCase,
+      digits: useDigits,
+      specSymbols: useSpecialSymbols,
+    };
+    saveToSessionStorage("currentPasswordSettings", newSettings);
+
+    if (isEqual(defaultSettings, newSettings)) {
+      setShowReminder(false);
+    } else {
+      setShowReminder(true);
+    }
+  }, [passwordLen, useUpperCase, useDigits, useSpecialSymbols]);
+
   const checkWidth = () => {
     window.innerWidth > size.smallTablet &&
       history.location.pathname.includes("password") &&
@@ -77,36 +113,18 @@ const PasswordStrength = (props) => {
 
   const onSliderChange = (e) => {
     setPasswordLen(Number(e.target.value));
-    if (
-      Number(e.target.value) === currentState[0] &&
-      useUpperCase === currentState[1] &&
-      useDigits === currentState[2] &&
-      useSpecialSymbols === currentState[3]
-    )
-      setShowReminder(false);
-    else setShowReminder(true);
   };
 
   const onClickCheckbox = (e) => {
-    setShowReminder(true);
     switch (e.target.value) {
       case "upperCase":
         setUseUpperCase(e.target.checked);
-        e.target.checked === currentState[1] &&
-          passwordLen === currentState[0] &&
-          setShowReminder(false);
         break;
       case "digits":
         setUseDigits(e.target.checked);
-        e.target.checked === currentState[2] &&
-          passwordLen === currentState[0] &&
-          setShowReminder(false);
         break;
       case "special":
         setUseSpecialSymbols(e.target.checked);
-        e.target.checked === currentState[3] &&
-          passwordLen === currentState[0] &&
-          setShowReminder(false);
         break;
     }
   };
@@ -120,17 +138,24 @@ const PasswordStrength = (props) => {
     )
       .then(() => {
         setShowReminder(false);
+        saveToSessionStorage("defaultPasswordSettings", {
+          minLength: passwordLen,
+          upperCase: useUpperCase,
+          digits: useDigits,
+          specSymbols: useSpecialSymbols,
+        });
         toastr.success(t("SuccessfullySaveSettingsMessage"));
       })
       .catch((e) => toastr.error(e));
   };
 
   const onCancelClick = () => {
+    const defaultSettings = getFromSessionStorage("defaultPasswordSettings");
+    setPasswordLen(defaultSettings.minLength);
+    setUseUpperCase(defaultSettings.upperCase);
+    setUseDigits(defaultSettings.digits);
+    setUseSpecialSymbols(defaultSettings.specSymbols);
     setShowReminder(false);
-    setPasswordLen(currentState[0]);
-    setUseUpperCase(currentState[1]);
-    setUseDigits(currentState[2]);
-    setUseSpecialSymbols(currentState[3]);
   };
 
   const lng = getLanguage(localStorage.getItem("language") || "en");
