@@ -51,19 +51,6 @@ const PasswordStrength = (props) => {
 
   const getSettings = () => {
     const currentSettings = getFromSessionStorage("currentPasswordSettings");
-
-    if (currentSettings) {
-      setPasswordLen(currentSettings.minLength);
-      setUseUpperCase(currentSettings.upperCase);
-      setUseDigits(currentSettings.digits);
-      setUseSpecialSymbols(currentSettings.specSymbols);
-    } else {
-      setPasswordLen(passwordSettings.minLength);
-      setUseUpperCase(passwordSettings.upperCase);
-      setUseDigits(passwordSettings.digits);
-      setUseSpecialSymbols(passwordSettings.specSymbols);
-    }
-
     const defaultSettings = getFromSessionStorage("defaultPasswordSettings");
 
     if (defaultSettings) {
@@ -78,6 +65,18 @@ const PasswordStrength = (props) => {
       saveToSessionStorage("defaultPasswordSettings", defaultData);
     }
 
+    if (currentSettings) {
+      setPasswordLen(currentSettings.minLength);
+      setUseUpperCase(currentSettings.upperCase);
+      setUseDigits(currentSettings.digits);
+      setUseSpecialSymbols(currentSettings.specSymbols);
+    } else {
+      setPasswordLen(passwordSettings.minLength);
+      setUseUpperCase(passwordSettings.upperCase);
+      setUseDigits(passwordSettings.digits);
+      setUseSpecialSymbols(passwordSettings.specSymbols);
+    }
+
     setIsLoading(true);
   };
 
@@ -86,10 +85,12 @@ const PasswordStrength = (props) => {
     getSettings();
     window.addEventListener("resize", checkWidth);
     return () => window.removeEventListener("resize", checkWidth);
-  }, []);
+  }, [isLoading]);
 
   useEffect(() => {
+    if (!isLoading) return;
     const defaultSettings = getFromSessionStorage("defaultPasswordSettings");
+
     const newSettings = {
       minLength: passwordLen,
       upperCase: useUpperCase,
@@ -138,12 +139,14 @@ const PasswordStrength = (props) => {
     )
       .then(() => {
         setShowReminder(false);
-        saveToSessionStorage("defaultPasswordSettings", {
+        const data = {
           minLength: passwordLen,
           upperCase: useUpperCase,
           digits: useDigits,
           specSymbols: useSpecialSymbols,
-        });
+        };
+        saveToSessionStorage("currentPasswordSettings", data);
+        saveToSessionStorage("defaultPasswordSettings", data);
         toastr.success(t("SuccessfullySaveSettingsMessage"));
       })
       .catch((e) => toastr.error(e));
