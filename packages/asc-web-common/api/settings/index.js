@@ -54,10 +54,17 @@ export function setDNSSettings(dnsName, enable) {
   });
 }
 
+export function getIpRestrictions() {
+  return request({
+    method: "get",
+    url: "/settings/iprestrictions",
+  });
+}
+
 export function setIpRestrictions(data) {
   return request({
     method: "put",
-    url: "/settings/iprestrictions.json",
+    url: "/settings/iprestrictions",
     data,
   });
 }
@@ -65,7 +72,7 @@ export function setIpRestrictions(data) {
 export function setIpRestrictionsEnable(data) {
   return request({
     method: "put",
-    url: "/settings/iprestrictions/settings.json",
+    url: "/settings/iprestrictions/settings",
     data,
   });
 }
