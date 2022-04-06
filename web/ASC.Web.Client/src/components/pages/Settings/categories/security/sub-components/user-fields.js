@@ -58,6 +58,7 @@ const UserFields = (props) => {
           return (
             <StyledInputWrapper key={`domain-input-${index}`}>
               <TextInput
+                id={`domain-input-${index}`}
                 value={input}
                 onChange={(e) => onChangeInput(e, index)}
                 hasError={error}
