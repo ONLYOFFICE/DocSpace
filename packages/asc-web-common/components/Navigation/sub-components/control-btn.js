@@ -5,6 +5,7 @@ import ContextMenuButton from "@appserver/components/context-menu-button";
 import IconButton from "@appserver/components/icon-button";
 import { isMobile } from "react-device-detect";
 import { tablet } from "@appserver/components/utils/device";
+import { Base } from "@appserver/components/themes";
 
 const StyledContainer = styled.div`
   margin-left: 20px;
@@ -30,7 +31,8 @@ const StyledContainer = styled.div`
   }
 
   .option-button {
-    margin-right: 8px;
+    margin-left: auto;
+    margin-right: 15px;
     min-width: 17px;
   }
 
@@ -38,6 +40,35 @@ const StyledContainer = styled.div`
     min-width: 17px;
   }
 `;
+
+const StyledInfoPanelToggleWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  align-self: center;
+  justify-content: center;
+  margin-left: ${({ isRootFolder }) => (isRootFolder ? "auto" : "none")};
+
+  .info-panel-toggle-bg {
+    height: 32px;
+    width: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: ${(props) =>
+      props.isInfoPanelVisible
+        ? props.theme.infoPanel.sectionHeaderToggleBgActive
+        : props.theme.infoPanel.sectionHeaderToggleBg};
+
+    path {
+      fill: ${(props) =>
+        props.isInfoPanelVisible
+          ? props.theme.infoPanel.sectionHeaderToggleIconActive
+          : props.theme.infoPanel.sectionHeaderToggleIcon};
+    }
+  }
+`;
+StyledInfoPanelToggleWrapper.defaultProps = { theme: Base };
 
 const ControlButtons = ({
   personal,
@@ -49,6 +80,8 @@ const ControlButtons = ({
   isRecycleBinFolder,
   isEmptyFilesList,
   clearTrash,
+  isInfoPanelVisible,
+  toggleInfoPanel,
 }) => {
   return (
     <StyledContainer isDropBox={isDropBox}>
@@ -96,6 +129,20 @@ const ControlButtons = ({
       ) : (
         <></>
       )}
+      <StyledInfoPanelToggleWrapper
+        isRootFolder={isRootFolder}
+        isInfoPanelVisible={isInfoPanelVisible}
+      >
+        <div className="info-panel-toggle-bg">
+          <IconButton
+            className="info-panel-toggle"
+            iconName="images/panel.svg"
+            size="16"
+            isFill={true}
+            onClick={toggleInfoPanel}
+          />
+        </div>
+      </StyledInfoPanelToggleWrapper>
     </StyledContainer>
   );
 };

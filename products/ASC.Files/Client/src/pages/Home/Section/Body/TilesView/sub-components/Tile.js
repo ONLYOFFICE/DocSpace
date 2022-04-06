@@ -146,15 +146,17 @@ const StyledFileTileTop = styled.div`
   align-items: baseline;
   height: 156px;
   position: relative;
+  border-radius: 6px 6px 0 0;
 
   .thumbnail-image {
     pointer-events: none;
     position: absolute;
     height: 100%;
     width: 100%;
-    object-fit: ${(props) => (props.isMedia ? "cover" : "none")};
+    object-fit: cover;
     object-position: top;
     z-index: 0;
+    border-radius: 6px 6px 0 0;
   }
 
   .temporary-icon > .injected-svg {
