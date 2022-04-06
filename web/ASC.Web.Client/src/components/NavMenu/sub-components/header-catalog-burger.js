@@ -8,10 +8,12 @@ import { Base } from "@appserver/components/themes";
 
 const StyledIconBox = styled.div`
   @media ${mobile} {
-    display: ${(props) => (props.isProduct ? "flex !important" : "none")};
+    display: flex;
   }
-  display: ${(props) => (props.isProduct && isMobileOnly ? "flex" : "none")};
+  display: ${isMobileOnly ? "flex" : "none"};
   align-items: center;
+
+  padding-left: 16px;
 `;
 
 const StyledMenuIcon = styled(MenuIcon)`
@@ -31,12 +33,7 @@ const HeaderCatalogBurger = (props) => {
   const { isProduct, onClick, ...rest } = props;
 
   return (
-    <StyledIconBox
-      isProduct={isProduct}
-      onClick={onClick}
-      name="catalog-burger"
-      {...rest}
-    >
+    <StyledIconBox onClick={onClick} name="catalog-burger" {...rest}>
       <StyledMenuIcon />
     </StyledIconBox>
   );

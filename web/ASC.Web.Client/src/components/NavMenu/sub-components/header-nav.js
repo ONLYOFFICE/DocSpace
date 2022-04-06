@@ -1,16 +1,16 @@
 import React, { useCallback, useState } from "react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import NavItem from "./nav-item";
 import ProfileActions from "./profile-actions";
 import { useTranslation } from "react-i18next";
-import { tablet } from "@appserver/components/utils/device";
+import { tablet, mobile } from "@appserver/components/utils/device";
 import { combineUrl, deleteCookie } from "@appserver/common/utils";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
 import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../../../package.json";
-import { isDesktop, isMobile } from "react-device-detect";
+import { isDesktop, isMobile, isMobileOnly } from "react-device-detect";
 import AboutDialog from "../../pages/About/AboutDialog";
 import DebugInfoDialog from "../../pages/DebugInfo";
 import HeaderCatalogBurger from "./header-catalog-burger";
@@ -57,6 +57,20 @@ const StyledNav = styled.nav`
   .icon-profile-menu {
     cursor: pointer;
   }
+
+  ${isMobile &&
+  css`
+    padding: 0 16px 0 16px !important;
+  `}
+
+  @media ${mobile} {
+    padding: 0 0 0 16px;
+  }
+
+  ${isMobileOnly &&
+  css`
+    padding: 0 0 0 16px !important;
+  `}
 `;
 const HeaderNav = ({
   history,
@@ -71,10 +85,9 @@ const HeaderNav = ({
   buildVersionInfo,
   debugInfo,
   settingsModule,
-  currentProductId,
-  toggleArticleOpen,
 
   changeTheme,
+  isDarkMode,
 }) => {
   const { t } = useTranslation(["NavMenu", "Common", "About"]);
   const [visibleAboutDialog, setVisibleAboutDialog] = useState(false);
@@ -147,8 +160,11 @@ const HeaderNav = ({
         }),
       },
       {
-        key: "ChangeTheme",
-        ...(!isPersonal && { label: "Change theme", onClick: changeTheme }),
+        key: "DarkMode",
+        label: t("Common:DarkMode"),
+        onClick: changeTheme,
+        withToggle: true,
+        isChecked: isDarkMode,
       },
       {
         key: "AboutBtn",
@@ -172,7 +188,7 @@ const HeaderNav = ({
     }
 
     return actions;
-  }, [onProfileClick, onAboutClick, onLogoutClick]);
+  }, [onProfileClick, onAboutClick, onLogoutClick, isDarkMode, changeTheme]);
   //console.log("HeaderNav render");
   return (
     <StyledNav className="profileMenuIcon hidingHeader">
@@ -183,12 +199,11 @@ const HeaderNav = ({
             user={user}
             userIsUpdate={userIsUpdate}
             setUserIsUpdate={setUserIsUpdate}
-            isProduct={currentProductId !== "home"}
           />
-          <HeaderCatalogBurger
+          {/* <HeaderCatalogBurger
             isProduct={currentProductId !== "home"}
             onClick={toggleArticleOpen}
-          />
+          /> */}
         </>
       ) : (
         <></>
@@ -243,11 +258,14 @@ export default withRouter(
       toggleArticleOpen,
       buildVersionInfo,
       debugInfo,
+      theme,
       changeTheme,
     } = settingsStore;
     const { user, userIsUpdate, setUserIsUpdate } = userStore;
     const modules = auth.availableModules;
     const settingsModule = modules.find((module) => module.id === "settings");
+
+    const isDarkMode = !theme.isBase;
 
     return {
       isPersonal,
@@ -268,6 +286,7 @@ export default withRouter(
       debugInfo,
       settingsModule,
       changeTheme,
+      isDarkMode,
     };
   })(observer(HeaderNav))
 );

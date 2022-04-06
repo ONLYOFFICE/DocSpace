@@ -119,7 +119,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
     return [firstError, errors];
   };
   render() {
-    const { isMaxProgress, thirdPartyStorage } = this.props;
+    const { isMaxProgress, thirdPartyStorage, buttonSize } = this.props;
     const {
       availableOptions,
       selectedStorage,
@@ -133,6 +133,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
       selectedStorage: availableStorage[selectedId],
       isMaxProgress,
       selectedId,
+      buttonSize,
       onMakeCopyIntoStorage: this.onMakeCopyIntoStorage,
       isInvalidForm: this.isInvalidForm,
     };

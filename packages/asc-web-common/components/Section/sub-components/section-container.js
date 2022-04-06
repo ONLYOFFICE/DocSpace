@@ -39,24 +39,20 @@ const StyledSectionContainer = styled.section`
   flex-direction: column;
 
   width: ${(props) =>
-    props.infoPanelIsVisible ? "calc(100vw - 677px)" : "calc(100vw - 256px)"};
+    props.infoPanelIsVisible ? "calc(100% - 677px)" : "100%"};
   max-width: ${(props) =>
-    props.infoPanelIsVisible ? "calc(100vw - 677px)" : "calc(100vw - 256px)"};
+    props.infoPanelIsVisible ? "calc(100vw - 677px)" : "100vw"};
 
   @media ${tablet} {
-    width: ${(props) =>
-      props.showText ? "calc(100vw - 240px)" : "calc(100vw - 52px)"};
-    max-width: ${(props) =>
-      props.showText ? "calc(100vw - 240px)" : "calc(100vw - 52px)"};
+    width: 100%;
+    max-width: 100vw !important;
     padding: 0 0 0 16px;
   }
 
   ${isMobile &&
   css`
-    width: ${(props) =>
-      props.showText ? "calc(100vw - 240px)" : "calc(100vw - 52px)"} !important;
-    max-width: ${(props) =>
-      props.showText ? "calc(100vw - 240px)" : "calc(100vw - 52px)"} !important;
+    width: 100% !important;
+    max-width: 100vw !important
     padding: 0 0 0 16px;
     ${tabletProps};
     min-width: 100px;

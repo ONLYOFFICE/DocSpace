@@ -231,13 +231,13 @@ class BackupListModalDialog extends React.Component {
                     <div className="restore_dialog-button">
                       <Button
                         primary
-                        size="medium"
+                        size="normal"
                         label={t("Common:Restore")}
                         onClick={this.onRestorePortal}
                         isDisabled={isCopyingToLocal || !isChecked}
                       />
                       <Button
-                        size="medium"
+                        size="normal"
                         label={t("Common:CloseButton")}
                         onClick={onModalClose}
                       />

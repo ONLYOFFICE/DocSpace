@@ -236,7 +236,7 @@ class WelcomePageSettings extends React.Component {
     const tooltipCustomTitlesTooltip = <CustomTitlesTooltip t={t} />;
 
     // TODO: Move to a file
-    const isMobileViewLanguageTimeSettings = (
+    const isMobileViewWelcomePageSettings = (
       <div className="category-item-wrapper">
         <div className="category-item-heading">
           <Link
@@ -267,6 +267,7 @@ class WelcomePageSettings extends React.Component {
           isVertical={true}
         >
           <TextInput
+            id="textInputContainerWelcomePage"
             scale={true}
             value={greetingTitle}
             onChange={this.onChangeGreetingTitle}
@@ -280,7 +281,7 @@ class WelcomePageSettings extends React.Component {
     return !isLoadedData ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : isMobileView ? (
-      isMobileViewLanguageTimeSettings
+      isMobileViewWelcomePageSettings
     ) : (
       <StyledSettingsComponent
         hasScroll={hasScroll}
@@ -304,6 +305,7 @@ class WelcomePageSettings extends React.Component {
           <> {settingsBlock}</>
         )}
         <SaveCancelButtons
+          id="buttonsWelcomePage"
           className="save-cancel-buttons"
           onSaveClick={this.onSaveGreetingSettings}
           onCancelClick={this.onRestoreGreetingSettings}

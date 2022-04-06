@@ -4,12 +4,24 @@ import { ReactSVG } from "react-svg";
 import styled from "styled-components";
 import Button from "../button";
 import { mobile, tablet } from "../utils/device";
+import { Base } from "../themes";
 
 const StyledButton = styled(Button)`
   border: none;
   padding: 5px 10px 0 10px;
   height: 50px;
   min-width: fit-content;
+
+  background-color: ${(props) => props.theme.button.backgroundColor.base};
+
+  :hover {
+    background-color: ${(props) =>
+      props.theme.button.backgroundColor.baseHover};
+  }
+  :active {
+    background-color: ${(props) =>
+      props.theme.button.backgroundColor.baseActive};
+  }
 
   svg {
     path {
@@ -59,6 +71,8 @@ const StyledButton = styled(Button)`
     line-height: 0;
   }
 `;
+
+StyledButton.defaultProps = { theme: Base };
 
 const GroupMenuItem = ({ item }) => {
   const { label, disabled, onClick, iconUrl, title } = item;

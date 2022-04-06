@@ -37,12 +37,12 @@ export const settingsTree = [
           },
         ],
       },
-      // {
-      //     key: '0-2',
-      //     icon: '',
-      //     link: 'whitelabel',
-      //     tKey: 'WhiteLabel',
-      // },
+      {
+        key: "0-2",
+        icon: "",
+        link: "whitelabel",
+        tKey: "WhiteLabel",
+      },
     ],
   },
   {
@@ -61,6 +61,12 @@ export const settingsTree = [
         children: [
           {
             key: "1-0-0",
+            icon: "",
+            link: "password",
+            tKey: "SettingPasswordStrength",
+          },
+          {
+            key: "1-0-1",
             icon: "",
             link: "tfa",
             tKey: "TwoFactorAuth",
