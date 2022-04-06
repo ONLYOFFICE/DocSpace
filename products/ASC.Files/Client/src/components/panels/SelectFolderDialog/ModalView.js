@@ -18,7 +18,7 @@ const SelectFolderDialogModalView = ({
   certainFolders,
   folderId,
   isLoadingData,
-  folderList,
+  resultingFolderTree,
   onSelect,
   header,
   footer,
@@ -26,7 +26,6 @@ const SelectFolderDialogModalView = ({
   showButtons,
   onSave,
   canCreate,
-  isLoading,
   primaryButtonName,
   noTreeSwitcher,
 }) => {
@@ -54,12 +53,12 @@ const SelectFolderDialogModalView = ({
             <FolderTreeBody
               theme={theme}
               isLoadingData={isLoadingData}
-              folderList={folderList}
+              resultingFolderTree={resultingFolderTree}
               onSelect={onSelect}
               withoutProvider={withoutProvider}
               certainFolders={certainFolders}
               isAvailable={isAvailable}
-              selectedKeys={[folderId]}
+              selectedKeys={[`${folderId}`]}
               heightContent={modalHeightContent}
             />
           </StyledSelectFolderPanel>
@@ -67,25 +66,24 @@ const SelectFolderDialogModalView = ({
         <ModalDialog.Footer theme={theme}>
           <StyledSelectFolderPanel theme={theme}>
             {footer}
-            {showButtons && (
-              <div className="select-folder-dialog-modal_buttons">
-                <Button
-                  theme={theme}
-                  className="select-folder-dialog-buttons-save"
-                  primary
-                  size="small"
-                  label={primaryButtonName}
-                  onClick={onSave}
-                  isDisabled={isLoadingData || !isAvailable || !canCreate}
-                />
-                <Button
-                  size="small"
-                  label={t("Common:CancelButton")}
-                  onClick={onClose}
-                  isDisabled={isLoadingData || isLoading}
-                />
-              </div>
-            )}
+
+            <div className="select-folder-dialog-modal_buttons">
+              <Button
+                theme={theme}
+                className="select-folder-dialog-buttons-save"
+                primary
+                size="small"
+                label={primaryButtonName}
+                onClick={onSave}
+                isDisabled={isLoadingData || !isAvailable || !canCreate}
+              />
+              <Button
+                size="small"
+                label={t("Common:CancelButton")}
+                onClick={onClose}
+                isDisabled={isLoadingData}
+              />
+            </div>
           </StyledSelectFolderPanel>
         </ModalDialog.Footer>
       </ModalDialog>

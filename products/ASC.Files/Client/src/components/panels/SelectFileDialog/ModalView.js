@@ -11,7 +11,7 @@ import { getFoldersTree } from "@appserver/common/api/files";
 import {
   exceptSortedByTagsFolders,
   exceptPrivacyTrashFolders,
-} from "../SelectFolderDialog/ExceptionFoldersConstants";
+} from "../SelectionPanel/ExceptionFoldersConstants";
 
 class SelectFileDialogModalView extends React.Component {
   constructor(props) {

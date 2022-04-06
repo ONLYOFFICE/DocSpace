@@ -4,13 +4,10 @@ import { I18nextProvider } from "react-i18next";
 import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 import throttle from "lodash/throttle";
-
 import { getCommonThirdPartyList } from "@appserver/common/api/settings";
 import {
   getCommonFolderList,
-  getFolder,
   getFolderPath,
-  getFoldersTree,
 } from "@appserver/common/api/files";
 
 import SelectFolderInput from "../SelectFolderInput";
@@ -19,63 +16,100 @@ import SelectFolderDialogAsideView from "./AsideView";
 import SelectFolderDialogModalView from "./ModalView";
 import stores from "../../../store/index";
 import utils from "@appserver/components/utils";
-import { FolderType } from "@appserver/common/constants";
-import { isArrayEqual } from "@appserver/components/utils/array";
 import store from "studio/store";
 import toastr from "studio/toastr";
-import {
-  exceptSortedByTagsFolders,
-  exceptPrivacyTrashFolders,
-} from "./ExceptionFoldersConstants";
+
+import SelectionPanel from "../SelectionPanel/SelectionPanelBody";
 
 const { auth: authStore } = store;
 
 const { desktop } = utils.device;
 
-let pathName = "";
-let folderList;
-
 class SelectFolderModalDialog extends React.Component {
   constructor(props) {
     super(props);
-    const {
-      isSetFolderImmediately,
-      id,
-      displayType,
-      selectionButtonPrimary,
-      t,
-    } = this.props;
-
-    const isNeedFolder = id ? true : isSetFolderImmediately;
-    this.buttonName = selectionButtonPrimary
-      ? t("Common:Select")
-      : t("Common:SaveButton");
+    const { id, displayType } = this.props;
 
     this.state = {
       isLoadingData: false,
-      isLoading: false,
-      isAvailable: true,
-      certainFolders: true,
-      folderId: "",
+      isInitialLoader: false,
+      folderId: id ? id : "",
       displayType: displayType || this.getDisplayType(),
-      isSetFolderImmediately: isNeedFolder,
       canCreate: true,
+      isAvailable: true,
     };
     this.throttledResize = throttle(this.setDisplayType, 300);
-    this.folderTitle = "";
     this.noTreeSwitcher = false;
   }
 
-  componentDidMount() {
-    const { onSetLoadingData, onSetLoadingInput, displayType } = this.props;
-
-    authStore.init(true); // it will work if authStore is not initialized
+  async componentDidMount() {
+    const {
+      treeFolders,
+      foldersType,
+      id,
+      onSetBaseFolderPath,
+      onSelectFolder,
+      foldersList,
+      treeFromInput,
+      isSetFolderImmediately,
+      setSelectedNode,
+      setSelectedFolder,
+      setExpandedPanelKeys,
+      displayType,
+    } = this.props;
 
     !displayType && window.addEventListener("resize", this.throttledResize);
-    this.setState({ isLoadingData: true }, function () {
-      onSetLoadingData && onSetLoadingData(true);
-      onSetLoadingInput && onSetLoadingInput(true);
-      this.trySwitch();
+
+    let timerId = setTimeout(() => {
+      this.setState({ isInitialLoader: true });
+    }, 1000);
+
+    let resultingFolderTree, resultingId;
+
+    try {
+      [
+        resultingFolderTree,
+        resultingId,
+      ] = await SelectionPanel.getBasicFolderInfo(
+        treeFolders,
+        foldersType,
+        id,
+        onSetBaseFolderPath,
+        onSelectFolder,
+        foldersList,
+        isSetFolderImmediately,
+        setSelectedNode,
+        setSelectedFolder,
+        setExpandedPanelKeys
+      );
+
+      clearTimeout(timerId);
+      timerId = null;
+    } catch (e) {
+      toastr.error(e);
+
+      clearTimeout(timerId);
+      timerId = null;
+      this.setState({ isInitialLoader: false });
+
+      return;
+    }
+
+    const tree = treeFromInput ? treeFromInput : resultingFolderTree;
+
+    if (tree.length === 0) {
+      this.setState({ isAvailable: false });
+      onSelectFolder(null);
+      //this.loadersCompletes();
+      return;
+    }
+
+    this.setState({
+      resultingFolderTree: tree,
+      isInitialLoader: false,
+      ...((foldersType === "common" || isSetFolderImmediately) && {
+        folderId: treeFromInput ? id : resultingId,
+      }),
     });
   }
 
@@ -95,7 +129,7 @@ class SelectFolderModalDialog extends React.Component {
     ) {
       this.setState({
         canCreate: canCreate,
-        isLoading: false,
+        isLoadingData: false,
       });
     }
 
@@ -103,88 +137,6 @@ class SelectFolderModalDialog extends React.Component {
       this.onResetInfo();
     }
   }
-  trySwitch = async () => {
-    const {
-      folderPath,
-      onSelectFolder,
-      onSetBaseFolderPath,
-      foldersType,
-      id,
-      selectedFolderId,
-      foldersList,
-    } = this.props;
-
-    switch (foldersType) {
-      case "exceptSortedByTags":
-        try {
-          const foldersTree = await getFoldersTree();
-
-          [folderList, this.noTreeSwitcher] = SelectFolderDialog.convertFolders(
-            foldersTree,
-            exceptSortedByTagsFolders
-          );
-          this.setBaseSettings();
-        } catch (err) {
-          console.error("error", err);
-          this.loadersCompletes();
-        }
-        break;
-      case "exceptPrivacyTrashFolders":
-        try {
-          const foldersTree = await getFoldersTree();
-          [folderList, this.noTreeSwitcher] = SelectFolderDialog.convertFolders(
-            foldersTree,
-            exceptPrivacyTrashFolders
-          );
-          this.setBaseSettings();
-        } catch (err) {
-          console.error(err);
-          this.loadersCompletes();
-        }
-        break;
-
-      case "common":
-        try {
-          folderList = await SelectFolderDialog.getCommonFolders();
-          folderPath.length === 0 &&
-            !selectedFolderId &&
-            onSelectFolder &&
-            onSelectFolder(`${id ? id : folderList[0].id}`);
-
-          this.setState({
-            folderId: `${
-              selectedFolderId ? selectedFolderId : id ? id : folderList[0].id
-            }`,
-          });
-
-          !id &&
-            !selectedFolderId &&
-            onSetBaseFolderPath &&
-            onSetBaseFolderPath(folderList[0].title);
-
-          this.setFolderInfo();
-        } catch (err) {
-          console.error(err);
-          this.loadersCompletes();
-        }
-
-        break;
-
-      case "third-party":
-        try {
-          folderList = foldersList
-            ? foldersList
-            : await SelectFolderDialog.getCommonThirdPartyList();
-
-          this.setBaseSettings();
-        } catch (err) {
-          console.error(err);
-
-          this.loadersCompletes();
-        }
-        break;
-    }
-  };
 
   loadersCompletes = () => {
     const {
@@ -199,161 +151,6 @@ class SelectFolderModalDialog extends React.Component {
     this.setState({
       isLoadingData: false,
     });
-  };
-  setBaseSettings = async () => {
-    const { isSetFolderImmediately } = this.state;
-    const {
-      onSelectFolder,
-      onSetBaseFolderPath,
-      id,
-      selectedFolderId,
-      showButtons,
-    } = this.props;
-
-    if (folderList.length === 0) {
-      this.setState({ isAvailable: false });
-      onSelectFolder(null);
-      this.loadersCompletes();
-      return;
-    }
-
-    !id && showButtons && this.setFolderToTree(folderList[0].id);
-
-    isSetFolderImmediately &&
-      !selectedFolderId &&
-      onSelectFolder &&
-      onSelectFolder(
-        `${selectedFolderId ? selectedFolderId : id ? id : folderList[0].id}`
-      );
-
-    isSetFolderImmediately &&
-      this.setState({
-        folderId: `${
-          selectedFolderId ? selectedFolderId : id ? id : folderList[0].id
-        }`,
-      });
-
-    if (onSetBaseFolderPath) {
-      try {
-        this.folderTitle = await SelectFolderDialog.getFolderPath(
-          id ? id : folderList[0].id
-        );
-
-        !id &&
-          !selectedFolderId &&
-          isSetFolderImmediately &&
-          onSetBaseFolderPath(this.folderTitle);
-      } catch (err) {
-        console.error(err);
-      }
-    }
-
-    this.setFolderInfo();
-  };
-
-  setFolderInfo = () => {
-    const {
-      id,
-      onSetFileName,
-      fileName,
-      selectedFolderId,
-      dialogWithFiles,
-      onSetBaseFolderPath,
-    } = this.props;
-
-    fileName && onSetFileName && onSetFileName(fileName);
-
-    if (!id && !selectedFolderId) {
-      this.loadersCompletes();
-      return;
-    }
-
-    if (selectedFolderId) {
-      onSetBaseFolderPath
-        ? this.setBaseFolderPath(selectedFolderId)
-        : this.loadersCompletes();
-    }
-
-    if (id && !selectedFolderId) {
-      if (!dialogWithFiles) this.setSelectedFolder(id);
-      else {
-        this.setBaseFolderPath(id);
-      }
-    }
-  };
-
-  setBaseFolderPath = () => {
-    const { onSetBaseFolderPath, selectedFolderId } = this.props;
-
-    SelectFolderDialog.getFolderPath(selectedFolderId)
-      .then((folderPath) => (this.folderTitle = folderPath))
-      .then(() => onSetBaseFolderPath(this.folderTitle))
-      .catch((error) => console.log("error", error))
-      .finally(() => {
-        this.loadersCompletes();
-      });
-  };
-  setSelectedFolder = async (id) => {
-    const { onSetBaseFolderPath } = this.props;
-
-    let folder,
-      folderPath,
-      requests = [];
-
-    requests.push(getFolder(id));
-
-    if (onSetBaseFolderPath) {
-      requests.push(getFolderPath(id));
-    }
-
-    try {
-      [folder, folderPath] = await Promise.all(requests);
-    } catch (e) {
-      console.error(e);
-    }
-
-    folder && this.setFolderObjectToTree(id, folder);
-
-    if (onSetBaseFolderPath && folderPath) {
-      this.folderTitle = SelectFolderInput.setFullFolderPath(folderPath);
-      onSetBaseFolderPath(this.folderTitle);
-    }
-
-    this.loadersCompletes();
-  };
-
-  setFolderToTree = (id) => {
-    getFolder(id)
-      .then((data) => {
-        this.setFolderObjectToTree(id, data);
-      })
-      .catch((error) => console.log("error", error));
-  };
-
-  setFolderObjectToTree = (id, data) => {
-    const {
-      setSelectedNode,
-      setSelectedFolder,
-      selectionButtonPrimary,
-      setExpandedPanelKeys,
-      onSetBaseFolderPath,
-    } = this.props;
-    const isInput = !!onSetBaseFolderPath;
-
-    if (!selectionButtonPrimary || isInput) {
-      //TODO:  it need for canCreate function now, will need when passed the folder id - need to come up with a different solution.
-      setSelectedNode([id + ""]);
-      const newPathParts = SelectFolderDialog.convertPathParts(data.pathParts);
-
-      isInput && setExpandedPanelKeys(newPathParts);
-
-      setSelectedFolder({
-        folders: data.folders,
-        ...data.current,
-        pathParts: newPathParts,
-        ...{ new: data.new },
-      });
-    }
   };
 
   componentWillUnmount() {
@@ -388,130 +185,52 @@ class SelectFolderModalDialog extends React.Component {
 
   onSelect = async (folder) => {
     const {
-      onSelectFolder,
-      onClose,
-      showButtons,
-      onSetFullPath,
-      selectionButtonPrimary,
-      onSetLoadingData,
-      onSetLoadingInput,
+      setSelectedNode,
+      setExpandedPanelKeys,
+      setSelectedFolder,
     } = this.props;
-    const { folderId } = this.state;
-
-    let requests = [];
-
-    if (isArrayEqual([folder[0]], [folderId])) {
-      return;
-    }
-
-    onSetLoadingData && onSetLoadingData(true);
-    onSetLoadingInput && onSetLoadingInput(true);
 
     this.setState({
       folderId: folder[0],
     });
 
-    let folderInfo, folderPath;
-
-    if (showButtons && !selectionButtonPrimary) {
-      this.setState({
-        isLoading: true,
-        canCreate: false,
-      });
-    }
-
-    try {
-      if (showButtons && onSetFullPath) {
-        requests.push(getFolder(folder[0]), getFolderPath(folder));
-
-        [folderInfo, folderPath] = await Promise.all(requests);
-      } else {
-        showButtons
-          ? (folderInfo = await getFolder(folder[0]))
-          : (folderPath = await getFolderPath(folder));
-      }
-
-      if (folderInfo) {
-        this.setFolderObjectToTree(folder[0], folderInfo);
-      }
-
-      if (folderPath) {
-        pathName = SelectFolderInput.setFullFolderPath(folderPath);
-        onSetFullPath && onSetFullPath(pathName);
-      }
-    } catch (e) {
-      console.error(e);
-      toastr.error();
-
-      if (showButtons) {
-        this.setState({
-          isLoading: false,
-          canCreate: true,
-        });
-
-        onClose && onClose();
-      }
-    }
-
-    onSelectFolder && onSelectFolder(folder[0]);
-    !showButtons && onClose && onClose();
-
-    this.loadersCompletes();
+    SelectionPanel.setFolderObjectToTree(
+      folder[0],
+      setSelectedNode,
+      setExpandedPanelKeys,
+      setSelectedFolder
+    );
   };
+
   onSave = (e) => {
-    const { onClose, onSave } = this.props;
+    const { onClose, onSave, onSetNewFolderPath, onSelectFolder } = this.props;
     const { folderId } = this.state;
 
     onSave && onSave(e, folderId);
+    onSetNewFolderPath && onSetNewFolderPath(folderId);
+    onSelectFolder && onSelectFolder(folderId);
+
     onClose && onClose();
   };
 
   onResetInfo = async () => {
-    const { id, foldersType, onSelectFolder } = this.props;
-    switch (foldersType) {
-      case "common":
-        try {
-          if (!id) {
-            folderList = await SelectFolderDialog.getCommonFolders();
-          }
+    const {
+      id,
+      setSelectedNode,
+      setExpandedPanelKeys,
+      setSelectedFolder,
+    } = this.props;
 
-          onSelectFolder && onSelectFolder(`${id ? id : folderList[0].id}`);
+    SelectionPanel.setFolderObjectToTree(
+      id,
+      setSelectedNode,
+      setExpandedPanelKeys,
+      setSelectedFolder
+    );
 
-          this.setState({
-            folderId: `${id ? id : folderList[0].id}`,
-          });
-
-          this.setFolderToTree(id ? id : folderList[0].id);
-
-          this.loadersCompletes();
-        } catch (err) {
-          console.error(err);
-          this.loadersCompletes();
-        }
-
-        break;
-
-      case "third-party":
-        try {
-          if (!id) {
-            folderList = await SelectFolderDialog.getCommonThirdPartyList();
-          }
-
-          onSelectFolder && onSelectFolder(`${id ? id : folderList[0].id}`);
-
-          this.setState({
-            folderId: `${id ? id : folderList[0].id}`,
-          });
-
-          this.setFolderToTree(id ? id : folderList[0].id);
-          this.loadersCompletes();
-        } catch (err) {
-          console.error(err);
-
-          this.loadersCompletes();
-        }
-        break;
-    }
+    this.setState({
+      folderId: id,
+    });
   };
 
   render() {
@@ -528,17 +247,18 @@ class SelectFolderModalDialog extends React.Component {
       header,
       headerName,
       footer,
-      showButtons,
+      buttonName,
     } = this.props;
     const {
-      isAvailable,
-      certainFolders,
       folderId,
       displayType,
-      isLoadingData,
       canCreate,
-      isLoading,
+      isLoadingData,
+      isAvailable,
+      resultingFolderTree,
     } = this.state;
+
+    const primaryButtonName = buttonName ? buttonName : t("Common:SaveButton");
 
     return displayType === "aside" ? (
       <SelectFolderDialogAsideView
@@ -550,21 +270,19 @@ class SelectFolderModalDialog extends React.Component {
         withoutProvider={withoutProvider}
         isNeedArrowIcon={isNeedArrowIcon}
         asideHeightContent={asideHeightContent}
-        isAvailable={isAvailable}
-        certainFolders={certainFolders}
+        certainFolders={true}
         folderId={folderId}
-        folderList={folderList}
+        resultingFolderTree={resultingFolderTree}
         onSelect={this.onSelect}
         onSave={this.onSave}
         header={header}
         headerName={headerName}
         footer={footer}
-        showButtons={showButtons}
-        isLoadingData={isLoadingData}
         canCreate={canCreate}
-        isLoading={isLoading}
-        primaryButtonName={this.buttonName}
+        isLoadingData={isLoadingData}
+        primaryButtonName={primaryButtonName}
         noTreeSwitcher={this.noTreeSwitcher}
+        isAvailable={isAvailable}
       />
     ) : (
       <SelectFolderDialogModalView
@@ -575,21 +293,19 @@ class SelectFolderModalDialog extends React.Component {
         onClose={onClose}
         withoutProvider={withoutProvider}
         modalHeightContent={modalHeightContent}
-        isAvailable={isAvailable}
-        certainFolders={certainFolders}
+        certainFolders={true}
         folderId={folderId}
-        folderList={folderList}
+        resultingFolderTree={resultingFolderTree}
         onSelect={this.onSelect}
         onSave={this.onSave}
         header={header}
         headerName={headerName}
         footer={footer}
-        showButtons={showButtons}
         canCreate={canCreate}
         isLoadingData={isLoadingData}
-        isLoading={isLoading}
-        primaryButtonName={this.buttonName}
+        primaryButtonName={primaryButtonName}
         noTreeSwitcher={this.noTreeSwitcher}
+        isAvailable={isAvailable}
       />
     );
   }
@@ -638,7 +354,11 @@ const SelectFolderDialogWrapper = inject(
     filesStore,
     auth,
   }) => {
-    const { setSelectedNode, setExpandedPanelKeys } = treeFoldersStore;
+    const {
+      setSelectedNode,
+      setExpandedPanelKeys,
+      treeFolders,
+    } = treeFoldersStore;
     const { canCreate } = filesStore;
     const { setSelectedFolder, id } = selectedFolderStore;
     const { setFolderId, setFile } = selectedFilesStore;
@@ -651,6 +371,7 @@ const SelectFolderDialogWrapper = inject(
       setExpandedPanelKeys,
       setFolderId,
       setFile,
+      treeFolders,
     };
   }
 )(
@@ -708,40 +429,6 @@ class SelectFolderDialog extends React.Component {
     );
 
     return convertFoldersArray;
-  };
-  static convertPathParts = (pathParts) => {
-    let newPathParts = [];
-    for (let i = 0; i < pathParts.length - 1; i++) {
-      if (typeof pathParts[i] === "number") {
-        newPathParts.push(String(pathParts[i]));
-      } else {
-        newPathParts.push(pathParts[i]);
-      }
-    }
-    return newPathParts;
-  };
-  static convertFolders = (folders, arrayOfExceptions) => {
-    let newArray = [];
-
-    let noSubfoldersCount = 0;
-    let needHideSwitcher = false;
-    for (let i = 0; i < folders.length; i++) {
-      if (!arrayOfExceptions.includes(folders[i].rootFolderType)) {
-        newArray.push(folders[i]);
-
-        if (
-          folders[i].foldersCount === 0 ||
-          folders[i].rootFolderType === FolderType.Privacy
-        ) {
-          noSubfoldersCount += 1;
-        }
-      }
-    }
-
-    if (newArray.length === noSubfoldersCount) {
-      needHideSwitcher = true;
-    }
-    return [newArray, needHideSwitcher];
   };
 
   render() {

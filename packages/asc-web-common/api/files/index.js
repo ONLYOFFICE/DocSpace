@@ -181,6 +181,37 @@ export function getFoldersTree() {
   );
 }
 
+export function getCommonFoldersTree() {
+  return request({ method: "get", url: "/files/@common" }).then(
+    (commonFolders) => {
+      return [
+        {
+          id: commonFolders.current.id,
+          key: 0 - 1,
+          parentId: commonFolders.current.parentId,
+          title: commonFolders.current.title,
+          rootFolderType: +commonFolders.current.rootFolderType,
+          rootFolderName: "@common",
+          pathParts: commonFolders.pathParts,
+          foldersCount: commonFolders.current.foldersCount,
+          newItems: commonFolders.new,
+        },
+      ];
+    }
+  );
+}
+
+export function getThirdPartyFoldersTree() {
+  return request({ method: "get", url: "/files/thirdparty/common" }).then(
+    (commonThirdPartyArray) => {
+      commonThirdPartyArray.map((currentValue, index) => {
+        commonThirdPartyArray[index].key = `0-${index}`;
+      });
+      return commonThirdPartyArray;
+    }
+  );
+}
+
 export function getMyFolderList(filter = FilesFilter.getDefault()) {
   const options = {
     method: "get",

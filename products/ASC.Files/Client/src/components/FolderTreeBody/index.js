@@ -9,7 +9,7 @@ import { StyledSelectFolderPanel } from "../panels/StyledPanels";
 const FolderTreeBody = ({
   isLoadingData,
   expandedKeys,
-  folderList,
+  resultingFolderTree,
   onSelect,
   withoutProvider,
   certainFolders,
@@ -36,7 +36,7 @@ const FolderTreeBody = ({
                 <TreeFolders
                   isPanel={true}
                   expandedPanelKeys={expandedKeys}
-                  data={folderList}
+                  data={resultingFolderTree}
                   filter={filter}
                   onSelect={onSelect}
                   withoutProvider={withoutProvider}
@@ -88,6 +88,7 @@ export default inject(
   ({ filesStore, treeFoldersStore, selectedFolderStore }) => {
     const { filter, isLoading } = filesStore;
     const { expandedPanelKeys } = treeFoldersStore;
+
     return {
       expandedKeys: expandedPanelKeys ? expandedPanelKeys : null,
       filter,
