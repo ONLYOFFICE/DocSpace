@@ -9,6 +9,7 @@ const AccessComboBox = (props) => {
   const {
     access,
     accessOptions,
+    directionY,
     directionX,
     isDisabled,
     itemId,
@@ -126,14 +127,14 @@ const AccessComboBox = (props) => {
       className="panel_combo-box"
       scaled={false}
       directionX={directionX}
+      directionY={directionY}
       disableIconClick={false}
       isDisabled={isDisabled}
       isDefaultMode={false}
-      fixedDirection={fixedDirection}
     >
       <ReactSVG src={accessIconUrl} className="sharing-access-combo-box-icon" />
     </ComboBox>
   );
 };
 
-export default AccessComboBox;
+export default React.memo(AccessComboBox);
