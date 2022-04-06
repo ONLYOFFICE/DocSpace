@@ -168,7 +168,7 @@ namespace ASC.Api.Documents
         }
 
         [Read("@root")]
-        public async Task<IEnumerable<FolderContentWrapper<int>>> GetRootFoldersAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders, bool withoutTrash, bool withoutAdditionalFolder)
+        public async Task<IEnumerable<FolderContentWrapper<int>>> GetRootFoldersAsync(Guid userIdOrGroupId, FilterType filterType, bool searchInContent, bool withsubfolders, bool withoutTrash, bool withoutAdditionalFolder)
         {
             var IsVisitor = UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsVisitor(UserManager);
             var IsOutsider = UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsOutsider(UserManager);
@@ -229,22 +229,22 @@ namespace ASC.Api.Documents
             var result = new List<FolderContentWrapper<int>>();
             foreach (var folder in folders)
             {
-                result.Add(await FilesControllerHelperInt.GetFolderAsync(folder, userIdOrGroupId, filterType, withsubfolders));
+                result.Add(await FilesControllerHelperInt.GetFolderAsync(folder, userIdOrGroupId, filterType, searchInContent, withsubfolders));
             }
 
             return result;
         }
 
         [Read("@privacy")]
-        public Task<FolderContentWrapper<int>> GetPrivacyFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        public Task<FolderContentWrapper<int>> GetPrivacyFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool searchInContent, bool withsubfolders)
         {
             if (!IsAvailablePrivacyRoomSettings()) throw new System.Security.SecurityException();
-            return InternalGetPrivacyFolderAsync(userIdOrGroupId, filterType, withsubfolders);
+            return InternalGetPrivacyFolderAsync(userIdOrGroupId, filterType, searchInContent, withsubfolders);
         }
 
-        private async Task<FolderContentWrapper<int>> InternalGetPrivacyFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        private async Task<FolderContentWrapper<int>> InternalGetPrivacyFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool searchInContent, bool withsubfolders)
         {
-            return await FilesControllerHelperInt.GetFolderAsync(await GlobalFolderHelper.FolderPrivacyAsync, userIdOrGroupId, filterType, withsubfolders);
+            return await FilesControllerHelperInt.GetFolderAsync(await GlobalFolderHelper.FolderPrivacyAsync, userIdOrGroupId, filterType, searchInContent, withsubfolders);
         }
 
         [Read("@privacy/available")]
@@ -262,9 +262,9 @@ namespace ASC.Api.Documents
         /// <category>Folders</category>
         /// <returns>My folder contents</returns>
         [Read("@my")]
-        public Task<FolderContentWrapper<int>> GetMyFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        public Task<FolderContentWrapper<int>> GetMyFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool searchInContent, bool withsubfolders)
         {
-            return FilesControllerHelperInt.GetFolderAsync(GlobalFolderHelper.FolderMy, userIdOrGroupId, filterType, withsubfolders);
+            return FilesControllerHelperInt.GetFolderAsync(GlobalFolderHelper.FolderMy, userIdOrGroupId, filterType, searchInContent, withsubfolders);
         }
 
         /// <summary>
@@ -276,9 +276,9 @@ namespace ASC.Api.Documents
         /// <category>Folders</category>
         /// <returns>Projects folder contents</returns>
         [Read("@projects")]
-        public async Task<FolderContentWrapper<string>> GetProjectsFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        public async Task<FolderContentWrapper<string>> GetProjectsFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool searchInContent, bool withsubfolders)
         {
-            return await FilesControllerHelperString.GetFolderAsync(await GlobalFolderHelper.GetFolderProjectsAsync<string>(), userIdOrGroupId, filterType, withsubfolders);
+            return await FilesControllerHelperString.GetFolderAsync(await GlobalFolderHelper.GetFolderProjectsAsync<string>(), userIdOrGroupId, filterType, searchInContent, withsubfolders);
         }
 
 
@@ -291,9 +291,9 @@ namespace ASC.Api.Documents
         /// <category>Folders</category>
         /// <returns>Common folder contents</returns>
         [Read("@common")]
-        public async Task<FolderContentWrapper<int>> GetCommonFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        public async Task<FolderContentWrapper<int>> GetCommonFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool searchInContent, bool withsubfolders)
         {
-            return await FilesControllerHelperInt.GetFolderAsync(await GlobalFolderHelper.FolderCommonAsync, userIdOrGroupId, filterType, withsubfolders);
+            return await FilesControllerHelperInt.GetFolderAsync(await GlobalFolderHelper.FolderCommonAsync, userIdOrGroupId, filterType, searchInContent, withsubfolders);
         }
 
         /// <summary>
@@ -305,9 +305,9 @@ namespace ASC.Api.Documents
         /// <category>Folders</category>
         /// <returns>Shared folder contents</returns>
         [Read("@share")]
-        public async Task<FolderContentWrapper<int>> GetShareFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        public async Task<FolderContentWrapper<int>> GetShareFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool searchInContent, bool withsubfolders)
         {
-            return await FilesControllerHelperInt.GetFolderAsync(await GlobalFolderHelper.FolderShareAsync, userIdOrGroupId, filterType, withsubfolders);
+            return await FilesControllerHelperInt.GetFolderAsync(await GlobalFolderHelper.FolderShareAsync, userIdOrGroupId, filterType, searchInContent, withsubfolders);
         }
 
         /// <summary>
@@ -317,9 +317,9 @@ namespace ASC.Api.Documents
         /// <category>Folders</category>
         /// <returns>Recent contents</returns>
         [Read("@recent")]
-        public async Task<FolderContentWrapper<int>> GetRecentFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        public async Task<FolderContentWrapper<int>> GetRecentFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool searchInContent, bool withsubfolders)
         {
-            return await FilesControllerHelperInt.GetFolderAsync(await GlobalFolderHelper.FolderRecentAsync, userIdOrGroupId, filterType, withsubfolders);
+            return await FilesControllerHelperInt.GetFolderAsync(await GlobalFolderHelper.FolderRecentAsync, userIdOrGroupId, filterType, searchInContent, withsubfolders);
         }
 
         [Create("file/{fileId}/recent", order: int.MaxValue)]
@@ -341,9 +341,9 @@ namespace ASC.Api.Documents
         /// <category>Folders</category>
         /// <returns>Favorites contents</returns>
         [Read("@favorites")]
-        public async Task<FolderContentWrapper<int>> GetFavoritesFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        public async Task<FolderContentWrapper<int>> GetFavoritesFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool searchInContent, bool withsubfolders)
         {
-            return await FilesControllerHelperInt.GetFolderAsync(await GlobalFolderHelper.FolderFavoritesAsync, userIdOrGroupId, filterType, withsubfolders);
+            return await FilesControllerHelperInt.GetFolderAsync(await GlobalFolderHelper.FolderFavoritesAsync, userIdOrGroupId, filterType, searchInContent, withsubfolders);
         }
 
         /// <summary>
@@ -353,9 +353,9 @@ namespace ASC.Api.Documents
         /// <category>Folders</category>
         /// <returns>Templates contents</returns>
         [Read("@templates")]
-        public async Task<FolderContentWrapper<int>> GetTemplatesFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        public async Task<FolderContentWrapper<int>> GetTemplatesFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool searchInContent, bool withsubfolders)
         {
-            return await FilesControllerHelperInt.GetFolderAsync(await GlobalFolderHelper.FolderTemplatesAsync, userIdOrGroupId, filterType, withsubfolders);
+            return await FilesControllerHelperInt.GetFolderAsync(await GlobalFolderHelper.FolderTemplatesAsync, userIdOrGroupId, filterType, searchInContent, withsubfolders);
         }
 
         /// <summary>
@@ -367,9 +367,9 @@ namespace ASC.Api.Documents
         /// <category>Folders</category>
         /// <returns>Trash folder contents</returns>
         [Read("@trash")]
-        public Task<FolderContentWrapper<int>> GetTrashFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        public Task<FolderContentWrapper<int>> GetTrashFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool searchInContent, bool withsubfolders)
         {
-            return FilesControllerHelperInt.GetFolderAsync(Convert.ToInt32(GlobalFolderHelper.FolderTrash), userIdOrGroupId, filterType, withsubfolders);
+            return FilesControllerHelperInt.GetFolderAsync(Convert.ToInt32(GlobalFolderHelper.FolderTrash), userIdOrGroupId, filterType, searchInContent, withsubfolders);
         }
 
         /// <summary>
@@ -384,16 +384,17 @@ namespace ASC.Api.Documents
         /// <param name="filterType" optional="true" remark="Allowed values: None (0), FilesOnly (1), FoldersOnly (2), DocumentsOnly (3), PresentationsOnly (4), SpreadsheetsOnly (5) or ImagesOnly (7)">Filter type</param>
         /// <returns>Folder contents</returns>
         [Read("{folderId}", order: int.MaxValue, DisableFormat = true)]
-        public async Task<FolderContentWrapper<string>> GetFolderAsync(string folderId, Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        public async Task<FolderContentWrapper<string>> GetFolderAsync(string folderId, Guid userIdOrGroupId, FilterType filterType, bool searchInContent, bool withsubfolders)
         {
-            var folder = await FilesControllerHelperString.GetFolderAsync(folderId, userIdOrGroupId, filterType, withsubfolders);
+            var folder = await FilesControllerHelperString.GetFolderAsync(folderId, userIdOrGroupId, filterType, searchInContent, withsubfolders);
             return folder.NotFoundIfNull();
         }
 
         [Read("{folderId:int}", order: int.MaxValue - 1, DisableFormat = true)]
-        public Task<FolderContentWrapper<int>> GetFolderAsync(int folderId, Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        public Task<FolderContentWrapper<int>> GetFolderAsync(int folderId, Guid userIdOrGroupId, FilterType filterType, bool searchInContent, bool withsubfolders)
         {
-            return FilesControllerHelperInt.GetFolderAsync(folderId, userIdOrGroupId, filterType, withsubfolders);
+            var q = FilesControllerHelperInt.GetFolderAsync(folderId, userIdOrGroupId, filterType, searchInContent, withsubfolders);
+            return q;
         }
 
         [Read("{folderId}/subfolders")]
