@@ -44,6 +44,8 @@ const TrustedMail = (props) => {
     setMailDomainSettings,
   } = props;
 
+  const regexp = /^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9](?:\.[a-zA-Z]{1,})+/; //check domain name valid
+
   const [type, setType] = useState("0");
   const [domains, setDomains] = useState([]);
   const [showReminder, setShowReminder] = useState(false);
@@ -127,6 +129,12 @@ const TrustedMail = (props) => {
   };
 
   const onSaveClick = () => {
+    const valid = domains.map((domain) => regexp.test(domain));
+    if (valid.includes(false)) {
+      toastr.error(t("Common:IncorrectDomain"));
+      return;
+    }
+
     const data = {
       type: Number(type),
       domains: domains,
@@ -196,6 +204,7 @@ const TrustedMail = (props) => {
           onChangeInput={onChangeInput}
           onDeleteInput={onDeleteInput}
           onClickAdd={onClickAdd}
+          regexp={regexp}
         />
       )}
 

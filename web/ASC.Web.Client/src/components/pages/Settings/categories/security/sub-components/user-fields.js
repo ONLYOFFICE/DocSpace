@@ -46,17 +46,21 @@ const UserFields = (props) => {
     onDeleteInput,
     onClickAdd,
     inputs,
+    regexp,
   } = props;
 
   return (
     <div className={className}>
       {inputs ? (
         inputs.map((input, index) => {
+          const error = !regexp.test(input);
+
           return (
             <StyledInputWrapper key={`domain-input-${index}`}>
               <TextInput
                 value={input}
                 onChange={(e) => onChangeInput(e, index)}
+                hasError={error}
               />
               <StyledTrashIcon
                 size="medium"
