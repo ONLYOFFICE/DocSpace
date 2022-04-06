@@ -9,11 +9,7 @@ import Loader from "@appserver/components/loader";
 import { withTranslation, Trans } from "react-i18next";
 import toastr from "studio/toastr";
 import { ShareAccessRights } from "@appserver/common/constants";
-import {
-  StyledAsidePanel,
-  StyledSharingBody,
-  StyledModalRowContainer,
-} from "../StyledPanels";
+import { StyledAsidePanel } from "../StyledPanels";
 import { AddUsersPanel, AddGroupsPanel, EmbeddingPanel } from "../index";
 import SharingRow from "./SharingRow";
 import { inject, observer } from "mobx-react";
