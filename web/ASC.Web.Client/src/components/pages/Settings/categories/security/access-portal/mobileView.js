@@ -31,6 +31,18 @@ const MobileView = (props) => {
         url="/settings/security/access-portal/tfa"
         onClickLink={onClickLink}
       />
+      <MobileCategoryWrapper
+        title={t("TrustedMail")}
+        subtitle={t("TrustedMailDescription")}
+        url="/settings/security/access-portal/trusted-mail"
+        onClickLink={onClickLink}
+      />
+      <MobileCategoryWrapper
+        title={t("IPSecurity")}
+        subtitle={t("IPSecurityDescription")}
+        url="/settings/security/access-portal/ip"
+        onClickLink={onClickLink}
+      />
     </MainContainer>
   );
 };

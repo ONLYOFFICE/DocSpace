@@ -4,15 +4,15 @@ import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import Box from "@appserver/components/box";
-import Button from "@appserver/components/button";
 import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";
 import Slider from "@appserver/components/slider";
 import Checkbox from "@appserver/components/checkbox";
 import SectionLoader from "../sub-components/section-loader";
 import { getLanguage } from "@appserver/common/utils";
-import { ButtonsWrapper, LearnMoreWrapper } from "../StyledSecurity";
+import { LearnMoreWrapper } from "../StyledSecurity";
 import toastr from "@appserver/components/toast/toastr";
+import Buttons from "../sub-components/buttons";
 import { size } from "@appserver/components/utils/device";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 import isEqual from "lodash/isEqual";
@@ -35,7 +35,6 @@ const MainContainer = styled.div`
     flex-direction: column;
     gap: 8px;
     margin-top: 18px;
-    margin-bottom: 24px;
   }
 `;
 
@@ -222,33 +221,12 @@ const PasswordStrength = (props) => {
         />
       </Box>
 
-      <ButtonsWrapper>
-        <Button
-          label={t("Common:SaveButton")}
-          size="small"
-          primary={true}
-          className="button"
-          onClick={onSaveClick}
-          isDisabled={!showReminder}
-        />
-        <Button
-          label={t("Common:CancelButton")}
-          size="small"
-          className="button"
-          onClick={onCancelClick}
-          isDisabled={!showReminder}
-        />
-        {showReminder && (
-          <Text
-            color="#A3A9AE"
-            fontSize="12px"
-            fontWeight="600"
-            className="reminder"
-          >
-            {t("YouHaveUnsavedChanges")}
-          </Text>
-        )}
-      </ButtonsWrapper>
+      <Buttons
+        t={t}
+        showReminder={showReminder}
+        onSaveClick={onSaveClick}
+        onCancelClick={onCancelClick}
+      />
     </MainContainer>
   );
 };

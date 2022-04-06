@@ -31,7 +31,8 @@ class SettingsStore {
     : Base;
   trustedDomains = [];
   trustedDomainsType = 0;
-  trustedDomains = [];
+  ipRestrictionEnable = false;
+  ipRestrictions = [];
   timezone = "UTC";
   timezones = [];
   utcOffset = "00:00:00";
@@ -442,6 +443,37 @@ class SettingsStore {
   setTheme = (theme) => {
     this.theme = themes[theme];
     localStorage.setItem("theme", theme);
+  };
+
+  setMailDomainSettings = async (data) => {
+    const res = await api.settings.setMailDomainSettings(data);
+    this.trustedDomainsType = data.type;
+    this.trustedDomains = data.domains;
+    return res;
+  };
+
+  getIpRestrictions = async () => {
+    const res = await api.settings.getIpRestrictions();
+    if (res.length === 0) this.ipRestrictionEnabled = false;
+    else this.ipRestrictionEnabled = true;
+  };
+
+  setIpRestrictions = async (ips) => {
+    const data = {
+      ips: ips,
+    };
+    const res = await api.settings.setIpRestrictions(data);
+    console.log("setIpRestrictions", res);
+    this.ipRestrictions = ips;
+  };
+
+  setIpRestrictionsEnable = async (enable) => {
+    const data = {
+      enable: enable,
+    };
+    const res = await api.settings.setIpRestrictionsEnable(data);
+    console.log("setIpRestrictionsEnable", res);
+    this.ipRestrictionEnabled = enable;
   };
 }
 
