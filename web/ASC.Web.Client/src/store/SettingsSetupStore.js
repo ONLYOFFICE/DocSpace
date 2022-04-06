@@ -231,14 +231,6 @@ class SettingsSetupStore {
     const res = await api.settings.setMailDomainSettings(dnsName, enable);
   };
 
-  setIpRestrictions = async (data) => {
-    const res = await api.settings.setIpRestrictions(data);
-  };
-
-  setIpRestrictionsEnable = async (data) => {
-    const res = await api.settings.setIpRestrictionsEnable(data);
-  };
-
   setMessageSettings = async (turnOn) => {
     const res = await api.settings.setMessageSettings(turnOn);
   };
