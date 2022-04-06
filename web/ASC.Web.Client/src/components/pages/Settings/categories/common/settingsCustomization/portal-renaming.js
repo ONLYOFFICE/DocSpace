@@ -25,27 +25,6 @@ import {
 } from "./StyledSettings";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 
-const StyledComponent = styled.div`
-  .settings-block {
-    margin-bottom: 70px;
-  }
-
-  .settings-block {
-    max-width: 350px;
-  }
-
-  .combo-button-label {
-    max-width: 100%;
-  }
-
-  .error {
-    font-weight: 400;
-    font-size: 10px;
-    line-height: 14px;
-    color: #f21c0e;
-  }
-`;
-
 const PortalRenaming = ({ t, setPortalRename, isMobileView }) => {
   // TODO: Change false
   const [isLoadedData, setIsLoadedData] = useState(true);
@@ -82,6 +61,15 @@ const PortalRenaming = ({ t, setPortalRename, isMobileView }) => {
 
     if (scrollPortalName !== hasScroll) {
       setHasScroll(scrollPortalName);
+    }
+
+    // TODO: Remove div with height 64 and remove settings-mobile class
+    const settingsMobile = document.getElementsByClassName(
+      "settings-mobile"
+    )[0];
+
+    if (settingsMobile) {
+      settingsMobile.style.display = "none";
     }
 
     return () =>
@@ -136,7 +124,8 @@ const PortalRenaming = ({ t, setPortalRename, isMobileView }) => {
         saveToSessionStorage("errorValue", lengthNameError);
         break;
       default:
-        setErrorValue("");
+        saveToSessionStorage("errorValue", null);
+        setErrorValue(null);
     }
   };
 
@@ -207,6 +196,9 @@ const PortalRenaming = ({ t, setPortalRename, isMobileView }) => {
 
   const settingsBlock = (
     <div className="settings-block">
+      <div className="settings-block-description">
+        {t("PortalRenamingMobile")}
+      </div>
       <FieldContainer
         id="fieldContainerWelcomePage"
         className="field-container-width"
@@ -217,10 +209,10 @@ const PortalRenaming = ({ t, setPortalRename, isMobileView }) => {
           scale={true}
           value={portalName}
           onChange={onChangePortalName}
-          // isDisabled={isLoadingGreetingSave || isLoadingGreetingRestore}
+          isDisabled={isLoadingPortalNameSave}
           hasError={hasError}
         />
-        <div className="error">{errorValue}</div>
+        <div className="errorText">{errorValue}</div>
       </FieldContainer>
     </div>
   );
@@ -231,7 +223,10 @@ const PortalRenaming = ({ t, setPortalRename, isMobileView }) => {
     isMobileViewPortalRenaming
   ) : (
     <>
-      <StyledComponent hasScroll={hasScroll} className="category-item-wrapper">
+      <StyledSettingsComponent
+        hasScroll={hasScroll}
+        className="category-item-wrapper"
+      >
         {checkInnerWidth() && !isMobileView && (
           <div className="category-item-heading">
             <div className="category-item-title">{t("PortalRenaming")}</div>
@@ -256,9 +251,9 @@ const PortalRenaming = ({ t, setPortalRename, isMobileView }) => {
           showReminder={showReminder}
           reminderTest={t("YouHaveUnsavedChanges")}
           displaySettings={true}
-          // hasScroll={hasScroll}
+          hasScroll={hasScroll}
         />
-      </StyledComponent>
+      </StyledSettingsComponent>
     </>
   );
 };

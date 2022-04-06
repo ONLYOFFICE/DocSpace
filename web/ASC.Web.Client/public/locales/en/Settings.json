@@ -101,6 +101,7 @@
   "PortalRenamingDescription": "Here you can change your portal address.",
   "PortalRenamingDescriptionTooltip": "Enter the part that will appear next to the onlyoffice.com/onlyoffice.eu portal address.",
   "PortalRenamingLabelText": "New portal name",
+  "PortalRenamingMobile": "Enter the part that will appear next to the onlyoffice.com/onlyoffice.eu portal address. Please note: your old portal address will become available to new ©linney users once you click the Save button.",
   "PortalRenamingSettingsTooltip": "<0>{{text}}</0> Enter the part that will appear next to the onlyoffice.com/onlyoffice.eu portal address.",
   "ProductUserOpportunities": "View profiles and groups",
   "RegistrationDate": "Registration date",
