@@ -61,11 +61,110 @@ const StyledBodyContent = styled.div`
 
 const StyledExternalLink = styled.div`
   width: 100%;
-  height: 40px;
 
+  padding: 12px;
   margin-bottom: 32px;
 
+  box-sizing: border-box;
+
   background-color: #f8f9f9;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  border-radius: 6px;
+
+  .external-link__unchecked {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .external-link__toggler {
+      position: relative;
+
+      span {
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 16px;
+      }
+    }
+
+    .external-link__combo {
+      .combo-button {
+        justify-content: right;
+        width: auto;
+
+        .combo-buttons_arrow-icon {
+          margin-right: 0;
+          margin-left: 4px;
+        }
+      }
+
+      .dropdown-container {
+        left: -15px;
+      }
+    }
+  }
+
+  .external-link__checked {
+    padding-top: 12px;
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: start;
+
+    .external-link__input-link {
+      flex-direction: row-reverse;
+      padding-right: 0px;
+
+      .external-link__buttons {
+        height: 100%;
+
+        display: flex;
+        align-items: center;
+
+        padding: 4px 16px 4px 24px;
+
+        .external-link__code {
+          margin-right: 12px;
+
+          cursor: pointer;
+          path {
+            fill: #333333 !important;
+          }
+        }
+
+        .external-link__copy {
+          cursor: pointer;
+          path {
+            fill: #333333 !important;
+          }
+        }
+      }
+
+      .append {
+        display: none;
+      }
+    }
+
+    .panel_combo-box {
+      .combo-button {
+        height: 32px;
+
+        .sharing-access-combo-box-icon {
+          display: flex;
+          align-items: center;
+        }
+      }
+      .dropdown-container {
+        top: 32px;
+      }
+    }
+  }
 `;
 
 const StyledFooterContent = styled.div`

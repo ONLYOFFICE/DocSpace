@@ -10,6 +10,7 @@ import AccessComboBox from "./AccessComboBox";
 import { getAccessIcon } from "../../../helpers/files-helpers";
 import { ReactSVG } from "react-svg";
 import { objectToGetParams } from "@appserver/common/utils";
+import ExternalLink from "./ExternalLink";
 
 class SharingRow extends React.Component {
   constructor(props) {
@@ -167,28 +168,29 @@ class SharingRow extends React.Component {
     return (
       <>
         {externalLinkVisible && (
-          <LinkRow
-            theme={theme}
+          <ExternalLink
             linkText={t("ExternalLink")}
+            shareText={t("Share")}
+            shareLink={shareLink}
             options={externalLinkOptions}
-            externalLinkData={externalLinkData}
             onToggleLink={onToggleLink}
-            withToggle
             onCopyLink={this.onCopyClick}
+            onShowEmbeddingPanel={onShowEmbeddingPanel}
             {...this.props}
           />
         )}
+
+        {!isPersonal && internalLinkVisible && (
+          <LinkRow
+            theme={theme}
+            linkText={t("InternalLink")}
+            options={internalLinkData}
+            {...this.props}
+          />
+        )}
+
         {!isPersonal && (
           <>
-            {internalLinkVisible && (
-              <LinkRow
-                theme={theme}
-                linkText={t("InternalLink")}
-                options={internalLinkData}
-                {...this.props}
-              />
-            )}
-
             {!shareLink && (
               <Row
                 theme={theme}
