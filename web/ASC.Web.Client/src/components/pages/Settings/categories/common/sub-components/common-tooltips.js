@@ -11,10 +11,10 @@ const StyledTooltip = styled.div`
   .bold {
     font-weight: 600;
   }
-  .display {
+  .display-inline {
     display: inline;
   }
-  .display-link {
+  .display-block {
     display: block;
   }
 `;
@@ -28,7 +28,7 @@ export const LanguageTimeSettingsTooltip = ({ t, theme }) => {
     <StyledTooltip>
       <Text className="font-size">
         <Trans ns="Settings" i18nKey="LanguageTimeSettingsTooltip" text={text}>
-          <Text className="bold display font-size">{{ text }}</Text>{" "}
+          <Text className="bold display-inline font-size">{{ text }}</Text>{" "}
         </Trans>
       </Text>
       <Text className="font-size">
@@ -39,10 +39,13 @@ export const LanguageTimeSettingsTooltip = ({ t, theme }) => {
           save={save}
         >
           {" "}
-          <Text className="bold display font-size"> {{ save }}</Text>{" "}
+          <Text className="bold display-inline font-size">
+            {" "}
+            {{ save }}
+          </Text>{" "}
           <Link
             color={theme.studio.settings.common.linkColorHelp}
-            className="display-link font-size"
+            className="display-block font-size"
             isHovered={true}
             href="https://helpcenter.onlyoffice.com/administration/configuration.aspx#CustomizingPortal_block"
           >
@@ -69,9 +72,12 @@ export const CustomTitlesTooltip = ({ t }) => {
           text={text}
           from={from}
         >
-          <Text className="bold display font-size"> {{ welcomeText }}</Text>{" "}
-          <Text className="bold display font-size"> {{ text }}</Text>{" "}
-          <Text className="bold display font-size"> {{ from }}</Text>{" "}
+          <Text className="bold display-inline font-size">
+            {" "}
+            {{ welcomeText }}
+          </Text>{" "}
+          <Text className="bold display-inline font-size"> {{ text }}</Text>{" "}
+          <Text className="bold display-inline font-size"> {{ from }}</Text>{" "}
         </Trans>
       </Text>
       <Text className="font-size">
@@ -81,7 +87,44 @@ export const CustomTitlesTooltip = ({ t }) => {
           header={header}
         >
           {" "}
-          <Text className="bold display font-size"> {{ header }}</Text>{" "}
+          <Text className="bold display-inline font-size">
+            {" "}
+            {{ header }}
+          </Text>{" "}
+        </Trans>
+      </Text>
+    </StyledTooltip>
+  );
+};
+
+export const PortalRenamingTooltip = ({ t }) => {
+  const text = t("Settings:PortalRenamingDescription");
+  const pleaseNote = t("Settings:PleaseNote");
+  const save = t("Common:SaveButton");
+
+  return (
+    <StyledTooltip>
+      <Text className="font-size">
+        <Trans
+          ns="Settings"
+          i18nKey="PortalRenamingSettingsTooltip"
+          text={text}
+        >
+          <Text className="display-inline font-size"> {{ text }}</Text>{" "}
+        </Trans>
+      </Text>
+      <Text className="font-size">
+        <Trans
+          ns="Settings"
+          i18nKey="PleaseNoteDescription"
+          pleaseNote={pleaseNote}
+          save={save}
+        >
+          <Text className="bold display-inline font-size">
+            {" "}
+            {{ pleaseNote }}
+          </Text>{" "}
+          <Text className="bold display-inline font-size"> {{ save }}</Text>{" "}
         </Trans>
       </Text>
     </StyledTooltip>

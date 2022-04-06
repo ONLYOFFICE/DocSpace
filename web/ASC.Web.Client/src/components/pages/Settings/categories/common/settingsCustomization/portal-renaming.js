@@ -17,6 +17,7 @@ import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";
 import { isSmallTablet } from "@appserver/components/utils/device";
 import checkScrollSettingsBlock from "../utils";
+import { PortalRenamingTooltip } from "../sub-components/common-tooltips";
 import {
   StyledSettingsComponent,
   StyledScrollbar,
@@ -174,11 +175,13 @@ const PortalRenaming = ({ t, setPortalRename, isMobileView }) => {
     }
   };
 
-  // TODO: Move to a file
   const onClickLink = (e) => {
     e.preventDefault();
     history.push(e.target.pathname);
   };
+
+  const tooltipPortalRenamingTooltip = <PortalRenamingTooltip t={t} />;
+  const hasError = errorValue === null ? false : true;
 
   const isMobileViewPortalRenaming = (
     <div className="category-item-wrapper">
@@ -192,26 +195,22 @@ const PortalRenaming = ({ t, setPortalRename, isMobileView }) => {
             "/settings/common/customization/portal-renaming"
           )}
         >
-          Portal Renaming
-          {/* {t("CustomTitlesWelcome")} */}
+          {t("PortalRenaming")}
         </Link>
         <StyledArrowRightIcon size="small" color="#333333" />
       </div>
       <Text className="category-item-description">
-        {/* {t("CustomTitlesSettingsDescription")} */}
-        Here you can change your portal address.
+        {t("PortalRenamingDescription")}
       </Text>
     </div>
   );
-
-  const hasError = errorValue === null ? false : true;
 
   const settingsBlock = (
     <div className="settings-block">
       <FieldContainer
         id="fieldContainerWelcomePage"
         className="field-container-width"
-        labelText={`${t("New portal name")}:`}
+        labelText={`${t("PortalRenamingLabelText")}:`}
         isVertical={true}
       >
         <TextInput
@@ -219,7 +218,6 @@ const PortalRenaming = ({ t, setPortalRename, isMobileView }) => {
           value={portalName}
           onChange={onChangePortalName}
           // isDisabled={isLoadingGreetingSave || isLoadingGreetingRestore}
-          placeholder={`${t("room")}`}
           hasError={hasError}
         />
         <div className="error">{errorValue}</div>
@@ -236,11 +234,11 @@ const PortalRenaming = ({ t, setPortalRename, isMobileView }) => {
       <StyledComponent hasScroll={hasScroll} className="category-item-wrapper">
         {checkInnerWidth() && !isMobileView && (
           <div className="category-item-heading">
-            <div className="category-item-title">{t("Portal Renaming")}</div>
+            <div className="category-item-title">{t("PortalRenaming")}</div>
             <HelpButton
               iconName="static/images/combined.shape.svg"
               size={12}
-              // tooltipContent={tooltipCustomTitlesTooltip}
+              tooltipContent={tooltipPortalRenamingTooltip}
             />
           </div>
         )}
