@@ -236,7 +236,7 @@ class WelcomePageSettings extends React.Component {
     const tooltipCustomTitlesTooltip = <CustomTitlesTooltip t={t} />;
 
     // TODO: Move to a file
-    const isMobileViewLanguageTimeSettings = (
+    const isMobileViewWelcomePageSettings = (
       <div className="category-item-wrapper">
         <div className="category-item-heading">
           <Link
@@ -281,7 +281,7 @@ class WelcomePageSettings extends React.Component {
     return !isLoadedData ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : isMobileView ? (
-      isMobileViewLanguageTimeSettings
+      isMobileViewWelcomePageSettings
     ) : (
       <StyledSettingsComponent
         hasScroll={hasScroll}

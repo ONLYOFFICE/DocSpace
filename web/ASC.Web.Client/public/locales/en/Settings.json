@@ -117,6 +117,7 @@
   "ServiceUrl": "Service Url",
   "StudioTimeLanguageSettings": "Language and Time Zone Settings",
   "SuccessfullySaveGreetingSettingsMessage": "Welcome Page settings have been successfully saved",
+  "SuccessfullySavePortalNameMessage": "Portal has been renamed successfully",
   "SuccessfullySaveSettingsMessage": "Settings have been successfully updated",
   "TeamTemplate": "Team template",
   "TeamTemplateSettingsDescription": "Team Template is a customizable way to name the organization (or group), its members and their activities. Drop down the Template list to choose one of the available presets or enter the names yourselves selecting the custom option from the list.",
