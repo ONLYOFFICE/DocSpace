@@ -54,6 +54,12 @@ const StyledSettingsComponent = styled.div`
     line-height: 20px;
   }
 
+  .errorText {
+    position: absolute;
+    font-size: 10px;
+    color: #f21c0e;
+  }
+
   @media (max-width: 599px) {
     ${(props) =>
       props.hasScroll &&
@@ -68,12 +74,22 @@ const StyledSettingsComponent = styled.div`
           padding-left: 16px;
         }
       `}
+
+    .settings-block-description {
+      line-height: 20px;
+      color: #657077;
+      padding-bottom: 12px;
+    }
   }
 
   @media (min-width: 600px) {
     .settings-block {
       max-width: 350px;
       height: auto;
+    }
+
+    .settings-block-description {
+      display: none;
     }
   }
 

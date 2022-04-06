@@ -90,8 +90,6 @@ class LanguageAndTimeZone extends React.Component {
       timezoneDefault: timezoneDefaultFromSessionStorage || timezone,
       language: languageFromSessionStorage || language,
       languageDefault: languageDefaultFromSessionStorage || language,
-      isLoadingGreetingSave: false,
-      isLoadingGreetingRestore: false,
       hasChanged: false,
       showReminder: false,
       hasScroll: false,

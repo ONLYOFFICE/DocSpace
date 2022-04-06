@@ -18,7 +18,7 @@ import TableGroupMenu from "@appserver/components/table-container/TableGroupMenu
 import Navigation from "@appserver/common/components/Navigation";
 
 const StyledContainer = styled.div`
-  padding: 0 0 15px;
+  /* padding: 0 0 15px;
 
   @media ${tablet} {
     padding: 0 0 17px;
@@ -36,7 +36,7 @@ const StyledContainer = styled.div`
   ${isMobileOnly &&
   css`
     padding: 0 0 13px;
-  `}
+  `} */
 
   .table-container_group-menu {
     ${(props) =>
@@ -317,6 +317,7 @@ class SectionHeaderContent extends React.Component {
     const {
       t,
       tReady,
+      isInfoPanelVisible,
       isRootFolder,
       title,
       canCreate,
@@ -344,6 +345,8 @@ class SectionHeaderContent extends React.Component {
             width={context.sectionWidth}
             isRootFolder={isRootFolder}
             canCreate={canCreate}
+            isRecycleBinFolder={isRecycleBinFolder}
+            title={title}
             isTitle={title}
             isDesktop={isDesktop}
             isTabletView={isTabletView}
@@ -357,6 +360,8 @@ class SectionHeaderContent extends React.Component {
                 isChecked={isHeaderChecked}
                 isIndeterminate={isHeaderIndeterminate}
                 headerMenu={headerMenu}
+                isInfoPanelVisible={this.props.isInfoPanelVisible}
+                toggleInfoPanel={this.props.toggleInfoPanel}
               />
             ) : (
               <div className="header-container">
@@ -383,6 +388,8 @@ class SectionHeaderContent extends React.Component {
                     isEmptyFilesList={isEmptyFilesList}
                     clearTrash={this.onEmptyTrashAction}
                     onBackToParentFolder={this.onBackToParentFolder}
+                    toggleInfoPanel={this.props.toggleInfoPanel}
+                    isInfoPanelVisible={this.props.isInfoPanelVisible}
                   />
                 )}
               </div>
@@ -403,6 +410,7 @@ export default inject(
     treeFoldersStore,
     filesActionsStore,
     settingsStore,
+    infoPanelStore,
   }) => {
     const {
       setSelected,
@@ -441,9 +449,10 @@ export default inject(
       backToParentFolder,
     } = filesActionsStore;
 
+    const { toggleIsVisible, isVisible } = infoPanelStore;
+
     return {
       showText: auth.settingsStore.showText,
-
       isDesktop: auth.settingsStore.isDesktopClient,
       isRootFolder: selectedFolderStore.parentId === 0,
       title: selectedFolderStore.title,
@@ -451,6 +460,8 @@ export default inject(
       pathParts: selectedFolderStore.pathParts,
       navigationPath: selectedFolderStore.navigationPath,
       canCreate,
+      toggleInfoPanel: toggleIsVisible,
+      isInfoPanelVisible: isVisible,
       isHeaderVisible,
       isHeaderIndeterminate,
       isHeaderChecked,
