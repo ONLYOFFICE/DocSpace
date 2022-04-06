@@ -22,6 +22,10 @@
     <ROW Property="ARPURLUPDATEINFO" Value="http://www.onlyoffice.com/download.aspx"/>
     <ROW Property="DATABASE_MIGRATION" Value="true"/>
     <ROW Property="DATABASE_PROP" Value="onlyoffice"/>
+    <ROW Property="ELASTICSEARCH_HOST" Value="localhost" ValueLocId="-"/>
+    <ROW Property="ELASTICSEARCH_MSG" Value="Unable to connect to remote Elasticsearch server at "/>
+    <ROW Property="ELASTICSEARCH_PORT" Value="9200" ValueLocId="-"/>
+    <ROW Property="ELASTICSEARCH_SCHEME" Value="http" ValueLocId="-"/>
     <ROW Property="ENVIRONMENT" Value="test"/>
     <ROW Property="INSTALL_ROOT_FOLDER_NAME" Value="[|Manufacturer]"/>
     <ROW Property="MSIFASTINSTALL" MultiBuildValue="DefaultBuild:3"/>
@@ -231,6 +235,7 @@
     <ROW Property="AI_SETUPEXEPATH" Signature_="AI_EXE_PATH_CU" Builds="DefaultBuild"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiBinaryComponent">
+    <ROW Name="PowerShellScriptLauncher.dll" SourcePath="&lt;AI_CUSTACTS&gt;PowerShellScriptLauncher.dll"/>
     <ROW Name="Prereq.dll" SourcePath="&lt;AI_CUSTACTS&gt;Prereq.dll"/>
     <ROW Name="SoftwareDetector.dll" SourcePath="&lt;AI_CUSTACTS&gt;SoftwareDetector.dll"/>
     <ROW Name="TxtUpdater.dll" SourcePath="&lt;AI_CUSTACTS&gt;TxtUpdater.dll"/>
@@ -243,6 +248,21 @@
     <ROW Dialog_="AdminInstallPointDlg" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Back]" Order="600" TextLocId="-" MsiKey="AdminInstallPointDlg#Back" Options="1"/>
     <ROW Dialog_="AdminWelcomeDlg" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="1" Text="[ButtonText_Back]" Order="400" TextLocId="-" MsiKey="AdminWelcomeDlg#Back" Options="1"/>
     <ROW Dialog_="CustomizeDlg" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Back]" Order="700" TextLocId="-" MsiKey="CustomizeDlg#Back" Options="1"/>
+    <ROW Dialog_="ELKConnectionDlg" Control="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Next]" Order="100" Options="1"/>
+    <ROW Dialog_="ELKConnectionDlg" Control="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Cancel]" Order="200" Options="1"/>
+    <ROW Dialog_="ELKConnectionDlg" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Back]" Order="300" Options="1"/>
+    <ROW Dialog_="ELKConnectionDlg" Control="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" Attributes="1048577" Text="[BannerBitmap]" Order="400"/>
+    <ROW Dialog_="ELKConnectionDlg" Control="BannerLine" Type="Line" X="0" Y="44" Width="372" Height="0" Attributes="1" Order="500"/>
+    <ROW Dialog_="ELKConnectionDlg" Control="BottomLine" Type="Line" X="5" Y="234" Width="368" Height="0" Attributes="1" Order="600"/>
+    <ROW Dialog_="ELKConnectionDlg" Control="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Attributes="196611" Text="Описание нового диалогового окна..." Order="700"/>
+    <ROW Dialog_="ELKConnectionDlg" Control="Logo" Type="Text" X="4" Y="228" Width="70" Height="12" Attributes="1" Text="Advanced Installer" Order="800"/>
+    <ROW Dialog_="ELKConnectionDlg" Control="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Attributes="196611" Text="Новое диалоговое окно" TextStyle="[DlgTitleFont]" Order="900"/>
+    <ROW Dialog_="ELKConnectionDlg" Control="ProtocolLabel" Type="Text" X="25" Y="65" Width="67" Height="11" Attributes="65539" Text="Protocol" Order="1000"/>
+    <ROW Dialog_="ELKConnectionDlg" Control="ServerLabel" Type="Text" X="25" Y="92" Width="67" Height="11" Attributes="65539" Text="Server:" Order="1100"/>
+    <ROW Dialog_="ELKConnectionDlg" Control="PortLabel" Type="Text" X="25" Y="119" Width="67" Height="11" Attributes="65539" Text="Port:" Order="1200"/>
+    <ROW Dialog_="ELKConnectionDlg" Control="ProtocolEdit" Type="Edit" X="98" Y="61" Width="253" Height="18" Attributes="3" Property="ELASTICSEARCH_SCHEME" Text="{5}" Order="1300"/>
+    <ROW Dialog_="ELKConnectionDlg" Control="ServerEdit" Type="Edit" X="98" Y="89" Width="253" Height="18" Attributes="3" Property="ELASTICSEARCH_HOST" Text="[ComputerName]" Order="1400"/>
+    <ROW Dialog_="ELKConnectionDlg" Control="PortEdit" Type="Edit" X="98" Y="116" Width="253" Height="18" Attributes="19" Property="ELASTICSEARCH_PORT" Text="{7}" Order="1500"/>
     <ROW Dialog_="ExitDialog" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="1" Text="[ButtonText_Back]" Order="400" TextLocId="-" MsiKey="ExitDialog#Back" Options="1"/>
     <ROW Dialog_="FatalError" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="1" Text="[ButtonText_Back]" Order="400" TextLocId="-" MsiKey="FatalError#Back" Options="1"/>
     <ROW Dialog_="FolderDlg" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Back]" Order="800" TextLocId="-" MsiKey="FolderDlg#Back" Options="1"/>
@@ -280,11 +300,11 @@
     <ATTRIBUTE name="DeletedRows" value="SQLConnectionDlg#OdbcResourceEdit@SQLConnectionDlg#OdbcResourceLabel@SQLConnectionDlg.aip"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiControlEventComponent">
-    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL AND ( OLDPRODUCTS = &quot;&quot; )" Ordering="4"/>
-    <ROW Dialog_="FolderDlg" Control_="Next" Event="NewDialog" Argument="SQLConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError &lt;&gt; &quot;&quot; )" Ordering="203"/>
+    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL AND ( OLDPRODUCTS = &quot;&quot; )" Ordering="7"/>
+    <ROW Dialog_="FolderDlg" Control_="Next" Event="NewDialog" Argument="SQLConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError &lt;&gt; &quot;&quot; )" Ordering="205"/>
     <ROW Dialog_="FolderDlg" Control_="Back" Event="NewDialog" Argument="WelcomeDlg" Condition="AI_INSTALL" Ordering="1"/>
     <ROW Dialog_="VerifyReadyDlg" Control_="Install" Event="EndDialog" Argument="Return" Condition="AI_INSTALL" Ordering="197"/>
-    <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="SQLConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError &lt;&gt; &quot;&quot; )" Ordering="202"/>
+    <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="ELKConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError &lt;&gt; &quot;&quot; AND ELK_CONNECTION = 0 )" Ordering="203"/>
     <ROW Dialog_="MaintenanceWelcomeDlg" Control_="Next" Event="NewDialog" Argument="MaintenanceTypeDlg" Condition="AI_MAINT" Ordering="99"/>
     <ROW Dialog_="CustomizeDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_MAINT" Ordering="101"/>
     <ROW Dialog_="CustomizeDlg" Control_="Back" Event="NewDialog" Argument="MaintenanceTypeDlg" Condition="AI_MAINT" Ordering="1"/>
@@ -305,23 +325,40 @@
     <ROW Dialog_="VerifyReadyDlg" Control_="Install" Event="EndDialog" Argument="Return" Condition="AI_PATCH" Ordering="199"/>
     <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="PatchWelcomeDlg" Condition="AI_PATCH" Ordering="205"/>
     <ROW Dialog_="PrerequisitesDlg" Control_="Back" Event="NewDialog" Argument="WelcomePrereqDlg" Condition="AI_BOOTSTRAPPER" Ordering="1"/>
-    <ROW Dialog_="SQLConnectionDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_5" Condition="AI_INSTALL AND ( SqlConnectionError &lt;&gt; &quot;&quot; )" Ordering="5"/>
-    <ROW Dialog_="SQLConnectionDlg" Control_="Next" Event="DoAction" Argument="TestSQLConnectionMsgBox" Condition="AI_INSTALL AND ( SqlConnectionError &lt;&gt; &quot;&quot; )" Ordering="6"/>
+    <ROW Dialog_="SQLConnectionDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_5" Condition="AI_INSTALL AND ( SqlConnectionError &lt;&gt; &quot;&quot; )" Ordering="4"/>
+    <ROW Dialog_="SQLConnectionDlg" Control_="Next" Event="DoAction" Argument="TestSQLConnectionMsgBox" Condition="AI_INSTALL AND ( SqlConnectionError &lt;&gt; &quot;&quot; )" Ordering="5"/>
     <ROW Dialog_="SQLConnectionDlg" Control_="SQLConnectionDlgDialogInitializer" Event="[PASSWORD_PROP]" Argument="{}" Condition="AI_INSTALL AND ( OLDPRODUCTS=&quot;&quot; AND SQLConnectionDlg_Cond )" Ordering="4"/>
     <ROW Dialog_="SQLConnectionDlg" Control_="SQLConnectionDlgDialogInitializer" Event="[AI_ButtonText_Next_Orig]" Argument="[ButtonText_Next]" Condition="AI_INSTALL AND ( OLDPRODUCTS=&quot;&quot; AND SQLConnectionDlg_Cond )" Ordering="3"/>
     <ROW Dialog_="SQLConnectionDlg" Control_="SQLConnectionDlgDialogInitializer" Event="[ButtonText_Next]" Argument="[[AI_CommitButton]]" Condition="AI_INSTALL AND ( OLDPRODUCTS=&quot;&quot; AND SQLConnectionDlg_Cond )" Ordering="2"/>
     <ROW Dialog_="SQLConnectionDlg" Control_="SQLConnectionDlgDialogInitializer" Event="[AI_Text_Next_Orig]" Argument="[Text_Next]" Condition="AI_INSTALL AND ( OLDPRODUCTS=&quot;&quot; AND SQLConnectionDlg_Cond )" Ordering="1"/>
     <ROW Dialog_="SQLConnectionDlg" Control_="SQLConnectionDlgDialogInitializer" Event="[Text_Next]" Argument="[Text_Install]" Condition="AI_INSTALL AND ( OLDPRODUCTS=&quot;&quot; AND SQLConnectionDlg_Cond )" Ordering="0"/>
-    <ROW Dialog_="SQLConnectionDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; )" Ordering="7"/>
-    <ROW Dialog_="SQLConnectionDlg" Control_="Back" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL" Ordering="1"/>
+    <ROW Dialog_="SQLConnectionDlg" Control_="Next" Event="NewDialog" Argument="ELKConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = 0 )" Ordering="7"/>
+    <ROW Dialog_="SQLConnectionDlg" Control_="Back" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL AND ( OLDPRODUCTS = &quot;&quot; )" Ordering="2"/>
     <ROW Dialog_="WelcomeDlg" Control_="Next" Event="DoAction" Argument="TestSqlConnection" Condition="AI_INSTALL" Ordering="1"/>
-    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="SQLConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError &lt;&gt; &quot;&quot; )" Ordering="2"/>
-    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL AND ( SqlConnectionError=&quot;&quot; )" Ordering="3"/>
+    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="SQLConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError &lt;&gt; &quot;&quot; )" Ordering="4"/>
+    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL AND ( SqlConnectionError=&quot;&quot; AND ELK_CONNECTION = 1 )" Ordering="6"/>
     <ROW Dialog_="FolderDlg" Control_="Next" Event="DoAction" Argument="TestSqlConnection" Condition="AI_INSTALL" Ordering="201"/>
-    <ROW Dialog_="FolderDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; )" Ordering="204"/>
-    <ROW Dialog_="SQLConnectionDlg" Control_="Next" Event="DoAction" Argument="TestSqlConnection" Condition="AI_INSTALL" Ordering="4"/>
-    <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL AND ( OLDPRODUCTS = &quot;&quot; AND SqlConnectionError = &quot;&quot; )" Ordering="201"/>
-    <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="WelcomeDlg" Condition="AI_INSTALL" Ordering="203"/>
+    <ROW Dialog_="FolderDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = 1 )" Ordering="207"/>
+    <ROW Dialog_="SQLConnectionDlg" Control_="Next" Event="DoAction" Argument="TestSqlConnection" Condition="AI_INSTALL" Ordering="3"/>
+    <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL AND ( OLDPRODUCTS = &quot;&quot; AND SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = 1 )" Ordering="201"/>
+    <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="WelcomeDlg" Condition="AI_INSTALL" Ordering="202"/>
+    <ROW Dialog_="ELKConnectionDlg" Control_="Cancel" Event="SpawnDialog" Argument="CancelDlg" Condition="1" Ordering="100"/>
+    <ROW Dialog_="ELKConnectionDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL AND ( ELK_CONNECTION = 1 AND SqlConnectionError = &quot;&quot; )" Ordering="7"/>
+    <ROW Dialog_="ELKConnectionDlg" Control_="Back" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL AND ( OLDPRODUCTS = &quot;&quot; )" Ordering="3"/>
+    <ROW Dialog_="ELKConnectionDlg" Control_="Back" Event="NewDialog" Argument="SQLConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError &lt;&gt; &quot;&quot; )" Ordering="5"/>
+    <ROW Dialog_="ELKConnectionDlg" Control_="Next" Event="DoAction" Argument="TestElasticsearchConnection" Condition="AI_INSTALL" Ordering="3"/>
+    <ROW Dialog_="ELKConnectionDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_1" Condition="AI_INSTALL" Ordering="2"/>
+    <ROW Dialog_="ELKConnectionDlg" Control_="Next" Event="DoAction" Argument="TestElasticsearchConnectionMsgBox" Condition="AI_INSTALL AND ( ELK_CONNECTION = 0 )" Ordering="6"/>
+    <ROW Dialog_="ELKConnectionDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER" Condition="AI_INSTALL AND ( ELK_CONNECTION = 0 )" Ordering="5"/>
+    <ROW Dialog_="SQLConnectionDlg" Control_="Back" Event="NewDialog" Argument="WelcomeDlg" Condition="AI_INSTALL AND ( OLDPRODUCTS &lt;&gt; &quot;&quot; )" Ordering="3"/>
+    <ROW Dialog_="ELKConnectionDlg" Control_="Back" Event="NewDialog" Argument="WelcomeDlg" Condition="AI_INSTALL AND ( OLDPRODUCTS &lt;&gt; &quot;&quot; )" Ordering="4"/>
+    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="DoAction" Argument="TestElasticsearchConnection" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; )" Ordering="3"/>
+    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_1" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; )" Ordering="2"/>
+    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="ELKConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = 0 )" Ordering="5"/>
+    <ROW Dialog_="SQLConnectionDlg" Control_="Next" Event="SpawnDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = 1 )" Ordering="8"/>
+    <ROW Dialog_="FolderDlg" Control_="Next" Event="DoAction" Argument="TestElasticsearchConnection" Condition="AI_INSTALL" Ordering="204"/>
+    <ROW Dialog_="FolderDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_1" Condition="AI_INSTALL" Ordering="203"/>
+    <ROW Dialog_="FolderDlg" Control_="Next" Event="NewDialog" Argument="ELKConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = 0 )" Ordering="206"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCreateFolderComponent">
     <ROW Directory_="APPDIR" Component_="APPDIR" ManualDelete="true"/>
@@ -331,6 +368,8 @@
     <ROW Action="AI_AppSearchEx" Type="1" Source="Prereq.dll" Target="DoAppSearchEx"/>
     <ROW Action="AI_BACKUP_AI_SETUPEXEPATH" Type="51" Source="AI_SETUPEXEPATH_ORIGINAL" Target="[AI_SETUPEXEPATH]"/>
     <ROW Action="AI_ConfigFailActions" Type="11265" Source="aicustact.dll" Target="ConfigureServFailActions" WithoutSeq="true"/>
+    <ROW Action="AI_DATA_SETTER" Type="51" Source="CustomActionData" Target="[ELASTICSEARCH_MSG]&#13;\n[ELASTICSEARCH_SCHEME]://[ELASTICSEARCH_HOST]:[ELASTICSEARCH_PORT] |[ProductName] Setup |MB_OK,MB_ICONWARNING,MB_DEFBUTTON1||[CLIENTPROCESSID]"/>
+    <ROW Action="AI_DATA_SETTER_1" Type="51" Source="CustomActionData" Target="AEQAaQBnAGkAdABhAGwAbAB5AFMAaQBnAG4AUwBjAHIAaQBwAHQAAgABAEYAbABhAGcAcwACADYAAQBQAGEAcgBhAG0AcwACAAEAUwBjAHIAaQBwAHQAAgAjAFIAZQBxAHUAaQByAGUAcwAgAC0AdgBlAHIAcwBpAG8AbgAgADMADQAKAFAAYQByAGEAbQAoACkADQAKAA0ACgBmAHUAbgBjAHQAaQBvAG4AIABDAGgAZQBjAGsAVABDAFAAUABvAHIAdABBAHYAYQBpAGwAYQBiAGkAbABpAHQAeQAgAFsAXAB7AF0ADQAKAA0ACgAgACAAcABhAHIAYQBtACAAKAAgACQAdABjAHAAXwBoAG8AcwB0ACwAIAAkAHAAbwByAHQAIAApAA0ACgANAAoAIAAgACQAdABpAG0AZQBfAHQAbwBfAHcAYQBpAHQAIAA9ACAAMQAwADAAMAANAAoAIAAgACQAdABjAHAAbwBiAGoAZQBjAHQAIAA9ACAATgBlAHcALQBPAGIAagBlAGMAdAAgAHMAeQBzAHQAZQBtAC4ATgBlAHQALgBTAG8AYwBrAGUAdABzAC4AVABjAHAAQwBsAGkAZQBuAHQADQAKACAAIAAkAGMAbwBuAG4AZQBjAHQAIAA9ACAAJAB0AGMAcABvAGIAagBlAGMAdAAuAEIAZQBnAGkAbgBDAG8AbgBuAGUAYwB0ACgAJAB0AGMAcABfAGgAbwBzAHQALAAgACQAcABvAHIAdAAsACAAJABuAHUAbABsACwAIAAkAG4AdQBsAGwAKQANAAoAIAAgACQAdwBhAGkAdAAgAD0AIAAkAGMAbwBuAG4AZQBjAHQALgBBAHMAeQBuAGMAVwBhAGkAdABIAGEAbgBkAGwAZQAuAFcAYQBpAHQATwBuAGUAKAAkAHQAaQBtAGUAXwB0AG8AXwB3AGEAaQB0ACwAIAAkAGYAYQBsAHMAZQApAA0ACgAgACAAaQBmACAAKAAtAE4AbwB0ACAAJAB3AGEAaQB0ACkAIABbAFwAewBdAA0ACgAgACAAIAAgAHIAZQB0AHUAcgBuACAAMAANAAoAIAAgAFsAXAB9AF0AIABlAGwAcwBlACAAWwBcAHsAXQANAAoAIAAgACAAIAAkAEUAcgByAG8AcgAuAGMAbABlAGEAcgAoACkADQAKACAAIAAgACAAJAB0AGMAcABvAGIAagBlAGMAdAAuAEUAbgBkAEMAbwBuAG4AZQBjAHQAKAAkAGMAbwBuAG4AZQBjAHQAKQAgAHwAIABPAHUAdAAtAE4AdQBsAGwADQAKACAAIAAgACAAaQBmACAAKAAkAEUAcgByAG8AcgBbAFwAWwBdADAAWwBcAF0AXQApACAAWwBcAHsAXQANAAoAIAAgACAAIAAgACAAIAAgAFcAcgBpAHQAZQAtAFcAYQByAG4AaQBuAGcAIAAoACIAWwBcAHsAXQAwAFsAXAB9AF0AIgAgAC0AZgAgACQARQByAHIAbwByAFsAXABbAF0AMABbAFwAXQBdAC4ARQB4AGMAZQBwAHQAaQBvAG4ALgBNAGUAcwBzAGEAZwBlACkADQAKACAAIAAgACAAWwBcAH0AXQAgAGUAbABzAGUAIABbAFwAewBdAA0ACgAgACAAIAAgACAAIAAgACAAcgBlAHQAdQByAG4AIAAxAA0ACgAgACAAIAAgAFsAXAB9AF0ADQAKACAAIABbAFwAfQBdAA0ACgBbAFwAfQBdAA0ACgANAAoAJABFAEwASwBfAEgATwBTAFQAIAA9ACAAQQBJAF8ARwBlAHQATQBzAGkAUAByAG8AcABlAHIAdAB5ACAARQBMAEEAUwBUAEkAQwBTAEUAQQBSAEMASABfAEgATwBTAFQADQAKACQARQBMAEsAXwBQAE8AUgBUACAAPQAgAEEASQBfAEcAZQB0AE0AcwBpAFAAcgBvAHAAZQByAHQAeQAgAEUATABBAFMAVABJAEMAUwBFAEEAUgBDAEgAXwBQAE8AUgBUAA0ACgANAAoAJABFAEwASwBfAEMATwBOAE4ARQBDAFQASQBPAE4AIAA9ACAAQwBoAGUAYwBrAFQAQwBQAFAAbwByAHQAQQB2AGEAaQBsAGEAYgBpAGwAaQB0AHkAIAAkAEUATABLAF8ASABPAFMAVAAgACQARQBMAEsAXwBQAE8AUgBUAA0ACgANAAoAQQBJAF8AUwBlAHQATQBzAGkAUAByAG8AcABlAHIAdAB5ACAARQBMAEsAXwBDAE8ATgBOAEUAQwBUAEkATwBOACAAJABFAEwASwBfAEMATwBOAE4ARQBDAFQASQBPAE4="/>
     <ROW Action="AI_DATA_SETTER_10" Type="51" Source="CustomActionData" Target="MySQL80"/>
     <ROW Action="AI_DATA_SETTER_11" Type="51" Source="CustomActionData" Target="MySQL80"/>
     <ROW Action="AI_DATA_SETTER_12" Type="51" Source="CustomActionData" Target="Elasticsearch"/>
@@ -388,8 +427,13 @@
     <ROW Action="StartMySQLService" Type="1" Source="aicustact.dll" Target="StartWinService" Options="1" AdditionalSeq="AI_DATA_SETTER_11"/>
     <ROW Action="StopElasticSearchService" Type="1" Source="aicustact.dll" Target="StopWinService" Options="1" AdditionalSeq="AI_DATA_SETTER_12"/>
     <ROW Action="StopMySQLService" Type="1" Source="aicustact.dll" Target="StopWinService" Options="1" AdditionalSeq="AI_DATA_SETTER_10"/>
+    <ROW Action="TestElasticsearchConnection" Type="1" Source="PowerShellScriptLauncher.dll" Target="RunPowerShellScript" WithoutSeq="true" Options="1" AdditionalSeq="AI_DATA_SETTER_1"/>
+    <ROW Action="TestElasticsearchConnectionMsgBox" Type="1" Source="aicustact.dll" Target="MsgBox" WithoutSeq="true" Options="1" AdditionalSeq="AI_DATA_SETTER"/>
     <ROW Action="TestSQLConnectionMsgBox" Type="1" Source="aicustact.dll" Target="MsgBox" WithoutSeq="true" Options="1" AdditionalSeq="AI_DATA_SETTER_5"/>
     <ROW Action="TestSqlConnection" Type="6" Source="utils.vbs" Target="TestSqlConnection" WithoutSeq="true"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiDialogComponent">
+    <ROW Dialog="ELKConnectionDlg" HCentering="50" VCentering="50" Width="370" Height="270" Attributes="3" Title="[ProductName] [Setup]" Control_Default="Next" Control_Cancel="Cancel"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiEnvComponent">
     <ROW Environment="JAVA_HOME" Name="=-*JAVA_HOME" Value="[WindowsVolume]Progra~1\Elastic\Elasticsearch\7.13.1\jdk" Component_="AI_ExePath"/>
