@@ -65,11 +65,11 @@ class TableHeader extends React.Component {
     const { columnIndex } = this.state;
 
     let leftColumn;
-    let colIndex = index ? index : columnIndex - 1;
+    let colIndex = index !== undefined ? index : columnIndex - 1;
 
-    if (colIndex === 0) return;
+    if (colIndex < 0) return;
 
-    while (colIndex !== 0) {
+    while (colIndex >= 0) {
       leftColumn = document.getElementById("column_" + colIndex);
       if (leftColumn) {
         if (leftColumn.dataset.enable === "true") break;
@@ -82,7 +82,7 @@ class TableHeader extends React.Component {
       : defaultMinColumnSize;
 
     if (leftColumn.clientWidth <= minSize) {
-      if (colIndex === 1) return false;
+      if (colIndex < 0) return false;
       return this.moveToLeft(widths, newWidth, colIndex - 1);
     }
 
