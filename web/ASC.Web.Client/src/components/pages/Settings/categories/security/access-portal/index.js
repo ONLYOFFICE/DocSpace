@@ -8,6 +8,7 @@ import TfaSection from "./tfa";
 import PasswordStrengthSection from "./passwordStrength";
 import TrustedMailSection from "./trustedMail";
 import IpSecuritySection from "./ipSecurity";
+import AdminMessageSection from "./adminMessage";
 import MobileView from "./mobileView";
 import CategoryWrapper from "../sub-components/category-wrapper";
 import { size } from "@appserver/components/utils/device";
@@ -56,6 +57,12 @@ const AccessPortal = (props) => {
         tooltipContent={t("IPSecurityDescription")}
       />
       <IpSecuritySection />
+      <hr />
+      <CategoryWrapper
+        title={t("AdminsMessage")}
+        tooltipContent={t("AdminsMessageDescription")}
+      />
+      <AdminMessageSection />
     </MainContainer>
   );
 };
