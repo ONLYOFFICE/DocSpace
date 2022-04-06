@@ -729,7 +729,12 @@ const SharingPanel = inject(
 
 class Panel extends React.Component {
   static convertSharingUsers = (shareDataItems) => {
-    const t = i18n.getFixedT(null, ["SharingPanel", "Common"]);
+    const t = i18n.getFixedT(null, [
+      "SharingPanel",
+      "Common",
+      "Translations",
+      "Home",
+    ]);
     const {
       FullAccess,
       DenyAccess,
