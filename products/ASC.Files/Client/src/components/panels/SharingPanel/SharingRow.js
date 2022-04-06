@@ -11,6 +11,7 @@ import { getAccessIcon } from "../../../helpers/files-helpers";
 import { ReactSVG } from "react-svg";
 import { objectToGetParams } from "@appserver/common/utils";
 import ExternalLink from "./ExternalLink";
+import InternalLink from "./InternalLink";
 
 class SharingRow extends React.Component {
   constructor(props) {
@@ -113,6 +114,7 @@ class SharingRow extends React.Component {
 
     const { isOwner, isLocked } = item;
     const { label, displayName, name, shareLink, id } = item.sharedTo;
+
     const userName = name
       ? name === "Everyone"
         ? t("ShareEveryone")
@@ -122,14 +124,6 @@ class SharingRow extends React.Component {
     const externalLinkVisible =
       selection && selection.length === 1 && shareLink;
     const internalLinkVisible = index === 0 && internalLink;
-
-    const internalLinkData = [
-      {
-        key: "linkItem",
-        label: t("CopyInternalLink"),
-        onClick: this.onCopyInternalLink,
-      },
-    ];
 
     const externalLinkOptions = [
       {
@@ -170,7 +164,7 @@ class SharingRow extends React.Component {
         {externalLinkVisible && (
           <ExternalLink
             linkText={t("ExternalLink")}
-            shareText={t("Share")}
+            shareText={t("Home:Share")}
             shareLink={shareLink}
             options={externalLinkOptions}
             onToggleLink={onToggleLink}
@@ -181,10 +175,10 @@ class SharingRow extends React.Component {
         )}
 
         {!isPersonal && internalLinkVisible && (
-          <LinkRow
-            theme={theme}
+          <InternalLink
             linkText={t("InternalLink")}
-            options={internalLinkData}
+            copyText={t("Translations:Copy")}
+            onCopyInternalLink={this.onCopyInternalLink}
             {...this.props}
           />
         )}

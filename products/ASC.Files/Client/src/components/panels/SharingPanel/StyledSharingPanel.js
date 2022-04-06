@@ -167,6 +167,31 @@ const StyledExternalLink = styled.div`
   }
 `;
 
+const StyledInternalLink = styled.div`
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 20px;
+
+  .internal-link__link-text {
+    line-height: 22px !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+  }
+
+  .internal-link__copy-text {
+    line-height: 15px !important;
+    font-weight: 600 !important;
+
+    border-bottom: 1px dashed #333333;
+
+    cursor: pointer;
+  }
+`;
+
 const StyledFooterContent = styled.div`
   width: calc(100% - 16px);
   border-top: 1px solid #eceef1;
@@ -195,5 +220,6 @@ export {
   StyledHeaderContent,
   StyledBodyContent,
   StyledExternalLink,
+  StyledInternalLink,
   StyledFooterContent,
 };

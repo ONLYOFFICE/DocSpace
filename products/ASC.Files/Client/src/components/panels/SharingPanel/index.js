@@ -26,7 +26,6 @@ import { StyledContent, StyledBodyContent } from "./StyledSharingPanel";
 
 import Header from "./Header";
 import Footer from "./Footer";
-import ExternalLink from "./ExternalLink";
 
 // const SharingBodyStyle = { height: `calc(100vh - 156px)` };
 
@@ -722,7 +721,7 @@ const SharingPanel = inject(
   }
 )(
   observer(
-    withTranslation(["SharingPanel", "Common", "Translations"])(
+    withTranslation(["SharingPanel", "Common", "Translations", "Home"])(
       withLoader(SharingPanelComponent)(<Loaders.DialogAsideLoader isPanel />)
     )
   )
