@@ -1,11 +1,11 @@
-import { makeAutoObservable } from "mobx";
 import api from "@appserver/common/api";
-import axios from "axios";
 import {
   setFavoritesSetting,
   setRecentSetting,
 } from "@appserver/common/api/files";
 import { FolderType } from "@appserver/common/constants";
+import axios from "axios";
+import { makeAutoObservable } from "mobx";
 import { presentInArray } from "../helpers/files-helpers";
 
 class SettingsStore {
@@ -60,6 +60,10 @@ class SettingsStore {
 
     this.thirdPartyStore = thirdPartyStore;
     this.treeFoldersStore = treeFoldersStore;
+  }
+
+  get infoPanelIsVisible() {
+    return this.infoPanelIsVisible;
   }
 
   setIsLoaded = (isLoaded) => {

@@ -19,6 +19,10 @@ import SubSectionBody from "./sub-components/section-body";
 import SubSectionBodyContent from "./sub-components/section-body-content";
 import SubSectionBar from "./sub-components/section-bar";
 import SubSectionPaging from "./sub-components/section-paging";
+//import SectionToggler from "./sub-components/section-toggler";
+import InfoPanel from "./sub-components/info-panel";
+import SubInfoPanelBody from "./sub-components/info-panel-body";
+import SubInfoPanelHeader from "./sub-components/info-panel-header";
 
 import ReactResizeDetector from "react-resize-detector";
 import FloatingButton from "../FloatingButton";
@@ -36,8 +40,13 @@ const StyledMainBar = styled.div`
   box-sizing: border-box;
 
   margin-left: -20px;
-  width: calc(100vw - 256px);
-  max-width: calc(100vw - 256px);
+  /* width: calc(100vw - 256px);
+  max-width: calc(100vw - 256px); */
+
+  width: ${(props) =>
+    props.infoPanelIsVisible ? "calc(100vw - 657px)" : "calc(100vw - 256px)"};
+  max-width: ${(props) =>
+    props.infoPanelIsVisible ? "calc(100vw - 657px)" : "calc(100vw - 256px)"};
 
   #bar-banner {
     margin-bottom: -3px;
@@ -123,12 +132,24 @@ function SectionPaging() {
 }
 SectionPaging.displayName = "SectionPaging";
 
+function InfoPanelBody() {
+  return null;
+}
+InfoPanelBody.displayName = "InfoPanelBody";
+
+function InfoPanelHeader() {
+  return null;
+}
+InfoPanelHeader.displayName = "InfoPanelHeader";
+
 class Section extends React.Component {
   static SectionHeader = SectionHeader;
   static SectionFilter = SectionFilter;
   static SectionBody = SectionBody;
   static SectionBar = SectionBar;
   static SectionPaging = SectionPaging;
+  static InfoPanelBody = InfoPanelBody;
+  static InfoPanelHeader = InfoPanelHeader;
 
   constructor(props) {
     super(props);
@@ -208,6 +229,7 @@ class Section extends React.Component {
       setMaintenanceExist,
       snackbarExist,
       showText,
+      infoPanelIsVisible,
     } = this.props;
 
     let sectionHeaderContent = null;
@@ -215,6 +237,9 @@ class Section extends React.Component {
     let sectionFilterContent = null;
     let sectionPagingContent = null;
     let sectionBodyContent = null;
+    let infoPanelBodyContent = null;
+    let infoPanelHeaderContent = null;
+
     React.Children.forEach(children, (child) => {
       const childType =
         child && child.type && (child.type.displayName || child.type.name);
@@ -234,6 +259,12 @@ class Section extends React.Component {
           break;
         case SectionBody.displayName:
           sectionBodyContent = child;
+          break;
+        case InfoPanelBody.displayName:
+          infoPanelBodyContent = child;
+          break;
+        case InfoPanelHeader.displayName:
+          infoPanelHeaderContent = child;
           break;
         default:
           break;
@@ -277,6 +308,7 @@ class Section extends React.Component {
                     maintenanceExist={maintenanceExist}
                     isSectionBarAvailable={isSectionBarAvailable}
                     isSectionHeaderAvailable={isSectionHeaderAvailable}
+                    infoPanelIsVisible={infoPanelIsVisible}
                   >
                     {!isMobile && (
                       <StyledMainBar
@@ -285,6 +317,7 @@ class Section extends React.Component {
                         className={"main-bar"}
                         showText={showText}
                         isSectionHeaderAvailable={isSectionHeaderAvailable}
+                        infoPanelIsVisible={infoPanelIsVisible}
                       >
                         <SubSectionBar
                           setMaintenanceExist={setMaintenanceExist}
@@ -302,6 +335,7 @@ class Section extends React.Component {
                         snackbarExist={snackbarExist}
                         className="section-header_header"
                         isHeaderVisible={isHeaderVisible}
+                        infoPanelIsVisible={infoPanelIsVisible}
                         viewAs={viewAs}
                         showText={showText}
                       >
@@ -322,6 +356,7 @@ class Section extends React.Component {
                         </SubSectionFilter>
                       </>
                     )}
+
                     {isSectionBodyAvailable && (
                       <>
                         <SubSectionBody
@@ -341,6 +376,7 @@ class Section extends React.Component {
                               isSectionHeaderAvailable={
                                 isSectionHeaderAvailable
                               }
+                              infoPanelIsVisible={infoPanelIsVisible}
                             >
                               <SubSectionBar
                                 setMaintenanceExist={setMaintenanceExist}
@@ -358,6 +394,7 @@ class Section extends React.Component {
                               isHeaderVisible={isHeaderVisible}
                               viewAs={viewAs}
                               showText={showText}
+                              infoPanelIsVisible={infoPanelIsVisible}
                             >
                               {sectionHeaderContent
                                 ? sectionHeaderContent.props.children
@@ -372,11 +409,13 @@ class Section extends React.Component {
                                 : null}
                             </SubSectionFilter>
                           )}
+
                           <SubSectionBodyContent>
                             {sectionBodyContent
                               ? sectionBodyContent.props.children
                               : null}
                           </SubSectionBodyContent>
+
                           {isSectionPagingAvailable && (
                             <SubSectionPaging>
                               {sectionPagingContent
@@ -387,6 +426,7 @@ class Section extends React.Component {
                         </SubSectionBody>
                       </>
                     )}
+
                     {!(isMobile || isMobileUtils() || isTabletUtils()) ? (
                       showPrimaryProgressBar && showSecondaryProgressBar ? (
                         <>
@@ -428,6 +468,12 @@ class Section extends React.Component {
                       <></>
                     )}
                   </SectionContainer>
+                  <InfoPanel>
+                    <SubInfoPanelHeader>
+                      {infoPanelHeaderContent}
+                    </SubInfoPanelHeader>
+                    <SubInfoPanelBody>{infoPanelBodyContent}</SubInfoPanelBody>
+                  </InfoPanel>
                 </Provider>
               )}
             </ReactResizeDetector>
@@ -501,12 +547,14 @@ Section.defaultProps = {
   withBodyAutoFocus: false,
 };
 
+Section.InfoPanelHeader = InfoPanelHeader;
+Section.InfoPanelBody = InfoPanelBody;
 Section.SectionHeader = SectionHeader;
 Section.SectionFilter = SectionFilter;
 Section.SectionBody = SectionBody;
 Section.SectionPaging = SectionPaging;
 
-export default inject(({ auth }) => {
+export default inject(({ auth, infoPanelStore }) => {
   const { isLoaded, settingsStore } = auth;
   const {
     isHeaderVisible,
@@ -523,6 +571,9 @@ export default inject(({ auth }) => {
     showText,
   } = settingsStore;
 
+  let infoPanelIsVisible = false;
+  if (infoPanelStore) infoPanelIsVisible = infoPanelStore.isVisible;
+
   return {
     isLoaded,
     isTabletView,
@@ -536,5 +587,7 @@ export default inject(({ auth }) => {
     isDesktop: isDesktopClient,
 
     showText,
+
+    infoPanelIsVisible: infoPanelIsVisible,
   };
 })(observer(Section));
