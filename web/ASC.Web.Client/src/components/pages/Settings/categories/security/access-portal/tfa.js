@@ -38,15 +38,19 @@ const TwoFactorAuth = (props) => {
   const getSettings = () => {
     const { tfaSettings, smsAvailable, appAvailable } = props;
     const currentSettings = getFromSessionStorage("currentTfaSettings");
+    const defaultSettings = getFromSessionStorage("defaultTfaSettings");
+
+    if (defaultSettings) {
+      saveToSessionStorage("defaultTfaSettings", defaultSettings);
+    } else {
+      saveToSessionStorage("defaultTfaSettings", tfaSettings);
+    }
 
     if (currentSettings) {
       setType(currentSettings);
     } else {
       setType(tfaSettings);
     }
-
-    const defaultSettings = getFromSessionStorage("defaultTfaSettings");
-    saveToSessionStorage("defaultTfaSettings", defaultSettings || tfaSettings);
 
     setSmsDisabled(smsAvailable);
     setAppDisabled(appAvailable);
@@ -58,9 +62,11 @@ const TwoFactorAuth = (props) => {
     getSettings();
     window.addEventListener("resize", checkWidth);
     return () => window.removeEventListener("resize", checkWidth);
-  }, []);
+  }, [isLoading]);
 
   useEffect(() => {
+    if (!isLoading) return;
+
     const defaultSettings = getFromSessionStorage("defaultTfaSettings");
     saveToSessionStorage("currentTfaSettings", type);
 

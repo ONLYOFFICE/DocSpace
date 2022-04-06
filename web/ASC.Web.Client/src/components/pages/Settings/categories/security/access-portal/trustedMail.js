@@ -47,9 +47,21 @@ const TrustedMail = (props) => {
   const [type, setType] = useState("0");
   const [domains, setDomains] = useState([]);
   const [showReminder, setShowReminder] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const getSettings = async () => {
     const currentSettings = getFromSessionStorage("currentTrustedMailSettings");
+    const defaultSettings = getFromSessionStorage("defaultTrustedMailSettings");
+
+    if (defaultSettings) {
+      saveToSessionStorage("defaultTrustedMailSettings", defaultSettings);
+    } else {
+      const defaultData = {
+        type: String(trustedDomainsType),
+        domains: trustedDomains,
+      };
+      saveToSessionStorage("defaultTrustedMailSettings", defaultData);
+    }
 
     if (currentSettings) {
       setType(currentSettings.type);
@@ -59,15 +71,7 @@ const TrustedMail = (props) => {
       setDomains(trustedDomains);
     }
 
-    const defaultSettings = getFromSessionStorage("defaultTrustedMailSettings");
-    const defaultData = {
-      type: String(trustedDomainsType),
-      domains: trustedDomains,
-    };
-    saveToSessionStorage(
-      "defaultTrustedMailSettings",
-      defaultSettings || defaultData
-    );
+    setIsLoading(true);
   };
 
   useEffect(() => {
@@ -75,9 +79,11 @@ const TrustedMail = (props) => {
     getSettings();
     window.addEventListener("resize", checkWidth);
     return () => window.removeEventListener("resize", checkWidth);
-  }, []);
+  }, [isLoading]);
 
   useEffect(() => {
+    if (!isLoading) return;
+
     const defaultSettings = getFromSessionStorage("defaultTrustedMailSettings");
     const newSettings = {
       type: type,
