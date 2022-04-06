@@ -138,14 +138,16 @@ class ProfileActions extends React.PureComponent {
                   <DropDownItem {...action} />
                 </Link>
               ) : (
-                <StyledDropdownItem noHover={true} key={action.key}>
-                  {action.label}
-                  <ToggleButton
-                    className="toggle-button"
-                    onChange={action.onClick}
-                    isChecked={action.isChecked}
-                  />
-                </StyledDropdownItem>
+                action && (
+                  <StyledDropdownItem noHover={true} key={action.key}>
+                    {action.label}
+                    <ToggleButton
+                      className="toggle-button"
+                      onChange={action.onClick}
+                      isChecked={action.isChecked}
+                    />
+                  </StyledDropdownItem>
+                )
               )
             )}
           </div>
