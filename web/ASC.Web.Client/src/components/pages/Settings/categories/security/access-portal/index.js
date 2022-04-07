@@ -70,8 +70,10 @@ const AccessPortal = (props) => {
       <IpSecuritySection />
       <hr />
       <CategoryWrapper
+        t={t}
         title={t("AdminsMessage")}
-        tooltipContent={t("AdminsMessageDescription")}
+        tooltipTitle={t("AdminsMessageDescription")}
+        tooltipUrl={`https://helpcenter.onlyoffice.com/${lng}/administration/configuration.aspx#ChangingSecuritySettings_block`}
       />
       <AdminMessageSection />
     </MainContainer>
