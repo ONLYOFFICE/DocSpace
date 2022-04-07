@@ -15,7 +15,8 @@ const SectionBodyContent = ({
     if (
       e.target.closest(".scroll-body") &&
       !e.target.closest(".files-item") &&
-      !e.target.closest(".not-selectable")
+      !e.target.closest(".not-selectable") &&
+      !e.target.closest(".info-panel")
     ) {
       setGallerySelected(null);
     }
@@ -32,7 +33,7 @@ const SectionBodyContent = ({
   return !hasGalleryFiles ? (
     <EmptyScreenContainer
       imageSrc="images/empty_screen_form-gallery.react.svg"
-      imageAlt="Empty Screen Filter image"
+      imageAlt="Empty Screen Gallery image"
       headerText={t("EmptyScreenHeader")}
       descriptionText={t("EmptyScreenDescription")}
     />

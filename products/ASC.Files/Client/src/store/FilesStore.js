@@ -305,9 +305,11 @@ class FilesStore {
     const oformData = OFORMsGallery.data;
     console.log("oformData", oformData);
 
-    this.oformFiles = oformData.filter(
-      (f) => f["attributes"]["locale"] === culture
-    );
+    if (oformData && oformData.length) {
+      this.oformFiles = oformData.filter(
+        (f) => f["attributes"]["locale"] === culture
+      );
+    }
   };
 
   get hasGalleryFiles() {

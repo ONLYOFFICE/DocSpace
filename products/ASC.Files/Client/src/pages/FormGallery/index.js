@@ -3,6 +3,10 @@ import Section from "@appserver/common/components/Section";
 
 import SectionHeaderContent from "./Header";
 import SectionBodyContent from "./Body";
+import {
+  InfoPanelBodyContent,
+  InfoPanelHeaderContent,
+} from "../Home/InfoPanel";
 
 const FormGallery = () => {
   return (
@@ -16,6 +20,12 @@ const FormGallery = () => {
       <Section.SectionBody>
         <SectionBodyContent />
       </Section.SectionBody>
+      <Section.InfoPanelHeader>
+        <InfoPanelHeaderContent isGallery />
+      </Section.InfoPanelHeader>
+      <Section.InfoPanelBody>
+        <InfoPanelBodyContent isGallery />
+      </Section.InfoPanelBody>
     </Section>
   );
 };

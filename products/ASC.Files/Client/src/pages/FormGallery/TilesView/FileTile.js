@@ -1,29 +1,18 @@
 import React from "react";
-import { observer, inject } from "mobx-react";
 import Tile from "./sub-components/Tile";
 import { SimpleFilesTileContent } from "./StyledTileView";
 import Link from "@appserver/components/link";
 import { isDesktop } from "react-device-detect";
 
 const FileTile = (props) => {
-  const { item, getIcon, isSelected, setGallerySelected } = props;
+  const { item } = props;
   const { fileExst, title } = item;
 
-  const src = getIcon(32, ".docxf");
-
   const { thumbnailUrl } = item;
-  const element = <img className="react-svg-icon" src={src} />;
 
   return (
     <div ref={props.selectableRef}>
-      <Tile
-        key={item.id}
-        item={item}
-        thumbnail={thumbnailUrl}
-        element={element}
-        isSelected={isSelected}
-        setGallerySelected={setGallerySelected}
-      >
+      <Tile key={item.id} item={item} thumbnail={thumbnailUrl}>
         <SimpleFilesTileContent
           //sideColor={theme.filesSection.tilesView.sideColor}
           isFile={fileExst}
@@ -48,15 +37,4 @@ const FileTile = (props) => {
   );
 };
 
-export default inject(({ settingsStore, filesStore }, { item }) => {
-  const { getIcon } = settingsStore;
-  const { gallerySelected, setGallerySelected } = filesStore;
-
-  const isSelected = item.id === gallerySelected;
-
-  return {
-    getIcon,
-    isSelected,
-    setGallerySelected,
-  };
-})(observer(FileTile));
+export default FileTile;

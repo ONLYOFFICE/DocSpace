@@ -1,6 +1,7 @@
+import React from "react";
+import { inject, observer } from "mobx-react";
 import ContextMenuButton from "@appserver/components/context-menu-button";
 import PropTypes from "prop-types";
-import React from "react";
 import ContextMenu from "@appserver/components/context-menu";
 import { isDesktop } from "react-device-detect";
 import Link from "@appserver/components/link";
@@ -97,28 +98,31 @@ class Tile extends React.PureComponent {
   };
 
   onShowTemplateInfo = () => {
-    console.log("Open info panel");
+    if (!this.props.isInfoPanelVisible) {
+      this.props.toggleInfoPanel(true);
+    }
   };
 
   getOptions = () => ["create", "template-info"];
 
   onSelectForm = () => {
-    console.log("onSelectForm");
-    this.props.setGallerySelected(this.props.item.id);
-    this.onShowTemplateInfo();
+    this.props.setGallerySelected(this.props.item);
   };
 
   render() {
     const {
       children,
       contextButtonSpacerWidth,
-      element,
       tileContextClick,
       isActive,
       isSelected,
       title,
       showHotkeyBorder,
+      getIcon,
     } = this.props;
+
+    const src = getIcon(32, ".docxf");
+    const element = <img className="react-svg-icon" src={src} />;
 
     const onContextMenu = (e) => {
       tileContextClick && tileContextClick();
@@ -142,6 +146,7 @@ class Tile extends React.PureComponent {
         showHotkeyBorder={showHotkeyBorder}
         onDoubleClick={this.onCreateForm}
         onClick={this.onSelectForm}
+        className="files-item"
       >
         <StyledFileTileTop isActive={isActive}>{icon}</StyledFileTileTop>
 
@@ -184,7 +189,6 @@ Tile.propTypes = {
   contextButtonSpacerWidth: PropTypes.string,
   contextOptions: PropTypes.array,
   data: PropTypes.object,
-  element: PropTypes.element,
   id: PropTypes.string,
   onSelect: PropTypes.func,
   tileContextClick: PropTypes.func,
@@ -195,4 +199,24 @@ Tile.defaultProps = {
   item: {},
 };
 
-export default withTranslation(["FormGallery", "Common"])(Tile);
+export default inject(
+  ({ filesStore, settingsStore, infoPanelStore }, { item }) => {
+    const { gallerySelected, setGallerySelected } = filesStore;
+    const { getIcon } = settingsStore;
+    const { toggleIsVisible, isVisible } = infoPanelStore;
+
+    const isSelected = item.id === gallerySelected?.id;
+
+    return {
+      isSelected,
+      setGallerySelected,
+      getIcon,
+      toggleInfoPanel: toggleIsVisible,
+      isInfoPanelVisible: isVisible,
+    };
+  }
+)(
+  withTranslation(["FormGallery", "Common"])(
+    /* withRouter( */ observer(Tile) /* ) */
+  )
+);

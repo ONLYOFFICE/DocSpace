@@ -2,6 +2,7 @@ import styled, { css } from "styled-components";
 import { isMobile, isMobileOnly } from "react-device-detect";
 import { tablet, mobile } from "@appserver/components/utils/device";
 import Headline from "@appserver/common/components/Headline";
+import { Base } from "@appserver/components/themes";
 
 const StyledHeadline = styled(Headline)`
   width: calc(100% + 1px);
@@ -15,10 +16,8 @@ const StyledHeadline = styled(Headline)`
 `;
 
 const StyledContainer = styled.div`
-  padding: ${(props) => (props.isDropBox ? "14px 0 3px" : "14px 0 0px")};
-
-  width: fit-content;
-
+  width: 100%;
+  padding: 14px 0 0px;
   display: grid;
 
   grid-template-columns: ${(props) =>
@@ -33,27 +32,50 @@ const StyledContainer = styled.div`
 
   @media ${tablet} {
     width: 100%;
-    padding: ${(props) => (props.isDropBox ? "16px 0 5px" : "16px 0 0px")};
+    padding: 16px 0 0px;
   }
 
   ${isMobile &&
   css`
     width: 100% !important;
-    padding: ${(props) =>
-      props.isDropBox ? "16px 0 5px" : " 16px 0 0px"} !important;
+    padding: 16px 0 0px;
   `}
 
   @media ${mobile} {
     width: 100%;
-    padding: ${(props) => (props.isDropBox ? "12px 0 5px" : "12px 0 0")};
+    padding: 12px 0 0;
   }
 
   ${isMobileOnly &&
   css`
     width: 100% !important;
-    padding: ${(props) =>
-      props.isDropBox ? "12px 0 5px" : "12px 0 0"} !important;
+    padding: 12px 0 0;
   `}
 `;
 
-export { StyledHeadline, StyledContainer };
+const StyledInfoPanelToggleWrapper = styled.div`
+  margin-left: auto;
+
+  .info-panel-toggle-bg {
+    height: 32px;
+    width: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: ${(props) =>
+      props.isInfoPanelVisible
+        ? props.theme.infoPanel.sectionHeaderToggleBgActive
+        : props.theme.infoPanel.sectionHeaderToggleBg};
+
+    path {
+      fill: ${(props) =>
+        props.isInfoPanelVisible
+          ? props.theme.infoPanel.sectionHeaderToggleIconActive
+          : props.theme.infoPanel.sectionHeaderToggleIcon};
+    }
+  }
+`;
+StyledInfoPanelToggleWrapper.defaultProps = { theme: Base };
+
+export { StyledHeadline, StyledContainer, StyledInfoPanelToggleWrapper };
