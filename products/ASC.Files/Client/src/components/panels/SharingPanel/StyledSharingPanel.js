@@ -92,19 +92,9 @@ const StyledExternalLink = styled.div`
       }
     }
 
-    .external-link__combo {
-      .combo-button {
-        justify-content: right;
-        width: auto;
-
-        .combo-buttons_arrow-icon {
-          margin-right: 0;
-          margin-left: 4px;
-        }
-      }
-
-      .dropdown-container {
-        left: -15px;
+    .external-link__share {
+      .fixed-max-width {
+        top: 18px;
       }
     }
   }
@@ -153,6 +143,7 @@ const StyledExternalLink = styled.div`
 
     .panel_combo-box {
       .combo-button {
+        min-width: 46px;
         height: 32px;
 
         .sharing-access-combo-box-icon {
@@ -192,6 +183,53 @@ const StyledInternalLink = styled.div`
   }
 `;
 
+const StyledItem = styled.div`
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 8px 0;
+
+  ${(props) =>
+    props.isEndOfBlock &&
+    css`
+      margin-bottom: 16px;
+    `}
+
+  .item__info-block {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+
+    .info-block__text {
+      margin-left: 12px;
+    }
+  }
+
+  .item__change-owner {
+    line-height: 15px !important;
+    font-weight: 600 !important;
+
+    border-bottom: 1px dashed #333333;
+
+    cursor: pointer;
+  }
+
+  .panel_combo-box {
+    .combo-button {
+      min-width: 46px;
+      height: 32px;
+
+      .sharing-access-combo-box-icon {
+        display: flex;
+        align-items: center;
+      }
+    }
+  }
+`;
+
 const StyledFooterContent = styled.div`
   width: calc(100% - 16px);
   border-top: 1px solid #eceef1;
@@ -221,5 +259,6 @@ export {
   StyledBodyContent,
   StyledExternalLink,
   StyledInternalLink,
+  StyledItem,
   StyledFooterContent,
 };

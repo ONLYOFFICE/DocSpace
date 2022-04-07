@@ -12,6 +12,7 @@ import { ReactSVG } from "react-svg";
 import { objectToGetParams } from "@appserver/common/utils";
 import ExternalLink from "./ExternalLink";
 import InternalLink from "./InternalLink";
+import Item from "./Item";
 
 class SharingRow extends React.Component {
   constructor(props) {
@@ -101,7 +102,6 @@ class SharingRow extends React.Component {
       onRemoveUserClick,
       onShowEmbeddingPanel,
       onToggleLink,
-      externalLinkData,
       onShowChangeOwnerPanel,
       isLoading,
       internalLink,
@@ -112,8 +112,15 @@ class SharingRow extends React.Component {
 
     const canShareOwnerChange = this.props.canShareOwnerChange(item);
 
-    const { isOwner, isLocked } = item;
-    const { label, displayName, name, shareLink, id } = item.sharedTo;
+    const {
+      label,
+      displayName,
+      name,
+      shareLink,
+      avatarSmall,
+      avatarUrl,
+      id,
+    } = item.sharedTo;
 
     const userName = name
       ? name === "Everyone"
@@ -123,6 +130,7 @@ class SharingRow extends React.Component {
 
     const externalLinkVisible =
       selection && selection.length === 1 && shareLink;
+
     const internalLinkVisible = index === 0 && internalLink;
 
     const externalLinkOptions = [
@@ -140,15 +148,6 @@ class SharingRow extends React.Component {
         key: "linkItem_4",
         label: `${t("ShareVia")} Twitter`,
         onClick: this.onShareTwitter,
-      },
-      {
-        key: "linkItem_5",
-        isSeparator: true,
-      },
-      {
-        key: "linkItem_6",
-        label: t("Embedding"),
-        onClick: () => onShowEmbeddingPanel(shareLink),
       },
     ];
 
@@ -183,7 +182,31 @@ class SharingRow extends React.Component {
           />
         )}
 
-        {!isPersonal && (
+        {!isPersonal && !externalLinkVisible && !internalLinkVisible && (
+          <Item
+            avatarUrl={!!avatarSmall ? avatarSmall : avatarUrl}
+            access={item.access}
+            label={
+              id === isMyId
+                ? t("Common:MeLabel")
+                : !!displayName
+                ? displayName
+                : !!name
+                ? name
+                : label
+            }
+            isOwner={item.isOwner}
+            canShareOwnerChange={canShareOwnerChange}
+            onShowChangeOwnerPanel={onShowChangeOwnerPanel}
+            changeOwnerText={t("ChangeOwnerPanel:ChangeOwner").replace(
+              "()",
+              ""
+            )}
+            {...this.props}
+          />
+        )}
+
+        {/* {!isPersonal && (
           <>
             {!shareLink && (
               <Row
@@ -283,7 +306,7 @@ class SharingRow extends React.Component {
               </Row>
             )}
           </>
-        )}
+        )} */}
       </>
     );
   }
