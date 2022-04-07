@@ -130,7 +130,7 @@ const TrustedMail = (props) => {
 
   const onSaveClick = () => {
     const valid = domains.map((domain) => regexp.test(domain));
-    if (valid.includes(false)) {
+    if (type === "1" && valid.includes(false)) {
       toastr.error(t("Common:IncorrectDomain"));
       return;
     }
