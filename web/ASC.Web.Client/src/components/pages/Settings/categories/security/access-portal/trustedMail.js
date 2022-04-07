@@ -204,16 +204,6 @@ const TrustedMail = (props) => {
         />
       )}
 
-      <Text
-        color="#F21C0E"
-        fontSize="16px"
-        fontWeight="700"
-        className="warning-text"
-      >
-        {t("Common:Warning")}!
-      </Text>
-      <Text>{t("TrustedMailWarningHelper")}</Text>
-
       <Buttons
         t={t}
         showReminder={showReminder}
@@ -224,7 +214,7 @@ const TrustedMail = (props) => {
   );
 };
 
-export default inject(({ auth, setup }) => {
+export default inject(({ auth }) => {
   const {
     trustedDomainsType,
     trustedDomains,
