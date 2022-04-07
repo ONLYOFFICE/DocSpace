@@ -57,12 +57,13 @@ const ExternalLink = ({
 
         {isChecked && (
           <LinkWithDropdown
-            className="sharing_panel-link"
+            className="external-link__share"
             dropdownType="alwaysDashed"
             data={options}
             fontSize="13px"
             fontWeight={600}
             directionX={"right"}
+            directionY={"bottom"}
             isDefaultMode={false}
           >
             {shareText}
