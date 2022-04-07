@@ -134,7 +134,7 @@ const TrustedMail = (props) => {
     try {
       const data = {
         type: Number(type),
-        domains: 12,
+        domains: domains,
         inviteUsersAsVisitors: true,
       };
       await setMailDomainSettings(data);
