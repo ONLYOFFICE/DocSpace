@@ -13,17 +13,9 @@ import Buttons from "../sub-components/buttons";
 import { LearnMoreWrapper } from "../StyledSecurity";
 import { size } from "@appserver/components/utils/device";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
-import isEqual from "lodash/isEqual";
 
 const MainContainer = styled.div`
   width: 100%;
-
-  .page-subtitle {
-    margin-bottom: 10px;
-  }
-
-  .box {
-  }
 `;
 
 const TwoFactorAuth = (props) => {
@@ -117,7 +109,7 @@ const TwoFactorAuth = (props) => {
   return (
     <MainContainer>
       <LearnMoreWrapper>
-        <Text className="page-subtitle">{t("TwoFactorAuthHelper")}</Text>
+        <Text className="learn-subtitle">{t("TwoFactorAuthHelper")}</Text>
         <Link
           color="#316DAA"
           target="_blank"

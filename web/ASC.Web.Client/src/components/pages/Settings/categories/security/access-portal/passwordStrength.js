@@ -20,10 +20,6 @@ import isEqual from "lodash/isEqual";
 const MainContainer = styled.div`
   width: 100%;
 
-  .page-subtitle {
-    margin-bottom: 10px;
-  }
-
   .password-slider {
     width: 160px;
     height: 8px;
@@ -166,7 +162,7 @@ const PasswordStrength = (props) => {
   return (
     <MainContainer>
       <LearnMoreWrapper>
-        <Text className="page-subtitle">
+        <Text className="learn-subtitle">
           {t("SettingPasswordStrengthHelper")}
         </Text>
         <Link

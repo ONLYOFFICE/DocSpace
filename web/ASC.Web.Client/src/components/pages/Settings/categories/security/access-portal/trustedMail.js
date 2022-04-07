@@ -18,10 +18,6 @@ import isEqual from "lodash/isEqual";
 const MainContainer = styled.div`
   width: 100%;
 
-  .page-subtitle {
-    margin-bottom: 10px;
-  }
-
   .user-fields {
     margin-bottom: 18px;
   }
@@ -160,7 +156,7 @@ const TrustedMail = (props) => {
   return (
     <MainContainer>
       <LearnMoreWrapper>
-        <Text className="page-subtitle">{t("TrustedMailHelper")}</Text>
+        <Text className="learn-subtitle">{t("TrustedMailHelper")}</Text>
         <Link
           color="#316DAA"
           target="_blank"
