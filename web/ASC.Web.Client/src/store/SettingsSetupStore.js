@@ -231,10 +231,6 @@ class SettingsSetupStore {
     const res = await api.settings.setMailDomainSettings(dnsName, enable);
   };
 
-  setCookieSettings = async (lifeTime) => {
-    const res = await api.settings.setCookieSettings(lifeTime);
-  };
-
   setLifetimeAuditSettings = async (data) => {
     const res = await api.settings.setLifetimeAuditSettings(data);
   };
