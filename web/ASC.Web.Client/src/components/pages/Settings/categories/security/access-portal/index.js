@@ -61,8 +61,10 @@ const AccessPortal = (props) => {
       <TrustedMailSection />
       <hr />
       <CategoryWrapper
+        t={t}
         title={t("IPSecurity")}
         tooltipContent={t("IPSecurityDescription")}
+        tooltipTitle={t("IPSecurityDescription")}
       />
       <IpSecuritySection />
     </MainContainer>
