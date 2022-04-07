@@ -75,7 +75,7 @@ namespace ASC.IPSecurity
             IPRestrictionsService = iPRestrictionsService;
             SettingsManager = settingsManager;
             CurrentIpForTest = configuration["ipsecurity:test"];
-            MyNetworks = configuration["ipsecurity.mynetworks"];
+            MyNetworks = configuration["ipsecurity:mynetworks"];
             var hideSettings = (configuration["web:hide-settings"] ?? "").Split(new[] { ',', ';', ' ' });
             IpSecurityEnabled = !hideSettings.Contains("IpSecurity", StringComparer.CurrentCultureIgnoreCase);
         }
