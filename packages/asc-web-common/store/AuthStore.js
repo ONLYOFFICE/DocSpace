@@ -56,6 +56,7 @@ class AuthStore {
       this.settingsStore.getPortalPasswordSettings();
       this.tfaStore.getTfaType();
       this.settingsStore.getIpRestrictions();
+      this.settingsStore.getSessionLifetime();
     }
 
     return Promise.all(requests);

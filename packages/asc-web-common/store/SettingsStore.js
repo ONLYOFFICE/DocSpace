@@ -33,6 +33,7 @@ class SettingsStore {
   trustedDomainsType = 0;
   ipRestrictionEnable = false;
   ipRestrictions = [];
+  sessionLifetime = "1440";
   timezone = "UTC";
   timezones = [];
   utcOffset = "00:00:00";
@@ -479,6 +480,16 @@ class SettingsStore {
   setMessageSettings = async (turnOn) => {
     await api.settings.setMessageSettings(turnOn);
     this.enableAdmMess = turnOn;
+  };
+
+  getSessionLifetime = async () => {
+    const res = await api.settings.getSessionLifetime();
+    this.sessionLifetime = res;
+  };
+
+  setSessionLifetimeSettings = async (lifeTime) => {
+    const res = await api.settings.setCookieSettings(lifeTime);
+    this.sessionLifetime = lifeTime;
   };
 }
 
