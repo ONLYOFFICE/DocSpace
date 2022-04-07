@@ -3,6 +3,7 @@
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
+using ASC.Core.Common.Settings;
 using ASC.IPSecurity;
 
 using Microsoft.AspNetCore.Mvc;
@@ -19,9 +20,11 @@ namespace ASC.Api.Core.Middleware
         public IpSecurityFilter(
             IOptionsMonitor<ILog> options,
             AuthContext authContext,
-            IPSecurity.IPSecurity IPSecurity)
+            IPSecurity.IPSecurity IPSecurity,
+            SettingsManager settingsManager)
         {
             log = options.CurrentValue;
+            IPRestrictionsSettings = settingsManager.Load<IPRestrictionsSettings>();
             AuthContext = authContext;
             this.IPSecurity = IPSecurity;
         }
@@ -36,7 +39,8 @@ namespace ASC.Api.Core.Middleware
 
         public void OnResourceExecuting(ResourceExecutingContext context)
         {
-            if (AuthContext.IsAuthenticated && !IPSecurity.Verify())
+
+            if (IPRestrictionsSettings.Enable && AuthContext.IsAuthenticated && !IPSecurity.Verify())
             {
                 context.Result = new StatusCodeResult((int)HttpStatusCode.Forbidden);
                 log.WarnFormat("IPSecurity: user {0}", AuthContext.CurrentAccount.ID);

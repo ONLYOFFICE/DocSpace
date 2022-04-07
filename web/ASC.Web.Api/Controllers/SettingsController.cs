@@ -1341,6 +1341,13 @@ namespace ASC.Api.Settings
             return IPRestrictionsService.Save(model.Ips, Tenant.TenantId);
         }
 
+        [Read("iprestrictions/settings")]
+        public IPRestrictionsSettings GetIpRestrictionsSettings()
+        {
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+            return SettingsManager.Load<IPRestrictionsSettings>();
+        }
+
         [Update("iprestrictions/settings")]
         public IPRestrictionsSettings UpdateIpRestrictionsSettingsFromBody([FromBody] IpRestrictionsModel model)
         {
