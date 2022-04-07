@@ -25,11 +25,6 @@ function useMfScripts() {
 
   React.useEffect(async () => {
     if (filesReady && studioReady) {
-      // const [toastr, filesUtils, SharingDialog] = await Promise.all([
-      //   loadComponent(STUDIO_SCOPE, "./toastr")(),
-      //   loadComponent(FILES_SCOPE, "./utils")(),
-      //   loadComponent(FILES_SCOPE, "./SharingDialog")(),
-      // ]);
       const SharingDialog = await loadComponent(
         FILES_SCOPE,
         "./SharingDialog"
