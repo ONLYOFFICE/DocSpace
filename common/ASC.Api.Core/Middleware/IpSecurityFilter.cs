@@ -24,14 +24,14 @@ namespace ASC.Api.Core.Middleware
             SettingsManager settingsManager)
         {
             log = options.CurrentValue;
-            IPRestrictionsSettings = settingsManager.Load<IPRestrictionsSettings>();
             AuthContext = authContext;
             this.IPSecurity = IPSecurity;
+            SettingsManager = settingsManager;
         }
 
         private AuthContext AuthContext { get; }
-        public IPRestrictionsSettings IPRestrictionsSettings { get; }
         private IPSecurity.IPSecurity IPSecurity { get; }
+        private SettingsManager SettingsManager { get; }
 
         public void OnResourceExecuted(ResourceExecutedContext context)
         {
@@ -40,11 +40,16 @@ namespace ASC.Api.Core.Middleware
         public void OnResourceExecuting(ResourceExecutingContext context)
         {
 
-            if (IPRestrictionsSettings.Enable && AuthContext.IsAuthenticated && !IPSecurity.Verify())
+            if (AuthContext.IsAuthenticated)
             {
-                context.Result = new StatusCodeResult((int)HttpStatusCode.Forbidden);
-                log.WarnFormat("IPSecurity: user {0}", AuthContext.CurrentAccount.ID);
-                return;
+                var enable = SettingsManager.Load<IPRestrictionsSettings>().Enable;
+
+                if (enable && !IPSecurity.Verify())
+                {
+                    context.Result = new StatusCodeResult((int)HttpStatusCode.Forbidden);
+                    log.WarnFormat("IPSecurity: user {0}", AuthContext.CurrentAccount.ID);
+                    return;
+                }
             }
         }
     }
