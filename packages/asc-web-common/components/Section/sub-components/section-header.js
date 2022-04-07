@@ -16,8 +16,16 @@ const StyledSectionHeader = styled.div`
   margin-right: 20px;
   ${NoUserSelect}
 
-  width: calc(100vw - 296px);
-  max-width: calc(100vw - 296px);
+  display: grid;
+  align-items: center;
+
+  /* width: calc(100vw - 296px);
+  max-width: calc(100vw - 296px); */
+
+  width: ${(props) =>
+    props.infoPanelIsVisible ? "calc(100vw - 696px)" : "calc(100vw - 296px)"};
+  max-width: ${(props) =>
+    props.infoPanelIsVisible ? "calc(100vw - 696px)" : "calc(100vw - 296px)"};
 
   @media ${tablet} {
     width: ${(props) =>

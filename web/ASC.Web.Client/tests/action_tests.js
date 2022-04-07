@@ -740,3 +740,58 @@ Scenario(
     });
   }
 );
+
+Scenario("Setting password strength change test success", async ({ I }) => {
+  I.mockEndpoint(Endpoints.settings, "settings");
+  I.mockEndpoint(Endpoints.password, "password");
+  I.mockEndpoint(Endpoints.build, "build");
+  I.mockEndpoint(Endpoints.info, "infoSettings");
+  I.mockEndpoint(Endpoints.self, "selfSettings");
+
+  if (deviceType === "mobile") {
+    I.amOnPage("/settings/security/access-portal/password");
+
+    I.see("Minimal password length");
+
+    I.click({
+      react: "Checkbox",
+      props: {
+        value: "digits",
+      },
+    });
+
+    I.see("You have unsaved changes");
+    I.click("Save");
+
+    I.see("Settings have been successfully updated");
+  }
+});
+
+Scenario("Setting password strength change test error", async ({ I }) => {
+  I.mockEndpoint(Endpoints.settings, "settings");
+  I.mockEndpoint(Endpoints.password, "password");
+  I.mockEndpoint(Endpoints.build, "build");
+  I.mockEndpoint(Endpoints.info, "infoSettings");
+  I.mockEndpoint(Endpoints.self, "selfSettings");
+
+  if (deviceType === "mobile") {
+    I.amOnPage("/settings/security/access-portal/password");
+
+    I.see("Minimal password length");
+
+    I.click({
+      react: "Checkbox",
+      props: {
+        value: "digits",
+      },
+    });
+
+    I.see("You have unsaved changes");
+
+    I.mockEndpoint(Endpoints.password, "passwordError");
+
+    I.click("Save");
+
+    I.see("Error");
+  }
+});

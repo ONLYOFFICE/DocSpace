@@ -54,6 +54,18 @@ const StyledSettingsComponent = styled.div`
     line-height: 20px;
   }
 
+  .errorText {
+    position: absolute;
+    font-size: 10px;
+    color: #f21c0e;
+  }
+
+  .settings-block-description {
+    line-height: 20px;
+    color: #657077;
+    padding-bottom: 12px;
+  }
+
   @media (max-width: 599px) {
     ${(props) =>
       props.hasScroll &&
@@ -74,6 +86,10 @@ const StyledSettingsComponent = styled.div`
     .settings-block {
       max-width: 350px;
       height: auto;
+    }
+
+    .settings-block-description {
+      display: none;
     }
   }
 
