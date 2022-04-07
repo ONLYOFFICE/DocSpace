@@ -8,7 +8,6 @@ import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";
 import Slider from "@appserver/components/slider";
 import Checkbox from "@appserver/components/checkbox";
-import SectionLoader from "../sub-components/section-loader";
 import { getLanguage } from "@appserver/common/utils";
 import { LearnMoreWrapper } from "../StyledSecurity";
 import toastr from "@appserver/components/toast/toastr";
@@ -158,7 +157,7 @@ const PasswordStrength = (props) => {
   };
 
   const lng = getLanguage(localStorage.getItem("language") || "en");
-  if (!isLoading) return <SectionLoader />;
+
   return (
     <MainContainer>
       <LearnMoreWrapper>

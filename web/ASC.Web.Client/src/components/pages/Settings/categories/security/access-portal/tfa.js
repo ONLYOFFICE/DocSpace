@@ -7,7 +7,6 @@ import RadioButtonGroup from "@appserver/components/radio-button-group";
 import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";
 import toastr from "@appserver/components/toast/toastr";
-import SectionLoader from "../sub-components/section-loader";
 import { getLanguage } from "@appserver/common/utils";
 import Buttons from "../sub-components/buttons";
 import { LearnMoreWrapper } from "../StyledSecurity";
@@ -105,7 +104,6 @@ const TwoFactorAuth = (props) => {
   };
 
   const lng = getLanguage(localStorage.getItem("language") || "en");
-  if (!isLoading) return <SectionLoader />;
   return (
     <MainContainer>
       <LearnMoreWrapper>
