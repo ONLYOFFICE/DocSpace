@@ -59,11 +59,12 @@ const StyledFileTileTop = styled.div`
   justify-content: space-between;
   align-items: baseline;
   height: 156px;
+  overflow: hidden;
   position: relative;
 
   .thumbnail-image {
     pointer-events: none;
-    position: absolute;
+    position: relative;
     height: 100%;
     width: 100%;
     object-fit: cover;
