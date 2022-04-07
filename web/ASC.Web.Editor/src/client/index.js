@@ -5,6 +5,9 @@ import App from "../App.js";
 import { useSSR } from "react-i18next";
 import useMfScripts from "../helpers/useMfScripts";
 import initDesktop from "../helpers/initDesktop";
+import { AppServerConfig } from "@appserver/common/constants";
+import { combineUrl } from "@appserver/common/utils";
+import ErrorBoundary from "../components/ErrorBoundary";
 
 const propsObj = window.__ASC_INITIAL_STATE__;
 const initialI18nStore = window.initialI18nStore;
@@ -24,16 +27,27 @@ const AppWrapper = () => {
   const [isInitialized, isErrorLoading] = useMfScripts();
   useSSR(initialI18nStore, initialLanguage);
 
+  const onError = () =>
+    window.open(
+      combineUrl(
+        AppServerConfig.proxyURL,
+        propsObj.personal ? "sign-in" : "/login"
+      ),
+      "_self"
+    );
+
   return (
-    <Suspense fallback={<div />}>
-      <App
-        {...propsObj}
-        mfReady={isInitialized}
-        mfFailed={isErrorLoading}
-        isDesktopEditor={isDesktopEditor}
-        initDesktop={initDesktop}
-      />
-    </Suspense>
+    <ErrorBoundary onError={onError}>
+      <Suspense fallback={<div />}>
+        <App
+          {...propsObj}
+          mfReady={isInitialized}
+          mfFailed={isErrorLoading}
+          isDesktopEditor={isDesktopEditor}
+          initDesktop={initDesktop}
+        />
+      </Suspense>
+    </ErrorBoundary>
   );
 };
 

@@ -117,6 +117,7 @@ function Editor({
 
   useEffect(async () => {
     console.log("useEffect config", config);
+
     if (config) {
       document.getElementById("scripDocServiceAddress").onload = onLoad();
       setDocumentTitle(config?.document?.title);
