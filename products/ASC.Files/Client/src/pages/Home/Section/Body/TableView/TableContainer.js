@@ -6,6 +6,7 @@ import TableHeader from "./TableHeader";
 import TableBody from "@appserver/components/table-container/TableBody";
 import { isMobile } from "react-device-detect";
 import styled, { css } from "styled-components";
+import { Base } from "@appserver/components/themes";
 
 const borderColor = "#ECEEF1";
 const colorBorderTransition = "#f3f4f4";
@@ -20,24 +21,33 @@ const StyledTableContainer = styled(TableContainer)`
         border-top: 1px solid;
       }
       .table-container_file-name-cell {
-        border-image-source: ${`linear-gradient(to right, ${colorBorderTransition} 17px, ${borderColor} 31px)`};
+        border-image-source: ${`linear-gradient(to right, ${(props) =>
+          props.theme.filesSection.tableView.row
+            .borderColorTransition} 17px, ${(props) =>
+          props.theme.filesSection.tableView.row.borderColor} 31px)`};
       }
       .table-container_row-context-menu-wrapper {
-        border-image-source: ${`linear-gradient(to left, ${colorBorderTransition} 17px, ${borderColor} 31px)`};
+        border-image-source: ${`linear-gradient(to left, ${(props) =>
+          props.theme.filesSection.tableView.row
+            .borderColorTransition} 17px, ${(props) =>
+          props.theme.filesSection.tableView.row.borderColor} 31px)`};
       }
     }
   }
 
-  .files-item:not(.table-row-selected) + .table-row-selected {
+  /* .files-item:not(.table-row-selected) + .table-row-selected {
     .table-row {
       .table-container_file-name-cell,
       .table-container_row-context-menu-wrapper {
         margin-top: -1px;
-        border-top: ${`1px ${borderColor} solid`};
+        border-top: ${`1px ${(props) =>
+    props.theme.filesSection.tableView.row.borderColor} solid`};
       }
     }
-  }
+  } */
 `;
+
+StyledTableContainer.defaultProps = { theme: Base };
 
 const Table = ({
   filesList,
@@ -45,6 +55,8 @@ const Table = ({
   viewAs,
   setViewAs,
   setFirsElemChecked,
+  setHeaderBorder,
+  theme,
 }) => {
   const ref = useRef(null);
 
@@ -68,6 +80,8 @@ const Table = ({
             item={item}
             index={index}
             setFirsElemChecked={setFirsElemChecked}
+            setHeaderBorder={setHeaderBorder}
+            theme={theme}
           />
         ))}
       </TableBody>
@@ -75,13 +89,21 @@ const Table = ({
   );
 };
 
-export default inject(({ filesStore }) => {
-  const { filesList, viewAs, setViewAs, setFirsElemChecked } = filesStore;
+export default inject(({ filesStore, auth }) => {
+  const {
+    filesList,
+    viewAs,
+    setViewAs,
+    setFirsElemChecked,
+    setHeaderBorder,
+  } = filesStore;
 
   return {
     filesList,
     viewAs,
     setViewAs,
     setFirsElemChecked,
+    setHeaderBorder,
+    theme: auth.settingsStore.theme,
   };
 })(observer(Table));

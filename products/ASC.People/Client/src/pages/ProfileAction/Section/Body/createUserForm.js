@@ -700,7 +700,7 @@ class CreateUserForm extends React.Component {
             onClick={this.handleSubmit}
             primary
             isDisabled={isLoading}
-            size="big"
+            size="normal"
             tabIndex={10}
             className="create-user_save-btn"
           />
@@ -708,7 +708,7 @@ class CreateUserForm extends React.Component {
             label={t("Common:CancelButton")}
             onClick={this.onCancelHandler}
             isDisabled={isLoading}
-            size="big"
+            size="normal"
             style={{ marginLeft: "8px" }}
             tabIndex={11}
             className="create-user_cancel-btn"

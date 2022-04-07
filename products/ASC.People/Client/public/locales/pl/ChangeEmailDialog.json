@@ -1,17 +1,5 @@
 ﻿{
-  "DomainIpAddress": "Domena i adres IP nie są obsługiwane",
   "EmailActivationDescription": "Instrukcje dotyczące aktywacji zostaną wysłane na wskazany adres e-mail",
   "EmailChangeTitle": "Zmień adres e-mail",
-  "EmptyEmail": "Adres e-mail nie może być pusty",
-  "EnterEmail": "Wpisz nowy adres e-mail",
-  "IncorrectDomain": "Niepoprawna domena",
-  "IncorrectEmail": "Niepoprawny adres e-mail",
-  "IncorrectLocalPart": "Niepoprawny identyfikator użytkownika",
-  "LocalDomain": "Domeny lokalne nie są obsługiwane",
-  "ManyEmails": "Podano za dużo adresów e-mail",
-  "MaxLengthExceeded": "Maksymalna długość identyfikatora użytkownika wynosi 64 znaki.",
-  "PunycodeDomain": "Domeny Punycode nie są obsługiwane",
-  "PunycodeLocalPart": "Identyfikator użytkownika Punycode nie jest obsługiwany",
-  "SameEmail": "Nie można użyć tego samego adresu e-mail",
-  "SpacesInLocalPart": "Identyfikator użytkownika nie może zawierać spacji"
+  "EnterEmail": "Wpisz nowy adres e-mail"
 }

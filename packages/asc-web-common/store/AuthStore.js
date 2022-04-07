@@ -52,6 +52,10 @@ class AuthStore {
       this.userStore.user && requests.push(this.moduleStore.init());
     }
 
+    if (this.isAuthenticated) {
+      this.settingsStore.getPortalPasswordSettings();
+    }
+
     return Promise.all(requests);
   };
   setLanguage() {
@@ -218,7 +222,7 @@ class AuthStore {
     this.settingsStore = new SettingsStore();
   };
 
-  logout = async (redirectToLogin = true) => {
+  logout = async (redirectToLogin = true, redirectPath = null) => {
     await api.user.logout();
 
     //console.log("Logout response ", response);
@@ -230,6 +234,9 @@ class AuthStore {
     isDesktop && logoutDesktop();
 
     if (redirectToLogin) {
+      if (redirectPath) {
+        return window.location.replace(redirectPath);
+      }
       if (personal) {
         return window.location.replace("/");
       } else {

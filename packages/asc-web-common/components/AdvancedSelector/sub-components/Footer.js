@@ -24,7 +24,7 @@ const Footer = (props) => {
       <Button
         className="add_members_btn"
         primary={true}
-        size="big"
+        size="normal"
         label={`${selectButtonLabel} ${
           selectedLength && showCounter ? `(${selectedLength})` : ""
         }`}

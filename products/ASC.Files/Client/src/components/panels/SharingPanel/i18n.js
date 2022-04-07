@@ -24,7 +24,7 @@ newInstance.use(Backend).init({
     loadPath: loadLanguagePath(config.homepage),
   },
 
-  ns: ["SharingPanel", "Common", "Translations"],
+  ns: ["SharingPanel", "Common", "Translations", "Home", "ChangeOwnerPanel"],
   defaultNS: "SharingPanel",
 
   react: {

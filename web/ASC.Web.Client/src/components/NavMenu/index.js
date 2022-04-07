@@ -13,34 +13,35 @@ import { withRouter } from "react-router";
 
 import Loaders from "@appserver/common/components/Loaders";
 import { LayoutContextConsumer } from "../Layout/context";
-import { isMobile } from "react-device-detect";
+import { isMobileOnly } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 import i18n from "./i18n";
 import PreparationPortalDialog from "../dialogs/PreparationPortalDialog";
-
-const backgroundColor = "#0F4071";
+import { Base } from "@appserver/components/themes";
 
 const StyledContainer = styled.header`
+  position: relative;
   align-items: center;
-  background-color: ${backgroundColor};
+  background-color: ${(props) => props.theme.header.backgroundColor};
 
   ${(props) =>
     !props.isLoaded
-      ? isMobile &&
+      ? isMobileOnly &&
         css`
           position: static;
 
           margin-right: -16px; /* It is a opposite value of padding-right of custom scroll bar,
        so that there is no white bar in the header on loading. (padding-right: 16px)*/
         `
-      : isMobile &&
+      : isMobileOnly &&
         css`
           .navMenuHeader,
           .profileMenuIcon,
           .navMenuHeaderUnAuth {
-            position: fixed;
+            position: absolute;
             z-index: 160;
-            top: ${(props) => (props.isVisible ? "0" : "-48px")};
+            top: 0;
+            // top: ${(props) => (props.isVisible ? "0" : "-48px")};
 
             transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
             -moz-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
@@ -65,6 +66,8 @@ const StyledContainer = styled.header`
     border-radius: 1px;
   }
 `;
+
+StyledContainer.defaultProps = { theme: Base };
 
 class NavMenu extends React.Component {
   constructor(props) {

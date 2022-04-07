@@ -1,22 +1,29 @@
-import { makeAutoObservable } from "mobx";
-
 import {
-  removeFiles,
+  checkFileConflicts,
   deleteFile,
   deleteFolder,
-  finalizeVersion,
-  lockFile,
   downloadFiles,
-  markAsRead,
-  checkFileConflicts,
-  removeShareFiles,
-  getSubfolders,
   emptyTrash,
+  finalizeVersion,
+  getSubfolders,
+  lockFile,
+  markAsRead,
+  removeFiles,
+  removeShareFiles,
 } from "@appserver/common/api/files";
-import { ConflictResolveType, FileAction } from "@appserver/common/constants";
-import { TIMEOUT } from "../helpers/constants";
-import { loopTreeFolders } from "../helpers/files-helpers";
+import {
+  ConflictResolveType,
+  FileAction,
+  FileStatus,
+} from "@appserver/common/constants";
+import { makeAutoObservable } from "mobx";
 import toastr from "studio/toastr";
+
+import { TIMEOUT } from "../helpers/constants";
+import { loopTreeFolders, checkProtocol } from "../helpers/files-helpers";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
+import config from "../../package.json";
 
 class FilesActionStore {
   authStore;
@@ -27,6 +34,7 @@ class FilesActionStore {
   settingsStore;
   dialogsStore;
   mediaViewerDataStore;
+  infoPanelStore;
 
   constructor(
     authStore,
@@ -36,7 +44,8 @@ class FilesActionStore {
     selectedFolderStore,
     settingsStore,
     dialogsStore,
-    mediaViewerDataStore
+    mediaViewerDataStore,
+    infoPanelStore
   ) {
     makeAutoObservable(this);
     this.authStore = authStore;
@@ -46,6 +55,7 @@ class FilesActionStore {
     this.selectedFolderStore = selectedFolderStore;
     this.settingsStore = settingsStore;
     this.dialogsStore = dialogsStore;
+    this.infoPanelStore = infoPanelStore;
     this.mediaViewerDataStore = mediaViewerDataStore;
   }
 
@@ -125,6 +135,7 @@ class FilesActionStore {
       percent: 0,
       label: translations.deleteOperation,
       alert: false,
+      filesCount: selection.length,
     });
 
     const deleteAfter = false; //Delete after finished TODO: get from settings
@@ -389,19 +400,31 @@ class FilesActionStore {
     }
   };
 
-  onSelectItem = ({ id, isFolder }) => {
-    const { setBufferSelection, selected, setSelected } = this.filesStore;
+  onSelectItem = ({ id, isFolder }, isBuffer = false) => {
+    const {
+      setBufferSelection,
+      selected,
+      setSelected,
+      setSelection,
+      setHotkeyCaretStart,
+      setHotkeyCaret,
+      filesList,
+    } = this.filesStore;
     /* selected === "close" &&  */ setSelected("none");
 
     if (!id) return;
 
-    const item = this.filesStore[isFolder ? "folders" : "files"].find(
-      (elm) => elm.id === id
+    const item = filesList.find(
+      (elm) => elm.id === id && elm.isFolder === isFolder
     );
 
     if (item) {
-      item.isFolder = isFolder;
-      setBufferSelection(item);
+      if (isBuffer) setBufferSelection(item);
+      else {
+        setSelection([item]);
+        setHotkeyCaret(null);
+        setHotkeyCaretStart(null);
+      }
     }
   };
 
@@ -506,6 +529,7 @@ class FilesActionStore {
   duplicateAction = (item, label) => {
     const {
       setSecondaryProgressBarData,
+      filesCount,
     } = this.uploadDataStore.secondaryProgressDataStore;
 
     //TODO: duplicate for folders?
@@ -521,6 +545,7 @@ class FilesActionStore {
       percent: 0,
       label,
       alert: false,
+      filesCount: filesCount + fileIds.length,
     });
 
     this.filesStore.addActiveItems(fileIds, folderIds);
@@ -573,6 +598,7 @@ class FilesActionStore {
     } = this.filesStore;
     //selected === "close" && setSelected("none");
     setBufferSelection(null);
+
     if (checked) {
       selectFile(file);
     } else {
@@ -763,6 +789,7 @@ class FilesActionStore {
     switch (option) {
       case "share":
         return isAccessedSelected && !personal; //isFavoritesFolder ||isRecentFolder
+      case "showInfo":
       case "copy":
       case "download":
         return hasSelection;
@@ -807,6 +834,8 @@ class FilesActionStore {
       setCopyPanelVisible,
       setDeleteDialogVisible,
     } = this.dialogsStore;
+
+    const { toggleIsVisible } = this.infoPanelStore;
 
     switch (option) {
       case "share":
@@ -892,6 +921,7 @@ class FilesActionStore {
     const moveTo = this.getOption("moveTo", t);
     const copy = this.getOption("copy", t);
     const deleteOption = this.getOption("delete", t);
+    const showInfo = this.getOption("showInfo", t);
 
     itemsCollection
       .set("share", share)
@@ -899,7 +929,8 @@ class FilesActionStore {
       .set("downloadAs", downloadAs)
       .set("moveTo", moveTo)
       .set("copy", copy)
-      .set("delete", deleteOption);
+      .set("delete", deleteOption)
+      .set("showInfo", showInfo);
 
     return this.convertToArray(itemsCollection);
   };
@@ -909,12 +940,15 @@ class FilesActionStore {
     const download = this.getOption("download", t);
     const downloadAs = this.getOption("downloadAs", t);
     const copy = this.getOption("copy", t);
+    const showInfo = this.getOption("showInfo", t);
 
     itemsCollection
       .set("share", share)
       .set("download", download)
       .set("downloadAs", downloadAs)
-      .set("copy", copy);
+      .set("copy", copy)
+      .set("showInfo", showInfo);
+
     return this.convertToArray(itemsCollection);
   };
 
@@ -925,6 +959,7 @@ class FilesActionStore {
     const download = this.getOption("download", t);
     const downloadAs = this.getOption("downloadAs", t);
     const copy = this.getOption("copy", t);
+    const showInfo = this.getOption("showInfo", t);
 
     itemsCollection
       .set("share", share)
@@ -937,7 +972,9 @@ class FilesActionStore {
           setUnsubscribe(true);
           setDeleteDialogVisible(true);
         },
-      });
+      })
+      .set("showInfo", showInfo);
+
     return this.convertToArray(itemsCollection);
   };
 
@@ -945,12 +982,15 @@ class FilesActionStore {
     const moveTo = this.getOption("moveTo", t);
     const deleteOption = this.getOption("delete", t);
     const download = this.getOption("download", t);
+    const showInfo = this.getOption("showInfo", t);
 
     itemsCollection
       .set("download", download)
       .set("moveTo", moveTo)
 
-      .set("delete", deleteOption);
+      .set("delete", deleteOption)
+      .set("showInfo", showInfo);
+
     return this.convertToArray(itemsCollection);
   };
 
@@ -961,6 +1001,7 @@ class FilesActionStore {
     const download = this.getOption("download", t);
     const downloadAs = this.getOption("downloadAs", t);
     const copy = this.getOption("copy", t);
+    const showInfo = this.getOption("showInfo", t);
 
     itemsCollection
       .set("share", share)
@@ -976,7 +1017,9 @@ class FilesActionStore {
             .then(() => toastr.success(t("RemovedFromFavorites")))
             .catch((err) => toastr.error(err));
         },
-      });
+      })
+      .set("showInfo", showInfo);
+
     return this.convertToArray(itemsCollection);
   };
 
@@ -989,6 +1032,7 @@ class FilesActionStore {
     const download = this.getOption("download", t);
     const downloadAs = this.getOption("downloadAs", t);
     const deleteOption = this.getOption("delete", t);
+    const showInfo = this.getOption("showInfo", t);
 
     itemsCollection
       .set("download", download)
@@ -998,9 +1042,12 @@ class FilesActionStore {
         onClick: () => setMoveToPanelVisible(true),
         iconUrl: "/static/images/move.react.svg",
       })
-      .set("delete", deleteOption);
+      .set("delete", deleteOption)
+      .set("showInfo", showInfo);
+
     return this.convertToArray(itemsCollection);
   };
+
   getHeaderMenu = (t) => {
     const {
       isFavoritesFolder,
@@ -1025,6 +1072,102 @@ class FilesActionStore {
     if (isRecentFolder) return this.getRecentFolderOptions(itemsCollection, t);
 
     return this.getAnotherFolderOptions(itemsCollection, t);
+  };
+
+  openFileAction = (item) => {
+    const {
+      setIsLoading,
+      fetchFiles,
+      openDocEditor,
+      isPrivacyFolder,
+    } = this.filesStore;
+    const {
+      isRecycleBinFolder,
+      setExpandedKeys,
+      createNewExpandedKeys,
+    } = this.treeFoldersStore;
+    const { setMediaViewerData } = this.mediaViewerDataStore;
+    const { setConvertDialogVisible, setConvertItem } = this.dialogsStore;
+
+    const isMediaOrImage = this.settingsStore.isMediaOrImage(item.fileExst);
+    const canConvert = this.settingsStore.canConvert(item.fileExst);
+    const canWebEdit = this.settingsStore.canWebEdit(item.fileExst);
+    const canViewedDocs = this.settingsStore.canViewedDocs(item.fileExst);
+
+    const { id, viewUrl, providerKey, fileStatus, encrypted, isFolder } = item;
+    if (encrypted && isPrivacyFolder) return checkProtocol(item.id, true);
+
+    if (isRecycleBinFolder) return;
+
+    if (isFolder) {
+      setIsLoading(true);
+      //addExpandedKeys(parentFolder + "");
+
+      fetchFiles(id, null, true, false)
+        .then((data) => {
+          const pathParts = data.selectedFolder.pathParts;
+          const newExpandedKeys = createNewExpandedKeys(pathParts);
+          setExpandedKeys(newExpandedKeys);
+
+          this.setNewBadgeCount(item);
+        })
+        .catch((err) => {
+          toastr.error(err);
+          setIsLoading(false);
+        })
+        .finally(() => setIsLoading(false));
+    } else {
+      if (canConvert) {
+        setConvertItem(item);
+        setConvertDialogVisible(true);
+        return;
+      }
+
+      if ((fileStatus & FileStatus.IsNew) === FileStatus.IsNew)
+        this.onMarkAsRead(id);
+
+      if (canWebEdit || canViewedDocs) {
+        let tab =
+          !this.authStore.settingsStore.isDesktopClient && !isFolder
+            ? window.open(
+                combineUrl(
+                  AppServerConfig.proxyURL,
+                  config.homepage,
+                  "/doceditor"
+                ),
+                "_blank"
+              )
+            : null;
+
+        return openDocEditor(id, providerKey, tab);
+      }
+
+      if (isMediaOrImage) {
+        localStorage.setItem("isFirstUrl", window.location.href);
+        setMediaViewerData({ visible: true, id });
+
+        const url = "/products/files/#preview/" + id;
+        history.pushState(null, null, url);
+        return;
+      }
+
+      return window.open(viewUrl, "_self");
+    }
+  };
+
+  backToParentFolder = () => {
+    const { setIsLoading, fetchFiles } = this.filesStore;
+
+    if (!this.selectedFolderStore.parentId) return;
+
+    setIsLoading(true);
+
+    fetchFiles(
+      this.selectedFolderStore.parentId,
+      null,
+      true,
+      false
+    ).finally(() => setIsLoading(false));
   };
 }
 

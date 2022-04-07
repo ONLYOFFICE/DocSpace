@@ -51,7 +51,10 @@ import Checkbox from "@appserver/components/checkbox";
 import { isMobile } from "react-device-detect";
 import store from "studio/store";
 
+import ThemeProvider from "@appserver/components/theme-provider";
+
 const { auth: authStore } = store;
+const theme = store.auth.settingsStore.theme;
 
 let documentIsReady = false;
 
@@ -105,6 +108,11 @@ const Editor = () => {
   ] = useState(false);
 
   let filesSettings;
+
+  useEffect(() => {
+    const tempElm = document.getElementById("loader");
+    tempElm.style.backgroundColor = theme.backgroundColor;
+  }, []);
 
   useEffect(() => {
     if (isRetina() && getCookie("is_retina") == null) {
@@ -230,7 +238,6 @@ const Editor = () => {
           data: "backup-restore",
         });
         socketHelper.on("restore-backup", () => {
-         
           setPreparationPortalDialogVisible(true);
         });
       } catch (e) {
@@ -617,19 +624,22 @@ const Editor = () => {
   const onSDKAppReady = () => {
     console.log("ONLYOFFICE Document Editor is ready");
 
-    const index = url.indexOf("#message/");
-    if (index > -1) {
-      const splitUrl = url.split("#message/");
-      const message = decodeURIComponent(splitUrl[1]).replaceAll("+", " ");
-      history.pushState({}, null, url.substring(0, index));
-      docEditor.showMessage(message);
-    } else {
-      if (config?.Error) docEditor.showMessage(config.Error);
-    }
-
     const tempElm = document.getElementById("loader");
     if (tempElm) {
       tempElm.outerHTML = "";
+    }
+
+    const index = url.indexOf("#message/");
+    if (index > -1) {
+      const splitUrl = url.split("#message/");
+      if (splitUrl.length === 2) {
+        let raw = splitUrl[1]?.trim();
+        const message = decodeURIComponent(raw).replace(/\+/g, " ");
+        docEditor.showMessage(message);
+        history.pushState({}, null, url.substring(0, index));
+      }
+    } else {
+      if (config?.Error) docEditor.showMessage(config.Error);
     }
   };
 
@@ -882,84 +892,87 @@ const Editor = () => {
   };
 
   return (
-    <Box
-      widthProp="100vw"
-      heightProp={isIPad() ? "calc(var(--vh, 1vh) * 100)" : "100vh"}
-    >
-      <Toast />
+    <ThemeProvider theme={theme}>
+      <Box
+        widthProp="100vw"
+        heightProp={isIPad() ? "calc(var(--vh, 1vh) * 100)" : "100vh"}
+      >
+        <Toast />
+        {!isLoading ? (
+          <>
+            <div id="editor"></div>
+            {isSharingAccess && isVisible && (
+              <SharingDialog
+                isVisible={isVisible}
+                sharingObject={fileInfo}
+                onCancel={onCancel}
+                onSuccess={loadUsersRightsList}
+              />
+            )}
 
-      {!isLoading ? (
-        <>
-          <div id="editor"></div>
-          {isSharingAccess && (
-            <SharingDialog
-              isVisible={isVisible}
-              sharingObject={fileInfo}
-              onCancel={onCancel}
-              onSuccess={loadUsersRightsList}
-            />
-          )}
+            {isFileDialogVisible && (
+              <SelectFileDialog
+                resetTreeFolders
+                onSelectFile={onSelectFile}
+                isPanelVisible={isFileDialogVisible}
+                onClose={onCloseFileDialog}
+                foldersType="exceptPrivacyTrashFolders"
+                {...fileTypeDetection()}
+                titleFilesList={selectFilesListTitle()}
+                headerName={i18n.t("SelectFileTitle")}
+              />
+            )}
 
-          {isFileDialogVisible && (
-            <SelectFileDialog
-              resetTreeFolders
-              onSelectFile={onSelectFile}
-              isPanelVisible={isFileDialogVisible}
-              onClose={onCloseFileDialog}
-              foldersType="exceptPrivacyTrashFolders"
-              {...fileTypeDetection()}
-              titleFilesList={selectFilesListTitle()}
-              headerName={i18n.t("SelectFileTitle")}
-            />
-          )}
-
-          {isFolderDialogVisible && (
-            <SelectFolderDialog
-              resetTreeFolders
-              showButtons
-              isPanelVisible={isFolderDialogVisible}
-              isSetFolderImmediately
-              asideHeightContent="calc(100% - 50px)"
-              onClose={onCloseFolderDialog}
-              foldersType="exceptSortedByTags"
-              onSave={onClickSaveSelectFolder}
-              header={
-                <StyledSelectFolder>
-                  <Text className="editor-select-folder_text">
-                    {i18n.t("FileName")}
-                  </Text>
-                  <TextInput
-                    className="editor-select-folder_text-input"
-                    scale
-                    onChange={onChangeInput}
-                    value={titleSelectorFolder}
-                  />
-                </StyledSelectFolder>
-              }
-              headerName={i18n.t("FolderForSave")}
-              {...(extension !== "fb2" && {
-                footer: (
+            {isFolderDialogVisible && (
+              <SelectFolderDialog
+                resetTreeFolders
+                showButtons
+                isPanelVisible={isFolderDialogVisible}
+                isSetFolderImmediately
+                asideHeightContent="calc(100% - 50px)"
+                onClose={onCloseFolderDialog}
+                foldersType="exceptSortedByTags"
+                onSave={onClickSaveSelectFolder}
+                header={
                   <StyledSelectFolder>
-                    <Checkbox
-                      className="editor-select-folder_checkbox"
-                      label={i18n.t("OpenSavedDocument")}
-                      onChange={onClickCheckbox}
-                      isChecked={openNewTab}
+                    <Text className="editor-select-folder_text">
+                      {i18n.t("FileName")}
+                    </Text>
+                    <TextInput
+                      className="editor-select-folder_text-input"
+                      scale
+                      onChange={onChangeInput}
+                      value={titleSelectorFolder}
                     />
                   </StyledSelectFolder>
-                ),
-              })}
-            />
-          )}
+                }
+                headerName={i18n.t("FolderForSave")}
+                {...(extension !== "fb2" && {
+                  footer: (
+                    <StyledSelectFolder>
+                      <Checkbox
+                        className="editor-select-folder_checkbox"
+                        label={i18n.t("OpenSavedDocument")}
+                        onChange={onClickCheckbox}
+                        isChecked={openNewTab}
+                      />
+                    </StyledSelectFolder>
+                  ),
+                })}
+              />
+            )}
 
-          {preparationPortalDialogVisible && (
-            <PreparationPortalDialog visible={preparationPortalDialogVisible} />
-          )}
-        </>
-      ) : (
-        <></>
-      )}
-    </Box>
+            {preparationPortalDialogVisible && (
+              <PreparationPortalDialog
+                visible={preparationPortalDialogVisible}
+              />
+            )}
+          </>
+        ) : (
+          <></>
+        )}
+      </Box>
+    </ThemeProvider>
   );
 };
 

@@ -10,7 +10,7 @@ import EmptyScreenContainer from "@appserver/components/empty-screen-container";
 import ExternalLinkIcon from "../../../../../../public/images/external.link.react.svg";
 import Loaders from "@appserver/common/components/Loaders";
 import toastr from "studio/toastr";
-import PageLayout from "@appserver/common/components/PageLayout";
+import Section from "@appserver/common/components/Section";
 import { useTranslation, withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { isMobile, isIOS } from "react-device-detect";
@@ -92,13 +92,16 @@ const StyledDesktopContainer = styled(EmptyScreenContainer)`
 
 const ExternalLink = ({ label, href }) => (
   <Box className="link-box">
-    <ExternalLinkIcon color="#333333" size={isMobile ? "small" : "medium"} />
+    <ExternalLinkIcon
+      color={theme.studio.comingSoon.linkIconColor}
+      size={isMobile ? "small" : "medium"}
+    />
     <Link
       as="a"
       href={href}
       target="_blank"
       className="view-web-link"
-      color="#555F65"
+      color={theme.studio.comingSoon.linkColor}
       isBold
       isHovered
     >
@@ -167,7 +170,7 @@ const Body = ({ modules, match, isLoaded, setCurrentProductId, t }) => {
           href={helpUrl}
           target="_blank"
           className="learn-more-link"
-          color="#555F65"
+          color={theme.studio.comingSoon.linkColor}
           isBold
           isHovered
         >
@@ -187,8 +190,8 @@ const Body = ({ modules, match, isLoaded, setCurrentProductId, t }) => {
           <Loaders.Rectangle
             width="100"
             height="14"
-            backgroundColor="#fff"
-            foregroundColor="#fff"
+            backgroundColor={theme.studio.comingSoon.backgroundColor}
+            foregroundColor={theme.studio.comingSoon.foregroundColor}
             backgroundOpacity={0.25}
             foregroundOpacity={0.2}
           />
@@ -216,11 +219,11 @@ const Body = ({ modules, match, isLoaded, setCurrentProductId, t }) => {
 
 const ComingSoon = (props) => {
   return (
-    <PageLayout>
-      <PageLayout.SectionBody>
+    <Section>
+      <Section.SectionBody>
         <Body {...props} />
-      </PageLayout.SectionBody>
-    </PageLayout>
+      </Section.SectionBody>
+    </Section>
   );
 };
 
@@ -232,6 +235,7 @@ ComingSoon.propTypes = {
 const ComingSoonWrapper = inject(({ auth }) => ({
   modules: auth.moduleStore.modules,
   isLoaded: auth.isLoaded,
+  theme: auth.seetingsStore.theme,
   setCurrentProductId: auth.settingsStore.setCurrentProductId,
 }))(withRouter(withTranslation("Common")(ComingSoon)));
 

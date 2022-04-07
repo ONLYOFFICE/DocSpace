@@ -3,6 +3,7 @@ import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
 import NoUserSelect from "../utils/commonStyles";
 import Base from "../themes/base";
+import { isDesktop } from "../utils/device";
 
 const activeCss = css`
   background-color: ${(props) =>
@@ -12,15 +13,30 @@ const activeCss = css`
 
   color: ${(props) =>
     props.primary
-      ? props.theme.button.color.primary
-      : props.theme.button.color.base};
+      ? props.theme.button.color.primaryActive
+      : props.theme.button.color.baseActive};
 
   ${(props) =>
-    !props.primary &&
-    css`
-      border: ${(props) => props.theme.button.border.baseActive};
-      box-sizing: ${(props) => props.theme.button.boxSizing};
-    `}
+    !props.primary
+      ? css`
+          border: ${(props) => props.theme.button.border.baseActive};
+          box-sizing: ${(props) => props.theme.button.boxSizing};
+        `
+      : css`
+          border: ${(props) => props.theme.button.border.primaryActive};
+          box-sizing: ${(props) => props.theme.button.boxSizing};
+        `}
+
+  .btnIcon {
+    svg {
+      path {
+        fill: ${(props) =>
+          props.primary
+            ? props.theme.button.color.primaryActive
+            : props.theme.button.color.baseActive};
+      }
+    }
+  }
 `;
 
 const hoverCss = css`
@@ -31,19 +47,67 @@ const hoverCss = css`
 
   color: ${(props) =>
     props.primary
-      ? props.theme.button.color.primary
-      : props.theme.button.color.base};
+      ? props.theme.button.color.primaryHover
+      : props.theme.button.color.baseHover};
 
   ${(props) =>
-    !props.primary &&
-    css`
-      border: ${(props) => props.theme.button.border.baseHover};
-      box-sizing: ${(props) => props.theme.button.boxSizing};
-    `}
+    !props.primary
+      ? css`
+          border: ${(props) => props.theme.button.border.baseHover};
+          box-sizing: ${(props) => props.theme.button.boxSizing};
+        `
+      : css`
+          border: ${(props) => props.theme.button.border.primaryHover};
+          box-sizing: ${(props) => props.theme.button.boxSizing};
+        `}
+
+  .btnIcon {
+    svg {
+      path {
+        fill: ${(props) =>
+          props.primary
+            ? props.theme.button.color.primaryHover
+            : props.theme.button.color.baseHover};
+      }
+    }
+  }
+`;
+
+const disableCss = css`
+  background-color: ${(props) =>
+    props.primary
+      ? props.theme.button.backgroundColor.primaryDisabled
+      : props.theme.button.backgroundColor.baseDisabled};
+
+  color: ${(props) =>
+    props.primary
+      ? props.theme.button.color.primaryDisabled
+      : props.theme.button.color.baseDisabled};
+
+  ${(props) =>
+    !props.primary
+      ? css`
+          border: ${(props) => props.theme.button.border.baseDisabled};
+          box-sizing: ${(props) => props.theme.button.boxSizing};
+        `
+      : css`
+          border: ${(props) => props.theme.button.border.primaryDisabled};
+          box-sizing: ${(props) => props.theme.button.boxSizing};
+        `}
+
+  .btnIcon {
+    svg {
+      path {
+        fill: ${(props) =>
+          props.primary
+            ? props.theme.button.color.primaryDisabled
+            : props.theme.button.color.baseDisabled};
+      }
+    }
+  }
 `;
 
 const heightStyle = (props) => props.theme.button.height[props.size];
-const lineHeightStyle = (props) => props.theme.button.lineHeight[props.size];
 const fontSizeStyle = (props) => props.theme.button.fontSize[props.size];
 
 const ButtonWrapper = ({
@@ -63,121 +127,44 @@ const ButtonWrapper = ({
   return <button ref={innerRef} type="button" {...props}></button>;
 };
 
-ButtonWrapper.propTypes = {
-  label: PropTypes.string,
-  primary: PropTypes.bool,
-  size: PropTypes.oneOf(["base", "medium", "big", "large"]),
-  scale: PropTypes.bool,
-  icon: PropTypes.node,
-
-  tabIndex: PropTypes.number,
-
-  isHovered: PropTypes.bool,
-  isClicked: PropTypes.bool,
-  isDisabled: PropTypes.bool,
-  disableHover: PropTypes.bool,
-  isLoading: PropTypes.bool,
-
-  onClick: PropTypes.func,
-};
 const StyledButton = styled(ButtonWrapper).attrs((props) => ({
   disabled: props.isDisabled || props.isLoading ? "disabled" : "",
   tabIndex: props.tabIndex,
+  size:
+    props.size === "normal"
+      ? isDesktop()
+        ? "normalDesktop"
+        : "normalTouchscreen"
+      : props.size,
 }))`
   height: ${(props) => heightStyle(props)};
-  line-height: ${(props) => lineHeightStyle(props)};
   font-size: ${(props) => fontSizeStyle(props)};
 
   color: ${(props) =>
-    (props.primary && props.theme.button.color.primary) ||
-    (!props.isDisabled
+    !props.primary
       ? props.theme.button.color.base
-      : props.theme.button.color.disabled)};
+      : props.theme.button.color.primary};
 
   background-color: ${(props) =>
-    !props.isDisabled || props.isLoading
-      ? props.primary
-        ? props.theme.button.backgroundColor.primary
-        : props.theme.button.backgroundColor.base
-      : props.primary
-      ? props.theme.button.backgroundColor.primaryDisabled
+    props.primary
+      ? props.theme.button.backgroundColor.primary
       : props.theme.button.backgroundColor.base};
 
-  ${(props) => props.scale && `width: 100%;`}
+  border: ${(props) =>
+    props.primary
+      ? props.theme.button.border.primary
+      : props.theme.button.border.base};
 
-  padding: ${(props) =>
-    (props.size === "large" &&
-      (props.primary
-        ? props.icon
-          ? props.label
-            ? "11px 24px 13px 24px"
-            : "11px 11px 13px 11px"
-          : props.label
-          ? "12px 20px 12px 20px"
-          : "0px"
-        : props.icon
-        ? props.label
-          ? "10px 24px 13px 24px"
-          : "10px 11px 13px 11px"
-        : props.label
-        ? "11px 20px 12px 20px"
-        : "0px")) ||
-    (props.size === "big" &&
-      (props.primary
-        ? props.icon
-          ? props.label
-            ? "8px 24px 9px 24px"
-            : "8px 10px 9px 10px"
-          : props.label
-          ? "8px 16px 8px 16px"
-          : "0px"
-        : props.icon
-        ? props.label
-          ? "7px 24px 9px 24px"
-          : "7px 10px 9px 10px"
-        : props.label
-        ? "7px 16px 8px 16px"
-        : "0px")) ||
-    (props.size === "medium" &&
-      (props.primary
-        ? props.icon
-          ? props.label
-            ? "6px 24px 7px 24px"
-            : "6px 10px 7px 10px"
-          : props.label
-          ? "7px 16px 7px 16px"
-          : "0px"
-        : props.icon
-        ? props.label
-          ? "5px 24px 7px 24px"
-          : "5px 10px 7px 10px"
-        : props.label
-        ? "6px 16px 7px 16px"
-        : "0px")) ||
-    (props.size === "base" &&
-      (props.primary
-        ? props.icon
-          ? props.label
-            ? "3px 20px 5px 20px"
-            : "3px 5px 5px 5px"
-          : props.label
-          ? "4px 12px 5px 12px"
-          : "0px"
-        : props.icon
-        ? props.label
-          ? "2px 20px 5px 20px"
-          : "2px 5px 5px 5px"
-        : props.label
-        ? "3px 12px 5px 12px"
-        : "0px"))};
+  ${(props) => props.scale && `width: 100%;`};
+  min-width: ${(props) =>
+    props.minwidth ? props.minwidth : props.theme.button.minWidth[props.size]};
 
-  ${(props) => (props.minwidth ? `min-width: ${props.minwidth};` : null)}
+  padding: ${(props) => `${props.theme.button.padding[props.size]}`};
 
   cursor: ${(props) =>
     props.isDisabled || props.isLoading ? "default !important" : "pointer"};
 
   font-family: ${(props) => props.theme.fontFamily};
-  border: none;
   margin: ${(props) => props.theme.margin};
   display: ${(props) => props.theme.button.display};
   font-weight: ${(props) => props.theme.button.fontWeight};
@@ -197,16 +184,6 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   ${(props) =>
-    !props.primary &&
-    css`
-      box-sizing: ${(props) => props.theme.button.boxSizing};
-      border: ${(props) =>
-        !props.isDisabled && !props.isLoading
-          ? props.theme.button.border.base
-          : props.theme.button.border.baseDisabled};
-    `}
-
-  ${(props) =>
     !props.isDisabled &&
     !props.isLoading &&
     (props.isHovered
@@ -217,8 +194,8 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
             ${hoverCss}
           }
         `)}
-  
-    ${(props) =>
+
+  ${(props) =>
     !props.isDisabled &&
     !props.isLoading &&
     (props.isClicked
@@ -228,35 +205,71 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
             ${activeCss}
           }
         `)}
-  
+
+  ${(props) => props.isDisabled && disableCss}
+
+
     &:focus {
     outline: ${(props) => props.theme.button.outline};
   }
 
-  .btnIcon,
-  .loader {
-    display: ${(props) => props.theme.button.display};
-    vertical-align: ${(props) => props.theme.button.topVerticalAlign};
+  .button-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .icon {
+    width: auto;
+    height: 100%;
+    display: flex;
+    align-items: center;
   }
 
   .loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    svg {
+      stroke: ${(props) =>
+        props.primary
+          ? props.theme.button.loader.primary
+          : props.theme.button.loader.base};
+    }
     vertical-align: ${(props) =>
-      props.size === "large" || props.size === "base"
+      props.size === "normalTouchscreen" || props.size === "extraSmall"
         ? props.theme.button.middleVerticalAlign
-        : props.size === "medium"
+        : props.size === "small"
         ? props.theme.button.bottomVerticalAlign
         : props.theme.button.topVerticalAlign};
   }
-
-  ${(props) =>
-    props.label &&
-    css`
-      .btnIcon,
-      .loader {
-        padding-right: ${(props) => props.theme.button.paddingRight};
-      }
-    `}
 `;
+
+ButtonWrapper.propTypes = {
+  label: PropTypes.string,
+  primary: PropTypes.bool,
+  size: PropTypes.oneOf([
+    "extraSmall",
+    "small",
+    "normal",
+    "medium",
+    "normalDesktop",
+    "normalTouchscreen",
+  ]),
+  scale: PropTypes.bool,
+  icon: PropTypes.node,
+
+  tabIndex: PropTypes.number,
+
+  isHovered: PropTypes.bool,
+  isClicked: PropTypes.bool,
+  isDisabled: PropTypes.bool,
+  disableHover: PropTypes.bool,
+  isLoading: PropTypes.bool,
+
+  onClick: PropTypes.func,
+};
 
 StyledButton.defaultProps = { theme: Base };
 

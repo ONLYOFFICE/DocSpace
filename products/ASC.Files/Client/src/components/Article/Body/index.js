@@ -1,46 +1,65 @@
 import React from "react";
-
-import toastr from "studio/toastr";
-import Loaders from "@appserver/common/components/Loaders";
-import TreeFolders from "./TreeFolders";
-import TreeSettings from "./TreeSettings";
-import isEmpty from "lodash/isEmpty";
+import styled from "styled-components";
+import { inject, observer } from "mobx-react";
+import { withRouter } from "react-router";
 import { setDocumentTitle } from "../../../helpers/utils";
+import config from "../../../../package.json";
+import { AppServerConfig } from "@appserver/common/constants";
+import Items from "./Items";
+import { isMobile, tablet } from "@appserver/components/utils/device";
+import FilesFilter from "@appserver/common/api/files/filter";
+import SettingsItems from "./SettingsItems";
+import { combineUrl } from "@appserver/common/utils";
+import { isDesktop, isTablet, isMobileOnly } from "react-device-detect";
 import ThirdPartyList from "./ThirdPartyList";
 import DownloadAppList from "./DownloadAppList";
 import Banner from "./Banner";
-import { inject, observer } from "mobx-react";
-import { withRouter } from "react-router-dom";
-import config from "../../../../package.json";
-import { clickBackdrop, combineUrl } from "@appserver/common/utils";
-import { AppServerConfig } from "@appserver/common/constants";
-import FilesFilter from "@appserver/common/api/files/filter";
-import { isDesktop, isTablet } from "react-device-detect";
 import { showLoader, hideLoader } from "@appserver/common/utils";
-class ArticleBodyContent extends React.Component {
-  onSelect = (data, e) => {
+import Loaders from "@appserver/common/components/Loaders";
+
+const StyledBlock = styled.div`
+  padding: 0 20px;
+
+  @media ${tablet} {
+    padding: ${(props) => (props.showText ? "0 16px" : 0)};
+  }
+`;
+
+const ArticleBodyContent = (props) => {
+  const {
+    personal,
+    firstLoad,
+    showText,
+    isDesktopClient,
+    enableThirdParty,
+    isVisitor,
+    FirebaseHelper,
+    isArticleLoading,
+    theme,
+  } = props;
+
+  const campaigns = (localStorage.getItem("campaigns") || "")
+    .split(",")
+    .filter((campaign) => campaign.length > 0);
+
+  const onClick = React.useCallback((data) => {
     const {
+      toggleArticleOpen,
       setIsLoading,
-      //setSelectedNode,
       fetchFiles,
       homepage,
       history,
-      hideArticle,
-    } = this.props;
+    } = props;
 
     const filesSection = window.location.pathname.indexOf("/filter") > 0;
-    //setSelectedNode(data);
-    hideArticle();
-    if (filesSection) setIsLoading(true);
-    else showLoader();
-    // const selectedFolderTitle =
-    //   (e.node && e.node.props && e.node.props.title) || null;
 
-    // selectedFolderTitle
-    //   ? setDocumentTitle(selectedFolderTitle)
-    //   : setDocumentTitle();
+    if (filesSection) {
+      setIsLoading(true);
+    } else {
+      showLoader();
+    }
 
-    fetchFiles(data[0], null, true, false)
+    fetchFiles(data, null, true, false)
       .then(() => {
         if (!filesSection) {
           const filter = FilesFilter.getDefault();
@@ -60,62 +79,41 @@ class ArticleBodyContent extends React.Component {
       })
       .catch((err) => toastr.error(err))
       .finally(() => {
+        if (isMobileOnly || isMobile()) {
+          toggleArticleOpen();
+        }
         if (filesSection) setIsLoading(false);
         else hideLoader();
       });
-  };
+  }, []);
 
-  onShowNewFilesPanel = (folderId) => {
-    this.props.setNewFilesPanelVisible(true, folderId);
-  };
+  const onShowNewFilesPanel = React.useCallback((folderId) => {
+    props.setNewFilesPanelVisible(true, [`${folderId}`]);
+  }, []);
 
-  render() {
-    const {
-      treeFolders,
-      onTreeDrop,
-      enableThirdParty,
-      isVisitor,
-      personal,
-      firstLoad,
-      isDesktopClient,
-      FirebaseHelper,
-    } = this.props;
-
-    //console.log("Article Body render");
-
-    const campaigns = (localStorage.getItem("campaigns") || "")
-      .split(",")
-      .filter((campaign) => campaign.length > 0);
-
-    return isEmpty(treeFolders) ? (
-      <Loaders.TreeFolders />
-    ) : (
-      <>
-        <TreeFolders
-          useDefaultSelectedKeys
-          onSelect={this.onSelect}
-          data={treeFolders}
-          onBadgeClick={this.onShowNewFilesPanel}
-          onTreeDrop={onTreeDrop}
-        />
-        {!personal && !firstLoad && <TreeSettings />}
-
-        {!isDesktopClient && (
-          <>
-            {enableThirdParty && !isVisitor && <ThirdPartyList />}
-            <DownloadAppList />
-            {(isDesktop || isTablet) &&
-              personal &&
-              !firstLoad &&
-              campaigns.length > 0 && (
-                <Banner FirebaseHelper={FirebaseHelper} />
-              )}
-          </>
-        )}
-      </>
-    );
-  }
-}
+  return isArticleLoading ? (
+    <Loaders.ArticleFolder />
+  ) : (
+    <>
+      <Items
+        onClick={onClick}
+        onBadgeClick={onShowNewFilesPanel}
+        showText={showText}
+      />
+      {!personal && !firstLoad && <SettingsItems />}
+      {!isDesktopClient && showText && (
+        <StyledBlock showText={showText}>
+          {enableThirdParty && !isVisitor && <ThirdPartyList />}
+          <DownloadAppList theme={theme} />
+          {(isDesktop || isTablet) &&
+            personal &&
+            !firstLoad &&
+            campaigns.length > 0 && <Banner FirebaseHelper={FirebaseHelper} />}
+        </StyledBlock>
+      )}
+    </>
+  );
+};
 
 export default inject(
   ({
@@ -126,12 +124,29 @@ export default inject(
     dialogsStore,
     settingsStore,
   }) => {
-    const { fetchFiles, setIsLoading, firstLoad } = filesStore;
-    const { treeFolders, setSelectedNode, setTreeFolders } = treeFoldersStore;
+    const {
+      fetchFiles,
+      setIsLoading,
+      setFirstLoad,
+      firstLoad,
+      isLoading,
+      isLoaded,
+    } = filesStore;
+    const { treeFolders, setTreeFolders } = treeFoldersStore;
 
     const { setNewFilesPanelVisible } = dialogsStore;
+    const isArticleLoading = (!isLoaded || isLoading) && firstLoad;
+    const {
+      showText,
+      articleOpen,
 
-    const { personal, hideArticle, isDesktopClient } = auth.settingsStore;
+      toggleArticleOpen,
+      personal,
+      hideArticle,
+      isDesktopClient,
+      FirebaseHelper,
+      theme,
+    } = auth.settingsStore;
 
     const selectedFolderTitle = selectedFolderStore.title;
 
@@ -140,21 +155,27 @@ export default inject(
       : setDocumentTitle();
 
     return {
+      toggleArticleOpen,
       treeFolders,
+      showText,
+      articleOpen,
       enableThirdParty: settingsStore.enableThirdParty,
       isVisitor: auth.userStore.user.isVisitor,
       homepage: config.homepage,
       personal,
 
+      isArticleLoading,
       setIsLoading,
+      setFirstLoad,
       fetchFiles,
-      setSelectedNode,
+
       setTreeFolders,
       setNewFilesPanelVisible,
       hideArticle,
       firstLoad,
       isDesktopClient,
-      FirebaseHelper: auth.settingsStore.firebaseHelper,
+      FirebaseHelper,
+      theme,
     };
   }
 )(observer(withRouter(ArticleBodyContent)));

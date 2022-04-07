@@ -14,14 +14,14 @@ import VersionHistoryStore from "./VersionHistoryStore";
 import DialogsStore from "./DialogsStore";
 import selectedFilesStore from "./SelectedFilesStore";
 import ContextOptionsStore from "./ContextOptionsStore";
+import HotkeyStore from "./HotkeyStore";
 import store from "studio/store";
+import InfoPanelStore from "./InfoPanelStore";
 
 const selectedFolderStore = new SelectedFolderStore(store.auth.settingsStore);
 
 const treeFoldersStore = new TreeFoldersStore(selectedFolderStore);
-
 const settingsStore = new SettingsStore(thirdPartyStore, treeFoldersStore);
-
 const filesStore = new FilesStore(
   store.auth,
   store.auth.settingsStore,
@@ -36,10 +36,8 @@ const mediaViewerDataStore = new MediaViewerDataStore(
   filesStore,
   settingsStore
 );
-
 const secondaryProgressDataStore = new SecondaryProgressDataStore();
 const primaryProgressDataStore = new PrimaryProgressDataStore();
-
 const dialogsStore = new DialogsStore(
   store.auth,
   treeFoldersStore,
@@ -56,6 +54,8 @@ const uploadDataStore = new UploadDataStore(
   settingsStore
 );
 
+const infoPanelStore = new InfoPanelStore();
+
 const filesActionsStore = new FilesActionsStore(
   store.auth,
   uploadDataStore,
@@ -64,11 +64,11 @@ const filesActionsStore = new FilesActionsStore(
   selectedFolderStore,
   settingsStore,
   dialogsStore,
-  mediaViewerDataStore
+  mediaViewerDataStore,
+  infoPanelStore
 );
 
 const versionHistoryStore = new VersionHistoryStore(filesStore);
-
 const contextOptionsStore = new ContextOptionsStore(
   store.auth,
   dialogsStore,
@@ -78,7 +78,17 @@ const contextOptionsStore = new ContextOptionsStore(
   treeFoldersStore,
   uploadDataStore,
   versionHistoryStore,
-  settingsStore
+  settingsStore,
+  infoPanelStore
+);
+
+const hotkeyStore = new HotkeyStore(
+  filesStore,
+  dialogsStore,
+  settingsStore,
+  filesActionsStore,
+  treeFoldersStore,
+  uploadDataStore
 );
 
 //const selectedFilesStore = new SelectedFilesStore(selectedFilesStore);
@@ -94,6 +104,8 @@ const stores = {
   filesActionsStore,
   selectedFilesStore,
   contextOptionsStore,
+  hotkeyStore,
+  infoPanelStore,
 };
 
 export default stores;

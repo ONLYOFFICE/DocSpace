@@ -1,11 +1,11 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import { isIOS, isFirefox, isMobile } from "react-device-detect";
+import { isIOS, isFirefox, isMobile, isMobileOnly } from "react-device-detect";
 
 const StyledMain = styled.main`
   height: ${(props) =>
     isIOS && !isFirefox
-      ? "calc(var(--vh, 1vh) * 100)"
+      ? "calc(100vh - 48px)"
       : props.isDesktop
       ? "100vh"
       : "calc(100vh - 48px)"};
@@ -16,6 +16,11 @@ const StyledMain = styled.main`
   box-sizing: border-box;
 
   ${isMobile &&
+  css`
+    height: calc(100vh - 48px);
+  `}
+
+  ${isMobileOnly &&
   css`
     height: auto;
     min-height: 100%;

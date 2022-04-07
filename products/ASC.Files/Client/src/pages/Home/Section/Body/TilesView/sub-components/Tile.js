@@ -10,6 +10,7 @@ import { isDesktop } from "react-device-detect";
 
 import Link from "@appserver/components/link";
 import Loader from "@appserver/components/loader";
+import { Base } from "@appserver/components/themes";
 
 const svgLoader = () => <div style={{ width: "96px" }} />;
 
@@ -32,11 +33,12 @@ const FileStyles = css`
 `;
 
 const checkedStyle = css`
-  background: #f3f4f4 !important;
+  background: ${(props) =>
+    props.theme.filesSection.tilesView.tile.checkedColor} !important;
 `;
 
 const bottomFileBorder = css`
-  border-top-color: #d0d5da;
+  border-top: ${(props) => props.theme.filesSection.tilesView.tile.border};
   border-radius: 0 0 6px 6px;
 `;
 
@@ -50,8 +52,10 @@ const StyledTile = styled.div`
     `}
   box-sizing: border-box;
   width: 100%;
-  border: 1px solid #d0d5da;
+  border: ${(props) => props.theme.filesSection.tilesView.tile.border};
   border-radius: 6px;
+  ${(props) => props.showHotkeyBorder && "border-color: #2DA7DB"};
+  ${(props) => props.isFolder && "border-top-left-radius: 0px;"}
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   ${(props) => props.isFolder && FlexBoxStyles}
@@ -61,6 +65,23 @@ const StyledTile = styled.div`
     props.isFolder &&
     (props.checked || props.isActive) &&
     checkedStyle}
+
+
+  &:before, 
+  &:after {
+    ${(props) => props.isFolder && props.dragging && draggingStyle};
+    ${(props) => props.showHotkeyBorder && "border-color: #2DA7DB"};
+  }
+
+  &:before,
+  &:after {
+    ${(props) => (props.checked || props.isActive) && checkedStyle};
+  }
+
+  &:hover:before,
+  &:hover:after {
+    ${(props) => props.isFolder && props.dragging && draggingHoverStyle};
+  }
 
   .checkbox {
     display: flex;
@@ -119,10 +140,13 @@ const StyledTile = styled.div`
 
 const StyledFileTileTop = styled.div`
   ${FlexBoxStyles};
+  background: ${(props) =>
+    props.theme.filesSection.tilesView.tile.backgroundColorTop};
   justify-content: space-between;
   align-items: baseline;
   height: 156px;
   position: relative;
+  border-radius: 6px 6px 0 0;
 
   .thumbnail-image {
     pointer-events: none;
@@ -130,8 +154,9 @@ const StyledFileTileTop = styled.div`
     height: 100%;
     width: 100%;
     object-fit: cover;
-    border-radius: 6px 6px 0 0;
+    object-position: top;
     z-index: 0;
+    border-radius: 6px 6px 0 0;
   }
 
   .temporary-icon > .injected-svg {
@@ -205,6 +230,8 @@ const StyledOptionButton = styled.div`
   }
 `;
 
+StyledOptionButton.defaultProps = { theme: Base };
+
 const badgesPosition = css`
   left: 9px;
 
@@ -252,11 +279,14 @@ const StyledIcons = styled.div`
     align-items: center;
     justify-content: center;
     padding: 8px;
-    background: rgb(255, 255, 255);
+    background: ${(props) =>
+      props.theme.filesSection.tilesView.tile.backgroundColor};
     border-radius: 4px;
     box-shadow: 0px 2px 4px rgba(4, 15, 27, 0.16);
   }
 `;
+
+StyledIcons.defaultProps = { theme: Base };
 
 class Tile extends React.PureComponent {
   constructor(props) {
@@ -327,11 +357,10 @@ class Tile extends React.PureComponent {
       isEdit,
       contentElement,
       title,
-      getModel,
-      t,
+      getContextModel,
+      showHotkeyBorder,
     } = this.props;
     const { isFolder, id, fileExst } = item;
-    const contextMenuData = { getModel, t, item };
 
     const renderElement = Object.prototype.hasOwnProperty.call(
       this.props,
@@ -364,6 +393,11 @@ class Tile extends React.PureComponent {
     const [FilesTileContent, badges] = children;
     const quickButtons = contentElement;
 
+    const contextMenuHeader = {
+      icon: children[0].props.item.icon,
+      title: children[0].props.item.title,
+    };
+
     return (
       <StyledTile
         ref={this.tile}
@@ -376,6 +410,7 @@ class Tile extends React.PureComponent {
         isActive={isActive}
         inProgress={inProgress}
         isDesktop={isDesktop}
+        showHotkeyBorder={showHotkeyBorder}
       >
         {isFolder || (!fileExst && id === -1) ? (
           <>
@@ -414,8 +449,6 @@ class Tile extends React.PureComponent {
             <StyledOptionButton spacerWidth={contextButtonSpacerWidth}>
               {renderContext ? (
                 <ContextMenuButton
-                  color="#A3A9AE"
-                  hoverColor="#657077"
                   className="expandButton"
                   directionX="right"
                   getData={getOptions}
@@ -426,12 +459,20 @@ class Tile extends React.PureComponent {
               ) : (
                 <div className="expandButton" />
               )}
-              <ContextMenu contextMenuData={contextMenuData} ref={this.cm} />
+              <ContextMenu
+                getContextModel={getContextModel}
+                ref={this.cm}
+                header={contextMenuHeader}
+              />
             </StyledOptionButton>
           </>
         ) : (
           <>
-            <StyledFileTileTop checked={checked} isActive={isActive}>
+            <StyledFileTileTop
+              checked={checked}
+              isActive={isActive}
+              isMedia={item.canOpenPlayer}
+            >
               {icon}
             </StyledFileTileTop>
 
@@ -477,8 +518,6 @@ class Tile extends React.PureComponent {
               <StyledOptionButton spacerWidth={contextButtonSpacerWidth}>
                 {renderContext ? (
                   <ContextMenuButton
-                    color="#A3A9AE"
-                    hoverColor="#657077"
                     className="expandButton"
                     directionX="right"
                     getData={getOptions}
@@ -489,7 +528,12 @@ class Tile extends React.PureComponent {
                 ) : (
                   <div className="expandButton" />
                 )}
-                <ContextMenu contextMenuData={contextMenuData} ref={this.cm} />
+                <ContextMenu
+                  getContextModel={getContextModel}
+                  ref={this.cm}
+                  header={contextMenuHeader}
+                  withBackdrop={true}
+                />
               </StyledOptionButton>
             </StyledFileTileBottom>
           </>

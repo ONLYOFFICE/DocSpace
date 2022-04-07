@@ -1,22 +1,23 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import api from "@appserver/common/api";
 import {
-  FolderType,
-  FilterType,
-  FileType,
-  FileAction,
   AppServerConfig,
+  FileAction,
+  FileType,
+  FilterType,
+  FolderType,
   FileStatus,
 } from "@appserver/common/constants";
 import history from "@appserver/common/history";
-import { loopTreeFolders } from "../helpers/files-helpers";
-import config from "../../package.json";
 import { combineUrl } from "@appserver/common/utils";
 import { updateTempContent } from "@appserver/common/utils";
-import { thumbnailStatuses } from "../helpers/constants";
 import { isMobile } from "react-device-detect";
-import { openDocEditor as openEditor } from "../helpers/utils";
 import toastr from "studio/toastr";
+
+import config from "../../package.json";
+import { thumbnailStatuses } from "../helpers/constants";
+import { loopTreeFolders } from "../helpers/files-helpers";
+import { openDocEditor as openEditor } from "../helpers/utils";
 
 const { FilesFilter } = api;
 const storageViewAs = localStorage.getItem("viewAs");
@@ -45,6 +46,7 @@ class FilesStore {
   startDrag = false;
 
   firstLoad = true;
+
   files = [];
   folders = [];
   selection = [];
@@ -52,10 +54,13 @@ class FilesStore {
   selected = "close";
   filter = FilesFilter.getDefault(); //TODO: FILTER
   loadTimeout = null;
+  hotkeyCaret = null;
+  hotkeyCaretStart = null;
   activeFiles = [];
   activeFolders = [];
 
   firstElemChecked = false;
+  headerBorder = false;
 
   isPrevSettingsModule = false;
 
@@ -381,12 +386,27 @@ class FilesStore {
   };
 
   setSelected = (selected) => {
-    if (selected === "close" || selected === "none")
+    if (selected === "close" || selected === "none") {
       this.setBufferSelection(null);
+      this.setHotkeyCaretStart(null);
+      this.setHotkeyCaret(null);
+    }
 
     this.selected = selected;
     const files = this.files.concat(this.folders);
     this.selection = this.getFilesBySelected(files, selected);
+  };
+
+  setHotkeyCaret = (hotkeyCaret) => {
+    if (hotkeyCaret) {
+      this.hotkeyCaret = hotkeyCaret;
+    } else if (this.hotkeyCaret) {
+      this.hotkeyCaret = hotkeyCaret;
+    }
+  };
+
+  setHotkeyCaretStart = (hotkeyCaretStart) => {
+    this.hotkeyCaretStart = hotkeyCaretStart;
   };
 
   setSelection = (selection) => {
@@ -530,10 +550,23 @@ class FilesStore {
             this.setSelected("close");
           }
 
+          const navigationPath = await Promise.all(
+            data.pathParts.map(async (folder) => {
+              const data = await api.files.getFolderInfo(folder);
+
+              return { id: folder, title: data.title };
+            })
+          ).then((res) => {
+            return res
+              .filter((item, index) => index !== res.length - 1)
+              .reverse();
+          });
+
           this.selectedFolderStore.setSelectedFolder({
             folders: data.folders,
             ...data.current,
             pathParts: data.pathParts,
+            navigationPath: navigationPath,
             ...{ new: data.new },
           });
 
@@ -629,7 +662,7 @@ class FilesStore {
     const isThirdPartyItem = !!item.providerKey;
     const hasNew =
       item.new > 0 || (item.fileStatus & FileStatus.IsNew) === FileStatus.IsNew;
-    const canConvert = false; //TODO: fix of added convert check;
+    const canConvert = this.filesSettingsStore.extsConvertible[item.fileExst];
     const isEncrypted = item.encrypted;
     const isDocuSign = false; //TODO: need this prop;
     const isEditing =
@@ -685,6 +718,7 @@ class FilesStore {
         "version", //category
         "finalize-version",
         "show-version-history",
+        "show-info",
         "block-unblock-version", //need split
         "separator1",
         "open-location",
@@ -725,7 +759,7 @@ class FilesStore {
         }
       }
 
-      if (!this.canConvertSelected) {
+      if (!canConvert) {
         fileOptions = this.removeOptions(fileOptions, ["download-as"]);
       }
 
@@ -972,6 +1006,7 @@ class FilesStore {
         "separator0",
         "sharing-settings",
         "owner-change",
+        "show-info",
         "link-for-portal-users",
         "separator1",
         "open-location",
@@ -1293,6 +1328,10 @@ class FilesStore {
 
   setFirsElemChecked = (checked) => {
     this.firstElemChecked = checked;
+  };
+
+  setHeaderBorder = (headerBorder) => {
+    this.headerBorder = headerBorder;
   };
 
   get canCreate() {

@@ -157,3 +157,11 @@ export function enableRestore() {
 export function enableAutoBackup() {
   return request({ method: "get", url: "/portal/enableAutoBackup" });
 }
+
+export function setPortalRename(alias) {
+  return request({
+    method: "put",
+    url: "/portal/portalrename.json",
+    data: { alias },
+  });
+}

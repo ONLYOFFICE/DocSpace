@@ -1,7 +1,8 @@
 import styled, { css } from "styled-components";
 import Scrollbar from "@appserver/components/scrollbar";
-import { desktop, tablet } from "@appserver/components/utils/device";
-import { isMobile } from "react-device-detect";
+import { desktop, mobile, tablet } from "@appserver/components/utils/device";
+import { isMobile, isMobileOnly } from "react-device-detect";
+import { Base } from "@appserver/components/themes";
 
 const PanelStyles = css`
   .panel_combo-box {
@@ -13,6 +14,7 @@ const PanelStyles = css`
     }
 
     .combo-button {
+      background: transparent;
       height: 36px;
     }
 
@@ -60,7 +62,8 @@ const StyledAsidePanel = styled.div`
     position: fixed;
     left: 0;
     right: 0;
-    background-color: #fff;
+    background-color: ${(props) =>
+      props.theme.filesPanels.aside.backgroundColor};
     height: ${isMobile ? "55px" : "48px"};
   }
   .upload-panel_header-content::after {
@@ -90,21 +93,40 @@ const StyledAsidePanel = styled.div`
 
   .header_aside-panel {
     transition: unset;
-    transform: translateX(${(props) => (props.visible ? "0" : "500px")});
-    width: 500px;
+    transform: translateX(${(props) => (props.visible ? "0" : "480px")});
+    width: 480px;
     overflow-y: hidden;
 
-    @media (max-width: 550px) {
-      width: 320px;
-      transform: translateX(${(props) => (props.visible ? "0" : "320px")});
+    @media (max-width: 480px) {
+      width: 100vw;
+      transform: translateX(${(props) => (props.visible ? "0" : "100vw")});
     }
 
-    .sharing_panel-header-container {
-      padding-right: 0;
+    @media ${mobile} {
+      position: fixed;
+      top: 64px;
+      bottom: 0;
+      left: 0;
+
+      width: 100vw;
+      height: calc(100vh - 64px);
     }
+
+    ${isMobileOnly &&
+    css`
+      position: fixed;
+      top: 64px;
+      bottom: 0;
+      left: 0;
+
+      width: 100vw;
+      height: calc(100vh - 64px);
+    `}
   }
   ${PanelStyles}
 `;
+
+StyledAsidePanel.defaultProps = { theme: Base };
 
 const StyledVersionHistoryPanel = styled.div`
   ${PanelStyles}
@@ -129,7 +151,7 @@ const StyledVersionHistoryPanel = styled.div`
     padding-top: ${(props) => (props.isLoading ? "16px" : null)};
     padding-bottom: ${(props) => (props.isLoading ? "0px" : null)};
     margin-left: 16px;
-    border-top: 1px solid #eceef1;
+    border-top: ${(props) => props.theme.filesPanels.versionHistory.borderTop};
 
     height: calc(100% - 53px);
     box-sizing: border-box;
@@ -142,6 +164,8 @@ const StyledVersionHistoryPanel = styled.div`
     }
   }
 `;
+
+StyledVersionHistoryPanel.defaultProps = { theme: Base };
 
 const StyledAddUsersPanelPanel = styled.div`
   .header_aside-panel {
@@ -193,7 +217,8 @@ const StyledContent = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
-  background-color: #fff;
+  background-color: ${(props) =>
+    props.theme.filesPanels.content.backgroundColor};
 
   .header_aside-panel-header {
     max-width: 500px;
@@ -209,7 +234,10 @@ const StyledContent = styled.div`
   .sharing-access-combo-box-icon {
     height: 16px;
     path {
-      fill: ${(props) => (props.isDisabled ? "#D0D5DA" : "#A3A9AE")};
+      fill: ${(props) =>
+        props.isDisabled
+          ? props.theme.filesPanels.content.disabledFill
+          : props.theme.filesPanels.content.fill};
     }
 
     svg {
@@ -240,25 +268,12 @@ const StyledContent = styled.div`
   }
 `;
 
+StyledContent.defaultProps = { theme: Base };
+
 const StyledHeaderContent = styled.div`
   display: flex;
   align-items: center;
   padding: 0 16px;
-
-  .sharing_panel-icons-container {
-    display: flex;
-    margin-left: auto;
-    .sharing_panel-drop-down-wrapper {
-      position: relative;
-
-      .sharing_panel-drop-down {
-        padding: 4px 0;
-      }
-      .sharing_panel-plus-icon {
-        //margin-right: 12px;
-      }
-    }
-  }
 
   .upload_panel-icons-container {
     display: flex;
@@ -310,12 +325,10 @@ const StyledBody = styled.div`
 
   .selector-wrapper {
     position: fixed;
-    height: calc(100% - 57px);
+    height: calc(100%);
     width: 100%;
 
     .column-options {
-      padding: 0px 16px;
-      padding-bottom: 16px;
       width: 100%;
 
       .header-options {
@@ -349,7 +362,8 @@ const StyledBody = styled.div`
     .embedding-panel_link {
       margin-right: 8px;
       height: 32px;
-      background-color: #eceef1;
+      background-color: ${(props) =>
+        props.theme.filesPanels.body.backgroundColor};
       line-height: 30px;
       padding: 0px 8px;
     }
@@ -381,10 +395,12 @@ const StyledBody = styled.div`
 
   .sharing-access-combo-box-icon {
     path {
-      fill: #333;
+      fill: ${(props) => props.theme.filesPanels.body.fill};
     }
   }
 `;
+
+StyledBody.defaultProps = { theme: Base };
 
 const StyledSharingBody = styled(Scrollbar)`
   position: relative;
@@ -410,11 +426,9 @@ const StyledSharingBody = styled(Scrollbar)`
   }
 
   .sharing-row {
-    margin: 0 16px;
+    padding-left: 16px;
     //width: calc(100% - 16px);
     box-sizing: border-box;
-
-    padding-right: 15px;
     border-bottom: none;
   }
 
@@ -535,8 +549,9 @@ const StyledFooter = styled.div`
   margin: auto;
   left: 0;
   right: 0;
-  background-color: #fff;
-  border-top: 1px solid #eceef1;
+  background-color: ${(props) =>
+    props.theme.filesPanels.footer.backgroundColor};
+  border-top: ${(props) => props.theme.filesPanels.footer.borderTop};
   box-sizing: border-box;
 
   .sharing_panel-checkbox {
@@ -573,15 +588,21 @@ const StyledFooter = styled.div`
   }
 `;
 
+StyledFooter.defaultProps = { theme: Base };
+
 const StyledLinkRow = styled.div`
-  width: calc(100% + 16px);
+  margin-right: -16px;
   padding: 0 16px;
   box-sizing: border-box;
-  background-color: #f8f9f9;
+  background-color: ${(props) =>
+    props.theme.filesPanels.linkRow.backgroundColor};
 
   .sharing-access-combo-box-icon {
     path {
-      fill: ${(props) => (props.isDisabled ? "#D0D5DA" : "#a3a9ae")};
+      fill: ${(props) =>
+        props.isDisabled
+          ? props.theme.filesPanels.linkRow.disabledFill
+          : props.theme.filesPanels.linkRow.fill};
     }
   }
 
@@ -627,6 +648,8 @@ const StyledLinkRow = styled.div`
     }
   }
 `;
+
+StyledLinkRow.defaultProps = { theme: Base };
 
 const StyledSelectFolderPanel = styled.div`
   ${(props) =>
@@ -712,6 +735,7 @@ const StyledSelectFolderPanel = styled.div`
     margin-top: 0 !important;
   }
 `;
+
 const StyledSelectFilePanel = styled.div`
   height: 100%;
   ${(props) =>
@@ -758,7 +782,7 @@ const StyledSelectFilePanel = styled.div`
     margin-bottom: 12px;
     font-size: 12px;
     line-height: 16px;
-    color: #a3a9ae;
+    color: ${(props) => props.theme.filesPanels.selectFile.borderRight};
   }
   .select-file-dialog-modal_buttons {
     ${(props) =>
@@ -782,11 +806,14 @@ const StyledSelectFilePanel = styled.div`
   .select-file-dialog_aside_body_files-list {
     margin-left: -17px;
     padding-left: 16px;
-    ${(props) => props.isChecked && `background: #f8f9f9;`}
+    ${(props) =>
+      props.isChecked &&
+      `background: ${(props) => props.theme.filesPanels.selectFile.background}`}
   }
 
   .file-name {
-    border-bottom: 1px solid #eceef1;
+    border-bottom: ${(props) =>
+      props.theme.filesPanels.selectFile.borderBottom};
   }
   .file-name {
     display: flex;
@@ -843,7 +870,9 @@ const StyledSelectFilePanel = styled.div`
     grid-template-areas: "tree files-list";
     .modal-dialog_tree-body {
       padding-top: 0;
-      border-right: 1px solid #dee2e6;
+      border-right: ${(props) =>
+        props.theme.filesPanels.selectFile.borderRight};
+
       span.rc-tree-title {
         max-width: ${(props) =>
           props.displayType === "aside" ? "243px" : "181px"};
@@ -854,7 +883,8 @@ const StyledSelectFilePanel = styled.div`
     position: fixed;
     bottom: 0;
     padding-top: 8px;
-    background-color: white;
+    background-color: ${(props) =>
+      props.theme.filesPanels.selectFile.buttonsBackground};
     height: 40px;
     width: 100%;
   }
@@ -872,12 +902,14 @@ const StyledSelectFilePanel = styled.div`
   }
 `;
 
+StyledSelectFilePanel.defaultProps = { theme: Base };
+
 const StyledFilesList = styled.div`
   .select-file-dialog_icon {
     margin-right: 8px;
   }
 
-  .radio-button_text{
+  .radio-button_text {
     ${(props) => props.displayType === "aside" && "margin: 0 !important;"};
   }
 
@@ -894,7 +926,7 @@ const StyledFilesList = styled.div`
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    color: #a3a9ae;
+    color: ${(props) => props.theme.filesPanels.filesList.color};
     font-weight: 600;
 
     ${(props) => props.displayType === "modal" && ` font-size: 11px;`}
@@ -904,11 +936,12 @@ const StyledFilesList = styled.div`
       props.displayType === "aside" ? "10px" : "11px"};
   }
   .file-exst {
-    color: #a3a9ae;
+    color: ${(props) => props.theme.filesPanels.filesList.color};
     font-weight: 600;
   }
   .modal-dialog_file-name:hover {
-    background-color: #f8f9f9;
+    background-color: ${(props) =>
+      props.theme.filesPanels.filesList.backgroundColor};
   }
   .files-list_full-name {
     white-space: nowrap;
@@ -934,9 +967,11 @@ const StyledFilesList = styled.div`
   .modal-dialog_file-name {
     border-radius: 3px;
     padding-right: 12px;
-    ${(props) => props.isChecked && `background:#F8F9F9;`}
+    ${(props) =>
+      props.isChecked &&
+      `background: ${props.theme.filesPanels.filesList.backgroundColor};`}
     cursor: pointer;
-    border-bottom: 1px solid #eceef1;
+    border-bottom: ${(props) => props.theme.filesPanels.filesList.borderBottom};
     display: grid;
 
     ${(props) =>
@@ -957,6 +992,8 @@ const StyledFilesList = styled.div`
     box-sizing: border-box;
   }
 `;
+
+StyledFilesList.defaultProps = { theme: Base };
 
 const StyledModalRowContainer = styled.div`
   display: flex;
@@ -1000,7 +1037,10 @@ const StyledModalRowContainer = styled.div`
     .sharing-access-combo-box-icon {
       height: 16px;
       path {
-        fill: ${(props) => (props.isDisabled ? "#D0D5DA" : "#A3A9AE")};
+        fill: ${(props) =>
+          props.isDisabled
+            ? props.theme.filesPanels.modalRow.disabledFill
+            : props.theme.filesPanels.modalRow.fill};
       }
 
       svg {
@@ -1032,7 +1072,8 @@ const StyledModalRowContainer = styled.div`
     .embedding-panel_link {
       margin-right: 8px;
       height: 32px;
-      background-color: #eceef1;
+      background-color: ${(props) =>
+        props.theme.filesPanels.modalRow.backgroundColor};
       line-height: 30px;
       padding: 0px 8px;
     }
@@ -1078,6 +1119,8 @@ const StyledModalRowContainer = styled.div`
     }
   }
 `;
+
+StyledModalRowContainer.defaultProps = { theme: Base };
 
 export {
   StyledAsidePanel,
