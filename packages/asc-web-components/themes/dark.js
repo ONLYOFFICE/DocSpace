@@ -1954,6 +1954,29 @@ const Dark = {
     },
   },
 
+  infoPanel: {
+    sectionHeaderToggleIcon: "#858585",
+    sectionHeaderToggleIconActive: "#c4c4c4",
+    sectionHeaderToggleBg: "transparent",
+    sectionHeaderToggleBgActive: "#292929",
+
+    backgroundColor: black,
+    borderColor: "#292929",
+    thumbnailBorderColor: grayLightMid,
+    textColor: white,
+
+    closeButtonWrapperPadding: "6px",
+    closeButtonIcon: black,
+    closeButtonSize: "12px",
+    closeButtonBg: "#a2a2a2",
+
+    accessGroupBg: "#242424",
+    accessGroupText: white,
+
+    showAccessUsersTextColor: gray,
+    showAccessPanelTextColor: "#E06A1B",
+  },
+
   filesArticleBody: {
     background: black,
     panelBackground: "#474747",

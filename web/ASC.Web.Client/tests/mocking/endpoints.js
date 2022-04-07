@@ -45,7 +45,7 @@ module.exports = class Endpoints {
 
   static password = {
     url: ["http://localhost:8092/api/2.0/settings/security/password"],
-    method: "GET",
+    method: ["GET", "PUT"],
     baseDir: "settings",
   };
 
@@ -127,6 +127,12 @@ module.exports = class Endpoints {
   static tfaconfirm = {
     url: ["http://localhost:8092/api/2.0/settings/tfaapp/confirm"],
     method: "GET",
+    baseDir: "settings",
+  };
+
+  static passwordError = {
+    url: ["http://localhost:8092/api/2.0/settings/password"],
+    method: "PUT",
     baseDir: "settings",
   };
 };

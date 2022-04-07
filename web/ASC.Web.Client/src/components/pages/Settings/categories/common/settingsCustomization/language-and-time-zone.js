@@ -19,17 +19,10 @@ import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../../../../../../package.json";
 import history from "@appserver/common/history";
 import { isMobileOnly } from "react-device-detect";
-import Text from "@appserver/components/text";
-import Box from "@appserver/components/box";
-import Link from "@appserver/components/link";
 import { isSmallTablet } from "@appserver/components/utils/device";
 import checkScrollSettingsBlock from "../utils";
-import {
-  StyledSettingsComponent,
-  StyledScrollbar,
-  StyledArrowRightIcon,
-} from "./StyledSettings";
-
+import { StyledSettingsComponent, StyledScrollbar } from "./StyledSettings";
+import LoaderLngTZSettings from "../sub-components/loaderLngTZSettings";
 const mapTimezonesToArray = (timezones) => {
   return timezones.map((timezone) => {
     return { key: timezone.id, label: timezone.displayName };
@@ -80,7 +73,7 @@ class LanguageAndTimeZone extends React.Component {
       "timezoneDefault"
     );
 
-    setDocumentTitle(t("Customization"));
+    setDocumentTitle(t("StudioTimeLanguageSettings"));
 
     this.state = {
       isLoadedData: false,
@@ -90,8 +83,6 @@ class LanguageAndTimeZone extends React.Component {
       timezoneDefault: timezoneDefaultFromSessionStorage || timezone,
       language: languageFromSessionStorage || language,
       languageDefault: languageDefaultFromSessionStorage || language,
-      isLoadingGreetingSave: false,
-      isLoadingGreetingRestore: false,
       hasChanged: false,
       showReminder: false,
       hasScroll: false,
@@ -343,8 +334,9 @@ class LanguageAndTimeZone extends React.Component {
       theme,
       cultureNames,
       isMobileView,
-      helpUrlCommonSettings,
+      isLoadingCustomization,
     } = this.props;
+
     const {
       isLoadedData,
       language,
@@ -359,37 +351,6 @@ class LanguageAndTimeZone extends React.Component {
       <LanguageTimeSettingsTooltip theme={theme} t={t} />
     );
 
-    const isMobileViewLanguageTimeSettings = (
-      <div className="category-item-wrapper">
-        <div className="category-item-heading">
-          <Link
-            className="inherit-title-link header"
-            onClick={this.onClickLink}
-            truncate={true}
-            href={combineUrl(
-              AppServerConfig.proxyURL,
-              "/settings/common/customization/language-and-time-zone"
-            )}
-          >
-            {t("StudioTimeLanguageSettings")}
-          </Link>
-          <StyledArrowRightIcon size="small" color="#333333" />
-        </div>
-        <Text className="category-item-description">
-          {t("LanguageAndTimeZoneSettingsDescription")}
-        </Text>
-        <Box paddingProp="10px 0 3px 0">
-          <Link
-            color={theme.studio.settings.common.linkColorHelp}
-            target="_blank"
-            isHovered={true}
-            href={helpUrlCommonSettings}
-          >
-            {t("Common:LearnMore")}
-          </Link>
-        </Box>
-      </div>
-    );
     const settingsBlock = (
       <div className="settings-block">
         <FieldContainer
@@ -440,8 +401,6 @@ class LanguageAndTimeZone extends React.Component {
 
     return !isLoadedData ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
-    ) : isMobileView ? (
-      isMobileViewLanguageTimeSettings
     ) : (
       <StyledSettingsComponent
         hasScroll={hasScroll}
@@ -492,7 +451,6 @@ export default inject(({ auth, setup }) => {
     //getPortalCultures,
     getPortalTimezones,
     getCurrentCustomSchema,
-    helpUrlCommonSettings,
   } = auth.settingsStore;
 
   const { user } = auth.userStore;
@@ -514,7 +472,6 @@ export default inject(({ auth, setup }) => {
     setLanguageAndTime,
     getCurrentCustomSchema,
     getPortalTimezones,
-    helpUrlCommonSettings,
   };
 })(
   withCultureNames(

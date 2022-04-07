@@ -32,8 +32,8 @@ export const settingsTree = [
           {
             key: "0-0-2",
             icon: "",
-            link: "team-template",
-            tKey: "TeamTemplate",
+            link: "portal-renaming",
+            tKey: "PortalRenaming",
           },
         ],
       },
@@ -61,6 +61,12 @@ export const settingsTree = [
         children: [
           {
             key: "1-0-0",
+            icon: "",
+            link: "password",
+            tKey: "SettingPasswordStrength",
+          },
+          {
+            key: "1-0-1",
             icon: "",
             link: "tfa",
             tKey: "TwoFactorAuth",

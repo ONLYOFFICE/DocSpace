@@ -365,6 +365,7 @@ class SettingsStore {
       digits,
       specSymbols
     );
+    this.setPasswordSettings(settings);
   };
 
   setTimezones = (timezones) => {
