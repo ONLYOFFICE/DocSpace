@@ -475,6 +475,11 @@ class SettingsStore {
     console.log("setIpRestrictionsEnable", res);
     this.ipRestrictionEnabled = enable;
   };
+
+  setMessageSettings = async (turnOn) => {
+    await api.settings.setMessageSettings(turnOn);
+    this.enableAdmMess = turnOn;
+  };
 }
 
 export default SettingsStore;
