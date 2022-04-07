@@ -47,7 +47,7 @@ const TrustedMail = (props) => {
   const [showReminder, setShowReminder] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const getSettings = async () => {
+  const getSettings = () => {
     const currentSettings = getFromSessionStorage("currentTrustedMailSettings");
     const defaultSettings = getFromSessionStorage("defaultTrustedMailSettings");
 
@@ -124,25 +124,29 @@ const TrustedMail = (props) => {
     setDomains(newInputs);
   };
 
-  const onSaveClick = () => {
+  const onSaveClick = async () => {
     const valid = domains.map((domain) => regexp.test(domain));
     if (type === "1" && valid.includes(false)) {
       toastr.error(t("Common:IncorrectDomain"));
       return;
     }
 
-    const data = {
-      type: Number(type),
-      domains: domains,
-      inviteUsersAsVisitors: true,
-    };
-    setMailDomainSettings(data);
-    saveToSessionStorage("defaultTrustedMailSettings", {
-      type: type,
-      domains: domains,
-    });
-    setShowReminder(false);
-    toastr.success(t("SuccessfullySaveSettingsMessage"));
+    try {
+      const data = {
+        type: Number(type),
+        domains: 12,
+        inviteUsersAsVisitors: true,
+      };
+      await setMailDomainSettings(data);
+      saveToSessionStorage("defaultTrustedMailSettings", {
+        type: type,
+        domains: domains,
+      });
+      setShowReminder(false);
+      toastr.success(t("SuccessfullySaveSettingsMessage"));
+    } catch (error) {
+      toastr.error(error);
+    }
   };
 
   const onCancelClick = () => {
