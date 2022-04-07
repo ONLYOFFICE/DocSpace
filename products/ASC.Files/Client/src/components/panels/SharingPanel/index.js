@@ -499,7 +499,9 @@ class SharingPanelComponent extends React.Component {
     } = this.state;
 
     const visible = sharingPanelVisible;
+
     const zIndex = 310;
+
     const onPlusClickProp = !isLoading ? { onClick: this.onPlusClick } : {};
 
     const isEncrypted =
@@ -507,6 +509,31 @@ class SharingPanelComponent extends React.Component {
 
     const internalLink =
       selection.length === 1 && !isEncrypted && this.getInternalLink();
+
+    const filteredShareDataItems = [];
+    const shareGroups = [];
+    const shareUsers = [];
+
+    shareDataItems.forEach((item, index) => {
+      if (item?.sharedTo?.shareLink || item?.isOwner) {
+        return filteredShareDataItems.push(item);
+      }
+
+      if (item?.sharedTo?.userName) {
+        shareUsers.push(item);
+      } else {
+        shareGroups.push(item);
+      }
+    });
+
+    if (shareGroups[shareGroups.length - 1]) {
+      shareGroups[shareGroups.length - 1].isEndOfBlock = true;
+    }
+    if (shareUsers[shareUsers.length - 1]) {
+      shareUsers[shareUsers.length - 1].isEndOfBlock = true;
+    }
+
+    filteredShareDataItems.push(...shareGroups, ...shareUsers);
 
     return (
       <StyledAsidePanel visible={visible}>
@@ -538,10 +565,9 @@ class SharingPanelComponent extends React.Component {
             <StyledBodyContent>
               <Scrollbar ref={this.scrollRef} stype="mediumBlack">
                 {!isLoading ? (
-                  shareDataItems.map((item, index) => (
+                  filteredShareDataItems.map((item, index) => (
                     <SharingRow
                       t={t}
-                      theme={theme}
                       isPersonal={isPersonal}
                       index={index}
                       key={`${item.sharedTo.id}_${index}`}
@@ -650,6 +676,7 @@ const SharingPanel = inject(
   ) => {
     const { replaceFileStream, setEncryptionAccess } = auth;
     const { personal, customNames, isDesktopClient } = auth.settingsStore;
+    const { user } = auth.userStore;
 
     const { id, access } = selectedFolderStore;
 
@@ -721,9 +748,13 @@ const SharingPanel = inject(
   }
 )(
   observer(
-    withTranslation(["SharingPanel", "Common", "Translations", "Home"])(
-      withLoader(SharingPanelComponent)(<Loaders.DialogAsideLoader isPanel />)
-    )
+    withTranslation([
+      "SharingPanel",
+      "Common",
+      "Translations",
+      "Home",
+      "ChangeOwnerPanel",
+    ])(withLoader(SharingPanelComponent)(<Loaders.DialogAsideLoader isPanel />))
   )
 );
 
@@ -734,6 +765,7 @@ class Panel extends React.Component {
       "Common",
       "Translations",
       "Home",
+      "ChangeOwnerPanel",
     ]);
     const {
       FullAccess,
