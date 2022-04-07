@@ -60,6 +60,12 @@ const StyledSettingsComponent = styled.div`
     color: #f21c0e;
   }
 
+  .settings-block-description {
+    line-height: 20px;
+    color: #657077;
+    padding-bottom: 12px;
+  }
+
   @media (max-width: 599px) {
     ${(props) =>
       props.hasScroll &&
@@ -74,12 +80,6 @@ const StyledSettingsComponent = styled.div`
           padding-left: 16px;
         }
       `}
-
-    .settings-block-description {
-      line-height: 20px;
-      color: #657077;
-      padding-bottom: 12px;
-    }
   }
 
   @media (min-width: 600px) {
