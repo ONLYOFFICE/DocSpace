@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import { PlusIcon, TrashIcon } from "./svg";
@@ -38,6 +38,14 @@ const StyledAddWrapper = styled.div`
   cursor: pointer;
 `;
 
+const usePrevious = (value) => {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = value;
+  }, [value]);
+  return ref.current;
+};
+
 const UserFields = (props) => {
   const {
     className,
@@ -49,6 +57,33 @@ const UserFields = (props) => {
     regexp,
   } = props;
 
+  const [errors, setErrors] = useState(new Array(inputs.length).fill(false));
+  const prevInputs = usePrevious(inputs.length);
+
+  useEffect(() => {
+    if (inputs.length > prevInputs) setErrors([...errors, false]);
+  }, [inputs]);
+
+  const onBlur = (index) => {
+    let newErrors = Array.from(errors);
+    newErrors[index] = true;
+    setErrors(newErrors);
+  };
+
+  const onFocus = (index) => {
+    let newErrors = Array.from(errors);
+    newErrors[index] = false;
+    setErrors(newErrors);
+  };
+
+  const onDelete = (index) => {
+    let newErrors = Array.from(errors);
+    newErrors.splice(index, 1);
+    setErrors(newErrors);
+
+    onDeleteInput(index);
+  };
+
   return (
     <div className={className}>
       {inputs ? (
@@ -59,14 +94,14 @@ const UserFields = (props) => {
             <StyledInputWrapper key={`domain-input-${index}`}>
               <TextInput
                 id={`domain-input-${index}`}
+                isAutoFocussed={true}
                 value={input}
                 onChange={(e) => onChangeInput(e, index)}
-                hasError={error}
+                onBlur={() => onBlur(index)}
+                onFocus={() => onFocus(index)}
+                hasError={errors[index] && error}
               />
-              <StyledTrashIcon
-                size="medium"
-                onClick={() => onDeleteInput(index)}
-              />
+              <StyledTrashIcon size="medium" onClick={() => onDelete(index)} />
             </StyledInputWrapper>
           );
         })

@@ -37,10 +37,6 @@ export const StyledSubmenuItems = styled.div`
   display: flex;
   flex-direction: row;
   gap: 4px;
-  padding: 0 20px;
-  @media ${tablet} {
-    padding: 0 16px;
-  }
 
   overflow: hidden;
   &::-webkit-scrollbar {

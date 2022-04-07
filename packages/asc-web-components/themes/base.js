@@ -1952,6 +1952,29 @@ const Base = {
     },
   },
 
+  infoPanel: {
+    sectionHeaderToggleIcon: gray,
+    sectionHeaderToggleIconActive: "#3B72A7",
+    sectionHeaderToggleBg: "transparent",
+    sectionHeaderToggleBgActive: grayLight,
+
+    backgroundColor: white,
+    borderColor: grayLightMid,
+    thumbnailBorderColor: grayLightMid,
+    textColor: black,
+
+    closeButtonWrapperPadding: "0px",
+    closeButtonIcon: white,
+    closeButtonSize: "17px",
+    closeButtonBg: "transparent",
+
+    accessGroupBg: grayLightMid,
+    accessGroupText: black,
+
+    showAccessUsersTextColor: gray,
+    showAccessPanelTextColor: "#3b72a7",
+  },
+
   filesArticleBody: {
     background: lightGrayishStrongBlue,
     panelBackground: lightGrayishStrongBlue,

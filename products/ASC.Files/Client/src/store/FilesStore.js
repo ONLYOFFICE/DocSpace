@@ -1,22 +1,23 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import api from "@appserver/common/api";
 import {
-  FolderType,
-  FilterType,
-  FileType,
-  FileAction,
   AppServerConfig,
+  FileAction,
+  FileType,
+  FilterType,
+  FolderType,
   FileStatus,
 } from "@appserver/common/constants";
 import history from "@appserver/common/history";
-import { loopTreeFolders } from "../helpers/files-helpers";
-import config from "../../package.json";
 import { combineUrl } from "@appserver/common/utils";
 import { updateTempContent } from "@appserver/common/utils";
-import { thumbnailStatuses } from "../helpers/constants";
 import { isMobile } from "react-device-detect";
-import { openDocEditor as openEditor } from "../helpers/utils";
 import toastr from "studio/toastr";
+
+import config from "../../package.json";
+import { thumbnailStatuses } from "../helpers/constants";
+import { loopTreeFolders } from "../helpers/files-helpers";
+import { openDocEditor as openEditor } from "../helpers/utils";
 
 const { FilesFilter } = api;
 const storageViewAs = localStorage.getItem("viewAs");
@@ -717,6 +718,7 @@ class FilesStore {
         "version", //category
         "finalize-version",
         "show-version-history",
+        "show-info",
         "block-unblock-version", //need split
         "separator1",
         "open-location",
@@ -1004,6 +1006,7 @@ class FilesStore {
         "separator0",
         "sharing-settings",
         "owner-change",
+        "show-info",
         "link-for-portal-users",
         "separator1",
         "open-location",
