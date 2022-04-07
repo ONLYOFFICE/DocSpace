@@ -9,6 +9,7 @@ import PasswordStrengthSection from "./passwordStrength";
 import TrustedMailSection from "./trustedMail";
 import IpSecuritySection from "./ipSecurity";
 import AdminMessageSection from "./adminMessage";
+import SessionLifetimeSection from "./sessionLifetime";
 import MobileView from "./mobileView";
 import CategoryWrapper from "../sub-components/category-wrapper";
 import { size } from "@appserver/components/utils/device";
@@ -76,6 +77,14 @@ const AccessPortal = (props) => {
         tooltipUrl={`https://helpcenter.onlyoffice.com/${lng}/administration/configuration.aspx#ChangingSecuritySettings_block`}
       />
       <AdminMessageSection />
+
+      <hr />
+      <CategoryWrapper
+        t={t}
+        title={t("SessionLifetime")}
+        tooltipTitle={t("SessionLifetimeDescription")}
+      />
+      <SessionLifetimeSection />
     </MainContainer>
   );
 };

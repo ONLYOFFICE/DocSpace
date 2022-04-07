@@ -20,6 +20,9 @@ const IpSecurityPage = lazy(() =>
 const AdminMessagePage = lazy(() =>
   import("./categories/security/access-portal/adminMessage")
 );
+const SessionLifetimePage = lazy(() =>
+  import("./categories/security/access-portal/sessionLifetime")
+);
 
 const CommonSettings = lazy(() => import("./categories/common/index.js"));
 
@@ -106,6 +109,10 @@ const ADMIN_MESSAGE_PAGE_URL = combineUrl(
   PROXY_BASE_URL,
   "/security/access-portal/admin-message"
 );
+const SESSION_LIFETIME_PAGE_URL = combineUrl(
+  PROXY_BASE_URL,
+  "/security/access-portal/lifetime"
+);
 
 const ADMINS_URL = combineUrl(PROXY_BASE_URL, "/security/access-rights/admins");
 const THIRD_PARTY_URL = combineUrl(
@@ -159,6 +166,11 @@ const Settings = () => {
             exact
             path={ADMIN_MESSAGE_PAGE_URL}
             component={AdminMessagePage}
+          />
+          <Route
+            exact
+            path={SESSION_LIFETIME_PAGE_URL}
+            component={SessionLifetimePage}
           />
 
           <Route exact path={THIRD_PARTY_URL} component={ThirdPartyServices} />
