@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { withTranslation } from "react-i18next";
-import styled from "styled-components";
 import Loader from "@appserver/components/loader";
 import toastr from "@appserver/components/toast/toastr";
 import HelpButton from "@appserver/components/help-button";
@@ -13,17 +12,12 @@ import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../../../../../../package.json";
 import history from "@appserver/common/history";
 import { isMobileOnly } from "react-device-detect";
-import Text from "@appserver/components/text";
-import Link from "@appserver/components/link";
 import { isSmallTablet } from "@appserver/components/utils/device";
 import checkScrollSettingsBlock from "../utils";
 import { PortalRenamingTooltip } from "../sub-components/common-tooltips";
-import {
-  StyledSettingsComponent,
-  StyledScrollbar,
-  StyledArrowRightIcon,
-} from "./StyledSettings";
+import { StyledSettingsComponent, StyledScrollbar } from "./StyledSettings";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
+import { setDocumentTitle } from "../../../../../../helpers/utils";
 
 const PortalRenaming = ({ t, setPortalRename, isMobileView }) => {
   // TODO: Change false
@@ -52,6 +46,8 @@ const PortalRenaming = ({ t, setPortalRename, isMobileView }) => {
     "The account name must be between 6 and 50 characters long";
 
   useEffect(() => {
+    setDocumentTitle(t("PortalRenaming"));
+
     const checkScroll = checkScrollSettingsBlock();
 
     window.addEventListener("resize", checkInnerWidth);
@@ -164,35 +160,8 @@ const PortalRenaming = ({ t, setPortalRename, isMobileView }) => {
     }
   };
 
-  const onClickLink = (e) => {
-    e.preventDefault();
-    history.push(e.target.pathname);
-  };
-
   const tooltipPortalRenamingTooltip = <PortalRenamingTooltip t={t} />;
   const hasError = errorValue === null ? false : true;
-
-  const isMobileViewPortalRenaming = (
-    <div className="category-item-wrapper">
-      <div className="category-item-heading">
-        <Link
-          truncate={true}
-          className="inherit-title-link header"
-          onClick={onClickLink}
-          href={combineUrl(
-            AppServerConfig.proxyURL,
-            "/settings/common/customization/portal-renaming"
-          )}
-        >
-          {t("PortalRenaming")}
-        </Link>
-        <StyledArrowRightIcon size="small" color="#333333" />
-      </div>
-      <Text className="category-item-description">
-        {t("PortalRenamingDescription")}
-      </Text>
-    </div>
-  );
 
   const settingsBlock = (
     <div className="settings-block">
@@ -219,42 +188,38 @@ const PortalRenaming = ({ t, setPortalRename, isMobileView }) => {
 
   return !isLoadedData ? (
     <Loader className="pageLoader" type="rombs" size="40px" />
-  ) : isMobileView ? (
-    isMobileViewPortalRenaming
   ) : (
-    <>
-      <StyledSettingsComponent
+    <StyledSettingsComponent
+      hasScroll={hasScroll}
+      className="category-item-wrapper"
+    >
+      {checkInnerWidth() && !isMobileView && (
+        <div className="category-item-heading">
+          <div className="category-item-title">{t("PortalRenaming")}</div>
+          <HelpButton
+            iconName="static/images/combined.shape.svg"
+            size={12}
+            tooltipContent={tooltipPortalRenamingTooltip}
+          />
+        </div>
+      )}
+      {(isMobileOnly && isSmallTablet()) || isSmallTablet() ? (
+        <StyledScrollbar stype="smallBlack">{settingsBlock}</StyledScrollbar>
+      ) : (
+        <> {settingsBlock}</>
+      )}
+      <SaveCancelButtons
+        className="save-cancel-buttons"
+        onSaveClick={onSavePortalRename}
+        onCancelClick={onCancelPortalName}
+        saveButtonLabel={t("Common:SaveButton")}
+        cancelButtonLabel={t("Common:CancelButton")}
+        showReminder={showReminder}
+        reminderTest={t("YouHaveUnsavedChanges")}
+        displaySettings={true}
         hasScroll={hasScroll}
-        className="category-item-wrapper"
-      >
-        {checkInnerWidth() && !isMobileView && (
-          <div className="category-item-heading">
-            <div className="category-item-title">{t("PortalRenaming")}</div>
-            <HelpButton
-              iconName="static/images/combined.shape.svg"
-              size={12}
-              tooltipContent={tooltipPortalRenamingTooltip}
-            />
-          </div>
-        )}
-        {(isMobileOnly && isSmallTablet()) || isSmallTablet() ? (
-          <StyledScrollbar stype="smallBlack">{settingsBlock}</StyledScrollbar>
-        ) : (
-          <> {settingsBlock}</>
-        )}
-        <SaveCancelButtons
-          className="save-cancel-buttons"
-          onSaveClick={onSavePortalRename}
-          onCancelClick={onCancelPortalName}
-          saveButtonLabel={t("Common:SaveButton")}
-          cancelButtonLabel={t("Common:CancelButton")}
-          showReminder={showReminder}
-          reminderTest={t("YouHaveUnsavedChanges")}
-          displaySettings={true}
-          hasScroll={hasScroll}
-        />
-      </StyledSettingsComponent>
-    </>
+      />
+    </StyledSettingsComponent>
   );
 };
 

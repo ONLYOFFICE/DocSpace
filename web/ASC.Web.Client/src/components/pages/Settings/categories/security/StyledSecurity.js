@@ -45,6 +45,12 @@ export const StyledCategoryWrapper = styled.div`
   align-items: center;
 `;
 
+export const StyledTooltip = styled.div`
+  .subtitle {
+    margin-bottom: 10px;
+  }
+`;
+
 export const StyledMobileCategoryWrapper = styled.div`
   margin-bottom: 20px;
 
@@ -114,5 +120,9 @@ export const LearnMoreWrapper = styled.div`
     display: flex;
     flex-direction: column;
     margin-bottom: 20px;
+  }
+
+  .learn-subtitle {
+    margin-bottom: 10px;
   }
 `;

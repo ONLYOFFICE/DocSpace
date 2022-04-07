@@ -8,7 +8,6 @@ import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";
 import Slider from "@appserver/components/slider";
 import Checkbox from "@appserver/components/checkbox";
-import SectionLoader from "../sub-components/section-loader";
 import { getLanguage } from "@appserver/common/utils";
 import { LearnMoreWrapper } from "../StyledSecurity";
 import toastr from "@appserver/components/toast/toastr";
@@ -19,10 +18,6 @@ import isEqual from "lodash/isEqual";
 
 const MainContainer = styled.div`
   width: 100%;
-
-  .page-subtitle {
-    margin-bottom: 10px;
-  }
 
   .password-slider {
     width: 160px;
@@ -162,11 +157,11 @@ const PasswordStrength = (props) => {
   };
 
   const lng = getLanguage(localStorage.getItem("language") || "en");
-  if (!isLoading) return <SectionLoader />;
+
   return (
     <MainContainer>
       <LearnMoreWrapper>
-        <Text className="page-subtitle">
+        <Text className="learn-subtitle">
           {t("SettingPasswordStrengthHelper")}
         </Text>
         <Link

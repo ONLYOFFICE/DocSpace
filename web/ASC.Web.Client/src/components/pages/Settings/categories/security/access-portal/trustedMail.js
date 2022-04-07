@@ -18,10 +18,6 @@ import isEqual from "lodash/isEqual";
 const MainContainer = styled.div`
   width: 100%;
 
-  .page-subtitle {
-    margin-bottom: 10px;
-  }
-
   .user-fields {
     margin-bottom: 18px;
   }
@@ -130,7 +126,7 @@ const TrustedMail = (props) => {
 
   const onSaveClick = () => {
     const valid = domains.map((domain) => regexp.test(domain));
-    if (valid.includes(false)) {
+    if (type === "1" && valid.includes(false)) {
       toastr.error(t("Common:IncorrectDomain"));
       return;
     }
@@ -160,7 +156,7 @@ const TrustedMail = (props) => {
   return (
     <MainContainer>
       <LearnMoreWrapper>
-        <Text className="page-subtitle">{t("TrustedMailHelper")}</Text>
+        <Text className="learn-subtitle">{t("TrustedMailHelper")}</Text>
         <Link
           color="#316DAA"
           target="_blank"
@@ -208,16 +204,6 @@ const TrustedMail = (props) => {
         />
       )}
 
-      <Text
-        color="#F21C0E"
-        fontSize="16px"
-        fontWeight="700"
-        className="warning-text"
-      >
-        {t("Common:Warning")}!
-      </Text>
-      <Text>{t("TrustedMailWarningHelper")}</Text>
-
       <Buttons
         t={t}
         showReminder={showReminder}
@@ -228,7 +214,7 @@ const TrustedMail = (props) => {
   );
 };
 
-export default inject(({ auth, setup }) => {
+export default inject(({ auth }) => {
   const {
     trustedDomainsType,
     trustedDomains,
