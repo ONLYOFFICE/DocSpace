@@ -238,7 +238,6 @@ const Editor = () => {
           data: "backup-restore",
         });
         socketHelper.on("restore-backup", () => {
-         
           setPreparationPortalDialogVisible(true);
         });
       } catch (e) {
@@ -625,19 +624,22 @@ const Editor = () => {
   const onSDKAppReady = () => {
     console.log("ONLYOFFICE Document Editor is ready");
 
-    const index = url.indexOf("#message/");
-    if (index > -1) {
-      const splitUrl = url.split("#message/");
-      const message = decodeURIComponent(splitUrl[1]).replaceAll("+", " ");
-      history.pushState({}, null, url.substring(0, index));
-      docEditor.showMessage(message);
-    } else {
-      if (config?.Error) docEditor.showMessage(config.Error);
-    }
-
     const tempElm = document.getElementById("loader");
     if (tempElm) {
       tempElm.outerHTML = "";
+    }
+
+    const index = url.indexOf("#message/");
+    if (index > -1) {
+      const splitUrl = url.split("#message/");
+      if (splitUrl.length === 2) {
+        let raw = splitUrl[1]?.trim();
+        const message = decodeURIComponent(raw).replace(/\+/g, " ");
+        docEditor.showMessage(message);
+        history.pushState({}, null, url.substring(0, index));
+      }
+    } else {
+      if (config?.Error) docEditor.showMessage(config.Error);
     }
   };
 
@@ -961,7 +963,9 @@ const Editor = () => {
             )}
 
             {preparationPortalDialogVisible && (
-              <PreparationPortalDialog visible={preparationPortalDialogVisible} />
+              <PreparationPortalDialog
+                visible={preparationPortalDialogVisible}
+              />
             )}
           </>
         ) : (

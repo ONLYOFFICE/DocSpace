@@ -30,6 +30,10 @@ const Navigation = ({
   isRecycleBinFolder,
   isEmptyFilesList,
   clearTrash,
+  showFolderInfo,
+  isCurrentFolderInfo,
+  toggleInfoPanel,
+  isInfoPanelVisible,
   ...rest
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -133,6 +137,8 @@ const Navigation = ({
               isRecycleBinFolder={isRecycleBinFolder}
               isEmptyFilesList={isEmptyFilesList}
               clearTrash={clearTrash}
+              toggleInfoPanel={toggleInfoPanel}
+              isInfoPanelVisible={isInfoPanelVisible}
             />
           </StyledContainer>
         </>

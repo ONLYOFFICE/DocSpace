@@ -22,6 +22,7 @@ import {
   SectionPagingContent,
   Bar,
 } from "./Section";
+import { InfoPanelBodyContent, InfoPanelHeaderContent } from "./InfoPanel";
 
 import { ArticleMainButtonContent } from "../../components/Article";
 
@@ -287,6 +288,7 @@ class PureHome extends React.Component {
       setMaintenanceExist,
       snackbarExist,
     } = this.props;
+
     return (
       <>
         <MediaViewer />
@@ -344,6 +346,14 @@ class PureHome extends React.Component {
               )}
             </Consumer>
           </Section.SectionBody>
+
+          <Section.InfoPanelHeader>
+            <InfoPanelHeaderContent />
+          </Section.InfoPanelHeader>
+
+          <Section.InfoPanelBody>
+            <InfoPanelBodyContent />
+          </Section.InfoPanelBody>
 
           <Section.SectionPaging>
             <SectionPagingContent tReady={tReady} />
