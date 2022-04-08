@@ -57,7 +57,6 @@ class SettingsSetupStore {
     if (this.isInit) return;
     this.isInit = true;
 
-    console.log("INIT STORE");
     if (authStore.isAuthenticated) {
       authStore.tfaStore.getTfaType();
     }
