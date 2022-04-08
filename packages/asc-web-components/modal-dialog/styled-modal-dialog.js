@@ -34,39 +34,28 @@ const Dialog = styled.div`
   cursor: default;
   align-items: center;
   justify-content: center;
-  width: ${(props) => props.theme.modalDialog.width};
-  max-width: ${(props) => props.theme.modalDialog.maxwidth};
-  margin: ${(props) => props.theme.modalDialog.margin};
-  min-height: ${(props) => props.theme.modalDialog.minHeight};
+  width: auto;
+  margin: 0 auto;
+  min-height: 100%;
 `;
 
 const Content = styled.div.attrs((props) => ({
   style: {
     marginBottom:
-      props.modalSwipeOffset < 0 ? `${props.modalSwipeOffset}px` : "0px",
+      props.modalSwipeOffset < 0 ? `${props.modalSwipeOffset * 1.1}px` : "0px",
   },
 }))`
   position: relative;
   box-sizing: border-box;
+  background-color: ${(props) => props.theme.modalDialog.backgroundColor};
+  color: ${(props) => props.theme.modalDialog.textColor};
   height: auto;
   max-height: ${(props) =>
     props.displayType === "aside" ? "auto" : props.isLarge ? "400px" : "280px"};
   width: ${(props) =>
     props.displayType === "aside" ? "auto" : props.isLarge ? "520px" : "400px"};
-
-  background-color: ${(props) =>
-    props.theme.modalDialog.content.backgroundColor};
-  padding: ${(props) =>
-    props.displayType === "modal"
-      ? props.theme.modalDialog.content.modalPadding
-      : props.theme.modalDialog.content.asidePadding};
-  border-radius: ${(props) =>
-    props.theme.modalDialog.content.modalBorderRadius};
-  ${(props) =>
-    props.withoutBodyScroll &&
-    css`
-      overflow: hidden;
-    `}
+  border-radius: 6px;
+  padding: ${(props) => (props.displayType === "modal" ? "0" : "0 0 -16px")};
 
   ${({ displayType }) =>
     displayType === "modal" &&
@@ -83,7 +72,8 @@ const Content = styled.div.attrs((props) => ({
 const StyledHeader = styled.div`
   display: flex;
   align-items: center;
-  border-bottom: 1px solid #eceef1;
+  border-bottom: ${(props) =>
+    `1px solid ${props.theme.modalDialog.headerBorderColor}`};
   margin-bottom: 16px;
   height: 52px;
 
@@ -92,15 +82,10 @@ const StyledHeader = styled.div`
   padding: 0 16px 0;
 
   .heading {
-    max-width: ${(props) => props.theme.modalDialog.content.heading.maxWidth};
     font-family: "Open Sans";
-
-    font-weight: ${(props) =>
-      props.theme.modalDialog.content.heading.fontWeight};
-    font-size: ${(props) =>
-      props.displayType === "modal"
-        ? props.theme.modalDialog.content.heading.modalFontSize
-        : props.theme.modalDialog.content.heading.asideFontSize};
+    color: ${(props) => props.theme.modalDialog.textColor};
+    font-weight: 700;
+    font-size: ${(props) => (props.displayType === "modal" ? "18px" : "21px")};
   }
 `;
 
@@ -113,7 +98,8 @@ const BodyBox = styled(Box)`
 const StyledFooter = styled.div`
   display: flex;
   flex-direction: row;
-  border-top: 1px solid #eceef1;
+  border-top: ${(props) =>
+    `1px solid ${props.theme.modalDialog.footerBorderColor}`};
   gap: 10px;
   padding: 16px;
   ${(props) => props.displayType === "aside" && "margin-bottom: -10px"}

@@ -98,7 +98,7 @@ Modal.propTypes = {
   displayType: PropTypes.oneOf(["auto", "modal", "aside"]),
   isLarge: PropTypes.bool,
 
-  modalSwipeOffset: PropTypes.number,
+  //modalSwipeOffset: PropTypes.number,
 
   header: PropTypes.object,
   body: PropTypes.object,

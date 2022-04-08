@@ -496,40 +496,13 @@ const Base = {
   },
 
   modalDialog: {
-    width: "auto",
-    maxwidth: "600px",
-    margin: " 0 auto",
-    minHeight: "100%",
-
-    content: {
-      backgroundColor: white,
-      modalPadding: "0",
-      modalBorderRadius: "6px",
-      asidePadding: "0 0 -16px",
-      heading: {
-        maxWidth: "600px",
-        margin: "8px 0 7px 16px",
-        modalLineHeight: "28px",
-        asideLineHeight: "56px",
-        fontWeight: "700",
-        asideFontSize: "21px",
-        modalFontSize: "18px",
-      },
-    },
-
-    header: {
-      borderBottom: `1px solid ${globalColors.lightGrayishBlue}`,
-    },
-
+    backgroundColor: white,
+    textColor: black,
+    headerBorderColor: globalColors.grayLightMid,
+    footerBorderColor: globalColors.grayLightMid,
     closeButton: {
-      width: "17px",
-      height: "17px",
-      minWidth: "17px",
-      minHeight: "17px",
-
-      right: "16px",
-      top: "13px",
-      hoverColor: grayMain,
+      backgroundColor: "#9a9ea3",
+      fillColor: white,
     },
   },
 

@@ -449,37 +449,13 @@ const Dark = {
   },
 
   modalDialog: {
-    width: "auto",
-    maxwidth: "560px",
-    margin: " 0 auto",
-    minHeight: "100%",
-
-    content: {
-      backgroundColor: white,
-      padding: "0 16px 16px",
-      modalBorderRadius: "6px",
-
-      heading: {
-        maxWidth: "500px",
-        margin: "0",
-        lineHeight: "56px",
-        fontWeight: "700",
-      },
-    },
-
-    header: {
-      borderBottom: `1px solid ${globalColors.lightGrayishBlue}`,
-    },
-
+    backgroundColor: black,
+    textColor: white,
+    headerBorderColor: "#474747",
+    footerBorderColor: "#474747",
     closeButton: {
-      width: "14px",
-      height: "14px",
-      minWidth: "14px",
-      minHeight: "14px",
-
-      right: "16px",
-      top: "13px",
-      hoverColor: grayMain,
+      backgroundColor: "#9A9EA3",
+      fillColor: black,
     },
   },
 

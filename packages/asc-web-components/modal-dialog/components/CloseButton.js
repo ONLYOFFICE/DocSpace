@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 import { smallTablet } from "../../utils/device";
 import IconButton from "../../icon-button";
+import Base from "../../themes/base";
 
 const StyledCloseButtonWrapper = styled.div`
   position: absolute;
@@ -14,7 +15,8 @@ const StyledCloseButtonWrapper = styled.div`
   align-items: center;
   justify-content: center;
 
-  background: #9a9ea3;
+  background-color: ${(props) =>
+    props.theme.modalDialog.closeButton.backgroundColor};
   border-radius: 50%;
 
   cursor: pointer;
@@ -40,10 +42,12 @@ const StyledCloseButtonWrapper = styled.div`
 
   .close-button {
     path {
-      fill: #fff;
+      fill: ${(props) => props.theme.modalDialog.closeButton.fillColor};
     }
   }
 `;
+
+StyledCloseButtonWrapper.defaultProps = { theme: Base };
 
 const CloseButton = ({ displayType, onClick }) => {
   return (

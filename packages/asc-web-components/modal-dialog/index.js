@@ -80,26 +80,22 @@ class ModalDialog extends React.Component {
       window.addEventListener("resize", this.throttledResize);
     window.addEventListener("keyup", this.onKeyPress);
 
-    if (isTouchDevice && isSmallTablet()) {
-      window.addEventListener("touchstart", handleTouchStart, false);
-      window.addEventListener(
-        "touchmove",
-        (e) => {
-          this.setState({
-            ...this.state,
-            modalSwipeOffset: handleTouchMove(e, this.props.onClose),
-          });
-        },
-        false
-      );
-    }
+    window.addEventListener("touchstart", handleTouchStart, false);
+    window.addEventListener(
+      "touchmove",
+      (e) => {
+        this.setState({
+          ...this.state,
+          modalSwipeOffset: handleTouchMove(e, this.props.onClose),
+        });
+      },
+      false
+    );
   }
 
   componentWillUnmount() {
-    if (this.props.displayType === "auto")
-      window.removeEventListener("resize", this.throttledResize);
+    window.removeEventListener("resize", this.throttledResize);
     window.removeEventListener("keyup", this.onKeyPress);
-
     window.removeEventListener("touchstart", handleTouchMove);
     window.removeEventListener("touchmove", handleTouchMove);
   }
