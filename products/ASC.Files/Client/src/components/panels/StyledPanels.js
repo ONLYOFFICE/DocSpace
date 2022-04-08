@@ -546,8 +546,8 @@ const StyledFooter = styled.div`
   display: flex;
   position: fixed;
   bottom: 0;
-  padding: 16px 0;
-  width: calc(100% - 32px);
+  padding: 16px;
+  width: 100%;
   margin: auto;
   left: 0;
   right: 0;
@@ -575,7 +575,7 @@ const StyledFooter = styled.div`
   }
 
   @media ${desktop} {
-    padding: 10px 0;
+    padding: 16px;
     min-height: 57px;
 
     .sharing_panel-checkbox {
