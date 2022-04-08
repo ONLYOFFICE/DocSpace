@@ -58,7 +58,8 @@ class SettingsSetupStore {
     this.isInit = true;
 
     if (authStore.isAuthenticated) {
-      authStore.tfaStore.getTfaType();
+      await authStore.settingsStore.getPortalPasswordSettings();
+      await authStore.tfaStore.getTfaType();
     }
   };
 
