@@ -802,6 +802,7 @@ Scenario("Trusted mail settings change test success", async ({ I }) => {
   I.mockEndpoint(Endpoints.info, "infoSettings");
   I.mockEndpoint(Endpoints.self, "selfSettings");
   I.mockEndpoint(Endpoints.common, "common");
+  I.mockEndpoint(Endpoints.maildomainsettings, "maildomainsettings");
 
   if (deviceType === "mobile") {
     I.amOnPage("/settings/security/access-portal/trusted-mail");
@@ -834,6 +835,7 @@ Scenario("Trusted mail settings change test error", async ({ I }) => {
   I.mockEndpoint(Endpoints.info, "infoSettings");
   I.mockEndpoint(Endpoints.self, "selfSettings");
   I.mockEndpoint(Endpoints.common, "common");
+  I.mockEndpoint(Endpoints.maildomainsettings, "maildomainsettings");
 
   if (deviceType === "mobile") {
     I.amOnPage("/settings/security/access-portal/trusted-mail");
@@ -857,5 +859,38 @@ Scenario("Trusted mail settings change test error", async ({ I }) => {
 
     I.see("You have unsaved changes");
     I.see("Incorrect domain");
+  }
+});
+
+Scenario("Trusted mail settings change test server error", async ({ I }) => {
+  I.mockEndpoint(Endpoints.settings, "settings");
+  I.mockEndpoint(Endpoints.build, "build");
+  I.mockEndpoint(Endpoints.info, "info");
+  I.mockEndpoint(Endpoints.self, "self");
+  I.mockEndpoint(Endpoints.common, "common");
+  I.mockEndpoint(Endpoints.maildomainsettings, "maildomainsettingsError");
+
+  if (deviceType === "mobile") {
+    I.amOnPage("/settings/security/access-portal/trusted-mail");
+
+    I.see("Trusted mail domain settings");
+
+    I.click({
+      react: "Checkbox",
+      props: {
+        value: "1",
+      },
+    });
+
+    I.see("You have unsaved changes");
+    I.click("Add trusted domain");
+
+    I.see({ react: "TextInput" });
+    I.fillField("#domain-input-0", "test");
+
+    I.click("Save");
+
+    I.see("You have unsaved changes");
+    I.see("Request failed with status code 400");
   }
 });
