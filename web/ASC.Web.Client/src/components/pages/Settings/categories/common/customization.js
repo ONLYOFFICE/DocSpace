@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
+import { inject, observer } from "mobx-react";
 import withCultureNames from "@appserver/common/hoc/withCultureNames";
 import LanguageAndTimeZone from "./settingsCustomization/language-and-time-zone";
 import WelcomePageSettings from "./settingsCustomization/welcome-page-settings";
@@ -9,6 +10,7 @@ import { isSmallTablet } from "@appserver/components/utils/device";
 import CustomizationNavbar from "./customization-navbar";
 import { Base } from "@appserver/components/themes";
 import { setDocumentTitle } from "../../../../../helpers/utils";
+import LoaderDescriptionCustomization from "./sub-components/loaderDescriptionCustomization";
 
 const StyledComponent = styled.div`
   .combo-button-label {
@@ -61,9 +63,9 @@ const StyledComponent = styled.div`
 
 StyledComponent.defaultProps = { theme: Base };
 
-const Customization = ({ t }) => {
+const Customization = ({ t, setIsLoadingArticleSettings }) => {
   const [mobileView, setMobileView] = useState(true);
-  const [isLoadingCustomization, setIsLoadingCustomization] = useState(true);
+  const [isLoadingCustomization, setIsLoadingCustomization] = useState(false);
 
   const checkInnerWidth = () => {
     if (isSmallTablet()) {
@@ -75,8 +77,12 @@ const Customization = ({ t }) => {
 
   useEffect(() => {
     setDocumentTitle(t("Customization"));
-    //TODO:  add method to get the portal name
-    setIsLoadingCustomization(false);
+    //TODO: Add method to get the portal name
+    setIsLoadingArticleSettings(true);
+    setTimeout(() => {
+      setIsLoadingCustomization(false);
+      setIsLoadingArticleSettings(isLoadingCustomization);
+    }, 3000);
 
     window.addEventListener("resize", checkInnerWidth);
     return () => window.removeEventListener("resize", checkInnerWidth);
@@ -91,6 +97,7 @@ const Customization = ({ t }) => {
       <div className="category-description">{`${t(
         "Settings:CustomizationDescription"
       )}`}</div>
+      {/* <LoaderDescriptionCustomization /> */}
       <LanguageAndTimeZone
         isLoadingCustomization={isLoadingCustomization}
         isMobileView={isMobile}
@@ -101,6 +108,14 @@ const Customization = ({ t }) => {
   );
 };
 
-export default withCultureNames(
-  withTranslation(["Settings", "Common"])(Customization)
+export default inject(({ setup }) => {
+  const { setIsLoadingArticleSettings } = setup;
+
+  return {
+    setIsLoadingArticleSettings,
+  };
+})(
+  withCultureNames(
+    withTranslation(["Settings", "Common"])(observer(Customization))
+  )
 );

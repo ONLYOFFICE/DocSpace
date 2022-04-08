@@ -31,7 +31,6 @@ const StyledContainer = styled.div`
   }
 
   .option-button {
-    margin-left: auto;
     margin-right: 15px;
     min-width: 17px;
   }
@@ -46,7 +45,7 @@ const StyledInfoPanelToggleWrapper = styled.div`
   align-items: center;
   align-self: center;
   justify-content: center;
-  margin-left: ${({ isRootFolder }) => (isRootFolder ? "auto" : "none")};
+  margin-left: auto;
 
   .info-panel-toggle-bg {
     height: 32px;

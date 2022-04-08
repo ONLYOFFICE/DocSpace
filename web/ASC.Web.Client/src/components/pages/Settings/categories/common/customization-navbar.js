@@ -10,6 +10,7 @@ import { AppServerConfig } from "@appserver/common/constants";
 import withCultureNames from "@appserver/common/hoc/withCultureNames";
 import history from "@appserver/common/history";
 import { Base } from "@appserver/components/themes";
+import LoaderCustomizationNavbar from "./sub-components/loaderCustomizationNavbar";
 
 import { StyledArrowRightIcon } from "../common/settingsCustomization/StyledSettings";
 
@@ -51,6 +52,9 @@ const CustomizationNavbar = ({ t, theme, helpUrlCommonSettings }) => {
     e.preventDefault();
     history.push(e.target.pathname);
   };
+
+  //return <LoaderCustomizationNavbar />;
+
   return (
     <StyledComponent>
       <div className="category-item-wrapper">

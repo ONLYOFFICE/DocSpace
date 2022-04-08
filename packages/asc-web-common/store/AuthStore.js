@@ -52,12 +52,6 @@ class AuthStore {
       this.userStore.user && requests.push(this.moduleStore.init());
     }
 
-    if (this.isAuthenticated) {
-      this.settingsStore.getPortalPasswordSettings();
-      this.tfaStore.getTfaType();
-      this.settingsStore.getIpRestrictions();
-    }
-
     return Promise.all(requests);
   };
   setLanguage() {

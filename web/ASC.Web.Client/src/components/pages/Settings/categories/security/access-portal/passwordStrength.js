@@ -11,10 +11,10 @@ import Checkbox from "@appserver/components/checkbox";
 import { getLanguage } from "@appserver/common/utils";
 import { LearnMoreWrapper } from "../StyledSecurity";
 import toastr from "@appserver/components/toast/toastr";
-import Buttons from "../sub-components/buttons";
 import { size } from "@appserver/components/utils/device";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 import isEqual from "lodash/isEqual";
+import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 
 const MainContainer = styled.div`
   width: 100%;
@@ -30,6 +30,7 @@ const MainContainer = styled.div`
     flex-direction: column;
     gap: 8px;
     margin-top: 18px;
+    margin-bottom: 24px;
   }
 `;
 
@@ -216,11 +217,16 @@ const PasswordStrength = (props) => {
         />
       </Box>
 
-      <Buttons
-        t={t}
-        showReminder={showReminder}
+      <SaveCancelButtons
+        className="save-cancel-buttons"
         onSaveClick={onSaveClick}
         onCancelClick={onCancelClick}
+        showReminder={showReminder}
+        reminderTest={t("YouHaveUnsavedChanges")}
+        saveButtonLabel={t("Common:SaveButton")}
+        cancelButtonLabel={t("Common:CancelButton")}
+        displaySettings={true}
+        hasScroll={false}
       />
     </MainContainer>
   );

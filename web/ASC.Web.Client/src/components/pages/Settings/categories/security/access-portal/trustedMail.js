@@ -10,24 +10,20 @@ import { LearnMoreWrapper } from "../StyledSecurity";
 import { getLanguage } from "@appserver/common/utils";
 import toastr from "@appserver/components/toast/toastr";
 import UserFields from "../sub-components/user-fields";
-import Buttons from "../sub-components/buttons";
 import { size } from "@appserver/components/utils/device";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 import isEqual from "lodash/isEqual";
+import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 
 const MainContainer = styled.div`
   width: 100%;
-
-  .user-fields {
-    margin-bottom: 18px;
-  }
 
   .box {
     margin-bottom: 11px;
   }
 
-  .warning-text {
-    margin-bottom: 9px;
+  .save-cancel-buttons {
+    margin-top: 24px;
   }
 `;
 
@@ -45,9 +41,10 @@ const TrustedMail = (props) => {
   const [type, setType] = useState("0");
   const [domains, setDomains] = useState([]);
   const [showReminder, setShowReminder] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const getSettings = async () => {
+  const getSettings = () => {
     const currentSettings = getFromSessionStorage("currentTrustedMailSettings");
     const defaultSettings = getFromSessionStorage("defaultTrustedMailSettings");
 
@@ -68,7 +65,6 @@ const TrustedMail = (props) => {
       setType(String(trustedDomainsType));
       setDomains(trustedDomains);
     }
-
     setIsLoading(true);
   };
 
@@ -81,7 +77,6 @@ const TrustedMail = (props) => {
 
   useEffect(() => {
     if (!isLoading) return;
-
     const defaultSettings = getFromSessionStorage("defaultTrustedMailSettings");
     const newSettings = {
       type: type,
@@ -124,25 +119,33 @@ const TrustedMail = (props) => {
     setDomains(newInputs);
   };
 
-  const onSaveClick = () => {
+  const onSaveClick = async () => {
+    setIsSaving(true);
     const valid = domains.map((domain) => regexp.test(domain));
     if (type === "1" && valid.includes(false)) {
+      setIsSaving(false);
       toastr.error(t("Common:IncorrectDomain"));
       return;
     }
 
-    const data = {
-      type: Number(type),
-      domains: domains,
-      inviteUsersAsVisitors: true,
-    };
-    setMailDomainSettings(data);
-    saveToSessionStorage("defaultTrustedMailSettings", {
-      type: type,
-      domains: domains,
-    });
-    setShowReminder(false);
-    toastr.success(t("SuccessfullySaveSettingsMessage"));
+    try {
+      const data = {
+        type: Number(type),
+        domains: domains,
+        inviteUsersAsVisitors: true,
+      };
+      await setMailDomainSettings(data);
+      saveToSessionStorage("defaultTrustedMailSettings", {
+        type: type,
+        domains: domains,
+      });
+      setShowReminder(false);
+      toastr.success(t("SuccessfullySaveSettingsMessage"));
+    } catch (error) {
+      toastr.error(error);
+    }
+
+    setIsSaving(false);
   };
 
   const onCancelClick = () => {
@@ -194,7 +197,6 @@ const TrustedMail = (props) => {
 
       {type === "1" && (
         <UserFields
-          className="user-fields"
           inputs={domains}
           buttonLabel={t("AddTrustedDomain")}
           onChangeInput={onChangeInput}
@@ -204,11 +206,16 @@ const TrustedMail = (props) => {
         />
       )}
 
-      <Buttons
-        t={t}
-        showReminder={showReminder}
+      <SaveCancelButtons
+        className="save-cancel-buttons"
         onSaveClick={onSaveClick}
         onCancelClick={onCancelClick}
+        showReminder={showReminder}
+        reminderTest={t("YouHaveUnsavedChanges")}
+        saveButtonLabel={t("Common:SaveButton")}
+        cancelButtonLabel={t("Common:CancelButton")}
+        displaySettings={true}
+        hasScroll={false}
       />
     </MainContainer>
   );

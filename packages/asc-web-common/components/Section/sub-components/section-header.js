@@ -11,59 +11,42 @@ import Base from "@appserver/components/themes/base";
 
 const StyledSectionHeader = styled.div`
   position: relative;
-  height: 53px;
-  min-height: 53px;
-  margin-right: 20px;
+
+  padding-right: 20px;
+
+  box-sizing: border-box;
+
   ${NoUserSelect}
 
   display: grid;
   align-items: center;
 
-  /* width: calc(100vw - 296px);
-  max-width: calc(100vw - 296px); */
-
-  width: ${(props) =>
-    props.infoPanelIsVisible ? "calc(100vw - 696px)" : "calc(100vw - 296px)"};
-  max-width: ${(props) =>
-    props.infoPanelIsVisible ? "calc(100vw - 696px)" : "calc(100vw - 296px)"};
+  width: 100%;
+  max-width: 100%;
 
   @media ${tablet} {
-    width: ${(props) =>
-      props.showText ? "calc(100vw - 272px)" : "calc(100vw - 84px)"};
-    max-width: ${(props) =>
-      props.showText ? "calc(100vw - 272px)" : "calc(100vw - 84px)"};
-    height: 61px;
-    min-height: 61px;
-    margin-right: 0px !important;
+    padding-right: 16px;
+    margin-right: 0px;
   }
 
   ${isMobile &&
   css`
-    width: ${(props) =>
-      props.showText ? "calc(100vw - 272px)" : "calc(100vw - 84px)"} !important;
-    max-width: ${(props) =>
-      props.showText ? "calc(100vw - 272px)" : "calc(100vw - 84px)"} !important;
-    height: 61px !important;
-    min-height: 61px !important;
-    margin-right: 0px !important;
+    padding-right: 0 !important;
+    margin-right: -16px !important;
   `}
 
   @media ${mobile} {
-    width: calc(100vw - 32px) !important;
-    max-width: calc(100vw - 32px) !important;
-    height: 53px;
-    min-height: 53px;
-    margin-right: 0px !important;
+    margin-right: 0px;
   }
 
   ${isMobileOnly &&
   css`
-    width: calc(100vw - 32px) !important;
-    max-width: calc(100vw - 32px) !important;
-    height: 53px;
-    min-height: 53px;
-    margin-top: -2px;
-    margin-right: 0px !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+
+    padding-right: 16px !important;
+
+    margin-top: -2px !important;
   `}
 `;
 

@@ -105,6 +105,8 @@ const Navigation = ({
               getContextOptionsFolder={getContextOptionsFolder}
               getContextOptionsPlus={getContextOptionsPlus}
               toggleDropBox={toggleDropBox}
+              toggleInfoPanel={toggleInfoPanel}
+              isInfoPanelVisible={isInfoPanelVisible}
               onClickAvailable={onClickAvailable}
             />
           )}
