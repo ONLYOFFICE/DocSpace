@@ -62,6 +62,7 @@ class SettingsSetupStore {
     if (authStore.isAuthenticated) {
       await authStore.settingsStore.getPortalPasswordSettings();
       await authStore.tfaStore.getTfaType();
+      await authStore.settingsStore.getIpRestrictions();
     }
   };
 
