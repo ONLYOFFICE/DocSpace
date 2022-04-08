@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import Backdrop from "../../backdrop";
 import Box from "../../box";
 import Loaders from "@appserver/common/components/Loaders";
 
@@ -15,6 +14,7 @@ import {
   StyledFooter,
 } from "../styled-modal-dialog";
 import CloseButton from "../components/CloseButton";
+import ModalBackdrop from "../components/ModalBackdrop";
 
 const Modal = ({
   id,
@@ -22,6 +22,7 @@ const Modal = ({
   className,
   zIndex,
   onClose,
+  visible,
 
   isLarge,
   isLoading,
@@ -32,15 +33,20 @@ const Modal = ({
   header,
   body,
   footer,
+  opacity,
 }) => {
   return (
-    <StyledModal>
-      <Backdrop
+    <StyledModal
+      className={visible && "active"}
+      opacity={opacity}
+      modalSwipeOffset={modalSwipeOffset}
+    >
+      <ModalBackdrop
         visible={true}
         zIndex={zIndex}
         withBackground={true}
         isModalDialog
-        className="backdrop"
+        modalSwipeOffset={modalSwipeOffset}
       >
         <Dialog
           className={`${className} dialog not-selectable`}
@@ -80,7 +86,7 @@ const Modal = ({
             )}
           </Content>
         </Dialog>
-      </Backdrop>
+      </ModalBackdrop>
     </StyledModal>
   );
 };

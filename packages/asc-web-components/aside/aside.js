@@ -5,7 +5,6 @@ import Scrollbar from "../scrollbar";
 import StyledAside from "./styled-aside";
 
 const Aside = React.memo((props) => {
-  //console.log("Aside render");
   const {
     visible,
     children,

@@ -1,14 +1,13 @@
-import styled, { css } from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 import Base from "../themes/base";
 import Box from "../box";
 import { smallTablet } from "../utils/device";
 
-const StyledModal = styled.div`
-  .backdrop {
-    background: rgba(6, 22, 38, 0.2);
-    backdrop-filter: blur(18px);
-  }
-
+const StyledModal = styled.div.attrs((props) => ({
+  style: {
+    opacity: `${props.opacity}`,
+  },
+}))`
   .heading-aside {
     margin-right: -16px;
   }

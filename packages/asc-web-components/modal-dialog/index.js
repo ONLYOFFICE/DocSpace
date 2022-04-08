@@ -1,13 +1,17 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { getModalType, isSmallTablet, isTouchDevice } from "../utils/device";
 import throttle from "lodash/throttle";
 
 import Portal from "../portal";
 import Modal from "./views/modal";
 import ModalAside from "./views/modalAside";
 import { handleTouchMove, handleTouchStart } from "./handlers/swipeHandler";
+import {
+  getCurrentDisplayType,
+  getTypeByWidth,
+  popstate,
+} from "./handlers/resizeHandler";
 
 function Header() {
   return null;
@@ -32,76 +36,109 @@ class ModalDialog extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      displayType: this.getTypeByWidth(),
+      displayType: getTypeByWidth(this.props.displayType),
+      opacity: 0,
       modalSwipeOffset: 0,
     };
 
-    this.getTypeByWidth = this.getTypeByWidth.bind(this);
-    this.resize = this.resize.bind(this);
-    this.throttledResize = throttle(this.resize, 300);
-    this.popstate = this.popstate.bind(this);
+    this.onResize = this.onResize.bind(this);
+    this.onSwipe = this.onSwipe.bind(this);
+    this.onKeyPress = this.onKeyPress.bind(this);
   }
 
-  getTypeByWidth() {
-    if (this.props.displayType !== "auto") return this.props.displayType;
-    return getModalType();
-  }
+  componentDidMount() {
+    window.addEventListener("resize", this.onResize);
+    window.addEventListener("keyup", this.onKeyPress);
+    window.addEventListener("touchstart", handleTouchStart);
+    window.addEventListener("touchmove", this.onSwipe);
+    window.addEventListener("touchend", this.onSwipeEnd);
 
-  resize() {
-    const newType = this.getTypeByWidth();
-    if (newType === this.state.displayType) return;
-
-    this.setState({ ...this.state, displayType: newType });
-    this.props.onResize && this.props.onResize(newType);
-  }
-
-  popstate() {
-    window.removeEventListener("popstate", this.popstate, false);
-    this.props.onClose();
-    window.history.go(1);
+    setTimeout(() => this.setState({ ...this.state, fadeType: "in" }), 0);
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.displayType !== prevProps.displayType)
-      this.setState({ ...this.state, displayType: this.getTypeByWidth() });
-    if (this.props.visible && this.state.displayType === "aside")
-      window.addEventListener("popstate", this.popstate, false);
-
-    if (!this.props.visible && this.state.modalSwipeOffset) {
       this.setState({
         ...this.state,
-        modalSwipeOffset: 0,
+        displayType: getTypeByWidth(this.props.displayType),
       });
-    }
-  }
 
-  componentDidMount() {
-    if (this.props.displayType === "auto")
-      window.addEventListener("resize", this.throttledResize);
-    window.addEventListener("keyup", this.onKeyPress);
-
-    window.addEventListener("touchstart", handleTouchStart, false);
-    window.addEventListener(
-      "touchmove",
-      (e) => {
+    if (!this.props.visible) {
+      if (this.state.modalSwipeOffset && this.state.opacity)
         this.setState({
           ...this.state,
-          modalSwipeOffset: handleTouchMove(e, this.props.onClose),
+          opacity: 0,
+          modalSwipeOffset: 0,
         });
-      },
-      false
-    );
+      else if (this.state.opacity)
+        this.setState({
+          ...this.state,
+          opacity: 0,
+        });
+      else if (this.state.modalSwipeOffset)
+        if (this.state.opacity) {
+          this.setState({
+            ...this.state,
+            modalSwipeOffset: 0,
+          });
+        }
+    }
+
+    if (this.props.visible && !prevProps.visible) {
+      this.graduallyIncreasOpacity();
+    }
+
+    if (this.props.visible && this.state.displayType === "aside")
+      window.addEventListener("popstate", popstate, false);
   }
 
   componentWillUnmount() {
-    window.removeEventListener("resize", this.throttledResize);
+    window.removeEventListener("resize", this.onResize);
     window.removeEventListener("keyup", this.onKeyPress);
-    window.removeEventListener("touchstart", handleTouchMove);
-    window.removeEventListener("touchmove", handleTouchMove);
+    window.removeEventListener("touchstart", handleTouchStart);
+    window.removeEventListener("touchmove", this.onSwipe);
+    window.addEventListener("touchend", this.onSwipeEnd);
   }
 
+  graduallyIncreasOpacity() {
+    for (let i = 0; i < 50; i++) {
+      setTimeout(
+        () =>
+          this.setState((oldState) => ({
+            ...this.state,
+            opacity: oldState.opacity + 0.02,
+          })),
+        0.1
+      );
+    }
+  }
+
+  onResize = throttle(() => {
+    const newType = getCurrentDisplayType(
+      this.state.displayType,
+      this.props.displayType,
+      this.props.onResize
+    );
+    if (newType) this.setState({ ...this.state, displayType: newType });
+  }, 300);
+
+  onSwipe = (e) => {
+    this.setState({
+      ...this.state,
+      modalSwipeOffset: handleTouchMove(e, this.props.onClose),
+    });
+  };
+
+  onSwipeEnd = () => {
+    this.setState({
+      ...this.state,
+      modalSwipeOffset: 0,
+    });
+  };
+
   onKeyPress = (e) => {
-    if (e.key === "Esc" || e.key === "Escape") this.props.onClose();
+    if ((e.key === "Esc" || e.key === "Escape") && this.props.visible)
+      this.props.onClose();
   };
 
   render() {
@@ -142,7 +179,9 @@ class ModalDialog extends React.Component {
     });
 
     const renderModal = () => {
-      if (!visible) return null;
+      if (!visible) {
+        return null;
+      }
       return this.state.displayType === "modal" ? (
         <Modal
           id={id}
@@ -150,12 +189,15 @@ class ModalDialog extends React.Component {
           className={className}
           isLarge={isLarge}
           zIndex={zIndex}
+          fadeType={this.state.fadeType}
           onClose={onClose}
           modalLoaderBodyHeight={modalLoaderBodyHeight}
           isLoading={isLoading}
           header={header}
           body={body}
           footer={footer}
+          visible={visible}
+          opacity={this.state.opacity}
           modalSwipeOffset={this.state.modalSwipeOffset}
         />
       ) : (
@@ -195,10 +237,12 @@ ModalDialog.propTypes = {
 
   /** Display type */
   displayType: PropTypes.oneOf(["auto", "modal", "aside"]),
-  /** If true sets width to 520px && maxHeight to 400px*/
+  /** Sets `width: 520px` and `max-hight: 400px`*/
   isLarge: PropTypes.bool,
 
+  /** Show loader in body */
   isLoading: PropTypes.bool,
+  /** Set loader height */
   modalLoaderBodyHeight: PropTypes.string,
 };
 

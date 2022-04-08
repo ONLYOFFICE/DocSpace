@@ -69,9 +69,7 @@ const Template = ({ onClick, onClose, onOk, ...args }) => {
 
 export const Default = Template.bind({});
 Default.args = {
-  scale: false,
   displayType: "modal",
   isLarge: false,
   zIndex: 310,
-  headerContent: "Change password",
 };

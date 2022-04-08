@@ -25,3 +25,7 @@ export const handleTouchMove = (e, onClose) => {
 
   return y1 - y2;
 };
+
+export const handleTouchEnd = (e) => {
+  return 0;
+};
