@@ -4,7 +4,7 @@ import Text from "@appserver/components/text";
 import { ButtonsWrapper } from "../StyledSecurity";
 
 const Buttons = (props) => {
-  const { t, showReminder, onSaveClick, onCancelClick } = props;
+  const { t, showReminder, onSaveClick, onCancelClick, isLoading } = props;
 
   return (
     <ButtonsWrapper>
@@ -15,13 +15,14 @@ const Buttons = (props) => {
         className="button"
         onClick={onSaveClick}
         isDisabled={!showReminder}
+        isLoading={isLoading}
       />
       <Button
         label={t("Common:CancelButton")}
         size="small"
         className="button"
         onClick={onCancelClick}
-        isDisabled={!showReminder}
+        isDisabled={!showReminder || isLoading}
       />
       {showReminder && (
         <Text
