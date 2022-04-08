@@ -197,7 +197,6 @@ const TrustedMail = (props) => {
 
       {type === "1" && (
         <UserFields
-          className="user-fields"
           inputs={domains}
           buttonLabel={t("AddTrustedDomain")}
           onChangeInput={onChangeInput}
