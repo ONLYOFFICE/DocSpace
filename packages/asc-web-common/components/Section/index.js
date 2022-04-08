@@ -222,7 +222,6 @@ class Section extends React.Component {
       isTabletView,
       firstLoad,
       dragging,
-      isBackdropVisible,
       isDesktop,
       isHomepage,
       maintenanceExist,
@@ -560,9 +559,6 @@ export default inject(({ auth, infoPanelStore }) => {
     isHeaderVisible,
     isTabletView,
 
-    isBackdropVisible,
-
-    setIsBackdropVisible,
     isDesktopClient,
     maintenanceExist,
     snackbarExist,
@@ -579,8 +575,6 @@ export default inject(({ auth, infoPanelStore }) => {
     isTabletView,
     isHeaderVisible,
 
-    isBackdropVisible,
-    setIsBackdropVisible,
     maintenanceExist,
     snackbarExist,
     setMaintenanceExist,

@@ -57,7 +57,7 @@ const Avatar = (props) => {
   const { size, source, userName, role, editing, editAction } = props;
   let isDefault = false;
 
-  if (source.includes("default_user_photo")) isDefault = true;
+  if (source?.includes("default_user_photo")) isDefault = true;
 
   const avatarContent = source ? (
     <StyledImage src={source} isDefault={isDefault} />
