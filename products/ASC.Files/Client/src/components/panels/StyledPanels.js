@@ -363,11 +363,21 @@ const StyledBody = styled.div`
     display: flex;
     .embedding-panel_link {
       margin-right: 8px;
-      height: 32px;
-      background-color: ${(props) =>
-        props.theme.filesPanels.body.backgroundColor};
-      line-height: 30px;
-      padding: 0px 8px;
+
+      border: 1px solid #eceef1;
+      border-radius: 16px;
+      line-height: 20px;
+      padding: 3px 15px;
+
+      box-sizing: border-box;
+
+      text-decoration: none;
+    }
+
+    .embedding-panel_active-link {
+      background: #265a8f;
+
+      color: #ffffff;
     }
   }
 
@@ -1071,13 +1081,14 @@ const StyledModalRowContainer = styled.div`
 
   .embedding-panel_links-container {
     display: flex;
+
     .embedding-panel_link {
       margin-right: 8px;
-      height: 32px;
-      background-color: ${(props) =>
-        props.theme.filesPanels.modalRow.backgroundColor};
+
+      border: 1px solid #eceef1;
+      border-radius: 16px;
       line-height: 30px;
-      padding: 0px 8px;
+      padding: 4px 15px;
     }
   }
 
