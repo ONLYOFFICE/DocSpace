@@ -136,7 +136,11 @@ const Selector = (props) => {
 
       const newGroupList = groupList;
 
-      newGroupList.find((group) => group.key === groupHeader.key).total = total;
+      if (newGroupList.length > 0) {
+        newGroupList.find(
+          (group) => group.key === groupHeader.key
+        ).total = total;
+      }
 
       setGroupList(newGroupList);
     }
