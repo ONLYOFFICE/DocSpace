@@ -366,15 +366,15 @@ class SharingPanelComponent extends React.Component {
     const { homepage, selection } = this.props;
 
     const item = selection[0];
-    const isFile = !!item.fileExst;
+    const isFile = !!item?.fileExst;
 
     if (selection.length !== 1) return null;
 
     return isFile
       ? item.canOpenPlayer
-        ? `${window.location.href}&preview=${item.id}`
+        ? `${window.location.href}&preview=${item?.id}`
         : item.webUrl
-      : `${window.location.origin + homepage}/filter?folder=${item.id}`;
+      : `${window.location.origin + homepage}/filter?folder=${item?.id}`;
   };
 
   onShowEmbeddingPanel = (link) =>
@@ -505,7 +505,7 @@ class SharingPanelComponent extends React.Component {
     const onPlusClickProp = !isLoading ? { onClick: this.onPlusClick } : {};
 
     const isEncrypted =
-      isPrivacy || (selection.length && selection[0].encrypted);
+      isPrivacy || (selection.length && selection[0]?.encrypted);
 
     const internalLink =
       selection.length === 1 && !isEncrypted && this.getInternalLink();
