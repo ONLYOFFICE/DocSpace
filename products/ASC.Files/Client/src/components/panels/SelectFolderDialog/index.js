@@ -1,21 +1,15 @@
 import React from "react";
-import { inject, observer, Provider as MobxProvider } from "mobx-react";
-import { I18nextProvider } from "react-i18next";
+import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 import throttle from "lodash/throttle";
 import { getCommonThirdPartyList } from "@appserver/common/api/settings";
 import { getCommonFolderList, getFolder } from "@appserver/common/api/files";
-import i18n from "./i18n";
 import SelectFolderDialogAsideView from "./AsideView";
-import stores from "../../../store/index";
 import utils from "@appserver/components/utils";
-import store from "studio/store";
 import toastr from "studio/toastr";
 import SelectionPanel from "../SelectionPanel/SelectionPanelBody";
 import { FilterType } from "@appserver/common/constants";
-
-const { auth: authStore } = store;
 
 const { desktop } = utils.device;
 
@@ -102,7 +96,6 @@ class SelectFolderModalDialog extends React.Component {
     if (tree.length === 0) {
       this.setState({ isAvailable: false });
       onSelectFolder(null);
-      //this.loadersCompletes();
       return;
     }
 
@@ -139,21 +132,6 @@ class SelectFolderModalDialog extends React.Component {
       this.onResetInfo();
     }
   }
-
-  loadersCompletes = () => {
-    const {
-      onSetLoadingData,
-
-      onSetLoadingInput,
-    } = this.props;
-
-    onSetLoadingData && onSetLoadingData(false);
-    onSetLoadingInput && onSetLoadingInput(false);
-
-    this.setState({
-      isLoadingData: false,
-    });
-  };
 
   componentWillUnmount() {
     const {
@@ -258,7 +236,7 @@ class SelectFolderModalDialog extends React.Component {
         const newFilesList = [...files].concat(finalData);
 
         const hasNextPage = newFilesList.length < data.total - 1;
-        console.log("loadNextPage", folderId, data.files, newFilesList);
+
         this._isLoadNextPage = false;
         this.setState((state) => ({
           isDataLoading: false,
@@ -285,7 +263,6 @@ class SelectFolderModalDialog extends React.Component {
       onClose,
       withoutProvider,
       isNeedArrowIcon,
-      modalHeightContent,
       asideHeightContent,
       header,
       dialogName,
@@ -480,13 +457,7 @@ class SelectFolderDialog extends React.Component {
   };
 
   render() {
-    return (
-      <MobxProvider auth={authStore} {...stores}>
-        <I18nextProvider i18n={i18n}>
-          <SelectFolderDialogWrapper {...this.props} />
-        </I18nextProvider>
-      </MobxProvider>
-    );
+    return <SelectFolderDialogWrapper {...this.props} />;
   }
 }
 

@@ -10,6 +10,7 @@ class Documents extends React.Component {
         withoutProvider
         isArchiveOnly
         searchParam=".gz"
+        dialogName="Select File"
       />
     );
   }

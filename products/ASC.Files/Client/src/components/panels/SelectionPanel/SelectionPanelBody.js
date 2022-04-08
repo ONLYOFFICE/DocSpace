@@ -39,8 +39,9 @@ const SelectionPanelBody = ({
   isAvailable,
   footer,
   header,
-  folderSelection,
+  folderSelection = false,
   folderTitle,
+  fileId,
 }) => {
   return (
     <ModalDialog
@@ -91,9 +92,9 @@ const SelectionPanelBody = ({
                     isNextPageLoading={isNextPageLoading}
                     loadNextPage={loadNextPage}
                     folderId={folderId}
-                    selectedFile={selectedFile}
                     displayType={"modal"}
-                    folderSelection
+                    folderSelection={folderSelection}
+                    fileId={fileId}
                   />
                 )}
               </>
@@ -172,8 +173,6 @@ class SelectionPanel extends React.Component {
     setSelectedFolder,
     setExpandedPanelKeys
   ) => {
-    //console.log("getBasicFolderInfo", setSelectedNode);
-    //debugger;
     const getRequestFolderTree = () => {
       switch (foldersType) {
         case "exceptSortedByTags":
@@ -243,7 +242,7 @@ class SelectionPanel extends React.Component {
 
     if (id || isSetFolderImmediately || foldersType === "common") {
       passedId = id ? id : foldersTree[0].id;
-      console.log("passedId", passedId, id, foldersTree[0].id);
+
       if (foldersType !== "third-party") {
         onSetBaseFolderPath && onSetBaseFolderPath(passedId);
         onSelectFolder && onSelectFolder(passedId);
@@ -263,7 +262,7 @@ class SelectionPanel extends React.Component {
     ) {
       filteredTreeFolders = getExceptionsFolders(foldersTree);
     }
-    console.log("base info requestedTreeFolders", requestedTreeFolders);
+
     return [filteredTreeFolders || requestedTreeFolders, passedId];
   };
   render() {

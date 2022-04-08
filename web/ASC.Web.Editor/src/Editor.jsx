@@ -238,7 +238,6 @@ const Editor = () => {
           data: "backup-restore",
         });
         socketHelper.on("restore-backup", () => {
-         
           setPreparationPortalDialogVisible(true);
         });
       } catch (e) {
@@ -917,7 +916,7 @@ const Editor = () => {
                 foldersType="exceptPrivacyTrashFolders"
                 {...fileTypeDetection()}
                 titleFilesList={selectFilesListTitle()}
-                headerName={i18n.t("SelectFileTitle")}
+                dialogName={i18n.t("SelectFileTitle")}
               />
             )}
 
@@ -961,7 +960,9 @@ const Editor = () => {
             )}
 
             {preparationPortalDialogVisible && (
-              <PreparationPortalDialog visible={preparationPortalDialogVisible} />
+              <PreparationPortalDialog
+                visible={preparationPortalDialogVisible}
+              />
             )}
           </>
         ) : (

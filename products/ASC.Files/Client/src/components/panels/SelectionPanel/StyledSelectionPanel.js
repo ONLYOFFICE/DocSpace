@@ -51,9 +51,8 @@ const StyledRow = styled.div`
   position: relative;
   height: 48px;
   width: calc(100% - 16px);
-
-  // margin-left: 16px;
   padding-left: 16px;
+
   .selection-panel_clicked-area {
     position: absolute;
     top: 0;

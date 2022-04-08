@@ -20,9 +20,8 @@ const FilesListBody = ({
   hasNextPage,
   isNextPageLoading,
   displayType,
-  viewer,
   folderId,
-  selectedFile,
+  fileId,
   theme,
   page,
   folderSelection,
@@ -96,11 +95,11 @@ const FilesListBody = ({
   };
 
   const isFileChecked = useCallback(
-    (file) => {
-      const checked = selectedFile ? file.id === selectedFile.id : false;
+    (id) => {
+      const checked = fileId ? id === fileId : false;
       return checked;
     },
-    [selectedFile]
+    [fileId]
   );
 
   const Item = useCallback(
@@ -114,7 +113,7 @@ const FilesListBody = ({
       }
 
       const item = files[index];
-      const isChecked = folderSelection ? false : isFileChecked(file);
+      const isChecked = folderSelection ? false : isFileChecked(item.id);
 
       return (
         <div style={style}>
@@ -136,7 +135,7 @@ const FilesListBody = ({
         </div>
       );
     },
-    [files, selectedFile, displayType, renderFirstLoader, renderPageLoader]
+    [files, fileId, displayType, renderFirstLoader, renderPageLoader]
   );
   return (
     <div className="selection-panel_files-list-body">

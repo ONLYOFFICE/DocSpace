@@ -96,7 +96,7 @@ const Panels = (props) => {
         foldersType="exceptPrivacyTrashFolders"
         ByExtension
         searchParam={".docx"}
-        headerName={t("Translations:CreateMasterFormFromFile")}
+        dialogName={t("Translations:CreateMasterFormFromFile")}
         titleFilesList={t("SelectFile:SelectDOCXFormat")}
         creationButtonPrimary
         withSubfolders={false}

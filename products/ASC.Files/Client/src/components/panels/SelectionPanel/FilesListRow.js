@@ -1,32 +1,27 @@
 import React from "react";
 import { StyledRow } from "./StyledSelectionPanel";
-import { ReactSVG } from "react-svg";
-import { inject, observer } from "mobx-react";
 import Text from "@appserver/components/text";
-import Checkbox from "@appserver/components/checkbox";
 import RadioButton from "@appserver/components/radio-button";
 import ItemIcon from "../../ItemIcon";
 const FilesListRow = ({
   displayType,
   index,
-  onFileClick,
+  onSelectFile,
   isChecked,
   theme,
   folderSelection,
   icon,
   item,
 }) => {
-  console.log("item", item);
+  console.log("folderSelection", folderSelection);
   const { id, fileExst, title } = item;
   const element = <ItemIcon id={id} icon={icon} fileExst={fileExst} />;
+
+  const onFileClick = () => {
+    onSelectFile && onSelectFile(item, index);
+  };
   return (
     <StyledRow displayType={displayType} theme={theme} isChecked={isChecked}>
-      {folderSelection && (
-        <div
-          //onClick={onFolderRowClick}
-          className="selection-panel_clicked-area"
-        ></div>
-      )}
       <div className="selection-panel_icon">{element}</div>
       <div className="selection-panel_text">
         <Text fontSize="14px" fontWeight={600}>
@@ -34,7 +29,7 @@ const FilesListRow = ({
         </Text>
       </div>
       <div className="selection-panel_checkbox">
-        {folderSelection && (
+        {!folderSelection && (
           <RadioButton
             //theme={theme}
             fontSize="13px"
