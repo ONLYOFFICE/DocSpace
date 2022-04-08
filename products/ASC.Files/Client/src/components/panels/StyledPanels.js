@@ -37,8 +37,8 @@ const PanelStyles = css`
   }
 
   .footer {
-    padding: 16px 0;
-    width: calc(100% - 32px);
+    padding: 16px;
+    width: 100%;
     margin: auto;
     left: 0;
     right: 0;
@@ -95,10 +95,12 @@ const StyledAsidePanel = styled.div`
     transition: unset;
     transform: translateX(${(props) => (props.visible ? "0" : "480px")});
     width: 480px;
+    max-width: 480px;
     overflow-y: hidden;
 
     @media (max-width: 480px) {
       width: 100vw;
+      max-width: 100vw;
       transform: translateX(${(props) => (props.visible ? "0" : "100vw")});
     }
 
