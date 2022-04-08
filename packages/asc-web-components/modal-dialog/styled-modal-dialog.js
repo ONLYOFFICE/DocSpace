@@ -3,11 +3,13 @@ import Base from "../themes/base";
 import Box from "../box";
 import { smallTablet } from "../utils/device";
 
-const StyledModal = styled.div.attrs((props) => ({
-  style: {
-    opacity: `${props.opacity}`,
-  },
-}))`
+const StyledModal = styled.div`
+  pointer-events: none;
+
+  &.modal-active {
+    pointer-events: all;
+  }
+
   .heading-aside {
     margin-right: -16px;
   }

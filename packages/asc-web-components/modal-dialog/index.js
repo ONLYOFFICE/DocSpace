@@ -37,12 +37,12 @@ class ModalDialog extends React.Component {
     super(props);
     this.state = {
       displayType: getTypeByWidth(this.props.displayType),
-      opacity: 0,
       modalSwipeOffset: 0,
     };
 
     this.onResize = this.onResize.bind(this);
     this.onSwipe = this.onSwipe.bind(this);
+    this.onSwipeEnd = this.onSwipeEnd.bind(this);
     this.onKeyPress = this.onKeyPress.bind(this);
   }
 
@@ -65,12 +65,8 @@ class ModalDialog extends React.Component {
       this.setState({
         ...this.state,
         modalSwipeOffset: 0,
-        opacity: 0,
       });
     }
-
-    if (this.props.visible && !prevProps.visible)
-      this.graduallyIncreaseOpacity();
 
     if (this.props.visible && this.state.displayType === "aside")
       window.addEventListener("popstate", popstate, false);
@@ -82,19 +78,6 @@ class ModalDialog extends React.Component {
     window.removeEventListener("touchstart", handleTouchStart);
     window.removeEventListener("touchmove", this.onSwipe);
     window.addEventListener("touchend", this.onSwipeEnd);
-  }
-
-  graduallyIncreaseOpacity() {
-    for (let i = 0; i < 34; i++) {
-      setTimeout(
-        () =>
-          this.setState((oldState) => ({
-            ...this.state,
-            opacity: oldState.opacity + 0.03,
-          })),
-        0.1
-      );
-    }
   }
 
   onResize = throttle(() => {
@@ -163,9 +146,6 @@ class ModalDialog extends React.Component {
     });
 
     const renderModal = () => {
-      if (!visible) {
-        return null;
-      }
       return this.state.displayType === "modal" ? (
         <Modal
           id={id}
@@ -181,7 +161,6 @@ class ModalDialog extends React.Component {
           body={body}
           footer={footer}
           visible={visible}
-          opacity={this.state.opacity}
           modalSwipeOffset={this.state.modalSwipeOffset}
         />
       ) : (
@@ -191,6 +170,7 @@ class ModalDialog extends React.Component {
           className={className}
           isLarge={isLarge}
           zIndex={zIndex}
+          visible={visible}
           onClose={onClose}
           isLoading={isLoading}
           header={header}

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import ModalDialog from "./index.js";
 import Button from "../button";
+import PropTypes from "prop-types";
 
 export default {
   title: "Components/ModalDialog",
@@ -27,7 +28,7 @@ const Template = ({ onOk, ...args }) => {
     <>
       <Button label="Show" primary={true} size="medium" onClick={openModal} />
       <ModalDialog {...args} visible={isVisible} onClose={closeModal}>
-        <ModalDialog.Header>{"Change password"}</ModalDialog.Header>
+        <ModalDialog.Header>Change password</ModalDialog.Header>
         <ModalDialog.Body>
           <span>
             Send the password change instruction to the{" "}
@@ -59,9 +60,13 @@ const Template = ({ onOk, ...args }) => {
   );
 };
 
+Template.propTypes = {
+  onOk: PropTypes.func,
+};
+
 export const Default = Template.bind({});
 Default.args = {
-  displayType: "modal",
+  displayType: "auto",
   isLarge: false,
   zIndex: 310,
 };

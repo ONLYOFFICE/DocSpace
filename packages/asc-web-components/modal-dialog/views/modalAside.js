@@ -15,12 +15,15 @@ import {
   StyledFooter,
 } from "../styled-modal-dialog";
 import CloseButton from "../components/CloseButton";
+import ModalBackdrop from "../components/ModalBackdrop";
 
 const ModalAside = ({
   id,
   style,
   className,
   zIndex,
+
+  visible,
   onClose,
 
   isLoading,
@@ -29,20 +32,26 @@ const ModalAside = ({
   body,
   footer,
 }) => {
+  if (!visible) return null;
   return (
-    <StyledModal>
+    <StyledModal className={visible ? "modal-active" : ""}>
       <Box className={className} id={id} style={style}>
         <CloseButton displayType="aside" onClick={onClose} />
-        <Backdrop
+        {/* <Backdrop
           visible={true}
           zIndex={zIndex}
           withBackground={true}
           isAside={true}
-          className="backdrop"
+        /> */}
+        <ModalBackdrop
+          className={"modal-backdrop-active"}
+          visible={true}
+          zIndex={zIndex}
+          modalSwipeOffset={0}
         />
         <Aside
           scale={false}
-          visible={true}
+          visible={visible}
           zIndex={zIndex}
           className="modal-dialog-aside aside-dialog not-selectable"
           withoutBodyScroll={true}

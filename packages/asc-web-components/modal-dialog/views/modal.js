@@ -20,30 +20,32 @@ const Modal = ({
   id,
   style,
   className,
-  zIndex,
-  onClose,
-  visible,
 
+  zIndex,
   isLarge,
-  isLoading,
-  modalLoaderBodyHeight,
+
+  visible,
+  onClose,
 
   modalSwipeOffset,
+
+  isLoading,
+  modalLoaderBodyHeight,
 
   header,
   body,
   footer,
-  opacity,
 }) => {
   return (
     <StyledModal
-      className={visible && "active"}
+      className={visible ? "modal-active" : ""}
       modalSwipeOffset={modalSwipeOffset}
     >
       <ModalBackdrop
+        className={visible ? "modal-backdrop-active" : ""}
         visible={true}
+        zIndex={zIndex}
         modalSwipeOffset={modalSwipeOffset}
-        opacity={opacity}
       >
         <Dialog
           className={`${className} dialog not-selectable`}
@@ -94,14 +96,14 @@ Modal.propTypes = {
   zIndex: PropTypes.number,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   onClose: PropTypes.func,
+  visible: PropTypes.bool,
+  modalSwipeOffset: PropTypes.number,
 
   isLoading: PropTypes.bool,
   modalLoaderBodyHeight: PropTypes.string,
 
   displayType: PropTypes.oneOf(["auto", "modal", "aside"]),
   isLarge: PropTypes.bool,
-
-  //modalSwipeOffset: PropTypes.number,
 
   header: PropTypes.object,
   body: PropTypes.object,
