@@ -10,24 +10,20 @@ import { LearnMoreWrapper } from "../StyledSecurity";
 import { getLanguage } from "@appserver/common/utils";
 import toastr from "@appserver/components/toast/toastr";
 import UserFields from "../sub-components/user-fields";
-import Buttons from "../sub-components/buttons";
 import { size } from "@appserver/components/utils/device";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 import isEqual from "lodash/isEqual";
+import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 
 const MainContainer = styled.div`
   width: 100%;
-
-  .user-fields {
-    margin-bottom: 18px;
-  }
 
   .box {
     margin-bottom: 11px;
   }
 
-  .warning-text {
-    margin-bottom: 9px;
+  .save-cancel-buttons {
+    margin-top: 24px;
   }
 `;
 
@@ -211,12 +207,16 @@ const TrustedMail = (props) => {
         />
       )}
 
-      <Buttons
-        t={t}
-        showReminder={showReminder}
+      <SaveCancelButtons
+        className="save-cancel-buttons"
         onSaveClick={onSaveClick}
         onCancelClick={onCancelClick}
-        isLoading={isSaving}
+        showReminder={showReminder}
+        reminderTest={t("YouHaveUnsavedChanges")}
+        saveButtonLabel={t("Common:SaveButton")}
+        cancelButtonLabel={t("Common:CancelButton")}
+        displaySettings={true}
+        hasScroll={false}
       />
     </MainContainer>
   );
