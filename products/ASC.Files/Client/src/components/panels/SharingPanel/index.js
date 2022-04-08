@@ -511,13 +511,16 @@ class SharingPanelComponent extends React.Component {
       selection.length === 1 && !isEncrypted && this.getInternalLink();
 
     const filteredShareDataItems = [];
+    const owner = [];
     const shareGroups = [];
     const shareUsers = [];
 
     shareDataItems.forEach((item, index) => {
-      if (item?.sharedTo?.shareLink || item?.isOwner) {
+      if (item?.sharedTo?.shareLink) {
         return filteredShareDataItems.push(item);
       }
+
+      if (item?.isOwner) return owner.push(item);
 
       if (item?.sharedTo?.userName) {
         shareUsers.push(item);
@@ -533,7 +536,7 @@ class SharingPanelComponent extends React.Component {
       shareUsers[shareUsers.length - 1].isEndOfBlock = true;
     }
 
-    filteredShareDataItems.push(...shareGroups, ...shareUsers);
+    filteredShareDataItems.push(...owner, ...shareGroups, ...shareUsers);
 
     return (
       <StyledAsidePanel visible={visible}>
@@ -618,7 +621,7 @@ class SharingPanelComponent extends React.Component {
             onSharingPanelClose={this.onClose}
             onClose={this.onShowUsersPanel}
             visible={showAddUsersPanel}
-            shareDataItems={shareDataItems}
+            shareDataItems={[...owner, ...shareUsers]}
             setShareDataItems={this.setShareDataItems}
             groupsCaption={groupsCaption}
             accessOptions={accessOptions}
@@ -632,7 +635,7 @@ class SharingPanelComponent extends React.Component {
             onSharingPanelClose={this.onClose}
             onClose={this.onShowGroupsPanel}
             visible={showAddGroupsPanel}
-            shareDataItems={shareDataItems}
+            shareDataItems={shareGroups}
             setShareDataItems={this.setShareDataItems}
             accessOptions={accessOptions}
             isMultiSelect
@@ -644,7 +647,7 @@ class SharingPanelComponent extends React.Component {
             onSharingPanelClose={this.onClose}
             onClose={this.onShowChangeOwnerPanel}
             visible={showChangeOwnerPanel}
-            shareDataItems={shareDataItems}
+            shareDataItems={[...owner, ...shareUsers]}
             setShareDataItems={this.setShareDataItems}
           />
         )}
