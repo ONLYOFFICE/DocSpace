@@ -2,6 +2,7 @@
   "count": 1,
   "response": {
     "trustedDomainsType": 0,
+    "trustedDomains": [],
     "culture": "en-US",
     "utcOffset": {
       "ticks": 0,

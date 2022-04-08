@@ -11,6 +11,9 @@ const TfaPage = lazy(() => import("./categories/security/access-portal/tfa"));
 const PasswordStrengthPage = lazy(() =>
   import("./categories/security/access-portal/passwordStrength")
 );
+const TrustedMailPage = lazy(() =>
+  import("./categories/security/access-portal/trustedMail")
+);
 
 const CommonSettings = lazy(() => import("./categories/common/index.js"));
 
@@ -85,6 +88,10 @@ const PASSWORD_PAGE_URL = combineUrl(
   PROXY_BASE_URL,
   "/security/access-portal/password"
 );
+const TRUSTED_MAIL_PAGE_URL = combineUrl(
+  PROXY_BASE_URL,
+  "/security/access-portal/trusted-mail"
+);
 
 const ADMINS_URL = combineUrl(PROXY_BASE_URL, "/security/access-rights/admins");
 const THIRD_PARTY_URL = combineUrl(
@@ -127,6 +134,11 @@ const Settings = () => {
             exact
             path={PASSWORD_PAGE_URL}
             component={PasswordStrengthPage}
+          />
+          <Route
+            exact
+            path={TRUSTED_MAIL_PAGE_URL}
+            component={TrustedMailPage}
           />
 
           <Route exact path={THIRD_PARTY_URL} component={ThirdPartyServices} />

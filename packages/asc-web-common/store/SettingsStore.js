@@ -31,7 +31,6 @@ class SettingsStore {
     : Base;
   trustedDomains = [];
   trustedDomainsType = 0;
-  trustedDomains = [];
   timezone = "UTC";
   timezones = [];
   utcOffset = "00:00:00";
@@ -442,6 +441,13 @@ class SettingsStore {
   setTheme = (theme) => {
     this.theme = themes[theme];
     localStorage.setItem("theme", theme);
+  };
+
+  setMailDomainSettings = async (data) => {
+    const res = await api.settings.setMailDomainSettings(data);
+    this.trustedDomainsType = data.type;
+    this.trustedDomains = data.domains;
+    return res;
   };
 }
 
