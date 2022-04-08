@@ -37,7 +37,6 @@ const withHotkeys = (Component) => {
       activateHotkeys,
       backToParentFolder,
 
-      hideArticle,
       uploadFile,
       someDialogIsOpen,
     } = props;
@@ -147,10 +146,7 @@ const withHotkeys = (Component) => {
     //Crete form template from file
     useHotkeys(
       "Alt+Shift+o",
-      () => {
-        hideArticle();
-        setSelectFileDialogVisible(true);
-      },
+      () => setSelectFileDialogVisible(true),
       hotkeysFilter
     );
 
@@ -217,14 +213,12 @@ const withHotkeys = (Component) => {
 
   return inject(
     ({
-      auth,
       filesStore,
       dialogsStore,
       settingsStore,
       filesActionsStore,
       hotkeyStore,
     }) => {
-      const { hideArticle } = auth.settingsStore;
       const { setSelected, viewAs, setViewAs, fileActionStore } = filesStore;
       const { setAction } = fileActionStore;
 
@@ -291,7 +285,6 @@ const withHotkeys = (Component) => {
         activateHotkeys,
         backToParentFolder,
 
-        hideArticle,
         uploadFile,
         someDialogIsOpen,
       };
