@@ -46,6 +46,7 @@ const TrustedMail = (props) => {
   const [domains, setDomains] = useState([]);
   const [showReminder, setShowReminder] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const getSettings = () => {
     const currentSettings = getFromSessionStorage("currentTrustedMailSettings");
@@ -68,6 +69,7 @@ const TrustedMail = (props) => {
       setType(String(trustedDomainsType));
       setDomains(trustedDomains);
     }
+    setIsLoading(true);
   };
 
   useEffect(() => {
@@ -75,9 +77,10 @@ const TrustedMail = (props) => {
     getSettings();
     window.addEventListener("resize", checkWidth);
     return () => window.removeEventListener("resize", checkWidth);
-  }, []);
+  }, [isLoading]);
 
   useEffect(() => {
+    if (!isLoading) return;
     const defaultSettings = getFromSessionStorage("defaultTrustedMailSettings");
     const newSettings = {
       type: type,
