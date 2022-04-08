@@ -8,6 +8,7 @@ import config from "../../package.json";
 
 class SettingsSetupStore {
   selectionStore = null;
+  isLoadingArticleSettings = false;
 
   common = {
     whiteLabel: {
@@ -321,6 +322,10 @@ class SettingsSetupStore {
     const res = await api.settings.getCommonThirdPartyList();
 
     this.setCommonThirdPartyList(res);
+  };
+
+  setIsLoadingArticleSettings = (isLoading) => {
+    this.isLoadingArticleSettings = isLoading;
   };
 }
 
