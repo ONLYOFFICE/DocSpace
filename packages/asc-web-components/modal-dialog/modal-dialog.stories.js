@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import ModalDialog from ".";
+import ModalDialog from "./index.js";
 import Button from "../button";
 
 export default {
@@ -22,7 +22,7 @@ export default {
 const Template = ({ onClick, onClose, onOk, ...args }) => {
   const [isVisible, setIsVisible] = useState(false);
 
-  const toggleVisible = (e) => {
+  const toggleVisible = () => {
     setIsVisible(!isVisible);
   };
 
@@ -50,7 +50,7 @@ const Template = ({ onClick, onClose, onOk, ...args }) => {
             scale
             size="big"
             onClick={(e) => {
-              toggleVisible(e);
+              toggleVisible();
               onOk(e);
             }}
           />
@@ -70,7 +70,8 @@ const Template = ({ onClick, onClose, onOk, ...args }) => {
 export const Default = Template.bind({});
 Default.args = {
   scale: false,
-  displayType: "aside",
+  displayType: "modal",
+  isLarge: false,
   zIndex: 310,
   headerContent: "Change password",
 };
