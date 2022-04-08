@@ -9,6 +9,7 @@ import { isSmallTablet } from "@appserver/components/utils/device";
 import CustomizationNavbar from "./customization-navbar";
 import { Base } from "@appserver/components/themes";
 import { setDocumentTitle } from "../../../../../helpers/utils";
+import LoaderDescriptionCustomization from "./sub-components/loaderDescriptionCustomization";
 
 const StyledComponent = styled.div`
   .combo-button-label {
@@ -91,6 +92,7 @@ const Customization = ({ t }) => {
       <div className="category-description">{`${t(
         "Settings:CustomizationDescription"
       )}`}</div>
+      {/* <LoaderDescriptionCustomization /> */}
       <LanguageAndTimeZone
         isLoadingCustomization={isLoadingCustomization}
         isMobileView={isMobile}
