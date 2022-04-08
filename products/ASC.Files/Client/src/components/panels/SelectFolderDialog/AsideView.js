@@ -24,7 +24,7 @@ const SelectFolderDialogAsideView = ({
   onSelect,
   footer,
   showButtons,
-  onSave,
+  onButtonClick,
   headerName,
   header,
   canCreate,
@@ -74,10 +74,10 @@ const SelectFolderDialogAsideView = ({
               <FolderTreeBody
                 theme={theme}
                 isLoadingData={isLoadingData}
-                resultingFolderTree={resultingFolderTree}
+                folderTree={resultingFolderTree}
                 onSelect={onSelect}
                 withoutProvider={withoutProvider}
-                certainFolders={certainFolders}
+                certainFolders
                 isAvailable={isAvailable}
                 selectedKeys={[`${folderId}`]}
                 heightContent={asideHeightContent}
@@ -97,7 +97,7 @@ const SelectFolderDialogAsideView = ({
                 primary
                 size="normal"
                 label={primaryButtonName}
-                onClick={onSave}
+                onClick={onButtonClick}
                 isDisabled={isLoadingData || !isAvailable || !canCreate}
               />
               <Button

@@ -5,21 +5,15 @@ import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 import throttle from "lodash/throttle";
 import { getCommonThirdPartyList } from "@appserver/common/api/settings";
-import {
-  getCommonFolderList,
-  getFolderPath,
-} from "@appserver/common/api/files";
-
-import SelectFolderInput from "../SelectFolderInput";
+import { getCommonFolderList, getFolder } from "@appserver/common/api/files";
 import i18n from "./i18n";
 import SelectFolderDialogAsideView from "./AsideView";
-import SelectFolderDialogModalView from "./ModalView";
 import stores from "../../../store/index";
 import utils from "@appserver/components/utils";
 import store from "studio/store";
 import toastr from "studio/toastr";
-
 import SelectionPanel from "../SelectionPanel/SelectionPanelBody";
+import { FilterType } from "@appserver/common/constants";
 
 const { auth: authStore } = store;
 
@@ -28,7 +22,9 @@ const { desktop } = utils.device;
 class SelectFolderModalDialog extends React.Component {
   constructor(props) {
     super(props);
-    const { id, displayType } = this.props;
+    const { id, displayType, filter } = this.props;
+    this.newFilter = filter.clone();
+    this.newFilter.filterType = FilterType.FilesOnly;
 
     this.state = {
       isLoadingData: false,
@@ -37,6 +33,12 @@ class SelectFolderModalDialog extends React.Component {
       displayType: displayType || this.getDisplayType(),
       canCreate: true,
       isAvailable: true,
+      filesList: [],
+
+      isNextPageLoading: false,
+      page: 0,
+      hasNextPage: true,
+      files: [],
     };
     this.throttledResize = throttle(this.setDisplayType, 300);
     this.noTreeSwitcher = false;
@@ -189,9 +191,12 @@ class SelectFolderModalDialog extends React.Component {
       setExpandedPanelKeys,
       setSelectedFolder,
     } = this.props;
-
+    console.log("folder", folder);
     this.setState({
       folderId: folder[0],
+      files: [],
+      hasNextPage: true,
+      page: 0,
     });
 
     SelectionPanel.setFolderObjectToTree(
@@ -202,7 +207,7 @@ class SelectFolderModalDialog extends React.Component {
     );
   };
 
-  onSave = (e) => {
+  onButtonClick = (e) => {
     const { onClose, onSave, onSetNewFolderPath, onSelectFolder } = this.props;
     const { folderId } = this.state;
 
@@ -233,6 +238,44 @@ class SelectFolderModalDialog extends React.Component {
     });
   };
 
+  _loadNextPage = () => {
+    const { files, page, folderId } = this.state;
+
+    if (this._isLoadNextPage) return;
+
+    this._isLoadNextPage = true;
+
+    const pageCount = 30;
+    this.newFilter.page = page;
+    this.newFilter.pageCount = pageCount;
+
+    this.setState({ isNextPageLoading: true }, async () => {
+      try {
+        const data = await getFolder(folderId, this.newFilter);
+
+        const finalData = [...data.files];
+
+        const newFilesList = [...files].concat(finalData);
+
+        const hasNextPage = newFilesList.length < data.total - 1;
+        console.log("loadNextPage", folderId, data.files, newFilesList);
+        this._isLoadNextPage = false;
+        this.setState((state) => ({
+          isDataLoading: false,
+          hasNextPage: hasNextPage,
+          isNextPageLoading: false,
+          page: state.page + 1,
+          files: newFilesList,
+          ...(page === 0 && { folderTitle: data.current.title }),
+        }));
+      } catch (e) {
+        toastr.error(e);
+        this.setState({
+          isDataLoading: false,
+        });
+      }
+    });
+  };
   render() {
     const {
       t,
@@ -245,7 +288,7 @@ class SelectFolderModalDialog extends React.Component {
       modalHeightContent,
       asideHeightContent,
       header,
-      headerName,
+      dialogName,
       footer,
       buttonName,
     } = this.props;
@@ -256,6 +299,13 @@ class SelectFolderModalDialog extends React.Component {
       isLoadingData,
       isAvailable,
       resultingFolderTree,
+      filesList,
+
+      hasNextPage,
+      isNextPageLoading,
+      files,
+      page,
+      folderTitle,
     } = this.state;
 
     const primaryButtonName = buttonName ? buttonName : t("Common:SaveButton");
@@ -274,9 +324,9 @@ class SelectFolderModalDialog extends React.Component {
         folderId={folderId}
         resultingFolderTree={resultingFolderTree}
         onSelect={this.onSelect}
-        onSave={this.onSave}
+        onButtonClick={this.onButtonClick}
         header={header}
-        headerName={headerName}
+        dialogName={dialogName}
         footer={footer}
         canCreate={canCreate}
         isLoadingData={isLoadingData}
@@ -285,27 +335,32 @@ class SelectFolderModalDialog extends React.Component {
         isAvailable={isAvailable}
       />
     ) : (
-      <SelectFolderDialogModalView
+      <SelectionPanel
         t={t}
         theme={theme}
         isPanelVisible={isPanelVisible}
-        zIndex={zIndex}
         onClose={onClose}
         withoutProvider={withoutProvider}
-        modalHeightContent={modalHeightContent}
-        certainFolders={true}
         folderId={folderId}
         resultingFolderTree={resultingFolderTree}
-        onSelect={this.onSelect}
-        onSave={this.onSave}
+        onButtonClick={this.onButtonClick}
         header={header}
-        headerName={headerName}
+        dialogName={dialogName}
         footer={footer}
         canCreate={canCreate}
         isLoadingData={isLoadingData}
         primaryButtonName={primaryButtonName}
         noTreeSwitcher={this.noTreeSwitcher}
         isAvailable={isAvailable}
+        onSelectFolder={this.onSelect}
+        filesList={filesList}
+        isNextPageLoading={isNextPageLoading}
+        page={page}
+        hasNextPage={hasNextPage}
+        files={files}
+        loadNextPage={this._loadNextPage}
+        folderTitle={folderTitle}
+        folderSelection
       />
     );
   }
@@ -359,7 +414,8 @@ const SelectFolderDialogWrapper = inject(
       setExpandedPanelKeys,
       treeFolders,
     } = treeFoldersStore;
-    const { canCreate } = filesStore;
+
+    const { canCreate, filter } = filesStore;
     const { setSelectedFolder, id } = selectedFolderStore;
     const { setFolderId, setFile } = selectedFilesStore;
     return {
@@ -372,6 +428,7 @@ const SelectFolderDialogWrapper = inject(
       setFolderId,
       setFile,
       treeFolders,
+      filter,
     };
   }
 )(
@@ -420,15 +477,6 @@ class SelectFolderDialog extends React.Component {
     };
 
     return [convertedData];
-  };
-
-  static getFolderPath = async (folderId) => {
-    const foldersArray = await getFolderPath(folderId);
-    const convertFoldersArray = SelectFolderInput.setFullFolderPath(
-      foldersArray
-    );
-
-    return convertFoldersArray;
   };
 
   render() {

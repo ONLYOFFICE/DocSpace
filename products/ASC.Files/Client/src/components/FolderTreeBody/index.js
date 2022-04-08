@@ -9,7 +9,7 @@ import { StyledSelectFolderPanel } from "../panels/StyledPanels";
 const FolderTreeBody = ({
   isLoadingData,
   expandedKeys,
-  resultingFolderTree,
+  folderTree,
   onSelect,
   withoutProvider,
   certainFolders,
@@ -31,12 +31,12 @@ const FolderTreeBody = ({
             displayType={displayType}
             isHeaderChildren={isHeaderChildren}
           >
-            <div className="select-folder-dialog_tree-folder">
+            <div className="selection-panel_tree-folder">
               <Scrollbar id="folder-tree-scroll-bar">
                 <TreeFolders
                   isPanel={true}
                   expandedPanelKeys={expandedKeys}
-                  data={resultingFolderTree}
+                  data={folderTree}
                   filter={filter}
                   onSelect={onSelect}
                   withoutProvider={withoutProvider}

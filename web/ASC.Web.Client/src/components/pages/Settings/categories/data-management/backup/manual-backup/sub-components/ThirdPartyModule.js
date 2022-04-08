@@ -15,7 +15,7 @@ class ThirdPartyModule extends React.Component {
 
     this.state = {
       isStartCopy: false,
-      isLoadingData: true,
+      isLoadingData: false,
       selectedFolder: folder || "",
       isPanelVisible: false,
       isError: false,
@@ -105,6 +105,7 @@ class ThirdPartyModule extends React.Component {
             foldersType="third-party"
             fontSizeInput={"13px"}
             foldersList={commonThirdPartyList}
+            isSetFolderImmediately
           />
         </div>
         <div className="manual-backup_buttons">

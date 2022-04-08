@@ -650,23 +650,26 @@ const StyledLinkRow = styled.div`
 StyledLinkRow.defaultProps = { theme: Base };
 
 const StyledSelectFolderPanel = styled.div`
-  ${(props) =>
-    props.displayType === "aside" &&
-    css`
-      height: 100%;
-    `}
+  height: 100%;
 
-  ${(props) =>
-    props.noTreeSwitcher &&
-    css`
-      span.rc-tree-switcher.rc-tree-switcher-noop {
-        display: none;
-      }
-    `}
+  .selection-panel_tree-folder {
+    height: 100%;
+  }
 
-    
-
-  .modal-dialog_header {
+  .
+    ${(props) =>
+      props.displayType === "aside" &&
+      css`
+        height: 100%;
+      `}
+    ${(props) =>
+      props.noTreeSwitcher &&
+      css`
+        span.rc-tree-switcher.rc-tree-switcher-noop {
+          display: none;
+        }
+      `}
+    .modal-dialog_header {
     display: flex;
     align-items: center;
   }
@@ -907,7 +910,7 @@ const StyledFilesList = styled.div`
     margin-right: 8px;
   }
 
-  .radio-button_text{
+  .radio-button_text {
     ${(props) => props.displayType === "aside" && "margin: 0 !important;"};
   }
 

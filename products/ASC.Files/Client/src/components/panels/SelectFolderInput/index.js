@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 import StyledComponent from "./StyledSelectFolderInput";
 import { getFolderPath } from "@appserver/common/api/files";
 import toastr from "@appserver/components/toast/toastr";
-import SelectionPanel from "../SelectionPanel/SelectionPanelBody";
 import SelectFolderDialog from "../SelectFolderDialog";
 import SimpleFileInput from "../../SimpleFileInput";
 
@@ -14,7 +13,9 @@ class SelectFolderInput extends React.PureComponent {
     const { id, foldersType, isSetFolderImmediately } = this.props;
 
     const isNeedLoader =
-      !!id || isSetFolderImmediately || foldersType === "common";
+      !!id ||
+      (isSetFolderImmediately && foldersType !== "third-party") ||
+      foldersType === "common";
 
     this.state = {
       isLoading: isNeedLoader,
@@ -25,49 +26,9 @@ class SelectFolderInput extends React.PureComponent {
     };
   }
   async componentDidMount() {
-    const {
-      setFirstLoad,
-      treeFolders,
-      foldersType,
-      id,
-      onSelectFolder,
-      foldersList,
-      isSetFolderImmediately,
-      setSelectedNode,
-      setSelectedFolder,
-      setExpandedPanelKeys,
-    } = this.props;
+    const { setFirstLoad } = this.props;
 
     setFirstLoad(false);
-
-    // let resultingFolderTree, resultingId;
-    // console.log("input mount");
-    // try {
-    //   [
-    //     resultingFolderTree,
-    //     resultingId,
-    //   ] = await SelectionPanel.getBasicFolderInfo(
-    //     treeFolders,
-    //     foldersType,
-    //     id,
-    //     this.onSetBaseFolderPath,
-    //     onSelectFolder,
-    //     foldersList,
-    //     isSetFolderImmediately,
-    //     setSelectedNode,
-    //     setSelectedFolder,
-    //     setExpandedPanelKeys
-    //   );
-    // } catch (e) {
-    //   toastr.error(e);
-    //   return;
-    // }
-
-    // this.setState({
-    //   resultingFolderTree,
-    //   baseId: resultingId,
-    //   isLoading: false,
-    // });
   }
 
   componentDidUpdate(prevProps) {
@@ -136,7 +97,6 @@ class SelectFolderInput extends React.PureComponent {
   };
 
   onSetBaseFolderPath = async (folderId) => {
-    //console.log("onSetBaseFolderPath", folderId);
     try {
       const convertFoldersArray = await this.setFolderPath(folderId);
 
@@ -158,13 +118,7 @@ class SelectFolderInput extends React.PureComponent {
     });
   };
   render() {
-    const {
-      isLoading,
-      baseFolderPath,
-      newFolderPath,
-      resultingFolderTree,
-      baseId,
-    } = this.state;
+    const { isLoading, baseFolderPath, newFolderPath, baseId } = this.state;
     const {
       onClickInput,
       isError,
@@ -179,7 +133,7 @@ class SelectFolderInput extends React.PureComponent {
     } = this.props;
 
     const passedId = baseId !== id && id ? id : baseId;
-    console.log("resultingFolderTree", resultingFolderTree, isLoading);
+
     return (
       <StyledComponent maxWidth={maxInputWidth}>
         <SimpleFileInput
@@ -192,7 +146,6 @@ class SelectFolderInput extends React.PureComponent {
           isDisabled={isDisabled || isLoading}
         />
 
-        {/* {isPanelVisible && ( */}
         <SelectFolderDialog
           {...rest}
           id={passedId}
@@ -200,7 +153,6 @@ class SelectFolderInput extends React.PureComponent {
           onSetBaseFolderPath={this.onSetBaseFolderPath}
           onSetNewFolderPath={this.onSetNewFolderPath}
         />
-        {/* )} */}
       </StyledComponent>
     );
   }
@@ -219,21 +171,9 @@ SelectFolderInput.defaultProps = {
   placeholder: "",
 };
 
-export default inject(
-  ({ filesStore, treeFoldersStore, selectedFolderStore }) => {
-    const {
-      setSelectedNode,
-      setExpandedPanelKeys,
-      treeFolders,
-    } = treeFoldersStore;
-    const { setSelectedFolder } = selectedFolderStore;
-    const { setFirstLoad } = filesStore;
-    return {
-      setFirstLoad,
-      treeFolders,
-      setSelectedNode,
-      setExpandedPanelKeys,
-      setSelectedFolder,
-    };
-  }
-)(observer(SelectFolderInput));
+export default inject(({ filesStore }) => {
+  const { setFirstLoad } = filesStore;
+  return {
+    setFirstLoad,
+  };
+})(observer(SelectFolderInput));

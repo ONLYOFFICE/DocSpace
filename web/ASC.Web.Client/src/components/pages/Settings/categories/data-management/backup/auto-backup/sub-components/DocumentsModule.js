@@ -45,6 +45,7 @@ class DocumentsModule extends React.PureComponent {
       <>
         <div className="auto-backup_folder-input">
           <SelectFolderInput
+            dialogName={"Select Folder"}
             onSelectFolder={this.onSelectFolder}
             onClose={this.onClose}
             onClickInput={this.onClickInput}

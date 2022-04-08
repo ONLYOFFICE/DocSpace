@@ -1,9 +1,8 @@
 import React from "react";
 import ModalDialog from "@appserver/components/modal-dialog";
-import IconButton from "@appserver/components/icon-button";
+import FolderTreeBody from "../../FolderTreeBody";
 import Button from "@appserver/components/button";
-import Loaders from "@appserver/common/components/Loaders";
-
+import FilesListBody from "./FilesListBody";
 import {
   getCommonFoldersTree,
   getFolder,
@@ -15,33 +14,117 @@ import {
   exceptSortedByTagsFolders,
   exceptPrivacyTrashFolders,
 } from "./ExceptionFoldersConstants";
-
+import { StyledBody } from "./StyledSelectionPanel";
+import Text from "@appserver/components/text";
 const SelectionPanelBody = ({
-  isPanelVisible,
-  isDataLoading,
-  hasNextPage,
-  resultingFolderTree,
-  footerChild,
-  headerChild,
-  loadNextPage,
-  loadingText,
-  onButtonClick,
-  onClose,
-  onArrowClickAction,
-  onSelectFile,
-  onFolderClick,
-  items,
-  folderId,
-  isNextPageLoading,
-  isInitialLoader,
-  page,
-  title,
   t,
-  selectedFileInfo,
-  buttonText,
+  isPanelVisible,
+  onClose,
+  withoutProvider,
+  onSelectFile,
+  files,
+  hasNextPage,
+  isNextPageLoading,
+  loadNextPage,
+  filesListTitle,
+  selectedFile,
+  dialogName,
+  primaryButtonName,
+  theme,
+  isLoading,
+  onButtonClick,
+  folderId,
+  onSelectFolder,
+  resultingFolderTree,
+  isAvailable,
+  footer,
+  header,
+  folderSelection,
+  folderTitle,
 }) => {
-  console.log("isRootPage", isRootPage);
-  return <></>;
+  return (
+    <ModalDialog
+      theme={theme}
+      visible={isPanelVisible}
+      onClose={onClose}
+      className="select-file-modal-dialog"
+      style={{ maxWidth: "773px" }}
+      displayType="modal"
+      modalBodyPadding="0px"
+      isLoading={isLoading}
+      modalLoaderBodyHeight="277px"
+    >
+      <ModalDialog.Header theme={theme}>{dialogName}</ModalDialog.Header>
+      <ModalDialog.Body theme={theme} className="select-file_body-modal-dialog">
+        <StyledBody>
+          <div className="selection-panel_body">
+            <div className="selection-panel_tree-body">
+              <FolderTreeBody
+                theme={theme}
+                folderTree={resultingFolderTree}
+                onSelect={onSelectFolder}
+                withoutProvider={withoutProvider}
+                certainFolders
+                isAvailable={isAvailable}
+                selectedKeys={[`${folderId}`]}
+                displayType="modal"
+              />
+            </div>
+            <div className="selection-panel_files-body">
+              <>
+                <div className="selection-panel_files-header">
+                  {header}
+                  {folderSelection ? (
+                    <Text color="#A3A9AE">{`The contents of the '${folderTitle}' folder`}</Text>
+                  ) : (
+                    <Text theme={theme} className="modal-dialog-filter-title">
+                      {filesListTitle}
+                    </Text>
+                  )}
+                </div>
+                {folderId && (
+                  <FilesListBody
+                    theme={theme}
+                    files={files}
+                    onSelectFile={onSelectFile}
+                    hasNextPage={hasNextPage}
+                    isNextPageLoading={isNextPageLoading}
+                    loadNextPage={loadNextPage}
+                    folderId={folderId}
+                    selectedFile={selectedFile}
+                    displayType={"modal"}
+                    folderSelection
+                  />
+                )}
+              </>
+            </div>
+
+            <div className="selection-panel_footer">
+              {footer}
+              <div className="selection-panel_buttons">
+                <Button
+                  theme={theme}
+                  className="select-file-modal-dialog-buttons-save"
+                  primary
+                  size="small"
+                  label={primaryButtonName}
+                  onClick={onButtonClick}
+                  //isDisabled={selectedFile.length === 0}
+                />
+                <Button
+                  theme={theme}
+                  className="modal-dialog-button"
+                  size="small"
+                  label={t("Common:CancelButton")}
+                  onClick={onClose}
+                />
+              </div>
+            </div>
+          </div>
+        </StyledBody>
+      </ModalDialog.Body>
+    </ModalDialog>
+  );
 };
 
 class SelectionPanel extends React.Component {
@@ -161,8 +244,10 @@ class SelectionPanel extends React.Component {
     if (id || isSetFolderImmediately || foldersType === "common") {
       passedId = id ? id : foldersTree[0].id;
       console.log("passedId", passedId, id, foldersTree[0].id);
-      onSetBaseFolderPath && onSetBaseFolderPath(passedId);
-      onSelectFolder && onSelectFolder(passedId);
+      if (foldersType !== "third-party") {
+        onSetBaseFolderPath && onSetBaseFolderPath(passedId);
+        onSelectFolder && onSelectFolder(passedId);
+      }
 
       await SelectionPanel.setFolderObjectToTree(
         passedId,
