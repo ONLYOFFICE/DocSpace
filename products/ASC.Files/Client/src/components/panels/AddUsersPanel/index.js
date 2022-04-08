@@ -122,10 +122,12 @@ class AddUsersPanelComponent extends React.Component {
     shareDataItems.forEach((item) => {
       const { sharedTo } = item;
 
-      const groups = sharedTo?.groups
-        ? sharedTo.groups.map((group) => group.id)
-        : [];
-      selectedOptions.push({ key: sharedTo.id, id: sharedTo.id, groups });
+      if (item.isUser) {
+        const groups = sharedTo?.groups
+          ? sharedTo.groups.map((group) => group.id)
+          : [];
+        selectedOptions.push({ key: sharedTo.id, id: sharedTo.id, groups });
+      }
     });
 
     const zIndex = 310;
@@ -147,7 +149,6 @@ class AddUsersPanelComponent extends React.Component {
 
     //console.log("AddUsersPanel render");
 
-    console.log(selectedOptions);
     return (
       <StyledAddUsersPanelPanel visible={visible}>
         <Backdrop
