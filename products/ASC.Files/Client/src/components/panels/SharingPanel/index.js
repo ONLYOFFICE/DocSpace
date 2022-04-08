@@ -264,6 +264,7 @@ class SharingPanelComponent extends React.Component {
   };
 
   onRemoveUserItemClick = (e) => {
+    console.log(e);
     const id = e.currentTarget.dataset.for;
     const shareDataItems = this.state.shareDataItems.slice(0);
 
@@ -520,11 +521,16 @@ class SharingPanelComponent extends React.Component {
         return filteredShareDataItems.push(item);
       }
 
-      if (item?.isOwner) return owner.push(item);
+      if (item?.isOwner) {
+        item.isUser = true;
+        return owner.push(item);
+      }
 
-      if (item?.sharedTo?.userName) {
+      if (item?.sharedTo?.userName || item?.sharedTo?.label) {
+        item.isUser = true;
         shareUsers.push(item);
       } else {
+        item.isGroup = true;
         shareGroups.push(item);
       }
     });
@@ -621,7 +627,7 @@ class SharingPanelComponent extends React.Component {
             onSharingPanelClose={this.onClose}
             onClose={this.onShowUsersPanel}
             visible={showAddUsersPanel}
-            shareDataItems={[...owner, ...shareUsers]}
+            shareDataItems={filteredShareDataItems}
             setShareDataItems={this.setShareDataItems}
             groupsCaption={groupsCaption}
             accessOptions={accessOptions}
@@ -635,7 +641,7 @@ class SharingPanelComponent extends React.Component {
             onSharingPanelClose={this.onClose}
             onClose={this.onShowGroupsPanel}
             visible={showAddGroupsPanel}
-            shareDataItems={shareGroups}
+            shareDataItems={filteredShareDataItems}
             setShareDataItems={this.setShareDataItems}
             accessOptions={accessOptions}
             isMultiSelect
@@ -647,7 +653,7 @@ class SharingPanelComponent extends React.Component {
             onSharingPanelClose={this.onClose}
             onClose={this.onShowChangeOwnerPanel}
             visible={showChangeOwnerPanel}
-            shareDataItems={[...owner, ...shareUsers]}
+            shareDataItems={filteredShareDataItems}
             setShareDataItems={this.setShareDataItems}
           />
         )}

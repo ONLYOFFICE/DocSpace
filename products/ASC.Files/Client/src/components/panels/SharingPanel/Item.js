@@ -14,9 +14,11 @@ const Item = ({
   label,
   avatarUrl,
   isOwner,
+  ownerText,
   onShowChangeOwnerPanel,
   changeOwnerText,
   access,
+  onRemoveUserClick,
 }) => {
   const onShowChangeOwnerPanelAction = React.useCallback(() => {
     onShowChangeOwnerPanel && onShowChangeOwnerPanel();
@@ -34,13 +36,17 @@ const Item = ({
         />
         <Text className="info-block__text">{label}</Text>
       </div>
-      {isOwner && canShareOwnerChange ? (
-        <Text
-          className="item__change-owner"
-          onClick={onShowChangeOwnerPanelAction}
-        >
-          {changeOwnerText}
-        </Text>
+      {isOwner ? (
+        canShareOwnerChange ? (
+          <Text
+            className="item__change-owner"
+            onClick={onShowChangeOwnerPanelAction}
+          >
+            {changeOwnerText}
+          </Text>
+        ) : (
+          <Text className="item__owner">{ownerText}</Text>
+        )
       ) : (
         <AccessComboBox
           t={t}
@@ -52,10 +58,12 @@ const Item = ({
           itemId={item.sharedTo.id}
           isDisabled={false}
           disableLink={false}
+          canDelete={true}
+          onRemoveUserClick={onRemoveUserClick}
         />
       )}
     </StyledItem>
   );
 };
 
-export default React.memo(Item);
+export default Item;

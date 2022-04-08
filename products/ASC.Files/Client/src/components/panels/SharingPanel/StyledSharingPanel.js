@@ -217,6 +217,10 @@ const StyledItem = styled.div`
     cursor: pointer;
   }
 
+  .item__owner {
+    color: rgb(163, 169, 174);
+  }
+
   .panel_combo-box {
     .combo-button {
       min-width: 46px;

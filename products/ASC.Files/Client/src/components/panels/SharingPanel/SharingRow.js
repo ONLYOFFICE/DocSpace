@@ -97,18 +97,14 @@ class SharingRow extends React.Component {
       item,
       index,
       isMyId,
-      accessOptions,
-      onChangeItemAccess,
+
       onRemoveUserClick,
       onShowEmbeddingPanel,
       onToggleLink,
       onShowChangeOwnerPanel,
-      isLoading,
       internalLink,
       isPersonal,
-      theme,
     } = this.props;
-    const { access } = this.state;
 
     const canShareOwnerChange = this.props.canShareOwnerChange(item);
 
@@ -121,12 +117,6 @@ class SharingRow extends React.Component {
       avatarUrl,
       id,
     } = item.sharedTo;
-
-    const userName = name
-      ? name === "Everyone"
-        ? t("ShareEveryone")
-        : name
-      : "";
 
     const externalLinkVisible =
       selection && selection.length === 1 && shareLink;
@@ -151,12 +141,14 @@ class SharingRow extends React.Component {
       },
     ];
 
-    const onRemoveUserProp = !isLoading ? { onClick: onRemoveUserClick } : {};
-    const onShowChangeOwnerPanelProp = !isLoading
-      ? { onClick: onShowChangeOwnerPanel }
-      : {};
-
-    const accessIconUrl = getAccessIcon(access);
+    const itemName =
+      id === isMyId
+        ? t("Common:MeLabel")
+        : !!displayName
+        ? displayName
+        : !!name
+        ? name
+        : label;
 
     return (
       <>
@@ -184,129 +176,21 @@ class SharingRow extends React.Component {
 
         {!isPersonal && !externalLinkVisible && !internalLinkVisible && (
           <Item
+            {...this.props}
             avatarUrl={!!avatarSmall ? avatarSmall : avatarUrl}
             access={item.access}
-            label={
-              id === isMyId
-                ? t("Common:MeLabel")
-                : !!displayName
-                ? displayName
-                : !!name
-                ? name
-                : label
-            }
+            label={itemName}
             isOwner={item.isOwner}
-            canShareOwnerChange={canShareOwnerChange}
+            ownerText={t("Common:Owner")}
             onShowChangeOwnerPanel={onShowChangeOwnerPanel}
             changeOwnerText={t("ChangeOwnerPanel:ChangeOwner").replace(
               "()",
               ""
             )}
-            {...this.props}
+            canShareOwnerChange={canShareOwnerChange && !shareLink}
+            onRemoveUserClick={onRemoveUserClick}
           />
         )}
-
-        {/* {!isPersonal && (
-          <>
-            {!shareLink && (
-              <Row
-                theme={theme}
-                className="sharing-row"
-                key={`internal-link-key_${id}`}
-                element={
-                  isOwner || isLocked ? (
-                    <ReactSVG
-                      src={accessIconUrl}
-                      className="sharing_panel-owner-icon"
-                      beforeInjection={(svg) => {
-                        svg
-                          .querySelector("path")
-                          .setAttribute(
-                            "fill",
-                            isLoading
-                              ? theme.filesPanels.sharing.loadingFill
-                              : theme.filesPanels.sharing.fill
-                          );
-                        svg.setAttribute(
-                          "style",
-                          `width:16px;
-                  min-width:16px;
-                  height:16px;
-                  min-height:16px;`
-                        );
-                      }}
-                    />
-                  ) : (
-                    <AccessComboBox
-                      t={t}
-                      theme={theme}
-                      access={access}
-                      directionX="left"
-                      onAccessChange={onChangeItemAccess}
-                      itemId={id}
-                      accessOptions={accessOptions}
-                      isDisabled={isLoading}
-                      fixedDirection={true}
-                    />
-                  )
-                }
-                contextButtonSpacerWidth="0px"
-              >
-                <>
-                  {!shareLink &&
-                    (isOwner && canShareOwnerChange ? (
-                      <Link
-                        theme={theme}
-                        isHovered
-                        type="action"
-                        {...onShowChangeOwnerPanelProp}
-                      >
-                        {label ? label : userName ? userName : displayName}
-                      </Link>
-                    ) : (
-                      <Text
-                        theme={theme}
-                        truncate
-                        className="sharing_panel-text"
-                      >
-                        {label ? label : userName ? userName : displayName}
-                      </Text>
-                    ))}
-                  {isOwner ? (
-                    <Text
-                      className="sharing_panel-remove-icon"
-                      theme={theme}
-                      color={theme.filesPanels.sharing.color}
-                    >
-                      {t("Common:Owner")}
-                    </Text>
-                  ) : id === isMyId ? (
-                    <Text
-                      className="sharing_panel-remove-icon"
-                      theme={theme}
-                      //color="#A3A9AE"
-                    >
-                      {t("Common:FullAccess")}
-                    </Text>
-                  ) : (
-                    !shareLink &&
-                    !isLocked && (
-                      <IconButton
-                        iconName="/static/images/remove.react.svg"
-                        theme={theme}
-                        id={id}
-                        {...onRemoveUserProp}
-                        className="sharing_panel-remove-icon"
-                        // color={theme.filesPanels.sharing.color}
-                        isDisabled={isLoading}
-                      />
-                    )
-                  )}
-                </>
-              </Row>
-            )}
-          </>
-        )} */}
       </>
     );
   }
