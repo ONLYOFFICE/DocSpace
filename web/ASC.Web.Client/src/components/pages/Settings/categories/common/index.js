@@ -46,7 +46,7 @@ const SubmenuCommon = (props) => {
       )
     );
   };
-
+  //TODO: Loader
   return !isLoading ? (
     <AppLoader />
   ) : (
