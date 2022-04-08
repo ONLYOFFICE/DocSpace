@@ -334,7 +334,7 @@ const Selector = (props) => {
           isDisabled={isDisabled}
           placeholder={searchPlaceHolderLabel}
           value={searchValue}
-          onChange={onSearchChange}
+          onSearchChange={onSearchChange}
           onClearSearch={onSearchReset}
         />
         <div style={{ width: "100%", height: "100%" }} className="body-options">
