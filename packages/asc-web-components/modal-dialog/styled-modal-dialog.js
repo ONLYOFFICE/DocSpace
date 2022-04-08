@@ -1,4 +1,4 @@
-import styled, { css, keyframes } from "styled-components";
+import styled, { css } from "styled-components";
 import Base from "../themes/base";
 import Box from "../box";
 import { smallTablet } from "../utils/device";

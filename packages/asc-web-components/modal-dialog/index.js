@@ -52,8 +52,6 @@ class ModalDialog extends React.Component {
     window.addEventListener("touchstart", handleTouchStart);
     window.addEventListener("touchmove", this.onSwipe);
     window.addEventListener("touchend", this.onSwipeEnd);
-
-    setTimeout(() => this.setState({ ...this.state, fadeType: "in" }), 0);
   }
 
   componentDidUpdate(prevProps) {
@@ -63,30 +61,16 @@ class ModalDialog extends React.Component {
         displayType: getTypeByWidth(this.props.displayType),
       });
 
-    if (!this.props.visible) {
-      if (this.state.modalSwipeOffset && this.state.opacity)
-        this.setState({
-          ...this.state,
-          opacity: 0,
-          modalSwipeOffset: 0,
-        });
-      else if (this.state.opacity)
-        this.setState({
-          ...this.state,
-          opacity: 0,
-        });
-      else if (this.state.modalSwipeOffset)
-        if (this.state.opacity) {
-          this.setState({
-            ...this.state,
-            modalSwipeOffset: 0,
-          });
-        }
+    if (!this.props.visible && prevProps.visible) {
+      this.setState({
+        ...this.state,
+        modalSwipeOffset: 0,
+        opacity: 0,
+      });
     }
 
-    if (this.props.visible && !prevProps.visible) {
-      this.graduallyIncreasOpacity();
-    }
+    if (this.props.visible && !prevProps.visible)
+      this.graduallyIncreaseOpacity();
 
     if (this.props.visible && this.state.displayType === "aside")
       window.addEventListener("popstate", popstate, false);
@@ -100,13 +84,13 @@ class ModalDialog extends React.Component {
     window.addEventListener("touchend", this.onSwipeEnd);
   }
 
-  graduallyIncreasOpacity() {
-    for (let i = 0; i < 50; i++) {
+  graduallyIncreaseOpacity() {
+    for (let i = 0; i < 34; i++) {
       setTimeout(
         () =>
           this.setState((oldState) => ({
             ...this.state,
-            opacity: oldState.opacity + 0.02,
+            opacity: oldState.opacity + 0.03,
           })),
         0.1
       );

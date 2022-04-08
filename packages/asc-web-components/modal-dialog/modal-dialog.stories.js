@@ -13,28 +13,20 @@ export default {
     },
   },
   argTypes: {
-    onClick: { action: "onClick" },
-    onClose: { action: "onClose" },
-    onOk: { action: "onOk", table: { disable: true } },
+    onOk: { action: "onOk" },
   },
 };
 
-const Template = ({ onClick, onClose, onOk, ...args }) => {
+const Template = ({ onOk, ...args }) => {
   const [isVisible, setIsVisible] = useState(false);
 
-  const toggleVisible = () => {
-    setIsVisible(!isVisible);
-  };
+  const openModal = () => setIsVisible(true);
+  const closeModal = () => setIsVisible(false);
 
   return (
     <>
-      <Button
-        label="Show"
-        primary={true}
-        size="medium"
-        onClick={toggleVisible}
-      />
-      <ModalDialog {...args} visible={isVisible} onClose={toggleVisible}>
+      <Button label="Show" primary={true} size="medium" onClick={openModal} />
+      <ModalDialog {...args} visible={isVisible} onClose={closeModal}>
         <ModalDialog.Header>{"Change password"}</ModalDialog.Header>
         <ModalDialog.Body>
           <span>
@@ -49,9 +41,9 @@ const Template = ({ onClick, onClose, onOk, ...args }) => {
             primary={true}
             scale
             size="big"
-            onClick={(e) => {
-              toggleVisible();
-              onOk(e);
+            onClick={() => {
+              onOk();
+              closeModal();
             }}
           />
           <Button
@@ -59,7 +51,7 @@ const Template = ({ onClick, onClose, onOk, ...args }) => {
             label="Cancel"
             scale
             size="big"
-            onClick={toggleVisible}
+            onClick={closeModal}
           />
         </ModalDialog.Footer>
       </ModalDialog>

@@ -38,15 +38,12 @@ const Modal = ({
   return (
     <StyledModal
       className={visible && "active"}
-      opacity={opacity}
       modalSwipeOffset={modalSwipeOffset}
     >
       <ModalBackdrop
         visible={true}
-        zIndex={zIndex}
-        withBackground={true}
-        isModalDialog
         modalSwipeOffset={modalSwipeOffset}
+        opacity={opacity}
       >
         <Dialog
           className={`${className} dialog not-selectable`}

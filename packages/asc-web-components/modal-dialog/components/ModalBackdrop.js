@@ -1,10 +1,10 @@
-import Backdrop from "../../backdrop";
-
 import React from "react";
 import styled from "styled-components";
 
 const StyledModalBackdrop = styled.div.attrs((props) => ({
   style: {
+    opacity: `${props.opacity}`,
+
     backdropFilter: `${
       props.modalSwipeOffset
         ? `blur(${18 - props.modalSwipeOffset * -0.15}px)`
@@ -27,7 +27,7 @@ const StyledModalBackdrop = styled.div.attrs((props) => ({
   top: 0;
 `;
 
-const ModalBackdrop = ({ zIndex, modalSwipeOffset, children }) => {
+const ModalBackdrop = ({ zIndex, modalSwipeOffset, opacity, children }) => {
   return (
     <StyledModalBackdrop modalSwipeOffset={modalSwipeOffset}>
       {children}
