@@ -563,7 +563,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   );
 };
 
-const ShellWrapper = inject(({ auth, backup }) => {
+const ShellWrapper = inject(({ auth, backup, setup }) => {
   const { init, isLoaded, settingsStore, setProductVersion, language } = auth;
   const {
     personal,
@@ -578,9 +578,11 @@ const ShellWrapper = inject(({ auth, backup }) => {
     setTheme,
   } = settingsStore;
   const { setPreparationPortalDialogVisible } = backup;
+  const { initSettings } = setup;
   return {
     loadBaseInfo: async () => {
       await init();
+      await initSettings();
 
       setModuleInfo(config.homepage, "home");
       setProductVersion(config.version);
