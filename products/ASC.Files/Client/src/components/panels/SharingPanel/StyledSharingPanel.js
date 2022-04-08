@@ -41,6 +41,13 @@ const StyledHeaderContent = styled.div`
     }
   }
 
+  .embedding_panel {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+  }
+
   .sharing_panel-icons-container {
     display: flex;
     margin-left: 16px;

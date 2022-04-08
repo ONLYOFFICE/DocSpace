@@ -10,9 +10,10 @@ import i18n from "./i18n";
 import {
   StyledEmbeddingPanel,
   StyledContent,
-  StyledHeaderContent,
   StyledBody,
 } from "../StyledPanels";
+
+import { StyledHeaderContent } from "../SharingPanel/StyledSharingPanel";
 
 import EmbeddingBody from "./EmbeddingBody";
 
@@ -40,19 +41,21 @@ class EmbeddingPanelComponent extends React.Component {
         <Aside className="header_aside-panel">
           <StyledContent>
             <StyledHeaderContent>
-              <IconButton
-                size="16"
-                iconName="/static/images/arrow.path.react.svg"
-                onClick={this.onArrowClick}
-                // color={theme.filesPanels.embedding.color}
-              />
-              <Heading
-                className="header_aside-panel-header"
-                size="medium"
-                truncate
-              >
-                {t("EmbeddingDocument")}
-              </Heading>
+              <div className="embedding_panel">
+                <IconButton
+                  size="16"
+                  iconName="/static/images/arrow.path.react.svg"
+                  onClick={this.onArrowClick}
+                  // color={theme.filesPanels.embedding.color}
+                />
+                <Heading
+                  className="header_aside-panel-header"
+                  size="medium"
+                  truncate
+                >
+                  {t("EmbeddingDocument")}
+                </Heading>
+              </div>
             </StyledHeaderContent>
             <StyledBody>
               <EmbeddingBody theme={theme} />
