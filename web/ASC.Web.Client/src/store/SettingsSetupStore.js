@@ -11,6 +11,8 @@ class SettingsSetupStore {
   selectionStore = null;
   authStore = null;
 
+  isLoadingArticleSettings = false;
+
   isInit = false;
 
   common = {
@@ -332,6 +334,10 @@ class SettingsSetupStore {
     const res = await api.settings.getCommonThirdPartyList();
 
     this.setCommonThirdPartyList(res);
+  };
+
+  setIsLoadingArticleSettings = (isLoading) => {
+    this.isLoadingArticleSettings = isLoading;
   };
 }
 

@@ -142,7 +142,6 @@ export default inject(
 
       toggleArticleOpen,
       personal,
-      hideArticle,
       isDesktopClient,
       FirebaseHelper,
       theme,
@@ -171,7 +170,6 @@ export default inject(
 
       setTreeFolders,
       setNewFilesPanelVisible,
-      hideArticle,
       firstLoad,
       isDesktopClient,
       FirebaseHelper,
