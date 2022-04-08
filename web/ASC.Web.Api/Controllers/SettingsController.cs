@@ -36,6 +36,7 @@ using System.Net.Mail;
 using System.Security;
 using System.ServiceModel.Security;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Web;
 
@@ -3103,9 +3104,24 @@ namespace ASC.Api.Settings
         /// <category>LDAP</category>
         /// <param name="cron">Cron expression</param>
         [Create("ldap/cron")]
-        public void SetLdapCronSettings(string cron)
+        [Consumes("application/x-www-form-urlencoded")]
+        public void SetLdapCronSettingsFromForm([FromForm]LdapCronModel model)
+        {
+            SetLdapCronSettings(model);
+        }
+
+
+        [Create("ldap/cron")]
+        public void SetLdapCronSettingsFromBody([FromBody] LdapCronModel model)
+        {
+            SetLdapCronSettings(model);
+        }
+
+        private void SetLdapCronSettings(LdapCronModel model)
         {
             CheckLdapPermissions();
+
+            var cron = model.Cron;
 
             if (!string.IsNullOrEmpty(cron))
             {
@@ -3239,7 +3255,20 @@ namespace ASC.Api.Settings
         /// <param name="acceptCertificate">Specifies if the errors of checking certificates are allowed (true) or not (false)</param>
         /// <returns>Operation status</returns>
         [Create("ldap")]
-        public LdapOperationStatus SaveLdapSettings(string settings, bool acceptCertificate)
+        [Consumes("application/x-www-form-urlencoded")]
+        public LdapOperationStatus SaveLdapSettingsFromForm([FromForm]LdapSettingsModel model)
+        {
+            return SaveLdapSettings(model);
+        }
+
+
+        [Create("ldap")]
+        public LdapOperationStatus SaveLdapSettingsFromBody([FromBody] LdapSettingsModel model)
+        {
+            return SaveLdapSettings(model);
+        }
+
+        private LdapOperationStatus SaveLdapSettings(LdapSettingsModel model)
         {
             CheckLdapPermissions();
 
@@ -3251,13 +3280,13 @@ namespace ASC.Api.Settings
                 return GetStartProcessError();
             }
 
-            var ldapSettings = JsonSerializer.Deserialize<LdapSettings>(settings);
+            var ldapSettings = JsonSerializer.Deserialize<LdapSettings>(model.Settings);
 
-            ldapSettings.AcceptCertificate = acceptCertificate;
+            ldapSettings.AcceptCertificate = model.AcceptCertificate;
 
             if (!ldapSettings.EnableLdapAuthentication)
             {
-                SetLdapCronSettings(null);
+                SetLdapCronSettingsFromBody(null);
             }
 
             //ToDo
@@ -3287,7 +3316,19 @@ namespace ASC.Api.Settings
         /// <param name="acceptCertificate">Specifies if the errors of checking certificates are allowed (true) or not (false)</param>
         /// <returns>Operation status</returns>
         [Create("ldap/save/test")]
-        public LdapOperationStatus TestLdapSave(string settings, bool acceptCertificate)
+        [Consumes("application/x-www-form-urlencoded")]
+        public LdapOperationStatus TestLdapSaveFromForm([FromForm]LdapSettingsModel model)
+        {
+            return TestLdapSave(model);
+        }
+
+        [Create("ldap/save/test")]
+        public LdapOperationStatus TestLdapSaveFromBody([FromBody] LdapSettingsModel model)
+        {
+            return TestLdapSave(model);
+        }
+
+        private LdapOperationStatus TestLdapSave(LdapSettingsModel model)
         {
             CheckLdapPermissions();
 
@@ -3313,9 +3354,9 @@ namespace ASC.Api.Settings
                 return GetStartProcessError();
             }
 
-            var ldapSettings = JsonSerializer.Deserialize<LdapSettings>(settings);
+            var ldapSettings = JsonSerializer.Deserialize<LdapSettings>(model.Settings);
 
-            ldapSettings.AcceptCertificate = acceptCertificate;
+            ldapSettings.AcceptCertificate = model.AcceptCertificate;
 
             LdapLocalization.Init(Resource.ResourceManager);
 
@@ -3397,7 +3438,7 @@ namespace ASC.Api.Settings
                 CertificateConfirmRequest = certificateConfirmRequest,
                 Source = operation.GetProperty<string>(LdapOperation.SOURCE),
                 OperationType = Enum.GetName(typeof(LdapOperationType),
-                    (LdapOperationType)Convert.ToInt32(operation.GetProperty<string>(LdapOperation.OPERATION_TYPE))),
+                    (LdapOperationType)operation.GetProperty<int>(LdapOperation.OPERATION_TYPE)),
                 Warning = operation.GetProperty<string>(LdapOperation.WARNING)
             };
 

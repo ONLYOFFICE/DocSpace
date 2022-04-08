@@ -21,16 +21,13 @@ namespace ASC.ActiveDirectory.Base.Settings;
 [DataContract]
 public class LdapSettings : ISettings, ICloneable
 {
-    private readonly SettingsManager _settingsManager;
     public Guid ID
     {
         get { return new Guid("{197149b3-fbc9-44c2-b42a-232f7e729c16}"); }
     }
 
-    public LdapSettings(
-        SettingsManager settingsManager)
+    public LdapSettings()
     {
-        _settingsManager = settingsManager;
         LdapMapping = new Dictionary<MappingFields, string>();
         AccessRights = new Dictionary<AccessRight, string>();
     }
@@ -79,7 +76,7 @@ public class LdapSettings : ISettings, ICloneable
     {
         var isMono = WorkContext.IsMono;
 
-        var settings = new LdapSettings(_settingsManager)
+        var settings = new LdapSettings()
         {
             Server = "",
             UserDN = "",
@@ -118,8 +115,6 @@ public class LdapSettings : ISettings, ICloneable
 
         return settings;
     }
-
-    public List<MappingFields> GetImportedFields { get { return _settingsManager.Load<LdapSettings>().LdapMapping.Keys.ToList(); } }
 
     public override bool Equals(object obj)
     {
