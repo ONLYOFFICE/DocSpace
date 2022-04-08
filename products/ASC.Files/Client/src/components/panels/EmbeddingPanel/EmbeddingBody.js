@@ -67,7 +67,9 @@ const EmbeddingBody = ({ embeddingLink, t, theme }) => {
         <Link
           isHovered
           type="action"
-          className="embedding-panel_link"
+          className={`embedding-panel_link  ${
+            size === "600x800" ? "embedding-panel_active-link" : ""
+          }`}
           onClick={onSelectSizeMiddle}
         >
           600 x 800 px
@@ -75,7 +77,9 @@ const EmbeddingBody = ({ embeddingLink, t, theme }) => {
         <Link
           isHovered
           type="action"
-          className="embedding-panel_link"
+          className={`embedding-panel_link  ${
+            size === "400x600" ? "embedding-panel_active-link" : ""
+          }`}
           onClick={onSelectSizeSmall}
         >
           400 x 600 px
@@ -83,7 +87,9 @@ const EmbeddingBody = ({ embeddingLink, t, theme }) => {
         <Link
           isHovered
           type="action"
-          className="embedding-panel_link"
+          className={`embedding-panel_link  ${
+            size === "auto" ? "embedding-panel_active-link" : ""
+          }`}
           onClick={onSelectSizeAuto}
         >
           {t("Auto")}
