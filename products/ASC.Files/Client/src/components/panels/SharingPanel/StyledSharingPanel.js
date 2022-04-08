@@ -57,6 +57,15 @@ const StyledBodyContent = styled.div`
   display: flex;
   flex-direction: column;
   align-items: start;
+
+  .panel-loader-wrapper {
+    display: flex;
+    align-items: center;
+
+    span {
+      margin-left: 8px;
+    }
+  }
 `;
 
 const StyledExternalLink = styled.div`

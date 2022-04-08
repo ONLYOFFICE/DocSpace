@@ -469,8 +469,7 @@ class SharingPanelComponent extends React.Component {
     //console.log("Sharing panel render");
     const {
       t,
-      theme,
-      tReady,
+
       isPersonal,
       isMyId,
       selection,
@@ -599,9 +598,10 @@ class SharingPanelComponent extends React.Component {
                 ) : (
                   <div key="loader" className="panel-loader-wrapper">
                     <Loader type="oval" size="16px" className="panel-loader" />
-                    <Text as="span">{`${t("Common:LoadingProcessing")} ${t(
-                      "Common:LoadingDescription"
-                    )}`}</Text>
+                    <Text as="span">
+                      {`${t("Common:LoadingProcessing")} 
+                      ${t("Common:LoadingDescription")}`}
+                    </Text>
                   </div>
                 )}
               </Scrollbar>
