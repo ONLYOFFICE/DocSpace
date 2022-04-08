@@ -75,6 +75,7 @@ namespace ASC.IPSecurity
             });
 
             TenantDbContext.TenantIpRestrictions.AddRange(ipsList);
+            TenantDbContext.SaveChanges();
 
             tx.Commit();
             return ips.ToList();
