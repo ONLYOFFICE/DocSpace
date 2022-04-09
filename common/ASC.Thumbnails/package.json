@@ -14,7 +14,7 @@
     "express": "^4.17.1",
     "filenamify-url": "^2.1.2",
     "graceful-fs": "~4.2.4",
-    "moment": "^2.26.0",
+    "moment": "^2.29.2",
     "nconf": "^0.11.0",
     "node-cache": "^5.1.0",
     "phantomjs-prebuilt": "^2.1.16",
