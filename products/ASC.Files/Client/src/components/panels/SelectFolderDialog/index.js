@@ -98,12 +98,16 @@ class SelectFolderModalDialog extends React.Component {
       onSelectFolder(null);
       return;
     }
+    const resId = treeFromInput ? id : resultingId;
+
+    foldersType === "common" ||
+      (isSetFolderImmediately && onSelectFolder && onSelectFolder(resId));
 
     this.setState({
       resultingFolderTree: tree,
       isInitialLoader: false,
       ...((foldersType === "common" || isSetFolderImmediately) && {
-        folderId: treeFromInput ? id : resultingId,
+        folderId: resId,
       }),
     });
   }
@@ -168,6 +172,7 @@ class SelectFolderModalDialog extends React.Component {
       setSelectedNode,
       setExpandedPanelKeys,
       setSelectedFolder,
+      onSelectFolder,
     } = this.props;
     console.log("folder", folder);
     this.setState({

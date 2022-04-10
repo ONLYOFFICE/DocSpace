@@ -163,19 +163,23 @@ class SelectionPanel extends React.Component {
     setExpandedPanelKeys,
     setSelectedFolder
   ) => {
-    const data = await getFolder(id);
+    try {
+      const data = await getFolder(id);
 
-    setSelectedNode([id + ""]);
-    const newPathParts = this.convertPathParts(data.pathParts);
+      setSelectedNode([id + ""]);
+      const newPathParts = this.convertPathParts(data.pathParts);
 
-    setExpandedPanelKeys(newPathParts);
+      setExpandedPanelKeys(newPathParts);
 
-    setSelectedFolder({
-      folders: data.folders,
-      ...data.current,
-      pathParts: newPathParts,
-      ...{ new: data.new },
-    });
+      setSelectedFolder({
+        folders: data.folders,
+        ...data.current,
+        pathParts: newPathParts,
+        ...{ new: data.new },
+      });
+    } catch (e) {
+      toastr.error(e);
+    }
   };
   static getBasicFolderInfo = async (
     treeFolders,

@@ -91,4 +91,34 @@ const StyledRow = styled.div`
     }
   }
 `;
-export { StyledBody, StyledRow };
+
+const StyledAsideBody = styled.div`
+  height: 100%;
+  .selection-panel_aside-body {
+    height: calc(100% - 32px);
+    display: grid;
+    grid-template-rows: max-content auto max-content;
+  }
+  .selection-panel_files-list-body {
+    height: 100%;
+  }
+  .selection-panel_files {
+    height: 100%;
+  }
+
+  .selection-panel_aside-footer {
+    border-top: 1px solid #eceef1;
+    margin-left: -13px;
+    margin-right: -13px;
+    padding-left: 16px;
+
+    .selection-panel_aside-buttons {
+      padding-top: 16px;
+
+      button:first-child {
+        margin-right: 8px;
+      }
+    }
+  }
+`;
+export { StyledBody, StyledRow, StyledAsideBody };

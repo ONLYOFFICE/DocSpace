@@ -7,7 +7,6 @@ import throttle from "lodash/throttle";
 
 import stores from "../../../store/index";
 import i18n from "./i18n";
-import SelectFileDialogModalView from "./ModalView";
 import SelectFileDialogAsideView from "./AsideView";
 
 import utils from "@appserver/components/utils";
@@ -26,17 +25,17 @@ class SelectFileDialogBody extends React.Component {
   constructor(props) {
     super(props);
     const {
-      folderId,
       storeFolderId,
       fileInfo,
       filter,
       creationButtonPrimary,
       t,
+      id,
     } = props;
 
     this.state = {
       isVisible: false,
-      folderId: storeFolderId || "",
+      folderId: id || storeFolderId || "",
       //passedId: folderId,
       selectedFile: fileInfo || "",
       fileName: (fileInfo && fileInfo.title) || "",
@@ -120,6 +119,7 @@ class SelectFileDialogBody extends React.Component {
       setExpandedPanelKeys,
       displayType,
     } = this.props;
+    const { folderId } = this.state;
     !displayType && window.addEventListener("resize", this.throttledResize);
 
     this.setFilter();
@@ -137,7 +137,7 @@ class SelectFileDialogBody extends React.Component {
       ] = await SelectionPanel.getBasicFolderInfo(
         treeFolders,
         foldersType,
-        id,
+        folderId,
         onSetBaseFolderPath,
         onSelectFolder,
         foldersList,
@@ -158,7 +158,7 @@ class SelectFileDialogBody extends React.Component {
 
       return;
     }
-
+    console.log("HELLO", resultingFolderTree, resultingId);
     const tree = treeFromInput ? treeFromInput : resultingFolderTree;
 
     if (tree.length === 0) {
@@ -171,7 +171,7 @@ class SelectFileDialogBody extends React.Component {
       resultingFolderTree: tree,
       isInitialLoader: false,
 
-      folderId: treeFromInput ? id : resultingId,
+      folderId: resultingId,
     });
   }
   componentWillUnmount() {
@@ -227,18 +227,20 @@ class SelectFileDialogBody extends React.Component {
       setExpandedPanelKeys,
       setSelectedFolder,
     } = this.props;
-
+    const { displayType } = this.state;
     // setFolderId(id);
 
+    const id = displayType === "aside" ? folder : folder[0];
+    console.log("ASIDE select folder", folder, folder[0]);
     this.setState({
-      folderId: folder[0],
+      folderId: id,
       hasNextPage: true,
       files: [],
       page: 0,
     });
 
     SelectionPanel.setFolderObjectToTree(
-      folder[0],
+      id,
       setSelectedNode,
       setExpandedPanelKeys,
       setSelectedFolder
@@ -270,7 +272,7 @@ class SelectFileDialogBody extends React.Component {
   _loadNextPage = () => {
     const { files, page, folderId } = this.state;
 
-    if (this._isLoadNextPage) return;
+    if (this._isLoadNextPage || !folderId) return;
 
     this._isLoadNextPage = true;
 
@@ -285,7 +287,7 @@ class SelectFileDialogBody extends React.Component {
         const finalData = [...data.files];
 
         const newFilesList = [...files].concat(finalData);
-        console.log("newFilesList", newFilesList);
+
         const hasNextPage = newFilesList.length < data.total - 1;
 
         this._isLoadNextPage = false;
@@ -343,38 +345,35 @@ class SelectFileDialogBody extends React.Component {
       ? t("Common:Create")
       : t("Common:SaveButton");
 
-    console.log("filesListTitle", filesListTitle);
     return displayType === "aside" ? (
       <SelectFileDialogAsideView
-        theme={theme}
         t={t}
+        theme={theme}
         isPanelVisible={isPanelVisible}
-        zIndex={zIndex}
+        isFolderPanelVisible={isVisible}
         onClose={onClose}
-        isVisible={isVisible}
         withoutProvider={withoutProvider}
-        foldersType={foldersType}
-        files={files}
-        onSelectFile={this.onSelectFile}
-        onClickInput={this.onClickInput}
-        onClickSave={this.onClickSave}
-        onCloseSelectFolderDialog={this.onCloseSelectFolderDialog}
-        onSelectFolder={this.onSelectFolder}
-        hasNextPage={hasNextPage}
-        isNextPageLoading={isNextPageLoading}
-        loadNextPage={this.loadNextPage}
-        selectedFolder={selectedFolder}
-        headerName={headerName}
-        selectedFile={selectedFile}
         folderId={folderId}
-        onSetFileName={onSetFileName}
-        fileName={fileName}
-        displayType={displayType}
-        isTranslationsReady={tReady}
-        passedId={passedId}
-        filesListTitle={filesListTitle}
-        isAvailableFolderList={isAvailableFolderList}
+        resultingFolderTree={resultingFolderTree}
+        onButtonClick={this.onClickSave}
+        header={header}
+        dialogName={dialogName}
+        footer={footer}
+        isLoadingData={isLoadingData}
         primaryButtonName={buttonName}
+        isAvailable={isAvailableFolderList}
+        onSelectFolder={this.onSelectFolder}
+        files={files}
+        isNextPageLoading={isNextPageLoading}
+        page={page}
+        hasNextPage={hasNextPage}
+        loadNextPage={this._loadNextPage}
+        onSelectFile={this.onSelectFile}
+        filesListTitle={filesListTitle}
+        fileId={selectedFile.id}
+        foldersType={foldersType}
+        onClickInput={this.onClickInput}
+        onCloseSelectFolderDialog={this.onCloseSelectFolderDialog}
       />
     ) : (
       <SelectionPanel
@@ -453,7 +452,7 @@ const SelectFileDialogWrapper = inject(
     const { filter } = filesStore;
     const { setSelectedFolder, id } = selectedFolderStore;
     return {
-      storeFolderId: storeFolderId || id,
+      //storeFolderId: storeFolderId || id,
       fileInfo,
       setFile,
       setFolderId,
@@ -462,6 +461,7 @@ const SelectFileDialogWrapper = inject(
       filter,
       setExpandedPanelKeys,
       treeFolders,
+      storeFolderId: id,
     };
   }
 )(

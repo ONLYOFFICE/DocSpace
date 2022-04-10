@@ -73,14 +73,12 @@ const SelectFolderDialogAsideView = ({
 
               <FolderTreeBody
                 theme={theme}
-                isLoadingData={isLoadingData}
                 folderTree={resultingFolderTree}
                 onSelect={onSelect}
                 withoutProvider={withoutProvider}
                 certainFolders
                 isAvailable={isAvailable}
                 selectedKeys={[`${folderId}`]}
-                heightContent={asideHeightContent}
                 displayType={DISPLAY_TYPE}
               />
             </div>
@@ -98,13 +96,13 @@ const SelectFolderDialogAsideView = ({
                 size="normal"
                 label={primaryButtonName}
                 onClick={onButtonClick}
-                isDisabled={isLoadingData || !isAvailable || !canCreate}
+                //isDisabled={isLoadingData || !isAvailable || !canCreate}
               />
               <Button
                 size="normal"
                 label={t("Common:CancelButton")}
                 onClick={onClose}
-                isDisabled={isLoadingData}
+                // isDisabled={isLoadingData}
               />
             </div>
           </StyledSelectFolderPanel>
