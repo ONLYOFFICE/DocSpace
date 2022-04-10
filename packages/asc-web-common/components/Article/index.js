@@ -31,6 +31,7 @@ const Article = ({
   toggleShowText,
   toggleArticleOpen,
   setIsMobileArticle,
+  isLoading,
   children,
   ...rest
 }) => {
@@ -115,7 +116,11 @@ const Article = ({
           className="resizable-block"
           handleWrapperClass="resizable-border not-selectable"
         >
-          <SubArticleHeader showText={showText} onClick={toggleShowText}>
+          <SubArticleHeader
+            isLoading={isLoading}
+            showText={showText}
+            onClick={toggleShowText}
+          >
             {articleHeaderContent ? articleHeaderContent.props.children : null}
           </SubArticleHeader>
           {articleMainButtonContent && !isMobileOnly && !isMobileUtils() ? (
@@ -123,7 +128,7 @@ const Article = ({
               {articleMainButtonContent.props.children}
             </SubArticleMainButton>
           ) : null}
-          <SubArticleBody showText={showText}>
+          <SubArticleBody isLoading={isLoading} showText={showText}>
             {articleBodyContent ? articleBodyContent.props.children : null}
           </SubArticleBody>
         </Resizable>
