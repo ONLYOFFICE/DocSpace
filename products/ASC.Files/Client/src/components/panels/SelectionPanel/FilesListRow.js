@@ -13,7 +13,6 @@ const FilesListRow = ({
   icon,
   item,
 }) => {
-  console.log("folderSelection", folderSelection);
   const { id, fileExst, title } = item;
   const element = <ItemIcon id={id} icon={icon} fileExst={fileExst} />;
 

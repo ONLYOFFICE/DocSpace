@@ -20,6 +20,13 @@ const StyledBody = styled.div`
       grid-area: tree;
       height: 100%;
       border-right: 1px solid #eceef1;
+
+      display: grid;
+      grid-template-rows: max-content auto;
+
+      .selection-panel_folder-title {
+        padding: 20px 12px 20px 0px;
+      }
     }
 
     .selection-panel_files-header {

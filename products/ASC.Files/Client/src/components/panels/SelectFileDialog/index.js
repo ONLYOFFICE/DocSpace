@@ -160,7 +160,7 @@ class SelectFileDialogBody extends React.Component {
     }
 
     const tree = treeFromInput ? treeFromInput : resultingFolderTree;
-    console.log("tree", tree);
+
     if (tree.length === 0) {
       this.setState({ isAvailable: false });
       onSelectFolder(null);
@@ -269,7 +269,7 @@ class SelectFileDialogBody extends React.Component {
 
   _loadNextPage = () => {
     const { files, page, folderId } = this.state;
-    console.log("loadeNextPage");
+
     if (this._isLoadNextPage) return;
 
     this._isLoadNextPage = true;
@@ -312,12 +312,11 @@ class SelectFileDialogBody extends React.Component {
       zIndex,
       foldersType,
       withoutProvider,
-      titleFilesList,
+      filesListTitle,
       onSetFileName,
       tReady,
       headerName,
       theme,
-      primaryButtonName,
       header,
       footer,
       dialogName,
@@ -339,10 +338,12 @@ class SelectFileDialogBody extends React.Component {
       page,
       folderId,
     } = this.state;
-    console.log("files", files);
+
     const buttonName = creationButtonPrimary
       ? t("Common:Create")
       : t("Common:SaveButton");
+
+    console.log("filesListTitle", filesListTitle);
     return displayType === "aside" ? (
       <SelectFileDialogAsideView
         theme={theme}
@@ -371,7 +372,7 @@ class SelectFileDialogBody extends React.Component {
         displayType={displayType}
         isTranslationsReady={tReady}
         passedId={passedId}
-        titleFilesList={titleFilesList}
+        filesListTitle={filesListTitle}
         isAvailableFolderList={isAvailableFolderList}
         primaryButtonName={buttonName}
       />
@@ -389,7 +390,7 @@ class SelectFileDialogBody extends React.Component {
         dialogName={dialogName}
         footer={footer}
         isLoadingData={isLoadingData}
-        primaryButtonName={primaryButtonName}
+        primaryButtonName={buttonName}
         isAvailable={isAvailableFolderList}
         onSelectFolder={this.onSelectFolder}
         files={files}
@@ -398,7 +399,7 @@ class SelectFileDialogBody extends React.Component {
         hasNextPage={hasNextPage}
         loadNextPage={this._loadNextPage}
         onSelectFile={this.onSelectFile}
-        titleFilesList={titleFilesList}
+        filesListTitle={filesListTitle}
         fileId={selectedFile.id}
       />
     );

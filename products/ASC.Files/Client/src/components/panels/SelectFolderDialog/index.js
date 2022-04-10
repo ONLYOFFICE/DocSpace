@@ -355,27 +355,14 @@ SelectFolderModalDialog.propTypes = {
   ]),
   displayType: PropTypes.oneOf(["aside", "modal"]),
   id: PropTypes.string,
-  zIndex: PropTypes.number,
   withoutProvider: PropTypes.bool,
-  isNeedArrowIcon: PropTypes.bool,
-  dialogWithFiles: PropTypes.bool,
-  showButtons: PropTypes.bool,
-  selectionButtonPrimary: PropTypes.bool,
-  modalHeightContent: PropTypes.string,
   asideHeightContent: PropTypes.string,
 };
 SelectFolderModalDialog.defaultProps = {
   isSetFolderImmediately: false,
-  dialogWithFiles: false,
-  isNeedArrowIcon: false,
   id: "",
-  modalHeightContent: "291px",
   asideHeightContent: "100%",
-  zIndex: 310,
   withoutProvider: false,
-  folderPath: "",
-  showButtons: false,
-  selectionButtonPrimary: false,
 };
 
 const SelectFolderDialogWrapper = inject(
@@ -394,7 +381,7 @@ const SelectFolderDialogWrapper = inject(
 
     const { canCreate, filter } = filesStore;
     const { setSelectedFolder, id } = selectedFolderStore;
-    const { setFolderId, setFile } = selectedFilesStore;
+    const { setFolderId } = selectedFilesStore;
     return {
       theme: auth.settingsStore.theme,
       setSelectedFolder,
@@ -403,7 +390,6 @@ const SelectFolderDialogWrapper = inject(
       storeFolderId: id,
       setExpandedPanelKeys,
       setFolderId,
-      setFile,
       treeFolders,
       filter,
     };

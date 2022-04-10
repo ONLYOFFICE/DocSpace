@@ -33,7 +33,6 @@ const FilesListBody = ({
   useEffect(() => {
     countLoad = 0;
     if (filesListRef && filesListRef.current) {
-      console.log("resetloadMoreItemsCache");
       filesListRef.current.resetloadMoreItemsCache(true);
     }
   }, [folderId, page, displayType]);
@@ -50,7 +49,7 @@ const FilesListBody = ({
   const loadMoreItems = useCallback(() => {
     if (isNextPageLoading) return;
     countLoad++;
-    console.log("loadMoreItems");
+
     loadNextPage && loadNextPage();
   }, [isNextPageLoading, files, displayType]);
 
@@ -104,7 +103,6 @@ const FilesListBody = ({
 
   const Item = useCallback(
     ({ index, style }) => {
-      console.log("hello");
       const isLoaded = isItemLoaded(index);
 
       if (!isLoaded) {

@@ -43,6 +43,7 @@ const SelectionPanelBody = ({
   folderTitle,
   fileId,
 }) => {
+  console.log("folderId", folderId);
   return (
     <ModalDialog
       theme={theme}
@@ -60,25 +61,39 @@ const SelectionPanelBody = ({
         <StyledBody>
           <div className="selection-panel_body">
             <div className="selection-panel_tree-body">
-              <FolderTreeBody
-                theme={theme}
-                folderTree={resultingFolderTree}
-                onSelect={onSelectFolder}
-                withoutProvider={withoutProvider}
-                certainFolders
-                isAvailable={isAvailable}
-                selectedKeys={[`${folderId}`]}
-                displayType="modal"
-              />
+              <Text
+                fontWeight="700"
+                fontSize="18px"
+                className="selection-panel_folder-title"
+              >
+                {"Documents"}
+              </Text>
+              {folderId ? (
+                <FolderTreeBody
+                  theme={theme}
+                  folderTree={resultingFolderTree}
+                  onSelect={onSelectFolder}
+                  withoutProvider={withoutProvider}
+                  certainFolders
+                  isAvailable={isAvailable}
+                  selectedKeys={[`${folderId}`]}
+                  displayType="modal"
+                />
+              ) : (
+                <></>
+              )}
             </div>
             <div className="selection-panel_files-body">
               <>
                 <div className="selection-panel_files-header">
                   {header}
                   {folderSelection ? (
-                    <Text color="#A3A9AE">{`The contents of the '${folderTitle}' folder`}</Text>
+                    <Text
+                      color="#A3A9AE"
+                      theme={theme}
+                    >{`The contents of the '${folderTitle}' folder`}</Text>
                   ) : (
-                    <Text theme={theme} className="modal-dialog-filter-title">
+                    <Text color="#A3A9AE" theme={theme}>
                       {filesListTitle}
                     </Text>
                   )}
