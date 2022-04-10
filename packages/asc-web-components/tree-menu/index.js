@@ -84,7 +84,7 @@ const StyledTreeMenu = styled(Tree)`
   .rc-tree-child-tree-open {
     display: block;
     ${(props) => props.disableSwitch && "margin: 0 0 25px 0;"}
-    margin-left: ${(props) => (props.disableSwitch ? "27px" : "8px")};
+    margin-left: ${(props) => (props.disableSwitch ? "27px" : "16px")};
     li:first-child {
       margin-top: ${(props) => (props.disableSwitch ? "10px" : "6px")};
       margin-left: 0;
