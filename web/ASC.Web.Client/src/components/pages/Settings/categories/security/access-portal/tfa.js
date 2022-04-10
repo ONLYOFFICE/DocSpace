@@ -4,82 +4,83 @@ import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import RadioButtonGroup from "@appserver/components/radio-button-group";
-import Button from "@appserver/components/button";
 import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";
 import toastr from "@appserver/components/toast/toastr";
-import SectionLoader from "../sub-components/section-loader";
 import { getLanguage } from "@appserver/common/utils";
-import { isMobile } from "react-device-detect";
+import { LearnMoreWrapper } from "../StyledSecurity";
+import { size } from "@appserver/components/utils/device";
+import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
+import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 
 const MainContainer = styled.div`
   width: 100%;
 
-  .page-subtitle {
-    margin-bottom: 10px;
-  }
-
   .box {
-    margin-top: 20px;
     margin-bottom: 24px;
   }
 `;
 
-const ButtonsWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  gap: 8px;
-  align-items: center;
-
-  @media (max-width: 375px) {
-    position: absolute;
-    bottom: 16px;
-    width: calc(100vw - 32px);
-
-    .button {
-      height: 40px;
-      width: 100%;
-    }
-
-    .reminder {
-      position: absolute;
-      bottom: 48px;
-    }
-  }
-`;
-
 const TwoFactorAuth = (props) => {
-  const { t } = props;
+  const { t, history } = props;
   const [type, setType] = useState("none");
-  const [currentState, setCurrentState] = useState("");
+
   const [smsDisabled, setSmsDisabled] = useState(false);
   const [appDisabled, setAppDisabled] = useState(false);
   const [showReminder, setShowReminder] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const getSettings = async () => {
-    const { getTfaType, getTfaSettings } = props;
-    const type = await getTfaType();
-    setType(type);
-    setCurrentState(type);
+  const getSettings = () => {
+    const { tfaSettings, smsAvailable, appAvailable } = props;
+    const currentSettings = getFromSessionStorage("currentTfaSettings");
+    const defaultSettings = getFromSessionStorage("defaultTfaSettings");
 
-    const settings = await getTfaSettings();
-    setSmsDisabled(settings[0].avaliable);
-    setAppDisabled(settings[1].avaliable);
+    if (defaultSettings) {
+      saveToSessionStorage("defaultTfaSettings", defaultSettings);
+    } else {
+      saveToSessionStorage("defaultTfaSettings", tfaSettings);
+    }
+
+    if (currentSettings) {
+      setType(currentSettings);
+    } else {
+      setType(tfaSettings);
+    }
+
+    setSmsDisabled(smsAvailable);
+    setAppDisabled(appAvailable);
+    setIsLoading(true);
   };
 
   useEffect(() => {
+    checkWidth();
     getSettings();
-    setIsLoading(true);
-  }, []);
+    window.addEventListener("resize", checkWidth);
+    return () => window.removeEventListener("resize", checkWidth);
+  }, [isLoading]);
+
+  useEffect(() => {
+    if (!isLoading) return;
+
+    const defaultSettings = getFromSessionStorage("defaultTfaSettings");
+    saveToSessionStorage("currentTfaSettings", type);
+
+    if (defaultSettings === type) {
+      setShowReminder(false);
+    } else {
+      setShowReminder(true);
+    }
+  }, [type]);
+
+  const checkWidth = () => {
+    window.innerWidth > size.smallTablet &&
+      history.location.pathname.includes("tfa") &&
+      history.push("/settings/security/access-portal");
+  };
 
   const onSelectTfaType = (e) => {
     if (type !== e.target.value) {
       setType(e.target.value);
-      setShowReminder(true);
-    }
-    if (e.target.value === currentState) {
-      setShowReminder(false);
     }
   };
 
@@ -94,31 +95,32 @@ const TwoFactorAuth = (props) => {
         );
       }
       setType(type);
+      saveToSessionStorage("defaultTfaSettings", type);
+
       setShowReminder(false);
     });
   };
 
   const onCancelClick = () => {
+    const defaultSettings = getFromSessionStorage("defaultTfaSettings");
+    setType(defaultSettings);
     setShowReminder(false);
-    setType(currentState);
   };
 
   const lng = getLanguage(localStorage.getItem("language") || "en");
-  if (!isLoading) return <SectionLoader />;
   return (
     <MainContainer>
-      {isMobile && (
-        <>
-          <Text className="page-subtitle">{t("TwoFactorAuthHelper")}</Text>
-          <Link
-            className="learn-more"
-            target="_blank"
-            href={`https://helpcenter.onlyoffice.com/${lng}/administration/two-factor-authentication.aspx`}
-          >
-            {t("Common:LearnMore")}
-          </Link>
-        </>
-      )}
+      <LearnMoreWrapper>
+        <Text className="learn-subtitle">{t("TwoFactorAuthHelper")}</Text>
+        <Link
+          color="#316DAA"
+          target="_blank"
+          isHovered
+          href={`https://helpcenter.onlyoffice.com/${lng}/administration/two-factor-authentication.aspx`}
+        >
+          {t("Common:LearnMore")}
+        </Link>
+      </LearnMoreWrapper>
 
       <RadioButtonGroup
         className="box"
@@ -147,52 +149,36 @@ const TwoFactorAuth = (props) => {
         onClick={onSelectTfaType}
       />
 
-      <ButtonsWrapper>
-        <Button
-          label={t("Common:SaveButton")}
-          size="small"
-          primary={true}
-          className="button"
-          onClick={onSaveClick}
-          isDisabled={!showReminder}
-        />
-        <Button
-          label={t("Common:CancelButton")}
-          size="small"
-          className="button"
-          onClick={onCancelClick}
-          isDisabled={!showReminder}
-        />
-        {showReminder && (
-          <Text
-            color="#A3A9AE"
-            fontSize="12px"
-            fontWeight="600"
-            className="reminder"
-          >
-            {t("YouHaveUnsavedChanges")}
-          </Text>
-        )}
-      </ButtonsWrapper>
+      <SaveCancelButtons
+        className="save-cancel-buttons"
+        onSaveClick={onSaveClick}
+        onCancelClick={onCancelClick}
+        showReminder={showReminder}
+        reminderTest={t("YouHaveUnsavedChanges")}
+        saveButtonLabel={t("Common:SaveButton")}
+        cancelButtonLabel={t("Common:CancelButton")}
+        displaySettings={true}
+        hasScroll={false}
+      />
     </MainContainer>
   );
 };
 
 export default inject(({ auth }) => {
-  const { organizationName } = auth.settingsStore;
   const {
-    getTfaType,
-    getTfaSettings,
     setTfaSettings,
     getTfaConfirmLink,
+    tfaSettings,
+    smsAvailable,
+    appAvailable,
   } = auth.tfaStore;
 
   return {
-    organizationName,
-    getTfaType,
-    getTfaSettings,
     setTfaSettings,
     getTfaConfirmLink,
+    tfaSettings,
+    smsAvailable,
+    appAvailable,
   };
 })(
   withTranslation(["Settings", "Common"])(withRouter(observer(TwoFactorAuth)))

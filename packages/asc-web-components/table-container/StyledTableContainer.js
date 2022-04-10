@@ -7,7 +7,7 @@ import { isMobile } from "react-device-detect";
 const StyledTableContainer = styled.div`
   -moz-user-select: none;
 
-  width: calc(100% - 5px);
+  width: 100%;
   max-width: 100%;
   margin-top: -19px;
 
@@ -79,7 +79,7 @@ const StyledTableGroupMenu = styled.div`
   align-items: center;
   width: 100%;
   z-index: 199;
-  height: 52px;
+  height: 53px;
   box-shadow: ${(props) => props.theme.tableContainer.groupMenu.boxShadow};
   border-radius: 0px 0px 6px 6px;
   margin: 0;
@@ -125,6 +125,42 @@ const StyledTableGroupMenu = styled.div`
 
 StyledTableGroupMenu.defaultProps = { theme: Base };
 
+const StyledInfoPanelToggleWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  align-self: center;
+  justify-content: center;
+  margin: 0 20px 0 auto;
+  height: 100%;
+  width: auto;
+  padding-left: 20px;
+
+  @media ${tablet} {
+    margin: 0 16px 0 auto;
+  }
+
+  .info-panel-toggle-bg {
+    height: 32px;
+    width: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: ${(props) =>
+      props.isInfoPanelVisible
+        ? props.theme.infoPanel.sectionHeaderToggleBgActive
+        : props.theme.infoPanel.sectionHeaderToggleBg};
+
+    path {
+      fill: ${(props) =>
+        props.isInfoPanelVisible
+          ? props.theme.infoPanel.sectionHeaderToggleIconActive
+          : props.theme.infoPanel.sectionHeaderToggleIcon};
+    }
+  }
+`;
+StyledInfoPanelToggleWrapper.defaultProps = { theme: Base };
+
 const StyledTableHeader = styled.div`
   position: fixed;
   background: ${(props) => props.theme.tableContainer.header.background};
@@ -163,6 +199,8 @@ const StyledTableHeaderCell = styled.div`
       `}
 
     svg {
+      width: 12px;
+      height: 12px;
       path {
         fill: ${(props) =>
           props.isActive
@@ -302,6 +340,9 @@ const StyledScrollbar = styled(Scrollbar)`
   .scroll-body {
     display: flex;
   }
+  .nav-thumb-vertical {
+    display: none !important;
+  }
   .nav-thumb-horizontal {
     ${isMobile && "display: none !important"};
   }
@@ -318,6 +359,7 @@ export {
   StyledTableCell,
   StyledTableSettings,
   StyledTableGroupMenu,
+  StyledInfoPanelToggleWrapper,
   StyledEmptyTableContainer,
   StyledScrollbar,
 };

@@ -1,26 +1,26 @@
-import { makeAutoObservable } from "mobx";
-
 import {
-  removeFiles,
+  checkFileConflicts,
   deleteFile,
   deleteFolder,
-  finalizeVersion,
-  lockFile,
   downloadFiles,
-  markAsRead,
-  checkFileConflicts,
-  removeShareFiles,
-  getSubfolders,
   emptyTrash,
+  finalizeVersion,
+  getSubfolders,
+  lockFile,
+  markAsRead,
+  removeFiles,
+  removeShareFiles,
 } from "@appserver/common/api/files";
 import {
   ConflictResolveType,
   FileAction,
   FileStatus,
 } from "@appserver/common/constants";
+import { makeAutoObservable } from "mobx";
+import toastr from "studio/toastr";
+
 import { TIMEOUT } from "../helpers/constants";
 import { loopTreeFolders, checkProtocol } from "../helpers/files-helpers";
-import toastr from "studio/toastr";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../package.json";
@@ -34,6 +34,7 @@ class FilesActionStore {
   settingsStore;
   dialogsStore;
   mediaViewerDataStore;
+  infoPanelStore;
 
   constructor(
     authStore,
@@ -43,7 +44,8 @@ class FilesActionStore {
     selectedFolderStore,
     settingsStore,
     dialogsStore,
-    mediaViewerDataStore
+    mediaViewerDataStore,
+    infoPanelStore
   ) {
     makeAutoObservable(this);
     this.authStore = authStore;
@@ -53,6 +55,7 @@ class FilesActionStore {
     this.selectedFolderStore = selectedFolderStore;
     this.settingsStore = settingsStore;
     this.dialogsStore = dialogsStore;
+    this.infoPanelStore = infoPanelStore;
     this.mediaViewerDataStore = mediaViewerDataStore;
   }
 
@@ -786,6 +789,7 @@ class FilesActionStore {
     switch (option) {
       case "share":
         return isAccessedSelected && !personal; //isFavoritesFolder ||isRecentFolder
+      case "showInfo":
       case "copy":
       case "download":
         return hasSelection;
@@ -830,6 +834,8 @@ class FilesActionStore {
       setCopyPanelVisible,
       setDeleteDialogVisible,
     } = this.dialogsStore;
+
+    const { toggleIsVisible } = this.infoPanelStore;
 
     switch (option) {
       case "share":
@@ -915,6 +921,7 @@ class FilesActionStore {
     const moveTo = this.getOption("moveTo", t);
     const copy = this.getOption("copy", t);
     const deleteOption = this.getOption("delete", t);
+    const showInfo = this.getOption("showInfo", t);
 
     itemsCollection
       .set("share", share)
@@ -922,7 +929,8 @@ class FilesActionStore {
       .set("downloadAs", downloadAs)
       .set("moveTo", moveTo)
       .set("copy", copy)
-      .set("delete", deleteOption);
+      .set("delete", deleteOption)
+      .set("showInfo", showInfo);
 
     return this.convertToArray(itemsCollection);
   };
@@ -932,12 +940,15 @@ class FilesActionStore {
     const download = this.getOption("download", t);
     const downloadAs = this.getOption("downloadAs", t);
     const copy = this.getOption("copy", t);
+    const showInfo = this.getOption("showInfo", t);
 
     itemsCollection
       .set("share", share)
       .set("download", download)
       .set("downloadAs", downloadAs)
-      .set("copy", copy);
+      .set("copy", copy)
+      .set("showInfo", showInfo);
+
     return this.convertToArray(itemsCollection);
   };
 
@@ -948,6 +959,7 @@ class FilesActionStore {
     const download = this.getOption("download", t);
     const downloadAs = this.getOption("downloadAs", t);
     const copy = this.getOption("copy", t);
+    const showInfo = this.getOption("showInfo", t);
 
     itemsCollection
       .set("share", share)
@@ -960,7 +972,9 @@ class FilesActionStore {
           setUnsubscribe(true);
           setDeleteDialogVisible(true);
         },
-      });
+      })
+      .set("showInfo", showInfo);
+
     return this.convertToArray(itemsCollection);
   };
 
@@ -968,12 +982,15 @@ class FilesActionStore {
     const moveTo = this.getOption("moveTo", t);
     const deleteOption = this.getOption("delete", t);
     const download = this.getOption("download", t);
+    const showInfo = this.getOption("showInfo", t);
 
     itemsCollection
       .set("download", download)
       .set("moveTo", moveTo)
 
-      .set("delete", deleteOption);
+      .set("delete", deleteOption)
+      .set("showInfo", showInfo);
+
     return this.convertToArray(itemsCollection);
   };
 
@@ -984,6 +1001,7 @@ class FilesActionStore {
     const download = this.getOption("download", t);
     const downloadAs = this.getOption("downloadAs", t);
     const copy = this.getOption("copy", t);
+    const showInfo = this.getOption("showInfo", t);
 
     itemsCollection
       .set("share", share)
@@ -999,7 +1017,9 @@ class FilesActionStore {
             .then(() => toastr.success(t("RemovedFromFavorites")))
             .catch((err) => toastr.error(err));
         },
-      });
+      })
+      .set("showInfo", showInfo);
+
     return this.convertToArray(itemsCollection);
   };
 
@@ -1012,6 +1032,7 @@ class FilesActionStore {
     const download = this.getOption("download", t);
     const downloadAs = this.getOption("downloadAs", t);
     const deleteOption = this.getOption("delete", t);
+    const showInfo = this.getOption("showInfo", t);
 
     itemsCollection
       .set("download", download)
@@ -1021,9 +1042,12 @@ class FilesActionStore {
         onClick: () => setMoveToPanelVisible(true),
         iconUrl: "/static/images/move.react.svg",
       })
-      .set("delete", deleteOption);
+      .set("delete", deleteOption)
+      .set("showInfo", showInfo);
+
     return this.convertToArray(itemsCollection);
   };
+
   getHeaderMenu = (t) => {
     const {
       isFavoritesFolder,

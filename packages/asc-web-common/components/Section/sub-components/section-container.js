@@ -22,7 +22,7 @@ const tabletProps = css`
     ${isMobileOnly &&
     css`
       padding: 0 16px;
-      margin: 0 -16px;
+      margin: 0 0 0 -16px;
     `}
   }
   .section-body_filter {
@@ -38,8 +38,10 @@ const StyledSectionContainer = styled.section`
   display: flex;
   flex-direction: column;
 
-  width: 100%;
-  max-width: 100vw;
+  width: ${(props) =>
+    props.infoPanelIsVisible ? "calc(100% - 677px)" : "100%"};
+  max-width: ${(props) =>
+    props.infoPanelIsVisible ? "calc(100vw - 677px)" : "100vw"};
 
   @media ${tablet} {
     width: 100%;

@@ -16,15 +16,10 @@ import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../../../../../../package.json";
 import history from "@appserver/common/history";
 import { isMobileOnly } from "react-device-detect";
-import Text from "@appserver/components/text";
-import Link from "@appserver/components/link";
 import { isSmallTablet } from "@appserver/components/utils/device";
 import checkScrollSettingsBlock from "../utils";
-import {
-  StyledSettingsComponent,
-  StyledScrollbar,
-  StyledArrowRightIcon,
-} from "./StyledSettings";
+import { StyledSettingsComponent, StyledScrollbar } from "./StyledSettings";
+import LoaderCustomization from "../sub-components/loaderCustomization";
 
 let greetingTitleFromSessionStorage = "";
 let greetingTitleDefaultFromSessionStorage = "";
@@ -47,7 +42,7 @@ class WelcomePageSettings extends React.Component {
       "isFirstWelcomePageSettings"
     );
 
-    setDocumentTitle(t("Customization"));
+    setDocumentTitle(t("CustomTitlesWelcome"));
 
     this.state = {
       isLoadedData: false,
@@ -235,29 +230,6 @@ class WelcomePageSettings extends React.Component {
 
     const tooltipCustomTitlesTooltip = <CustomTitlesTooltip t={t} />;
 
-    // TODO: Move to a file
-    const isMobileViewLanguageTimeSettings = (
-      <div className="category-item-wrapper">
-        <div className="category-item-heading">
-          <Link
-            truncate={true}
-            className="inherit-title-link header"
-            onClick={this.onClickLink}
-            href={combineUrl(
-              AppServerConfig.proxyURL,
-              "/settings/common/customization/welcome-page-settings"
-            )}
-          >
-            {t("CustomTitlesWelcome")}
-          </Link>
-          <StyledArrowRightIcon size="small" color="#333333" />
-        </div>
-        <Text className="category-item-description">
-          {t("CustomTitlesSettingsDescription")}
-        </Text>
-      </div>
-    );
-
     const settingsBlock = (
       <div className="settings-block">
         <FieldContainer
@@ -278,10 +250,9 @@ class WelcomePageSettings extends React.Component {
       </div>
     );
 
+    // return <LoaderCustomization welcomePage={true} />;
     return !isLoadedData ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
-    ) : isMobileView ? (
-      isMobileViewLanguageTimeSettings
     ) : (
       <StyledSettingsComponent
         hasScroll={hasScroll}

@@ -578,6 +578,7 @@ const ShellWrapper = inject(({ auth, backup }) => {
     setTheme,
   } = settingsStore;
   const { setPreparationPortalDialogVisible } = backup;
+
   return {
     loadBaseInfo: async () => {
       await init();

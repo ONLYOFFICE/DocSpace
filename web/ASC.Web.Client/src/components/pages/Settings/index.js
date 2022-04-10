@@ -8,6 +8,12 @@ import AppServerConfig from "@appserver/common/constants/AppServerConfig";
 const SecuritySettings = lazy(() => import("./categories/security/index.js"));
 const Admins = lazy(() => import("./categories/security/access-rights/admins"));
 const TfaPage = lazy(() => import("./categories/security/access-portal/tfa"));
+const PasswordStrengthPage = lazy(() =>
+  import("./categories/security/access-portal/passwordStrength")
+);
+const TrustedMailPage = lazy(() =>
+  import("./categories/security/access-portal/trustedMail")
+);
 
 const CommonSettings = lazy(() => import("./categories/common/index.js"));
 
@@ -19,6 +25,9 @@ const LanguageAndTimeZoneSettings = lazy(() =>
 );
 const WelcomePageSettings = lazy(() =>
   import("./categories/common/settingsCustomization/welcome-page-settings")
+);
+const PortalRenaming = lazy(() =>
+  import("./categories/common/settingsCustomization/portal-renaming")
 );
 const TeamTemplate = lazy(() => import("./categories/common/team-template"));
 const ThirdPartyServices = lazy(() =>
@@ -42,6 +51,8 @@ const WhiteLabel = lazy(() => import("./categories/common/whitelabel"));
 const PROXY_BASE_URL = combineUrl(AppServerConfig.proxyURL, "/settings");
 
 const COMMON_URLS = [
+  PROXY_BASE_URL,
+  combineUrl(PROXY_BASE_URL, "/common"),
   combineUrl(PROXY_BASE_URL, "/common/customization"),
   combineUrl(PROXY_BASE_URL, "/common/whitelabel"),
 ];
@@ -59,6 +70,10 @@ const WELCOME_PAGE_SETTINGS_URL = combineUrl(
   PROXY_BASE_URL,
   "/common/customization/welcome-page-settings"
 );
+const PORTAL_RENAMING = combineUrl(
+  PROXY_BASE_URL,
+  "/common/customization/portal-renaming"
+);
 const TEAM_TEMPLATE_URL = combineUrl(
   PROXY_BASE_URL,
   "/common/customization/team-template"
@@ -69,6 +84,14 @@ const SECURITY_URLS = [
   combineUrl(PROXY_BASE_URL, "/security/access-portal"),
 ];
 const TFA_PAGE_URL = combineUrl(PROXY_BASE_URL, "/security/access-portal/tfa");
+const PASSWORD_PAGE_URL = combineUrl(
+  PROXY_BASE_URL,
+  "/security/access-portal/password"
+);
+const TRUSTED_MAIL_PAGE_URL = combineUrl(
+  PROXY_BASE_URL,
+  "/security/access-portal/trusted-mail"
+);
 
 const ADMINS_URL = combineUrl(PROXY_BASE_URL, "/security/access-rights/admins");
 const THIRD_PARTY_URL = combineUrl(
@@ -100,12 +123,23 @@ const Settings = () => {
             path={WELCOME_PAGE_SETTINGS_URL}
             component={WelcomePageSettings}
           />
+          <Route exact path={PORTAL_RENAMING} component={PortalRenaming} />
           <Route exact path={WHITELABEL_URL} component={WhiteLabel} />
           <Route exact path={TEAM_TEMPLATE_URL} component={TeamTemplate} />
 
           <Route exact path={SECURITY_URLS} component={SecuritySettings} />
           <Route path={ADMINS_URL} component={Admins} />
           <Route exact path={TFA_PAGE_URL} component={TfaPage} />
+          <Route
+            exact
+            path={PASSWORD_PAGE_URL}
+            component={PasswordStrengthPage}
+          />
+          <Route
+            exact
+            path={TRUSTED_MAIL_PAGE_URL}
+            component={TrustedMailPage}
+          />
 
           <Route exact path={THIRD_PARTY_URL} component={ThirdPartyServices} />
           <Route

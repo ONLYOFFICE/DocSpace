@@ -22,6 +22,7 @@ class ContextOptionsStore {
   uploadDataStore;
   versionHistoryStore;
   settingsStore;
+  infoPanelStore;
 
   constructor(
     authStore,
@@ -32,7 +33,8 @@ class ContextOptionsStore {
     treeFoldersStore,
     uploadDataStore,
     versionHistoryStore,
-    settingsStore
+    settingsStore,
+    infoPanelStore
   ) {
     makeAutoObservable(this);
     this.authStore = authStore;
@@ -44,6 +46,7 @@ class ContextOptionsStore {
     this.uploadDataStore = uploadDataStore;
     this.versionHistoryStore = versionHistoryStore;
     this.settingsStore = settingsStore;
+    this.infoPanelStore = infoPanelStore;
   }
 
   onOpenFolder = (item) => {
@@ -335,6 +338,11 @@ class ContextOptionsStore {
     return options;
   };
 
+  onShowInfoPanel = () => {
+    const { setIsVisible } = this.infoPanelStore;
+    setIsVisible(true);
+  };
+
   getFilesContextOptions = (item, t) => {
     const { contextOptions } = item;
     const isRootThirdPartyFolder =
@@ -510,6 +518,13 @@ class ContextOptionsStore {
         disabled: true,
       },
       ...versionActions,
+      {
+        key: "show-info",
+        label: t("InfoPanel:ViewDetails"),
+        icon: "/static/images/info.outline.react.svg",
+        onClick: this.onShowInfoPanel,
+        disabled: false,
+      },
       {
         key: "block-unblock-version",
         label: t("UnblockVersion"),

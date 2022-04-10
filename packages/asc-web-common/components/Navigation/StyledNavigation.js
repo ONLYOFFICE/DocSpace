@@ -3,16 +3,13 @@ import { isMobile, isMobileOnly } from "react-device-detect";
 import { tablet, desktop, mobile } from "@appserver/components/utils/device";
 
 const StyledContainer = styled.div`
-  padding: ${(props) => (props.isDropBox ? "14px 0 3px" : "14px 0 0px")};
-
-  width: fit-content;
-
+  width: 100% !important;
   display: grid;
-
-  grid-template-columns: ${(props) =>
-    props.isRootFolder ? "1fr auto" : "29px 1fr auto"};
-
   align-items: center;
+  grid-template-columns: ${(props) =>
+    props.isRootFolder ? "auto 1fr" : "29px auto 1fr"};
+
+  padding: ${(props) => (props.isDropBox ? "10px 0 5px" : "10px 0 11px")};
 
   .arrow-button {
     width: 17px;
@@ -21,25 +18,25 @@ const StyledContainer = styled.div`
 
   @media ${tablet} {
     width: 100%;
-    padding: ${(props) => (props.isDropBox ? "16px 0 5px" : "16px 0 0px")};
+    padding: ${(props) => (props.isDropBox ? "14px 0 5px" : "14px 0 15px")};
   }
   ${isMobile &&
   css`
     width: 100%;
     padding: ${(props) =>
-      props.isDropBox ? "16px 0 5px" : " 16px 0 0px"} !important;
+      props.isDropBox ? "12px 0 5px" : " 12px 0 13px"} !important;
   `}
 
   @media ${mobile} {
-    width: 100%;
-    padding: ${(props) => (props.isDropBox ? "12px 0 5px" : "12px 0 0")};
+    padding: ${(props) =>
+      props.isDropBox ? "10px 0 5px" : "10px 0 11px"} !important;
   }
 
   ${isMobileOnly &&
   css`
     width: 100% !important;
     padding: ${(props) =>
-      props.isDropBox ? "18px 0 5px" : "18px 0 0"} !important;
+      props.isDropBox ? "10px 0 5px" : "10px 0 11px"} !important;
   `}
 `;
 

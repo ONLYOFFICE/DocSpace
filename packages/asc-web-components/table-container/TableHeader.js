@@ -65,11 +65,11 @@ class TableHeader extends React.Component {
     const { columnIndex } = this.state;
 
     let leftColumn;
-    let colIndex = index ? index : columnIndex - 1;
+    let colIndex = index !== undefined ? index : columnIndex - 1;
 
-    if (colIndex === 0) return;
+    if (colIndex < 0) return;
 
-    while (colIndex !== 0) {
+    while (colIndex >= 0) {
       leftColumn = document.getElementById("column_" + colIndex);
       if (leftColumn) {
         if (leftColumn.dataset.enable === "true") break;
@@ -82,7 +82,7 @@ class TableHeader extends React.Component {
       : defaultMinColumnSize;
 
     if (leftColumn.clientWidth <= minSize) {
-      if (colIndex === 1) return false;
+      if (colIndex < 0) return false;
       return this.moveToLeft(widths, newWidth, colIndex - 1);
     }
 
@@ -117,7 +117,7 @@ class TableHeader extends React.Component {
     const column2Width = this.getSubstring(widths[colIndex]);
 
     const defaultColumn = document.getElementById("column_" + colIndex);
-    if (defaultColumn.dataset.defaultSize) return;
+    if (!defaultColumn || defaultColumn.dataset.defaultSize) return;
 
     if (column2Width + offset >= defaultMinColumnSize) {
       widths[+columnIndex] = newWidth + "px";
@@ -236,8 +236,8 @@ class TableHeader extends React.Component {
     const storageSize =
       !resetColumnsSize && localStorage.getItem(columnStorageName);
 
-    const defaultSize = this.props.columns.find((col) => col.defaultSize)
-      ?.defaultSize;
+    const defaultSize =
+      this.props.columns.find((col) => col.defaultSize)?.defaultSize || 0;
 
     //TODO: Fixed columns size if something went wrong
     if (storageSize) {
@@ -262,9 +262,12 @@ class TableHeader extends React.Component {
 
     const containerWidth = +container.clientWidth;
 
-    const oldWidth = tableContainer
-      .map((column) => this.getSubstring(column))
-      .reduce((x, y) => x + y);
+    const oldWidth =
+      tableContainer
+        .map((column) => this.getSubstring(column))
+        .reduce((x, y) => x + y) -
+      defaultSize -
+      settingsSize;
 
     let str = "";
 
@@ -278,7 +281,7 @@ class TableHeader extends React.Component {
         const enable =
           index == tableContainer.length - 1 ||
           (column ? column.dataset.enable === "true" : item !== "0px");
-        const defaultSize = column && column.dataset.defaultSize;
+        const defaultColumnSize = column && column.dataset.defaultSize;
 
         const isActiveNow = item === "0px" && enable;
         if (isActiveNow && column) activeColumnIndex = index;
@@ -301,18 +304,14 @@ class TableHeader extends React.Component {
         } else if (item !== `${settingsSize}px`) {
           const percent = (this.getSubstring(item) / oldWidth) * 100;
 
-          if (index == 1) {
-            const newItemWidth = (containerWidth * percent) / 100 + "px";
-            gridTemplateColumns.push(newItemWidth);
-          } else {
-            const newItemWidth = defaultSize
-              ? `${defaultSize}px`
-              : percent === 0
-              ? `${minColumnSize}px`
-              : (containerWidth * percent) / 100 + "px";
+          const newItemWidth = defaultColumnSize
+            ? `${defaultColumnSize}px`
+            : percent === 0
+            ? `${minColumnSize}px`
+            : ((containerWidth - defaultSize - settingsSize) * percent) / 100 +
+              "px";
 
-            gridTemplateColumns.push(newItemWidth);
-          }
+          gridTemplateColumns.push(newItemWidth);
         } else {
           gridTemplateColumns.push(item);
         }
@@ -351,7 +350,8 @@ class TableHeader extends React.Component {
 
     const enableColumns = this.props.columns
       .filter((x) => x.enable)
-      .filter((x) => !x.defaultSize);
+      .filter((x) => !x.defaultSize)
+      .filter((x) => !x.default);
 
     const container = containerRef.current
       ? containerRef.current

@@ -82,6 +82,7 @@ export default function withFileActions(WrappedFileItem) {
       if (mouseButton || e.currentTarget.tagName !== "DIV" || label) {
         return e;
       }
+
       e.preventDefault();
       setTooltipPosition(e.pageX, e.pageY);
       setStartDrag(true);
@@ -92,13 +93,14 @@ export default function withFileActions(WrappedFileItem) {
       const { viewAs } = this.props;
 
       if (
-        e.target.closest(".checkbox") ||
         e.target.tagName === "INPUT" ||
         e.target.tagName === "SPAN" ||
         e.target.tagName === "A" ||
-        e.target.closest(".expandButton") ||
-        e.target.closest(".badges") ||
+        e.target.closest(".checkbox") ||
         e.button !== 0 ||
+        e.target.closest(".expandButton") ||
+        e.target.querySelector(".expandButton") ||
+        e.target.closest(".badges") ||
         e.target.closest(".not-selectable")
       )
         return;
@@ -106,12 +108,10 @@ export default function withFileActions(WrappedFileItem) {
       if (viewAs === "tile") {
         if (e.target.closest(".edit-button") || e.target.tagName === "IMG")
           return;
-
         if (e.detail === 1) this.fileContextClick();
-      } else {
-        this.fileContextClick();
-      }
+      } else this.fileContextClick();
     };
+
     onFilesClick = (e) => {
       const { item, openFileAction } = this.props;
       if (
@@ -247,6 +247,7 @@ export default function withFileActions(WrappedFileItem) {
         activeFiles,
         activeFolders,
       } = filesStore;
+
       const { startUpload } = uploadDataStore;
       const { type, extension, id } = fileActionStore;
 
