@@ -411,6 +411,7 @@ class RestoreBackup extends React.Component {
         <div className="restore-backup_modules">
           {isCheckedDocuments && (
             <Documents
+              t={t}
               isPanelVisible={isPanelVisible}
               onClose={this.onPanelClose}
               onClickInput={this.onClickInput}
@@ -420,6 +421,7 @@ class RestoreBackup extends React.Component {
           )}
           {isCheckedThirdParty && (
             <ThirdPartyResources
+              t={t}
               isPanelVisible={isPanelVisible}
               onClose={this.onPanelClose}
               onClickInput={this.onClickInput}
