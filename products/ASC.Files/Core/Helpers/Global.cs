@@ -285,6 +285,16 @@ public class GlobalFolder
     internal static readonly IDictionary<int, int> ProjectsRootFolderCache =
         new ConcurrentDictionary<int, int>(); /*Use SYNCHRONIZED for cross thread blocks*/
 
+    public async ValueTask<int> GetFolderVirtualRooms(IDaoFactory daoFactory)
+    {
+        if (!_coreBaseSettings.DocSpace)
+        {
+            return default;
+        }
+
+        return await daoFactory.GetFolderDao<int>().GetFolderIDVirtualRooms(true);
+    }
+
     public async ValueTask<int> GetFolderProjectsAsync(IDaoFactory daoFactory)
     {
         if (_coreBaseSettings.Personal)
@@ -303,7 +313,7 @@ public class GlobalFolder
             result = await folderDao.GetFolderIDProjectsAsync(true);
 
                 ProjectsRootFolderCache[_tenantManager.GetCurrentTenant().Id] = result;
-            }
+        }
 
         return result;
     }
@@ -340,13 +350,13 @@ public class GlobalFolder
         return myFolderId.Value;
     }
 
-        protected internal void SetFolderMy(object value)
+    protected internal void SetFolderMy(object value)
     {
         var cacheKey = string.Format("my/{0}/{1}", _tenantManager.GetCurrentTenant().Id, value);
         UserRootFolderCache.Remove(cacheKey, out _);
     }
 
-        public async ValueTask<bool> IsFirstVisit(IDaoFactory daoFactory)
+    public async ValueTask<bool> IsFirstVisit(IDaoFactory daoFactory)
     {
         var cacheKey = string.Format("my/{0}/{1}", _tenantManager.GetCurrentTenant().Id, _authContext.CurrentAccount.ID);
 
@@ -379,7 +389,7 @@ public class GlobalFolder
             return default;
         }
 
-            if (!CommonFolderCache.TryGetValue(_tenantManager.GetCurrentTenant().Id, out var commonFolderId))
+        if (!CommonFolderCache.TryGetValue(_tenantManager.GetCurrentTenant().Id, out var commonFolderId))
         {
             commonFolderId = await GetFolderIdAndProccessFirstVisitAsync(fileMarker, daoFactory, false);
             if (!Equals(commonFolderId, 0))
@@ -574,7 +584,7 @@ public class GlobalFolder
         return trashFolderId;
     }
 
-        protected internal void SetFolderTrash(object value)
+    protected internal void SetFolderTrash(object value)
     {
         var cacheKey = string.Format("trash/{0}/{1}", _tenantManager.GetCurrentTenant().Id, value);
         TrashFolderCache.Remove(cacheKey);
@@ -704,6 +714,7 @@ public class GlobalFolderHelper
     public ValueTask<int> FolderRecentAsync => _globalFolder.GetFolderRecentAsync(_daoFactory);
     public ValueTask<int> FolderFavoritesAsync => _globalFolder.GetFolderFavoritesAsync(_daoFactory);
     public ValueTask<int> FolderTemplatesAsync => _globalFolder.GetFolderTemplatesAsync(_daoFactory);
+    public ValueTask<int> FolderVirtualRoomsAsync => _globalFolder.GetFolderVirtualRooms(_daoFactory);
 
     public T GetFolderMy<T>()
     {

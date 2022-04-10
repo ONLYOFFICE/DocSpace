@@ -149,5 +149,14 @@ namespace ASC.Files.Core.Resources {
                 return ResourceManager.GetString("Trash", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VirtualRooms.
+        /// </summary>
+        public static string VirtualRooms {
+            get {
+                return ResourceManager.GetString("VirtualRooms", resourceCulture);
+            }
+        }
     }
 }

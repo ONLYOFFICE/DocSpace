@@ -179,6 +179,11 @@ internal abstract class ThirdPartyProviderDao
         return null;
     }
 
+    public Task<string> GetFolderIDVirtualRooms(bool createIfNotExists)
+    {
+        return null;
+    }
+
     public Task<string> GetBunchObjectIDAsync(string folderID)
     {
         return null;

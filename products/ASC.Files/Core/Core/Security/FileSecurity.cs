@@ -378,7 +378,8 @@ public class FileSecurity : IFileSecurity
                  f.RootFolderType == FolderType.Favorites ||
                  f.RootFolderType == FolderType.Templates ||
                  f.RootFolderType == FolderType.Privacy ||
-                 f.RootFolderType == FolderType.Projects;
+                 f.RootFolderType == FolderType.Projects ||
+                 f.RootFolderType == FolderType.VirtualRooms;
 
         var isVisitor = user.IsVisitor(_userManager);
 
@@ -538,6 +539,12 @@ public class FileSecurity : IFileSecurity
                 if (e.RootFolderType == FolderType.COMMON && _fileSecurityCommon.IsAdministrator(userId))
                 {
                     // administrator in Common has all right
+                    result.Add(e);
+                    continue;
+                }
+
+                if (e.RootFolderType == FolderType.VirtualRooms && _fileSecurityCommon.IsAdministrator(userId))
+                {
                     result.Add(e);
                     continue;
                 }

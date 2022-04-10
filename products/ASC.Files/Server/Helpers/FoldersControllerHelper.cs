@@ -198,6 +198,11 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
             folders.Add((int)_globalFolderHelper.FolderTrash);
         }
 
+        if (_coreBaseSettings.DocSpace)
+        {
+            folders.Add(await _globalFolderHelper.FolderVirtualRoomsAsync);
+        }
+
         return folders;
     }
 

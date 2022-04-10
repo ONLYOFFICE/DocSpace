@@ -301,6 +301,13 @@ public interface IFolderDao<T>
     /// <returns></returns>
     Task<T> GetFolderIDProjectsAsync(bool createIfNotExists);
 
+    /// <summary>
+    /// Returns id folder "VirtualRooms"
+    /// Only in TMFolderDao
+    /// </summary>
+    /// <param name="createIfNotExists"></param>
+    /// <returns></returns>
+    Task<T> GetFolderIDVirtualRooms(bool createIfNotExists);
 
     /// <summary>
     /// Return id of related object

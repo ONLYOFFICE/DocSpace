@@ -41,6 +41,7 @@ public enum FolderType
     Recent = 11,
     Templates = 12,
     Privacy = 13,
+    VirtualRooms = 14,
 }
 
 public interface IFolder
@@ -118,6 +119,9 @@ public class Folder<T> : FileEntry<T>, IFolder, IMapFrom<DbFolder>
                         break;
                     case FolderType.Projects:
                         result.Title = FilesUCResource.ProjectFiles;
+                        break;
+                    case FolderType.VirtualRooms:
+                        result.Title = FilesUCResource.VirtualRooms;
                         break;
                     case FolderType.BUNCH:
                         try

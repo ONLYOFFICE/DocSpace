@@ -277,6 +277,7 @@ public class FoldersControllerCommon : ApiControllerBase
 
         return result;
     }
+
     /// <summary>
     /// Returns the detailed list of files and folders located in the 'Shared with Me' section
     /// </summary>

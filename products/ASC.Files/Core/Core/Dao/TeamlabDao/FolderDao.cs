@@ -38,6 +38,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     private const string Privacy = "privacy";
     private const string Trash = "trash";
     private const string Projects = "projects";
+    private const string VirtualRooms = "virtualrooms";
 
     private readonly FactoryIndexerFolder _factoryIndexer;
     private readonly GlobalSpace _globalSpace;
@@ -961,6 +962,10 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                         folder.FolderType = FolderType.Projects;
                         folder.Title = Projects;
                         break;
+                    case VirtualRooms:
+                        folder.FolderType = FolderType.VirtualRooms;
+                        folder.Title = VirtualRooms;
+                        break;
                     default:
                         folder.FolderType = FolderType.BUNCH;
                         folder.Title = key;
@@ -1057,6 +1062,10 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                     folder.FolderType = FolderType.Projects;
                     folder.Title = Projects;
                     break;
+                case VirtualRooms:
+                    folder.FolderType = FolderType.VirtualRooms;
+                    folder.Title = VirtualRooms;
+                    break;
                 default:
                     folder.FolderType = FolderType.BUNCH;
                     folder.Title = key;
@@ -1123,6 +1132,11 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     public Task<int> GetFolderIDPrivacyAsync(bool createIfNotExists, Guid? userId = null)
     {
         return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Privacy, (userId ?? AuthContext.CurrentAccount.ID).ToString(), createIfNotExists);
+    }
+
+    public Task<int> GetFolderIDVirtualRooms(bool createIfNotExists)
+    {
+        return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, VirtualRooms, null, createIfNotExists);
     }
 
     #endregion
