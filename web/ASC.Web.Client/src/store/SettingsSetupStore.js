@@ -2,13 +2,18 @@ import api from "@appserver/common/api";
 import { makeAutoObservable } from "mobx";
 const { Filter } = api;
 import SelectionStore from "./SelectionStore";
+import authStore from "@appserver/common/store/AuthStore";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../package.json";
 
 class SettingsSetupStore {
   selectionStore = null;
+  authStore = null;
+
   isLoadingArticleSettings = false;
+
+  isInit = false;
 
   common = {
     whiteLabel: {
@@ -46,8 +51,19 @@ class SettingsSetupStore {
 
   constructor() {
     this.selectionStore = new SelectionStore(this);
+    this.authStore = authStore;
     makeAutoObservable(this);
   }
+
+  initSettings = async () => {
+    if (this.isInit) return;
+    this.isInit = true;
+
+    if (authStore.isAuthenticated) {
+      await authStore.settingsStore.getPortalPasswordSettings();
+      await authStore.tfaStore.getTfaType();
+    }
+  };
 
   setIsLoading = (isLoading) => {
     this.security.accessRight.isLoading = isLoading;
@@ -226,10 +242,6 @@ class SettingsSetupStore {
 
   setPortalRename = async (alias) => {
     const res = await api.portal.setPortalRename(alias);
-  };
-
-  setMailDomainSettings = async (data) => {
-    const res = await api.settings.setMailDomainSettings(data);
   };
 
   setDNSSettings = async (dnsName, enable) => {

@@ -2574,6 +2574,7 @@ const Base = {
     },
 
     settings: {
+      iconFill: black,
       article: {
         titleColor: grayMain,
         fillIcon: "dimgray",
