@@ -97,8 +97,6 @@ function Editor({
   ...rest
 }) {
   const [isLoaded, setIsLoaded] = useState(false);
-  const [documentTitle, setNewDocumentTitle] = useState("Loading...");
-
   const [fileInfo, setFileInfo] = useState(rest.fileInfo);
   const [url, setUrl] = useState(rest.url);
   const [fileId, setFileId] = useState(rest.fileId);
@@ -160,6 +158,8 @@ function Editor({
 
   useEffect(async () => {
     try {
+      const url = window.location.href;
+
       if (
         successAuth &&
         url.indexOf("#message/") > -1 &&
@@ -168,7 +168,6 @@ function Editor({
         canConvert(fileInfo.fileExst)
       ) {
         const result = await convertDocumentUrl();
-
         const splitUrl = url.split("#message/");
 
         if (result) {
@@ -409,7 +408,6 @@ function Editor({
       title = organizationName;
     }
     document.title = title;
-    setNewDocumentTitle(title);
   };
 
   const changeTitle = () => {
@@ -425,8 +423,10 @@ function Editor({
 
   const onSDKAppReady = () => {
     console.log("ONLYOFFICE Document Editor is ready");
+    const url = window.location.href;
 
     const index = url.indexOf("#message/");
+
     if (index > -1) {
       const splitUrl = url.split("#message/");
       const message = decodeURIComponent(splitUrl[1]).replaceAll("+", " ");
