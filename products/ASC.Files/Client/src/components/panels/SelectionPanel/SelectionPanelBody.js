@@ -16,6 +16,7 @@ import {
 } from "./ExceptionFoldersConstants";
 import { StyledBody } from "./StyledSelectionPanel";
 import Text from "@appserver/components/text";
+import Loaders from "@appserver/common/components/Loaders";
 const SelectionPanelBody = ({
   t,
   isPanelVisible,
@@ -68,7 +69,8 @@ const SelectionPanelBody = ({
               >
                 {"Documents"}
               </Text>
-              {folderId ? (
+
+              {folderId && resultingFolderTree ? (
                 <FolderTreeBody
                   theme={theme}
                   folderTree={resultingFolderTree}
@@ -80,7 +82,7 @@ const SelectionPanelBody = ({
                   displayType="modal"
                 />
               ) : (
-                <></>
+                <Loaders.NewTreeFolders />
               )}
             </div>
             <div className="selection-panel_files-body">
@@ -98,20 +100,19 @@ const SelectionPanelBody = ({
                     </Text>
                   )}
                 </div>
-                {folderId && (
-                  <FilesListBody
-                    theme={theme}
-                    files={files}
-                    onSelectFile={onSelectFile}
-                    hasNextPage={hasNextPage}
-                    isNextPageLoading={isNextPageLoading}
-                    loadNextPage={loadNextPage}
-                    folderId={folderId}
-                    displayType={"modal"}
-                    folderSelection={folderSelection}
-                    fileId={fileId}
-                  />
-                )}
+
+                <FilesListBody
+                  theme={theme}
+                  files={files}
+                  onSelectFile={onSelectFile}
+                  hasNextPage={hasNextPage}
+                  isNextPageLoading={isNextPageLoading}
+                  loadNextPage={loadNextPage}
+                  folderId={folderId}
+                  displayType={"modal"}
+                  folderSelection={folderSelection}
+                  fileId={fileId}
+                />
               </>
             </div>
 

@@ -29,9 +29,11 @@ const FilesListBody = ({
 }) => {
   const { t } = useTranslation(["SelectFile", "Common"]);
   const filesListRef = useRef(null);
+  if (page === 0) {
+    countLoad = 0;
+  }
 
   useEffect(() => {
-    countLoad = 0;
     if (filesListRef && filesListRef.current) {
       filesListRef.current.resetloadMoreItemsCache(true);
     }
@@ -50,8 +52,8 @@ const FilesListBody = ({
     if (isNextPageLoading) return;
     countLoad++;
 
-    loadNextPage && loadNextPage();
-  }, [isNextPageLoading, files, displayType]);
+    folderId && loadNextPage && loadNextPage();
+  }, [isNextPageLoading, files, displayType, folderId]);
 
   const renderPageLoader = (style) => {
     return (
@@ -76,18 +78,8 @@ const FilesListBody = ({
   const renderFirstLoader = (style) => {
     return (
       <div style={style}>
-        <div
-          key="loader"
-          className="panel-loader-wrapper loader-wrapper_margin"
-        >
-          <Loaders.Rows
-            theme={theme}
-            style={{
-              marginBottom: displayType === "aside" ? "24px" : "26px",
-              marginTop: displayType === "aside" ? "8px" : "10px",
-            }}
-            count={displayType === "aside" ? 12 : 5}
-          />
+        <div className="select-folder_loader" key="loader">
+          <Loaders.ListLoader withoutFirstRectangle />
         </div>
       </div>
     );
@@ -105,7 +97,7 @@ const FilesListBody = ({
     ({ index, style }) => {
       const isLoaded = isItemLoaded(index);
 
-      if (!isLoaded) {
+      if (!isLoaded || !folderId) {
         if (countLoad >= 1) return renderPageLoader(style);
         return renderFirstLoader(style);
       }
