@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import { hydrate } from "react-dom";
-//import { registerSW } from "@appserver/common/sw/helper";
+import { registerSW } from "@appserver/common/sw/helper";
 import App from "../App.js";
 import { useSSR } from "react-i18next";
 import useMfScripts from "../helpers/useMfScripts";

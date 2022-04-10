@@ -20,7 +20,6 @@ class ErrorBoundary extends React.Component {
 
   // eslint-disable-next-line no-unused-vars
   static getDerivedStateFromError(error) {
-    console.log("getDerivedStateFromError");
     // Update state so the next render will show the fallback UI.
     return { hasError: true };
   }
@@ -28,12 +27,10 @@ class ErrorBoundary extends React.Component {
   componentDidCatch(error, errorInfo) {
     // You can also log the error to an error reporting service
     console.error(error, errorInfo);
-    console.log("componentDidCatch");
     this.props.onError && this.props.onError();
   }
 
   render() {
-    console.log("render error boundary");
     if (this.state.hasError) {
       // You can render any custom fallback UI
       return <Error520 />;
