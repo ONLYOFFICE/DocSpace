@@ -96,7 +96,7 @@ const SelectFileDialogAsideView = ({
                     size="small"
                     label={primaryButtonName}
                     onClick={onButtonClick}
-                    //isDisabled={selectedFile.length === 0}
+                    isDisabled={!fileId}
                   />
                   <Button
                     theme={theme}

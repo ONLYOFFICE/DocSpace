@@ -214,6 +214,7 @@ class SelectFileDialog extends React.Component {
       hasNextPage: true,
       files: [],
       page: 0,
+      selectedFile: [],
     });
 
     const isFilesModule =

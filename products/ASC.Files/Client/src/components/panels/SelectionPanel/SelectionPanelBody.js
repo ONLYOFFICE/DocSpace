@@ -134,7 +134,10 @@ const SelectionPanelBody = ({
                     size="small"
                     label={primaryButtonName}
                     onClick={onButtonClick}
-                    isDisabled={isLoadingData || !canCreate}
+                    isDisabled={
+                      isLoadingData ||
+                      (!fileId && !folderSelection && !canCreate)
+                    }
                   />
                   <Button
                     theme={theme}
