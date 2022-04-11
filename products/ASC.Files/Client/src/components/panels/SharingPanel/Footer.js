@@ -43,7 +43,7 @@ const Footer = ({
         className="sharing_panel-button"
         label={buttonLabel}
         scale={true}
-        size={"medium"}
+        size={"normal"}
         primary
         onClick={onSaveClick}
         isDisabled={isLoading}

@@ -273,10 +273,6 @@ const StyledFooterContent = styled.div`
   .sharing_panel-checkbox {
     margin-bottom: 16px;
   }
-
-  .sharing_panel-button {
-    max-height: 40px;
-  }
 `;
 
 export {
