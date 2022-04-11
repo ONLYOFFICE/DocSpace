@@ -48,7 +48,7 @@ const tabletStyles = css`
     display: block;
     position: static;
     width: 350px;
-    padding: 0 0 24px 0;
+    padding: 0;
   }
 `;
 
@@ -64,7 +64,6 @@ const StyledLoader = styled.div`
 
   .title {
     width: ${(props) => (props.portalRenaming ? "49px" : "63.7px")};
-
     padding-bottom: 4px;
   }
 
@@ -116,6 +115,7 @@ const LoaderCustomization = ({
       lngTZSettings={lngTZSettings}
       portalRenaming={portalRenaming}
       welcomePage={welcomePage}
+      className="category-item-wrapper"
     >
       <Loaders.Rectangle height="22px" className="header" />
 
