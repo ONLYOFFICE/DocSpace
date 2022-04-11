@@ -88,7 +88,7 @@ public class LdapUserImporter : IDisposable
 
     public void Init(LdapSettings settings, LdapLocalization resource)
     {
-        LdapHelper.Init(settings);
+        ((NovellLdapHelper)LdapHelper).Init(settings);
         Resource = resource;
     }
 

@@ -459,4 +459,12 @@ public abstract class LdapOperation
                 return Resource.LdapSettingsErrorUnknownError;
         }
     }
+
+    public static class LdapOperationExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<NovellLdapSettingsChecker>();
+        }
+    }
 }

@@ -19,7 +19,7 @@
 using Constants = ASC.Core.Users.Constants;
 
 namespace ASC.ActiveDirectory.ComplexOperations;
-[Scope]
+[Scope(Additional = typeof(LdapOperationExtension))]
 public class LdapSaveSyncOperation : LdapOperation
 {
     private LdapChangeCollection _ldapChanges;
