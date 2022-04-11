@@ -40,9 +40,12 @@ const StyledBody = styled.div`
       margin-right: -13px;
       padding-left: 16px;
 
-      .selection-panel_buttons {
-        padding-top: 16px;
+      padding-top: 16px;
 
+      div:first-child {
+        padding-bottom: 12px;
+      }
+      .selection-panel_buttons {
         button:first-child {
           margin-right: 8px;
         }
@@ -106,15 +109,24 @@ const StyledAsideBody = styled.div`
     height: 100%;
   }
 
+  .selection-panel_aside-folder-title {
+    margin-top: 12px;
+  }
+  .selection-panel_aside-tree {
+    margin-top: 12px;
+  }
   .selection-panel_aside-footer {
     border-top: 1px solid #eceef1;
     margin-left: -13px;
     margin-right: -13px;
     padding-left: 16px;
 
-    .selection-panel_aside-buttons {
-      padding-top: 16px;
+    padding-top: 16px;
 
+    div:first-child {
+      padding-bottom: 12px;
+    }
+    .selection-panel_aside-buttons {
       button:first-child {
         margin-right: 8px;
       }

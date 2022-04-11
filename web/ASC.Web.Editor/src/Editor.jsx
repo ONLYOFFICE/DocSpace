@@ -946,7 +946,7 @@ const Editor = () => {
                     />
                   </StyledSelectFolder>
                 }
-                headerName={i18n.t("FolderForSave")}
+                dialogName={i18n.t("FolderForSave")}
                 {...(extension !== "fb2" && {
                   footer: (
                     <StyledSelectFolder>

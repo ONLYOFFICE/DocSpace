@@ -24,19 +24,11 @@ import toastr from "studio/toastr";
 class SelectFileDialogBody extends React.Component {
   constructor(props) {
     super(props);
-    const {
-      storeFolderId,
-      fileInfo,
-      filter,
-      creationButtonPrimary,
-      t,
-      id,
-    } = props;
+    const { storeFolderId, fileInfo, filter, id } = props;
 
     this.state = {
       isVisible: false,
       folderId: id || storeFolderId || "",
-      //passedId: folderId,
       selectedFile: fileInfo || "",
       fileName: (fileInfo && fileInfo.title) || "",
       files: [],
@@ -226,6 +218,7 @@ class SelectFileDialogBody extends React.Component {
       setSelectedNode,
       setExpandedPanelKeys,
       setSelectedFolder,
+      onSetBaseFolderPath,
     } = this.props;
     const { displayType } = this.state;
     // setFolderId(id);
@@ -239,12 +232,13 @@ class SelectFileDialogBody extends React.Component {
       page: 0,
     });
 
-    SelectionPanel.setFolderObjectToTree(
-      id,
-      setSelectedNode,
-      setExpandedPanelKeys,
-      setSelectedFolder
-    );
+    onSetBaseFolderPath &&
+      SelectionPanel.setFolderObjectToTree(
+        id,
+        setSelectedNode,
+        setExpandedPanelKeys,
+        setSelectedFolder
+      );
   };
 
   onSelectFile = (item, index) => {
@@ -451,6 +445,7 @@ const SelectFileDialogWrapper = inject(
     } = treeFoldersStore;
     const { filter } = filesStore;
     const { setSelectedFolder, id } = selectedFolderStore;
+
     return {
       //storeFolderId: storeFolderId || id,
       fileInfo,

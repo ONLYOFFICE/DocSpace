@@ -305,7 +305,7 @@ class SelectFolderModalDialog extends React.Component {
         certainFolders={true}
         folderId={folderId}
         resultingFolderTree={resultingFolderTree}
-        onSelect={this.onSelect}
+        onSelectFolder={this.onSelect}
         onButtonClick={this.onButtonClick}
         header={header}
         dialogName={dialogName}
@@ -416,35 +416,6 @@ class SelectFolderDialog extends React.Component {
     });
 
     return commonThirdPartyArray;
-  };
-
-  static getCommonFolders = async () => {
-    const commonFolders = await getCommonFolderList();
-
-    const convertedData = {
-      id: commonFolders.current.id,
-      key: 0 - 1,
-      parentId: commonFolders.current.parentId,
-      title: commonFolders.current.title,
-      rootFolderType: +commonFolders.current.rootFolderType,
-      rootFolderName: "@common",
-      folders: commonFolders.folders.map((folder) => {
-        return {
-          id: folder.id,
-          title: folder.title,
-          access: folder.access,
-          foldersCount: folder.foldersCount,
-          rootFolderType: folder.rootFolderType,
-          providerKey: folder.providerKey,
-          newItems: folder.new,
-        };
-      }),
-      pathParts: commonFolders.pathParts,
-      foldersCount: commonFolders.current.foldersCount,
-      newItems: commonFolders.new,
-    };
-
-    return [convertedData];
   };
 
   render() {

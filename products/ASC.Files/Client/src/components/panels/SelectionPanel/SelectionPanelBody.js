@@ -117,7 +117,8 @@ const SelectionPanelBody = ({
             </div>
 
             <div className="selection-panel_footer">
-              {footer}
+              <div>{footer}</div>
+
               <div className="selection-panel_buttons">
                 <Button
                   theme={theme}
@@ -268,12 +269,14 @@ class SelectionPanel extends React.Component {
         onSelectFolder && onSelectFolder(passedId);
       }
 
-      await SelectionPanel.setFolderObjectToTree(
-        passedId,
-        setSelectedNode,
-        setExpandedPanelKeys,
-        setSelectedFolder
-      );
+      if (onSetBaseFolderPath) {
+        await SelectionPanel.setFolderObjectToTree(
+          passedId,
+          setSelectedNode,
+          setExpandedPanelKeys,
+          setSelectedFolder
+        );
+      }
     }
 
     if (

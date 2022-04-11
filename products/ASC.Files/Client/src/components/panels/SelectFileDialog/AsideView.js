@@ -74,6 +74,7 @@ const SelectFileDialogAsideView = ({
                 loadNextPage={loadNextPage}
                 files={files}
                 resultingFolderTree={resultingFolderTree}
+                isNeedArrowIcon
               />
 
               <Text className="modal-dialog-filter-title">

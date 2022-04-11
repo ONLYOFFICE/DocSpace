@@ -5,40 +5,37 @@ import FolderTreeBody from "../../FolderTreeBody";
 import { StyledAsidePanel, StyledSelectFolderPanel } from "../StyledPanels";
 import Button from "@appserver/components/button";
 import ModalDialog from "@appserver/components/modal-dialog";
-
-const DISPLAY_TYPE = "aside";
+import { StyledAsideBody } from "../SelectionPanel/StyledSelectionPanel";
+import Text from "@appserver/components/text";
+import Loaders from "@appserver/common/components/Loaders";
 const SelectFolderDialogAsideView = ({
   theme,
   t,
   isPanelVisible,
-  zIndex,
   onClose,
   withoutProvider,
   isNeedArrowIcon,
-  asideHeightContent,
   isAvailable,
-  certainFolders,
   folderId,
   isLoadingData,
   resultingFolderTree,
-  onSelect,
+  onSelectFolder,
   footer,
-  showButtons,
   onButtonClick,
-  headerName,
+  dialogName,
   header,
   canCreate,
   primaryButtonName,
   noTreeSwitcher,
 }) => {
+  console.log("resultingFolderTree", resultingFolderTree);
   return (
     <StyledAsidePanel theme={theme} visible={isPanelVisible}>
       <ModalDialog
         theme={theme}
         visible={isPanelVisible}
-        zIndex={zIndex}
         contentHeight="100%"
-        contentPaddingBottom={footer && showButtons ? "100px" : "40px"}
+        contentPaddingBottom="0px"
         onClose={onClose}
         withoutBodyScroll
         displayType="aside"
@@ -56,57 +53,64 @@ const SelectFolderDialogAsideView = ({
                   // color={theme.filesPanels.selectFolder.color}
                 />
               )}
-              {headerName ? headerName : t("Translations:FolderSelection")}
+              {dialogName}
             </div>
           </StyledSelectFolderPanel>
         </ModalDialog.Header>
         <ModalDialog.Body theme={theme}>
-          <StyledSelectFolderPanel
-            theme={theme}
-            displayType={DISPLAY_TYPE}
-            showButtons={showButtons}
-            isFooter={!!footer}
-            noTreeSwitcher={noTreeSwitcher}
-          >
-            <div className="select-folder-dialog_aside_body">
-              <div>{header} </div>
+          <StyledAsideBody theme={theme}>
+            <div className="selection-panel_aside-body">
+              <div>
+                {header}
+                <Text
+                  fontWeight="700"
+                  fontSize="18px"
+                  className="selection-panel_aside-folder-title"
+                >
+                  {"Documents"}
+                </Text>
+              </div>
 
-              <FolderTreeBody
-                theme={theme}
-                folderTree={resultingFolderTree}
-                onSelect={onSelect}
-                withoutProvider={withoutProvider}
-                certainFolders
-                isAvailable={isAvailable}
-                selectedKeys={[`${folderId}`]}
-                displayType={DISPLAY_TYPE}
-              />
+              <div className="selection-panel_aside-tree">
+                {folderId && resultingFolderTree ? (
+                  <FolderTreeBody
+                    theme={theme}
+                    folderTree={resultingFolderTree}
+                    onSelect={onSelectFolder}
+                    withoutProvider={withoutProvider}
+                    certainFolders
+                    isAvailable={isAvailable}
+                    selectedKeys={[`${folderId}`]}
+                    displayType="aside"
+                  />
+                ) : (
+                  <Loaders.NewTreeFolders />
+                )}
+              </div>
+
+              <div className="selection-panel_aside-footer">
+                <div>{footer}</div>
+                <div className="selection-panel_aside-buttons">
+                  <Button
+                    theme={theme}
+                    className="select-folder-dialog-buttons-save"
+                    primary
+                    size="normal"
+                    label={primaryButtonName}
+                    onClick={onButtonClick}
+                    //isDisabled={isLoadingData || !isAvailable || !canCreate}
+                  />
+                  <Button
+                    size="normal"
+                    label={t("Common:CancelButton")}
+                    onClick={onClose}
+                    // isDisabled={isLoadingData}
+                  />
+                </div>
+              </div>
             </div>
-          </StyledSelectFolderPanel>
+          </StyledAsideBody>
         </ModalDialog.Body>
-        <ModalDialog.Footer theme={theme}>
-          <StyledSelectFolderPanel theme={theme}>
-            {footer}
-
-            <div className="select-folder-dialog-modal_buttons">
-              <Button
-                theme={theme}
-                className="select-folder-dialog-buttons-save"
-                primary
-                size="normal"
-                label={primaryButtonName}
-                onClick={onButtonClick}
-                //isDisabled={isLoadingData || !isAvailable || !canCreate}
-              />
-              <Button
-                size="normal"
-                label={t("Common:CancelButton")}
-                onClick={onClose}
-                // isDisabled={isLoadingData}
-              />
-            </div>
-          </StyledSelectFolderPanel>
-        </ModalDialog.Footer>
       </ModalDialog>
     </StyledAsidePanel>
   );
