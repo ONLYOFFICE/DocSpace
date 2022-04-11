@@ -485,7 +485,9 @@ class TreeFolders extends React.Component {
         gapBetweenNodes="22"
         gapBetweenNodesTablet="26"
         isFullFillSelection={false}
-        childrenCount={expandedPanelKeys?.length}
+        childrenCount={
+          expandedPanelKeys ? expandedPanelKeys.length : expandedKeys.length
+        }
       >
         {this.getItems(data || treeFolders)}
       </StyledTreeMenu>
@@ -549,8 +551,4 @@ export default inject(
       getSubfolders,
     };
   }
-)(
-  withTranslation(["Home", "Common"])(
-    withLoader(observer(TreeFolders))(<Loaders.TreeFolders />)
-  )
-);
+)(withTranslation(["Home", "Common"])(observer(TreeFolders)));
