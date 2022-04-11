@@ -43,6 +43,8 @@ const SelectionPanelBody = ({
   folderSelection = false,
   folderTitle,
   fileId,
+  canCreate,
+  isLoadingData,
 }) => {
   console.log("folderId", folderId);
   return (
@@ -127,7 +129,7 @@ const SelectionPanelBody = ({
                   size="small"
                   label={primaryButtonName}
                   onClick={onButtonClick}
-                  //isDisabled={selectedFile.length === 0}
+                  isDisabled={isLoadingData || !canCreate}
                 />
                 <Button
                   theme={theme}
@@ -135,6 +137,7 @@ const SelectionPanelBody = ({
                   size="small"
                   label={t("Common:CancelButton")}
                   onClick={onClose}
+                  isDisabled={isLoadingData}
                 />
               </div>
             </div>
@@ -194,6 +197,10 @@ class SelectionPanel extends React.Component {
     setSelectedFolder,
     setExpandedPanelKeys
   ) => {
+    const isFilesModule =
+      window.location.href.indexOf("products/files") !== -1 &&
+      window.location.href.indexOf("doceditor") === -1;
+
     const getRequestFolderTree = () => {
       switch (foldersType) {
         case "exceptSortedByTags":
@@ -269,7 +276,7 @@ class SelectionPanel extends React.Component {
         onSelectFolder && onSelectFolder(passedId);
       }
 
-      if (onSetBaseFolderPath) {
+      if (!isFilesModule) {
         await SelectionPanel.setFolderObjectToTree(
           passedId,
           setSelectedNode,

@@ -116,19 +116,16 @@ class SelectFolderModalDialog extends React.Component {
     const {
       storeFolderId,
       canCreate,
-      showButtons,
-      selectionButtonPrimary,
+      checkPossibilityCreating,
       isReset,
     } = this.props;
 
-    if (
-      showButtons &&
-      !selectionButtonPrimary &&
-      storeFolderId !== prevProps.storeFolderId
-    ) {
+    if (checkPossibilityCreating && storeFolderId !== prevProps.storeFolderId) {
+      clearTimeout(this.timerId);
+      this.timerId = null;
+
       this.setState({
         canCreate: canCreate,
-        isLoadingData: false,
       });
     }
 
@@ -144,6 +141,10 @@ class SelectFolderModalDialog extends React.Component {
       setSelectedFolder,
       dialogWithFiles,
     } = this.props;
+
+    clearTimeout(this.timerId);
+    this.timerId = null;
+
     if (this.throttledResize) {
       this.throttledResize && this.throttledResize.cancel();
       window.removeEventListener("resize", this.throttledResize);
@@ -173,7 +174,12 @@ class SelectFolderModalDialog extends React.Component {
       setExpandedPanelKeys,
       setSelectedFolder,
       onSelectFolder,
+      checkPossibilityCreating,
+      storeFolderId,
     } = this.props;
+    const { folderId } = this.state;
+
+    if (+folderId === +folder[0]) return;
     console.log("folder", folder);
     this.setState({
       folderId: folder[0],
@@ -181,6 +187,16 @@ class SelectFolderModalDialog extends React.Component {
       hasNextPage: true,
       page: 0,
     });
+
+    if (checkPossibilityCreating) {
+      this.timerId = setTimeout(
+        () =>
+          this.setState({
+            canCreate: false,
+          }),
+        100
+      );
+    }
 
     SelectionPanel.setFolderObjectToTree(
       folder[0],
@@ -268,7 +284,6 @@ class SelectFolderModalDialog extends React.Component {
       onClose,
       withoutProvider,
       isNeedArrowIcon,
-      asideHeightContent,
       header,
       dialogName,
       footer,
@@ -301,7 +316,6 @@ class SelectFolderModalDialog extends React.Component {
         onClose={onClose}
         withoutProvider={withoutProvider}
         isNeedArrowIcon={isNeedArrowIcon}
-        asideHeightContent={asideHeightContent}
         certainFolders={true}
         folderId={folderId}
         resultingFolderTree={resultingFolderTree}
@@ -361,13 +375,13 @@ SelectFolderModalDialog.propTypes = {
   displayType: PropTypes.oneOf(["aside", "modal"]),
   id: PropTypes.string,
   withoutProvider: PropTypes.bool,
-  asideHeightContent: PropTypes.string,
+  checkPossibilityCreating: PropTypes.bool,
 };
 SelectFolderModalDialog.defaultProps = {
   isSetFolderImmediately: false,
   id: "",
-  asideHeightContent: "100%",
   withoutProvider: false,
+  checkPossibilityCreating: false,
 };
 
 const SelectFolderDialogWrapper = inject(

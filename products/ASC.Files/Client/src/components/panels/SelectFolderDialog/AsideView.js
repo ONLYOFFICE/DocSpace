@@ -28,7 +28,7 @@ const SelectFolderDialogAsideView = ({
   primaryButtonName,
   noTreeSwitcher,
 }) => {
-  console.log("resultingFolderTree", resultingFolderTree);
+  console.log("canCreate", canCreate);
   return (
     <StyledAsidePanel theme={theme} visible={isPanelVisible}>
       <ModalDialog
@@ -98,13 +98,13 @@ const SelectFolderDialogAsideView = ({
                     size="normal"
                     label={primaryButtonName}
                     onClick={onButtonClick}
-                    //isDisabled={isLoadingData || !isAvailable || !canCreate}
+                    isDisabled={isLoadingData || !isAvailable || !canCreate}
                   />
                   <Button
                     size="normal"
                     label={t("Common:CancelButton")}
                     onClick={onClose}
-                    // isDisabled={isLoadingData}
+                    isDisabled={isLoadingData}
                   />
                 </div>
               </div>

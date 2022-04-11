@@ -929,7 +929,7 @@ const Editor = () => {
                 showButtons
                 isPanelVisible={isFolderDialogVisible}
                 isSetFolderImmediately
-                asideHeightContent="calc(100% - 50px)"
+                checkPossibilityCreating
                 onClose={onCloseFolderDialog}
                 foldersType="exceptSortedByTags"
                 onSave={onClickSaveSelectFolder}
