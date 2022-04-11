@@ -89,7 +89,7 @@ const Panels = (props) => {
     selectFileDialogVisible && (
       <SelectFileDialog
         key="select-file-dialog"
-        resetTreeFolders
+        //resetTreeFolders
         onSelectFile={createMasterForm}
         isPanelVisible={selectFileDialogVisible}
         onClose={onClose}
@@ -97,7 +97,7 @@ const Panels = (props) => {
         ByExtension
         searchParam={".docx"}
         dialogName={t("Translations:CreateMasterFormFromFile")}
-        titleFilesList={t("SelectFile:SelectDOCXFormat")}
+        filesListTitle={t("SelectFile:SelectDOCXFormat")}
         creationButtonPrimary
         withSubfolders={false}
       />
