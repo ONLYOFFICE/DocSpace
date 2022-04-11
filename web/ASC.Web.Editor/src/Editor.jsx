@@ -918,17 +918,14 @@ const Editor = () => {
                 onClose={onCloseFileDialog}
                 foldersType="exceptPrivacyTrashFolders"
                 {...fileTypeDetection()}
-                titleFilesList={selectFilesListTitle()}
+                filesListTitle={selectFilesListTitle()}
                 dialogName={i18n.t("SelectFileTitle")}
               />
             )}
 
             {isFolderDialogVisible && (
               <SelectFolderDialog
-                resetTreeFolders
-                showButtons
                 isPanelVisible={isFolderDialogVisible}
-                isSetFolderImmediately
                 checkPossibilityCreating
                 onClose={onCloseFolderDialog}
                 foldersType="exceptSortedByTags"

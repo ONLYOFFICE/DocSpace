@@ -10,12 +10,10 @@ import SimpleFileInput from "../../SimpleFileInput";
 class SelectFolderInput extends React.PureComponent {
   constructor(props) {
     super(props);
-    const { id, foldersType, isSetFolderImmediately } = this.props;
+    const { id, foldersType } = this.props;
 
     const isNeedLoader =
-      !!id ||
-      (isSetFolderImmediately && foldersType !== "third-party") ||
-      foldersType === "common";
+      !!id || foldersType !== "third-party" || foldersType === "common";
 
     this.state = {
       isLoading: isNeedLoader,

@@ -53,7 +53,7 @@ const SelectFolderDialogAsideView = ({
                   // color={theme.filesPanels.selectFolder.color}
                 />
               )}
-              {dialogName}
+              {dialogName ? dialogName : t("Translations:FolderSelection")}
             </div>
           </StyledSelectFolderPanel>
         </ModalDialog.Header>

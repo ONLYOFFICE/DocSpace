@@ -75,7 +75,7 @@ class DocumentsModule extends React.Component {
             isDisabled={isModuleDisabled}
             foldersType="common"
             withoutProvider
-            fontSizeInput={"13px"}
+            ignoreSelectedFolderTree
           />
         </div>
         <div className="manual-backup_buttons">

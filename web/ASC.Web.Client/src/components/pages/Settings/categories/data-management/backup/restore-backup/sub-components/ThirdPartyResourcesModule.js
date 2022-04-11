@@ -11,6 +11,7 @@ class ThirdPartyResources extends React.Component {
         foldersType="third-party"
         searchParam=".gz"
         filesListTitle={t("SelectFileInGZFormat")}
+        ignoreSelectedFolderTree
         isArchiveOnly
       />
     );

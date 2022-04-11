@@ -65,7 +65,6 @@ const SelectFileDialogAsideView = ({
                 isPanelVisible={isFolderPanelVisible}
                 foldersType={foldersType}
                 withoutProvider={withoutProvider}
-                isSetFolderImmediately
                 id={folderId}
                 onSelectFile={onSelectFile}
                 displayType={DISPLAY_TYPE}

@@ -58,7 +58,6 @@ class ThirdPartyModule extends React.PureComponent {
             isReset={isReset}
             isSuccessSave={isSuccessSave}
             foldersList={commonThirdPartyList}
-            isSetFolderImmediately
           />
         </div>
         <ScheduleComponent isLoadingData={isLoadingData} {...rest} />

@@ -103,9 +103,8 @@ class ThirdPartyModule extends React.Component {
             isPanelVisible={isPanelVisible}
             isError={isError}
             foldersType="third-party"
-            fontSizeInput={"13px"}
             foldersList={commonThirdPartyList}
-            isSetFolderImmediately
+            ignoreSelectedFolderTree
           />
         </div>
         <div className="manual-backup_buttons">

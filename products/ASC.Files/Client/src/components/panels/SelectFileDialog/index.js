@@ -24,11 +24,18 @@ import toastr from "studio/toastr";
 class SelectFileDialogBody extends React.Component {
   constructor(props) {
     super(props);
-    const { storeFolderId, fileInfo, filter, id } = props;
+    const {
+      storeFolderId,
+      fileInfo,
+      filter,
+      id,
+      ignoreSelectedFolderTree,
+    } = props;
 
+    const resultingId = ignoreSelectedFolderTree ? id : id || storeFolderId;
     this.state = {
       isVisible: false,
-      folderId: id || storeFolderId || "",
+      folderId: resultingId || "",
       selectedFile: fileInfo || "",
       fileName: (fileInfo && fileInfo.title) || "",
       files: [],
@@ -105,7 +112,6 @@ class SelectFileDialogBody extends React.Component {
       onSelectFolder,
       foldersList,
       treeFromInput,
-      isSetFolderImmediately,
       setSelectedNode,
       setSelectedFolder,
       setExpandedPanelKeys,
@@ -133,7 +139,7 @@ class SelectFileDialogBody extends React.Component {
         onSetBaseFolderPath,
         onSelectFolder,
         foldersList,
-        isSetFolderImmediately,
+        true,
         setSelectedNode,
         setSelectedFolder,
         setExpandedPanelKeys
@@ -178,13 +184,11 @@ class SelectFileDialogBody extends React.Component {
     this.throttledResize && this.throttledResize.cancel();
     window.removeEventListener("resize", this.throttledResize);
 
-    if (resetTreeFolders) {
-      setExpandedPanelKeys(null);
-      //setSelectedFolder(null);
+    setExpandedPanelKeys(null);
+    //setSelectedFolder(null);
 
-      setFolderId(null);
-      setFile(null);
-    }
+    setFolderId(null);
+    setFile(null);
   }
 
   getDisplayType = () => {
@@ -224,7 +228,7 @@ class SelectFileDialogBody extends React.Component {
     // setFolderId(id);
 
     const id = displayType === "aside" ? folder : folder[0];
-    console.log("ASIDE select folder", folder, folder[0]);
+
     this.setState({
       folderId: id,
       hasNextPage: true,
@@ -232,7 +236,11 @@ class SelectFileDialogBody extends React.Component {
       page: 0,
     });
 
-    onSetBaseFolderPath &&
+    const isFilesModule =
+      window.location.href.indexOf("products/files") !== -1 &&
+      window.location.href.indexOf("doceditor") === -1;
+
+    !isFilesModule &&
       SelectionPanel.setFolderObjectToTree(
         id,
         setSelectedNode,
@@ -410,18 +418,16 @@ SelectFileDialogBody.propTypes = {
   ]),
   folderId: PropTypes.string,
   withoutProvider: PropTypes.bool,
-  creationButtonPrimary: PropTypes.bool,
+  ignoreSelectedFolderTree: PropTypes.bool,
   headerName: PropTypes.string,
-  titleFilesList: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-  zIndex: PropTypes.number,
+  filesListTitle: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
 };
 
 SelectFileDialogBody.defaultProps = {
   folderId: "",
-  titleFilesList: "",
+  filesListTitle: "",
   withoutProvider: false,
-  zIndex: 310,
-  creationButtonPrimary: false,
+  ignoreSelectedFolderTree: false,
 };
 
 const SelectFileDialogWrapper = inject(

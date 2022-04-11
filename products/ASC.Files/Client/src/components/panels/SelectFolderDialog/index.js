@@ -47,7 +47,6 @@ class SelectFolderModalDialog extends React.Component {
       onSelectFolder,
       foldersList,
       treeFromInput,
-      isSetFolderImmediately,
       setSelectedNode,
       setSelectedFolder,
       setExpandedPanelKeys,
@@ -73,7 +72,7 @@ class SelectFolderModalDialog extends React.Component {
         onSetBaseFolderPath,
         onSelectFolder,
         foldersList,
-        isSetFolderImmediately,
+        true,
         setSelectedNode,
         setSelectedFolder,
         setExpandedPanelKeys
@@ -100,15 +99,13 @@ class SelectFolderModalDialog extends React.Component {
     }
     const resId = treeFromInput ? id : resultingId;
 
-    foldersType === "common" ||
-      (isSetFolderImmediately && onSelectFolder && onSelectFolder(resId));
+    onSelectFolder && onSelectFolder(resId);
 
     this.setState({
       resultingFolderTree: tree,
       isInitialLoader: false,
-      ...((foldersType === "common" || isSetFolderImmediately) && {
-        folderId: resId,
-      }),
+
+      folderId: resId,
     });
   }
 
@@ -150,10 +147,8 @@ class SelectFolderModalDialog extends React.Component {
       window.removeEventListener("resize", this.throttledResize);
     }
 
-    if (resetTreeFolders && !dialogWithFiles) {
-      setExpandedPanelKeys(null);
-      setSelectedFolder(null);
-    }
+    setExpandedPanelKeys(null);
+    setSelectedFolder(null);
   }
   getDisplayType = () => {
     const displayType =
@@ -173,14 +168,12 @@ class SelectFolderModalDialog extends React.Component {
       setSelectedNode,
       setExpandedPanelKeys,
       setSelectedFolder,
-      onSelectFolder,
       checkPossibilityCreating,
-      storeFolderId,
     } = this.props;
     const { folderId } = this.state;
 
     if (+folderId === +folder[0]) return;
-    console.log("folder", folder);
+
     this.setState({
       folderId: folder[0],
       files: [],
@@ -197,13 +190,17 @@ class SelectFolderModalDialog extends React.Component {
         100
       );
     }
+    const isFilesModule =
+      window.location.href.indexOf("products/files") !== -1 &&
+      window.location.href.indexOf("doceditor") === -1;
 
-    SelectionPanel.setFolderObjectToTree(
-      folder[0],
-      setSelectedNode,
-      setExpandedPanelKeys,
-      setSelectedFolder
-    );
+    !isFilesModule &&
+      SelectionPanel.setFolderObjectToTree(
+        folder[0],
+        setSelectedNode,
+        setExpandedPanelKeys,
+        setSelectedFolder
+      );
   };
 
   onButtonClick = (e) => {
@@ -378,7 +375,6 @@ SelectFolderModalDialog.propTypes = {
   checkPossibilityCreating: PropTypes.bool,
 };
 SelectFolderModalDialog.defaultProps = {
-  isSetFolderImmediately: false,
   id: "",
   withoutProvider: false,
   checkPossibilityCreating: false,
