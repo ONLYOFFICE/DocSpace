@@ -249,7 +249,8 @@ public class FileSharingHelper
     {
         return
             entry != null
-            && (entry.RootFolderType == FolderType.COMMON && _global.IsAdministrator
+            && ((entry.RootFolderType == FolderType.COMMON && _global.IsAdministrator)
+            || (entry.RootFolderType == FolderType.VirtualRooms && _global.IsAdministrator)
                 || !_userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager)
                     && (entry.RootFolderType == FolderType.USER
                         && (Equals(entry.RootId, _globalFolderHelper.FolderMy) || await _fileSecurity.CanEditAsync(entry))
