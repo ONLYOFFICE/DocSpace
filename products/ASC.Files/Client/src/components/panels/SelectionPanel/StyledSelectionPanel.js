@@ -109,6 +109,11 @@ const StyledAsideBody = styled.div`
     height: 100%;
   }
 
+  .selection-panel_aside-header {
+    div:first-child {
+      ${(props) => props.header && " margin-bottom: 12px;"}
+    }
+  }
   .selection-panel_aside-folder-title {
     margin-top: 12px;
   }
