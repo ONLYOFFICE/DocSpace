@@ -393,8 +393,7 @@ namespace ASC.Api.Documents
         [Read("{folderId:int}", order: int.MaxValue - 1, DisableFormat = true)]
         public Task<FolderContentWrapper<int>> GetFolderAsync(int folderId, Guid userIdOrGroupId, FilterType filterType, bool searchInContent, bool withsubfolders)
         {
-            var q = FilesControllerHelperInt.GetFolderAsync(folderId, userIdOrGroupId, filterType, searchInContent, withsubfolders);
-            return q;
+             return FilesControllerHelperInt.GetFolderAsync(folderId, userIdOrGroupId, filterType, searchInContent, withsubfolders);
         }
 
         [Read("{folderId}/subfolders")]
