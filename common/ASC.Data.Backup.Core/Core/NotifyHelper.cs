@@ -28,62 +28,8 @@ using ASC.Notify.Engine;
 
 namespace ASC.Data.Backup;
 
-[Singletone(Additional = typeof(NotifyHelperExtension))]
-public class NotifyHelper
-{
-    private readonly IServiceScopeFactory _serviceScopeFactory;
-
-    public NotifyHelper(IServiceScopeFactory serviceScopeFactory)
-    {
-        _serviceScopeFactory = serviceScopeFactory;
-    }
-
-    public void SendAboutTransferStart(Tenant tenant, string targetRegion, bool notifyUsers)
-    {
-        MigrationNotify(tenant, Actions.MigrationPortalStart, targetRegion, string.Empty, notifyUsers);
-    }
-
-    public void SendAboutTransferComplete(Tenant tenant, string targetRegion, string targetAddress, bool notifyOnlyOwner, int toTenantId)
-    {
-        MigrationNotify(tenant, Actions.MigrationPortalSuccessV115, targetRegion, targetAddress, !notifyOnlyOwner, toTenantId);
-    }
-
-    public void SendAboutTransferError(Tenant tenant, string targetRegion, string resultAddress, bool notifyOnlyOwner)
-    {
-        MigrationNotify(tenant, !string.IsNullOrEmpty(targetRegion) ? Actions.MigrationPortalError : Actions.MigrationPortalServerFailure, targetRegion, resultAddress, !notifyOnlyOwner);
-    }
-
-    public void SendAboutBackupCompleted(int tenantId, Guid userId)
-    {
-        using var scope = _serviceScopeFactory.CreateScope();
-        var scopeClass = scope.ServiceProvider.GetService<NotifyHelperWorker>();
-        scopeClass.SendAboutBackupCompleted(tenantId, userId);
-    }
-
-    public void SendAboutRestoreStarted(Tenant tenant, bool notifyAllUsers)
-    {
-        using var scope = _serviceScopeFactory.CreateScope();
-        var scopeClass = scope.ServiceProvider.GetService<NotifyHelperWorker>();
-        scopeClass.SendAboutRestoreStarted(tenant, notifyAllUsers);
-    }
-
-    public void SendAboutRestoreCompleted(Tenant tenant, bool notifyAllUsers)
-    {
-        using var scope = _serviceScopeFactory.CreateScope();
-        var scopeClass = scope.ServiceProvider.GetService<NotifyHelperWorker>();
-        scopeClass.SendAboutRestoreCompleted(tenant, notifyAllUsers);
-    }
-
-    private void MigrationNotify(Tenant tenant, INotifyAction action, string region, string url, bool notify, int? toTenantId = null)
-    {
-        using var scope = _serviceScopeFactory.CreateScope();
-        var scopeClass = scope.ServiceProvider.GetService<NotifyHelperWorker>();
-        scopeClass.MigrationNotify(tenant, action, region, url, notify, toTenantId);
-    }
-}
-
 [Scope]
-public class NotifyHelperWorker
+public class NotifyHelper
 {
     private readonly AuthManager _authManager;
     private readonly NotifyEngineQueue _notifyEngineQueue;
@@ -96,7 +42,7 @@ public class NotifyHelperWorker
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
     private readonly TenantManager _tenantManager;
 
-    public NotifyHelperWorker(
+    public NotifyHelper(
         UserManager userManager,
         StudioNotifyHelper studioNotifyHelper,
         StudioNotifySource studioNotifySource,
@@ -118,6 +64,21 @@ public class NotifyHelperWorker
         _workContext = workContext;
         _commonLinkUtility = commonLinkUtility;
         _tenantLogoManager = tenantLogoManager;
+    }
+
+    public void SendAboutTransferStart(Tenant tenant, string targetRegion, bool notifyUsers)
+    {
+        MigrationNotify(tenant, Actions.MigrationPortalStart, targetRegion, string.Empty, notifyUsers);
+    }
+
+    public void SendAboutTransferComplete(Tenant tenant, string targetRegion, string targetAddress, bool notifyOnlyOwner, int toTenantId)
+    {
+        MigrationNotify(tenant, Actions.MigrationPortalSuccessV115, targetRegion, targetAddress, !notifyOnlyOwner, toTenantId);
+    }
+
+    public void SendAboutTransferError(Tenant tenant, string targetRegion, string resultAddress, bool notifyOnlyOwner)
+    {
+        MigrationNotify(tenant, !string.IsNullOrEmpty(targetRegion) ? Actions.MigrationPortalError : Actions.MigrationPortalServerFailure, targetRegion, resultAddress, !notifyOnlyOwner);
     }
 
     public void SendAboutBackupCompleted(int tenantId, Guid userId)
@@ -176,7 +137,7 @@ public class NotifyHelperWorker
         }
     }
 
-    public void MigrationNotify(Tenant tenant, INotifyAction action, string region, string url, bool notify, int? toTenantId = null)
+    private void MigrationNotify(Tenant tenant, INotifyAction action, string region, string url, bool notify, int? toTenantId = null)
     {
         _tenantManager.SetCurrentTenant(tenant);
 
@@ -238,13 +199,5 @@ public class NotifyHelperWorker
         }
 
         return args;
-    }
-}
-
-public static class NotifyHelperExtension
-{
-    public static void Register(DIHelper services)
-    {
-        services.TryAdd<NotifyHelperWorker>();
     }
 }
