@@ -519,6 +519,7 @@ const Base = {
     minHeight: "47px",
     width: "100%",
     borderBottom: globalColors.grayLightMid,
+    backgroundColor: globalColors.lightHover,
     minWidth: "160px",
     overflow: "hidden",
     textOverflow: "ellipsis",

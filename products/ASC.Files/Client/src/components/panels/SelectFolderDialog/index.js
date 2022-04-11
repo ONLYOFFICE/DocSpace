@@ -392,8 +392,11 @@ export default inject(
     const { canCreate, filter } = filesStore;
     const { setSelectedFolder, id } = selectedFolderStore;
     const { setFolderId } = selectedFilesStore;
+
+    const { settingsStore } = auth;
+    const { theme } = settingsStore;
     return {
-      theme: auth.settingsStore.theme,
+      theme: theme,
       setSelectedFolder,
       setSelectedNode,
       canCreate,

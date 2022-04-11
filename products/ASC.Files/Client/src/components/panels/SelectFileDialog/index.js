@@ -403,6 +403,7 @@ SelectFileDialog.defaultProps = {
 
 export default inject(
   ({
+    auth,
     filesStore,
     selectedFilesStore,
     treeFoldersStore,
@@ -418,6 +419,8 @@ export default inject(
     const { filter } = filesStore;
     const { setSelectedFolder, id } = selectedFolderStore;
 
+    const { settingsStore } = auth;
+    const { theme } = settingsStore;
     return {
       fileInfo,
       setFile,
@@ -428,6 +431,7 @@ export default inject(
       setExpandedPanelKeys,
       treeFolders,
       storeFolderId: id,
+      theme: theme,
     };
   }
 )(

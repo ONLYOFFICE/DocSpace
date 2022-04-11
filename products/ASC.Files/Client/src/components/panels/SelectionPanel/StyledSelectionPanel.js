@@ -7,6 +7,7 @@ const StyledBody = styled.div`
     grid-template-columns: 256px 1fr;
     grid-template-areas: "tree files" "footer footer";
     grid-template-rows: auto max-content;
+    margin-right: -4px;
 
     .selection-panel_files-body {
       grid-area: files;
@@ -35,7 +36,7 @@ const StyledBody = styled.div`
 
     .selection-panel_footer {
       grid-area: footer;
-      border-top: 1px solid #eceef1;
+      border-top: 1px solid ${(props) => props.theme.row.borderBottom};
       margin-left: -13px;
       margin-right: -13px;
       padding-left: 16px;
@@ -61,7 +62,11 @@ const StyledRow = styled.div`
   position: relative;
   height: 48px;
   width: calc(100% - 16px);
-  ${(props) => props.displayType === "modal" && "padding-left: 16px;"}
+
+  padding-left: 16px;
+
+  ${(props) =>
+    props.isChecked && `background: ${props.theme.row.backgroundColor}`};
 
   .selection-panel_clicked-area {
     position: absolute;
@@ -104,6 +109,8 @@ const StyledAsideBody = styled.div`
   }
   .selection-panel_files-list-body {
     height: 100%;
+    margin-left: -16px;
+    margin-right: -6px;
   }
   .selection-panel_files {
     height: 100%;
@@ -121,7 +128,7 @@ const StyledAsideBody = styled.div`
     margin-top: 12px;
   }
   .selection-panel_aside-footer {
-    border-top: 1px solid #eceef1;
+    border-top: 1px solid ${(props) => props.theme.row.borderBottom};
     margin-left: -13px;
     margin-right: -13px;
     padding-left: 16px;
