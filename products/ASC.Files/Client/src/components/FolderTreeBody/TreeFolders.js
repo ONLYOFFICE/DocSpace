@@ -26,12 +26,12 @@ const StyledTreeMenu = styled(TreeMenu)`
     background: ${(props) => !props.dragging && "none !important"};
   }
 
-  .rc-tree-node-selected {
+  /* .rc-tree-node-selected {
     background: ${(props) =>
-      !props.isPanel
-        ? props.theme.filesArticleBody.background
-        : props.theme.filesArticleBody.panelBackground} !important;
-  }
+    !props.isPanel
+      ? props.theme.filesArticleBody.background
+      : props.theme.filesArticleBody.panelBackground} !important;
+  } */
 
   .rc-tree-treenode-disabled > span:not(.rc-tree-switcher),
   .rc-tree-treenode-disabled > a,
@@ -462,6 +462,7 @@ class TreeFolders extends React.Component {
       isPanel,
     } = this.props;
 
+    console.log("expandedPanelKeys", expandedPanelKeys);
     return (
       <StyledTreeMenu
         isPanel={isPanel}
@@ -484,6 +485,7 @@ class TreeFolders extends React.Component {
         gapBetweenNodes="22"
         gapBetweenNodesTablet="26"
         isFullFillSelection={false}
+        childrenCount={expandedPanelKeys?.length}
       >
         {this.getItems(data || treeFolders)}
       </StyledTreeMenu>

@@ -22,6 +22,7 @@ const StyledTreeMenu = styled(Tree)`
 
   .rc-tree-switcher {
     margin-left: 0 !important;
+    padding-left: 16px;
     margin-top: 1px;
   }
 
@@ -30,7 +31,8 @@ const StyledTreeMenu = styled(Tree)`
     width: 18px;
     height: 16px;
     padding: 0;
-    margin-top: 4px;
+    /* margin-top: 4px; */
+    margin-top: -4px;
   }
 
   ${(props) =>
@@ -44,8 +46,9 @@ const StyledTreeMenu = styled(Tree)`
     margin-right: 6px !important;
   }
   .rc-tree-node-content-wrapper {
-    position: static !important;
-    margin-bottom: ${(props) => +props.gapBetweenNodes - 16 + "px;"};
+    /* position: static !important; */
+    /* margin-bottom: ${(props) => +props.gapBetweenNodes - 16 + "px;"}; */
+    padding-top: 4px;
   }
 
   ${(props) =>
@@ -84,12 +87,39 @@ const StyledTreeMenu = styled(Tree)`
   .rc-tree-child-tree-open {
     display: block;
     ${(props) => props.disableSwitch && "margin: 0 0 25px 0;"}
-    margin-left: ${(props) => (props.disableSwitch ? "27px" : "16px")};
+    //margin-left: ${(props) => (props.disableSwitch ? "27px" : "16px")};
+    /* padding-left: 16px; */
     li:first-child {
       margin-top: ${(props) => (props.disableSwitch ? "10px" : "6px")};
       margin-left: 0;
+      padding-left: 16px;
     }
   }
+
+  .rc-tree-treenode-selected {
+    /* background: #f3f4f4; */
+    ::after {
+      position: absolute;
+      display: block;
+      top: 0px;
+
+      width: 100%;
+      width: ${(props) => props.widthAdditional};
+      height: 36px;
+      background-color: #f3f4f4;
+      content: "";
+      z-index: 1;
+      right: -${(props) => props.multiplicationFactor - 4}px;
+    }
+    .span.rc-tree-node-selected {
+    }
+  }
+  .rc-tree-treenode-switcher-open {
+    .rc-tree-child-tree-open {
+      // margin-left: -16px;
+    }
+  }
+
   .rc-tree-treenode-disabled > span:not(.rc-tree-switcher),
   .rc-tree-treenode-disabled > a,
   .rc-tree-treenode-disabled > a span {
@@ -136,12 +166,12 @@ const StyledTreeMenu = styled(Tree)`
       : ``}
   @media (max-width: 1024px) {
     margin-top: 20px !important;
-    .rc-tree-node-content-wrapper {
+    /* .rc-tree-node-content-wrapper {
       margin-bottom: ${(props) =>
-        props.gapBetweenNodesTablet
-          ? +props.gapBetweenNodesTablet - 16 + "px;"
-          : +props.gapBetweenNodes - 16 + "px;"};
-    }
+      props.gapBetweenNodesTablet
+        ? +props.gapBetweenNodesTablet - 16 + "px;"
+        : +props.gapBetweenNodes - 16 + "px;"};
+    } */
     & > li > .rc-tree-child-tree {
       margin-left: 4px;
     }
@@ -151,7 +181,6 @@ const StyledTreeMenu = styled(Tree)`
 StyledTreeMenu.defaultProps = { theme: Base };
 
 const TreeMenu = React.forwardRef((props, ref) => {
-  //console.log("TreeMenu render");
   const {
     defaultExpandAll,
     defaultExpandParent,
@@ -193,6 +222,7 @@ const TreeMenu = React.forwardRef((props, ref) => {
     gapBetweenNodesTablet,
     isEmptyRootNode,
     theme,
+    childrenCount,
   } = props;
   const expandedKeysProp = expandedKeys ? { expandedKeys: expandedKeys } : {};
 
@@ -234,7 +264,7 @@ const TreeMenu = React.forwardRef((props, ref) => {
   };
 
   const modifiedChildren = renderChildren(children);
-
+  console.log("TreeMenu render", childrenCount * 8.5);
   return (
     <>
       <StyledTreeMenu
@@ -277,6 +307,10 @@ const TreeMenu = React.forwardRef((props, ref) => {
         gapBetweenNodes={gapBetweenNodes}
         gapBetweenNodesTablet={gapBetweenNodesTablet}
         isEmptyRootNode={isEmptyRootNode}
+        widthAdditional={`calc(100% + ${
+          (childrenCount ? childrenCount : 1) * 32
+        }px)`}
+        multiplicationFactor={32}
       >
         {modifiedChildren}
       </StyledTreeMenu>

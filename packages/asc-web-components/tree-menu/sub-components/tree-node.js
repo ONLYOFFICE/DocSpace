@@ -220,6 +220,7 @@ const TreeNodeMenu = styled(TreeNode)`
 
     svg {
       height: 16px;
+      margin-top: 8px;
     }
   }
   span.rc-tree-iconEle {
@@ -242,6 +243,8 @@ const TreeNodeMenu = styled(TreeNode)`
     vertical-align: 1px;
     height: 24px;
     width: 8px;
+    z-index: 2;
+    position: relative;
   }
   span.rc-tree-switcher.rc-tree-icon__customize,
   span.rc-tree-checkbox.rc-tree-icon__customize,
@@ -339,7 +342,7 @@ const TreeNodeMenu = styled(TreeNode)`
   }
 
   .rc-tree-node-selected {
-    background: ${(props) => props.theme.treeNode.selected.background};
+    //background: ${(props) => props.theme.treeNode.selected.background};
     mix-blend-mode: normal;
     border-radius: ${(props) => props.theme.treeNode.selected.borderRadius};
     z-index: 0;
@@ -354,6 +357,9 @@ const TreeNodeMenu = styled(TreeNode)`
         props.theme.treeNode.selected.hoverBackgroundColor};
     }
     overflow: visible;
+    z-index: 2;
+    position: relative;
+    padding-top: 4px;
   }
 
   .newItem {

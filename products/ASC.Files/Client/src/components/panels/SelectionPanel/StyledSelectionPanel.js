@@ -28,6 +28,13 @@ const StyledBody = styled.div`
       .selection-panel_folder-title {
         padding: 20px 12px 20px 0px;
       }
+      .selection-panel_tree-folder {
+        margin-left: -12px;
+      }
+
+      .span.rc-tree-switcher {
+        padding-left: 16px;
+      }
     }
 
     .selection-panel_files-header {
@@ -126,6 +133,8 @@ const StyledAsideBody = styled.div`
   }
   .selection-panel_aside-tree {
     margin-top: 12px;
+    margin-left: -16px;
+    margin-right: -16px;
   }
   .selection-panel_aside-footer {
     border-top: 1px solid ${(props) => props.theme.row.borderBottom};
