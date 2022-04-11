@@ -41,7 +41,7 @@ const IpSecurity = (props) => {
   const {
     t,
     history,
-    ipRestrictionEnabled,
+    ipRestrictionEnable,
     setIpRestrictionsEnable,
     ipRestrictions,
     setIpRestrictions,
@@ -62,7 +62,7 @@ const IpSecurity = (props) => {
       saveToSessionStorage("defaultIPSettings", defaultSettings);
     } else {
       const defaultData = {
-        enable: ipRestrictionEnabled,
+        enable: ipRestrictionEnable,
         ips: ipRestrictions,
       };
       saveToSessionStorage("defaultIPSettings", defaultData);
@@ -72,7 +72,7 @@ const IpSecurity = (props) => {
       setEnable(currentSettings.enable);
       setIps(currentSettings.ips);
     } else {
-      setEnable(ipRestrictionEnabled);
+      setEnable(ipRestrictionEnable);
       setIps(ipRestrictions);
     }
 
@@ -227,14 +227,14 @@ const IpSecurity = (props) => {
 
 export default inject(({ auth }) => {
   const {
-    ipRestrictionEnabled,
+    ipRestrictionEnable,
     setIpRestrictionsEnable,
     ipRestrictions,
     setIpRestrictions,
   } = auth.settingsStore;
 
   return {
-    ipRestrictionEnabled,
+    ipRestrictionEnable,
     setIpRestrictionsEnable,
     ipRestrictions,
     setIpRestrictions,
