@@ -133,4 +133,13 @@ const StyledAsideBody = styled.div`
     }
   }
 `;
-export { StyledBody, StyledRow, StyledAsideBody };
+
+const StyledAsideHeader = styled.div`
+  display: flex;
+  align-items: center;
+
+  .selection-panel_aside-header-icon {
+    margin-right: 16px;
+  }
+`;
+export { StyledBody, StyledRow, StyledAsideBody, StyledAsideHeader };

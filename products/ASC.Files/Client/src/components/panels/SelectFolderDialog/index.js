@@ -4,7 +4,7 @@ import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 import throttle from "lodash/throttle";
 import { getCommonThirdPartyList } from "@appserver/common/api/settings";
-import { getCommonFolderList, getFolder } from "@appserver/common/api/files";
+import { getFolder } from "@appserver/common/api/files";
 import SelectFolderDialogAsideView from "./AsideView";
 import utils from "@appserver/components/utils";
 import toastr from "studio/toastr";
@@ -132,12 +132,7 @@ class SelectFolderModalDialog extends React.Component {
   }
 
   componentWillUnmount() {
-    const {
-      setExpandedPanelKeys,
-      resetTreeFolders,
-      setSelectedFolder,
-      dialogWithFiles,
-    } = this.props;
+    const { setExpandedPanelKeys, setSelectedFolder } = this.props;
 
     clearTimeout(this.timerId);
     this.timerId = null;
@@ -370,7 +365,7 @@ SelectFolderModalDialog.propTypes = {
     "exceptPrivacyTrashFolders",
   ]),
   displayType: PropTypes.oneOf(["aside", "modal"]),
-  id: PropTypes.string,
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   withoutProvider: PropTypes.bool,
   checkPossibilityCreating: PropTypes.bool,
 };
