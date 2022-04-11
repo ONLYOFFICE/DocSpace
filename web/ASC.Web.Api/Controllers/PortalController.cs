@@ -18,9 +18,12 @@ using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core;
 using ASC.Web.Core.Files;
+using ASC.Web.Core.Helpers;
 using ASC.Web.Core.Mobile;
+using ASC.Web.Core.PublicResources;
 using ASC.Web.Core.Utility;
 using ASC.Web.Studio.Core;
+using ASC.Web.Studio.Core.Notify;
 using ASC.Web.Studio.UserControls.Management;
 using ASC.Web.Studio.Utility;
 
@@ -37,6 +40,10 @@ namespace ASC.Web.Api.Controllers
     [ApiController]
     public class PortalController : ControllerBase
     {
+        private readonly ApiSystemHelper _apiSystemHelper;
+        private readonly CoreSettings _coreSettings;
+        private readonly StudioNotifyService _studioNotifyService;
+        private readonly PermissionContext _permissionContext;
 
         private Tenant Tenant { get { return ApiContext.Tenant; } }
 
@@ -80,7 +87,11 @@ namespace ASC.Web.Api.Controllers
             LicenseReader licenseReader,
             SetupInfo setupInfo,
             DocumentServiceLicense documentServiceLicense,
-            IHttpClientFactory clientFactory
+            IHttpClientFactory clientFactory,
+            ApiSystemHelper apiSystemHelper,
+            CoreSettings coreSettings,
+            PermissionContext permissionContext,
+            StudioNotifyService studioNotifyService
             )
         {
             Log = options.CurrentValue;
@@ -102,6 +113,10 @@ namespace ASC.Web.Api.Controllers
             DocumentServiceLicense = documentServiceLicense;
             TenantExtra = tenantExtra;
             ClientFactory = clientFactory;
+            _apiSystemHelper = apiSystemHelper;
+            _coreSettings = coreSettings;
+            _studioNotifyService = studioNotifyService;
+            _permissionContext = permissionContext;
         }
 
         [Read("")]
@@ -279,6 +294,88 @@ namespace ASC.Web.Api.Controllers
         {
             var currentUser = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
             MobileAppInstallRegistrator.RegisterInstall(currentUser.Email, type);
+        }
+
+        /// <summary>
+        /// Updates a portal name with a new one specified in the request.
+        /// </summary>
+        /// <short>Update a portal name</short>
+        /// <param name="alias">New portal name</param>
+        /// <returns>Message about renaming a portal</returns>
+        ///<visible>false</visible>
+        [Update("portalrename")]
+        public async Task<object> UpdatePortalName(string alias)
+        {
+            if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.PortalSecurity)))
+            {
+                throw new BillingException(Resource.ErrorNotAllowedOption, "PortalRename");
+            }
+
+            if (CoreBaseSettings.Personal)
+            {
+                throw new Exception(Resource.ErrorAccessDenied);
+            }
+
+            _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+            if (string.IsNullOrEmpty(alias)) throw new ArgumentException();
+
+            var tenant = TenantManager.GetCurrentTenant();
+            var user = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
+
+            var localhost = _coreSettings.BaseDomain == "localhost" || tenant.TenantAlias == "localhost";
+
+            var newAlias = alias.ToLowerInvariant();
+            var oldAlias = tenant.TenantAlias;
+            var oldVirtualRootPath = CommonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/');
+
+            if (!string.Equals(newAlias, oldAlias, StringComparison.InvariantCultureIgnoreCase))
+            {
+                if (!string.IsNullOrEmpty(_apiSystemHelper.ApiSystemUrl))
+                {
+                    await _apiSystemHelper.ValidatePortalNameAsync(newAlias, user.ID);
+                }
+                else
+                {
+                    TenantManager.CheckTenantAddress(newAlias.Trim());
+                }
+
+
+                if (!string.IsNullOrEmpty(_apiSystemHelper.ApiCacheUrl))
+                {
+                    await _apiSystemHelper.AddTenantToCacheAsync(newAlias, user.ID);
+                }
+
+                tenant.TenantAlias = alias;
+                tenant = TenantManager.SaveTenant(tenant);
+
+
+                if (!string.IsNullOrEmpty(_apiSystemHelper.ApiCacheUrl))
+                {
+                    await _apiSystemHelper.RemoveTenantFromCacheAsync(oldAlias, user.ID);
+                }
+
+                if (!localhost || string.IsNullOrEmpty(tenant.MappedDomain))
+                {
+                    _studioNotifyService.PortalRenameNotify(tenant, oldVirtualRootPath);
+                }
+            }
+            else
+            {
+                return string.Empty;
+            }
+
+            return CreateReference(tenant.GetTenantDomain(_coreSettings), tenant.TenantId, user.Email);
+        }
+
+        private string CreateReference(string tenantDomain, int tenantId, string email)
+        {
+            return string.Format("{0}{1}{2}/{3}",
+                                 ApiContext.HttpContextAccessor.HttpContext.Request != null ? ApiContext.HttpContextAccessor.HttpContext.Request.Scheme : Uri.UriSchemeHttp,
+                                 Uri.SchemeDelimiter,
+                                 tenantDomain,
+                                 CommonLinkUtility.GetConfirmationUrlRelative(tenantId, email, ConfirmType.Auth)
+                );
         }
     }
 }

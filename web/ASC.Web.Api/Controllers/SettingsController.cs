@@ -319,7 +319,8 @@ namespace ASC.Api.Settings
                 GreetingSettings = Tenant.Name,
                 Personal = CoreBaseSettings.Personal,
                 Version = Configuration["version:number"] ?? "",
-                TenantStatus = TenantManager.GetCurrentTenant().Status
+                TenantStatus = Tenant.Status,
+                TenantAlias = Tenant.TenantAlias
             };
 
             if (AuthContext.IsAuthenticated)
@@ -1117,7 +1118,7 @@ namespace ASC.Api.Settings
             {
                 var logoDict = new Dictionary<int, string>();
 
-                foreach(var l in model.Logo)
+                foreach (var l in model.Logo)
                 {
                     logoDict.Add(Int32.Parse(l.Key), l.Value);
                 }
