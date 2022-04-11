@@ -50,6 +50,8 @@ class SelectFolderDialog extends React.Component {
       setSelectedFolder,
       setExpandedPanelKeys,
       displayType,
+      isNeedArrowIcon,
+      folderTree,
     } = this.props;
 
     !displayType && window.addEventListener("resize", this.throttledResize);
@@ -60,45 +62,48 @@ class SelectFolderDialog extends React.Component {
 
     let resultingFolderTree, resultingId;
 
-    try {
-      [
-        resultingFolderTree,
-        resultingId,
-      ] = await SelectionPanel.getBasicFolderInfo(
-        treeFolders,
-        foldersType,
-        id,
-        onSetBaseFolderPath,
-        onSelectFolder,
-        foldersList,
-        true,
-        setSelectedNode,
-        setSelectedFolder,
-        setExpandedPanelKeys
-      );
+    if (!isNeedArrowIcon) {
+      try {
+        [
+          resultingFolderTree,
+          resultingId,
+        ] = await SelectionPanel.getBasicFolderInfo(
+          treeFolders,
+          foldersType,
+          id,
+          onSetBaseFolderPath,
+          onSelectFolder,
+          foldersList,
+          true,
+          setSelectedNode,
+          setSelectedFolder,
+          setExpandedPanelKeys
+        );
 
-      clearTimeout(timerId);
-      timerId = null;
-    } catch (e) {
-      toastr.error(e);
+        clearTimeout(timerId);
+        timerId = null;
+      } catch (e) {
+        toastr.error(e);
 
-      clearTimeout(timerId);
-      timerId = null;
-      this.setState({ isInitialLoader: false });
+        clearTimeout(timerId);
+        timerId = null;
+        this.setState({ isInitialLoader: false });
 
-      return;
+        return;
+      }
     }
 
-    const tree = treeFromInput ? treeFromInput : resultingFolderTree;
+    const tree = isNeedArrowIcon ? folderTree : resultingFolderTree;
 
     if (tree.length === 0) {
       this.setState({ isAvailable: false });
       onSelectFolder(null);
       return;
     }
-    const resId = treeFromInput ? id : resultingId;
+    const resId = isNeedArrowIcon ? id : resultingId;
 
     onSelectFolder && onSelectFolder(resId);
+    isNeedArrowIcon && onSetBaseFolderPath(resId);
 
     this.setState({
       resultingFolderTree: tree,
@@ -242,13 +247,9 @@ class SelectFolderDialog extends React.Component {
     this.setState({ isNextPageLoading: true }, async () => {
       try {
         const data = await getFolder(folderId, this.newFilter);
-
         const finalData = [...data.files];
-
         const newFilesList = [...files].concat(finalData);
-
         const hasNextPage = newFilesList.length < data.total - 1;
-
         this._isLoadNextPage = false;
         this.setState((state) => ({
           isDataLoading: false,

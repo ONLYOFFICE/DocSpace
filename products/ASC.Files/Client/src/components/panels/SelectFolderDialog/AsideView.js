@@ -29,7 +29,6 @@ const SelectFolderDialogAsideView = ({
   primaryButtonName,
   noTreeSwitcher,
 }) => {
-  console.log("canCreate", canCreate);
   return (
     <ModalDialog
       theme={theme}

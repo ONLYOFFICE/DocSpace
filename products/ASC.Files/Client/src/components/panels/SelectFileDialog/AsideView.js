@@ -65,7 +65,8 @@ const SelectFileDialogAsideView = ({
                   isNextPageLoading={isNextPageLoading}
                   loadNextPage={loadNextPage}
                   files={files}
-                  resultingFolderTree={resultingFolderTree}
+                  folderTree={resultingFolderTree}
+                  isFolderTreeLoading={!!!resultingFolderTree}
                   isNeedArrowIcon
                 />
 

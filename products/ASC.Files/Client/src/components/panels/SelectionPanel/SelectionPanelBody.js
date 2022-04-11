@@ -136,7 +136,8 @@ const SelectionPanelBody = ({
                     onClick={onButtonClick}
                     isDisabled={
                       isLoadingData ||
-                      (!fileId && !folderSelection && !canCreate)
+                      (!fileId && !folderSelection) ||
+                      !canCreate
                     }
                   />
                   <Button
@@ -204,7 +205,8 @@ class SelectionPanel extends React.Component {
     isSetFolderImmediately,
     setSelectedNode,
     setSelectedFolder,
-    setExpandedPanelKeys
+    setExpandedPanelKeys,
+    isFilesPanel = false
   ) => {
     const isFilesModule =
       window.location.href.indexOf("products/files") !== -1 &&
@@ -280,10 +282,13 @@ class SelectionPanel extends React.Component {
     if (id || isSetFolderImmediately || foldersType === "common") {
       passedId = id ? id : foldersTree[0].id;
 
-      if (foldersType !== "third-party") {
+      if (foldersType === "third-party") {
+        isFilesPanel && onSetBaseFolderPath && onSetBaseFolderPath(passedId);
+      } else {
         onSetBaseFolderPath && onSetBaseFolderPath(passedId);
-        onSelectFolder && onSelectFolder(passedId);
       }
+
+      onSelectFolder && onSelectFolder(passedId);
 
       if (!isFilesModule) {
         await SelectionPanel.setFolderObjectToTree(

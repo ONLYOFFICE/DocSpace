@@ -127,6 +127,7 @@ class SelectFolderInput extends React.PureComponent {
       isPanelVisible,
       id,
       theme,
+      isFolderTreeLoading = false,
       ...rest
     } = this.props;
 
@@ -141,16 +142,18 @@ class SelectFolderInput extends React.PureComponent {
           isError={isError}
           onClickInput={onClickInput}
           placeholder={placeholder}
-          isDisabled={isDisabled || isLoading}
+          isDisabled={isFolderTreeLoading || isDisabled || isLoading}
         />
 
-        <SelectFolderDialog
-          {...rest}
-          id={passedId}
-          isPanelVisible={isPanelVisible}
-          onSetBaseFolderPath={this.onSetBaseFolderPath}
-          onSetNewFolderPath={this.onSetNewFolderPath}
-        />
+        {!isFolderTreeLoading && (
+          <SelectFolderDialog
+            {...rest}
+            id={passedId}
+            isPanelVisible={isPanelVisible}
+            onSetBaseFolderPath={this.onSetBaseFolderPath}
+            onSetNewFolderPath={this.onSetNewFolderPath}
+          />
+        )}
       </StyledComponent>
     );
   }

@@ -132,7 +132,8 @@ class SelectFileDialog extends React.Component {
         true,
         setSelectedNode,
         setSelectedFolder,
-        setExpandedPanelKeys
+        setExpandedPanelKeys,
+        true
       );
 
       clearTimeout(timerId);
@@ -222,6 +223,7 @@ class SelectFileDialog extends React.Component {
       window.location.href.indexOf("doceditor") === -1;
 
     !isFilesModule &&
+      displayType !== "aside" &&
       SelectionPanel.setFolderObjectToTree(
         id,
         setSelectedNode,
@@ -265,13 +267,9 @@ class SelectFileDialog extends React.Component {
     this.setState({ isNextPageLoading: true }, async () => {
       try {
         const data = await getFolder(folderId, this.newFilter);
-
         const finalData = [...data.files];
-
         const newFilesList = [...files].concat(finalData);
-
         const hasNextPage = newFilesList.length < data.total - 1;
-
         this._isLoadNextPage = false;
         this.setState((state) => ({
           isDataLoading: false,
