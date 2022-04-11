@@ -6,6 +6,10 @@ import { withTranslation } from "react-i18next";
 
 import { isArrayEqual } from "@appserver/components/utils/array";
 
+import { isMobileOnly } from "react-device-detect";
+
+import { isMobile } from "@appserver/components/utils/device";
+
 import {
   //getKeyByLink,
   settingsTree,
@@ -55,7 +59,7 @@ class ArticleBodyContent extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     if (!isArrayEqual(prevState.selectedKeys, this.state.selectedKeys)) {
       const { selectedKeys } = this.state;
-      console.log(selectedKeys);
+
       const { match, history } = this.props;
       const settingsPath = getSelectedLinkByKey(selectedKeys[0], settingsTree);
       const newPath = match.path + settingsPath;
@@ -66,13 +70,17 @@ class ArticleBodyContent extends React.Component {
   onSelect = (value) => {
     const { selectedKeys } = this.state;
 
-    console.log(selectedKeys, value);
+    const { toggleArticleOpen } = this.props;
 
     if (isArrayEqual([value], selectedKeys)) {
       return;
     }
 
     this.setState({ selectedKeys: [value + "-0"] });
+
+    if (isMobileOnly || isMobile()) {
+      toggleArticleOpen();
+    }
   };
 
   mapKeys = (tKey) => {
@@ -145,5 +153,6 @@ class ArticleBodyContent extends React.Component {
 export default inject(({ auth }) => {
   return {
     showText: auth.settingsStore.showText,
+    toggleArticleOpen: auth.settingsStore.toggleArticleOpen,
   };
 })(withRouter(withTranslation("Settings")(observer(ArticleBodyContent))));
