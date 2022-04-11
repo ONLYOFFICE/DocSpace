@@ -412,7 +412,7 @@ class ContextOptionsStore {
                 },
                 {
                   key: "copy",
-                  label: t("Duplicate"),
+                  label: t("Common:Duplicate"),
                   onClick: () => this.onDuplicate(item, t),
                   disabled: false,
                 },
@@ -436,7 +436,7 @@ class ContextOptionsStore {
             },
             {
               key: "copy",
-              label: t("Duplicate"),
+              label: t("Common:Duplicate"),
               icon: "/static/images/copy.react.svg",
               onClick: () => this.onDuplicate(item, t),
               disabled: false,
