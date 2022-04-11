@@ -63,7 +63,7 @@ class ContextOptionsStore {
     const {
       setConvertPasswordDialogVisible,
       setFormCreationInfo,
-    } = dialogsStore;
+    } = this.dialogsStore;
     const { title, id, folderId, fileExst } = item;
 
     const newTitle =
