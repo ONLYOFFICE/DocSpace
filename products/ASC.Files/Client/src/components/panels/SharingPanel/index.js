@@ -537,9 +537,6 @@ class SharingPanelComponent extends React.Component {
     if (shareGroups[shareGroups.length - 1]) {
       shareGroups[shareGroups.length - 1].isEndOfBlock = true;
     }
-    if (shareUsers[shareUsers.length - 1]) {
-      shareUsers[shareUsers.length - 1].isEndOfBlock = true;
-    }
 
     filteredShareDataItems.push(...owner, ...shareGroups, ...shareUsers);
 

@@ -80,6 +80,7 @@ const StyledAsidePanel = styled.div`
     padding-top: ${isMobile ? "55px" : "48px"};
     height: ${isMobile ? "calc(100vh - 55px)" : "calc(100vh - 48px)"};
   }
+
   .modal-dialog-aside {
     padding: 0;
     transform: translateX(${(props) => (props.visible ? "0" : "500px")});
@@ -99,12 +100,6 @@ const StyledAsidePanel = styled.div`
     overflow-y: hidden;
 
     @media (max-width: 480px) {
-      width: 100vw;
-      max-width: 100vw;
-      transform: translateX(${(props) => (props.visible ? "0" : "100vw")});
-    }
-
-    @media ${mobile} {
       position: fixed;
       top: 64px;
       bottom: 0;
@@ -171,13 +166,32 @@ StyledVersionHistoryPanel.defaultProps = { theme: Base };
 
 const StyledAddUsersPanelPanel = styled.div`
   .header_aside-panel {
-    transform: translateX(${(props) => (props.visible ? "0" : "500px")});
-    width: 500px;
+    transition: unset;
+    transform: translateX(${(props) => (props.visible ? "0" : "480px")});
+    width: 480px;
+    max-width: 480px;
+    overflow-y: hidden;
 
-    @media (max-width: 550px) {
-      width: 320px;
-      transform: translateX(${(props) => (props.visible ? "0" : "320px")});
+    @media (max-width: 480px) {
+      position: fixed;
+      top: 64px;
+      bottom: 0;
+      left: 0;
+
+      width: 100vw;
+      height: calc(100vh - 64px);
     }
+
+    ${isMobileOnly &&
+    css`
+      position: fixed;
+      top: 64px;
+      bottom: 0;
+      left: 0;
+
+      width: 100vw;
+      height: calc(100vh - 64px);
+    `}
   }
   ${PanelStyles}
   .combo-button-label {
@@ -187,13 +201,32 @@ const StyledAddUsersPanelPanel = styled.div`
 
 const StyledAddGroupsPanel = styled.div`
   .header_aside-panel {
-    transform: translateX(${(props) => (props.visible ? "0" : "500px")});
-    width: 500px;
+    transition: unset;
+    transform: translateX(${(props) => (props.visible ? "0" : "480px")});
+    width: 480px;
+    max-width: 480px;
+    overflow-y: hidden;
 
-    @media (max-width: 550px) {
-      width: 320px;
-      transform: translateX(${(props) => (props.visible ? "0" : "320px")});
+    @media (max-width: 480px) {
+      position: fixed;
+      top: 64px;
+      bottom: 0;
+      left: 0;
+
+      width: 100vw;
+      height: calc(100vh - 64px);
     }
+
+    ${isMobileOnly &&
+    css`
+      position: fixed;
+      top: 64px;
+      bottom: 0;
+      left: 0;
+
+      width: 100vw;
+      height: calc(100vh - 64px);
+    `}
   }
   ${PanelStyles}
   .combo-button-label {
@@ -203,13 +236,32 @@ const StyledAddGroupsPanel = styled.div`
 
 const StyledEmbeddingPanel = styled.div`
   .header_aside-panel {
-    transform: translateX(${(props) => (props.visible ? "0" : "500px")});
-    width: 500px;
+    transition: unset;
+    transform: translateX(${(props) => (props.visible ? "0" : "480px")});
+    width: 480px;
+    max-width: 480px;
+    overflow-y: hidden;
 
-    @media (max-width: 550px) {
-      width: 320px;
-      transform: translateX(${(props) => (props.visible ? "0" : "320px")});
+    @media (max-width: 480px) {
+      position: fixed;
+      top: 64px;
+      bottom: 0;
+      left: 0;
+
+      width: 100vw;
+      height: calc(100vh - 64px);
     }
+
+    ${isMobileOnly &&
+    css`
+      position: fixed;
+      top: 64px;
+      bottom: 0;
+      left: 0;
+
+      width: 100vw;
+      height: calc(100vh - 64px);
+    `}
   }
   ${PanelStyles}
 `;
@@ -383,6 +435,7 @@ const StyledBody = styled.div`
 
   .embedding-panel_inputs-container {
     display: flex;
+    margin-top: 16px;
 
     .embedding-panel_input {
       margin-right: 8px;
@@ -391,6 +444,7 @@ const StyledBody = styled.div`
   }
 
   .embedding-panel_code-container {
+    margin-top: 16px;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   }
 

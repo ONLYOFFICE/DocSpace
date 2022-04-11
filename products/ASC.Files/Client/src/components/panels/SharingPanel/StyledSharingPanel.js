@@ -26,12 +26,18 @@ const StyledHeaderContent = styled.div`
   align-items: center;
   justify-content: space-between;
 
-  .sharing_panel-header-info {
-    max-width: calc(100% - 33px);
+  @media (max-width: 480px) {
+    width: calc(100vw - 32px);
+    max-width: calc(100vw - 32px);
+  }
 
+  .sharing_panel-header-info {
     display: flex;
     align-items: center;
     justify-content: start;
+
+    width: calc(100% - 33px);
+    max-width: calc(100% - 33px);
 
     .sharing_panel-arrow {
       margin-right: 16px;
