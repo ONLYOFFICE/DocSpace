@@ -14,7 +14,7 @@ import DocumentsModule from "./sub-components/DocumentsModule";
 import ThirdPartyStorageModule from "./sub-components/ThirdPartyStorageModule";
 import { StyledModules, StyledManualBackup } from "./../StyledBackup";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../../utils";
-import { getThirdPartyFoldersTree } from "@appserver/common/api/files";
+import { getThirdPartyCommonFolderTree } from "@appserver/common/api/files";
 
 let selectedStorageType = "";
 
@@ -60,7 +60,7 @@ class ManualBackup extends React.Component {
     try {
       getProgress(t);
 
-      const commonThirdPartyList = await getThirdPartyFoldersTree();
+      const commonThirdPartyList = await getThirdPartyCommonFolderTree();
       commonThirdPartyList && setCommonThirdPartyList(commonThirdPartyList);
     } catch (error) {
       console.error(error);

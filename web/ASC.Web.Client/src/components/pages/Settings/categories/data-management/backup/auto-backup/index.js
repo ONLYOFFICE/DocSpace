@@ -24,7 +24,7 @@ import { StyledModules, StyledAutoBackup } from "../StyledBackup";
 import ThirdPartyModule from "./sub-components/ThirdPartyModule";
 import DocumentsModule from "./sub-components/DocumentsModule";
 import ThirdPartyStorageModule from "./sub-components/ThirdPartyStorageModule";
-import { getThirdPartyFoldersTree } from "@appserver/common/api/files";
+import { getThirdPartyCommonFolderTree } from "@appserver/common/api/files";
 const {
   DocumentModuleType,
   ResourcesModuleType,
@@ -93,7 +93,7 @@ class AutomaticBackup extends React.PureComponent {
         backupSchedule,
         backupStorage,
       ] = await Promise.all([
-        getThirdPartyFoldersTree,
+        getThirdPartyCommonFolderTree,
         getBackupSchedule(),
         getBackupStorage(),
       ]);

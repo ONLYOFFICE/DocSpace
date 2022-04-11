@@ -201,7 +201,7 @@ export function getCommonFoldersTree() {
   );
 }
 
-export function getThirdPartyFoldersTree() {
+export function getThirdPartyCommonFolderTree() {
   return request({ method: "get", url: "/files/thirdparty/common" }).then(
     (commonThirdPartyArray) => {
       commonThirdPartyArray.map((currentValue, index) => {

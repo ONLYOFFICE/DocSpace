@@ -18,7 +18,7 @@ import toastr from "@appserver/components/toast/toastr";
 import moment from "moment";
 import { getBackupStorage } from "@appserver/common/api/settings";
 import HelpButton from "@appserver/components/help-button";
-import { getThirdPartyFoldersTree } from "@appserver/common/api/files";
+import { getThirdPartyCommonFolderTree } from "@appserver/common/api/files";
 class BackupDesktopView extends React.Component {
   constructor(props) {
     super(props);
@@ -56,7 +56,7 @@ class BackupDesktopView extends React.Component {
       enableAutoBackup(),
       getBackupSchedule(),
       getBackupStorage(),
-      getThirdPartyFoldersTree(),
+      getThirdPartyCommonFolderTree(),
     ];
 
     try {

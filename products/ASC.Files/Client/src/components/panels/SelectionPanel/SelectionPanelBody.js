@@ -7,7 +7,7 @@ import {
   getCommonFoldersTree,
   getFolder,
   getFoldersTree,
-  getThirdPartyFoldersTree,
+  getThirdPartyCommonFolderTree,
 } from "@appserver/common/api/files";
 import toastr from "studio/toastr";
 import {
@@ -227,7 +227,7 @@ class SelectionPanel extends React.Component {
 
         case "third-party":
           try {
-            return getThirdPartyFoldersTree();
+            return getThirdPartyCommonFolderTree();
           } catch (err) {
             console.error(err);
           }

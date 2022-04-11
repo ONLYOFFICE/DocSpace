@@ -3,7 +3,6 @@ import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 import throttle from "lodash/throttle";
-import { getCommonThirdPartyList } from "@appserver/common/api/settings";
 import { getFolder } from "@appserver/common/api/files";
 import SelectFolderDialogAsideView from "./AsideView";
 import utils from "@appserver/components/utils";
@@ -13,7 +12,7 @@ import { FilterType } from "@appserver/common/constants";
 
 const { desktop } = utils.device;
 
-class SelectFolderModalDialog extends React.Component {
+class SelectFolderDialog extends React.Component {
   constructor(props) {
     super(props);
     const { id, displayType, filter } = this.props;
@@ -354,7 +353,7 @@ class SelectFolderModalDialog extends React.Component {
   }
 }
 
-SelectFolderModalDialog.propTypes = {
+SelectFolderDialog.propTypes = {
   onSelectFolder: PropTypes.func,
   onClose: PropTypes.func.isRequired,
   isPanelVisible: PropTypes.bool.isRequired,
@@ -369,13 +368,13 @@ SelectFolderModalDialog.propTypes = {
   withoutProvider: PropTypes.bool,
   checkPossibilityCreating: PropTypes.bool,
 };
-SelectFolderModalDialog.defaultProps = {
+SelectFolderDialog.defaultProps = {
   id: "",
   withoutProvider: false,
   checkPossibilityCreating: false,
 };
 
-const SelectFolderDialogWrapper = inject(
+export default inject(
   ({
     treeFoldersStore,
     selectedFolderStore,
@@ -407,25 +406,7 @@ const SelectFolderDialogWrapper = inject(
 )(
   observer(
     withTranslation(["SelectFolder", "Common", "Translations"])(
-      SelectFolderModalDialog
+      SelectFolderDialog
     )
   )
 );
-
-class SelectFolderDialog extends React.Component {
-  static getCommonThirdPartyList = async () => {
-    const commonThirdPartyArray = await getCommonThirdPartyList();
-
-    commonThirdPartyArray.map((currentValue, index) => {
-      commonThirdPartyArray[index].key = `0-${index}`;
-    });
-
-    return commonThirdPartyArray;
-  };
-
-  render() {
-    return <SelectFolderDialogWrapper {...this.props} />;
-  }
-}
-
-export default SelectFolderDialog;
