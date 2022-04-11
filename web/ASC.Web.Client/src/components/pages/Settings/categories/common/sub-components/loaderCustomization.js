@@ -1,6 +1,56 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Loaders from "@appserver/common/components/Loaders";
+
+import { isTablet } from "react-device-detect";
+
+const tabletStyles = css`
+  .header {
+    display: block;
+    width: ${(props) =>
+      props.lngTZSettings
+        ? "283px"
+        : props.welcomePage
+        ? "201px"
+        : props.portalRenaming
+        ? "150px"
+        : 0};
+    padding-bottom: 16px;
+  }
+
+  .description {
+    display: none;
+  }
+
+  .title {
+    display: block;
+    width: ${(props) =>
+      props.lngTZSettings
+        ? "65px"
+        : props.welcomePage
+        ? "31px"
+        : props.portalRenaming
+        ? "113px"
+        : 0};
+  }
+
+  .combo-box {
+    display: block;
+    width: 350px;
+  }
+
+  .field-container {
+    display: block;
+    width: 350px;
+  }
+
+  .save-cancel-buttons {
+    display: block;
+    position: static;
+    width: 350px;
+    padding: 0 0 24px 0;
+  }
+`;
 
 const StyledLoader = styled.div`
   .header {
@@ -14,26 +64,23 @@ const StyledLoader = styled.div`
 
   .title {
     width: ${(props) => (props.portalRenaming ? "49px" : "63.7px")};
-    height: 20px;
+
     padding-bottom: 4px;
   }
 
   .title-long {
     display: block;
     width: 68px;
-    height: 20px;
     padding-bottom: 4px;
   }
 
   .combo-box {
     display: block;
-    height: 32px;
     width: 100%;
     padding-bottom: 24px;
   }
 
   .field-container {
-    height: 20px;
     width: 100%;
     padding-bottom: 12px;
   }
@@ -48,87 +95,49 @@ const StyledLoader = styled.div`
   }
 
   @media (min-width: 600px) {
-    .header {
-      display: block;
-      width: ${(props) =>
-        props.lngTZSettings
-          ? "283px"
-          : props.welcomePage
-          ? "201px"
-          : props.portalRenaming
-          ? "150px"
-          : 0};
-      height: 22px;
-      padding-bottom: 16px;
-    }
-
-    .description {
-      display: none;
-    }
-
-    .title {
-      display: block;
-      width: ${(props) =>
-        props.lngTZSettings
-          ? "65px"
-          : props.welcomePage
-          ? "31px"
-          : props.portalRenaming
-          ? "113px"
-          : 0};
-      height: 20px;
-    }
-
-    .combo-box {
-      display: block;
-      width: 350px;
-    }
-
-    .field-container {
-      display: block;
-      height: 20px;
-      width: 350px;
-    }
-
-    .save-cancel-buttons {
-      display: block;
-      position: static;
-      width: 350px;
-      height: 32px;
-      padding: 0 0 24px 0;
-    }
+    ${tabletStyles}
   }
+
+  ${isTablet &&
+  `
+    ${tabletStyles}
+  `}
 `;
 
-const loaderCustomization = ({
+const LoaderCustomization = ({
   lngTZSettings,
   portalRenaming,
   welcomePage,
 }) => {
+  const heightSaveCancelButtons = window.innerWidth < 600 ? "40px" : "32px";
+
   return (
     <StyledLoader
       lngTZSettings={lngTZSettings}
       portalRenaming={portalRenaming}
       welcomePage={welcomePage}
     >
-      <Loaders.Rectangle className="header" />
+      <Loaders.Rectangle height="22px" className="header" />
 
       {portalRenaming && (
         <Loaders.Rectangle height="80px" className="description" />
       )}
 
-      <Loaders.Rectangle className="title" />
-      <Loaders.Rectangle className="combo-box" />
+      <Loaders.Rectangle height="20px" className="title" />
+      <Loaders.Rectangle height="32px" className="combo-box" />
       {lngTZSettings && (
         <>
-          <Loaders.Rectangle className="field-container" />
-          <Loaders.Rectangle className="title-long" />
-          <Loaders.Rectangle className="combo-box" />
+          <Loaders.Rectangle height="20px" className="field-container" />
+          <Loaders.Rectangle height="20px" className="title-long" />
+          <Loaders.Rectangle height="32px" className="combo-box" />
         </>
       )}
-      <Loaders.Rectangle height="40px" className="save-cancel-buttons" />
+      <Loaders.Rectangle
+        height={heightSaveCancelButtons}
+        className="save-cancel-buttons"
+      />
     </StyledLoader>
   );
 };
 
-export default loaderCustomization;
+export default LoaderCustomization;
