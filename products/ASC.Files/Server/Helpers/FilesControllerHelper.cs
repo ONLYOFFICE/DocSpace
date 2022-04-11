@@ -141,9 +141,9 @@ namespace ASC.Files.Helpers
             ClientFactory = clientFactory;
         }
 
-        public async Task<FolderContentWrapper<T>> GetFolderAsync(T folderId, Guid userIdOrGroupId, FilterType filterType, bool withSubFolders)
+        public async Task<FolderContentWrapper<T>> GetFolderAsync(T folderId, Guid userIdOrGroupId, FilterType filterType, bool searchInContent, bool withSubFolders)
         {
-            var folderContentWrapper = await ToFolderContentWrapperAsync(folderId, userIdOrGroupId, filterType, withSubFolders);
+            var folderContentWrapper = await ToFolderContentWrapperAsync(folderId, userIdOrGroupId, filterType, searchInContent, withSubFolders);
             return folderContentWrapper.NotFoundIfNull();
         }
 
@@ -823,7 +823,7 @@ namespace ASC.Files.Helpers
         //    return files.Concat(folders);
         //}
 
-        private async Task<FolderContentWrapper<T>> ToFolderContentWrapperAsync(T folderId, Guid userIdOrGroupId, FilterType filterType, bool withSubFolders)
+        private async Task<FolderContentWrapper<T>> ToFolderContentWrapperAsync(T folderId, Guid userIdOrGroupId, FilterType filterType, bool searchInContent, bool withSubFolders)
         {
             OrderBy orderBy = null;
             if (Enum.TryParse(ApiContext.SortBy, true, out SortedByType sortBy))
@@ -839,7 +839,7 @@ namespace ASC.Files.Helpers
                                                                                filterType == FilterType.ByUser,
                                                                                userIdOrGroupId.ToString(),
                                                                                ApiContext.FilterValue,
-                                                                               false,
+                                                                               searchInContent,
                                                                                withSubFolders,
                                                                                orderBy);
             return await FolderContentWrapperHelper.GetAsync(items, startIndex);
