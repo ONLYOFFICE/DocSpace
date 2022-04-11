@@ -252,7 +252,7 @@ public class EntryManager
 {
     private const string UpdateList = "filesUpdateList";
 
-    private ICache _cache;
+    private readonly ICache _cache;
     private readonly FileTrackerHelper _fileTracker;
     private readonly EntryStatusManager _entryStatusManager;
     private readonly IDaoFactory _daoFactory;
@@ -278,6 +278,7 @@ public class EntryManager
     private readonly IServiceProvider _serviceProvider;
     private readonly ILog _logger;
     private readonly IHttpClientFactory _clientFactory;
+    private readonly Global _global;
 
     public EntryManager(
         IDaoFactory daoFactory,
@@ -305,7 +306,8 @@ public class EntryManager
         ICache cache,
         FileTrackerHelper fileTracker,
         EntryStatusManager entryStatusManager,
-        IHttpClientFactory clientFactory)
+        IHttpClientFactory clientFactory,
+        Global global)
     {
         _daoFactory = daoFactory;
         _fileSecurity = fileSecurity;
@@ -333,6 +335,7 @@ public class EntryManager
         _fileTracker = fileTracker;
         _entryStatusManager = entryStatusManager;
         _clientFactory = clientFactory;
+        _global = global;
     }
 
     public async Task<(IEnumerable<FileEntry> Entries, int Total)> GetEntriesAsync<T>(Folder<T> parent, int from, int count, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy)
@@ -507,6 +510,22 @@ public class EntryManager
             var shared = await fileSecurity.GetPrivacyForMeAsync(filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
 
             entries = entries.Concat(shared);
+
+            CalculateTotal();
+        }
+        else if (parent.FolderType == FolderType.VirtualRooms)
+        {
+            if (_global.IsAdministrator)
+            {
+                var folderDao = _daoFactory.GetFolderDao<T>();
+                var folders = await folderDao.GetFoldersAsync(parent.Id, orderBy, filter, subjectGroup, subjectId, searchText, withSubfolders).ToListAsync();
+
+                entries = entries.Concat(folders);
+            }
+            else
+            {
+                entries = await fileSecurity.GetVirtualRoomsForMeAsync();
+            }
 
             CalculateTotal();
         }
