@@ -308,7 +308,6 @@ class WhiteLabel extends React.Component {
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
       <>
-        В разработке
         <StyledComponent>
           <div className="settings-block">
             <Text fontSize="16px">{t("LogoSettings")}</Text>

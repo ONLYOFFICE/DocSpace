@@ -81,7 +81,7 @@ const tabletButtons = css`
 
   .save-button,
   .cancel-button {
-    max-width: max-content;
+    width: auto;
     padding-left: 28px;
     padding-right: 28px;
   }

@@ -135,4 +135,10 @@ module.exports = class Endpoints {
     method: "PUT",
     baseDir: "settings",
   };
+
+  static maildomainsettings = {
+    url: ["http://localhost:8092/api/2.0/settings/maildomainsettings.json"],
+    method: "POST",
+    baseDir: "settings",
+  };
 };

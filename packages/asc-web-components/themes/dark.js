@@ -2586,6 +2586,7 @@ const Dark = {
     },
 
     settings: {
+      iconFill: white,
       article: {
         titleColor: "#c4c4c4",
         fillIcon: "#c4c4c4",

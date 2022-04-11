@@ -111,7 +111,8 @@ class SectionHeaderContent extends React.Component {
     const arrayOfParams = resultPath.split("/");
 
     const key = getKeyByLink(arrayOfParams, settingsTree);
-    const header = getTKeyByKey(key, settingsTree);
+    const currKey = key.length > 3 ? key : key[0];
+    const header = getTKeyByKey(currKey, settingsTree);
     const isCategory = checkPropertyByLink(
       arrayOfParams,
       settingsTree,
@@ -134,7 +135,8 @@ class SectionHeaderContent extends React.Component {
     const arrayOfParams = this.getArrayOfParams();
 
     const key = getKeyByLink(arrayOfParams, settingsTree);
-    const header = getTKeyByKey(key, settingsTree);
+    const currKey = key.length > 3 ? key : key[0];
+    const header = getTKeyByKey(currKey, settingsTree);
     const isCategory = checkPropertyByLink(
       arrayOfParams,
       settingsTree,
