@@ -13,6 +13,8 @@ import { setDocumentTitle } from "../../../../../helpers/utils";
 import LoaderDescriptionCustomization from "./sub-components/loaderDescriptionCustomization";
 
 const StyledComponent = styled.div`
+  width: 100%;
+
   .combo-button-label {
     max-width: 100%;
   }
