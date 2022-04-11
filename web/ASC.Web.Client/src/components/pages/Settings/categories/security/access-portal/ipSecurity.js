@@ -129,21 +129,25 @@ const IpSecurity = (props) => {
     setIps([...ips, ""]);
   };
 
-  const onSaveClick = () => {
+  const onSaveClick = async () => {
     const valid = ips.map((ip) => regexp.test(ip));
     if (valid.includes(false)) {
       return;
     }
 
-    setIpRestrictions(ips);
-    setIpRestrictionsEnable(enable);
+    try {
+      await setIpRestrictions(ips);
+      await setIpRestrictionsEnable(enable);
 
-    saveToSessionStorage("defaultIPSettings", {
-      enable: enable,
-      ips: ips,
-    });
-    setShowReminder(false);
-    toastr.success(t("SuccessfullySaveSettingsMessage"));
+      saveToSessionStorage("defaultIPSettings", {
+        enable: enable,
+        ips: ips,
+      });
+      setShowReminder(false);
+      toastr.success(t("SuccessfullySaveSettingsMessage"));
+    } catch (error) {
+      toastr.error(error);
+    }
   };
 
   const onCancelClick = () => {
