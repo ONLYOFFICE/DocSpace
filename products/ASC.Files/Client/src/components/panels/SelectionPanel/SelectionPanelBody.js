@@ -28,7 +28,6 @@ const SelectionPanelBody = ({
   isNextPageLoading,
   loadNextPage,
   filesListTitle,
-  selectedFile,
   dialogName,
   primaryButtonName,
   theme,
@@ -43,7 +42,7 @@ const SelectionPanelBody = ({
   folderSelection = false,
   folderTitle,
   fileId,
-  canCreate,
+  canCreate = true,
   isLoadingData,
 }) => {
   console.log("folderId", folderId);
@@ -57,7 +56,6 @@ const SelectionPanelBody = ({
       displayType="modal"
       modalBodyPadding="0px"
       isLoading={isLoading}
-      modalLoaderBodyHeight="277px"
     >
       <ModalDialog.Header theme={theme}>{dialogName}</ModalDialog.Header>
       <ModalDialog.Body theme={theme} className="select-file_body-modal-dialog">

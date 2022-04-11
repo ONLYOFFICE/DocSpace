@@ -61,7 +61,7 @@ const StyledRow = styled.div`
   position: relative;
   height: 48px;
   width: calc(100% - 16px);
-  padding-left: 16px;
+  ${(props) => props.displayType === "modal" && "padding-left: 16px;"}
 
   .selection-panel_clicked-area {
     position: absolute;

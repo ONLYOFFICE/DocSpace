@@ -114,30 +114,6 @@ const SelectFileDialogAsideView = ({
                 />
               </div>
             </div>
-            {/* <div className="select-file-dialog_aside_body-files_list">
-                {folderId ? (
-                 
-                ) : isAvailable ? (
-                  <div key="loader" className="panel-loader-wrapper">
-                    <Loaders.Rows
-                      theme={theme}
-                      style={{
-                        marginBottom: "24px",
-                        marginTop: "20px",
-                      }}
-                      count={12}
-                    />
-                  </div>
-                ) : (
-                  <div className="select-file-dialog_empty-container">
-                    <EmptyContainer
-                      theme={theme}
-                      headerText={t("Home:EmptyFolderHeader")}
-                      imageSrc="/static/images/empty_screen.png"
-                    />
-                  </div>
-                )}
-              </div> */}
           </div>
         </StyledAsideBody>
       </ModalDialog.Body>
