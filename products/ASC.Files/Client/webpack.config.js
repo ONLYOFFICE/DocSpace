@@ -169,12 +169,14 @@ var config = {
         "./app": "./src/Files.jsx",
         "./SharingDialog": "./src/components/panels/SharingDialog",
         "./utils": "./src/helpers/utils.js",
-        "./SelectFileDialog": "./src/components/panels/SelectFileDialog",
+        "./SelectFileDialog":
+          "./src/components/panels/SelectFileDialog/SelectFileDialogWrapper",
+        "./SelectFileInput":
+          "./src/components/panels/SelectFileInput/SelectFileInputWrapper",
         "./SelectFolderDialog":
           "./src/components/panels/SelectFolderDialog/SelectFolderDialogWrapper",
         "./SelectFolderInput":
           "./src/components/panels/SelectFolderInput/SelectFolderInputWrapper",
-        "./SelectFileInput": "./src/components/panels/SelectFileInput",
       },
       shared: {
         ...deps,

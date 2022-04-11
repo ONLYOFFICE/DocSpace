@@ -1,24 +1,17 @@
 import React from "react";
-import { inject, observer, Provider as MobxProvider } from "mobx-react";
-import { I18nextProvider } from "react-i18next";
+import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 import throttle from "lodash/throttle";
-import stores from "../../../store/index";
-import i18n from "./i18n";
 import SelectFileDialogAsideView from "./AsideView";
 import utils from "@appserver/components/utils";
 import { getFolder } from "@appserver/common/api/files";
 import { FilterType } from "@appserver/common/constants";
-
-const { desktop } = utils.device;
-
-import store from "studio/store";
-
-const { auth: authStore } = store;
 import SelectionPanel from "../SelectionPanel/SelectionPanelBody";
 import toastr from "studio/toastr";
-class SelectFileDialogBody extends React.Component {
+
+const { desktop } = utils.device;
+class SelectFileDialog extends React.Component {
   constructor(props) {
     super(props);
     const {
@@ -385,7 +378,7 @@ class SelectFileDialogBody extends React.Component {
     );
   }
 }
-SelectFileDialogBody.propTypes = {
+SelectFileDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   isPanelVisible: PropTypes.bool.isRequired,
   onSelectFile: PropTypes.func.isRequired,
@@ -402,14 +395,14 @@ SelectFileDialogBody.propTypes = {
   filesListTitle: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
 };
 
-SelectFileDialogBody.defaultProps = {
+SelectFileDialog.defaultProps = {
   id: "",
   filesListTitle: "",
   withoutProvider: false,
   ignoreSelectedFolderTree: false,
 };
 
-const SelectFileDialogWrapper = inject(
+export default inject(
   ({
     filesStore,
     selectedFilesStore,
@@ -440,21 +433,6 @@ const SelectFileDialogWrapper = inject(
   }
 )(
   observer(
-    withTranslation(["SelectFile", "Common", "Translations"])(
-      SelectFileDialogBody
-    )
+    withTranslation(["SelectFile", "Common", "Translations"])(SelectFileDialog)
   )
 );
-class SelectFileDialog extends React.Component {
-  render() {
-    return (
-      <MobxProvider auth={authStore} {...stores}>
-        <I18nextProvider i18n={i18n}>
-          <SelectFileDialogWrapper {...this.props} />
-        </I18nextProvider>
-      </MobxProvider>
-    );
-  }
-}
-
-export default SelectFileDialog;
