@@ -395,7 +395,7 @@ const StyledBody = styled.div`
   }
 
   .embedding-panel_text {
-    padding: 8px 0 4px 0;
+    padding: 0px 0 4px 0;
   }
 
   .embedding-panel_copy-icon {
