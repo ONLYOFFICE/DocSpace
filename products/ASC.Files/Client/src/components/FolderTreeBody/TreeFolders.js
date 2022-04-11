@@ -462,7 +462,6 @@ class TreeFolders extends React.Component {
       isPanel,
     } = this.props;
 
-    console.log("expandedPanelKeys", expandedPanelKeys);
     return (
       <StyledTreeMenu
         isPanel={isPanel}
