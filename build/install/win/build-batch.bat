@@ -1,3 +1,6 @@
+REM echo ######## Set variables ########
+set "msbuild4="C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe""
+
 REM echo ######## Extracting and preparing files to build ########
 %sevenzip% x build\install\win\nginx-1.21.1.zip -o"build\install\win\Files" -y
 xcopy "build\install\win\Files\nginx-1.21.1" "build\install\win\Files\nginx" /s /y /b /i
@@ -24,6 +27,12 @@ copy "build\install\win\nginx.conf" "build\install\win\Files\nginx\conf\nginx.co
 copy "build\install\win\kafka-zookeeper\zookeeper\conf\zoo_sample.cfg" "build\install\win\kafka-zookeeper\zookeeper\conf\zoo.cfg" /y
 del /f /q "build\install\win\kafka-zookeeper\zookeeper\conf\zoo_sample.cfg"
 rmdir build\install\win\publish /s /q
+
+REM echo ######## Build Utils ########
+%msbuild4% build\install\win\CustomActions\C#\Utils\Utils.csproj
+copy build\install\win\CustomActions\C#\Utils\bin\Debug\Utils.CA.dll build\install\win\Utils.CA.dll /y
+rmdir build\install\win\CustomActions\C#\Utils\bin /s /q
+rmdir build\install\win\CustomActions\C#\Utils\obj /s /q
 
 REM echo ######## Edit zookeeper/kafka cfg and proprties files ########
 %sed% -i "s/\(dataDir\).*/\1=.\/..\/zookeeper\/Data/g" build/install/win/kafka-zookeeper/zookeeper/conf/zoo.cfg
@@ -74,4 +83,5 @@ REM echo ######## Build MySQL Server Installer ########
 iscc "build\install\win\MySQL Server Installer Runner.iss"
 
 REM echo ######## Build AppServer package ########
+%AdvancedInstaller% /edit build\install\win\AppServer.aip /SetVersion %BUILD_VERSION%.%BUILD_NUMBER%
 %AdvancedInstaller% /rebuild build\install\win\AppServer.aip
