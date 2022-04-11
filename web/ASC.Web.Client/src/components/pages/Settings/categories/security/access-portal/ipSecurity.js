@@ -32,8 +32,8 @@ const MainContainer = styled.div`
     margin-bottom: 9px;
   }
 
-  .warning-helper {
-    margin-bottom: 24px;
+  .save-cancel-buttons {
+    margin-top: 24px;
   }
 `;
 
@@ -192,15 +192,19 @@ const IpSecurity = (props) => {
         />
       )}
 
-      <Text
-        color="#F21C0E"
-        fontSize="16px"
-        fontWeight="700"
-        className="warning-text"
-      >
-        {t("Common:Warning")}!
-      </Text>
-      <Text className="warning-helper">{t("IPSecurityWarningHelper")}</Text>
+      {enable && (
+        <>
+          <Text
+            color="#F21C0E"
+            fontSize="16px"
+            fontWeight="700"
+            className="warning-text"
+          >
+            {t("Common:Warning")}!
+          </Text>
+          <Text>{t("IPSecurityWarningHelper")}</Text>
+        </>
+      )}
 
       <SaveCancelButtons
         className="save-cancel-buttons"
