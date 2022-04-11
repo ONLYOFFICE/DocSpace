@@ -1408,7 +1408,8 @@ namespace ASC.Files.Core.Data
                        result.InAll(a => a.Folders.Select(r => r.FolderId), new[] { parentId });
                    }
                }
-              /* if (orderBy != null)
+
+               if (orderBy != null)
                {
                    switch (orderBy.SortedBy)
                    {
@@ -1428,7 +1429,7 @@ namespace ASC.Files.Core.Data
                            result.Sort(r => r.CreateOn, orderBy.IsAsc);
                            break;
                    }
-               }*/
+               }
 
                if (subjectID != Guid.Empty)
                {
