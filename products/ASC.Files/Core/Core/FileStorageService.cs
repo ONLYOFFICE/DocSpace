@@ -394,10 +394,28 @@ public class FileStorageService<T> //: IFileStorageService
             throw new ArgumentException();
         }
 
-        return InternalCreateNewFolderAsync(parentId, title);
+        return InternalCreateNewFolderAsync(parentId, title, FolderType.DEFAULT);
     }
 
-    public async Task<Folder<T>> InternalCreateNewFolderAsync(T parentId, string title)
+    public async Task<Folder<T>> CreateRoom(string title, RoomType roomType)
+    {
+        ArgumentNullException.ThrowIfNull(title, nameof(title));
+
+        var folderType = roomType switch
+        {
+            RoomType.FillingFormsRoom => FolderType.FillingFormsRoom,
+            RoomType.ReviewRoom => FolderType.ReviewRoom,
+            RoomType.ReadOnlyRoom => FolderType.ReadOnlyRoom,
+            RoomType.CustomRoom => FolderType.CustomRoom,
+            _ => FolderType.CustomRoom,
+        };
+
+        var parentId = await _globalFolderHelper.GetFolderVirtualRooms<T>();
+
+        return await InternalCreateNewFolderAsync(parentId, title, folderType);
+    }
+
+    public async Task<Folder<T>> InternalCreateNewFolderAsync(T parentId, string title, FolderType folderType = FolderType.DEFAULT)
     {
         var folderDao = GetFolderDao();
 
@@ -410,6 +428,7 @@ public class FileStorageService<T> //: IFileStorageService
             var newFolder = _serviceProvider.GetService<Folder<T>>();
             newFolder.Title = title;
             newFolder.ParentId = parent.Id;
+            newFolder.FolderType = folderType;
 
             var folderId = await folderDao.SaveFolderAsync(newFolder);
             var folder = await folderDao.GetFolderAsync(folderId);

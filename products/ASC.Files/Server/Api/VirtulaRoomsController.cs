@@ -29,10 +29,7 @@ namespace ASC.Files.Api;
 [ConstraintRoute("int")]
 public class VirtulaRoomsControllerInternal : VirtualRoomsController<int>
 {
-    public VirtulaRoomsControllerInternal(
-        FoldersControllerHelper<int> foldersControllerHelperInt,
-        GlobalFolderHelper globalFolderHelper) 
-        : base(foldersControllerHelperInt, globalFolderHelper)
+    public VirtulaRoomsControllerInternal(FoldersControllerHelper<int> foldersControllerHelperInt, GlobalFolderHelper globalFolderHelper, FileStorageService<int> fileStorageServiceInt, FolderDtoHelper folderDtoHelper) : base(foldersControllerHelperInt, globalFolderHelper, fileStorageServiceInt, folderDtoHelper)
     {
     }
 }
@@ -45,17 +42,30 @@ public class VirtualRoomsThirdparty
 public class VirtualRoomsController<T> : ApiControllerBase
 {
     private readonly FoldersControllerHelper<int> _foldersControllerHelperInt;
+    private readonly FileStorageService<int> _fileStorageServiceInt;
+    private readonly FolderDtoHelper _folderDtoHelper;
     private readonly GlobalFolderHelper _globalFolderHelper;
 
-    public VirtualRoomsController(FoldersControllerHelper<int> foldersControllerHelperInt, GlobalFolderHelper globalFolderHelper)
+    public VirtualRoomsController(FoldersControllerHelper<int> foldersControllerHelperInt, GlobalFolderHelper globalFolderHelper,
+        FileStorageService<int> fileStorageServiceInt, FolderDtoHelper folderDtoHelper)
     {
         _foldersControllerHelperInt = foldersControllerHelperInt;
         _globalFolderHelper = globalFolderHelper;
+        _fileStorageServiceInt = fileStorageServiceInt;
+        _folderDtoHelper = folderDtoHelper;
     }
 
     [Read("@virtualrooms")]
     public async Task<FolderContentDto<int>> GetVirtualRoomsFolderAsync(bool withSubfolders)
     {
         return await _foldersControllerHelperInt.GetFolderAsync(await _globalFolderHelper.FolderVirtualRoomsAsync, Guid.Empty, FilterType.None, withSubfolders);
+    }
+
+    [Create("room")]
+    public async Task<FolderDto<int>> CreateVirtualRoomAsync([FromBody] CreateRoomRequestDto inDto)
+    {
+        var room = await _fileStorageServiceInt.CreateRoom(inDto.Title, inDto.RoomType);
+
+        return await _folderDtoHelper.GetAsync(room);
     }
 }

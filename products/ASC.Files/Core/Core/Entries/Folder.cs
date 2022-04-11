@@ -42,6 +42,11 @@ public enum FolderType
     Templates = 12,
     Privacy = 13,
     VirtualRooms = 14,
+    FillingFormsRoom = 15,
+    EditingRoom = 16,
+    ReviewRoom = 17,
+    ReadOnlyRoom = 18,
+    CustomRoom = 19
 }
 
 public interface IFolder

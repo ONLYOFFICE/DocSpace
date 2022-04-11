@@ -741,6 +741,11 @@ public class GlobalFolderHelper
         return (T)Convert.ChangeType(await FolderPrivacyAsync, typeof(T));
     }
 
+    public async ValueTask<T> GetFolderVirtualRooms<T>()
+    {
+        return (T)Convert.ChangeType(await FolderVirtualRoomsAsync, typeof(T));
+    }
+
     public void SetFolderMy<T>(T val)
     {
         _globalFolder.SetFolderMy(val);

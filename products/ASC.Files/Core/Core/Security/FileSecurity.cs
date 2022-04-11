@@ -459,11 +459,6 @@ public class FileSecurity : IFileSecurity
                         // Templates folder read-only
                         continue;
                     }
-
-                    if (folder.FolderType == FolderType.VirtualRooms)
-                    {
-                        continue;
-                    }
                 }
 
                 if (isVisitor && e.ProviderEntry)
