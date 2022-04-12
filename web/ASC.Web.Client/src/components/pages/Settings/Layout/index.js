@@ -4,6 +4,7 @@ import { ArticleHeaderContent, ArticleBodyContent } from "./Article";
 import { SectionHeaderContent, SectionPagingContent } from "./Section";
 import { inject, observer } from "mobx-react";
 import Section from "@appserver/common/components/Section";
+import LoaderSectionHeader from "./Section/loaderSectionHeader";
 
 const ArticleSettings = React.memo(() => {
   return (

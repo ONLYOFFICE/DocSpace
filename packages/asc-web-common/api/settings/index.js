@@ -69,6 +69,13 @@ export function setIpRestrictions(data) {
   });
 }
 
+export function getIpRestrictionsEnable() {
+  return request({
+    method: "get",
+    url: "/settings/iprestrictions/settings",
+  });
+}
+
 export function setIpRestrictionsEnable(data) {
   return request({
     method: "put",

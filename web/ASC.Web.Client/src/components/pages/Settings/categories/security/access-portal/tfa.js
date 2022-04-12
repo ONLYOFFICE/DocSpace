@@ -8,13 +8,17 @@ import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";
 import toastr from "@appserver/components/toast/toastr";
 import { getLanguage } from "@appserver/common/utils";
-import Buttons from "../sub-components/buttons";
 import { LearnMoreWrapper } from "../StyledSecurity";
 import { size } from "@appserver/components/utils/device";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
+import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 
 const MainContainer = styled.div`
   width: 100%;
+
+  .box {
+    margin-bottom: 24px;
+  }
 `;
 
 const TwoFactorAuth = (props) => {
@@ -145,11 +149,16 @@ const TwoFactorAuth = (props) => {
         onClick={onSelectTfaType}
       />
 
-      <Buttons
-        t={t}
-        showReminder={showReminder}
+      <SaveCancelButtons
+        className="save-cancel-buttons"
         onSaveClick={onSaveClick}
         onCancelClick={onCancelClick}
+        showReminder={showReminder}
+        reminderTest={t("YouHaveUnsavedChanges")}
+        saveButtonLabel={t("Common:SaveButton")}
+        cancelButtonLabel={t("Common:CancelButton")}
+        displaySettings={true}
+        hasScroll={false}
       />
     </MainContainer>
   );

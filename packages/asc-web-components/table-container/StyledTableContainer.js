@@ -157,6 +157,8 @@ const StyledInfoPanelToggleWrapper = styled.div`
           ? props.theme.infoPanel.sectionHeaderToggleIconActive
           : props.theme.infoPanel.sectionHeaderToggleIcon};
     }
+
+    margin-bottom: 1px;
   }
 `;
 StyledInfoPanelToggleWrapper.defaultProps = { theme: Base };
@@ -199,6 +201,8 @@ const StyledTableHeaderCell = styled.div`
       `}
 
     svg {
+      width: 12px;
+      height: 12px;
       path {
         fill: ${(props) =>
           props.isActive

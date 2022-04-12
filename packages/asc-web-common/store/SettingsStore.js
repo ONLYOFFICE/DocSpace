@@ -1,6 +1,6 @@
 import { makeAutoObservable } from "mobx";
 import api from "../api";
-import { ARTICLE_PINNED_KEY, LANGUAGE, TenantStatus } from "../constants";
+import { LANGUAGE, TenantStatus } from "../constants";
 import { combineUrl } from "../utils";
 import FirebaseHelper from "../utils/firebase";
 import { AppServerConfig } from "../constants";
@@ -454,8 +454,8 @@ class SettingsStore {
 
   getIpRestrictions = async () => {
     const res = await api.settings.getIpRestrictions();
-    if (res.length === 0) this.ipRestrictionEnabled = false;
-    else this.ipRestrictionEnabled = true;
+    this.ipRestrictions = res?.map((el) => el.ip);
+    console.log(this.ipRestrictions);
   };
 
   setIpRestrictions = async (ips) => {
@@ -463,8 +463,12 @@ class SettingsStore {
       ips: ips,
     };
     const res = await api.settings.setIpRestrictions(data);
-    console.log("setIpRestrictions", res);
-    this.ipRestrictions = ips;
+    this.ipRestrictions = res;
+  };
+
+  getIpRestrictionsEnable = async () => {
+    const res = await api.settings.getIpRestrictionsEnable();
+    this.ipRestrictionEnable = res.enable;
   };
 
   setIpRestrictionsEnable = async (enable) => {
@@ -472,8 +476,7 @@ class SettingsStore {
       enable: enable,
     };
     const res = await api.settings.setIpRestrictionsEnable(data);
-    console.log("setIpRestrictionsEnable", res);
-    this.ipRestrictionEnabled = enable;
+    this.ipRestrictionEnable = res.enable;
   };
 
   setMessageSettings = async (turnOn) => {

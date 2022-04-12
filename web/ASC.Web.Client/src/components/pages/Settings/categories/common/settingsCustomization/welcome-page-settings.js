@@ -19,7 +19,7 @@ import { isMobileOnly } from "react-device-detect";
 import { isSmallTablet } from "@appserver/components/utils/device";
 import checkScrollSettingsBlock from "../utils";
 import { StyledSettingsComponent, StyledScrollbar } from "./StyledSettings";
-import LoaderLngTZSettings from "../sub-components/loaderLngTZSettings";
+import LoaderCustomization from "../sub-components/loaderCustomization";
 
 let greetingTitleFromSessionStorage = "";
 let greetingTitleDefaultFromSessionStorage = "";
@@ -250,6 +250,7 @@ class WelcomePageSettings extends React.Component {
       </div>
     );
 
+    // return <LoaderCustomization welcomePage={true} />;
     return !isLoadedData ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (

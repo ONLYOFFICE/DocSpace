@@ -27,7 +27,11 @@ const StyledInputWrapper = styled.div`
   gap: 10px;
   align-items: center;
   margin-bottom: 8px;
-  width: 370px;
+  width: 350px;
+
+  @media (max-width: 375px) {
+    width: 100%;
+  }
 `;
 
 const StyledAddWrapper = styled.div`

@@ -6,6 +6,8 @@ const StyledSearchInput = styled.div`
   font-style: normal;
 
   .search-input-block {
+    max-height: 32px;
+
     & > input {
       font-size: ${(props) => props.theme.searchInput.fontSize};
       font-weight: ${(props) => props.theme.searchInput.fontWeight};
