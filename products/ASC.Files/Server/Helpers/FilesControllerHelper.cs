@@ -28,15 +28,16 @@ namespace ASC.Files.Helpers;
 
 public class FilesControllerHelper<T> : FilesHelperBase<T>
 {
+    private readonly IServiceProvider _serviceProvider;
     private readonly ILog _logger;
     private readonly ApiDateTimeHelper _apiDateTimeHelper;
     private readonly UserManager _userManager;
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
-    private readonly IServiceProvider _serviceProvider;
     private readonly FileConverter _fileConverter;
     private readonly FileOperationDtoHelper _fileOperationDtoHelper;
 
     public FilesControllerHelper(
+        IServiceProvider serviceProvider,
         FilesSettingsHelper filesSettingsHelper,
         FileUploader fileUploader,
         SocketManager socketManager,
@@ -50,9 +51,8 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
         ApiDateTimeHelper apiDateTimeHelper,
         UserManager userManager,
         DisplayUserSettingsHelper displayUserSettingsHelper,
-        IServiceProvider serviceProvider,
         FileConverter fileConverter,
-        FileOperationDtoHelper fileOperationDtoHelper) 
+        FileOperationDtoHelper fileOperationDtoHelper)
         : base(
             filesSettingsHelper,
             fileUploader,
@@ -64,11 +64,11 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
             httpContextAccessor,
             folderDtoHelper)
     {
+        _serviceProvider = serviceProvider;
         _logger = logger;
         _apiDateTimeHelper = apiDateTimeHelper;
         _fileConverter = fileConverter;
         _userManager = userManager;
-        _serviceProvider = serviceProvider;
         _displayUserSettingsHelper = displayUserSettingsHelper;
         _fileOperationDtoHelper = fileOperationDtoHelper;
     }

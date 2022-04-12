@@ -27,7 +27,7 @@
 namespace ASC.Web.Core.Users
 {
     [Serializable]
-    public class UserHelpTourSettings : ISettings
+    public class UserHelpTourSettings : ISettings<UserHelpTourSettings>
     {
         public Guid ID
         {
@@ -38,7 +38,7 @@ namespace ASC.Web.Core.Users
 
         public bool IsNewUser { get; set; }
 
-        public ISettings GetDefault(IServiceProvider serviceProvider)
+        public UserHelpTourSettings GetDefault()
         {
             return new UserHelpTourSettings
             {

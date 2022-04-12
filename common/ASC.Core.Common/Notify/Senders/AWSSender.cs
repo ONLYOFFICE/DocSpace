@@ -28,7 +28,7 @@ using Message = Amazon.SimpleEmail.Model.Message;
 
 namespace ASC.Core.Notify.Senders;
 
-[Singletone(Additional = typeof(AWSSenderExtension))]
+[Singletone]
 public class AWSSender : SmtpSender
 {
     private readonly object _locker = new object();
@@ -39,8 +39,10 @@ public class AWSSender : SmtpSender
     private TimeSpan _sendWindow = TimeSpan.MinValue;
     private GetSendQuotaResponse _quota;
 
-    public AWSSender(IServiceProvider serviceProvider,
-        IOptionsMonitor<ILog> options) : base(serviceProvider, options)
+    public AWSSender(
+        IConfiguration configuration,
+        IServiceProvider serviceProvider,
+        IOptionsMonitor<ILog> options) : base(configuration, serviceProvider, options)
     {
         Logger = options.Get("ASC.Notify.AmazonSES");
     }
@@ -63,10 +65,10 @@ public class AWSSender : SmtpSender
             {
                 Logger.DebugFormat("Tenant: {0}, To: {1}", m.TenantId, m.Reciever);
                 using var scope = ServiceProvider.CreateScope();
-                var scopeClass = scope.ServiceProvider.GetService<AWSSenderScope>();
-                var (tenantManager, configuration) = scopeClass;
+                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
                 tenantManager.SetCurrentTenant(m.TenantId);
 
+                var configuration = scope.ServiceProvider.GetService<CoreConfiguration>();
                 if (!configuration.SmtpSettings.IsDefaultSettings)
                 {
                     UseCoreSettings = true;
@@ -212,31 +214,5 @@ public class AWSSender : SmtpSender
     private bool IsRefreshNeeded()
     {
         return _quota == null || (DateTime.UtcNow - _lastRefresh) > _refreshTimeout;
-    }
-}
-
-[Scope]
-public class AWSSenderScope
-{
-    private readonly TenantManager _tenantManager;
-    private readonly CoreConfiguration _coreConfiguration;
-
-    public AWSSenderScope(TenantManager tenantManager, CoreConfiguration coreConfiguration)
-    {
-        _tenantManager = tenantManager;
-        _coreConfiguration = coreConfiguration;
-    }
-
-    public void Deconstruct(out TenantManager tenantManager, out CoreConfiguration coreConfiguration)
-    {
-        (tenantManager, coreConfiguration) = (_tenantManager, _coreConfiguration);
-    }
-}
-
-public static class AWSSenderExtension
-{
-    public static void Register(DIHelper services)
-    {
-        services.TryAdd<AWSSenderScope>();
     }
 }

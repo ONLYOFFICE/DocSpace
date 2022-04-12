@@ -27,7 +27,7 @@
 namespace ASC.Web.Studio.Core
 {
     [Serializable]
-    public class CustomNavigationSettings : ISettings
+    public class CustomNavigationSettings : ISettings<CustomNavigationSettings>
     {
         public List<CustomNavigationItem> Items { get; set; }
 
@@ -36,7 +36,7 @@ namespace ASC.Web.Studio.Core
             get { return new Guid("{32E02E4C-925D-4391-BAA4-3B5D223A2104}"); }
         }
 
-        public ISettings GetDefault(IServiceProvider serviceProvider)
+        public CustomNavigationSettings GetDefault()
         {
             return new CustomNavigationSettings { Items = new List<CustomNavigationItem>() };
         }

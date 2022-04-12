@@ -34,15 +34,14 @@ public class SenderChannel : ISenderChannel
     public string SenderName { get; private set; }
 
 
-    public SenderChannel(Context context, string senderName, ISink decorateSink, ISink senderSink)
+    public SenderChannel(DispatchEngine dispatchEngine, string senderName, ISink decorateSink, ISink senderSink)
     {
         SenderName = senderName ?? throw new ArgumentNullException(nameof(senderName));
         _firstSink = decorateSink;
         _senderSink = senderSink ?? throw new ApplicationException($"channel with tag {senderName} not created sender sink");
 
 
-        context = context ?? throw new ArgumentNullException(nameof(context));
-        var dispatcherSink = new DispatchSink(SenderName, context.DispatchEngine);
+        var dispatcherSink = new DispatchSink(SenderName, dispatchEngine);
         _firstSink = AddSink(_firstSink, dispatcherSink);
     }
 

@@ -32,10 +32,10 @@ public class JabberSender : INotifySender
     private readonly ILog _logger;
     private readonly IServiceProvider _serviceProvider;
 
-    public JabberSender(IServiceProvider serviceProvider)
+    public JabberSender(IServiceProvider serviceProvider, IOptionsMonitor<ILog> optionsMonitor)
     {
         _serviceProvider = serviceProvider;
-        _logger = _serviceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
+        _logger = optionsMonitor.CurrentValue;
     }
 
     public void Init(IDictionary<string, string> properties) { }

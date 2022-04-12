@@ -72,7 +72,7 @@ public class Startup : BaseStartup
         services.AddMemoryCache();
         DIHelper.TryAdd<Login>();
         DIHelper.TryAdd<PathUtils>();
-        DIHelper.TryAdd<StorageHandlerScope>();
+        DIHelper.TryAdd<StorageFactory>();
         DIHelper.TryAdd<GoogleLoginProvider>();
         DIHelper.TryAdd<FacebookLoginProvider>();
         DIHelper.TryAdd<LinkedInLoginProvider>();

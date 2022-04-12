@@ -44,22 +44,9 @@ class TelegramSenderSink : Sink
         try
         {
             const SendResult result = SendResult.OK;
-            var m = new NotifyMessage
-            {
-                Reciever = message.Recipient.ID,
-                Subject = message.Subject,
-                ContentType = message.ContentType,
-                Content = message.Body,
-                SenderType = _senderName,
-                CreationDate = DateTime.UtcNow.Ticks,
-            };
 
             using var scope = _serviceProvider.CreateScope();
-            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-
-            var tenant = tenantManager.GetCurrentTenant(false);
-            m.TenantId = tenant == null ? Tenant.DefaultTenant : tenant.Id;
-
+            var m = scope.ServiceProvider.GetRequiredService<TelegramSenderSinkMessageCreator>().CreateNotifyMessage(message, _senderName);
             _sender.Send(m);
 
             return new SendResponse(message, _senderName, result);
@@ -68,5 +55,34 @@ class TelegramSenderSink : Sink
         {
             return new SendResponse(message, _senderName, ex);
         }
+    }
+}
+
+[Scope]
+public class TelegramSenderSinkMessageCreator : SinkMessageCreator
+{
+    private readonly TenantManager _tenantManager;
+
+    public TelegramSenderSinkMessageCreator(TenantManager tenantManager)
+    {
+        _tenantManager = tenantManager;
+    }
+
+    public override NotifyMessage CreateNotifyMessage(INoticeMessage message, string senderName)
+    {
+        var m = new NotifyMessage
+        {
+            Reciever = message.Recipient.ID,
+            Subject = message.Subject,
+            ContentType = message.ContentType,
+            Content = message.Body,
+            SenderType = senderName,
+            CreationDate = DateTime.UtcNow.Ticks,
+        };
+
+        var tenant = _tenantManager.GetCurrentTenant(false);
+        m.TenantId = tenant == null ? Tenant.DefaultTenant : tenant.Id;
+
+        return m;
     }
 }

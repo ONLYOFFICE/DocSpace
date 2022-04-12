@@ -26,7 +26,7 @@
 
 namespace ASC.ElasticSearch.Service;
 
-[Singletone(Additional = typeof(ServiceExtension))]
+[Singletone]
 public class ElasticSearchService
 {
     private readonly IServiceProvider _serviceProvider;
@@ -77,9 +77,8 @@ public class ElasticSearchService
         Task.WhenAll(tasks).ContinueWith(r =>
         {
             using var scope = _serviceProvider.CreateScope();
-
-            var scopeClass = scope.ServiceProvider.GetService<ServiceScope>();
-            var (tenantManager, settingsManager) = scopeClass;
+            var tenantManager = scope.ServiceProvider.GetRequiredService<TenantManager>();
+            var settingsManager = scope.ServiceProvider.GetRequiredService<SettingsManager>();
             tenantManager.SetCurrentTenant(tenant);
             settingsManager.ClearCache<SearchSettings>();
         });
@@ -92,31 +91,4 @@ public class ElasticSearchService
     //        LastIndexed = Launcher.LastIndexed
     //    };
     //}
-}
-
-[Scope]
-public class ServiceScope
-{
-    private readonly TenantManager _tenantManager;
-    private readonly SettingsManager _settingsManager;
-
-    public ServiceScope(TenantManager tenantManager, SettingsManager settingsManager)
-    {
-        _tenantManager = tenantManager;
-        _settingsManager = settingsManager;
-    }
-
-    public void Deconstruct(out TenantManager tenantManager, out SettingsManager settingsManager)
-    {
-        tenantManager = _tenantManager;
-        settingsManager = _settingsManager;
-    }
-}
-
-internal static class ServiceExtension
-{
-    public static void Register(DIHelper services)
-    {
-        services.TryAdd<ServiceScope>();
-    }
 }

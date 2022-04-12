@@ -29,28 +29,24 @@ namespace ASC.Files.Api;
 [ConstraintRoute("int")]
 public class FilesControllerInternal : FilesController<int>
 {
-    public FilesControllerInternal(IServiceProvider serviceProvider, FilesControllerHelper<int> filesControllerHelper) : base(serviceProvider, filesControllerHelper)
+    public FilesControllerInternal(FilesControllerHelper<int> filesControllerHelper) : base(filesControllerHelper)
     {
     }
 }
 
 public class FilesControllerThirdparty : FilesController<string>
 {
-    public FilesControllerThirdparty(IServiceProvider serviceProvider, FilesControllerHelper<string> filesControllerHelper) : base(serviceProvider, filesControllerHelper)
+    public FilesControllerThirdparty(FilesControllerHelper<string> filesControllerHelper) : base(filesControllerHelper)
     {
     }
 }
 
 public abstract class FilesController<T> : ApiControllerBase
 {
-    private readonly IServiceProvider _serviceProvider;
     private readonly FilesControllerHelper<T> _filesControllerHelper;
 
-    public FilesController(
-        IServiceProvider serviceProvider,
-        FilesControllerHelper<T> filesControllerHelper)
+    public FilesController(FilesControllerHelper<T> filesControllerHelper)
     {
-        _serviceProvider = serviceProvider;
         _filesControllerHelper = filesControllerHelper;
     }
 
@@ -96,14 +92,14 @@ public abstract class FilesController<T> : ApiControllerBase
     [Create("file/{fileId}/copyas", order: int.MaxValue)]
     public object CopyFileAsFromBody(T fileId, [FromBody] CopyAsRequestDto<JsonElement> inDto)
     {
-        return CopyFile(fileId, inDto);
+        return CopyFile(fileId, inDto, _filesControllerHelper);
     }
 
     [Create("file/{fileId}/copyas", order: int.MaxValue)]
     [Consumes("application/x-www-form-urlencoded")]
     public object CopyFileAsFromForm(T fileId, [FromForm] CopyAsRequestDto<JsonElement> inDto)
     {
-        return CopyFile(fileId, inDto);
+        return CopyFile(fileId, inDto, _filesControllerHelper);
     }
 
     /// <summary>
@@ -315,9 +311,8 @@ public abstract class FilesController<T> : ApiControllerBase
     }
 
 
-    private object CopyFile(T fileId, CopyAsRequestDto<JsonElement> inDto)
+    private object CopyFile(T fileId, CopyAsRequestDto<JsonElement> inDto, FilesControllerHelper<T> helper)
     {
-        var helper = _serviceProvider.GetService<FilesControllerHelper<T>>();
         if (inDto.DestFolderId.ValueKind == JsonValueKind.Number)
         {
             return helper.CopyFileAsAsync(fileId, inDto.DestFolderId.GetInt32(), inDto.DestTitle, inDto.Password);

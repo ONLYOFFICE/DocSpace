@@ -39,21 +39,19 @@ namespace ASC.Data.Reassigns
         private bool _notify;
         //private readonly IFileStorageService _docService;
         //private readonly MailGarbageEngine _mailEraser;
-        
+
         public RemoveProgressItem(
             IServiceScopeFactory serviceScopeFactory,
-            IHttpContextAccessor httpContextAccessor)
+            IDictionary<string, StringValues> httpHeaders,
+            int tenantId, UserInfo user, Guid currentUserId, bool notify)
         {
-            _httpHeaders = QueueWorker.GetHttpHeaders(httpContextAccessor.HttpContext.Request);
+            _httpHeaders = httpHeaders;
             _serviceScopeFactory = serviceScopeFactory;
 
 
             //_docService = Web.Files.Classes.Global.FileStorageService;
             //_mailEraser = new MailGarbageEngine();
-        }
 
-        public void Init(int tenantId, UserInfo user, Guid currentUserId, bool notify)
-        {
             _tenantId = tenantId;
             User = user;
             FromUser = user.Id;

@@ -41,20 +41,23 @@ public class NotifyRequest
     internal List<string> RequaredTags;
     internal List<ISendInterceptor> Interceptors;
     internal bool IsNeedCheckSubscriptions;
+    private readonly ILog _log;
+    private readonly IOptionsMonitor<ILog> _options;
 
-    public NotifyRequest(INotifySource notifySource, INotifyAction action, string objectID, IRecipient recipient)
+    public NotifyRequest(IOptionsMonitor<ILog> options, INotifySource notifySource, INotifyAction action, string objectID, IRecipient recipient)
     {
         Properties = new Hashtable();
         Arguments = new List<ITagValue>();
         RequaredTags = new List<string>();
         Interceptors = new List<ISendInterceptor>();
-
+        _options = options;
         NotifySource = notifySource ?? throw new ArgumentNullException(nameof(notifySource));
         Recipient = recipient ?? throw new ArgumentNullException(nameof(recipient));
         NotifyAction = action ?? throw new ArgumentNullException(nameof(action));
         ObjectID = objectID;
 
         IsNeedCheckSubscriptions = true;
+        _log = options.Get("ASC.Notify");
     }
 
     internal bool Intercept(InterceptorPlace place, IServiceScope serviceScope)
@@ -73,7 +76,7 @@ public class NotifyRequest
                 }
                 catch (Exception err)
                 {
-                    serviceScope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().Get("ASC.Notify").ErrorFormat("{0} {1} {2}: {3}", interceptor.Name, NotifyAction, Recipient, err);
+                    _log.ErrorFormat("{0} {1} {2}: {3}", interceptor.Name, NotifyAction, Recipient, err);
                 }
             }
         }
@@ -103,7 +106,7 @@ public class NotifyRequest
     {
         ArgumentNullException.ThrowIfNull(recipient);
 
-        var newRequest = new NotifyRequest(NotifySource, NotifyAction, ObjectID, recipient)
+        var newRequest = new NotifyRequest(_options, NotifySource, NotifyAction, ObjectID, recipient)
         {
             SenderNames = SenderNames,
             Patterns = Patterns,

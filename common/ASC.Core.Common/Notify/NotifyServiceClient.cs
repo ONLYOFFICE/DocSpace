@@ -28,11 +28,12 @@ using CacheNotifyAction = ASC.Common.Caching.CacheNotifyAction;
 
 namespace ASC.Core.Notify;
 
-[Scope]
+[Singletone]
 public class NotifyServiceClient : INotifyService
 {
     private readonly ICacheNotify<NotifyMessage> _cacheNotify;
     private readonly ICacheNotify<NotifyInvoke> _notifyInvoke;
+
     public NotifyServiceClient(ICacheNotify<NotifyMessage> cacheNotify, ICacheNotify<NotifyInvoke> notifyInvoke)
     {
         _cacheNotify = cacheNotify;
