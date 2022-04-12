@@ -94,14 +94,14 @@ const SelectFileDialogAsideView = ({
                   <Button
                     theme={theme}
                     primary
-                    size="small"
+                    size="normalTouchscreen"
                     label={primaryButtonName}
                     onClick={onButtonClick}
                     isDisabled={!fileId}
                   />
                   <Button
                     theme={theme}
-                    size="small"
+                    size="normalTouchscreen"
                     label={t("Common:CancelButton")}
                     onClick={onClose}
                   />

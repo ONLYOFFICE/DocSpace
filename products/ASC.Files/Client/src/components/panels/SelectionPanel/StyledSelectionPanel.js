@@ -52,9 +52,6 @@ const StyledBody = styled.div`
 
       padding-top: 16px;
 
-      div:first-child {
-        padding-bottom: 12px;
-      }
       .selection-panel_buttons {
         button:first-child {
           margin-right: 8px;
@@ -174,9 +171,6 @@ const StyledAsideBody = styled.div`
 
     padding-top: 16px;
 
-    div:first-child {
-      padding-bottom: 12px;
-    }
     .selection-panel_aside-buttons {
       button:first-child {
         margin-right: 8px;
