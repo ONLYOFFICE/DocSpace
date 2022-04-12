@@ -32,7 +32,7 @@ const Header = React.forwardRef(
         <div className="sharing_panel-header-info">
           {uploadPanelVisible && (
             <IconButton
-              size="16"
+              size="15"
               iconName="/static/images/arrow.path.react.svg"
               className="sharing_panel-arrow"
               onClick={onClose}
@@ -47,7 +47,7 @@ const Header = React.forwardRef(
           <div className="sharing_panel-icons-container">
             <div ref={ref} className="sharing_panel-drop-down-wrapper">
               <IconButton
-                size="17"
+                size="15"
                 iconName="/static/images/actions.header.touch.react.svg"
                 className="sharing_panel-plus-icon"
                 {...onPlusClickProp}
