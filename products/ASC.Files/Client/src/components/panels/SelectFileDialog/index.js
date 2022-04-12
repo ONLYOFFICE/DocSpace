@@ -158,10 +158,16 @@ class SelectFileDialog extends React.Component {
     });
   }
   componentWillUnmount() {
-    const { setFolderId, setFile } = this.props;
+    const {
+      setFolderId,
+      setFile,
+      setExpandedPanelKeys,
+      withoutResetFolderTree,
+    } = this.props;
     this.throttledResize && this.throttledResize.cancel();
     window.removeEventListener("resize", this.throttledResize);
 
+    !withoutResetFolderTree && setExpandedPanelKeys(null);
     setFolderId(null);
     setFile(null);
   }
@@ -365,6 +371,7 @@ SelectFileDialog.propTypes = {
   ignoreSelectedFolderTree: PropTypes.bool,
   headerName: PropTypes.string,
   filesListTitle: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  withoutResetFolderTree: PropTypes.bool,
 };
 
 SelectFileDialog.defaultProps = {
@@ -372,6 +379,7 @@ SelectFileDialog.defaultProps = {
   filesListTitle: "",
   withoutProvider: false,
   ignoreSelectedFolderTree: false,
+  withoutResetFolderTree: false,
 };
 
 export default inject(
@@ -384,7 +392,7 @@ export default inject(
   }) => {
     const { fileInfo, setFolderId, setFile } = selectedFilesStore;
 
-    const { treeFolders } = treeFoldersStore;
+    const { treeFolders, setExpandedPanelKeys } = treeFoldersStore;
     const { filter } = filesStore;
     const { id } = selectedFolderStore;
 
@@ -398,6 +406,7 @@ export default inject(
       treeFolders,
       storeFolderId: id,
       theme: theme,
+      setExpandedPanelKeys,
     };
   }
 )(

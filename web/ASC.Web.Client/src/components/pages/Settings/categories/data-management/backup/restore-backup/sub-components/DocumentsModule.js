@@ -13,6 +13,7 @@ class Documents extends React.Component {
         searchParam=".gz"
         dialogName="Select File"
         filesListTitle={t("SelectFileInGZFormat")}
+        withoutResetFolderTree
         ignoreSelectedFolderTree
       />
     );

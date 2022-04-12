@@ -131,6 +131,9 @@ class SelectFolderDialog extends React.Component {
   }
 
   componentWillUnmount() {
+    const { setExpandedPanelKeys } = this.props;
+    setExpandedPanelKeys(null);
+
     clearTimeout(this.timerId);
     this.timerId = null;
 
@@ -366,7 +369,11 @@ export default inject(
     filesStore,
     auth,
   }) => {
-    const { treeFolders, expandedPanelKeys } = treeFoldersStore;
+    const {
+      treeFolders,
+      expandedPanelKeys,
+      setExpandedPanelKeys,
+    } = treeFoldersStore;
 
     const { canCreate, filter } = filesStore;
     const { setSelectedFolder, id } = selectedFolderStore;
@@ -380,7 +387,7 @@ export default inject(
 
       canCreate,
       storeFolderId: id,
-
+      setExpandedPanelKeys,
       setFolderId,
       treeFolders,
       filter,
