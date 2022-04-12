@@ -175,7 +175,7 @@ namespace ASC.Core
         public UserInfo GetUserBySid(string sid)
         {
             return GetUsersInternal()
-                .FirstOrDefault(u => u.Sid != null && string.Equals(u.Sid , sid, StringComparison.CurrentCultureIgnoreCase)) ?? Constants.LostUser;
+                .FirstOrDefault(u => u.Sid != null && string.Equals(u.Sid, sid, StringComparison.CurrentCultureIgnoreCase)) ?? Constants.LostUser;
         }
 
         public UserInfo GetSsoUserByNameId(string nameId)
@@ -517,6 +517,11 @@ namespace ASC.Core
         public GroupInfo GetGroupInfo(Guid groupID)
         {
             var group = UserService.GetGroup(Tenant.TenantId, groupID);
+
+            if (group == null)
+            {
+                group = ToGroup(Constants.BuildinGroups.FirstOrDefault(r => r.ID == groupID));
+            }
 
             return new GroupInfo
             {
