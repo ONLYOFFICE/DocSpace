@@ -402,7 +402,6 @@ namespace ASC.Files.Helpers
         public async Task<FileWrapper<TTemplate>> CopyFileAsAsync<TTemplate>(T fileId, TTemplate destFolderId, string destTitle, string password = null)
         {
             var service = ServiceProvider.GetService<FileStorageService<TTemplate>>();
-            var controller = ServiceProvider.GetService<FilesControllerHelper<TTemplate>>();
             var file = await FileStorageService.GetFileAsync(fileId, -1);
             var ext = FileUtility.GetFileExtension(file.Title);
             var destExt = FileUtility.GetFileExtension(destTitle);
@@ -415,6 +414,7 @@ namespace ASC.Files.Helpers
 
             using (var fileStream = await FileConverter.ExecAsync(file, destExt, password))
             {
+                var controller = ServiceProvider.GetService<FilesControllerHelper<TTemplate>>();
                 return await controller.InsertFileAsync(destFolderId, fileStream, destTitle, true);
             }
         }

@@ -1148,41 +1148,41 @@ namespace ASC.Api.Documents
         }
 
         [Create("file/{fileId:int}/copyas", order: int.MaxValue - 1)]
-        public object CopyFileAsFromBody(int fileId, [FromBody] CopyAsModel<JsonElement> model)
+        public Task<FileEntryWrapper> CopyFileAsFromBody(int fileId, [FromBody] CopyAsModel<JsonElement> model)
         {
             return CopyFile(fileId, model);
         }
 
         [Create("file/{fileId:int}/copyas", order: int.MaxValue - 1)]
         [Consumes("application/x-www-form-urlencoded")]
-        public object CopyFileAsFromForm(int fileId, [FromForm] CopyAsModel<JsonElement> model)
+        public Task<FileEntryWrapper> CopyFileAsFromForm(int fileId, [FromForm] CopyAsModel<JsonElement> model)
         {
             return CopyFile(fileId, model);
         }
 
         [Create("file/{fileId}/copyas", order: int.MaxValue)]
-        public object CopyFileAsFromBody(string fileId, [FromBody] CopyAsModel<JsonElement> model)
+        public Task<FileEntryWrapper> CopyFileAsFromBody(string fileId, [FromBody] CopyAsModel<JsonElement> model)
         {
             return CopyFile(fileId, model);
         }
 
         [Create("file/{fileId}/copyas", order: int.MaxValue)]
         [Consumes("application/x-www-form-urlencoded")]
-        public object CopyFileAsFromForm(string fileId, [FromForm] CopyAsModel<JsonElement> model)
+        public Task<FileEntryWrapper> CopyFileAsFromForm(string fileId, [FromForm] CopyAsModel<JsonElement> model)
         {
             return CopyFile(fileId, model);
         }
 
-        private object CopyFile<T>(T fileId, CopyAsModel<JsonElement> model)
+        private async Task<FileEntryWrapper> CopyFile<T>(T fileId, CopyAsModel<JsonElement> model)
         {
             var helper = ServiceProvider.GetService<FilesControllerHelper<T>>();
             if (model.DestFolderId.ValueKind == JsonValueKind.Number)
             {
-                return helper.CopyFileAsAsync(fileId, model.DestFolderId.GetInt32(), model.DestTitle, model.Password);
+                return await helper.CopyFileAsAsync(fileId, model.DestFolderId.GetInt32(), model.DestTitle, model.Password);
             }
             else if (model.DestFolderId.ValueKind == JsonValueKind.String)
             {
-                return helper.CopyFileAsAsync(fileId, model.DestFolderId.GetString(), model.DestTitle, model.Password);
+                return await helper.CopyFileAsAsync(fileId, model.DestFolderId.GetString(), model.DestTitle, model.Password);
             }
 
             return null;
