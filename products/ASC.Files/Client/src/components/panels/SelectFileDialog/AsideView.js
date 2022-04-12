@@ -70,7 +70,7 @@ const SelectFileDialogAsideView = ({
                   isNeedArrowIcon
                 />
 
-                <Text className="modal-dialog-filter-title">
+                <Text color="#A3A9AE" className="selection-panel_aside-title">
                   {filesListTitle}
                 </Text>
               </div>

@@ -159,6 +159,11 @@ const StyledAsideBody = styled.div`
     margin-left: -16px;
     margin-right: -16px;
   }
+
+  .selection-panel_aside-title {
+    padding-bottom: 16px;
+  }
+
   .selection-panel_aside-footer {
     border-top: 1px solid ${(props) => props.theme.row.borderBottom};
     margin-left: -13px;
