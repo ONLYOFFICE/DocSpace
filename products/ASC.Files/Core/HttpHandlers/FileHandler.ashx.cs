@@ -75,17 +75,13 @@ namespace ASC.Web.Files
 {
     public class FileHandler
     {
-        private IServiceProvider ServiceProvider { get; }
 
-        public FileHandler(RequestDelegate next, IServiceProvider serviceProvider)
+        public FileHandler(RequestDelegate next)
         {
-            ServiceProvider = serviceProvider;
         }
 
-        public async Task Invoke(HttpContext context)
+        public async Task Invoke(HttpContext context, FileHandlerService fileHandlerService)
         {
-            using var scope = ServiceProvider.CreateScope();
-            var fileHandlerService = scope.ServiceProvider.GetService<FileHandlerService>();
             await fileHandlerService.Invoke(context).ConfigureAwait(false);
         }
     }
