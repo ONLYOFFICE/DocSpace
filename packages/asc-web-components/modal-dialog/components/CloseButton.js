@@ -41,6 +41,7 @@ const StyledCloseButtonWrapper = styled.div`
         `}
 
   .close-button {
+    cursor: pointer;
     path {
       fill: ${(props) => props.theme.modalDialog.closeButton.fillColor};
     }
@@ -51,12 +52,11 @@ StyledCloseButtonWrapper.defaultProps = { theme: Base };
 
 const CloseButton = ({ displayType, onClick }) => {
   return (
-    <StyledCloseButtonWrapper displayType={displayType}>
+    <StyledCloseButtonWrapper onClick={onClick} displayType={displayType}>
       <IconButton
         size={12}
         className="close-button"
         iconName="/static/images/cross.react.svg"
-        onClick={onClick}
       />
     </StyledCloseButtonWrapper>
   );

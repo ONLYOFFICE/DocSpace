@@ -66,7 +66,7 @@ Template.propTypes = {
 
 export const Default = Template.bind({});
 Default.args = {
-  displayType: "auto",
+  displayType: "modal",
   isLarge: false,
   zIndex: 310,
 };
