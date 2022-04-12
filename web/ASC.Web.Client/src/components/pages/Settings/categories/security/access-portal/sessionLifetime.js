@@ -26,10 +26,71 @@ const MainContainer = styled.div`
 `;
 
 const SessionLifetime = (props) => {
-  const { t } = props;
+  const { t, history, lifetime, setSessionLifetimeSettings } = props;
   const [type, setType] = useState(false);
   const [sessionLifetime, setSessionLifetime] = useState("0");
   const [showReminder, setShowReminder] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const getSettings = () => {
+    const currentSettings = getFromSessionStorage(
+      "currentSessionLifetimeSettings"
+    );
+    const defaultSettings = getFromSessionStorage(
+      "defaultSessionLifetimeSettings"
+    );
+
+    if (defaultSettings) {
+      saveToSessionStorage("defaultSessionLifetimeSettings", defaultSettings);
+    } else {
+      saveToSessionStorage("defaultSessionLifetimeSettings", {
+        lifetime: lifetime.toString(),
+        type: lifetime > 0 ? true : false,
+      });
+    }
+
+    if (currentSettings) {
+      setType(currentSettings.type);
+      setSessionLifetime(currentSettings.lifetime);
+    } else {
+      setType(lifetime > 0 ? true : false);
+      setSessionLifetime(lifetime.toString());
+    }
+    setIsLoading(true);
+  };
+
+  useEffect(() => {
+    checkWidth();
+    getSettings();
+    window.addEventListener("resize", checkWidth);
+    return () => window.removeEventListener("resize", checkWidth);
+  }, [isLoading]);
+
+  useEffect(() => {
+    if (!isLoading) return;
+
+    const defaultSettings = getFromSessionStorage(
+      "defaultSessionLifetimeSettings"
+    );
+    const newSettings = {
+      lifetime: sessionLifetime,
+      type: type,
+    };
+
+    saveToSessionStorage("currentSessionLifetimeSettings", newSettings);
+
+    if (defaultSettings.type === newSettings.type) {
+      setShowReminder(false);
+    } else {
+      setShowReminder(true);
+    }
+  }, [type, sessionLifetime]);
+
+  const checkWidth = () => {
+    window.innerWidth > size.smallTablet &&
+      history.location.pathname.includes("lifetime") &&
+      history.push("/settings/security/access-portal");
+  };
 
   const onSelectType = (e) => {
     setType(e.target.value === "enable" ? true : false);
@@ -39,9 +100,28 @@ const SessionLifetime = (props) => {
     setSessionLifetime(e.target.value);
   };
 
-  const onSaveClick = () => {};
+  const onSaveClick = async () => {
+    try {
+      setSessionLifetimeSettings(sessionLifetime);
+      toastr.success(t("SuccessfullySaveSettingsMessage"));
+      saveToSessionStorage("defaultSessionLifetimeSettings", {
+        lifetime: lifetime,
+        type: type,
+      });
+      setShowReminder(false);
+    } catch (error) {
+      toastr.error(error);
+    }
+  };
 
-  const onCancelClick = () => {};
+  const onCancelClick = () => {
+    const defaultSettings = getFromSessionStorage(
+      "defaultSessionLifetimeSettings"
+    );
+    setType(defaultSettings.type);
+    setSessionLifetime(defaultSettings.lifetime);
+    setShowReminder(false);
+  };
 
   return (
     <MainContainer>
@@ -102,7 +182,7 @@ export default inject(({ auth }) => {
   const { sessionLifetime, setSessionLifetimeSettings } = auth.settingsStore;
 
   return {
-    sessionLifetime,
+    lifetime: sessionLifetime,
     setSessionLifetimeSettings,
   };
 })(
