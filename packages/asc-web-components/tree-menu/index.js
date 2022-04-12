@@ -92,6 +92,8 @@ const StyledTreeMenu = styled(Tree)`
     li:first-child {
       margin-top: ${(props) => (props.disableSwitch ? "10px" : "6px")};
       margin-left: 0;
+    }
+    li {
       padding-left: 16px;
     }
   }
