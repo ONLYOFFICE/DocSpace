@@ -393,7 +393,7 @@ namespace ASC.Api.Documents
         [Read("{folderId:int}", order: int.MaxValue - 1, DisableFormat = true)]
         public Task<FolderContentWrapper<int>> GetFolderAsync(int folderId, Guid userIdOrGroupId, FilterType filterType, bool searchInContent, bool withsubfolders)
         {
-             return FilesControllerHelperInt.GetFolderAsync(folderId, userIdOrGroupId, filterType, searchInContent, withsubfolders);
+            return FilesControllerHelperInt.GetFolderAsync(folderId, userIdOrGroupId, filterType, searchInContent, withsubfolders);
         }
 
         [Read("{folderId}/subfolders")]
@@ -1058,31 +1058,35 @@ namespace ASC.Api.Documents
         }
 
         [Create("owner")]
-        public IAsyncEnumerable<FileEntryWrapper> ChangeOwnerFromBodyAsync([FromBody] ChangeOwnerModel model)
+        public async Task<IEnumerable<FileEntryWrapper>> ChangeOwnerFromBodyAsync([FromBody] ChangeOwnerModel model)
         {
-            return ChangeOwnerAsync(model);
+            return await ChangeOwnerAsync(model);
         }
 
         [Create("owner")]
         [Consumes("application/x-www-form-urlencoded")]
-        public IAsyncEnumerable<FileEntryWrapper> ChangeOwnerFromFormAsync([FromForm] ChangeOwnerModel model)
+        public async Task<IEnumerable<FileEntryWrapper>> ChangeOwnerFromFormAsync([FromForm] ChangeOwnerModel model)
         {
-            return ChangeOwnerAsync(model);
+            return await ChangeOwnerAsync(model);
         }
 
-        public async IAsyncEnumerable<FileEntryWrapper> ChangeOwnerAsync(ChangeOwnerModel model)
+        public async Task<IEnumerable<FileEntryWrapper>> ChangeOwnerAsync(ChangeOwnerModel model)
         {
             var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(model.FolderIds);
             var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(model.FileIds);
 
-            var result = AsyncEnumerable.Empty<FileEntry>();
-            result.Concat(FileStorageServiceInt.ChangeOwnerAsync(folderIntIds, fileIntIds, model.UserId));
-            result.Concat(FileStorageService.ChangeOwnerAsync(folderStringIds, fileStringIds, model.UserId));
+            var data = Enumerable.Empty<FileEntry>();
+            data = data.Concat(await FileStorageServiceInt.ChangeOwnerAsync(folderIntIds, fileIntIds, model.UserId));
+            data = data.Concat(await FileStorageService.ChangeOwnerAsync(folderStringIds, fileStringIds, model.UserId));
 
-            await foreach (var e in result)
+            var result = new List<FileEntryWrapper>();
+
+            foreach (var e in data)
             {
-                yield return await FilesControllerHelperInt.GetFileEntryWrapperAsync(e);
+                result.Add(await FilesControllerHelperInt.GetFileEntryWrapperAsync(e));
             }
+
+            return result;
         }
 
         /// <summary>

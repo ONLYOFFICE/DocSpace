@@ -576,7 +576,7 @@ namespace ASC.Web.Files.Utils
 
                 await foreach (var providerFolderTag in providerFolderTags)
                 {
-                    tags.Concat(providerTagDao.GetNewTagsAsync(AuthContext.CurrentAccount.ID, providerFolderTag.Value, true));
+                    tags = tags.Concat(providerTagDao.GetNewTagsAsync(AuthContext.CurrentAccount.ID, providerFolderTag.Value, true));
                 }
             }
 
