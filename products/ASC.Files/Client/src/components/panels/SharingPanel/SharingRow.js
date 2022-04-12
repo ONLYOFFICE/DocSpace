@@ -1,14 +1,6 @@
 import React from "react";
-import IconButton from "@appserver/components/icon-button";
-import Link from "@appserver/components/link";
-import Row from "@appserver/components/row";
-import Text from "@appserver/components/text";
 import toastr from "@appserver/components/toast/toastr";
 import copy from "copy-to-clipboard";
-import LinkRow from "./linkRow";
-import AccessComboBox from "./AccessComboBox";
-import { getAccessIcon } from "../../../helpers/files-helpers";
-import { ReactSVG } from "react-svg";
 import { objectToGetParams } from "@appserver/common/utils";
 import ExternalLink from "./ExternalLink";
 import InternalLink from "./InternalLink";
@@ -19,14 +11,16 @@ class SharingRow extends React.Component {
     super(props);
 
     this.state = {
-      access: props.item.access,
+      access: !this.props.isInternalLinkOnly ? props.item.access : "",
     };
   }
 
   componentDidUpdate() {
-    const { access } = this.props.item;
-    if (this.state.access !== access) {
-      this.setState({ access });
+    if (!this.props.isInternalLinkOnly) {
+      const { access } = this.props.item;
+      if (this.state.access !== access) {
+        this.setState({ access });
+      }
     }
   }
 
@@ -91,6 +85,17 @@ class SharingRow extends React.Component {
 
   render() {
     //console.log("SharingRow render");
+    if (this.props.isInternalLinkOnly) {
+      const { t } = this.props;
+      return (
+        <InternalLink
+          linkText={t("InternalLink")}
+          copyText={t("Translations:Copy")}
+          onCopyInternalLink={this.onCopyInternalLink}
+          {...this.props}
+        />
+      );
+    }
     const {
       t,
       selection,

@@ -578,28 +578,38 @@ class SharingPanelComponent extends React.Component {
             <StyledBodyContent>
               <Scrollbar ref={this.scrollRef} stype="mediumBlack">
                 {!isLoading ? (
-                  filteredShareDataItems.map((item, index) => (
+                  filteredShareDataItems.length > 0 ? (
+                    filteredShareDataItems.map((item, index) => (
+                      <SharingRow
+                        t={t}
+                        isPersonal={isPersonal}
+                        index={index}
+                        key={`${item.sharedTo.id}_${index}`}
+                        selection={selection}
+                        item={item}
+                        isMyId={isMyId}
+                        accessOptions={accessOptions}
+                        externalAccessOptions={externalAccessOptions}
+                        canShareOwnerChange={canShareOwnerChange}
+                        onChangeItemAccess={this.onChangeItemAccess}
+                        internalLink={internalLink}
+                        onRemoveUserClick={this.onRemoveUserItemClick}
+                        onShowEmbeddingPanel={this.onShowEmbeddingPanel}
+                        onToggleLink={this.onToggleLink}
+                        onShowChangeOwnerPanel={this.onShowChangeOwnerPanel}
+                        isLoading={isLoading}
+                        documentTitle={documentTitle}
+                        isInternalLinkOnly={false}
+                      />
+                    ))
+                  ) : (
                     <SharingRow
                       t={t}
                       isPersonal={isPersonal}
-                      index={index}
-                      key={`${item.sharedTo.id}_${index}`}
-                      selection={selection}
-                      item={item}
-                      isMyId={isMyId}
-                      accessOptions={accessOptions}
-                      externalAccessOptions={externalAccessOptions}
-                      canShareOwnerChange={canShareOwnerChange}
-                      onChangeItemAccess={this.onChangeItemAccess}
                       internalLink={internalLink}
-                      onRemoveUserClick={this.onRemoveUserItemClick}
-                      onShowEmbeddingPanel={this.onShowEmbeddingPanel}
-                      onToggleLink={this.onToggleLink}
-                      onShowChangeOwnerPanel={this.onShowChangeOwnerPanel}
-                      isLoading={isLoading}
-                      documentTitle={documentTitle}
+                      isInternalLinkOnly={true}
                     />
-                  ))
+                  )
                 ) : (
                   <div key="loader" className="panel-loader-wrapper">
                     <Loader type="oval" size="16px" className="panel-loader" />
