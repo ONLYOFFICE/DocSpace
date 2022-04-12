@@ -2344,6 +2344,17 @@ const Dark = {
       fill: grayMaxLight,
       loadingFill: grayMaxLight,
 
+      borderBottom: "1px solid #474747",
+      borderTop: "1px solid #474747",
+      externalLinkBackground: "#292929",
+      externalLinkSvg: "#858585",
+
+      internalLinkBorder: "1px dashed #eeeeee",
+
+      itemBorder: "1px dashed #333333",
+
+      itemOwnerColor: "#858585",
+
       dropdownColor: grayMaxLight,
 
       loader: {

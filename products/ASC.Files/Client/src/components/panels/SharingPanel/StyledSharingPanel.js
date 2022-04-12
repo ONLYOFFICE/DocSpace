@@ -1,3 +1,4 @@
+import { Base } from "@appserver/components/themes";
 import styled, { css } from "styled-components";
 
 const StyledContent = styled.div`
@@ -15,7 +16,7 @@ const StyledHeaderContent = styled.div`
   max-width: calc(100% - 16px);
   height: 52px;
 
-  border-bottom: 1px solid #eceef1;
+  border-bottom: ${(props) => props.theme.filesPanels.sharing.borderBottom};
 
   padding: 0 16px;
 
@@ -60,6 +61,8 @@ const StyledHeaderContent = styled.div`
   }
 `;
 
+StyledHeaderContent.defaultProps = { theme: Base };
+
 const StyledBodyContent = styled.div`
   width: calc(100%);
   height: 100%;
@@ -89,7 +92,8 @@ const StyledExternalLink = styled.div`
 
   box-sizing: border-box;
 
-  background-color: #f8f9f9;
+  background-color: ${(props) =>
+    props.theme.filesPanels.sharing.externalLinkBackground};
 
   display: flex;
   flex-direction: column;
@@ -146,14 +150,16 @@ const StyledExternalLink = styled.div`
 
           cursor: pointer;
           path {
-            fill: #333333 !important;
+            fill: ${(props) =>
+              props.theme.filesPanels.sharing.externalLinkSvg} !important;
           }
         }
 
         .external-link__copy {
           cursor: pointer;
           path {
-            fill: #333333 !important;
+            fill: ${(props) =>
+              props.theme.filesPanels.sharing.externalLinkSvg} !important;
           }
         }
       }
@@ -180,6 +186,8 @@ const StyledExternalLink = styled.div`
   }
 `;
 
+StyledExternalLink.defaultProps = { theme: Base };
+
 const StyledInternalLink = styled.div`
   width: 100%;
 
@@ -199,11 +207,14 @@ const StyledInternalLink = styled.div`
     line-height: 15px !important;
     font-weight: 600 !important;
 
-    border-bottom: 1px dashed #333333;
+    border-bottom: ${(props) =>
+      props.theme.filesPanels.sharing.internalLinkBorder};
 
     cursor: pointer;
   }
 `;
+
+StyledInternalLink.defaultProps = { theme: Base };
 
 const StyledItem = styled.div`
   width: 100%;
@@ -234,13 +245,13 @@ const StyledItem = styled.div`
     line-height: 15px !important;
     font-weight: 600 !important;
 
-    border-bottom: 1px dashed #333333;
+    border-bottom: ${(props) => props.theme.filesPanels.sharing.itemBorder};
 
     cursor: pointer;
   }
 
   .item__owner {
-    color: rgb(163, 169, 174);
+    color: ${(props) => props.theme.filesPanels.sharing.itemOwnerColor};
   }
 
   .panel_combo-box {
@@ -256,9 +267,11 @@ const StyledItem = styled.div`
   }
 `;
 
+StyledItem.defaultProps = { theme: Base };
+
 const StyledFooterContent = styled.div`
   width: calc(100% - 16px);
-  border-top: 1px solid #eceef1;
+  border-top: ${(props) => props.theme.filesPanels.sharing.borderTop};
 
   padding: 16px;
 
@@ -274,6 +287,8 @@ const StyledFooterContent = styled.div`
     margin-bottom: 16px;
   }
 `;
+
+StyledFooterContent.defaultProps = { theme: Base };
 
 export {
   StyledContent,
