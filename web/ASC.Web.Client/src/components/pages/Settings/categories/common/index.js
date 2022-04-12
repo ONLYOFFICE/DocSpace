@@ -8,7 +8,7 @@ import config from "../../../../../../package.json";
 
 import Customization from "./customization";
 import WhiteLabel from "./whitelabel";
-import AppLoader from "@appserver/common/components/AppLoader";
+import LoaderSubmenu from "./sub-components/loaderSubmenu";
 
 const SubmenuCommon = (props) => {
   const { t, history } = props;
@@ -34,7 +34,7 @@ const SubmenuCommon = (props) => {
     if (currentTab !== -1) {
       setCurrentTab(currentTab);
     }
-    setIsLoading(true);
+    //setIsLoading(true);
   }, []);
 
   const onSelect = (e) => {
@@ -46,9 +46,9 @@ const SubmenuCommon = (props) => {
       )
     );
   };
-  //TODO: Loader
-  return !isLoading ? (
-    <AppLoader />
+  //TODO: isLoading
+  return isLoading ? (
+    <LoaderSubmenu />
   ) : (
     <Submenu
       data={data}

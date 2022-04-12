@@ -157,6 +157,8 @@ const StyledInfoPanelToggleWrapper = styled.div`
           ? props.theme.infoPanel.sectionHeaderToggleIconActive
           : props.theme.infoPanel.sectionHeaderToggleIcon};
     }
+
+    margin-bottom: 1px;
   }
 `;
 StyledInfoPanelToggleWrapper.defaultProps = { theme: Base };

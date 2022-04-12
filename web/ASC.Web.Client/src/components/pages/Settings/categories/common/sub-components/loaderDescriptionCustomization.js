@@ -1,14 +1,25 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Loaders from "@appserver/common/components/Loaders";
+import { isTablet } from "react-device-detect";
+
+const tabletStyles = css`
+  .description {
+    width: 684px;
+    padding-bottom: 20px;
+  }
+`;
 
 const StyledLoader = styled.div`
   @media (min-width: 600px) {
-    .description {
-      width: 684px;
-      padding-bottom: 20px;
-    }
+    ${tabletStyles}
   }
+
+  ${isTablet &&
+  css`
+    ${tabletStyles}
+  `}
+
   @media (min-width: 1024px) {
     .description {
       width: 700px;
@@ -16,12 +27,12 @@ const StyledLoader = styled.div`
   }
 `;
 
-const loaderDescriptionCustomization = () => {
+const LoaderDescriptionCustomization = () => {
   return (
     <StyledLoader>
-      <Loaders.Rectangle className="description" />
+      <Loaders.Rectangle height="40px" className="description" />
     </StyledLoader>
   );
 };
 
-export default loaderDescriptionCustomization;
+export default LoaderDescriptionCustomization;
