@@ -112,15 +112,31 @@ class DropDown extends React.PureComponent {
     const { smallSectionWidth, forwardedRef } = this.props;
     const { manualY } = this.state;
 
+    let parentDropdownNode = this.dropDownRef.current.parentNode;
+
+    while (
+      parentDropdownNode &&
+      !parentDropdownNode.classList.contains("scroll-body")
+    ) {
+      parentDropdownNode = parentDropdownNode.parentNode;
+    }
+
     const rects = this.dropDownRef.current.getBoundingClientRect();
     const parentRects = forwardedRef?.current?.getBoundingClientRect();
+    const parentScrollRects = parentDropdownNode
+      ? parentDropdownNode.getBoundingClientRect()
+      : null;
     const container = DomHelpers.getViewport();
 
     const dimensions = parentRects
       ? {
-          toTopCorner: parentRects.top,
+          toTopCorner: !!parentScrollRects
+            ? parentRects.top - parentScrollRects.top
+            : parentRects.top,
           parentHeight: parentRects.height,
-          containerHeight: parentRects.top,
+          containerHeight: !!parentScrollRects
+            ? parentRects.top - parentScrollRects.top
+            : parentRects.top,
         }
       : {
           toTopCorner: rects.top,

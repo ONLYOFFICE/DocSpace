@@ -32,6 +32,8 @@ const AccessComboBox = (props) => {
     DenyAccess,
   } = ShareAccessRights;
 
+  const ref = React.useRef(null);
+
   const advancedOptions = (
     <>
       {accessOptions.includes("FullAccess") && (

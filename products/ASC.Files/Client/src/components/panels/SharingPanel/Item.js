@@ -60,7 +60,6 @@ const Item = ({
           disableLink={false}
           canDelete={true}
           onRemoveUserClick={onRemoveUserClick}
-          fixedDirection={item?.isFixedDirection}
         />
       )}
     </StyledItem>
