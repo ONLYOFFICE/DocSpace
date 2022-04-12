@@ -45,6 +45,7 @@ const IpSecurity = (props) => {
     setIpRestrictionsEnable,
     ipRestrictions,
     setIpRestrictions,
+    initSettings,
   } = props;
 
   const regexp = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/; //check ip valid
@@ -80,6 +81,7 @@ const IpSecurity = (props) => {
   };
 
   useEffect(() => {
+    initSettings();
     checkWidth();
     getSettings();
     window.addEventListener("resize", checkWidth);
@@ -225,7 +227,7 @@ const IpSecurity = (props) => {
   );
 };
 
-export default inject(({ auth }) => {
+export default inject(({ auth, setup }) => {
   const {
     ipRestrictionEnable,
     setIpRestrictionsEnable,
@@ -233,10 +235,13 @@ export default inject(({ auth }) => {
     setIpRestrictions,
   } = auth.settingsStore;
 
+  const { initSettings } = setup;
+
   return {
     ipRestrictionEnable,
     setIpRestrictionsEnable,
     ipRestrictions,
     setIpRestrictions,
+    initSettings,
   };
 })(withTranslation(["Settings", "Common"])(withRouter(observer(IpSecurity))));
