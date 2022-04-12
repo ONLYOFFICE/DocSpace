@@ -67,7 +67,7 @@ const SelectionPanelBody = ({
           theme={theme}
           className="select-file_body-modal-dialog"
         >
-          <StyledBody header={!!header}>
+          <StyledBody header={!!header} footer={!!footer}>
             <div className="selection-panel_body">
               <div className="selection-panel_tree-body">
                 <Text

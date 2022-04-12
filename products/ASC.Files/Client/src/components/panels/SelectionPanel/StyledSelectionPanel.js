@@ -53,6 +53,7 @@ const StyledBody = styled.div`
       padding-top: 16px;
 
       .selection-panel_buttons {
+        ${(props) => props.footer && "margin-top:16px"};
         button:first-child {
           margin-right: 8px;
         }
@@ -172,6 +173,7 @@ const StyledAsideBody = styled.div`
     padding-top: 16px;
 
     .selection-panel_aside-buttons {
+      ${(props) => props.footer && "margin-top:16px"};
       button:first-child {
         margin-right: 8px;
       }
