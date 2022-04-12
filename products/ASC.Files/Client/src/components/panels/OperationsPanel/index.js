@@ -85,7 +85,6 @@ const OperationsPanelComponent = (props) => {
   };
 
   const startOperation = async (isCopy, destFolderId, folderTitle) => {
-    debugger;
     const isProviderFolder = selection.find((x) => !x.providerKey);
     const items =
       isProviderFolder && !isCopy

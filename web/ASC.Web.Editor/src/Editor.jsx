@@ -926,7 +926,6 @@ const Editor = () => {
             {isFolderDialogVisible && (
               <SelectFolderDialog
                 isPanelVisible={isFolderDialogVisible}
-                checkPossibilityCreating
                 onClose={onCloseFolderDialog}
                 foldersType="exceptSortedByTags"
                 onSave={onClickSaveSelectFolder}

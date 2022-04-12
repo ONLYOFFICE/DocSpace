@@ -109,21 +109,7 @@ class SelectFolderDialog extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const {
-      storeFolderId,
-      canCreate,
-      checkPossibilityCreating,
-      isReset,
-    } = this.props;
-
-    if (checkPossibilityCreating && storeFolderId !== prevProps.storeFolderId) {
-      clearTimeout(this.timerId);
-      this.timerId = null;
-
-      this.setState({
-        canCreate: canCreate,
-      });
-    }
+    const { isReset } = this.props;
 
     if (isReset && isReset !== prevProps.isReset) {
       this.onResetInfo();
@@ -156,7 +142,7 @@ class SelectFolderDialog extends React.Component {
   };
 
   onSelect = async (folder, treeNode) => {
-    const { checkPossibilityCreating, onSetFolderInfo } = this.props;
+    const { onSetFolderInfo } = this.props;
     const { folderId } = this.state;
 
     if (+folderId === +folder[0]) return;
@@ -167,16 +153,6 @@ class SelectFolderDialog extends React.Component {
       hasNextPage: true,
       page: 0,
     });
-
-    if (checkPossibilityCreating) {
-      this.timerId = setTimeout(
-        () =>
-          this.setState({
-            canCreate: false,
-          }),
-        100
-      );
-    }
 
     onSetFolderInfo && onSetFolderInfo(folder, treeNode);
   };
@@ -351,13 +327,11 @@ SelectFolderDialog.propTypes = {
   displayType: PropTypes.oneOf(["aside", "modal"]),
   id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   withoutProvider: PropTypes.bool,
-  checkPossibilityCreating: PropTypes.bool,
   withoutImmediatelyClose: PropTypes.bool,
 };
 SelectFolderDialog.defaultProps = {
   id: "",
   withoutProvider: false,
-  checkPossibilityCreating: false,
   withoutImmediatelyClose: false,
 };
 
@@ -375,18 +349,16 @@ export default inject(
       setExpandedPanelKeys,
     } = treeFoldersStore;
 
-    const { canCreate, filter } = filesStore;
-    const { setSelectedFolder, id } = selectedFolderStore;
+    const { filter } = filesStore;
+    const { id, rootFolderType } = selectedFolderStore;
     const { setFolderId } = selectedFilesStore;
 
     const { settingsStore } = auth;
     const { theme } = settingsStore;
     return {
       theme: theme,
-      setSelectedFolder,
-
-      canCreate,
       storeFolderId: id,
+      storeRootFolderType: rootFolderType,
       setExpandedPanelKeys,
       setFolderId,
       treeFolders,
