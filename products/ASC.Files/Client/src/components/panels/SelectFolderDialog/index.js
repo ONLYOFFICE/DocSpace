@@ -350,7 +350,7 @@ export default inject(
     } = treeFoldersStore;
 
     const { filter } = filesStore;
-    const { id, rootFolderType } = selectedFolderStore;
+    const { id } = selectedFolderStore;
     const { setFolderId } = selectedFilesStore;
 
     const { settingsStore } = auth;
@@ -358,7 +358,6 @@ export default inject(
     return {
       theme: theme,
       storeFolderId: id,
-      storeRootFolderType: rootFolderType,
       setExpandedPanelKeys,
       setFolderId,
       treeFolders,
