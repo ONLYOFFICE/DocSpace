@@ -27,7 +27,6 @@ const SelectFolderDialogAsideView = ({
   header,
   canCreate,
   primaryButtonName,
-  noTreeSwitcher,
 }) => {
   return (
     <ModalDialog

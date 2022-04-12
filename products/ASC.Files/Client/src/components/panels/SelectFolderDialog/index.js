@@ -35,8 +35,6 @@ class SelectFolderDialog extends React.Component {
       expandedKeys: null,
     };
     this.throttledResize = throttle(this.setDisplayType, 300);
-    this.noTreeSwitcher = false;
-    this.expandedKeys = null;
   }
 
   async componentDidMount() {
@@ -303,7 +301,6 @@ class SelectFolderDialog extends React.Component {
         canCreate={canCreate}
         isLoadingData={isLoadingData}
         primaryButtonName={primaryButtonName}
-        noTreeSwitcher={this.noTreeSwitcher}
         isAvailable={isAvailable}
       />
     ) : (
@@ -322,7 +319,6 @@ class SelectFolderDialog extends React.Component {
         canCreate={canCreate}
         isLoadingData={isLoadingData}
         primaryButtonName={primaryButtonName}
-        noTreeSwitcher={this.noTreeSwitcher}
         isAvailable={isAvailable}
         onSelectFolder={this.onSelect}
         filesList={filesList}
