@@ -5,7 +5,6 @@ import Loaders from "@appserver/common/components/Loaders";
 const StyledLoader = styled.div`
   .title-long {
     width: 283px;
-    height: 22px;
     padding-bottom: 8px;
   }
 
@@ -16,32 +15,30 @@ const StyledLoader = styled.div`
 
   .link {
     width: 57px;
-    height: 20px;
     padding-bottom: 20px;
   }
 
   .title {
     display: block;
     width: 132px;
-    height: 22px;
     padding-bottom: 8px;
   }
 `;
 
-const loaderCustomizationNavbar = () => {
+const LoaderCustomizationNavbar = () => {
   return (
     <StyledLoader>
-      <Loaders.Rectangle className="title-long" />
+      <Loaders.Rectangle height="22px" className="title-long" />
       <Loaders.Rectangle height="100px" className="width" />
-      <Loaders.Rectangle className="link" />
+      <Loaders.Rectangle height="20px" className="link" />
 
-      <Loaders.Rectangle className="title" />
+      <Loaders.Rectangle height="22px" className="title" />
       <Loaders.Rectangle height="80px" className="width" />
 
-      <Loaders.Rectangle className="title" />
+      <Loaders.Rectangle height="22px" className="title" />
       <Loaders.Rectangle height="20px" className="width" />
     </StyledLoader>
   );
 };
 
-export default loaderCustomizationNavbar;
+export default LoaderCustomizationNavbar;

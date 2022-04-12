@@ -1,8 +1,15 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Loaders from "@appserver/common/components/Loaders";
 import { isDesktop as isDesktopUtils } from "@appserver/components/utils/device";
 import { isTablet } from "react-device-detect";
+
+const tabletStyles = css`
+  padding-top: 12px;
+  .loader {
+    width: 184px;
+  }
+`;
 
 const StyledLoader = styled.div`
   padding-top: 8px;
@@ -12,18 +19,12 @@ const StyledLoader = styled.div`
   }
 
   @media (min-width: 600px) {
-    padding-top: 12px;
-    .loader {
-      width: 184px;
-    }
+    ${tabletStyles}
   }
 
   ${isTablet &&
   css`
-    padding-top: 12px;
-    .loader {
-      width: 184px;
-    }
+    ${tabletStyles}
   `}
 
   @media (min-width: 1025px) {
