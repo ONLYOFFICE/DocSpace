@@ -486,7 +486,7 @@ class SettingsStore {
   };
 
   getSessionLifetime = async () => {
-    const res = await api.settings.getSessionLifetime();
+    const res = await api.settings.getCookieSettings();
     this.sessionLifetime = res;
   };
 
