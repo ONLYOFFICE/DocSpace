@@ -64,6 +64,7 @@ class SettingsSetupStore {
       await authStore.tfaStore.getTfaType();
       await authStore.settingsStore.getIpRestrictionsEnable();
       await authStore.settingsStore.getIpRestrictions();
+      await authStore.settingsStore.getSessionLifetime();
     }
   };
 
