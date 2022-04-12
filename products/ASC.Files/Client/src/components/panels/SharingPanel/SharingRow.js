@@ -174,7 +174,7 @@ class SharingRow extends React.Component {
           />
         )}
 
-        {!isPersonal && !externalLinkVisible && !internalLinkVisible && (
+        {!isPersonal && !externalLinkVisible && (
           <Item
             {...this.props}
             avatarUrl={!!avatarSmall ? avatarSmall : avatarUrl}
