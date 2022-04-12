@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Files.Core.Helpers;
+
 namespace ASC.Web.Files.Utils;
 
 [Scope]
@@ -40,6 +42,7 @@ public class FileSharingAceHelper<T>
     private readonly GlobalFolderHelper _globalFolderHelper;
     private readonly FileSharingHelper _fileSharingHelper;
     private readonly FileTrackerHelper _fileTracker;
+    private readonly FileSecurityCommon _fileSecurityCommon;
 
     public FileSharingAceHelper(
         FileSecurity fileSecurity,
@@ -52,7 +55,8 @@ public class FileSharingAceHelper<T>
         NotifyClient notifyClient,
         GlobalFolderHelper globalFolderHelper,
         FileSharingHelper fileSharingHelper,
-        FileTrackerHelper fileTracker)
+        FileTrackerHelper fileTracker,
+        FileSecurityCommon fileSecurityCommon)
     {
         _fileSecurity = fileSecurity;
         _coreBaseSettings = coreBaseSettings;
@@ -65,9 +69,10 @@ public class FileSharingAceHelper<T>
         _globalFolderHelper = globalFolderHelper;
         _fileSharingHelper = fileSharingHelper;
         _fileTracker = fileTracker;
+        _fileSecurityCommon = fileSecurityCommon;
     }
 
-    public async Task<bool> SetAceObjectAsync(List<AceWrapper> aceWrappers, FileEntry<T> entry, bool notify, string message)
+    public async Task<bool> SetAceObjectAsync(List<AceWrapper> aceWrappers, FileEntry<T> entry, bool notify, string message, bool handleForRooms = false)
     {
         if (entry == null)
         {
@@ -85,6 +90,8 @@ public class FileSharingAceHelper<T>
         var recipients = new Dictionary<Guid, FileShare>();
         var usersWithoutRight = new List<Guid>();
         var changed = false;
+
+        aceWrappers = handleForRooms ? FilterAndProcessForRooms(entry, aceWrappers) : aceWrappers;
 
         foreach (var w in aceWrappers.OrderByDescending(ace => ace.SubjectGroup))
         {
@@ -219,6 +226,60 @@ public class FileSharingAceHelper<T>
 
                 await _fileMarker.RemoveMarkAsNewAsync(entry);
             });
+    }
+
+    private List<AceWrapper> FilterAndProcessForRooms(FileEntry<T> entry, List<AceWrapper> aceWrappers)
+    {
+        if (entry.FileEntryType == FileEntryType.File)
+        {
+            return aceWrappers;
+        }
+
+        var folderType = ((IFolder)entry).FolderType;
+
+        if (folderType != FolderType.FillingFormsRoom && folderType != FolderType.EditingRoom 
+            && folderType != FolderType.ReadOnlyRoom && folderType != FolderType.ReviewRoom
+            && folderType != FolderType.CustomRoom)
+        {
+            return aceWrappers;
+        }
+
+        var result = new List<AceWrapper>(aceWrappers.Count);
+
+        var isAdmin = _fileSecurityCommon.IsAdministrator(_authContext.CurrentAccount.ID);
+        var isRoomManager = !isAdmin ? false : true;
+
+        foreach (var ace in aceWrappers)
+        {
+            if (ace.SubjectGroup)
+            {
+                continue;
+            }
+
+            if (!RoomTemplateValidator.Validate(ace.Share, folderType))
+            {
+                continue;
+            }
+
+            if (ace.Share == FileShare.RoomManager && isAdmin)
+            {
+                result.Add(ace);
+                continue;
+            }
+
+            if ((ace.Share == FileShare.None || ace.Share == FileShare.Restrict ) && isAdmin)
+            {
+                result.Add(ace);
+                continue;
+            }
+
+            if (ace.Share != FileShare.RoomManager && isRoomManager)
+            {
+                result.Add(ace);
+            }
+        }
+
+        return result;
     }
 }
 
