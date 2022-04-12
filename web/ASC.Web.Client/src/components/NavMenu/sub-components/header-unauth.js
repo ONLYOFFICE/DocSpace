@@ -109,7 +109,7 @@ export default inject(({ auth }) => {
   const { enableAdmMess, wizardToken } = settingsStore;
   return {
     enableAdmMess,
-    wizardToken: wizardToken || "/",
+    wizardToken,
     isAuthenticated,
     isLoaded,
   };
