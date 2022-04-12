@@ -264,7 +264,7 @@ const TreeMenu = React.forwardRef((props, ref) => {
   };
 
   const modifiedChildren = renderChildren(children);
-  console.log("TreeMenu render", childrenCount * 8.5);
+
   return (
     <>
       <StyledTreeMenu

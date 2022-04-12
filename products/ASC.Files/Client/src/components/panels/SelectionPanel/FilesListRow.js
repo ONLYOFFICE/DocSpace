@@ -20,7 +20,12 @@ const FilesListRow = ({
     onSelectFile && onSelectFile(item, index);
   };
   return (
-    <StyledRow displayType={displayType} theme={theme} isChecked={isChecked}>
+    <StyledRow
+      displayType={displayType}
+      theme={theme}
+      isChecked={isChecked}
+      folderSelection={folderSelection}
+    >
       <div className="selection-panel_icon">{element}</div>
       <div className="selection-panel_text">
         <Text fontSize="14px" fontWeight={600}>

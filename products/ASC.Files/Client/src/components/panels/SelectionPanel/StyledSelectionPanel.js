@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 const StyledBody = styled.div`
   .selection-panel_body {
@@ -105,6 +105,28 @@ const StyledRow = styled.div`
       }
     }
   }
+
+  ${(props) =>
+    props.folderSelection &&
+    css`
+      .selection-panel_icon {
+        ::after {
+          position: absolute;
+          display: block;
+          background-color: #f3f4f4;
+          border-top-right-radius: 50%;
+          left: 18px;
+          top: 6px;
+          width: 27px;
+          height: 32px;
+          content: "";
+          opacity: 0.7;
+        }
+      }
+      .selection-panel_text p {
+        color: ${(props) => props.theme.text.disableColor};
+      }
+    `}
 `;
 
 const StyledAsideBody = styled.div`
