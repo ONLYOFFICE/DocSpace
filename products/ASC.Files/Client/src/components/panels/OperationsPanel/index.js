@@ -1,18 +1,19 @@
 import React, { useState } from "react";
 import { withRouter } from "react-router";
-import ModalDialog from "@appserver/components/modal-dialog";
+//import ModalDialog from "@appserver/components/modal-dialog";
 import { withTranslation } from "react-i18next";
-import TreeFolders from "../../FolderTreeBody/TreeFolders";
+//import TreeFolders from "../../FolderTreeBody/TreeFolders";
 import { inject, observer } from "mobx-react";
 import toastr from "studio/toastr";
-import Button from "@appserver/components/button";
-import styled from "styled-components";
+//import Button from "@appserver/components/button";
+//import styled from "styled-components";
+import SelectFolderDialog from "../SelectFolderDialog";
 
-const StyledModalDialog = styled(ModalDialog)`
-  .modal-dialog-aside-footer {
-    width: 90%;
-  }
-`;
+// const StyledModalDialog = styled(ModalDialog)`
+//   .modal-dialog-aside-footer {
+//     width: 90%;
+//   }
+// `;
 
 const OperationsPanelComponent = (props) => {
   const {
@@ -39,13 +40,13 @@ const OperationsPanelComponent = (props) => {
     parentFolderId,
   } = props;
 
-  const zIndex = 310;
+  //const zIndex = 310;
   const deleteAfter = false; // TODO: get from settings
 
-  const expandedKeys = props.expandedKeys.map((item) => item.toString());
+  //const expandedKeys = props.expandedKeys.map((item) => item.toString());
 
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedFolder, setSelectedFolder] = useState(null);
+  const [selectedFolder, setSelectedFolder] = useState(currentFolderId);
   const [folderTitle, setFolderTitle] = useState(null);
   const [providerKey, setProviderKey] = useState(null);
 
@@ -77,12 +78,14 @@ const OperationsPanelComponent = (props) => {
   };
 
   const onSelect = (folder, treeNode) => {
+    console.log("folder", folder, "treeNode", treeNode);
     setProviderKey(treeNode.node.props.providerKey);
     setFolderTitle(treeNode.node.props.title);
     setSelectedFolder(isNaN(+folder[0]) ? folder[0] : +folder[0]);
   };
 
   const startOperation = async (isCopy, destFolderId, folderTitle) => {
+    debugger;
     const isProviderFolder = selection.find((x) => !x.providerKey);
     const items =
       isProviderFolder && !isCopy
@@ -139,54 +142,24 @@ const OperationsPanelComponent = (props) => {
     );
   };
 
-  //console.log("Operations panel render");
+  // console.log("Operations panel render", expandedKeys);
   return (
-    <StyledModalDialog
-      visible={visible}
-      displayType="aside"
-      zIndex={zIndex}
+    <SelectFolderDialog
+      foldersType="exceptSortedByTags"
+      isPanelVisible={visible}
+      onSetFolderInfo={onSelect}
+      onSave={onSubmit}
       onClose={onClose}
-      isLoading={!tReady}
-      className="operations-panel-dialog"
-    >
-      <ModalDialog.Header>
-        {isRecycleBin
+      id={isRecycleBin ? null : currentFolderId}
+      withoutImmediatelyClose
+      dialogName={
+        isRecycleBin
           ? t("Translations:Restore")
           : isCopy
           ? t("Translations:Copy")
-          : t("Translations:Move")}
-      </ModalDialog.Header>
-      <ModalDialog.Body>
-        <TreeFolders
-          isPanel={true}
-          expandedPanelKeys={expandedKeys}
-          data={operationsFolders}
-          filter={filter}
-          onSelect={onSelect}
-          needUpdate={false}
-          disabled={isLoading || isLoading}
-          selectedKeys={[selectedFolder + ""]}
-        />
-      </ModalDialog.Body>
-      <ModalDialog.Footer>
-        <Button
-          scale
-          key="OkButton"
-          label={
-            isRecycleBin
-              ? t("Translations:Restore")
-              : isCopy
-              ? t("Translations:Copy")
-              : t("Translations:Move")
-          }
-          size="small"
-          primary
-          onClick={onSubmit}
-          isLoading={isLoading}
-          isDisabled={!selectedFolder || isLoading}
-        />
-      </ModalDialog.Footer>
-    </StyledModalDialog>
+          : t("Translations:Move")
+      }
+    ></SelectFolderDialog>
   );
 };
 
