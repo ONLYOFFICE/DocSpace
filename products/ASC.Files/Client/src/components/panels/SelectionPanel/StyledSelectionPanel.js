@@ -39,8 +39,10 @@ const StyledBody = styled.div`
 
     .selection-panel_files-header {
       padding: 16px;
+      .selection-panel_title {
+        ${(props) => props.header && "padding-top: 16px"};
+      }
     }
-
     .selection-panel_footer {
       grid-area: footer;
       border-top: 1px solid ${(props) => props.theme.row.borderBottom};

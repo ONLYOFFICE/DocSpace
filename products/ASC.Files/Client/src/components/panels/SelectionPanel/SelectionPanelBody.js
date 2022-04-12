@@ -67,7 +67,7 @@ const SelectionPanelBody = ({
           theme={theme}
           className="select-file_body-modal-dialog"
         >
-          <StyledBody>
+          <StyledBody header={!!header}>
             <div className="selection-panel_body">
               <div className="selection-panel_tree-body">
                 <Text
@@ -98,16 +98,16 @@ const SelectionPanelBody = ({
                 <>
                   <div className="selection-panel_files-header">
                     {header}
-                    {folderSelection ? (
-                      <Text
-                        color="#A3A9AE"
-                        theme={theme}
-                      >{`The contents of the '${folderTitle}' folder`}</Text>
-                    ) : (
-                      <Text color="#A3A9AE" theme={theme}>
-                        {filesListTitle}
-                      </Text>
-                    )}
+
+                    <Text
+                      color="#A3A9AE"
+                      theme={theme}
+                      className="selection-panel_title"
+                    >
+                      {folderSelection
+                        ? `The contents of the '${folderTitle}' folder`
+                        : filesListTitle}
+                    </Text>
                   </div>
 
                   <FilesListBody
