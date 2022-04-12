@@ -24,34 +24,42 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+
+
 namespace ASC.Core.Configuration;
 
-public class AmiPublicDnsSyncService : IServiceController
+[Scope]
+public class AmiPublicDnsSyncService : BackgroundService
 {
-    public static IServiceProvider ServiceProvider { get; set; }
+    private TenantManager _tenantManager;
+    private CoreBaseSettings _coreBaseSettings;
+    private IHttpClientFactory _clientFactory;
 
-    public void Start()
+    public AmiPublicDnsSyncService(TenantManager tenantManager, CoreBaseSettings coreBaseSettings, IHttpClientFactory clientFactory)
     {
-        Synchronize();
+        _tenantManager = tenantManager;
+        _coreBaseSettings = coreBaseSettings;
+        _clientFactory = clientFactory;
     }
 
-    public void Stop() { }
-
-    public static void Synchronize()
+    protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        using var scope = ServiceProvider.CreateScope();
-        var scopeClass = scope.ServiceProvider.GetService<AmiPublicDnsSyncServiceScope>();
-        var (tenantManager, coreBaseSettings, clientFactory) = scopeClass;
-        if (coreBaseSettings.Standalone)
+        Synchronize();
+        return Task.CompletedTask;
+    }
+
+    private void Synchronize()
+    {
+        if (_coreBaseSettings.Standalone)
         {
-            var tenants = tenantManager.GetTenants(false).Where(t => MappedDomainNotSettedByUser(t.MappedDomain));
+            var tenants = _tenantManager.GetTenants(false).Where(t => MappedDomainNotSettedByUser(t.MappedDomain));
             if (tenants.Any())
             {
-                var dnsname = GetAmiPublicDnsName(clientFactory);
+                var dnsname = GetAmiPublicDnsName(_clientFactory);
                 foreach (var tenant in tenants.Where(t => !string.IsNullOrEmpty(dnsname) && t.MappedDomain != dnsname))
                 {
                     tenant.MappedDomain = dnsname;
-                    tenantManager.SaveTenant(tenant);
+                    _tenantManager.SaveTenant(tenant);
                 }
             }
         }
@@ -88,24 +96,5 @@ public class AmiPublicDnsSyncService : IServiceController
         }
 
         return null;
-    }
-}
-
-public class AmiPublicDnsSyncServiceScope
-{
-    private TenantManager _tenantManager;
-    private CoreBaseSettings _coreBaseSettings;
-    private IHttpClientFactory _clientFactory;
-
-    public AmiPublicDnsSyncServiceScope(TenantManager tenantManager, CoreBaseSettings coreBaseSettings, IHttpClientFactory clientFactory)
-    {
-        _tenantManager = tenantManager;
-        _coreBaseSettings = coreBaseSettings;
-        _clientFactory = clientFactory;
-    }
-
-    public void Deconstruct(out TenantManager tenantManager, out CoreBaseSettings coreBaseSettings, out IHttpClientFactory clientFactory)
-    {
-        (tenantManager, coreBaseSettings, clientFactory) = (_tenantManager, _coreBaseSettings, _clientFactory);
     }
 }

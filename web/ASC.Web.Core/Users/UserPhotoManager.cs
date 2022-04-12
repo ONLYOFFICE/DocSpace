@@ -74,8 +74,8 @@ namespace ASC.Web.Core.Users
         public override int GetHashCode()
         {
             return HashCode.Combine(UserId, MaxFileSize, Size);
-            }
         }
+    }
 
     [Singletone]
     public class UserPhotoManagerCache
@@ -179,7 +179,6 @@ namespace ASC.Web.Core.Users
         private StorageFactory StorageFactory { get; }
         private UserPhotoManagerCache UserPhotoManagerCache { get; }
         private SettingsManager SettingsManager { get; }
-        private IServiceProvider ServiceProvider { get; }
         public ILog Log { get; }
 
         private Tenant tenant;
@@ -196,8 +195,7 @@ namespace ASC.Web.Core.Users
             UserPhotoManagerCache userPhotoManagerCache,
             ILog<UserPhotoManager> logger,
             DistributedTaskQueueOptionsManager optionsQueue,
-            SettingsManager settingsManager,
-            IServiceProvider serviceProvider)
+            SettingsManager settingsManager)
         {
             ResizeQueue = optionsQueue.Get<ResizeWorkerItem>();
             UserManager = userManager;
@@ -206,7 +204,6 @@ namespace ASC.Web.Core.Users
             StorageFactory = storageFactory;
             UserPhotoManagerCache = userPhotoManagerCache;
             SettingsManager = settingsManager;
-            ServiceProvider = serviceProvider;
             Log = logger;
         }
 
@@ -412,7 +409,7 @@ namespace ASC.Web.Core.Users
         }
 
         private string GetDefaultPhotoAbsoluteWebPath(Size size)
-            {
+        {
             return size switch
             {
                 Size(var w, var h) when w == RetinaFotoSize.Width && h == RetinaFotoSize.Height => WebImageSupplier.GetAbsoluteWebPath(_defaultRetinaAvatar),
@@ -491,7 +488,7 @@ namespace ASC.Web.Core.Users
         }
         public void ResetThumbnailSettings(Guid userId)
         {
-            var thumbSettings = new UserPhotoThumbnailSettings().GetDefault(ServiceProvider) as UserPhotoThumbnailSettings;
+            var thumbSettings = SettingsManager.GetDefault<UserPhotoThumbnailSettings>();
             SettingsManager.SaveForUser(thumbSettings, userId);
         }
 
@@ -507,8 +504,8 @@ namespace ASC.Web.Core.Users
             {
                 var storage = GetDataStore();
                 storage.DeleteFilesAsync("", idUser + "*.*", false).Wait();
-            } 
-            catch(DirectoryNotFoundException e)
+            }
+            catch (DirectoryNotFoundException e)
             {
                 Log.Error(e);
             }
@@ -587,7 +584,7 @@ namespace ASC.Web.Core.Users
 
             try
             {
-                using var img = Image.Load(data ,out var format);
+                using var img = Image.Load(data, out var format);
                 imgFormat = format;
                 width = img.Width;
                 height = img.Height;
@@ -858,7 +855,7 @@ namespace ASC.Web.Core.Users
         }
 
         public static CacheSize ToCache(Size size)
-            {
+        {
             return size switch
             {
                 Size(var w, var h) when w == RetinaFotoSize.Width && h == RetinaFotoSize.Height => CacheSize.Retina,
@@ -868,7 +865,7 @@ namespace ASC.Web.Core.Users
                 Size(var w, var h) when w == MediumFotoSize.Width && h == MediumFotoSize.Height => CacheSize.Medium,
                 _ => CacheSize.Original
             };
-    }
+        }
     }
 
     #region Exception Classes
@@ -997,7 +994,7 @@ namespace ASC.Web.Core.Users
         public static void Deconstruct(this Size size, out int w, out int h)
         {
             (w, h) = (size.Width, size.Height);
-    }
+        }
     }
 
     public static class ResizeWorkerItemExtension

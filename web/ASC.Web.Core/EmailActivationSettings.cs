@@ -27,7 +27,7 @@
 namespace ASC.Web.Studio.Core
 {
     [Serializable]
-    public class EmailActivationSettings : ISettings
+    public class EmailActivationSettings : ISettings<EmailActivationSettings>
     {
         public bool Show { get; set; }
 
@@ -36,7 +36,7 @@ namespace ASC.Web.Studio.Core
             get { return new Guid("{85987929-1339-48EB-B06D-B9D097BDACF6}"); }
         }
 
-        public ISettings GetDefault(IServiceProvider serviceProvider)
+        public EmailActivationSettings GetDefault()
         {
             return new EmailActivationSettings { Show = true };
         }

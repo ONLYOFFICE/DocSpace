@@ -43,30 +43,16 @@ class JabberSenderSink : Sink
     {
         try
         {
-            using var scope = _serviceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<JabberSenderSinkScope>();
-            (var userManager, var tenantManager) = scopeClass;
             var result = SendResult.OK;
-            var username = userManager.GetUsers(new Guid(message.Recipient.ID)).UserName;
-            if (string.IsNullOrEmpty(username))
+            using var scope = _serviceProvider.CreateScope();
+            var m = scope.ServiceProvider.GetRequiredService<JabberSenderSinkMessageCreator>().CreateNotifyMessage(message, _senderName);
+
+            if (string.IsNullOrEmpty(m.Reciever))
             {
                 result = SendResult.IncorrectRecipient;
             }
             else
             {
-                var m = new NotifyMessage
-                {
-                    Reciever = username,
-                    Subject = message.Subject,
-                    ContentType = message.ContentType,
-                    Content = message.Body,
-                    SenderType = _senderName,
-                    CreationDate = DateTime.UtcNow.Ticks,
-                };
-
-                var tenant = tenantManager.GetCurrentTenant(false);
-                m.TenantId = tenant == null ? Tenant.DefaultTenant : tenant.Id;
-
                 _sender.Send(m);
             }
 
@@ -80,19 +66,33 @@ class JabberSenderSink : Sink
 }
 
 [Scope]
-public class JabberSenderSinkScope
+public class JabberSenderSinkMessageCreator : SinkMessageCreator
 {
     private readonly UserManager _userManager;
     private readonly TenantManager _tenantManager;
 
-    public JabberSenderSinkScope(UserManager userManager, TenantManager tenantManager)
+    public JabberSenderSinkMessageCreator(UserManager userManager, TenantManager tenantManager)
     {
         _tenantManager = tenantManager;
         _userManager = userManager;
     }
 
-    public void Deconstruct(out UserManager userManager, out TenantManager tenantManager)
+    public override NotifyMessage CreateNotifyMessage(INoticeMessage message, string senderName)
     {
-        (userManager, tenantManager) = (_userManager, _tenantManager);
+        var username = _userManager.GetUsers(new Guid(message.Recipient.ID)).UserName;
+
+        var m = new NotifyMessage
+        {
+            Reciever = username,
+            Subject = message.Subject,
+            ContentType = message.ContentType,
+            Content = message.Body,
+            SenderType = senderName,
+            CreationDate = DateTime.UtcNow.Ticks,
+        };
+
+        var tenant = _tenantManager.GetCurrentTenant(false);
+        m.TenantId = tenant == null ? Tenant.DefaultTenant : tenant.Id;
+        return m;
     }
 }

@@ -26,9 +26,23 @@
 
 namespace ASC.Core.Billing;
 
+[Singletone]
+public class LicenseReaderConfig
+{
+    public readonly string LicensePath;
+    public LicenseReaderConfig(IConfiguration configuration)
+    {
+        LicensePath = configuration["license:file:path"] ?? "";
+    }
+}
+
 [Scope]
 public class LicenseReader
 {
+    private readonly UserManager _userManager;
+    private readonly TenantManager _tenantManager;
+    private readonly PaymentManager _paymentManager;
+    private readonly CoreSettings _coreSettings;
     private readonly ILog _logger;
     public readonly string LicensePath;
     private readonly string _licensePathTemp;
@@ -41,15 +55,14 @@ public class LicenseReader
         TenantManager tenantManager,
         PaymentManager paymentManager,
         CoreSettings coreSettings,
-        IConfiguration configuration,
+        LicenseReaderConfig licenseReaderConfig,
         ILog logger)
     {
         _userManager = userManager;
         _tenantManager = tenantManager;
         _paymentManager = paymentManager;
         _coreSettings = coreSettings;
-        _configuration = configuration;
-        LicensePath = _configuration["license:file:path"] ?? "";
+        LicensePath = licenseReaderConfig.LicensePath;
         _licensePathTemp = LicensePath + ".tmp";
         _logger = logger;
     }
@@ -336,10 +349,4 @@ public class LicenseReader
             //return _date;
         }
     }
-
-    private readonly UserManager _userManager;
-    private readonly TenantManager _tenantManager;
-    private readonly PaymentManager _paymentManager;
-    private readonly CoreSettings _coreSettings;
-    private readonly IConfiguration _configuration;
 }

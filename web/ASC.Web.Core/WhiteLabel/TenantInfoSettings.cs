@@ -27,7 +27,7 @@
 namespace ASC.Web.Core.WhiteLabel
 {
     [Serializable]
-    public class TenantInfoSettings : ISettings
+    public class TenantInfoSettings : ISettings<TenantInfoSettings>
     {
         [JsonPropertyName("LogoSize")]
         public Size CompanyLogoSize { get; internal set; }
@@ -38,7 +38,7 @@ namespace ASC.Web.Core.WhiteLabel
         [JsonPropertyName("Default")]
         internal bool IsDefault { get; set; }
 
-        public ISettings GetDefault(IServiceProvider serviceProvider)
+        public TenantInfoSettings GetDefault()
         {
             return new TenantInfoSettings()
             {

@@ -30,17 +30,13 @@ public class EmailSenderSink : Sink
 {
     private static readonly string _senderName = Configuration.Constants.NotifyEMailSenderSysName;
     private readonly INotifySender _sender;
+    private readonly IServiceProvider _serviceProvider;
 
-
-    public EmailSenderSink(INotifySender sender, IServiceProvider serviceProvider, IOptionsMonitor<ILog> options)
+    public EmailSenderSink(INotifySender sender, IServiceProvider serviceProvider)
     {
         _sender = sender ?? throw new ArgumentNullException(nameof(sender));
         _serviceProvider = serviceProvider;
-        _logger = options.Get("ASC.Notify");
     }
-
-    private readonly IServiceProvider _serviceProvider;
-    private readonly ILog _logger;
 
     public override SendResponse ProcessMessage(INoticeMessage message)
     {
@@ -52,7 +48,8 @@ public class EmailSenderSink : Sink
         var responce = new SendResponse(message, _senderName, default(SendResult));
         try
         {
-            var m = CreateNotifyMessage(message);
+            using var scope = _serviceProvider.CreateScope();
+            var m = scope.ServiceProvider.GetRequiredService<EmailSenderSinkMessageCreator>().CreateNotifyMessage(message, _senderName);
             var result = _sender.Send(m);
 
             responce.Result = result switch
@@ -70,30 +67,39 @@ public class EmailSenderSink : Sink
             return new SendResponse(message, _senderName, e);
         }
     }
+}
 
+[Scope]
+public class EmailSenderSinkMessageCreator : SinkMessageCreator
+{
+    private readonly TenantManager _tenantManager;
+    private readonly CoreConfiguration _coreConfiguration;
+    private readonly ILog _logger;
 
-    private NotifyMessage CreateNotifyMessage(INoticeMessage message)
+    public EmailSenderSinkMessageCreator(TenantManager tenantManager, CoreConfiguration coreConfiguration, IOptionsMonitor<ILog> options)
+    {
+        _tenantManager = tenantManager;
+        _coreConfiguration = coreConfiguration;
+        _logger = options.Get("ASC.Notify");
+    }
+
+    public override NotifyMessage CreateNotifyMessage(INoticeMessage message, string senderName)
     {
         var m = new NotifyMessage
         {
             Subject = message.Subject.Trim(' ', '\t', '\n', '\r'),
             ContentType = message.ContentType,
             Content = message.Body,
-            SenderType = _senderName,
+            SenderType = senderName,
             CreationDate = DateTime.UtcNow.Ticks,
         };
 
-        using var scope = _serviceProvider.CreateScope();
-
-        var scopeClass = scope.ServiceProvider.GetService<EmailSenderSinkScope>();
-        var (tenantManager, configuration, options) = scopeClass;
-
-        var tenant = tenantManager.GetCurrentTenant(false);
+        var tenant = _tenantManager.GetCurrentTenant(false);
         m.TenantId = tenant == null ? Tenant.DefaultTenant : tenant.Id;
 
-        var from = MailAddressUtils.Create(configuration.SmtpSettings.SenderAddress, configuration.SmtpSettings.SenderDisplayName);
+        var from = MailAddressUtils.Create(_coreConfiguration.SmtpSettings.SenderAddress, _coreConfiguration.SmtpSettings.SenderDisplayName);
         var fromTag = message.Arguments.FirstOrDefault(x => x.Tag.Equals("MessageFrom"));
-        if ((configuration.SmtpSettings.IsDefaultSettings || string.IsNullOrEmpty(configuration.SmtpSettings.SenderDisplayName)) &&
+        if ((_coreConfiguration.SmtpSettings.IsDefaultSettings || string.IsNullOrEmpty(_coreConfiguration.SmtpSettings.SenderDisplayName)) &&
             fromTag != null && fromTag.Value != null)
         {
             try
@@ -121,7 +127,7 @@ public class EmailSenderSink : Sink
             }
             catch (Exception e)
             {
-                _serviceProvider.GetService<IOptionsMonitor<ILog>>().Get("ASC.Notify").Error("Error creating reply to tag for: " + replyTag.Value, e);
+                _logger.Error("Error creating reply to tag for: " + replyTag.Value, e);
             }
         }
 
@@ -151,25 +157,5 @@ public class EmailSenderSink : Sink
         }
 
         return m;
-    }
-}
-
-[Scope]
-public class EmailSenderSinkScope
-{
-    private readonly TenantManager _tenantManager;
-    private readonly CoreConfiguration _coreConfiguration;
-    private readonly IOptionsMonitor<ILog> _options;
-
-    public EmailSenderSinkScope(TenantManager tenantManager, CoreConfiguration coreConfiguration, IOptionsMonitor<ILog> options)
-    {
-        _tenantManager = tenantManager;
-        _coreConfiguration = coreConfiguration;
-        _options = options;
-    }
-
-    public void Deconstruct(out TenantManager tenantManager, out CoreConfiguration coreConfiguration, out IOptionsMonitor<ILog> optionsMonitor)
-    {
-        (tenantManager, coreConfiguration, optionsMonitor) = (_tenantManager, _coreConfiguration, _options);
     }
 }
