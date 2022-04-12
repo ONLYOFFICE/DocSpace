@@ -102,9 +102,6 @@ class SelectFileDialog extends React.Component {
       onSelectFolder,
       foldersList,
       treeFromInput,
-      setSelectedNode,
-      setSelectedFolder,
-      setExpandedPanelKeys,
       displayType,
     } = this.props;
     const { folderId } = this.state;
@@ -130,9 +127,6 @@ class SelectFileDialog extends React.Component {
         onSelectFolder,
         foldersList,
         true,
-        setSelectedNode,
-        setSelectedFolder,
-        setExpandedPanelKeys,
         true
       );
 
@@ -164,11 +158,11 @@ class SelectFileDialog extends React.Component {
     });
   }
   componentWillUnmount() {
-    const { setExpandedPanelKeys, setFolderId, setFile } = this.props;
+    const { setFolderId, setFile } = this.props;
     this.throttledResize && this.throttledResize.cancel();
     window.removeEventListener("resize", this.throttledResize);
 
-    setExpandedPanelKeys(null);
+    //setExpandedPanelKeys(null);
     //setSelectedFolder(null);
 
     setFolderId(null);
@@ -218,18 +212,13 @@ class SelectFileDialog extends React.Component {
       selectedFile: [],
     });
 
-    const isFilesModule =
-      window.location.href.indexOf("products/files") !== -1 &&
-      window.location.href.indexOf("doceditor") === -1;
-
-    !isFilesModule &&
-      displayType !== "aside" &&
-      SelectionPanel.setFolderObjectToTree(
-        id,
-        setSelectedNode,
-        setExpandedPanelKeys,
-        setSelectedFolder
-      );
+    // displayType !== "aside" &&
+    // SelectionPanel.setFolderObjectToTree(
+    //   id,
+    //   setSelectedNode,
+    //   setExpandedPanelKeys,
+    //   setSelectedFolder
+    // );
   };
 
   onSelectFile = (item, index) => {

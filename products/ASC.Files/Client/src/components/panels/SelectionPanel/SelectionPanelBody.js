@@ -44,6 +44,7 @@ const SelectionPanelBody = ({
   fileId,
   canCreate = true,
   isLoadingData,
+  expandedKeys,
 }) => {
   const onMouseEvent = (event) => {
     event.stopPropagation();
@@ -86,6 +87,7 @@ const SelectionPanelBody = ({
                     certainFolders
                     isAvailable={isAvailable}
                     selectedKeys={[`${folderId}`]}
+                    expandedKeys={expandedKeys}
                     displayType="modal"
                   />
                 ) : (
@@ -159,38 +161,11 @@ const SelectionPanelBody = ({
 };
 
 class SelectionPanel extends React.Component {
-  static convertPathParts = (pathParts) => {
-    let newPathParts = [];
-    for (let i = 0; i < pathParts.length - 1; i++) {
-      if (typeof pathParts[i] === "number") {
-        newPathParts.push(String(pathParts[i]));
-      } else {
-        newPathParts.push(pathParts[i]);
-      }
-    }
-    return newPathParts;
-  };
-
-  static setFolderObjectToTree = async (
-    id,
-    setSelectedNode,
-    setExpandedPanelKeys,
-    setSelectedFolder
-  ) => {
+  static setFolderObjectToTree = async (id) => {
     try {
       const data = await getFolder(id);
-
-      setSelectedNode([id + ""]);
-      const newPathParts = this.convertPathParts(data.pathParts);
-
-      setExpandedPanelKeys(newPathParts);
-
-      setSelectedFolder({
-        folders: data.folders,
-        ...data.current,
-        pathParts: newPathParts,
-        ...{ new: data.new },
-      });
+      const newPathParts = data.pathParts.map((item) => item.toString());
+      return newPathParts;
     } catch (e) {
       toastr.error(e);
     }
@@ -203,11 +178,9 @@ class SelectionPanel extends React.Component {
     onSelectFolder,
     foldersList,
     isSetFolderImmediately,
-    setSelectedNode,
-    setSelectedFolder,
-    setExpandedPanelKeys,
     isFilesPanel = false
   ) => {
+    //debugger;
     const isFilesModule =
       window.location.href.indexOf("products/files") !== -1 &&
       window.location.href.indexOf("doceditor") === -1;
@@ -289,15 +262,6 @@ class SelectionPanel extends React.Component {
       }
 
       onSelectFolder && onSelectFolder(passedId);
-
-      if (!isFilesModule) {
-        await SelectionPanel.setFolderObjectToTree(
-          passedId,
-          setSelectedNode,
-          setExpandedPanelKeys,
-          setSelectedFolder
-        );
-      }
     }
 
     if (
@@ -307,7 +271,7 @@ class SelectionPanel extends React.Component {
       filteredTreeFolders = getExceptionsFolders(foldersTree);
     }
 
-    return [filteredTreeFolders || requestedTreeFolders, passedId];
+    return [filteredTreeFolders || foldersTree, passedId];
   };
   render() {
     return <SelectionPanelBody {...this.props} />;

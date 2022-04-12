@@ -32,9 +32,11 @@ class SelectFolderDialog extends React.Component {
       page: 0,
       hasNextPage: true,
       files: [],
+      expandedKeys: null,
     };
     this.throttledResize = throttle(this.setDisplayType, 300);
     this.noTreeSwitcher = false;
+    this.expandedKeys = null;
   }
 
   async componentDidMount() {
@@ -45,16 +47,14 @@ class SelectFolderDialog extends React.Component {
       onSetBaseFolderPath,
       onSelectFolder,
       foldersList,
-      treeFromInput,
-      setSelectedNode,
-      setSelectedFolder,
-      setExpandedPanelKeys,
       displayType,
-      isNeedArrowIcon,
+      isNeedArrowIcon = false,
       folderTree,
     } = this.props;
-
+    // debugger;
     !displayType && window.addEventListener("resize", this.throttledResize);
+
+    this.expandedKeys = this.props.expandedKeys?.map((item) => item.toString());
 
     let timerId = setTimeout(() => {
       this.setState({ isInitialLoader: true });
@@ -74,10 +74,7 @@ class SelectFolderDialog extends React.Component {
           onSetBaseFolderPath,
           onSelectFolder,
           foldersList,
-          true,
-          setSelectedNode,
-          setSelectedFolder,
-          setExpandedPanelKeys
+          true
         );
 
         clearTimeout(timerId);
@@ -108,7 +105,7 @@ class SelectFolderDialog extends React.Component {
     this.setState({
       resultingFolderTree: tree,
       isInitialLoader: false,
-
+      expandedKeys: this.expandedKeys ? this.expandedKeys : null,
       folderId: resId,
     });
   }
@@ -136,8 +133,6 @@ class SelectFolderDialog extends React.Component {
   }
 
   componentWillUnmount() {
-    const { setExpandedPanelKeys, setSelectedFolder } = this.props;
-
     clearTimeout(this.timerId);
     this.timerId = null;
 
@@ -145,9 +140,6 @@ class SelectFolderDialog extends React.Component {
       this.throttledResize && this.throttledResize.cancel();
       window.removeEventListener("resize", this.throttledResize);
     }
-
-    setExpandedPanelKeys(null);
-    setSelectedFolder(null);
   }
   getDisplayType = () => {
     const displayType =
@@ -162,13 +154,8 @@ class SelectFolderDialog extends React.Component {
     this.setState({ displayType: displayType });
   };
 
-  onSelect = async (folder) => {
-    const {
-      setSelectedNode,
-      setExpandedPanelKeys,
-      setSelectedFolder,
-      checkPossibilityCreating,
-    } = this.props;
+  onSelect = async (folder, treeNode) => {
+    const { checkPossibilityCreating, onSetFolderInfo } = this.props;
     const { folderId } = this.state;
 
     if (+folderId === +folder[0]) return;
@@ -189,52 +176,40 @@ class SelectFolderDialog extends React.Component {
         100
       );
     }
-    const isFilesModule =
-      window.location.href.indexOf("products/files") !== -1 &&
-      window.location.href.indexOf("doceditor") === -1;
 
-    !isFilesModule &&
-      SelectionPanel.setFolderObjectToTree(
-        folder[0],
-        setSelectedNode,
-        setExpandedPanelKeys,
-        setSelectedFolder
-      );
+    onSetFolderInfo && onSetFolderInfo(folder, treeNode);
   };
 
   onButtonClick = (e) => {
-    const { onClose, onSave, onSetNewFolderPath, onSelectFolder } = this.props;
+    const {
+      onClose,
+      onSave,
+      onSetNewFolderPath,
+      onSelectFolder,
+      withoutImmediatelyClose,
+    } = this.props;
     const { folderId } = this.state;
 
     onSave && onSave(e, folderId);
     onSetNewFolderPath && onSetNewFolderPath(folderId);
     onSelectFolder && onSelectFolder(folderId);
 
-    onClose && onClose();
+    !withoutImmediatelyClose && onClose && onClose();
   };
 
   onResetInfo = async () => {
-    const {
-      id,
-      setSelectedNode,
-      setExpandedPanelKeys,
-      setSelectedFolder,
-    } = this.props;
+    const { id } = this.props;
 
-    SelectionPanel.setFolderObjectToTree(
-      id,
-      setSelectedNode,
-      setExpandedPanelKeys,
-      setSelectedFolder
-    );
+    const pathParts = await SelectionPanel.setFolderObjectToTree(id);
 
     this.setState({
       folderId: id,
+      expandedKeys: pathParts,
     });
   };
 
   _loadNextPage = () => {
-    const { files, page, folderId } = this.state;
+    const { files, page, folderId, expandedKeys } = this.state;
 
     if (this._isLoadNextPage) return;
 
@@ -247,6 +222,11 @@ class SelectFolderDialog extends React.Component {
     this.setState({ isNextPageLoading: true }, async () => {
       try {
         const data = await getFolder(folderId, this.newFilter);
+        const convertedPathParts =
+          page === 0
+            ? data.pathParts.map((item) => item.toString())
+            : expandedKeys;
+
         const finalData = [...data.files];
         const newFilesList = [...files].concat(finalData);
         const hasNextPage = newFilesList.length < data.total - 1;
@@ -257,7 +237,10 @@ class SelectFolderDialog extends React.Component {
           isNextPageLoading: false,
           page: state.page + 1,
           files: newFilesList,
-          ...(page === 0 && { folderTitle: data.current.title }),
+          ...(page === 0 && {
+            folderTitle: data.current.title,
+            expandedKeys: convertedPathParts,
+          }),
         }));
       } catch (e) {
         toastr.error(e);
@@ -295,6 +278,7 @@ class SelectFolderDialog extends React.Component {
       files,
       page,
       folderTitle,
+      expandedKeys,
     } = this.state;
 
     const primaryButtonName = buttonName ? buttonName : t("Common:SaveButton");
@@ -348,6 +332,7 @@ class SelectFolderDialog extends React.Component {
         files={files}
         loadNextPage={this._loadNextPage}
         folderTitle={folderTitle}
+        expandedKeys={expandedKeys}
         folderSelection
       />
     );
@@ -356,7 +341,7 @@ class SelectFolderDialog extends React.Component {
 
 SelectFolderDialog.propTypes = {
   onSelectFolder: PropTypes.func,
-  onClose: PropTypes.func.isRequired,
+  onClose: PropTypes.func,
   isPanelVisible: PropTypes.bool.isRequired,
   foldersType: PropTypes.oneOf([
     "common",
@@ -368,11 +353,13 @@ SelectFolderDialog.propTypes = {
   id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   withoutProvider: PropTypes.bool,
   checkPossibilityCreating: PropTypes.bool,
+  withoutImmediatelyClose: PropTypes.bool,
 };
 SelectFolderDialog.defaultProps = {
   id: "",
   withoutProvider: false,
   checkPossibilityCreating: false,
+  withoutImmediatelyClose: false,
 };
 
 export default inject(
@@ -383,11 +370,7 @@ export default inject(
     filesStore,
     auth,
   }) => {
-    const {
-      setSelectedNode,
-      setExpandedPanelKeys,
-      treeFolders,
-    } = treeFoldersStore;
+    const { treeFolders, expandedPanelKeys } = treeFoldersStore;
 
     const { canCreate, filter } = filesStore;
     const { setSelectedFolder, id } = selectedFolderStore;
@@ -398,13 +381,16 @@ export default inject(
     return {
       theme: theme,
       setSelectedFolder,
-      setSelectedNode,
+
       canCreate,
       storeFolderId: id,
-      setExpandedPanelKeys,
+
       setFolderId,
       treeFolders,
       filter,
+      expandedKeys: expandedPanelKeys
+        ? expandedPanelKeys
+        : selectedFolderStore.pathParts,
     };
   }
 )(
