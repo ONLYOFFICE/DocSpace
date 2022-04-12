@@ -13,17 +13,17 @@ const ToggleIcon = ({ isChecked, isLoading }) => {
         isChecked ? "checked" : "notChecked",
         isLoading ? "isLoading" : "",
       ]}
-      width="30"
-      height="18"
-      viewBox="0 0 30 18"
+      width="28"
+      height="16"
+      viewBox="0 0 28 16"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <motion.rect x="1" y="1" width="28" height="16" rx="8" />
+      <motion.rect width="28" height="16" rx="8" />
       <motion.circle
         fill-rule="evenodd"
         clip-rule="evenodd"
-        cy="9"
+        cy="8"
         variants={{
           isLoading: {
             r: [5, 6, 6],
@@ -35,8 +35,8 @@ const ToggleIcon = ({ isChecked, isLoading }) => {
               },
             },
           },
-          checked: { cx: 21, r: 6 },
-          notChecked: { cx: 9, r: 6 },
+          checked: { cx: 20, r: 6 },
+          notChecked: { cx: 8, r: 6 },
         }}
       />
     </motion.svg>
