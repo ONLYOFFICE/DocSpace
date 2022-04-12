@@ -538,6 +538,14 @@ class SharingPanelComponent extends React.Component {
       shareGroups[shareGroups.length - 1].isEndOfBlock = true;
     }
 
+    if (shareGroups[0]) {
+      shareGroups[0].isFixedDirection = true;
+    } else {
+      if (shareUsers[0]) {
+        shareUsers[0].isFixedDirection = true;
+      }
+    }
+
     filteredShareDataItems.push(...owner, ...shareGroups, ...shareUsers);
 
     return (
