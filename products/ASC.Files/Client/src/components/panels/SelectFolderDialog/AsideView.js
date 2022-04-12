@@ -53,7 +53,7 @@ const SelectFolderDialogAsideView = ({
         </StyledAsideHeader>
       </ModalDialog.Header>
       <ModalDialog.Body theme={theme}>
-        <StyledAsideBody theme={theme} header={!!header}>
+        <StyledAsideBody theme={theme} header={!!header} footer={!!footer}>
           <div className="selection-panel_aside-body">
             <div className="selection-panel_aside-header">
               <div>{header}</div>
