@@ -153,7 +153,6 @@ class DialogsStore {
       this.setNewFilesIds(null);
     }
 
-    this.authStore.settingsStore.hideArticle();
     this.newFilesPanelVisible = newFilesPanelVisible;
   };
 

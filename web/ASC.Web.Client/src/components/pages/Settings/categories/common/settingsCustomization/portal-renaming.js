@@ -18,6 +18,7 @@ import { PortalRenamingTooltip } from "../sub-components/common-tooltips";
 import { StyledSettingsComponent, StyledScrollbar } from "./StyledSettings";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 import { setDocumentTitle } from "../../../../../../helpers/utils";
+import LoaderCustomization from "../sub-components/loaderCustomization";
 
 const PortalRenaming = ({ t, setPortalRename, isMobileView }) => {
   // TODO: Change false
@@ -186,6 +187,7 @@ const PortalRenaming = ({ t, setPortalRename, isMobileView }) => {
     </div>
   );
 
+  //return <LoaderCustomization portalRenaming={true} />;
   return !isLoadedData ? (
     <Loader className="pageLoader" type="rombs" size="40px" />
   ) : (

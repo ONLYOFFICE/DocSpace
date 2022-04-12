@@ -8,10 +8,10 @@ import RadioButtonGroup from "@appserver/components/radio-button-group";
 import toastr from "@appserver/components/toast/toastr";
 import { LearnMoreWrapper } from "../StyledSecurity";
 import UserFields from "../sub-components/user-fields";
-import Buttons from "../sub-components/buttons";
 import { size } from "@appserver/components/utils/device";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 import isEqual from "lodash/isEqual";
+import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 
 const MainContainer = styled.div`
   width: 100%;
@@ -31,19 +31,23 @@ const MainContainer = styled.div`
   .warning-text {
     margin-bottom: 9px;
   }
+
+  .save-cancel-buttons {
+    margin-top: 24px;
+  }
 `;
 
 const IpSecurity = (props) => {
   const {
     t,
     history,
-    ipRestrictionEnabled,
+    ipRestrictionEnable,
     setIpRestrictionsEnable,
     ipRestrictions,
     setIpRestrictions,
   } = props;
 
-  const regexp = /(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))|((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])/; //check ip valid
+  const regexp = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/; //check ip valid
 
   const [enable, setEnable] = useState(false);
   const [ips, setIps] = useState();
@@ -58,7 +62,7 @@ const IpSecurity = (props) => {
       saveToSessionStorage("defaultIPSettings", defaultSettings);
     } else {
       const defaultData = {
-        enable: ipRestrictionEnabled,
+        enable: ipRestrictionEnable,
         ips: ipRestrictions,
       };
       saveToSessionStorage("defaultIPSettings", defaultData);
@@ -68,7 +72,7 @@ const IpSecurity = (props) => {
       setEnable(currentSettings.enable);
       setIps(currentSettings.ips);
     } else {
-      setEnable(ipRestrictionEnabled);
+      setEnable(ipRestrictionEnable);
       setIps(ipRestrictions);
     }
 
@@ -125,21 +129,25 @@ const IpSecurity = (props) => {
     setIps([...ips, ""]);
   };
 
-  const onSaveClick = () => {
+  const onSaveClick = async () => {
     const valid = ips.map((ip) => regexp.test(ip));
     if (valid.includes(false)) {
       return;
     }
 
-    setIpRestrictions(ips);
-    setIpRestrictionsEnable(enable);
+    try {
+      await setIpRestrictions(ips);
+      await setIpRestrictionsEnable(enable);
 
-    saveToSessionStorage("defaultIPSettings", {
-      enable: enable,
-      ips: ips,
-    });
-    setShowReminder(false);
-    toastr.success(t("SuccessfullySaveSettingsMessage"));
+      saveToSessionStorage("defaultIPSettings", {
+        enable: enable,
+        ips: ips,
+      });
+      setShowReminder(false);
+      toastr.success(t("SuccessfullySaveSettingsMessage"));
+    } catch (error) {
+      toastr.error(error);
+    }
   };
 
   const onCancelClick = () => {
@@ -188,21 +196,30 @@ const IpSecurity = (props) => {
         />
       )}
 
-      <Text
-        color="#F21C0E"
-        fontSize="16px"
-        fontWeight="700"
-        className="warning-text"
-      >
-        {t("Common:Warning")}!
-      </Text>
-      <Text>{t("IPSecurityWarningHelper")}</Text>
+      {enable && (
+        <>
+          <Text
+            color="#F21C0E"
+            fontSize="16px"
+            fontWeight="700"
+            className="warning-text"
+          >
+            {t("Common:Warning")}!
+          </Text>
+          <Text>{t("IPSecurityWarningHelper")}</Text>
+        </>
+      )}
 
-      <Buttons
-        t={t}
-        showReminder={showReminder}
+      <SaveCancelButtons
+        className="save-cancel-buttons"
         onSaveClick={onSaveClick}
         onCancelClick={onCancelClick}
+        showReminder={showReminder}
+        reminderTest={t("YouHaveUnsavedChanges")}
+        saveButtonLabel={t("Common:SaveButton")}
+        cancelButtonLabel={t("Common:CancelButton")}
+        displaySettings={true}
+        hasScroll={false}
       />
     </MainContainer>
   );
@@ -210,14 +227,14 @@ const IpSecurity = (props) => {
 
 export default inject(({ auth }) => {
   const {
-    ipRestrictionEnabled,
+    ipRestrictionEnable,
     setIpRestrictionsEnable,
     ipRestrictions,
     setIpRestrictions,
   } = auth.settingsStore;
 
   return {
-    ipRestrictionEnabled,
+    ipRestrictionEnable,
     setIpRestrictionsEnable,
     ipRestrictions,
     setIpRestrictions,

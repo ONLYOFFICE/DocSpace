@@ -26,7 +26,7 @@ const StyledBox = styled.div`
   top: 0px;
   left: ${isMobile ? "-16px" : "-20px"};
 
-  padding: ${isMobile ? "0 16px 0 16px" : "0 20px"};
+  padding: ${isMobile ? "0 16px " : "0 20px"};
 
   width: ${(props) => props.dropBoxWidth}px;
 
@@ -85,7 +85,9 @@ const DropBox = React.forwardRef(
       getContextOptionsFolder,
       getContextOptionsPlus,
       toggleDropBox,
+      toggleInfoPanel,
       onClickAvailable,
+      isInfoPanelVisible,
     },
     ref
   ) => {
@@ -141,6 +143,8 @@ const DropBox = React.forwardRef(
             canCreate={canCreate}
             getContextOptionsFolder={getContextOptionsFolder}
             getContextOptionsPlus={getContextOptionsPlus}
+            toggleInfoPanel={toggleInfoPanel}
+            isInfoPanelVisible={isInfoPanelVisible}
           />
         </StyledContainer>
 

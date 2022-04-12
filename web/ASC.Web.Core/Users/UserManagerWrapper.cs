@@ -36,6 +36,7 @@ using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
+using ASC.IPSecurity;
 using ASC.MessagingSystem;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Core.Utility;
@@ -259,7 +260,9 @@ namespace ASC.Web.Core.Users
             email = (email ?? "").Trim();
             if (!email.TestEmailRegex()) throw new ArgumentNullException(nameof(email), Resource.ErrorNotCorrectEmail);
 
-            if (!IPSecurity.Verify())
+            var settings = SettingsManager.Load<IPRestrictionsSettings>();
+
+            if (settings.Enable && !IPSecurity.Verify())
             {
                 throw new Exception(Resource.ErrorAccessRestricted);
             }

@@ -22,7 +22,7 @@ const tabletProps = css`
     ${isMobileOnly &&
     css`
       padding: 0 16px;
-      margin: 0 -16px;
+      margin: 0 0 0 -16px;
     `}
   }
   .section-body_filter {

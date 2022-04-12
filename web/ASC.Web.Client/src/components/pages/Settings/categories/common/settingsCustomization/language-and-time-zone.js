@@ -22,7 +22,7 @@ import { isMobileOnly } from "react-device-detect";
 import { isSmallTablet } from "@appserver/components/utils/device";
 import checkScrollSettingsBlock from "../utils";
 import { StyledSettingsComponent, StyledScrollbar } from "./StyledSettings";
-import LoaderLngTZSettings from "../sub-components/loaderLngTZSettings";
+import LoaderCustomization from "../sub-components/loaderCustomization";
 const mapTimezonesToArray = (timezones) => {
   return timezones.map((timezone) => {
     return { key: timezone.id, label: timezone.displayName };
@@ -399,6 +399,7 @@ class LanguageAndTimeZone extends React.Component {
       </div>
     );
 
+    //return <LoaderCustomization lngTZSettings={true} />;
     return !isLoadedData ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (

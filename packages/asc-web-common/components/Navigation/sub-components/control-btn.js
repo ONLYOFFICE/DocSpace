@@ -31,7 +31,6 @@ const StyledContainer = styled.div`
   }
 
   .option-button {
-    margin-left: auto;
     margin-right: 15px;
     min-width: 17px;
   }
@@ -46,7 +45,7 @@ const StyledInfoPanelToggleWrapper = styled.div`
   align-items: center;
   align-self: center;
   justify-content: center;
-  margin-left: ${({ isRootFolder }) => (isRootFolder ? "auto" : "none")};
+  margin-left: auto;
 
   .info-panel-toggle-bg {
     height: 32px;
@@ -136,7 +135,7 @@ const ControlButtons = ({
         <div className="info-panel-toggle-bg">
           <IconButton
             className="info-panel-toggle"
-            iconName="images/panel.svg"
+            iconName="images/panel.react.svg"
             size="16"
             isFill={true}
             onClick={toggleInfoPanel}
