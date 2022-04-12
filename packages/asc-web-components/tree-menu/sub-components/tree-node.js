@@ -185,6 +185,7 @@ const TreeNodeMenu = styled(TreeNode)`
     width: ${(props) => (props.disableSwitch ? "90%" : "108%")};
     display: inline-block;
     position: relative;
+    z-index: 2;
     /*min-width: ${(props) => (props.disableSwitch ? "160px" : "190px")};*/
     // overflow: hidden;
 
