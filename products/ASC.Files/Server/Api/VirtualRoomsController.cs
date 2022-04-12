@@ -27,44 +27,44 @@
 namespace ASC.Files.Api;
 
 [ConstraintRoute("int")]
-public class VirtulaRoomsControllerInternal : VirtualRoomsController<int>
+public class VirtualRoomsControllerInternal : VirtualRoomsController<int>
 {
-    public VirtulaRoomsControllerInternal(FoldersControllerHelper<int> foldersControllerHelperInt, GlobalFolderHelper globalFolderHelper, FileStorageService<int> fileStorageServiceInt, FolderDtoHelper folderDtoHelper) : base(foldersControllerHelperInt, globalFolderHelper, fileStorageServiceInt, folderDtoHelper)
+    public VirtualRoomsControllerInternal(FoldersControllerHelper<int> foldersControllerHelper, GlobalFolderHelper globalFolderHelper, FileStorageService<int> fileStorageService, FolderDtoHelper folderDtoHelper) : base(foldersControllerHelper, globalFolderHelper, fileStorageService, folderDtoHelper)
     {
     }
 }
 
-public class VirtualRoomsThirdparty
+public class VirtualRoomsControllerThirdparty
 {
 
 }
 
-public class VirtualRoomsController<T> : ApiControllerBase
+public abstract class VirtualRoomsController<T> : ApiControllerBase
 {
-    private readonly FoldersControllerHelper<int> _foldersControllerHelperInt;
-    private readonly FileStorageService<int> _fileStorageServiceInt;
+    private readonly FoldersControllerHelper<T> _foldersControllerHelper;
+    private readonly FileStorageService<T> _fileStorageService;
     private readonly FolderDtoHelper _folderDtoHelper;
     private readonly GlobalFolderHelper _globalFolderHelper;
 
-    public VirtualRoomsController(FoldersControllerHelper<int> foldersControllerHelperInt, GlobalFolderHelper globalFolderHelper,
-        FileStorageService<int> fileStorageServiceInt, FolderDtoHelper folderDtoHelper)
+    public VirtualRoomsController(FoldersControllerHelper<T> foldersControllerHelper, GlobalFolderHelper globalFolderHelper,
+        FileStorageService<T> fileStorageService, FolderDtoHelper folderDtoHelper)
     {
-        _foldersControllerHelperInt = foldersControllerHelperInt;
+        _foldersControllerHelper = foldersControllerHelper;
         _globalFolderHelper = globalFolderHelper;
-        _fileStorageServiceInt = fileStorageServiceInt;
+        _fileStorageService = fileStorageService;
         _folderDtoHelper = folderDtoHelper;
     }
 
-    [Read("@virtualrooms")]
-    public async Task<FolderContentDto<int>> GetVirtualRoomsFolderAsync(bool withSubfolders)
+    [Read("@rooms")]
+    public async Task<FolderContentDto<T>> GetVirtualRoomsFolderAsync()
     {
-        return await _foldersControllerHelperInt.GetFolderAsync(await _globalFolderHelper.FolderVirtualRoomsAsync, Guid.Empty, FilterType.None, withSubfolders);
+        return await _foldersControllerHelper.GetFolderAsync(await _globalFolderHelper.GetFolderVirtualRooms<T>(), Guid.Empty, FilterType.None, true);
     }
 
     [Create("room")]
-    public async Task<FolderDto<int>> CreateVirtualRoomAsync([FromBody] CreateRoomRequestDto inDto)
+    public async Task<FolderDto<T>> CreateVirtualRoomAsync([FromBody] CreateRoomRequestDto inDto)
     {
-        var room = await _fileStorageServiceInt.CreateRoom(inDto.Title, inDto.RoomType);
+        var room = await _fileStorageService.CreateRoom(inDto.Title, inDto.RoomType);
 
         return await _folderDtoHelper.GetAsync(room);
     }
