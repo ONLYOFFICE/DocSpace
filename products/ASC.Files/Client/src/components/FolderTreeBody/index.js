@@ -1,13 +1,11 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
-import Loader from "@appserver/components/loader";
 import Text from "@appserver/components/text";
 import Scrollbar from "@appserver/components/scrollbar";
 import TreeFolders from "./TreeFolders";
-import { StyledSelectFolderPanel } from "../panels/StyledPanels";
+import { StyledTree } from "../panels/SelectionPanel/StyledSelectionPanel";
 const FolderTreeBody = ({
-  isLoadingData,
   expandedKeys,
   folderTree,
   onSelect,
@@ -16,64 +14,35 @@ const FolderTreeBody = ({
   isAvailable,
   filter,
   selectedKeys,
-  heightContent,
-  displayType,
-  isHeaderChildren,
   theme,
 }) => {
   const { t } = useTranslation(["SelectFolder", "Common"]);
   return (
     <>
-      {!isLoadingData ? (
-        isAvailable ? (
-          <StyledSelectFolderPanel
-            heightContent={heightContent}
-            displayType={displayType}
-            isHeaderChildren={isHeaderChildren}
-          >
-            <div className="selection-panel_tree-folder">
-              <Scrollbar id="folder-tree-scroll-bar">
-                <TreeFolders
-                  isPanel={true}
-                  expandedPanelKeys={expandedKeys}
-                  data={folderTree}
-                  filter={filter}
-                  onSelect={onSelect}
-                  withoutProvider={withoutProvider}
-                  certainFolders={certainFolders}
-                  selectedKeys={selectedKeys}
-                  needUpdate={false}
-                />
-              </Scrollbar>
-            </div>
-          </StyledSelectFolderPanel>
-        ) : (
-          <StyledSelectFolderPanel
-            heightContent={heightContent}
-            isHeaderChildren={isHeaderChildren}
-          >
-            <div className="tree-folder-empty-list select-folder-dialog_tree-folder">
-              <Text as="span">{t("NotAvailableFolder")}</Text>
-            </div>
-          </StyledSelectFolderPanel>
-        )
-      ) : (
-        <StyledSelectFolderPanel heightContent={heightContent}>
-          <div className="tree-folder-Loader" key="loader">
-            <Loader
-              type="oval"
-              size="16px"
-              style={{
-                display: "inline",
-                marginRight: "10px",
-                marginTop: "16px",
-              }}
-            />
-            <Text as="span">{`${t("Common:LoadingProcessing")} ${t(
-              "Common:LoadingDescription"
-            )}`}</Text>
+      {isAvailable ? (
+        <StyledTree theme={theme}>
+          <div className="selection-panel_tree-folder">
+            <Scrollbar id="folder-tree-scroll-bar">
+              <TreeFolders
+                isPanel={true}
+                expandedPanelKeys={expandedKeys}
+                data={folderTree}
+                filter={filter}
+                onSelect={onSelect}
+                withoutProvider={withoutProvider}
+                certainFolders={certainFolders}
+                selectedKeys={selectedKeys}
+                needUpdate={false}
+              />
+            </Scrollbar>
           </div>
-        </StyledSelectFolderPanel>
+        </StyledTree>
+      ) : (
+        <StyledTree>
+          <div className="selection-panel_empty-folder">
+            <Text as="span">{t("NotAvailableFolder")}</Text>
+          </div>
+        </StyledTree>
       )}
     </>
   );
@@ -84,15 +53,13 @@ FolderTreeBody.defaultProps = {
   isLoadingData: false,
 };
 
-export default inject(
-  ({ filesStore, treeFoldersStore, selectedFolderStore }) => {
-    const { filter, isLoading } = filesStore;
-    const { expandedPanelKeys } = treeFoldersStore;
+export default inject(({ filesStore, treeFoldersStore }) => {
+  const { filter, isLoading } = filesStore;
+  const { expandedPanelKeys } = treeFoldersStore;
 
-    return {
-      expandedKeys: expandedPanelKeys ? expandedPanelKeys : null,
-      filter,
-      isLoading,
-    };
-  }
-)(observer(FolderTreeBody));
+  return {
+    expandedKeys: expandedPanelKeys ? expandedPanelKeys : null,
+    filter,
+    isLoading,
+  };
+})(observer(FolderTreeBody));

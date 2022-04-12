@@ -6,7 +6,7 @@ import { getFolderPath } from "@appserver/common/api/files";
 import toastr from "@appserver/components/toast/toastr";
 import SelectFolderDialog from "../SelectFolderDialog";
 import SimpleFileInput from "../../SimpleFileInput";
-
+import { withTranslation } from "react-i18next";
 class SelectFolderInput extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -152,6 +152,7 @@ class SelectFolderInput extends React.PureComponent {
             isPanelVisible={isPanelVisible}
             onSetBaseFolderPath={this.onSetBaseFolderPath}
             onSetNewFolderPath={this.onSetNewFolderPath}
+            dialogName={t("Translations:FolderSelection")}
           />
         )}
       </StyledComponent>
@@ -177,4 +178,4 @@ export default inject(({ filesStore }) => {
   return {
     setFirstLoad,
   };
-})(observer(SelectFolderInput));
+})(observer(withTranslation("Translations")(SelectFolderInput)));

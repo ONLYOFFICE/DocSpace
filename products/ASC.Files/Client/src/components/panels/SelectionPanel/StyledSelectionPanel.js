@@ -131,6 +131,7 @@ const StyledAsideBody = styled.div`
   .selection-panel_aside-folder-title {
     margin-top: 12px;
   }
+
   .selection-panel_aside-tree {
     margin-top: 12px;
     margin-left: -16px;
@@ -163,4 +164,45 @@ const StyledAsideHeader = styled.div`
     margin-right: 16px;
   }
 `;
-export { StyledBody, StyledRow, StyledAsideBody, StyledAsideHeader };
+
+const StyledTree = styled.div`
+  height: 100%;
+
+  .files-tree-menu {
+    margin-top: 0 !important;
+    margin-bottom: 22px;
+  }
+  .selection-panel_tree-folder {
+    height: 100%;
+  }
+  #folder-tree-scroll-bar {
+    .nav-thumb-horizontal {
+      height: 0px !important;
+    }
+
+    ${(props) =>
+      props.displayType === "modal" &&
+      css`
+        .nav-thumb-vertical {
+          margin-left: 4px !important;
+          width: 4px !important;
+        }
+      `}
+
+    .scroll-body {
+      overflow-x: hidden !important;
+    }
+  }
+
+  .selection-panel_empty-folder {
+    margin-top: 12px;
+    margin-left: 12px;
+  }
+`;
+export {
+  StyledBody,
+  StyledRow,
+  StyledAsideBody,
+  StyledAsideHeader,
+  StyledTree,
+};

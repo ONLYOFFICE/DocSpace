@@ -649,94 +649,6 @@ const StyledLinkRow = styled.div`
 
 StyledLinkRow.defaultProps = { theme: Base };
 
-const StyledSelectFolderPanel = styled.div`
-  height: 100%;
-
-  .selection-panel_tree-folder {
-    height: 100%;
-  }
-
-  .
-    ${(props) =>
-      props.displayType === "aside" &&
-      css`
-        height: 100%;
-      `}
-    ${(props) =>
-      props.noTreeSwitcher &&
-      css`
-        span.rc-tree-switcher.rc-tree-switcher-noop {
-          display: none;
-        }
-      `}
-    .modal-dialog_header {
-    display: flex;
-    align-items: center;
-  }
-  .select-folder-modal-dialog-header {
-    margin-bottom: 16px;
-  }
-  .modal-dialog_header-title {
-    ${(props) => props.isNeedArrowIcon && `margin-left:16px;`}
-  }
-  .select-folder-dialog_tree-folder {
-    margin-top: 12px;
-    height: ${(props) => (props.displayType === "aside" ? "100%" : "291px")};
-  }
-
-  .select-folder-dialog-buttons-save {
-    margin-right: 8px;
-  }
-  .select-folder-dialog-modal_buttons {
-    margin-top: 16px;
-  }
-
-  .select-folder-dialog_header {
-    display: flex;
-    align-items: center;
-  }
-  .select-folder-dialog_header-icon {
-    margin-right: 16px;
-  }
-  .select-folder-dialog_aside_body {
-    height: ${(props) =>
-      props.isFooter ? "calc(100% - 110px)" : "calc(100% - 64px)"};
-    width: 296px;
-  }
-  #folder-tree-scroll-bar {
-    .nav-thumb-horizontal {
-      height: 0px !important;
-    }
-
-    ${(props) =>
-      props.displayType === "modal" &&
-      css`
-        .nav-thumb-vertical {
-          margin-left: 4px !important;
-          width: 4px !important;
-        }
-      `}
-
-    .scroll-body {
-      overflow-x: hidden !important;
-    }
-  }
-  .tree-folder-Loader {
-    ${(props) =>
-      props.displayType === "aside"
-        ? css`
-            margin-top: 16px;
-          `
-        : css`
-            height: ${props.heightContent};
-          `}
-  }
-
-  .files-tree-menu {
-    margin-top: 0 !important;
-  }
-`;
-
 const StyledModalRowContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -876,6 +788,5 @@ export {
   StyledSharingBody,
   StyledFooter,
   StyledLinkRow,
-  StyledSelectFolderPanel,
   StyledModalRowContainer,
 };
