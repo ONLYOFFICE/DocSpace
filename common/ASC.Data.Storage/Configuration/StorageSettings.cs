@@ -136,6 +136,7 @@ namespace ASC.Data.Storage.Configuration
         private SettingsManager SettingsManager { get; }
         private IHttpContextAccessor HttpContextAccessor { get; }
         private ConsumerFactory ConsumerFactory { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public StorageSettingsHelper(
             BaseStorageSettingsListener baseStorageSettingsListener,
@@ -145,7 +146,8 @@ namespace ASC.Data.Storage.Configuration
             IOptionsMonitor<ILog> options,
             TenantManager tenantManager,
             SettingsManager settingsManager,
-            ConsumerFactory consumerFactory)
+            ConsumerFactory consumerFactory,
+            IServiceProvider serviceProvider)
         {
             baseStorageSettingsListener.Subscribe();
             StorageFactoryConfig = storageFactoryConfig;
@@ -155,6 +157,7 @@ namespace ASC.Data.Storage.Configuration
             TenantManager = tenantManager;
             SettingsManager = settingsManager;
             ConsumerFactory = consumerFactory;
+            ServiceProvider = serviceProvider;
         }
         public StorageSettingsHelper(
             BaseStorageSettingsListener baseStorageSettingsListener,
@@ -165,8 +168,9 @@ namespace ASC.Data.Storage.Configuration
             TenantManager tenantManager,
             SettingsManager settingsManager,
             IHttpContextAccessor httpContextAccessor,
-            ConsumerFactory consumerFactory)
-            : this(baseStorageSettingsListener, storageFactoryConfig, pathUtils, cache, options, tenantManager, settingsManager, consumerFactory)
+            ConsumerFactory consumerFactory,
+            IServiceProvider serviceProvider)
+            : this(baseStorageSettingsListener, storageFactoryConfig, pathUtils, cache, options, tenantManager, settingsManager, consumerFactory, serviceProvider)
         {
             HttpContextAccessor = httpContextAccessor;
         }
@@ -219,8 +223,7 @@ namespace ASC.Data.Storage.Configuration
 
             if (DataStoreConsumer(baseStorageSettings).HandlerType == null) return null;
 
-            return dataStore = ((IDataStore)
-                Activator.CreateInstance(DataStoreConsumer(baseStorageSettings).HandlerType, TenantManager, PathUtils, HttpContextAccessor, Options))
+            return dataStore = ((IDataStore)ServiceProvider.GetService(DataStoreConsumer(baseStorageSettings).HandlerType))
                 .Configure(TenantManager.GetCurrentTenant().TenantId.ToString(), null, null, DataStoreConsumer(baseStorageSettings));
         }
     }

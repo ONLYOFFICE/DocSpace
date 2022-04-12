@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.9.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.9.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
     <value>Le champ du code de validation ne peut pas être vide</value>
@@ -541,6 +541,9 @@
   <data name="CustomNamingPeopleSchema" xml:space="preserve">
     <value>Personnel</value>
   </data>
+  <data name="DnsChangeMsg" xml:space="preserve">
+    <value>Un lien pour confirmer l'opération a été envoyé à {0}(l'adresse e-mail du propriétaire du portail).</value>
+  </data>
   <data name="EmailAndPasswordIncorrectAmiId" xml:space="preserve">
     <value>Identifiant de l'instance n'est pas valide.</value>
   </data>
@@ -622,6 +625,12 @@
   <data name="ErrorRequestLimitExceeded" xml:space="preserve">
     <value>Le délai de  requête est dépassé</value>
   </data>
+  <data name="ErrorTenantTooShort" xml:space="preserve">
+    <value>L'hôte du domaine ne peut pas être vide</value>
+  </data>
+  <data name="ErrorTenantTooShortFormat" xml:space="preserve">
+    <value>Le nom de domaine doit contenir de {0} à {1} caractères.</value>
+  </data>
   <data name="ErrorUserNotFound" xml:space="preserve">
     <value>Il est impossible de trouver l'utilisateur</value>
   </data>
@@ -690,6 +699,9 @@
   <data name="PersonalFreeSpaceException" xml:space="preserve">
     <value>Quota d'espace disque est dépassé</value>
   </data>
+  <data name="PortalAccessSettingsTariffException" xml:space="preserve">
+    <value>Cette fonctionalité n'est activée que pour le tarif gratuit</value>
+  </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Accès au portail</value>
   </data>
@@ -731,6 +743,9 @@
   </data>
   <data name="SsoSettingsInvalidMapping" xml:space="preserve">
     <value>Mappage des champs non valides</value>
+  </data>
+  <data name="SuccessfullyPortalRenameMessage" xml:space="preserve">
+    <value>Le portail a été renommé avec succès</value>
   </data>
   <data name="SuccessfullySaveGreetingSettingsMessage" xml:space="preserve">
     <value>Les paramètres de la page d'accueil ont été enregistrés avec succès</value>

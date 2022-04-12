@@ -13,7 +13,6 @@
     "CopyItem": "<strong>{{title}}</strong> kopiert",
     "CopyItems": "Elemente kopiert: <strong>{{qty}}</strong>",
     "Document": "Dokument",
-    "Duplicate": "Kopie erstellen",
     "EmptyFile": "Leere Datei",
     "EmptyFilterDescriptionText": "Keine Dateien oder Ordner entsprechen diesem Filter. Versuchen Sie einen anderen Filter oder entfernen Sie diesen, um alle Dateien zu sehen.",
     "EmptyFilterSubheadingText": "Hier gibt es keine Dateien, die diesem Filter entsprechen",

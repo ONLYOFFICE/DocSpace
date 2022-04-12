@@ -68,7 +68,7 @@ const ModalContainer = ({
           label={t("Common:SaveButton")}
           primary={true}
           scale={true}
-          size="big"
+          size="normal"
           onClick={onSaveEmailHandler}
         />
       </BtnContainer>
@@ -94,7 +94,7 @@ const ModalContainer = ({
           label={t("Common:CloseButton")}
           primary={true}
           scale={true}
-          size="big"
+          size="normal"
           onClick={onCloseModal}
         />
       </BtnContainer>

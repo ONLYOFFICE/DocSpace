@@ -82,13 +82,13 @@ namespace ASC.Files.Thirdparty
     internal class ProviderAccountDao : IProviderDao
     {
         private int tenantID;
-        protected int TenantID 
-        { 
-            get 
+        protected int TenantID
+        {
+            get
             {
                 if (tenantID == 0) tenantID = TenantManager.GetCurrentTenant().TenantId;
-                return tenantID; 
-            } 
+                return tenantID;
+            }
         }
         private Lazy<FilesDbContext> LazyFilesDbContext { get; }
         private FilesDbContext FilesDbContext { get => LazyFilesDbContext.Value; }
@@ -100,6 +100,7 @@ namespace ASC.Files.Thirdparty
         private SecurityContext SecurityContext { get; }
         private ConsumerFactory ConsumerFactory { get; }
         private ThirdpartyConfiguration ThirdpartyConfiguration { get; }
+        private readonly OAuth20TokenHelper _oAuth20TokenHelper;
 
         public ProviderAccountDao(
             IServiceProvider serviceProvider,
@@ -110,6 +111,7 @@ namespace ASC.Files.Thirdparty
             ConsumerFactory consumerFactory,
             ThirdpartyConfiguration thirdpartyConfiguration,
             DbContextManager<FilesDbContext> dbContextManager,
+            OAuth20TokenHelper oAuth20TokenHelper,
             IOptionsMonitor<ILog> options)
         {
             LazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
@@ -121,6 +123,7 @@ namespace ASC.Files.Thirdparty
             SecurityContext = securityContext;
             ConsumerFactory = consumerFactory;
             ThirdpartyConfiguration = thirdpartyConfiguration;
+            _oAuth20TokenHelper = oAuth20TokenHelper;
         }
 
         public virtual Task<IProviderInfo> GetProviderInfoAsync(int linkId)
@@ -521,7 +524,7 @@ namespace ASC.Files.Thirdparty
             {
                 case ProviderTypes.GoogleDrive:
                     code = authData.Token;
-                    token = OAuth20TokenHelper.GetAccessToken<GoogleLoginProvider>(ConsumerFactory, code);
+                    token = _oAuth20TokenHelper.GetAccessToken<GoogleLoginProvider>(ConsumerFactory, code);
 
                     if (token == null) throw new UnauthorizedAccessException(string.Format(FilesCommonResource.ErrorMassage_SecurityException_Auth, provider));
 
@@ -529,7 +532,7 @@ namespace ASC.Files.Thirdparty
 
                 case ProviderTypes.Box:
                     code = authData.Token;
-                    token = OAuth20TokenHelper.GetAccessToken<BoxLoginProvider>(ConsumerFactory, code);
+                    token = _oAuth20TokenHelper.GetAccessToken<BoxLoginProvider>(ConsumerFactory, code);
 
                     if (token == null) throw new UnauthorizedAccessException(string.Format(FilesCommonResource.ErrorMassage_SecurityException_Auth, provider));
 
@@ -537,7 +540,7 @@ namespace ASC.Files.Thirdparty
 
                 case ProviderTypes.DropboxV2:
                     code = authData.Token;
-                    token = OAuth20TokenHelper.GetAccessToken<DropboxLoginProvider>(ConsumerFactory, code);
+                    token = _oAuth20TokenHelper.GetAccessToken<DropboxLoginProvider>(ConsumerFactory, code);
 
                     if (token == null) throw new UnauthorizedAccessException(string.Format(FilesCommonResource.ErrorMassage_SecurityException_Auth, provider));
 
@@ -559,7 +562,7 @@ namespace ASC.Files.Thirdparty
 
                 case ProviderTypes.OneDrive:
                     code = authData.Token;
-                    token = OAuth20TokenHelper.GetAccessToken<OneDriveLoginProvider>(ConsumerFactory, code);
+                    token = _oAuth20TokenHelper.GetAccessToken<OneDriveLoginProvider>(ConsumerFactory, code);
 
                     if (token == null) throw new UnauthorizedAccessException(string.Format(FilesCommonResource.ErrorMassage_SecurityException_Auth, provider));
 
@@ -569,7 +572,7 @@ namespace ASC.Files.Thirdparty
 
                     code = authData.Token;
 
-                    token = OAuth20TokenHelper.GetAccessToken<OneDriveLoginProvider>(ConsumerFactory, code);
+                    token = _oAuth20TokenHelper.GetAccessToken<OneDriveLoginProvider>(ConsumerFactory, code);
 
                     if (token == null) throw new UnauthorizedAccessException(string.Format(FilesCommonResource.ErrorMassage_SecurityException_Auth, provider));
 

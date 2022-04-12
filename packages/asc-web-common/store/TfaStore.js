@@ -4,6 +4,8 @@ import history from "../history";
 
 class TfaStore {
   tfaSettings = null;
+  smsAvailable = null;
+  appAvailable = null;
   backupCodes = [];
   tfaAndroidAppUrl =
     "https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2";
@@ -22,6 +24,8 @@ class TfaStore {
 
     const type = sms ? "sms" : app ? "app" : "none";
     this.tfaSettings = type;
+    this.smsAvailable = res[0].avaliable;
+    this.appAvailable = res[1].avaliable;
 
     return type;
   };
@@ -64,8 +68,8 @@ class TfaStore {
     return api.settings.getTfaNewBackupCodes();
   };
 
-  unlinkApp = async () => {
-    return api.settings.unlinkTfaApp();
+  unlinkApp = async (id) => {
+    return api.settings.unlinkTfaApp(id);
   };
 }
 

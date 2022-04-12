@@ -265,6 +265,8 @@ class SelectFileDialogBody extends React.Component {
       onSetFileName,
       tReady,
       headerName,
+      foldersList,
+      theme,
     } = this.props;
     const {
       isVisible,
@@ -285,6 +287,7 @@ class SelectFileDialogBody extends React.Component {
 
     return displayType === "aside" ? (
       <SelectFileDialogAsideView
+        theme={theme}
         t={t}
         isPanelVisible={isPanelVisible}
         zIndex={zIndex}
@@ -317,6 +320,7 @@ class SelectFileDialogBody extends React.Component {
       />
     ) : (
       <SelectFileDialogModalView
+        theme={theme}
         t={t}
         isPanelVisible={isPanelVisible}
         onClose={onClose}
@@ -337,6 +341,7 @@ class SelectFileDialogBody extends React.Component {
         passedId={passedId}
         titleFilesList={titleFilesList}
         primaryButtonName={this.buttonName}
+        foldersList={foldersList}
       />
     );
   }

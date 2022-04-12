@@ -37,10 +37,10 @@ const HeaderLoader = ({ id, className, style, ...rest }) => {
         radius="18"
         width="36"
         height="36"
-        backgroundColor="#fff"
-        foregroundColor="#fff"
-        backgroundOpacity={0.25}
-        foregroundOpacity={0.2}
+        backgroundColor={backgroundColor}
+        foregroundColor={foregroundColor}
+        backgroundOpacity={backgroundOpacity}
+        foregroundOpacity={foregroundOpacity}
       />
     </StyledHeader>
   );

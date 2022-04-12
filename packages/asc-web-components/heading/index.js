@@ -31,7 +31,6 @@ Heading.propTypes = {
 };
 
 Heading.defaultProps = {
-  color: "#333333",
   title: null,
   truncate: false,
   isInline: false,
@@ -40,4 +39,4 @@ Heading.defaultProps = {
   className: "",
 };
 
-export default Heading;
+export default React.memo(Heading);

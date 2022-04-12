@@ -1,17 +1,5 @@
 ﻿{
-  "DomainIpAddress": "IP ünvan kimi domen dəstəklənmir",
   "EmailActivationDescription": "Aktivləşdirmə təlimatları daxil edilmiş elektron poçta göndəriləcək.",
   "EmailChangeTitle": "Elektron poçtun dəyişdirilməsi",
-  "EmptyEmail": "Elektron poçt sahəsi boşdur",
-  "EnterEmail": "Yeni elektron poçt ünvanı daxil edin",
-  "IncorrectDomain": "Yanlış domen",
-  "IncorrectEmail": "Etibarsız elektron poçt",
-  "IncorrectLocalPart": "Yanlış lokal yol",
-  "LocalDomain": "Lokal domen dəstəklənmir",
-  "ManyEmails": "Xanada xeyli elektron poçt qeyd olunub",
-  "MaxLengthExceeded": "Elektron poçtun maksimal uzunluğu 64 simvoldur.",
-  "PunycodeDomain": "Domen icazəsi olmayan simvollardan ibarətdir",
-  "PunycodeLocalPart": "Lokal yolda icazə verilməyən simvollardan istifadə olunur",
-  "SameEmail": "Eyni elektron poçtu istifadəd edə bilməzsiniz",
-  "SpacesInLocalPart": "Lokal yolda boşluqlar icazə verilmir"
+  "EnterEmail": "Yeni elektron poçt ünvanı daxil edin"
 }

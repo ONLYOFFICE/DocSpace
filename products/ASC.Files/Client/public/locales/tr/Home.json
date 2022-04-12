@@ -13,7 +13,6 @@
     "CopyItem": "<strong>{{title}}</strong> kopyalandı",
     "CopyItems": "<strong>{{qty}}</strong> öğeler kopyalandı",
     "Document": "Belge",
-    "Duplicate": "Bir kopya oluştur",
     "EmptyFile": "Boş dosya",
     "EmptyFilterDescriptionText": "Bu filtreyle eşleşen dosya veya klasör yok. Farklı bir filtre deneyin veya tüm dosyaları görüntülemek için filtreyi temizleyin.",
     "EmptyFilterSubheadingText": "Bu filtre için burada görüntülenecek dosya yok",

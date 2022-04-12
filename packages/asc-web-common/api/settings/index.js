@@ -25,6 +25,82 @@ export function getPortalPasswordSettings(confirmKey = null) {
   return request(options);
 }
 
+export function setPortalPasswordSettings(
+  minLength,
+  upperCase,
+  digits,
+  specSymbols
+) {
+  return request({
+    method: "put",
+    url: "/settings/security/password.json",
+    data: { minLength, upperCase, digits, specSymbols },
+  });
+}
+
+export function setMailDomainSettings(data) {
+  return request({
+    method: "post",
+    url: "/settings/maildomainsettings.json",
+    data,
+  });
+}
+
+export function setDNSSettings(dnsName, enable) {
+  return request({
+    method: "post",
+    url: "/settings/maildomainsettings.json",
+    data: { dnsName, enable },
+  });
+}
+
+export function setIpRestrictions(data) {
+  return request({
+    method: "put",
+    url: "/settings/iprestrictions.json",
+    data,
+  });
+}
+
+export function setIpRestrictionsEnable(data) {
+  return request({
+    method: "put",
+    url: "/settings/iprestrictions/settings.json",
+    data,
+  });
+}
+
+export function setMessageSettings(turnOn) {
+  return request({
+    method: "post",
+    url: "/settings/messagesettings.json",
+    data: { turnOn },
+  });
+}
+
+export function setCookieSettings(lifeTime) {
+  return request({
+    method: "put",
+    url: "/settings/cookiesettings.json",
+    data: { lifeTime },
+  });
+}
+
+export function setLifetimeAuditSettings(data) {
+  return request({
+    method: "post",
+    url: "/security/audit/settings/lifetime.json",
+    data,
+  });
+}
+
+export function getAuditTrailReport() {
+  return request({
+    method: "post",
+    url: "/security/audit/login/report.json",
+  });
+}
+
 export function getPortalTimezones(confirmKey = null) {
   const options = {
     method: "get",
@@ -76,6 +152,24 @@ export function getLogoUrls() {
   return request({
     method: "get",
     url: `/settings/whitelabel/logos.json`,
+  });
+}
+
+export function setWhiteLabelSettings(data) {
+  const options = {
+    method: "post",
+    url: "/settings/whitelabel/save.json",
+    data,
+  };
+
+  return request(options);
+}
+
+export function restoreWhiteLabelSettings(isDefault) {
+  return request({
+    method: "put",
+    url: "/settings/whitelabel/restore.json",
+    data: { isDefault },
   });
 }
 
@@ -286,10 +380,14 @@ export function getTfaConfirmLink() {
   });
 }
 
-export function unlinkTfaApp() {
+export function unlinkTfaApp(id) {
+  const data = {
+    id,
+  };
   return request({
     method: "put",
     url: "/settings/tfaappnewapp",
+    data,
   });
 }
 
@@ -312,6 +410,7 @@ export function validateTfaCode(code) {
   return request({
     method: "post",
     url: "/settings/tfaapp/validate",
+    skipLogout: true,
     data,
   });
 }
@@ -323,11 +422,26 @@ export function getCommonThirdPartyList() {
   };
   return request(options);
 }
+export function getBackupStorage() {
+  const options = {
+    method: "get",
+    url: "/settings/storage/backup",
+  };
+  return request(options);
+}
 
 export function getBuildVersion() {
   const options = {
     method: "get",
     url: "/settings/version/build.json",
+  };
+  return request(options);
+}
+
+export function getCapabilities() {
+  const options = {
+    method: "get",
+    url: "/capabilities",
   };
   return request(options);
 }

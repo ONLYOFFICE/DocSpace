@@ -1,17 +1,5 @@
 ﻿{
-  "DomainIpAddress": "Domenii sub forma unei adrese IP nu sunt acceptate",
   "EmailActivationDescription": "Instructiunile de activare vor fi trimise la adresa de e-mail indicată",
   "EmailChangeTitle": "Modificarea adresei e-mail",
-  "EmptyEmail": "Niciun e-mail nu a fost parsat",
-  "EnterEmail": "Introduceți noua adresă de e-mail",
-  "IncorrectDomain": "Domeniul nu este valabil",
-  "IncorrectEmail": "Adresa de e-mail nu este valabilă",
-  "IncorrectLocalPart": "Partea locală este incorectă",
-  "LocalDomain": "Domeniile locale nu sunt acceptate",
-  "ManyEmails": "Prea multe e-mailuri de analizat",
-  "MaxLengthExceeded": "Lungimea maximă a numelui de utilizator sau a unei alte părți locale este de 64 caractere.",
-  "PunycodeDomain": "Domeniile Punycode nu sunt acceptate",
-  "PunycodeLocalPart": "Partea locală Punycode nu este acceptată",
-  "SameEmail": "Nu puteți folosi una și aceeaşi adresă adresa e-mail ",
-  "SpacesInLocalPart": "Partea locală nu trebuie să conțină spații"
+  "EnterEmail": "Introduceți noua adresă de e-mail"
 }

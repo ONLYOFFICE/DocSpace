@@ -15,12 +15,16 @@ class SectionBodyContent extends React.Component {
       <Consumer>
         {(context) =>
           viewAs === "table" ? (
-            <TableView sectionWidth={context.sectionWidth} tReady={tReady} />
+            <>
+              <TableView sectionWidth={context.sectionWidth} tReady={tReady} />
+            </>
           ) : (
-            <PeopleRowContainer
-              sectionWidth={context.sectionWidth}
-              tReady={tReady}
-            />
+            <>
+              <PeopleRowContainer
+                sectionWidth={context.sectionWidth}
+                tReady={tReady}
+              />
+            </>
           )
         }
       </Consumer>

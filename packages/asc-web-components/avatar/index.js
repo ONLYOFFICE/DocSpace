@@ -15,8 +15,6 @@ import {
 import IconButton from "../icon-button";
 import commonIconsStyles from "../utils/common-icons-style";
 
-const whiteColor = "#FFFFFF";
-
 const StyledGuestIcon = styled(GuestIcon)`
   ${commonIconsStyles}
 `;
@@ -29,11 +27,11 @@ const StyledOwnerIcon = styled(OwnerIcon)`
 const getRoleIcon = (role) => {
   switch (role) {
     case "guest":
-      return <StyledGuestIcon size="scale" />;
+      return <StyledGuestIcon size="scale" className="guest_icon" />;
     case "admin":
-      return <StyledAdministratorIcon size="scale" />;
+      return <StyledAdministratorIcon size="scale" className="admin_icon" />;
     case "owner":
-      return <StyledOwnerIcon size="scale" />;
+      return <StyledOwnerIcon size="scale" className="owner_icon" />;
     default:
       return null;
   }
@@ -57,9 +55,12 @@ Initials.propTypes = {
 const Avatar = (props) => {
   //console.log("Avatar render");
   const { size, source, userName, role, editing, editAction } = props;
+  let isDefault = false;
+
+  if (source?.includes("default_user_photo")) isDefault = true;
 
   const avatarContent = source ? (
-    <StyledImage src={source} />
+    <StyledImage src={source} isDefault={isDefault} />
   ) : userName ? (
     <Initials userName={userName} size={size} />
   ) : (
@@ -76,7 +77,7 @@ const Avatar = (props) => {
       {editing && size === "max" && (
         <EditContainer>
           <IconButton
-            color={whiteColor}
+            className="edit_icon"
             iconName="/static/images/pencil.react.svg"
             onClick={editAction}
             size={16}

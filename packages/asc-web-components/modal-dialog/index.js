@@ -120,6 +120,9 @@ class ModalDialog extends React.Component {
       children,
       isLoading,
       modalLoaderBodyHeight,
+      withoutCloseButton,
+      theme,
+      width,
     } = this.props;
 
     let header = null,
@@ -208,6 +211,7 @@ ModalDialog.propTypes = {
   isLoading: PropTypes.bool,
   /** Set loader height */
   modalLoaderBodyHeight: PropTypes.string,
+  width: PropTypes.string,
 };
 
 ModalDialog.defaultProps = {

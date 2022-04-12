@@ -35,7 +35,7 @@ const HeaderContainer = styled.div`
   }
 
   .arrow-button {
-    margin-right: 16px;
+    margin-right: 12px;
 
     @media ${tablet} {
       padding: 8px 0 8px 8px;
@@ -111,7 +111,8 @@ class SectionHeaderContent extends React.Component {
     const arrayOfParams = resultPath.split("/");
 
     const key = getKeyByLink(arrayOfParams, settingsTree);
-    const header = getTKeyByKey(key, settingsTree);
+    const currKey = key.length > 3 ? key : key[0];
+    const header = getTKeyByKey(currKey, settingsTree);
     const isCategory = checkPropertyByLink(
       arrayOfParams,
       settingsTree,
@@ -134,7 +135,8 @@ class SectionHeaderContent extends React.Component {
     const arrayOfParams = this.getArrayOfParams();
 
     const key = getKeyByLink(arrayOfParams, settingsTree);
-    const header = getTKeyByKey(key, settingsTree);
+    const currKey = key.length > 3 ? key : key[0];
+    const header = getTKeyByKey(currKey, settingsTree);
     const isCategory = checkPropertyByLink(
       arrayOfParams,
       settingsTree,
@@ -261,8 +263,6 @@ class SectionHeaderContent extends React.Component {
               <IconButton
                 iconName="/static/images/arrow.path.react.svg"
                 size="17"
-                color="#A3A9AE"
-                hoverColor="#657077"
                 isFill={true}
                 onClick={this.onBackToParent}
                 className="arrow-button"
@@ -276,8 +276,6 @@ class SectionHeaderContent extends React.Component {
                 <IconButton
                   iconName="/static/images/actions.header.touch.react.svg"
                   size="17"
-                  color="#A3A9AE"
-                  hoverColor="#657077"
                   isFill={true}
                   onClick={this.onToggleSelector}
                   className="action-button"

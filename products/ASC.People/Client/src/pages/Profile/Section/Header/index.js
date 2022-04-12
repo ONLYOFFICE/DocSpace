@@ -455,9 +455,7 @@ class SectionHeaderContent extends React.PureComponent {
       >
         <IconButton
           iconName="/static/images/arrow.path.react.svg"
-          color="#A3A9AE"
           size="17"
-          hoverColor="#657077"
           isFill={true}
           onClick={this.onClickBack}
           className="arrow-button"
@@ -474,7 +472,6 @@ class SectionHeaderContent extends React.PureComponent {
             title={t("Common:Actions")}
             iconName="/static/images/vertical-dots.react.svg"
             size={17}
-            color="#A3A9AE"
             getData={contextOptions}
             isDisabled={false}
           />

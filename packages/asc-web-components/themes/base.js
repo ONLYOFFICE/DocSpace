@@ -49,6 +49,7 @@ const {
 } = globalColors;
 
 const Base = {
+  isBase: true,
   color: black,
   backgroundColor: white,
   fontFamily: "Open Sans, sans-serif, Arial",
@@ -71,6 +72,7 @@ const Base = {
     },
 
     fontWeight: 600,
+    color: black,
   },
 
   button: {
@@ -95,42 +97,54 @@ const Base = {
     paddingRight: "4px",
 
     height: {
-      base: "24px",
-      medium: "32px",
-      big: "36px",
-      large: "44px",
+      extraSmall: "24px",
+      small: "32px",
+      normalDesktop: "36px",
+      normalTouchscreen: "40px",
+      medium: "44px",
     },
 
     lineHeight: {
-      base: "15px",
-      medium: "18px",
-      big: "20px",
-      large: "20px",
+      extraSmall: "15px",
+      small: "20px",
+      normalDesktop: "16px",
+      normalTouchscreen: "16px",
+      medium: "22px",
     },
 
     fontSize: {
-      base: "12px",
-      medium: "13px",
-      big: "14px",
-      large: "16px",
+      extraSmall: "12px",
+      small: "13px",
+      normalDesktop: "14px",
+      normalTouchscreen: "14px",
+      medium: "16px",
     },
 
     padding: {
-      base: "0 14px",
-      medium: "0 18px",
-      big: "0 20px",
+      extraSmall: "0 12px",
+      small: "0 28px",
+      normalDesktop: "0 28px",
+      normalTouchscreen: "0 28px",
+      medium: "0 32px",
     },
 
     minWidth: {
-      base: "65px",
-      medium: "80px",
-      big: "85px",
+      extraSmall: "none",
+      small: "100px",
+      normalDesktop: "100px",
+      normalTouchscreen: "100px",
+      medium: "100px",
     },
 
     color: {
       base: black,
+      baseHover: black,
+      baseActive: black,
+      baseDisabled: grayLightMid,
       primary: white,
-      disabled: grayLightMid,
+      primaryHover: white,
+      primaryActive: white,
+      primaryDisabled: white,
     },
 
     backgroundColor: {
@@ -154,6 +168,11 @@ const Base = {
       primaryActive: `1px solid ${globalColors.blueActive}`,
       primaryDisabled: `1px solid ${globalColors.blueDisabled}`,
     },
+
+    loader: {
+      base: black,
+      primary: white,
+    },
   },
 
   helpButton: {
@@ -169,10 +188,55 @@ const Base = {
   },
 
   mainButtonMobile: {
+    textColor: grayMain,
+
+    buttonColor: orangeMain,
+    iconFill: white,
+
+    circleBackground: white,
+
+    mobileProgressBarBackground: "rgb(48%, 58%, 69%, 0.4)",
+
+    bar: {
+      background: "linear-gradient(225deg, #2274aa 0%, #0f4071 100%)",
+      errorBackground: orangePressed,
+
+      icon: "#A3A9AE",
+    },
+
+    buttonWrapper: {
+      background: white,
+      uploadingBackground: grayLightMid,
+    },
+
+    buttonOptions: {
+      backgroundColor: blueLightMid,
+      color: white,
+    },
+
     dropDown: {
-      right: "15%",
-      bottom: "15%",
+      position: "fixed",
+      right: "32px",
+      bottom: "32px",
+
       width: "400px",
+
+      zIndex: "202",
+
+      mobile: {
+        right: "24px",
+        bottom: "24px",
+
+        marginLeft: "24px",
+
+        width: "calc(100vw - 48px)",
+      },
+      separatorBackground: white,
+
+      buttonColor: white,
+      hoverButtonColor: "#3a6c9e",
+
+      backgroundActionMobile: blueLightMid,
     },
 
     dropDownItem: {
@@ -191,7 +255,7 @@ const Base = {
     lineHeight: "22px",
     fontSize: "15px",
     fontWeight: 700,
-    textColor: "#FFF",
+    textColor: white,
 
     cornerRoundsTopRight: "0",
     cornerRoundsBottomRight: "0",
@@ -199,6 +263,7 @@ const Base = {
     svg: {
       margin: "auto",
       height: "100%",
+      fill: white,
     },
 
     secondaryButton: {
@@ -239,16 +304,16 @@ const Base = {
     background: white,
     disableBackgroundColor: "rgba(0, 0, 0, 0.08)",
     hoverBackground: white,
-    activeBackground: grayMaxLight,
+    activeBackground: "grayMaxLight",
+    hoverBorder: "#1877f2",
 
     boxShadow:
       "0px 1px 1px rgba(0, 0, 0, 0.24),0px 0px 1px rgba(0, 0, 0, 0.12)",
-    hoverBoxShadow:
-      "0px 2px 2px rgba(0, 0, 0, 0.24),0px 0px 2px rgba(0, 0, 0, 0.12)",
+    hoverBoxShadow: "none",
 
     color: "rgba(0, 0, 0, 0.54)",
     disableColor: "rgba(0, 0, 0, 0.4)",
-
+    border: "none",
     text: {
       width: "100%",
       height: "16px",
@@ -261,10 +326,11 @@ const Base = {
       textOverflow: "ellipsis",
       whiteSpace: "nowrap",
       color: "#757575",
+      hoverColor: "#1877f2",
     },
 
     svg: {
-      margin: "11px",
+      margin: "11px 16px",
       width: "18px",
       height: "18px",
       minWidth: "18px",
@@ -318,7 +384,10 @@ const Base = {
     },
   },
 
-  iconButton: {},
+  iconButton: {
+    color: gray,
+    hoverColor: grayMain,
+  },
   selectorAddButton: {
     background: grayLight,
     activeBackground: grayLightMid,
@@ -329,7 +398,8 @@ const Base = {
     height: " 34px",
     width: "34px",
     padding: "9px",
-    color: black,
+    color: "#979797",
+    hoverColor: black,
   },
 
   saveCancelButtons: {
@@ -354,9 +424,15 @@ const Base = {
       borderRight: `1px solid ${globalColors.grayLightMid}`,
     },
 
+    text: {
+      color: cyanBlueDarkShade,
+      disabledColor: grayMid,
+    },
+
     closeButton: {
       alignItems: "center",
       padding: "0 8px",
+      color: "#979797",
       colorHover: cyanBlueDarkShade,
       backgroundColor: grayLightMid,
     },
@@ -411,8 +487,11 @@ const Base = {
   radioButton: {
     textColor: black,
     textDisableColor: gray,
-    disableColor: grayLight,
+
     marginRight: "4px",
+
+    background: white,
+    disableBackground: grayLight,
 
     fillColor: black,
     borderColor: grayMid,
@@ -451,7 +530,7 @@ const Base = {
     },
 
     optionButton: {
-      padding: "8px 0px 9px 7px",
+      padding: "8px 9px 9px 7px",
     },
   },
 
@@ -487,6 +566,8 @@ const Base = {
     padding: "1px",
     lineHeight: "0.8",
     overflow: "hidden",
+    color: white,
+    backgroundColor: orangeMain,
   },
 
   scrollbar: {
@@ -578,6 +659,8 @@ const Base = {
     },
 
     icon: {
+      background: white,
+
       border: "1px solid",
       borderRadius: "0 3px 3px 0",
 
@@ -597,15 +680,30 @@ const Base = {
         large: "43px",
       },
     },
+
+    iconButton: {
+      width: {
+        base: "15px",
+        middle: "15px",
+        big: "16px",
+        huge: "16px",
+        large: "16px",
+      },
+    },
   },
 
   passwordInput: {
     disableColor: grayMid,
     color: gray,
 
+    iconColor: grayMid,
+    hoverIconColor: gray,
+
     hoverColor: gray,
 
     lineHeight: "32px",
+
+    tooltipTextColor: black,
 
     text: {
       lineHeight: "14px",
@@ -640,6 +738,9 @@ const Base = {
   searchInput: {
     fontSize: "14px",
     fontWeight: "600",
+
+    iconColor: grayMid,
+    hoverIconColor: grayMid,
   },
 
   textInput: {
@@ -691,6 +792,9 @@ const Base = {
     margin: "0",
 
     borderColor: blueMain,
+
+    iconColor: grayMid,
+    hoverIconColor: grayMid,
   },
 
   textArea: {
@@ -762,11 +866,13 @@ const Base = {
 
   tooltip: {
     borderRadius: "6px",
-    boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.13)",
+    boxShadow: "0px 10px 15px rgba(4, 15, 27, 0.13)",
     opacity: "1",
-    padding: "16px",
+    padding: "8px 12px",
     pointerEvents: "auto",
     maxWidth: "340px",
+    color: "#F8F7BF",
+    textColor: black,
 
     before: {
       border: "none",
@@ -797,6 +903,7 @@ const Base = {
         margin: "7px 15px 7px 15px",
         overflow: "hidden",
         color: white,
+        hoverColor: black,
         disableColor: grayMid,
       },
     },
@@ -831,7 +938,7 @@ const Base = {
 
       labelIcon: {
         width: "100%",
-        margin: "0 0 8px 0",
+        margin: "0 0 4px 0",
       },
 
       body: {
@@ -845,9 +952,14 @@ const Base = {
         height: "13px",
       },
     },
+
+    errorLabel: {
+      color: orangePressed,
+    },
   },
 
   avatar: {
+    defaultImage: `url("/static/images/avatar.base.react.svg")`,
     initialsContainer: {
       color: white,
       left: "50%",
@@ -903,13 +1015,33 @@ const Base = {
         width: "50%",
         height: "100%",
         margin: "auto",
+        fill: white,
       },
+    },
+
+    administrator: {
+      fill: orangeMain,
+      stroke: darkBlack,
+      color: white,
+    },
+
+    guest: {
+      fill: "#3B72A7",
+      stroke: darkBlack,
+      color: white,
+    },
+
+    owner: {
+      fill: "#EDC409",
+      stroke: darkBlack,
+      color: white,
     },
 
     editContainer: {
       right: "0px",
       bottom: "0px",
-      backgroundColor: "#265a8f",
+      fill: white,
+      backgroundColor: blueLightMid,
       borderRadius: "50%",
       height: "32px",
       width: "32px",
@@ -946,6 +1078,11 @@ const Base = {
 
   avatarEditorBody: {
     maxWidth: "400px",
+
+    selectLink: {
+      color: black,
+      linkColor: link,
+    },
 
     slider: {
       width: "100%",
@@ -1045,6 +1182,8 @@ const Base = {
 
       button: {
         background: gray,
+        fill: white,
+        hoverFill: white,
         padding: "0 12px",
         height: "40px",
         borderRadius: "6px",
@@ -1062,6 +1201,10 @@ const Base = {
   backdrop: {
     backgroundColor: "rgba(6, 22, 38, 0.1)",
     unsetBackgroundColor: "unset",
+  },
+
+  treeMenu: {
+    disabledColor: "#767676",
   },
 
   treeNode: {
@@ -1156,6 +1299,7 @@ const Base = {
     background: white,
     borderRadius: "6px",
     boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.13)",
+    border: "none",
   },
 
   dropDownItem: {
@@ -1206,6 +1350,12 @@ const Base = {
       info: hoverInfo,
       warning: hoverWarning,
     },
+    border: {
+      success: "none",
+      error: "none",
+      info: "none",
+      warning: "none",
+    },
 
     zIndex: "9999",
     position: "fixed",
@@ -1249,7 +1399,12 @@ const Base = {
       minWidth: "16px",
       height: "16px",
       minHeight: "16px",
-      color: black,
+      color: {
+        success: black,
+        error: black,
+        info: black,
+        warning: black,
+      },
     },
 
     text: {
@@ -1263,9 +1418,16 @@ const Base = {
       margin: "0",
       marginBottom: "5px",
       lineHeight: "16px",
-      color: darkBlack,
+      color: {
+        success: darkBlack,
+        error: darkBlack,
+        info: darkBlack,
+        warning: darkBlack,
+      },
       fontSize: "12px",
     },
+
+    closeButtonColor: black,
   },
 
   loader: {
@@ -1273,6 +1435,10 @@ const Base = {
     size: "40px",
     marginRight: "2px",
     borderRadius: "50%",
+  },
+
+  dialogLoader: {
+    borderBottom: "1px solid rgb(222, 226, 230)",
   },
 
   // dropDownItem: {
@@ -1342,7 +1508,7 @@ const Base = {
       marginTop: "12px",
       marginRight: "8px",
       marginLeft: "auto",
-      fillColor: gray,
+      fillColor: grayMain,
     },
 
     button: {
@@ -1358,7 +1524,7 @@ const Base = {
       border: `1px solid ${grayMid}`,
       borderRadius: "3px",
       borderColor: blueMain,
-
+      openBorderColor: blueMain,
       disabledBorderColor: grayLightMid,
       disabledBackground: grayLight,
 
@@ -1373,7 +1539,7 @@ const Base = {
 
       disabledColor: grayMid,
       color: black,
-
+      selectedColor: black,
       maxWidth: "175px",
 
       lineHeightWithoutBorder: "16px",
@@ -1398,8 +1564,6 @@ const Base = {
     hoverBorderBottom: "1px dashed",
     contentPadding: "10px 0px 0px 0px",
     arrowMargin: "4px 8px 4px 0px",
-    arrowMarginRight: "9px",
-    arrowMarginBottom: "5px",
     transform: "rotate(180deg)",
     iconColor: black,
 
@@ -1415,12 +1579,24 @@ const Base = {
 
     disableFillColor: grayLightMid,
     disableFillColorOff: grayLightMid,
+
+    borderColor: blueMain,
+    borderColorOff: gray,
+
+    disableBorderColor: grayLightMid,
+    disableBorderColorOff: grayLightMid,
+
+    fillCircleColor: white,
+    fillCircleColorOff: white,
+
+    disableFillCircleColor: white,
+    disableFillCircleColorOff: white,
   },
 
   contextMenuButton: {
     content: {
       width: "100%",
-      backgroundColor: " #fff",
+      backgroundColor: white,
       padding: "0 16px 16px",
     },
 
@@ -1602,6 +1778,869 @@ const Base = {
   //     },
   //   },
   // },
+
+  catalog: {
+    background: "#f8f9f9",
+
+    header: {
+      borderBottom: "1px solid #eceef1",
+      iconFill: "#657077",
+    },
+    control: {
+      background: "#9a9ea3",
+      fill: "#ffffff",
+    },
+
+    headerBurgerColor: "#657077",
+  },
+
+  catalogItem: {
+    container: {
+      width: "100%",
+      height: "36px",
+      padding: "0 20px",
+      marginBottom: "16px",
+      tablet: {
+        height: "44px",
+        padding: "0 16px",
+        marginBottom: "24px",
+      },
+    },
+    sibling: {
+      active: {
+        background: lightGrayishStrongBlue,
+      },
+      hover: {
+        background: grayLightMid,
+      },
+    },
+    img: {
+      svg: {
+        width: "16px",
+        height: "16px",
+
+        fill: "#657077",
+
+        tablet: {
+          width: "20px",
+          height: "20px",
+        },
+      },
+    },
+    text: {
+      width: "100%",
+      marginLeft: "8px",
+      lineHeight: "20px",
+      color: cyanBlueDarkShade,
+      fontSize: "13px",
+      fontWeight: 600,
+      tablet: {
+        marginLeft: "12px",
+        lineHeight: "16px",
+        fontSize: "14px",
+        fontWeight: "bold",
+      },
+    },
+    initialText: {
+      color: white,
+      width: "16px",
+      lineHeight: "11px",
+      fontSize: "11px",
+      fontWeight: "bold",
+      tablet: {
+        width: "20px",
+        lineHeight: "19px",
+        fontSize: "11px",
+      },
+    },
+    badgeWrapper: {
+      size: "16px",
+      marginLeft: "8px",
+      marginRight: "-2px",
+      tablet: {
+        width: "48px",
+        height: "44px",
+        marginRight: "-16px",
+      },
+    },
+    badgeWithoutText: {
+      backgroundColor: orangeMain,
+
+      size: "8px",
+      position: "-4px",
+    },
+  },
+
+  navigation: {
+    expanderColor: black,
+    background: white,
+
+    icon: {
+      fill: "#316DAA",
+      stroke: "#DFE2E3",
+    },
+  },
+
+  nav: {
+    backgroundColor: "#0F4071",
+  },
+
+  navItem: {
+    baseColor: "#7A95B0",
+    activeColor: white,
+    separatorColor: "#3E668D",
+
+    wrapper: {
+      hoverBackground: "#0d3760",
+    },
+  },
+
+  header: {
+    backgroundColor: "#0F4071",
+
+    linkColor: "#7a95b0",
+    productColor: white,
+  },
+
+  menuContainer: {
+    background: "linear-gradient(200.71deg, #2274aa 0%, #0f4071 100%)",
+    arrowTop: "#206FA4",
+    color: white,
+  },
+
+  article: {
+    background: grayLight,
+    pinBorderColor: grayLightMid,
+  },
+
+  section: {
+    toggler: {
+      background: white,
+      fill: gray,
+      boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.13)",
+    },
+
+    header: {
+      backgroundColor: white,
+      background: `linear-gradient(180deg,#ffffff 2.81%,rgba(255, 255, 255, 0.91) 63.03%,rgba(255, 255, 255, 0) 100%)`,
+    },
+  },
+
+  infoPanel: {
+    sectionHeaderToggleIcon: gray,
+    sectionHeaderToggleIconActive: "#3B72A7",
+    sectionHeaderToggleBg: "transparent",
+    sectionHeaderToggleBgActive: grayLight,
+
+    backgroundColor: white,
+    borderColor: grayLightMid,
+    thumbnailBorderColor: grayLightMid,
+    textColor: black,
+
+    closeButtonWrapperPadding: "0px",
+    closeButtonIcon: white,
+    closeButtonSize: "17px",
+    closeButtonBg: "transparent",
+
+    accessGroupBg: grayLightMid,
+    accessGroupText: black,
+
+    showAccessUsersTextColor: gray,
+    showAccessPanelTextColor: "#3b72a7",
+  },
+
+  filesArticleBody: {
+    background: lightGrayishStrongBlue,
+    panelBackground: lightGrayishStrongBlue,
+
+    fill: grayMain,
+    expanderColor: "dimgray",
+    downloadAppList: {
+      color: "#83888d",
+      winHoverColor: "#3785D3",
+      macHoverColor: black,
+      linuxHoverColor: "#FFB800",
+      androidHoverColor: "#9BD71C",
+      iosHoverColor: black,
+    },
+    thirdPartyList: {
+      color: "#818b91",
+      linkColor: cyanBlueDarkShade,
+    },
+  },
+
+  peopleArticleBody: {
+    iconColor: grayMain,
+    expanderColor: "dimgray",
+  },
+
+  peopleTableRow: {
+    fill: "#3b72a7",
+
+    nameColor: black,
+    pendingNameColor: gray,
+
+    sideInfoColor: gray,
+    pendingSideInfoColor: grayMid,
+  },
+
+  filterInput: {
+    button: {
+      border: "1px solid #d0d5da",
+      hoverBorder: "1px solid #a3a9ae",
+
+      openBackground: "#a3a9ae",
+
+      openFill: "#ffffff",
+    },
+
+    filter: {
+      background: "#ffffff",
+      border: "1px solid #eceef1",
+      color: "#a3a9ae",
+
+      separatorColor: "#eceef1",
+      indicatorColor: "#ED7309",
+
+      selectedItem: {
+        background: "#265a8f",
+        border: "#265a8f",
+        color: "#ffffff",
+      },
+    },
+
+    sort: {
+      background: "#ffffff",
+      hoverBackground: "#f8f9f9",
+      selectedViewIcon: "#dfe2e3",
+      viewIcon: "#a3a9ae",
+      sortFill: "#657077",
+
+      tileSortFill: black,
+      tileSortColor: black,
+    },
+  },
+
+  profileInfo: {
+    color: "#83888d",
+    iconButtonColor: black,
+    linkColor: gray,
+
+    tooltipLinkColor: black,
+    iconColor: "#C96C27",
+  },
+
+  updateUserForm: {
+    tooltipTextColor: black,
+    borderTop: "1px solid #eceef1",
+  },
+
+  tableContainer: {
+    borderRight: `2px solid ${grayMid}`,
+    hoverBorderColor: grayMain,
+    tableCellBorder: `1px solid ${grayLightMid}`,
+
+    groupMenu: {
+      background: white,
+      borderBottom: "none",
+      borderRight: `1px solid ${grayMid}`,
+      boxShadow: "0px 5px 20px rgba(4, 15, 27, 7%)",
+    },
+
+    header: {
+      background: white,
+      borderBottom: `1px solid ${grayLightMid}`,
+      textColor: gray,
+      activeTextColor: grayMain,
+      hoverTextColor: grayMaxLight,
+
+      iconColor: gray,
+      activeIconColor: grayMain,
+      hoverIconColor: grayMain,
+
+      borderImageSource: `linear-gradient(to right,${white} 21px,${grayLightMid} 21px,${grayLightMid} calc(100% - 20px),${white} calc(100% - 20px))`,
+    },
+
+    tableCell: {
+      border: `1px solid ${grayLightMid}`,
+    },
+  },
+
+  filesSection: {
+    rowView: {
+      checkedBackground: "#f3f4f4",
+
+      draggingBackground: lightCumulus,
+      draggingHoverBackground: lightMediumGoldenrod,
+
+      shareButton: {
+        color: grayMain,
+        fill: grayMain,
+      },
+
+      sideColor: gray,
+      linkColor: black,
+      textColor: gray,
+
+      editingIconColor: "#3b72a7",
+      shareHoverColor: "#3b72a7",
+    },
+
+    tableView: {
+      fileName: {
+        linkColor: black,
+        textColor: gray,
+      },
+
+      row: {
+        checkboxChecked: `linear-gradient(to right, #f3f4f4 24px, ${grayLightMid} 24px)`,
+        checkboxDragging: `linear-gradient(to right, ${lightCumulus} 24px, ${grayLightMid} 24px)`,
+        checkboxDraggingHover: `linear-gradient(to right,rgb(239, 239, 178) 24px, ${grayLightMid} 24px)`,
+
+        contextMenuWrapperChecked: `linear-gradient(to left, #f3f4f4 24px, ${grayLightMid} 24px)`,
+        contextMenuWrapperDragging: `border-image-source: linear-gradient(to left, ${lightCumulus} 24px, ${grayLightMid} 24px)`,
+        contextMenuWrapperDraggingHover: `linear-gradient(to left,rgb(239, 239, 178) 24px,${grayLightMid} 24px)`,
+
+        backgroundActive: `#F3F4F4`,
+
+        borderImageCheckbox: `linear-gradient(to right, ${white} 24px, ${grayLightMid} 24px)`,
+        borderImageContextMenu: `linear-gradient(to left, ${white} 24px, ${grayLightMid} 24px)`,
+
+        borderHover: gray,
+        sideColor: gray,
+        shareHoverColor: "#3b72a7",
+
+        borderImageRight:
+          "linear-gradient(to right, #ffffff 25px,#eceef1 24px)",
+        borderImageLeft: "linear-gradient(to left, #ffffff 24px,#eceef1 24px)",
+
+        borderColor: "#ECEEf1",
+        borderColorTransition: "#f3f4f4",
+      },
+    },
+
+    tilesView: {
+      tile: {
+        draggingColor: lightCumulus,
+        draggingHoverColor: lightMediumGoldenrod,
+        checkedColor: "#f3f4f4",
+        border: `1px solid ${grayMid}`,
+        backgroundColor: white,
+
+        backgroundColorTop: white,
+      },
+
+      sideColor: black,
+      color: black,
+      textColor: gray,
+    },
+  },
+
+  advancedSelector: {
+    footerBorder: `1px solid ${grayLightMid}`,
+
+    hoverBackgroundColor: grayLightMid,
+    selectedBackgroundColor: grayLightMid,
+    borderLeft: `1px solid ${grayLightMid}`,
+
+    searcher: {
+      hoverBorderColor: grayMid,
+      focusBorderColor: blueMain,
+      placeholderColor: gray,
+    },
+  },
+
+  floatingButton: {
+    backgroundColor: "#3B72A7",
+    color: white,
+    boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.13)",
+    fill: white,
+
+    alert: {
+      fill: "#F58D31",
+      path: white,
+    },
+  },
+
+  mediaViewer: {
+    color: "#d1d1d1",
+    background: "rgba(17, 17, 17, 0.867)",
+    backgroundColor: "rgba(11, 11, 11, 0.7)",
+    fill: white,
+    titleColor: white,
+    iconColor: white,
+
+    controlBtn: {
+      backgroundColor: "rgba(200, 200, 200, 0.2)",
+    },
+
+    imageViewer: {
+      backgroundColor: "rgba(200, 200, 200, 0.2)",
+      inactiveBackgroundColor: "rgba(11,11,11,0.7)",
+      fill: white,
+    },
+
+    progressBar: {
+      background: "#d1d1d1",
+      backgroundColor: "rgba(200, 200, 200, 0.2)",
+    },
+
+    scrollButton: {
+      backgroundColor: "rgba(11, 11, 11, 0.7)",
+      background: "rgba(200, 200, 200, 0.2)",
+      border: `solid ${white}`,
+    },
+
+    videoViewer: {
+      fill: white,
+      stroke: white,
+      color: "#d1d1d1",
+      colorError: white,
+      backgroundColorError: darkBlack,
+      backgroundColor: "rgba(11, 11, 11, 0.7)",
+      background: "rgba(200, 200, 200, 0.2)",
+    },
+  },
+
+  filesThirdPartyDialog: {
+    border: "1px solid #d1d1d1",
+  },
+
+  filesModalDialog: {
+    border: `1px solid lightgray`,
+  },
+
+  filesDragTooltip: {
+    background: white,
+    boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.13)",
+    color: gray,
+  },
+
+  filesEmptyContainer: {
+    linkColor: cyanBlueDarkShade,
+    privateRoom: {
+      linkColor: "#116d9d",
+    },
+  },
+
+  filesPanels: {
+    color: black,
+
+    aside: {
+      backgroundColor: white,
+    },
+
+    addGroups: {
+      iconColor: gray,
+      arrowColor: darkBlack,
+    },
+
+    addUsers: {
+      iconColor: gray,
+      arrowColor: darkBlack,
+    },
+
+    changeOwner: {
+      iconColor: gray,
+      arrowColor: darkBlack,
+    },
+
+    embedding: {
+      textAreaColor: "#AEAEAE",
+      iconColor: black,
+      color: gray,
+    },
+
+    versionHistory: {
+      borderTop: `1px solid ${grayLightMid}`,
+    },
+
+    content: {
+      backgroundColor: white,
+      fill: gray,
+      disabledFill: grayMid,
+    },
+
+    body: {
+      backgroundColor: grayLightMid,
+      fill: black,
+    },
+
+    footer: {
+      backgroundColor: white,
+      borderTop: `1px solid ${grayLightMid}`,
+    },
+
+    linkRow: {
+      backgroundColor: grayLight,
+      fill: gray,
+      disabledFill: grayMid,
+    },
+
+    selectFolder: {
+      color: gray,
+    },
+
+    selectFile: {
+      color: gray,
+      background: grayLight,
+      borderBottom: `1px solid ${grayLightMid}`,
+      borderRight: `1px solid ${globalColors.lightGrayishBlue}`,
+
+      buttonsBackground: white,
+    },
+
+    filesList: {
+      color: gray,
+      backgroundColor: grayLightMid,
+      borderBottom: `1px solid ${grayLightMid}`,
+    },
+
+    modalRow: {
+      backgroundColor: grayLightMid,
+      fill: gray,
+      disabledFill: grayMid,
+    },
+
+    sharing: {
+      color: gray,
+      fill: gray,
+      loadingFill: grayMid,
+
+      dropdownColor: black,
+
+      loader: {
+        foregroundColor: grayLight,
+        backgroundColor: grayLight,
+      },
+    },
+
+    upload: {
+      color: gray,
+      tooltipColor: lightCumulus,
+
+      shareButton: {
+        color: gray,
+        sharedColor: grayMain,
+      },
+
+      loadingButton: {
+        color: blueMain,
+        background: white,
+      },
+    },
+  },
+
+  menuItem: {
+    iconWrapper: {
+      width: "16px",
+      height: "16px",
+      header: {
+        width: "24px",
+        height: "24px",
+      },
+    },
+    separator: {
+      borderBottom: `1px solid ${grayLightMid} !important`,
+      margin: "6px 16px 6px 16px !important",
+      height: "1px !important",
+      width: "calc(100% - 32px) !important",
+    },
+    text: {
+      header: {
+        fontSize: "15px",
+        lineHeight: "20px",
+      },
+      mobile: {
+        fontSize: "13px",
+        lineHeight: "36px",
+      },
+      fontSize: "12px",
+      lineHeight: "30px",
+      fontWeight: "600",
+      margin: "0 0 0 8px",
+      color: black,
+    },
+    hover: grayLight,
+    background: "none",
+    svgFill: black,
+    header: {
+      height: "50px",
+      borderBottom: `1px solid ${grayLightMid}`,
+      marginBottom: "6px",
+    },
+    height: "30px",
+    borderBottom: "none",
+    marginBottom: "0",
+    padding: "0 12px",
+    mobile: {
+      height: "36px",
+      padding: "0 16px",
+    },
+  },
+  newContextMenu: {
+    background: white,
+    borderRadius: "6px",
+    boxShadow: "0px 12px 40px rgba(4, 15, 27, 0.12)",
+    padding: "6px 0px",
+    border: "none",
+    devices: {
+      maxHeight: "calc(100vh - 64px)",
+      tabletWidth: "375px",
+      mobileWidth: "100vw",
+      left: 0,
+      right: 0,
+      bottom: 0,
+      margin: "0 auto",
+    },
+  },
+  filesSettings: {
+    color: cyanBlueDarkShade,
+
+    linkColor: black,
+  },
+
+  filesBadges: {
+    iconColor: gray,
+    hoverIconColor: "#3B72A7",
+
+    color: white,
+    backgroundColor: gray,
+
+    badgeColor: white,
+    badgeBackgroundColor: orangeMain,
+  },
+
+  filesEditingWrapper: {
+    color: black,
+    border: `1px solid ${grayMid}`,
+    borderBottom: `1px solid ${grayLightMid}`,
+
+    fill: gray,
+    hoverFill: grayMain,
+  },
+
+  filesIcons: {
+    fill: "#3b72a7",
+    hoverFill: "#3b72a7",
+  },
+
+  filesQuickButtons: {
+    color: gray,
+    sharedColor: "#3b72a7",
+    hoverColor: "#3b72a7",
+  },
+
+  filesSharedButton: {
+    color: gray,
+    sharedColor: grayMain,
+  },
+
+  filesPrivateRoom: {
+    borderBottom: "1px solid #d3d3d3",
+    linkColor: "#116d9d",
+    textColor: "#83888D",
+  },
+
+  filesVersionHistory: {
+    row: {
+      color: gray,
+      fill: black,
+    },
+
+    badge: {
+      color: white,
+      stroke: gray,
+      fill: gray,
+      defaultFill: white,
+      badgeFill: orangeMain,
+    },
+
+    versionList: {
+      fill: grayMid,
+      stroke: grayMid,
+      color: grayMid,
+    },
+  },
+
+  login: {
+    linkColor: link,
+    textColor: gray,
+
+    register: {
+      backgroundColor: grayLight,
+      textColor: link,
+    },
+
+    container: {
+      backgroundColor: grayLightMid,
+    },
+  },
+
+  facebookButton: {
+    background: white,
+    border: "1px solid #1877f2",
+    color: "#1877f2",
+  },
+
+  peopleSelector: {
+    textColor: gray,
+  },
+
+  peopleWithContent: {
+    color: gray,
+    pendingColor: grayMid,
+  },
+
+  peopleDialogs: {
+    modal: {
+      border: `1px solid ${gray}`,
+    },
+
+    deleteUser: {
+      textColor: red,
+    },
+
+    deleteSelf: {
+      linkColor: link,
+    },
+
+    changePassword: {
+      linkColor: link,
+    },
+  },
+
+  studio: {
+    about: {
+      linkColor: blueMain,
+      border: "1px solid lightgray",
+      logoColor: black,
+    },
+
+    comingSoon: {
+      linkColor: cyanBlueDarkShade,
+      linkIconColor: black,
+      backgroundColor: white,
+      foregroundColor: white,
+    },
+
+    confirm: {
+      activateUser: {
+        textColor: "#116d9d",
+        textColorError: red,
+      },
+      change: {
+        titleColor: "#116d9d",
+      },
+    },
+
+    home: {
+      textColorError: red,
+    },
+
+    paymentsEnterprise: {
+      background: grayLight,
+
+      buttonBackground: "#edf2f7",
+
+      linkColor: link,
+      headerColor: orangePressed,
+    },
+
+    settings: {
+      iconFill: black,
+      article: {
+        titleColor: grayMain,
+        fillIcon: "dimgray",
+        expanderColor: "dimgray",
+      },
+
+      security: {
+        arrowFill: black,
+        descriptionColor: cyanBlueDarkShade,
+
+        admins: {
+          backgroundColor: black,
+          backgroundColorWrapper: blueMain,
+          roleColor: grayMid,
+
+          color: link,
+          departmentColor: gray,
+
+          tooltipColor: lightCumulus,
+
+          nameColor: black,
+          pendingNameColor: gray,
+
+          textColor: white,
+          iconColor: blueMain,
+        },
+
+        owner: {
+          backgroundColor: grayLight,
+          linkColor: link,
+          departmentColor: gray,
+          tooltipColor: lightCumulus,
+        },
+      },
+
+      common: {
+        linkColor: gray,
+        linkColorHelp: link,
+        tooltipLinkColor: black,
+        arrowColor: black,
+        descriptionColor: cyanBlueDarkShade,
+
+        whiteLabel: {
+          borderImg: "1px solid #d1d1d1",
+
+          backgroundColor: "#0f4071",
+          greenBackgroundColor: "#7e983f",
+          blueBackgroundColor: "#5170b5",
+          orangeBackgroundColor: "#e86e2e",
+
+          dataFontColor: white,
+          dataFontColorBlack: black,
+        },
+      },
+
+      integration: {
+        separatorBorder: `1px solid ${grayLightMid}`,
+        linkColor: link,
+      },
+    },
+
+    wizard: {
+      linkColor: "#116d9d",
+    },
+  },
+
+  campaignsBanner: {
+    border: "1px solid #d1d1d1",
+    color: darkBlack,
+
+    btnColor: white,
+    btnBackgroundActive: blueMain,
+  },
+
+  tileLoader: {
+    border: `1px solid ${grayMid}`,
+
+    background: white,
+  },
+
+  errorContainer: {
+    background: white,
+  },
+
+  editor: {
+    color: "#555f65",
+    background: white,
+  },
+
+  submenu: {
+    lineColor: "#eceef1",
+  },
 };
 
 export default Base;
