@@ -304,11 +304,11 @@ namespace ASC.Web.Api.Controllers
         /// <returns>Message about renaming a portal</returns>
         ///<visible>false</visible>
         [Update("portalrename")]
-        public async Task<object> UpdatePortalName(string alias)
+        public async Task<object> UpdatePortalName(PortalRenameModel model)
         {
             if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.PortalSecurity)))
             {
-                throw new BillingException(Resource.ErrorNotAllowedOption, "PortalRename");
+                throw new BillingException(Resource.ErrorNotAllowedOption);
             }
 
             if (CoreBaseSettings.Personal)
@@ -318,7 +318,8 @@ namespace ASC.Web.Api.Controllers
 
             _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-            if (string.IsNullOrEmpty(alias)) throw new ArgumentException();
+            var alias = model.Alias;
+            if (string.IsNullOrEmpty(alias)) throw new ArgumentException(nameof(alias));
 
             var tenant = TenantManager.GetCurrentTenant();
             var user = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
@@ -339,7 +340,6 @@ namespace ASC.Web.Api.Controllers
                 {
                     TenantManager.CheckTenantAddress(newAlias.Trim());
                 }
-
 
                 if (!string.IsNullOrEmpty(_apiSystemHelper.ApiCacheUrl))
                 {
@@ -365,17 +365,7 @@ namespace ASC.Web.Api.Controllers
                 return string.Empty;
             }
 
-            return CreateReference(tenant.GetTenantDomain(_coreSettings), tenant.TenantId, user.Email);
-        }
-
-        private string CreateReference(string tenantDomain, int tenantId, string email)
-        {
-            return string.Format("{0}{1}{2}/{3}",
-                                 ApiContext.HttpContextAccessor.HttpContext.Request != null ? ApiContext.HttpContextAccessor.HttpContext.Request.Scheme : Uri.UriSchemeHttp,
-                                 Uri.SchemeDelimiter,
-                                 tenantDomain,
-                                 CommonLinkUtility.GetConfirmationUrlRelative(tenantId, email, ConfirmType.Auth)
-                );
+            return CommonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.Auth);
         }
     }
 }
