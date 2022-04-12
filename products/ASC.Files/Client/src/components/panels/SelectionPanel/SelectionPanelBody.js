@@ -161,13 +161,14 @@ const SelectionPanelBody = ({
 };
 
 class SelectionPanel extends React.Component {
-  static setFolderObjectToTree = async (id) => {
+  static getFolderPath = async (id) => {
     try {
       const data = await getFolder(id);
       const newPathParts = data.pathParts.map((item) => item.toString());
       return newPathParts;
     } catch (e) {
       toastr.error(e);
+      return null;
     }
   };
   static getBasicFolderInfo = async (
@@ -180,11 +181,6 @@ class SelectionPanel extends React.Component {
     isSetFolderImmediately,
     isFilesPanel = false
   ) => {
-    //debugger;
-    const isFilesModule =
-      window.location.href.indexOf("products/files") !== -1 &&
-      window.location.href.indexOf("doceditor") === -1;
-
     const getRequestFolderTree = () => {
       switch (foldersType) {
         case "exceptSortedByTags":

@@ -48,7 +48,6 @@ const SelectFolderDialogAsideView = ({
               size="16"
               iconName="/static/images/arrow.path.react.svg"
               onClick={onClose}
-              // color={theme.filesPanels.selectFolder.color}
             />
           )}
           {dialogName ? dialogName : t("Translations:FolderSelection")}

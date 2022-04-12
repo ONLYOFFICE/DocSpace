@@ -51,7 +51,7 @@ class SelectFolderDialog extends React.Component {
       isNeedArrowIcon = false,
       folderTree,
     } = this.props;
-    // debugger;
+
     !displayType && window.addEventListener("resize", this.throttledResize);
 
     this.expandedKeys = this.props.expandedKeys?.map((item) => item.toString());
@@ -200,7 +200,7 @@ class SelectFolderDialog extends React.Component {
   onResetInfo = async () => {
     const { id } = this.props;
 
-    const pathParts = await SelectionPanel.setFolderObjectToTree(id);
+    const pathParts = await SelectionPanel.getFolderPath(id);
 
     this.setState({
       folderId: id,
