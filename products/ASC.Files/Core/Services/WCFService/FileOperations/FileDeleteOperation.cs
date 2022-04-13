@@ -114,7 +114,10 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
             {
                 Error = FilesCommonResource.ErrorMassage_FolderNotFound;
             }
-            else if (folder.FolderType != FolderType.DEFAULT && folder.FolderType != FolderType.BUNCH)
+            else if (folder.FolderType != FolderType.DEFAULT && folder.FolderType != FolderType.BUNCH
+                && folder.FolderType != FolderType.FillingFormsRoom && folder.FolderType != FolderType.EditingRoom
+                && folder.FolderType != FolderType.ReviewRoom && folder.FolderType != FolderType.ReadOnlyRoom 
+                && folder.FolderType != FolderType.CustomRoom)
             {
                 Error = FilesCommonResource.ErrorMassage_SecurityException_DeleteFolder;
             }
