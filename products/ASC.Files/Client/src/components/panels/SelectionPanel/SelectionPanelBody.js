@@ -107,7 +107,7 @@ const SelectionPanelBody = ({
                       className="selection-panel_title"
                     >
                       {folderSelection
-                        ? `The contents of the '${folderTitle}' folder`
+                        ? t("FolderContents", { folderTitle })
                         : filesListTitle}
                     </Text>
                   </div>
