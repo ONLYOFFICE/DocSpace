@@ -18,7 +18,7 @@ class SelectFolderDialog extends React.Component {
     const { id, displayType, filter } = this.props;
     this.newFilter = filter.clone();
     this.newFilter.filterType = FilterType.FilesOnly;
-
+    this.newFilter.withSubfolders = false;
     this.state = {
       isLoadingData: false,
       isInitialLoader: false,
