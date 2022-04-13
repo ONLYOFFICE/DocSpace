@@ -448,8 +448,13 @@ public class FileStorageService<T> //: IFileStorageService
         var folderDao = GetFolderDao();
         var folder = await folderDao.GetFolderAsync(folderId);
         ErrorIf(folder == null, FilesCommonResource.ErrorMassage_FolderNotFound);
-        ErrorIf(!await _fileSecurity.CanEditAsync(folder), FilesCommonResource.ErrorMassage_SecurityException_RenameFolder);
-        if (!await _fileSecurity.CanDeleteAsync(folder) && _userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager))
+
+        var canRename = (folder.FolderType == FolderType.FillingFormsRoom || folder.FolderType == FolderType.EditingRoom
+            || folder.FolderType == FolderType.ReviewRoom || folder.FolderType == FolderType.ReadOnlyRoom || folder.FolderType == FolderType.CustomRoom)
+            ? await _fileSecurity.CanEditRoomAsync(folder) : await _fileSecurity.CanRenameAsync(folder);
+
+        ErrorIf(!canRename, FilesCommonResource.ErrorMassage_SecurityException_RenameFolder);
+        if (!canRename && _userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager))
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_RenameFolder);
         }
