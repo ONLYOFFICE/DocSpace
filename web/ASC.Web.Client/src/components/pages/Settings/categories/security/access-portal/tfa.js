@@ -48,16 +48,18 @@ const TwoFactorAuth = (props) => {
   };
 
   useEffect(() => {
+    checkWidth();
+    window.addEventListener("resize", checkWidth);
+
     if (!isInit) initSettings().then(() => setIsLoading(true));
     else setIsLoading(true);
+
+    return () => window.removeEventListener("resize", checkWidth);
   }, []);
 
   useEffect(() => {
     if (!isInit) return;
-    checkWidth();
     getSettings();
-    window.addEventListener("resize", checkWidth);
-    return () => window.removeEventListener("resize", checkWidth);
   }, [isLoading]);
 
   useEffect(() => {
