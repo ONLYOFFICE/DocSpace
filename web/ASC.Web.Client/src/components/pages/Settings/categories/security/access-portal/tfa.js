@@ -22,7 +22,7 @@ const MainContainer = styled.div`
 `;
 
 const TwoFactorAuth = (props) => {
-  const { t, history } = props;
+  const { t, history, initSettings, isInit } = props;
   const [type, setType] = useState("none");
 
   const [smsDisabled, setSmsDisabled] = useState(false);
@@ -33,13 +33,8 @@ const TwoFactorAuth = (props) => {
   const getSettings = () => {
     const { tfaSettings, smsAvailable, appAvailable } = props;
     const currentSettings = getFromSessionStorage("currentTfaSettings");
-    const defaultSettings = getFromSessionStorage("defaultTfaSettings");
 
-    if (defaultSettings) {
-      saveToSessionStorage("defaultTfaSettings", defaultSettings);
-    } else {
-      saveToSessionStorage("defaultTfaSettings", tfaSettings);
-    }
+    saveToSessionStorage("defaultTfaSettings", tfaSettings);
 
     if (currentSettings) {
       setType(currentSettings);
@@ -49,10 +44,14 @@ const TwoFactorAuth = (props) => {
 
     setSmsDisabled(smsAvailable);
     setAppDisabled(appAvailable);
-    setIsLoading(true);
   };
 
   useEffect(() => {
+    if (!isInit) initSettings().then(() => setIsLoading(true));
+  }, []);
+
+  useEffect(() => {
+    if (!isInit) return;
     checkWidth();
     getSettings();
     window.addEventListener("resize", checkWidth);
@@ -164,7 +163,7 @@ const TwoFactorAuth = (props) => {
   );
 };
 
-export default inject(({ auth }) => {
+export default inject(({ auth, setup }) => {
   const {
     setTfaSettings,
     getTfaConfirmLink,
@@ -173,12 +172,16 @@ export default inject(({ auth }) => {
     appAvailable,
   } = auth.tfaStore;
 
+  const { isInit, initSettings } = setup;
+
   return {
     setTfaSettings,
     getTfaConfirmLink,
     tfaSettings,
     smsAvailable,
     appAvailable,
+    isInit,
+    initSettings,
   };
 })(
   withTranslation(["Settings", "Common"])(withRouter(observer(TwoFactorAuth)))

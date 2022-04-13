@@ -46,17 +46,12 @@ const TrustedMail = (props) => {
 
   const getSettings = () => {
     const currentSettings = getFromSessionStorage("currentTrustedMailSettings");
-    const defaultSettings = getFromSessionStorage("defaultTrustedMailSettings");
 
-    if (defaultSettings) {
-      saveToSessionStorage("defaultTrustedMailSettings", defaultSettings);
-    } else {
-      const defaultData = {
-        type: String(trustedDomainsType),
-        domains: trustedDomains,
-      };
-      saveToSessionStorage("defaultTrustedMailSettings", defaultData);
-    }
+    const defaultData = {
+      type: String(trustedDomainsType),
+      domains: trustedDomains,
+    };
+    saveToSessionStorage("defaultTrustedMailSettings", defaultData);
 
     if (currentSettings) {
       setType(currentSettings.type);

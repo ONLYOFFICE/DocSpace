@@ -35,7 +35,15 @@ const MainContainer = styled.div`
 `;
 
 const PasswordStrength = (props) => {
-  const { t, history, setPortalPasswordSettings, passwordSettings } = props;
+  const {
+    t,
+    history,
+    setPortalPasswordSettings,
+    passwordSettings,
+    initSettings,
+    isInit,
+  } = props;
+
   const [passwordLen, setPasswordLen] = useState(8);
   const [useUpperCase, setUseUpperCase] = useState(false);
   const [useDigits, setUseDigits] = useState(false);
@@ -46,19 +54,14 @@ const PasswordStrength = (props) => {
 
   const getSettings = () => {
     const currentSettings = getFromSessionStorage("currentPasswordSettings");
-    const defaultSettings = getFromSessionStorage("defaultPasswordSettings");
 
-    if (defaultSettings) {
-      saveToSessionStorage("defaultPasswordSettings", defaultSettings);
-    } else {
-      const defaultData = {
-        minLength: passwordSettings.minLength,
-        upperCase: passwordSettings.upperCase,
-        digits: passwordSettings.digits,
-        specSymbols: passwordSettings.specSymbols,
-      };
-      saveToSessionStorage("defaultPasswordSettings", defaultData);
-    }
+    const defaultData = {
+      minLength: passwordSettings.minLength,
+      upperCase: passwordSettings.upperCase,
+      digits: passwordSettings.digits,
+      specSymbols: passwordSettings.specSymbols,
+    };
+    saveToSessionStorage("defaultPasswordSettings", defaultData);
 
     if (currentSettings) {
       setPasswordLen(currentSettings.minLength);
@@ -71,11 +74,14 @@ const PasswordStrength = (props) => {
       setUseDigits(passwordSettings.digits);
       setUseSpecialSymbols(passwordSettings.specSymbols);
     }
-
-    setIsLoading(true);
   };
 
   useEffect(() => {
+    if (!isInit) initSettings().then(() => setIsLoading(true));
+  }, []);
+
+  useEffect(() => {
+    if (!isInit) return;
     checkWidth();
     getSettings();
     window.addEventListener("resize", checkWidth);
@@ -232,12 +238,15 @@ const PasswordStrength = (props) => {
   );
 };
 
-export default inject(({ auth }) => {
+export default inject(({ auth, setup }) => {
   const { setPortalPasswordSettings, passwordSettings } = auth.settingsStore;
+  const { initSettings, isInit } = setup;
 
   return {
     setPortalPasswordSettings,
     passwordSettings,
+    initSettings,
+    isInit,
   };
 })(
   withTranslation(["Settings", "Common"])(
