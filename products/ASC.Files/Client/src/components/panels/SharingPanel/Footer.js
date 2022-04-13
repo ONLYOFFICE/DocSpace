@@ -7,46 +7,40 @@ import Textarea from "@appserver/components/textarea";
 import { StyledFooterContent } from "./StyledSharingPanel";
 
 const Footer = ({
-  buttonLabel,
-  checkboxLabel,
-  textareaPlaceholder,
-  message,
+  t,
   isPersonal,
+  message,
+  onChangeMessage,
   isNotifyUsers,
-  isLoading,
   onNotifyUsersChange,
   onSaveClick,
-  onChangeMessage,
 }) => {
   return (
     <StyledFooterContent>
       {isNotifyUsers && (
         <Textarea
           className="sharing_panel-notification"
-          placeholder={textareaPlaceholder}
+          placeholder={t("AddShareMessage")}
           onChange={onChangeMessage}
           value={message}
-          isDisabled={isLoading}
         />
       )}
 
       {!isPersonal && (
         <Checkbox
           isChecked={isNotifyUsers}
-          label={checkboxLabel}
+          label={t("Notify users")}
           onChange={onNotifyUsersChange}
           className="sharing_panel-checkbox"
-          isDisabled={isLoading}
         />
       )}
       <Button
         className="sharing_panel-button"
-        label={buttonLabel}
+        label={t("Common:SaveButton")}
         scale={true}
         size={"normal"}
         primary
         onClick={onSaveClick}
-        isDisabled={isLoading}
       />
     </StyledFooterContent>
   );

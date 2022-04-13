@@ -587,14 +587,11 @@ class SharingPanelComponent extends React.Component {
             </StyledBodyContent>
 
             <Footer
-              buttonLabel={t("Common:SaveButton")}
-              checkboxLabel={t("Notify users")}
-              textareaPlaceholder={t("AddShareMessage")}
+              t={t}
+              isPersonal={isPersonal}
               message={message}
               onChangeMessage={this.onChangeMessage}
-              isPersonal={isPersonal}
               isNotifyUsers={isNotifyUsers}
-              isLoading={isLoading}
               onNotifyUsersChange={this.onNotifyUsersChange}
               onSaveClick={this.onSaveClick}
             />
