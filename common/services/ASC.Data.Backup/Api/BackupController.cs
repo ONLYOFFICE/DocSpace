@@ -29,7 +29,7 @@ namespace ASC.Data.Backup.Controllers;
 [Scope]
 [DefaultRoute]
 [ApiController]
-public class BackupController
+public class BackupController : ControllerBase
 {
     private readonly BackupAjaxHandler _backupHandler;
     private readonly CoreBaseSettings _coreBaseSettings;
@@ -46,7 +46,7 @@ public class BackupController
         TenantExtra tenantExtra,
         IEventBus eventBus)
     {
-        _currentUserId = securityContext.CurrentAccount.ID; 
+        _currentUserId = securityContext.CurrentAccount.ID;
         _tenantId = tenantManager.GetCurrentTenant().Id;
         _backupHandler = backupAjaxHandler;
         _coreBaseSettings = coreBaseSettings;
@@ -157,14 +157,14 @@ public class BackupController
         var storageType = backup.StorageType == null ? BackupStorageType.Documents : (BackupStorageType)Int32.Parse(backup.StorageType);
         var storageParams = backup.StorageParams == null ? new Dictionary<string, string>() : backup.StorageParams.ToDictionary(r => r.Key.ToString(), r => r.Value.ToString());
 
-        _eventBus.Publish(new BackupRequestIntegrationEvent (        
-             tenantId : _tenantId,
+        _eventBus.Publish(new BackupRequestIntegrationEvent(
+             tenantId: _tenantId,
              storageParams: storageParams,
-             storageType : storageType,
-             backupMail : backup.BackupMail,
+             storageType: storageType,
+             backupMail: backup.BackupMail,
              createBy: _currentUserId
         ));
-        
+
         return _backupHandler.GetBackupProgress();
     }
 
@@ -271,8 +271,8 @@ public class BackupController
                              notify: backupRestore.Notify,
                              backupId: backupRestore.BackupId
                         ));
-           
-        
+
+
         return _backupHandler.GetBackupProgress();
     }
 

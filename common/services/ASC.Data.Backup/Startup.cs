@@ -36,9 +36,11 @@ public class Startup : BaseStartup
 
     public override void ConfigureServices(IServiceCollection services)
     {
-        base.ConfigureServices(services);      
+        base.ConfigureServices(services);
 
-        DIHelper.TryAdd<BackupController>();
+        DIHelper.TryAdd<BackupProgressItem>();
+        DIHelper.TryAdd<RestoreProgressItem>();
+        DIHelper.TryAdd<TransferProgressItem>();
 
         NotifyConfigurationExtension.Register(DIHelper);
 
