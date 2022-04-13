@@ -116,11 +116,6 @@ const StyledTreeMenu = styled(Tree)`
     .span.rc-tree-node-selected {
     }
   }
-  .rc-tree-treenode-switcher-open {
-    .rc-tree-child-tree-open {
-      // margin-left: -16px;
-    }
-  }
 
   .rc-tree-treenode-disabled > span:not(.rc-tree-switcher),
   .rc-tree-treenode-disabled > a,
