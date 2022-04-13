@@ -130,6 +130,11 @@ public class FileSecurity : IFileSecurity
         return CanAsync(entry, userId, FilesSecurityActions.Delete);
     }
 
+    public Task<bool> CanEditRoomAsync<T>(FileEntry<T> entry, Guid userId)
+    {
+        return CanAsync(entry, userId, FilesSecurityActions.RoomEdit);
+    }
+
     public Task<bool> CanReadAsync<T>(FileEntry<T> entry)
     {
         return CanReadAsync(entry, _authContext.CurrentAccount.ID);
@@ -168,6 +173,11 @@ public class FileSecurity : IFileSecurity
     public Task<bool> CanDeleteAsync<T>(FileEntry<T> entry)
     {
         return CanDeleteAsync(entry, _authContext.CurrentAccount.ID);
+    }
+
+    public Task<bool> CanEditRoomAsync<T>(FileEntry<T> entry)
+    {
+        return CanEditRoomAsync(entry, _authContext.CurrentAccount.ID);
     }
 
     public Task<IEnumerable<Guid>> WhoCanReadAsync<T>(FileEntry<T> entry)
@@ -545,6 +555,7 @@ public class FileSecurity : IFileSecurity
 
                 if (e.RootFolderType == FolderType.VirtualRooms && _fileSecurityCommon.IsAdministrator(userId))
                 {
+                    // administrator in VirtualRooms has all right
                     result.Add(e);
                     continue;
                 }
@@ -602,27 +613,31 @@ public class FileSecurity : IFileSecurity
                 {
                     result.Add(e);
                 }
-                else if (action == FilesSecurityActions.Comment && (e.Access == FileShare.Comment || e.Access == FileShare.Review || e.Access == FileShare.CustomFilter || e.Access == FileShare.ReadWrite))
+                else if (action == FilesSecurityActions.Comment && (e.Access == FileShare.Comment || e.Access == FileShare.Review || e.Access == FileShare.CustomFilter || e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomManager))
                 {
                     result.Add(e);
                 }
-                else if (action == FilesSecurityActions.FillForms && (e.Access == FileShare.FillForms || e.Access == FileShare.Review || e.Access == FileShare.ReadWrite))
+                else if (action == FilesSecurityActions.FillForms && (e.Access == FileShare.FillForms || e.Access == FileShare.Review || e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomManager))
                 {
                     result.Add(e);
                 }
-                else if (action == FilesSecurityActions.Review && (e.Access == FileShare.Review || e.Access == FileShare.ReadWrite))
+                else if (action == FilesSecurityActions.Review && (e.Access == FileShare.Review || e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomManager))
                 {
                     result.Add(e);
                 }
-                else if (action == FilesSecurityActions.CustomFilter && (e.Access == FileShare.CustomFilter || e.Access == FileShare.ReadWrite))
+                else if (action == FilesSecurityActions.CustomFilter && (e.Access == FileShare.CustomFilter || e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomManager))
                 {
                     result.Add(e);
                 }
-                else if (action == FilesSecurityActions.Edit && e.Access == FileShare.ReadWrite)
+                else if (action == FilesSecurityActions.Edit && (e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomManager))
                 {
                     result.Add(e);
                 }
-                else if (action == FilesSecurityActions.Create && e.Access == FileShare.ReadWrite)
+                else if (action == FilesSecurityActions.RoomEdit && (e.Access == FileShare.RoomManager))
+                {
+                    result.Add(e);
+                }
+                else if (action == FilesSecurityActions.Create && (e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomManager))
                 {
                     result.Add(e);
                 }
@@ -1110,6 +1125,7 @@ public class FileSecurity : IFileSecurity
         Create,
         Edit,
         Delete,
-        CustomFilter
+        CustomFilter,
+        RoomEdit
     }
 }
