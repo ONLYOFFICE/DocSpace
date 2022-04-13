@@ -28,10 +28,10 @@ namespace ASC.Files.Core.Helpers;
 
 public static class RoomTemplateValidator
 {
-    private static readonly HashSet<FileShare> _fillingFormsRoom = new HashSet<FileShare>() { FileShare.FillForms, FileShare.ReadWrite, FileShare.Read, FileShare.None };
-    private static readonly HashSet<FileShare> _editingRoom = new HashSet<FileShare>() { FileShare.ReadWrite, FileShare.Read, FileShare.Review, FileShare.None };
-    private static readonly HashSet<FileShare> _reviewRoom = new HashSet<FileShare> { FileShare.ReadWrite, FileShare.Read, FileShare.None, FileShare.Review, FileShare.Comment, FileShare.Restrict };
-    private static readonly HashSet<FileShare> _readOnlyRoom = new HashSet<FileShare> { FileShare.ReadWrite, FileShare.Read, FileShare.Restrict, FileShare.None };
+    private static readonly HashSet<FileShare> _fillingFormsRoom = new HashSet<FileShare>() { FileShare.FillForms, FileShare.ReadWrite, FileShare.Read, FileShare.None, FileShare.RoomManager };
+    private static readonly HashSet<FileShare> _editingRoom = new HashSet<FileShare>() { FileShare.ReadWrite, FileShare.Read, FileShare.Review, FileShare.None, FileShare.RoomManager };
+    private static readonly HashSet<FileShare> _reviewRoom = new HashSet<FileShare> { FileShare.ReadWrite, FileShare.Read, FileShare.None, FileShare.Review, FileShare.Comment, FileShare.Restrict, FileShare.RoomManager };
+    private static readonly HashSet<FileShare> _readOnlyRoom = new HashSet<FileShare> { FileShare.ReadWrite, FileShare.Read, FileShare.Restrict, FileShare.None, FileShare.RoomManager };
 
     public static bool Validate(FileShare share, FolderType folderType)
     {
