@@ -1,6 +1,18 @@
 import styled, { css } from "styled-components";
 
 const StyledBody = styled.div`
+  .empty-folder_container {
+    grid-template-areas:
+      "img img"
+      "headerText headerText";
+    .ec-image {
+      margin: auto;
+    }
+    .ec-header {
+      margin: auto;
+    }
+  }
+
   .selection-panel_body {
     height: 507px;
     display: grid;
@@ -131,6 +143,18 @@ const StyledRow = styled.div`
 
 const StyledAsideBody = styled.div`
   height: 100%;
+  .empty-folder_container {
+    grid-template-areas:
+      "img img"
+      "headerText headerText";
+    .ec-image {
+      margin: auto;
+    }
+    .ec-header {
+      margin: auto;
+    }
+  }
+
   .selection-panel_aside-body {
     height: calc(100% - 32px);
     display: grid;

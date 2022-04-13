@@ -161,7 +161,7 @@ const FilesListBody = ({
           <EmptyContainer
             theme={theme}
             headerText={t("Home:EmptyFolderHeader")}
-            imageSrc="/static/images/empty_screen.png"
+            imageSrc="/static/images/empty.screen.react.svg"
           />
         </div>
       )}
