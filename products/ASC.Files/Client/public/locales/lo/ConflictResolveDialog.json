@@ -1,6 +1,6 @@
 ﻿{
-  "ConflictResolveDescription": "ຊື່ໄຟລ໌ {{file}} ມີຢູ່ໃນໂຟນເດີ {{folder}} ແລ້ວ.",
-  "ConflictResolveDescriptionFiles": "{{filesCount}} ມີເອກະສານຊື່ດ່ຽວກັນໃນໂໄນເດີ້ແລ້ວ '{{folder}}'.",
+  "ConflictResolveDescription": "ຊື່ໄຟລ໌ <strong>{{file}}</strong> ມີຢູ່ໃນໂຟນເດີ <strong>{{folder}}</strong> ແລ້ວ.",
+  "ConflictResolveDescriptionFiles": "{{filesCount}} ມີເອກະສານຊື່ດ່ຽວກັນໃນໂໄນເດີ້ແລ້ວ <strong>{{folder}}<strong>.",
   "ConflictResolveSelectAction": "ກະລຸນາເລືອກການດຳເນີນການ",
   "ConflictResolveTitle": "ຢືນຢັນການທັບ",
   "CreateDescription": "ໃນໂຟນເດີ້ຈະມີ 2 ໄຟລ໌ແຕກຕ່າງກັນ.",

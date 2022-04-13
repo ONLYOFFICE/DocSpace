@@ -1,6 +1,6 @@
 ﻿{
-  "ConflictResolveDescription": " Tệp có tên {{file}} đã tồn tại trong thư mục {{folder}}.",
-  "ConflictResolveDescriptionFiles": " {{filesCount}} tài liệu có cùng tên đã tồn tại trong thư mục '{{folder}}.",
+  "ConflictResolveDescription": " Tệp có tên <strong>{{file}}</strong> đã tồn tại trong thư mục <strong>{{folder}}</strong>.",
+  "ConflictResolveDescriptionFiles": " {{filesCount}} tài liệu có cùng tên đã tồn tại trong thư mục <strong>{{folder}}<strong>.",
   "ConflictResolveSelectAction": "Vui lòng chọn hành động:",
   "ConflictResolveTitle": "Xác nhận ghi đè",
   "CreateDescription": "Sẽ có hai tệp khác nhau trong thư mục.",

@@ -1,6 +1,6 @@
 ﻿{
-  "ConflictResolveDescription": "Το αρχείο με το όνομα {{file}} υπάρχει ήδη στον φάκελο {{folder}}.",
-  "ConflictResolveDescriptionFiles": "{{filesCount}} έγγραφα με το ίδιο όνομα υπάρχουν ήδη στον φάκελο {{folder}}",
+  "ConflictResolveDescription": "Το αρχείο με το όνομα <strong>{{file}}</strong> υπάρχει ήδη στον φάκελο <strong>{{folder}}</strong>.",
+  "ConflictResolveDescriptionFiles": "{{filesCount}} έγγραφα με το ίδιο όνομα υπάρχουν ήδη στον φάκελο <strong>{{folder}}<strong>",
   "ConflictResolveSelectAction": "Επιλέξτε την ενέργεια",
   "ConflictResolveTitle": "Επιβεβαίωση αντικατάστασης",
   "CreateDescription": "Θα υπάρχουν δύο διαφορετικά αρχεία στον φάκελο.",

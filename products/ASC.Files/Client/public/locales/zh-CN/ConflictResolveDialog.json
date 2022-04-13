@@ -1,6 +1,6 @@
 ﻿{
-  "ConflictResolveDescription": "{{folder}}文件夹中已有名称为{{file}}的文件。",
-  "ConflictResolveDescriptionFiles": "‘{{folder}}’文件夹中已有{{filesCount}}个名称相同的文档。",
+  "ConflictResolveDescription": "<strong>{{folder}}</strong>文件夹中已有名称为<strong>{{file}}</strong>的文件。",
+  "ConflictResolveDescriptionFiles": "<strong>{{folder}}<strong>文件夹中已有{{filesCount}}个名称相同的文档。",
   "ConflictResolveSelectAction": "请选择操作：",
   "ConflictResolveTitle": "覆盖确认",
   "CreateDescription": "文件夹中将有两种不同文件。",
