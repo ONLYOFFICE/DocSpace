@@ -223,7 +223,7 @@ const withDialogs = (WrappedComponent) => {
       />
     );
 
-    const selectFileDialog = mfReady && (
+    const selectFileDialog = mfReady && props.successAuth && (
       <DynamicComponent
         system={{
           scope: FILES_SCOPE,
@@ -242,7 +242,7 @@ const withDialogs = (WrappedComponent) => {
       />
     );
 
-    const selectFolderDialog = mfReady && (
+    const selectFolderDialog = mfReady && props.successAuth && (
       <DynamicComponent
         resetTreeFolders
         showButtons
