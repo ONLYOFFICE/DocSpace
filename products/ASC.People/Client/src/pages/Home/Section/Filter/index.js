@@ -8,6 +8,7 @@ import Loaders from "@appserver/common/components/Loaders";
 import { withLayoutSize } from "@appserver/common/utils";
 import { isMobileOnly } from "react-device-detect";
 import { inject, observer } from "mobx-react";
+import withLoader from "../../../../HOCs/withLoader";
 
 const getEmployeeStatus = (filterValues) => {
   const employeeStatus = result(
@@ -294,7 +295,7 @@ export default withRouter(
     observer(
       withLayoutSize(
         withTranslation(["Home", "Common", "Translations", "GroupSelector"])(
-          SectionFilterContent
+          withLoader(SectionFilterContent)(<Loaders.Filter />)
         )
       )
     )
