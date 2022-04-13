@@ -91,7 +91,7 @@ public class FileSharingAceHelper<T>
         var usersWithoutRight = new List<Guid>();
         var changed = false;
 
-        aceWrappers = handleForRooms ? FilterAndProcessForRooms(entry, aceWrappers) : aceWrappers;
+        aceWrappers = handleForRooms ? await FilterForRoomsAsync(entry, aceWrappers) : aceWrappers;
 
         foreach (var w in aceWrappers.OrderByDescending(ace => ace.SubjectGroup))
         {
@@ -228,7 +228,7 @@ public class FileSharingAceHelper<T>
             });
     }
 
-    private List<AceWrapper> FilterAndProcessForRooms(FileEntry<T> entry, List<AceWrapper> aceWrappers)
+    private async Task<List<AceWrapper>> FilterForRoomsAsync(FileEntry<T> entry, List<AceWrapper> aceWrappers)
     {
         if (entry.FileEntryType == FileEntryType.File)
         {
@@ -247,7 +247,7 @@ public class FileSharingAceHelper<T>
         var result = new List<AceWrapper>(aceWrappers.Count);
 
         var isAdmin = _fileSecurityCommon.IsAdministrator(_authContext.CurrentAccount.ID);
-        var isRoomManager = !isAdmin ? false : true;
+        var isRoomManager = !isAdmin ? await _fileSecurity.CanEditRoomAsync(entry) : true;
 
         foreach (var ace in aceWrappers)
         {
@@ -270,6 +270,11 @@ public class FileSharingAceHelper<T>
             if ((ace.Share == FileShare.None || ace.Share == FileShare.Restrict ) && isAdmin)
             {
                 result.Add(ace);
+                continue;
+            }
+
+            if (await _fileSecurity.CanEditRoomAsync(entry, ace.SubjectId))
+            {
                 continue;
             }
 
@@ -308,10 +313,15 @@ public class FileSharingHelper
 
     public async Task<bool> CanSetAccessAsync<T>(FileEntry<T> entry)
     {
+        var isFolder = entry is Folder<T>;
+        var folder = entry as Folder<T>;
+
         return
             entry != null
             && ((entry.RootFolderType == FolderType.COMMON && _global.IsAdministrator)
             || (entry.RootFolderType == FolderType.VirtualRooms && _global.IsAdministrator)
+            || (isFolder && (folder.FolderType == FolderType.FillingFormsRoom || folder.FolderType == FolderType.EditingRoom || folder.FolderType == FolderType.ReviewRoom ||
+                folder.FolderType == FolderType.ReadOnlyRoom && folder.FolderType == FolderType.CustomRoom) && await _fileSecurity.CanEditRoomAsync(entry))
                 || !_userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager)
                     && (entry.RootFolderType == FolderType.USER
                         && (Equals(entry.RootId, _globalFolderHelper.FolderMy) || await _fileSecurity.CanEditAsync(entry))
