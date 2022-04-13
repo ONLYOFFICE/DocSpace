@@ -11,7 +11,6 @@ class ThirdPartyResources extends React.Component {
         foldersType="third-party"
         searchParam=".gz"
         filesListTitle={t("SelectFileInGZFormat")}
-        dialogName="Select File"
         withoutResetFolderTree
         ignoreSelectedFolderTree
         isArchiveOnly

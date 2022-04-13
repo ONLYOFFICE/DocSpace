@@ -240,6 +240,7 @@ class SelectFolderDialog extends React.Component {
       dialogName,
       footer,
       buttonName,
+      isDisableTree,
     } = this.props;
     const {
       folderId,
@@ -258,7 +259,10 @@ class SelectFolderDialog extends React.Component {
       expandedKeys,
     } = this.state;
 
-    const primaryButtonName = buttonName ? buttonName : t("Common:SaveButton");
+    const primaryButtonName = buttonName
+      ? buttonName
+      : t("Common:SaveHereButton");
+    const name = dialogName ? dialogName : t("Common:SaveButton");
 
     return displayType === "aside" ? (
       <SelectFolderDialogAsideView
@@ -275,12 +279,15 @@ class SelectFolderDialog extends React.Component {
         onSelectFolder={this.onSelect}
         onButtonClick={this.onButtonClick}
         header={header}
-        dialogName={dialogName}
+        dialogName={isNeedArrowIcon ? t("Translations:FolderSelection") : name}
         footer={footer}
         canCreate={canCreate}
         isLoadingData={isLoadingData}
-        primaryButtonName={primaryButtonName}
+        primaryButtonName={
+          isNeedArrowIcon ? t("Common:Select") : primaryButtonName
+        }
         isAvailable={isAvailable}
+        isDisableTree={isDisableTree}
       />
     ) : (
       <SelectionPanel
@@ -293,7 +300,7 @@ class SelectFolderDialog extends React.Component {
         resultingFolderTree={resultingFolderTree}
         onButtonClick={this.onButtonClick}
         header={header}
-        dialogName={dialogName}
+        dialogName={name}
         footer={footer}
         canCreate={canCreate}
         isLoadingData={isLoadingData}
@@ -308,6 +315,7 @@ class SelectFolderDialog extends React.Component {
         loadNextPage={this._loadNextPage}
         folderTitle={folderTitle}
         expandedKeys={expandedKeys}
+        isDisableTree={isDisableTree}
         folderSelection
       />
     );
@@ -328,11 +336,13 @@ SelectFolderDialog.propTypes = {
   id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   withoutProvider: PropTypes.bool,
   withoutImmediatelyClose: PropTypes.bool,
+  isDisableTree: PropTypes.bool,
 };
 SelectFolderDialog.defaultProps = {
   id: "",
   withoutProvider: false,
   withoutImmediatelyClose: false,
+  isDisableTree: false,
 };
 
 export default inject(

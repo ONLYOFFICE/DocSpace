@@ -27,6 +27,7 @@ const SelectFolderDialogAsideView = ({
   header,
   canCreate,
   primaryButtonName,
+  isDisableTree,
 }) => {
   return (
     <ModalDialog
@@ -58,7 +59,7 @@ const SelectFolderDialogAsideView = ({
             <div className="selection-panel_aside-header">
               <div>{header}</div>
               <Text fontWeight="700" fontSize="18px">
-                {"Documents"}
+                {t("Translations:Documents")}
               </Text>
             </div>
 
@@ -72,6 +73,7 @@ const SelectFolderDialogAsideView = ({
                   certainFolders
                   isAvailable={isAvailable}
                   selectedKeys={[`${folderId}`]}
+                  isDisableTree={isDisableTree}
                   displayType="aside"
                 />
               ) : (
@@ -89,7 +91,9 @@ const SelectFolderDialogAsideView = ({
                   size="normalTouchscreen"
                   label={primaryButtonName}
                   onClick={onButtonClick}
-                  isDisabled={isLoadingData || !isAvailable || !canCreate}
+                  isDisabled={
+                    isDisableTree || isLoadingData || !isAvailable || !canCreate
+                  }
                 />
                 <Button
                   size="normalTouchscreen"

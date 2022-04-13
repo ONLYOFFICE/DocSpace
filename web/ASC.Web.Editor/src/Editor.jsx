@@ -919,7 +919,6 @@ const Editor = () => {
                 foldersType="exceptPrivacyTrashFolders"
                 {...fileTypeDetection()}
                 filesListTitle={selectFilesListTitle()}
-                dialogName={i18n.t("SelectFileTitle")}
               />
             )}
 
@@ -942,7 +941,6 @@ const Editor = () => {
                     />
                   </StyledSelectFolder>
                 }
-                dialogName={i18n.t("FolderForSave")}
                 {...(extension !== "fb2" && {
                   footer: (
                     <StyledSelectFolder>

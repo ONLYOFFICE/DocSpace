@@ -296,6 +296,7 @@ class SelectFileDialog extends React.Component {
     const buttonName = creationButtonPrimary
       ? t("Common:Create")
       : t("Common:SaveButton");
+    const name = dialogName ? dialogName : t("Common:SelectFile");
 
     return displayType === "aside" ? (
       <SelectFileDialogAsideView
@@ -309,7 +310,7 @@ class SelectFileDialog extends React.Component {
         resultingFolderTree={resultingFolderTree}
         onButtonClick={this.onClickSave}
         header={header}
-        dialogName={dialogName}
+        dialogName={name}
         footer={footer}
         isLoadingData={isLoadingData}
         primaryButtonName={buttonName}
@@ -338,7 +339,7 @@ class SelectFileDialog extends React.Component {
         resultingFolderTree={resultingFolderTree}
         onButtonClick={this.onClickSave}
         header={header}
-        dialogName={dialogName}
+        dialogName={name}
         footer={footer}
         isLoadingData={isLoadingData}
         primaryButtonName={buttonName}

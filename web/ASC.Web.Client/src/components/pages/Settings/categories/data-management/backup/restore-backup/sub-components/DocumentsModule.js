@@ -11,7 +11,6 @@ class Documents extends React.Component {
         withoutProvider
         isArchiveOnly
         searchParam=".gz"
-        dialogName="Select File"
         filesListTitle={t("SelectFileInGZFormat")}
         withoutResetFolderTree
         ignoreSelectedFolderTree

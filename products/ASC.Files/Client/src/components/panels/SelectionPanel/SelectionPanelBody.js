@@ -45,6 +45,7 @@ const SelectionPanelBody = ({
   canCreate = true,
   isLoadingData,
   expandedKeys,
+  isDisableTree,
 }) => {
   const onMouseEvent = (event) => {
     event.stopPropagation();
@@ -75,7 +76,7 @@ const SelectionPanelBody = ({
                   fontSize="18px"
                   className="selection-panel_folder-title"
                 >
-                  {"Documents"}
+                  {t("Translations:Documents")}
                 </Text>
 
                 {folderId && resultingFolderTree ? (
@@ -88,6 +89,7 @@ const SelectionPanelBody = ({
                     isAvailable={isAvailable}
                     selectedKeys={[`${folderId}`]}
                     expandedKeys={expandedKeys}
+                    isDisableTree={isDisableTree}
                     displayType="modal"
                   />
                 ) : (
@@ -137,10 +139,12 @@ const SelectionPanelBody = ({
                     label={primaryButtonName}
                     onClick={onButtonClick}
                     isDisabled={
+                      isDisableTree ||
                       isLoadingData ||
                       (!fileId && !folderSelection) ||
                       !canCreate
                     }
+                    isLoading={isDisableTree}
                   />
                   <Button
                     theme={theme}

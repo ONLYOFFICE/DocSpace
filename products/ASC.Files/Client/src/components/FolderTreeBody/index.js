@@ -15,6 +15,7 @@ const FolderTreeBody = ({
   filter,
   selectedKeys,
   theme,
+  isDisableTree,
 }) => {
   const { t } = useTranslation(["SelectFolder", "Common"]);
   return (
@@ -32,6 +33,7 @@ const FolderTreeBody = ({
                 withoutProvider={withoutProvider}
                 certainFolders={certainFolders}
                 selectedKeys={selectedKeys}
+                disabled={isDisableTree}
                 needUpdate={false}
               />
             </Scrollbar>

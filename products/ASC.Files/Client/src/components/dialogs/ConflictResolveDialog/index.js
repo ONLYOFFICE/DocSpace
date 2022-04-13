@@ -183,7 +183,6 @@ const ConflictResolveDialog = (props) => {
       isLoading={!tReady}
       visible={visible}
       onClose={onCloseDialog}
-      //displayType="aside"
     >
       <ModalDialog.Header>{t("ConflictResolveTitle")}</ModalDialog.Header>
       <ModalDialog.Body>

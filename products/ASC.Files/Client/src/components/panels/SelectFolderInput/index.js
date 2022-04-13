@@ -152,7 +152,6 @@ class SelectFolderInput extends React.PureComponent {
             isPanelVisible={isPanelVisible}
             onSetBaseFolderPath={this.onSetBaseFolderPath}
             onSetNewFolderPath={this.onSetNewFolderPath}
-            dialogName={t("Translations:FolderSelection")}
           />
         )}
       </StyledComponent>
