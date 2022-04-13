@@ -187,7 +187,7 @@ export function getCommonFoldersTree() {
       return [
         {
           id: commonFolders.current.id,
-          key: 0 - 1,
+          key: "1",
           parentId: commonFolders.current.parentId,
           title: commonFolders.current.title,
           rootFolderType: +commonFolders.current.rootFolderType,
