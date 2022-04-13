@@ -1,6 +1,6 @@
 ﻿{
   "ConflictResolveDescription": "O ficheiro com o nome <strong>{{file}}</strong> já existe na pasta <strong>{{folder}}</strong>.",
-  "ConflictResolveDescriptionFiles": "{{filesCount}} documentos com o mesmo nome já existem na pasta <strong>{{folder}}<strong>.",
+  "ConflictResolveDescriptionFiles": "{{filesCount}} documentos com o mesmo nome já existem na pasta <strong>{{folder}}</strong>.",
   "ConflictResolveSelectAction": "Selecione a ação:",
   "ConflictResolveTitle": "Confirmação de substituição",
   "CreateDescription": "Haverá dois ficheiros diferentes na pasta.",

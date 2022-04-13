@@ -1,6 +1,6 @@
 ﻿{
   "ConflictResolveDescription": "Tiedosto, jonka nimi on <strong>{{file}}</strong>, on jo kansiossa <strong>{{folder}}</strong>.",
-  "ConflictResolveDescriptionFiles": "{{filesCount}} samannimistä asiakirjaa on jo olemassa kansiossa <strong>{{folder}}<strong>.",
+  "ConflictResolveDescriptionFiles": "{{filesCount}} samannimistä asiakirjaa on jo olemassa kansiossa <strong>{{folder}}</strong>.",
   "ConflictResolveSelectAction": "Valitse toiminto:",
   "ConflictResolveTitle": "Korvaamisen vahvistus",
   "CreateDescription": "Kansiossa tulee olemaan kaksi eri tiedostoa.",

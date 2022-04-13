@@ -1,6 +1,6 @@
 ﻿{
   "ConflictResolveDescription": "<strong>{{file}}</strong> isimli dosya <strong>{{folder}}</strong> klasöründe zaten mevcut.",
-  "ConflictResolveDescriptionFiles": "{{filesCount}} belgeleri, <strong>{{folder}}<strong> klasöründe aynı isimle zaten mevcut.",
+  "ConflictResolveDescriptionFiles": "{{filesCount}} belgeleri, <strong>{{folder}}</strong> klasöründe aynı isimle zaten mevcut.",
   "ConflictResolveSelectAction": "Lütfen işlemi seçin:",
   "ConflictResolveTitle": "Üstüne yazma onayı",
   "CreateDescription": "Klasörde iki farklı dosya olacaktır.",

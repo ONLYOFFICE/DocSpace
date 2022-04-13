@@ -1,6 +1,6 @@
 ﻿{
   "ConflictResolveDescription": "Het bestand met de naam <strong>{{file}}</strong> bestaat al in de map <strong>{{folder}}</strong>.",
-  "ConflictResolveDescriptionFiles": "{{filesCount}} documenten met dezelfde naam al bestaan in de map <strong>{{folder}}<strong>.",
+  "ConflictResolveDescriptionFiles": "{{filesCount}} documenten met dezelfde naam al bestaan in de map <strong>{{folder}}</strong>.",
   "ConflictResolveSelectAction": "Kies de actie:",
   "ConflictResolveTitle": "Overschrijf bevestiging",
   "CreateDescription": "Er zullen twee verschillende bestanden in de map staan.",

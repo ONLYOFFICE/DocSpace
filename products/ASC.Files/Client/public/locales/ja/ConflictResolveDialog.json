@@ -1,6 +1,6 @@
 ﻿{
   "ConflictResolveDescription": "フォルダ<strong>{{folder}}</strong>内に<strong>{{file}}</strong>という名前のファイルがすでに存在しています。",
-  "ConflictResolveDescriptionFiles": "{{filesCount}}フォルダ<strong>{{folder}}<strong>に同名のドキュメントがすでに存在しています。",
+  "ConflictResolveDescriptionFiles": "{{filesCount}}フォルダ<strong>{{folder}}</strong>に同名のドキュメントがすでに存在しています。",
   "ConflictResolveSelectAction": "アクションをお選びください：",
   "ConflictResolveTitle": "上書き確認",
   "CreateDescription": "フォルダ内には2種類のファイルが存在します。",

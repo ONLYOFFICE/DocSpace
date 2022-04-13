@@ -1,6 +1,6 @@
 ﻿{
   "ConflictResolveDescription": "Súbor s názvom <strong>{{file}}</strong> už v priečinku <strong>{{folder}}</strong> existuje.",
-  "ConflictResolveDescriptionFiles": "Dokumenty {{filesCount}} s rovnakými názvami už v priečinku <strong>{{folder}}<strong> existujú.",
+  "ConflictResolveDescriptionFiles": "Dokumenty {{filesCount}} s rovnakými názvami už v priečinku <strong>{{folder}}</strong> existujú.",
   "ConflictResolveSelectAction": "Vyberte akciu:",
   "ConflictResolveTitle": "Potvrdenie prepísania",
   "CreateDescription": "V priečinku budú dva rôzne súbory.",
