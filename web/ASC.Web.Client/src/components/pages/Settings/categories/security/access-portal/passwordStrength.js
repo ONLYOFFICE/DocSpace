@@ -51,6 +51,7 @@ const PasswordStrength = (props) => {
 
   const [showReminder, setShowReminder] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const getSettings = () => {
     const currentSettings = getFromSessionStorage("currentPasswordSettings");
@@ -78,6 +79,7 @@ const PasswordStrength = (props) => {
 
   useEffect(() => {
     if (!isInit) initSettings().then(() => setIsLoading(true));
+    else setIsLoading(true);
   }, []);
 
   useEffect(() => {
@@ -99,10 +101,11 @@ const PasswordStrength = (props) => {
       specSymbols: useSpecialSymbols,
     };
 
+    saveToSessionStorage("currentPasswordSettings", newSettings);
+
     if (isEqual(defaultSettings, newSettings)) {
       setShowReminder(false);
     } else {
-      saveToSessionStorage("currentPasswordSettings", newSettings);
       setShowReminder(true);
     }
   }, [passwordLen, useUpperCase, useDigits, useSpecialSymbols]);
@@ -131,26 +134,31 @@ const PasswordStrength = (props) => {
     }
   };
 
-  const onSaveClick = () => {
-    setPortalPasswordSettings(
-      passwordLen,
-      useUpperCase,
-      useDigits,
-      useSpecialSymbols
-    )
-      .then(() => {
-        setShowReminder(false);
-        const data = {
-          minLength: passwordLen,
-          upperCase: useUpperCase,
-          digits: useDigits,
-          specSymbols: useSpecialSymbols,
-        };
-        saveToSessionStorage("currentPasswordSettings", data);
-        saveToSessionStorage("defaultPasswordSettings", data);
-        toastr.success(t("SuccessfullySaveSettingsMessage"));
-      })
-      .catch((e) => toastr.error(e));
+  const onSaveClick = async () => {
+    setIsSaving(true);
+
+    try {
+      const data = {
+        minLength: passwordLen,
+        upperCase: useUpperCase,
+        digits: useDigits,
+        specSymbols: useSpecialSymbols,
+      };
+      await setPortalPasswordSettings(
+        passwordLen,
+        useUpperCase,
+        useDigits,
+        useSpecialSymbols
+      );
+      setShowReminder(false);
+      saveToSessionStorage("currentPasswordSettings", data);
+      saveToSessionStorage("defaultPasswordSettings", data);
+      toastr.success(t("SuccessfullySaveSettingsMessage"));
+    } catch (error) {
+      toastr.error(e);
+    }
+
+    setIsSaving(false);
   };
 
   const onCancelClick = () => {
@@ -233,6 +241,7 @@ const PasswordStrength = (props) => {
         cancelButtonLabel={t("Common:CancelButton")}
         displaySettings={true}
         hasScroll={false}
+        isSaving={isSaving}
       />
     </MainContainer>
   );

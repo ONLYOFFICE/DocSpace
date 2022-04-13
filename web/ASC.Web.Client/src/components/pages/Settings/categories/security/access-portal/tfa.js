@@ -29,6 +29,7 @@ const TwoFactorAuth = (props) => {
   const [appDisabled, setAppDisabled] = useState(false);
   const [showReminder, setShowReminder] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const getSettings = () => {
     const { tfaSettings, smsAvailable, appAvailable } = props;
@@ -48,6 +49,7 @@ const TwoFactorAuth = (props) => {
 
   useEffect(() => {
     if (!isInit) initSettings().then(() => setIsLoading(true));
+    else setIsLoading(true);
   }, []);
 
   useEffect(() => {
@@ -86,17 +88,19 @@ const TwoFactorAuth = (props) => {
   const onSaveClick = () => {
     const { t, setTfaSettings, getTfaConfirmLink, history } = props;
 
+    setIsSaving(true);
     setTfaSettings(type).then((res) => {
       toastr.success(t("SuccessfullySaveSettingsMessage"));
+      setType(type);
+      saveToSessionStorage("defaultTfaSettings", type);
+      setIsSaving(false);
+      setShowReminder(false);
+
       if (type !== "none") {
         getTfaConfirmLink(res).then((link) =>
           history.push(link.replace(window.location.origin, ""))
         );
       }
-      setType(type);
-      saveToSessionStorage("defaultTfaSettings", type);
-
-      setShowReminder(false);
     });
   };
 
@@ -158,6 +162,7 @@ const TwoFactorAuth = (props) => {
         cancelButtonLabel={t("Common:CancelButton")}
         displaySettings={true}
         hasScroll={false}
+        isSaving={isSaving}
       />
     </MainContainer>
   );

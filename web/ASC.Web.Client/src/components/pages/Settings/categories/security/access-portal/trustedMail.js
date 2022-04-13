@@ -211,6 +211,7 @@ const TrustedMail = (props) => {
         cancelButtonLabel={t("Common:CancelButton")}
         displaySettings={true}
         hasScroll={false}
+        isSaving={isSaving}
       />
     </MainContainer>
   );
