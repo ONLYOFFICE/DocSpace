@@ -30,12 +30,13 @@ function useMfScripts() {
         "./SharingDialog"
       )();
       const toastr = await loadComponent(STUDIO_SCOPE, "./toastr")();
-
       const filesUtils = await loadComponent(FILES_SCOPE, "./utils")();
+      const authStore = await loadComponent(STUDIO_SCOPE, "./store")();
 
       window.toastr = toastr.default;
       window.filesUtils = filesUtils;
       window.SharingDialog = SharingDialog.default;
+      window.authStore = authStore.default;
 
       setIsInitialized(true);
       setIsError(false);

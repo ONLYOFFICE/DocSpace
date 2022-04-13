@@ -7,7 +7,6 @@ import throttle from "lodash/throttle";
 import Loader from "@appserver/components/loader";
 import Toast from "@appserver/components/toast";
 import { toast } from "react-toastify";
-
 import {
   restoreDocumentsVersion,
   markAsFavorite,
@@ -17,11 +16,9 @@ import {
   updateFile,
   checkFillFormDraft,
 } from "@appserver/common/api/files";
-
 import { EditorWrapper } from "./StyledEditor";
 import { useTranslation } from "react-i18next";
 import withDialogs from "./helpers/withDialogs";
-
 import { canConvert, convertDocumentUrl } from "./helpers/utils";
 
 const LoaderComponent = (
@@ -94,6 +91,7 @@ function Editor({
   isDesktopEditor,
   initDesktop,
   view,
+  preparationPortalDialog,
   ...rest
 }) {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -582,6 +580,7 @@ function Editor({
       {sharingDialog}
       {selectFileDialog}
       {selectFolderDialog}
+      {preparationPortalDialog}
       <Toast />
     </EditorWrapper>
   );
