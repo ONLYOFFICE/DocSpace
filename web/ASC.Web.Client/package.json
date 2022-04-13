@@ -34,7 +34,8 @@
     "test:sequential": "run-s -c test:chromium:sequential test:firefox:sequential test:webkit:sequential && yarn test:parse-xml",
     "test:model": "run-s -c test:chromium:model test:firefox:model test:webkit:model && yarn test:parse-xml",
     "test:parse-xml": "node tests/helpers/parserXML.js",
-    "test:ui": "npx codecept-ui"
+    "test:ui": "npx codecept-ui",
+    "test:ui:mobile": "cross-env DEVICE_TYPE=mobile npx codecept-ui"
   },
   "dependencies": {
     "firebase": "^8.10.0",
