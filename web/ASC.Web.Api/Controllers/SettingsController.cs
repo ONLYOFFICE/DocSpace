@@ -313,14 +313,19 @@ namespace ASC.Api.Settings
         [AllowAnonymous]
         public SettingsWrapper GetSettings(bool? withpassword)
         {
+            var studioAdminMessageSettings = SettingsManager.Load<StudioAdminMessageSettings>();
+
             var settings = new SettingsWrapper
             {
                 Culture = Tenant.GetCulture().ToString(),
                 GreetingSettings = Tenant.Name,
                 Personal = CoreBaseSettings.Personal,
                 Version = Configuration["version:number"] ?? "",
-                TenantStatus = TenantManager.GetCurrentTenant().Status
+                TenantStatus = Tenant.Status,
+                TenantAlias = Tenant.TenantAlias,
+                EnableAdmMess = studioAdminMessageSettings.Enable || TenantExtra.IsNotPaid()
             };
+
 
             if (AuthContext.IsAuthenticated)
             {
@@ -370,9 +375,7 @@ namespace ASC.Api.Settings
                     settings.TrustedDomains = Tenant.TrustedDomains;
                 }
 
-                var studioAdminMessageSettings = SettingsManager.Load<StudioAdminMessageSettings>();
 
-                settings.EnableAdmMess = studioAdminMessageSettings.Enable || TenantExtra.IsNotPaid();
 
                 settings.ThirdpartyEnable = SetupInfo.ThirdPartyAuthEnabled && ProviderManager.IsNotEmpty;
 
@@ -1117,7 +1120,7 @@ namespace ASC.Api.Settings
             {
                 var logoDict = new Dictionary<int, string>();
 
-                foreach(var l in model.Logo)
+                foreach (var l in model.Logo)
                 {
                     logoDict.Add(Int32.Parse(l.Key), l.Value);
                 }
@@ -1339,6 +1342,13 @@ namespace ASC.Api.Settings
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
             return IPRestrictionsService.Save(model.Ips, Tenant.TenantId);
+        }
+
+        [Read("iprestrictions/settings")]
+        public IPRestrictionsSettings GetIpRestrictionsSettings()
+        {
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+            return SettingsManager.Load<IPRestrictionsSettings>();
         }
 
         [Update("iprestrictions/settings")]
