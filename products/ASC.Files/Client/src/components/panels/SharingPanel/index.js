@@ -20,7 +20,6 @@ import { isMobile, isMobileOnly } from "react-device-detect";
 import Loaders from "@appserver/common/components/Loaders";
 import withLoader from "../../../HOCs/withLoader";
 import ModalDialog from "@appserver/components/modal-dialog";
-import EmbeddingBody from "../EmbeddingPanel/EmbeddingBody";
 
 import { StyledContent, StyledBodyContent } from "./StyledSharingPanel";
 
@@ -33,7 +32,6 @@ class SharingPanelComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      showActionPanel: false,
       isNotifyUsers: false,
       shareDataItems: [],
       baseShareData: [],
@@ -47,23 +45,13 @@ class SharingPanelComponent extends React.Component {
       showPanel: false,
       accessOptions: [],
       filesOwnerId: null,
-      showEmbeddingContent: false,
       isUpdated: false,
       isLoading: false,
       baseExternalAccess: null,
     };
 
-    this.ref = React.createRef();
     this.scrollRef = React.createRef();
   }
-
-  onPlusClick = () =>
-    this.setState({ showActionPanel: !this.state.showActionPanel });
-
-  onCloseActionPanel = (e) => {
-    if (this.ref.current.contains(e.target)) return;
-    this.setState({ showActionPanel: !this.state.showActionPanel });
-  };
 
   isUpdateAccessInfo = (selectedAccess) => {
     const { baseExternalAccess, isUpdated } = this.state;
@@ -87,7 +75,6 @@ class SharingPanelComponent extends React.Component {
 
     this.setState({
       shareDataItems: newDataItems,
-      showEmbeddingContent: false,
     });
   };
 
@@ -245,7 +232,23 @@ class SharingPanelComponent extends React.Component {
   onShowUsersPanel = () =>
     this.setState({
       showAddUsersPanel: !this.state.showAddUsersPanel,
-      showActionPanel: false,
+    });
+
+  onShowGroupsPanel = () =>
+    this.setState({
+      showAddGroupsPanel: !this.state.showAddGroupsPanel,
+    });
+
+  onShowChangeOwnerPanel = () => {
+    this.setState({
+      showChangeOwnerPanel: !this.state.showChangeOwnerPanel,
+    });
+  };
+
+  onShowEmbeddingPanel = (link) =>
+    this.setState({
+      showEmbeddingPanel: !this.state.showEmbeddingPanel,
+      shareLink: link,
     });
 
   onChangeItemAccess = (e) => {
@@ -377,40 +380,19 @@ class SharingPanelComponent extends React.Component {
       : `${window.location.origin + homepage}/filter?folder=${item?.id}`;
   };
 
-  onShowEmbeddingPanel = (link) =>
-    this.setState({
-      showEmbeddingPanel: !this.state.showEmbeddingPanel,
-      shareLink: link,
-    });
+  onChangeMessage = (e) => {
+    this.setState({ message: e.target.value });
+  };
 
-  onShowEmbeddingContainer = (link) =>
-    this.setState({
-      showEmbeddingContent: !this.state.showEmbeddingContent,
-      shareLink: link,
-    });
-
-  onShowGroupsPanel = () =>
-    this.setState({
-      showAddGroupsPanel: !this.state.showAddGroupsPanel,
-      showActionPanel: false,
-    });
-
-  onShowChangeOwnerPanel = () =>
-    this.setState({
-      showChangeOwnerPanel: !this.state.showChangeOwnerPanel,
-      showActionPanel: false,
-    });
-
-  onChangeMessage = (e) => this.setState({ message: e.target.value });
-
-  setShareDataItems = (shareDataItems) => this.setState({ shareDataItems });
+  setShareDataItems = (shareDataItems) => {
+    this.setState({ shareDataItems });
+  };
 
   onClose = () => {
     const {
       onCancel,
       setSharingPanelVisible,
       selectUploadedFile,
-      setIsFolderActions,
       setSelection,
       setBufferSelection,
     } = this.props;
@@ -481,7 +463,6 @@ class SharingPanelComponent extends React.Component {
       isPrivacy,
     } = this.props;
     const {
-      showActionPanel,
       isNotifyUsers,
       shareDataItems,
       message,
@@ -493,7 +474,6 @@ class SharingPanelComponent extends React.Component {
       //showPanel,
       accessOptions,
       externalAccessOptions,
-      showEmbeddingContent,
       isUpdated,
       isLoading,
     } = this.state;
@@ -551,21 +531,13 @@ class SharingPanelComponent extends React.Component {
         <Aside className="header_aside-panel" visible={visible}>
           <StyledContent>
             <Header
-              headerText={t("SharingSettingsTitle")}
-              addUsers={t("LinkText")}
-              addGroups={t("AddGroupsForSharingButton")}
+              t={t}
               uploadPanelVisible={uploadPanelVisible}
               isPersonal={isPersonal}
-              onPlusClickProp={onPlusClickProp}
-              isLoading={isLoading}
               isEncrypted={isEncrypted}
-              showActionPanel={showActionPanel}
               onClose={this.onClose}
-              onCloseActionPanel={this.onCloseActionPanel}
               onShowUsersPanel={this.onShowUsersPanel}
               onShowGroupsPanel={this.onShowGroupsPanel}
-              forwardRef={this.ref}
-              ref={this.ref}
             />
             <StyledBodyContent>
               <Scrollbar ref={this.scrollRef} stype="mediumBlack">

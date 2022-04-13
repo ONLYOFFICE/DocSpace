@@ -1,6 +1,8 @@
 import { Base } from "@appserver/components/themes";
 import styled, { css } from "styled-components";
 
+import { isMobile, isMobileOnly } from "react-device-detect";
+
 const StyledContent = styled.div`
   width: 100%;
   height: 100%;
@@ -14,13 +16,12 @@ const StyledContent = styled.div`
 const StyledHeaderContent = styled.div`
   width: calc(100% - 16px);
   max-width: calc(100% - 16px);
-  height: 52px;
+  height: 53px;
 
   border-bottom: ${(props) => props.theme.filesPanels.sharing.borderBottom};
 
   padding: 0 16px;
 
-  margin-bottom: 24px;
   margin-right: -16px;
 
   display: flex;
@@ -31,6 +32,12 @@ const StyledHeaderContent = styled.div`
     width: calc(100vw - 32px);
     max-width: calc(100vw - 32px);
   }
+
+  ${isMobileOnly &&
+  css`
+    width: calc(100vw - 32px);
+    max-width: calc(100vw - 32px);
+  `}
 
   .sharing_panel-header-info {
     display: flex;
@@ -53,6 +60,7 @@ const StyledHeaderContent = styled.div`
     display: flex;
     align-items: center;
     justify-content: start;
+    margin-bottom: 16px;
   }
 
   .sharing_panel-icons-container {
@@ -67,7 +75,6 @@ const StyledBodyContent = styled.div`
   width: calc(100%);
   height: 100%;
 
-  padding: 0 0 0 16px;
   margin-right: -16px;
 
   display: flex;
