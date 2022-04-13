@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
 
-const StyledBody = styled.div`
+const commonStyles = css`
   .empty-folder_container {
     grid-template-areas:
       "img img"
@@ -12,7 +12,9 @@ const StyledBody = styled.div`
       margin: auto;
     }
   }
+`;
 
+const StyledBody = styled.div`
   .selection-panel_body {
     height: 507px;
     display: grid;
@@ -72,6 +74,8 @@ const StyledBody = styled.div`
       }
     }
   }
+
+  ${commonStyles}
 `;
 
 const StyledRow = styled.div`
@@ -143,17 +147,6 @@ const StyledRow = styled.div`
 
 const StyledAsideBody = styled.div`
   height: 100%;
-  .empty-folder_container {
-    grid-template-areas:
-      "img img"
-      "headerText headerText";
-    .ec-image {
-      margin: auto;
-    }
-    .ec-header {
-      margin: auto;
-    }
-  }
 
   .selection-panel_aside-body {
     height: calc(100% - 32px);
@@ -203,6 +196,8 @@ const StyledAsideBody = styled.div`
       }
     }
   }
+
+  ${commonStyles}
 `;
 
 const StyledAsideHeader = styled.div`
