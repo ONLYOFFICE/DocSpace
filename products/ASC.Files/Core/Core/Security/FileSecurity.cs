@@ -135,6 +135,11 @@ public class FileSecurity : IFileSecurity
         return CanAsync(entry, userId, FilesSecurityActions.RoomEdit);
     }
 
+    public Task<bool> CanRenameAsync<T>(FileEntry<T> entry, Guid userId)
+    {
+        return CanAsync(entry, userId, FilesSecurityActions.Rename);
+    }
+
     public Task<bool> CanReadAsync<T>(FileEntry<T> entry)
     {
         return CanReadAsync(entry, _authContext.CurrentAccount.ID);
@@ -178,6 +183,11 @@ public class FileSecurity : IFileSecurity
     public Task<bool> CanEditRoomAsync<T>(FileEntry<T> entry)
     {
         return CanEditRoomAsync(entry, _authContext.CurrentAccount.ID);
+    }
+
+    public Task<bool> CanRenameAsync<T>(FileEntry<T> entry)
+    {
+        return CanRenameAsync(entry, _authContext.CurrentAccount.ID);
     }
 
     public Task<IEnumerable<Guid>> WhoCanReadAsync<T>(FileEntry<T> entry)
@@ -638,6 +648,10 @@ public class FileSecurity : IFileSecurity
                     result.Add(e);
                 }
                 else if (action == FilesSecurityActions.Create && (e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomManager))
+                {
+                    result.Add(e);
+                }
+                else if (action == FilesSecurityActions.Rename && (e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomManager))
                 {
                     result.Add(e);
                 }
@@ -1126,6 +1140,7 @@ public class FileSecurity : IFileSecurity
         Edit,
         Delete,
         CustomFilter,
-        RoomEdit
+        RoomEdit,
+        Rename
     }
 }
