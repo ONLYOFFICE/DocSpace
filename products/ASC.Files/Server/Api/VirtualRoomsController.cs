@@ -66,6 +66,14 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         return await _folderDtoHelper.GetAsync(room);
     }
 
+    [Update("room/{roomId}")]
+    public async Task<FolderDto<T>> RenameRoomFromBodyAsync(T roomId, [FromBody] RenameRoomRequestDto inDto)
+    {
+        var room = await _fileStorageService.FolderRenameAsync(roomId, inDto.Title);
+
+        return await _folderDtoHelper.GetAsync(room);
+    }
+
     [Delete("room")]
     public async IAsyncEnumerable<FileOperationDto> DeleteRoomsFromBodyAsync([FromBody] DeleteRoomsRequestDto inDto)
     {
