@@ -9,7 +9,7 @@
         "log__dir": "../../../Logs",
         "core__products__folder": "../../../products",
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_URLS": "http://localhost:5013"
+        "ASPNETCORE_URLS": "http://localhost:5032"
       }
     },
     "WSL 2 : Ubuntu 20.04": {
@@ -21,7 +21,7 @@
         "log__dir": "../../../Logs",
         "core__products__folder": "../../../products",
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_URLS": "http://localhost:5013"
+        "ASPNETCORE_URLS": "http://localhost:5032"
       },
       "distributionName": "Ubuntu-20.04"
     }
