@@ -1601,7 +1601,7 @@ namespace ASC.Web.Files.Services.WCFService
                     {
                         if (sync)
                         {
-                            results.Append(await FileConverter.ExecSynchronouslyAsync(file, fileInfo.Password));
+                            results = results.Append(await FileConverter.ExecSynchronouslyAsync(file, fileInfo.Password));
                         }
                         else
                         {
@@ -1999,8 +1999,8 @@ namespace ASC.Web.Files.Services.WCFService
 
             var fileDao = GetFileDao();
             var folderDao = GetFolderDao();
-            entries.Concat(filesId.ToAsyncEnumerable().SelectAwait(async fileId => await fileDao.GetFileAsync(fileId)));
-            entries.Concat(foldersId.ToAsyncEnumerable().SelectAwait(async e => await folderDao.GetFolderAsync(e)));
+            entries = entries.Concat(filesId.ToAsyncEnumerable().SelectAwait(async fileId => await fileDao.GetFileAsync(fileId)));
+            entries = entries.Concat(foldersId.ToAsyncEnumerable().SelectAwait(async e => await folderDao.GetFolderAsync(e)));
 
 
             return FileSharingAceHelper.RemoveAceAsync(entries);
@@ -2234,16 +2234,16 @@ namespace ASC.Web.Files.Services.WCFService
             //return new List<string>(accounts);
         }
 
-        public async IAsyncEnumerable<FileEntry> ChangeOwnerAsync(IEnumerable<T> foldersId, IEnumerable<T> filesId, Guid userId)
+        public async Task<IEnumerable<FileEntry>> ChangeOwnerAsync(IEnumerable<T> foldersId, IEnumerable<T> filesId, Guid userId)
         {
             var userInfo = UserManager.GetUsers(userId);
             ErrorIf(Equals(userInfo, Constants.LostUser) || userInfo.IsVisitor(UserManager), FilesCommonResource.ErrorMassage_ChangeOwner);
 
-            var entries = AsyncEnumerable.Empty<FileEntry>();
+            var entries = new List<FileEntry>();
 
             var folderDao = GetFolderDao();
-            var folders = folderDao.GetFoldersAsync(foldersId);
-            await foreach (var folder in folders)
+            var folders = await folderDao.GetFoldersAsync(foldersId).ToListAsync();
+            foreach (var folder in folders)
             {
                 ErrorIf(!await FileSecurity.CanEditAsync(folder), FilesCommonResource.ErrorMassage_SecurityException);
                 ErrorIf(folder.RootFolderType != FolderType.COMMON, FilesCommonResource.ErrorMassage_SecurityException);
@@ -2262,13 +2262,13 @@ namespace ASC.Web.Files.Services.WCFService
 
                     FilesMessageService.Send(newFolder, GetHttpHeaders(), MessageAction.FileChangeOwner, new[] { newFolder.Title, userInfo.DisplayUserName(false, DisplayUserSettingsHelper) });
                 }
-                entries.Append(newFolder);
+                entries.Add(newFolder);
             }
 
             var fileDao = GetFileDao();
-            var files = fileDao.GetFilesAsync(filesId);
+            var files = await fileDao.GetFilesAsync(filesId).ToListAsync();
 
-            await foreach (var file in files)
+            foreach (var file in files)
             {
                 ErrorIf(!await FileSecurity.CanEditAsync(file), FilesCommonResource.ErrorMassage_SecurityException);
                 ErrorIf(await EntryManager.FileLockedForMeAsync(file.ID), FilesCommonResource.ErrorMassage_LockedFile);
@@ -2313,13 +2313,10 @@ namespace ASC.Web.Files.Services.WCFService
 
                     FilesMessageService.Send(newFile, GetHttpHeaders(), MessageAction.FileChangeOwner, new[] { newFile.Title, userInfo.DisplayUserName(false, DisplayUserSettingsHelper) });
                 }
-                entries.Append(newFile);
+                entries.Add(newFile);
             }
 
-            await foreach (var entrie in entries)
-            {
-                yield return entrie;
-            }
+            return entries;
         }
 
         public bool StoreOriginal(bool set)
