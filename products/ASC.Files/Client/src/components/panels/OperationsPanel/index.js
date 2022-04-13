@@ -170,14 +170,14 @@ const OperationsPanelComponent = (props) => {
       withoutImmediatelyClose
       dialogName={
         isRecycleBin
-          ? t("Translations:Restore")
+          ? t("Common:Restore")
           : isCopy
           ? t("Translations:Copy")
           : t("Translations:Move")
       }
       buttonName={
         isRecycleBin
-          ? t("Translations:RestoreHere")
+          ? t("Common:RestoreHere")
           : isCopy
           ? t("Translations:CopyHere")
           : t("Translations:MoveHere")

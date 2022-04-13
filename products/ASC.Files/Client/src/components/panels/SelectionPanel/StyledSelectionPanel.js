@@ -191,6 +191,9 @@ const StyledAsideBody = styled.div`
 
     .selection-panel_aside-buttons {
       ${(props) => props.footer && "margin-top:16px"};
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+
       button:first-child {
         margin-right: 8px;
       }
