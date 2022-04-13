@@ -182,12 +182,13 @@ export function getFoldersTree() {
 }
 
 export function getCommonFoldersTree() {
+  const index = 1;
   return request({ method: "get", url: "/files/@common" }).then(
     (commonFolders) => {
       return [
         {
           id: commonFolders.current.id,
-          key: "1",
+          key: `0-${index}`,
           parentId: commonFolders.current.parentId,
           title: commonFolders.current.title,
           rootFolderType: +commonFolders.current.rootFolderType,
