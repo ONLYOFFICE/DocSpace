@@ -4,7 +4,7 @@ import ModalDialog from "@appserver/components/modal-dialog";
 import RadioButtonGroup from "@appserver/components/radio-button-group";
 import Button from "@appserver/components/button";
 import Text from "@appserver/components/text";
-import { withTranslation } from "react-i18next";
+import { withTranslation, Trans } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { ConflictResolveType } from "@appserver/common/constants";
 import toastr from "studio/toastr";
@@ -12,7 +12,10 @@ import styled from "styled-components";
 
 const StyledModalDialog = styled(ModalDialog)`
   .conflict-resolve-dialog-text {
-    padding-bottom: 8px;
+    padding-bottom: 12px;
+  }
+  .conflict-resolve-dialog-text-description {
+    padding-bottom: 16px;
   }
 
   .conflict-resolve-radio-button {
@@ -26,6 +29,10 @@ const StyledModalDialog = styled(ModalDialog)`
     grid-template-columns: 1fr 1fr;
     grid-gap: 10px;
     width: 90%;
+  }
+
+  .button-dialog-accept {
+    margin-right: 8px;
   }
 `;
 
@@ -43,6 +50,7 @@ const ConflictResolveDialog = (props) => {
     setMoveToPanelVisible,
     setCopyPanelVisible,
     setThirdPartyMoveDialogVisible,
+    theme,
   } = props;
 
   const {
@@ -127,8 +135,12 @@ const ConflictResolveDialog = (props) => {
     {
       label: (
         <div>
-          <Text>{t("OverwriteTitle")}</Text>
-          <Text>{t("OverwriteDescription")}</Text>
+          <Text fontWeight={600} fontSize={"14px"}>
+            {t("OverwriteTitle")}
+          </Text>
+          <Text color={theme.text.disableColor} fontSize={"12px"}>
+            {t("OverwriteDescription")}
+          </Text>
         </div>
       ),
       value: "overwrite",
@@ -136,8 +148,12 @@ const ConflictResolveDialog = (props) => {
     {
       label: (
         <div>
-          <Text>{t("CreateTitle")}</Text>
-          <Text>{t("CreateDescription")}</Text>
+          <Text fontWeight={600} fontSize={"14px"}>
+            {t("CreateTitle")}
+          </Text>
+          <Text color={theme.text.disableColor} fontSize={"12px"}>
+            {t("CreateDescription")}
+          </Text>
         </div>
       ),
 
@@ -146,8 +162,12 @@ const ConflictResolveDialog = (props) => {
     {
       label: (
         <div>
-          <Text>{t("SkipTitle")}</Text>
-          <Text>{t("SkipDescription")}</Text>
+          <Text fontWeight={600} fontSize={"14px"}>
+            {t("SkipTitle")}
+          </Text>
+          <Text color={theme.text.disableColor} fontSize={"12px"}>
+            {t("SkipDescription")}
+          </Text>
         </div>
       ),
       value: "skip",
@@ -163,17 +183,34 @@ const ConflictResolveDialog = (props) => {
       isLoading={!tReady}
       visible={visible}
       onClose={onCloseDialog}
-      displayType="aside"
+      //displayType="aside"
     >
       <ModalDialog.Header>{t("ConflictResolveTitle")}</ModalDialog.Header>
       <ModalDialog.Body>
-        <Text className="conflict-resolve-dialog-text">
-          {singleFile
-            ? t("ConflictResolveDescription", { file, folder: folderTitle })
-            : t("ConflictResolveDescriptionFiles", {
-                filesCount,
-                folder: folderTitle,
-              })}
+        <Text className="conflict-resolve-dialog-text-description">
+          {singleFile ? (
+            <Trans
+              t={t}
+              file={filesCount}
+              folder={folderTitle}
+              i18nKey="ConflictResolveDescription"
+              ns="ConflictResolveDialog"
+            >
+              The file with the name {{ file }} already exists in the folder
+              {{ folder: folderTitle }}.
+            </Trans>
+          ) : (
+            <Trans
+              t={t}
+              filesCount={filesCount}
+              folder={folderTitle}
+              i18nKey="ConflictResolveDescriptionFiles"
+              ns="ConflictResolveDialog"
+            >
+              {{ filesCount }} documents with the same name already exist in the
+              folder '{{ folder: folderTitle }}'.
+            </Trans>
+          )}
         </Text>
         <Text className="conflict-resolve-dialog-text">
           {t("ConflictResolveSelectAction")}
@@ -196,7 +233,6 @@ const ConflictResolveDialog = (props) => {
           label={t("Common:OKButton")}
           size="small"
           primary
-          scale
           onClick={onAcceptType}
           //isLoading={isLoading}
         />
@@ -205,7 +241,6 @@ const ConflictResolveDialog = (props) => {
           key="CancelButton"
           label={t("Common:CancelButton")}
           size="small"
-          scale
           onClick={onCloseDialog}
           //isLoading={isLoading}
         />
@@ -214,7 +249,7 @@ const ConflictResolveDialog = (props) => {
   );
 };
 
-export default inject(({ dialogsStore, uploadDataStore, filesStore }) => {
+export default inject(({ auth, dialogsStore, uploadDataStore, filesStore }) => {
   const {
     conflictResolveDialogVisible: visible,
     setConflictResolveDialogVisible,
@@ -227,8 +262,10 @@ export default inject(({ dialogsStore, uploadDataStore, filesStore }) => {
 
   const { itemOperationToFolder } = uploadDataStore;
   const { activeFiles, setActiveFiles } = filesStore;
-
+  const { settingsStore } = auth;
+  const { theme } = settingsStore;
   return {
+    theme,
     items,
     visible,
     conflictResolveDialogData,

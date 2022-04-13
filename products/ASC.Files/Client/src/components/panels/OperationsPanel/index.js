@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { withRouter } from "react-router";
 //import ModalDialog from "@appserver/components/modal-dialog";
 import { withTranslation } from "react-i18next";
@@ -14,7 +14,7 @@ import SelectFolderDialog from "../SelectFolderDialog";
 //     width: 90%;
 //   }
 // `;
-
+let operationData, fileWithConflicts;
 const OperationsPanelComponent = (props) => {
   const {
     t,
@@ -38,6 +38,7 @@ const OperationsPanelComponent = (props) => {
     checkFileConflicts,
     setThirdPartyMoveDialogVisible,
     parentFolderId,
+    conflictResolveDialogVisible,
   } = props;
 
   //const zIndex = 310;
@@ -50,6 +51,19 @@ const OperationsPanelComponent = (props) => {
   const [folderTitle, setFolderTitle] = useState(null);
   const [providerKey, setProviderKey] = useState(null);
 
+  const [intermediateHidden, setIntermediateHidden] = useState(false);
+
+  useEffect(() => {
+    console.log("conflictResolveDialogVisible", conflictResolveDialogVisible);
+    if (conflictResolveDialogVisible === false) {
+      intermediateHidden && setIntermediateHidden(false);
+    }
+  }, [conflictResolveDialogVisible]);
+
+  useEffect(() => {
+    intermediateHidden &&
+      setConflictDialogData(fileWithConflicts, operationData);
+  }, [intermediateHidden]);
   const onClose = () => {
     if (isCopy) {
       setCopyPanelVisible(false);
@@ -113,7 +127,7 @@ const OperationsPanelComponent = (props) => {
 
     if (!folderIds.length && !fileIds.length) return;
 
-    const operationData = {
+    operationData = {
       destFolderId,
       folderIds,
       fileIds,
@@ -130,7 +144,8 @@ const OperationsPanelComponent = (props) => {
     checkFileConflicts(destFolderId, folderIds, fileIds).then(
       async (conflicts) => {
         if (conflicts.length) {
-          setConflictDialogData(conflicts, operationData);
+          fileWithConflicts = conflicts;
+          setIntermediateHidden(true);
           setIsLoading(false);
         } else {
           setIsLoading(false);
@@ -142,10 +157,11 @@ const OperationsPanelComponent = (props) => {
   };
 
   // console.log("Operations panel render", expandedKeys);
+  const isVisible = intermediateHidden ? false : visible;
   return (
     <SelectFolderDialog
       foldersType="exceptSortedByTags"
-      isPanelVisible={visible}
+      isPanelVisible={isVisible}
       onSetFolderInfo={onSelect}
       onSave={onSubmit}
       onClose={onClose}
@@ -157,6 +173,13 @@ const OperationsPanelComponent = (props) => {
           : isCopy
           ? t("Translations:Copy")
           : t("Translations:Move")
+      }
+      buttonName={
+        isRecycleBin
+          ? t("Translations:RestoreHere")
+          : isCopy
+          ? t("Translations:CopyHere")
+          : t("Translations:MoveHere")
       }
     ></SelectFolderDialog>
   );
@@ -199,6 +222,7 @@ export default inject(
       setDestFolderId,
       setThirdPartyMoveDialogVisible,
       setIsFolderActions,
+      conflictResolveDialogVisible,
     } = dialogsStore;
 
     const selections = selection.length ? selection : [bufferSelection];
@@ -231,6 +255,7 @@ export default inject(
       setExpandedPanelKeys,
       itemOperationToFolder,
       checkFileConflicts,
+      conflictResolveDialogVisible,
     };
   }
 )(withRouter(observer(OperationsPanel)));
