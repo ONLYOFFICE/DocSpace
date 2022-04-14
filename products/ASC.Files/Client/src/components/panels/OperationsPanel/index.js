@@ -57,6 +57,8 @@ const OperationsPanelComponent = (props) => {
   useEffect(() => {
     if (conflictResolveDialogVisible === false) {
       intermediateHidden && setIntermediateHidden(false);
+    } else {
+      isLoading && setIsLoading(false);
     }
   }, [conflictResolveDialogVisible]);
 
