@@ -67,6 +67,10 @@ class SettingsSetupStore {
     }
   };
 
+  setIsInit = (isInit) => {
+    this.isInit = isInit;
+  };
+
   setIsLoading = (isLoading) => {
     this.security.accessRight.isLoading = isLoading;
   };

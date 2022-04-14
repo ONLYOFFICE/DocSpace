@@ -76,32 +76,6 @@ Scenario("Tfa activation success", async ({ I }) => {
   I.see("Documents");
 });
 
-Scenario("Tfa on from settings", async ({ I }) => {
-  I.mockEndpoint(Endpoints.common, "common");
-  I.mockEndpoint(Endpoints.settings, "settings");
-  I.mockEndpoint(Endpoints.build, "build");
-  I.mockEndpoint(Endpoints.info, "infoSettings");
-  I.mockEndpoint(Endpoints.self, "selfSettings");
-  I.mockEndpoint(Endpoints.tfaapp, "tfaapp");
-  I.mockEndpoint(Endpoints.tfaconfirm, "tfaconfirm");
-  I.mockEndpoint(Endpoints.confirm, "confirm");
-  I.mockEndpoint(Endpoints.setup, "setup");
-
-  I.amOnPage("/settings/security/access-portal/tfa");
-
-  I.see("Two-factor authentication");
-
-  I.click({
-    react: "RadioButton",
-    props: {
-      value: "app",
-    },
-  });
-
-  I.click("Save");
-  I.see("Configure your authenticator application");
-});
-
 Scenario("Profile remove success", async ({ I }) => {
   I.mockEndpoint(Endpoints.confirm, "confirm");
 
@@ -741,12 +715,16 @@ Scenario(
   }
 );
 
+// SECURITY SETTINGS TESTS
+
 Scenario("Setting password strength change test success", async ({ I }) => {
-  I.mockEndpoint(Endpoints.settings, "settings");
-  I.mockEndpoint(Endpoints.password, "password");
-  I.mockEndpoint(Endpoints.build, "build");
-  I.mockEndpoint(Endpoints.info, "infoSettings");
   I.mockEndpoint(Endpoints.self, "selfSettings");
+  I.mockEndpoint(Endpoints.info, "infoSettings");
+  I.mockEndpoint(Endpoints.build, "build");
+  I.mockEndpoint(Endpoints.settings, "settingsCustomization");
+  I.mockEndpoint(Endpoints.common, "common");
+  I.mockEndpoint(Endpoints.password, "password");
+  I.mockEndpoint(Endpoints.tfaapp, "tfaapp");
 
   if (deviceType === "mobile") {
     I.amOnPage("/settings/security/access-portal/password");
@@ -768,11 +746,13 @@ Scenario("Setting password strength change test success", async ({ I }) => {
 });
 
 Scenario("Setting password strength change test error", async ({ I }) => {
-  I.mockEndpoint(Endpoints.settings, "settings");
-  I.mockEndpoint(Endpoints.password, "password");
-  I.mockEndpoint(Endpoints.build, "build");
-  I.mockEndpoint(Endpoints.info, "infoSettings");
   I.mockEndpoint(Endpoints.self, "selfSettings");
+  I.mockEndpoint(Endpoints.info, "infoSettings");
+  I.mockEndpoint(Endpoints.build, "build");
+  I.mockEndpoint(Endpoints.settings, "settingsCustomization");
+  I.mockEndpoint(Endpoints.common, "common");
+  I.mockEndpoint(Endpoints.password, "password");
+  I.mockEndpoint(Endpoints.tfaapp, "tfaapp");
 
   if (deviceType === "mobile") {
     I.amOnPage("/settings/security/access-portal/password");
@@ -796,12 +776,102 @@ Scenario("Setting password strength change test error", async ({ I }) => {
   }
 });
 
+Scenario("Tfa on from settings", async ({ I }) => {
+  I.mockEndpoint(Endpoints.self, "selfSettings");
+  I.mockEndpoint(Endpoints.info, "infoSettings");
+  I.mockEndpoint(Endpoints.build, "build");
+  I.mockEndpoint(Endpoints.settings, "settingsCustomization");
+  I.mockEndpoint(Endpoints.common, "common");
+  I.mockEndpoint(Endpoints.password, "password");
+  I.mockEndpoint(Endpoints.tfaapp, "tfaapp");
+  I.mockEndpoint(Endpoints.tfaconfirm, "tfaconfirm");
+  I.mockEndpoint(Endpoints.confirm, "confirm");
+  I.mockEndpoint(Endpoints.setup, "setup");
+
+  if (deviceType === "mobile") {
+    I.amOnPage("/settings/security/access-portal/tfa");
+
+    I.see("Two-factor authentication");
+
+    I.click({
+      react: "RadioButton",
+      props: {
+        value: "app",
+      },
+    });
+
+    I.click("Save");
+    I.see("Configure your authenticator application");
+  }
+});
+
+Scenario("Tfa on from settings custom scenario", async ({ I }) => {
+  I.mockEndpoint(Endpoints.self, "selfSettings");
+  I.mockEndpoint(Endpoints.info, "infoSettings");
+  I.mockEndpoint(Endpoints.build, "build");
+  I.mockEndpoint(Endpoints.settings, "settingsCustomization");
+  I.mockEndpoint(Endpoints.common, "common");
+  I.mockEndpoint(Endpoints.password, "password");
+  I.mockEndpoint(Endpoints.tfaapp, "tfaapp");
+  I.mockEndpoint(Endpoints.tfaconfirm, "tfaconfirm");
+  I.mockEndpoint(Endpoints.confirm, "confirm");
+  I.mockEndpoint(Endpoints.setup, "setup");
+  I.mockEndpoint(Endpoints.providers, "providers");
+  I.mockEndpoint(Endpoints.capabilities, "capabilities");
+  I.mockEndpoint(Endpoints.auth, "auth");
+
+  if (deviceType === "mobile") {
+    I.amOnPage("/settings/security/access-portal/tfa");
+
+    I.see("Two-factor authentication");
+
+    I.click({
+      react: "RadioButton",
+      props: {
+        value: "app",
+      },
+    });
+
+    I.click("Save");
+    I.see("Configure your authenticator application");
+
+    I.click({
+      react: "Avatar",
+    });
+    I.see("Settings");
+    I.click("Settings");
+    I.see("Common");
+
+    I.click({
+      react: "Avatar",
+    });
+    I.click("Sign Out");
+    I.see("Cloud Office Applications");
+
+    I.fillField("login", "test@example.com");
+    I.fillField("password", "12345678");
+    I.click({
+      react: "Button",
+      props: {
+        className: "login-button",
+        type: "page",
+      },
+    });
+
+    I.wait(2);
+
+    I.see("Configure your authenticator application");
+  }
+});
+
 Scenario("Trusted mail settings change test success", async ({ I }) => {
   I.mockEndpoint(Endpoints.settings, "settings");
   I.mockEndpoint(Endpoints.build, "build");
   I.mockEndpoint(Endpoints.info, "infoSettings");
   I.mockEndpoint(Endpoints.self, "selfSettings");
   I.mockEndpoint(Endpoints.common, "common");
+  I.mockEndpoint(Endpoints.password, "password");
+  I.mockEndpoint(Endpoints.tfaapp, "tfaapp");
   I.mockEndpoint(Endpoints.maildomainsettings, "maildomainsettings");
 
   if (deviceType === "mobile") {
@@ -810,16 +880,18 @@ Scenario("Trusted mail settings change test success", async ({ I }) => {
     I.see("Trusted mail domain settings");
 
     I.click({
-      react: "Checkbox",
+      react: "RadioButton",
       props: {
         value: "1",
       },
     });
 
     I.see("You have unsaved changes");
+
+    I.see("Add trusted domain");
     I.click("Add trusted domain");
 
-    I.see({ react: "TextInput" });
+    I.seeElement("#domain-input-0");
     I.fillField("#user-input-0", "test.com");
 
     I.click("Save");
@@ -835,6 +907,8 @@ Scenario("Trusted mail settings change test error", async ({ I }) => {
   I.mockEndpoint(Endpoints.info, "infoSettings");
   I.mockEndpoint(Endpoints.self, "selfSettings");
   I.mockEndpoint(Endpoints.common, "common");
+  I.mockEndpoint(Endpoints.password, "password");
+  I.mockEndpoint(Endpoints.tfaapp, "tfaapp");
   I.mockEndpoint(Endpoints.maildomainsettings, "maildomainsettings");
 
   if (deviceType === "mobile") {
@@ -843,16 +917,18 @@ Scenario("Trusted mail settings change test error", async ({ I }) => {
     I.see("Trusted mail domain settings");
 
     I.click({
-      react: "Checkbox",
+      react: "RadioButton",
       props: {
         value: "1",
       },
     });
 
     I.see("You have unsaved changes");
+
+    I.see("Add trusted domain");
     I.click("Add trusted domain");
 
-    I.see({ react: "TextInput" });
+    I.seeElement("#domain-input-0");
     I.fillField("#user-input-0", "test");
 
     I.click("Save");
@@ -865,9 +941,11 @@ Scenario("Trusted mail settings change test error", async ({ I }) => {
 Scenario("Trusted mail settings change test server error", async ({ I }) => {
   I.mockEndpoint(Endpoints.settings, "settings");
   I.mockEndpoint(Endpoints.build, "build");
-  I.mockEndpoint(Endpoints.info, "info");
-  I.mockEndpoint(Endpoints.self, "self");
+  I.mockEndpoint(Endpoints.info, "infoSettings");
+  I.mockEndpoint(Endpoints.self, "selfSettings");
   I.mockEndpoint(Endpoints.common, "common");
+  I.mockEndpoint(Endpoints.password, "password");
+  I.mockEndpoint(Endpoints.tfaapp, "tfaapp");
   I.mockEndpoint(Endpoints.maildomainsettings, "maildomainsettingsError");
 
   if (deviceType === "mobile") {
@@ -876,17 +954,19 @@ Scenario("Trusted mail settings change test server error", async ({ I }) => {
     I.see("Trusted mail domain settings");
 
     I.click({
-      react: "Checkbox",
+      react: "RadioButton",
       props: {
         value: "1",
       },
     });
 
     I.see("You have unsaved changes");
+
+    I.see("Add trusted domain");
     I.click("Add trusted domain");
 
-    I.see({ react: "TextInput" });
-    I.fillField("#domain-input-0", "test");
+    I.seeElement("#domain-input-0");
+    I.fillField("#domain-input-0", "test.com");
 
     I.click("Save");
 
