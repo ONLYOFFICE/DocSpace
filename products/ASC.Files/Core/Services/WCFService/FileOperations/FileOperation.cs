@@ -60,6 +60,16 @@ public abstract class FileOperation : DistributedTask
         Culture = Thread.CurrentThread.CurrentCulture.Name;
 
         TaskInfo = new DistributedTask();
+
+        TaskInfo[Owner] = (new Guid()).ToString();
+        TaskInfo[OpType] = 0;
+        TaskInfo[Src] = "";
+        TaskInfo[Progress] = 0;
+        TaskInfo[Res] = "";
+        TaskInfo[Err] = "";
+        TaskInfo[Process] = 0;
+        TaskInfo[Finish] = false;
+        TaskInfo[Hold] = false; ;
     }
 
     public virtual DistributedTask GetDistributedTask()
@@ -74,13 +84,13 @@ public abstract class FileOperation : DistributedTask
     {
         var progress = Total != 0 ? 100 * Processed / Total : 0;
 
-        TaskInfo.SetProperty(OpType, OperationType);
-        TaskInfo.SetProperty(Owner, ((IAccount)(Principal ?? Thread.CurrentPrincipal).Identity).ID);
-        TaskInfo.SetProperty(Progress, progress < 100 ? progress : 100);
-        TaskInfo.SetProperty(Res, Result);
-        TaskInfo.SetProperty(Err, Error);
-        TaskInfo.SetProperty(Process, SuccessProcessed);
-        TaskInfo.SetProperty(Hold, HoldResult);
+        TaskInfo[OpType] = (int)OperationType;
+        TaskInfo[Owner] = ((IAccount)(Principal ?? Thread.CurrentPrincipal).Identity).ID.ToString();
+        TaskInfo[Progress] = progress < 100 ? progress : 100;
+        TaskInfo[Res] = Result;
+        TaskInfo[Err] = Error;
+        TaskInfo[Process] = SuccessProcessed;
+        TaskInfo[Hold] = HoldResult;
     }
 
     public abstract Task RunJobAsync(DistributedTask _, CancellationToken cancellationToken);
@@ -130,8 +140,8 @@ internal class ComposeFileOperation<T1, T2> : FileOperation
         var thirdpartyTask = ThirdPartyOperation.GetDistributedTask();
         var daoTask = DaoOperation.GetDistributedTask();
 
-        var error1 = thirdpartyTask.GetProperty<string>(Err);
-        var error2 = daoTask.GetProperty<string>(Err);
+        var error1 = thirdpartyTask[Err];
+        var error2 = daoTask[Err];
 
         if (!string.IsNullOrEmpty(error1))
         {
@@ -142,8 +152,8 @@ internal class ComposeFileOperation<T1, T2> : FileOperation
             Error = error2;
         }
 
-        var status1 = thirdpartyTask.GetProperty<string>(Res);
-        var status2 = daoTask.GetProperty<string>(Res);
+        var status1 = thirdpartyTask[Res];
+        var status2 = daoTask[Res];
 
         if (!string.IsNullOrEmpty(status1))
         {
@@ -154,15 +164,15 @@ internal class ComposeFileOperation<T1, T2> : FileOperation
             Result = status2;
         }
 
-        var finished1 = thirdpartyTask.GetProperty<bool?>(Finish);
-        var finished2 = daoTask.GetProperty<bool?>(Finish);
+        bool finished1 = thirdpartyTask[Finish];
+        bool finished2 = daoTask[Finish];
 
-        if (finished1 != null && finished2 != null)
+        if (finished1 && finished2)
         {
-            TaskInfo.SetProperty(Finish, finished1);
+            TaskInfo[Finish] = true;
         }
 
-        SuccessProcessed = thirdpartyTask.GetProperty<int>(Process) + daoTask.GetProperty<int>(Process);
+        SuccessProcessed = thirdpartyTask[Process] + daoTask[Process];
 
 
         base.FillDistributedTask();
@@ -171,12 +181,12 @@ internal class ComposeFileOperation<T1, T2> : FileOperation
 
         if (ThirdPartyOperation.Total != 0)
         {
-            progress += thirdpartyTask.GetProperty<int>(Progress);
+            progress += thirdpartyTask[Progress];
         }
 
         if (DaoOperation.Total != 0)
         {
-            progress += daoTask.GetProperty<int>(Progress);
+            progress += daoTask[Progress];
         }
 
         if (ThirdPartyOperation.Total != 0 && DaoOperation.Total != 0)
@@ -184,7 +194,7 @@ internal class ComposeFileOperation<T1, T2> : FileOperation
             progress /= 2;
         }
 
-        TaskInfo.SetProperty(Progress, progress < 100 ? progress : 100);
+        TaskInfo[Progress] = progress < 100 ? progress : 100;
         TaskInfo.PublishChanges();
     }
 
@@ -293,7 +303,7 @@ abstract class FileOperation<T, TId> : FileOperation where T : FileOperationData
         {
             try
             {
-                TaskInfo.SetProperty(Finish, true);
+                TaskInfo[Finish] = true;
                 PublishTaskInfo();
             }
             catch { /* ignore */ }
@@ -313,7 +323,7 @@ abstract class FileOperation<T, TId> : FileOperation where T : FileOperationData
     {
         base.FillDistributedTask();
 
-        TaskInfo.SetProperty(Src, Source);
+        TaskInfo[Src] = Source;
     }
 
     protected virtual int InitTotalProgressSteps()

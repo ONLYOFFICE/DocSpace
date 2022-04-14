@@ -184,9 +184,9 @@ public class LogFactory<T> : ILog<T>
         _logger.Trace(message);
     }
 
-    public void TraceFormat(string message, object arg0)
+    public void TraceFormat(string message, params object[] args)
     {
-        _logger.TraceFormat(message, arg0);
+        _logger.TraceFormat(message, args);
     }
 
     public void Warn(object message)

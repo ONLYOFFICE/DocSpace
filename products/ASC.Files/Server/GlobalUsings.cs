@@ -79,3 +79,4 @@ global using Microsoft.Extensions.Hosting.WindowsServices;
 global using Microsoft.Extensions.Options;
 
 global using Newtonsoft.Json.Linq;
+global using ASC.Common.Threading;

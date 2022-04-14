@@ -35,7 +35,7 @@ public interface ILog
     bool IsTraceEnabled { get; }
 
     void Trace(object message);
-    void TraceFormat(string message, object arg0);
+    void TraceFormat(string message, params object[] args);
 
     void DebugWithProps(string message, IEnumerable<KeyValuePair<string, object>> props);
     void Debug(object message);

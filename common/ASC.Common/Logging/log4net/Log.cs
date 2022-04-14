@@ -68,11 +68,11 @@ public class Log : ILog
         }
     }
 
-    public void TraceFormat(string message, object arg0)
+    public void TraceFormat(string message, params object[] args)
     {
         if (IsTraceEnabled)
         {
-            _logger.Logger.Log(GetType(), Level.Trace, string.Format(message, arg0), null);
+            _logger.Logger.Log(GetType(), Level.Trace, string.Format(message, args), null);
         }
     }
 

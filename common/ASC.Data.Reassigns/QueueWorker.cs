@@ -43,12 +43,13 @@ namespace ASC.Data.Reassigns
         protected readonly IDictionary<string, StringValues> HttpHeaders;
 
         public QueueWorker(
+            IHttpContextAccessor httpContextAccessor,
             IServiceScopeFactory serviceProvider,
-            DistributedTaskQueueOptionsManager options,
-            IHttpContextAccessor httpContextAccessor)
+            IDistributedTaskQueueFactory queueFactory, 
+            string queueName)
         {
             ServiceProvider = serviceProvider;
-            Queue = options.Get<T>();
+            Queue = queueFactory.CreateQueue(queueName);
             HttpHeaders = httpContextAccessor.HttpContext.Request?.Headers;
         }
 
@@ -61,7 +62,7 @@ namespace ASC.Data.Reassigns
         {
             var id = GetProgressItemId(tenantId, userId);
 
-            return Queue.GetTask<T>(id);
+            return Queue.PeekTask<T>(id);
         }
 
         public void Terminate(int tenantId, Guid userId)
@@ -70,7 +71,7 @@ namespace ASC.Data.Reassigns
 
             if (item != null)
             {
-                Queue.CancelTask(item.Id);
+                Queue.DequeueTask(item.Id);
             }
         }
 
@@ -82,14 +83,14 @@ namespace ASC.Data.Reassigns
 
                 if (task != null && task.IsCompleted)
                 {
-                    Queue.RemoveTask(task.Id);
+                    Queue.DequeueTask(task.Id);
                     task = null;
                 }
 
                 if (task == null)
                 {
                     task = newTask;
-                    Queue.QueueTask(task);
+                    Queue.EnqueueTask(task);
                 }
 
                 return task;
@@ -100,10 +101,13 @@ namespace ASC.Data.Reassigns
     [Scope(Additional = typeof(ReassignProgressItemExtension))]
     public class QueueWorkerReassign : QueueWorker<ReassignProgressItem>
     {
+        public const string CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME = "user_data_reassign";
+
         public QueueWorkerReassign(
+            IHttpContextAccessor httpContextAccessor,
             IServiceScopeFactory serviceProvider,
-            DistributedTaskQueueOptionsManager options,
-            IHttpContextAccessor httpContextAccessor) : base(serviceProvider, options, httpContextAccessor)
+            IDistributedTaskQueueFactory queueFactory) :
+            base(httpContextAccessor, serviceProvider, queueFactory, CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME)
         {
         }
 
@@ -118,10 +122,13 @@ namespace ASC.Data.Reassigns
     [Scope(Additional = typeof(RemoveProgressItemExtension))]
     public class QueueWorkerRemove : QueueWorker<RemoveProgressItem>
     {
+        public const string CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME = "user_data_remove";
+
         public QueueWorkerRemove(
+            IHttpContextAccessor httpContextAccessor,
             IServiceScopeFactory serviceProvider,
-            DistributedTaskQueueOptionsManager options,
-            IHttpContextAccessor httpContextAccessor) : base(serviceProvider, options, httpContextAccessor)
+            IDistributedTaskQueueFactory queueFactory) :
+            base(httpContextAccessor, serviceProvider, queueFactory, CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME)
         {
         }
 

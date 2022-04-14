@@ -105,3 +105,6 @@ global using NVelocity.App;
 global using NVelocity.Runtime.Resource.Loader;
 
 global using StackExchange.Redis.Extensions.Core.Abstractions;
+global using RabbitMQ.Client;
+global using RabbitMQ.Client.Events;
+global using ProtoBuf;

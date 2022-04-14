@@ -27,42 +27,61 @@
 namespace ASC.Data.Backup.Services;
 
 [Singletone]
-internal sealed class BackupSchedulerService : IHostedService, IDisposable
+public sealed class BackupSchedulerService : BackgroundService
 {
-    private readonly TimeSpan _period;
-    private Timer _timer;
+    private readonly TimeSpan _backupSchedulerPeriod;
     private readonly ILog _logger;
 
-    private readonly BackupWorker _backupWorker;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly IServiceScopeFactory _scopeFactory;
+    private readonly IEventBus _eventBus;
 
     public BackupSchedulerService(
         ILog<BackupSchedulerService> logger,
         IServiceScopeFactory scopeFactory,
         ConfigurationExtension configuration,
         CoreBaseSettings coreBaseSettings,
-        BackupWorker backupWorker)
+        IEventBus eventBus)
     {
         _logger = logger;
         _coreBaseSettings = coreBaseSettings;
-        _backupWorker = backupWorker;
-        _period = configuration.GetSetting<BackupSettings>("backup").Scheduler.Period;
+        _backupSchedulerPeriod = configuration.GetSetting<BackupSettings>("backup").Scheduler.Period;
         _scopeFactory = scopeFactory;
+        _eventBus = eventBus ?? throw new ArgumentNullException(nameof(eventBus));
     }
 
-    public Task StartAsync(CancellationToken cancellationToken)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.Info("starting backup scheduler service...");
+        _logger.Debug("BackupSchedulerService is starting.");
 
-        _timer = new Timer(ScheduleBackupTasks, null, TimeSpan.Zero, _period);
+        stoppingToken.Register(() => _logger.Debug("#1 BackupSchedulerService background task is stopping."));
 
-        _logger.Info("backup scheduler service started");
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            using var serviceScope = _scopeFactory.CreateScope();
 
-        return Task.CompletedTask;
+            var registerInstanceService = serviceScope.ServiceProvider.GetService<IRegisterInstanceManager<BackupSchedulerService>>();
+
+            if (!await registerInstanceService.IsActive(RegisterInstanceWorkerService<BackupSchedulerService>.InstanceId))
+            {
+                _logger.Debug($"BackupSchedulerService background task with instance id {RegisterInstanceWorkerService<BackupSchedulerService>.InstanceId} is't active.");
+
+                await Task.Delay(1000, stoppingToken);
+
+                continue;
+            }
+
+            _logger.Debug("BackupSchedulerService background task is doing background work.");
+
+            ExecuteBackupScheduler(stoppingToken);
+
+            await Task.Delay(_backupSchedulerPeriod, stoppingToken);
+        }
+
+        _logger.Debug("BackupSchedulerService background task is stopping.");
     }
 
-    public void ScheduleBackupTasks(object state)
+    private void ExecuteBackupScheduler(CancellationToken stoppingToken)
     {
         using var serviceScope = _scopeFactory.CreateScope();
 
@@ -79,18 +98,32 @@ internal sealed class BackupSchedulerService : IHostedService, IDisposable
 
         foreach (var schedule in backupsToSchedule)
         {
+            if (stoppingToken.IsCancellationRequested) return;
+
             try
             {
                 if (_coreBaseSettings.Standalone || tenantManager.GetTenantQuota(schedule.TenantId).AutoBackup)
                 {
                     var tariff = paymentManager.GetTariff(schedule.TenantId);
+
                     if (tariff.State < TariffState.Delay)
                     {
                         schedule.LastBackupTime = DateTime.UtcNow;
 
                         backupRepository.SaveBackupSchedule(schedule);
+
                         _logger.DebugFormat("Start scheduled backup: {0}, {1}, {2}, {3}", schedule.TenantId, schedule.BackupMail, schedule.StorageType, schedule.StorageBasePath);
-                        _backupWorker.StartScheduledBackup(schedule);
+
+                        _eventBus.Publish(new BackupRequestIntegrationEvent(
+                                                 tenantId: schedule.TenantId,
+                                                 storageBasePath: schedule.StorageBasePath,
+                                                 storageParams: JsonConvert.DeserializeObject<Dictionary<string,string>>(schedule.StorageParams),
+                                                 storageType: schedule.StorageType,
+                                                 backupMail: schedule.BackupMail,
+                                                 createBy: ASC.Core.Configuration.Constants.CoreSystem.ID,
+                                                 isScheduled: true,
+                                                 backupsStored: schedule.BackupsStored                                                
+                                          ));
                     }
                     else
                     {
@@ -107,21 +140,5 @@ internal sealed class BackupSchedulerService : IHostedService, IDisposable
                 _logger.Error("error while scheduling backups: {0}", error);
             }
         }
-
-    }
-
-    public Task StopAsync(CancellationToken cancellationToken)
-    {
-        _logger.Info("stopping backup cleaner service...");
-
-        _timer?.Change(Timeout.Infinite, 0);
-
-        _logger.Info("backup cleaner service stopped");
-
-        return Task.CompletedTask;
-    }
-    public void Dispose()
-    {
-        _timer?.Dispose();
     }
 }

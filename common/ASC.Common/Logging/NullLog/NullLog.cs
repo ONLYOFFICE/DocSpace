@@ -38,7 +38,7 @@ public class NullLog : ILog
 
     public void Trace(object message) { }
 
-    public void TraceFormat(string message, object arg0) { }
+    public void TraceFormat(string message, params object[] args) { }
 
     public void DebugWithProps(string message, IEnumerable<KeyValuePair<string, object>> props) { }
 

@@ -38,7 +38,6 @@ public class BackupAjaxHandler
     private readonly UserManager _userManager;
     private readonly TenantExtra _tenantExtra;
     private readonly ConsumerFactory _consumerFactory;
-    private readonly BackupFileUploadHandler _backupFileUploadHandler;
     private readonly BackupService _backupService;
     private TempPath TempPath { get; }
 
@@ -58,7 +57,6 @@ public class BackupAjaxHandler
         UserManager userManager,
         TenantExtra tenantExtra,
         ConsumerFactory consumerFactory,
-        BackupFileUploadHandler backupFileUploadHandler,
         TempPath tempPath)
     {
         _tenantManager = tenantManager;
@@ -70,7 +68,6 @@ public class BackupAjaxHandler
         _userManager = userManager;
         _tenantExtra = tenantExtra;
         _consumerFactory = consumerFactory;
-        _backupFileUploadHandler = backupFileUploadHandler;
         _backupService = backupService;
         TempPath = tempPath;
     }

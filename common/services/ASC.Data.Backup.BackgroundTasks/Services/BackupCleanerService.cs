@@ -27,12 +27,10 @@
 namespace ASC.Data.Backup.Services;
 
 [Singletone]
-internal sealed class BackupCleanerService : IHostedService, IDisposable
+internal sealed class BackupCleanerService : BackgroundService
 {
-    private Timer _timer;
     private readonly ILog _logger;
-    private readonly TimeSpan _period;
-
+    private readonly TimeSpan _backupCleanerPeriod;
     private readonly IServiceScopeFactory _scopeFactory;
 
     public BackupCleanerService(
@@ -42,21 +40,41 @@ internal sealed class BackupCleanerService : IHostedService, IDisposable
     {
         _scopeFactory = scopeFactory;
         _logger = logger;
-        _period = configuration.GetSetting<BackupSettings>("backup").Cleaner.Period;
+        _backupCleanerPeriod = configuration.GetSetting<BackupSettings>("backup").Cleaner.Period;
     }
 
-    public Task StartAsync(CancellationToken cancellationToken)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.Info("starting backup cleaner service...");
+        _logger.Debug("BackupCleanerService is starting.");
 
-        _timer = new Timer(DeleteExpiredBackups, null, TimeSpan.Zero, _period);
+        stoppingToken.Register(() => _logger.Debug("#1 BackupCleanerService background task is stopping."));
 
-        _logger.Info("backup cleaner service started");
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            _logger.Debug("BackupCleanerService background task is doing background work.");
 
-        return Task.CompletedTask;
+            using var serviceScope = _scopeFactory.CreateScope();
+
+            var registerInstanceService = serviceScope.ServiceProvider.GetService<IRegisterInstanceManager<BackupCleanerService>>();
+
+            if (!await registerInstanceService.IsActive(RegisterInstanceWorkerService<BackupCleanerService>.InstanceId))
+            {
+                _logger.Debug($"BackupCleanerService background task with instance id {RegisterInstanceWorkerService<BackupCleanerService>.InstanceId} is't active.");
+
+                await Task.Delay(1000, stoppingToken);
+
+                continue;
+            }
+
+            ExecuteBackupCleaner(stoppingToken);
+
+            await Task.Delay(_backupCleanerPeriod, stoppingToken);
+        }
+
+        _logger.Debug("BackupCleanerService background task is stopping.");
     }
 
-    public void DeleteExpiredBackups(object state)
+    private void ExecuteBackupCleaner(CancellationToken stoppingToken)
     {
         using var serviceScope = _scopeFactory.CreateScope();
 
@@ -71,6 +89,8 @@ internal sealed class BackupCleanerService : IHostedService, IDisposable
 
         foreach (var scheduledBackups in backupRepository.GetScheduledBackupRecords().GroupBy(r => r.TenantId))
         {
+            if (stoppingToken.IsCancellationRequested) return;
+
             var schedule = backupRepository.GetBackupSchedule(scheduledBackups.Key);
 
             if (schedule != null)
@@ -90,6 +110,8 @@ internal sealed class BackupCleanerService : IHostedService, IDisposable
 
         foreach (var backupRecord in backupsToRemove)
         {
+            if (stoppingToken.IsCancellationRequested) return;
+
             try
             {
                 var backupStorage = backupStorageFactory.GetBackupStorage(backupRecord);
@@ -113,20 +135,6 @@ internal sealed class BackupCleanerService : IHostedService, IDisposable
                 _logger.Warn("can't remove backup record: " + backupRecord.Id, error);
             }
         }
-    }
 
-    public Task StopAsync(CancellationToken cancellationToken)
-    {
-        _logger.Info("stopping backup cleaner service...");
-
-        _timer?.Change(Timeout.Infinite, 0);
-        _logger.Info("backup cleaner service stopped");
-
-        return Task.CompletedTask;
-    }
-
-    public void Dispose()
-    {
-        _timer?.Dispose();
     }
 }

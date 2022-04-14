@@ -24,12 +24,15 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+global using System;
 global using System.Collections;
 global using System.Collections.Concurrent;
+global using System.Collections.Generic;
 global using System.Configuration;
 global using System.Data.Common;
 global using System.Diagnostics;
 global using System.Globalization;
+global using System.Linq;
 global using System.Linq.Expressions;
 global using System.Net;
 global using System.Reflection;
@@ -77,6 +80,8 @@ global using ASC.Core.Common.EF.Context;
 global using ASC.Core.Common.EF.Model;
 global using ASC.Core.Common.EF.Model.Mail;
 global using ASC.Core.Common.EF.Model.Resource;
+global using ASC.Core.Common.Hosting.Extensions;
+global using ASC.Core.Common.Hosting.Interfaces;
 global using ASC.Core.Common.Notify;
 global using ASC.Core.Common.Notify.Jabber;
 global using ASC.Core.Common.Notify.Push;

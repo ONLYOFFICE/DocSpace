@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ASC.Core.Common\ASC.Core.Common.csproj" />
+    <ProjectReference Include="..\ASC.EventBus\ASC.EventBus.csproj" />
+  </ItemGroup>
+
+</Project>

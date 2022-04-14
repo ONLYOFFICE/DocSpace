@@ -83,7 +83,7 @@ public class EmployeeDtoHelper
         }
         catch (Exception)
         {
-            return Get(Constants.LostUser);
+            return Get(ASC.Core.Users.Constants.LostUser);
         }
     }
 

@@ -32,12 +32,14 @@ public class EncryptionWorker
     private readonly object _locker;
     private readonly FactoryOperation _factoryOperation;
     private readonly DistributedTaskQueue _queue;
+    public const string CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME = "encryption";
 
-    public EncryptionWorker(FactoryOperation factoryOperation, DistributedTaskQueueOptionsManager options)
+    public EncryptionWorker(FactoryOperation factoryOperation, 
+                            IDistributedTaskQueueFactory queueFactory)
     {
         _locker = new object();
         _factoryOperation = factoryOperation;
-        _queue = options.Get<EncryptionOperation>();
+        _queue = queueFactory.CreateQueue(CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME);
     }
 
     public void Start(EncryptionSettingsProto encryptionSettings)
@@ -45,19 +47,19 @@ public class EncryptionWorker
         EncryptionOperation encryptionOperation;
         lock (_locker)
         {
-            if (_queue.GetTask<EncryptionOperation>(GetCacheId()) != null)
+            if (_queue.GetAllTasks().Any(x => x.Id == GetCacheId()))
             {
                 return;
             }
 
             encryptionOperation = _factoryOperation.CreateOperation(encryptionSettings, GetCacheId());
-            _queue.QueueTask(encryptionOperation);
+            _queue.EnqueueTask(encryptionOperation);
         }
     }
 
     public void Stop()
     {
-        _queue.CancelTask(GetCacheId());
+        _queue.DequeueTask(GetCacheId());
     }
 
     public string GetCacheId()
@@ -67,7 +69,7 @@ public class EncryptionWorker
 
     public double? GetEncryptionProgress()
     {
-        var progress = _queue.GetTasks<EncryptionOperation>().FirstOrDefault();
+        var progress = _queue.GetAllTasks<EncryptionOperation>().FirstOrDefault();
 
         return progress.Percentage;
     }
@@ -97,6 +99,5 @@ public static class FactoryOperationExtension
     public static void Register(DIHelper dIHelper)
     {
         dIHelper.TryAdd<EncryptionOperation>();
-        dIHelper.AddDistributedTaskQueueService<EncryptionOperation>(1);
     }
 }

@@ -26,9 +26,11 @@
 
 namespace ASC.Data.Storage;
 
-[Scope(Additional = typeof(StaticUploaderExtension))]
+[Scope]
 public class StaticUploader
 {
+    public const string CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME = "static_upload";
+
     protected readonly DistributedTaskQueue Queue;
     private ICache _cache;
     private static readonly CancellationTokenSource _tokenSource;
@@ -52,15 +54,15 @@ public class StaticUploader
         StorageSettingsHelper storageSettingsHelper,
         UploadOperation uploadOperation,
         ICache cache,
-        DistributedTaskQueueOptionsManager options)
+        IDistributedTaskQueueFactory queueFactory)
     {
         _cache = cache;
         _serviceProvider = serviceProvider;
         _tenantManager = tenantManager;
         _settingsManager = settingsManager;
         _storageSettingsHelper = storageSettingsHelper;
+        Queue = queueFactory.CreateQueue(CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME);
         _uploadOperation = uploadOperation;
-        Queue = options.Get<UploadOperationProgress>();
     }
 
     public async Task<string> UploadFileAsync(string relativePath, string mappedPath, Action<string> onComplete = null)
@@ -117,18 +119,17 @@ public class StaticUploader
 
         var tenant = _tenantManager.GetCurrentTenant();
         var key = typeof(UploadOperationProgress).FullName + tenant.Id;
-        UploadOperationProgress uploadOperation;
 
         lock (_locker)
         {
-            uploadOperation = Queue.GetTask<UploadOperationProgress>(key);
-            if (uploadOperation != null)
+            if (Queue.GetAllTasks().Any(x => x.Id != key))
             {
                 return;
             }
 
-            uploadOperation = new UploadOperationProgress(_serviceProvider, key, tenant.Id, relativePath, mappedPath);
-            Queue.QueueTask(uploadOperation);
+            var uploadOperation = new UploadOperationProgress(_serviceProvider, key, tenant.Id, relativePath, mappedPath);
+
+            Queue.EnqueueTask(uploadOperation);
         }
     }
 
@@ -154,7 +155,7 @@ public class StaticUploader
         {
             var key = typeof(UploadOperationProgress).FullName + tenantId;
 
-            return Queue.GetTask<UploadOperationProgress>(key);
+            return Queue.PeekTask<UploadOperationProgress>(key);
         }
     }
 
@@ -279,13 +280,5 @@ public class UploadOperationProgress : DistributedTaskProgress
     public object Clone()
     {
         return MemberwiseClone();
-    }
-}
-
-public static class StaticUploaderExtension
-{
-    public static void Register(DIHelper services)
-    {
-        services.AddDistributedTaskQueueService<UploadOperationProgress>(1);
     }
 }

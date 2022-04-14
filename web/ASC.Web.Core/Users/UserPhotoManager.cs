@@ -167,6 +167,8 @@ namespace ASC.Web.Core.Users
     [Scope(Additional = typeof(ResizeWorkerItemExtension))]
     public class UserPhotoManager
     {
+        public const string CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME = "user_photo_manager";
+
         //Regex for parsing filenames into groups with id's
         private static readonly Regex ParseFile =
                 new Regex(@"^(?'module'\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\}{0,1}){0,1}" +
@@ -194,10 +196,10 @@ namespace ASC.Web.Core.Users
             StorageFactory storageFactory,
             UserPhotoManagerCache userPhotoManagerCache,
             ILog<UserPhotoManager> logger,
-            DistributedTaskQueueOptionsManager optionsQueue,
+            IDistributedTaskQueueFactory queueFactory,
             SettingsManager settingsManager)
         {
-            ResizeQueue = optionsQueue.Get<ResizeWorkerItem>();
+            ResizeQueue = queueFactory.CreateQueue(CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME);
             UserManager = userManager;
             WebImageSupplier = webImageSupplier;
             TenantManager = tenantManager;
@@ -657,7 +659,7 @@ namespace ASC.Web.Core.Users
 
             var resizeTask = new ResizeWorkerItem(userID, data, maxFileSize, size, GetDataStore(), SettingsManager.LoadForUser<UserPhotoThumbnailSettings>(userID));
             var key = $"{userID}{size}";
-            resizeTask.SetProperty("key", key);
+            resizeTask["key"] = key;
 
             if (now)
             {
@@ -667,10 +669,10 @@ namespace ASC.Web.Core.Users
             }
             else
             {
-                if (!ResizeQueue.GetTasks<ResizeWorkerItem>().Any(r => r.GetProperty<string>("key") == key))
+                if (!ResizeQueue.GetAllTasks<ResizeWorkerItem>().Any(r => r["key"] == key))
                 {
                     //Add
-                    ResizeQueue.QueueTask((a, b) => ResizeImage(resizeTask), resizeTask);
+                    ResizeQueue.EnqueueTask((a, b) => ResizeImage(resizeTask), resizeTask);
                 }
                 return GetDefaultPhotoAbsoluteWebPath(size);
                 //NOTE: return default photo here. Since task will update cache
@@ -1001,7 +1003,10 @@ namespace ASC.Web.Core.Users
     {
         public static void Register(DIHelper services)
         {
-            services.AddDistributedTaskQueueService<ResizeWorkerItem>(2);
+            services.Configure<DistributedTaskQueueFactoryOptions>(UserPhotoManager.CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME, options =>
+            {
+                options.MaxThreadsCount = 2;
+            });
         }
     }
 }
