@@ -69,7 +69,13 @@ const StyledTile = styled.div`
 
   &:before, 
   &:after {
-    ${(props) => props.isFolder && props.dragging && draggingStyle};
+    ${(props) =>
+      props.isFolder &&
+      props.dragging &&
+      css`
+        background: ${(props) =>
+          props.theme.filesSection.rowView.draggingBackground};
+      `};
     ${(props) => props.showHotkeyBorder && "border-color: #2DA7DB"};
   }
 
@@ -80,7 +86,13 @@ const StyledTile = styled.div`
 
   &:hover:before,
   &:hover:after {
-    ${(props) => props.isFolder && props.dragging && draggingHoverStyle};
+    ${(props) =>
+      props.isFolder &&
+      props.dragging &&
+      css`
+        background: ${(props) =>
+          props.theme.filesSection.rowView.draggingHoverBackground};
+      `};
   }
 
   .checkbox {
@@ -116,7 +128,11 @@ const StyledTile = styled.div`
   }
 
   .tile-folder-loader {
-    padding-top: 4px;
+    padding-top: 16px;
+    width: 32px;
+    height: 32px;
+    margin-left: 21px;
+    margin-right: 14px;
   }
 
   :hover {
@@ -180,8 +196,11 @@ const StyledFileTileBottom = styled.div`
   box-sizing: border-box;
 
   .tile-file-loader {
-    padding-top: 4px;
-    padding-left: 3px;
+    padding-top: 16px;
+    width: 32px;
+    height: 32px;
+    margin-left: 23px;
+    margin-right: 14px;
   }
 `;
 

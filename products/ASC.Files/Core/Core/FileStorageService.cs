@@ -723,7 +723,7 @@ namespace ASC.Web.Files.Services.WCFService
                 if (isFinish)
                 {
                     FileTracker.Remove(id, tabId);
-                    await SocketManager.StopEditAsync(id);
+                    SocketManager.StopEdit(id);
                 }
                 else
                 {
@@ -770,7 +770,7 @@ namespace ASC.Web.Files.Services.WCFService
                 if (!forcesave && FileTracker.IsEditingAlone(fileId))
                 {
                     FileTracker.Remove(fileId);
-                    await SocketManager.StopEditAsync(fileId);
+                    SocketManager.StopEdit(fileId);
                 }
 
                 var file = await EntryManager.SaveEditingAsync(fileId, fileExtension, fileuri, stream, doc, forcesave: forcesave ? ForcesaveType.User : ForcesaveType.None, keepLink: true);
@@ -793,7 +793,7 @@ namespace ASC.Web.Files.Services.WCFService
                 if (!forcesave && FileTracker.IsEditing(fileId))
                 {
                     FileTracker.Remove(fileId);
-                    await SocketManager.StopEditAsync(fileId);
+                    SocketManager.StopEdit(fileId);
                 }
 
                 var file = await EntryManager.SaveEditingAsync(fileId,

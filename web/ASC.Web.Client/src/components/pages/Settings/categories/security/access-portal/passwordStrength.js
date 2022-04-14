@@ -4,25 +4,20 @@ import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import Box from "@appserver/components/box";
-import Button from "@appserver/components/button";
 import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";
 import Slider from "@appserver/components/slider";
 import Checkbox from "@appserver/components/checkbox";
-import SectionLoader from "../sub-components/section-loader";
 import { getLanguage } from "@appserver/common/utils";
-import { ButtonsWrapper, LearnMoreWrapper } from "../StyledSecurity";
+import { LearnMoreWrapper } from "../StyledSecurity";
 import toastr from "@appserver/components/toast/toastr";
 import { size } from "@appserver/components/utils/device";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 import isEqual from "lodash/isEqual";
+import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 
 const MainContainer = styled.div`
   width: 100%;
-
-  .page-subtitle {
-    margin-bottom: 10px;
-  }
 
   .password-slider {
     width: 160px;
@@ -163,11 +158,11 @@ const PasswordStrength = (props) => {
   };
 
   const lng = getLanguage(localStorage.getItem("language") || "en");
-  if (!isLoading) return <SectionLoader />;
+
   return (
     <MainContainer>
       <LearnMoreWrapper>
-        <Text className="page-subtitle">
+        <Text className="learn-subtitle">
           {t("SettingPasswordStrengthHelper")}
         </Text>
         <Link
@@ -222,33 +217,17 @@ const PasswordStrength = (props) => {
         />
       </Box>
 
-      <ButtonsWrapper>
-        <Button
-          label={t("Common:SaveButton")}
-          size="small"
-          primary={true}
-          className="button"
-          onClick={onSaveClick}
-          isDisabled={!showReminder}
-        />
-        <Button
-          label={t("Common:CancelButton")}
-          size="small"
-          className="button"
-          onClick={onCancelClick}
-          isDisabled={!showReminder}
-        />
-        {showReminder && (
-          <Text
-            color="#A3A9AE"
-            fontSize="12px"
-            fontWeight="600"
-            className="reminder"
-          >
-            {t("YouHaveUnsavedChanges")}
-          </Text>
-        )}
-      </ButtonsWrapper>
+      <SaveCancelButtons
+        className="save-cancel-buttons"
+        onSaveClick={onSaveClick}
+        onCancelClick={onCancelClick}
+        showReminder={showReminder}
+        reminderTest={t("YouHaveUnsavedChanges")}
+        saveButtonLabel={t("Common:SaveButton")}
+        cancelButtonLabel={t("Common:CancelButton")}
+        displaySettings={true}
+        hasScroll={false}
+      />
     </MainContainer>
   );
 };

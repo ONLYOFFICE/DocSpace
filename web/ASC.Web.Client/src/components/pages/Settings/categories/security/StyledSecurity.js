@@ -45,6 +45,12 @@ export const StyledCategoryWrapper = styled.div`
   align-items: center;
 `;
 
+export const StyledTooltip = styled.div`
+  .subtitle {
+    margin-bottom: 10px;
+  }
+`;
+
 export const StyledMobileCategoryWrapper = styled.div`
   margin-bottom: 20px;
 
@@ -79,33 +85,6 @@ export const StyledMobileCategoryWrapper = styled.div`
 
 StyledMobileCategoryWrapper.defaultProps = { theme: Base };
 
-export const ButtonsWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  gap: 8px;
-  align-items: center;
-
-  @media (max-width: 600px) {
-    position: absolute;
-    bottom: 16px;
-    width: calc(100vw - 84px);
-
-    .button {
-      height: 40px;
-      width: 100%;
-    }
-
-    .reminder {
-      position: absolute;
-      bottom: 48px;
-    }
-  }
-
-  @media (max-width: 430px) {
-    width: calc(100vw - 32px);
-  }
-`;
-
 export const LearnMoreWrapper = styled.div`
   display: none;
 
@@ -113,5 +92,9 @@ export const LearnMoreWrapper = styled.div`
     display: flex;
     flex-direction: column;
     margin-bottom: 20px;
+  }
+
+  .learn-subtitle {
+    margin-bottom: 10px;
   }
 `;

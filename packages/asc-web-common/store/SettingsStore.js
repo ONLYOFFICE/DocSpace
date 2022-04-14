@@ -1,6 +1,6 @@
 import { makeAutoObservable } from "mobx";
 import api from "../api";
-import { ARTICLE_PINNED_KEY, LANGUAGE, TenantStatus } from "../constants";
+import { LANGUAGE, TenantStatus } from "../constants";
 import { combineUrl } from "../utils";
 import FirebaseHelper from "../utils/firebase";
 import { AppServerConfig } from "../constants";
@@ -31,7 +31,6 @@ class SettingsStore {
     : Base;
   trustedDomains = [];
   trustedDomainsType = 0;
-  trustedDomains = [];
   timezone = "UTC";
   timezones = [];
   utcOffset = "00:00:00";
@@ -443,6 +442,13 @@ class SettingsStore {
   setTheme = (theme) => {
     this.theme = themes[theme];
     localStorage.setItem("theme", theme);
+  };
+
+  setMailDomainSettings = async (data) => {
+    const res = await api.settings.setMailDomainSettings(data);
+    this.trustedDomainsType = data.type;
+    this.trustedDomains = data.domains;
+    return res;
   };
 
   getOforms = () => {

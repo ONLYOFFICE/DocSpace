@@ -152,23 +152,12 @@ class FilesStore {
       );
     });
 
-    socketHelper.on("s:stop-edit-file", (id, data) => {
-      //console.log(`Call s:stop-edit-file (id=${id})`);
+    socketHelper.on("s:stop-edit-file", (id) => {
+      console.log(`Call s:stop-edit-file (id=${id})`);
       const foundIndex = this.files.findIndex((x) => x.id === id);
       if (foundIndex == -1) return;
 
-      let file;
-
-      if (data) {
-        file = JSON.parse(data);
-        console.log(`socket stop-edit-file (id=${id}`, file);
-      }
-
-      this.updateFileStatus(
-        foundIndex,
-        this.files[foundIndex].fileStatus & ~FileStatus.IsEditing,
-        file
-      );
+      this.getFileInfo(id);
     });
   }
 
@@ -500,12 +489,8 @@ class FilesStore {
     clearFilter = true,
     withSubfolders = false
   ) => {
-    const {
-      treeFolders,
-      setSelectedNode,
-      getSubfolders,
-      selectedTreeNode,
-    } = this.treeFoldersStore;
+    const { treeFolders, setSelectedNode, getSubfolders, selectedTreeNode } =
+      this.treeFoldersStore;
     const { id } = this.selectedFolderStore;
 
     const isPrefSettings = isNaN(+selectedTreeNode) && !id;
@@ -708,11 +693,8 @@ class FilesStore {
       isMy,
     } = this.treeFoldersStore;
 
-    const {
-      canWebEdit,
-      canViewedDocs,
-      canFormFillingDocs,
-    } = this.filesSettingsStore;
+    const { canWebEdit, canViewedDocs, canFormFillingDocs } =
+      this.filesSettingsStore;
 
     const isThirdPartyFolder =
       item.providerKey && item.id === item.rootFolderId;
@@ -1628,12 +1610,8 @@ class FilesStore {
   };
 
   get sortedFiles() {
-    const {
-      extsConvertible,
-      isSpreadsheet,
-      isPresentation,
-      isDocument,
-    } = this.filesSettingsStore;
+    const { extsConvertible, isSpreadsheet, isPresentation, isDocument } =
+      this.filesSettingsStore;
 
     let sortedFiles = {
       documents: [],
