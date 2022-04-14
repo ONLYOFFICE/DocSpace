@@ -18,9 +18,7 @@ export default function template(
       window.__ASC_INITIAL_STATE__ = ${JSON.stringify(initialState)}
     </script>
     <script id="__ASC_I18N_INIT__">
-      window.initialI18nStore = JSON.parse('${JSON.stringify(
-        initialI18nStore
-      )}')
+      window.initialI18nStore = ${JSON.stringify(initialI18nStore)}
       window.initialLanguage = '${initialLanguage}'
     </script>
     <script type='text/javascript' id='scripDocServiceAddress' src="${docApiUrl}" async></script>
