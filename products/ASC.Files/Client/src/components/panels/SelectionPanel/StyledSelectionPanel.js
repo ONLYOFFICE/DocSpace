@@ -201,6 +201,7 @@ const StyledAsideBody = styled.div`
     padding-left: 16px;
     padding-right: 16px;
     padding-top: 16px;
+    padding-bottom: 12px;
 
     .selection-panel_aside-buttons {
       ${(props) => props.footer && "margin-top:16px"};
