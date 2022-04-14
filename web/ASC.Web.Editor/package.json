@@ -10,7 +10,7 @@
     "build:server": "webpack --config webpack.server.js",
     "build:client": "webpack --config webpack.client.js --profile --json > clientBuild/stats.json",
     "build:prod": "yarn clean && shx --silent mkdir clientBuild  && shx --silent mkdir serverBuild && yarn build:client --mode production --progress && yarn build:server --mode production --progress && node serverBuild/server.js",
-    "build:dev": "yarn clean && shx --silent mkdir dist && yarn build:client --progress && yarn build:server --progress && node serverBuild/server.js"
+    "start": "yarn clean && shx --silent mkdir clientBuild  && shx --silent mkdir serverBuild && yarn build:client --progress && yarn build:server --progress && node serverBuild/server.js"
   },
   "devDependencies": {
     "@babel/core": "^7.15.5",
