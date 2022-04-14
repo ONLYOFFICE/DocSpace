@@ -172,19 +172,19 @@ public class SecurityController : ControllerBase
 
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        if (wrapper.settings.LoginHistoryLifeTime <= 0 || wrapper.settings.LoginHistoryLifeTime > TenantAuditSettings.MaxLifeTime)
+        if (wrapper.Settings.LoginHistoryLifeTime <= 0 || wrapper.Settings.LoginHistoryLifeTime > TenantAuditSettings.MaxLifeTime)
         {
             throw new ArgumentException("LoginHistoryLifeTime");
         }
 
-        if (wrapper.settings.AuditTrailLifeTime <= 0 || wrapper.settings.AuditTrailLifeTime > TenantAuditSettings.MaxLifeTime)
+        if (wrapper.Settings.AuditTrailLifeTime <= 0 || wrapper.Settings.AuditTrailLifeTime > TenantAuditSettings.MaxLifeTime)
         {
             throw new ArgumentException("AuditTrailLifeTime");
         }
 
-        _settingsManager.SaveForTenant(wrapper.settings, _tenantManager.GetCurrentTenant().Id);
+        _settingsManager.SaveForTenant(wrapper.Settings, _tenantManager.GetCurrentTenant().Id);
         _messageService.Send(MessageAction.AuditSettingsUpdated);
 
-        return wrapper.settings;
+        return wrapper.Settings;
     }
 }

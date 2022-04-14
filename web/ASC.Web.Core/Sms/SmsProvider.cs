@@ -148,8 +148,10 @@ public abstract class SmsProvider : Consumer
             var url = SendMessageUrl();
             url = url.Replace("{phone}", number).Replace("{text}", HttpUtility.UrlEncode(message));
 
-            var request = new HttpRequestMessage();
-            request.RequestUri = new Uri(url);
+            var request = new HttpRequestMessage
+            {
+                RequestUri = new Uri(url)
+            };
             request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
 
             var httpClient = ClientFactory.CreateClient();
@@ -244,8 +246,10 @@ public class SmscProvider : SmsProvider, IValidateKeysProvider
             {
                 var url = GetBalanceUrl();
 
-                var request = new HttpRequestMessage();
-                request.RequestUri = new Uri(url);
+                var request = new HttpRequestMessage
+                {
+                    RequestUri = new Uri(url)
+                };
                 request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
 
                 var httpClient = ClientFactory.CreateClient();

@@ -44,7 +44,7 @@ public class TableRowFormatterState : FormatterState
         _attsInfo = m.Groups["atts"].Value;
         input = "|" + m.Groups["content"].Value + "|";
 
-        if (!(this.Formatter.CurrentState is TableFormatterState))
+        if (this.Formatter.CurrentState is not TableFormatterState)
         {
             var s = new TableFormatterState(this.Formatter);
             this.Formatter.ChangeState(s);

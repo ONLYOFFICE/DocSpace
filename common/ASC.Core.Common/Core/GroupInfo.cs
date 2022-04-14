@@ -54,7 +54,7 @@ public class GroupInfo : IRole, IRecipientsGroup
 
     public override bool Equals(object obj)
     {
-        if (!(obj is GroupInfo g))
+        if (obj is not GroupInfo g)
         {
             return false;
         }

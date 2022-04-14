@@ -89,7 +89,10 @@ internal sealed class BackupCleanerService : BackgroundService
 
         foreach (var scheduledBackups in backupRepository.GetScheduledBackupRecords().GroupBy(r => r.TenantId))
         {
-            if (stoppingToken.IsCancellationRequested) return;
+            if (stoppingToken.IsCancellationRequested)
+            {
+                return;
+            }
 
             var schedule = backupRepository.GetBackupSchedule(scheduledBackups.Key);
 
@@ -110,7 +113,10 @@ internal sealed class BackupCleanerService : BackgroundService
 
         foreach (var backupRecord in backupsToRemove)
         {
-            if (stoppingToken.IsCancellationRequested) return;
+            if (stoppingToken.IsCancellationRequested)
+            {
+                return;
+            }
 
             try
             {

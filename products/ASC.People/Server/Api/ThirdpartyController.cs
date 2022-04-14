@@ -296,8 +296,10 @@ public class ThirdpartyController : ApiControllerBase
     {
         using (var memstream = new MemoryStream())
         {
-            var request = new HttpRequestMessage();
-            request.RequestUri = new Uri(url);
+            var request = new HttpRequestMessage
+            {
+                RequestUri = new Uri(url)
+            };
 
             var httpClient = _httpClientFactory.CreateClient();
             using (var response = httpClient.Send(request))

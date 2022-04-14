@@ -36,7 +36,7 @@ class InterceptorStorage
     {
         get
         {
-            if (!(CallContext.GetData(_callContextPrefix) is Dictionary<string, ISendInterceptor> storage))
+            if (CallContext.GetData(_callContextPrefix) is not Dictionary<string, ISendInterceptor> storage)
             {
                 storage = new Dictionary<string, ISendInterceptor>(10);
                 CallContext.SetData(_callContextPrefix, storage);

@@ -34,7 +34,7 @@ public interface IUrlShortener
 [Scope]
 public class UrlShortener
 {
-    public bool Enabled { get { return !(Instance is NullShortener); } }
+    public bool Enabled { get { return Instance is not NullShortener; } }
 
     private IUrlShortener _instance;
     public IUrlShortener Instance
@@ -131,8 +131,10 @@ public class OnlyoShortener : IUrlShortener
 
     public async Task<string> GetShortenLinkAsync(string shareLink)
     {
-        var request = new HttpRequestMessage();
-        request.RequestUri = new Uri(_internalUrl + "?url=" + HttpUtility.UrlEncode(shareLink));
+        var request = new HttpRequestMessage
+        {
+            RequestUri = new Uri(_internalUrl + "?url=" + HttpUtility.UrlEncode(shareLink))
+        };
         request.Headers.Add("Authorization", CreateAuthToken());
         request.Headers.Add("Encoding", Encoding.UTF8.ToString());//todo check 
 

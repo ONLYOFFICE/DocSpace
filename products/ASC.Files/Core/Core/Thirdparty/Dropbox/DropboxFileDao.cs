@@ -386,7 +386,7 @@ internal class DropboxFileDao : DropboxDaoBase, IFileDao<string>
             await tx.CommitAsync().ConfigureAwait(false);
         }
 
-        if (!(dropboxFile is ErrorFile))
+        if (dropboxFile is not ErrorFile)
         {
             await ProviderInfo.Storage.DeleteItemAsync(dropboxFile);
         }

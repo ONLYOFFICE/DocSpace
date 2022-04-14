@@ -70,7 +70,7 @@ public sealed class NVelocityPatternFormatter : PatternFormatter
 
     private void EventCartridgeReferenceInsertion(object sender, ReferenceInsertionEventArgs e)
     {
-        if (!(e.OriginalValue is string originalString))
+        if (e.OriginalValue is not string originalString)
         {
             return;
         }

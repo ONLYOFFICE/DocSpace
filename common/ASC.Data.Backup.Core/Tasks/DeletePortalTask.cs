@@ -60,7 +60,7 @@ public class DeletePortalTask : PortalTaskBase
         var tablesProcessed = 0;
         using (var connection = DbFactory.OpenConnection())
         {
-            foreach (var table in module.GetTablesOrdered().Reverse().Where(t => !IgnoredTables.Contains(t.Name)))
+            foreach (var table in module.GetTablesOrdered().Reverse().Where(t => !_ignoredTables.Contains(t.Name)))
             {
                 ActionInvoker.Try(state =>
                     {

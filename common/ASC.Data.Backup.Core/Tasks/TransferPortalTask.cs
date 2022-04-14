@@ -99,7 +99,7 @@ public class TransferPortalTask : PortalTaskBase
             backupTask.Init(TenantId, ConfigPath, backupFilePath, Limit);
             backupTask.ProcessStorage = false;
             backupTask.ProgressChanged += (sender, args) => SetCurrentStepProgress(args.Progress);
-            foreach (var moduleName in IgnoredModules)
+            foreach (var moduleName in _ignoredModules)
             {
                 backupTask.IgnoreModule(moduleName);
             }
@@ -110,7 +110,7 @@ public class TransferPortalTask : PortalTaskBase
             restoreTask.Init(ToConfigPath, backupFilePath, columnMapper: columnMapper);
             restoreTask.ProcessStorage = false;
             restoreTask.ProgressChanged += (sender, args) => SetCurrentStepProgress(args.Progress);
-            foreach (var moduleName in IgnoredModules)
+            foreach (var moduleName in _ignoredModules)
             {
                 restoreTask.IgnoreModule(moduleName);
             }
@@ -210,10 +210,10 @@ public class TransferPortalTask : PortalTaskBase
 
             var commandText = "update tenants_tenants " +
             "set " +
-                $"  status={status.ToString("d")}, " +
+                $"  status={status:d}, " +
                 $"  alias = '{newAlias}', " +
-                $"  last_modified='{DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss")}', " +
-                $"  statuschanged='{DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss")}' " +
+                $"  last_modified='{DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}', " +
+                $"  statuschanged='{DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}' " +
                 $"where alias = '{alias}'";
 
         if (!string.IsNullOrEmpty(whereCondition))

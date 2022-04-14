@@ -263,7 +263,7 @@ internal class BoxFolderDao : BoxDaoBase, IFolderDao<string>
             await tx.CommitAsync().ConfigureAwait(false);
         }
 
-        if (!(boxFolder is ErrorFolder))
+        if (boxFolder is not ErrorFolder)
         {
             var storage = await ProviderInfo.StorageAsync;
             await storage.DeleteItemAsync(boxFolder).ConfigureAwait(false);

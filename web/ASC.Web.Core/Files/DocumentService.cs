@@ -132,9 +132,11 @@ public static class DocumentService
                                  : documentRevisionId;
         documentRevisionId = GenerateRevisionId(documentRevisionId);
 
-        var request = new HttpRequestMessage();
-        request.RequestUri = new Uri(documentConverterUrl);
-        request.Method = HttpMethod.Post;
+        var request = new HttpRequestMessage
+        {
+            RequestUri = new Uri(documentConverterUrl),
+            Method = HttpMethod.Post
+        };
         request.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
         var httpClient = clientFactory.CreateClient();
@@ -251,9 +253,11 @@ public static class DocumentService
         string signatureSecret,
         IHttpClientFactory clientFactory)
     {
-        var request = new HttpRequestMessage();
-        request.RequestUri = new Uri(documentTrackerUrl);
-        request.Method = HttpMethod.Post;
+        var request = new HttpRequestMessage
+        {
+            RequestUri = new Uri(documentTrackerUrl),
+            Method = HttpMethod.Post
+        };
 
         var httpClient = clientFactory.CreateClient();
         httpClient.Timeout = TimeSpan.FromMilliseconds(Timeout);
@@ -359,9 +363,11 @@ public static class DocumentService
        string signatureSecret,
        IHttpClientFactory clientFactory)
     {
-        var request = new HttpRequestMessage();
-        request.RequestUri = new Uri(docbuilderUrl);
-        request.Method = HttpMethod.Post;
+        var request = new HttpRequestMessage
+        {
+            RequestUri = new Uri(docbuilderUrl),
+            Method = HttpMethod.Post
+        };
 
         var httpClient = clientFactory.CreateClient();
         httpClient.Timeout = TimeSpan.FromMilliseconds(Timeout);
@@ -447,8 +453,10 @@ public static class DocumentService
 
     private static async Task<bool> InternalHealthcheckRequestAsync(string healthcheckUrl, IHttpClientFactory clientFactory)
     {
-        var request = new HttpRequestMessage();
-        request.RequestUri = new Uri(healthcheckUrl);
+        var request = new HttpRequestMessage
+        {
+            RequestUri = new Uri(healthcheckUrl)
+        };
 
         var httpClient = clientFactory.CreateClient();
         httpClient.Timeout = TimeSpan.FromMilliseconds(Timeout);
@@ -520,7 +528,7 @@ public static class DocumentService
             public DateTime BuildDate { get; set; }
 
             [JsonPropertyName("buildNumber")]
-            public int buildNumber { get; set; }
+            public int BuildNumber { get; set; }
 
             [JsonPropertyName("buildVersion")]
             public string BuildVersion { get; set; }

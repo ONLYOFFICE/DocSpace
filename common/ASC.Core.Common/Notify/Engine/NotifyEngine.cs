@@ -334,7 +334,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
 
     private List<SendResponse> SendDirectNotify(NotifyRequest request, IServiceScope serviceScope)
     {
-        if (!(request.Recipient is IDirectRecipient))
+        if (request.Recipient is not IDirectRecipient)
         {
             throw new ArgumentException("request.Recipient not IDirectRecipient", nameof(request));
         }
@@ -395,7 +395,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
 
     private SendResponse SendDirectNotify(NotifyRequest request, ISenderChannel channel, IServiceScope serviceScope)
     {
-        if (!(request.Recipient is IDirectRecipient))
+        if (request.Recipient is not IDirectRecipient)
         {
             throw new ArgumentException("request.Recipient not IDirectRecipient", nameof(request));
         }

@@ -68,7 +68,7 @@ public sealed class ResizeWorkerItem : DistributedTask
             return true;
         }
 
-        if (!(obj is ResizeWorkerItem))
+        if (obj is not ResizeWorkerItem)
         {
             return false;
         }

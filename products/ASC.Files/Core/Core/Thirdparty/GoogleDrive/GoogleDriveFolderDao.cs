@@ -252,7 +252,7 @@ internal class GoogleDriveFolderDao : GoogleDriveDaoBase, IFolderDao<string>
             await tx.CommitAsync().ConfigureAwait(false);
         }
 
-        if (!(driveFolder is ErrorDriveEntry))
+        if (driveFolder is not ErrorDriveEntry)
         {
             var storage = await ProviderInfo.StorageAsync;
             await storage.DeleteEntryAsync(driveFolder.Id).ConfigureAwait(false);

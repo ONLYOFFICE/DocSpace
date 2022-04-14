@@ -98,7 +98,10 @@ public sealed class BackupSchedulerService : BackgroundService
 
         foreach (var schedule in backupsToSchedule)
         {
-            if (stoppingToken.IsCancellationRequested) return;
+            if (stoppingToken.IsCancellationRequested)
+            {
+                return;
+            }
 
             try
             {

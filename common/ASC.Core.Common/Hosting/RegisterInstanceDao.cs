@@ -4,7 +4,7 @@
 public class RegisterInstanceDao<T> : IRegisterInstanceDao<T> where T : IHostedService
 {
     private readonly ILog _logger;
-    private InstanceRegistrationContext _instanceRegistrationContext;
+    private readonly InstanceRegistrationContext _instanceRegistrationContext;
 
     public RegisterInstanceDao(
         IOptionsMonitor<ILog> options,
@@ -42,7 +42,9 @@ public class RegisterInstanceDao<T> : IRegisterInstanceDao<T> where T : IHostedS
                 var entry = ex.Entries.Single();
 
                 if (entry.State == EntityState.Modified)
+                {
                     entry.State = EntityState.Added;
+                }
             }
         }
         while (saveFailed);
@@ -59,8 +61,11 @@ public class RegisterInstanceDao<T> : IRegisterInstanceDao<T> where T : IHostedS
     {
         var item = _instanceRegistrationContext.InstanceRegistrations.Find(instanceId);
 
-        if (item == null) return;
-                
+        if (item == null)
+        {
+            return;
+        }
+
         _instanceRegistrationContext.InstanceRegistrations.Remove(item);
 
         try
@@ -72,7 +77,9 @@ public class RegisterInstanceDao<T> : IRegisterInstanceDao<T> where T : IHostedS
             var entry = ex.Entries.Single();
 
             if (entry.State == EntityState.Deleted)
-                entry.State = EntityState.Detached;           
+            {
+                entry.State = EntityState.Detached;
+            }
         }   
     }
 

@@ -218,8 +218,10 @@ public class PortalController : ControllerBase
         url = url.Replace("&amp;", "&");
         url = WebUtility.UrlEncode(url);
 
-        var request = new HttpRequestMessage();
-        request.RequestUri = new Uri(string.Format(_configuration["bookmarking:thumbnail-url"], url));
+        var request = new HttpRequestMessage
+        {
+            RequestUri = new Uri(string.Format(_configuration["bookmarking:thumbnail-url"], url))
+        };
 
         var httpClient = _clientFactory.CreateClient();
         using var response = httpClient.Send(request);

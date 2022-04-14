@@ -359,14 +359,14 @@ public class Selector<T> where T : class, ISearchItem
 
     private string IsNested(Field selector)
     {
-        if (!(selector.Expression is LambdaExpression lambdaExpression))
+        if (selector.Expression is not LambdaExpression lambdaExpression)
         {
             return null;
         }
 
         if (lambdaExpression.Body is MethodCallExpression methodCallExpression && methodCallExpression.Arguments.Count > 1)
         {
-            return !(methodCallExpression.Arguments[0] is MemberExpression pathMember)
+            return methodCallExpression.Arguments[0] is not MemberExpression pathMember
                 ? null
                 : pathMember.Member.Name.ToLowerCamelCase();
         }

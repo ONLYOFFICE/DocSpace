@@ -261,9 +261,11 @@ internal class OneDriveStorage
             Path = "/" + ApiVersion + "/drive/items/" + folderId + ":/" + fileName + ":/oneDrive.createUploadSession"
         };
 
-        var request = new HttpRequestMessage();
-        request.RequestUri = uploadUriBuilder.Uri;
-        request.Method = HttpMethod.Post;
+        var request = new HttpRequestMessage
+        {
+            RequestUri = uploadUriBuilder.Uri,
+            Method = HttpMethod.Post
+        };
         request.Headers.Add("Authorization", "Bearer " + AccessToken);
         request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json")
         {
@@ -304,9 +306,11 @@ internal class OneDriveStorage
 
     private async Task InternalTransferAsync(ResumableUploadSession oneDriveSession, Stream stream, long chunkLength)
     {
-        var request = new HttpRequestMessage();
-        request.RequestUri = new Uri(oneDriveSession.Location);
-        request.Method = HttpMethod.Put;
+        var request = new HttpRequestMessage
+        {
+            RequestUri = new Uri(oneDriveSession.Location),
+            Method = HttpMethod.Put
+        };
         request.Headers.Add("Authorization", "Bearer " + AccessToken);
         request.Headers.Add("Content-Range", string.Format("bytes {0}-{1}/{2}",
                                                            oneDriveSession.BytesTransfered,
@@ -341,9 +345,11 @@ internal class OneDriveStorage
 
     public async Task CancelTransferAsync(ResumableUploadSession oneDriveSession)
     {
-        var request = new HttpRequestMessage();
-        request.RequestUri = new Uri(oneDriveSession.Location);
-        request.Method = HttpMethod.Delete;
+        var request = new HttpRequestMessage
+        {
+            RequestUri = new Uri(oneDriveSession.Location),
+            Method = HttpMethod.Delete
+        };
 
         var httpClient = _clientFactory.CreateClient();
         using var response = await httpClient.SendAsync(request);

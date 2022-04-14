@@ -384,7 +384,7 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
             await tx.CommitAsync().ConfigureAwait(false);
         }
 
-        if (!(boxFile is ErrorFile))
+        if (boxFile is not ErrorFile)
         {
             var storage = await ProviderInfo.StorageAsync;
             await storage.DeleteItemAsync(boxFile);

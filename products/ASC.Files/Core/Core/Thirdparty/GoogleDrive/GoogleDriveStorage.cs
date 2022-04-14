@@ -260,9 +260,11 @@ internal class GoogleDriveStorage : IDisposable
             downloadArg = $"{file.Id}/export?mimeType={HttpUtility.UrlEncode(requiredMimeType)}";
         }
 
-        var request = new HttpRequestMessage();
-        request.RequestUri = new Uri(GoogleLoginProvider.GoogleUrlFile + downloadArg);
-        request.Method = HttpMethod.Get;
+        var request = new HttpRequestMessage
+        {
+            RequestUri = new Uri(GoogleLoginProvider.GoogleUrlFile + downloadArg),
+            Method = HttpMethod.Get
+        };
         request.Headers.Add("Authorization", "Bearer " + AccessToken);
 
         var httpClient = _clientFactory.CreateClient();
@@ -542,9 +544,11 @@ internal class GoogleDriveStorage : IDisposable
             body = !string.IsNullOrEmpty(titleData + parentData) ? "{{" + titleData + parentData + "}}" : "";
         }
 
-        var request = new HttpRequestMessage();
-        request.RequestUri = new Uri(GoogleLoginProvider.GoogleUrlFileUpload + fileId + "?uploadType=resumable");
-        request.Method = new HttpMethod(method);
+        var request = new HttpRequestMessage
+        {
+            RequestUri = new Uri(GoogleLoginProvider.GoogleUrlFileUpload + fileId + "?uploadType=resumable"),
+            Method = new HttpMethod(method)
+        };
         request.Headers.Add("X-Upload-Content-Type", MimeMapping.GetMimeMapping(driveFile.Name));
         request.Headers.Add("X-Upload-Content-Length", contentLength.ToString(CultureInfo.InvariantCulture));
         request.Headers.Add("Authorization", "Bearer " + AccessToken);
@@ -553,10 +557,11 @@ internal class GoogleDriveStorage : IDisposable
         var httpClient = _clientFactory.CreateClient();
         using var response = await httpClient.SendAsync(request);
 
-        var uploadSession = new ResumableUploadSession(driveFile.Id, folderId, contentLength);
-
-        uploadSession.Location = response.Headers.Location.ToString();
-        uploadSession.Status = ResumableUploadSessionStatus.Started;
+        var uploadSession = new ResumableUploadSession(driveFile.Id, folderId, contentLength)
+        {
+            Location = response.Headers.Location.ToString(),
+            Status = ResumableUploadSessionStatus.Started
+        };
 
         return uploadSession;
     }
@@ -575,9 +580,11 @@ internal class GoogleDriveStorage : IDisposable
 
     private async Task InternalTransferAsync(ResumableUploadSession googleDriveSession, Stream stream, long chunkLength)
     {
-        var request = new HttpRequestMessage();
-        request.RequestUri = new Uri(googleDriveSession.Location);
-        request.Method = HttpMethod.Put;
+        var request = new HttpRequestMessage
+        {
+            RequestUri = new Uri(googleDriveSession.Location),
+            Method = HttpMethod.Put
+        };
         request.Headers.Add("Authorization", "Bearer " + AccessToken);
         request.Headers.Add("Content-Range", string.Format("bytes {0}-{1}/{2}",
                                                            googleDriveSession.BytesTransfered,

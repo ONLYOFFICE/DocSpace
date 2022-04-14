@@ -201,7 +201,10 @@ public class DistributedTaskQueue
     {
         var taskById = GetAllTasks().FirstOrDefault(x => x.Id == id);
 
-        if (taskById == null) return null;
+        if (taskById == null)
+        {
+            return null;
+        }
 
         return Map(taskById, _serviceProvider.GetService<T>());
     }
@@ -210,7 +213,10 @@ public class DistributedTaskQueue
     {
         var queueTasks = GetAllTasks().ToList();
 
-        if (!queueTasks.Exists(x => x.Id == id)) return;
+        if (!queueTasks.Exists(x => x.Id == id))
+        {
+            return;
+        }
 
         _cancellationCacheNotify.Publish(new DistributedTaskCancelation() { Id = id }, CacheNotifyAction.Remove);
 
@@ -289,7 +295,10 @@ public class DistributedTaskQueue
 {
         var serializedObject = _distributedCache.Get(_name);
 
-        if (serializedObject == null) return new List<DistributedTask>();
+        if (serializedObject == null)
+        {
+            return new List<DistributedTask>();
+        }
 
         using var ms = new MemoryStream(serializedObject);
 
@@ -298,11 +307,17 @@ public class DistributedTaskQueue
 
     private IEnumerable<DistributedTask> DeleteOrphanCacheItem(IEnumerable<DistributedTask> queueTasks)
     {
-        if (!queueTasks.Any()) return queueTasks;
+        if (!queueTasks.Any())
+        {
+            return queueTasks;
+        }
 
         var orphans = queueTasks.Where(IsOrphanCacheItem);
 
-        if (!orphans.Any()) return queueTasks;
+        if (!orphans.Any())
+        {
+            return queueTasks;
+        }
 
         queueTasks = queueTasks.Except(queueTasks);
 

@@ -282,8 +282,10 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
 
         var httpClient = _clientFactory.CreateClient();
 
-        var request = new HttpRequestMessage();
-        request.RequestUri = new Uri(_boxUrlUpload.Replace("{fileId}", fileId));
+        var request = new HttpRequestMessage
+        {
+            RequestUri = new Uri(_boxUrlUpload.Replace("{fileId}", fileId))
+        };
 
         using (var tmpStream = new MemoryStream())
         {
@@ -300,8 +302,10 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
             }
             else
             {
-                var downloadRequest = new HttpRequestMessage();
-                downloadRequest.RequestUri = new Uri(downloadUrl);
+                var downloadRequest = new HttpRequestMessage
+                {
+                    RequestUri = new Uri(downloadUrl)
+                };
                 using var response = await httpClient.SendAsync(request);
                 using var downloadStream = new ResponseStream(response);
                 await downloadStream.CopyToAsync(tmpStream);
@@ -440,9 +444,11 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
                 throw new SecurityException("Access token is null");
             }
 
-            var request = new HttpRequestMessage();
-            request.RequestUri = new Uri(_boxUrlFile.Replace("{fileId}", fileId) + "/content");
-            request.Method = HttpMethod.Get;
+            var request = new HttpRequestMessage
+            {
+                RequestUri = new Uri(_boxUrlFile.Replace("{fileId}", fileId) + "/content"),
+                Method = HttpMethod.Get
+            };
             request.Headers.Add("Authorization", "Bearer " + token);
 
             var httpClient = _clientFactory.CreateClient();

@@ -36,7 +36,7 @@ class RoleProvider : IRoleProvider
     public List<IRole> GetRoles(ISubject account)
     {
         var roles = new List<IRole>();
-        if (!(account is ISystemAccount))
+        if (account is not ISystemAccount)
         {
             if (account is IRole)
             {

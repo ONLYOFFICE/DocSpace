@@ -38,13 +38,18 @@ namespace ASC.FederatedLogin.Helpers;
 
         public string PerformRequest(string uri, string contentType = "", string method = "GET", string body = "", Dictionary<string, string> headers = null, int timeout = 30000)
         {
-            if (string.IsNullOrEmpty(uri)) throw new ArgumentNullException(nameof(uri));
+            if (string.IsNullOrEmpty(uri))
+        {
+            throw new ArgumentNullException(nameof(uri));
+        }
 
-        var request = new HttpRequestMessage();
-        request.RequestUri = new Uri(uri);
-        request.Method = new HttpMethod(method);
+        var request = new HttpRequestMessage
+        {
+            RequestUri = new Uri(uri),
+            Method = new HttpMethod(method)
+        };
 
-            var httpClient = _httpClientFactory.CreateClient();
+        var httpClient = _httpClientFactory.CreateClient();
             httpClient.Timeout = TimeSpan.FromMilliseconds(timeout);
 
         if (headers != null)

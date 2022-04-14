@@ -1197,8 +1197,10 @@ public class EntryManager
             else
             {
 
-                var request = new HttpRequestMessage();
-                request.RequestUri = new Uri(downloadUri);
+                var request = new HttpRequestMessage
+                {
+                    RequestUri = new Uri(downloadUri)
+                };
 
                 var httpClient = _clientFactory.CreateClient();
                 using var response = await httpClient.SendAsync(request);

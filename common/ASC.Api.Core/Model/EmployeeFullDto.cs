@@ -149,8 +149,8 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
             Terminated = _apiDateTimeHelper.Get(userInfo.TerminatedDate),
             WorkFrom = _apiDateTimeHelper.Get(userInfo.WorkFromDate),
             Email = userInfo.Email,
-            IsVisitor = userInfo.IsVisitor(UserManager),
-            IsAdmin = userInfo.IsAdmin(UserManager),
+            IsVisitor = userInfo.IsVisitor(_userManager),
+            IsAdmin = userInfo.IsAdmin(_userManager),
             IsOwner = userInfo.IsOwner(_context.Tenant),
             IsLDAP = userInfo.IsLDAP(),
             IsSSO = userInfo.IsSSO()
@@ -189,8 +189,8 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
 
         if (_context.Check("groups") || _context.Check("department"))
         {
-            var groups = UserManager.GetUserGroups(userInfo.Id)
-                .Select(x => new GroupSummaryDto(x, UserManager))
+            var groups = _userManager.GetUserGroups(userInfo.Id)
+                .Select(x => new GroupSummaryDto(x, _userManager))
                 .ToList();
 
             if (groups.Count > 0)
@@ -208,17 +208,17 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
 
         if (_context.Check("avatarMax"))
         {
-            result.AvatarMax = UserPhotoManager.GetMaxPhotoURL(userInfo.Id, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
+            result.AvatarMax = _userPhotoManager.GetMaxPhotoURL(userInfo.Id, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
         }
 
         if (_context.Check("avatarMedium"))
         {
-            result.AvatarMedium = UserPhotoManager.GetMediumPhotoURL(userInfo.Id, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
+            result.AvatarMedium = _userPhotoManager.GetMediumPhotoURL(userInfo.Id, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
         }
 
         if (_context.Check("avatar"))
         {
-            result.Avatar = UserPhotoManager.GetBigPhotoURL(userInfo.Id, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
+            result.Avatar = _userPhotoManager.GetBigPhotoURL(userInfo.Id, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
         }
 
         if (_context.Check("listAdminModules"))

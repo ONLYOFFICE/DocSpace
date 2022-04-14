@@ -78,8 +78,10 @@ public class TipsController: BaseSettingsController
         {
             try
             {
-                var request = new HttpRequestMessage();
-                request.RequestUri = new Uri($"{_setupInfo.TipsAddress}/tips/deletereaded");
+                var request = new HttpRequestMessage
+                {
+                    RequestUri = new Uri($"{_setupInfo.TipsAddress}/tips/deletereaded")
+                };
 
                 var data = new NameValueCollection
                 {

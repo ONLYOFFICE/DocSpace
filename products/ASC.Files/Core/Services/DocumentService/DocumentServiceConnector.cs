@@ -257,8 +257,10 @@ public class DocumentServiceConnector
 
             try
             {
-                var request1 = new HttpRequestMessage();
-                request1.RequestUri = new Uri(convertedFileUri);
+                var request1 = new HttpRequestMessage
+                {
+                    RequestUri = new Uri(convertedFileUri)
+                };
 
                 using var httpClient = _clientFactory.CreateClient();
                 using var response = await httpClient.SendAsync(request1);

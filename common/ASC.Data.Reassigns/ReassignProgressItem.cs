@@ -34,9 +34,9 @@ public class ReassignProgressItem : DistributedTaskProgress
 
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly IDictionary<string, StringValues> _httpHeaders;
-    private int _tenantId;
-    private Guid _currentUserId;
-    private bool _deleteProfile;
+    private readonly int _tenantId;
+    private readonly Guid _currentUserId;
+    private readonly bool _deleteProfile;
 
     //private readonly IFileStorageService _docService;
     //private readonly ProjectsReassign _projectsReassign;

@@ -35,8 +35,6 @@ class QuotaServiceCache
     internal readonly ICacheNotify<QuotaCacheItem> CacheNotify;
     internal readonly bool QuotaCacheEnabled;
 
-    private readonly TrustInterval _interval;
-
     public QuotaServiceCache(IConfiguration Configuration, ICacheNotify<QuotaCacheItem> cacheNotify, ICache cache)
     {
         if (Configuration["core:enable-quota-cache"] == null)
@@ -50,7 +48,6 @@ class QuotaServiceCache
 
         CacheNotify = cacheNotify;
         Cache = cache;
-        _interval = new TrustInterval();
 
         cacheNotify.Subscribe((i) =>
         {
@@ -103,12 +100,10 @@ class CachedQuotaService : IQuotaService
     internal ICacheNotify<QuotaCacheItem> CacheNotify { get; set; }
     internal QuotaServiceCache QuotaServiceCache { get; set; }
 
-    private readonly TrustInterval _interval;
     private readonly TimeSpan _cacheExpiration;
 
     public CachedQuotaService()
     {
-        _interval = new TrustInterval();
         _cacheExpiration = TimeSpan.FromMinutes(10);
     }
 

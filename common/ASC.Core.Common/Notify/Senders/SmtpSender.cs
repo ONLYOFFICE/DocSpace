@@ -30,15 +30,15 @@ namespace ASC.Core.Notify.Senders;
 public class SmtpSender : INotifySender
 {
     protected ILog Logger { get; set; }
-    protected readonly IConfiguration Configuration;
-    protected IServiceProvider ServiceProvider;
+    protected readonly IConfiguration _configuration;
+    protected IServiceProvider _serviceProvider;
 
     private string _host;
     private int _port;
     private bool _ssl;
     private ICredentials _credentials;
-    protected bool UseCoreSettings;
-    const int _networkTimeout = 30000;
+    protected bool _useCoreSettings;
+    const int NetworkTimeout = 30000;
 
     public SmtpSender(
         IConfiguration configuration,
@@ -46,15 +46,15 @@ public class SmtpSender : INotifySender
         IOptionsMonitor<ILog> options)
     {
         Logger = options.Get("ASC.Notify");
-        Configuration = configuration;
-        ServiceProvider = serviceProvider;
+        _configuration = configuration;
+        _serviceProvider = serviceProvider;
     }
 
     public virtual void Init(IDictionary<string, string> properties)
     {
         if (properties.ContainsKey("useCoreSettings") && bool.Parse(properties["useCoreSettings"]))
         {
-            UseCoreSettings = true;
+            _useCoreSettings = true;
         }
         else
         {
@@ -82,7 +82,7 @@ public class SmtpSender : INotifySender
 
     public virtual NoticeSendResult Send(NotifyMessage m)
     {
-        using var scope = ServiceProvider.CreateScope();
+        using var scope = _serviceProvider.CreateScope();
         var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
         tenantManager.SetCurrentTenant(m.TenantId);
 
@@ -94,7 +94,7 @@ public class SmtpSender : INotifySender
         {
             try
             {
-                if (UseCoreSettings)
+                if (_useCoreSettings)
                 {
                     InitUseCoreSettings(configuration);
                 }
@@ -269,7 +269,7 @@ public class SmtpSender : INotifySender
     {
         var smtpClient = new MailKit.Net.Smtp.SmtpClient
         {
-            Timeout = _networkTimeout
+            Timeout = NetworkTimeout
         };
 
         return smtpClient;

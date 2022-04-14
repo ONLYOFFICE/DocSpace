@@ -167,7 +167,7 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
             do
             {
                 path.Add(ProviderInfo.ToFolder(folder));
-            } while (folder != ProviderInfo.RootFolder && !(folder is SharePointFolderErrorEntry) &&
+            } while (folder != ProviderInfo.RootFolder && folder is not SharePointFolderErrorEntry &&
                      (folder = await ProviderInfo.GetParentFolderAsync(folder.ServerRelativeUrl).ConfigureAwait(false)) != null);
         }
         path.Reverse();

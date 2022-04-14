@@ -207,7 +207,7 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
     protected string MakeId(ICloudFileSystemEntry entry)
     {
         var path = string.Empty;
-        if (entry != null && !(entry is ErrorEntry))
+        if (entry != null && entry is not ErrorEntry)
         {
             try
             {
@@ -437,7 +437,7 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
 
     protected IEnumerable<ICloudFileSystemEntry> GetFolderFiles(ICloudDirectoryEntry folder)
     {
-        return folder.Where(x => !(x is ICloudDirectoryEntry));
+        return folder.Where(x => x is not ICloudDirectoryEntry);
     }
 
     protected IEnumerable<ICloudFileSystemEntry> GetFolderSubfolders(ICloudDirectoryEntry folder)

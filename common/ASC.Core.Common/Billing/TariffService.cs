@@ -354,7 +354,7 @@ public class TariffService : ITariffService
                       ? GetBillingUrlCacheKey(tenant.Value)
                       : string.Format($"notenant{(!string.IsNullOrEmpty(affiliateId) ? "_" + affiliateId : "")}");
         key += quota.Visible ? "" : "0";
-        if (!(Cache.Get<Dictionary<string, Tuple<Uri, Uri>>>(key) is IDictionary<string, Tuple<Uri, Uri>> urls))
+        if (Cache.Get<Dictionary<string, Tuple<Uri, Uri>>>(key) is not IDictionary<string, Tuple<Uri, Uri>> urls)
         {
             urls = new Dictionary<string, Tuple<Uri, Uri>>();
             if (BillingClient.Configured)

@@ -209,9 +209,11 @@ public class BillingClient
     {
         var url = _billingDomain + method;
 
-        var request = new HttpRequestMessage();
-        request.RequestUri = new Uri(url);
-        request.Method = HttpMethod.Post;
+        var request = new HttpRequestMessage
+        {
+            RequestUri = new Uri(url),
+            Method = HttpMethod.Post
+        };
         if (!string.IsNullOrEmpty(_billingKey))
         {
             request.Headers.Add("Authorization", CreateAuthToken(_billingKey, _billingSecret));

@@ -30,8 +30,7 @@ namespace ASC.Web.Core.Mobile;
 public class MobileDetector
 {
     private readonly Regex _uaMobileRegex;
-
-    private ICache cache { get; set; }
+    private readonly ICache _cache;
 
     private IHttpContextAccessor HttpContextAccessor { get; }
 
@@ -43,7 +42,7 @@ public class MobileDetector
 
     public MobileDetector(IHttpContextAccessor httpContextAccessor, IConfiguration configuration, ICache cache)
     {
-        this.cache = cache;
+        this._cache = cache;
         if (!string.IsNullOrEmpty(configuration["mobile:regex"]))
         {
             _uaMobileRegex = new Regex(configuration["mobile:regex"], RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
@@ -63,14 +62,14 @@ public class MobileDetector
             var key = "mobileDetector/" + ua.GetHashCode();
 
 
-            if (bool.TryParse(cache.Get<string>(key), out var fromCache))
+            if (bool.TryParse(_cache.Get<string>(key), out var fromCache))
             {
                 result = fromCache;
             }
             else
             {
                 result = regex.IsMatch(ua);
-                cache.Insert(key, result.ToString(), TimeSpan.FromMinutes(10));
+                _cache.Insert(key, result.ToString(), TimeSpan.FromMinutes(10));
             }
         }
         return result.GetValueOrDefault();

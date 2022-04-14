@@ -258,7 +258,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
             await tx.CommitAsync().ConfigureAwait(false);
         }
 
-        if (!(folder is ErrorEntry))
+        if (folder is not ErrorEntry)
         {
             ProviderInfo.Storage.DeleteFileSystemEntry(folder);
         }

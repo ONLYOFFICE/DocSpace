@@ -34,9 +34,9 @@ public class RemoveProgressItem : DistributedTaskProgress
 
     private readonly IDictionary<string, StringValues> _httpHeaders;
     private readonly IServiceScopeFactory _serviceScopeFactory;
-    private int _tenantId;
-    private Guid _currentUserId;
-    private bool _notify;
+    private readonly int _tenantId;
+    private readonly Guid _currentUserId;
+    private readonly bool _notify;
     //private readonly IFileStorageService _docService;
     //private readonly MailGarbageEngine _mailEraser;
 

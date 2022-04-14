@@ -103,7 +103,7 @@ public class RestorePortalTask : PortalTaskBase
                     var restoreTask = new RestoreDbModuleTask(_options, module, dataReader, _columnMapper, DbFactory, ReplaceDate, Dump, StorageFactory, StorageFactoryConfig, ModuleProvider);
                     restoreTask.ProgressChanged += (sender, args) => SetCurrentStepProgress(args.Progress);
 
-                    foreach (var tableName in IgnoredTables)
+                    foreach (var tableName in _ignoredTables)
                     {
                         restoreTask.IgnoreTable(tableName);
                     }

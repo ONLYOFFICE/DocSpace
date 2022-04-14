@@ -59,7 +59,10 @@ public class IntegrationEventLogService : IIntegrationEventLogService, IDisposab
 
     public Task SaveEventAsync(IntegrationEvent @event, IDbContextTransaction transaction)
     {
-        if (transaction == null) throw new ArgumentNullException(nameof(transaction));
+        if (transaction == null)
+        {
+            throw new ArgumentNullException(nameof(transaction));
+        }
 
         var eventLogEntry = new IntegrationEventLogEntry(@event, transaction.TransactionId);
 
@@ -90,7 +93,9 @@ public class IntegrationEventLogService : IIntegrationEventLogService, IDisposab
         eventLogEntry.State = status;
 
         if (status == EventStateEnum.InProgress)
+        {
             eventLogEntry.TimesSent++;
+        }
 
         _integrationEventLogContext.IntegrationEventLogs.Update(eventLogEntry);
 

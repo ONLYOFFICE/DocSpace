@@ -345,7 +345,7 @@ public class CachedUserService : IUserService, ICachedService
     public IDictionary<string, UserGroupRef> GetUserGroupRefs(int tenant)
     {
         var key = UserServiceCache.GetRefCacheKey(tenant);
-        if (!(Cache.Get<UserGroupRefStore>(key) is IDictionary<string, UserGroupRef> refs))
+        if (Cache.Get<UserGroupRefStore>(key) is not IDictionary<string, UserGroupRef> refs)
         {
             refs = Service.GetUserGroupRefs(tenant);
             Cache.Insert(key, new UserGroupRefStore(refs), _cacheExpiration);

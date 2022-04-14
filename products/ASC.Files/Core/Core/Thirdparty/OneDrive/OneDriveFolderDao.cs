@@ -259,7 +259,7 @@ internal class OneDriveFolderDao : OneDriveDaoBase, IFolderDao<string>
             await tx.CommitAsync().ConfigureAwait(false);
         }
 
-        if (!(onedriveFolder is ErrorItem))
+        if (onedriveFolder is not ErrorItem)
         {
             var storage = await ProviderInfo.StorageAsync;
             await storage.DeleteItemAsync(onedriveFolder).ConfigureAwait(false);

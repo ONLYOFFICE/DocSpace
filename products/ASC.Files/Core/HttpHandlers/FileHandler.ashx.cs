@@ -1200,8 +1200,10 @@ public class FileHandlerService
             file.ParentId = folder.Id;
         file.Comment = FilesCommonResource.CommentCreate;
 
-        var request = new HttpRequestMessage();
-        request.RequestUri = new Uri(fileUri);
+        var request = new HttpRequestMessage
+        {
+            RequestUri = new Uri(fileUri)
+        };
 
         var fileDao = DaoFactory.GetFileDao<T>();
         var httpClient = ClientFactory.CreateClient();

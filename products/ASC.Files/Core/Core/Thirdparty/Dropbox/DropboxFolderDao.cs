@@ -262,7 +262,7 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
             await tx.CommitAsync().ConfigureAwait(false);
         }
 
-        if (!(dropboxFolder is ErrorFolder))
+        if (dropboxFolder is not ErrorFolder)
         {
             await ProviderInfo.Storage.DeleteItemAsync(dropboxFolder).ConfigureAwait(false);
         }

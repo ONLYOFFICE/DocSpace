@@ -51,11 +51,11 @@ internal class RestoreDbModuleTask : PortalTaskBase
     public override void RunJob()
     {
         Logger.DebugFormat("begin restore data for module {0}", _module.ModuleName);
-        SetStepsCount(_module.Tables.Count(t => !IgnoredTables.Contains(t.Name)));
+        SetStepsCount(_module.Tables.Count(t => !_ignoredTables.Contains(t.Name)));
 
         using (var connection = DbFactory.OpenConnection())
         {
-            foreach (var table in _module.GetTablesOrdered().Where(t => !IgnoredTables.Contains(t.Name) && t.InsertMethod != InsertMethod.None))
+            foreach (var table in _module.GetTablesOrdered().Where(t => !_ignoredTables.Contains(t.Name) && t.InsertMethod != InsertMethod.None))
             {
                 Logger.DebugFormat("begin restore table {0}", table.Name);
 

@@ -671,9 +671,11 @@ public class GoogleCloudStorage : BaseStorage
 
         var contentRangeHeader = $"bytes {bytesRangeStart}-{bytesRangeEnd}/{totalBytes}";
 
-        var request = new HttpRequestMessage();
-        request.RequestUri = new Uri(uploadUri);
-        request.Method = HttpMethod.Put;
+        var request = new HttpRequestMessage
+        {
+            RequestUri = new Uri(uploadUri),
+            Method = HttpMethod.Put
+        };
         request.Headers.Add("Content-Range", contentRangeHeader);
         request.Content = new StreamContent(stream);
 

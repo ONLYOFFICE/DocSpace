@@ -1155,7 +1155,7 @@ public class FileStorageService<T> //: IFileStorageService
 
         return result;
 
-        string GetFileExtensionWithoutDot(string ext)
+        static string GetFileExtensionWithoutDot(string ext)
         {
             return ext.Substring(ext.IndexOf('.') + 1);
         }

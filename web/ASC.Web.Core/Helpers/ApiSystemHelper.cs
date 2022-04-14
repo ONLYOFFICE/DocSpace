@@ -137,9 +137,11 @@ public class ApiSystemHelper
 
         var url = $"{absoluteApiUrl}/{apiPath}";
 
-        var request = new HttpRequestMessage();
-        request.RequestUri = new Uri(url);
-        request.Method = new HttpMethod(httpMethod);
+        var request = new HttpRequestMessage
+        {
+            RequestUri = new Uri(url),
+            Method = new HttpMethod(httpMethod)
+        };
         request.Headers.Add("Authorization", CreateAuthToken(userId.ToString()));
         request.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
 

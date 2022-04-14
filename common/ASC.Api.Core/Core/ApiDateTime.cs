@@ -288,7 +288,7 @@ public sealed class ApiDateTime : IComparable<ApiDateTime>, IComparable
             return true;
         }
 
-        if (!(obj is ApiDateTime))
+        if (obj is not ApiDateTime)
         {
             return false;
         }

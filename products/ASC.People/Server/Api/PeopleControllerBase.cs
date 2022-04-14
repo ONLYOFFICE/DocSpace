@@ -96,8 +96,10 @@ public abstract class PeopleControllerBase : ApiControllerBase
             files = new Uri(_apiContext.HttpContextAccessor.HttpContext.Request.GetDisplayUrl()).GetLeftPart(UriPartial.Authority) + "/" + files.TrimStart('/');
         }
 
-        var request = new HttpRequestMessage();
-        request.RequestUri = new Uri(files);
+        var request = new HttpRequestMessage
+        {
+            RequestUri = new Uri(files)
+        };
 
         var httpClient = _httpClientFactory.CreateClient();
         using var response = httpClient.Send(request);

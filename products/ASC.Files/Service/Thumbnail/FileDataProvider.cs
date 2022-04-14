@@ -29,7 +29,7 @@ namespace ASC.Files.ThumbnailBuilder;
 [Scope]
 internal class FileDataProvider
 {
-    private FilesDbContext filesDbContext => _lazyFilesDbContext.Value;
+    private FilesDbContext FilesDbContext => _lazyFilesDbContext.Value;
 
     private readonly ThumbnailSettings _thumbnailSettings;
     private readonly ICache _cache;
@@ -84,8 +84,8 @@ internal class FileDataProvider
         */
 
         var search =
-            filesDbContext.Tariffs
-            .Join(filesDbContext.Quotas.AsQueryable().DefaultIfEmpty(), a => a.Tariff, b => b.Tenant, (tariff, quota) => new { tariff, quota })
+            FilesDbContext.Tariffs
+            .Join(FilesDbContext.Quotas.AsQueryable().DefaultIfEmpty(), a => a.Tariff, b => b.Tenant, (tariff, quota) => new { tariff, quota })
             .Where(r =>
                     (
                         r.tariff.Comment == null ||
@@ -115,7 +115,7 @@ internal class FileDataProvider
 
     private IEnumerable<FileData<int>> GetFileData(Expression<Func<DbFile, bool>> where)
     {
-        var search = filesDbContext.Files
+        var search = FilesDbContext.Files
             .AsQueryable()
             .Where(r => r.CurrentVersion && r.ThumbnailStatus == Thumbnail.Waiting && !r.Encrypted)
             .OrderByDescending(r => r.ModifiedOn)
@@ -127,7 +127,7 @@ internal class FileDataProvider
         }
 
         return search
-            .Join(filesDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FileTenant { DbFile = f, DbTenant = t })
+            .Join(FilesDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FileTenant { DbFile = f, DbTenant = t })
             .Where(r => r.DbTenant.Status == TenantStatus.Active)
             .Select(r => new FileData<int>(r.DbFile.TenantId, r.DbFile.Id, ""))
             .ToList();

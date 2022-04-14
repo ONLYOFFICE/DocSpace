@@ -390,7 +390,7 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
             await tx.CommitAsync().ConfigureAwait(false);
         }
 
-        if (!(onedriveFile is ErrorItem))
+        if (onedriveFile is not ErrorItem)
         {
             var storage = await ProviderInfo.StorageAsync;
             await storage.DeleteItemAsync(onedriveFile);

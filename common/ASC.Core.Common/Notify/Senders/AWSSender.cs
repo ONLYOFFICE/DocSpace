@@ -64,16 +64,16 @@ public class AWSSender : SmtpSender, IDisposable
             try
             {
                 Logger.DebugFormat("Tenant: {0}, To: {1}", m.TenantId, m.Reciever);
-                using var scope = ServiceProvider.CreateScope();
+                using var scope = _serviceProvider.CreateScope();
                 var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
                 tenantManager.SetCurrentTenant(m.TenantId);
 
                 var configuration = scope.ServiceProvider.GetService<CoreConfiguration>();
                 if (!configuration.SmtpSettings.IsDefaultSettings)
                 {
-                    UseCoreSettings = true;
+                    _useCoreSettings = true;
                     result = base.Send(m);
-                    UseCoreSettings = false;
+                    _useCoreSettings = false;
                 }
                 else
                 {

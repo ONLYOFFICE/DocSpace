@@ -56,10 +56,12 @@ public class Recaptcha
         {
             var data = $"secret={SetupInfo.RecaptchaPrivateKey}&remoteip={ip}&response={response}";
 
-            var request = new HttpRequestMessage();
-            request.RequestUri = new Uri(SetupInfo.RecaptchaVerifyUrl);
-            request.Method = HttpMethod.Post;
-            request.Content = new StringContent(data, Encoding.UTF8, "application/x-www-form-urlencoded");
+            var request = new HttpRequestMessage
+            {
+                RequestUri = new Uri(SetupInfo.RecaptchaVerifyUrl),
+                Method = HttpMethod.Post,
+                Content = new StringContent(data, Encoding.UTF8, "application/x-www-form-urlencoded")
+            };
 
             var httpClient = ClientFactory.CreateClient();
             using var httpClientResponse = await httpClient.SendAsync(request);

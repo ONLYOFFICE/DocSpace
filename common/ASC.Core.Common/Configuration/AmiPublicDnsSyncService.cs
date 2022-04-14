@@ -31,9 +31,9 @@ namespace ASC.Core.Configuration;
 [Scope]
 public class AmiPublicDnsSyncService : BackgroundService
 {
-    private TenantManager _tenantManager;
-    private CoreBaseSettings _coreBaseSettings;
-    private IHttpClientFactory _clientFactory;
+    private readonly TenantManager _tenantManager;
+    private readonly CoreBaseSettings _coreBaseSettings;
+    private readonly IHttpClientFactory _clientFactory;
 
     public AmiPublicDnsSyncService(TenantManager tenantManager, CoreBaseSettings coreBaseSettings, IHttpClientFactory clientFactory)
     {
@@ -74,9 +74,11 @@ public class AmiPublicDnsSyncService : BackgroundService
     {
         try
         {
-            var request = new HttpRequestMessage();
-            request.RequestUri = new Uri("http://169.254.169.254/latest/meta-data/public-hostname");
-            request.Method = HttpMethod.Get;
+            var request = new HttpRequestMessage
+            {
+                RequestUri = new Uri("http://169.254.169.254/latest/meta-data/public-hostname"),
+                Method = HttpMethod.Get
+            };
 
             var httpClient = clientFactory.CreateClient();
             httpClient.Timeout = TimeSpan.FromMilliseconds(5000);

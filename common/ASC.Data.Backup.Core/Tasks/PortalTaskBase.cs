@@ -50,10 +50,11 @@ public abstract class PortalTaskBase
     protected ModuleProvider ModuleProvider { get; set; }
     protected DbFactory DbFactory { get; set; }
 
-    protected readonly List<ModuleName> IgnoredModules = new List<ModuleName>();
-    protected readonly List<string> IgnoredTables = new List<string>(); //todo: add using to backup and transfer tasks
+    protected readonly List<ModuleName> _ignoredModules = new List<ModuleName>();
+    protected readonly List<string> _ignoredTables = new List<string>(); //todo: add using to backup and transfer tasks
 
-    protected PortalTaskBase(DbFactory dbFactory, IOptionsMonitor<ILog> options, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider)    {
+    protected PortalTaskBase(DbFactory dbFactory, IOptionsMonitor<ILog> options, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider)
+    {
         Logger = options.CurrentValue;
         ProcessStorage = true;
         StorageFactory = storageFactory;
@@ -70,17 +71,17 @@ public abstract class PortalTaskBase
 
     public void IgnoreModule(ModuleName moduleName)
     {
-        if (!IgnoredModules.Contains(moduleName))
+        if (!_ignoredModules.Contains(moduleName))
         {
-            IgnoredModules.Add(moduleName);
+            _ignoredModules.Add(moduleName);
         }
     }
 
     public void IgnoreTable(string tableName)
     {
-        if (!IgnoredTables.Contains(tableName))
+        if (!_ignoredTables.Contains(tableName))
         {
-            IgnoredTables.Add(tableName);
+            _ignoredTables.Add(tableName);
         }
     }
 
@@ -88,7 +89,7 @@ public abstract class PortalTaskBase
 
     internal virtual IEnumerable<IModuleSpecifics> GetModulesToProcess()
     {
-        return ModuleProvider.AllModules.Where(module => !IgnoredModules.Contains(module.ModuleName));
+        return ModuleProvider.AllModules.Where(module => !_ignoredModules.Contains(module.ModuleName));
     }
 
     protected IEnumerable<BackupFileInfo> GetFilesToProcess(int tenantId)
@@ -142,7 +143,7 @@ public abstract class PortalTaskBase
 
         var moduleSpecifics = ModuleProvider.GetByStorageModule(storageModuleName);
 
-        return moduleSpecifics == null || !IgnoredModules.Contains(moduleSpecifics.ModuleName);
+        return moduleSpecifics == null || !_ignoredModules.Contains(moduleSpecifics.ModuleName);
     }
 
     #region Progress
@@ -156,7 +157,7 @@ public abstract class PortalTaskBase
     {
         if (value <= 0)
         {
-                throw new ArgumentOutOfRangeException(nameof(value));
+            throw new ArgumentOutOfRangeException(nameof(value));
         }
         _stepsCount = value;
         Logger.Debug("Steps: " + _stepsCount);
@@ -180,7 +181,7 @@ public abstract class PortalTaskBase
     {
         if (value < 0 || value > 100)
         {
-                throw new ArgumentOutOfRangeException(nameof(value));
+            throw new ArgumentOutOfRangeException(nameof(value));
         }
         if (value == 100)
         {
@@ -196,7 +197,7 @@ public abstract class PortalTaskBase
     {
         if (value < 0 || value > 100)
         {
-                throw new ArgumentOutOfRangeException(nameof(value));
+            throw new ArgumentOutOfRangeException(nameof(value));
         }
         if (Progress != value)
         {
@@ -220,7 +221,7 @@ public abstract class PortalTaskBase
 
         foreach (var p in parsed)
         {
-                if (string.IsNullOrWhiteSpace(p))
+            if (string.IsNullOrWhiteSpace(p))
             {
                 continue;
             }
@@ -242,10 +243,10 @@ public abstract class PortalTaskBase
 
         if (db)
         {
-                args.Append($"-D {connectionString["database"]} ");
+            args.Append($"-D {connectionString["database"]} ");
         }
 
-            args.Append($"-e \" source {file}\"");
+        args.Append($"-e \" source {file}\"");
         Logger.DebugFormat("run mysql file {0} {1}", file, args.ToString());
 
         var startInfo = new ProcessStartInfo
@@ -273,24 +274,24 @@ public abstract class PortalTaskBase
         Logger.DebugFormat("complete mysql file {0}", file);
     }
 
-        protected Task RunMysqlFile(Stream stream, string delimiter = ";")
+    protected Task RunMysqlFile(Stream stream, string delimiter = ";")
     {
-            if (stream == null)
+        if (stream == null)
         {
             return Task.CompletedTask;
         }
 
         return InternalRunMysqlFile(stream, delimiter);
-        }
+    }
 
-        private async Task InternalRunMysqlFile(Stream stream, string delimiter)
-        {
+    private async Task InternalRunMysqlFile(Stream stream, string delimiter)
+    {
         using var reader = new StreamReader(stream, Encoding.UTF8);
         string commandText;
 
         while ((commandText = await reader.ReadLineAsync()) != null)
         {
-                var sb = new StringBuilder(commandText);
+            var sb = new StringBuilder(commandText);
             while (!commandText.EndsWith(delimiter))
             {
                 var newline = await reader.ReadLineAsync();
@@ -298,9 +299,9 @@ public abstract class PortalTaskBase
                 {
                     break;
                 }
-                    sb.Append(newline);
+                sb.Append(newline);
             }
-                commandText = sb.ToString();
+            commandText = sb.ToString();
             try
             {
 

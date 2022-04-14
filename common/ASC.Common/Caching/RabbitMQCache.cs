@@ -94,7 +94,9 @@ public class RabbitMQCache<T> : IDisposable, ICacheNotify<T> where T : IMessage<
         lock (_lock)
         {
             if (IsConnected)
+            {
                 return;
+            }
 
             _connection = _connectionFactory.CreateConnection();
             _connection.ConnectionShutdown += (s, e) => TryConnect();
@@ -169,7 +171,9 @@ public class RabbitMQCache<T> : IDisposable, ICacheNotify<T> where T : IMessage<
     public void Dispose()
     {
         if (_disposed)
+        {
             return;
+        }
 
         _consumerChannel?.Dispose();
         _connection.Dispose();

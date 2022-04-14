@@ -208,7 +208,10 @@ public class BaseIndexer<T> where T : class, ISearchItem
 
     internal void Index(T data, bool immediately = true)
     {
-        if (!BeforeIndex(data)) return;
+        if (!BeforeIndex(data))
+        {
+            return;
+        }
 
         _client.Instance.Index(data, idx => GetMeta(idx, data, immediately));
     }
@@ -220,7 +223,10 @@ public class BaseIndexer<T> where T : class, ISearchItem
             return;
         }
 
-        if (!CheckExist(data[0])) return;
+        if (!CheckExist(data[0]))
+        {
+            return;
+        }
 
         if (data[0] is ISearchItemDocument)
         {
@@ -235,7 +241,7 @@ public class BaseIndexer<T> where T : class, ISearchItem
 
                 BeforeIndex(t);
 
-                if (!(t is ISearchItemDocument wwd) || wwd.Document == null || string.IsNullOrEmpty(wwd.Document.Data))
+                if (t is not ISearchItemDocument wwd || wwd.Document == null || string.IsNullOrEmpty(wwd.Document.Data))
                 {
                     portion.Add(t);
                 }
@@ -317,7 +323,10 @@ public class BaseIndexer<T> where T : class, ISearchItem
 
     internal async Task IndexAsync(List<T> data, bool immediately = true)
     {
-        if (!CheckExist(data[0])) return;
+        if (!CheckExist(data[0]))
+        {
+            return;
+        }
 
         if (data is ISearchItemDocument)
         {
@@ -414,25 +423,41 @@ public class BaseIndexer<T> where T : class, ISearchItem
 
     internal void Update(T data, bool immediately = true, params Expression<Func<T, object>>[] fields)
     {
-        if (!CheckExist(data)) return;
+        if (!CheckExist(data))
+        {
+            return;
+        }
+
         _client.Instance.Update(DocumentPath<T>.Id(data), r => GetMetaForUpdate(r, data, immediately, fields));
     }
 
     internal void Update(T data, UpdateAction action, Expression<Func<T, IList>> fields, bool immediately = true)
     {
-        if (!CheckExist(data)) return;
+        if (!CheckExist(data))
+        {
+            return;
+        }
+
         _client.Instance.Update(DocumentPath<T>.Id(data), r => GetMetaForUpdate(r, data, action, fields, immediately));
     }
 
     internal void Update(T data, Expression<Func<Selector<T>, Selector<T>>> expression, int tenantId, bool immediately = true, params Expression<Func<T, object>>[] fields)
     {
-        if (!CheckExist(data)) return;
+        if (!CheckExist(data))
+        {
+            return;
+        }
+
         _client.Instance.UpdateByQuery(GetDescriptorForUpdate(data, expression, tenantId, immediately, fields));
     }
 
     internal void Update(T data, Expression<Func<Selector<T>, Selector<T>>> expression, int tenantId, UpdateAction action, Expression<Func<T, IList>> fields, bool immediately = true)
     {
-        if (!CheckExist(data)) return;
+        if (!CheckExist(data))
+        {
+            return;
+        }
+
         _client.Instance.UpdateByQuery(GetDescriptorForUpdate(data, expression, tenantId, action, fields, immediately));
     }
 

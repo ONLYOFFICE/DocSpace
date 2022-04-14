@@ -382,7 +382,7 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
             await tx.CommitAsync().ConfigureAwait(false);
         }
 
-        if (!(driveFile is ErrorDriveEntry))
+        if (driveFile is not ErrorDriveEntry)
         {
             var storage = await ProviderInfo.StorageAsync;
             await storage.DeleteEntryAsync(driveFile.Id).ConfigureAwait(false);

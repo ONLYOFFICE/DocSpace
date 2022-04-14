@@ -31,8 +31,8 @@ public abstract class NotifySource : INotifySource
     private readonly IDictionary<CultureInfo, IActionProvider> _actions = new Dictionary<CultureInfo, IActionProvider>();
     private readonly IDictionary<CultureInfo, IPatternProvider> _patterns = new Dictionary<CultureInfo, IPatternProvider>();
 
-    protected ISubscriptionProvider SubscriprionProvider;
-    protected IRecipientProvider RecipientsProvider;
+    protected ISubscriptionProvider _subscriprionProvider;
+    protected IRecipientProvider _recipientsProvider;
     protected IActionProvider ActionProvider => GetActionProvider();
     protected IPatternProvider PatternProvider => GetPatternProvider();
     public string Id { get; private set; }
@@ -46,7 +46,7 @@ public abstract class NotifySource : INotifySource
 
         Id = id;
         _userManager = userManager;
-        RecipientsProvider = recipientsProvider;
+        _recipientsProvider = recipientsProvider;
         _subscriptionManager = subscriptionManager;
     }
 
@@ -104,9 +104,9 @@ public abstract class NotifySource : INotifySource
 
     protected virtual ISubscriptionProvider CreateSubscriptionProvider()
     {
-        var subscriptionProvider = new DirectSubscriptionProvider(Id, _subscriptionManager, RecipientsProvider);
+        var subscriptionProvider = new DirectSubscriptionProvider(Id, _subscriptionManager, _recipientsProvider);
 
-        return new TopSubscriptionProvider(RecipientsProvider, subscriptionProvider, WorkContext.DefaultClientSenders)
+        return new TopSubscriptionProvider(_recipientsProvider, subscriptionProvider, WorkContext.DefaultClientSenders)
             ?? throw new NotifyException("Provider ISubscriprionProvider not instanced.");
     }
 

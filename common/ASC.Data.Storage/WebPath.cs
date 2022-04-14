@@ -232,9 +232,11 @@ public class WebPath
     {
         try
         {
-            var request = new HttpRequestMessage();
-            request.RequestUri = new Uri(path);
-            request.Method = HttpMethod.Head;
+            var request = new HttpRequestMessage
+            {
+                RequestUri = new Uri(path),
+                Method = HttpMethod.Head
+            };
             var httpClient = ClientFactory.CreateClient();
             using var response = httpClient.Send(request);
 

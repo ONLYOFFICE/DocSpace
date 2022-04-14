@@ -88,9 +88,11 @@ public class UploadControllerHelper<T> : FilesHelperBase<T>
 
         var httpClient = _httpClientFactory.CreateClient();
 
-        var request = new HttpRequestMessage();
-        request.RequestUri = new Uri(createSessionUrl);
-        request.Method = HttpMethod.Post;
+        var request = new HttpRequestMessage
+        {
+            RequestUri = new Uri(createSessionUrl),
+            Method = HttpMethod.Post
+        };
 
         // hack for uploader.onlyoffice.com in api requests
         var rewriterHeader = _apiContext.HttpContextAccessor.HttpContext.Request.Headers[HttpRequestExtensions.UrlRewriterHeader];

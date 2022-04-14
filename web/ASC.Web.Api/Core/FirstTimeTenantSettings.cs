@@ -227,8 +227,10 @@ public class FirstTimeTenantSettings
         if (string.IsNullOrEmpty(_amiId))
         {
             var getAmiIdUrl = _setupInfo.AmiMetaUrl + "instance-id";
-            var request = new HttpRequestMessage();
-            request.RequestUri = new Uri(getAmiIdUrl);
+            var request = new HttpRequestMessage
+            {
+                RequestUri = new Uri(getAmiIdUrl)
+            };
 
             try
             {
@@ -263,8 +265,10 @@ public class FirstTimeTenantSettings
             }
 
             url += "/post.ashx";
-            var request = new HttpRequestMessage();
-            request.RequestUri = new Uri(url);
+            var request = new HttpRequestMessage
+            {
+                RequestUri = new Uri(url)
+            };
             var values = new NameValueCollection
                     {
                         { "type", "sendsubscription" },

@@ -283,9 +283,11 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
 
         var httpClient = _clientFactory.CreateClient();
 
-        var request = new HttpRequestMessage();
-        request.RequestUri = new Uri(GoogleLoginProvider.GoogleUrlFileUpload + "/{fileId}?uploadType=media".Replace("{fileId}", fileId));
-        request.Method = HttpMethod.Patch;
+        var request = new HttpRequestMessage
+        {
+            RequestUri = new Uri(GoogleLoginProvider.GoogleUrlFileUpload + "/{fileId}?uploadType=media".Replace("{fileId}", fileId)),
+            Method = HttpMethod.Patch
+        };
         request.Headers.Add("Authorization", "Bearer " + token);
         request.Content.Headers.ContentType = new MediaTypeHeaderValue(MimeMapping.GetMimeMapping(currentType));
 
@@ -492,9 +494,11 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
 
             Logger.Debug("GoogleDriveApp: get file stream downloadUrl - " + downloadUrl);
 
-            var request = new HttpRequestMessage();
-            request.RequestUri = new Uri(downloadUrl);
-            request.Method = HttpMethod.Get;
+            var request = new HttpRequestMessage
+            {
+                RequestUri = new Uri(downloadUrl),
+                Method = HttpMethod.Get
+            };
             request.Headers.Add("Authorization", "Bearer " + token);
 
             var httpClient = _clientFactory.CreateClient();
@@ -718,8 +722,10 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
 
         Logger.Debug("GoogleDriveApp: create from - " + contentUrl);
 
-        var request = new HttpRequestMessage();
-        request.RequestUri = new Uri(contentUrl);
+        var request = new HttpRequestMessage
+        {
+            RequestUri = new Uri(contentUrl)
+        };
 
         var httpClient = _clientFactory.CreateClient();
         using var response = await httpClient.SendAsync(request);
@@ -734,8 +740,10 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
 
         var httpClient = _clientFactory.CreateClient();
 
-        var request = new HttpRequestMessage();
-        request.RequestUri = new Uri(GoogleLoginProvider.GoogleUrlFileUpload + "?uploadType=multipart");
+        var request = new HttpRequestMessage
+        {
+            RequestUri = new Uri(GoogleLoginProvider.GoogleUrlFileUpload + "?uploadType=multipart")
+        };
 
         using (var tmpStream = new MemoryStream())
         {
@@ -841,9 +849,11 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
 
             var httpClient = _clientFactory.CreateClient();
 
-            var request = new HttpRequestMessage();
-            request.RequestUri = new Uri(downloadUrl);
-            request.Method = HttpMethod.Get;
+            var request = new HttpRequestMessage
+            {
+                RequestUri = new Uri(downloadUrl),
+                Method = HttpMethod.Get
+            };
             request.Headers.Add("Authorization", "Bearer " + token);
 
             Logger.Debug("GoogleDriveApp: download exportLink - " + downloadUrl);
