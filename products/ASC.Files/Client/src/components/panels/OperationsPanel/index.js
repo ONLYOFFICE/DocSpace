@@ -157,12 +157,13 @@ const OperationsPanelComponent = (props) => {
         }
       })
       .catch((e) => {
-        clearTimeout(timerId);
-        timerId = null;
-
         toastr.error(e);
         setIsLoading(false);
         clearActiveOperations(fileIds, folderIds);
+      })
+      .finally(() => {
+        clearTimeout(timerId);
+        timerId = null;
       });
   };
 
