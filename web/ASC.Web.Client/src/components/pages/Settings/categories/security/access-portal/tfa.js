@@ -22,24 +22,20 @@ const MainContainer = styled.div`
 `;
 
 const TwoFactorAuth = (props) => {
-  const { t, history } = props;
+  const { t, history, initSettings, isInit, setIsInit } = props;
   const [type, setType] = useState("none");
 
   const [smsDisabled, setSmsDisabled] = useState(false);
   const [appDisabled, setAppDisabled] = useState(false);
   const [showReminder, setShowReminder] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const getSettings = () => {
     const { tfaSettings, smsAvailable, appAvailable } = props;
     const currentSettings = getFromSessionStorage("currentTfaSettings");
-    const defaultSettings = getFromSessionStorage("defaultTfaSettings");
 
-    if (defaultSettings) {
-      saveToSessionStorage("defaultTfaSettings", defaultSettings);
-    } else {
-      saveToSessionStorage("defaultTfaSettings", tfaSettings);
-    }
+    saveToSessionStorage("defaultTfaSettings", tfaSettings);
 
     if (currentSettings) {
       setType(currentSettings);
@@ -49,14 +45,21 @@ const TwoFactorAuth = (props) => {
 
     setSmsDisabled(smsAvailable);
     setAppDisabled(appAvailable);
-    setIsLoading(true);
   };
 
   useEffect(() => {
     checkWidth();
-    getSettings();
     window.addEventListener("resize", checkWidth);
+
+    if (!isInit) initSettings().then(() => setIsLoading(true));
+    else setIsLoading(true);
+
     return () => window.removeEventListener("resize", checkWidth);
+  }, []);
+
+  useEffect(() => {
+    if (!isInit) return;
+    getSettings();
   }, [isLoading]);
 
   useEffect(() => {
@@ -84,21 +87,27 @@ const TwoFactorAuth = (props) => {
     }
   };
 
-  const onSaveClick = () => {
+  const onSaveClick = async () => {
     const { t, setTfaSettings, getTfaConfirmLink, history } = props;
 
-    setTfaSettings(type).then((res) => {
-      toastr.success(t("SuccessfullySaveSettingsMessage"));
-      if (type !== "none") {
-        getTfaConfirmLink(res).then((link) =>
-          history.push(link.replace(window.location.origin, ""))
-        );
-      }
-      setType(type);
-      saveToSessionStorage("defaultTfaSettings", type);
+    setIsSaving(true);
 
+    try {
+      await setTfaSettings(type);
+
+      toastr.success(t("SuccessfullySaveSettingsMessage"));
+      saveToSessionStorage("defaultTfaSettings", type);
+      setIsSaving(false);
       setShowReminder(false);
-    });
+
+      if (type !== "none") {
+        setIsInit(false);
+        const link = await getTfaConfirmLink();
+        history.push(link.replace(window.location.origin, ""));
+      }
+    } catch (error) {
+      toastr.error(error);
+    }
   };
 
   const onCancelClick = () => {
@@ -159,12 +168,13 @@ const TwoFactorAuth = (props) => {
         cancelButtonLabel={t("Common:CancelButton")}
         displaySettings={true}
         hasScroll={false}
+        isSaving={isSaving}
       />
     </MainContainer>
   );
 };
 
-export default inject(({ auth }) => {
+export default inject(({ auth, setup }) => {
   const {
     setTfaSettings,
     getTfaConfirmLink,
@@ -173,12 +183,17 @@ export default inject(({ auth }) => {
     appAvailable,
   } = auth.tfaStore;
 
+  const { isInit, initSettings, setIsInit } = setup;
+
   return {
     setTfaSettings,
     getTfaConfirmLink,
     tfaSettings,
     smsAvailable,
     appAvailable,
+    isInit,
+    initSettings,
+    setIsInit,
   };
 })(
   withTranslation(["Settings", "Common"])(withRouter(observer(TwoFactorAuth)))
