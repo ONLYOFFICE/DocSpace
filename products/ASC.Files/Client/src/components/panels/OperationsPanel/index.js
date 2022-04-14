@@ -14,7 +14,7 @@ import SelectFolderDialog from "../SelectFolderDialog";
 //     width: 90%;
 //   }
 // `;
-let operationData, fileWithConflicts;
+let operationData, fileWithConflicts, timerId;
 const OperationsPanelComponent = (props) => {
   const {
     t,
@@ -39,6 +39,7 @@ const OperationsPanelComponent = (props) => {
     setThirdPartyMoveDialogVisible,
     parentFolderId,
     conflictResolveDialogVisible,
+    clearActiveOperations,
   } = props;
 
   //const zIndex = 310;
@@ -92,7 +93,6 @@ const OperationsPanelComponent = (props) => {
   };
 
   const onSelect = (folder, treeNode) => {
-    console.log("folder", folder, "treeNode", treeNode);
     setProviderKey(treeNode.node.props.providerKey);
     setFolderTitle(treeNode.node.props.title);
     setSelectedFolder(isNaN(+folder[0]) ? folder[0] : +folder[0]);
@@ -140,9 +140,13 @@ const OperationsPanelComponent = (props) => {
       },
     };
 
-    setIsLoading(true);
-    checkFileConflicts(destFolderId, folderIds, fileIds).then(
-      async (conflicts) => {
+    if (!timerId)
+      timerId = setTimeout(() => {
+        setIsLoading(true);
+      }, 500);
+
+    checkFileConflicts(destFolderId, folderIds, fileIds)
+      .then(async (conflicts) => {
         if (conflicts.length) {
           fileWithConflicts = conflicts;
           setIntermediateHidden(true);
@@ -152,8 +156,15 @@ const OperationsPanelComponent = (props) => {
           onClose();
           await itemOperationToFolder(operationData);
         }
-      }
-    );
+      })
+      .catch((e) => {
+        clearTimeout(timerId);
+        timerId = null;
+
+        toastr.error(e);
+        setIsLoading(false);
+        clearActiveOperations(fileIds, folderIds);
+      });
   };
 
   // console.log("Operations panel render", expandedKeys);
@@ -212,7 +223,7 @@ export default inject(
       expandedPanelKeys,
     } = treeFoldersStore;
     const { setConflictDialogData, checkFileConflicts } = filesActionsStore;
-    const { itemOperationToFolder } = uploadDataStore;
+    const { itemOperationToFolder, clearActiveOperations } = uploadDataStore;
 
     const {
       moveToPanelVisible,
@@ -257,6 +268,7 @@ export default inject(
       itemOperationToFolder,
       checkFileConflicts,
       conflictResolveDialogVisible,
+      clearActiveOperations,
     };
   }
 )(withRouter(observer(OperationsPanel)));
