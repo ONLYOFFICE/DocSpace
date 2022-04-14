@@ -107,6 +107,11 @@ class SelectFileDialog extends React.Component {
     const { folderId } = this.state;
     !displayType && window.addEventListener("resize", this.throttledResize);
 
+    this.expandedKeys = this.props.expandedKeys?.map((item) => item.toString());
+    if (this.expandedKeys) {
+      +this.expandedKeys[this.expandedKeys.length - 1] === id &&
+        this.expandedKeys.pop();
+    }
     this.setFilter();
 
     let timerId = setTimeout(() => {
@@ -153,7 +158,7 @@ class SelectFileDialog extends React.Component {
     this.setState({
       resultingFolderTree: tree,
       isInitialLoader: false,
-
+      expandedKeys: this.expandedKeys,
       folderId: resultingId,
     });
   }
@@ -233,7 +238,7 @@ class SelectFileDialog extends React.Component {
   };
 
   _loadNextPage = () => {
-    const { files, page, folderId } = this.state;
+    const { files, page, folderId, expandedKeys } = this.state;
 
     if (this._isLoadNextPage || !folderId) return;
 
@@ -249,6 +254,14 @@ class SelectFileDialog extends React.Component {
         const finalData = [...data.files];
         const newFilesList = [...files].concat(finalData);
         const hasNextPage = newFilesList.length < data.total - 1;
+        let convertedPathParts = expandedKeys;
+
+        if (page === 0) {
+          convertedPathParts = data.pathParts.map((item) => item.toString());
+          +convertedPathParts[convertedPathParts.length - 1] === +folderId &&
+            convertedPathParts.pop();
+        }
+
         this._isLoadNextPage = false;
         this.setState((state) => ({
           isDataLoading: false,
@@ -256,6 +269,9 @@ class SelectFileDialog extends React.Component {
           isNextPageLoading: false,
           page: state.page + 1,
           files: newFilesList,
+          ...(page === 0 && {
+            expandedKeys: convertedPathParts,
+          }),
         }));
       } catch (e) {
         toastr.error(e);
@@ -292,6 +308,7 @@ class SelectFileDialog extends React.Component {
       isLoadingData,
       page,
       folderId,
+      expandedKeys,
     } = this.state;
 
     const buttonName = creationButtonPrimary
@@ -329,6 +346,7 @@ class SelectFileDialog extends React.Component {
         onClickInput={this.onClickInput}
         onCloseSelectFolderDialog={this.onCloseSelectFolderDialog}
         maxInputWidth={maxInputWidth}
+        filesPanelExpandedKeys={expandedKeys}
       />
     ) : (
       <SelectionPanel
@@ -355,6 +373,7 @@ class SelectFileDialog extends React.Component {
         onSelectFile={this.onSelectFile}
         filesListTitle={filesListTitle}
         fileId={selectedFile.id}
+        expandedKeys={expandedKeys}
       />
     );
   }
@@ -395,12 +414,23 @@ export default inject(
   }) => {
     const { fileInfo, setFolderId, setFile } = selectedFilesStore;
 
-    const { treeFolders, setExpandedPanelKeys } = treeFoldersStore;
+    const {
+      treeFolders,
+      setExpandedPanelKeys,
+      expandedPanelKeys,
+    } = treeFoldersStore;
     const { filter } = filesStore;
     const { id } = selectedFolderStore;
 
     const { settingsStore } = auth;
     const { theme } = settingsStore;
+
+    console.log(
+      "expandedPanelKeys",
+      expandedPanelKeys,
+      "selectedFolderStore.pathParts",
+      selectedFolderStore.pathParts
+    );
     return {
       fileInfo,
       setFile,
@@ -410,6 +440,9 @@ export default inject(
       storeFolderId: id,
       theme: theme,
       setExpandedPanelKeys,
+      expandedKeys: expandedPanelKeys
+        ? expandedPanelKeys
+        : selectedFolderStore.pathParts,
     };
   }
 )(

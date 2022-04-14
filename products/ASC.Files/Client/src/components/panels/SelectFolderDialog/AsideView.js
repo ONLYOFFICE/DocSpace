@@ -35,6 +35,7 @@ const SelectFolderDialogAsideView = ({
   canCreate,
   primaryButtonName,
   isDisableTree,
+  expandedKeys,
 }) => {
   return (
     <StyledModalDialog
@@ -82,6 +83,7 @@ const SelectFolderDialogAsideView = ({
                   selectedKeys={[`${folderId}`]}
                   isDisableTree={isDisableTree}
                   displayType="aside"
+                  expandedKeys={expandedKeys}
                 />
               ) : (
                 <Loaders.NewTreeFolders />

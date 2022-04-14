@@ -171,6 +171,9 @@ class SelectionPanel extends React.Component {
     try {
       const data = await getFolder(id);
       const newPathParts = data.pathParts.map((item) => item.toString());
+
+      +newPathParts[newPathParts.length - 1] === +id && newPathParts.pop();
+
       return newPathParts;
     } catch (e) {
       toastr.error(e);

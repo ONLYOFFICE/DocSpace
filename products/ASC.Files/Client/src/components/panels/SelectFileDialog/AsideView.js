@@ -32,6 +32,7 @@ const SelectFileDialogAsideView = ({
   isFolderPanelVisible,
   maxInputWidth,
   page,
+  filesPanelExpandedKeys,
 }) => {
   const onMouseEvent = (event) => {
     event.stopPropagation();
@@ -78,6 +79,7 @@ const SelectFileDialogAsideView = ({
                   isFolderTreeLoading={!!!resultingFolderTree}
                   isNeedArrowIcon
                   maxInputWidth={maxInputWidth}
+                  filesPanelExpandedKeys={filesPanelExpandedKeys}
                 />
 
                 <Text color="#A3A9AE" className="selection-panel_aside-title">

@@ -55,6 +55,11 @@ class SelectFolderDialog extends React.Component {
 
     this.expandedKeys = this.props.expandedKeys?.map((item) => item.toString());
 
+    if (this.expandedKeys) {
+      +this.expandedKeys[this.expandedKeys.length - 1] === id &&
+        this.expandedKeys.pop();
+    }
+
     let timerId = setTimeout(() => {
       this.setState({ isInitialLoader: true });
     }, 1000);
@@ -202,11 +207,13 @@ class SelectFolderDialog extends React.Component {
     this.setState({ isNextPageLoading: true }, async () => {
       try {
         const data = await getFolder(folderId, this.newFilter);
+        let convertedPathParts = expandedKeys;
 
-        const convertedPathParts =
-          page === 0
-            ? data.pathParts.map((item) => item.toString())
-            : expandedKeys;
+        if (page === 0) {
+          convertedPathParts = data.pathParts.map((item) => item.toString());
+          +convertedPathParts[convertedPathParts.length - 1] === +folderId &&
+            convertedPathParts.pop();
+        }
 
         const finalData = [...data.files];
         const newFilesList = [...files].concat(finalData);
@@ -240,12 +247,13 @@ class SelectFolderDialog extends React.Component {
       zIndex,
       onClose,
       withoutProvider,
-      isNeedArrowIcon,
+      isNeedArrowIcon, //for aside view when selected file
       header,
       dialogName,
       footer,
       buttonName,
       isDisableTree,
+      filesPanelExpandedKeys,
     } = this.props;
     const {
       folderId,
@@ -293,6 +301,7 @@ class SelectFolderDialog extends React.Component {
         }
         isAvailable={isAvailable}
         isDisableTree={isDisableTree}
+        expandedKeys={isNeedArrowIcon ? filesPanelExpandedKeys : expandedKeys}
       />
     ) : (
       <SelectionPanel
