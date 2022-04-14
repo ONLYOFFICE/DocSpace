@@ -6,10 +6,8 @@ import { ShareAccessRights } from "@appserver/common/constants";
 
 import toastr from "@appserver/components/toast/toastr";
 import ToggleButton from "@appserver/components/toggle-button";
-import LinkWithDropdown from "@appserver/components/link-with-dropdown";
 import InputBlock from "@appserver/components/input-block";
 import Button from "@appserver/components/button";
-import IconButton from "@appserver/components/icon-button";
 
 import AccessComboBox from "./AccessComboBox";
 
