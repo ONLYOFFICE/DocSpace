@@ -461,8 +461,12 @@ class FilesStore {
     clearFilter = true,
     withSubfolders = false
   ) => {
-    const { treeFolders, setSelectedNode, getSubfolders, selectedTreeNode } =
-      this.treeFoldersStore;
+    const {
+      treeFolders,
+      setSelectedNode,
+      getSubfolders,
+      selectedTreeNode,
+    } = this.treeFoldersStore;
     const { id } = this.selectedFolderStore;
 
     const isPrefSettings = isNaN(+selectedTreeNode) && !id;
@@ -629,8 +633,17 @@ class FilesStore {
   deselectFile = (file) => {
     const { id, parentId } = file;
     const isFileSelected = this.isFileSelected(id, parentId);
-    if (isFileSelected)
-      this.selection = this.selection.filter((x) => x.id !== id);
+    if (isFileSelected) {
+      let selectionIndex = this.selection.findIndex(
+        (x) => x.parentId === parentId && x.id === id
+      );
+
+      if (selectionIndex !== -1) {
+        this.selection = this.selection.filter(
+          (x, index) => index !== selectionIndex
+        );
+      }
+    }
   };
 
   removeOptions = (options, toRemoveArray) =>
@@ -665,8 +678,11 @@ class FilesStore {
       isMy,
     } = this.treeFoldersStore;
 
-    const { canWebEdit, canViewedDocs, canFormFillingDocs } =
-      this.filesSettingsStore;
+    const {
+      canWebEdit,
+      canViewedDocs,
+      canFormFillingDocs,
+    } = this.filesSettingsStore;
 
     const isThirdPartyFolder =
       item.providerKey && item.id === item.rootFolderId;
@@ -1433,7 +1449,7 @@ class FilesStore {
 
       let isFolder = false;
       this.folders.map((x) => {
-        if (x.id === item.id) isFolder = true;
+        if (x.id === item.id && x.parentId === item.parentId) isFolder = true;
       });
 
       const { isRecycleBinFolder } = this.treeFoldersStore;
@@ -1582,8 +1598,12 @@ class FilesStore {
   };
 
   get sortedFiles() {
-    const { extsConvertible, isSpreadsheet, isPresentation, isDocument } =
-      this.filesSettingsStore;
+    const {
+      extsConvertible,
+      isSpreadsheet,
+      isPresentation,
+      isDocument,
+    } = this.filesSettingsStore;
 
     let sortedFiles = {
       documents: [],
