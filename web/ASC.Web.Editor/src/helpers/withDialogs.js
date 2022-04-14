@@ -36,20 +36,25 @@ const withDialogs = (WrappedComponent) => {
     const { t } = useTranslation(["Editor", "Common"]);
 
     const { fileInfo, fileId, mfReady } = props;
-    React.useEffect(async () => {
-      if (window.authStore) {
-        await window.authStore.auth.init(true);
 
-        const { socketHelper } = window.authStore.auth.settingsStore;
-        socketHelper.emit({
-          command: "subscribe",
-          data: "backup-restore",
-        });
-        socketHelper.on("restore-backup", () => {
-          setPreparationPortalDialogVisible(true);
-        });
+    React.useEffect(() => {
+      if (window.authStore) {
+        initSocketHelper();
       }
     }, [mfReady]);
+
+    const initSocketHelper = async () => {
+      await window.authStore.auth.init(true);
+
+      const { socketHelper } = window.authStore.auth.settingsStore;
+      socketHelper.emit({
+        command: "subscribe",
+        data: "backup-restore",
+      });
+      socketHelper.on("restore-backup", () => {
+        setPreparationPortalDialogVisible(true);
+      });
+    };
 
     const onSDKRequestSharingSettings = () => {
       setIsVisible(true);

@@ -25,21 +25,7 @@ function useMfScripts() {
 
   React.useEffect(async () => {
     if (filesReady && studioReady) {
-      const SharingDialog = await loadComponent(
-        FILES_SCOPE,
-        "./SharingDialog"
-      )();
-      const toastr = await loadComponent(STUDIO_SCOPE, "./toastr")();
-      const filesUtils = await loadComponent(FILES_SCOPE, "./utils")();
-      const authStore = await loadComponent(STUDIO_SCOPE, "./store")();
-
-      window.toastr = toastr.default;
-      window.filesUtils = filesUtils;
-      window.SharingDialog = SharingDialog.default;
-      window.authStore = authStore.default;
-
-      setIsInitialized(true);
-      setIsError(false);
+      initMfScripts();
     }
 
     if (studioFailed || filesFailed) {
@@ -47,6 +33,21 @@ function useMfScripts() {
       setIsInitialized(false);
     }
   }, [filesReady, studioReady]);
+
+  const initMfScripts = async () => {
+    const SharingDialog = await loadComponent(FILES_SCOPE, "./SharingDialog")();
+    const toastr = await loadComponent(STUDIO_SCOPE, "./toastr")();
+    const filesUtils = await loadComponent(FILES_SCOPE, "./utils")();
+    const authStore = await loadComponent(STUDIO_SCOPE, "./store")();
+
+    window.toastr = toastr.default;
+    window.filesUtils = filesUtils;
+    window.SharingDialog = SharingDialog.default;
+    window.authStore = authStore.default;
+
+    setIsInitialized(true);
+    setIsError(false);
+  };
 
   return [isInitialized, isError];
 }

@@ -111,7 +111,7 @@ function Editor({
     }
   }, []);
 
-  useEffect(async () => {
+  useEffect(() => {
     if (config) {
       document.getElementById("scripDocServiceAddress").onload = onLoad();
       setDocumentTitle(config?.document?.title);
@@ -129,10 +129,7 @@ function Editor({
         !fileInfo.canEdit
       ) {
         try {
-          const formUrl = await checkFillFormDraft(fileId);
-          history.pushState({}, null, formUrl);
-
-          document.location.reload();
+          initForm();
         } catch (err) {
           console.error(err);
         }
@@ -152,7 +149,7 @@ function Editor({
     }
   }, [isDesktopEditor]);
 
-  useEffect(async () => {
+  useEffect(() => {
     try {
       const url = window.location.href;
 
@@ -163,24 +160,35 @@ function Editor({
         fileInfo?.fileExst &&
         canConvert(fileInfo.fileExst)
       ) {
-        const result = await convertDocumentUrl();
-        const splitUrl = url.split("#message/");
-
-        if (result) {
-          const newUrl = `${result.webUrl}#message/${splitUrl[1]}`;
-
-          history.pushState({}, null, newUrl);
-
-          setFileInfo(result);
-          setUrl(newUrl);
-          setFileId(fileId);
-          setVersion(version);
-        }
+        showDocEditorMessage(url);
       }
     } catch (err) {
       console.error(err);
     }
   }, [url, fileInfo?.fileExst]);
+
+  const initForm = async () => {
+    const formUrl = await checkFillFormDraft(fileId);
+    history.pushState({}, null, formUrl);
+
+    document.location.reload();
+  };
+
+  const showDocEditorMessage = async (url) => {
+    const result = await convertDocumentUrl();
+    const splitUrl = url.split("#message/");
+
+    if (result) {
+      const newUrl = `${result.webUrl}#message/${splitUrl[1]}`;
+
+      history.pushState({}, null, newUrl);
+
+      setFileInfo(result);
+      setUrl(newUrl);
+      setFileId(fileId);
+      setVersion(version);
+    }
+  };
 
   const getDefaultFileName = (format) => {
     switch (format) {
