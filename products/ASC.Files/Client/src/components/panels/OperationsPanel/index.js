@@ -55,7 +55,6 @@ const OperationsPanelComponent = (props) => {
   const [intermediateHidden, setIntermediateHidden] = useState(false);
 
   useEffect(() => {
-    console.log("conflictResolveDialogVisible", conflictResolveDialogVisible);
     if (conflictResolveDialogVisible === false) {
       intermediateHidden && setIntermediateHidden(false);
     }
