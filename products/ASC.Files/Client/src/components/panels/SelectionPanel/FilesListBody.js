@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Loader from "@appserver/components/loader";
 import Text from "@appserver/components/text";
 import { useTranslation, withTranslation } from "react-i18next";
@@ -9,10 +9,10 @@ import { FixedSizeList as List } from "react-window";
 import { inject, observer } from "mobx-react";
 import FilesListRow from "./FilesListRow";
 import EmptyContainer from "../../EmptyContainer/EmptyContainer";
-
+import { StyledItemsLoader } from "../SelectionPanel/StyledSelectionPanel";
 import Loaders from "@appserver/common/components/Loaders";
 
-let countLoad;
+let countLoad, timerId;
 const FilesListBody = ({
   files,
   onSelectFile,
@@ -28,6 +28,7 @@ const FilesListBody = ({
   getIcon,
 }) => {
   const { t } = useTranslation(["SelectFile", "Common"]);
+  const [isLoading, setIsLoading] = useState(false);
   const filesListRef = useRef(null);
   if (page === 0) {
     countLoad = 0;
@@ -58,10 +59,7 @@ const FilesListBody = ({
   const renderPageLoader = (style) => {
     return (
       <div style={style}>
-        <div
-          key="loader"
-          className="panel-loader-wrapper loader-wrapper_margin"
-        >
+        <StyledItemsLoader key="loader">
           <Loader
             theme={theme}
             type="oval"
@@ -69,21 +67,25 @@ const FilesListBody = ({
             className="panel-loader"
           />
           <Text theme={theme} as="span">
-            {t("Common:LoadingProcessing")} ${t("Common:LoadingDescription")}
+            {t("Common:LoadingProcessing")} {t("Common:LoadingDescription")}
           </Text>
-        </div>
+        </StyledItemsLoader>
       </div>
     );
   };
-  const renderFirstLoader = (style) => {
-    return (
-      <div style={style}>
-        <div className="select-folder_loader" key="loader">
-          <Loaders.ListLoader withoutFirstRectangle />
+
+  const renderFirstLoader = useCallback(
+    (style) => {
+      return (
+        <div style={style}>
+          <div className="selection-panel_loader" key="loader">
+            {isLoading ? <Loaders.ListLoader withoutFirstRectangle /> : <></>}
+          </div>
         </div>
-      </div>
-    );
-  };
+      );
+    },
+    [isLoading]
+  );
 
   const isFileChecked = useCallback(
     (id) => {
@@ -98,8 +100,22 @@ const FilesListBody = ({
       const isLoaded = isItemLoaded(index);
 
       if (!isLoaded || !folderId) {
-        if (countLoad >= 1) return renderPageLoader(style);
+        if (!timerId)
+          timerId = setTimeout(() => {
+            setIsLoading(true);
+          }, 500);
+
+        if (countLoad >= 1) {
+          return renderPageLoader(style);
+        }
+
         return renderFirstLoader(style);
+      }
+
+      if (timerId) {
+        setIsLoading(false);
+        clearTimeout(timerId);
+        timerId = null;
       }
 
       const item = files[index];

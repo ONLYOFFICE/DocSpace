@@ -31,6 +31,7 @@ const SelectFileDialogAsideView = ({
   onClickInput,
   isFolderPanelVisible,
   maxInputWidth,
+  page,
 }) => {
   const onMouseEvent = (event) => {
     event.stopPropagation();
@@ -95,6 +96,7 @@ const SelectFileDialogAsideView = ({
                   displayType="aside"
                   folderSelection={false}
                   fileId={fileId}
+                  page={page}
                 />
               </div>
               <div className="selection-panel_aside-footer">

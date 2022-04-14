@@ -46,6 +46,7 @@ const SelectionPanelBody = ({
   isLoadingData,
   expandedKeys,
   isDisableTree,
+  page,
 }) => {
   const onMouseEvent = (event) => {
     event.stopPropagation();
@@ -123,6 +124,7 @@ const SelectionPanelBody = ({
                     displayType={"modal"}
                     folderSelection={folderSelection}
                     fileId={fileId}
+                    page={page}
                   />
                 </>
               </div>

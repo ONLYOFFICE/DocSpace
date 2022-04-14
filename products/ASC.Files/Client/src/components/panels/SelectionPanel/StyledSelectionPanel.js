@@ -259,6 +259,15 @@ const StyledTree = styled.div`
     margin-left: 12px;
   }
 `;
+
+const StyledItemsLoader = styled.div`
+  display: flex;
+  .panel-loader {
+    margin-left: 16px;
+    margin-right: 8px;
+  }
+`;
+
 export {
   StyledBody,
   StyledRow,
@@ -266,4 +275,5 @@ export {
   StyledAsideHeader,
   StyledTree,
   StyledModalDialog,
+  StyledItemsLoader,
 };
