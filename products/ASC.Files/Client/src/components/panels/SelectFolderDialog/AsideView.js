@@ -9,6 +9,13 @@ import {
 } from "../SelectionPanel/StyledSelectionPanel";
 import Text from "@appserver/components/text";
 import Loaders from "@appserver/common/components/Loaders";
+import styled, { css } from "styled-components";
+
+const StyledModalDialog = styled(ModalDialog)`
+  .modal-dialog-aside-body {
+    padding-top: 12px;
+  }
+`;
 const SelectFolderDialogAsideView = ({
   theme,
   t,
@@ -30,7 +37,7 @@ const SelectFolderDialogAsideView = ({
   isDisableTree,
 }) => {
   return (
-    <ModalDialog
+    <StyledModalDialog
       theme={theme}
       visible={isPanelVisible}
       contentHeight="100%"
@@ -106,7 +113,7 @@ const SelectFolderDialogAsideView = ({
           </div>
         </StyledAsideBody>
       </ModalDialog.Body>
-    </ModalDialog>
+    </StyledModalDialog>
   );
 };
 export default SelectFolderDialogAsideView;

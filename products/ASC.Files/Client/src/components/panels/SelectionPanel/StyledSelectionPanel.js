@@ -180,7 +180,9 @@ const StyledAsideBody = styled.div`
   .selection-panel_aside-folder-title {
     margin-top: 12px;
   }
-
+  .selection-panel_folder-selection-title {
+    margin-bottom: 4px;
+  }
   .selection-panel_aside-tree {
     margin-top: 12px;
     margin-left: -16px;

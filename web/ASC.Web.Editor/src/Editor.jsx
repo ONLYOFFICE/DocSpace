@@ -930,7 +930,10 @@ const Editor = () => {
                 onSave={onClickSaveSelectFolder}
                 header={
                   <StyledSelectFolder>
-                    <Text className="editor-select-folder_text">
+                    <Text
+                      className="editor-select-folder_text"
+                      fontWeight={600}
+                    >
                       {i18n.t("FileName")}
                     </Text>
                     <TextInput

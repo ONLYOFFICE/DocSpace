@@ -51,6 +51,13 @@ const SelectFileDialogAsideView = ({
           <StyledAsideBody theme={theme}>
             <div className="selection-panel_aside-body">
               <div className="selection-panel_folder-info">
+                <Text
+                  className="selection-panel_folder-selection-title"
+                  fontWeight={600}
+                >
+                  {t("Translations:FolderSelection")}
+                </Text>
+
                 <SelectFolderInput
                   theme={theme}
                   onClickInput={onClickInput}
