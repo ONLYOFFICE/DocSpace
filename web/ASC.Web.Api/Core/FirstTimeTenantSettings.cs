@@ -47,7 +47,7 @@ public class FirstTimeTenantSettings
     private readonly IHttpClientFactory _clientFactory;
 
     public FirstTimeTenantSettings(
-        IOptionsMonitor<ILog> options,
+        ILog logger,
         TenantManager tenantManager,
         TenantExtra tenantExtra,
         SettingsManager settingsManager,
@@ -62,7 +62,7 @@ public class FirstTimeTenantSettings
         CoreBaseSettings coreBaseSettings,
         IHttpClientFactory clientFactory)
     {
-        _log = options.CurrentValue;
+        _log = logger;
         _tenantManager = tenantManager;
         _tenantExtra = tenantExtra;
         _settingsManager = settingsManager;

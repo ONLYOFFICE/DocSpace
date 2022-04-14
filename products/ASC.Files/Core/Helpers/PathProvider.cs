@@ -100,7 +100,7 @@ public class PathProvider
             case FolderType.BUNCH:
                 if (projectID == 0)
                 {
-                    var path = await folderDao.GetBunchObjectIDAsync(folder.RootFolderId);
+                    var path = await folderDao.GetBunchObjectIDAsync(folder.RootId);
 
                     var projectIDFromDao = path.Split('/').Last();
 
@@ -112,9 +112,9 @@ public class PathProvider
                     projectID = Convert.ToInt32(projectIDFromDao);
                 }
 
-                return _commonLinkUtility.GetFullAbsolutePath(string.Format("{0}?prjid={1}#{2}", ProjectVirtualPath, projectID, folder.ID));
+                return _commonLinkUtility.GetFullAbsolutePath(string.Format("{0}?prjid={1}#{2}", ProjectVirtualPath, projectID, folder.Id));
             default:
-                return _commonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.FilesBaseAbsolutePath + "#" + HttpUtility.UrlPathEncode(folder.ID.ToString()));
+                return _commonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.FilesBaseAbsolutePath + "#" + HttpUtility.UrlPathEncode(folder.Id.ToString()));
         }
     }
 
@@ -136,7 +136,7 @@ public class PathProvider
         var uriBuilder = new UriBuilder(_commonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.FileHandlerPath));
         var query = uriBuilder.Query;
         query += FilesLinkUtility.Action + "=stream&";
-        query += FilesLinkUtility.FileId + "=" + HttpUtility.UrlEncode(file.ID.ToString()) + "&";
+        query += FilesLinkUtility.FileId + "=" + HttpUtility.UrlEncode(file.Id.ToString()) + "&";
         var version = 0;
         if (!lastVersion)
         {
@@ -144,7 +144,7 @@ public class PathProvider
             query += FilesLinkUtility.Version + "=" + file.Version + "&";
         }
 
-        query += FilesLinkUtility.AuthKey + "=" + _emailValidationKeyProvider.GetEmailKey(file.ID.ToString() + version);
+        query += FilesLinkUtility.AuthKey + "=" + _emailValidationKeyProvider.GetEmailKey(file.Id.ToString() + version);
         if (!string.IsNullOrEmpty(doc))
         {
             query += "&" + FilesLinkUtility.DocShareKey + "=" + HttpUtility.UrlEncode(doc);
@@ -163,9 +163,9 @@ public class PathProvider
         var uriBuilder = new UriBuilder(_commonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.FileHandlerPath));
         var query = uriBuilder.Query;
         query += $"{FilesLinkUtility.Action}=diff&";
-        query += $"{FilesLinkUtility.FileId}={HttpUtility.UrlEncode(file.ID.ToString())}&";
+        query += $"{FilesLinkUtility.FileId}={HttpUtility.UrlEncode(file.Id.ToString())}&";
         query += $"{FilesLinkUtility.Version}={file.Version}&";
-        query += $"{FilesLinkUtility.AuthKey}={_emailValidationKeyProvider.GetEmailKey(file.ID + file.Version.ToString(CultureInfo.InvariantCulture))}";
+        query += $"{FilesLinkUtility.AuthKey}={_emailValidationKeyProvider.GetEmailKey(file.Id + file.Version.ToString(CultureInfo.InvariantCulture))}";
         if (!string.IsNullOrEmpty(doc))
         {
             query += $"&{FilesLinkUtility.DocShareKey}={HttpUtility.UrlEncode(doc)}";

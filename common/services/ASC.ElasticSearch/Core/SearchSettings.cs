@@ -27,7 +27,7 @@
 namespace ASC.ElasticSearch.Core;
 
 [Serializable]
-public class SearchSettings : ISettings
+public class SearchSettings : ISettings<SearchSettings>
 {
     public string Data { get; set; }
     public Guid ID => new Guid("{93784AB2-10B5-4C2F-9B36-F2662CCCF316}");
@@ -52,7 +52,7 @@ public class SearchSettings : ISettings
 
     private List<SearchSettingsItem> _items;
 
-    public ISettings GetDefault(IServiceProvider serviceProvider)
+    public SearchSettings GetDefault()
     {
         return new SearchSettings();
     }

@@ -83,10 +83,10 @@ public class FolderDtoHelper : FileEntryDtoHelper
     {
         var result = await GetFolderWrapperAsync(folder);
 
-        result.ParentId = folder.FolderID;
+        result.ParentId = folder.ParentId;
 
         if (folder.RootFolderType == FolderType.USER
-            && !Equals(folder.RootFolderCreator, _authContext.CurrentAccount.ID))
+            && !Equals(folder.RootCreateBy, _authContext.CurrentAccount.ID))
         {
             result.RootFolderType = FolderType.SHARE;
 
@@ -95,7 +95,7 @@ public class FolderDtoHelper : FileEntryDtoHelper
 
             if (folders != null)
             {
-                var folderWithRight = folders.FirstOrDefault(f => f.Item1.ID.Equals(folder.FolderID));
+                var folderWithRight = folders.FirstOrDefault(f => f.Item1.Id.Equals(folder.ParentId));
                 if (folderWithRight == null || !folderWithRight.Item2)
                 {
                     result.ParentId = await _globalFolderHelper.GetFolderShareAsync<T>();
@@ -103,7 +103,7 @@ public class FolderDtoHelper : FileEntryDtoHelper
             }
             else
             {
-                parentFolder = await folderDao.GetFolderAsync(folder.FolderID);
+                parentFolder = await folderDao.GetFolderAsync(folder.ParentId);
                 var canRead = await FileSecurity.CanReadAsync(parentFolder);
                 if (!canRead)
                 {
@@ -118,8 +118,8 @@ public class FolderDtoHelper : FileEntryDtoHelper
     private async Task<FolderDto<T>> GetFolderWrapperAsync<T>(Folder<T> folder)
     {
         var result = await GetAsync<FolderDto<T>, T>(folder);
-        result.FilesCount = folder.TotalFiles;
-        result.FoldersCount = folder.TotalSubFolders;
+        result.FilesCount = folder.FilesCount;
+        result.FoldersCount = folder.FoldersCount;
         result.IsShareable = folder.Shareable.NullIfDefault();
         result.New = folder.NewForMe;
 

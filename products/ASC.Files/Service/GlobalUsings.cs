@@ -47,6 +47,7 @@ global using ASC.Feed.Aggregator.Service;
 global using ASC.Feed.Core;
 global using ASC.Feed.Data;
 global using ASC.Files.Core;
+global using ASC.Files.Core.Core.Entries;
 global using ASC.Files.Core.EF;
 global using ASC.Files.Core.Security;
 global using ASC.Files.ThumbnailBuilder;

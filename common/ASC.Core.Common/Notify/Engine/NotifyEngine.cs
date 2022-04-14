@@ -26,6 +26,13 @@
 
 namespace ASC.Notify.Engine;
 
+public interface INotifyEngineAction
+{
+    void BeforeTransferRequest(NotifyRequest request);
+    void AfterTransferRequest(NotifyRequest request);
+}
+
+[Singletone]
 public class NotifyEngine : INotifyEngine
 {
     private readonly ILog _logger;
@@ -39,25 +46,27 @@ public class NotifyEngine : INotifyEngine
     private readonly Dictionary<string, IPatternStyler> _stylers = new Dictionary<string, IPatternStyler>();
     private readonly IPatternFormatter _sysTagFormatter = new ReplacePatternFormatter(@"_#(?<tagName>[A-Z0-9_\-.]+)#_", true);
     private readonly TimeSpan _defaultSleep = TimeSpan.FromSeconds(10);
-    private readonly IServiceProvider _serviceProvider;
-
-    public event Action<NotifyEngine, NotifyRequest, IServiceScope> BeforeTransferRequest;
-    public event Action<NotifyEngine, NotifyRequest, IServiceScope> AfterTransferRequest;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
+    internal readonly ICollection<Type> Actions;
 
 
-    public NotifyEngine(Context context, IServiceProvider serviceProvider)
+    public NotifyEngine(Context context, IOptionsMonitor<ILog> options, IServiceScopeFactory serviceScopeFactory)
     {
+        Actions = new List<Type>();
         _context = context ?? throw new ArgumentNullException(nameof(context));
-        _logger = serviceProvider.GetService<IOptionsMonitor<ILog>>().Get("ASC.Notify");
-        _serviceProvider = serviceProvider;
+        _logger = options.Get("ASC.Notify");
+        _serviceScopeFactory = serviceScopeFactory;
         _notifyScheduler = new Thread(NotifyScheduler) { IsBackground = true, Name = "NotifyScheduler" };
         _notifySender = new Thread(NotifySender) { IsBackground = true, Name = "NotifySender" };
     }
 
-
-    public virtual void QueueRequest(NotifyRequest request, IServiceScope serviceScope)
+    public void AddAction<T>() where T : INotifyEngineAction
     {
-        BeforeTransferRequest?.Invoke(this, request, serviceScope);
+        Actions.Add(typeof(T));
+    }
+
+    public void QueueRequest(NotifyRequest request)
+    {
         lock (_requests)
         {
             if (!_notifySender.IsAlive)
@@ -184,8 +193,12 @@ public class NotifyEngine : INotifyEngine
                 }
                 if (request != null)
                 {
-                    using var scope = _serviceProvider.CreateScope();
-                    AfterTransferRequest?.Invoke(this, request, scope);
+                    using var scope = _serviceScopeFactory.CreateScope();
+                    foreach (var action in Actions)
+                    {
+                        ((INotifyEngineAction)scope.ServiceProvider.GetRequiredService(action)).AfterTransferRequest(request);
+                    }
+
                     try
                     {
                         SendNotify(request, scope);
@@ -351,7 +364,7 @@ public class NotifyEngine : INotifyEngine
         {
             foreach (var sendertag in request._senderNames)
             {
-                var channel = _context.NotifyService.GetSender(sendertag);
+                var channel = _context.GetSender(sendertag);
                 if (channel != null)
                 {
                     try
@@ -632,5 +645,28 @@ public class NotifyEngine : INotifyEngine
         {
             return _method.GetHashCode();
         }
+    }
+}
+
+[Scope]
+public class NotifyEngineQueue
+{
+    private readonly NotifyEngine _notifyEngine;
+    private readonly IServiceProvider _serviceProvider;
+
+    public NotifyEngineQueue(NotifyEngine notifyEngine, IServiceProvider serviceProvider)
+    {
+        _notifyEngine = notifyEngine;
+        _serviceProvider = serviceProvider;
+    }
+
+    public void QueueRequest(NotifyRequest request)
+    {
+        foreach (var action in _notifyEngine.Actions)
+        {
+            ((INotifyEngineAction)_serviceProvider.GetRequiredService(action)).BeforeTransferRequest(request);
+        }
+
+        _notifyEngine.QueueRequest(request);
     }
 }

@@ -38,8 +38,11 @@ public class BackupAjaxHandler
     private readonly UserManager _userManager;
     private readonly TenantExtra _tenantExtra;
     private readonly ConsumerFactory _consumerFactory;
-    private readonly BackupFileUploadHandler _backupFileUploadHandler;
     private readonly BackupService _backupService;
+    private TempPath TempPath { get; }
+
+    private const string BackupTempFolder = "backup";
+    private const string BackupFileName = "backup.tmp";
 
     #region backup
 
@@ -54,7 +57,7 @@ public class BackupAjaxHandler
         UserManager userManager,
         TenantExtra tenantExtra,
         ConsumerFactory consumerFactory,
-        BackupFileUploadHandler backupFileUploadHandler)
+        TempPath tempPath)
     {
         _tenantManager = tenantManager;
         _messageService = messageService;
@@ -65,8 +68,8 @@ public class BackupAjaxHandler
         _userManager = userManager;
         _tenantExtra = tenantExtra;
         _consumerFactory = consumerFactory;
-        _backupFileUploadHandler = backupFileUploadHandler;
         _backupService = backupService;
+        TempPath = tempPath;
     }
 
     public void StartBackup(BackupStorageType storageType, Dictionary<string, string> storageParams, bool backupMail)
@@ -149,15 +152,15 @@ public class BackupAjaxHandler
 
         ValidateCronSettings(cronParams);
 
-            var scheduleRequest = new CreateScheduleRequest
-            {
-                TenantId = _tenantManager.GetCurrentTenant().Id,
-                BackupMail = backupMail,
-                Cron = cronParams.ToString(),
-                NumberOfBackupsStored = backupsStored,
-                StorageType = storageType,
-                StorageParams = storageParams
-            };
+        var scheduleRequest = new CreateScheduleRequest
+        {
+            TenantId = _tenantManager.GetCurrentTenant().Id,
+            BackupMail = backupMail,
+            Cron = cronParams.ToString(),
+            NumberOfBackupsStored = backupsStored,
+            StorageType = storageType,
+            StorageParams = storageParams
+        };
 
         switch (storageType)
         {
@@ -251,7 +254,7 @@ public class BackupAjaxHandler
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-            if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.Backup)))
+        if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.Backup)))
         {
             throw new BillingException(Resource.ErrorNotAllowedOption, "Backup");
         }
@@ -283,7 +286,7 @@ public class BackupAjaxHandler
 
             if (restoreRequest.StorageType == BackupStorageType.Local && !_coreBaseSettings.Standalone)
             {
-                restoreRequest.FilePathOrId = _backupFileUploadHandler.GetFilePath();
+                restoreRequest.FilePathOrId = GetTmpFilePath();
             }
         }
 
@@ -300,7 +303,7 @@ public class BackupAjaxHandler
         return result;
     }
 
-    private void DemandPermissionsRestore()
+    public void DemandPermissionsRestore()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -308,6 +311,17 @@ public class BackupAjaxHandler
             (!_coreBaseSettings.Standalone && !_tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Restore))
         {
             throw new BillingException(Resource.ErrorNotAllowedOption, "Restore");
+        }
+    }
+
+    public void DemandPermissionsAutoBackup()
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+        if (!SetupInfo.IsVisibleSettings("AutoBackup") ||
+            (!_coreBaseSettings.Standalone && !_tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).AutoBackup))
+        {
+            throw new BillingException(Resource.ErrorNotAllowedOption, "AutoBackup");
         }
     }
 
@@ -341,9 +355,9 @@ public class BackupAjaxHandler
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
         var currentUser = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
-            if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.Migration))
-            || !currentUser.IsOwner(_tenantManager.GetCurrentTenant())
-            || !SetupInfo.IsSecretEmail(currentUser.Email) && !_tenantExtra.GetTenantQuota().HasMigration)
+        if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.Migration))
+        || !currentUser.IsOwner(_tenantManager.GetCurrentTenant())
+        || !SetupInfo.IsSecretEmail(currentUser.Email) && !_tenantExtra.GetTenantQuota().HasMigration)
         {
             throw new InvalidOperationException(Resource.ErrorNotAllowedOption);
         }
@@ -364,6 +378,18 @@ public class BackupAjaxHandler
     private int GetCurrentTenantId()
     {
         return _tenantManager.GetCurrentTenant().Id;
+    }
+
+    public string GetTmpFilePath()
+    {
+        var folder = Path.Combine(TempPath.GetTempPath(), BackupTempFolder, _tenantManager.GetCurrentTenant().Id.ToString());
+
+        if (!Directory.Exists(folder))
+        {
+            Directory.CreateDirectory(folder);
+        }
+
+        return Path.Combine(folder, BackupFileName);
     }
 
     public class Schedule

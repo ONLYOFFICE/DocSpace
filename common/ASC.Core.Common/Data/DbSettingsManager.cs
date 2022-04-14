@@ -152,17 +152,17 @@ public class DbSettingsManager
         }
     }
 
-    public bool SaveSettings<T>(T settings, int tenantId) where T : ISettings
+    public bool SaveSettings<T>(T settings, int tenantId) where T : class, ISettings<T>
     {
         return SaveSettingsFor(settings, tenantId, Guid.Empty);
     }
 
-    public T LoadSettings<T>(int tenantId) where T : class, ISettings
+    public T LoadSettings<T>(int tenantId) where T : class, ISettings<T>
     {
         return LoadSettingsFor<T>(tenantId, Guid.Empty);
     }
 
-    public void ClearCache<T>(int tenantId) where T : class, ISettings
+    public void ClearCache<T>(int tenantId) where T : class, ISettings<T>
     {
         var settings = LoadSettings<T>(tenantId);
         var key = settings.ID.ToString() + tenantId + Guid.Empty;
@@ -171,7 +171,7 @@ public class DbSettingsManager
     }
 
 
-    public bool SaveSettingsFor<T>(T settings, int tenantId, Guid userId) where T : ISettings
+    public bool SaveSettingsFor<T>(T settings, int tenantId, Guid userId) where T : class, ISettings<T>
     {
         ArgumentNullException.ThrowIfNull(settings);
 
@@ -179,8 +179,7 @@ public class DbSettingsManager
         {
             var key = settings.ID.ToString() + tenantId + userId;
             var data = Serialize(settings);
-
-            var def = (T)settings.GetDefault(ServiceProvider);
+            var def = GetDefault<T>();
 
             var defaultData = Serialize(def);
 
@@ -231,11 +230,10 @@ public class DbSettingsManager
         }
     }
 
-    internal T LoadSettingsFor<T>(int tenantId, Guid userId) where T : class, ISettings
+    internal T LoadSettingsFor<T>(int tenantId, Guid userId) where T : class, ISettings<T>
     {
-        var settingsInstance = ActivatorUtilities.CreateInstance<T>(ServiceProvider);
-        var key = settingsInstance.ID.ToString() + tenantId + userId;
-        var def = (T)settingsInstance.GetDefault(ServiceProvider);
+        var def = GetDefault<T>();
+        var key = def.ID.ToString() + tenantId + userId;
 
         try
         {
@@ -246,7 +244,7 @@ public class DbSettingsManager
             }
 
             var result = WebstudioDbContext.WebstudioSettings
-                    .Where(r => r.Id == settingsInstance.ID)
+                    .Where(r => r.Id == def.ID)
                     .Where(r => r.TenantId == tenantId)
                     .Where(r => r.UserId == userId)
                     .Select(r => r.Data)
@@ -273,57 +271,63 @@ public class DbSettingsManager
         return def;
     }
 
-    public T Load<T>() where T : class, ISettings
+    public T GetDefault<T>() where T : class, ISettings<T>
+    {
+        var settingsInstance = ActivatorUtilities.CreateInstance<T>(ServiceProvider);
+        return settingsInstance.GetDefault();
+    }
+
+    public T Load<T>() where T : class, ISettings<T>
     {
         return LoadSettings<T>(TenantID);
     }
 
-    public T LoadForCurrentUser<T>() where T : class, ISettings
+    public T LoadForCurrentUser<T>() where T : class, ISettings<T>
     {
         return LoadForUser<T>(CurrentUserID);
     }
 
-    public T LoadForUser<T>(Guid userId) where T : class, ISettings
+    public T LoadForUser<T>(Guid userId) where T : class, ISettings<T>
     {
         return LoadSettingsFor<T>(TenantID, userId);
     }
 
-    public T LoadForDefaultTenant<T>() where T : class, ISettings
+    public T LoadForDefaultTenant<T>() where T : class, ISettings<T>
     {
         return LoadForTenant<T>(Tenant.DefaultTenant);
     }
 
-    public T LoadForTenant<T>(int tenantId) where T : class, ISettings
+    public T LoadForTenant<T>(int tenantId) where T : class, ISettings<T>
     {
         return LoadSettings<T>(tenantId);
     }
 
-    public virtual bool Save<T>(T data) where T : class, ISettings
+    public virtual bool Save<T>(T data) where T : class, ISettings<T>
     {
         return SaveSettings(data, TenantID);
     }
 
-    public bool SaveForCurrentUser<T>(T data) where T : class, ISettings
+    public bool SaveForCurrentUser<T>(T data) where T : class, ISettings<T>
     {
         return SaveForUser(data, CurrentUserID);
     }
 
-    public bool SaveForUser<T>(T data, Guid userId) where T : class, ISettings
+    public bool SaveForUser<T>(T data, Guid userId) where T : class, ISettings<T>
     {
         return SaveSettingsFor(data, TenantID, userId);
     }
 
-    public bool SaveForDefaultTenant<T>(T data) where T : class, ISettings
+    public bool SaveForDefaultTenant<T>(T data) where T : class, ISettings<T>
     {
         return SaveForTenant(data, Tenant.DefaultTenant);
     }
 
-    public bool SaveForTenant<T>(T data, int tenantId) where T : class, ISettings
+    public bool SaveForTenant<T>(T data, int tenantId) where T : class, ISettings<T>
     {
         return SaveSettings(data, tenantId);
     }
 
-    public void ClearCache<T>() where T : class, ISettings
+    public void ClearCache<T>() where T : class, ISettings<T>
     {
         ClearCache<T>(TenantID);
     }
@@ -332,7 +336,7 @@ public class DbSettingsManager
     {
         var options = new JsonSerializerOptions
         {
-            PropertyNameCaseInsensitive = true
+            PropertyNameCaseInsensitive = true,
         };
 
         return JsonSerializer.Deserialize<T>(data, options);

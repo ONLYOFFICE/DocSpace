@@ -50,6 +50,7 @@ global using ARSoft.Tools.Net.Dns;
 
 global using ASC.Common;
 global using ASC.Common.Caching;
+global using ASC.Common.Mapping.PrimitiveTypeConverters;
 global using ASC.Common.DependencyInjection;
 global using ASC.Common.Logging;
 global using ASC.Common.Security;
@@ -104,3 +105,6 @@ global using NVelocity.App;
 global using NVelocity.Runtime.Resource.Loader;
 
 global using StackExchange.Redis.Extensions.Core.Abstractions;
+global using RabbitMQ.Client;
+global using RabbitMQ.Client.Events;
+global using ProtoBuf;

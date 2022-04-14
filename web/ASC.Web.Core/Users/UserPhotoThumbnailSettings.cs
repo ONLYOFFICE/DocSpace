@@ -27,7 +27,7 @@
 namespace ASC.Web.Core.Users;
 
 [Serializable]
-public class UserPhotoThumbnailSettings : ISettings
+    public class UserPhotoThumbnailSettings : ISettings<UserPhotoThumbnailSettings>
 {
     public Guid ID
     {
@@ -56,7 +56,7 @@ public class UserPhotoThumbnailSettings : ISettings
 
     public bool IsDefault { get; private set; }
 
-    public ISettings GetDefault(IServiceProvider serviceProvider)
+        public UserPhotoThumbnailSettings GetDefault()
     {
         return new UserPhotoThumbnailSettings
         {

@@ -33,7 +33,6 @@ public class ReassignProgressItem : DistributedTaskProgress
     public Guid ToUser { get; private set; }
 
     private readonly IServiceScopeFactory _serviceScopeFactory;
-    private readonly QueueWorkerRemove _queueWorkerRemove;
     private readonly IDictionary<string, StringValues> _httpHeaders;
     private int _tenantId;
     private Guid _currentUserId;
@@ -44,19 +43,15 @@ public class ReassignProgressItem : DistributedTaskProgress
 
     public ReassignProgressItem(
         IServiceScopeFactory serviceScopeFactory,
-        IHttpContextAccessor httpContextAccessor,
-        QueueWorkerRemove queueWorkerRemove)
+            IDictionary<string, StringValues> httpHeaders,
+            int tenantId, Guid fromUserId, Guid toUserId, Guid currentUserId, bool deleteProfile)
     {
         _serviceScopeFactory = serviceScopeFactory;
-        _queueWorkerRemove = queueWorkerRemove;
-        _httpHeaders = QueueWorker.GetHttpHeaders(httpContextAccessor.HttpContext.Request);
+            _httpHeaders = httpHeaders;
 
         //_docService = Web.Files.Classes.Global.FileStorageService;
         //_projectsReassign = new ProjectsReassign();
-    }
 
-    public void Init(int tenantId, Guid fromUserId, Guid toUserId, Guid currentUserId, bool deleteProfile)
-    {
         _tenantId = tenantId;
         FromUser = fromUserId;
         ToUser = toUserId;
@@ -77,6 +72,7 @@ public class ReassignProgressItem : DistributedTaskProgress
     {
         using var scope = _serviceScopeFactory.CreateScope();
         var scopeClass = scope.ServiceProvider.GetService<ReassignProgressItemScope>();
+            var queueWorkerRemove = scope.ServiceProvider.GetService<QueueWorkerRemove>();
         var (tenantManager, coreBaseSettings, messageService, studioNotifyService, securityContext, userManager, userPhotoManager, displayUserSettingsHelper, messageTarget, options) = scopeClass;
         var logger = options.Get("ASC.Web");
         tenantManager.SetCurrentTenant(_tenantId);
@@ -126,7 +122,7 @@ public class ReassignProgressItem : DistributedTaskProgress
 
             if (_deleteProfile)
             {
-                DeleteUserProfile(userManager, userPhotoManager, messageService, messageTarget, displayUserSettingsHelper);
+                    DeleteUserProfile(userManager, userPhotoManager, messageService, messageTarget, displayUserSettingsHelper, queueWorkerRemove);
             }
         }
         catch (Exception ex)
@@ -178,14 +174,14 @@ public class ReassignProgressItem : DistributedTaskProgress
         studioNotifyService.SendMsgReassignsFailed(_currentUserId, fromUser, toUser, errorMessage);
     }
 
-    private void DeleteUserProfile(UserManager userManager, UserPhotoManager userPhotoManager, MessageService messageService, MessageTarget messageTarget, DisplayUserSettingsHelper displayUserSettingsHelper)
+        private void DeleteUserProfile(UserManager userManager, UserPhotoManager userPhotoManager, MessageService messageService, MessageTarget messageTarget, DisplayUserSettingsHelper displayUserSettingsHelper, QueueWorkerRemove queueWorkerRemove)
     {
         var user = userManager.GetUsers(FromUser);
         var userName = user.DisplayUserName(false, displayUserSettingsHelper);
 
         userPhotoManager.RemovePhoto(user.Id);
         userManager.DeleteUser(user.Id);
-        _queueWorkerRemove.Start(_tenantId, user, _currentUserId, false);
+            queueWorkerRemove.Start(_tenantId, user, _currentUserId, false);
 
         if (_httpHeaders != null)
         {
@@ -264,6 +260,5 @@ public static class ReassignProgressItemExtension
     public static void Register(DIHelper services)
     {
         services.TryAdd<ReassignProgressItemScope>();
-        services.AddDistributedTaskQueueService<ReassignProgressItem>(1);
     }
 }

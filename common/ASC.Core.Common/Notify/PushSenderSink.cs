@@ -33,10 +33,10 @@ class PushSenderSink : Sink
     private readonly ILog _logger;
     private bool _configured = true;
 
-    public PushSenderSink(IServiceProvider serviceProvider)
+    public PushSenderSink(IServiceProvider serviceProvider, IOptionsMonitor<ILog> options)
     {
         _serviceProvider = serviceProvider;
-        _logger = _serviceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
+        _logger = options.CurrentValue;
     }
 
     private readonly IServiceProvider _serviceProvider;

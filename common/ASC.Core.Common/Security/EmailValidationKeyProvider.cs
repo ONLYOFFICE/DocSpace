@@ -43,7 +43,7 @@ public class EmailValidationKeyProvider
     private readonly MachinePseudoKeys _machinePseudoKeys;
     private readonly TenantManager _tenantManager;
 
-    public EmailValidationKeyProvider(MachinePseudoKeys machinePseudoKeys, TenantManager tenantManager, IConfiguration configuration, IOptionsMonitor<ILog> options)
+    public EmailValidationKeyProvider(MachinePseudoKeys machinePseudoKeys, TenantManager tenantManager, IConfiguration configuration, ILog  logger)
     {
         _machinePseudoKeys = machinePseudoKeys;
         _tenantManager = tenantManager;
@@ -58,7 +58,7 @@ public class EmailValidationKeyProvider
 
         _validEmailKeyInterval = validInterval;
         _validAuthKeyInterval = authValidInterval;
-        _logger = options.CurrentValue;
+        _logger = logger;
     }
 
     public string GetEmailKey(string email)

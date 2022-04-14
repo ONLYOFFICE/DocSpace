@@ -26,6 +26,7 @@
 
 namespace ASC.Notify.Engine;
 
+[Singletone]
 public class DispatchEngine
 {
     private readonly ILog _logger;
@@ -47,7 +48,7 @@ public class DispatchEngine
         var response = new SendResponse(message, senderName, SendResult.OK);
         if (!_logOnly)
         {
-            var sender = _context.NotifyService.GetSender(senderName);
+            var sender = _context.GetSender(senderName);
             if (sender != null)
             {
                 response = sender.DirectSend(message);

@@ -30,12 +30,14 @@ namespace ASC.Data.Storage.Configuration;
 public class BaseStorageSettingsListener
 {
     private readonly IServiceProvider _serviceProvider;
+    private readonly ICacheNotify<ConsumerCacheItem> _cacheNotify;
     private readonly object _locker;
     private volatile bool _subscribed;
 
-    public BaseStorageSettingsListener(IServiceProvider serviceProvider)
+    public BaseStorageSettingsListener(IServiceProvider serviceProvider, ICacheNotify<ConsumerCacheItem> cacheNotify)
     {
         _serviceProvider = serviceProvider;
+        _cacheNotify = cacheNotify;
         _locker = new object();
     }
 
@@ -55,12 +57,12 @@ public class BaseStorageSettingsListener
 
             _subscribed = true;
 
-            _serviceProvider.GetService<ICacheNotify<ConsumerCacheItem>>().Subscribe((i) =>
+            _cacheNotify.Subscribe((i) =>
             {
                 using var scope = _serviceProvider.CreateScope();
 
                 var scopeClass = scope.ServiceProvider.GetService<BaseStorageSettingsListenerScope>();
-                var (storageSettingsHelper, settingsManager, cdnStorageSettings) = scopeClass;
+                var (storageSettingsHelper, settingsManager) = scopeClass;
                 var settings = settingsManager.LoadForTenant<StorageSettings>(i.TenantId);
                 if (i.Name == settings.Module)
                 {
@@ -78,7 +80,7 @@ public class BaseStorageSettingsListener
 }
 
 [Serializable]
-public abstract class BaseStorageSettings<T> : ISettings where T : class, ISettings, new()
+public abstract class BaseStorageSettings<T> : ISettings<BaseStorageSettings<T>> where T : class, ISettings<T>, new()
 {
     public string Module { get; set; }
     public Dictionary<string, string> Props { get; set; }
@@ -86,25 +88,35 @@ public abstract class BaseStorageSettings<T> : ISettings where T : class, ISetti
     public abstract Guid ID { get; }
     internal ICacheNotify<DataStoreCacheItem> Cache { get; set; }
 
-    public ISettings GetDefault(IServiceProvider serviceProvider)
+    public BaseStorageSettings<T> GetDefault()
     {
-        return new T();
+        throw new NotImplementedException();
     }
 }
 
 [Serializable]
-public class StorageSettings : BaseStorageSettings<StorageSettings>
+public class StorageSettings : BaseStorageSettings<StorageSettings>, ISettings<StorageSettings>
 {
     public override Guid ID => new Guid("F13EAF2D-FA53-44F1-A6D6-A5AEDA46FA2B");
+
+    StorageSettings ISettings<StorageSettings>.GetDefault()
+    {
+        return new StorageSettings();
+    }
 }
 
 [Scope]
 [Serializable]
-public class CdnStorageSettings : BaseStorageSettings<CdnStorageSettings>
+public class CdnStorageSettings : BaseStorageSettings<CdnStorageSettings>, ISettings<CdnStorageSettings>
 {
     public override Guid ID => new Guid("0E9AE034-F398-42FE-B5EE-F86D954E9FB2");
 
     public override Func<DataStoreConsumer, DataStoreConsumer> Switch => d => d.Cdn;
+
+    CdnStorageSettings ISettings<CdnStorageSettings>.GetDefault()
+    {
+        return new CdnStorageSettings();
+    }
 }
 
 [Scope]
@@ -119,6 +131,7 @@ public class StorageSettingsHelper
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ConsumerFactory _consumerFactory;
     private IDataStore _dataStore;
+        private IServiceProvider ServiceProvider { get; }
 
     public StorageSettingsHelper(
         BaseStorageSettingsListener baseStorageSettingsListener,
@@ -128,7 +141,8 @@ public class StorageSettingsHelper
         IOptionsMonitor<ILog> options,
         TenantManager tenantManager,
         SettingsManager settingsManager,
-        ConsumerFactory consumerFactory)
+            ConsumerFactory consumerFactory,
+            IServiceProvider serviceProvider)
     {
         baseStorageSettingsListener.Subscribe();
         _storageFactoryConfig = storageFactoryConfig;
@@ -138,6 +152,7 @@ public class StorageSettingsHelper
         _tenantManager = tenantManager;
         _settingsManager = settingsManager;
         _consumerFactory = consumerFactory;
+            ServiceProvider = serviceProvider;
     }
 
     public StorageSettingsHelper(
@@ -149,27 +164,28 @@ public class StorageSettingsHelper
         TenantManager tenantManager,
         SettingsManager settingsManager,
         IHttpContextAccessor httpContextAccessor,
-        ConsumerFactory consumerFactory)
-        : this(baseStorageSettingsListener, storageFactoryConfig, pathUtils, cache, options, tenantManager, settingsManager, consumerFactory)
+            ConsumerFactory consumerFactory,
+            IServiceProvider serviceProvider)
+            : this(baseStorageSettingsListener, storageFactoryConfig, pathUtils, cache, options, tenantManager, settingsManager, consumerFactory, serviceProvider)
     {
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public bool Save<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings, new()
+    public bool Save<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings<T>, new()
     {
         ClearDataStoreCache();
 
         return _settingsManager.Save(baseStorageSettings);
     }
 
-    public void Clear<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings, new()
+    public void Clear<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings<T>, new()
     {
         baseStorageSettings.Module = null;
         baseStorageSettings.Props = null;
         Save(baseStorageSettings);
     }
 
-    public DataStoreConsumer DataStoreConsumer<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings, new()
+    public DataStoreConsumer DataStoreConsumer<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings<T>, new()
     {
         if (string.IsNullOrEmpty(baseStorageSettings.Module) || baseStorageSettings.Props == null)
         {
@@ -193,7 +209,7 @@ public class StorageSettingsHelper
         return _dataStoreConsumer;
     }
 
-    public IDataStore DataStore<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings, new()
+    public IDataStore DataStore<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings<T>, new()
     {
         if (_dataStore != null)
         {
@@ -227,20 +243,17 @@ public class BaseStorageSettingsListenerScope
 {
     private readonly StorageSettingsHelper _storageSettingsHelper;
     private readonly SettingsManager _settingsManager;
-    private readonly CdnStorageSettings _cdnStorageSettings;
 
-    public BaseStorageSettingsListenerScope(StorageSettingsHelper storageSettingsHelper, SettingsManager settingsManager, CdnStorageSettings cdnStorageSettings)
+    public BaseStorageSettingsListenerScope(StorageSettingsHelper storageSettingsHelper, SettingsManager settingsManager)
     {
         _storageSettingsHelper = storageSettingsHelper;
         _settingsManager = settingsManager;
-        _cdnStorageSettings = cdnStorageSettings;
     }
 
-    public void Deconstruct(out StorageSettingsHelper storageSettingsHelper, out SettingsManager settingsManager, out CdnStorageSettings cdnStorageSettings)
+    public void Deconstruct(out StorageSettingsHelper storageSettingsHelper, out SettingsManager settingsManager)
     {
         storageSettingsHelper = _storageSettingsHelper;
         settingsManager = _settingsManager;
-        cdnStorageSettings = this._cdnStorageSettings;
     }
 }
 

@@ -42,6 +42,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
     private readonly ProviderFolderDao _providerFolderDao;
     private readonly CrossDao _crossDao;
     private readonly Settings _settings;
+    private readonly IMapper _mapper;
 
     public FileDao(
         FactoryIndexerFile factoryIndexer,
@@ -66,7 +67,8 @@ internal class FileDao : AbstractDao, IFileDao<int>
         ChunkedUploadSessionHolder chunkedUploadSessionHolder,
         ProviderFolderDao providerFolderDao,
         CrossDao crossDao,
-        Settings settings)
+        Settings settings,
+        IMapper mapper)
         : base(
               dbContextManager,
               userManager,
@@ -92,6 +94,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         _providerFolderDao = providerFolderDao;
         _crossDao = crossDao;
         _settings = settings;
+        _mapper = mapper;
     }
 
     public Task InvalidateCacheAsync(int fileId)
@@ -103,20 +106,20 @@ internal class FileDao : AbstractDao, IFileDao<int>
     {
         var query = GetFileQuery(r => r.Id == fileId && r.CurrentVersion).AsNoTracking();
 
-        return ToFile(await
-            FromQueryWithShared(query)
-            .SingleOrDefaultAsync()
-            .ConfigureAwait(false));
+        var dbFile = await FromQueryWithShared(query).SingleOrDefaultAsync()
+            .ConfigureAwait(false);
+
+        return _mapper.Map<DbFileQuery, File<int>>(dbFile);
     }
 
     public async Task<File<int>> GetFileAsync(int fileId, int fileVersion)
     {
         var query = GetFileQuery(r => r.Id == fileId && r.Version == fileVersion).AsNoTracking();
 
-        return ToFile(await
-            FromQueryWithShared(query)
-            .SingleOrDefaultAsync()
-            .ConfigureAwait(false));
+        var dbFile = await FromQueryWithShared(query).SingleOrDefaultAsync()
+            .ConfigureAwait(false);
+
+        return _mapper.Map<DbFileQuery, File<int>>(dbFile);
     }
 
     public Task<File<int>> GetFileAsync(int parentId, string title)
@@ -128,13 +131,14 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     private async Task<File<int>> InternalGetFileAsync(int parentId, string title)
     {
-        var query = GetFileQuery(r => r.Title == title && r.CurrentVersion && r.FolderId == parentId)
+        var query = GetFileQuery(r => r.Title == title && r.CurrentVersion && r.ParentId == parentId)
             .AsNoTracking()
             .OrderBy(r => r.CreateOn);
 
-        return ToFile(await FromQueryWithShared(query).FirstOrDefaultAsync().ConfigureAwait(false));
-    }
+        var dbFile = await FromQueryWithShared(query).FirstOrDefaultAsync().ConfigureAwait(false);
 
+        return _mapper.Map<DbFileQuery, File<int>>(dbFile);
+    }
 
     public async Task<File<int>> GetFileStableAsync(int fileId, int fileVersion = -1)
     {
@@ -148,14 +152,17 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
         query = query.OrderByDescending(r => r.Version);
 
-        return ToFile(await FromQueryWithShared(query).FirstOrDefaultAsync().ConfigureAwait(false));
+        var dbFile = await FromQueryWithShared(query).FirstOrDefaultAsync().ConfigureAwait(false);
+
+        return _mapper.Map<DbFileQuery, File<int>>(dbFile);
     }
 
     public IAsyncEnumerable<File<int>> GetFileHistoryAsync(int fileId)
     {
         var query = GetFileQuery(r => r.Id == fileId).OrderByDescending(r => r.Version).AsNoTracking();
 
-        return FromQueryWithShared(query).AsAsyncEnumerable().Select(ToFile);
+        return FromQueryWithShared(query).AsAsyncEnumerable()
+            .Select(_mapper.Map<DbFileQuery, File<int>>);
     }
 
     public IAsyncEnumerable<File<int>> GetFilesAsync(IEnumerable<int> fileIds)
@@ -168,7 +175,8 @@ internal class FileDao : AbstractDao, IFileDao<int>
         var query = GetFileQuery(r => fileIds.Contains(r.Id) && r.CurrentVersion)
             .AsNoTracking();
 
-        return FromQueryWithShared(query).AsAsyncEnumerable().Select(e => ToFile(e));
+        return FromQueryWithShared(query).AsAsyncEnumerable()
+            .Select(e => _mapper.Map<DbFileQuery, File<int>>(e));
     }
 
     public IAsyncEnumerable<File<int>> GetFilesFilteredAsync(IEnumerable<int> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool checkShared = false)
@@ -225,14 +233,15 @@ internal class FileDao : AbstractDao, IFileDao<int>
                 break;
         }
 
-        return (checkShared ? FromQueryWithShared(query) : FromQuery(query)).AsAsyncEnumerable().Select(e => ToFile(e));
+        return (checkShared ? FromQueryWithShared(query) : FromQuery(query)).AsAsyncEnumerable()
+            .Select(e => _mapper.Map<DbFileQuery, File<int>>(e));
     }
 
     public Task<List<int>> GetFilesAsync(int parentId)
     {
         return Query(FilesDbContext.Files)
             .AsNoTracking()
-            .Where(r => r.FolderId == parentId && r.CurrentVersion)
+            .Where(r => r.ParentId == parentId && r.CurrentVersion)
             .Select(r => r.Id)
             .ToListAsync()
 ;
@@ -250,14 +259,14 @@ internal class FileDao : AbstractDao, IFileDao<int>
             orderBy = new OrderBy(SortedByType.DateAndTime, false);
         }
 
-        var q = GetFileQuery(r => r.FolderId == parentId && r.CurrentVersion).AsNoTracking();
+        var q = GetFileQuery(r => r.ParentId == parentId && r.CurrentVersion).AsNoTracking();
 
 
         if (withSubfolders)
         {
             q = GetFileQuery(r => r.CurrentVersion)
                 .AsNoTracking()
-                .Join(FilesDbContext.Tree, r => r.FolderId, a => a.FolderId, (file, tree) => new { file, tree })
+                .Join(FilesDbContext.Tree, r => r.ParentId, a => a.FolderId, (file, tree) => new { file, tree })
                 .Where(r => r.tree.ParentId == parentId)
                 .Select(r => r.file);
         }
@@ -318,7 +327,8 @@ internal class FileDao : AbstractDao, IFileDao<int>
                 break;
         }
 
-        return FromQueryWithShared(q).AsAsyncEnumerable().Select(ToFile);
+        return FromQueryWithShared(q).AsAsyncEnumerable()
+            .Select(_mapper.Map<DbFileQuery, File<int>>);
     }
 
     public Task<Stream> GetFileStreamAsync(File<int> file, long offset)
@@ -368,7 +378,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         if (checkQuota && _coreBaseSettings.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
         {
             var personalMaxSpace = _coreConfiguration.PersonalMaxSpace(_settingsManager);
-            if (personalMaxSpace - await _globalSpace.GetUserUsedSpaceAsync(file.ID == default ? _authContext.CurrentAccount.ID : file.CreateBy) < file.ContentLength)
+            if (personalMaxSpace - await _globalSpace.GetUserUsedSpaceAsync(file.Id == default ? _authContext.CurrentAccount.ID : file.CreateBy) < file.ContentLength)
             {
                 throw FileSizeComment.GetPersonalFreeSpaceException(personalMaxSpace);
             }
@@ -382,9 +392,9 @@ internal class FileDao : AbstractDao, IFileDao<int>
         {
             using var tx = FilesDbContext.Database.BeginTransaction();
 
-            if (file.ID == default)
+            if (file.Id == default)
             {
-                file.ID = FilesDbContext.Files.Any() ? FilesDbContext.Files.Max(r => r.Id) + 1 : 1;
+                file.Id = FilesDbContext.Files.Any() ? FilesDbContext.Files.Max(r => r.Id) + 1 : 1;
                 file.Version = 1;
                 file.VersionGroup = 1;
                 isNew = true;
@@ -407,7 +417,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
             }
 
             var toUpdate = FilesDbContext.Files
-                .FirstOrDefault(r => r.Id == file.ID && r.CurrentVersion && r.TenantId == TenantID);
+                .FirstOrDefault(r => r.Id == file.Id && r.CurrentVersion && r.TenantId == TenantID);
 
             if (toUpdate != null)
             {
@@ -417,11 +427,11 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
             toInsert = new DbFile
             {
-                Id = file.ID,
+                Id = file.Id,
                 Version = file.Version,
                 VersionGroup = file.VersionGroup,
                 CurrentVersion = true,
-                FolderId = file.FolderID,
+                ParentId = file.ParentId,
                 Title = file.Title,
                 ContentLength = file.ContentLength,
                 Category = (int)file.FilterType,
@@ -433,7 +443,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
                 Comment = file.Comment,
                 Encrypted = file.Encrypted,
                 Forcesave = file.Forcesave,
-                Thumb = file.ThumbnailStatus,
+                ThumbnailStatus = file.ThumbnailStatus,
                 TenantId = TenantID
             };
 
@@ -447,7 +457,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
             var parentFolders =
                 FilesDbContext.Tree
                 .AsQueryable()
-                .Where(r => r.FolderId == file.FolderID)
+                .Where(r => r.FolderId == file.ParentId)
                 .OrderByDescending(r => r.Level)
                 .ToList();
 
@@ -472,7 +482,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
             if (isNew)
             {
-                RecalculateFilesCountAsync(file.FolderID).Wait();
+                RecalculateFilesCountAsync(file.ParentId).Wait();
             }
         }
 
@@ -488,8 +498,8 @@ internal class FileDao : AbstractDao, IFileDao<int>
                 {
                     if (isNew)
                     {
-                        var stored = await _globalStore.GetStore().IsDirectoryAsync(GetUniqFileDirectory(file.ID));
-                        await DeleteFileAsync(file.ID, stored).ConfigureAwait(false);
+                        var stored = await _globalStore.GetStore().IsDirectoryAsync(GetUniqFileDirectory(file.Id));
+                        await DeleteFileAsync(file.Id, stored).ConfigureAwait(false);
                     }
                     else if (!await IsExistOnStorageAsync(file))
                     {
@@ -506,14 +516,14 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
         _ = _factoryIndexer.IndexAsync(await InitDocumentAsync(toInsert).ConfigureAwait(false));
 
-        return await GetFileAsync(file.ID).ConfigureAwait(false);
+        return await GetFileAsync(file.Id).ConfigureAwait(false);
     }
 
     public Task<File<int>> ReplaceFileVersionAsync(File<int> file, Stream fileStream)
     {
         ArgumentNullException.ThrowIfNull(file);
 
-        if (file.ID == default)
+        if (file.Id == default)
         {
             throw new ArgumentException("No file id or folder id toFolderId determine provider");
         }
@@ -533,7 +543,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         if (_coreBaseSettings.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
         {
             var personalMaxSpace = _coreConfiguration.PersonalMaxSpace(_settingsManager);
-            if (personalMaxSpace - await _globalSpace.GetUserUsedSpaceAsync(file.ID == default ? _authContext.CurrentAccount.ID : file.CreateBy) < file.ContentLength)
+            if (personalMaxSpace - await _globalSpace.GetUserUsedSpaceAsync(file.Id == default ? _authContext.CurrentAccount.ID : file.CreateBy) < file.ContentLength)
             {
                 throw FileSizeComment.GetPersonalFreeSpaceException(personalMaxSpace);
             }
@@ -563,11 +573,11 @@ internal class FileDao : AbstractDao, IFileDao<int>
             }
 
             toUpdate = FilesDbContext.Files
-                .FirstOrDefault(r => r.Id == file.ID && r.Version == file.Version && r.TenantId == TenantID);
+                .FirstOrDefault(r => r.Id == file.Id && r.Version == file.Version && r.TenantId == TenantID);
 
             toUpdate.Version = file.Version;
             toUpdate.VersionGroup = file.VersionGroup;
-            toUpdate.FolderId = file.FolderID;
+            toUpdate.ParentId = file.ParentId;
             toUpdate.Title = file.Title;
             toUpdate.ContentLength = file.ContentLength;
             toUpdate.Category = (int)file.FilterType;
@@ -579,7 +589,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
             toUpdate.Comment = file.Comment;
             toUpdate.Encrypted = file.Encrypted;
             toUpdate.Forcesave = file.Forcesave;
-            toUpdate.Thumb = file.ThumbnailStatus;
+            toUpdate.ThumbnailStatus = file.ThumbnailStatus;
 
             FilesDbContext.SaveChanges();
 
@@ -589,7 +599,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
             var parentFolders = FilesDbContext.Tree
                 .AsQueryable()
-                .Where(r => r.FolderId == file.FolderID)
+                .Where(r => r.FolderId == file.ParentId)
                 .OrderByDescending(r => r.Level)
                 .ToList();
 
@@ -633,13 +643,13 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
         _ = _factoryIndexer.IndexAsync(await InitDocumentAsync(toUpdate).ConfigureAwait(false));
 
-        return await GetFileAsync(file.ID).ConfigureAwait(false);
+        return await GetFileAsync(file.Id).ConfigureAwait(false);
     }
 
     private Task DeleteVersionAsync(File<int> file)
     {
         if (file == null
-            || file.ID == default
+            || file.Id == default
             || file.Version <= 1)
         {
             return Task.CompletedTask;
@@ -651,7 +661,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
     private async Task InternalDeleteVersionAsync(File<int> file)
     {
         var toDelete = await Query(FilesDbContext.Files)
-            .FirstOrDefaultAsync(r => r.Id == file.ID && r.Version == file.Version)
+            .FirstOrDefaultAsync(r => r.Id == file.Id && r.Version == file.Version)
             .ConfigureAwait(false);
 
         if (toDelete != null)
@@ -662,7 +672,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
         var toUpdate = await Query(FilesDbContext.Files)
-            .FirstOrDefaultAsync(r => r.Id == file.ID && r.Version == file.Version - 1)
+            .FirstOrDefaultAsync(r => r.Id == file.Id && r.Version == file.Version - 1)
             .ConfigureAwait(false);
 
         toUpdate.CurrentVersion = true;
@@ -671,7 +681,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     private async Task DeleteVersionStreamAsync(File<int> file)
     {
-        await _globalStore.GetStore().DeleteDirectoryAsync(GetUniqFileVersionPath(file.ID, file.Version));
+        await _globalStore.GetStore().DeleteDirectoryAsync(GetUniqFileVersionPath(file.Id, file.Version));
     }
 
     private async Task SaveFileStreamAsync(File<int> file, Stream stream)
@@ -700,7 +710,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
         var fromFolders = Query(FilesDbContext.Files)
             .Where(r => r.Id == fileId)
-            .Select(a => a.FolderId)
+            .Select(a => a.ParentId)
             .Distinct()
             .AsAsyncEnumerable();
 
@@ -761,7 +771,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         return Query(FilesDbContext.Files)
             .AsNoTracking()
             .AnyAsync(r => r.Title == title &&
-                      r.FolderId == folderId &&
+                      r.ParentId == folderId &&
                       r.CurrentVersion)
 ;
     }
@@ -801,7 +811,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         {
             var fromFolders = await Query(FilesDbContext.Files)
                 .Where(r => r.Id == fileId)
-                .Select(a => a.FolderId)
+                .Select(a => a.ParentId)
                 .Distinct()
                 .AsAsyncEnumerable()
                 .ToListAsync()
@@ -814,7 +824,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
             foreach (var f in toUpdate)
             {
-                f.FolderId = toFolderId;
+                f.ParentId = toFolderId;
 
                 var trashId = await trashIdTask;
                 if (trashId.Equals(toFolderId))
@@ -864,7 +874,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
             true)
             .ConfigureAwait(false);
 
-        return moved.ID;
+        return moved.Id;
     }
 
     public async Task<File<TTo>> CopyFileAsync<TTo>(int fileId, TTo toFolderId)
@@ -889,7 +899,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         {
             var copy = _serviceProvider.GetService<File<int>>();
             copy.FileStatus = file.FileStatus;
-            copy.FolderID = toFolderId;
+            copy.ParentId = toFolderId;
             copy.Title = file.Title;
             copy.ConvertedType = file.ConvertedType;
             copy.Comment = FilesCommonResource.CommentCopy;
@@ -932,7 +942,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
     {
         newTitle = Global.ReplaceInvalidCharsAndTruncate(newTitle);
         var toUpdate = await Query(FilesDbContext.Files)
-            .Where(r => r.Id == file.ID)
+            .Where(r => r.Id == file.Id)
             .Where(r => r.CurrentVersion)
             .FirstOrDefaultAsync()
             .ConfigureAwait(false);
@@ -945,7 +955,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
         await _factoryIndexer.UpdateAsync(toUpdate, true, r => r.Title, r => r.ModifiedBy, r => r.ModifiedOn).ConfigureAwait(false);
 
-        return file.ID;
+        return file.Id;
     }
 
     public async Task<string> UpdateCommentAsync(int fileId, int fileVersion, string comment)
@@ -1032,7 +1042,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
     public string GetUniqFilePath(File<int> file, string fileTitle)
     {
         return file != null
-                   ? $"{GetUniqFileVersionPath(file.ID, file.Version)}/{fileTitle}"
+                   ? $"{GetUniqFileVersionPath(file.Id, file.Version)}/{fileTitle}"
                    : null;
     }
 
@@ -1096,9 +1106,9 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     private async Task<File<int>> GetFileForCommitAsync(ChunkedUploadSession<int> uploadSession)
     {
-        if (uploadSession.File.ID != default)
+        if (uploadSession.File.Id != default)
         {
-            var file = await GetFileAsync(uploadSession.File.ID).ConfigureAwait(false);
+            var file = await GetFileAsync(uploadSession.File.Id).ConfigureAwait(false);
             file.Version++;
             file.ContentLength = uploadSession.BytesTotal;
             file.ConvertedType = null;
@@ -1110,7 +1120,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         }
 
         var result = _serviceProvider.GetService<File<int>>();
-        result.FolderID = uploadSession.File.FolderID;
+        result.ParentId = uploadSession.File.ParentId;
         result.Title = uploadSession.File.Title;
         result.ContentLength = uploadSession.BytesTotal;
         result.Comment = FilesCommonResource.CommentUpload;
@@ -1151,7 +1161,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
     {
         var q = GetFileQuery(r => r.CurrentVersion)
             .AsNoTracking()
-            .Join(FilesDbContext.Tree, a => a.FolderId, t => t.FolderId, (file, tree) => new { file, tree })
+            .Join(FilesDbContext.Tree, a => a.ParentId, t => t.FolderId, (file, tree) => new { file, tree })
             .Where(r => parentIds.Contains(r.tree.ParentId))
             .Select(r => r.file);
 
@@ -1202,7 +1212,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
         var query = await FromQueryWithShared(q).ToListAsync().ConfigureAwait(false);
 
-        return query.ConvertAll(e => ToFile(e));
+        return query.ConvertAll(e => _mapper.Map<DbFileQuery, File<int>>(e));
     }
 
     public IAsyncEnumerable<File<int>> SearchAsync(string searchText, bool bunch = false)
@@ -1211,7 +1221,8 @@ internal class FileDao : AbstractDao, IFileDao<int>
         {
             var query = GetFileQuery(r => r.CurrentVersion && ids.Contains(r.Id)).AsNoTracking();
 
-            return FromQueryWithShared(query).AsAsyncEnumerable().Select(e => ToFile(e))
+            return FromQueryWithShared(query).AsAsyncEnumerable()
+                .Select(e => _mapper.Map<DbFileQuery, File<int>>(e))
                 .Where(
                     f =>
                     bunch
@@ -1223,7 +1234,8 @@ internal class FileDao : AbstractDao, IFileDao<int>
         {
             var query = BuildSearch(GetFileQuery(r => r.CurrentVersion).AsNoTracking(), searchText, SearhTypeEnum.Any);
 
-            return FromQueryWithShared(query).AsAsyncEnumerable().Select(e => ToFile(e))
+            return FromQueryWithShared(query).AsAsyncEnumerable()
+                .Select(e => _mapper.Map<DbFileQuery, File<int>>(e))
                 .Where(f =>
                        bunch
                             ? f.RootFolderType == FolderType.BUNCH
@@ -1256,7 +1268,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
     private async Task InternalSaveEditHistoryAsync(File<int> file, string changes, Stream differenceStream)
     {
         var toUpdateTask = Query(FilesDbContext.Files)
-            .Where(r => r.Id == file.ID)
+            .Where(r => r.Id == file.Id)
             .Where(r => r.Version == file.Version)
             .ToListAsync()
             .ConfigureAwait(false);
@@ -1319,7 +1331,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 ;
     }
 
-    public async Task<IEnumerable<(File<int>, SmallShareRecord)>> GetFeedsAsync(int tenant, DateTime from, DateTime to)
+    public async Task<IEnumerable<FileWithShare>> GetFeedsAsync(int tenant, DateTime from, DateTime to)
     {
         var q1 = FilesDbContext.Files
             .AsQueryable()
@@ -1339,14 +1351,15 @@ internal class FileDao : AbstractDao, IFileDao<int>
             .Join(FilesDbContext.Security.AsQueryable().DefaultIfEmpty(), r => r.File.Id.ToString(), s => s.EntryId, (f, s) => new DbFileQueryWithSecurity { DbFileQuery = f, Security = s })
             .Where(r => r.Security.TenantId == tenant)
             .Where(r => r.Security.EntryType == FileEntryType.File)
-            .Where(r => r.Security.Security == Security.FileShare.Restrict)
-            .Where(r => r.Security.TimeStamp >= from && r.Security.TimeStamp <= to)
+            .Where(r => r.Security.Share == Security.FileShare.Restrict)
+            //.Where(r => r.Security.TimeStamp >= from && r.Security.TimeStamp <= to)
             .ToListAsync();
 
-        var fileWithShare = await q2.Select(e => ToFileWithShare(e)).ToListAsync().ConfigureAwait(false);
+        var fileWithShare = await q2.Select(e => _mapper.Map<DbFileQueryWithSecurity, FileWithShare>(e))
+            .ToListAsync().ConfigureAwait(false);
         var q4 = await q4Task.ConfigureAwait(false);
 
-        return fileWithShare.Union(q4.Select(ToFileWithShare));
+        return fileWithShare.Union(_mapper.Map<IEnumerable<DbFileQueryWithSecurity>, IEnumerable<FileWithShare>>(q4));
     }
 
     public async Task<IEnumerable<int>> GetTenantsWithFeedsAsync(DateTime fromTime)
@@ -1391,12 +1404,12 @@ internal class FileDao : AbstractDao, IFileDao<int>
     {
         var toUpdate = await FilesDbContext.Files
             .AsQueryable()
-            .FirstOrDefaultAsync(r => r.Id == file.ID && r.Version == file.Version && r.TenantId == TenantID)
+            .FirstOrDefaultAsync(r => r.Id == file.Id && r.Version == file.Version && r.TenantId == TenantID)
             .ConfigureAwait(false);
 
         if (toUpdate != null)
         {
-            toUpdate.Thumb = thumbnail != null ? Thumbnail.Created : file.ThumbnailStatus;
+            toUpdate.ThumbnailStatus = thumbnail != null ? Thumbnail.Created : file.ThumbnailStatus;
             await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
         }
 
@@ -1508,7 +1521,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
                    Root = (from f in FilesDbContext.Folders.AsQueryable()
                            where f.Id ==
                            (from t in FilesDbContext.Tree.AsQueryable()
-                            where t.FolderId == r.FolderId
+                            where t.FolderId == r.ParentId
                             orderby t.Level descending
                             select t.ParentId
                             ).FirstOrDefault()
@@ -1519,7 +1532,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
                              where f.EntryType == FileEntryType.File && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId
                              select f
                              ).Any(),
-                   Linked = (from f in FilesDbContext.FilesLink
+                   IsFillFormDraft = (from f in FilesDbContext.FilesLink
                              where f.TenantId == r.TenantId && f.LinkedId == r.Id.ToString() && f.LinkedFor == cId
                              select f)
                              .Any()
@@ -1537,7 +1550,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
                 Root = (from f in FilesDbContext.Folders.AsQueryable()
                         where f.Id ==
                         (from t in FilesDbContext.Tree.AsQueryable()
-                         where t.FolderId == r.FolderId
+                         where t.FolderId == r.ParentId
                          orderby t.Level descending
                          select t.ParentId
                          ).FirstOrDefault()
@@ -1545,59 +1558,11 @@ internal class FileDao : AbstractDao, IFileDao<int>
                         select f
                           ).FirstOrDefault(),
                 Shared = true,
-                Linked = (from f in FilesDbContext.FilesLink
+                IsFillFormDraft = (from f in FilesDbContext.FilesLink
                           where f.TenantId == r.TenantId && f.LinkedId == r.Id.ToString() && f.LinkedFor == cId
                           select f)
                              .Any()
             });
-    }
-
-    public File<int> ToFile(DbFileQuery r)
-    {
-        var file = _serviceProvider.GetService<File<int>>();
-
-        if (r == null)
-        {
-            return null;
-        }
-
-        file.ID = r.File.Id;
-        file.Title = r.File.Title;
-        file.FolderID = r.File.FolderId;
-        file.CreateOn = _tenantUtil.DateTimeFromUtc(r.File.CreateOn);
-        file.CreateBy = r.File.CreateBy;
-        file.Version = r.File.Version;
-        file.VersionGroup = r.File.VersionGroup;
-        file.ContentLength = r.File.ContentLength;
-        file.ModifiedOn = _tenantUtil.DateTimeFromUtc(r.File.ModifiedOn);
-        file.ModifiedBy = r.File.ModifiedBy;
-        file.RootFolderType = r.Root?.FolderType ?? default;
-        file.RootFolderCreator = r.Root?.CreateBy ?? default;
-        file.RootFolderId = r.Root?.Id ?? default;
-        file.Shared = r.Shared;
-        file.ConvertedType = r.File.ConvertedType;
-        file.Comment = r.File.Comment;
-        file.Encrypted = r.File.Encrypted;
-        file.Forcesave = r.File.Forcesave;
-        file.ThumbnailStatus = r.File.Thumb;
-        file.IsFillFormDraft = r.Linked;
-
-        return file;
-    }
-
-    public (File<int>, SmallShareRecord) ToFileWithShare(DbFileQueryWithSecurity r)
-    {
-        var file = ToFile(r.DbFileQuery);
-        var record = r.Security != null
-            ? new SmallShareRecord
-            {
-                ShareOn = r.Security.TimeStamp,
-                ShareBy = r.Security.Owner,
-                ShareTo = r.Security.Subject
-            }
-            : null;
-
-        return (file, record);
     }
 
     internal protected Task<DbFile> InitDocumentAsync(DbFile dbFile)
@@ -1618,7 +1583,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
     private async Task<DbFile> InernalInitDocumentAsync(DbFile dbFile)
     {
         var file = _serviceProvider.GetService<File<int>>();
-        file.ID = dbFile.Id;
+        file.Id = dbFile.Id;
         file.Title = dbFile.Title;
         file.Version = dbFile.Version;
         file.ContentLength = dbFile.ContentLength;
@@ -1653,7 +1618,7 @@ public class DbFileQuery
     public DbFile File { get; set; }
     public DbFolder Root { get; set; }
     public bool Shared { get; set; }
-    public bool Linked { get; set; }
+    public bool IsFillFormDraft { get; set; }
 }
 
 public class DbFileQueryWithSecurity

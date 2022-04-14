@@ -72,7 +72,6 @@ public static class UserPhotoThumbnailManager
 
     public static Image GetImage(Image mainImg, Size size, UserPhotoThumbnailSettings thumbnailSettings)
     {
-
         var x = thumbnailSettings.Point.X > 0 ? thumbnailSettings.Point.X : 0;
         var y = thumbnailSettings.Point.Y > 0 ? thumbnailSettings.Point.Y : 0;
         var width = x + thumbnailSettings.Size.Width > mainImg.Width ? mainImg.Width : thumbnailSettings.Size.Width;
@@ -85,8 +84,7 @@ public static class UserPhotoThumbnailManager
 
         var destRound = mainImg.Clone(x => x.Crop(rect).Resize(new ResizeOptions
         {
-            Size = size,
-            Mode = ResizeMode.Stretch
+                Size = size
         }));
 
         return destRound;

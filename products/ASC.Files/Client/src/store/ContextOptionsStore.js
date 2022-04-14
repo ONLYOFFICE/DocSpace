@@ -238,7 +238,7 @@ class ContextOptionsStore {
 
   onDuplicate = (item, t) => {
     this.filesActionsStore
-      .duplicateAction(item, t("Translations:CopyOperation"))
+      .duplicateAction(item, t("Common:CopyOperation"))
       .catch((err) => toastr.error(err));
   };
 
@@ -398,7 +398,7 @@ class ContextOptionsStore {
               },
               {
                 key: "copy",
-                label: t("Duplicate"),
+                label: t("Common:Duplicate"),
                 onClick: () => this.onDuplicate(item, t),
                 disabled: false,
               },
@@ -422,7 +422,7 @@ class ContextOptionsStore {
           },
           {
             key: "copy",
-            label: t("Duplicate"),
+            label: t("Common:Duplicate"),
             icon: "/static/images/copy.react.svg",
             onClick: () => this.onDuplicate(item, t),
             disabled: false,
@@ -564,7 +564,7 @@ class ContextOptionsStore {
       ...moveActions,
       {
         key: "restore",
-        label: t("Translations:Restore"),
+        label: t("Common:Restore"),
         icon: "images/move.react.svg",
         onClick: this.onMoveAction,
         disabled: false,

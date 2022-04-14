@@ -32,8 +32,10 @@ public class CompanyWhiteLabelSettingsWrapper
 }
 
 [Serializable]
-public class CompanyWhiteLabelSettings : ISettings
+    public class CompanyWhiteLabelSettings : ISettings<CompanyWhiteLabelSettings>
 {
+        private readonly CoreSettings _coreSettings;
+
     public string CompanyName { get; set; }
 
     public string Site { get; set; }
@@ -47,13 +49,19 @@ public class CompanyWhiteLabelSettings : ISettings
     [JsonPropertyName("IsLicensor")]
     public bool IsLicensor { get; set; }
 
-
-    public bool IsDefault(CoreSettings coreSettings)
-    {
-        if (!(GetDefault(coreSettings) is CompanyWhiteLabelSettings defaultSettings))
+        public CompanyWhiteLabelSettings(CoreSettings coreSettings)
         {
-            return false;
+            _coreSettings = coreSettings;
         }
+
+        public CompanyWhiteLabelSettings()
+    {
+
+        }
+
+        public bool IsDefault()
+        {
+            var defaultSettings = GetDefault();
 
         return CompanyName == defaultSettings.CompanyName &&
                 Site == defaultSettings.Site &&
@@ -70,30 +78,12 @@ public class CompanyWhiteLabelSettings : ISettings
         get { return new Guid("{C3C5A846-01A3-476D-A962-1CFD78C04ADB}"); }
     }
 
-    private static CompanyWhiteLabelSettings _default;
 
-    public ISettings GetDefault(IServiceProvider serviceProvider)
+        public CompanyWhiteLabelSettings GetDefault()
     {
-        if (_default != null)
-        {
-            return _default;
-        }
+            var settings = _coreSettings.GetSetting("CompanyWhiteLabelSettings");
 
-        return GetDefault(serviceProvider.GetService<CoreSettings>());
-    }
-
-    public ISettings GetDefault(CoreSettings coreSettings)
-    {
-        if (_default != null)
-        {
-            return _default;
-        }
-
-        var settings = coreSettings.GetSetting("CompanyWhiteLabelSettings");
-
-        _default = string.IsNullOrEmpty(settings) ? new CompanyWhiteLabelSettings() : Newtonsoft.Json.JsonConvert.DeserializeObject<CompanyWhiteLabelSettings>(settings);
-
-        return _default;
+            return string.IsNullOrEmpty(settings) ? new CompanyWhiteLabelSettings(_coreSettings) : JsonConvert.DeserializeObject<CompanyWhiteLabelSettings>(settings);
     }
 
     #endregion

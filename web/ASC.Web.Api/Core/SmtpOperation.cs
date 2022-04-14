@@ -177,7 +177,7 @@ public class SmtpOperation
         {
             try
             {
-                TaskInfo.SetProperty(FINISHED, true);
+                TaskInfo[FINISHED] = true;
                 PublishTaskInfo();
 
                 _securityContext.Logout();
@@ -207,11 +207,11 @@ public class SmtpOperation
 
     protected virtual void FillDistributedTask()
     {
-        TaskInfo.SetProperty(SOURCE, Source);
-        TaskInfo.SetProperty(OWNER, CurrentTenant);
-        TaskInfo.SetProperty(PROGRESS, Progress < 100 ? Progress : 100);
-        TaskInfo.SetProperty(RESULT, Status);
-        TaskInfo.SetProperty(ERROR, Error);
+        TaskInfo[SOURCE] = Source;
+        TaskInfo[OWNER] = CurrentTenant;
+        TaskInfo[PROGRESS] = Progress < 100 ? Progress : 100;
+        TaskInfo[RESULT] = Status;
+        TaskInfo[ERROR] = Error;
         //TaskInfo.SetProperty(PROCESSED, successProcessed);
     }
 

@@ -26,8 +26,8 @@
 
 namespace ASC.Core.Common.Settings;
 
-public interface ISettings
+public interface ISettings<T> where T : ISettings<T>
 {
     Guid ID { get; }
-    ISettings GetDefault(IServiceProvider serviceProvider);
+    T GetDefault();
 }

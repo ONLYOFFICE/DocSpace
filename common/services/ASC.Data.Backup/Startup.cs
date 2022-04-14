@@ -1,4 +1,4 @@
-﻿// (c) Copyright Ascensio System SIA 2010-2022
+// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -38,24 +38,24 @@ public class Startup : BaseStartup
     {
         base.ConfigureServices(services);
 
-        DIHelper.AddDistributedTaskQueueService<BaseBackupProgressItem>(1);
-
         DIHelper.TryAdd<BackupProgressItem>();
         DIHelper.TryAdd<RestoreProgressItem>();
         DIHelper.TryAdd<TransferProgressItem>();
 
-        DIHelper.TryAdd<Schedule>();
-
-        DIHelper.TryAdd<BackupCleanerService>();
-        DIHelper.TryAdd<BackupSchedulerService>();
-        DIHelper.TryAdd<BackupListenerService>();
-        DIHelper.TryAdd<BackupWorkerService>();
-
         NotifyConfigurationExtension.Register(DIHelper);
 
-        services.AddHostedService<BackupCleanerService>();
-        services.AddHostedService<BackupSchedulerService>();
-        services.AddHostedService<BackupListenerService>();
-        services.AddHostedService<BackupWorkerService>();
+    }
+
+    public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        base.Configure(app, env);
+
+        app.MapWhen(
+            context => context.Request.Path.ToString().EndsWith("backupFileUpload.ashx"),
+            appBranch =>
+            {
+                appBranch.UseBackupFileUploadHandler();
+            });
     }
 }
+

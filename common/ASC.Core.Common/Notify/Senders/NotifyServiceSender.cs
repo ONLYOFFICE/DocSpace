@@ -26,13 +26,14 @@
 
 namespace ASC.Core.Notify.Senders;
 
+[Singletone]
 public class NotifyServiceSender : INotifySender
 {
     public readonly NotifyServiceClient _notifyServiceClient;
 
-    public NotifyServiceSender(ICacheNotify<NotifyMessage> cacheNotify, ICacheNotify<NotifyInvoke> notifyInvoke)
+    public NotifyServiceSender(NotifyServiceClient notifyServiceClient)
     {
-        _notifyServiceClient = new NotifyServiceClient(cacheNotify, notifyInvoke);
+        _notifyServiceClient = notifyServiceClient;
     }
 
     public void Init(IDictionary<string, string> properties) { }

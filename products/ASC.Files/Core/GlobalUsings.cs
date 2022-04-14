@@ -55,6 +55,7 @@ global using ASC.Api.Utils;
 global using ASC.Common;
 global using ASC.Common.Caching;
 global using ASC.Common.Logging;
+global using ASC.Common.Mapping;
 global using ASC.Common.Security.Authentication;
 global using ASC.Common.Security.Authorizing;
 global using ASC.Common.Threading;
@@ -82,8 +83,10 @@ global using ASC.FederatedLogin.Profile;
 global using ASC.Files.Core;
 global using ASC.Files.Core.ApiModels.RequestDto;
 global using ASC.Files.Core.ApiModels.ResponseDto;
+global using ASC.Files.Core.Core.Entries;
 global using ASC.Files.Core.Data;
 global using ASC.Files.Core.EF;
+global using ASC.Files.Core.Mapping;
 global using ASC.Files.Core.Resources;
 global using ASC.Files.Core.Security;
 global using ASC.Files.Core.Services.NotifyService;
@@ -130,6 +133,8 @@ global using ASC.Web.Studio.Core;
 global using ASC.Web.Studio.Core.Notify;
 global using ASC.Web.Studio.UserControls.Statistics;
 global using ASC.Web.Studio.Utility;
+
+global using AutoMapper;
 
 global using Box.V2;
 global using Box.V2.Auth;

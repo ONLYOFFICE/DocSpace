@@ -81,6 +81,34 @@ public static class ModelBindingContextExtension
         return ParseQuery(bindingContext, $"{modelName}[]");
     }
 
+    internal static IEnumerable<ItemKeyValuePair<JsonElement, string>> ParseDictionary(this ModelBindingContext bindingContext, string modelName)
+    {
+        var result = new List<ItemKeyValuePair<JsonElement, string>>();
+
+        for (var i = 0; ; i++)
+        {
+            var keyProviderResult = bindingContext.ValueProvider.GetValue($"{modelName}[{i}][key]");
+            var valueProviderResult = bindingContext.ValueProvider.GetValue($"{modelName}[{i}][value]");
+
+            if (keyProviderResult != ValueProviderResult.None && valueProviderResult != ValueProviderResult.None)
+            {
+                bindingContext.ModelState.SetModelValue(modelName, keyProviderResult);
+                bindingContext.ModelState.SetModelValue(modelName, valueProviderResult);
+
+                if (!string.IsNullOrEmpty(keyProviderResult.FirstValue) && !string.IsNullOrEmpty(valueProviderResult.FirstValue))
+                {
+                    result.Add(new ItemKeyValuePair<JsonElement, string> { Key = ParseQueryParam(keyProviderResult.FirstValue), Value = valueProviderResult.FirstValue });
+                }
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        return result;
+    }
+
     public static JsonElement ParseQueryParam(string? data)
     {
         if (int.TryParse(data, out _))
@@ -140,6 +168,34 @@ public class DeleteBatchModelBinder : BaseBatchModelBinder
         {
             result.Immediately = immediately;
         }
+
+        bindingContext.Result = ModelBindingResult.Success(result);
+
+        return Task.CompletedTask;
+    }
+}
+
+public class DownloadModelBinder : BaseBatchModelBinder
+{
+    public override Task BindModelAsync(ModelBindingContext bindingContext)
+    {
+        base.BindModelAsync(bindingContext);
+        ArgumentNullException.ThrowIfNull(bindingContext);
+
+        var result = new DownloadRequestDto();
+
+        var baseResult = bindingContext.Result.Model as BaseBatchRequestDto;
+
+        if (baseResult == null)
+        {
+            bindingContext.Result = ModelBindingResult.Success(result);
+
+            return Task.CompletedTask;
+        }
+
+        result.FileIds = baseResult.FileIds;
+        result.FolderIds = baseResult.FolderIds;
+        result.FileConvertIds = bindingContext.ParseDictionary(nameof(result.FileConvertIds));
 
         bindingContext.Result = ModelBindingResult.Success(result);
 

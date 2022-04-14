@@ -29,7 +29,6 @@ namespace ASC.Web.Api.Controllers.Settings;
 public class SecurityController : BaseSettingsController
 {
     private readonly MessageService _messageService;
-    private readonly IServiceProvider _serviceProvider;
     private readonly EmployeeDtoHelper _employeeHelperDto;
     private readonly UserManager _userManager;
     private readonly AuthContext _authContext;
@@ -51,12 +50,10 @@ public class SecurityController : BaseSettingsController
         WebItemManager webItemManager,
         WebItemManagerSecurity webItemManagerSecurity,
         DisplayUserSettingsHelper displayUserSettingsHelper,
-        IServiceProvider serviceProvider,
         EmployeeDtoHelper employeeWraperHelper,
         MessageTarget messageTarget,
         IMemoryCache memoryCache) : base(apiContext, memoryCache, webItemManager)
     {
-        _serviceProvider = serviceProvider;
         _employeeHelperDto = employeeWraperHelper;
         _messageService = messageService;
         _userManager = userManager;
@@ -220,7 +217,7 @@ public class SecurityController : BaseSettingsController
             }
             else if (productId == defaultPageSettings.DefaultProductID)
             {
-                _settingsManager.Save((StudioDefaultPageSettings)defaultPageSettings.GetDefault(_serviceProvider));
+                _settingsManager.Save(_settingsManager.GetDefault<StudioDefaultPageSettings>());
             }
 
             _webItemSecurity.SetSecurity(item.Key, item.Value, subjects);

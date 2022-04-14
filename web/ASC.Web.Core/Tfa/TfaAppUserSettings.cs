@@ -27,7 +27,7 @@
 namespace ASC.Web.Studio.Core.TFA;
 
 [Serializable]
-public class TfaAppUserSettings : ISettings
+    public class TfaAppUserSettings : ISettings<TfaAppUserSettings>
 {
     [JsonPropertyName("BackupCodes")]
     public IEnumerable<BackupCode> CodesSetting { get; set; }
@@ -40,7 +40,7 @@ public class TfaAppUserSettings : ISettings
         get { return new Guid("{EAF10611-BE1E-4634-B7A1-57F913042F78}"); }
     }
 
-    public ISettings GetDefault(IServiceProvider serviceProvider)
+        public TfaAppUserSettings GetDefault()
     {
         return new TfaAppUserSettings
         {
@@ -86,13 +86,9 @@ public class TfaAppUserSettings : ISettings
         return settingsManager.LoadForUser<TfaAppUserSettings>(guid).CodesSetting.Any();
     }
 
-    public static void DisableForUser(IServiceProvider serviceProvider, SettingsManager settingsManager, Guid guid)
+        public static void DisableForUser(SettingsManager settingsManager, Guid guid)
     {
-        if (new TfaAppUserSettings().GetDefault(serviceProvider) is TfaAppUserSettings defaultSettings)
-        {
+            var defaultSettings = settingsManager.GetDefault<TfaAppUserSettings>();
             settingsManager.SaveForUser(defaultSettings, guid);
         }
     }
-
-
-}

@@ -26,47 +26,40 @@
 
 namespace ASC.Web.Studio.Core.Backup;
 
-[Scope]
 public class BackupFileUploadHandler
 {
     private const long MaxBackupFileSize = 1024L * 1024L * 1024L;
-    private const string BackupTempFolder = "backup";
-    private const string BackupFileName = "backup.tmp";
-
-    private readonly PermissionContext _permissionContext;
-    private readonly TempPath _tempPath;
-    private readonly TenantManager _tenantManager;
-
-    public BackupFileUploadHandler(
-        PermissionContext permissionContext,
-        TempPath tempPath,
-        TenantManager tenantManager)
+    public BackupFileUploadHandler(RequestDelegate next)
     {
-        _permissionContext = permissionContext;
-        _tempPath = tempPath;
-        _tenantManager = tenantManager;
+
     }
 
-    public string ProcessUpload(IFormFile file)
+    public async Task Invoke(HttpContext context,
+        PermissionContext permissionContext,
+        BackupAjaxHandler backupAjaxHandler)
     {
-        if (file == null)
-        {
-            return "No files.";
-        }
-
-        if (!_permissionContext.CheckPermissions(SecutiryConstants.EditPortalSettings))
-        {
-            return "Access denied.";
-        }
-
-        if (file.Length <= 0 || file.Length > MaxBackupFileSize)
-        {
-            return $"File size must be greater than 0 and less than {MaxBackupFileSize} bytes";
-        }
-
+        FileUploadResult result;
         try
         {
-            var filePath = GetFilePath();
+            if (context.Request.Form.Files.Count == 0)
+            {
+                result = Error("No files.");
+            }
+
+            if (!permissionContext.CheckPermissions(SecutiryConstants.EditPortalSettings))
+            {
+                result = Error("Access denied.");
+            }
+
+            var file = context.Request.Form.Files[0];
+
+            if (file.Length <= 0 || file.Length > MaxBackupFileSize)
+            {
+                result = Error($"File size must be greater than 0 and less than {MaxBackupFileSize} bytes");
+            }
+
+
+            var filePath = backupAjaxHandler.GetTmpFilePath();
 
             if (File.Exists(filePath))
             {
@@ -75,26 +68,41 @@ public class BackupFileUploadHandler
 
             using (var fileStream = File.Create(filePath))
             {
-                file.CopyTo(fileStream);
+                await file.CopyToAsync(fileStream);
             }
 
-            return string.Empty;
+            result = Success();
         }
         catch (Exception error)
         {
-            return error.Message;
+            result = Error(error.Message);
         }
+
+        await context.Response.WriteAsync(System.Text.Json.JsonSerializer.Serialize(result));
     }
 
-    internal string GetFilePath()
+    private FileUploadResult Success()
     {
-        var folder = Path.Combine(_tempPath.GetTempPath(), BackupTempFolder, _tenantManager.GetCurrentTenant().Id.ToString());
-
-        if (!Directory.Exists(folder))
+        return new FileUploadResult
         {
-            Directory.CreateDirectory(folder);
-        }
+            Success = true
+        };
+    }
 
-        return Path.Combine(folder, BackupFileName);
+    private FileUploadResult Error(string messageFormat, params object[] args)
+    {
+        return new FileUploadResult
+        {
+            Success = false,
+            Message = string.Format(messageFormat, args)
+        };
+    }
+}
+
+public static class BackupFileUploadHandlerExtensions
+{
+    public static IApplicationBuilder UseBackupFileUploadHandler(this IApplicationBuilder builder)
+    {
+        return builder.UseMiddleware<BackupFileUploadHandler>();
     }
 }

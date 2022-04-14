@@ -31,9 +31,9 @@ public class StorageFactoryConfig
 {
     public Configuration.Storage Section { get; }
 
-    public StorageFactoryConfig(IServiceProvider serviceProvider)
+    public StorageFactoryConfig(Configuration.Storage storage)
     {
-        Section = serviceProvider.GetService<Configuration.Storage>();
+        Section = storage;
     }
 
     public IEnumerable<string> GetModuleList(string configpath, bool exceptDisabledMigration = false)
@@ -243,7 +243,7 @@ public class StorageFactory
             props = handler.Property.ToDictionary(r => r.Name, r => r.Value);
         }
 
-            
+
         return ((IDataStore)ActivatorUtilities.CreateInstance(_serviceProvider, instanceType))
             .Configure(tenant, handler, moduleElement, props)
             .SetQuotaController(moduleElement.Count ? controller : null

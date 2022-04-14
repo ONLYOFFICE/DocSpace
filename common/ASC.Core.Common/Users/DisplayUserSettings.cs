@@ -27,13 +27,13 @@
 namespace ASC.Web.Core.Users;
 
 [Serializable]
-public class DisplayUserSettings : ISettings
+public class DisplayUserSettings : ISettings<DisplayUserSettings>
 {
     public Guid ID => new Guid("2EF59652-E1A7-4814-BF71-FEB990149428");
 
     public bool IsDisableGettingStarted { get; set; }
 
-    public ISettings GetDefault(IServiceProvider serviceProvider)
+    public DisplayUserSettings GetDefault()
     {
         return new DisplayUserSettings
         {

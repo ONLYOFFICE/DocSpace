@@ -26,18 +26,47 @@
 
 namespace ASC.Web.Studio.Utility;
 
+[Singletone]
+public class TenantExtraConfig
+{
+    private readonly CoreBaseSettings _coreBaseSettings;
+    private readonly LicenseReaderConfig _licenseReaderConfig;
+
+    public TenantExtraConfig(CoreBaseSettings coreBaseSettings, LicenseReaderConfig licenseReaderConfig)
+    {
+        _coreBaseSettings = coreBaseSettings;
+        _licenseReaderConfig = licenseReaderConfig;
+    }
+
+    public bool Saas
+    {
+        get { return !_coreBaseSettings.Standalone; }
+    }
+
+    public bool Enterprise
+    {
+        get { return _coreBaseSettings.Standalone && !string.IsNullOrEmpty(_licenseReaderConfig.LicensePath); }
+    }
+
+    public bool Opensource
+    {
+        get { return _coreBaseSettings.Standalone && string.IsNullOrEmpty(_licenseReaderConfig.LicensePath); }
+    }
+}
+
 [Scope]
 public class TenantExtra
 {
-    private UserManager UserManager { get; }
-    private TenantStatisticsProvider TenantStatisticsProvider { get; }
-    private AuthContext AuthContext { get; }
-    private TenantManager TenantManager { get; }
-    private PaymentManager PaymentManager { get; }
-    private CoreBaseSettings CoreBaseSettings { get; }
-    private LicenseReader LicenseReader { get; }
-    private SetupInfo SetupInfo { get; }
-    private SettingsManager SettingsManager { get; }
+    private readonly TenantExtraConfig _tenantExtraConfig;
+    private readonly UserManager _userManager;
+    private readonly TenantStatisticsProvider _tenantStatisticsProvider;
+    private readonly AuthContext _authContext;
+    private readonly TenantManager _tenantManager;
+    private readonly PaymentManager _paymentManager;
+    private readonly CoreBaseSettings _coreBaseSettings;
+    private readonly LicenseReader _licenseReader;
+    private readonly SetupInfo _setupInfo;
+    private readonly SettingsManager _settingsManager;
 
     public TenantExtra(
         UserManager userManager,
@@ -48,17 +77,19 @@ public class TenantExtra
         CoreBaseSettings coreBaseSettings,
         LicenseReader licenseReader,
         SetupInfo setupInfo,
-        SettingsManager settingsManager)
+        SettingsManager settingsManager,
+        TenantExtraConfig tenantExtraConfig)
     {
-        UserManager = userManager;
-        TenantStatisticsProvider = tenantStatisticsProvider;
-        AuthContext = authContext;
-        TenantManager = tenantManager;
-        PaymentManager = paymentManager;
-        CoreBaseSettings = coreBaseSettings;
-        LicenseReader = licenseReader;
-        SetupInfo = setupInfo;
-        SettingsManager = settingsManager;
+        _userManager = userManager;
+        _tenantStatisticsProvider = tenantStatisticsProvider;
+        _authContext = authContext;
+        _tenantManager = tenantManager;
+        _paymentManager = paymentManager;
+        _coreBaseSettings = coreBaseSettings;
+        _licenseReader = licenseReader;
+        _setupInfo = setupInfo;
+        _settingsManager = settingsManager;
+        _tenantExtraConfig = tenantExtraConfig;
     }
 
     public bool EnableTariffSettings
@@ -67,25 +98,25 @@ public class TenantExtra
         {
             return
                 SetupInfo.IsVisibleSettings<TariffSettings>()
-                && !SettingsManager.Load<TenantAccessSettings>().Anyone
-                && (!CoreBaseSettings.Standalone || !string.IsNullOrEmpty(LicenseReader.LicensePath))
-                && string.IsNullOrEmpty(SetupInfo.AmiMetaUrl);
+                && !_settingsManager.Load<TenantAccessSettings>().Anyone
+                && (!_coreBaseSettings.Standalone || !string.IsNullOrEmpty(_licenseReader.LicensePath))
+                && string.IsNullOrEmpty(_setupInfo.AmiMetaUrl);
         }
     }
 
     public bool Saas
     {
-        get { return !CoreBaseSettings.Standalone; }
+        get => _tenantExtraConfig.Saas;
     }
 
     public bool Enterprise
     {
-        get { return CoreBaseSettings.Standalone && !string.IsNullOrEmpty(LicenseReader.LicensePath); }
+        get => _tenantExtraConfig.Enterprise;
     }
 
     public bool Opensource
     {
-        get { return CoreBaseSettings.Standalone && string.IsNullOrEmpty(LicenseReader.LicensePath); }
+        get => _tenantExtraConfig.Opensource;
     }
 
     public bool EnterprisePaid
@@ -97,11 +128,11 @@ public class TenantExtra
     {
         get
         {
-            return CoreBaseSettings.Standalone &&
-                !string.IsNullOrEmpty(SetupInfo.ControlPanelUrl) &&
+            return _coreBaseSettings.Standalone &&
+                !string.IsNullOrEmpty(_setupInfo.ControlPanelUrl) &&
                 GetTenantQuota().ControlPanel &&
                 GetCurrentTariff().State < TariffState.NotPaid &&
-                UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsAdmin(UserManager);
+                _userManager.GetUsers(_authContext.CurrentAccount.ID).IsAdmin(_userManager);
         }
     }
 
@@ -121,22 +152,22 @@ public class TenantExtra
 
     public Tariff GetCurrentTariff()
     {
-        return PaymentManager.GetTariff(TenantManager.GetCurrentTenant().Id);
+        return _paymentManager.GetTariff(_tenantManager.GetCurrentTenant().Id);
     }
 
     public TenantQuota GetTenantQuota()
     {
-        return GetTenantQuota(TenantManager.GetCurrentTenant().Id);
+        return GetTenantQuota(_tenantManager.GetCurrentTenant().Id);
     }
 
     public TenantQuota GetTenantQuota(int tenant)
     {
-        return TenantManager.GetTenantQuota(tenant);
+        return _tenantManager.GetTenantQuota(tenant);
     }
 
     public IEnumerable<TenantQuota> GetTenantQuotas()
     {
-        return TenantManager.GetTenantQuotas();
+        return _tenantManager.GetTenantQuotas();
     }
 
     private TenantQuota GetPrevQuota(TenantQuota curQuota)
@@ -173,8 +204,8 @@ public class TenantExtra
 
     public TenantQuota GetRightQuota()
     {
-        var usedSpace = TenantStatisticsProvider.GetUsedSize();
-        var needUsersCount = TenantStatisticsProvider.GetUsersCount();
+        var usedSpace = _tenantStatisticsProvider.GetUsedSize();
+        var needUsersCount = _tenantStatisticsProvider.GetUsersCount();
         var quotas = GetTenantQuotas();
 
         return quotas.OrderBy(q => q.ActiveUsers)
@@ -188,7 +219,7 @@ public class TenantExtra
 
     public int GetRemainingCountUsers()
     {
-        return GetTenantQuota().ActiveUsers - TenantStatisticsProvider.GetUsersCount();
+        return GetTenantQuota().ActiveUsers - _tenantStatisticsProvider.GetUsersCount();
     }
 
     public bool UpdatedWithoutLicense
@@ -196,15 +227,15 @@ public class TenantExtra
         get
         {
             DateTime licenseDay;
-            return CoreBaseSettings.Standalone
+            return _coreBaseSettings.Standalone
                    && (licenseDay = GetCurrentTariff().LicenseDate.Date) < DateTime.Today
-                   && licenseDay < LicenseReader.VersionReleaseDate;
+                   && licenseDay < _licenseReader.VersionReleaseDate;
         }
     }
 
     public void DemandControlPanelPermission()
     {
-        if (!CoreBaseSettings.Standalone || SettingsManager.Load<TenantControlPanelSettings>().LimitedAccess)
+        if (!_coreBaseSettings.Standalone || _settingsManager.Load<TenantControlPanelSettings>().LimitedAccess)
         {
             throw new System.Security.SecurityException(Resource.ErrorAccessDenied);
         }
@@ -223,7 +254,7 @@ public class TenantExtra
     /// </summary>
     public long MaxUploadSize
     {
-        get { return Math.Min(SetupInfo.AvailableFileSize, MaxChunkedUploadSize); }
+        get { return Math.Min(_setupInfo.AvailableFileSize, MaxChunkedUploadSize); }
     }
 
     /// <summary>
@@ -236,11 +267,11 @@ public class TenantExtra
             var diskQuota = GetTenantQuota();
             if (diskQuota != null)
             {
-                var usedSize = TenantStatisticsProvider.GetUsedSize();
+                var usedSize = _tenantStatisticsProvider.GetUsedSize();
                 var freeSize = Math.Max(diskQuota.MaxTotalSize - usedSize, 0);
                 return Math.Min(freeSize, diskQuota.MaxFileSize);
             }
-            return SetupInfo.ChunkUploadSize;
+            return _setupInfo.ChunkUploadSize;
         }
     }
 }

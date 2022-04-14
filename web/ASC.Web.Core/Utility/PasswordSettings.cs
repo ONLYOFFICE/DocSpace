@@ -27,7 +27,7 @@
 namespace ASC.Web.Core.Utility;
 
 [Serializable]
-public sealed class PasswordSettings : ISettings
+    public sealed class PasswordSettings : ISettings<PasswordSettings>
 {
     public Guid ID
     {
@@ -35,6 +35,7 @@ public sealed class PasswordSettings : ISettings
     }
 
     public const int MaxLength = 30;
+        private readonly IConfiguration _configuration;
 
     /// <summary>
     /// Minimal length password has
@@ -56,20 +57,24 @@ public sealed class PasswordSettings : ISettings
     /// </summary>
     public bool SpecSymbols { get; set; }
 
-    public ISettings GetDefault(IConfiguration configuration)
+        public PasswordSettings(IConfiguration configuration)
     {
-        var def = new PasswordSettings { MinLength = 8, UpperCase = false, Digits = false, SpecSymbols = false };
+            _configuration = configuration;
+        }
 
-        if (int.TryParse(configuration["web.password.min"], out var defaultMinLength))
+        public PasswordSettings()
         {
+        }
+
+        public PasswordSettings GetDefault()
+        {
+            var def = new PasswordSettings(_configuration) { MinLength = 8, UpperCase = false, Digits = false, SpecSymbols = false };
+
+            if (_configuration != null && int.TryParse(_configuration["web:password:min"], out var defaultMinLength))
+            {
             def.MinLength = Math.Max(1, Math.Min(MaxLength, defaultMinLength));
         }
 
         return def;
     }
-
-    public ISettings GetDefault(IServiceProvider serviceProvider)
-    {
-        return GetDefault(serviceProvider.GetService<IConfiguration>());
     }
-}

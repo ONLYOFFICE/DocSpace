@@ -27,7 +27,7 @@
 namespace ASC.Web.Studio.Core;
 
 [Serializable]
-public class CollaboratorSettings : ISettings
+    public class CollaboratorSettings : ISettings<CollaboratorSettings>
 {
     public bool FirstVisit { get; set; }
 
@@ -36,7 +36,7 @@ public class CollaboratorSettings : ISettings
         get { return new Guid("{73537E08-17F6-4706-BFDA-1414108AA7D2}"); }
     }
 
-    public ISettings GetDefault(IServiceProvider serviceProvider)
+        public CollaboratorSettings GetDefault()
     {
         return new CollaboratorSettings()
         {

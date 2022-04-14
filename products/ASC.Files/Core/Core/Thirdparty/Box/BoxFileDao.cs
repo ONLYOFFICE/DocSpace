@@ -262,10 +262,10 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
 
     public async Task<Stream> GetFileStreamAsync(File<string> file, long offset)
     {
-        var boxFileId = MakeBoxId(file.ID);
+        var boxFileId = MakeBoxId(file.Id);
         await ProviderInfo.CacheResetAsync(boxFileId, true).ConfigureAwait(false);
 
-        var boxFile = await GetBoxFileAsync(file.ID).ConfigureAwait(false);
+        var boxFile = await GetBoxFileAsync(file.Id).ConfigureAwait(false);
         if (boxFile == null)
         {
             throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
@@ -305,9 +305,9 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
         BoxFile newBoxFile = null;
         var storage = await ProviderInfo.StorageAsync;
 
-        if (file.ID != null)
+        if (file.Id != null)
         {
-            var fileId = MakeBoxId(file.ID);
+            var fileId = MakeBoxId(file.Id);
             newBoxFile = await storage.SaveStreamAsync(fileId, fileStream).ConfigureAwait(false);
 
             if (!newBoxFile.Name.Equals(file.Title))
@@ -317,9 +317,9 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
                 newBoxFile = await storage.RenameFileAsync(fileId, file.Title).ConfigureAwait(false);
             }
         }
-        else if (file.FolderID != null)
+        else if (file.ParentId != null)
         {
-            var folderId = MakeBoxId(file.FolderID);
+            var folderId = MakeBoxId(file.ParentId);
             file.Title = await GetAvailableTitleAsync(file.Title, folderId, IsExistAsync).ConfigureAwait(false);
             newBoxFile = await storage.CreateFileAsync(fileStream, file.Title, folderId).ConfigureAwait(false);
         }
@@ -428,7 +428,7 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
             true)
             .ConfigureAwait(false);
 
-        return moved.ID;
+        return moved.Id;
     }
 
     public async Task<string> MoveFileAsync(string fileId, string toFolderId)
@@ -509,7 +509,7 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
 
     public async Task<string> FileRenameAsync(File<string> file, string newTitle)
     {
-        var boxFile = await GetBoxFileAsync(file.ID).ConfigureAwait(false);
+        var boxFile = await GetBoxFileAsync(file.Id).ConfigureAwait(false);
         newTitle = await GetAvailableTitleAsync(newTitle, GetParentFolderId(boxFile), IsExistAsync).ConfigureAwait(false);
 
         var storage = await ProviderInfo.StorageAsync;
@@ -554,14 +554,14 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
             return null;
         }
 
-        if (file.ID != null)
+        if (file.Id != null)
         {
-            file.ID = MakeId(file.ID);
+            file.Id = MakeId(file.Id);
         }
 
-        if (file.FolderID != null)
+        if (file.ParentId != null)
         {
-            file.FolderID = MakeId(file.FolderID);
+            file.ParentId = MakeId(file.ParentId);
         }
 
         return file;

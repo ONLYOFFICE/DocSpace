@@ -55,10 +55,15 @@ namespace ASC.ApiSystem
 
             var redisConfiguration = Configuration.GetSection("Redis").Get<RedisConfiguration>();
             var kafkaConfiguration = Configuration.GetSection("kafka").Get<KafkaSettings>();
+            var rabbitMQConfiguration = Configuration.GetSection("RabbitMQ").Get<RabbitMQSettings>();
 
             if (kafkaConfiguration != null)
             {
                 diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCacheNotify<>));
+            }
+            else if (rabbitMQConfiguration != null)
+            {
+                diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RabbitMQCache<>));
             }
             else if (redisConfiguration != null)
             {

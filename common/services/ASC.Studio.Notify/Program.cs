@@ -37,7 +37,7 @@ builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
     config.AddJsonFile($"appsettings.services.json", true)
           .AddJsonFile("notify.json")
           .AddJsonFile($"notify.{env.EnvironmentName}.json", true);
-}, 
+},
 (hostContext, services, diHelper) =>
 {
     services.AddHttpClient();
@@ -55,6 +55,11 @@ builder.WebHost.ConfigureDefaultKestrel();
 var startup = new BaseWorkerStartup(builder.Configuration);
 
 startup.ConfigureServices(builder.Services);
+
+builder.Host.ConfigureContainer<ContainerBuilder>((context, builder) =>
+{
+    builder.Register(context.Configuration);
+});
 
 var app = builder.Build();
 

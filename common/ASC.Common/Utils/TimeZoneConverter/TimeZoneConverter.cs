@@ -37,10 +37,11 @@ public class TimeZoneConverter
     private readonly IConfiguration _configuration;
     private readonly ILog _logger;
 
-    public TimeZoneConverter(IConfiguration configuration, IOptionsMonitor<ILog> option)
+    public TimeZoneConverter(IConfiguration configuration, ILog logger)
     {
-        _logger = option.CurrentValue;
+        _logger = logger;
         _configuration = configuration;
+
         InitMapZones();
         InitTranslations();
     }

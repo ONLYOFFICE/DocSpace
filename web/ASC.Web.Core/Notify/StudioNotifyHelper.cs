@@ -60,7 +60,7 @@ public class StudioNotifyHelper
         CoreBaseSettings coreBaseSettings,
         WebImageSupplier webImageSupplier,
         IConfiguration configuration,
-        IOptionsMonitor<ILog> option)
+            ILog logger)
     {
         Helplink = commonLinkUtility.GetHelpLink(settingsManager, additionalWhiteLabelSettingsHelper, false);
         NotifySource = studioNotifySource;
@@ -74,7 +74,7 @@ public class StudioNotifyHelper
         _webImageSupplier = webImageSupplier;
         SubscriptionProvider = NotifySource.GetSubscriptionProvider();
         RecipientsProvider = NotifySource.GetRecipientsProvider();
-        _logger = option.CurrentValue;
+            _logger = logger;
 
         int.TryParse(configuration["core:notify:countspam"], out _countMailsToNotActivated);
         _notificationImagePath = configuration["web:notification:image:path"];

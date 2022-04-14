@@ -32,7 +32,6 @@ public class TfaappController : BaseSettingsController
 {
     private readonly MessageService _messageService;
     private readonly StudioNotifyService _studioNotifyService;
-    private readonly IServiceProvider _serviceProvider;
     private readonly SmsProviderManager _smsProviderManager;
     private readonly UserManager _userManager;
     private readonly AuthContext _authContext;
@@ -62,13 +61,11 @@ public class TfaappController : BaseSettingsController
         DisplayUserSettingsHelper displayUserSettingsHelper,
         MessageTarget messageTarget,
         StudioSmsNotificationSettingsHelper studioSmsNotificationSettingsHelper,
-        IServiceProvider serviceProvider,
         SmsProviderManager smsProviderManager,
         IMemoryCache memoryCache,
         InstanceCrypto instanceCrypto,
         Signature signature) : base(apiContext, memoryCache, webItemManager)
     {
-        _serviceProvider = serviceProvider;
         _smsProviderManager = smsProviderManager;
         _messageService = messageService;
         _studioNotifyService = studioNotifyService;
@@ -343,7 +340,7 @@ public class TfaappController : BaseSettingsController
             throw new NotSupportedException("Not available.");
         }
 
-        TfaAppUserSettings.DisableForUser(_serviceProvider, _settingsManager, user.Id);
+        TfaAppUserSettings.DisableForUser(_settingsManager, user.Id);
         _messageService.Send(MessageAction.UserDisconnectedTfaApp, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
 
         if (isMe)

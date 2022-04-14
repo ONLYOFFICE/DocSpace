@@ -49,7 +49,7 @@ public class ConsumerBackupStorage : IBackupStorage
     {
         using var stream = File.OpenRead(localPath);
         var storagePath = Path.GetFileName(localPath);
-            _store.SaveAsync(Domain, storagePath, stream, ACL.Private).Wait();
+        _store.SaveAsync(Domain, storagePath, stream, ACL.Private).Wait();
         return storagePath;
     }
 
@@ -62,19 +62,26 @@ public class ConsumerBackupStorage : IBackupStorage
 
     public void Delete(string storagePath)
     {
-            if (_store.IsFileAsync(Domain, storagePath).Result)
+        if (_store.IsFileAsync(Domain, storagePath).Result)
         {
-                _store.DeleteAsync(Domain, storagePath).Wait();
+            _store.DeleteAsync(Domain, storagePath).Wait();
         }
     }
 
     public bool IsExists(string storagePath)
     {
+        if (_store != null)
+        {
             return _store.IsFileAsync(Domain, storagePath).Result;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     public string GetPublicLink(string storagePath)
     {
-            return _store.GetInternalUriAsync(Domain, storagePath, TimeSpan.FromDays(1), null).Result.AbsoluteUri;
+        return _store.GetInternalUriAsync(Domain, storagePath, TimeSpan.FromDays(1), null).Result.AbsoluteUri;
     }
 }

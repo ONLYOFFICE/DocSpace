@@ -28,16 +28,17 @@ namespace ASC.Notify.Model;
 
 class NotifyClientImpl : INotifyClient
 {
-    private readonly Context _context;
     private readonly InterceptorStorage _interceptors = new InterceptorStorage();
+    private readonly IOptionsMonitor<ILog> _options;
+    private readonly NotifyEngineQueue _notifyEngineQueue;
     private readonly INotifySource _notifySource;
     public readonly IServiceScope _serviceScope;
 
-    public NotifyClientImpl(Context context, INotifySource notifySource, IServiceScope serviceScope)
+    public NotifyClientImpl(IOptionsMonitor<ILog> options, NotifyEngineQueue notifyEngineQueue, INotifySource notifySource)
     {
-        this._notifySource = notifySource ?? throw new ArgumentNullException(nameof(notifySource));
-        _serviceScope = serviceScope;
-        _context = context ?? throw new ArgumentNullException(nameof(context));
+        _options = options;
+        _notifyEngineQueue = notifyEngineQueue;
+        _notifySource = notifySource ?? throw new ArgumentNullException(nameof(notifySource));
     }
 
     public void SendNoticeToAsync(INotifyAction action, IRecipient[] recipients, string[] senderNames, params ITagValue[] args)
@@ -113,7 +114,7 @@ class NotifyClientImpl : INotifyClient
     private void SendAsync(NotifyRequest request)
     {
         request._interceptors = _interceptors.GetAll();
-        _context.NotifyEngine.QueueRequest(request, _serviceScope);
+        _notifyEngineQueue.QueueRequest(request);
     }
 
     private NotifyRequest CreateRequest(INotifyAction action, string objectID, IRecipient recipient, ITagValue[] args, string[] senders, bool checkSubsciption)
@@ -121,7 +122,7 @@ class NotifyClientImpl : INotifyClient
         ArgumentNullException.ThrowIfNull(action);
         ArgumentNullException.ThrowIfNull(recipient);
 
-        var request = new NotifyRequest(_notifySource, action, objectID, recipient)
+        var request = new NotifyRequest(_options, _notifySource, action, objectID, recipient)
         {
             _senderNames = senders,
             _isNeedCheckSubscriptions = checkSubsciption

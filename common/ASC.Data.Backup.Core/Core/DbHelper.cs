@@ -41,12 +41,12 @@ public class DbHelper : IDisposable
         = new Dictionary<string, string>();
 
     public DbHelper(
-        IOptionsMonitor<ILog> options,
+        ILog logger,
         ConnectionStringSettings connectionString,
         TenantDbContext tenantDbContext,
         CoreDbContext coreDbContext)
     {
-        _logger = options.CurrentValue;
+        _logger = logger;
         _tenantDbContext = tenantDbContext;
         _coreDbContext = coreDbContext;
         var file = connectionString.ElementInformation.Source;

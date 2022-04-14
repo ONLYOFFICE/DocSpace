@@ -39,7 +39,7 @@ const SelectFolderDialogAsideView = ({
         contentHeight="100%"
         contentPaddingBottom={footer && showButtons ? "100px" : "40px"}
         onClose={onClose}
-        removeScroll
+        withoutBodyScroll
         displayType="aside"
       >
         <ModalDialog.Header>

@@ -26,30 +26,36 @@
 
 namespace ASC.Web.Core.Utility.Settings;
 
-public class WebItemSettings : ISettings
+    public class WebItemSettings : ISettings<WebItemSettings>
 {
+        private readonly WebItemManager _webItemManager;
+
     public Guid ID
     {
         get { return new Guid("{C888CF56-585B-4c78-9E64-FE1093649A62}"); }
     }
+
     [JsonPropertyName("Settings")]
     public List<WebItemOption> SettingsCollection { get; set; }
 
+        public WebItemSettings(WebItemManager webItemManager) : this()
+        {
+            _webItemManager = webItemManager;
+        }
     public WebItemSettings()
     {
         SettingsCollection = new List<WebItemOption>();
     }
 
-    public ISettings GetDefault(IServiceProvider serviceProvider)
+        public WebItemSettings GetDefault()
     {
-        var settings = new WebItemSettings();
-        var webItemManager = serviceProvider.GetService<WebItemManager>();
-        webItemManager.GetItemsAll().ForEach(w =>
+            var settings = new WebItemSettings(_webItemManager);
+            _webItemManager.GetItemsAll().ForEach(w =>
         {
             var opt = new WebItemOption
             {
                 ItemID = w.ID,
-                SortOrder = webItemManager.GetSortOrder(w),
+                    SortOrder = _webItemManager.GetSortOrder(w),
                 Disabled = false,
             };
             settings.SettingsCollection.Add(opt);

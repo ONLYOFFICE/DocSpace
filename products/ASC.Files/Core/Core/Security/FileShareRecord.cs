@@ -26,9 +26,9 @@
 
 namespace ASC.Files.Core.Security;
 
-public class FileShareRecord
+public class FileShareRecord : IMapFrom<DbFilesSecurity>
 {
-    public int Tenant { get; set; }
+    public int TenantId { get; set; }
     public object EntryId { get; set; }
     public FileEntryType EntryType { get; set; }
     public Guid Subject { get; set; }
@@ -60,9 +60,9 @@ public class FileShareRecord
 
 public class SmallShareRecord
 {
-    public Guid ShareTo { get; set; }
+    public Guid Subject { get; set; }
     public Guid ShareParentTo { get; set; }
-    public Guid ShareBy { get; set; }
-    public DateTime ShareOn { get; set; }
+    public Guid Owner { get; set; }
+    public DateTime TimeStamp { get; set; }
     public FileShare Share { get; set; }
 }

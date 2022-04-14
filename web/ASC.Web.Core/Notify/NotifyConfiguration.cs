@@ -35,12 +35,13 @@ public class NotifyConfiguration
     private static readonly object _locker = new object();
     private static readonly Regex _urlReplacer = new Regex(@"(<a [^>]*href=(('(?<url>[^>']*)')|(""(?<url>[^>""]*)""))[^>]*>)|(<img [^>]*src=(('(?<url>(?![data:|cid:])[^>']*)')|(""(?<url>(?![data:|cid:])[^>""]*)""))[^/>]*/?>)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
     private static readonly Regex _textileLinkReplacer = new Regex(@"""(?<text>[\w\W]+?)"":""(?<link>[^""]+)""", RegexOptions.Singleline | RegexOptions.Compiled);
+    private readonly NotifyEngine _notifyEngine;
+    private readonly WorkContext _workContext;
 
-    private IServiceProvider ServiceProvider { get; }
-
-    public NotifyConfiguration(IServiceProvider serviceProvider)
+    public NotifyConfiguration(NotifyEngine notifyEngine, WorkContext workContext)
     {
-        ServiceProvider = serviceProvider;
+        _notifyEngine = notifyEngine;
+        _workContext = workContext;
     }
 
     public void Configure()
@@ -50,9 +51,9 @@ public class NotifyConfiguration
             if (!_configured)
             {
                 _configured = true;
-                WorkContext.NotifyStartUp(ServiceProvider);
-                WorkContext.NotifyContext.NotifyClientRegistration += NotifyClientRegisterCallback;
-                WorkContext.NotifyContext.NotifyEngine.BeforeTransferRequest += BeforeTransferRequest;
+                _workContext.NotifyStartUp();
+                _workContext.NotifyContext.NotifyClientRegistration += NotifyClientRegisterCallback;
+                _notifyEngine.AddAction<NotifyTransferRequest>();
             }
         }
     }
@@ -107,81 +108,8 @@ public class NotifyConfiguration
              InterceptorLifetime.Global,
              (r, p, scope) =>
              {
-                 var scopeClass = scope.ServiceProvider.GetService<NotifyConfigurationScope>();
-                 var coreBaseSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
-                 var (tenantManager, webItemSecurity, userManager, options, _, _, _, _, _, _, _, _, _, _, _) = scopeClass;
-                 try
-                 {
-                         // culture
-                         var u = Constants.LostUser;
-                     if (!(coreBaseSettings.Personal && r.NotifyAction.ID == Actions.PersonalConfirmation.ID))
-                     {
-                         var tenant = tenantManager.GetCurrentTenant();
-
-                         if (32 <= r.Recipient.ID.Length)
-                         {
-                             var guid = default(Guid);
-                             try
-                             {
-                                 guid = new Guid(r.Recipient.ID);
-                             }
-                             catch (FormatException) { }
-                             catch (OverflowException) { }
-
-                             if (guid != default)
-                             {
-                                 u = userManager.GetUsers(guid);
-                             }
-                         }
-
-                         if (Constants.LostUser.Equals(u))
-                         {
-                             u = userManager.GetUserByEmail(r.Recipient.ID);
-                         }
-
-                         if (Constants.LostUser.Equals(u))
-                         {
-                             u = userManager.GetUserByUserName(r.Recipient.ID);
-                         }
-
-                         if (!Constants.LostUser.Equals(u))
-                         {
-                             var culture = !string.IsNullOrEmpty(u.CultureName) ? u.GetCulture() : tenant.GetCulture();
-                             Thread.CurrentThread.CurrentCulture = culture;
-                             Thread.CurrentThread.CurrentUICulture = culture;
-
-                                 // security
-                                 var tag = r.Arguments.Find(a => a.Tag == CommonTags.ModuleID);
-                             var productId = tag != null ? (Guid)tag.Value : Guid.Empty;
-                             if (productId == Guid.Empty)
-                             {
-                                 tag = r.Arguments.Find(a => a.Tag == CommonTags.ProductID);
-                                 productId = tag != null ? (Guid)tag.Value : Guid.Empty;
-                             }
-                             if (productId == Guid.Empty)
-                             {
-                                 productId = (Guid)(CallContext.GetData("asc.web.product_id") ?? Guid.Empty);
-                             }
-                             if (productId != Guid.Empty && productId != new Guid("f4d98afdd336433287783c6945c81ea0") /* ignore people product */)
-                             {
-                                 return !webItemSecurity.IsAvailableForUser(productId, u.Id);
-                             }
-                         }
-                     }
-
-                     var tagCulture = r.Arguments.FirstOrDefault(a => a.Tag == CommonTags.Culture);
-                     if (tagCulture != null)
-                     {
-                         var culture = CultureInfo.GetCultureInfo((string)tagCulture.Value);
-                         Thread.CurrentThread.CurrentCulture = culture;
-                         Thread.CurrentThread.CurrentUICulture = culture;
-                     }
-                 }
-                 catch (Exception error)
-                 {
-                     options.CurrentValue.Error(error);
-                 }
-                 return false;
+                 var scopeClass = scope.ServiceProvider.GetRequiredService<ProductSecurityInterceptor>();
+                 return scopeClass.Intercept(r, p);
              });
         client.AddInterceptor(securityAndCulture);
 
@@ -218,79 +146,241 @@ public class NotifyConfiguration
 
         #endregion
     }
+}
 
-    private void BeforeTransferRequest(NotifyEngine sender, NotifyRequest request, IServiceScope scope)
+[Scope]
+public class ProductSecurityInterceptor
+{
+    private readonly TenantManager _tenantManager;
+    private readonly WebItemSecurity _webItemSecurity;
+    private readonly UserManager _userManager;
+    private readonly CoreBaseSettings _coreBaseSettings;
+    private readonly ILog _log;
+
+    public ProductSecurityInterceptor(
+        TenantManager tenantManager,
+        WebItemSecurity webItemSecurity,
+        UserManager userManager,
+        CoreBaseSettings coreBaseSettings,
+        IOptionsMonitor<ILog> options
+        )
+    {
+        _tenantManager = tenantManager;
+        _webItemSecurity = webItemSecurity;
+        _userManager = userManager;
+        _coreBaseSettings = coreBaseSettings;
+        _log = options.CurrentValue;
+    }
+
+    public bool Intercept(NotifyRequest r, InterceptorPlace p)
+    {
+        try
+        {
+            // culture
+            var u = Constants.LostUser;
+            if (!(_coreBaseSettings.Personal && r.NotifyAction.ID == Actions.PersonalConfirmation.ID))
+            {
+                var tenant = _tenantManager.GetCurrentTenant();
+
+                if (32 <= r.Recipient.ID.Length)
+                {
+                    var guid = default(Guid);
+                    try
+                    {
+                        guid = new Guid(r.Recipient.ID);
+                    }
+                    catch (FormatException) { }
+                    catch (OverflowException) { }
+
+                    if (guid != default)
+                    {
+                        u = _userManager.GetUsers(guid);
+                    }
+                }
+
+                if (Constants.LostUser.Equals(u))
+                {
+                    u = _userManager.GetUserByEmail(r.Recipient.ID);
+                }
+
+                if (Constants.LostUser.Equals(u))
+                {
+                    u = _userManager.GetUserByUserName(r.Recipient.ID);
+                }
+
+                if (!Constants.LostUser.Equals(u))
+                {
+                    var culture = !string.IsNullOrEmpty(u.CultureName) ? u.GetCulture() : tenant.GetCulture();
+                    Thread.CurrentThread.CurrentCulture = culture;
+                    Thread.CurrentThread.CurrentUICulture = culture;
+
+                    // security
+                    var tag = r.Arguments.Find(a => a.Tag == CommonTags.ModuleID);
+                    var productId = tag != null ? (Guid)tag.Value : Guid.Empty;
+                    if (productId == Guid.Empty)
+                    {
+                        tag = r.Arguments.Find(a => a.Tag == CommonTags.ProductID);
+                        productId = tag != null ? (Guid)tag.Value : Guid.Empty;
+                    }
+                    if (productId == Guid.Empty)
+                    {
+                        productId = (Guid)(CallContext.GetData("asc.web.product_id") ?? Guid.Empty);
+                    }
+                    if (productId != Guid.Empty && productId != new Guid("f4d98afdd336433287783c6945c81ea0") /* ignore people product */)
+                    {
+                        return !_webItemSecurity.IsAvailableForUser(productId, u.Id);
+                    }
+                }
+            }
+
+            var tagCulture = r.Arguments.FirstOrDefault(a => a.Tag == CommonTags.Culture);
+            if (tagCulture != null)
+            {
+                var culture = CultureInfo.GetCultureInfo((string)tagCulture.Value);
+                Thread.CurrentThread.CurrentCulture = culture;
+                Thread.CurrentThread.CurrentUICulture = culture;
+            }
+        }
+        catch (Exception error)
+        {
+            _log.Error(error);
+        }
+
+        return false;
+    }
+}
+
+public static class NotifyConfigurationExtension
+{
+    public static void Register(DIHelper services)
+    {
+        services.TryAdd<NotifyTransferRequest>();
+        services.TryAdd<ProductSecurityInterceptor>();
+        services.TryAdd<TextileStyler>();
+        services.TryAdd<JabberStyler>();
+        services.TryAdd<PushStyler>();
+    }
+}
+
+[Scope]
+public class NotifyTransferRequest : INotifyEngineAction
+{
+    private readonly TenantManager _tenantManager;
+    private readonly AuthContext _authContext;
+    private readonly UserManager _userManager;
+    private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
+    private readonly TenantExtra _tenantExtra;
+    private readonly WebItemManager _webItemManager;
+    private readonly TenantLogoManager _tenantLogoManager;
+    private readonly AdditionalWhiteLabelSettingsHelper _additionalWhiteLabelSettingsHelper;
+    private readonly TenantUtil _tenantUtil;
+    private readonly CoreBaseSettings _coreBaseSettings;
+    private readonly CommonLinkUtility _commonLinkUtility;
+    private readonly SettingsManager _settingsManager;
+    private readonly StudioNotifyHelper _studioNotifyHelper;
+    private readonly ILog _log;
+
+    public NotifyTransferRequest(
+        TenantManager tenantManager,
+        AuthContext authContext,
+        UserManager userManager,
+        DisplayUserSettingsHelper displayUserSettingsHelper,
+        IOptionsMonitor<ILog> options,
+        TenantExtra tenantExtra,
+        WebItemManager webItemManager,
+        TenantLogoManager tenantLogoManager,
+        AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper,
+        TenantUtil tenantUtil,
+        CoreBaseSettings coreBaseSettings,
+        CommonLinkUtility commonLinkUtility,
+        SettingsManager settingsManager,
+        StudioNotifyHelper studioNotifyHelper)
+    {
+        _tenantManager = tenantManager;
+        _authContext = authContext;
+        _userManager = userManager;
+        _displayUserSettingsHelper = displayUserSettingsHelper;
+        _tenantExtra = tenantExtra;
+        _webItemManager = webItemManager;
+        _tenantLogoManager = tenantLogoManager;
+        _additionalWhiteLabelSettingsHelper = additionalWhiteLabelSettingsHelper;
+        _tenantUtil = tenantUtil;
+        _coreBaseSettings = coreBaseSettings;
+        _commonLinkUtility = commonLinkUtility;
+        _settingsManager = settingsManager;
+        _studioNotifyHelper = studioNotifyHelper;
+        _log = options.CurrentValue;
+    }
+
+    public void BeforeTransferRequest(NotifyRequest request)
     {
         var aid = Guid.Empty;
         var aname = string.Empty;
-        var tenant = scope.ServiceProvider.GetService<TenantManager>().GetCurrentTenant();
-        var authContext = scope.ServiceProvider.GetService<AuthContext>();
-        var userManager = scope.ServiceProvider.GetService<UserManager>();
-        var displayUserSettingsHelper = scope.ServiceProvider.GetService<DisplayUserSettingsHelper>();
+        var tenant = _tenantManager.GetCurrentTenant();
 
-        if (authContext.IsAuthenticated)
+        if (_authContext.IsAuthenticated)
         {
-            aid = authContext.CurrentAccount.ID;
-            var user = userManager.GetUsers(aid);
-            if (userManager.UserExists(user))
+            aid = _authContext.CurrentAccount.ID;
+            var user = _userManager.GetUsers(aid);
+            if (_userManager.UserExists(user))
             {
-                aname = user.DisplayUserName(false, displayUserSettingsHelper)
-                    .Replace(">", "&#62")
-                    .Replace("<", "&#60");
+                aname = user.DisplayUserName(false, _displayUserSettingsHelper)
+                .Replace(">", "&#62")
+                .Replace("<", "&#60");
             }
         }
-        var scopeClass = scope.ServiceProvider.GetService<NotifyConfigurationScope>();
-        var (_, _, _, options, tenantExtra, _, webItemManager, configuration, tenantLogoManager, additionalWhiteLabelSettingsHelper, tenantUtil, coreBaseSettings, commonLinkUtility, settingsManager, studioNotifyHelper) = scopeClass;
-        var log = options.CurrentValue;
 
-        commonLinkUtility.GetLocationByRequest(out var product, out var module);
+        _commonLinkUtility.GetLocationByRequest(out var product, out var module);
         if (product == null && CallContext.GetData("asc.web.product_id") != null)
         {
-            product = webItemManager[(Guid)CallContext.GetData("asc.web.product_id")] as IProduct;
+            product = _webItemManager[(Guid)CallContext.GetData("asc.web.product_id")] as IProduct;
         }
 
         var logoText = TenantWhiteLabelSettings.DefaultLogoText;
-        if ((tenantExtra.Enterprise || coreBaseSettings.CustomMode) && !MailWhiteLabelSettings.IsDefault(settingsManager, configuration))
+        if ((_tenantExtra.Enterprise || _coreBaseSettings.CustomMode) && !MailWhiteLabelSettings.IsDefault(_settingsManager))
         {
-            logoText = tenantLogoManager.GetLogoText();
+            logoText = _tenantLogoManager.GetLogoText();
         }
 
         request.Arguments.Add(new TagValue(CommonTags.AuthorID, aid));
         request.Arguments.Add(new TagValue(CommonTags.AuthorName, aname));
-        request.Arguments.Add(new TagValue(CommonTags.AuthorUrl, commonLinkUtility.GetFullAbsolutePath(commonLinkUtility.GetUserProfile(aid))));
-        request.Arguments.Add(new TagValue(CommonTags.VirtualRootPath, commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')));
+        request.Arguments.Add(new TagValue(CommonTags.AuthorUrl, _commonLinkUtility.GetFullAbsolutePath(_commonLinkUtility.GetUserProfile(aid))));
+        request.Arguments.Add(new TagValue(CommonTags.VirtualRootPath, _commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')));
         request.Arguments.Add(new TagValue(CommonTags.ProductID, product != null ? product.ID : Guid.Empty));
         request.Arguments.Add(new TagValue(CommonTags.ModuleID, module != null ? module.ID : Guid.Empty));
-        request.Arguments.Add(new TagValue(CommonTags.ProductUrl, commonLinkUtility.GetFullAbsolutePath(product != null ? product.StartURL : "~")));
-        request.Arguments.Add(new TagValue(CommonTags.DateTime, tenantUtil.DateTimeNow()));
+        request.Arguments.Add(new TagValue(CommonTags.ProductUrl, _commonLinkUtility.GetFullAbsolutePath(product != null ? product.StartURL : "~")));
+        request.Arguments.Add(new TagValue(CommonTags.DateTime, _tenantUtil.DateTimeNow()));
         request.Arguments.Add(new TagValue(CommonTags.RecipientID, Context.SysRecipient));
-        request.Arguments.Add(new TagValue(CommonTags.ProfileUrl, commonLinkUtility.GetFullAbsolutePath(commonLinkUtility.GetMyStaff())));
-        request.Arguments.Add(new TagValue(CommonTags.RecipientSubscriptionConfigURL, commonLinkUtility.GetUnsubscribe()));
-        request.Arguments.Add(new TagValue(CommonTags.HelpLink, commonLinkUtility.GetHelpLink(settingsManager, additionalWhiteLabelSettingsHelper, false)));
+        request.Arguments.Add(new TagValue(CommonTags.ProfileUrl, _commonLinkUtility.GetFullAbsolutePath(_commonLinkUtility.GetMyStaff())));
+        request.Arguments.Add(new TagValue(CommonTags.RecipientSubscriptionConfigURL, _commonLinkUtility.GetUnsubscribe()));
+        request.Arguments.Add(new TagValue(CommonTags.HelpLink, _commonLinkUtility.GetHelpLink(_settingsManager, _additionalWhiteLabelSettingsHelper, false)));
         request.Arguments.Add(new TagValue(CommonTags.LetterLogoText, logoText));
-        request.Arguments.Add(new TagValue(CommonTags.MailWhiteLabelSettings, MailWhiteLabelSettings.Instance(settingsManager)));
+        request.Arguments.Add(new TagValue(CommonTags.MailWhiteLabelSettings, MailWhiteLabelSettings.Instance(_settingsManager)));
         request.Arguments.Add(new TagValue(CommonTags.SendFrom, tenant.Name));
-        request.Arguments.Add(new TagValue(CommonTags.ImagePath, studioNotifyHelper.GetNotificationImageUrl("").TrimEnd('/')));
+        request.Arguments.Add(new TagValue(CommonTags.ImagePath, _studioNotifyHelper.GetNotificationImageUrl("").TrimEnd('/')));
 
-        AddLetterLogo(request, tenantExtra, tenantLogoManager, coreBaseSettings, commonLinkUtility, log);
+        AddLetterLogo(request);
+    }
+    public void AfterTransferRequest(NotifyRequest request)
+    {
     }
 
-    private static void AddLetterLogo(NotifyRequest request, TenantExtra tenantExtra, TenantLogoManager tenantLogoManager, CoreBaseSettings coreBaseSettings, CommonLinkUtility commonLinkUtility, ILog Log)
+    private void AddLetterLogo(NotifyRequest request)
     {
-        if (tenantExtra.Enterprise || coreBaseSettings.CustomMode)
+        if (_tenantExtra.Enterprise || _coreBaseSettings.CustomMode)
         {
             try
             {
-                var logoData = tenantLogoManager.GetMailLogoDataFromCache();
+                var logoData = _tenantLogoManager.GetMailLogoDataFromCache();
 
                 if (logoData == null)
                 {
-                    var logoStream = tenantLogoManager.GetWhitelabelMailLogo();
+                    var logoStream = _tenantLogoManager.GetWhitelabelMailLogo();
                     logoData = ReadStreamToByteArray(logoStream) ?? GetDefaultMailLogo();
 
                     if (logoData != null)
                     {
-                        tenantLogoManager.InsertMailLogoDataToCache(logoData);
+                        _tenantLogoManager.InsertMailLogoDataToCache(logoData);
                     }
                 }
 
@@ -310,11 +400,11 @@ public class NotifyConfiguration
             }
             catch (Exception error)
             {
-                Log.Error(error);
+                _log.Error(error);
             }
         }
 
-        var logoUrl = commonLinkUtility.GetFullAbsolutePath(tenantLogoManager.GetLogoDark(true));
+        var logoUrl = _commonLinkUtility.GetFullAbsolutePath(_tenantLogoManager.GetLogoDark(true));
 
         request.Arguments.Add(new TagValue(CommonTags.LetterLogo, logoUrl));
     }
@@ -334,108 +424,10 @@ public class NotifyConfiguration
         }
     }
 
-    public static byte[] GetDefaultMailLogo()
+    private static byte[] GetDefaultMailLogo()
     {
         var filePath = CrossPlatform.PathCombine(AppDomain.CurrentDomain.BaseDirectory, "skins", "default", "images", "logo", "dark_general.png");
 
         return File.Exists(filePath) ? File.ReadAllBytes(filePath) : null;
-    }
-}
-
-[Scope]
-public class NotifyConfigurationScope
-{
-    private TenantManager TenantManager { get; }
-    private WebItemSecurity WebItemSecurity { get; }
-    private UserManager UserManager { get; }
-    private IOptionsMonitor<ILog> Options { get; }
-    private TenantExtra TenantExtra { get; }
-    private WebItemManagerSecurity WebItemManagerSecurity { get; }
-    private WebItemManager WebItemManager { get; }
-    private IConfiguration Configuration { get; }
-    private TenantLogoManager TenantLogoManager { get; }
-    private AdditionalWhiteLabelSettingsHelper AdditionalWhiteLabelSettingsHelper { get; }
-    private TenantUtil TenantUtil { get; }
-    private CoreBaseSettings CoreBaseSettings { get; }
-    private CommonLinkUtility CommonLinkUtility { get; }
-    private SettingsManager SettingsManager { get; }
-    private StudioNotifyHelper StudioNotifyHelper { get; }
-
-    public NotifyConfigurationScope(TenantManager tenantManager,
-        WebItemSecurity webItemSecurity,
-        UserManager userManager,
-        IOptionsMonitor<ILog> options,
-        TenantExtra tenantExtra,
-        WebItemManagerSecurity webItemManagerSecurity,
-        WebItemManager webItemManager,
-        IConfiguration configuration,
-        TenantLogoManager tenantLogoManager,
-        AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper,
-        TenantUtil tenantUtil,
-        CoreBaseSettings coreBaseSettings,
-        CommonLinkUtility commonLinkUtility,
-        SettingsManager settingsManager,
-        StudioNotifyHelper studioNotifyHelper
-        )
-    {
-        TenantManager = tenantManager;
-        WebItemSecurity = webItemSecurity;
-        UserManager = userManager;
-        Options = options;
-        TenantExtra = tenantExtra;
-        WebItemManagerSecurity = webItemManagerSecurity;
-        WebItemManager = webItemManager;
-        Configuration = configuration;
-        TenantLogoManager = tenantLogoManager;
-        AdditionalWhiteLabelSettingsHelper = additionalWhiteLabelSettingsHelper;
-        TenantUtil = tenantUtil;
-        CoreBaseSettings = coreBaseSettings;
-        CommonLinkUtility = commonLinkUtility;
-        SettingsManager = settingsManager;
-        StudioNotifyHelper = studioNotifyHelper;
-    }
-
-    public void Deconstruct(out TenantManager tenantManager,
-        out WebItemSecurity webItemSecurity,
-        out UserManager userManager,
-        out IOptionsMonitor<ILog> optionsMonitor,
-        out TenantExtra tenantExtra,
-        out WebItemManagerSecurity webItemManagerSecurity,
-        out WebItemManager webItemManager,
-        out IConfiguration configuration,
-        out TenantLogoManager tenantLogoManager,
-        out AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper,
-        out TenantUtil tenantUtil,
-        out CoreBaseSettings coreBaseSettings,
-        out CommonLinkUtility commonLinkUtility,
-        out SettingsManager settingsManager,
-        out StudioNotifyHelper studioNotifyHelper)
-    {
-        tenantManager = TenantManager;
-        webItemSecurity = WebItemSecurity;
-        userManager = UserManager;
-        optionsMonitor = Options;
-        tenantExtra = TenantExtra;
-        webItemManagerSecurity = WebItemManagerSecurity;
-        webItemManager = WebItemManager;
-        configuration = Configuration;
-        tenantLogoManager = TenantLogoManager;
-        additionalWhiteLabelSettingsHelper = AdditionalWhiteLabelSettingsHelper;
-        tenantUtil = TenantUtil;
-        coreBaseSettings = CoreBaseSettings;
-        commonLinkUtility = CommonLinkUtility;
-        settingsManager = SettingsManager;
-        studioNotifyHelper = StudioNotifyHelper;
-    }
-}
-
-public static class NotifyConfigurationExtension
-{
-    public static void Register(DIHelper services)
-    {
-        services.TryAdd<NotifyConfigurationScope>();
-        services.TryAdd<TextileStyler>();
-        services.TryAdd<JabberStyler>();
-        services.TryAdd<PushStyler>();
     }
 }

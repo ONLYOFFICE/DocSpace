@@ -27,7 +27,7 @@
 namespace ASC.Web.Core.Utility.Settings;
 
 [Serializable]
-public class TenantAccessSettings : ISettings
+    public class TenantAccessSettings : ISettings<TenantAccessSettings>
 {
     public bool Anyone { get; set; }
 
@@ -38,7 +38,7 @@ public class TenantAccessSettings : ISettings
         get { return new Guid("{0CB4C871-0040-45AB-AE79-4CC292B91EF1}"); }
     }
 
-    public ISettings GetDefault(IServiceProvider serviceProvider)
+        public TenantAccessSettings GetDefault()
     {
         return new TenantAccessSettings { Anyone = false, RegisterUsersImmediately = false };
     }

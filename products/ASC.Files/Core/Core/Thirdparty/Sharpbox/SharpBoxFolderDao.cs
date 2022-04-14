@@ -177,16 +177,16 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
     {
         try
         {
-            if (folder.ID != null)
+            if (folder.Id != null)
             {
                 //Create with id
-                var savedfolder = ProviderInfo.Storage.CreateFolder(MakePath(folder.ID));
+                var savedfolder = ProviderInfo.Storage.CreateFolder(MakePath(folder.Id));
 
                 return MakeId(savedfolder);
             }
-            if (folder.FolderID != null)
+            if (folder.ParentId != null)
             {
-                var parentFolder = GetFolderById(folder.FolderID);
+                var parentFolder = GetFolderById(folder.ParentId);
 
                 folder.Title = await GetAvailableTitleAsync(folder.Title, parentFolder, IsExistAsync).ConfigureAwait(false);
 
@@ -305,7 +305,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
             true, cancellationToken)
             .ConfigureAwait(false);
 
-        return moved.ID;
+        return moved.Id;
     }
 
     public async Task<string> MoveFolderAsync(string folderId, string toFolderId, CancellationToken? cancellationToken)
@@ -391,12 +391,12 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
 
     public async Task<string> RenameFolderAsync(Folder<string> folder, string newTitle)
     {
-        var entry = GetFolderById(folder.ID);
+        var entry = GetFolderById(folder.Id);
 
         var oldId = MakeId(entry);
         var newId = oldId;
 
-        if ("/".Equals(MakePath(folder.ID)))
+        if ("/".Equals(MakePath(folder.Id)))
         {
             //It's root folder
             await DaoSelector.RenameProviderAsync(ProviderInfo, newTitle).ConfigureAwait(false);
@@ -404,7 +404,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
         }
         else
         {
-            var parentFolder = GetFolderById(folder.FolderID);
+            var parentFolder = GetFolderById(folder.ParentId);
             newTitle = await GetAvailableTitleAsync(newTitle, parentFolder, IsExistAsync).ConfigureAwait(false);
 
             //rename folder

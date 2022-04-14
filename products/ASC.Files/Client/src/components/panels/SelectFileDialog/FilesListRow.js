@@ -5,23 +5,27 @@ import { inject, observer } from "mobx-react";
 import Text from "@appserver/components/text";
 import Checkbox from "@appserver/components/checkbox";
 import RadioButton from "@appserver/components/radio-button";
-const FilesListRow = ({
-  displayType,
-  needRowSelection,
-  index,
-  onSelectFile,
-  fileName,
-  children,
-  fileExst,
-  iconSrc,
-  isMultiSelect, // it will be needed
-  isChecked,
-}) => {
+
+const FilesListRow = (props) => {
+  const {
+    displayType,
+    needRowSelection,
+    index,
+    onSelectFile,
+    fileName,
+    children,
+    fileExst,
+    iconSrc,
+    isChecked,
+    noCheckBox,
+    isMultiSelect,
+  } = props;
   return (
     <StyledFilesList
       displayType={displayType}
       needRowSelection={needRowSelection}
       isChecked={isChecked}
+      noCheckBox={noCheckBox}
     >
       <div
         data-index={index}
@@ -46,6 +50,7 @@ const FilesListRow = ({
             className="select-file-dialog_checked"
           />
         )}
+
         <ReactSVG src={iconSrc} className="select-file-dialog_icon" />
         <div data-index={index} className="files-list_full-name">
           <Text data-index={index} className="entry-title">
@@ -62,7 +67,6 @@ const FilesListRow = ({
 };
 
 FilesListRow.defaultProps = {
-  needRowSelection: true,
   isMultiSelect: false,
 };
 

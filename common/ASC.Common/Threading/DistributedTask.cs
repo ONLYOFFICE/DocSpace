@@ -28,73 +28,43 @@ using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace ASC.Common.Threading;
 
+[ProtoContract(IgnoreUnknownSubTypes = true)]
+[ProtoInclude(100, typeof(DistributedTaskProgress))]
 public class DistributedTask
 {
+    [ProtoMember(10)]
+    protected string _exeption;
+
+    [ProtoMember(11)]
+    protected Dictionary<string, string> _props;
+
     public Action<DistributedTask> Publication { get; set; }
-    public int InstanceId
-    {
-        get => DistributedTaskCache.InstanceId;
-        set => DistributedTaskCache.InstanceId = value;
-    }
-    public string Id
-    {
-        get => DistributedTaskCache.Id;
-        protected set => DistributedTaskCache.Id = value ?? "";
-    }
-    public DistributedTaskStatus Status
-    {
-        get => Enum.Parse<DistributedTaskStatus>(DistributedTaskCache.Status);
-        set => DistributedTaskCache.Status = value.ToString();
-    }
+
+    [ProtoMember(1)]
+    public int InstanceId { get; set; }
+
+    [ProtoMember(2)]
+    public string Id { get; set; }
+
+    [ProtoMember(3)]
+    public DistributedTaskStatus Status { get; set; }
+
+    [ProtoMember(4)]
+    public DateTime LastModifiedOn { get; set; }
+
     public Exception Exception
     {
-        get => new Exception(DistributedTaskCache.Exception);
-        set => DistributedTaskCache.Exception = value?.ToString() ?? "";
+        get => new Exception(_exeption);
+        set => _exeption = value?.Message ?? "";
     }
-    protected internal DistributedTaskCache DistributedTaskCache { get; internal set; }
+
 
     public DistributedTask()
     {
-        DistributedTaskCache = new DistributedTaskCache
-        {
-            Id = Guid.NewGuid().ToString()
-        };
-    }
+        Id = Guid.NewGuid().ToString();
 
-    public DistributedTask(DistributedTaskCache distributedTaskCache)
-    {
-        DistributedTaskCache = distributedTaskCache;
-    }
-
-    public T GetProperty<T>(string name)
-    {
-        var prop = DistributedTaskCache.Props.FirstOrDefault(r => r.Key == name);
-        if (prop == null)
-        {
-            return default;
-        }
-
-        return JsonSerializer.Deserialize<T>(prop.Value);
-    }
-
-    public void SetProperty(string name, object value)
-    {
-        var prop = new DistributedTaskCache.Types.DistributedTaskCacheProp()
-        {
-            Key = name,
-            Value = JsonSerializer.Serialize(value)
-        };
-
-        var current = DistributedTaskCache.Props.SingleOrDefault(r => r.Key == name);
-        if (current != null)
-        {
-            DistributedTaskCache.Props.Remove(current);
-        }
-
-        if (value != null)
-        {
-            DistributedTaskCache.Props.Add(prop);
-        }
+        _exeption = String.Empty;
+        _props = new Dictionary<string, string>();
     }
 
     public void PublishChanges()
@@ -105,5 +75,54 @@ public class DistributedTask
         }
 
         Publication(this);
+    }
+
+    [Obsolete("GetProperty<T> is deprecated, please use indexer this[propName] instead.")]
+    public T GetProperty<T>(string propName)
+    {        
+        if (!_props.TryGetValue(propName, out var propValue))
+        {
+            return default;
+        }
+        
+        return JsonSerializer.Deserialize<T>(propValue);
+    }
+
+    [Obsolete("SetProperty is deprecated, please use indexer this[propName] = propValue instead.")]
+    public void SetProperty(string propName, object propValue)
+    {
+        _props[propName] = JsonSerializer.Serialize(propValue);
+    }
+
+    public dynamic this[string propName]
+    {
+        get
+        {
+            if (!_props.TryGetValue(propName, out var propValue))
+            {
+                throw new ArgumentException($"Unknown propery {propName}. You must init the property before used.");
+            }
+
+            if (int.TryParse(propValue, out var resultAsInt))
+            {
+                return resultAsInt;
+            }
+
+            if (bool.TryParse(propValue, out var resultAsBool))
+            {
+                return resultAsBool;
+            }
+
+            return _props[propName];
+        }
+        set
+        {
+            _props[propName] = Convert.ToString(value);
+        }
+    }
+
+    public override int GetHashCode()
+    {
+        return Id.GetHashCode();
     }
 }

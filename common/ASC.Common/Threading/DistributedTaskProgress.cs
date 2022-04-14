@@ -1,4 +1,4 @@
-﻿// (c) Copyright Ascensio System SIA 2010-2022
+// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -25,24 +25,25 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Common.Threading;
+
 [Transient]
+[ProtoContract(IgnoreUnknownSubTypes = true)]
 public class DistributedTaskProgress : DistributedTask
 {
+    [ProtoMember(1)]
+    private double _percentage;
+
     public double Percentage
     {
-        get => Math.Min(100.0, Math.Max(0, DistributedTaskCache.Percentage));
-        set => DistributedTaskCache.Percentage = value;
+        get => Math.Min(100.0, Math.Max(0, _percentage));
+        set => _percentage = value;
     }
-    public bool IsCompleted
-    {
-        get => DistributedTaskCache.IsCompleted;
-        set => DistributedTaskCache.IsCompleted = value;
-    }
-    protected int StepCount
-    {
-        get => DistributedTaskCache.StepCount;
-        set => DistributedTaskCache.StepCount = value;
-    }
+
+    [ProtoMember(2)]
+    public bool IsCompleted { get; set; }
+
+    [ProtoMember(3)]
+    protected int StepCount { get; set; }
 
     public void RunJob()
     {

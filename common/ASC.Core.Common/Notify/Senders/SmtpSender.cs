@@ -26,7 +26,7 @@
 
 namespace ASC.Core.Notify.Senders;
 
-[Singletone(Additional = typeof(SmtpSenderExtension))]
+[Singletone]
 public class SmtpSender : INotifySender
 {
     protected ILog Logger { get; set; }
@@ -41,11 +41,12 @@ public class SmtpSender : INotifySender
     const int _networkTimeout = 30000;
 
     public SmtpSender(
+        IConfiguration configuration,
         IServiceProvider serviceProvider,
         IOptionsMonitor<ILog> options)
     {
         Logger = options.Get("ASC.Notify");
-        Configuration = serviceProvider.GetService<IConfiguration>();
+        Configuration = configuration;
         ServiceProvider = serviceProvider;
     }
 
@@ -82,9 +83,10 @@ public class SmtpSender : INotifySender
     public virtual NoticeSendResult Send(NotifyMessage m)
     {
         using var scope = ServiceProvider.CreateScope();
-        var scopeClass = scope.ServiceProvider.GetService<SmtpSenderScope>();
-        var (tenantManager, configuration) = scopeClass;
+        var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
         tenantManager.SetCurrentTenant(m.TenantId);
+
+        var configuration = scope.ServiceProvider.GetService<CoreConfiguration>();
 
         var smtpClient = GetSmtpClient();
         var result = NoticeSendResult.TryOnceAgain;
@@ -302,31 +304,5 @@ public class SmtpSender : INotifySender
         {
             return null;
         }
-    }
-}
-
-[Scope]
-public class SmtpSenderScope
-{
-    private readonly TenantManager _tenantManager;
-    private readonly CoreConfiguration _coreConfiguration;
-
-    public SmtpSenderScope(TenantManager tenantManager, CoreConfiguration coreConfiguration)
-    {
-        _tenantManager = tenantManager;
-        _coreConfiguration = coreConfiguration;
-    }
-
-    public void Deconstruct(out TenantManager tenantManager, out CoreConfiguration coreConfiguration)
-    {
-        (tenantManager, coreConfiguration) = (_tenantManager, _coreConfiguration);
-    }
-}
-
-public static class SmtpSenderExtension
-{
-    public static void Register(DIHelper services)
-    {
-        services.TryAdd<SmtpSenderScope>();
     }
 }
