@@ -188,19 +188,19 @@ const AccessComboBox = (props) => {
 
           break;
       }
-
-      if (canDelete) {
-        newAvailableOptions.push({ key: "separator", isSeparator: true });
-        newAvailableOptions.push({
-          key: "delete",
-          title: t("Common:Delete"),
-          label: t("Common:Delete"),
-          icon: "/static/images/delete.react.svg",
-          dataFor: itemId,
-          onClick: onRemoveUserClick,
-        });
-      }
     });
+
+    if (canDelete) {
+      newAvailableOptions.push({ key: "separator", isSeparator: true });
+      newAvailableOptions.push({
+        key: "delete",
+        title: t("Common:Delete"),
+        label: t("Common:Delete"),
+        icon: "/static/images/delete.react.svg",
+        dataFor: itemId,
+        onClick: onRemoveUserClick,
+      });
+    }
 
     setAvailableOptions(newAvailableOptions);
     if (newAvailableOptions.length > 0) {
@@ -249,7 +249,7 @@ const AccessComboBox = (props) => {
       theme={theme}
       advancedOptions={advancedOptions}
       options={[]}
-      selectedOption={selectedOption}
+      selectedOption={{}}
       size="content"
       className="panel_combo-box"
       scaled={false}
