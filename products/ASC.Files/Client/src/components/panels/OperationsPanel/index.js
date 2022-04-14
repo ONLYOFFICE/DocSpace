@@ -48,9 +48,9 @@ const OperationsPanelComponent = (props) => {
   //const expandedKeys = props.expandedKeys.map((item) => item.toString());
 
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedFolder, setSelectedFolder] = useState(currentFolderId);
-  const [folderTitle, setFolderTitle] = useState(null);
-  const [providerKey, setProviderKey] = useState(null);
+  //const [selectedFolder, setSelectedFolder] = useState(null);
+  //const [folderTitle, setFolderTitle] = useState(null);
+  //const [providerKey, setProviderKey] = useState(null);
 
   const [intermediateHidden, setIntermediateHidden] = useState(false);
 
@@ -64,6 +64,13 @@ const OperationsPanelComponent = (props) => {
     intermediateHidden &&
       setConflictDialogData(fileWithConflicts, operationData);
   }, [intermediateHidden]);
+
+  useEffect(() => {
+    return () => {
+      clearTimeout(timerId);
+      timerId = null;
+    };
+  });
   const onClose = () => {
     if (isCopy) {
       setCopyPanelVisible(false);
@@ -74,7 +81,7 @@ const OperationsPanelComponent = (props) => {
     setExpandedPanelKeys(null);
   };
 
-  const onSubmit = () => {
+  const onSubmit = (selectedFolder, folderTitle, providerKey) => {
     if (currentFolderId === selectedFolder) {
       return;
     }
@@ -91,11 +98,11 @@ const OperationsPanelComponent = (props) => {
     }
   };
 
-  const onSelect = (folder, treeNode) => {
-    setProviderKey(treeNode.node.props.providerKey);
-    setFolderTitle(treeNode.node.props.title);
-    setSelectedFolder(isNaN(+folder[0]) ? folder[0] : +folder[0]);
-  };
+  // const onSelect = (folder, treeNode) => {
+  //   setProviderKey(treeNode.node.props.providerKey);
+  //   setFolderTitle(treeNode.node.props.title);
+  //   setSelectedFolder(isNaN(+folder[0]) ? folder[0] : +folder[0]);
+  // };
 
   const startOperation = async (isCopy, destFolderId, folderTitle) => {
     const isProviderFolder = selection.find((x) => !x.providerKey);
@@ -174,8 +181,7 @@ const OperationsPanelComponent = (props) => {
       isDisableTree={isLoading}
       foldersType="exceptSortedByTags"
       isPanelVisible={isVisible}
-      onSetFolderInfo={onSelect}
-      onSave={onSubmit}
+      onSubmit={onSubmit}
       onClose={onClose}
       id={isRecycleBin ? null : currentFolderId}
       withoutImmediatelyClose

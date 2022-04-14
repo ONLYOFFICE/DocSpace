@@ -23,6 +23,7 @@ class SelectFolderDialog extends React.Component {
       isLoadingData: false,
       isInitialLoader: false,
       folderId: id ? id : "",
+      folderTitle: "",
       displayType: displayType || this.getDisplayType(),
       canCreate: true,
       isAvailable: true,
@@ -154,7 +155,7 @@ class SelectFolderDialog extends React.Component {
       page: 0,
     });
 
-    onSetFolderInfo && onSetFolderInfo(folder, treeNode);
+    //onSetFolderInfo && onSetFolderInfo(folder, treeNode);
   };
 
   onButtonClick = (e) => {
@@ -164,9 +165,11 @@ class SelectFolderDialog extends React.Component {
       onSetNewFolderPath,
       onSelectFolder,
       withoutImmediatelyClose,
+      onSubmit,
     } = this.props;
-    const { folderId } = this.state;
+    const { folderId, folderTitle, providerKey } = this.state;
 
+    onSubmit && onSubmit(folderId, folderTitle, providerKey);
     onSave && onSave(e, folderId);
     onSetNewFolderPath && onSetNewFolderPath(folderId);
     onSelectFolder && onSelectFolder(folderId);
@@ -199,6 +202,7 @@ class SelectFolderDialog extends React.Component {
     this.setState({ isNextPageLoading: true }, async () => {
       try {
         const data = await getFolder(folderId, this.newFilter);
+
         const convertedPathParts =
           page === 0
             ? data.pathParts.map((item) => item.toString())
@@ -216,6 +220,7 @@ class SelectFolderDialog extends React.Component {
           files: newFilesList,
           ...(page === 0 && {
             folderTitle: data.current.title,
+            providerKey: data.current.providerKey,
             expandedKeys: convertedPathParts,
           }),
         }));
