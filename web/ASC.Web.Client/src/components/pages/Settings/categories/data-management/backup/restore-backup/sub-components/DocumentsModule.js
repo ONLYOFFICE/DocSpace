@@ -14,6 +14,7 @@ class Documents extends React.Component {
         filesListTitle={t("SelectFileInGZFormat")}
         withoutResetFolderTree
         ignoreSelectedFolderTree
+        maxFolderInputWidth="446px"
       />
     );
   }

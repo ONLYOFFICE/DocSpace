@@ -14,7 +14,7 @@ import {
   exceptSortedByTagsFolders,
   exceptPrivacyTrashFolders,
 } from "./ExceptionFoldersConstants";
-import { StyledBody } from "./StyledSelectionPanel";
+import { StyledBody, StyledModalDialog } from "./StyledSelectionPanel";
 import Text from "@appserver/components/text";
 import Loaders from "@appserver/common/components/Loaders";
 const SelectionPanelBody = ({
@@ -53,7 +53,7 @@ const SelectionPanelBody = ({
 
   return (
     <div onMouseUp={onMouseEvent} onMouseDown={onMouseEvent}>
-      <ModalDialog
+      <StyledModalDialog
         theme={theme}
         visible={isPanelVisible}
         onClose={onClose}
@@ -159,7 +159,7 @@ const SelectionPanelBody = ({
             </div>
           </StyledBody>
         </ModalDialog.Body>
-      </ModalDialog>
+      </StyledModalDialog>
     </div>
   );
 };

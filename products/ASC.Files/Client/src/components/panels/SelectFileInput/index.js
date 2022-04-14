@@ -34,6 +34,7 @@ class SelectFileInputBody extends React.PureComponent {
       t,
       placeholder,
       maxInputWidth,
+      maxFolderInputWidth,
       isPanelVisible,
       isDisabled,
       isError,
@@ -50,7 +51,6 @@ class SelectFileInputBody extends React.PureComponent {
           isDisabled={isDisabled}
           isError={isError}
           onClickInput={onClickInput}
-          maxInputWidth={maxInputWidth}
         />
 
         {isPanelVisible && (
@@ -59,6 +59,7 @@ class SelectFileInputBody extends React.PureComponent {
             id={folderId}
             isPanelVisible={isPanelVisible}
             onSetFileNameAndLocation={this.onSetFileNameAndLocation}
+            maxInputWidth={maxFolderInputWidth}
           />
         )}
       </StyledComponent>

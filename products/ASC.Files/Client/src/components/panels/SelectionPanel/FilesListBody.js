@@ -143,7 +143,7 @@ const FilesListBody = ({
                 theme={theme}
                 height={height}
                 itemCount={itemCount}
-                itemSize={displayType === "aside" ? 56 : 50}
+                itemSize={48}
                 onItemsRendered={onItemsRendered}
                 ref={ref}
                 width={width + 8}

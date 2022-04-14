@@ -14,6 +14,7 @@ class ThirdPartyResources extends React.Component {
         withoutResetFolderTree
         ignoreSelectedFolderTree
         isArchiveOnly
+        maxFolderInputWidth="446px"
       />
     );
   }

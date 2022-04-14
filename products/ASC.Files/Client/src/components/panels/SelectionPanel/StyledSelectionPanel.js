@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-
+import ModalDialog from "@appserver/components/modal-dialog";
 const commonStyles = css`
   .empty-folder_container {
     grid-template-areas:
@@ -14,11 +14,21 @@ const commonStyles = css`
   }
 `;
 
+const StyledModalDialog = styled(ModalDialog)`
+  .heading {
+    line-height: 52px;
+    font-size: 21px;
+  }
+  .modal-dialog-aside-header {
+    height: 53px;
+  }
+`;
+
 const StyledBody = styled.div`
   .selection-panel_body {
-    height: 507px;
+    height: 495px;
     display: grid;
-    grid-template-columns: 256px 1fr;
+    grid-template-columns: 245px 1fr;
     grid-template-areas: "tree files" "footer footer";
     grid-template-rows: auto max-content;
     margin-right: -4px;
@@ -40,7 +50,7 @@ const StyledBody = styled.div`
       grid-template-rows: max-content auto;
 
       .selection-panel_folder-title {
-        padding: 20px 12px 20px 0px;
+        padding: 12px 20px 14px 0px;
       }
       .selection-panel_tree-folder {
         margin-left: -12px;
@@ -186,7 +196,7 @@ const StyledAsideBody = styled.div`
     margin-left: -13px;
     margin-right: -13px;
     padding-left: 16px;
-
+    padding-right: 16px;
     padding-top: 16px;
 
     .selection-panel_aside-buttons {
@@ -252,4 +262,5 @@ export {
   StyledAsideBody,
   StyledAsideHeader,
   StyledTree,
+  StyledModalDialog,
 };

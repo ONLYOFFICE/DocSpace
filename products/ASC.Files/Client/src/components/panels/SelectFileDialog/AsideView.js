@@ -30,6 +30,7 @@ const SelectFileDialogAsideView = ({
   onCloseSelectFolderDialog,
   onClickInput,
   isFolderPanelVisible,
+  maxInputWidth,
 }) => {
   const onMouseEvent = (event) => {
     event.stopPropagation();
@@ -68,6 +69,7 @@ const SelectFileDialogAsideView = ({
                   folderTree={resultingFolderTree}
                   isFolderTreeLoading={!!!resultingFolderTree}
                   isNeedArrowIcon
+                  maxInputWidth={maxInputWidth}
                 />
 
                 <Text color="#A3A9AE" className="selection-panel_aside-title">

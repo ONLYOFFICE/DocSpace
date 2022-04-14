@@ -278,6 +278,7 @@ class SelectFileDialog extends React.Component {
       footer,
       dialogName,
       creationButtonPrimary,
+      maxInputWidth,
     } = this.props;
     const {
       isVisible,
@@ -327,6 +328,7 @@ class SelectFileDialog extends React.Component {
         foldersType={foldersType}
         onClickInput={this.onClickInput}
         onCloseSelectFolderDialog={this.onCloseSelectFolderDialog}
+        maxInputWidth={maxInputWidth}
       />
     ) : (
       <SelectionPanel
