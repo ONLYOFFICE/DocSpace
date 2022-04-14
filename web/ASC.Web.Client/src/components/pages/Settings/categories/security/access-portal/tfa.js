@@ -22,7 +22,7 @@ const MainContainer = styled.div`
 `;
 
 const TwoFactorAuth = (props) => {
-  const { t, history, initSettings, isInit } = props;
+  const { t, history, initSettings, isInit, setIsInit } = props;
   const [type, setType] = useState("none");
 
   const [smsDisabled, setSmsDisabled] = useState(false);
@@ -87,23 +87,27 @@ const TwoFactorAuth = (props) => {
     }
   };
 
-  const onSaveClick = () => {
+  const onSaveClick = async () => {
     const { t, setTfaSettings, getTfaConfirmLink, history } = props;
 
     setIsSaving(true);
-    setTfaSettings(type).then((res) => {
+
+    try {
+      await setTfaSettings(type);
+
       toastr.success(t("SuccessfullySaveSettingsMessage"));
-      setType(type);
       saveToSessionStorage("defaultTfaSettings", type);
       setIsSaving(false);
       setShowReminder(false);
 
       if (type !== "none") {
-        getTfaConfirmLink(res).then((link) =>
-          history.push(link.replace(window.location.origin, ""))
-        );
+        setIsInit(false);
+        const link = await getTfaConfirmLink();
+        history.push(link.replace(window.location.origin, ""));
       }
-    });
+    } catch (error) {
+      toastr.error(error);
+    }
   };
 
   const onCancelClick = () => {
@@ -179,7 +183,7 @@ export default inject(({ auth, setup }) => {
     appAvailable,
   } = auth.tfaStore;
 
-  const { isInit, initSettings } = setup;
+  const { isInit, initSettings, setIsInit } = setup;
 
   return {
     setTfaSettings,
@@ -189,6 +193,7 @@ export default inject(({ auth, setup }) => {
     appAvailable,
     isInit,
     initSettings,
+    setIsInit,
   };
 })(
   withTranslation(["Settings", "Common"])(withRouter(observer(TwoFactorAuth)))
