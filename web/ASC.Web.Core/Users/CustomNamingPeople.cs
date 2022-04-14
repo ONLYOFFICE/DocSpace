@@ -27,7 +27,7 @@
 namespace ASC.Web.Core.Users;
 
 [Serializable]
-    public class PeopleNamesSettings : ISettings<PeopleNamesSettings>
+public class PeopleNamesSettings : ISettings<PeopleNamesSettings>
 {
     public Guid ID
     {
@@ -38,7 +38,7 @@ namespace ASC.Web.Core.Users;
 
     public string ItemId { get; set; }
 
-        public PeopleNamesSettings GetDefault()
+    public PeopleNamesSettings GetDefault()
     {
         return new PeopleNamesSettings { ItemId = PeopleNamesItem.DefaultID };
     }

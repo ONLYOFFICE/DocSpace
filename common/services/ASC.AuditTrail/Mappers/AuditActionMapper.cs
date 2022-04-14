@@ -62,7 +62,7 @@ public class AuditActionMapper
         {
             var actionText = _actions[(MessageAction)evt.Action].GetActionText();
 
-                if (evt.Description == null || evt.Description.Count == 0)
+            if (evt.Description == null || evt.Description.Count == 0)
             {
                 return actionText;
             }
@@ -94,7 +94,7 @@ public class AuditActionMapper
         {
             var actionText = _actions[(MessageAction)evt.Action].GetActionText();
 
-                if (evt.Description == null || evt.Description.Count == 0)
+            if (evt.Description == null || evt.Description.Count == 0)
             {
                 return actionText;
             }

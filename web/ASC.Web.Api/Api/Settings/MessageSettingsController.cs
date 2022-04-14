@@ -28,7 +28,7 @@ using Constants = ASC.Core.Users.Constants;
 
 namespace ASC.Web.Api.Controllers.Settings;
 
-public class MessageSettingsController: BaseSettingsController
+public class MessageSettingsController : BaseSettingsController
 {
     private Tenant Tenant { get { return ApiContext.Tenant; } }
 
@@ -200,23 +200,23 @@ public class MessageSettingsController: BaseSettingsController
             switch (Tenant.TrustedDomainsType)
             {
                 case TenantTrustedDomainsType.Custom:
-                {
-                    var address = new MailAddress(email);
-                    if (Tenant.TrustedDomains.Any(d => address.Address.EndsWith("@" + d.Replace("*", ""), StringComparison.InvariantCultureIgnoreCase)))
+                    {
+                        var address = new MailAddress(email);
+                        if (Tenant.TrustedDomains.Any(d => address.Address.EndsWith("@" + d.Replace("*", ""), StringComparison.InvariantCultureIgnoreCase)))
+                        {
+                            _studioNotifyService.SendJoinMsg(email, emplType);
+                            _messageService.Send(MessageInitiator.System, MessageAction.SentInviteInstructions, email);
+                            return Resource.FinishInviteJoinEmailMessage;
+                        }
+
+                        throw new Exception(Resource.ErrorEmailDomainNotAllowed);
+                    }
+                case TenantTrustedDomainsType.All:
                     {
                         _studioNotifyService.SendJoinMsg(email, emplType);
                         _messageService.Send(MessageInitiator.System, MessageAction.SentInviteInstructions, email);
                         return Resource.FinishInviteJoinEmailMessage;
                     }
-
-                    throw new Exception(Resource.ErrorEmailDomainNotAllowed);
-                }
-                case TenantTrustedDomainsType.All:
-                {
-                    _studioNotifyService.SendJoinMsg(email, emplType);
-                    _messageService.Send(MessageInitiator.System, MessageAction.SentInviteInstructions, email);
-                    return Resource.FinishInviteJoinEmailMessage;
-                }
                 default:
                     throw new Exception(Resource.ErrorNotCorrectEmail);
             }

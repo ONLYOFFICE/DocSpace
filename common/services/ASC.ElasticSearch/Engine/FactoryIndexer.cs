@@ -687,7 +687,7 @@ public class FactoryIndexer
             }
         }
 
-        return InternalCheckStateAsync(cacheState, key);    
+        return InternalCheckStateAsync(cacheState, key);
     }
 
     private async Task<bool> InternalCheckStateAsync(bool cacheState, string key)

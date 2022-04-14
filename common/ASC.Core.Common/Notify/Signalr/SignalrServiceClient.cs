@@ -295,7 +295,7 @@ public class SignalrServiceClient
         {
             ProcessError(error);
         }
-     }
+    }
 
     public void StopEdit<T>(T fileId, string room, string data)
     {
@@ -361,16 +361,16 @@ public class SignalrServiceClient
         return domain;
     }
 
-        private void ProcessError(Exception e)
-        {
-            _logger.ErrorFormat("Service Error: {0}, {1}, {2}", e.Message, e.StackTrace,
-                (e.InnerException != null) ? e.InnerException.Message : string.Empty);
+    private void ProcessError(Exception e)
+    {
+        _logger.ErrorFormat("Service Error: {0}, {1}, {2}", e.Message, e.StackTrace,
+            (e.InnerException != null) ? e.InnerException.Message : string.Empty);
 
-            if (e is HttpRequestException)
-            {
-                _lastErrorTime = DateTime.Now;
-            }
+        if (e is HttpRequestException)
+        {
+            _lastErrorTime = DateTime.Now;
         }
+    }
 
     private string MakeRequest(string method, object data)
     {

@@ -31,8 +31,8 @@ public abstract class CustomHttpMethodAttribute : HttpMethodAttribute
     public bool Check { get; set; }
     public bool DisableFormat { get; set; }
 
-        protected CustomHttpMethodAttribute(string method, string template = null, bool check = true, int order = 1)
-        : base(new List<string>() { method }, $"[controller]{(template != null ? $"/{template}" : "")}")
+    protected CustomHttpMethodAttribute(string method, string template = null, bool check = true, int order = 1)
+    : base(new List<string>() { method }, $"[controller]{(template != null ? $"/{template}" : "")}")
     {
         Check = check;
         Order = order;

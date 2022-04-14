@@ -29,7 +29,7 @@ namespace Textile.States;
 /// <summary>
 /// Base formatting state for all lists.
 /// </summary>
-abstract public class ListFormatterState : FormatterState
+public abstract class ListFormatterState : FormatterState
 {
     internal const string PatternBegin = @"^\s*(?<tag>";
     internal const string PatternEnd = @")" + Globals.BlockModifiersPattern + @"(?:\s+)? (?<content>.*)$";

@@ -42,7 +42,7 @@ public class IntegrationEventRejectExeption : Exception
     public IntegrationEventRejectExeption(Guid eventId, string message, Exception inner)
         : base(message, inner)
     {
-        EventId = eventId;    
+        EventId = eventId;
     }
 
     public Guid EventId { get; private set; }

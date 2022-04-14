@@ -54,7 +54,7 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
         GlobalFolderHelper globalFolderHelper,
         CoreBaseSettings coreBaseSettings,
         FileUtility fileUtility,
-        TenantManager tenantManager) 
+        TenantManager tenantManager)
         : base(
             filesSettingsHelper,
             fileUploader,

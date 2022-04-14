@@ -190,10 +190,10 @@ public abstract class BaseStartup
 
 public static class LogNLogConfigureExtenstion
 {
-    private static LoggingConfiguration GetXmlLoggingConfiguration(IHostEnvironment hostEnvironment,IConfiguration configuration)
+    private static LoggingConfiguration GetXmlLoggingConfiguration(IHostEnvironment hostEnvironment, IConfiguration configuration)
     {
         var loggerConfiguration = new XmlLoggingConfiguration(CrossPlatform.PathCombine(configuration["pathToConf"], "nlog.config"));
-       
+
         var settings = new ConfigurationExtension(configuration).GetSetting<NLogSettings>("log");
 
         if (!string.IsNullOrEmpty(settings.Name))
@@ -209,7 +209,7 @@ public static class LogNLogConfigureExtenstion
 
         return loggerConfiguration;
     }
-    
+
     public static IHostBuilder ConfigureNLogLogging(this IHostBuilder hostBuilder)
     {
         return hostBuilder.ConfigureLogging((hostBuildexContext, r) =>

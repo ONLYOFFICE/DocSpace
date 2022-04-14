@@ -50,7 +50,7 @@ public class PhotoController : PeopleControllerBase
         SettingsManager settingsManager,
         FileSizeComment fileSizeComment,
         SetupInfo setupInfo,
-        IHttpClientFactory httpClientFactory) 
+        IHttpClientFactory httpClientFactory)
         : base(userManager, permissionContext, apiContext, userPhotoManager, httpClientFactory)
     {
         _messageService = messageService;

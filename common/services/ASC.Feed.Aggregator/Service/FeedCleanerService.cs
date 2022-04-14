@@ -38,7 +38,7 @@ public class FeedCleanerService : FeedBaseService
         : base(feedSettings, serviceScopeFactory, optionsMonitor)
     {
     }
-    
+
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _logger.Info("Feed Cleaner Service running.");

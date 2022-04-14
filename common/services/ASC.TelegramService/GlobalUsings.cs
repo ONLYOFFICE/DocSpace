@@ -27,7 +27,6 @@
 global using System.Net;
 global using System.Reflection;
 global using System.Runtime.Caching;
-global using System.Runtime.InteropServices;
 global using System.Text.RegularExpressions;
 
 global using ASC.Api.Core;
@@ -45,10 +44,8 @@ global using ASC.TelegramService;
 global using ASC.TelegramService.Core;
 
 global using Autofac;
-global using Autofac.Extensions.DependencyInjection;
 
 global using Microsoft.AspNetCore.Builder;
-global using Microsoft.AspNetCore.Hosting;
 global using Microsoft.Extensions.Hosting.WindowsServices;
 global using Microsoft.Extensions.Options;
 

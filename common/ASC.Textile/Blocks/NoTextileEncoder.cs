@@ -75,7 +75,7 @@ public static class NoTextileEncoder
             }
             return patternPrefix + toEncode + patternSuffix;
         }
-        tmp = Regex.Replace(tmp, "("+ patternPrefix + "(?<notex>.+?)" + patternSuffix + ")*", new MatchEvaluator(evaluator));
+        tmp = Regex.Replace(tmp, "(" + patternPrefix + "(?<notex>.+?)" + patternSuffix + ")*", new MatchEvaluator(evaluator));
         return tmp;
     }
 

@@ -26,7 +26,6 @@
 
 global using System.Linq.Expressions;
 
-global using ASC.Api.Core;
 global using ASC.Api.Core.Extensions;
 global using ASC.ClearEvents.Services;
 global using ASC.Common;
@@ -38,9 +37,7 @@ global using ASC.MessagingSystem.Data;
 global using ASC.MessagingSystem.Models;
 
 global using Autofac;
-global using Autofac.Extensions.DependencyInjection;
 
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Hosting.WindowsServices;
-global using Microsoft.Extensions.Options;

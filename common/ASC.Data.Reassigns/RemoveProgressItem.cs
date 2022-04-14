@@ -45,7 +45,7 @@ public class RemoveProgressItem : DistributedTaskProgress
             IDictionary<string, StringValues> httpHeaders,
             int tenantId, UserInfo user, Guid currentUserId, bool notify)
     {
-            _httpHeaders = httpHeaders;
+        _httpHeaders = httpHeaders;
         _serviceScopeFactory = serviceScopeFactory;
 
 

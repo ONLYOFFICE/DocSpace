@@ -185,6 +185,6 @@ public abstract class ParamParser<T> : ParamParser
 {
     protected ParamParser() : base(typeof(T)) { }
 
-    public override abstract object FromString(string arg);
-    public override abstract string ToString(object arg);
+    public abstract override object FromString(string arg);
+    public abstract override string ToString(object arg);
 }

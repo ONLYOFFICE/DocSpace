@@ -67,7 +67,7 @@ public class EasyBibHelper : Consumer
         _requestHelper = requestHelper;
     }
 
-        public string GetEasyBibCitationsList(int source, string data)
+    public string GetEasyBibCitationsList(int source, string data)
     {
         var uri = "";
         switch (source)
@@ -90,7 +90,7 @@ public class EasyBibHelper : Consumer
         var headers = new Dictionary<string, string>() { };
         try
         {
-                return _requestHelper.PerformRequest(uri, "", method, "", headers);
+            return _requestHelper.PerformRequest(uri, "", method, "", headers);
         }
         catch (Exception)
         {
@@ -99,7 +99,7 @@ public class EasyBibHelper : Consumer
 
     }
 
-        public string GetEasyBibStyles()
+    public string GetEasyBibStyles()
     {
 
         const string method = "GET";
@@ -130,7 +130,7 @@ public class EasyBibHelper : Consumer
             var body = citationData;
             var headers = new Dictionary<string, string>() { };
 
-                return _requestHelper.PerformRequest(uri, contentType, method, body, headers);
+            return _requestHelper.PerformRequest(uri, contentType, method, body, headers);
 
         }
         catch (Exception)

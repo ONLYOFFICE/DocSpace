@@ -911,7 +911,7 @@ public static class FileMarkerExtention
     {
         services.TryAdd<AsyncTaskData<int>>();
         services.TryAdd<FileMarkerHelper<int>>();
-     
+
         services.TryAdd<AsyncTaskData<string>>();
         services.TryAdd<FileMarkerHelper<string>>();
     }

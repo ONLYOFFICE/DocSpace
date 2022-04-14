@@ -28,11 +28,11 @@ namespace ASC.Web.Files.HttpHandlers;
 
 public class DocuSignHandler
 {
-        public DocuSignHandler(RequestDelegate next)
+    public DocuSignHandler(RequestDelegate next)
     {
     }
 
-        public async Task Invoke(HttpContext context, DocuSignHandlerService docuSignHandlerService)
+    public async Task Invoke(HttpContext context, DocuSignHandlerService docuSignHandlerService)
     {
         await docuSignHandlerService.Invoke(context).ConfigureAwait(false);
     }

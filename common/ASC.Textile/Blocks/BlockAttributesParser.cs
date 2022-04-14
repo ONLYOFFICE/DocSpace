@@ -35,7 +35,7 @@ public static class BlockAttributesParser
     /// </summary>
     /// <param name="input"></param>
     /// <returns></returns>
-    static public string ParseBlockAttributes(string input)
+    public static string ParseBlockAttributes(string input)
     {
         return ParseBlockAttributes(input, "");
     }
@@ -46,7 +46,7 @@ public static class BlockAttributesParser
     /// <param name="input"></param>
     /// <param name="element"></param>
     /// <returns></returns>
-    static public string ParseBlockAttributes(string input, string element)
+    public static string ParseBlockAttributes(string input, string element)
     {
         var style = string.Empty;
         var cssClass = string.Empty;
@@ -149,7 +149,7 @@ public static class BlockAttributesParser
             style += "text-align:" + Globals.HorizontalAlign[m.Groups[1].Value] + ";";
         }
 
-        return 
+        return
                 (style.Length > 0 ? " style=\"" + style + "\"" : "") +
                 (cssClass.Length > 0 ? " class=\"" + cssClass + "\"" : "") +
                 (lang.Length > 0 ? " lang=\"" + lang + "\"" : "") +

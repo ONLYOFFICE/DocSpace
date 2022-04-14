@@ -38,8 +38,8 @@ public static class Wildcard
         var offsetInput = 0;
         var isAsterix = false;
 
-            var i = 0;
-            while (i < pattern.Length)
+        var i = 0;
+        while (i < pattern.Length)
         {
             switch (pattern[i])
             {
@@ -90,6 +90,6 @@ public static class Wildcard
         }
         // final evaluation. The index should be pointing at the
         // end of the string.
-            return offsetInput == input.Length;
+        return offsetInput == input.Length;
     }
 }

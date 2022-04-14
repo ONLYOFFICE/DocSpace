@@ -26,7 +26,7 @@
 
 namespace ASC.Web.Api.Controllers.Settings;
 
-public class TipsController: BaseSettingsController
+public class TipsController : BaseSettingsController
 {
     private Tenant Tenant { get { return ApiContext.Tenant; } }
 

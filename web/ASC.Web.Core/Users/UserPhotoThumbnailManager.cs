@@ -84,7 +84,7 @@ public static class UserPhotoThumbnailManager
 
         var destRound = mainImg.Clone(x => x.Crop(rect).Resize(new ResizeOptions
         {
-                Size = size
+            Size = size
         }));
 
         return destRound;

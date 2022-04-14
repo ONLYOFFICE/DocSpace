@@ -38,19 +38,19 @@ public static class CustomHealthCheck
 
         var connectionString = configurationExtension.GetConnectionStrings("default");
 
-            if (string.Equals(connectionString.ProviderName, "MySql.Data.MySqlClient"))
-            {
+        if (string.Equals(connectionString.ProviderName, "MySql.Data.MySqlClient"))
+        {
             hcBuilder.AddMySql(connectionString.ConnectionString,
                                name: "mysqldb",
                                tags: new string[] { "mysqldb" });
-            }
+        }
 
-            if (string.Equals(connectionString.ProviderName, "Npgsql"))
-            {
+        if (string.Equals(connectionString.ProviderName, "Npgsql"))
+        {
             hcBuilder.AddNpgSql(connectionString.ConnectionString,
                                name: "postgredb",
                                tags: new string[] { "postgredb" });
-            }
+        }
 
         var kafkaSettings = configurationExtension.GetSetting<KafkaSettings>("kafka");
         if (kafkaSettings != null && !string.IsNullOrEmpty(kafkaSettings.BootstrapServers))

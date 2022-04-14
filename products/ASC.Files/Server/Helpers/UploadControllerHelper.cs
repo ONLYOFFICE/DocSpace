@@ -48,7 +48,7 @@ public class UploadControllerHelper<T> : FilesHelperBase<T>
         ChunkedUploadSessionHelper chunkedUploadSessionHelper,
         TenantManager tenantManager,
         IHttpClientFactory httpClientFactory,
-        SecurityContext securityContext) 
+        SecurityContext securityContext)
         : base(
             filesSettingsHelper,
             fileUploader,

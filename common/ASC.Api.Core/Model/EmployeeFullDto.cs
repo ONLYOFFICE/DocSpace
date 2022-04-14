@@ -56,7 +56,7 @@ public class EmployeeFullDto : EmployeeDto
     public MobilePhoneActivationStatus MobilePhoneActivationStatus { get; set; }
     public bool IsSSO { get; set; }
 
-    public new static EmployeeFullDto GetSample()
+    public static new EmployeeFullDto GetSample()
     {
         return new EmployeeFullDto
         {
@@ -126,7 +126,7 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
 
         if (apiContext.Check("Id"))
         {
-            bindExprs.Add(Expression.Bind(typeof(UserInfo).GetProperty("ID"), 
+            bindExprs.Add(Expression.Bind(typeof(UserInfo).GetProperty("ID"),
                 Expression.Property(parameter, typeof(User).GetProperty("Id"))));
         }
 
@@ -224,7 +224,7 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
         if (_context.Check("listAdminModules"))
         {
             var listAdminModules = userInfo.GetListAdminModules(_webItemSecurity);
-                if (listAdminModules.Count > 0)
+            if (listAdminModules.Count > 0)
             {
                 result.ListAdminModules = listAdminModules;
             }
@@ -250,7 +250,7 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
             }
         }
 
-            if (contacts.Count > 0)
+        if (contacts.Count > 0)
         {
             employeeWraperFull.Contacts = contacts;
         }

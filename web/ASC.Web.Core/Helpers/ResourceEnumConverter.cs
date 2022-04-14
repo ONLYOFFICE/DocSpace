@@ -257,7 +257,7 @@ public class ResourceEnumConverter : System.ComponentModel.EnumConverter
     /// </summary>
     /// <param name="value">The enum value to convert to string</param>
     /// <returns>The localized string value for the enum</returns>
-    static public string ConvertToString(Enum value)
+    public static string ConvertToString(Enum value)
     {
         var converter = TypeDescriptor.GetConverter(value.GetType());
         return converter.ConvertToString(value);
@@ -277,7 +277,7 @@ public class ResourceEnumConverter : System.ComponentModel.EnumConverter
     /// to the displayed text.   You can bind an ASP.NET control to the list returned by this method by setting
     /// the DataValueField to "Key" and theDataTextField to "Value". 
     /// </remarks>
-    static public List<KeyValuePair<Enum, string>> GetValues(Type enumType, CultureInfo culture)
+    public static List<KeyValuePair<Enum, string>> GetValues(Type enumType, CultureInfo culture)
     {
         var result = new List<KeyValuePair<Enum, string>>();
         var converter = TypeDescriptor.GetConverter(enumType);
@@ -302,7 +302,7 @@ public class ResourceEnumConverter : System.ComponentModel.EnumConverter
     /// to the displayed text.   You can bind an ASP.NET control to the list returned by this method by setting
     /// the DataValueField to "Key" and theDataTextField to "Value". 
     /// </remarks>
-    static public List<KeyValuePair<Enum, string>> GetValues(Type enumType)
+    public static List<KeyValuePair<Enum, string>> GetValues(Type enumType)
     {
         return GetValues(enumType, CultureInfo.CurrentUICulture);
     }

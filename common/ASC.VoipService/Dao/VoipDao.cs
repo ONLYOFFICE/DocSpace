@@ -243,7 +243,7 @@ public class VoipDao : AbstractDao
             .Where(tmp => tmp.Status <= (int)VoipCallStatus.Missed)
             .Max(tmp => tmp.DialDate)
         }).Where(r => r.dbVoipCall.DbVoipCall.DialDate >= r.tmpDate || r.tmpDate == default)
-        .Select(q=> q.dbVoipCall);
+        .Select(q => q.dbVoipCall);
 
         return _mapper.Map<List<CallContact>, IEnumerable<VoipCall>>(query.ToList());
     }
@@ -287,7 +287,7 @@ public class VoipDao : AbstractDao
         {
             q = q.Where(r => r.AnsweredBy == filter.Agent.Value);
         }
-        
+
         return from voipCalls in q
                join crmContact in VoipDbContext.CrmContact on voipCalls.ContactId equals crmContact.Id into grouping
                from g in grouping.DefaultIfEmpty()

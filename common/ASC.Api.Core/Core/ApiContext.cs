@@ -132,7 +132,7 @@ public class ApiContext : ICloneable
         if (!string.IsNullOrEmpty(count) && ulong.TryParse(count, out var countParsed))
         {
             //Count specified and valid
-            Count = Math.Min((long)countParsed, _maxCount); 
+            Count = Math.Min((long)countParsed, _maxCount);
         }
 
         var startIndex = query.GetRequestValue("startIndex");
@@ -268,8 +268,8 @@ public static class ApiContextExtension
 {
     public static bool Check(this ApiContext context, string field)
     {
-        return context?.Fields == null 
-            || (context.Fields != null 
+        return context?.Fields == null
+            || (context.Fields != null
             && context.Fields.Contains(field, StringComparer.InvariantCultureIgnoreCase));
     }
 }

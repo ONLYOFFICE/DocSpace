@@ -44,15 +44,15 @@ public class MemoryCacheNotify<T> : ICacheNotify<T> where T : IMessage<T>, new()
         }
     }
 
-        public Task PublishAsync(T obj, CacheNotifyAction action)
+    public Task PublishAsync(T obj, CacheNotifyAction action)
+    {
+        if (_actions.TryGetValue(GetKey(action), out var onchange) && onchange != null)
         {
-            if (_actions.TryGetValue(GetKey(action), out var onchange) && onchange != null)
-            {
-                Parallel.ForEach(onchange, a => a(obj));
-            }
-
-            return Task.CompletedTask;
+            Parallel.ForEach(onchange, a => a(obj));
         }
+
+        return Task.CompletedTask;
+    }
 
     public void Subscribe(Action<T> onchange, CacheNotifyAction notifyAction)
     {

@@ -32,9 +32,9 @@ public class AdditionalWhiteLabelSettingsWrapper
 }
 
 [Serializable]
-    public class AdditionalWhiteLabelSettings : ISettings<AdditionalWhiteLabelSettings>
+public class AdditionalWhiteLabelSettings : ISettings<AdditionalWhiteLabelSettings>
 {
-        private readonly AdditionalWhiteLabelSettingsHelper _additionalWhiteLabelSettingsHelper;
+    private readonly AdditionalWhiteLabelSettingsHelper _additionalWhiteLabelSettingsHelper;
 
     public bool StartDocsEnabled { get; set; }
 
@@ -60,9 +60,9 @@ public class AdditionalWhiteLabelSettingsWrapper
 
     public string LicenseAgreementsUrl { get; set; }
 
-        public bool IsDefault()
+    public bool IsDefault()
     {
-            var defaultSettings = GetDefault();
+        var defaultSettings = GetDefault();
 
         return StartDocsEnabled == defaultSettings.StartDocsEnabled &&
                 HelpCenterEnabled == defaultSettings.HelpCenterEnabled &&
@@ -83,27 +83,27 @@ public class AdditionalWhiteLabelSettingsWrapper
         get { return new Guid("{0108422F-C05D-488E-B271-30C4032494DA}"); }
     }
 
-        public AdditionalWhiteLabelSettings(AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper)
+    public AdditionalWhiteLabelSettings(AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper)
     {
-            _additionalWhiteLabelSettingsHelper = additionalWhiteLabelSettingsHelper;
+        _additionalWhiteLabelSettingsHelper = additionalWhiteLabelSettingsHelper;
     }
 
-        public AdditionalWhiteLabelSettings() { }
+    public AdditionalWhiteLabelSettings() { }
 
-        public AdditionalWhiteLabelSettings GetDefault()
+    public AdditionalWhiteLabelSettings GetDefault()
     {
-            return new AdditionalWhiteLabelSettings(_additionalWhiteLabelSettingsHelper)
+        return new AdditionalWhiteLabelSettings(_additionalWhiteLabelSettingsHelper)
         {
             StartDocsEnabled = true,
-                HelpCenterEnabled = _additionalWhiteLabelSettingsHelper?.DefaultHelpCenterUrl != null,
-                FeedbackAndSupportEnabled = _additionalWhiteLabelSettingsHelper?.DefaultFeedbackAndSupportUrl != null,
-                FeedbackAndSupportUrl = _additionalWhiteLabelSettingsHelper?.DefaultFeedbackAndSupportUrl,
-                UserForumEnabled = _additionalWhiteLabelSettingsHelper?.DefaultUserForumUrl != null,
-                UserForumUrl = _additionalWhiteLabelSettingsHelper?.DefaultUserForumUrl,
-                VideoGuidesEnabled = _additionalWhiteLabelSettingsHelper?.DefaultVideoGuidesUrl != null,
-                VideoGuidesUrl = _additionalWhiteLabelSettingsHelper?.DefaultVideoGuidesUrl,
-                SalesEmail = _additionalWhiteLabelSettingsHelper?.DefaultMailSalesEmail,
-                BuyUrl = _additionalWhiteLabelSettingsHelper?.DefaultBuyUrl,
+            HelpCenterEnabled = _additionalWhiteLabelSettingsHelper?.DefaultHelpCenterUrl != null,
+            FeedbackAndSupportEnabled = _additionalWhiteLabelSettingsHelper?.DefaultFeedbackAndSupportUrl != null,
+            FeedbackAndSupportUrl = _additionalWhiteLabelSettingsHelper?.DefaultFeedbackAndSupportUrl,
+            UserForumEnabled = _additionalWhiteLabelSettingsHelper?.DefaultUserForumUrl != null,
+            UserForumUrl = _additionalWhiteLabelSettingsHelper?.DefaultUserForumUrl,
+            VideoGuidesEnabled = _additionalWhiteLabelSettingsHelper?.DefaultVideoGuidesUrl != null,
+            VideoGuidesUrl = _additionalWhiteLabelSettingsHelper?.DefaultVideoGuidesUrl,
+            SalesEmail = _additionalWhiteLabelSettingsHelper?.DefaultMailSalesEmail,
+            BuyUrl = _additionalWhiteLabelSettingsHelper?.DefaultBuyUrl,
             LicenseAgreementsEnabled = true,
             LicenseAgreementsUrl = DefaultLicenseAgreements
         };
@@ -116,7 +116,7 @@ public class AdditionalWhiteLabelSettingsWrapper
             return "https://help.onlyoffice.com/Products/Files/doceditor.aspx?fileid=6795868&doc=RG5GaVN6azdUQW5kLzZQNzBXbHZ4Rm9QWVZuNjZKUmgya0prWnpCd2dGcz0_IjY3OTU4Njgi0";
         }
     }
-    }
+}
 
 [Singletone]
 public class AdditionalWhiteLabelSettingsHelper

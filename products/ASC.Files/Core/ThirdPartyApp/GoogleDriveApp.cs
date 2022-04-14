@@ -136,7 +136,8 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
         _serviceProvider = serviceProvider;
         _clientFactory = clientFactory;
         _oAuth20TokenHelper = oAuth20TokenHelper;
-        _requestHelper = requestHelper;    }
+        _requestHelper = requestHelper;
+    }
 
     public async Task<bool> RequestAsync(HttpContext context)
     {
@@ -593,7 +594,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
         try
         {
             Logger.Debug("GoogleDriveApp: GetAccessToken by code " + code);
-                var token = _oAuth20TokenHelper.GetAccessToken<GoogleDriveApp>(ConsumerFactory, code);
+            var token = _oAuth20TokenHelper.GetAccessToken<GoogleDriveApp>(ConsumerFactory, code);
 
             return new Token(token, AppAttr);
         }
@@ -698,8 +699,8 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
         try
         {
             var requestUrl = GoogleLoginProvider.GoogleUrlFile + googleFileId + "?fields=" + HttpUtility.UrlEncode(GoogleLoginProvider.FilesFields);
-                var resultResponse = _requestHelper.PerformRequest(requestUrl,
-                                                              headers: new Dictionary<string, string> { { "Authorization", "Bearer " + token } });
+            var resultResponse = _requestHelper.PerformRequest(requestUrl,
+                                                          headers: new Dictionary<string, string> { { "Authorization", "Bearer " + token } });
             Logger.Debug("GoogleDriveApp: file response - " + resultResponse);
 
             return resultResponse;

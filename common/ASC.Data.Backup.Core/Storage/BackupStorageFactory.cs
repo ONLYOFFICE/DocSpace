@@ -79,31 +79,31 @@ public class BackupStorageFactory
         {
             case BackupStorageType.Documents:
             case BackupStorageType.ThridpartyDocuments:
-            {
-                _documentsBackupStorage.Init(tenantId, webConfigPath);
+                {
+                    _documentsBackupStorage.Init(tenantId, webConfigPath);
 
-                return _documentsBackupStorage;
-            }
+                    return _documentsBackupStorage;
+                }
             case BackupStorageType.DataStore:
-            {
-                _dataStoreBackupStorage.Init(tenantId, webConfigPath);
+                {
+                    _dataStoreBackupStorage.Init(tenantId, webConfigPath);
 
-                return _dataStoreBackupStorage;
-            }
+                    return _dataStoreBackupStorage;
+                }
             case BackupStorageType.Local:
                 return _localBackupStorage;
             case BackupStorageType.ThirdPartyConsumer:
-            {
-                if (storageParams == null)
                 {
-                    return null;
+                    if (storageParams == null)
+                    {
+                        return null;
+                    }
+
+                    _tenantManager.SetCurrentTenant(tenantId);
+                    _consumerBackupStorage.Init(storageParams);
+
+                    return _consumerBackupStorage;
                 }
-
-                _tenantManager.SetCurrentTenant(tenantId);
-                _consumerBackupStorage.Init(storageParams);
-
-                return _consumerBackupStorage;
-            }
             default:
                 throw new InvalidOperationException("Unknown storage type.");
         }

@@ -124,11 +124,11 @@ public class GroupController : ControllerBase
         var @group = GetGroupInfo(groupid);
         var groupWrapperFull = _groupFullDtoHelper.Get(group, false);
 
-       _userManager.DeleteGroup(groupid);
+        _userManager.DeleteGroup(groupid);
 
-       _messageService.Send(MessageAction.GroupDeleted, _messageTarget.Create(group.ID), group.Name);
+        _messageService.Send(MessageAction.GroupDeleted, _messageTarget.Create(group.ID), group.Name);
 
-       return groupWrapperFull;
+        return groupWrapperFull;
     }
 
     [Update("{groupid}/members/{newgroupid}")]

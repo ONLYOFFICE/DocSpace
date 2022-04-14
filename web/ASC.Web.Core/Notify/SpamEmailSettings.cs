@@ -27,7 +27,7 @@
 namespace ASC.Web.Studio.Core.Notify;
 
 [Serializable]
-    public class SpamEmailSettings : ISettings<SpamEmailSettings>
+public class SpamEmailSettings : ISettings<SpamEmailSettings>
 {
     public int MailsSendedCount { get; set; }
 
@@ -38,7 +38,7 @@ namespace ASC.Web.Studio.Core.Notify;
         get { return new Guid("{A9819A62-60AF-48E3-989C-08259772FA57}"); }
     }
 
-        public SpamEmailSettings GetDefault()
+    public SpamEmailSettings GetDefault()
     {
         return new SpamEmailSettings
         {

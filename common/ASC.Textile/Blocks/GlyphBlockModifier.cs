@@ -64,7 +64,7 @@ public class GlyphBlockModifier : BlockModifier
             var splits = Regex.Split(line, "(<.*?>)");
             var offtags = "code|pre|notextile";
             var codepre = false;
-                
+
             foreach (var split in splits)
             {
                 var modifiedSplit = split;

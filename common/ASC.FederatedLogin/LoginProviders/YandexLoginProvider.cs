@@ -55,7 +55,7 @@ public class YandexLoginProvider : BaseLoginProvider<YandexLoginProvider>
         string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
         : base(oAuth20TokenHelper, tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, signature, instanceCrypto, name, order, props, additional)
     {
-            _requestHelper = requestHelper;
+        _requestHelper = requestHelper;
     }
 
     public override LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params, IDictionary<string, string> additionalStateArgs)

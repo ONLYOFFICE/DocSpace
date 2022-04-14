@@ -151,7 +151,7 @@ internal class BoxProviderInfo : IProviderInfo
 internal class BoxStorageDisposableWrapper : IDisposable
 {
     public BoxStorage Storage { get; private set; }
-        private readonly OAuth20TokenHelper _oAuth20TokenHelper;
+    private readonly OAuth20TokenHelper _oAuth20TokenHelper;
 
     private readonly ConsumerFactory _consumerFactory;
     private readonly TempStream _tempStream;
@@ -162,7 +162,7 @@ internal class BoxStorageDisposableWrapper : IDisposable
         _consumerFactory = consumerFactory;
         _tempStream = tempStream;
         _serviceProvider = serviceProvider;
-            _oAuth20TokenHelper = oAuth20TokenHelper;
+        _oAuth20TokenHelper = oAuth20TokenHelper;
     }
 
     internal Task<BoxStorage> CreateStorageAsync(OAuth20Token token, int id)

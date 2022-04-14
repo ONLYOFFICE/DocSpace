@@ -31,11 +31,11 @@ namespace ASC.Web.Files;
 
 public class FileHandler
 {
-        public FileHandler(RequestDelegate next)
+    public FileHandler(RequestDelegate next)
     {
     }
 
-        public async Task Invoke(HttpContext context, FileHandlerService fileHandlerService)
+    public async Task Invoke(HttpContext context, FileHandlerService fileHandlerService)
     {
         await fileHandlerService.Invoke(context).ConfigureAwait(false);
     }
@@ -44,7 +44,7 @@ public class FileHandler
 [Scope]
 public class FileHandlerService
 {
-        private readonly CompressToArchive _compressToArchive;
+    private readonly CompressToArchive _compressToArchive;
 
     public string FileHandlerPath
     {
@@ -128,7 +128,7 @@ public class FileHandlerService
         FFmpegService = fFmpegService;
         ServiceProvider = serviceProvider;
         SocketManager = socketManager;
-            _compressToArchive = compressToArchive;
+        _compressToArchive = compressToArchive;
         TempStream = tempStream;
         UserManager = userManager;
         Logger = optionsMonitor.CurrentValue;
@@ -203,7 +203,7 @@ public class FileHandlerService
             return;
         }
 
-            var ext = _compressToArchive.GetExt(context.Request.Query["ext"]);
+        var ext = _compressToArchive.GetExt(context.Request.Query["ext"]);
         var store = GlobalStore.GetStore();
         var path = string.Format(@"{0}\{1}{2}", SecurityContext.CurrentAccount.ID, FileConstant.DownloadTitle, ext);
 
@@ -308,7 +308,7 @@ public class FileHandlerService
 
             if (!await fileDao.IsExistOnStorageAsync(file))
             {
-                    Logger.ErrorFormat("Download file error. File is not exist on storage. File id: {0}.", file.Id);
+                Logger.ErrorFormat("Download file error. File is not exist on storage. File id: {0}.", file.Id);
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
 
                 return;
@@ -364,7 +364,7 @@ public class FileHandlerService
                             {
                                 fileStream = await fileDao.GetFileStreamAsync(file);
 
-                                    Logger.InfoFormat("Converting {0} (fileId: {1}) to mp4", file.Title, file.Id);
+                                Logger.InfoFormat("Converting {0} (fileId: {1}) to mp4", file.Title, file.Id);
                                 var stream = await FFmpegService.Convert(fileStream, ext);
                                 await store.SaveAsync(string.Empty, mp4Path, stream, mp4Name);
                             }
@@ -1022,7 +1022,7 @@ public class FileHandlerService
 
     private static string GetEtag<T>(File<T> file)
     {
-            return file.Id + ":" + file.Version + ":" + file.Title.GetHashCode() + ":" + file.ContentLength;
+        return file.Id + ":" + file.Version + ":" + file.Title.GetHashCode() + ":" + file.ContentLength;
     }
 
     private Task CreateFile(HttpContext context)
@@ -1179,7 +1179,7 @@ public class FileHandlerService
 
         var file = ServiceProvider.GetService<File<T>>();
         file.Title = fileTitle;
-            file.ParentId = folder.Id;
+        file.ParentId = folder.Id;
         file.Comment = FilesCommonResource.CommentCreate;
 
         var fileDao = DaoFactory.GetFileDao<T>();
@@ -1197,7 +1197,7 @@ public class FileHandlerService
 
         var file = ServiceProvider.GetService<File<T>>();
         file.Title = fileTitle;
-            file.ParentId = folder.Id;
+        file.ParentId = folder.Id;
         file.Comment = FilesCommonResource.CommentCreate;
 
         var request = new HttpRequestMessage
@@ -1208,7 +1208,7 @@ public class FileHandlerService
         var fileDao = DaoFactory.GetFileDao<T>();
         var httpClient = ClientFactory.CreateClient();
         using var response = await httpClient.SendAsync(request);
-            using var fileStream = await response.Content.ReadAsStreamAsync();
+        using var fileStream = await response.Content.ReadAsStreamAsync();
 
         if (fileStream.CanSeek)
         {
@@ -1270,7 +1270,7 @@ public class FileHandlerService
                 return;
             }
 
-                urlRedirect = FilesLinkUtility.GetFileWebPreviewUrl(FileUtility, file.Title, file.Id);
+            urlRedirect = FilesLinkUtility.GetFileWebPreviewUrl(FileUtility, file.Title, file.Id);
         }
 
         if (string.IsNullOrEmpty(urlRedirect))

@@ -27,7 +27,7 @@
 namespace ASC.Web.Studio.Core;
 
 [Serializable]
-    public class PromotionsSettings : ISettings<PromotionsSettings>
+public class PromotionsSettings : ISettings<PromotionsSettings>
 {
     public bool Show { get; set; }
 
@@ -36,7 +36,7 @@ namespace ASC.Web.Studio.Core;
         get { return new Guid("{D291A4C1-179D-4ced-895A-E094E809C859}"); }
     }
 
-        public PromotionsSettings GetDefault()
+    public PromotionsSettings GetDefault()
     {
         return new PromotionsSettings { Show = true };
     }

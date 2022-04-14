@@ -65,7 +65,7 @@ internal class S3BackupStorage : IBackupStorage
                     FilePath = localPath,
                     StorageClass = S3StorageClass.StandardInfrequentAccess,
                     PartSize = 6291456, // 6 MB.
-                        Key = key
+                    Key = key
                 });
         }
 

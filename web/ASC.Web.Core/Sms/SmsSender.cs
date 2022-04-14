@@ -43,7 +43,7 @@ public class SmsSender
         Configuration = configuration;
         TenantManager = tenantManager;
         SmsProviderManager = smsProviderManager;
-            Log = logger;
+        Log = logger;
     }
 
     public Task<bool> SendSMSAsync(string number, string message)

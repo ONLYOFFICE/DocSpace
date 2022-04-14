@@ -55,7 +55,7 @@ public class VKLoginProvider : BaseLoginProvider<VKLoginProvider>
         string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
         : base(oAuth20TokenHelper, tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, signature, instanceCrypto, name, order, props, additional)
     {
-            _requestHelper = requestHelper;
+        _requestHelper = requestHelper;
     }
 
 
@@ -109,7 +109,7 @@ public class VKLoginProvider : BaseLoginProvider<VKLoginProvider>
     private LoginProfile RequestProfile(string accessToken)
     {
         var fields = new[] { "sex" };
-            var vkProfile = _requestHelper.PerformRequest(VKProfileUrl + "&fields=" + HttpUtility.UrlEncode(string.Join(",", fields)) + "&access_token=" + accessToken);
+        var vkProfile = _requestHelper.PerformRequest(VKProfileUrl + "&fields=" + HttpUtility.UrlEncode(string.Join(",", fields)) + "&access_token=" + accessToken);
         var loginProfile = ProfileFromVK(vkProfile);
 
         return loginProfile;

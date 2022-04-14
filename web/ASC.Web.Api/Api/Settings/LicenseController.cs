@@ -26,7 +26,7 @@
 
 namespace ASC.Web.Api.Controllers.Settings;
 
-public class LicenseController: BaseSettingsController
+public class LicenseController : BaseSettingsController
 {
     private Tenant Tenant { get { return ApiContext.Tenant; } }
 

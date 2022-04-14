@@ -27,7 +27,7 @@
 namespace ASC.Web.Studio.Core;
 
 [Serializable]
-    public class PersonalSettings : ISettings<PersonalSettings>
+public class PersonalSettings : ISettings<PersonalSettings>
 {
 
     [JsonPropertyName("IsNewUser")]
@@ -41,7 +41,7 @@ namespace ASC.Web.Studio.Core;
         get { return new Guid("{B3427865-8E32-4E66-B6F3-91C61922239F}"); }
     }
 
-        public PersonalSettings GetDefault()
+    public PersonalSettings GetDefault()
     {
         return new PersonalSettings
         {

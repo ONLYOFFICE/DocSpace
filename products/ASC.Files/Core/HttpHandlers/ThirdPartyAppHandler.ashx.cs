@@ -28,11 +28,11 @@ namespace ASC.Web.Files.HttpHandlers;
 
 public class ThirdPartyAppHandler
 {
-        public ThirdPartyAppHandler(RequestDelegate next)
+    public ThirdPartyAppHandler(RequestDelegate next)
     {
     }
 
-        public async Task Invoke(HttpContext context, ThirdPartyAppHandlerService thirdPartyAppHandlerService)
+    public async Task Invoke(HttpContext context, ThirdPartyAppHandlerService thirdPartyAppHandlerService)
     {
         await thirdPartyAppHandlerService.InvokeAsync(context);
     }

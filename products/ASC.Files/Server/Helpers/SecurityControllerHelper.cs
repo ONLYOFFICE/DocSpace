@@ -44,7 +44,7 @@ public class SecurityControllerHelper<T> : FilesHelperBase<T>
         IHttpContextAccessor httpContextAccessor,
         FolderDtoHelper folderDtoHelper,
         FileShareDtoHelper fileShareDtoHelper,
-        FileShareParamsHelper fileShareParamsHelper) 
+        FileShareParamsHelper fileShareParamsHelper)
         : base(
             filesSettingsHelper,
             fileUploader,
@@ -132,7 +132,7 @@ public class SecurityControllerHelper<T> : FilesHelperBase<T>
     public async Task<IEnumerable<FileShareDto>> SetSecurityInfoAsync(IEnumerable<T> fileIds, IEnumerable<T> folderIds, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
     {
         if (share != null && share.Any())
-{
+        {
             var list = new List<AceWrapper>(share.Select(_fileShareParamsHelper.ToAceObject));
 
             var aceCollection = new AceCollection<T>

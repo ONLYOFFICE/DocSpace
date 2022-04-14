@@ -26,7 +26,7 @@
 
 namespace ASC.Web.Studio.Core;
 
-    public class PrivacyRoomSettings : ISettings<PrivacyRoomSettings>
+public class PrivacyRoomSettings : ISettings<PrivacyRoomSettings>
 {
     [JsonPropertyName("enbaled")]
     public bool EnabledSetting { get; set; }
@@ -36,7 +36,7 @@ namespace ASC.Web.Studio.Core;
         get { return new Guid("{FCF002BC-EC4B-4DAB-A6CE-BDE0ABDA44D3}"); }
     }
 
-        public PrivacyRoomSettings GetDefault()
+    public PrivacyRoomSettings GetDefault()
     {
         return new PrivacyRoomSettings
         {

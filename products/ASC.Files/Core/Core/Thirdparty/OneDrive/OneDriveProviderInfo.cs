@@ -134,9 +134,9 @@ internal class OneDriveStorageDisposableWrapper : IDisposable
 
     public OneDriveStorageDisposableWrapper(ConsumerFactory consumerFactory, IServiceProvider serviceProvider, OAuth20TokenHelper oAuth20TokenHelper)
     {
-       ConsumerFactory = consumerFactory;
-       ServiceProvider = serviceProvider;
-       _oAuth20TokenHelper = oAuth20TokenHelper;
+        ConsumerFactory = consumerFactory;
+        ServiceProvider = serviceProvider;
+        _oAuth20TokenHelper = oAuth20TokenHelper;
     }
 
     public Task<OneDriveStorage> CreateStorageAsync(OAuth20Token token, int id)

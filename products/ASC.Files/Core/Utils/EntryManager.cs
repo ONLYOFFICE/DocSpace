@@ -660,27 +660,27 @@ public class EntryManager
         var tagDao = _daoFactory.GetTagDao<int>();
         var tags = await tagDao.GetTagsAsync(_authContext.CurrentAccount.ID, TagType.Recent).ToListAsync();
 
-            var fileIds = tags.Where(tag => tag.EntryType == FileEntryType.File).Select(r => r.EntryId).ToList();
+        var fileIds = tags.Where(tag => tag.EntryType == FileEntryType.File).Select(r => r.EntryId).ToList();
 
-            var files = await GetRecentByIdsAsync(fileIds.OfType<int>(), filter, subjectGroup, subjectId, searchText, searchInContent);
-            files.Concat(await GetRecentByIdsAsync(fileIds.OfType<string>(), filter, subjectGroup, subjectId, searchText, searchInContent));
+        var files = await GetRecentByIdsAsync(fileIds.OfType<int>(), filter, subjectGroup, subjectId, searchText, searchInContent);
+        files.Concat(await GetRecentByIdsAsync(fileIds.OfType<string>(), filter, subjectGroup, subjectId, searchText, searchInContent));
 
-            var listFileIds = fileIds.Select(tag => tag.ToString()).ToList();
+        var listFileIds = fileIds.Select(tag => tag.ToString()).ToList();
 
-            return files.OrderBy(file =>
+        return files.OrderBy(file =>
+    {
+        var fileId = "";
+        if (file is File<int> fileInt)
         {
-            var fileId = "";
-            if (file is File<int> fileInt)
-            {
-                fileId = fileInt.Id.ToString();
-            }
-            else if (file is File<string> fileString)
-            {
-                fileId = fileString.Id;
-            }
+            fileId = fileInt.Id.ToString();
+        }
+        else if (file is File<string> fileString)
+        {
+            fileId = fileString.Id;
+        }
 
-                return listFileIds.IndexOf(fileId.ToString());
-        }).ToList();
+        return listFileIds.IndexOf(fileId.ToString());
+    }).ToList();
 
         async Task<IEnumerable<FileEntry>> GetRecentByIdsAsync<T>(IEnumerable<T> fileIds, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent)
         {

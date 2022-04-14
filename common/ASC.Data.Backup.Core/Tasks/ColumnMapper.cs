@@ -147,7 +147,7 @@ public class ColumnMapper
 
     private static string GetMappingKey(string tableName, string columnName)
     {
-            return $"t:{tableName};c:{columnName}".ToLowerInvariant();
+        return $"t:{tableName};c:{columnName}".ToLowerInvariant();
     }
 
     private static string GetMappingKey(string tableName, string columnName, object oldValue)

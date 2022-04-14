@@ -26,7 +26,7 @@
 
 namespace ASC.Web.Api.Controllers.Settings;
 
-public class IpRestrictionsController: BaseSettingsController
+public class IpRestrictionsController : BaseSettingsController
 {
     private Tenant Tenant { get { return ApiContext.Tenant; } }
 

@@ -29,7 +29,7 @@ using UnknownImageFormatException = SixLabors.ImageSharp.UnknownImageFormatExcep
 namespace ASC.Web.Core.WhiteLabel;
 
 [Serializable]
-    public class TenantWhiteLabelSettings : ISettings<TenantWhiteLabelSettings>
+public class TenantWhiteLabelSettings : ISettings<TenantWhiteLabelSettings>
 {
     public const string DefaultLogoText = BaseWhiteLabelSettings.DefaultLogoText;
 
@@ -92,7 +92,7 @@ namespace ASC.Web.Core.WhiteLabel;
 
     #region ISettings Members
 
-        public TenantWhiteLabelSettings GetDefault()
+    public TenantWhiteLabelSettings GetDefault()
     {
         return new TenantWhiteLabelSettings
         {
@@ -221,14 +221,14 @@ public class TenantWhiteLabelSettingsHelper
         WhiteLabelHelper = whiteLabelHelper;
         TenantManager = tenantManager;
         SettingsManager = settingsManager;
-            Log = logger;
+        Log = logger;
     }
 
     #region Restore default
 
     public bool IsDefault(TenantWhiteLabelSettings tenantWhiteLabelSettings)
     {
-            var defaultSettings = SettingsManager.GetDefault<TenantWhiteLabelSettings>();
+        var defaultSettings = SettingsManager.GetDefault<TenantWhiteLabelSettings>();
 
         return tenantWhiteLabelSettings.LogoLightSmallExt == defaultSettings.LogoLightSmallExt &&
                 tenantWhiteLabelSettings.LogoDarkExt == defaultSettings.LogoDarkExt &&

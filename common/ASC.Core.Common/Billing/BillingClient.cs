@@ -40,15 +40,15 @@ public class BillingClient
     private const int AvangatePaymentSystemId = 1;
 
 
-        public BillingClient(IConfiguration configuration, IHttpClientFactory httpClientFactory)
-            : this(false, configuration, httpClientFactory)
+    public BillingClient(IConfiguration configuration, IHttpClientFactory httpClientFactory)
+        : this(false, configuration, httpClientFactory)
     {
     }
 
-        public BillingClient(bool test, IConfiguration configuration, IHttpClientFactory httpClientFactory)
+    public BillingClient(bool test, IConfiguration configuration, IHttpClientFactory httpClientFactory)
     {
         _test = test;
-            _httpClientFactory = httpClientFactory;
+        _httpClientFactory = httpClientFactory;
         var billingDomain = configuration["core:payment-url"];
 
         _billingDomain = (billingDomain ?? "").Trim().TrimEnd('/');
@@ -219,8 +219,8 @@ public class BillingClient
             request.Headers.Add("Authorization", CreateAuthToken(_billingKey, _billingSecret));
         }
 
-            var httpClient = _httpClientFactory.CreateClient();
-            httpClient.Timeout = TimeSpan.FromMilliseconds(60000);
+        var httpClient = _httpClientFactory.CreateClient();
+        httpClient.Timeout = TimeSpan.FromMilliseconds(60000);
 
         var data = new Dictionary<string, List<string>>();
         if (!string.IsNullOrEmpty(portalId))

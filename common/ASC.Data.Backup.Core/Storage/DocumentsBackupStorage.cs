@@ -130,7 +130,7 @@ public class DocumentsBackupStorage : IBackupStorage
         var folderDao = GetFolderDao<T>();
         var fileDao = GetFileDao<T>();
 
-            var folder = folderDao.GetFolderAsync(folderId).Result;
+        var folder = folderDao.GetFolderAsync(folderId).Result;
         if (folder == null)
         {
             throw new FileNotFoundException("Folder not found.");
@@ -144,10 +144,10 @@ public class DocumentsBackupStorage : IBackupStorage
 
         File<T> file = null;
         var buffer = new byte[_setupInfo.ChunkUploadSize];
-            var chunkedUploadSession = fileDao.CreateUploadSessionAsync(newFile, source.Length).Result;
+        var chunkedUploadSession = fileDao.CreateUploadSessionAsync(newFile, source.Length).Result;
         chunkedUploadSession.CheckQuota = false;
 
-            int bytesRead;
+        int bytesRead;
 
         while ((bytesRead = source.Read(buffer, 0, (int)_setupInfo.ChunkUploadSize)) > 0)
         {
@@ -155,7 +155,7 @@ public class DocumentsBackupStorage : IBackupStorage
             {
                 theMemStream.Write(buffer, 0, bytesRead);
                 theMemStream.Position = 0;
-                    file = fileDao.UploadChunkAsync(chunkedUploadSession, theMemStream, bytesRead).Result;
+                file = fileDao.UploadChunkAsync(chunkedUploadSession, theMemStream, bytesRead).Result;
             }
         }
 
@@ -166,13 +166,13 @@ public class DocumentsBackupStorage : IBackupStorage
     {
         _tenantManager.SetCurrentTenant(_tenantId);
         var fileDao = GetFileDao<T>();
-            var file = fileDao.GetFileAsync(fileId).Result;
+        var file = fileDao.GetFileAsync(fileId).Result;
         if (file == null)
         {
             throw new FileNotFoundException("File not found.");
         }
 
-            using var source = fileDao.GetFileStreamAsync(file).Result;
+        using var source = fileDao.GetFileStreamAsync(file).Result;
         using var destination = File.OpenWrite(targetLocalPath);
         source.CopyTo(destination);
     }
@@ -180,7 +180,7 @@ public class DocumentsBackupStorage : IBackupStorage
     private void DeleteDao<T>(T fileId)
     {
         var fileDao = GetFileDao<T>();
-            fileDao.DeleteFileAsync(fileId).Wait();
+        fileDao.DeleteFileAsync(fileId).Wait();
     }
 
     private bool IsExistsDao<T>(T fileId)
@@ -189,7 +189,7 @@ public class DocumentsBackupStorage : IBackupStorage
         try
         {
 
-                var file = fileDao.GetFileAsync(fileId).Result;
+            var file = fileDao.GetFileAsync(fileId).Result;
 
             return file != null && file.RootFolderType != FolderType.TRASH;
         }

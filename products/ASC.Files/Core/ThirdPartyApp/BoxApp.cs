@@ -604,7 +604,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
         try
         {
             Logger.Debug("BoxApp: GetAccessToken by code " + code);
-                var token = _oAuth20TokenHelper.GetAccessToken<BoxApp>(ConsumerFactory, code);
+            var token = _oAuth20TokenHelper.GetAccessToken<BoxApp>(ConsumerFactory, code);
 
             return new Token(token, AppAttr);
         }

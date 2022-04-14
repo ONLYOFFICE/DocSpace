@@ -34,7 +34,7 @@ public class IntegrationEventLogEntry
         CreateOn = @event.CreateOn;
         CreateBy = @event.CreateBy;
         TenantId = @event.TenantId;
-        EventTypeName = @event.GetType().FullName;                     
+        EventTypeName = @event.GetType().FullName;
         Content = JsonSerializer.Serialize(@event, @event.GetType(), new JsonSerializerOptions
         {
             WriteIndented = true
@@ -46,10 +46,10 @@ public class IntegrationEventLogEntry
     public Guid EventId { get; private set; }
 
     public string EventTypeName { get; private set; }
-    
+
     [NotMapped]
     public string EventTypeShortName => EventTypeName.Split('.')?.Last();
-    
+
     [NotMapped]
     public IntegrationEvent IntegrationEvent { get; private set; }
     public EventStateEnum State { get; set; }
@@ -59,9 +59,9 @@ public class IntegrationEventLogEntry
     public string Content { get; private set; }
     public string TransactionId { get; private set; }
     public int TenantId { get; private set; }
-    
+
     public IntegrationEventLogEntry DeserializeJsonContent(Type type)
-    {            
+    {
         IntegrationEvent = JsonSerializer.Deserialize(Content, type, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }) as IntegrationEvent;
         return this;
     }

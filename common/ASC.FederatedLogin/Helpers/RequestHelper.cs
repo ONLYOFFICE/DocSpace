@@ -26,19 +26,19 @@
 
 namespace ASC.FederatedLogin.Helpers;
 
-    [Singletone]
-    public class RequestHelper
+[Singletone]
+public class RequestHelper
 {
-        private readonly IHttpClientFactory _httpClientFactory;
+    private readonly IHttpClientFactory _httpClientFactory;
 
-        public RequestHelper(IHttpClientFactory httpClientFactory)
+    public RequestHelper(IHttpClientFactory httpClientFactory)
     {
-            _httpClientFactory = httpClientFactory;
-        }
+        _httpClientFactory = httpClientFactory;
+    }
 
-        public string PerformRequest(string uri, string contentType = "", string method = "GET", string body = "", Dictionary<string, string> headers = null, int timeout = 30000)
-        {
-            if (string.IsNullOrEmpty(uri))
+    public string PerformRequest(string uri, string contentType = "", string method = "GET", string body = "", Dictionary<string, string> headers = null, int timeout = 30000)
+    {
+        if (string.IsNullOrEmpty(uri))
         {
             throw new ArgumentNullException(nameof(uri));
         }
@@ -50,7 +50,7 @@ namespace ASC.FederatedLogin.Helpers;
         };
 
         var httpClient = _httpClientFactory.CreateClient();
-            httpClient.Timeout = TimeSpan.FromMilliseconds(timeout);
+        httpClient.Timeout = TimeSpan.FromMilliseconds(timeout);
 
         if (headers != null)
         {
@@ -70,7 +70,7 @@ namespace ASC.FederatedLogin.Helpers;
             }
         }
 
-            using var response = httpClient.Send(request);
+        using var response = httpClient.Send(request);
         using var stream = response.Content.ReadAsStream();
         if (stream == null)
         {

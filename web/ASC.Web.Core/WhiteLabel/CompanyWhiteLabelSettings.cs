@@ -32,9 +32,9 @@ public class CompanyWhiteLabelSettingsWrapper
 }
 
 [Serializable]
-    public class CompanyWhiteLabelSettings : ISettings<CompanyWhiteLabelSettings>
+public class CompanyWhiteLabelSettings : ISettings<CompanyWhiteLabelSettings>
 {
-        private readonly CoreSettings _coreSettings;
+    private readonly CoreSettings _coreSettings;
 
     public string CompanyName { get; set; }
 
@@ -49,19 +49,19 @@ public class CompanyWhiteLabelSettingsWrapper
     [JsonPropertyName("IsLicensor")]
     public bool IsLicensor { get; set; }
 
-        public CompanyWhiteLabelSettings(CoreSettings coreSettings)
-        {
-            _coreSettings = coreSettings;
-        }
+    public CompanyWhiteLabelSettings(CoreSettings coreSettings)
+    {
+        _coreSettings = coreSettings;
+    }
 
-        public CompanyWhiteLabelSettings()
+    public CompanyWhiteLabelSettings()
     {
 
-        }
+    }
 
-        public bool IsDefault()
-        {
-            var defaultSettings = GetDefault();
+    public bool IsDefault()
+    {
+        var defaultSettings = GetDefault();
 
         return CompanyName == defaultSettings.CompanyName &&
                 Site == defaultSettings.Site &&
@@ -79,11 +79,11 @@ public class CompanyWhiteLabelSettingsWrapper
     }
 
 
-        public CompanyWhiteLabelSettings GetDefault()
+    public CompanyWhiteLabelSettings GetDefault()
     {
-            var settings = _coreSettings.GetSetting("CompanyWhiteLabelSettings");
+        var settings = _coreSettings.GetSetting("CompanyWhiteLabelSettings");
 
-            return string.IsNullOrEmpty(settings) ? new CompanyWhiteLabelSettings(_coreSettings) : JsonConvert.DeserializeObject<CompanyWhiteLabelSettings>(settings);
+        return string.IsNullOrEmpty(settings) ? new CompanyWhiteLabelSettings(_coreSettings) : JsonConvert.DeserializeObject<CompanyWhiteLabelSettings>(settings);
     }
 
     #endregion

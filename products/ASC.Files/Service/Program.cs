@@ -38,7 +38,7 @@ builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
           .AddJsonFile("notify.json")
           .AddJsonFile($"notify.{env.EnvironmentName}.json", true)
           .AddJsonFile("elastic.json", true);
-}, 
+},
 (hostContext, services, diHelper) =>
 {
     services.AddHttpClient();

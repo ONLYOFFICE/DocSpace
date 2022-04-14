@@ -31,7 +31,7 @@ public class StaticUploader
 {
     protected readonly DistributedTaskQueue _queue;
     private readonly ICache _cache;
-    public const string CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME = "static_upload";    private static readonly CancellationTokenSource _tokenSource;
+    public const string CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME = "static_upload"; private static readonly CancellationTokenSource _tokenSource;
     private static readonly object _locker;
     private readonly IServiceProvider _serviceProvider;
     private readonly TenantManager _tenantManager;
@@ -98,7 +98,7 @@ public class StaticUploader
         lock (_locker)
         {
             _cache.Insert(key, _uploadOperation.Result, DateTime.MaxValue);
-    }
+        }
 
         return _uploadOperation.Result;
     }
@@ -208,8 +208,8 @@ public class UploadOperation
                     await dataStore.SaveAsync(path, stream);
                 }
                 var uri = await dataStore.GetInternalUriAsync("", path, TimeSpan.Zero, null);
-                    Result = uri.AbsoluteUri.ToLower();
-                    _logger.DebugFormat("UploadFile {0}", Result);
+                Result = uri.AbsoluteUri.ToLower();
+                _logger.DebugFormat("UploadFile {0}", Result);
                 return Result;
             }
         }
@@ -243,7 +243,7 @@ public class UploadOperationProgress : DistributedTaskProgress
         _relativePath = relativePath;
         _mappedPath = mappedPath;
 
-            const string extensions = ".png|.jpeg|.jpg|.gif|.ico|.swf|.mp3|.ogg|.eot|.svg|.ttf|.woff|.woff2|.css|.less|.js";
+        const string extensions = ".png|.jpeg|.jpg|.gif|.ico|.swf|.mp3|.ogg|.eot|.svg|.ttf|.woff|.woff2|.css|.less|.js";
         var extensionsArray = extensions.Split('|');
 
         _directoryFiles = Directory.GetFiles(mappedPath, "*", SearchOption.AllDirectories)

@@ -27,7 +27,7 @@
 namespace ASC.Web.Studio.Core;
 
 [Serializable]
-    public class StudioDefaultPageSettings : ISettings<StudioDefaultPageSettings>
+public class StudioDefaultPageSettings : ISettings<StudioDefaultPageSettings>
 {
     public Guid DefaultProductID { get; set; }
 
@@ -41,7 +41,7 @@ namespace ASC.Web.Studio.Core;
         get { return new Guid("{48328C27-4C85-4987-BA0E-D6BB17356B10}"); }
     }
 
-        public StudioDefaultPageSettings GetDefault()
+    public StudioDefaultPageSettings GetDefault()
     {
         return new StudioDefaultPageSettings { DefaultProductID = Guid.Empty };
     }

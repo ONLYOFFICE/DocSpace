@@ -28,13 +28,13 @@ namespace ASC.EventBus.Events;
 
 [ProtoContract]
 public record IntegrationEvent
-{          
+{
     protected IntegrationEvent()
     {
 
     }
 
-    public IntegrationEvent(Guid createBy, int tenantId) 
+    public IntegrationEvent(Guid createBy, int tenantId)
     {
         Id = Guid.NewGuid();
         CreateOn = DateTime.UtcNow;

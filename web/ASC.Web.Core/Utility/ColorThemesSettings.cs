@@ -27,7 +27,7 @@
 namespace ASC.Web.Core.Utility;
 
 [Serializable]
-    public class ColorThemesSettings : ISettings<ColorThemesSettings>
+public class ColorThemesSettings : ISettings<ColorThemesSettings>
 {
     public const string ThemeFolderTemplate = "<theme_folder>";
     private const string DefaultName = "pure-orange";
@@ -37,7 +37,7 @@ namespace ASC.Web.Core.Utility;
 
     public bool FirstRequest { get; set; }
 
-        public ColorThemesSettings GetDefault()
+    public ColorThemesSettings GetDefault()
     {
         return new ColorThemesSettings
         {

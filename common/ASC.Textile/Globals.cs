@@ -64,7 +64,7 @@ static class Globals
     /// <summary>
     /// Vertical text alignment tags, mapped to their HTML meanings.
     /// </summary>
-    public static Dictionary<string, string> VerticalAlign { get; set;}
+    public static Dictionary<string, string> VerticalAlign { get; set; }
 
     static Globals()
     {

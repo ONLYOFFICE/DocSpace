@@ -97,7 +97,7 @@ public class TelegramHandler
         _clients.Remove(tenantId);
     }
 
-    public void CreateOrUpdateClientForTenant(int tenantId, string token, int tokenLifespan, string proxy, bool startTelegramService, CancellationToken stoppingToken,  bool force = false)
+    public void CreateOrUpdateClientForTenant(int tenantId, string token, int tokenLifespan, string proxy, bool startTelegramService, CancellationToken stoppingToken, bool force = false)
     {
         var scope = _scopeFactory.CreateScope();
         var telegramHelper = scope.ServiceProvider.GetService<TelegramHelper>();

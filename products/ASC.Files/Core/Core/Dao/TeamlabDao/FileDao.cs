@@ -1533,8 +1533,8 @@ internal class FileDao : AbstractDao, IFileDao<int>
                              select f
                              ).Any(),
                    IsFillFormDraft = (from f in FilesDbContext.FilesLink
-                             where f.TenantId == r.TenantId && f.LinkedId == r.Id.ToString() && f.LinkedFor == cId
-                             select f)
+                                      where f.TenantId == r.TenantId && f.LinkedId == r.Id.ToString() && f.LinkedFor == cId
+                                      select f)
                              .Any()
                };
     }
@@ -1559,13 +1559,13 @@ internal class FileDao : AbstractDao, IFileDao<int>
                           ).FirstOrDefault(),
                 Shared = true,
                 IsFillFormDraft = (from f in FilesDbContext.FilesLink
-                          where f.TenantId == r.TenantId && f.LinkedId == r.Id.ToString() && f.LinkedFor == cId
-                          select f)
+                                   where f.TenantId == r.TenantId && f.LinkedId == r.Id.ToString() && f.LinkedFor == cId
+                                   select f)
                              .Any()
             });
     }
 
-    internal protected Task<DbFile> InitDocumentAsync(DbFile dbFile)
+    protected internal Task<DbFile> InitDocumentAsync(DbFile dbFile)
     {
         if (!_factoryIndexer.CanIndexByContent(dbFile))
         {

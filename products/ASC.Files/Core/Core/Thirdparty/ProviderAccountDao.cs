@@ -68,7 +68,7 @@ internal class ProviderAccountDao : IProviderDao
     private readonly SecurityContext _securityContext;
     private readonly ConsumerFactory _consumerFactory;
     private readonly ThirdpartyConfiguration _thirdpartyConfiguration;
-        private readonly OAuth20TokenHelper _oAuth20TokenHelper;
+    private readonly OAuth20TokenHelper _oAuth20TokenHelper;
 
     public ProviderAccountDao(
         IServiceProvider serviceProvider,
@@ -91,7 +91,7 @@ internal class ProviderAccountDao : IProviderDao
         _securityContext = securityContext;
         _consumerFactory = consumerFactory;
         _thirdpartyConfiguration = thirdpartyConfiguration;
-            _oAuth20TokenHelper = oAuth20TokenHelper;
+        _oAuth20TokenHelper = oAuth20TokenHelper;
     }
 
     public virtual Task<IProviderInfo> GetProviderInfoAsync(int linkId)

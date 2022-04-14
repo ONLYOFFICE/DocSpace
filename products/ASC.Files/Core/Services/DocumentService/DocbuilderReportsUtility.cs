@@ -241,7 +241,7 @@ public class ReportState
         TaskInfo["reportType"] = ReportType;
         TaskInfo["fileId"] = FileId;
         TaskInfo["status"] = (int)Status;
-        TaskInfo["reportOrigin"] = (int)Origin; 
+        TaskInfo["reportOrigin"] = (int)Origin;
         TaskInfo["exception"] = Exception;
     }
 }

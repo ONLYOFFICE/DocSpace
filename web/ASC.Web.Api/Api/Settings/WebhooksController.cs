@@ -26,7 +26,7 @@
 
 namespace ASC.Web.Api.Controllers.Settings;
 
-public class WebhooksController: BaseSettingsController
+public class WebhooksController : BaseSettingsController
 {
     private readonly DbWorker _webhookDbWorker;
 

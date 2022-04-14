@@ -1,3 +1,29 @@
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
+
 /*
  *
  * (c) Copyright Ascensio System Limited 2010-2018
@@ -77,21 +103,21 @@ public class DistributedTaskQueue
     public int MaxThreadsCount
     {
         get
-    {
+        {
             return _maxThreadsCount;
-    }
+        }
 
         set
-    {
+        {
             Scheduler = value <= 0
                 ? TaskScheduler.Default
                 : new ConcurrentExclusiveSchedulerPair(TaskScheduler.Default, value).ConcurrentScheduler;
 
             if (value > 0)
-    {
+            {
                 _maxThreadsCount = value;
+            }
         }
-    }
     }
 
     public void EnqueueTask(DistributedTaskProgress taskProgress)
@@ -146,15 +172,15 @@ public class DistributedTaskQueue
         var token = cancelation.Token;
         _cancelations[distributedTask.Id] = cancelation;
 
-            var task = new Task(() =>
-        {
-            var t = action(distributedTask, token);
-            t.ConfigureAwait(false)
-            .GetAwaiter()
-            .OnCompleted(() => OnCompleted(t, distributedTask.Id));
-        }, token, TaskCreationOptions.LongRunning);
+        var task = new Task(() =>
+    {
+        var t = action(distributedTask, token);
+        t.ConfigureAwait(false)
+        .GetAwaiter()
+        .OnCompleted(() => OnCompleted(t, distributedTask.Id));
+    }, token, TaskCreationOptions.LongRunning);
 
-            task.ConfigureAwait(false);
+        task.ConfigureAwait(false);
 
         distributedTask.Status = DistributedTaskStatus.Running;
 
@@ -168,7 +194,7 @@ public class DistributedTaskQueue
 
         _logger.TraceFormat("EnqueueTask '{DistributedTaskId}' by instanse id '{InstanceId}'", distributedTask.Id, INSTANCE_ID);
 
-            }
+    }
 
     public IEnumerable<DistributedTask> GetAllTasks(int? instanceId = null)
     {
@@ -179,10 +205,10 @@ public class DistributedTaskQueue
         if (instanceId.HasValue)
         {
             queueTasks = queueTasks.Where(x => x.InstanceId == instanceId.Value);
-            }
+        }
 
         foreach (var task in queueTasks)
-    {
+        {
             if (task.Publication == null)
             {
                 task.Publication = GetPublication();
@@ -195,7 +221,7 @@ public class DistributedTaskQueue
     public IEnumerable<T> GetAllTasks<T>() where T : DistributedTask
     {
         return GetAllTasks().Select(x => Map(x, _serviceProvider.GetService<T>()));
-            }
+    }
 
     public T PeekTask<T>(string id) where T : DistributedTask
     {
@@ -223,13 +249,13 @@ public class DistributedTaskQueue
         queueTasks = queueTasks.FindAll(x => x.Id != id);
 
         if (queueTasks.Count == 0)
-    {
+        {
             _distributedCache.Remove(_name);
-    }
+        }
         else
-    {
+        {
             SaveToCache(queueTasks);
-    }
+        }
 
         _logger.TraceFormat("DequeueTask '{DistributedTaskId}' by instanse id '{InstanceId}'", id, INSTANCE_ID);
 
@@ -243,7 +269,7 @@ public class DistributedTaskQueue
             distributedTask.Status = DistributedTaskStatus.Completed;
             if (task.Exception != null)
             {
-            distributedTask.Exception = task.Exception;
+                distributedTask.Exception = task.Exception;
             }
             if (task.IsFaulted)
             {
@@ -289,10 +315,10 @@ public class DistributedTaskQueue
             SlidingExpiration = TimeSpan.FromMinutes(15)
         });
 
-}
+    }
 
     private IEnumerable<DistributedTask> LoadFromCache()
-{
+    {
         var serializedObject = _distributedCache.Get(_name);
 
         if (serializedObject == null)
@@ -327,9 +353,9 @@ public class DistributedTaskQueue
     }
 
     private bool IsOrphanCacheItem(DistributedTask obj)
-        {
+    {
         return obj.LastModifiedOn.AddSeconds(_timeUntilUnregisterInSeconds) < DateTime.UtcNow;
-        }
+    }
 
 
     /// <summary>
@@ -341,7 +367,7 @@ public class DistributedTaskQueue
     /// <param name="source">Source object.</param>
     /// <returns>Updated destination object.</returns>
     private T Map<T, TU>(TU source, T destination)
-        {
+    {
         destination.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance)
                     .ToList()
                     .ForEach(field =>
@@ -353,7 +379,7 @@ public class DistributedTaskQueue
                             var value = sf.GetValue(source);
                             destination.GetType().GetField(field.Name, BindingFlags.NonPublic | BindingFlags.Instance).SetValue(destination, value);
                         }
-        });
+                    });
 
         destination.GetType().GetProperties().Where(p => p.CanWrite == true && !p.GetIndexParameters().Any())
                     .ToList()
@@ -364,7 +390,7 @@ public class DistributedTaskQueue
                         {
                             var value = sp.GetValue(source, null);
                             destination.GetType().GetProperty(prop.Name).SetValue(destination, value, null);
-    }
+                        }
                     });
 
 

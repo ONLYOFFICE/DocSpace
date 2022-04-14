@@ -164,7 +164,8 @@ public class DocuSignHelper
         _serviceProvider = serviceProvider;
         _consumerFactory = consumerFactory;
         Logger = options.CurrentValue;
-        _requestHelper = requestHelper;    }
+        _requestHelper = requestHelper;
+    }
 
     public bool ValidateToken(OAuth20Token token)
     {

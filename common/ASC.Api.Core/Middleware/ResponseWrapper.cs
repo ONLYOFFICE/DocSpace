@@ -37,7 +37,7 @@ public class CustomExceptionFilterAttribute : ExceptionFilterAttribute
             status = HttpStatusCode.InternalServerError;
         }
 
-            var withStackTrace = true;
+        var withStackTrace = true;
 
         switch (context.Exception)
         {
@@ -53,16 +53,16 @@ public class CustomExceptionFilterAttribute : ExceptionFilterAttribute
                 status = HttpStatusCode.Forbidden;
                 message = "Access denied";
                 break;
-                case AuthenticationException:
-                    status = HttpStatusCode.Unauthorized;
-                    withStackTrace = false;
-                    break;
+            case AuthenticationException:
+                status = HttpStatusCode.Unauthorized;
+                withStackTrace = false;
+                break;
             case InvalidOperationException:
                 status = HttpStatusCode.Forbidden;
                 break;
         }
 
-            var result = new ObjectResult(new ErrorApiResponse(status, context.Exception, message, withStackTrace))
+        var result = new ObjectResult(new ErrorApiResponse(status, context.Exception, message, withStackTrace))
         {
             StatusCode = (int)status
         };

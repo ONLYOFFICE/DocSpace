@@ -27,14 +27,14 @@
 namespace ASC.Web.Studio.Core.SMS;
 
 [Serializable]
-    public class StudioSmsNotificationSettings : ISettings<StudioSmsNotificationSettings>
+public class StudioSmsNotificationSettings : ISettings<StudioSmsNotificationSettings>
 {
     public Guid ID
     {
         get { return new Guid("{2802df61-af0d-40d4-abc5-a8506a5352ff}"); }
     }
 
-        public StudioSmsNotificationSettings GetDefault()
+    public StudioSmsNotificationSettings GetDefault()
     {
         return new StudioSmsNotificationSettings { EnableSetting = false, };
     }

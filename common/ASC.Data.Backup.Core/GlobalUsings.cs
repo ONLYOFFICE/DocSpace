@@ -86,7 +86,6 @@ global using ASC.Web.Core.Users;
 global using ASC.Web.Core.Utility;
 global using ASC.Web.Core.WhiteLabel;
 global using ASC.Web.Studio.Core;
-global using ASC.Web.Studio.Core.Backup;
 global using ASC.Web.Studio.Core.Notify;
 global using ASC.Web.Studio.Utility;
 
@@ -105,6 +104,6 @@ global using Microsoft.Extensions.Options;
 global using MySql.Data.MySqlClient;
 
 global using Newtonsoft.Json;
-global using ASC.EventBus.Exceptions;
-global using ProtoBuf;
 global using Newtonsoft.Json.Linq;
+
+global using ProtoBuf;

@@ -43,7 +43,7 @@ public class EmailValidationKeyProvider
     private readonly MachinePseudoKeys _machinePseudoKeys;
     private readonly TenantManager _tenantManager;
 
-    public EmailValidationKeyProvider(MachinePseudoKeys machinePseudoKeys, TenantManager tenantManager, IConfiguration configuration, ILog  logger)
+    public EmailValidationKeyProvider(MachinePseudoKeys machinePseudoKeys, TenantManager tenantManager, IConfiguration configuration, ILog logger)
     {
         _machinePseudoKeys = machinePseudoKeys;
         _tenantManager = tenantManager;

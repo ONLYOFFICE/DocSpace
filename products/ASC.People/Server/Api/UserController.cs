@@ -303,13 +303,13 @@ public class UserController : PeopleControllerBase
         if (_coreBaseSettings.Personal)
         {
             throw new MethodAccessException("Method not available");
-}
+        }
 
         var user = _userManager.GetUserByUserName(username);
         if (user.Id == Constants.LostUser.Id)
         {
             if (Guid.TryParse(username, out var userId))
-{
+            {
                 user = _userManager.GetUsers(userId);
             }
             else

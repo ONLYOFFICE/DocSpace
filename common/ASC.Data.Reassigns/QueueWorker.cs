@@ -36,21 +36,21 @@ public static class QueueWorker
 
 public class QueueWorker<T> where T : DistributedTaskProgress
 {
-        protected IServiceScopeFactory ServiceProvider { get; }
+    protected IServiceScopeFactory ServiceProvider { get; }
 
     private readonly object _synchRoot = new object();
     protected readonly DistributedTaskQueue _queue;
-        protected readonly IDictionary<string, StringValues> HttpHeaders;
+    protected readonly IDictionary<string, StringValues> HttpHeaders;
 
     public QueueWorker(
         IHttpContextAccessor httpContextAccessor,
             IServiceScopeFactory serviceProvider,
-            IDistributedTaskQueueFactory queueFactory, 
+            IDistributedTaskQueueFactory queueFactory,
             string queueName)
     {
         ServiceProvider = serviceProvider;
-            _queue = queueFactory.CreateQueue(queueName);
-            HttpHeaders = httpContextAccessor.HttpContext.Request?.Headers;
+        _queue = queueFactory.CreateQueue(queueName);
+        HttpHeaders = httpContextAccessor.HttpContext.Request?.Headers;
     }
 
     public static string GetProgressItemId(int tenantId, Guid userId)
@@ -62,7 +62,7 @@ public class QueueWorker<T> where T : DistributedTaskProgress
     {
         var id = GetProgressItemId(tenantId, userId);
 
-            return _queue.PeekTask<T>(id);
+        return _queue.PeekTask<T>(id);
     }
 
     public void Terminate(int tenantId, Guid userId)
@@ -71,11 +71,11 @@ public class QueueWorker<T> where T : DistributedTaskProgress
 
         if (item != null)
         {
-                _queue.DequeueTask(item.Id);
+            _queue.DequeueTask(item.Id);
         }
     }
 
-        protected T Start(int tenantId, Guid userId, T newTask)
+    protected T Start(int tenantId, Guid userId, T newTask)
     {
         lock (_synchRoot)
         {
@@ -83,14 +83,14 @@ public class QueueWorker<T> where T : DistributedTaskProgress
 
             if (task != null && task.IsCompleted)
             {
-                    _queue.DequeueTask(task.Id);
+                _queue.DequeueTask(task.Id);
                 task = null;
             }
 
             if (task == null)
             {
-                    task = newTask;
-                    _queue.EnqueueTask(task);
+                task = newTask;
+                _queue.EnqueueTask(task);
             }
 
             return task;
@@ -101,7 +101,7 @@ public class QueueWorker<T> where T : DistributedTaskProgress
 [Scope(Additional = typeof(ReassignProgressItemExtension))]
 public class QueueWorkerReassign : QueueWorker<ReassignProgressItem>
 {
-        public const string CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME = "user_data_reassign";
+    public const string CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME = "user_data_reassign";
 
     public QueueWorkerReassign(
         IHttpContextAccessor httpContextAccessor,
@@ -113,16 +113,16 @@ public class QueueWorkerReassign : QueueWorker<ReassignProgressItem>
 
     public ReassignProgressItem Start(int tenantId, Guid fromUserId, Guid toUserId, Guid currentUserId, bool deleteProfile)
     {
-            var result = new ReassignProgressItem(ServiceProvider, HttpHeaders, tenantId, fromUserId, toUserId, currentUserId, deleteProfile);
+        var result = new ReassignProgressItem(ServiceProvider, HttpHeaders, tenantId, fromUserId, toUserId, currentUserId, deleteProfile);
 
-            return Start(tenantId, fromUserId, result);
+        return Start(tenantId, fromUserId, result);
     }
 }
 
 [Scope(Additional = typeof(RemoveProgressItemExtension))]
 public class QueueWorkerRemove : QueueWorker<RemoveProgressItem>
 {
-        public const string CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME = "user_data_remove";
+    public const string CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME = "user_data_remove";
 
     public QueueWorkerRemove(
         IHttpContextAccessor httpContextAccessor,
@@ -134,8 +134,8 @@ public class QueueWorkerRemove : QueueWorker<RemoveProgressItem>
 
     public RemoveProgressItem Start(int tenantId, UserInfo user, Guid currentUserId, bool notify)
     {
-            var result = new RemoveProgressItem(ServiceProvider, HttpHeaders, tenantId, user, currentUserId, notify);
+        var result = new RemoveProgressItem(ServiceProvider, HttpHeaders, tenantId, user, currentUserId, notify);
 
-            return Start(tenantId, user.Id, result);
+        return Start(tenantId, user.Id, result);
     }
 }
