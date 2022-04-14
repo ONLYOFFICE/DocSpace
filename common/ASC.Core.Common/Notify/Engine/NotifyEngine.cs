@@ -33,7 +33,7 @@ public interface INotifyEngineAction
 }
 
 [Singletone]
-public class NotifyEngine : INotifyEngine
+public class NotifyEngine : INotifyEngine, IDisposable
 {
     private readonly ILog _logger;
     private readonly Context _context;
@@ -644,6 +644,19 @@ public class NotifyEngine : INotifyEngine
         public override int GetHashCode()
         {
             return _method.GetHashCode();
+        }
+    }
+
+    public void Dispose()
+    {
+        if (_methodsEvent != null)
+        {
+            _methodsEvent.Dispose();
+        }
+
+        if (_requestsEvent != null)
+        {
+            _requestsEvent.Dispose();
         }
     }
 }

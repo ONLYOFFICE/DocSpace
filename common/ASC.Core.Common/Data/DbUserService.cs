@@ -32,7 +32,6 @@ namespace ASC.Core.Data;
 public class ConfigureEFUserService : IConfigureNamedOptions<EFUserService>
 {
     private readonly DbContextManager<UserDbContext> _dbContextManager;
-    public string DbId { get; set; }
 
     public ConfigureEFUserService(DbContextManager<UserDbContext> dbContextManager)
     {
@@ -41,7 +40,7 @@ public class ConfigureEFUserService : IConfigureNamedOptions<EFUserService>
 
     public void Configure(string name, EFUserService options)
     {
-        DbId = name;
+        options.DbId = name;
         options.LazyUserDbContext = new Lazy<UserDbContext>(() => _dbContextManager.Get(name));
         options.UserDbContextManager = _dbContextManager;
     }
@@ -61,7 +60,7 @@ public class EFUserService : IUserService
     internal DbContextManager<UserDbContext> UserDbContextManager;
     private readonly PasswordHasher _passwordHasher;
     public readonly MachinePseudoKeys MachinePseudoKeys;
-    private readonly string _dbId;
+    internal string DbId { get; set; }
     private readonly IMapper _mapper;
 
     public EFUserService(
@@ -271,7 +270,7 @@ public class EFUserService : IUserService
 
     public IQueryable<UserInfo> GetUsers(int tenant, bool isAdmin, EmployeeStatus? employeeStatus, List<List<Guid>> includeGroups, List<Guid> excludeGroups, EmployeeActivationStatus? activationStatus, string text, string sortBy, bool sortOrderAsc, long limit, long offset, out int total, out int count)
     {
-        var userDbContext = UserDbContextManager.GetNew(_dbId);
+        var userDbContext = UserDbContextManager.GetNew(DbId);
         var totalQuery = GetUserQuery(userDbContext, tenant);
         totalQuery = GetUserQueryForFilter(totalQuery, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text);
         total = totalQuery.Count();
@@ -302,7 +301,7 @@ public class EFUserService : IUserService
 
     public IQueryable<UserInfo> GetUsers(int tenant, out int total)
     {
-        var userDbContext = UserDbContextManager.GetNew(_dbId);
+        var userDbContext = UserDbContextManager.GetNew(DbId);
         total = userDbContext.Users.Count(r => r.Tenant == tenant);
 
         return GetUserQuery(userDbContext, tenant)

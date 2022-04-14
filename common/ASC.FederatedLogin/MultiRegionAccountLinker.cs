@@ -29,7 +29,7 @@ namespace ASC.FederatedLogin;
 public class MultiRegionAccountLinker
 {
     private readonly Dictionary<string, AccountLinker> _accountLinkers = new Dictionary<string, AccountLinker>();
-    private readonly string _baseDatabaseId;
+    //private readonly string _baseDatabaseId;
 
     public MultiRegionAccountLinker(string databaseId, ConfigurationExtension configuration, IOptionsSnapshot<AccountLinker> snapshot)
     {
@@ -94,11 +94,12 @@ public class MultiRegionAccountLinker
 
     private string GetDatabaseId(string hostedRegion)
     {
-        var databaseId = _baseDatabaseId;
+        var databaseId = string.Empty;
 
         if (!string.IsNullOrEmpty(hostedRegion))
         {
-            databaseId = string.Join(".", new[] { _baseDatabaseId, hostedRegion.Trim() });
+            //databaseId = string.Join(".", new[] { _baseDatabaseId, hostedRegion.Trim() });
+            databaseId = string.Join(".", new[] { hostedRegion.Trim() });
         }
 
         if (!_accountLinkers.ContainsKey(databaseId))

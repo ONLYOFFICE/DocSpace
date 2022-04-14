@@ -30,7 +30,7 @@ using ConfigurationSection = System.Configuration.ConfigurationSection;
 namespace ASC.Core.Common.Billing;
 
 [Singletone]
-public class CouponManager
+public class CouponManager : IDisposable
 {
     private IEnumerable<AvangateProduct> _products;
     private readonly IHttpClientFactory _clientFactory;
@@ -182,6 +182,14 @@ public class CouponManager
         stringBuilder.Append($"hash='{sBuilder}'");
 
         return stringBuilder.ToString();
+    }
+
+    public void Dispose()
+    {
+        if (_semaphoreSlim != null)
+        {
+            _semaphoreSlim.Dispose();
+        }
     }
 }
 
