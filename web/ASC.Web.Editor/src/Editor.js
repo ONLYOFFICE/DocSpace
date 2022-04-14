@@ -61,8 +61,8 @@ const onSDKError = (event) => {
 
 const text = "text";
 const presentation = "presentation";
-let documentIsReady = false; // move to state?
-let docSaved = null; // move to state?
+let documentIsReady = false;
+let docSaved = null;
 let docTitle = null;
 let docEditor;
 
@@ -112,8 +112,6 @@ function Editor({
   }, []);
 
   useEffect(async () => {
-    console.log("useEffect config", config);
-
     if (config) {
       document.getElementById("scripDocServiceAddress").onload = onLoad();
       setDocumentTitle(config?.document?.title);
@@ -294,13 +292,13 @@ function Editor({
       result.push(obj);
     }
     return result;
-  }; // +++
+  };
 
   const getCurrentDocumentVersion = (fileHistory, historyLength) => {
     return url.indexOf("&version=") !== -1
       ? +url.split("&version=")[1]
       : fileHistory[historyLength - 1].version;
-  }; // +++
+  };
 
   const onSDKRequestHistory = async () => {
     try {
@@ -316,7 +314,7 @@ function Editor({
         error: `${e}`, //TODO: maybe need to display something else.
       });
     }
-  }; // +++
+  };
 
   const onSDKRequestHistoryData = async (event) => {
     const version = event.data;
@@ -348,7 +346,7 @@ function Editor({
         version,
       });
     }
-  }; // +++
+  };
 
   const onDocumentReady = () => {
     documentIsReady = true;
@@ -360,7 +358,7 @@ function Editor({
 
   const updateFavorite = (favorite) => {
     docEditor.setFavorite(favorite);
-  }; //+++
+  };
 
   const onMetaChange = (event) => {
     const newTitle = event.data.title;
@@ -385,7 +383,7 @@ function Editor({
             .then(() => updateFavorite(favorite))
             .catch((error) => console.log("error", error));
     }
-  }; // +++
+  };
 
   const setDocumentTitle = (subTitle = null) => {
     //const { isAuthenticated, settingsStore, product: currentModule } = auth;
@@ -431,7 +429,7 @@ function Editor({
       history.pushState({}, null, url.substring(0, index));
       docEditor.showMessage(message);
     }
-  }; // +++
+  };
 
   const onLoad = () => {
     try {
@@ -469,7 +467,6 @@ function Editor({
         config.document.info.favorite = null;
       }
 
-      //let url = window.location.href;
       if (url.indexOf("anchor") !== -1) {
         const splitUrl = url.split("anchor=");
         const decodeURI = decodeURIComponent(splitUrl[1]);
@@ -511,44 +508,44 @@ function Editor({
         onRequestRestore;
 
       if (isSharingAccess) {
-        onRequestSharingSettings = onSDKRequestSharingSettings; // +++
+        onRequestSharingSettings = onSDKRequestSharingSettings;
       }
 
       if (fileInfo && fileInfo.canEdit) {
-        onRequestRename = onSDKRequestRename; // +++
+        onRequestRename = onSDKRequestRename;
       }
 
       if (successAuth) {
-        onRequestSaveAs = onSDKRequestSaveAs; //+++
-        onRequestInsertImage = onSDKRequestInsertImage; // +++
-        onRequestMailMergeRecipients = onSDKRequestMailMergeRecipients; // +++
-        onRequestCompareFile = onSDKRequestCompareFile; // +++
+        onRequestSaveAs = onSDKRequestSaveAs;
+        onRequestInsertImage = onSDKRequestInsertImage;
+        onRequestMailMergeRecipients = onSDKRequestMailMergeRecipients;
+        onRequestCompareFile = onSDKRequestCompareFile;
       }
 
       if (!!config.document.permissions.changeHistory) {
-        onRequestRestore = onSDKRequestRestore; // +++
+        onRequestRestore = onSDKRequestRestore;
       }
       const events = {
         events: {
-          onAppReady: onSDKAppReady, // +++
-          onDocumentStateChange: onDocumentStateChange, // +++
-          onMetaChange: onMetaChange, // +++
-          onDocumentReady: onDocumentReady, // ++-
-          onInfo: onSDKInfo, // +++
-          onWarning: onSDKWarning, // +++
-          onError: onSDKError, // +++
-          onRequestSharingSettings, // +++
-          onRequestRename, // +++
-          onMakeActionLink: onMakeActionLink, // +++
-          onRequestInsertImage, //+++
-          onRequestSaveAs, // +++
-          onRequestMailMergeRecipients, // +++
-          onRequestCompareFile, // +++
-          onRequestEditRights: onSDKRequestEditRights, // // TODO: need move can canConvert from docsevicestore
-          onRequestHistory: onSDKRequestHistory, // +++
-          onRequestHistoryClose: onSDKRequestHistoryClose, // +++
-          onRequestHistoryData: onSDKRequestHistoryData, // +++
-          onRequestRestore, // +++
+          onAppReady: onSDKAppReady,
+          onDocumentStateChange: onDocumentStateChange,
+          onMetaChange: onMetaChange,
+          onDocumentReady: onDocumentReady,
+          onInfo: onSDKInfo,
+          onWarning: onSDKWarning,
+          onError: onSDKError,
+          onRequestSharingSettings,
+          onRequestRename,
+          onMakeActionLink: onMakeActionLink,
+          onRequestInsertImage,
+          onRequestSaveAs,
+          onRequestMailMergeRecipients,
+          onRequestCompareFile,
+          onRequestEditRights: onSDKRequestEditRights,
+          onRequestHistory: onSDKRequestHistory,
+          onRequestHistoryClose: onSDKRequestHistoryClose,
+          onRequestHistoryData: onSDKRequestHistoryData,
+          onRequestRestore,
         },
       };
 
@@ -561,7 +558,6 @@ function Editor({
 
       setIsLoaded(true);
     } catch (error) {
-      console.log(error, "init error");
       window.toastr.error(error.message, null, 0, true);
     }
   };

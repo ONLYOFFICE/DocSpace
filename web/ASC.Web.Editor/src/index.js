@@ -75,12 +75,10 @@ app.get("/products/files/doceditor", async (req, res) => {
       initialLanguage
     );
 
-    res.setHeader("Cache-Control", "assets, max-age=604800");
-
     res.send(response);
   });
 });
 
-app.listen(port, (err) => {
+app.listen(port, () => {
   console.log(`Server is listening on port ${port}`);
 });

@@ -84,7 +84,6 @@ const withDialogs = (WrappedComponent) => {
     };
 
     const onSDKRequestInsertImage = (event) => {
-      console.log("onSDKRequestInsertImage", event.data, insertImageAction);
       setTypeInsertImageAction(event.data);
       setFilesType(insertImageAction);
       setIsFileDialogVisible(true);

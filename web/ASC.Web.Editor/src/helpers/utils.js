@@ -32,7 +32,6 @@ export const initDocEditor = async (req) => {
   initSSR(headers);
 
   try {
-    //const doc = url.indexOf("doc=") !== -1 ? url.split("doc=")[1] : null;??
     const decodedId = query.fileId || query.fileid || null;
     const fileId =
       typeof decodedId === "string" ? encodeURIComponent(decodedId) : decodedId;
@@ -45,7 +44,7 @@ export const initDocEditor = async (req) => {
       };
     }
 
-    const doc = query?.doc || null; // TODO: need to check
+    const doc = query?.doc || null;
     const view = url.indexOf("action=view") !== -1;
     const fileVersion = version || null;
 
