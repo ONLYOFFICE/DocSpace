@@ -2,16 +2,12 @@ import React from "react";
 import Backdrop from "@appserver/components/backdrop";
 
 import Aside from "@appserver/components/aside";
-import Scrollbar from "@appserver/components/scrollbar";
-import Text from "@appserver/components/text";
-import Loader from "@appserver/components/loader";
 
 import { withTranslation, Trans } from "react-i18next";
 import toastr from "studio/toastr";
 import { ShareAccessRights } from "@appserver/common/constants";
 import { StyledAsidePanel } from "../StyledPanels";
 import { AddUsersPanel, AddGroupsPanel, EmbeddingPanel } from "../index";
-import SharingRow from "./SharingRow";
 import { inject, observer } from "mobx-react";
 import config from "../../../../package.json";
 import i18n from "./i18n";
@@ -21,9 +17,10 @@ import Loaders from "@appserver/common/components/Loaders";
 import withLoader from "../../../HOCs/withLoader";
 import ModalDialog from "@appserver/components/modal-dialog";
 
-import { StyledContent, StyledBodyContent } from "./StyledSharingPanel";
+import { StyledContent } from "./StyledSharingPanel";
 
 import Header from "./Header";
+import Body from "./Body";
 import Footer from "./Footer";
 
 // const SharingBodyStyle = { height: `calc(100vh - 156px)` };
@@ -451,7 +448,6 @@ class SharingPanelComponent extends React.Component {
     //console.log("Sharing panel render");
     const {
       t,
-
       isPersonal,
       isMyId,
       selection,
@@ -482,8 +478,6 @@ class SharingPanelComponent extends React.Component {
 
     const zIndex = 310;
 
-    const onPlusClickProp = !isLoading ? { onClick: this.onPlusClick } : {};
-
     const isEncrypted =
       isPrivacy || (selection.length && selection[0]?.encrypted);
 
@@ -491,13 +485,14 @@ class SharingPanelComponent extends React.Component {
       selection.length === 1 && !isEncrypted && this.getInternalLink();
 
     const filteredShareDataItems = [];
+    const externalItem = [];
     const owner = [];
     const shareGroups = [];
     const shareUsers = [];
 
-    shareDataItems.forEach((item, index) => {
+    shareDataItems.forEach((item) => {
       if (item?.sharedTo?.shareLink) {
-        return filteredShareDataItems.push(item);
+        return externalItem.push(item);
       }
 
       if (item?.isOwner) {
@@ -505,7 +500,10 @@ class SharingPanelComponent extends React.Component {
         return owner.push(item);
       }
 
-      if (item?.sharedTo?.userName || item?.sharedTo?.label) {
+      if (
+        item?.sharedTo?.userName ||
+        (item?.sharedTo?.label && item.sharedTo.avatarUrl)
+      ) {
         item.isUser = true;
         shareUsers.push(item);
       } else {
@@ -514,11 +512,12 @@ class SharingPanelComponent extends React.Component {
       }
     });
 
-    if (shareGroups[shareGroups.length - 1]) {
-      shareGroups[shareGroups.length - 1].isEndOfBlock = true;
-    }
-
-    filteredShareDataItems.push(...owner, ...shareGroups, ...shareUsers);
+    filteredShareDataItems.push(
+      ...externalItem,
+      ...owner,
+      ...shareGroups,
+      ...shareUsers
+    );
 
     return (
       <StyledAsidePanel visible={visible}>
@@ -528,7 +527,11 @@ class SharingPanelComponent extends React.Component {
           zIndex={zIndex}
           isAside={true}
         />
-        <Aside className="header_aside-panel" visible={visible}>
+        <Aside
+          className="header_aside-panel"
+          visible={visible}
+          withoutBodyScroll={true}
+        >
           <StyledContent>
             <Header
               t={t}
@@ -539,7 +542,29 @@ class SharingPanelComponent extends React.Component {
               onShowUsersPanel={this.onShowUsersPanel}
               onShowGroupsPanel={this.onShowGroupsPanel}
             />
-            <StyledBodyContent>
+            {!isLoading && externalItem && (
+              <Body
+                t={t}
+                isPersonal={isPersonal}
+                selection={selection}
+                externalItem={externalItem[0]}
+                owner={owner[0]}
+                shareGroups={shareGroups}
+                shareUsers={shareUsers}
+                isMyId={isMyId}
+                onToggleLink={this.onToggleLink}
+                onShowEmbeddingPanel={this.onShowEmbeddingPanel}
+                onChangeItemAccess={this.onChangeItemAccess}
+                accessOptions={accessOptions}
+                externalAccessOptions={externalAccessOptions}
+                canShareOwnerChange={canShareOwnerChange}
+                internalLink={internalLink}
+                onRemoveUserClick={this.onRemoveUserItemClick}
+                onShowChangeOwnerPanel={this.onShowChangeOwnerPanel}
+                documentTitle={documentTitle}
+              />
+            )}
+            {/* <StyledBodyContent>
               <Scrollbar ref={this.scrollRef} stype="mediumBlack">
                 {!isLoading ? (
                   filteredShareDataItems.length > 0 ? (
@@ -584,7 +609,7 @@ class SharingPanelComponent extends React.Component {
                   </div>
                 )}
               </Scrollbar>
-            </StyledBodyContent>
+            </StyledBodyContent> */}
 
             <Footer
               t={t}
