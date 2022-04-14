@@ -23,7 +23,7 @@ function useMfScripts() {
     url: STUDIO_REMOTE_ENTRY_URL,
   });
 
-  React.useEffect(async () => {
+  React.useEffect(() => {
     if (filesReady && studioReady) {
       initMfScripts();
     }
