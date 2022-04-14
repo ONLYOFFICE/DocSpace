@@ -79,7 +79,6 @@ const StyledExternalLink = styled.div`
   width: 100%;
 
   padding: 20px 16px;
-  margin-bottom: 32px;
 
   border-bottom: ${(props) => props.theme.filesPanels.sharing.borderBottom};
 
@@ -201,7 +200,9 @@ const StyledInternalLink = styled.div`
   align-items: center;
   justify-content: space-between;
 
-  margin-bottom: 20px;
+  padding: 20px 16px;
+
+  box-sizing: border-box;
 
   .internal-link__link-text {
     line-height: 22px !important;

@@ -1,22 +1,25 @@
 import React from "react";
+import copy from "copy-to-clipboard";
 
+import toastr from "@appserver/components/toast/toastr";
 import Text from "@appserver/components/text";
 
 import { StyledInternalLink } from "./StyledSharingPanel";
 
-const InternalLink = ({ linkText, copyText, onCopyInternalLink }) => {
+const InternalLink = ({ t, internalLink }) => {
   const onCopyInternalLinkAction = React.useCallback(() => {
-    onCopyInternalLink && onCopyInternalLink();
-  }, [onCopyInternalLink]);
+    copy(internalLink);
+    toastr.success(t("Translations:LinkCopySuccess"));
+  }, [internalLink]);
 
   return (
     <StyledInternalLink>
-      <Text className={"internal-link__link-text"}>{linkText}</Text>
+      <Text className={"internal-link__link-text"}>{t("InternalLink")}</Text>
       <Text
         className={"internal-link__copy-text"}
         onClick={onCopyInternalLinkAction}
       >
-        {copyText}
+        {t("Translations:Copy")}
       </Text>
     </StyledInternalLink>
   );
