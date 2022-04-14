@@ -788,19 +788,80 @@ Scenario("Tfa on from settings", async ({ I }) => {
   I.mockEndpoint(Endpoints.confirm, "confirm");
   I.mockEndpoint(Endpoints.setup, "setup");
 
-  I.amOnPage("/settings/security/access-portal/tfa");
+  if (deviceType === "mobile") {
+    I.amOnPage("/settings/security/access-portal/tfa");
 
-  I.see("Two-factor authentication");
+    I.see("Two-factor authentication");
 
-  I.click({
-    react: "RadioButton",
-    props: {
-      value: "app",
-    },
-  });
+    I.click({
+      react: "RadioButton",
+      props: {
+        value: "app",
+      },
+    });
 
-  I.click("Save");
-  I.see("Configure your authenticator application");
+    I.click("Save");
+    I.see("Configure your authenticator application");
+  }
+});
+
+Scenario("Tfa on from settings custom scenario", async ({ I }) => {
+  I.mockEndpoint(Endpoints.self, "selfSettings");
+  I.mockEndpoint(Endpoints.info, "infoSettings");
+  I.mockEndpoint(Endpoints.build, "build");
+  I.mockEndpoint(Endpoints.settings, "settingsCustomization");
+  I.mockEndpoint(Endpoints.common, "common");
+  I.mockEndpoint(Endpoints.password, "password");
+  I.mockEndpoint(Endpoints.tfaapp, "tfaapp");
+  I.mockEndpoint(Endpoints.tfaconfirm, "tfaconfirm");
+  I.mockEndpoint(Endpoints.confirm, "confirm");
+  I.mockEndpoint(Endpoints.setup, "setup");
+  I.mockEndpoint(Endpoints.providers, "providers");
+  I.mockEndpoint(Endpoints.capabilities, "capabilities");
+  I.mockEndpoint(Endpoints.auth, "auth");
+
+  if (deviceType === "mobile") {
+    I.amOnPage("/settings/security/access-portal/tfa");
+
+    I.see("Two-factor authentication");
+
+    I.click({
+      react: "RadioButton",
+      props: {
+        value: "app",
+      },
+    });
+
+    I.click("Save");
+    I.see("Configure your authenticator application");
+
+    I.click({
+      react: "Avatar",
+    });
+    I.see("Settings");
+    I.click("Settings");
+    I.see("Common");
+
+    I.click({
+      react: "Avatar",
+    });
+    I.click("Sign Out");
+    I.see("Cloud Office Applications");
+
+    I.fillField("login", "test@example.com");
+    I.fillField("password", "12345678");
+    I.click({
+      react: "Button",
+      props: {
+        className: "login-button",
+        type: "page",
+      },
+    });
+
+    I.wait(2);
+
+    I.see("Configure your authenticator application");
+  }
 });
 
 Scenario("Trusted mail settings change test success", async ({ I }) => {

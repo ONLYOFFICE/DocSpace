@@ -141,4 +141,10 @@ module.exports = class Endpoints {
     method: "POST",
     baseDir: "settings",
   };
+
+  static auth = {
+    url: ["http://localhost:8092/api/2.0/authentication.json"],
+    method: "POST",
+    baseDir: "auth",
+  };
 };
