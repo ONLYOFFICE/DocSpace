@@ -14,15 +14,13 @@ const StyledContent = styled.div`
 `;
 
 const StyledHeaderContent = styled.div`
-  width: calc(100% - 16px);
-  max-width: calc(100% - 16px);
+  width: calc(100% - 32px);
+  max-width: calc(100% - 32px);
   height: 53px;
 
   border-bottom: ${(props) => props.theme.filesPanels.sharing.borderBottom};
 
   padding: 0 16px;
-
-  margin-right: -16px;
 
   display: flex;
   align-items: center;
@@ -50,9 +48,6 @@ const StyledHeaderContent = styled.div`
     .sharing_panel-arrow {
       margin-right: 16px;
     }
-
-    .sharing_panel-header {
-    }
   }
 
   .embedding_panel {
@@ -72,68 +67,49 @@ const StyledHeaderContent = styled.div`
 StyledHeaderContent.defaultProps = { theme: Base };
 
 const StyledBodyContent = styled.div`
-  width: calc(100%);
+  width: 100%;
   height: 100%;
-
-  margin-right: -16px;
 
   display: flex;
   flex-direction: column;
   align-items: start;
-
-  .panel-loader-wrapper {
-    display: flex;
-    align-items: center;
-
-    span {
-      margin-left: 8px;
-    }
-  }
 `;
 
 const StyledExternalLink = styled.div`
   width: 100%;
 
-  padding: 12px;
+  padding: 20px 16px;
   margin-bottom: 32px;
+
+  border-bottom: ${(props) => props.theme.filesPanels.sharing.borderBottom};
 
   box-sizing: border-box;
 
-  background-color: ${(props) =>
-    props.theme.filesPanels.sharing.externalLinkBackground};
-
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: start;
 
-  border-radius: 6px;
-
-  .external-link__unchecked {
-    width: 100%;
-
+  .external-link__base-line {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: start;
+    flex-direction: row;
+
+    .external-link__text {
+      font-weight: 700;
+      font-size: 16px;
+      line-height: 22px;
+
+      margin-right: 16px;
+    }
 
     .external-link__toggler {
       position: relative;
-
-      span {
-        font-weight: 600;
-        font-size: 14px;
-        line-height: 16px;
-      }
-    }
-
-    .external-link__share {
-      .fixed-max-width {
-        top: 18px;
-      }
     }
   }
 
   .external-link__checked {
-    padding-top: 12px;
+    margin-top: 16px;
     width: 100%;
 
     display: flex;
@@ -145,14 +121,16 @@ const StyledExternalLink = styled.div`
       padding-right: 0px;
 
       .external-link__buttons {
+        position: relative;
+
         height: 100%;
 
         display: flex;
         align-items: center;
 
-        padding: 4px 16px 4px 24px;
+        padding: 4px 16px;
 
-        .external-link__code {
+        .external-link__code-icon {
           margin-right: 12px;
 
           cursor: pointer;
@@ -162,18 +140,25 @@ const StyledExternalLink = styled.div`
           }
         }
 
-        .external-link__copy {
+        .external-link__share-icon {
           cursor: pointer;
           path {
             fill: ${(props) =>
               props.theme.filesPanels.sharing.externalLinkSvg} !important;
           }
         }
+
+        external-link__share-dropdown {
+        }
       }
 
       .append {
         display: none;
       }
+    }
+
+    .external-link__copy {
+      margin-left: 8px;
     }
 
     .panel_combo-box {
@@ -189,6 +174,20 @@ const StyledExternalLink = styled.div`
       .dropdown-container {
         top: 32px;
       }
+    }
+  }
+
+  .external-link__access-rights {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    flex-direction: row;
+
+    margin-top: 16px;
+
+    .external-link__access-rights_text {
+      color: #a3a9ae;
+      margin-right: 8px;
     }
   }
 `;
@@ -277,7 +276,7 @@ const StyledItem = styled.div`
 StyledItem.defaultProps = { theme: Base };
 
 const StyledFooterContent = styled.div`
-  width: calc(100% - 16px);
+  width: calc(100% - 32px);
   border-top: ${(props) => props.theme.filesPanels.sharing.borderTop};
 
   padding: 16px;
