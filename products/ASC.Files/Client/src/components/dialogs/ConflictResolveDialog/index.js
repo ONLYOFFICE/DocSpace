@@ -19,8 +19,14 @@ const StyledModalDialog = styled(ModalDialog)`
   }
 
   .conflict-resolve-radio-button {
+    label{
+      display: flex;
+      align-items: flex-start;
+    }
     svg {
       overflow: visible;
+      margin-right: 8px;
+      margin-top: 3px
     }
   }
 
@@ -28,11 +34,20 @@ const StyledModalDialog = styled(ModalDialog)`
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-gap: 10px;
-    width: 90%;
+    width: 100%;
   }
 
   .button-dialog-accept {
     margin-right: 8px;
+  }
+  .modal-dialog-aside-footer, .modal-dialog-modal-footer {
+    border-top: ${(props) => props.theme.button.border.baseDisabled};
+    margin-left: -16px;
+    margin-right: -16px;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-top: 16px;
+}
   }
 `;
 
@@ -183,6 +198,8 @@ const ConflictResolveDialog = (props) => {
       isLoading={!tReady}
       visible={visible}
       onClose={onCloseDialog}
+      theme={theme}
+      style={{ maxWidth: "520px" }}
     >
       <ModalDialog.Header>{t("ConflictResolveTitle")}</ModalDialog.Header>
       <ModalDialog.Body>
@@ -230,7 +247,7 @@ const ConflictResolveDialog = (props) => {
           className="button-dialog-accept"
           key="OkButton"
           label={t("Common:OKButton")}
-          size="small"
+          size="normalTouchscreen"
           primary
           onClick={onAcceptType}
           //isLoading={isLoading}
@@ -239,7 +256,7 @@ const ConflictResolveDialog = (props) => {
           className="button-dialog"
           key="CancelButton"
           label={t("Common:CancelButton")}
-          size="small"
+          size="normalTouchscreen"
           onClick={onCloseDialog}
           //isLoading={isLoading}
         />
