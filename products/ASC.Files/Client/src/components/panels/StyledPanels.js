@@ -99,7 +99,7 @@ const StyledAsidePanel = styled.div`
     max-width: 480px;
     overflow-y: hidden;
 
-    @media (max-width: 480px) {
+    @media (max-width: 500px) {
       position: fixed;
       top: 64px;
       bottom: 0;
@@ -172,7 +172,7 @@ const StyledAddUsersPanelPanel = styled.div`
     max-width: 480px;
     overflow-y: hidden;
 
-    @media (max-width: 480px) {
+    @media (max-width: 500px) {
       position: fixed;
       top: 64px;
       bottom: 0;
@@ -207,7 +207,7 @@ const StyledAddGroupsPanel = styled.div`
     max-width: 480px;
     overflow-y: hidden;
 
-    @media (max-width: 480px) {
+    @media (max-width: 500px) {
       position: fixed;
       top: 64px;
       bottom: 0;
@@ -242,7 +242,7 @@ const StyledEmbeddingPanel = styled.div`
     max-width: 480px;
     overflow-y: hidden;
 
-    @media (max-width: 480px) {
+    @media (max-width: 500px) {
       position: fixed;
       top: 64px;
       bottom: 0;
