@@ -14,27 +14,29 @@ const StyledContent = styled.div`
 `;
 
 const StyledHeaderContent = styled.div`
-  width: calc(100% - 32px);
-  max-width: calc(100% - 32px);
+  width: 100%;
+  max-width: 100%;
   height: 53px;
 
   border-bottom: ${(props) => props.theme.filesPanels.sharing.borderBottom};
 
   padding: 0 16px;
 
+  box-sizing: border-box;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
 
-  @media (max-width: 480px) {
-    width: calc(100vw - 32px);
-    max-width: calc(100vw - 32px);
+  @media (max-width: 500px) {
+    width: 100vw;
+    max-width: 100vw;
   }
 
   ${isMobileOnly &&
   css`
-    width: calc(100vw - 32px);
-    max-width: calc(100vw - 32px);
+    width: 100vw;
+    max-width: 100vw;
   `}
 
   .sharing_panel-header-info {
@@ -230,13 +232,9 @@ const StyledItem = styled.div`
   align-items: center;
   justify-content: space-between;
 
-  padding: 8px 0;
+  padding: 8px 16px;
 
-  ${(props) =>
-    props.isEndOfBlock &&
-    css`
-      margin-bottom: 16px;
-    `}
+  box-sizing: border-box;
 
   .item__info-block {
     display: flex;
@@ -277,8 +275,10 @@ const StyledItem = styled.div`
 StyledItem.defaultProps = { theme: Base };
 
 const StyledFooterContent = styled.div`
-  width: calc(100% - 32px);
+  width: 100%;
   border-top: ${(props) => props.theme.filesPanels.sharing.borderTop};
+
+  box-sizing: border-box;
 
   padding: 16px;
 
@@ -292,6 +292,9 @@ const StyledFooterContent = styled.div`
 
   .sharing_panel-checkbox {
     margin-bottom: 16px;
+  }
+  .sharing_panel-button {
+    min-height: 40px;
   }
 `;
 

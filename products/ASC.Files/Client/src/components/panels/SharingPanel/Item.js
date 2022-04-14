@@ -11,46 +11,61 @@ const Item = ({
   canShareOwnerChange,
   externalAccessOptions,
   onChangeItemAccess,
-  label,
-  avatarUrl,
-  isOwner,
-  ownerText,
   onShowChangeOwnerPanel,
-  changeOwnerText,
   access,
   onRemoveUserClick,
+  isMyId,
+  isSeparator,
 }) => {
   const onShowChangeOwnerPanelAction = React.useCallback(() => {
     onShowChangeOwnerPanel && onShowChangeOwnerPanel();
   }, [onShowChangeOwnerPanel]);
 
-  return (
-    <StyledItem isEndOfBlock={isOwner || item?.isEndOfBlock}>
+  let itemName = "";
+  let avatarUrl = "";
+
+  if (!isSeparator) {
+    itemName =
+      item.sharedTo.id === isMyId
+        ? t("Common:MeLabel")
+        : !!item.sharedTo.displayName
+        ? item.sharedTo.displayName
+        : !!item.sharedTo.name
+        ? item.sharedTo.name
+        : item.sharedTo.label;
+
+    avatarUrl = !!item.avatarSmall ? item.avatarSmall : item.avatarUrl;
+  }
+
+  return isSeparator ? (
+    <StyledItem isSeparator={isSeparator} />
+  ) : (
+    <StyledItem>
       <div className="item__info-block">
         <Avatar
           className="info-block__avatar"
           size={"min"}
           role={"user"}
           source={avatarUrl}
-          userName={label}
+          userName={itemName}
         />
-        <Text className="info-block__text">{label}</Text>
+        <Text className="info-block__text">{itemName}</Text>
       </div>
-      {isOwner ? (
+      {item.isOwner ? (
         canShareOwnerChange ? (
           <Text
             className="item__change-owner"
             onClick={onShowChangeOwnerPanelAction}
           >
-            {changeOwnerText}
+            {t("ChangeOwnerPanel:ChangeOwner").replace("()", "")}
           </Text>
         ) : (
-          <Text className="item__owner">{ownerText}</Text>
+          <Text className="item__owner">{t("Common:Owner")}</Text>
         )
       ) : (
         <AccessComboBox
           t={t}
-          access={access}
+          access={item.access}
           directionX="right"
           directionY="bottom"
           accessOptions={externalAccessOptions}
