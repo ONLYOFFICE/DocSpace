@@ -5,6 +5,7 @@ const commonStyles = css`
     grid-template-areas:
       "img img"
       "headerText headerText";
+    grid-template-rows: 72px 1fr;
     .ec-image {
       margin: auto;
     }
