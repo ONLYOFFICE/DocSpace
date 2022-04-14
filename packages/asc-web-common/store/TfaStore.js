@@ -42,10 +42,8 @@ class TfaStore {
     this.backupCodes = codes;
   };
 
-  getTfaConfirmLink = async (res) => {
-    if (res) {
-      return await api.settings.getTfaConfirmLink();
-    }
+  getTfaConfirmLink = async () => {
+    return await api.settings.getTfaConfirmLink();
   };
 
   getSecretKeyAndQR = async (confirmKey) => {
