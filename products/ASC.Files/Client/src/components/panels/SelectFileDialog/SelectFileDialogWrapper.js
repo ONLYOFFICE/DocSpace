@@ -1,10 +1,10 @@
 import React from "react";
 import { Provider as MobxProvider, inject, observer } from "mobx-react";
-
+import { I18nextProvider } from "react-i18next";
 import SelectFileDialog from "./index";
 import stores from "../../../store/index";
 import store from "studio/store";
-
+import i18n from "./i18n";
 const { auth: authStore } = store;
 
 class SelectFileDialogBody extends React.Component {
@@ -33,7 +33,9 @@ class SelectFileDialogWrapper extends React.Component {
   render() {
     return (
       <MobxProvider auth={authStore} {...stores}>
-        <SelectFileWrapper {...this.props} />
+        <I18nextProvider i18n={i18n}>
+          <SelectFileWrapper {...this.props} />
+        </I18nextProvider>
       </MobxProvider>
     );
   }
