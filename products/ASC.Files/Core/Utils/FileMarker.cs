@@ -380,9 +380,8 @@ namespace ASC.Web.Files.Utils
 
             T folderID;
             int valueNew;
-            var userFolderIdTask = internalFolderDao.GetFolderIDUserAsync(false, userID);
-            var privacyFolderIdTask = internalFolderDao.GetFolderIDPrivacyAsync(false, userID);
-            var userFolderId = await userFolderIdTask;
+            var userFolderId = await internalFolderDao.GetFolderIDUserAsync(false, userID);
+            var privacyFolderId = await internalFolderDao.GetFolderIDPrivacyAsync(false, userID);
 
             var removeTags = new List<Tag>();
 
@@ -417,8 +416,6 @@ namespace ASC.Web.Files.Utils
 
                 removeTags.AddRange(listTags);
             }
-
-            var privacyFolderId = await privacyFolderIdTask;
 
             var parentFolders = await folderDao.GetParentFoldersAsync(folderID);
             parentFolders.Reverse();
