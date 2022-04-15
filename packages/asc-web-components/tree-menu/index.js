@@ -60,6 +60,7 @@ const StyledTreeMenu = styled(Tree)`
 
   & .rc-tree-node-selected .rc-tree-title {
     ${(props) => !props.isFullFillSelection && "width: calc(100% - 26px);"}
+    margin-top: 2px;
   }
 
   &:not(.rc-tree-show-line) .rc-tree-switcher-noop {

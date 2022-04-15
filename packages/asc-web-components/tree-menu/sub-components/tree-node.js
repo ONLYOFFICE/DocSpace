@@ -222,7 +222,7 @@ const TreeNodeMenu = styled(TreeNode)`
 
     svg {
       height: 16px;
-      margin-top: 8px;
+      margin-top: 10px;
     }
   }
   span.rc-tree-iconEle {
@@ -338,6 +338,7 @@ const TreeNodeMenu = styled(TreeNode)`
     color: ${(props) => props.theme.treeNode.title.color};
     padding-left: ${(props) =>
       props.icon || props.disableSwitch ? "0" : "20px"};
+    margin-top: 2px;
   }
   span.rc-tree-title:first-child {
     max-width: 100%;
