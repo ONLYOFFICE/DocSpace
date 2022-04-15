@@ -12,6 +12,7 @@ export const DeleteDataLayout = styled.div`
 
 export const MainContainer = styled.div`
   max-width: 700px;
+  white-space: pre-line;
 
   .header {
     margin-bottom: 8px;

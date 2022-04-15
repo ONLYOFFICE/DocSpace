@@ -103,7 +103,7 @@
   "PortalAdminsDescription": "Have the same access rights as the portal owner, except the right to: change portal owner; deactivate or delete portal.",
   "PortalDeactivation": "Portal Deactivation",
   "PortalDeactivationDescription": "Use this option to deactivate your portal temporarily.",
-  "PortalDeactivationHelper": "If you wish to deactivate the portal, your portal and all information associated with it will be blocked so that no one has access to it for a particular period. To do that click the Deactivate button. A link to confirm the operation will be sent to the email address of the portal owner. In case you want to come back to the portal and resume using it you will need to use the second link provided in the confirmation email. So, please, keep this email in a safe place.",
+  "PortalDeactivationHelper": "If you wish to deactivate the portal, your portal and all information associated with it will be blocked so that no one has access to it for a particular period. To do that click the Deactivate button. A link to confirm the operation will be sent to the email address of the portal owner.\n In case you want to come back to the portal and resume using it you will need to use the second link provided in the confirmation email. So, please, keep this email in a safe place.",
   "PortalDeletion": "Portal Deletion",
   "PortalDeletionDescription": "Use this option to delete your portal permanently.",
   "PortalDeletionHelper": "If you do not think you will use the portal and would like to delete your portal permanently submit your request using the Delete button. Please, keep in mind that you will not be able to reactivate your portal or recover any information associated with it.",
