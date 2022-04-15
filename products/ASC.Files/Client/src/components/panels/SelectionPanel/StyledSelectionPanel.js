@@ -6,6 +6,9 @@ const commonStyles = css`
       "img img"
       "headerText headerText";
     grid-template-rows: 72px 1fr;
+ 
+    padding-bottom: 0;
+
     .ec-image {
       margin: auto;
     }
