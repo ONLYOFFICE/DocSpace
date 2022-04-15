@@ -3,8 +3,6 @@ import { makeObservable, action, observable } from "mobx";
 class SelectFileDialogStore {
   folderId = null;
   fileInfo = null;
-  folderTitle = "";
-  providerKey = null;
 
   constructor() {
     makeObservable(this, {
@@ -21,14 +19,6 @@ class SelectFileDialogStore {
   };
   setFile = (obj) => {
     this.fileInfo = obj;
-  };
-
-  setFolderTitle = (title) => {
-    this.folderTitle = title;
-  };
-
-  setProviderKey = (providerKey) => {
-    this.providerKey = providerKey;
   };
 }
 

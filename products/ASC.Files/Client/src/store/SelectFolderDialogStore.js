@@ -1,6 +1,6 @@
 import { makeObservable, action, observable } from "mobx";
 
-class SelectedFilesStore {
+class SelectFolderDialogStore {
   folderId = null;
   fileInfo = null;
   folderTitle = "";
@@ -11,17 +11,17 @@ class SelectedFilesStore {
     makeObservable(this, {
       fileInfo: observable,
       folderId: observable,
+      folderTitle: observable,
+      providerKey: observable,
 
       setFolderId: action,
-      setFile: action,
+      setProviderKey: action,
+      setFolderTitle: action,
     });
   }
 
   setFolderId = (id) => {
     this.folderId = id;
-  };
-  setFile = (obj) => {
-    this.fileInfo = obj;
   };
 
   setFolderTitle = (title) => {
@@ -31,10 +31,6 @@ class SelectedFilesStore {
   setProviderKey = (providerKey) => {
     this.providerKey = providerKey;
   };
-
-  setBaseFolderPath = (baseFolderPath) => {
-    this.baseFolderPath = baseFolderPath;
-  };
 }
 
-export default new SelectedFilesStore();
+export default new SelectFolderDialogStore();

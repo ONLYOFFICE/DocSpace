@@ -64,7 +64,7 @@ export default inject(
       ? expandedPanelKeys
       : selectedFolderStore.pathParts;
     const expandedKeys = expandedKeysProp?.map((item) => item.toString());
-    !expandedPanelKeys && expandedKeys.pop();
+    !expandedPanelKeys && expandedKeys?.pop();
     return {
       expandedKeys: expandedKeys,
 
