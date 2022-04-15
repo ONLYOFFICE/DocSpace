@@ -572,15 +572,8 @@ function Editor({
 
   return (
     <EditorWrapper isVisibleSharingDialog={isVisible}>
-      {needLoader ? (
-        LoaderComponent
-      ) : (
-        <>
-          <div id="editor"></div>
-          {!isLoaded && LoaderComponent}
-        </>
-      )}
-
+      <div id="editor"></div>
+      {(!isLoaded || needLoader) && LoaderComponent}
       {sharingDialog}
       {selectFileDialog}
       {selectFolderDialog}
