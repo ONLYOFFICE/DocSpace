@@ -5,13 +5,31 @@ import DropDown from "@appserver/components/drop-down";
 
 import styled, { css } from "styled-components";
 import DropDownItem from "@appserver/components/drop-down-item";
-import { isDesktop, isTablet, isMobileOnly } from "react-device-detect";
+import {
+  isDesktop,
+  isTablet,
+  isMobile,
+  isMobileOnly,
+} from "react-device-detect";
 import { Base } from "@appserver/components/themes";
-import { mobile } from "@appserver/components/utils/device";
+import { mobile, tablet } from "@appserver/components/utils/device";
 import CrossIcon from "@appserver/components/public/static/images/cross.react.svg";
 
 const StyledDropDown = styled(DropDown)`
   z-index: 500;
+
+  top: 54px !important;
+  right: 20px !important;
+
+  @media ${tablet} {
+    right: 16px !important;
+  }
+
+  ${isMobile &&
+  css`
+    right: 16px !important;
+  `}
+
   @media ${mobile} {
     position: fixed;
 
