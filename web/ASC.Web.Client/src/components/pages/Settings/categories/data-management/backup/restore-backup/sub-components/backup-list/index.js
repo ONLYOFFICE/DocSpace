@@ -163,7 +163,10 @@ class BackupListModalDialog extends React.Component {
       >
         <ModalDialog.Header>{t("BackupList")}</ModalDialog.Header>
         <ModalDialog.Body>
-          <StyledBackupList isCopyingToLocal={isCopyingToLocal}>
+          <StyledBackupList
+            isCopyingToLocal={isCopyingToLocal}
+            isEmpty={filesList?.length === 0}
+          >
             <div className="backup-list_content">
               {filesList.length > 0 && (
                 <div className="backup-restore_dialog-header">

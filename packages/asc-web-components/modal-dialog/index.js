@@ -177,7 +177,9 @@ class ModalDialog extends React.Component {
                   <BodyBox paddingProp={modalBodyPadding}>
                     {body ? body.props.children : null}
                   </BodyBox>
-                  <Box>{footer ? footer.props.children : null}</Box>
+                  <Box className="modal-dialog-modal-footer">
+                    {footer ? footer.props.children : null}
+                  </Box>
                 </>
               )}
             </Content>

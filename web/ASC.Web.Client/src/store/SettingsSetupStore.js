@@ -334,12 +334,6 @@ class SettingsSetupStore {
     return api.settings.sendOwnerChange(id);
   };
 
-  getCommonThirdPartyList = async () => {
-    const res = await api.settings.getCommonThirdPartyList();
-
-    this.setCommonThirdPartyList(res);
-  };
-
   setIsLoadingArticleSettings = (isLoading) => {
     this.isLoadingArticleSettings = isLoading;
   };
