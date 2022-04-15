@@ -6,7 +6,7 @@ const commonStyles = css`
       "img img"
       "headerText headerText";
     grid-template-rows: 72px 1fr;
- 
+
     padding-bottom: 0;
 
     .ec-image {
@@ -76,7 +76,7 @@ const StyledBody = styled.div`
       grid-area: footer;
       border-top: 1px solid ${(props) => props.theme.row.borderBottom};
       margin-left: -13px;
-      margin-right: -13px;
+      margin-right: -7px;
       padding-left: 16px;
 
       padding-top: 16px;
