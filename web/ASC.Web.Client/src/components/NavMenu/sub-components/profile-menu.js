@@ -5,11 +5,13 @@ import DropDown from "@appserver/components/drop-down";
 
 import styled, { css } from "styled-components";
 import DropDownItem from "@appserver/components/drop-down-item";
-import { isDesktop, isTablet, isMobile } from "react-device-detect";
+import { isDesktop, isTablet, isMobileOnly } from "react-device-detect";
 import { Base } from "@appserver/components/themes";
 import { mobile } from "@appserver/components/utils/device";
+import CrossIcon from "@appserver/components/public/static/images/cross.react.svg";
 
 const StyledDropDown = styled(DropDown)`
+  z-index: 500;
   @media ${mobile} {
     position: fixed;
 
@@ -24,7 +26,7 @@ const StyledDropDown = styled(DropDown)`
     border-radius: 6px 6px 0px 0px !important;
   }
 
-  ${isMobile &&
+  ${isMobileOnly &&
   css`
     position: fixed;
 
@@ -40,6 +42,37 @@ const StyledDropDown = styled(DropDown)`
     border-radius: 6px 6px 0px 0px !important;
   `}
 `;
+
+const StyledControlContainer = styled.div`
+  background: ${(props) => props.theme.catalog.control.background};
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  top: -34px;
+  right: 10px;
+  border-radius: 100px;
+  cursor: pointer;
+  display: ${isMobileOnly ? "flex" : "none"};
+  align-items: center;
+  justify-content: center;
+  z-index: 290;
+
+  @media ${mobile} {
+    display: flex;
+  }
+`;
+
+StyledControlContainer.defaultProps = { theme: Base };
+
+const StyledCrossIcon = styled(CrossIcon)`
+  width: 12px;
+  height: 12px;
+  path {
+    fill: ${(props) => props.theme.catalog.control.fill};
+  }
+`;
+
+StyledCrossIcon.defaultProps = { theme: Base };
 
 const commonStyle = css`
   font-family: "Open Sans", sans-serif, Arial;
@@ -115,15 +148,11 @@ class ProfileMenu extends React.Component {
       open,
       forwardedRef,
     } = this.props;
-    const right = isTablet ? "4px" : "8px";
-    const top = "62px";
 
     return (
       <StyledDropDown
         className={className}
         directionX="right"
-        right={right}
-        top={top}
         open={open}
         clickOutsideAction={clickOutsideAction}
         forwardedRef={forwardedRef}
@@ -141,6 +170,9 @@ class ProfileMenu extends React.Component {
             </AvatarContainer>
             <MainLabelContainer>{displayName}</MainLabelContainer>
             <LabelContainer>{email}</LabelContainer>
+            <StyledControlContainer onClick={clickOutsideAction}>
+              <StyledCrossIcon />
+            </StyledControlContainer>
           </MenuContainer>
         </StyledProfileMenu>
         {children}
