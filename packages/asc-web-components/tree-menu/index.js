@@ -31,7 +31,6 @@ const StyledTreeMenu = styled(Tree)`
     width: 18px;
     height: 16px;
     padding: 0;
-    /* margin-top: 4px; */
     margin-top: -4px;
   }
 
@@ -46,8 +45,6 @@ const StyledTreeMenu = styled(Tree)`
     margin-right: 6px !important;
   }
   .rc-tree-node-content-wrapper {
-    /* position: static !important; */
-    /* margin-bottom: ${(props) => +props.gapBetweenNodes - 16 + "px;"}; */
     padding-top: 4px;
   }
 
@@ -87,8 +84,6 @@ const StyledTreeMenu = styled(Tree)`
   .rc-tree-child-tree-open {
     display: block;
     ${(props) => props.disableSwitch && "margin: 0 0 25px 0;"}
-    //margin-left: ${(props) => (props.disableSwitch ? "27px" : "16px")};
-    /* padding-left: 16px; */
     li:first-child {
       margin-top: ${(props) => (props.disableSwitch ? "10px" : "8px")};
       margin-bottom: 8px;
@@ -100,7 +95,6 @@ const StyledTreeMenu = styled(Tree)`
   }
 
   .rc-tree-treenode-selected {
-    /* background: #f3f4f4; */
     ::after {
       position: absolute;
       display: block;
