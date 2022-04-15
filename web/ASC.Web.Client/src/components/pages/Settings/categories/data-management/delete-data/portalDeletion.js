@@ -30,7 +30,12 @@ const PortalDeactivation = (props) => {
         {t("PortalDeletionDescription")}
       </Text>
       <Text className="helper">{t("PortalDeletionHelper")}</Text>
-      <Button label={t("Common:Delete")} primary size="normal" />
+      <Button
+        className="button"
+        label={t("Common:Delete")}
+        primary
+        size="normal"
+      />
     </MainContainer>
   );
 };

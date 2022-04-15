@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { smallTablet, mobile } from "@appserver/components/utils/device";
 
 export const DeleteDataLayout = styled.div`
   width: 100%;
@@ -24,5 +25,17 @@ export const MainContainer = styled.div`
 
   .helper {
     margin-bottom: 24px;
+  }
+
+  .button {
+    @media (${smallTablet}) {
+      position: absolute;
+      bottom: 16px;
+      width: calc(100% - 40px);
+
+      @media (${mobile}) {
+        width: calc(100% - 32px);
+      }
+    }
   }
 `;
