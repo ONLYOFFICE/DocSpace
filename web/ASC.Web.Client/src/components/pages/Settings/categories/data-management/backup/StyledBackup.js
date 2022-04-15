@@ -54,11 +54,11 @@ const StyledManualBackup = styled.div`
     button:first-child {
       width: 50%;
       max-width: 164px;
+      margin-right: 8px;
     }
     button:last-child {
       max-width: 164px;
       width: calc(50% - 8px);
-      margin-left: 8px;
     }
   }
 
