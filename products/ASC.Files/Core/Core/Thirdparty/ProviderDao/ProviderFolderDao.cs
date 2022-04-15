@@ -124,7 +124,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
                 var selectorLocal = selector;
                 var matchedIds = folderIds.Where(selectorLocal.IsMatch).ToList();
 
-                if (matchedIds.Count > 0) continue;
+                if (matchedIds.Count == 0) continue;
 
                 result = result.Concat(matchedIds.GroupBy(selectorLocal.GetIdCode)
                                                 .ToAsyncEnumerable()
