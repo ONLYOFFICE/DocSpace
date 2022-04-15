@@ -55,13 +55,21 @@ FolderTreeBody.defaultProps = {
   isLoadingData: false,
 };
 
-export default inject(({ filesStore, treeFoldersStore }, { expandedKeys }) => {
-  const { filter, isLoading } = filesStore;
-  const { expandedPanelKeys } = treeFoldersStore;
+export default inject(
+  ({ filesStore, treeFoldersStore, selectedFolderStore }) => {
+    const { filter, isLoading } = filesStore;
+    const { expandedPanelKeys } = treeFoldersStore;
 
-  return {
-    expandedKeys: expandedPanelKeys ? expandedPanelKeys : expandedKeys,
-    filter,
-    isLoading,
-  };
-})(observer(FolderTreeBody));
+    const expandedKeysProp = expandedPanelKeys
+      ? expandedPanelKeys
+      : selectedFolderStore.pathParts;
+    const expandedKeys = expandedKeysProp?.map((item) => item.toString());
+    !expandedPanelKeys && expandedKeys.pop();
+    return {
+      expandedKeys: expandedKeys,
+
+      filter,
+      isLoading,
+    };
+  }
+)(observer(FolderTreeBody));

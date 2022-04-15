@@ -72,12 +72,13 @@ export default inject(({ backup }) => {
     selectedFolderId,
     defaultStorageType,
     commonThirdPartyList,
+    defaultFolderId,
   } = backup;
 
   const isResourcesDefault =
     defaultStorageType === `${BackupStorageType.ResourcesModuleType}`;
 
-  const passedId = isResourcesDefault ? selectedFolderId : "";
+  const passedId = isResourcesDefault ? defaultFolderId : "";
 
   return {
     setSelectedFolder,

@@ -7,6 +7,7 @@ import toastr from "@appserver/components/toast/toastr";
 import SelectFolderDialog from "../SelectFolderDialog";
 import SimpleFileInput from "../../SimpleFileInput";
 import { withTranslation } from "react-i18next";
+import SelectionPanel from "../SelectionPanel/SelectionPanelBody";
 class SelectFolderInput extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -24,14 +25,45 @@ class SelectFolderInput extends React.PureComponent {
     };
   }
   async componentDidMount() {
-    const { setFirstLoad } = this.props;
+    const {
+      setFirstLoad,
+      treeFolders,
+      foldersType,
+      id,
+      onSelectFolder,
+      foldersList,
+    } = this.props;
 
     setFirstLoad(false);
+
+    let resultingFolderTree, resultingId;
+
+    try {
+      [
+        resultingFolderTree,
+        resultingId,
+      ] = await SelectionPanel.getBasicFolderInfo(
+        treeFolders,
+        foldersType,
+        id,
+        this.onSetBaseFolderPath,
+        onSelectFolder,
+        foldersList
+      );
+    } catch (e) {
+      toastr.error(e);
+      return;
+    }
+
+    this.setState({
+      resultingFolderTree,
+      baseId: resultingId,
+    });
   }
 
   componentDidUpdate(prevProps) {
-    const { isSuccessSave, isReset } = this.props;
-    const { newFolderPath, baseFolderPath } = this.state;
+    const { isSuccessSave, isReset, setFolderId, id } = this.props;
+    const { newFolderPath, baseFolderPath, baseId } = this.state;
 
     if (isSuccessSave && isSuccessSave !== prevProps.isSuccessSave) {
       newFolderPath &&
@@ -41,6 +73,8 @@ class SelectFolderInput extends React.PureComponent {
     }
 
     if (isReset && isReset !== prevProps.isReset) {
+      setFolderId(baseId !== id && id ? id : baseId);
+
       this.setState({
         newFolderPath: baseFolderPath,
       });
@@ -115,8 +149,15 @@ class SelectFolderInput extends React.PureComponent {
       isLoading,
     });
   };
+
   render() {
-    const { isLoading, baseFolderPath, newFolderPath, baseId } = this.state;
+    const {
+      isLoading,
+      baseFolderPath,
+      newFolderPath,
+      baseId,
+      resultingFolderTree,
+    } = this.state;
     const {
       onClickInput,
       isError,
@@ -145,9 +186,11 @@ class SelectFolderInput extends React.PureComponent {
           isDisabled={isFolderTreeLoading || isDisabled || isLoading}
         />
 
-        {!isFolderTreeLoading && (
+        {!isFolderTreeLoading && isPanelVisible && (
           <SelectFolderDialog
             {...rest}
+            withInput={true}
+            folderTree={resultingFolderTree}
             id={passedId}
             isPanelVisible={isPanelVisible}
             onSetBaseFolderPath={this.onSetBaseFolderPath}
@@ -172,9 +215,15 @@ SelectFolderInput.defaultProps = {
   placeholder: "",
 };
 
-export default inject(({ filesStore }) => {
-  const { setFirstLoad } = filesStore;
-  return {
-    setFirstLoad,
-  };
-})(observer(withTranslation("Translations")(SelectFolderInput)));
+export default inject(
+  ({ filesStore, treeFoldersStore, selectFolderDialogStore }) => {
+    const { setFirstLoad } = filesStore;
+    const { treeFolders } = treeFoldersStore;
+    const { setFolderId } = selectFolderDialogStore;
+    return {
+      setFirstLoad,
+      treeFolders,
+      setFolderId,
+    };
+  }
+)(observer(withTranslation("Translations")(SelectFolderInput)));

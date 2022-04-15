@@ -2,9 +2,9 @@ import React from "react";
 import { StyledAsideBody } from "../SelectionPanel/StyledSelectionPanel";
 import Text from "@appserver/components/text";
 import SelectFolderInput from "../SelectFolderInput";
-import FilesListBody from "../SelectionPanel/FilesListBody";
 import Button from "@appserver/components/button";
 import ModalDialog from "@appserver/components/modal-dialog";
+import FilesListWrapper from "../SelectionPanel/FilesListWrapper";
 
 const SelectFileDialogAsideView = ({
   t,
@@ -31,8 +31,7 @@ const SelectFileDialogAsideView = ({
   onClickInput,
   isFolderPanelVisible,
   maxInputWidth,
-  page,
-  filesPanelExpandedKeys,
+  newFilter,
 }) => {
   const onMouseEvent = (event) => {
     event.stopPropagation();
@@ -79,7 +78,6 @@ const SelectFileDialogAsideView = ({
                   isFolderTreeLoading={!!!resultingFolderTree}
                   isNeedArrowIcon
                   maxInputWidth={maxInputWidth}
-                  filesPanelExpandedKeys={filesPanelExpandedKeys}
                 />
 
                 <Text color="#A3A9AE" className="selection-panel_aside-title">
@@ -87,18 +85,14 @@ const SelectFileDialogAsideView = ({
                 </Text>
               </div>
               <div className="selection-panel_files">
-                <FilesListBody
+                <FilesListWrapper
                   theme={theme}
-                  files={files}
                   onSelectFile={onSelectFile}
-                  hasNextPage={hasNextPage}
-                  isNextPageLoading={isNextPageLoading}
-                  loadNextPage={loadNextPage}
                   folderId={folderId}
                   displayType="aside"
                   folderSelection={false}
                   fileId={fileId}
-                  page={page}
+                  newFilter={newFilter}
                 />
               </div>
               <div className="selection-panel_aside-footer">

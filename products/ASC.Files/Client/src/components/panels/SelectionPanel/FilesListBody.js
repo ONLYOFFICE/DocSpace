@@ -100,12 +100,11 @@ const FilesListBody = ({
       const isLoaded = isItemLoaded(index);
 
       if (!isLoaded || !folderId) {
-        if (!timerId)
-          timerId = setTimeout(() => {
-            setIsLoading(true);
-          }, 500);
-
         if (countLoad >= 1) {
+          // timerId = setTimeout(() => {
+          //   setIsLoading(true);
+          // }, 500);
+
           return renderPageLoader(style);
         }
 
@@ -113,9 +112,9 @@ const FilesListBody = ({
       }
 
       if (timerId) {
-        setIsLoading(false);
-        clearTimeout(timerId);
-        timerId = null;
+        // setIsLoading(false);
+        // clearTimeout(timerId);
+        //timerId = null;
       }
 
       const item = files[index];

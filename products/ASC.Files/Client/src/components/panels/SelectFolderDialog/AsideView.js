@@ -32,10 +32,8 @@ const SelectFolderDialogAsideView = ({
   onButtonClick,
   dialogName,
   header,
-  canCreate,
   primaryButtonName,
   isDisableTree,
-  expandedKeys,
 }) => {
   return (
     <StyledModalDialog
@@ -83,7 +81,6 @@ const SelectFolderDialogAsideView = ({
                   selectedKeys={[`${folderId}`]}
                   isDisableTree={isDisableTree}
                   displayType="aside"
-                  expandedKeys={expandedKeys}
                 />
               ) : (
                 <Loaders.NewTreeFolders />
@@ -100,9 +97,7 @@ const SelectFolderDialogAsideView = ({
                   size="normalTouchscreen"
                   label={primaryButtonName}
                   onClick={onButtonClick}
-                  isDisabled={
-                    isDisableTree || isLoadingData || !isAvailable || !canCreate
-                  }
+                  isDisabled={isDisableTree || isLoadingData || !isAvailable}
                 />
                 <Button
                   size="normalTouchscreen"

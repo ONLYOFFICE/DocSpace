@@ -84,7 +84,8 @@ const OperationsPanelComponent = (props) => {
   };
 
   const onSubmit = (selectedFolder, folderTitle, providerKey) => {
-    if (currentFolderId === selectedFolder) {
+    debugger;
+    if (+currentFolderId === +selectedFolder) {
       return;
     }
 

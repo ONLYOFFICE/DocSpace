@@ -2,7 +2,7 @@ import React from "react";
 import ModalDialog from "@appserver/components/modal-dialog";
 import FolderTreeBody from "../../FolderTreeBody";
 import Button from "@appserver/components/button";
-import FilesListBody from "./FilesListBody";
+import FilesListWrapper from "./FilesListWrapper";
 import {
   getCommonFoldersTree,
   getFolder,
@@ -23,10 +23,6 @@ const SelectionPanelBody = ({
   onClose,
   withoutProvider,
   onSelectFile,
-  files,
-  hasNextPage,
-  isNextPageLoading,
-  loadNextPage,
   filesListTitle,
   dialogName,
   primaryButtonName,
@@ -47,6 +43,7 @@ const SelectionPanelBody = ({
   expandedKeys,
   isDisableTree,
   page,
+  newFilter,
 }) => {
   const onMouseEvent = (event) => {
     event.stopPropagation();
@@ -113,18 +110,14 @@ const SelectionPanelBody = ({
                     </Text>
                   </div>
 
-                  <FilesListBody
+                  <FilesListWrapper
                     theme={theme}
-                    files={files}
                     onSelectFile={onSelectFile}
-                    hasNextPage={hasNextPage}
-                    isNextPageLoading={isNextPageLoading}
-                    loadNextPage={loadNextPage}
                     folderId={folderId}
                     displayType={"modal"}
                     folderSelection={folderSelection}
+                    newFilter={newFilter}
                     fileId={fileId}
-                    page={page}
                   />
                 </>
               </div>
@@ -187,7 +180,6 @@ class SelectionPanel extends React.Component {
     onSetBaseFolderPath,
     onSelectFolder,
     foldersList,
-    isSetFolderImmediately,
     isFilesPanel = false
   ) => {
     const getRequestFolderTree = () => {
@@ -239,7 +231,7 @@ class SelectionPanel extends React.Component {
       }
     };
 
-    let requestedTreeFolders, filteredTreeFolders, passedId;
+    let requestedTreeFolders, filteredTreeFolders;
 
     const treeFoldersLength = treeFolders.length;
 
@@ -257,17 +249,15 @@ class SelectionPanel extends React.Component {
     const foldersTree =
       treeFoldersLength > 0 ? treeFolders : requestedTreeFolders;
 
-    if (id || isSetFolderImmediately || foldersType === "common") {
-      passedId = id ? id : foldersTree[0].id;
+    const passedId = id ? id : foldersTree[0].id;
 
-      if (foldersType === "third-party") {
-        isFilesPanel && onSetBaseFolderPath && onSetBaseFolderPath(passedId);
-      } else {
-        onSetBaseFolderPath && onSetBaseFolderPath(passedId);
-      }
-
-      onSelectFolder && onSelectFolder(passedId);
+    if (foldersType === "third-party") {
+      isFilesPanel && onSetBaseFolderPath && onSetBaseFolderPath(passedId);
+    } else {
+      onSetBaseFolderPath && onSetBaseFolderPath(passedId);
     }
+
+    onSelectFolder && onSelectFolder(passedId);
 
     if (
       foldersType === "exceptSortedByTags" ||
