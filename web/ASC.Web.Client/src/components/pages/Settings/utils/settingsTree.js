@@ -132,6 +132,20 @@ export const settingsTree = [
         link: "delete-data",
         tKey: "DeleteData",
         isCategory: true,
+        children: [
+          {
+            key: "4-1-0",
+            icon: "",
+            link: "deactivation",
+            tKey: "PortalDeactivation",
+          },
+          {
+            key: "4-1-1",
+            icon: "",
+            link: "deletion",
+            tKey: "PortalDeletion",
+          },
+        ],
       },
     ],
   },

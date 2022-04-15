@@ -47,7 +47,10 @@ const RestoreBackup = lazy(() =>
   import("./categories/data-management/backup/restore-backup")
 );
 const DeleteData = lazy(() =>
-  import("./categories/data-management/delete-data")
+  import("./categories/data-management/delete-data/portalDeletion")
+);
+const DeactivateData = lazy(() =>
+  import("./categories/data-management/delete-data/portalDeactivation")
 );
 const WhiteLabel = lazy(() => import("./categories/common/whitelabel"));
 
@@ -105,11 +108,15 @@ const DATA_MANAGEMENT_URL = [
   combineUrl(PROXY_BASE_URL, "/datamanagement/backup"),
   combineUrl(PROXY_BASE_URL, "/datamanagement/delete-data"),
 ];
-/*const BACKUP_URL = combineUrl(PROXY_BASE_URL, "/datamanagement/backup");
+/*const BACKUP_URL = combineUrl(PROXY_BASE_URL, "/datamanagement/backup");*/
 const DELETE_DATA_URL = combineUrl(
   PROXY_BASE_URL,
-  "/datamanagement/delete-data"
-);*/
+  "/datamanagement/delete-data/deletion"
+);
+const DEACTIVATE_DATA_URL = combineUrl(
+  PROXY_BASE_URL,
+  "/datamanagement/delete-data/deactivation"
+);
 
 const ERROR_404_URL = combineUrl(AppServerConfig.proxyURL, "/error/404");
 
@@ -155,6 +162,9 @@ const Settings = () => {
             path={DATA_MANAGEMENT_URL}
             component={DataManagementSettings}
           />
+          <Route exact path={DELETE_DATA_URL} component={DeleteData} />
+          <Route exact path={DEACTIVATE_DATA_URL} component={DeactivateData} />
+
           {/*<Route exact path={BACKUP_URL} component={Backup} />
           <Route exact path={DELETE_DATA_URL} component={DeleteData} />*/}
 
