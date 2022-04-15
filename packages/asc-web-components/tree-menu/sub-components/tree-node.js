@@ -124,6 +124,7 @@ const TreeNodeMenu = styled(TreeNode)`
 
   .rc-tree-node-selected {
     max-width: ${(props) => (props.newItems > 999 ? "71%" : "87%")} !important;
+    width: calc(100% - 10px) !important;
   }
 
   ${(props) =>
@@ -184,6 +185,7 @@ const TreeNodeMenu = styled(TreeNode)`
   .rc-tree-node-content-wrapper {
     // width: ${(props) => (props.disableSwitch ? "90%" : "108%")};
     width: calc(100% - 16px);
+    max-width: 87%;
     display: inline-block;
     position: relative;
     z-index: 2;
@@ -329,7 +331,7 @@ const TreeNodeMenu = styled(TreeNode)`
         ? props.icon
           ? props.newItems > 999
             ? "calc(100% - 104px)"
-            : "calc(100% - 44px)"
+            : "calc(100% - 16px)"
           : "calc(100% - 20px)"
         : "100%"};
     white-space: nowrap;
