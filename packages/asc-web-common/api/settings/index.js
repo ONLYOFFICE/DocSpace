@@ -429,13 +429,6 @@ export function validateTfaCode(code) {
   });
 }
 
-export function getCommonThirdPartyList() {
-  const options = {
-    method: "get",
-    url: "/files/thirdparty/common",
-  };
-  return request(options);
-}
 export function getBackupStorage() {
   const options = {
     method: "get",

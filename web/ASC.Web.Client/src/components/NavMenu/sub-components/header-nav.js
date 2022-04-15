@@ -36,15 +36,6 @@ const StyledNav = styled.nav`
   height: 48px;
   z-index: 190 !important;
 
-  .profile-menu {
-    right: 12px;
-    top: 66px;
-
-    @media ${tablet} {
-      right: 6px;
-    }
-  }
-
   & > div {
     margin: 0 0 0 16px;
     padding: 0;
@@ -85,9 +76,6 @@ const HeaderNav = ({
   buildVersionInfo,
   debugInfo,
   settingsModule,
-
-  changeTheme,
-  isDarkMode,
 }) => {
   const { t } = useTranslation(["NavMenu", "Common", "About"]);
   const [visibleAboutDialog, setVisibleAboutDialog] = useState(false);
@@ -160,13 +148,6 @@ const HeaderNav = ({
         }),
       },
       {
-        key: "DarkMode",
-        label: t("Common:DarkMode"),
-        onClick: changeTheme,
-        withToggle: true,
-        isChecked: isDarkMode,
-      },
-      {
         key: "AboutBtn",
         label: t("AboutCompanyTitle"),
         onClick: onAboutClick,
@@ -176,6 +157,7 @@ const HeaderNav = ({
         key: "LogoutBtn",
         label: t("LogoutButton"),
         onClick: onLogoutClick,
+        isButton: true,
       },
     ];
 
@@ -188,7 +170,7 @@ const HeaderNav = ({
     }
 
     return actions;
-  }, [onProfileClick, onAboutClick, onLogoutClick, isDarkMode, changeTheme]);
+  }, [onProfileClick, onAboutClick, onLogoutClick]);
   //console.log("HeaderNav render");
   return (
     <StyledNav className="profileMenuIcon hidingHeader">
@@ -258,14 +240,10 @@ export default withRouter(
       toggleArticleOpen,
       buildVersionInfo,
       debugInfo,
-      theme,
-      changeTheme,
     } = settingsStore;
     const { user, userIsUpdate, setUserIsUpdate } = userStore;
     const modules = auth.availableModules;
     const settingsModule = modules.find((module) => module.id === "settings");
-
-    const isDarkMode = !theme.isBase;
 
     return {
       isPersonal,
@@ -285,8 +263,6 @@ export default withRouter(
       buildVersionInfo,
       debugInfo,
       settingsModule,
-      changeTheme,
-      isDarkMode,
     };
   })(observer(HeaderNav))
 );

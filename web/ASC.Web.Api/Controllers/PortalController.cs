@@ -40,6 +40,10 @@ namespace ASC.Web.Api.Controllers
     [ApiController]
     public class PortalController : ControllerBase
     {
+        private readonly ApiSystemHelper _apiSystemHelper;
+        private readonly CoreSettings _coreSettings;
+        private readonly StudioNotifyService _studioNotifyService;
+        private readonly PermissionContext _permissionContext;
 
         private Tenant Tenant { get { return ApiContext.Tenant; } }
 
@@ -87,11 +91,11 @@ namespace ASC.Web.Api.Controllers
             LicenseReader licenseReader,
             SetupInfo setupInfo,
             DocumentServiceLicense documentServiceLicense,
+            IHttpClientFactory clientFactory,
+            ApiSystemHelper apiSystemHelper,
             CoreSettings coreSettings,
             PermissionContext permissionContext,
-            ApiSystemHelper apiSystemHelper,
-            StudioNotifyService studioNotifyService,
-            IHttpClientFactory clientFactory
+            StudioNotifyService studioNotifyService
             )
         {
             Log = options.CurrentValue;
@@ -117,6 +121,10 @@ namespace ASC.Web.Api.Controllers
             StudioNotifyService = studioNotifyService;
             TenantExtra = tenantExtra;
             ClientFactory = clientFactory;
+            _apiSystemHelper = apiSystemHelper;
+            _coreSettings = coreSettings;
+            _studioNotifyService = studioNotifyService;
+            _permissionContext = permissionContext;
         }
 
         [Read("")]
@@ -296,38 +304,35 @@ namespace ASC.Web.Api.Controllers
             MobileAppInstallRegistrator.RegisterInstall(currentUser.Email, type);
         }
 
+        /// <summary>
+        /// Updates a portal name with a new one specified in the request.
+        /// </summary>
+        /// <short>Update a portal name</short>
+        /// <param name="alias">New portal name</param>
+        /// <returns>Message about renaming a portal</returns>
+        ///<visible>false</visible>
         [Update("portalrename")]
-        public object UpdatePortalNameFromObject([FromBody] PortalRenameModel model)
+        public async Task<object> UpdatePortalName(PortalRenameModel model)
         {
-            return UpdatePortalNameAsync(model);
-        }
-
-        [Update("portalrename")]
-        [Consumes("application/x-www-form-urlencoded")]
-        public object UpdatePortalNameFromForm([FromForm] PortalRenameModel model)
-        {
-            return UpdatePortalNameAsync(model);
-        }
-
-        public async Task<object> UpdatePortalNameAsync(PortalRenameModel model)
-        {
-            var enabled = SetupInfo.IsVisibleSettings("PortalRename");
-
-            if (!enabled)
-                throw new SecurityException(Resource.PortalAccessSettingsTariffException);
+            if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.PortalSecurity)))
+            {
+                throw new BillingException(Resource.ErrorNotAllowedOption);
+            }
 
             if (CoreBaseSettings.Personal)
+            {
                 throw new Exception(Resource.ErrorAccessDenied);
+            }
 
-            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+            _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
             var alias = model.Alias;
-            if (string.IsNullOrEmpty(alias)) throw new ArgumentException();
+            if (string.IsNullOrEmpty(alias)) throw new ArgumentException(nameof(alias));
 
             var tenant = TenantManager.GetCurrentTenant();
             var user = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
 
-            var localhost = CoreSettings.BaseDomain == "localhost" || tenant.TenantAlias == "localhost";
+            var localhost = _coreSettings.BaseDomain == "localhost" || tenant.TenantAlias == "localhost";
 
             var newAlias = alias.ToLowerInvariant();
             var oldAlias = tenant.TenantAlias;
@@ -335,51 +340,40 @@ namespace ASC.Web.Api.Controllers
 
             if (!string.Equals(newAlias, oldAlias, StringComparison.InvariantCultureIgnoreCase))
             {
-                if (!string.IsNullOrEmpty(ApiSystemHelper.ApiSystemUrl))
+                if (!string.IsNullOrEmpty(_apiSystemHelper.ApiSystemUrl))
                 {
-                    await ApiSystemHelper.ValidatePortalNameAsync(newAlias, user.ID);
+                    await _apiSystemHelper.ValidatePortalNameAsync(newAlias, user.ID);
                 }
                 else
                 {
                     TenantManager.CheckTenantAddress(newAlias.Trim());
                 }
 
-
-                if (!string.IsNullOrEmpty(ApiSystemHelper.ApiCacheUrl))
+                if (!string.IsNullOrEmpty(_apiSystemHelper.ApiCacheUrl))
                 {
-                    await ApiSystemHelper.AddTenantToCacheAsync(newAlias, user.ID);
+                    await _apiSystemHelper.AddTenantToCacheAsync(newAlias, user.ID);
                 }
 
                 tenant.TenantAlias = alias;
                 tenant = TenantManager.SaveTenant(tenant);
 
 
-                if (!string.IsNullOrEmpty(ApiSystemHelper.ApiCacheUrl))
+                if (!string.IsNullOrEmpty(_apiSystemHelper.ApiCacheUrl))
                 {
-                    await ApiSystemHelper.RemoveTenantFromCacheAsync(oldAlias, user.ID);
+                    await _apiSystemHelper.RemoveTenantFromCacheAsync(oldAlias, user.ID);
                 }
 
                 if (!localhost || string.IsNullOrEmpty(tenant.MappedDomain))
                 {
-                    StudioNotifyService.PortalRenameNotify(tenant, oldVirtualRootPath);
+                    _studioNotifyService.PortalRenameNotify(tenant, oldVirtualRootPath);
                 }
             }
             else
             {
-                return null;
+                return string.Empty;
             }
 
-            var reference = string.Format("{0}{1}{2}/{3}",
-                                 ApiContext.HttpContextAccessor.HttpContext.Request?.Scheme ?? Uri.UriSchemeHttp,
-                                 Uri.SchemeDelimiter,
-                                 tenant.GetTenantDomain(CoreSettings),
-                                 CommonLinkUtility.GetConfirmationUrlRelative(tenant.TenantId, user.Email, ConfirmType.Auth));
-
-            return new
-            {
-                message = Resource.SuccessfullyPortalRenameMessage,
-                reference = reference
-            };
+            return CommonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.Auth);
         }
     }
 }

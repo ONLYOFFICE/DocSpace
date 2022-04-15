@@ -317,14 +317,19 @@ namespace ASC.Api.Settings
         [AllowAnonymous]
         public SettingsWrapper GetSettings(bool? withpassword)
         {
+            var studioAdminMessageSettings = SettingsManager.Load<StudioAdminMessageSettings>();
+
             var settings = new SettingsWrapper
             {
                 Culture = Tenant.GetCulture().ToString(),
                 GreetingSettings = Tenant.Name,
                 Personal = CoreBaseSettings.Personal,
                 Version = Configuration["version:number"] ?? "",
-                TenantStatus = TenantManager.GetCurrentTenant().Status
+                TenantStatus = Tenant.Status,
+                TenantAlias = Tenant.TenantAlias,
+                EnableAdmMess = studioAdminMessageSettings.Enable || TenantExtra.IsNotPaid()
             };
+
 
             if (AuthContext.IsAuthenticated)
             {
@@ -374,9 +379,7 @@ namespace ASC.Api.Settings
                     settings.TrustedDomains = Tenant.TrustedDomains;
                 }
 
-                var studioAdminMessageSettings = SettingsManager.Load<StudioAdminMessageSettings>();
 
-                settings.EnableAdmMess = studioAdminMessageSettings.Enable || TenantExtra.IsNotPaid();
 
                 settings.ThirdpartyEnable = SetupInfo.ThirdPartyAuthEnabled && ProviderManager.IsNotEmpty;
 
