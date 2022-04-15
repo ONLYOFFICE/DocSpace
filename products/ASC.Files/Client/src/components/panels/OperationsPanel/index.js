@@ -84,7 +84,6 @@ const OperationsPanelComponent = (props) => {
   };
 
   const onSubmit = (selectedFolder, folderTitle, providerKey) => {
-    debugger;
     if (+currentFolderId === +selectedFolder) {
       return;
     }
@@ -193,7 +192,7 @@ const OperationsPanelComponent = (props) => {
           ? t("Common:Restore")
           : isCopy
           ? t("Translations:Copy")
-          : t("Translations:Move")
+          : t("Home:MoveTo")
       }
       buttonName={
         isRecycleBin
@@ -210,6 +209,7 @@ const OperationsPanel = withTranslation([
   "OperationsPanel",
   "Translations",
   "Common",
+  "Home",
 ])(OperationsPanelComponent);
 
 export default inject(
