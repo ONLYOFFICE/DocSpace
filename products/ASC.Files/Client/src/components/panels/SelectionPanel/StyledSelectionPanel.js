@@ -64,6 +64,7 @@ const StyledBody = styled.div`
 
     .selection-panel_files-header {
       padding: 16px;
+      word-break: break-word;
       .selection-panel_title {
         ${(props) => props.header && "padding-top: 16px"};
       }

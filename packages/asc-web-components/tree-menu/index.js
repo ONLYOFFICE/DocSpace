@@ -52,7 +52,7 @@ const StyledTreeMenu = styled(Tree)`
     !props.isFullFillSelection &&
     css`
       span.rc-tree-node-selected {
-        width: min-content !important;
+        // width: min-content !important;
         padding-right: 4px;
         max-width: 98%;
       }
