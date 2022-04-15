@@ -87,6 +87,36 @@ class ThirdPartyStore {
     });
   };
 
+  getThirdPartyIcon = (iconName) => {
+    switch (iconName) {
+      case "Box":
+        return "images/icon_box.react.svg";
+      case "DropboxV2":
+        return "images/icon_dropbox.react.svg";
+      case "GoogleDrive":
+        return "images/icon_google_drive.react.svg";
+      case "OneDrive":
+        return "images/icon_onedrive.react.svg";
+      case "SharePoint":
+        return "images/icon_sharepoint.react.svg";
+      case "kDrive":
+        return "images/icon_kdrive.react.svg";
+      case "Yandex":
+        return "images/icon_yandex_disk.react.svg";
+      case "OwnCloud":
+        return "images/icon_owncloud.react.svg";
+      case "NextCloud":
+        return "images/icon_nextcloud.react.svg";
+      case "OneDriveForBusiness":
+        return "images/icon_onedrive.react.svg";
+      case "WebDav":
+        return "images/icon_webdav.react.svg";
+
+      default:
+        return "";
+    }
+  };
+
   get googleConnectItem() {
     return this.capabilities.find((x) => x[0] === "GoogleDrive");
   }
