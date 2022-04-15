@@ -127,11 +127,10 @@ class ProfileActions extends React.PureComponent {
           <div style={{ paddingTop: "8px" }}>
             {this.props.userActions.map((action) =>
               action?.isButton ? (
-                <StyledButtonWrapper>
+                <StyledButtonWrapper key={action.key}>
                   <Button
                     size={"small"}
                     scale={true}
-                    key={action.key}
                     label={action.label}
                     onClick={action.onClick}
                   />
