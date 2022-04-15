@@ -5,6 +5,7 @@ import i18nextMiddleware from "i18next-express-middleware";
 import i18next from "i18next";
 import Backend from "i18next-fs-backend";
 import path, { join } from "path";
+import compression from "compression";
 
 const loadPath = (lng, ns) => {
   let resourcePath =
@@ -42,7 +43,7 @@ i18next.use(Backend).init({
 });
 
 app.use(i18nextMiddleware.handle(i18next));
-
+app.use(compression());
 app.use(
   "/products/files/doceditor/static/",
   express.static(path.resolve(__dirname, "../clientBuild/static"))
