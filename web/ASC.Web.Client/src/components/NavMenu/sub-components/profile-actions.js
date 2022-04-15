@@ -8,21 +8,19 @@ import ProfileMenu from "./profile-menu";
 import api from "@appserver/common/api";
 
 import ToggleButton from "@appserver/components/toggle-button";
+import Button from "@appserver/components/button";
 
 const StyledDiv = styled.div`
   width: 32px;
   height: 32px;
 `;
 
-const StyledDropdownItem = styled(DropDownItem)`
-  justify-content: space-between;
+const StyledButtonWrapper = styled.div`
+  width: 100%;
 
-  .toggle-button {
-    position: relative;
-    align-items: center;
+  padding: 12px 16px;
 
-    grid-gap: 0px;
-  }
+  box-sizing: border-box;
 `;
 
 class ProfileActions extends React.PureComponent {
@@ -127,16 +125,28 @@ class ProfileActions extends React.PureComponent {
           forwardedRef={this.ref}
         >
           <div style={{ paddingTop: "8px" }}>
-            {this.props.userActions.map((action) => (
-              <Link
-                noHover={true}
-                key={action.key}
-                href={action.url}
-                onClick={this.onClickItemLink}
-              >
-                <DropDownItem {...action} />
-              </Link>
-            ))}
+            {this.props.userActions.map((action) =>
+              action?.isButton ? (
+                <StyledButtonWrapper>
+                  <Button
+                    size={"small"}
+                    scale={true}
+                    key={action.key}
+                    label={action.label}
+                    onClick={action.onClick}
+                  />
+                </StyledButtonWrapper>
+              ) : (
+                <Link
+                  noHover={true}
+                  key={action.key}
+                  href={action.url}
+                  onClick={this.onClickItemLink}
+                >
+                  <DropDownItem {...action} />
+                </Link>
+              )
+            )}
           </div>
         </ProfileMenu>
       </StyledDiv>

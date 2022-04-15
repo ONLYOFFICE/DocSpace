@@ -166,6 +166,7 @@ const HeaderNav = ({
         key: "LogoutBtn",
         label: t("LogoutButton"),
         onClick: onLogoutClick,
+        isButton: true,
       },
     ];
 
