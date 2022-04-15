@@ -10,7 +10,6 @@ const { auth: authStore } = store;
 class SelectFileDialogBody extends React.Component {
   componentDidMount() {
     const { settings, setFilesSettings } = this.props;
-    authStore.init(true);
     settings && setFilesSettings(settings);
   }
 
