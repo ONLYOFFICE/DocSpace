@@ -126,9 +126,12 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             return;
         }
 
-        if (!await FilesSecurity.CanCreateAsync(toFolder))
+        if (toFolder.FolderType != FolderType.VirtualRooms && toFolder.FolderType != FolderType.Archive)
         {
-            throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_Create);
+            if (!await FilesSecurity.CanCreateAsync(toFolder))
+            {
+                throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_Create);
+            }
         }
 
         var parentFolders = await folderDao.GetParentFoldersAsync(toFolder.Id);
@@ -152,14 +155,37 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                 rootFrom = await FolderDao.GetRootFolderByFileAsync(Files[0]);
             }
 
-            if (rootFrom != null && rootFrom.FolderType == FolderType.TRASH)
+            if (rootFrom != null)
             {
-                throw new InvalidOperationException("Can not copy from Trash.");
+                if (rootFrom.FolderType == FolderType.TRASH)
+                {
+                    throw new InvalidOperationException("Can not copy from Trash.");
+                }
+                
+                if (rootFrom.FolderType == FolderType.VirtualRooms)
+                {
+                    throw new InvalidOperationException("Can not copy from VirtualRooms.");
+                }
+
+                if (rootFrom.FolderType == FolderType.Archive)
+                {
+                    throw new InvalidOperationException("Can not copy from Archive.");
+                }
             }
 
             if (toFolder.RootFolderType == FolderType.TRASH)
             {
                 throw new InvalidOperationException("Can not copy to Trash.");
+            }
+
+            if (toFolder.RootFolderType == FolderType.VirtualRooms)
+            {
+                throw new InvalidOperationException("Can not copy to VirtualRooms");
+            }
+
+            if (toFolder.RootFolderType == FolderType.Archive)
+            {
+                throw new InvalidOperationException("Can not copy to Archive");
             }
         }
 
@@ -203,6 +229,10 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             var folder = await FolderDao.GetFolderAsync(folderId);
             var taskError = WithErrorAsync(scope, await FileDao.GetFilesAsync(folder.Id, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, string.Empty, false, true).ToListAsync());
 
+            var isRoom = folder.FolderType == FolderType.CustomRoom || folder.FolderType == FolderType.EditingRoom
+                || folder.FolderType == FolderType.ReviewRoom || folder.FolderType == FolderType.ReadOnlyRoom
+                || folder.FolderType == FolderType.FillingFormsRoom;
+
             if (folder == null)
             {
                 Error = FilesCommonResource.ErrorMassage_FolderNotFound;
@@ -210,6 +240,18 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             else if (!await FilesSecurity.CanReadAsync(folder))
             {
                 Error = FilesCommonResource.ErrorMassage_SecurityException_ReadFolder;
+            }
+            else if (!isRoom && (toFolder.FolderType != FolderType.VirtualRooms || toFolder.FolderType != FolderType.Archive))
+            {
+                Error = FilesCommonResource.ErrorMessage_ArchivingFolder;
+            }
+            else if (isRoom && toFolder.FolderType != FolderType.VirtualRooms && !await FilesSecurity.CanEditRoomAsync(folder))
+            {
+                Error = FilesCommonResource.ErrorMessage_ArchivingFolder;
+            }
+            else if (isRoom && toFolder.FolderType != FolderType.Archive && !await FilesSecurity.CanReadAsync(folder))
+            {
+                Error = FilesCommonResource.ErrorMessage_ArchivingFolder;
             }
             else if (folder.RootFolderType == FolderType.Privacy
                 && (copy || toFolder.RootFolderType != FolderType.Privacy))
@@ -336,7 +378,11 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                     }
                     else
                     {
-                        if (!await FilesSecurity.CanDeleteAsync(folder))
+                        if (!isRoom && !await FilesSecurity.CanDeleteAsync(folder))
+                        {
+                            Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
+                        }
+                        else if (isRoom && !await FilesSecurity.CanEditRoomAsync(folder))
                         {
                             Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
                         }
@@ -414,6 +460,10 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             if (file == null)
             {
                 Error = FilesCommonResource.ErrorMassage_FileNotFound;
+            }
+            else if (toFolder.FolderType == FolderType.VirtualRooms || toFolder.FolderType == FolderType.Archive)
+            {
+                Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFile;
             }
             else if (!await FilesSecurity.CanReadAsync(file))
             {

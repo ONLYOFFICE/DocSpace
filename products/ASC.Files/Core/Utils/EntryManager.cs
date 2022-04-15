@@ -529,6 +529,24 @@ public class EntryManager
 
             CalculateTotal();
         }
+        else if (parent.FolderType != FolderType.Archive)
+        {
+            withSubfolders = false;
+
+            if (_global.IsAdministrator)
+            {
+                var folderDao = _daoFactory.GetFolderDao<T>();
+                var thirdPartyFolderDao = _daoFactory.GetFolderDao<string>();
+
+                var folders = await folderDao.GetFoldersAsync(parent.Id, orderBy, filter, subjectGroup, subjectId, searchText, withSubfolders).ToListAsync();
+
+                entries = entries.Concat(folders);
+            }
+            else
+            {
+                entries = await fileSecurity.GetArchiveForMeAsync();
+            }
+        }
         else
         {
             if (parent.FolderType == FolderType.TRASH)
@@ -1508,7 +1526,7 @@ public class EntryManager
             throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
         }
 
-        if (!await _fileSecurity.CanRenameAsync(file))
+        if (!await _fileSecurity.CanEditAsync(file))
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_RenameFile);
         }

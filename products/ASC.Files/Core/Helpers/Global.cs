@@ -295,6 +295,16 @@ public class GlobalFolder
         return await daoFactory.GetFolderDao<int>().GetFolderIDVirtualRooms(true);
     }
 
+    public async ValueTask<int> GetFolderArchive(IDaoFactory daoFactory)
+    {
+        if (!_coreBaseSettings.DocSpace)
+        {
+            return default;
+        }
+
+        return await daoFactory.GetFolderDao<int>().GetFolderIDArchive(true);
+    }
+
     public async ValueTask<int> GetFolderProjectsAsync(IDaoFactory daoFactory)
     {
         if (_coreBaseSettings.Personal)
@@ -715,6 +725,7 @@ public class GlobalFolderHelper
     public ValueTask<int> FolderFavoritesAsync => _globalFolder.GetFolderFavoritesAsync(_daoFactory);
     public ValueTask<int> FolderTemplatesAsync => _globalFolder.GetFolderTemplatesAsync(_daoFactory);
     public ValueTask<int> FolderVirtualRoomsAsync => _globalFolder.GetFolderVirtualRooms(_daoFactory);
+    public ValueTask<int> FolderArchiveAsync => _globalFolder.GetFolderArchive(_daoFactory);
 
     public T GetFolderMy<T>()
     {
@@ -744,6 +755,11 @@ public class GlobalFolderHelper
     public async ValueTask<T> GetFolderVirtualRooms<T>()
     {
         return (T)Convert.ChangeType(await FolderVirtualRoomsAsync, typeof(T));
+    }
+
+    public async ValueTask<T> GetFolderArchive<T>()
+    {
+        return (T)Convert.ChangeType(await FolderArchiveAsync, typeof(T));
     }
 
     public void SetFolderMy<T>(T val)

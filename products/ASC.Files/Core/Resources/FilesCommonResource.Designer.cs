@@ -781,6 +781,24 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You don&apos;t have enough permission to archive the room.
+        /// </summary>
+        public static string ErrorMessage_ArchivingFolder {
+            get {
+                return ResourceManager.GetString("ErrorMessage_ArchivingFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You cannot edit archived rooms.
+        /// </summary>
+        public static string ErrorMessage_UpdateArchivedRoom {
+            get {
+                return ResourceManager.GetString("ErrorMessage_UpdateArchivedRoom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Everyone.
         /// </summary>
         public static string Everyone {
