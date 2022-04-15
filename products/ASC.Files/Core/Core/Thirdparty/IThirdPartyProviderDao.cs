@@ -184,6 +184,11 @@ internal abstract class ThirdPartyProviderDao
         return null;
     }
 
+    public Task<string> GetFolderIDArchive(bool createIfNotExists)
+    {
+        return null;
+    }
+
     public Task<string> GetBunchObjectIDAsync(string folderID)
     {
         return null;

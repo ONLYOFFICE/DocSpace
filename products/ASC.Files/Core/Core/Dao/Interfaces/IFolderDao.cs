@@ -310,6 +310,14 @@ public interface IFolderDao<T>
     Task<T> GetFolderIDVirtualRooms(bool createIfNotExists);
 
     /// <summary>
+    /// Returns id folder "Archive"
+    /// Only in TMFolderDao
+    /// </summary>
+    /// <param name="createIfNotExists"></param>
+    /// <returns></returns>
+    Task<T> GetFolderIDArchive(bool createIfNotExists);
+
+    /// <summary>
     /// Return id of related object
     /// Only in TMFolderDao
     /// </summary>

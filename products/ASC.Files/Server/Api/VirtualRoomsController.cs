@@ -58,6 +58,12 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         return await _foldersControllerHelper.GetFolderAsync(await _globalFolderHelper.GetFolderVirtualRooms<T>(), Guid.Empty, FilterType.None, true);
     }
 
+    [Read("@archive")]
+    public async Task<FolderContentDto<T>> GetArchiveFolderAsync()
+    {
+        return await _foldersControllerHelper.GetFolderAsync(await _globalFolderHelper.GetFolderArchive<T>(), Guid.Empty, FilterType.None, true);
+    }
+
     [Create("room")]
     public async Task<FolderDto<T>> CreateRoomFromBodyAsync([FromBody] CreateRoomRequestDto inDto)
     {
@@ -83,5 +89,35 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         {
             yield return await _fileOperationDtoHelper.GetAsync(e);
         }
+    }
+
+    [Update("room/archive")]
+    public async Task<IEnumerable<FileOperationDto>> ArchiveRoomsFromBodyAsync([FromBody] DeleteRoomsRequestDto inDto)
+    {
+        var destFolder = JsonSerializer.SerializeToElement(await _globalFolderHelper.FolderArchiveAsync);
+
+        var result = new List<FileOperationDto>();
+
+        foreach (var e in _fileStorageService.MoveOrCopyItems(inDto.FolderIds.ToList(), inDto.FileIds.ToList(), destFolder, FileConflictResolveType.Skip, false, inDto.DeleteAfter))
+        {
+            result.Add(await _fileOperationDtoHelper.GetAsync(e));
+        }
+
+        return result;
+    }
+
+    [Update("room/unarchive")]
+    public async Task<IEnumerable<FileOperationDto>> UnarchiveRoomsFromBodyAsync([FromBody] DeleteRoomsRequestDto inDto)
+    {
+        var destFolder = JsonSerializer.SerializeToElement(await _globalFolderHelper.FolderVirtualRoomsAsync);
+
+        var result = new List<FileOperationDto>();
+
+        foreach (var e in _fileStorageService.MoveOrCopyItems(inDto.FolderIds.ToList(), inDto.FileIds.ToList(), destFolder, FileConflictResolveType.Skip, false, inDto.DeleteAfter))
+        {
+            result.Add(await _fileOperationDtoHelper.GetAsync(e));
+        }
+
+        return result;
     }
 }

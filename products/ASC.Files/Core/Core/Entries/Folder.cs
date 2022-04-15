@@ -46,7 +46,8 @@ public enum FolderType
     EditingRoom = 16,
     ReviewRoom = 17,
     ReadOnlyRoom = 18,
-    CustomRoom = 19
+    CustomRoom = 19,
+    Archive = 20,
 }
 
 public interface IFolder
@@ -127,6 +128,9 @@ public class Folder<T> : FileEntry<T>, IFolder, IMapFrom<DbFolder>
                         break;
                     case FolderType.VirtualRooms:
                         result.Title = FilesUCResource.VirtualRooms;
+                        break;
+                    case FolderType.Archive:
+                        result.Title = FilesUCResource.Archive;
                         break;
                     case FolderType.BUNCH:
                         try

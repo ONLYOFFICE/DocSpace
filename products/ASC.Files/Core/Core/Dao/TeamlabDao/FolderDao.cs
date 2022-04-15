@@ -39,6 +39,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     private const string Trash = "trash";
     private const string Projects = "projects";
     private const string VirtualRooms = "virtualrooms";
+    private const string Archive = "archive";
 
     private readonly FactoryIndexerFolder _factoryIndexer;
     private readonly GlobalSpace _globalSpace;
@@ -518,7 +519,9 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         {
             var folder = await GetFolderAsync(folderId).ConfigureAwait(false);
 
-            if (folder.FolderType != FolderType.DEFAULT)
+            if (folder.FolderType != FolderType.DEFAULT && folder.FolderType != FolderType.CustomRoom
+                && folder.FolderType != FolderType.FillingFormsRoom && folder.FolderType != FolderType.EditingRoom
+                && folder.FolderType != FolderType.ReadOnlyRoom && folder.FolderType != FolderType.ReviewRoom)
             {
                 throw new ArgumentException("It is forbidden to move the System folder.", nameof(folderId));
             }
@@ -966,6 +969,10 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                         folder.FolderType = FolderType.VirtualRooms;
                         folder.Title = VirtualRooms;
                         break;
+                    case Archive:
+                        folder.FolderType = FolderType.Archive;
+                        folder.Title = Archive;
+                        break;
                     default:
                         folder.FolderType = FolderType.BUNCH;
                         folder.Title = key;
@@ -1066,6 +1073,10 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                     folder.FolderType = FolderType.VirtualRooms;
                     folder.Title = VirtualRooms;
                     break;
+                case Archive:
+                    folder.FolderType = FolderType.Archive;
+                    folder.Title = Archive;
+                    break;
                 default:
                     folder.FolderType = FolderType.BUNCH;
                     folder.Title = key;
@@ -1137,6 +1148,11 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     public Task<int> GetFolderIDVirtualRooms(bool createIfNotExists)
     {
         return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, VirtualRooms, null, createIfNotExists);
+    }
+
+    public Task<int> GetFolderIDArchive(bool createIfNotExists)
+    {
+        return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Archive, null, createIfNotExists);
     }
 
     #endregion

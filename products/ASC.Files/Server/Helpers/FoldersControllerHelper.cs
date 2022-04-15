@@ -204,6 +204,7 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
         if (_coreBaseSettings.DocSpace)
         {
             folders.Add(await _globalFolderHelper.FolderVirtualRoomsAsync);
+            folders.Add(await _globalFolderHelper.FolderArchiveAsync);
         }
 
         return folders;
