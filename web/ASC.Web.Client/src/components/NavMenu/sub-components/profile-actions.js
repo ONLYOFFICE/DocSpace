@@ -127,29 +127,16 @@ class ProfileActions extends React.PureComponent {
           forwardedRef={this.ref}
         >
           <div style={{ paddingTop: "8px" }}>
-            {this.props.userActions.map((action) =>
-              action && !action?.withToggle ? (
-                <Link
-                  noHover={true}
-                  key={action.key}
-                  href={action.url}
-                  onClick={this.onClickItemLink}
-                >
-                  <DropDownItem {...action} />
-                </Link>
-              ) : (
-                action && (
-                  <StyledDropdownItem noHover={true} key={action.key}>
-                    {action.label}
-                    <ToggleButton
-                      className="toggle-button"
-                      onChange={action.onClick}
-                      isChecked={action.isChecked}
-                    />
-                  </StyledDropdownItem>
-                )
-              )
-            )}
+            {this.props.userActions.map((action) => (
+              <Link
+                noHover={true}
+                key={action.key}
+                href={action.url}
+                onClick={this.onClickItemLink}
+              >
+                <DropDownItem {...action} />
+              </Link>
+            ))}
           </div>
         </ProfileMenu>
       </StyledDiv>
