@@ -1,3 +1,29 @@
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
+
 /*
  *
  * (c) Copyright Ascensio System Limited 2010-2018
@@ -48,7 +74,7 @@ public class DistributedTaskQueue
     private TaskScheduler Scheduler { get; set; } = TaskScheduler.Default;
 
     public DistributedTaskQueue(IServiceProvider serviceProvider,
-                                ICacheNotify<DistributedTaskCancelation> cancelTaskNotify,
+        ICacheNotify<DistributedTaskCancelation> cancelTaskNotify,
                                 IDistributedCache distributedCache,
                                 IOptionsMonitor<ILog> options)
 
@@ -201,7 +227,10 @@ public class DistributedTaskQueue
     {
         var taskById = GetAllTasks().FirstOrDefault(x => x.Id == id);
 
-        if (taskById == null) return null;
+        if (taskById == null)
+        {
+            return null;
+        }
 
         return Map(taskById, _serviceProvider.GetService<T>());
     }
@@ -210,7 +239,10 @@ public class DistributedTaskQueue
     {
         var queueTasks = GetAllTasks().ToList();
 
-        if (!queueTasks.Exists(x => x.Id == id)) return;
+        if (!queueTasks.Exists(x => x.Id == id))
+        {
+            return;
+        }
 
         _cancellationCacheNotify.Publish(new DistributedTaskCancelation() { Id = id }, CacheNotifyAction.Remove);
 
@@ -289,7 +321,10 @@ public class DistributedTaskQueue
     {
         var serializedObject = _distributedCache.Get(_name);
 
-        if (serializedObject == null) return new List<DistributedTask>();
+        if (serializedObject == null)
+        {
+            return new List<DistributedTask>();
+        }
 
         using var ms = new MemoryStream(serializedObject);
 
@@ -298,11 +333,17 @@ public class DistributedTaskQueue
 
     private IEnumerable<DistributedTask> DeleteOrphanCacheItem(IEnumerable<DistributedTask> queueTasks)
     {
-        if (!queueTasks.Any()) return queueTasks;
+        if (!queueTasks.Any())
+        {
+            return queueTasks;
+        }
 
         var orphans = queueTasks.Where(IsOrphanCacheItem);
 
-        if (!orphans.Any()) return queueTasks;
+        if (!orphans.Any())
+        {
+            return queueTasks;
+        }
 
         queueTasks = queueTasks.Except(queueTasks);
 

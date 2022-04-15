@@ -24,13 +24,12 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Data.Reassigns
+namespace ASC.Data.Reassigns;
+
+public enum ProgressStatus
 {
-    public enum ProgressStatus
-    {
-        Queued,
-        Started,
-        Done,
-        Failed
-    }
+    Queued,
+    Started,
+    Done,
+    Failed
 }

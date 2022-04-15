@@ -98,7 +98,10 @@ public sealed class BackupSchedulerService : BackgroundService
 
         foreach (var schedule in backupsToSchedule)
         {
-            if (stoppingToken.IsCancellationRequested) return;
+            if (stoppingToken.IsCancellationRequested)
+            {
+                return;
+            }
 
             try
             {
@@ -117,12 +120,12 @@ public sealed class BackupSchedulerService : BackgroundService
                         _eventBus.Publish(new BackupRequestIntegrationEvent(
                                                  tenantId: schedule.TenantId,
                                                  storageBasePath: schedule.StorageBasePath,
-                                                 storageParams: JsonConvert.DeserializeObject<Dictionary<string,string>>(schedule.StorageParams),
+                                                 storageParams: JsonConvert.DeserializeObject<Dictionary<string, string>>(schedule.StorageParams),
                                                  storageType: schedule.StorageType,
                                                  backupMail: schedule.BackupMail,
                                                  createBy: ASC.Core.Configuration.Constants.CoreSystem.ID,
                                                  isScheduled: true,
-                                                 backupsStored: schedule.BackupsStored                                                
+                                                 backupsStored: schedule.BackupsStored
                                           ));
                     }
                     else

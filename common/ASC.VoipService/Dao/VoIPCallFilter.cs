@@ -46,8 +46,15 @@ public class VoipCallFilter
     {
         get
         {
-            if (string.IsNullOrWhiteSpace(Type)) return null;
-            if (TypeStatuses.TryGetValue(Type, out var status)) return status;
+            if (string.IsNullOrWhiteSpace(Type))
+            {
+                return null;
+            }
+
+            if (TypeStatuses.TryGetValue(Type, out var status))
+            {
+                return status;
+            }
 
             return null;
         }
@@ -57,7 +64,11 @@ public class VoipCallFilter
     {
         get
         {
-            if (string.IsNullOrWhiteSpace(SortBy)) return null;
+            if (string.IsNullOrWhiteSpace(SortBy))
+            {
+                return null;
+            }
+
             return SortColumns.ContainsKey(SortBy) ? SortColumns[SortBy] : null;
         }
     }

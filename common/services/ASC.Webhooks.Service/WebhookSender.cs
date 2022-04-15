@@ -53,10 +53,10 @@ public class WebhookSender
         var secretKey = entry.SecretKey;
         var data = entry.Payload;
 
-        HttpResponseMessage response = new HttpResponseMessage();
-        HttpRequestMessage request = new HttpRequestMessage();
+        var response = new HttpResponseMessage();
+        var request = new HttpRequestMessage();
 
-        for (int i = 0; i < RepeatCount; i++)
+        for (var i = 0; i < RepeatCount; i++)
         {
             try
             {

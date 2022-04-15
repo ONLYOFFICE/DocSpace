@@ -52,7 +52,8 @@ public class SecurityController : BaseSettingsController
         DisplayUserSettingsHelper displayUserSettingsHelper,
         EmployeeDtoHelper employeeWraperHelper,
         MessageTarget messageTarget,
-        IMemoryCache memoryCache) : base(apiContext, memoryCache, webItemManager)
+        IMemoryCache memoryCache,
+        IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _employeeHelperDto = employeeWraperHelper;
         _messageService = messageService;
@@ -71,10 +72,10 @@ public class SecurityController : BaseSettingsController
     {
         if (ids == null || !ids.Any())
         {
-            ids = _webItemManager.GetItemsAll().Select(i => i.ID.ToString());
+            ids = WebItemManager.GetItemsAll().Select(i => i.ID.ToString());
         }
 
-        var subItemList = _webItemManager.GetItemsAll().Where(item => item.IsSubItem()).Select(i => i.ID.ToString());
+        var subItemList = WebItemManager.GetItemsAll().Where(item => item.IsSubItem()).Select(i => i.ID.ToString());
 
         return ids.Select(r => _webItemSecurity.GetSecurityInfo(r))
                     .Select(i => new SecurityDto
@@ -90,7 +91,7 @@ public class SecurityController : BaseSettingsController
     [Read("security/{id}")]
     public bool GetWebItemSecurityInfo(Guid id)
     {
-        var module = _webItemManager[id];
+        var module = WebItemManager[id];
 
         return module != null && !module.IsDisabled(_webItemSecurity, _authContext);
     }
@@ -138,7 +139,10 @@ public class SecurityController : BaseSettingsController
         _webItemSecurity.SetSecurity(inDto.Id, inDto.Enabled, inDto.Subjects?.ToArray());
         var securityInfo = GetWebItemSecurityInfo(new List<string> { inDto.Id });
 
-        if (inDto.Subjects == null) return securityInfo;
+        if (inDto.Subjects == null)
+        {
+            return securityInfo;
+        }
 
         var productName = GetProductName(new Guid(inDto.Id));
 
@@ -186,7 +190,9 @@ public class SecurityController : BaseSettingsController
         foreach (var item in inDto.Items)
         {
             if (!itemList.ContainsKey(item.Key))
+            {
                 itemList.Add(item.Key, item.Value);
+            }
         }
 
         var defaultPageSettings = _settingsManager.Load<StudioDefaultPageSettings>();
@@ -198,7 +204,7 @@ public class SecurityController : BaseSettingsController
 
             if (item.Value)
             {
-                if (_webItemManager[productId] is IProduct webItem || productId == WebItemManager.MailProductID)
+                if (WebItemManager[productId] is IProduct webItem || productId == WebItemManager.MailProductID)
                 {
                     var productInfo = _webItemSecurity.GetSecurityInfo(item.Key);
                     var selectedGroups = productInfo.Groups.Select(group => group.ID).ToList();

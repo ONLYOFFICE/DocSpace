@@ -146,8 +146,8 @@ public class DocumentServiceTrackerHelper
     private readonly NotifyClient _notifyClient;
     private readonly MailMergeTaskRunner _mailMergeTaskRunner;
     private readonly FileTrackerHelper _fileTracker;
-    public readonly ILog _logger;
-    public readonly IHttpClientFactory _clientFactory;
+    private readonly ILog _logger;
+    private readonly IHttpClientFactory _clientFactory;
 
     public DocumentServiceTrackerHelper(
         SecurityContext securityContext,
@@ -480,8 +480,10 @@ public class DocumentServiceTrackerHelper
             {
                 case MailMergeType.AttachDocx:
                 case MailMergeType.AttachPdf:
-                    var requestDownload = new HttpRequestMessage();
-                    requestDownload.RequestUri = new Uri(_documentServiceConnector.ReplaceDocumentAdress(fileData.Url));
+                    var requestDownload = new HttpRequestMessage
+                    {
+                        RequestUri = new Uri(_documentServiceConnector.ReplaceDocumentAdress(fileData.Url))
+                    };
 
                     using (var responseDownload = await httpClient.SendAsync(requestDownload))
                     using (var streamDownload = await responseDownload.Content.ReadAsStreamAsync())
@@ -514,11 +516,14 @@ public class DocumentServiceTrackerHelper
                     break;
 
                 case MailMergeType.Html:
-                    var httpRequest = new HttpRequestMessage();
-                    httpRequest.RequestUri = new Uri(_documentServiceConnector.ReplaceDocumentAdress(fileData.Url));
+                    var httpRequest = new HttpRequestMessage
+                    {
+                        RequestUri = new Uri(_documentServiceConnector.ReplaceDocumentAdress(fileData.Url))
+                    };
 
                     using (var httpResponse = await httpClient.SendAsync(httpRequest))
                     using (var stream = await httpResponse.Content.ReadAsStreamAsync())
+                    {
                         if (stream != null)
                         {
                             using (var reader = new StreamReader(stream, Encoding.GetEncoding(Encoding.UTF8.WebName)))
@@ -526,6 +531,7 @@ public class DocumentServiceTrackerHelper
                                 message = await reader.ReadToEndAsync();
                             }
                         }
+                    }
 
                     break;
             }
@@ -582,11 +588,13 @@ public class DocumentServiceTrackerHelper
         try
         {
             var fileName = Global.ReplaceInvalidCharsAndTruncate(fileId + FileUtility.GetFileExtension(downloadUri));
-            var path = $@"save_crash\{DateTime.UtcNow.ToString("yyyy_MM_dd")}\{userId}_{fileName}";
+            var path = $@"save_crash\{DateTime.UtcNow:yyyy_MM_dd}\{userId}_{fileName}";
 
             var store = _globalStore.GetStore();
-            var request = new HttpRequestMessage();
-            request.RequestUri = new Uri(downloadUri);
+            var request = new HttpRequestMessage
+            {
+                RequestUri = new Uri(downloadUri)
+            };
 
             var httpClient = _clientFactory.CreateClient();
             using (var response = await httpClient.SendAsync(request))
@@ -623,8 +631,10 @@ public class DocumentServiceTrackerHelper
         try
         {
             var fileDao = _daoFactory.GetFileDao<T>();
-            var request = new HttpRequestMessage();
-            request.RequestUri = new Uri(differenceUrl);
+            var request = new HttpRequestMessage
+            {
+                RequestUri = new Uri(differenceUrl)
+            };
 
             var httpClient = _clientFactory.CreateClient();
             using var response = await httpClient.SendAsync(request);

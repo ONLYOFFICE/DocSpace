@@ -99,12 +99,12 @@ public class DbSettingsManager
 {
     private readonly TimeSpan _expirationTimeout = TimeSpan.FromMinutes(5);
 
-    internal ILog Logger;
-    internal ICache Cache;
-    internal IServiceProvider ServiceProvider;
-    internal DbSettingsManagerCache DbSettingsManagerCache;
-    internal AuthContext AuthContext;
-    internal TenantManager TenantManager;
+    internal ILog Logger { get; set; }
+    internal ICache Cache { get; set; }
+    internal IServiceProvider ServiceProvider { get; set; }
+    internal DbSettingsManagerCache DbSettingsManagerCache { get; set; }
+    internal AuthContext AuthContext { get; set; }
+    internal TenantManager TenantManager { get; set; }
     internal Lazy<WebstudioDbContext> LazyWebstudioDbContext;
     internal WebstudioDbContext WebstudioDbContext => LazyWebstudioDbContext.Value;
 
@@ -132,7 +132,10 @@ public class DbSettingsManager
     {
         get
         {
-            if (_tenantID == 0) _tenantID = TenantManager.GetCurrentTenant().Id;
+            if (_tenantID == 0)
+            {
+                _tenantID = TenantManager.GetCurrentTenant().Id;
+            }
 
             return _tenantID;
         }

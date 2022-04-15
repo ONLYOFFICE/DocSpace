@@ -118,7 +118,7 @@ public class FactoryIndexerFolder : FactoryIndexer<DbFolder>
             var j = 0;
             var tasks = new List<Task>();
 
-            foreach (var data in Indexer.IndexAll(getCount, getIds, getData))
+            foreach (var data in _indexer.IndexAll(getCount, getIds, getData))
             {
                 if (_settings.Threads == 1)
                 {

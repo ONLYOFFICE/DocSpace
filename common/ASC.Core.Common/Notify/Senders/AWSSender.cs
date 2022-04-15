@@ -29,7 +29,7 @@ using Message = Amazon.SimpleEmail.Model.Message;
 namespace ASC.Core.Notify.Senders;
 
 [Singletone]
-public class AWSSender : SmtpSender
+public class AWSSender : SmtpSender, IDisposable
 {
     private readonly object _locker = new object();
     private AmazonSimpleEmailServiceClient _amazonEmailServiceClient;
@@ -44,7 +44,7 @@ public class AWSSender : SmtpSender
         IServiceProvider serviceProvider,
         IOptionsMonitor<ILog> options) : base(configuration, serviceProvider, options)
     {
-        Logger = options.Get("ASC.Notify.AmazonSES");
+        _logger = options.Get("ASC.Notify.AmazonSES");
     }
 
     public override void Init(IDictionary<string, string> properties)
@@ -63,28 +63,28 @@ public class AWSSender : SmtpSender
         {
             try
             {
-                Logger.DebugFormat("Tenant: {0}, To: {1}", m.TenantId, m.Reciever);
-                using var scope = ServiceProvider.CreateScope();
+                _logger.DebugFormat("Tenant: {0}, To: {1}", m.TenantId, m.Reciever);
+                using var scope = _serviceProvider.CreateScope();
                 var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
                 tenantManager.SetCurrentTenant(m.TenantId);
 
                 var configuration = scope.ServiceProvider.GetService<CoreConfiguration>();
                 if (!configuration.SmtpSettings.IsDefaultSettings)
                 {
-                    UseCoreSettings = true;
+                    _useCoreSettings = true;
                     result = base.Send(m);
-                    UseCoreSettings = false;
+                    _useCoreSettings = false;
                 }
                 else
                 {
                     result = SendMessage(m);
                 }
 
-                Logger.DebugFormat(result.ToString());
+                _logger.DebugFormat(result.ToString());
             }
             catch (Exception e)
             {
-                Logger.ErrorFormat("Tenant: {0}, To: {1} - {2}", m.TenantId, m.Reciever, e);
+                _logger.ErrorFormat("Tenant: {0}, To: {1} - {2}", m.TenantId, m.Reciever, e);
                 throw;
             }
         }
@@ -107,7 +107,7 @@ public class AWSSender : SmtpSender
 
         if (result == NoticeSendResult.MessageIncorrect || result == NoticeSendResult.SendingImpossible)
         {
-            Logger.DebugFormat("Amazon sending failed: {0}, fallback to smtp", result);
+            _logger.DebugFormat("Amazon sending failed: {0}, fallback to smtp", result);
             result = base.Send(m);
         }
 
@@ -126,7 +126,7 @@ public class AWSSender : SmtpSender
                 {
                     //Quota exceeded, queue next refresh to +24 hours
                     _lastRefresh = DateTime.UtcNow.AddHours(24);
-                    Logger.WarnFormat("Quota limit reached. setting next check to: {0}", _lastRefresh);
+                    _logger.WarnFormat("Quota limit reached. setting next check to: {0}", _lastRefresh);
 
                     return NoticeSendResult.SendingImpossible;
                 }
@@ -178,7 +178,7 @@ public class AWSSender : SmtpSender
             {
                 //Possible BUG: at high frequncies maybe bug with to little differences
                 //This means that time passed from last send is less then message per second
-                Logger.DebugFormat("Send rate doesn't fit in send window. sleeping for: {0}", _sendWindow);
+                _logger.DebugFormat("Send rate doesn't fit in send window. sleeping for: {0}", _sendWindow);
                 Thread.Sleep(_sendWindow);
             }
         }
@@ -186,13 +186,16 @@ public class AWSSender : SmtpSender
 
     private void RefreshQuotaIfNeeded()
     {
-        if (!IsRefreshNeeded()) return;
+        if (!IsRefreshNeeded())
+        {
+            return;
+        }
 
         lock (_locker)
         {
             if (IsRefreshNeeded())//Double check
             {
-                Logger.DebugFormat("refreshing qouta. interval: {0} Last refresh was at: {1}", _refreshTimeout, _lastRefresh);
+                _logger.DebugFormat("refreshing qouta. interval: {0} Last refresh was at: {1}", _refreshTimeout, _lastRefresh);
 
                 //Do quota refresh
                 _lastRefresh = DateTime.UtcNow.AddMinutes(1);
@@ -201,11 +204,11 @@ public class AWSSender : SmtpSender
                     var r = new GetSendQuotaRequest();
                     _quota = _amazonEmailServiceClient.GetSendQuotaAsync(r).Result;
                     _sendWindow = TimeSpan.FromSeconds(1.0 / _quota.MaxSendRate);
-                    Logger.DebugFormat("quota: {0}/{1} at {2} mps. send window:{3}", _quota.SentLast24Hours, _quota.Max24HourSend, _quota.MaxSendRate, _sendWindow);
+                    _logger.DebugFormat("quota: {0}/{1} at {2} mps. send window:{3}", _quota.SentLast24Hours, _quota.Max24HourSend, _quota.MaxSendRate, _sendWindow);
                 }
                 catch (Exception e)
                 {
-                    Logger.Error("error refreshing quota", e);
+                    _logger.Error("error refreshing quota", e);
                 }
             }
         }
@@ -214,5 +217,13 @@ public class AWSSender : SmtpSender
     private bool IsRefreshNeeded()
     {
         return _quota == null || (DateTime.UtcNow - _lastRefresh) > _refreshTimeout;
+    }
+
+    public void Dispose()
+    {
+        if (_amazonEmailServiceClient != null)
+        {
+            _amazonEmailServiceClient.Dispose();
+        }
     }
 }

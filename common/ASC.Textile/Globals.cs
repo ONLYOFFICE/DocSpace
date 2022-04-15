@@ -64,7 +64,7 @@ static class Globals
     /// <summary>
     /// Vertical text alignment tags, mapped to their HTML meanings.
     /// </summary>
-    public static Dictionary<string, string> VerticalAlign { get; set;}
+    public static Dictionary<string, string> VerticalAlign { get; set; }
 
     static Globals()
     {
@@ -94,7 +94,7 @@ static class Globals
     public static string EncodeHTMLLink(string url)
     {
         url = url.Replace("&amp;", "&#38;");
-        url = System.Text.RegularExpressions.Regex.Replace(url, "&(?=[^#])", "&#38;");
+        url = Regex.Replace(url, "&(?=[^#])", "&#38;");
         return url;
     }
 }

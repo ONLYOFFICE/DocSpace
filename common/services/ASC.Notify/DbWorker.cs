@@ -34,13 +34,13 @@ public class DbWorker
     private readonly IMapper _mapper;
 
     private readonly IServiceScopeFactory _serviceScopeFactory;
-    public NotifyServiceCfg NotifyServiceCfg { get; }
+    private readonly NotifyServiceCfg _notifyServiceCfg;
 
     public DbWorker(IServiceScopeFactory serviceScopeFactory, IOptions<NotifyServiceCfg> notifyServiceCfg, IMapper mapper)
     {
         _serviceScopeFactory = serviceScopeFactory;
-        NotifyServiceCfg = notifyServiceCfg.Value;
-        _dbid = NotifyServiceCfg.ConnectionStringName;
+        _notifyServiceCfg = notifyServiceCfg.Value;
+        _dbid = _notifyServiceCfg.ConnectionStringName;
         _mapper = mapper;
     }
 
@@ -84,7 +84,7 @@ public class DbWorker
 
             var q = dbContext.NotifyQueue
                 .Join(dbContext.NotifyInfo, r => r.NotifyId, r => r.NotifyId, (queue, info) => new { queue, info })
-                .Where(r => r.info.State == (int)MailSendingState.NotSended || r.info.State == (int)MailSendingState.Error && r.info.ModifyDate < DateTime.UtcNow - TimeSpan.Parse(NotifyServiceCfg.Process.AttemptsInterval))
+                .Where(r => r.info.State == (int)MailSendingState.NotSended || r.info.State == (int)MailSendingState.Error && r.info.ModifyDate < DateTime.UtcNow - TimeSpan.Parse(_notifyServiceCfg.Process.AttemptsInterval))
                 .OrderBy(i => i.info.Priority)
                 .ThenBy(i => i.info.NotifyId)
                 .Take(count);
@@ -157,7 +157,7 @@ public class DbWorker
             if (result == MailSendingState.Error)
             {
                 var attempts = dbContext.NotifyInfo.Where(r => r.NotifyId == id).Select(r => r.Attempts).FirstOrDefault();
-                if (NotifyServiceCfg.Process.MaxAttempts <= attempts + 1)
+                if (_notifyServiceCfg.Process.MaxAttempts <= attempts + 1)
                 {
                     result = MailSendingState.FatalError;
                 }

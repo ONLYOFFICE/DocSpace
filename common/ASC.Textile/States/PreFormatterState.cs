@@ -29,8 +29,8 @@ namespace Textile.States;
 [FormatterState(@"^\s*<pre" + Globals.HtmlAttributesPattern + ">")]
 public class PreFormatterState : FormatterState
 {
-    private bool _shouldExitNextTime = false;
-    private int _fakeNestingDepth = 0;
+    private bool _shouldExitNextTime;
+    private int _fakeNestingDepth;
 
     public PreFormatterState(TextileFormatter f)
         : base(f)
@@ -66,7 +66,9 @@ public class PreFormatterState : FormatterState
     public override void FormatLine(string input)
     {
         if (Regex.IsMatch(input, "<pre>"))
+        {
             _fakeNestingDepth++;
+        }
 
         Formatter.Output.WriteLine(input);
     }
@@ -74,11 +76,20 @@ public class PreFormatterState : FormatterState
     public override bool ShouldExit(string input)
     {
         if (_shouldExitNextTime)
+        {
             return true;
+        }
+
         if (Regex.IsMatch(input, @"</pre>"))
+        {
             _fakeNestingDepth--;
+        }
+
         if (_fakeNestingDepth <= 0)
+        {
             _shouldExitNextTime = true;
+        }
+
         return false;
     }
 

@@ -28,7 +28,7 @@ namespace ASC.Web.Files.Utils;
 
 public class MailMergeTask : IDisposable
 {
-    internal const string MessageBodyFormat = "id={0}&from={1}&subject={2}&to%5B%5D={3}&body={4}&mimeReplyToId=";
+    internal const string _messageBodyFormat = "id={0}&from={1}&subject={2}&to%5B%5D={3}&body={4}&mimeReplyToId=";
 
     public string From { get; set; }
     public string Subject { get; set; }
@@ -133,9 +133,11 @@ public class MailMergeTaskRunner
                                          mailMergeTask.MessageId,
                                          mailMergeTask.AttachTitle);
 
-        var request = new HttpRequestMessage();
-        request.RequestUri = new Uri(_baseCommonLinkUtility.GetFullAbsolutePath(apiUrlAttach));
-        request.Method = HttpMethod.Post;
+        var request = new HttpRequestMessage
+        {
+            RequestUri = new Uri(_baseCommonLinkUtility.GetFullAbsolutePath(apiUrlAttach)),
+            Method = HttpMethod.Post
+        };
         request.Headers.Add("Authorization", _securityContext.AuthenticateMe(_securityContext.CurrentAccount.ID));
         request.Content.Headers.ContentType = new MediaTypeHeaderValue(mailMergeTask.AttachTitle);
         request.Content = new StreamContent(mailMergeTask.Attach);

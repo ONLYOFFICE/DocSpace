@@ -47,7 +47,7 @@ public class NotifyDbContext : BaseDbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ModelBuilderWrapper
-            .From(modelBuilder, Provider)
+            .From(modelBuilder, _provider)
             .AddNotifyInfo()
             .AddNotifyQueue();
     }

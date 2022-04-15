@@ -281,7 +281,9 @@ public class FileSecurity : IFileSecurity
         }
 
         if (defaultShareRecord != null)
+        {
             shares = shares.Concat(new[] { defaultShareRecord });
+        }
 
         var manyShares = shares.SelectMany(x =>
         {
@@ -697,9 +699,13 @@ public class FileSecurity : IFileSecurity
                     if (await adapter.CanCreateAsync(e, userId) ||
                         await adapter.CanDeleteAsync(e, userId) ||
                         await adapter.CanEditAsync(e, userId))
+                    {
                         e.Access = FileShare.ReadWrite;
+                    }
                     else
+                    {
                         e.Access = FileShare.Read;
+                    }
 
                     result.Add(e);
                 }

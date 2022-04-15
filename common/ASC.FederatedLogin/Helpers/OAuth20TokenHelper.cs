@@ -33,11 +33,11 @@ public class OAuth20TokenHelper
     private readonly ConsumerFactory _consumerFactory;
     private readonly RequestHelper _requestHelper;
 
-        public OAuth20TokenHelper(IHttpContextAccessor httpContextAccessor, ConsumerFactory consumerFactory, RequestHelper requestHelper)
+    public OAuth20TokenHelper(IHttpContextAccessor httpContextAccessor, ConsumerFactory consumerFactory, RequestHelper requestHelper)
     {
         _httpContextAccessor = httpContextAccessor;
         _consumerFactory = consumerFactory;
-            _requestHelper = requestHelper;
+        _requestHelper = requestHelper;
     }
 
     public string RequestCode<T>(string scope = null, IDictionary<string, string> additionalArgs = null, IDictionary<string, string> additionalStateArgs = null)
@@ -102,7 +102,7 @@ public class OAuth20TokenHelper
         return uriBuilder.Uri + "?" + query;
     }
 
-        public OAuth20Token GetAccessToken<T>(ConsumerFactory consumerFactory, string authCode) where T : Consumer, IOAuthProvider, new()
+    public OAuth20Token GetAccessToken<T>(ConsumerFactory consumerFactory, string authCode) where T : Consumer, IOAuthProvider, new()
     {
         var loginProvider = consumerFactory.Get<T>();
         var requestUrl = loginProvider.AccessTokenUrl;
@@ -123,7 +123,7 @@ public class OAuth20TokenHelper
 
         data += "&grant_type=authorization_code";
 
-            var json = _requestHelper.PerformRequest(requestUrl, "application/x-www-form-urlencoded", "POST", data);
+        var json = _requestHelper.PerformRequest(requestUrl, "application/x-www-form-urlencoded", "POST", data);
         if (json != null)
         {
             if (!json.StartsWith('{'))
@@ -147,14 +147,14 @@ public class OAuth20TokenHelper
         return null;
     }
 
-        public OAuth20Token RefreshToken<T>(ConsumerFactory consumerFactory, OAuth20Token token) where T : Consumer, IOAuthProvider, new()
+    public OAuth20Token RefreshToken<T>(ConsumerFactory consumerFactory, OAuth20Token token) where T : Consumer, IOAuthProvider, new()
     {
         var loginProvider = consumerFactory.Get<T>();
 
         return RefreshToken(loginProvider.AccessTokenUrl, token);
     }
 
-        public OAuth20Token RefreshToken(string requestUrl, OAuth20Token token)
+    public OAuth20Token RefreshToken(string requestUrl, OAuth20Token token)
     {
         if (token == null || !CanRefresh(token))
         {
@@ -163,7 +163,7 @@ public class OAuth20TokenHelper
 
         var data = $"client_id={HttpUtility.UrlEncode(token.ClientID)}&client_secret={HttpUtility.UrlEncode(token.ClientSecret)}&refresh_token={HttpUtility.UrlEncode(token.RefreshToken)}&grant_type=refresh_token";
 
-            var json = _requestHelper.PerformRequest(requestUrl, "application/x-www-form-urlencoded", "POST", data);
+        var json = _requestHelper.PerformRequest(requestUrl, "application/x-www-form-urlencoded", "POST", data);
         if (json != null)
         {
             var refreshed = OAuth20Token.FromJson(json);

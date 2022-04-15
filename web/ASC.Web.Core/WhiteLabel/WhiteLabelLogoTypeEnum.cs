@@ -24,14 +24,13 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Core.WhiteLabel
+namespace ASC.Web.Core.WhiteLabel;
+
+public enum WhiteLabelLogoTypeEnum
 {
-    public enum WhiteLabelLogoTypeEnum
-    {
-        LightSmall = 1,
-        Dark = 2,
-        Favicon = 3,
-        DocsEditor = 4,
-        DocsEditorEmbed = 5
-    }
+    LightSmall = 1,
+    Dark = 2,
+    Favicon = 3,
+    DocsEditor = 4,
+    DocsEditorEmbed = 5
 }

@@ -176,7 +176,9 @@ public class TenantExtra
         foreach (var quota in GetTenantQuotas().OrderBy(r => r.ActiveUsers).Where(r => r.Year == curQuota.Year && r.Year3 == curQuota.Year3))
         {
             if (quota.Tenant == curQuota.Tenant)
+            {
                 return prev;
+            }
 
             prev = quota;
         }
@@ -187,7 +189,10 @@ public class TenantExtra
     {
         var prevQuota = GetPrevQuota(quota);
         if (prevQuota == null || prevQuota.Trial)
+        {
             return 1;
+        }
+
         return prevQuota.ActiveUsers + 1;
     }
 
@@ -232,7 +237,7 @@ public class TenantExtra
     {
         if (!_coreBaseSettings.Standalone || _settingsManager.Load<TenantControlPanelSettings>().LimitedAccess)
         {
-            throw new System.Security.SecurityException(Resource.ErrorAccessDenied);
+            throw new SecurityException(Resource.ErrorAccessDenied);
         }
     }
 

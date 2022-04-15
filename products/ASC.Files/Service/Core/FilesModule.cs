@@ -62,7 +62,7 @@ public class FilesModule : FeedModule
 
     public override bool VisibleFor(Feed.Aggregator.Feed feed, object data, Guid userId)
     {
-        if (!WebItemSecurity.IsAvailableForUser(ProductID, userId))
+        if (!_webItemSecurity.IsAvailableForUser(ProductID, userId))
         {
             return false;
         }
@@ -98,7 +98,7 @@ public class FilesModule : FeedModule
 
     public override void VisibleFor(List<Tuple<FeedRow, object>> feed, Guid userId)
     {
-        if (!WebItemSecurity.IsAvailableForUser(ProductID, userId))
+        if (!_webItemSecurity.IsAvailableForUser(ProductID, userId))
         {
             return;
         }

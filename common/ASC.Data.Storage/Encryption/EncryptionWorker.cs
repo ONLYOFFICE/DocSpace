@@ -34,7 +34,7 @@ public class EncryptionWorker
     private readonly DistributedTaskQueue _queue;
     public const string CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME = "encryption";
 
-    public EncryptionWorker(FactoryOperation factoryOperation, 
+    public EncryptionWorker(FactoryOperation factoryOperation,
                             IDistributedTaskQueueFactory queueFactory)
     {
         _locker = new object();

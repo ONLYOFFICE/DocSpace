@@ -24,111 +24,118 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Core.Utility
+namespace ASC.Web.Core.Utility;
+
+[Serializable]
+public class ColorThemesSettings : ISettings<ColorThemesSettings>
 {
-    [Serializable]
-    public class ColorThemesSettings : ISettings<ColorThemesSettings>
+    public const string ThemeFolderTemplate = "<theme_folder>";
+    private const string DefaultName = "pure-orange";
+
+
+    public string ColorThemeName { get; set; }
+
+    public bool FirstRequest { get; set; }
+
+    public ColorThemesSettings GetDefault()
     {
-        public const string ThemeFolderTemplate = "<theme_folder>";
-        private const string DefaultName = "pure-orange";
-
-
-        public string ColorThemeName { get; set; }
-
-        public bool FirstRequest { get; set; }
-
-        public ColorThemesSettings GetDefault()
+        return new ColorThemesSettings
         {
-            return new ColorThemesSettings
-            {
-                ColorThemeName = DefaultName,
-                FirstRequest = true
-            };
-        }
-
-        public Guid ID
-        {
-            get { return new Guid("{AB5B3C97-A972-475C-BB13-71936186C4E6}"); }
-        }
+            ColorThemeName = DefaultName,
+            FirstRequest = true
+        };
     }
 
-    [Scope]
-    public class ColorThemesSettingsHelper
+    public Guid ID
     {
-        private SettingsManager SettingsManager { get; }
-        public IHostEnvironment HostEnvironment { get; }
+        get { return new Guid("{AB5B3C97-A972-475C-BB13-71936186C4E6}"); }
+    }
+}
 
-        public ColorThemesSettingsHelper(
-            SettingsManager settingsManager,
-            IHostEnvironment hostEnvironment)
+[Scope]
+public class ColorThemesSettingsHelper
+{
+    private readonly SettingsManager _settingsManager;
+    private readonly IHostEnvironment _hostEnvironment;
+
+    public ColorThemesSettingsHelper(
+        SettingsManager settingsManager,
+        IHostEnvironment hostEnvironment)
+    {
+        _settingsManager = settingsManager;
+        _hostEnvironment = hostEnvironment;
+    }
+
+    public string GetThemeFolderName(IUrlHelper urlHelper, string path)
+    {
+        var folderName = GetColorThemesSettings();
+        var resolvedPath = path.ToLower().Replace(ColorThemesSettings.ThemeFolderTemplate, folderName);
+
+        //TODO check
+        if (!urlHelper.IsLocalUrl(resolvedPath))
         {
-            SettingsManager = settingsManager;
-            HostEnvironment = hostEnvironment;
+            resolvedPath = urlHelper.Action(resolvedPath);
         }
 
-        public string GetThemeFolderName(IUrlHelper urlHelper, string path)
+        try
         {
-            var folderName = GetColorThemesSettings();
-            var resolvedPath = path.ToLower().Replace(ColorThemesSettings.ThemeFolderTemplate, folderName);
+            var filePath = CrossPlatform.PathCombine(_hostEnvironment.ContentRootPath, resolvedPath);
+            if (!File.Exists(filePath))
+            {
+                throw new FileNotFoundException("", path);
+            }
+        }
+        catch (Exception)
+        {
+            resolvedPath = path.ToLower().Replace(ColorThemesSettings.ThemeFolderTemplate, "default");
 
-            //TODO check
             if (!urlHelper.IsLocalUrl(resolvedPath))
+            {
                 resolvedPath = urlHelper.Action(resolvedPath);
-
-            try
-            {
-                var filePath = CrossPlatform.PathCombine(HostEnvironment.ContentRootPath, resolvedPath);
-                if (!File.Exists(filePath))
-                    throw new FileNotFoundException("", path);
-            }
-            catch (Exception)
-            {
-                resolvedPath = path.ToLower().Replace(ColorThemesSettings.ThemeFolderTemplate, "default");
-
-                if (!urlHelper.IsLocalUrl(resolvedPath))
-                    resolvedPath = urlHelper.Action(resolvedPath);
-
-                var filePath = CrossPlatform.PathCombine(HostEnvironment.ContentRootPath, resolvedPath);
-
-                if (!File.Exists(filePath))
-                    throw new FileNotFoundException("", path);
             }
 
-            return resolvedPath;
+            var filePath = CrossPlatform.PathCombine(_hostEnvironment.ContentRootPath, resolvedPath);
+
+            if (!File.Exists(filePath))
+            {
+                throw new FileNotFoundException("", path);
+            }
         }
 
-        public string GetColorThemesSettings()
+        return resolvedPath;
+    }
+
+    public string GetColorThemesSettings()
+    {
+        var colorTheme = _settingsManager.Load<ColorThemesSettings>();
+        var colorThemeName = colorTheme.ColorThemeName;
+
+        if (colorTheme.FirstRequest)
         {
-            var colorTheme = SettingsManager.Load<ColorThemesSettings>();
-            var colorThemeName = colorTheme.ColorThemeName;
-
-            if (colorTheme.FirstRequest)
-            {
-                colorTheme.FirstRequest = false;
-                SettingsManager.Save(colorTheme);
-            }
-
-            return colorThemeName;
+            colorTheme.FirstRequest = false;
+            _settingsManager.Save(colorTheme);
         }
 
-        public void SaveColorTheme(string theme)
+        return colorThemeName;
+    }
+
+    public void SaveColorTheme(string theme)
+    {
+        var settings = new ColorThemesSettings { ColorThemeName = theme, FirstRequest = false };
+        var path = "/skins/" + ColorThemesSettings.ThemeFolderTemplate;
+        var resolvedPath = path.ToLower().Replace(ColorThemesSettings.ThemeFolderTemplate, theme);
+
+        try
         {
-            var settings = new ColorThemesSettings { ColorThemeName = theme, FirstRequest = false };
-            var path = "/skins/" + ColorThemesSettings.ThemeFolderTemplate;
-            var resolvedPath = path.ToLower().Replace(ColorThemesSettings.ThemeFolderTemplate, theme);
-
-            try
+            var filePath = CrossPlatform.PathCombine(_hostEnvironment.ContentRootPath, resolvedPath);
+            if (Directory.Exists(filePath))
             {
-                var filePath = CrossPlatform.PathCombine(HostEnvironment.ContentRootPath, resolvedPath);
-                if (Directory.Exists(filePath))
-                {
-                    SettingsManager.Save(settings);
-                }
+                _settingsManager.Save(settings);
             }
-            catch (Exception)
-            {
+        }
+        catch (Exception)
+        {
 
-            }
         }
     }
 }

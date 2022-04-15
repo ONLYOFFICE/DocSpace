@@ -61,7 +61,7 @@ public class ServiceClientListener
 
             _cache.Insert(GetCacheKey(n.TenantId), migrationProgress, DateTime.MaxValue);
         },
-           Common.Caching.CacheNotifyAction.Insert);
+           CacheNotifyAction.Insert);
     }
 
     private string GetCacheKey(int tenantId)
@@ -96,7 +96,7 @@ public class ServiceClient : IService
             TenantId = tenant,
             StorSettings = storSettings
         },
-                Common.Caching.CacheNotifyAction.Insert);
+                CacheNotifyAction.Insert);
     }
 
     public void UploadCdn(int tenantId, string relativePath, string mappedPath, CdnStorageSettings settings = null)
@@ -110,7 +110,7 @@ public class ServiceClient : IService
             MappedPath = mappedPath,
             CdnStorSettings = cdnStorSettings
         },
-                Common.Caching.CacheNotifyAction.Insert);
+                CacheNotifyAction.Insert);
     }
 
     public double GetProgress(int tenant)
@@ -122,6 +122,6 @@ public class ServiceClient : IService
 
     public void StopMigrate()
     {
-        CacheMigrationNotify.Publish(new MigrationCache(), Common.Caching.CacheNotifyAction.InsertOrUpdate);
+        CacheMigrationNotify.Publish(new MigrationCache(), CacheNotifyAction.InsertOrUpdate);
     }
 }

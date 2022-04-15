@@ -82,9 +82,9 @@ public class ProductEntryPoint : Product
                 IconFileName = "images/files.menu.svg",
                 LargeIconFileName = "images/files.svg",
                 DefaultSortOrder = 10,
-                    //SubscriptionManager = SubscriptionManager,
-                    //SpaceUsageStatManager = FilesSpaceUsageStatManager,
-                    AdminOpportunities = adminOpportunities,
+                //SubscriptionManager = SubscriptionManager,
+                //SpaceUsageStatManager = FilesSpaceUsageStatManager,
+                AdminOpportunities = adminOpportunities,
                 UserOpportunities = userOpportunities,
                 CanNotBeDisabled = true,
             };

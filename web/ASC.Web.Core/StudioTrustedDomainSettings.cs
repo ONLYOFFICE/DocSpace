@@ -24,20 +24,19 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Studio.Core
+namespace ASC.Web.Studio.Core;
+
+public class StudioTrustedDomainSettings : ISettings<StudioTrustedDomainSettings>
 {
-    public class StudioTrustedDomainSettings : ISettings<StudioTrustedDomainSettings>
+    public bool InviteUsersAsVisitors { get; set; }
+
+    public Guid ID
     {
-        public bool InviteUsersAsVisitors { get; set; }
+        get { return new Guid("{00A2DB01-BAE3-48aa-BE32-CE768D7C874E}"); }
+    }
 
-        public Guid ID
-        {
-            get { return new Guid("{00A2DB01-BAE3-48aa-BE32-CE768D7C874E}"); }
-        }
-
-        public StudioTrustedDomainSettings GetDefault()
-        {
-            return new StudioTrustedDomainSettings { InviteUsersAsVisitors = false };
-        }
+    public StudioTrustedDomainSettings GetDefault()
+    {
+        return new StudioTrustedDomainSettings { InviteUsersAsVisitors = false };
     }
 }

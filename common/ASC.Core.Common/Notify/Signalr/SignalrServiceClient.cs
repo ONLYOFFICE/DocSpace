@@ -29,12 +29,12 @@ namespace ASC.Core.Notify.Signalr;
 [Scope]
 public class ConfigureSignalrServiceClient : IConfigureNamedOptions<SignalrServiceClient>
 {
-    internal readonly TenantManager TenantManager;
-    internal readonly CoreSettings CoreSettings;
-    internal readonly MachinePseudoKeys MachinePseudoKeys;
-    internal readonly IConfiguration Configuration;
-    internal readonly IOptionsMonitor<ILog> Options;
-    internal readonly IHttpClientFactory ClientFactory;
+    internal readonly TenantManager _tenantManager;
+    internal readonly CoreSettings _coreSettings;
+    internal readonly MachinePseudoKeys _machinePseudoKeys;
+    internal readonly IConfiguration _configuration;
+    internal readonly IOptionsMonitor<ILog> _options;
+    internal readonly IHttpClientFactory _clientFactory;
 
     public ConfigureSignalrServiceClient(
         TenantManager tenantManager,
@@ -44,37 +44,37 @@ public class ConfigureSignalrServiceClient : IConfigureNamedOptions<SignalrServi
         IOptionsMonitor<ILog> options,
         IHttpClientFactory clientFactory)
     {
-        TenantManager = tenantManager;
-        CoreSettings = coreSettings;
-        MachinePseudoKeys = machinePseudoKeys;
-        Configuration = configuration;
-        Options = options;
-        ClientFactory = clientFactory;
+        _tenantManager = tenantManager;
+        _coreSettings = coreSettings;
+        _machinePseudoKeys = machinePseudoKeys;
+        _configuration = configuration;
+        _options = options;
+        _clientFactory = clientFactory;
     }
 
     public void Configure(string name, SignalrServiceClient options)
     {
-        options.Logger = Options.CurrentValue;
-        options.Hub = name.Trim('/');
-        options.TenantManager = TenantManager;
-        options.CoreSettings = CoreSettings;
-        options.ClientFactory = ClientFactory;
-        options.SKey = MachinePseudoKeys.GetMachineConstant();
-        options.Url = Configuration["web:hub:internal"];
-        options.EnableSignalr = !string.IsNullOrEmpty(options.Url);
+        options._logger = _options.CurrentValue;
+        options._hub = name.Trim('/');
+        options._tenantManager = _tenantManager;
+        options._coreSettings = _coreSettings;
+        options._clientFactory = _clientFactory;
+        options._sKey = _machinePseudoKeys.GetMachineConstant();
+        options._url = _configuration["web:hub:internal"];
+        options.EnableSignalr = !string.IsNullOrEmpty(options._url);
 
         try
         {
-            var replaceSetting = Configuration["jabber:replace-domain"];
+            var replaceSetting = _configuration["jabber:replace-domain"];
             if (!string.IsNullOrEmpty(replaceSetting))
             {
-                options.JabberReplaceDomain = true;
+                options._jabberReplaceDomain = true;
                 var q =
                     replaceSetting.Split(new[] { "->" }, StringSplitOptions.RemoveEmptyEntries)
                         .Select(s => s.Trim().ToLowerInvariant())
                         .ToList();
-                options.JabberReplaceFromDomain = q.ElementAt(0);
-                options.JabberReplaceToDomain = q.ElementAt(1);
+                options._jabberReplaceFromDomain = q.ElementAt(0);
+                options._jabberReplaceToDomain = q.ElementAt(1);
             }
         }
         catch (Exception) { }
@@ -90,20 +90,20 @@ public class ConfigureSignalrServiceClient : IConfigureNamedOptions<SignalrServi
 public class SignalrServiceClient
 {
     private static readonly TimeSpan _timeout = TimeSpan.FromSeconds(1);
-    internal ILog Logger;
+    internal ILog _logger;
     private static DateTime _lastErrorTime;
     public bool EnableSignalr { get; set; }
-    internal byte[] SKey;
-    internal string Url;
-    internal bool JabberReplaceDomain;
-    internal string JabberReplaceFromDomain;
-    internal string JabberReplaceToDomain;
+    internal byte[] _sKey;
+    internal string _url;
+    internal bool _jabberReplaceDomain;
+    internal string _jabberReplaceFromDomain;
+    internal string _jabberReplaceToDomain;
 
-    internal string Hub;
+    internal string _hub;
 
-    internal TenantManager TenantManager;
-    internal CoreSettings CoreSettings;
-    internal IHttpClientFactory ClientFactory;
+    internal TenantManager _tenantManager;
+    internal CoreSettings _coreSettings;
+    internal IHttpClientFactory _clientFactory;
 
     public SignalrServiceClient() { }
 
@@ -114,12 +114,12 @@ public class SignalrServiceClient
         {
             domain = ReplaceDomain(domain);
             var tenant = tenantId == -1
-                ? TenantManager.GetTenant(domain)
-                : TenantManager.GetTenant(tenantId);
+                ? _tenantManager.GetTenant(domain)
+                : _tenantManager.GetTenant(tenantId);
             var isTenantUser = callerUserName.Length == 0;
             var message = new MessageClass
             {
-                UserName = isTenantUser ? tenant.GetTenantDomain(CoreSettings) : callerUserName,
+                UserName = isTenantUser ? tenant.GetTenantDomain(_coreSettings) : callerUserName,
                 Text = messageText
             };
 
@@ -137,11 +137,11 @@ public class SignalrServiceClient
         {
             domain = ReplaceDomain(domain);
 
-            var tenant = TenantManager.GetTenant(domain);
+            var tenant = _tenantManager.GetTenant(domain);
 
             var message = new MessageClass
             {
-                UserName = tenant.GetTenantDomain(CoreSettings),
+                UserName = tenant.GetTenantDomain(_coreSettings),
                 Text = chatRoomName
             };
 
@@ -161,7 +161,7 @@ public class SignalrServiceClient
 
             if (tenantId == -1)
             {
-                tenantId = TenantManager.GetTenant(domain).Id;
+                tenantId = _tenantManager.GetTenant(domain).Id;
             }
 
             MakeRequest("setState", new { tenantId, from, state });
@@ -190,7 +190,7 @@ public class SignalrServiceClient
         {
             domain = ReplaceDomain(domain);
 
-            var tenant = TenantManager.GetTenant(domain);
+            var tenant = _tenantManager.GetTenant(domain);
 
             MakeRequest("sendUnreadCounts", new { tenantId = tenant.Id, unreadCounts });
         }
@@ -276,7 +276,7 @@ public class SignalrServiceClient
     {
         try
         {
-            var numberRoom = TenantManager.GetCurrentTenant().Id + numberId;
+            var numberRoom = _tenantManager.GetCurrentTenant().Id + numberId;
             MakeRequest("reload", new { numberRoom, agentId });
         }
         catch (Exception error)
@@ -295,7 +295,7 @@ public class SignalrServiceClient
         {
             ProcessError(error);
         }
-     }
+    }
 
     public void StopEdit<T>(T fileId, string room, string data)
     {
@@ -349,28 +349,28 @@ public class SignalrServiceClient
 
     private string ReplaceDomain(string domain)
     {
-        if (JabberReplaceDomain && domain.EndsWith(JabberReplaceFromDomain))
+        if (_jabberReplaceDomain && domain.EndsWith(_jabberReplaceFromDomain))
         {
-            var place = domain.LastIndexOf(JabberReplaceFromDomain);
+            var place = domain.LastIndexOf(_jabberReplaceFromDomain);
             if (place >= 0)
             {
-                return domain.Remove(place, JabberReplaceFromDomain.Length).Insert(place, JabberReplaceToDomain);
+                return domain.Remove(place, _jabberReplaceFromDomain.Length).Insert(place, _jabberReplaceToDomain);
             }
         }
 
         return domain;
     }
 
-        private void ProcessError(Exception e)
-        {
-            Logger.ErrorFormat("Service Error: {0}, {1}, {2}", e.Message, e.StackTrace,
-                (e.InnerException != null) ? e.InnerException.Message : string.Empty);
+    private void ProcessError(Exception e)
+    {
+        _logger.ErrorFormat("Service Error: {0}, {1}, {2}", e.Message, e.StackTrace,
+            (e.InnerException != null) ? e.InnerException.Message : string.Empty);
 
-            if (e is HttpRequestException)
-            {
-                _lastErrorTime = DateTime.Now;
-            }
+        if (e is HttpRequestException)
+        {
+            _lastErrorTime = DateTime.Now;
         }
+    }
 
     private string MakeRequest(string method, object data)
     {
@@ -385,11 +385,11 @@ public class SignalrServiceClient
         request.RequestUri = new Uri(GetMethod(method));
 
         var jsonData = JsonConvert.SerializeObject(data);
-        Logger.DebugFormat("Method:{0}, Data:{1}", method, jsonData);
+        _logger.DebugFormat("Method:{0}, Data:{1}", method, jsonData);
 
         request.Content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-        var httpClient = ClientFactory.CreateClient();
+        var httpClient = _clientFactory.CreateClient();
 
         using (var response = httpClient.Send(request))
         using (var stream = response.Content.ReadAsStream())
@@ -413,12 +413,12 @@ public class SignalrServiceClient
 
     private string GetMethod(string method)
     {
-        return $"{Url.TrimEnd('/')}/controller/{Hub}/{method}";
+        return $"{_url.TrimEnd('/')}/controller/{_hub}/{method}";
     }
 
     public string CreateAuthToken(string pkey = "socketio")
     {
-        using var hasher = new HMACSHA1(SKey);
+        using var hasher = new HMACSHA1(_sKey);
         var now = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
         var hash = Convert.ToBase64String(hasher.ComputeHash(Encoding.UTF8.GetBytes(string.Join("\n", now, pkey))));
 

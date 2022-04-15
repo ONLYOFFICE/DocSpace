@@ -26,7 +26,7 @@
 
 namespace ASC.Web.Api.Controllers.Settings;
 
-public class WebhooksController: BaseSettingsController
+public class WebhooksController : BaseSettingsController
 {
     private readonly DbWorker _webhookDbWorker;
 
@@ -34,7 +34,8 @@ public class WebhooksController: BaseSettingsController
         ApiContext apiContext,
         WebItemManager webItemManager,
         IMemoryCache memoryCache,
-        DbWorker dbWorker) : base(apiContext, memoryCache, webItemManager)
+        DbWorker dbWorker,
+        IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _webhookDbWorker = dbWorker;
     }
@@ -45,8 +46,16 @@ public class WebhooksController: BaseSettingsController
     [Create("webhook")]
     public void CreateWebhook(WebhooksConfig model)
     {
-        if (model.Uri == null) throw new ArgumentNullException("Uri");
-        if (model.SecretKey == null) throw new ArgumentNullException("SecretKey");
+        if (model.Uri == null)
+        {
+            throw new ArgumentNullException("Uri");
+        }
+
+        if (model.SecretKey == null)
+        {
+            throw new ArgumentNullException("SecretKey");
+        }
+
         _webhookDbWorker.AddWebhookConfig(model);
     }
 
@@ -56,8 +65,16 @@ public class WebhooksController: BaseSettingsController
     [Update("webhook")]
     public void UpdateWebhook(WebhooksConfig model)
     {
-        if (model.Uri == null) throw new ArgumentNullException("Uri");
-        if (model.SecretKey == null) throw new ArgumentNullException("SecretKey");
+        if (model.Uri == null)
+        {
+            throw new ArgumentNullException("Uri");
+        }
+
+        if (model.SecretKey == null)
+        {
+            throw new ArgumentNullException("SecretKey");
+        }
+
         _webhookDbWorker.UpdateWebhookConfig(model);
     }
 
@@ -67,8 +84,16 @@ public class WebhooksController: BaseSettingsController
     [Delete("webhook")]
     public void RemoveWebhook(WebhooksConfig model)
     {
-        if (model.Uri == null) throw new ArgumentNullException("Uri");
-        if (model.SecretKey == null) throw new ArgumentNullException("SecretKey");
+        if (model.Uri == null)
+        {
+            throw new ArgumentNullException("Uri");
+        }
+
+        if (model.SecretKey == null)
+        {
+            throw new ArgumentNullException("SecretKey");
+        }
+
         _webhookDbWorker.RemoveWebhookConfig(model);
     }
 

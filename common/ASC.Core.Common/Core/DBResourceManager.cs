@@ -28,7 +28,7 @@ namespace TMResourceData;
 
 public class DBResourceManager : ResourceManager
 {
-    public static readonly bool WhiteLableEnabled = false;
+    public static readonly bool WhiteLableEnabled;
     private readonly ConcurrentDictionary<string, ResourceSet> _resourceSets = new ConcurrentDictionary<string, ResourceSet>();
 
     public DBResourceManager(string filename, Assembly assembly)
@@ -89,7 +89,7 @@ public class DBResourceManager : ResourceManager
                 if (prop != null)
                 {
                     var rm = (ResourceManager)prop.GetValue(type);
-                    if (!(rm is DBResourceManager))
+                    if (rm is not DBResourceManager)
                     {
                         var dbrm = new DBResourceManager(rm.BaseName, a);
                         type.InvokeMember("resourceMan", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.SetField, null, type, new object[] { dbrm });
@@ -218,7 +218,7 @@ public class DBResourceManager : ResourceManager
         private Dictionary<string, string> GetResources()
         {
             var key = $"{_fileName}/{_culture}";
-            if (!(_cache.Get(key) is Dictionary<string, string> dic))
+            if (_cache.Get(key) is not Dictionary<string, string> dic)
             {
                 lock (_locker)
                 {

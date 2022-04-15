@@ -62,7 +62,10 @@ public class CodeBlockModifier : BlockModifier
     {
         var res = m.Groups["before"].Value + "<code";
         if (m.Groups["lang"].Length > 0)
+        {
             res += " language=\"" + m.Groups["lang"].Value + "\"";
+        }
+
         res += ">" + m.Groups["code"].Value + "</code>" + m.Groups["after"].Value;
         return res;
     }

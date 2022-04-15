@@ -26,9 +26,9 @@
 
 namespace ASC.Web.Api.Controllers.Settings;
 
-public class TipsController: BaseSettingsController
+public class TipsController : BaseSettingsController
 {
-    private Tenant Tenant { get { return _apiContext.Tenant; } }
+    private Tenant Tenant { get { return ApiContext.Tenant; } }
 
     private readonly AuthContext _authContext;
     private readonly StudioNotifyHelper _studioNotifyHelper;
@@ -46,7 +46,8 @@ public class TipsController: BaseSettingsController
         WebItemManager webItemManager,
         SetupInfo setupInfo,
         IMemoryCache memoryCache,
-        IHttpClientFactory clientFactory) : base(apiContext, memoryCache, webItemManager)
+        IHttpClientFactory clientFactory,
+        IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _log = option.Get("ASC.Api");
         _authContext = authContext;
@@ -78,8 +79,10 @@ public class TipsController: BaseSettingsController
         {
             try
             {
-                var request = new HttpRequestMessage();
-                request.RequestUri = new Uri($"{_setupInfo.TipsAddress}/tips/deletereaded");
+                var request = new HttpRequestMessage
+                {
+                    RequestUri = new Uri($"{_setupInfo.TipsAddress}/tips/deletereaded")
+                };
 
                 var data = new NameValueCollection
                 {

@@ -40,23 +40,23 @@ public class BuilderQueue<T>
         _config = settings;
     }
 
-        public async Task BuildThumbnails(IEnumerable<FileData<T>> filesWithoutThumbnails)
+    public async Task BuildThumbnails(IEnumerable<FileData<T>> filesWithoutThumbnails)
     {
         try
         {
-                await Parallel.ForEachAsync(
-                filesWithoutThumbnails,
-                new ParallelOptions { MaxDegreeOfParallelism = _config.MaxDegreeOfParallelism },
-                    async (fileData, token) =>
-                {
-                    using var scope = _serviceScopeFactory.CreateScope();
-                    var commonLinkUtilitySettings = scope.ServiceProvider.GetService<CommonLinkUtilitySettings>();
-                    commonLinkUtilitySettings.ServerUri = fileData.BaseUri;
+            await Parallel.ForEachAsync(
+            filesWithoutThumbnails,
+            new ParallelOptions { MaxDegreeOfParallelism = _config.MaxDegreeOfParallelism },
+                async (fileData, token) =>
+            {
+                using var scope = _serviceScopeFactory.CreateScope();
+                var commonLinkUtilitySettings = scope.ServiceProvider.GetService<CommonLinkUtilitySettings>();
+                commonLinkUtilitySettings.ServerUri = fileData.BaseUri;
 
-                    var builder = scope.ServiceProvider.GetService<Builder<T>>();
-                        await builder.BuildThumbnail(fileData);
-                }
-            );
+                var builder = scope.ServiceProvider.GetService<Builder<T>>();
+                await builder.BuildThumbnail(fileData);
+            }
+        );
         }
         catch (Exception exception)
         {
@@ -100,7 +100,7 @@ public class Builder<T>
         _clientFactory = clientFactory;
     }
 
-        internal async Task BuildThumbnail(FileData<T> fileData)
+    internal async Task BuildThumbnail(FileData<T> fileData)
     {
         try
         {
@@ -114,7 +114,7 @@ public class Builder<T>
                 return;
             }
 
-                await GenerateThumbnail(fileDao, fileData);
+            await GenerateThumbnail(fileDao, fileData);
         }
         catch (Exception exception)
         {
@@ -126,13 +126,13 @@ public class Builder<T>
         }
     }
 
-        private async Task GenerateThumbnail(IFileDao<T> fileDao, FileData<T> fileData)
+    private async Task GenerateThumbnail(IFileDao<T> fileDao, FileData<T> fileData)
     {
         File<T> file = null;
 
         try
         {
-                file = await fileDao.GetFileAsync(fileData.FileId);
+            file = await fileDao.GetFileAsync(fileData.FileId);
 
             if (file == null)
             {
@@ -153,18 +153,18 @@ public class Builder<T>
             if (!_config.FormatsArray.Contains(ext) || file.Encrypted || file.RootFolderType == FolderType.TRASH || file.ContentLength > _config.AvailableFileSize)
             {
                 file.ThumbnailStatus = Thumbnail.NotRequired;
-                    await fileDao.SaveThumbnailAsync(file, null);
+                await fileDao.SaveThumbnailAsync(file, null);
 
                 return;
             }
 
             if (IsImage(file))
             {
-                    await CropImage(fileDao, file);
+                await CropImage(fileDao, file);
             }
             else
             {
-                    await MakeThumbnail(fileDao, file);
+                await MakeThumbnail(fileDao, file);
             }
         }
         catch (Exception exception)
@@ -173,12 +173,12 @@ public class Builder<T>
             if (file != null)
             {
                 file.ThumbnailStatus = Thumbnail.Error;
-                    await fileDao.SaveThumbnailAsync(file, null);
+                await fileDao.SaveThumbnailAsync(file, null);
             }
         }
     }
 
-        private async Task MakeThumbnail(IFileDao<T> fileDao, File<T> file)
+    private async Task MakeThumbnail(IFileDao<T> fileDao, File<T> file)
     {
         _logger.DebugFormat("MakeThumbnail: FileId: {0}.", file.Id);
 
@@ -189,10 +189,10 @@ public class Builder<T>
         {
             try
             {
-                    var (result, url) = await GetThumbnailUrl(file, _global.ThumbnailExtension);
-                    thumbnailUrl = url;
+                var (result, url) = await GetThumbnailUrl(file, _global.ThumbnailExtension);
+                thumbnailUrl = url;
 
-                    if (result)
+                if (result)
                 {
                     break;
                 }
@@ -230,10 +230,10 @@ public class Builder<T>
         }
         while (string.IsNullOrEmpty(thumbnailUrl));
 
-            await SaveThumbnail(fileDao, file, thumbnailUrl);
+        await SaveThumbnail(fileDao, file, thumbnailUrl);
     }
 
-        private async Task<(bool, string)> GetThumbnailUrl(File<T> file, string toExtension)
+    private async Task<(bool, string)> GetThumbnailUrl(File<T> file, string toExtension)
     {
         var fileUri = _pathProvider.GetFileStreamUrl(file);
         fileUri = _documentServiceConnector.ReplaceCommunityAdress(fileUri);
@@ -269,24 +269,24 @@ public class Builder<T>
             }
         };
 
-            var (operationResultProgress, url) = await _documentServiceConnector.GetConvertedUriAsync(fileUri, fileExtension, toExtension, docKey, null, thumbnail, spreadsheetLayout, false);
+        var (operationResultProgress, url) = await _documentServiceConnector.GetConvertedUriAsync(fileUri, fileExtension, toExtension, docKey, null, thumbnail, spreadsheetLayout, false);
 
         operationResultProgress = Math.Min(operationResultProgress, 100);
-            return (operationResultProgress == 100, url);
+        return (operationResultProgress == 100, url);
     }
 
-        private async Task SaveThumbnail(IFileDao<T> fileDao, File<T> file, string thumbnailUrl)
+    private async Task SaveThumbnail(IFileDao<T> fileDao, File<T> file, string thumbnailUrl)
     {
         _logger.DebugFormat("SaveThumbnail: FileId: {0}. ThumbnailUrl {1}.", file.Id, thumbnailUrl);
 
-            using var request = new HttpRequestMessage();
+        using var request = new HttpRequestMessage();
         request.RequestUri = new Uri(thumbnailUrl);
 
         var httpClient = _clientFactory.CreateClient();
         using var response = httpClient.Send(request);
         using (var stream = new ResponseStream(response))
         {
-                await Crop(fileDao, file, stream);
+            await Crop(fileDao, file, stream);
         }
 
         _logger.DebugFormat("SaveThumbnail: FileId: {0}. Successfully saved.", file.Id);
@@ -299,19 +299,19 @@ public class Builder<T>
         return FileUtility.ExtsImage.Contains(extension);
     }
 
-        private async Task CropImage(IFileDao<T> fileDao, File<T> file)
+    private async Task CropImage(IFileDao<T> fileDao, File<T> file)
     {
         _logger.DebugFormat("CropImage: FileId: {0}.", file.Id);
 
-            using (var stream = await fileDao.GetFileStreamAsync(file))
+        using (var stream = await fileDao.GetFileStreamAsync(file))
         {
-                await Crop(fileDao, file, stream);
+            await Crop(fileDao, file, stream);
         }
 
         _logger.DebugFormat("CropImage: FileId: {0}. Successfully saved.", file.Id);
     }
 
-        private async Task Crop(IFileDao<T> fileDao, File<T> file, Stream stream)
+    private async Task Crop(IFileDao<T> fileDao, File<T> file, Stream stream)
     {
         using (var sourceImg = Image.Load(stream))
         {
@@ -320,8 +320,8 @@ public class Builder<T>
                 using (var targetStream = new MemoryStream())
                 {
                     targetImg.Save(targetStream, PngFormat.Instance);
-                        //targetImg.Save(targetStream, JpegFormat.Instance);
-                        await fileDao.SaveThumbnailAsync(file, targetStream);
+                    //targetImg.Save(targetStream, JpegFormat.Instance);
+                    await fileDao.SaveThumbnailAsync(file, targetStream);
                 }
             }
         }

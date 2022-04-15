@@ -123,7 +123,7 @@ internal class DropboxFileDao : DropboxDaoBase, IFileDao<string>
         if (subjectID != Guid.Empty)
         {
             files = files.Where(x => subjectGroup
-                                         ? UserManager.IsUserInGroup(x.CreateBy, subjectID)
+                                         ? _userManager.IsUserInGroup(x.CreateBy, subjectID)
                                          : x.CreateBy == subjectID);
         }
 
@@ -149,7 +149,7 @@ internal class DropboxFileDao : DropboxDaoBase, IFileDao<string>
             case FilterType.MediaOnly:
                 files = files.Where(x =>
                 {
-                    FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+                    var fileType = FileUtility.GetFileTypeByFileName(x.Title);
                     return fileType == FileType.Audio || fileType == FileType.Video;
                 });
                 break;
@@ -192,7 +192,7 @@ internal class DropboxFileDao : DropboxDaoBase, IFileDao<string>
         if (subjectID != Guid.Empty)
         {
             files = files.Where(x => subjectGroup
-                                         ? UserManager.IsUserInGroup(x.CreateBy, subjectID)
+                                         ? _userManager.IsUserInGroup(x.CreateBy, subjectID)
                                          : x.CreateBy == subjectID);
         }
 
@@ -218,7 +218,7 @@ internal class DropboxFileDao : DropboxDaoBase, IFileDao<string>
             case FilterType.MediaOnly:
                 files = files.Where(x =>
                 {
-                    FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+                    var fileType = FileUtility.GetFileTypeByFileName(x.Title);
 
                     return fileType == FileType.Audio || fileType == FileType.Video;
                 });
@@ -386,7 +386,7 @@ internal class DropboxFileDao : DropboxDaoBase, IFileDao<string>
             await tx.CommitAsync().ConfigureAwait(false);
         }
 
-        if (!(dropboxFile is ErrorFile))
+        if (dropboxFile is not ErrorFile)
         {
             await ProviderInfo.Storage.DeleteItemAsync(dropboxFile);
         }
@@ -566,7 +566,7 @@ internal class DropboxFileDao : DropboxDaoBase, IFileDao<string>
 
     public Task<ChunkedUploadSession<string>> CreateUploadSessionAsync(File<string> file, long contentLength)
     {
-        if (SetupInfo.ChunkUploadSize > contentLength)
+        if (_setupInfo.ChunkUploadSize > contentLength)
         {
             return Task.FromResult(new ChunkedUploadSession<string>(RestoreIds(file), contentLength) { UseChunks = false });
         }
@@ -585,7 +585,7 @@ internal class DropboxFileDao : DropboxDaoBase, IFileDao<string>
         }
         else
         {
-            uploadSession.Items["TempPath"] = TempPath.GetTempFileName();
+            uploadSession.Items["TempPath"] = _tempPath.GetTempFileName();
         }
 
         uploadSession.File = RestoreIds(uploadSession.File);

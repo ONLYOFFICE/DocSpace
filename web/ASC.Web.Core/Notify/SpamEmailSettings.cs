@@ -24,44 +24,43 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Studio.Core.Notify
+namespace ASC.Web.Studio.Core.Notify;
+
+[Serializable]
+public class SpamEmailSettings : ISettings<SpamEmailSettings>
 {
-    [Serializable]
-    public class SpamEmailSettings : ISettings<SpamEmailSettings>
+    public int MailsSendedCount { get; set; }
+
+    public DateTime MailsSendedDate { get; set; }
+
+    public Guid ID
     {
-        public int MailsSendedCount { get; set; }
+        get { return new Guid("{A9819A62-60AF-48E3-989C-08259772FA57}"); }
+    }
 
-        public DateTime MailsSendedDate { get; set; }
-
-        public Guid ID
+    public SpamEmailSettings GetDefault()
+    {
+        return new SpamEmailSettings
         {
-            get { return new Guid("{A9819A62-60AF-48E3-989C-08259772FA57}"); }
-        }
+            MailsSendedCount = 0,
+            MailsSendedDate = DateTime.UtcNow.AddDays(-2)
+        };
+    }
 
-        public SpamEmailSettings GetDefault()
+    public int MailsSended
+    {
+        get { return GetCount(); }
+        set
         {
-            return new SpamEmailSettings
-            {
-                MailsSendedCount = 0,
-                MailsSendedDate = DateTime.UtcNow.AddDays(-2)
-            };
+            MailsSendedDate = DateTime.UtcNow.Date;
+            MailsSendedCount = value;
         }
+    }
 
-        public int MailsSended
-        {
-            get { return GetCount(); }
-            set
-            {
-                MailsSendedDate = DateTime.UtcNow.Date;
-                MailsSendedCount = value;
-            }
-        }
-
-        private int GetCount()
-        {
-            return MailsSendedDate.Date < DateTime.UtcNow.Date
-                       ? 0
-                       : MailsSendedCount;
-        }
+    private int GetCount()
+    {
+        return MailsSendedDate.Date < DateTime.UtcNow.Date
+                   ? 0
+                   : MailsSendedCount;
     }
 }

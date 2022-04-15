@@ -24,20 +24,19 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Core.Utility
+namespace ASC.Web.Core.Utility;
+
+public class FileUploadResult
 {
-    public class FileUploadResult
-    {
 
-        public bool Success { get; set; }
-        public object Data { get; set; }
-        public string Message { get; set; }
-        public string FileName { get; set; }
-        public string FileURL { get; set; }
-    }
+    public bool Success { get; set; }
+    public object Data { get; set; }
+    public string Message { get; set; }
+    public string FileName { get; set; }
+    public string FileURL { get; set; }
+}
 
-    public interface IFileUploadHandler
-    {
-        FileUploadResult ProcessUpload(HttpContext context);
-    }
+public interface IFileUploadHandler
+{
+    FileUploadResult ProcessUpload(HttpContext context);
 }

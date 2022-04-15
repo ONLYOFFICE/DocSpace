@@ -24,22 +24,21 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Studio.Core
+namespace ASC.Web.Studio.Core;
+
+[Serializable]
+public class TipsSettings : ISettings<TipsSettings>
 {
-    [Serializable]
-    public class TipsSettings : ISettings<TipsSettings>
+    [DataMember(Name = "Show")]
+    public bool Show { get; set; }
+
+    public Guid ID
     {
-        [DataMember(Name = "Show")]
-        public bool Show { get; set; }
+        get { return new Guid("{27909339-B4D4-466F-8F40-A64C9D2FC041}"); }
+    }
 
-        public Guid ID
-        {
-            get { return new Guid("{27909339-B4D4-466F-8F40-A64C9D2FC041}"); }
-        }
-
-        public TipsSettings GetDefault()
-        {
-            return new TipsSettings { Show = true };
-        }
+    public TipsSettings GetDefault()
+    {
+        return new TipsSettings { Show = true };
     }
 }

@@ -33,7 +33,7 @@ public interface INotifyEngineAction
 }
 
 [Singletone]
-public class NotifyEngine : INotifyEngine
+public class NotifyEngine : INotifyEngine, IDisposable
 {
     private readonly ILog _logger;
     private readonly Context _context;
@@ -271,7 +271,7 @@ public class NotifyEngine : INotifyEngine
         if (request.Recipient is IDirectRecipient)
         {
             var subscriptionSource = request.GetSubscriptionProvider(serviceScope);
-            if (!request.IsNeedCheckSubscriptions || !subscriptionSource.IsUnsubscribe(request.Recipient as IDirectRecipient, request.NotifyAction, request.ObjectID))
+            if (!request._isNeedCheckSubscriptions || !subscriptionSource.IsUnsubscribe(request.Recipient as IDirectRecipient, request.NotifyAction, request.ObjectID))
             {
                 var directresponses = new List<SendResponse>(1);
                 try
@@ -334,7 +334,7 @@ public class NotifyEngine : INotifyEngine
 
     private List<SendResponse> SendDirectNotify(NotifyRequest request, IServiceScope serviceScope)
     {
-        if (!(request.Recipient is IDirectRecipient))
+        if (request.Recipient is not IDirectRecipient)
         {
             throw new ArgumentException("request.Recipient not IDirectRecipient", nameof(request));
         }
@@ -360,9 +360,9 @@ public class NotifyEngine : INotifyEngine
             _logger.Error("Prepare", ex);
         }
 
-        if (request.SenderNames != null && request.SenderNames.Length > 0)
+        if (request._senderNames != null && request._senderNames.Length > 0)
         {
-            foreach (var sendertag in request.SenderNames)
+            foreach (var sendertag in request._senderNames)
             {
                 var channel = _context.GetSender(sendertag);
                 if (channel != null)
@@ -395,7 +395,7 @@ public class NotifyEngine : INotifyEngine
 
     private SendResponse SendDirectNotify(NotifyRequest request, ISenderChannel channel, IServiceScope serviceScope)
     {
-        if (!(request.Recipient is IDirectRecipient))
+        if (request.Recipient is not IDirectRecipient)
         {
             throw new ArgumentException("request.Recipient not IDirectRecipient", nameof(request));
         }
@@ -506,7 +506,7 @@ public class NotifyEngine : INotifyEngine
 
     private void PrepareRequestFillSenders(NotifyRequest request, IServiceScope serviceScope)
     {
-        if (request.SenderNames == null)
+        if (request._senderNames == null)
         {
             var subscriptionProvider = request.GetSubscriptionProvider(serviceScope);
 
@@ -514,24 +514,24 @@ public class NotifyEngine : INotifyEngine
             senderNames.AddRange(subscriptionProvider.GetSubscriptionMethod(request.NotifyAction, request.Recipient) ?? Array.Empty<string>());
             senderNames.AddRange(request.Arguments.OfType<AdditionalSenderTag>().Select(tag => (string)tag.Value));
 
-            request.SenderNames = senderNames.ToArray();
+            request._senderNames = senderNames.ToArray();
         }
     }
 
     private void PrepareRequestFillPatterns(NotifyRequest request, IServiceScope serviceScope)
     {
-        if (request.Patterns == null)
+        if (request._patterns == null)
         {
-            request.Patterns = new IPattern[request.SenderNames.Length];
-            if (request.Patterns.Length == 0)
+            request._patterns = new IPattern[request._senderNames.Length];
+            if (request._patterns.Length == 0)
             {
                 return;
             }
 
             var apProvider = request.GetPatternProvider(serviceScope);
-            for (var i = 0; i < request.SenderNames.Length; i++)
+            for (var i = 0; i < request._senderNames.Length; i++)
             {
-                var senderName = request.SenderNames[i];
+                var senderName = request._senderNames[i];
                 IPattern pattern = null;
                 if (apProvider.GetPatternMethod != null)
                 {
@@ -542,7 +542,7 @@ public class NotifyEngine : INotifyEngine
                     pattern = apProvider.GetPattern(request.NotifyAction, senderName);
                 }
 
-                request.Patterns[i] = pattern ?? throw new NotifyException($"For action \"{request.NotifyAction.ID}\" by sender \"{senderName}\" no one patterns getted.");
+                request._patterns[i] = pattern ?? throw new NotifyException($"For action \"{request.NotifyAction.ID}\" by sender \"{senderName}\" no one patterns getted.");
             }
         }
     }
@@ -550,7 +550,7 @@ public class NotifyEngine : INotifyEngine
     private void PrepareRequestFillTags(NotifyRequest request, IServiceScope serviceScope)
     {
         var patternProvider = request.GetPatternProvider(serviceScope);
-        foreach (var pattern in request.Patterns)
+        foreach (var pattern in request._patterns)
         {
             IPatternFormatter formatter;
             try
@@ -574,9 +574,9 @@ public class NotifyEngine : INotifyEngine
                 throw new NotifyException(string.Format("Get tags from formatter of pattern \"{0}\" failed.", pattern), exc);
             }
 
-            foreach (var tag in tags.Where(tag => !request.Arguments.Exists(tagValue => Equals(tagValue.Tag, tag)) && !request.RequaredTags.Exists(rtag => Equals(rtag, tag))))
+            foreach (var tag in tags.Where(tag => !request.Arguments.Exists(tagValue => Equals(tagValue.Tag, tag)) && !request._requaredTags.Exists(rtag => Equals(rtag, tag))))
             {
-                request.RequaredTags.Add(tag);
+                request._requaredTags.Add(tag);
             }
         }
     }
@@ -644,6 +644,19 @@ public class NotifyEngine : INotifyEngine
         public override int GetHashCode()
         {
             return _method.GetHashCode();
+        }
+    }
+
+    public void Dispose()
+    {
+        if (_methodsEvent != null)
+        {
+            _methodsEvent.Dispose();
+        }
+
+        if (_requestsEvent != null)
+        {
+            _requestsEvent.Dispose();
         }
     }
 }

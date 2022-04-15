@@ -58,15 +58,15 @@ public class ConfigureDbTenantService : IConfigureNamedOptions<DbTenantService>
 [Scope]
 public class DbTenantService : ITenantService
 {
-    private List<string> _forbiddenDomains;
-
-    internal TenantDomainValidator TenantDomainValidator;
-    private readonly MachinePseudoKeys _machinePseudoKeys;
+    internal TenantDomainValidator TenantDomainValidator { get; set; }
     internal TenantDbContext TenantDbContext => LazyTenantDbContext.Value;
-    internal Lazy<TenantDbContext> LazyTenantDbContext;
     internal UserDbContext UserDbContext => LazyUserDbContext.Value;
+    internal Lazy<TenantDbContext> LazyTenantDbContext;
     internal Lazy<UserDbContext> LazyUserDbContext;
+
     private readonly IMapper _mapper;
+    private readonly MachinePseudoKeys _machinePseudoKeys;
+    private List<string> _forbiddenDomains;
 
     public DbTenantService(
         DbContextManager<TenantDbContext> dbContextManager,

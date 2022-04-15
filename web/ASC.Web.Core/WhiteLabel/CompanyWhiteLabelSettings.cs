@@ -24,73 +24,72 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Core.WhiteLabel
+namespace ASC.Web.Core.WhiteLabel;
+
+public class CompanyWhiteLabelSettingsWrapper
 {
-    public class CompanyWhiteLabelSettingsWrapper
+    public CompanyWhiteLabelSettings Settings { get; set; }
+}
+
+[Serializable]
+public class CompanyWhiteLabelSettings : ISettings<CompanyWhiteLabelSettings>
+{
+    private readonly CoreSettings _coreSettings;
+
+    public string CompanyName { get; set; }
+
+    public string Site { get; set; }
+
+    public string Email { get; set; }
+
+    public string Address { get; set; }
+
+    public string Phone { get; set; }
+
+    [JsonPropertyName("IsLicensor")]
+    public bool IsLicensor { get; set; }
+
+    public CompanyWhiteLabelSettings(CoreSettings coreSettings)
     {
-        public CompanyWhiteLabelSettings Settings { get; set; }
+        _coreSettings = coreSettings;
     }
 
-    [Serializable]
-    public class CompanyWhiteLabelSettings : ISettings<CompanyWhiteLabelSettings>
+    public CompanyWhiteLabelSettings()
     {
-        private readonly CoreSettings _coreSettings;
 
-        public string CompanyName { get; set; }
+    }
 
-        public string Site { get; set; }
+    public bool IsDefault()
+    {
+        var defaultSettings = GetDefault();
 
-        public string Email { get; set; }
+        return CompanyName == defaultSettings.CompanyName &&
+                Site == defaultSettings.Site &&
+                Email == defaultSettings.Email &&
+                Address == defaultSettings.Address &&
+                Phone == defaultSettings.Phone &&
+                IsLicensor == defaultSettings.IsLicensor;
+    }
 
-        public string Address { get; set; }
+    #region ISettings Members
 
-        public string Phone { get; set; }
-
-        [JsonPropertyName("IsLicensor")]
-        public bool IsLicensor { get; set; }
-
-        public CompanyWhiteLabelSettings(CoreSettings coreSettings)
-        {
-            _coreSettings = coreSettings;
-        }
-
-        public CompanyWhiteLabelSettings()
-        {
-
-        }
-
-        public bool IsDefault()
-        {
-            var defaultSettings = GetDefault();
-
-            return CompanyName == defaultSettings.CompanyName &&
-                    Site == defaultSettings.Site &&
-                    Email == defaultSettings.Email &&
-                    Address == defaultSettings.Address &&
-                    Phone == defaultSettings.Phone &&
-                    IsLicensor == defaultSettings.IsLicensor;
-        }
-
-        #region ISettings Members
-
-        public Guid ID
-        {
-            get { return new Guid("{C3C5A846-01A3-476D-A962-1CFD78C04ADB}"); }
-        }
+    public Guid ID
+    {
+        get { return new Guid("{C3C5A846-01A3-476D-A962-1CFD78C04ADB}"); }
+    }
 
 
-        public CompanyWhiteLabelSettings GetDefault()
-        {
-            var settings = _coreSettings.GetSetting("CompanyWhiteLabelSettings");
+    public CompanyWhiteLabelSettings GetDefault()
+    {
+        var settings = _coreSettings.GetSetting("CompanyWhiteLabelSettings");
 
-            return string.IsNullOrEmpty(settings) ? new CompanyWhiteLabelSettings(_coreSettings) : JsonConvert.DeserializeObject<CompanyWhiteLabelSettings>(settings);
-        }
+        return string.IsNullOrEmpty(settings) ? new CompanyWhiteLabelSettings(_coreSettings) : JsonConvert.DeserializeObject<CompanyWhiteLabelSettings>(settings);
+    }
 
-        #endregion
+    #endregion
 
-        public static CompanyWhiteLabelSettings Instance(SettingsManager settingsManager)
-        {
-            return settingsManager.LoadForDefaultTenant<CompanyWhiteLabelSettings>();
-        }
+    public static CompanyWhiteLabelSettings Instance(SettingsManager settingsManager)
+    {
+        return settingsManager.LoadForDefaultTenant<CompanyWhiteLabelSettings>();
     }
 }

@@ -24,297 +24,296 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Data.Reassigns
+namespace ASC.Data.Reassigns;
+
+[Transient]
+public class RemoveProgressItem : DistributedTaskProgress
 {
-    [Transient]
-    public class RemoveProgressItem : DistributedTaskProgress
-    {
-        public Guid FromUser { get; private set; }
-        public UserInfo User { get; private set; }
+    public Guid FromUser { get; private set; }
+    public UserInfo User { get; private set; }
 
-        private readonly IDictionary<string, StringValues> _httpHeaders;
-        private readonly IServiceScopeFactory _serviceScopeFactory;
-        private int _tenantId;
-        private Guid _currentUserId;
-        private bool _notify;
-        //private readonly IFileStorageService _docService;
-        //private readonly MailGarbageEngine _mailEraser;
+    private readonly IDictionary<string, StringValues> _httpHeaders;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
+    private readonly int _tenantId;
+    private readonly Guid _currentUserId;
+    private readonly bool _notify;
+    //private readonly IFileStorageService _docService;
+    //private readonly MailGarbageEngine _mailEraser;
 
-        public RemoveProgressItem(
-            IServiceScopeFactory serviceScopeFactory,
+    public RemoveProgressItem(
+        IServiceScopeFactory serviceScopeFactory,
             IDictionary<string, StringValues> httpHeaders,
             int tenantId, UserInfo user, Guid currentUserId, bool notify)
+    {
+        _httpHeaders = httpHeaders;
+        _serviceScopeFactory = serviceScopeFactory;
+
+
+        //_docService = Web.Files.Classes.Global.FileStorageService;
+        //_mailEraser = new MailGarbageEngine();
+
+        _tenantId = tenantId;
+        User = user;
+        FromUser = user.Id;
+        _currentUserId = currentUserId;
+        _notify = notify;
+
+        Id = QueueWorkerRemove.GetProgressItemId(tenantId, FromUser);
+        Status = DistributedTaskStatus.Created;
+        Exception = null;
+        Percentage = 0;
+        IsCompleted = false;
+    }
+
+    protected override void DoJob()
+    {
+        using var scope = _serviceScopeFactory.CreateScope();
+        var scopeClass = scope.ServiceProvider.GetService<RemoveProgressItemScope>();
+        var (tenantManager, coreBaseSettings, messageService, studioNotifyService, securityContext, userManager, messageTarget, webItemManagerSecurity, storageFactory, userFormatter, options) = scopeClass;
+        var logger = options.Get("ASC.Web");
+        tenantManager.SetCurrentTenant(_tenantId);
+        var userName = userFormatter.GetUserName(User, DisplayUserNameFormat.Default);
+
+        try
         {
-            _httpHeaders = httpHeaders;
-            _serviceScopeFactory = serviceScopeFactory;
-
-
-            //_docService = Web.Files.Classes.Global.FileStorageService;
-            //_mailEraser = new MailGarbageEngine();
-
-            _tenantId = tenantId;
-            User = user;
-            FromUser = user.Id;
-            _currentUserId = currentUserId;
-            _notify = notify;
-
-            Id = QueueWorkerRemove.GetProgressItemId(tenantId, FromUser);
-            Status = DistributedTaskStatus.Created;
-            Exception = null;
             Percentage = 0;
-            IsCompleted = false;
-        }
+            Status = DistributedTaskStatus.Running;
 
-        protected override void DoJob()
-        {
-            using var scope = _serviceScopeFactory.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<RemoveProgressItemScope>();
-            var (tenantManager, coreBaseSettings, messageService, studioNotifyService, securityContext, userManager, messageTarget, webItemManagerSecurity, storageFactory, userFormatter, options) = scopeClass;
-            var logger = options.Get("ASC.Web");
-            tenantManager.SetCurrentTenant(_tenantId);
-            var userName = userFormatter.GetUserName(User, DisplayUserNameFormat.Default);
+            securityContext.AuthenticateMeWithoutCookie(_currentUserId);
 
-            try
+            long crmSpace;
+            GetUsageSpace(webItemManagerSecurity, out var docsSpace, out var mailSpace, out var talkSpace);
+
+            logger.InfoFormat("deleting user data for {0} ", FromUser);
+
+            logger.Info("deleting of data from documents");
+
+            //_docService.DeleteStorage(_userId);
+            Percentage = 25;
+            PublishChanges();
+
+            if (!coreBaseSettings.CustomMode)
             {
-                Percentage = 0;
-                Status = DistributedTaskStatus.Running;
-
-                securityContext.AuthenticateMeWithoutCookie(_currentUserId);
-
-                long crmSpace;
-                GetUsageSpace(webItemManagerSecurity, out var docsSpace, out var mailSpace, out var talkSpace);
-
-                logger.InfoFormat("deleting user data for {0} ", FromUser);
-
-                logger.Info("deleting of data from documents");
-
-                //_docService.DeleteStorage(_userId);
-                Percentage = 25;
-                PublishChanges();
-
-                if (!coreBaseSettings.CustomMode)
-                {
-                    logger.Info("deleting of data from crm");
+                logger.Info("deleting of data from crm");
 
 
-                    //using (var scope = DIHelper.Resolve(_tenantId))
-                    //{
-                    //    var crmDaoFactory = scope.Resolve<CrmDaoFactory>();
-                    crmSpace = 0;// crmDaoFactory.ReportDao.GetFiles(_userId).Sum(file => file.ContentLength);
-                                 //    crmDaoFactory.ReportDao.DeleteFiles(_userId);
-                                 //}
-                    Percentage = 50;
-                }
-                else
-                {
-                    crmSpace = 0;
-                }
-
-                PublishChanges();
-
-                logger.Info("deleting of data from mail");
-
-                //_mailEraser.ClearUserMail(_userId);
-                Percentage = 75;
-                PublishChanges();
-
-                logger.Info("deleting of data from talk");
-                DeleteTalkStorage(storageFactory);
-                Percentage = 99;
-                PublishChanges();
-
-                SendSuccessNotify(studioNotifyService, messageService, messageTarget, userName, docsSpace, crmSpace, mailSpace, talkSpace);
-
-                Percentage = 100;
-                Status = DistributedTaskStatus.Completed;
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-                Status = DistributedTaskStatus.Failted;
-                Exception = ex;
-                SendErrorNotify(studioNotifyService, ex.Message, userName);
-            }
-            finally
-            {
-                logger.Info("data deletion is complete");
-                IsCompleted = true;
-                PublishChanges();
-            }
-        }
-
-        public object Clone()
-        {
-            return MemberwiseClone();
-        }
-
-        private void GetUsageSpace(WebItemManagerSecurity webItemManagerSecurity, out long docsSpace, out long mailSpace, out long talkSpace)
-        {
-            docsSpace = mailSpace = talkSpace = 0;
-
-            var webItems = webItemManagerSecurity.GetItems(Web.Core.WebZones.WebZoneType.All, ItemAvailableState.All);
-
-            foreach (var item in webItems)
-            {
-                IUserSpaceUsage manager;
-
-                if (item.ID == WebItemManager.DocumentsProductID)
-                {
-                    manager = item.Context.SpaceUsageStatManager as IUserSpaceUsage;
-                    if (manager == null)
-                    {
-                        continue;
-                    }
-
-                    docsSpace = manager.GetUserSpaceUsageAsync(FromUser).Result;
-                }
-
-                if (item.ID == WebItemManager.MailProductID)
-                {
-                    manager = item.Context.SpaceUsageStatManager as IUserSpaceUsage;
-                    if (manager == null)
-                    {
-                        continue;
-                    }
-
-                    mailSpace = manager.GetUserSpaceUsageAsync(FromUser).Result;
-                }
-
-                if (item.ID == WebItemManager.TalkProductID)
-                {
-                    manager = item.Context.SpaceUsageStatManager as IUserSpaceUsage;
-                    if (manager == null)
-                    {
-                        continue;
-                    }
-
-                    talkSpace = manager.GetUserSpaceUsageAsync(FromUser).Result;
-                }
-            }
-        }
-
-        private void DeleteTalkStorage(StorageFactory storageFactory)
-        {
-            using var md5 = MD5.Create();
-            var data = md5.ComputeHash(Encoding.Default.GetBytes(FromUser.ToString()));
-
-            var sBuilder = new StringBuilder();
-
-            for (int i = 0, n = data.Length; i < n; i++)
-            {
-                sBuilder.Append(data[i].ToString("x2"));
-            }
-
-            var md5Hash = sBuilder.ToString();
-
-            var storage = storageFactory.GetStorage(_tenantId.ToString(CultureInfo.InvariantCulture), "talk");
-
-            if (storage != null && storage.IsDirectoryAsync(md5Hash).Result)
-            {
-                storage.DeleteDirectoryAsync(md5Hash).Wait();
-            }
-        }
-
-        private void SendSuccessNotify(StudioNotifyService studioNotifyService, MessageService messageService, MessageTarget messageTarget, string userName, long docsSpace, long crmSpace, long mailSpace, long talkSpace)
-        {
-            if (_notify)
-            {
-                studioNotifyService.SendMsgRemoveUserDataCompleted(_currentUserId, User, userName,
-                                                                            docsSpace, crmSpace, mailSpace, talkSpace);
-            }
-
-            if (_httpHeaders != null)
-            {
-                messageService.Send(_httpHeaders, MessageAction.UserDataRemoving, messageTarget.Create(FromUser), new[] { userName });
+                //using (var scope = DIHelper.Resolve(_tenantId))
+                //{
+                //    var crmDaoFactory = scope.Resolve<CrmDaoFactory>();
+                crmSpace = 0;// crmDaoFactory.ReportDao.GetFiles(_userId).Sum(file => file.ContentLength);
+                             //    crmDaoFactory.ReportDao.DeleteFiles(_userId);
+                             //}
+                Percentage = 50;
             }
             else
             {
-                messageService.Send(MessageAction.UserDataRemoving, messageTarget.Create(FromUser), userName);
+                crmSpace = 0;
             }
-        }
 
-        private void SendErrorNotify(StudioNotifyService studioNotifyService, string errorMessage, string userName)
+            PublishChanges();
+
+            logger.Info("deleting of data from mail");
+
+            //_mailEraser.ClearUserMail(_userId);
+            Percentage = 75;
+            PublishChanges();
+
+            logger.Info("deleting of data from talk");
+            DeleteTalkStorage(storageFactory);
+            Percentage = 99;
+            PublishChanges();
+
+            SendSuccessNotify(studioNotifyService, messageService, messageTarget, userName, docsSpace, crmSpace, mailSpace, talkSpace);
+
+            Percentage = 100;
+            Status = DistributedTaskStatus.Completed;
+        }
+        catch (Exception ex)
         {
-            if (!_notify)
+            logger.Error(ex);
+            Status = DistributedTaskStatus.Failted;
+            Exception = ex;
+            SendErrorNotify(studioNotifyService, ex.Message, userName);
+        }
+        finally
+        {
+            logger.Info("data deletion is complete");
+            IsCompleted = true;
+            PublishChanges();
+        }
+    }
+
+    public object Clone()
+    {
+        return MemberwiseClone();
+    }
+
+    private void GetUsageSpace(WebItemManagerSecurity webItemManagerSecurity, out long docsSpace, out long mailSpace, out long talkSpace)
+    {
+        docsSpace = mailSpace = talkSpace = 0;
+
+        var webItems = webItemManagerSecurity.GetItems(Web.Core.WebZones.WebZoneType.All, ItemAvailableState.All);
+
+        foreach (var item in webItems)
+        {
+            IUserSpaceUsage manager;
+
+            if (item.ID == WebItemManager.DocumentsProductID)
             {
-                return;
+                manager = item.Context.SpaceUsageStatManager as IUserSpaceUsage;
+                if (manager == null)
+                {
+                    continue;
+                }
+
+                docsSpace = manager.GetUserSpaceUsageAsync(FromUser).Result;
             }
 
-            studioNotifyService.SendMsgRemoveUserDataFailed(_currentUserId, User, userName, errorMessage);
+            if (item.ID == WebItemManager.MailProductID)
+            {
+                manager = item.Context.SpaceUsageStatManager as IUserSpaceUsage;
+                if (manager == null)
+                {
+                    continue;
+                }
+
+                mailSpace = manager.GetUserSpaceUsageAsync(FromUser).Result;
+            }
+
+            if (item.ID == WebItemManager.TalkProductID)
+            {
+                manager = item.Context.SpaceUsageStatManager as IUserSpaceUsage;
+                if (manager == null)
+                {
+                    continue;
+                }
+
+                talkSpace = manager.GetUserSpaceUsageAsync(FromUser).Result;
+            }
         }
     }
 
-    [Scope]
-    public class RemoveProgressItemScope
+    private void DeleteTalkStorage(StorageFactory storageFactory)
     {
-        private readonly TenantManager _tenantManager;
-        private readonly CoreBaseSettings _coreBaseSettings;
-        private readonly MessageService _messageService;
-        private readonly StudioNotifyService _studioNotifyService;
-        private readonly SecurityContext _securityContext;
-        private readonly UserManager _userManager;
-        private readonly MessageTarget _messageTarget;
-        private readonly WebItemManagerSecurity _webItemManagerSecurity;
-        private readonly StorageFactory _storageFactory;
-        private readonly UserFormatter _userFormatter;
-        private readonly IOptionsMonitor<ILog> _options;
+        using var md5 = MD5.Create();
+        var data = md5.ComputeHash(Encoding.Default.GetBytes(FromUser.ToString()));
 
-        public RemoveProgressItemScope(TenantManager tenantManager,
-            CoreBaseSettings coreBaseSettings,
-            MessageService messageService,
-            StudioNotifyService studioNotifyService,
-            SecurityContext securityContext,
-            UserManager userManager,
-            MessageTarget messageTarget,
-            WebItemManagerSecurity webItemManagerSecurity,
-            StorageFactory storageFactory,
-            UserFormatter userFormatter,
-            IOptionsMonitor<ILog> options)
+        var sBuilder = new StringBuilder();
+
+        for (int i = 0, n = data.Length; i < n; i++)
         {
-            _tenantManager = tenantManager;
-            _coreBaseSettings = coreBaseSettings;
-            _messageService = messageService;
-            _studioNotifyService = studioNotifyService;
-            _securityContext = securityContext;
-            _userManager = userManager;
-            _messageTarget = messageTarget;
-            _webItemManagerSecurity = webItemManagerSecurity;
-            _storageFactory = storageFactory;
-            _userFormatter = userFormatter;
-            _options = options;
+            sBuilder.Append(data[i].ToString("x2"));
         }
 
-        public void Deconstruct(out TenantManager tenantManager,
-            out CoreBaseSettings coreBaseSettings,
-            out MessageService messageService,
-            out StudioNotifyService studioNotifyService,
-            out SecurityContext securityContext,
-            out UserManager userManager,
-            out MessageTarget messageTarget,
-            out WebItemManagerSecurity webItemManagerSecurity,
-            out StorageFactory storageFactory,
-            out UserFormatter userFormatter,
-            out IOptionsMonitor<ILog> optionsMonitor)
+        var md5Hash = sBuilder.ToString();
+
+        var storage = storageFactory.GetStorage(_tenantId.ToString(CultureInfo.InvariantCulture), "talk");
+
+        if (storage != null && storage.IsDirectoryAsync(md5Hash).Result)
         {
-            tenantManager = _tenantManager;
-            coreBaseSettings = _coreBaseSettings;
-            messageService = _messageService;
-            studioNotifyService = _studioNotifyService;
-            securityContext = _securityContext;
-            userManager = _userManager;
-            messageTarget = _messageTarget;
-            webItemManagerSecurity = _webItemManagerSecurity;
-            storageFactory = _storageFactory;
-            userFormatter = _userFormatter;
-            optionsMonitor = _options;
+            storage.DeleteDirectoryAsync(md5Hash).Wait();
         }
     }
 
-    public static class RemoveProgressItemExtension
+    private void SendSuccessNotify(StudioNotifyService studioNotifyService, MessageService messageService, MessageTarget messageTarget, string userName, long docsSpace, long crmSpace, long mailSpace, long talkSpace)
     {
-        public static void Register(DIHelper services)
+        if (_notify)
         {
-            services.TryAdd<RemoveProgressItemScope>();
+            studioNotifyService.SendMsgRemoveUserDataCompleted(_currentUserId, User, userName,
+                                                                        docsSpace, crmSpace, mailSpace, talkSpace);
         }
+
+        if (_httpHeaders != null)
+        {
+            messageService.Send(_httpHeaders, MessageAction.UserDataRemoving, messageTarget.Create(FromUser), new[] { userName });
+        }
+        else
+        {
+            messageService.Send(MessageAction.UserDataRemoving, messageTarget.Create(FromUser), userName);
+        }
+    }
+
+    private void SendErrorNotify(StudioNotifyService studioNotifyService, string errorMessage, string userName)
+    {
+        if (!_notify)
+        {
+            return;
+        }
+
+        studioNotifyService.SendMsgRemoveUserDataFailed(_currentUserId, User, userName, errorMessage);
+    }
+}
+
+[Scope]
+public class RemoveProgressItemScope
+{
+    private readonly TenantManager _tenantManager;
+    private readonly CoreBaseSettings _coreBaseSettings;
+    private readonly MessageService _messageService;
+    private readonly StudioNotifyService _studioNotifyService;
+    private readonly SecurityContext _securityContext;
+    private readonly UserManager _userManager;
+    private readonly MessageTarget _messageTarget;
+    private readonly WebItemManagerSecurity _webItemManagerSecurity;
+    private readonly StorageFactory _storageFactory;
+    private readonly UserFormatter _userFormatter;
+    private readonly IOptionsMonitor<ILog> _options;
+
+    public RemoveProgressItemScope(TenantManager tenantManager,
+        CoreBaseSettings coreBaseSettings,
+        MessageService messageService,
+        StudioNotifyService studioNotifyService,
+        SecurityContext securityContext,
+        UserManager userManager,
+        MessageTarget messageTarget,
+        WebItemManagerSecurity webItemManagerSecurity,
+        StorageFactory storageFactory,
+        UserFormatter userFormatter,
+        IOptionsMonitor<ILog> options)
+    {
+        _tenantManager = tenantManager;
+        _coreBaseSettings = coreBaseSettings;
+        _messageService = messageService;
+        _studioNotifyService = studioNotifyService;
+        _securityContext = securityContext;
+        _userManager = userManager;
+        _messageTarget = messageTarget;
+        _webItemManagerSecurity = webItemManagerSecurity;
+        _storageFactory = storageFactory;
+        _userFormatter = userFormatter;
+        _options = options;
+    }
+
+    public void Deconstruct(out TenantManager tenantManager,
+        out CoreBaseSettings coreBaseSettings,
+        out MessageService messageService,
+        out StudioNotifyService studioNotifyService,
+        out SecurityContext securityContext,
+        out UserManager userManager,
+        out MessageTarget messageTarget,
+        out WebItemManagerSecurity webItemManagerSecurity,
+        out StorageFactory storageFactory,
+        out UserFormatter userFormatter,
+        out IOptionsMonitor<ILog> optionsMonitor)
+    {
+        tenantManager = _tenantManager;
+        coreBaseSettings = _coreBaseSettings;
+        messageService = _messageService;
+        studioNotifyService = _studioNotifyService;
+        securityContext = _securityContext;
+        userManager = _userManager;
+        messageTarget = _messageTarget;
+        webItemManagerSecurity = _webItemManagerSecurity;
+        storageFactory = _storageFactory;
+        userFormatter = _userFormatter;
+        optionsMonitor = _options;
+    }
+}
+
+public static class RemoveProgressItemExtension
+{
+    public static void Register(DIHelper services)
+    {
+        services.TryAdd<RemoveProgressItemScope>();
     }
 }

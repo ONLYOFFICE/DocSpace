@@ -26,190 +26,189 @@
 
 using Constants = ASC.Core.Configuration.Constants;
 
-namespace ASC.Web.Studio.Core.Notify
+namespace ASC.Web.Studio.Core.Notify;
+
+[Singletone(Additional = typeof(ServiceLauncherExtension))]
+public class StudioNotifyServiceSender
 {
-    [Singletone(Additional = typeof(ServiceLauncherExtension))]
-    public class StudioNotifyServiceSender
+    private static string EMailSenderName { get { return Constants.NotifyEMailSenderSysName; } }
+
+    private readonly IServiceScopeFactory _serviceProvider;
+    private readonly IConfiguration _configuration;
+    private readonly WorkContext _workContext;
+    private readonly TenantExtraConfig _tenantExtraConfig;
+    private readonly CoreBaseSettings _coreBaseSettings;
+
+    public StudioNotifyServiceSender(
+        IServiceScopeFactory serviceProvider,
+        IConfiguration configuration,
+        ICacheNotify<NotifyItem> cache,
+        WorkContext workContext,
+        TenantExtraConfig tenantExtraConfig,
+        CoreBaseSettings coreBaseSettings)
     {
-        private static string EMailSenderName { get { return Constants.NotifyEMailSenderSysName; } }
+        cache.Subscribe(OnMessage, CacheNotifyAction.Any);
+        _serviceProvider = serviceProvider;
+        _configuration = configuration;
+        _workContext = workContext;
+        _tenantExtraConfig = tenantExtraConfig;
+        _coreBaseSettings = coreBaseSettings;
+    }
 
-        private readonly IServiceScopeFactory _serviceProvider;
-        private readonly IConfiguration _configuration;
-        private readonly WorkContext _workContext;
-        private readonly TenantExtraConfig _tenantExtraConfig;
-        private readonly CoreBaseSettings _coreBaseSettings;
+    public void OnMessage(NotifyItem item)
+    {
+        using var scope = _serviceProvider.CreateScope();
+        var scopeClass = scope.ServiceProvider.GetRequiredService<StudioNotifyWorker>();
+        scopeClass.OnMessage(item);
+    }
 
-        public StudioNotifyServiceSender(
-            IServiceScopeFactory serviceProvider,
-            IConfiguration configuration,
-            ICacheNotify<NotifyItem> cache,
-            WorkContext workContext,
-            TenantExtraConfig tenantExtraConfig,
-            CoreBaseSettings coreBaseSettings)
+    public void RegisterSendMethod()
+    {
+        var cron = _configuration["core:notify:cron"] ?? "0 0 5 ? * *"; // 5am every day
+
+        if (_configuration["core:notify:tariff"] != "false")
         {
-            cache.Subscribe(OnMessage, CacheNotifyAction.Any);
-            _serviceProvider = serviceProvider;
-            _configuration = configuration;
-            _workContext = workContext;
-            _tenantExtraConfig = tenantExtraConfig;
-            _coreBaseSettings = coreBaseSettings;
-        }
-
-        public void OnMessage(NotifyItem item)
-        {
-            using var scope = _serviceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetRequiredService<StudioNotifyWorker>();
-            scopeClass.OnMessage(item);
-        }
-
-        public void RegisterSendMethod()
-        {
-            var cron = _configuration["core:notify:cron"] ?? "0 0 5 ? * *"; // 5am every day
-
-            if (_configuration["core:notify:tariff"] != "false")
+            if (_tenantExtraConfig.Enterprise)
             {
-                if (_tenantExtraConfig.Enterprise)
-                {
-                    _workContext.RegisterSendMethod(SendEnterpriseTariffLetters, cron);
-                }
-                else if (_tenantExtraConfig.Opensource)
-                {
-                    _workContext.RegisterSendMethod(SendOpensourceTariffLetters, cron);
-                }
-                else if (_tenantExtraConfig.Saas)
-                {
-                    if (_coreBaseSettings.Personal)
-                    {
-                        if (!_coreBaseSettings.CustomMode)
-                        {
-                            _workContext.RegisterSendMethod(SendLettersPersonal, cron);
-                        }
-                    }
-                    else
-                    {
-                        _workContext.RegisterSendMethod(SendSaasTariffLetters, cron);
-                    }
-                }
+                _workContext.RegisterSendMethod(SendEnterpriseTariffLetters, cron);
             }
-
-            if (!_coreBaseSettings.Personal)
+            else if (_tenantExtraConfig.Opensource)
             {
-                _workContext.RegisterSendMethod(SendMsgWhatsNew, "0 0 * ? * *"); // every hour
+                _workContext.RegisterSendMethod(SendOpensourceTariffLetters, cron);
+            }
+            else if (_tenantExtraConfig.Saas)
+            {
+                if (_coreBaseSettings.Personal)
+                {
+                    if (!_coreBaseSettings.CustomMode)
+                    {
+                        _workContext.RegisterSendMethod(SendLettersPersonal, cron);
+                    }
+                }
+                else
+                {
+                    _workContext.RegisterSendMethod(SendSaasTariffLetters, cron);
+                }
             }
         }
 
-        public void SendSaasTariffLetters(DateTime scheduleDate)
+        if (!_coreBaseSettings.Personal)
         {
-            using var scope = _serviceProvider.CreateScope();
-            scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendSaasLettersAsync(EMailSenderName, scheduleDate).Wait();
-        }
-
-        public void SendEnterpriseTariffLetters(DateTime scheduleDate)
-        {
-            using var scope = _serviceProvider.CreateScope();
-            scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendEnterpriseLetters(EMailSenderName, scheduleDate);
-        }
-
-        public void SendOpensourceTariffLetters(DateTime scheduleDate)
-        {
-            using var scope = _serviceProvider.CreateScope();
-            scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendOpensourceLetters(EMailSenderName, scheduleDate);
-        }
-
-        public void SendLettersPersonal(DateTime scheduleDate)
-        {
-            using var scope = _serviceProvider.CreateScope();
-            scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendPersonalLetters(EMailSenderName, scheduleDate);
-        }
-
-        public void SendMsgWhatsNew(DateTime scheduleDate)
-        {
-            using var scope = _serviceProvider.CreateScope();
-            scope.ServiceProvider.GetRequiredService<StudioWhatsNewNotify>().SendMsgWhatsNew(scheduleDate);
+            _workContext.RegisterSendMethod(SendMsgWhatsNew, "0 0 * ? * *"); // every hour
         }
     }
 
-    [Scope]
-    public class StudioNotifyWorker
+    public void SendSaasTariffLetters(DateTime scheduleDate)
     {
-        private readonly CommonLinkUtilitySettings _commonLinkUtilitySettings;
-        private readonly NotifyEngineQueue _notifyEngineQueue;
-        private readonly WorkContext _workContext;
-        private readonly TenantManager _tenantManager;
-        private readonly UserManager _userManager;
-        private readonly SecurityContext _securityContext;
-        private readonly StudioNotifyHelper _studioNotifyHelper;
-
-        public StudioNotifyWorker(
-            TenantManager tenantManager,
-            UserManager userManager,
-            SecurityContext securityContext,
-            StudioNotifyHelper studioNotifyHelper,
-            CommonLinkUtilitySettings commonLinkUtilitySettings,
-            NotifyEngineQueue notifyEngineQueue,
-            WorkContext workContext)
-        {
-            _tenantManager = tenantManager;
-            _userManager = userManager;
-            _securityContext = securityContext;
-            _studioNotifyHelper = studioNotifyHelper;
-            _commonLinkUtilitySettings = commonLinkUtilitySettings;
-            _notifyEngineQueue = notifyEngineQueue;
-            _workContext = workContext;
-        }
-
-        public void OnMessage(NotifyItem item)
-        {
-            _commonLinkUtilitySettings.ServerUri = item.BaseUrl;
-            _tenantManager.SetCurrentTenant(item.TenantId);
-
-            CultureInfo culture = null;
-
-            var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifyHelper.NotifySource);
-
-            var tenant = _tenantManager.GetCurrentTenant(false);
-
-            if (tenant != null)
-            {
-                culture = tenant.GetCulture();
-            }
-
-            if (Guid.TryParse(item.UserId, out var userId) && !userId.Equals(Constants.Guest.ID) && !userId.Equals(Guid.Empty))
-            {
-                _securityContext.AuthenticateMeWithoutCookie(Guid.Parse(item.UserId));
-                var user = _userManager.GetUsers(userId);
-                if (!string.IsNullOrEmpty(user.CultureName))
-                {
-                    culture = CultureInfo.GetCultureInfo(user.CultureName);
-                }
-            }
-
-            if (culture != null && !Equals(Thread.CurrentThread.CurrentCulture, culture))
-            {
-                Thread.CurrentThread.CurrentCulture = culture;
-            }
-            if (culture != null && !Equals(Thread.CurrentThread.CurrentUICulture, culture))
-            {
-                Thread.CurrentThread.CurrentUICulture = culture;
-            }
-
-            client.SendNoticeToAsync(
-                (NotifyAction)item.Action,
-                item.ObjectId,
-                item.Recipients?.Select(r => r.IsGroup ? new RecipientsGroup(r.Id, r.Name) : (IRecipient)new DirectRecipient(r.Id, r.Name, r.Addresses.ToArray(), r.CheckActivation)).ToArray(),
-                item.SenderNames.Count > 0 ? item.SenderNames.ToArray() : null,
-                item.CheckSubsciption,
-                item.Tags.Select(r => new TagValue(r.Tag_, r.Value)).ToArray());
-        }
+        using var scope = _serviceProvider.CreateScope();
+        scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendSaasLettersAsync(EMailSenderName, scheduleDate).Wait();
     }
 
-    public static class ServiceLauncherExtension
+    public void SendEnterpriseTariffLetters(DateTime scheduleDate)
     {
-        public static void Register(DIHelper services)
+        using var scope = _serviceProvider.CreateScope();
+        scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendEnterpriseLetters(EMailSenderName, scheduleDate);
+    }
+
+    public void SendOpensourceTariffLetters(DateTime scheduleDate)
+    {
+        using var scope = _serviceProvider.CreateScope();
+        scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendOpensourceLetters(EMailSenderName, scheduleDate);
+    }
+
+    public void SendLettersPersonal(DateTime scheduleDate)
+    {
+        using var scope = _serviceProvider.CreateScope();
+        scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendPersonalLetters(EMailSenderName, scheduleDate);
+    }
+
+    public void SendMsgWhatsNew(DateTime scheduleDate)
+    {
+        using var scope = _serviceProvider.CreateScope();
+        scope.ServiceProvider.GetRequiredService<StudioWhatsNewNotify>().SendMsgWhatsNew(scheduleDate);
+    }
+}
+
+[Scope]
+public class StudioNotifyWorker
+{
+    private readonly CommonLinkUtilitySettings _commonLinkUtilitySettings;
+    private readonly NotifyEngineQueue _notifyEngineQueue;
+    private readonly WorkContext _workContext;
+    private readonly TenantManager _tenantManager;
+    private readonly UserManager _userManager;
+    private readonly SecurityContext _securityContext;
+    private readonly StudioNotifyHelper _studioNotifyHelper;
+
+    public StudioNotifyWorker(
+        TenantManager tenantManager,
+    UserManager userManager,
+    SecurityContext securityContext,
+    StudioNotifyHelper studioNotifyHelper,
+        CommonLinkUtilitySettings commonLinkUtilitySettings,
+        NotifyEngineQueue notifyEngineQueue,
+        WorkContext workContext)
+    {
+        _tenantManager = tenantManager;
+        _userManager = userManager;
+        _securityContext = securityContext;
+        _studioNotifyHelper = studioNotifyHelper;
+        _commonLinkUtilitySettings = commonLinkUtilitySettings;
+        _notifyEngineQueue = notifyEngineQueue;
+        _workContext = workContext;
+    }
+
+    public void OnMessage(NotifyItem item)
+    {
+        _commonLinkUtilitySettings.ServerUri = item.BaseUrl;
+        _tenantManager.SetCurrentTenant(item.TenantId);
+
+        CultureInfo culture = null;
+
+        var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifyHelper.NotifySource);
+
+        var tenant = _tenantManager.GetCurrentTenant(false);
+
+        if (tenant != null)
         {
-            services.TryAdd<StudioNotifyWorker>();
-            services.TryAdd<StudioPeriodicNotify>();
-            services.TryAdd<StudioWhatsNewNotify>();
+            culture = tenant.GetCulture();
         }
+
+        if (Guid.TryParse(item.UserId, out var userId) && !userId.Equals(Constants.Guest.ID) && !userId.Equals(Guid.Empty))
+        {
+            _securityContext.AuthenticateMeWithoutCookie(Guid.Parse(item.UserId));
+            var user = _userManager.GetUsers(userId);
+            if (!string.IsNullOrEmpty(user.CultureName))
+            {
+                culture = CultureInfo.GetCultureInfo(user.CultureName);
+            }
+        }
+
+        if (culture != null && !Equals(Thread.CurrentThread.CurrentCulture, culture))
+        {
+            Thread.CurrentThread.CurrentCulture = culture;
+        }
+        if (culture != null && !Equals(Thread.CurrentThread.CurrentUICulture, culture))
+        {
+            Thread.CurrentThread.CurrentUICulture = culture;
+        }
+
+        client.SendNoticeToAsync(
+            (NotifyAction)item.Action,
+            item.ObjectId,
+            item.Recipients?.Select(r => r.IsGroup ? new RecipientsGroup(r.Id, r.Name) : (IRecipient)new DirectRecipient(r.Id, r.Name, r.Addresses.ToArray(), r.CheckActivation)).ToArray(),
+            item.SenderNames.Count > 0 ? item.SenderNames.ToArray() : null,
+            item.CheckSubsciption,
+            item.Tags.Select(r => new TagValue(r.Tag_, r.Value)).ToArray());
+    }
+}
+
+public static class ServiceLauncherExtension
+{
+    public static void Register(DIHelper services)
+    {
+        services.TryAdd<StudioNotifyWorker>();
+        services.TryAdd<StudioPeriodicNotify>();
+        services.TryAdd<StudioWhatsNewNotify>();
     }
 }

@@ -102,7 +102,7 @@ internal abstract class GoogleDriveDaoBase : ThirdPartyProviderDao<GoogleDrivePr
         var gExt = MimeMapping.GetExtention(driveFile.MimeType);
         if (GoogleLoginProvider.GoogleDriveExt.Contains(gExt))
         {
-            var downloadableExtension = FileUtility.GetGoogleDownloadableExtension(gExt);
+            var downloadableExtension = _fileUtility.GetGoogleDownloadableExtension(gExt);
             if (!downloadableExtension.Equals(FileUtility.GetFileExtension(title)))
             {
                 title += downloadableExtension;
@@ -143,12 +143,12 @@ internal abstract class GoogleDriveDaoBase : ThirdPartyProviderDao<GoogleDrivePr
 
         if (folder.CreateOn != DateTime.MinValue && folder.CreateOn.Kind == DateTimeKind.Utc)
         {
-            folder.CreateOn = TenantUtil.DateTimeFromUtc(folder.CreateOn);
+            folder.CreateOn = _tenantUtil.DateTimeFromUtc(folder.CreateOn);
         }
 
         if (folder.ModifiedOn != DateTime.MinValue && folder.ModifiedOn.Kind == DateTimeKind.Utc)
         {
-            folder.ModifiedOn = TenantUtil.DateTimeFromUtc(folder.ModifiedOn);
+            folder.ModifiedOn = _tenantUtil.DateTimeFromUtc(folder.ModifiedOn);
         }
 
         return folder;
@@ -209,9 +209,9 @@ internal abstract class GoogleDriveDaoBase : ThirdPartyProviderDao<GoogleDrivePr
 
         file.Id = MakeId(driveFile.Id);
         file.ContentLength = driveFile.Size.HasValue ? (long)driveFile.Size : 0;
-        file.CreateOn = driveFile.CreatedTime.HasValue ? TenantUtil.DateTimeFromUtc(driveFile.CreatedTime.Value) : default;
+        file.CreateOn = driveFile.CreatedTime.HasValue ? _tenantUtil.DateTimeFromUtc(driveFile.CreatedTime.Value) : default;
         file.ParentId = MakeId(GetParentDriveId(driveFile));
-        file.ModifiedOn = driveFile.ModifiedTime.HasValue ? TenantUtil.DateTimeFromUtc(driveFile.ModifiedTime.Value) : default;
+        file.ModifiedOn = driveFile.ModifiedTime.HasValue ? _tenantUtil.DateTimeFromUtc(driveFile.ModifiedTime.Value) : default;
         file.NativeAccessor = driveFile;
         file.Title = MakeFileTitle(driveFile);
 

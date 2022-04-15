@@ -45,7 +45,7 @@ public class RecipientsGroup
 
     public override bool Equals(object obj)
     {
-        if (!(obj is IRecipientsGroup recGr))
+        if (obj is not IRecipientsGroup recGr)
         {
             return false;
         }

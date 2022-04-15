@@ -132,7 +132,7 @@ public abstract class FormatterState
     {
         get
         {
-            return typeof(States.ParagraphFormatterState);
+            return typeof(ParagraphFormatterState);
         }
     }
 

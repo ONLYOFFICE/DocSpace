@@ -61,7 +61,6 @@ global using ASC.Web.Files.Core.Search;
 global using ASC.Web.Files.Services.DocumentService;
 
 global using Autofac;
-global using Autofac.Extensions.DependencyInjection;
 
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.Extensions.Hosting.WindowsServices;
@@ -69,6 +68,3 @@ global using Microsoft.Extensions.Options;
 
 global using SixLabors.ImageSharp;
 global using SixLabors.ImageSharp.Formats.Png;
-
-global using StackExchange.Redis.Extensions.Core.Configuration;
-global using StackExchange.Redis.Extensions.Newtonsoft;

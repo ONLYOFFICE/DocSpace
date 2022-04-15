@@ -28,7 +28,7 @@ namespace ASC.Web.Api.Controllers.Settings;
 
 public class StorageController : BaseSettingsController
 {
-    private Tenant Tenant { get { return _apiContext.Tenant; } }
+    private Tenant Tenant { get { return ApiContext.Tenant; } }
 
     private readonly MessageService _messageService;
     private readonly StudioNotifyService _studioNotifyService;
@@ -70,7 +70,8 @@ public class StorageController : BaseSettingsController
         EncryptionSettingsHelper encryptionSettingsHelper,
         BackupAjaxHandler backupAjaxHandler,
         ICacheNotify<DeleteSchedule> cacheDeleteSchedule,
-        EncryptionWorker encryptionWorker) : base(apiContext, memoryCache, webItemManager)
+        EncryptionWorker encryptionWorker,
+        IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _log = option.Get("ASC.Api");
         _serviceClient = serviceClient;
@@ -109,7 +110,10 @@ public class StorageController : BaseSettingsController
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        if (!_coreBaseSettings.Standalone) return -1;
+        if (!_coreBaseSettings.Standalone)
+        {
+            return -1;
+        }
 
         return _serviceClient.GetProgress(Tenant.Id);
     }
@@ -196,7 +200,7 @@ public class StorageController : BaseSettingsController
 
         foreach (var tenant in tenants)
         {
-            _cacheDeleteSchedule.Publish(new DeleteSchedule() { TenantId = tenant.Id }, Common.Caching.CacheNotifyAction.Insert);
+            _cacheDeleteSchedule.Publish(new DeleteSchedule() { TenantId = tenant.Id }, CacheNotifyAction.Insert);
         }
 
         var settings = _encryptionSettingsHelper.Load();
@@ -340,16 +344,24 @@ public class StorageController : BaseSettingsController
         try
         {
             _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-            if (!_coreBaseSettings.Standalone) return null;
+            if (!_coreBaseSettings.Standalone)
+            {
+                return null;
+            }
 
             _tenantExtra.DemandControlPanelPermission();
 
             var consumer = _consumerFactory.GetByKey(inDto.Module);
             if (!consumer.IsSet)
+            {
                 throw new ArgumentException("module");
+            }
 
             var settings = _settingsManager.Load<StorageSettings>();
-            if (settings.Module == inDto.Module) return settings;
+            if (settings.Module == inDto.Module)
+            {
+                return settings;
+            }
 
             settings.Module = inDto.Module;
             settings.Props = inDto.Props.ToDictionary(r => r.Key, b => b.Value);
@@ -370,7 +382,10 @@ public class StorageController : BaseSettingsController
         try
         {
             _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-            if (!_coreBaseSettings.Standalone) return;
+            if (!_coreBaseSettings.Standalone)
+            {
+                return;
+            }
 
             _tenantExtra.DemandControlPanelPermission();
 
@@ -393,7 +408,10 @@ public class StorageController : BaseSettingsController
     public List<StorageDto> GetAllCdnStorages()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-        if (!_coreBaseSettings.Standalone) return null;
+        if (!_coreBaseSettings.Standalone)
+        {
+            return null;
+        }
 
         _tenantExtra.DemandControlPanelPermission();
 
@@ -418,16 +436,24 @@ public class StorageController : BaseSettingsController
     private CdnStorageSettings UpdateCdn(StorageRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-        if (!_coreBaseSettings.Standalone) return null;
+        if (!_coreBaseSettings.Standalone)
+        {
+            return null;
+        }
 
         _tenantExtra.DemandControlPanelPermission();
 
         var consumer = _consumerFactory.GetByKey(inDto.Module);
         if (!consumer.IsSet)
+        {
             throw new ArgumentException("module");
+        }
 
         var settings = _settingsManager.Load<CdnStorageSettings>();
-        if (settings.Module == inDto.Module) return settings;
+        if (settings.Module == inDto.Module)
+        {
+            return settings;
+        }
 
         settings.Module = inDto.Module;
         settings.Props = inDto.Props.ToDictionary(r => r.Key, b => b.Value);
@@ -449,7 +475,10 @@ public class StorageController : BaseSettingsController
     public void ResetCdnToDefault()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-        if (!_coreBaseSettings.Standalone) return;
+        if (!_coreBaseSettings.Standalone)
+        {
+            return;
+        }
 
         _tenantExtra.DemandControlPanelPermission();
 

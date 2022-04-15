@@ -241,7 +241,7 @@ public class ReportState
         TaskInfo["reportType"] = ReportType;
         TaskInfo["fileId"] = FileId;
         TaskInfo["status"] = (int)Status;
-        TaskInfo["reportOrigin"] = (int)Origin; 
+        TaskInfo["reportOrigin"] = (int)Origin;
         TaskInfo["exception"] = Exception;
     }
 }
@@ -316,7 +316,7 @@ public class DocbuilderReportsUtility
 [Scope]
 public class DocbuilderReportsUtilityHelper
 {
-    public DocbuilderReportsUtility DocbuilderReportsUtility { get; }
+    private readonly DocbuilderReportsUtility _docbuilderReportsUtility;
     private readonly AuthContext _authContext;
     private readonly TenantManager _tenantManager;
     private readonly IHttpContextAccessor _httpContextAccessor;
@@ -326,7 +326,7 @@ public class DocbuilderReportsUtilityHelper
         AuthContext authContext,
         TenantManager tenantManager)
     {
-        DocbuilderReportsUtility = docbuilderReportsUtility;
+        _docbuilderReportsUtility = docbuilderReportsUtility;
         _authContext = authContext;
         _tenantManager = tenantManager;
         TenantId = _tenantManager.GetCurrentTenant().Id;
@@ -348,17 +348,17 @@ public class DocbuilderReportsUtilityHelper
 
     public void Enqueue(ReportState state)
     {
-        DocbuilderReportsUtility.Enqueue(state);
+        _docbuilderReportsUtility.Enqueue(state);
     }
 
     public void Terminate(ReportOrigin origin)
     {
-        DocbuilderReportsUtility.Terminate(origin, TenantId, UserId);
+        _docbuilderReportsUtility.Terminate(origin, TenantId, UserId);
     }
 
     public ReportState Status(ReportOrigin origin)
     {
-        return DocbuilderReportsUtility.Status(origin, _httpContextAccessor, TenantId, UserId);
+        return _docbuilderReportsUtility.Status(origin, _httpContextAccessor, TenantId, UserId);
     }
 }
 

@@ -24,59 +24,64 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Core.Mobile
+namespace ASC.Web.Core.Mobile;
+
+public class CachedMobileAppInstallRegistrator : IMobileAppInstallRegistrator
 {
-    public class CachedMobileAppInstallRegistrator : IMobileAppInstallRegistrator
+    private readonly ICache _cache;
+    private readonly TimeSpan _cacheExpiration;
+    private readonly IMobileAppInstallRegistrator _registrator;
+    private readonly TenantManager _tenantManager;
+
+    public CachedMobileAppInstallRegistrator(MobileAppInstallRegistrator registrator, TenantManager tenantManager, ICache cache)
+        : this(registrator, TimeSpan.FromMinutes(30), tenantManager, cache)
     {
-        private ICache Cache { get; set; }
-        private readonly TimeSpan cacheExpiration;
-        private readonly IMobileAppInstallRegistrator registrator;
+    }
 
-        private TenantManager TenantManager { get; }
+    public CachedMobileAppInstallRegistrator(MobileAppInstallRegistrator registrator, TimeSpan cacheExpiration, TenantManager tenantManager, ICache cache)
+    {
+        _cache = cache;
+        _tenantManager = tenantManager;
+        this._registrator = registrator ?? throw new ArgumentNullException(nameof(registrator));
+        this._cacheExpiration = cacheExpiration;
+    }
 
-        public CachedMobileAppInstallRegistrator(MobileAppInstallRegistrator registrator, TenantManager tenantManager, ICache cache)
-            : this(registrator, TimeSpan.FromMinutes(30), tenantManager, cache)
+    public void RegisterInstall(string userEmail, MobileAppType appType)
+    {
+        if (string.IsNullOrEmpty(userEmail))
         {
+            return;
         }
 
-        public CachedMobileAppInstallRegistrator(MobileAppInstallRegistrator registrator, TimeSpan cacheExpiration, TenantManager tenantManager, ICache cache)
+        _registrator.RegisterInstall(userEmail, appType);
+        _cache.Insert(GetCacheKey(userEmail, null), true, _cacheExpiration);
+        _cache.Insert(GetCacheKey(userEmail, appType), true, _cacheExpiration);
+    }
+
+    public bool IsInstallRegistered(string userEmail, MobileAppType? appType)
+    {
+        if (string.IsNullOrEmpty(userEmail))
         {
-            Cache = cache;
-            TenantManager = tenantManager;
-            this.registrator = registrator ?? throw new ArgumentNullException(nameof(registrator));
-            this.cacheExpiration = cacheExpiration;
+            return false;
         }
 
-        public void RegisterInstall(string userEmail, MobileAppType appType)
+        var fromCache = _cache.Get<string>(GetCacheKey(userEmail, appType));
+
+
+        if (bool.TryParse(fromCache, out var cachedValue))
         {
-            if (string.IsNullOrEmpty(userEmail)) return;
-            registrator.RegisterInstall(userEmail, appType);
-            Cache.Insert(GetCacheKey(userEmail, null), true, cacheExpiration);
-            Cache.Insert(GetCacheKey(userEmail, appType), true, cacheExpiration);
+            return cachedValue;
         }
 
-        public bool IsInstallRegistered(string userEmail, MobileAppType? appType)
-        {
-            if (string.IsNullOrEmpty(userEmail)) return false;
+        var isRegistered = _registrator.IsInstallRegistered(userEmail, appType);
+        _cache.Insert(GetCacheKey(userEmail, appType), isRegistered.ToString(), _cacheExpiration);
+        return isRegistered;
+    }
 
-            var fromCache = Cache.Get<string>(GetCacheKey(userEmail, appType));
+    private string GetCacheKey(string userEmail, MobileAppType? appType)
+    {
+        var cacheKey = appType.HasValue ? userEmail + "/" + appType.ToString() : userEmail;
 
-
-            if (bool.TryParse(fromCache, out var cachedValue))
-            {
-                return cachedValue;
-            }
-
-            var isRegistered = registrator.IsInstallRegistered(userEmail, appType);
-            Cache.Insert(GetCacheKey(userEmail, appType), isRegistered.ToString(), cacheExpiration);
-            return isRegistered;
-        }
-
-        private string GetCacheKey(string userEmail, MobileAppType? appType)
-        {
-            var cacheKey = appType.HasValue ? userEmail + "/" + appType.ToString() : userEmail;
-
-            return string.Format("{0}:mobile:{1}", TenantManager.GetCurrentTenant().Id, cacheKey);
-        }
+        return string.Format("{0}:mobile:{1}", _tenantManager.GetCurrentTenant().Id, cacheKey);
     }
 }

@@ -91,8 +91,9 @@ public class UserController : PeopleControllerBase
         PermissionContext permissionContext,
         ApiContext apiContext,
         UserPhotoManager userPhotoManager,
-        IHttpClientFactory httpClientFactory)
-        : base(userManager, permissionContext, apiContext, userPhotoManager, httpClientFactory)
+        IHttpClientFactory httpClientFactory,
+        IHttpContextAccessor httpContextAccessor)
+        : base(userManager, permissionContext, apiContext, userPhotoManager, httpClientFactory, httpContextAccessor)
     {
         _constants = constants;
         _cookiesManager = cookiesManager;
@@ -217,7 +218,7 @@ public class UserController : PeopleControllerBase
             throw new SecurityException();
         }
 
-        _securityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
+        _securityContext.AuthenticateMeWithoutCookie(Core.Configuration.Constants.CoreSystem);
         user.Status = EmployeeStatus.Terminated;
 
         _userManager.SaveUserInfo(user);
@@ -303,13 +304,13 @@ public class UserController : PeopleControllerBase
         if (_coreBaseSettings.Personal)
         {
             throw new MethodAccessException("Method not available");
-}
+        }
 
         var user = _userManager.GetUserByUserName(username);
         if (user.Id == Constants.LostUser.Id)
         {
             if (Guid.TryParse(username, out var userId))
-{
+            {
                 user = _userManager.GetUsers(userId);
             }
             else
@@ -657,7 +658,10 @@ public class UserController : PeopleControllerBase
     {
         try
         {
-            if (_coreBaseSettings.CustomMode) inDto.Lang = "ru-RU";
+            if (_coreBaseSettings.CustomMode)
+            {
+                inDto.Lang = "ru-RU";
+            }
 
             var cultureInfo = _setupInfo.GetPersonalCulture(inDto.Lang).Value;
 
@@ -668,7 +672,10 @@ public class UserController : PeopleControllerBase
 
             inDto.Email.ThrowIfNull(new ArgumentException(Resource.ErrorEmailEmpty, "email"));
 
-            if (!inDto.Email.TestEmailRegex()) throw new ArgumentException(Resource.ErrorNotCorrectEmail, "email");
+            if (!inDto.Email.TestEmailRegex())
+            {
+                throw new ArgumentException(Resource.ErrorNotCorrectEmail, "email");
+            }
 
             if (!SetupInfo.IsSecretEmail(inDto.Email)
                 && !string.IsNullOrEmpty(_setupInfo.RecaptchaPublicKey) && !string.IsNullOrEmpty(_setupInfo.RecaptchaPrivateKey))
@@ -1043,7 +1050,7 @@ public class UserController : PeopleControllerBase
 
     public object SendUserPassword(MemberRequestDto inDto)
     {
-        string error = _userManagerWrapper.SendUserPassword(inDto.Email);
+        var error = _userManagerWrapper.SendUserPassword(inDto.Email);
         if (!string.IsNullOrEmpty(error))
         {
             _logger.ErrorFormat("Password recovery ({0}): {1}", inDto.Email, error);
@@ -1187,7 +1194,7 @@ public class UserController : PeopleControllerBase
         }
 
         // change user type
-        var canBeGuestFlag = !user.IsOwner(Tenant) && !user.IsAdmin(_userManager) && user.GetListAdminModules(_webItemSecurity).Count == 0 && !user.IsMe(_authContext);
+        var canBeGuestFlag = !user.IsOwner(Tenant) && !user.IsAdmin(_userManager) && user.GetListAdminModules(_webItemSecurity, _webItemManager).Count == 0 && !user.IsMe(_authContext);
 
         if (inDto.IsVisitor && !user.IsVisitor(_userManager) && canBeGuestFlag)
         {
@@ -1273,7 +1280,7 @@ public class UserController : PeopleControllerBase
         foreach (var user in users)
         {
             if (user.IsOwner(Tenant) || user.IsAdmin(_userManager)
-                || user.IsMe(_authContext) || user.GetListAdminModules(_webItemSecurity).Count > 0)
+                || user.IsMe(_authContext) || user.GetListAdminModules(_webItemSecurity, _webItemManager).Count > 0)
             {
                 continue;
             }

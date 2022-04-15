@@ -52,7 +52,8 @@ public class OwnerController : BaseSettingsController
         WebItemManager webItemManager,
         DisplayUserSettingsHelper displayUserSettingsHelper,
         MessageTarget messageTarget,
-        IMemoryCache memoryCache) : base(apiContext, memoryCache, webItemManager)
+        IMemoryCache memoryCache,
+        IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _messageService = messageService;
         _commonLinkUtility = commonLinkUtility;
@@ -86,7 +87,10 @@ public class OwnerController : BaseSettingsController
         var owner = _userManager.GetUsers(curTenant.OwnerId);
         var newOwner = _userManager.GetUsers(inDto.OwnerId);
 
-        if (newOwner.IsVisitor(_userManager)) throw new System.Security.SecurityException("Collaborator can not be an owner");
+        if (newOwner.IsVisitor(_userManager))
+        {
+            throw new SecurityException("Collaborator can not be an owner");
+        }
 
         if (!owner.Id.Equals(_authContext.CurrentAccount.ID) || Guid.Empty.Equals(newOwner.Id))
         {

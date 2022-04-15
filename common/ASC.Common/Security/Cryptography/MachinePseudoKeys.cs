@@ -29,7 +29,7 @@ namespace ASC.Security.Cryptography;
 [Singletone]
 public class MachinePseudoKeys
 {
-    private readonly byte[] _confKey = null;
+    private readonly byte[] _confKey;
 
     public MachinePseudoKeys(IConfiguration configuration)
     {

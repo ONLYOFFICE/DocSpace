@@ -75,7 +75,9 @@ public static class EnumerableExtensions
         ArgumentNullException.ThrowIfNull(collection);
 
         if (partLength <= 0)
+        {
             throw new ArgumentOutOfRangeException(nameof(partLength), partLength, "Length must be positive integer");
+        }
 
         return MakePartsIterator(collection, partLength);
     }

@@ -35,7 +35,6 @@ public class WorkContext
     private static readonly object _syncRoot = new object();
     private readonly IServiceProvider _serviceProvider;
     private readonly IConfiguration _configuration;
-    private readonly IOptionsMonitor<ILog> _options;
     private readonly DispatchEngine _dispatchEngine;
     private readonly JabberSender _jabberSender;
     private readonly AWSSender _awsSender;
@@ -81,7 +80,6 @@ public class WorkContext
     public WorkContext(
         IServiceProvider serviceProvider,
         IConfiguration configuration,
-        IOptionsMonitor<ILog> options,
         DispatchEngine dispatchEngine,
         NotifyEngine notifyEngine,
         NotifyContext notifyContext,
@@ -94,7 +92,6 @@ public class WorkContext
     {
         _serviceProvider = serviceProvider;
         _configuration = configuration;
-        _options = options;
         _dispatchEngine = dispatchEngine;
         NotifyEngine = notifyEngine;
         NotifyContext = notifyContext;

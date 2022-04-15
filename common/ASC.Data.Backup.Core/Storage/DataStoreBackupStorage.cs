@@ -48,14 +48,14 @@ public class DataStoreBackupStorage : IBackupStorage
     {
         using var stream = File.OpenRead(localPath);
         var storagePath = Path.GetFileName(localPath);
-            GetDataStore().SaveAsync("", storagePath, stream).Wait();
+        GetDataStore().SaveAsync("", storagePath, stream).Wait();
 
         return storagePath;
     }
 
     public void Download(string storagePath, string targetLocalPath)
     {
-            using var source = GetDataStore().GetReadStreamAsync("", storagePath).Result;
+        using var source = GetDataStore().GetReadStreamAsync("", storagePath).Result;
         using var destination = File.OpenWrite(targetLocalPath);
         source.CopyTo(destination);
     }
@@ -63,20 +63,20 @@ public class DataStoreBackupStorage : IBackupStorage
     public void Delete(string storagePath)
     {
         var dataStore = GetDataStore();
-            if (dataStore.IsFileAsync("", storagePath).Result)
+        if (dataStore.IsFileAsync("", storagePath).Result)
         {
-                dataStore.DeleteAsync("", storagePath).Wait();
+            dataStore.DeleteAsync("", storagePath).Wait();
         }
     }
 
     public bool IsExists(string storagePath)
     {
-            return GetDataStore().IsFileAsync("", storagePath).Result;
+        return GetDataStore().IsFileAsync("", storagePath).Result;
     }
 
     public string GetPublicLink(string storagePath)
     {
-            return GetDataStore().GetPreSignedUriAsync("", storagePath, TimeSpan.FromDays(1), null).Result.ToString();
+        return GetDataStore().GetPreSignedUriAsync("", storagePath, TimeSpan.FromDays(1), null).Result.ToString();
     }
 
     protected virtual IDataStore GetDataStore()

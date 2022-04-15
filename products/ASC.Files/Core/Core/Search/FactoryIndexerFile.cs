@@ -47,7 +47,10 @@ public class BaseIndexerFile : BaseIndexer<DbFile>
 
     protected override bool BeforeIndex(DbFile data)
     {
-        if (!base.BeforeIndex(data)) return false;
+        if (!base.BeforeIndex(data))
+        {
+            return false;
+        }
 
         var fileDao = _daoFactory.GetFileDao<int>() as FileDao;
         _tenantManager.SetCurrentTenant(data.TenantId);
@@ -58,7 +61,10 @@ public class BaseIndexerFile : BaseIndexer<DbFile>
 
     protected override async Task<bool> BeforeIndexAsync(DbFile data)
     {
-        if (!base.BeforeIndex(data)) return false;
+        if (!base.BeforeIndex(data))
+        {
+            return false;
+        }
 
         var fileDao = _daoFactory.GetFileDao<int>() as FileDao;
         _tenantManager.SetCurrentTenant(data.TenantId);
@@ -166,7 +172,7 @@ public class FactoryIndexerFile : FactoryIndexer<DbFile>
             var j = 0;
             var tasks = new List<Task>();
 
-            foreach (var data in Indexer.IndexAll(getCount, getIds, getData))
+            foreach (var data in _indexer.IndexAll(getCount, getIds, getData))
             {
                 if (_settings.Threads == 1)
                 {

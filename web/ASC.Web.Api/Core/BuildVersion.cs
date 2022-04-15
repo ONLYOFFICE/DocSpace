@@ -71,7 +71,9 @@ public class BuildVersion
     private Task<string> GetDocumentVersionAsync()
     {
         if (string.IsNullOrEmpty(_filesLinkUtility.DocServiceApiUrl))
+        {
             return null;
+        }
 
         return _documentServiceConnector.GetVersionAsync();
     }

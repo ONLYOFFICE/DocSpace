@@ -106,7 +106,7 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
         if (subjectID != Guid.Empty)
         {
             files = files.Where(x => subjectGroup
-                                         ? UserManager.IsUserInGroup(x.CreateBy, subjectID)
+                                         ? _userManager.IsUserInGroup(x.CreateBy, subjectID)
                                          : x.CreateBy == subjectID);
         }
 
@@ -132,7 +132,7 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
             case FilterType.MediaOnly:
                 files = files.Where(x =>
                 {
-                    FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+                    var fileType = FileUtility.GetFileTypeByFileName(x.Title);
 
                     return fileType == FileType.Audio || fileType == FileType.Video;
                 });
@@ -159,7 +159,7 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
         var folder = GetFolderById(parentId).AsEnumerable();
 
         return Task.FromResult(folder
-            .Where(x => !(x is ICloudDirectoryEntry))
+            .Where(x => x is not ICloudDirectoryEntry)
                 .Select(x => MakeId(x)).ToList());
     }
 
@@ -171,13 +171,13 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
         }
 
         //Get only files
-        var files = GetFolderById(parentId).Where(x => !(x is ICloudDirectoryEntry)).Select(ToFile);
+        var files = GetFolderById(parentId).Where(x => x is not ICloudDirectoryEntry).Select(ToFile);
 
         //Filter
         if (subjectID != Guid.Empty)
         {
             files = files.Where(x => subjectGroup
-                                         ? UserManager.IsUserInGroup(x.CreateBy, subjectID)
+                                         ? _userManager.IsUserInGroup(x.CreateBy, subjectID)
                                          : x.CreateBy == subjectID);
         }
 
@@ -203,7 +203,7 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
             case FilterType.MediaOnly:
                 files = files.Where(x =>
                 {
-                    FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+                    var fileType = FileUtility.GetFileTypeByFileName(x.Title);
 
                     return fileType == FileType.Audio || fileType == FileType.Video;
                 });
@@ -401,7 +401,7 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
             await tx.CommitAsync().ConfigureAwait(false);
         }
 
-        if (!(file is ErrorEntry))
+        if (file is not ErrorEntry)
         {
             ProviderInfo.Storage.DeleteFileSystemEntry(file);
         }
@@ -565,7 +565,7 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
 
     public async Task<ChunkedUploadSession<string>> CreateUploadSessionAsync(File<string> file, long contentLength)
     {
-        if (SetupInfo.ChunkUploadSize > contentLength)
+        if (_setupInfo.ChunkUploadSize > contentLength)
         {
             return new ChunkedUploadSession<string>(MakeId(file), contentLength) { UseChunks = false };
         }
@@ -594,7 +594,7 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
         }
         else
         {
-            uploadSession.Items["TempPath"] = TempPath.GetTempFileName();
+            uploadSession.Items["TempPath"] = _tempPath.GetTempFileName();
         }
 
         uploadSession.File = MakeId(uploadSession.File);

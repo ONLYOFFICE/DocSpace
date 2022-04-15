@@ -35,8 +35,8 @@ public class DiscDataStore : BaseStorage
 
     private readonly Dictionary<string, MappedPath> _mappedPaths = new Dictionary<string, MappedPath>();
     private ICrypt _crypt;
-    private EncryptionSettingsHelper _encryptionSettingsHelper;
-    private EncryptionFactory _encryptionFactory;
+    private readonly EncryptionSettingsHelper _encryptionSettingsHelper;
+    private readonly EncryptionFactory _encryptionFactory;
 
     public override IDataStore Configure(string tenant, Handler handlerConfig, Module moduleConfig, IDictionary<string, string> props)
     {
@@ -47,11 +47,11 @@ public class DiscDataStore : BaseStorage
 
         foreach (var domain in moduleConfig.Domain)
         {
-            _mappedPaths.Add(domain.Name, new MappedPath(TpathUtils, tenant, moduleConfig.AppendTenantId, domain.Path, handlerConfig.GetProperties()));
+            _mappedPaths.Add(domain.Name, new MappedPath(_tpathUtils, tenant, moduleConfig.AppendTenantId, domain.Path, handlerConfig.GetProperties()));
         }
 
         //Add default
-        _mappedPaths.Add(string.Empty, new MappedPath(TpathUtils, tenant, moduleConfig.AppendTenantId, PathUtils.Normalize(moduleConfig.Path), handlerConfig.GetProperties()));
+        _mappedPaths.Add(string.Empty, new MappedPath(_tpathUtils, tenant, moduleConfig.AppendTenantId, PathUtils.Normalize(moduleConfig.Path), handlerConfig.GetProperties()));
 
         //Make expires
         DomainsExpires =
@@ -144,7 +144,7 @@ public class DiscDataStore : BaseStorage
     {
         Logger.Debug("Save " + path);
 
-        var buffered = TempStream.GetBuffered(stream);
+        var buffered = _tempStream.GetBuffered(stream);
         if (QuotaController != null)
         {
             QuotaController.QuotaUsedCheck(buffered.Length);
@@ -197,12 +197,12 @@ public class DiscDataStore : BaseStorage
     }
 
     #region chunking
-        public override Task<string> InitiateChunkedUploadAsync(string domain, string path)
-        {
-            var target = GetTarget(domain, path);
-            CreateDirectory(target);
-            return Task.FromResult(target);
-        }
+    public override Task<string> InitiateChunkedUploadAsync(string domain, string path)
+    {
+        var target = GetTarget(domain, path);
+        CreateDirectory(target);
+        return Task.FromResult(target);
+    }
 
     public override async Task<string> UploadChunkAsync(string domain, string path, string uploadId, Stream stream, long defaultChunkSize, int chunkNumber, long chunkLength)
     {
@@ -423,7 +423,10 @@ public class DiscDataStore : BaseStorage
             targetDir += Path.DirectorySeparatorChar;
         }
 
-        if (!Directory.Exists(targetDir)) return Task.CompletedTask;
+        if (!Directory.Exists(targetDir))
+        {
+            return Task.CompletedTask;
+        }
 
         var entries = Directory.GetFiles(targetDir, "*.*", SearchOption.AllDirectories);
         var size = entries.Select(entry => _crypt.GetFileSize(entry)).Sum();

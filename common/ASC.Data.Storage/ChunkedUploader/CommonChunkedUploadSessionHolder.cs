@@ -151,7 +151,9 @@ public class CommonChunkedUploadSessionHolder
     public Stream UploadSingleChunk(CommonChunkedUploadSession uploadSession, Stream stream, long chunkLength)
     {
         if (uploadSession.BytesTotal == 0)
+        {
             uploadSession.BytesTotal = chunkLength;
+        }
 
         if (uploadSession.BytesTotal >= chunkLength)
         {
@@ -182,7 +184,9 @@ public class CommonChunkedUploadSessionHolder
     public async Task<Stream> UploadSingleChunkAsync(CommonChunkedUploadSession uploadSession, Stream stream, long chunkLength)
     {
         if (uploadSession.BytesTotal == 0)
+        {
             uploadSession.BytesTotal = chunkLength;
+        }
 
         if (uploadSession.BytesTotal >= chunkLength)
         {

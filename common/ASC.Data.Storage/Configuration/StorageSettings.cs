@@ -131,7 +131,6 @@ public class StorageSettingsHelper
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ConsumerFactory _consumerFactory;
     private IDataStore _dataStore;
-        private IServiceProvider ServiceProvider { get; }
 
     public StorageSettingsHelper(
         BaseStorageSettingsListener baseStorageSettingsListener,
@@ -141,8 +140,7 @@ public class StorageSettingsHelper
         IOptionsMonitor<ILog> options,
         TenantManager tenantManager,
         SettingsManager settingsManager,
-            ConsumerFactory consumerFactory,
-            IServiceProvider serviceProvider)
+            ConsumerFactory consumerFactory)
     {
         baseStorageSettingsListener.Subscribe();
         _storageFactoryConfig = storageFactoryConfig;
@@ -152,7 +150,6 @@ public class StorageSettingsHelper
         _tenantManager = tenantManager;
         _settingsManager = settingsManager;
         _consumerFactory = consumerFactory;
-            ServiceProvider = serviceProvider;
     }
 
     public StorageSettingsHelper(
@@ -164,9 +161,8 @@ public class StorageSettingsHelper
         TenantManager tenantManager,
         SettingsManager settingsManager,
         IHttpContextAccessor httpContextAccessor,
-            ConsumerFactory consumerFactory,
-            IServiceProvider serviceProvider)
-            : this(baseStorageSettingsListener, storageFactoryConfig, pathUtils, cache, options, tenantManager, settingsManager, consumerFactory, serviceProvider)
+            ConsumerFactory consumerFactory)
+            : this(baseStorageSettingsListener, storageFactoryConfig, pathUtils, cache, options, tenantManager, settingsManager, consumerFactory)
     {
         _httpContextAccessor = httpContextAccessor;
     }
@@ -233,7 +229,7 @@ public class StorageSettingsHelper
 
         foreach (var module in _storageFactoryConfig.GetModuleList("", true))
         {
-            _cache.Publish(new DataStoreCacheItem() { TenantId = path, Module = module }, Common.Caching.CacheNotifyAction.Remove);
+            _cache.Publish(new DataStoreCacheItem() { TenantId = path, Module = module }, CacheNotifyAction.Remove);
         }
     }
 }

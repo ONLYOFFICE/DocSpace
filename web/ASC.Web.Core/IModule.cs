@@ -24,15 +24,14 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Core
+namespace ASC.Web.Core;
+
+[WebZone(WebZoneType.Nowhere)]
+public interface IModule : IWebItem
 {
-    [WebZoneAttribute(WebZoneType.Nowhere)]
-    public interface IModule : IWebItem
-    {
-        Guid ProjectId { get; }
+    Guid ProjectId { get; }
 
-        string ModuleSysName { get; }
+    string ModuleSysName { get; }
 
-        new ModuleContext Context { get; }
-    }
+    new ModuleContext Context { get; }
 }

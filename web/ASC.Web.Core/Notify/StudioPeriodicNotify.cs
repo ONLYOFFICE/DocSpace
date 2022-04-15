@@ -24,1040 +24,1050 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Studio.Core.Notify
+namespace ASC.Web.Studio.Core.Notify;
+
+[Scope]
+public class StudioPeriodicNotify
 {
-    [Scope]
-    public class StudioPeriodicNotify
+    private readonly NotifyEngineQueue _notifyEngineQueue;
+    private readonly WorkContext _workContext;
+    private readonly TenantManager _tenantManager;
+    private readonly UserManager _userManager;
+    private readonly StudioNotifyHelper _studioNotifyHelper;
+    private readonly PaymentManager _paymentManager;
+    private readonly TenantExtra _tenantExtra;
+    private readonly AuthContext _authContext;
+    private readonly CommonLinkUtility _commonLinkUtility;
+    private readonly ApiSystemHelper _apiSystemHelper;
+    private readonly SetupInfo _setupInfo;
+    private readonly DbContextManager<FeedDbContext> _dbContextManager;
+    private readonly CouponManager _couponManager;
+    private readonly IConfiguration _configuration;
+    private readonly SettingsManager _settingsManager;
+    private readonly CoreBaseSettings _coreBaseSettings;
+    private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
+    private readonly AuthManager _authManager;
+    private readonly SecurityContext _securityContext;
+    private readonly ILog _log;
+
+    public StudioPeriodicNotify(
+        IOptionsMonitor<ILog> log,
+        NotifyEngineQueue notifyEngineQueue,
+        WorkContext workContext,
+        TenantManager tenantManager,
+        UserManager userManager,
+        StudioNotifyHelper studioNotifyHelper,
+        PaymentManager paymentManager,
+        TenantExtra tenantExtra,
+        AuthContext authContext,
+        CommonLinkUtility commonLinkUtility,
+        ApiSystemHelper apiSystemHelper,
+        SetupInfo setupInfo,
+        DbContextManager<FeedDbContext> dbContextManager,
+        CouponManager couponManager,
+        IConfiguration configuration,
+        SettingsManager settingsManager,
+        CoreBaseSettings coreBaseSettings,
+        DisplayUserSettingsHelper displayUserSettingsHelper,
+        AuthManager authManager,
+        SecurityContext securityContext)
     {
-        private readonly NotifyEngineQueue _notifyEngineQueue;
-        private readonly WorkContext _workContext;
-        private readonly TenantManager _tenantManager;
-        private readonly UserManager _userManager;
-        private readonly StudioNotifyHelper _studioNotifyHelper;
-        private readonly PaymentManager _paymentManager;
-        private readonly TenantExtra _tenantExtra;
-        private readonly AuthContext _authContext;
-        private readonly CommonLinkUtility _commonLinkUtility;
-        private readonly ApiSystemHelper _apiSystemHelper;
-        private readonly SetupInfo _setupInfo;
-        private readonly DbContextManager<FeedDbContext> _dbContextManager;
-        private readonly CouponManager _couponManager;
-        private readonly IConfiguration _configuration;
-        private readonly SettingsManager _settingsManager;
-        private readonly CoreBaseSettings _coreBaseSettings;
-        private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
-        private readonly AuthManager _authManager;
-        private readonly SecurityContext _securityContext;
-        private readonly ILog _log;
+        _notifyEngineQueue = notifyEngineQueue;
+        _workContext = workContext;
+        _tenantManager = tenantManager;
+        _userManager = userManager;
+        _studioNotifyHelper = studioNotifyHelper;
+        _paymentManager = paymentManager;
+        _tenantExtra = tenantExtra;
+        _authContext = authContext;
+        _commonLinkUtility = commonLinkUtility;
+        _apiSystemHelper = apiSystemHelper;
+        _setupInfo = setupInfo;
+        _dbContextManager = dbContextManager;
+        _couponManager = couponManager;
+        _configuration = configuration;
+        _settingsManager = settingsManager;
+        _coreBaseSettings = coreBaseSettings;
+        _displayUserSettingsHelper = displayUserSettingsHelper;
+        _authManager = authManager;
+        _securityContext = securityContext;
+        _log = log.Get("ASC.Notify");
+    }
 
-        public StudioPeriodicNotify(
-            IOptionsMonitor<ILog> log,
-            NotifyEngineQueue notifyEngineQueue,
-            WorkContext workContext,
-            TenantManager tenantManager,
-            UserManager userManager,
-            StudioNotifyHelper studioNotifyHelper,
-            PaymentManager paymentManager,
-            TenantExtra tenantExtra,
-            AuthContext authContext,
-            CommonLinkUtility commonLinkUtility,
-            ApiSystemHelper apiSystemHelper,
-            SetupInfo setupInfo,
-            DbContextManager<FeedDbContext> dbContextManager,
-            CouponManager couponManager,
-            IConfiguration configuration,
-            SettingsManager settingsManager,
-            CoreBaseSettings coreBaseSettings,
-            DisplayUserSettingsHelper displayUserSettingsHelper,
-            AuthManager authManager,
-            SecurityContext securityContext)
+    public Task SendSaasLettersAsync(string senderName, DateTime scheduleDate)
+    {
+        _log.Info("Start SendSaasTariffLetters");
+
+        var activeTenants = _tenantManager.GetTenants().ToList();
+
+        if (activeTenants.Count <= 0)
         {
-            _notifyEngineQueue = notifyEngineQueue;
-            _workContext = workContext;
-            _tenantManager = tenantManager;
-            _userManager = userManager;
-            _studioNotifyHelper = studioNotifyHelper;
-            _paymentManager = paymentManager;
-            _tenantExtra = tenantExtra;
-            _authContext = authContext;
-            _commonLinkUtility = commonLinkUtility;
-            _apiSystemHelper = apiSystemHelper;
-            _setupInfo = setupInfo;
-            _dbContextManager = dbContextManager;
-            _couponManager = couponManager;
-            _configuration = configuration;
-            _settingsManager = settingsManager;
-            _coreBaseSettings = coreBaseSettings;
-            _displayUserSettingsHelper = displayUserSettingsHelper;
-            _authManager = authManager;
-            _securityContext = securityContext;
-            _log = log.Get("ASC.Notify");
+            _log.Info("End SendSaasTariffLetters");
+            return Task.CompletedTask;
         }
 
-        public Task SendSaasLettersAsync(string senderName, DateTime scheduleDate)
+        return InternalSendSaasLettersAsync(senderName, scheduleDate, activeTenants);
+    }
+
+    private async Task InternalSendSaasLettersAsync(string senderName, DateTime scheduleDate, List<Tenant> activeTenants)
+    {
+        var nowDate = scheduleDate.Date;
+
+        foreach (var tenant in activeTenants)
         {
-            _log.Info("Start SendSaasTariffLetters");
-
-            var activeTenants = _tenantManager.GetTenants().ToList();
-
-            if (activeTenants.Count <= 0)
+            try
             {
-                _log.Info("End SendSaasTariffLetters");
-                return Task.CompletedTask;
-            }
+                _tenantManager.SetCurrentTenant(tenant.Id);
+                var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifyHelper.NotifySource);
 
-            return InternalSendSaasLettersAsync(senderName, scheduleDate, activeTenants);
-        }
+                var tariff = _paymentManager.GetTariff(tenant.Id);
+                var quota = _tenantManager.GetTenantQuota(tenant.Id);
+                var createdDate = tenant.CreationDateTime.Date;
 
-        private async Task InternalSendSaasLettersAsync(string senderName, DateTime scheduleDate, List<Tenant> activeTenants)
-        {
-            var nowDate = scheduleDate.Date;
+                var dueDateIsNotMax = tariff.DueDate != DateTime.MaxValue;
+                var dueDate = tariff.DueDate.Date;
 
-            foreach (var tenant in activeTenants)
-            {
-                try
+                var delayDueDateIsNotMax = tariff.DelayDueDate != DateTime.MaxValue;
+                var delayDueDate = tariff.DelayDueDate.Date;
+
+                INotifyAction action = null;
+                var paymentMessage = true;
+
+                var toadmins = false;
+                var tousers = false;
+                var toowner = false;
+
+                var coupon = string.Empty;
+
+                Func<string> greenButtonText = () => string.Empty;
+
+                string blueButtonText() => WebstudioNotifyPatternResource.ButtonRequestCallButton;
+                var greenButtonUrl = string.Empty;
+
+                Func<string> tableItemText1 = () => string.Empty;
+                Func<string> tableItemText2 = () => string.Empty;
+                Func<string> tableItemText3 = () => string.Empty;
+                Func<string> tableItemText4 = () => string.Empty;
+                Func<string> tableItemText5 = () => string.Empty;
+                Func<string> tableItemText6 = () => string.Empty;
+                Func<string> tableItemText7 = () => string.Empty;
+
+                var tableItemUrl1 = string.Empty;
+                var tableItemUrl2 = string.Empty;
+                var tableItemUrl3 = string.Empty;
+                var tableItemUrl4 = string.Empty;
+                var tableItemUrl5 = string.Empty;
+                var tableItemUrl6 = string.Empty;
+                var tableItemUrl7 = string.Empty;
+
+                var tableItemImg1 = string.Empty;
+                var tableItemImg2 = string.Empty;
+                var tableItemImg3 = string.Empty;
+                var tableItemImg4 = string.Empty;
+                var tableItemImg5 = string.Empty;
+                var tableItemImg6 = string.Empty;
+                var tableItemImg7 = string.Empty;
+
+                Func<string> tableItemComment1 = () => string.Empty;
+                Func<string> tableItemComment2 = () => string.Empty;
+                Func<string> tableItemComment3 = () => string.Empty;
+                Func<string> tableItemComment4 = () => string.Empty;
+                Func<string> tableItemComment5 = () => string.Empty;
+                Func<string> tableItemComment6 = () => string.Empty;
+                Func<string> tableItemComment7 = () => string.Empty;
+
+                Func<string> tableItemLearnMoreText1 = () => string.Empty;
+
+                string tableItemLearnMoreText2() => string.Empty;
+
+                string tableItemLearnMoreText3() => string.Empty;
+
+                string tableItemLearnMoreText4() => string.Empty;
+
+                string tableItemLearnMoreText5() => string.Empty;
+
+                string tableItemLearnMoreText6() => string.Empty;
+
+                string tableItemLearnMoreText7() => string.Empty;
+
+                var tableItemLearnMoreUrl1 = string.Empty;
+                var tableItemLearnMoreUrl2 = string.Empty;
+                var tableItemLearnMoreUrl3 = string.Empty;
+                var tableItemLearnMoreUrl4 = string.Empty;
+                var tableItemLearnMoreUrl5 = string.Empty;
+                var tableItemLearnMoreUrl6 = string.Empty;
+                var tableItemLearnMoreUrl7 = string.Empty;
+
+
+                if (quota.Free)
                 {
-                    _tenantManager.SetCurrentTenant(tenant.Id);
-                    var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifyHelper.NotifySource);
+                    #region Free tariff every 2 months during 1 year
 
-                    var tariff = _paymentManager.GetTariff(tenant.Id);
-                    var quota = _tenantManager.GetTenantQuota(tenant.Id);
-                    var createdDate = tenant.CreationDateTime.Date;
-
-                    var dueDateIsNotMax = tariff.DueDate != DateTime.MaxValue;
-                    var dueDate = tariff.DueDate.Date;
-
-                    var delayDueDateIsNotMax = tariff.DelayDueDate != DateTime.MaxValue;
-                    var delayDueDate = tariff.DelayDueDate.Date;
-
-                    INotifyAction action = null;
-                    var paymentMessage = true;
-
-                    var toadmins = false;
-                    var tousers = false;
-                    var toowner = false;
-
-                    var coupon = string.Empty;
-
-                    Func<string> greenButtonText = () => string.Empty;
-
-                    string blueButtonText() => WebstudioNotifyPatternResource.ButtonRequestCallButton;
-                    var greenButtonUrl = string.Empty;
-
-                    Func<string> tableItemText1 = () => string.Empty;
-                    Func<string> tableItemText2 = () => string.Empty;
-                    Func<string> tableItemText3 = () => string.Empty;
-                    Func<string> tableItemText4 = () => string.Empty;
-                    Func<string> tableItemText5 = () => string.Empty;
-                    Func<string> tableItemText6 = () => string.Empty;
-                    Func<string> tableItemText7 = () => string.Empty;
-
-                    var tableItemUrl1 = string.Empty;
-                    var tableItemUrl2 = string.Empty;
-                    var tableItemUrl3 = string.Empty;
-                    var tableItemUrl4 = string.Empty;
-                    var tableItemUrl5 = string.Empty;
-                    var tableItemUrl6 = string.Empty;
-                    var tableItemUrl7 = string.Empty;
-
-                    var tableItemImg1 = string.Empty;
-                    var tableItemImg2 = string.Empty;
-                    var tableItemImg3 = string.Empty;
-                    var tableItemImg4 = string.Empty;
-                    var tableItemImg5 = string.Empty;
-                    var tableItemImg6 = string.Empty;
-                    var tableItemImg7 = string.Empty;
-
-                    Func<string> tableItemComment1 = () => string.Empty;
-                    Func<string> tableItemComment2 = () => string.Empty;
-                    Func<string> tableItemComment3 = () => string.Empty;
-                    Func<string> tableItemComment4 = () => string.Empty;
-                    Func<string> tableItemComment5 = () => string.Empty;
-                    Func<string> tableItemComment6 = () => string.Empty;
-                    Func<string> tableItemComment7 = () => string.Empty;
-
-                    Func<string> tableItemLearnMoreText1 = () => string.Empty;
-
-                    string tableItemLearnMoreText2() => string.Empty;
-
-                    string tableItemLearnMoreText3() => string.Empty;
-
-                    string tableItemLearnMoreText4() => string.Empty;
-
-                    string tableItemLearnMoreText5() => string.Empty;
-
-                    string tableItemLearnMoreText6() => string.Empty;
-
-                    string tableItemLearnMoreText7() => string.Empty;
-
-                    var tableItemLearnMoreUrl1 = string.Empty;
-                    var tableItemLearnMoreUrl2 = string.Empty;
-                    var tableItemLearnMoreUrl3 = string.Empty;
-                    var tableItemLearnMoreUrl4 = string.Empty;
-                    var tableItemLearnMoreUrl5 = string.Empty;
-                    var tableItemLearnMoreUrl6 = string.Empty;
-                    var tableItemLearnMoreUrl7 = string.Empty;
-
-
-                    if (quota.Free)
+                    if (createdDate.AddMonths(2) == nowDate || createdDate.AddMonths(4) == nowDate || createdDate.AddMonths(6) == nowDate || createdDate.AddMonths(8) == nowDate || createdDate.AddMonths(10) == nowDate || createdDate.AddMonths(12) == nowDate)
                     {
-                        #region Free tariff every 2 months during 1 year
+                        action = Actions.SaasAdminPaymentWarningEvery2MonthsV115;
+                        toadmins = true;
 
-                        if (createdDate.AddMonths(2) == nowDate || createdDate.AddMonths(4) == nowDate || createdDate.AddMonths(6) == nowDate || createdDate.AddMonths(8) == nowDate || createdDate.AddMonths(10) == nowDate || createdDate.AddMonths(12) == nowDate)
-                        {
-                            action = Actions.SaasAdminPaymentWarningEvery2MonthsV115;
-                            toadmins = true;
-
-                            greenButtonText = () => WebstudioNotifyPatternResource.ButtonUseDiscount;
-                            greenButtonUrl = _commonLinkUtility.GetFullAbsolutePath("~/Tariffs.aspx");
-                        }
-
-                        #endregion
+                        greenButtonText = () => WebstudioNotifyPatternResource.ButtonUseDiscount;
+                        greenButtonUrl = _commonLinkUtility.GetFullAbsolutePath("~/Tariffs.aspx");
                     }
-                    else if (quota.Trial)
+
+                    #endregion
+                }
+                else if (quota.Trial)
+                {
+                    #region After registration letters
+
+                    #region 1 days after registration to admins SAAS TRIAL
+
+                    if (createdDate.AddDays(1) == nowDate)
                     {
-                        #region After registration letters
+                        action = Actions.SaasAdminModulesV115;
+                        paymentMessage = false;
+                        toadmins = true;
 
-                        #region 1 days after registration to admins SAAS TRIAL
+                        greenButtonText = () => WebstudioNotifyPatternResource.ButtonAccessYouWebOffice;
+                        greenButtonUrl = $"{_commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')}/";
+                    }
 
-                        if (createdDate.AddDays(1) == nowDate)
+                    #endregion
+
+                    #region  4 days after registration to admins SAAS TRIAL
+
+                    else if (createdDate.AddDays(4) == nowDate)
+                    {
+                        action = Actions.SaasAdminComfortTipsV115;
+                        paymentMessage = false;
+                        toadmins = true;
+
+                        greenButtonText = () => WebstudioNotifyPatternResource.ButtonUseDiscount;
+                        greenButtonUrl = _commonLinkUtility.GetFullAbsolutePath("~/Tariffs.aspx");
+                    }
+
+                    #endregion
+
+                    #region 7 days after registration to admins and users SAAS TRIAL
+
+                    else if (createdDate.AddDays(7) == nowDate)
+                    {
+                        action = Actions.SaasAdminUserDocsTipsV115;
+                        paymentMessage = false;
+                        toadmins = true;
+                        tousers = true;
+
+                        tableItemImg1 = _studioNotifyHelper.GetNotificationImageUrl("tips-documents-formatting-100.png");
+                        tableItemText1 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_formatting_hdr;
+                        tableItemComment1 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_formatting;
+
+                        if (!_coreBaseSettings.CustomMode)
                         {
-                            action = Actions.SaasAdminModulesV115;
-                            paymentMessage = false;
-                            toadmins = true;
-
-                            greenButtonText = () => WebstudioNotifyPatternResource.ButtonAccessYouWebOffice;
-                            greenButtonUrl = $"{_commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')}/";
+                            tableItemLearnMoreUrl1 = _studioNotifyHelper.Helplink + "/onlyoffice-editors/index.aspx";
+                            tableItemLearnMoreText1 = () => WebstudioNotifyPatternResource.LinkLearnMore;
                         }
 
-                        #endregion
+                        tableItemImg2 = _studioNotifyHelper.GetNotificationImageUrl("tips-documents-share-100.png");
+                        tableItemText2 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_share_hdr;
+                        tableItemComment2 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_share;
 
-                        #region  4 days after registration to admins SAAS TRIAL
+                        tableItemImg3 = _studioNotifyHelper.GetNotificationImageUrl("tips-documents-coediting-100.png");
+                        tableItemText3 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_coediting_hdr;
+                        tableItemComment3 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_coediting;
 
-                        else if (createdDate.AddDays(4) == nowDate)
+                        tableItemImg4 = _studioNotifyHelper.GetNotificationImageUrl("tips-documents-review-100.png");
+                        tableItemText4 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_review_hdr;
+                        tableItemComment4 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_review;
+
+                        tableItemImg5 = _studioNotifyHelper.GetNotificationImageUrl("tips-customize-modules-100.png");
+                        tableItemText5 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_contentcontrols_hdr;
+                        tableItemComment5 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_contentcontrols;
+
+                        tableItemImg6 = _studioNotifyHelper.GetNotificationImageUrl("tips-customize-customize-100.png");
+                        tableItemText6 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_spreadsheets_hdr;
+                        tableItemComment6 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_spreadsheets;
+
+                        tableItemImg7 = _studioNotifyHelper.GetNotificationImageUrl("tips-documents-attach-100.png");
+                        tableItemText7 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_differences_hdr;
+                        tableItemComment7 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_differences;
+
+                        greenButtonText = () => WebstudioNotifyPatternResource.ButtonAccessYouWebOffice;
+                        greenButtonUrl = $"{_commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')}/products/files/";
+                    }
+
+                    #endregion
+
+                    #region 14 days after registration to admins and users SAAS TRIAL
+
+                    else if (createdDate.AddDays(14) == nowDate)
+                    {
+                        action = Actions.SaasAdminUserAppsTipsV115;
+                        paymentMessage = false;
+                        toadmins = true;
+                        tousers = true;
+                    }
+
+                    #endregion
+
+                    #endregion
+
+                    #region Trial warning letters
+
+                    #region 5 days before SAAS TRIAL ends to admins
+
+                    else if (!_coreBaseSettings.CustomMode && dueDateIsNotMax && dueDate.AddDays(-5) == nowDate)
+                    {
+                        toadmins = true;
+                        action = Actions.SaasAdminTrialWarningBefore5V115;
+                        coupon = "PortalCreation10%";
+
+                        if (string.IsNullOrEmpty(coupon))
                         {
-                            action = Actions.SaasAdminComfortTipsV115;
-                            paymentMessage = false;
-                            toadmins = true;
-
-                            greenButtonText = () => WebstudioNotifyPatternResource.ButtonUseDiscount;
-                            greenButtonUrl = _commonLinkUtility.GetFullAbsolutePath("~/Tariffs.aspx");
-                        }
-
-                        #endregion
-
-                        #region 7 days after registration to admins and users SAAS TRIAL
-
-                        else if (createdDate.AddDays(7) == nowDate)
-                        {
-                            action = Actions.SaasAdminUserDocsTipsV115;
-                            paymentMessage = false;
-                            toadmins = true;
-                            tousers = true;
-
-                            tableItemImg1 = _studioNotifyHelper.GetNotificationImageUrl("tips-documents-formatting-100.png");
-                            tableItemText1 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_formatting_hdr;
-                            tableItemComment1 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_formatting;
-
-                            if (!_coreBaseSettings.CustomMode)
+                            try
                             {
-                                tableItemLearnMoreUrl1 = _studioNotifyHelper.Helplink + "/onlyoffice-editors/index.aspx";
-                                tableItemLearnMoreText1 = () => WebstudioNotifyPatternResource.LinkLearnMore;
+                                _log.InfoFormat("start CreateCoupon to {0}", tenant.Alias);
+
+                                coupon = SetupInfo.IsSecretEmail(_userManager.GetUsers(tenant.OwnerId).Email)
+                                        ? tenant.Alias
+                                            : _couponManager.CreateCoupon(_tenantManager);
+
+                                _log.InfoFormat("end CreateCoupon to {0} coupon = {1}", tenant.Alias, coupon);
                             }
-
-                            tableItemImg2 = _studioNotifyHelper.GetNotificationImageUrl("tips-documents-share-100.png");
-                            tableItemText2 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_share_hdr;
-                            tableItemComment2 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_share;
-
-                            tableItemImg3 = _studioNotifyHelper.GetNotificationImageUrl("tips-documents-coediting-100.png");
-                            tableItemText3 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_coediting_hdr;
-                            tableItemComment3 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_coediting;
-
-                            tableItemImg4 = _studioNotifyHelper.GetNotificationImageUrl("tips-documents-review-100.png");
-                            tableItemText4 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_review_hdr;
-                            tableItemComment4 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_review;
-
-                            tableItemImg5 = _studioNotifyHelper.GetNotificationImageUrl("tips-customize-modules-100.png");
-                            tableItemText5 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_contentcontrols_hdr;
-                            tableItemComment5 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_contentcontrols;
-
-                            tableItemImg6 = _studioNotifyHelper.GetNotificationImageUrl("tips-customize-customize-100.png");
-                            tableItemText6 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_spreadsheets_hdr;
-                            tableItemComment6 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_spreadsheets;
-
-                            tableItemImg7 = _studioNotifyHelper.GetNotificationImageUrl("tips-documents-attach-100.png");
-                            tableItemText7 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_differences_hdr;
-                            tableItemComment7 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_differences;
-
-                            greenButtonText = () => WebstudioNotifyPatternResource.ButtonAccessYouWebOffice;
-                            greenButtonUrl = $"{_commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')}/products/files/";
-                        }
-
-                        #endregion
-
-                        #region 14 days after registration to admins and users SAAS TRIAL
-
-                        else if (createdDate.AddDays(14) == nowDate)
-                        {
-                            action = Actions.SaasAdminUserAppsTipsV115;
-                            paymentMessage = false;
-                            toadmins = true;
-                            tousers = true;
-                        }
-
-                        #endregion
-
-                        #endregion
-
-                        #region Trial warning letters
-
-                        #region 5 days before SAAS TRIAL ends to admins
-
-                        else if (!_coreBaseSettings.CustomMode && dueDateIsNotMax && dueDate.AddDays(-5) == nowDate)
-                        {
-                            toadmins = true;
-                            action = Actions.SaasAdminTrialWarningBefore5V115;
-                            coupon = "PortalCreation10%";
-
-                            if (string.IsNullOrEmpty(coupon))
+                            catch (AggregateException ae)
                             {
-                                try
-                                {
-                                    _log.InfoFormat("start CreateCoupon to {0}", tenant.Alias);
-
-                                    coupon = SetupInfo.IsSecretEmail(_userManager.GetUsers(tenant.OwnerId).Email)
-                                                ? tenant.Alias
-                                                : _couponManager.CreateCoupon(_tenantManager);
-
-                                    _log.InfoFormat("end CreateCoupon to {0} coupon = {1}", tenant.Alias, coupon);
-                                }
-                                catch (AggregateException ae)
-                                {
-                                    foreach (var ex in ae.InnerExceptions)
-                                        _log.Error(ex);
-                                }
-                                catch (Exception ex)
+                                foreach (var ex in ae.InnerExceptions)
                                 {
                                     _log.Error(ex);
                                 }
                             }
-
-                            greenButtonText = () => WebstudioNotifyPatternResource.ButtonUseDiscount;
-                            greenButtonUrl = _commonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx");
-                        }
-
-                        #endregion
-
-                        #region SAAS TRIAL expires today to admins
-
-                        else if (dueDate == nowDate)
-                        {
-                            action = Actions.SaasAdminTrialWarningV115;
-                            toadmins = true;
-                        }
-
-                        #endregion
-
-                        #region 1 day after SAAS TRIAL expired to admins
-
-                        if (dueDateIsNotMax && dueDate.AddDays(1) == nowDate)
-                        {
-                            action = Actions.SaasAdminTrialWarningAfter1V115;
-                            toadmins = true;
-
-                            greenButtonText = () => WebstudioNotifyPatternResource.ButtonRenewNow;
-                            greenButtonUrl = _commonLinkUtility.GetFullAbsolutePath("~/Tariffs.aspx");
-                        }
-
-                        #region 6 months after SAAS TRIAL expired
-
-                        else if (dueDateIsNotMax && dueDate.AddMonths(6) == nowDate)
-                        {
-                            action = Actions.SaasAdminTrialWarningAfterHalfYearV115;
-                            toowner = true;
-
-                            greenButtonText = () => WebstudioNotifyPatternResource.ButtonLeaveFeedback;
-
-                            var owner = _userManager.GetUsers(tenant.OwnerId);
-                            greenButtonUrl = _setupInfo.TeamlabSiteRedirect + "/remove-portal-feedback-form.aspx#" +
-                                          System.Web.HttpUtility.UrlEncode(Convert.ToBase64String(
-                                              System.Text.Encoding.UTF8.GetBytes("{\"firstname\":\"" + owner.FirstName +
-                                                                                 "\",\"lastname\":\"" + owner.LastName +
-                                                                                 "\",\"alias\":\"" + tenant.Alias +
-                                                                                 "\",\"email\":\"" + owner.Email + "\"}")));
-                        }
-                        else if (dueDateIsNotMax && dueDate.AddMonths(6).AddDays(7) <= nowDate)
-                        {
-                            _tenantManager.RemoveTenant(tenant.Id, true);
-
-                            if (!string.IsNullOrEmpty(_apiSystemHelper.ApiCacheUrl))
+                            catch (Exception ex)
                             {
-                                await _apiSystemHelper.RemoveTenantFromCacheAsync(tenant.Alias, _authContext.CurrentAccount.ID);
+                                _log.Error(ex);
                             }
                         }
 
-                        #endregion
-
-                        #endregion
-
-                        #endregion
+                        greenButtonText = () => WebstudioNotifyPatternResource.ButtonUseDiscount;
+                        greenButtonUrl = _commonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx");
                     }
 
-                    else if (tariff.State >= TariffState.Paid)
+                    #endregion
+
+                    #region SAAS TRIAL expires today to admins
+
+                    else if (dueDate == nowDate)
                     {
-                        #region Payment warning letters
-
-                        #region 6 months after SAAS PAID expired
-
-                        if (tariff.State == TariffState.NotPaid && dueDateIsNotMax && dueDate.AddMonths(6) == nowDate)
-                        {
-                            action = Actions.SaasAdminTrialWarningAfterHalfYearV115;
-                            toowner = true;
-
-                            greenButtonText = () => WebstudioNotifyPatternResource.ButtonLeaveFeedback;
-
-                            var owner = _userManager.GetUsers(tenant.OwnerId);
-                            greenButtonUrl = _setupInfo.TeamlabSiteRedirect + "/remove-portal-feedback-form.aspx#" +
-                                          System.Web.HttpUtility.UrlEncode(Convert.ToBase64String(
-                                              System.Text.Encoding.UTF8.GetBytes("{\"firstname\":\"" + owner.FirstName +
-                                                                                 "\",\"lastname\":\"" + owner.LastName +
-                                                                                 "\",\"alias\":\"" + tenant.Alias +
-                                                                                 "\",\"email\":\"" + owner.Email + "\"}")));
-                        }
-                        else if (tariff.State == TariffState.NotPaid && dueDateIsNotMax && dueDate.AddMonths(6).AddDays(7) <= nowDate)
-                        {
-                            _tenantManager.RemoveTenant(tenant.Id, true);
-
-                            if (!string.IsNullOrEmpty(_apiSystemHelper.ApiCacheUrl))
-                            {
-                                await _apiSystemHelper.RemoveTenantFromCacheAsync(tenant.Alias, _authContext.CurrentAccount.ID);
-                            }
-                        }
-
-                        #endregion
-
-                        #endregion
+                        action = Actions.SaasAdminTrialWarningV115;
+                        toadmins = true;
                     }
 
+                    #endregion
 
-                    if (action == null) continue;
+                    #region 1 day after SAAS TRIAL expired to admins
 
-                    var users = toowner
+                    if (dueDateIsNotMax && dueDate.AddDays(1) == nowDate)
+                    {
+                        action = Actions.SaasAdminTrialWarningAfter1V115;
+                        toadmins = true;
+
+                        greenButtonText = () => WebstudioNotifyPatternResource.ButtonRenewNow;
+                        greenButtonUrl = _commonLinkUtility.GetFullAbsolutePath("~/Tariffs.aspx");
+                    }
+
+                    #region 6 months after SAAS TRIAL expired
+
+                    else if (dueDateIsNotMax && dueDate.AddMonths(6) == nowDate)
+                    {
+                        action = Actions.SaasAdminTrialWarningAfterHalfYearV115;
+                        toowner = true;
+
+                        greenButtonText = () => WebstudioNotifyPatternResource.ButtonLeaveFeedback;
+
+                        var owner = _userManager.GetUsers(tenant.OwnerId);
+                        greenButtonUrl = _setupInfo.TeamlabSiteRedirect + "/remove-portal-feedback-form.aspx#" +
+                                  HttpUtility.UrlEncode(Convert.ToBase64String(
+                                      Encoding.UTF8.GetBytes("{\"firstname\":\"" + owner.FirstName +
+                                                                         "\",\"lastname\":\"" + owner.LastName +
+                                                                         "\",\"alias\":\"" + tenant.Alias +
+                                                                         "\",\"email\":\"" + owner.Email + "\"}")));
+                    }
+                    else if (dueDateIsNotMax && dueDate.AddMonths(6).AddDays(7) <= nowDate)
+                    {
+                        _tenantManager.RemoveTenant(tenant.Id, true);
+
+                        if (!string.IsNullOrEmpty(_apiSystemHelper.ApiCacheUrl))
+                        {
+                            await _apiSystemHelper.RemoveTenantFromCacheAsync(tenant.Alias, _authContext.CurrentAccount.ID);
+                        }
+                    }
+
+                    #endregion
+
+                    #endregion
+
+                    #endregion
+                }
+
+                else if (tariff.State >= TariffState.Paid)
+                {
+                    #region Payment warning letters
+
+                    #region 6 months after SAAS PAID expired
+
+                    if (tariff.State == TariffState.NotPaid && dueDateIsNotMax && dueDate.AddMonths(6) == nowDate)
+                    {
+                        action = Actions.SaasAdminTrialWarningAfterHalfYearV115;
+                        toowner = true;
+
+                        greenButtonText = () => WebstudioNotifyPatternResource.ButtonLeaveFeedback;
+
+                        var owner = _userManager.GetUsers(tenant.OwnerId);
+                        greenButtonUrl = _setupInfo.TeamlabSiteRedirect + "/remove-portal-feedback-form.aspx#" +
+                                  HttpUtility.UrlEncode(Convert.ToBase64String(
+                                      Encoding.UTF8.GetBytes("{\"firstname\":\"" + owner.FirstName +
+                                                                         "\",\"lastname\":\"" + owner.LastName +
+                                                                         "\",\"alias\":\"" + tenant.Alias +
+                                                                         "\",\"email\":\"" + owner.Email + "\"}")));
+                    }
+                    else if (tariff.State == TariffState.NotPaid && dueDateIsNotMax && dueDate.AddMonths(6).AddDays(7) <= nowDate)
+                    {
+                        _tenantManager.RemoveTenant(tenant.Id, true);
+
+                        if (!string.IsNullOrEmpty(_apiSystemHelper.ApiCacheUrl))
+                        {
+                            await _apiSystemHelper.RemoveTenantFromCacheAsync(tenant.Alias, _authContext.CurrentAccount.ID);
+                        }
+                    }
+
+                    #endregion
+
+                    #endregion
+                }
+
+
+                if (action == null)
+                {
+                    continue;
+                }
+
+                var users = toowner
                                     ? new List<UserInfo> { _userManager.GetUsers(tenant.OwnerId) }
                                     : _studioNotifyHelper.GetRecipients(toadmins, tousers, false);
 
-                    foreach (var u in users.Where(u => paymentMessage || _studioNotifyHelper.IsSubscribedToNotify(u, Actions.PeriodicNotify)))
-                    {
-                        var culture = string.IsNullOrEmpty(u.CultureName) ? tenant.GetCulture() : u.GetCulture();
-                        Thread.CurrentThread.CurrentCulture = culture;
-                        Thread.CurrentThread.CurrentUICulture = culture;
-                        var rquota = _tenantExtra.GetRightQuota() ?? TenantQuota.Default;
+                foreach (var u in users.Where(u => paymentMessage || _studioNotifyHelper.IsSubscribedToNotify(u, Actions.PeriodicNotify)))
+                {
+                    var culture = string.IsNullOrEmpty(u.CultureName) ? tenant.GetCulture() : u.GetCulture();
+                    Thread.CurrentThread.CurrentCulture = culture;
+                    Thread.CurrentThread.CurrentUICulture = culture;
+                    var rquota = _tenantExtra.GetRightQuota() ?? TenantQuota.Default;
 
-                        client.SendNoticeToAsync(
-                            action,
+                    client.SendNoticeToAsync(
+                        action,
                             new[] { _studioNotifyHelper.ToRecipient(u.Id) },
-                            new[] { senderName },
-                            new TagValue(Tags.UserName, u.FirstName.HtmlEncode()),
+                        new[] { senderName },
+                        new TagValue(Tags.UserName, u.FirstName.HtmlEncode()),
                             new TagValue(Tags.PricingPage, _commonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx")),
                             new TagValue(Tags.ActiveUsers, _userManager.GetUsers().Length),
-                            new TagValue(Tags.Price, rquota.Price),
-                            new TagValue(Tags.PricePeriod, rquota.Year3 ? UserControlsCommonResource.TariffPerYear3 : rquota.Year ? UserControlsCommonResource.TariffPerYear : UserControlsCommonResource.TariffPerMonth),
-                            new TagValue(Tags.DueDate, dueDate.ToLongDateString()),
-                            new TagValue(Tags.DelayDueDate, (delayDueDateIsNotMax ? delayDueDate : dueDate).ToLongDateString()),
-                            TagValues.BlueButton(blueButtonText, "http://www.onlyoffice.com/call-back-form.aspx"),
-                            TagValues.GreenButton(greenButtonText, greenButtonUrl),
-                            TagValues.TableTop(),
-                            TagValues.TableItem(1, tableItemText1, tableItemUrl1, tableItemImg1, tableItemComment1, tableItemLearnMoreText1, tableItemLearnMoreUrl1),
-                            TagValues.TableItem(2, tableItemText2, tableItemUrl2, tableItemImg2, tableItemComment2, tableItemLearnMoreText2, tableItemLearnMoreUrl2),
-                            TagValues.TableItem(3, tableItemText3, tableItemUrl3, tableItemImg3, tableItemComment3, tableItemLearnMoreText3, tableItemLearnMoreUrl3),
-                            TagValues.TableItem(4, tableItemText4, tableItemUrl4, tableItemImg4, tableItemComment4, tableItemLearnMoreText4, tableItemLearnMoreUrl4),
-                            TagValues.TableItem(5, tableItemText5, tableItemUrl5, tableItemImg5, tableItemComment5, tableItemLearnMoreText5, tableItemLearnMoreUrl5),
-                            TagValues.TableItem(6, tableItemText6, tableItemUrl6, tableItemImg6, tableItemComment6, tableItemLearnMoreText6, tableItemLearnMoreUrl6),
-                            TagValues.TableItem(7, tableItemText7, tableItemUrl7, tableItemImg7, tableItemComment7, tableItemLearnMoreText7, tableItemLearnMoreUrl7),
-                            TagValues.TableBottom(),
+                        new TagValue(Tags.Price, rquota.Price),
+                        new TagValue(Tags.PricePeriod, rquota.Year3 ? UserControlsCommonResource.TariffPerYear3 : rquota.Year ? UserControlsCommonResource.TariffPerYear : UserControlsCommonResource.TariffPerMonth),
+                        new TagValue(Tags.DueDate, dueDate.ToLongDateString()),
+                        new TagValue(Tags.DelayDueDate, (delayDueDateIsNotMax ? delayDueDate : dueDate).ToLongDateString()),
+                        TagValues.BlueButton(blueButtonText, "http://www.onlyoffice.com/call-back-form.aspx"),
+                        TagValues.GreenButton(greenButtonText, greenButtonUrl),
+                        TagValues.TableTop(),
+                        TagValues.TableItem(1, tableItemText1, tableItemUrl1, tableItemImg1, tableItemComment1, tableItemLearnMoreText1, tableItemLearnMoreUrl1),
+                        TagValues.TableItem(2, tableItemText2, tableItemUrl2, tableItemImg2, tableItemComment2, tableItemLearnMoreText2, tableItemLearnMoreUrl2),
+                        TagValues.TableItem(3, tableItemText3, tableItemUrl3, tableItemImg3, tableItemComment3, tableItemLearnMoreText3, tableItemLearnMoreUrl3),
+                        TagValues.TableItem(4, tableItemText4, tableItemUrl4, tableItemImg4, tableItemComment4, tableItemLearnMoreText4, tableItemLearnMoreUrl4),
+                        TagValues.TableItem(5, tableItemText5, tableItemUrl5, tableItemImg5, tableItemComment5, tableItemLearnMoreText5, tableItemLearnMoreUrl5),
+                        TagValues.TableItem(6, tableItemText6, tableItemUrl6, tableItemImg6, tableItemComment6, tableItemLearnMoreText6, tableItemLearnMoreUrl6),
+                        TagValues.TableItem(7, tableItemText7, tableItemUrl7, tableItemImg7, tableItemComment7, tableItemLearnMoreText7, tableItemLearnMoreUrl7),
+                        TagValues.TableBottom(),
                             new TagValue(CommonTags.Footer, u.IsAdmin(_userManager) ? "common" : "social"),
-                            new TagValue(Tags.Coupon, coupon));
-                    }
-                }
-                catch (Exception err)
-                {
-                    _log.Error(err);
+                        new TagValue(Tags.Coupon, coupon));
                 }
             }
-
-            _log.Info("End SendSaasTariffLetters");
+            catch (Exception err)
+            {
+                _log.Error(err);
+            }
         }
 
-        public void SendEnterpriseLetters(string senderName, DateTime scheduleDate)
+        _log.Info("End SendSaasTariffLetters");
+    }
+
+    public void SendEnterpriseLetters(string senderName, DateTime scheduleDate)
+    {
+        var nowDate = scheduleDate.Date;
+        const string dbid = "webstudio";
+
+        _log.Info("Start SendTariffEnterpriseLetters");
+
+        var activeTenants = _tenantManager.GetTenants().ToList();
+
+        if (activeTenants.Count <= 0)
         {
-            var nowDate = scheduleDate.Date;
-            const string dbid = "webstudio";
+            _log.Info("End SendTariffEnterpriseLetters");
+            return;
+        }
 
-            _log.Info("Start SendTariffEnterpriseLetters");
-
-            var activeTenants = _tenantManager.GetTenants().ToList();
-
-            if (activeTenants.Count <= 0)
+        foreach (var tenant in activeTenants)
+        {
+            try
             {
-                _log.Info("End SendTariffEnterpriseLetters");
-                return;
-            }
+                var defaultRebranding = MailWhiteLabelSettings.IsDefault(_settingsManager);
+                _tenantManager.SetCurrentTenant(tenant.Id);
+                var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifyHelper.NotifySource);
 
-            foreach (var tenant in activeTenants)
-            {
-                try
+                var tariff = _paymentManager.GetTariff(tenant.Id);
+                var quota = _tenantManager.GetTenantQuota(tenant.Id);
+                var createdDate = tenant.CreationDateTime.Date;
+
+                var actualEndDate = tariff.DueDate != DateTime.MaxValue ? tariff.DueDate : tariff.LicenseDate;
+                var dueDateIsNotMax = actualEndDate != DateTime.MaxValue;
+                var dueDate = actualEndDate.Date;
+
+                var delayDueDateIsNotMax = tariff.DelayDueDate != DateTime.MaxValue;
+                var delayDueDate = tariff.DelayDueDate.Date;
+
+                INotifyAction action = null;
+                var paymentMessage = true;
+
+                var toadmins = false;
+                var tousers = false;
+
+                Func<string> greenButtonText = () => string.Empty;
+
+                string blueButtonText() => WebstudioNotifyPatternResource.ButtonRequestCallButton;
+                var greenButtonUrl = string.Empty;
+
+                Func<string> tableItemText1 = () => string.Empty;
+                Func<string> tableItemText2 = () => string.Empty;
+                Func<string> tableItemText3 = () => string.Empty;
+                Func<string> tableItemText4 = () => string.Empty;
+                Func<string> tableItemText5 = () => string.Empty;
+                Func<string> tableItemText6 = () => string.Empty;
+                Func<string> tableItemText7 = () => string.Empty;
+
+                var tableItemUrl1 = string.Empty;
+                var tableItemUrl2 = string.Empty;
+                var tableItemUrl3 = string.Empty;
+                var tableItemUrl4 = string.Empty;
+                var tableItemUrl5 = string.Empty;
+                var tableItemUrl6 = string.Empty;
+                var tableItemUrl7 = string.Empty;
+
+                var tableItemImg1 = string.Empty;
+                var tableItemImg2 = string.Empty;
+                var tableItemImg3 = string.Empty;
+                var tableItemImg4 = string.Empty;
+                var tableItemImg5 = string.Empty;
+                var tableItemImg6 = string.Empty;
+                var tableItemImg7 = string.Empty;
+
+                Func<string> tableItemComment1 = () => string.Empty;
+                Func<string> tableItemComment2 = () => string.Empty;
+                Func<string> tableItemComment3 = () => string.Empty;
+                Func<string> tableItemComment4 = () => string.Empty;
+                Func<string> tableItemComment5 = () => string.Empty;
+                Func<string> tableItemComment6 = () => string.Empty;
+                Func<string> tableItemComment7 = () => string.Empty;
+
+                Func<string> tableItemLearnMoreText1 = () => string.Empty;
+
+                string tableItemLearnMoreText2() => string.Empty;
+
+                string tableItemLearnMoreText3() => string.Empty;
+
+                string tableItemLearnMoreText4() => string.Empty;
+
+                string tableItemLearnMoreText5() => string.Empty;
+
+                string tableItemLearnMoreText6() => string.Empty;
+
+                string tableItemLearnMoreText7() => string.Empty;
+
+                var tableItemLearnMoreUrl1 = string.Empty;
+                var tableItemLearnMoreUrl2 = string.Empty;
+                var tableItemLearnMoreUrl3 = string.Empty;
+                var tableItemLearnMoreUrl4 = string.Empty;
+                var tableItemLearnMoreUrl5 = string.Empty;
+                var tableItemLearnMoreUrl6 = string.Empty;
+                var tableItemLearnMoreUrl7 = string.Empty;
+
+
+                if (quota.Trial && defaultRebranding)
                 {
-                    var defaultRebranding = MailWhiteLabelSettings.IsDefault(_settingsManager);
-                    _tenantManager.SetCurrentTenant(tenant.Id);
-                    var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifyHelper.NotifySource);
+                    #region After registration letters
 
-                    var tariff = _paymentManager.GetTariff(tenant.Id);
-                    var quota = _tenantManager.GetTenantQuota(tenant.Id);
-                    var createdDate = tenant.CreationDateTime.Date;
+                    #region 1 day after registration to admins ENTERPRISE TRIAL + defaultRebranding
 
-                    var actualEndDate = tariff.DueDate != DateTime.MaxValue ? tariff.DueDate : tariff.LicenseDate;
-                    var dueDateIsNotMax = actualEndDate != DateTime.MaxValue;
-                    var dueDate = actualEndDate.Date;
-
-                    var delayDueDateIsNotMax = tariff.DelayDueDate != DateTime.MaxValue;
-                    var delayDueDate = tariff.DelayDueDate.Date;
-
-                    INotifyAction action = null;
-                    var paymentMessage = true;
-
-                    var toadmins = false;
-                    var tousers = false;
-
-                    Func<string> greenButtonText = () => string.Empty;
-
-                    string blueButtonText() => WebstudioNotifyPatternResource.ButtonRequestCallButton;
-                    var greenButtonUrl = string.Empty;
-
-                    Func<string> tableItemText1 = () => string.Empty;
-                    Func<string> tableItemText2 = () => string.Empty;
-                    Func<string> tableItemText3 = () => string.Empty;
-                    Func<string> tableItemText4 = () => string.Empty;
-                    Func<string> tableItemText5 = () => string.Empty;
-                    Func<string> tableItemText6 = () => string.Empty;
-                    Func<string> tableItemText7 = () => string.Empty;
-
-                    var tableItemUrl1 = string.Empty;
-                    var tableItemUrl2 = string.Empty;
-                    var tableItemUrl3 = string.Empty;
-                    var tableItemUrl4 = string.Empty;
-                    var tableItemUrl5 = string.Empty;
-                    var tableItemUrl6 = string.Empty;
-                    var tableItemUrl7 = string.Empty;
-
-                    var tableItemImg1 = string.Empty;
-                    var tableItemImg2 = string.Empty;
-                    var tableItemImg3 = string.Empty;
-                    var tableItemImg4 = string.Empty;
-                    var tableItemImg5 = string.Empty;
-                    var tableItemImg6 = string.Empty;
-                    var tableItemImg7 = string.Empty;
-
-                    Func<string> tableItemComment1 = () => string.Empty;
-                    Func<string> tableItemComment2 = () => string.Empty;
-                    Func<string> tableItemComment3 = () => string.Empty;
-                    Func<string> tableItemComment4 = () => string.Empty;
-                    Func<string> tableItemComment5 = () => string.Empty;
-                    Func<string> tableItemComment6 = () => string.Empty;
-                    Func<string> tableItemComment7 = () => string.Empty;
-
-                    Func<string> tableItemLearnMoreText1 = () => string.Empty;
-
-                    string tableItemLearnMoreText2() => string.Empty;
-
-                    string tableItemLearnMoreText3() => string.Empty;
-
-                    string tableItemLearnMoreText4() => string.Empty;
-
-                    string tableItemLearnMoreText5() => string.Empty;
-
-                    string tableItemLearnMoreText6() => string.Empty;
-
-                    string tableItemLearnMoreText7() => string.Empty;
-
-                    var tableItemLearnMoreUrl1 = string.Empty;
-                    var tableItemLearnMoreUrl2 = string.Empty;
-                    var tableItemLearnMoreUrl3 = string.Empty;
-                    var tableItemLearnMoreUrl4 = string.Empty;
-                    var tableItemLearnMoreUrl5 = string.Empty;
-                    var tableItemLearnMoreUrl6 = string.Empty;
-                    var tableItemLearnMoreUrl7 = string.Empty;
-
-
-                    if (quota.Trial && defaultRebranding)
+                    if (createdDate.AddDays(1) == nowDate)
                     {
-                        #region After registration letters
+                        action = Actions.EnterpriseAdminCustomizePortalV10;
+                        paymentMessage = false;
+                        toadmins = true;
 
-                        #region 1 day after registration to admins ENTERPRISE TRIAL + defaultRebranding
+                        tableItemImg1 = _studioNotifyHelper.GetNotificationImageUrl("tips-customize-brand-100.png");
+                        tableItemText1 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_brand_hdr;
+                        tableItemComment1 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_brand;
 
-                        if (createdDate.AddDays(1) == nowDate)
+                        tableItemImg2 = _studioNotifyHelper.GetNotificationImageUrl("tips-customize-regional-100.png");
+                        tableItemText2 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_regional_hdr;
+                        tableItemComment2 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_regional;
+
+                        tableItemImg3 = _studioNotifyHelper.GetNotificationImageUrl("tips-customize-customize-100.png");
+                        tableItemText3 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_customize_hdr;
+                        tableItemComment3 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_customize;
+
+                        tableItemImg4 = _studioNotifyHelper.GetNotificationImageUrl("tips-customize-modules-100.png");
+                        tableItemText4 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_modules_hdr;
+                        tableItemComment4 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_modules;
+
+                        tableItemImg5 = _studioNotifyHelper.GetNotificationImageUrl("tips-customize-3rdparty-100.png");
+                        tableItemText5 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_3rdparty_hdr;
+                        tableItemComment5 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_3rdparty;
+
+                        greenButtonText = () => WebstudioNotifyPatternResource.ButtonConfigureRightNow;
+                        greenButtonUrl = _commonLinkUtility.GetFullAbsolutePath(_commonLinkUtility.GetAdministration(ManagementType.General));
+                    }
+
+                    #endregion
+
+                    #region 4 days after registration to admins ENTERPRISE TRIAL + only 1 user + defaultRebranding
+
+                    else if (createdDate.AddDays(4) == nowDate && _userManager.GetUsers().Length == 1)
+                    {
+                        action = Actions.EnterpriseAdminInviteTeammatesV10;
+                        paymentMessage = false;
+                        toadmins = true;
+
+                        greenButtonText = () => WebstudioNotifyPatternResource.ButtonInviteRightNow;
+                        greenButtonUrl = $"{_commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')}/products/people/";
+                    }
+
+                    #endregion
+
+                    #region 5 days after registration to admins ENTERPRISE TRAIL + without activity in 1 or more days + defaultRebranding
+
+                    else if (createdDate.AddDays(5) == nowDate)
+                    {
+                        List<DateTime> datesWithActivity;
+
+                        datesWithActivity =
+                                _dbContextManager.Get(dbid).FeedAggregates
+                                .Where(r => r.Tenant == _tenantManager.GetCurrentTenant().Id)
+                            .Where(r => r.CreatedDate <= nowDate.AddDays(-1))
+                            .GroupBy(r => r.CreatedDate.Date)
+                            .Select(r => r.Key)
+                            .ToList();
+
+                        if (datesWithActivity.Count < 5)
                         {
-                            action = Actions.EnterpriseAdminCustomizePortalV10;
+                            action = Actions.EnterpriseAdminWithoutActivityV10;
                             paymentMessage = false;
                             toadmins = true;
+                        }
+                    }
 
-                            tableItemImg1 = _studioNotifyHelper.GetNotificationImageUrl("tips-customize-brand-100.png");
-                            tableItemText1 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_brand_hdr;
-                            tableItemComment1 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_brand;
+                    #endregion
 
-                            tableItemImg2 = _studioNotifyHelper.GetNotificationImageUrl("tips-customize-regional-100.png");
-                            tableItemText2 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_regional_hdr;
-                            tableItemComment2 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_regional;
+                    #region 7 days after registration to admins and users ENTERPRISE TRIAL + defaultRebranding
 
-                            tableItemImg3 = _studioNotifyHelper.GetNotificationImageUrl("tips-customize-customize-100.png");
-                            tableItemText3 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_customize_hdr;
-                            tableItemComment3 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_customize;
+                    else if (createdDate.AddDays(7) == nowDate)
+                    {
+                        action = Actions.EnterpriseAdminUserDocsTipsV10;
+                        paymentMessage = false;
+                        toadmins = true;
+                        tousers = true;
 
-                            tableItemImg4 = _studioNotifyHelper.GetNotificationImageUrl("tips-customize-modules-100.png");
-                            tableItemText4 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_modules_hdr;
-                            tableItemComment4 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_modules;
+                        tableItemImg1 = _studioNotifyHelper.GetNotificationImageUrl("tips-documents-formatting-100.png");
+                        tableItemText1 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_formatting_hdr;
+                        tableItemComment1 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_formatting;
 
+                        if (!_coreBaseSettings.CustomMode)
+                        {
+                            tableItemLearnMoreUrl1 = _studioNotifyHelper.Helplink + "/onlyoffice-editors/index.aspx";
+                            tableItemLearnMoreText1 = () => WebstudioNotifyPatternResource.LinkLearnMore;
+                        }
+
+                        tableItemImg2 = _studioNotifyHelper.GetNotificationImageUrl("tips-documents-share-100.png");
+                        tableItemText2 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_share_hdr;
+                        tableItemComment2 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_share;
+
+                        tableItemImg3 = _studioNotifyHelper.GetNotificationImageUrl("tips-documents-coediting-100.png");
+                        tableItemText3 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_coediting_hdr;
+                        tableItemComment3 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_coediting;
+
+                        tableItemImg4 = _studioNotifyHelper.GetNotificationImageUrl("tips-documents-review-100.png");
+                        tableItemText4 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_review_hdr;
+                        tableItemComment4 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_review;
+
+                        tableItemImg5 = _studioNotifyHelper.GetNotificationImageUrl("tips-documents-3rdparty-100.png");
+                        tableItemText5 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_3rdparty_hdr;
+                        tableItemComment5 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_3rdparty;
+
+                        tableItemImg6 = _studioNotifyHelper.GetNotificationImageUrl("tips-documents-attach-100.png");
+                        tableItemText6 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_attach_hdr;
+                        tableItemComment6 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_attach;
+
+                        tableItemImg7 = _studioNotifyHelper.GetNotificationImageUrl("tips-documents-apps-100.png");
+                        tableItemText7 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_apps_hdr;
+                        tableItemComment7 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_apps;
+
+                        greenButtonText = () => WebstudioNotifyPatternResource.ButtonAccessYouWebOffice;
+                        greenButtonUrl = $"{_commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')}/products/files/";
+                    }
+
+                    #endregion
+
+                    #region 21 days after registration to admins and users ENTERPRISE TRIAL + defaultRebranding
+
+                    else if (createdDate.AddDays(21) == nowDate)
+                    {
+                        action = Actions.EnterpriseAdminUserAppsTipsV10;
+                        paymentMessage = false;
+                        toadmins = true;
+                        tousers = true;
+                    }
+
+                    #endregion
+
+                    #endregion
+
+                    #region Trial warning letters
+
+                    #region 7 days before ENTERPRISE TRIAL ends to admins + defaultRebranding
+
+                    else if (dueDateIsNotMax && dueDate.AddDays(-7) == nowDate)
+                    {
+                        action = Actions.EnterpriseAdminTrialWarningBefore7V10;
+                        toadmins = true;
+
+                        greenButtonText = () => WebstudioNotifyPatternResource.ButtonSelectPricingPlans;
+                        greenButtonUrl = "http://www.onlyoffice.com/enterprise-edition.aspx";
+                    }
+
+                    #endregion
+
+                    #region ENTERPRISE TRIAL expires today to admins + defaultRebranding
+
+                    else if (dueDate == nowDate)
+                    {
+                        action = Actions.EnterpriseAdminTrialWarningV10;
+                        toadmins = true;
+                    }
+
+                    #endregion
+
+                    #endregion
+                }
+                else if (quota.Trial && !defaultRebranding)
+                {
+                    #region After registration letters
+
+                    #region 1 day after registration to admins ENTERPRISE TRIAL + !defaultRebranding
+
+                    if (createdDate.AddDays(1) == nowDate)
+                    {
+                        action = Actions.EnterpriseWhitelabelAdminCustomizePortalV10;
+                        paymentMessage = false;
+                        toadmins = true;
+
+                        tableItemImg1 = _studioNotifyHelper.GetNotificationImageUrl("tips-customize-brand-100.png");
+                        tableItemText1 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_brand_hdr;
+                        tableItemComment1 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_brand;
+
+                        tableItemImg2 = _studioNotifyHelper.GetNotificationImageUrl("tips-customize-regional-100.png");
+                        tableItemText2 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_regional_hdr;
+                        tableItemComment2 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_regional;
+
+                        tableItemImg3 = _studioNotifyHelper.GetNotificationImageUrl("tips-customize-customize-100.png");
+                        tableItemText3 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_customize_hdr;
+                        tableItemComment3 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_customize;
+
+                        tableItemImg4 = _studioNotifyHelper.GetNotificationImageUrl("tips-customize-modules-100.png");
+                        tableItemText4 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_modules_hdr;
+                        tableItemComment4 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_modules;
+
+                        if (!_coreBaseSettings.CustomMode)
+                        {
                             tableItemImg5 = _studioNotifyHelper.GetNotificationImageUrl("tips-customize-3rdparty-100.png");
                             tableItemText5 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_3rdparty_hdr;
                             tableItemComment5 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_3rdparty;
-
-                            greenButtonText = () => WebstudioNotifyPatternResource.ButtonConfigureRightNow;
-                            greenButtonUrl = _commonLinkUtility.GetFullAbsolutePath(_commonLinkUtility.GetAdministration(ManagementType.General));
                         }
 
-                        #endregion
-
-                        #region 4 days after registration to admins ENTERPRISE TRIAL + only 1 user + defaultRebranding
-
-                        else if (createdDate.AddDays(4) == nowDate && _userManager.GetUsers().Length == 1)
-                        {
-                            action = Actions.EnterpriseAdminInviteTeammatesV10;
-                            paymentMessage = false;
-                            toadmins = true;
-
-                            greenButtonText = () => WebstudioNotifyPatternResource.ButtonInviteRightNow;
-                            greenButtonUrl = $"{_commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')}/products/people/";
-                        }
-
-                        #endregion
-
-                        #region 5 days after registration to admins ENTERPRISE TRAIL + without activity in 1 or more days + defaultRebranding
-
-                        else if (createdDate.AddDays(5) == nowDate)
-                        {
-                            List<DateTime> datesWithActivity;
-
-                            datesWithActivity =
-                                _dbContextManager.Get(dbid).FeedAggregates
-                                .Where(r => r.Tenant == _tenantManager.GetCurrentTenant().Id)
-                                .Where(r => r.CreatedDate <= nowDate.AddDays(-1))
-                                .GroupBy(r => r.CreatedDate.Date)
-                                .Select(r => r.Key)
-                                .ToList();
-
-                            if (datesWithActivity.Count < 5)
-                            {
-                                action = Actions.EnterpriseAdminWithoutActivityV10;
-                                paymentMessage = false;
-                                toadmins = true;
-                            }
-                        }
-
-                        #endregion
-
-                        #region 7 days after registration to admins and users ENTERPRISE TRIAL + defaultRebranding
-
-                        else if (createdDate.AddDays(7) == nowDate)
-                        {
-                            action = Actions.EnterpriseAdminUserDocsTipsV10;
-                            paymentMessage = false;
-                            toadmins = true;
-                            tousers = true;
-
-                            tableItemImg1 = _studioNotifyHelper.GetNotificationImageUrl("tips-documents-formatting-100.png");
-                            tableItemText1 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_formatting_hdr;
-                            tableItemComment1 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_formatting;
-
-                            if (!_coreBaseSettings.CustomMode)
-                            {
-                                tableItemLearnMoreUrl1 = _studioNotifyHelper.Helplink + "/onlyoffice-editors/index.aspx";
-                                tableItemLearnMoreText1 = () => WebstudioNotifyPatternResource.LinkLearnMore;
-                            }
-
-                            tableItemImg2 = _studioNotifyHelper.GetNotificationImageUrl("tips-documents-share-100.png");
-                            tableItemText2 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_share_hdr;
-                            tableItemComment2 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_share;
-
-                            tableItemImg3 = _studioNotifyHelper.GetNotificationImageUrl("tips-documents-coediting-100.png");
-                            tableItemText3 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_coediting_hdr;
-                            tableItemComment3 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_coediting;
-
-                            tableItemImg4 = _studioNotifyHelper.GetNotificationImageUrl("tips-documents-review-100.png");
-                            tableItemText4 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_review_hdr;
-                            tableItemComment4 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_review;
-
-                            tableItemImg5 = _studioNotifyHelper.GetNotificationImageUrl("tips-documents-3rdparty-100.png");
-                            tableItemText5 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_3rdparty_hdr;
-                            tableItemComment5 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_3rdparty;
-
-                            tableItemImg6 = _studioNotifyHelper.GetNotificationImageUrl("tips-documents-attach-100.png");
-                            tableItemText6 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_attach_hdr;
-                            tableItemComment6 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_attach;
-
-                            tableItemImg7 = _studioNotifyHelper.GetNotificationImageUrl("tips-documents-apps-100.png");
-                            tableItemText7 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_apps_hdr;
-                            tableItemComment7 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_apps;
-
-                            greenButtonText = () => WebstudioNotifyPatternResource.ButtonAccessYouWebOffice;
-                            greenButtonUrl = $"{_commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')}/products/files/";
-                        }
-
-                        #endregion
-
-                        #region 21 days after registration to admins and users ENTERPRISE TRIAL + defaultRebranding
-
-                        else if (createdDate.AddDays(21) == nowDate)
-                        {
-                            action = Actions.EnterpriseAdminUserAppsTipsV10;
-                            paymentMessage = false;
-                            toadmins = true;
-                            tousers = true;
-                        }
-
-                        #endregion
-
-                        #endregion
-
-                        #region Trial warning letters
-
-                        #region 7 days before ENTERPRISE TRIAL ends to admins + defaultRebranding
-
-                        else if (dueDateIsNotMax && dueDate.AddDays(-7) == nowDate)
-                        {
-                            action = Actions.EnterpriseAdminTrialWarningBefore7V10;
-                            toadmins = true;
-
-                            greenButtonText = () => WebstudioNotifyPatternResource.ButtonSelectPricingPlans;
-                            greenButtonUrl = "http://www.onlyoffice.com/enterprise-edition.aspx";
-                        }
-
-                        #endregion
-
-                        #region ENTERPRISE TRIAL expires today to admins + defaultRebranding
-
-                        else if (dueDate == nowDate)
-                        {
-                            action = Actions.EnterpriseAdminTrialWarningV10;
-                            toadmins = true;
-                        }
-
-                        #endregion
-
-                        #endregion
+                        greenButtonText = () => WebstudioNotifyPatternResource.ButtonConfigureRightNow;
+                        greenButtonUrl = _commonLinkUtility.GetFullAbsolutePath(_commonLinkUtility.GetAdministration(ManagementType.General));
                     }
-                    else if (quota.Trial && !defaultRebranding)
+
+                    #endregion
+
+                    #endregion
+                }
+                else if (tariff.State == TariffState.Paid)
+                {
+                    #region Payment warning letters
+
+                    #region 7 days before ENTERPRISE PAID expired to admins
+
+                    if (dueDateIsNotMax && dueDate.AddDays(-7) == nowDate)
                     {
-                        #region After registration letters
-
-                        #region 1 day after registration to admins ENTERPRISE TRIAL + !defaultRebranding
-
-                        if (createdDate.AddDays(1) == nowDate)
-                        {
-                            action = Actions.EnterpriseWhitelabelAdminCustomizePortalV10;
-                            paymentMessage = false;
-                            toadmins = true;
-
-                            tableItemImg1 = _studioNotifyHelper.GetNotificationImageUrl("tips-customize-brand-100.png");
-                            tableItemText1 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_brand_hdr;
-                            tableItemComment1 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_brand;
-
-                            tableItemImg2 = _studioNotifyHelper.GetNotificationImageUrl("tips-customize-regional-100.png");
-                            tableItemText2 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_regional_hdr;
-                            tableItemComment2 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_regional;
-
-                            tableItemImg3 = _studioNotifyHelper.GetNotificationImageUrl("tips-customize-customize-100.png");
-                            tableItemText3 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_customize_hdr;
-                            tableItemComment3 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_customize;
-
-                            tableItemImg4 = _studioNotifyHelper.GetNotificationImageUrl("tips-customize-modules-100.png");
-                            tableItemText4 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_modules_hdr;
-                            tableItemComment4 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_modules;
-
-                            if (!_coreBaseSettings.CustomMode)
-                            {
-                                tableItemImg5 = _studioNotifyHelper.GetNotificationImageUrl("tips-customize-3rdparty-100.png");
-                                tableItemText5 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_3rdparty_hdr;
-                                tableItemComment5 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_3rdparty;
-                            }
-
-                            greenButtonText = () => WebstudioNotifyPatternResource.ButtonConfigureRightNow;
-                            greenButtonUrl = _commonLinkUtility.GetFullAbsolutePath(_commonLinkUtility.GetAdministration(ManagementType.General));
-                        }
-
-                        #endregion
-
-                        #endregion
+                        action = defaultRebranding
+                                     ? Actions.EnterpriseAdminPaymentWarningBefore7V10
+                                     : Actions.EnterpriseWhitelabelAdminPaymentWarningBefore7V10;
+                        toadmins = true;
+                        greenButtonText = () => WebstudioNotifyPatternResource.ButtonSelectPricingPlans;
+                        greenButtonUrl = _commonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx");
                     }
-                    else if (tariff.State == TariffState.Paid)
+
+                    #endregion
+
+                    #region ENTERPRISE PAID expires today to admins
+
+                    else if (dueDate == nowDate)
                     {
-                        #region Payment warning letters
-
-                        #region 7 days before ENTERPRISE PAID expired to admins
-
-                        if (dueDateIsNotMax && dueDate.AddDays(-7) == nowDate)
-                        {
-                            action = defaultRebranding
-                                         ? Actions.EnterpriseAdminPaymentWarningBefore7V10
-                                         : Actions.EnterpriseWhitelabelAdminPaymentWarningBefore7V10;
-                            toadmins = true;
-                            greenButtonText = () => WebstudioNotifyPatternResource.ButtonSelectPricingPlans;
-                            greenButtonUrl = _commonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx");
-                        }
-
-                        #endregion
-
-                        #region ENTERPRISE PAID expires today to admins
-
-                        else if (dueDate == nowDate)
-                        {
-                            action = defaultRebranding
-                                         ? Actions.EnterpriseAdminPaymentWarningV10
-                                         : Actions.EnterpriseWhitelabelAdminPaymentWarningV10;
-                            toadmins = true;
-                            greenButtonText = () => WebstudioNotifyPatternResource.ButtonSelectPricingPlans;
-                            greenButtonUrl = _commonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx");
-                        }
-
-                        #endregion
-
-                        #endregion
+                        action = defaultRebranding
+                                     ? Actions.EnterpriseAdminPaymentWarningV10
+                                     : Actions.EnterpriseWhitelabelAdminPaymentWarningV10;
+                        toadmins = true;
+                        greenButtonText = () => WebstudioNotifyPatternResource.ButtonSelectPricingPlans;
+                        greenButtonUrl = _commonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx");
                     }
 
+                    #endregion
 
-                    if (action == null) continue;
+                    #endregion
+                }
 
-                    var users = _studioNotifyHelper.GetRecipients(toadmins, tousers, false);
 
-                    foreach (var u in users.Where(u => paymentMessage || _studioNotifyHelper.IsSubscribedToNotify(u, Actions.PeriodicNotify)))
+                if (action == null)
+                {
+                    continue;
+                }
+
+                var users = _studioNotifyHelper.GetRecipients(toadmins, tousers, false);
+
+                foreach (var u in users.Where(u => paymentMessage || _studioNotifyHelper.IsSubscribedToNotify(u, Actions.PeriodicNotify)))
+                {
+                    var culture = string.IsNullOrEmpty(u.CultureName) ? tenant.GetCulture() : u.GetCulture();
+                    Thread.CurrentThread.CurrentCulture = culture;
+                    Thread.CurrentThread.CurrentUICulture = culture;
+
+                    var rquota = _tenantExtra.GetRightQuota() ?? TenantQuota.Default;
+
+                    client.SendNoticeToAsync(
+                        action,
+                            new[] { _studioNotifyHelper.ToRecipient(u.Id) },
+                        new[] { senderName },
+                        new TagValue(Tags.UserName, u.FirstName.HtmlEncode()),
+                            new TagValue(Tags.PricingPage, _commonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx")),
+                            new TagValue(Tags.ActiveUsers, _userManager.GetUsers().Length),
+                        new TagValue(Tags.Price, rquota.Price),
+                        new TagValue(Tags.PricePeriod, rquota.Year3 ? UserControlsCommonResource.TariffPerYear3 : rquota.Year ? UserControlsCommonResource.TariffPerYear : UserControlsCommonResource.TariffPerMonth),
+                        new TagValue(Tags.DueDate, dueDate.ToLongDateString()),
+                        new TagValue(Tags.DelayDueDate, (delayDueDateIsNotMax ? delayDueDate : dueDate).ToLongDateString()),
+                        TagValues.BlueButton(blueButtonText, "http://www.onlyoffice.com/call-back-form.aspx"),
+                        TagValues.GreenButton(greenButtonText, greenButtonUrl),
+                        TagValues.TableTop(),
+                        TagValues.TableItem(1, tableItemText1, tableItemUrl1, tableItemImg1, tableItemComment1, tableItemLearnMoreText1, tableItemLearnMoreUrl1),
+                        TagValues.TableItem(2, tableItemText2, tableItemUrl2, tableItemImg2, tableItemComment2, tableItemLearnMoreText2, tableItemLearnMoreUrl2),
+                        TagValues.TableItem(3, tableItemText3, tableItemUrl3, tableItemImg3, tableItemComment3, tableItemLearnMoreText3, tableItemLearnMoreUrl3),
+                        TagValues.TableItem(4, tableItemText4, tableItemUrl4, tableItemImg4, tableItemComment4, tableItemLearnMoreText4, tableItemLearnMoreUrl4),
+                        TagValues.TableItem(5, tableItemText5, tableItemUrl5, tableItemImg5, tableItemComment5, tableItemLearnMoreText5, tableItemLearnMoreUrl5),
+                        TagValues.TableItem(6, tableItemText6, tableItemUrl6, tableItemImg6, tableItemComment6, tableItemLearnMoreText6, tableItemLearnMoreUrl6),
+                        TagValues.TableItem(7, tableItemText7, tableItemUrl7, tableItemImg7, tableItemComment7, tableItemLearnMoreText7, tableItemLearnMoreUrl7),
+                        TagValues.TableBottom());
+                }
+            }
+            catch (Exception err)
+            {
+                _log.Error(err);
+            }
+        }
+
+        _log.Info("End SendTariffEnterpriseLetters");
+    }
+
+    public void SendOpensourceLetters(string senderName, DateTime scheduleDate)
+    {
+        var nowDate = scheduleDate.Date;
+
+        _log.Info("Start SendOpensourceTariffLetters");
+
+        var activeTenants = _tenantManager.GetTenants().ToList();
+
+        if (activeTenants.Count <= 0)
+        {
+            _log.Info("End SendOpensourceTariffLetters");
+            return;
+        }
+
+        foreach (var tenant in activeTenants)
+        {
+            try
+            {
+                _tenantManager.SetCurrentTenant(tenant.Id);
+                var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifyHelper.NotifySource);
+
+                var createdDate = tenant.CreationDateTime.Date;
+
+
+                #region After registration letters
+
+                #region 5 days after registration to admins
+
+                if (createdDate.AddDays(5) == nowDate)
+                {
+                    var users = _studioNotifyHelper.GetRecipients(true, true, false);
+
+
+                    foreach (var u in users.Where(u => _studioNotifyHelper.IsSubscribedToNotify(u, Actions.PeriodicNotify)))
                     {
                         var culture = string.IsNullOrEmpty(u.CultureName) ? tenant.GetCulture() : u.GetCulture();
                         Thread.CurrentThread.CurrentCulture = culture;
                         Thread.CurrentThread.CurrentUICulture = culture;
 
-                        var rquota = _tenantExtra.GetRightQuota() ?? TenantQuota.Default;
-
                         client.SendNoticeToAsync(
-                            action,
-                            new[] { _studioNotifyHelper.ToRecipient(u.Id) },
-                            new[] { senderName },
-                            new TagValue(Tags.UserName, u.FirstName.HtmlEncode()),
-                            new TagValue(Tags.PricingPage, _commonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx")),
-                            new TagValue(Tags.ActiveUsers, _userManager.GetUsers().Length),
-                            new TagValue(Tags.Price, rquota.Price),
-                            new TagValue(Tags.PricePeriod, rquota.Year3 ? UserControlsCommonResource.TariffPerYear3 : rquota.Year ? UserControlsCommonResource.TariffPerYear : UserControlsCommonResource.TariffPerMonth),
-                            new TagValue(Tags.DueDate, dueDate.ToLongDateString()),
-                            new TagValue(Tags.DelayDueDate, (delayDueDateIsNotMax ? delayDueDate : dueDate).ToLongDateString()),
-                            TagValues.BlueButton(blueButtonText, "http://www.onlyoffice.com/call-back-form.aspx"),
-                            TagValues.GreenButton(greenButtonText, greenButtonUrl),
-                            TagValues.TableTop(),
-                            TagValues.TableItem(1, tableItemText1, tableItemUrl1, tableItemImg1, tableItemComment1, tableItemLearnMoreText1, tableItemLearnMoreUrl1),
-                            TagValues.TableItem(2, tableItemText2, tableItemUrl2, tableItemImg2, tableItemComment2, tableItemLearnMoreText2, tableItemLearnMoreUrl2),
-                            TagValues.TableItem(3, tableItemText3, tableItemUrl3, tableItemImg3, tableItemComment3, tableItemLearnMoreText3, tableItemLearnMoreUrl3),
-                            TagValues.TableItem(4, tableItemText4, tableItemUrl4, tableItemImg4, tableItemComment4, tableItemLearnMoreText4, tableItemLearnMoreUrl4),
-                            TagValues.TableItem(5, tableItemText5, tableItemUrl5, tableItemImg5, tableItemComment5, tableItemLearnMoreText5, tableItemLearnMoreUrl5),
-                            TagValues.TableItem(6, tableItemText6, tableItemUrl6, tableItemImg6, tableItemComment6, tableItemLearnMoreText6, tableItemLearnMoreUrl6),
-                            TagValues.TableItem(7, tableItemText7, tableItemUrl7, tableItemImg7, tableItemComment7, tableItemLearnMoreText7, tableItemLearnMoreUrl7),
-                            TagValues.TableBottom());
-                    }
-                }
-                catch (Exception err)
-                {
-                    _log.Error(err);
-                }
-            }
-
-            _log.Info("End SendTariffEnterpriseLetters");
-        }
-
-        public void SendOpensourceLetters(string senderName, DateTime scheduleDate)
-        {
-            var nowDate = scheduleDate.Date;
-
-            _log.Info("Start SendOpensourceTariffLetters");
-
-            var activeTenants = _tenantManager.GetTenants().ToList();
-
-            if (activeTenants.Count <= 0)
-            {
-                _log.Info("End SendOpensourceTariffLetters");
-                return;
-            }
-
-            foreach (var tenant in activeTenants)
-            {
-                try
-                {
-                    _tenantManager.SetCurrentTenant(tenant.Id);
-                    var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifyHelper.NotifySource);
-
-                    var createdDate = tenant.CreationDateTime.Date;
-
-
-                    #region After registration letters
-
-                    #region 5 days after registration to admins
-
-                    if (createdDate.AddDays(5) == nowDate)
-                    {
-                        var users = _studioNotifyHelper.GetRecipients(true, true, false);
-
-
-                        foreach (var u in users.Where(u => _studioNotifyHelper.IsSubscribedToNotify(u, Actions.PeriodicNotify)))
-                        {
-                            var culture = string.IsNullOrEmpty(u.CultureName) ? tenant.GetCulture() : u.GetCulture();
-                            Thread.CurrentThread.CurrentCulture = culture;
-                            Thread.CurrentThread.CurrentUICulture = culture;
-
-                            client.SendNoticeToAsync(
                                 u.IsAdmin(_userManager) ? Actions.OpensourceAdminDocsTipsV11 : Actions.OpensourceUserDocsTipsV11,
                                 new[] { _studioNotifyHelper.ToRecipient(u.Id) },
-                                new[] { senderName },
+                            new[] { senderName },
                                 new TagValue(Tags.UserName, u.DisplayUserName(_displayUserSettingsHelper)),
-                                new TagValue(CommonTags.Footer, "opensource"));
-                        }
+                            new TagValue(CommonTags.Footer, "opensource"));
                     }
-                    #endregion
+                }
+                #endregion
 
-                    #endregion
-                }
-                catch (Exception err)
-                {
-                    _log.Error(err);
-                }
+                #endregion
             }
-
-            _log.Info("End SendOpensourceTariffLetters");
-        }
-
-        public void SendPersonalLetters(string senderName, DateTime scheduleDate)
-        {
-            _log.Info("Start SendLettersPersonal...");
-
-            var activeTenants = _tenantManager.GetTenants().ToList();
-
-            foreach (var tenant in activeTenants)
+            catch (Exception err)
             {
-                try
+                _log.Error(err);
+            }
+        }
+
+        _log.Info("End SendOpensourceTariffLetters");
+    }
+
+    public void SendPersonalLetters(string senderName, DateTime scheduleDate)
+    {
+        _log.Info("Start SendLettersPersonal...");
+
+        var activeTenants = _tenantManager.GetTenants().ToList();
+
+        foreach (var tenant in activeTenants)
+        {
+            try
+            {
+                Func<string> greenButtonText = () => string.Empty;
+                var greenButtonUrl = string.Empty;
+
+                var sendCount = 0;
+
+                _tenantManager.SetCurrentTenant(tenant.Id);
+                var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifyHelper.NotifySource);
+
+                _log.InfoFormat("Current tenant: {0}", tenant.Id);
+
+                var users = _userManager.GetUsers(EmployeeStatus.Active);
+
+                foreach (var user in users.Where(u => _studioNotifyHelper.IsSubscribedToNotify(u, Actions.PeriodicNotify)))
                 {
-                    Func<string> greenButtonText = () => string.Empty;
-                    var greenButtonUrl = string.Empty;
+                    INotifyAction action;
 
-                    var sendCount = 0;
+                    _securityContext.AuthenticateMeWithoutCookie(_authManager.GetAccountByID(tenant.Id, user.Id));
 
-                    _tenantManager.SetCurrentTenant(tenant.Id);
-                    var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifyHelper.NotifySource);
-
-                    _log.InfoFormat("Current tenant: {0}", tenant.Id);
-
-                    var users = _userManager.GetUsers(EmployeeStatus.Active);
-
-                    foreach (var user in users.Where(u => _studioNotifyHelper.IsSubscribedToNotify(u, Actions.PeriodicNotify)))
+                    var culture = tenant.GetCulture();
+                    if (!string.IsNullOrEmpty(user.CultureName))
                     {
-                        INotifyAction action;
-
-                        _securityContext.AuthenticateMeWithoutCookie(_authManager.GetAccountByID(tenant.Id, user.Id));
-
-                        var culture = tenant.GetCulture();
-                        if (!string.IsNullOrEmpty(user.CultureName))
+                        try
                         {
-                            try
-                            {
-                                culture = user.GetCulture();
-                            }
-                            catch (CultureNotFoundException exception)
-                            {
-
-                                _log.Error(exception);
-                            }
+                            culture = user.GetCulture();
                         }
-
-                        Thread.CurrentThread.CurrentCulture = culture;
-                        Thread.CurrentThread.CurrentUICulture = culture;
-
-                        var dayAfterRegister = (int)scheduleDate.Date.Subtract(user.CreateDate.Date).TotalDays;
-
-                        if (_coreBaseSettings.CustomMode)
-                        {
-                            switch (dayAfterRegister)
-                            {
-                                case 7:
-                                    action = Actions.PersonalCustomModeAfterRegistration7;
-                                    break;
-                                default:
-                                    continue;
-                            }
-                        }
-                        else
+                        catch (CultureNotFoundException exception)
                         {
 
-                            switch (dayAfterRegister)
-                            {
-                                case 7:
-                                    action = Actions.PersonalAfterRegistration7;
-                                    break;
-                                case 14:
-                                    action = Actions.PersonalAfterRegistration14;
-                                    break;
-                                case 21:
-                                    action = Actions.PersonalAfterRegistration21;
-                                    break;
-                                case 28:
-                                    action = Actions.PersonalAfterRegistration28;
-                                    greenButtonText = () => WebstudioNotifyPatternResource.ButtonStartFreeTrial;
-                                    greenButtonUrl = "https://www.onlyoffice.com/download-workspace.aspx";
-                                    break;
-                                default:
-                                    continue;
-                            }
+                            _log.Error(exception);
                         }
-
-                        if (action == null) continue;
-
-                        _log.InfoFormat(@"Send letter personal '{1}'  to {0} culture {2}. tenant id: {3} user culture {4} create on {5} now date {6}",
-                              user.Email, action.ID, culture, tenant.Id, user.GetCulture(), user.CreateDate, scheduleDate.Date);
-
-                        sendCount++;
-
-                        client.SendNoticeToAsync(
-                          action,
-                          null,
-                          _studioNotifyHelper.RecipientFromEmail(user.Email, true),
-                          new[] { senderName },
-                          TagValues.PersonalHeaderStart(),
-                          TagValues.PersonalHeaderEnd(),
-                          TagValues.GreenButton(greenButtonText, greenButtonUrl),
-                          new TagValue(CommonTags.Footer, _coreBaseSettings.CustomMode ? "personalCustomMode" : "personal"));
                     }
 
-                    _log.InfoFormat("Total send count: {0}", sendCount);
+                    Thread.CurrentThread.CurrentCulture = culture;
+                    Thread.CurrentThread.CurrentUICulture = culture;
+
+                    var dayAfterRegister = (int)scheduleDate.Date.Subtract(user.CreateDate.Date).TotalDays;
+
+                    if (_coreBaseSettings.CustomMode)
+                    {
+                        switch (dayAfterRegister)
+                        {
+                            case 7:
+                                action = Actions.PersonalCustomModeAfterRegistration7;
+                                break;
+                            default:
+                                continue;
+                        }
+                    }
+                    else
+                    {
+
+                        switch (dayAfterRegister)
+                        {
+                            case 7:
+                                action = Actions.PersonalAfterRegistration7;
+                                break;
+                            case 14:
+                                action = Actions.PersonalAfterRegistration14;
+                                break;
+                            case 21:
+                                action = Actions.PersonalAfterRegistration21;
+                                break;
+                            case 28:
+                                action = Actions.PersonalAfterRegistration28;
+                                greenButtonText = () => WebstudioNotifyPatternResource.ButtonStartFreeTrial;
+                                greenButtonUrl = "https://www.onlyoffice.com/download-workspace.aspx";
+                                break;
+                            default:
+                                continue;
+                        }
+                    }
+
+                    if (action == null)
+                    {
+                        continue;
+                    }
+
+                    _log.InfoFormat(@"Send letter personal '{1}'  to {0} culture {2}. tenant id: {3} user culture {4} create on {5} now date {6}",
+                      user.Email, action.ID, culture, tenant.Id, user.GetCulture(), user.CreateDate, scheduleDate.Date);
+
+                    sendCount++;
+
+                    client.SendNoticeToAsync(
+                      action,
+                      null,
+                          _studioNotifyHelper.RecipientFromEmail(user.Email, true),
+                      new[] { senderName },
+                      TagValues.PersonalHeaderStart(),
+                      TagValues.PersonalHeaderEnd(),
+                      TagValues.GreenButton(greenButtonText, greenButtonUrl),
+                          new TagValue(CommonTags.Footer, _coreBaseSettings.CustomMode ? "personalCustomMode" : "personal"));
                 }
-                catch (Exception err)
-                {
-                    _log.Error(err);
-                }
+
+                _log.InfoFormat("Total send count: {0}", sendCount);
             }
-
-            _log.Info("End SendLettersPersonal.");
+            catch (Exception err)
+            {
+                _log.Error(err);
+            }
         }
 
-        public static bool ChangeSubscription(Guid userId, StudioNotifyHelper studioNotifyHelper)
-        {
-            var recipient = studioNotifyHelper.ToRecipient(userId);
+        _log.Info("End SendLettersPersonal.");
+    }
 
-            var isSubscribe = studioNotifyHelper.IsSubscribedToNotify(recipient, Actions.PeriodicNotify);
+    public static bool ChangeSubscription(Guid userId, StudioNotifyHelper studioNotifyHelper)
+    {
+        var recipient = studioNotifyHelper.ToRecipient(userId);
 
-            studioNotifyHelper.SubscribeToNotify(recipient, Actions.PeriodicNotify, !isSubscribe);
+        var isSubscribe = studioNotifyHelper.IsSubscribedToNotify(recipient, Actions.PeriodicNotify);
 
-            return !isSubscribe;
-        }
+        studioNotifyHelper.SubscribeToNotify(recipient, Actions.PeriodicNotify, !isSubscribe);
+
+        return !isSubscribe;
     }
 }

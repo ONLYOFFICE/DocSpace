@@ -56,7 +56,7 @@ public class EmployeeFullDto : EmployeeDto
     public MobilePhoneActivationStatus MobilePhoneActivationStatus { get; set; }
     public bool IsSSO { get; set; }
 
-    public new static EmployeeFullDto GetSample()
+    public static new EmployeeFullDto GetSample()
     {
         return new EmployeeFullDto
         {
@@ -95,6 +95,7 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
     private readonly ApiContext _context;
     private readonly WebItemSecurity _webItemSecurity;
     private readonly ApiDateTimeHelper _apiDateTimeHelper;
+    private readonly WebItemManager _webItemManager;
 
     public EmployeeFullDtoHelper(
         ApiContext context,
@@ -103,12 +104,14 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
         WebItemSecurity webItemSecurity,
         CommonLinkUtility commonLinkUtility,
         DisplayUserSettingsHelper displayUserSettingsHelper,
-        ApiDateTimeHelper apiDateTimeHelper)
+        ApiDateTimeHelper apiDateTimeHelper,
+        WebItemManager webItemManager)
     : base(context, displayUserSettingsHelper, userPhotoManager, commonLinkUtility, userManager)
     {
         _context = context;
         _webItemSecurity = webItemSecurity;
         _apiDateTimeHelper = apiDateTimeHelper;
+        _webItemManager = webItemManager;
     }
 
     public static Expression<Func<User, UserInfo>> GetExpression(ApiContext apiContext)
@@ -126,7 +129,7 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
 
         if (apiContext.Check("Id"))
         {
-            bindExprs.Add(Expression.Bind(typeof(UserInfo).GetProperty("ID"), 
+            bindExprs.Add(Expression.Bind(typeof(UserInfo).GetProperty("ID"),
                 Expression.Property(parameter, typeof(User).GetProperty("Id"))));
         }
 
@@ -149,8 +152,8 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
             Terminated = _apiDateTimeHelper.Get(userInfo.TerminatedDate),
             WorkFrom = _apiDateTimeHelper.Get(userInfo.WorkFromDate),
             Email = userInfo.Email,
-            IsVisitor = userInfo.IsVisitor(UserManager),
-            IsAdmin = userInfo.IsAdmin(UserManager),
+            IsVisitor = userInfo.IsVisitor(_userManager),
+            IsAdmin = userInfo.IsAdmin(_userManager),
             IsOwner = userInfo.IsOwner(_context.Tenant),
             IsLDAP = userInfo.IsLDAP(),
             IsSSO = userInfo.IsSSO()
@@ -189,8 +192,8 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
 
         if (_context.Check("groups") || _context.Check("department"))
         {
-            var groups = UserManager.GetUserGroups(userInfo.Id)
-                .Select(x => new GroupSummaryDto(x, UserManager))
+            var groups = _userManager.GetUserGroups(userInfo.Id)
+                .Select(x => new GroupSummaryDto(x, _userManager))
                 .ToList();
 
             if (groups.Count > 0)
@@ -208,23 +211,23 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
 
         if (_context.Check("avatarMax"))
         {
-            result.AvatarMax = UserPhotoManager.GetMaxPhotoURL(userInfo.Id, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
+            result.AvatarMax = _userPhotoManager.GetMaxPhotoURL(userInfo.Id, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
         }
 
         if (_context.Check("avatarMedium"))
         {
-            result.AvatarMedium = UserPhotoManager.GetMediumPhotoURL(userInfo.Id, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
+            result.AvatarMedium = _userPhotoManager.GetMediumPhotoURL(userInfo.Id, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
         }
 
         if (_context.Check("avatar"))
         {
-            result.Avatar = UserPhotoManager.GetBigPhotoURL(userInfo.Id, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
+            result.Avatar = _userPhotoManager.GetBigPhotoURL(userInfo.Id, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
         }
 
         if (_context.Check("listAdminModules"))
         {
-            var listAdminModules = userInfo.GetListAdminModules(_webItemSecurity);
-                if (listAdminModules.Count > 0)
+            var listAdminModules = userInfo.GetListAdminModules(_webItemSecurity, _webItemManager);
+            if (listAdminModules.Count > 0)
             {
                 result.ListAdminModules = listAdminModules;
             }
@@ -250,7 +253,7 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
             }
         }
 
-            if (contacts.Count > 0)
+        if (contacts.Count > 0)
         {
             employeeWraperFull.Contacts = contacts;
         }

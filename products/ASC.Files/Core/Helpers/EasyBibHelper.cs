@@ -31,10 +31,10 @@ public class EasyBibHelper : Consumer
 {
     public ILog Logger { get; set; }
 
-    static readonly string SearchBookUrl = "https://worldcat.citation-api.com/query?search=",
-                    SearchJournalUrl = "https://crossref.citation-api.com/query?search=",
-                    SearchWebSiteUrl = "https://web.citation-api.com/query?search=",
-                    EasyBibStyles = "https://api.citation-api.com/2.1/rest/styles";
+    static readonly string _searchBookUrl = "https://worldcat.citation-api.com/query?search=",
+                    _searchJournalUrl = "https://crossref.citation-api.com/query?search=",
+                    _searchWebSiteUrl = "https://web.citation-api.com/query?search=",
+                    _easyBibStyles = "https://api.citation-api.com/2.1/rest/styles";
 
     public enum EasyBibSource
     {
@@ -56,7 +56,7 @@ public class EasyBibHelper : Consumer
         IConfiguration configuration,
         ICacheNotify<ConsumerCacheItem> cache,
         ConsumerFactory factory,
-            RequestHelper requestHelper,
+        RequestHelper requestHelper,
         string name,
         int order,
         Dictionary<string, string> props,
@@ -64,22 +64,22 @@ public class EasyBibHelper : Consumer
         : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, factory, name, order, props, additional)
     {
         Logger = option.CurrentValue;
-            _requestHelper = requestHelper;
+        _requestHelper = requestHelper;
     }
 
-        public string GetEasyBibCitationsList(int source, string data)
+    public string GetEasyBibCitationsList(int source, string data)
     {
         var uri = "";
         switch (source)
         {
             case 0:
-                uri = SearchBookUrl;
+                uri = _searchBookUrl;
                 break;
             case 1:
-                uri = SearchJournalUrl;
+                uri = _searchJournalUrl;
                 break;
             case 2:
-                uri = SearchWebSiteUrl;
+                uri = _searchWebSiteUrl;
                 break;
             default:
                 break;
@@ -90,7 +90,7 @@ public class EasyBibHelper : Consumer
         var headers = new Dictionary<string, string>() { };
         try
         {
-                return _requestHelper.PerformRequest(uri, "", method, "", headers);
+            return _requestHelper.PerformRequest(uri, "", method, "", headers);
         }
         catch (Exception)
         {
@@ -99,14 +99,14 @@ public class EasyBibHelper : Consumer
 
     }
 
-        public string GetEasyBibStyles()
+    public string GetEasyBibStyles()
     {
 
         const string method = "GET";
         var headers = new Dictionary<string, string>() { };
         try
         {
-            return _requestHelper.PerformRequest(EasyBibStyles, "", method, "", headers);
+            return _requestHelper.PerformRequest(_easyBibStyles, "", method, "", headers);
         }
         catch (Exception)
         {
@@ -130,7 +130,7 @@ public class EasyBibHelper : Consumer
             var body = citationData;
             var headers = new Dictionary<string, string>() { };
 
-                return _requestHelper.PerformRequest(uri, contentType, method, body, headers);
+            return _requestHelper.PerformRequest(uri, contentType, method, body, headers);
 
         }
         catch (Exception)

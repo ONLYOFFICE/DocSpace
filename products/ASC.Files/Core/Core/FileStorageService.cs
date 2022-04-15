@@ -31,9 +31,8 @@ namespace ASC.Web.Files.Services.WCFService;
 [Scope]
 public class FileStorageService<T> //: IFileStorageService
 {
-    public CompressToArchive CompressToArchive { get; }
-
     private static readonly FileEntrySerializer _serializer = new FileEntrySerializer();
+    private readonly CompressToArchive _compressToArchive;
     private readonly Global _global;
     private readonly GlobalStore _globalStore;
     private readonly GlobalFolderHelper _globalFolderHelper;
@@ -75,7 +74,7 @@ public class FileStorageService<T> //: IFileStorageService
     private readonly FileTrackerHelper _fileTracker;
     private readonly ICacheNotify<ThumbnailRequest> _thumbnailNotify;
     private readonly EntryStatusManager _entryStatusManager;
-    private ILog _logger;
+    private readonly ILog _logger;
 
     public FileStorageService(
         Global global,
@@ -164,7 +163,7 @@ public class FileStorageService<T> //: IFileStorageService
         _fileTracker = fileTracker;
         _thumbnailNotify = thumbnailNotify;
         _entryStatusManager = entryStatusManager;
-        CompressToArchive = compressToArchive;
+        _compressToArchive = compressToArchive;
     }
 
     public async Task<Folder<T>> GetFolderAsync(T folderId)
@@ -607,7 +606,7 @@ public class FileStorageService<T> //: IFileStorageService
         if (fileExt != _fileUtility.MasterFormExtension)
         {
             fileExt = _fileUtility.GetInternalExtension(title);
-            if (!_fileUtility.InternalExtension.Values.Contains(fileExt))
+            if (!_fileUtility.InternalExtension.ContainsValue(fileExt))
             {
                 fileExt = _fileUtility.InternalExtension[FileType.Document];
                 file.Title = title + fileExt;
@@ -1155,7 +1154,7 @@ public class FileStorageService<T> //: IFileStorageService
 
         return result;
 
-        string GetFileExtensionWithoutDot(string ext)
+        static string GetFileExtensionWithoutDot(string ext)
         {
             return ext.Substring(ext.IndexOf('.') + 1);
         }
@@ -1185,10 +1184,10 @@ public class FileStorageService<T> //: IFileStorageService
         return new List<EditHistory>(await fileDao.GetEditHistoryAsync(_documentServiceHelper, file.Id));
     }
 
-    public async Task<Web.Core.Files.DocumentService.FileLink> GetPresignedUriAsync(T fileId)
+    public async Task<FileLink> GetPresignedUriAsync(T fileId)
     {
         var file = await GetFileAsync(fileId, -1);
-        var result = new Web.Core.Files.DocumentService.FileLink
+        var result = new FileLink
         {
             FileType = FileUtility.GetFileExtension(file.Title),
             Url = _documentServiceConnector.ReplaceCommunityAdress(_pathProvider.GetFileStreamUrl(file))
@@ -1863,7 +1862,10 @@ public class FileStorageService<T> //: IFileStorageService
 
     public Task<List<FileEntry<T>>> AddToFavoritesAsync(IEnumerable<T> foldersId, IEnumerable<T> filesId)
     {
-        if (_userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
+        if (_userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager))
+        {
+            throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
+        }
 
         return InternalAddToFavoritesAsync(foldersId, filesId);
     }
@@ -2475,7 +2477,7 @@ public class FileStorageService<T> //: IFileStorageService
     {
         _filesSettingsHelper.DownloadTarGz = set;
 
-        return CompressToArchive;
+        return _compressToArchive;
     }
 
     public bool ChangeDeleteConfrim(bool set)
@@ -2502,7 +2504,7 @@ public class FileStorageService<T> //: IFileStorageService
                 req.Files.Add(f);
             }
 
-            _thumbnailNotify.Publish(req, Common.Caching.CacheNotifyAction.Insert);
+            _thumbnailNotify.Publish(req, CacheNotifyAction.Insert);
         }
         catch (Exception e)
         {

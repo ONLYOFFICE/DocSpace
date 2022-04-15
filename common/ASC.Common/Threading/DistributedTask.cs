@@ -79,12 +79,12 @@ public class DistributedTask
 
     [Obsolete("GetProperty<T> is deprecated, please use indexer this[propName] instead.")]
     public T GetProperty<T>(string propName)
-    {        
+    {
         if (!_props.TryGetValue(propName, out var propValue))
         {
             return default;
         }
-        
+
         return JsonSerializer.Deserialize<T>(propValue);
     }
 

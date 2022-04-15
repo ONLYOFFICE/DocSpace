@@ -29,11 +29,9 @@ namespace ASC.Data.Storage;
 [Scope]
 public class StaticUploader
 {
-    public const string CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME = "static_upload";
-
-    protected readonly DistributedTaskQueue Queue;
-    private ICache _cache;
-    private static readonly CancellationTokenSource _tokenSource;
+    protected readonly DistributedTaskQueue _queue;
+    private readonly ICache _cache;
+    public const string CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME = "static_upload"; private static readonly CancellationTokenSource _tokenSource;
     private static readonly object _locker;
     private readonly IServiceProvider _serviceProvider;
     private readonly TenantManager _tenantManager;
@@ -61,7 +59,7 @@ public class StaticUploader
         _tenantManager = tenantManager;
         _settingsManager = settingsManager;
         _storageSettingsHelper = storageSettingsHelper;
-        Queue = queueFactory.CreateQueue(CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME);
+        _queue = queueFactory.CreateQueue(CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME);
         _uploadOperation = uploadOperation;
     }
 
@@ -122,14 +120,14 @@ public class StaticUploader
 
         lock (_locker)
         {
-            if (Queue.GetAllTasks().Any(x => x.Id != key))
+            if (_queue.GetAllTasks().Any(x => x.Id != key))
             {
                 return;
             }
 
             var uploadOperation = new UploadOperationProgress(_serviceProvider, key, tenant.Id, relativePath, mappedPath);
 
-            Queue.EnqueueTask(uploadOperation);
+            _queue.EnqueueTask(uploadOperation);
         }
     }
 
@@ -155,7 +153,7 @@ public class StaticUploader
         {
             var key = typeof(UploadOperationProgress).FullName + tenantId;
 
-            return Queue.PeekTask<UploadOperationProgress>(key);
+            return _queue.PeekTask<UploadOperationProgress>(key);
         }
     }
 

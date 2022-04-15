@@ -24,27 +24,26 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace System
-{
-    public static class EnumExtension
-    {
-        public static T TryParseEnum<T>(string value, T defaultValue) where T : struct
-        {
-            return TryParseEnum(value, defaultValue, out _);
-        }
+namespace System;
 
-        public static T TryParseEnum<T>(string value, T defaultValue, out bool isDefault) where T : struct
+public static class EnumExtension
+{
+    public static T TryParseEnum<T>(string value, T defaultValue) where T : struct
+    {
+        return TryParseEnum(value, defaultValue, out _);
+    }
+
+    public static T TryParseEnum<T>(string value, T defaultValue, out bool isDefault) where T : struct
+    {
+        isDefault = false;
+        try
         {
-            isDefault = false;
-            try
-            {
-                return (T)Enum.Parse(typeof(T), value, true);
-            }
-            catch
-            {
-                isDefault = true;
-                return defaultValue;
-            }
+            return (T)Enum.Parse(typeof(T), value, true);
+        }
+        catch
+        {
+            isDefault = true;
+            return defaultValue;
         }
     }
 }

@@ -809,14 +809,28 @@ public static class MimeMapping
 
     public static string GetExtention(string mimeMapping)
     {
-        if (string.IsNullOrEmpty(mimeMapping)) return null;
+        if (string.IsNullOrEmpty(mimeMapping))
+        {
+            return null;
+        }
 
         foreach (DictionaryEntry entry in _extensionToMimeMappingTable)
         {
             var mime = (string)entry.Value;
-            if (mime.Equals(mimeMapping, StringComparison.OrdinalIgnoreCase)) return (string)entry.Key;
-            if (!_mimeSynonyms.ContainsKey(mime)) continue;
-            if (_mimeSynonyms[mime].Contains(mimeMapping.ToLowerInvariant())) return (string)entry.Key;
+            if (mime.Equals(mimeMapping, StringComparison.OrdinalIgnoreCase))
+            {
+                return (string)entry.Key;
+            }
+
+            if (!_mimeSynonyms.ContainsKey(mime))
+            {
+                continue;
+            }
+
+            if (_mimeSynonyms[mime].Contains(mimeMapping.ToLowerInvariant()))
+            {
+                return (string)entry.Key;
+            }
         }
 
         return null;
@@ -828,9 +842,14 @@ public static class MimeMapping
         var startIndex = fileName.LastIndexOf('.');
 
         if (0 <= startIndex && fileName.LastIndexOf('\\') < startIndex)
+        {
             str = (string)_extensionToMimeMappingTable[fileName.Substring(startIndex)];
+        }
 
-        if (str == null) str = (string)_extensionToMimeMappingTable[".*"];
+        if (str == null)
+        {
+            str = (string)_extensionToMimeMappingTable[".*"];
+        }
 
         return str;
     }
@@ -838,17 +857,25 @@ public static class MimeMapping
     private static void AddMimeMapping(string extension, string MimeType)
     {
         if (_extensionToMimeMappingTable.ContainsKey(extension))
+        {
             AddMimeSynonym((string)_extensionToMimeMappingTable[extension], MimeType);
-
-        else _extensionToMimeMappingTable.Add(extension, MimeType);
+        }
+        else
+        {
+            _extensionToMimeMappingTable.Add(extension, MimeType);
+        }
     }
 
     private static void AddMimeSynonym(string mime, string synonym)
     {
         if (!_mimeSynonyms.ContainsKey(mime))
+        {
             _mimeSynonyms[mime] = new List<string>();
+        }
 
         if (!_mimeSynonyms[mime].Contains(synonym))
+        {
             _mimeSynonyms[mime].Add(synonym);
+        }
     }
 }

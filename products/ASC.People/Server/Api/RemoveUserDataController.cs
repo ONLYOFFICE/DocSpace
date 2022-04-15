@@ -63,7 +63,7 @@ public class RemoveUserDataController : ApiControllerBase
 
     [Read(@"remove/progress")]
     public RemoveProgressItem GetRemoveProgress(Guid userId)
-{
+    {
         _permissionContext.DemandPermissions(Constants.Action_EditUser);
 
         return _queueWorkerRemove.GetProgressItemStatus(Tenant.Id, userId);

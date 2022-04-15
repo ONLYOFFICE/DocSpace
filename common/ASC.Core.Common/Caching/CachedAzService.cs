@@ -74,7 +74,6 @@ class CachedAzService : IAzService
     private readonly ICache _cache;
     private readonly TimeSpan _cacheExpiration;
 
-
     public CachedAzService(DbAzService service, AzServiceCache azServiceCache)
     {
         _service = service ?? throw new ArgumentNullException(nameof(service));
@@ -82,7 +81,6 @@ class CachedAzService : IAzService
         _cacheNotify = azServiceCache.CacheNotify;
         _cacheExpiration = TimeSpan.FromMinutes(10);
     }
-
 
     public IEnumerable<AzRecord> GetAces(int tenant, DateTime from)
     {

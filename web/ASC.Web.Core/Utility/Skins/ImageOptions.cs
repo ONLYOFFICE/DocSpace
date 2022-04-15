@@ -24,12 +24,11 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Core.Utility.Skins
+namespace ASC.Web.Core.Utility.Skins;
+
+[Serializable]
+public class ImageOptions
 {
-    [Serializable]
-    public class ImageOptions
-    {
-        public virtual string ImageFileName { get; set; }
-        public virtual Guid PartID { get; set; }
-    }
+    public virtual string ImageFileName { get; set; }
+    public virtual Guid PartID { get; set; }
 }

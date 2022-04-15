@@ -24,32 +24,34 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Core.Utility.Skins
+namespace ASC.Web.Core.Utility.Skins;
+
+public class WebSkin
 {
-    public class WebSkin
+    private static readonly HashSet<string> _baseCultureCss = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+
+    public static bool HasCurrentCultureCssFile
     {
-        private static readonly HashSet<string> BaseCultureCss = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+        get { return _baseCultureCss.Contains(CultureInfo.CurrentCulture.Name); }
+    }
 
-        public static bool HasCurrentCultureCssFile
+    public WebSkin(IWebHostEnvironment webHostEnvironment)
+    {
+        try
         {
-            get { return BaseCultureCss.Contains(CultureInfo.CurrentCulture.Name); }
+            var dir = CrossPlatform.PathCombine(webHostEnvironment.ContentRootPath, "~/skins/default/");
+            if (!Directory.Exists(dir))
+            {
+                return;
+            }
+
+            foreach (var f in Directory.GetFiles(dir, "common_style.*.css"))
+            {
+                _baseCultureCss.Add(Path.GetFileName(f).Split('.')[1]);
+            }
         }
-
-        public WebSkin(IWebHostEnvironment webHostEnvironment)
+        catch
         {
-            try
-            {
-                var dir = CrossPlatform.PathCombine(webHostEnvironment.ContentRootPath, "~/skins/default/");
-                if (!Directory.Exists(dir)) return;
-
-                foreach (var f in Directory.GetFiles(dir, "common_style.*.css"))
-                {
-                    BaseCultureCss.Add(Path.GetFileName(f).Split('.')[1]);
-                }
-            }
-            catch
-            {
-            }
         }
     }
 }

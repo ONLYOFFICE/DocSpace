@@ -205,15 +205,15 @@ internal abstract class ThirdPartyProviderDao
 internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDisposable where T : class, IProviderInfo
 {
     public int TenantID { get; private set; }
-    protected readonly IServiceProvider ServiceProvider;
-    protected readonly UserManager UserManager;
-    protected readonly TenantUtil TenantUtil;
+    protected readonly IServiceProvider _serviceProvider;
+    protected readonly UserManager _userManager;
+    protected readonly TenantUtil _tenantUtil;
     private readonly Lazy<FilesDbContext> _lazyFilesDbContext;
     protected FilesDbContext FilesDbContext => _lazyFilesDbContext.Value;
-    protected readonly SetupInfo SetupInfo;
-    protected readonly ILog Logger;
-    protected readonly FileUtility FileUtility;
-    protected readonly TempPath TempPath;
+    protected readonly SetupInfo _setupInfo;
+    protected readonly ILog _logger;
+    protected readonly FileUtility _fileUtility;
+    protected readonly TempPath _tempPath;
     protected RegexDaoSelectorBase<T> DaoSelector { get; set; }
     protected T ProviderInfo { get; set; }
     protected string PathPrefix { get; private set; }
@@ -231,14 +231,14 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         FileUtility fileUtility,
         TempPath tempPath)
     {
-        ServiceProvider = serviceProvider;
-        UserManager = userManager;
-        TenantUtil = tenantUtil;
+        _serviceProvider = serviceProvider;
+        _userManager = userManager;
+        _tenantUtil = tenantUtil;
         _lazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
-        SetupInfo = setupInfo;
-        Logger = monitor.CurrentValue;
-        FileUtility = fileUtility;
-        TempPath = tempPath;
+        _setupInfo = setupInfo;
+        _logger = monitor.CurrentValue;
+        _fileUtility = fileUtility;
+        _tempPath = tempPath;
         TenantID = tenantManager.GetCurrentTenant().Id;
     }
 
@@ -298,7 +298,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
 
     protected Folder<string> GetFolder()
     {
-        var folder = ServiceProvider.GetService<Folder<string>>();
+        var folder = _serviceProvider.GetService<Folder<string>>();
 
         InitFileEntry(folder);
 
@@ -323,7 +323,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
 
     protected File<string> GetFile()
     {
-        var file = ServiceProvider.GetService<File<string>>();
+        var file = _serviceProvider.GetService<File<string>>();
 
         InitFileEntry(file);
 
@@ -356,8 +356,8 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
     protected void InitFileEntryError(FileEntry<string> fileEntry, ErrorEntry entry)
     {
         fileEntry.Id = MakeId(entry.ErrorId);
-        fileEntry.CreateOn = TenantUtil.DateTimeNow();
-        fileEntry.ModifiedOn = TenantUtil.DateTimeNow();
+        fileEntry.CreateOn = _tenantUtil.DateTimeNow();
+        fileEntry.ModifiedOn = _tenantUtil.DateTimeNow();
         fileEntry.Error = entry.Error;
     }
 

@@ -59,7 +59,10 @@ public class StorageHandler
         if (storageExpire != TimeSpan.Zero && storageExpire != TimeSpan.MinValue && storageExpire != TimeSpan.MaxValue || !string.IsNullOrEmpty(auth))
         {
             var expire = context.Request.Query[Constants.QueryExpire];
-            if (string.IsNullOrEmpty(expire)) expire = storageExpire.TotalMinutes.ToString(CultureInfo.InvariantCulture);
+            if (string.IsNullOrEmpty(expire))
+            {
+                expire = storageExpire.TotalMinutes.ToString(CultureInfo.InvariantCulture);
+            }
 
             var validateResult = emailValidationKeyProvider.ValidateEmailKey(path + "." + header + "." + expire, auth ?? "", TimeSpan.FromMinutes(Convert.ToDouble(expire)));
             if (validateResult != EmailValidationKeyProvider.ValidationResult.Ok)

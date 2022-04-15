@@ -70,7 +70,7 @@ public class DirectRecipient
 
     public override bool Equals(object obj)
     {
-        if (!(obj is IDirectRecipient recD))
+        if (obj is not IDirectRecipient recD)
         {
             return false;
         }

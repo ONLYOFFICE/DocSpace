@@ -29,7 +29,6 @@ global using System.Globalization;
 global using System.Net;
 global using System.Net.Mail;
 global using System.Net.Sockets;
-global using System.Runtime.InteropServices;
 global using System.Security;
 global using System.ServiceModel.Security;
 global using System.Text.Json;
@@ -109,7 +108,6 @@ global using ASC.Webhooks.Core;
 global using ASC.Webhooks.Core.Dao.Models;
 
 global using Autofac;
-global using Autofac.Extensions.DependencyInjection;
 
 global using AutoMapper;
 

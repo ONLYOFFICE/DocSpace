@@ -100,7 +100,9 @@ public abstract class CachedDictionaryBase<T>
             var newValue = defaults();
 
             if (Condition == null || Condition(newValue))
+            {
                 Add(rootkey, key, newValue);
+            }
 
             return newValue;
         }

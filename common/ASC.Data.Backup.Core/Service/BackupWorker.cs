@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ConfigurationProvider = ASC.Data.Backup.Utils.ConfigurationProvider;
-
 namespace ASC.Data.Backup.Services;
 
 [Singletone]
@@ -73,7 +71,7 @@ public class BackupWorker
         _configPaths[_currentRegion] = PathHelper.ToRootedConfigPath(settings.WebConfigs.CurrentPath);
 
         var invalidConfigPath = _configPaths.Values.FirstOrDefault(path => !File.Exists(path));
-        
+
         if (invalidConfigPath != null)
         {
             _logger.WarnFormat("Configuration file {0} not found", invalidConfigPath);
@@ -110,9 +108,9 @@ public class BackupWorker
             {
 
                 item = _serviceProvider.GetService<BackupProgressItem>();
-               
+
                 item.Init(request, false, TempFolder, _limit, _currentRegion, _configPaths);
-                
+
                 _progressQueue.EnqueueTask(item);
             }
 

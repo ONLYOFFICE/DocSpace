@@ -28,7 +28,7 @@ namespace Textile.Blocks;
 
 public static class NoTextileEncoder
 {
-    private static readonly string[,] TextileModifiers = {
+    private static readonly string[,] _textileModifiers = {
                             { "\"", "&#34;" },
                             { "%", "&#37;" },
                             { "*", "&#42;" },
@@ -66,16 +66,16 @@ public static class NoTextileEncoder
             {
                 return string.Empty;
             }
-            for (var i = 0; i < TextileModifiers.GetLength(0); ++i)
+            for (var i = 0; i < _textileModifiers.GetLength(0); ++i)
             {
-                if (exceptions == null || Array.IndexOf(exceptions, TextileModifiers[i, 0]) < 0)
+                if (exceptions == null || Array.IndexOf(exceptions, _textileModifiers[i, 0]) < 0)
                 {
-                    toEncode = toEncode.Replace(TextileModifiers[i, 0], TextileModifiers[i, 1]);
+                    toEncode = toEncode.Replace(_textileModifiers[i, 0], _textileModifiers[i, 1]);
                 }
             }
             return patternPrefix + toEncode + patternSuffix;
         }
-        tmp = Regex.Replace(tmp, "("+ patternPrefix + "(?<notex>.+?)" + patternSuffix + ")*", new MatchEvaluator(evaluator));
+        tmp = Regex.Replace(tmp, "(" + patternPrefix + "(?<notex>.+?)" + patternSuffix + ")*", new MatchEvaluator(evaluator));
         return tmp;
     }
 
@@ -89,11 +89,11 @@ public static class NoTextileEncoder
         string evaluator(Match m)
         {
             var toEncode = m.Groups["notex"].Value;
-            for (var i = 0; i < TextileModifiers.GetLength(0); ++i)
+            for (var i = 0; i < _textileModifiers.GetLength(0); ++i)
             {
-                if (exceptions == null || Array.IndexOf(exceptions, TextileModifiers[i, 0]) < 0)
+                if (exceptions == null || Array.IndexOf(exceptions, _textileModifiers[i, 0]) < 0)
                 {
-                    toEncode = toEncode.Replace(TextileModifiers[i, 1], TextileModifiers[i, 0]);
+                    toEncode = toEncode.Replace(_textileModifiers[i, 1], _textileModifiers[i, 0]);
                 }
             }
             return toEncode;

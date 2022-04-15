@@ -24,17 +24,16 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Core
+namespace ASC.Web.Core;
+
+[Serializable]
+public class WebItemSecurityInfo
 {
-    [Serializable]
-    public class WebItemSecurityInfo
-    {
-        public string WebItemId { get; set; }
+    public string WebItemId { get; set; }
 
-        public IEnumerable<UserInfo> Users { get; set; }
+    public IEnumerable<UserInfo> Users { get; set; }
 
-        public IEnumerable<GroupInfo> Groups { get; set; }
+    public IEnumerable<GroupInfo> Groups { get; set; }
 
-        public bool Enabled { get; set; }
-    }
+    public bool Enabled { get; set; }
 }

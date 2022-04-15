@@ -93,7 +93,7 @@ public class CommonChunkedUploadSession : ICloneable
         {
             if (item.Value != null)
             {
-                    if (item.Value is JsonElement)
+                if (item.Value is JsonElement)
                 {
                     var value = (JsonElement)item.Value;
                     if (value.ValueKind == JsonValueKind.String)

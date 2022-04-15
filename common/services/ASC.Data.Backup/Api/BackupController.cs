@@ -36,7 +36,7 @@ public class BackupController : ControllerBase
     private readonly TenantExtra _tenantExtra;
     private readonly IEventBus _eventBus;
     private readonly Guid _currentUserId;
-    private int _tenantId;
+    private readonly int _tenantId;
 
     public BackupController(
         BackupAjaxHandler backupAjaxHandler,

@@ -33,19 +33,22 @@ public abstract class PeopleControllerBase : ApiControllerBase
     protected readonly ApiContext _apiContext;
     protected readonly UserPhotoManager _userPhotoManager;
     protected readonly IHttpClientFactory _httpClientFactory;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
     public PeopleControllerBase(
         UserManager userManager,
         PermissionContext permissionContext,
         ApiContext apiContext,
         UserPhotoManager userPhotoManager,
-        IHttpClientFactory httpClientFactory)
+        IHttpClientFactory httpClientFactory,
+        IHttpContextAccessor httpContextAccessor)
     {
         _userManager = userManager;
         _permissionContext = permissionContext;
         _apiContext = apiContext;
         _userPhotoManager = userPhotoManager;
         _httpClientFactory = httpClientFactory;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     protected UserInfo GetUserInfo(string userNameOrId)
@@ -93,11 +96,13 @@ public abstract class PeopleControllerBase : ApiControllerBase
 
         if (!files.StartsWith("http://") && !files.StartsWith("https://"))
         {
-            files = new Uri(_apiContext.HttpContextAccessor.HttpContext.Request.GetDisplayUrl()).GetLeftPart(UriPartial.Authority) + "/" + files.TrimStart('/');
+            files = new Uri(_httpContextAccessor.HttpContext.Request.GetDisplayUrl()).GetLeftPart(UriPartial.Authority) + "/" + files.TrimStart('/');
         }
 
-        var request = new HttpRequestMessage();
-        request.RequestUri = new Uri(files);
+        var request = new HttpRequestMessage
+        {
+            RequestUri = new Uri(files)
+        };
 
         var httpClient = _httpClientFactory.CreateClient();
         using var response = httpClient.Send(request);

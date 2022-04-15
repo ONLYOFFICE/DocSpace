@@ -60,7 +60,7 @@ public class FoldersModule : FeedModule
 
     public override bool VisibleFor(Feed.Aggregator.Feed feed, object data, Guid userId)
     {
-        if (!WebItemSecurity.IsAvailableForUser(ProductID, userId))
+        if (!_webItemSecurity.IsAvailableForUser(ProductID, userId))
         {
             return false;
         }

@@ -32,7 +32,6 @@ class NotifyClientImpl : INotifyClient
     private readonly IOptionsMonitor<ILog> _options;
     private readonly NotifyEngineQueue _notifyEngineQueue;
     private readonly INotifySource _notifySource;
-    public readonly IServiceScope _serviceScope;
 
     public NotifyClientImpl(IOptionsMonitor<ILog> options, NotifyEngineQueue notifyEngineQueue, INotifySource notifySource)
     {
@@ -113,7 +112,7 @@ class NotifyClientImpl : INotifyClient
 
     private void SendAsync(NotifyRequest request)
     {
-        request.Interceptors = _interceptors.GetAll();
+        request._interceptors = _interceptors.GetAll();
         _notifyEngineQueue.QueueRequest(request);
     }
 
@@ -124,8 +123,8 @@ class NotifyClientImpl : INotifyClient
 
         var request = new NotifyRequest(_options, _notifySource, action, objectID, recipient)
         {
-            SenderNames = senders,
-            IsNeedCheckSubscriptions = checkSubsciption
+            _senderNames = senders,
+            _isNeedCheckSubscriptions = checkSubsciption
         };
 
         if (args != null)

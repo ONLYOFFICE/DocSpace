@@ -29,15 +29,15 @@ namespace ASC.Core.Notify.Senders;
 [Singletone]
 public class SmtpSender : INotifySender
 {
-    protected ILog Logger { get; set; }
-    protected readonly IConfiguration Configuration;
-    protected IServiceProvider ServiceProvider;
+    protected ILog _logger;
+    protected readonly IConfiguration _configuration;
+    protected IServiceProvider _serviceProvider;
 
     private string _host;
     private int _port;
     private bool _ssl;
     private ICredentials _credentials;
-    protected bool UseCoreSettings;
+    protected bool _useCoreSettings;
     const int NetworkTimeout = 30000;
 
     public SmtpSender(
@@ -45,16 +45,16 @@ public class SmtpSender : INotifySender
         IServiceProvider serviceProvider,
         IOptionsMonitor<ILog> options)
     {
-        Logger = options.Get("ASC.Notify");
-        Configuration = configuration;
-        ServiceProvider = serviceProvider;
+        _logger = options.Get("ASC.Notify");
+        _configuration = configuration;
+        _serviceProvider = serviceProvider;
     }
 
     public virtual void Init(IDictionary<string, string> properties)
     {
         if (properties.ContainsKey("useCoreSettings") && bool.Parse(properties["useCoreSettings"]))
         {
-            UseCoreSettings = true;
+            _useCoreSettings = true;
         }
         else
         {
@@ -82,7 +82,7 @@ public class SmtpSender : INotifySender
 
     public virtual NoticeSendResult Send(NotifyMessage m)
     {
-        using var scope = ServiceProvider.CreateScope();
+        using var scope = _serviceProvider.CreateScope();
         var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
         tenantManager.SetCurrentTenant(m.TenantId);
 
@@ -94,14 +94,14 @@ public class SmtpSender : INotifySender
         {
             try
             {
-                if (UseCoreSettings)
+                if (_useCoreSettings)
                 {
                     InitUseCoreSettings(configuration);
                 }
 
                 var mail = BuildMailMessage(m);
 
-                Logger.DebugFormat("SmtpSender - host={0}; port={1}; enableSsl={2} enableAuth={3}", _host, _port, _ssl, _credentials != null);
+                _logger.DebugFormat("SmtpSender - host={0}; port={1}; enableSsl={2} enableAuth={3}", _host, _port, _ssl, _credentials != null);
 
                 smtpClient.Connect(_host, _port,
                     _ssl ? SecureSocketOptions.Auto : SecureSocketOptions.None);
@@ -116,7 +116,7 @@ public class SmtpSender : INotifySender
             }
             catch (Exception e)
             {
-                Logger.ErrorFormat("Tenant: {0}, To: {1} - {2}", m.TenantId, m.Reciever, e);
+                _logger.ErrorFormat("Tenant: {0}, To: {1} - {2}", m.TenantId, m.Reciever, e);
 
                 throw;
             }

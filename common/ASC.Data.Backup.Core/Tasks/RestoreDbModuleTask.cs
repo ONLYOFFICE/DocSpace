@@ -28,7 +28,7 @@ namespace ASC.Data.Backup.Tasks;
 
 internal class RestoreDbModuleTask : PortalTaskBase
 {
-    private const int TransactionLength = 10000;
+    private const int _transactionLength = 10000;
 
     private readonly IDataReadOperator _reader;
     private readonly IModuleSpecifics _module;
@@ -51,11 +51,11 @@ internal class RestoreDbModuleTask : PortalTaskBase
     public override void RunJob()
     {
         Logger.DebugFormat("begin restore data for module {0}", _module.ModuleName);
-        SetStepsCount(_module.Tables.Count(t => !IgnoredTables.Contains(t.Name)));
+        SetStepsCount(_module.Tables.Count(t => !_ignoredTables.Contains(t.Name)));
 
         using (var connection = DbFactory.OpenConnection())
         {
-            foreach (var table in _module.GetTablesOrdered().Where(t => !IgnoredTables.Contains(t.Name) && t.InsertMethod != InsertMethod.None))
+            foreach (var table in _module.GetTablesOrdered().Where(t => !_ignoredTables.Contains(t.Name) && t.InsertMethod != InsertMethod.None))
             {
                 Logger.DebugFormat("begin restore table {0}", table.Name);
 
@@ -107,8 +107,8 @@ internal class RestoreDbModuleTask : PortalTaskBase
         foreach (
             var rows in
                 GetRows(tableInfo, stream)
-                    .Skip(transactionsCommited * TransactionLength)
-                    .MakeParts(TransactionLength))
+                    .Skip(transactionsCommited * _transactionLength)
+                    .MakeParts(_transactionLength))
         {
             using var transaction = connection.BeginTransaction();
             var rowsSuccess = 0;
@@ -138,7 +138,7 @@ internal class RestoreDbModuleTask : PortalTaskBase
                         else if (tableInfo.IdType == IdType.Integer)
                         {
                             var command = connection.CreateCommand();
-                                command.CommandText = $"select max({tableInfo.IdColumn}) from {tableInfo.Name};";
+                            command.CommandText = $"select max({tableInfo.IdColumn}) from {tableInfo.Name};";
                             newIdValue = (int)command.WithTimeout(120).ExecuteScalar() + 1;
                         }
                     }

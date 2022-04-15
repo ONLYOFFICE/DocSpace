@@ -28,7 +28,7 @@ namespace ASC.Common.Utils;
 
 public class ConnectionStringCollection : IEnumerable<ConnectionStringSettings>
 {
-    private List<ConnectionStringSettings> _data;
+    private readonly List<ConnectionStringSettings> _data;
 
     public ConnectionStringSettings this[string name] => _data.FirstOrDefault(r => r.Name == name);
 

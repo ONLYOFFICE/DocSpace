@@ -206,7 +206,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         {
             if (subjectGroup)
             {
-                var users = UserManager.GetUsersByGroup(subjectID).Select(u => u.Id).ToArray();
+                var users = _userManager.GetUsersByGroup(subjectID).Select(u => u.Id).ToArray();
                 q = q.Where(r => users.Contains(r.CreateBy));
             }
             else
@@ -262,7 +262,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         {
             if (subjectGroup)
             {
-                var users = UserManager.GetUsersByGroup(subjectID.Value).Select(u => u.Id).ToArray();
+                var users = _userManager.GetUsersByGroup(subjectID.Value).Select(u => u.Id).ToArray();
                 q = q.Where(r => users.Contains(r.CreateBy));
             }
             else
@@ -306,16 +306,16 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     {
         folder.Title = Global.ReplaceInvalidCharsAndTruncate(folder.Title);
 
-        folder.ModifiedOn = TenantUtil.DateTimeNow();
-        folder.ModifiedBy = AuthContext.CurrentAccount.ID;
+        folder.ModifiedOn = _tenantUtil.DateTimeNow();
+        folder.ModifiedBy = _authContext.CurrentAccount.ID;
 
         if (folder.CreateOn == default)
         {
-            folder.CreateOn = TenantUtil.DateTimeNow();
+            folder.CreateOn = _tenantUtil.DateTimeNow();
         }
         if (folder.CreateBy == default)
         {
-            folder.CreateBy = AuthContext.CurrentAccount.ID;
+            folder.CreateBy = _authContext.CurrentAccount.ID;
         }
 
         var isnew = false;
@@ -331,7 +331,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
             toUpdate.Title = folder.Title;
             toUpdate.CreateBy = folder.CreateBy;
-            toUpdate.ModifiedOn = TenantUtil.DateTimeToUtc(folder.ModifiedOn);
+            toUpdate.ModifiedOn = _tenantUtil.DateTimeToUtc(folder.ModifiedOn);
             toUpdate.ModifiedBy = folder.ModifiedBy;
 
             await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
@@ -349,9 +349,9 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                 Id = 0,
                 ParentId = folder.ParentId,
                 Title = folder.Title,
-                CreateOn = TenantUtil.DateTimeToUtc(folder.CreateOn),
+                CreateOn = _tenantUtil.DateTimeToUtc(folder.CreateOn),
                 CreateBy = folder.CreateBy,
-                ModifiedOn = TenantUtil.DateTimeToUtc(folder.ModifiedOn),
+                ModifiedOn = _tenantUtil.DateTimeToUtc(folder.ModifiedOn),
                 ModifiedBy = folder.ModifiedBy,
                 FolderType = folder.FolderType,
                 TenantId = TenantID
@@ -542,7 +542,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
             toUpdate.ParentId = toFolderId;
             toUpdate.ModifiedOn = DateTime.UtcNow;
-            toUpdate.ModifiedBy = AuthContext.CurrentAccount.ID;
+            toUpdate.ModifiedBy = _authContext.CurrentAccount.ID;
 
             await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
@@ -554,7 +554,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
             var toDelete = await FilesDbContext.Tree
                 .AsQueryable()
-                .Where(r => subfolders.Keys.Contains(r.FolderId) && !subfolders.Keys.Contains(r.ParentId))
+                .Where(r => subfolders.ContainsKey(r.FolderId) && !subfolders.ContainsKey(r.ParentId))
                 .ToListAsync();
 
             FilesDbContext.Tree.RemoveRange(toDelete);
@@ -636,7 +636,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             folder.FolderType = FolderType.DEFAULT;
         }
 
-        var copy = ServiceProvider.GetService<Folder<int>>();
+        var copy = _serviceProvider.GetService<Folder<int>>();
         copy.ParentId = toFolderId;
         copy.RootId = toFolder.RootId;
         copy.RootCreateBy = toFolder.RootCreateBy;
@@ -755,7 +755,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
         toUpdate.Title = Global.ReplaceInvalidCharsAndTruncate(newTitle);
         toUpdate.ModifiedOn = DateTime.UtcNow;
-        toUpdate.ModifiedBy = AuthContext.CurrentAccount.ID;
+        toUpdate.ModifiedBy = _authContext.CurrentAccount.ID;
 
         await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
@@ -827,12 +827,12 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     {
         var tmp = long.MaxValue;
 
-        if (CoreBaseSettings.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
+        if (_coreBaseSettings.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
         {
-            tmp = CoreConfiguration.PersonalMaxSpace(SettingsManager) - await _globalSpace.GetUserUsedSpaceAsync();
+            tmp = _coreConfiguration.PersonalMaxSpace(_settingsManager) - await _globalSpace.GetUserUsedSpaceAsync();
         }
 
-        return Math.Min(tmp, chunkedUpload ? SetupInfo.MaxChunkedUploadSize(TenantExtra, TenantStatisticProvider) : SetupInfo.MaxUploadSize(TenantExtra, TenantStatisticProvider));
+        return Math.Min(tmp, chunkedUpload ? _setupInfo.MaxChunkedUploadSize(_tenantExtra, _tenantStatisticProvider) : _setupInfo.MaxUploadSize(_tenantExtra, _tenantStatisticProvider));
     }
 
     private async Task RecalculateFoldersCountAsync(int id)
@@ -922,7 +922,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             var newFolderId = 0;
             if (createIfNotExists && !folderIdsDictionary.TryGetValue(key, out var folderId))
             {
-                var folder = ServiceProvider.GetService<Folder<int>>();
+                var folder = _serviceProvider.GetService<Folder<int>>();
                 switch (bunch)
                 {
                     case My:
@@ -1014,7 +1014,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         var newFolderId = 0;
         if (createIfNotExists)
         {
-            var folder = ServiceProvider.GetService<Folder<int>>();
+            var folder = _serviceProvider.GetService<Folder<int>>();
             folder.ParentId = 0;
             switch (bunch)
             {
@@ -1087,7 +1087,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     public Task<int> GetFolderIDTrashAsync(bool createIfNotExists, Guid? userId = null)
     {
-        return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Trash, (userId ?? AuthContext.CurrentAccount.ID).ToString(), createIfNotExists);
+        return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Trash, (userId ?? _authContext.CurrentAccount.ID).ToString(), createIfNotExists);
     }
 
     public Task<int> GetFolderIDCommonAsync(bool createIfNotExists)
@@ -1097,7 +1097,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     public Task<int> GetFolderIDUserAsync(bool createIfNotExists, Guid? userId = null)
     {
-        return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, My, (userId ?? AuthContext.CurrentAccount.ID).ToString(), createIfNotExists);
+        return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, My, (userId ?? _authContext.CurrentAccount.ID).ToString(), createIfNotExists);
     }
 
     public Task<int> GetFolderIDShareAsync(bool createIfNotExists)
@@ -1122,7 +1122,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     public Task<int> GetFolderIDPrivacyAsync(bool createIfNotExists, Guid? userId = null)
     {
-        return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Privacy, (userId ?? AuthContext.CurrentAccount.ID).ToString(), createIfNotExists);
+        return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Privacy, (userId ?? _authContext.CurrentAccount.ID).ToString(), createIfNotExists);
     }
 
     #endregion

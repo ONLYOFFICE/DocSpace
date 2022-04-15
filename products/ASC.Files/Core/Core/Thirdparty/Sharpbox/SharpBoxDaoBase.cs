@@ -104,14 +104,20 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
 
         public ICloudFileSystemEntry GetChild(string name, bool bThrowException)
         {
-            if (bThrowException) throw new ArgumentNullException(name);
+            if (bThrowException)
+            {
+                throw new ArgumentNullException(name);
+            }
 
             return null;
         }
 
         public ICloudFileSystemEntry GetChild(string idOrName, bool bThrowException, bool firstByNameIfNotFound)
         {
-            if (bThrowException) throw new ArgumentNullException(idOrName);
+            if (bThrowException)
+            {
+                throw new ArgumentNullException(idOrName);
+            }
 
             return null;
         }
@@ -201,7 +207,7 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
     protected string MakeId(ICloudFileSystemEntry entry)
     {
         var path = string.Empty;
-        if (entry != null && !(entry is ErrorEntry))
+        if (entry != null && entry is not ErrorEntry)
         {
             try
             {
@@ -209,7 +215,7 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
             }
             catch (Exception ex)
             {
-                Logger.Error("Sharpbox makeId error", ex);
+                _logger.Error("Sharpbox makeId error", ex);
             }
         }
         else if (entry != null)
@@ -276,12 +282,12 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
 
         if (folder.CreateOn != DateTime.MinValue && folder.CreateOn.Kind == DateTimeKind.Utc)
         {
-            folder.CreateOn = TenantUtil.DateTimeFromUtc(folder.CreateOn);
+            folder.CreateOn = _tenantUtil.DateTimeFromUtc(folder.CreateOn);
         }
 
         if (folder.ModifiedOn != DateTime.MinValue && folder.ModifiedOn.Kind == DateTimeKind.Utc)
         {
-            folder.ModifiedOn = TenantUtil.DateTimeFromUtc(folder.ModifiedOn);
+            folder.ModifiedOn = _tenantUtil.DateTimeFromUtc(folder.ModifiedOn);
         }
 
         return folder;
@@ -351,9 +357,9 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
 
         file.Id = MakeId(fsEntry);
         file.ContentLength = fsEntry.Length;
-        file.CreateOn = fsEntry.Modified.Kind == DateTimeKind.Utc ? TenantUtil.DateTimeFromUtc(fsEntry.Modified) : fsEntry.Modified;
+        file.CreateOn = fsEntry.Modified.Kind == DateTimeKind.Utc ? _tenantUtil.DateTimeFromUtc(fsEntry.Modified) : fsEntry.Modified;
         file.ParentId = MakeId(fsEntry.Parent);
-        file.ModifiedOn = fsEntry.Modified.Kind == DateTimeKind.Utc ? TenantUtil.DateTimeFromUtc(fsEntry.Modified) : fsEntry.Modified;
+        file.ModifiedOn = fsEntry.Modified.Kind == DateTimeKind.Utc ? _tenantUtil.DateTimeFromUtc(fsEntry.Modified) : fsEntry.Modified;
         file.NativeAccessor = fsEntry;
         file.Title = MakeTitle(fsEntry);
         file.RootId = RootFolderMakeId();
@@ -431,7 +437,7 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
 
     protected IEnumerable<ICloudFileSystemEntry> GetFolderFiles(ICloudDirectoryEntry folder)
     {
-        return folder.Where(x => !(x is ICloudDirectoryEntry));
+        return folder.Where(x => x is not ICloudDirectoryEntry);
     }
 
     protected IEnumerable<ICloudFileSystemEntry> GetFolderSubfolders(ICloudDirectoryEntry folder)

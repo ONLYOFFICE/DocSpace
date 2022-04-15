@@ -70,7 +70,9 @@ public class TableFormatterState : FormatterState
     public override void FormatLine(string input)
     {
         if (input.Length > 0)
+        {
             throw new Exception("The TableFormatter state is not supposed to format any lines!");
+        }
     }
 
     public override bool ShouldExit(string input)
@@ -85,6 +87,6 @@ public class TableFormatterState : FormatterState
 
     protected string FormattedStylesAndAlignment()
     {
-        return Blocks.BlockAttributesParser.ParseBlockAttributes(_alignInfo + _attsInfo);
+        return BlockAttributesParser.ParseBlockAttributes(_alignInfo + _attsInfo);
     }
 }

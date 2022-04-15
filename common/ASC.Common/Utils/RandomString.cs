@@ -35,7 +35,7 @@ public static class RandomString
 
         while (0 < length--)
         {
-                res.Append(valid[RandomNumberGenerator.GetInt32(valid.Length)]);
+            res.Append(valid[RandomNumberGenerator.GetInt32(valid.Length)]);
         }
 
         return res.ToString();

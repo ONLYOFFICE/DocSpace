@@ -52,6 +52,4 @@ global using AutoMapper;
 global using CsvHelper;
 global using CsvHelper.Configuration;
 
-global using Microsoft.Extensions.Options;
-
 global using Newtonsoft.Json;

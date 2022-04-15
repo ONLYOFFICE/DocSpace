@@ -27,7 +27,7 @@
 namespace ASC.AuditTrail.Models.Mappings;
 
 [Scope]
-public class EventTypeConverter : ITypeConverter<LoginEventQuery, LoginEventDto>, 
+public class EventTypeConverter : ITypeConverter<LoginEventQuery, LoginEventDto>,
                                   ITypeConverter<AuditEventQuery, AuditEventDto>
 {
     private readonly UserFormatter _userFormatter;

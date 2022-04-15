@@ -25,8 +25,6 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Api.Core.Middleware;
-using System.Security.Authentication;
-
 public class CustomExceptionFilterAttribute : ExceptionFilterAttribute
 {
     public override void OnException(ExceptionContext context)
@@ -39,7 +37,7 @@ public class CustomExceptionFilterAttribute : ExceptionFilterAttribute
             status = HttpStatusCode.InternalServerError;
         }
 
-            bool withStackTrace = true;
+        var withStackTrace = true;
 
         switch (context.Exception)
         {
@@ -55,16 +53,16 @@ public class CustomExceptionFilterAttribute : ExceptionFilterAttribute
                 status = HttpStatusCode.Forbidden;
                 message = "Access denied";
                 break;
-                case AuthenticationException:
-                    status = HttpStatusCode.Unauthorized;
-                    withStackTrace = false;
-                    break;
+            case AuthenticationException:
+                status = HttpStatusCode.Unauthorized;
+                withStackTrace = false;
+                break;
             case InvalidOperationException:
                 status = HttpStatusCode.Forbidden;
                 break;
         }
 
-            var result = new ObjectResult(new ErrorApiResponse(status, context.Exception, message, withStackTrace))
+        var result = new ObjectResult(new ErrorApiResponse(status, context.Exception, message, withStackTrace))
         {
             StatusCode = (int)status
         };

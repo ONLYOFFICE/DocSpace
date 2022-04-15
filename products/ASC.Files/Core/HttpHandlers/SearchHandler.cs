@@ -103,7 +103,7 @@ public class SearchHandler
     {
         var folderDao = _daoFactory.GetFolderDao<int>();
         var files = SearchFilesAsync(text);
-        List<SearchResultItem> list = new List<SearchResultItem>();
+        var list = new List<SearchResultItem>();
         await foreach (var file in files)
         {
             var searchResultItem = new SearchResultItem

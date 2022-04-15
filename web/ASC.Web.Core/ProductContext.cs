@@ -24,20 +24,19 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Core
-{
-    public class ProductContext : WebItemContext
-    {
-        private IProductSubscriptionManager _sunscriptionManager;
+namespace ASC.Web.Core;
 
-        public new IProductSubscriptionManager SubscriptionManager
+public class ProductContext : WebItemContext
+{
+    private IProductSubscriptionManager _sunscriptionManager;
+
+    public new IProductSubscriptionManager SubscriptionManager
+    {
+        get { return _sunscriptionManager; }
+        set
         {
-            get { return _sunscriptionManager; }
-            set
-            {
-                _sunscriptionManager = value;
-                base.SubscriptionManager = value;
-            }
+            _sunscriptionManager = value;
+            base.SubscriptionManager = value;
         }
     }
 }

@@ -131,7 +131,7 @@ public class DocuSignHelper
     private readonly FilesLinkUtility _filesLinkUtility;
     private readonly IServiceProvider _serviceProvider;
     private readonly ConsumerFactory _consumerFactory;
-        private readonly RequestHelper _requestHelper;
+    private readonly RequestHelper _requestHelper;
 
     public DocuSignHelper(
         DocuSignToken docuSignToken,
@@ -164,7 +164,8 @@ public class DocuSignHelper
         _serviceProvider = serviceProvider;
         _consumerFactory = consumerFactory;
         Logger = options.CurrentValue;
-        _requestHelper = requestHelper;    }
+        _requestHelper = requestHelper;
+    }
 
     public bool ValidateToken(OAuth20Token token)
     {

@@ -24,65 +24,66 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Core
-{
-    public class RecaptchaException : InvalidCredentialException
-    {
-        public RecaptchaException()
-        {
-        }
+namespace ASC.Web.Core;
 
-        public RecaptchaException(string message)
-            : base(message)
-        {
-        }
+public class RecaptchaException : InvalidCredentialException
+{
+    public RecaptchaException()
+    {
     }
 
-    [Scope]
-    public class Recaptcha
+    public RecaptchaException(string message)
+        : base(message)
     {
-        private SetupInfo SetupInfo { get; }
-        private IHttpClientFactory ClientFactory { get; }
+    }
+}
 
-        public Recaptcha(SetupInfo setupInfo, IHttpClientFactory clientFactory)
-        {
-            SetupInfo = setupInfo;
-            ClientFactory = clientFactory;
-        }
+[Scope]
+public class Recaptcha
+{
+    private readonly SetupInfo _setupInfo;
+    private readonly IHttpClientFactory _clientFactory;
 
-        public async Task<bool> ValidateRecaptchaAsync(string response, string ip)
+    public Recaptcha(SetupInfo setupInfo, IHttpClientFactory clientFactory)
+    {
+        _setupInfo = setupInfo;
+        _clientFactory = clientFactory;
+    }
+
+    public async Task<bool> ValidateRecaptchaAsync(string response, string ip)
+    {
+        try
         {
-            try
+            var data = $"secret={_setupInfo.RecaptchaPrivateKey}&remoteip={ip}&response={response}";
+
+            var request = new HttpRequestMessage
             {
-                var data = $"secret={SetupInfo.RecaptchaPrivateKey}&remoteip={ip}&response={response}";
+                RequestUri = new Uri(_setupInfo.RecaptchaVerifyUrl),
+                Method = HttpMethod.Post,
+                Content = new StringContent(data, Encoding.UTF8, "application/x-www-form-urlencoded")
+            };
 
-                var request = new HttpRequestMessage();
-                request.RequestUri = new Uri(SetupInfo.RecaptchaVerifyUrl);
-                request.Method = HttpMethod.Post;
-                request.Content = new StringContent(data, Encoding.UTF8, "application/x-www-form-urlencoded");
+            var httpClient = _clientFactory.CreateClient();
+            using var httpClientResponse = await httpClient.SendAsync(request);
+            using (var reader = new StreamReader(await httpClientResponse.Content.ReadAsStreamAsync()))
+            {
+                var resp = await reader.ReadToEndAsync();
+                var resObj = JObject.Parse(resp);
 
-                var httpClient = ClientFactory.CreateClient();
-                using var httpClientResponse = await httpClient.SendAsync(request);
-                using (var reader = new StreamReader(await httpClientResponse.Content.ReadAsStreamAsync()))
+                if (resObj["success"] != null && resObj.Value<bool>("success"))
                 {
-                    var resp = await reader.ReadToEndAsync();
-                    var resObj = JObject.Parse(resp);
-
-                    if (resObj["success"] != null && resObj.Value<bool>("success"))
-                    {
-                        return true;
-                    }
-                    if (resObj["error-codes"] != null && resObj["error-codes"].HasValues)
-                    {
-                        return false;
-                    }
+                    return true;
+                }
+                if (resObj["error-codes"] != null && resObj["error-codes"].HasValues)
+                {
+                    return false;
                 }
             }
-            catch (Exception)
-            {
-            }
-
-            return false;
         }
+        catch (Exception)
+        {
+        }
+
+        return false;
     }
 }

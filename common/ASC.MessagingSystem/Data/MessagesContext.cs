@@ -52,7 +52,7 @@ public class MessagesContext : BaseDbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ModelBuilderWrapper
-            .From(modelBuilder, Provider)
+            .From(modelBuilder, _provider)
             .AddAuditEvent()
             .AddLoginEvents()
             .AddUser()

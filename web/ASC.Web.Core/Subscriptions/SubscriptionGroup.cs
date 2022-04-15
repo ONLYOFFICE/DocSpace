@@ -24,12 +24,11 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Core.Subscriptions
-{
-    public class SubscriptionGroup
-    {
-        public Guid ID { get; set; }
+namespace ASC.Web.Core.Subscriptions;
 
-        public string Name { get; set; }
-    }
+public class SubscriptionGroup
+{
+    public Guid ID { get; set; }
+
+    public string Name { get; set; }
 }

@@ -33,7 +33,7 @@ public class WebhooksGlobalFilterAttribute : ResultFilterAttribute
 {
     private readonly IWebhookPublisher _webhookPublisher;
     private readonly JsonSerializerOptions _jsonSerializerOptions;
-    private static List<string> _methodList = new List<string> { "POST", "UPDATE", "DELETE" };
+    private static readonly List<string> _methodList = new List<string> { "POST", "UPDATE", "DELETE" };
 
     public WebhooksGlobalFilterAttribute(IWebhookPublisher webhookPublisher, Action<JsonOptions> projectJsonOptions)
     {

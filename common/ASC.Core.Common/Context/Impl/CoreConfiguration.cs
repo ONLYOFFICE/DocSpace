@@ -121,9 +121,9 @@ public class CoreSettings
         }
     }
 
-    internal ITenantService TenantService;
-    internal CoreBaseSettings CoreBaseSettings;
-    internal IConfiguration Configuration;
+    internal ITenantService TenantService { get; set; }
+    internal CoreBaseSettings CoreBaseSettings { get; set; }
+    internal IConfiguration Configuration { get; set; }
 
     public CoreSettings() { }
 

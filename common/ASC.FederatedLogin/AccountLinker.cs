@@ -60,8 +60,6 @@ public class AccountLinkerStorage
 [Scope]
 public class ConfigureAccountLinker : IConfigureNamedOptions<AccountLinker>
 {
-    public IConfiguration Configuration { get; }
-
     private readonly Signature _signature;
     private readonly InstanceCrypto _instanceCrypto;
     private readonly AccountLinkerStorage _accountLinkerStorage;
@@ -69,13 +67,11 @@ public class ConfigureAccountLinker : IConfigureNamedOptions<AccountLinker>
 
     public ConfigureAccountLinker(
         Signature signature,
-        IConfiguration configuration,
         InstanceCrypto instanceCrypto,
         AccountLinkerStorage accountLinkerStorage,
         DbContextManager<AccountLinkContext> dbContextManager)
     {
         _signature = signature;
-        Configuration = configuration;
         _instanceCrypto = instanceCrypto;
         _accountLinkerStorage = accountLinkerStorage;
         _dbContextManager = dbContextManager;

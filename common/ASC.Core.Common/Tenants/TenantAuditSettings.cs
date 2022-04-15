@@ -49,5 +49,5 @@ public class TenantAuditSettings : ISettings<TenantAuditSettings>
 
 public class TenantAuditSettingsWrapper
 {
-    public TenantAuditSettings settings { get; set; }
+    public TenantAuditSettings Settings { get; set; }
 }

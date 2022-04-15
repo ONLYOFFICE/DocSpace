@@ -50,11 +50,11 @@ public class SharePointProviderInfo : IProviderInfo
         SharePointProviderInfoHelper sharePointProviderInfoHelper,
         TempStream tempStream)
     {
-        Logger = logger;
+        _logger = logger;
         _serviceProvider = serviceProvider;
         _tenantUtil = tenantUtil;
-        SharePointProviderInfoHelper = sharePointProviderInfoHelper;
-        TempStream = tempStream;
+        _sharePointProviderInfoHelper = sharePointProviderInfoHelper;
+        _tempStream = tempStream;
     }
 
     public Task<bool> CheckAccessAsync()
@@ -68,7 +68,7 @@ public class SharePointProviderInfo : IProviderInfo
         }
         catch (Exception e)
         {
-            Logger.Warn("CheckAccess", e);
+            _logger.Warn("CheckAccess", e);
 
             return Task.FromResult(false);
         }
@@ -81,7 +81,7 @@ public class SharePointProviderInfo : IProviderInfo
             _clientContext.Dispose();
         }
 
-        return SharePointProviderInfoHelper.InvalidateAsync();
+        return _sharePointProviderInfoHelper.InvalidateAsync();
     }
 
     public void UpdateTitle(string newtitle)
@@ -123,13 +123,13 @@ public class SharePointProviderInfo : IProviderInfo
     public async Task<File> GetFileByIdAsync(object id)
     {
         var key = "spointf-" + MakeId(id);
-        var file = SharePointProviderInfoHelper.GetFile(key);
+        var file = _sharePointProviderInfoHelper.GetFile(key);
         if (file == null)
         {
             file = await GetFileAsync(id).ConfigureAwait(false);
             if (file != null)
             {
-                SharePointProviderInfoHelper.AddFile(key, file);
+                _sharePointProviderInfoHelper.AddFile(key, file);
             }
         }
 
@@ -148,7 +148,7 @@ public class SharePointProviderInfo : IProviderInfo
         }
         catch (Exception ex)
         {
-            await SharePointProviderInfoHelper.PublishFolderAsync(MakeId(GetParentFolderId(id))).ConfigureAwait(false);
+            await _sharePointProviderInfoHelper.PublishFolderAsync(MakeId(GetParentFolderId(id))).ConfigureAwait(false);
             var serverException = (ServerException)ex;
             if (serverException.ServerErrorTypeName == typeof(FileNotFoundException).ToString())
             {
@@ -173,7 +173,7 @@ public class SharePointProviderInfo : IProviderInfo
         var fileInfo = File.OpenBinaryDirect(_clientContext, (string)id);
         _clientContext.ExecuteQuery();
 
-        var tempBuffer = TempStream.Create();
+        var tempBuffer = _tempStream.Create();
         using (var str = fileInfo.Stream)
         {
             if (str != null)
@@ -201,15 +201,15 @@ public class SharePointProviderInfo : IProviderInfo
         _clientContext.Load(file.ListItemAllFields);
         _clientContext.ExecuteQuery();
 
-        SharePointProviderInfoHelper.AddFile("spointf-" + MakeId(id), file);
-        await SharePointProviderInfoHelper.PublishFolderAsync(MakeId(GetParentFolderId(id))).ConfigureAwait(false);
+        _sharePointProviderInfoHelper.AddFile("spointf-" + MakeId(id), file);
+        await _sharePointProviderInfoHelper.PublishFolderAsync(MakeId(GetParentFolderId(id))).ConfigureAwait(false);
 
         return file;
     }
 
     public async Task DeleteFileAsync(string id)
     {
-        await SharePointProviderInfoHelper.PublishFileAsync(MakeId(id), MakeId(GetParentFolderId(id)));
+        await _sharePointProviderInfoHelper.PublishFileAsync(MakeId(id), MakeId(GetParentFolderId(id)));
 
         var file = await GetFileByIdAsync(id).ConfigureAwait(false);
 
@@ -224,7 +224,7 @@ public class SharePointProviderInfo : IProviderInfo
 
     public async Task<string> RenameFileAsync(string id, string newTitle)
     {
-        await SharePointProviderInfoHelper.PublishFileAsync(MakeId(id), MakeId(GetParentFolderId(id))).ConfigureAwait(false);
+        await _sharePointProviderInfoHelper.PublishFileAsync(MakeId(id), MakeId(GetParentFolderId(id))).ConfigureAwait(false);
 
         var file = await GetFileByIdAsync(id).ConfigureAwait(false);
 
@@ -242,8 +242,8 @@ public class SharePointProviderInfo : IProviderInfo
 
     public async Task<string> MoveFileAsync(string id, string toFolderId)
     {
-        await SharePointProviderInfoHelper.PublishFileAsync(MakeId(id), MakeId(GetParentFolderId(id))).ConfigureAwait(false);
-        await SharePointProviderInfoHelper.PublishFolderAsync(MakeId(toFolderId)).ConfigureAwait(false);
+        await _sharePointProviderInfoHelper.PublishFileAsync(MakeId(id), MakeId(GetParentFolderId(id))).ConfigureAwait(false);
+        await _sharePointProviderInfoHelper.PublishFolderAsync(MakeId(toFolderId)).ConfigureAwait(false);
 
         var file = await GetFileByIdAsync(id).ConfigureAwait(false);
 
@@ -261,7 +261,7 @@ public class SharePointProviderInfo : IProviderInfo
 
     public async Task<File> CopyFileAsync(string id, string toFolderId)
     {
-        await SharePointProviderInfoHelper.PublishFolderAsync(MakeId(toFolderId), MakeId(GetParentFolderId(id))).ConfigureAwait(false);
+        await _sharePointProviderInfoHelper.PublishFolderAsync(MakeId(toFolderId), MakeId(GetParentFolderId(id))).ConfigureAwait(false);
 
         var file = await GetFileByIdAsync(id).ConfigureAwait(false);
 
@@ -306,7 +306,7 @@ public class SharePointProviderInfo : IProviderInfo
         }
 
         result.Id = MakeId(file.ServerRelativeUrl);
-        result.Access = Core.Security.FileShare.None;
+        result.Access = FileShare.None;
         //ContentLength = file.Length,
         result.CreateBy = Owner;
         result.CreateOn = file.TimeCreated.Kind == DateTimeKind.Utc ? _tenantUtil.DateTimeFromUtc(file.TimeCreated) : file.TimeCreated;
@@ -345,33 +345,32 @@ public class SharePointProviderInfo : IProviderInfo
         get
         {
             var key = "spointd-" + MakeId();
-            var folder = SharePointProviderInfoHelper.GetFolder(key);
+            var folder = _sharePointProviderInfoHelper.GetFolder(key);
             if (folder == null)
             {
                 folder = GetFolderByIdAsync(SpRootFolderId).Result;
-                SharePointProviderInfoHelper.AddFolder(key, folder);
+                _sharePointProviderInfoHelper.AddFolder(key, folder);
             }
 
             return folder;
         }
     }
 
-    public ILog Logger { get; }
+    private readonly ILog _logger;
     private readonly IServiceProvider _serviceProvider;
     private readonly TenantUtil _tenantUtil;
-    public SharePointProviderInfoHelper SharePointProviderInfoHelper { get; }
-    public TempStream TempStream { get; }
-
+    private readonly SharePointProviderInfoHelper _sharePointProviderInfoHelper;
+    private readonly TempStream _tempStream;
     public async Task<Folder> GetFolderByIdAsync(object id)
     {
         var key = "spointd-" + MakeId(id);
-        var folder = SharePointProviderInfoHelper.GetFolder(key);
+        var folder = _sharePointProviderInfoHelper.GetFolder(key);
         if (folder == null)
         {
             folder = await GetFolderAsync(id).ConfigureAwait(false);
             if (folder != null)
             {
-                SharePointProviderInfoHelper.AddFolder(key, folder);
+                _sharePointProviderInfoHelper.AddFolder(key, folder);
             }
         }
 
@@ -396,7 +395,7 @@ public class SharePointProviderInfo : IProviderInfo
         }
         catch (Exception ex)
         {
-            await SharePointProviderInfoHelper.PublishFolderAsync(MakeId(GetParentFolderId(id))).ConfigureAwait(false);
+            await _sharePointProviderInfoHelper.PublishFolderAsync(MakeId(GetParentFolderId(id))).ConfigureAwait(false);
             var serverException = (ServerException)ex;
             if (serverException.ServerErrorTypeName == typeof(FileNotFoundException).ToString())
             {
@@ -438,7 +437,7 @@ public class SharePointProviderInfo : IProviderInfo
 
     public async Task<object> RenameFolderAsync(object id, string newTitle)
     {
-        await SharePointProviderInfoHelper.PublishFolderAsync(MakeId(id), MakeId(GetParentFolderId(id)));
+        await _sharePointProviderInfoHelper.PublishFolderAsync(MakeId(id), MakeId(GetParentFolderId(id)));
 
         var folder = await GetFolderByIdAsync(id).ConfigureAwait(false);
         if (folder is SharePointFolderErrorEntry)
@@ -453,7 +452,7 @@ public class SharePointProviderInfo : IProviderInfo
 
     public async Task<string> MoveFolderAsync(string id, string toFolderId)
     {
-        await SharePointProviderInfoHelper.PublishFolderAsync(MakeId(id), MakeId(GetParentFolderId(id)), MakeId(toFolderId)).ConfigureAwait(false);
+        await _sharePointProviderInfoHelper.PublishFolderAsync(MakeId(id), MakeId(GetParentFolderId(id)), MakeId(toFolderId)).ConfigureAwait(false);
 
         var folder = await GetFolderByIdAsync(id).ConfigureAwait(false);
         if (folder is SharePointFolderErrorEntry)
@@ -469,7 +468,7 @@ public class SharePointProviderInfo : IProviderInfo
 
     public async Task<Folder> CopyFolderAsync(object id, object toFolderId)
     {
-        await SharePointProviderInfoHelper.PublishFolderAsync(MakeId(toFolderId));
+        await _sharePointProviderInfoHelper.PublishFolderAsync(MakeId(toFolderId));
 
         var folder = await GetFolderByIdAsync(id).ConfigureAwait(false);
         if (folder is SharePointFolderErrorEntry)
@@ -523,14 +522,14 @@ public class SharePointProviderInfo : IProviderInfo
         _clientContext.Load(folder);
         _clientContext.ExecuteQuery();
 
-        await SharePointProviderInfoHelper.CreateFolderAsync(id, MakeId(GetParentFolderId(id)), folder).ConfigureAwait(false);
+        await _sharePointProviderInfoHelper.CreateFolderAsync(id, MakeId(GetParentFolderId(id)), folder).ConfigureAwait(false);
 
         return folder;
     }
 
     public async Task DeleteFolderAsync(string id)
     {
-        await SharePointProviderInfoHelper.PublishFolderAsync(MakeId(id), MakeId(GetParentFolderId(id)));
+        await _sharePointProviderInfoHelper.PublishFolderAsync(MakeId(id), MakeId(GetParentFolderId(id)));
 
         var folder = await GetFolderByIdAsync(id).ConfigureAwait(false);
 
@@ -675,12 +674,12 @@ public class SharePointProviderInfoHelper
 
     public Task InvalidateAsync()
     {
-        return _notify.PublishAsync(new SharePointProviderCacheItem { }, Common.Caching.CacheNotifyAction.Remove);
+        return _notify.PublishAsync(new SharePointProviderCacheItem { }, CacheNotifyAction.Remove);
     }
 
     public Task PublishFolderAsync(string id)
     {
-        return _notify.PublishAsync(new SharePointProviderCacheItem { FolderKey = id }, Common.Caching.CacheNotifyAction.Remove);
+        return _notify.PublishAsync(new SharePointProviderCacheItem { FolderKey = id }, CacheNotifyAction.Remove);
     }
 
     public async Task PublishFolderAsync(string id1, string id2)
@@ -697,7 +696,7 @@ public class SharePointProviderInfoHelper
 
     public Task PublishFileAsync(string fileId, string folderId)
     {
-        return _notify.PublishAsync(new SharePointProviderCacheItem { FileKey = fileId, FolderKey = folderId }, Common.Caching.CacheNotifyAction.Remove);
+        return _notify.PublishAsync(new SharePointProviderCacheItem { FileKey = fileId, FolderKey = folderId }, CacheNotifyAction.Remove);
     }
 
     public async Task CreateFolderAsync(string id, string parentFolderId, Folder folder)

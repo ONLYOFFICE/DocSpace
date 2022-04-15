@@ -36,16 +36,16 @@ public enum Provider
 
 public class BaseDbContext : DbContext
 {
+    public ConnectionStringSettings ConnectionStringSettings { get; set; }
+    internal string MigrateAssembly { get; set; }
+    internal ILoggerFactory LoggerFactory { get; set; }
+    public static readonly ServerVersion ServerVersion = ServerVersion.Parse("8.0.25");
+
+    protected virtual Dictionary<Provider, Func<BaseDbContext>> ProviderContext => null;
+    protected Provider _provider;
+
     public BaseDbContext() { }
     public BaseDbContext(DbContextOptions options) : base(options) { }
-
-    internal string MigrateAssembly;
-    internal ILoggerFactory LoggerFactory;
-    public ConnectionStringSettings ConnectionStringSettings { get; set; }
-    protected internal Provider Provider;
-
-    public static readonly ServerVersion ServerVersion = ServerVersion.Parse("8.0.25");
-    protected virtual Dictionary<Provider, Func<BaseDbContext>> ProviderContext => null;
 
     public void Migrate()
     {
@@ -70,8 +70,8 @@ public class BaseDbContext : DbContext
     {
         optionsBuilder.UseLoggerFactory(LoggerFactory);
         optionsBuilder.EnableSensitiveDataLogging();
-        Provider = GetProviderByConnectionString();
-        switch (Provider)
+        _provider = GetProviderByConnectionString();
+        switch (_provider)
         {
             case Provider.MySql:
                 optionsBuilder.UseMySql(ConnectionStringSettings.ConnectionString, ServerVersion, r =>
@@ -150,7 +150,7 @@ public class MultiRegionalDbContext<T> : IDisposable, IAsyncDisposable where T :
 {
     public MultiRegionalDbContext() { }
 
-    internal List<T> Context;
+    internal List<T> Context { get; set; }
 
     public void Dispose()
     {

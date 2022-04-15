@@ -24,17 +24,17 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Core.Calendars
+namespace ASC.Web.Core.Calendars;
+
+public class CalendarColors
 {
-    public class CalendarColors
+    public string BackgroudColor { get; set; }
+    public string TextColor { get; set; }
+    public static List<CalendarColors> BaseColors
     {
-        public string BackgroudColor { get; set; }
-        public string TextColor { get; set; }
-        public static List<CalendarColors> BaseColors
+        get
         {
-            get
-            {
-                return new List<CalendarColors>(){
+            return new List<CalendarColors>(){
                     new CalendarColors(){ BackgroudColor = "#e34603", TextColor="#ffffff"},
                     new CalendarColors(){ BackgroudColor = "#f88e14", TextColor="#000000"},
                     new CalendarColors(){ BackgroudColor = "#ffb403", TextColor="#000000"},
@@ -52,8 +52,7 @@ namespace ASC.Web.Core.Calendars
                     new CalendarColors(){ BackgroudColor = "#e24e78", TextColor="#000000"},
                     new CalendarColors(){ BackgroudColor = "#bf0036", TextColor="#ffffff"}
                 };
-            }
         }
-
     }
+
 }

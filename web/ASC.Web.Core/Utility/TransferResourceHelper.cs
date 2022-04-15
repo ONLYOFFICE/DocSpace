@@ -24,23 +24,22 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Studio.Utility
+namespace ASC.Web.Studio.Utility;
+
+public static class TransferResourceHelper
 {
-    public static class TransferResourceHelper
+    public static string GetRegionDescription(string region)
     {
-        public static string GetRegionDescription(string region)
+        region = region.ToLower().Trim();
+
+        return region switch
         {
-            region = region.ToLower().Trim();
+            "eu" => Resource.EuServerRegion,
+            "us" => Resource.UsServerRegion,
+            "sg" => Resource.SgServerRegion,
+            "org" => Resource.OrgServerRegion,
 
-            return region switch
-            {
-                "eu" => Resource.EuServerRegion,
-                "us" => Resource.UsServerRegion,
-                "sg" => Resource.SgServerRegion,
-                "org" => Resource.OrgServerRegion,
-
-                _ => string.Empty,
-            };
-        }
+            _ => string.Empty,
+        };
     }
 }

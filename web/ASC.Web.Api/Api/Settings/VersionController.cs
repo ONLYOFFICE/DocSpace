@@ -28,7 +28,7 @@ namespace ASC.Web.Api.Controllers.Settings;
 
 public class VersionController : BaseSettingsController
 {
-    private Tenant Tenant { get { return _apiContext.Tenant; } }
+    private Tenant Tenant { get { return ApiContext.Tenant; } }
 
     private readonly TenantManager _tenantManager;
     private readonly PermissionContext _permissionContext;
@@ -40,7 +40,8 @@ public class VersionController : BaseSettingsController
         TenantManager tenantManager,
         WebItemManager webItemManager,
         BuildVersion buildVersion,
-        IMemoryCache memoryCache) : base(apiContext, memoryCache, webItemManager)
+        IMemoryCache memoryCache,
+        IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _permissionContext = permissionContext;
         _tenantManager = tenantManager;

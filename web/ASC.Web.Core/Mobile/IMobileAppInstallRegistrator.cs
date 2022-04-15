@@ -24,12 +24,11 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Core.Mobile
+namespace ASC.Web.Core.Mobile;
+
+[Scope(typeof(MobileAppInstallRegistrator), typeof(CachedMobileAppInstallRegistrator))]
+public interface IMobileAppInstallRegistrator
 {
-    [Scope(typeof(MobileAppInstallRegistrator), typeof(CachedMobileAppInstallRegistrator))]
-    public interface IMobileAppInstallRegistrator
-    {
-        void RegisterInstall(string userEmail, MobileAppType appType);
-        bool IsInstallRegistered(string userEmail, MobileAppType? appType);
-    }
+    void RegisterInstall(string userEmail, MobileAppType appType);
+    bool IsInstallRegistered(string userEmail, MobileAppType? appType);
 }

@@ -50,7 +50,7 @@ public class TelegramServiceClient : ITelegramService
 
     public void SendMessage(NotifyMessage m)
     {
-        _cacheMessage.Publish(m, ASC.Common.Caching.CacheNotifyAction.Insert);
+        _cacheMessage.Publish(m, CacheNotifyAction.Insert);
     }
 
     public void RegisterUser(string userId, int tenantId, string token)
@@ -61,7 +61,7 @@ public class TelegramServiceClient : ITelegramService
             UserId = userId,
             TenantId = tenantId,
             Token = token
-        }, ASC.Common.Caching.CacheNotifyAction.Insert);
+        }, CacheNotifyAction.Insert);
     }
 
     public void CreateOrUpdateClient(int tenantId, string token, int tokenLifespan, string proxy)
@@ -72,12 +72,12 @@ public class TelegramServiceClient : ITelegramService
             Token = token,
             TokenLifespan = tokenLifespan,
             Proxy = proxy
-        }, ASC.Common.Caching.CacheNotifyAction.Insert);
+        }, CacheNotifyAction.Insert);
     }
 
     public void DisableClient(int tenantId)
     {
-        _cacheDisableClient.Publish(new DisableClientProto() { TenantId = tenantId }, ASC.Common.Caching.CacheNotifyAction.Insert);
+        _cacheDisableClient.Publish(new DisableClientProto() { TenantId = tenantId }, CacheNotifyAction.Insert);
     }
 
     public string RegistrationToken(string userId, int tenantId)

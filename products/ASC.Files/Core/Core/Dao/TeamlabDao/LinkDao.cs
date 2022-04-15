@@ -29,11 +29,9 @@ namespace ASC.Files.Core.Data;
 [Scope]
 internal class LinkDao : AbstractDao, ILinkDao
 {
-    public DbContextManager<FilesDbContext> DbContextManager { get; }
-
     public LinkDao(
         UserManager userManager,
-        DbContextManager<EF.FilesDbContext> dbContextManager,
+        DbContextManager<FilesDbContext> dbContextManager,
         TenantManager tenantManager,
         TenantUtil tenantUtil,
         SetupInfo setupInfo,
@@ -68,7 +66,7 @@ internal class LinkDao : AbstractDao, ILinkDao
             TenantId = TenantID,
             SourceId = sourceId,
             LinkedId = linkedId,
-            LinkedFor = AuthContext.CurrentAccount.ID
+            LinkedFor = _authContext.CurrentAccount.ID
         });
 
         await FilesDbContext.SaveChangesAsync();
@@ -77,7 +75,7 @@ internal class LinkDao : AbstractDao, ILinkDao
     public Task<string> GetSourceAsync(string linkedId)
     {
         return FilesDbContext.FilesLink
-            .Where(r => r.TenantId == TenantID && r.LinkedId == linkedId && r.LinkedFor == AuthContext.CurrentAccount.ID)
+            .Where(r => r.TenantId == TenantID && r.LinkedId == linkedId && r.LinkedFor == _authContext.CurrentAccount.ID)
             .Select(r => r.SourceId)
             .SingleOrDefaultAsync();
     }
@@ -85,7 +83,7 @@ internal class LinkDao : AbstractDao, ILinkDao
     public Task<string> GetLinkedAsync(string sourceId)
     {
         return FilesDbContext.FilesLink
-            .Where(r => r.TenantId == TenantID && r.SourceId == sourceId && r.LinkedFor == AuthContext.CurrentAccount.ID)
+            .Where(r => r.TenantId == TenantID && r.SourceId == sourceId && r.LinkedFor == _authContext.CurrentAccount.ID)
             .Select(r => r.LinkedId)
             .SingleOrDefaultAsync();
     }
@@ -93,7 +91,7 @@ internal class LinkDao : AbstractDao, ILinkDao
     public async Task DeleteLinkAsync(string sourceId)
     {
         var link = await FilesDbContext.FilesLink
-            .Where(r => r.TenantId == TenantID && r.SourceId == sourceId && r.LinkedFor == AuthContext.CurrentAccount.ID)
+            .Where(r => r.TenantId == TenantID && r.SourceId == sourceId && r.LinkedFor == _authContext.CurrentAccount.ID)
             .SingleOrDefaultAsync();
 
         FilesDbContext.FilesLink.Remove(link);

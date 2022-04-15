@@ -24,15 +24,15 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Core.Users.Import
+namespace ASC.Web.Core.Users.Import;
+
+public class OutlookCSVUserImporter : TextFileUserImporter
 {
-    public class OutlookCSVUserImporter : TextFileUserImporter
+    public OutlookCSVUserImporter(Stream stream)
+        : base(stream)
     {
-        public OutlookCSVUserImporter(Stream stream)
-            : base(stream)
-        {
-            HasHeader = true;
-            NameMapping = new Dictionary<string, string>()
+        HasHeader = true;
+        NameMapping = new Dictionary<string, string>()
                               {
                                   {"First Name", "FirstName"},
                                   {"Last Name", "LastName"},
@@ -63,6 +63,5 @@ namespace ASC.Web.Core.Users.Import
                                   {"Office Location", ""},
                                   {"Notes", "Notes"}
                               };
-        }
     }
 }

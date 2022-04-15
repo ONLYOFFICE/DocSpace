@@ -39,13 +39,13 @@ public abstract class BaseStorage : IDataStore
         = new Dictionary<string, TimeSpan>();
     protected ILog Logger { get; set; }
 
-    protected readonly TempStream TempStream;
-    protected readonly TenantManager TenantManager;
-    protected readonly PathUtils TpathUtils;
-    protected readonly EmailValidationKeyProvider TemailValidationKeyProvider;
-    protected readonly IHttpContextAccessor HttpContextAccessor;
-    protected readonly IOptionsMonitor<ILog> Options;
-    protected readonly IHttpClientFactory ClientFactory;
+    protected readonly TempStream _tempStream;
+    protected readonly TenantManager _tenantManager;
+    protected readonly PathUtils _tpathUtils;
+    protected readonly EmailValidationKeyProvider _temailValidationKeyProvider;
+    protected readonly IHttpContextAccessor _httpContextAccessor;
+    protected readonly IOptionsMonitor<ILog> _options;
+    protected readonly IHttpClientFactory _clientFactory;
 
     public BaseStorage(
         TempStream tempStream,
@@ -57,14 +57,14 @@ public abstract class BaseStorage : IDataStore
         IHttpClientFactory clientFactory)
     {
 
-        TempStream = tempStream;
-        TenantManager = tenantManager;
-        TpathUtils = pathUtils;
-        TemailValidationKeyProvider = emailValidationKeyProvider;
-        Options = options;
-        ClientFactory = clientFactory;
+        _tempStream = tempStream;
+        _tenantManager = tenantManager;
+        _tpathUtils = pathUtils;
+        _temailValidationKeyProvider = emailValidationKeyProvider;
+        _options = options;
+        _clientFactory = clientFactory;
         Logger = options.CurrentValue;
-        HttpContextAccessor = httpContextAccessor;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public TimeSpan GetExpire(string domain)
@@ -108,7 +108,7 @@ public abstract class BaseStorage : IDataStore
             var expireString = expire.TotalMinutes.ToString(CultureInfo.InvariantCulture);
 
             int currentTenantId;
-            var currentTenant = TenantManager.GetCurrentTenant(false);
+            var currentTenant = _tenantManager.GetCurrentTenant(false);
             if (currentTenant != null)
             {
                 currentTenantId = currentTenant.Id;
@@ -118,7 +118,7 @@ public abstract class BaseStorage : IDataStore
                 currentTenantId = 0;
             }
 
-            var auth = TemailValidationKeyProvider.GetEmailKey(currentTenantId, path.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar) + "." + headerAttr + "." + expireString);
+            var auth = _temailValidationKeyProvider.GetEmailKey(currentTenantId, path.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar) + "." + headerAttr + "." + expireString);
             query = $"{(path.IndexOf('?') >= 0 ? "&" : "?")}{Constants.QueryExpire}={expireString}&{Constants.QueryAuth}={auth}";
         }
 
@@ -128,8 +128,8 @@ public abstract class BaseStorage : IDataStore
         }
 
         var tenant = Tenant.Trim('/');
-        var vpath = TpathUtils.ResolveVirtualPath(Modulename, domain);
-        vpath = TpathUtils.ResolveVirtualPath(vpath, false);
+        var vpath = _tpathUtils.ResolveVirtualPath(Modulename, domain);
+        vpath = _tpathUtils.ResolveVirtualPath(vpath, false);
         vpath = string.Format(vpath, tenant);
         var virtualPath = new Uri(vpath + "/", UriKind.RelativeOrAbsolute);
 

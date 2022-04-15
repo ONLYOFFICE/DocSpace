@@ -66,20 +66,17 @@ public class Login
 
     private Dictionary<string, string> _params;
     private readonly IWebHostEnvironment _webHostEnvironment;
-    private readonly IMemoryCache _memoryCache;
     private readonly Signature _signature;
     private readonly InstanceCrypto _instanceCrypto;
     private readonly ProviderManager _providerManager;
 
     public Login(
         IWebHostEnvironment webHostEnvironment,
-        IMemoryCache memoryCache,
         Signature signature,
         InstanceCrypto instanceCrypto,
         ProviderManager providerManager)
     {
         _webHostEnvironment = webHostEnvironment;
-        _memoryCache = memoryCache;
         _signature = signature;
         _instanceCrypto = instanceCrypto;
         _providerManager = providerManager;

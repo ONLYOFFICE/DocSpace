@@ -55,7 +55,7 @@ public class UserDbContext : BaseDbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ModelBuilderWrapper
-        .From(modelBuilder, Provider)
+        .From(modelBuilder, _provider)
         .AddSubscriptionMethod()
         .AddUser()
         .AddAcl()

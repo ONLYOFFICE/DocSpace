@@ -73,8 +73,8 @@ class ConfigureTariffService : IConfigureNamedOptions<TariffService>
         TariffServiceStorage tariffServiceStorage,
         IOptionsMonitor<ILog> options)
     {
-        this._quotaService = quotaService;
-        this._tenantService = tenantService;
+        _quotaService = quotaService;
+        _tenantService = tenantService;
         _coreBaseSettings = coreBaseSettings;
         _coreSettings = coreSettings;
         _configuration = configuration;
@@ -126,27 +126,27 @@ public class TariffService : ITariffService
     private static readonly TimeSpan _defaultCacheExpiration = TimeSpan.FromMinutes(5);
     private static readonly TimeSpan _standaloneCacheExpiration = TimeSpan.FromMinutes(15);
 
-    internal ICache Cache;
-    internal ICacheNotify<TariffCacheItem> Notify;
-    internal ILog Logger;
-    internal IQuotaService QuotaService;
-    internal ITenantService TenantService;
-    internal bool Test;
-    internal int PaymentDelay;
+    internal ICache Cache { get; set; }
+    internal ICacheNotify<TariffCacheItem> Notify { get; set; }
+    internal ILog Logger { get; set; }
+    internal IQuotaService QuotaService { get; set; }
+    internal ITenantService TenantService { get; set; }
+    internal bool Test { get; set; }
+    internal int PaymentDelay { get; set; }
 
     public TimeSpan CacheExpiration { get; set; }
-    internal CoreBaseSettings CoreBaseSettings;
-    internal CoreSettings CoreSettings;
-    internal IConfiguration Configuration;
+    internal CoreBaseSettings CoreBaseSettings { get; set; }
+    internal CoreSettings CoreSettings { get; set; }
+    internal IConfiguration Configuration { get; set; }
     internal CoreDbContext CoreDbContext => LazyCoreDbContext.Value;
     internal Lazy<CoreDbContext> LazyCoreDbContext;
-    internal TariffServiceStorage TariffServiceStorage;
-    internal IOptionsMonitor<ILog> Options;
-    public BillingClient BillingClient { get; }
-        public IHttpClientFactory HttpClientFactory { get; }
+    internal TariffServiceStorage TariffServiceStorage { get; set; }
+    internal IOptionsMonitor<ILog> Options { get; set; }
 
-    public readonly int ActiveUsersMin;
-    public readonly int ActiveUsersMax;
+    private readonly BillingClient _billingClient;
+    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly int _activeUsersMin;
+    //private readonly int _activeUsersMax;
 
     public TariffService()
     {
@@ -163,8 +163,8 @@ public class TariffService : ITariffService
         TariffServiceStorage tariffServiceStorage,
         IOptionsMonitor<ILog> options,
         Users.Constants constants,
-            BillingClient billingClient,
-            IHttpClientFactory httpClientFactory)
+        BillingClient billingClient,
+        IHttpClientFactory httpClientFactory)
         : this()
 
     {
@@ -175,8 +175,8 @@ public class TariffService : ITariffService
         Configuration = configuration;
         TariffServiceStorage = tariffServiceStorage;
         Options = options;
-        BillingClient = billingClient;
-            HttpClientFactory = httpClientFactory;
+        _billingClient = billingClient;
+        _httpClientFactory = httpClientFactory;
         CoreBaseSettings = coreBaseSettings;
         Test = configuration["core:payment:test"] == "true";
         int.TryParse(configuration["core:payment:delay"], out var paymentDelay);
@@ -187,14 +187,14 @@ public class TariffService : ITariffService
         Notify = TariffServiceStorage.Notify;
         LazyCoreDbContext = new Lazy<CoreDbContext>(() => coreDbContextManager.Value);
         var range = (Configuration["core.payment-user-range"] ?? "").Split('-');
-        if (!int.TryParse(range[0], out ActiveUsersMin))
+        if (!int.TryParse(range[0], out _activeUsersMin))
         {
-            ActiveUsersMin = 0;
+            _activeUsersMin = 0;
         }
-        if (range.Length < 2 || !int.TryParse(range[1], out ActiveUsersMax))
-        {
-            ActiveUsersMax = constants.MaxEveryoneCount;
-        }
+        //if (range.Length < 2 || !int.TryParse(range[1], out _activeUsersMax))
+        //{
+        //    _activeUsersMax = constants.MaxEveryoneCount;
+        //}
     }
 
     public Tariff GetTariff(int tenantId, bool withRequestToPaymentSystem = true)
@@ -213,7 +213,7 @@ public class TariffService : ITariffService
             tariff = CalculateTariff(tenantId, tariff);
             Cache.Insert(key, tariff, DateTime.UtcNow.Add(GetCacheExpiration()));
 
-            if (BillingClient.Configured && withRequestToPaymentSystem)
+            if (_billingClient.Configured && withRequestToPaymentSystem)
             {
                 Task.Run(() =>
                   {
@@ -234,7 +234,7 @@ public class TariffService : ITariffService
                           asynctariff.DueDate = 9999 <= lastPayment.EndDate.Year ? DateTime.MaxValue : lastPayment.EndDate;
 
                           if (quota.ActiveUsers == -1
-                              && lastPayment.Quantity < ActiveUsersMin)
+                              && lastPayment.Quantity < _activeUsersMin)
                           {
                               throw new BillingException(string.Format("The portal {0} is paid for {1} users", tenantId, lastPayment.Quantity));
                           }
@@ -304,7 +304,7 @@ public class TariffService : ITariffService
 
     public void ClearCache(int tenantId)
     {
-        Notify.Publish(new TariffCacheItem { TenantId = tenantId }, ASC.Common.Caching.CacheNotifyAction.Remove);
+        Notify.Publish(new TariffCacheItem { TenantId = tenantId }, CacheNotifyAction.Remove);
     }
 
     public IEnumerable<PaymentInfo> GetPayments(int tenantId)
@@ -314,7 +314,7 @@ public class TariffService : ITariffService
         if (payments == null)
         {
             payments = new List<PaymentInfo>();
-            if (BillingClient.Configured)
+            if (_billingClient.Configured)
             {
                 try
                 {
@@ -354,10 +354,10 @@ public class TariffService : ITariffService
                       ? GetBillingUrlCacheKey(tenant.Value)
                       : string.Format($"notenant{(!string.IsNullOrEmpty(affiliateId) ? "_" + affiliateId : "")}");
         key += quota.Visible ? "" : "0";
-        if (!(Cache.Get<Dictionary<string, Tuple<Uri, Uri>>>(key) is IDictionary<string, Tuple<Uri, Uri>> urls))
+        if (Cache.Get<Dictionary<string, Tuple<Uri, Uri>>>(key) is not IDictionary<string, Tuple<Uri, Uri>> urls)
         {
             urls = new Dictionary<string, Tuple<Uri, Uri>>();
-            if (BillingClient.Configured)
+            if (_billingClient.Configured)
             {
                 try
                 {
@@ -645,7 +645,7 @@ public class TariffService : ITariffService
     {
         try
         {
-                return new BillingClient(Test, Configuration, HttpClientFactory);
+            return new BillingClient(Test, Configuration, _httpClientFactory);
         }
         catch (InvalidOperationException ioe)
         {

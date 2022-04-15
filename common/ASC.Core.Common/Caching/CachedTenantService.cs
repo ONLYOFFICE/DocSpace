@@ -30,7 +30,7 @@ namespace ASC.Core.Caching;
 class TenantServiceCache
 {
     private const string Key = "tenants";
-    private TimeSpan _cacheExpiration;
+    private readonly TimeSpan _cacheExpiration;
     internal readonly ICache Cache;
     internal readonly ICacheNotify<TenantCacheItem> CacheNotifyItem;
     internal readonly ICacheNotify<TenantSetting> CacheNotifySettings;
@@ -71,13 +71,11 @@ class TenantServiceCache
         return store;
     }
 
-
     internal class TenantStore
     {
         private readonly Dictionary<int, Tenant> _byId = new Dictionary<int, Tenant>();
         private readonly Dictionary<string, Tenant> _byDomain = new Dictionary<string, Tenant>();
         private readonly object _locker = new object();
-
 
         public Tenant Get(int id)
         {
@@ -195,12 +193,13 @@ class ConfigureCachedTenantService : IConfigureNamedOptions<CachedTenantService>
 [Scope]
 class CachedTenantService : ITenantService
 {
-    internal ITenantService Service;
+    internal ITenantService Service { get; set; }
+    internal ICacheNotify<TenantSetting> CacheNotifySettings { get; set; }
+    internal ICacheNotify<TenantCacheItem> CacheNotifyItem { get; set; }
+    internal TenantServiceCache TenantServiceCache { get; set; }
+
+    private readonly TimeSpan _settingsExpiration;
     private readonly ICache _cache;
-    internal ICacheNotify<TenantSetting> CacheNotifySettings;
-    internal ICacheNotify<TenantCacheItem> CacheNotifyItem;
-    private TimeSpan _settingsExpiration;
-    internal TenantServiceCache TenantServiceCache;
 
     public CachedTenantService()
     {
@@ -209,7 +208,7 @@ class CachedTenantService : ITenantService
 
     public CachedTenantService(DbTenantService service, TenantServiceCache tenantServiceCache, ICache cache) : this()
     {
-        this._cache = cache;
+        _cache = cache;
         Service = service ?? throw new ArgumentNullException(nameof(service));
         TenantServiceCache = tenantServiceCache;
         CacheNotifyItem = tenantServiceCache.CacheNotifyItem;
@@ -321,6 +320,6 @@ class CachedTenantService : ITenantService
         Service.SetTenantSettings(tenant, key, data);
         var cacheKey = string.Format("settings/{0}/{1}", tenant, key);
 
-        CacheNotifySettings.Publish(new TenantSetting { Key = cacheKey }, ASC.Common.Caching.CacheNotifyAction.Remove);
+        CacheNotifySettings.Publish(new TenantSetting { Key = cacheKey }, CacheNotifyAction.Remove);
     }
 }

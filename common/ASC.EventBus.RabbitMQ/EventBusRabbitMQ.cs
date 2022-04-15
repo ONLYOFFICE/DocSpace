@@ -1,4 +1,30 @@
-﻿using System.Collections.Concurrent;
+﻿// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
+
+using System.Collections.Concurrent;
 
 using ASC.EventBus.Exceptions;
 using ASC.EventBus.Serializers;
@@ -16,12 +42,12 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
     private readonly IEventBusSubscriptionsManager _subsManager;
     private readonly ILifetimeScope _autofac;
     private readonly int _retryCount;
-    private IIntegrationEventSerializer _serializer;
+    private readonly IIntegrationEventSerializer _serializer;
 
     private string _consumerTag;
     private IModel _consumerChannel;
     private string _queueName;
-    private string _deadLetterQueueName;
+    private readonly string _deadLetterQueueName;
 
     private static ConcurrentQueue<Guid> _rejectedEvents;
 
@@ -91,9 +117,9 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
             _logger.TraceFormat("Declaring RabbitMQ exchange to publish event: {EventId}", @event.Id);
 
             channel.ExchangeDeclare(exchange: EXCHANGE_NAME, type: "direct");
-                                   
+
             var body = _serializer.Serialize(@event);
-          
+
             policy.Execute(() =>
             {
                 var properties = channel.CreateBasicProperties();
@@ -233,9 +259,9 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
 
             if (eventArgs.Redelivered)
             {
-                if (_rejectedEvents.TryPeek(out Guid result) && result.Equals(ex.EventId))
+                if (_rejectedEvents.TryPeek(out var result) && result.Equals(ex.EventId))
                 {
-                    _rejectedEvents.TryDequeue(out Guid _);
+                    _rejectedEvents.TryDequeue(out var _);
                     _consumerChannel.BasicReject(eventArgs.DeliveryTag, requeue: false);
                 }
                 else
@@ -315,9 +341,12 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
 
     private void PreProcessEvent(IntegrationEvent @event)
     {
-        if (_rejectedEvents.Count == 0) return;
+        if (_rejectedEvents.Count == 0)
+        {
+            return;
+        }
 
-        if (_rejectedEvents.TryPeek(out Guid result) && result.Equals(@event.Id))
+        if (_rejectedEvents.TryPeek(out var result) && result.Equals(@event.Id))
         {
             @event.Redelivered = true;
         }
@@ -340,7 +369,11 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
                     if (subscription.IsDynamic)
                     {
                         var handler = scope.ResolveOptional(subscription.HandlerType) as IDynamicIntegrationEventHandler;
-                        if (handler == null) continue;
+                        if (handler == null)
+                        {
+                            continue;
+                        }
+
                         using dynamic eventData = @event;
                         await Task.Yield();
                         await handler.Handle(eventData);
@@ -348,7 +381,11 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
                     else
                     {
                         var handler = scope.ResolveOptional(subscription.HandlerType);
-                        if (handler == null) continue;
+                        if (handler == null)
+                        {
+                            continue;
+                        }
+
                         var eventType = _subsManager.GetEventTypeByName(eventName);
                         var concreteType = typeof(IIntegrationEventHandler<>).MakeGenericType(eventType);
 
