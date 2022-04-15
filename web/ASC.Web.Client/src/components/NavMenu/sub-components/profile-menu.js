@@ -65,21 +65,6 @@ export const LabelContainer = styled.div`
 
 LabelContainer.defaultProps = { theme: Base };
 
-export const TopArrow = styled.div`
-  position: absolute;
-  cursor: default;
-  top: -6px;
-  right: 16px;
-  width: 24px;
-  height: 6px;
-  box-sizing: border-box;
-  border-left: 12px solid transparent;
-  border-right: 12px solid transparent;
-  border-bottom: 6px solid ${(props) => props.theme.menuContainer.arrowTop};
-`;
-
-TopArrow.defaultProps = { theme: Base };
-
 class ProfileMenu extends React.Component {
   constructor(props) {
     super(props);
@@ -123,7 +108,6 @@ class ProfileMenu extends React.Component {
             <MainLabelContainer>{displayName}</MainLabelContainer>
             <LabelContainer>{email}</LabelContainer>
           </MenuContainer>
-          <TopArrow />
         </StyledProfileMenu>
         {children}
       </DropDown>
