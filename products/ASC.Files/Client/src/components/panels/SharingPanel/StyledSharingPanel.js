@@ -10,7 +10,10 @@ const StyledContent = styled.div`
   display: grid;
 
   grid-template-columns: 1fr;
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: ${(props) =>
+    props.isNotifyUsers
+      ? "53px calc(100% - 253px) 200px"
+      : "53px calc(100% - 162px) 108px"};
 `;
 
 const StyledHeaderContent = styled.div`
@@ -75,6 +78,22 @@ const StyledBodyContent = styled.div`
   display: flex;
   flex-direction: column;
   align-items: start;
+
+  .body-scroll-content-sharing-panel {
+    width: 100%;
+    height: ${(props) =>
+      props.externalLinkVisible
+        ? !props.externalLinkOpen
+          ? "calc(100% - 125px)"
+          : "calc(100% - 207px)"
+        : "calc(100% - 62px)"};
+    max-height: ${(props) =>
+      props.externalLinkVisible
+        ? !props.externalLinkOpen
+          ? "calc(100% - 125px)"
+          : "calc(100% - 207px)"
+        : "calc(100% - 62px)"};
+  }
 `;
 
 const StyledExternalLink = styled.div`
@@ -276,7 +295,11 @@ StyledItem.defaultProps = { theme: Base };
 
 const StyledFooterContent = styled.div`
   width: 100%;
+
+  min-height: 100px;
   border-top: ${(props) => props.theme.filesPanels.sharing.borderTop};
+
+  position: relative;
 
   box-sizing: border-box;
 

@@ -12,10 +12,10 @@ const Item = ({
   externalAccessOptions,
   onChangeItemAccess,
   onShowChangeOwnerPanel,
-  access,
   onRemoveUserClick,
   isMyId,
   isSeparator,
+  style,
 }) => {
   const onShowChangeOwnerPanelAction = React.useCallback(() => {
     onShowChangeOwnerPanel && onShowChangeOwnerPanel();
@@ -38,9 +38,9 @@ const Item = ({
   }
 
   return isSeparator ? (
-    <StyledItem isSeparator={isSeparator} />
+    <StyledItem style={style} isSeparator={isSeparator} />
   ) : (
-    <StyledItem>
+    <StyledItem style={style}>
       <div className="item__info-block">
         <Avatar
           className="info-block__avatar"
@@ -67,7 +67,7 @@ const Item = ({
           t={t}
           access={item.access}
           directionX="right"
-          directionY="bottom"
+          directionY="both"
           accessOptions={externalAccessOptions}
           onAccessChange={onChangeItemAccess}
           itemId={item.sharedTo.id}

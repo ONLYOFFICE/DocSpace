@@ -264,7 +264,6 @@ class SharingPanelComponent extends React.Component {
   };
 
   onRemoveUserItemClick = (e) => {
-    console.log(e);
     const id = e.currentTarget.dataset.for;
     const shareDataItems = this.state.shareDataItems.slice(0);
 
@@ -532,7 +531,7 @@ class SharingPanelComponent extends React.Component {
           visible={visible}
           withoutBodyScroll={true}
         >
-          <StyledContent>
+          <StyledContent isNotifyUsers={isNotifyUsers}>
             <Header
               t={t}
               uploadPanelVisible={uploadPanelVisible}
@@ -564,52 +563,6 @@ class SharingPanelComponent extends React.Component {
                 documentTitle={documentTitle}
               />
             )}
-            {/* <StyledBodyContent>
-              <Scrollbar ref={this.scrollRef} stype="mediumBlack">
-                {!isLoading ? (
-                  filteredShareDataItems.length > 0 ? (
-                    filteredShareDataItems.map((item, index) => (
-                      <SharingRow
-                        t={t}
-                        isPersonal={isPersonal}
-                        index={index}
-                        key={`${item.sharedTo.id}_${index}`}
-                        selection={selection}
-                        item={item}
-                        isMyId={isMyId}
-                        accessOptions={accessOptions}
-                        externalAccessOptions={externalAccessOptions}
-                        canShareOwnerChange={canShareOwnerChange}
-                        onChangeItemAccess={this.onChangeItemAccess}
-                        internalLink={internalLink}
-                        onRemoveUserClick={this.onRemoveUserItemClick}
-                        onShowEmbeddingPanel={this.onShowEmbeddingPanel}
-                        onToggleLink={this.onToggleLink}
-                        onShowChangeOwnerPanel={this.onShowChangeOwnerPanel}
-                        isLoading={isLoading}
-                        documentTitle={documentTitle}
-                        isInternalLinkOnly={false}
-                      />
-                    ))
-                  ) : (
-                    <SharingRow
-                      t={t}
-                      isPersonal={isPersonal}
-                      internalLink={internalLink}
-                      isInternalLinkOnly={true}
-                    />
-                  )
-                ) : (
-                  <div key="loader" className="panel-loader-wrapper">
-                    <Loader type="oval" size="16px" className="panel-loader" />
-                    <Text as="span">
-                      {`${t("Common:LoadingProcessing")} 
-                      ${t("Common:LoadingDescription")}`}
-                    </Text>
-                  </div>
-                )}
-              </Scrollbar>
-            </StyledBodyContent> */}
 
             <Footer
               t={t}

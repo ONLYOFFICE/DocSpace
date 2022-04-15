@@ -27,7 +27,6 @@ const AccessComboBox = (props) => {
     onAccessChange,
     t,
     theme,
-    arrowIconColor,
     disableLink,
     fixedDirection,
     canDelete,
@@ -257,7 +256,9 @@ const AccessComboBox = (props) => {
       directionY={directionY}
       disableIconClick={false}
       isDisabled={isDisabled}
-      isDefaultMode={false}
+      isDefaultMode={true}
+      ref={ref}
+      forwardRef={ref}
       fixedDirection={fixedDirection}
     >
       <ReactSVG
