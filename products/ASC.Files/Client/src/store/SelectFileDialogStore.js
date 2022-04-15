@@ -1,6 +1,6 @@
 import { makeObservable, action, observable } from "mobx";
 
-class SelectedFilesStore {
+class SelectFileDialogStore {
   folderId = null;
   fileInfo = null;
 
@@ -22,4 +22,4 @@ class SelectedFilesStore {
   };
 }
 
-export default new SelectedFilesStore();
+export default new SelectFileDialogStore();

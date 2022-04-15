@@ -517,6 +517,7 @@ const Dark = {
     minHeight: "47px",
     width: "100%",
     borderBottom: "#474747",
+    backgroundColor: globalColors.veryDarkGrey,
     minWidth: "160px",
     overflow: "hidden",
     textOverflow: "ellipsis",

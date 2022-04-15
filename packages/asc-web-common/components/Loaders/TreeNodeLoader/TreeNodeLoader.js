@@ -11,6 +11,7 @@ const TreeNodeLoader = ({
   foregroundOpacity,
   speed,
   animate,
+  withRectangle = false,
 }) => {
   return (
     <>
@@ -25,6 +26,23 @@ const TreeNodeLoader = ({
         speed={speed}
         animate={animate}
       />
+
+      {withRectangle && (
+        <RectangleLoader
+          title={title}
+          width="16"
+          height="16"
+          borderRadius={borderRadius}
+          backgroundColor={backgroundColor}
+          foregroundColor={foregroundColor}
+          backgroundOpacity={backgroundOpacity}
+          foregroundOpacity={foregroundOpacity}
+          speed={speed}
+          animate={animate}
+          className="tree-node-loader_additional-rectangle"
+        />
+      )}
+
       <RectangleLoader
         title={title}
         width="100%"

@@ -54,11 +54,11 @@ const StyledManualBackup = styled.div`
     button:first-child {
       width: 50%;
       max-width: 164px;
+      margin-right: 8px;
     }
     button:last-child {
       max-width: 164px;
       width: calc(50% - 8px);
-      margin-left: 8px;
     }
   }
 
@@ -433,6 +433,8 @@ const StyledBackupList = styled.div`
   }
   .backup-restore_empty-list {
     margin-top: 96px;
+    margin-left: 16px;
+    margin-right: 16px;
   }
 
   #backup-list_help {
@@ -458,7 +460,8 @@ const StyledBackupList = styled.div`
 
     .backup-list_footer {
       padding: 16px 16px 0 16px;
-      border-top: ${`1px solid ${borderColor}`};
+
+      ${(props) => !props.isEmpty && `border-top: 1px solid ${borderColor}`};
       margin-left: -16px;
       margin-right: -16px;
 
