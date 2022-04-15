@@ -78,7 +78,7 @@ class ChangeEmailDialogComponent extends React.Component {
     if (isEmailValid) {
       const sameEmailError = email.toLowerCase() === user.email.toLowerCase();
       if (sameEmailError) {
-        this.setState({ errorMessage: t("SameEmail"), hasError: true });
+        this.setState({ errorMessage: t("Common:SameEmail"), hasError: true });
       } else {
         this.setState({ errorMessage: "", hasError: false });
         this.onSendEmailChangeInstructions();
@@ -87,27 +87,27 @@ class ChangeEmailDialogComponent extends React.Component {
       const translatedErrors = emailErrors.map((errorKey) => {
         switch (errorKey) {
           case errorKeys.LocalDomain:
-            return t("LocalDomain");
+            return t("Common:LocalDomain");
           case errorKeys.IncorrectDomain:
-            return t("IncorrectDomain");
+            return t("Common:IncorrectDomain");
           case errorKeys.DomainIpAddress:
-            return t("DomainIpAddress");
+            return t("Common:DomainIpAddress");
           case errorKeys.PunycodeDomain:
-            return t("PunycodeDomain");
+            return t("Common:PunycodeDomain");
           case errorKeys.PunycodeLocalPart:
-            return t("PunycodeLocalPart");
+            return t("Common:PunycodeLocalPart");
           case errorKeys.IncorrectLocalPart:
-            return t("IncorrectLocalPart");
+            return t("Common:IncorrectLocalPart");
           case errorKeys.SpacesInLocalPart:
-            return t("SpacesInLocalPart");
+            return t("Common:SpacesInLocalPart");
           case errorKeys.MaxLengthExceeded:
-            return t("MaxLengthExceeded");
+            return t("Common:MaxLengthExceeded");
           case errorKeys.IncorrectEmail:
-            return t("IncorrectEmail");
+            return t("Common:IncorrectEmail");
           case errorKeys.ManyEmails:
-            return t("ManyEmails");
+            return t("Common:ManyEmails");
           case errorKeys.EmptyEmail:
-            return t("EmptyEmail");
+            return t("Common:EmptyEmail");
           default:
             throw new Error("Unknown translation key");
         }
@@ -164,7 +164,7 @@ class ChangeEmailDialogComponent extends React.Component {
           <Button
             key="SendBtn"
             label={t("Common:SendButton")}
-            size="medium"
+            size="small"
             primary={true}
             onClick={this.onValidateEmail}
             isLoading={isRequestRunning}

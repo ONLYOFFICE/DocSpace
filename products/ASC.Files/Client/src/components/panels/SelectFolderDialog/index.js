@@ -517,6 +517,7 @@ class SelectFolderModalDialog extends React.Component {
   render() {
     const {
       t,
+      theme,
       isPanelVisible,
       zIndex,
       onClose,
@@ -541,6 +542,7 @@ class SelectFolderModalDialog extends React.Component {
 
     return displayType === "aside" ? (
       <SelectFolderDialogAsideView
+        theme={theme}
         t={t}
         isPanelVisible={isPanelVisible}
         zIndex={zIndex}
@@ -567,6 +569,7 @@ class SelectFolderModalDialog extends React.Component {
     ) : (
       <SelectFolderDialogModalView
         t={t}
+        theme={theme}
         isPanelVisible={isPanelVisible}
         zIndex={zIndex}
         onClose={onClose}
@@ -633,12 +636,14 @@ const SelectFolderDialogWrapper = inject(
     selectedFolderStore,
     selectedFilesStore,
     filesStore,
+    auth,
   }) => {
     const { setSelectedNode, setExpandedPanelKeys } = treeFoldersStore;
     const { canCreate } = filesStore;
     const { setSelectedFolder, id } = selectedFolderStore;
     const { setFolderId, setFile } = selectedFilesStore;
     return {
+      theme: auth.settingsStore.theme,
       setSelectedFolder,
       setSelectedNode,
       canCreate,

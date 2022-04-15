@@ -169,6 +169,7 @@ class SelectFileDialogModalView extends React.Component {
       onClickSave,
       headerName,
       primaryButtonName,
+      theme,
     } = this.props;
 
     const { isLoading, isAvailable } = this.state;
@@ -177,11 +178,13 @@ class SelectFileDialogModalView extends React.Component {
 
     return (
       <StyledAsidePanel
+        theme={theme}
         visible={isPanelVisible}
         onMouseUp={this.onMouseEvent}
         onMouseDown={this.onMouseEvent}
       >
         <ModalDialog
+          theme={theme}
           visible={isPanelVisible}
           zIndex={zIndex}
           onClose={onClose}
@@ -192,18 +195,23 @@ class SelectFileDialogModalView extends React.Component {
           isLoading={isLoading}
           modalLoaderBodyHeight="277px"
         >
-          <ModalDialog.Header>
+          <ModalDialog.Header theme={theme}>
             {headerName ? headerName : t("SelectFile")}
           </ModalDialog.Header>
-          <ModalDialog.Body className="select-file_body-modal-dialog">
+          <ModalDialog.Body
+            theme={theme}
+            className="select-file_body-modal-dialog"
+          >
             <StyledSelectFilePanel
               isHeaderChildren={isHeaderChildren}
+              theme={theme}
               displayType="modal"
               noTreeSwitcher={this.noTreeSwitcher}
             >
               <div className="modal-dialog_body">
                 <div className="modal-dialog_tree-body">
                   <FolderTreeBody
+                    theme={theme}
                     expandedKeys={expandedKeys}
                     folderList={this.folderList}
                     onSelect={this.onSelect}
@@ -219,12 +227,13 @@ class SelectFileDialogModalView extends React.Component {
                 <div className="modal-dialog_files-body">
                   <>
                     {titleFilesList && (
-                      <Text className="modal-dialog-filter-title">
+                      <Text theme={theme} className="modal-dialog-filter-title">
                         {titleFilesList}
                       </Text>
                     )}
                     {selectedFolder && (
                       <FilesListBody
+                        theme={theme}
                         filesList={filesList}
                         onSelectFile={onSelectFile}
                         hasNextPage={hasNextPage}
@@ -243,20 +252,25 @@ class SelectFileDialogModalView extends React.Component {
               </div>
             </StyledSelectFilePanel>
           </ModalDialog.Body>
-          <ModalDialog.Footer>
-            <StyledSelectFilePanel isHeaderChildren={isHeaderChildren}>
+          <ModalDialog.Footer theme={theme}>
+            <StyledSelectFilePanel
+              theme={theme}
+              isHeaderChildren={isHeaderChildren}
+            >
               <div className="select-file-dialog-modal_buttons">
                 <Button
+                  theme={theme}
                   className="select-file-modal-dialog-buttons-save"
                   primary
-                  size="medium"
+                  size="small"
                   label={primaryButtonName}
                   onClick={onClickSave}
                   isDisabled={selectedFile.length === 0}
                 />
                 <Button
+                  theme={theme}
                   className="modal-dialog-button"
-                  size="medium"
+                  size="small"
                   label={t("Common:CancelButton")}
                   onClick={onClose}
                 />

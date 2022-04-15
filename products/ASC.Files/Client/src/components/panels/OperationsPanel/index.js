@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { withRouter } from "react-router";
 import ModalDialog from "@appserver/components/modal-dialog";
 import { withTranslation } from "react-i18next";
-import TreeFolders from "../../Article/Body/TreeFolders";
+import TreeFolders from "../../FolderTreeBody/TreeFolders";
 import { inject, observer } from "mobx-react";
 import toastr from "studio/toastr";
 import Button from "@appserver/components/button";
@@ -92,7 +92,6 @@ const OperationsPanelComponent = (props) => {
     let fileIds = [];
     let folderIds = [];
 
-
     for (let item of items) {
       if (item.fileExst || item.contentLength) {
         fileIds.push(item.id);
@@ -159,6 +158,7 @@ const OperationsPanelComponent = (props) => {
       </ModalDialog.Header>
       <ModalDialog.Body>
         <TreeFolders
+          isPanel={true}
           expandedPanelKeys={expandedKeys}
           data={operationsFolders}
           filter={filter}
@@ -179,7 +179,7 @@ const OperationsPanelComponent = (props) => {
               ? t("Translations:Copy")
               : t("Translations:Move")
           }
-          size="medium"
+          size="small"
           primary
           onClick={onSubmit}
           isLoading={isLoading}

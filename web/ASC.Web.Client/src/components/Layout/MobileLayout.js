@@ -2,6 +2,7 @@ import React, { Component, createRef } from "react";
 import { isTouchDevice } from "@appserver/components/utils/device";
 import Scrollbar from "@appserver/components/scrollbar";
 import { LayoutContextProvider } from "./context";
+import { getBannerAttribute } from "@appserver/components/utils/banner";
 import PropTypes from "prop-types";
 import {
   isTablet,
@@ -48,6 +49,7 @@ class MobileLayout extends Component {
 
   scrolledTheVerticalAxis = () => {
     const { prevScrollPosition, visibleContent } = this.state;
+    const { headerHeight } = getBannerAttribute();
 
     const currentScrollPosition =
       this.customScrollElm.scrollTop > 0 ? this.customScrollElm.scrollTop : 0;
@@ -68,7 +70,18 @@ class MobileLayout extends Component {
     if (
       (isSafari || isIOS) &&
       this.customScrollElm.scrollHeight - this.customScrollElm.clientHeight <
-        112
+        headerHeight
+    ) {
+      if (!this.state.visibleContent)
+        this.setState({
+          visibleContent: true,
+        });
+      return;
+    }
+
+    if (
+      prevScrollPosition - currentScrollPosition > 0 &&
+      currentScrollPosition < headerHeight
     ) {
       if (!this.state.visibleContent)
         this.setState({
@@ -79,7 +92,7 @@ class MobileLayout extends Component {
 
     if (
       (isSafari || isIOS) &&
-      Math.abs(currentScrollPosition - prevScrollPosition) <= 112 &&
+      Math.abs(currentScrollPosition - prevScrollPosition) <= headerHeight &&
       currentScrollPosition === 0
     ) {
       if (!this.state.visibleContent)
@@ -89,7 +102,7 @@ class MobileLayout extends Component {
       return;
     }
 
-    if (Math.abs(currentScrollPosition - prevScrollPosition) <= 112) {
+    if (Math.abs(currentScrollPosition - prevScrollPosition) <= headerHeight) {
       return;
     }
 

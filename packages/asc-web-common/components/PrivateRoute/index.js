@@ -2,7 +2,7 @@
 import React, { useEffect } from "react";
 import { Redirect, Route } from "react-router-dom";
 //import Loader from "@appserver/components/loader";
-//import PageLayout from "../PageLayout";
+//import Section from "../Section";
 // import Error401 from "studio/Error401";
 // import Error404 from "studio/Error404";
 import AppLoader from "../AppLoader";
@@ -95,11 +95,11 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     // if (!userLoaded) {
     //   console.log("PrivateRoute render Loader", rest);
     //   return (
-    //     <PageLayout>
-    //       <PageLayout.SectionBody>
+    //     <Section>
+    //       <Section.SectionBody>
     //         <Loader className="pageLoader" type="rombs" size="40px" />
-    //       </PageLayout.SectionBody>
-    //     </PageLayout>
+    //       </Section.SectionBody>
+    //     </Section>
     //   );
     // }
 

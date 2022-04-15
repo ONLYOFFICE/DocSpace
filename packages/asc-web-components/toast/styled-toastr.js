@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import IconButton from "../icon-button";
 import Base from "../themes/base";
 
 const IconWrapper = styled.div`
@@ -9,8 +10,26 @@ const IconWrapper = styled.div`
     min-width: ${(props) => props.theme.toastr.svg.minWidth};
     height: ${(props) => props.theme.toastr.svg.height};
     min-height: ${(props) => props.theme.toastr.svg.minHeight};
+  }
+
+  .toastr_success {
     path {
-      fill: ${(props) => props.theme.toastr.svg.color};
+      fill: ${(props) => props.theme.toastr.svg.color.success};
+    }
+  }
+  .toastr_error {
+    path {
+      fill: ${(props) => props.theme.toastr.svg.color.error};
+    }
+  }
+  .toastr_warning {
+    path {
+      fill: ${(props) => props.theme.toastr.svg.color.warning};
+    }
+  }
+  .toastr_info {
+    path {
+      fill: ${(props) => props.theme.toastr.svg.color.info};
     }
   }
 `;
@@ -24,7 +43,7 @@ const StyledDiv = styled.div`
     margin: ${(props) => props.theme.toastr.title.margin};
     margin-bottom: ${(props) => props.theme.toastr.title.marginBottom};
     line-height: ${(props) => props.theme.toastr.title.lineHeight};
-    color: ${(props) => props.theme.toastr.title.color};
+    color: ${(props) => props.theme.toastr.title.color[props.type]};
     font-size: ${(props) => props.theme.toastr.title.fontSize};
   }
 
@@ -48,4 +67,14 @@ const StyledCloseWrapper = styled.div`
   }
 `;
 
-export { StyledCloseWrapper, StyledDiv, IconWrapper };
+const StyledIconButton = styled(IconButton)`
+  svg {
+    path {
+      fill: ${(props) => props.theme.toastr.closeButtonColor};
+    }
+  }
+`;
+
+StyledIconButton.defaultProps = { theme: Base };
+
+export { StyledCloseWrapper, StyledDiv, IconWrapper, StyledIconButton };

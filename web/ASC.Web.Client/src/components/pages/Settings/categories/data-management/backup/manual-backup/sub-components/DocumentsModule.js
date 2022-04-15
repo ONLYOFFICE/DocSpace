@@ -62,7 +62,7 @@ class DocumentsModule extends React.Component {
   };
 
   render() {
-    const { isMaxProgress, t } = this.props;
+    const { isMaxProgress, t, buttonSize } = this.props;
     const {
       isPanelVisible,
       isStartCopy,
@@ -93,14 +93,13 @@ class DocumentsModule extends React.Component {
             onClick={this.onMakeCopy}
             primary
             isDisabled={isModuleDisabled}
-            size="medium"
+            size={buttonSize}
           />
           {!isMaxProgress && (
             <Button
               label={t("Common:CopyOperation") + "..."}
               isDisabled={true}
-              size="medium"
-              style={{ marginLeft: "8px" }}
+              size={buttonSize}
             />
           )}
         </div>

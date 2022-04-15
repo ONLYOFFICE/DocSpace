@@ -1,282 +1,123 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
-import Text from "@appserver/components/text";
-import Box from "@appserver/components/box";
-import toastr from "@appserver/components/toast/toastr";
-import Link from "@appserver/components/link";
-import ArrowRightIcon from "../../../../../../public/images/arrow.right.react.svg";
-import { setDocumentTitle } from "../../../../../helpers/utils";
-import commonIconsStyles from "@appserver/components/utils/common-icons-style";
-import { showLoader, hideLoader, combineUrl } from "@appserver/common/utils";
 import { inject, observer } from "mobx-react";
-import { AppServerConfig } from "@appserver/common/constants";
 import withCultureNames from "@appserver/common/hoc/withCultureNames";
-import commonSettingsStyles from "../../utils/commonSettingsStyles";
-const mapTimezonesToArray = (timezones) => {
-  return timezones.map((timezone) => {
-    return { key: timezone.id, label: timezone.displayName };
-  });
-};
-
-const findSelectedItemByKey = (items, selectedItemKey) => {
-  return items.find((item) => item.key === selectedItemKey);
-};
-
-const StyledArrowRightIcon = styled(ArrowRightIcon)`
-  ${commonIconsStyles}
-  path {
-    fill: ${(props) => props.color};
-  }
-`;
+import LanguageAndTimeZone from "./settingsCustomization/language-and-time-zone";
+import WelcomePageSettings from "./settingsCustomization/welcome-page-settings";
+import PortalRenaming from "./settingsCustomization/portal-renaming";
+import { isSmallTablet } from "@appserver/components/utils/device";
+import CustomizationNavbar from "./customization-navbar";
+import { Base } from "@appserver/components/themes";
+import { setDocumentTitle } from "../../../../../helpers/utils";
+import LoaderDescriptionCustomization from "./sub-components/loaderDescriptionCustomization";
 
 const StyledComponent = styled.div`
-  .margin-top {
-    margin-top: 20px;
-  }
-
-  .margin-left {
-    margin-left: 20px;
-  }
-
-  .settings-block {
-    margin-bottom: 70px;
-  }
-
-  .field-container-width {
-    max-width: 500px;
-  }
+  width: 100%;
 
   .combo-button-label {
     max-width: 100%;
   }
 
-  ${commonSettingsStyles}
+  .settings-block {
+    margin-bottom: 24px;
+  }
+
+  .category-description {
+    line-height: 20px;
+    color: #657077;
+    margin-bottom: 20px;
+    max-width: 700px;
+  }
+
+  .category-item-wrapper:not(:last-child) {
+    border-bottom: 1px solid #eceef1;
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+  }
+
+  .category-item-description {
+    color: ${(props) => props.theme.studio.settings.common.descriptionColor};
+    font-size: 12px;
+    max-width: 1024px;
+  }
+
+  .category-item-heading {
+    display: flex;
+    align-items: center;
+    padding-bottom: 16px;
+  }
+
+  .category-item-title {
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 22px;
+    margin-right: 4px;
+  }
+
+  @media (min-width: 600px) {
+    .settings-block {
+      max-width: 350px;
+      height: auto;
+    }
+  }
 `;
-class Customization extends React.Component {
-  constructor(props) {
-    super(props);
 
-    const {
-      portalLanguage,
-      portalTimeZoneId,
-      cultureNames,
-      rawTimezones,
-      /*organizationName,*/
-      t,
-    } = props;
-    const timezones = mapTimezonesToArray(rawTimezones);
+StyledComponent.defaultProps = { theme: Base };
 
+const Customization = ({ t, setIsLoadingArticleSettings }) => {
+  const [mobileView, setMobileView] = useState(true);
+  const [isLoadingCustomization, setIsLoadingCustomization] = useState(false);
+
+  const checkInnerWidth = () => {
+    if (isSmallTablet()) {
+      setMobileView(true);
+    } else {
+      setMobileView(false);
+    }
+  };
+
+  useEffect(() => {
     setDocumentTitle(t("Customization"));
+    //TODO: Add method to get the portal name
+    setIsLoadingArticleSettings(true);
+    setTimeout(() => {
+      setIsLoadingCustomization(false);
+      setIsLoadingArticleSettings(isLoadingCustomization);
+    }, 3000);
 
-    this.state = {
-      isLoading: false,
-      timezones,
-      timezone: findSelectedItemByKey(
-        timezones,
-        portalTimeZoneId || timezones[0]
-      ),
-      language: findSelectedItemByKey(
-        cultureNames,
-        portalLanguage || cultureNames[0]
-      ),
-      isLoadingGreetingSave: false,
-      isLoadingGreetingRestore: false,
-    };
-  }
+    window.addEventListener("resize", checkInnerWidth);
+    return () => window.removeEventListener("resize", checkInnerWidth);
+  }, []);
 
-  componentDidMount() {
-    const {
-      portalLanguage,
-      portalTimeZoneId,
-      getPortalTimezones,
-      cultureNames,
-    } = this.props;
+  const isMobile = !!(isSmallTablet() && mobileView);
 
-    const { timezones } = this.state;
-    showLoader();
-    if (!timezones.length && !cultureNames.length) {
-      getPortalTimezones().then(() => {
-        const timezones = mapTimezonesToArray(this.props.rawTimezones);
-        const timezone =
-          findSelectedItemByKey(timezones, portalTimeZoneId) || timezones[0];
-        const language =
-          findSelectedItemByKey(cultureNames, portalLanguage) ||
-          cultureNames[0];
+  return isMobile ? (
+    <CustomizationNavbar />
+  ) : (
+    <StyledComponent>
+      <div className="category-description">{`${t(
+        "Settings:CustomizationDescription"
+      )}`}</div>
+      {/* <LoaderDescriptionCustomization /> */}
+      <LanguageAndTimeZone
+        isLoadingCustomization={isLoadingCustomization}
+        isMobileView={isMobile}
+      />
+      <WelcomePageSettings isMobileView={isMobile} />
+      <PortalRenaming isMobileView={isMobile} />
+    </StyledComponent>
+  );
+};
 
-        this.setState({ language, timezones, timezone });
-      });
-    }
-
-    hideLoader();
-  }
-
-  componentDidUpdate(prevProps) {
-    const {
-      i18n,
-      language,
-      nameSchemaId,
-      getCurrentCustomSchema,
-      cultureNames,
-    } = this.props;
-
-    if (language !== prevProps.language) {
-      changeLanguage(i18n)
-        .then(() => {
-          const newLocaleSelectedLanguage =
-            findSelectedItemByKey(cultureNames, this.state.language.key) ||
-            cultureNames[0];
-
-          this.setState({
-            language: newLocaleSelectedLanguage,
-          });
-        })
-        //.then(() => getModules(clientStore.dispatch))
-        .then(() => getCurrentCustomSchema(nameSchemaId));
-    }
-  }
-
-  onLanguageSelect = (language) => {
-    this.setState({ language });
-  };
-
-  onTimezoneSelect = (timezone) => {
-    this.setState({ timezone });
-  };
-
-  onSaveLngTZSettings = () => {
-    const { setLanguageAndTime, i18n } = this.props;
-    this.setState({ isLoading: true }, function () {
-      setLanguageAndTime(this.state.language.key, this.state.timezone.key)
-        .then(() => changeLanguage(i18n))
-        .then((t) => toastr.success(t("SuccessfullySaveSettingsMessage")))
-        .catch((error) => toastr.error(error))
-        .finally(() => this.setState({ isLoading: false }));
-    });
-  };
-
-  onClickLink = (e) => {
-    e.preventDefault();
-    const { history } = this.props;
-    history.push(e.target.pathname);
-  };
-
-  render() {
-    const { t, helpUrlCommonSettings, customNames } = this.props;
-    const { language, timezone } = this.state;
-
-    return (
-      <StyledComponent>
-        <div className="category-item-wrapper">
-          <div className="category-item-heading">
-            <Link
-              className="inherit-title-link header"
-              onClick={this.onClickLink}
-              truncate={true}
-              href={combineUrl(
-                AppServerConfig.proxyURL,
-                "/settings/common/customization/language-and-time-zone"
-              )}
-            >
-              {t("StudioTimeLanguageSettings")}
-            </Link>
-            <StyledArrowRightIcon size="small" color="#333333" />
-          </div>
-          {language && language.label && timezone && timezone.label && (
-            <Text className="category-item-subheader" truncate={true}>
-              {`${language.label} / ${timezone.label}`}
-            </Text>
-          )}
-          <Text className="category-item-description">
-            {t("LanguageAndTimeZoneSettingsDescription")}
-          </Text>
-        </div>
-        <div className="category-item-wrapper">
-          <div className="category-item-heading">
-            <Link
-              truncate={true}
-              className="inherit-title-link header"
-              onClick={this.onClickLink}
-              href={combineUrl(
-                AppServerConfig.proxyURL,
-                "/settings/common/customization/custom-titles"
-              )}
-            >
-              {t("CustomTitles")}
-            </Link>
-            <StyledArrowRightIcon size="small" color="#333333" />
-          </div>
-          <Text className="category-item-description">
-            {t("CustomTitlesSettingsDescription")}
-          </Text>
-        </div>
-        <div className="category-item-wrapper">
-          <div className="category-item-heading">
-            <Link
-              truncate={true}
-              className="inherit-title-link header"
-              onClick={this.onClickLink}
-              href={combineUrl(
-                AppServerConfig.proxyURL,
-                "/settings/common/customization/team-template"
-              )}
-            >
-              {t("TeamTemplate")}
-            </Link>
-            <StyledArrowRightIcon size="small" color="#333333" />
-          </div>
-          <Box marginProp="4px 0 6px 0">
-            <Text fontWeight="600">{`${customNames.name}`}</Text>
-          </Box>
-          <Text className="category-item-description">
-            {t("TeamTemplateSettingsDescription")}
-          </Text>
-          <Box marginProp="16px 0 0 0">
-            <Link
-              color="#316DAA"
-              target="_blank"
-              isHovered={true}
-              href={helpUrlCommonSettings}
-            >
-              {t("Common:LearnMore")}
-            </Link>
-          </Box>
-        </div>
-      </StyledComponent>
-    );
-  }
-}
-
-export default inject(({ auth, setup }) => {
-  const {
-    culture,
-    timezone,
-    timezones,
-    nameSchemaId,
-    organizationName,
-    getCurrentCustomSchema,
-    getPortalTimezones,
-    helpUrlCommonSettings,
-    customNames,
-  } = auth.settingsStore;
-
-  const { setLanguageAndTime } = setup;
+export default inject(({ setup }) => {
+  const { setIsLoadingArticleSettings } = setup;
 
   return {
-    portalLanguage: culture,
-    language: culture,
-    portalTimeZoneId: timezone,
-    rawTimezones: timezones,
-    nameSchemaId,
-    organizationName,
-    setLanguageAndTime,
-    getPortalTimezones,
-    getCurrentCustomSchema,
-    helpUrlCommonSettings,
-    customNames,
+    setIsLoadingArticleSettings,
   };
 })(
   withCultureNames(
-    observer(withTranslation(["Settings", "Common"])(Customization))
+    withTranslation(["Settings", "Common"])(observer(Customization))
   )
 );

@@ -1,24 +1,26 @@
 import React, { useCallback, useState } from "react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import NavItem from "./nav-item";
 import ProfileActions from "./profile-actions";
 import { useTranslation } from "react-i18next";
-import { tablet } from "@appserver/components/utils/device";
+import { tablet, mobile } from "@appserver/components/utils/device";
 import { combineUrl, deleteCookie } from "@appserver/common/utils";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
 import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../../../package.json";
-import { isDesktop } from "react-device-detect";
+import { isDesktop, isMobile, isMobileOnly } from "react-device-detect";
 import AboutDialog from "../../pages/About/AboutDialog";
 import DebugInfoDialog from "../../pages/DebugInfo";
+import HeaderCatalogBurger from "./header-catalog-burger";
 
 const { proxyURL } = AppServerConfig;
 const homepage = config.homepage;
 
 const PROXY_HOMEPAGE_URL = combineUrl(proxyURL, homepage);
 const ABOUT_URL = combineUrl(PROXY_HOMEPAGE_URL, "/about");
+const SETTINGS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/settings");
 const PROFILE_SELF_URL = combineUrl(
   PROXY_HOMEPAGE_URL,
   "/products/people/view/@self"
@@ -55,6 +57,20 @@ const StyledNav = styled.nav`
   .icon-profile-menu {
     cursor: pointer;
   }
+
+  ${isMobile &&
+  css`
+    padding: 0 16px 0 16px !important;
+  `}
+
+  @media ${mobile} {
+    padding: 0 0 0 16px;
+  }
+
+  ${isMobileOnly &&
+  css`
+    padding: 0 0 0 16px !important;
+  `}
 `;
 const HeaderNav = ({
   history,
@@ -69,6 +85,9 @@ const HeaderNav = ({
   buildVersionInfo,
   debugInfo,
   settingsModule,
+
+  changeTheme,
+  isDarkMode,
 }) => {
   const { t } = useTranslation(["NavMenu", "Common", "About"]);
   const [visibleAboutDialog, setVisibleAboutDialog] = useState(false);
@@ -88,6 +107,7 @@ const HeaderNav = ({
     }
   }, []);
 
+  const onCloseDialog = () => setVisibleDialog(false);
   const onDebugClick = useCallback(() => {
     setVisibleDebugDialog(true);
   }, []);
@@ -140,6 +160,13 @@ const HeaderNav = ({
         }),
       },
       {
+        key: "DarkMode",
+        label: t("Common:DarkMode"),
+        onClick: changeTheme,
+        withToggle: true,
+        isChecked: isDarkMode,
+      },
+      {
         key: "AboutBtn",
         label: t("AboutCompanyTitle"),
         onClick: onAboutClick,
@@ -161,35 +188,23 @@ const HeaderNav = ({
     }
 
     return actions;
-  }, [onProfileClick, onAboutClick, onLogoutClick]);
-
+  }, [onProfileClick, onAboutClick, onLogoutClick, isDarkMode, changeTheme]);
   //console.log("HeaderNav render");
   return (
     <StyledNav className="profileMenuIcon hidingHeader">
-      {modules
-        .filter((m) => m.isolateMode)
-        .map((m) => (
-          <NavItem
-            key={m.id}
-            iconName={m.iconName}
-            iconUrl={m.iconUrl}
-            badgeNumber={m.notifications}
-            url={m.link}
-            onClick={(e) => {
-              history.push(m.link);
-              e.preventDefault();
-            }}
-            onBadgeClick={(e) => console.log(m.iconName + "Badge Clicked", e)}
-            noHover={true}
-          />
-        ))}
       {isAuthenticated && user ? (
-        <ProfileActions
-          userActions={getCurrentUserActions()}
-          user={user}
-          userIsUpdate={userIsUpdate}
-          setUserIsUpdate={setUserIsUpdate}
-        />
+        <>
+          <ProfileActions
+            userActions={getCurrentUserActions()}
+            user={user}
+            userIsUpdate={userIsUpdate}
+            setUserIsUpdate={setUserIsUpdate}
+          />
+          {/* <HeaderCatalogBurger
+            isProduct={currentProductId !== "home"}
+            onClick={toggleArticleOpen}
+          /> */}
+        </>
       ) : (
         <></>
       )}
@@ -221,6 +236,8 @@ HeaderNav.propTypes = {
   logout: PropTypes.func,
   isAuthenticated: PropTypes.bool,
   isLoaded: PropTypes.bool,
+  currentProductId: PropTypes.string,
+  toggleArticleOpen: PropTypes.func,
 };
 
 export default withRouter(
@@ -236,12 +253,19 @@ export default withRouter(
     const {
       defaultPage,
       personal: isPersonal,
+      version: versionAppServer,
+      currentProductId,
+      toggleArticleOpen,
       buildVersionInfo,
       debugInfo,
+      theme,
+      changeTheme,
     } = settingsStore;
     const { user, userIsUpdate, setUserIsUpdate } = userStore;
     const modules = auth.availableModules;
     const settingsModule = modules.find((module) => module.id === "settings");
+
+    const isDarkMode = !theme.isBase;
 
     return {
       isPersonal,
@@ -253,11 +277,16 @@ export default withRouter(
       modules,
       logout,
       peopleAvailable: modules.some((m) => m.appName === "people"),
+      versionAppServer,
       userIsUpdate,
       setUserIsUpdate,
+      currentProductId,
+      toggleArticleOpen,
       buildVersionInfo,
       debugInfo,
       settingsModule,
+      changeTheme,
+      isDarkMode,
     };
   })(observer(HeaderNav))
 );

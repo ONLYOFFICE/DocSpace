@@ -1,17 +1,5 @@
 ﻿{
-  "DomainIpAddress": "Verkkotunnuksia IP-osoitteina ei tueta",
   "EmailActivationDescription": "Aktivointiohjeet lähetetään syötettyyn sähköpostiosoitteeseen",
   "EmailChangeTitle": "Sähköpostin muuttaminen",
-  "EmptyEmail": "Yhtään sähköpostia ei ole jäsennelty",
-  "EnterEmail": "Anna uusi sähköpostiosoite",
-  "IncorrectDomain": "Virheellinen verkkotunnus",
-  "IncorrectEmail": "Virheellinen sähköposti",
-  "IncorrectLocalPart": "Virheellinen paikallinen osa",
-  "LocalDomain": "Paikallisia verkkotunnuksia ei tueta",
-  "ManyEmails": "Liian monta jäsenneltyä sähköpostia",
-  "MaxLengthExceeded": "Käyttäjänimen tai muun paikallisen osan enimmäispituus on 64 merkkiä.",
-  "PunycodeDomain": "Paikallisia verkkotunnuksia ei tueta",
-  "PunycodeLocalPart": "Punycode-verkkotunnuksia ei tueta",
-  "SameEmail": "Et voi käyttää samaa sähköpostiosoitetta",
-  "SpacesInLocalPart": "Paikallinen osa ei voi sisältää välilyöntejä"
+  "EnterEmail": "Anna uusi sähköpostiosoite"
 }

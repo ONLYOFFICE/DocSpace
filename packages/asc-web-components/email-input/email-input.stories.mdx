@@ -35,35 +35,18 @@ You can apply all properties of the `TextInput` component to the component
 
 Our validation algorithm based on [RFC 5322 email address parser](https://www.npmjs.com/package/email-addresses).
 
-For email validating you should use plain Object or EmailSettings with following settings:
-
-      const settings = {
-        allowDomainPunycode,
-        allowLocalPartPunycode,
-        allowDomainIp,
-        allowStrictLocalPart,
-        allowSpaces,
-        allowName,
-        allowLocalDomainName,
-      };
-
-### emailSettings prop
-
-Plain object:
+For email validating you should use instance of EmailSettings class with following settings:
 
 ```js
-const emailSettings = {
-  allowDomainPunycode: false,
-  allowLocalPartPunycode: false,
-  allowDomainIp: false,
-  allowStrictLocalPart: true,
-  allowSpaces: false,
-  allowName: false,
-  allowLocalDomainName: false,
-};
+const settings = new EmailSettings();
+settings.allowDomainPunycode = false;
+settings.allowLocalPartPunycode = false;
+settings.allowDomainIp = false;
+settings.allowStrictLocalPart = true;
+settings.allowSpaces = false;
+settings.allowName = false;
+settings.allowLocalDomainName = false;
 ```
-
-or instance of `EmailSettings` class:
 
 ```js
 import { EmailInput, utils } from "@appserver/components";

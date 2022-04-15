@@ -1,7 +1,6 @@
-import { createContext } from 'react'
+import { createContext } from "react";
 
-const LayoutContext = createContext({})
+const LayoutContext = createContext({});
 
-
-export const LayoutContextProvider = LayoutContext.Provider
-export const LayoutContextConsumer = LayoutContext.Consumer
+export const LayoutContextProvider = LayoutContext.Provider;
+export const LayoutContextConsumer = LayoutContext.Consumer;

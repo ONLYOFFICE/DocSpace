@@ -2,12 +2,18 @@ import api from "@appserver/common/api";
 import { makeAutoObservable } from "mobx";
 const { Filter } = api;
 import SelectionStore from "./SelectionStore";
+import authStore from "@appserver/common/store/AuthStore";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../package.json";
 
 class SettingsSetupStore {
   selectionStore = null;
+  authStore = null;
+
+  isLoadingArticleSettings = false;
+
+  isInit = false;
 
   common = {
     whiteLabel: {
@@ -45,8 +51,23 @@ class SettingsSetupStore {
 
   constructor() {
     this.selectionStore = new SelectionStore(this);
+    this.authStore = authStore;
     makeAutoObservable(this);
   }
+
+  initSettings = async () => {
+    if (this.isInit) return;
+    this.isInit = true;
+
+    if (authStore.isAuthenticated) {
+      await authStore.settingsStore.getPortalPasswordSettings();
+      await authStore.tfaStore.getTfaType();
+    }
+  };
+
+  setIsInit = (isInit) => {
+    this.isInit = isInit;
+  };
 
   setIsLoading = (isLoading) => {
     this.security.accessRight.isLoading = isLoading;
@@ -208,10 +229,51 @@ class SettingsSetupStore {
     this.setLogoUrls(Object.values(res));
   };
 
+  setWhiteLabelSettings = async (data) => {
+    const response = await api.settings.setWhiteLabelSettings(data);
+    return Promise.resolve(response);
+  };
+
+  restoreWhiteLabelSettings = async (isDefault) => {
+    const res = await api.settings.restoreWhiteLabelSettings(isDefault);
+  };
+
   setLanguageAndTime = async (lng, timeZoneID) => {
     const res = await api.settings.setLanguageAndTime(lng, timeZoneID);
     //console.log("setLanguageAndTime", res);
     //if (res) this.setPortalLanguageAndTime({ lng, timeZoneID });
+  };
+
+  setPortalRename = async (alias) => {
+    const res = await api.portal.setPortalRename(alias);
+  };
+
+  setDNSSettings = async (dnsName, enable) => {
+    const res = await api.settings.setMailDomainSettings(dnsName, enable);
+  };
+
+  setIpRestrictions = async (data) => {
+    const res = await api.settings.setIpRestrictions(data);
+  };
+
+  setIpRestrictionsEnable = async (data) => {
+    const res = await api.settings.setIpRestrictionsEnable(data);
+  };
+
+  setMessageSettings = async (turnOn) => {
+    const res = await api.settings.setMessageSettings(turnOn);
+  };
+
+  setCookieSettings = async (lifeTime) => {
+    const res = await api.settings.setCookieSettings(lifeTime);
+  };
+
+  setLifetimeAuditSettings = async (data) => {
+    const res = await api.settings.setLifetimeAuditSettings(data);
+  };
+
+  getAuditTrailReport = async () => {
+    const res = await api.settings.getAuditTrailReport();
   };
 
   setGreetingTitle = async (greetingTitle) => {
@@ -276,6 +338,10 @@ class SettingsSetupStore {
     const res = await api.settings.getCommonThirdPartyList();
 
     this.setCommonThirdPartyList(res);
+  };
+
+  setIsLoadingArticleSettings = (isLoading) => {
+    this.isLoadingArticleSettings = isLoading;
   };
 }
 

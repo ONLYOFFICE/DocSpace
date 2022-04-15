@@ -40,10 +40,6 @@ const Template = ({
     onValidateInput(e);
   };
 
-  const onCopyToClipboardHandler = (e) => {
-    onCopyToClipboard(`Data ${e} copied to clipboard`);
-  };
-
   return (
     <div style={{ height: "110px", display: "grid", gridGap: "24px" }}>
       <TextInput
@@ -62,7 +58,6 @@ const Template = ({
         tooltipPasswordLength={`${tooltipPasswordLength} ${settingMinLength}`}
         passwordSettings={fakeSettings}
         onValidateInput={onValidateInputHandler}
-        onCopyToClipboard={onCopyToClipboardHandler}
         tooltipOffsetLeft={150}
       />
     </div>
@@ -79,13 +74,8 @@ basic.args = {
   simpleView: false,
   inputName: "demoPasswordInput",
   emailInputName: "demoEmailInput",
-  hideNewPasswordButton: false,
   isDisableTooltip: false,
   isTextTooltipVisible: false,
-  clipActionResource: "Copy e-mail and password",
-  clipEmailResource: "E-mail: ",
-  clipPasswordResource: "Password: ",
-  clipCopiedResource: "Copied",
   tooltipPasswordTitle: "Password must contain:",
   tooltipPasswordLength: "minimum length: ",
   tooltipPasswordDigits: "digits",

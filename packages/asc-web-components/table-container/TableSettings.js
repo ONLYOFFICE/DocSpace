@@ -28,8 +28,6 @@ const TableSettings = ({ columns }) => {
       ref={ref}
     >
       <IconButton
-        color="#A3A9AE"
-        hoverColor="#657077"
         size={12}
         isFill
         iconName="/static/images/settings.desc.react.svg"

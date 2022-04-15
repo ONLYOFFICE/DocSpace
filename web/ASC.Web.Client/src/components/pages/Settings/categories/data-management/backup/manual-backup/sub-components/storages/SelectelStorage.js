@@ -52,7 +52,13 @@ class SelectelStorage extends React.Component {
 
   render() {
     const { formSettings, formErrors } = this.state;
-    const { t, isLoadingData, isMaxProgress, selectedStorage } = this.props;
+    const {
+      t,
+      isLoadingData,
+      isMaxProgress,
+      selectedStorage,
+      buttonSize,
+    } = this.props;
 
     return (
       <>
@@ -71,13 +77,13 @@ class SelectelStorage extends React.Component {
             onClick={this.onMakeCopy}
             primary
             isDisabled={!isMaxProgress || this.isDisabled}
-            size="medium"
+            size={buttonSize}
           />
           {!isMaxProgress && (
             <Button
               label={t("Common:CopyOperation") + "..."}
               isDisabled={true}
-              size="medium"
+              size={buttonSize}
               style={{ marginLeft: "8px" }}
             />
           )}

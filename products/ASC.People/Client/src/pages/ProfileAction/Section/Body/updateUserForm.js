@@ -50,12 +50,7 @@ import {
 import config from "../../../../../package.json";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
-
-const dialogsDataset = {
-  changeEmail: "changeEmail",
-  changePassword: "changePassword",
-  changePhone: "changePhone",
-};
+import { Base } from "@appserver/components/themes";
 
 const Table = styled.table`
   width: 100%;
@@ -64,8 +59,10 @@ const Table = styled.table`
 
 const Th = styled.th`
   padding: 11px 0 10px 0px;
-  border-top: 1px solid #eceef1;
+  border-top: ${(props) => props.theme.updateUserForm.borderTop};
 `;
+
+Th.defaultProps = { theme: Base };
 
 const Td = styled.td``;
 
@@ -185,13 +182,10 @@ class UpdateUserForm extends React.Component {
         defaultWidth: 0,
         defaultHeight: 0,
       },
-      dialogsVisible: {
-        [dialogsDataset.changePassword]: false,
-        [dialogsDataset.changePhone]: false,
-        [dialogsDataset.changeEmail]: false,
-        currentDialog: "",
-      },
       isMobile: isMobile || isTablet,
+      changeEmailDialogVisible: false,
+      changePhoneDialogVisible: false,
+      changePasswordDialogVisible: false,
     };
 
     //Set unique contacts id
@@ -202,6 +196,18 @@ class UpdateUserForm extends React.Component {
     });
 
     return newState;
+  };
+
+  onChangeEmailDialog = (visible) => {
+    this.setState({ changeEmailDialogVisible: visible });
+  };
+
+  onChangePhoneDialog = (visible) => {
+    this.setState({ changePhoneDialogVisible: visible });
+  };
+
+  onChangePasswordDialog = (visible) => {
+    this.setState({ changePasswordDialogVisible: visible });
   };
 
   setIsEdit = () => {
@@ -225,19 +231,6 @@ class UpdateUserForm extends React.Component {
 
     this.setState(stateCopy);
     this.setIsEdit();
-  };
-
-  toggleDialogsVisible = (e) => {
-    const stateCopy = Object.assign({}, {}, this.state.dialogsVisible);
-    const selectedDialog = e ? e.target.dataset.dialog : e;
-    if (selectedDialog) {
-      stateCopy[selectedDialog] = true;
-      stateCopy.currentDialog = selectedDialog;
-    } else {
-      stateCopy[stateCopy.currentDialog] = false;
-      stateCopy.currentDialog = "";
-    }
-    this.setState({ dialogsVisible: stateCopy });
   };
 
   onUserTypeChange = (event) => {
@@ -600,6 +593,7 @@ class UpdateUserForm extends React.Component {
       language,
       personal,
       isTabletView,
+      theme,
     } = this.props;
     const {
       guestCaption,
@@ -618,11 +612,19 @@ class UpdateUserForm extends React.Component {
     //TODO: inject guestsCaption in 'ProfileTypePopupHelper' key instead of hardcoded 'Guests'
     const tooltipTypeContent = (
       <>
-        <Text style={{ paddingBottom: 17 }} fontSize="13px">
+        <Text
+          style={{ paddingBottom: 17 }}
+          color={theme.updateUserForm.tooltipTextColor}
+          fontSize="13px"
+        >
           {t("ProfileTypePopupHelper")}
         </Text>
 
-        <Text fontSize="12px" as="div">
+        <Text
+          color={theme.updateUserForm.tooltipTextColor}
+          fontSize="12px"
+          as="div"
+        >
           <Table>
             <tbody>
               <tr>
@@ -751,11 +753,15 @@ class UpdateUserForm extends React.Component {
               inputValue={profile.email}
               buttonText={t("ChangeButton")}
               buttonIsDisabled={isLoading}
-              buttonOnClick={this.toggleDialogsVisible}
+              buttonOnClick={() => this.onChangeEmailDialog(true)}
               buttonTabIndex={1}
               helpButtonHeaderContent={t("Common:Mail")}
               tooltipContent={
-                <Text fontSize="13px" as="div">
+                <Text
+                  color={theme.updateUserForm.tooltipTextColor}
+                  fontSize="13px"
+                  as="div"
+                >
                   <Trans t={t} i18nKey="EmailPopupHelper" ns="ProfileAction">
                     The main e-mail is needed to restore access to the portal in
                     case of loss of the password and send notifications.
@@ -774,7 +780,6 @@ class UpdateUserForm extends React.Component {
                   </Trans>
                 </Text>
               }
-              dataDialog={dialogsDataset.changeEmail}
               maxLabelWidth={maxLabelWidth}
             />
             <TextChangeField
@@ -783,9 +788,8 @@ class UpdateUserForm extends React.Component {
               inputValue={"********"}
               buttonText={t("ChangeButton")}
               buttonIsDisabled={isLoading}
-              buttonOnClick={this.toggleDialogsVisible}
+              buttonOnClick={() => this.onChangePasswordDialog(true)}
               buttonTabIndex={2}
-              dataDialog={dialogsDataset.changePassword}
               maxLabelWidth={maxLabelWidth}
             />
             {/*TODO: uncomment this after added phone form */}
@@ -795,9 +799,8 @@ class UpdateUserForm extends React.Component {
               inputValue={profile.mobilePhone}
               buttonText={t("ChangeButton")}
               buttonIsDisabled={isLoading}
-              buttonOnClick={this.toggleDialogsVisible}
+              buttonOnClick={() => this.onChangePhoneDialog(true)}
               buttonTabIndex={3}
-              dataDialog={dialogsDataset.changePhone}
               maxLabelWidth={maxLabelWidth}
             /> */}
             <TextField
@@ -983,39 +986,39 @@ class UpdateUserForm extends React.Component {
             onClick={this.handleSubmit}
             primary
             isDisabled={isLoading}
-            size="big"
+            size="normal"
             tabIndex={11}
           />
           <Button
             label={t("Common:CancelButton")}
             onClick={this.onCancelHandler}
             isDisabled={isLoading}
-            size="big"
+            size="normal"
             style={{ marginLeft: "8px" }}
             tabIndex={12}
           />
         </div>
 
-        {dialogsVisible.changeEmail && (
+        {this.state.changeEmailDialogVisible && (
           <ChangeEmailDialog
-            visible={dialogsVisible.changeEmail}
-            onClose={this.toggleDialogsVisible}
+            visible={this.state.changeEmailDialogVisible}
+            onClose={() => this.onChangeEmailDialog(false)}
             user={profile}
           />
         )}
 
-        {dialogsVisible.changePassword && (
+        {this.state.changePasswordDialogVisible && (
           <ChangePasswordDialog
-            visible={dialogsVisible.changePassword}
-            onClose={this.toggleDialogsVisible}
+            visible={this.state.changePasswordDialogVisible}
+            onClose={() => this.onChangePasswordDialog(false)}
             email={profile.email}
           />
         )}
 
-        {dialogsVisible.changePhone && (
+        {this.state.changePhoneDialogVisible && (
           <ChangePhoneDialog
-            visible={dialogsVisible.changePhone}
-            onClose={this.toggleDialogsVisible}
+            visible={this.state.changePhoneDialogVisible}
+            onClose={() => this.onChangePhoneDialog(false)}
             user={profile}
           />
         )}
@@ -1026,6 +1029,7 @@ class UpdateUserForm extends React.Component {
 
 export default withRouter(
   inject(({ auth, peopleStore }) => ({
+    theme: auth.settingsStore.theme,
     customNames: auth.settingsStore.customNames,
     isAdmin: auth.isAdmin,
     language: auth.language,

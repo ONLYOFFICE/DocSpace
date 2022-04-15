@@ -63,6 +63,10 @@ namespace ASC.Web.Api.Controllers
         private LicenseReader LicenseReader { get; }
         private SetupInfo SetupInfo { get; }
         private DocumentServiceLicense DocumentServiceLicense { get; }
+        private CoreSettings CoreSettings { get; }
+        private PermissionContext PermissionContext { get; }
+        private ApiSystemHelper ApiSystemHelper { get; }
+        private StudioNotifyService StudioNotifyService { get; }
         private TenantExtra TenantExtra { get; set; }
         public ILog Log { get; }
         public IHttpClientFactory ClientFactory { get; }
@@ -111,6 +115,10 @@ namespace ASC.Web.Api.Controllers
             LicenseReader = licenseReader;
             SetupInfo = setupInfo;
             DocumentServiceLicense = documentServiceLicense;
+            CoreSettings = coreSettings;
+            PermissionContext = permissionContext;
+            ApiSystemHelper = apiSystemHelper;
+            StudioNotifyService = studioNotifyService;
             TenantExtra = tenantExtra;
             ClientFactory = clientFactory;
             _apiSystemHelper = apiSystemHelper;
@@ -139,7 +147,7 @@ namespace ASC.Web.Api.Controllers
                 throw new SecurityException("Method not available");
             }
 
-            return CommonLinkUtility.GetConfirmationUrl(string.Empty, ConfirmType.LinkInvite, (int)employeeType)
+            return CommonLinkUtility.GetConfirmationUrl(string.Empty, ConfirmType.LinkInvite, (int)employeeType, SecurityContext.CurrentAccount.ID)
                    + $"&emplType={employeeType:d}";
         }
 
