@@ -148,23 +148,12 @@ class FilesStore {
       );
     });
 
-    socketHelper.on("s:stop-edit-file", (id, data) => {
-      //console.log(`Call s:stop-edit-file (id=${id})`);
+    socketHelper.on("s:stop-edit-file", (id) => {
+      console.log(`Call s:stop-edit-file (id=${id})`);
       const foundIndex = this.files.findIndex((x) => x.id === id);
       if (foundIndex == -1) return;
 
-      let file;
-
-      if (data) {
-        file = JSON.parse(data);
-        console.log(`socket stop-edit-file (id=${id}`, file);
-      }
-
-      this.updateFileStatus(
-        foundIndex,
-        this.files[foundIndex].fileStatus & ~FileStatus.IsEditing,
-        file
-      );
+      this.getFileInfo(id);
     });
   }
 
@@ -644,8 +633,17 @@ class FilesStore {
   deselectFile = (file) => {
     const { id, parentId } = file;
     const isFileSelected = this.isFileSelected(id, parentId);
-    if (isFileSelected)
-      this.selection = this.selection.filter((x) => x.id !== id);
+    if (isFileSelected) {
+      let selectionIndex = this.selection.findIndex(
+        (x) => x.parentId === parentId && x.id === id
+      );
+
+      if (selectionIndex !== -1) {
+        this.selection = this.selection.filter(
+          (x, index) => index !== selectionIndex
+        );
+      }
+    }
   };
 
   removeOptions = (options, toRemoveArray) =>
@@ -1451,7 +1449,7 @@ class FilesStore {
 
       let isFolder = false;
       this.folders.map((x) => {
-        if (x.id === item.id) isFolder = true;
+        if (x.id === item.id && x.parentId === item.parentId) isFolder = true;
       });
 
       const { isRecycleBinFolder } = this.treeFoldersStore;
