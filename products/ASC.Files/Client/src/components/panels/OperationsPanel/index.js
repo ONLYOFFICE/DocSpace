@@ -1,19 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { withRouter } from "react-router";
-//import ModalDialog from "@appserver/components/modal-dialog";
 import { withTranslation } from "react-i18next";
-//import TreeFolders from "../../FolderTreeBody/TreeFolders";
 import { inject, observer } from "mobx-react";
 import toastr from "studio/toastr";
-//import Button from "@appserver/components/button";
-//import styled from "styled-components";
 import SelectFolderDialog from "../SelectFolderDialog";
 
-// const StyledModalDialog = styled(ModalDialog)`
-//   .modal-dialog-aside-footer {
-//     width: 90%;
-//   }
-// `;
 let operationData, fileWithConflicts, timerId;
 const OperationsPanelComponent = (props) => {
   const {
@@ -42,16 +33,9 @@ const OperationsPanelComponent = (props) => {
     clearActiveOperations,
   } = props;
 
-  //const zIndex = 310;
   const deleteAfter = false; // TODO: get from settings
 
-  //const expandedKeys = props.expandedKeys.map((item) => item.toString());
-
   const [isLoading, setIsLoading] = useState(false);
-  //const [selectedFolder, setSelectedFolder] = useState(null);
-  //const [folderTitle, setFolderTitle] = useState(null);
-  //const [providerKey, setProviderKey] = useState(null);
-
   const [intermediateHidden, setIntermediateHidden] = useState(false);
 
   useEffect(() => {
@@ -84,7 +68,7 @@ const OperationsPanelComponent = (props) => {
   };
 
   const onSubmit = (selectedFolder, folderTitle, providerKey) => {
-    if (+currentFolderId === +selectedFolder) {
+    if (currentFolderId === selectedFolder) {
       return;
     }
 
@@ -99,12 +83,6 @@ const OperationsPanelComponent = (props) => {
       }
     }
   };
-
-  // const onSelect = (folder, treeNode) => {
-  //   setProviderKey(treeNode.node.props.providerKey);
-  //   setFolderTitle(treeNode.node.props.title);
-  //   setSelectedFolder(isNaN(+folder[0]) ? folder[0] : +folder[0]);
-  // };
 
   const startOperation = async (isCopy, destFolderId, folderTitle) => {
     const isProviderFolder = selection.find((x) => !x.providerKey);
@@ -229,7 +207,6 @@ export default inject(
       isRecycleBinFolder,
       operationsFolders,
       setExpandedPanelKeys,
-      expandedPanelKeys,
     } = treeFoldersStore;
     const { setConflictDialogData, checkFileConflicts } = filesActionsStore;
     const { itemOperationToFolder, clearActiveOperations } = uploadDataStore;
@@ -254,9 +231,6 @@ export default inject(
     const provider = selections.find((x) => x.providerKey);
 
     return {
-      expandedKeys: expandedPanelKeys
-        ? expandedPanelKeys
-        : selectedFolderStore.pathParts,
       currentFolderId: selectedFolderStore.id,
       parentFolderId: selectedFolderStore.parentId,
       isRecycleBin: isRecycleBinFolder,
