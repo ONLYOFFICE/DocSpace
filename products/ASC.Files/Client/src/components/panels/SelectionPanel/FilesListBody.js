@@ -29,25 +29,51 @@ const FilesListBody = ({
 }) => {
   const { t } = useTranslation(["SelectFile", "Common"]);
   const [isLoading, setIsLoading] = useState(false);
+
   const filesListRef = useRef(null);
   if (page === 0) {
     countLoad = 0;
   }
 
   useEffect(() => {
+    return () => {
+      clearTimeout(timerId);
+      timerId = null;
+    };
+  }, []);
+  useEffect(() => {
     if (filesListRef && filesListRef.current) {
       filesListRef.current.resetloadMoreItemsCache(true);
     }
   }, [folderId, page, displayType]);
+
+  useEffect(() => {
+    if (isNextPageLoading) {
+      timerId = setTimeout(() => {
+        setIsLoading(true);
+      }, 500);
+    } else {
+      isLoading && setIsLoading(false);
+      clearTimeout(timerId);
+      timerId = null;
+    }
+  }, [isNextPageLoading]);
+
+  // If there are more items to be loaded then add an extra row to hold a loading indicator.
+  const itemCount = hasNextPage ? files.length + 1 : files.length;
+
   // Every row is loaded except for our loading indicator row.
   const isItemLoaded = useCallback(
     (index) => {
-      return !hasNextPage || index < files.length;
+      const isLoaded = !hasNextPage || index < files.length;
+      if (isLoaded) {
+        clearTimeout(timerId);
+        timerId = null;
+      }
+      return isLoaded;
     },
     [files, hasNextPage]
   );
-  // If there are more items to be loaded then add an extra row to hold a loading indicator.
-  const itemCount = hasNextPage ? files.length + 1 : files.length;
 
   const loadMoreItems = useCallback(() => {
     if (isNextPageLoading) return;
@@ -101,20 +127,10 @@ const FilesListBody = ({
 
       if (!isLoaded || !folderId) {
         if (countLoad >= 1) {
-          // timerId = setTimeout(() => {
-          //   setIsLoading(true);
-          // }, 500);
-
           return renderPageLoader(style);
         }
 
         return renderFirstLoader(style);
-      }
-
-      if (timerId) {
-        // setIsLoading(false);
-        // clearTimeout(timerId);
-        //timerId = null;
       }
 
       const item = files[index];
