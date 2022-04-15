@@ -41,7 +41,7 @@ const StyledHeader = styled.div`
 
   .cloud-settings-name {
     display: flex;
-    margin-left: 22px;
+    margin-left: 6px;
     width: 70%;
   }
 
@@ -68,7 +68,11 @@ const StyledRow = styled(Row)`
 `;
 
 const StyledRowContainer = styled(RowContainer)`
-  margin-right: -35px;
+  @media ${tablet} {
+    margin-right: -35px;
+  }
+
+  margin: 0;
 `;
 
 class ConnectClouds extends React.Component {
