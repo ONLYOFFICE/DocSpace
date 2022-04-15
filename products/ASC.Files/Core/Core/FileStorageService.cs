@@ -31,9 +31,8 @@ namespace ASC.Web.Files.Services.WCFService;
 [Scope]
 public class FileStorageService<T> //: IFileStorageService
 {
-    public CompressToArchive CompressToArchive { get; }
-
     private static readonly FileEntrySerializer _serializer = new FileEntrySerializer();
+    private readonly CompressToArchive _compressToArchive;
     private readonly Global _global;
     private readonly GlobalStore _globalStore;
     private readonly GlobalFolderHelper _globalFolderHelper;
@@ -164,7 +163,7 @@ public class FileStorageService<T> //: IFileStorageService
         _fileTracker = fileTracker;
         _thumbnailNotify = thumbnailNotify;
         _entryStatusManager = entryStatusManager;
-        CompressToArchive = compressToArchive;
+        _compressToArchive = compressToArchive;
     }
 
     public async Task<Folder<T>> GetFolderAsync(T folderId)
@@ -1185,10 +1184,10 @@ public class FileStorageService<T> //: IFileStorageService
         return new List<EditHistory>(await fileDao.GetEditHistoryAsync(_documentServiceHelper, file.Id));
     }
 
-    public async Task<Web.Core.Files.DocumentService.FileLink> GetPresignedUriAsync(T fileId)
+    public async Task<FileLink> GetPresignedUriAsync(T fileId)
     {
         var file = await GetFileAsync(fileId, -1);
-        var result = new Web.Core.Files.DocumentService.FileLink
+        var result = new FileLink
         {
             FileType = FileUtility.GetFileExtension(file.Title),
             Url = _documentServiceConnector.ReplaceCommunityAdress(_pathProvider.GetFileStreamUrl(file))
@@ -2478,7 +2477,7 @@ public class FileStorageService<T> //: IFileStorageService
     {
         _filesSettingsHelper.DownloadTarGz = set;
 
-        return CompressToArchive;
+        return _compressToArchive;
     }
 
     public bool ChangeDeleteConfrim(bool set)
@@ -2505,7 +2504,7 @@ public class FileStorageService<T> //: IFileStorageService
                 req.Files.Add(f);
             }
 
-            _thumbnailNotify.Publish(req, Common.Caching.CacheNotifyAction.Insert);
+            _thumbnailNotify.Publish(req, CacheNotifyAction.Insert);
         }
         catch (Exception e)
         {

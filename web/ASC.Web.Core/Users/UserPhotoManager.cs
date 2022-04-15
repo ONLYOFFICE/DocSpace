@@ -116,7 +116,7 @@ public class UserPhotoManagerCache
             {
                 var userId = new Guid(data.UserId);
                 _photofiles.GetOrAdd(data.Size, (r) => new ConcurrentDictionary<Guid, string>())[userId] = data.FileName;
-            }, Common.Caching.CacheNotifyAction.InsertOrUpdate);
+            }, CacheNotifyAction.InsertOrUpdate);
 
             _cacheNotify.Subscribe((data) =>
             {
@@ -132,7 +132,7 @@ public class UserPhotoManagerCache
                     SetCacheLoadedForTenant(false, data.TenantId);
                 }
                 catch { }
-            }, Common.Caching.CacheNotifyAction.Remove);
+            }, CacheNotifyAction.Remove);
         }
         catch (Exception)
         {
@@ -154,7 +154,7 @@ public class UserPhotoManagerCache
     {
         if (_cacheNotify != null)
         {
-            _cacheNotify.Publish(new UserPhotoManagerCacheItem { UserId = userID.ToString(), TenantId = tenantId }, Common.Caching.CacheNotifyAction.Remove);
+            _cacheNotify.Publish(new UserPhotoManagerCacheItem { UserId = userID.ToString(), TenantId = tenantId }, CacheNotifyAction.Remove);
         }
     }
 
@@ -162,7 +162,7 @@ public class UserPhotoManagerCache
     {
         if (_cacheNotify != null)
         {
-            _cacheNotify.Publish(new UserPhotoManagerCacheItem { UserId = userID.ToString(), Size = UserPhotoManager.ToCache(size), FileName = fileName, TenantId = tenantId }, Common.Caching.CacheNotifyAction.InsertOrUpdate);
+            _cacheNotify.Publish(new UserPhotoManagerCacheItem { UserId = userID.ToString(), Size = UserPhotoManager.ToCache(size), FileName = fileName, TenantId = tenantId }, CacheNotifyAction.InsertOrUpdate);
         }
     }
 
@@ -345,7 +345,7 @@ public class UserPhotoManager
     public bool UserHasAvatar(Guid userID)
     {
         var path = GetPhotoAbsoluteWebPath(userID);
-        var fileName = System.IO.Path.GetFileName(path);
+        var fileName = Path.GetFileName(path);
         return fileName != _defaultAvatar;
     }
 

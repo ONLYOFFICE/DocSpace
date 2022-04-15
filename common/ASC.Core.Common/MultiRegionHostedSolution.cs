@@ -254,7 +254,7 @@ public class MultiRegionHostedSolution
 
                         foreach (var r in q)
                         {
-                            var cs = new System.Configuration.ConnectionStringSettings(r.Region, r.ConnectionString, r.Provider);
+                            var cs = new ConnectionStringSettings(r.Region, r.ConnectionString, r.Provider);
 
                             if (!_regions.ContainsKey(string.Empty))
                             {

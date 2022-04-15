@@ -56,7 +56,7 @@ public abstract class FileOperation : DistributedTask
 
     protected FileOperation(IServiceProvider serviceProvider)
     {
-        _principal = serviceProvider.GetService<Microsoft.AspNetCore.Http.IHttpContextAccessor>()?.HttpContext?.User ?? Thread.CurrentPrincipal;
+        _principal = serviceProvider.GetService<IHttpContextAccessor>()?.HttpContext?.User ?? Thread.CurrentPrincipal;
         _culture = Thread.CurrentThread.CurrentCulture.Name;
 
         _taskInfo = new DistributedTask();

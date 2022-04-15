@@ -100,25 +100,25 @@ public class ThumbnailItem
 
 public class ThumbnailsData
 {
-    private Guid UserId { get; set; }
-    private UserPhotoManager UserPhotoManager { get; }
+    private readonly Guid _userId;
+    private readonly UserPhotoManager _userPhotoManager;
 
     public ThumbnailsData(Guid userId, UserPhotoManager userPhotoManager)
     {
-        UserId = userId;
-        UserPhotoManager = userPhotoManager;
+        _userId = userId;
+        _userPhotoManager = userPhotoManager;
     }
 
     public Image MainImgBitmap(out IImageFormat format)
     {
-        var img = UserPhotoManager.GetPhotoImage(UserId, out var imageFormat);
+        var img = _userPhotoManager.GetPhotoImage(_userId, out var imageFormat);
         format = imageFormat;
         return img;
     }
 
     public string MainImgUrl()
     {
-        return UserPhotoManager.GetPhotoAbsoluteWebPath(UserId);
+        return _userPhotoManager.GetPhotoAbsoluteWebPath(_userId);
     }
 
     public List<ThumbnailItem> ThumbnailList()
@@ -128,27 +128,27 @@ public class ThumbnailsData
                     new ThumbnailItem
                         {
                             Size = UserPhotoManager.RetinaFotoSize,
-                            ImgUrl = UserPhotoManager.GetRetinaPhotoURL(UserId)
+                            ImgUrl = _userPhotoManager.GetRetinaPhotoURL(_userId)
                         },
                     new ThumbnailItem
                         {
                             Size = UserPhotoManager.MaxFotoSize,
-                            ImgUrl = UserPhotoManager.GetMaxPhotoURL(UserId)
+                            ImgUrl = _userPhotoManager.GetMaxPhotoURL(_userId)
                         },
                     new ThumbnailItem
                         {
                             Size = UserPhotoManager.BigFotoSize,
-                            ImgUrl = UserPhotoManager.GetBigPhotoURL(UserId)
+                            ImgUrl = _userPhotoManager.GetBigPhotoURL(_userId)
                         },
                     new ThumbnailItem
                         {
                             Size = UserPhotoManager.MediumFotoSize,
-                            ImgUrl = UserPhotoManager.GetMediumPhotoURL(UserId)
+                            ImgUrl = _userPhotoManager.GetMediumPhotoURL(_userId)
                         },
                     new ThumbnailItem
                         {
                             Size = UserPhotoManager.SmallFotoSize,
-                            ImgUrl = UserPhotoManager.GetSmallPhotoURL(UserId)
+                            ImgUrl = _userPhotoManager.GetSmallPhotoURL(_userId)
                         }
             };
     }
@@ -158,7 +158,7 @@ public class ThumbnailsData
         foreach (var item in bitmaps)
         {
             using var mainImgBitmap = MainImgBitmap(out var format);
-            UserPhotoManager.SaveThumbnail(UserId, item.Image, format);
+            _userPhotoManager.SaveThumbnail(_userId, item.Image, format);
         }
     }
 }

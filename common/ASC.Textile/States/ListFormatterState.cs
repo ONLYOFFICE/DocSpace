@@ -161,6 +161,6 @@ public abstract class ListFormatterState : FormatterState
 
     protected string FormattedStylesAndAlignment(string element)
     {
-        return Blocks.BlockAttributesParser.ParseBlockAttributes(_alignInfo + _attsInfo, element);
+        return BlockAttributesParser.ParseBlockAttributes(_alignInfo + _attsInfo, element);
     }
 }

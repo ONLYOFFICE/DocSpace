@@ -83,7 +83,7 @@ internal class S3BackupStorage : IBackupStorage
 
         using var s3 = GetClient();
         using var response = s3.GetObjectAsync(request).Result;
-        response.WriteResponseStreamToFileAsync(targetLocalPath, true, new System.Threading.CancellationToken());
+        response.WriteResponseStreamToFileAsync(targetLocalPath, true, new CancellationToken());
     }
 
     public void Delete(string storagePath)

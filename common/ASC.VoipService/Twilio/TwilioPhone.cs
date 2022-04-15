@@ -53,7 +53,7 @@ public class TwilioPhone : VoipPhone
         {
             SendDigits = number.Length > 1 ? number[1] + "#" : string.Empty,
             Record = Settings.Caller.Record,
-            Url = new System.Uri(Settings.Connect(contactId: contactId))
+            Url = new Uri(Settings.Connect(contactId: contactId))
         }, _twilio);
 
         return new VoipCall { Id = call.Sid, NumberFrom = call.From, NumberTo = call.To };
@@ -66,7 +66,7 @@ public class TwilioPhone : VoipPhone
 
     public override VoipCall RedirectCall(string callId, string to)
     {
-        var call = CallResource.Update(callId, url: new System.Uri(Settings.Redirect(to)), method: HttpMethod.Post, client: _twilio);
+        var call = CallResource.Update(callId, url: new Uri(Settings.Redirect(to)), method: HttpMethod.Post, client: _twilio);
         return new VoipCall { Id = call.Sid, NumberTo = to };
     }
 
@@ -107,7 +107,7 @@ public class TwilioPhone : VoipPhone
         var calls = QueueCalls(queueId);
         if (calls.Contains(callId))
         {
-            MemberResource.Update(queueId, callId, new System.Uri(Settings.Dequeue(reject)), HttpMethod.Post,
+            MemberResource.Update(queueId, callId, new Uri(Settings.Dequeue(reject)), HttpMethod.Post,
                 client: _twilio);
         }
     }

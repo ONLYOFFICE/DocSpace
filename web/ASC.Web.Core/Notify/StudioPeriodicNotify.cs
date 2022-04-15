@@ -382,8 +382,8 @@ public class StudioPeriodicNotify
 
                         var owner = _userManager.GetUsers(tenant.OwnerId);
                         greenButtonUrl = _setupInfo.TeamlabSiteRedirect + "/remove-portal-feedback-form.aspx#" +
-                                  System.Web.HttpUtility.UrlEncode(Convert.ToBase64String(
-                                      System.Text.Encoding.UTF8.GetBytes("{\"firstname\":\"" + owner.FirstName +
+                                  HttpUtility.UrlEncode(Convert.ToBase64String(
+                                      Encoding.UTF8.GetBytes("{\"firstname\":\"" + owner.FirstName +
                                                                          "\",\"lastname\":\"" + owner.LastName +
                                                                          "\",\"alias\":\"" + tenant.Alias +
                                                                          "\",\"email\":\"" + owner.Email + "\"}")));
@@ -420,8 +420,8 @@ public class StudioPeriodicNotify
 
                         var owner = _userManager.GetUsers(tenant.OwnerId);
                         greenButtonUrl = _setupInfo.TeamlabSiteRedirect + "/remove-portal-feedback-form.aspx#" +
-                                  System.Web.HttpUtility.UrlEncode(Convert.ToBase64String(
-                                      System.Text.Encoding.UTF8.GetBytes("{\"firstname\":\"" + owner.FirstName +
+                                  HttpUtility.UrlEncode(Convert.ToBase64String(
+                                      Encoding.UTF8.GetBytes("{\"firstname\":\"" + owner.FirstName +
                                                                          "\",\"lastname\":\"" + owner.LastName +
                                                                          "\",\"alias\":\"" + tenant.Alias +
                                                                          "\",\"email\":\"" + owner.Email + "\"}")));

@@ -30,8 +30,8 @@ internal static class DateTimeExtension
 {
     public static int GetWeekOfYear(this DateTime date, DayOfWeek firstDayOfWeek)
     {
-        return System.Threading.Thread.CurrentThread.CurrentCulture.Calendar.GetWeekOfYear(date,
-                            System.Globalization.CalendarWeekRule.FirstFourDayWeek, firstDayOfWeek);
+        return Thread.CurrentThread.CurrentCulture.Calendar.GetWeekOfYear(date,
+                            CalendarWeekRule.FirstFourDayWeek, firstDayOfWeek);
     }
 
     public static int GetWeekOfYearCount(this DateTime date, DayOfWeek firstDayOfWeek)
@@ -41,12 +41,12 @@ internal static class DateTimeExtension
 
     public static int GetDaysInMonth(this DateTime date)
     {
-        return System.Threading.Thread.CurrentThread.CurrentCulture.Calendar.GetDaysInMonth(date.Year, date.Month);
+        return Thread.CurrentThread.CurrentCulture.Calendar.GetDaysInMonth(date.Year, date.Month);
     }
 
     public static int GetDaysInYear(this DateTime date)
     {
-        return System.Threading.Thread.CurrentThread.CurrentCulture.Calendar.GetDaysInYear(date.Year);
+        return Thread.CurrentThread.CurrentCulture.Calendar.GetDaysInYear(date.Year);
     }
 
     public static int GetDayOfWeekInMonth(this DateTime date)
@@ -1048,7 +1048,7 @@ public class RecurrenceRule : IICalFormatView, ICloneable
                     break;
 
                 case "byday":
-                    rr.ByDay = val.Split(',').Select(v => RecurrenceRule.WeekDay.ParseWeekDay(v)).ToArray();
+                    rr.ByDay = val.Split(',').Select(v => WeekDay.ParseWeekDay(v)).ToArray();
                     break;
 
                 case "bymonthday":
@@ -1072,7 +1072,7 @@ public class RecurrenceRule : IICalFormatView, ICloneable
                     break;
 
                 case "wkst":
-                    rr.WKST = RecurrenceRule.WeekDay.ParseWeekDay(val);
+                    rr.WKST = WeekDay.ParseWeekDay(val);
                     break;
 
                 case "exdates":

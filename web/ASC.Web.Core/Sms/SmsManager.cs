@@ -31,12 +31,12 @@ namespace ASC.Web.Studio.Core.SMS;
 [Scope]
 public class SmsManager
 {
-    private UserManager UserManager { get; }
-    private SecurityContext SecurityContext { get; }
-    private TenantManager TenantManager { get; }
-    private SmsKeyStorage SmsKeyStorage { get; }
-    private SmsSender SmsSender { get; }
-    private StudioSmsNotificationSettingsHelper StudioSmsNotificationSettingsHelper { get; }
+    private readonly UserManager _userManager;
+    private readonly SecurityContext _securityContext;
+    private readonly TenantManager _tenantManager;
+    private readonly SmsKeyStorage _smsKeyStorage;
+    private readonly SmsSender _smsSender;
+    private readonly StudioSmsNotificationSettingsHelper _studioSmsNotificationSettingsHelper;
 
     public SmsManager(
         UserManager userManager,
@@ -46,12 +46,12 @@ public class SmsManager
         SmsSender smsSender,
         StudioSmsNotificationSettingsHelper studioSmsNotificationSettingsHelper)
     {
-        UserManager = userManager;
-        SecurityContext = securityContext;
-        TenantManager = tenantManager;
-        SmsKeyStorage = smsKeyStorage;
-        SmsSender = smsSender;
-        StudioSmsNotificationSettingsHelper = studioSmsNotificationSettingsHelper;
+        _userManager = userManager;
+        _securityContext = securityContext;
+        _tenantManager = tenantManager;
+        _smsKeyStorage = smsKeyStorage;
+        _smsSender = smsSender;
+        _studioSmsNotificationSettingsHelper = studioSmsNotificationSettingsHelper;
     }
 
     public Task<string> SaveMobilePhoneAsync(UserInfo user, string mobilePhone)
@@ -80,24 +80,24 @@ public class SmsManager
     {
         user.MobilePhone = mobilePhone;
         user.MobilePhoneActivationStatus = MobilePhoneActivationStatus.NotActivated;
-        if (SecurityContext.IsAuthenticated)
+        if (_securityContext.IsAuthenticated)
         {
-            UserManager.SaveUserInfo(user);
+            _userManager.SaveUserInfo(user);
         }
         else
         {
             try
             {
-                SecurityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
-                UserManager.SaveUserInfo(user);
+                _securityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
+                _userManager.SaveUserInfo(user);
             }
             finally
             {
-                SecurityContext.Logout();
+                _securityContext.Logout();
             }
         }
 
-        if (StudioSmsNotificationSettingsHelper.Enable)
+        if (_studioSmsNotificationSettingsHelper.Enable)
         {
             await PutAuthCodeAsync(user, false);
         }
@@ -112,19 +112,19 @@ public class SmsManager
             throw new Exception(Resource.ErrorUserNotFound);
         }
 
-        if (!StudioSmsNotificationSettingsHelper.IsVisibleSettings() || !StudioSmsNotificationSettingsHelper.Enable)
+        if (!_studioSmsNotificationSettingsHelper.IsVisibleSettings() || !_studioSmsNotificationSettingsHelper.Enable)
         {
             throw new MethodAccessException();
         }
 
         var mobilePhone = SmsSender.GetPhoneValueDigits(user.MobilePhone);
 
-        if (SmsKeyStorage.ExistsKey(mobilePhone) && !again)
+        if (_smsKeyStorage.ExistsKey(mobilePhone) && !again)
         {
             return Task.CompletedTask;
         }
 
-        if (!SmsKeyStorage.GenerateKey(mobilePhone, out var key))
+        if (!_smsKeyStorage.GenerateKey(mobilePhone, out var key))
         {
             throw new Exception(Resource.SmsTooMuchError);
         }
@@ -134,16 +134,16 @@ public class SmsManager
 
     private async Task InternalPutAuthCodeAsync(string mobilePhone, string key)
     {
-        if (await SmsSender.SendSMSAsync(mobilePhone, string.Format(Resource.SmsAuthenticationMessageToUser, key)))
+        if (await _smsSender.SendSMSAsync(mobilePhone, string.Format(Resource.SmsAuthenticationMessageToUser, key)))
         {
-            TenantManager.SetTenantQuotaRow(new TenantQuotaRow { Tenant = TenantManager.GetCurrentTenant().Id, Path = "/sms", Counter = 1 }, true);
+            _tenantManager.SetTenantQuotaRow(new TenantQuotaRow { Tenant = _tenantManager.GetCurrentTenant().Id, Path = "/sms", Counter = 1 }, true);
         }
     }
 
     public void ValidateSmsCode(UserInfo user, string code)
     {
-        if (!StudioSmsNotificationSettingsHelper.IsVisibleSettings()
-            || !StudioSmsNotificationSettingsHelper.Enable)
+        if (!_studioSmsNotificationSettingsHelper.IsVisibleSettings()
+            || !_studioSmsNotificationSettingsHelper.Enable)
         {
             return;
         }
@@ -153,7 +153,7 @@ public class SmsManager
             throw new Exception(Resource.ErrorUserNotFound);
         }
 
-        var valid = SmsKeyStorage.ValidateKey(user.MobilePhone, code);
+        var valid = _smsKeyStorage.ValidateKey(user.MobilePhone, code);
         switch (valid)
         {
             case SmsKeyStorage.Result.Empty:
@@ -170,16 +170,16 @@ public class SmsManager
             throw new Exception("Error: " + valid);
         }
 
-        if (!SecurityContext.IsAuthenticated)
+        if (!_securityContext.IsAuthenticated)
         {
-            SecurityContext.AuthenticateMe(user.Id);
+            _securityContext.AuthenticateMe(user.Id);
             //CookiesManager.SetCookies(CookiesType.AuthKey, cookiesKey);
         }
 
         if (user.MobilePhoneActivationStatus == MobilePhoneActivationStatus.NotActivated)
         {
             user.MobilePhoneActivationStatus = MobilePhoneActivationStatus.Activated;
-            UserManager.SaveUserInfo(user);
+            _userManager.SaveUserInfo(user);
         }
     }
 }

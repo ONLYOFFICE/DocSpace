@@ -26,7 +26,7 @@
 
 namespace ASC.Web.Core;
 
-[WebZoneAttribute(WebZoneType.Nowhere)]
+[WebZone(WebZoneType.Nowhere)]
 public interface IModule : IWebItem
 {
     Guid ProjectId { get; }

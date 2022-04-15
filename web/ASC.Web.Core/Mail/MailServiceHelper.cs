@@ -30,18 +30,19 @@ namespace ASC.Web.Core.Mail;
 
 public class MailServiceHelperStorage
 {
-    private ICacheNotify<MailServiceHelperCache> CacheNotify { get; }
-    public ICache Cache { get; }
+    private readonly ICacheNotify<MailServiceHelperCache> _cacheNotify;
+    private readonly ICache _cache;
+
     public MailServiceHelperStorage(ICacheNotify<MailServiceHelperCache> cacheNotify, ICache cache)
     {
-        Cache = cache;
-        CacheNotify = cacheNotify;
-        CacheNotify.Subscribe(r => Cache.Remove(r.Key), Common.Caching.CacheNotifyAction.Remove);
+        _cache = cache;
+        _cacheNotify = cacheNotify;
+        _cacheNotify.Subscribe(r => _cache.Remove(r.Key), CacheNotifyAction.Remove);
     }
 
     public void Remove()
     {
-        CacheNotify.Publish(new MailServiceHelperCache() { Key = MailServiceHelper.CacheKey }, Common.Caching.CacheNotifyAction.Remove);
+        _cacheNotify.Publish(new MailServiceHelperCache() { Key = MailServiceHelper.CacheKey }, CacheNotifyAction.Remove);
     }
 }
 
@@ -58,15 +59,16 @@ public class MailServiceHelper
 
     internal const string CacheKey = "mailserverinfo";
 
-    private UserManager UserManager { get; }
-    private AuthContext AuthContext { get; }
-    private IConfiguration Configuration { get; }
-    private CoreBaseSettings CoreBaseSettings { get; }
-    public MailServiceHelperStorage MailServiceHelperStorage { get; }
-    private EFLoggerFactory LoggerFactory { get; }
-    private Lazy<MailDbContext> LazyMailDbContext { get; }
-    private MailDbContext MailDbContext { get => LazyMailDbContext.Value; }
-    private ICache Cache { get; }
+    private readonly UserManager _userManager;
+    private readonly AuthContext _authContext;
+    private readonly IConfiguration _configuration;
+    private readonly CoreBaseSettings _coreBaseSettings;
+    private readonly MailServiceHelperStorage _mailServiceHelperStorage;
+    private readonly EFLoggerFactory _loggerFactory;
+    private readonly Lazy<MailDbContext> _lazyMailDbContext;
+    private readonly ICache _cache;
+
+    private MailDbContext MailDbContext { get => _lazyMailDbContext.Value; }
 
     public MailServiceHelper(
         UserManager userManager,
@@ -75,17 +77,18 @@ public class MailServiceHelper
         CoreBaseSettings coreBaseSettings,
         MailServiceHelperStorage mailServiceHelperStorage,
         DbContextManager<MailDbContext> dbContext,
-        EFLoggerFactory loggerFactory)
+        EFLoggerFactory loggerFactory,
+        ICache cache)
     {
         ConnectionStringFormat = GetConnectionStringFormat(configuration);
-        UserManager = userManager;
-        AuthContext = authContext;
-        Configuration = configuration;
-        CoreBaseSettings = coreBaseSettings;
-        MailServiceHelperStorage = mailServiceHelperStorage;
-        LoggerFactory = loggerFactory;
-        LazyMailDbContext = new Lazy<MailDbContext>(() => dbContext.Get("webstudio"));
-        Cache = mailServiceHelperStorage.Cache;
+        _userManager = userManager;
+        _authContext = authContext;
+        _configuration = configuration;
+        _coreBaseSettings = coreBaseSettings;
+        _mailServiceHelperStorage = mailServiceHelperStorage;
+        _loggerFactory = loggerFactory;
+        _lazyMailDbContext = new Lazy<MailDbContext>(() => dbContext.Get("webstudio"));
+        _cache = cache;
         DefaultDatabase = GetDefaultDatabase();
     }
 
@@ -99,18 +102,18 @@ public class MailServiceHelper
 
     private string GetDefaultDatabase()
     {
-        var value = Configuration["mail:database-name"];
+        var value = _configuration["mail:database-name"];
         return string.IsNullOrEmpty(value) ? "onlyoffice_mailserver" : value;
     }
 
     private void DemandPermission()
     {
-        if (!CoreBaseSettings.Standalone)
+        if (!_coreBaseSettings.Standalone)
         {
             throw new NotSupportedException("Method for server edition only.");
         }
 
-        if (!UserManager.IsUserInGroup(AuthContext.CurrentAccount.ID, Constants.GroupAdmin.ID))
+        if (!_userManager.IsUserInGroup(_authContext.CurrentAccount.ID, Constants.GroupAdmin.ID))
         {
             throw new SecurityException();
         }
@@ -132,7 +135,7 @@ public class MailServiceHelper
 
     private MailServerInfo InnerGetMailServerInfo()
     {
-        var cachedData = Cache.Get<Tuple<MailServerInfo>>(CacheKey);
+        var cachedData = _cache.Get<Tuple<MailServerInfo>>(CacheKey);
 
         if (cachedData != null)
         {
@@ -144,9 +147,9 @@ public class MailServiceHelper
         cachedData =
             new Tuple<MailServerInfo>(string.IsNullOrEmpty(value)
                                             ? null
-                                            : Newtonsoft.Json.JsonConvert.DeserializeObject<MailServerInfo>(value));
+                                            : JsonConvert.DeserializeObject<MailServerInfo>(value));
 
-        Cache.Insert(CacheKey, cachedData, DateTime.UtcNow.Add(TimeSpan.FromDays(1)));
+        _cache.Insert(CacheKey, cachedData, DateTime.UtcNow.Add(TimeSpan.FromDays(1)));
 
         return cachedData.Item1;
     }
@@ -160,7 +163,7 @@ public class MailServiceHelper
         var options = dbContextOptionsBuilder
             //.UseMySql(connectionString)
             .UseNpgsql(connectionString)
-            .UseLoggerFactory(LoggerFactory)
+            .UseLoggerFactory(_loggerFactory)
             .Options;
 
         using var mailDbContext = new MailDbContext(options);
@@ -180,7 +183,7 @@ public class MailServiceHelper
         var options = dbContextOptionsBuilder
             //.UseMySql(connectionString)
             .UseNpgsql(connectionString)
-            .UseLoggerFactory(LoggerFactory)
+            .UseLoggerFactory(_loggerFactory)
             .Options;
 
         using var mailDbContext = new MailDbContext(options);
@@ -259,7 +262,7 @@ public class MailServiceHelper
 
         var mailServerData = MailDbContext.ServerServer.FirstOrDefault();
 
-        var connectionString = Newtonsoft.Json.JsonConvert.SerializeObject(mailServer);
+        var connectionString = JsonConvert.SerializeObject(mailServer);
 
         var server = new ServerServer
         {
@@ -311,7 +314,7 @@ public class MailServiceHelper
 
         transaction.Commit();
 
-        MailServiceHelperStorage.Remove();
+        _mailServiceHelperStorage.Remove();
     }
 }
 

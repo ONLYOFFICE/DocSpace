@@ -41,9 +41,9 @@ public class ThirdPartyAppHandler
 [Scope]
 public class ThirdPartyAppHandlerService
 {
-    private AuthContext AuthContext { get; }
-    private CommonLinkUtility CommonLinkUtility { get; }
-    private ILog Log { get; set; }
+    private readonly AuthContext _authContext;
+    private readonly CommonLinkUtility _commonLinkUtility;
+    private readonly ILog _log;
 
     public string HandlerPath { get; set; }
 
@@ -53,22 +53,22 @@ public class ThirdPartyAppHandlerService
         BaseCommonLinkUtility baseCommonLinkUtility,
         CommonLinkUtility commonLinkUtility)
     {
-        AuthContext = authContext;
-        CommonLinkUtility = commonLinkUtility;
-        Log = optionsMonitor.CurrentValue;
+        _authContext = authContext;
+        _commonLinkUtility = commonLinkUtility;
+        _log = optionsMonitor.CurrentValue;
         HandlerPath = baseCommonLinkUtility.ToAbsolute("~/thirdpartyapp");
     }
 
     public async Task InvokeAsync(HttpContext context)
     {
-        Log.Debug("ThirdPartyApp: handler request - " + context.Request.Url());
+        _log.Debug("ThirdPartyApp: handler request - " + context.Request.Url());
 
         var message = string.Empty;
 
         try
         {
             var app = ThirdPartySelector.GetApp(context.Request.Query[ThirdPartySelector.AppAttr]);
-            Log.Debug("ThirdPartyApp: app - " + app);
+            _log.Debug("ThirdPartyApp: app - " + app);
 
             if (await app.RequestAsync(context))
             {
@@ -82,7 +82,7 @@ public class ThirdPartyAppHandlerService
         }
         catch (Exception e)
         {
-            Log.Error("ThirdPartyApp", e);
+            _log.Error("ThirdPartyApp", e);
             message = e.Message;
         }
 
@@ -94,10 +94,10 @@ public class ThirdPartyAppHandlerService
             }
         }
 
-        var redirectUrl = CommonLinkUtility.GetDefault();
+        var redirectUrl = _commonLinkUtility.GetDefault();
         if (!string.IsNullOrEmpty(message))
         {
-            redirectUrl += AuthContext.IsAuthenticated ? "#error/" : "?m=";
+            redirectUrl += _authContext.IsAuthenticated ? "#error/" : "?m=";
             redirectUrl += HttpUtility.UrlEncode(message);
         }
         context.Response.Redirect(redirectUrl, true);

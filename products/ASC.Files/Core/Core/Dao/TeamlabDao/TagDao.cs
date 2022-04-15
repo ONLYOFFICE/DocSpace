@@ -501,7 +501,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
     }
 
     static readonly Func<FilesDbContext, int, Guid, List<string>, IAsyncEnumerable<TagLinkData>> _newTagsForFilesQuery =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery((EF.FilesDbContext ctx, int tenantId, Guid subject, List<string> where) =>
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery((FilesDbContext ctx, int tenantId, Guid subject, List<string> where) =>
         ctx.Tag
         .AsNoTracking()
         .Where(r => r.TenantId == tenantId)
@@ -522,7 +522,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
         );
 
     static readonly Func<FilesDbContext, int, Guid, List<string>, IAsyncEnumerable<TagLinkData>> _newTagsForFoldersQuery =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery((EF.FilesDbContext ctx, int tenantId, Guid subject, List<string> monitorFolderIdsStrings) =>
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery((FilesDbContext ctx, int tenantId, Guid subject, List<string> monitorFolderIdsStrings) =>
         ctx.Tag
         .AsNoTracking()
         .Where(r => r.TenantId == tenantId)
@@ -539,7 +539,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
         );
 
     static readonly Func<FilesDbContext, int, Guid, FolderType, IAsyncEnumerable<TagLinkData>> _tmpShareFileTagsQuery =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery((EF.FilesDbContext ctx, int tenantId, Guid subject, FolderType folderType) =>
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery((FilesDbContext ctx, int tenantId, Guid subject, FolderType folderType) =>
         ctx.Tag
         .AsNoTracking()
         .Where(r => r.TenantId == tenantId)
@@ -571,7 +571,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
         );
 
     static readonly Func<FilesDbContext, int, Guid, FolderType, IAsyncEnumerable<TagLinkData>> _tmpShareFolderTagsQuery =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery((EF.FilesDbContext ctx, int tenantId, Guid subject, FolderType folderType) =>
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery((FilesDbContext ctx, int tenantId, Guid subject, FolderType folderType) =>
             ctx.Tag
             .AsNoTracking()
             .Where(r => r.TenantId == tenantId)
@@ -604,7 +604,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
             );
 
     static readonly Func<FilesDbContext, int, Guid, IAsyncEnumerable<TagLinkData>> _tmpShareSboxTagsQuery =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery((EF.FilesDbContext ctx, int tenantId, Guid subject) =>
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery((FilesDbContext ctx, int tenantId, Guid subject) =>
             ctx.Tag
             .AsNoTracking()
             .Where(r => r.TenantId == tenantId)
@@ -634,7 +634,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
             );
 
     static readonly Func<FilesDbContext, int, Guid, IAsyncEnumerable<TagLinkData>> _projectsQuery =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery((EF.FilesDbContext ctx, int tenantId, Guid subject) =>
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery((FilesDbContext ctx, int tenantId, Guid subject) =>
             ctx.Tag
             .AsNoTracking()
             .Where(r => r.TenantId == tenantId)
@@ -655,7 +655,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
             );
 
     static readonly Func<FilesDbContext, int, Guid, List<string>, IAsyncEnumerable<TagLinkData>> _newTagsForSBoxQuery =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery((EF.FilesDbContext ctx, int tenantId, Guid subject, List<string> thirdpartyFolderIds) =>
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery((FilesDbContext ctx, int tenantId, Guid subject, List<string> thirdpartyFolderIds) =>
             ctx.Tag
             .AsNoTracking()
             .Where(r => r.TenantId == tenantId)
@@ -676,14 +676,14 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
                     .Distinct()
             );
 
-    static readonly Func<FilesDbContext, List<int>, bool, IAsyncEnumerable<int>> _getFolderQuery = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery((EF.FilesDbContext ctx, List<int> monitorFolderIdsInt, bool deepSearch) =>
+    static readonly Func<FilesDbContext, List<int>, bool, IAsyncEnumerable<int>> _getFolderQuery = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery((FilesDbContext ctx, List<int> monitorFolderIdsInt, bool deepSearch) =>
           ctx.Tree
               .AsNoTracking()
               .Where(r => monitorFolderIdsInt.Contains(r.ParentId))
               .Where(r => deepSearch || r.Level == 1)
               .Select(r => r.FolderId));
 
-    static readonly Func<FilesDbContext, int, FolderType, Guid, IAsyncEnumerable<int>> _getThirdpartyAccountQuery = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery((EF.FilesDbContext ctx, int tenantId, FolderType folderType, Guid subject) =>
+    static readonly Func<FilesDbContext, int, FolderType, Guid, IAsyncEnumerable<int>> _getThirdpartyAccountQuery = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery((FilesDbContext ctx, int tenantId, FolderType folderType, Guid subject) =>
           ctx.ThirdpartyAccount
                 .Where(r => r.TenantId == tenantId)
                 .Where(r => r.FolderType == folderType)

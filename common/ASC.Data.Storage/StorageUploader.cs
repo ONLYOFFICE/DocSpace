@@ -216,7 +216,7 @@ public class MigrateOperation : DistributedTaskProgress
             Error = Exception.ToString(),
             IsCompleted = IsCompleted
         },
-            Common.Caching.CacheNotifyAction.Insert);
+            CacheNotifyAction.Insert);
     }
 }
 

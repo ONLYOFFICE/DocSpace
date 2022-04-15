@@ -28,9 +28,11 @@ namespace ASC.Web.Studio.Core.Notify;
 
 internal class StudioSubscriptionManager : ISubscriptionManager
 {
+    private readonly StudioNotifyHelper _studioNotifyHelper;
+
     public StudioSubscriptionManager(StudioNotifyHelper studioNotifyHelper)
     {
-        StudioNotifyHelper = studioNotifyHelper;
+        _studioNotifyHelper = studioNotifyHelper;
     }
 
     #region ISubscriptionManager Members
@@ -68,10 +70,8 @@ internal class StudioSubscriptionManager : ISubscriptionManager
 
     public ISubscriptionProvider SubscriptionProvider
     {
-        get { return StudioNotifyHelper.SubscriptionProvider; }
+        get { return _studioNotifyHelper.SubscriptionProvider; }
     }
-
-    private StudioNotifyHelper StudioNotifyHelper { get; }
 
     #endregion
 }

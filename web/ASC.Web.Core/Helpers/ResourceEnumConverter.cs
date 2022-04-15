@@ -40,7 +40,7 @@ namespace ASC.Web.Core.Helpers;
 /// to make the LocalizedEnumConverter the default TypeConverter for the enums in your
 /// project.
 /// </remarks>
-public class ResourceEnumConverter : System.ComponentModel.EnumConverter
+public class ResourceEnumConverter : EnumConverter
 {
     private class LookupTable : Dictionary<string, object> { }
     private readonly Dictionary<CultureInfo, LookupTable> _lookupTables = new Dictionary<CultureInfo, LookupTable>();
@@ -212,7 +212,7 @@ public class ResourceEnumConverter : System.ComponentModel.EnumConverter
     /// <param name="culture"></param>
     /// <param name="value"></param>
     /// <returns></returns>
-    public override object ConvertFrom(System.ComponentModel.ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value)
+    public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
     {
         if (value is string @string)
         {
@@ -238,7 +238,7 @@ public class ResourceEnumConverter : System.ComponentModel.EnumConverter
     /// <param name="value"></param>
     /// <param name="destinationType"></param>
     /// <returns></returns>
-    public override object ConvertTo(System.ComponentModel.ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType)
+    public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
     {
         if (value != null && destinationType == typeof(string))
         {

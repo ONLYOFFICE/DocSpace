@@ -237,7 +237,7 @@ public class TenantExtra
     {
         if (!_coreBaseSettings.Standalone || _settingsManager.Load<TenantControlPanelSettings>().LimitedAccess)
         {
-            throw new System.Security.SecurityException(Resource.ErrorAccessDenied);
+            throw new SecurityException(Resource.ErrorAccessDenied);
         }
     }
 

@@ -32,12 +32,13 @@ public class FilesLinkUtility
     public const string FilesBaseVirtualPath = "~/products/files/";
     public const string EditorPage = "doceditor";
     private readonly string _filesUploaderURL;
-    private CommonLinkUtility CommonLinkUtility { get; set; }
-    private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
-    private CoreBaseSettings CoreBaseSettings { get; set; }
-    private CoreSettings CoreSettings { get; set; }
-    private IConfiguration Configuration { get; }
-    private InstanceCrypto InstanceCrypto { get; }
+
+    private readonly CommonLinkUtility _commonLinkUtility;
+    private readonly BaseCommonLinkUtility _baseCommonLinkUtility;
+    private readonly CoreBaseSettings _coreBaseSettings;
+    private readonly CoreSettings _coreSettings;
+    private readonly IConfiguration _configuration;
+    private readonly InstanceCrypto _instanceCrypto;
 
     public FilesLinkUtility(
         CommonLinkUtility commonLinkUtility,
@@ -47,18 +48,18 @@ public class FilesLinkUtility
         IConfiguration configuration,
         InstanceCrypto instanceCrypto)
     {
-        CommonLinkUtility = commonLinkUtility;
-        BaseCommonLinkUtility = baseCommonLinkUtility;
-        CoreBaseSettings = coreBaseSettings;
-        CoreSettings = coreSettings;
-        Configuration = configuration;
-        InstanceCrypto = instanceCrypto;
-        _filesUploaderURL = Configuration["files:uploader:url"] ?? "~";
+        _commonLinkUtility = commonLinkUtility;
+        _baseCommonLinkUtility = baseCommonLinkUtility;
+        _coreBaseSettings = coreBaseSettings;
+        _coreSettings = coreSettings;
+        _configuration = configuration;
+        _instanceCrypto = instanceCrypto;
+        _filesUploaderURL = _configuration["files:uploader:url"] ?? "~";
     }
 
     public string FilesBaseAbsolutePath
     {
-        get { return BaseCommonLinkUtility.ToAbsolute(FilesBaseVirtualPath); }
+        get { return _baseCommonLinkUtility.ToAbsolute(FilesBaseVirtualPath); }
     }
 
     public const string FileId = "fileid";
@@ -277,7 +278,7 @@ public class FilesLinkUtility
 
     public string GetFileWebViewerUrlForMobile(object fileId, int fileVersion)
     {
-        var viewerUrl = CommonLinkUtility.ToAbsolute("~/../products/files/") + EditorPage + "?" + FileId + "={0}";
+        var viewerUrl = _commonLinkUtility.ToAbsolute("~/../products/files/") + EditorPage + "?" + FileId + "={0}";
 
         return string.Format(viewerUrl, HttpUtility.UrlEncode(fileId.ToString()))
                + (fileVersion > 0 ? "&" + Version + "=" + fileVersion : string.Empty);
@@ -379,7 +380,7 @@ public class FilesLinkUtility
                                         HttpUtility.UrlEncode(fileName),
                                         contentLength,
                                         tenantId,
-                                        HttpUtility.UrlEncode(InstanceCrypto.Encrypt(securityContext.CurrentAccount.ID.ToString())),
+                                        HttpUtility.UrlEncode(_instanceCrypto.Encrypt(securityContext.CurrentAccount.ID.ToString())),
                                         Thread.CurrentThread.CurrentUICulture.Name,
                                         encrypted.ToString().ToLower());
 
@@ -393,13 +394,13 @@ public class FilesLinkUtility
             queryString = queryString + "&" + FolderId + "=" + HttpUtility.UrlEncode(folderId.ToString());
         }
 
-        return CommonLinkUtility.GetFullAbsolutePath(GetFileUploaderHandlerVirtualPath() + queryString);
+        return _commonLinkUtility.GetFullAbsolutePath(GetFileUploaderHandlerVirtualPath() + queryString);
     }
 
     public string GetUploadChunkLocationUrl(string uploadId)
     {
         var queryString = "?uid=" + uploadId;
-        return CommonLinkUtility.GetFullAbsolutePath(GetFileUploaderHandlerVirtualPath() + queryString);
+        return _commonLinkUtility.GetFullAbsolutePath(GetFileUploaderHandlerVirtualPath() + queryString);
     }
 
     public bool IsLocalFileUploader
@@ -416,20 +417,20 @@ public class FilesLinkUtility
     private string GetUrlSetting(string key, string appSettingsKey = null)
     {
         var value = string.Empty;
-        if (CoreBaseSettings.Standalone)
+        if (_coreBaseSettings.Standalone)
         {
-            value = CoreSettings.GetSetting(GetSettingsKey(key));
+            value = _coreSettings.GetSetting(GetSettingsKey(key));
         }
         if (string.IsNullOrEmpty(value))
         {
-            value = Configuration["files:docservice:url:" + (appSettingsKey ?? key)];
+            value = _configuration["files:docservice:url:" + (appSettingsKey ?? key)];
         }
         return value;
     }
 
     private void SetUrlSetting(string key, string value)
     {
-        if (!CoreBaseSettings.Standalone)
+        if (!_coreBaseSettings.Standalone)
         {
             throw new NotSupportedException("Method for server edition only.");
         }
@@ -441,7 +442,7 @@ public class FilesLinkUtility
 
         if (GetUrlSetting(key) != value)
         {
-            CoreSettings.SaveSetting(GetSettingsKey(key), value);
+            _coreSettings.SaveSetting(GetSettingsKey(key), value);
         }
     }
 

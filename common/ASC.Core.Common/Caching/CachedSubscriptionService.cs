@@ -153,19 +153,19 @@ public class CachedSubscriptionService : ISubscriptionService
     public void SaveSubscription(SubscriptionRecord s)
     {
         _service.SaveSubscription(s);
-        _notifyRecord.Publish(s, ASC.Common.Caching.CacheNotifyAction.InsertOrUpdate);
+        _notifyRecord.Publish(s, CacheNotifyAction.InsertOrUpdate);
     }
 
     public void RemoveSubscriptions(int tenant, string sourceId, string actionId)
     {
         _service.RemoveSubscriptions(tenant, sourceId, actionId);
-        _notifyRecord.Publish(new SubscriptionRecord { Tenant = tenant, SourceId = sourceId, ActionId = actionId }, ASC.Common.Caching.CacheNotifyAction.Remove);
+        _notifyRecord.Publish(new SubscriptionRecord { Tenant = tenant, SourceId = sourceId, ActionId = actionId }, CacheNotifyAction.Remove);
     }
 
     public void RemoveSubscriptions(int tenant, string sourceId, string actionId, string objectId)
     {
         _service.RemoveSubscriptions(tenant, sourceId, actionId, objectId);
-        _notifyRecord.Publish(new SubscriptionRecord { Tenant = tenant, SourceId = sourceId, ActionId = actionId, ObjectId = objectId }, ASC.Common.Caching.CacheNotifyAction.Remove);
+        _notifyRecord.Publish(new SubscriptionRecord { Tenant = tenant, SourceId = sourceId, ActionId = actionId, ObjectId = objectId }, CacheNotifyAction.Remove);
     }
 
     public IEnumerable<SubscriptionMethod> GetSubscriptionMethods(int tenant, string sourceId, string actionId, string recipientId)
@@ -180,7 +180,7 @@ public class CachedSubscriptionService : ISubscriptionService
     public void SetSubscriptionMethod(SubscriptionMethod m)
     {
         _service.SetSubscriptionMethod(m);
-        _notifyMethod.Publish(m, ASC.Common.Caching.CacheNotifyAction.Any);
+        _notifyMethod.Publish(m, CacheNotifyAction.Any);
     }
 
 

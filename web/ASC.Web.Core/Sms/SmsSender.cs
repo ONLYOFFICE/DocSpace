@@ -29,10 +29,10 @@ namespace ASC.Web.Core.Sms;
 [Scope]
 public class SmsSender
 {
-    private IConfiguration Configuration { get; }
-    private TenantManager TenantManager { get; }
-    private SmsProviderManager SmsProviderManager { get; }
-    public ILog Log { get; }
+    private readonly IConfiguration _configuration;
+    private readonly TenantManager _tenantManager;
+    private readonly SmsProviderManager _smsProviderManager;
+    private readonly ILog _log;
 
     public SmsSender(
         IConfiguration configuration,
@@ -40,10 +40,10 @@ public class SmsSender
             ILog logger,
         SmsProviderManager smsProviderManager)
     {
-        Configuration = configuration;
-        TenantManager = tenantManager;
-        SmsProviderManager = smsProviderManager;
-        Log = logger;
+        _configuration = configuration;
+        _tenantManager = tenantManager;
+        _smsProviderManager = smsProviderManager;
+        _log = logger;
     }
 
     public Task<bool> SendSMSAsync(string number, string message)
@@ -51,22 +51,22 @@ public class SmsSender
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(number);
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(message);
 
-        if (!SmsProviderManager.Enabled())
+        if (!_smsProviderManager.Enabled())
         {
             throw new MethodAccessException();
         }
 
-        if ("log".Equals(Configuration["core:notify:postman"], StringComparison.InvariantCultureIgnoreCase))
+        if ("log".Equals(_configuration["core:notify:postman"], StringComparison.InvariantCultureIgnoreCase))
         {
-            var tenant = TenantManager.GetCurrentTenant(false);
+            var tenant = _tenantManager.GetCurrentTenant(false);
             var tenantId = tenant == null ? Tenant.DefaultTenant : tenant.Id;
 
-            Log.InfoFormat("Tenant {0} send sms to phoneNumber {1} Message: {2}", tenantId, number, message);
+            _log.InfoFormat("Tenant {0} send sms to phoneNumber {1} Message: {2}", tenantId, number, message);
             return Task.FromResult(false);
         }
 
         number = new Regex("[^\\d+]").Replace(number, string.Empty);
-        return SmsProviderManager.SendMessageAsync(number, message);
+        return _smsProviderManager.SendMessageAsync(number, message);
     }
 
     public static string GetPhoneValueDigits(string mobilePhone)

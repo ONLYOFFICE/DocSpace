@@ -26,7 +26,7 @@
 
 namespace Textile.States;
 
-[FormatterState(SimpleBlockFormatterState.PatternBegin + @"bq" + SimpleBlockFormatterState.PatternEnd)]
+[FormatterState(PatternBegin + @"bq" + PatternEnd)]
 public class BlockQuoteFormatterState : SimpleBlockFormatterState
 {
     public BlockQuoteFormatterState(TextileFormatter f)

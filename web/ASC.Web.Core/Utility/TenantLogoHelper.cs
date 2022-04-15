@@ -29,10 +29,10 @@ namespace ASC.Web.Studio.Utility;
 [Scope]
 public class TenantLogoHelper
 {
-    private TenantLogoManager TenantLogoManager { get; }
-    private SettingsManager SettingsManager { get; }
-    private TenantWhiteLabelSettingsHelper TenantWhiteLabelSettingsHelper { get; }
-    private TenantInfoSettingsHelper TenantInfoSettingsHelper { get; }
+    private readonly TenantLogoManager _tenantLogoManager;
+    private readonly SettingsManager _settingsManager;
+    private readonly TenantWhiteLabelSettingsHelper _tenantWhiteLabelSettingsHelper;
+    private readonly TenantInfoSettingsHelper _tenantInfoSettingsHelper;
 
     public TenantLogoHelper(
         TenantLogoManager tenantLogoManager,
@@ -40,38 +40,38 @@ public class TenantLogoHelper
         TenantWhiteLabelSettingsHelper tenantWhiteLabelSettingsHelper,
         TenantInfoSettingsHelper tenantInfoSettingsHelper)
     {
-        TenantLogoManager = tenantLogoManager;
-        SettingsManager = settingsManager;
-        TenantWhiteLabelSettingsHelper = tenantWhiteLabelSettingsHelper;
-        TenantInfoSettingsHelper = tenantInfoSettingsHelper;
+        _tenantLogoManager = tenantLogoManager;
+        _settingsManager = settingsManager;
+        _tenantWhiteLabelSettingsHelper = tenantWhiteLabelSettingsHelper;
+        _tenantInfoSettingsHelper = tenantInfoSettingsHelper;
     }
 
     public string GetLogo(WhiteLabelLogoTypeEnum type, bool general = true, bool isDefIfNoWhiteLabel = false)
     {
         string imgUrl;
-        if (TenantLogoManager.WhiteLabelEnabled)
+        if (_tenantLogoManager.WhiteLabelEnabled)
         {
-            var _tenantWhiteLabelSettings = SettingsManager.Load<TenantWhiteLabelSettings>();
-            return TenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, type, general);
+            var _tenantWhiteLabelSettings = _settingsManager.Load<TenantWhiteLabelSettings>();
+            return _tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, type, general);
         }
         else
         {
             if (isDefIfNoWhiteLabel)
             {
-                imgUrl = TenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(type, general);
+                imgUrl = _tenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(type, general);
             }
             else
             {
                 if (type == WhiteLabelLogoTypeEnum.Dark)
                 {
                     /*** simple scheme ***/
-                    var _tenantInfoSettings = SettingsManager.Load<TenantInfoSettings>();
-                    imgUrl = TenantInfoSettingsHelper.GetAbsoluteCompanyLogoPath(_tenantInfoSettings);
+                    var _tenantInfoSettings = _settingsManager.Load<TenantInfoSettings>();
+                    imgUrl = _tenantInfoSettingsHelper.GetAbsoluteCompanyLogoPath(_tenantInfoSettings);
                     /***/
                 }
                 else
                 {
-                    imgUrl = TenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(type, general);
+                    imgUrl = _tenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(type, general);
                 }
             }
         }

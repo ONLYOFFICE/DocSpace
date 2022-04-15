@@ -34,3 +34,5 @@ global using ASC.EventBus.Events;
 
 global using ProtoBuf;
 global using ProtoBuf.Meta;
+
+global using static ASC.EventBus.InMemoryEventBusSubscriptionsManager;

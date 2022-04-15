@@ -93,6 +93,6 @@ public class TableRowFormatterState : FormatterState
 
     protected string FormattedStylesAndAlignment()
     {
-        return Blocks.BlockAttributesParser.ParseBlockAttributes(_alignInfo + _attsInfo);
+        return BlockAttributesParser.ParseBlockAttributes(_alignInfo + _attsInfo);
     }
 }

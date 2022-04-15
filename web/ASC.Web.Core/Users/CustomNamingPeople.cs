@@ -158,18 +158,18 @@ public class CustomNamingPeople
     private static bool _loaded;
 
     private static readonly List<PeopleNamesItem> _items = new List<PeopleNamesItem>();
-    private SettingsManager SettingsManager { get; }
+    private readonly SettingsManager _settingsManager;
 
     public CustomNamingPeople(SettingsManager settingsManager)
     {
-        SettingsManager = settingsManager;
+        _settingsManager = settingsManager;
     }
 
     public PeopleNamesItem Current
     {
         get
         {
-            var settings = SettingsManager.Load<PeopleNamesSettings>();
+            var settings = _settingsManager.Load<PeopleNamesSettings>();
             return PeopleNamesItem.CustomID.Equals(settings.ItemId, StringComparison.InvariantCultureIgnoreCase) && settings.Item != null ?
                 settings.Item :
                 GetPeopleNames(settings.ItemId);
@@ -200,7 +200,7 @@ public class CustomNamingPeople
     {
         if (PeopleNamesItem.CustomID.Equals(schemaId, StringComparison.InvariantCultureIgnoreCase))
         {
-            var settings = SettingsManager.Load<PeopleNamesSettings>();
+            var settings = _settingsManager.Load<PeopleNamesSettings>();
             var result = settings.Item;
             if (result == null)
             {
@@ -231,18 +231,18 @@ public class CustomNamingPeople
 
     public void SetPeopleNames(string schemaId)
     {
-        var settings = SettingsManager.Load<PeopleNamesSettings>();
+        var settings = _settingsManager.Load<PeopleNamesSettings>();
         settings.ItemId = schemaId;
-        SettingsManager.Save(settings);
+        _settingsManager.Save(settings);
     }
 
     public void SetPeopleNames(PeopleNamesItem custom)
     {
-        var settings = SettingsManager.Load<PeopleNamesSettings>();
+        var settings = _settingsManager.Load<PeopleNamesSettings>();
         custom.Id = PeopleNamesItem.CustomID;
         settings.ItemId = PeopleNamesItem.CustomID;
         settings.Item = custom;
-        SettingsManager.Save(settings);
+        _settingsManager.Save(settings);
     }
 
 

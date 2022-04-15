@@ -31,12 +31,12 @@ namespace ASC.Web.Core.Mobile;
 [Scope]
 public class MobileAppInstallRegistrator : IMobileAppInstallRegistrator
 {
-    private Lazy<DbContext> LazyDbContext { get; }
-    private DbContext DbContext { get => LazyDbContext.Value; }
+    private readonly Lazy<DbContext> _lazyDbContext;
+    private DbContext DbContext { get => _lazyDbContext.Value; }
 
     public MobileAppInstallRegistrator(DbContextManager<DbContext> dbContext)
     {
-        LazyDbContext = new Lazy<DbContext>(() => dbContext.Value);
+        _lazyDbContext = new Lazy<DbContext>(() => dbContext.Value);
     }
 
     public void RegisterInstall(string userEmail, MobileAppType appType)

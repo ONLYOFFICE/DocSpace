@@ -36,11 +36,10 @@ public static class QueueWorker
 
 public class QueueWorker<T> where T : DistributedTaskProgress
 {
-    protected IServiceScopeFactory ServiceProvider { get; }
-
+    protected IServiceScopeFactory _serviceProvider;
     private readonly object _synchRoot = new object();
     protected readonly DistributedTaskQueue _queue;
-    protected readonly IDictionary<string, StringValues> HttpHeaders;
+    protected readonly IDictionary<string, StringValues> _httpHeaders;
 
     public QueueWorker(
         IHttpContextAccessor httpContextAccessor,
@@ -48,9 +47,9 @@ public class QueueWorker<T> where T : DistributedTaskProgress
             IDistributedTaskQueueFactory queueFactory,
             string queueName)
     {
-        ServiceProvider = serviceProvider;
+        _serviceProvider = serviceProvider;
         _queue = queueFactory.CreateQueue(queueName);
-        HttpHeaders = httpContextAccessor.HttpContext.Request?.Headers;
+        _httpHeaders = httpContextAccessor.HttpContext.Request?.Headers;
     }
 
     public static string GetProgressItemId(int tenantId, Guid userId)
@@ -113,7 +112,7 @@ public class QueueWorkerReassign : QueueWorker<ReassignProgressItem>
 
     public ReassignProgressItem Start(int tenantId, Guid fromUserId, Guid toUserId, Guid currentUserId, bool deleteProfile)
     {
-        var result = new ReassignProgressItem(ServiceProvider, HttpHeaders, tenantId, fromUserId, toUserId, currentUserId, deleteProfile);
+        var result = new ReassignProgressItem(_serviceProvider, _httpHeaders, tenantId, fromUserId, toUserId, currentUserId, deleteProfile);
 
         return Start(tenantId, fromUserId, result);
     }
@@ -134,7 +133,7 @@ public class QueueWorkerRemove : QueueWorker<RemoveProgressItem>
 
     public RemoveProgressItem Start(int tenantId, UserInfo user, Guid currentUserId, bool notify)
     {
-        var result = new RemoveProgressItem(ServiceProvider, HttpHeaders, tenantId, user, currentUserId, notify);
+        var result = new RemoveProgressItem(_serviceProvider, _httpHeaders, tenantId, user, currentUserId, notify);
 
         return Start(tenantId, user.Id, result);
     }

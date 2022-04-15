@@ -29,11 +29,11 @@ namespace ASC.Web.Core.Notify;
 [Scope]
 public class StudioNotifyServiceHelper
 {
-    private ICacheNotify<NotifyItem> Cache { get; }
-    private StudioNotifyHelper StudioNotifyHelper { get; }
-    private AuthContext AuthContext { get; }
-    private TenantManager TenantManager { get; }
-    public CommonLinkUtility CommonLinkUtility { get; }
+    private readonly ICacheNotify<NotifyItem> _cache;
+    private readonly StudioNotifyHelper _studioNotifyHelper;
+    private readonly AuthContext _authContext;
+    private readonly TenantManager _tenantManager;
+    private readonly CommonLinkUtility _commonLinkUtility;
 
     public StudioNotifyServiceHelper(
         StudioNotifyHelper studioNotifyHelper,
@@ -42,11 +42,11 @@ public class StudioNotifyServiceHelper
         CommonLinkUtility commonLinkUtility,
         ICacheNotify<NotifyItem> cache)
     {
-        StudioNotifyHelper = studioNotifyHelper;
-        AuthContext = authContext;
-        TenantManager = tenantManager;
-        CommonLinkUtility = commonLinkUtility;
-        Cache = cache;
+        _studioNotifyHelper = studioNotifyHelper;
+        _authContext = authContext;
+        _tenantManager = tenantManager;
+        _commonLinkUtility = commonLinkUtility;
+        _cache = cache;
     }
 
     public void SendNoticeToAsync(INotifyAction action, IRecipient[] recipients, string[] senderNames, params ITagValue[] args)
@@ -76,7 +76,7 @@ public class StudioNotifyServiceHelper
 
     public void SendNoticeAsync(INotifyAction action, string objectID, params ITagValue[] args)
     {
-        var subscriptionSource = StudioNotifyHelper.NotifySource.GetSubscriptionProvider();
+        var subscriptionSource = _studioNotifyHelper.NotifySource.GetSubscriptionProvider();
         var recipients = subscriptionSource.GetRecipients(action, objectID);
 
         SendNoticeToAsync(action, objectID, recipients, null, false, args);
@@ -91,11 +91,11 @@ public class StudioNotifyServiceHelper
     {
         var item = new NotifyItem
         {
-            TenantId = TenantManager.GetCurrentTenant().Id,
-            UserId = AuthContext.CurrentAccount.ID.ToString(),
+            TenantId = _tenantManager.GetCurrentTenant().Id,
+            UserId = _authContext.CurrentAccount.ID.ToString(),
             Action = (NotifyAction)action,
             CheckSubsciption = checkSubsciption,
-            BaseUrl = CommonLinkUtility.GetFullAbsolutePath("")
+            BaseUrl = _commonLinkUtility.GetFullAbsolutePath("")
         };
 
         if (objectID != null)
@@ -133,6 +133,6 @@ public class StudioNotifyServiceHelper
             item.Tags.AddRange(args.Select(r => new Tag { Tag_ = r.Tag, Value = r.Value.ToString() }));
         }
 
-        Cache.Publish(item, CacheNotifyAction.Any);
+        _cache.Publish(item, CacheNotifyAction.Any);
     }
 }

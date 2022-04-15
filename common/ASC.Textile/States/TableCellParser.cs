@@ -59,7 +59,7 @@ public class TableCellParser
         //string opts = BlockAttributesParser.ParseBlockAttributes(m.Groups["span"].Value, "td") +
         //              BlockAttributesParser.ParseBlockAttributes(m.Groups["align"].Value, "td") +
         //              BlockAttributesParser.ParseBlockAttributes(m.Groups["atts"].Value, "td");
-        var opts = Blocks.BlockAttributesParser.ParseBlockAttributes(m.Groups["span"].Value + m.Groups["align"].Value + m.Groups["atts"].Value, "td");
+        var opts = BlockAttributesParser.ParseBlockAttributes(m.Groups["span"].Value + m.Groups["align"].Value + m.Groups["atts"].Value, "td");
 
         var res = "<" + htmlTag + opts + ">";
         // It may be possible the user actually intended to have a dot at the beginning of

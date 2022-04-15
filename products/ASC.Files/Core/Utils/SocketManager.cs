@@ -32,7 +32,7 @@ public class SocketManager
     private readonly SignalrServiceClient _signalrServiceClient;
     private readonly FileDtoHelper _filesWrapperHelper;
     private readonly TenantManager _tenantManager;
-    public IDaoFactory DaoFactory { get; }
+    private readonly IDaoFactory _daoFactory;
 
     public SocketManager(
         IOptionsSnapshot<SignalrServiceClient> optionsSnapshot,
@@ -44,7 +44,7 @@ public class SocketManager
         _signalrServiceClient = optionsSnapshot.Get("files");
         _filesWrapperHelper = filesWrapperHelper;
         _tenantManager = tenantManager;
-        DaoFactory = daoFactory;
+        _daoFactory = daoFactory;
     }
 
     public void StartEdit<T>(T fileId)
@@ -56,12 +56,12 @@ public class SocketManager
     public async Task StopEditAsync<T>(T fileId)
     {
         var room = GetFileRoom(fileId);
-        var file = await DaoFactory.GetFileDao<T>().GetFileStableAsync(fileId);
+        var file = await _daoFactory.GetFileDao<T>().GetFileStableAsync(fileId);
 
         var serializerSettings = new JsonSerializerOptions()
         {
             WriteIndented = false,
-            DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         };
 
@@ -78,7 +78,7 @@ public class SocketManager
         var serializerSettings = new JsonSerializerOptions()
         {
             WriteIndented = false,
-            DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         };
         serializerSettings.Converters.Add(new ApiDateTimeConverter());

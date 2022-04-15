@@ -29,23 +29,23 @@ namespace ASC.Web.Studio.Core;
 [Scope]
 public class FileSizeComment
 {
-    private TenantExtra TenantExtra { get; }
-    private SetupInfo SetupInfo { get; }
+    private readonly TenantExtra _tenantExtra;
+    private readonly SetupInfo _setupInfo;
 
     public FileSizeComment(TenantExtra tenantExtra, SetupInfo setupInfo)
     {
-        TenantExtra = tenantExtra;
-        SetupInfo = setupInfo;
+        _tenantExtra = tenantExtra;
+        _setupInfo = setupInfo;
     }
 
     public string FileSizeExceptionString
     {
-        get { return GetFileSizeExceptionString(TenantExtra.MaxUploadSize); }
+        get { return GetFileSizeExceptionString(_tenantExtra.MaxUploadSize); }
     }
 
     public string FileImageSizeExceptionString
     {
-        get { return GetFileSizeExceptionString(SetupInfo.MaxImageUploadSize); }
+        get { return GetFileSizeExceptionString(_setupInfo.MaxImageUploadSize); }
     }
 
     public static string GetFileSizeExceptionString(long size)
@@ -113,7 +113,7 @@ public class FileSizeComment
     {
         return
             string.Format(note,
-                          FilesSizeToString(TenantExtra.MaxUploadSize),
+                          FilesSizeToString(_tenantExtra.MaxUploadSize),
                           withHtmlStrong ? "<strong>" : string.Empty,
                           withHtmlStrong ? "</strong>" : string.Empty);
     }
@@ -128,7 +128,7 @@ public class FileSizeComment
     {
         return
             string.Format(note,
-                          FilesSizeToString(SetupInfo.MaxImageUploadSize),
+                          FilesSizeToString(_setupInfo.MaxImageUploadSize),
                           withHtmlStrong ? "<strong>" : string.Empty,
                           withHtmlStrong ? "</strong>" : string.Empty);
     }

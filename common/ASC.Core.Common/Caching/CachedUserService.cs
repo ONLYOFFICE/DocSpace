@@ -60,12 +60,12 @@ public class UserServiceCache
         CacheGroupCacheItem = cacheGroupCacheItem;
         CacheUserGroupRefItem = cacheUserGroupRefItem;
 
-        cacheUserInfoItem.Subscribe((u) => InvalidateCache(u), ASC.Common.Caching.CacheNotifyAction.Any);
-        cacheUserPhotoItem.Subscribe((p) => Cache.Remove(p.Key), ASC.Common.Caching.CacheNotifyAction.Remove);
-        cacheGroupCacheItem.Subscribe((g) => InvalidateCache(), ASC.Common.Caching.CacheNotifyAction.Any);
+        cacheUserInfoItem.Subscribe((u) => InvalidateCache(u), CacheNotifyAction.Any);
+        cacheUserPhotoItem.Subscribe((p) => Cache.Remove(p.Key), CacheNotifyAction.Remove);
+        cacheGroupCacheItem.Subscribe((g) => InvalidateCache(), CacheNotifyAction.Any);
 
-        cacheUserGroupRefItem.Subscribe((r) => UpdateUserGroupRefCache(r, true), ASC.Common.Caching.CacheNotifyAction.Remove);
-        cacheUserGroupRefItem.Subscribe((r) => UpdateUserGroupRefCache(r, false), ASC.Common.Caching.CacheNotifyAction.InsertOrUpdate);
+        cacheUserGroupRefItem.Subscribe((r) => UpdateUserGroupRefCache(r, true), CacheNotifyAction.Remove);
+        cacheUserGroupRefItem.Subscribe((r) => UpdateUserGroupRefCache(r, false), CacheNotifyAction.InsertOrUpdate);
     }
 
     public void InvalidateCache()
@@ -296,7 +296,7 @@ public class CachedUserService : IUserService, ICachedService
     public void SetUserPhoto(int tenant, Guid id, byte[] photo)
     {
         Service.SetUserPhoto(tenant, id, photo);
-        CacheUserPhotoItem.Publish(new UserPhotoCacheItem { Key = UserServiceCache.GetUserPhotoCacheKey(tenant, id) }, ASC.Common.Caching.CacheNotifyAction.Remove);
+        CacheUserPhotoItem.Publish(new UserPhotoCacheItem { Key = UserServiceCache.GetUserPhotoCacheKey(tenant, id) }, CacheNotifyAction.Remove);
     }
 
     public DateTime GetUserPasswordStamp(int tenant, Guid id)

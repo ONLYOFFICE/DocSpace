@@ -37,7 +37,7 @@ public abstract class SpaceUsageStatManager
         public long SpaceUsage { get; set; }
     }
 
-    public abstract ValueTask<System.Collections.Generic.List<UsageSpaceStatItem>> GetStatDataAsync();
+    public abstract ValueTask<List<UsageSpaceStatItem>> GetStatDataAsync();
 }
 
 public interface IUserSpaceUsage

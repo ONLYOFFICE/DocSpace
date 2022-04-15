@@ -65,7 +65,7 @@ public class FileEntrySerializer
             serializer.WriteObject(writer, o);
         }
 
-        result.Seek(0, System.IO.SeekOrigin.Begin);
+        result.Seek(0, SeekOrigin.Begin);
 
         /*if (_oldMonoSerializer)
         {

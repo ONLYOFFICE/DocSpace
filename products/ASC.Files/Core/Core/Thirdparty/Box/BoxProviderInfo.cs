@@ -307,7 +307,7 @@ public class BoxProviderInfoHelper
     {
         if (boxItem != null)
         {
-            await _cacheNotify.PublishAsync(new BoxCacheItem { IsFile = boxItem is BoxFile, Key = id + "-" + boxItem.Id }, Common.Caching.CacheNotifyAction.Remove).ConfigureAwait(false);
+            await _cacheNotify.PublishAsync(new BoxCacheItem { IsFile = boxItem is BoxFile, Key = id + "-" + boxItem.Id }, CacheNotifyAction.Remove).ConfigureAwait(false);
         }
     }
 
@@ -316,7 +316,7 @@ public class BoxProviderInfoHelper
         var key = id + "-";
         if (boxId == null)
         {
-            await _cacheNotify.PublishAsync(new BoxCacheItem { ResetAll = true, Key = key }, Common.Caching.CacheNotifyAction.Remove).ConfigureAwait(false);
+            await _cacheNotify.PublishAsync(new BoxCacheItem { ResetAll = true, Key = key }, CacheNotifyAction.Remove).ConfigureAwait(false);
         }
         else
         {
@@ -327,7 +327,7 @@ public class BoxProviderInfoHelper
 
             key += boxId;
 
-            await _cacheNotify.PublishAsync(new BoxCacheItem { IsFile = isFile ?? false, IsFileExists = isFile.HasValue, Key = key }, Common.Caching.CacheNotifyAction.Remove).ConfigureAwait(false);
+            await _cacheNotify.PublishAsync(new BoxCacheItem { IsFile = isFile ?? false, IsFileExists = isFile.HasValue, Key = key }, CacheNotifyAction.Remove).ConfigureAwait(false);
         }
     }
 }

@@ -121,18 +121,18 @@ public class AdditionalWhiteLabelSettings : ISettings<AdditionalWhiteLabelSettin
 [Singletone]
 public class AdditionalWhiteLabelSettingsHelper
 {
-    private IConfiguration Configuration { get; }
+    private readonly IConfiguration _configuration;
 
     public AdditionalWhiteLabelSettingsHelper(IConfiguration configuration)
     {
-        Configuration = configuration;
+        _configuration = configuration;
     }
 
     public string DefaultHelpCenterUrl
     {
         get
         {
-            var url = Configuration["web:help-center"];
+            var url = _configuration["web:help-center"];
             return string.IsNullOrEmpty(url) ? null : url;
         }
     }
@@ -141,7 +141,7 @@ public class AdditionalWhiteLabelSettingsHelper
     {
         get
         {
-            var url = Configuration["web:support-feedback"];
+            var url = _configuration["web:support-feedback"];
             return string.IsNullOrEmpty(url) ? null : url;
         }
     }
@@ -150,7 +150,7 @@ public class AdditionalWhiteLabelSettingsHelper
     {
         get
         {
-            var url = Configuration["web:user-forum"];
+            var url = _configuration["web:user-forum"];
             return string.IsNullOrEmpty(url) ? null : url;
         }
     }
@@ -168,7 +168,7 @@ public class AdditionalWhiteLabelSettingsHelper
     {
         get
         {
-            var email = Configuration["web:payment:email"];
+            var email = _configuration["web:payment:email"];
             return !string.IsNullOrEmpty(email) ? email : "sales@onlyoffice.com";
         }
     }
@@ -177,7 +177,7 @@ public class AdditionalWhiteLabelSettingsHelper
     {
         get
         {
-            var site = Configuration["web:teamlab-site"];
+            var site = _configuration["web:teamlab-site"];
             return !string.IsNullOrEmpty(site) ? site + "/post.ashx?type=buyenterprise" : "";
         }
     }

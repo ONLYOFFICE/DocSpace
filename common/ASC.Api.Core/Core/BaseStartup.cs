@@ -30,23 +30,23 @@ namespace ASC.Api.Core;
 
 public abstract class BaseStartup
 {
-    public IConfiguration Configuration { get; }
-    public IHostEnvironment HostEnvironment { get; }
-    public virtual JsonConverter[] Converters { get; }
-    public virtual bool AddControllersAsServices { get; }
-    public virtual bool ConfirmAddScheme { get; }
-    public virtual bool AddAndUseSession { get; }
+    private readonly IConfiguration _configuration;
+    private readonly IHostEnvironment _hostEnvironment;
+    protected virtual JsonConverter[] Converters { get; }
+    protected virtual bool AddControllersAsServices { get; }
+    protected virtual bool ConfirmAddScheme { get; }
+    protected virtual bool AddAndUseSession { get; }
     protected DIHelper DIHelper { get; }
     protected bool LoadProducts { get; set; } = true;
     protected bool LoadConsumers { get; } = true;
 
     public BaseStartup(IConfiguration configuration, IHostEnvironment hostEnvironment)
     {
-        Configuration = configuration;
-        HostEnvironment = hostEnvironment;
+        _configuration = configuration;
+        _hostEnvironment = hostEnvironment;
         DIHelper = new DIHelper();
 
-        if (bool.TryParse(Configuration["core:products"], out var loadProducts))
+        if (bool.TryParse(_configuration["core:products"], out var loadProducts))
         {
             LoadProducts = loadProducts;
         }
@@ -54,7 +54,7 @@ public abstract class BaseStartup
 
     public virtual void ConfigureServices(IServiceCollection services)
     {
-        services.AddCustomHealthCheck(Configuration);
+        services.AddCustomHealthCheck(_configuration);
         services.AddHttpContextAccessor();
         services.AddMemoryCache();
         services.AddHttpClient();
@@ -98,16 +98,16 @@ public abstract class BaseStartup
         DIHelper.TryAdd<CookieAuthHandler>();
         DIHelper.TryAdd<WebhooksGlobalFilterAttribute>();
 
-        services.AddDistributedCache(Configuration);
-        services.AddEventBus(Configuration);
+        services.AddDistributedCache(_configuration);
+        services.AddEventBus(_configuration);
         services.AddDistributedTaskQueue();
-        services.AddCacheNotify(Configuration);
+        services.AddCacheNotify(_configuration);
 
         DIHelper.TryAdd(typeof(IWebhookPublisher), typeof(WebhookPublisher));
 
         if (LoadProducts)
         {
-            DIHelper.RegisterProducts(Configuration, HostEnvironment.ContentRootPath);
+            DIHelper.RegisterProducts(_configuration, _hostEnvironment.ContentRootPath);
         }
 
         services.AddOptions();
@@ -184,7 +184,7 @@ public abstract class BaseStartup
 
     public void ConfigureContainer(ContainerBuilder builder)
     {
-        builder.Register(Configuration, LoadProducts, LoadConsumers);
+        builder.Register(_configuration, LoadProducts, LoadConsumers);
     }
 }
 

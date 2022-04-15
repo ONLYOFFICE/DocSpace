@@ -31,11 +31,11 @@ public class DocumentServiceLicense
 {
     private static readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(15);
 
-    private ICache Cache { get; }
-    public CoreBaseSettings CoreBaseSettings { get; }
-    private FilesLinkUtility FilesLinkUtility { get; }
-    private FileUtility FileUtility { get; }
-    private IHttpClientFactory ClientFactory { get; }
+    private readonly ICache _cache;
+    private readonly CoreBaseSettings _coreBaseSettings;
+    private readonly FilesLinkUtility _filesLinkUtility;
+    private readonly FileUtility _fileUtility;
+    private readonly IHttpClientFactory _clientFactory;
 
 
     public DocumentServiceLicense(
@@ -45,21 +45,21 @@ public class DocumentServiceLicense
         FileUtility fileUtility,
         IHttpClientFactory clientFactory)
     {
-        Cache = cache;
-        CoreBaseSettings = coreBaseSettings;
-        FilesLinkUtility = filesLinkUtility;
-        FileUtility = fileUtility;
-        ClientFactory = clientFactory;
+        _cache = cache;
+        _coreBaseSettings = coreBaseSettings;
+        _filesLinkUtility = filesLinkUtility;
+        _fileUtility = fileUtility;
+        _clientFactory = clientFactory;
     }
 
     private Task<CommandResponse> GetDocumentServiceLicenseAsync()
     {
-        if (!CoreBaseSettings.Standalone)
+        if (!_coreBaseSettings.Standalone)
         {
             return Task.FromResult<CommandResponse>(null);
         }
 
-        if (string.IsNullOrEmpty(FilesLinkUtility.DocServiceCommandUrl))
+        if (string.IsNullOrEmpty(_filesLinkUtility.DocServiceCommandUrl))
         {
             return Task.FromResult<CommandResponse>(null);
         }
@@ -70,21 +70,21 @@ public class DocumentServiceLicense
     private async Task<CommandResponse> InternalGetDocumentServiceLicenseAsync()
     {
         var cacheKey = "DocumentServiceLicense";
-        var commandResponse = Cache.Get<CommandResponse>(cacheKey);
+        var commandResponse = _cache.Get<CommandResponse>(cacheKey);
         if (commandResponse == null)
         {
-            commandResponse = await DocumentService.CommandRequestAsync(
-                   FileUtility,
-                   FilesLinkUtility.DocServiceCommandUrl,
-                   DocumentService.CommandMethod.License,
+            commandResponse = await CommandRequestAsync(
+                   _fileUtility,
+                   _filesLinkUtility.DocServiceCommandUrl,
+                   CommandMethod.License,
                    null,
                    null,
                    null,
                    null,
-                   FileUtility.SignatureSecret,
-                   ClientFactory
+                   _fileUtility.SignatureSecret,
+                   _clientFactory
                    );
-            Cache.Insert(cacheKey, commandResponse, DateTime.UtcNow.Add(_cacheExpiration));
+            _cache.Insert(cacheKey, commandResponse, DateTime.UtcNow.Add(_cacheExpiration));
         }
 
         return commandResponse;

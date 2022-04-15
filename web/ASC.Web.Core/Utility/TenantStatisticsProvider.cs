@@ -31,34 +31,34 @@ namespace ASC.Web.Studio.UserControls.Statistics;
 [Scope]
 public class TenantStatisticsProvider
 {
-    private UserManager UserManager { get; }
-    private TenantManager TenantManager { get; }
+    private readonly UserManager _userManager;
+    private readonly TenantManager _tenantManager;
 
     public TenantStatisticsProvider(UserManager userManager, TenantManager tenantManager)
     {
-        UserManager = userManager;
-        TenantManager = tenantManager;
+        _userManager = userManager;
+        _tenantManager = tenantManager;
     }
 
     public int GetUsersCount()
     {
-        return UserManager.GetUsersByGroup(Constants.GroupUser.ID).Length;
+        return _userManager.GetUsersByGroup(Constants.GroupUser.ID).Length;
     }
 
     public int GetVisitorsCount()
     {
-        return UserManager.GetUsersByGroup(Constants.GroupVisitor.ID).Length;
+        return _userManager.GetUsersByGroup(Constants.GroupVisitor.ID).Length;
     }
 
     public int GetAdminsCount()
     {
-        return UserManager.GetUsersByGroup(Constants.GroupAdmin.ID).Length;
+        return _userManager.GetUsersByGroup(Constants.GroupAdmin.ID).Length;
     }
 
 
     public long GetUsedSize()
     {
-        return GetUsedSize(TenantManager.GetCurrentTenant().Id);
+        return GetUsedSize(_tenantManager.GetCurrentTenant().Id);
     }
 
     public long GetUsedSize(int tenant)
@@ -68,12 +68,12 @@ public class TenantStatisticsProvider
 
     public long GetUsedSize(Guid moduleId)
     {
-        return GetQuotaRows(TenantManager.GetCurrentTenant().Id).Where(r => new Guid(r.Tag).Equals(moduleId)).Sum(r => r.Counter);
+        return GetQuotaRows(_tenantManager.GetCurrentTenant().Id).Where(r => new Guid(r.Tag).Equals(moduleId)).Sum(r => r.Counter);
     }
 
     public IEnumerable<TenantQuotaRow> GetQuotaRows(int tenant)
     {
-        return TenantManager.FindTenantQuotaRows(tenant)
+        return _tenantManager.FindTenantQuotaRows(tenant)
             .Where(r => !string.IsNullOrEmpty(r.Tag) && new Guid(r.Tag) != Guid.Empty);
     }
 }

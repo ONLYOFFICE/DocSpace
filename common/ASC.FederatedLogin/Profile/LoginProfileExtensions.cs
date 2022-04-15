@@ -33,7 +33,7 @@ public static class LoginProfileExtensions
         return profile.AppendProfile(uri);
     }
 
-    public static Uri AddProfileSession(this Uri uri, LoginProfile profile, Microsoft.AspNetCore.Http.HttpContext context)
+    public static Uri AddProfileSession(this Uri uri, LoginProfile profile, HttpContext context)
     {
         return profile.AppendSessionProfile(uri, context);
     }

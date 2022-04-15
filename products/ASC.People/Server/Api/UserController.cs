@@ -217,7 +217,7 @@ public class UserController : PeopleControllerBase
             throw new SecurityException();
         }
 
-        _securityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
+        _securityContext.AuthenticateMeWithoutCookie(Core.Configuration.Constants.CoreSystem);
         user.Status = EmployeeStatus.Terminated;
 
         _userManager.SaveUserInfo(user);
@@ -1193,7 +1193,7 @@ public class UserController : PeopleControllerBase
         }
 
         // change user type
-        var canBeGuestFlag = !user.IsOwner(Tenant) && !user.IsAdmin(_userManager) && user.GetListAdminModules(_webItemSecurity).Count == 0 && !user.IsMe(_authContext);
+        var canBeGuestFlag = !user.IsOwner(Tenant) && !user.IsAdmin(_userManager) && user.GetListAdminModules(_webItemSecurity, _webItemManager).Count == 0 && !user.IsMe(_authContext);
 
         if (inDto.IsVisitor && !user.IsVisitor(_userManager) && canBeGuestFlag)
         {
@@ -1279,7 +1279,7 @@ public class UserController : PeopleControllerBase
         foreach (var user in users)
         {
             if (user.IsOwner(Tenant) || user.IsAdmin(_userManager)
-                || user.IsMe(_authContext) || user.GetListAdminModules(_webItemSecurity).Count > 0)
+                || user.IsMe(_authContext) || user.GetListAdminModules(_webItemSecurity, _webItemManager).Count > 0)
             {
                 continue;
             }

@@ -105,8 +105,8 @@ public class WebItemManager
         get { return new Guid("{46CFA73A-F320-46CF-8D5B-CD82E1D67F26}"); }
     }
 
-    public IServiceProvider ServiceProvider { get; }
-    private IConfiguration Configuration { get; }
+    private readonly IServiceProvider _serviceProvider;
+    private readonly IConfiguration _configuration;
 
 
     public IWebItem this[Guid id]
@@ -120,18 +120,18 @@ public class WebItemManager
 
     public WebItemManager(IServiceProvider serviceProvider, IConfiguration configuration, IOptionsMonitor<ILog> options)
     {
-        ServiceProvider = serviceProvider;
-        Configuration = configuration;
+        _serviceProvider = serviceProvider;
+        _configuration = configuration;
         _log = options.Get("ASC.Web");
-        _disableItem = (Configuration["web:disabled-items"] ?? "").Split(",").ToList();
-        _lazyItems = new Lazy<ConcurrentDictionary<Guid, IWebItem>>(LoadItems, System.Threading.LazyThreadSafetyMode.ExecutionAndPublication);
+        _disableItem = (_configuration["web:disabled-items"] ?? "").Split(",").ToList();
+        _lazyItems = new Lazy<ConcurrentDictionary<Guid, IWebItem>>(LoadItems, LazyThreadSafetyMode.ExecutionAndPublication);
     }
 
     private ConcurrentDictionary<Guid, IWebItem> LoadItems()
     {
         var result = new ConcurrentDictionary<Guid, IWebItem>();
 
-        foreach (var webitem in ServiceProvider.GetService<IEnumerable<IWebItem>>())
+        foreach (var webitem in _serviceProvider.GetService<IEnumerable<IWebItem>>())
         {
             var file = webitem.ID.ToString();
             try
@@ -210,15 +210,15 @@ public class WebItemManager
 [Scope]
 public class WebItemManagerSecurity
 {
-    private WebItemSecurity WebItemSecurity { get; }
-    private AuthContext AuthContext { get; }
-    private WebItemManager WebItemManager { get; }
+    private readonly WebItemSecurity _webItemSecurity;
+    private readonly AuthContext _authContext;
+    private readonly WebItemManager _webItemManager;
 
     public WebItemManagerSecurity(WebItemSecurity webItemSecurity, AuthContext authContext, WebItemManager webItemManager)
     {
-        WebItemSecurity = webItemSecurity;
-        AuthContext = authContext;
-        WebItemManager = webItemManager;
+        _webItemSecurity = webItemSecurity;
+        _authContext = authContext;
+        _webItemManager = webItemManager;
     }
 
     public List<IWebItem> GetItems(WebZoneType webZone)
@@ -228,10 +228,10 @@ public class WebItemManagerSecurity
 
     public List<IWebItem> GetItems(WebZoneType webZone, ItemAvailableState avaliableState)
     {
-        var copy = WebItemManager.GetItemsAll().ToList();
+        var copy = _webItemManager.GetItemsAll().ToList();
         var list = copy.Where(item =>
             {
-                if ((avaliableState & ItemAvailableState.Disabled) != ItemAvailableState.Disabled && item.IsDisabled(WebItemSecurity, AuthContext))
+                if ((avaliableState & ItemAvailableState.Disabled) != ItemAvailableState.Disabled && item.IsDisabled(_webItemSecurity, _authContext))
                 {
                     return false;
                 }
@@ -239,7 +239,7 @@ public class WebItemManagerSecurity
                 return attribute != null && (attribute.Type & webZone) != 0;
             }).ToList();
 
-        list.Sort((x, y) => WebItemManager.GetSortOrder(x).CompareTo(WebItemManager.GetSortOrder(y)));
+        list.Sort((x, y) => _webItemManager.GetSortOrder(x).CompareTo(_webItemManager.GetSortOrder(y)));
         return list;
     }
 

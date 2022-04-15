@@ -60,13 +60,13 @@ public class TfaManager
     private static readonly TwoFactorAuthenticator _tfa = new TwoFactorAuthenticator();
     private ICache Cache { get; set; }
 
-    private SettingsManager SettingsManager { get; }
-    private SecurityContext SecurityContext { get; }
-    private CookiesManager CookiesManager { get; }
-    private SetupInfo SetupInfo { get; }
-    private Signature Signature { get; }
-    private InstanceCrypto InstanceCrypto { get; }
-    public MachinePseudoKeys MachinePseudoKeys { get; }
+    private readonly SettingsManager _settingsManager;
+    private readonly SecurityContext _securityContext;
+    private readonly CookiesManager _cookiesManager;
+    private readonly SetupInfo _setupInfo;
+    private readonly Signature _signature;
+    private readonly InstanceCrypto _instanceCrypto;
+    private readonly MachinePseudoKeys _machinePseudoKeys;
 
     public TfaManager(
         SettingsManager settingsManager,
@@ -79,24 +79,24 @@ public class TfaManager
         ICache cache)
     {
         Cache = cache;
-        SettingsManager = settingsManager;
-        SecurityContext = securityContext;
-        CookiesManager = cookiesManager;
-        SetupInfo = setupInfo;
-        Signature = signature;
-        InstanceCrypto = instanceCrypto;
-        MachinePseudoKeys = machinePseudoKeys;
+        _settingsManager = settingsManager;
+        _securityContext = securityContext;
+        _cookiesManager = cookiesManager;
+        _setupInfo = setupInfo;
+        _signature = signature;
+        _instanceCrypto = instanceCrypto;
+        _machinePseudoKeys = machinePseudoKeys;
     }
 
     public SetupCode GenerateSetupCode(UserInfo user)
     {
-        return _tfa.GenerateSetupCode(SetupInfo.TfaAppSender, user.Email, GenerateAccessToken(user), false, 4);
+        return _tfa.GenerateSetupCode(_setupInfo.TfaAppSender, user.Email, GenerateAccessToken(user), false, 4);
     }
 
     public bool ValidateAuthCode(UserInfo user, string code, bool checkBackup = true)
     {
         if (!TfaAppAuthSettings.IsVisibleSettings
-            || !SettingsManager.Load<TfaAppAuthSettings>().EnableSetting)
+            || !_settingsManager.Load<TfaAppAuthSettings>().EnableSetting)
         {
             return false;
         }
@@ -114,7 +114,7 @@ public class TfaManager
         }
 
         int.TryParse(Cache.Get<string>("tfa/" + user.Id), out var counter);
-        if (++counter > SetupInfo.LoginThreshold)
+        if (++counter > _setupInfo.LoginThreshold)
         {
             throw new BruteForceCredentialException(Resource.TfaTooMuchError);
         }
@@ -122,9 +122,9 @@ public class TfaManager
 
         if (!_tfa.ValidateTwoFactorPIN(GenerateAccessToken(user), code))
         {
-            if (checkBackup && TfaAppUserSettings.BackupCodesForUser(SettingsManager, user.Id).Any(x => x.GetEncryptedCode(InstanceCrypto, Signature) == code && !x.IsUsed))
+            if (checkBackup && TfaAppUserSettings.BackupCodesForUser(_settingsManager, user.Id).Any(x => x.GetEncryptedCode(_instanceCrypto, _signature) == code && !x.IsUsed))
             {
-                TfaAppUserSettings.DisableCodeForUser(SettingsManager, InstanceCrypto, Signature, user.Id, code);
+                TfaAppUserSettings.DisableCodeForUser(_settingsManager, _instanceCrypto, _signature, user.Id, code);
             }
             else
             {
@@ -134,13 +134,13 @@ public class TfaManager
 
         Cache.Insert("tfa/" + user.Id, (counter - 1).ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)));
 
-        if (!SecurityContext.IsAuthenticated)
+        if (!_securityContext.IsAuthenticated)
         {
-            var cookiesKey = SecurityContext.AuthenticateMe(user.Id);
-            CookiesManager.SetCookies(CookiesType.AuthKey, cookiesKey);
+            var cookiesKey = _securityContext.AuthenticateMe(user.Id);
+            _cookiesManager.SetCookies(CookiesType.AuthKey, cookiesKey);
         }
 
-        if (!TfaAppUserSettings.EnableForUser(SettingsManager, user.Id))
+        if (!TfaAppUserSettings.EnableForUser(_settingsManager, user.Id))
         {
             GenerateBackupCodes();
             return true;
@@ -151,8 +151,8 @@ public class TfaManager
 
     public IEnumerable<BackupCode> GenerateBackupCodes()
     {
-        var count = SetupInfo.TfaAppBackupCodeCount;
-        var length = SetupInfo.TfaAppBackupCodeLength;
+        var count = _setupInfo.TfaAppBackupCodeCount;
+        var length = _setupInfo.TfaAppBackupCodeLength;
 
         const string alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-_";
 
@@ -171,22 +171,22 @@ public class TfaManager
             }
 
             var code = new BackupCode();
-            code.SetEncryptedCode(InstanceCrypto, result.ToString());
+            code.SetEncryptedCode(_instanceCrypto, result.ToString());
             list.Add(code);
         }
-        var settings = SettingsManager.LoadForCurrentUser<TfaAppUserSettings>();
+        var settings = _settingsManager.LoadForCurrentUser<TfaAppUserSettings>();
         settings.CodesSetting = list;
-        SettingsManager.SaveForCurrentUser(settings);
+        _settingsManager.SaveForCurrentUser(settings);
 
         return list;
     }
 
     private string GenerateAccessToken(UserInfo user)
     {
-        var userSalt = TfaAppUserSettings.GetSalt(SettingsManager, user.Id);
+        var userSalt = TfaAppUserSettings.GetSalt(_settingsManager, user.Id);
 
         //from Signature.Create
-        var machineSalt = Encoding.UTF8.GetString(MachinePseudoKeys.GetMachineConstant());
+        var machineSalt = Encoding.UTF8.GetString(_machinePseudoKeys.GetMachineConstant());
         var token = Convert.ToBase64String(SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(userSalt + machineSalt)));
         var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
 

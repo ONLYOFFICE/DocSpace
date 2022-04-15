@@ -29,19 +29,17 @@ namespace ASC.Web.Files.Helpers;
 [Scope]
 public class WordpressToken
 {
-    public ILog Logger { get; set; }
     private readonly TokenHelper _tokenHelper;
-    public ConsumerFactory ConsumerFactory { get; }
+    private readonly ConsumerFactory _consumerFactory;
 
     private readonly OAuth20TokenHelper _oAuth20TokenHelper;
 
     public const string AppAttr = "wordpress";
 
-    public WordpressToken(IOptionsMonitor<ILog> optionsMonitor, TokenHelper tokenHelper, ConsumerFactory consumerFactory, OAuth20TokenHelper oAuth20TokenHelper)
+    public WordpressToken(TokenHelper tokenHelper, ConsumerFactory consumerFactory, OAuth20TokenHelper oAuth20TokenHelper)
     {
-        Logger = optionsMonitor.CurrentValue;
         _tokenHelper = tokenHelper;
-        ConsumerFactory = consumerFactory;
+        _consumerFactory = consumerFactory;
         _oAuth20TokenHelper = oAuth20TokenHelper;
     }
 
@@ -59,7 +57,7 @@ public class WordpressToken
 
     public OAuth20Token SaveTokenFromCode(string code)
     {
-        var token = _oAuth20TokenHelper.GetAccessToken<WordpressLoginProvider>(ConsumerFactory, code);
+        var token = _oAuth20TokenHelper.GetAccessToken<WordpressLoginProvider>(_consumerFactory, code);
         ArgumentNullException.ThrowIfNull(token);
 
         _tokenHelper.SaveToken(new Token(token, AppAttr));

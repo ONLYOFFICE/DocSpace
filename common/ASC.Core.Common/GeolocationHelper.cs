@@ -70,7 +70,7 @@ public class GeolocationHelper
         return IPGeolocationInfo.Default;
     }
 
-    public IPGeolocationInfo GetIPGeolocationFromHttpContext(Microsoft.AspNetCore.Http.HttpContext context)
+    public IPGeolocationInfo GetIPGeolocationFromHttpContext(HttpContext context)
     {
         if (context != null && context.Request != null)
         {

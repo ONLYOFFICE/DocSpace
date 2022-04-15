@@ -29,28 +29,28 @@ namespace ASC.Web.Core.Files;
 [Singletone]
 public class FileUtilityConfiguration
 {
-    private IConfiguration Configuration { get; }
+    private readonly IConfiguration _configuration;
 
     public FileUtilityConfiguration(IConfiguration configuration)
     {
-        Configuration = configuration;
+        _configuration = configuration;
     }
 
     private List<string> _extsIndexing;
-    public List<string> ExtsIndexing { get => _extsIndexing ??= Configuration.GetSection("files:index").Get<List<string>>() ?? new List<string>(); }
+    public List<string> ExtsIndexing { get => _extsIndexing ??= _configuration.GetSection("files:index").Get<List<string>>() ?? new List<string>(); }
 
     private List<string> _extsImagePreviewed;
-    public List<string> ExtsImagePreviewed { get => _extsImagePreviewed ??= Configuration.GetSection("files:viewed-images").Get<List<string>>() ?? new List<string>(); }
+    public List<string> ExtsImagePreviewed { get => _extsImagePreviewed ??= _configuration.GetSection("files:viewed-images").Get<List<string>>() ?? new List<string>(); }
 
     private List<string> _extsMediaPreviewed;
-    public List<string> ExtsMediaPreviewed { get => _extsMediaPreviewed ??= Configuration.GetSection("files:viewed-media").Get<List<string>>() ?? new List<string>(); }
+    public List<string> ExtsMediaPreviewed { get => _extsMediaPreviewed ??= _configuration.GetSection("files:viewed-media").Get<List<string>>() ?? new List<string>(); }
 
     private List<string> _extsWebPreviewed;
     public List<string> ExtsWebPreviewed
     {
         get
         {
-            return _extsWebPreviewed ??= Configuration.GetSection("files:docservice:viewed-docs").Get<List<string>>() ?? new List<string>();
+            return _extsWebPreviewed ??= _configuration.GetSection("files:docservice:viewed-docs").Get<List<string>>() ?? new List<string>();
         }
     }
 
@@ -59,19 +59,19 @@ public class FileUtilityConfiguration
     {
         get
         {
-            return _extsWebEdited ??= Configuration.GetSection("files:docservice:edited-docs").Get<List<string>>() ?? new List<string>();
+            return _extsWebEdited ??= _configuration.GetSection("files:docservice:edited-docs").Get<List<string>>() ?? new List<string>();
         }
     }
 
     private List<string> _extsWebEncrypt;
-    public List<string> ExtsWebEncrypt { get => _extsWebEncrypt ??= Configuration.GetSection("files:docservice:encrypted-docs").Get<List<string>>() ?? new List<string>(); }
+    public List<string> ExtsWebEncrypt { get => _extsWebEncrypt ??= _configuration.GetSection("files:docservice:encrypted-docs").Get<List<string>>() ?? new List<string>(); }
 
     private List<string> _extsWebReviewed;
     public List<string> ExtsWebReviewed
     {
         get
         {
-            return _extsWebReviewed ??= Configuration.GetSection("files:docservice:reviewed-docs").Get<List<string>>() ?? new List<string>();
+            return _extsWebReviewed ??= _configuration.GetSection("files:docservice:reviewed-docs").Get<List<string>>() ?? new List<string>();
         }
     }
 
@@ -80,7 +80,7 @@ public class FileUtilityConfiguration
     {
         get
         {
-            return _extsWebCustomFilterEditing ??= Configuration.GetSection("files:docservice:customfilter-docs").Get<List<string>>() ?? new List<string>();
+            return _extsWebCustomFilterEditing ??= _configuration.GetSection("files:docservice:customfilter-docs").Get<List<string>>() ?? new List<string>();
         }
     }
 
@@ -89,7 +89,7 @@ public class FileUtilityConfiguration
     {
         get
         {
-            return _extsWebRestrictedEditing ??= Configuration.GetSection("files:docservice:formfilling-docs").Get<List<string>>() ?? new List<string>();
+            return _extsWebRestrictedEditing ??= _configuration.GetSection("files:docservice:formfilling-docs").Get<List<string>>() ?? new List<string>();
         }
     }
 
@@ -98,7 +98,7 @@ public class FileUtilityConfiguration
     {
         get
         {
-            return _extsWebCommented ??= Configuration.GetSection("files:docservice:commented-docs").Get<List<string>>() ?? new List<string>();
+            return _extsWebCommented ??= _configuration.GetSection("files:docservice:commented-docs").Get<List<string>>() ?? new List<string>();
         }
     }
 
@@ -107,7 +107,7 @@ public class FileUtilityConfiguration
     {
         get
         {
-            return _extsWebTemplate ??= Configuration.GetSection("files:docservice:template-docs").Get<List<string>>() ?? new List<string>();
+            return _extsWebTemplate ??= _configuration.GetSection("files:docservice:template-docs").Get<List<string>>() ?? new List<string>();
         }
     }
 
@@ -116,35 +116,35 @@ public class FileUtilityConfiguration
     {
         get
         {
-            return _extsMustConvert ??= Configuration.GetSection("files:docservice:convert-docs").Get<List<string>>() ?? new List<string>();
+            return _extsMustConvert ??= _configuration.GetSection("files:docservice:convert-docs").Get<List<string>>() ?? new List<string>();
         }
     }
 
     private List<string> _extsCoAuthoring;
     public List<string> ExtsCoAuthoring
     {
-        get => _extsCoAuthoring ??= Configuration.GetSection("files:docservice:coauthor-docs").Get<List<string>>() ?? new List<string>();
+        get => _extsCoAuthoring ??= _configuration.GetSection("files:docservice:coauthor-docs").Get<List<string>>() ?? new List<string>();
     }
 
     private string _masterFormExtension;
     public string MasterFormExtension
     {
-        get => _masterFormExtension ??= Configuration["files:docservice:internal-form"] ?? ".docxf";
+        get => _masterFormExtension ??= _configuration["files:docservice:internal-form"] ?? ".docxf";
     }
 
     public Dictionary<FileType, string> InternalExtension
     {
         get => new Dictionary<FileType, string>
             {
-                { FileType.Document, Configuration["files:docservice:internal-doc"] ?? ".docx" },
-                { FileType.Spreadsheet, Configuration["files:docservice:internal-xls"] ?? ".xlsx" },
-                { FileType.Presentation, Configuration["files:docservice:internal-ppt"] ?? ".pptx" }
+                { FileType.Document, _configuration["files:docservice:internal-doc"] ?? ".docx" },
+                { FileType.Spreadsheet, _configuration["files:docservice:internal-xls"] ?? ".xlsx" },
+                { FileType.Presentation, _configuration["files:docservice:internal-ppt"] ?? ".pptx" }
             };
     }
 
     internal string GetSignatureSecret()
     {
-        var result = Configuration["files:docservice:secret:value"] ?? "";
+        var result = _configuration["files:docservice:secret:value"] ?? "";
 
         var regex = new Regex(@"^\s+$");
 
@@ -158,7 +158,7 @@ public class FileUtilityConfiguration
 
     internal string GetSignatureHeader()
     {
-        var result = (Configuration["files:docservice:secret:header"] ?? "").Trim();
+        var result = (_configuration["files:docservice:secret:header"] ?? "").Trim();
         if (string.IsNullOrEmpty(result))
         {
             result = "Authorization";
@@ -170,14 +170,14 @@ public class FileUtilityConfiguration
 
     internal bool GetCanForcesave()
     {
-        return !bool.TryParse(Configuration["files:docservice:forcesave"] ?? "", out var canForcesave) || canForcesave;
+        return !bool.TryParse(_configuration["files:docservice:forcesave"] ?? "", out var canForcesave) || canForcesave;
     }
 }
 
 [Scope]
 public class FileUtility
 {
-    private Lazy<FilesDbContext> LazyFilesDbContext { get; }
+    private readonly Lazy<FilesDbContext> LazyFilesDbContext;
     private FilesDbContext FilesDbContext { get => LazyFilesDbContext.Value; }
 
     public FileUtility(
@@ -185,8 +185,8 @@ public class FileUtility
         FilesLinkUtility filesLinkUtility,
         DbContextManager<FilesDbContext> dbContextManager)
     {
-        FileUtilityConfiguration = fileUtilityConfiguration;
-        FilesLinkUtility = filesLinkUtility;
+        _fileUtilityConfiguration = fileUtilityConfiguration;
+        _filesLinkUtility = filesLinkUtility;
         LazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get("files"));
         CanForcesave = GetCanForcesave();
     }
@@ -361,7 +361,7 @@ public class FileUtility
             if (_extsConvertible == null)
             {
                 _extsConvertible = new Dictionary<string, List<string>>();
-                if (string.IsNullOrEmpty(FilesLinkUtility.DocServiceConverterUrl))
+                if (string.IsNullOrEmpty(_filesLinkUtility.DocServiceConverterUrl))
                 {
                     return _extsConvertible;
                 }
@@ -410,22 +410,22 @@ public class FileUtility
         }
     }
 
-    private List<string> ExtsIndexing { get => FileUtilityConfiguration.ExtsIndexing; }
+    private List<string> ExtsIndexing { get => _fileUtilityConfiguration.ExtsIndexing; }
 
-    public List<string> ExtsImagePreviewed { get => FileUtilityConfiguration.ExtsImagePreviewed; }
+    public List<string> ExtsImagePreviewed { get => _fileUtilityConfiguration.ExtsImagePreviewed; }
 
-    public List<string> ExtsMediaPreviewed { get => FileUtilityConfiguration.ExtsMediaPreviewed; }
+    public List<string> ExtsMediaPreviewed { get => _fileUtilityConfiguration.ExtsMediaPreviewed; }
 
     public List<string> ExtsWebPreviewed
     {
         get
         {
-            if (string.IsNullOrEmpty(FilesLinkUtility.DocServiceApiUrl))
+            if (string.IsNullOrEmpty(_filesLinkUtility.DocServiceApiUrl))
             {
                 return new List<string>();
             }
 
-            return FileUtilityConfiguration.ExtsWebPreviewed;
+            return _fileUtilityConfiguration.ExtsWebPreviewed;
         }
     }
 
@@ -433,27 +433,27 @@ public class FileUtility
     {
         get
         {
-            if (string.IsNullOrEmpty(FilesLinkUtility.DocServiceApiUrl))
+            if (string.IsNullOrEmpty(_filesLinkUtility.DocServiceApiUrl))
             {
                 return new List<string>();
             }
 
-            return FileUtilityConfiguration.ExtsWebEdited;
+            return _fileUtilityConfiguration.ExtsWebEdited;
         }
     }
 
-    public List<string> ExtsWebEncrypt { get => FileUtilityConfiguration.ExtsWebEncrypt; }
+    public List<string> ExtsWebEncrypt { get => _fileUtilityConfiguration.ExtsWebEncrypt; }
 
     public List<string> ExtsWebReviewed
     {
         get
         {
-            if (string.IsNullOrEmpty(FilesLinkUtility.DocServiceApiUrl))
+            if (string.IsNullOrEmpty(_filesLinkUtility.DocServiceApiUrl))
             {
                 return new List<string>();
             }
 
-            return FileUtilityConfiguration.ExtsWebReviewed;
+            return _fileUtilityConfiguration.ExtsWebReviewed;
         }
     }
 
@@ -461,12 +461,12 @@ public class FileUtility
     {
         get
         {
-            if (string.IsNullOrEmpty(FilesLinkUtility.DocServiceApiUrl))
+            if (string.IsNullOrEmpty(_filesLinkUtility.DocServiceApiUrl))
             {
                 return new List<string>();
             }
 
-            return FileUtilityConfiguration.ExtsWebCustomFilterEditing;
+            return _fileUtilityConfiguration.ExtsWebCustomFilterEditing;
         }
     }
 
@@ -474,12 +474,12 @@ public class FileUtility
     {
         get
         {
-            if (string.IsNullOrEmpty(FilesLinkUtility.DocServiceApiUrl))
+            if (string.IsNullOrEmpty(_filesLinkUtility.DocServiceApiUrl))
             {
                 return new List<string>();
             }
 
-            return FileUtilityConfiguration.ExtsWebRestrictedEditing;
+            return _fileUtilityConfiguration.ExtsWebRestrictedEditing;
         }
     }
 
@@ -487,40 +487,40 @@ public class FileUtility
     {
         get
         {
-            if (string.IsNullOrEmpty(FilesLinkUtility.DocServiceApiUrl))
+            if (string.IsNullOrEmpty(_filesLinkUtility.DocServiceApiUrl))
             {
                 return new List<string>();
             }
 
-            return FileUtilityConfiguration.ExtsWebCommented;
+            return _fileUtilityConfiguration.ExtsWebCommented;
         }
     }
 
     public List<string> ExtsWebTemplate
     {
-        get => FileUtilityConfiguration.ExtsWebTemplate;
+        get => _fileUtilityConfiguration.ExtsWebTemplate;
     }
 
     public List<string> ExtsMustConvert
     {
         get
         {
-            if (string.IsNullOrEmpty(FilesLinkUtility.DocServiceConverterUrl))
+            if (string.IsNullOrEmpty(_filesLinkUtility.DocServiceConverterUrl))
             {
                 return new List<string>();
             }
 
-            return FileUtilityConfiguration.ExtsMustConvert;
+            return _fileUtilityConfiguration.ExtsMustConvert;
         }
     }
 
     public List<string> ExtsCoAuthoring
     {
-        get => FileUtilityConfiguration.ExtsCoAuthoring;
+        get => _fileUtilityConfiguration.ExtsCoAuthoring;
     }
 
-    private FileUtilityConfiguration FileUtilityConfiguration { get; }
-    private FilesLinkUtility FilesLinkUtility { get; }
+    private readonly FileUtilityConfiguration _fileUtilityConfiguration;
+    private readonly FilesLinkUtility _filesLinkUtility;
 
     public static readonly List<string> ExtsArchive = new List<string>
             {
@@ -595,9 +595,9 @@ public class FileUtility
                 ".xlt", ".xltm", ".xltx",
                 ".pot", ".potm", ".potx",
             };
-    public Dictionary<FileType, string> InternalExtension => FileUtilityConfiguration.InternalExtension;
+    public Dictionary<FileType, string> InternalExtension => _fileUtilityConfiguration.InternalExtension;
 
-    public string MasterFormExtension { get => FileUtilityConfiguration.MasterFormExtension; }
+    public string MasterFormExtension { get => _fileUtilityConfiguration.MasterFormExtension; }
     public enum CsvDelimiter
     {
         None = 0,
@@ -610,13 +610,13 @@ public class FileUtility
     public string SignatureSecret { get => GetSignatureSecret(); }
     public string SignatureHeader { get => GetSignatureHeader(); }
 
-    private string GetSignatureSecret() => FileUtilityConfiguration.GetSignatureSecret();
+    private string GetSignatureSecret() => _fileUtilityConfiguration.GetSignatureSecret();
 
-    private string GetSignatureHeader() => FileUtilityConfiguration.GetSignatureHeader();
+    private string GetSignatureHeader() => _fileUtilityConfiguration.GetSignatureHeader();
 
     public readonly bool CanForcesave;
 
-    private bool GetCanForcesave() => FileUtilityConfiguration.GetCanForcesave();
+    private bool GetCanForcesave() => _fileUtilityConfiguration.GetCanForcesave();
 
     #endregion
 }

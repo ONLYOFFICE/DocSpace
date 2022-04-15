@@ -40,12 +40,12 @@ public class CookiesManager
     private const string AuthCookiesName = "asc_auth_key";
     private const string SocketIOCookiesName = "socketio.sid";
 
-    private IHttpContextAccessor HttpContextAccessor { get; }
-    private UserManager UserManager { get; }
-    private SecurityContext SecurityContext { get; }
-    private TenantCookieSettingsHelper TenantCookieSettingsHelper { get; }
-    private TenantManager TenantManager { get; }
-    private CoreBaseSettings CoreBaseSettings { get; }
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly UserManager _userManager;
+    private readonly SecurityContext _securityContext;
+    private readonly TenantCookieSettingsHelper _tenantCookieSettingsHelper;
+    private readonly TenantManager _tenantManager;
+    private readonly CoreBaseSettings _coreBaseSettings;
 
     public CookiesManager(
         IHttpContextAccessor httpContextAccessor,
@@ -55,12 +55,12 @@ public class CookiesManager
         TenantManager tenantManager,
         CoreBaseSettings coreBaseSettings)
     {
-        HttpContextAccessor = httpContextAccessor;
-        UserManager = userManager;
-        SecurityContext = securityContext;
-        TenantCookieSettingsHelper = tenantCookieSettingsHelper;
-        TenantManager = tenantManager;
-        CoreBaseSettings = coreBaseSettings;
+        _httpContextAccessor = httpContextAccessor;
+        _userManager = userManager;
+        _securityContext = securityContext;
+        _tenantCookieSettingsHelper = tenantCookieSettingsHelper;
+        _tenantManager = tenantManager;
+        _coreBaseSettings = coreBaseSettings;
     }
 
     private static string GetCookiesName(CookiesType type)
@@ -76,19 +76,19 @@ public class CookiesManager
 
     public string GetRequestVar(CookiesType type)
     {
-        if (HttpContextAccessor?.HttpContext == null)
+        if (_httpContextAccessor?.HttpContext == null)
         {
             return "";
         }
 
-        var cookie = HttpContextAccessor.HttpContext.Request.Query[GetCookiesName(type)].FirstOrDefault() ?? HttpContextAccessor.HttpContext.Request.Form[GetCookiesName(type)].FirstOrDefault();
+        var cookie = _httpContextAccessor.HttpContext.Request.Query[GetCookiesName(type)].FirstOrDefault() ?? _httpContextAccessor.HttpContext.Request.Form[GetCookiesName(type)].FirstOrDefault();
 
         return string.IsNullOrEmpty(cookie) ? GetCookies(type) : cookie;
     }
 
     public void SetCookies(CookiesType type, string value, bool session = false)
     {
-        if (HttpContextAccessor?.HttpContext == null)
+        if (_httpContextAccessor?.HttpContext == null)
         {
             return;
         }
@@ -102,23 +102,23 @@ public class CookiesManager
         {
             options.HttpOnly = true;
 
-            if (HttpContextAccessor.HttpContext.Request.GetUrlRewriter().Scheme == "https")
+            if (_httpContextAccessor.HttpContext.Request.GetUrlRewriter().Scheme == "https")
             {
                 options.Secure = true;
 
-                if (CoreBaseSettings.Personal)
+                if (_coreBaseSettings.Personal)
                 {
                     options.SameSite = SameSiteMode.None;
                 }
             }
         }
 
-        HttpContextAccessor.HttpContext.Response.Cookies.Append(GetCookiesName(type), value, options);
+        _httpContextAccessor.HttpContext.Response.Cookies.Append(GetCookiesName(type), value, options);
     }
 
     public void SetCookies(CookiesType type, string value, string domain, bool session = false)
     {
-        if (HttpContextAccessor?.HttpContext == null)
+        if (_httpContextAccessor?.HttpContext == null)
         {
             return;
         }
@@ -133,29 +133,29 @@ public class CookiesManager
         {
             options.HttpOnly = true;
 
-            if (HttpContextAccessor.HttpContext.Request.GetUrlRewriter().Scheme == "https")
+            if (_httpContextAccessor.HttpContext.Request.GetUrlRewriter().Scheme == "https")
             {
                 options.Secure = true;
 
-                if (CoreBaseSettings.Personal)
+                if (_coreBaseSettings.Personal)
                 {
                     options.SameSite = SameSiteMode.None;
                 }
             }
         }
 
-        HttpContextAccessor.HttpContext.Response.Cookies.Append(GetCookiesName(type), value, options);
+        _httpContextAccessor.HttpContext.Response.Cookies.Append(GetCookiesName(type), value, options);
     }
 
     public string GetCookies(CookiesType type)
     {
-        if (HttpContextAccessor?.HttpContext != null)
+        if (_httpContextAccessor?.HttpContext != null)
         {
             var cookieName = GetCookiesName(type);
 
-            if (HttpContextAccessor.HttpContext.Request.Cookies.ContainsKey(cookieName))
+            if (_httpContextAccessor.HttpContext.Request.Cookies.ContainsKey(cookieName))
             {
-                return HttpContextAccessor.HttpContext.Request.Cookies[cookieName] ?? "";
+                return _httpContextAccessor.HttpContext.Request.Cookies[cookieName] ?? "";
             }
         }
         return "";
@@ -163,14 +163,14 @@ public class CookiesManager
 
     public void ClearCookies(CookiesType type)
     {
-        if (HttpContextAccessor?.HttpContext == null)
+        if (_httpContextAccessor?.HttpContext == null)
         {
             return;
         }
 
-        if (HttpContextAccessor.HttpContext.Request.Cookies.ContainsKey(GetCookiesName(type)))
+        if (_httpContextAccessor.HttpContext.Request.Cookies.ContainsKey(GetCookiesName(type)))
         {
-            HttpContextAccessor.HttpContext.Response.Cookies.Delete(GetCookiesName(type), new CookieOptions() { Expires = DateTime.Now.AddDays(-3) });
+            _httpContextAccessor.HttpContext.Response.Cookies.Delete(GetCookiesName(type), new CookieOptions() { Expires = DateTime.Now.AddDays(-3) });
         }
     }
 
@@ -180,8 +180,8 @@ public class CookiesManager
 
         if (!session)
         {
-            var tenant = TenantManager.GetCurrentTenant().Id;
-            expires = TenantCookieSettingsHelper.GetExpiresTime(tenant);
+            var tenant = _tenantManager.GetCurrentTenant().Id;
+            expires = _tenantCookieSettingsHelper.GetExpiresTime(tenant);
         }
 
         return expires;
@@ -189,13 +189,13 @@ public class CookiesManager
 
     public void SetLifeTime(int lifeTime)
     {
-        var tenant = TenantManager.GetCurrentTenant();
-        if (!UserManager.IsUserInGroup(SecurityContext.CurrentAccount.ID, Constants.GroupAdmin.ID))
+        var tenant = _tenantManager.GetCurrentTenant();
+        if (!_userManager.IsUserInGroup(_securityContext.CurrentAccount.ID, Constants.GroupAdmin.ID))
         {
             throw new SecurityException();
         }
 
-        var settings = TenantCookieSettingsHelper.GetForTenant(tenant.Id);
+        var settings = _tenantCookieSettingsHelper.GetForTenant(tenant.Id);
 
         if (lifeTime > 0)
         {
@@ -207,27 +207,27 @@ public class CookiesManager
             settings.LifeTime = 0;
         }
 
-        TenantCookieSettingsHelper.SetForTenant(tenant.Id, settings);
+        _tenantCookieSettingsHelper.SetForTenant(tenant.Id, settings);
 
-        var cookie = SecurityContext.AuthenticateMe(SecurityContext.CurrentAccount.ID);
+        var cookie = _securityContext.AuthenticateMe(_securityContext.CurrentAccount.ID);
 
         SetCookies(CookiesType.AuthKey, cookie);
     }
 
     public int GetLifeTime(int tenantId)
     {
-        return TenantCookieSettingsHelper.GetForTenant(tenantId).LifeTime;
+        return _tenantCookieSettingsHelper.GetForTenant(tenantId).LifeTime;
     }
 
     public void ResetUserCookie(Guid? userId = null)
     {
-        var settings = TenantCookieSettingsHelper.GetForUser(userId ?? SecurityContext.CurrentAccount.ID);
+        var settings = _tenantCookieSettingsHelper.GetForUser(userId ?? _securityContext.CurrentAccount.ID);
         settings.Index += 1;
-        TenantCookieSettingsHelper.SetForUser(userId ?? SecurityContext.CurrentAccount.ID, settings);
+        _tenantCookieSettingsHelper.SetForUser(userId ?? _securityContext.CurrentAccount.ID, settings);
 
         if (!userId.HasValue)
         {
-            var cookie = SecurityContext.AuthenticateMe(SecurityContext.CurrentAccount.ID);
+            var cookie = _securityContext.AuthenticateMe(_securityContext.CurrentAccount.ID);
 
             SetCookies(CookiesType.AuthKey, cookie);
         }
@@ -235,18 +235,18 @@ public class CookiesManager
 
     public void ResetTenantCookie()
     {
-        var tenant = TenantManager.GetCurrentTenant();
+        var tenant = _tenantManager.GetCurrentTenant();
 
-        if (!UserManager.IsUserInGroup(SecurityContext.CurrentAccount.ID, Constants.GroupAdmin.ID))
+        if (!_userManager.IsUserInGroup(_securityContext.CurrentAccount.ID, Constants.GroupAdmin.ID))
         {
             throw new SecurityException();
         }
 
-        var settings = TenantCookieSettingsHelper.GetForTenant(tenant.Id);
+        var settings = _tenantCookieSettingsHelper.GetForTenant(tenant.Id);
         settings.Index += 1;
-        TenantCookieSettingsHelper.SetForTenant(tenant.Id, settings);
+        _tenantCookieSettingsHelper.SetForTenant(tenant.Id, settings);
 
-        var cookie = SecurityContext.AuthenticateMe(SecurityContext.CurrentAccount.ID);
+        var cookie = _securityContext.AuthenticateMe(_securityContext.CurrentAccount.ID);
         SetCookies(CookiesType.AuthKey, cookie);
     }
 }

@@ -255,13 +255,13 @@ public class OneDriveProviderInfoHelper
         var key = id + "-";
         if (string.IsNullOrEmpty(onedriveId))
         {
-            await _cacheNotify.PublishAsync(new OneDriveCacheItem { ResetAll = true, Key = key }, Common.Caching.CacheNotifyAction.Remove).ConfigureAwait(false);
+            await _cacheNotify.PublishAsync(new OneDriveCacheItem { ResetAll = true, Key = key }, CacheNotifyAction.Remove).ConfigureAwait(false);
         }
         else
         {
             key += onedriveId;
 
-            await _cacheNotify.PublishAsync(new OneDriveCacheItem { Key = key }, Common.Caching.CacheNotifyAction.Remove).ConfigureAwait(false);
+            await _cacheNotify.PublishAsync(new OneDriveCacheItem { Key = key }, CacheNotifyAction.Remove).ConfigureAwait(false);
         }
     }
 }

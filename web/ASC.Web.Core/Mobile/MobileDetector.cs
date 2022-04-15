@@ -31,8 +31,7 @@ public class MobileDetector
 {
     private readonly Regex _uaMobileRegex;
     private readonly ICache _cache;
-
-    private IHttpContextAccessor HttpContextAccessor { get; }
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
     public bool IsMobile()
     {
@@ -48,14 +47,14 @@ public class MobileDetector
             _uaMobileRegex = new Regex(configuration["mobile:regex"], RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
         }
 
-        HttpContextAccessor = httpContextAccessor;
+        _httpContextAccessor = httpContextAccessor;
     }
 
 
     public bool IsRequestMatchesMobile()
     {
         bool? result = false;
-        var ua = HttpContextAccessor.HttpContext.Request.Headers["User-Agent"].ToString();
+        var ua = _httpContextAccessor.HttpContext.Request.Headers["User-Agent"].ToString();
         var regex = _uaMobileRegex;
         if (!string.IsNullOrEmpty(ua) && regex != null)
         {

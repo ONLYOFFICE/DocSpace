@@ -61,6 +61,11 @@ public class CommonLinkUtility : BaseCommonLinkUtility
     public const string ParamName_ProductSysName = "product";
     public const string ParamName_UserUserID = "uid";
 
+    private readonly UserManager _userManager;
+    private readonly WebItemManagerSecurity _webItemManagerSecurity;
+    private readonly WebItemManager _webItemManager;
+    private readonly EmailValidationKeyProvider _emailValidationKeyProvider;
+
     public CommonLinkUtility(
         CoreBaseSettings coreBaseSettings,
         CoreSettings coreSettings,
@@ -87,17 +92,12 @@ public class CommonLinkUtility : BaseCommonLinkUtility
         IOptionsMonitor<ILog> options,
         CommonLinkUtilitySettings settings) :
         base(httpContextAccessor, coreBaseSettings, coreSettings, tenantManager, options, settings) =>
-        (UserManager, WebItemManagerSecurity, WebItemManager, EmailValidationKeyProvider) = (userManager, webItemManagerSecurity, webItemManager, emailValidationKeyProvider);
+        (_userManager, _webItemManagerSecurity, _webItemManager, _emailValidationKeyProvider) = (userManager, webItemManagerSecurity, webItemManager, emailValidationKeyProvider);
 
     public string Logout
     {
         get { return ToAbsolute("~/auth.aspx") + "?t=logout"; }
     }
-
-    private UserManager UserManager { get; }
-    private WebItemManagerSecurity WebItemManagerSecurity { get; }
-    private WebItemManager WebItemManager { get; }
-    private EmailValidationKeyProvider EmailValidationKeyProvider { get; }
 
     public string GetDefault()
     {
@@ -134,7 +134,7 @@ public class CommonLinkUtility : BaseCommonLinkUtility
 
     public string GetUserProfile(Guid userID)
     {
-        if (!UserManager.UserExists(userID))
+        if (!_userManager.UserExists(userID))
         {
             return GetEmployees();
         }
@@ -144,7 +144,7 @@ public class CommonLinkUtility : BaseCommonLinkUtility
 
     public string GetUserProfile(UserInfo user)
     {
-        if (!UserManager.UserExists(user))
+        if (!_userManager.UserExists(user))
         {
             return GetEmployees();
         }
@@ -272,7 +272,7 @@ public class CommonLinkUtility : BaseCommonLinkUtility
             var itemName = GetWebItemNameFromUrl(currentURL);
             if (!string.IsNullOrEmpty(itemName))
             {
-                foreach (var item in WebItemManager.GetItemsAll())
+                foreach (var item in _webItemManager.GetItemsAll())
                 {
                     var _itemName = GetWebItemNameFromUrl(item.StartURL);
                     if (itemName.Equals(_itemName, StringComparison.InvariantCultureIgnoreCase))
@@ -301,7 +301,7 @@ public class CommonLinkUtility : BaseCommonLinkUtility
 
                 if (pid != Guid.Empty)
                 {
-                    return WebItemManager[pid];
+                    return _webItemManager[pid];
                 }
             }
         }
@@ -340,7 +340,7 @@ public class CommonLinkUtility : BaseCommonLinkUtility
 
         if (!string.IsNullOrEmpty(productName) || !string.IsNullOrEmpty(moduleName))
         {
-            foreach (var product in WebItemManager.GetItemsAll<IProduct>())
+            foreach (var product in _webItemManager.GetItemsAll<IProduct>())
             {
                 var _productName = GetProductNameFromUrl(product.StartURL);
                 if (!string.IsNullOrEmpty(_productName))
@@ -351,7 +351,7 @@ public class CommonLinkUtility : BaseCommonLinkUtility
 
                         if (!string.IsNullOrEmpty(moduleName))
                         {
-                            foreach (var module in WebItemManagerSecurity.GetSubItems(product.ID).OfType<IModule>())
+                            foreach (var module in _webItemManagerSecurity.GetSubItems(product.ID).OfType<IModule>())
                             {
                                 var _moduleName = GetModuleNameFromUrl(module.StartURL);
                                 if (!string.IsNullOrEmpty(_moduleName))
@@ -366,7 +366,7 @@ public class CommonLinkUtility : BaseCommonLinkUtility
                         }
                         else
                         {
-                            foreach (var module in WebItemManagerSecurity.GetSubItems(product.ID).OfType<IModule>())
+                            foreach (var module in _webItemManagerSecurity.GetSubItems(product.ID).OfType<IModule>())
                             {
                                 if (!module.StartURL.Equals(product.StartURL) && currentURL.Contains(_regFilePathTrim.Replace(module.StartURL, string.Empty)))
                                 {
@@ -384,7 +384,7 @@ public class CommonLinkUtility : BaseCommonLinkUtility
 
         if (pid != Guid.Empty)
         {
-            currentProduct = WebItemManager[pid] as IProduct;
+            currentProduct = _webItemManager[pid] as IProduct;
         }
     }
 
@@ -464,7 +464,7 @@ public class CommonLinkUtility : BaseCommonLinkUtility
 
         if (!string.IsNullOrEmpty(sysName))
         {
-            foreach (var product in WebItemManager.GetItemsAll<IProduct>())
+            foreach (var product in _webItemManager.GetItemsAll<IProduct>())
             {
                 if (string.Equals(sysName, WebItemExtension.GetSysName(product)))
                 {
@@ -479,12 +479,12 @@ public class CommonLinkUtility : BaseCommonLinkUtility
 
     public string GetUserParamsPair(Guid userID)
     {
-        return GetUserParamsPair(UserManager.GetUsers(userID));
+        return GetUserParamsPair(_userManager.GetUsers(userID));
     }
 
     public string GetUserParamsPair(UserInfo user)
     {
-        if (user == null || string.IsNullOrEmpty(user.UserName) || !UserManager.UserExists(user))
+        if (user == null || string.IsNullOrEmpty(user.UserName) || !_userManager.UserExists(user))
         {
             return "";
         }
@@ -546,7 +546,7 @@ public class CommonLinkUtility : BaseCommonLinkUtility
 
     public string GetToken(int tenantId, string email, ConfirmType confirmType, object postfix = null, Guid userId = default)
     {
-        var validationKey = EmailValidationKeyProvider.GetEmailKey(tenantId, email + confirmType + (postfix ?? ""));
+        var validationKey = _emailValidationKeyProvider.GetEmailKey(tenantId, email + confirmType + (postfix ?? ""));
 
         var link = $"type={confirmType}&key={validationKey}";
 

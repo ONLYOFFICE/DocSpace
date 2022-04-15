@@ -55,10 +55,10 @@ public class TenantInfoSettings : ISettings<TenantInfoSettings>
 [Scope]
 public class TenantInfoSettingsHelper
 {
-    private WebImageSupplier WebImageSupplier { get; }
-    private StorageFactory StorageFactory { get; }
-    private TenantManager TenantManager { get; }
-    private IConfiguration Configuration { get; }
+    private readonly WebImageSupplier _webImageSupplier;
+    private readonly StorageFactory _storageFactory;
+    private readonly TenantManager _tenantManager;
+    private readonly IConfiguration _configuration;
 
     public TenantInfoSettingsHelper(
         WebImageSupplier webImageSupplier,
@@ -66,10 +66,10 @@ public class TenantInfoSettingsHelper
         TenantManager tenantManager,
         IConfiguration configuration)
     {
-        WebImageSupplier = webImageSupplier;
-        StorageFactory = storageFactory;
-        TenantManager = tenantManager;
-        Configuration = configuration;
+        _webImageSupplier = webImageSupplier;
+        _storageFactory = storageFactory;
+        _tenantManager = tenantManager;
+        _configuration = configuration;
     }
     public void RestoreDefault(TenantInfoSettings tenantInfoSettings, TenantLogoManager tenantLogoManager)
     {
@@ -79,16 +79,16 @@ public class TenantInfoSettingsHelper
 
     public void RestoreDefaultTenantName()
     {
-        var currentTenant = TenantManager.GetCurrentTenant();
-        currentTenant.Name = Configuration["web:portal-name"] ?? "Cloud Office Applications";
-        TenantManager.SaveTenant(currentTenant);
+        var currentTenant = _tenantManager.GetCurrentTenant();
+        currentTenant.Name = _configuration["web:portal-name"] ?? "Cloud Office Applications";
+        _tenantManager.SaveTenant(currentTenant);
     }
 
     public void RestoreDefaultLogo(TenantInfoSettings tenantInfoSettings, TenantLogoManager tenantLogoManager)
     {
         tenantInfoSettings.IsDefault = true;
 
-        var store = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().Id.ToString(), "logo");
+        var store = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id.ToString(), "logo");
         try
         {
             store.DeleteFilesAsync("", "*", false).Wait();
@@ -103,7 +103,7 @@ public class TenantInfoSettingsHelper
 
     public void SetCompanyLogo(string companyLogoFileName, byte[] data, TenantInfoSettings tenantInfoSettings, TenantLogoManager tenantLogoManager)
     {
-        var store = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().Id.ToString(), "logo");
+        var store = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id.ToString(), "logo");
 
         if (!tenantInfoSettings.IsDefault)
         {
@@ -132,10 +132,10 @@ public class TenantInfoSettingsHelper
     {
         if (tenantInfoSettings.IsDefault)
         {
-            return WebImageSupplier.GetAbsoluteWebPath("logo/dark_general.png");
+            return _webImageSupplier.GetAbsoluteWebPath("logo/dark_general.png");
         }
 
-        var store = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().Id.ToString(), "logo");
+        var store = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id.ToString(), "logo");
         return store.GetUriAsync(tenantInfoSettings.CompanyLogoFileName ?? "").Result.ToString();
     }
 
@@ -149,7 +149,7 @@ public class TenantInfoSettingsHelper
             return null;
         }
 
-        var storage = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().Id.ToString(CultureInfo.InvariantCulture), "logo");
+        var storage = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id.ToString(CultureInfo.InvariantCulture), "logo");
 
         if (storage == null)
         {

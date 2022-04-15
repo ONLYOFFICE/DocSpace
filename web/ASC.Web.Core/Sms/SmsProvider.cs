@@ -29,18 +29,17 @@ namespace ASC.Web.Core.Sms;
 [Scope(Additional = typeof(TwilioProviderExtention))]
 public class SmsProviderManager
 {
-    public SmscProvider SmscProvider { get => ConsumerFactory.Get<SmscProvider>(); }
-    private ConsumerFactory ConsumerFactory { get; }
+    private readonly ConsumerFactory _consumerFactory;
 
-    public ClickatellProvider ClickatellProvider { get => ConsumerFactory.Get<ClickatellProvider>(); }
-    public TwilioProvider TwilioProvider { get => ConsumerFactory.Get<TwilioProvider>(); }
-
-    public ClickatellProvider ClickatellUSAProvider { get => ConsumerFactory.Get<ClickatellUSAProvider>(); }
-    public TwilioProvider TwilioSaaSProvider { get => ConsumerFactory.Get<TwilioSaaSProvider>(); }
+    public SmscProvider SmscProvider { get => _consumerFactory.Get<SmscProvider>(); }
+    public ClickatellProvider ClickatellProvider { get => _consumerFactory.Get<ClickatellProvider>(); }
+    public TwilioProvider TwilioProvider { get => _consumerFactory.Get<TwilioProvider>(); }
+    public ClickatellProvider ClickatellUSAProvider { get => _consumerFactory.Get<ClickatellUSAProvider>(); }
+    public TwilioProvider TwilioSaaSProvider { get => _consumerFactory.Get<TwilioSaaSProvider>(); }
 
     public SmsProviderManager(ConsumerFactory consumerFactory)
     {
-        ConsumerFactory = consumerFactory;
+        _consumerFactory = consumerFactory;
     }
 
     public bool Enabled()
@@ -379,11 +378,11 @@ public class TwilioProvider : SmsProvider, IValidateKeysProvider
         get { return this["twiliosender"]; }
     }
 
-    public AuthContext AuthContext { get; }
-    public TenantUtil TenantUtil { get; }
-    public SecurityContext SecurityContext { get; }
-    public BaseCommonLinkUtility BaseCommonLinkUtility { get; }
-    public TwilioProviderCleaner TwilioProviderCleaner { get; }
+    private readonly AuthContext _authContext;
+    private readonly TenantUtil _tenantUtil;
+    private readonly SecurityContext _securityContext;
+    private readonly BaseCommonLinkUtility _baseCommonLinkUtility;
+    private readonly TwilioProviderCleaner _twilioProviderCleaner;
 
     public override bool Enable()
     {
@@ -442,11 +441,11 @@ public class TwilioProvider : SmsProvider, IValidateKeysProvider
         string name, int order, Dictionary<string, string> props)
         : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, clientFactory, memCache, name, order, props)
     {
-        AuthContext = authContext;
-        TenantUtil = tenantUtil;
-        SecurityContext = securityContext;
-        BaseCommonLinkUtility = baseCommonLinkUtility;
-        TwilioProviderCleaner = twilioProviderCleaner;
+        _authContext = authContext;
+        _tenantUtil = tenantUtil;
+        _securityContext = securityContext;
+        _baseCommonLinkUtility = baseCommonLinkUtility;
+        _twilioProviderCleaner = twilioProviderCleaner;
     }
 
 
@@ -454,7 +453,7 @@ public class TwilioProvider : SmsProvider, IValidateKeysProvider
     {
         try
         {
-            new VoipService.Twilio.TwilioProvider(Key, Secret, AuthContext, TenantUtil, SecurityContext, BaseCommonLinkUtility).GetExistingPhoneNumbers();
+            new VoipService.Twilio.TwilioProvider(Key, Secret, _authContext, _tenantUtil, _securityContext, _baseCommonLinkUtility).GetExistingPhoneNumbers();
             return true;
         }
         catch (Exception)
@@ -465,7 +464,7 @@ public class TwilioProvider : SmsProvider, IValidateKeysProvider
 
     public void ClearOldNumbers()
     {
-        TwilioProviderCleaner.ClearOldNumbers(Key, Secret);
+        _twilioProviderCleaner.ClearOldNumbers(Key, Secret);
     }
 }
 
@@ -500,19 +499,19 @@ public class TwilioSaaSProvider : TwilioProvider
 [Scope]
 public class TwilioProviderCleaner
 {
-    private VoipDao VoipDao { get; }
-    private AuthContext AuthContext { get; }
-    private TenantUtil TenantUtil { get; }
-    private SecurityContext SecurityContext { get; }
-    private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
+    private readonly VoipDao _voipDao;
+    private readonly AuthContext _authContext;
+    private readonly TenantUtil _tenantUtil;
+    private readonly SecurityContext _securityContext;
+    private readonly BaseCommonLinkUtility _baseCommonLinkUtility;
 
     public TwilioProviderCleaner(VoipDao voipDao, AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, BaseCommonLinkUtility baseCommonLinkUtility)
     {
-        VoipDao = voipDao;
-        AuthContext = authContext;
-        TenantUtil = tenantUtil;
-        SecurityContext = securityContext;
-        BaseCommonLinkUtility = baseCommonLinkUtility;
+        _voipDao = voipDao;
+        _authContext = authContext;
+        _tenantUtil = tenantUtil;
+        _securityContext = securityContext;
+        _baseCommonLinkUtility = baseCommonLinkUtility;
     }
 
     public void ClearOldNumbers(string key, string secret)
@@ -522,13 +521,13 @@ public class TwilioProviderCleaner
             return;
         }
 
-        var provider = new VoipService.Twilio.TwilioProvider(key, secret, AuthContext, TenantUtil, SecurityContext, BaseCommonLinkUtility);
+        var provider = new VoipService.Twilio.TwilioProvider(key, secret, _authContext, _tenantUtil, _securityContext, _baseCommonLinkUtility);
 
-        var numbers = VoipDao.GetNumbers();
+        var numbers = _voipDao.GetNumbers();
         foreach (var number in numbers)
         {
             provider.DisablePhone(number);
-            VoipDao.DeleteNumber(number.Id);
+            _voipDao.DeleteNumber(number.Id);
         }
     }
 }

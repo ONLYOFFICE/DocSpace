@@ -172,7 +172,7 @@ public partial class TextileFormatter
         }
         else
         {
-            ChangeState(new States.ParagraphFormatterState(this));
+            ChangeState(new ParagraphFormatterState(this));
         }
         return input;
     }

@@ -262,8 +262,7 @@ public class FileSharingHelper
 [Scope]
 public class FileSharing
 {
-    public ILog Logger { get; }
-
+    private readonly ILog _logger;
     private readonly Global _global;
     private readonly FileSecurity _fileSecurity;
     private readonly AuthContext _authContext;
@@ -292,7 +291,7 @@ public class FileSharing
         _fileShareLink = fileShareLink;
         _daoFactory = daoFactory;
         _fileSharingHelper = fileSharingHelper;
-        Logger = optionsMonitor.CurrentValue;
+        _logger = optionsMonitor.CurrentValue;
     }
 
     public Task<bool> CanSetAccessAsync<T>(FileEntry<T> entry)
@@ -309,7 +308,7 @@ public class FileSharing
 
         if (!await CanSetAccessAsync(entry))
         {
-            Logger.ErrorFormat("User {0} can't get shared info for {1} {2}", _authContext.CurrentAccount.ID, entry.FileEntryType == FileEntryType.File ? "file" : "folder", entry.Id);
+            _logger.ErrorFormat("User {0} can't get shared info for {1} {2}", _authContext.CurrentAccount.ID, entry.FileEntryType == FileEntryType.File ? "file" : "folder", entry.Id);
 
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
         }
@@ -480,7 +479,7 @@ public class FileSharing
             }
             catch (Exception e)
             {
-                Logger.Error(e);
+                _logger.Error(e);
 
                 throw new InvalidOperationException(e.Message, e);
             }

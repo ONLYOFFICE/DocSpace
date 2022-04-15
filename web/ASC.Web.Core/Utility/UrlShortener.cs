@@ -43,13 +43,13 @@ public class UrlShortener
         {
             if (_instance == null)
             {
-                if (ConsumerFactory.Get<BitlyLoginProvider>().Enabled)
+                if (_consumerFactory.Get<BitlyLoginProvider>().Enabled)
                 {
-                    _instance = new BitLyShortener(ConsumerFactory);
+                    _instance = new BitLyShortener(_consumerFactory);
                 }
-                else if (!string.IsNullOrEmpty(Configuration["web:url-shortener:value"]))
+                else if (!string.IsNullOrEmpty(_configuration["web:url-shortener:value"]))
                 {
-                    _instance = new OnlyoShortener(Configuration, CommonLinkUtility, MachinePseudoKeys, ClientFactory);
+                    _instance = new OnlyoShortener(_configuration, _commonLinkUtility, _machinePseudoKeys, _clientFactory);
                 }
                 else
                 {
@@ -65,11 +65,11 @@ public class UrlShortener
         }
     }
 
-    private IConfiguration Configuration { get; }
-    private ConsumerFactory ConsumerFactory { get; }
-    private CommonLinkUtility CommonLinkUtility { get; }
-    private MachinePseudoKeys MachinePseudoKeys { get; }
-    private IHttpClientFactory ClientFactory { get; }
+    private readonly IConfiguration _configuration;
+    private readonly ConsumerFactory _consumerFactory;
+    private readonly CommonLinkUtility _commonLinkUtility;
+    private readonly MachinePseudoKeys _machinePseudoKeys;
+    private readonly IHttpClientFactory _clientFactory;
 
     public UrlShortener(
         IConfiguration configuration,
@@ -78,11 +78,11 @@ public class UrlShortener
         MachinePseudoKeys machinePseudoKeys,
         IHttpClientFactory clientFactory)
     {
-        Configuration = configuration;
-        ConsumerFactory = consumerFactory;
-        CommonLinkUtility = commonLinkUtility;
-        MachinePseudoKeys = machinePseudoKeys;
-        ClientFactory = clientFactory;
+        _configuration = configuration;
+        _consumerFactory = consumerFactory;
+        _commonLinkUtility = commonLinkUtility;
+        _machinePseudoKeys = machinePseudoKeys;
+        _clientFactory = clientFactory;
     }
 }
 

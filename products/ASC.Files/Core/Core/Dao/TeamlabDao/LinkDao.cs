@@ -29,11 +29,9 @@ namespace ASC.Files.Core.Data;
 [Scope]
 internal class LinkDao : AbstractDao, ILinkDao
 {
-    public DbContextManager<FilesDbContext> DbContextManager { get; }
-
     public LinkDao(
         UserManager userManager,
-        DbContextManager<EF.FilesDbContext> dbContextManager,
+        DbContextManager<FilesDbContext> dbContextManager,
         TenantManager tenantManager,
         TenantUtil tenantUtil,
         SetupInfo setupInfo,

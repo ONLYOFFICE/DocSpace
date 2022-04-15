@@ -320,6 +320,6 @@ class CachedTenantService : ITenantService
         Service.SetTenantSettings(tenant, key, data);
         var cacheKey = string.Format("settings/{0}/{1}", tenant, key);
 
-        CacheNotifySettings.Publish(new TenantSetting { Key = cacheKey }, ASC.Common.Caching.CacheNotifyAction.Remove);
+        CacheNotifySettings.Publish(new TenantSetting { Key = cacheKey }, CacheNotifyAction.Remove);
     }
 }

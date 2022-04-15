@@ -46,11 +46,11 @@ public class StudioSmsNotificationSettings : ISettings<StudioSmsNotificationSett
 [Scope]
 public class StudioSmsNotificationSettingsHelper
 {
-    private TenantExtra TenantExtra { get; }
-    private CoreBaseSettings CoreBaseSettings { get; }
-    private SetupInfo SetupInfo { get; }
-    private SettingsManager SettingsManager { get; }
-    private SmsProviderManager SmsProviderManager { get; }
+    private readonly TenantExtra _tenantExtra;
+    private readonly CoreBaseSettings _coreBaseSettings;
+    private readonly SetupInfo _setupInfo;
+    private readonly SettingsManager _settingsManager;
+    private readonly SmsProviderManager _smsProviderManager;
 
     public StudioSmsNotificationSettingsHelper(
         TenantExtra tenantExtra,
@@ -59,18 +59,18 @@ public class StudioSmsNotificationSettingsHelper
         SettingsManager settingsManager,
         SmsProviderManager smsProviderManager)
     {
-        TenantExtra = tenantExtra;
-        CoreBaseSettings = coreBaseSettings;
-        SetupInfo = setupInfo;
-        SettingsManager = settingsManager;
-        SmsProviderManager = smsProviderManager;
+        _tenantExtra = tenantExtra;
+        _coreBaseSettings = coreBaseSettings;
+        _setupInfo = setupInfo;
+        _settingsManager = settingsManager;
+        _smsProviderManager = smsProviderManager;
     }
 
     public bool IsVisibleSettings()
     {
-        var quota = TenantExtra.GetTenantQuota();
-        return CoreBaseSettings.Standalone
-                || ((!quota.Trial || SetupInfo.SmsTrial)
+        var quota = _tenantExtra.GetTenantQuota();
+        return _coreBaseSettings.Standalone
+                || ((!quota.Trial || _setupInfo.SmsTrial)
                     && !quota.NonProfit
                     && !quota.Free
                     && !quota.Open);
@@ -78,12 +78,12 @@ public class StudioSmsNotificationSettingsHelper
 
     public bool Enable
     {
-        get { return SettingsManager.Load<StudioSmsNotificationSettings>().EnableSetting && SmsProviderManager.Enabled(); }
+        get { return _settingsManager.Load<StudioSmsNotificationSettings>().EnableSetting && _smsProviderManager.Enabled(); }
         set
         {
-            var settings = SettingsManager.Load<StudioSmsNotificationSettings>();
+            var settings = _settingsManager.Load<StudioSmsNotificationSettings>();
             settings.EnableSetting = value;
-            SettingsManager.Save<StudioSmsNotificationSettings>(settings);
+            _settingsManager.Save(settings);
         }
     }
 }

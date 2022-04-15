@@ -31,7 +31,7 @@ public static class GrammaticalHelper
     public static string ChooseNumeralCase(int number, string nominative, string genitiveSingular, string genitivePlural)
     {
         if (
-            System.Threading.Thread.CurrentThread.CurrentUICulture.ThreeLetterISOLanguageName.Equals("rus", StringComparison.InvariantCultureIgnoreCase))
+            Thread.CurrentThread.CurrentUICulture.ThreeLetterISOLanguageName.Equals("rus", StringComparison.InvariantCultureIgnoreCase))
         {
             int[] formsTable = { 2, 0, 1, 1, 1, 2, 2, 2, 2, 2 };
 

@@ -94,7 +94,7 @@ static class Globals
     public static string EncodeHTMLLink(string url)
     {
         url = url.Replace("&amp;", "&#38;");
-        url = System.Text.RegularExpressions.Regex.Replace(url, "&(?=[^#])", "&#38;");
+        url = Regex.Replace(url, "&(?=[^#])", "&#38;");
         return url;
     }
 }

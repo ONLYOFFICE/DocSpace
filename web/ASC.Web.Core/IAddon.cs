@@ -26,7 +26,7 @@
 
 namespace ASC.Web.Core;
 
-[WebZoneAttribute(WebZoneType.Nowhere)]
+[WebZone(WebZoneType.Nowhere)]
 public interface IAddon : IWebItem
 {
     new AddonContext Context { get; }

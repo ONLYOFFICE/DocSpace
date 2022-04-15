@@ -76,7 +76,7 @@ public class TariffSettings : ISettings<TariffSettings>
     {
         var tariffSettings = settingsManager.Load<TariffSettings>();
         tariffSettings.HidePricingPageForUsers = newVal;
-        settingsManager.Save<TariffSettings>(tariffSettings);
+        settingsManager.Save(tariffSettings);
     }
 
     public static bool GetLicenseAccept(SettingsManager settingsManager)

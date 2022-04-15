@@ -120,7 +120,7 @@ public static class ServiceCollectionExtension
                 var logger = sp.GetRequiredService<IOptionsMonitor<ILog>>();
                 var eventBusSubcriptionsManager = sp.GetRequiredService<IEventBusSubscriptionsManager>();
 
-                var serializer = new ASC.EventBus.Serializers.ProtobufSerializer();
+                var serializer = new EventBus.Serializers.ProtobufSerializer();
 
                 var subscriptionClientName = "asc_event_bus_default_queue";
 

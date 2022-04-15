@@ -200,6 +200,6 @@ public class TenantLogoManager
 
     public void RemoveMailLogoDataFromCache()
     {
-        _cacheNotify.Publish(new TenantLogoCacheItem() { Key = CacheKey }, Common.Caching.CacheNotifyAction.Remove);
+        _cacheNotify.Publish(new TenantLogoCacheItem() { Key = CacheKey }, CacheNotifyAction.Remove);
     }
 }

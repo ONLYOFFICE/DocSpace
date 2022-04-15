@@ -33,9 +33,9 @@ public static class StudioUserInfoExtension
         return userInfo == null ? "" : commonLinkUtility.GetUserProfile(userInfo);
     }
 
-    public static List<string> GetListAdminModules(this UserInfo ui, WebItemSecurity webItemSecurity)
+    public static List<string> GetListAdminModules(this UserInfo ui, WebItemSecurity webItemSecurity, WebItemManager webItemManager)
     {
-        var products = webItemSecurity.WebItemManager.GetItemsAll().Where(i => i is IProduct || i.ID == WebItemManager.MailProductID);
+        var products = webItemManager.GetItemsAll().Where(i => i is IProduct || i.ID == WebItemManager.MailProductID);
 
         return (from product in products where webItemSecurity.IsProductAdministrator(product.ID, ui.Id) select product.ProductClassName).ToList();
     }

@@ -142,7 +142,7 @@ public class RackspaceCloudStorage : BaseStorage
         }
         else
         {
-            secretKey = Common.Utils.RandomString.Generate(64);
+            secretKey = RandomString.Generate(64);
             accounMetaData.Add("Temp-Url-Key", secretKey);
             client.UpdateAccountMetadata(accounMetaData, _region);
         }

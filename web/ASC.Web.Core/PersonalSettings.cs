@@ -54,32 +54,32 @@ public class PersonalSettings : ISettings<PersonalSettings>
 [Scope]
 public class PersonalSettingsHelper
 {
+    private readonly SettingsManager _settingsManager;
+
     public PersonalSettingsHelper(SettingsManager settingsManager)
     {
-        SettingsManager = settingsManager;
+        _settingsManager = settingsManager;
     }
 
     public bool IsNewUser
     {
-        get { return SettingsManager.LoadForCurrentUser<PersonalSettings>().IsNewUserSetting; }
+        get { return _settingsManager.LoadForCurrentUser<PersonalSettings>().IsNewUserSetting; }
         set
         {
-            var settings = SettingsManager.LoadForCurrentUser<PersonalSettings>();
+            var settings = _settingsManager.LoadForCurrentUser<PersonalSettings>();
             settings.IsNewUserSetting = value;
-            SettingsManager.SaveForCurrentUser(settings);
+            _settingsManager.SaveForCurrentUser(settings);
         }
     }
 
     public bool IsNotActivated
     {
-        get { return SettingsManager.LoadForCurrentUser<PersonalSettings>().IsNotActivatedSetting; }
+        get { return _settingsManager.LoadForCurrentUser<PersonalSettings>().IsNotActivatedSetting; }
         set
         {
-            var settings = SettingsManager.LoadForCurrentUser<PersonalSettings>();
+            var settings = _settingsManager.LoadForCurrentUser<PersonalSettings>();
             settings.IsNotActivatedSetting = value;
-            SettingsManager.SaveForCurrentUser(settings);
+            _settingsManager.SaveForCurrentUser(settings);
         }
     }
-
-    private SettingsManager SettingsManager { get; }
 }

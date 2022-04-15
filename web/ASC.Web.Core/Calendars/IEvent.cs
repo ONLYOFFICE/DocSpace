@@ -26,7 +26,7 @@
 
 namespace ASC.Web.Core.Calendars;
 
-[System.AttributeUsage(System.AttributeTargets.Class,
+[AttributeUsage(AttributeTargets.Class,
                AllowMultiple = false,
                Inherited = true)]
 public class AllDayLongUTCAttribute : Attribute

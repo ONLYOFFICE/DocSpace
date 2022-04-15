@@ -199,7 +199,7 @@ public class StorageController : BaseSettingsController
 
         foreach (var tenant in tenants)
         {
-            _cacheDeleteSchedule.Publish(new DeleteSchedule() { TenantId = tenant.Id }, Common.Caching.CacheNotifyAction.Insert);
+            _cacheDeleteSchedule.Publish(new DeleteSchedule() { TenantId = tenant.Id }, CacheNotifyAction.Insert);
         }
 
         var settings = _encryptionSettingsHelper.Load();

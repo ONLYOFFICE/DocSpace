@@ -126,7 +126,7 @@ public class GoogleCloudStorage : BaseStorage
         using var storage = GetStorage();
 
         using var stream = new MemoryStream(Encoding.UTF8.GetBytes(_json ?? ""));
-        var preSignedURL = await UrlSigner.FromServiceAccountData(stream).SignAsync(_bucket, MakePath(domain, path), expire, HttpMethod.Get);
+        var preSignedURL = await FromServiceAccountData(stream).SignAsync(_bucket, MakePath(domain, path), expire, HttpMethod.Get);
 
         return MakeUri(preSignedURL);
     }
@@ -135,12 +135,12 @@ public class GoogleCloudStorage : BaseStorage
     {
         return new Uri(SecureHelper.IsSecure(_httpContextAccessor.HttpContext, _options) ? _bucketSSlRoot : _bucketRoot, MakePath(domain, path));
     }
-    public override Task<System.IO.Stream> GetReadStreamAsync(string domain, string path)
+    public override Task<Stream> GetReadStreamAsync(string domain, string path)
     {
         return GetReadStreamAsync(domain, path, 0);
     }
 
-    public override async Task<System.IO.Stream> GetReadStreamAsync(string domain, string path, int offset)
+    public override async Task<Stream> GetReadStreamAsync(string domain, string path, int offset)
     {
         var tempStream = _tempStream.Create();
 
@@ -158,22 +158,22 @@ public class GoogleCloudStorage : BaseStorage
         return tempStream;
     }
 
-    public override Task<Uri> SaveAsync(string domain, string path, System.IO.Stream stream)
+    public override Task<Uri> SaveAsync(string domain, string path, Stream stream)
     {
         return SaveAsync(domain, path, stream, string.Empty, string.Empty);
     }
 
-    public override Task<Uri> SaveAsync(string domain, string path, System.IO.Stream stream, Configuration.ACL acl)
+    public override Task<Uri> SaveAsync(string domain, string path, Stream stream, ACL acl)
     {
         return SaveAsync(domain, path, stream, null, null, acl);
     }
 
-    public override Task<Uri> SaveAsync(string domain, string path, System.IO.Stream stream, string contentType, string contentDisposition)
+    public override Task<Uri> SaveAsync(string domain, string path, Stream stream, string contentType, string contentDisposition)
     {
         return SaveAsync(domain, path, stream, contentType, contentDisposition, ACL.Auto);
     }
 
-    public override Task<Uri> SaveAsync(string domain, string path, System.IO.Stream stream, string contentEncoding, int cacheDays)
+    public override Task<Uri> SaveAsync(string domain, string path, Stream stream, string contentEncoding, int cacheDays)
     {
         return SaveAsync(domain, path, stream, string.Empty, string.Empty, ACL.Auto, contentEncoding, cacheDays);
     }
@@ -377,7 +377,7 @@ public class GoogleCloudStorage : BaseStorage
         return await GetUriAsync(newdomain, newpath);
     }
 
-    public override Task<Uri> SaveTempAsync(string domain, out string assignedPath, System.IO.Stream stream)
+    public override Task<Uri> SaveTempAsync(string domain, out string assignedPath, Stream stream)
     {
         assignedPath = Guid.NewGuid().ToString();
 
@@ -568,7 +568,7 @@ public class GoogleCloudStorage : BaseStorage
         }
     }
 
-    public override async Task<string> SavePrivateAsync(string domain, string path, System.IO.Stream stream, DateTime expires)
+    public override async Task<string> SavePrivateAsync(string domain, string path, Stream stream, DateTime expires)
     {
         using var storage = GetStorage();
 
@@ -757,7 +757,7 @@ public class GoogleCloudStorage : BaseStorage
         throw new NotImplementedException();
     }
 
-    protected override Task<Uri> SaveWithAutoAttachmentAsync(string domain, string path, System.IO.Stream stream, string attachmentFileName)
+    protected override Task<Uri> SaveWithAutoAttachmentAsync(string domain, string path, Stream stream, string attachmentFileName)
     {
         var contentDisposition = $"attachment; filename={HttpUtility.UrlPathEncode(attachmentFileName)};";
         if (attachmentFileName.Any(c => c >= 0 && c <= 127))

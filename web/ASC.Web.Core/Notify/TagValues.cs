@@ -55,7 +55,7 @@ public static class TagValues
             return $@"<table style=""height: 48px; width: 540px; border-collapse: collapse; empty-cells: show; vertical-align: middle; text-align: center; margin: 30px auto; padding: 0;""><tbody><tr cellpadding=""0"" cellspacing=""0"" border=""0"">{td}<td style=""height: 48px; width: 380px; margin:0; padding:0; background-color: #66b76d; -moz-border-radius: 2px; -webkit-border-radius: 2px; border-radius: 2px;""><a style=""{color}"" target=""_blank"" href=""{btnUrl}"">{btnText}</a></td>{td}</tr></tbody></table>";
         }
 
-        return new ASC.Notify.Patterns.TagActionValue("BlueButton", action);
+        return new TagActionValue("BlueButton", action);
     }
 
     public static ITagValue GreenButton(Func<string> btnTextFunc, string btnUrl)

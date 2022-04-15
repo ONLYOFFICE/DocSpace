@@ -343,7 +343,7 @@ public class AuthenticationController : ControllerBase
             }
             else
             {
-                throw new System.Security.SecurityException("Auth code is not available");
+                throw new SecurityException("Auth code is not available");
             }
 
             var token = _securityContext.AuthenticateMe(user.Id);

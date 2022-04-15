@@ -33,12 +33,12 @@ public class StatisticManager
     private static readonly TimeSpan _cacheTime = TimeSpan.FromMinutes(2);
     private static readonly IDictionary<string, UserVisit> _cache = new Dictionary<string, UserVisit>();
 
-    private Lazy<WebstudioDbContext> LazyWebstudioDbContext { get; }
-    private WebstudioDbContext WebstudioDbContext { get => LazyWebstudioDbContext.Value; }
+    private readonly Lazy<WebstudioDbContext> _lazyWebstudioDbContext;
+    private WebstudioDbContext WebstudioDbContext { get => _lazyWebstudioDbContext.Value; }
 
     public StatisticManager(DbContextManager<WebstudioDbContext> dbContextManager)
     {
-        LazyWebstudioDbContext = new Lazy<WebstudioDbContext>(() => dbContextManager.Value);
+        _lazyWebstudioDbContext = new Lazy<WebstudioDbContext>(() => dbContextManager.Value);
     }
 
     public void SaveUserVisit(int tenantID, Guid userID, Guid productID)

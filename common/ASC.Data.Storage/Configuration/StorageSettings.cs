@@ -229,7 +229,7 @@ public class StorageSettingsHelper
 
         foreach (var module in _storageFactoryConfig.GetModuleList("", true))
         {
-            _cache.Publish(new DataStoreCacheItem() { TenantId = path, Module = module }, Common.Caching.CacheNotifyAction.Remove);
+            _cache.Publish(new DataStoreCacheItem() { TenantId = path, Module = module }, CacheNotifyAction.Remove);
         }
     }
 }

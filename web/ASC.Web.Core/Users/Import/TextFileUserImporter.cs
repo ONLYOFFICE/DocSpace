@@ -118,7 +118,7 @@ public class TextFileUserImporter : IUserImporter
         var result = Regex.Split(line, pattern);
 
         //remove TextDelmiter
-        result = Array.ConvertAll<string, string>(result,
+        result = Array.ConvertAll(result,
             original =>
             {
                 if (original.StartsWith(TextDelmiter) && original.EndsWith(TextDelmiter))

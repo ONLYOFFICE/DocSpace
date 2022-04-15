@@ -95,6 +95,7 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
     private readonly ApiContext _context;
     private readonly WebItemSecurity _webItemSecurity;
     private readonly ApiDateTimeHelper _apiDateTimeHelper;
+    private readonly WebItemManager _webItemManager;
 
     public EmployeeFullDtoHelper(
         ApiContext context,
@@ -103,12 +104,14 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
         WebItemSecurity webItemSecurity,
         CommonLinkUtility commonLinkUtility,
         DisplayUserSettingsHelper displayUserSettingsHelper,
-        ApiDateTimeHelper apiDateTimeHelper)
+        ApiDateTimeHelper apiDateTimeHelper,
+        WebItemManager webItemManager)
     : base(context, displayUserSettingsHelper, userPhotoManager, commonLinkUtility, userManager)
     {
         _context = context;
         _webItemSecurity = webItemSecurity;
         _apiDateTimeHelper = apiDateTimeHelper;
+        _webItemManager = webItemManager;
     }
 
     public static Expression<Func<User, UserInfo>> GetExpression(ApiContext apiContext)
@@ -223,7 +226,7 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
 
         if (_context.Check("listAdminModules"))
         {
-            var listAdminModules = userInfo.GetListAdminModules(_webItemSecurity);
+            var listAdminModules = userInfo.GetListAdminModules(_webItemSecurity, _webItemManager);
             if (listAdminModules.Count > 0)
             {
                 result.ListAdminModules = listAdminModules;

@@ -245,15 +245,15 @@ public class StudioWhatsNewNotify
     private static string GetWhatsNewActionText(FeedMin feed)
     {
 
-        if (feed.Module == ASC.Feed.Constants.BookmarksModule)
+        if (feed.Module == Feed.Constants.BookmarksModule)
         {
             return WebstudioNotifyPatternResource.ActionCreateBookmark;
         }
-        else if (feed.Module == ASC.Feed.Constants.BlogsModule)
+        else if (feed.Module == Feed.Constants.BlogsModule)
         {
             return WebstudioNotifyPatternResource.ActionCreateBlog;
         }
-        else if (feed.Module == ASC.Feed.Constants.ForumsModule)
+        else if (feed.Module == Feed.Constants.ForumsModule)
         {
             if (feed.Item == "forumTopic")
             {
@@ -270,51 +270,51 @@ public class StudioWhatsNewNotify
                 return WebstudioNotifyPatternResource.ActionCreateForumPoll;
             }
         }
-        else if (feed.Module == ASC.Feed.Constants.EventsModule)
+        else if (feed.Module == Feed.Constants.EventsModule)
         {
             return WebstudioNotifyPatternResource.ActionCreateEvent;
         }
-        else if (feed.Module == ASC.Feed.Constants.ProjectsModule)
+        else if (feed.Module == Feed.Constants.ProjectsModule)
         {
             return WebstudioNotifyPatternResource.ActionCreateProject;
         }
-        else if (feed.Module == ASC.Feed.Constants.MilestonesModule)
+        else if (feed.Module == Feed.Constants.MilestonesModule)
         {
             return WebstudioNotifyPatternResource.ActionCreateMilestone;
         }
-        else if (feed.Module == ASC.Feed.Constants.DiscussionsModule)
+        else if (feed.Module == Feed.Constants.DiscussionsModule)
         {
             return WebstudioNotifyPatternResource.ActionCreateDiscussion;
         }
-        else if (feed.Module == ASC.Feed.Constants.TasksModule)
+        else if (feed.Module == Feed.Constants.TasksModule)
         {
             return WebstudioNotifyPatternResource.ActionCreateTask;
         }
-        else if (feed.Module == ASC.Feed.Constants.CommentsModule)
+        else if (feed.Module == Feed.Constants.CommentsModule)
         {
             return WebstudioNotifyPatternResource.ActionCreateComment;
         }
-        else if (feed.Module == ASC.Feed.Constants.CrmTasksModule)
+        else if (feed.Module == Feed.Constants.CrmTasksModule)
         {
             return WebstudioNotifyPatternResource.ActionCreateTask;
         }
-        else if (feed.Module == ASC.Feed.Constants.ContactsModule)
+        else if (feed.Module == Feed.Constants.ContactsModule)
         {
             return WebstudioNotifyPatternResource.ActionCreateContact;
         }
-        else if (feed.Module == ASC.Feed.Constants.DealsModule)
+        else if (feed.Module == Feed.Constants.DealsModule)
         {
             return WebstudioNotifyPatternResource.ActionCreateDeal;
         }
-        else if (feed.Module == ASC.Feed.Constants.CasesModule)
+        else if (feed.Module == Feed.Constants.CasesModule)
         {
             return WebstudioNotifyPatternResource.ActionCreateCase;
         }
-        else if (feed.Module == ASC.Feed.Constants.FilesModule)
+        else if (feed.Module == Feed.Constants.FilesModule)
         {
             return WebstudioNotifyPatternResource.ActionCreateFile;
         }
-        else if (feed.Module == ASC.Feed.Constants.FoldersModule)
+        else if (feed.Module == Feed.Constants.FoldersModule)
         {
             return WebstudioNotifyPatternResource.ActionCreateFolder;
         }

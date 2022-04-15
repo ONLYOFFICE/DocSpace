@@ -241,8 +241,8 @@ internal class FileConverterQueue<T> : IDisposable
                     }
                     catch (Exception exception)
                     {
-                        var password = exception.InnerException is DocumentService.DocumentServiceException documentServiceException
-                                       && documentServiceException.Code == DocumentService.DocumentServiceException.ErrorCode.ConvertPassword;
+                        var password = exception.InnerException is DocumentServiceException documentServiceException
+                                       && documentServiceException.Code == DocumentServiceException.ErrorCode.ConvertPassword;
 
                         logger.Error(string.Format("Error convert {0} with url {1}", file.Id, fileUri), exception);
                         lock (_locker)

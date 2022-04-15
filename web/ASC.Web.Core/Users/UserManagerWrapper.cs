@@ -35,17 +35,17 @@ namespace ASC.Web.Core.Users;
 [Scope]
 public sealed class UserManagerWrapper
 {
-    private StudioNotifyService StudioNotifyService { get; }
-    private UserManager UserManager { get; }
-    private SecurityContext SecurityContext { get; }
-    private MessageService MessageService { get; }
-    private CustomNamingPeople CustomNamingPeople { get; }
-    private TenantUtil TenantUtil { get; }
-    private CoreBaseSettings CoreBaseSettings { get; }
-    private IPSecurity.IPSecurity IPSecurity { get; }
-    private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-    private SettingsManager SettingsManager { get; }
-    private UserFormatter UserFormatter { get; }
+    private readonly StudioNotifyService _studioNotifyService;
+    private readonly UserManager _userManager;
+    private readonly SecurityContext _securityContext;
+    private readonly MessageService _messageService;
+    private readonly CustomNamingPeople _customNamingPeople;
+    private readonly TenantUtil _tenantUtil;
+    private readonly CoreBaseSettings _coreBaseSettings;
+    private readonly IPSecurity.IPSecurity _iPSecurity;
+    private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
+    private readonly SettingsManager _settingsManager;
+    private readonly UserFormatter _userFormatter;
 
     public UserManagerWrapper(
         StudioNotifyService studioNotifyService,
@@ -60,17 +60,17 @@ public sealed class UserManagerWrapper
         SettingsManager settingsManager,
         UserFormatter userFormatter)
     {
-        StudioNotifyService = studioNotifyService;
-        UserManager = userManager;
-        SecurityContext = securityContext;
-        MessageService = messageService;
-        CustomNamingPeople = customNamingPeople;
-        TenantUtil = tenantUtil;
-        CoreBaseSettings = coreBaseSettings;
-        IPSecurity = iPSecurity;
-        DisplayUserSettingsHelper = displayUserSettingsHelper;
-        SettingsManager = settingsManager;
-        UserFormatter = userFormatter;
+        _studioNotifyService = studioNotifyService;
+        _userManager = userManager;
+        _securityContext = securityContext;
+        _messageService = messageService;
+        _customNamingPeople = customNamingPeople;
+        _tenantUtil = tenantUtil;
+        _coreBaseSettings = coreBaseSettings;
+        _iPSecurity = iPSecurity;
+        _displayUserSettingsHelper = displayUserSettingsHelper;
+        _settingsManager = settingsManager;
+        _userFormatter = userFormatter;
     }
 
     private bool TestUniqueUserName(string uniqueName)
@@ -80,7 +80,7 @@ public sealed class UserManagerWrapper
             return false;
         }
 
-        return Equals(UserManager.GetUserByUserName(uniqueName), Constants.LostUser);
+        return Equals(_userManager.GetUserByUserName(uniqueName), Constants.LostUser);
     }
 
     private string MakeUniqueName(UserInfo userInfo)
@@ -102,7 +102,7 @@ public sealed class UserManagerWrapper
 
     public bool CheckUniqueEmail(Guid userId, string email)
     {
-        var foundUser = UserManager.GetUserByEmail(email);
+        var foundUser = _userManager.GetUserByEmail(email);
         return Equals(foundUser, Constants.LostUser) || foundUser.Id == userId;
     }
 
@@ -110,14 +110,14 @@ public sealed class UserManagerWrapper
     {
         ArgumentNullException.ThrowIfNull(userInfo);
 
-        if (!UserFormatter.IsValidUserName(userInfo.FirstName, userInfo.LastName))
+        if (!_userFormatter.IsValidUserName(userInfo.FirstName, userInfo.LastName))
         {
             throw new Exception(Resource.ErrorIncorrectUserName);
         }
 
         if (!CheckUniqueEmail(userInfo.Id, userInfo.Email))
         {
-            throw new Exception(CustomNamingPeople.Substitute<Resource>("ErrorEmailAlreadyExists"));
+            throw new Exception(_customNamingPeople.Substitute<Resource>("ErrorEmailAlreadyExists"));
         }
 
         if (makeUniqueName)
@@ -126,20 +126,20 @@ public sealed class UserManagerWrapper
         }
         if (!userInfo.WorkFromDate.HasValue)
         {
-            userInfo.WorkFromDate = TenantUtil.DateTimeNow();
+            userInfo.WorkFromDate = _tenantUtil.DateTimeNow();
         }
 
-        if (!CoreBaseSettings.Personal && !fromInviteLink)
+        if (!_coreBaseSettings.Personal && !fromInviteLink)
         {
             userInfo.ActivationStatus = !afterInvite ? EmployeeActivationStatus.Pending : EmployeeActivationStatus.Activated;
         }
 
-        var newUserInfo = UserManager.SaveUserInfo(userInfo);
-        SecurityContext.SetUserPasswordHash(newUserInfo.Id, passwordHash);
+        var newUserInfo = _userManager.SaveUserInfo(userInfo);
+        _securityContext.SetUserPasswordHash(newUserInfo.Id, passwordHash);
 
-        if (CoreBaseSettings.Personal)
+        if (_coreBaseSettings.Personal)
         {
-            StudioNotifyService.SendUserWelcomePersonal(newUserInfo);
+            _studioNotifyService.SendUserWelcomePersonal(newUserInfo);
             return newUserInfo;
         }
 
@@ -150,16 +150,16 @@ public sealed class UserManagerWrapper
             {
                 if (isVisitor)
                 {
-                    StudioNotifyService.GuestInfoAddedAfterInvite(newUserInfo);
+                    _studioNotifyService.GuestInfoAddedAfterInvite(newUserInfo);
                 }
                 else
                 {
-                    StudioNotifyService.UserInfoAddedAfterInvite(newUserInfo);
+                    _studioNotifyService.UserInfoAddedAfterInvite(newUserInfo);
                 }
 
                 if (fromInviteLink)
                 {
-                    StudioNotifyService.SendEmailActivationInstructions(newUserInfo, newUserInfo.Email);
+                    _studioNotifyService.SendEmailActivationInstructions(newUserInfo, newUserInfo.Email);
                 }
             }
             else
@@ -167,11 +167,11 @@ public sealed class UserManagerWrapper
                 //Send user invite
                 if (isVisitor)
                 {
-                    StudioNotifyService.GuestInfoActivation(newUserInfo);
+                    _studioNotifyService.GuestInfoActivation(newUserInfo);
                 }
                 else
                 {
-                    StudioNotifyService.UserInfoActivation(newUserInfo);
+                    _studioNotifyService.UserInfoActivation(newUserInfo);
                 }
 
             }
@@ -179,7 +179,7 @@ public sealed class UserManagerWrapper
 
         if (isVisitor)
         {
-            UserManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupVisitor.ID);
+            _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupVisitor.ID);
         }
 
         return newUserInfo;
@@ -194,7 +194,7 @@ public sealed class UserManagerWrapper
             throw new Exception(Resource.ErrorPasswordEmpty);
         }
 
-        var passwordSettingsObj = SettingsManager.Load<PasswordSettings>();
+        var passwordSettingsObj = _settingsManager.Load<PasswordSettings>();
 
         if (!CheckPasswordRegex(passwordSettingsObj, password))
         {
@@ -206,7 +206,7 @@ public sealed class UserManagerWrapper
     {
         var pwdBuilder = new StringBuilder();
 
-        if (CoreBaseSettings.CustomMode)
+        if (_coreBaseSettings.CustomMode)
         {
             pwdBuilder.Append(@"^(?=.*[a-z]{0,})");
 
@@ -273,13 +273,13 @@ public sealed class UserManagerWrapper
             throw new ArgumentNullException(nameof(email), Resource.ErrorNotCorrectEmail);
         }
 
-        if (!IPSecurity.Verify())
+        if (!_iPSecurity.Verify())
         {
             throw new Exception(Resource.ErrorAccessRestricted);
         }
 
-        var userInfo = UserManager.GetUserByEmail(email);
-        if (!UserManager.UserExists(userInfo) || string.IsNullOrEmpty(userInfo.Email))
+        var userInfo = _userManager.GetUserByEmail(email);
+        if (!_userManager.UserExists(userInfo) || string.IsNullOrEmpty(userInfo.Email))
         {
             return string.Format(Resource.ErrorUserNotFoundByEmail, email);
         }
@@ -296,10 +296,10 @@ public sealed class UserManagerWrapper
             return Resource.CouldNotRecoverPasswordForSsoUser;
         }
 
-        StudioNotifyService.UserPasswordChange(userInfo);
+        _studioNotifyService.UserPasswordChange(userInfo);
 
-        var displayUserName = userInfo.DisplayUserName(false, DisplayUserSettingsHelper);
-        MessageService.Send(MessageAction.UserSentPasswordChangeInstructions, displayUserName);
+        var displayUserName = userInfo.DisplayUserName(false, _displayUserSettingsHelper);
+        _messageService.Send(MessageAction.UserSentPasswordChangeInstructions, displayUserName);
 
         return null;
     }
@@ -348,7 +348,7 @@ public sealed class UserManagerWrapper
     public string GetPasswordHelpMessage()
     {
         var info = new StringBuilder();
-        var passwordSettings = SettingsManager.Load<PasswordSettings>();
+        var passwordSettings = _settingsManager.Load<PasswordSettings>();
         info.Append($"{Resource.ErrorPasswordMessageStart} ");
         info.AppendFormat(Resource.ErrorPasswordLength, passwordSettings.MinLength, PasswordSettings.MaxLength);
         if (passwordSettings.UpperCase)

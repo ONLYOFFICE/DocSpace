@@ -88,7 +88,7 @@ public class OwnerController : BaseSettingsController
 
         if (newOwner.IsVisitor(_userManager))
         {
-            throw new System.Security.SecurityException("Collaborator can not be an owner");
+            throw new SecurityException("Collaborator can not be an owner");
         }
 
         if (!owner.Id.Equals(_authContext.CurrentAccount.ID) || Guid.Empty.Equals(newOwner.Id))

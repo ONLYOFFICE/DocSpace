@@ -60,7 +60,7 @@ internal class ProviderAccountDao : IProviderDao
     }
     private readonly Lazy<FilesDbContext> _lazyFilesDbContext;
     private FilesDbContext FilesDbContext => _lazyFilesDbContext.Value;
-    public ILog Logger { get; }
+    private readonly ILog _logger;
     private readonly IServiceProvider _serviceProvider;
     private readonly TenantUtil _tenantUtil;
     private readonly TenantManager _tenantManager;
@@ -83,7 +83,7 @@ internal class ProviderAccountDao : IProviderDao
         IOptionsMonitor<ILog> options)
     {
         _lazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
-        Logger = options.Get("ASC.Files");
+        _logger = options.Get("ASC.Files");
         _serviceProvider = serviceProvider;
         _tenantUtil = tenantUtil;
         _tenantManager = tenantManager;
@@ -124,7 +124,7 @@ internal class ProviderAccountDao : IProviderDao
         }
         catch (Exception e)
         {
-            Logger.Error(string.Format("GetProvidersInfoInternal: user = {0}", userId), e);
+            _logger.Error(string.Format("GetProvidersInfoInternal: user = {0}", userId), e);
 
             return new List<IProviderInfo>().ToAsyncEnumerable();
         }
@@ -149,7 +149,7 @@ internal class ProviderAccountDao : IProviderDao
         }
         catch (Exception e)
         {
-            Logger.Error(string.Format("GetProvidersInfoInternal: linkId = {0} , folderType = {1} , user = {2}",
+            _logger.Error(string.Format("GetProvidersInfoInternal: linkId = {0} , folderType = {1} , user = {2}",
                                               linkId, folderType, _securityContext.CurrentAccount.ID), e);
             return new List<IProviderInfo>().ToAsyncEnumerable();
         }
@@ -245,7 +245,7 @@ internal class ProviderAccountDao : IProviderDao
             }
             catch (Exception e)
             {
-                Logger.Error(string.Format("UpdateProviderInfo: linkId = {0} , user = {1}", linkId, _securityContext.CurrentAccount.ID), e);
+                _logger.Error(string.Format("UpdateProviderInfo: linkId = {0} , user = {1}", linkId, _securityContext.CurrentAccount.ID), e);
                 throw;
             }
 

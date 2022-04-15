@@ -52,7 +52,7 @@ internal class GoogleDriveStorage : IDisposable
         }
     }
 
-    public ILog Logger { get; }
+    private readonly ILog _logger;
     public bool IsOpened { get; private set; }
 
     private DriveService _driveService;
@@ -74,7 +74,7 @@ internal class GoogleDriveStorage : IDisposable
     {
         _consumerFactory = consumerFactory;
         _fileUtility = fileUtility;
-        Logger = monitor.Get("ASC.Files");
+        _logger = monitor.Get("ASC.Files");
         _tempStream = tempStream;
         _clientFactory = clientFactory;
         _oAuth20TokenHelper = oAuth20TokenHelper;
@@ -314,7 +314,7 @@ internal class GoogleDriveStorage : IDisposable
                 throw result.Exception;
             }
 
-            Logger.Error("Error while trying to insert entity. GoogleDrive insert returned an error.", result.Exception);
+            _logger.Error("Error while trying to insert entity. GoogleDrive insert returned an error.", result.Exception);
         }
 
         return request.ResponseBody;
@@ -345,7 +345,7 @@ internal class GoogleDriveStorage : IDisposable
                 throw result.Exception;
             }
 
-            Logger.Error("Error while trying to insert entity. GoogleDrive insert returned an error.", result.Exception);
+            _logger.Error("Error while trying to insert entity. GoogleDrive insert returned an error.", result.Exception);
         }
 
         return request.ResponseBody;
@@ -468,7 +468,7 @@ internal class GoogleDriveStorage : IDisposable
                 throw result.Exception;
             }
 
-            Logger.Error("Error while trying to insert entity. GoogleDrive save returned an error.", result.Exception);
+            _logger.Error("Error while trying to insert entity. GoogleDrive save returned an error.", result.Exception);
         }
 
         return request.ResponseBody;
@@ -489,7 +489,7 @@ internal class GoogleDriveStorage : IDisposable
                 throw result.Exception;
             }
 
-            Logger.Error("Error while trying to insert entity. GoogleDrive save returned an error.", result.Exception);
+            _logger.Error("Error while trying to insert entity. GoogleDrive save returned an error.", result.Exception);
         }
 
         return request.ResponseBody;

@@ -113,11 +113,11 @@ public class SetupInfo
     public string RecaptchaVerifyUrl { get; private set; }
     public int LoginThreshold { get; private set; }
     public string AmiMetaUrl { get; private set; }
-    private IConfiguration Configuration { get; }
+    private readonly IConfiguration _configuration;
 
     public SetupInfo(IConfiguration configuration)
     {
-        Configuration = configuration;
+        _configuration = configuration;
         MetaImageURL = GetAppSettings("web.meta-image-url", "https://download.onlyoffice.com/assets/fb/fb_icon_325x325.jpg");
         StatisticTrackURL = GetAppSettings("web.track-url", string.Empty);
         UserVoiceURL = GetAppSettings("web.uservoice", string.Empty);
@@ -226,7 +226,7 @@ public class SetupInfo
 
     private string GetAppSettings(string key, string defaultValue)
     {
-        var result = Configuration[key] ?? defaultValue;
+        var result = _configuration[key] ?? defaultValue;
 
         if (!string.IsNullOrEmpty(result))
         {
@@ -239,7 +239,7 @@ public class SetupInfo
 
     private T GetAppSettings<T>(string key, T defaultValue)
     {
-        var configSetting = Configuration[key];
+        var configSetting = _configuration[key];
         if (!string.IsNullOrEmpty(configSetting))
         {
             configSetting = configSetting.Trim();

@@ -55,15 +55,15 @@ public class ColorThemesSettings : ISettings<ColorThemesSettings>
 [Scope]
 public class ColorThemesSettingsHelper
 {
-    private SettingsManager SettingsManager { get; }
-    public IHostEnvironment HostEnvironment { get; }
+    private readonly SettingsManager _settingsManager;
+    private readonly IHostEnvironment _hostEnvironment;
 
     public ColorThemesSettingsHelper(
         SettingsManager settingsManager,
         IHostEnvironment hostEnvironment)
     {
-        SettingsManager = settingsManager;
-        HostEnvironment = hostEnvironment;
+        _settingsManager = settingsManager;
+        _hostEnvironment = hostEnvironment;
     }
 
     public string GetThemeFolderName(IUrlHelper urlHelper, string path)
@@ -79,7 +79,7 @@ public class ColorThemesSettingsHelper
 
         try
         {
-            var filePath = CrossPlatform.PathCombine(HostEnvironment.ContentRootPath, resolvedPath);
+            var filePath = CrossPlatform.PathCombine(_hostEnvironment.ContentRootPath, resolvedPath);
             if (!File.Exists(filePath))
             {
                 throw new FileNotFoundException("", path);
@@ -94,7 +94,7 @@ public class ColorThemesSettingsHelper
                 resolvedPath = urlHelper.Action(resolvedPath);
             }
 
-            var filePath = CrossPlatform.PathCombine(HostEnvironment.ContentRootPath, resolvedPath);
+            var filePath = CrossPlatform.PathCombine(_hostEnvironment.ContentRootPath, resolvedPath);
 
             if (!File.Exists(filePath))
             {
@@ -107,13 +107,13 @@ public class ColorThemesSettingsHelper
 
     public string GetColorThemesSettings()
     {
-        var colorTheme = SettingsManager.Load<ColorThemesSettings>();
+        var colorTheme = _settingsManager.Load<ColorThemesSettings>();
         var colorThemeName = colorTheme.ColorThemeName;
 
         if (colorTheme.FirstRequest)
         {
             colorTheme.FirstRequest = false;
-            SettingsManager.Save(colorTheme);
+            _settingsManager.Save(colorTheme);
         }
 
         return colorThemeName;
@@ -127,10 +127,10 @@ public class ColorThemesSettingsHelper
 
         try
         {
-            var filePath = CrossPlatform.PathCombine(HostEnvironment.ContentRootPath, resolvedPath);
+            var filePath = CrossPlatform.PathCombine(_hostEnvironment.ContentRootPath, resolvedPath);
             if (Directory.Exists(filePath))
             {
-                SettingsManager.Save(settings);
+                _settingsManager.Save(settings);
             }
         }
         catch (Exception)

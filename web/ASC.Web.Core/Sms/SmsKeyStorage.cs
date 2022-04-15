@@ -29,47 +29,45 @@ namespace ASC.Web.Core.Sms;
 [Singletone]
 public class SmsKeyStorageCache
 {
-    private ICacheNotify<SmsKeyCacheKey> KeyCacheNotify { get; }
-    public ICache KeyCache { get; }
-    public ICache CheckCache { get; }
+    private readonly ICacheNotify<SmsKeyCacheKey> _keyCacheNotify;
+    private readonly ICache _keyCache;
 
     public SmsKeyStorageCache(ICacheNotify<SmsKeyCacheKey> keyCacheNotify, ICache cache)
     {
-        CheckCache = cache;
-        KeyCache = cache;
-        KeyCacheNotify = keyCacheNotify;
-        KeyCacheNotify.Subscribe(r => KeyCache.Remove(r.Key), Common.Caching.CacheNotifyAction.Remove);
+        _keyCache = cache;
+        _keyCacheNotify = keyCacheNotify;
+        _keyCacheNotify.Subscribe(r => _keyCache.Remove(r.Key), CacheNotifyAction.Remove);
     }
 
     public void RemoveFromCache(string cacheKey)
     {
-        KeyCacheNotify.Publish(new SmsKeyCacheKey { Key = cacheKey }, Common.Caching.CacheNotifyAction.Remove);
+        _keyCacheNotify.Publish(new SmsKeyCacheKey { Key = cacheKey }, CacheNotifyAction.Remove);
     }
 }
 
 [Scope]
 public class SmsKeyStorage
 {
-    public readonly int KeyLength;
+    private readonly int _keyLength;
     public readonly TimeSpan StoreInterval;
-    public readonly int AttemptCount;
+    private readonly int _attemptCount;
     private static readonly object _keyLocker = new object();
-    private ICache KeyCache { get; }
-    private ICache CheckCache { get; }
 
-    private TenantManager TenantManager { get; }
-    public SmsKeyStorageCache SmsKeyStorageCache { get; }
+    private readonly ICache _keyCache;
+    private readonly ICache _checkCache;
+    private readonly TenantManager _tenantManager;
+    private readonly SmsKeyStorageCache _smsKeyStorageCache;
 
-    public SmsKeyStorage(TenantManager tenantManager, IConfiguration configuration, SmsKeyStorageCache smsKeyStorageCache)
+    public SmsKeyStorage(TenantManager tenantManager, IConfiguration configuration, SmsKeyStorageCache smsKeyStorageCache, ICache cache)
     {
-        KeyCache = smsKeyStorageCache.KeyCache;
-        CheckCache = smsKeyStorageCache.CheckCache;
+        _keyCache = cache;
+        _checkCache = cache;
 
-        TenantManager = tenantManager;
-        SmsKeyStorageCache = smsKeyStorageCache;
-        if (!int.TryParse(configuration["sms:keylength"], out KeyLength))
+        _tenantManager = tenantManager;
+        _smsKeyStorageCache = smsKeyStorageCache;
+        if (!int.TryParse(configuration["sms:keylength"], out _keyLength))
         {
-            KeyLength = 6;
+            _keyLength = 6;
         }
 
         if (!int.TryParse(configuration["sms:keystore"], out var store))
@@ -78,19 +76,18 @@ public class SmsKeyStorage
         }
         StoreInterval = TimeSpan.FromMinutes(store);
 
-        if (!int.TryParse(configuration["sms:keycount"], out AttemptCount))
+        if (!int.TryParse(configuration["sms:keycount"], out _attemptCount))
         {
-            AttemptCount = 5;
+            _attemptCount = 5;
         }
     }
 
     private string BuildCacheKey(string phone)
     {
-        var tenant = TenantManager.GetCurrentTenant(false);
+        var tenant = _tenantManager.GetCurrentTenant(false);
         var tenantCache = tenant == null ? Tenant.DefaultTenant : tenant.Id;
         return "smskey" + phone + tenantCache;
     }
-
 
     public bool GenerateKey(string phone, out string key)
     {
@@ -99,17 +96,17 @@ public class SmsKeyStorage
         lock (_keyLocker)
         {
             var cacheKey = BuildCacheKey(phone);
-            var phoneKeys = KeyCache.Get<Dictionary<string, DateTime>>(cacheKey) ?? new Dictionary<string, DateTime>();
-            if (phoneKeys.Count > AttemptCount)
+            var phoneKeys = _keyCache.Get<Dictionary<string, DateTime>>(cacheKey) ?? new Dictionary<string, DateTime>();
+            if (phoneKeys.Count > _attemptCount)
             {
                 key = null;
                 return false;
             }
 
-            key = RandomNumberGenerator.GetInt32((int)Math.Pow(10, KeyLength - 1), (int)Math.Pow(10, KeyLength)).ToString(CultureInfo.InvariantCulture);
+            key = RandomNumberGenerator.GetInt32((int)Math.Pow(10, _keyLength - 1), (int)Math.Pow(10, _keyLength)).ToString(CultureInfo.InvariantCulture);
             phoneKeys[key] = DateTime.UtcNow;
 
-            KeyCache.Insert(cacheKey, phoneKeys, DateTime.UtcNow.Add(StoreInterval));
+            _keyCache.Insert(cacheKey, phoneKeys, DateTime.UtcNow.Add(StoreInterval));
             return true;
         }
     }
@@ -124,11 +121,10 @@ public class SmsKeyStorage
         lock (_keyLocker)
         {
             var cacheKey = BuildCacheKey(phone);
-            var phoneKeys = KeyCache.Get<Dictionary<string, DateTime>>(cacheKey);
+            var phoneKeys = _keyCache.Get<Dictionary<string, DateTime>>(cacheKey);
             return phoneKeys != null;
         }
     }
-
 
     public Result ValidateKey(string phone, string key)
     {
@@ -139,18 +135,18 @@ public class SmsKeyStorage
         }
 
         var cacheCheck = BuildCacheKey("check" + phone);
-        int.TryParse(CheckCache.Get<string>(cacheCheck), out var counter);
-        if (++counter > AttemptCount)
+        int.TryParse(_checkCache.Get<string>(cacheCheck), out var counter);
+        if (++counter > _attemptCount)
         {
             return Result.TooMuch;
         }
 
-        CheckCache.Insert(cacheCheck, counter.ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(StoreInterval));
+        _checkCache.Insert(cacheCheck, counter.ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(StoreInterval));
 
         lock (_keyLocker)
         {
             var cacheKey = BuildCacheKey(phone);
-            var phoneKeys = KeyCache.Get<Dictionary<string, DateTime>>(cacheKey);
+            var phoneKeys = _keyCache.Get<Dictionary<string, DateTime>>(cacheKey);
             if (phoneKeys == null)
             {
                 return Result.Timeout;
@@ -162,13 +158,13 @@ public class SmsKeyStorage
             }
 
             var createDate = phoneKeys[key];
-            SmsKeyStorageCache.RemoveFromCache(cacheKey);
+            _smsKeyStorageCache.RemoveFromCache(cacheKey);
             if (createDate.Add(StoreInterval) < DateTime.UtcNow)
             {
                 return Result.Timeout;
             }
 
-            CheckCache.Insert(cacheCheck, (counter - 1).ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(StoreInterval));
+            _checkCache.Insert(cacheCheck, (counter - 1).ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(StoreInterval));
             return Result.Ok;
         }
     }

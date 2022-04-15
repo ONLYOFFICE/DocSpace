@@ -26,7 +26,7 @@
 
 namespace ASC.Web.Core;
 
-[WebZoneAttribute(WebZoneType.Nowhere)]
+[WebZone(WebZoneType.Nowhere)]
 public class NavigationWebItem : IWebItem
 {
     public virtual Guid ID { get; set; }

@@ -28,13 +28,13 @@ namespace ASC.Api.Core.Core;
 
 public class CustomEndpointDataSource : EndpointDataSource
 {
-    public EndpointDataSource Source { get; }
+    private readonly EndpointDataSource _source;
     public override IReadOnlyList<Endpoint> Endpoints { get; }
 
     public CustomEndpointDataSource(EndpointDataSource source)
     {
-        Source = source;
-        var endpoints = Source.Endpoints.Cast<RouteEndpoint>();
+        _source = source;
+        var endpoints = _source.Endpoints.Cast<RouteEndpoint>();
         Endpoints = endpoints
             .SelectMany(r =>
             {
@@ -81,7 +81,7 @@ public class CustomEndpointDataSource : EndpointDataSource
 
     public override IChangeToken GetChangeToken()
     {
-        return Source.GetChangeToken();
+        return _source.GetChangeToken();
     }
 }
 
