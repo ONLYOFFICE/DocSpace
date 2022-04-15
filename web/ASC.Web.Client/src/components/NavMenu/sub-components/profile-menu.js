@@ -5,8 +5,41 @@ import DropDown from "@appserver/components/drop-down";
 
 import styled, { css } from "styled-components";
 import DropDownItem from "@appserver/components/drop-down-item";
-import { isDesktop, isTablet } from "react-device-detect";
+import { isDesktop, isTablet, isMobile } from "react-device-detect";
 import { Base } from "@appserver/components/themes";
+import { mobile } from "@appserver/components/utils/device";
+
+const StyledDropDown = styled(DropDown)`
+  @media ${mobile} {
+    position: fixed;
+
+    top: unset !important;
+    right: 0 !important;
+    left: 0 !important;
+    bottom: 0 !important;
+    width: 100vw;
+
+    border: none !important;
+
+    border-radius: 6px 6px 0px 0px !important;
+  }
+
+  ${isMobile &&
+  css`
+    position: fixed;
+
+    top: unset !important;
+    right: 0 !important;
+    left: 0 !important;
+    bottom: 0 !important;
+
+    width: 100vw;
+
+    border: none !important;
+
+    border-radius: 6px 6px 0px 0px !important;
+  `}
+`;
 
 const commonStyle = css`
   font-family: "Open Sans", sans-serif, Arial;
@@ -86,7 +119,7 @@ class ProfileMenu extends React.Component {
     const top = "62px";
 
     return (
-      <DropDown
+      <StyledDropDown
         className={className}
         directionX="right"
         right={right}
@@ -94,6 +127,7 @@ class ProfileMenu extends React.Component {
         open={open}
         clickOutsideAction={clickOutsideAction}
         forwardedRef={forwardedRef}
+        isDefaultMode={false}
       >
         <StyledProfileMenu>
           <MenuContainer>
@@ -110,7 +144,7 @@ class ProfileMenu extends React.Component {
           </MenuContainer>
         </StyledProfileMenu>
         {children}
-      </DropDown>
+      </StyledDropDown>
     );
   }
 }
