@@ -1,6 +1,6 @@
 ﻿{
-  "ConflictResolveDescription": "Le fichier portant le nom <strong>{{file}}</strong> existe déjà dans le dossier <strong>{{folder}}</strong>.",
-  "ConflictResolveDescriptionFiles": "{{filesCount}} les documents portant le même nom existent déjà dans le dossier <strong>{{folder}}</strong>.",
+  "ConflictResolveDescription": "Le fichier portant le nom <1>{{file}}</1> existe déjà dans le dossier <1>{{folder}}</1>.",
+  "ConflictResolveDescriptionFiles": "{{filesCount}} les documents portant le même nom existent déjà dans le dossier <1>{{folder}}</1>.",
   "ConflictResolveSelectAction": "Veuillez sélectionner une action :",
   "ConflictResolveTitle": "Confirmation de l'écrasement",
   "CreateDescription": "Il y aura deux fichiers différents dans le dossier.",

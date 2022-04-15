@@ -212,8 +212,9 @@ const ConflictResolveDialog = (props) => {
               i18nKey="ConflictResolveDescription"
               ns="ConflictResolveDialog"
             >
-              The file with the name {{ file }} already exists in the folder
-              {{ folder: folderTitle }}.
+              The file with the name <strong>{{ file }}</strong> already exists
+              in the folder
+              <strong>{{ folder: folderTitle }}</strong>.
             </Trans>
           ) : (
             <Trans
@@ -224,7 +225,7 @@ const ConflictResolveDialog = (props) => {
               ns="ConflictResolveDialog"
             >
               {{ filesCount }} documents with the same name already exist in the
-              folder '{{ folder: folderTitle }}'.
+              folder <strong>{{ folder: folderTitle }}</strong>.
             </Trans>
           )}
         </Text>

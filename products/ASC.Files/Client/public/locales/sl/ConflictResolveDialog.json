@@ -1,6 +1,6 @@
 ﻿{
-  "ConflictResolveDescription": "Datoteka z imenom <strong>{{file}}</strong> že obstaja v mapi <strong>{{folder}}</strong>.",
-  "ConflictResolveDescriptionFiles": "{{filesCount}} dokumentov z enakim imenom že obstaja v mapi <strong>{{folder}}</strong>.",
+  "ConflictResolveDescription": "Datoteka z imenom <1>{{file}}</1> že obstaja v mapi <1>{{folder}}</1>.",
+  "ConflictResolveDescriptionFiles": "{{filesCount}} dokumentov z enakim imenom že obstaja v mapi <1>{{folder}}</1>.",
   "ConflictResolveSelectAction": "Prosim, izberite akcijo:",
   "ConflictResolveTitle": "Prepišite potrditev",
   "CreateDescription": "V mapi bosta dve različni datoteki.",

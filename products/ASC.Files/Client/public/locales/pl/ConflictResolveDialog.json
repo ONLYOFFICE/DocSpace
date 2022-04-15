@@ -1,6 +1,6 @@
 ﻿{
-  "ConflictResolveDescription": "Plik o nazwie <strong>{{file}}</strong> istnieje już w folderze <strong>{{folder}}</strong>.",
-  "ConflictResolveDescriptionFiles": "{{filesCount}} dokument(y/ów) o tej samej nazwie istnieje(-ją) już w folderze <strong>{{folder}}</strong>.",
+  "ConflictResolveDescription": "Plik o nazwie <1>{{file}}</1> istnieje już w folderze <1>{{folder}}</1>.",
+  "ConflictResolveDescriptionFiles": "{{filesCount}} dokument(y/ów) o tej samej nazwie istnieje(-ją) już w folderze <1>{{folder}}</1>.",
   "ConflictResolveSelectAction": "Wybierz działanie:",
   "ConflictResolveTitle": "Potwierdź zastąpienie",
   "CreateDescription": "W folderze będą dwa różne pliki.",

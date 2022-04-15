@@ -1,6 +1,6 @@
 ﻿{
-  "ConflictResolveDescription": "Fișierul cu numele <strong>{{file}}</strong> există deja în dosarul <strong>{{folder}}</strong>.",
-  "ConflictResolveDescriptionFiles": "{{filesCount}} fișiere cu același nume exista deja în folderul<strong>{{folder}}</strong>.",
+  "ConflictResolveDescription": "Fișierul cu numele <1>{{file}}</1> există deja în dosarul <1>{{folder}}</1>.",
+  "ConflictResolveDescriptionFiles": "{{filesCount}} fișiere cu același nume exista deja în folderul<1>{{folder}}</1>.",
   "ConflictResolveSelectAction": "Selectați acțiune:",
   "ConflictResolveTitle": "Confirmarea suprascrierii",
   "CreateDescription": "Două fișiere diferite vor fi salvate în dosarul.",
