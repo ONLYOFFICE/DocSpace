@@ -1,8 +1,10 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-import { getFolder } from "@appserver/common/api/files";
 import toastr from "studio/toastr";
 import FilesListBody from "./FilesListBody";
+import axios from "axios";
+import { combineUrl, getFolderOptions } from "@appserver/common/utils";
+import AppServerConfig from "@appserver/common/constants/AppServerConfig";
 
 class FilesListWrapper extends React.Component {
   constructor(props) {
@@ -20,7 +22,17 @@ class FilesListWrapper extends React.Component {
 
   componentDidUpdate(prevProps) {
     const { folderId } = this.props;
+    const { isNextPageLoading } = this.state;
+
     if (folderId !== prevProps.folderId) {
+      if (isNextPageLoading) {
+        this.source.cancel();
+
+        this._isLoadNextPage = false;
+        this.setState({
+          isNextPageLoading: false,
+        });
+      }
       this.setState({
         page: 0,
         files: [],
@@ -41,15 +53,30 @@ class FilesListWrapper extends React.Component {
 
     if (this._isLoadNextPage) return;
 
-    this._isLoadNextPage = true;
-
     const pageCount = 30;
     this.newFilter.page = page;
     this.newFilter.pageCount = pageCount;
-
+    this._isLoadNextPage = true;
     this.setState({ isNextPageLoading: true }, async () => {
       try {
-        const data = await getFolder(folderId, this.newFilter);
+        this.CancelToken = axios.CancelToken;
+        this.source = this.CancelToken.source();
+        const options = getFolderOptions(folderId, this.newFilter);
+
+        const response = await axios
+          .get(combineUrl(AppServerConfig.apiPrefixURL, options.url), {
+            cancelToken: this.source.token,
+          })
+          .catch((thrown) => {
+            if (axios.isCancel(thrown)) {
+              console.log("Request canceled", thrown.message);
+            } else {
+              console.error(thrown);
+            }
+            return;
+          });
+        if (!response) return;
+        const data = response.data.response;
 
         if (page === 0 && folderSelection) {
           setFolderTitle(data.current.title);

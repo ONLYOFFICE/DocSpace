@@ -3,6 +3,7 @@ import axios from "axios";
 import FilesFilter from "./filter";
 import { FolderType } from "../../constants";
 import find from "lodash/find";
+import { getFolderOptions } from "../../utils";
 
 export function openEdit(fileId, version, doc, view) {
   const params = []; // doc ? `?doc=${doc}` : "";
@@ -48,19 +49,7 @@ export function getFolderPath(folderId) {
 }
 
 export function getFolder(folderId, filter) {
-  if (folderId && typeof folderId === "string") {
-    folderId = encodeURIComponent(folderId.replace(/\\\\/g, "\\"));
-  }
-
-  const params =
-    filter && filter instanceof FilesFilter
-      ? `${folderId}?${filter.toApiUrlParams()}`
-      : folderId;
-  const options = {
-    method: "get",
-    url: `/files/${params}`,
-  };
-
+  const options = getFolderOptions(folderId, filter);
   return request(options);
 }
 

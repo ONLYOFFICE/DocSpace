@@ -76,6 +76,12 @@ const FilesListBody = ({
   );
 
   const loadMoreItems = useCallback(() => {
+    if (folderId && page == 0 && isNextPageLoading) {
+      
+      loadNextPage && loadNextPage();
+      return;
+    }
+
     if (isNextPageLoading) return;
     countLoad++;
 
