@@ -36,15 +36,6 @@ const StyledNav = styled.nav`
   height: 48px;
   z-index: 190 !important;
 
-  .profile-menu {
-    right: 12px;
-    top: 66px;
-
-    @media ${tablet} {
-      right: 6px;
-    }
-  }
-
   & > div {
     margin: 0 0 0 16px;
     padding: 0;
