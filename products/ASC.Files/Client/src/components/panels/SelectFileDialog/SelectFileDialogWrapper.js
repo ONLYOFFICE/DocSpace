@@ -1,15 +1,32 @@
 import React from "react";
-import { Provider as MobxProvider } from "mobx-react";
-import { I18nextProvider } from "react-i18next";
+import { Provider as MobxProvider, inject, observer } from "mobx-react";
+
+import SelectFileDialog from "./index";
 import stores from "../../../store/index";
 import store from "studio/store";
-import SelectFileDialog from "./index";
-import i18n from "./i18n";
+
 const { auth: authStore } = store;
 
-const SelectFileModalWrapper = (props) => <SelectFileDialog {...props} />;
+class SelectFileDialogBody extends React.Component {
+  componentDidMount() {
+    const { settings, setFilesSettings } = this.props;
+    authStore.init(true);
+    settings && setFilesSettings(settings);
+  }
 
-class SelectFolderModal extends React.Component {
+  render() {
+    return <SelectFileDialog {...this.props} />;
+  }
+}
+const SelectFileWrapper = inject(({ settingsStore }) => {
+  const { setFilesSettings } = settingsStore;
+
+  return {
+    setFilesSettings,
+  };
+})(observer(SelectFileDialogBody));
+
+class SelectFileDialogWrapper extends React.Component {
   componentDidMount() {
     authStore.init(true);
   }
@@ -17,12 +34,10 @@ class SelectFolderModal extends React.Component {
   render() {
     return (
       <MobxProvider auth={authStore} {...stores}>
-        <I18nextProvider i18n={i18n}>
-          <SelectFileModalWrapper {...this.props} />
-        </I18nextProvider>
+        <SelectFileWrapper {...this.props} />
       </MobxProvider>
     );
   }
 }
 
-export default SelectFolderModal;
+export default SelectFileDialogWrapper;
