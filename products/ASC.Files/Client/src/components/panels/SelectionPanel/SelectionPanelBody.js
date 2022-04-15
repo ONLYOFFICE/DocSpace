@@ -44,6 +44,7 @@ const SelectionPanelBody = ({
   isDisableTree,
   page,
   newFilter,
+  isDisableButton,
 }) => {
   const onMouseEvent = (event) => {
     event.stopPropagation();
@@ -134,6 +135,7 @@ const SelectionPanelBody = ({
                     label={primaryButtonName}
                     onClick={onButtonClick}
                     isDisabled={
+                      isDisableButton ||
                       isDisableTree ||
                       isLoadingData ||
                       (!fileId && !folderSelection) ||

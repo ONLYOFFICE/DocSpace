@@ -34,6 +34,7 @@ const SelectFolderDialogAsideView = ({
   header,
   primaryButtonName,
   isDisableTree,
+  isDisableButton,
 }) => {
   return (
     <StyledModalDialog
@@ -97,7 +98,12 @@ const SelectFolderDialogAsideView = ({
                   size="normalTouchscreen"
                   label={primaryButtonName}
                   onClick={onButtonClick}
-                  isDisabled={isDisableTree || isLoadingData || !isAvailable}
+                  isDisabled={
+                    isDisableButton ||
+                    isDisableTree ||
+                    isLoadingData ||
+                    !isAvailable
+                  }
                 />
                 <Button
                   size="normalTouchscreen"

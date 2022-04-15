@@ -186,6 +186,7 @@ class SelectFolderDialog extends React.Component {
       folderId,
       folderTitle,
       expandedKeys,
+      isDisableButton,
     } = this.props;
     const {
       displayType,
@@ -224,6 +225,7 @@ class SelectFolderDialog extends React.Component {
         }
         isAvailable={isAvailable}
         isDisableTree={isDisableTree}
+        isDisableButton={isDisableButton}
       />
     ) : (
       <SelectionPanel
@@ -247,6 +249,7 @@ class SelectFolderDialog extends React.Component {
         isDisableTree={isDisableTree}
         folderSelection
         newFilter={this.newFilter}
+        isDisableButton={isDisableButton}
       />
     );
   }

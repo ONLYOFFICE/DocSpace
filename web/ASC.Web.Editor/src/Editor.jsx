@@ -928,6 +928,7 @@ const Editor = () => {
                 onClose={onCloseFolderDialog}
                 foldersType="exceptSortedByTags"
                 onSave={onClickSaveSelectFolder}
+                isDisableButton={!titleSelectorFolder.trim()}
                 header={
                   <StyledSelectFolder>
                     <Text
