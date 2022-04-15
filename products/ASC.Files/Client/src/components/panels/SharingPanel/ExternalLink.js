@@ -26,23 +26,17 @@ const ExternalLink = ({
   externalAccessOptions,
   onToggleLink,
   onShowEmbeddingPanel,
+  isOpen,
   onChangeItemAccess,
 }) => {
   const [shareLink, setShareLink] = React.useState("");
   const [shareActionOpen, setShareActionOpen] = React.useState(false);
-  const [isChecked, setIsChecked] = React.useState(false);
 
   const ref = React.useRef(null);
 
   React.useEffect(() => {
     setShareLink(externalItem.sharedTo.shareLink);
-    setIsChecked(externalItem.access !== ShareAccessRights.DenyAccess);
   }, [externalItem]);
-
-  const onToggleLinkAction = React.useCallback(() => {
-    setIsChecked((val) => !val);
-    onToggleLink && onToggleLink(externalItem);
-  }, [externalItem, onToggleLink]);
 
   const onToggleShareAction = React.useCallback(() => {
     setShareActionOpen((val) => !val);
@@ -126,12 +120,12 @@ const ExternalLink = ({
         </Text>
         <ToggleButton
           className="external-link__toggler"
-          isChecked={isChecked}
-          onChange={onToggleLinkAction}
+          isChecked={isOpen}
+          onChange={onToggleLink}
         />
       </div>
 
-      {isChecked && (
+      {isOpen && (
         <>
           <div className="external-link__checked">
             <InputBlock
