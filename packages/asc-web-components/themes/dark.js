@@ -1931,7 +1931,7 @@ const Dark = {
 
   menuContainer: {
     background: "linear-gradient(226.22deg, #606060 0.24%, #1F1F1F 79.81%)",
-    color: "#22221f",
+    color: "rgba(255, 255, 255, 0.92)",
   },
 
   article: {
