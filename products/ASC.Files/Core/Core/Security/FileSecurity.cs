@@ -135,11 +135,6 @@ public class FileSecurity : IFileSecurity
         return CanAsync(entry, userId, FilesSecurityActions.RoomEdit);
     }
 
-    public Task<bool> CanRenameAsync<T>(FileEntry<T> entry, Guid userId)
-    {
-        return CanAsync(entry, userId, FilesSecurityActions.Rename);
-    }
-
     public Task<bool> CanReadAsync<T>(FileEntry<T> entry)
     {
         return CanReadAsync(entry, _authContext.CurrentAccount.ID);
@@ -183,11 +178,6 @@ public class FileSecurity : IFileSecurity
     public Task<bool> CanEditRoomAsync<T>(FileEntry<T> entry)
     {
         return CanEditRoomAsync(entry, _authContext.CurrentAccount.ID);
-    }
-
-    public Task<bool> CanRenameAsync<T>(FileEntry<T> entry)
-    {
-        return CanRenameAsync(entry, _authContext.CurrentAccount.ID);
     }
 
     public Task<IEnumerable<Guid>> WhoCanReadAsync<T>(FileEntry<T> entry)
@@ -399,7 +389,8 @@ public class FileSecurity : IFileSecurity
                  f.RootFolderType == FolderType.Templates ||
                  f.RootFolderType == FolderType.Privacy ||
                  f.RootFolderType == FolderType.Projects ||
-                 f.RootFolderType == FolderType.VirtualRooms;
+                 f.RootFolderType == FolderType.VirtualRooms ||
+                 f.RootFolderType == FolderType.Archive;
 
         var isVisitor = user.IsVisitor(_userManager);
 
@@ -477,6 +468,11 @@ public class FileSecurity : IFileSecurity
                     if (folder.FolderType == FolderType.Templates)
                     {
                         // Templates folder read-only
+                        continue;
+                    }
+
+                    if (folder.FolderType == FolderType.Archive)
+                    {
                         continue;
                     }
                 }
@@ -570,6 +566,12 @@ public class FileSecurity : IFileSecurity
                     continue;
                 }
 
+                if (action == FilesSecurityActions.Delete && e.RootFolderType == FolderType.Archive && _fileSecurityCommon.IsAdministrator(userId))
+                {
+                    result.Add(e);
+                    continue;
+                }
+
                 if (subjects == null)
                 {
                     subjects = GetUserSubjects(userId);
@@ -648,10 +650,6 @@ public class FileSecurity : IFileSecurity
                     result.Add(e);
                 }
                 else if (action == FilesSecurityActions.Create && (e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomManager))
-                {
-                    result.Add(e);
-                }
-                else if (action == FilesSecurityActions.Rename && (e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomManager))
                 {
                     result.Add(e);
                 }
@@ -970,6 +968,45 @@ public class FileSecurity : IFileSecurity
         return entries;
     }
 
+    public async Task<List<FileEntry>> GetArchiveForMeAsync()
+    {
+        var securityDao = _daoFactory.GetSecurityDao<int>();
+        var subjects = GetUserSubjects(_authContext.CurrentAccount.ID);
+        var records = await securityDao.GetSharesAsync(subjects);
+
+        var result = new List<FileEntry>();
+        result.AddRange(await GetArchiveForMeAsync<int>(records, subjects));
+
+        return result;
+    }
+
+    private async Task<List<FileEntry>> GetArchiveForMeAsync<T>(IEnumerable<FileShareRecord> records, List<Guid> subjects)
+{
+        var folderDao = _daoFactory.GetFolderDao<T>();
+        var folderIds = new Dictionary<T, FileShare>();
+
+        var recordGroup = records.GroupBy(r => new { r.EntryId, r.EntryType }, (key, group) => new
+        {
+            firstRecord = group.OrderBy(r => r, new SubjectComparer(subjects))
+                .ThenByDescending(r => r.Share, new FileShareRecord.ShareComparer())
+                .First()
+        });
+
+        foreach (var record in recordGroup.Where(r => r.firstRecord.Share == FileShare.RoomManager))
+        {
+            if (!folderIds.ContainsKey((T)record.firstRecord.EntryId))
+            {
+                folderIds.Add((T)record.firstRecord.EntryId, record.firstRecord.Share);
+            }
+        }
+
+        var entries = new List<FileEntry>();
+
+        entries.AddRange(await folderDao.GetFoldersAsync(folderIds.Keys).Where(f => f.RootFolderType == FolderType.Archive).ToListAsync());
+
+        return entries;
+    }
+
     public async Task<List<FileEntry>> GetPrivacyForMeAsync(FilterType filterType, bool subjectGroup, Guid subjectID, string searchText = "", bool searchInContent = false, bool withSubfolders = false)
     {
         var securityDao = _daoFactory.GetSecurityDao<int>();
@@ -1141,6 +1178,5 @@ public class FileSecurity : IFileSecurity
         Delete,
         CustomFilter,
         RoomEdit,
-        Rename
     }
 }
