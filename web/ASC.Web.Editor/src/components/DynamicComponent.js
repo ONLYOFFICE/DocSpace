@@ -106,7 +106,9 @@ const DynamicComponent = ({ system, needProxy, ...rest }) => {
 
   return (
     <React.Suspense fallback={<div />}>
-      {needProxy ? <LoadedComponent {...rest} /> : <Component {...rest} />}
+      {needProxy
+        ? LoadedComponent && <LoadedComponent {...rest} />
+        : Component && <Component {...rest} />}
     </React.Suspense>
   );
 };
