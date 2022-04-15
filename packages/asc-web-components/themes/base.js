@@ -1930,7 +1930,6 @@ const Base = {
 
   menuContainer: {
     background: "linear-gradient(200.71deg, #2274aa 0%, #0f4071 100%)",
-    arrowTop: "#206FA4",
     color: white,
   },
 
