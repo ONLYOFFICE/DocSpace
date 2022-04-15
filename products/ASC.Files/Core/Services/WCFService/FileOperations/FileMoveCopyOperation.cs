@@ -243,15 +243,15 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             }
             else if (!isRoom && (toFolder.FolderType != FolderType.VirtualRooms || toFolder.FolderType != FolderType.Archive))
             {
-                Error = FilesCommonResource.ErrorMessage_ArchivingFolder;
+                Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
             }
             else if (isRoom && toFolder.FolderType != FolderType.VirtualRooms && !await FilesSecurity.CanEditRoomAsync(folder))
             {
-                Error = FilesCommonResource.ErrorMessage_ArchivingFolder;
+                Error = FilesCommonResource.ErrorMessage_UnarchiveRoom;
             }
             else if (isRoom && toFolder.FolderType != FolderType.Archive && !await FilesSecurity.CanReadAsync(folder))
             {
-                Error = FilesCommonResource.ErrorMessage_ArchivingFolder;
+                Error = FilesCommonResource.ErrorMessage_ArchiveRoom;
             }
             else if (folder.RootFolderType == FolderType.Privacy
                 && (copy || toFolder.RootFolderType != FolderType.Privacy))
