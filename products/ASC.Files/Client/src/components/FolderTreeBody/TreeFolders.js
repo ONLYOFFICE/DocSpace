@@ -453,7 +453,7 @@ class TreeFolders extends React.Component {
       isLoading,
       onSelect,
       dragging,
-      expandedKeys,
+
       expandedPanelKeys,
       treeFolders,
       data,
@@ -475,7 +475,7 @@ class TreeFolders extends React.Component {
         onSelect={onSelect}
         selectedKeys={selectedKeys}
         loadData={this.onLoadData}
-        expandedKeys={expandedPanelKeys ? expandedPanelKeys : expandedKeys}
+        expandedKeys={expandedPanelKeys}
         onExpand={this.onExpand}
         onDragOver={this.onDragOver}
         onDragLeave={this.onDragLeave}
@@ -484,9 +484,7 @@ class TreeFolders extends React.Component {
         gapBetweenNodes="22"
         gapBetweenNodesTablet="26"
         isFullFillSelection={false}
-        childrenCount={
-          expandedPanelKeys ? expandedPanelKeys.length : expandedKeys.length
-        }
+        childrenCount={expandedPanelKeys?.length}
       >
         {this.getItems(data || treeFolders)}
       </StyledTreeMenu>
@@ -518,7 +516,6 @@ export default inject(
       myFolderId,
       commonFolderId,
       isPrivacyFolder,
-      expandedKeys,
       setExpandedKeys,
       setExpandedPanelKeys,
       getSubfolders,
@@ -535,7 +532,6 @@ export default inject(
       commonId: commonFolderId,
       isPrivacy: isPrivacyFolder,
       draggableItems: dragging ? selection : null,
-      expandedKeys,
       treeFolders,
       isLoading,
       selectedKeys: useDefaultSelectedKeys
