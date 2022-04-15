@@ -69,7 +69,13 @@ const StyledTile = styled.div`
 
   &:before, 
   &:after {
-    ${(props) => props.isFolder && props.dragging && draggingStyle};
+    ${(props) =>
+      props.isFolder &&
+      props.dragging &&
+      css`
+        background: ${(props) =>
+          props.theme.filesSection.rowView.draggingBackground};
+      `};
     ${(props) => props.showHotkeyBorder && "border-color: #2DA7DB"};
   }
 
@@ -80,7 +86,13 @@ const StyledTile = styled.div`
 
   &:hover:before,
   &:hover:after {
-    ${(props) => props.isFolder && props.dragging && draggingHoverStyle};
+    ${(props) =>
+      props.isFolder &&
+      props.dragging &&
+      css`
+        background: ${(props) =>
+          props.theme.filesSection.rowView.draggingHoverBackground};
+      `};
   }
 
   .checkbox {

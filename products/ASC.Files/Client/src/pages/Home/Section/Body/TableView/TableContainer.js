@@ -76,7 +76,7 @@ const Table = ({
       <TableBody>
         {filesList.map((item, index) => (
           <TableRow
-            key={item.id}
+            key={`${item.id}_${index}`}
             item={item}
             index={index}
             setFirsElemChecked={setFirsElemChecked}
