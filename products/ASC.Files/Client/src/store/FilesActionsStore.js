@@ -168,8 +168,8 @@ class FilesActionStore {
       this.isMediaOpen();
 
       try {
-        await removeFiles(folderIds, fileIds, deleteAfter, immediately).then(
-          async (res) => {
+        await removeFiles(folderIds, fileIds, deleteAfter, immediately)
+          .then(async (res) => {
             if (res[0]?.error) return Promise.reject(res[0].error);
             const data = res[0] ? res[0] : null;
             const pbData = {
@@ -199,8 +199,10 @@ class FilesActionStore {
               return toastr.success(translations.FileRemoved);
             }
             return toastr.success(translations.FolderRemoved);
-          }
-        );
+          })
+          .finally(() => {
+            clearActiveOperations(fileIds, folderIds);
+          });
       } catch (err) {
         clearActiveOperations(fileIds, folderIds);
         setSecondaryProgressBarData({
