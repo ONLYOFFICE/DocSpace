@@ -133,9 +133,14 @@ class SelectFolderDialog extends React.Component {
   onClose = () => {
     const { setExpandedPanelKeys, onClose, treeFolders } = this.props;
 
-    if (!treeFolders) {
+    if (!treeFolders.length) {
       setExpandedPanelKeys(null);
     }
+    onClose && onClose();
+  };
+
+  onCloseAside = () => {
+    const { onClose } = this.props;
     onClose && onClose();
   };
 
@@ -202,7 +207,7 @@ class SelectFolderDialog extends React.Component {
         t={t}
         isPanelVisible={isPanelVisible}
         zIndex={zIndex}
-        onClose={this.onClose}
+        onClose={this.onCloseAside}
         withoutProvider={withoutProvider}
         isNeedArrowIcon={isNeedArrowIcon}
         certainFolders={true}
