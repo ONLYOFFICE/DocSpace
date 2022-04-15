@@ -38,7 +38,7 @@ public class RestorePortalTask : PortalTaskBase
     private ColumnMapper _columnMapper;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly LicenseReader _licenseReader;
-    public readonly TenantManager _tenantManager;
+    private readonly TenantManager _tenantManager;
     private readonly AscCacheNotify _ascCacheNotify;
     private readonly IOptionsMonitor<ILog> _options;
 

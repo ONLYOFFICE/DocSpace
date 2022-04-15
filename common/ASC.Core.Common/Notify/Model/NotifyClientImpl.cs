@@ -32,7 +32,6 @@ class NotifyClientImpl : INotifyClient
     private readonly IOptionsMonitor<ILog> _options;
     private readonly NotifyEngineQueue _notifyEngineQueue;
     private readonly INotifySource _notifySource;
-    public readonly IServiceScope _serviceScope;
 
     public NotifyClientImpl(IOptionsMonitor<ILog> options, NotifyEngineQueue notifyEngineQueue, INotifySource notifySource)
     {

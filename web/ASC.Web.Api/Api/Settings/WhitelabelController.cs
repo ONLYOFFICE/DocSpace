@@ -54,7 +54,8 @@ public class WhitelabelController : BaseSettingsController
         CoreBaseSettings coreBaseSettings,
         CommonLinkUtility commonLinkUtility,
         IMemoryCache memoryCache,
-        StorageFactory storageFactory) : base(apiContext, memoryCache, webItemManager)
+        StorageFactory storageFactory,
+        IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _tenantManager = tenantManager;
         _tenantExtra = tenantExtra;

@@ -64,7 +64,8 @@ public class TfaappController : BaseSettingsController
         SmsProviderManager smsProviderManager,
         IMemoryCache memoryCache,
         InstanceCrypto instanceCrypto,
-        Signature signature) : base(apiContext, memoryCache, webItemManager)
+        Signature signature,
+        IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _smsProviderManager = smsProviderManager;
         _messageService = messageService;

@@ -56,7 +56,8 @@ public class MessageSettingsController : BaseSettingsController
         CoreBaseSettings coreBaseSettings,
         CustomNamingPeople customNamingPeople,
         IPSecurity.IPSecurity ipSecurity,
-        IMemoryCache memoryCache) : base(apiContext, memoryCache, webItemManager)
+        IMemoryCache memoryCache,
+        IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _customNamingPeople = customNamingPeople;
         _ipSecurity = ipSecurity;

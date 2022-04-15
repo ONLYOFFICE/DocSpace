@@ -41,20 +41,21 @@ public partial class BaseSettingsController : ControllerBase
     internal readonly ApiContext ApiContext;
     internal readonly IMemoryCache MemoryCache;
     internal readonly WebItemManager WebItemManager;
-
+    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly int _maxCount = 10;
     private readonly int _expirationMinutes = 2;
 
-    public BaseSettingsController(ApiContext apiContext, IMemoryCache memoryCache, WebItemManager webItemManager)
+    public BaseSettingsController(ApiContext apiContext, IMemoryCache memoryCache, WebItemManager webItemManager, IHttpContextAccessor httpContextAccessor)
     {
         ApiContext = apiContext;
         MemoryCache = memoryCache;
         WebItemManager = webItemManager;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     internal void CheckCache(string basekey)
     {
-        var key = ApiContext.HttpContextAccessor.HttpContext.Request.GetUserHostAddress() + basekey;
+        var key = _httpContextAccessor.HttpContext.Request.GetUserHostAddress() + basekey;
         if (MemoryCache.TryGetValue<int>(key, out var count))
         {
             if (count > _maxCount)

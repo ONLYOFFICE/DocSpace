@@ -91,8 +91,9 @@ public class SettingsController : BaseSettingsController
         TelegramHelper telegramHelper,
         UrlShortener urlShortener,
         PasswordHasher passwordHasher,
-        Constants constants
-        ) : base(apiContext, memoryCache, webItemManager)
+        Constants constants,
+        IHttpContextAccessor httpContextAccessor
+        ) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _log = option.Get("ASC.Api");
         _consumerFactory = consumerFactory;

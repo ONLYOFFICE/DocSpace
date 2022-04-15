@@ -70,7 +70,8 @@ public class StorageController : BaseSettingsController
         EncryptionSettingsHelper encryptionSettingsHelper,
         BackupAjaxHandler backupAjaxHandler,
         ICacheNotify<DeleteSchedule> cacheDeleteSchedule,
-        EncryptionWorker encryptionWorker) : base(apiContext, memoryCache, webItemManager)
+        EncryptionWorker encryptionWorker,
+        IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _log = option.Get("ASC.Api");
         _serviceClient = serviceClient;

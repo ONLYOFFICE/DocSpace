@@ -29,7 +29,7 @@ namespace ASC.Core.Notify.Senders;
 [Singletone]
 public class SmtpSender : INotifySender
 {
-    protected ILog Logger { get; set; }
+    protected ILog _logger;
     protected readonly IConfiguration _configuration;
     protected IServiceProvider _serviceProvider;
 
@@ -45,7 +45,7 @@ public class SmtpSender : INotifySender
         IServiceProvider serviceProvider,
         IOptionsMonitor<ILog> options)
     {
-        Logger = options.Get("ASC.Notify");
+        _logger = options.Get("ASC.Notify");
         _configuration = configuration;
         _serviceProvider = serviceProvider;
     }
@@ -101,7 +101,7 @@ public class SmtpSender : INotifySender
 
                 var mail = BuildMailMessage(m);
 
-                Logger.DebugFormat("SmtpSender - host={0}; port={1}; enableSsl={2} enableAuth={3}", _host, _port, _ssl, _credentials != null);
+                _logger.DebugFormat("SmtpSender - host={0}; port={1}; enableSsl={2} enableAuth={3}", _host, _port, _ssl, _credentials != null);
 
                 smtpClient.Connect(_host, _port,
                     _ssl ? SecureSocketOptions.Auto : SecureSocketOptions.None);
@@ -116,7 +116,7 @@ public class SmtpSender : INotifySender
             }
             catch (Exception e)
             {
-                Logger.ErrorFormat("Tenant: {0}, To: {1} - {2}", m.TenantId, m.Reciever, e);
+                _logger.ErrorFormat("Tenant: {0}, To: {1} - {2}", m.TenantId, m.Reciever, e);
 
                 throw;
             }

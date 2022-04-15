@@ -42,7 +42,8 @@ public class GreetingSettingsController : BaseSettingsController
         TenantManager tenantManager,
         PermissionContext permissionContext,
         WebItemManager webItemManager,
-        IMemoryCache memoryCache) : base(apiContext, memoryCache, webItemManager)
+        IMemoryCache memoryCache,
+        IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _tenantInfoSettingsHelper = tenantInfoSettingsHelper;
         _messageService = messageService;

@@ -34,7 +34,8 @@ public class WebhooksController : BaseSettingsController
         ApiContext apiContext,
         WebItemManager webItemManager,
         IMemoryCache memoryCache,
-        DbWorker dbWorker) : base(apiContext, memoryCache, webItemManager)
+        DbWorker dbWorker,
+        IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _webhookDbWorker = dbWorker;
     }

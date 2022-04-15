@@ -128,7 +128,7 @@ public class FileDtoHelper : FileEntryDtoHelper
             else
             {
                 parentFolder = await folderDao.GetFolderAsync(file.ParentId);
-                if (!await FileSecurity.CanReadAsync(parentFolder))
+                if (!await _fileSecurity.CanReadAsync(parentFolder))
                 {
                     result.FolderId = await _globalFolderHelper.GetFolderShareAsync<T>();
                 }
@@ -154,7 +154,7 @@ public class FileDtoHelper : FileEntryDtoHelper
         result.Locked = file.Locked.NullIfDefault();
         result.LockedBy = file.LockedBy;
         result.CanWebRestrictedEditing = _fileUtility.CanWebRestrictedEditing(file.Title);
-        result.CanFillForms = await FileSecurity.CanFillFormsAsync(file);
+        result.CanFillForms = await _fileSecurity.CanFillFormsAsync(file);
 
         try
         {

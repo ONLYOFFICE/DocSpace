@@ -52,7 +52,8 @@ public class OwnerController : BaseSettingsController
         WebItemManager webItemManager,
         DisplayUserSettingsHelper displayUserSettingsHelper,
         MessageTarget messageTarget,
-        IMemoryCache memoryCache) : base(apiContext, memoryCache, webItemManager)
+        IMemoryCache memoryCache,
+        IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _messageService = messageService;
         _commonLinkUtility = commonLinkUtility;

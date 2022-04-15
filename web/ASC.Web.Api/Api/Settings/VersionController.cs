@@ -40,7 +40,8 @@ public class VersionController : BaseSettingsController
         TenantManager tenantManager,
         WebItemManager webItemManager,
         BuildVersion buildVersion,
-        IMemoryCache memoryCache) : base(apiContext, memoryCache, webItemManager)
+        IMemoryCache memoryCache,
+        IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _permissionContext = permissionContext;
         _tenantManager = tenantManager;

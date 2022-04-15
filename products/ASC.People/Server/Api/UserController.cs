@@ -91,8 +91,9 @@ public class UserController : PeopleControllerBase
         PermissionContext permissionContext,
         ApiContext apiContext,
         UserPhotoManager userPhotoManager,
-        IHttpClientFactory httpClientFactory)
-        : base(userManager, permissionContext, apiContext, userPhotoManager, httpClientFactory)
+        IHttpClientFactory httpClientFactory,
+        IHttpContextAccessor httpContextAccessor)
+        : base(userManager, permissionContext, apiContext, userPhotoManager, httpClientFactory, httpContextAccessor)
     {
         _constants = constants;
         _cookiesManager = cookiesManager;

@@ -87,8 +87,8 @@ public class FileEntryDtoHelper
 {
     private readonly ApiDateTimeHelper _apiDateTimeHelper;
     private readonly EmployeeDtoHelper _employeeWraperHelper;
-    public readonly FileSharingHelper FileSharingHelper;
-    public readonly FileSecurity FileSecurity;
+    private readonly FileSharingHelper _fileSharingHelper;
+    protected readonly FileSecurity _fileSecurity;
 
     public FileEntryDtoHelper(
         ApiDateTimeHelper apiDateTimeHelper,
@@ -98,8 +98,8 @@ public class FileEntryDtoHelper
     {
         _apiDateTimeHelper = apiDateTimeHelper;
         _employeeWraperHelper = employeeWraperHelper;
-        FileSharingHelper = fileSharingHelper;
-        FileSecurity = fileSecurity;
+        _fileSharingHelper = fileSharingHelper;
+        _fileSecurity = fileSecurity;
     }
 
     protected internal async Task<T> GetAsync<T, TId>(FileEntry<TId> entry) where T : FileEntryWrapper<TId>, new()
@@ -119,8 +119,8 @@ public class FileEntryDtoHelper
             ProviderItem = entry.ProviderEntry.NullIfDefault(),
             ProviderKey = entry.ProviderKey,
             ProviderId = entry.ProviderId.NullIfDefault(),
-            CanShare = await FileSharingHelper.CanSetAccessAsync(entry),
-            CanEdit = await FileSecurity.CanEditAsync(entry)
+            CanShare = await _fileSharingHelper.CanSetAccessAsync(entry),
+            CanEdit = await _fileSecurity.CanEditAsync(entry)
         };
     }
 }

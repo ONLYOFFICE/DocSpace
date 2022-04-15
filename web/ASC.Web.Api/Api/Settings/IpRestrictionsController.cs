@@ -40,7 +40,8 @@ public class IpRestrictionsController : BaseSettingsController
         SettingsManager settingsManager,
         WebItemManager webItemManager,
         IPRestrictionsService iPRestrictionsService,
-        IMemoryCache memoryCache) : base(apiContext, memoryCache, webItemManager)
+        IMemoryCache memoryCache,
+        IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _permissionContext = permissionContext;
         _settingsManager = settingsManager;

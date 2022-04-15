@@ -28,7 +28,7 @@ namespace ASC.Notify.Engine;
 
 public class NotifyRequest
 {
-    private INotifySource NotifySource { get; set; }
+    private readonly INotifySource _notifySource;
     public INotifyAction NotifyAction { get; internal set; }
     public string ObjectID { get; internal set; }
     public IRecipient Recipient { get; internal set; }
@@ -51,7 +51,7 @@ public class NotifyRequest
         _requaredTags = new List<string>();
         _interceptors = new List<ISendInterceptor>();
         _options = options;
-        NotifySource = notifySource ?? throw new ArgumentNullException(nameof(notifySource));
+        _notifySource = notifySource ?? throw new ArgumentNullException(nameof(notifySource));
         Recipient = recipient ?? throw new ArgumentNullException(nameof(recipient));
         NotifyAction = action ?? throw new ArgumentNullException(nameof(action));
         ObjectID = objectID;
@@ -106,7 +106,7 @@ public class NotifyRequest
     {
         ArgumentNullException.ThrowIfNull(recipient);
 
-        var newRequest = new NotifyRequest(_options, NotifySource, NotifyAction, ObjectID, recipient)
+        var newRequest = new NotifyRequest(_options, _notifySource, NotifyAction, ObjectID, recipient)
         {
             _senderNames = _senderNames,
             _patterns = _patterns,
@@ -127,21 +127,21 @@ public class NotifyRequest
 
     public IActionProvider GetActionProvider(IServiceScope scope)
     {
-        return ((INotifySource)scope.ServiceProvider.GetService(NotifySource.GetType())).GetActionProvider();
+        return ((INotifySource)scope.ServiceProvider.GetService(_notifySource.GetType())).GetActionProvider();
     }
 
     public IPatternProvider GetPatternProvider(IServiceScope scope)
     {
-        return ((INotifySource)scope.ServiceProvider.GetService(NotifySource.GetType())).GetPatternProvider();
+        return ((INotifySource)scope.ServiceProvider.GetService(_notifySource.GetType())).GetPatternProvider();
     }
 
     public IRecipientProvider GetRecipientsProvider(IServiceScope scope)
     {
-        return ((INotifySource)scope.ServiceProvider.GetService(NotifySource.GetType())).GetRecipientsProvider();
+        return ((INotifySource)scope.ServiceProvider.GetService(_notifySource.GetType())).GetRecipientsProvider();
     }
 
     public ISubscriptionProvider GetSubscriptionProvider(IServiceScope scope)
     {
-        return ((INotifySource)scope.ServiceProvider.GetService(NotifySource.GetType())).GetSubscriptionProvider();
+        return ((INotifySource)scope.ServiceProvider.GetService(_notifySource.GetType())).GetSubscriptionProvider();
     }
 }

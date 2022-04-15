@@ -56,7 +56,8 @@ public class LicenseController : BaseSettingsController
         CoreBaseSettings coreBaseSettings,
         IMemoryCache memoryCache,
         FirstTimeTenantSettings firstTimeTenantSettings,
-        PaymentManager paymentManager) : base(apiContext, memoryCache, webItemManager)
+        PaymentManager paymentManager,
+        IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _log = option.Get("ASC.Api");
         _firstTimeTenantSettings = firstTimeTenantSettings;

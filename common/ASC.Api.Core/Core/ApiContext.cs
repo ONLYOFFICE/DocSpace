@@ -31,22 +31,22 @@ namespace ASC.Api.Core;
 [Scope]
 public class ApiContext : ICloneable
 {
-    public IHttpContextAccessor HttpContextAccessor { get; set; }
+    private readonly IHttpContextAccessor _httpContextAccessor;
     public string[] Fields { get; set; }
     public string[] FilterValues { get; set; }
     public bool FromCache { get; set; }
-    public Tenant Tenant => _tenant ??= _tenantManager.GetCurrentTenant(HttpContextAccessor?.HttpContext);
+    public Tenant Tenant => _tenant ??= _tenantManager.GetCurrentTenant(_httpContextAccessor?.HttpContext);
     public long? TotalCount
     {
         set
         {
-            if (HttpContextAccessor.HttpContext.Items.ContainsKey(nameof(TotalCount)))
+            if (_httpContextAccessor.HttpContext.Items.ContainsKey(nameof(TotalCount)))
             {
-                HttpContextAccessor.HttpContext.Items[nameof(TotalCount)] = value;
+                _httpContextAccessor.HttpContext.Items[nameof(TotalCount)] = value;
             }
             else
             {
-                HttpContextAccessor.HttpContext.Items.Add(nameof(TotalCount), value);
+                _httpContextAccessor.HttpContext.Items.Add(nameof(TotalCount), value);
             }
         }
     }
@@ -119,14 +119,14 @@ public class ApiContext : ICloneable
     {
         _securityContext = securityContext;
         _tenantManager = tenantManager;
-        HttpContextAccessor = httpContextAccessor;
+        _httpContextAccessor = httpContextAccessor;
         if (httpContextAccessor.HttpContext == null)
         {
             return;
         }
 
         Count = _maxCount;
-        var query = HttpContextAccessor.HttpContext.Request.Query;
+        var query = _httpContextAccessor.HttpContext.Request.Query;
         //Try parse values
         var count = query.GetRequestValue("count");
         if (!string.IsNullOrEmpty(count) && ulong.TryParse(count, out var countParsed))
@@ -199,7 +199,7 @@ public class ApiContext : ICloneable
 
     public ApiContext SetCount(int count)
     {
-        HttpContextAccessor.HttpContext.Items[nameof(Count)] = count;
+        _httpContextAccessor.HttpContext.Items[nameof(Count)] = count;
 
         return this;
     }
@@ -217,7 +217,7 @@ public class ApiContext : ICloneable
 
     public void AuthByClaim()
     {
-        var id = HttpContextAccessor.HttpContext.User.Claims.FirstOrDefault(r => r.Type == ClaimTypes.Sid);
+        var id = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(r => r.Type == ClaimTypes.Sid);
         if (Guid.TryParse(id?.Value, out var userId))
         {
             _securityContext.AuthenticateMeWithoutCookie(userId);

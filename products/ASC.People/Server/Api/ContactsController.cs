@@ -36,8 +36,9 @@ public class ContactsController : PeopleControllerBase
         ApiContext apiContext,
         UserPhotoManager userPhotoManager,
         IHttpClientFactory httpClientFactory,
-        EmployeeFullDtoHelper employeeFullDtoHelper)
-        : base(userManager, permissionContext, apiContext, userPhotoManager, httpClientFactory)
+        EmployeeFullDtoHelper employeeFullDtoHelper,
+        IHttpContextAccessor httpContextAccessor)
+        : base(userManager, permissionContext, apiContext, userPhotoManager, httpClientFactory, httpContextAccessor)
     {
         _employeeFullDtoHelper = employeeFullDtoHelper;
     }

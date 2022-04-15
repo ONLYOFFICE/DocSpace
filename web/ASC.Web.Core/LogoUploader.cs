@@ -103,14 +103,14 @@ public class StorageHelper
     private readonly UserPhotoManager _userPhotoManager;
     private readonly StorageFactory _storageFactory;
     private readonly TenantManager _tenantManager;
-    public readonly ILog Logger;
+    private readonly ILog _logger;
 
     public StorageHelper(UserPhotoManager userPhotoManager, StorageFactory storageFactory, TenantManager tenantManager, IOptionsMonitor<ILog> options)
     {
         _userPhotoManager = userPhotoManager;
         _storageFactory = storageFactory;
         _tenantManager = tenantManager;
-        Logger = options.CurrentValue;
+        _logger = options.CurrentValue;
     }
 
     public string SaveTmpLogo(string tmpLogoPath)
@@ -141,7 +141,7 @@ public class StorageHelper
         }
         catch (Exception ex)
         {
-            Logger.Error(ex);
+            _logger.Error(ex);
             return null;
         }
     }
@@ -166,7 +166,7 @@ public class StorageHelper
         }
         catch (Exception e)
         {
-            Logger.Error(e);
+            _logger.Error(e);
         }
     }
 

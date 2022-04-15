@@ -46,7 +46,8 @@ public class TipsController : BaseSettingsController
         WebItemManager webItemManager,
         SetupInfo setupInfo,
         IMemoryCache memoryCache,
-        IHttpClientFactory clientFactory) : base(apiContext, memoryCache, webItemManager)
+        IHttpClientFactory clientFactory,
+        IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _log = option.Get("ASC.Api");
         _authContext = authContext;

@@ -40,7 +40,8 @@ public class CustomNavigationController : BaseSettingsController
         SettingsManager settingsManager,
         WebItemManager webItemManager,
         StorageHelper storageHelper,
-        IMemoryCache memoryCache) : base(apiContext, memoryCache, webItemManager)
+        IMemoryCache memoryCache,
+        IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _messageService = messageService;
         _permissionContext = permissionContext;

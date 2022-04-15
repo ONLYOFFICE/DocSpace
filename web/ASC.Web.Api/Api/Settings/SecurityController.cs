@@ -52,7 +52,8 @@ public class SecurityController : BaseSettingsController
         DisplayUserSettingsHelper displayUserSettingsHelper,
         EmployeeDtoHelper employeeWraperHelper,
         MessageTarget messageTarget,
-        IMemoryCache memoryCache) : base(apiContext, memoryCache, webItemManager)
+        IMemoryCache memoryCache,
+        IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _employeeHelperDto = employeeWraperHelper;
         _messageService = messageService;
