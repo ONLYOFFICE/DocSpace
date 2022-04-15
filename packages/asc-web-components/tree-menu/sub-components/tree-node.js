@@ -182,7 +182,8 @@ const TreeNodeMenu = styled(TreeNode)`
     padding: 0;
   }
   .rc-tree-node-content-wrapper {
-    width: ${(props) => (props.disableSwitch ? "90%" : "108%")};
+    // width: ${(props) => (props.disableSwitch ? "90%" : "108%")};
+    width: calc(100% - 16px);
     display: inline-block;
     position: relative;
     z-index: 2;
