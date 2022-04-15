@@ -15,53 +15,53 @@ const StyledModalDialog = styled(ModalDialog)`
   .modal-dialog-aside-body {
     margin-right: -16px;
   }
-`;
 
-const StyledServicesBlock = styled.div`
-  padding-top: 20px;
-  display: grid;
-  grid-gap: 16px;
+  .service-block {
+    padding-top: 20px;
+    display: grid;
+    grid-gap: 16px;
 
-  .service-item-container {
-    display: flex;
-
-    .service-name-container {
+    .service-item-container {
       display: flex;
-      align-items: center;
 
-      .service-item__svg {
-        width: 24px;
-        height: 24px;
-        margin-right: 8px;
-      }
-      .kDrive {
-        svg {
-          path:nth-child(7) {
-            opacity: 0.5 !important;
-          }
-          path:nth-child(8) {
-            opacity: 0.8 !important;
-          }
-          path:nth-child(9) {
-            opacity: 0.8 !important;
-          }
-          path:nth-child(10) {
-            opacity: 0.16 !important;
-          }
-          path:nth-child(11) {
-            opacity: 0.16 !important;
+      .service-name-container {
+        display: flex;
+        align-items: center;
+
+        .service-item__svg {
+          width: 24px;
+          height: 24px;
+          margin-right: 8px;
+        }
+        .kDrive {
+          svg {
+            path:nth-child(7) {
+              opacity: 0.5 !important;
+            }
+            path:nth-child(8) {
+              opacity: 0.8 !important;
+            }
+            path:nth-child(9) {
+              opacity: 0.8 !important;
+            }
+            path:nth-child(10) {
+              opacity: 0.16 !important;
+            }
+            path:nth-child(11) {
+              opacity: 0.16 !important;
+            }
           }
         }
       }
-    }
 
-    .service-btn {
-      margin-left: auto;
+      .service-btn {
+        margin-left: auto;
+      }
     }
   }
 `;
 
-StyledServicesBlock.defaultProps = { theme: Base };
+StyledModalDialog.defaultProps = { theme: Base };
 
 const ServiceItem = (props) => {
   const {
@@ -176,11 +176,6 @@ const ThirdPartyDialog = (props) => {
     setThirdPartyDialogVisible(false);
   };
 
-  const yandexLogoUrl =
-    i18n && i18n.language === "ru-RU"
-      ? "images/services/logo_yandex_ru.svg"
-      : "images/services/logo_yandex_en.svg";
-
   return (
     <StyledModalDialog
       isLoading={!tReady}
@@ -205,7 +200,7 @@ const ThirdPartyDialog = (props) => {
             </Trans>
           )}
         </Text>
-        <StyledServicesBlock>
+        <div className="service-block">
           {googleConnectItem && (
             <ServiceItem
               t={t}
@@ -306,7 +301,7 @@ const ThirdPartyDialog = (props) => {
               getThirdPartyIcon={getThirdPartyIcon}
             />
           )}
-        </StyledServicesBlock>
+        </div>
       </ModalDialog.Body>
     </StyledModalDialog>
   );
