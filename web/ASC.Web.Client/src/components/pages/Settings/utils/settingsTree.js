@@ -126,6 +126,13 @@ export const settingsTree = [
         tKey: "Backup",
         isCategory: true,
       },
+      {
+        key: "4-1",
+        icon: "",
+        link: "delete-data",
+        tKey: "DeleteData",
+        isCategory: true,
+      },
     ],
   },
 ];

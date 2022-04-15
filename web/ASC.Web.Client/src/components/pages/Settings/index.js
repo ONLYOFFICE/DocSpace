@@ -34,8 +34,9 @@ const ThirdPartyServices = lazy(() =>
   import("./categories/integration/thirdPartyServicesSettings")
 );
 const DataManagementSettings = lazy(() =>
-  import("./categories/data-management/backup")
+  import("./categories/data-management/")
 );
+const Backup = lazy(() => import("./categories/data-management/backup"));
 const AutomaticBackup = lazy(() =>
   import("./categories/data-management/backup/auto-backup")
 );
@@ -45,7 +46,9 @@ const ManualBackup = lazy(() =>
 const RestoreBackup = lazy(() =>
   import("./categories/data-management/backup/restore-backup")
 );
-
+const DeleteData = lazy(() =>
+  import("./categories/data-management/delete-data")
+);
 const WhiteLabel = lazy(() => import("./categories/common/whitelabel"));
 
 const PROXY_BASE_URL = combineUrl(AppServerConfig.proxyURL, "/settings");
@@ -98,10 +101,15 @@ const THIRD_PARTY_URL = combineUrl(
   PROXY_BASE_URL,
   "/integration/third-party-services"
 );
-const DATA_MANAGEMENT_URL = combineUrl(
+const DATA_MANAGEMENT_URL = [
+  combineUrl(PROXY_BASE_URL, "/datamanagement/backup"),
+  combineUrl(PROXY_BASE_URL, "/datamanagement/delete-data"),
+];
+/*const BACKUP_URL = combineUrl(PROXY_BASE_URL, "/datamanagement/backup");
+const DELETE_DATA_URL = combineUrl(
   PROXY_BASE_URL,
-  "/datamanagement/backup"
-);
+  "/datamanagement/delete-data"
+);*/
 
 const ERROR_404_URL = combineUrl(AppServerConfig.proxyURL, "/error/404");
 
@@ -147,6 +155,8 @@ const Settings = () => {
             path={DATA_MANAGEMENT_URL}
             component={DataManagementSettings}
           />
+          {/*<Route exact path={BACKUP_URL} component={Backup} />
+          <Route exact path={DELETE_DATA_URL} component={DeleteData} />*/}
 
           <Redirect
             to={{
