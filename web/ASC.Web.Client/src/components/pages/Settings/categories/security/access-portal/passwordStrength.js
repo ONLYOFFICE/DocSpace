@@ -26,11 +26,13 @@ const MainContainer = styled.div`
   }
 
   .checkboxes {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+    display: inline-block;
     margin-top: 18px;
     margin-bottom: 24px;
+
+    .second-checkbox {
+      margin: 8px 0;
+    }
   }
 `;
 
@@ -220,6 +222,7 @@ const PasswordStrength = (props) => {
           value="upperCase"
         />
         <Checkbox
+          className="second-checkbox"
           onChange={onClickCheckbox}
           label={t("UseDigits")}
           isChecked={useDigits}
