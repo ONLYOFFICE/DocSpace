@@ -12,8 +12,8 @@ import { Dark, Base } from "@appserver/components/themes";
 const { proxyURL } = AppServerConfig;
 
 const themes = {
-  Dark: Dark,
-  Base: Base,
+  dark: Dark,
+  base: Base,
 };
 
 class SettingsStore {
@@ -428,8 +428,19 @@ class SettingsStore {
       this.buildVersionInfo.documentServer = "6.4.1";
   };
 
-  setTheme = (theme) => {
+  setTheme = (key) => {
+    let theme = key;
+
+    if (theme === "system") {
+      theme =
+        window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "base";
+    }
+
     this.theme = themes[theme];
+
     localStorage.setItem("theme", theme);
   };
 
