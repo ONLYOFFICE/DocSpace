@@ -17,7 +17,7 @@ const StyledDiv = styled(ClearDiv)`
       `) ||
     (props.orientation === "vertical" &&
       css`
-        display: block;
+        display: inline-block;
       `)};
 
   width: ${(props) => props.width};

@@ -108,7 +108,6 @@ RadioButtonGroup.defaultProps = {
   selected: undefined,
   spacing: "15px",
   orientation: "horizontal",
-  width: "100%",
 };
 
 export default RadioButtonGroup;
