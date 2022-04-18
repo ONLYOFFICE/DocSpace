@@ -69,14 +69,6 @@ const StyledRow = styled(Row)`
   }
 `;
 
-const StyledRowContainer = styled(RowContainer)`
-  @media ${tablet} {
-    margin-right: -35px;
-  }
-
-  margin: 0;
-`;
-
 class ConnectClouds extends React.Component {
   constructor(props) {
     super(props);
@@ -215,7 +207,7 @@ class ConnectClouds extends React.Component {
                 </Text>
               </div>
             </StyledHeader>
-            <StyledRowContainer useReactWindow={false}>
+            <RowContainer useReactWindow={false}>
               {providers.map((item, index) => {
                 const src = getThirdPartyIcon(item.provider_key);
                 const element = <ReactSVG src={src} alt="" />;
@@ -268,7 +260,7 @@ class ConnectClouds extends React.Component {
                   </StyledRow>
                 );
               })}
-            </StyledRowContainer>
+            </RowContainer>
           </>
         ) : (
           <EmptyFolderContainer
