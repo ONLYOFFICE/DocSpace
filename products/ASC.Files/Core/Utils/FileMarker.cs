@@ -380,9 +380,8 @@ namespace ASC.Web.Files.Utils
 
             T folderID;
             int valueNew;
-            var userFolderIdTask = internalFolderDao.GetFolderIDUserAsync(false, userID);
-            var privacyFolderIdTask = internalFolderDao.GetFolderIDPrivacyAsync(false, userID);
-            var userFolderId = await userFolderIdTask;
+            var userFolderId = await internalFolderDao.GetFolderIDUserAsync(false, userID);
+            var privacyFolderId = await internalFolderDao.GetFolderIDPrivacyAsync(false, userID);
 
             var removeTags = new List<Tag>();
 
@@ -417,8 +416,6 @@ namespace ASC.Web.Files.Utils
 
                 removeTags.AddRange(listTags);
             }
-
-            var privacyFolderId = await privacyFolderIdTask;
 
             var parentFolders = await folderDao.GetParentFoldersAsync(folderID);
             parentFolders.Reverse();
@@ -558,9 +555,9 @@ namespace ASC.Web.Files.Utils
             var tagDao = DaoFactory.GetTagDao<T>();
             var providerFolderDao = DaoFactory.GetFolderDao<string>();
             var providerTagDao = DaoFactory.GetTagDao<string>();
-            var tags = (tagDao.GetNewTagsAsync(AuthContext.CurrentAccount.ID, folder, true) ?? AsyncEnumerable.Empty<Tag>());
+            var tags = await (tagDao.GetNewTagsAsync(AuthContext.CurrentAccount.ID, folder, true) ?? AsyncEnumerable.Empty<Tag>()).ToListAsync();
 
-            if (!(await tags.CountAsync() == 0)) return new List<FileEntry>();
+            if (!tags.Any()) return new List<FileEntry>();
 
             if (Equals(folder.ID, GlobalFolder.GetFolderMy(this, DaoFactory)) ||
                 Equals(folder.ID, await GlobalFolder.GetFolderCommonAsync(this, DaoFactory)) ||
@@ -568,25 +565,33 @@ namespace ASC.Web.Files.Utils
             {
                 var folderTags = tags.Where(tag => tag.EntryType == FileEntryType.Folder && (tag.EntryId is string));
 
-                var providerFolderTags = folderTags
-                    .SelectAwait(async tag => new KeyValuePair<Tag, Folder<string>>(tag, await providerFolderDao.GetFolderAsync(tag.EntryId.ToString())))
-                    .Where(pair => pair.Value != null && pair.Value.ProviderEntry);
+                var providerFolderTags = new List<KeyValuePair<Tag, Folder<string>>>();
 
-                providerFolderTags = providerFolderTags.Reverse();
-
-                await foreach (var providerFolderTag in providerFolderTags)
+                foreach (var tag in folderTags)
                 {
-                    tags.Concat(providerTagDao.GetNewTagsAsync(AuthContext.CurrentAccount.ID, providerFolderTag.Value, true));
+                    var pair = new KeyValuePair<Tag, Folder<string>>(tag, await providerFolderDao.GetFolderAsync(tag.EntryId.ToString()));
+                    if (pair.Value != null && pair.Value.ProviderEntry)
+                    {
+                        providerFolderTags.Add(pair);
+                    }
+                }
+
+                providerFolderTags.Reverse();
+
+                foreach (var providerFolderTag in providerFolderTags)
+                {
+                    tags.AddRange(await providerTagDao.GetNewTagsAsync(AuthContext.CurrentAccount.ID, providerFolderTag.Value, true).ToListAsync());
                 }
             }
 
             tags = tags
                 .Where(r => !Equals(r.EntryId, folder.ID))
-                .Distinct();
+                .Distinct()
+                .ToList();
 
             //TODO: refactoring
-            var entryTagsProvider = await GetEntryTagsAsync<string>(tags.Where(r => r.EntryId is string));
-            var entryTagsInternal = await GetEntryTagsAsync<int>(tags.Where(r => r.EntryId is int));
+            var entryTagsProvider = await GetEntryTagsAsync<string>(tags.Where(r => r.EntryId is string).ToAsyncEnumerable());
+            var entryTagsInternal = await GetEntryTagsAsync<int>(tags.Where(r => r.EntryId is int).ToAsyncEnumerable());
 
             foreach (var entryTag in entryTagsInternal)
             {

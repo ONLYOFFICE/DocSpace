@@ -663,7 +663,7 @@ namespace ASC.Web.Files.Utils
         public Task<Stream> ExecAsync<T>(File<T> file)
         {
             return ExecAsync(file, FileUtility.GetInternalExtension(file.Title));
-        }      
+        }
 
         public async Task<Stream> ExecAsync<T>(File<T> file, string toExtension, string password = null)
         {
@@ -687,8 +687,8 @@ namespace ASC.Web.Files.Utils
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(convertUri);
 
-            using var httpClient = ClientFactory.CreateClient();
-            using var response = await httpClient.SendAsync(request);
+            var httpClient = ClientFactory.CreateClient();
+            var response = await httpClient.SendAsync(request);
             return new ResponseStream(response);
         }
 

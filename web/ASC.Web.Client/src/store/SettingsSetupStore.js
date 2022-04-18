@@ -65,6 +65,10 @@ class SettingsSetupStore {
     }
   };
 
+  setIsInit = (isInit) => {
+    this.isInit = isInit;
+  };
+
   setIsLoading = (isLoading) => {
     this.security.accessRight.isLoading = isLoading;
   };
@@ -328,12 +332,6 @@ class SettingsSetupStore {
 
   sendOwnerChange = (id) => {
     return api.settings.sendOwnerChange(id);
-  };
-
-  getCommonThirdPartyList = async () => {
-    const res = await api.settings.getCommonThirdPartyList();
-
-    this.setCommonThirdPartyList(res);
   };
 
   setIsLoadingArticleSettings = (isLoading) => {
