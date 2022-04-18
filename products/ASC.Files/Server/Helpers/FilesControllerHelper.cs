@@ -141,9 +141,9 @@ namespace ASC.Files.Helpers
             ClientFactory = clientFactory;
         }
 
-        public async Task<FolderContentWrapper<T>> GetFolderAsync(T folderId, Guid userIdOrGroupId, FilterType filterType, bool withSubFolders)
+        public async Task<FolderContentWrapper<T>> GetFolderAsync(T folderId, Guid userIdOrGroupId, FilterType filterType, bool searchInContent, bool withSubFolders)
         {
-            var folderContentWrapper = await ToFolderContentWrapperAsync(folderId, userIdOrGroupId, filterType, withSubFolders);
+            var folderContentWrapper = await ToFolderContentWrapperAsync(folderId, userIdOrGroupId, filterType, searchInContent, withSubFolders);
             return folderContentWrapper.NotFoundIfNull();
         }
 
@@ -402,7 +402,6 @@ namespace ASC.Files.Helpers
         public async Task<FileWrapper<TTemplate>> CopyFileAsAsync<TTemplate>(T fileId, TTemplate destFolderId, string destTitle, string password = null)
         {
             var service = ServiceProvider.GetService<FileStorageService<TTemplate>>();
-            var controller = ServiceProvider.GetService<FilesControllerHelper<TTemplate>>();
             var file = await FileStorageService.GetFileAsync(fileId, -1);
             var ext = FileUtility.GetFileExtension(file.Title);
             var destExt = FileUtility.GetFileExtension(destTitle);
@@ -415,6 +414,7 @@ namespace ASC.Files.Helpers
 
             using (var fileStream = await FileConverter.ExecAsync(file, destExt, password))
             {
+                var controller = ServiceProvider.GetService<FilesControllerHelper<TTemplate>>();
                 return await controller.InsertFileAsync(destFolderId, fileStream, destTitle, true);
             }
         }
@@ -823,7 +823,7 @@ namespace ASC.Files.Helpers
         //    return files.Concat(folders);
         //}
 
-        private async Task<FolderContentWrapper<T>> ToFolderContentWrapperAsync(T folderId, Guid userIdOrGroupId, FilterType filterType, bool withSubFolders)
+        private async Task<FolderContentWrapper<T>> ToFolderContentWrapperAsync(T folderId, Guid userIdOrGroupId, FilterType filterType, bool searchInContent, bool withSubFolders)
         {
             OrderBy orderBy = null;
             if (Enum.TryParse(ApiContext.SortBy, true, out SortedByType sortBy))
@@ -839,7 +839,7 @@ namespace ASC.Files.Helpers
                                                                                filterType == FilterType.ByUser,
                                                                                userIdOrGroupId.ToString(),
                                                                                ApiContext.FilterValue,
-                                                                               false,
+                                                                               searchInContent,
                                                                                withSubFolders,
                                                                                orderBy);
             return await FolderContentWrapperHelper.GetAsync(items, startIndex);

@@ -555,6 +555,7 @@ namespace ASC.ElasticSearch
                 while (!string.IsNullOrEmpty(name = TryGetName(expression, out var member)))
                 {
                     sourceExprText = "." + name + sourceExprText;
+                    expression = member.Expression;
                 }
 
                 if (isList)

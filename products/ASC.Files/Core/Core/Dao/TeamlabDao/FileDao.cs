@@ -1401,11 +1401,11 @@ namespace ASC.Files.Core.Data
                {
                    if (withSubfolders)
                    {
-                       result.In(a => a.Folders.Select(r => r.ParentId), new[] { parentId });
+                       result.In(a => a.Folders.Select(r => r.FolderId), new[] { parentId });
                    }
                    else
                    {
-                       result.InAll(a => a.Folders.Select(r => r.ParentId), new[] { parentId });
+                       result.InAll(a => a.Folders.Select(r => r.FolderId), new[] { parentId });
                    }
                }
 

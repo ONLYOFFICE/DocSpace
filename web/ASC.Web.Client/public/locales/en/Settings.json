@@ -123,6 +123,7 @@
   "SendNotificationAboutRestoring": "Send notification about portal restoring to users",
   "ServerSideEncryptionMethod": "Server Side Encryption Method",
   "ServiceUrl": "Service Url",
+  "SelectFileInGZFormat": "Select the file in .GZ format",
   "StudioTimeLanguageSettings": "Language and Time Zone Settings",
   "SuccessfullySaveGreetingSettingsMessage": "Welcome Page settings have been successfully saved",
   "SuccessfullySavePortalNameMessage": "Portal has been renamed successfully",

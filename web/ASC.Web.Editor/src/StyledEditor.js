@@ -3,9 +3,6 @@ import styled from "styled-components";
 import Base from "@appserver/components/themes/base";
 
 const StyledSelectFolder = styled.div`
-  .editor-select-folder_text {
-    color: ${(props) => props.theme.editor.color};
-  }
   .editor-select-folder_text-input {
     margin-top: 8px;
   }

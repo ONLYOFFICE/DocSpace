@@ -26,12 +26,12 @@ const StyledTreeMenu = styled(TreeMenu)`
     background: ${(props) => !props.dragging && "none !important"};
   }
 
-  .rc-tree-node-selected {
+  /* .rc-tree-node-selected {
     background: ${(props) =>
-      !props.isPanel
-        ? props.theme.filesArticleBody.background
-        : props.theme.filesArticleBody.panelBackground} !important;
-  }
+    !props.isPanel
+      ? props.theme.filesArticleBody.background
+      : props.theme.filesArticleBody.panelBackground} !important;
+  } */
 
   .rc-tree-treenode-disabled > span:not(.rc-tree-switcher),
   .rc-tree-treenode-disabled > a,
@@ -453,7 +453,7 @@ class TreeFolders extends React.Component {
       isLoading,
       onSelect,
       dragging,
-      expandedKeys,
+
       expandedPanelKeys,
       treeFolders,
       data,
@@ -475,7 +475,7 @@ class TreeFolders extends React.Component {
         onSelect={onSelect}
         selectedKeys={selectedKeys}
         loadData={this.onLoadData}
-        expandedKeys={expandedPanelKeys ? expandedPanelKeys : expandedKeys}
+        expandedKeys={expandedPanelKeys}
         onExpand={this.onExpand}
         onDragOver={this.onDragOver}
         onDragLeave={this.onDragLeave}
@@ -484,6 +484,7 @@ class TreeFolders extends React.Component {
         gapBetweenNodes="22"
         gapBetweenNodesTablet="26"
         isFullFillSelection={false}
+        childrenCount={expandedPanelKeys?.length}
       >
         {this.getItems(data || treeFolders)}
       </StyledTreeMenu>
@@ -515,7 +516,6 @@ export default inject(
       myFolderId,
       commonFolderId,
       isPrivacyFolder,
-      expandedKeys,
       setExpandedKeys,
       setExpandedPanelKeys,
       getSubfolders,
@@ -532,7 +532,6 @@ export default inject(
       commonId: commonFolderId,
       isPrivacy: isPrivacyFolder,
       draggableItems: dragging ? selection : null,
-      expandedKeys,
       treeFolders,
       isLoading,
       selectedKeys: useDefaultSelectedKeys
@@ -547,8 +546,4 @@ export default inject(
       getSubfolders,
     };
   }
-)(
-  withTranslation(["Home", "Common"])(
-    withLoader(observer(TreeFolders))(<Loaders.TreeFolders />)
-  )
-);
+)(withTranslation(["Home", "Common"])(observer(TreeFolders)));
