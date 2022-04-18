@@ -29,7 +29,7 @@ namespace ASC.Files.Api;
 [ConstraintRoute("int")]
 public class VirtualRoomsControllerInternal : VirtualRoomsController<int>
 {
-    public VirtualRoomsControllerInternal(FoldersControllerHelper<int> foldersControllerHelper, GlobalFolderHelper globalFolderHelper, FileStorageService<int> fileStorageService, FolderDtoHelper folderDtoHelper, FileOperationDtoHelper fileOperationDtoHelper) : base(foldersControllerHelper, globalFolderHelper, fileStorageService, folderDtoHelper, fileOperationDtoHelper)
+    public VirtualRoomsControllerInternal(FoldersControllerHelper<int> foldersControllerHelper, GlobalFolderHelper globalFolderHelper, FileStorageService<int> fileStorageService, FolderDtoHelper folderDtoHelper, FileOperationDtoHelper fileOperationDtoHelper, SecurityControllerHelper<int> securityControllerHelper) : base(foldersControllerHelper, globalFolderHelper, fileStorageService, folderDtoHelper, fileOperationDtoHelper, securityControllerHelper)
     {
     }
 }
@@ -41,15 +41,18 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     private readonly FolderDtoHelper _folderDtoHelper;
     private readonly GlobalFolderHelper _globalFolderHelper;
     private readonly FileOperationDtoHelper _fileOperationDtoHelper;
+    private readonly SecurityControllerHelper<T> _securityControllerHelper;
 
     public VirtualRoomsController(FoldersControllerHelper<T> foldersControllerHelper, GlobalFolderHelper globalFolderHelper,
-        FileStorageService<T> fileStorageService, FolderDtoHelper folderDtoHelper, FileOperationDtoHelper fileOperationDtoHelper)
+        FileStorageService<T> fileStorageService, FolderDtoHelper folderDtoHelper, FileOperationDtoHelper fileOperationDtoHelper,
+        SecurityControllerHelper<T> securityControllerHelper)
     {
         _foldersControllerHelper = foldersControllerHelper;
         _globalFolderHelper = globalFolderHelper;
         _fileStorageService = fileStorageService;
         _folderDtoHelper = folderDtoHelper;
         _fileOperationDtoHelper = fileOperationDtoHelper;
+        _securityControllerHelper = securityControllerHelper;
     }
 
     [Read("@rooms")]
@@ -145,6 +148,19 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     public async Task<IEnumerable<FileOperationDto>> UnarchiveRoomsFromFormAsync([FromForm][ModelBinder(BinderType = typeof(BatchModelBinder))] BatchRoomsRequestDto inDto)
     {
         return await UnarchiveRoomsAsync(inDto);
+    }
+
+    [Update("room/{roomId}/share")]
+    public Task<IEnumerable<FileShareDto>> SetRoomSecurityFromBodyAsync(T roomId, [FromBody] SecurityInfoRequestDto inDto)
+    {
+        return _securityControllerHelper.SetFolderSecurityInfoAsync(roomId, inDto.Share, inDto.Notify, inDto.SharingMessage);
+    }
+
+    [Update("room/{roomId}/share")]
+    [Consumes("application/x-www-form-urlencoded")]
+    public Task<IEnumerable<FileShareDto>> SetRoomSecurityFromFormAsync(T roomId, [FromForm] SecurityInfoRequestDto inDto)
+    {
+        return _securityControllerHelper.SetFolderSecurityInfoAsync(roomId, inDto.Share, inDto.Notify, inDto.SharingMessage);
     }
 
     private async Task<IEnumerable<FileOperationDto>> ArchiveRoomsAsync(BatchRoomsRequestDto inDto)
