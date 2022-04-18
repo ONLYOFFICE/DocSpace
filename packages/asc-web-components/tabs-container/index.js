@@ -168,7 +168,7 @@ class TabContainer extends Component {
                 selected={activeTab === index}
                 isDisabled={isDisabled}
               >
-                <Text className="title_style" fontSize="13px">
+                <Text fontWeight={600} className="title_style" fontSize="13px">
                   {item.title}
                 </Text>
               </Label>
