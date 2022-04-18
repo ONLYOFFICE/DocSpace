@@ -81,7 +81,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     }
 
     [Delete("room")]
-    public async IAsyncEnumerable<FileOperationDto> DeleteRoomsFromBodyAsync([FromBody] DeleteRoomsRequestDto inDto)
+    public async IAsyncEnumerable<FileOperationDto> DeleteRoomsFromBodyAsync([FromBody] BatchRoomsRequestDto inDto)
     {
         var tasks = _fileStorageService.DeleteItems("delete", inDto.FileIds.ToList(), inDto.FolderIds.ToList(), false, inDto.DeleteAfter, true);
 
@@ -92,7 +92,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     }
 
     [Update("room/archive")]
-    public async Task<IEnumerable<FileOperationDto>> ArchiveRoomsFromBodyAsync([FromBody] DeleteRoomsRequestDto inDto)
+    public async Task<IEnumerable<FileOperationDto>> ArchiveRoomsFromBodyAsync([FromBody] BatchRoomsRequestDto inDto)
     {
         var destFolder = JsonSerializer.SerializeToElement(await _globalFolderHelper.FolderArchiveAsync);
 
@@ -107,7 +107,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     }
 
     [Update("room/unarchive")]
-    public async Task<IEnumerable<FileOperationDto>> UnarchiveRoomsFromBodyAsync([FromBody] DeleteRoomsRequestDto inDto)
+    public async Task<IEnumerable<FileOperationDto>> UnarchiveRoomsFromBodyAsync([FromBody] BatchRoomsRequestDto inDto)
     {
         var destFolder = JsonSerializer.SerializeToElement(await _globalFolderHelper.FolderVirtualRoomsAsync);
 
