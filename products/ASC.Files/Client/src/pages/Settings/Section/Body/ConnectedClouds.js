@@ -29,6 +29,8 @@ const linkStyles = {
 
 const StyledHeader = styled.div`
   display: flex;
+  border-bottom: 1px solid #eceef1;
+  padding-bottom: 12px;
 
   @media ${tablet} {
     display: none;
@@ -200,7 +202,7 @@ class ConnectClouds extends React.Component {
               <Text
                 className="cloud-settings-clouds"
                 fontSize="12px"
-                fontWidth={600}
+                fontWeight={600}
                 color="#657077"
               >
                 {t("Clouds")}
@@ -208,7 +210,7 @@ class ConnectClouds extends React.Component {
 
               <div className="cloud-settings-name">
                 <div className="cloud-settings-separator" />
-                <Text fontSize="12px" fontWidth={600} color="#A3A9AE">
+                <Text fontSize="12px" fontWeight={600} color="#A3A9AE">
                   {t("Common:Name")}
                 </Text>
               </div>

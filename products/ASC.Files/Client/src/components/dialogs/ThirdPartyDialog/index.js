@@ -10,6 +10,8 @@ import Link from "@appserver/components/link";
 import { connectedCloudsTitleTranslation } from "../../../helpers/utils";
 import { Base } from "@appserver/components/themes";
 import Button from "@appserver/components/button";
+import SelectorAddButton from "@appserver/components/selector-add-button";
+import { isMobile } from "react-device-detect";
 
 const StyledModalDialog = styled(ModalDialog)`
   .modal-dialog-aside-body {
@@ -56,6 +58,12 @@ const StyledModalDialog = styled(ModalDialog)`
 
       .service-btn {
         margin-left: auto;
+
+        svg {
+          path {
+            fill: #333;
+          }
+        }
       }
     }
   }
@@ -96,13 +104,23 @@ const ServiceItem = (props) => {
           {serviceName ? serviceName : capabilityName}
         </Text>
       </div>
-      <Button
-        size="small"
-        className="service-btn"
-        label={t("Common:Connect")}
-        onClick={onClick}
-        {...dataProps}
-      />
+      {isMobile ? (
+        <SelectorAddButton
+          onClick={onClick}
+          iconName="/static/images/actions.plus.icon.react.svg"
+          className="service-btn"
+          title={t("Common:Connect")}
+          {...dataProps}
+        />
+      ) : (
+        <Button
+          size="small"
+          className="service-btn"
+          label={t("Common:Connect")}
+          onClick={onClick}
+          {...dataProps}
+        />
+      )}
     </div>
   );
 };
@@ -246,14 +264,14 @@ const ThirdPartyDialog = (props) => {
             />
           )}
 
-          {sharePointConnectItem && (
+          {/* {sharePointConnectItem && (
             <ServiceItem
               t={t}
               capability={sharePointConnectItem}
               onClick={onShowService}
               getThirdPartyIcon={getThirdPartyIcon}
             />
-          )}
+          )} */}
 
           {nextCloudConnectItem && (
             <ServiceItem
