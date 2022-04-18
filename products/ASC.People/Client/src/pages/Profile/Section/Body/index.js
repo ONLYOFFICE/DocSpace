@@ -37,6 +37,7 @@ import {
 
 import Loaders from "@appserver/common/components/Loaders";
 import withLoader from "../../../../HOCs/withLoader";
+import RadioButtonGroup from "@appserver/components/radio-button-group";
 
 const ProfileWrapper = styled.div`
   display: flex;
@@ -359,6 +360,7 @@ class SectionBodyContent extends React.PureComponent {
       personal,
       tipsSubscription,
       theme,
+      setTheme,
     } = this.props;
     const contacts = profile.contacts && getUserContacts(profile.contacts);
     const role = getUserRole(profile);
@@ -380,6 +382,8 @@ class SectionBodyContent extends React.PureComponent {
         }
       });
     }
+
+    const selectedTheme = localStorage.getItem("theme");
 
     return (
       <ProfileWrapper>
@@ -483,8 +487,27 @@ class SectionBodyContent extends React.PureComponent {
           </ToggleWrapper>
         )}
 
-        {profile.notes && (
+        {isSelf && (
           <ToggleWrapper>
+            <ToggleContent label={t("InterfaceTheme")} isOpen={true}>
+              <RadioButtonGroup
+                orientation={"vertical"}
+                name={"interface-theme"}
+                options={[
+                  { value: "system", label: t("SystemTheme") },
+                  { value: "base", label: t("LightTheme") },
+                  { value: "dark", label: t("DarkTheme") },
+                ]}
+                onClick={(e) => setTheme(e.target.value)}
+                selected={selectedTheme}
+                spacing={"10px"}
+              />
+            </ToggleContent>
+          </ToggleWrapper>
+        )}
+
+        {profile.notes && (
+          <ToggleWrapper isContacts={true}>
             <ToggleContent label={t("Translations:Comments")} isOpen={true}>
               <Text className="profile-comments" as="span">
                 {profile.notes}
@@ -536,7 +559,13 @@ export default withRouter(
   inject(({ auth, peopleStore }) => {
     const { isAdmin, userStore, settingsStore, tfaStore } = auth;
     const { user: viewer } = userStore;
-    const { isTabletView, getOAuthToken, getLoginLink, theme } = settingsStore;
+    const {
+      isTabletView,
+      getOAuthToken,
+      getLoginLink,
+      theme,
+      setTheme,
+    } = settingsStore;
     const { targetUserStore, avatarEditorStore, usersStore } = peopleStore;
     const {
       targetUser: profile,
@@ -579,6 +608,7 @@ export default withRouter(
       changeEmailSubscription,
       tipsSubscription,
       theme,
+      setTheme,
     };
   })(
     observer(
