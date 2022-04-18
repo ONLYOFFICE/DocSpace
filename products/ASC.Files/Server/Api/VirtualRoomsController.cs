@@ -72,8 +72,26 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         return await _folderDtoHelper.GetAsync(room);
     }
 
+    [Create("room")]
+    [Consumes("application/x-www-form-urlencoded")]
+    public async Task<FolderDto<T>> CreateRoomFromFormAsync([FromForm] CreateRoomRequestDto inDto)
+    {
+        var room = await _fileStorageService.CreateRoom(inDto.Title, inDto.RoomType);
+
+        return await _folderDtoHelper.GetAsync(room);
+    }
+
     [Update("room/{roomId}")]
     public async Task<FolderDto<T>> RenameRoomFromBodyAsync(T roomId, [FromBody] RenameRoomRequestDto inDto)
+    {
+        var room = await _fileStorageService.FolderRenameAsync(roomId, inDto.Title);
+
+        return await _folderDtoHelper.GetAsync(room);
+    }
+
+    [Update("room/{roomId}")]
+    [Consumes("application/x-www-form-urlencoded")]
+    public async Task<FolderDto<T>> RenameRoomFromFormAsync(T roomId, [FromForm] RenameRoomRequestDto inDto)
     {
         var room = await _fileStorageService.FolderRenameAsync(roomId, inDto.Title);
 
@@ -91,8 +109,45 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         }
     }
 
+    [Delete("room")]
+    [Consumes("application/x-www-form-urlencoded")]
+    public async IAsyncEnumerable<FileOperationDto> DeleteRoomsFromFormAsync([FromForm][ModelBinder(BinderType = typeof(BatchModelBinder))] BatchRoomsRequestDto inDto)
+    {
+        var tasks = _fileStorageService.DeleteItems("delete", inDto.FileIds.ToList(), inDto.FolderIds.ToList(), false, inDto.DeleteAfter, true);
+
+        foreach (var e in tasks)
+        {
+            yield return await _fileOperationDtoHelper.GetAsync(e);
+        }
+    }
+
     [Update("room/archive")]
     public async Task<IEnumerable<FileOperationDto>> ArchiveRoomsFromBodyAsync([FromBody] BatchRoomsRequestDto inDto)
+    {
+        return await ArchiveRoomsAsync(inDto);
+    }
+
+    [Update("room/archive")]
+    [Consumes("application/x-www-form-urlencoded")]
+    public async Task<IEnumerable<FileOperationDto>> ArchiveRoomsFromFormAsync([FromForm][ModelBinder(BinderType = typeof(BatchModelBinder))] BatchRoomsRequestDto inDto)
+    {
+        return await ArchiveRoomsAsync(inDto);
+    }
+
+    [Update("room/unarchive")]
+    public async Task<IEnumerable<FileOperationDto>> UnarchiveRoomsFromBodyAsync([FromBody] BatchRoomsRequestDto inDto)
+    {
+        return await UnarchiveRoomsAsync(inDto);
+    }
+
+    [Update("room/unarchive")]
+    [Consumes("application/x-www-form-urlencoded")]
+    public async Task<IEnumerable<FileOperationDto>> UnarchiveRoomsFromFormAsync([FromForm][ModelBinder(BinderType = typeof(BatchModelBinder))] BatchRoomsRequestDto inDto)
+    {
+        return await UnarchiveRoomsAsync(inDto);
+    }
+
+    private async Task<IEnumerable<FileOperationDto>> ArchiveRoomsAsync(BatchRoomsRequestDto inDto)
     {
         var destFolder = JsonSerializer.SerializeToElement(await _globalFolderHelper.FolderArchiveAsync);
 
@@ -106,8 +161,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         return result;
     }
 
-    [Update("room/unarchive")]
-    public async Task<IEnumerable<FileOperationDto>> UnarchiveRoomsFromBodyAsync([FromBody] BatchRoomsRequestDto inDto)
+    private async Task<IEnumerable<FileOperationDto>> UnarchiveRoomsAsync(BatchRoomsRequestDto inDto)
     {
         var destFolder = JsonSerializer.SerializeToElement(await _globalFolderHelper.FolderVirtualRoomsAsync);
 
