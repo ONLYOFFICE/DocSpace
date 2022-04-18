@@ -2,7 +2,7 @@ import { makeAutoObservable } from "mobx";
 import api from "@appserver/common/api";
 
 class ThirdPartyStore {
-  capabilities = [];
+  capabilities = null;
   providers = [];
 
   constructor() {
@@ -118,43 +118,61 @@ class ThirdPartyStore {
   };
 
   get googleConnectItem() {
-    return this.capabilities.find((x) => x[0] === "GoogleDrive");
+    return (
+      this.capabilities && this.capabilities.find((x) => x[0] === "GoogleDrive")
+    );
   }
 
   get boxConnectItem() {
-    return this.capabilities.find((x) => x[0] === "Box");
+    return this.capabilities && this.capabilities.find((x) => x[0] === "Box");
   }
 
   get dropboxConnectItem() {
-    return this.capabilities.find((x) => x[0] === "DropboxV2");
+    return (
+      this.capabilities && this.capabilities.find((x) => x[0] === "DropboxV2")
+    );
   }
   get oneDriveConnectItem() {
-    return this.capabilities.find((x) => x[0] === "OneDrive");
+    return (
+      this.capabilities && this.capabilities.find((x) => x[0] === "OneDrive")
+    );
   }
 
   get sharePointConnectItem() {
-    return this.capabilities.find((x) => x[0] === "SharePoint");
+    return (
+      this.capabilities && this.capabilities.find((x) => x[0] === "SharePoint")
+    );
   }
 
   get kDriveConnectItem() {
-    return this.capabilities.find((x) => x[0] === "kDrive");
+    return (
+      this.capabilities && this.capabilities.find((x) => x[0] === "kDrive")
+    );
   }
 
   get yandexConnectItem() {
-    return this.capabilities.find((x) => x[0] === "Yandex");
+    return (
+      this.capabilities && this.capabilities.find((x) => x[0] === "Yandex")
+    );
   }
 
   get webDavConnectItem() {
-    return this.capabilities.find((x) => x[0] === "WebDav");
+    return (
+      this.capabilities && this.capabilities.find((x) => x[0] === "WebDav")
+    );
   }
 
   // TODO: remove WebDav get NextCloud
   get nextCloudConnectItem() {
-    return this.capabilities.find((x) => x[0] === "WebDav");
+    return (
+      this.capabilities && this.capabilities.find((x) => x[0] === "WebDav")
+    );
   }
   // TODO:remove WebDav get OwnCloud
   get ownCloudConnectItem() {
-    return this.capabilities.find((x) => x[0] === "WebDav");
+    return (
+      this.capabilities && this.capabilities.find((x) => x[0] === "WebDav")
+    );
   }
 }
 
