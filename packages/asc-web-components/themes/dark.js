@@ -517,6 +517,7 @@ const Dark = {
     minHeight: "47px",
     width: "100%",
     borderBottom: "#474747",
+    backgroundColor: globalColors.veryDarkGrey,
     minWidth: "160px",
     overflow: "hidden",
     textOverflow: "ellipsis",
@@ -1930,10 +1931,8 @@ const Dark = {
   },
 
   menuContainer: {
-    background:
-      "linear-gradient(226.22deg, #EBB67A 0.24%, #E9AC6B 11.61%, #E8A25D 22.98%, #E69850 34.34%, #E58D42 45.71%, #E38235 57.08%, #E27628 68.44%, #E06A1B 79.81%)",
-    arrowTop: "#EAB274",
-    color: "#22221f",
+    background: "linear-gradient(226.22deg, #606060 0.24%, #1F1F1F 79.81%)",
+    color: "rgba(255, 255, 255, 0.92)",
   },
 
   article: {

@@ -185,7 +185,10 @@ namespace ASC.Web.Files.Utils
                 }
             }
 
-            await usersWithoutRight.ToAsyncEnumerable().ForEachAwaitAsync(async userId => await FileMarker.RemoveMarkAsNewAsync(entry, userId));
+            foreach (var userId in usersWithoutRight)
+            {
+                await FileMarker.RemoveMarkAsNewAsync(entry, userId);
+            }
 
             return changed;
         }

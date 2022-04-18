@@ -519,6 +519,7 @@ const Base = {
     minHeight: "47px",
     width: "100%",
     borderBottom: globalColors.grayLightMid,
+    backgroundColor: globalColors.lightHover,
     minWidth: "160px",
     overflow: "hidden",
     textOverflow: "ellipsis",
@@ -1930,7 +1931,6 @@ const Base = {
 
   menuContainer: {
     background: "linear-gradient(200.71deg, #2274aa 0%, #0f4071 100%)",
-    arrowTop: "#206FA4",
     color: white,
   },
 
