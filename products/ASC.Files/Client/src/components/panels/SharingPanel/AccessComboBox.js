@@ -44,15 +44,19 @@ const AccessComboBox = (props) => {
     (e) => {
       const access = +e.target.dataset.access;
 
-      const item = availableOptions.find((option) => {
-        return option.dataAccess === access;
-      });
+      if (access) {
+        const item = availableOptions.find((option) => {
+          return option.dataAccess === access;
+        });
 
-      setSelectedOption(item);
+        setSelectedOption(item);
 
-      onAccessChange && onAccessChange(e);
+        onAccessChange && onAccessChange(e);
+      } else {
+        onRemoveUserClick && onRemoveUserClick(e);
+      }
     },
-    [availableOptions, onAccessChange]
+    [availableOptions, onAccessChange, onRemoveUserClick]
   );
 
   React.useEffect(() => {
