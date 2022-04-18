@@ -120,7 +120,6 @@ const config = {
     maxAssetSize: 512000,
   },
   plugins: [
-    //new CleanWebpackPlugin(),
     new ModuleFederationPlugin({
       name: "editor",
       filename: "remoteEntry.js",
