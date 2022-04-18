@@ -12,6 +12,7 @@ import {
   getTypeByWidth,
   popstate,
 } from "./handlers/resizeHandler";
+import { isMobile, isSmallTablet } from "../utils/device";
 
 function Header() {
   return null;
@@ -81,6 +82,11 @@ class ModalDialog extends React.Component {
   }
 
   onResize = throttle(() => {
+    if (isSmallTablet()) {
+      this.setState({ ...this.state, displayType: "modal" });
+      return;
+    }
+
     const newType = getCurrentDisplayType(
       this.state.displayType,
       this.props.displayType,
@@ -120,9 +126,8 @@ class ModalDialog extends React.Component {
       children,
       isLoading,
       modalLoaderBodyHeight,
-      withoutCloseButton,
-      theme,
-      width,
+      autoMaxHeight,
+      autoMaxWidth,
     } = this.props;
 
     let header = null,
@@ -149,13 +154,16 @@ class ModalDialog extends React.Component {
     });
 
     const renderModal = () => {
-      return this.state.displayType === "modal" ? (
+      console.log(isMobile());
+      return isMobile() || this.state.displayType === "modal" ? (
         <Modal
           id={id}
           style={style}
           className={className}
           isLarge={isLarge}
           zIndex={zIndex}
+          autoMaxHeight={autoMaxHeight}
+          autoMaxWidth={autoMaxWidth}
           fadeType={this.state.fadeType}
           onClose={onClose}
           modalLoaderBodyHeight={modalLoaderBodyHeight}
@@ -207,6 +215,9 @@ ModalDialog.propTypes = {
   /** Sets `width: 520px` and `max-hight: 400px`*/
   isLarge: PropTypes.bool,
 
+  autoMaxHeight: PropTypes.bool,
+  autoMaxWidth: PropTypes.bool,
+
   /** Show loader in body */
   isLoading: PropTypes.bool,
   /** Set loader height */
@@ -215,7 +226,7 @@ ModalDialog.propTypes = {
 };
 
 ModalDialog.defaultProps = {
-  displayType: "auto",
+  displayType: "modal",
   zIndex: 310,
   isLarge: false,
   withoutCloseButton: false,

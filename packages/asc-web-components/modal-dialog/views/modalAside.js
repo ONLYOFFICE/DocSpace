@@ -36,13 +36,7 @@ const ModalAside = ({
   return (
     <StyledModal className={visible ? "modal-active" : ""}>
       <Box className={className} id={id} style={style}>
-        <CloseButton displayType="aside" onClick={onClose} />
-        {/* <Backdrop
-          visible={true}
-          zIndex={zIndex}
-          withBackground={true}
-          isAside={true}
-        /> */}
+        <CloseButton displayType="aside" zIndex={zIndex} onClick={onClose} />
         <ModalBackdrop
           className={"modal-backdrop-active"}
           visible={true}
@@ -51,9 +45,9 @@ const ModalAside = ({
         />
         <Aside
           scale={false}
-          visible={visible}
+          visible={true}
           zIndex={zIndex}
-          className="modal-dialog-aside aside-dialog not-selectable"
+          className="aside-dialog not-selectable"
           withoutBodyScroll={true}
         >
           <Content displayType="aside">
@@ -74,11 +68,12 @@ const ModalAside = ({
                 <BodyBox
                   className={"modal-dialog-aside-body bodybox-aside"}
                   paddingProp={"0 16px"}
+                  displayType="modal"
                   withoutBodyScroll={true}
                 >
                   {body ? body.props.children : null}
                 </BodyBox>
-                <Box className={"modal-dialog-aside-footer footer-aside"}>
+                <Box className={"footer-aside"}>
                   <StyledFooter displayType="aside">
                     {footer ? footer.props.children : null}
                   </StyledFooter>

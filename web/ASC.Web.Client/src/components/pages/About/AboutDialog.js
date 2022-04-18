@@ -15,6 +15,8 @@ const AboutDialog = (props) => {
       isLoading={!ready}
       visible={visible}
       onClose={onClose}
+      displayType="modal"
+      isLarge
     >
       <ModalDialog.Header>{t("AboutHeader")}</ModalDialog.Header>
       <ModalDialog.Body>

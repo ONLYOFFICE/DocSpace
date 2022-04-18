@@ -43,7 +43,8 @@ class ResetApplicationDialogComponent extends React.Component {
           <Button
             key="SendBtn"
             label={t("Common:ResetApplication")}
-            size="small"
+            size="normal"
+            scale
             primary={true}
             onClick={this.resetApp}
           />
@@ -51,7 +52,8 @@ class ResetApplicationDialogComponent extends React.Component {
             key="CloseBtn"
             className="button-dialog"
             label={t("Common:CloseButton")}
-            size="small"
+            size="normal"
+            scale
             primary={false}
             onClick={onClose}
           />

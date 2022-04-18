@@ -11,13 +11,37 @@ import toastr from "studio/toastr";
 import styled from "styled-components";
 
 const StyledModalDialog = styled(ModalDialog)`
-  .conflict-resolve-dialog-text {
+  .radio {
     padding-bottom: 8px;
   }
 
+  .message {
+    margin-bottom: 16px;
+  }
+
+  .select-action {
+    margin-bottom: 12px;
+  }
+
   .conflict-resolve-radio-button {
+    label {
+      align-items: start;
+    }
+
     svg {
       overflow: visible;
+    }
+
+    .radio-option-title {
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 16px;
+    }
+
+    .radio-option-description {
+      font-size: 12px;
+      line-height: 16px;
+      color: #a3a9ae;
     }
   }
 
@@ -127,8 +151,11 @@ const ConflictResolveDialog = (props) => {
     {
       label: (
         <div>
-          <Text>{t("OverwriteTitle")}</Text>
-          <Text>{t("OverwriteDescription")}</Text>
+          <Text className="radio-option-title">{t("OverwriteTitle")}</Text>
+          <Text className="radio-option-description">
+            {" "}
+            {t("OverwriteDescription")}
+          </Text>
         </div>
       ),
       value: "overwrite",
@@ -136,8 +163,10 @@ const ConflictResolveDialog = (props) => {
     {
       label: (
         <div>
-          <Text>{t("CreateTitle")}</Text>
-          <Text>{t("CreateDescription")}</Text>
+          <Text className="radio-option-title">{t("CreateTitle")}</Text>
+          <Text className="radio-option-description">
+            {t("CreateDescription")}
+          </Text>
         </div>
       ),
 
@@ -146,8 +175,10 @@ const ConflictResolveDialog = (props) => {
     {
       label: (
         <div>
-          <Text>{t("SkipTitle")}</Text>
-          <Text>{t("SkipDescription")}</Text>
+          <Text className="radio-option-title">{t("SkipTitle")}</Text>
+          <Text className="radio-option-description">
+            {t("SkipDescription")}
+          </Text>
         </div>
       ),
       value: "skip",
@@ -163,11 +194,12 @@ const ConflictResolveDialog = (props) => {
       isLoading={!tReady}
       visible={visible}
       onClose={onCloseDialog}
-      displayType="aside"
+      isLarge
+      zIndex={312}
     >
       <ModalDialog.Header>{t("ConflictResolveTitle")}</ModalDialog.Header>
       <ModalDialog.Body>
-        <Text className="conflict-resolve-dialog-text">
+        <Text className="message">
           {singleFile
             ? t("ConflictResolveDescription", { file, folder: folderTitle })
             : t("ConflictResolveDescriptionFiles", {
@@ -175,7 +207,7 @@ const ConflictResolveDialog = (props) => {
                 folder: folderTitle,
               })}
         </Text>
-        <Text className="conflict-resolve-dialog-text">
+        <Text className="select-action">
           {t("ConflictResolveSelectAction")}
         </Text>
         <RadioButtonGroup
@@ -194,20 +226,16 @@ const ConflictResolveDialog = (props) => {
           className="button-dialog-accept"
           key="OkButton"
           label={t("Common:OKButton")}
-          size="small"
+          size="normal"
           primary
-          scale
           onClick={onAcceptType}
-          //isLoading={isLoading}
         />
         <Button
           className="button-dialog"
           key="CancelButton"
           label={t("Common:CancelButton")}
-          size="small"
-          scale
+          size="normal"
           onClick={onCloseDialog}
-          //isLoading={isLoading}
         />
       </ModalDialog.Footer>
     </StyledModalDialog>

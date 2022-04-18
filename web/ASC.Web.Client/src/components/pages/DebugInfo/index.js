@@ -6,13 +6,11 @@ import ModalDialog from "@appserver/components/modal-dialog";
 import Text from "@appserver/components/text";
 import Box from "@appserver/components/box";
 import Scrollbar from "@appserver/components/scrollbar";
-import { getModalType } from "@appserver/components/utils/device";
 import axios from "axios";
 
 const DebugInfoDialog = (props) => {
   const { visible, onClose, user } = props;
   const [md, setMd] = useState();
-  const [modalType, setModalType] = useState(getModalType());
 
   useEffect(() => {
     if (md || !visible) return;
@@ -30,16 +28,12 @@ const DebugInfoDialog = (props) => {
     loadMD();
   }, [md, visible]);
 
-  const onResize = (type) => {
-    setModalType(type);
-  };
-
   return (
     <ModalDialog
       visible={visible}
       onClose={onClose}
-      contentHeight="500px"
-      onResize={onResize}
+      isLarge
+      displayType="modal"
     >
       <ModalDialog.Header>Debug Info</ModalDialog.Header>
       <ModalDialog.Body>
@@ -51,10 +45,7 @@ const DebugInfoDialog = (props) => {
         )}
         <Text>{`# User Agent: ${navigator.userAgent}`}</Text>
         <hr />
-        <Box
-          overflowProp="auto"
-          heightProp={modalType === "modal" ? "300px" : "70vh"}
-        >
+        <Box overflowProp="auto">
           <Scrollbar>{md && <ReactMarkdown children={md} />}</Scrollbar>
         </Box>
       </ModalDialog.Body>

@@ -35,9 +35,9 @@ const StyledCloseButtonWrapper = styled.div`
           }
         `
       : css`
-          z-index: 1000;
+          z-index: ${(props) => props.zIndex + 1};
           margin-top: 10px;
-          right: 335px;
+          right: 495px;
         `}
 
   .close-button {
@@ -50,9 +50,13 @@ const StyledCloseButtonWrapper = styled.div`
 
 StyledCloseButtonWrapper.defaultProps = { theme: Base };
 
-const CloseButton = ({ displayType, onClick }) => {
+const CloseButton = ({ displayType, zIndex, onClick }) => {
   return (
-    <StyledCloseButtonWrapper onClick={onClick} displayType={displayType}>
+    <StyledCloseButtonWrapper
+      zIndex={zIndex}
+      onClick={onClick}
+      displayType={displayType}
+    >
       <IconButton
         size={12}
         className="close-button"

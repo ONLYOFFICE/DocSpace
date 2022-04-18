@@ -120,7 +120,7 @@ const StyledAvatarContainer = styled.div`
   .preview-container {
     display: grid;
     grid-template-columns: 1fr;
-    grid-column-gap: 16px;
+    grid-column-gap: 44px;
 
     .custom-range {
       width: 100%;
@@ -158,7 +158,7 @@ const StyledAvatarContainer = styled.div`
       display: grid;
 
       @media ${desktop} {
-        width: 224px;
+        width: 216px;
       }
 
       @media ${tablet} {

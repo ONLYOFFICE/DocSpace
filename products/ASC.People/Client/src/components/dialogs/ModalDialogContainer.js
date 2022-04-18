@@ -36,6 +36,11 @@ const ModalDialogContainer = styled(ModalDialog)`
 
   .textarea-dialog {
     margin-top: 12px;
+    margin-bottom: 24px;
+  }
+
+  .checkbox-dialog {
+    margin-bottom: 8px;
   }
 
   .link-dialog {

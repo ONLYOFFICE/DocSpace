@@ -56,6 +56,7 @@ const StyledCloseButtonWrapper = styled.div`
   border-radius: 50%;
 
   .info-panel-button {
+    width: auto;
     svg {
       width: ${(props) => props.theme.infoPanel.closeButtonSize};
       height: ${(props) => props.theme.infoPanel.closeButtonSize};

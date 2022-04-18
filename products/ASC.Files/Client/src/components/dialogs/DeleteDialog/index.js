@@ -209,6 +209,7 @@ class DeleteDialogComponent extends React.Component {
         isLoading={!tReady}
         visible={visible}
         onClose={this.onClose}
+        autoMaxHeight
       >
         <ModalDialog.Header>{title}</ModalDialog.Header>
         <ModalDialog.Body>
@@ -258,7 +259,8 @@ class DeleteDialogComponent extends React.Component {
             className="button-dialog-accept"
             key="OkButton"
             label={accessButtonLabel}
-            size="small"
+            size="normal"
+            scale
             primary
             onClick={unsubscribe ? this.onUnsubscribe : this.onDelete}
             isLoading={isLoading}
@@ -268,7 +270,7 @@ class DeleteDialogComponent extends React.Component {
             className="button-dialog"
             key="CancelButton"
             label={t("Common:CancelButton")}
-            size="small"
+            size="normal"
             onClick={this.onClose}
             isLoading={isLoading}
           />

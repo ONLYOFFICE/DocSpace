@@ -85,7 +85,7 @@ class BackupCodesDialogComponent extends React.Component {
           <Button
             key="PrintBtn"
             label={t("PrintButton")}
-            size="small"
+            size="normal"
             primary={true}
             onClick={this.printPage}
           />
@@ -93,7 +93,7 @@ class BackupCodesDialogComponent extends React.Component {
             key="RequestNewBtn"
             className="button-dialog"
             label={t("RequestNewButton")}
-            size="small"
+            size="normal"
             primary={false}
             onClick={this.getNewBackupCodes}
           />

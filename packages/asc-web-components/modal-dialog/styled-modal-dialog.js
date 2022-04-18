@@ -20,12 +20,15 @@ const StyledModal = styled.div`
 
   .footer-aside {
     width: 100%;
-    margin-bottom: -6px;
+    position: fixed;
+    bottom: 10px;
   }
 
   .aside-dialog {
-    padding: 0;
-    margin-bottom: -6px;
+    position: fixed;
+    height: 100vh;
+    width: ${(props) => (props.autoMaxWidth ? "auto" : " 480px")};
+    padding-bottom: 64px;
   }
 `;
 
@@ -52,9 +55,17 @@ const Content = styled.div.attrs((props) => ({
   color: ${(props) => props.theme.modalDialog.textColor};
   height: auto;
   max-height: ${(props) =>
-    props.displayType === "aside" ? "auto" : props.isLarge ? "400px" : "280px"};
+    props.displayType === "aside" || props.autoMaxHeight
+      ? "auto"
+      : props.isLarge
+      ? "400px"
+      : "280px"};
   width: ${(props) =>
-    props.displayType === "aside" ? "auto" : props.isLarge ? "520px" : "400px"};
+    props.displayType === "aside" || props.autoMaxWidth
+      ? "auto"
+      : props.isLarge
+      ? "520px"
+      : "400px"};
   border-radius: 6px;
   padding: ${(props) => (props.displayType === "modal" ? "0" : "0 0 -16px")};
 
@@ -65,6 +76,7 @@ const Content = styled.div.attrs((props) => ({
         position: absolute;
         bottom: 0;
         width: 100%;
+        max-height: auto;
         border-radius: 6px 6px 0 0;
       }
     `}
@@ -93,7 +105,9 @@ const StyledHeader = styled.div`
 const BodyBox = styled(Box)`
   position: relative;
   ${(props) => props.withoutBodyScroll && `height: 100%;`}
-  padding-bottom: 8px;
+  padding: 0 16px;
+  padding-bottom: ${(props) =>
+    props.displayType === "aside" ? `8px` : props.hasFooter ? `8px` : "16px"};
 `;
 
 const StyledFooter = styled.div`

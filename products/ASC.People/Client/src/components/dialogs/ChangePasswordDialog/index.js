@@ -64,7 +64,8 @@ class ChangePasswordDialogComponent extends React.Component {
           <Button
             key="SendBtn"
             label={t("Common:SendButton")}
-            size="small"
+            size="normal"
+            scale
             primary={true}
             onClick={this.onSendPasswordChangeInstructions}
             isLoading={isRequestRunning}

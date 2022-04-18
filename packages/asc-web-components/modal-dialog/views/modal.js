@@ -23,6 +23,8 @@ const Modal = ({
 
   zIndex,
   isLarge,
+  autoMaxHeight,
+  autoMaxWidth,
 
   visible,
   onClose,
@@ -56,31 +58,39 @@ const Modal = ({
             displayType="modal"
             id="modal-dialog"
             isLarge={isLarge}
+            autoMaxHeight={autoMaxHeight}
+            autoMaxWidth={autoMaxWidth}
             modalSwipeOffset={modalSwipeOffset}
           >
             {isLoading ? (
               <Loaders.DialogLoader bodyHeight={modalLoaderBodyHeight} />
             ) : (
               <>
-                <StyledHeader id="modal-header-swipe">
-                  <Heading
-                    level={1}
-                    className={"heading"}
-                    size="medium"
-                    truncate={true}
-                  >
-                    {header ? header.props.children : null}
-                    <CloseButton displayType={"modal"} onClick={onClose} />
-                  </Heading>
-                </StyledHeader>
-                <BodyBox paddingProp={"0 16px"} withoutBodyScroll={true}>
-                  {body ? body.props.children : null}
-                </BodyBox>
-                <Box>
-                  <StyledFooter displayType="modal">
-                    {footer ? footer.props.children : null}
-                  </StyledFooter>
-                </Box>
+                {header && (
+                  <StyledHeader id="modal-header-swipe">
+                    <Heading
+                      level={1}
+                      className={"heading"}
+                      size="medium"
+                      truncate={true}
+                    >
+                      {header ? header.props.children : null}
+                      <CloseButton displayType={"modal"} onClick={onClose} />
+                    </Heading>
+                  </StyledHeader>
+                )}
+                {body && (
+                  <BodyBox withoutBodyScroll={true} hasFooter={1 && footer}>
+                    {body ? body.props.children : null}
+                  </BodyBox>
+                )}
+                {footer && (
+                  <Box>
+                    <StyledFooter displayType="modal">
+                      {footer ? footer.props.children : null}
+                    </StyledFooter>
+                  </Box>
+                )}
               </>
             )}
           </Content>

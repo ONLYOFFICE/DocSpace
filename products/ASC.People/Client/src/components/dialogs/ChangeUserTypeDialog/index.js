@@ -118,6 +118,7 @@ class ChangeUserTypeDialogComponent extends React.Component {
         isLoading={!tReady}
         visible={visible}
         onClose={onClose}
+        autoMaxHeight
       >
         <ModalDialog.Header>{t("ChangeUserTypeHeader")}</ModalDialog.Header>
         <ModalDialog.Body>
@@ -141,7 +142,8 @@ class ChangeUserTypeDialogComponent extends React.Component {
         <ModalDialog.Footer>
           <Button
             label={t("ChangeUserTypeButton")}
-            size="small"
+            size="normal"
+            scale
             primary
             onClick={this.onChangeUserType}
             isLoading={isRequestRunning}
@@ -150,7 +152,8 @@ class ChangeUserTypeDialogComponent extends React.Component {
           <Button
             className="button-dialog"
             label={t("Common:CancelButton")}
-            size="small"
+            size="normal"
+            scale
             onClick={onClose}
             isDisabled={isRequestRunning}
           />

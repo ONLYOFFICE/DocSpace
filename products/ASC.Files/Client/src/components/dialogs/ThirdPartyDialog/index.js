@@ -191,6 +191,8 @@ const ThirdPartyDialog = (props) => {
       displayType="modal"
       zIndex={310}
       onClose={onClose}
+      autoMaxHeight
+      isLarge
     >
       <ModalDialog.Header>
         {t("Translations:ConnectingAccount")}

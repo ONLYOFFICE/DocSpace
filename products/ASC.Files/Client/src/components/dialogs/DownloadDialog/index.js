@@ -351,6 +351,9 @@ class DownloadDialogComponent extends React.Component {
         isLoading={!tReady}
         visible={visible}
         onClose={this.onClose}
+        autoMaxHeight
+        autoMaxWidth
+        isLarge
       >
         <ModalDialog.Header>{t("Translations:DownloadAs")}</ModalDialog.Header>
         <ModalDialog.Body>

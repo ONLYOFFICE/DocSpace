@@ -95,7 +95,7 @@ class DeleteProfileEverDialogComponent extends React.Component {
             key="OKBtn"
             className="delete-profile_button-delete"
             label={t("Common:OKButton")}
-            size="small"
+            size="normal"
             primary={true}
             onClick={this.onDeleteProfileEver}
             isLoading={isRequestRunning}

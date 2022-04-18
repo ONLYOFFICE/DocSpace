@@ -116,6 +116,7 @@ class SendInviteDialogComponent extends React.Component {
         isLoading={!tReady}
         visible={visible}
         onClose={onClose}
+        autoMaxHeight
       >
         <ModalDialog.Header>
           {t("Translations:SendInviteAgain")}
@@ -135,7 +136,8 @@ class SendInviteDialogComponent extends React.Component {
         <ModalDialog.Footer>
           <Button
             label={t("Common:OKButton")}
-            size="small"
+            size="normal"
+            scale
             primary
             onClick={this.onSendInvite}
             isLoading={isRequestRunning}
@@ -144,7 +146,8 @@ class SendInviteDialogComponent extends React.Component {
           <Button
             className="button-dialog"
             label={t("Common:CancelButton")}
-            size="small"
+            size="normal"
+            scale
             onClick={onClose}
             isDisabled={isRequestRunning}
           />
