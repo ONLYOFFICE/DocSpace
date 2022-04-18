@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import Text from "@appserver/components/text";
@@ -8,6 +8,7 @@ import { size } from "@appserver/components/utils/device";
 
 const PortalDeactivation = (props) => {
   const { t, history } = props;
+  const [isDesktop, setIsDesktop] = useState(true);
 
   useEffect(() => {
     checkWidth();
@@ -19,6 +20,10 @@ const PortalDeactivation = (props) => {
     window.innerWidth > size.smallTablet &&
       history.location.pathname.includes("deactivation") &&
       history.push("/settings/datamanagement/delete-data");
+
+    window.innerWidth >= size.desktop
+      ? setIsDesktop(true)
+      : setIsDesktop(false);
   };
 
   return (
@@ -34,7 +39,7 @@ const PortalDeactivation = (props) => {
         className="button"
         label={t("Deactivate")}
         primary
-        size="normal"
+        size={isDesktop ? "small" : "normal"}
       />
     </MainContainer>
   );
