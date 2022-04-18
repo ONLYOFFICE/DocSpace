@@ -26,9 +26,7 @@ class SettingsStore {
   currentProductId = "";
   culture = "en";
   cultures = [];
-  theme = !!localStorage.getItem("theme")
-    ? themes[localStorage.getItem("theme")]
-    : Base;
+  theme = Base;
   trustedDomains = [];
   trustedDomainsType = 0;
   timezone = "UTC";
