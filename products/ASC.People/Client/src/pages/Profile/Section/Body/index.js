@@ -314,7 +314,7 @@ class SectionBodyContent extends React.PureComponent {
                   onClick={(e) => this.linkAccount(item.provider, item.url, e)}
                   isHovered={true}
                 >
-                  {t("Connect")}
+                  {t("Common:Connect")}
                 </Link>
               </div>
             )}

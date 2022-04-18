@@ -1,6 +1,4 @@
 import React from "react";
-import styled, { css } from "styled-components";
-
 import Error403 from "studio/Error403";
 import Error520 from "studio/Error520";
 import ConnectClouds from "./ConnectedClouds";
@@ -11,29 +9,6 @@ import config from "../../../../../package.json";
 import TabsContainer from "@appserver/components/tabs-container";
 import CommonSettings from "./CommonSettings";
 import AdminSettings from "./AdminSettings";
-
-import { tablet } from "@appserver/components/utils/device";
-import { isMobile } from "react-device-detect";
-
-const StyledContainer = styled.div`
-  position: absolute;
-  top: 3px;
-
-  width: calc(100% - 40px);
-
-  height: auto;
-
-  @media ${tablet} {
-    position: static;
-    width: calc(100% - 32px);
-  }
-
-  ${isMobile &&
-  css`
-    position: static;
-    width: calc(100% - 32px);
-  `}
-`;
 
 const SectionBodyContent = ({
   setting,
@@ -116,13 +91,13 @@ const SectionBodyContent = ({
   ) : isErrorSettings ? (
     <Error520 />
   ) : (
-    <StyledContainer>
+    <div>
       <TabsContainer
         elements={elements}
         onSelect={onSelect}
         selectedItem={selectedTab()}
       />
-    </StyledContainer>
+    </div>
   );
 };
 
