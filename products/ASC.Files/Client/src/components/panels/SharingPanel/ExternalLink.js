@@ -44,6 +44,7 @@ const ExternalLink = ({
 
   const closeShareAction = React.useCallback(
     (e) => {
+      console.log("1");
       if (ref.current.contains(e.target)) return;
       setShareActionOpen((val) => !val);
     },
@@ -71,7 +72,9 @@ const ExternalLink = ({
         body,
       });
     window.open(mailtoLink, "_self");
-  }, [selection, t, shareLink]);
+
+    onToggleShareAction();
+  }, [onToggleShareAction, selection, t, shareLink]);
 
   // const onShareFacebook = () => {
   //   const facebookLink =
@@ -92,7 +95,8 @@ const ExternalLink = ({
       });
 
     window.open(twitterLink, "", "width=1000,height=670");
-  }, [shareLink]);
+    onToggleShareAction();
+  }, [onToggleShareAction, shareLink]);
 
   const options = [
     {
