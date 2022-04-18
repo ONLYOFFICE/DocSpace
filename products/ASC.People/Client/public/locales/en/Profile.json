@@ -4,11 +4,14 @@
   "Connect": "Connect",
   "ContactInformation": "Contact Information",
   "CountCodesRemaining": "codes remaining",
+  "DarkTheme": "Dark theme",
   "Disconnect": "Disconnect",
   "EditPhoto": "Edit photo",
   "EditSubscriptionsBtn": "Edit subscriptions",
   "EditUser": "Edit profile",
+  "InterfaceTheme": "Interface theme",
   "InviteAgainLbl": "Invite again",
+  "LightTheme": "Light theme",
   "LoginSettings": "Login settings",
   "MessageEmailActivationInstuctionsSentOnEmail": "The email activation instructions have been sent to the <strong>{{ email }}</strong> email address",
   "PhoneLbl": "Phone",
@@ -18,6 +21,7 @@
   "Subscriptions": "Subscriptions",
   "SubscriptionEmailTipsToggleLbl": "Email notification with tips and tricks",
   "SubscriptionTurnOffToast": "You have been successfully unsubscribed from the the mailing list. <1>Subscribe again</1>",
+  "SystemTheme": "Use system theme",
   "TfaLoginSettings": "Login settings",
   "TwoFactorDescription": "Two-factor authentication via a code-generating app was enabled for all users by the admin."
 }
