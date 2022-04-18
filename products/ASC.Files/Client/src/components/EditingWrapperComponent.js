@@ -53,8 +53,6 @@ const EditingWrapper = styled.div`
       border-bottom: ${(props) => props.theme.filesEditingWrapper.borderBottom};
       padding-bottom: 4px;
       margin-top: 4px;
-
-      /* margin-left: -4px; */
     `}
 
   ${(props) =>
@@ -153,9 +151,12 @@ const EditingWrapper = styled.div`
         width: 24px;
         height: 24px;
         border: 1px transparent;
-        padding: 4px 0 0 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-        :hover {
+        &:hover {
           border: ${(props) => props.theme.filesEditingWrapper.border};
         }
       `}

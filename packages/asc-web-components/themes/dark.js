@@ -2445,6 +2445,13 @@ const Dark = {
     border: "1px solid #474747",
     borderBottom: "1px solid #474747",
 
+    tile: {
+      background: globalColors.black,
+      itemBackground: "#242424",
+      itemBorder: gray,
+      itemActiveBorder: "#eeeeee",
+    },
+
     fill: "#858585",
     hoverFill: "#eeeeee",
   },
