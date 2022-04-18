@@ -233,6 +233,8 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                 || folder.FolderType == FolderType.ReviewRoom || folder.FolderType == FolderType.ReadOnlyRoom
                 || folder.FolderType == FolderType.FillingFormsRoom;
 
+            var canEditRoom = await FilesSecurity.CanEditRoomAsync(folder);
+
             if (folder == null)
             {
                 Error = FilesCommonResource.ErrorMassage_FolderNotFound;
@@ -241,17 +243,17 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             {
                 Error = FilesCommonResource.ErrorMassage_SecurityException_ReadFolder;
             }
-            else if (!isRoom && (toFolder.FolderType != FolderType.VirtualRooms || toFolder.FolderType != FolderType.Archive))
+            else if (isRoom && !canEditRoom)
+            {
+                Error = FilesCommonResource.ErrorMassage_SecurityException;
+            }
+            else if (!isRoom && (toFolder.FolderType == FolderType.VirtualRooms || toFolder.FolderType == FolderType.Archive))
             {
                 Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
             }
-            else if (isRoom && toFolder.FolderType != FolderType.VirtualRooms && !await FilesSecurity.CanEditRoomAsync(folder))
+            else if (isRoom && toFolder.FolderType != FolderType.VirtualRooms && toFolder.FolderType != FolderType.Archive)
             {
                 Error = FilesCommonResource.ErrorMessage_UnarchiveRoom;
-            }
-            else if (isRoom && toFolder.FolderType != FolderType.Archive && !await FilesSecurity.CanReadAsync(folder))
-            {
-                Error = FilesCommonResource.ErrorMessage_ArchiveRoom;
             }
             else if (folder.RootFolderType == FolderType.Privacy
                 && (copy || toFolder.RootFolderType != FolderType.Privacy))
