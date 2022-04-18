@@ -59,9 +59,26 @@ const EditingWrapper = styled.div`
 
   ${(props) =>
     props.viewAs === "tile" &&
-    `margin-right: 10px !important; margin-left: 8px;`}
-  
-  
+    css`
+      position: absolute;
+      width: calc(100% - 18px);
+      z-index: 1;
+      gap: 4px;
+
+      background-color: ${(props) =>
+        props.theme.filesEditingWrapper.tile.background};
+
+      border: ${(props) => props.theme.filesEditingWrapper.border};
+      border-radius: 0 0 6px 6px;
+
+      height: 43px;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 9px 8px 9px 8px;
+    `}
+
+
   @media ${tablet} {
     height: 56px;
   }
@@ -96,26 +113,37 @@ const EditingWrapper = styled.div`
       `}
 
     ${(props) => props.viewAs === "table" && `padding-left: 12px`}
+
+    ${(props) =>
+      props.viewAs === "tile" &&
+      css`
+        background: #fff;
+        border: ${(props) =>
+          `1px solid ${props.theme.filesEditingWrapper.tile.itemBorder}`};
+
+        &:focus {
+          border: ${(props) =>
+            `1px solid ${props.theme.filesEditingWrapper.tile.itemActiveBorder}`};
+        }
+      `};
   }
 
   .edit-button {
     margin-left: 8px;
     height: 32px;
-    padding: 8px 7px 7px 7px;
+    padding: 0px 7px 0px 7px;
 
     ${(props) =>
       props.viewAs === "tile" &&
       css`
         margin-left: 0px;
-        background: none;
-        border: 1px solid transparent;
+        background: #fff;
+        border: ${(props) =>
+          `1px solid ${props.theme.filesEditingWrapper.tile.itemBorder}`};
 
-        :hover {
-          border: ${(props) => props.theme.filesEditingWrapper.border};
-        }
-
-        &:last-child {
-          margin-left: 2px;
+        &:hover {
+          border: ${(props) =>
+            `1px solid ${props.theme.filesEditingWrapper.tile.itemActiveBorder}`};
         }
       `};
 
@@ -134,13 +162,11 @@ const EditingWrapper = styled.div`
   }
 
   .edit-ok-icon {
-    margin-top: -6px;
     width: 16px;
     height: 16px;
   }
 
   .edit-cancel-icon {
-    margin-top: -6px;
     width: 14px;
     height: 14px;
     padding: 1px;

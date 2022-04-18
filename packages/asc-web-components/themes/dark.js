@@ -127,14 +127,6 @@ const Dark = {
       medium: "0 32px",
     },
 
-    minWidth: {
-      extraSmall: "none",
-      small: "100px",
-      normalDesktop: "100px",
-      normalTouchscreen: "100px",
-      medium: "100px",
-    },
-
     color: {
       base: "#CCCCCC",
       baseHover: "#FAFAFA",
