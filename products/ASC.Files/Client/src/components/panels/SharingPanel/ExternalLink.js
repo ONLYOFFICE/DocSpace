@@ -28,6 +28,7 @@ const ExternalLink = ({
   onShowEmbeddingPanel,
   isOpen,
   onChangeItemAccess,
+  style,
 }) => {
   const [shareLink, setShareLink] = React.useState("");
   const [shareActionOpen, setShareActionOpen] = React.useState(false);
@@ -44,7 +45,6 @@ const ExternalLink = ({
 
   const closeShareAction = React.useCallback(
     (e) => {
-      console.log("1");
       if (ref.current.contains(e.target)) return;
       setShareActionOpen((val) => !val);
     },
@@ -117,7 +117,7 @@ const ExternalLink = ({
   ];
 
   return (
-    <StyledExternalLink>
+    <StyledExternalLink style={style}>
       <div className="external-link__base-line">
         <Text className="external-link__text" noSelect={true} truncate={true}>
           {t("ExternalLink")}

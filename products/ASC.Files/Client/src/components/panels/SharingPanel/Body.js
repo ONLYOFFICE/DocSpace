@@ -1,6 +1,7 @@
 import React from "react";
 
 import { VariableSizeList as List } from "react-window";
+import { isMobileOnly } from "react-device-detect";
 
 import CustomScrollbarsVirtualList from "@appserver/components/scrollbar/custom-scrollbars-virtual-list";
 import { ShareAccessRights } from "@appserver/common/constants";
@@ -21,9 +22,39 @@ const Row = React.memo(({ data, index, style }) => {
     onRemoveUserClick,
     t,
     items,
+    selection,
+    onShowEmbeddingPanel,
+    externalLinkOpen,
+    onToggleExternalLinkOpen,
   } = data;
 
   if (items === undefined) return;
+
+  if (!!items[index]?.sharedTo?.shareLink) {
+    return (
+      <ExternalLink
+        t={t}
+        selection={selection}
+        externalItem={items[index]}
+        externalAccessOptions={externalAccessOptions}
+        onChangeItemAccess={onChangeItemAccess}
+        onShowEmbeddingPanel={onShowEmbeddingPanel}
+        isOpen={externalLinkOpen}
+        onToggleLink={onToggleExternalLinkOpen}
+        style={style}
+      />
+    );
+  }
+
+  if (!!items[index]?.internalLink) {
+    return (
+      <InternalLink
+        t={t}
+        internalLink={items[index]?.internalLink}
+        style={style}
+      />
+    );
+  }
 
   return (
     <Item
@@ -65,6 +96,7 @@ const Body = ({
   const [listData, setListData] = React.useState({});
 
   const bodyRef = React.useRef();
+  const listRef = React.useRef();
 
   const onToggleExternalLinkOpen = React.useCallback(() => {
     setExternalLinkOpen((oldState) => !oldState);
@@ -90,9 +122,13 @@ const Body = ({
     (index) => {
       if (itemList.length === 0) return;
       if (itemList[index].isSeparator) return 16;
+      if (itemList[index]?.internalLink) return 62;
+      if (!!itemList[index]?.sharedTo.shareLink) {
+        return externalLinkOpen ? 145 : 63;
+      }
       return 48;
     },
-    [itemList]
+    [itemList, externalLinkOpen]
   );
 
   React.useEffect(() => {
@@ -112,8 +148,6 @@ const Body = ({
       items.push(...shareUsers);
     }
 
-    setItemList(items);
-
     const newListData = {
       height: bodyRef?.current?.offsetHeight,
       width: "auto",
@@ -129,6 +163,22 @@ const Body = ({
       },
     };
 
+    if (isMobileOnly) {
+      if (!!internalLink) {
+        items.unshift({ internalLink: internalLink });
+      }
+      if (selection?.length === 1 && !!externalItem?.sharedTo?.shareLink) {
+        items.unshift(externalItem);
+      }
+
+      newListData.data.items = items;
+      newListData.data.selection = selection;
+      newListData.data.onShowEmbeddingPanel = onShowEmbeddingPanel;
+      newListData.data.externalLinkOpen = externalLinkOpen;
+      newListData.data.onToggleExternalLinkOpen = onToggleExternalLinkOpen;
+    }
+
+    setItemList(items);
     setListData(newListData);
   }, [
     bodyRef.current,
@@ -142,43 +192,77 @@ const Body = ({
     onShowChangeOwnerPanel,
     onRemoveUserClick,
     t,
+    externalItem,
+    internalLink,
+    selection,
+    onShowEmbeddingPanel,
+    externalLinkOpen,
+    onToggleExternalLinkOpen,
   ]);
 
+  React.useEffect(() => {
+    listRef?.current?.resetAfterIndex(0);
+  }, [externalLinkOpen]);
+
   return (
-    <StyledBodyContent
-      externalLinkOpen={externalLinkOpen}
-      externalLinkVisible={externalLinkVisible}
-    >
-      {externalLinkVisible && (
-        <ExternalLink
-          t={t}
-          selection={selection}
-          externalItem={externalItem}
-          externalAccessOptions={externalAccessOptions}
-          onChangeItemAccess={onChangeItemAccess}
-          onShowEmbeddingPanel={onShowEmbeddingPanel}
-          isOpen={externalLinkOpen}
-          onToggleLink={onToggleExternalLinkOpen}
-        />
+    <>
+      {!isMobileOnly ? (
+        <StyledBodyContent
+          externalLinkOpen={externalLinkOpen}
+          externalLinkVisible={externalLinkVisible}
+        >
+          {externalLinkVisible && (
+            <ExternalLink
+              t={t}
+              selection={selection}
+              externalItem={externalItem}
+              externalAccessOptions={externalAccessOptions}
+              onChangeItemAccess={onChangeItemAccess}
+              onShowEmbeddingPanel={onShowEmbeddingPanel}
+              isOpen={externalLinkOpen}
+              onToggleLink={onToggleExternalLinkOpen}
+            />
+          )}
+
+          {!!internalLink && <InternalLink t={t} internalLink={internalLink} />}
+
+          <div className="body-scroll-content-sharing-panel" ref={bodyRef}>
+            {listData?.height && listData?.data?.items?.length > 0 && (
+              <List
+                height={listData.height}
+                width={listData.width}
+                itemCount={itemList.length}
+                itemSize={getItemSize}
+                itemData={listData.data}
+                outerElementType={CustomScrollbarsVirtualList}
+              >
+                {Row}
+              </List>
+            )}
+          </div>
+        </StyledBodyContent>
+      ) : (
+        <>
+          <StyledBodyContent>
+            <div className="body-scroll-content-sharing-panel" ref={bodyRef}>
+              {listData?.height && listData?.data?.items?.length > 0 && (
+                <List
+                  height={listData.height}
+                  width={listData.width}
+                  itemCount={itemList.length}
+                  itemSize={getItemSize}
+                  itemData={listData.data}
+                  outerElementType={CustomScrollbarsVirtualList}
+                  ref={listRef}
+                >
+                  {Row}
+                </List>
+              )}
+            </div>
+          </StyledBodyContent>
+        </>
       )}
-
-      {!!internalLink && <InternalLink t={t} internalLink={internalLink} />}
-
-      <div className="body-scroll-content-sharing-panel" ref={bodyRef}>
-        {listData?.height && listData?.data?.items?.length > 0 && (
-          <List
-            height={listData.height}
-            width={listData.width}
-            itemCount={itemList.length}
-            itemSize={getItemSize}
-            itemData={listData.data}
-            outerElementType={CustomScrollbarsVirtualList}
-          >
-            {Row}
-          </List>
-        )}
-      </div>
-    </StyledBodyContent>
+    </>
   );
 };
 

@@ -6,14 +6,14 @@ import Text from "@appserver/components/text";
 
 import { StyledInternalLink } from "./StyledSharingPanel";
 
-const InternalLink = ({ t, internalLink }) => {
+const InternalLink = ({ t, internalLink, style }) => {
   const onCopyInternalLinkAction = React.useCallback(() => {
     copy(internalLink);
     toastr.success(t("Translations:LinkCopySuccess"));
   }, [internalLink]);
 
   return (
-    <StyledInternalLink>
+    <StyledInternalLink style={style}>
       <Text className={"internal-link__link-text"}>{t("InternalLink")}</Text>
       <Text
         className={"internal-link__copy-text"}

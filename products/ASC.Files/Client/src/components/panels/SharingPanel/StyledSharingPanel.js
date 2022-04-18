@@ -93,6 +93,12 @@ const StyledBodyContent = styled.div`
           ? "calc(100% - 125px)"
           : "calc(100% - 207px)"
         : "calc(100% - 62px)"};
+
+    ${isMobileOnly &&
+    css`
+      height: 100% !important;
+      max-height: 100% !important;
+    `}
   }
 `;
 
