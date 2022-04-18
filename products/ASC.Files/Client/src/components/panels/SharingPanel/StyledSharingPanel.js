@@ -13,7 +13,7 @@ const StyledContent = styled.div`
   grid-template-rows: ${(props) =>
     props.isNotifyUsers
       ? "53px calc(100% - 253px) 200px"
-      : "53px calc(100% - 162px) 108px"};
+      : "53px calc(100% - 161px) 108px"};
 `;
 
 const StyledHeaderContent = styled.div`
@@ -310,11 +310,11 @@ const StyledFooterContent = styled.div`
   align-items: start;
 
   .sharing_panel-notification {
-    margin-bottom: 16px;
+    margin-bottom: 18px;
   }
 
   .sharing_panel-checkbox {
-    margin-bottom: 16px;
+    margin-bottom: 18px;
   }
   .sharing_panel-button {
     min-height: 40px;

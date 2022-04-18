@@ -22,6 +22,7 @@ import { StyledContent } from "./StyledSharingPanel";
 import Header from "./Header";
 import Body from "./Body";
 import Footer from "./Footer";
+import SharingPanelLoader from "@appserver/common/components/Loaders/SharingPanelLoader";
 
 // const SharingBodyStyle = { height: `calc(100vh - 156px)` };
 
@@ -44,6 +45,7 @@ class SharingPanelComponent extends React.Component {
       filesOwnerId: null,
       isUpdated: false,
       isLoading: false,
+
       baseExternalAccess: null,
     };
 
@@ -469,7 +471,7 @@ class SharingPanelComponent extends React.Component {
       //showPanel,
       accessOptions,
       externalAccessOptions,
-      isUpdated,
+
       isLoading,
     } = this.state;
 
@@ -517,7 +519,6 @@ class SharingPanelComponent extends React.Component {
       ...shareGroups,
       ...shareUsers
     );
-
     return (
       <StyledAsidePanel visible={visible}>
         <Backdrop
@@ -531,17 +532,18 @@ class SharingPanelComponent extends React.Component {
           visible={visible}
           withoutBodyScroll={true}
         >
-          <StyledContent isNotifyUsers={isNotifyUsers}>
-            <Header
-              t={t}
-              uploadPanelVisible={uploadPanelVisible}
-              isPersonal={isPersonal}
-              isEncrypted={isEncrypted}
-              onClose={this.onClose}
-              onShowUsersPanel={this.onShowUsersPanel}
-              onShowGroupsPanel={this.onShowGroupsPanel}
-            />
-            {!isLoading && externalItem && (
+          {!isLoading ? (
+            <StyledContent isNotifyUsers={isNotifyUsers}>
+              <Header
+                t={t}
+                uploadPanelVisible={uploadPanelVisible}
+                isPersonal={isPersonal}
+                isEncrypted={isEncrypted}
+                onClose={this.onClose}
+                onShowUsersPanel={this.onShowUsersPanel}
+                onShowGroupsPanel={this.onShowGroupsPanel}
+              />
+
               <Body
                 t={t}
                 isPersonal={isPersonal}
@@ -562,18 +564,20 @@ class SharingPanelComponent extends React.Component {
                 onShowChangeOwnerPanel={this.onShowChangeOwnerPanel}
                 documentTitle={documentTitle}
               />
-            )}
 
-            <Footer
-              t={t}
-              isPersonal={isPersonal}
-              message={message}
-              onChangeMessage={this.onChangeMessage}
-              isNotifyUsers={isNotifyUsers}
-              onNotifyUsersChange={this.onNotifyUsersChange}
-              onSaveClick={this.onSaveClick}
-            />
-          </StyledContent>
+              <Footer
+                t={t}
+                isPersonal={isPersonal}
+                message={message}
+                onChangeMessage={this.onChangeMessage}
+                isNotifyUsers={isNotifyUsers}
+                onNotifyUsersChange={this.onNotifyUsersChange}
+                onSaveClick={this.onSaveClick}
+              />
+            </StyledContent>
+          ) : (
+            <SharingPanelLoader />
+          )}
         </Aside>
 
         {showAddUsersPanel && (
