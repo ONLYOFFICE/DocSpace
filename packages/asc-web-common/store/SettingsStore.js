@@ -439,7 +439,7 @@ class SettingsStore {
 
     this.theme = themes[theme];
 
-    localStorage.setItem("theme", theme);
+    localStorage.setItem("theme", key);
   };
 
   setMailDomainSettings = async (data) => {
