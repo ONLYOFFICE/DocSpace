@@ -175,10 +175,12 @@ const InvalidRoute = (props) => (
 
 const RedirectToHome = () => <Redirect to={PROXY_HOMEPAGE_URL} />;
 
+const themeKeys = ["system", "base", "dark"];
+
 const checkTheme = () => {
   const key = localStorage.getItem("theme");
 
-  if (key) return key;
+  if (themeKeys.some((theme) => theme === key)) return key;
 
   return "system";
 };
