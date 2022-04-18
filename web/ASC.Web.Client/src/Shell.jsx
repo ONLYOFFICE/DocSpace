@@ -176,18 +176,11 @@ const InvalidRoute = (props) => (
 const RedirectToHome = () => <Redirect to={PROXY_HOMEPAGE_URL} />;
 
 const checkTheme = () => {
-  const theme = localStorage.getItem("theme");
+  const key = localStorage.getItem("theme");
 
-  if (theme) return theme;
+  if (key) return key;
 
-  if (
-    window.matchMedia &&
-    window.matchMedia("(prefers-color-scheme: dark)").matches
-  ) {
-    return "Dark";
-  }
-
-  return "Base";
+  return "system";
 };
 
 const Shell = ({ items = [], page = "home", ...rest }) => {
@@ -608,6 +601,7 @@ const ShellWrapper = inject(({ auth, backup }) => {
 
 const ThemeProviderWrapper = inject(({ auth }) => {
   const { settingsStore } = auth;
+
   return { theme: settingsStore.theme };
 })(observer(ThemeProvider));
 
