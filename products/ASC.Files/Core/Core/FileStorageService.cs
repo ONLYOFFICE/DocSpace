@@ -401,18 +401,18 @@ public class FileStorageService<T> //: IFileStorageService
     {
         ArgumentNullException.ThrowIfNull(title, nameof(title));
 
-        var folderType = roomType switch
+        return roomType switch
         {
-            RoomType.FillingFormsRoom => FolderType.FillingFormsRoom,
-            RoomType.ReviewRoom => FolderType.ReviewRoom,
-            RoomType.ReadOnlyRoom => FolderType.ReadOnlyRoom,
-            RoomType.CustomRoom => FolderType.CustomRoom,
-            _ => FolderType.CustomRoom,
+            RoomType.CustomRoom => await CreateCustomRoom(title),
+            _ => await CreateCustomRoom(title),
         };
+    }
 
+    private async Task<Folder<T>> CreateCustomRoom(string title)
+    {
         var parentId = await _globalFolderHelper.GetFolderVirtualRooms<T>();
 
-        return await InternalCreateNewFolderAsync(parentId, title, folderType);
+        return await InternalCreateNewFolderAsync(parentId, title, FolderType.CustomRoom);
     }
 
     public async Task<Folder<T>> InternalCreateNewFolderAsync(T parentId, string title, FolderType folderType = FolderType.DEFAULT)
