@@ -13,7 +13,14 @@ import {
 } from "./StyledSharingPanel";
 import RectangleLoader from "../RectangleLoader/RectangleLoader";
 
-const SharingPanelLoaderModal = ({ id, className, style, ...rest }) => {
+const SharingPanelLoaderModal = ({
+  id,
+  className,
+  style,
+  isShared,
+  ...rest
+}) => {
+  console.log(isShared);
   return (
     <StyledContainer>
       <StyledHeader isPersonal={true}>
@@ -26,12 +33,16 @@ const SharingPanelLoaderModal = ({ id, className, style, ...rest }) => {
           width={"146px"}
           height={"22px"}
         />
-        <RectangleLoader
-          className="rectangle-loader"
-          width={"368px"}
-          height={"32px"}
-        />
-        <RectangleLoader width={"184px"} height={"20px"} />
+        {isShared && (
+          <>
+            <RectangleLoader
+              className="rectangle-loader"
+              width={"368px"}
+              height={"32px"}
+            />
+            <RectangleLoader width={"184px"} height={"20px"} />
+          </>
+        )}
       </StyledExternalLink>
       <StyledButtons>
         <RectangleLoader width={"100%"} height={"40px"} />
