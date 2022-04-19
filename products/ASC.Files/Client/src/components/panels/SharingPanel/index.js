@@ -366,11 +366,13 @@ class SharingPanelComponent extends React.Component {
         toastr.error(err);
         this.onClose();
       })
-      .finally(() =>
-        this.setState({
-          isLoading: false,
-        })
-      );
+      .finally(() => {
+        setTimeout(() => {
+          return this.setState({
+            isLoading: false,
+          });
+        }, 500);
+      });
   };
 
   getInternalLink = () => {
