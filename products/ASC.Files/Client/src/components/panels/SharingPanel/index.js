@@ -540,7 +540,7 @@ class SharingPanelComponent extends React.Component {
         {isPersonal ? (
           <>
             {isLoading ? (
-              <>
+              isMobileOnly ? (
                 <ModalDialog
                   displayType="modal"
                   visible={visible}
@@ -548,7 +548,6 @@ class SharingPanelComponent extends React.Component {
                   withoutBodyScroll={true}
                   scale={true}
                   onClose={this.onClose}
-                  width={"400px"}
                   isPersonal={isPersonal}
                   modalBodyPadding="12px 0 0"
                 >
@@ -556,7 +555,25 @@ class SharingPanelComponent extends React.Component {
                     <SharingPanelLoaderModal isShared={isShared} />
                   </ModalDialog.Body>
                 </ModalDialog>
-              </>
+              ) : (
+                <>
+                  <ModalDialog
+                    displayType="modal"
+                    visible={visible}
+                    withoutCloseButton={true}
+                    withoutBodyScroll={true}
+                    scale={true}
+                    onClose={this.onClose}
+                    width={"400px"}
+                    isPersonal={isPersonal}
+                    modalBodyPadding="12px 0 0"
+                  >
+                    <ModalDialog.Body>
+                      <SharingPanelLoaderModal isShared={isShared} />
+                    </ModalDialog.Body>
+                  </ModalDialog>
+                </>
+              )
             ) : isMobileOnly ? (
               <ModalDialog
                 displayType="modal"
