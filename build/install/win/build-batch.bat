@@ -1,5 +1,5 @@
 REM echo ######## Set variables ########
-set "msbuild4="C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe""
+set "publisher="Ascensio System SIA""
 
 REM echo ######## Extracting and preparing files to build ########
 %sevenzip% x build\install\win\nginx-1.21.1.zip -o"build\install\win\Files" -y
@@ -29,7 +29,7 @@ del /f /q "build\install\win\kafka-zookeeper\zookeeper\conf\zoo_sample.cfg"
 rmdir build\install\win\publish /s /q
 
 REM echo ######## Build Utils ########
-%msbuild4% build\install\win\CustomActions\C#\Utils\Utils.csproj
+%msbuild% build\install\win\CustomActions\C#\Utils\Utils.csproj
 copy build\install\win\CustomActions\C#\Utils\bin\Debug\Utils.CA.dll build\install\win\Utils.CA.dll /y
 rmdir build\install\win\CustomActions\C#\Utils\bin /s /q
 rmdir build\install\win\CustomActions\C#\Utils\obj /s /q
@@ -80,7 +80,7 @@ copy "build\install\win\publish\Apache ZooKeeper.msi" "build\install\win\Apache 
 copy "build\install\win\publish\Apache Kafka.msi" "build\install\win\Apache Kafka.msi" /y
 
 REM echo ######## Build MySQL Server Installer ########
-iscc "build\install\win\MySQL Server Installer Runner.iss"
+iscc /Qp /S"byparam="signtool" sign /a /n "%publisher%" /t http://timestamp.digicert.com $f" "build\install\win\MySQL Server Installer Runner.iss"
 
 REM echo ######## Build AppServer package ########
 %AdvancedInstaller% /edit build\install\win\AppServer.aip /SetVersion %BUILD_VERSION%.%BUILD_NUMBER%

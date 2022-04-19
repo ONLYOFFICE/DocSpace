@@ -127,14 +127,6 @@ const Base = {
       medium: "0 32px",
     },
 
-    minWidth: {
-      extraSmall: "none",
-      small: "100px",
-      normalDesktop: "100px",
-      normalTouchscreen: "100px",
-      medium: "100px",
-    },
-
     color: {
       base: black,
       baseHover: black,
@@ -519,6 +511,7 @@ const Base = {
     minHeight: "47px",
     width: "100%",
     borderBottom: globalColors.grayLightMid,
+    backgroundColor: globalColors.lightHover,
     minWidth: "160px",
     overflow: "hidden",
     textOverflow: "ellipsis",
@@ -1930,7 +1923,6 @@ const Base = {
 
   menuContainer: {
     background: "linear-gradient(200.71deg, #2274aa 0%, #0f4071 100%)",
-    arrowTop: "#206FA4",
     color: white,
   },
 
@@ -2441,6 +2433,13 @@ const Base = {
     color: black,
     border: `1px solid ${grayMid}`,
     borderBottom: `1px solid ${grayLightMid}`,
+
+    tile: {
+      background: globalColors.lightHover,
+      itemBackground: white,
+      itemBorder: grayMid,
+      itemActiveBorder: blueMain,
+    },
 
     fill: gray,
     hoverFill: grayMain,

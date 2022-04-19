@@ -102,6 +102,8 @@ const Editor = () => {
   const [typeInsertImageAction, setTypeInsertImageAction] = useState();
   const throttledChangeTitle = throttle(() => changeTitle(), 500);
 
+  const [settings, setSettings] = useState(null);
+
   const [
     preparationPortalDialogVisible,
     setPreparationPortalDialogVisible,
@@ -228,7 +230,10 @@ const Editor = () => {
       try {
         await authStore.init(true);
         user = authStore.userStore.user;
-        if (user) filesSettings = await getSettingsFiles();
+        if (user) {
+          filesSettings = await getSettingsFiles();
+          setSettings(filesSettings);
+        }
         personal = authStore.settingsStore.personal;
         successAuth = !!user;
 
@@ -912,30 +917,30 @@ const Editor = () => {
 
             {isFileDialogVisible && (
               <SelectFileDialog
+                settings={settings}
                 resetTreeFolders
                 onSelectFile={onSelectFile}
                 isPanelVisible={isFileDialogVisible}
                 onClose={onCloseFileDialog}
                 foldersType="exceptPrivacyTrashFolders"
                 {...fileTypeDetection()}
-                titleFilesList={selectFilesListTitle()}
-                headerName={i18n.t("SelectFileTitle")}
+                filesListTitle={selectFilesListTitle()}
               />
             )}
 
             {isFolderDialogVisible && (
               <SelectFolderDialog
-                resetTreeFolders
-                showButtons
                 isPanelVisible={isFolderDialogVisible}
-                isSetFolderImmediately
-                asideHeightContent="calc(100% - 50px)"
                 onClose={onCloseFolderDialog}
                 foldersType="exceptSortedByTags"
                 onSave={onClickSaveSelectFolder}
+                isDisableButton={!titleSelectorFolder.trim()}
                 header={
                   <StyledSelectFolder>
-                    <Text className="editor-select-folder_text">
+                    <Text
+                      className="editor-select-folder_text"
+                      fontWeight={600}
+                    >
                       {i18n.t("FileName")}
                     </Text>
                     <TextInput
@@ -946,7 +951,6 @@ const Editor = () => {
                     />
                   </StyledSelectFolder>
                 }
-                headerName={i18n.t("FolderForSave")}
                 {...(extension !== "fb2" && {
                   footer: (
                     <StyledSelectFolder>

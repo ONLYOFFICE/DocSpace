@@ -9,10 +9,10 @@ const StyledFilter = styled.div`
   grid-template-rows: 1fr;
   grid-column-gap: 8px;
 
-  ${isMobile &&
+  /* ${isMobile &&
   css`
     margin-top: -22px;
-  `}
+  `} */
 
   @media ${mobile} {
     grid-template-columns: 1fr 50px;

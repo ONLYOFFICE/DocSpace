@@ -43,7 +43,7 @@ namespace ASC.IPSecurity
         public IPRestrictionsServiceCache(ICacheNotify<IPRestrictionItem> notify, ICache cache)
         {
             Cache = cache;
-            notify.Subscribe((r) => Cache.Remove(GetCacheKey(r.TenantId)), CacheNotifyAction.Any);
+            notify.Subscribe((r) => Cache.Remove(GetCacheKey(r.TenantId)), CacheNotifyAction.InsertOrUpdate);
             Notify = notify;
         }
 
