@@ -188,6 +188,8 @@ const ExternalLink = ({
               isDisabled={false}
               disableLink={false}
               isExternalLink={true}
+              isDefaultMode={false}
+              fixedDirection={true}
             />
           </div>
         </>

@@ -32,6 +32,7 @@ const AccessComboBox = (props) => {
     canDelete,
     onRemoveUserClick,
     isExternalLink,
+    isDefaultMode,
   } = props;
 
   const [isLoading, setIsLoading] = React.useState(true);
@@ -260,7 +261,7 @@ const AccessComboBox = (props) => {
       directionY={directionY}
       disableIconClick={false}
       isDisabled={isDisabled}
-      isDefaultMode={true}
+      isDefaultMode={isDefaultMode}
       ref={ref}
       forwardRef={ref}
       fixedDirection={fixedDirection}
