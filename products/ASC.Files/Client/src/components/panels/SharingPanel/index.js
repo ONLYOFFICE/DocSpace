@@ -546,6 +546,7 @@ class SharingPanelComponent extends React.Component {
                   scale={true}
                   onClose={this.onClose}
                   width={"400px"}
+                  isPersonal={isPersonal}
                 >
                   <ModalDialog.Body>
                     <SharingPanelLoaderModal />
@@ -562,6 +563,7 @@ class SharingPanelComponent extends React.Component {
                 onClose={this.onClose}
                 width={"400px"}
                 modalBodyPadding="12px 0 0"
+                isPersonal={isPersonal}
               >
                 <ModalDialog.Header>
                   <Header

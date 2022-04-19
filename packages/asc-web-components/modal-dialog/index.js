@@ -115,6 +115,7 @@ class ModalDialog extends React.Component {
       withoutCloseButton,
       theme,
       width,
+      isPersonal,
     } = this.props;
 
     let header = null;
@@ -163,7 +164,7 @@ class ModalDialog extends React.Component {
                 <Loaders.DialogLoader bodyHeight={modalLoaderBodyHeight} />
               ) : (
                 <>
-                  <StyledHeader>
+                  <StyledHeader isPersonal={isPersonal}>
                     <Heading className="heading" size="medium" truncate={true}>
                       {header ? header.props.children : null}
                     </Heading>

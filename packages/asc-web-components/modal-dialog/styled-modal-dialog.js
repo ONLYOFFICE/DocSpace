@@ -60,6 +60,17 @@ const StyledHeader = styled.div`
   border-bottom: ${(props) => props.theme.modalDialog.header.borderBottom};
 
   position: relative;
+
+  ${(props) =>
+    props.isPersonal &&
+    css`
+      width: 100%;
+      margin-left: -12px;
+      margin-right: 12px;
+
+      padding-left: 12px;
+      padding-right: 12px;
+    `}
 `;
 StyledHeader.defaultProps = { theme: Base };
 
