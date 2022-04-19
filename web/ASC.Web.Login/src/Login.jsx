@@ -410,7 +410,6 @@ const Form = (props) => {
 
           <form className="auth-form-container">
             <FieldContainer
-              className="form-field"
               isVertical={true}
               labelVisible={false}
               hasError={isEmailErrorShow}
@@ -438,7 +437,6 @@ const Form = (props) => {
               />
             </FieldContainer>
             <FieldContainer
-              className="form-field"
               isVertical={true}
               labelVisible={false}
               hasError={!passwordValid}
