@@ -47,7 +47,7 @@ const SectionHeaderContent = (props) => {
         <div className="info-panel-toggle-bg">
           <IconButton
             className="info-panel-toggle"
-            iconName="images/panel.svg"
+            iconName="images/panel.react.svg"
             size="16"
             isFill={true}
             onClick={toggleInfoPanel}
