@@ -549,50 +549,53 @@ class SharingPanelComponent extends React.Component {
                 <ModalDialog.Header>
                   <Header
                     t={t}
-                    uploadPanelVisible={uploadPanelVisible}
+                    uploadPanelVisible={showEmbeddingContent}
                     isPersonal={isPersonal}
                     isEncrypted={isEncrypted}
-                    onClose={this.onClose}
+                    onClose={this.onShowEmbeddingContainer}
                     onShowUsersPanel={this.onShowUsersPanel}
                     onShowGroupsPanel={this.onShowGroupsPanel}
+                    label={t("EmbeddingPanel:EmbeddingDocument")}
                   />
                 </ModalDialog.Header>
 
                 <ModalDialog.Body>
-                  <Body
-                    t={t}
-                    isPersonal={isPersonal}
-                    selection={selection}
-                    externalItem={externalItem[0]}
-                    onToggleLink={this.onToggleLink}
-                    onShowEmbeddingPanel={this.onShowEmbeddingContainer}
-                    onChangeItemAccess={this.onChangeItemAccess}
-                    accessOptions={accessOptions}
-                    externalAccessOptions={externalAccessOptions}
-                  />
-
-                  {showEmbeddingContent && (
+                  {showEmbeddingContent ? (
                     <EmbeddingBody theme={theme} embeddingLink={shareLink} />
+                  ) : (
+                    <Body
+                      t={t}
+                      isPersonal={isPersonal}
+                      selection={selection}
+                      externalItem={externalItem[0]}
+                      onToggleLink={this.onToggleLink}
+                      onShowEmbeddingPanel={this.onShowEmbeddingContainer}
+                      onChangeItemAccess={this.onChangeItemAccess}
+                      accessOptions={accessOptions}
+                      externalAccessOptions={externalAccessOptions}
+                    />
                   )}
                 </ModalDialog.Body>
 
-                <ModalDialog.Footer>
-                  <StyledModalFooter>
-                    <Button
-                      size={"normal"}
-                      label={t("Common:SaveButton")}
-                      primary
-                      onClick={this.onSaveClick}
-                      scale
-                    />
-                    <Button
-                      size={"normal"}
-                      label={t("Common:CancelButton")}
-                      scale
-                      onClick={this.onClose}
-                    />
-                  </StyledModalFooter>
-                </ModalDialog.Footer>
+                {!showEmbeddingContent && (
+                  <ModalDialog.Footer>
+                    <StyledModalFooter>
+                      <Button
+                        size={"normal"}
+                        label={t("Common:SaveButton")}
+                        primary
+                        onClick={this.onSaveClick}
+                        scale
+                      />
+                      <Button
+                        size={"normal"}
+                        label={t("Common:CancelButton")}
+                        scale
+                        onClick={this.onClose}
+                      />
+                    </StyledModalFooter>
+                  </ModalDialog.Footer>
+                )}
               </ModalDialog>
             )}
           </>
@@ -800,6 +803,7 @@ const SharingPanel = inject(
       "Translations",
       "Home",
       "ChangeOwnerPanel",
+      "EmbeddingPanel",
     ])(withLoader(SharingPanelComponent)(<Loaders.DialogAsideLoader isPanel />))
   )
 );
@@ -812,6 +816,7 @@ class Panel extends React.Component {
       "Translations",
       "Home",
       "ChangeOwnerPanel",
+      "EmbeddingPanel",
     ]);
     const {
       FullAccess,

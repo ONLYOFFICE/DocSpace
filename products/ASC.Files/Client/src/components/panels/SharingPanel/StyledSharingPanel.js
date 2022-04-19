@@ -52,6 +52,9 @@ const StyledHeaderContent = styled.div`
     max-width: calc(100% - 33px);
 
     .sharing_panel-arrow {
+      .icon-button_svg {
+        width: 15px;
+      }
       margin-right: 16px;
     }
   }

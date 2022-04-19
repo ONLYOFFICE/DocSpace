@@ -15,6 +15,7 @@ const Header = ({
   onShowUsersPanel,
   onShowGroupsPanel,
   onClose,
+  label,
 }) => {
   const [showActionPanel, setShowActionPanel] = React.useState(false);
 
@@ -42,6 +43,8 @@ const Header = ({
     onShowGroupsPanel && onShowGroupsPanel();
   }, [onShowGroupsPanel]);
 
+  console.log(uploadPanelVisible);
+
   return (
     <StyledHeaderContent
       isPersonal={isPersonal}
@@ -50,7 +53,7 @@ const Header = ({
       <div className="sharing_panel-header-info">
         {uploadPanelVisible && (
           <IconButton
-            size="15"
+            size="15px"
             iconName="/static/images/arrow.path.react.svg"
             className="sharing_panel-arrow"
             onClick={onClose}
@@ -61,7 +64,9 @@ const Header = ({
           size="medium"
           truncate={!isPersonal}
         >
-          {t("SharingSettingsTitle")}
+          {uploadPanelVisible && label && isPersonal
+            ? label
+            : t("SharingSettingsTitle")}
         </Heading>
       </div>
 
