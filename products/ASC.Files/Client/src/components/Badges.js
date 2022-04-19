@@ -9,6 +9,10 @@ import { Base } from "@appserver/components/themes";
 
 export const StyledIcon = styled(IconButton)`
   ${commonIconsStyles}
+`;
+
+const StyledEditIcon = styled(IconButton)`
+  ${commonIconsStyles}
 
   svg {
     path {
@@ -135,7 +139,7 @@ const Badges = ({
           />
         )}
       {isEditing && (
-        <StyledIcon
+        <StyledEditIcon
           iconName={iconEdit}
           className="badge icons-group is-editing tablet-badge tablet-edit"
           size={sizeBadge}
