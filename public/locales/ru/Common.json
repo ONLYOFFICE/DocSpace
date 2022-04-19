@@ -121,12 +121,15 @@
   "RequiredField": "Обязательное поле",
   "ResetApplication": "Сбросить приложение",
   "Restore": "Восстановить",
+  "RestoreHere": "Восстановить сюда",
   "Review": "Рецензирование",
   "Role": "Позиция",
   "SameEmail": "Email совпадает с текущим",
   "SaveButton": "Сохранить",
+  "SaveHereButton": "Сохранить сюда",
   "Search": "Поиск",
   "Select": "Выберите",
+  "SelectFile": "Выберите файл",
   "SelectAll": "Выбрать все",
   "SendButton": "Отправить",
   "Sending": "Отправка...",
@@ -154,5 +157,6 @@
   "Video": "Видео",
   "View": "Просмотр",
   "ViewWeb": "Просмотреть веб-версию",
-  "Warning": "Внимание"
+  "Warning": "Внимание",
+  "Connect": "Подключить"
 }

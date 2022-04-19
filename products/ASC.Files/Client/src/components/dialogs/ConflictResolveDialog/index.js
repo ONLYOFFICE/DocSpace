@@ -4,7 +4,7 @@ import ModalDialog from "@appserver/components/modal-dialog";
 import RadioButtonGroup from "@appserver/components/radio-button-group";
 import Button from "@appserver/components/button";
 import Text from "@appserver/components/text";
-import { withTranslation } from "react-i18next";
+import { withTranslation, Trans } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { ConflictResolveType } from "@appserver/common/constants";
 import toastr from "studio/toastr";
@@ -30,6 +30,8 @@ const StyledModalDialog = styled(ModalDialog)`
 
     svg {
       overflow: visible;
+      margin-right: 8px;
+      margin-top: 3px
     }
 
     .radio-option-title {
@@ -49,7 +51,20 @@ const StyledModalDialog = styled(ModalDialog)`
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-gap: 10px;
-    width: 90%;
+    width: 100%;
+  }
+
+  .button-dialog-accept {
+    margin-right: 8px;
+  }
+  .modal-dialog-aside-footer, .modal-dialog-modal-footer {
+    border-top: ${(props) => props.theme.button.border.baseDisabled};
+    margin-left: -16px;
+    margin-right: -16px;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-top: 16px;
+}
   }
 `;
 
@@ -67,6 +82,7 @@ const ConflictResolveDialog = (props) => {
     setMoveToPanelVisible,
     setCopyPanelVisible,
     setThirdPartyMoveDialogVisible,
+    theme,
   } = props;
 
   const {
@@ -242,7 +258,7 @@ const ConflictResolveDialog = (props) => {
   );
 };
 
-export default inject(({ dialogsStore, uploadDataStore, filesStore }) => {
+export default inject(({ auth, dialogsStore, uploadDataStore, filesStore }) => {
   const {
     conflictResolveDialogVisible: visible,
     setConflictResolveDialogVisible,
@@ -255,8 +271,10 @@ export default inject(({ dialogsStore, uploadDataStore, filesStore }) => {
 
   const { itemOperationToFolder } = uploadDataStore;
   const { activeFiles, setActiveFiles } = filesStore;
-
+  const { settingsStore } = auth;
+  const { theme } = settingsStore;
   return {
+    theme,
     items,
     visible,
     conflictResolveDialogData,

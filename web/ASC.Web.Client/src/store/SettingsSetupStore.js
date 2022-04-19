@@ -10,9 +10,6 @@ import config from "../../package.json";
 class SettingsSetupStore {
   selectionStore = null;
   authStore = null;
-
-  isLoadingArticleSettings = false;
-
   isInit = false;
 
   common = {
@@ -63,6 +60,10 @@ class SettingsSetupStore {
       await authStore.settingsStore.getPortalPasswordSettings();
       await authStore.tfaStore.getTfaType();
     }
+  };
+
+  setIsInit = (isInit) => {
+    this.isInit = isInit;
   };
 
   setIsLoading = (isLoading) => {
@@ -334,10 +335,6 @@ class SettingsSetupStore {
     const res = await api.settings.getCommonThirdPartyList();
 
     this.setCommonThirdPartyList(res);
-  };
-
-  setIsLoadingArticleSettings = (isLoading) => {
-    this.isLoadingArticleSettings = isLoading;
   };
 }
 

@@ -20,6 +20,7 @@
     "utcHoursOffset": 0,
     "greetingSettings": "Web Office",
     "ownerId": "00000000-0000-0000-0000-000000000000",
+    "nameSchemaId": "Common",
     "enabledJoin": true,
     "enableAdmMess": true,
     "thirdpartyEnable": true,

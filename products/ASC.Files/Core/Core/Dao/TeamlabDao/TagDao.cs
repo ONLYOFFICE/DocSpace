@@ -777,7 +777,7 @@ ctx.Tag
                 }
 
                 monitorFolderIds = monitorFolderIds.Concat(tempTags.Where(x => x.EntryType == FileEntryType.Folder).Select(x => x.EntryId));
-                result.Concat(tempTags);
+                result = result.Concat(tempTags);
             }
 
             var monitorFolderIdsInt = await monitorFolderIds.OfType<int>().ToListAsync();
@@ -787,13 +787,13 @@ ctx.Tag
 
             var monitorFolderIdsStrings = await monitorFolderIds.Select(r => r.ToString()).ToListAsync();
 
-            result.Concat(FromQueryAsync(newTagsForFoldersQuery(FilesDbContext, tenantId, subject, monitorFolderIdsStrings)));
+            result = result.Concat(FromQueryAsync(newTagsForFoldersQuery(FilesDbContext, tenantId, subject, monitorFolderIdsStrings)));
 
             var where = (deepSearch ? await monitorFolderIds.ToArrayAsync().ConfigureAwait(false) : new object[] { parentFolder.ID })
                 .Select(r => r.ToString())
                 .ToList();
 
-            result.Concat(FromQueryAsync(newTagsForFilesQuery(FilesDbContext, tenantId, subject, where)));
+            result = result.Concat(FromQueryAsync(newTagsForFilesQuery(FilesDbContext, tenantId, subject, where)));
 
             if (parentFolder.FolderType == FolderType.USER || parentFolder.FolderType == FolderType.COMMON)
             {
@@ -809,7 +809,7 @@ ctx.Tag
 
                 if (thirdpartyFolderIds.Count > 0)
                 {
-                    result.Concat(FromQueryAsync(newTagsForSBoxQuery(FilesDbContext, tenantId, subject, thirdpartyFolderIds)));
+                    result = result.Concat(FromQueryAsync(newTagsForSBoxQuery(FilesDbContext, tenantId, subject, thirdpartyFolderIds)));
                 }
             }
 

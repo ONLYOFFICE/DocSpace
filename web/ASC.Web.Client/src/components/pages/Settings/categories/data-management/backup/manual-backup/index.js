@@ -9,12 +9,12 @@ import RadioButton from "@appserver/components/radio-button";
 import toastr from "@appserver/components/toast/toastr";
 import Loader from "@appserver/components/loader";
 import { BackupStorageType } from "@appserver/common/constants";
-import SelectFolderDialog from "files/SelectFolderDialog";
 import ThirdPartyModule from "./sub-components/ThirdPartyModule";
 import DocumentsModule from "./sub-components/DocumentsModule";
 import ThirdPartyStorageModule from "./sub-components/ThirdPartyStorageModule";
 import { StyledModules, StyledManualBackup } from "./../StyledBackup";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../../utils";
+import { getThirdPartyCommonFolderTree } from "@appserver/common/api/files";
 
 let selectedStorageType = "";
 
@@ -60,7 +60,7 @@ class ManualBackup extends React.Component {
     try {
       getProgress(t);
 
-      const commonThirdPartyList = await SelectFolderDialog.getCommonThirdPartyList();
+      const commonThirdPartyList = await getThirdPartyCommonFolderTree();
       commonThirdPartyList && setCommonThirdPartyList(commonThirdPartyList);
     } catch (error) {
       console.error(error);
@@ -150,10 +150,6 @@ class ManualBackup extends React.Component {
 
     if (isCheckedDocuments || isCheckedThirdParty) {
       saveToSessionStorage("LocalCopyFolder", `${selectedFolder}`);
-
-      SelectFolderDialog.getFolderPath(selectedFolder).then((folderPath) => {
-        saveToSessionStorage("LocalCopyPath", `${folderPath}`);
-      });
     } else {
       saveToSessionStorage("LocalCopyStorage", `${selectedStorageId}`);
       saveToSessionStorage(

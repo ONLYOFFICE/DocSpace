@@ -1,6 +1,5 @@
 {
-  "count": 1,
-  "response": "Error",
-  "status": 0,
+  "error": { "message": "Request failed with status code 400", "hresult": 0 },
+  "status": 1,
   "statusCode": 400
 }

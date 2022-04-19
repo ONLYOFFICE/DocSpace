@@ -2,7 +2,7 @@ import { makeAutoObservable } from "mobx";
 import api from "@appserver/common/api";
 
 class ThirdPartyStore {
-  capabilities = [];
+  capabilities = null;
   providers = [];
 
   constructor() {
@@ -87,44 +87,92 @@ class ThirdPartyStore {
     });
   };
 
+  getThirdPartyIcon = (iconName) => {
+    switch (iconName) {
+      case "Box":
+        return "images/icon_box.react.svg";
+      case "DropboxV2":
+        return "images/icon_dropbox.react.svg";
+      case "GoogleDrive":
+        return "images/icon_google_drive.react.svg";
+      case "OneDrive":
+        return "images/icon_onedrive.react.svg";
+      case "SharePoint":
+        return "images/icon_sharepoint.react.svg";
+      case "kDrive":
+        return "images/icon_kdrive.react.svg";
+      case "Yandex":
+        return "images/icon_yandex_disk.react.svg";
+      case "OwnCloud":
+        return "images/icon_owncloud.react.svg";
+      case "NextCloud":
+        return "images/icon_nextcloud.react.svg";
+      case "OneDriveForBusiness":
+        return "images/icon_onedrive.react.svg";
+      case "WebDav":
+        return "images/icon_webdav.react.svg";
+
+      default:
+        return "";
+    }
+  };
+
   get googleConnectItem() {
-    return this.capabilities.find((x) => x[0] === "GoogleDrive");
+    return (
+      this.capabilities && this.capabilities.find((x) => x[0] === "GoogleDrive")
+    );
   }
 
   get boxConnectItem() {
-    return this.capabilities.find((x) => x[0] === "Box");
+    return this.capabilities && this.capabilities.find((x) => x[0] === "Box");
   }
 
   get dropboxConnectItem() {
-    return this.capabilities.find((x) => x[0] === "DropboxV2");
+    return (
+      this.capabilities && this.capabilities.find((x) => x[0] === "DropboxV2")
+    );
   }
   get oneDriveConnectItem() {
-    return this.capabilities.find((x) => x[0] === "OneDrive");
+    return (
+      this.capabilities && this.capabilities.find((x) => x[0] === "OneDrive")
+    );
   }
 
   get sharePointConnectItem() {
-    return this.capabilities.find((x) => x[0] === "SharePoint");
+    return (
+      this.capabilities && this.capabilities.find((x) => x[0] === "SharePoint")
+    );
   }
 
   get kDriveConnectItem() {
-    return this.capabilities.find((x) => x[0] === "kDrive");
+    return (
+      this.capabilities && this.capabilities.find((x) => x[0] === "kDrive")
+    );
   }
 
   get yandexConnectItem() {
-    return this.capabilities.find((x) => x[0] === "Yandex");
+    return (
+      this.capabilities && this.capabilities.find((x) => x[0] === "Yandex")
+    );
   }
 
   get webDavConnectItem() {
-    return this.capabilities.find((x) => x[0] === "WebDav");
+    return (
+      this.capabilities && this.capabilities.find((x) => x[0] === "WebDav")
+    );
   }
 
   // TODO: remove WebDav get NextCloud
   get nextCloudConnectItem() {
-    return this.capabilities.find((x) => x[0] === "WebDav");
+    return (
+      this.capabilities && this.capabilities.find((x) => x[0] === "WebDav")
+    );
   }
   // TODO:remove WebDav get OwnCloud
   get ownCloudConnectItem() {
-    return this.capabilities.find((x) => x[0] === "WebDav");
+    return (
+      this.capabilities && this.capabilities.find((x) => x[0] === "WebDav")
+    );
   }
 }
 

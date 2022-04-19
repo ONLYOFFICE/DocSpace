@@ -7,6 +7,7 @@ import ArticleButton from "./ArticleButtonLoader";
 import ArticleFolder from "./ArticleFolderLoader";
 import ArticleGroup from "./ArticleGroupsLoader";
 import TreeFolders from "./TreeFolderLoader";
+import NewTreeFolders from "./NewTreeFolderLoader";
 import TreeSettingsLoader from "./TreeSettingsLoader";
 import Row from "./RowLoader";
 import Rows from "./RowsLoader";
@@ -46,4 +47,5 @@ export default {
   ArticleFolder,
   ArticleGroup,
   ListLoader,
+  NewTreeFolders,
 };
