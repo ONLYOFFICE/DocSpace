@@ -127,14 +127,6 @@ const Base = {
       medium: "0 32px",
     },
 
-    minWidth: {
-      extraSmall: "none",
-      small: "100px",
-      normalDesktop: "100px",
-      normalTouchscreen: "100px",
-      medium: "100px",
-    },
-
     color: {
       base: black,
       baseHover: black,
@@ -2452,6 +2444,13 @@ const Base = {
     color: black,
     border: `1px solid ${grayMid}`,
     borderBottom: `1px solid ${grayLightMid}`,
+
+    tile: {
+      background: globalColors.lightHover,
+      itemBackground: white,
+      itemBorder: grayMid,
+      itemActiveBorder: blueMain,
+    },
 
     fill: gray,
     hoverFill: grayMain,
