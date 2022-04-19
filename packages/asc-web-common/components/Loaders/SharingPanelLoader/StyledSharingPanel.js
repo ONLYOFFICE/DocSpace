@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import { Base } from "@appserver/components/themes";
 
@@ -11,10 +11,13 @@ const StyledContainer = styled.div`
 
 const StyledHeader = styled.div`
   width: 100%;
-  padding: ${(props) => (props.isPersonal ? "12px 16px" : "12px 16px")};
-
-  margin-left: -12px;
-  margin-right: 12px;
+  padding: ${(props) => (props.isPersonal ? "0px 16px 12px" : "12px 16px")};
+  ${(props) =>
+    props.isPersonal &&
+    css`
+      margin-left: -12px;
+      margin-right: 12px;
+    `}
 
   display: flex;
   align-items: center;
@@ -123,7 +126,7 @@ const StyledButtons = styled.div`
 
   box-sizing: border-box;
 
-  padding: 2px 4px 0;
+  padding: 4px;
 
   svg:first-child {
     margin-right: 8px;

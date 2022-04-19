@@ -23,7 +23,7 @@ const SharingPanelLoaderModal = ({
   return (
     <StyledContainer>
       <StyledHeader isPersonal={true}>
-        <RectangleLoader width={"283px"} height={"29px"} />
+        <RectangleLoader width={"283px"} height={"16px"} />
       </StyledHeader>
 
       <StyledExternalLink isPersonal={true}>
