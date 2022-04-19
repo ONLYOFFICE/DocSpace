@@ -591,6 +591,7 @@ class SharingPanelComponent extends React.Component {
                     />
                   ) : (
                     <Body
+                      isShared={isShared}
                       t={t}
                       isPersonal={isPersonal}
                       selection={selection}

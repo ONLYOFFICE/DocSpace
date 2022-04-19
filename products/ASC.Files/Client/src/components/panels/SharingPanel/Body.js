@@ -90,9 +90,10 @@ const Body = ({
   shareGroups = [],
   shareUsers = [],
   isPersonal,
+  isShared,
 }) => {
   const [externalLinkVisible, setExternalLinkVisible] = React.useState(false);
-  const [externalLinkOpen, setExternalLinkOpen] = React.useState(false);
+  const [externalLinkOpen, setExternalLinkOpen] = React.useState(isShared);
   const [itemList, setItemList] = React.useState([]);
   const [listData, setListData] = React.useState({});
 
