@@ -138,6 +138,7 @@ const ExternalLink = ({
               scale={true}
               isReadOnly={true}
               placeholder={shareLink}
+              isDisabled={true}
             >
               <div ref={ref} className="external-link__buttons">
                 <CodeIcon
