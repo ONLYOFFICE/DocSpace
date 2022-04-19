@@ -55,7 +55,7 @@ const StyledTile = styled.div`
   border: ${(props) => props.theme.filesSection.tilesView.tile.border};
   border-radius: 6px;
   ${(props) => props.showHotkeyBorder && "border-color: #2DA7DB"};
-  ${(props) => props.isFolder && "border-top-left-radius: 0px;"}
+  ${(props) => props.isFolder && "border-top-left-radius: 6px;"}
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   ${(props) => props.isFolder && FlexBoxStyles}

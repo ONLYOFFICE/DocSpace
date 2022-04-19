@@ -15,7 +15,6 @@ const StyledLoader = styled.div`
 
   @media (min-width: 1024px) {
     padding: 0px 20px 0px;
-    margin-top: -7px;
 
     .loader {
       width: 216px;

@@ -1,7 +1,6 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
 import FieldContainer from "@appserver/components/field-container";
-import ToggleButton from "@appserver/components/toggle-button";
 import ComboBox from "@appserver/components/combobox";
 import toastr from "@appserver/components/toast/toastr";
 import HelpButton from "@appserver/components/help-button";
@@ -433,13 +432,6 @@ class LanguageAndTimeZone extends React.Component {
             className="dropdown-item-width"
           />
         </FieldContainer>
-        <div className="field-container-flex">
-          <div className="field-title">{`${t("Automatic time zone")}`}</div>
-          <ToggleButton
-            className="toggle"
-            onChange={() => toastr.info(<>Not implemented</>)}
-          />
-        </div>
         <FieldContainer
           id="fieldContainerTimezone"
           labelText={`${t("TimeZone")}:`}
