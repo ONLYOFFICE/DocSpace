@@ -121,14 +121,15 @@ const HeaderNav = ({
     settingsModule && useCallback(() => history.push(settingsUrl), []);
 
   const getCurrentUserActions = useCallback(() => {
-    const settings = settingsModule
-      ? {
-          key: "SettingsBtn",
-          label: t("Common:Settings"),
-          onClick: onSettingsClick,
-          url: settingsUrl,
-        }
-      : null;
+    const settings =
+      settingsModule && !isPersonal
+        ? {
+            key: "SettingsBtn",
+            label: t("Common:Settings"),
+            onClick: onSettingsClick,
+            url: settingsUrl,
+          }
+        : null;
 
     const actions = [
       {
@@ -243,8 +244,7 @@ export default withRouter(
     } = settingsStore;
     const { user, userIsUpdate, setUserIsUpdate } = userStore;
     const modules = auth.availableModules;
-    const settingsModule =
-      modules.find((module) => module.id === "settings") && !isPersonal;
+    const settingsModule = modules.find((module) => module.id === "settings");
 
     return {
       isPersonal,
