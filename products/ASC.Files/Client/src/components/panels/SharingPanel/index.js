@@ -557,6 +557,73 @@ class SharingPanelComponent extends React.Component {
                   </ModalDialog.Body>
                 </ModalDialog>
               </>
+            ) : isMobileOnly ? (
+              <ModalDialog
+                displayType="modal"
+                visible={visible}
+                withoutCloseButton={false}
+                withoutBodyScroll={true}
+                scale={true}
+                onClose={this.onClose}
+                modalBodyPadding="12px 0 0"
+                isPersonal={isPersonal}
+              >
+                <ModalDialog.Header>
+                  <Header
+                    t={t}
+                    uploadPanelVisible={showEmbeddingContent}
+                    isPersonal={isPersonal}
+                    isEncrypted={isEncrypted}
+                    onClose={this.onShowEmbeddingContainer}
+                    onShowUsersPanel={this.onShowUsersPanel}
+                    onShowGroupsPanel={this.onShowGroupsPanel}
+                    label={t("EmbeddingPanel:EmbeddingDocument")}
+                  />
+                </ModalDialog.Header>
+
+                <ModalDialog.Body>
+                  {showEmbeddingContent ? (
+                    <EmbeddingBody
+                      isPersonal={isPersonal}
+                      theme={theme}
+                      embeddingLink={externalItem[0].sharedTo.shareLink}
+                    />
+                  ) : (
+                    <Body
+                      isShared={isShared}
+                      t={t}
+                      isPersonal={isPersonal}
+                      selection={selection}
+                      externalItem={externalItem[0]}
+                      onToggleLink={this.onToggleLink}
+                      onShowEmbeddingPanel={this.onShowEmbeddingContainer}
+                      onChangeItemAccess={this.onChangeItemAccess}
+                      accessOptions={accessOptions}
+                      externalAccessOptions={externalAccessOptions}
+                    />
+                  )}
+                </ModalDialog.Body>
+
+                {!showEmbeddingContent && (
+                  <ModalDialog.Footer>
+                    <StyledModalFooter>
+                      <Button
+                        size={"normal"}
+                        label={t("Common:SaveButton")}
+                        primary
+                        onClick={this.onSaveClick}
+                        scale
+                      />
+                      <Button
+                        size={"normal"}
+                        label={t("Common:CancelButton")}
+                        scale
+                        onClick={this.onClose}
+                      />
+                    </StyledModalFooter>
+                  </ModalDialog.Footer>
+                )}
+              </ModalDialog>
             ) : (
               <ModalDialog
                 displayType="modal"
