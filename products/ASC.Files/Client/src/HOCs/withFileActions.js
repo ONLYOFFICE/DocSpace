@@ -21,8 +21,15 @@ export default function withFileActions(WrappedFileItem) {
       id !== -1 && onSelectItem({ id, isFolder });
     };
 
+    onFileContextClick = () => {
+      const { onSelectItem } = this.props;
+      const { id, isFolder } = this.props.item;
+
+      id !== -1 && onSelectItem({ id, isFolder }, true);
+    };
+
     onHideContextMenu = () => {
-      //this.props.setBufferSelection(null);
+      this.props.setBufferSelection(null);
     };
 
     onDropZoneUpload = (files, uploadToFolder) => {
@@ -181,7 +188,7 @@ export default function withFileActions(WrappedFileItem) {
       return (
         <WrappedFileItem
           onContentFileSelect={this.onContentFileSelect}
-          fileContextClick={this.fileContextClick}
+          fileContextClick={this.onFileContextClick}
           onDrop={this.onDrop}
           onMouseDown={this.onMouseDown}
           onFilesClick={this.onFilesClick}
