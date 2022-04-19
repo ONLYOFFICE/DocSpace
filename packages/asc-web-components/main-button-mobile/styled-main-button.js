@@ -134,7 +134,6 @@ const StyledDropDownItem = styled(DropDownItem)`
 `;
 
 const StyledButtonOptions = styled.div`
-  display: ${(props) => !props.isOpenButton && "none"};
   padding: 16px 0;
   background-color: ${(props) =>
     props.theme.mainButtonMobile.buttonOptions.backgroundColor};

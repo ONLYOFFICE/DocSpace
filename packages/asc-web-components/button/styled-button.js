@@ -156,8 +156,7 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
       : props.theme.button.border.base};
 
   ${(props) => props.scale && `width: 100%;`};
-  min-width: ${(props) =>
-    props.minwidth ? props.minwidth : props.theme.button.minWidth[props.size]};
+  min-width: ${(props) => props.minwidth && props.minwidth};
 
   padding: ${(props) => `${props.theme.button.padding[props.size]}`};
 
@@ -214,6 +213,8 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
   }
 
   .button-content {
+    width: 100%;
+    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
