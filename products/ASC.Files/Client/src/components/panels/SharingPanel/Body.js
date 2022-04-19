@@ -93,7 +93,6 @@ const Body = ({
 }) => {
   const [externalLinkVisible, setExternalLinkVisible] = React.useState(false);
   const [externalLinkOpen, setExternalLinkOpen] = React.useState(false);
-  const [hideDropDown, setHideDropDown] = React.useState(false);
   const [itemList, setItemList] = React.useState([]);
   const [listData, setListData] = React.useState({});
 
@@ -111,14 +110,6 @@ const Body = ({
     );
     setExternalLinkOpen(externalItem?.access !== ShareAccessRights.DenyAccess);
   }, [externalItem, selection]);
-
-  const onScrollStart = React.useCallback(() => {
-    setHideDropDown(true);
-  }, []);
-
-  const onScrollStop = React.useCallback(() => {
-    setHideDropDown(false);
-  }, []);
 
   const getItemSize = React.useCallback(
     (index) => {
