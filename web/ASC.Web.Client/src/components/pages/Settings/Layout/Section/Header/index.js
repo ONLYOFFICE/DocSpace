@@ -7,8 +7,9 @@ import Headline from "@appserver/common/components/Headline";
 import IconButton from "@appserver/components/icon-button";
 import GroupButtonsMenu from "@appserver/components/group-buttons-menu";
 import DropDownItem from "@appserver/components/drop-down-item";
-
+import LoaderSectionHeader from "../loaderSectionHeader";
 import { tablet, desktop } from "@appserver/components/utils/device";
+import withLoading from "../../../../../../HOCs/withLoading";
 
 import {
   getKeyByLink,
@@ -132,6 +133,12 @@ class SectionHeaderContent extends React.Component {
   }
 
   componentDidUpdate() {
+    const { isLoaded, tReady, setIsLoadedSectionHeader } = this.props;
+
+    const isLoadedSetting = isLoaded && tReady;
+
+    if (isLoadedSetting) setIsLoadedSectionHeader(isLoadedSetting);
+
     const arrayOfParams = this.getArrayOfParams();
 
     const key = getKeyByLink(arrayOfParams, settingsTree);
@@ -214,6 +221,7 @@ class SectionHeaderContent extends React.Component {
       isHeaderChecked,
       isHeaderVisible,
       selection,
+      isLoadedPage,
     } = this.props;
     const { header, isCategoryOrHeader } = this.state;
     const arrayOfParams = this.getArrayOfParams();
@@ -241,6 +249,8 @@ class SectionHeaderContent extends React.Component {
       },
     ];
 
+    const commonSettings = location.pathname.includes("common");
+    const showLoader = commonSettings ? !isLoadedPage : false;
     return (
       <StyledContainer isHeaderVisible={isHeaderVisible}>
         {isHeaderVisible ? (
@@ -257,6 +267,8 @@ class SectionHeaderContent extends React.Component {
               selected={menuItems[0].label}
             />
           </div>
+        ) : showLoader ? (
+          <LoaderSectionHeader />
         ) : (
           <HeaderContainer>
             {!isCategoryOrHeader && arrayOfParams[0] && (
@@ -289,7 +301,7 @@ class SectionHeaderContent extends React.Component {
   }
 }
 
-export default inject(({ auth, setup }) => {
+export default inject(({ auth, setup, common }) => {
   const { customNames } = auth.settingsStore;
   const { addUsers, removeAdmins } = setup.headerAction;
   const { toggleSelector } = setup;
@@ -304,7 +316,7 @@ export default inject(({ auth, setup }) => {
     selection,
   } = setup.selectionStore;
   const { admins, selectorIsOpen } = setup.security.accessRight;
-
+  const { isLoaded, setIsLoadedSectionHeader } = common;
   return {
     addUsers,
     removeAdmins,
@@ -320,9 +332,13 @@ export default inject(({ auth, setup }) => {
     toggleSelector,
     selectorIsOpen,
     selection,
+    isLoaded,
+    setIsLoadedSectionHeader,
   };
 })(
-  withRouter(
-    withTranslation(["Settings", "Common"])(observer(SectionHeaderContent))
+  withLoading(
+    withRouter(
+      withTranslation(["Settings", "Common"])(observer(SectionHeaderContent))
+    )
   )
 );
