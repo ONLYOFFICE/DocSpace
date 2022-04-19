@@ -575,7 +575,10 @@ class SharingPanelComponent extends React.Component {
 
                 <ModalDialog.Body>
                   {showEmbeddingContent ? (
-                    <EmbeddingBody theme={theme} embeddingLink={shareLink} />
+                    <EmbeddingBody
+                      theme={theme}
+                      embeddingLink={externalItem[0].sharedTo.shareLink}
+                    />
                   ) : (
                     <Body
                       t={t}
@@ -715,7 +718,7 @@ class SharingPanelComponent extends React.Component {
                 visible={showEmbeddingPanel}
                 onSharingPanelClose={this.onClose}
                 onClose={this.onShowEmbeddingPanel}
-                embeddingLink={shareLink}
+                embeddingLink={externalItem[0].sharedTo.shareLink}
               />
             )}
           </StyledAsidePanel>
