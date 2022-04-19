@@ -59,13 +59,15 @@ const StyledHeaderContent = styled.div`
     }
   }
 
-  .embedding_panel {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: start;
-    margin-bottom: 16px;
-  }
+  ${(props) =>
+    props.isEmbedding &&
+    css`
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: start;
+      margin-bottom: 16px;
+    `}
 
   .sharing_panel-icons-container {
     display: flex;

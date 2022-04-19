@@ -36,22 +36,20 @@ class EmbeddingPanelComponent extends React.Component {
         />
         <Aside className="header_aside-panel">
           <StyledContent>
-            <StyledHeaderContent>
-              <div className="embedding_panel">
-                <IconButton
-                  size="16"
-                  iconName="/static/images/arrow.path.react.svg"
-                  onClick={this.onArrowClick}
-                  // color={theme.filesPanels.embedding.color}
-                />
-                <Heading
-                  className="header_aside-panel-header"
-                  size="medium"
-                  truncate
-                >
-                  {t("EmbeddingDocument")}
-                </Heading>
-              </div>
+            <StyledHeaderContent isEmbedding={true}>
+              <IconButton
+                size="16"
+                iconName="/static/images/arrow.path.react.svg"
+                onClick={this.onArrowClick}
+                // color={theme.filesPanels.embedding.color}
+              />
+              <Heading
+                className="header_aside-panel-header"
+                size="medium"
+                truncate
+              >
+                {t("EmbeddingDocument")}
+              </Heading>
             </StyledHeaderContent>
 
             <EmbeddingBody embeddingLink={embeddingLink} theme={theme} />
