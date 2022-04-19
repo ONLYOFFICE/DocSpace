@@ -20,7 +20,6 @@ const SharingPanelLoaderModal = ({
   isShared,
   ...rest
 }) => {
-  console.log(isShared);
   return (
     <StyledContainer>
       <StyledHeader isPersonal={true}>

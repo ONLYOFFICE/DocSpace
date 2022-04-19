@@ -292,8 +292,6 @@ class SharingPanelComponent extends React.Component {
     let folderId = [];
     let fileId = [];
 
-    console.log(selection);
-
     for (let item of selection) {
       if (item.access === 1 || item.access === 0) {
         if (item.fileExst) {
@@ -318,8 +316,6 @@ class SharingPanelComponent extends React.Component {
     const returnValue = this.getData();
     const folderId = returnValue[0];
     const fileId = returnValue[1];
-
-    console.log(fileId, folderId);
 
     if (folderId.length !== 0 || fileId.length !== 0) {
       this.setState(
@@ -784,8 +780,6 @@ const SharingPanel = inject(
       selectUploadedFile,
       updateUploadedItem,
     } = uploadDataStore;
-
-    console.log(selection[0].shared);
 
     return {
       theme: auth.settingsStore.theme,
