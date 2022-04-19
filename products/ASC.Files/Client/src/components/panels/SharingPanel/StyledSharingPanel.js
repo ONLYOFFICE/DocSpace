@@ -19,7 +19,7 @@ const StyledContent = styled.div`
 const StyledHeaderContent = styled.div`
   width: 100%;
   max-width: 100%;
-  height: 53px;
+  height: ${(props) => (props.isPersonal ? "40px" : "53px")};
 
   border-bottom: ${(props) =>
     props.isPersonal ? "none" : props.theme.filesPanels.sharing.borderBottom};
