@@ -8,6 +8,7 @@ import toastr from "@appserver/components/toast/toastr";
 import IconButton from "@appserver/components/icon-button";
 import i18n from "./i18n";
 import { withTranslation, I18nextProvider } from "react-i18next";
+import StyledBody from "./StyledEmbeddingPanel";
 
 const EmbeddingBody = ({ embeddingLink, t, theme }) => {
   const [size, setSize] = useState("auto");
@@ -61,74 +62,76 @@ const EmbeddingBody = ({ embeddingLink, t, theme }) => {
   };
 
   return (
-    <div className="embedding-panel_body">
-      <Text className="embedding-panel_text">{t("Common:Size")}:</Text>
-      <div className="embedding-panel_links-container">
-        <Link
-          isHovered
-          type="action"
-          className={`embedding-panel_link  ${
-            size === "600x800" ? "embedding-panel_active-link" : ""
-          }`}
-          onClick={onSelectSizeMiddle}
-        >
-          600 x 800 px
-        </Link>
-        <Link
-          isHovered
-          type="action"
-          className={`embedding-panel_link  ${
-            size === "400x600" ? "embedding-panel_active-link" : ""
-          }`}
-          onClick={onSelectSizeSmall}
-        >
-          400 x 600 px
-        </Link>
-        <Link
-          isHovered
-          type="action"
-          className={`embedding-panel_link  ${
-            size === "auto" ? "embedding-panel_active-link" : ""
-          }`}
-          onClick={onSelectSizeAuto}
-        >
-          {t("Auto")}
-        </Link>
-      </div>
-      <div className="embedding-panel_inputs-container">
-        <div>
-          <Text className="embedding-panel_text">{t("Width")}:</Text>
-          <TextInput
-            className="embedding-panel_input"
-            value={widthValue}
-            onChange={onChangeWidth}
+    <StyledBody>
+      <div className="embedding-panel_body">
+        <Text className="embedding-panel_text">{t("Common:Size")}:</Text>
+        <div className="embedding-panel_links-container">
+          <Link
+            isHovered
+            type="action"
+            className={`embedding-panel_link  ${
+              size === "600x800" ? "embedding-panel_active-link" : ""
+            }`}
+            onClick={onSelectSizeMiddle}
+          >
+            600 x 800 px
+          </Link>
+          <Link
+            isHovered
+            type="action"
+            className={`embedding-panel_link  ${
+              size === "400x600" ? "embedding-panel_active-link" : ""
+            }`}
+            onClick={onSelectSizeSmall}
+          >
+            400 x 600 px
+          </Link>
+          <Link
+            isHovered
+            type="action"
+            className={`embedding-panel_link  ${
+              size === "auto" ? "embedding-panel_active-link" : ""
+            }`}
+            onClick={onSelectSizeAuto}
+          >
+            {t("Auto")}
+          </Link>
+        </div>
+        <div className="embedding-panel_inputs-container">
+          <div>
+            <Text className="embedding-panel_text">{t("Width")}:</Text>
+            <TextInput
+              className="embedding-panel_input"
+              value={widthValue}
+              onChange={onChangeWidth}
+            />
+          </div>
+          <div>
+            <Text className="embedding-panel_text">{t("Height")}:</Text>
+            <TextInput
+              className="embedding-panel_input"
+              value={heightValue}
+              onChange={onChangeHeight}
+            />
+          </div>
+        </div>
+        <div className="embedding-panel_code-container">
+          <Text className="embedding-panel_text">{t("EmbedCode")}:</Text>
+          <IconButton
+            className="embedding-panel_copy-icon"
+            size="16"
+            iconName="/static/images/copy.react.svg"
+            // color={theme.filesPanels.embedding.iconColor}
+            onClick={onCopyLink}
+          />
+          <Textarea
+            color={theme.filesPanels.embedding.textAreaColor}
+            isReadOnly
+            value={link}
           />
         </div>
-        <div>
-          <Text className="embedding-panel_text">{t("Height")}:</Text>
-          <TextInput
-            className="embedding-panel_input"
-            value={heightValue}
-            onChange={onChangeHeight}
-          />
-        </div>
       </div>
-      <div className="embedding-panel_code-container">
-        <Text className="embedding-panel_text">{t("EmbedCode")}:</Text>
-        <IconButton
-          className="embedding-panel_copy-icon"
-          size="16"
-          iconName="/static/images/copy.react.svg"
-          // color={theme.filesPanels.embedding.iconColor}
-          onClick={onCopyLink}
-        />
-        <Textarea
-          color={theme.filesPanels.embedding.textAreaColor}
-          isReadOnly
-          value={link}
-        />
-      </div>
-    </div>
+    </StyledBody>
   );
 };
 

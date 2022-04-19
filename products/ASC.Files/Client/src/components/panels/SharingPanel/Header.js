@@ -43,8 +43,6 @@ const Header = ({
     onShowGroupsPanel && onShowGroupsPanel();
   }, [onShowGroupsPanel]);
 
-  console.log(uploadPanelVisible);
-
   return (
     <StyledHeaderContent
       isPersonal={isPersonal}

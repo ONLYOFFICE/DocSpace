@@ -7,11 +7,7 @@ import Aside from "@appserver/components/aside";
 import IconButton from "@appserver/components/icon-button";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import i18n from "./i18n";
-import {
-  StyledEmbeddingPanel,
-  StyledContent,
-  StyledBody,
-} from "../StyledPanels";
+import { StyledEmbeddingPanel, StyledContent } from "../StyledPanels";
 
 import { StyledHeaderContent } from "../SharingPanel/StyledSharingPanel";
 
@@ -57,9 +53,8 @@ class EmbeddingPanelComponent extends React.Component {
                 </Heading>
               </div>
             </StyledHeaderContent>
-            <StyledBody>
-              <EmbeddingBody theme={theme} />
-            </StyledBody>
+
+            <EmbeddingBody theme={theme} />
           </StyledContent>
         </Aside>
       </StyledEmbeddingPanel>
