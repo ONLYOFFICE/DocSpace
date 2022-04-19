@@ -420,10 +420,15 @@ public class FileStorageService<T> //: IFileStorageService
         var folderDao = GetFolderDao();
 
         var parent = await folderDao.GetFolderAsync(parentId);
+        var isRoom = folderType == FolderType.CustomRoom || folderType == FolderType.FillingFormsRoom 
+            || folderType == FolderType.ReadOnlyRoom || folderType == FolderType.ReviewRoom
+            || folderType == FolderType.EditingRoom;
+
         ErrorIf(parent == null, FilesCommonResource.ErrorMassage_FolderNotFound);
         ErrorIf(!await _fileSecurity.CanCreateAsync(parent), FilesCommonResource.ErrorMassage_SecurityException_Create);
         ErrorIf(parent.RootFolderType == FolderType.Archive, FilesCommonResource.ErrorMessage_UpdateArchivedRoom);
         ErrorIf(parent.FolderType == FolderType.Archive, FilesCommonResource.ErrorMassage_SecurityException);
+        ErrorIf(!isRoom && parent.FolderType == FolderType.VirtualRooms, FilesCommonResource.ErrorMassage_SecurityException_Create);
 
         try
         {

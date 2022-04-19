@@ -645,13 +645,24 @@ public class FileSecurity : IFileSecurity
                 {
                     result.Add(e);
                 }
-                else if (action == FilesSecurityActions.RoomEdit && (e.Access == FileShare.RoomManager))
+                else if (action == FilesSecurityActions.RoomEdit && e.Access == FileShare.RoomManager)
                 {
                     result.Add(e);
                 }
                 else if (action == FilesSecurityActions.Create && (e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomManager))
                 {
                     result.Add(e);
+                }
+                else if (action == FilesSecurityActions.Delete && (e.Access == FileShare.RoomManager || e.Access == FileShare.ReadWrite))
+                {
+                    if (file != null && (file.RootFolderType == FolderType.VirtualRooms || file.RootFolderType == FolderType.Archive))
+                    {
+                        result.Add(e);
+                    }
+                    else if (folder != null && folder.FolderType == FolderType.DEFAULT)
+                    {
+                        result.Add(e);
+                    }
                 }
                 else if (e.Access != FileShare.Restrict && e.CreateBy == userId && (e.FileEntryType == FileEntryType.File || folder.FolderType != FolderType.COMMON))
                 {

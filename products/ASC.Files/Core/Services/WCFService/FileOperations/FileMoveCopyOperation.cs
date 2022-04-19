@@ -247,7 +247,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             {
                 Error = FilesCommonResource.ErrorMassage_SecurityException;
             }
-            else if (!isRoom && (toFolder.FolderType == FolderType.VirtualRooms || toFolder.FolderType == FolderType.Archive))
+            else if (!isRoom && (toFolder.FolderType == FolderType.VirtualRooms || toFolder.RootFolderType == FolderType.Archive))
             {
                 Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
             }
@@ -457,13 +457,13 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             CancellationToken.ThrowIfCancellationRequested();
 
             var file = await FileDao.GetFileAsync(fileId);
-            var taskError = WithErrorAsync(scope, new[] { file });
+            var taskError = await WithErrorAsync(scope, new[] { file });
 
             if (file == null)
             {
                 Error = FilesCommonResource.ErrorMassage_FileNotFound;
             }
-            else if (toFolder.FolderType == FolderType.VirtualRooms || toFolder.FolderType == FolderType.Archive)
+            else if (toFolder.FolderType == FolderType.VirtualRooms || toFolder.RootFolderType == FolderType.Archive)
             {
                 Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFile;
             }
@@ -524,9 +524,9 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                         }
                         else
                         {
-                            if ((await taskError).isError)
+                            if ((taskError).isError)
                             {
-                                Error = (await taskError).message;
+                                Error = (taskError).message;
                             }
                             else
                             {
@@ -639,9 +639,9 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                     }
                                     else
                                     {
-                                        if ((await taskError).isError)
+                                        if ((taskError).isError)
                                         {
-                                            Error = (await taskError).message;
+                                            Error = (taskError).message;
                                         }
                                         else
                                         {
