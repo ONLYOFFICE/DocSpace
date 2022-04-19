@@ -2,7 +2,7 @@ import styled, { css } from "styled-components";
 
 const StyledBody = styled.div`
   .embedding-panel_body {
-    padding: 0 16px;
+    padding: ${(props) => (props.isPersonal ? "0 4px" : "0 16px")};
   }
 
   .embedding-panel_links-container {

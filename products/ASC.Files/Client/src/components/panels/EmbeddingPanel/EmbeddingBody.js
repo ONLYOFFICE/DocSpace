@@ -10,7 +10,7 @@ import i18n from "./i18n";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import StyledBody from "./StyledEmbeddingPanel";
 
-const EmbeddingBody = ({ embeddingLink, t, theme }) => {
+const EmbeddingBody = ({ embeddingLink, t, theme, isPersonal }) => {
   const [size, setSize] = useState("auto");
   const [widthValue, setWidthValue] = useState("100%");
   const [heightValue, setHeightValue] = useState("100%");
@@ -62,7 +62,7 @@ const EmbeddingBody = ({ embeddingLink, t, theme }) => {
   };
 
   return (
-    <StyledBody>
+    <StyledBody isPersonal={isPersonal}>
       <div className="embedding-panel_body">
         <Text className="embedding-panel_text">{t("Common:Size")}:</Text>
         <div className="embedding-panel_links-container">

@@ -578,6 +578,7 @@ class SharingPanelComponent extends React.Component {
                 <ModalDialog.Body>
                   {showEmbeddingContent ? (
                     <EmbeddingBody
+                      isPersonal={isPersonal}
                       theme={theme}
                       embeddingLink={externalItem[0].sharedTo.shareLink}
                     />
