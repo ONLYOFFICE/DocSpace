@@ -11,7 +11,7 @@ const StyledContainer = styled.div`
 
 const StyledHeader = styled.div`
   width: 100%;
-  padding: 12px 16px;
+  padding: ${(props) => (props.isPersonal ? "12px 4px" : "12px 16px")};
 
   display: flex;
   align-items: center;
@@ -30,11 +30,12 @@ const StyledExternalLink = styled.div`
   display: flex;
   flex-direction: column;
 
-  padding: 20px 16px;
+  padding: ${(props) => (props.isPersonal ? "20px 4px" : "20px 16px")};
 
   box-sizing: border-box;
 
-  border-bottom: ${(props) => props.theme.filesPanels.sharing.borderBottom};
+  border-bottom: ${(props) =>
+    props.isPersonal ? "none" : props.theme.filesPanels.sharing.borderBottom};
 
   .rectangle-loader {
     margin-bottom: 16px;
@@ -110,6 +111,22 @@ const StyledItem = styled.div`
   }
 `;
 
+const StyledButtons = styled.div`
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  box-sizing: border-box;
+
+  padding: 2px 4px 0;
+
+  svg:first-child {
+    margin-right: 8px;
+  }
+`;
+
 export {
   StyledContainer,
   StyledHeader,
@@ -118,4 +135,5 @@ export {
   StyledOwner,
   StyledBody,
   StyledItem,
+  StyledButtons,
 };

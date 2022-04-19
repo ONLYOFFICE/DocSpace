@@ -23,6 +23,7 @@ import DialogLoader from "./DialogLoader";
 import DialogAsideLoader from "./DialogAsideLoader";
 import ListLoader from "./ListLoader";
 import SharingPanelLoader from "./SharingPanelLoader";
+import SharingPanelLoaderModal from "./SharingPanelLoader/modal";
 
 export default {
   Rectangle,
@@ -50,4 +51,5 @@ export default {
   ListLoader,
   NewTreeFolders,
   SharingPanelLoader,
+  SharingPanelLoaderModal,
 };

@@ -25,6 +25,7 @@ import Header from "./Header";
 import Body from "./Body";
 import Footer from "./Footer";
 import SharingPanelLoader from "@appserver/common/components/Loaders/SharingPanelLoader";
+import SharingPanelLoaderModal from "@appserver/common/components/Loaders/SharingPanelLoader/modal";
 
 // const SharingBodyStyle = { height: `calc(100vh - 156px)` };
 
@@ -536,7 +537,20 @@ class SharingPanelComponent extends React.Component {
         {isPersonal ? (
           <>
             {isLoading ? (
-              <></>
+              <>
+                <ModalDialog
+                  displayType="modal"
+                  visible={visible}
+                  withoutCloseButton={true}
+                  withoutBodyScroll={true}
+                  scale={true}
+                  onClose={this.onClose}
+                >
+                  <ModalDialog.Body>
+                    <SharingPanelLoaderModal />
+                  </ModalDialog.Body>
+                </ModalDialog>
+              </>
             ) : (
               <ModalDialog
                 displayType="modal"
