@@ -1,10 +1,8 @@
 import React from "react";
 import Scrollbar from "@appserver/components/scrollbar";
-import LoaderArticleBody from "./article-body-loader";
-const ArticleBody = ({ children, isLoading = false }) => {
-  return isLoading ? (
-    <LoaderArticleBody />
-  ) : (
+
+const ArticleBody = ({ children }) => {
+  return (
     <Scrollbar className="article-body__scrollbar" stype="mediumBlack">
       {children}
     </Scrollbar>

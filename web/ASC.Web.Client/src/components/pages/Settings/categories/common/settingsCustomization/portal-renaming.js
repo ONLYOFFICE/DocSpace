@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { withTranslation } from "react-i18next";
-import Loader from "@appserver/components/loader";
 import toastr from "@appserver/components/toast/toastr";
 import HelpButton from "@appserver/components/help-button";
 import FieldContainer from "@appserver/components/field-container";
@@ -19,10 +18,18 @@ import { StyledSettingsComponent, StyledScrollbar } from "./StyledSettings";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 import { setDocumentTitle } from "../../../../../../helpers/utils";
 import LoaderCustomization from "../sub-components/loaderCustomization";
+import withLoading from "../../../../../../HOCs/withLoading";
+const PortalRenaming = (props) => {
+  const {
+    t,
+    setPortalRename,
+    isMobileView,
+    tReady,
+    isLoaded,
+    setIsLoadedPortalRenaming,
+    isLoadedPage,
+  } = props;
 
-const PortalRenaming = ({ t, setPortalRename, isMobileView }) => {
-  // TODO: Change false
-  const [isLoadedData, setIsLoadedData] = useState(true);
   const [isLoadingPortalNameSave, setIsLoadingPortalNameSave] = useState(false);
 
   const portalNameFromSessionStorage = getFromSessionStorage("portalName");
@@ -45,6 +52,8 @@ const PortalRenaming = ({ t, setPortalRename, isMobileView }) => {
   const accountNameError = "Account name is empty";
   const lengthNameError =
     "The account name must be between 6 and 50 characters long";
+
+  const isLoadedSetting = isLoaded && tReady;
 
   useEffect(() => {
     setDocumentTitle(t("PortalRenaming"));
@@ -76,6 +85,10 @@ const PortalRenaming = ({ t, setPortalRename, isMobileView }) => {
         checkScrollSettingsBlock
       );
   }, []);
+
+  useEffect(() => {
+    if (isLoadedSetting) setIsLoadedPortalRenaming(isLoadedSetting);
+  }, [isLoadedSetting]);
 
   //TODO: Need a method to get the portal name
   const onSavePortalRename = () => {
@@ -187,9 +200,8 @@ const PortalRenaming = ({ t, setPortalRename, isMobileView }) => {
     </div>
   );
 
-  //return <LoaderCustomization portalRenaming={true} />;
-  return !isLoadedData ? (
-    <Loader className="pageLoader" type="rombs" size="40px" />
+  return !isLoadedPage ? (
+    <LoaderCustomization portalRenaming={true} />
   ) : (
     <StyledSettingsComponent
       hasScroll={hasScroll}
@@ -225,12 +237,16 @@ const PortalRenaming = ({ t, setPortalRename, isMobileView }) => {
   );
 };
 
-export default inject(({ auth, setup }) => {
+export default inject(({ auth, setup, common }) => {
   const { theme } = auth.settingsStore;
   const { setPortalRename } = setup;
-
+  const { isLoaded, setIsLoadedPortalRenaming } = common;
   return {
     theme,
     setPortalRename,
+    isLoaded,
+    setIsLoadedPortalRenaming,
   };
-})(withTranslation(["Settings", "Common"])(observer(PortalRenaming)));
+})(
+  withLoading(withTranslation(["Settings", "Common"])(observer(PortalRenaming)))
+);
