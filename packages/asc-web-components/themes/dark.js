@@ -127,14 +127,6 @@ const Dark = {
       medium: "0 32px",
     },
 
-    minWidth: {
-      extraSmall: "none",
-      small: "100px",
-      normalDesktop: "100px",
-      normalTouchscreen: "100px",
-      medium: "100px",
-    },
-
     color: {
       base: "#CCCCCC",
       baseHover: "#FAFAFA",
@@ -2452,6 +2444,13 @@ const Dark = {
     color: grayMaxLight,
     border: "1px solid #474747",
     borderBottom: "1px solid #474747",
+
+    tile: {
+      background: globalColors.black,
+      itemBackground: "#242424",
+      itemBorder: gray,
+      itemActiveBorder: "#eeeeee",
+    },
 
     fill: "#858585",
     hoverFill: "#eeeeee",

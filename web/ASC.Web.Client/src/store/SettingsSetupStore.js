@@ -10,9 +10,6 @@ import config from "../../package.json";
 class SettingsSetupStore {
   selectionStore = null;
   authStore = null;
-
-  isLoadingArticleSettings = false;
-
   isInit = false;
 
   common = {
@@ -334,8 +331,10 @@ class SettingsSetupStore {
     return api.settings.sendOwnerChange(id);
   };
 
-  setIsLoadingArticleSettings = (isLoading) => {
-    this.isLoadingArticleSettings = isLoading;
+  getCommonThirdPartyList = async () => {
+    const res = await api.settings.getCommonThirdPartyList();
+
+    this.setCommonThirdPartyList(res);
   };
 }
 

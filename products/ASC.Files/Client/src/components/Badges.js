@@ -11,6 +11,16 @@ export const StyledIcon = styled(IconButton)`
   ${commonIconsStyles}
 `;
 
+const StyledEditIcon = styled(IconButton)`
+  ${commonIconsStyles}
+
+  svg {
+    path {
+      fill: ${(props) => props.theme.filesSection.rowView.editingIconColor};
+    }
+  }
+`;
+
 const StyledWrapper = styled.div`
   display: flex;
   justify-content: center;
@@ -129,7 +139,7 @@ const Badges = ({
           />
         )}
       {isEditing && (
-        <StyledIcon
+        <StyledEditIcon
           iconName={iconEdit}
           className="badge icons-group is-editing tablet-badge tablet-edit"
           size={sizeBadge}

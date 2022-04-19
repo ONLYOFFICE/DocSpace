@@ -20,6 +20,7 @@ import { isSmallTablet } from "@appserver/components/utils/device";
 import checkScrollSettingsBlock from "../utils";
 import { StyledSettingsComponent, StyledScrollbar } from "./StyledSettings";
 import LoaderCustomization from "../sub-components/loaderCustomization";
+import withLoading from "../../../../../../HOCs/withLoading";
 
 let greetingTitleFromSessionStorage = "";
 let greetingTitleDefaultFromSessionStorage = "";
@@ -45,7 +46,6 @@ class WelcomePageSettings extends React.Component {
     setDocumentTitle(t("CustomTitlesWelcome"));
 
     this.state = {
-      isLoadedData: false,
       isLoading: false,
       greetingTitle: greetingTitleFromSessionStorage || greetingSettings,
       greetingTitleDefault:
@@ -61,15 +61,17 @@ class WelcomePageSettings extends React.Component {
 
   componentDidMount() {
     window.addEventListener("resize", this.checkInnerWidth);
-    showLoader();
-    this.setState({
-      isLoadedData: true,
-    });
-    hideLoader();
   }
 
   componentDidUpdate(prevProps, prevState) {
+    const { isLoaded, setIsLoadedWelcomePageSettings, tReady } = this.props;
+
     const { hasScroll } = this.state;
+
+    const isLoadedSetting = isLoaded && tReady;
+
+    if (isLoadedSetting) setIsLoadedWelcomePageSettings(isLoadedSetting);
+
     const checkScroll = checkScrollSettingsBlock();
 
     window.addEventListener("resize", checkScroll);
@@ -88,12 +90,6 @@ class WelcomePageSettings extends React.Component {
 
     if (settingsMobile) {
       settingsMobile.style.display = "none";
-    }
-
-    if (prevState.isLoadedData !== true) {
-      this.setState({
-        isLoadedData: true,
-      });
     }
 
     if (this.state.greetingTitleDefault) {
@@ -217,9 +213,8 @@ class WelcomePageSettings extends React.Component {
   };
 
   render() {
-    const { t, isMobileView } = this.props;
+    const { t, isMobileView, isLoadedPage } = this.props;
     const {
-      isLoadedData,
       greetingTitle,
       isLoadingGreetingSave,
       isLoadingGreetingRestore,
@@ -250,9 +245,8 @@ class WelcomePageSettings extends React.Component {
       </div>
     );
 
-    // return <LoaderCustomization welcomePage={true} />;
-    return !isLoadedData ? (
-      <Loader className="pageLoader" type="rombs" size="40px" />
+    return !isLoadedPage ? (
+      <LoaderCustomization welcomePage={true} />
     ) : (
       <StyledSettingsComponent
         hasScroll={hasScroll}
@@ -293,14 +287,21 @@ class WelcomePageSettings extends React.Component {
   }
 }
 
-export default inject(({ auth, setup }) => {
+export default inject(({ auth, setup, common }) => {
   const { greetingSettings, organizationName, theme } = auth.settingsStore;
   const { setGreetingTitle, restoreGreetingTitle } = setup;
+  const { isLoaded, setIsLoadedWelcomePageSettings } = common;
   return {
     theme,
     greetingSettings,
     organizationName,
     setGreetingTitle,
     restoreGreetingTitle,
+    isLoaded,
+    setIsLoadedWelcomePageSettings,
   };
-})(withTranslation(["Settings", "Common"])(observer(WelcomePageSettings)));
+})(
+  withLoading(
+    withTranslation(["Settings", "Common"])(observer(WelcomePageSettings))
+  )
+);

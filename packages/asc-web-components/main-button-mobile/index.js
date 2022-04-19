@@ -127,7 +127,6 @@ const MainButtonMobile = (props) => {
   };
 
   const onMainButtonClick = (e) => {
-    if (isOpen && ref.current.contains(e.target)) return;
     toggle(!isOpen);
   };
 
@@ -191,8 +190,8 @@ const MainButtonMobile = (props) => {
               />
             ))}
         </StyledProgressContainer>
-        <StyledButtonOptions isOpenButton={isOpenButton}>
-          {isOpenButton && buttonOptions
+        <StyledButtonOptions>
+          {buttonOptions
             ? buttonOptions.map((option) =>
                 option.isSeparator ? (
                   <div key={option.key} className="separator-wrapper">
@@ -213,20 +212,6 @@ const MainButtonMobile = (props) => {
               )
             : ""}
         </StyledButtonOptions>
-        {withButton && (
-          <StyledButtonWrapper
-            isUploading={isUploading}
-            isOpenButton={isOpenButton}
-          >
-            <Button
-              label={title}
-              className="action-mobile-button"
-              primary
-              size="medium"
-              onClick={onUploadClick}
-            />
-          </StyledButtonWrapper>
-        )}
       </div>
     );
   };
