@@ -28,7 +28,7 @@ const SharingPanelLoaderModal = ({ id, className, style, ...rest }) => {
         />
         <RectangleLoader
           className="rectangle-loader"
-          width={"448px"}
+          width={"368px"}
           height={"32px"}
         />
         <RectangleLoader width={"184px"} height={"20px"} />
