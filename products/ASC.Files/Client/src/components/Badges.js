@@ -9,6 +9,12 @@ import { Base } from "@appserver/components/themes";
 
 export const StyledIcon = styled(IconButton)`
   ${commonIconsStyles}
+
+  svg {
+    path {
+      fill: ${(props) => props.theme.filesSection.rowView.editingIconColor};
+    }
+  }
 `;
 
 const StyledWrapper = styled.div`
