@@ -24,181 +24,179 @@ using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 
-namespace ASC.Web.Studio.UserControls.Management.SingleSignOnSettings
+namespace ASC.Web.Studio.UserControls.Management.SingleSignOnSettings;
+[Serializable]
+public class SsoUserData
 {
-    [Serializable]
-    public class SsoUserData
+    private readonly UserManager _userManager;
+    private readonly TenantUtil _tenantUtil1;
+    public SsoUserData(
+        UserManager userManager,
+        TenantUtil tenantUtil)
     {
-        private readonly UserManager _userManager;
-        private readonly TenantUtil _tenantUtil1;
-        public SsoUserData(
-            UserManager userManager,
-            TenantUtil tenantUtil)
+        _userManager = userManager;
+        _tenantUtil1 = tenantUtil;
+    }
+
+    private const int MAX_NUMBER_OF_SYMBOLS = 64;
+
+    [DataMember(Name = "nameID")]
+    public string NameId { get; set; }
+
+    [DataMember(Name = "sessionID")]
+    public string SessionId { get; set; }
+
+    [DataMember(Name = "email")]
+    public string Email { get; set; }
+
+    [DataMember(Name = "firstName")]
+    public string FirstName { get; set; }
+
+    [DataMember(Name = "lastName")]
+    public string LastName { get; set; }
+
+    [DataMember(Name = "location")]
+    public string Location { get; set; }
+
+    [DataMember(Name = "phone")]
+    public string Phone { get; set; }
+
+    [DataMember(Name = "title")]
+    public string Title { get; set; }
+
+    public override string ToString()
+    {
+        return JsonSerializer.Serialize(this);
+    }
+
+    private const string MOB_PHONE = "mobphone";
+    private const string EXT_MOB_PHONE = "extmobphone";
+
+    public UserInfo ToUserInfo(bool checkExistance = false)
+    {
+        var firstName = TrimToLimit(FirstName);
+        var lastName = TrimToLimit(LastName);
+
+        if (string.IsNullOrEmpty(Email) || string.IsNullOrEmpty(firstName) || string.IsNullOrEmpty(lastName))
         {
-            _userManager = userManager;
-            _tenantUtil1 = tenantUtil;
+            return Constants.LostUser;
         }
 
-        private const int MAX_NUMBER_OF_SYMBOLS = 64;
+        var userInfo = Constants.LostUser;
 
-        [DataMember(Name = "nameID")]
-        public string NameId { get; set; }
-
-        [DataMember(Name = "sessionID")]
-        public string SessionId { get; set; }
-
-        [DataMember(Name = "email")]
-        public string Email { get; set; }
-
-        [DataMember(Name = "firstName")]
-        public string FirstName { get; set; }
-
-        [DataMember(Name = "lastName")]
-        public string LastName { get; set; }
-
-        [DataMember(Name = "location")]
-        public string Location { get; set; }
-
-        [DataMember(Name = "phone")]
-        public string Phone { get; set; }
-
-        [DataMember(Name = "title")]
-        public string Title { get; set; }
-
-        public override string ToString()
+        if (checkExistance)
         {
-            return JsonSerializer.Serialize(this);
-        }
-
-        private const string MOB_PHONE = "mobphone";
-        private const string EXT_MOB_PHONE = "extmobphone";
-
-        public UserInfo ToUserInfo(bool checkExistance = false)
-        {
-            var firstName = TrimToLimit(FirstName);
-            var lastName = TrimToLimit(LastName);
-
-            if (string.IsNullOrEmpty(Email) || string.IsNullOrEmpty(firstName) || string.IsNullOrEmpty(lastName))
-            {
-                return Constants.LostUser;
-            }
-
-            var userInfo = Constants.LostUser;
-
-            if (checkExistance)
-            {
-                userInfo = _userManager.GetSsoUserByNameId(NameId);
-
-                if (Equals(userInfo, Constants.LostUser))
-                {
-                    userInfo = _userManager.GetUserByEmail(Email);
-                }
-            }
+            userInfo = _userManager.GetSsoUserByNameId(NameId);
 
             if (Equals(userInfo, Constants.LostUser))
             {
-                userInfo = new UserInfo
-                {
-                    Email = Email,
-                    FirstName = firstName,
-                    LastName = lastName,
-                    SsoNameId = NameId,
-                    SsoSessionId = SessionId,
-                    Location = Location,
-                    Title = Title,
-                    ActivationStatus = EmployeeActivationStatus.NotActivated,
-                    WorkFromDate = _tenantUtil1.DateTimeNow()
-                };
-
-                if (string.IsNullOrEmpty(Phone))
-                    return userInfo;
-
-                var contacts = new List<string> { EXT_MOB_PHONE, Phone };
-                userInfo.ContactsList = contacts;
+                userInfo = _userManager.GetUserByEmail(Email);
             }
-            else
-            {
-                userInfo.Email = Email;
-                userInfo.FirstName = firstName;
-                userInfo.LastName = lastName;
-                userInfo.SsoNameId = NameId;
-                userInfo.SsoSessionId = SessionId;
-                userInfo.Location = Location;
-                userInfo.Title = Title;
-
-                var portalUserContacts = userInfo.ContactsList;
-
-                var newContacts = new List<string>();
-                var phones = new List<string>();
-                var otherContacts = new List<string>();
-
-                for (int i = 0, n = portalUserContacts.Count; i < n; i += 2)
-                {
-                    if (i + 1 >= portalUserContacts.Count)
-                        continue;
-
-                    var type = portalUserContacts[i];
-                    var value = portalUserContacts[i + 1];
-
-                    switch (type)
-                    {
-                        case EXT_MOB_PHONE:
-                            break;
-                        case MOB_PHONE:
-                            phones.Add(value);
-                            break;
-                        default:
-                            otherContacts.Add(type);
-                            otherContacts.Add(value);
-                            break;
-                    }
-                }
-
-                if (!string.IsNullOrEmpty(Phone))
-                {
-                    if (phones.Exists(p => p.Equals(Phone)))
-                    {
-                        phones.Remove(Phone);
-                    }
-
-                    newContacts.Add(EXT_MOB_PHONE);
-                    newContacts.Add(Phone);
-                }
-
-                phones.ForEach(p =>
-                {
-                    newContacts.Add(MOB_PHONE);
-                    newContacts.Add(p);
-                });
-
-                newContacts.AddRange(otherContacts);
-
-                userInfo.ContactsList = newContacts;
-            }
-
-            return userInfo;
         }
 
-        private static string TrimToLimit(string str, int limit = MAX_NUMBER_OF_SYMBOLS)
+        if (Equals(userInfo, Constants.LostUser))
         {
-            if (string.IsNullOrEmpty(str))
-                return "";
+            userInfo = new UserInfo
+            {
+                Email = Email,
+                FirstName = firstName,
+                LastName = lastName,
+                SsoNameId = NameId,
+                SsoSessionId = SessionId,
+                Location = Location,
+                Title = Title,
+                ActivationStatus = EmployeeActivationStatus.NotActivated,
+                WorkFromDate = _tenantUtil1.DateTimeNow()
+            };
 
-            var newStr = str.Trim();
+            if (string.IsNullOrEmpty(Phone))
+                return userInfo;
 
-            return newStr.Length > limit
-                    ? newStr.Substring(0, MAX_NUMBER_OF_SYMBOLS)
-                    : newStr;
+            var contacts = new List<string> { EXT_MOB_PHONE, Phone };
+            userInfo.ContactsList = contacts;
         }
+        else
+        {
+            userInfo.Email = Email;
+            userInfo.FirstName = firstName;
+            userInfo.LastName = lastName;
+            userInfo.SsoNameId = NameId;
+            userInfo.SsoSessionId = SessionId;
+            userInfo.Location = Location;
+            userInfo.Title = Title;
+
+            var portalUserContacts = userInfo.ContactsList;
+
+            var newContacts = new List<string>();
+            var phones = new List<string>();
+            var otherContacts = new List<string>();
+
+            for (int i = 0, n = portalUserContacts.Count; i < n; i += 2)
+            {
+                if (i + 1 >= portalUserContacts.Count)
+                    continue;
+
+                var type = portalUserContacts[i];
+                var value = portalUserContacts[i + 1];
+
+                switch (type)
+                {
+                    case EXT_MOB_PHONE:
+                        break;
+                    case MOB_PHONE:
+                        phones.Add(value);
+                        break;
+                    default:
+                        otherContacts.Add(type);
+                        otherContacts.Add(value);
+                        break;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(Phone))
+            {
+                if (phones.Exists(p => p.Equals(Phone)))
+                {
+                    phones.Remove(Phone);
+                }
+
+                newContacts.Add(EXT_MOB_PHONE);
+                newContacts.Add(Phone);
+            }
+
+            phones.ForEach(p =>
+            {
+                newContacts.Add(MOB_PHONE);
+                newContacts.Add(p);
+            });
+
+            newContacts.AddRange(otherContacts);
+
+            userInfo.ContactsList = newContacts;
+        }
+
+        return userInfo;
     }
 
-    [Serializable]
-    public class LogoutSsoUserData
+    private static string TrimToLimit(string str, int limit = MAX_NUMBER_OF_SYMBOLS)
     {
-        [DataMember(Name = "nameID")]
-        public string NameId { get; set; }
+        if (string.IsNullOrEmpty(str))
+            return "";
 
-        [DataMember(Name = "sessionID")]
-        public string SessionId { get; set; }
+        var newStr = str.Trim();
+
+        return newStr.Length > limit
+                ? newStr.Substring(0, MAX_NUMBER_OF_SYMBOLS)
+                : newStr;
     }
+}
+
+[Serializable]
+public class LogoutSsoUserData
+{
+    [DataMember(Name = "nameID")]
+    public string NameId { get; set; }
+
+    [DataMember(Name = "sessionID")]
+    public string SessionId { get; set; }
 }
