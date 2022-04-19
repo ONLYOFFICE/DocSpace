@@ -2430,7 +2430,6 @@ const Base = {
   },
 
   filesEditingWrapper: {
-    tileBackground: white,
     color: black,
     border: `1px solid ${grayMid}`,
     borderBottom: `1px solid ${grayLightMid}`,
