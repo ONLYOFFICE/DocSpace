@@ -28,25 +28,12 @@ const HomeContainer = styled.div`
     align-items: center;
 
     .home-modules {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      grid-gap: 26px ${isMobileOnly ? "31px" : "45px"};
-
-      ${(isTablet || isMobile) &&
-      css`
-        display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
-      `}
+      display: flex;
+      justify-content: center;
+      gap: ${isMobileOnly ? "31px" : "45px"};
 
       .home-module {
         z-index: 42;
-      }
-
-      @media (max-width: 400px) {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
       }
     }
 
