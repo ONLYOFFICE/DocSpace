@@ -285,26 +285,6 @@ public class GlobalFolder
     internal static readonly IDictionary<int, int> ProjectsRootFolderCache =
         new ConcurrentDictionary<int, int>(); /*Use SYNCHRONIZED for cross thread blocks*/
 
-    public async ValueTask<int> GetFolderVirtualRooms(IDaoFactory daoFactory)
-    {
-        if (!_coreBaseSettings.DocSpace)
-        {
-            return default;
-        }
-
-        return await daoFactory.GetFolderDao<int>().GetFolderIDVirtualRooms(true);
-    }
-
-    public async ValueTask<int> GetFolderArchive(IDaoFactory daoFactory)
-    {
-        if (!_coreBaseSettings.DocSpace)
-        {
-            return default;
-        }
-
-        return await daoFactory.GetFolderDao<int>().GetFolderIDArchive(true);
-    }
-
     public async ValueTask<int> GetFolderProjectsAsync(IDaoFactory daoFactory)
     {
         if (_coreBaseSettings.Personal)
@@ -331,6 +311,47 @@ public class GlobalFolder
     public async ValueTask<T> GetFolderProjectsAsync<T>(IDaoFactory daoFactory)
     {
         return (T)Convert.ChangeType(await GetFolderProjectsAsync(daoFactory), typeof(T));
+    }
+
+    internal static readonly ConcurrentDictionary<string, int> DocSpaceFolderCache = 
+        new ConcurrentDictionary<string, int>();
+
+    public async ValueTask<int> GetFolderVirtualRooms(IDaoFactory daoFactory)
+    {
+        if (!_coreBaseSettings.DocSpace)
+        {
+            return default;
+        }
+
+        var key = $"archive/{_tenantManager.GetCurrentTenant().Id}";
+
+        if (!DocSpaceFolderCache.TryGetValue(key, out var result))
+        {
+            result = await daoFactory.GetFolderDao<int>().GetFolderIDVirtualRooms(true);
+
+            DocSpaceFolderCache[key] = result;
+        }
+
+        return result;
+    }
+
+    public async ValueTask<int> GetFolderArchive(IDaoFactory daoFactory)
+    {
+        if (!_coreBaseSettings.DocSpace)
+        {
+            return default;
+        }
+
+        var key = $"vrooms/{_tenantManager.GetCurrentTenant().Id}";
+
+        if (!DocSpaceFolderCache.TryGetValue(key, out var result))
+        {
+            result = await daoFactory.GetFolderDao<int>().GetFolderIDArchive(true);
+
+            DocSpaceFolderCache[key] = result;
+        }
+
+        return result;
     }
 
     internal static readonly ConcurrentDictionary<string, Lazy<int>> UserRootFolderCache =
