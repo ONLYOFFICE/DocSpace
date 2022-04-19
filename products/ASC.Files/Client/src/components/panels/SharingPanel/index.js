@@ -1,5 +1,6 @@
 import React from "react";
 import Backdrop from "@appserver/components/backdrop";
+import Button from "@appserver/components/button";
 
 import Aside from "@appserver/components/aside";
 
@@ -16,8 +17,9 @@ import { isMobile, isMobileOnly } from "react-device-detect";
 import Loaders from "@appserver/common/components/Loaders";
 import withLoader from "../../../HOCs/withLoader";
 import ModalDialog from "@appserver/components/modal-dialog";
+import EmbeddingBody from "../EmbeddingPanel/EmbeddingBody";
 
-import { StyledContent } from "./StyledSharingPanel";
+import { StyledContent, StyledModalFooter } from "./StyledSharingPanel";
 
 import Header from "./Header";
 import Body from "./Body";
@@ -45,7 +47,7 @@ class SharingPanelComponent extends React.Component {
       filesOwnerId: null,
       isUpdated: false,
       isLoading: false,
-
+      showEmbeddingContent: false,
       baseExternalAccess: null,
     };
 
@@ -74,6 +76,7 @@ class SharingPanelComponent extends React.Component {
 
     this.setState({
       shareDataItems: newDataItems,
+      showEmbeddingContent: false,
     });
   };
 
@@ -250,6 +253,12 @@ class SharingPanelComponent extends React.Component {
       shareLink: link,
     });
 
+  onShowEmbeddingContainer = (link) =>
+    this.setState({
+      showEmbeddingContent: !this.state.showEmbeddingContent,
+      shareLink: link,
+    });
+
   onChangeItemAccess = (e) => {
     const { isPersonal } = this.props;
     const id = e.currentTarget.dataset.id;
@@ -396,6 +405,7 @@ class SharingPanelComponent extends React.Component {
     } = this.props;
 
     setSharingPanelVisible(false);
+
     setSelection([]);
 
     selectUploadedFile([]);
@@ -458,6 +468,7 @@ class SharingPanelComponent extends React.Component {
       documentTitle,
       sharingPanelVisible,
       isPrivacy,
+      theme,
     } = this.props;
     const {
       isNotifyUsers,
@@ -471,7 +482,7 @@ class SharingPanelComponent extends React.Component {
       //showPanel,
       accessOptions,
       externalAccessOptions,
-
+      showEmbeddingContent,
       isLoading,
     } = this.state;
 
@@ -519,112 +530,180 @@ class SharingPanelComponent extends React.Component {
       ...shareGroups,
       ...shareUsers
     );
+
     return (
-      <StyledAsidePanel visible={visible}>
-        <Backdrop
-          onClick={this.onClose}
-          visible={visible}
-          zIndex={zIndex}
-          isAside={true}
-        />
-        <Aside
-          className="header_aside-panel"
-          visible={visible}
-          withoutBodyScroll={true}
-        >
-          {!isLoading ? (
-            <StyledContent isNotifyUsers={isNotifyUsers}>
-              <Header
-                t={t}
-                uploadPanelVisible={uploadPanelVisible}
-                isPersonal={isPersonal}
-                isEncrypted={isEncrypted}
+      <>
+        {isPersonal ? (
+          <>
+            {isLoading ? (
+              <></>
+            ) : (
+              <ModalDialog
+                displayType="modal"
+                visible={visible}
+                withoutCloseButton={true}
+                withoutBodyScroll={true}
+                scale={true}
                 onClose={this.onClose}
-                onShowUsersPanel={this.onShowUsersPanel}
-                onShowGroupsPanel={this.onShowGroupsPanel}
-              />
+              >
+                <ModalDialog.Header>
+                  <Header
+                    t={t}
+                    uploadPanelVisible={uploadPanelVisible}
+                    isPersonal={isPersonal}
+                    isEncrypted={isEncrypted}
+                    onClose={this.onClose}
+                    onShowUsersPanel={this.onShowUsersPanel}
+                    onShowGroupsPanel={this.onShowGroupsPanel}
+                  />
+                </ModalDialog.Header>
 
-              <Body
-                t={t}
-                isPersonal={isPersonal}
-                selection={selection}
-                externalItem={externalItem[0]}
-                owner={owner[0]}
-                shareGroups={shareGroups}
-                shareUsers={shareUsers}
-                isMyId={isMyId}
-                onToggleLink={this.onToggleLink}
-                onShowEmbeddingPanel={this.onShowEmbeddingPanel}
-                onChangeItemAccess={this.onChangeItemAccess}
+                <ModalDialog.Body>
+                  <Body
+                    t={t}
+                    isPersonal={isPersonal}
+                    selection={selection}
+                    externalItem={externalItem[0]}
+                    onToggleLink={this.onToggleLink}
+                    onShowEmbeddingPanel={this.onShowEmbeddingContainer}
+                    onChangeItemAccess={this.onChangeItemAccess}
+                    accessOptions={accessOptions}
+                    externalAccessOptions={externalAccessOptions}
+                  />
+
+                  {showEmbeddingContent && (
+                    <EmbeddingBody theme={theme} embeddingLink={shareLink} />
+                  )}
+                </ModalDialog.Body>
+
+                <ModalDialog.Footer>
+                  <StyledModalFooter>
+                    <Button
+                      size={"normal"}
+                      label={t("Common:SaveButton")}
+                      primary
+                      onClick={this.onSaveClick}
+                      scale
+                    />
+                    <Button
+                      size={"normal"}
+                      label={t("Common:CancelButton")}
+                      scale
+                      onClick={this.onClose}
+                    />
+                  </StyledModalFooter>
+                </ModalDialog.Footer>
+              </ModalDialog>
+            )}
+          </>
+        ) : (
+          <StyledAsidePanel visible={visible}>
+            <Backdrop
+              onClick={this.onClose}
+              visible={visible}
+              zIndex={zIndex}
+              isAside={true}
+            />
+            <Aside
+              className="header_aside-panel"
+              visible={visible}
+              withoutBodyScroll={true}
+            >
+              {!isLoading ? (
+                <StyledContent isNotifyUsers={isNotifyUsers}>
+                  <Header
+                    t={t}
+                    uploadPanelVisible={uploadPanelVisible}
+                    isPersonal={isPersonal}
+                    isEncrypted={isEncrypted}
+                    onClose={this.onClose}
+                    onShowUsersPanel={this.onShowUsersPanel}
+                    onShowGroupsPanel={this.onShowGroupsPanel}
+                  />
+
+                  <Body
+                    t={t}
+                    isPersonal={isPersonal}
+                    selection={selection}
+                    externalItem={externalItem[0]}
+                    owner={owner[0]}
+                    shareGroups={shareGroups}
+                    shareUsers={shareUsers}
+                    isMyId={isMyId}
+                    onToggleLink={this.onToggleLink}
+                    onShowEmbeddingPanel={this.onShowEmbeddingPanel}
+                    onChangeItemAccess={this.onChangeItemAccess}
+                    accessOptions={accessOptions}
+                    externalAccessOptions={externalAccessOptions}
+                    canShareOwnerChange={canShareOwnerChange}
+                    internalLink={internalLink}
+                    onRemoveUserClick={this.onRemoveUserItemClick}
+                    onShowChangeOwnerPanel={this.onShowChangeOwnerPanel}
+                    documentTitle={documentTitle}
+                  />
+
+                  <Footer
+                    t={t}
+                    isPersonal={isPersonal}
+                    message={message}
+                    onChangeMessage={this.onChangeMessage}
+                    isNotifyUsers={isNotifyUsers}
+                    onNotifyUsersChange={this.onNotifyUsersChange}
+                    onSaveClick={this.onSaveClick}
+                  />
+                </StyledContent>
+              ) : (
+                <SharingPanelLoader />
+              )}
+            </Aside>
+
+            {showAddUsersPanel && (
+              <AddUsersPanel
+                onSharingPanelClose={this.onClose}
+                onClose={this.onShowUsersPanel}
+                visible={showAddUsersPanel}
+                shareDataItems={filteredShareDataItems}
+                setShareDataItems={this.setShareDataItems}
+                groupsCaption={groupsCaption}
                 accessOptions={accessOptions}
-                externalAccessOptions={externalAccessOptions}
-                canShareOwnerChange={canShareOwnerChange}
-                internalLink={internalLink}
-                onRemoveUserClick={this.onRemoveUserItemClick}
-                onShowChangeOwnerPanel={this.onShowChangeOwnerPanel}
-                documentTitle={documentTitle}
+                isMultiSelect
+                isEncrypted={isEncrypted}
               />
+            )}
 
-              <Footer
-                t={t}
-                isPersonal={isPersonal}
-                message={message}
-                onChangeMessage={this.onChangeMessage}
-                isNotifyUsers={isNotifyUsers}
-                onNotifyUsersChange={this.onNotifyUsersChange}
-                onSaveClick={this.onSaveClick}
+            {showAddGroupsPanel && (
+              <AddGroupsPanel
+                onSharingPanelClose={this.onClose}
+                onClose={this.onShowGroupsPanel}
+                visible={showAddGroupsPanel}
+                shareDataItems={filteredShareDataItems}
+                setShareDataItems={this.setShareDataItems}
+                accessOptions={accessOptions}
+                isMultiSelect
               />
-            </StyledContent>
-          ) : (
-            <SharingPanelLoader />
-          )}
-        </Aside>
+            )}
 
-        {showAddUsersPanel && (
-          <AddUsersPanel
-            onSharingPanelClose={this.onClose}
-            onClose={this.onShowUsersPanel}
-            visible={showAddUsersPanel}
-            shareDataItems={filteredShareDataItems}
-            setShareDataItems={this.setShareDataItems}
-            groupsCaption={groupsCaption}
-            accessOptions={accessOptions}
-            isMultiSelect
-            isEncrypted={isEncrypted}
-          />
-        )}
+            {showChangeOwnerPanel && (
+              <AddUsersPanel
+                onSharingPanelClose={this.onClose}
+                onClose={this.onShowChangeOwnerPanel}
+                visible={showChangeOwnerPanel}
+                shareDataItems={filteredShareDataItems}
+                setShareDataItems={this.setShareDataItems}
+              />
+            )}
 
-        {showAddGroupsPanel && (
-          <AddGroupsPanel
-            onSharingPanelClose={this.onClose}
-            onClose={this.onShowGroupsPanel}
-            visible={showAddGroupsPanel}
-            shareDataItems={filteredShareDataItems}
-            setShareDataItems={this.setShareDataItems}
-            accessOptions={accessOptions}
-            isMultiSelect
-          />
+            {showEmbeddingPanel && (
+              <EmbeddingPanel
+                visible={showEmbeddingPanel}
+                onSharingPanelClose={this.onClose}
+                onClose={this.onShowEmbeddingPanel}
+                embeddingLink={shareLink}
+              />
+            )}
+          </StyledAsidePanel>
         )}
-
-        {showChangeOwnerPanel && (
-          <AddUsersPanel
-            onSharingPanelClose={this.onClose}
-            onClose={this.onShowChangeOwnerPanel}
-            visible={showChangeOwnerPanel}
-            shareDataItems={filteredShareDataItems}
-            setShareDataItems={this.setShareDataItems}
-          />
-        )}
-
-        {showEmbeddingPanel && (
-          <EmbeddingPanel
-            visible={showEmbeddingPanel}
-            onSharingPanelClose={this.onClose}
-            onClose={this.onShowEmbeddingPanel}
-            embeddingLink={shareLink}
-          />
-        )}
-      </StyledAsidePanel>
+      </>
     );
   }
 }

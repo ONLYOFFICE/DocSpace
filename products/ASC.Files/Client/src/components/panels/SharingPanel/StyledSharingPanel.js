@@ -21,9 +21,10 @@ const StyledHeaderContent = styled.div`
   max-width: 100%;
   height: 53px;
 
-  border-bottom: ${(props) => props.theme.filesPanels.sharing.borderBottom};
+  border-bottom: ${(props) =>
+    props.isPersonal ? "none" : props.theme.filesPanels.sharing.borderBottom};
 
-  padding: 0 16px;
+  padding: ${(props) => (props.isPersonal ? "0 4px" : "0 16px")};
 
   box-sizing: border-box;
 
@@ -105,9 +106,10 @@ const StyledBodyContent = styled.div`
 const StyledExternalLink = styled.div`
   width: 100%;
 
-  padding: 20px 16px;
+  padding: ${(props) => (props.isPersonal ? "8px 4px" : "20px 16px")};
 
-  border-bottom: ${(props) => props.theme.filesPanels.sharing.borderBottom};
+  border-bottom: ${(props) =>
+    props.isPersonal ? "none" : props.theme.filesPanels.sharing.borderBottom};
 
   box-sizing: border-box;
 
@@ -329,6 +331,22 @@ const StyledFooterContent = styled.div`
 
 StyledFooterContent.defaultProps = { theme: Base };
 
+const StyledModalFooter = styled.div`
+  width: 100%;
+
+  padding: 16px 4px 4px;
+
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  button:first-child {
+    margin-right: 8px;
+  }
+`;
+
 export {
   StyledContent,
   StyledHeaderContent,
@@ -337,4 +355,5 @@ export {
   StyledInternalLink,
   StyledItem,
   StyledFooterContent,
+  StyledModalFooter,
 };

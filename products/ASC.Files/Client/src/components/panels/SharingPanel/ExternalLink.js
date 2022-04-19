@@ -29,6 +29,7 @@ const ExternalLink = ({
   isOpen,
   onChangeItemAccess,
   style,
+  isPersonal,
 }) => {
   const [shareLink, setShareLink] = React.useState("");
   const [shareActionOpen, setShareActionOpen] = React.useState(false);
@@ -117,7 +118,7 @@ const ExternalLink = ({
   ];
 
   return (
-    <StyledExternalLink style={style}>
+    <StyledExternalLink isPersonal={isPersonal} style={style}>
       <div className="external-link__base-line">
         <Text className="external-link__text" noSelect={true} truncate={true}>
           {t("ExternalLink")}

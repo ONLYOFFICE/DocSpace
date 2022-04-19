@@ -43,7 +43,10 @@ const Header = ({
   }, [onShowGroupsPanel]);
 
   return (
-    <StyledHeaderContent className="sharing_panel-header-container">
+    <StyledHeaderContent
+      isPersonal={isPersonal}
+      className="sharing_panel-header-container"
+    >
       <div className="sharing_panel-header-info">
         {uploadPanelVisible && (
           <IconButton
@@ -53,7 +56,11 @@ const Header = ({
             onClick={onClose}
           />
         )}
-        <Heading className="sharing_panel-header" size="medium" truncate>
+        <Heading
+          className="sharing_panel-header"
+          size="medium"
+          truncate={!isPersonal}
+        >
           {t("SharingSettingsTitle")}
         </Heading>
       </div>
