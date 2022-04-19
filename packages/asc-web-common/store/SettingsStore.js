@@ -250,8 +250,13 @@ class SettingsStore {
     this.isLoaded = isLoaded;
   };
 
+  setCultures = (cultures) => {
+    this.cultures = cultures;
+  };
+
   getPortalCultures = async () => {
-    this.cultures = await api.settings.getPortalCultures();
+    const cultures = await api.settings.getPortalCultures();
+    this.setCultures(cultures);
   };
 
   setIsEncryptionSupport = (isEncryptionSupport) => {
