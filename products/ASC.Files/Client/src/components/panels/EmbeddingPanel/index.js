@@ -22,7 +22,7 @@ class EmbeddingPanelComponent extends React.Component {
   };
 
   render() {
-    const { visible, t, theme } = this.props;
+    const { visible, t, theme, embeddingLink } = this.props;
     const zIndex = 310;
 
     //console.log("EmbeddingPanel render");
@@ -54,7 +54,7 @@ class EmbeddingPanelComponent extends React.Component {
               </div>
             </StyledHeaderContent>
 
-            <EmbeddingBody theme={theme} />
+            <EmbeddingBody embeddingLink={embeddingLink} theme={theme} />
           </StyledContent>
         </Aside>
       </StyledEmbeddingPanel>
