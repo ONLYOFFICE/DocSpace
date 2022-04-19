@@ -114,13 +114,14 @@ class DropDown extends React.PureComponent {
 
     const rects = this.dropDownRef.current.getBoundingClientRect();
     const parentRects = forwardedRef?.current?.getBoundingClientRect();
+
     const container = DomHelpers.getViewport();
 
     const dimensions = parentRects
       ? {
           toTopCorner: parentRects.top,
           parentHeight: parentRects.height,
-          containerHeight: parentRects.top,
+          containerHeight: !parentRects.top,
         }
       : {
           toTopCorner: rects.top,
