@@ -58,19 +58,6 @@ const StyledHeader = styled.div`
   display: flex;
   align-items: center;
   border-bottom: ${(props) => props.theme.modalDialog.header.borderBottom};
-
-  position: relative;
-
-  ${(props) =>
-    props.isPersonal &&
-    css`
-      width: 100%;
-      margin-left: -12px;
-      margin-right: 12px;
-
-      padding-left: 12px;
-      padding-right: 12px;
-    `}
 `;
 StyledHeader.defaultProps = { theme: Base };
 
@@ -84,8 +71,7 @@ const CloseButton = styled(CrossSidebarIcon)`
   min-height: ${(props) => props.theme.modalDialog.closeButton.minHeight};
 
   right: ${(props) => props.theme.modalDialog.closeButton.right};
-  top: 50%;
-  transform: translate(0, -50%);
+  top: ${(props) => props.theme.modalDialog.closeButton.top};
 
   &:hover {
     path {
