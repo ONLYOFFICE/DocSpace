@@ -223,6 +223,7 @@ const Form = (props) => {
     if (!userName) {
       hasError = true;
       setIdentifierValid(false);
+      setIsEmailErrorShow(true);
     }
 
     const pass = password.trim();
@@ -252,6 +253,7 @@ const Form = (props) => {
         } else history.push(url, { user, hash });
       })
       .catch((error) => {
+        setIsEmailErrorShow(true);
         setErrorText(error);
         setPasswordValid(!error);
         setIsLoading(false);
@@ -357,7 +359,7 @@ const Form = (props) => {
   };
 
   const onBlurEmail = () => {
-    setIsEmailErrorShow(true);
+    !identifierValid && setIsEmailErrorShow(true);
   };
 
   //console.log("Login render");
@@ -411,7 +413,7 @@ const Form = (props) => {
               className="form-field"
               isVertical={true}
               labelVisible={false}
-              hasError={(isEmailErrorShow && !identifierValid) || errorText}
+              hasError={isEmailErrorShow}
               errorMessage={
                 errorText ? t(`Common:${errorText}`) : t("Common:RequiredField")
               } //TODO: Add wrong login server error
@@ -420,10 +422,7 @@ const Form = (props) => {
                 id="login"
                 name="login"
                 type="email"
-                hasError={
-                  (isEmailErrorShow && !identifierValid) ||
-                  (errorText && errorText.length > 0)
-                }
+                hasError={isEmailErrorShow}
                 value={identifier}
                 placeholder={t("RegistrationEmailWatermark")}
                 size="large"
