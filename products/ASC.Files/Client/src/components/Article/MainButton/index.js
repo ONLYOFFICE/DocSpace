@@ -14,6 +14,7 @@ import { FileAction } from "@appserver/common/constants";
 import { encryptionUploadDialog } from "../../../helpers/desktop";
 
 import MobileView from "./MobileView";
+import withLoader from "../../../HOCs/withLoader";
 
 const ArticleMainButtonContent = (props) => {
   const {
@@ -232,8 +233,6 @@ const ArticleMainButtonContent = (props) => {
               />
             )}
         </>
-      ) : isArticleLoading ? (
-        <Loaders.ArticleButton />
       ) : (
         <MainButton
           isDisabled={isDisabled ? isDisabled : !canCreate}
@@ -313,4 +312,8 @@ export default inject(
       firstLoad,
     };
   }
-)(withTranslation(["Article", "Common"])(observer(ArticleMainButtonContent)));
+)(
+  withTranslation(["Article", "Common"])(
+    withLoader(observer(ArticleMainButtonContent))(<Loaders.ArticleButton />)
+  )
+);
