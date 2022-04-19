@@ -155,7 +155,6 @@ class ArticleBodyContent extends React.Component {
     const items = this.catalogItems();
     const { isLoadedPage } = this.props;
     const commonSettings = location.pathname.includes("common");
-    // TODO: styles fix
 
     const showLoader = commonSettings ? !isLoadedPage : false;
 
