@@ -243,7 +243,8 @@ export default withRouter(
     } = settingsStore;
     const { user, userIsUpdate, setUserIsUpdate } = userStore;
     const modules = auth.availableModules;
-    const settingsModule = modules.find((module) => module.id === "settings");
+    const settingsModule =
+      modules.find((module) => module.id === "settings") && !isPersonal;
 
     return {
       isPersonal,
