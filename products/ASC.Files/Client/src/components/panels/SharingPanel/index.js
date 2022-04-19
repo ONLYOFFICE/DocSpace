@@ -420,10 +420,6 @@ class SharingPanelComponent extends React.Component {
     this.getShareData();
 
     document.addEventListener("keyup", this.onKeyPress);
-
-    window.onpopstate = () => {
-      this.onClose();
-    };
   }
 
   componentWillUnmount() {
