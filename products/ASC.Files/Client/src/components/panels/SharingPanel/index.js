@@ -561,6 +561,7 @@ class SharingPanelComponent extends React.Component {
                 scale={true}
                 onClose={this.onClose}
                 width={"400px"}
+                modalBodyPadding="12px 0 0"
               >
                 <ModalDialog.Header>
                   <Header

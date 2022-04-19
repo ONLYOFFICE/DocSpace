@@ -111,7 +111,12 @@ const StyledBodyContent = styled.div`
 const StyledExternalLink = styled.div`
   width: 100%;
 
-  padding: ${(props) => (props.isPersonal ? "8px 4px" : "20px 16px")};
+  padding: ${(props) =>
+    props.isPersonal
+      ? props.isOpen
+        ? "8px 4px 4px"
+        : "8px 4px 20px"
+      : "20px 16px"};
 
   border-bottom: ${(props) =>
     props.isPersonal ? "none" : props.theme.filesPanels.sharing.borderBottom};
@@ -339,7 +344,7 @@ StyledFooterContent.defaultProps = { theme: Base };
 const StyledModalFooter = styled.div`
   width: 100%;
 
-  padding: 12px 4px 4px;
+  padding: 16px 4px 4px;
 
   box-sizing: border-box;
 

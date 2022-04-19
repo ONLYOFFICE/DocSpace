@@ -118,7 +118,7 @@ const ExternalLink = ({
   ];
 
   return (
-    <StyledExternalLink isPersonal={isPersonal} style={style}>
+    <StyledExternalLink isPersonal={isPersonal} isOpen={isOpen} style={style}>
       <div className="external-link__base-line">
         <Text className="external-link__text" noSelect={true} truncate={true}>
           {t("ExternalLink")}
