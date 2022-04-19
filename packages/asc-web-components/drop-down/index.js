@@ -352,6 +352,7 @@ DropDownContainer.propTypes = {
   isDefaultMode: PropTypes.bool,
   /** Needed to open correctly people and group selector when the section width is small */
   smallSectionWidth: PropTypes.bool,
+  /** It is necessary when we explicitly set the direction, disables check position */
   fixedDirection: PropTypes.bool,
 };
 
