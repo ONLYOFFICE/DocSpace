@@ -11,7 +11,10 @@ const StyledContainer = styled.div`
 
 const StyledHeader = styled.div`
   width: 100%;
-  padding: ${(props) => (props.isPersonal ? "12px 4px" : "12px 16px")};
+  padding: ${(props) => (props.isPersonal ? "12px 16px" : "12px 16px")};
+
+  margin-left: -12px;
+  margin-right: 12px;
 
   display: flex;
   align-items: center;
