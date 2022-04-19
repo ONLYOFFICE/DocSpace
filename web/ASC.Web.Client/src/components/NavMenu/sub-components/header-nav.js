@@ -121,14 +121,15 @@ const HeaderNav = ({
     settingsModule && useCallback(() => history.push(settingsUrl), []);
 
   const getCurrentUserActions = useCallback(() => {
-    const settings = settingsModule
-      ? {
-          key: "SettingsBtn",
-          label: t("Common:Settings"),
-          onClick: onSettingsClick,
-          url: settingsUrl,
-        }
-      : null;
+    const settings =
+      settingsModule && !isPersonal
+        ? {
+            key: "SettingsBtn",
+            label: t("Common:Settings"),
+            onClick: onSettingsClick,
+            url: settingsUrl,
+          }
+        : null;
 
     const actions = [
       {

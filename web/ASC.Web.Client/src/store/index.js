@@ -4,12 +4,14 @@ import WizardStore from "./WizardStore";
 import SettingsSetupStore from "./SettingsSetupStore";
 import ConfirmStore from "./ConfirmStore";
 import BackupStore from "./BackupStore";
+import CommonStore from "./CommonStore";
 
 const paymentStore = new PaymentStore();
 const wizardStore = new WizardStore();
 const setupStore = new SettingsSetupStore();
 const confirmStore = new ConfirmStore();
 const backupStore = new BackupStore();
+const commonStore = new CommonStore();
 
 const store = {
   auth: authStore,
@@ -18,6 +20,7 @@ const store = {
   setup: setupStore,
   confirm: confirmStore,
   backup: backupStore,
+  common: commonStore,
 };
 
 export default store;

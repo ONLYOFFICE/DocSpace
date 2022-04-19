@@ -12,8 +12,9 @@ import {
   StyledSubmenuItems,
   StyledSubmenuItemText,
 } from "./styled-submenu";
+import LoaderSubmenu from "./loader";
 
-const Submenu = ({ data, startSelect = 0, onSelect, ...rest }) => {
+const Submenu = ({ data, startSelect = 0, onSelect, isLoading, ...rest }) => {
   if (!data) return null;
 
   const [currentItem, setCurrentItem] = useState(
@@ -74,29 +75,40 @@ const Submenu = ({ data, startSelect = 0, onSelect, ...rest }) => {
 
   return (
     <StyledSubmenu {...rest}>
-      <StyledSubmenuItems ref={submenuItemsRef} role="list">
-        {data.map((d) => {
-          const isActive = d.id === currentItem.id;
+      {isLoading ? (
+        <LoaderSubmenu />
+      ) : (
+        <>
+          <StyledSubmenuItems ref={submenuItemsRef} role="list">
+            {data.map((d) => {
+              const isActive = d.id === currentItem.id;
 
-          return (
-            <StyledSubmenuItem key={d.id} id={d.id} onClick={selectSubmenuItem}>
-              <StyledSubmenuItemText>
-                <Text
-                  color={isActive ? "#316DAA" : "#657077"}
-                  fontSize="13px"
-                  fontWeight="600"
-                  truncate={false}
+              return (
+                <StyledSubmenuItem
+                  key={d.id}
+                  id={d.id}
+                  onClick={selectSubmenuItem}
                 >
-                  {d.name}
-                </Text>
-              </StyledSubmenuItemText>
-              <StyledSubmenuItemLabel color={isActive ? "#316DAA" : "none"} />
-            </StyledSubmenuItem>
-          );
-        })}
-      </StyledSubmenuItems>
-      <StyledSubmenuBottomLine />
-
+                  <StyledSubmenuItemText>
+                    <Text
+                      color={isActive ? "#316DAA" : "#657077"}
+                      fontSize="13px"
+                      fontWeight="600"
+                      truncate={false}
+                    >
+                      {d.name}
+                    </Text>
+                  </StyledSubmenuItemText>
+                  <StyledSubmenuItemLabel
+                    color={isActive ? "#316DAA" : "none"}
+                  />
+                </StyledSubmenuItem>
+              );
+            })}
+          </StyledSubmenuItems>
+          <StyledSubmenuBottomLine />
+        </>
+      )}
       <StyledSubmenuContentWrapper>
         {currentItem.content}
       </StyledSubmenuContentWrapper>
@@ -108,6 +120,7 @@ Submenu.propTypes = {
   data: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
   startSelect: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
   onSelect: PropTypes.func,
+  isLoading: PropTypes.bool,
 };
 
 export default Submenu;
