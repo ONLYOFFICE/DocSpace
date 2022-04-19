@@ -53,28 +53,21 @@ namespace ASC.Api.Core.Core
             }
 
 
-            try
-            {
-                var elasticSettings = configuration.GetSection("elastic");
+            var elasticSettings = configuration.GetSection("elastic");
 
-                if (elasticSettings != null && elasticSettings.GetChildren().Any())
+            if (elasticSettings != null && elasticSettings.GetChildren().Any())
+            {
+                var host = elasticSettings.GetSection("Host").Value ?? "localhost";
+                var scheme = elasticSettings.GetSection("Scheme").Value ?? "http";
+                var port = elasticSettings.GetSection("Port").Value ?? "9200";
+                var elasticSearchUri = $"{scheme}://{host}:{port}";
+
+                if (Uri.IsWellFormedUriString(elasticSearchUri, UriKind.Absolute))
                 {
-                    var host = elasticSettings.GetSection("Host").Value ?? "localhost";
-                    var scheme = elasticSettings.GetSection("Scheme").Value ?? "http";
-                    var port = elasticSettings.GetSection("Port").Value ?? "9200";
-                    var elasticSearchUri = $"{scheme}://{host}:{port}";
-
-                    if (Uri.IsWellFormedUriString(elasticSearchUri, UriKind.Absolute))
-                    {
-                        hcBuilder.AddElasticsearch(elasticSearchUri,
-                                                   name: "elasticsearch",
-                                                   tags: new string[] { "elasticsearch" });
-                    }
+                    hcBuilder.AddElasticsearch(elasticSearchUri,
+                                               name: "elasticsearch",
+                                               tags: new string[] { "elasticsearch" });
                 }
-            }
-            catch (Exception)
-            {
-
             }
 
             return services;
