@@ -111,7 +111,7 @@ class AddGroupsPanelComponent extends React.Component {
     const selectedOptions = [];
     shareDataItems.forEach((item) => {
       const { sharedTo } = item;
-      if (!sharedTo.groups && !sharedTo.shareLink) {
+      if (item?.isGroup) {
         selectedOptions.push({ id: sharedTo.id, key: sharedTo.id });
       }
     });
