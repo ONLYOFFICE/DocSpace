@@ -136,7 +136,11 @@ const Selector = (props) => {
 
       const newGroupList = groupList;
 
-      newGroupList.find((group) => group.key === groupHeader.key).total = total;
+      if (newGroupList.length > 0) {
+        newGroupList.find(
+          (group) => group.key === groupHeader.key
+        ).total = total;
+      }
 
       setGroupList(newGroupList);
     }
@@ -334,7 +338,7 @@ const Selector = (props) => {
           isDisabled={isDisabled}
           placeholder={searchPlaceHolderLabel}
           value={searchValue}
-          onChange={onSearchChange}
+          onSearchChange={onSearchChange}
           onClearSearch={onSearchReset}
         />
         <div style={{ width: "100%", height: "100%" }} className="body-options">

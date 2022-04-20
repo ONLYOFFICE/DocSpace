@@ -68,8 +68,6 @@ const ToggleButtonContainer = styled.label`
   }
 
   .toggle-button-text {
-    margin-top: 2px;
-
     color: ${(props) =>
       props.isDisabled
         ? props.theme.text.disableColor

@@ -243,32 +243,35 @@ const HeaderComponent = ({
             />
           )}
         </LinkWithoutRedirect>
-        {isNavAvailable && isDesktopView && !isPersonal && (
-          <StyledNavigationIconsWrapper>
-            {mainModules.map((item) => {
-              return (
-                <React.Fragment key={item.id}>
-                  {item.iconUrl &&
-                    !item.separator &&
-                    item.id !== "settings" && (
-                      <HeaderNavigationIcon
-                        key={item.id}
-                        id={item.id}
-                        data-id={item.id}
-                        data-link={item.link}
-                        active={item.id == currentProductId}
-                        iconUrl={item.iconUrl}
-                        badgeNumber={item.notifications}
-                        onItemClick={onItemClick}
-                        onBadgeClick={onBadgeClick}
-                        url={item.link}
-                      />
-                    )}
-                </React.Fragment>
-              );
-            })}
-          </StyledNavigationIconsWrapper>
-        )}
+        {isNavAvailable &&
+          isDesktopView &&
+          !isPersonal &&
+          currentProductId !== "home" && (
+            <StyledNavigationIconsWrapper>
+              {mainModules.map((item) => {
+                return (
+                  <React.Fragment key={item.id}>
+                    {item.iconUrl &&
+                      !item.separator &&
+                      item.id !== "settings" && (
+                        <HeaderNavigationIcon
+                          key={item.id}
+                          id={item.id}
+                          data-id={item.id}
+                          data-link={item.link}
+                          active={item.id == currentProductId}
+                          iconUrl={item.iconUrl}
+                          badgeNumber={item.notifications}
+                          onItemClick={onItemClick}
+                          onBadgeClick={onBadgeClick}
+                          url={item.link}
+                        />
+                      )}
+                  </React.Fragment>
+                );
+              })}
+            </StyledNavigationIconsWrapper>
+          )}
       </Header>
 
       {isNavAvailable && !isDesktopView && (

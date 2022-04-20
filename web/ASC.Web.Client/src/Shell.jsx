@@ -535,11 +535,13 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
                 component={ComingSoonRoute}
               />
               <PrivateRoute path={PAYMENTS_URL} component={PaymentsRoute} />
-              <PrivateRoute
-                restricted
-                path={SETTINGS_URL}
-                component={SettingsRoute}
-              />
+              {!personal && (
+                <PrivateRoute
+                  restricted
+                  path={SETTINGS_URL}
+                  component={SettingsRoute}
+                />
+              )}
               <PrivateRoute
                 exact
                 allowForMe

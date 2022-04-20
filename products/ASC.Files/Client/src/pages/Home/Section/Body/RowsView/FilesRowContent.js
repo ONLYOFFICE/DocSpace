@@ -41,11 +41,6 @@ const SimpleFilesRowContent = styled(RowContent)`
     width: max-content;
   }
 
-  .is-editing {
-    path {
-      fill: ${(props) => props.theme.filesSection.rowView.editingIconColor};
-    }
-  }
   ${(props) =>
     ((props.sectionWidth <= 1024 && props.sectionWidth > 500) || isTablet) &&
     `
