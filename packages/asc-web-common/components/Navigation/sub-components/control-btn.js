@@ -81,7 +81,13 @@ const ControlButtons = ({
   clearTrash,
   isInfoPanelVisible,
   toggleInfoPanel,
+  toggleDropBox,
 }) => {
+  const toggleInfoPanelAction = () => {
+    toggleInfoPanel && toggleInfoPanel();
+    toggleDropBox && toggleDropBox();
+  };
+
   return (
     <StyledContainer isDropBox={isDropBox}>
       {!isRootFolder && canCreate ? (
@@ -138,7 +144,7 @@ const ControlButtons = ({
             iconName="images/panel.react.svg"
             size="16"
             isFill={true}
-            onClick={toggleInfoPanel}
+            onClick={toggleInfoPanelAction}
           />
         </div>
       </StyledInfoPanelToggleWrapper>
