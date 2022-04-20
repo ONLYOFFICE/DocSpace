@@ -3099,61 +3099,23 @@ namespace ASC.Api.Settings
         /// <param name="serializeSettings">Serialized SSO settings</param>
         /// <returns>SSO settings</returns>
         [Create("ssov2")]
-        public SsoSettingsV2 SaveSsoSettingsV2FromBody([FromBody]string serializeSettings)
+        public SsoSettingsV2 SaveSsoSettingsV2FromBody([FromBody] SsoSettingsModel model)
         {
-            CheckSsoPermissions();
-
-            if (string.IsNullOrEmpty(serializeSettings))
-                throw new ArgumentException(Resource.SsoSettingsCouldNotBeNull);
-
-            var settings = JsonSerializer.Deserialize<SsoSettingsV2>(serializeSettings);
-
-            if (settings == null)
-                throw new ArgumentException(Resource.SsoSettingsCouldNotBeNull);
-
-            if (string.IsNullOrWhiteSpace(settings.IdpSettings.EntityId))
-                throw new Exception(Resource.SsoSettingsInvalidEntityId);
-
-            if (string.IsNullOrWhiteSpace(settings.IdpSettings.SsoUrl) ||
-                !CheckUri(settings.IdpSettings.SsoUrl))
-                throw new Exception(string.Format(Resource.SsoSettingsInvalidBinding, "SSO " + settings.IdpSettings.SsoBinding));
-
-            if (!string.IsNullOrWhiteSpace(settings.IdpSettings.SloUrl) &&
-                !CheckUri(settings.IdpSettings.SloUrl))
-                throw new Exception(string.Format(Resource.SsoSettingsInvalidBinding, "SLO " + settings.IdpSettings.SloBinding));
-
-            if (string.IsNullOrWhiteSpace(settings.FieldMapping.FirstName) ||
-                string.IsNullOrWhiteSpace(settings.FieldMapping.LastName) ||
-                string.IsNullOrWhiteSpace(settings.FieldMapping.Email))
-                throw new Exception(Resource.SsoSettingsInvalidMapping);
-
-            if (string.IsNullOrEmpty(settings.SpLoginLabel))
-            {
-                settings.SpLoginLabel = SsoSettingsV2.SSO_SP_LOGIN_LABEL;
-            }
-            else if (settings.SpLoginLabel.Length > 100)
-            {
-                settings.SpLoginLabel = settings.SpLoginLabel.Substring(0, 100);
-            }
-
-            if (!SettingsManager.Save(settings))
-                throw new Exception(Resource.SsoSettingsCantSaveSettings);
-
-            if (!settings.EnableSso)
-                ConverSsoUsersToOrdinary();
-
-            var messageAction = settings.EnableSso ? MessageAction.SSOEnabled : MessageAction.SSODisabled;
-
-            MessageService.Send(messageAction);
-
-            return settings;
+            return SaveSsoSettingsV2(model);
         }
 
         [Create("ssov2")]
         [Consumes("application/x-www-form-urlencoded")]
-        public SsoSettingsV2 SaveSsoSettingsV2FromForm([FromForm] string serializeSettings)
+        public SsoSettingsV2 SaveSsoSettingsV2FromForm([FromForm] SsoSettingsModel model)
+        {
+            return SaveSsoSettingsV2(model);
+        }
+
+        private SsoSettingsV2 SaveSsoSettingsV2(SsoSettingsModel model)
         {
             CheckSsoPermissions();
+
+            var serializeSettings = model.SerializeSettings;
 
             if (string.IsNullOrEmpty(serializeSettings))
                 throw new ArgumentException(Resource.SsoSettingsCouldNotBeNull);
