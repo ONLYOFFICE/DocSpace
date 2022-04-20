@@ -4,8 +4,6 @@ import PropTypes from "prop-types";
 import Scrollbar from "../scrollbar";
 import StyledAside from "./styled-aside";
 
-// import CloseButton from "../modal-dialog/components/CloseButton";
-
 const Aside = React.memo((props) => {
   const {
     visible,

@@ -5,37 +5,17 @@ import { smallTablet } from "../utils/device";
 
 const StyledModal = styled.div`
   pointer-events: none;
-
   &.modal-active {
     pointer-events: all;
   }
 
-  .heading-aside {
-    margin-right: -16px;
-  }
-
-  .bodybox-aside {
-    padding-left: 16px;
-  }
-
-  .footer-aside {
-    width: 100%;
-    position: fixed;
-    bottom: 10px;
-  }
-
-  .aside-dialog {
-    position: fixed;
-    height: 100vh;
-    width: ${(props) => (props.autoMaxWidth ? "auto" : " 480px")};
-    padding-bottom: 64px;
+  .loader-wrapper {
+    padding: 0 16px 16px;
   }
 `;
 
 const Dialog = styled.div`
-  position: relative;
   display: flex;
-  cursor: default;
   align-items: center;
   justify-content: center;
   width: auto;
@@ -49,37 +29,51 @@ const Content = styled.div.attrs((props) => ({
       props.modalSwipeOffset < 0 ? `${props.modalSwipeOffset * 1.1}px` : "0px",
   },
 }))`
-  position: relative;
   box-sizing: border-box;
+  position: relative;
   background-color: ${(props) => props.theme.modalDialog.backgroundColor};
   color: ${(props) => props.theme.modalDialog.textColor};
-  height: auto;
-  max-height: ${(props) =>
-    props.displayType === "aside" || props.autoMaxHeight
-      ? "auto"
-      : props.isLarge
-      ? "400px"
-      : "280px"};
-  width: ${(props) =>
-    props.displayType === "aside" || props.autoMaxWidth
-      ? "auto"
-      : props.isLarge
-      ? "520px"
-      : "400px"};
-  border-radius: 6px;
   padding: ${(props) => (props.displayType === "modal" ? "0" : "0 0 -16px")};
 
-  ${({ displayType }) =>
-    displayType === "modal" &&
-    css`
-      @media ${smallTablet} {
-        position: absolute;
-        bottom: 0;
-        width: 100%;
-        max-height: auto;
-        border-radius: 6px 6px 0 0;
-      }
-    `}
+  ${(props) =>
+    props.displayType === "modal"
+      ? css`
+          height: auto;
+          max-height: ${(props) =>
+            props.autoMaxHeight ? "auto" : props.isLarge ? "400px" : "280px"};
+          width: ${(props) =>
+            props.autoMaxWidth ? "auto" : props.isLarge ? "520px" : "400px"};
+
+          border-radius: 6px;
+          @media ${smallTablet} {
+            transform: translateY(${(props) => (props.visible ? "0" : "100%")});
+            transition: transform 0.3s ease-in-out;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: auto;
+            border-radius: 6px 6px 0 0;
+          }
+        `
+      : css`
+          width: 480px;
+          display: flex;
+          flex-direction: column;
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          transform: translateX(${(props) => (props.visible ? 0 : "100%")});
+          transition: transform 0.3s ease-in-out;
+          @media ${smallTablet} {
+            transform: translateY(${(props) => (props.visible ? "0" : "100%")});
+            height: calc(100vh - 64px);
+            width: 100%;
+            left: 0;
+            top: auto;
+            bottom: 0;
+          }
+        `}
 `;
 
 const StyledHeader = styled.div`
@@ -102,27 +96,32 @@ const StyledHeader = styled.div`
   }
 `;
 
-const BodyBox = styled(Box)`
+const StyledBody = styled(Box)`
   position: relative;
-  ${(props) => props.withoutBodyScroll && `height: 100%;`}
   padding: 0 16px;
   padding-bottom: ${(props) =>
-    props.displayType === "aside" ? `8px` : props.hasFooter ? `8px` : "16px"};
+    props.displayType === "aside" || props.hasFooter ? "8px" : "16px"};
+
+  ${(props) =>
+    props.displayType === "aside" &&
+    css`
+      padding-bottom: 8px;
+      height: 100%;
+      min-height: auto;
+    `}
 `;
 
 const StyledFooter = styled.div`
-  //width: 100%;
   display: flex;
   flex-direction: row;
   border-top: ${(props) =>
     `1px solid ${props.theme.modalDialog.footerBorderColor}`};
   gap: 10px;
   padding: 16px;
-  ${(props) => props.displayType === "aside" && "margin-bottom: -10px"}
 `;
 
 Dialog.defaultProps = { theme: Base };
 StyledHeader.defaultProps = { theme: Base };
 Content.defaultProps = { theme: Base };
 
-export { StyledModal, StyledHeader, Content, Dialog, BodyBox, StyledFooter };
+export { StyledModal, StyledHeader, Content, Dialog, StyledBody, StyledFooter };

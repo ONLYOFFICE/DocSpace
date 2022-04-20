@@ -22,22 +22,24 @@ const StyledCloseButtonWrapper = styled.div`
   cursor: pointer;
   position: absolute;
 
-  right: 0;
-  top: 0;
-
   ${(props) =>
     props.displayType === "modal"
       ? css`
-          margin-right: -34px;
+          top: 0;
+          right: -34px;
           @media ${smallTablet} {
-            margin-right: 10px;
-            margin-top: -34px;
+            right: 10px;
+            top: -34px;
           }
         `
       : css`
-          z-index: ${(props) => props.zIndex + 1};
-          margin-top: 10px;
-          right: 495px;
+          top: 10px;
+          left: -34px;
+          @media ${smallTablet} {
+            top: -34px;
+            left: auto;
+            right: 10px;
+          }
         `}
 
   .close-button {
