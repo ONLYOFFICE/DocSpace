@@ -13,8 +13,8 @@ const StyledContainer = styled.div`
   align-items: center;
 
   .add-button {
-    margin-right: 12px;
-    min-width: 17px;
+    margin-right: 16px;
+    min-width: 15px;
 
     ${(props) =>
       !props.isDropBox &&
@@ -31,12 +31,13 @@ const StyledContainer = styled.div`
   }
 
   .option-button {
-    margin-right: 15px;
-    min-width: 17px;
+    margin-right: 16px;
+    min-width: 15px;
   }
 
   .trash-button {
-    min-width: 17px;
+    margin-right: 16px;
+    min-width: 15px;
   }
 `;
 
@@ -46,6 +47,15 @@ const StyledInfoPanelToggleWrapper = styled.div`
   align-self: center;
   justify-content: center;
   margin-left: auto;
+
+  @media ${tablet} {
+    margin-left: 0;
+  }
+
+  ${isMobile &&
+  css`
+    margin-left: 0;
+  `}
 
   .info-panel-toggle-bg {
     height: 32px;
@@ -96,7 +106,7 @@ const ControlButtons = ({
             className="add-button"
             directionX="right"
             iconName="images/plus.svg"
-            size={17}
+            size={15}
             isFill
             getData={getContextOptionsPlus}
             isDisabled={false}
@@ -106,48 +116,80 @@ const ControlButtons = ({
               className="option-button"
               directionX="right"
               iconName="images/vertical-dots.react.svg"
-              size={17}
+              size={15}
               isFill
               getData={getContextOptionsFolder}
               isDisabled={false}
             />
           )}
+          <StyledInfoPanelToggleWrapper
+            isRootFolder={isRootFolder}
+            isInfoPanelVisible={isInfoPanelVisible}
+          >
+            <div className="info-panel-toggle-bg">
+              <IconButton
+                className="info-panel-toggle"
+                iconName="images/panel.react.svg"
+                size="15"
+                isFill={true}
+                onClick={toggleInfoPanelAction}
+              />
+            </div>
+          </StyledInfoPanelToggleWrapper>
         </>
       ) : canCreate ? (
-        <ContextMenuButton
-          className="add-button"
-          directionX="right"
-          iconName="images/plus.svg"
-          size={17}
-          isFill
-          getData={getContextOptionsPlus}
-          isDisabled={false}
-        />
+        <>
+          <ContextMenuButton
+            className="add-button"
+            directionX="right"
+            iconName="images/plus.svg"
+            size={15}
+            isFill
+            getData={getContextOptionsPlus}
+            isDisabled={false}
+          />
+          <StyledInfoPanelToggleWrapper
+            isRootFolder={isRootFolder}
+            isInfoPanelVisible={isInfoPanelVisible}
+          >
+            <div className="info-panel-toggle-bg">
+              <IconButton
+                className="info-panel-toggle"
+                iconName="images/panel.react.svg"
+                size="15"
+                isFill={true}
+                onClick={toggleInfoPanelAction}
+              />
+            </div>
+          </StyledInfoPanelToggleWrapper>
+        </>
       ) : isRecycleBinFolder && !isEmptyFilesList ? (
-        <IconButton
-          iconName="images/clear.active.react.svg"
-          size={17}
-          isFill={true}
-          onClick={clearTrash}
-          className="trash-button"
-        />
+        <>
+          <IconButton
+            iconName="images/clear.active.react.svg"
+            size={15}
+            isFill={true}
+            onClick={clearTrash}
+            className="trash-button"
+          />
+          <StyledInfoPanelToggleWrapper
+            isRootFolder={isRootFolder}
+            isInfoPanelVisible={isInfoPanelVisible}
+          >
+            <div className="info-panel-toggle-bg">
+              <IconButton
+                className="info-panel-toggle"
+                iconName="images/panel.react.svg"
+                size="15"
+                isFill={true}
+                onClick={toggleInfoPanelAction}
+              />
+            </div>
+          </StyledInfoPanelToggleWrapper>
+        </>
       ) : (
         <></>
       )}
-      <StyledInfoPanelToggleWrapper
-        isRootFolder={isRootFolder}
-        isInfoPanelVisible={isInfoPanelVisible}
-      >
-        <div className="info-panel-toggle-bg">
-          <IconButton
-            className="info-panel-toggle"
-            iconName="images/panel.react.svg"
-            size="16"
-            isFill={true}
-            onClick={toggleInfoPanelAction}
-          />
-        </div>
-      </StyledInfoPanelToggleWrapper>
     </StyledContainer>
   );
 };
