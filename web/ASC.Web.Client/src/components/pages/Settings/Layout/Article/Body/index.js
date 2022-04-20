@@ -9,6 +9,7 @@ import { isArrayEqual } from "@appserver/components/utils/array";
 import { isMobileOnly } from "react-device-detect";
 
 import { isMobile } from "@appserver/components/utils/device";
+import withLoading from "../../../../../../HOCs/withLoading";
 
 import {
   //getKeyByLink,
@@ -19,6 +20,7 @@ import {
 } from "../../../utils";
 
 import CatalogItem from "@appserver/components/catalog-item";
+import LoaderArticleBody from "./loaderArticleBody";
 
 class ArticleBodyContent extends React.Component {
   constructor(props) {
@@ -57,6 +59,12 @@ class ArticleBodyContent extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    const { isLoaded, tReady, setIsLoadedArticleBody } = this.props;
+
+    const isLoadedSetting = isLoaded && tReady;
+
+    if (isLoadedSetting) setIsLoadedArticleBody(isLoadedSetting);
+
     if (!isArrayEqual(prevState.selectedKeys, this.state.selectedKeys)) {
       const { selectedKeys } = this.state;
 
@@ -145,14 +153,28 @@ class ArticleBodyContent extends React.Component {
 
   render() {
     const items = this.catalogItems();
+    const { isLoadedPage, location } = this.props;
 
-    return <>{items}</>;
+    const commonSettings =
+      location.pathname.includes("common") || location.pathname === "/settings";
+
+    const showLoader = commonSettings ? !isLoadedPage : false;
+
+    return showLoader ? <LoaderArticleBody /> : <>{items}</>;
   }
 }
 
-export default inject(({ auth }) => {
+export default inject(({ auth, common }) => {
+  const { isLoaded, setIsLoadedArticleBody } = common;
+
   return {
     showText: auth.settingsStore.showText,
     toggleArticleOpen: auth.settingsStore.toggleArticleOpen,
+    isLoaded,
+    setIsLoadedArticleBody,
   };
-})(withRouter(withTranslation("Settings")(observer(ArticleBodyContent))));
+})(
+  withLoading(
+    withRouter(withTranslation("Settings")(observer(ArticleBodyContent)))
+  )
+);

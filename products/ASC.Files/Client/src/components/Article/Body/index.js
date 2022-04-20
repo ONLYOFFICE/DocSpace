@@ -16,6 +16,8 @@ import DownloadAppList from "./DownloadAppList";
 import Banner from "./Banner";
 import { showLoader, hideLoader } from "@appserver/common/utils";
 import Loaders from "@appserver/common/components/Loaders";
+import withLoader from "../../../HOCs/withLoader";
+import { withTranslation } from "react-i18next";
 
 const StyledBlock = styled.div`
   padding: 0 20px;
@@ -34,7 +36,6 @@ const ArticleBodyContent = (props) => {
     enableThirdParty,
     isVisitor,
     FirebaseHelper,
-    isArticleLoading,
     theme,
   } = props;
 
@@ -91,9 +92,7 @@ const ArticleBodyContent = (props) => {
     props.setNewFilesPanelVisible(true, [`${folderId}`]);
   }, []);
 
-  return isArticleLoading ? (
-    <Loaders.ArticleFolder />
-  ) : (
+  return (
     <>
       <Items
         onClick={onClick}
@@ -176,4 +175,10 @@ export default inject(
       theme,
     };
   }
-)(observer(withRouter(ArticleBodyContent)));
+)(
+  withRouter(
+    withTranslation([])(
+      withLoader(observer(ArticleBodyContent))(<Loaders.ArticleFolder />)
+    )
+  )
+);

@@ -22,6 +22,8 @@ import Tiles from "./TilesLoader";
 import DialogLoader from "./DialogLoader";
 import DialogAsideLoader from "./DialogAsideLoader";
 import ListLoader from "./ListLoader";
+import SharingPanelLoader from "./SharingPanelLoader";
+import SharingPanelLoaderModal from "./SharingPanelLoader/modal";
 
 export default {
   Rectangle,
@@ -48,4 +50,6 @@ export default {
   ArticleGroup,
   ListLoader,
   NewTreeFolders,
+  SharingPanelLoader,
+  SharingPanelLoaderModal,
 };

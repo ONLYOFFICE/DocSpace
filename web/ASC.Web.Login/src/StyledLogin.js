@@ -18,9 +18,11 @@ export const LoginContainer = styled.div`
   margin: 56px auto 0 auto;
   max-width: 960px;
 
-  .login-tooltip {
-    padding-left: 4px;
-    display: inline-block;
+  .remember-wrapper {
+    max-width: 142px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
   }
 
   .buttonWrapper {
@@ -125,22 +127,21 @@ export const LoginContainer = styled.div`
       width: 100%;
     }
 
-    .form-field {
-      height: 48px;
-    }
-
     .login-forgot-wrapper {
       height: 36px;
       padding: 14px 0;
 
       .login-checkbox-wrapper {
         display: flex;
+        //align-items: center;
 
         .login-checkbox {
-          float: left;
-          span {
-            font-size: 12px;
-          }
+          display: flex;
+        }
+
+        .remember-helper-wrapper {
+          display: flex;
+          gap: 4px;
         }
       }
 

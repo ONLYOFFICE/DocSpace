@@ -17,6 +17,8 @@ import {
 } from "@appserver/components/utils/device";
 import MobileView from "./MobileView";
 
+import withLoader from "../../../HOCs/withLoader";
+
 class ArticleMainButtonContent extends React.Component {
   constructor(props) {
     super(props);
@@ -74,7 +76,7 @@ class ArticleMainButtonContent extends React.Component {
       guestCaption,
       groupCaption,
       sectionWidth,
-      isArticleLoading,
+
       isMobileArticle,
     } = this.props;
 
@@ -149,15 +151,13 @@ class ArticleMainButtonContent extends React.Component {
 
     return isAdmin ? (
       <>
-        {isMobileArticle && !isArticleLoading ? (
+        {isMobileArticle ? (
           <MobileView
             labelProps={t("OtherOperations")}
             actionOptions={menuModel}
             buttonOptions={links}
             sectionWidth={sectionWidth}
           />
-        ) : isArticleLoading ? (
-          <Loaders.ArticleButton />
         ) : (
           <MainButton
             isDisabled={false}
@@ -183,18 +183,12 @@ class ArticleMainButtonContent extends React.Component {
 }
 
 export default withRouter(
-  inject(({ auth, peopleStore }) => {
+  inject(({ auth }) => {
     const {
       userCaption,
       guestCaption,
       groupCaption,
     } = auth.settingsStore.customNames;
-
-    const { loadingStore } = peopleStore;
-
-    const { isLoading, isLoaded, firstLoad } = loadingStore;
-
-    const isArticleLoading = (isLoading || !isLoaded) && firstLoad;
 
     return {
       isAdmin: auth.isAdmin,
@@ -205,11 +199,10 @@ export default withRouter(
       toggleShowText: auth.settingsStore.toggleShowText,
       isMobileArticle: auth.settingsStore.isMobileArticle,
       showText: auth.settingsStore.showText,
-      isArticleLoading,
     };
   })(
     withTranslation(["Article", "Common", "Translations"])(
-      observer(ArticleMainButtonContent)
+      withLoader(observer(ArticleMainButtonContent))(<Loaders.ArticleButton />)
     )
   )
 );

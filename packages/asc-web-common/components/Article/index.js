@@ -31,7 +31,7 @@ const Article = ({
   toggleShowText,
   toggleArticleOpen,
   setIsMobileArticle,
-  isLoading,
+  isLoadedPage,
   children,
   ...rest
 }) => {
@@ -117,7 +117,7 @@ const Article = ({
           handleWrapperClass="resizable-border not-selectable"
         >
           <SubArticleHeader
-            isLoading={isLoading}
+            isLoadedPage={isLoadedPage}
             showText={showText}
             onClick={toggleShowText}
           >
@@ -128,7 +128,7 @@ const Article = ({
               {articleMainButtonContent.props.children}
             </SubArticleMainButton>
           ) : null}
-          <SubArticleBody isLoading={isLoading} showText={showText}>
+          <SubArticleBody showText={showText}>
             {articleBodyContent ? articleBodyContent.props.children : null}
           </SubArticleBody>
         </Resizable>

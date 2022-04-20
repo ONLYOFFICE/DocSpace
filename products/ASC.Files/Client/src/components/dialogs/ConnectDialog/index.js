@@ -202,6 +202,7 @@ const PureConnectDialogContainer = (props) => {
       isLoading={!tReady}
       visible={visible}
       zIndex={310}
+      displayType="modal"
       onClose={onClose}
     >
       <ModalDialog.Header>
