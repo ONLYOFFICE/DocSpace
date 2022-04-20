@@ -2325,6 +2325,17 @@ const Base = {
       fill: gray,
       loadingFill: grayMid,
 
+      borderBottom: "1px solid #eceef1",
+      borderTop: "1px solid #eceef1",
+      externalLinkBackground: "#f8f9f9",
+      externalLinkSvg: "#333333",
+
+      internalLinkBorder: "1px dashed #333333",
+
+      itemBorder: "1px dashed #333333",
+
+      itemOwnerColor: "rgb(163, 169, 174)",
+
       dropdownColor: black,
 
       loader: {

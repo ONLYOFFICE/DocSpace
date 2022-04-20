@@ -222,6 +222,7 @@ class SectionHeaderContent extends React.Component {
       isHeaderVisible,
       selection,
       isLoadedPage,
+      location,
     } = this.props;
     const { header, isCategoryOrHeader } = this.state;
     const arrayOfParams = this.getArrayOfParams();
@@ -249,7 +250,8 @@ class SectionHeaderContent extends React.Component {
       },
     ];
 
-    const commonSettings = location.pathname.includes("common");
+    const commonSettings =
+      location.pathname.includes("common") || location.pathname === "/settings";
     const showLoader = commonSettings ? !isLoadedPage : false;
     return (
       <StyledContainer isHeaderVisible={isHeaderVisible}>

@@ -311,6 +311,8 @@ const FilesTableRow = (props) => {
       if (showHotkeyBorder) {
         setHeaderBorder(true);
       } else {
+        const elem = document.getElementById("table-container_caption-header");
+        if (elem) elem.style.borderColor = "#ECEEF1";
         setHeaderBorder(false);
       }
     }
