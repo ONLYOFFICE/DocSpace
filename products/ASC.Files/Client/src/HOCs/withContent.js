@@ -20,12 +20,19 @@ export default function withContent(WrappedContent) {
     constructor(props) {
       super(props);
 
-      const { item, fileActionId, fileActionExt, fileActionTemplateId } = props;
+      const {
+        item,
+        fileActionId,
+        fileActionExt,
+        fileActionTemplateId,
+        fromTemplate,
+      } = props;
       let titleWithoutExt = props.titleWithoutExt;
       if (
         fileActionId === -1 &&
         item.id === fileActionId &&
-        fileActionTemplateId === null
+        fileActionTemplateId === null &&
+        !fromTemplate
       ) {
         titleWithoutExt = getDefaultFileName(fileActionExt);
       }
@@ -188,6 +195,7 @@ export default function withContent(WrappedContent) {
         clearActiveOperations,
         addActiveItems,
         fileCopyAs,
+        fromTemplate,
       } = this.props;
       const { itemTitle } = this.state;
 
@@ -282,6 +290,37 @@ export default function withContent(WrappedContent) {
                 open && openDocEditor(null, null, tab);
               }
             })
+            .finally(() => {
+              const fileIds = [+itemId];
+              createdFileId && fileIds.push(createdFileId);
+
+              clearActiveOperations(fileIds);
+
+              return setIsLoading(false);
+            });
+        } else if (fromTemplate) {
+          const {
+            createFormFromTemplate,
+            item,
+            gallerySelected,
+            openDocEditor,
+          } = this.props;
+          const { itemTitle } = this.state;
+          const { parentId, fileExst } = item;
+
+          createFormFromTemplate(
+            parentId,
+            gallerySelected.id,
+            `${itemTitle}.${fileExst}`
+          )
+            .then((file) => {
+              createdFileId = file.id;
+              addActiveItems([file.id]);
+
+              return open && openDocEditor(file.id, file.providerKey, tab);
+            })
+            .then(() => this.completeAction(itemId))
+            .catch((e) => toastr.error(e))
             .finally(() => {
               const fileIds = [+itemId];
               createdFileId && fileIds.push(createdFileId);
@@ -465,6 +504,8 @@ export default function withContent(WrappedContent) {
         isUpdatingRowItem,
         passwordEntryProcess,
         addActiveItems,
+        gallerySelected,
+        createFormFromTemplate,
       } = filesStore;
       const { clearActiveOperations, fileCopyAs } = uploadDataStore;
       const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
@@ -474,6 +515,7 @@ export default function withContent(WrappedContent) {
         id: fileActionId,
         templateId: fileActionTemplateId,
         type: fileActionType,
+        fromTemplate,
       } = filesStore.fileActionStore;
       const { replaceFileStream, setEncryptionAccess } = auth;
       const {
@@ -491,7 +533,7 @@ export default function withContent(WrappedContent) {
       const isEdit =
         item.id === fileActionId && item.fileExst === fileActionExt;
 
-      const titleWithoutExt = getTitleWithoutExst(item);
+      const titleWithoutExt = getTitleWithoutExst(item, fromTemplate);
 
       return {
         createFile,
@@ -526,6 +568,9 @@ export default function withContent(WrappedContent) {
         fileCopyAs,
         isEdit,
         titleWithoutExt,
+        fromTemplate,
+        gallerySelected,
+        createFormFromTemplate,
       };
     }
   )(observer(WithContent));
