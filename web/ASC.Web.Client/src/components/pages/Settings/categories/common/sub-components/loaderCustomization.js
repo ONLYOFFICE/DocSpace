@@ -127,7 +127,6 @@ const LoaderCustomization = ({
       <Loaders.Rectangle height="32px" className="combo-box" />
       {lngTZSettings && (
         <>
-          <Loaders.Rectangle height="20px" className="field-container" />
           <Loaders.Rectangle height="20px" className="title-long" />
           <Loaders.Rectangle height="32px" className="combo-box" />
         </>
