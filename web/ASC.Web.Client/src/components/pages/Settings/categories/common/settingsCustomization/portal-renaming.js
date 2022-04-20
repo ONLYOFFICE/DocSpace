@@ -46,13 +46,6 @@ const PortalRenaming = (props) => {
   const [portalNameDefault, setPortalNameDefault] = useState(
     portalNameDefaultFromSessionStorage || portalName
   );
-  console.log("portalNameFromSessionStorage", portalNameFromSessionStorage);
-  console.log(
-    "portalNameDefaultFromSessionStorage",
-    portalNameDefaultFromSessionStorage
-  );
-  console.log("portalNameDefault", portalNameDefault);
-  console.log("portalName", portalName);
 
   const [showReminder, setShowReminder] = useState(false);
   const [hasScroll, setHasScroll] = useState(false);
@@ -103,18 +96,18 @@ const PortalRenaming = (props) => {
   const onSavePortalRename = () => {
     setIsLoadingPortalNameSave(true);
 
-    // setPortalRename(portalName)
-    //   .then(() => toastr.success(t("SuccessfullySavePortalNameMessage")))
-    //   .catch((error) => {
-    //     //TODO: Add translation
-    //     setErrorValue("Incorrect account name");
-    //     saveToSessionStorage("errorValue", "Incorrect account name");
-    //   })
-    //   .finally(() => setIsLoadingPortalNameSave(false));
+    setPortalRename(portalName)
+      .then(() => toastr.success(t("SuccessfullySavePortalNameMessage")))
+      .catch((error) => {
+        //TODO: Add translation
+        setErrorValue("Incorrect account name");
+        saveToSessionStorage("errorValue", "Incorrect account name");
+      })
+      .finally(() => setIsLoadingPortalNameSave(false));
 
     setShowReminder(false);
-    // setPortalName(portalName);
-    //setPortalNameDefault(portalName);
+    setPortalName(portalName);
+    setPortalNameDefault(portalName);
 
     saveToSessionStorage("portalName", portalName);
     saveToSessionStorage("portalNameDefault", portalName);
@@ -155,8 +148,6 @@ const PortalRenaming = (props) => {
   const settingIsEqualInitialValue = (value) => {
     const defaultValue = JSON.stringify(portalNameDefault);
     const currentValue = JSON.stringify(value);
-    console.log("defaultValue", defaultValue);
-    console.log("currentValue", currentValue);
     return defaultValue === currentValue;
   };
 
@@ -178,7 +169,7 @@ const PortalRenaming = (props) => {
 
   const onChangePortalName = (e) => {
     const value = e.target.value;
-    console.log("value", value);
+
     onValidateInput(value);
 
     setPortalName(value);
