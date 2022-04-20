@@ -69,16 +69,25 @@ const Navigation = ({
     setFirstClick(true);
   };
 
+  const onResize = React.useCallback(() => {
+    setDropBoxWidth(DomHelpers.getOuterWidth(containerRef.current));
+  }, [containerRef.current]);
+
   React.useEffect(() => {
     if (isOpen) {
       window.addEventListener("click", onMissClick);
+      window.addEventListener("resize", onResize);
     } else {
       window.removeEventListener("click", onMissClick);
+      window.addEventListener("resize", onResize);
       setFirstClick(true);
     }
 
-    return () => window.removeEventListener("click", onMissClick);
-  }, [isOpen, onMissClick]);
+    return () => {
+      window.removeEventListener("click", onMissClick);
+      window.addEventListener("resize", onResize);
+    };
+  }, [isOpen, onResize, onMissClick]);
 
   const onBackToParentFolderAction = React.useCallback(() => {
     setIsOpen((val) => !val);

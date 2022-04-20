@@ -60,7 +60,12 @@ class WelcomePageSettings extends React.Component {
   }
 
   componentDidMount() {
+    const { isLoaded, setIsLoadedWelcomePageSettings, tReady } = this.props;
     window.addEventListener("resize", this.checkInnerWidth);
+
+    const isLoadedSetting = isLoaded && tReady;
+
+    if (isLoadedSetting) setIsLoadedWelcomePageSettings(isLoadedSetting);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -68,9 +73,13 @@ class WelcomePageSettings extends React.Component {
 
     const { hasScroll } = this.state;
 
-    const isLoadedSetting = isLoaded && tReady;
+    if (isLoaded !== prevProps.isLoaded || tReady !== prevProps.tReady) {
+      const isLoadedSetting = isLoaded && tReady;
 
-    if (isLoadedSetting) setIsLoadedWelcomePageSettings(isLoadedSetting);
+      if (isLoadedSetting) {
+        setIsLoadedWelcomePageSettings(isLoadedSetting);
+      }
+    }
 
     const checkScroll = checkScrollSettingsBlock();
 

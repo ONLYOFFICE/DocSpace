@@ -144,6 +144,7 @@ const DropBox = React.forwardRef(
             getContextOptionsFolder={getContextOptionsFolder}
             getContextOptionsPlus={getContextOptionsPlus}
             toggleInfoPanel={toggleInfoPanel}
+            toggleDropBox={toggleDropBox}
             isInfoPanelVisible={isInfoPanelVisible}
           />
         </StyledContainer>

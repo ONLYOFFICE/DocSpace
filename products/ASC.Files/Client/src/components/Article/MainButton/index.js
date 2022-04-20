@@ -17,6 +17,7 @@ import { withRouter } from "react-router";
 import MobileView from "./MobileView";
 import { combineUrl } from "@appserver/common/utils";
 import config from "../../../../package.json";
+import withLoader from "../../../HOCs/withLoader";
 
 const ArticleMainButtonContent = (props) => {
   const {
@@ -264,8 +265,6 @@ const ArticleMainButtonContent = (props) => {
               />
             )}
         </>
-      ) : isArticleLoading ? (
-        <Loaders.ArticleButton />
       ) : (
         <MainButton
           isDisabled={isDisabled ? isDisabled : !canCreate}
@@ -359,6 +358,6 @@ export default inject(
   }
 )(
   withTranslation(["Article", "Common"])(
-    observer(withRouter(ArticleMainButtonContent))
+    withLoader(observer(withRouter(ArticleMainButtonContent)))(<Loaders.ArticleButton />)
   )
 );

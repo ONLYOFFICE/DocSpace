@@ -235,6 +235,7 @@ const MainButtonMobile = (props) => {
           directionY="top"
           directionX="right"
           isMobile={isMobile || isTablet}
+          fixedDirection={true}
           heightProp={height}
           sectionWidth={sectionWidth}
           isDefaultMode={false}

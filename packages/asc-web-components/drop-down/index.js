@@ -114,13 +114,14 @@ class DropDown extends React.PureComponent {
 
     const rects = this.dropDownRef.current.getBoundingClientRect();
     const parentRects = forwardedRef?.current?.getBoundingClientRect();
+
     const container = DomHelpers.getViewport();
 
     const dimensions = parentRects
       ? {
           toTopCorner: parentRects.top,
           parentHeight: parentRects.height,
-          containerHeight: parentRects.top,
+          containerHeight: !parentRects.top,
         }
       : {
           toTopCorner: rects.top,
@@ -352,6 +353,7 @@ DropDownContainer.propTypes = {
   isDefaultMode: PropTypes.bool,
   /** Needed to open correctly people and group selector when the section width is small */
   smallSectionWidth: PropTypes.bool,
+  /** It is necessary when we explicitly set the direction, disables check position */
   fixedDirection: PropTypes.bool,
 };
 
