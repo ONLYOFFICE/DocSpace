@@ -3,7 +3,8 @@ import Base from "../themes/base";
 
 const StyledLabel = styled.label`
   display: flex;
-  align-items: center;
+  //align-items: center;
+  justify-content: center;
   position: relative;
   margin: 0;
 
@@ -107,11 +108,21 @@ const StyledLabel = styled.label`
             `}
   }
 
+  .wrapper {
+    display: inline-block;
+  }
+
   .checkbox-text {
     color: ${(props) =>
       props.isDisabled
         ? props.theme.text.disableColor
         : props.theme.text.color};
+    margin-top: -2px;
+  }
+
+  .help-button {
+    display: inline-block;
+    margin-left: 4px;
   }
 `;
 StyledLabel.defaultProps = { theme: Base };

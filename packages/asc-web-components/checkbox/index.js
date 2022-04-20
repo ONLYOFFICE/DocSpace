@@ -62,6 +62,10 @@ class Checkbox extends React.Component {
     this.props.onChange && this.props.onChange(e);
   }
 
+  onClick(e) {
+    return e.preventDefault();
+  }
+
   render() {
     //console.log("Checkbox render");
     const {
@@ -75,39 +79,49 @@ class Checkbox extends React.Component {
       title,
       truncate,
       name,
+      helpButton,
     } = this.props;
 
     return (
-      <StyledLabel
-        id={id}
-        style={style}
-        isDisabled={isDisabled}
-        isIndeterminate={isIndeterminate}
-        className={className}
-        title={title}
-      >
-        <HiddenInput
-          name={name}
-          type="checkbox"
-          checked={this.state.checked}
+      <>
+        <StyledLabel
+          id={id}
+          style={style}
           isDisabled={isDisabled}
-          ref={this.ref}
-          value={value}
-          onChange={this.onInputChange}
-        />
-        <RenderCheckboxIcon {...this.props} />
-        {this.props.label && (
-          <Text
-            as="span"
-            title={title}
+          isIndeterminate={isIndeterminate}
+          className={className}
+          title={title}
+        >
+          <HiddenInput
+            name={name}
+            type="checkbox"
+            checked={this.state.checked}
             isDisabled={isDisabled}
-            truncate={truncate}
-            className="checkbox-text"
-          >
-            {label}
-          </Text>
-        )}
-      </StyledLabel>
+            ref={this.ref}
+            value={value}
+            onChange={this.onInputChange}
+          />
+          <RenderCheckboxIcon {...this.props} />
+          <div className="wrapper">
+            {this.props.label && (
+              <Text
+                as="span"
+                title={title}
+                isDisabled={isDisabled}
+                truncate={truncate}
+                className="checkbox-text"
+              >
+                {label}
+              </Text>
+            )}
+            {helpButton && (
+              <span className="help-button" onClick={this.onClick}>
+                {helpButton}
+              </span>
+            )}
+          </div>
+        </StyledLabel>
+      </>
     );
   }
 }
@@ -137,6 +151,8 @@ Checkbox.propTypes = {
   title: PropTypes.string,
   /** Disables word wrapping */
   truncate: PropTypes.bool,
+  /** Help button render */
+  helpButton: PropTypes.any,
 };
 
 Checkbox.defaultProps = {
