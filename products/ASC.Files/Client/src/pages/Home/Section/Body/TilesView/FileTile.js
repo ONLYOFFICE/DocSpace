@@ -38,6 +38,7 @@ const FileTile = (props) => {
     badgesComponent,
     t,
     getContextModel,
+    onHideContextMenu,
   } = props;
 
   const temporaryExtension =
@@ -88,6 +89,7 @@ const FileTile = (props) => {
           inProgress={inProgress}
           isEdit={isEdit}
           getContextModel={getContextModel}
+          hideContextMenu={onHideContextMenu}
           t={t}
           title={
             item.isFolder
