@@ -14,7 +14,13 @@ import FilesFilter from "@appserver/common/api/files/filter";
 import { combineUrl } from "@appserver/common/utils";
 
 const SectionHeaderContent = (props) => {
-  const { t, history, match, isInfoPanelVisible, toggleInfoPanel } = props;
+  const {
+    t,
+    history,
+    match,
+    isInfoPanelVisible,
+    setInfoPanelIsVisible,
+  } = props;
 
   const onBackToFiles = () => {
     const filter = FilesFilter.getDefault();
@@ -50,7 +56,7 @@ const SectionHeaderContent = (props) => {
             iconName="images/panel.react.svg"
             size="16"
             isFill={true}
-            onClick={toggleInfoPanel}
+            onClick={setInfoPanelIsVisible}
           />
         </div>
       </StyledInfoPanelToggleWrapper>
@@ -59,10 +65,10 @@ const SectionHeaderContent = (props) => {
 };
 
 export default inject(({ infoPanelStore }) => {
-  const { toggleIsVisible, isVisible } = infoPanelStore;
+  const { setInfoPanelIsVisible, isVisible } = infoPanelStore;
 
   return {
-    toggleInfoPanel: toggleIsVisible,
+    setInfoPanelIsVisible,
     isInfoPanelVisible: isVisible,
   };
 })(withTranslation("Common")(withRouter(observer(SectionHeaderContent))));

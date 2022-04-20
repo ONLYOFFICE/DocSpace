@@ -392,6 +392,7 @@ class FilesActionStore {
         extension: null,
         title: "",
         templateId: null,
+        fromTemplate: null,
       });
       setIsLoading(false);
       type === FileAction.Rename &&

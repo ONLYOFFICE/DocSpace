@@ -22,8 +22,6 @@ import { openDocEditor as openEditor } from "../helpers/utils";
 const { FilesFilter } = api;
 const storageViewAs = localStorage.getItem("viewAs");
 
-import OFORMsGallery from "./OFORMsGallery.json";
-
 class FilesStore {
   authStore;
   settingsStore;
@@ -281,8 +279,7 @@ class FilesStore {
       }
     }
     requests.push(getFilesSettings());
-    //requests.push(this.getOforms());
-    this.getOforms();
+    requests.push(this.getOforms());
 
     return Promise.all(requests).then(() => (this.isInit = true));
   };
@@ -290,9 +287,7 @@ class FilesStore {
   getOforms = async () => {
     const { culture, getOforms } = this.settingsStore;
 
-    //const oformData = await getOforms();
-    const oformData = OFORMsGallery.data;
-    console.log("oformData", oformData);
+    const oformData = await getOforms();
 
     if (oformData && oformData.length) {
       this.oformFiles = oformData.filter(
@@ -1207,6 +1202,15 @@ class FilesStore {
   createFolder(parentFolderId, title) {
     return api.files.createFolder(parentFolderId, title);
   }
+
+  createFormFromTemplate = (folderId, formId, title) => {
+    return api.files
+      .createFormFromTemplate(folderId, formId, title)
+      .then((file) => Promise.resolve(file))
+      .finally(() => {
+        this.setGallerySelected(null);
+      });
+  };
 
   setFile = (file) => {
     const fileIndex = this.files.findIndex((f) => f.id === file.id);

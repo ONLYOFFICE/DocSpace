@@ -862,3 +862,16 @@ export function restoreDocumentsVersion(fileId, version, doc) {
 
   return request(options);
 }
+
+export function createFormFromTemplate(folderId, formId, title) {
+  const options = {
+    method: "post",
+    url: `files/${folderId}/file.json`,
+    data: {
+      title,
+      formId,
+    },
+  };
+
+  return request(options);
+}

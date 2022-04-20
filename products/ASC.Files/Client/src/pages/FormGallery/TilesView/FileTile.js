@@ -6,22 +6,17 @@ import { isDesktop } from "react-device-detect";
 
 const FileTile = (props) => {
   const { item } = props;
-  const { fileExst, title } = item;
-
-  const { thumbnailUrl } = item;
 
   return (
     <div ref={props.selectableRef}>
-      <Tile key={item.id} item={item} thumbnail={thumbnailUrl}>
+      <Tile key={item.id} item={item}>
         <SimpleFilesTileContent
-          //sideColor={theme.filesSection.tilesView.sideColor}
-          isFile={fileExst}
+        //sideColor={theme.filesSection.tilesView.sideColor}
         >
           <Link
             className="item-file-name"
             containerWidth="100%"
             type="page"
-            title={title}
             fontWeight="600"
             fontSize={isDesktop ? "13px" : "14px"}
             target="_blank"

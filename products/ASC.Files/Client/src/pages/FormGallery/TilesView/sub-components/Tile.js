@@ -7,9 +7,11 @@ import { isDesktop } from "react-device-detect";
 import Link from "@appserver/components/link";
 import { withTranslation } from "react-i18next";
 import { ReactSVG } from "react-svg";
-import { AppServerConfig } from "@appserver/common/constants";
+import { AppServerConfig, FileAction } from "@appserver/common/constants";
 import { combineUrl } from "@appserver/common/utils";
 import config from "../../../../../package.json";
+import FilesFilter from "@appserver/common/api/files/filter";
+import { withRouter } from "react-router-dom";
 
 import {
   StyledTile,
@@ -82,24 +84,37 @@ class Tile extends React.PureComponent {
   };
 
   onCreateForm = () => {
-    // const filter = FilesFilter.getDefault();
-    // filter.folder = match.params.fileId;
-    // const urlFilter = filter.toUrlParams();
+    const { match, history, item } = this.props;
+    const { setInfoPanelIsVisible, setAction } = this.props;
 
-    // history.push(
-    //   combineUrl(
-    //     AppServerConfig.proxyURL,
-    //     config.homepage,
-    //     `/filter?${urlFilter}`
-    //   )
-    // );
+    const filter = FilesFilter.getDefault();
+    filter.folder = match.params.fileId;
+    const urlFilter = filter.toUrlParams();
 
-    console.log("onCreateForm");
+    setInfoPanelIsVisible(false);
+
+    setTimeout(() => {
+      setAction({
+        type: FileAction.Create,
+        extension: "docxf",
+        fromTemplate: true,
+        title: item.attributes.name_form,
+        id: -1,
+      });
+    }, 100);
+
+    history.push(
+      combineUrl(
+        AppServerConfig.proxyURL,
+        config.homepage,
+        `/filter?${urlFilter}`
+      )
+    );
   };
 
   onShowTemplateInfo = () => {
     if (!this.props.isInfoPanelVisible) {
-      this.props.toggleInfoPanel(true);
+      this.props.setInfoPanelIsVisible(true);
     }
   };
 
@@ -201,9 +216,9 @@ Tile.defaultProps = {
 
 export default inject(
   ({ filesStore, settingsStore, infoPanelStore }, { item }) => {
-    const { gallerySelected, setGallerySelected } = filesStore;
+    const { gallerySelected, setGallerySelected, fileActionStore } = filesStore;
     const { getIcon } = settingsStore;
-    const { toggleIsVisible, isVisible } = infoPanelStore;
+    const { setInfoPanelIsVisible, isVisible } = infoPanelStore;
 
     const isSelected = item.id === gallerySelected?.id;
 
@@ -211,12 +226,9 @@ export default inject(
       isSelected,
       setGallerySelected,
       getIcon,
-      toggleInfoPanel: toggleIsVisible,
+      setInfoPanelIsVisible,
       isInfoPanelVisible: isVisible,
+      setAction: fileActionStore.setAction,
     };
   }
-)(
-  withTranslation(["FormGallery", "Common"])(
-    /* withRouter( */ observer(Tile) /* ) */
-  )
-);
+)(withTranslation(["FormGallery", "Common"])(withRouter(observer(Tile))));
