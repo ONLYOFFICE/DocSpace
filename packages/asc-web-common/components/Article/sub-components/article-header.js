@@ -27,7 +27,9 @@ const ArticleHeader = ({
   const isLoadedSetting = isLoaded;
 
   const commonSettings =
-    location.pathname.includes("common") || location.pathname === "/settings";
+    (location.pathname.includes("common") ||
+      location.pathname === "/settings") &&
+    !location.pathname.includes("files");
 
   useEffect(() => {
     if (isLoadedSetting) setIsLoadedArticleHeader(isLoadedSetting);
