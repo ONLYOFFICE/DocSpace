@@ -9,9 +9,12 @@ import Text from "./sub-components/text";
 import ControlButtons from "./sub-components/control-btn";
 import DropBox from "./sub-components/drop-box";
 
+import { isMobileOnly } from "react-device-detect";
+
 import { Consumer } from "@appserver/components/utils/context";
 
 import DomHelpers from "@appserver/components/utils/domHelpers";
+import Backdrop from "@appserver/components/backdrop";
 
 const Navigation = ({
   tReady,
@@ -39,6 +42,7 @@ const Navigation = ({
   const [isOpen, setIsOpen] = React.useState(false);
   const [firstClick, setFirstClick] = React.useState(true);
   const [dropBoxWidth, setDropBoxWidth] = React.useState(0);
+  const [maxHeight, setMaxHeight] = React.useState(false);
 
   const dropBoxRef = React.useRef(null);
   const containerRef = React.useRef(null);
@@ -64,8 +68,14 @@ const Navigation = ({
 
   const toggleDropBox = () => {
     if (isRootFolder) return setIsOpen(false);
-    setDropBoxWidth(DomHelpers.getOuterWidth(containerRef.current));
     setIsOpen((prev) => !prev);
+
+    setDropBoxWidth(DomHelpers.getOuterWidth(containerRef.current));
+
+    const { top } = DomHelpers.getOffset(containerRef.current);
+
+    setMaxHeight(`calc(100vh - ${top}px)`);
+
     setFirstClick(true);
   };
 
@@ -99,25 +109,36 @@ const Navigation = ({
       {(context) => (
         <>
           {isOpen && (
-            <DropBox
-              {...rest}
-              ref={dropBoxRef}
-              dropBoxWidth={dropBoxWidth}
-              sectionHeight={context.sectionHeight}
-              showText={showText}
-              isRootFolder={isRootFolder}
-              onBackToParentFolder={onBackToParentFolderAction}
-              title={title}
-              personal={personal}
-              canCreate={canCreate}
-              navigationItems={navigationItems}
-              getContextOptionsFolder={getContextOptionsFolder}
-              getContextOptionsPlus={getContextOptionsPlus}
-              toggleDropBox={toggleDropBox}
-              toggleInfoPanel={toggleInfoPanel}
-              isInfoPanelVisible={isInfoPanelVisible}
-              onClickAvailable={onClickAvailable}
-            />
+            <>
+              {isMobileOnly && (
+                <Backdrop
+                  isAside={true}
+                  visible={isOpen}
+                  withBackground={true}
+                  zIndex={400}
+                />
+              )}
+              <DropBox
+                {...rest}
+                ref={dropBoxRef}
+                maxHeight={maxHeight}
+                dropBoxWidth={dropBoxWidth}
+                sectionHeight={context.sectionHeight}
+                showText={showText}
+                isRootFolder={isRootFolder}
+                onBackToParentFolder={onBackToParentFolderAction}
+                title={title}
+                personal={personal}
+                canCreate={canCreate}
+                navigationItems={navigationItems}
+                getContextOptionsFolder={getContextOptionsFolder}
+                getContextOptionsPlus={getContextOptionsPlus}
+                toggleDropBox={toggleDropBox}
+                toggleInfoPanel={toggleInfoPanel}
+                isInfoPanelVisible={isInfoPanelVisible}
+                onClickAvailable={onClickAvailable}
+              />
+            </>
           )}
           <StyledContainer
             ref={containerRef}

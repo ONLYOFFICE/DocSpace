@@ -29,7 +29,8 @@ export default function withFileActions(WrappedFileItem) {
     };
 
     onHideContextMenu = () => {
-      this.props.setBufferSelection(null);
+      //this.props.setBufferSelection(null);
+      this.props.setEnabledHotkeys(true);
     };
 
     onDropZoneUpload = (files, uploadToFolder) => {
@@ -253,6 +254,7 @@ export default function withFileActions(WrappedFileItem) {
         hotkeyCaret,
         activeFiles,
         activeFolders,
+        setEnabledHotkeys,
       } = filesStore;
 
       const { startUpload } = uploadDataStore;
@@ -323,6 +325,7 @@ export default function withFileActions(WrappedFileItem) {
         getModel: contextOptionsStore.getModel,
         showHotkeyBorder,
         openFileAction,
+        setEnabledHotkeys,
       };
     }
   )(observer(WithFileActions));

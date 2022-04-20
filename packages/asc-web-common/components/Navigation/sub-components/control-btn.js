@@ -49,12 +49,12 @@ const StyledInfoPanelToggleWrapper = styled.div`
   margin-left: auto;
 
   @media ${tablet} {
-    margin-left: 0;
+    margin-left: ${(props) => (props.isRootFolder ? "auto" : "0")};
   }
 
   ${isMobile &&
   css`
-    margin-left: 0;
+    margin-left: ${(props) => (props.isRootFolder ? "auto" : "0")};
   `}
 
   .info-panel-toggle-bg {
