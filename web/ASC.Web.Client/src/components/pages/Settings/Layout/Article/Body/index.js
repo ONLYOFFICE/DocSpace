@@ -156,7 +156,8 @@ class ArticleBodyContent extends React.Component {
     const { isLoadedPage, location } = this.props;
 
     const commonSettings =
-      location.pathname.includes("common") || location.pathname === "/settings";
+      location.pathname.includes("common/customization") ||
+      location.pathname === "/settings";
 
     const showLoader = commonSettings ? !isLoadedPage : false;
 
