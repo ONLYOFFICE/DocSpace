@@ -59,9 +59,8 @@ const SelectionPanelBody = ({
         style={{ maxWidth: "773px" }}
         displayType="modal"
         isLoading={isLoading}
-        //isLarge
-        //autoMaxHeight
-        //autoMaxWidth
+        autoMaxHeight
+        autoMaxWidth
       >
         <ModalDialog.Header theme={theme}>{dialogName}</ModalDialog.Header>
         <ModalDialog.Body
