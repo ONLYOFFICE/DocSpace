@@ -84,24 +84,14 @@ class Tile extends React.PureComponent {
   };
 
   onCreateForm = () => {
-    const { match, history, item } = this.props;
-    const { setInfoPanelIsVisible, setAction } = this.props;
+    const { match, history } = this.props;
+    const { setInfoPanelIsVisible } = this.props;
 
     const filter = FilesFilter.getDefault();
     filter.folder = match.params.fileId;
     const urlFilter = filter.toUrlParams();
 
     setInfoPanelIsVisible(false);
-
-    setTimeout(() => {
-      setAction({
-        type: FileAction.Create,
-        extension: "docxf",
-        fromTemplate: true,
-        title: item.attributes.name_form,
-        id: -1,
-      });
-    }, 100);
 
     history.push(
       combineUrl(
@@ -216,7 +206,7 @@ Tile.defaultProps = {
 
 export default inject(
   ({ filesStore, settingsStore, infoPanelStore }, { item }) => {
-    const { gallerySelected, setGallerySelected, fileActionStore } = filesStore;
+    const { gallerySelected, setGallerySelected } = filesStore;
     const { getIcon } = settingsStore;
     const { setInfoPanelIsVisible, isVisible } = infoPanelStore;
 
@@ -228,7 +218,6 @@ export default inject(
       getIcon,
       setInfoPanelIsVisible,
       isInfoPanelVisible: isVisible,
-      setAction: fileActionStore.setAction,
     };
   }
 )(withTranslation(["FormGallery", "Common"])(withRouter(observer(Tile))));

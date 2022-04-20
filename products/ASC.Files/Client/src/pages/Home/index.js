@@ -32,6 +32,7 @@ import DragTooltip from "../../components/DragTooltip";
 import { observer, inject } from "mobx-react";
 import config from "../../../package.json";
 import { Consumer } from "@appserver/components/utils/context";
+import { FileAction } from "@appserver/common/constants";
 
 class PureHome extends React.Component {
   componentDidMount() {
@@ -48,6 +49,8 @@ class PureHome extends React.Component {
       getFileInfo,
       setIsPrevSettingsModule,
       isPrevSettingsModule,
+      gallerySelected,
+      setAction,
     } = this.props;
 
     if (!window.location.href.includes("#preview")) {
@@ -158,11 +161,26 @@ class PureHome extends React.Component {
           const folderId = filter.folder;
           //console.log("filter", filter);
 
-          return fetchFiles(folderId, filter).then((data) => {
-            const pathParts = data.selectedFolder.pathParts;
-            const newExpandedKeys = createTreeFolders(pathParts, expandedKeys);
-            setExpandedKeys(newExpandedKeys);
-          });
+          return fetchFiles(folderId, filter)
+            .then((data) => {
+              const pathParts = data.selectedFolder.pathParts;
+              const newExpandedKeys = createTreeFolders(
+                pathParts,
+                expandedKeys
+              );
+              setExpandedKeys(newExpandedKeys);
+            })
+            .then(() => {
+              if (gallerySelected) {
+                setAction({
+                  type: FileAction.Create,
+                  extension: "docxf",
+                  fromTemplate: true,
+                  title: gallerySelected.attributes.name_form,
+                  id: -1,
+                });
+              }
+            });
         }
 
         return Promise.resolve();
@@ -394,9 +412,10 @@ export default inject(
       getFileInfo,
       setIsPrevSettingsModule,
       isPrevSettingsModule,
+      gallerySelected,
     } = filesStore;
 
-    const { id } = fileActionStore;
+    const { id, setAction } = fileActionStore;
     const {
       isRecycleBinFolder,
       isPrivacyFolder,
@@ -490,6 +509,8 @@ export default inject(
 
       setIsPrevSettingsModule,
       isPrevSettingsModule,
+      gallerySelected,
+      setAction,
     };
   }
 )(withRouter(observer(Home)));

@@ -1206,10 +1206,7 @@ class FilesStore {
   createFormFromTemplate = (folderId, formId, title) => {
     return api.files
       .createFormFromTemplate(folderId, formId, title)
-      .then((file) => Promise.resolve(file))
-      .finally(() => {
-        this.setGallerySelected(null);
-      });
+      .then((file) => Promise.resolve(file));
   };
 
   setFile = (file) => {
