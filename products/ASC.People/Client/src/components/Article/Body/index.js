@@ -11,6 +11,7 @@ import config from "../../../../package.json";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 import CatalogItem from "@appserver/components/catalog-item";
+import withLoader from "../../../HOCs/withLoader";
 
 const departmentsIcon = "images/departments.group.react.svg";
 const groupIcon = "/static/images/catalog.folder.react.svg";
@@ -27,7 +28,6 @@ const ArticleBodyContent = ({
   isVisitor,
   isAdmin,
   setDocumentTitle,
-  isArticleLoading,
 }) => {
   const [groupItems, setGroupItems] = React.useState(null);
 
@@ -106,50 +106,41 @@ const ArticleBodyContent = ({
 
   return (
     <>
-      {!isVisitor &&
-        (isArticleLoading ? (
-          <Loaders.ArticleGroup />
-        ) : (
-          <div style={!isAdmin && isMobileOnly ? { marginTop: "16px" } : null}>
-            <CatalogItem
-              key={"root"}
-              id={"departments"}
-              icon={departmentsIcon}
-              onClick={onClick}
-              text={groupsCaption}
-              showText={showText}
-              isActive={isActive("root")}
-            />
-            {groupItems}
-          </div>
-        ))}
+      {!isVisitor && (
+        <div style={!isAdmin && isMobileOnly ? { marginTop: "16px" } : null}>
+          <CatalogItem
+            key={"root"}
+            id={"departments"}
+            icon={departmentsIcon}
+            onClick={onClick}
+            text={groupsCaption}
+            showText={showText}
+            isActive={isActive("root")}
+          />
+          {groupItems}
+        </div>
+      )}
     </>
   );
 };
 
-const BodyContent = withTranslation("Article")(withRouter(ArticleBodyContent));
+const BodyContent = withTranslation(["Article"])(
+  withRouter(withLoader(ArticleBodyContent)(<Loaders.ArticleFolder />))
+);
 
 export default inject(({ auth, peopleStore }) => {
   const { settingsStore, setDocumentTitle, isAdmin } = auth;
   const { customNames, showText, toggleArticleOpen } = settingsStore;
-  const {
-    groupsStore,
-    selectedGroupStore,
-    filterStore,
-    loadingStore,
-  } = peopleStore;
+  const { groupsStore, selectedGroupStore, filterStore } = peopleStore;
   const { filter } = filterStore;
   const { groups } = groupsStore;
   const { groupsCaption } = customNames;
   const { selectedGroup, selectGroup } = selectedGroupStore;
   const selectedKey = selectedGroup ? selectedGroup : "root";
 
-  const { isLoading, isLoaded, firstLoad } = loadingStore;
-
-  const isArticleLoading = (isLoading || !isLoaded) && firstLoad;
   return {
     setDocumentTitle,
-    isArticleLoading,
+
     isVisitor: auth.userStore.user.isVisitor,
     isAdmin,
     groups,

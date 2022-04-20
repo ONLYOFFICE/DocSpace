@@ -1,20 +1,19 @@
 import React from "react";
 import Loaders from "@appserver/common/components/Loaders";
 import { inject, observer } from "mobx-react";
+import { withTranslation } from "react-i18next";
+import withLoader from "../../../HOCs/withLoader";
 
-const ArticleHeaderContent = ({ currentModuleName, isArticleLoading }) => {
-  return isArticleLoading ? (
-    <Loaders.ArticleHeader />
-  ) : (
-    <>{currentModuleName}</>
-  );
+const ArticleHeaderContent = ({ currentModuleName }) => {
+  return <>{currentModuleName}</>;
 };
 
-export default inject(({ auth, filesStore }) => {
-  const { isLoaded, isLoading, firstLoad } = filesStore;
-  const isArticleLoading = (!isLoaded || isLoading) && firstLoad;
+export default inject(({ auth }) => {
   return {
-    isArticleLoading,
     currentModuleName: (auth.product && auth.product.title) || "",
   };
-})(observer(ArticleHeaderContent));
+})(
+  withTranslation([])(
+    withLoader(observer(ArticleHeaderContent))(<Loaders.ArticleHeader />)
+  )
+);
