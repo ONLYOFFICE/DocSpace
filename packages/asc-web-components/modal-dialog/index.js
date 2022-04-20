@@ -162,7 +162,6 @@ class ModalDialog extends React.Component {
           className={className}
           isLarge={isLarge}
           zIndex={zIndex}
-<<<<<<< HEAD
           autoMaxHeight={autoMaxHeight}
           autoMaxWidth={autoMaxWidth}
           fadeType={this.state.fadeType}
@@ -175,48 +174,6 @@ class ModalDialog extends React.Component {
           visible={visible}
           modalSwipeOffset={this.state.modalSwipeOffset}
         />
-=======
-          withBackground={true}
-          isModalDialog
-        >
-          <Dialog
-            width={width}
-            className={`${className} not-selectable`}
-            id={id}
-            style={style}
-          >
-            <Content
-              contentHeight={contentHeight}
-              contentWidth={contentWidth}
-              displayType={this.state.displayType}
-            >
-              {isLoading ? (
-                <Loaders.DialogLoader bodyHeight={modalLoaderBodyHeight} />
-              ) : (
-                <>
-                  <StyledHeader>
-                    <Heading className="heading" size="medium" truncate={true}>
-                      {header ? header.props.children : null}
-                    </Heading>
-                    {!withoutCloseButton && (
-                      <CloseButton
-                        className="modal-dialog-button_close"
-                        onClick={onClose}
-                      ></CloseButton>
-                    )}
-                  </StyledHeader>
-                  <BodyBox paddingProp={modalBodyPadding}>
-                    {body ? body.props.children : null}
-                  </BodyBox>
-                  <Box className="modal-dialog-modal-footer">
-                    {footer ? footer.props.children : null}
-                  </Box>
-                </>
-              )}
-            </Content>
-          </Dialog>
-        </Backdrop>
->>>>>>> feature/virtual-rooms-1.2
       ) : (
         <ModalAside
           id={id}

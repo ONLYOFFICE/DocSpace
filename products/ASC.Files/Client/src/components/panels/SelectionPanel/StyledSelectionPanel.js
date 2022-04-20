@@ -38,6 +38,7 @@ const StyledBody = styled.div`
     margin-right: -4px;
 
     .selection-panel_files-body {
+      //width: 500px;
       grid-area: files;
       display: grid;
       grid-template-rows: max-content auto;
