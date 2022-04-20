@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 using ASC.Api.Core;
 using ASC.Api.Documents;
 using ASC.Files.Core.Security;
+using ASC.Files.Core.Services.OFormService;
 using ASC.Web.Files;
 using ASC.Web.Files.HttpHandlers;
 using ASC.Web.Studio.Core.Notify;
@@ -40,7 +41,9 @@ namespace ASC.Files
             DIHelper.TryAdd<ChunkedUploaderHandlerService>();
             DIHelper.TryAdd<DocuSignHandlerService>();
             DIHelper.TryAdd<ThirdPartyAppHandlerService>();
+            DIHelper.TryAdd<OFormService>();
 
+            services.AddHostedService<OFormService>();
             NotifyConfigurationExtension.Register(DIHelper);
         }
 
