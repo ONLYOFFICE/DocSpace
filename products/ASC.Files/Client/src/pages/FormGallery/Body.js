@@ -24,6 +24,7 @@ const SectionBodyContent = ({
 
   useEffect(() => {
     window.addEventListener("mousedown", onMouseDown);
+    setGallerySelected(null);
 
     return () => {
       window.removeEventListener("mousedown", onMouseDown);

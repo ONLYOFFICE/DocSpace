@@ -13,7 +13,7 @@ class FileActionStore {
   }
 
   setAction = (fileAction) => {
-    if (fileAction.fromTemplate !== undefined && this.fromTemplate) return;
+    if (fileAction.fromTemplate === undefined && this.fromTemplate) return;
 
     const fileActionItems = Object.keys(fileAction);
     for (let key of fileActionItems) {
