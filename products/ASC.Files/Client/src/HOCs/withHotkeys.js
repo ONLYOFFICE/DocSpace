@@ -39,6 +39,7 @@ const withHotkeys = (Component) => {
 
       uploadFile,
       someDialogIsOpen,
+      enabledHotkeys,
     } = props;
 
     const hotkeysFilter = {
@@ -46,7 +47,7 @@ const withHotkeys = (Component) => {
         ev.target?.type === "checkbox" || ev.target?.tagName !== "INPUT",
       filterPreventDefault: false,
       enableOnTags: ["INPUT"],
-      enabled: !someDialogIsOpen,
+      enabled: !someDialogIsOpen && enabledHotkeys,
     };
 
     const onKeyDown = (e) => activateHotkeys(e);
@@ -219,7 +220,13 @@ const withHotkeys = (Component) => {
       filesActionsStore,
       hotkeyStore,
     }) => {
-      const { setSelected, viewAs, setViewAs, fileActionStore } = filesStore;
+      const {
+        setSelected,
+        viewAs,
+        setViewAs,
+        fileActionStore,
+        enabledHotkeys,
+      } = filesStore;
       const { setAction } = fileActionStore;
 
       const {
@@ -287,6 +294,7 @@ const withHotkeys = (Component) => {
 
         uploadFile,
         someDialogIsOpen,
+        enabledHotkeys,
       };
     }
   )(observer(WithHotkeys));

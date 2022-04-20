@@ -83,10 +83,12 @@ class ContextMenu extends Component {
 
   hide = (e) => {
     this.currentEvent = e;
-    this.setState({ visible: false, reshow: false, changeView: false }, () => {
-      if (this.props.onHide) {
-        this.props.onHide(this.currentEvent);
-      }
+
+    this.props.onHide && this.props.onHide(e);
+    this.setState({
+      visible: false,
+      reshow: false,
+      changeView: false,
     });
   };
 

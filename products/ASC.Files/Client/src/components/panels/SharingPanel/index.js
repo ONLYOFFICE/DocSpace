@@ -905,7 +905,7 @@ const SharingPanel = inject(
       id,
       setBufferSelection,
       access,
-      isShared: selection[0].shared,
+      isShared: selection[0]?.shared ? selection[0].shared : false,
     };
   }
 )(

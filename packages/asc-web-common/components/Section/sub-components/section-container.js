@@ -52,7 +52,7 @@ const StyledSectionContainer = styled.section`
   ${isMobile &&
   css`
     width: 100% !important;
-    max-width: 100vw !important
+    max-width: 100vw !important;
     padding: 0 0 0 16px;
     ${tabletProps};
     min-width: 100px;

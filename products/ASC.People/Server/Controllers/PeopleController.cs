@@ -220,7 +220,11 @@ namespace ASC.Employee.Core.Controllers
         [Read("@self")]
         public EmployeeWraper Self()
         {
-            return EmployeeWraperFullHelper.GetFull(UserManager.GetUser(SecurityContext.CurrentAccount.ID, EmployeeWraperFullHelper.GetExpression(ApiContext)));
+            var result = EmployeeWraperFullHelper.GetFull(UserManager.GetUser(SecurityContext.CurrentAccount.ID, EmployeeWraperFullHelper.GetExpression(ApiContext)));
+
+            result.Theme = SettingsManager.LoadForCurrentUser<DarkThemeSettings>().Theme;
+
+            return result;
         }
 
         [Read("email")]
@@ -720,13 +724,13 @@ namespace ASC.Employee.Core.Controllers
             return EmployeeWraperFullHelper.GetFull(user);
         }
 
-        [Update("{userid}")]
+        [Update("{userid}", order: int.MaxValue, DisableFormat = true)]
         public EmployeeWraperFull UpdateMemberFromBody(string userid, [FromBody] UpdateMemberModel memberModel)
         {
             return UpdateMember(userid, memberModel);
         }
 
-        [Update("{userid}")]
+        [Update("{userid}", order: int.MaxValue, DisableFormat = true)]
         [Consumes("application/x-www-form-urlencoded")]
         public EmployeeWraperFull UpdateMemberFromForm(string userid, [FromForm] UpdateMemberModel memberModel)
         {
@@ -1493,6 +1497,36 @@ namespace ASC.Employee.Core.Controllers
             return users.Select(EmployeeWraperFullHelper.GetFull);
         }
 
+        [Read("theme")]
+        public DarkThemeSettings GetTheme()
+        {
+            return SettingsManager.LoadForCurrentUser<DarkThemeSettings>();
+        }
+
+        [Update("theme")]
+        public DarkThemeSettings ChangeThemeFromBody([FromBody] DarkThemeSettingsModel model)
+        {
+            return ChangeTheme(model);
+        }
+
+        [Update("theme")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public DarkThemeSettings ChangeThemeFromForm([FromForm] DarkThemeSettingsModel model)
+        {
+            return ChangeTheme(model);
+        }
+
+        private DarkThemeSettings ChangeTheme(DarkThemeSettingsModel model)
+        {
+            var darkThemeSettings = new DarkThemeSettings
+            {
+                Theme = model.Theme
+            };
+
+            SettingsManager.SaveForCurrentUser(darkThemeSettings);
+
+            return darkThemeSettings;
+        }
 
         [Update("invite")]
         public IEnumerable<EmployeeWraperFull> ResendUserInvitesFromBody([FromBody] UpdateMembersModel model)
