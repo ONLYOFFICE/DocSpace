@@ -175,16 +175,6 @@ const InvalidRoute = (props) => (
 
 const RedirectToHome = () => <Redirect to={PROXY_HOMEPAGE_URL} />;
 
-const themeKeys = ["system", "base", "dark"];
-
-const checkTheme = () => {
-  const key = localStorage.getItem("theme");
-
-  if (themeKeys.some((theme) => theme === key)) return key;
-
-  return "system";
-};
-
 const Shell = ({ items = [], page = "home", ...rest }) => {
   const {
     isLoaded,
@@ -201,6 +191,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     setMaintenanceExist,
     roomsMode,
     setSnackbarExist,
+    userTheme,
   } = rest;
 
   useEffect(() => {
@@ -426,8 +417,8 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   }, [page]);
 
   useEffect(() => {
-    setTheme(checkTheme());
-  }, []);
+    if (userTheme) setTheme(userTheme);
+  }, [userTheme]);
 
   const pathname = window.location.pathname.toLowerCase();
   const isEditor = pathname.indexOf("doceditor") !== -1;
@@ -562,6 +553,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
 const ShellWrapper = inject(({ auth, backup }) => {
   const { init, isLoaded, settingsStore, setProductVersion, language } = auth;
+
   const {
     personal,
     roomsMode,
@@ -600,6 +592,7 @@ const ShellWrapper = inject(({ auth, backup }) => {
     setTheme,
     roomsMode,
     setSnackbarExist,
+    userTheme: auth?.userStore?.user?.theme,
   };
 })(observer(Shell));
 
