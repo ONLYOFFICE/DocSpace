@@ -18,7 +18,7 @@ const SectionHeaderContent = (props) => {
 
   const onBackToFiles = () => {
     const filter = FilesFilter.getDefault();
-    filter.folder = match.params.fileId;
+    filter.folder = match.params.folderId;
     const urlFilter = filter.toUrlParams();
 
     history.push(

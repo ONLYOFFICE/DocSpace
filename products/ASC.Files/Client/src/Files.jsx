@@ -43,7 +43,7 @@ const FILTER_URL = combineUrl(PROXY_HOMEPAGE_URL, "/filter");
 const MEDIA_VIEW_URL = combineUrl(PROXY_HOMEPAGE_URL, "/#preview");
 const FORM_GALLERY_URL = combineUrl(
   PROXY_HOMEPAGE_URL,
-  "/form-gallery/:fileId"
+  "/form-gallery/:folderId"
 );
 
 if (!window.AppServer) {

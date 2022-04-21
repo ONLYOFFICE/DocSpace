@@ -92,7 +92,7 @@ class Tile extends React.PureComponent {
     const { setInfoPanelIsVisible } = this.props;
 
     const filter = FilesFilter.getDefault();
-    filter.folder = match.params.fileId;
+    filter.folder = match.params.folderId;
     const urlFilter = filter.toUrlParams();
 
     setInfoPanelIsVisible(false);
