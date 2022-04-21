@@ -349,7 +349,7 @@ namespace ASC.Files.Helpers
             return await FolderWrapperHelper.GetAsync(folder);
         }
 
-        public async Task<FileWrapper<T>> CreateFileAsync(T folderId, string title, JsonElement templateId, bool enableExternalExt = false)
+        public async Task<FileWrapper<T>> CreateFileAsync(T folderId, string title, JsonElement templateId, int formId, bool enableExternalExt = false)
         {
             File<T> file;
 
@@ -363,7 +363,7 @@ namespace ASC.Files.Helpers
             }
             else
             {
-                file = await FileStorageService.CreateNewFileAsync(new FileModel<T, int> { ParentId = folderId, Title = title, TemplateId = 0 }, enableExternalExt);
+                file = await FileStorageService.CreateNewFileAsync(new FileModel<T, int> { ParentId = folderId, Title = title, TemplateId = 0, FormId = formId }, enableExternalExt);
             }
 
             return await FileWrapperHelper.GetAsync(file);

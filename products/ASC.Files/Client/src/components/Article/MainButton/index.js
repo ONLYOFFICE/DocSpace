@@ -10,10 +10,13 @@ import {
   isTablet as isTabletUtils,
 } from "@appserver/components/utils/device";
 import Loaders from "@appserver/common/components/Loaders";
-import { FileAction } from "@appserver/common/constants";
+import { AppServerConfig, FileAction } from "@appserver/common/constants";
 import { encryptionUploadDialog } from "../../../helpers/desktop";
+import { withRouter } from "react-router";
 
 import MobileView from "./MobileView";
+import { combineUrl } from "@appserver/common/utils";
+import config from "../../../../package.json";
 import withLoader from "../../../HOCs/withLoader";
 
 const ArticleMainButtonContent = (props) => {
@@ -35,6 +38,9 @@ const ArticleMainButtonContent = (props) => {
     isRecentFolder,
     isCommonFolder,
     isRecycleBinFolder,
+    history,
+    hasGalleryFiles,
+    currentFolderId,
   } = props;
   const inputFilesElement = React.useRef(null);
   const inputFolderElement = React.useRef(null);
@@ -89,6 +95,16 @@ const ArticleMainButtonContent = (props) => {
 
   const onInputClick = React.useCallback((e) => (e.target.value = null), []);
 
+  const onShowGallery = () => {
+    history.push(
+      combineUrl(
+        AppServerConfig.proxyURL,
+        config.homepage,
+        `/form-gallery/${currentFolderId}/`
+      )
+    );
+  };
+
   React.useEffect(() => {
     const folderUpload = !isMobile
       ? [
@@ -126,6 +142,13 @@ const ArticleMainButtonContent = (props) => {
                   disabled: isPrivacy,
                   key: "form-file",
                 },
+                hasGalleryFiles && {
+                  className: "main-button_drop-down_sub",
+                  label: t("Common:OFORMsGallery"),
+                  onClick: onShowGallery,
+                  disabled: isPrivacy,
+                  key: "form-gallery",
+                },
               ],
             },
           ]
@@ -147,6 +170,17 @@ const ArticleMainButtonContent = (props) => {
               key: "form-file",
             },
           ];
+
+    if ((isMobile || isTabletUtils()) && hasGalleryFiles) {
+      formActions.push({
+        className: "main-button_drop-down_sub",
+        icon: "images/form.react.svg",
+        label: t("Common:OFORMsGallery"),
+        onClick: onShowGallery,
+        disabled: isPrivacy,
+        key: "form-gallery",
+      });
+    }
 
     const actions = [
       {
@@ -209,6 +243,8 @@ const ArticleMainButtonContent = (props) => {
   }, [
     t,
     isPrivacy,
+    hasGalleryFiles,
+    currentFolderId,
     onCreate,
     onShowSelectFileDialog,
     onUploadFileClick,
@@ -268,13 +304,21 @@ const ArticleMainButtonContent = (props) => {
 };
 
 export default inject(
-  ({ auth, filesStore, dialogsStore, uploadDataStore, treeFoldersStore }) => {
+  ({
+    auth,
+    filesStore,
+    dialogsStore,
+    uploadDataStore,
+    treeFoldersStore,
+    selectedFolderStore,
+  }) => {
     const {
       isLoaded,
       firstLoad,
       isLoading,
       fileActionStore,
       canCreate,
+      hasGalleryFiles,
     } = filesStore;
     const {
       isPrivacyFolder,
@@ -288,6 +332,8 @@ export default inject(
     const { setSelectFileDialogVisible } = dialogsStore;
 
     const isArticleLoading = (!isLoaded || isLoading) && firstLoad;
+
+    const currentFolderId = selectedFolderStore.id;
 
     return {
       showText: auth.settingsStore.showText,
@@ -310,10 +356,14 @@ export default inject(
       isLoading,
       isLoaded,
       firstLoad,
+      hasGalleryFiles,
+      currentFolderId,
     };
   }
 )(
   withTranslation(["Article", "Common"])(
-    withLoader(observer(ArticleMainButtonContent))(<Loaders.ArticleButton />)
+    withLoader(observer(withRouter(ArticleMainButtonContent)))(
+      <Loaders.ArticleButton />
+    )
   )
 );

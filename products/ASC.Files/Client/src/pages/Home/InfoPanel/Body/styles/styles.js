@@ -64,6 +64,16 @@ const StyledTitle = styled.div`
   }
 `;
 
+const StyledGalleryThumbnail = styled.div`
+  max-height: 200px;
+  overflow: hidden;
+
+  .info-panel_gallery-img {
+    display: block;
+    margin: 0 auto;
+  }
+`;
+
 const StyledThumbnail = styled.div`
   display: flex;
   justify-content: center;
@@ -231,4 +241,5 @@ export {
   StyledAccess,
   StyledAccessItem,
   StyledOpenSharingPanel,
+  StyledGalleryThumbnail,
 };

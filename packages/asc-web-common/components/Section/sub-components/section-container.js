@@ -38,10 +38,8 @@ const StyledSectionContainer = styled.section`
   display: flex;
   flex-direction: column;
 
-  width: ${(props) =>
-    props.infoPanelIsVisible ? "calc(100% - 677px)" : "100%"};
-  max-width: ${(props) =>
-    props.infoPanelIsVisible ? "calc(100vw - 677px)" : "100vw"};
+  width: 100%;
+  max-width: 100%;
 
   @media ${tablet} {
     width: 100%;
