@@ -240,6 +240,7 @@ const ArticleMainButtonContent = (props) => {
   }, [
     t,
     isPrivacy,
+    hasGalleryFiles,
     currentFolderId,
     onCreate,
     onShowSelectFileDialog,
@@ -358,6 +359,8 @@ export default inject(
   }
 )(
   withTranslation(["Article", "Common"])(
-    withLoader(observer(withRouter(ArticleMainButtonContent)))(<Loaders.ArticleButton />)
+    withLoader(observer(withRouter(ArticleMainButtonContent)))(
+      <Loaders.ArticleButton />
+    )
   )
 );
