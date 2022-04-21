@@ -3,7 +3,7 @@ import api from "../api";
 import { LANGUAGE, TenantStatus } from "../constants";
 import { combineUrl } from "../utils";
 import FirebaseHelper from "../utils/firebase";
-import { AppServerConfig } from "../constants";
+import { AppServerConfig, ThemeKeys } from "../constants";
 import { version } from "../package.json";
 import SocketIOHelper from "../utils/socket";
 
@@ -26,9 +26,7 @@ class SettingsStore {
   currentProductId = "";
   culture = "en";
   cultures = [];
-  theme = !!localStorage.getItem("theme")
-    ? themes[localStorage.getItem("theme")]
-    : Base;
+  theme = Base;
   trustedDomains = [];
   trustedDomainsType = 0;
   timezone = "UTC";
@@ -440,19 +438,28 @@ class SettingsStore {
       this.buildVersionInfo.documentServer = "6.4.1";
   };
 
-  changeTheme = () => {
-    const currentTheme =
-      JSON.stringify(this.theme) === JSON.stringify(Base) ? Dark : Base;
-    localStorage.setItem(
-      "theme",
-      JSON.stringify(this.theme) === JSON.stringify(Base) ? "Dark" : "Base"
-    );
-    this.theme = currentTheme;
-  };
+  setTheme = (key) => {
+    let theme = null;
+    switch (key) {
+      case ThemeKeys.Base:
+      case ThemeKeys.BaseStr:
+        theme = ThemeKeys.BaseStr;
+        break;
+      case ThemeKeys.Dark:
+      case ThemeKeys.DarkStr:
+        theme = ThemeKeys.DarkStr;
+        break;
+      case ThemeKeys.System:
+      case ThemeKeys.SystemStr:
+      default:
+        theme =
+          window.matchMedia &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? ThemeKeys.DarkStr
+            : ThemeKeys.BaseStr;
+    }
 
-  setTheme = (theme) => {
     this.theme = themes[theme];
-    localStorage.setItem("theme", theme);
   };
 
   setMailDomainSettings = async (data) => {
