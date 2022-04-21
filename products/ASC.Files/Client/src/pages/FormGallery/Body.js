@@ -4,12 +4,14 @@ import EmptyScreenContainer from "@appserver/components/empty-screen-container";
 import { withTranslation } from "react-i18next";
 import TileContainer from "./TilesView/sub-components/TileContainer";
 import FileTile from "./TilesView/FileTile";
+import Loader from "@appserver/components/loader";
 
 const SectionBodyContent = ({
   oformFiles,
   hasGalleryFiles,
   setGallerySelected,
   t,
+  tReady,
 }) => {
   const onMouseDown = (e) => {
     if (
@@ -31,7 +33,9 @@ const SectionBodyContent = ({
     };
   }, [onMouseDown]);
 
-  return !hasGalleryFiles ? (
+  return !tReady || !oformFiles ? (
+    <Loader className="pageLoader" type="rombs" size="40px" />
+  ) : !hasGalleryFiles ? (
     <EmptyScreenContainer
       imageSrc="images/empty_screen_form-gallery.react.svg"
       imageAlt="Empty Screen Gallery image"

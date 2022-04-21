@@ -64,7 +64,7 @@ class FilesStore {
 
   isPrevSettingsModule = false;
   enabledHotkeys = true;
-  oformFiles = [];
+  oformFiles = null;
   gallerySelected = null;
 
   constructor(
@@ -294,7 +294,7 @@ class FilesStore {
   };
 
   get hasGalleryFiles() {
-    return !!this.oformFiles.length;
+    return this.oformFiles && !!this.oformFiles.length;
   }
 
   setGallerySelected = (gallerySelected) => {
