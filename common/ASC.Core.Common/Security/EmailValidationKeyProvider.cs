@@ -279,6 +279,10 @@ namespace ASC.Security.Cryptography
                     checkKeyResult = Provider.ValidateEmailKey(email + type, key, Provider.ValidAuthKeyInterval);
                     break;
 
+                case ConfirmType.PortalContinue:
+                    checkKeyResult = Provider.ValidateEmailKey(email + type, key);
+                    break;
+
                 default:
                     checkKeyResult = Provider.ValidateEmailKey(email + type, key, Provider.ValidEmailKeyInterval);
                     break;

@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Http;
 using System.Security;
 using System.Threading.Tasks;
+using System.Web;
 
 using ASC.Api.Core;
 using ASC.Common;
@@ -14,6 +15,7 @@ using ASC.Core.Common.Notify.Push;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
+using ASC.MessagingSystem;
 using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core;
@@ -21,12 +23,14 @@ using ASC.Web.Core.Files;
 using ASC.Web.Core.Helpers;
 using ASC.Web.Core.Mobile;
 using ASC.Web.Core.PublicResources;
+using ASC.Web.Core.Users;
 using ASC.Web.Core.Utility;
 using ASC.Web.Studio.Core;
 using ASC.Web.Studio.Core.Notify;
 using ASC.Web.Studio.UserControls.Management;
 using ASC.Web.Studio.Utility;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -43,6 +47,9 @@ namespace ASC.Web.Api.Controllers
         private readonly ApiSystemHelper _apiSystemHelper;
         private readonly CoreSettings _coreSettings;
         private readonly StudioNotifyService _studioNotifyService;
+        private readonly MessageService _messageService;
+        private readonly MessageTarget _messageTarget;
+        private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
         private readonly PermissionContext _permissionContext;
 
         private Tenant Tenant { get { return ApiContext.Tenant; } }
@@ -95,7 +102,10 @@ namespace ASC.Web.Api.Controllers
             ApiSystemHelper apiSystemHelper,
             CoreSettings coreSettings,
             PermissionContext permissionContext,
-            StudioNotifyService studioNotifyService
+            StudioNotifyService studioNotifyService,
+            MessageService messageService,
+            MessageTarget messageTarget,
+            DisplayUserSettingsHelper displayUserSettingsHelper
             )
         {
             Log = options.CurrentValue;
@@ -124,6 +134,9 @@ namespace ASC.Web.Api.Controllers
             _apiSystemHelper = apiSystemHelper;
             _coreSettings = coreSettings;
             _studioNotifyService = studioNotifyService;
+            _messageService = messageService;
+            _messageTarget = messageTarget;
+            _displayUserSettingsHelper = displayUserSettingsHelper;
             _permissionContext = permissionContext;
         }
 
@@ -374,6 +387,94 @@ namespace ASC.Web.Api.Controllers
             }
 
             return CommonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.Auth);
+        }
+
+        [Create("suspend")]
+        public void SendSuspendInstructions()
+        {
+            _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+            var owner = UserManager.GetUsers(Tenant.OwnerId);
+            var suspendUrl = CommonLinkUtility.GetConfirmationUrl(owner.Email, ConfirmType.PortalSuspend);
+            var continueUrl = CommonLinkUtility.GetConfirmationUrl(owner.Email, ConfirmType.PortalContinue);
+
+            _studioNotifyService.SendMsgPortalDeactivation(Tenant, suspendUrl, continueUrl);
+
+            _messageService.Send(MessageAction.OwnerSentPortalDeactivationInstructions, _messageTarget.Create(owner.ID), owner.DisplayUserName(false, _displayUserSettingsHelper));
+        }
+
+        [Create("delete")]
+        public void SendDeleteInstructions()
+        {
+            _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+            var owner = UserManager.GetUsers(Tenant.OwnerId);
+
+            var showAutoRenewText = !CoreBaseSettings.Standalone &&
+                            PaymentManager.GetTariffPayments(Tenant.TenantId).Any() &&
+                            !TenantExtra.GetTenantQuota().Trial;
+
+            _studioNotifyService.SendMsgPortalDeletion(Tenant, CommonLinkUtility.GetConfirmationUrl(owner.Email, ConfirmType.PortalRemove), showAutoRenewText);
+
+            _messageService.Send(MessageAction.OwnerSentPortalDeleteInstructions, _messageTarget.Create(owner.ID), owner.DisplayUserName(false, _displayUserSettingsHelper));
+        }
+
+        [Update("continue")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "PortalContinue")]
+        public void ContinuePortal()
+        {
+            Tenant.SetStatus(TenantStatus.Active);
+            TenantManager.SaveTenant(Tenant);
+        }
+
+        [Update("suspend")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "PortalSuspend")]
+        public void SuspendPortal()
+        {
+            Tenant.SetStatus(TenantStatus.Suspended);
+            TenantManager.SaveTenant(Tenant);
+            _messageService.Send(MessageAction.PortalDeactivated);
+        }
+
+        [Delete("delete")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "ProfileRemove")]
+        public async Task<object> DeletePortal()
+        {
+            TenantManager.RemoveTenant(Tenant.TenantId);
+
+            if (!string.IsNullOrEmpty(_apiSystemHelper.ApiCacheUrl))
+            {
+                await _apiSystemHelper.RemoveTenantFromCacheAsync(Tenant.TenantAlias, SecurityContext.CurrentAccount.ID);
+            }
+
+            var owner = UserManager.GetUsers(Tenant.OwnerId);
+            var redirectLink = SetupInfo.TeamlabSiteRedirect + "/remove-portal-feedback-form.aspx#";
+            var parameters = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes("{\"firstname\":\"" + owner.FirstName +
+                                                                                    "\",\"lastname\":\"" + owner.LastName +
+                                                                                    "\",\"alias\":\"" + Tenant.TenantAlias +
+                                                                                    "\",\"email\":\"" + owner.Email + "\"}"));
+
+            redirectLink += HttpUtility.UrlEncode(parameters);
+
+            var authed = false;
+            try
+            {
+                if (!SecurityContext.IsAuthenticated)
+                {
+                    SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
+                    authed = true;
+                }
+
+                _messageService.Send(MessageAction.PortalDeleted);
+
+            }
+            finally
+            {
+                if (authed) SecurityContext.Logout();
+            }
+
+            _studioNotifyService.SendMsgPortalDeletionSuccess(owner, redirectLink);
+
+            return redirectLink;
         }
     }
 }
