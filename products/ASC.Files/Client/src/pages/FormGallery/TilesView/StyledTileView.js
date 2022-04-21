@@ -2,6 +2,7 @@ import styled, { css } from "styled-components";
 import { Base } from "@appserver/components/themes";
 import TileContent from "./sub-components/TileContent";
 import { tablet, desktop } from "@appserver/components/utils/device";
+import { isMobile } from "react-device-detect";
 
 const FlexBoxStyles = css`
   display: flex;
@@ -341,6 +342,11 @@ const StyledTileContainer = styled.div`
   @media ${tablet} {
     margin-right: -3px;
   }
+
+  ${isMobile &&
+  css`
+    padding-top: 24px;
+  `}
 `;
 
 StyledTileContainer.defaultProps = { theme: Base };
