@@ -298,8 +298,8 @@ export function deleteFolder(folderId, deleteAfter, immediately) {
   return request(options);
 }
 
-export function createFile(folderId, title, templateId) {
-  const data = { title, templateId };
+export function createFile(folderId, title, templateId, formId) {
+  const data = { title, templateId, formId };
   const options = {
     method: "post",
     url: `/files/${folderId}/file`,
@@ -858,19 +858,6 @@ export function restoreDocumentsVersion(fileId, version, doc) {
   const options = {
     method: "get",
     url: `files/file/${fileId}/restoreversion?version=${version}&doc=${doc}`,
-  };
-
-  return request(options);
-}
-
-export function createFormFromTemplate(folderId, formId, title) {
-  const options = {
-    method: "post",
-    url: `files/${folderId}/file.json`,
-    data: {
-      title,
-      formId,
-    },
   };
 
   return request(options);

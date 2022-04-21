@@ -196,8 +196,10 @@ export default function withContent(WrappedContent) {
         addActiveItems,
         fileCopyAs,
         fromTemplate,
+        gallerySelected,
       } = this.props;
       const { itemTitle } = this.state;
+      const { parentId, fileExst } = item;
 
       const isMakeFormFromFile = fileActionTemplateId ? true : false;
 
@@ -299,19 +301,11 @@ export default function withContent(WrappedContent) {
               return setIsLoading(false);
             });
         } else if (fromTemplate) {
-          const {
-            createFormFromTemplate,
-            item,
-            gallerySelected,
-            openDocEditor,
-          } = this.props;
-          const { itemTitle } = this.state;
-          const { parentId, fileExst } = item;
-
-          createFormFromTemplate(
+          createFile(
             parentId,
-            gallerySelected.id,
-            `${itemTitle}.${fileExst}`
+            `${itemTitle}.${fileExst}`,
+            undefined,
+            gallerySelected.id
           )
             .then((file) => {
               createdFileId = file.id;
@@ -505,7 +499,6 @@ export default function withContent(WrappedContent) {
         passwordEntryProcess,
         addActiveItems,
         gallerySelected,
-        createFormFromTemplate,
       } = filesStore;
       const { clearActiveOperations, fileCopyAs } = uploadDataStore;
       const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
@@ -570,7 +563,6 @@ export default function withContent(WrappedContent) {
         titleWithoutExt,
         fromTemplate,
         gallerySelected,
-        createFormFromTemplate,
       };
     }
   )(observer(WithContent));

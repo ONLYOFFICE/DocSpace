@@ -1190,21 +1190,17 @@ class FilesStore {
     return api.files.addFileToRecentlyViewed(fileId);
   };
 
-  createFile = (folderId, title, templateId) => {
-    return api.files.createFile(folderId, title, templateId).then((file) => {
-      return Promise.resolve(file);
-    });
+  createFile = (folderId, title, templateId, formId) => {
+    return api.files
+      .createFile(folderId, title, templateId, formId)
+      .then((file) => {
+        return Promise.resolve(file);
+      });
   };
 
   createFolder(parentFolderId, title) {
     return api.files.createFolder(parentFolderId, title);
   }
-
-  createFormFromTemplate = (folderId, formId, title) => {
-    return api.files
-      .createFormFromTemplate(folderId, formId, title)
-      .then((file) => Promise.resolve(file));
-  };
 
   setFile = (file) => {
     const fileIndex = this.files.findIndex((f) => f.id === file.id);
