@@ -107,7 +107,12 @@ const Article = ({
 
   return (
     <>
-      <StyledArticle showText={showText} articleOpen={articleOpen} {...rest}>
+      <StyledArticle
+        id={"article-container"}
+        showText={showText}
+        articleOpen={articleOpen}
+        {...rest}
+      >
         <Resizable
           defaultSize={{
             width: 256,
