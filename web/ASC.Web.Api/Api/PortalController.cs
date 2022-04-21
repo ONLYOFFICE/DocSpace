@@ -54,7 +54,14 @@ public class PortalController : ControllerBase
     private readonly TenantExtra _tenantExtra;
     private readonly ILog _log;
     private readonly IHttpClientFactory _clientFactory;
-
+    private readonly ApiSystemHelper _apiSystemHelper;
+    private readonly CoreSettings _coreSettings;
+    private readonly PermissionContext _permissionContext;
+    private readonly StudioNotifyService _studioNotifyService;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly MessageService _messageService;
+    private readonly MessageTarget _messageTarget;
+    private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
 
     public PortalController(
         IOptionsMonitor<ILog> options,
@@ -75,7 +82,15 @@ public class PortalController : ControllerBase
         LicenseReader licenseReader,
         SetupInfo setupInfo,
         DocumentServiceLicense documentServiceLicense,
-        IHttpClientFactory clientFactory
+        IHttpClientFactory clientFactory,
+        ApiSystemHelper apiSystemHelper,
+        CoreSettings coreSettings,
+        PermissionContext permissionContext,
+        StudioNotifyService studioNotifyService,
+        IHttpContextAccessor httpContextAccessor,
+        MessageService messageService,
+        MessageTarget messageTarget,
+        DisplayUserSettingsHelper displayUserSettingsHelper
         )
     {
         _log = options.CurrentValue;
@@ -97,6 +112,14 @@ public class PortalController : ControllerBase
         _documentServiceLicense = documentServiceLicense;
         _tenantExtra = tenantExtra;
         _clientFactory = clientFactory;
+        _apiSystemHelper = apiSystemHelper;
+        _coreSettings = coreSettings;
+        _permissionContext = permissionContext;
+        _studioNotifyService = studioNotifyService;
+        _httpContextAccessor = httpContextAccessor;
+        _messageService = messageService;
+        _messageTarget = messageTarget;
+        _displayUserSettingsHelper = displayUserSettingsHelper;
     }
 
     [Read("")]
@@ -276,5 +299,169 @@ public class PortalController : ControllerBase
     {
         var currentUser = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
         _mobileAppInstallRegistrator.RegisterInstall(currentUser.Email, type);
+    }
+
+    /// <summary>
+    /// Updates a portal name with a new one specified in the request.
+    /// </summary>
+    /// <short>Update a portal name</short>
+    /// <param name="alias">New portal name</param>
+    /// <returns>Message about renaming a portal</returns>
+    ///<visible>false</visible>
+    [Update("portalrename")]
+    public async Task<object> UpdatePortalName(PortalRenameRequestsDto model)
+    {
+        if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.PortalSecurity)))
+        {
+            throw new BillingException(Resource.ErrorNotAllowedOption, "PortalRename");
+        }
+
+        if (_coreBaseSettings.Personal)
+        {
+            throw new Exception(Resource.ErrorAccessDenied);
+        }
+
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+        var alias = model.Alias;
+        if (string.IsNullOrEmpty(alias))
+        {
+            throw new ArgumentException(nameof(alias));
+        }
+
+        var tenant = _tenantManager.GetCurrentTenant();
+        var user = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
+
+        var localhost = _coreSettings.BaseDomain == "localhost" || tenant.Alias == "localhost";
+
+        var newAlias = alias.ToLowerInvariant();
+        var oldAlias = tenant.Alias;
+        var oldVirtualRootPath = _commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/');
+
+        if (!string.Equals(newAlias, oldAlias, StringComparison.InvariantCultureIgnoreCase))
+        {
+            if (!string.IsNullOrEmpty(_apiSystemHelper.ApiSystemUrl))
+            {
+                await _apiSystemHelper.ValidatePortalNameAsync(newAlias, user.Id);
+            }
+            else
+            {
+                _tenantManager.CheckTenantAddress(newAlias.Trim());
+            }
+
+
+            if (!string.IsNullOrEmpty(_apiSystemHelper.ApiCacheUrl))
+            {
+                await _apiSystemHelper.AddTenantToCacheAsync(newAlias, user.Id);
+            }
+
+            tenant.Alias = alias;
+            tenant = _tenantManager.SaveTenant(tenant);
+
+
+            if (!string.IsNullOrEmpty(_apiSystemHelper.ApiCacheUrl))
+            {
+                await _apiSystemHelper.RemoveTenantFromCacheAsync(oldAlias, user.Id);
+            }
+
+            if (!localhost || string.IsNullOrEmpty(tenant.MappedDomain))
+            {
+                _studioNotifyService.PortalRenameNotify(tenant, oldVirtualRootPath);
+            }
+        }
+        else
+        {
+            return string.Empty;
+        }
+
+        return _commonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.Auth);
+    }
+
+    [Create("suspend")]
+    public void SendSuspendInstructions()
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+        var owner = _userManager.GetUsers(Tenant.OwnerId);
+        var suspendUrl = _commonLinkUtility.GetConfirmationUrl(owner.Email, ConfirmType.PortalSuspend);
+        var continueUrl = _commonLinkUtility.GetConfirmationUrl(owner.Email, ConfirmType.PortalContinue);
+
+        _studioNotifyService.SendMsgPortalDeactivation(Tenant, suspendUrl, continueUrl);
+
+        _messageService.Send(MessageAction.OwnerSentPortalDeactivationInstructions, _messageTarget.Create(owner.Id), owner.DisplayUserName(false, _displayUserSettingsHelper));
+    }
+
+    [Create("delete")]
+    public void SendDeleteInstructions()
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        var owner = _userManager.GetUsers(Tenant.OwnerId);
+
+        var showAutoRenewText = !_coreBaseSettings.Standalone &&
+                        _paymentManager.GetTariffPayments(Tenant.Id).Any() &&
+                        !_tenantExtra.GetTenantQuota().Trial;
+
+        _studioNotifyService.SendMsgPortalDeletion(Tenant, _commonLinkUtility.GetConfirmationUrl(owner.Email, ConfirmType.PortalRemove), showAutoRenewText);
+
+        _messageService.Send(MessageAction.OwnerSentPortalDeleteInstructions, _messageTarget.Create(owner.Id), owner.DisplayUserName(false, _displayUserSettingsHelper));
+    }
+
+    [Update("continue")]
+    [Authorize(AuthenticationSchemes = "confirm", Roles = "PortalContinue")]
+    public void ContinuePortal()
+    {
+        Tenant.SetStatus(TenantStatus.Active);
+        _tenantManager.SaveTenant(Tenant);
+    }
+
+    [Update("suspend")]
+    [Authorize(AuthenticationSchemes = "confirm", Roles = "PortalSuspend")]
+    public void SuspendPortal()
+    {
+        Tenant.SetStatus(TenantStatus.Suspended);
+        _tenantManager.SaveTenant(Tenant);
+        _messageService.Send(MessageAction.PortalDeactivated);
+    }
+
+    [Delete("delete")]
+    [Authorize(AuthenticationSchemes = "confirm", Roles = "ProfileRemove")]
+    public async Task<object> DeletePortal()
+    {
+        _tenantManager.RemoveTenant(Tenant.Id);
+
+        if (!string.IsNullOrEmpty(_apiSystemHelper.ApiCacheUrl))
+        {
+            await _apiSystemHelper.RemoveTenantFromCacheAsync(Tenant.Alias, _securityContext.CurrentAccount.ID);
+        }
+
+        var owner = _userManager.GetUsers(Tenant.OwnerId);
+        var redirectLink = _setupInfo.TeamlabSiteRedirect + "/remove-portal-feedback-form.aspx#";
+        var parameters = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes("{\"firstname\":\"" + owner.FirstName +
+                                                                                "\",\"lastname\":\"" + owner.LastName +
+                                                                                "\",\"alias\":\"" + Tenant.Alias +
+                                                                                "\",\"email\":\"" + owner.Email + "\"}"));
+
+        redirectLink += HttpUtility.UrlEncode(parameters);
+
+        var authed = false;
+        try
+        {
+            if (!_securityContext.IsAuthenticated)
+            {
+                _securityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
+                authed = true;
+            }
+
+            _messageService.Send(MessageAction.PortalDeleted);
+
+        }
+        finally
+        {
+            if (authed) _securityContext.Logout();
+        }
+
+        _studioNotifyService.SendMsgPortalDeletionSuccess(owner, redirectLink);
+
+        return redirectLink;
     }
 }

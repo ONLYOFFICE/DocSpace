@@ -276,7 +276,12 @@ public class EmailValidationKeyModelHelper
             case ConfirmType.PhoneAuth:
             case ConfirmType.TfaActivation:
             case ConfirmType.TfaAuth:
+            case ConfirmType.Auth:
                 checkKeyResult = _provider.ValidateEmailKey(email + type, key, _provider._validAuthKeyInterval);
+                break;
+
+            case ConfirmType.PortalContinue:
+                checkKeyResult = _provider.ValidateEmailKey(email + type, key);
                 break;
 
             default:

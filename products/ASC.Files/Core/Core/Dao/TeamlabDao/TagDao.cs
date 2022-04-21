@@ -791,7 +791,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
             }
 
             monitorFolderIds = monitorFolderIds.Concat(tempTags.Where(x => x.EntryType == FileEntryType.Folder).Select(x => x.EntryId));
-            result.Concat(tempTags);
+            result = result.Concat(tempTags);
         }
 
         var monitorFolderIdsInt = await monitorFolderIds.OfType<int>().ToListAsync();
@@ -801,13 +801,13 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
         var monitorFolderIdsStrings = await monitorFolderIds.Select(r => r.ToString()).ToListAsync();
 
-        result.Concat(FromQueryAsync(_newTagsForFoldersQuery(FilesDbContext, tenantId, subject, monitorFolderIdsStrings)));
+        result = result.Concat(FromQueryAsync(_newTagsForFoldersQuery(FilesDbContext, tenantId, subject, monitorFolderIdsStrings)));
 
         var where = (deepSearch ? await monitorFolderIds.ToArrayAsync().ConfigureAwait(false) : new object[] { parentFolder.Id })
             .Select(r => r.ToString())
             .ToList();
 
-        result.Concat(FromQueryAsync(_newTagsForFilesQuery(FilesDbContext, tenantId, subject, where)));
+        result = result.Concat(FromQueryAsync(_newTagsForFilesQuery(FilesDbContext, tenantId, subject, where)));
 
         if (parentFolder.FolderType == FolderType.USER || parentFolder.FolderType == FolderType.COMMON)
         {
@@ -823,7 +823,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
             if (thirdpartyFolderIds.Count > 0)
             {
-                result.Concat(FromQueryAsync(_newTagsForSBoxQuery(FilesDbContext, tenantId, subject, thirdpartyFolderIds)));
+                result = result.Concat(FromQueryAsync(_newTagsForSBoxQuery(FilesDbContext, tenantId, subject, thirdpartyFolderIds)));
             }
         }
 

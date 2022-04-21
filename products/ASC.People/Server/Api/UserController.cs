@@ -59,6 +59,7 @@ public class UserController : PeopleControllerBase
     private readonly MessageService _messageService;
     private readonly AuthContext _authContext;
     private readonly SetupInfo _setupInfo;
+    private readonly SettingsManager _settingsManager;
 
     public UserController(
         Constants constants,
@@ -92,7 +93,8 @@ public class UserController : PeopleControllerBase
         ApiContext apiContext,
         UserPhotoManager userPhotoManager,
         IHttpClientFactory httpClientFactory,
-        IHttpContextAccessor httpContextAccessor)
+        IHttpContextAccessor httpContextAccessor,
+        SettingsManager settingsManager)
         : base(userManager, permissionContext, apiContext, userPhotoManager, httpClientFactory, httpContextAccessor)
     {
         _constants = constants;
@@ -121,6 +123,7 @@ public class UserController : PeopleControllerBase
         _messageService = messageService;
         _authContext = authContext;
         _setupInfo = setupInfo;
+        _settingsManager = settingsManager;
     }
 
     [Create("active")]
@@ -442,12 +445,47 @@ public class UserController : PeopleControllerBase
         return ResendUserInvites(inDto);
     }
 
+    [Read("theme")]
+    public DarkThemeSettings GetTheme()
+    {
+        return _settingsManager.LoadForCurrentUser<DarkThemeSettings>();
+    }
+
+    [Update("theme")]
+    public DarkThemeSettings ChangeThemeFromBody([FromBody] DarkThemeSettingsRequestDto model)
+    {
+        return ChangeTheme(model);
+    }
+
+    [Update("theme")]
+    [Consumes("application/x-www-form-urlencoded")]
+    public DarkThemeSettings ChangeThemeFromForm([FromForm] DarkThemeSettingsRequestDto model)
+    {
+        return ChangeTheme(model);
+    }
+
+    private DarkThemeSettings ChangeTheme(DarkThemeSettingsRequestDto model)
+    {
+        var darkThemeSettings = new DarkThemeSettings
+        {
+            Theme = model.Theme
+        };
+
+        _settingsManager.SaveForCurrentUser(darkThemeSettings);
+
+        return darkThemeSettings;
+    }
+
     [Read("@self")]
     public EmployeeDto Self()
     {
         var user = _userManager.GetUser(_securityContext.CurrentAccount.ID, EmployeeFullDtoHelper.GetExpression(_apiContext));
 
-        return _employeeFullDtoHelper.GetFull(user);
+        var result = _employeeFullDtoHelper.GetFull(user);
+
+        result.Theme = _settingsManager.LoadForCurrentUser<DarkThemeSettings>().Theme;
+
+        return result;
     }
 
     [Create("email", false)]

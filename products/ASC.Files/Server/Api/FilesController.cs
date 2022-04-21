@@ -90,14 +90,14 @@ public abstract class FilesController<T> : ApiControllerBase
     }
 
     [Create("file/{fileId}/copyas", order: int.MaxValue)]
-    public object CopyFileAsFromBody(T fileId, [FromBody] CopyAsRequestDto<JsonElement> inDto)
+    public Task<FileEntryDto> CopyFileAsFromBody(T fileId, [FromBody] CopyAsRequestDto<JsonElement> inDto)
     {
         return CopyFile(fileId, inDto, _filesControllerHelper);
     }
 
     [Create("file/{fileId}/copyas", order: int.MaxValue)]
     [Consumes("application/x-www-form-urlencoded")]
-    public object CopyFileAsFromForm(T fileId, [FromForm] CopyAsRequestDto<JsonElement> inDto)
+    public Task<FileEntryDto> CopyFileAsFromForm(T fileId, [FromForm] CopyAsRequestDto<JsonElement> inDto)
     {
         return CopyFile(fileId, inDto, _filesControllerHelper);
     }
@@ -311,15 +311,15 @@ public abstract class FilesController<T> : ApiControllerBase
     }
 
 
-    private object CopyFile(T fileId, CopyAsRequestDto<JsonElement> inDto, FilesControllerHelper<T> helper)
+    private async Task<FileEntryDto> CopyFile(T fileId, CopyAsRequestDto<JsonElement> inDto, FilesControllerHelper<T> helper)
     {
         if (inDto.DestFolderId.ValueKind == JsonValueKind.Number)
         {
-            return helper.CopyFileAsAsync(fileId, inDto.DestFolderId.GetInt32(), inDto.DestTitle, inDto.Password);
+            return await helper.CopyFileAsAsync(fileId, inDto.DestFolderId.GetInt32(), inDto.DestTitle, inDto.Password);
         }
         else if (inDto.DestFolderId.ValueKind == JsonValueKind.String)
         {
-            return helper.CopyFileAsAsync(fileId, inDto.DestFolderId.GetString(), inDto.DestTitle, inDto.Password);
+            return await helper.CopyFileAsAsync(fileId, inDto.DestFolderId.GetString(), inDto.DestTitle, inDto.Password);
         }
 
         return null;

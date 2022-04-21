@@ -265,7 +265,6 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
     public async Task<FileDto<TTemplate>> CopyFileAsAsync<TTemplate>(T fileId, TTemplate destFolderId, string destTitle, string password = null)
     {
         var service = _serviceProvider.GetService<FileStorageService<TTemplate>>();
-        var controller = _serviceProvider.GetService<FilesControllerHelper<TTemplate>>();
         var file = await _fileStorageService.GetFileAsync(fileId, -1);
         var ext = FileUtility.GetFileExtension(file.Title);
         var destExt = FileUtility.GetFileExtension(destTitle);
@@ -279,6 +278,7 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
 
         using (var fileStream = await _fileConverter.ExecAsync(file, destExt, password))
         {
+            var controller = _serviceProvider.GetService<FilesControllerHelper<TTemplate>>();
             return await controller.InsertFileAsync(destFolderId, fileStream, destTitle, true);
         }
     }

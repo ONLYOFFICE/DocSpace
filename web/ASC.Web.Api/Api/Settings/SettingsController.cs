@@ -129,13 +129,17 @@ public class SettingsController : BaseSettingsController
     [AllowAnonymous]
     public SettingsDto GetSettings(bool? withpassword)
     {
+        var studioAdminMessageSettings = _settingsManager.Load<StudioAdminMessageSettings>();
+
         var settings = new SettingsDto
         {
             Culture = Tenant.GetCulture().ToString(),
             GreetingSettings = Tenant.Name,
             Personal = _coreBaseSettings.Personal,
             Version = _configuration["version:number"] ?? "",
-            TenantStatus = _tenantManager.GetCurrentTenant().Status
+            TenantStatus = _tenantManager.GetCurrentTenant().Status,
+            TenantAlias = Tenant.Alias,
+            EnableAdmMess = studioAdminMessageSettings.Enable || _tenantExtra.IsNotPaid()
         };
 
         if (_authContext.IsAuthenticated)
@@ -184,10 +188,6 @@ public class SettingsController : BaseSettingsController
                 settings.TrustedDomainsType = Tenant.TrustedDomainsType;
                 settings.TrustedDomains = Tenant.TrustedDomains;
             }
-
-            var studioAdminMessageSettings = _settingsManager.Load<StudioAdminMessageSettings>();
-
-            settings.EnableAdmMess = studioAdminMessageSettings.Enable || _tenantExtra.IsNotPaid();
 
             settings.ThirdpartyEnable = _setupInfo.ThirdPartyAuthEnabled && _providerManager.IsNotEmpty;
 

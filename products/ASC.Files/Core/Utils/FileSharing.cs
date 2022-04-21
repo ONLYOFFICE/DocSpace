@@ -187,7 +187,10 @@ public class FileSharingAceHelper<T>
             }
         }
 
-        await usersWithoutRight.ToAsyncEnumerable().ForEachAwaitAsync(async userId => await _fileMarker.RemoveMarkAsNewAsync(entry, userId));
+            foreach (var userId in usersWithoutRight)
+            {
+                await _fileMarker.RemoveMarkAsNewAsync(entry, userId);
+            }
 
         return changed;
     }

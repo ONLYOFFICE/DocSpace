@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+
+
 using Constants = ASC.Core.Users.Constants;
 
 namespace ASC.Web.Core.Users;
@@ -273,7 +275,9 @@ public sealed class UserManagerWrapper
             throw new ArgumentNullException(nameof(email), Resource.ErrorNotCorrectEmail);
         }
 
-        if (!_iPSecurity.Verify())
+        var settings = _settingsManager.Load<IPRestrictionsSettings>();
+
+        if (settings.Enable && !_iPSecurity.Verify())
         {
             throw new Exception(Resource.ErrorAccessRestricted);
         }

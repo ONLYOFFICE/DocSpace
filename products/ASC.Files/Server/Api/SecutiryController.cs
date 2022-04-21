@@ -180,16 +180,16 @@ public class SecutiryControllerCommon : ApiControllerBase
     }
 
     [Create("owner")]
-    public IAsyncEnumerable<FileEntryDto> ChangeOwnerFromBodyAsync([FromBody] ChangeOwnerRequestDto inDto)
+    public async Task<IEnumerable<FileEntryDto>> ChangeOwnerFromBodyAsync([FromBody] ChangeOwnerRequestDto inDto)
     {
-        return ChangeOwnerAsync(inDto);
+        return await ChangeOwnerAsync(inDto);
     }
 
     [Create("owner")]
     [Consumes("application/x-www-form-urlencoded")]
-    public IAsyncEnumerable<FileEntryDto> ChangeOwnerFromFormAsync([FromForm] ChangeOwnerRequestDto inDto)
+    public async Task<IEnumerable<FileEntryDto>> ChangeOwnerFromFormAsync([FromForm] ChangeOwnerRequestDto inDto)
     {
-        return ChangeOwnerAsync(inDto);
+        return await ChangeOwnerAsync(inDto);
     }
 
 
@@ -254,19 +254,23 @@ public class SecutiryControllerCommon : ApiControllerBase
         return SetSecurityInfoAsync(inDto);
     }
 
-    private async IAsyncEnumerable<FileEntryDto> ChangeOwnerAsync(ChangeOwnerRequestDto inDto)
+    private async Task<IEnumerable<FileEntryDto>> ChangeOwnerAsync(ChangeOwnerRequestDto inDto)
     {
         var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(inDto.FolderIds);
         var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(inDto.FileIds);
 
-        var result = AsyncEnumerable.Empty<FileEntry>();
-        result.Concat(_fileStorageServiceInt.ChangeOwnerAsync(folderIntIds, fileIntIds, inDto.UserId));
-        result.Concat(_fileStorageServiceString.ChangeOwnerAsync(folderStringIds, fileStringIds, inDto.UserId));
+        var data = Enumerable.Empty<FileEntry>();
+        data = data.Concat(await _fileStorageServiceInt.ChangeOwnerAsync(folderIntIds, fileIntIds, inDto.UserId));
+        data = data.Concat(await _fileStorageServiceString.ChangeOwnerAsync(folderStringIds, fileStringIds, inDto.UserId));
 
-        await foreach (var e in result)
+        var result = new List<FileEntryDto>();
+
+        foreach (var e in data)
         {
-            yield return await _securityControllerHelperInt.GetFileEntryWrapperAsync(e);
+            result.Add(await _securityControllerHelperInt.GetFileEntryWrapperAsync(e));
         }
+
+        return result;
     }
 
     private async Task<IEnumerable<FileShareDto>> SetSecurityInfoAsync(SecurityInfoRequestDto inDto)

@@ -1,4 +1,4 @@
-﻿// (c) Copyright Ascensio System SIA 2010-2022
+// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,42 +24,32 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Api.Core.Middleware;
+namespace ASC.Web.Core.Users;
 
-[Scope]
-public class IpSecurityFilter : IResourceFilter
+[Serializable]
+public class DarkThemeSettings : ISettings<DarkThemeSettings>
 {
-    private readonly AuthContext _authContext;
-    private readonly IPSecurity.IPSecurity _iPSecurity;
-    private readonly ILog _logger;
-    private readonly SettingsManager _settingsManager;
-
-    public IpSecurityFilter(
-        ILog logger,
-        AuthContext authContext,
-        IPSecurity.IPSecurity IPSecurity,
-        SettingsManager settingsManager)
+    [System.Text.Json.Serialization.JsonIgnore]
+    public Guid ID
     {
-        _logger = logger;
-        _authContext = authContext;
-        _iPSecurity = IPSecurity;
-        _settingsManager = settingsManager;
+        get { return new Guid("{38362061-066D-4C57-A23E-8953CF34EFC3}"); }
     }
 
-    public void OnResourceExecuted(ResourceExecutedContext context) { }
+    public DarkThemeSettingsEnum Theme { get; set; }
 
-    public void OnResourceExecuting(ResourceExecutingContext context)
+    public DarkThemeSettings GetDefault()
     {
-        if (_authContext.IsAuthenticated)
+        return new DarkThemeSettings
         {
-            var enable = _settingsManager.Load<IPRestrictionsSettings>().Enable;
-
-            if (enable && !_iPSecurity.Verify())
-            {
-                context.Result = new StatusCodeResult((int)HttpStatusCode.Forbidden);
-                _logger.WarnFormat("IPSecurity: user {0}", _authContext.CurrentAccount.ID);
-                return;
-            }
-        }
+            Theme = DarkThemeSettingsEnum.Base,
+        };
     }
+}
+
+[System.Text.Json.Serialization.JsonConverter(typeof(JsonStringEnumConverter))]
+public enum DarkThemeSettingsEnum
+{
+    Base,
+    Dark,
+    System
 }

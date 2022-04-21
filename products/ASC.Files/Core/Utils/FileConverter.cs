@@ -675,8 +675,8 @@ public class FileConverter
             RequestUri = new Uri(convertUri)
         };
 
-        using var httpClient = _clientFactory.CreateClient();
-        using var response = await httpClient.SendAsync(request);
+        var httpClient = _clientFactory.CreateClient();
+        var response = await httpClient.SendAsync(request);
 
         return new ResponseStream(response);
     }

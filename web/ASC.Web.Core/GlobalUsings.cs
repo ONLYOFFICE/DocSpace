@@ -75,6 +75,7 @@ global using ASC.FederatedLogin.LoginProviders;
 global using ASC.FederatedLogin.Profile;
 global using ASC.Feed;
 global using ASC.Feed.Data;
+global using ASC.IPSecurity;
 global using ASC.MessagingSystem.Core;
 global using ASC.Notify;
 global using ASC.Notify.Engine;

@@ -24,42 +24,9 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Api.Core.Middleware;
+namespace ASC.People.ApiModels.RequestDto;
 
-[Scope]
-public class IpSecurityFilter : IResourceFilter
+public class DarkThemeSettingsRequestDto
 {
-    private readonly AuthContext _authContext;
-    private readonly IPSecurity.IPSecurity _iPSecurity;
-    private readonly ILog _logger;
-    private readonly SettingsManager _settingsManager;
-
-    public IpSecurityFilter(
-        ILog logger,
-        AuthContext authContext,
-        IPSecurity.IPSecurity IPSecurity,
-        SettingsManager settingsManager)
-    {
-        _logger = logger;
-        _authContext = authContext;
-        _iPSecurity = IPSecurity;
-        _settingsManager = settingsManager;
-    }
-
-    public void OnResourceExecuted(ResourceExecutedContext context) { }
-
-    public void OnResourceExecuting(ResourceExecutingContext context)
-    {
-        if (_authContext.IsAuthenticated)
-        {
-            var enable = _settingsManager.Load<IPRestrictionsSettings>().Enable;
-
-            if (enable && !_iPSecurity.Verify())
-            {
-                context.Result = new StatusCodeResult((int)HttpStatusCode.Forbidden);
-                _logger.WarnFormat("IPSecurity: user {0}", _authContext.CurrentAccount.ID);
-                return;
-            }
-        }
-    }
+    public DarkThemeSettingsEnum Theme { get; set; }
 }
