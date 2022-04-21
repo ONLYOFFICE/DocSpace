@@ -51,6 +51,7 @@ class PureHome extends React.Component {
       isPrevSettingsModule,
       gallerySelected,
       setAction,
+      setIsUpdatingRowItem,
     } = this.props;
 
     if (!window.location.href.includes("#preview")) {
@@ -172,6 +173,7 @@ class PureHome extends React.Component {
             })
             .then(() => {
               if (gallerySelected) {
+                setIsUpdatingRowItem(false);
                 setAction({
                   type: FileAction.Create,
                   extension: "docxf",
@@ -413,6 +415,7 @@ export default inject(
       setIsPrevSettingsModule,
       isPrevSettingsModule,
       gallerySelected,
+      setIsUpdatingRowItem,
     } = filesStore;
 
     const { id, setAction } = fileActionStore;
@@ -511,6 +514,7 @@ export default inject(
       isPrevSettingsModule,
       gallerySelected,
       setAction,
+      setIsUpdatingRowItem,
     };
   }
 )(withRouter(observer(Home)));
