@@ -169,15 +169,18 @@ const ArticleMainButtonContent = (props) => {
               disabled: isPrivacy,
               key: "form-file",
             },
-            hasGalleryFiles && {
-              className: "main-button_drop-down_sub",
-              icon: "images/form.react.svg",
-              label: t("Common:OFORMsGallery"),
-              onClick: onShowGallery,
-              disabled: isPrivacy,
-              key: "form-gallery",
-            },
           ];
+
+    if ((isMobile || isTabletUtils()) && hasGalleryFiles) {
+      formActions.push({
+        className: "main-button_drop-down_sub",
+        icon: "images/form.react.svg",
+        label: t("Common:OFORMsGallery"),
+        onClick: onShowGallery,
+        disabled: isPrivacy,
+        key: "form-gallery",
+      });
+    }
 
     const actions = [
       {
