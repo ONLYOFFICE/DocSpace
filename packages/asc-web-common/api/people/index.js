@@ -303,3 +303,13 @@ export function getSelectorUserList() {
     url: "/people/filter.json?fields=id,displayName,groups",
   });
 }
+
+export function changeTheme(key) {
+  const data = { Theme: key };
+
+  return request({
+    method: "put",
+    url: `/people/theme.json`,
+    data,
+  });
+}
