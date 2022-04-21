@@ -1,4 +1,5 @@
 import { request } from "../client";
+import axios from "axios";
 
 export function getSettings() {
   return request({
@@ -455,10 +456,8 @@ export function toggleTipsSubscription() {
   return request(options);
 }
 
-export function getOforms(url) {
-  const options = {
-    method: "get",
-    url,
-  };
-  return request(options);
+export async function getOforms(url) {
+  const response = await axios.get(url);
+
+  return response?.data?.data;
 }

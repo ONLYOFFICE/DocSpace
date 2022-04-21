@@ -286,15 +286,8 @@ class FilesStore {
   };
 
   getOforms = async () => {
-    const { culture, getOforms } = this.settingsStore;
-
-    const oformData = await getOforms();
-
-    if (oformData && oformData.length) {
-      this.oformFiles = oformData.filter(
-        (f) => f["attributes"]["locale"] === culture
-      );
-    }
+    const oformData = await this.settingsStore.getOforms();
+    this.oformFiles = oformData ? oformData : [];
   };
 
   get hasGalleryFiles() {
