@@ -40,7 +40,7 @@ const commonStyles = css`
   .section-wrapper {
     ${(props) =>
       !props.withScroll &&
-      `display: flex; height: 100%; box-sizing:border-box`};
+      `display: flex; flex-direction: column; height: 100%; box-sizing:border-box`};
     ${(props) => !props.withScroll && paddingStyles}
   }
 
