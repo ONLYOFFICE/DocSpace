@@ -2,7 +2,7 @@ import React from "react";
 import { withTranslation } from "react-i18next";
 
 const InfoPanelHeaderContent = ({ t }) => {
-  return <>{t("Info")}</>;
+  return <>{t("FormTemplateInfo")}</>;
 };
 
-export default withTranslation(["InfoPanel"])(InfoPanelHeaderContent);
+export default withTranslation(["FormGallery"])(InfoPanelHeaderContent);
