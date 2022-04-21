@@ -151,7 +151,7 @@ class ArticleMainButtonContent extends React.Component {
 
     return isAdmin ? (
       <>
-        {isMobileArticle && !isArticleLoading ? (
+        {isMobileArticle ? (
           <MobileView
             labelProps={t("OtherOperations")}
             actionOptions={menuModel}

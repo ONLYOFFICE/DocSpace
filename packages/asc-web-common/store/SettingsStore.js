@@ -33,6 +33,7 @@ class SettingsStore {
   trustedDomainsType = 0;
   timezone = "UTC";
   timezones = [];
+  tenantAlias = "";
   utcOffset = "00:00:00";
   utcHoursOffset = 0;
   defaultPage = "/";
@@ -220,6 +221,10 @@ class SettingsStore {
       this.tenantStatus !== TenantStatus.PortalRestore
     ) {
       this.getCurrentCustomSchema(origSettings.nameSchemaId);
+    }
+
+    if (origSettings.tenantAlias) {
+      this.setTenantAlias(origSettings.tenantAlias);
     }
   };
 
@@ -453,6 +458,10 @@ class SettingsStore {
     this.trustedDomainsType = data.type;
     this.trustedDomains = data.domains;
     return res;
+  };
+
+  setTenantAlias = (tenantAlias) => {
+    this.tenantAlias = tenantAlias;
   };
 }
 

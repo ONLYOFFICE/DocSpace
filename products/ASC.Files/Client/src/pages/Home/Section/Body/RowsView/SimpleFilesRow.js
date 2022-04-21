@@ -98,7 +98,8 @@ const StyledSimpleFilesRow = styled(Row)`
 
   .row_content {
     ${(props) =>
-      props.sectionWidth > 500 && `max-width: fit-content;`}//min-width: auto;;
+      props.sectionWidth > 500 &&
+      `max-width: fit-content;`}//min-width: auto;;;;
   }
 
   .badges {
@@ -260,6 +261,6 @@ const SimpleFilesRow = (props) => {
   );
 };
 
-export default withTranslation(["Home", "Translations"])(
+export default withTranslation(["Home", "Translations", "InfoPanel"])(
   withFileActions(withRouter(withQuickButtons(SimpleFilesRow)))
 );
