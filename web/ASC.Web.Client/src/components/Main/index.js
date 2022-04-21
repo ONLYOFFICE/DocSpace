@@ -15,10 +15,9 @@ const StyledMain = styled.main`
   flex-direction: row;
   box-sizing: border-box;
 
-  ${isMobile &&
-  css`
-    height: calc(100vh - 48px);
-  `}
+  #article-container {
+    height: calc(100%) !important;
+  }
 
   ${isMobileOnly &&
   css`
@@ -30,7 +29,7 @@ const StyledMain = styled.main`
 
 const Main = React.memo((props) => {
   if (isIOS && !isFirefox) {
-    const vh = (window.innerHeight - 57) * 0.01;
+    const vh = (window.innerHeight - 48) * 0.01;
     document.documentElement.style.setProperty("--vh", `${vh}px`);
   }
   //console.log("Main render");
