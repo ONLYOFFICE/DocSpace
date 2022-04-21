@@ -323,6 +323,12 @@ class AuthStore {
   setProviders = (providers) => {
     this.providers = providers;
   };
+
+  getOforms = () => {
+    const culture =
+      this.userStore.user.cultureName || this.settingsStore.culture;
+    return api.settings.getOforms(`${this.settingsStore.urlOforms}${culture}`);
+  };
 }
 
 export default new AuthStore();

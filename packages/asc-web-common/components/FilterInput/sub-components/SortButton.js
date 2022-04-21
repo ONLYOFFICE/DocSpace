@@ -13,6 +13,7 @@ import { mobile } from "@appserver/components/utils/device";
 import { Base } from "@appserver/components/themes";
 
 import SortDesc from "../../../../../public/images/sort.desc.react.svg";
+import Backdrop from "@appserver/components/backdrop";
 
 const selectedViewIcon = css`
   svg {
@@ -203,13 +204,13 @@ const SortButton = ({
 
   const onOptionClick = React.useCallback(
     (e) => {
-      const sortDirection =
-        currentSelectedFilterData.sortDirection === "desc" &&
-        e.target.closest(".option-item__icon")
-          ? "asc"
-          : "desc";
-
       const key = e.target.closest(".option-item").dataset.value;
+
+      let sortDirection = currentSelectedFilterData.sortDirection;
+
+      if (key === currentSelectedFilterData.sortId) {
+        sortDirection = sortDirection === "desc" ? "asc" : "desc";
+      }
 
       setCurrentSelectedFilterData({
         sortId: key,
@@ -287,30 +288,37 @@ const SortButton = ({
   ]);
 
   return (
-    <StyledSortButton
-      viewAs={viewAs}
-      isDesc={currentSelectedFilterData.sortDirection === "desc"}
-      onClick={toggleCombobox}
-    >
-      <ComboBox
-        opened={isOpen}
-        toggleAction={toggleCombobox}
-        className={"sort-combo-box"}
-        options={[]}
-        selectedOption={{}}
-        directionX={"right"}
-        directionY={"both"}
-        scaled={true}
-        size={"content"}
-        advancedOptions={getAdvancedOptions()}
-        disableIconClick={false}
-        disableItemClick={true}
-        isDefaultMode={false}
-        manualY={"102%"}
+    <>
+      <Backdrop
+        visible={isOpen}
+        withBackground={true}
+        onClick={toggleCombobox}
+      />
+      <StyledSortButton
+        viewAs={viewAs}
+        isDesc={currentSelectedFilterData.sortDirection === "desc"}
+        onClick={toggleCombobox}
       >
-        <IconButton iconName="/static/images/sort.react.svg" size={16} />
-      </ComboBox>
-    </StyledSortButton>
+        <ComboBox
+          opened={isOpen}
+          toggleAction={toggleCombobox}
+          className={"sort-combo-box"}
+          options={[]}
+          selectedOption={{}}
+          directionX={"right"}
+          directionY={"both"}
+          scaled={true}
+          size={"content"}
+          advancedOptions={getAdvancedOptions()}
+          disableIconClick={false}
+          disableItemClick={true}
+          isDefaultMode={false}
+          manualY={"102%"}
+        >
+          <IconButton iconName="/static/images/sort.react.svg" size={16} />
+        </ComboBox>
+      </StyledSortButton>
+    </>
   );
 };
 

@@ -60,7 +60,7 @@ const Header = ({
         <Heading
           className="sharing_panel-header"
           size="medium"
-          truncate={!isPersonal}
+          truncate={true}
           style={{ fontWeight: 700 }}
         >
           {uploadPanelVisible && label && isPersonal
