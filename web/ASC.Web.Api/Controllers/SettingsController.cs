@@ -1117,7 +1117,7 @@ namespace ASC.Api.Settings
             {
                 var logoDict = new Dictionary<int, string>();
 
-                foreach(var l in model.Logo)
+                foreach (var l in model.Logo)
                 {
                     logoDict.Add(Int32.Parse(l.Key), l.Value);
                 }
@@ -3118,28 +3118,38 @@ namespace ASC.Api.Settings
             var serializeSettings = model.SerializeSettings;
 
             if (string.IsNullOrEmpty(serializeSettings))
+            {
                 throw new ArgumentException(Resource.SsoSettingsCouldNotBeNull);
+            }
 
             var settings = JsonSerializer.Deserialize<SsoSettingsV2>(serializeSettings);
 
             if (settings == null)
+            {
                 throw new ArgumentException(Resource.SsoSettingsCouldNotBeNull);
+            }
 
             if (string.IsNullOrWhiteSpace(settings.IdpSettings.EntityId))
+            {
                 throw new Exception(Resource.SsoSettingsInvalidEntityId);
+            }
 
-            if (string.IsNullOrWhiteSpace(settings.IdpSettings.SsoUrl) ||
-                !CheckUri(settings.IdpSettings.SsoUrl))
+            if (string.IsNullOrWhiteSpace(settings.IdpSettings.SsoUrl) || !CheckUri(settings.IdpSettings.SsoUrl))
+            {
                 throw new Exception(string.Format(Resource.SsoSettingsInvalidBinding, "SSO " + settings.IdpSettings.SsoBinding));
+            }
 
-            if (!string.IsNullOrWhiteSpace(settings.IdpSettings.SloUrl) &&
-                !CheckUri(settings.IdpSettings.SloUrl))
+            if (!string.IsNullOrWhiteSpace(settings.IdpSettings.SloUrl) && !CheckUri(settings.IdpSettings.SloUrl))
+            {
                 throw new Exception(string.Format(Resource.SsoSettingsInvalidBinding, "SLO " + settings.IdpSettings.SloBinding));
+            }
 
             if (string.IsNullOrWhiteSpace(settings.FieldMapping.FirstName) ||
                 string.IsNullOrWhiteSpace(settings.FieldMapping.LastName) ||
                 string.IsNullOrWhiteSpace(settings.FieldMapping.Email))
+            {
                 throw new Exception(Resource.SsoSettingsInvalidMapping);
+            }
 
             if (string.IsNullOrEmpty(settings.SpLoginLabel))
             {
@@ -3151,10 +3161,14 @@ namespace ASC.Api.Settings
             }
 
             if (!SettingsManager.Save(settings))
+            {
                 throw new Exception(Resource.SsoSettingsCantSaveSettings);
+            }
 
             if (!settings.EnableSso)
+            {
                 ConverSsoUsersToOrdinary();
+            }
 
             var messageAction = settings.EnableSso ? MessageAction.SSOEnabled : MessageAction.SSODisabled;
 
@@ -3179,7 +3193,9 @@ namespace ASC.Api.Settings
             var defaultSettings = new SsoSettingsV2().GetDefault(ServiceProvider) as SsoSettingsV2;
 
             if (defaultSettings != null && !SettingsManager.Save(defaultSettings))
+            {
                 throw new Exception(Resource.SsoSettingsCantSaveSettings);
+            }
 
             ConverSsoUsersToOrdinary();
 
@@ -3209,8 +3225,7 @@ namespace ASC.Api.Settings
         private static bool CheckUri(string uriName)
         {
             Uri uriResult;
-            return Uri.TryCreate(uriName, UriKind.Absolute, out uriResult) &&
-                   (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+            return Uri.TryCreate(uriName, UriKind.Absolute, out uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
         }
 
         private void CheckSsoPermissions()
@@ -3234,7 +3249,9 @@ namespace ASC.Api.Settings
             if (MemoryCache.TryGetValue<int>(key, out var count))
             {
                 if (count > maxCount)
+                {
                     throw new Exception(Resource.ErrorRequestLimitExceeded);
+                }
             }
 
             MemoryCache.Set(key, count + 1, TimeSpan.FromMinutes(expirationMinutes));
