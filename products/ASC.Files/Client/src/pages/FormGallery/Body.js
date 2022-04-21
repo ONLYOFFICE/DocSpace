@@ -39,7 +39,7 @@ const SectionBodyContent = ({
     <EmptyScreenContainer
       imageSrc="images/empty_screen_form-gallery.react.svg"
       imageAlt="Empty Screen Gallery image"
-      headerText={t("EmptyScreenHeader")}
+      headerText={t("GalleryEmptyScreenHeader")}
       descriptionText={t("EmptyScreenDescription")}
     />
   ) : (

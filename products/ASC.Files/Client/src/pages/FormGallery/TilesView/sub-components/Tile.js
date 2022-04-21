@@ -7,7 +7,7 @@ import { isDesktop } from "react-device-detect";
 import Link from "@appserver/components/link";
 import { withTranslation } from "react-i18next";
 import { ReactSVG } from "react-svg";
-import { AppServerConfig, FileAction } from "@appserver/common/constants";
+import { AppServerConfig } from "@appserver/common/constants";
 import { combineUrl } from "@appserver/common/utils";
 import config from "../../../../../package.json";
 import FilesFilter from "@appserver/common/api/files/filter";
@@ -18,7 +18,6 @@ import {
   StyledFileTileTop,
   StyledFileTileBottom,
   StyledContent,
-  StyledElement,
   StyledOptionButton,
 } from "../StyledTileView";
 

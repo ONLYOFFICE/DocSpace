@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import Text from "@appserver/components/text";
+import { withTranslation } from "react-i18next";
 
 const StyledGalleryEmptyScreen = styled.div`
   .info-panel_gallery-empty-screen-img {
@@ -10,7 +11,7 @@ const StyledGalleryEmptyScreen = styled.div`
   }
 `;
 
-const GalleryEmptyScreen = () => {
+const GalleryEmptyScreen = ({ t }) => {
   return (
     <StyledGalleryEmptyScreen className="info-panel_gallery-empty-screen">
       <img
@@ -18,10 +19,8 @@ const GalleryEmptyScreen = () => {
         src="images/form-gallery-search.react.svg"
         alt="Empty Screen Gallery image"
       />
-      <Text textAlign="center">
-        Select any form template to see the details
-      </Text>
+      <Text textAlign="center">{t("GalleryEmptyScreenDescription")}</Text>
     </StyledGalleryEmptyScreen>
   );
 };
-export default GalleryEmptyScreen;
+export default withTranslation("FormGallery")(GalleryEmptyScreen);
