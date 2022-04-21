@@ -15,25 +15,8 @@ class TileContainer extends React.PureComponent {
     };
   }
 
-  onRowContextClick = (options) => {
-    if (Array.isArray(options)) {
-      this.setState({
-        contextOptions: options,
-      });
-    }
-  };
-
   renderTile = memo(({ data, index, style }) => {
-    const options = data[index].props.contextOptions;
-
-    return (
-      <div
-        onContextMenu={this.onRowContextClick.bind(this, options)}
-        style={style}
-      >
-        {data[index]}
-      </div>
-    );
+    return <div style={style}>{data[index]}</div>;
   }, areEqual);
 
   render() {
@@ -70,17 +53,7 @@ class TileContainer extends React.PureComponent {
         {useReactWindow ? (
           <AutoSizer>{renderList}</AutoSizer>
         ) : (
-          <StyledGridWrapper>
-            {/* <div
-              className="tile-item-wrapper file"
-              // onContextMenu={this.onRowContextClick.bind(
-              //   this,
-              //   children.props.contextOptions
-              // )}
-            > */}
-            {children}
-            {/* </div> */}
-          </StyledGridWrapper>
+          <StyledGridWrapper>{children}</StyledGridWrapper>
         )}
       </StyledTileContainer>
     );

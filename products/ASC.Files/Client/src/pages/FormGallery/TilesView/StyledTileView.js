@@ -61,6 +61,7 @@ const StyledFileTileTop = styled.div`
   height: 156px;
   overflow: hidden;
   position: relative;
+  border-radius: 6px 6px 0 0;
 
   .thumbnail-image {
     pointer-events: none;
