@@ -3,7 +3,7 @@ import api from "../api";
 import { LANGUAGE, TenantStatus } from "../constants";
 import { combineUrl } from "../utils";
 import FirebaseHelper from "../utils/firebase";
-import { AppServerConfig } from "../constants";
+import { AppServerConfig, ThemeKeys } from "../constants";
 import { version } from "../package.json";
 import SocketIOHelper from "../utils/socket";
 
@@ -12,8 +12,8 @@ import { Dark, Base } from "@appserver/components/themes";
 const { proxyURL } = AppServerConfig;
 
 const themes = {
-  dark: Dark,
-  base: Base,
+  Dark: Dark,
+  Base: Base,
 };
 
 class SettingsStore {
@@ -432,19 +432,27 @@ class SettingsStore {
   };
 
   setTheme = (key) => {
-    let theme = key;
-
-    if (theme === "system") {
-      theme =
-        window.matchMedia &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark"
-          : "base";
+    let theme = null;
+    switch (key) {
+      case ThemeKeys.Base:
+      case ThemeKeys.BaseStr:
+        theme = ThemeKeys.BaseStr;
+        break;
+      case ThemeKeys.Dark:
+      case ThemeKeys.DarkStr:
+        theme = ThemeKeys.DarkStr;
+        break;
+      case ThemeKeys.System:
+      case ThemeKeys.SystemStr:
+      default:
+        theme =
+          window.matchMedia &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? ThemeKeys.DarkStr
+            : ThemeKeys.BaseStr;
     }
 
     this.theme = themes[theme];
-
-    localStorage.setItem("theme", key);
   };
 
   setMailDomainSettings = async (data) => {
