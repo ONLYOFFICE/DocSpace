@@ -1,23 +1,21 @@
 import React from "react";
-import Headline from "@appserver/common/components/Headline";
 import Loaders from "@appserver/common/components/Loaders";
 import { inject, observer } from "mobx-react";
+import { withTranslation } from "react-i18next";
+import withLoader from "../../../HOCs/withLoader";
 
-const ArticleHeaderContent = ({ isVisitor, isLoaded, currentModuleName }) => {
-  return (
-    !isVisitor &&
-    (isLoaded ? (
-      <Headline type="menu">{currentModuleName}</Headline>
-    ) : (
-      <Loaders.ArticleHeader />
-    ))
-  );
+const ArticleHeaderContent = ({ isVisitor, currentModuleName }) => {
+  return !isVisitor && <>{currentModuleName}</>;
 };
 
 export default inject(({ auth }) => {
   return {
     isVisitor: auth.userStore.user.isVisitor,
-    isLoaded: auth.isLoaded,
+
     currentModuleName: auth.product.title,
   };
-})(observer(ArticleHeaderContent));
+})(
+  withTranslation()(
+    withLoader(observer(ArticleHeaderContent))(<Loaders.ArticleHeader />)
+  )
+);

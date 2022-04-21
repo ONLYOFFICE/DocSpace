@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { EmailSettings } from "../utils/email";
 import EmailInput from "./";
 
 const Template = ({
@@ -16,7 +17,7 @@ const Template = ({
   const onChangeHandler = (value) => {
     setEmailValue(value);
   };
-  const settings = {
+  const settings = EmailSettings.parse({
     allowDomainPunycode,
     allowLocalPartPunycode,
     allowDomainIp,
@@ -24,7 +25,7 @@ const Template = ({
     allowSpaces,
     allowName,
     allowLocalDomainName,
-  };
+  });
   return (
     <EmailInput
       {...rest}

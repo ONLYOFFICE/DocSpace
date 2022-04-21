@@ -14,12 +14,11 @@ import { StyledBackup } from "./StyledBackup";
 import AutoBackup from "./auto-backup";
 import ManualBackup from "./manual-backup";
 import RestoreBackup from "./restore-backup";
-import SelectFolderDialog from "files/SelectFolderDialog";
 import toastr from "@appserver/components/toast/toastr";
 import moment from "moment";
 import { getBackupStorage } from "@appserver/common/api/settings";
 import HelpButton from "@appserver/components/help-button";
-
+import { getThirdPartyCommonFolderTree } from "@appserver/common/api/files";
 class BackupDesktopView extends React.Component {
   constructor(props) {
     super(props);
@@ -57,7 +56,7 @@ class BackupDesktopView extends React.Component {
       enableAutoBackup(),
       getBackupSchedule(),
       getBackupStorage(),
-      SelectFolderDialog.getCommonThirdPartyList(),
+      getThirdPartyCommonFolderTree(),
     ];
 
     try {
@@ -101,6 +100,7 @@ class BackupDesktopView extends React.Component {
       helpUrlCreatingBackup,
       downloadingProgress,
       organizationName,
+      buttonSize,
     } = this.props;
     const { isInitialLoading, enableRestore, enableAutoBackup } = this.state;
 
@@ -150,7 +150,7 @@ class BackupDesktopView extends React.Component {
             {t("ManualBackupDescription")}
           </Text>
 
-          <ManualBackup />
+          <ManualBackup buttonSize={buttonSize} />
         </div>
 
         {enableAutoBackup && (
@@ -167,7 +167,7 @@ class BackupDesktopView extends React.Component {
               {t("AutoBackupDescription")}
             </Text>
 
-            <AutoBackup />
+            <AutoBackup buttonSize={buttonSize} />
           </div>
         )}
 
@@ -181,7 +181,7 @@ class BackupDesktopView extends React.Component {
                 t("RestoreBackupHelp") + " " + t("RestoreBackupHelpNote")
               )}
             </div>
-            <RestoreBackup history={history} />
+            <RestoreBackup history={history} buttonSize={buttonSize} />
           </>
         )}
 
@@ -200,7 +200,11 @@ class BackupDesktopView extends React.Component {
 
 export default inject(({ auth, backup }) => {
   const { language, settingsStore } = auth;
-  const { helpUrlCreatingBackup, organizationName } = settingsStore;
+  const {
+    helpUrlCreatingBackup,
+    organizationName,
+    isTabletView,
+  } = settingsStore;
   const {
     setThirdPartyStorage,
     setBackupSchedule,
@@ -210,6 +214,7 @@ export default inject(({ auth, backup }) => {
     downloadingProgress,
   } = backup;
 
+  const buttonSize = isTabletView ? "normal" : "small";
   return {
     helpUrlCreatingBackup,
     language,
@@ -220,5 +225,6 @@ export default inject(({ auth, backup }) => {
     clearProgressInterval,
     downloadingProgress,
     organizationName,
+    buttonSize,
   };
 })(observer(withTranslation(["Settings", "Common"])(BackupDesktopView)));

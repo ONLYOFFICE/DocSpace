@@ -29,7 +29,6 @@ namespace Frontend.Translations.Tests
         }
 
         public List<string> Workspaces { get; set; }
-
         public List<TranslationFile> TranslationFiles { get; set; }
         public List<JavaScriptFile> JavaScriptFiles { get; set; }
         public List<ModuleFolder> ModuleFolders { get; set; }
@@ -37,6 +36,12 @@ namespace Frontend.Translations.Tests
         public List<LanguageItem> CommonTranslations { get; set; }
         public List<ParseJsonError> ParseJsonErrors { get; set; }
         public List<JsonEncodingError> WrongEncodingJsonErrors { get; set; }
+
+        private static string _md5ExcludesPath = "../../../md5-excludes.json";
+
+        private static List<string> md5Excludes = File.Exists(_md5ExcludesPath)
+            ? JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(_md5ExcludesPath))
+            : new List<string>();
 
         [OneTimeSetUp]
         public void Setup()
@@ -339,18 +344,8 @@ namespace Frontend.Translations.Tests
         [Category("FastRunning")]
         public void DublicatesFilesByMD5HashTest()
         {
-            var skipHashes = new List<string>() {
-                "e6d664afaace71b3a22abb09fc124543",
-                "5a1d4d36141c7a8ca53f2540f3fd5940",
-                "6d3334459f062ba0f39de6a38225c564",
-                "b8e7630201c96d26c94d348447328276",
-                "3ad0e57ce636af715af3f629e364f1ed",
-                "dfb129715a0122a29afe233226c648d9",
-                "ec73989085d4e1b984c1c9dca10524da"
-            };
-
             var duplicatesByMD5 = TranslationFiles
-                .Where(t => !skipHashes.Contains(t.Md5Hash))
+                .Where(t => !md5Excludes.Contains(t.Md5Hash))
                 .GroupBy(t => t.Md5Hash)
                 .Where(grp => grp.Count() > 1)
                 .Select(grp => new { Key = grp.Key, Count = grp.Count(), Paths = grp.ToList().Select(f => f.FilePath) })

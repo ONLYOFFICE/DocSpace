@@ -1,17 +1,5 @@
 ﻿{
-  "DomainIpAddress": "IPアドレスとしてのドメインには対応していません",
   "EmailActivationDescription": "入力されたメールにアクティベーションの手順が送られてきます。l",
   "EmailChangeTitle": "メールの変更",
-  "EmptyEmail": "誰もメールを解析しない",
-  "EnterEmail": "新しいメールアドレスの入力",
-  "IncorrectDomain": "不適切なドメイン",
-  "IncorrectEmail": "メールが正しくない",
-  "IncorrectLocalPart": "不適切なローカルパート",
-  "LocalDomain": "ローカルドメインには対応していません",
-  "ManyEmails": "解析されたメール数が多すぎる",
-  "MaxLengthExceeded": "ユーザー名などのローカルパートの最大長は64文字です。",
-  "PunycodeDomain": "ピュニコード・ドメインはサポートされていません",
-  "PunycodeLocalPart": "ピュニコードのローカルパートには対応されていません",
-  "SameEmail": "同じメールを使用することはできません",
-  "SpacesInLocalPart": "ローカルパートはスペースを含むことができません"
+  "EnterEmail": "新しいメールアドレスの入力"
 }

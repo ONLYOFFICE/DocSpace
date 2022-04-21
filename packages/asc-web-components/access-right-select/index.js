@@ -13,20 +13,32 @@ import {
   StyledAccessRightItemContent,
   StyledAccessRightItemTitleAndBadge,
 } from "./styled-accessright.js";
+import { ReactSVG } from "react-svg";
 
-const AccessRightSelect = ({ options, onSelect, selectedOption, ...props }) => {
+const AccessRightSelect = ({
+  options,
+  onSelect,
+  advancedOptions,
+  selectedOption,
+  ...props
+}) => {
   const [currentItem, setCurrentItem] = useState(selectedOption);
 
   function onSelectCurrentItem(e) {
-    const key = e.currentTarget.dataset.key;
+    const key = +e.currentTarget.dataset.key;
     const item = options.find((el) => {
       return el.key === key;
     });
+
     if (item) {
       setCurrentItem(item);
       onSelect && onSelect(item);
     }
   }
+
+  React.useEffect(() => {
+    setCurrentItem(selectedOption);
+  }, [selectedOption]);
 
   const formatToAccessRightItem = (data) => {
     return (
@@ -67,12 +79,15 @@ const AccessRightSelect = ({ options, onSelect, selectedOption, ...props }) => {
 
   return (
     <StyledAccessRightWrapper>
-      <StyledAccessRightIcon src={currentItem?.icon} />
+      <ReactSVG className="access-right__icon" src={currentItem?.icon} />
       <ComboBox
-        advancedOptions={formatToAccessRightItem(options)}
+        advancedOptions={
+          !!advancedOptions ? advancedOptions : formatToAccessRightItem(options)
+        }
+        onSelect={onSelectCurrentItem}
         directionX="left"
         directionY="bottom"
-        opened
+        opened={false}
         noBorder
         options={[]}
         scaled={false}
@@ -92,8 +107,10 @@ AccessRightSelect.propTypes = {
   options: PropTypes.arrayOf(PropTypes.object).isRequired,
   /** Will be triggered whenever an AccessRightSelect is selected option */
   onSelect: PropTypes.func,
+  /** List of advanced options */
+  advancedOptions: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   /** The option that is selected by default */
   selectedOption: PropTypes.object,
 };
 
-export default AccessRightSelect;
+export default React.memo(AccessRightSelect);

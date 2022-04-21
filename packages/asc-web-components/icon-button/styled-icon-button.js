@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Base } from "../themes";
 
 const StyledOuter = styled.div`
   width: ${(props) =>
@@ -13,9 +14,20 @@ const StyledOuter = styled.div`
       height: 100%;
     }
     path {
-      fill: ${(props) => props.color};
+      fill: ${(props) =>
+        props.color ? props.color : props.theme.iconButton.color};
+    }
+  }
+  &:hover {
+    svg {
+      path {
+        fill: ${(props) =>
+          props.color ? props.color : props.theme.iconButton.hoverColor};
+      }
     }
   }
 `;
+
+StyledOuter.defaultProps = { theme: Base };
 
 export default StyledOuter;

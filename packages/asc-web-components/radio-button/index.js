@@ -6,10 +6,11 @@ import Text from "../text";
 import { Label, Input } from "./styled-radio-button";
 
 // eslint-disable-next-line react/prop-types
-const RadiobuttonIcon = ({ isChecked }) => {
+const RadiobuttonIcon = ({ isChecked, theme }) => {
   let newProps = {
     size: "medium",
     className: "radio-button",
+    theme: theme,
   };
 
   return (
@@ -41,6 +42,7 @@ class RadioButton extends React.Component {
   render() {
     return (
       <Label
+        theme={this.props.theme}
         orientation={this.props.orientation}
         spacing={this.props.spacing}
         isDisabled={this.props.isDisabled}
@@ -49,6 +51,7 @@ class RadioButton extends React.Component {
         style={this.props.style}
       >
         <Input
+          theme={this.props.theme}
           type="radio"
           name={this.props.name}
           value={this.props.value}
@@ -65,6 +68,7 @@ class RadioButton extends React.Component {
         />
         <RadiobuttonIcon {...this.props} />
         <Text
+          theme={this.props.theme}
           as="span"
           className="radio-button_text"
           fontSize={this.props.fontSize}

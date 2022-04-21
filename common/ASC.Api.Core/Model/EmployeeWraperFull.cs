@@ -175,6 +175,26 @@ namespace ASC.Web.Api.Models
             return lambda;
         }
 
+        public EmployeeWraperFull GetSimple(UserInfo userInfo)
+        {
+            var result = new EmployeeWraperFull
+            {
+                FirstName = userInfo.FirstName,
+                LastName = userInfo.LastName,
+            };
+
+            FillGroups(result, userInfo);
+
+            var photoData = UserPhotoManager.GetUserPhotoData(userInfo.ID, UserPhotoManager.BigFotoSize);
+
+            if (photoData != null)
+            {
+                result.Avatar = "data:image/png;base64," + Convert.ToBase64String(photoData);
+            }
+
+            return result;
+        }
+
         public EmployeeWraperFull GetFull(UserInfo userInfo)
         {
             var result = new EmployeeWraperFull
@@ -225,23 +245,7 @@ namespace ASC.Web.Api.Models
             }
 
             FillConacts(result, userInfo);
-
-            if (Context.Check("groups") || Context.Check("department"))
-            {
-                var groups = UserManager.GetUserGroups(userInfo.ID)
-                    .Select(x => new GroupWrapperSummary(x, UserManager))
-                    .ToList();
-
-                if (groups.Count > 0)
-                {
-                    result.Groups = groups;
-                    result.Department = string.Join(", ", result.Groups.Select(d => d.Name.HtmlEncode()));
-                }
-                else
-                {
-                    result.Department = "";
-                }
-            }
+            FillGroups(result, userInfo);
 
             var userInfoLM = userInfo.LastModified.GetHashCode();
 
@@ -269,6 +273,28 @@ namespace ASC.Web.Api.Models
             }
 
             return result;
+        }
+
+        private void FillGroups(EmployeeWraperFull result, UserInfo userInfo)
+        {
+            if (!Context.Check("groups") && !Context.Check("department"))
+            {
+                return;
+            }
+
+            var groups = UserManager.GetUserGroups(userInfo.ID)
+                .Select(x => new GroupWrapperSummary(x, UserManager))
+                .ToList();
+
+            if (groups.Count > 0)
+            {
+                result.Groups = groups;
+                result.Department = string.Join(", ", result.Groups.Select(d => d.Name.HtmlEncode()));
+            }
+            else
+            {
+                result.Department = "";
+            }
         }
 
         private void FillConacts(EmployeeWraperFull employeeWraperFull, UserInfo userInfo)

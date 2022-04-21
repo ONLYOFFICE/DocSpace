@@ -9,6 +9,11 @@ const StyledContainer = styled.div`
     cursor: pointer;
     user-select: none;
 
+    display: grid;
+    grid-template-columns: 16px 1fr;
+    grid-column-gap: 9px;
+    max-width: 660px;
+
     svg {
       ${(props) =>
         !props.enableToggle &&
@@ -23,10 +28,9 @@ const StyledContainer = styled.div`
   }
 
   .arrow-toggle-content {
-    margin-right: ${(props) => props.theme.toggleContent.arrowMarginRight};
-    margin-bottom: ${(props) => props.theme.toggleContent.arrowMarginBottom};
-
-    transform: ${(props) => props.open && props.theme.toggleContent.transform};
+    margin: auto 0;
+    transform: ${(props) =>
+      props.isOpen && props.theme.toggleContent.transform};
   }
 
   .heading-toggle-content {

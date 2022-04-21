@@ -5,20 +5,10 @@ import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";
 import Box from "@appserver/components/box";
 import Row from "@appserver/components/row";
+import RowContent from "@appserver/components/row-content";
 import RowContainer from "@appserver/components/row-container";
 import { withTranslation } from "react-i18next";
 import EmptyFolderContainer from "../../../../components/EmptyContainer/EmptyContainer";
-import BoxIcon from "../../../../../public/images/icon_box.react.svg";
-import DropBoxIcon from "../../../../../public/images/icon_dropbox.react.svg";
-import GoogleDriveIcon from "../../../../../public/images/icon_google_drive.react.svg";
-import KDriveIcon from "../../../../../public/images/icon_kdrive.react.svg";
-import NextCloudIcon from "../../../../../public/images/icon_nextcloud.react.svg";
-import OneDriveIcon from "../../../../../public/images/icon_onedrive.react.svg";
-import OwnCloudIcon from "../../../../../public/images/icon_owncloud.react.svg";
-import SharePointIcon from "../../../../../public/images/icon_sharepoint.react.svg";
-import WebDavIcon from "../../../../../public/images/icon_webdav.react.svg";
-import YandexDiskIcon from "../../../../../public/images/icon_yandex_disk.react.svg";
-import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import { inject, observer } from "mobx-react";
 import combineUrl from "@appserver/common/utils/combineUrl";
 import AppServerConfig from "@appserver/common/constants/AppServerConfig";
@@ -26,46 +16,58 @@ import config from "../../../../../package.json";
 import { withRouter } from "react-router";
 import { connectedCloudsTypeTitleTranslation } from "../../../../helpers/utils";
 import Loaders from "@appserver/common/components/Loaders";
-
-const StyledBoxIcon = styled(BoxIcon)`
-  ${commonIconsStyles}
-`;
-const StyledDropBoxIcon = styled(DropBoxIcon)`
-  ${commonIconsStyles}
-`;
-const StyledGoogleDriveIcon = styled(GoogleDriveIcon)`
-  ${commonIconsStyles}
-`;
-const StyledKDriveIcon = styled(KDriveIcon)`
-  ${commonIconsStyles}
-`;
-const StyledNextCloudIcon = styled(NextCloudIcon)`
-  ${commonIconsStyles}
-`;
-const StyledOneDriveIcon = styled(OneDriveIcon)`
-  ${commonIconsStyles}
-`;
-const StyledOwnCloudIcon = styled(OwnCloudIcon)`
-  ${commonIconsStyles}
-`;
-const StyledSharePointIcon = styled(SharePointIcon)`
-  ${commonIconsStyles}
-`;
-const StyledWebDavIcon = styled(WebDavIcon)`
-  ${commonIconsStyles}
-`;
-const StyledYandexDiskIcon = styled(YandexDiskIcon)`
-  ${commonIconsStyles}
-`;
+import { tablet } from "@appserver/components/utils/device";
+import { ReactSVG } from "react-svg";
 
 const linkStyles = {
   isHovered: true,
   type: "action",
   fontWeight: "600",
-  color: "#555f65",
   className: "empty-folder_link",
   display: "flex",
 };
+
+const StyledHeader = styled.div`
+  display: flex;
+  border-bottom: 1px solid #eceef1;
+  padding-bottom: 12px;
+
+  @media ${tablet} {
+    display: none;
+  }
+
+  .cloud-settings-clouds {
+    width: 30%;
+    margin-right: 12px;
+  }
+
+  .cloud-settings-name {
+    display: flex;
+    margin-left: 6px;
+    width: 70%;
+  }
+
+  .cloud-settings-separator {
+    display: block;
+    height: 10px;
+    margin: 4px 8px 0 0;
+    z-index: 1;
+    border-right: 1px solid #d0d5da;
+  }
+
+  .cloud-settings-header_connection {
+    display: flex;
+    margin-left: -15px;
+  }
+`;
+
+const StyledRow = styled(Row)`
+  .cloud-settings-row-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    width: 100%;
+  }
+`;
 
 class ConnectClouds extends React.Component {
   constructor(props) {
@@ -110,36 +112,6 @@ class ConnectClouds extends React.Component {
 
     this.props.setConnectItem(item);
     this.props.setConnectDialogVisible(true);
-  };
-
-  getThirdPartyIcon = (iconName) => {
-    switch (iconName) {
-      case "Box":
-        return <StyledBoxIcon size="big" />;
-      case "DropboxV2":
-        return <StyledDropBoxIcon size="big" />;
-      case "GoogleDrive":
-        return <StyledGoogleDriveIcon size="big" />;
-      case "OneDrive":
-        return <StyledOneDriveIcon size="big" />;
-      case "SharePoint":
-        return <StyledSharePointIcon size="big" />;
-      case "kDrive":
-        return <StyledKDriveIcon size="big" />;
-      case "Yandex":
-        return <StyledYandexDiskIcon size="big" />;
-      case "OwnCloud":
-        return <StyledOwnCloudIcon size="big" />;
-      case "NextCloud":
-        return <StyledNextCloudIcon size="big" />;
-      case "OneDriveForBusiness":
-        return <StyledOneDriveIcon size="big" />;
-      case "WebDav":
-        return <StyledWebDavIcon size="big" />;
-
-      default:
-        return;
-    }
   };
 
   openLocation = (e) => {
@@ -187,6 +159,7 @@ class ConnectClouds extends React.Component {
       {
         key: `${index}_change`,
         "data-provider-id": item.provider_id,
+        icon: "/static/images/access.edit.react.svg",
         label: t("Translations:ThirdPartyInfo"),
         onClick: this.onChangeThirdPartyInfo,
       },
@@ -194,6 +167,7 @@ class ConnectClouds extends React.Component {
         key: `${index}_delete`,
         "data-id": item.provider_id,
         "data-title": item.customer_title,
+        icon: "/static/images/catalog.trash.react.svg",
         label: t("Translations:DeleteThirdParty"),
         onClick: this.onDeleteThirdParty,
       },
@@ -201,51 +175,63 @@ class ConnectClouds extends React.Component {
   };
 
   render() {
-    const { t, providers, tReady } = this.props;
+    const { t, providers, tReady, theme, getThirdPartyIcon } = this.props;
+
+    linkStyles.color = theme.filesSettings.color;
 
     return (
       <>
         {!!providers.length ? (
           <>
             <Button
-              size="base"
-              style={{ marginBottom: "8px" }}
+              size="small"
+              style={{ marginBottom: "24px" }}
               onClick={this.onShowThirdPartyDialog}
-              label={t("ConnectedCloud")}
+              label={t("Common:AddButton")}
               primary
             />
+            <StyledHeader>
+              <Text
+                className="cloud-settings-clouds"
+                fontSize="12px"
+                fontWeight={600}
+                color="#657077"
+              >
+                {t("Clouds")}
+              </Text>
+
+              <div className="cloud-settings-name">
+                <div className="cloud-settings-separator" />
+                <Text fontSize="12px" fontWeight={600} color="#A3A9AE">
+                  {t("Common:Name")}
+                </Text>
+              </div>
+            </StyledHeader>
             <RowContainer useReactWindow={false}>
               {providers.map((item, index) => {
-                const element = this.getThirdPartyIcon(item.provider_key);
+                const src = getThirdPartyIcon(item.provider_key);
+                const element = <ReactSVG src={src} alt="" />;
                 const typeTitle = connectedCloudsTypeTitleTranslation(
                   item.provider_key,
                   t
                 );
 
                 return (
-                  <Row
+                  <StyledRow
                     key={index}
                     element={element}
                     contextOptions={this.getContextOptions(item, index)}
                   >
-                    <Box
-                      containerMinWidth="200px"
-                      containerWidth="100%"
-                      displayProp="flex"
-                      flexDirection="row"
-                      alignItems="baseline"
-                      alignSelf="baseline"
-                      marginProp="auto 0"
-                    >
+                    <RowContent>
                       <Text
-                        style={{ width: 100 }}
                         as="div"
                         type="page"
+                        fontSize="13px"
+                        fontWeight={600}
                         title={item.provider_key}
-                        fontWeight="600"
-                        fontSize="15px"
-                        color="#333"
+                        //color={theme.filesSettings.linkColor}
                         noSelect
+                        containerWidth="30%"
                       >
                         {tReady ? (
                           typeTitle
@@ -253,21 +239,25 @@ class ConnectClouds extends React.Component {
                           <Loaders.Rectangle width="90px" height="10px" />
                         )}
                       </Text>
+                      <div></div>
+
                       <Link
                         type="page"
                         title={item.customer_title}
-                        color="#333"
-                        fontSize="13px"
+                        //color={theme.filesSettings.linkColor}
+                        color="#A3A9AE"
+                        fontSize="11px"
                         fontWeight={400}
                         truncate={true}
                         data-provider-key={item.provider_key}
                         data-provider-id={item.provider_id}
                         onClick={this.openLocation}
+                        containerWidth="70%"
                       >
                         {item.customer_title}
                       </Link>
-                    </Box>
-                  </Row>
+                    </RowContent>
+                  </StyledRow>
                 );
               })}
             </RowContainer>
@@ -300,8 +290,12 @@ class ConnectClouds extends React.Component {
 }
 
 export default inject(
-  ({ filesStore, settingsStore, treeFoldersStore, dialogsStore }) => {
-    const { providers, capabilities } = settingsStore.thirdPartyStore;
+  ({ auth, filesStore, settingsStore, treeFoldersStore, dialogsStore }) => {
+    const {
+      providers,
+      capabilities,
+      getThirdPartyIcon,
+    } = settingsStore.thirdPartyStore;
     const { filter, setFirstLoad } = filesStore;
     const { myFolder, commonFolder, getSubfolders } = treeFoldersStore;
     const {
@@ -313,6 +307,7 @@ export default inject(
     } = dialogsStore;
 
     return {
+      theme: auth.settingsStore.theme,
       filter,
       providers,
       capabilities,
@@ -325,6 +320,7 @@ export default inject(
       setDeleteThirdPartyDialogVisible,
       setRemoveItem,
       getSubfolders,
+      getThirdPartyIcon,
 
       homepage: config.homepage,
     };

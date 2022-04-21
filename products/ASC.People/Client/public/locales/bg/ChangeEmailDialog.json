@@ -1,17 +1,5 @@
 ﻿{
-  "DomainIpAddress": "Домейни като IP адрес не се поддържат",
   "EmailActivationDescription": "Инструкциите за активация ще бъдат изпратени на въведения имейл",
   "EmailChangeTitle": "Промяна на имейл",
-  "EmptyEmail": "Никой имейл не е анализиран",
-  "EnterEmail": "Въведете нов имейл адрес",
-  "IncorrectDomain": "Неправилен домейн",
-  "IncorrectEmail": "Неправилен имейл",
-  "IncorrectLocalPart": "Неправилна местна част",
-  "LocalDomain": "Не се поддържат местни домейни",
-  "ManyEmails": "Анализирани са твърде много имейли",
-  "MaxLengthExceeded": "Максималната дължина на потребителско име или друга местна част е 64 символа.",
-  "PunycodeDomain": "Домените на Punycode не се поддържат",
-  "PunycodeLocalPart": "Местните части на Punycode не се поддържат",
-  "SameEmail": "Не може да използвате същия имейл",
-  "SpacesInLocalPart": "Местната част не може да съдържа интервали"
+  "EnterEmail": "Въведете нов имейл адрес"
 }

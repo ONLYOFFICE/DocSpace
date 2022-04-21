@@ -34,9 +34,11 @@ const FileTile = (props) => {
     isEdit,
     inProgress,
     quickButtonsComponent,
+    showHotkeyBorder,
     badgesComponent,
     t,
-    getModel,
+    getContextModel,
+    onHideContextMenu,
   } = props;
 
   const temporaryExtension =
@@ -59,7 +61,7 @@ const FileTile = (props) => {
       <DragAndDrop
         data-title={item.title}
         value={value}
-        className={`files-item ${className}`}
+        className={`files-item ${className} ${item.id}_${item.fileExst}`}
         onDrop={onDrop}
         onMouseDown={onMouseDown}
         dragging={dragging && isDragging}
@@ -86,13 +88,15 @@ const FileTile = (props) => {
           isActive={isActive}
           inProgress={inProgress}
           isEdit={isEdit}
-          getModel={getModel}
+          getContextModel={getContextModel}
+          hideContextMenu={onHideContextMenu}
           t={t}
           title={
             item.isFolder
               ? t("Translations:TitleShowFolderActions")
               : t("Translations:TitleShowActions")
           }
+          showHotkeyBorder={showHotkeyBorder}
         >
           <FilesTileContent
             item={item}
@@ -110,7 +114,7 @@ export default inject(({ settingsStore }) => {
   const { getIcon } = settingsStore;
   return { getIcon };
 })(
-  withTranslation(["Home", "VersionBadge"])(
+  withTranslation(["Home", "VersionBadge", "InfoPanel"])(
     withFileActions(
       withRouter(withBadges(withQuickButtons(observer(FileTile))))
     )

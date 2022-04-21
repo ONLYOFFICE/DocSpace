@@ -315,7 +315,7 @@ class FileRow extends Component {
                 <Button
                   id="conversion-button"
                   className="conversion-password_button"
-                  size={"medium"}
+                  size={"small"}
                   scale
                   primary
                   label={t("Ready")}
@@ -347,7 +347,7 @@ export default inject(
       splitted = item.fileInfo.title.split(".");
       name = splitted[0];
     }
-    const { personal } = auth.settingsStore;
+    const { personal, theme } = auth.settingsStore;
     const {
       canViewedDocs,
       isMediaOrImage,
@@ -383,6 +383,7 @@ export default inject(
 
     return {
       isPersonal: personal,
+      theme,
       currentFileUploadProgress,
       uploaded,
       isMedia,

@@ -108,9 +108,7 @@ const SectionHeaderContent = (props) => {
     <Wrapper>
       <IconButton
         iconName="/static/images/arrow.path.react.svg"
-        color="#A3A9AE"
         size="17"
-        hoverColor="#657077"
         isFill={true}
         onClick={onClickBackHandler}
         className="arrow-button"

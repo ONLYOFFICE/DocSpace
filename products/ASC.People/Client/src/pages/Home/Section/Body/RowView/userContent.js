@@ -15,11 +15,18 @@ const UserContent = ({
   onEmailClick,
   onUserNameClick,
   groups,
+  theme,
 }) => {
   const { userName, displayName, title, mobilePhone, email, statusType } = item;
 
-  const nameColor = statusType === "pending" ? "#A3A9AE" : "#333333";
-  const sideInfoColor = statusType === "pending" ? "#D0D5DA" : "#A3A9AE";
+  const nameColor =
+    statusType === "pending"
+      ? theme.peopleTableRow.pendingNameColor
+      : theme.peopleTableRow.nameColor;
+  const sideInfoColor =
+    statusType === "pending"
+      ? theme.peopleTableRow.pendingSideInfoColor
+      : theme.peopleTableRow.sideInfoColor;
 
   return (
     <RowContent
