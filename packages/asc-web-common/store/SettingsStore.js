@@ -465,10 +465,6 @@ class SettingsStore {
   setTenantAlias = (tenantAlias) => {
     this.tenantAlias = tenantAlias;
   };
-
-  getOforms = () => {
-    return api.settings.getOforms(`${this.urlOforms}${this.culture}`);
-  };
 }
 
 export default SettingsStore;

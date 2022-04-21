@@ -286,7 +286,7 @@ class FilesStore {
   };
 
   getOforms = async () => {
-    const oformData = await this.settingsStore.getOforms();
+    const oformData = await this.authStore.getOforms();
 
     runInAction(() => {
       this.oformFiles = oformData?.data?.data ? oformData.data.data : [];
