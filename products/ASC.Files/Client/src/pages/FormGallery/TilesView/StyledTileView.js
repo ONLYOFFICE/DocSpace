@@ -63,14 +63,18 @@ const StyledFileTileTop = styled.div`
   position: relative;
   border-radius: 6px 6px 0 0;
 
-  .thumbnail-image {
-    pointer-events: none;
-    position: relative;
-    height: 100%;
-    width: 100%;
-    object-fit: cover;
-    border-radius: 6px 6px 0 0;
-    z-index: 0;
+  .thumbnail-image-link {
+    margin: 0 auto;
+
+    .thumbnail-image {
+      pointer-events: none;
+      position: relative;
+      height: 100%;
+      width: 100%;
+      object-fit: cover;
+      border-radius: 6px 6px 0 0;
+      z-index: 0;
+    }
   }
 
   .temporary-icon > .injected-svg {

@@ -48,7 +48,11 @@ class Tile extends React.PureComponent {
     const svgLoader = () => <div style={{ width: "96px" }} />;
 
     return src ? (
-      <Link type="page" onClick={thumbnailClick}>
+      <Link
+        className="thumbnail-image-link"
+        type="page"
+        onClick={thumbnailClick}
+      >
         <img
           src={src}
           className="thumbnail-image"
