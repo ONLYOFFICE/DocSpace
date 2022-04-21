@@ -26,8 +26,16 @@ import {
   getUserRole,
 } from "../../../../helpers/people-helpers";
 import config from "../../../../../package.json";
-import { AppServerConfig, providersData } from "@appserver/common/constants";
-import { unlinkOAuth, linkOAuth } from "@appserver/common/api/people";
+import {
+  AppServerConfig,
+  providersData,
+  ThemeKeys,
+} from "@appserver/common/constants";
+import {
+  unlinkOAuth,
+  linkOAuth,
+  changeTheme,
+} from "@appserver/common/api/people";
 import { getAuthProviders } from "@appserver/common/api/settings";
 import { Trans, useTranslation } from "react-i18next";
 import {
@@ -345,6 +353,18 @@ class SectionBodyContent extends React.PureComponent {
     this.props.changeEmailSubscription(checked);
   };
 
+  onChangeTheme = async (e) => {
+    const { setIsLoading, changeTheme, setTheme } = this.props;
+
+    const value = e.currentTarget.value;
+
+    setIsLoading(true);
+
+    await changeTheme(value);
+
+    setIsLoading(false);
+  };
+
   render() {
     const { resetAppDialogVisible, backupCodesDialogVisible, tfa } = this.state;
     const {
@@ -361,6 +381,7 @@ class SectionBodyContent extends React.PureComponent {
       tipsSubscription,
       theme,
       setTheme,
+      selectedTheme,
     } = this.props;
     const contacts = profile.contacts && getUserContacts(profile.contacts);
     const role = getUserRole(profile);
@@ -382,8 +403,6 @@ class SectionBodyContent extends React.PureComponent {
         }
       });
     }
-
-    const selectedTheme = localStorage.getItem("theme");
 
     return (
       <ProfileWrapper>
@@ -494,11 +513,11 @@ class SectionBodyContent extends React.PureComponent {
                 orientation={"vertical"}
                 name={"interface-theme"}
                 options={[
-                  { value: "system", label: t("SystemTheme") },
-                  { value: "base", label: t("LightTheme") },
-                  { value: "dark", label: t("DarkTheme") },
+                  { value: ThemeKeys.SystemStr, label: t("SystemTheme") },
+                  { value: ThemeKeys.BaseStr, label: t("LightTheme") },
+                  { value: ThemeKeys.DarkStr, label: t("DarkTheme") },
                 ]}
-                onClick={(e) => setTheme(e.target.value)}
+                onClick={this.onChangeTheme}
                 selected={selectedTheme}
                 spacing={"10px"}
               />
@@ -558,7 +577,8 @@ class SectionBodyContent extends React.PureComponent {
 export default withRouter(
   inject(({ auth, peopleStore }) => {
     const { isAdmin, userStore, settingsStore, tfaStore } = auth;
-    const { user: viewer } = userStore;
+    const { user: viewer, changeTheme } = userStore;
+
     const {
       isTabletView,
       getOAuthToken,
@@ -566,7 +586,12 @@ export default withRouter(
       theme,
       setTheme,
     } = settingsStore;
-    const { targetUserStore, avatarEditorStore, usersStore } = peopleStore;
+    const {
+      targetUserStore,
+      avatarEditorStore,
+      usersStore,
+      loadingStore,
+    } = peopleStore;
     const {
       targetUser: profile,
       isMe: isSelf,
@@ -609,6 +634,9 @@ export default withRouter(
       tipsSubscription,
       theme,
       setTheme,
+      changeTheme,
+      selectedTheme: viewer.theme,
+      setIsLoading: loadingStore.setIsLoading,
     };
   })(
     observer(
