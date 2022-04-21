@@ -258,13 +258,13 @@ class TileContainer extends React.PureComponent {
   };
 
   onOptionClick = (e) => {
-    const sortDirection =
-      this.state.selectedFilterData.sortDirection === "desc" &&
-      e.target.closest(".option-item__icon")
-        ? "asc"
-        : "desc";
-
     const key = e.target.closest(".option-item").dataset.value;
+
+    let sortDirection = this.state.selectedFilterData.sortDirection;
+
+    if (key === this.state.selectedFilterData.sortId) {
+      sortDirection = sortDirection === "desc" ? "asc" : "desc";
+    }
 
     this.setState({
       selectedFilterData: {
@@ -414,7 +414,7 @@ class TileContainer extends React.PureComponent {
                       size={"content"}
                       advancedOptions={advancedOptions}
                       disableIconClick={false}
-                      disableItemClick={true}
+                      // disableItemClick={true}
                       isDefaultMode={false}
                       noBorder={true}
                       manualY={"102%"}

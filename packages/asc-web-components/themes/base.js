@@ -127,14 +127,6 @@ const Base = {
       medium: "0 32px",
     },
 
-    minWidth: {
-      extraSmall: "none",
-      small: "100px",
-      normalDesktop: "100px",
-      normalTouchscreen: "100px",
-      medium: "100px",
-    },
-
     color: {
       base: black,
       baseHover: black,
@@ -2333,6 +2325,17 @@ const Base = {
       fill: gray,
       loadingFill: grayMid,
 
+      borderBottom: "1px solid #eceef1",
+      borderTop: "1px solid #eceef1",
+      externalLinkBackground: "#f8f9f9",
+      externalLinkSvg: "#333333",
+
+      internalLinkBorder: "1px dashed #333333",
+
+      itemBorder: "1px dashed #333333",
+
+      itemOwnerColor: "rgb(163, 169, 174)",
+
       dropdownColor: black,
 
       loader: {
@@ -2441,6 +2444,13 @@ const Base = {
     color: black,
     border: `1px solid ${grayMid}`,
     borderBottom: `1px solid ${grayLightMid}`,
+
+    tile: {
+      background: globalColors.lightHover,
+      itemBackground: white,
+      itemBorder: grayMid,
+      itemActiveBorder: blueMain,
+    },
 
     fill: gray,
     hoverFill: grayMain,

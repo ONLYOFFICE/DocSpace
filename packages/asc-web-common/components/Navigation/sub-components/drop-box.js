@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 
@@ -33,7 +33,7 @@ const StyledBox = styled.div`
   height: ${(props) => (props.height ? `${props.height}px` : "fit-content")};
   max-height: calc(100vh - 48px);
 
-  z-index: 399;
+  z-index: 401;
   display: flex;
   flex-direction: column;
 
@@ -51,6 +51,7 @@ const StyledBox = styled.div`
   css`
     margin-left: 16px;
     padding: 0 16px !important;
+    max-height: ${(props) => props.maxHeight};
   `}
 `;
 
@@ -88,6 +89,7 @@ const DropBox = React.forwardRef(
       toggleInfoPanel,
       onClickAvailable,
       isInfoPanelVisible,
+      maxHeight,
     },
     ref
   ) => {
@@ -124,41 +126,45 @@ const DropBox = React.forwardRef(
     }, [sectionHeight]);
 
     return (
-      <StyledBox
-        ref={ref}
-        height={sectionHeight < dropBoxHeight ? sectionHeight : null}
-        showText={showText}
-        dropBoxWidth={dropBoxWidth}
-      >
-        <StyledContainer canCreate={canCreate} isDropBox={true}>
-          <ArrowButton
-            isRootFolder={isRootFolder}
-            onBackToParentFolder={onBackToParentFolder}
-          />
-          <Text title={title} isOpen={true} onClick={toggleDropBox} />
-          <ControlButtons
-            personal={personal}
-            isRootFolder={isRootFolder}
-            isDropBox={true}
-            canCreate={canCreate}
-            getContextOptionsFolder={getContextOptionsFolder}
-            getContextOptionsPlus={getContextOptionsPlus}
-            toggleInfoPanel={toggleInfoPanel}
-            isInfoPanelVisible={isInfoPanelVisible}
-          />
-        </StyledContainer>
-
-        <VariableSizeList
-          height={dropBoxHeight}
-          width={"auto"}
-          itemCount={countItems}
-          itemSize={getItemSize}
-          itemData={[navigationItems, onClickAvailable]}
-          outerElementType={CustomScrollbarsVirtualList}
+      <>
+        <StyledBox
+          ref={ref}
+          maxHeight={maxHeight}
+          height={sectionHeight < dropBoxHeight ? sectionHeight : null}
+          showText={showText}
+          dropBoxWidth={dropBoxWidth}
         >
-          {Row}
-        </VariableSizeList>
-      </StyledBox>
+          <StyledContainer canCreate={canCreate} isDropBox={true}>
+            <ArrowButton
+              isRootFolder={isRootFolder}
+              onBackToParentFolder={onBackToParentFolder}
+            />
+            <Text title={title} isOpen={true} onClick={toggleDropBox} />
+            <ControlButtons
+              personal={personal}
+              isRootFolder={isRootFolder}
+              isDropBox={true}
+              canCreate={canCreate}
+              getContextOptionsFolder={getContextOptionsFolder}
+              getContextOptionsPlus={getContextOptionsPlus}
+              toggleInfoPanel={toggleInfoPanel}
+              toggleDropBox={toggleDropBox}
+              isInfoPanelVisible={isInfoPanelVisible}
+            />
+          </StyledContainer>
+
+          <VariableSizeList
+            height={dropBoxHeight}
+            width={"auto"}
+            itemCount={countItems}
+            itemSize={getItemSize}
+            itemData={[navigationItems, onClickAvailable]}
+            outerElementType={CustomScrollbarsVirtualList}
+          >
+            {Row}
+          </VariableSizeList>
+        </StyledBox>
+      </>
     );
   }
 );

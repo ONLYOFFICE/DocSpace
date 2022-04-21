@@ -175,21 +175,6 @@ const InvalidRoute = (props) => (
 
 const RedirectToHome = () => <Redirect to={PROXY_HOMEPAGE_URL} />;
 
-const checkTheme = () => {
-  const theme = localStorage.getItem("theme");
-
-  if (theme) return theme;
-
-  if (
-    window.matchMedia &&
-    window.matchMedia("(prefers-color-scheme: dark)").matches
-  ) {
-    return "Dark";
-  }
-
-  return "Base";
-};
-
 const Shell = ({ items = [], page = "home", ...rest }) => {
   const {
     isLoaded,
@@ -206,6 +191,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     setMaintenanceExist,
     roomsMode,
     setSnackbarExist,
+    userTheme,
   } = rest;
 
   useEffect(() => {
@@ -431,8 +417,8 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   }, [page]);
 
   useEffect(() => {
-    setTheme(checkTheme());
-  }, []);
+    if (userTheme) setTheme(userTheme);
+  }, [userTheme]);
 
   const pathname = window.location.pathname.toLowerCase();
   const isEditor = pathname.indexOf("doceditor") !== -1;
@@ -535,11 +521,13 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
                 component={ComingSoonRoute}
               />
               <PrivateRoute path={PAYMENTS_URL} component={PaymentsRoute} />
-              <PrivateRoute
-                restricted
-                path={SETTINGS_URL}
-                component={SettingsRoute}
-              />
+              {!personal && (
+                <PrivateRoute
+                  restricted
+                  path={SETTINGS_URL}
+                  component={SettingsRoute}
+                />
+              )}
               <PrivateRoute
                 exact
                 allowForMe
@@ -565,6 +553,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
 const ShellWrapper = inject(({ auth, backup }) => {
   const { init, isLoaded, settingsStore, setProductVersion, language } = auth;
+
   const {
     personal,
     roomsMode,
@@ -603,11 +592,13 @@ const ShellWrapper = inject(({ auth, backup }) => {
     setTheme,
     roomsMode,
     setSnackbarExist,
+    userTheme: auth?.userStore?.user?.theme,
   };
 })(observer(Shell));
 
 const ThemeProviderWrapper = inject(({ auth }) => {
   const { settingsStore } = auth;
+
   return { theme: settingsStore.theme };
 })(observer(ThemeProvider));
 

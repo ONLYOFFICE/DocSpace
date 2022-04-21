@@ -1,9 +1,11 @@
 import { inject, observer } from "mobx-react";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import SeveralItems from "./SeveralItems";
 import SingleItem from "./SingleItem";
+import GalleryItem from "./GalleryItem";
+import GalleryEmptyScreen from "./GalleryEmptyScreen";
 import { StyledInfoRoomBody } from "./styles/styles.js";
 import { Base } from "@appserver/components/themes";
 
@@ -20,6 +22,8 @@ const InfoPanelBodyContent = ({
   isRecycleBinFolder,
   isRecentFolder,
   isFavoritesFolder,
+  isGallery,
+  gallerySelected,
 }) => {
   const singleItem = (item) => {
     const dontShowLocation = item.isFolder && item.parentId === 0;
@@ -47,7 +51,15 @@ const InfoPanelBodyContent = ({
     );
   };
 
-  return (
+  return isGallery ? (
+    !gallerySelected ? (
+      <GalleryEmptyScreen />
+    ) : (
+      <StyledInfoRoomBody>
+        <GalleryItem selectedItem={gallerySelected} />
+      </StyledInfoRoomBody>
+    )
+  ) : (
     <StyledInfoRoomBody>
       <>
         {selectedItems.length === 0 ? (
@@ -76,7 +88,12 @@ export default inject(
     treeFoldersStore,
     selectedFolderStore,
   }) => {
-    const { selection, getFolderInfo, getShareUsers } = filesStore;
+    const {
+      selection,
+      getFolderInfo,
+      getShareUsers,
+      gallerySelected,
+    } = filesStore;
     const { getIcon, getFolderIcon } = settingsStore;
     const { onSelectItem } = filesActionsStore;
     const { setSharingPanelVisible } = dialogsStore;
@@ -98,6 +115,7 @@ export default inject(
       isRecycleBinFolder,
       isRecentFolder,
       isFavoritesFolder,
+      gallerySelected,
     };
   }
 )(

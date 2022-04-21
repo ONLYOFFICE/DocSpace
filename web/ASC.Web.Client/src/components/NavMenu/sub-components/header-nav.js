@@ -34,7 +34,7 @@ const StyledNav = styled.nav`
   position: absolute;
   right: 0;
   height: 48px;
-  z-index: 190 !important;
+  z-index: 203 !important;
 
   & > div {
     margin: 0 0 0 16px;
@@ -121,14 +121,15 @@ const HeaderNav = ({
     settingsModule && useCallback(() => history.push(settingsUrl), []);
 
   const getCurrentUserActions = useCallback(() => {
-    const settings = settingsModule
-      ? {
-          key: "SettingsBtn",
-          label: t("Common:Settings"),
-          onClick: onSettingsClick,
-          url: settingsUrl,
-        }
-      : null;
+    const settings =
+      settingsModule && !isPersonal
+        ? {
+            key: "SettingsBtn",
+            label: t("Common:Settings"),
+            onClick: onSettingsClick,
+            url: settingsUrl,
+          }
+        : null;
 
     const actions = [
       {

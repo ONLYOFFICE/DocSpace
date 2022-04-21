@@ -223,6 +223,7 @@ const Form = (props) => {
     if (!userName) {
       hasError = true;
       setIdentifierValid(false);
+      setIsEmailErrorShow(true);
     }
 
     const pass = password.trim();
@@ -252,6 +253,7 @@ const Form = (props) => {
         } else history.push(url, { user, hash });
       })
       .catch((error) => {
+        setIsEmailErrorShow(true);
         setErrorText(error);
         setPasswordValid(!error);
         setIsLoading(false);
@@ -357,7 +359,7 @@ const Form = (props) => {
   };
 
   const onBlurEmail = () => {
-    setIsEmailErrorShow(true);
+    !identifierValid && setIsEmailErrorShow(true);
   };
 
   //console.log("Login render");
@@ -408,10 +410,9 @@ const Form = (props) => {
 
           <form className="auth-form-container">
             <FieldContainer
-              className="form-field"
               isVertical={true}
               labelVisible={false}
-              hasError={(isEmailErrorShow && !identifierValid) || errorText}
+              hasError={isEmailErrorShow}
               errorMessage={
                 errorText ? t(`Common:${errorText}`) : t("Common:RequiredField")
               } //TODO: Add wrong login server error
@@ -420,10 +421,7 @@ const Form = (props) => {
                 id="login"
                 name="login"
                 type="email"
-                hasError={
-                  (isEmailErrorShow && !identifierValid) ||
-                  (errorText && errorText.length > 0)
-                }
+                hasError={isEmailErrorShow}
                 value={identifier}
                 placeholder={t("RegistrationEmailWatermark")}
                 size="large"
@@ -439,7 +437,6 @@ const Form = (props) => {
               />
             </FieldContainer>
             <FieldContainer
-              className="form-field"
               isVertical={true}
               labelVisible={false}
               hasError={!passwordValid}
@@ -466,19 +463,24 @@ const Form = (props) => {
 
             <div className="login-forgot-wrapper">
               <div className="login-checkbox-wrapper">
-                <Checkbox
-                  className="login-checkbox"
-                  isChecked={isChecked}
-                  onChange={onChangeCheckbox}
-                  label={<Text fontSize="13px">{t("Remember")}</Text>}
-                />
-                <HelpButton
-                  className="login-tooltip"
-                  helpButtonHeaderContent={t("CookieSettingsTitle")}
-                  tooltipContent={
-                    <Text fontSize="12px">{t("RememberHelper")}</Text>
-                  }
-                />
+                <div className="remember-wrapper">
+                  <Checkbox
+                    className="login-checkbox"
+                    isLogin={true}
+                    isChecked={isChecked}
+                    onChange={onChangeCheckbox}
+                    label={t("Remember")}
+                    helpButton={
+                      <HelpButton
+                        helpButtonHeaderContent={t("CookieSettingsTitle")}
+                        tooltipContent={
+                          <Text fontSize="12px">{t("RememberHelper")}</Text>
+                        }
+                      />
+                    }
+                  />
+                </div>
+
                 <Link
                   fontSize="13px"
                   color="#316DAA"
