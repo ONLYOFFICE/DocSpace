@@ -98,7 +98,9 @@ namespace ASC.Web.Api.Models
 
         public bool IsSSO { get; set; }
 
-        public new static EmployeeWraperFull GetSample()
+        public DarkThemeSettingsEnum? Theme { get; set; }
+
+        public static new EmployeeWraperFull GetSample()
         {
             return new EmployeeWraperFull
             {
