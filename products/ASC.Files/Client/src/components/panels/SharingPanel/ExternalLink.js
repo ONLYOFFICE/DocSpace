@@ -176,7 +176,7 @@ const ExternalLink = ({
           </div>
           <div className="external-link__access-rights">
             <Text className="external-link__access-rights_text">
-              Access rights:
+              {t("AccessRights")}:
             </Text>
             <AccessComboBox
               t={t}
