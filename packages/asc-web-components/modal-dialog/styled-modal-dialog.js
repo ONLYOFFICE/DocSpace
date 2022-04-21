@@ -33,10 +33,11 @@ const Content = styled.div.attrs((props) => ({
   position: relative;
   background-color: ${(props) => props.theme.modalDialog.backgroundColor};
   color: ${(props) => props.theme.modalDialog.textColor};
-  padding: ${(props) => (props.displayType === "modal" ? "0" : "0 0 -16px")};
+  padding: ${(props) =>
+    props.currentDisplayType === "modal" ? "0" : "0 0 -16px"};
 
   ${(props) =>
-    props.displayType === "modal"
+    props.currentDisplayType === "modal"
       ? css`
           height: auto;
           max-height: ${(props) =>
@@ -63,7 +64,7 @@ const Content = styled.div.attrs((props) => ({
           top: 0;
           right: 0;
           bottom: 0;
-          transform: translateX(${(props) => (props.visible ? 0 : "100%")});
+          transform: translateX(${(props) => (props.visible ? "0" : "100%")});
           transition: transform 0.3s ease-in-out;
           @media ${smallTablet} {
             transform: translateY(${(props) => (props.visible ? "0" : "100%")});
@@ -92,7 +93,8 @@ const StyledHeader = styled.div`
     font-family: "Open Sans";
     color: ${(props) => props.theme.modalDialog.textColor};
     font-weight: 700;
-    font-size: ${(props) => (props.displayType === "modal" ? "18px" : "21px")};
+    font-size: ${(props) =>
+      props.currentDisplayType === "modal" ? "18px" : "21px"};
   }
 `;
 
@@ -100,10 +102,10 @@ const StyledBody = styled(Box)`
   position: relative;
   padding: 0 16px;
   padding-bottom: ${(props) =>
-    props.displayType === "aside" || props.hasFooter ? "8px" : "16px"};
+    props.currentDisplayType === "aside" || props.hasFooter ? "8px" : "16px"};
 
   ${(props) =>
-    props.displayType === "aside" &&
+    props.currentDisplayType === "aside" &&
     css`
       padding-bottom: 8px;
       height: 100%;

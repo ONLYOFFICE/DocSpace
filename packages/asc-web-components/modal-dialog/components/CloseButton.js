@@ -23,7 +23,7 @@ const StyledCloseButtonWrapper = styled.div`
   position: absolute;
 
   ${(props) =>
-    props.displayType === "modal"
+    props.currentDisplayType === "modal"
       ? css`
           top: 0;
           right: -34px;
@@ -52,12 +52,12 @@ const StyledCloseButtonWrapper = styled.div`
 
 StyledCloseButtonWrapper.defaultProps = { theme: Base };
 
-const CloseButton = ({ displayType, zIndex, onClick }) => {
+const CloseButton = ({ currentDisplayType, zIndex, onClick }) => {
   return (
     <StyledCloseButtonWrapper
       zIndex={zIndex}
       onClick={onClick}
-      displayType={displayType}
+      currentDisplayType={currentDisplayType}
     >
       <IconButton
         size={12}
@@ -69,7 +69,7 @@ const CloseButton = ({ displayType, zIndex, onClick }) => {
 };
 
 CloseButton.propTypes = {
-  displayType: PropTypes.oneOf(["modal", "aside"]),
+  currentDisplayType: PropTypes.oneOf(["modal", "aside"]),
   onClick: PropTypes.func,
 };
 
