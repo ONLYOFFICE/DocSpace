@@ -287,7 +287,10 @@ class FilesStore {
 
   getOforms = async () => {
     const oformData = await this.settingsStore.getOforms();
-    this.oformFiles = oformData ? oformData : [];
+
+    runInAction(() => {
+      this.oformFiles = oformData?.data?.data ? oformData.data.data : [];
+    });
   };
 
   get hasGalleryFiles() {

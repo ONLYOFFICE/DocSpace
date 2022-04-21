@@ -456,8 +456,6 @@ export function toggleTipsSubscription() {
   return request(options);
 }
 
-export async function getOforms(url) {
-  const response = await axios.get(url);
-
-  return response?.data?.data;
+export function getOforms(url) {
+  return axios.get(url);
 }
