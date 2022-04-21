@@ -61,11 +61,16 @@ class WelcomePageSettings extends React.Component {
 
   componentDidMount() {
     const { isLoaded, setIsLoadedWelcomePageSettings, tReady } = this.props;
+    const { greetingTitleDefault } = this.state;
     window.addEventListener("resize", this.checkInnerWidth);
 
     const isLoadedSetting = isLoaded && tReady;
 
     if (isLoadedSetting) setIsLoadedWelcomePageSettings(isLoadedSetting);
+
+    if (greetingTitleDefault) {
+      this.checkChanges();
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {

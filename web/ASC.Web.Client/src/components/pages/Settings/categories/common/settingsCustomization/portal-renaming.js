@@ -44,7 +44,7 @@ const PortalRenaming = (props) => {
     portalNameFromSessionStorage || tenantAlias
   );
   const [portalNameDefault, setPortalNameDefault] = useState(
-    portalNameDefaultFromSessionStorage || portalName
+    portalNameDefaultFromSessionStorage || tenantAlias
   );
 
   const [showReminder, setShowReminder] = useState(false);
@@ -63,8 +63,7 @@ const PortalRenaming = (props) => {
 
     const checkScroll = checkScrollSettingsBlock();
 
-    window.addEventListener("resize", checkInnerWidth);
-    window.addEventListener("resize", checkScroll);
+    window.addEventListener("resize", checkInnerWidth, checkScroll);
 
     const scrollPortalName = checkScroll();
 
@@ -91,7 +90,10 @@ const PortalRenaming = (props) => {
 
   useEffect(() => {
     if (isLoadedSetting) setIsLoadedPortalRenaming(isLoadedSetting);
-  }, [isLoadedSetting]);
+    if (portalNameDefault) {
+      checkChanges();
+    }
+  }, [isLoadedSetting, portalNameDefault]);
 
   const onSavePortalRename = () => {
     setIsLoadingPortalNameSave(true);
@@ -124,9 +126,6 @@ const PortalRenaming = (props) => {
       saveToSessionStorage("portalName", "");
       setShowReminder(false);
     }
-
-    //TODO: delete?
-    checkChanges();
   };
 
   const onValidateInput = (value) => {
@@ -177,10 +176,8 @@ const PortalRenaming = (props) => {
     if (settingIsEqualInitialValue(value)) {
       saveToSessionStorage("portalName", "");
       saveToSessionStorage("portalNameDefault", "");
-      setShowReminder(false);
     } else {
       saveToSessionStorage("portalName", value);
-      setShowReminder(true);
     }
 
     checkChanges();
