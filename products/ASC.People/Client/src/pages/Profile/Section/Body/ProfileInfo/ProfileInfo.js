@@ -31,7 +31,7 @@ const InfoItem = styled.div`
   font-size: 13px;
   line-height: 24px;
   display: flex;
-  width: 360px;
+  width: 358px;
 `;
 
 const InfoItemLabel = styled.div`
