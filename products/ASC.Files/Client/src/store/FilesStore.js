@@ -63,6 +63,7 @@ class FilesStore {
   headerBorder = false;
 
   isPrevSettingsModule = false;
+  enabledHotkeys = true;
   oformFiles = [];
   gallerySelected = null;
 
@@ -1968,6 +1969,10 @@ class FilesStore {
 
   setPasswordEntryProcess = (process) => {
     this.passwordEntryProcess = process;
+  };
+
+  setEnabledHotkeys = (enabledHotkeys) => {
+    this.enabledHotkeys = enabledHotkeys;
   };
 }
 

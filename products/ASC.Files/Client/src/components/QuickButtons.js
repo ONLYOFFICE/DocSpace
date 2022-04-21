@@ -29,8 +29,8 @@ const QuickButtons = ({
   const isTile = viewAs === "tile";
 
   const iconShare = shared
-    ? "/static/images/file.actions.share.react.svg"
-    : "/static/images/catalog.share.react.svg";
+    ? "/static/images/shared.share.react.svg"
+    : "/static/images/share.react.svg";
 
   const colorShare = shared
     ? theme.filesQuickButtons.sharedColor

@@ -411,6 +411,7 @@ class FilesActionStore {
       setSelection,
       setHotkeyCaretStart,
       setHotkeyCaret,
+      setEnabledHotkeys,
       filesList,
     } = this.filesStore;
     /* selected === "close" &&  */ setSelected("none");
@@ -422,8 +423,10 @@ class FilesActionStore {
     );
 
     if (item) {
-      if (isBuffer) setBufferSelection(item);
-      else {
+      if (isBuffer) {
+        setBufferSelection(item);
+        setEnabledHotkeys(false);
+      } else {
         setSelection([item]);
         setHotkeyCaret(null);
         setHotkeyCaretStart(null);

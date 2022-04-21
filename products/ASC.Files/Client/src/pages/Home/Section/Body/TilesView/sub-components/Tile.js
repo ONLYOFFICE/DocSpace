@@ -378,6 +378,7 @@ class Tile extends React.PureComponent {
       title,
       getContextModel,
       showHotkeyBorder,
+      hideContextMenu,
     } = this.props;
     const { isFolder, id, fileExst } = item;
 
@@ -479,6 +480,7 @@ class Tile extends React.PureComponent {
                 <div className="expandButton" />
               )}
               <ContextMenu
+                onHide={hideContextMenu}
                 getContextModel={getContextModel}
                 ref={this.cm}
                 header={contextMenuHeader}
@@ -552,6 +554,7 @@ class Tile extends React.PureComponent {
                   ref={this.cm}
                   header={contextMenuHeader}
                   withBackdrop={true}
+                  onHide={hideContextMenu}
                 />
               </StyledOptionButton>
             </StyledFileTileBottom>

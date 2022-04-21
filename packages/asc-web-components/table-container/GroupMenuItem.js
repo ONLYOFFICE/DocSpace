@@ -77,13 +77,21 @@ StyledButton.defaultProps = { theme: Base };
 const GroupMenuItem = ({ item }) => {
   const { label, disabled, onClick, iconUrl, title } = item;
   return (
-    <StyledButton
-      label={label}
-      title={title || label}
-      isDisabled={disabled}
-      onClick={onClick}
-      icon={<ReactSVG src={iconUrl} className="combo-button_selected-icon" />}
-    />
+    <>
+      {disabled ? (
+        <></>
+      ) : (
+        <StyledButton
+          label={label}
+          title={title || label}
+          isDisabled={disabled}
+          onClick={onClick}
+          icon={
+            <ReactSVG src={iconUrl} className="combo-button_selected-icon" />
+          }
+        />
+      )}
+    </>
   );
 };
 
