@@ -112,11 +112,29 @@ public class SecurityController : BaseSettingsController
 
     [Read("security/password", Check = false)]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Everyone")]
-    public object GetPasswordSettings()
+    public PasswordSettings GetPasswordSettings()
     {
-        var UserPasswordSettings = _settingsManager.Load<PasswordSettings>();
+        return _settingsManager.Load<PasswordSettings>();
+    }
 
-        return UserPasswordSettings;
+    [Update("security/password")]
+    public PasswordSettings UpdatePasswordSettings(PasswordSettingsModel model)
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+        var userPasswordSettings = _settingsManager.Load<PasswordSettings>();
+
+        userPasswordSettings.MinLength = model.MinLength;
+        userPasswordSettings.UpperCase = model.UpperCase;
+        userPasswordSettings.Digits = model.Digits;
+        userPasswordSettings.SpecSymbols = model.SpecSymbols;
+
+        _settingsManager.Save(userPasswordSettings);
+
+        _messageService.Send(MessageAction.PasswordStrengthSettingsUpdated);
+
+        return userPasswordSettings;
+
     }
 
     [Update("security")]

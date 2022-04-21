@@ -33,6 +33,7 @@ public class FileStorageService<T> //: IFileStorageService
 {
     private static readonly FileEntrySerializer _serializer = new FileEntrySerializer();
     private readonly CompressToArchive _compressToArchive;
+    private readonly OFormRequestManager _oFormRequestManager;
     private readonly Global _global;
     private readonly GlobalStore _globalStore;
     private readonly GlobalFolderHelper _globalFolderHelper;
@@ -119,7 +120,8 @@ public class FileStorageService<T> //: IFileStorageService
         FileTrackerHelper fileTracker,
         ICacheNotify<ThumbnailRequest> thumbnailNotify,
         EntryStatusManager entryStatusManager,
-        CompressToArchive compressToArchive)
+        CompressToArchive compressToArchive,
+        OFormRequestManager oFormRequestManager)
     {
         _global = global;
         _globalStore = globalStore;
@@ -164,6 +166,7 @@ public class FileStorageService<T> //: IFileStorageService
         _thumbnailNotify = thumbnailNotify;
         _entryStatusManager = entryStatusManager;
         _compressToArchive = compressToArchive;
+        _oFormRequestManager = oFormRequestManager;
     }
 
     public async Task<Folder<T>> GetFolderAsync(T folderId)
@@ -621,7 +624,15 @@ public class FileStorageService<T> //: IFileStorageService
             file.Title = FileUtility.ReplaceFileExtension(title, fileExt);
         }
 
-        if (EqualityComparer<TTemplate>.Default.Equals(fileWrapper.TemplateId, default(TTemplate)))
+        if (fileWrapper.FormId != 0)
+        {
+            using (var stream = await _oFormRequestManager.Get(fileWrapper.FormId))
+            {
+                file.ContentLength = stream.Length;
+                file = await fileDao.SaveFileAsync(file, stream);
+            }
+        }
+        else if (EqualityComparer<TTemplate>.Default.Equals(fileWrapper.TemplateId, default(TTemplate)))
         {
             var culture = _userManager.GetUsers(_authContext.CurrentAccount.ID).GetCulture();
             var storeTemplate = GetStoreTemplate();
@@ -730,7 +741,7 @@ public class FileStorageService<T> //: IFileStorageService
             if (isFinish)
             {
                 _fileTracker.Remove(id, tabId);
-                await _socketManager.StopEditAsync(id);
+                _socketManager.StopEdit(id);
             }
             else
             {
@@ -780,7 +791,7 @@ public class FileStorageService<T> //: IFileStorageService
             if (!forcesave && _fileTracker.IsEditingAlone(fileId))
             {
                 _fileTracker.Remove(fileId);
-                await _socketManager.StopEditAsync(fileId);
+                _socketManager.StopEdit(fileId);
             }
 
             var file = await _entryManager.SaveEditingAsync(fileId, fileExtension, fileuri, stream, doc, forcesave: forcesave ? ForcesaveType.User : ForcesaveType.None, keepLink: true);
@@ -805,7 +816,7 @@ public class FileStorageService<T> //: IFileStorageService
             if (!forcesave && _fileTracker.IsEditing(fileId))
             {
                 _fileTracker.Remove(fileId);
-                await _socketManager.StopEditAsync(fileId);
+                _socketManager.StopEdit(fileId);
             }
 
             var file = await _entryManager.SaveEditingAsync(fileId,
@@ -2611,4 +2622,5 @@ public class FileModel<T, TTempate>
     public T ParentId { get; set; }
     public string Title { get; set; }
     public TTempate TemplateId { get; set; }
+    public int FormId { get; set; }
 }

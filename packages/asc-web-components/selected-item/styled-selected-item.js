@@ -1,4 +1,6 @@
 import styled from "styled-components";
+
+import Text from "../text";
 import Base from "../themes/base";
 
 const StyledSelectedItem = styled.div`
@@ -28,6 +30,12 @@ const StyledCloseButton = styled.div`
   padding: ${(props) => props.theme.selectedItem.closeButton.padding};
   cursor: ${(props) => (!props.isDisabled ? "pointer" : "default")};
 
+  path {
+    ${(props) =>
+      !props.isDisabled &&
+      `fill: ${props.theme.selectedItem.closeButton.color};`}
+  }
+
   &:hover {
     path {
       ${(props) =>
@@ -44,4 +52,17 @@ const StyledCloseButton = styled.div`
 `;
 StyledCloseButton.defaultProps = { theme: Base };
 
-export { StyledCloseButton, StyledSelectedTextBox, StyledSelectedItem };
+const StyledText = styled(Text)`
+  color: ${(props) =>
+    props.isDisabled
+      ? props.theme.selectedItem.text.disabledColor
+      : props.theme.selectedItem.text.color};
+`;
+StyledText.defaultProps = { theme: Base };
+
+export {
+  StyledCloseButton,
+  StyledSelectedTextBox,
+  StyledSelectedItem,
+  StyledText,
+};

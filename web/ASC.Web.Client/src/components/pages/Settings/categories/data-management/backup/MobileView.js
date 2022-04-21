@@ -132,7 +132,7 @@ class BackupMobileView extends React.Component {
       : restoreBackup
       ? restoreBackupTitle
       : "";
-
+    const buttonSize = "normal";
     const renderSection = (section, sectionTitle, keyHelp) => (
       <div className="backup-section_wrapper">
         <div className="backup-section_heading">
@@ -213,9 +213,11 @@ class BackupMobileView extends React.Component {
               </StyledSettingsHeader>
             )}
 
-            {autoBackup && <AutoBackup />}
-            {manualBackup && <ManualBackup />}
-            {restoreBackup && <RestoreBackup history={history} />}
+            {autoBackup && <AutoBackup buttonSize={buttonSize} />}
+            {manualBackup && <ManualBackup buttonSize={buttonSize} />}
+            {restoreBackup && (
+              <RestoreBackup history={history} buttonSize={buttonSize} />
+            )}
 
             {!isSectionOpen && renderBackupSections()}
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { getObjectByLocation } from "@appserver/common/utils";
 import ErrorContainer from "@appserver/common/components/ErrorContainer";
-import PageLayout from "@appserver/common/components/PageLayout";
+import Section from "@appserver/common/components/Section";
 import Loaders from "@appserver/common/components/Loaders";
 import { setDocumentTitle } from "../../../helpers/utils";
 
@@ -28,15 +28,15 @@ const ThirdPartyResponsePage = ({ match }) => {
   }, [t, provider]);
 
   return (
-    <PageLayout>
-      <PageLayout.SectionBody>
+    <Section>
+      <Section.SectionBody>
         {error ? (
           <ErrorContainer bodyText={error} />
         ) : (
           <Loaders.Rectangle height="96vh" />
         )}
-      </PageLayout.SectionBody>
-    </PageLayout>
+      </Section.SectionBody>
+    </Section>
   );
 };
 

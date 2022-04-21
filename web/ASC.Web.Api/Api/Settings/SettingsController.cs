@@ -59,6 +59,7 @@ public class SettingsController : BaseSettingsController
     private readonly ILog _log;
     private readonly TelegramHelper _telegramHelper;
     private readonly Constants _constants;
+    private readonly DnsSettings _dnsSettings;
 
     public SettingsController(
         IOptionsMonitor<ILog> option,
@@ -92,7 +93,8 @@ public class SettingsController : BaseSettingsController
         UrlShortener urlShortener,
         PasswordHasher passwordHasher,
         Constants constants,
-        IHttpContextAccessor httpContextAccessor
+        IHttpContextAccessor httpContextAccessor,
+        DnsSettings dnsSettings
         ) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _log = option.Get("ASC.Api");
@@ -123,6 +125,7 @@ public class SettingsController : BaseSettingsController
         _urlShortener = urlShortener;
         _telegramHelper = telegramHelper;
         _constants = constants;
+        _dnsSettings = dnsSettings;
     }
 
     [Read("", Check = false)]
@@ -293,6 +296,12 @@ public class SettingsController : BaseSettingsController
     public object GetMachineName()
     {
         return Dns.GetHostName().ToLowerInvariant();
+    }
+
+    [Update("dns")]
+    public object SaveDnsSettings(DnsSettingsModel model)
+    {
+        return _dnsSettings.SaveDnsSettings(model.DnsName, model.Enable);
     }
 
     //[Read("recalculatequota")]

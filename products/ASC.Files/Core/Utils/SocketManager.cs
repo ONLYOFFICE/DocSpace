@@ -53,23 +53,11 @@ public class SocketManager
         _signalrServiceClient.StartEdit(fileId, room);
     }
 
-    public async Task StopEditAsync<T>(T fileId)
+        public void StopEdit<T>(T fileId)
     {
         var room = GetFileRoom(fileId);
-        var file = await _daoFactory.GetFileDao<T>().GetFileStableAsync(fileId);
 
-        var serializerSettings = new JsonSerializerOptions()
-        {
-            WriteIndented = false,
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-        };
-
-        serializerSettings.Converters.Add(new ApiDateTimeConverter());
-        serializerSettings.Converters.Add(new FileEntryWrapperConverter());
-        var data = JsonSerializer.Serialize(await _filesWrapperHelper.GetAsync(file), serializerSettings);
-
-        _signalrServiceClient.StopEdit(fileId, room, data);
+            _signalrServiceClient.StopEdit(fileId, room);
     }
 
     public async Task CreateFileAsync<T>(File<T> file)

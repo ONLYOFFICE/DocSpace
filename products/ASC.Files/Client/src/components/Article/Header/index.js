@@ -1,18 +1,19 @@
 import React from "react";
-import Headline from "@appserver/common/components/Headline";
 import Loaders from "@appserver/common/components/Loaders";
 import { inject, observer } from "mobx-react";
+import { withTranslation } from "react-i18next";
+import withLoader from "../../../HOCs/withLoader";
 
 const ArticleHeaderContent = ({ currentModuleName }) => {
-  return currentModuleName ? (
-    <Headline type="menu">{currentModuleName}</Headline>
-  ) : (
-    <Loaders.ArticleHeader />
-  );
+  return <>{currentModuleName}</>;
 };
 
 export default inject(({ auth }) => {
   return {
     currentModuleName: (auth.product && auth.product.title) || "",
   };
-})(observer(ArticleHeaderContent));
+})(
+  withTranslation([])(
+    withLoader(observer(ArticleHeaderContent))(<Loaders.ArticleHeader />)
+  )
+);

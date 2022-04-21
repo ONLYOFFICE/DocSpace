@@ -9,12 +9,12 @@ import RadioButton from "@appserver/components/radio-button";
 import toastr from "@appserver/components/toast/toastr";
 import Loader from "@appserver/components/loader";
 import { BackupStorageType } from "@appserver/common/constants";
-import SelectFolderDialog from "files/SelectFolderDialog";
 import ThirdPartyModule from "./sub-components/ThirdPartyModule";
 import DocumentsModule from "./sub-components/DocumentsModule";
 import ThirdPartyStorageModule from "./sub-components/ThirdPartyStorageModule";
 import { StyledModules, StyledManualBackup } from "./../StyledBackup";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../../utils";
+import { getThirdPartyCommonFolderTree } from "@appserver/common/api/files";
 
 let selectedStorageType = "";
 
@@ -60,7 +60,7 @@ class ManualBackup extends React.Component {
     try {
       getProgress(t);
 
-      const commonThirdPartyList = await SelectFolderDialog.getCommonThirdPartyList();
+      const commonThirdPartyList = await getThirdPartyCommonFolderTree();
       commonThirdPartyList && setCommonThirdPartyList(commonThirdPartyList);
     } catch (error) {
       console.error(error);
@@ -92,7 +92,7 @@ class ManualBackup extends React.Component {
       setDownloadingProgress(1);
       getIntervalProgress(t);
     } catch (e) {
-      toastr.error(`${t("BackupCreatedError")}`);
+      toastr.error(t("BackupCreatedError"));
       console.error(err);
     }
   };
@@ -150,10 +150,6 @@ class ManualBackup extends React.Component {
 
     if (isCheckedDocuments || isCheckedThirdParty) {
       saveToSessionStorage("LocalCopyFolder", `${selectedFolder}`);
-
-      SelectFolderDialog.getFolderPath(selectedFolder).then((folderPath) => {
-        saveToSessionStorage("LocalCopyPath", `${folderPath}`);
-      });
     } else {
       saveToSessionStorage("LocalCopyStorage", `${selectedStorageId}`);
       saveToSessionStorage(
@@ -172,7 +168,7 @@ class ManualBackup extends React.Component {
       setTemporaryLink("");
       getIntervalProgress(t);
     } catch (err) {
-      toastr.error(`${t("BackupCreatedError")}`);
+      toastr.error(t("BackupCreatedError"));
       console.error(err);
 
       clearSessionStorage();
@@ -184,6 +180,7 @@ class ManualBackup extends React.Component {
       temporaryLink,
       downloadingProgress,
       commonThirdPartyList,
+      buttonSize,
     } = this.props;
     const {
       isInitialLoading,
@@ -208,6 +205,7 @@ class ManualBackup extends React.Component {
     const commonModulesProps = {
       isMaxProgress,
       onMakeCopy: this.onMakeCopy,
+      buttonSize,
     };
 
     return isInitialLoading ? (
@@ -233,14 +231,14 @@ class ManualBackup extends React.Component {
                 onClick={this.onMakeTemporaryBackup}
                 primary
                 isDisabled={!isMaxProgress}
-                size="medium"
+                size={buttonSize}
               />
               {temporaryLink?.length > 0 && isMaxProgress && (
                 <Button
                   label={t("DownloadCopy")}
                   onClick={this.onClickDownloadBackup}
                   isDisabled={false}
-                  size="medium"
+                  size={buttonSize}
                   style={{ marginLeft: "8px" }}
                 />
               )}
@@ -248,7 +246,7 @@ class ManualBackup extends React.Component {
                 <Button
                   label={t("Common:CopyOperation") + "..."}
                   isDisabled={true}
-                  size="medium"
+                  size={buttonSize}
                   style={{ marginLeft: "8px" }}
                 />
               )}

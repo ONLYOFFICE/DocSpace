@@ -51,6 +51,15 @@ const StyledManualBackup = styled.div`
   .manual-backup_buttons {
     margin-top: 16px;
     margin-left: 24px;
+    button:first-child {
+      width: 50%;
+      max-width: 164px;
+      margin-right: 8px;
+    }
+    button:last-child {
+      max-width: 164px;
+      width: calc(50% - 8px);
+    }
   }
 
   .manual-backup_storages-module {
@@ -339,7 +348,7 @@ const StyledBackup = styled.div`
 
 const StyledBackupList = styled.div`
   height: 100%;
-
+  width: calc(100% - 16px);
   .loader {
     height: inherit;
   }
@@ -407,12 +416,11 @@ const StyledBackupList = styled.div`
     height: 48px;
     grid-template-areas: "trash icon-name full-name  radiobutton";
 
-    grid-template-columns: 25px 32px calc(100% - 97px) 1fr;
+    grid-template-columns: 25px 32px auto 32px;
 
     ${(props) => props.isChecked && `background: #F3F4F4;`}
 
     padding-left: 16px;
-    padding-right: 10px;
   }
 
   .backup-restore_dialog-scroll-body {
@@ -425,6 +433,8 @@ const StyledBackupList = styled.div`
   }
   .backup-restore_empty-list {
     margin-top: 96px;
+    margin-left: 16px;
+    margin-right: 16px;
   }
 
   #backup-list_help {
@@ -450,7 +460,8 @@ const StyledBackupList = styled.div`
 
     .backup-list_footer {
       padding: 16px 16px 0 16px;
-      border-top: ${`1px solid ${borderColor}`};
+
+      ${(props) => !props.isEmpty && `border-top: 1px solid ${borderColor}`};
       margin-left: -16px;
       margin-right: -16px;
 

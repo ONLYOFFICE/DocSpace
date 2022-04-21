@@ -142,7 +142,7 @@ public class PortalController : ControllerBase
             throw new SecurityException("Method not available");
         }
 
-        return _commonLinkUtility.GetConfirmationUrl(string.Empty, ConfirmType.LinkInvite, (int)employeeType)
+        return _commonLinkUtility.GetConfirmationUrl(string.Empty, ConfirmType.LinkInvite, (int)employeeType, _authContext.CurrentAccount.ID)
                 + $"&emplType={employeeType:d}";
     }
 

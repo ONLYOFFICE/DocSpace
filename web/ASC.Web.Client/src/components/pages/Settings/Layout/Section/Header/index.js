@@ -7,8 +7,9 @@ import Headline from "@appserver/common/components/Headline";
 import IconButton from "@appserver/components/icon-button";
 import GroupButtonsMenu from "@appserver/components/group-buttons-menu";
 import DropDownItem from "@appserver/components/drop-down-item";
-
+import LoaderSectionHeader from "../loaderSectionHeader";
 import { tablet, desktop } from "@appserver/components/utils/device";
+import withLoading from "../../../../../../HOCs/withLoading";
 
 import {
   getKeyByLink,
@@ -35,7 +36,7 @@ const HeaderContainer = styled.div`
   }
 
   .arrow-button {
-    margin-right: 16px;
+    margin-right: 12px;
 
     @media ${tablet} {
       padding: 8px 0 8px 8px;
@@ -111,7 +112,8 @@ class SectionHeaderContent extends React.Component {
     const arrayOfParams = resultPath.split("/");
 
     const key = getKeyByLink(arrayOfParams, settingsTree);
-    const header = getTKeyByKey(key, settingsTree);
+    const currKey = key.length > 3 ? key : key[0];
+    const header = getTKeyByKey(currKey, settingsTree);
     const isCategory = checkPropertyByLink(
       arrayOfParams,
       settingsTree,
@@ -131,10 +133,17 @@ class SectionHeaderContent extends React.Component {
   }
 
   componentDidUpdate() {
+    const { isLoaded, tReady, setIsLoadedSectionHeader } = this.props;
+
+    const isLoadedSetting = isLoaded && tReady;
+
+    if (isLoadedSetting) setIsLoadedSectionHeader(isLoadedSetting);
+
     const arrayOfParams = this.getArrayOfParams();
 
     const key = getKeyByLink(arrayOfParams, settingsTree);
-    const header = getTKeyByKey(key, settingsTree);
+    const currKey = key.length > 3 ? key : key[0];
+    const header = getTKeyByKey(currKey, settingsTree);
     const isCategory = checkPropertyByLink(
       arrayOfParams,
       settingsTree,
@@ -212,6 +221,8 @@ class SectionHeaderContent extends React.Component {
       isHeaderChecked,
       isHeaderVisible,
       selection,
+      isLoadedPage,
+      location,
     } = this.props;
     const { header, isCategoryOrHeader } = this.state;
     const arrayOfParams = this.getArrayOfParams();
@@ -239,6 +250,10 @@ class SectionHeaderContent extends React.Component {
       },
     ];
 
+    const commonSettings =
+      location.pathname.includes("common/customization") ||
+      location.pathname === "/settings";
+    const showLoader = commonSettings ? !isLoadedPage : false;
     return (
       <StyledContainer isHeaderVisible={isHeaderVisible}>
         {isHeaderVisible ? (
@@ -255,14 +270,14 @@ class SectionHeaderContent extends React.Component {
               selected={menuItems[0].label}
             />
           </div>
+        ) : showLoader ? (
+          <LoaderSectionHeader />
         ) : (
           <HeaderContainer>
             {!isCategoryOrHeader && arrayOfParams[0] && (
               <IconButton
                 iconName="/static/images/arrow.path.react.svg"
                 size="17"
-                color="#A3A9AE"
-                hoverColor="#657077"
                 isFill={true}
                 onClick={this.onBackToParent}
                 className="arrow-button"
@@ -276,8 +291,6 @@ class SectionHeaderContent extends React.Component {
                 <IconButton
                   iconName="/static/images/actions.header.touch.react.svg"
                   size="17"
-                  color="#A3A9AE"
-                  hoverColor="#657077"
                   isFill={true}
                   onClick={this.onToggleSelector}
                   className="action-button"
@@ -291,7 +304,7 @@ class SectionHeaderContent extends React.Component {
   }
 }
 
-export default inject(({ auth, setup }) => {
+export default inject(({ auth, setup, common }) => {
   const { customNames } = auth.settingsStore;
   const { addUsers, removeAdmins } = setup.headerAction;
   const { toggleSelector } = setup;
@@ -306,7 +319,7 @@ export default inject(({ auth, setup }) => {
     selection,
   } = setup.selectionStore;
   const { admins, selectorIsOpen } = setup.security.accessRight;
-
+  const { isLoaded, setIsLoadedSectionHeader } = common;
   return {
     addUsers,
     removeAdmins,
@@ -322,9 +335,13 @@ export default inject(({ auth, setup }) => {
     toggleSelector,
     selectorIsOpen,
     selection,
+    isLoaded,
+    setIsLoadedSectionHeader,
   };
 })(
-  withRouter(
-    withTranslation(["Settings", "Common"])(observer(SectionHeaderContent))
+  withLoading(
+    withRouter(
+      withTranslation(["Settings", "Common"])(observer(SectionHeaderContent))
+    )
   )
 );

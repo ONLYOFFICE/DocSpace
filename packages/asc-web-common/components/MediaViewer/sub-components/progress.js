@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
+import { Base } from "@appserver/components/themes";
 
 const StyledProgress = styled.div`
   display: inline-block;
@@ -11,7 +12,8 @@ const StyledProgress = styled.div`
     position: relative;
     width: ${(props) => props.width}px;
     height: 6px;
-    background: rgba(200, 200, 200, 0.2);
+    background: ${(props) =>
+      props.theme.mediaViewer.progressBar.backgroundColor};
     margin: 15px 0;
     vertical-align: middle;
   }
@@ -22,7 +24,7 @@ const StyledProgress = styled.div`
 
     top: calc(50% - 3px);
     height: 6px;
-    background: #d1d1d1;
+    background: ${(props) => props.theme.mediaViewer.progressBar.background};
     border-radius: 2px;
   }
   input[type="range"] {
@@ -104,6 +106,8 @@ const StyledProgress = styled.div`
     pointer-events: none;
   }
 `;
+
+StyledProgress.defaultProps = { theme: Base };
 const Progress = (props) => {
   return (
     <StyledProgress {...props}>

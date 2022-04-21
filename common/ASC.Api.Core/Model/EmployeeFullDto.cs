@@ -139,6 +139,25 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
 
         return lambda;
     }
+    public EmployeeFullDto GetSimple(UserInfo userInfo)
+    {
+        var result = new EmployeeFullDto
+        {
+            FirstName = userInfo.FirstName,
+            LastName = userInfo.LastName,
+        };
+
+        FillGroups(result, userInfo);
+
+        var photoData = _userPhotoManager.GetUserPhotoData(userInfo.Id, UserPhotoManager.BigFotoSize);
+
+        if (photoData != null)
+        {
+            result.Avatar = "data:image/png;base64," + Convert.ToBase64String(photoData);
+        }
+
+        return result;
+    }
 
     public EmployeeFullDto GetFull(UserInfo userInfo)
     {
@@ -190,23 +209,7 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
         }
 
         FillConacts(result, userInfo);
-
-        if (_context.Check("groups") || _context.Check("department"))
-        {
-            var groups = _userManager.GetUserGroups(userInfo.Id)
-                .Select(x => new GroupSummaryDto(x, _userManager))
-                .ToList();
-
-            if (groups.Count > 0)
-            {
-                result.Groups = groups;
-                result.Department = string.Join(", ", result.Groups.Select(d => d.Name.HtmlEncode()));
-            }
-            else
-            {
-                result.Department = "";
-            }
-        }
+        FillGroups(result, userInfo);
 
         var userInfoLM = userInfo.LastModified.GetHashCode();
 
@@ -235,6 +238,27 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
         }
 
         return result;
+    }
+    private void FillGroups(EmployeeFullDto result, UserInfo userInfo)
+    {
+        if (!_context.Check("groups") && !_context.Check("department"))
+        {
+            return;
+        }
+
+        var groups = _userManager.GetUserGroups(userInfo.Id)
+            .Select(x => new GroupSummaryDto(x, _userManager))
+            .ToList();
+
+        if (groups.Count > 0)
+        {
+            result.Groups = groups;
+            result.Department = string.Join(", ", result.Groups.Select(d => d.Name.HtmlEncode()));
+        }
+        else
+        {
+            result.Department = "";
+        }
     }
 
     private void FillConacts(EmployeeFullDto employeeWraperFull, UserInfo userInfo)

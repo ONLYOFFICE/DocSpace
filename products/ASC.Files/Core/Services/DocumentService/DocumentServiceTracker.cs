@@ -217,8 +217,9 @@ public class DocumentServiceTrackerHelper
         {
             case TrackerStatus.NotFound:
             case TrackerStatus.Closed:
-                _fileTracker.Remove(fileId);
-                await _socketManager.StopEditAsync(fileId);
+                    _fileTracker.Remove(fileId);
+                    _socketManager.StopEdit(fileId);
+
                 break;
 
             case TrackerStatus.Editing:
@@ -423,8 +424,8 @@ public class DocumentServiceTrackerHelper
 
         if (!forcesave)
         {
-            _fileTracker.Remove(fileId);
-            await _socketManager.StopEditAsync(fileId);
+                _fileTracker.Remove(fileId);
+                _socketManager.StopEdit(fileId);
         }
 
         if (file != null)

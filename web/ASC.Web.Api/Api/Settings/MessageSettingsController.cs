@@ -36,6 +36,8 @@ public class MessageSettingsController : BaseSettingsController
     private readonly StudioNotifyService _studioNotifyService;
     private readonly CustomNamingPeople _customNamingPeople;
     private readonly IPSecurity.IPSecurity _ipSecurity;
+    private readonly TenantManager _tenantManager;
+    private readonly CookiesManager _cookiesManager;
     private readonly UserManager _userManager;
     private readonly TenantExtra _tenantExtra;
     private readonly TenantStatisticsProvider _tenantStatisticsProvider;
@@ -57,10 +59,14 @@ public class MessageSettingsController : BaseSettingsController
         CustomNamingPeople customNamingPeople,
         IPSecurity.IPSecurity ipSecurity,
         IMemoryCache memoryCache,
-        IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
+        IHttpContextAccessor httpContextAccessor,
+        TenantManager tenantManager,
+        CookiesManager cookiesManager) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _customNamingPeople = customNamingPeople;
         _ipSecurity = ipSecurity;
+        _tenantManager = tenantManager;
+        _cookiesManager = cookiesManager;
         _messageService = messageService;
         _studioNotifyService = studioNotifyService;
         _userManager = userManager;
@@ -91,6 +97,41 @@ public class MessageSettingsController : BaseSettingsController
         _settingsManager.Save(new StudioAdminMessageSettings { Enable = inDto.TurnOn });
 
         _messageService.Send(MessageAction.AdministratorMessageSettingsUpdated);
+
+        return Resource.SuccessfullySaveSettingsMessage;
+    }
+
+    [Read("cookiesettings")]
+    public int GetCookieSettings()
+    {
+        return _cookiesManager.GetLifeTime(_tenantManager.GetCurrentTenant().Id);
+    }
+
+    [Update("cookiesettings")]
+    public object UpdateCookieSettingsFromBody([FromBody] CookieSettingsModel model)
+    {
+        return UpdateCookieSettings(model);
+    }
+
+    [Update("messagesettings")]
+    [Consumes("application/x-www-form-urlencoded")]
+    public object UpdateCookieSettingsFromForm([FromForm] CookieSettingsModel model)
+    {
+        return UpdateCookieSettings(model);
+    }
+
+    private object UpdateCookieSettings(CookieSettingsModel model)
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+        if (!SetupInfo.IsVisibleSettings("CookieSettings"))
+        {
+            throw new BillingException(Resource.ErrorNotAllowedOption, "CookieSettings");
+        }
+
+        _cookiesManager.SetLifeTime(model.LifeTime);
+
+        _messageService.Send(MessageAction.CookieSettingsUpdated);
 
         return Resource.SuccessfullySaveSettingsMessage;
     }

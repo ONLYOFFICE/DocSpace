@@ -48,6 +48,18 @@ class UserStore {
     this.setIsLoading(false);
   };
 
+  changeTheme = async (key) => {
+    this.setIsLoading(true);
+
+    const { theme } = await api.people.changeTheme(key);
+
+    this.user.theme = theme;
+
+    this.setIsLoading(false);
+
+    return theme;
+  };
+
   setUserIsUpdate = (isUpdate) => {
     //console.log("setUserIsUpdate");
     this.userIsUpdate = isUpdate;

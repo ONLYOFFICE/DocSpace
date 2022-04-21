@@ -315,7 +315,7 @@ class BackupStore {
         }
       }
     } catch (e) {
-      toastr.error(`${t("BackupCreatedError")}`);
+      toastr.error(t("BackupCreatedError"));
       this.clearSessionStorage();
     }
   };
@@ -340,7 +340,7 @@ class BackupStore {
 
           if (error.length > 0 && progress !== 100) {
             clearInterval(timerId);
-            this.timerId && toastr.error(`${t("BackupCreatedError")}`);
+            this.timerId && toastr.error(t("BackupCreatedError"));
             this.timerId = null;
             this.clearSessionStorage();
             this.downloadingProgress = 100;
@@ -359,7 +359,7 @@ class BackupStore {
               this.temporaryLink = link;
             }
 
-            this.timerId && toastr.success(`${t("BackupCreatedSuccess")}`);
+            this.timerId && toastr.success(t("BackupCreatedSuccess"));
             this.timerId = null;
 
             return;
@@ -376,7 +376,7 @@ class BackupStore {
         clearInterval(this.timerId);
         this.clearSessionStorage();
         this.downloadingProgress = 100;
-        this.timerId && toastr.error(`${t("BackupCreatedError")}`);
+        this.timerId && toastr.error(t("BackupCreatedError"));
         this.timerId = null;
       }
     }, 1000);

@@ -297,11 +297,11 @@ public class SignalrServiceClient
         }
     }
 
-    public void StopEdit<T>(T fileId, string room, string data)
+        public void StopEdit<T>(T fileId, string room)
     {
         try
         {
-            MakeRequest("stop-edit", new { room, fileId, data });
+                MakeRequest("stop-edit", new { room, fileId });
         }
         catch (Exception error)
         {

@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using System.Security.Claims;
+
 using Module = ASC.Api.Core.Module;
 using SecurityContext = ASC.Core.SecurityContext;
 
@@ -301,6 +303,7 @@ public class UserController : PeopleControllerBase
         return _employeeFullDtoHelper.GetFull(user);
     }
 
+    [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Everyone")]
     [Read("{username}", order: int.MaxValue)]
     public EmployeeDto GetById(string username)
     {
@@ -308,6 +311,11 @@ public class UserController : PeopleControllerBase
         {
             throw new MethodAccessException("Method not available");
         }
+
+        var isInvite = _httpContextAccessor.HttpContext.User.Claims
+               .Any(role => role.Type == ClaimTypes.Role && Enum.TryParse<ConfirmType>(role.Value, out var confirmType) && confirmType == ConfirmType.LinkInvite);
+
+        _apiContext.AuthByClaim();
 
         var user = _userManager.GetUserByUserName(username);
         if (user.Id == Constants.LostUser.Id)
@@ -325,6 +333,11 @@ public class UserController : PeopleControllerBase
         if (user.Id == Constants.LostUser.Id)
         {
             throw new ItemNotFoundException("User not found");
+        }
+
+        if (isInvite)
+        {
+            return _employeeFullDtoHelper.GetSimple(user);
         }
 
         return _employeeFullDtoHelper.GetFull(user);

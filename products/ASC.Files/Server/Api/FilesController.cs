@@ -114,14 +114,14 @@ public abstract class FilesController<T> : ApiControllerBase
     [Create("{folderId}/file")]
     public Task<FileDto<T>> CreateFileFromBodyAsync(T folderId, [FromBody] CreateFileRequestDto<JsonElement> inDto)
     {
-        return _filesControllerHelper.CreateFileAsync(folderId, inDto.Title, inDto.TemplateId, inDto.EnableExternalExt);
+        return _filesControllerHelper.CreateFileAsync(folderId, inDto.Title, inDto.TemplateId, inDto.FormId, inDto.EnableExternalExt);
     }
 
     [Create("{folderId}/file")]
     [Consumes("application/x-www-form-urlencoded")]
     public Task<FileDto<T>> CreateFileFromFormAsync(T folderId, [FromForm] CreateFileRequestDto<JsonElement> inDto)
     {
-        return _filesControllerHelper.CreateFileAsync(folderId, inDto.Title, inDto.TemplateId, inDto.EnableExternalExt);
+        return _filesControllerHelper.CreateFileAsync(folderId, inDto.Title, inDto.TemplateId, inDto.FormId, inDto.EnableExternalExt);
     }
 
     /// <summary>
@@ -353,14 +353,14 @@ public class FilesControllerCommon : ApiControllerBase
     [Create("@my/file")]
     public Task<FileDto<int>> CreateFileFromBodyAsync([FromBody] CreateFileRequestDto<JsonElement> inDto)
     {
-        return _filesControllerHelperInternal.CreateFileAsync(_globalFolderHelper.FolderMy, inDto.Title, inDto.TemplateId, inDto.EnableExternalExt);
+        return _filesControllerHelperInternal.CreateFileAsync(_globalFolderHelper.FolderMy, inDto.Title, inDto.TemplateId, inDto.FormId, inDto.EnableExternalExt);
     }
 
     [Create("@my/file")]
     [Consumes("application/x-www-form-urlencoded")]
     public Task<FileDto<int>> CreateFileFromFormAsync([FromForm] CreateFileRequestDto<JsonElement> inDto)
     {
-        return _filesControllerHelperInternal.CreateFileAsync(_globalFolderHelper.FolderMy, inDto.Title, inDto.TemplateId, inDto.EnableExternalExt);
+        return _filesControllerHelperInternal.CreateFileAsync(_globalFolderHelper.FolderMy, inDto.Title, inDto.TemplateId, inDto.FormId, inDto.EnableExternalExt);
     }
 
     /// <summary>

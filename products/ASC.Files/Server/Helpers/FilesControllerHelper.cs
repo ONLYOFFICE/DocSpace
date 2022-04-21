@@ -128,7 +128,7 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
         }
     }
 
-    public async Task<FileDto<T>> CreateFileAsync(T folderId, string title, JsonElement templateId, bool enableExternalExt = false)
+    public async Task<FileDto<T>> CreateFileAsync(T folderId, string title, JsonElement templateId, int formId, bool enableExternalExt = false)
     {
         File<T> file;
 
@@ -142,7 +142,7 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
         }
         else
         {
-            file = await _fileStorageService.CreateNewFileAsync(new FileModel<T, int> { ParentId = folderId, Title = title, TemplateId = 0 }, enableExternalExt);
+            file = await _fileStorageService.CreateNewFileAsync(new FileModel<T, int> { ParentId = folderId, Title = title, TemplateId = 0, FormId = formId }, enableExternalExt);
         }
 
         return await _fileDtoHelper.GetAsync(file);

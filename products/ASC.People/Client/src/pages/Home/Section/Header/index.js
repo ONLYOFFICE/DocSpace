@@ -4,7 +4,7 @@ import { withRouter } from "react-router";
 
 import DropDownItem from "@appserver/components/drop-down-item";
 import ContextMenuButton from "@appserver/components/context-menu-button";
-import { tablet, desktop } from "@appserver/components/utils/device";
+import { tablet, desktop, mobile } from "@appserver/components/utils/device";
 import { Consumer } from "@appserver/components/utils/context";
 
 import Headline from "@appserver/common/components/Headline";
@@ -13,56 +13,47 @@ import Loaders from "@appserver/common/components/Loaders";
 import withLoader from "../../../../HOCs/withLoader";
 import { AppServerConfig } from "@appserver/common/constants";
 import { withTranslation } from "react-i18next";
-import { isMobile } from "react-device-detect";
+import { isMobile, isMobileOnly } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 import config from "../../../../../package.json";
 import { combineUrl } from "@appserver/common/utils";
 import TableGroupMenu from "@appserver/components/table-container/TableGroupMenu";
 
 const StyledContainer = styled.div`
+  margin-bottom: 6px;
   .group-button-menu-container {
-    margin: 0 -16px;
+    margin: 0 -20px;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-    ${isMobile &&
-    css`
-      position: sticky;
-    `}
-    ${(props) =>
-      !props.isTabletView
-        ? props.width &&
-          isMobile &&
-          css`
-            width: ${props.width + 40 + "px"};
-          `
-        : props.width &&
-          isMobile &&
-          css`
-            width: ${props.width + 24 + "px"};
-          `}
+
+    width: calc(100vw - 256px);
 
     @media ${tablet} {
-      padding-bottom: 0;
-      ${!isMobile &&
-      css`
-        height: 56px;
-      `}
-      & > div:first-child {
-        ${(props) =>
-          !isMobile &&
-          props.width &&
-          css`
-            width: ${props.width + 16 + "px"};
-          `}
+      width: ${(props) =>
+        props.showText ? "calc(100vw - 240px)" : "calc(100vw - 52px)"};
 
-        position: absolute;
-        top: 48px;
-        z-index: 180;
-      }
+      margin: 0 -16px;
     }
 
-    @media ${desktop} {
-      margin: 0 -24px;
+    ${isMobile &&
+    css`
+      width: ${(props) =>
+        props.showText ? "calc(100vw - 240px)" : "calc(100vw - 52px)"};
+
+      margin: 0 -16px;
+    `}
+
+    @media ${mobile} {
+      width: 100vw;
+
+      margin: 0 -16px;
     }
+
+    ${isMobileOnly &&
+    css`
+      width: 100vw !important;
+
+      margin: 0 -16px;
+    `}
   }
 
   .header-container {
@@ -78,6 +69,7 @@ const StyledContainer = styled.div`
         }
       `}
 
+    margin-bottom: 3px;
     align-items: center;
     max-width: calc(100vw - 32px);
 
@@ -114,6 +106,7 @@ const SectionHeaderContent = (props) => {
     resetFilter,
     getHeaderMenu,
     setInvitationDialogVisible,
+    showText,
   } = props;
 
   const {
@@ -273,6 +266,7 @@ const SectionHeaderContent = (props) => {
           isLoaded={isLoaded}
           width={context.sectionWidth}
           isTabletView={isTabletView}
+          showText={showText}
         >
           {isHeaderVisible ? (
             <div className="group-button-menu-container">
@@ -302,7 +296,6 @@ const SectionHeaderContent = (props) => {
                       title={t("Common:Actions")}
                       iconName="/static/images/vertical-dots.react.svg"
                       size={17}
-                      color="#A3A9AE"
                       getData={getContextOptionsGroup}
                       isDisabled={false}
                     />
@@ -325,8 +318,6 @@ const SectionHeaderContent = (props) => {
                         title={t("Common:Actions")}
                         iconName="/static/images/actions.header.touch.react.svg"
                         size={17}
-                        color="#A3A9AE"
-                        hoverColor="#657077"
                         getData={getContextOptionsPlus}
                         isDisabled={false}
                       />
@@ -345,7 +336,7 @@ const SectionHeaderContent = (props) => {
 export default withRouter(
   inject(({ auth, peopleStore }) => {
     const { settingsStore, isLoaded, isAdmin } = auth;
-    const { customNames, isTabletView } = settingsStore;
+    const { customNames, isTabletView, showText } = settingsStore;
 
     const {
       resetFilter,
@@ -395,6 +386,7 @@ export default withRouter(
       isTabletView,
       getHeaderMenu,
       setInvitationDialogVisible,
+      showText,
     };
   })(
     withTranslation(["Home", "Common", "Translations"])(

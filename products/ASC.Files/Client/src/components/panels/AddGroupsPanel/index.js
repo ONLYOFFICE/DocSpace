@@ -1,4 +1,5 @@
 import React from "react";
+import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
 import Backdrop from "@appserver/components/backdrop";
 import Heading from "@appserver/components/heading";
@@ -104,8 +105,16 @@ class AddGroupsPanelComponent extends React.Component {
   // }
 
   render() {
-    const { t, visible, accessOptions } = this.props;
+    const { t, visible, accessOptions, theme, shareDataItems } = this.props;
     const { accessRight } = this.state;
+
+    const selectedOptions = [];
+    shareDataItems.forEach((item) => {
+      const { sharedTo } = item;
+      if (item?.isGroup) {
+        selectedOptions.push({ id: sharedTo.id, key: sharedTo.id });
+      }
+    });
 
     const zIndex = 310;
 
@@ -120,34 +129,11 @@ class AddGroupsPanelComponent extends React.Component {
         />
         <Aside className="header_aside-panel">
           <StyledContent>
-            <StyledHeaderContent>
-              <IconButton
-                size="16"
-                iconName="/static/images/arrow.path.react.svg"
-                onClick={this.onArrowClick}
-                color="A3A9AE"
-              />
-              <Heading
-                className="header_aside-panel-header"
-                size="medium"
-                truncate
-              >
-                {t("AddGroupsForSharingButton")}
-              </Heading>
-              {/*<IconButton
-                size="16"
-                iconName="static/images/actions.header.touch.react.svg"
-                className="header_aside-panel-plus-icon"
-                onClick={this.onPLusClick}
-              />*/}
-            </StyledHeaderContent>
-
             <StyledBody ref={this.scrollRef}>
               <GroupSelector
                 className="groupSelector"
                 isOpen={visible}
                 isMultiSelect
-                displayType="aside"
                 withoutAside
                 onSelect={this.onSelectGroups}
                 embeddedComponent={
@@ -157,10 +143,13 @@ class AddGroupsPanelComponent extends React.Component {
                     directionX="right"
                     onAccessChange={this.onAccessChange}
                     accessOptions={accessOptions}
-                    arrowIconColor="#000000"
+                    arrowIconColor={theme.filesPanels.addGroups.arrowColor}
                   />
                 }
+                headerLabel={t("AddGroupsForSharingButton")}
+                onArrowClick={this.onArrowClick}
                 showCounter
+                selectedOptions={selectedOptions}
               />
             </StyledBody>
           </StyledContent>
@@ -176,6 +165,12 @@ AddGroupsPanelComponent.propTypes = {
   onClose: PropTypes.func,
 };
 
-export default withTranslation("SharingPanel")(
-  withLoader(AddGroupsPanelComponent)(<Loaders.DialogAsideLoader isPanel />)
+export default inject(({ auth }) => {
+  return { theme: auth.settingsStore.theme };
+})(
+  observer(
+    withTranslation("SharingPanel")(
+      withLoader(AddGroupsPanelComponent)(<Loaders.DialogAsideLoader isPanel />)
+    )
+  )
 );

@@ -33,7 +33,7 @@ public abstract class PeopleControllerBase : ApiControllerBase
     protected readonly ApiContext _apiContext;
     protected readonly UserPhotoManager _userPhotoManager;
     protected readonly IHttpClientFactory _httpClientFactory;
-    private readonly IHttpContextAccessor _httpContextAccessor;
+    protected readonly IHttpContextAccessor _httpContextAccessor;
 
     public PeopleControllerBase(
         UserManager userManager,

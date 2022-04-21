@@ -40,7 +40,7 @@ export const countAutoFocus = (itemId, data, submenuItemsRef) => {
   const [focusedItem] = itemsAndGaps.filter((obj) => obj.id === itemId);
   const submenuWidth = submenuItemsRef.current.offsetWidth;
 
-  if (itemOnMarker.id && focusedItem.id === itemOnMarker.id)
+  if (itemOnMarker?.id && focusedItem.id === itemOnMarker.id)
     return focusedItem.end - marker;
   if (
     focusedItem.start < marker - submenuWidth ||

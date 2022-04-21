@@ -10,7 +10,6 @@ const linkStyles = {
   isHovered: true,
   type: "action",
   fontWeight: "600",
-  color: "#555f65",
   className: "empty-folder_link",
   display: "flex",
 };
@@ -21,7 +20,10 @@ const EmptyContainer = ({
   isPrivacyFolder,
   parentId,
   isEncryptionSupport,
+  theme,
 }) => {
+  linkStyles.color = theme.filesEmptyContainer.linkColor;
+
   const onCreate = (e) => {
     const format = e.currentTarget.dataset.format || null;
     setAction({
@@ -55,6 +57,7 @@ export default inject(
 
     return {
       isEncryptionSupport: auth.settingsStore.isEncryptionSupport,
+      theme: auth.settingsStore.theme,
       isFiltered,
       setAction: filesStore.fileActionStore.setAction,
       isPrivacyFolder,
