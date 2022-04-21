@@ -64,6 +64,8 @@ class FilesStore {
 
   isPrevSettingsModule = false;
   enabledHotkeys = true;
+  oformFiles = null;
+  gallerySelected = null;
 
   constructor(
     authStore,
@@ -278,8 +280,25 @@ class FilesStore {
       }
     }
     requests.push(getFilesSettings());
+    requests.push(this.getOforms());
 
     return Promise.all(requests).then(() => (this.isInit = true));
+  };
+
+  getOforms = async () => {
+    const oformData = await this.authStore.getOforms();
+
+    runInAction(() => {
+      this.oformFiles = oformData?.data?.data ? oformData.data.data : [];
+    });
+  };
+
+  get hasGalleryFiles() {
+    return this.oformFiles && !!this.oformFiles.length;
+  }
+
+  setGallerySelected = (gallerySelected) => {
+    this.gallerySelected = gallerySelected;
   };
 
   setFirstLoad = (firstLoad) => {
@@ -1171,10 +1190,12 @@ class FilesStore {
     return api.files.addFileToRecentlyViewed(fileId);
   };
 
-  createFile = (folderId, title, templateId) => {
-    return api.files.createFile(folderId, title, templateId).then((file) => {
-      return Promise.resolve(file);
-    });
+  createFile = (folderId, title, templateId, formId) => {
+    return api.files
+      .createFile(folderId, title, templateId, formId)
+      .then((file) => {
+        return Promise.resolve(file);
+      });
   };
 
   createFolder(parentFolderId, title) {
