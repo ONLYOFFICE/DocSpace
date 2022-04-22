@@ -1,4 +1,5 @@
 import { request } from "../client";
+import axios from "axios";
 
 export function getSettings() {
   return request({
@@ -453,4 +454,8 @@ export function toggleTipsSubscription() {
     url: "/settings/tips/change/subscription",
   };
   return request(options);
+}
+
+export function getOforms(url) {
+  return axios.get(url);
 }

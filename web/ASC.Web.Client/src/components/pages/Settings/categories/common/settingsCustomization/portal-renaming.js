@@ -28,30 +28,32 @@ const PortalRenaming = (props) => {
     isLoaded,
     setIsLoadedPortalRenaming,
     isLoadedPage,
+    tenantAlias,
   } = props;
 
-  const [isLoadingPortalNameSave, setIsLoadingPortalNameSave] = useState(false);
-
   const portalNameFromSessionStorage = getFromSessionStorage("portalName");
+
   const portalNameDefaultFromSessionStorage = getFromSessionStorage(
     "portalNameDefault"
   );
 
-  const errorValueFromSessionStorage = getFromSessionStorage("errorValue");
-
-  const [portalName, setPortalName] = useState(portalNameFromSessionStorage);
-  const [portalNameDefault, setPortalNameDefault] = useState(
-    portalNameDefaultFromSessionStorage || portalName
+  const [portalName, setPortalName] = useState(
+    portalNameFromSessionStorage || tenantAlias
   );
 
-  const [showReminder, setShowReminder] = useState(false);
-  const [hasScroll, setHasScroll] = useState(false);
-  const [errorValue, setErrorValue] = useState(errorValueFromSessionStorage);
+  const [portalNameDefault, setPortalNameDefault] = useState(
+    portalNameDefaultFromSessionStorage || tenantAlias
+  );
 
-  //TODO: Add translation
-  const accountNameError = "Account name is empty";
-  const lengthNameError =
-    "The account name must be between 6 and 50 characters long";
+  const [isLoadingPortalNameSave, setIsLoadingPortalNameSave] = useState(false);
+
+  const [showReminder, setShowReminder] = useState(false);
+
+  const [hasScroll, setHasScroll] = useState(false);
+
+  const errorValueFromSessionStorage = getFromSessionStorage("errorValue");
+
+  const [errorValue, setErrorValue] = useState(errorValueFromSessionStorage);
 
   const isLoadedSetting = isLoaded && tReady;
 
@@ -60,8 +62,7 @@ const PortalRenaming = (props) => {
 
     const checkScroll = checkScrollSettingsBlock();
 
-    window.addEventListener("resize", checkInnerWidth);
-    window.addEventListener("resize", checkScroll);
+    window.addEventListener("resize", checkInnerWidth, checkScroll);
 
     const scrollPortalName = checkScroll();
 
@@ -88,18 +89,22 @@ const PortalRenaming = (props) => {
 
   useEffect(() => {
     if (isLoadedSetting) setIsLoadedPortalRenaming(isLoadedSetting);
-  }, [isLoadedSetting]);
 
-  //TODO: Need a method to get the portal name
+    if (portalNameDefault) {
+      checkChanges();
+    }
+  }, [isLoadedSetting, portalNameDefault]);
+
   const onSavePortalRename = () => {
+    if (errorValue) return;
+
     setIsLoadingPortalNameSave(true);
 
     setPortalRename(portalName)
       .then(() => toastr.success(t("SuccessfullySavePortalNameMessage")))
       .catch((error) => {
-        //TODO: Add translation
-        setErrorValue("Incorrect account name");
-        saveToSessionStorage("errorValue", "Incorrect account name");
+        setErrorValue(error);
+        saveToSessionStorage("errorValue", error);
       })
       .finally(() => setIsLoadingPortalNameSave(false));
 
@@ -114,24 +119,52 @@ const PortalRenaming = (props) => {
   const onCancelPortalName = () => {
     const portalNameFromSessionStorage = getFromSessionStorage("portalName");
 
+    saveToSessionStorage("errorValue", null);
+
+    setErrorValue(null);
+
     if (
       portalNameFromSessionStorage &&
-      !settingIsEqualInitialValue("portalName", portalNameFromSessionStorage)
+      !settingIsEqualInitialValue(portalNameFromSessionStorage)
     ) {
       setPortalName(portalNameDefault);
       saveToSessionStorage("portalName", "");
+      setShowReminder(false);
     }
   };
 
+  const onChangePortalName = (e) => {
+    const value = e.target.value;
+
+    onValidateInput(value);
+
+    setPortalName(value);
+
+    if (settingIsEqualInitialValue(value)) {
+      saveToSessionStorage("portalName", "");
+      saveToSessionStorage("portalNameDefault", "");
+    } else {
+      saveToSessionStorage("portalName", value);
+    }
+
+    checkChanges();
+  };
+
   const onValidateInput = (value) => {
+    const validDomain = new RegExp("^[a-z0-9]([a-z0-9-]){1,98}[a-z0-9]$", "i");
+
     switch (true) {
       case value === "":
-        setErrorValue(accountNameError);
-        saveToSessionStorage("errorValue", accountNameError);
+        setErrorValue(t("PortalNameEmpty"));
+        saveToSessionStorage("errorValue", t("PortalNameEmpty"));
         break;
       case value.length < 6 || value.length > 50:
-        setErrorValue(lengthNameError);
-        saveToSessionStorage("errorValue", lengthNameError);
+        setErrorValue(t("PortalNameLength"));
+        saveToSessionStorage("errorValue", t("PortalNameLength"));
+        break;
+      case !validDomain.test(value):
+        setErrorValue(t("PortalNameIncorrect"));
+        saveToSessionStorage("errorValue", t("PortalNameIncorrect"));
         break;
       default:
         saveToSessionStorage("errorValue", null);
@@ -145,19 +178,19 @@ const PortalRenaming = (props) => {
     return defaultValue === currentValue;
   };
 
-  const onChangePortalName = (e) => {
-    const value = e.target.value;
+  const checkChanges = () => {
+    let hasChanged = false;
 
-    onValidateInput(value);
+    const valueFromSessionStorage = getFromSessionStorage("portalName");
+    if (
+      valueFromSessionStorage &&
+      !settingIsEqualInitialValue(valueFromSessionStorage)
+    ) {
+      hasChanged = true;
+    }
 
-    setPortalName(value);
-
-    if (settingIsEqualInitialValue("portalName", value)) {
-      saveToSessionStorage("portalName", "");
-      saveToSessionStorage("portalNameDefault", "");
-    } else {
-      saveToSessionStorage("portalName", value);
-      setShowReminder(true);
+    if (hasChanged !== showReminder) {
+      setShowReminder(hasChanged);
     }
   };
 
@@ -238,7 +271,7 @@ const PortalRenaming = (props) => {
 };
 
 export default inject(({ auth, setup, common }) => {
-  const { theme } = auth.settingsStore;
+  const { theme, tenantAlias } = auth.settingsStore;
   const { setPortalRename } = setup;
   const { isLoaded, setIsLoadedPortalRenaming } = common;
   return {
@@ -246,6 +279,7 @@ export default inject(({ auth, setup, common }) => {
     setPortalRename,
     isLoaded,
     setIsLoadedPortalRenaming,
+    tenantAlias,
   };
 })(
   withLoading(withTranslation(["Settings", "Common"])(observer(PortalRenaming)))

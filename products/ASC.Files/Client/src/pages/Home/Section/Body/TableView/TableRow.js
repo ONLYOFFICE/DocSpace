@@ -20,6 +20,8 @@ import Base from "@appserver/components/themes/base";
 import { isSafari } from "react-device-detect";
 
 const hotkeyBorderStyle = css`
+  border-bottom: 1px solid;
+  border-image-slice: 1;
   border-image-source: linear-gradient(to left, #2da7db 24px, #2da7db 24px);
 `;
 
@@ -74,10 +76,6 @@ const StyledTableRow = styled(TableRow)`
     }
   }
 
-  .table-container_element {
-    /* margin-left: ${(props) => (props.isFolder ? "-3px" : "-4px")}; */
-  }
-
   .table-container_row-checkbox {
     padding-left: 16px;
     width: 16px;
@@ -93,53 +91,17 @@ const StyledTableRow = styled(TableRow)`
   }
 
   .table-container_file-name-cell {
-    min-width: 30px;
     margin-left: -24px;
     padding-left: 24px;
-    border-bottom: 1px solid;
-    border-image-slice: 1;
-    border-image-source: ${(props) =>
-      props.theme.filesSection.tableView.row.borderImageCheckbox};
-
-    ${(props) =>
-      !props.isActive &&
-      !props.checked &&
-      css`
-        border-image-slice: 1;
-        border-bottom: 1px solid;
-        border-image-source: ${(props) =>
-          props.theme.filesSection.tableView.row.borderImageRight};
-      `};
-
-    border-top: 0;
-    border-right: 0;
-    border-left: 0;
 
     ${(props) => props.showHotkeyBorder && hotkeyBorderStyle};
     ${(props) => props.dragging && rowCheckboxDraggingStyle};
   }
 
   .table-container_row-context-menu-wrapper {
-    margin-right: -20x;
     width: 28px;
+    margin-right: -20x;
     padding-right: 18px;
-    border-bottom: 1px solid;
-    border-image-slice: 1;
-    border-image-source: ${(props) =>
-      props.theme.filesSection.tableView.row.borderImageContextMenu};
-
-    ${(props) =>
-      !props.isActive &&
-      !props.checked &&
-      css`
-        border-bottom: 1px solid;
-        border-image-slice: 1;
-        border-image-source: ${(props) =>
-          props.theme.filesSection.tableView.row.borderImageLeft};
-      `};
-
-    border-top: 0;
-    border-left: 0;
 
     ${(props) => props.dragging && contextMenuWrapperDraggingStyle};
     ${(props) => props.showHotkeyBorder && hotkeyBorderStyle};
@@ -419,7 +381,7 @@ const FilesTableRow = (props) => {
   );
 };
 
-export default withTranslation(["Home", "Common", "VersionBadge"])(
+export default withTranslation(["Home", "Common", "VersionBadge", "InfoPanel"])(
   withFileActions(
     withRouter(withContent(withQuickButtons(withBadges(FilesTableRow))))
   )

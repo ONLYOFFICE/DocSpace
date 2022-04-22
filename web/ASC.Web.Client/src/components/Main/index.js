@@ -1,11 +1,17 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import { isIOS, isFirefox, isMobile, isMobileOnly } from "react-device-detect";
+import {
+  isIOS,
+  isFirefox,
+  isSafari,
+  isMobile,
+  isMobileOnly,
+} from "react-device-detect";
 
 const StyledMain = styled.main`
   height: ${(props) =>
     isIOS && !isFirefox
-      ? "calc(100vh - 48px)"
+      ? "calc(var(--vh, 1vh) * 100)"
       : props.isDesktop
       ? "100vh"
       : "calc(100vh - 48px)"};
@@ -15,10 +21,14 @@ const StyledMain = styled.main`
   flex-direction: row;
   box-sizing: border-box;
 
-  ${isMobile &&
-  css`
-    height: calc(100vh - 48px);
-  `}
+  #article-container {
+    ${isMobileOnly &&
+    css`
+      height: ${isIOS && !isFirefox
+        ? "calc(var(--vh, 1vh) * 100 - 16px)"
+        : "100vh - 64px"} !important;
+    `}
+  }
 
   ${isMobileOnly &&
   css`
@@ -30,7 +40,7 @@ const StyledMain = styled.main`
 
 const Main = React.memo((props) => {
   if (isIOS && !isFirefox) {
-    const vh = (window.innerHeight - 57) * 0.01;
+    const vh = (window.innerHeight - 48) * 0.01;
     document.documentElement.style.setProperty("--vh", `${vh}px`);
   }
   //console.log("Main render");

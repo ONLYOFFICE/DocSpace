@@ -493,7 +493,7 @@ class ContextOptionsStore {
       {
         key: "sharing-settings",
         label: t("SharingSettings"),
-        icon: "/static/images/catalog.share.react.svg",
+        icon: "/static/images/share.react.svg",
         onClick: this.onClickShare,
         disabled: !isShareable,
       },
@@ -528,7 +528,7 @@ class ContextOptionsStore {
       {
         key: "block-unblock-version",
         label: t("UnblockVersion"),
-        icon: "images/lock.react.svg",
+        icon: "/static/images/locked.react.svg",
         onClick: () => this.lockFile(item),
         disabled: false,
       },

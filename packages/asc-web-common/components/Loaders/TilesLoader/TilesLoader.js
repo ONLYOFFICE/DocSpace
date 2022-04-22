@@ -34,7 +34,13 @@ const StyledWrapper = styled.div`
   }
 `;
 
-const TilesLoader = ({ foldersCount, filesCount, sectionWidth, ...rest }) => {
+const TilesLoader = ({
+  foldersCount,
+  filesCount,
+  sectionWidth,
+  withTitle,
+  ...rest
+}) => {
   const folders = [];
   const files = [];
 
@@ -59,15 +65,17 @@ const TilesLoader = ({ foldersCount, filesCount, sectionWidth, ...rest }) => {
       ) : null}
       <StyledTilesLoader>{folders}</StyledTilesLoader>
 
-      {filesCount > 0 ? (
-        <RectangleLoader
-          height="22px"
-          width="35px"
-          className="files"
-          animate
-          {...rest}
-        />
-      ) : null}
+      {filesCount > 0
+        ? withTitle && (
+            <RectangleLoader
+              height="22px"
+              width="35px"
+              className="files"
+              animate
+              {...rest}
+            />
+          )
+        : null}
       <StyledTilesLoader>{files}</StyledTilesLoader>
     </StyledWrapper>
   );
@@ -81,6 +89,7 @@ TilesLoader.propTypes = {
 TilesLoader.defaultProps = {
   foldersCount: 2,
   filesCount: 8,
+  withTitle: true,
 };
 
 export default TilesLoader;

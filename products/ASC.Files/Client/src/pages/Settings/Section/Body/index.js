@@ -19,6 +19,7 @@ const SectionBodyContent = ({
   history,
   setExpandSettingsTree,
   setSelectedNode,
+  isPersonal,
   t,
 }) => {
   const commonSettings = {
@@ -41,11 +42,13 @@ const SectionBodyContent = ({
 
   const elements = [];
 
-  if (isAdmin) {
+  if (isAdmin && !isPersonal) {
     elements.push(adminSettings);
   }
 
-  elements.push(commonSettings);
+  if (!isPersonal) {
+    elements.push(commonSettings);
+  }
 
   if (enableThirdParty) {
     elements.push(connectedCloud);
@@ -74,19 +77,20 @@ const SectionBodyContent = ({
   const selectedTab = React.useCallback(() => {
     switch (setting) {
       case "common":
-        return 1;
+        return isAdmin ? 1 : 0;
       case "admin":
         return 0;
       case "connected-clouds":
-        return 2;
+        return isAdmin ? (isPersonal ? 0 : 2) : 1;
       default:
-        return 1;
+        return isAdmin ? 1 : 0;
     }
-  }, [setting]);
+  }, [setting, isAdmin, isPersonal]);
 
   return !settingsIsLoaded ? null : (!enableThirdParty &&
-      setting === "thirdParty") ||
-    (!isAdmin && setting === "admin") ? (
+      setting === "connected-clouds") ||
+    (!isAdmin && setting === "admin") ||
+    (isPersonal && setting !== "connected-clouds") ? (
     <Error403 />
   ) : isErrorSettings ? (
     <Error520 />
@@ -108,9 +112,11 @@ export default inject(({ auth, treeFoldersStore, settingsStore }) => {
 
     setExpandSettingsTree,
   } = settingsStore;
+
   const { setSelectedNode } = treeFoldersStore;
   return {
     isAdmin: auth.isAdmin,
+    isPersonal: auth.settingsStore.personal,
     enableThirdParty,
     settingsIsLoaded,
 
