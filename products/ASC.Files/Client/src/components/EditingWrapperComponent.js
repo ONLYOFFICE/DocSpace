@@ -172,11 +172,6 @@ const EditingWrapper = styled.div`
     height: 14px;
     padding: 1px;
   }
-
-  .is-edit {
-    /* margin-top: 4px; */
-    ${(props) => props.viewAs === "table" && `padding-left: 4px;`}
-  }
 `;
 
 EditingWrapper.defaultProps = { theme: Base };
