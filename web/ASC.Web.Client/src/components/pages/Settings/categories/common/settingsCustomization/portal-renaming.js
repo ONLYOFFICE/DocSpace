@@ -216,12 +216,13 @@ const PortalRenaming = (props) => {
         {t("PortalRenamingMobile")}
       </div>
       <FieldContainer
-        id="fieldContainerWelcomePage"
+        id="fieldContainerPortalRenaming"
         className="field-container-width"
         labelText={`${t("PortalRenamingLabelText")}:`}
         isVertical={true}
       >
         <TextInput
+          id="textInputContainerPortalRenaming"
           scale={true}
           value={portalName}
           onChange={onChangePortalName}
@@ -256,6 +257,7 @@ const PortalRenaming = (props) => {
         <> {settingsBlock}</>
       )}
       <SaveCancelButtons
+        id="buttonsPortalRenaming"
         className="save-cancel-buttons"
         onSaveClick={onSavePortalRename}
         onCancelClick={onCancelPortalName}
