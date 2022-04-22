@@ -1,6 +1,12 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import { isIOS, isFirefox, isMobile, isMobileOnly } from "react-device-detect";
+import {
+  isIOS,
+  isFirefox,
+  isSafari,
+  isMobile,
+  isMobileOnly,
+} from "react-device-detect";
 
 const StyledMain = styled.main`
   height: ${(props) =>
@@ -16,7 +22,12 @@ const StyledMain = styled.main`
   box-sizing: border-box;
 
   #article-container {
-    height: calc(100%) !important;
+    ${isMobileOnly &&
+    css`
+      height: ${isIOS && !isFirefox
+        ? "calc(var(--vh, 1vh) * 100 - 16px)"
+        : "100vh - 64px"} !important;
+    `}
   }
 
   ${isMobileOnly &&
