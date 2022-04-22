@@ -38,10 +38,12 @@ const StyledArticle = styled.article`
     display: ${(props) => (props.articleOpen ? "flex" : "none")};
     min-width: 100vw;
     width: 100vw;
+    position: fixed;
+
     height: calc(100vh - 64px) !important;
     margin: 0;
+    margin-top: 16px;
     padding: 0;
-    padding-bottom: 0px;
   }
 
   ${isMobileOnly &&
@@ -50,22 +52,15 @@ const StyledArticle = styled.article`
     min-width: 100vw !important;
     width: 100vw;
     position: fixed;
+
     margin-top: 64px !important;
     height: calc(100vh - 64px) !important;
     margin: 0;
     padding: 0;
-    padding-bottom: 0px;
   `}
 
-  @media ${mobile} {
-    position: fixed;
-    margin-top: 16px;
-    height: calc(100vh - 64px) !important;
-    z-index: 400;
-  }
-
   z-index: ${(props) =>
-    props.showText && (isMobileOnly || isMobileUtils()) ? "205" : "100"};
+    props.showText && (isMobileOnly || isMobileUtils()) ? "230" : "100"};
 
   .resizable-block {
     overflow: hidden;
