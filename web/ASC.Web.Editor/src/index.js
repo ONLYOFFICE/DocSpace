@@ -6,10 +6,13 @@ import i18next from "i18next";
 import Backend from "i18next-fs-backend";
 import path, { join } from "path";
 import compression from "compression";
+// import webpack from "webpack";
+// import WebpackDevMiddleware from "webpack-dev-middleware";
+// import WebpackHotMiddleware from "webpack-hot-middleware";
 
 const loadPath = (lng, ns) => {
   let resourcePath =
-    path.resolve(process.cwd(), "clientBuild") + `/locales/${lng}/${ns}.json`;
+    path.resolve(process.cwd(), "dist/client") + `/locales/${lng}/${ns}.json`;
 
   if (ns === "Common")
     resourcePath = join(__dirname, `../../../public/locales/${lng}/${ns}.json`);
@@ -42,16 +45,30 @@ i18next.use(Backend).init({
   },
 });
 
+// if (process.env.NODE_ENV === "development") {
+//   const webpackConfig = require("../webpack/dev/webpack.dev.client.js");
+//   const compiler = webpack(webpackConfig);
+//   console.log("server");
+//   app.use(
+//     WebpackDevMiddleware(compiler, {
+//       publicPath: webpackConfig.output.publicPath,
+//       serverSideRender: true,
+//     })
+//   );
+
+//   app.use(WebpackHotMiddleware(compiler));
+// }
+
 app.use(i18nextMiddleware.handle(i18next));
 app.use(compression());
 app.use(
   "/products/files/doceditor/static/",
-  express.static(path.resolve(__dirname, "../clientBuild/static"))
+  express.static(path.resolve(__dirname, "../dist/client/static"))
 );
-app.use(express.static(path.resolve(__dirname, "../clientBuild")));
+app.use(express.static(path.resolve(__dirname, "../dist/client")));
 
 app.get("/products/files/doceditor", async (req, res) => {
-  const { props, content, styleTags, scriptTags } = await render(req);
+  const { props, content, styleTags, extractor } = await render(req);
   const userLng = props?.user?.cultureName || "en";
   const initialI18nStore = {};
 
@@ -71,9 +88,9 @@ app.get("/products/files/doceditor", async (req, res) => {
       props,
       content,
       styleTags,
-      scriptTags,
       initialI18nStore,
-      initialLanguage
+      initialLanguage,
+      extractor
     );
 
     res.send(response);

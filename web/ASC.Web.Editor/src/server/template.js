@@ -5,9 +5,10 @@ export default function template(
   initialState = {},
   content = "",
   styleTags,
-  scriptTags,
+  //scriptTags,
   initialI18nStore,
-  initialLanguage
+  initialLanguage,
+  extractor
 ) {
   const { title } = pkg;
   const { docApiUrl } = initialState;
@@ -22,7 +23,7 @@ export default function template(
       window.initialLanguage = '${initialLanguage}'
     </script>
     <script type='text/javascript' id='scripDocServiceAddress' src="${docApiUrl}" async></script>
-   ${scriptTags}
+    ${extractor.getScriptTags()}
 `;
 
   const page = `
