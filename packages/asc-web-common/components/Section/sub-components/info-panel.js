@@ -1,12 +1,16 @@
 import { Base } from "@appserver/components/themes";
-import { isTablet, mobile, tablet } from "@appserver/components/utils/device";
+import {
+  isTablet,
+  isMobile as isMobileUtils,
+  tablet,
+} from "@appserver/components/utils/device";
 import { inject } from "mobx-react";
 import PropTypes from "prop-types";
 import React, { useEffect } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import CrossIcon from "@appserver/components/public/static/images/cross.react.svg";
 
-import { isMobile, isMobileOnly } from "react-device-detect";
+import { isMobile } from "react-device-detect";
 
 const StyledInfoPanelWrapper = styled.div.attrs(({ id }) => ({
   id: id,
@@ -18,12 +22,22 @@ const StyledInfoPanelWrapper = styled.div.attrs(({ id }) => ({
 
   @media ${tablet} {
     z-index: 309;
-    position: absolute;
+    position: fixed;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
   }
+
+  ${isMobile &&
+  css`
+    z-index: 309;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  `}
 `;
 
 const StyledInfoPanel = styled.div`
@@ -42,9 +56,18 @@ const StyledInfoPanel = styled.div`
     max-width: calc(100vw - 69px);
   }
 
-  @media ${mobile} {
+  ${isMobile &&
+  css`
+    position: absolute;
+    border: none;
+    right: 0;
+    width: 480px;
+    max-width: calc(100vw - 69px);
+  `}
+
+  @media (max-width: 428px) {
     bottom: 0;
-    height: 80%;
+    height: calc(100% - 64px);
     width: 100vw;
     max-width: 100vw;
   }
@@ -74,28 +97,19 @@ const StyledControlContainer = styled.div`
 
   ${isMobile &&
   css`
-    display: flex;
+    display: flex !important;
 
     top: 18px;
     left: -34px;
   `}
 
-  @media ${mobile} {
-    position: fixed;
+  @media (max-width: 428px) {
     display: flex;
 
-    top: 30px;
+    top: -34px;
     right: 10px;
+    left: unset;
   }
-
-  ${isMobileOnly &&
-  css`
-    position: fixed !important;
-    display: flex;
-
-    top: 30px !important;
-    right: 10px !important;
-  `}
 `;
 
 StyledControlContainer.defaultProps = { theme: Base };
@@ -121,7 +135,9 @@ const InfoPanel = ({ children, isVisible, setIsVisible }) => {
       if (e.target.id === "InfoPanelWrapper") closeInfoPanel();
     };
 
-    if (isTablet()) document.addEventListener("mousedown", onMouseDown);
+    if (isTablet() || isMobile || isMobileUtils()) {
+      document.addEventListener("mousedown", onMouseDown);
+    }
     return () => document.removeEventListener("mousedown", onMouseDown);
   }, []);
 
