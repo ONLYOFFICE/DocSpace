@@ -74,13 +74,13 @@ const SectionBodyContent = ({
   const selectedTab = React.useCallback(() => {
     switch (setting) {
       case "common":
-        return 1;
+        return isAdmin ? 1 : 0;
       case "admin":
         return 0;
       case "connected-clouds":
-        return 2;
+        return isAdmin ? 2 : 1;
       default:
-        return 1;
+        return isAdmin ? 1 : 0;
     }
   }, [setting]);
 
