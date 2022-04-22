@@ -2070,7 +2070,7 @@ const Base = {
       borderBottom: `1px solid ${grayLightMid}`,
       textColor: gray,
       activeTextColor: grayMain,
-      hoverTextColor: grayMaxLight,
+      hoverTextColor: grayMain,
 
       iconColor: gray,
       activeIconColor: grayMain,
