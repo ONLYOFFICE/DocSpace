@@ -23,20 +23,19 @@
  *
 */
 
-namespace ASC.ApiSystem.Models
+namespace ASC.ApiSystem.Models;
+
+public class CoreSettingsModel
 {
-    public class CoreSettingsModel
+    public int Tenant { get; set; }
+
+    [StringLength(255)]
+    public string Key { get; set; }
+
+    public string Value { get; set; }
+
+    public CoreSettingsModel()
     {
-        public int Tenant { get; set; }
-
-        [StringLength(255)]
-        public string Key { get; set; }
-
-        public string Value { get; set; }
-
-        public CoreSettingsModel()
-        {
-            Tenant = -1;
-        }
+        Tenant = -1;
     }
 }

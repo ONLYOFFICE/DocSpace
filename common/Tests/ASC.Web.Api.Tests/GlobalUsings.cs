@@ -24,18 +24,28 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Api.Tests.Infrastructure;
+global using System;
+global using System.IO;
+global using System.Reflection;
+global using System.Text.Json;
 
-class ApiTestsData
-{
-    public static IEnumerable<TestCaseData> UserForWizard()
-    {
-        yield return new TestCaseData("testuser@onlyoffice.com", "00000000", "en-US", "UTC", "", "", false);
-    }
+global using ASC.Common.Logging;
+global using ASC.Core;
+global using ASC.Core.Common.EF;
+global using ASC.Core.Common.EF.Context;
+global using ASC.Core.Common.EF.Model;
+global using ASC.Core.Common.Settings;
+global using ASC.Core.Data;
+global using ASC.Core.Tenants;
+global using ASC.Core.Users;
+global using ASC.Web.Api.ApiModel.RequestsDto;
+global using ASC.Web.Api.Tests.Infrastructure;
+global using ASC.Web.Core.Utility.Settings;
+global using ASC.Web.Studio.UserControls.FirstTime;
 
-    public static IEnumerable<TestCaseData> WebStudioSettingsData()
-    {
-        yield return new TestCaseData(1, Guid.Parse("00000000-0000-0000-0000-000000000000"), "{\"Completed\":false}");
-    }
+global using Microsoft.AspNetCore.Identity;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Options;
 
-}
+global using NUnit.Framework;
