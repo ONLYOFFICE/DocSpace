@@ -11,7 +11,7 @@ const ArticleBackdrop = ({ onClick, ...rest }) => {
       <StyledControlContainer onClick={onClick} {...rest}>
         <StyledCrossIcon />
       </StyledControlContainer>
-      <Backdrop visible={true} zIndex={201} withBackground={true} />
+      <Backdrop visible={true} zIndex={210} withBackground={true} />
     </>
   );
 };
