@@ -20,7 +20,7 @@
     "lodash": "^4.17.20",
     "minify-xml": "^2.5.0",
     "morgan": "1.10.0",
-    "nconf": "^0.10.0",
+    "nconf": "^0.11.4",
     "node-fetch": "^2.6.1",
     "node-forge": "^0.10.0",
     "nodemon": "2.0.4",
