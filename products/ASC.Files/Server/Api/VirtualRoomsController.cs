@@ -83,30 +83,8 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         return await _folderDtoHelper.GetAsync(room);
     }
 
-    [Create("room")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public async Task<FolderDto<T>> CreateRoomFromFormAsync([FromForm] CreateRoomRequestDto inDto)
-    {
-        ErrorIfNotDocSpace();
-
-        var room = await _fileStorageService.CreateRoom(inDto.Title, inDto.RoomType);
-
-        return await _folderDtoHelper.GetAsync(room);
-    }
-
     [Update("room/{roomId}")]
     public async Task<FolderDto<T>> RenameRoomFromBodyAsync(T roomId, [FromBody] RenameRoomRequestDto inDto)
-    {
-        ErrorIfNotDocSpace();
-
-        var room = await _fileStorageService.FolderRenameAsync(roomId, inDto.Title);
-
-        return await _folderDtoHelper.GetAsync(room);
-    }
-
-    [Update("room/{roomId}")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public async Task<FolderDto<T>> RenameRoomFromFormAsync(T roomId, [FromForm] RenameRoomRequestDto inDto)
     {
         ErrorIfNotDocSpace();
 
@@ -128,64 +106,8 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         }
     }
 
-    [Delete("room")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public async IAsyncEnumerable<FileOperationDto> DeleteRoomsFromFormAsync([FromForm][ModelBinder(BinderType = typeof(BatchModelBinder))] BatchRoomsRequestDto inDto)
-    {
-        ErrorIfNotDocSpace();
-
-        var tasks = _fileStorageService.DeleteItems("delete", inDto.FileIds.ToList(), inDto.FolderIds.ToList(), false, inDto.DeleteAfter, true);
-
-        foreach (var e in tasks)
-        {
-            yield return await _fileOperationDtoHelper.GetAsync(e);
-        }
-    }
-
     [Update("room/archive")]
     public async Task<IEnumerable<FileOperationDto>> ArchiveRoomsFromBodyAsync([FromBody] BatchRoomsRequestDto inDto)
-    {
-        return await ArchiveRoomsAsync(inDto);
-    }
-
-    [Update("room/archive")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public async Task<IEnumerable<FileOperationDto>> ArchiveRoomsFromFormAsync([FromForm][ModelBinder(BinderType = typeof(BatchModelBinder))] BatchRoomsRequestDto inDto)
-    {
-        return await ArchiveRoomsAsync(inDto);
-    }
-
-    [Update("room/unarchive")]
-    public async Task<IEnumerable<FileOperationDto>> UnarchiveRoomsFromBodyAsync([FromBody] BatchRoomsRequestDto inDto)
-    {
-        return await UnarchiveRoomsAsync(inDto);
-    }
-
-    [Update("room/unarchive")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public async Task<IEnumerable<FileOperationDto>> UnarchiveRoomsFromFormAsync([FromForm][ModelBinder(BinderType = typeof(BatchModelBinder))] BatchRoomsRequestDto inDto)
-    {
-        return await UnarchiveRoomsAsync(inDto);
-    }
-
-    [Update("room/{roomId}/share")]
-    public Task<IEnumerable<FileShareDto>> SetRoomSecurityFromBodyAsync(T roomId, [FromBody] SecurityInfoRequestDto inDto)
-    {
-        ErrorIfNotDocSpace();
-
-        return _securityControllerHelper.SetFolderSecurityInfoAsync(roomId, inDto.Share, inDto.Notify, inDto.SharingMessage);
-    }
-
-    [Update("room/{roomId}/share")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public Task<IEnumerable<FileShareDto>> SetRoomSecurityFromFormAsync(T roomId, [FromForm] SecurityInfoRequestDto inDto)
-    {
-        ErrorIfNotDocSpace();
-
-        return _securityControllerHelper.SetFolderSecurityInfoAsync(roomId, inDto.Share, inDto.Notify, inDto.SharingMessage);
-    }
-
-    private async Task<IEnumerable<FileOperationDto>> ArchiveRoomsAsync(BatchRoomsRequestDto inDto)
     {
         ErrorIfNotDocSpace();
 
@@ -201,7 +123,8 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         return result;
     }
 
-    private async Task<IEnumerable<FileOperationDto>> UnarchiveRoomsAsync(BatchRoomsRequestDto inDto)
+    [Update("room/unarchive")]
+    public async Task<IEnumerable<FileOperationDto>> UnarchiveRoomsFromBodyAsync([FromBody] BatchRoomsRequestDto inDto)
     {
         ErrorIfNotDocSpace();
 
@@ -215,6 +138,14 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         }
 
         return result;
+    }
+
+    [Update("room/{roomId}/share")]
+    public Task<IEnumerable<FileShareDto>> SetRoomSecurityFromBodyAsync(T roomId, [FromBody] SecurityInfoRequestDto inDto)
+    {
+        ErrorIfNotDocSpace();
+
+        return _securityControllerHelper.SetFolderSecurityInfoAsync(roomId, inDto.Share, inDto.Notify, inDto.SharingMessage);
     }
 
     private void ErrorIfNotDocSpace()
