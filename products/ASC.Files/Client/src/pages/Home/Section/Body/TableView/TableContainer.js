@@ -5,11 +5,8 @@ import TableRow from "./TableRow";
 import TableHeader from "./TableHeader";
 import TableBody from "@appserver/components/table-container/TableBody";
 import { isMobile } from "react-device-detect";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { Base } from "@appserver/components/themes";
-
-const borderColor = "#ECEEF1";
-const colorBorderTransition = "#f3f4f4";
 
 const StyledTableContainer = styled(TableContainer)`
   .table-row-selected + .table-row-selected {
@@ -21,30 +18,29 @@ const StyledTableContainer = styled(TableContainer)`
         border-top: 1px solid;
       }
       .table-container_file-name-cell {
-        border-image-source: ${`linear-gradient(to right, ${(props) =>
-          props.theme.filesSection.tableView.row
-            .borderColorTransition} 17px, ${(props) =>
-          props.theme.filesSection.tableView.row.borderColor} 31px)`};
+        border-image-source: ${(props) => `linear-gradient(to right, 
+          ${props.theme.filesSection.tableView.row.borderColorTransition} 17px, ${props.theme.filesSection.tableView.row.borderColor} 31px)`};
       }
       .table-container_row-context-menu-wrapper {
-        border-image-source: ${`linear-gradient(to left, ${(props) =>
-          props.theme.filesSection.tableView.row
-            .borderColorTransition} 17px, ${(props) =>
-          props.theme.filesSection.tableView.row.borderColor} 31px)`};
+        border-image-source: ${(props) => `linear-gradient(to left,
+          ${props.theme.filesSection.tableView.row.borderColorTransition} 17px, ${props.theme.filesSection.tableView.row.borderColor} 31px)`};
       }
     }
   }
 
-  /* .files-item:not(.table-row-selected) + .table-row-selected {
+  .files-item:not(.table-row-selected) + .table-row-selected {
     .table-row {
       .table-container_file-name-cell,
       .table-container_row-context-menu-wrapper {
         margin-top: -1px;
-        border-top: ${`1px ${(props) =>
-    props.theme.filesSection.tableView.row.borderColor} solid`};
+        border-top: ${(props) =>
+          `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
+
+        border-bottom: ${(props) =>
+          `1px solid ${props.theme.filesSection.tableView.row.borderColor}`};
       }
     }
-  } */
+  }
 `;
 
 StyledTableContainer.defaultProps = { theme: Base };
