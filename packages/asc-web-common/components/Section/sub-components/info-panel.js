@@ -1,10 +1,12 @@
-import IconButton from "@appserver/components/icon-button";
 import { Base } from "@appserver/components/themes";
 import { isTablet, mobile, tablet } from "@appserver/components/utils/device";
 import { inject } from "mobx-react";
 import PropTypes from "prop-types";
 import React, { useEffect } from "react";
 import styled from "styled-components";
+import CrossIcon from "@appserver/components/public/static/images/cross.react.svg";
+
+import { isMobile, isMobileOnly } from "react-device-detect";
 
 const StyledInfoPanelWrapper = styled.div.attrs(({ id }) => ({
   id: id,
@@ -48,37 +50,66 @@ const StyledInfoPanel = styled.div`
   }
 `;
 
-const StyledCloseButtonWrapper = styled.div`
-  position: absolute;
+const StyledControlContainer = styled.div`
   display: none;
-  background-color: ${(props) => props.theme.infoPanel.closeButtonBg};
-  padding: ${(props) => props.theme.infoPanel.closeButtonWrapperPadding};
-  border-radius: 50%;
 
-  .info-panel-button {
-    svg {
-      width: ${(props) => props.theme.infoPanel.closeButtonSize};
-      height: ${(props) => props.theme.infoPanel.closeButtonSize};
-    }
-    path {
-      fill: ${(props) => props.theme.infoPanel.closeButtonIcon};
-    }
-  }
+  width: 24px;
+  height: 24px;
+  position: absolute;
+
+  border-radius: 100px;
+  cursor: pointer;
+
+  align-items: center;
+  justify-content: center;
+  z-index: 450;
+  background: ${(props) => props.theme.catalog.control.background};
 
   @media ${tablet} {
-    display: block;
-    top: 0;
-    left: 0;
-    margin-top: 18px;
-    margin-left: -34px;
+    display: flex;
+
+    top: 18px;
+    left: -34px;
   }
+
+  ${isMobile &&
+  css`
+    display: flex;
+
+    top: 18px;
+    left: -34px;
+  `}
+
   @media ${mobile} {
-    right: 0;
-    left: auto;
-    margin-top: -34px;
-    margin-right: 10px;
+    position: fixed;
+    display: flex;
+
+    top: 30px;
+    right: 10px;
+  }
+
+  ${isMobileOnly &&
+  css`
+    position: fixed !important;
+    display: flex;
+
+    top: 30px !important;
+    right: 10px !important;
+  `}
+`;
+
+StyledControlContainer.defaultProps = { theme: Base };
+
+const StyledCrossIcon = styled(CrossIcon)`
+  width: 12px;
+  height: 12px;
+  z-index: 455;
+  path {
+    fill: ${(props) => props.theme.catalog.control.fill};
   }
 `;
+
+StyledCrossIcon.defaultProps = { theme: Base };
 
 const InfoPanel = ({ children, isVisible, setIsVisible }) => {
   if (!isVisible) return null;
@@ -97,13 +128,10 @@ const InfoPanel = ({ children, isVisible, setIsVisible }) => {
   return (
     <StyledInfoPanelWrapper className="info-panel" id="InfoPanelWrapper">
       <StyledInfoPanel>
-        <StyledCloseButtonWrapper>
-          <IconButton
-            onClick={closeInfoPanel}
-            iconName="/static/images/cross.react.svg"
-            className="info-panel-button"
-          />
-        </StyledCloseButtonWrapper>
+        <StyledControlContainer onClick={closeInfoPanel}>
+          <StyledCrossIcon />
+        </StyledControlContainer>
+
         {children}
       </StyledInfoPanel>
     </StyledInfoPanelWrapper>
@@ -120,7 +148,6 @@ InfoPanel.propTypes = {
 };
 
 StyledInfoPanelWrapper.defaultProps = { theme: Base };
-StyledCloseButtonWrapper.defaultProps = { theme: Base };
 StyledInfoPanel.defaultProps = { theme: Base };
 InfoPanel.defaultProps = { theme: Base };
 
