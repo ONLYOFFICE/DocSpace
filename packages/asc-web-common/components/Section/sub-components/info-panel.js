@@ -48,6 +48,10 @@ const StyledInfoPanel = styled.div`
   display: flex;
   flex-direction: column;
 
+  .scroll-body {
+    padding-bottom: 20px;
+  }
+
   @media ${tablet} {
     position: absolute;
     border: none;
