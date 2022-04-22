@@ -116,8 +116,9 @@ const StyledBody = styled(Box)`
 const StyledFooter = styled.div`
   display: flex;
   flex-direction: row;
-  border-top: ${(props) =>
-    `1px solid ${props.theme.modalDialog.footerBorderColor}`};
+  ${(props) =>
+    props.withFooterBorder &&
+    `border-top: 1px solid ${props.theme.modalDialog.headerBorderColor}`};
   gap: 10px;
   padding: 16px;
 `;

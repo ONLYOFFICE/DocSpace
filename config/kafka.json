@@ -1,4 +1,10 @@
 {
+<<<<<<< Updated upstream
 	"kafka": {
 	}
+=======
+  "kafka": {
+    "BootstrapServers": "localhost:9092"
+  }
+>>>>>>> Stashed changes
 }

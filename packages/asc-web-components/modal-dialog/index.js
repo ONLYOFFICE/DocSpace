@@ -33,6 +33,8 @@ const ModalDialog = ({
   autoMaxHeight,
   autoMaxWidth,
   withBodyScroll,
+  modalLoaderBodyHeight,
+  withFooterBorder,
 }) => {
   const [currentDisplayType, setCurrentDisplayType] = useState(
     getCurrentDisplayType(displayType, displayTypeDetailed)
@@ -85,6 +87,7 @@ const ModalDialog = ({
           zIndex={zIndex}
           autoMaxHeight={autoMaxHeight}
           autoMaxWidth={autoMaxWidth}
+          withFooterBorder={withFooterBorder}
           onClose={onClose}
           isLoading={isLoading}
           header={header}
@@ -117,21 +120,26 @@ ModalDialog.propTypes = {
 
   /** Show loader in body */
   isLoading: PropTypes.bool,
-  /** Set loader height */
-  modalLoaderBodyHeight: PropTypes.string,
 
   /** **`MODAL-ONLY`**  
 
   Sets `width: 520px` and `max-hight: 400px`*/
   isLarge: PropTypes.bool,
+
   /** **`MODAL-ONLY`**  
 
   Sets `max-width: auto`*/
   autoMaxWidth: PropTypes.bool,
+
   /** **`MODAL-ONLY`**  
 
   Sets `max-height: auto`*/
   autoMaxHeight: PropTypes.bool,
+
+  /** **`MODAL-ONLY`**  
+
+  Displays border betweeen body and footer`*/
+  withFooterBorder: PropTypes.bool,
 
   /** **`ASIDE-ONLY`**  
 
@@ -149,12 +157,14 @@ ModalDialog.defaultProps = {
     desktop: "modal",
     tablet: "aside",
     smallTablet: "aside",
-    mobile: "modal",
+    mobile: "aside",
   },
   zIndex: 310,
   isLarge: false,
+  isLoading: false,
   withoutCloseButton: false,
   withBodyScroll: false,
+  withFooterBorder: false,
 };
 
 ModalDialog.Header = Header;

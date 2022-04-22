@@ -32,6 +32,7 @@ const Modal = ({
   body,
   footer,
   visible,
+  withFooterBorder,
   modalSwipeOffset,
 }) => {
   const headerComponent = header ? header.props.children : null;
@@ -70,13 +71,17 @@ const Modal = ({
               onClick={onClose}
             />
             {isLoading ? (
-              <div className="loader-wrapper">
-                {currentDisplayType === "modal" ? (
-                  <Loaders.DialogLoader bodyHeight={modalLoaderBodyHeight} />
-                ) : (
-                  <Loaders.DialogAsideLoader withoutAside />
-                )}
-              </div>
+              currentDisplayType === "modal" ? (
+                <Loaders.DialogLoader
+                  isLarge={isLarge}
+                  withFooterBorder={withFooterBorder}
+                />
+              ) : (
+                <Loaders.DialogAsideLoader
+                  withoutAside
+                  withFooterBorder={withFooterBorder}
+                />
+              )
             ) : (
               <>
                 {header && (
@@ -108,7 +113,10 @@ const Modal = ({
                   </StyledBody>
                 )}
                 {footer && (
-                  <StyledFooter currentDisplayType={currentDisplayType}>
+                  <StyledFooter
+                    withFooterBorder={withFooterBorder}
+                    currentDisplayType={currentDisplayType}
+                  >
                     {footerComponent}
                   </StyledFooter>
                 )}
