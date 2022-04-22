@@ -40,6 +40,7 @@ const withHotkeys = (Component) => {
       uploadFile,
       someDialogIsOpen,
       enabledHotkeys,
+      mediaViewerIsVisible,
     } = props;
 
     const hotkeysFilter = {
@@ -47,7 +48,7 @@ const withHotkeys = (Component) => {
         ev.target?.type === "checkbox" || ev.target?.tagName !== "INPUT",
       filterPreventDefault: false,
       enableOnTags: ["INPUT"],
-      enabled: !someDialogIsOpen && enabledHotkeys,
+      enabled: !someDialogIsOpen && enabledHotkeys && !mediaViewerIsVisible,
     };
 
     const onKeyDown = (e) => activateHotkeys(e);
@@ -219,6 +220,7 @@ const withHotkeys = (Component) => {
       settingsStore,
       filesActionsStore,
       hotkeyStore,
+      mediaViewerDataStore,
     }) => {
       const {
         setSelected,
@@ -261,6 +263,8 @@ const withHotkeys = (Component) => {
         backToParentFolder,
       } = filesActionsStore;
 
+      const { visible: mediaViewerIsVisible } = mediaViewerDataStore;
+
       return {
         setSelected,
         viewAs,
@@ -295,6 +299,7 @@ const withHotkeys = (Component) => {
         uploadFile,
         someDialogIsOpen,
         enabledHotkeys,
+        mediaViewerIsVisible,
       };
     }
   )(observer(WithHotkeys));
