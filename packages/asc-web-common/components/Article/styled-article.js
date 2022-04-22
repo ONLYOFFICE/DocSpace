@@ -97,7 +97,6 @@ const StyledArticle = styled.article`
       height: calc(100vh - 64px) !important;
       margin: 0;
       padding: 0;
-      padding-bottom: 0px;
     }
 
     ${isMobile &&
@@ -114,16 +113,23 @@ const StyledArticle = styled.article`
       display: ${(props) => (props.articleOpen ? "flex" : "none")};
       min-width: 100vw !important;
       width: 100vw;
-      height: calc(100vh - 64px) !important;
       margin: 0;
       padding: 0;
-      padding-bottom: 0px;
     `}
   }
 
   .article-body__scrollbar {
     .scroll-body {
       padding-right: 0px !important;
+
+      @media ${mobile} {
+        padding-bottom: 20px;
+      }
+
+      ${isMobileOnly &&
+      css`
+        padding-bottom: 20px;
+      `}
     }
   }
 `;
