@@ -57,7 +57,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         _coreBaseSettings = coreBaseSettings;
     }
 
-    [Read("@rooms")]
+    [Read("rooms")]
     public async Task<FolderContentDto<T>> GetRoomsFolderAsync()
     {
         ErrorIfNotDocSpace();
@@ -65,7 +65,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         return await _foldersControllerHelper.GetFolderAsync(await _globalFolderHelper.GetFolderVirtualRooms<T>(), Guid.Empty, FilterType.None, true);
     }
 
-    [Read("@archive")]
+    [Read("archive")]
     public async Task<FolderContentDto<T>> GetArchiveFolderAsync()
     {
         ErrorIfNotDocSpace();
