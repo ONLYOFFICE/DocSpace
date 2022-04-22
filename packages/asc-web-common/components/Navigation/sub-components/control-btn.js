@@ -130,7 +130,7 @@ const ControlButtons = ({
               <IconButton
                 className="info-panel-toggle"
                 iconName="images/panel.react.svg"
-                size="15"
+                size="16"
                 isFill={true}
                 onClick={toggleInfoPanelAction}
               />
@@ -156,7 +156,7 @@ const ControlButtons = ({
               <IconButton
                 className="info-panel-toggle"
                 iconName="images/panel.react.svg"
-                size="15"
+                size="16"
                 isFill={true}
                 onClick={toggleInfoPanelAction}
               />
@@ -180,7 +180,7 @@ const ControlButtons = ({
               <IconButton
                 className="info-panel-toggle"
                 iconName="images/panel.react.svg"
-                size="15"
+                size="16"
                 isFill={true}
                 onClick={toggleInfoPanelAction}
               />
