@@ -5,6 +5,10 @@ import Base from "../themes/base";
 const StyledContainer = styled.div`
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
+  .toggle-container {
+    display: inline-block;
+  }
+
   .span-toggle-content {
     cursor: pointer;
     user-select: none;
@@ -34,6 +38,7 @@ const StyledContainer = styled.div`
   }
 
   .heading-toggle-content {
+    display: inline-block;
     height: ${(props) => props.theme.toggleContent.headingHeight};
     line-height: ${(props) => props.theme.toggleContent.headingHeight};
     box-sizing: border-box;

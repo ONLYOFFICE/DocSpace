@@ -114,9 +114,9 @@ const PureThirdPartyListContainer = ({
   history,
 }) => {
   const redirectAction = useCallback(() => {
-    const thirdPartyUrl = "/settings/thirdParty";
+    const thirdPartyUrl = "/settings/connected-clouds";
     if (history.location.pathname.indexOf(thirdPartyUrl) === -1) {
-      setSelectedNode(["thirdParty"]);
+      setSelectedNode(["connected-clouds"]);
       setSelectedFolder(null);
       return history.push(
         combineUrl(AppServerConfig.proxyURL, config.homepage, thirdPartyUrl)
