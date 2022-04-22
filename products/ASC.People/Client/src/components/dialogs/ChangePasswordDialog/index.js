@@ -37,7 +37,12 @@ class ChangePasswordDialogComponent extends React.Component {
     const { isRequestRunning } = this.state;
 
     return (
-      <ModalDialog isLoading={!tReady} visible={visible} onClose={onClose}>
+      <ModalDialog
+        isLoading={!tReady}
+        visible={visible}
+        onClose={onClose}
+        displayType="modal"
+      >
         <ModalDialog.Header>{t("PasswordChangeTitle")}</ModalDialog.Header>
         <ModalDialog.Body>
           <Text fontSize="13px">
