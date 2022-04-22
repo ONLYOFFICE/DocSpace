@@ -323,7 +323,7 @@ public class GlobalFolder
             return default;
         }
 
-        var key = $"archive/{_tenantManager.GetCurrentTenant().Id}";
+        var key = $"vrooms/{_tenantManager.GetCurrentTenant().Id}";
 
         if (!DocSpaceFolderCache.TryGetValue(key, out var result))
         {
@@ -342,7 +342,7 @@ public class GlobalFolder
             return default;
         }
 
-        var key = $"vrooms/{_tenantManager.GetCurrentTenant().Id}";
+        var key = $"archive/{_tenantManager.GetCurrentTenant().Id}";
 
         if (!DocSpaceFolderCache.TryGetValue(key, out var result))
         {
