@@ -2141,7 +2141,7 @@ const Dark = {
           "linear-gradient(to right, #333333 25px, #474747 24px)",
         borderImageLeft: "linear-gradient(to left, #333333 20px, #474747 24px)",
 
-        borderColor: "#858585",
+        borderColor: "#474747",
         borderColorTransition: "#474747",
       },
     },
