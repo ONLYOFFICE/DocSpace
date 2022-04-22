@@ -16,7 +16,7 @@
     "memorystore": "^1.6.6",
     "moment": "^2.29.1",
     "morgan": "^1.10.0",
-    "nconf": "^0.11.3",
+    "nconf": "^0.11.4",
     "nodemon": "^2.0.15",
     "redis": "^3.1.2",
     "socket.io": "^4.4.0",
