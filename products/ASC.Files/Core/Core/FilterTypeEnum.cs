@@ -40,4 +40,9 @@ public enum FilterType
     [EnumMember] ArchiveOnly = 10,
     [EnumMember] ByExtension = 11,
     [EnumMember] MediaOnly = 12,
+    [EnumMember] FillingFormsRoomsOnly = 13,
+    [EnumMember] EditingRoomsOnly = 14,
+    [EnumMember] ReviewRoomsOnly = 15,
+    [EnumMember] ReadOnlyRoomsOnly = 16,
+    [EnumMember] CustomRoomsOnly = 17,
 }

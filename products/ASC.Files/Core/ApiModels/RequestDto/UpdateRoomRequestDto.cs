@@ -26,7 +26,7 @@
 
 namespace ASC.Files.Core.ApiModels.RequestDto;
 
-public class BatchRoomsRequestDto : BaseBatchRequestDto
+public class UpdateRoomRequestDto
 {
-    public bool DeleteAfter { get; set; }
+    public string Title { get; set; }
 }

@@ -24,6 +24,13 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Files.Core.Data;
+
+using MailKit.Search;
+
+using StackExchange.Redis;
+using static Nest.JoinField;
+
 namespace ASC.Files.Core.Security;
 
 [Scope]
@@ -937,83 +944,139 @@ public class FileSecurity : IFileSecurity
         return entries.Where(x => string.IsNullOrEmpty(x.Error)).Cast<FileEntry>().ToList();
     }
 
-    public async Task<List<FileEntry>> GetVirtualRoomsForMeAsync()
+    public async Task<List<FileEntry>> GetVirtualRoomsAsync<T>(T folderId, FilterType filterType, string searchText, bool searchInContent, OrderBy orderBy)
     {
         var securityDao = _daoFactory.GetSecurityDao<int>();
         var subjects = GetUserSubjects(_authContext.CurrentAccount.ID);
         var records = await securityDao.GetSharesAsync(subjects);
 
         var result = new List<FileEntry>();
-        result.AddRange(await GetVirtualRoomsForMeAsync<int>(records.Where(r => r.EntryId.GetType() == typeof(int)), subjects));
-        result.AddRange(await GetVirtualRoomsForMeAsync<string>(records.Where(r => r.EntryId.GetType() == typeof(string)), subjects));
+
+        var entries = await GetVirtualRoomsAsync(folderId, records, subjects, filterType, searchText, searchInContent, orderBy);
+        result.AddRange(entries);
+
+        switch (orderBy.SortedBy)
+        {
+            case SortedByType.Author:
+                result.OrderBy(r => r.CreateBy);
+                break;
+            case SortedByType.AZ:
+                result.OrderBy(r => r.Title);
+                break;
+            case SortedByType.DateAndTime:
+                result.OrderBy(r => r.ModifiedBy);
+                break;
+            case SortedByType.DateAndTimeCreation:
+                result.OrderBy(r => r.CreateOn);
+                break;
+            default:
+                result.OrderBy(r => r.Title);
+                break;
+        }
 
         return result;
     }
 
-    private async Task<List<FileEntry>> GetVirtualRoomsForMeAsync<T>(IEnumerable<FileShareRecord> records, List<Guid> subjects)
+    private async Task<List<FileEntry>> GetVirtualRoomsAsync<T>(T folderId, IEnumerable<FileShareRecord> records, List<Guid> subjects, FilterType filterType, string search, bool searchInContent, OrderBy orderBy)
     {
         var folderDao = _daoFactory.GetFolderDao<T>();
-        var folderIds = new Dictionary<T, FileShare>();
+        var entries = new List<FileEntry>();
+        var folders = new List<Folder<T>>();
 
-        var recordGroup = records.GroupBy(r => new { r.EntryId, r.EntryType }, (key, group) => new
+        if (_fileSecurityCommon.IsAdministrator(_authContext.CurrentAccount.ID))
         {
-            firstRecord = group.OrderBy(r => r, new SubjectComparer(subjects))
+            folders = await folderDao.GetFoldersAsync(folderId, orderBy, filterType, false, Guid.Empty, searchInContent ? string.Empty : search, true).ToListAsync();
+            entries.AddRange(folders);
+        }
+        else
+        {
+            var folderIds = new Dictionary<T, FileShare>();
+            var recordGroup = records.GroupBy(r => new { r.EntryId, r.EntryType }, (key, group) => new
+            {
+                firstRecord = group.OrderBy(r => r, new SubjectComparer(subjects))
                 .ThenByDescending(r => r.Share, new FileShareRecord.ShareComparer())
                 .First()
-        });
+            });
 
-        foreach (var record in recordGroup)
-        {
-            if (!folderIds.ContainsKey((T)record.firstRecord.EntryId))
+            foreach (var record in recordGroup)
             {
-                folderIds.Add((T)record.firstRecord.EntryId, record.firstRecord.Share);
+                if (!folderIds.ContainsKey((T)record.firstRecord.EntryId))
+                {
+                    folderIds.Add((T)record.firstRecord.EntryId, record.firstRecord.Share);
+                }
             }
+
+            folders = await folderDao.GetFoldersAsync(folderIds.Keys, filterType, searchText: search)
+                .Where(f => f.RootFolderType == FolderType.VirtualRooms).ToListAsync();
         }
-
-        var entries = new List<FileEntry>();
-
-        var folders = await folderDao.GetFoldersAsync(folderIds.Keys).Where(f => f.RootFolderType == FolderType.VirtualRooms).ToListAsync();
-
-        entries.AddRange(folders);
 
         return entries;
     }
 
-    public async Task<List<FileEntry>> GetArchiveForMeAsync()
+    public async Task<List<FileEntry>> GetArchiveAsync<T>(T folderId, FilterType filterType, string searchText, OrderBy orderBy)
     {
         var securityDao = _daoFactory.GetSecurityDao<int>();
         var subjects = GetUserSubjects(_authContext.CurrentAccount.ID);
         var records = await securityDao.GetSharesAsync(subjects);
 
         var result = new List<FileEntry>();
-        result.AddRange(await GetArchiveForMeAsync<int>(records, subjects));
+
+        var entries = await GetArchiveAsync(folderId, records, subjects, filterType, searchText, orderBy);
+        result.AddRange(entries);
+
+        switch (orderBy.SortedBy)
+        {
+            case SortedByType.Author:
+                result.OrderBy(r => r.CreateBy);
+                break;
+            case SortedByType.AZ:
+                result.OrderBy(r => r.Title);
+                break;
+            case SortedByType.DateAndTime:
+                result.OrderBy(r => r.ModifiedBy);
+                break;
+            case SortedByType.DateAndTimeCreation:
+                result.OrderBy(r => r.CreateOn);
+                break;
+            default:
+                result.OrderBy(r => r.Title);
+                break;
+        }
 
         return result;
     }
 
-    private async Task<List<FileEntry>> GetArchiveForMeAsync<T>(IEnumerable<FileShareRecord> records, List<Guid> subjects)
-{
+    private async Task<List<FileEntry>> GetArchiveAsync<T>(T folderId, IEnumerable<FileShareRecord> records, List<Guid> subjects, FilterType filterType, string search, OrderBy orderBy)
+    {
         var folderDao = _daoFactory.GetFolderDao<T>();
         var folderIds = new Dictionary<T, FileShare>();
-
-        var recordGroup = records.GroupBy(r => new { r.EntryId, r.EntryType }, (key, group) => new
-        {
-            firstRecord = group.OrderBy(r => r, new SubjectComparer(subjects))
-                .ThenByDescending(r => r.Share, new FileShareRecord.ShareComparer())
-                .First()
-        });
-
-        foreach (var record in recordGroup.Where(r => r.firstRecord.Share == FileShare.RoomManager))
-        {
-            if (!folderIds.ContainsKey((T)record.firstRecord.EntryId))
-            {
-                folderIds.Add((T)record.firstRecord.EntryId, record.firstRecord.Share);
-            }
-        }
-
         var entries = new List<FileEntry>();
 
-        entries.AddRange(await folderDao.GetFoldersAsync(folderIds.Keys).Where(f => f.RootFolderType == FolderType.Archive).ToListAsync());
+        if (_fileSecurityCommon.IsAdministrator(_authContext.CurrentAccount.ID))
+        {
+            var folders = await folderDao.GetFoldersAsync(folderId, orderBy, filterType, false, Guid.Empty, search).ToListAsync();
+            entries.AddRange(folders);
+        }
+        else
+        {
+            var recordGroup = records.GroupBy(r => new { r.EntryId, r.EntryType }, (key, group) => new
+            {
+                firstRecord = group.OrderBy(r => r, new SubjectComparer(subjects))
+                .ThenByDescending(r => r.Share, new FileShareRecord.ShareComparer())
+                .First()
+            });
+
+            foreach (var record in recordGroup.Where(r => r.firstRecord.Share == FileShare.RoomManager))
+            {
+                if (!folderIds.ContainsKey((T)record.firstRecord.EntryId))
+                {
+                    folderIds.Add((T)record.firstRecord.EntryId, record.firstRecord.Share);
+                }
+            }
+
+            entries.AddRange(await folderDao.GetFoldersAsync(folderIds.Keys, filterType, searchText: search)
+                .Where(f => f.RootFolderType == FolderType.Archive).ToListAsync());
+        }
 
         return entries;
     }

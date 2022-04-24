@@ -515,24 +515,12 @@ public class EntryManager
         }
         else if (parent.FolderType == FolderType.VirtualRooms)
         {
-            if (_global.IsAdministrator)
-            {
-                var folderDao = _daoFactory.GetFolderDao<T>();
-                var folders = await folderDao.GetFoldersAsync(parent.Id, orderBy, filter, subjectGroup, subjectId, searchText, withSubfolders).ToListAsync();
-
-                entries = entries.Concat(folders);
-            }
-            else
-            {
-                entries = await fileSecurity.GetVirtualRoomsForMeAsync();
-            }
+            entries = await fileSecurity.GetVirtualRoomsAsync(parent.Id, filter, searchText, searchInContent, orderBy);
 
             CalculateTotal();
         }
         else if (parent.FolderType != FolderType.Archive)
         {
-            withSubfolders = false;
-
             if (_global.IsAdministrator)
             {
                 var folderDao = _daoFactory.GetFolderDao<T>();
@@ -544,7 +532,7 @@ public class EntryManager
             }
             else
             {
-                entries = await fileSecurity.GetArchiveForMeAsync();
+                entries = await fileSecurity.GetArchiveAsync(parent.Id, filter, searchText, orderBy);
             }
         }
         else
