@@ -32,13 +32,18 @@ const notSelectedViewIcon = css`
 `;
 
 const mobileView = css`
-  position: fixed;
-  top: auto;
-  left: 0;
-  bottom: 0;
-  width: 100vw;
+  ${(props) =>
+    !props.isRecentFolder &&
+    !props.isFavoritesFolder &&
+    css`
+      position: fixed;
+      top: auto;
+      left: 0;
+      bottom: 0;
+      width: 100vw;
 
-  z-index: 999;
+      z-index: 999;
+    `}
 `;
 
 const StyledSortButton = styled.div`
@@ -63,11 +68,9 @@ const StyledSortButton = styled.div`
       min-width: 200px;
       margin-top: 3px;
 
-      @media ${mobile} {
+      @media (max-width: 428px) {
         ${mobileView}
       }
-
-      ${isMobileOnly && mobileView}
 
       .view-selector-item {
         display: flex;
@@ -298,6 +301,8 @@ const SortButton = ({
         viewAs={viewAs}
         isDesc={currentSelectedFilterData.sortDirection === "desc"}
         onClick={toggleCombobox}
+        isRecentFolder={isRecentFolder}
+        isFavoritesFolder={isFavoritesFolder}
       >
         <ComboBox
           opened={isOpen}
