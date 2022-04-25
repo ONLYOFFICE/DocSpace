@@ -44,6 +44,10 @@ const StyledFilterBlock = styled.div`
       width: 100%;
     }
   }
+
+  .filter-body {
+    height: calc(100% - 125px);
+  }
 `;
 
 StyledFilterBlock.defaultProps = { theme: Base };
@@ -210,7 +214,9 @@ const StyledFilterBlockItemToggleButton = styled(ToggleButton)`
 
 const StyledFilterBlockItemSeparator = styled.div`
   height: 1px;
-  width: 100%;
+  width: calc(100% + 16px);
+
+  margin-right: 16px;
 
   background: ${(props) => props.theme.filterInput.filter.separatorColor};
 
