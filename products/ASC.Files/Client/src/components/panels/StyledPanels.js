@@ -101,12 +101,12 @@ const StyledAsidePanel = styled.div`
 
     @media (max-width: 500px) {
       position: fixed;
-      top: 64px;
+      top: unset;
       bottom: 0;
       left: 0;
 
-      width: 100vw;
-      height: calc(100vh - 64px);
+      width: 100%;
+      height: calc(100% - 64px);
     }
 
     ${isMobileOnly &&
@@ -116,8 +116,8 @@ const StyledAsidePanel = styled.div`
       bottom: 0;
       left: 0;
 
-      width: 100vw;
-      height: calc(100vh - 64px);
+      width: 100%;
+      height: calc(100% - 64px);
     `}
   }
   ${PanelStyles}
@@ -178,8 +178,8 @@ const StyledAddUsersPanelPanel = styled.div`
       bottom: 0;
       left: 0;
 
-      width: 100vw;
-      height: calc(100vh - 64px);
+      width: 100%;
+      height: calc(100% - 64px);
     }
 
     ${isMobileOnly &&
@@ -189,8 +189,8 @@ const StyledAddUsersPanelPanel = styled.div`
       bottom: 0;
       left: 0;
 
-      width: 100vw;
-      height: calc(100vh - 64px);
+      width: 100%;
+      height: calc(100% - 64px);
     `}
   }
   ${PanelStyles}
@@ -213,8 +213,8 @@ const StyledAddGroupsPanel = styled.div`
       bottom: 0;
       left: 0;
 
-      width: 100vw;
-      height: calc(100vh - 64px);
+      width: 100%;
+      height: calc(100% - 64px);
     }
 
     ${isMobileOnly &&
@@ -224,8 +224,8 @@ const StyledAddGroupsPanel = styled.div`
       bottom: 0;
       left: 0;
 
-      width: 100vw;
-      height: calc(100vh - 64px);
+      width: 100%;
+      height: calc(100% - 64px);
     `}
   }
   ${PanelStyles}
@@ -248,8 +248,8 @@ const StyledEmbeddingPanel = styled.div`
       bottom: 0;
       left: 0;
 
-      width: 100vw;
-      height: calc(100vh - 64px);
+      width: 100%;
+      height: calc(100% - 64px);
     }
 
     ${isMobileOnly &&
@@ -259,8 +259,8 @@ const StyledEmbeddingPanel = styled.div`
       bottom: 0;
       left: 0;
 
-      width: 100vw;
-      height: calc(100vh - 64px);
+      width: 100%;
+      height: calc(100% - 64px);
     `}
   }
   ${PanelStyles}
