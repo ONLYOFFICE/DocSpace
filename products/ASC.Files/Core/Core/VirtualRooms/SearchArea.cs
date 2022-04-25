@@ -29,5 +29,6 @@ namespace ASC.Files.Core.VirtualRooms;
 public enum SearchArea
 {
     Active,
-    Archive
+    Archive,
+    Any
 }
