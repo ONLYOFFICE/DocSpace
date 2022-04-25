@@ -141,6 +141,7 @@ class AddGroupsPanelComponent extends React.Component {
                     t={t}
                     access={accessRight}
                     directionX="right"
+                    directionY="top"
                     onAccessChange={this.onAccessChange}
                     accessOptions={accessOptions}
                     arrowIconColor={theme.filesPanels.addGroups.arrowColor}
