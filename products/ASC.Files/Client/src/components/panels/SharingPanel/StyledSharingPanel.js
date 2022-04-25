@@ -46,8 +46,8 @@ const StyledContent = styled.div`
   grid-template-columns: 1fr;
   grid-template-rows: ${(props) =>
     props.isNotifyUsers
-      ? "53px calc(100% - 253px) 200px"
-      : "53px calc(100% - 161px) 108px"};
+      ? "53px calc(100% - 254px) 201px"
+      : "53px calc(100% - 162px) 109px"};
 `;
 
 const StyledHeaderContent = styled.div`
