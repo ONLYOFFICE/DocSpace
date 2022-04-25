@@ -382,7 +382,7 @@ const FilesTableRow = (props) => {
 };
 
 export default withTranslation(["Home", "Common", "VersionBadge", "InfoPanel"])(
-  withFileActions(
-    withRouter(withContent(withQuickButtons(withBadges(FilesTableRow))))
+  withRouter(
+    withFileActions(withContent(withQuickButtons(withBadges(FilesTableRow))))
   )
 );

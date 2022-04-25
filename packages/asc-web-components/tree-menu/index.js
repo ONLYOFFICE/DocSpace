@@ -104,7 +104,7 @@ const StyledTreeMenu = styled(Tree)`
       width: 100%;
       width: ${(props) => props.widthAdditional};
       height: 36px;
-      background-color: #f3f4f4;
+      background-color: ${(props) => props.theme.treeNode.background};
       content: "";
       z-index: 1;
       right: -${(props) => props.multiplicationFactor - 4}px;
