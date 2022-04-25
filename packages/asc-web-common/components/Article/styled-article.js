@@ -36,11 +36,11 @@ const StyledArticle = styled.article`
 
   @media ${mobile} {
     display: ${(props) => (props.articleOpen ? "flex" : "none")};
-    min-width: 100vw;
-    width: 100vw;
+    min-width: 100%;
+    width: 100%;
     position: fixed;
 
-    height: calc(100vh - 64px) !important;
+    height: calc(100% - 64px) !important;
     margin: 0;
     margin-top: 16px;
     padding: 0;
@@ -49,12 +49,12 @@ const StyledArticle = styled.article`
   ${isMobileOnly &&
   css`
     display: ${(props) => (props.articleOpen ? "flex" : "none")} !important;
-    min-width: 100vw !important;
-    width: 100vw;
+    min-width: 100% !important;
+    width: 100%;
     position: fixed;
 
     margin-top: 64px !important;
-    height: calc(100vh - 64px) !important;
+    height: calc(100% - 64px) !important;
     margin: 0;
     padding: 0;
   `}
@@ -92,9 +92,9 @@ const StyledArticle = styled.article`
 
     @media ${mobile} {
       display: ${(props) => (props.articleOpen ? "flex" : "none")};
-      min-width: 100vw;
-      width: 100vw;
-      height: calc(100vh - 64px) !important;
+      min-width: 100%;
+      width: 100%;
+
       margin: 0;
       padding: 0;
     }
@@ -111,8 +111,8 @@ const StyledArticle = styled.article`
     ${isMobileOnly &&
     css`
       display: ${(props) => (props.articleOpen ? "flex" : "none")};
-      min-width: 100vw !important;
-      width: 100vw;
+      min-width: 100% !important;
+      width: 100%;
       margin: 0;
       padding: 0;
     `}
