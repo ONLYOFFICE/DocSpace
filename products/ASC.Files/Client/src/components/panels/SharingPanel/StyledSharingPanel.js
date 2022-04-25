@@ -29,6 +29,12 @@ const StyledContainer = styled.div`
     width: 100%;
     height: calc(100% - 64px);
   }
+
+  .panel_combo-box {
+    .optionalBlock {
+      margin-right: -3px;
+    }
+  }
 `;
 
 const StyledContent = styled.div`
