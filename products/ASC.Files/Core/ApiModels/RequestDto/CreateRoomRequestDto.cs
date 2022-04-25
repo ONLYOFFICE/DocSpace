@@ -28,11 +28,11 @@ namespace ASC.Files.Core.ApiModels.RequestDto;
 
 public enum RoomType
 {
-    FillingFormsRoom = 0,
-    EditingRoom = 1,
-    ReviewRoom = 2,
-    ReadOnlyRoom = 3,
-    CustomRoom = 4
+    FillingFormsRoom = 1,
+    EditingRoom = 2,
+    ReviewRoom = 3,
+    ReadOnlyRoom = 4,
+    CustomRoom = 5
 }
 
 public class CreateRoomRequestDto
