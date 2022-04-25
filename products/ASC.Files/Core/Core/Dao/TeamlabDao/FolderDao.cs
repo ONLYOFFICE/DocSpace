@@ -176,6 +176,16 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
         var q = GetFolderQuery(r => r.ParentId == parentId).AsNoTracking();
 
+        q = filterType switch
+        {
+            FilterType.FillingFormsRoomsOnly => q.Where(f => f.FolderType == FolderType.FillingFormsRoom),
+            FilterType.EditingRoomsOnly => q.Where(f => f.FolderType == FolderType.EditingRoom),
+            FilterType.ReviewRoomsOnly => q.Where(f => f.FolderType == FolderType.ReviewRoom),
+            FilterType.ReadOnlyRoomsOnly => q.Where(f => f.FolderType == FolderType.ReadOnlyRoom),
+            FilterType.CustomRoomsOnly => q.Where(f => f.FolderType == FolderType.CustomRoom),
+            _ => q
+        };
+
         if (withSubfolders)
         {
             q = GetFolderQuery().AsNoTracking()
@@ -217,16 +227,6 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             }
         }
 
-        q = filterType switch
-        {
-            FilterType.FillingFormsRoomsOnly => q.Where(f => f.FolderType == FolderType.FillingFormsRoom),
-            FilterType.EditingRoomsOnly => q.Where(f => f.FolderType == FolderType.EditingRoom),
-            FilterType.ReviewRoomsOnly => q.Where(f => f.FolderType == FolderType.ReviewRoom),
-            FilterType.ReadOnlyRoomsOnly => q.Where(f => f.FolderType == FolderType.ReadOnlyRoom),
-            FilterType.CustomRoomsOnly => q.Where(f => f.FolderType == FolderType.CustomRoom),
-            _ => q
-        };
-
         var dbFolders = FromQueryWithShared(q).AsAsyncEnumerable();
 
         return dbFolders.Select(_mapper.Map<DbFolderQuery, Folder<int>>);
@@ -243,6 +243,16 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         }
 
         var q = GetFolderQuery(r => folderIds.Contains(r.Id)).AsNoTracking();
+
+        q = filterType switch
+        {
+            FilterType.FillingFormsRoomsOnly => q.Where(f => f.FolderType == FolderType.FillingFormsRoom),
+            FilterType.EditingRoomsOnly => q.Where(f => f.FolderType == FolderType.EditingRoom),
+            FilterType.ReviewRoomsOnly => q.Where(f => f.FolderType == FolderType.ReviewRoom),
+            FilterType.ReadOnlyRoomsOnly => q.Where(f => f.FolderType == FolderType.ReadOnlyRoom),
+            FilterType.CustomRoomsOnly => q.Where(f => f.FolderType == FolderType.CustomRoom),
+            _ => q
+        };
 
         if (searchSubfolders)
         {
@@ -282,16 +292,6 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                 q = q.Where(r => r.CreateBy == subjectID);
             }
         }
-
-        q = filterType switch
-        {
-            FilterType.FillingFormsRoomsOnly => q.Where(f => f.FolderType == FolderType.FillingFormsRoom),
-            FilterType.EditingRoomsOnly => q.Where(f => f.FolderType == FolderType.EditingRoom),
-            FilterType.ReviewRoomsOnly => q.Where(f => f.FolderType == FolderType.ReviewRoom),
-            FilterType.ReadOnlyRoomsOnly => q.Where(f => f.FolderType == FolderType.ReadOnlyRoom),
-            FilterType.CustomRoomsOnly => q.Where(f => f.FolderType == FolderType.CustomRoom),
-            _ => q
-        };
 
         var dbFolders = (checkShare ? FromQueryWithShared(q) : FromQuery(q)).AsAsyncEnumerable();
 
