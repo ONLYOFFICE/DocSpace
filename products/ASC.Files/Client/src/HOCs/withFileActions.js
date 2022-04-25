@@ -132,7 +132,10 @@ export default function withFileActions(WrappedFileItem) {
       openFileAction(item);
     };
 
-    getContextModel = () => this.props.getModel(this.props.item, this.props.t);
+    getContextModel = () => {
+      const { getModel, item, t, history } = this.props;
+      return getModel(item, t, history);
+    };
 
     render() {
       const {

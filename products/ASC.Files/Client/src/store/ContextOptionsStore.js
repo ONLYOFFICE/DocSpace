@@ -2,7 +2,6 @@ import { makeAutoObservable } from "mobx";
 import copy from "copy-to-clipboard";
 import saveAs from "file-saver";
 import { isMobile } from "react-device-detect";
-import history from "@appserver/common/history";
 import config from "../../package.json";
 import toastr from "studio/toastr";
 import { FileAction, AppServerConfig } from "@appserver/common/constants";
@@ -105,7 +104,7 @@ class ContextOptionsStore {
     this.dialogsStore.setCopyPanelVisible(true);
   };
 
-  showVersionHistory = (id) => {
+  showVersionHistory = (id, history) => {
     const {
       fetchFileVersions,
       setIsVerHistoryPanel,
@@ -343,7 +342,7 @@ class ContextOptionsStore {
     setIsVisible(true);
   };
 
-  getFilesContextOptions = (item, t) => {
+  getFilesContextOptions = (item, t, history) => {
     const { contextOptions } = item;
     const isRootThirdPartyFolder =
       item.providerKey && item.id === item.rootFolderId;
@@ -367,7 +366,7 @@ class ContextOptionsStore {
                 {
                   key: "show-version-history",
                   label: t("ShowVersionHistory"),
-                  onClick: () => this.showVersionHistory(item.id),
+                  onClick: () => this.showVersionHistory(item.id, history),
                   disabled: false,
                 },
               ],
@@ -385,7 +384,7 @@ class ContextOptionsStore {
               key: "show-version-history",
               label: t("ShowVersionHistory"),
               icon: "images/history.react.svg",
-              onClick: () => this.showVersionHistory(item.id),
+              onClick: () => this.showVersionHistory(item.id, history),
               disabled: false,
             },
           ];
@@ -631,7 +630,7 @@ class ContextOptionsStore {
     return options;
   };
 
-  getModel = (item, t) => {
+  getModel = (item, t, history) => {
     const { type, id, extension } = this.filesStore.fileActionStore;
     const { fileExst, contextOptions } = item;
 
@@ -639,7 +638,7 @@ class ContextOptionsStore {
 
     const contextOptionsProps =
       !isEdit && contextOptions && contextOptions.length > 0
-        ? this.getFilesContextOptions(item, t)
+        ? this.getFilesContextOptions(item, t, history)
         : [];
 
     return contextOptionsProps;
