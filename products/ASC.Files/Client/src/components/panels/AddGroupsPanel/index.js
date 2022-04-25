@@ -145,6 +145,7 @@ class AddGroupsPanelComponent extends React.Component {
                     onAccessChange={this.onAccessChange}
                     accessOptions={accessOptions}
                     arrowIconColor={theme.filesPanels.addGroups.arrowColor}
+                    isEmbedded={true}
                   />
                 }
                 headerLabel={t("AddGroupsForSharingButton")}

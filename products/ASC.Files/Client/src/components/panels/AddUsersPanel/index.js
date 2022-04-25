@@ -143,6 +143,7 @@ class AddUsersPanelComponent extends React.Component {
               onAccessChange={this.onAccessChange}
               accessOptions={accessOptions}
               arrowIconColor={theme.filesPanels.addUsers.arrowColor}
+              isEmbedded={true}
             />
           ),
         }

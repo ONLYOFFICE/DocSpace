@@ -33,6 +33,7 @@ const AccessComboBox = (props) => {
     onRemoveUserClick,
     isExternalLink,
     isDefaultMode,
+    isEmbedded,
   } = props;
 
   const [isLoading, setIsLoading] = React.useState(true);
@@ -255,7 +256,7 @@ const AccessComboBox = (props) => {
       options={[]}
       selectedOption={{}}
       size="content"
-      className="panel_combo-box"
+      className={`panel_combo-box ${isEmbedded ? "embedded_combo-box" : ""}`}
       scaled={false}
       directionX={directionX}
       directionY={directionY}

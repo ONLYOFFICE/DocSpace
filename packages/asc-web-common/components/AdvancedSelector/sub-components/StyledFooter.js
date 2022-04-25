@@ -7,6 +7,9 @@ const StyledFooter = styled.div`
   padding: 16px;
   height: 69px;
 
+  display: flex;
+  align-items: center;
+
   ${(props) =>
     props.withEmbeddedComponent &&
     css`
@@ -21,6 +24,12 @@ const StyledFooter = styled.div`
 
   button {
     min-height: 40px;
+  }
+
+  .embedded_combo-box {
+    .combo-button {
+      min-height: 42px;
+    }
   }
 `;
 
