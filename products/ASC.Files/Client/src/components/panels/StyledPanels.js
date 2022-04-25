@@ -248,8 +248,8 @@ const StyledEmbeddingPanel = styled.div`
       bottom: 0;
       left: 0;
 
-      width: 100%;
-      height: calc(100% - 64px);
+      width: 100vw;
+      height: calc(100vh - 64px);
     }
 
     ${isMobileOnly &&
@@ -259,8 +259,8 @@ const StyledEmbeddingPanel = styled.div`
       bottom: 0;
       left: 0;
 
-      width: 100%;
-      height: calc(100% - 64px);
+      width: 100vw;
+      height: calc(100vh - 64px);
     `}
   }
   ${PanelStyles}

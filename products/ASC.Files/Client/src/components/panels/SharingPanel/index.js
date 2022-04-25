@@ -19,7 +19,11 @@ import withLoader from "../../../HOCs/withLoader";
 import ModalDialog from "@appserver/components/modal-dialog";
 import EmbeddingBody from "../EmbeddingPanel/EmbeddingBody";
 
-import { StyledContent, StyledModalFooter } from "./StyledSharingPanel";
+import {
+  StyledContainer,
+  StyledContent,
+  StyledModalFooter,
+} from "./StyledSharingPanel";
 
 import Header from "./Header";
 import Body from "./Body";
@@ -712,18 +716,14 @@ class SharingPanelComponent extends React.Component {
             )}
           </>
         ) : (
-          <StyledAsidePanel visible={visible}>
+          <>
             <Backdrop
               onClick={this.onClose}
               visible={visible}
               zIndex={zIndex}
               isAside={true}
             />
-            <Aside
-              className="header_aside-panel"
-              visible={visible}
-              withoutBodyScroll={true}
-            >
+            <StyledContainer className="header_aside-panel" visible={visible}>
               {!isLoading ? (
                 <StyledContent isNotifyUsers={isNotifyUsers}>
                   <Header
@@ -770,7 +770,7 @@ class SharingPanelComponent extends React.Component {
               ) : (
                 <SharingPanelLoader />
               )}
-            </Aside>
+            </StyledContainer>
 
             {showAddUsersPanel && (
               <AddUsersPanel
@@ -816,7 +816,7 @@ class SharingPanelComponent extends React.Component {
                 embeddingLink={externalItem[0].sharedTo.shareLink}
               />
             )}
-          </StyledAsidePanel>
+          </>
         )}
       </>
     );
