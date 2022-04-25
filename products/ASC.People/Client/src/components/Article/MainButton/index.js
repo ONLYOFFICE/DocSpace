@@ -153,7 +153,7 @@ class ArticleMainButtonContent extends React.Component {
       <>
         {isMobileArticle ? (
           <MobileView
-            labelProps={t("OtherOperations")}
+            labelProps={t("Common:OtherOperations")}
             actionOptions={menuModel}
             buttonOptions={links}
             sectionWidth={sectionWidth}
