@@ -2411,6 +2411,7 @@ const Base = {
   newContextMenu: {
     background: white,
     borderRadius: "6px",
+    mobileBorderRadius: "6px 6px 0 0",
     boxShadow: "0px 12px 40px rgba(4, 15, 27, 0.12)",
     padding: "6px 0px",
     border: "none",

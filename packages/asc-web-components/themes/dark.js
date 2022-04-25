@@ -2421,6 +2421,7 @@ const Dark = {
   newContextMenu: {
     background: "#3D3D3D",
     borderRadius: "6px",
+    mobileBorderRadius: "6px 6px 0 0",
     boxShadow:
       "0px 12px 24px rgba(0, 0, 0, 0.12), 0px 8px 16px rgba(0, 0, 0, 0.08), 0px 3.2px 2.6px rgba(0, 0, 0, 0.08)",
     padding: "6px 0px",
