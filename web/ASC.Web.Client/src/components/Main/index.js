@@ -21,15 +21,6 @@ const StyledMain = styled.main`
   flex-direction: row;
   box-sizing: border-box;
 
-  #article-container {
-    ${isMobileOnly &&
-    css`
-      height: ${isIOS && !isFirefox
-        ? "calc(var(--vh, 1vh) * 100 - 16px)"
-        : "100vh - 64px"} !important;
-    `}
-  }
-
   ${isMobileOnly &&
   css`
     height: auto;
