@@ -18,6 +18,10 @@ const StyledFooter = styled.div`
     css`
       display: none;
     `}
+
+  button {
+    min-height: 40px;
+  }
 `;
 
 StyledFooter.defaultProps = { theme: Base };
