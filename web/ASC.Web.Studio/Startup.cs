@@ -4,6 +4,7 @@ using ASC.Data.Storage;
 using ASC.Data.Storage.DiscStorage;
 using ASC.FederatedLogin;
 using ASC.FederatedLogin.LoginProviders;
+using ASC.Web.Core.HttpHandlers;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -33,6 +34,7 @@ namespace ASC.Web.Studio
             DIHelper.TryAdd<GoogleLoginProvider>();
             DIHelper.TryAdd<FacebookLoginProvider>();
             DIHelper.TryAdd<LinkedInLoginProvider>();
+            DIHelper.TryAdd<SsoHandlerService>();
         }
 
         public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -58,6 +60,13 @@ namespace ASC.Web.Studio
             {
                 endpoints.InitializeHttpHandlers();
             });
+
+            app.MapWhen(
+               context => context.Request.Path.ToString().EndsWith("ssologin.ashx"),
+               appBranch =>
+               {
+                   appBranch.UseSsoHandler();
+               });
 
             app.MapWhen(
                context => context.Request.Path.ToString().EndsWith("login.ashx"),
