@@ -26,6 +26,7 @@ const StyledMainButtonMobile = styled(MainButtonMobile)`
 `;
 
 const MobileView = ({
+  t,
   titleProp,
   actionOptions,
   buttonOptions,
@@ -88,7 +89,7 @@ const MobileView = ({
       {
         key: "primary-progress",
         open: primaryProgressDataVisible,
-        label: "Upload",
+        label: t("UploadPanel:Uploads"),
         icon: "/static/images/mobile.actions.remove.react.svg",
         percent: primaryProgressDataPercent,
         status: `${
@@ -102,7 +103,7 @@ const MobileView = ({
       {
         key: "secondary-progress",
         open: secondaryProgressDataStoreVisible,
-        label: "Other operations",
+        label: t("Article:OtherOperations"),
         icon: "/static/images/mobile.actions.remove.react.svg",
         percent: secondaryProgressDataStorePercent,
         status: `${Math.round(
