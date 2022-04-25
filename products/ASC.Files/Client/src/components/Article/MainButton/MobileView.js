@@ -103,7 +103,7 @@ const MobileView = ({
       {
         key: "secondary-progress",
         open: secondaryProgressDataStoreVisible,
-        label: t("Article:OtherOperations"),
+        label: t("Common:OtherOperations"),
         icon: "/static/images/mobile.actions.remove.react.svg",
         percent: secondaryProgressDataStorePercent,
         status: `${Math.round(
