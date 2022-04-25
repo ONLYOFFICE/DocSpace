@@ -63,16 +63,11 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     }
 
     [Read("rooms")]
-    public async Task<FolderContentDto<T>> GetRoomsFolderAsync(RoomType type, int from, int count, string search, bool searchInContent, SearchArea searchArea, SortedByType orderBy)
+    public async Task<FolderContentDto<T>> GetRoomsFolderAsync(RoomType type, string subjectId, bool searchInContent, bool withSubfolders, SearchArea searchArea)
     {
         ErrorIfNotDocSpace();
 
-        var parentId = searchArea switch
-        {
-            SearchArea.Active => await _globalFolderHelper.GetFolderVirtualRooms<T>(),
-            SearchArea.Archive => await _globalFolderHelper.GetFolderArchive<T>(),
-            _ => await _globalFolderHelper.GetFolderVirtualRooms<T>()
-        };
+        var parentId = await _globalFolderHelper.GetFolderVirtualRooms<T>();
 
         var filter = type switch
         {
@@ -84,11 +79,19 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
             _ => FilterType.None
         };
 
-        var sortedBy = new OrderBy(orderBy, !_apiContext.SortDescending);
+        OrderBy orderBy = null;
+        if (Enum.TryParse(_apiContext.SortBy, true, out SortedByType sortBy))
+        {
+            orderBy = new OrderBy(sortBy, !_apiContext.SortDescending);
+        }
 
-        var content = await _fileStorageService.GetFolderItemsAsync(parentId, from, count, filter, false, string.Empty, search, true, false, sortedBy);
+        var startIndex = Convert.ToInt32(_apiContext.StartIndex);
+        var count = Convert.ToInt32(_apiContext.Count);
+        var filterValue = _apiContext.FilterValue;
 
-        var dto = await _folderContentDtoHelper.GetAsync(content, 0);
+        var content = await _fileStorageService.GetFolderItemsAsync(parentId, startIndex, count, filter, false, subjectId, filterValue, searchInContent, withSubfolders, orderBy, searchArea);
+
+        var dto = await _folderContentDtoHelper.GetAsync(content, startIndex);
 
         return dto.NotFoundIfNull();
     }
