@@ -140,7 +140,7 @@ public class MigrateOperation : DistributedTaskProgress
     {
         try
         {
-            _logger.DebugFormat("Tenant: {0}", _tenantId);
+            _logger.LogDebug("Tenant: {0}", _tenantId);
             Status = DistributedTaskStatus.Running;
 
             using var scope = _serviceProvider.CreateScope();
@@ -164,17 +164,17 @@ public class MigrateOperation : DistributedTaskProgress
                 foreach (var domain in domains)
                 {
                     //Status = module + domain;
-                    _logger.DebugFormat("Domain: {0}", domain);
+                    _logger.LogDebug("Domain: {0}", domain);
                     files = oldStore.ListFilesRelativeAsync(domain, "\\", "*.*", true).ToArrayAsync().Result;
 
                     foreach (var file in files)
                     {
-                        _logger.DebugFormat("File: {0}", file);
+                        _logger.LogDebug("File: {0}", file);
                         crossModuleTransferUtility.CopyFileAsync(domain, file, domain, file).Wait();
                     }
                 }
 
-                _logger.Debug("Domain:");
+                _logger.LogDebug("Domain:");
 
                 files = oldStore.ListFilesRelativeAsync(string.Empty, "\\", "*.*", true).ToArrayAsync().Result
                 .Where(path => domains.All(domain => !path.Contains(domain + "/")))
@@ -182,7 +182,7 @@ public class MigrateOperation : DistributedTaskProgress
 
                 foreach (var file in files)
                 {
-                    _logger.DebugFormat("File: {0}", file);
+                    _logger.LogDebug("File: {0}", file);
                     crossModuleTransferUtility.CopyFileAsync("", file, "", file).Wait();
                 }
 
@@ -201,7 +201,7 @@ public class MigrateOperation : DistributedTaskProgress
         {
             Status = DistributedTaskStatus.Failted;
             Exception = e;
-            _logger.Error(e);
+            _logger.LogError(e, "MigrateOperation");
         }
 
         MigrationPublish();

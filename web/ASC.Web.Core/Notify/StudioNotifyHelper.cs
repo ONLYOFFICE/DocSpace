@@ -165,7 +165,7 @@ public class StudioNotifyHelper
                 {
                     res = res.Take(mayTake).ToList();
 
-                    _logger.Warn(string.Format("Free tenant {0} for today is trying to send {1} more letters without checking activation. Sent {2}", tenant.Id, tryCount, mayTake));
+                    _logger.LogWarning(string.Format("Free tenant {0} for today is trying to send {1} more letters without checking activation. Sent {2}", tenant.Id, tryCount, mayTake));
                 }
                 spamEmailSettings.MailsSended = sended + tryCount;
                 _settingsManager.Save(spamEmailSettings);

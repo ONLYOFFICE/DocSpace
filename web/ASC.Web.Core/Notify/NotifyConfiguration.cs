@@ -138,7 +138,7 @@ public class NotifyConfiguration
                  }
                  catch (Exception error)
                  {
-                     scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue.Error(error);
+                     scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue.LogError(error, "NotifyClientRegisterCallback");
                  }
                  return false;
              });
@@ -243,7 +243,7 @@ public class ProductSecurityInterceptor
         }
         catch (Exception error)
         {
-            _log.Error(error);
+            _log.LogError(error, "ProductSecurityInterceptor");
         }
 
         return false;
@@ -400,7 +400,7 @@ public class NotifyTransferRequest : INotifyEngineAction
             }
             catch (Exception error)
             {
-                _log.Error(error);
+                _log.LogError(error, "AddLetterLogo");
             }
         }
 

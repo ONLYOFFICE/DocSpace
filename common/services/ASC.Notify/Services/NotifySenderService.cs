@@ -45,14 +45,14 @@ public class NotifySenderService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.Info("Notify Sender Service running.");
+        _logger.LogInformation("Notify Sender Service running.");
 
         while (!stoppingToken.IsCancellationRequested)
         {
             await ThreadManagerWork(stoppingToken);
         }
 
-        _logger.Info("Notify Sender Service is stopping.");
+        _logger.LogInformation("Notify Sender Service is stopping.");
     }
 
     private async Task ThreadManagerWork(CancellationToken stoppingToken)
@@ -86,7 +86,7 @@ public class NotifySenderService : BackgroundService
         }
         catch (Exception e)
         {
-            _logger.Error(e);
+            _logger.LogError(e, "ThreadManagerWork");
         }
     }
 
@@ -114,12 +114,12 @@ public class NotifySenderService : BackgroundService
                         result = MailSendingState.FatalError;
                     }
 
-                    _logger.DebugFormat("Notify #{0} has been sent.", m.Key);
+                    _logger.LogDebug("Notify #{0} has been sent.", m.Key);
                 }
                 catch (Exception e)
                 {
                     result = MailSendingState.FatalError;
-                    _logger.Error(e);
+                    _logger.LogError(e, result.ToString());
                 }
 
                 _db.SetState(m.Key, result);
@@ -131,7 +131,7 @@ public class NotifySenderService : BackgroundService
         }
         catch (Exception e)
         {
-            _logger.Error(e);
+            _logger.LogError(e, "SendMessages");
         }
     }
 }

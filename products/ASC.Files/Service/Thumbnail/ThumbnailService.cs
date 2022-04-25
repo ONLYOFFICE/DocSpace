@@ -40,7 +40,7 @@ public class ThumbnailService : IHostedService
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        _logger.Info("Thumbnail Service running.");
+        _logger.LogInformation("Thumbnail Service running.");
 
         _cacheNotify.Subscribe(BuildThumbnails, CacheNotifyAction.Insert);
 
@@ -49,7 +49,7 @@ public class ThumbnailService : IHostedService
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
-        _logger.Info("Thumbnail Service is stopping.");
+        _logger.LogInformation("Thumbnail Service is stopping.");
 
         _cacheNotify.Unsubscribe(CacheNotifyAction.Insert);
 

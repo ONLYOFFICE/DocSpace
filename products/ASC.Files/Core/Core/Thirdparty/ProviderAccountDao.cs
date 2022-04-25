@@ -124,7 +124,7 @@ internal class ProviderAccountDao : IProviderDao
         }
         catch (Exception e)
         {
-            _logger.Error(string.Format("GetProvidersInfoInternal: user = {0}", userId), e);
+            _logger.LogError(e, string.Format("GetProvidersInfoInternal: user = {0}", userId));
 
             return new List<IProviderInfo>().ToAsyncEnumerable();
         }
@@ -149,8 +149,8 @@ internal class ProviderAccountDao : IProviderDao
         }
         catch (Exception e)
         {
-            _logger.Error(string.Format("GetProvidersInfoInternal: linkId = {0} , folderType = {1} , user = {2}",
-                                              linkId, folderType, _securityContext.CurrentAccount.ID), e);
+            _logger.LogError(e, string.Format("GetProvidersInfoInternal: linkId = {0} , folderType = {1} , user = {2}",
+                                              linkId, folderType, _securityContext.CurrentAccount.ID));
             return new List<IProviderInfo>().ToAsyncEnumerable();
         }
     }
@@ -245,7 +245,7 @@ internal class ProviderAccountDao : IProviderDao
             }
             catch (Exception e)
             {
-                _logger.Error(string.Format("UpdateProviderInfo: linkId = {0} , user = {1}", linkId, _securityContext.CurrentAccount.ID), e);
+                _logger.LogError(e, string.Format("UpdateProviderInfo: linkId = {0} , user = {1}", linkId, _securityContext.CurrentAccount.ID));
                 throw;
             }
 

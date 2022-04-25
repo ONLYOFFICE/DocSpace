@@ -70,7 +70,7 @@ public class RabbitMQCache<T> : IDisposable, ICacheNotify<T> where T : IMessage<
     {
         TryConnect();
 
-        _logger.Trace("Creating RabbitMQ consumer channel");
+        _logger.LogTrace("Creating RabbitMQ consumer channel");
 
         var channel = _connection.CreateModel();
 
@@ -85,7 +85,7 @@ public class RabbitMQCache<T> : IDisposable, ICacheNotify<T> where T : IMessage<
 
         channel.CallbackException += (sender, ea) =>
         {
-            _logger.Warn("Recreating RabbitMQ consumer channel", ea.Exception);
+            _logger.LogWarning(ea.Exception, "Recreating RabbitMQ consumer channel");
 
             _consumerChannel.Dispose();
             _consumerChannel = CreateConsumerChannel();
@@ -99,7 +99,7 @@ public class RabbitMQCache<T> : IDisposable, ICacheNotify<T> where T : IMessage<
 
     private void StartBasicConsume()
     {
-        _logger.Trace("Starting RabbitMQ basic consume");
+        _logger.LogTrace("Starting RabbitMQ basic consume");
 
         if (_consumerChannel != null)
         {
@@ -111,7 +111,7 @@ public class RabbitMQCache<T> : IDisposable, ICacheNotify<T> where T : IMessage<
         }
         else
         {
-            _logger.Error("StartBasicConsume can't call on _consumerChannel == null");
+            _logger.LogError("StartBasicConsume can't call on _consumerChannel == null");
         }
     }
 

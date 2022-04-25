@@ -48,7 +48,7 @@ public class TenantStatusFilter : IResourceFilter
         if (tenant == null)
         {
             context.Result = new StatusCodeResult((int)HttpStatusCode.NotFound);
-            _logger.Warn("Current tenant not found");
+            _logger.LogWarning("Current tenant not found");
 
             return;
         }
@@ -56,7 +56,7 @@ public class TenantStatusFilter : IResourceFilter
         if (tenant.Status == TenantStatus.RemovePending || tenant.Status == TenantStatus.Suspended)
         {
             context.Result = new StatusCodeResult((int)HttpStatusCode.NotFound);
-            _logger.WarnFormat("Tenant {0} is not removed or suspended", tenant.Id);
+            _logger.LogWarning("Tenant {0} is not removed or suspended", tenant.Id);
 
             return;
         }
@@ -68,7 +68,7 @@ public class TenantStatusFilter : IResourceFilter
                 return;
             }
             context.Result = new StatusCodeResult((int)HttpStatusCode.Forbidden);
-            _logger.WarnFormat("Tenant {0} is {1}", tenant.Id, tenant.Status);
+            _logger.LogWarning("Tenant {0} is {1}", tenant.Id, tenant.Status);
             return;
         }
     }

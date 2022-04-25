@@ -381,7 +381,7 @@ public class TariffService : ITariffService
                 }
                 catch (Exception error)
                 {
-                    Logger.Error(error);
+                    Logger.LogError(error, "GetShoppingUri");
                 }
             }
             Cache.Insert(key, urls, DateTime.UtcNow.Add(TimeSpan.FromMinutes(10)));
@@ -653,7 +653,7 @@ public class TariffService : ITariffService
         }
         catch (ReflectionTypeLoadException rtle)
         {
-            Logger.ErrorFormat("{0}{1}LoaderExceptions: {2}",
+            Logger.LogError("{0}{1}LoaderExceptions: {2}",
                 rtle,
                 Environment.NewLine,
                 string.Join(Environment.NewLine, rtle.LoaderExceptions.Select(e => e.ToString())));
@@ -697,22 +697,21 @@ public class TariffService : ITariffService
     {
         if (error is BillingNotFoundException)
         {
-            Logger.DebugFormat("Payment tenant {0} not found: {1}", tenantId, error.Message);
+            Logger.LogDebug("Payment tenant {0} not found: {1}", tenantId, error.Message);
         }
         else if (error is BillingNotConfiguredException)
         {
-            Logger.DebugFormat("Billing tenant {0} not configured: {1}", tenantId, error.Message);
+            Logger.LogDebug("Billing tenant {0} not configured: {1}", tenantId, error.Message);
         }
         else
         {
             if (Logger.IsDebugEnabled)
             {
-                Logger.Error("Billing tenant " + tenantId);
-                Logger.Error(error);
+                Logger.LogError(error, "Billing tenant " + tenantId);
             }
             else
             {
-                Logger.ErrorFormat("Billing tenant {0}: {1}", tenantId, error.Message);
+                Logger.LogError("Billing tenant {0}: {1}", tenantId, error.Message);
             }
         }
     }

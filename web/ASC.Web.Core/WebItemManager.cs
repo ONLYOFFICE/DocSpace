@@ -145,7 +145,7 @@ public class WebItemManager
             }
             catch (Exception exc)
             {
-                _log.Error($"Couldn't load web item {file}", exc);
+                _log.LogError(exc, $"Couldn't load web item {file}");
             }
         }
 
@@ -175,7 +175,7 @@ public class WebItemManager
             }
 
             result.TryAdd(webitem.ID, webitem);
-            _log.DebugFormat("Web item {0} loaded", webitem.Name);
+            _log.LogDebug("Web item {0} loaded", webitem.Name);
         }
     }
 

@@ -45,7 +45,7 @@ public class FeedAggregatorService : FeedBaseService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.Info("Feed Aggregator service running.");
+        _logger.LogInformation("Feed Aggregator service running.");
 
         var cfg = _feedSettings;
 
@@ -56,7 +56,7 @@ public class FeedAggregatorService : FeedBaseService
             await Task.Delay(cfg.AggregatePeriod, stoppingToken);
         }
 
-        _logger.Info("Feed Aggregator Service stopping.");
+        _logger.LogInformation("Feed Aggregator Service stopping.");
     }
 
     private static T Attempt<T>(int count, Func<T> action)
@@ -102,7 +102,7 @@ public class FeedAggregatorService : FeedBaseService
             baseCommonLinkUtility.Initialize(cfg.ServerRoot);
 
             var start = DateTime.UtcNow;
-            _logger.DebugFormat("Start of collecting feeds...");
+            _logger.LogDebug("Start of collecting feeds...");
 
             var unreadUsers = new Dictionary<int, Dictionary<Guid, int>>();
             var modules = scope.ServiceProvider.GetService<IEnumerable<IFeedModule>>();
@@ -125,7 +125,7 @@ public class FeedAggregatorService : FeedBaseService
                 var toTime = DateTime.UtcNow;
 
                 var tenants = Attempt(10, () => module.GetTenantsWithFeeds(fromTime)).ToList();
-                _logger.DebugFormat("Find {1} tenants for module {0}.", module.GetType().Name, tenants.Count);
+                _logger.LogDebug("Find {1} tenants for module {0}.", module.GetType().Name, tenants.Count);
 
                 foreach (var tenant in tenants)
                 {
@@ -146,7 +146,7 @@ public class FeedAggregatorService : FeedBaseService
                         var users = userManager.GetUsers();
 
                         var feeds = Attempt(10, () => module.GetFeeds(new FeedFilter(fromTime, toTime) { Tenant = tenant }).Where(r => r.Item1 != null).ToList());
-                        _logger.DebugFormat("{0} feeds in {1} tenant.", feeds.Count, tenant);
+                        _logger.LogDebug("{0} feeds in {1} tenant.", feeds.Count, tenant);
 
                         var tenant1 = tenant;
                         var module1 = module;
@@ -172,7 +172,7 @@ public class FeedAggregatorService : FeedBaseService
                     }
                     catch (Exception ex)
                     {
-                        _logger.ErrorFormat("Tenant: {0}, {1}", tenant, ex);
+                        _logger.LogError("Tenant: {0}, {1}", tenant, ex);
                     }
                 }
 
@@ -202,11 +202,11 @@ public class FeedAggregatorService : FeedBaseService
 
             _signalrServiceClient.SendUnreadUsers(unreadUsers);
 
-            _logger.DebugFormat("Time of collecting news: {0}", DateTime.UtcNow - start);
+            _logger.LogDebug("Time of collecting news: {0}", DateTime.UtcNow - start);
         }
         catch (Exception ex)
         {
-            _logger.Error(ex);
+            _logger.LogError(ex, "AggregateFeeds");
         }
     }
 }

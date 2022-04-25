@@ -68,7 +68,7 @@ public class SharePointProviderInfo : IProviderInfo
         }
         catch (Exception e)
         {
-            _logger.Warn("CheckAccess", e);
+            _logger.LogWarning(e, "CheckAccess");
 
             return Task.FromResult(false);
         }

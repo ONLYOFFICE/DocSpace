@@ -60,7 +60,7 @@ public class BuilderQueue<T>
         }
         catch (Exception exception)
         {
-            _logger.Error(string.Format("BuildThumbnails: filesWithoutThumbnails.Count: {0}.", filesWithoutThumbnails.Count()), exception);
+            _logger.LogError(exception, string.Format("BuildThumbnails: filesWithoutThumbnails.Count: {0}.", filesWithoutThumbnails.Count()));
         }
     }
 }
@@ -109,7 +109,7 @@ public class Builder<T>
             var fileDao = _daoFactory.GetFileDao<T>();
             if (fileDao == null)
             {
-                _logger.ErrorFormat("BuildThumbnail: TenantId: {0}. FileDao could not be null.", fileData.TenantId);
+                _logger.LogError("BuildThumbnail: TenantId: {0}. FileDao could not be null.", fileData.TenantId);
 
                 return;
             }
@@ -118,7 +118,7 @@ public class Builder<T>
         }
         catch (Exception exception)
         {
-            _logger.Error(string.Format("BuildThumbnail: TenantId: {0}.", fileData.TenantId), exception);
+            _logger.LogError(exception, string.Format("BuildThumbnail: TenantId: {0}.", fileData.TenantId));
         }
         finally
         {
@@ -136,14 +136,14 @@ public class Builder<T>
 
             if (file == null)
             {
-                _logger.ErrorFormat("GenerateThumbnail: FileId: {0}. File not found.", fileData.FileId);
+                _logger.LogError("GenerateThumbnail: FileId: {0}. File not found.", fileData.FileId);
 
                 return;
             }
 
             if (file.ThumbnailStatus != Thumbnail.Waiting)
             {
-                _logger.InfoFormat("GenerateThumbnail: FileId: {0}. Thumbnail already processed.", fileData.FileId);
+                _logger.LogInformation("GenerateThumbnail: FileId: {0}. Thumbnail already processed.", fileData.FileId);
 
                 return;
             }
@@ -169,7 +169,7 @@ public class Builder<T>
         }
         catch (Exception exception)
         {
-            _logger.Error(string.Format("GenerateThumbnail: FileId: {0}.", fileData.FileId), exception);
+            _logger.LogError(exception, string.Format("GenerateThumbnail: FileId: {0}.", fileData.FileId));
             if (file != null)
             {
                 file.ThumbnailStatus = Thumbnail.Error;
@@ -180,7 +180,7 @@ public class Builder<T>
 
     private async Task MakeThumbnail(IFileDao<T> fileDao, File<T> file)
     {
-        _logger.DebugFormat("MakeThumbnail: FileId: {0}.", file.Id);
+        _logger.LogDebug("MakeThumbnail: FileId: {0}.", file.Id);
 
         string thumbnailUrl = null;
         var attempt = 1;
@@ -222,7 +222,7 @@ public class Builder<T>
             }
             else
             {
-                _logger.DebugFormat("MakeThumbnail: FileId: {0}. Sleep {1} after attempt #{2}. ", file.Id, _config.AttemptWaitInterval, attempt);
+                _logger.LogDebug("MakeThumbnail: FileId: {0}. Sleep {1} after attempt #{2}. ", file.Id, _config.AttemptWaitInterval, attempt);
                 attempt++;
             }
 
@@ -277,7 +277,7 @@ public class Builder<T>
 
     private async Task SaveThumbnail(IFileDao<T> fileDao, File<T> file, string thumbnailUrl)
     {
-        _logger.DebugFormat("SaveThumbnail: FileId: {0}. ThumbnailUrl {1}.", file.Id, thumbnailUrl);
+        _logger.LogDebug("SaveThumbnail: FileId: {0}. ThumbnailUrl {1}.", file.Id, thumbnailUrl);
 
         using var request = new HttpRequestMessage();
         request.RequestUri = new Uri(thumbnailUrl);
@@ -289,7 +289,7 @@ public class Builder<T>
             await Crop(fileDao, file, stream);
         }
 
-        _logger.DebugFormat("SaveThumbnail: FileId: {0}. Successfully saved.", file.Id);
+        _logger.LogDebug("SaveThumbnail: FileId: {0}. Successfully saved.", file.Id);
     }
 
     private bool IsImage(File<T> file)
@@ -301,14 +301,14 @@ public class Builder<T>
 
     private async Task CropImage(IFileDao<T> fileDao, File<T> file)
     {
-        _logger.DebugFormat("CropImage: FileId: {0}.", file.Id);
+        _logger.LogDebug("CropImage: FileId: {0}.", file.Id);
 
         using (var stream = await fileDao.GetFileStreamAsync(file))
         {
             await Crop(fileDao, file, stream);
         }
 
-        _logger.DebugFormat("CropImage: FileId: {0}. Successfully saved.", file.Id);
+        _logger.LogDebug("CropImage: FileId: {0}. Successfully saved.", file.Id);
     }
 
     private async Task Crop(IFileDao<T> fileDao, File<T> file, Stream stream)

@@ -106,7 +106,7 @@ public class LicenseReader
             var temp = true;
             if (!File.Exists(_licensePathTemp))
             {
-                _logger.Debug("Temp license not found");
+                _logger.LogDebug("Temp license not found");
 
                 if (!File.Exists(LicensePath))
                 {
@@ -280,17 +280,17 @@ public class LicenseReader
     {
         if (error is BillingNotFoundException)
         {
-            _logger.DebugFormat("License not found: {0}", error.Message);
+            _logger.LogDebug("License not found: {0}", error.Message);
         }
         else
         {
             if (_logger.IsDebugEnabled)
             {
-                _logger.Error(error);
+                _logger.LogError(error, error.Message);
             }
             else
             {
-                _logger.Error(error.Message);
+                _logger.LogError(error.Message);
             }
         }
     }

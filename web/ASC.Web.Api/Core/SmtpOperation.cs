@@ -152,7 +152,7 @@ public class SmtpOperation
         catch (AuthorizingException authError)
         {
             Error = Resource.ErrorAccessDenied; // "No permissions to perform this action";
-            _logger.Error(Error, new SecurityException(Error, authError));
+            _logger.LogError(new SecurityException(Error, authError), Error);
         }
         catch (AggregateException ae)
         {
@@ -161,17 +161,17 @@ public class SmtpOperation
         catch (SocketException ex)
         {
             Error = ex.Message; //TODO: Add translates of ordinary cases
-            _logger.Error(ex.ToString());
+            _logger.LogError(ex.ToString());
         }
         catch (AuthenticationException ex)
         {
             Error = ex.Message; //TODO: Add translates of ordinary cases
-            _logger.Error(ex.ToString());
+            _logger.LogError(ex.ToString());
         }
         catch (Exception ex)
         {
             Error = ex.Message; //TODO: Add translates of ordinary cases
-            _logger.Error(ex.ToString());
+            _logger.LogError(ex.ToString());
         }
         finally
         {
@@ -184,7 +184,7 @@ public class SmtpOperation
             }
             catch (Exception ex)
             {
-                _logger.ErrorFormat("LdapOperation finalization problem. {0}", ex);
+                _logger.LogError(ex, "LdapOperation finalization problem");
             }
         }
     }
@@ -244,7 +244,7 @@ public class SmtpOperation
             Source = currentSource;
         }
 
-        _logger.InfoFormat(ProgerssString, Progress, Status, Source);
+        _logger.LogInformation(ProgerssString, Progress, Status, Source);
 
         PublishTaskInfo();
     }

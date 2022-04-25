@@ -59,7 +59,7 @@ public class FileMarkerHelper<T>
         }
         catch (Exception e)
         {
-            _logger.Error(e);
+            _logger.LogError(e, "ExecMarkFileAsNew");
         }
     }
 }

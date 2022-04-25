@@ -64,7 +64,7 @@ public class GeolocationHelper
         }
         catch (Exception error)
         {
-            Logger.Error(error);
+            Logger.LogError(error, "GetIPGeolocation");
         }
 
         return IPGeolocationInfo.Default;

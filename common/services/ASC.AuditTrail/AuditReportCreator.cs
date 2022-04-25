@@ -73,7 +73,7 @@ public class AuditReportCreator
         }
         catch (Exception ex)
         {
-            _logger.Error("Error while generating login report: " + ex);
+            _logger.LogError(ex, "Error while generating login report:");
             throw;
         }
     }

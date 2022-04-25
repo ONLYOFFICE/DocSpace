@@ -61,7 +61,7 @@ public class RegisterInstanceDao<T> : IRegisterInstanceDao<T> where T : IHostedS
             }
             catch (DbUpdateConcurrencyException ex)
             {
-                _logger.TraceFormat("DbUpdateConcurrencyException: then updating {instanceName} at {time} time.", obj.InstanceRegistrationId, DateTimeOffset.Now);
+                _logger.LogTrace("DbUpdateConcurrencyException: then updating {instanceName} at {time} time.", obj.InstanceRegistrationId, DateTimeOffset.Now);
 
                 saveFailed = true;
 

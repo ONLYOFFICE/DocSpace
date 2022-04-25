@@ -45,7 +45,7 @@ public class PaymentFilter : IResourceFilter
         if (context.ActionDescriptor is ControllerActionDescriptor controllerActionDescriptor
             && !controllerActionDescriptor.EndpointMetadata.OfType<CustomHttpMethodAttribute>().FirstOrDefault().Check)
         {
-            _logger.Debug("Payment is not required");
+            _logger.LogDebug("Payment is not required");
 
             return;
         }
@@ -56,7 +56,7 @@ public class PaymentFilter : IResourceFilter
             if (_tenantExtra.IsNotPaid())
             {
                 context.Result = new StatusCodeResult((int)HttpStatusCode.PaymentRequired);
-                _logger.WarnFormat("Payment Required {0}.", context.HttpContext.Request.Url());
+                _logger.LogWarning("Payment Required {0}.", context.HttpContext.Request.Url());
             }
         }
     }

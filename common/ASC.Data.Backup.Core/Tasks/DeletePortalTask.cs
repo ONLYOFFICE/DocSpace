@@ -36,7 +36,7 @@ public class DeletePortalTask : PortalTaskBase
 
     public override void RunJob()
     {
-        Logger.DebugFormat("begin delete {0}", TenantId);
+        Logger.LogDebug("begin delete {0}", TenantId);
         var modulesToProcess = GetModulesToProcess().Reverse().ToList();
         SetStepsCount(ProcessStorage ? modulesToProcess.Count + 1 : modulesToProcess.Count);
 
@@ -50,12 +50,12 @@ public class DeletePortalTask : PortalTaskBase
             DoDeleteStorage();
         }
 
-        Logger.DebugFormat("end delete {0}", TenantId);
+        Logger.LogDebug("end delete {0}", TenantId);
     }
 
     private void DoDeleteModule(IModuleSpecifics module)
     {
-        Logger.DebugFormat("begin delete data for module ({0})", module.ModuleName);
+        Logger.LogDebug("begin delete data for module ({0})", module.ModuleName);
         var tablesCount = module.Tables.Count();
         var tablesProcessed = 0;
         using (var connection = DbFactory.OpenConnection())
@@ -71,12 +71,12 @@ public class DeletePortalTask : PortalTaskBase
             }
         }
 
-        Logger.DebugFormat("end delete data for module ({0})", module.ModuleName);
+        Logger.LogDebug("end delete data for module ({0})", module.ModuleName);
     }
 
     private void DoDeleteStorage()
     {
-        Logger.Debug("begin delete storage");
+        Logger.LogDebug("begin delete storage");
         var storageModules = StorageFactoryConfig.GetModuleList(ConfigPath).Where(IsStorageModuleAllowed).ToList();
         var modulesProcessed = 0;
         foreach (var module in storageModules)
@@ -86,12 +86,12 @@ public class DeletePortalTask : PortalTaskBase
             foreach (var domain in domains)
             {
                 ActionInvoker.Try(state => storage.DeleteFilesAsync((string)state, "\\", "*.*", true).Wait(), domain, 5,
-                              onFailure: error => Logger.WarnFormat("Can't delete files for domain {0}: \r\n{1}", domain, error));
+                              onFailure: error => Logger.LogWarning("Can't delete files for domain {0}: \r\n{1}", domain, error));
             }
             storage.DeleteFilesAsync("\\", "*.*", true).Wait();
             SetCurrentStepProgress((int)(++modulesProcessed * 100 / (double)storageModules.Count));
         }
 
-        Logger.Debug("end delete storage");
+        Logger.LogDebug("end delete storage");
     }
 }

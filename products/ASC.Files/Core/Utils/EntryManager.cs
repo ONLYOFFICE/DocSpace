@@ -1415,7 +1415,7 @@ public class EntryManager
         }
         catch (Exception e)
         {
-            _logger.Error(string.Format("Error on update {0} to version {1}", fileId, version), e);
+            _logger.LogError(e, string.Format("Error on update {0} to version {1}", fileId, version));
 
             throw new Exception(e.Message, e);
         }
@@ -1574,14 +1574,14 @@ public class EntryManager
         {
             await DeleteSubitemsAsync(folder.Id, folderDao, fileDao, linkDao);
 
-            _logger.InfoFormat("Delete folder {0} in {1}", folder.Id, parentId);
+            _logger.LogInformation("Delete folder {0} in {1}", folder.Id, parentId);
             await folderDao.DeleteFolderAsync(folder.Id);
         }
 
         var files = fileDao.GetFilesAsync(parentId, null, FilterType.None, false, Guid.Empty, string.Empty, true);
         await foreach (var file in files)
         {
-            _logger.InfoFormat("Delete file {0} in {1}", file.Id, parentId);
+            _logger.LogInformation("Delete file {0} in {1}", file.Id, parentId);
             await fileDao.DeleteFileAsync(file.Id);
 
             await linkDao.DeleteAllLinkAsync(file.Id.ToString());
@@ -1600,7 +1600,7 @@ public class EntryManager
                          && shares.Any(record => record.Share != FileShare.Restrict);
             if (shared)
             {
-                _logger.InfoFormat("Move shared folder {0} from {1} to {2}", folder.Id, parentId, toId);
+                _logger.LogInformation("Move shared folder {0} from {1} to {2}", folder.Id, parentId, toId);
                 await folderDao.MoveFolderAsync(folder.Id, toId, null);
             }
             else
@@ -1615,7 +1615,7 @@ public class EntryManager
 
         await foreach (var file in files)
         {
-            _logger.InfoFormat("Move shared file {0} from {1} to {2}", file.Id, parentId, toId);
+            _logger.LogInformation("Move shared file {0} from {1} to {2}", file.Id, parentId, toId);
             await fileDao.MoveFileAsync(file.Id, toId);
         }
     }

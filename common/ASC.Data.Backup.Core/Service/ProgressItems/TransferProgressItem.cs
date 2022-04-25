@@ -134,7 +134,7 @@ public class TransferProgressItem : BaseBackupProgressItem
         }
         catch (Exception error)
         {
-            Logger.Error(error);
+            Logger.LogError(error, "TransferProgressItem");
             Exception = error;
 
             Link = GetLink(alias, true);
@@ -148,7 +148,7 @@ public class TransferProgressItem : BaseBackupProgressItem
             }
             catch (Exception error)
             {
-                Logger.Error("publish", error);
+                Logger.LogError(error, "publish");
             }
 
             if (File.Exists(tempFile))

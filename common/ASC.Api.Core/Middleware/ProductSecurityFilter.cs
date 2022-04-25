@@ -94,7 +94,7 @@ public class ProductSecurityFilter : IResourceFilter
                 if (!_webItemSecurity.IsAvailableForMe(pid))
                 {
                     context.Result = new StatusCodeResult((int)HttpStatusCode.Forbidden);
-                    _logger.WarnFormat("Product {0} denied for user {1}", controllerActionDescriptor.ControllerName, _authContext.CurrentAccount);
+                    _logger.LogWarning("Product {0} denied for user {1}", controllerActionDescriptor.ControllerName, _authContext.CurrentAccount);
                 }
             }
         }

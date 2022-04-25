@@ -85,7 +85,7 @@ public class FilesMessageService
     {
         if (headers == null)
         {
-            _logger.Debug(string.Format("Empty Request Headers for \"{0}\" type of event", action));
+            _logger.LogDebug(string.Format("Empty Request Headers for \"{0}\" type of event", action));
 
             return;
         }
@@ -103,7 +103,7 @@ public class FilesMessageService
 
         if (_httpContextAccessor == null)
         {
-            _logger.Debug(string.Format("Empty Http Request for \"{0}\" type of event", action));
+            _logger.LogDebug(string.Format("Empty Http Request for \"{0}\" type of event", action));
 
             return;
         }

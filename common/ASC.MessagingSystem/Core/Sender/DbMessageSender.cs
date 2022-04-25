@@ -59,7 +59,7 @@ public class DbMessageSender : IMessageSender
         }
         catch (Exception ex)
         {
-            _logger.Error("Failed to send a message", ex);
+            _logger.LogError(ex, "Failed to send a message");
         }
     }
 }

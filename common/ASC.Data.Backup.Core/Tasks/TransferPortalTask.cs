@@ -76,7 +76,7 @@ public class TransferPortalTask : PortalTaskBase
 
     public override void RunJob()
     {
-        Logger.DebugFormat("begin transfer {0}", TenantId);
+        Logger.LogDebug("begin transfer {0}", TenantId);
         var fromDbFactory = new DbFactory(null, null);
         var toDbFactory = new DbFactory(null, null);
         var tenantAlias = GetTenantAlias(fromDbFactory);
@@ -149,13 +149,13 @@ public class TransferPortalTask : PortalTaskBase
             {
                 File.Delete(backupFilePath);
             }
-            Logger.DebugFormat("end transfer {0}", TenantId);
+            Logger.LogDebug("end transfer {0}", TenantId);
         }
     }
 
     private void DoTransferStorage(ColumnMapper columnMapper)
     {
-        Logger.Debug("begin transfer storage");
+        Logger.LogDebug("begin transfer storage");
         var fileGroups = GetFilesToProcess(TenantId).GroupBy(file => file.Module).ToList();
         var groupsProcessed = 0;
         foreach (var group in fileGroups)
@@ -177,12 +177,12 @@ public class TransferPortalTask : PortalTaskBase
                     }
                     catch (Exception error)
                     {
-                        Logger.WarnFormat("Can't copy file ({0}:{1}): {2}", file.Module, file.Path, error);
+                        Logger.LogWarning("Can't copy file ({0}:{1}): {2}", file.Module, file.Path, error);
                     }
                 }
                 else
                 {
-                    Logger.WarnFormat("Can't adjust file path \"{0}\".", file.Path);
+                    Logger.LogWarning("Can't adjust file path \"{0}\".", file.Path);
                 }
             }
             SetCurrentStepProgress((int)(++groupsProcessed * 100 / (double)fileGroups.Count));
@@ -193,7 +193,7 @@ public class TransferPortalTask : PortalTaskBase
             SetStepCompleted();
         }
 
-        Logger.Debug("end transfer storage");
+        Logger.LogDebug("end transfer storage");
     }
 
     private void SaveTenant(DbFactory dbFactory, string alias, TenantStatus status, string newAlias = null, string whereCondition = null)

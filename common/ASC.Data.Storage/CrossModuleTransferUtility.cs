@@ -101,7 +101,7 @@ public class CrossModuleTransferUtility
             }
             catch (Exception ex)
             {
-                _logger.Error("Copy File", ex);
+                _logger.LogError(ex, "Copy File");
                 await holder.AbortAsync(session);
             }
         }

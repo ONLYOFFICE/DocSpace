@@ -84,16 +84,16 @@ public class ReassignProgressItem : DistributedTaskProgress
 
             securityContext.AuthenticateMeWithoutCookie(_currentUserId);
 
-            logger.InfoFormat("reassignment of data from {0} to {1}", FromUser, ToUser);
+            logger.LogInformation("reassignment of data from {0} to {1}", FromUser, ToUser);
 
-            logger.Info("reassignment of data from documents");
+            logger.LogInformation("reassignment of data from documents");
 
 
             //_docService.ReassignStorage(_fromUserId, _toUserId);
             Percentage = 33;
             PublishChanges();
 
-            logger.Info("reassignment of data from projects");
+            logger.LogInformation("reassignment of data from projects");
 
             //_projectsReassign.Reassign(_fromUserId, _toUserId);
             Percentage = 66;
@@ -101,7 +101,7 @@ public class ReassignProgressItem : DistributedTaskProgress
 
             if (!coreBaseSettings.CustomMode)
             {
-                logger.Info("reassignment of data from crm");
+                logger.LogInformation("reassignment of data from crm");
 
                 //using (var scope = DIHelper.Resolve(_tenantId))
                 //{
@@ -127,14 +127,14 @@ public class ReassignProgressItem : DistributedTaskProgress
         }
         catch (Exception ex)
         {
-            logger.Error(ex);
+            logger.LogError(ex, "ReassignProgressItem");
             Status = DistributedTaskStatus.Failted;
             Exception = ex;
             SendErrorNotify(userManager, studioNotifyService, ex.Message);
         }
         finally
         {
-            logger.Info("data reassignment is complete");
+            logger.LogInformation("data reassignment is complete");
             IsCompleted = true;
         }
 

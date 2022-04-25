@@ -187,10 +187,10 @@ public class FileSharingAceHelper<T>
             }
         }
 
-            foreach (var userId in usersWithoutRight)
-            {
-                await _fileMarker.RemoveMarkAsNewAsync(entry, userId);
-            }
+        foreach (var userId in usersWithoutRight)
+        {
+            await _fileMarker.RemoveMarkAsNewAsync(entry, userId);
+        }
 
         return changed;
     }
@@ -311,7 +311,7 @@ public class FileSharing
 
         if (!await CanSetAccessAsync(entry))
         {
-            _logger.ErrorFormat("User {0} can't get shared info for {1} {2}", _authContext.CurrentAccount.ID, entry.FileEntryType == FileEntryType.File ? "file" : "folder", entry.Id);
+            _logger.LogError("User {0} can't get shared info for {1} {2}", _authContext.CurrentAccount.ID, entry.FileEntryType == FileEntryType.File ? "file" : "folder", entry.Id);
 
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
         }
@@ -482,7 +482,7 @@ public class FileSharing
             }
             catch (Exception e)
             {
-                _logger.Error(e);
+                _logger.LogError(e, "GetSharedInfo");
 
                 throw new InvalidOperationException(e.Message, e);
             }

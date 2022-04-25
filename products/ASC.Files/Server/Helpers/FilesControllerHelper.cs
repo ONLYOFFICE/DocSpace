@@ -120,7 +120,7 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
                 catch (Exception e)
                 {
                     o.File = r.Result;
-                    _logger.Error(e);
+                    _logger.LogError(e, "CheckConversion");
                 }
             }
 

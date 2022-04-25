@@ -145,7 +145,7 @@ public class DbHelper : IDisposable
             var adapter = _factory.CreateDataAdapter();
             adapter.SelectCommand = CreateCommand("select " + Quote(table) + ".* from " + Quote(table) + GetWhere(table, tenant));
 
-            _logger.Debug(adapter.SelectCommand.CommandText);
+            _logger.LogDebug(adapter.SelectCommand.CommandText);
 
             adapter.Fill(dataTable);
 
@@ -153,7 +153,7 @@ public class DbHelper : IDisposable
         }
         catch (Exception error)
         {
-            _logger.ErrorFormat("Table {0}: {1}", table, error);
+            _logger.LogError("Table {0}: {1}", table, error);
             throw;
         }
     }
@@ -226,7 +226,7 @@ public class DbHelper : IDisposable
         }
         catch (Exception e)
         {
-            _logger.ErrorFormat("Table {0}: {1}", table, e);
+            _logger.LogError("Table {0}: {1}", table, e);
         }
     }
 

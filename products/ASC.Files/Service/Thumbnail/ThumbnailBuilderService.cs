@@ -48,19 +48,19 @@ public class ThumbnailBuilderService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.Info("Thumbnail Worker running.");
+        _logger.LogInformation("Thumbnail Worker running.");
 
         while (!stoppingToken.IsCancellationRequested)
         {
             await Procedure(stoppingToken);
         }
 
-        _logger.Info("Thumbnail Worker is stopping.");
+        _logger.LogInformation("Thumbnail Worker is stopping.");
     }
 
     private async Task Procedure(CancellationToken stoppingToken)
     {
-        _logger.Trace("Procedure: Start.");
+        _logger.LogTrace("Procedure: Start.");
 
         if (stoppingToken.IsCancellationRequested)
         {
@@ -74,7 +74,7 @@ public class ThumbnailBuilderService : BackgroundService
 
         if (filesWithoutThumbnails.Count == 0)
         {
-            _logger.TraceFormat("Procedure: Waiting for data. Sleep {0}.", _thumbnailSettings.LaunchFrequency);
+            _logger.LogTrace("Procedure: Waiting for data. Sleep {0}.", _thumbnailSettings.LaunchFrequency);
 
             await Task.Delay(TimeSpan.FromSeconds(_thumbnailSettings.LaunchFrequency), stoppingToken);
 
@@ -93,7 +93,7 @@ public class ThumbnailBuilderService : BackgroundService
             await _builderQueue.BuildThumbnails(filesWithoutThumbnails);
         }
 
-        _logger.Trace("Procedure: Finish.");
+        _logger.LogTrace("Procedure: Finish.");
     }
 }
 

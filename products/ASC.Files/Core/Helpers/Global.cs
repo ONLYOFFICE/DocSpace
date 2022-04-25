@@ -62,13 +62,13 @@ public class GlobalNotify
                 }
                 catch (Exception e)
                 {
-                    Logger.Fatal("ClearCache action", e);
+                    Logger.LogCritical(e, "ClearCache action");
                 }
             }, CacheNotifyAction.Any);
         }
         catch (Exception e)
         {
-            Logger.Fatal("ClearCache subscribe", e);
+            Logger.LogCritical(e, "ClearCache subscribe");
         }
     }
 }
@@ -612,7 +612,7 @@ public class GlobalFolder
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(ex);
+                    _logger.LogError(ex, "GetFolderIdAndProccessFirstVisit");
                 }
             }
         }
@@ -676,7 +676,7 @@ public class GlobalFolder
         }
         catch (Exception ex)
         {
-            _logger.Error(ex);
+            _logger.LogError(ex, "SaveFile");
         }
     }
 

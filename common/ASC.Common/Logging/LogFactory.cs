@@ -57,42 +57,22 @@ public class LogFactory<T> : ILog<T>
 
     public void Configure(string name)
     {
-        _logger.Debug(name);
+        _logger.LogDebug(name);
     }
 
-    public void Debug(object message)
+    public void LogDebug(string message)
     {
-        _logger.Debug(message);
+        _logger.LogDebug(message);
     }
 
-    public void Debug(object message, Exception exception)
+    public void LogDebug(Exception exception, string message)
     {
-        _logger.Debug(message, exception);
+        _logger.LogDebug(exception, message);
     }
 
-    public void DebugFormat(string format, params object[] args)
+    public void LogDebug(string format, params object[] args)
     {
-        _logger.DebugFormat(format, args);
-    }
-
-    public void DebugFormat(string format, object arg0)
-    {
-        _logger.DebugFormat(format, arg0);
-    }
-
-    public void DebugFormat(string format, object arg0, object arg1)
-    {
-        _logger.DebugFormat(format, arg0, arg1);
-    }
-
-    public void DebugFormat(string format, object arg0, object arg1, object arg2)
-    {
-        _logger.DebugFormat(format, arg0, arg1, arg2);
-    }
-
-    public void DebugFormat(IFormatProvider provider, string format, params object[] args)
-    {
-        _logger.DebugFormat(provider, format, args);
+        _logger.LogDebug(format, args);
     }
 
     public void DebugWithProps(string message, IEnumerable<KeyValuePair<string, object>> props)
@@ -100,153 +80,73 @@ public class LogFactory<T> : ILog<T>
         _logger.DebugWithProps(message, props);
     }
 
-    public void Error(object message)
+    public void LogError(string message)
     {
-        _logger.Error(message);
+        _logger.LogError(message);
     }
 
-    public void Error(object message, Exception exception)
+    public void LogError(Exception exception, string message)
     {
-        _logger.Error(message, exception);
+        _logger.LogError(exception, message);
     }
 
-    public void ErrorFormat(string format, params object[] args)
+    public void LogError(string format, params object[] args)
     {
-        _logger.ErrorFormat(format, args);
+        _logger.LogError(format, args);
     }
 
-    public void ErrorFormat(string format, object arg0)
+    public void LogCritical(string message)
     {
-        _logger.ErrorFormat(format, arg0);
+        _logger.LogCritical(message);
     }
 
-    public void ErrorFormat(string format, object arg0, object arg1)
+    public void LogCritical(Exception exception, string message)
     {
-        _logger.ErrorFormat(format, arg0, arg1);
+        _logger.LogCritical(exception, message);
     }
 
-    public void ErrorFormat(string format, object arg0, object arg1, object arg2)
+    public void LogCritical(string format, params object[] args)
     {
-        _logger.ErrorFormat(format, arg0, arg1, arg2);
+        _logger.LogCritical(format, args);
     }
 
-    public void ErrorFormat(IFormatProvider provider, string format, params object[] args)
+    public void LogInformation(string message)
     {
-        _logger.ErrorFormat(provider, format, args);
+        _logger.LogInformation(message);
     }
 
-    public void Fatal(object message)
+    public void LogInformation(Exception exception, string message)
     {
-        _logger.Fatal(message);
+        _logger.LogInformation(exception, message);
     }
 
-    public void Fatal(string message, Exception exception)
+    public void LogInformation(string format, params object[] args)
     {
-        _logger.Fatal(message, exception);
+        _logger.LogInformation(format, args);
     }
 
-    public void FatalFormat(string format, params object[] args)
+    public void LogTrace(string message)
     {
-        _logger.FatalFormat(format, args);
+        _logger.LogTrace(message);
     }
 
-    public void FatalFormat(string format, object arg0)
+    public void LogTrace(string message, params object[] args)
     {
-        _logger.FatalFormat(format, arg0);
+        _logger.LogTrace(message, args);
     }
 
-    public void FatalFormat(string format, object arg0, object arg1)
+    public void LogWarning(string message)
     {
-        _logger.FatalFormat(format, arg0, arg1);
+        _logger.LogWarning(message);
     }
 
-    public void FatalFormat(string format, object arg0, object arg1, object arg2)
+    public void LogWarning(Exception exception, string message)
     {
-        _logger.FatalFormat(format, arg0, arg1, arg2);
+        _logger.LogWarning(exception, message);
     }
 
-    public void FatalFormat(IFormatProvider provider, string format, params object[] args)
+    public void LogWarning(string format, params object[] args)
     {
-        _logger.FatalFormat(provider, format, args);
-    }
-
-    public void Info(object message)
-    {
-        _logger.Info(message);
-    }
-
-    public void Info(string message, Exception exception)
-    {
-        _logger.Info(message, exception);
-    }
-
-    public void InfoFormat(string format, params object[] args)
-    {
-        _logger.InfoFormat(format, args);
-    }
-
-    public void InfoFormat(string format, object arg0)
-    {
-        _logger.InfoFormat(format, arg0);
-    }
-
-    public void InfoFormat(string format, object arg0, object arg1)
-    {
-        _logger.InfoFormat(format, arg0, arg1);
-    }
-
-    public void InfoFormat(string format, object arg0, object arg1, object arg2)
-    {
-        _logger.InfoFormat(format, arg0, arg1, arg2);
-    }
-
-    public void InfoFormat(IFormatProvider provider, string format, params object[] args)
-    {
-        _logger.InfoFormat(provider, format, args);
-    }
-
-    public void Trace(object message)
-    {
-        _logger.Trace(message);
-    }
-
-    public void TraceFormat(string message, params object[] args)
-    {
-        _logger.TraceFormat(message, args);
-    }
-
-    public void Warn(object message)
-    {
-        _logger.Warn(message);
-    }
-
-    public void Warn(object message, Exception exception)
-    {
-        _logger.Warn(message, exception);
-    }
-
-    public void WarnFormat(string format, params object[] args)
-    {
-        _logger.WarnFormat(format, args);
-    }
-
-    public void WarnFormat(string format, object arg0)
-    {
-        _logger.WarnFormat(format, arg0);
-    }
-
-    public void WarnFormat(string format, object arg0, object arg1)
-    {
-        _logger.WarnFormat(format, arg0, arg1);
-    }
-
-    public void WarnFormat(string format, object arg0, object arg1, object arg2)
-    {
-        _logger.WarnFormat(format, arg0, arg1, arg2);
-    }
-
-    public void WarnFormat(IFormatProvider provider, string format, params object[] args)
-    {
-        _logger.WarnFormat(provider, format, args);
+        _logger.LogWarning(format, args);
     }
 }

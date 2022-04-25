@@ -108,7 +108,7 @@ public class EditHistory
             }
             catch (Exception ex)
             {
-                _logger.Error("DeSerialize old scheme exception", ex);
+                _logger.LogError(ex, "DeSerialize old scheme exception");
             }
 
             return changes;

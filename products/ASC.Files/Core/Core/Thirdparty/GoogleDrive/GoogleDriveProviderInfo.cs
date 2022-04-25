@@ -69,7 +69,7 @@ internal class GoogleDriveProviderInfo : IProviderInfo
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error("GoogleDrive error", ex);
+                    _logger.LogError(ex, "GoogleDrive error");
 
                     return null;
                 }

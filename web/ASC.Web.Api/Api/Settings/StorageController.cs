@@ -295,7 +295,7 @@ public class StorageController : BaseSettingsController
         }
         catch (Exception e)
         {
-            _log.Error("GetStorageEncryptionSettings", e);
+            _log.LogError(e, "GetStorageEncryptionSettings");
             return null;
         }
     }
@@ -371,7 +371,7 @@ public class StorageController : BaseSettingsController
         }
         catch (Exception e)
         {
-            _log.Error("UpdateStorage", e);
+            _log.LogError(e, "UpdateStorage");
             throw;
         }
     }
@@ -399,7 +399,7 @@ public class StorageController : BaseSettingsController
         }
         catch (Exception e)
         {
-            _log.Error("ResetStorageToDefault", e);
+            _log.LogError(e, "ResetStorageToDefault");
             throw;
         }
     }
@@ -464,7 +464,7 @@ public class StorageController : BaseSettingsController
         }
         catch (Exception e)
         {
-            _log.Error("UpdateCdn", e);
+            _log.LogError(e, "UpdateCdn");
             throw;
         }
 

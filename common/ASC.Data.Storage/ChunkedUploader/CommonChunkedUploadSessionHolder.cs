@@ -61,7 +61,7 @@ public class CommonChunkedUploadSessionHolder
         }
         catch (Exception err)
         {
-            _option.CurrentValue.Error(err);
+            _option.CurrentValue.LogError(err, "DeleteExpired");
         }
     }
 

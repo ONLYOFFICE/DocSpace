@@ -76,7 +76,7 @@ public class NotifyRequest
                 }
                 catch (Exception err)
                 {
-                    _log.ErrorFormat("{0} {1} {2}: {3}", interceptor.Name, NotifyAction, Recipient, err);
+                    _log.LogError("{0} {1} {2}: {3}", interceptor.Name, NotifyAction, Recipient, err);
                 }
             }
         }

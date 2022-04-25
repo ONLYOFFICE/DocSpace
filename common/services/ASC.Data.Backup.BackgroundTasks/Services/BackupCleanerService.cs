@@ -45,13 +45,13 @@ internal sealed class BackupCleanerService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.Debug("BackupCleanerService is starting.");
+        _logger.LogDebug("BackupCleanerService is starting.");
 
-        stoppingToken.Register(() => _logger.Debug("#1 BackupCleanerService background task is stopping."));
+        stoppingToken.Register(() => _logger.LogDebug("#1 BackupCleanerService background task is stopping."));
 
         while (!stoppingToken.IsCancellationRequested)
         {
-            _logger.Debug("BackupCleanerService background task is doing background work.");
+            _logger.LogDebug("BackupCleanerService background task is doing background work.");
 
             using var serviceScope = _scopeFactory.CreateScope();
 
@@ -59,7 +59,7 @@ internal sealed class BackupCleanerService : BackgroundService
 
             if (!await registerInstanceService.IsActive(RegisterInstanceWorkerService<BackupCleanerService>.InstanceId))
             {
-                _logger.Debug($"BackupCleanerService background task with instance id {RegisterInstanceWorkerService<BackupCleanerService>.InstanceId} is't active.");
+                _logger.LogDebug($"BackupCleanerService background task with instance id {RegisterInstanceWorkerService<BackupCleanerService>.InstanceId} is't active.");
 
                 await Task.Delay(1000, stoppingToken);
 
@@ -71,7 +71,7 @@ internal sealed class BackupCleanerService : BackgroundService
             await Task.Delay(_backupCleanerPeriod, stoppingToken);
         }
 
-        _logger.Debug("BackupCleanerService background task is stopping.");
+        _logger.LogDebug("BackupCleanerService background task is stopping.");
     }
 
     private void ExecuteBackupCleaner(CancellationToken stoppingToken)
@@ -81,11 +81,11 @@ internal sealed class BackupCleanerService : BackgroundService
         var backupRepository = serviceScope.ServiceProvider.GetRequiredService<BackupRepository>();
         var backupStorageFactory = serviceScope.ServiceProvider.GetRequiredService<BackupStorageFactory>();
 
-        _logger.Debug("started to clean expired backups");
+        _logger.LogDebug("started to clean expired backups");
 
         var backupsToRemove = backupRepository.GetExpiredBackupRecords();
 
-        _logger.DebugFormat("found {0} backups which are expired", backupsToRemove.Count);
+        _logger.LogDebug("found {0} backups which are expired", backupsToRemove.Count);
 
         foreach (var scheduledBackups in backupRepository.GetScheduledBackupRecords().GroupBy(r => r.TenantId))
         {
@@ -101,7 +101,7 @@ internal sealed class BackupCleanerService : BackgroundService
                 var scheduledBackupsToRemove = scheduledBackups.OrderByDescending(r => r.CreatedOn).Skip(schedule.BackupsStored).ToList();
                 if (scheduledBackupsToRemove.Any())
                 {
-                    _logger.DebugFormat("only last {0} scheduled backup records are to keep for tenant {1} so {2} records must be removed", schedule.BackupsStored, schedule.TenantId, scheduledBackupsToRemove.Count);
+                    _logger.LogDebug("only last {0} scheduled backup records are to keep for tenant {1} so {2} records must be removed", schedule.BackupsStored, schedule.TenantId, scheduledBackupsToRemove.Count);
                     backupsToRemove.AddRange(scheduledBackupsToRemove);
                 }
             }
@@ -132,7 +132,7 @@ internal sealed class BackupCleanerService : BackgroundService
             }
             catch (ProviderInfoArgumentException error)
             {
-                _logger.Warn("can't remove backup record " + backupRecord.Id, error);
+                _logger.LogWarning(error, "can't remove backup record " + backupRecord.Id);
 
                 if (DateTime.UtcNow > backupRecord.CreatedOn.AddMonths(6))
                 {
@@ -141,7 +141,7 @@ internal sealed class BackupCleanerService : BackgroundService
             }
             catch (Exception error)
             {
-                _logger.Warn("can't remove backup record: " + backupRecord.Id, error);
+                _logger.LogWarning(error, "can't remove backup record: " + backupRecord.Id);
             }
         }
 

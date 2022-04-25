@@ -63,7 +63,7 @@ public class BackupStorageFactory
         }
         catch (Exception error)
         {
-            _logger.Error("can't get backup storage for record " + record.Id, error);
+            _logger.LogError(error, ("can't get backup storage for record " + record.Id));
 
             return null;
         }

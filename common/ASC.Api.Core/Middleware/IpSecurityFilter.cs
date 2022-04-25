@@ -57,7 +57,7 @@ public class IpSecurityFilter : IResourceFilter
             if (enable && !_iPSecurity.Verify())
             {
                 context.Result = new StatusCodeResult((int)HttpStatusCode.Forbidden);
-                _logger.WarnFormat("IPSecurity: user {0}", _authContext.CurrentAccount.ID);
+                _logger.LogWarning("IPSecurity: user {0}", _authContext.CurrentAccount.ID);
                 return;
             }
         }

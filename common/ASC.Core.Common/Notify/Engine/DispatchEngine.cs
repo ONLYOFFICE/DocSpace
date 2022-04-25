@@ -40,7 +40,7 @@ public class DispatchEngine
         _messagesLogger = options.Get("ASC.Notify.Messages");
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _logOnly = "log".Equals(configuration["core:notify:postman"], StringComparison.InvariantCultureIgnoreCase);
-        _logger.DebugFormat("LogOnly: {0}", _logOnly);
+        _logger.LogDebug("LogOnly: {0}", _logOnly);
     }
 
     public SendResponse Dispatch(INoticeMessage message, string senderName)
@@ -71,15 +71,15 @@ public class DispatchEngine
         var logmsg = string.Format("[{0}] sended to [{1}] over {2}, status: {3} ", message.Subject, message.Recipient, senderName, response.Result);
         if (response.Result == SendResult.Inprogress)
         {
-            _logger.Debug(logmsg, response.Exception);
+            _logger.LogDebug(response.Exception, logmsg);
         }
         else if (response.Result == SendResult.Impossible)
         {
-            _logger.Error(logmsg, response.Exception);
+            _logger.LogError(response.Exception, logmsg);
         }
         else
         {
-            _logger.Debug(logmsg);
+            _logger.LogDebug(logmsg);
         }
     }
 
@@ -89,7 +89,7 @@ public class DispatchEngine
         {
             if (_messagesLogger.IsDebugEnabled)
             {
-                _messagesLogger.DebugFormat("[{5}]->[{1}] by [{6}] to [{2}] at {0}\r\n\r\n[{3}]\r\n{4}\r\n{7}",
+                _messagesLogger.LogDebug("[{5}]->[{1}] by [{6}] to [{2}] at {0}\r\n\r\n[{3}]\r\n{4}\r\n{7}",
                     DateTime.Now,
                     message.Recipient.Name,
                     0 < message.Recipient.Addresses.Length ? message.Recipient.Addresses[0] : string.Empty,

@@ -86,7 +86,7 @@ public class Log : ILog
         IsTraceEnabled = _logger.Logger.IsEnabledFor(Level.Trace);
     }
 
-    public void Trace(object message)
+    public void LogTrace(string message)
     {
         if (IsTraceEnabled)
         {
@@ -94,7 +94,7 @@ public class Log : ILog
         }
     }
 
-    public void TraceFormat(string message, params object[] args)
+    public void LogTrace(string message, params object[] args)
     {
         if (IsTraceEnabled)
         {
@@ -102,7 +102,7 @@ public class Log : ILog
         }
     }
 
-    public void Debug(object message)
+    public void LogDebug(string message)
     {
         if (IsDebugEnabled)
         {
@@ -110,7 +110,7 @@ public class Log : ILog
         }
     }
 
-    public void Debug(object message, Exception exception)
+    public void LogDebug(Exception exception, string message)
     {
         if (IsDebugEnabled)
         {
@@ -118,43 +118,11 @@ public class Log : ILog
         }
     }
 
-    public void DebugFormat(string format, params object[] args)
+    public void LogDebug(string format, params object[] args)
     {
         if (IsDebugEnabled)
         {
             _logger.DebugFormat(format, args);
-        }
-    }
-
-    public void DebugFormat(string format, object arg0)
-    {
-        if (IsDebugEnabled)
-        {
-            _logger.DebugFormat(format, arg0);
-        }
-    }
-
-    public void DebugFormat(string format, object arg0, object arg1)
-    {
-        if (IsDebugEnabled)
-        {
-            _logger.DebugFormat(format, arg0, arg1);
-        }
-    }
-
-    public void DebugFormat(string format, object arg0, object arg1, object arg2)
-    {
-        if (IsDebugEnabled)
-        {
-            _logger.DebugFormat(format, arg0, arg1, arg2);
-        }
-    }
-
-    public void DebugFormat(IFormatProvider provider, string format, params object[] args)
-    {
-        if (IsDebugEnabled)
-        {
-            _logger.DebugFormat(provider, format, args);
         }
     }
 
@@ -174,7 +142,7 @@ public class Log : ILog
     }
 
 
-    public void Info(object message)
+    public void LogInformation(string message)
     {
         if (IsInfoEnabled)
         {
@@ -182,7 +150,7 @@ public class Log : ILog
         }
     }
 
-    public void Info(string message, Exception exception)
+    public void LogInformation(Exception exception, string message)
     {
         if (IsInfoEnabled)
         {
@@ -190,7 +158,7 @@ public class Log : ILog
         }
     }
 
-    public void InfoFormat(string format, params object[] args)
+    public void LogInformation(string format, params object[] args)
     {
         if (IsInfoEnabled)
         {
@@ -198,40 +166,8 @@ public class Log : ILog
         }
     }
 
-    public void InfoFormat(string format, object arg0)
-    {
-        if (IsInfoEnabled)
-        {
-            _logger.InfoFormat(format, arg0);
-        }
-    }
 
-    public void InfoFormat(string format, object arg0, object arg1)
-    {
-        if (IsInfoEnabled)
-        {
-            _logger.InfoFormat(format, arg0, arg1);
-        }
-    }
-
-    public void InfoFormat(string format, object arg0, object arg1, object arg2)
-    {
-        if (IsInfoEnabled)
-        {
-            _logger.InfoFormat(format, arg0, arg1, arg2);
-        }
-    }
-
-    public void InfoFormat(IFormatProvider provider, string format, params object[] args)
-    {
-        if (IsInfoEnabled)
-        {
-            _logger.InfoFormat(provider, format, args);
-        }
-    }
-
-
-    public void Warn(object message)
+    public void LogWarning(string message)
     {
         if (IsWarnEnabled)
         {
@@ -239,7 +175,7 @@ public class Log : ILog
         }
     }
 
-    public void Warn(object message, Exception exception)
+    public void LogWarning(Exception exception, string message)
     {
         if (IsWarnEnabled)
         {
@@ -247,7 +183,7 @@ public class Log : ILog
         }
     }
 
-    public void WarnFormat(string format, params object[] args)
+    public void LogWarning(string format, params object[] args)
     {
         if (IsWarnEnabled)
         {
@@ -255,40 +191,8 @@ public class Log : ILog
         }
     }
 
-    public void WarnFormat(string format, object arg0)
-    {
-        if (IsWarnEnabled)
-        {
-            _logger.WarnFormat(format, arg0);
-        }
-    }
 
-    public void WarnFormat(string format, object arg0, object arg1)
-    {
-        if (IsWarnEnabled)
-        {
-            _logger.WarnFormat(format, arg0, arg1);
-        }
-    }
-
-    public void WarnFormat(string format, object arg0, object arg1, object arg2)
-    {
-        if (IsWarnEnabled)
-        {
-            _logger.WarnFormat(format, arg0, arg1, arg2);
-        }
-    }
-
-    public void WarnFormat(IFormatProvider provider, string format, params object[] args)
-    {
-        if (IsWarnEnabled)
-        {
-            _logger.WarnFormat(provider, format, args);
-        }
-    }
-
-
-    public void Error(object message)
+    public void LogError(string message)
     {
         if (IsErrorEnabled)
         {
@@ -296,7 +200,7 @@ public class Log : ILog
         }
     }
 
-    public void Error(object message, Exception exception)
+    public void LogError(Exception exception, string message)
     {
         if (IsErrorEnabled)
         {
@@ -304,7 +208,7 @@ public class Log : ILog
         }
     }
 
-    public void ErrorFormat(string format, params object[] args)
+    public void LogError(string format, params object[] args)
     {
         if (IsErrorEnabled)
         {
@@ -312,40 +216,7 @@ public class Log : ILog
         }
     }
 
-    public void ErrorFormat(string format, object arg0)
-    {
-        if (IsErrorEnabled)
-        {
-            _logger.ErrorFormat(format, arg0);
-        }
-    }
-
-    public void ErrorFormat(string format, object arg0, object arg1)
-    {
-        if (IsErrorEnabled)
-        {
-            _logger.ErrorFormat(format, arg0, arg1);
-        }
-    }
-
-    public void ErrorFormat(string format, object arg0, object arg1, object arg2)
-    {
-        if (IsErrorEnabled)
-        {
-            _logger.ErrorFormat(format, arg0, arg1, arg2);
-        }
-    }
-
-    public void ErrorFormat(IFormatProvider provider, string format, params object[] args)
-    {
-        if (IsErrorEnabled)
-        {
-            _logger.ErrorFormat(provider, format, args);
-        }
-    }
-
-
-    public void Fatal(object message)
+    public void LogCritical(string message)
     {
         if (IsFatalEnabled)
         {
@@ -353,7 +224,7 @@ public class Log : ILog
         }
     }
 
-    public void Fatal(string message, Exception exception)
+    public void LogCritical(Exception exception, string message)
     {
         if (IsFatalEnabled)
         {
@@ -361,43 +232,11 @@ public class Log : ILog
         }
     }
 
-    public void FatalFormat(string format, params object[] args)
+    public void LogCritical(string format, params object[] args)
     {
         if (IsFatalEnabled)
         {
             _logger.FatalFormat(format, args);
-        }
-    }
-
-    public void FatalFormat(string format, object arg0)
-    {
-        if (IsFatalEnabled)
-        {
-            _logger.FatalFormat(format, arg0);
-        }
-    }
-
-    public void FatalFormat(string format, object arg0, object arg1)
-    {
-        if (IsFatalEnabled)
-        {
-            _logger.FatalFormat(format, arg0, arg1);
-        }
-    }
-
-    public void FatalFormat(string format, object arg0, object arg1, object arg2)
-    {
-        if (IsFatalEnabled)
-        {
-            _logger.FatalFormat(format, arg0, arg1, arg2);
-        }
-    }
-
-    public void FatalFormat(IFormatProvider provider, string format, params object[] args)
-    {
-        if (IsFatalEnabled)
-        {
-            _logger.FatalFormat(provider, format, args);
         }
     }
 

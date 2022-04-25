@@ -145,7 +145,7 @@ public class FilesModuleSpecifics : ModuleSpecificsBase
                 }
                 catch (Exception ex)
                 {
-                    _logger.ErrorFormat("Can not prepare data {0}: {1}", row[providerColumn] as string, ex);
+                    _logger.LogError("Can not prepare data {0}: {1}", row[providerColumn] as string, ex);
                     data.Rows.Remove(row);
                     i--;
                 }
@@ -269,7 +269,7 @@ public class FilesModuleSpecifics : ModuleSpecificsBase
             }
             catch (Exception err)
             {
-                _logger.ErrorFormat("Can not prepare value {0}: {1}", value, err);
+                _logger.LogError("Can not prepare value {0}: {1}", value, err);
                 value = null;
             }
             return true;

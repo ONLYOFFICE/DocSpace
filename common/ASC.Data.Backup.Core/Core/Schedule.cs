@@ -68,7 +68,7 @@ public class Schedule
         catch (Exception e)
         {
             var log = _options.CurrentValue;
-            log.Error("Schedule " + backupSchedule.TenantId, e);
+            log.LogError(e, ("Schedule " + backupSchedule.TenantId));
 
             return false;
         }

@@ -99,7 +99,7 @@ public class WordpressHelper
         }
         catch (Exception ex)
         {
-            Logger.Error("Get Wordpress info about me ", ex);
+            Logger.LogError(ex, "Get Wordpress info about me ");
 
             return string.Empty;
         }
@@ -117,7 +117,7 @@ public class WordpressHelper
         }
         catch (Exception ex)
         {
-            Logger.Error("Create Wordpress post ", ex);
+            Logger.LogError(ex, "Create Wordpress post ");
 
             return false;
         }

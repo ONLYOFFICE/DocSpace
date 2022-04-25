@@ -101,7 +101,7 @@ public class SmtpSender : INotifySender
 
                 var mail = BuildMailMessage(m);
 
-                _logger.DebugFormat("SmtpSender - host={0}; port={1}; enableSsl={2} enableAuth={3}", _host, _port, _ssl, _credentials != null);
+                _logger.LogDebug("SmtpSender - host={0}; port={1}; enableSsl={2} enableAuth={3}", _host, _port, _ssl, _credentials != null);
 
                 smtpClient.Connect(_host, _port,
                     _ssl ? SecureSocketOptions.Auto : SecureSocketOptions.None);
@@ -116,7 +116,7 @@ public class SmtpSender : INotifySender
             }
             catch (Exception e)
             {
-                _logger.ErrorFormat("Tenant: {0}, To: {1} - {2}", m.TenantId, m.Reciever, e);
+                _logger.LogError("Tenant: {0}, To: {1} - {2}", m.TenantId, m.Reciever, e);
 
                 throw;
             }

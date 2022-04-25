@@ -87,7 +87,7 @@ public class BaseCommonLinkUtility
             }
             catch (Exception error)
             {
-                options.Get("ASC.Web").Error(error);
+                options.Get("ASC.Web").LogError(error, error.Message);
             }
         }
 

@@ -96,13 +96,13 @@ public class StudioPeriodicNotify
 
     public Task SendSaasLettersAsync(string senderName, DateTime scheduleDate)
     {
-        _log.Info("Start SendSaasTariffLetters");
+        _log.LogInformation("Start SendSaasTariffLetters");
 
         var activeTenants = _tenantManager.GetTenants().ToList();
 
         if (activeTenants.Count <= 0)
         {
-            _log.Info("End SendSaasTariffLetters");
+            _log.LogInformation("End SendSaasTariffLetters");
             return Task.CompletedTask;
         }
 
@@ -323,24 +323,24 @@ public class StudioPeriodicNotify
                         {
                             try
                             {
-                                _log.InfoFormat("start CreateCoupon to {0}", tenant.Alias);
+                                _log.LogInformation("start CreateCoupon to {0}", tenant.Alias);
 
                                 coupon = SetupInfo.IsSecretEmail(_userManager.GetUsers(tenant.OwnerId).Email)
                                         ? tenant.Alias
                                             : _couponManager.CreateCoupon(_tenantManager);
 
-                                _log.InfoFormat("end CreateCoupon to {0} coupon = {1}", tenant.Alias, coupon);
+                                _log.LogInformation("end CreateCoupon to {0} coupon = {1}", tenant.Alias, coupon);
                             }
                             catch (AggregateException ae)
                             {
                                 foreach (var ex in ae.InnerExceptions)
                                 {
-                                    _log.Error(ex);
+                                    _log.LogError(ex, "");
                                 }
                             }
                             catch (Exception ex)
                             {
-                                _log.Error(ex);
+                                _log.LogError(ex, "SendSaasLettersAsync");
                             }
                         }
 
@@ -486,11 +486,11 @@ public class StudioPeriodicNotify
             }
             catch (Exception err)
             {
-                _log.Error(err);
+                _log.LogError(err, "SendSaasLettersAsync");
             }
         }
 
-        _log.Info("End SendSaasTariffLetters");
+        _log.LogInformation("End SendSaasTariffLetters");
     }
 
     public void SendEnterpriseLetters(string senderName, DateTime scheduleDate)
@@ -498,13 +498,13 @@ public class StudioPeriodicNotify
         var nowDate = scheduleDate.Date;
         const string dbid = "webstudio";
 
-        _log.Info("Start SendTariffEnterpriseLetters");
+        _log.LogInformation("Start SendTariffEnterpriseLetters");
 
         var activeTenants = _tenantManager.GetTenants().ToList();
 
         if (activeTenants.Count <= 0)
         {
-            _log.Info("End SendTariffEnterpriseLetters");
+            _log.LogInformation("End SendTariffEnterpriseLetters");
             return;
         }
 
@@ -879,24 +879,24 @@ public class StudioPeriodicNotify
             }
             catch (Exception err)
             {
-                _log.Error(err);
+                _log.LogError(err, "SendEnterpriseLetters");
             }
         }
 
-        _log.Info("End SendTariffEnterpriseLetters");
+        _log.LogInformation("End SendTariffEnterpriseLetters");
     }
 
     public void SendOpensourceLetters(string senderName, DateTime scheduleDate)
     {
         var nowDate = scheduleDate.Date;
 
-        _log.Info("Start SendOpensourceTariffLetters");
+        _log.LogInformation("Start SendOpensourceTariffLetters");
 
         var activeTenants = _tenantManager.GetTenants().ToList();
 
         if (activeTenants.Count <= 0)
         {
-            _log.Info("End SendOpensourceTariffLetters");
+            _log.LogInformation("End SendOpensourceTariffLetters");
             return;
         }
 
@@ -939,16 +939,16 @@ public class StudioPeriodicNotify
             }
             catch (Exception err)
             {
-                _log.Error(err);
+                _log.LogError(err, "SendOpensourceLetters");
             }
         }
 
-        _log.Info("End SendOpensourceTariffLetters");
+        _log.LogInformation("End SendOpensourceTariffLetters");
     }
 
     public void SendPersonalLetters(string senderName, DateTime scheduleDate)
     {
-        _log.Info("Start SendLettersPersonal...");
+        _log.LogInformation("Start SendLettersPersonal...");
 
         var activeTenants = _tenantManager.GetTenants().ToList();
 
@@ -964,7 +964,7 @@ public class StudioPeriodicNotify
                 _tenantManager.SetCurrentTenant(tenant.Id);
                 var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifyHelper.NotifySource);
 
-                _log.InfoFormat("Current tenant: {0}", tenant.Id);
+                _log.LogInformation("Current tenant: {0}", tenant.Id);
 
                 var users = _userManager.GetUsers(EmployeeStatus.Active);
 
@@ -984,7 +984,7 @@ public class StudioPeriodicNotify
                         catch (CultureNotFoundException exception)
                         {
 
-                            _log.Error(exception);
+                            _log.LogError(exception, "SendPersonalLetters");
                         }
                     }
 
@@ -1033,7 +1033,7 @@ public class StudioPeriodicNotify
                         continue;
                     }
 
-                    _log.InfoFormat(@"Send letter personal '{1}'  to {0} culture {2}. tenant id: {3} user culture {4} create on {5} now date {6}",
+                    _log.LogInformation(@"Send letter personal '{1}'  to {0} culture {2}. tenant id: {3} user culture {4} create on {5} now date {6}",
                       user.Email, action.ID, culture, tenant.Id, user.GetCulture(), user.CreateDate, scheduleDate.Date);
 
                     sendCount++;
@@ -1049,15 +1049,15 @@ public class StudioPeriodicNotify
                           new TagValue(CommonTags.Footer, _coreBaseSettings.CustomMode ? "personalCustomMode" : "personal"));
                 }
 
-                _log.InfoFormat("Total send count: {0}", sendCount);
+                _log.LogInformation("Total send count: {0}", sendCount);
             }
             catch (Exception err)
             {
-                _log.Error(err);
+                _log.LogError(err, "SendPersonalLetters");
             }
         }
 
-        _log.Info("End SendLettersPersonal.");
+        _log.LogInformation("End SendLettersPersonal.");
     }
 
     public static bool ChangeSubscription(Guid userId, StudioNotifyHelper studioNotifyHelper)

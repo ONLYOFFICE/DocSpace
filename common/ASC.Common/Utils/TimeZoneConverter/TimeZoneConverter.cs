@@ -82,7 +82,7 @@ public class TimeZoneConverter
             return mapZone.WindowsTimeZoneId;
         }
 
-        _logger.Error($"OlsonTimeZone {olsonTimeZoneId} not found");
+        _logger.LogError($"OlsonTimeZone {olsonTimeZoneId} not found");
 
         return defaultIfNoMatch ? "UTC" : null;
     }
@@ -103,7 +103,7 @@ public class TimeZoneConverter
             return mapZone.OlsonTimeZoneId;
         }
 
-        _logger.Error($"WindowsTimeZone {windowsTimeZoneId} not found");
+        _logger.LogError($"WindowsTimeZone {windowsTimeZoneId} not found");
 
         return defaultIfNoMatch ? "Etc/GMT" : null;
     }
@@ -137,20 +137,20 @@ public class TimeZoneConverter
                     return TimeZoneInfo.FindSystemTimeZoneById(mapZone.OlsonTimeZoneId);
                 }
 
-                _logger.InfoFormat("TimeZone {0} not found", timeZoneId);
+                _logger.LogInformation("TimeZone {0} not found", timeZoneId);
 
                 return defaultIfNoMatch ? GetTimeZoneByOffset(timeZoneId) ?? defaultTimezone : null;
             }
             catch (Exception error)
             {
-                _logger.Error(error);
+                _logger.LogError(error, "GetTimeZone");
 
                 return defaultIfNoMatch ? defaultTimezone : null;
             }
         }
         catch (Exception error)
         {
-            _logger.Error(error);
+            _logger.LogError(error, "GetTimeZone");
 
             return defaultIfNoMatch ? defaultTimezone : null;
         }
@@ -225,7 +225,7 @@ public class TimeZoneConverter
         catch (Exception error)
         {
             _mapZones = new MapZone[0];
-            _logger.Error(error);
+            _logger.LogError(error, "InitMapZones");
         }
     }
 
@@ -325,7 +325,7 @@ public class TimeZoneConverter
         catch (Exception error)
         {
             _translations = new Dictionary<string, string>();
-            _logger.Error(error);
+            _logger.LogError(error, "InitTranslations");
         }
     }
 

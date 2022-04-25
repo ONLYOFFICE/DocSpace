@@ -217,22 +217,22 @@ public class LicenseController : BaseSettingsController
         }
         catch (LicenseExpiredException ex)
         {
-            _log.Error("License upload", ex);
+            _log.LogError(ex, "License upload");
             throw new Exception(Resource.LicenseErrorExpired);
         }
         catch (LicenseQuotaException ex)
         {
-            _log.Error("License upload", ex);
+            _log.LogError(ex, "License upload");
             throw new Exception(Resource.LicenseErrorQuota);
         }
         catch (LicensePortalException ex)
         {
-            _log.Error("License upload", ex);
+            _log.LogError(ex, "License upload");
             throw new Exception(Resource.LicenseErrorPortal);
         }
         catch (Exception ex)
         {
-            _log.Error("License upload", ex);
+            _log.LogError(ex, "License upload");
             throw new Exception(Resource.LicenseError);
         }
     }

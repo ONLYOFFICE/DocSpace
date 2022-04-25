@@ -52,9 +52,9 @@ public sealed class BackupSchedulerService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.Debug("BackupSchedulerService is starting.");
+        _logger.LogDebug("BackupSchedulerService is starting.");
 
-        stoppingToken.Register(() => _logger.Debug("#1 BackupSchedulerService background task is stopping."));
+        stoppingToken.Register(() => _logger.LogDebug("#1 BackupSchedulerService background task is stopping."));
 
         while (!stoppingToken.IsCancellationRequested)
         {
@@ -64,21 +64,21 @@ public sealed class BackupSchedulerService : BackgroundService
 
             if (!await registerInstanceService.IsActive(RegisterInstanceWorkerService<BackupSchedulerService>.InstanceId))
             {
-                _logger.Debug($"BackupSchedulerService background task with instance id {RegisterInstanceWorkerService<BackupSchedulerService>.InstanceId} is't active.");
+                _logger.LogDebug($"BackupSchedulerService background task with instance id {RegisterInstanceWorkerService<BackupSchedulerService>.InstanceId} is't active.");
 
                 await Task.Delay(1000, stoppingToken);
 
                 continue;
             }
 
-            _logger.Debug("BackupSchedulerService background task is doing background work.");
+            _logger.LogDebug("BackupSchedulerService background task is doing background work.");
 
             ExecuteBackupScheduler(stoppingToken);
 
             await Task.Delay(_backupSchedulerPeriod, stoppingToken);
         }
 
-        _logger.Debug("BackupSchedulerService background task is stopping.");
+        _logger.LogDebug("BackupSchedulerService background task is stopping.");
     }
 
     private void ExecuteBackupScheduler(CancellationToken stoppingToken)
@@ -90,11 +90,11 @@ public sealed class BackupSchedulerService : BackgroundService
         var backupSchedule = serviceScope.ServiceProvider.GetRequiredService<Schedule>();
         var tenantManager = serviceScope.ServiceProvider.GetRequiredService<TenantManager>();
 
-        _logger.DebugFormat("started to schedule backups");
+        _logger.LogDebug("started to schedule backups");
 
         var backupsToSchedule = backupRepository.GetBackupSchedules().Where(schedule => backupSchedule.IsToBeProcessed(schedule)).ToList();
 
-        _logger.DebugFormat("{0} backups are to schedule", backupsToSchedule.Count);
+        _logger.LogDebug("{0} backups are to schedule", backupsToSchedule.Count);
 
         foreach (var schedule in backupsToSchedule)
         {
@@ -115,7 +115,7 @@ public sealed class BackupSchedulerService : BackgroundService
 
                         backupRepository.SaveBackupSchedule(schedule);
 
-                        _logger.DebugFormat("Start scheduled backup: {0}, {1}, {2}, {3}", schedule.TenantId, schedule.BackupMail, schedule.StorageType, schedule.StorageBasePath);
+                        _logger.LogDebug("Start scheduled backup: {0}, {1}, {2}, {3}", schedule.TenantId, schedule.BackupMail, schedule.StorageType, schedule.StorageBasePath);
 
                         _eventBus.Publish(new BackupRequestIntegrationEvent(
                                                  tenantId: schedule.TenantId,
@@ -130,17 +130,17 @@ public sealed class BackupSchedulerService : BackgroundService
                     }
                     else
                     {
-                        _logger.DebugFormat("Skip portal {0} not paid", schedule.TenantId);
+                        _logger.LogDebug("Skip portal {0} not paid", schedule.TenantId);
                     }
                 }
                 else
                 {
-                    _logger.DebugFormat("Skip portal {0} haven't access", schedule.TenantId);
+                    _logger.LogDebug("Skip portal {0} haven't access", schedule.TenantId);
                 }
             }
             catch (Exception error)
             {
-                _logger.Error("error while scheduling backups: {0}", error);
+                _logger.LogError(error, "error while scheduling backups: {0}");
             }
         }
     }

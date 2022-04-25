@@ -51,7 +51,7 @@ public class ElasticSearchIndexService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.Info("ElasticSearch Index Service running.");
+        _logger.LogInformation("ElasticSearch Index Service running.");
 
         try
         {
@@ -66,7 +66,7 @@ public class ElasticSearchIndexService : BackgroundService
         }
         catch (Exception e)
         {
-            _logger.Error("Subscribe on start", e);
+            _logger.LogError(e, "Subscribe on start");
         }
 
         using var scope = _serviceScopeFactory.CreateScope();
@@ -104,13 +104,12 @@ public class ElasticSearchIndexService : BackgroundService
                     return;
                 }
 
-                _logger.DebugFormat("Product reindex {0}", product.IndexName);
+                _logger.LogDebug("Product reindex {0}", product.IndexName);
                 product.ReIndex();
             }
             catch (Exception e)
             {
-                _logger.Error(e);
-                _logger.ErrorFormat("Product reindex {0}", product.IndexName);
+                _logger.LogError(e, string.Format("Product reindex {0}", product.IndexName));
             }
         }
 
@@ -121,14 +120,13 @@ public class ElasticSearchIndexService : BackgroundService
                 return;
             }
 
-            _logger.DebugFormat("Product {0}", product.IndexName);
+            _logger.LogDebug("Product {0}", product.IndexName);
             _indexNotify.Publish(new IndexAction() { Indexing = product.IndexName, LastIndexed = 0 }, CacheNotifyAction.Any);
             product.IndexAll();
         }
         catch (Exception e)
         {
-            _logger.Error(e);
-            _logger.ErrorFormat("Product {0}", product.IndexName);
+            _logger.LogError(e, string.Format("Product {0}", product.IndexName));
         }
     }
 
@@ -153,7 +151,7 @@ public class ElasticSearchIndexService : BackgroundService
         }
         catch (Exception e)
         {
-            _logger.Fatal("IndexAll", e);
+            _logger.LogCritical(e, "IndexAll");
 
             throw;
         }

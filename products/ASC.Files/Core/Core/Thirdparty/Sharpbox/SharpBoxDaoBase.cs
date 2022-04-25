@@ -215,7 +215,7 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
             }
             catch (Exception ex)
             {
-                _logger.Error("Sharpbox makeId error", ex);
+                _logger.LogError(ex, "Sharpbox makeId error");
             }
         }
         else if (entry != null)

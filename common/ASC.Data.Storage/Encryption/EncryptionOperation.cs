@@ -78,7 +78,7 @@ public class EncryptionOperation : DistributedTaskProgress
 
             if (_encryptionSettings.Status == EncryprtionStatus.Encrypted || _encryptionSettings.Status == EncryprtionStatus.Decrypted)
             {
-                log.Debug("Storage already " + _encryptionSettings.Status);
+                log.LogDebug("Storage already " + _encryptionSettings.Status);
 
                 return;
             }
@@ -121,7 +121,7 @@ public class EncryptionOperation : DistributedTaskProgress
         catch (Exception e)
         {
             Exception = e;
-            log.Error(e);
+            log.LogError(e, "EncryptionOperation");
         }
     }
 
@@ -144,7 +144,7 @@ public class EncryptionOperation : DistributedTaskProgress
 
         StepDone();
 
-        log.DebugFormat("Percentage: {0}", Percentage);
+        log.LogDebug("Percentage: {0}", Percentage);
     }
 
     private Task<List<string>> ReadProgressAsync(DiscDataStore store)
@@ -212,7 +212,7 @@ public class EncryptionOperation : DistributedTaskProgress
         {
             var logItem = $"{logParent}, File: {file}";
 
-            log.Debug(logItem);
+            log.LogDebug(logItem);
 
             try
             {
@@ -230,7 +230,7 @@ public class EncryptionOperation : DistributedTaskProgress
             catch (Exception e)
             {
                 _hasErrors = true;
-                log.Error(logItem + " " + e.Message, e);
+                log.LogError(e, (logItem + " " + e.Message));
 
                 // ERROR_DISK_FULL: There is not enough space on the disk.
                 // if (e is IOException && e.HResult == unchecked((int)0x80070070)) break;
@@ -280,7 +280,7 @@ public class EncryptionOperation : DistributedTaskProgress
 
         encryptionSettingsHelper.Save(_encryptionSettings);
 
-        log.Debug("Save new EncryptionSettings");
+        log.LogDebug("Save new EncryptionSettings");
     }
 
     private void ActivateTenants(TenantManager tenantManager, ILog log, NotifyHelper notifyHelper)
@@ -293,7 +293,7 @@ public class EncryptionOperation : DistributedTaskProgress
 
                 tenant.SetStatus(TenantStatus.Active);
                 tenantManager.SaveTenant(tenant);
-                log.DebugFormat("Tenant {0} SetStatus Active", tenant.Alias);
+                log.LogDebug("Tenant {0} SetStatus Active", tenant.Alias);
 
                 if (!_hasErrors)
                 {
@@ -307,7 +307,7 @@ public class EncryptionOperation : DistributedTaskProgress
                         {
                             notifyHelper.SendStorageDecryptionSuccess(tenant.Id);
                         }
-                        log.DebugFormat("Tenant {0} SendStorageEncryptionSuccess", tenant.Alias);
+                        log.LogDebug("Tenant {0} SendStorageEncryptionSuccess", tenant.Alias);
                     }
                 }
                 else
@@ -321,7 +321,7 @@ public class EncryptionOperation : DistributedTaskProgress
                         notifyHelper.SendStorageDecryptionError(tenant.Id);
                     }
 
-                    log.DebugFormat("Tenant {0} SendStorageEncryptionError", tenant.Alias);
+                    log.LogDebug("Tenant {0} SendStorageEncryptionError", tenant.Alias);
                 }
             }
         }

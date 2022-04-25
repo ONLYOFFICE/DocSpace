@@ -44,7 +44,7 @@ public class BackupDeleteScheldureRequestIntegrationEventHandler : IIntegrationE
 
     public async Task Handle(IntegrationEvent @event)
     {
-        _logger.InfoFormat("----- Handling integration event: {IntegrationEventId} at {AppName} - ({@IntegrationEvent})", @event.Id, Program.AppName, @event);
+        _logger.LogInformation("----- Handling integration event: {IntegrationEventId} at {AppName} - ({@IntegrationEvent})", @event.Id, Program.AppName, @event);
 
         _backupService.DeleteSchedule(@event.TenantId);
 

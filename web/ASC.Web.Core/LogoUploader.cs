@@ -141,7 +141,7 @@ public class StorageHelper
         }
         catch (Exception ex)
         {
-            _logger.Error(ex);
+            _logger.LogError(ex, "SaveTmpLogo");
             return null;
         }
     }
@@ -166,7 +166,7 @@ public class StorageHelper
         }
         catch (Exception e)
         {
-            _logger.Error(e);
+            _logger.LogError(e, "DeleteLogo");
         }
     }
 

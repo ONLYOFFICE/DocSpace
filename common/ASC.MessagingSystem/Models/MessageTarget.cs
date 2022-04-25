@@ -61,7 +61,7 @@ public class MessageTarget
         }
         catch (Exception e)
         {
-            _logger.Error("EventMessageTarget exception", e);
+            _logger.LogError(e, "EventMessageTarget exception");
 
             return null;
         }
@@ -79,7 +79,7 @@ public class MessageTarget
         }
         catch (Exception e)
         {
-            _logger.Error("EventMessageTarget exception", e);
+            _logger.LogError(e, "EventMessageTarget exception");
 
             return null;
         }

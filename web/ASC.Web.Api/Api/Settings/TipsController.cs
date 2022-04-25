@@ -98,7 +98,7 @@ public class TipsController : BaseSettingsController
             }
             catch (Exception e)
             {
-                _log.Error(e.Message, e);
+                _log.LogError(e, e.Message);
             }
         }
 

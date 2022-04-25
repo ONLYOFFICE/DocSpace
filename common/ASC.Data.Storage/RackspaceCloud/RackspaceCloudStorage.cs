@@ -261,8 +261,7 @@ public class RackspaceCloudStorage : BaseStorage
             }
             catch (Exception exp)
             {
-                _logger.InfoFormat("The invalidation {0} failed", _public_container + "/" + MakePath(domain, path));
-                _logger.Error(exp);
+                _logger.LogError(exp, string.Format("The invalidation {0} failed", _public_container + "/" + MakePath(domain, path)));
             }
         }
 

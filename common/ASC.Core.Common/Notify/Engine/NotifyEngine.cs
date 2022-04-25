@@ -142,7 +142,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
                         }
                         catch (Exception error)
                         {
-                            _logger.Error(error);
+                            _logger.LogError(error, "InvokeSendMethod");
                         }
                         w.UpdateScheduleDate(now);
                     }
@@ -172,7 +172,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
         }
         catch (Exception e)
         {
-            _logger.Error(e);
+            _logger.LogError(e, "NotifyScheduler");
         }
     }
 
@@ -205,7 +205,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
                     }
                     catch (Exception e)
                     {
-                        _logger.Error(e);
+                        _logger.LogError(e, "SendNotify");
                     }
                 }
                 else
@@ -220,7 +220,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
         }
         catch (Exception e)
         {
-            _logger.Error(e);
+            _logger.LogError(e, "NotifySender");
         }
     }
 
@@ -248,7 +248,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
         {
             result = new NotifyResult(sendResponces.Aggregate((SendResult)0, (s, r) => r.Result), sendResponces);
         }
-        _logger.Debug(result);
+        _logger.LogDebug(result.ToString());
 
         return result;
     }
@@ -357,7 +357,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
         catch (Exception ex)
         {
             responses.Add(new SendResponse(request.NotifyAction, null, request.Recipient, SendResult.Impossible));
-            _logger.Error("Prepare", ex);
+            _logger.LogError(ex, "Prepare");
         }
 
         if (request._senderNames != null && request._senderNames.Length > 0)
@@ -500,7 +500,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
         }
         catch (Exception exc)
         {
-            _logger.Warn("error styling message", exc);
+            _logger.LogWarning(exc, "error styling message");
         }
     }
 
@@ -614,7 +614,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
             }
             catch (Exception e)
             {
-                Logger.Error(e);
+                Logger.LogError(e, "UpdateScheduleDate");
             }
         }
 
@@ -630,7 +630,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
                     }
                     catch (Exception e)
                     {
-                        Logger.Error(e);
+                        Logger.LogError(e, "InvokeSendMethod");
                     }
                 }).Wait();
             }

@@ -87,7 +87,7 @@ public class CapabilitiesController : ControllerBase
         }
         catch (Exception ex)
         {
-            _log.Error(ex.Message);
+            _log.LogError(ex.Message);
         }
 
         try
@@ -101,7 +101,7 @@ public class CapabilitiesController : ControllerBase
         }
         catch (Exception ex)
         {
-            _log.Error(ex.Message);
+            _log.LogError(ex.Message);
         }
 
         try
@@ -125,7 +125,7 @@ public class CapabilitiesController : ControllerBase
         }
         catch (Exception ex)
         {
-            _log.Error(ex.Message);
+            _log.LogError(ex.Message);
         }
 
         return result;

@@ -84,9 +84,9 @@ public class RemoveProgressItem : DistributedTaskProgress
             long crmSpace;
             GetUsageSpace(webItemManagerSecurity, out var docsSpace, out var mailSpace, out var talkSpace);
 
-            logger.InfoFormat("deleting user data for {0} ", FromUser);
+            logger.LogInformation("deleting user data for {0} ", FromUser);
 
-            logger.Info("deleting of data from documents");
+            logger.LogInformation("deleting of data from documents");
 
             //_docService.DeleteStorage(_userId);
             Percentage = 25;
@@ -94,7 +94,7 @@ public class RemoveProgressItem : DistributedTaskProgress
 
             if (!coreBaseSettings.CustomMode)
             {
-                logger.Info("deleting of data from crm");
+                logger.LogInformation("deleting of data from crm");
 
 
                 //using (var scope = DIHelper.Resolve(_tenantId))
@@ -112,13 +112,13 @@ public class RemoveProgressItem : DistributedTaskProgress
 
             PublishChanges();
 
-            logger.Info("deleting of data from mail");
+            logger.LogInformation("deleting of data from mail");
 
             //_mailEraser.ClearUserMail(_userId);
             Percentage = 75;
             PublishChanges();
 
-            logger.Info("deleting of data from talk");
+            logger.LogInformation("deleting of data from talk");
             DeleteTalkStorage(storageFactory);
             Percentage = 99;
             PublishChanges();
@@ -130,14 +130,14 @@ public class RemoveProgressItem : DistributedTaskProgress
         }
         catch (Exception ex)
         {
-            logger.Error(ex);
+            logger.LogError(ex, "RemoveProgressItem");
             Status = DistributedTaskStatus.Failted;
             Exception = ex;
             SendErrorNotify(studioNotifyService, ex.Message, userName);
         }
         finally
         {
-            logger.Info("data deletion is complete");
+            logger.LogInformation("data deletion is complete");
             IsCompleted = true;
             PublishChanges();
         }

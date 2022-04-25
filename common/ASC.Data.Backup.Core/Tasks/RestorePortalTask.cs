@@ -78,9 +78,9 @@ public class RestorePortalTask : PortalTaskBase
 
     public override void RunJob()
     {
-        Logger.Debug("begin restore portal");
+        Logger.LogDebug("begin restore portal");
 
-        Logger.Debug("begin restore data");
+        Logger.LogDebug("begin restore data");
 
         using (var dataReader = new ZipReadOperator(BackupFilePath))
         {
@@ -112,13 +112,13 @@ public class RestorePortalTask : PortalTaskBase
                 }
             }
 
-            Logger.Debug("end restore data");
+            Logger.LogDebug("end restore data");
 
             if (ProcessStorage)
             {
                 if (_coreBaseSettings.Standalone)
                 {
-                    Logger.Debug("clear cache");
+                    Logger.LogDebug("clear cache");
                     _ascCacheNotify.ClearCache();
                 }
 
@@ -133,21 +133,21 @@ public class RestorePortalTask : PortalTaskBase
 
         if (_coreBaseSettings.Standalone)
         {
-            Logger.Debug("refresh license");
+            Logger.LogDebug("refresh license");
             try
             {
                 _licenseReader.RejectLicense();
             }
             catch (Exception ex)
             {
-                Logger.Error(ex);
+                Logger.LogError(ex, "RunJob");
             }
 
-            Logger.Debug("clear cache");
+            Logger.LogDebug("clear cache");
             _ascCacheNotify.ClearCache();
         }
 
-        Logger.Debug("end restore portal");
+        Logger.LogDebug("end restore portal");
     }
 
     private void RestoreFromDump(IDataReadOperator dataReader)
@@ -204,7 +204,7 @@ public class RestorePortalTask : PortalTaskBase
 
     private async Task RestoreFromDumpFile(IDataReadOperator dataReader, string fileName)
     {
-        Logger.DebugFormat("Restore from {0}", fileName);
+        Logger.LogDebug("Restore from {0}", fileName);
         using (var stream = dataReader.GetEntry(fileName))
         {
             await RunMysqlFile(stream);
@@ -264,7 +264,7 @@ public class RestorePortalTask : PortalTaskBase
 
     private void DoRestoreStorage(IDataReadOperator dataReader)
     {
-        Logger.Debug("begin restore storage");
+        Logger.LogDebug("begin restore storage");
 
         var fileGroups = GetFilesToProcess(dataReader).GroupBy(file => file.Module).ToList();
         var groupsProcessed = 0;
@@ -294,7 +294,7 @@ public class RestorePortalTask : PortalTaskBase
                         }
                         catch (Exception error)
                         {
-                            Logger.WarnFormat("can't restore file ({0}:{1}): {2}", file.Module, file.Path, error);
+                            Logger.LogWarning("can't restore file ({0}:{1}): {2}", file.Module, file.Path, error);
                         }
                     }
                 }
@@ -315,12 +315,12 @@ public class RestorePortalTask : PortalTaskBase
             SetStepCompleted();
         }
 
-        Logger.Debug("end restore storage");
+        Logger.LogDebug("end restore storage");
     }
 
     private void DoDeleteStorage(IEnumerable<string> storageModules, IEnumerable<Tenant> tenants)
     {
-        Logger.Debug("begin delete storage");
+        Logger.LogDebug("begin delete storage");
 
         foreach (var tenant in tenants)
         {
@@ -343,7 +343,7 @@ public class RestorePortalTask : PortalTaskBase
                         },
                         domain,
                         5,
-                        onFailure: error => Logger.WarnFormat("Can't delete files for domain {0}: \r\n{1}", domain, error)
+                        onFailure: error => Logger.LogWarning("Can't delete files for domain {0}: \r\n{1}", domain, error)
                     );
                 }
 
@@ -351,7 +351,7 @@ public class RestorePortalTask : PortalTaskBase
             }
         }
 
-        Logger.Debug("end delete storage");
+        Logger.LogDebug("end delete storage");
     }
 
     private IEnumerable<BackupFileInfo> GetFilesToProcess(IDataReadOperator dataReader)

@@ -68,10 +68,10 @@ public class DBResourceManager : ResourceManager
             }
             catch (ReflectionTypeLoadException rtle)
             {
-                log.WarnFormat("Can not GetTypes() from assembly {0}, try GetExportedTypes(), error: {1}", a.FullName, rtle.Message);
+                log.LogWarning("Can not GetTypes() from assembly {0}, try GetExportedTypes(), error: {1}", a.FullName, rtle.Message);
                 foreach (var e in rtle.LoaderExceptions)
                 {
-                    log.Info(e.Message);
+                    log.LogInformation(e.Message);
                 }
 
                 try
@@ -80,7 +80,7 @@ public class DBResourceManager : ResourceManager
                 }
                 catch (Exception err)
                 {
-                    log.ErrorFormat("Can not GetExportedTypes() from assembly {0}: {1}", a.FullName, err.Message);
+                    log.LogError("Can not GetExportedTypes() from assembly {0}: {1}", a.FullName, err.Message);
                 }
             }
             foreach (var type in types)
@@ -159,7 +159,7 @@ public class DBResourceManager : ResourceManager
             }
             catch (Exception err)
             {
-                _logger.Error(err);
+                _logger.LogError(err, "DBResourceSet");
             }
 
             _invariant = invariant;
@@ -178,7 +178,7 @@ public class DBResourceManager : ResourceManager
             }
             catch (Exception err)
             {
-                _logger.ErrorFormat("Can not get resource from {0} for {1}: GetString({2}), {3}", _fileName, _culture, name, err);
+                _logger.LogError("Can not get resource from {0} for {1}: GetString({2}), {3}", _fileName, _culture, name, err);
             }
 
             if (_invariant != null && result == null)
@@ -209,7 +209,7 @@ public class DBResourceManager : ResourceManager
             }
             catch (Exception err)
             {
-                _logger.Error(err);
+                _logger.LogError(err, "DBResourceSet");
             }
 
             return result.GetEnumerator();
@@ -274,7 +274,7 @@ public class WhiteLabelHelper
         }
         catch (Exception e)
         {
-            _logger.Error("SetNewText", e);
+            _logger.LogError(e, "SetNewText");
         }
     }
 
@@ -286,7 +286,7 @@ public class WhiteLabelHelper
         }
         catch (Exception e)
         {
-            _logger.Error("RestoreOldText", e);
+            _logger.LogError(e, "RestoreOldText");
         }
     }
 
@@ -334,7 +334,7 @@ public class WhiteLabelHelper
             }
             catch (Exception e)
             {
-                _logger.Error("ReplaceLogo", e);
+                _logger.LogError(e, "ReplaceLogo");
             }
         }
 

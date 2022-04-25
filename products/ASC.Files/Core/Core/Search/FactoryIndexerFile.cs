@@ -198,7 +198,7 @@ public class FactoryIndexerFile : FactoryIndexer<DbFile>
         }
         catch (Exception e)
         {
-            Logger.Error(e);
+            Logger.LogError(e, "FactoryIndexerFile");
             throw;
         }
     }

@@ -195,7 +195,7 @@ public class ReportState
         }
         catch (Exception e)
         {
-            logger.Error("DocbuilderReportsUtility error", e);
+            logger.LogError(e, "DocbuilderReportsUtility error");
             Exception = e.Message;
             Status = ReportStatus.Failed;
         }
@@ -224,7 +224,7 @@ public class ReportState
             }
             catch (Exception e)
             {
-                logger.Error(" PublishTaskInfo DocbuilderReportsUtility", e);
+                logger.LogError(e, " PublishTaskInfo DocbuilderReportsUtility");
                 if (tries == 0)
                 {
                     throw;

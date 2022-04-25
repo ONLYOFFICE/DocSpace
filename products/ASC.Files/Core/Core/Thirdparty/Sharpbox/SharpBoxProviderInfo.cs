@@ -86,7 +86,7 @@ internal class SharpBoxProviderInfo : IProviderInfo
         }
         catch (SharpBoxException ex)
         {
-            Logger.Error("Sharpbox CheckAccess error", ex);
+            Logger.LogError(ex, "Sharpbox CheckAccess error");
 
             return Task.FromResult(false);
         }

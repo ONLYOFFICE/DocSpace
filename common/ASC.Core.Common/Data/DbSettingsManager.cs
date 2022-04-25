@@ -224,7 +224,7 @@ public class DbSettingsManager
         }
         catch (Exception ex)
         {
-            Logger.Error(ex);
+            Logger.LogError(ex, "SaveSettingsFor");
 
             return false;
         }
@@ -265,7 +265,7 @@ public class DbSettingsManager
         }
         catch (Exception ex)
         {
-            Logger.Error(ex);
+            Logger.LogError(ex, "LoadSettingsFor");
         }
 
         return def;

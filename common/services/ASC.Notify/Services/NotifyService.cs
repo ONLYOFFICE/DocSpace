@@ -57,7 +57,7 @@ public class NotifyService : IHostedService
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        _logger.Info("Notify Service running.");
+        _logger.LogInformation("Notify Service running.");
 
         _cacheNotify.Subscribe((n) => SendNotifyMessage(n), CacheNotifyAction.InsertOrUpdate);
         _cacheInvoke.Subscribe((n) => InvokeSendMethod(n), CacheNotifyAction.InsertOrUpdate);
@@ -72,7 +72,7 @@ public class NotifyService : IHostedService
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
-        _logger.Info("Notify Service is stopping.");
+        _logger.LogInformation("Notify Service is stopping.");
 
         _cacheNotify.Unsubscribe(CacheNotifyAction.InsertOrUpdate);
         _cacheInvoke.Unsubscribe(CacheNotifyAction.InsertOrUpdate);
@@ -88,7 +88,7 @@ public class NotifyService : IHostedService
         }
         catch (Exception e)
         {
-            _logger.Error(e);
+            _logger.LogError(e, "SendNotifyMessage");
         }
     }
 
@@ -129,7 +129,7 @@ public class NotifyService : IHostedService
         _notifyConfiguration.Configure();
         foreach (var pair in _notifyServiceCfg.Schedulers.Where(r => r.MethodInfo != null))
         {
-            _logger.DebugFormat("Start scheduler {0} ({1})", pair.Name, pair.MethodInfo);
+            _logger.LogDebug("Start scheduler {0} ({1})", pair.Name, pair.MethodInfo);
             pair.MethodInfo.Invoke(null, null);
         }
     }
