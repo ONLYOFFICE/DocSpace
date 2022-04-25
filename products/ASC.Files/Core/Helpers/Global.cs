@@ -335,6 +335,11 @@ public class GlobalFolder
         return result;
     }
 
+    public async ValueTask<T> GetFolderVirtualRooms<T>(IDaoFactory daoFactory)
+    {
+        return (T)Convert.ChangeType(await GetFolderVirtualRooms(daoFactory), typeof(T));
+    }
+
     public async ValueTask<int> GetFolderArchive(IDaoFactory daoFactory)
     {
         if (!_coreBaseSettings.DocSpace)
@@ -352,6 +357,11 @@ public class GlobalFolder
         }
 
         return result;
+    }
+
+    public async ValueTask<T> GetFolderArchive<T>(IDaoFactory daoFactory)
+    {
+        return (T)Convert.ChangeType(await GetFolderArchive(daoFactory), typeof(T));
     }
 
     internal static readonly ConcurrentDictionary<string, Lazy<int>> UserRootFolderCache =
