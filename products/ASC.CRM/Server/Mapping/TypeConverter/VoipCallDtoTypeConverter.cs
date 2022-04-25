@@ -61,8 +61,8 @@ namespace ASC.CRM.Mapping
             var result = new VoipCallDto
             {
                 Id = source.Id,
-                From = source.From,
-                To = source.To,
+                From = source.NumberFrom,
+                To = source.NumberTo,
                 Status = source.Status,
                 AnsweredBy = _employeeWraperHelper.Get(source.AnsweredBy),
                 DialDate = _apiDateTimeHelper.Get(source.DialDate),

@@ -63,7 +63,7 @@ namespace ASC.CRM.Api
     {
         private readonly FileUploader _fileUploader;
         private readonly ASC.Files.Core.Data.DaoFactory _filesDaoFactory;
-        private readonly FileWrapperHelper _fileWrapperHelper;
+        private readonly FileDtoHelper _fileWrapperHelper;
         private readonly FilesSettingsHelper _filesSettingsHelper;
         private readonly ApiContext _apiContext;
         private readonly MessageService _messageService;
@@ -77,7 +77,7 @@ namespace ASC.CRM.Api
                      ApiContext apiContext,
                      MessageTarget messageTarget,
                      MessageService messageService,
-                     FileWrapperHelper fileWrapperHelper,
+                     FileDtoHelper fileWrapperHelper,
                      ASC.Files.Core.Data.DaoFactory filesDaoFactory,
                      FileUploader fileUploader,
                      SecurityContext securityContext,
