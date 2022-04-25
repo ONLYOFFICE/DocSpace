@@ -1080,6 +1080,8 @@ class FilesActionStore {
     return this.getAnotherFolderOptions(itemsCollection, t);
   };
 
+  onMarkAsRead = (item) => this.markAsRead([], [`${item.id}`], item);
+
   openFileAction = (item) => {
     const {
       setIsLoading,
@@ -1130,7 +1132,7 @@ class FilesActionStore {
       }
 
       if ((fileStatus & FileStatus.IsNew) === FileStatus.IsNew)
-        this.onMarkAsRead(id);
+        this.onMarkAsRead(item);
 
       if (canWebEdit || canViewedDocs) {
         let tab =
