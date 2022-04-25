@@ -10,9 +10,7 @@ const FileTile = (props) => {
   return (
     <div ref={props.selectableRef}>
       <Tile key={item.id} item={item}>
-        <SimpleFilesTileContent
-        //sideColor={theme.filesSection.tilesView.sideColor}
-        >
+        <SimpleFilesTileContent>
           <Link
             className="item-file-name"
             containerWidth="100%"
@@ -20,8 +18,6 @@ const FileTile = (props) => {
             fontWeight="600"
             fontSize={isDesktop ? "13px" : "14px"}
             target="_blank"
-            //{...linkStyles} //TODO: OFORM
-            //color={theme.filesSection.tilesView.color}
             isTextOverflow
           >
             {item.attributes.name_form}

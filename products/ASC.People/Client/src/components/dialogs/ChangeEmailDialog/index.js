@@ -134,7 +134,7 @@ class ChangeEmailDialogComponent extends React.Component {
         isLoading={!tReady}
         visible={visible}
         onClose={onClose}
-        isTabletView={isTabletView}
+        displayType="modal"
       >
         <ModalDialog.Header>{t("EmailChangeTitle")}</ModalDialog.Header>
         <ModalDialog.Body>

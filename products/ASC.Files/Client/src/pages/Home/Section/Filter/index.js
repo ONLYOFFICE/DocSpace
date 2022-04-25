@@ -112,7 +112,8 @@ const SectionFilterContent = ({
 
   const onChangeViewAs = (view) => {
     if (view === "row") {
-      setViewAs("table");
+      if (sectionWidth < 1025 || isMobile) setViewAs("row");
+      else setViewAs("table");
     } else {
       setViewAs(view);
     }

@@ -5,12 +5,7 @@ import DropDown from "@appserver/components/drop-down";
 
 import styled, { css } from "styled-components";
 import DropDownItem from "@appserver/components/drop-down-item";
-import {
-  isDesktop,
-  isTablet,
-  isMobile,
-  isMobileOnly,
-} from "react-device-detect";
+import { isMobile } from "react-device-detect";
 import { Base } from "@appserver/components/themes";
 import { mobile, tablet } from "@appserver/components/utils/device";
 import CrossIcon from "@appserver/components/public/static/images/cross.react.svg";
@@ -25,12 +20,7 @@ const StyledDropDown = styled(DropDown)`
     right: 16px !important;
   }
 
-  ${isMobile &&
-  css`
-    right: 16px !important;
-  `}
-
-  @media ${mobile} {
+  @media (max-width: 428px) {
     position: fixed;
 
     top: unset !important;
@@ -43,22 +33,6 @@ const StyledDropDown = styled(DropDown)`
 
     border-radius: 6px 6px 0px 0px !important;
   }
-
-  ${isMobileOnly &&
-  css`
-    position: fixed;
-
-    top: unset !important;
-    right: 0 !important;
-    left: 0 !important;
-    bottom: 0 !important;
-
-    width: 100vw;
-
-    border: none !important;
-
-    border-radius: 6px 6px 0px 0px !important;
-  `}
 `;
 
 const StyledControlContainer = styled.div`
@@ -70,12 +44,12 @@ const StyledControlContainer = styled.div`
   right: 10px;
   border-radius: 100px;
   cursor: pointer;
-  display: ${isMobileOnly ? "flex" : "none"};
+  display: none;
   align-items: center;
   justify-content: center;
   z-index: 290;
 
-  @media ${mobile} {
+  @media (max-width: 428px) {
     display: flex;
   }
 `;

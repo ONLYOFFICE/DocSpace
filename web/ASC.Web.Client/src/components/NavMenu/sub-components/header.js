@@ -224,7 +224,8 @@ const HeaderComponent = ({
         needNavMenu={needNavMenu}
         isDesktopView={isDesktopView}
       >
-        {currentProductId !== "home" && (
+        {((isPersonal && location.pathname.includes("files")) ||
+          (!isPersonal && currentProductId !== "home")) && (
           <HeaderCatalogBurger onClick={toggleArticleOpen} />
         )}
         <LinkWithoutRedirect className="header-logo-wrapper" to={defaultPage}>
