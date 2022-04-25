@@ -338,7 +338,8 @@ public class EntryManager
         _global = global;
     }
 
-    public async Task<(IEnumerable<FileEntry> Entries, int Total)> GetEntriesAsync<T>(Folder<T> parent, int from, int count, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy)
+    public async Task<(IEnumerable<FileEntry> Entries, int Total)> GetEntriesAsync<T>(Folder<T> parent, int from, int count, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy,
+        SearchArea searchArea = SearchArea.Active)
     {
         int total = 0;
 
@@ -515,25 +516,9 @@ public class EntryManager
         }
         else if (parent.FolderType == FolderType.VirtualRooms)
         {
-            entries = await fileSecurity.GetVirtualRoomsAsync(parent.Id, filter, searchText, searchInContent, orderBy);
+            entries = await fileSecurity.GetVirtualRoomsAsync(filter, subjectId, searchText, searchInContent, withSubfolders, orderBy, searchArea);
 
             CalculateTotal();
-        }
-        else if (parent.FolderType != FolderType.Archive)
-        {
-            if (_global.IsAdministrator)
-            {
-                var folderDao = _daoFactory.GetFolderDao<T>();
-                var thirdPartyFolderDao = _daoFactory.GetFolderDao<string>();
-
-                var folders = await folderDao.GetFoldersAsync(parent.Id, orderBy, filter, subjectGroup, subjectId, searchText, withSubfolders).ToListAsync();
-
-                entries = entries.Concat(folders);
-            }
-            else
-            {
-                entries = await fileSecurity.GetArchiveAsync(parent.Id, filter, searchText, orderBy);
-            }
         }
         else
         {
