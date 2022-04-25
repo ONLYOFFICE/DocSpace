@@ -65,7 +65,7 @@ const mobileDropDown = css`
 const StyledDropDown = styled(DropDown)`
   position: ${(props) => props.theme.mainButtonMobile.dropDown.position};
   width: ${(props) => props.theme.mainButtonMobile.dropDown.width};
-  max-width: calc(100vw - 64px);
+  max-width: calc(100vw - 48px);
 
   right: ${(props) => props.theme.mainButtonMobile.dropDown.right};
   bottom: ${(props) => props.theme.mainButtonMobile.dropDown.bottom};
