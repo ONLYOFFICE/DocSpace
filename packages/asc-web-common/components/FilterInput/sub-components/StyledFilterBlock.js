@@ -10,8 +10,8 @@ import CrossIcon from "@appserver/components/public/static/images/cross.react.sv
 const mobileView = css`
   top: 64px;
 
-  width: 100vw !important;
-  height: calc(100vh - 64px) !important;
+  width: 100% !important;
+  height: calc(100% - 64px) !important;
 `;
 
 const StyledFilterBlock = styled.div`
@@ -20,7 +20,7 @@ const StyledFilterBlock = styled.div`
   right: 0;
 
   width: 480px;
-  height: 100vh;
+  height: 100%;
 
   z-index: 400;
 
@@ -248,12 +248,12 @@ const StyledFilterBlockFooter = styled.div`
   justify-content: center;
 
   @media ${mobile} {
-    width: 100vw;
+    width: 100%;
   }
 
   ${isMobileOnly &&
   css`
-    width: 100vw;
+    width: 100%;
   `}
 `;
 
