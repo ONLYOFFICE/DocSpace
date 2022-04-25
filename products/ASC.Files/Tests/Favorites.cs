@@ -39,8 +39,8 @@ class Favorites : BaseFilesTests
     public override async Task SetUp()
     {
         await base.SetUp();
-        TestFolder = await FoldersControllerHelper.CreateFolderAsync(GlobalFolderHelper.FolderMy, "TestFolder").ConfigureAwait(false);
-        TestFile = await FilesControllerHelper.CreateFileAsync(GlobalFolderHelper.FolderMy, "TestFile", default, default).ConfigureAwait(false);
+        TestFolder = await _foldersControllerHelper.CreateFolderAsync(_globalFolderHelper.FolderMy, "TestFolder").ConfigureAwait(false);
+        TestFile = await _filesControllerHelper.CreateFileAsync(_globalFolderHelper.FolderMy, "TestFile", default, default).ConfigureAwait(false);
         folderIds = new List<int> { TestFolder.Id };
         fileIds = new List<int> { TestFile.Id };
     }
@@ -48,7 +48,7 @@ class Favorites : BaseFilesTests
     [OneTimeSetUp]
     public void Authenticate()
     {
-        SecurityContext.AuthenticateMe(CurrentTenant.OwnerId);
+        _securityContext.AuthenticateMe(_currentTenant.OwnerId);
     }
 
     [OneTimeTearDown]
@@ -63,7 +63,7 @@ class Favorites : BaseFilesTests
     [Order(1)]
     public void CreateFolderReturnsFolderWrapper(string folderTitle)
     {
-        var folderWrapper = Assert.ThrowsAsync<InvalidOperationException>(async () => await FoldersControllerHelper.CreateFolderAsync(await GlobalFolderHelper.FolderFavoritesAsync, folderTitle));
+        var folderWrapper = Assert.ThrowsAsync<InvalidOperationException>(async () => await _foldersControllerHelper.CreateFolderAsync(await _globalFolderHelper.FolderFavoritesAsync, folderTitle));
         Assert.That(folderWrapper.Message == "You don't have enough permission to create");
     }
 
@@ -72,8 +72,8 @@ class Favorites : BaseFilesTests
     [Order(1)]
     public async Task CreateFileReturnsFolderWrapper(string fileTitle)
     {
-        var fileWrapper = await FilesControllerHelper.CreateFileAsync(await GlobalFolderHelper.FolderShareAsync, fileTitle, default, default);
-        Assert.AreEqual(fileWrapper.FolderId, GlobalFolderHelper.FolderMy);
+        var fileWrapper = await _filesControllerHelper.CreateFileAsync(await _globalFolderHelper.FolderShareAsync, fileTitle, default, default);
+        Assert.AreEqual(fileWrapper.FolderId, _globalFolderHelper.FolderMy);
     }
 
     [Test]
@@ -81,7 +81,7 @@ class Favorites : BaseFilesTests
     [Order(2)]
     public async Task GetFavoriteFolderToFolderWrapper()
     {
-        var favorite = await FileStorageService.AddToFavoritesAsync(folderIds, fileIds);
+        var favorite = await _fileStorageService.AddToFavoritesAsync(folderIds, fileIds);
 
         Assert.IsNotNull(favorite);
     }
@@ -90,7 +90,7 @@ class Favorites : BaseFilesTests
     [Order(3)]
     public async Task DeleteFavoriteFolderToFolderWrapper()
     {
-        var favorite = await FileStorageService.DeleteFavoritesAsync(folderIds, fileIds);
+        var favorite = await _fileStorageService.DeleteFavoritesAsync(folderIds, fileIds);
 
         Assert.IsNotNull(favorite);
 

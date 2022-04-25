@@ -36,15 +36,15 @@ class Trash : BaseFilesTests
     public override async Task SetUp()
     {
         await base.SetUp();
-        TestFolder = await FoldersControllerHelper.CreateFolderAsync(GlobalFolderHelper.FolderMy, "TestFolder");
-        TestFile = await FilesControllerHelper.CreateFileAsync(GlobalFolderHelper.FolderMy, "TestFile", default, default);
+        TestFolder = await _foldersControllerHelper.CreateFolderAsync(_globalFolderHelper.FolderMy, "TestFolder");
+        TestFile = await _filesControllerHelper.CreateFileAsync(_globalFolderHelper.FolderMy, "TestFile", default, default);
 
     }
 
     [OneTimeSetUp]
     public void Authenticate()
     {
-        SecurityContext.AuthenticateMe(CurrentTenant.OwnerId);
+        _securityContext.AuthenticateMe(_currentTenant.OwnerId);
     }
 
     [OneTimeTearDown]
@@ -59,7 +59,7 @@ class Trash : BaseFilesTests
     [Order(1)]
     public void CreateFolderReturnsFolderWrapper(string folderTitle)
     {
-        var folderWrapper = Assert.ThrowsAsync<InvalidOperationException>(async () => await FoldersControllerHelper.CreateFolderAsync((int)GlobalFolderHelper.FolderTrash, folderTitle));
+        var folderWrapper = Assert.ThrowsAsync<InvalidOperationException>(async () => await _foldersControllerHelper.CreateFolderAsync((int)_globalFolderHelper.FolderTrash, folderTitle));
         Assert.That(folderWrapper.Message == "You don't have enough permission to create");
     }
     [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCreateFileItems))]
@@ -67,8 +67,8 @@ class Trash : BaseFilesTests
     [Order(2)]
     public async Task CreateFileReturnsFolderWrapper(string fileTitle)
     {
-        var fileWrapper = await FilesControllerHelper.CreateFileAsync((int)GlobalFolderHelper.FolderTrash, fileTitle, default, default);
-        Assert.AreEqual(fileWrapper.FolderId, GlobalFolderHelper.FolderMy);
+        var fileWrapper = await _filesControllerHelper.CreateFileAsync((int)_globalFolderHelper.FolderTrash, fileTitle, default, default);
+        Assert.AreEqual(fileWrapper.FolderId, _globalFolderHelper.FolderMy);
     }
 
     [Test]
@@ -76,13 +76,13 @@ class Trash : BaseFilesTests
     [Order(2)]
     public async Task DeleteFileFromTrash()
     {
-        var Empty = await OperationControllerHelper.EmptyTrashAsync();
+        var Empty = await _operationControllerHelper.EmptyTrashAsync();
 
         List<FileOperationResult> statuses;
 
         while (true)
         {
-            statuses = FileStorageService.GetTasksStatuses();
+            statuses = _fileStorageService.GetTasksStatuses();
 
             if (statuses.TrueForAll(r => r.Finished))
                 break;

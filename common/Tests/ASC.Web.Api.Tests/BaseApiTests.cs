@@ -25,9 +25,42 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 
-using SecurityContext = ASC.Core.SecurityContext;
-
 namespace ASC.Web.Api.Tests;
+
+class ApiApplication : WebApplicationFactory<Program>
+{
+    private readonly Dictionary<string, string> _args;
+
+    public ApiApplication(Dictionary<string, string> args)
+    {
+        _args = args;
+    }
+
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
+    {
+        foreach (var s in _args)
+        {
+            builder.UseSetting(s.Key, s.Value);
+        }
+
+        builder.ConfigureAppConfiguration((context, a) =>
+        {
+            (a.Sources[0] as ChainedConfigurationSource).Configuration["pathToConf"] = a.Build()["pathToConf"];
+        });
+
+        builder.ConfigureServices(services =>
+        {
+            var DIHelper = new ASC.Common.DIHelper();
+            DIHelper.Configure(services);
+            foreach (var a in Assembly.Load("ASC.Files").GetTypes().Where(r => r.IsAssignableTo<ControllerBase>()))
+            {
+                DIHelper.TryAdd(a);
+            }
+        });
+
+        base.ConfigureWebHost(builder);
+    }
+}
 
 [SetUpFixture]
 public class MySetUpClass
@@ -37,11 +70,17 @@ public class MySetUpClass
     [OneTimeSetUp]
     public void CreateDb()
     {
-        var host = Program.CreateHostBuilder(new string[] {
-            "--pathToConf", Path.Combine("..", "..", "..", "..","..", "..", "config"),
-            "--ConnectionStrings:default:connectionString", BaseApiTests.TestConnection,
-            "--migration:enabled", "true",
-            "--core:products:folder", Path.Combine("..", "..", "..", "..","..", "..", "products")}).Build();
+        var host = new ApiApplication(new Dictionary<string, string>
+                {
+                    { "pathToConf", Path.Combine("..","..", "..", "config") },
+                    { "ConnectionStrings:default:connectionString", BaseApiTests.TestConnection },
+                    { "migration:enabled", "true" },
+                    { "core:products:folder", Path.Combine("..","..", "..", "products") },
+                    { "web:hub::internal", "" }
+                })
+       .WithWebHostBuilder(builder =>
+       {
+       });
 
         Migrate(host.Services);
         Migrate(host.Services, Assembly.GetExecutingAssembly().GetName().Name);
@@ -86,10 +125,14 @@ class BaseApiTests
     public const string TestConnection = "Server=localhost;Database=onlyoffice_test;User ID=root;Password=root;Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;AllowPublicKeyRetrieval=True";
     public virtual void SetUp()
     {
-        var host = Program.CreateHostBuilder(new string[] {
-            "--pathToConf" , Path.Combine("..", "..", "..", "..","..", "..", "config"),
-            "--ConnectionStrings:default:connectionString", TestConnection,
-             "--migration:enabled", "true" }).Build();
+        var host = new ApiApplication(new Dictionary<string, string>
+            {
+                { "pathToConf", Path.Combine("..","..", "..", "config") },
+                { "ConnectionStrings:default:connectionString", TestConnection },
+                { "migration:enabled", "true" },
+                { "web:hub:internal", "" }
+            })
+        .WithWebHostBuilder(a => { });
 
         _scope = host.Services.CreateScope();
 

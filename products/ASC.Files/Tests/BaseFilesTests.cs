@@ -53,7 +53,7 @@ class FilesApplication : WebApplicationFactory<Program>
         {
             var DIHelper = new ASC.Common.DIHelper();
             DIHelper.Configure(services);
-            foreach (var a in Assembly.Load("ASC.Files").GetTypes().Where(r => r.IsAssignableTo<ControllerBase>()))
+            foreach (var a in Assembly.Load("ASC.Files").GetTypes().Where(r => r.IsAssignableTo<ControllerBase>() && !r.IsAbstract))
             {
                 DIHelper.TryAdd(a);
             }
@@ -92,7 +92,7 @@ public class MySetUpClass
     [OneTimeTearDown]
     public void DropDb()
     {
-        var context = Scope.ServiceProvider.GetService<DbContextManager<TenantDbContext>>();
+        var context = Scope.ServiceProvider.GetService<DbContextManager<UserDbContext>>();
         context.Value.Database.EnsureDeleted();
     }
 
@@ -108,26 +108,30 @@ public class MySetUpClass
 
         using var db = scope.ServiceProvider.GetService<DbContextManager<UserDbContext>>();
         db.Value.Migrate();
+
+        using var filesDb = scope.ServiceProvider.GetService<DbContextManager<Core.EF.FilesDbContext>>();
+        filesDb.Value.Migrate();
     }
 }
 
 public class BaseFilesTests
 {
-    protected ILog Log { get; set; }
-    protected TagsController<int> TagsController { get; set; }
-    protected SecurityControllerHelper<int> SecurityControllerHelper { get; set; }
-    protected FilesControllerHelper<int> FilesControllerHelper { get; set; }
-    protected OperationControllerHelper<int> OperationControllerHelper { get; set; }
-    protected FoldersControllerHelper<int> FoldersControllerHelper { get; set; }
-    protected GlobalFolderHelper GlobalFolderHelper { get; set; }
-    protected FileStorageService<int> FileStorageService { get; set; }
-    protected FileDtoHelper FileDtoHelper { get; set; }
-    protected EntryManager EntryManager { get; set; }
-    protected UserManager UserManager { get; set; }
-    protected Tenant CurrentTenant { get; set; }
-    protected SecurityContext SecurityContext { get; set; }
-    protected UserOptions UserOptions { get; set; }
-    protected IServiceScope scope { get; set; }
+    protected ILog _log;
+    protected TagsController<int> _tagsController;
+    protected SecurityControllerHelper<int> _securityControllerHelper;
+    protected FilesControllerHelper<int> _filesControllerHelper;
+    protected OperationControllerHelper<int> _operationControllerHelper;
+    protected FoldersControllerHelper<int> _foldersControllerHelper;
+    protected GlobalFolderHelper _globalFolderHelper;
+    protected FileStorageService<int> _fileStorageService;
+    protected FileDtoHelper _fileDtoHelper;
+    protected EntryManager _entryManager;
+    protected UserManager _userManager;
+    protected Tenant _currentTenant;
+    protected SecurityContext _securityContext;
+    protected UserOptions _userOptions;
+    protected IServiceScope _scope;
+    protected HttpClient _client;
 
     public const string TestConnection = "Server=localhost;Database=onlyoffice_test;User ID=root;Password=root;Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;AllowPublicKeyRetrieval=True";
 
@@ -142,37 +146,46 @@ public class BaseFilesTests
             })
              .WithWebHostBuilder(a => { });
 
-        scope = host.Services.CreateScope();
+        _client = host.CreateClient(new WebApplicationFactoryClientOptions()
+        {
+            BaseAddress = new Uri(@"http://localhost:5007/api/2.0/files/")
+        });
 
-        var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+        _scope = host.Services.CreateScope();
+
+        var tenantManager = _scope.ServiceProvider.GetService<TenantManager>();
         var tenant = tenantManager.GetTenant(1);
         tenantManager.SetCurrentTenant(tenant);
-        CurrentTenant = tenant;
+        _currentTenant = tenant;
 
-        FileDtoHelper = scope.ServiceProvider.GetService<FileDtoHelper>();
-        EntryManager = scope.ServiceProvider.GetService<EntryManager>();
-        TagsController = scope.ServiceProvider.GetService<TagsController<int>>();
-        SecurityControllerHelper = scope.ServiceProvider.GetService<SecurityControllerHelper<int>>();
-        OperationControllerHelper = scope.ServiceProvider.GetService<OperationControllerHelper<int>>();
-        FoldersControllerHelper = scope.ServiceProvider.GetService<FoldersControllerHelper<int>>();
-        FilesControllerHelper = scope.ServiceProvider.GetService<FilesControllerHelper<int>>();
-        GlobalFolderHelper = scope.ServiceProvider.GetService<GlobalFolderHelper>();
-        UserManager = scope.ServiceProvider.GetService<UserManager>();
-        SecurityContext = scope.ServiceProvider.GetService<SecurityContext>();
-        UserOptions = scope.ServiceProvider.GetService<IOptions<UserOptions>>().Value;
-        FileStorageService = scope.ServiceProvider.GetService<FileStorageService<int>>();
-        Log = scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
+        _fileDtoHelper = _scope.ServiceProvider.GetService<FileDtoHelper>();
+        _entryManager = _scope.ServiceProvider.GetService<EntryManager>();
+        _tagsController = _scope.ServiceProvider.GetService<TagsController<int>>();
+        _securityControllerHelper = _scope.ServiceProvider.GetService<SecurityControllerHelper<int>>();
+        _operationControllerHelper = _scope.ServiceProvider.GetService<OperationControllerHelper<int>>();
+        _foldersControllerHelper = _scope.ServiceProvider.GetService<FoldersControllerHelper<int>>();
+        _filesControllerHelper = _scope.ServiceProvider.GetService<FilesControllerHelper<int>>();
+        _globalFolderHelper = _scope.ServiceProvider.GetService<GlobalFolderHelper>();
+        _userManager = _scope.ServiceProvider.GetService<UserManager>();
+        _securityContext = _scope.ServiceProvider.GetService<SecurityContext>();
+        _userOptions = _scope.ServiceProvider.GetService<IOptions<UserOptions>>().Value;
+        _fileStorageService = _scope.ServiceProvider.GetService<FileStorageService<int>>();
+        _log = _scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
 
-        SecurityContext.AuthenticateMe(CurrentTenant.OwnerId);
+        var cookie = _securityContext.AuthenticateMe(_currentTenant.OwnerId);
+        _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", cookie);
+        _client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+        _client.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/json;");
+
         return Task.CompletedTask;
     }
 
     public async Task DeleteFolderAsync(int folder)
     {
-        await FoldersControllerHelper.DeleteFolder(folder, false, true);
+        await _foldersControllerHelper.DeleteFolder(folder, false, true);
         while (true)
         {
-            var statuses = FileStorageService.GetTasksStatuses();
+            var statuses = _fileStorageService.GetTasksStatuses();
 
             if (statuses.TrueForAll(r => r.Finished))
                 break;
@@ -181,10 +194,10 @@ public class BaseFilesTests
     }
     public async Task DeleteFileAsync(int file)
     {
-        await FilesControllerHelper.DeleteFileAsync(file, false, true);
+        await _filesControllerHelper.DeleteFileAsync(file, false, true);
         while (true)
         {
-            var statuses = FileStorageService.GetTasksStatuses();
+            var statuses = _fileStorageService.GetTasksStatuses();
 
             if (statuses.TrueForAll(r => r.Finished))
                 break;

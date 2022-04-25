@@ -38,16 +38,16 @@ class Recent : BaseFilesTests
     public override async Task SetUp()
     {
         await base.SetUp();
-        TestFolder = await FoldersControllerHelper.CreateFolderAsync(GlobalFolderHelper.FolderMy, "TestFolder");
-        TestFile = await FilesControllerHelper.CreateFileAsync(GlobalFolderHelper.FolderMy, "TestFile", default, default);
-        NewUser = UserManager.GetUsers(Guid.Parse("005bb3ff-7de3-47d2-9b3d-61b9ec8a76a5"));
+        TestFolder = await _foldersControllerHelper.CreateFolderAsync(_globalFolderHelper.FolderMy, "TestFolder");
+        TestFile = await _filesControllerHelper.CreateFileAsync(_globalFolderHelper.FolderMy, "TestFile", default, default);
+        NewUser = _userManager.GetUsers(Guid.Parse("005bb3ff-7de3-47d2-9b3d-61b9ec8a76a5"));
         TestFileShare = new List<FileShareParams> { new FileShareParams { Access = Core.Security.FileShare.Read, ShareTo = NewUser.Id } };
     }
 
     [OneTimeSetUp]
     public void Authenticate()
     {
-        SecurityContext.AuthenticateMe(CurrentTenant.OwnerId);
+        _securityContext.AuthenticateMe(_currentTenant.OwnerId);
     }
 
     [OneTimeTearDown]
@@ -62,7 +62,7 @@ class Recent : BaseFilesTests
     [Order(1)]
     public void CreateFolderReturnsFolderWrapper(string folderTitle)
     {
-        var folderWrapper = Assert.ThrowsAsync<InvalidOperationException>(async () => await FoldersControllerHelper.CreateFolderAsync(await GlobalFolderHelper.FolderRecentAsync, folderTitle));
+        var folderWrapper = Assert.ThrowsAsync<InvalidOperationException>(async () => await _foldersControllerHelper.CreateFolderAsync(await _globalFolderHelper.FolderRecentAsync, folderTitle));
         Assert.That(folderWrapper.Message == "You don't have enough permission to create");
     }
 
@@ -71,7 +71,7 @@ class Recent : BaseFilesTests
     [Order(1)]
     public void CreateFileReturnsFolderWrapper(string folderTitle)
     {
-        var folderWrapper = Assert.ThrowsAsync<InvalidOperationException>(async () => await FoldersControllerHelper.CreateFolderAsync(await GlobalFolderHelper.FolderRecentAsync, folderTitle));
+        var folderWrapper = Assert.ThrowsAsync<InvalidOperationException>(async () => await _foldersControllerHelper.CreateFolderAsync(await _globalFolderHelper.FolderRecentAsync, folderTitle));
         Assert.That(folderWrapper.Message == "You don't have enough permission to create");
     }
 
@@ -90,14 +90,14 @@ class Recent : BaseFilesTests
     public async Task DeleteRecentFileReturnsFolderWrapper(string fileTitleExpected)
     {
         var RecentFolder = await AddToRecentAsync(TestFile.Id);
-        await FilesControllerHelper.DeleteFileAsync(
+        await _filesControllerHelper.DeleteFileAsync(
             TestFile.Id,
             false,
             true);
 
         while (true)
         {
-            var statuses = FileStorageService.GetTasksStatuses();
+            var statuses = _fileStorageService.GetTasksStatuses();
 
             if (statuses.TrueForAll(r => r.Finished))
                 break;
@@ -112,8 +112,8 @@ class Recent : BaseFilesTests
     [Order(3)]
     public async Task ShareFileToAnotherUserAddToRecent(string fileTitleExpected, bool notify, string message)
     {
-        await SecurityControllerHelper.SetFileSecurityInfoAsync(TestFile.Id, TestFileShare, notify, message);
-        SecurityContext.AuthenticateMe(NewUser.Id);
+        await _securityControllerHelper.SetFileSecurityInfoAsync(TestFile.Id, TestFileShare, notify, message);
+        _securityContext.AuthenticateMe(NewUser.Id);
         var RecentFile = await AddToRecentAsync(TestFile.Id);
         Assert.IsNotNull(RecentFile);
         Assert.AreEqual(fileTitleExpected + ".docx", RecentFile.Title);
@@ -121,9 +121,9 @@ class Recent : BaseFilesTests
 
     private async Task<FileDto<int>> AddToRecentAsync(int fileId)
     {
-        var file = await FileStorageService.GetFileAsync(fileId, -1);
-        EntryManager.MarkAsRecent(file);
+        var file = await _fileStorageService.GetFileAsync(fileId, -1);
+        _entryManager.MarkAsRecent(file);
 
-        return await FileDtoHelper.GetAsync(file);
+        return await _fileDtoHelper.GetAsync(file);
     }
 }
