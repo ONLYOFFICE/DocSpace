@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
-import { isMobile, isMobileOnly } from "react-device-detect";
-import { tablet, desktop, mobile } from "@appserver/components/utils/device";
+import { isMobileOnly } from "react-device-detect";
+import { tablet, mobile } from "@appserver/components/utils/device";
 
 const StyledContainer = styled.div`
   width: 100% !important;
@@ -22,14 +22,6 @@ const StyledContainer = styled.div`
       props.isRootFolder ? "auto 1fr" : "29px 1fr auto"};
     padding: ${(props) => (props.isDropBox ? "14px 0 5px" : "14px 0 15px")};
   }
-  ${isMobile &&
-  css`
-    width: 100%;
-    grid-template-columns: ${(props) =>
-      props.isRootFolder ? "auto 1fr" : "29px 1fr auto"};
-    padding: ${(props) =>
-      props.isDropBox ? "12px 0 5px" : " 12px 0 13px"} !important;
-  `}
 
   @media ${mobile} {
     padding: ${(props) =>
