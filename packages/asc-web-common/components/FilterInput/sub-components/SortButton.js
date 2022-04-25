@@ -68,11 +68,9 @@ const StyledSortButton = styled.div`
       min-width: 200px;
       margin-top: 3px;
 
-      @media ${mobile} {
+      @media (max-width: 428px) {
         ${mobileView}
       }
-
-      ${isMobileOnly && mobileView}
 
       .view-selector-item {
         display: flex;
