@@ -5,13 +5,13 @@ import SimpleFilesRow from "./SimpleFilesRow";
 import { isMobile } from "react-device-detect";
 import styled from "styled-components";
 import marginStyles from "./CommonStyles";
-
-const borderColor = "#ECEEF1";
+import { Base } from "@appserver/components/themes";
 
 const StyledRowContainer = styled(RowContainer)`
   .row-selected + .row-wrapper:not(.row-selected) {
     .files-row {
-      border-top: ${`1px ${borderColor} solid`};
+      border-top: ${(props) =>
+        `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
       margin-top: -3px;
       ${marginStyles}
     }
@@ -21,7 +21,8 @@ const StyledRowContainer = styled(RowContainer)`
     + .row-wrapper:not(.row-hotkey-border)
     + .row-selected {
     .files-row {
-      border-top: ${`1px ${borderColor} solid`};
+      border-top: ${(props) =>
+        `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
       margin-top: -3px;
       ${marginStyles}
     }
@@ -29,7 +30,8 @@ const StyledRowContainer = styled(RowContainer)`
 
   .row-selected:last-child {
     .files-row {
-      border-bottom: ${`1px ${borderColor} solid`};
+      border-bottom: ${(props) =>
+        `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
       padding-bottom: 1px;
       ${marginStyles}
     }
@@ -39,12 +41,16 @@ const StyledRowContainer = styled(RowContainer)`
   }
   .row-selected:first-child {
     .files-row {
-      border-top: ${`1px ${borderColor} solid`};
+      border-top: ${(props) =>
+        `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
       margin-top: -3px;
       ${marginStyles}
     }
   }
 `;
+
+StyledRowContainer.defaultProps = { theme: Base };
+
 const FilesRowContainer = ({ filesList, sectionWidth, viewAs, setViewAs }) => {
   useEffect(() => {
     if ((viewAs !== "table" && viewAs !== "row") || !sectionWidth) return;
