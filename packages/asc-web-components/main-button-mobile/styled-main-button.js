@@ -56,7 +56,9 @@ const StyledFloatingButton = styled(FloatingButton)`
 StyledFloatingButton.defaultProps = { theme: Base };
 
 const mobileDropDown = css`
-  width: ${(props) => props.theme.mainButtonMobile.dropDown.mobile.width};
+  @media (max-width: 428px) {
+    width: ${(props) => props.theme.mainButtonMobile.dropDown.mobile.width};
+  }
 
   right: ${(props) => props.theme.mainButtonMobile.dropDown.mobile.right};
   bottom: ${(props) => props.theme.mainButtonMobile.dropDown.mobile.bottom};
