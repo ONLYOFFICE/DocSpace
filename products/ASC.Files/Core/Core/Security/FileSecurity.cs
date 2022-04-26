@@ -967,8 +967,11 @@ public class FileSecurity : IFileSecurity
             case SortedByType.DateAndTime:
                 result.OrderBy(r => r.ModifiedBy);
                 break;
-            case SortedByType.DateAndTimeCreation:
-                result.OrderBy(r => r.CreateOn);
+            case SortedByType.Size:
+                result.OrderBy(r => r.ModifiedBy);
+                break;
+            case SortedByType.Type:
+                result.OrderBy(r => r.FileEntryType);
                 break;
             default:
                 result.OrderBy(r => r.Title);
