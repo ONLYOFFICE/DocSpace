@@ -5,6 +5,7 @@ import DropDownItem from "@appserver/components/drop-down-item";
 import AccessRightSelect from "@appserver/components/access-right-select";
 import { getAccessIcon } from "../../../helpers/files-helpers";
 import { ReactSVG } from "react-svg";
+import Backdrop from "@appserver/components/backdrop";
 
 const {
   FullAccess,

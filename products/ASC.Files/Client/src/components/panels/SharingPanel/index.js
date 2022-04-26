@@ -19,11 +19,7 @@ import withLoader from "../../../HOCs/withLoader";
 import ModalDialog from "@appserver/components/modal-dialog";
 import EmbeddingBody from "../EmbeddingPanel/EmbeddingBody";
 
-import {
-  StyledContainer,
-  StyledContent,
-  StyledModalFooter,
-} from "./StyledSharingPanel";
+import { StyledContent, StyledModalFooter } from "./StyledSharingPanel";
 
 import Header from "./Header";
 import Body from "./Body";

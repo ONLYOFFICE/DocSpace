@@ -101,24 +101,14 @@ const StyledAsidePanel = styled.div`
 
     @media (max-width: 500px) {
       position: fixed;
-      top: unset;
+
+      top: 64px;
       bottom: 0;
-      left: 0;
+      right: 0;
 
       width: 100%;
       height: calc(100% - 64px);
     }
-
-    ${isMobileOnly &&
-    css`
-      position: fixed;
-      top: 64px;
-      bottom: 0;
-      left: 0;
-
-      width: 100%;
-      height: calc(100% - 64px);
-    `}
   }
   ${PanelStyles}
 `;
@@ -176,22 +166,11 @@ const StyledAddUsersPanelPanel = styled.div`
       position: fixed;
       top: 64px;
       bottom: 0;
-      left: 0;
+      right: 0;
 
       width: 100%;
       height: calc(100% - 64px);
     }
-
-    ${isMobileOnly &&
-    css`
-      position: fixed;
-      top: 64px;
-      bottom: 0;
-      left: 0;
-
-      width: 100%;
-      height: calc(100% - 64px);
-    `}
   }
   ${PanelStyles}
   .combo-button-label {
@@ -211,22 +190,11 @@ const StyledAddGroupsPanel = styled.div`
       position: fixed;
       top: 64px;
       bottom: 0;
-      left: 0;
+      right: 0;
 
       width: 100%;
       height: calc(100% - 64px);
     }
-
-    ${isMobileOnly &&
-    css`
-      position: fixed;
-      top: 64px;
-      bottom: 0;
-      left: 0;
-
-      width: 100%;
-      height: calc(100% - 64px);
-    `}
   }
   ${PanelStyles}
   .combo-button-label {
@@ -246,22 +214,11 @@ const StyledEmbeddingPanel = styled.div`
       position: fixed;
       top: 64px;
       bottom: 0;
-      left: 0;
+      right: 0;
 
-      width: 100vw;
-      height: calc(100vh - 64px);
+      width: 100%;
+      height: calc(100% - 64px);
     }
-
-    ${isMobileOnly &&
-    css`
-      position: fixed;
-      top: 64px;
-      bottom: 0;
-      left: 0;
-
-      width: 100vw;
-      height: calc(100vh - 64px);
-    `}
   }
   ${PanelStyles}
 `;
