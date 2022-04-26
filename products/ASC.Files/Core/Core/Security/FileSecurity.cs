@@ -956,28 +956,6 @@ public class FileSecurity : IFileSecurity
         var entries = await GetVirtualRoomsAsync<int>(records, subjects, filterType, subjectId, searchText, searchInContent, withSubfolders, orderBy, searchArea);
         result.AddRange(entries);
 
-        switch (orderBy.SortedBy)
-        {
-            case SortedByType.Author:
-                result.OrderBy(r => r.CreateBy);
-                break;
-            case SortedByType.AZ:
-                result.OrderBy(r => r.Title);
-                break;
-            case SortedByType.DateAndTime:
-                result.OrderBy(r => r.ModifiedBy);
-                break;
-            case SortedByType.Size:
-                result.OrderBy(r => r.ModifiedBy);
-                break;
-            case SortedByType.Type:
-                result.OrderBy(r => r.FileEntryType);
-                break;
-            default:
-                result.OrderBy(r => r.Title);
-                break;
-        }
-
         return result;
     }
 
