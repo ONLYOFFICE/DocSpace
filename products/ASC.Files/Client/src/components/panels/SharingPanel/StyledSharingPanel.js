@@ -3,42 +3,6 @@ import styled, { css } from "styled-components";
 
 import { isMobile, isMobileOnly } from "react-device-detect";
 
-const StyledContainer = styled.div`
-  transition: unset;
-  transform: translateX(${(props) => (props.visible ? "0" : "480px")});
-  width: 480px;
-  height: 100%;
-  position: fixed;
-  max-width: 480px;
-  overflow-y: hidden;
-
-  right: 0;
-  bottom: 0;
-
-  background: ${(props) => props.theme.aside.backgroundColor};
-
-  z-index: 311;
-
-  @media (max-width: 500px) {
-    position: fixed;
-    top: unset;
-
-    bottom: 0;
-    right: 0;
-
-    width: 100%;
-    height: calc(100% - 64px);
-  }
-
-  .panel_combo-box {
-    .optionalBlock {
-      margin-right: -3px;
-    }
-  }
-`;
-
-StyledContainer.defaultProps = { theme: Base };
-
 const StyledContent = styled.div`
   width: 100%;
   height: 100%;
@@ -389,7 +353,6 @@ const StyledModalFooter = styled.div`
 `;
 
 export {
-  StyledContainer,
   StyledContent,
   StyledHeaderContent,
   StyledBodyContent,
