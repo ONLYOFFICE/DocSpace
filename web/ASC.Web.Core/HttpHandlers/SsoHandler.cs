@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Text.Json;
 using System.Threading.Tasks;
-using System.Web;
 
 using ASC.Common;
 using ASC.Common.Logging;
@@ -59,8 +58,6 @@ public class SsoHandlerService
     private readonly MessageService _messageService;
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
 
-
-    private const string AUTH_PAGE = "~/Auth.aspx";
 
     public SsoHandlerService(
         IOptionsMonitor<ILog> optionsMonitor,
@@ -183,7 +180,7 @@ public class SsoHandlerService
                 _cookiesManager.SetCookies(CookiesType.AuthKey, authKey);
                 _messageService.Send(MessageAction.LoginSuccessViaSSO);
 
-                context.Response.Redirect(_commonLinkUtility.GetDefault() + "?token=" + HttpUtility.UrlEncode(authKey), false);
+                await context.Response.WriteAsync($"Authenticated with token: {authKey}");
             }
             else if (context.Request.Query["logout"] == "true")
             {
@@ -220,7 +217,7 @@ public class SsoHandlerService
         }
         catch (Exception e)
         {
-            await WriteErrorToResponse(context, "Unexpected error. {0}", e);
+            await WriteErrorToResponse(context, $"Unexpected error. {e}");
         }
         finally
         {
@@ -229,10 +226,10 @@ public class SsoHandlerService
         }
     }
 
-    private async Task WriteErrorToResponse(HttpContext context, string errorText, object errorArg = null)
+    private async Task WriteErrorToResponse(HttpContext context, string errorText)
     {
-        _log.ErrorFormat(errorText, errorArg);
-        await context.Response.WriteAsync(string.Format(errorText, errorArg));
+        _log.ErrorFormat(errorText);
+        await context.Response.WriteAsync(errorText);
     }
 
     private UserInfo AddUser(UserInfo userInfo)
