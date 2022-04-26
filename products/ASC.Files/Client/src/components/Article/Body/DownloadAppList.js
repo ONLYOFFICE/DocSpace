@@ -33,7 +33,7 @@ const DownloadAppListContainer = React.memo(({ t, theme }) => {
 
   return (
     <StyledDownloadAppList>
-      <Text className="download-app-text" fontSize="14px">
+      <Text className="download-app-text" fontSize="14px" noSelect={true}>
         {t("Translations:DownloadApps")}
       </Text>
       <div className="download-app-list">
