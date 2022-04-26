@@ -5,6 +5,7 @@ import DropDownItem from "@appserver/components/drop-down-item";
 import AccessRightSelect from "@appserver/components/access-right-select";
 import { getAccessIcon } from "../../../helpers/files-helpers";
 import { ReactSVG } from "react-svg";
+import Backdrop from "@appserver/components/backdrop";
 
 const {
   FullAccess,
@@ -33,6 +34,7 @@ const AccessComboBox = (props) => {
     onRemoveUserClick,
     isExternalLink,
     isDefaultMode,
+    isEmbedded,
   } = props;
 
   const [isLoading, setIsLoading] = React.useState(true);
@@ -255,7 +257,7 @@ const AccessComboBox = (props) => {
       options={[]}
       selectedOption={{}}
       size="content"
-      className="panel_combo-box"
+      className={`panel_combo-box ${isEmbedded ? "embedded_combo-box" : ""}`}
       scaled={false}
       directionX={directionX}
       directionY={directionY}
@@ -266,10 +268,12 @@ const AccessComboBox = (props) => {
       forwardRef={ref}
       fixedDirection={fixedDirection}
     >
-      <ReactSVG
-        src={selectedOption.icon}
-        className="sharing-access-combo-box-icon"
-      />
+      {selectedOption?.icon && (
+        <ReactSVG
+          src={selectedOption?.icon}
+          className="sharing-access-combo-box-icon"
+        />
+      )}
     </ComboBox>
   );
 };

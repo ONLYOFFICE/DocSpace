@@ -869,6 +869,9 @@ const SharingPanel = inject(
       updateUploadedItem,
     } = uploadDataStore;
 
+    const isShared =
+      selection.length > 0 && selection[0].shared ? selection[0].shared : false;
+
     return {
       theme: auth.settingsStore.theme,
       isPersonal: personal,
@@ -905,7 +908,7 @@ const SharingPanel = inject(
       id,
       setBufferSelection,
       access,
-      isShared: selection[0]?.shared ? selection[0].shared : false,
+      isShared: isShared,
     };
   }
 )(
