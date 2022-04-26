@@ -103,11 +103,13 @@ public class SsoHandlerService
         {
             if (!SetupInfo.IsVisibleSettings(ManagementType.SingleSignOnSettings.ToString()) && !_coreBaseSettings.Standalone)
             {
-                ErrorWithStatus("Single sign-on settings are disabled");
+                await WriteErrorToResponse(context, "Single sign-on settings are disabled");
+                return;
             }
             if (!(_coreBaseSettings.Standalone || _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().TenantId).Sso))
             {
-                ErrorWithStatus("Single sign-on settings are not paid");
+                await WriteErrorToResponse(context, "Single sign-on settings are not paid");
+                return;
             }
             var settings = _settingsManager.Load<SsoSettingsV2>();
 
@@ -122,14 +124,16 @@ public class SsoHandlerService
 
             if (!settings.EnableSso)
             {
-                ErrorWithStatus("Single sign-on is disabled");
+                await WriteErrorToResponse(context, "Single sign-on is disabled");
+                return;
             }
 
             var data = context.Request.Query["data"];
 
             if (string.IsNullOrEmpty(data))
             {
-                ErrorWithStatus("SAML response is null or empty");
+                await WriteErrorToResponse(context, "SAML response is null or empty");
+                return;
             }
 
             if (context.Request.Query["auth"] == "true")
@@ -138,19 +142,22 @@ public class SsoHandlerService
 
                 if (userData == null)
                 {
-                    ErrorWithStatus("SAML response is not valid");
+                    await WriteErrorToResponse(context, "SAML response is not valid");
+                    return;
                 }
 
                 var userInfo = userData.ToUserInfo(true);
 
                 if (Equals(userInfo, Constants.LostUser))
                 {
-                    ErrorWithStatus("Can't create userInfo using current SAML response (fields Email, FirstName, LastName are required)");
+                    await WriteErrorToResponse(context, "Can't create userInfo using current SAML response (fields Email, FirstName, LastName are required)");
+                    return;
                 }
 
                 if (userInfo.Status == EmployeeStatus.Terminated)
                 {
-                    ErrorWithStatus("Current user is terminated");
+                    await WriteErrorToResponse(context, "Current user is terminated");
+                    return;
                 }
 
                 if (context.User != null && context.User.Identity != null && context.User.Identity.IsAuthenticated)
@@ -184,19 +191,22 @@ public class SsoHandlerService
 
                 if (logoutSsoUserData == null)
                 {
-                    ErrorWithStatus("SAML Logout response is not valid");
+                    await WriteErrorToResponse(context, "SAML Logout response is not valid");
+                    return;
                 }
 
                 var userInfo = _userManager.GetSsoUserByNameId(logoutSsoUserData.NameId);
 
                 if (Equals(userInfo, Constants.LostUser))
                 {
-                    ErrorWithStatus("Can't logout userInfo using current SAML response");
+                    await WriteErrorToResponse(context, "Can't logout userInfo using current SAML response");
+                    return;
                 }
 
                 if (userInfo.Status == EmployeeStatus.Terminated)
                 {
-                    ErrorWithStatus("Current user is terminated");
+                    await WriteErrorToResponse(context, "Current user is terminated");
+                    return;
                 }
 
                 _securityContext.AuthenticateMeWithoutCookie(userInfo.ID);
@@ -208,25 +218,21 @@ public class SsoHandlerService
                 _securityContext.Logout();
             }
         }
-        catch (SsoException ex)
-        {
-            throw ex;
-        }
         catch (Exception e)
         {
-            ErrorWithStatus("Unexpected error. {0}", e);
+            await WriteErrorToResponse(context, "Unexpected error. {0}", e);
         }
         finally
         {
-            //await context.Response.CompleteAsync();
+            await context.Response.CompleteAsync();
             //context.ApplicationInstance.CompleteRequest();
         }
     }
 
-    private void ErrorWithStatus(string errorText, object errorArg = null)
+    private async Task WriteErrorToResponse(HttpContext context, string errorText, object errorArg = null)
     {
         _log.ErrorFormat(errorText, errorArg);
-        throw new SsoException(errorText, errorArg);
+        await context.Response.WriteAsync(string.Format(errorText, errorArg));
     }
 
     private UserInfo AddUser(UserInfo userInfo)
@@ -274,11 +280,6 @@ public class SsoHandlerService
         return newUserInfo;
 
     }
-}
-
-public class SsoException : Exception
-{
-    public SsoException(string message, object errorArg) : base(string.Format(message, errorArg)) { }
 }
 
 public static class SsoHandlerExtensions
