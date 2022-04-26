@@ -81,8 +81,10 @@ class AvatarEditor extends React.Component {
   };
 
   onClose = () => {
-    this.setState({ visible: false });
-    this.props.onClose();
+    if (this.state.visible) {
+      this.setState({ visible: false });
+      this.props.onClose();
+    }
   };
 
   componentDidUpdate(prevProps) {
