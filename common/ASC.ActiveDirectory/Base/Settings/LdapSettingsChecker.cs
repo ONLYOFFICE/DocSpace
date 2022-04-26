@@ -16,7 +16,7 @@
 
 
 namespace ASC.ActiveDirectory.Base.Settings;
-public abstract class LdapSettingsChecker : IDisposable
+public abstract class LdapSettingsChecker
 {
     protected ILog log;
 
@@ -38,9 +38,4 @@ public abstract class LdapSettingsChecker : IDisposable
     }
 
     public abstract LdapSettingsStatus CheckSettings();
-
-    public void Dispose()
-    {
-        LdapImporter.Dispose();
-    }
 }

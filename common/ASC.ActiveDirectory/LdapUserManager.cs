@@ -594,15 +594,12 @@ public class LdapUserManager
 
                     if (!TryCheckAndSyncToLdapUser(ldapUserInfo, _novellLdapUserImporter, out userInfo))
                     {
-                        _novellLdapUserImporter.Dispose();
                         _log.Debug("TryCheckAndSyncToLdapUser() failed");
                         return false;
                     }
-                    _novellLdapUserImporter.Dispose();
                 }
                 else
                 {
-                    _novellLdapUserImporter.Dispose();
                     return false;
                 }
             }
@@ -641,8 +638,6 @@ public class LdapUserManager
                             cookiesManager.ResetUserCookie(uInfo.ID);
                         }
                     }
-                    novellLdapUserImporter.Dispose();
-
                 }).Start();
 
                 if (ldapUserInfo.Item2.IsDisabled)
@@ -660,11 +655,6 @@ public class LdapUserManager
         }
         catch (Exception ex)
         {
-            if (_novellLdapUserImporter != null)
-            {
-                _novellLdapUserImporter.Dispose();
-            }
-
             _log.ErrorFormat("TryGetLdapUserInfo(login: '{0}') failed. Error: {1}", login, ex);
             userInfo = Constants.LostUser;
             return false;

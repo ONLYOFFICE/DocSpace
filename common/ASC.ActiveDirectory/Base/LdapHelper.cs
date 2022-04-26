@@ -107,7 +107,7 @@ public abstract class LdapHelper : IDisposable
         string password;
         try
         {
-            password = InstanceCrypto.Decrypt(passwordBytes);
+            password = InstanceCrypto.Decrypt(passwordBytes, new UnicodeEncoding());
         }
         catch (Exception)
         {

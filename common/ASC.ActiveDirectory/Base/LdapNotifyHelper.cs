@@ -98,8 +98,7 @@ public class LdapNotifyHelper
 
         var op = scope.ServiceProvider.GetRequiredService<LdapSaveSyncOperation>();
 
-        op.Init(ldapSettings, tenant, LdapOperationType.Sync);
-        _ldapTasks.QueueTask(op.RunJob, op.GetDistributedTask());
+        op.RunJob(ldapSettings, tenant, LdapOperationType.Sync);
     }
 
     public static class DbHelperExtension

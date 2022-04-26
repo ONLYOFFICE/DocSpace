@@ -26,30 +26,37 @@ public class NovellLdapEntryExtension
     }
     public object GetAttributeValue(LdapEntry ldapEntry, string attributeName, bool getBytes = false)
     {
-        var attribute = ldapEntry.GetAttribute(attributeName);
-
-        if (attribute == null)
-            return null;
-
-        if (!(string.Equals(attributeName, LdapConstants.ADSchemaAttributes.OBJECT_SID,
-            StringComparison.OrdinalIgnoreCase) || getBytes))
+        try
         {
-            return attribute.StringValue;
+            var attribute = ldapEntry.GetAttribute(attributeName);
+
+            if (attribute == null)
+                return null;
+
+            if (!(string.Equals(attributeName, LdapConstants.ADSchemaAttributes.OBJECT_SID,
+                StringComparison.OrdinalIgnoreCase) || getBytes))
+            {
+                return attribute.StringValue;
+            }
+
+            if (attribute.ByteValue == null)
+                return null;
+
+            var value = new byte[attribute.ByteValue.Length];
+
+            Buffer.BlockCopy(attribute.ByteValue, 0, value, 0, attribute.ByteValue.Length);
+
+            if (getBytes)
+            {
+                return value;
+            }
+
+            return DecodeSid(value);
         }
-
-        if (attribute.ByteValue == null)
-            return null;
-
-        var value = new byte[attribute.ByteValue.Length];
-
-        Buffer.BlockCopy(attribute.ByteValue, 0, value, 0, attribute.ByteValue.Length);
-
-        if (getBytes)
+        catch (Exception)
         {
-            return value;
+            return null;
         }
-
-        return DecodeSid(value);
     }
 
     public string[] GetAttributeArrayValue(LdapEntry ldapEntry, string attributeName)
