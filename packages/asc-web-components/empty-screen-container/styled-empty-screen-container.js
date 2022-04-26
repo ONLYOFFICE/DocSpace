@@ -59,7 +59,6 @@ const EmptyContentBody = styled.div`
     }
 
     @media (max-width: 428px) {
-      min-width: 343px;
       grid-template-areas:
         "img img img"
         "headerText headerText headerText"
