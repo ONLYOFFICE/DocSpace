@@ -58,8 +58,8 @@ const StyledInfoPanelToggleWrapper = styled.div`
   `}
 
   .info-panel-toggle-bg {
-    height: 32px;
-    width: 32px;
+    height: 16px;
+    width: 16px;
     display: flex;
     align-items: center;
     justify-content: center;

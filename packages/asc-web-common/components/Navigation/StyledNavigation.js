@@ -9,7 +9,7 @@ const StyledContainer = styled.div`
   grid-template-columns: ${(props) =>
     props.isRootFolder ? "auto 1fr" : "29px auto 1fr"};
 
-  padding: ${(props) => (props.isDropBox ? "10px 0 5px" : "10px 0 11px")};
+  padding: ${(props) => (props.isDropBox ? "10px 0 5px" : "14px 0 15px")};
 
   .arrow-button {
     width: 17px;
@@ -20,20 +20,13 @@ const StyledContainer = styled.div`
     width: 100%;
     grid-template-columns: ${(props) =>
       props.isRootFolder ? "auto 1fr" : "29px 1fr auto"};
-    padding: ${(props) => (props.isDropBox ? "14px 0 5px" : "14px 0 15px")};
+    padding: ${(props) => (props.isDropBox ? "14px 0 5px" : "16px 0 17px")};
   }
 
   @media ${mobile} {
     padding: ${(props) =>
-      props.isDropBox ? "10px 0 5px" : "10px 0 11px"} !important;
+      props.isDropBox ? "10px 0 5px" : "12px 0 13px"} !important;
   }
-
-  ${isMobileOnly &&
-  css`
-    width: 100% !important;
-    padding: ${(props) =>
-      props.isDropBox ? "10px 0 5px" : "10px 0 11px"} !important;
-  `}
 `;
 
 export default StyledContainer;
