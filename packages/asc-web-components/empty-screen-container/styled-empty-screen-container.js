@@ -58,7 +58,7 @@ const EmptyContentBody = styled.div`
       }
     }
 
-    @media ${mobile} {
+    @media (max-width: 428px) {
       min-width: 343px;
       grid-template-areas:
         "img img img"
