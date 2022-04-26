@@ -15,7 +15,7 @@ const StyledContainer = styled.div`
   right: 0;
   bottom: 0;
 
-  background: #333333;
+  background: ${(props) => props.theme.aside.backgroundColor};
 
   z-index: 311;
 
@@ -36,6 +36,8 @@ const StyledContainer = styled.div`
     }
   }
 `;
+
+StyledContainer.defaultProps = { theme: Base };
 
 const StyledContent = styled.div`
   width: 100%;
