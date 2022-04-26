@@ -31,7 +31,7 @@ namespace ASC.Web.Files.Services.DocumentService;
 [Scope]
 public class DocumentServiceConnector
 {
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly FilesLinkUtility _filesLinkUtility;
     private readonly FileUtility _fileUtility;
     private readonly IHttpClientFactory _clientFactory;
@@ -43,7 +43,7 @@ public class DocumentServiceConnector
     private readonly PathProvider _pathProvider;
 
     public DocumentServiceConnector(
-        IOptionsMonitor<ILog> optionsMonitor,
+        ILogger<DocumentServiceConnector> logger,
         FilesLinkUtility filesLinkUtility,
         FileUtility fileUtility,
         PathProvider pathProvider,
@@ -54,7 +54,7 @@ public class DocumentServiceConnector
         CoreSettings coreSettings,
         IHttpClientFactory clientFactory)
     {
-        _logger = optionsMonitor.CurrentValue;
+        _logger = logger;
         _filesLinkUtility = filesLinkUtility;
         _fileUtility = fileUtility;
         _globalStore = globalStore;

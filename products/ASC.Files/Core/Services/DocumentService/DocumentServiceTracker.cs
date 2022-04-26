@@ -146,7 +146,7 @@ public class DocumentServiceTrackerHelper
     private readonly NotifyClient _notifyClient;
     private readonly MailMergeTaskRunner _mailMergeTaskRunner;
     private readonly FileTrackerHelper _fileTracker;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly IHttpClientFactory _clientFactory;
 
     public DocumentServiceTrackerHelper(
@@ -160,7 +160,7 @@ public class DocumentServiceTrackerHelper
         GlobalStore globalStore,
         DisplayUserSettingsHelper displayUserSettingsHelper,
         IDaoFactory daoFactory,
-        ILog logger,
+        ILogger<DocumentServiceTrackerHelper> logger,
         DocumentServiceHelper documentServiceHelper,
         EntryManager entryManager,
         FileShareLink fileShareLink,

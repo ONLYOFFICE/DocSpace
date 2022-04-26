@@ -42,9 +42,9 @@ public class CouponManager : IDisposable
     private readonly Uri _baseAddress;
     private readonly string _apiVersion;
     private readonly SemaphoreSlim _semaphoreSlim;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
 
-    public CouponManager(ILog logger, IHttpClientFactory clientFactory)
+    public CouponManager(ILogger<CouponManager> logger, IHttpClientFactory clientFactory)
     {
         _semaphoreSlim = new SemaphoreSlim(1, 1);
         _logger = logger;
@@ -211,7 +211,7 @@ class Promotion
     public int PublishToAffiliatesNetwork { get; set; }
     public int AutoApply { get; set; }
 
-    public static async Task<string> GeneratePromotion(ILog log, CouponManager couponManager, TenantManager tenantManager, int percent, int schedule)
+    public static async Task<string> GeneratePromotion(ILogger log, CouponManager couponManager, TenantManager tenantManager, int percent, int schedule)
     {
         try
         {

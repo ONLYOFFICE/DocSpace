@@ -42,9 +42,9 @@ public class AWSSender : SmtpSender, IDisposable
     public AWSSender(
         IConfiguration configuration,
         IServiceProvider serviceProvider,
-        IOptionsMonitor<ILog> options) : base(configuration, serviceProvider, options)
+        ILoggerProvider options) : base(configuration, serviceProvider, options)
     {
-        _logger = options.Get("ASC.Notify.AmazonSES");
+        _logger = options.CreateLogger("ASC.Notify.AmazonSES");
     }
 
     public override void Init(IDictionary<string, string> properties)

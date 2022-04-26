@@ -49,8 +49,6 @@
  *
 */
 
-using Microsoft.Extensions.Caching.Distributed;
-
 namespace ASC.Common.Threading;
 
 [Transient]
@@ -63,7 +61,7 @@ public class DistributedTaskQueue
     private readonly IServiceProvider _serviceProvider;
     private readonly ICacheNotify<DistributedTaskCancelation> _cancellationCacheNotify;
     private readonly IDistributedCache _distributedCache;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
 
     /// <summary>
     /// setup -1 for infinity thread counts
@@ -73,17 +71,18 @@ public class DistributedTaskQueue
     private readonly int _timeUntilUnregisterInSeconds = 60;
     private TaskScheduler Scheduler { get; set; } = TaskScheduler.Default;
 
-    public DistributedTaskQueue(IServiceProvider serviceProvider,
+    public DistributedTaskQueue(
+        IServiceProvider serviceProvider,
         ICacheNotify<DistributedTaskCancelation> cancelTaskNotify,
-                                IDistributedCache distributedCache,
-                                IOptionsMonitor<ILog> options)
+        IDistributedCache distributedCache,
+        ILogger<DistributedTaskQueue> logger)
 
     {
         _distributedCache = distributedCache;
         _serviceProvider = serviceProvider;
         _cancellationCacheNotify = cancelTaskNotify;
         _cancelations = new ConcurrentDictionary<string, CancellationTokenSource>();
-        _logger = options.CurrentValue;
+        _logger = logger;
 
         _cancellationCacheNotify.Subscribe((c) =>
         {

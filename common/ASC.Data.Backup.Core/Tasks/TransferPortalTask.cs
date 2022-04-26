@@ -39,7 +39,7 @@ public class TransferPortalTask : PortalTaskBase
     public int ToTenantId { get; private set; }
     public int Limit { get; private set; }
 
-    private readonly IOptionsMonitor<ILog> _options;
+    private readonly ILogger _options;
     private readonly TempStream _tempStream;
     private readonly TempPath _tempPath;
     private readonly IServiceProvider _serviceProvider;
@@ -48,7 +48,7 @@ public class TransferPortalTask : PortalTaskBase
     public TransferPortalTask(
         DbFactory dbFactory,
         IServiceProvider serviceProvider,
-        IOptionsMonitor<ILog> options,
+        ILogger<TransferPortalTask> options,
         StorageFactory storageFactory,
         StorageFactoryConfig storageFactoryConfig,
         ModuleProvider moduleProvider,

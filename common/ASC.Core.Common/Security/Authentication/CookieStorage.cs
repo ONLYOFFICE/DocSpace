@@ -34,12 +34,12 @@ public class CookieStorage
     private readonly InstanceCrypto _instanceCrypto;
     private readonly TenantCookieSettingsHelper _tenantCookieSettingsHelper;
     private readonly HttpContext _httpContext;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
 
     public CookieStorage(
         InstanceCrypto instanceCrypto,
         TenantCookieSettingsHelper tenantCookieSettingsHelper,
-        ILog logger)
+        ILogger<CookieStorage> logger)
     {
         _instanceCrypto = instanceCrypto;
         _tenantCookieSettingsHelper = tenantCookieSettingsHelper;
@@ -50,7 +50,7 @@ public class CookieStorage
         IHttpContextAccessor httpContextAccessor,
         InstanceCrypto instanceCrypto,
         TenantCookieSettingsHelper tenantCookieSettingsHelper,
-        ILog logger)
+        ILogger<CookieStorage> logger)
         : this(instanceCrypto, tenantCookieSettingsHelper, logger)
     {
         _httpContext = httpContextAccessor.HttpContext;

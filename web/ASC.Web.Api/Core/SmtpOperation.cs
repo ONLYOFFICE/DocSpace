@@ -50,7 +50,7 @@ public class SmtpOperation
     private readonly UserManager _userManager;
     private readonly SecurityContext _securityContext;
     private readonly TenantManager _tenantManager;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly SmtpSettingsDto _smtpSettings;
 
     private readonly string _messageSubject;
@@ -64,7 +64,7 @@ public class SmtpOperation
         UserManager userManager,
         SecurityContext securityContext,
         TenantManager tenantManager,
-        IOptionsMonitor<ILog> options)
+        ILogger<SmtpOperation> logger)
     {
         _smtpSettings = smtpSettings;
         CurrentTenant = tenant;
@@ -85,7 +85,7 @@ public class SmtpOperation
 
         TaskInfo = new DistributedTask();
 
-        _logger = options.CurrentValue;
+        _logger = logger;
     }
 
     public void RunJob(DistributedTask distributedTask, CancellationToken cancellationToken)

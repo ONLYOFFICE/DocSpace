@@ -29,14 +29,14 @@ namespace ASC.Core.Common.Hosting;
 [Scope]
 public class RegisterInstanceDao<T> : IRegisterInstanceDao<T> where T : IHostedService
 {
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly InstanceRegistrationContext _instanceRegistrationContext;
 
     public RegisterInstanceDao(
-        IOptionsMonitor<ILog> options,
+        ILogger<RegisterInstanceDao<T>> logger,
         DbContextManager<InstanceRegistrationContext> dbContextManager)
     {
-        _logger = options.CurrentValue;
+        _logger = logger;
         _instanceRegistrationContext = dbContextManager.Value;
     }
 

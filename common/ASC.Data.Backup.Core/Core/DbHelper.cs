@@ -34,14 +34,14 @@ public class DbHelper : IDisposable
     private readonly DbCommandBuilder _builder;
     private readonly DataTable _columns;
     private readonly bool _mysql;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly TenantDbContext _tenantDbContext;
     private readonly CoreDbContext _coreDbContext;
     private readonly IDictionary<string, string> _whereExceptions
         = new Dictionary<string, string>();
 
     public DbHelper(
-        ILog logger,
+        ILogger<DbHelper> logger,
         ConnectionStringSettings connectionString,
         TenantDbContext tenantDbContext,
         CoreDbContext coreDbContext)

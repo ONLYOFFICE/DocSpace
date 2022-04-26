@@ -74,7 +74,7 @@ public class FileHandlerService
     private readonly TempStream _tempStream;
     private readonly UserManager _userManager;
     private readonly SocketManager _socketManager;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly IHttpClientFactory _clientFactory;
 
     public FileHandlerService(
@@ -83,7 +83,7 @@ public class FileHandlerService
         AuthContext authContext,
         SecurityContext securityContext,
         GlobalStore globalStore,
-        IOptionsMonitor<ILog> optionsMonitor,
+        ILogger<FileHandlerService> logger,
         IDaoFactory daoFactory,
         FileSecurity fileSecurity,
         FileMarker fileMarker,
@@ -131,7 +131,7 @@ public class FileHandlerService
         _compressToArchive = compressToArchive;
         _tempStream = tempStream;
         _userManager = userManager;
-        _logger = optionsMonitor.CurrentValue;
+        _logger = logger;
         _clientFactory = clientFactory;
     }
 
@@ -251,7 +251,7 @@ public class FileHandlerService
         }
         catch (Exception e)
         {
-            _logger.LogError("BulkDownloadFile failed for user {0} with error: ", _securityContext.CurrentAccount.ID, e.Message);
+            _logger.LogError(e, "BulkDownloadFile failed for user {0} with error: ", _securityContext.CurrentAccount.ID);
             throw new HttpException((int)HttpStatusCode.BadRequest, e.Message);
         }
     }

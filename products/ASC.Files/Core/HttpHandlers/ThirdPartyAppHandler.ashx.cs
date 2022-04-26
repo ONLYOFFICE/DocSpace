@@ -43,19 +43,19 @@ public class ThirdPartyAppHandlerService
 {
     private readonly AuthContext _authContext;
     private readonly CommonLinkUtility _commonLinkUtility;
-    private readonly ILog _log;
+    private readonly ILogger _log;
 
     public string HandlerPath { get; set; }
 
     public ThirdPartyAppHandlerService(
-        IOptionsMonitor<ILog> optionsMonitor,
+        ILogger<ThirdPartyAppHandlerService> logger,
         AuthContext authContext,
         BaseCommonLinkUtility baseCommonLinkUtility,
         CommonLinkUtility commonLinkUtility)
     {
         _authContext = authContext;
         _commonLinkUtility = commonLinkUtility;
-        _log = optionsMonitor.CurrentValue;
+        _log = logger;
         HandlerPath = baseCommonLinkUtility.ToAbsolute("~/thirdpartyapp");
     }
 

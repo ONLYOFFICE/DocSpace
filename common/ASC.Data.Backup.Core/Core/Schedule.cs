@@ -30,12 +30,12 @@ namespace ASC.Data.Backup;
 public class Schedule
 {
     private readonly TenantManager _tenantManager;
-    private readonly IOptionsMonitor<ILog> _options;
+    private readonly ILogger _logger;
     private readonly TenantUtil _tenantUtil;
 
-    public Schedule(IOptionsMonitor<ILog> options, TenantManager tenantManager, TenantUtil tenantUtil)
+    public Schedule(ILogger<Schedule> options, TenantManager tenantManager, TenantUtil tenantUtil)
     {
-        _options = options;
+        _logger = options;
         _tenantManager = tenantManager;
         _tenantUtil = tenantUtil;
     }
@@ -67,7 +67,7 @@ public class Schedule
         }
         catch (Exception e)
         {
-            var log = _options.CurrentValue;
+            var log = _logger;
             log.LogError(e, ("Schedule " + backupSchedule.TenantId));
 
             return false;

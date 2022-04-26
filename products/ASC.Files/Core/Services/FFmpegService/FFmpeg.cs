@@ -81,7 +81,7 @@ public class FFmpegService
         }
     }
 
-    public FFmpegService(ILog logger, IConfiguration configuration)
+    public FFmpegService(ILogger<FFmpegService> logger, IConfiguration configuration)
     {
         _logger = logger;
         _fFmpegPath = configuration["files:ffmpeg:value"];
@@ -125,7 +125,7 @@ public class FFmpegService
     private readonly string _fFmpegPath;
     private readonly string _fFmpegArgs;
 
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
 
     private ProcessStartInfo PrepareFFmpeg(string inputFormat)
     {

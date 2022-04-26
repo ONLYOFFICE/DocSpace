@@ -32,7 +32,7 @@ public class NotifyService : IHostedService
     private readonly DbWorker _db;
     private readonly ICacheNotify<NotifyInvoke> _cacheInvoke;
     private readonly ICacheNotify<NotifyMessage> _cacheNotify;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly NotifyConfiguration _notifyConfiguration;
     private readonly NotifyServiceCfg _notifyServiceCfg;
@@ -42,14 +42,14 @@ public class NotifyService : IHostedService
         DbWorker db,
         ICacheNotify<NotifyInvoke> cacheInvoke,
         ICacheNotify<NotifyMessage> cacheNotify,
-        IOptionsMonitor<ILog> options,
+        ILoggerProvider options,
         IServiceScopeFactory serviceScopeFactory,
         NotifyConfiguration notifyConfiguration)
     {
         _cacheInvoke = cacheInvoke;
         _cacheNotify = cacheNotify;
         _db = db;
-        _logger = options.Get("ASC.NotifyService");
+        _logger = options.CreateLogger("ASC.NotifyService");
         _notifyConfiguration = notifyConfiguration;
         _notifyServiceCfg = notifyServiceCfg.Value;
         _serviceScopeFactory = serviceScopeFactory;

@@ -29,16 +29,16 @@ namespace ASC.MessagingSystem.Core.Sender;
 [Singletone]
 public class DbMessageSender : IMessageSender
 {
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly MessagesRepository _messagesRepository;
     private readonly bool _messagingEnabled;
 
-    public DbMessageSender(IConfiguration configuration, MessagesRepository messagesRepository, IOptionsMonitor<ILog> options)
+    public DbMessageSender(IConfiguration configuration, MessagesRepository messagesRepository, ILoggerProvider options)
     {
         var setting = configuration["messaging:enabled"];
         _messagingEnabled = !string.IsNullOrEmpty(setting) && setting == "true";
         _messagesRepository = messagesRepository;
-        _logger = options.Get("ASC.Messaging");
+        _logger = options.CreateLogger("ASC.Messaging");
     }
 
     public void Send(EventMessage message)

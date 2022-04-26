@@ -50,7 +50,6 @@ global using ASC.Api.Core.Routing;
 global using ASC.Common;
 global using ASC.Common.Caching;
 global using ASC.Common.DependencyInjection;
-global using ASC.Common.Logging;
 global using ASC.Common.Mapping;
 global using ASC.Common.Notify.Engine;
 global using ASC.Common.Threading;
@@ -110,10 +109,6 @@ global using Microsoft.Extensions.Primitives;
 
 global using Newtonsoft.Json;
 global using Newtonsoft.Json.Serialization;
-
-global using NLog;
-global using NLog.Config;
-global using NLog.Extensions.Logging;
 
 global using RabbitMQ.Client;
 

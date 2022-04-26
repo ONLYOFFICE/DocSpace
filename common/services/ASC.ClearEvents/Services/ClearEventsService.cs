@@ -29,11 +29,11 @@ namespace ASC.ClearEvents.Services;
 [Scope]
 public class ClearEventsService : IHostedService, IDisposable
 {
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private Timer _timer;
 
-    public ClearEventsService(ILog logger, IServiceScopeFactory serviceScopeFactory)
+    public ClearEventsService(ILogger<ClearEventsService> logger, IServiceScopeFactory serviceScopeFactory)
     {
         _logger = logger;
         _serviceScopeFactory = serviceScopeFactory;

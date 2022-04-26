@@ -36,7 +36,7 @@ public class CapabilitiesController : ControllerBase
     private readonly ProviderManager _providerManager;
     private readonly IConfiguration _configuration;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly ILog _log;
+    private readonly ILogger _log;
 
 
     public CapabilitiesController(
@@ -45,14 +45,14 @@ public class CapabilitiesController : ControllerBase
         ProviderManager providerManager,
         IConfiguration configuration,
         IHttpContextAccessor httpContextAccessor,
-        IOptionsMonitor<ILog> options)
+        ILogger<CapabilitiesController> logger)
     {
         _coreBaseSettings = coreBaseSettings;
         _tenantManager = tenantManager;
         _providerManager = providerManager;
         _configuration = configuration;
         _httpContextAccessor = httpContextAccessor;
-        _log = options.CurrentValue;
+        _log = logger;
     }
 
     ///<summary>

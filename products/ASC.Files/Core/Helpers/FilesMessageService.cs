@@ -29,23 +29,23 @@ namespace ASC.Web.Files.Helpers;
 [Scope]
 public class FilesMessageService
 {
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly MessageTarget _messageTarget;
     private readonly MessageService _messageService;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
     public FilesMessageService(
-        IOptionsMonitor<ILog> options,
+        ILoggerProvider options,
         MessageTarget messageTarget,
         MessageService messageService)
     {
-        _logger = options.Get("ASC.Messaging");
+        _logger = options.CreateLogger("ASC.Messaging");
         _messageTarget = messageTarget;
         _messageService = messageService;
     }
 
     public FilesMessageService(
-        IOptionsMonitor<ILog> options,
+        ILoggerProvider options,
         MessageTarget messageTarget,
         MessageService messageService,
         IHttpContextAccessor httpContextAccessor)

@@ -31,12 +31,12 @@ namespace ASC.Geolocation;
 public class GeolocationHelper
 {
     public string Dbid { get; set; }
-    public ILog Logger { get; }
+    public ILogger Logger { get; }
     private readonly DbContext _dbContext;
 
-    public GeolocationHelper(DbContextManager<DbContext> dbContext, IOptionsMonitor<ILog> option)
+    public GeolocationHelper(DbContextManager<DbContext> dbContext, ILogger<GeolocationHelper> logger)
     {
-        Logger = option.CurrentValue;
+        Logger = logger;
         _dbContext = dbContext.Get(Dbid);
     }
 

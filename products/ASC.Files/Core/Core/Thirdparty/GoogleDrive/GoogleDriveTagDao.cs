@@ -36,10 +36,10 @@ internal class GoogleDriveTagDao : GoogleDriveDaoBase, ITagDao<string>
         TenantUtil tenantUtil,
         DbContextManager<FilesDbContext> dbContextManager,
         SetupInfo setupInfo,
-        IOptionsMonitor<ILog> monitor,
+        ILogger<GoogleDriveTagDao> monitor,
         FileUtility fileUtility,
         TempPath tempPath)
-                : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
+        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
     {
     }
 }

@@ -43,7 +43,7 @@ public interface ISubscriptionProvider
 
 public static class SubscriptionProviderHelper
 {
-    public static bool IsSubscribed(this ISubscriptionProvider provider, ILog log, INotifyAction action, IRecipient recipient, string objectID)
+    public static bool IsSubscribed(this ISubscriptionProvider provider, ILogger log, INotifyAction action, IRecipient recipient, string objectID)
     {
         var result = false;
 

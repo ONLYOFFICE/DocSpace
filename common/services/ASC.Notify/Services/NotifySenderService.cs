@@ -30,15 +30,15 @@ namespace ASC.Notify.Services;
 public class NotifySenderService : BackgroundService
 {
     private readonly DbWorker _db;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly NotifyServiceCfg _notifyServiceCfg;
 
     public NotifySenderService(
         IOptions<NotifyServiceCfg> notifyServiceCfg,
         DbWorker dbWorker,
-        IOptionsMonitor<ILog> options)
+        ILoggerProvider options)
     {
-        _logger = options.Get("ASC.NotifySender");
+        _logger = options.CreateLogger("ASC.NotifySender");
         _notifyServiceCfg = notifyServiceCfg.Value;
         _db = dbWorker;
     }

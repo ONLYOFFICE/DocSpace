@@ -30,13 +30,13 @@ namespace ASC.Core.Common.Notify;
 
 class PushSenderSink : Sink
 {
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private bool _configured = true;
 
-    public PushSenderSink(IServiceProvider serviceProvider, IOptionsMonitor<ILog> options)
+    public PushSenderSink(IServiceProvider serviceProvider, ILogger<PushSenderSink> logger)
     {
         _serviceProvider = serviceProvider;
-        _logger = options.CurrentValue;
+        _logger = logger;
     }
 
     private readonly IServiceProvider _serviceProvider;

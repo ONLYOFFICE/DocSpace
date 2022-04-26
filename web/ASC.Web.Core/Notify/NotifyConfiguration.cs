@@ -138,7 +138,7 @@ public class NotifyConfiguration
                  }
                  catch (Exception error)
                  {
-                     scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue.LogError(error, "NotifyClientRegisterCallback");
+                     scope.ServiceProvider.GetService<ILogger<NotifyConfiguration>>().LogError(error, "NotifyClientRegisterCallback");
                  }
                  return false;
              });
@@ -155,21 +155,21 @@ public class ProductSecurityInterceptor
     private readonly WebItemSecurity _webItemSecurity;
     private readonly UserManager _userManager;
     private readonly CoreBaseSettings _coreBaseSettings;
-    private readonly ILog _log;
+    private readonly ILogger _log;
 
     public ProductSecurityInterceptor(
         TenantManager tenantManager,
         WebItemSecurity webItemSecurity,
         UserManager userManager,
         CoreBaseSettings coreBaseSettings,
-        IOptionsMonitor<ILog> options
+        ILogger<ProductSecurityInterceptor> logger
         )
     {
         _tenantManager = tenantManager;
         _webItemSecurity = webItemSecurity;
         _userManager = userManager;
         _coreBaseSettings = coreBaseSettings;
-        _log = options.CurrentValue;
+        _log = logger;
     }
 
     public bool Intercept(NotifyRequest r, InterceptorPlace p)
@@ -278,14 +278,14 @@ public class NotifyTransferRequest : INotifyEngineAction
     private readonly CommonLinkUtility _commonLinkUtility;
     private readonly SettingsManager _settingsManager;
     private readonly StudioNotifyHelper _studioNotifyHelper;
-    private readonly ILog _log;
+    private readonly ILogger _log;
 
     public NotifyTransferRequest(
         TenantManager tenantManager,
         AuthContext authContext,
         UserManager userManager,
         DisplayUserSettingsHelper displayUserSettingsHelper,
-        IOptionsMonitor<ILog> options,
+        ILogger<NotifyTransferRequest> logger,
         TenantExtra tenantExtra,
         WebItemManager webItemManager,
         TenantLogoManager tenantLogoManager,
@@ -309,7 +309,7 @@ public class NotifyTransferRequest : INotifyEngineAction
         _commonLinkUtility = commonLinkUtility;
         _settingsManager = settingsManager;
         _studioNotifyHelper = studioNotifyHelper;
-        _log = options.CurrentValue;
+        _log = logger;
     }
 
     public void BeforeTransferRequest(NotifyRequest request)

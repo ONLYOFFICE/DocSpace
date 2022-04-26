@@ -41,12 +41,11 @@ public class StudioNotifyHelper
     private readonly UserManager _userManager;
     private readonly SettingsManager _settingsManager;
     private readonly CommonLinkUtility _commonLinkUtility;
-    private readonly SetupInfo _setupInfo;
     private readonly TenantManager _tenantManager;
     private readonly TenantExtra _tenantExtra;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly WebImageSupplier _webImageSupplier;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
 
     public StudioNotifyHelper(
         StudioNotifySource studioNotifySource,
@@ -54,20 +53,18 @@ public class StudioNotifyHelper
         SettingsManager settingsManager,
         AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper,
         CommonLinkUtility commonLinkUtility,
-        SetupInfo setupInfo,
         TenantManager tenantManager,
         TenantExtra tenantExtra,
         CoreBaseSettings coreBaseSettings,
         WebImageSupplier webImageSupplier,
         IConfiguration configuration,
-            ILog logger)
+        ILogger<StudioNotifyHelper> logger)
     {
         Helplink = commonLinkUtility.GetHelpLink(settingsManager, additionalWhiteLabelSettingsHelper, false);
         NotifySource = studioNotifySource;
         _userManager = userManager;
         _settingsManager = settingsManager;
         _commonLinkUtility = commonLinkUtility;
-        _setupInfo = setupInfo;
         _tenantManager = tenantManager;
         _tenantExtra = tenantExtra;
         _coreBaseSettings = coreBaseSettings;

@@ -41,7 +41,7 @@ public class UserController : PeopleControllerBase
     private readonly CustomNamingPeople _customNamingPeople;
     private readonly EmployeeDtoHelper _employeeDtoHelper;
     private readonly EmployeeFullDtoHelper _employeeFullDtoHelper;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly PasswordHasher _passwordHasher;
     private readonly QueueWorkerReassign _queueWorkerReassign;
     private readonly QueueWorkerRemove _queueWorkerRemove;
@@ -70,7 +70,7 @@ public class UserController : PeopleControllerBase
         CustomNamingPeople customNamingPeople,
         EmployeeDtoHelper employeeDtoHelper,
         EmployeeFullDtoHelper employeeFullDtoHelper,
-        ILog logger,
+        ILogger<UserController> logger,
         PasswordHasher passwordHasher,
         QueueWorkerReassign queueWorkerReassign,
         QueueWorkerRemove queueWorkerRemove,

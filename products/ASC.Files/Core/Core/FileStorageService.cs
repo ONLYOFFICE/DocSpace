@@ -75,7 +75,7 @@ public class FileStorageService<T> //: IFileStorageService
     private readonly FileTrackerHelper _fileTracker;
     private readonly ICacheNotify<ThumbnailRequest> _thumbnailNotify;
     private readonly EntryStatusManager _entryStatusManager;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
 
     public FileStorageService(
         Global global,
@@ -91,7 +91,7 @@ public class FileStorageService<T> //: IFileStorageService
         CustomNamingPeople customNamingPeople,
         DisplayUserSettingsHelper displayUserSettingsHelper,
         IHttpContextAccessor httpContextAccessor,
-        IOptionsMonitor<ILog> optionMonitor,
+        ILoggerProvider optionMonitor,
         PathProvider pathProvider,
         FileSecurity fileSecurity,
         SocketManager socketManager,
@@ -159,7 +159,7 @@ public class FileStorageService<T> //: IFileStorageService
         _consumerFactory = consumerFactory;
         _encryptionKeyPairHelper = encryptionKeyPairHelper;
         _settingsManager = settingsManager;
-        _logger = optionMonitor.Get("ASC.Files");
+        _logger = optionMonitor.CreateLogger("ASC.Files");
         _fileOperationsManager = fileOperationsManager;
         _tenantManager = tenantManager;
         _fileTracker = fileTracker;

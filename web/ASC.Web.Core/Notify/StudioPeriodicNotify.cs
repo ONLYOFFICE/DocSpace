@@ -48,10 +48,10 @@ public class StudioPeriodicNotify
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
     private readonly AuthManager _authManager;
     private readonly SecurityContext _securityContext;
-    private readonly ILog _log;
+    private readonly ILogger _log;
 
     public StudioPeriodicNotify(
-        IOptionsMonitor<ILog> log,
+        ILoggerProvider log,
         NotifyEngineQueue notifyEngineQueue,
         WorkContext workContext,
         TenantManager tenantManager,
@@ -91,7 +91,7 @@ public class StudioPeriodicNotify
         _displayUserSettingsHelper = displayUserSettingsHelper;
         _authManager = authManager;
         _securityContext = securityContext;
-        _log = log.Get("ASC.Notify");
+        _log = log.CreateLogger("ASC.Notify");
     }
 
     public Task SendSaasLettersAsync(string senderName, DateTime scheduleDate)

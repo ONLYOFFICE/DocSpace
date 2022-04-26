@@ -34,7 +34,6 @@ global using ASC.Api.Core.Convention;
 global using ASC.Api.Core.Extensions;
 global using ASC.Api.Utils;
 global using ASC.Common;
-global using ASC.Common.Logging;
 global using ASC.Common.Utils;
 global using ASC.Common.Web;
 global using ASC.Core;
@@ -69,6 +68,7 @@ global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Http.Extensions;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.Extensions.Hosting.WindowsServices;
+global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Options;
 
 global using SixLabors.ImageSharp;

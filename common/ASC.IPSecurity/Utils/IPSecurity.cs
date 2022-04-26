@@ -31,7 +31,7 @@ public class IPSecurity
 {
     public bool IpSecurityEnabled { get; }
 
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly AuthContext _authContext;
     private readonly TenantManager _tenantManager;
@@ -45,9 +45,9 @@ public class IPSecurity
         AuthContext authContext,
         TenantManager tenantManager,
         IPRestrictionsService iPRestrictionsService,
-        IOptionsMonitor<ILog> options)
+        ILoggerProvider options)
     {
-        _logger = options.Get("ASC.IPSecurity");
+        _logger = options.CreateLogger("ASC.IPSecurity");
         _httpContextAccessor = httpContextAccessor;
         _authContext = authContext;
         _tenantManager = tenantManager;
@@ -174,7 +174,7 @@ public class IPSecurity
         }
         catch (Exception ex)
         {
-            _logger.LogError("Can't verify local network from request with IP-address: {0}", string.Join(",", ips), ex);
+            _logger.LogError(ex, "Can't verify local network from request with IP-address: {0}", string.Join(",", ips));
         }
 
         return false;

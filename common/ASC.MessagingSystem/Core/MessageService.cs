@@ -29,7 +29,7 @@ namespace ASC.MessagingSystem.Core;
 [Scope]
 public class MessageService
 {
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly IMessageSender _sender;
     private readonly HttpRequest _request;
     private readonly MessageFactory _messageFactory;
@@ -40,7 +40,7 @@ public class MessageService
         MessageFactory messageFactory,
         DbMessageSender sender,
         MessagePolicy messagePolicy,
-        ILog logger)
+        ILogger<MessageService> logger)
     {
         if (configuration["messaging:enabled"] != "true")
         {
@@ -59,7 +59,7 @@ public class MessageService
         MessageFactory messageFactory,
         DbMessageSender sender,
         MessagePolicy messagePolicy,
-        ILog logger)
+        ILogger<MessageService> logger)
         : this(configuration, messageFactory, sender, messagePolicy, logger)
     {
         _request = httpContextAccessor?.HttpContext?.Request;

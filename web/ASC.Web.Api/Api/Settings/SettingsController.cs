@@ -56,13 +56,13 @@ public class SettingsController : BaseSettingsController
     private readonly CoreConfiguration _coreConfiguration;
     private readonly UrlShortener _urlShortener;
     private readonly PasswordHasher _passwordHasher;
-    private readonly ILog _log;
+    private readonly ILogger _log;
     private readonly TelegramHelper _telegramHelper;
     private readonly Constants _constants;
     private readonly DnsSettings _dnsSettings;
 
     public SettingsController(
-        IOptionsMonitor<ILog> option,
+        ILoggerProvider option,
         MessageService messageService,
         ApiContext apiContext,
         UserManager userManager,
@@ -97,7 +97,7 @@ public class SettingsController : BaseSettingsController
         DnsSettings dnsSettings
         ) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
-        _log = option.Get("ASC.Api");
+        _log = option.CreateLogger("ASC.Api");
         _consumerFactory = consumerFactory;
         _timeZoneConverter = timeZoneConverter;
         _customNamingPeople = customNamingPeople;

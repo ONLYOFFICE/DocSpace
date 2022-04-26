@@ -77,7 +77,7 @@ public class BackupProgressItem : BaseBackupProgressItem
     private readonly NotifyHelper _notifyHelper;
 
     public BackupProgressItem(
-        ILog logger,
+        ILogger<BackupProgressItem> logger,
         IServiceScopeFactory serviceProvider,
         CoreBaseSettings coreBaseSettings,
         NotifyHelper notifyHelper)
@@ -217,7 +217,7 @@ public class BackupProgressItem : BaseBackupProgressItem
             }
             catch (Exception error)
             {
-                Logger.LogError(error, "can't delete file: {0}");
+                Logger.LogError(error, "can't delete file");
             }
         }
     }

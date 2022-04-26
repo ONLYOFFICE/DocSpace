@@ -29,7 +29,7 @@ namespace ASC.Web.Studio.Core.Notify;
 [Scope]
 public class StudioWhatsNewNotify
 {
-    private readonly ILog _log;
+    private readonly ILogger _log;
     private readonly WebItemManager _webItemManager;
     private readonly TenantManager _tenantManager;
     private readonly PaymentManager _paymentManager;
@@ -62,7 +62,7 @@ public class StudioWhatsNewNotify
         NotifyEngineQueue notifyEngineQueue,
         IConfiguration confuguration,
         WorkContext workContext,
-        IOptionsMonitor<ILog> optionsMonitor,
+        ILoggerProvider optionsMonitor,
         IMapper mapper,
         WebItemManager webItemManager)
     {
@@ -82,7 +82,7 @@ public class StudioWhatsNewNotify
         _confuguration = confuguration;
         _workContext = workContext;
         _mapper = mapper;
-        _log = optionsMonitor.Get("ASC.Notify");
+        _log = optionsMonitor.CreateLogger("ASC.Notify");
     }
 
     public void SendMsgWhatsNew(DateTime scheduleDate)

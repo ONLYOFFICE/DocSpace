@@ -47,7 +47,6 @@ global using Amazon.S3.Transfer;
 global using ASC.Api.Utils;
 global using ASC.Common;
 global using ASC.Common.Caching;
-global using ASC.Common.Logging;
 global using ASC.Common.Threading;
 global using ASC.Common.Utils;
 global using ASC.Core;
@@ -99,7 +98,7 @@ global using Microsoft.AspNetCore.Http;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
-global using Microsoft.Extensions.Options;
+global using Microsoft.Extensions.Logging;
 
 global using MySql.Data.MySqlClient;
 

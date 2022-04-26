@@ -33,7 +33,7 @@ public class BaseIndexerFile : BaseIndexer<DbFile>
 
     public BaseIndexerFile(
         Client client,
-        IOptionsMonitor<ILog> log,
+        ILogger<BaseIndexerFile> log,
         DbContextManager<WebstudioDbContext> dbContextManager,
         TenantManager tenantManager,
         BaseIndexerHelper baseIndexerHelper,
@@ -82,7 +82,7 @@ public class FactoryIndexerFile : FactoryIndexer<DbFile>
     private readonly Settings _settings;
 
     public FactoryIndexerFile(
-        IOptionsMonitor<ILog> options,
+        ILoggerProvider options,
         TenantManager tenantManager,
         SearchSettingsHelper searchSettingsHelper,
         FactoryIndexer factoryIndexer,

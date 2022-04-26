@@ -29,12 +29,12 @@ namespace ASC.Core.Notify.Senders;
 [Singletone]
 public class TelegramSender : INotifySender
 {
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly IServiceProvider _serviceProvider;
 
-    public TelegramSender(IOptionsMonitor<ILog> options, IServiceProvider serviceProvider)
+    public TelegramSender(ILoggerProvider options, IServiceProvider serviceProvider)
     {
-        _logger = options.Get("ASC");
+        _logger = options.CreateLogger("ASC");
         _serviceProvider = serviceProvider;
     }
 

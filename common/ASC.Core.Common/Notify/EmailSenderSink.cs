@@ -74,13 +74,13 @@ public class EmailSenderSinkMessageCreator : SinkMessageCreator
 {
     private readonly TenantManager _tenantManager;
     private readonly CoreConfiguration _coreConfiguration;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
 
-    public EmailSenderSinkMessageCreator(TenantManager tenantManager, CoreConfiguration coreConfiguration, IOptionsMonitor<ILog> options)
+    public EmailSenderSinkMessageCreator(TenantManager tenantManager, CoreConfiguration coreConfiguration, ILoggerProvider options)
     {
         _tenantManager = tenantManager;
         _coreConfiguration = coreConfiguration;
-        _logger = options.Get("ASC.Notify");
+        _logger = options.CreateLogger("ASC.Notify");
     }
 
     public override NotifyMessage CreateNotifyMessage(INoticeMessage message, string senderName)

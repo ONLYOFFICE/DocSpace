@@ -70,7 +70,7 @@ public class RemoveProgressItem : DistributedTaskProgress
         using var scope = _serviceScopeFactory.CreateScope();
         var scopeClass = scope.ServiceProvider.GetService<RemoveProgressItemScope>();
         var (tenantManager, coreBaseSettings, messageService, studioNotifyService, securityContext, userManager, messageTarget, webItemManagerSecurity, storageFactory, userFormatter, options) = scopeClass;
-        var logger = options.Get("ASC.Web");
+        var logger = options.CreateLogger("ASC.Web");
         tenantManager.SetCurrentTenant(_tenantId);
         var userName = userFormatter.GetUserName(User, DisplayUserNameFormat.Default);
 
@@ -257,7 +257,7 @@ public class RemoveProgressItemScope
     private readonly WebItemManagerSecurity _webItemManagerSecurity;
     private readonly StorageFactory _storageFactory;
     private readonly UserFormatter _userFormatter;
-    private readonly IOptionsMonitor<ILog> _options;
+    private readonly ILoggerProvider _options;
 
     public RemoveProgressItemScope(TenantManager tenantManager,
         CoreBaseSettings coreBaseSettings,
@@ -269,7 +269,7 @@ public class RemoveProgressItemScope
         WebItemManagerSecurity webItemManagerSecurity,
         StorageFactory storageFactory,
         UserFormatter userFormatter,
-        IOptionsMonitor<ILog> options)
+        ILoggerProvider options)
     {
         _tenantManager = tenantManager;
         _coreBaseSettings = coreBaseSettings;
@@ -294,7 +294,7 @@ public class RemoveProgressItemScope
         out WebItemManagerSecurity webItemManagerSecurity,
         out StorageFactory storageFactory,
         out UserFormatter userFormatter,
-        out IOptionsMonitor<ILog> optionsMonitor)
+        out ILoggerProvider optionsMonitor)
     {
         tenantManager = _tenantManager;
         coreBaseSettings = _coreBaseSettings;

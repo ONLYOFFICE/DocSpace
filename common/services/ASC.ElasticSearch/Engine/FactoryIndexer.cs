@@ -56,7 +56,7 @@ public interface IFactoryIndexer
 [Scope]
 public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
 {
-    public ILog Logger { get; }
+    public ILogger Logger { get; }
     public string IndexName { get => _indexer.IndexName; }
     public virtual string SettingsTitle => string.Empty;
 
@@ -71,7 +71,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
         = new ConcurrentExclusiveSchedulerPair(TaskScheduler.Default, 10).ConcurrentScheduler;
 
     public FactoryIndexer(
-        IOptionsMonitor<ILog> options,
+        ILoggerProvider options,
         TenantManager tenantManager,
         SearchSettingsHelper searchSettingsHelper,
         FactoryIndexer factoryIndexer,
@@ -80,7 +80,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
         ICache cache)
     {
         _cache = cache;
-        Logger = options.Get("ASC.Indexer");
+        Logger = options.CreateLogger("ASC.Indexer");
         _tenantManager = tenantManager;
         _searchSettingsHelper = searchSettingsHelper;
         _factoryIndexerCommon = factoryIndexer;
@@ -603,7 +603,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
 [Scope]
 public class FactoryIndexer
 {
-    public ILog Log { get; }
+    public ILogger Log { get; }
 
     private readonly ICache _cache;
     private readonly IServiceProvider _serviceProvider;
@@ -615,7 +615,7 @@ public class FactoryIndexer
         IServiceProvider serviceProvider,
         FactoryIndexerHelper factoryIndexerHelper,
         Client client,
-        IOptionsMonitor<ILog> options,
+        ILoggerProvider options,
         CoreBaseSettings coreBaseSettings,
         ICache cache)
     {
@@ -627,7 +627,7 @@ public class FactoryIndexer
 
         try
         {
-            Log = options.Get("ASC.Indexer");
+            Log = options.CreateLogger("ASC.Indexer");
         }
         catch (Exception e)
         {

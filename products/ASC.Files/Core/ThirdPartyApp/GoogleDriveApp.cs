@@ -40,7 +40,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
     public string ClientSecret => this["googleDriveAppSecretKey"];
     public bool IsEnabled => !string.IsNullOrEmpty(ClientID) && !string.IsNullOrEmpty(ClientSecret);
 
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly PathProvider _pathProvider;
     private readonly TenantUtil _tenantUtil;
     private readonly AuthContext _authContext;
@@ -87,7 +87,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
         SettingsManager settingsManager,
         PersonalSettingsHelper personalSettingsHelper,
         BaseCommonLinkUtility baseCommonLinkUtility,
-        IOptionsMonitor<ILog> option,
+        ILogger<GoogleDriveApp> logger,
         FileUtility fileUtility,
         FilesSettingsHelper filesSettingsHelper,
         IOptionsSnapshot<AccountLinker> snapshot,
@@ -109,7 +109,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
         string name, int order, Dictionary<string, string> additional)
         : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, additional)
     {
-        _logger = option.CurrentValue;
+        _logger = logger;
         _pathProvider = pathProvider;
         _tenantUtil = tenantUtil;
         _authContext = authContext;

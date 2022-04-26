@@ -31,13 +31,13 @@ public class TelegramHandler
 {
     private readonly Dictionary<int, TenantTgClient> _clients;
     private readonly CommandModule _command;
-    private readonly ILog _log;
+    private readonly ILogger _log;
     private readonly IServiceScopeFactory _scopeFactory;
 
-    public TelegramHandler(CommandModule command, IOptionsMonitor<ILog> option, IServiceScopeFactory scopeFactory)
+    public TelegramHandler(CommandModule command, ILogger<TelegramHandler> logger, IServiceScopeFactory scopeFactory)
     {
         _command = command;
-        _log = option.CurrentValue;
+        _log = logger;
         _scopeFactory = scopeFactory;
         _clients = new Dictionary<int, TenantTgClient>();
         ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13;

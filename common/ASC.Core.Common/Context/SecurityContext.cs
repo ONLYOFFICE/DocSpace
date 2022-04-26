@@ -29,7 +29,7 @@ namespace ASC.Core;
 [Scope]
 public class SecurityContext
 {
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     public IAccount CurrentAccount => _authContext.CurrentAccount;
     public bool IsAuthenticated => _authContext.IsAuthenticated;
 
@@ -50,7 +50,7 @@ public class SecurityContext
         UserFormatter userFormatter,
         CookieStorage cookieStorage,
         TenantCookieSettingsHelper tenantCookieSettingsHelper,
-        ILog logger
+        ILogger<SecurityContext> logger
         )
     {
         _logger = logger;
@@ -72,7 +72,7 @@ public class SecurityContext
         UserFormatter userFormatter,
         CookieStorage cookieStorage,
         TenantCookieSettingsHelper tenantCookieSettingsHelper,
-        ILog logger
+        ILogger<SecurityContext> logger
         ) : this(userManager, authentication, authContext, tenantManager, userFormatter, cookieStorage, tenantCookieSettingsHelper, logger)
     {
         _httpContextAccessor = httpContextAccessor;

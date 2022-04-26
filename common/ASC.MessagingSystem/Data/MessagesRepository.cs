@@ -37,11 +37,11 @@ public class MessagesRepository : IDisposable
     private readonly IDictionary<string, EventMessage> _cache;
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly IMapper _mapper;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly Timer _timer;
     private Parser _parser;
 
-    public MessagesRepository(IServiceScopeFactory serviceScopeFactory, ILog logger, IMapper mapper)
+    public MessagesRepository(IServiceScopeFactory serviceScopeFactory, ILogger<MessagesRepository> logger, IMapper mapper)
     {
         _cacheTime = TimeSpan.FromMinutes(1);
         _cache = new Dictionary<string, EventMessage>();

@@ -30,12 +30,12 @@ namespace ASC.Files.ThumbnailBuilder;
 public class BuilderQueue<T>
 {
     private readonly ThumbnailSettings _config;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly IServiceScopeFactory _serviceScopeFactory;
 
-    public BuilderQueue(IServiceScopeFactory serviceScopeFactory, IOptionsMonitor<ILog> log, ThumbnailSettings settings)
+    public BuilderQueue(IServiceScopeFactory serviceScopeFactory, ILoggerProvider log, ThumbnailSettings settings)
     {
-        _logger = log.Get("ASC.Files.ThumbnailBuilder");
+        _logger = log.CreateLogger("ASC.Files.ThumbnailBuilder");
         _serviceScopeFactory = serviceScopeFactory;
         _config = settings;
     }
@@ -69,7 +69,7 @@ public class BuilderQueue<T>
 public class Builder<T>
 {
     private readonly ThumbnailSettings _config;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly TenantManager _tenantManager;
     private readonly IDaoFactory _daoFactory;
     private readonly DocumentServiceConnector _documentServiceConnector;
@@ -86,7 +86,7 @@ public class Builder<T>
         DocumentServiceHelper documentServiceHelper,
         Global global,
         PathProvider pathProvider,
-        IOptionsMonitor<ILog> log,
+        ILoggerProvider log,
         IHttpClientFactory clientFactory)
     {
         _config = settings;
@@ -96,7 +96,7 @@ public class Builder<T>
         _documentServiceHelper = documentServiceHelper;
         _global = global;
         _pathProvider = pathProvider;
-        _logger = log.Get("ASC.Files.ThumbnailBuilder");
+        _logger = log.CreateLogger("ASC.Files.ThumbnailBuilder");
         _clientFactory = clientFactory;
     }
 

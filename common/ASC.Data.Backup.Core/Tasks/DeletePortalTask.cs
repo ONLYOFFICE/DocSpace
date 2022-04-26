@@ -28,7 +28,14 @@ namespace ASC.Data.Backup.Tasks;
 
 public class DeletePortalTask : PortalTaskBase
 {
-    public DeletePortalTask(DbFactory dbFactory, IOptionsMonitor<ILog> options, int tenantId, string configPath, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider)
+    public DeletePortalTask(
+        DbFactory dbFactory,
+        ILogger<DeletePortalTask> options,
+        int tenantId,
+        string configPath,
+        StorageFactory storageFactory,
+        StorageFactoryConfig storageFactoryConfig,
+        ModuleProvider moduleProvider)
         : base(dbFactory, options, storageFactory, storageFactoryConfig, moduleProvider)
     {
         Init(tenantId, configPath);

@@ -29,7 +29,7 @@ namespace ASC.Files.Helpers;
 public class FilesControllerHelper<T> : FilesHelperBase<T>
 {
     private readonly IServiceProvider _serviceProvider;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly ApiDateTimeHelper _apiDateTimeHelper;
     private readonly UserManager _userManager;
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
@@ -47,7 +47,7 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
         FolderContentDtoHelper folderContentDtoHelper,
         IHttpContextAccessor httpContextAccessor,
         FolderDtoHelper folderDtoHelper,
-        ILog logger,
+        ILogger<FilesControllerHelper<T>> logger,
         ApiDateTimeHelper apiDateTimeHelper,
         UserManager userManager,
         DisplayUserSettingsHelper displayUserSettingsHelper,

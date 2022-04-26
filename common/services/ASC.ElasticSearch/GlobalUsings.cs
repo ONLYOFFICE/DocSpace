@@ -33,7 +33,6 @@ global using System.Text;
 
 global using ASC.Common;
 global using ASC.Common.Caching;
-global using ASC.Common.Logging;
 global using ASC.Common.Utils;
 global using ASC.Core;
 global using ASC.Core.Common.EF;
@@ -51,7 +50,7 @@ global using Elasticsearch.Net;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Hosting;
-global using Microsoft.Extensions.Options;
+global using Microsoft.Extensions.Logging;
 
 global using Nest;
 

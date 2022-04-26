@@ -41,7 +41,16 @@ public class BackupPortalTask : PortalTaskBase
     private readonly TempStream _tempStream;
     private readonly Lazy<BackupsContext> _lazyBackupsContext;
 
-    public BackupPortalTask(DbFactory dbFactory, DbContextManager<BackupsContext> dbContextManager, IOptionsMonitor<ILog> options, TenantManager tenantManager, CoreBaseSettings coreBaseSettings, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider, TempStream tempStream)
+    public BackupPortalTask(
+        DbFactory dbFactory,
+        DbContextManager<BackupsContext> dbContextManager,
+        ILogger<BackupPortalTask> options,
+        TenantManager tenantManager,
+        CoreBaseSettings coreBaseSettings,
+        StorageFactory storageFactory,
+        StorageFactoryConfig storageFactoryConfig,
+        ModuleProvider moduleProvider,
+        TempStream tempStream)
         : base(dbFactory, options, storageFactory, storageFactoryConfig, moduleProvider)
     {
         _dump = coreBaseSettings.Standalone;
@@ -595,7 +604,7 @@ public class BackupPortalTask : PortalTaskBase
                         table,
                         maxAttempts: 5,
                         onFailure: error => { throw ThrowHelper.CantBackupTable(table.Name, error); },
-                        onAttemptFailure: error => Logger.LogWarning(error, "backup attempt failure: {0}"));
+                        onAttemptFailure: error => Logger.LogWarning(error, "backup attempt failure"));
 
                     foreach (var col in data.Columns.Cast<DataColumn>().Where(col => col.DataType == typeof(DateTime)))
                     {

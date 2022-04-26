@@ -45,7 +45,6 @@ global using Amazon.Util;
 
 global using ASC.Common;
 global using ASC.Common.Caching;
-global using ASC.Common.Logging;
 global using ASC.Common.Threading;
 global using ASC.Common.Utils;
 global using ASC.Core;
@@ -76,7 +75,7 @@ global using Microsoft.AspNetCore.Routing;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Hosting;
-global using Microsoft.Extensions.Options;
+global using Microsoft.Extensions.Logging;
 
 global using net.openstack.Core.Domain;
 global using net.openstack.Providers.Rackspace;

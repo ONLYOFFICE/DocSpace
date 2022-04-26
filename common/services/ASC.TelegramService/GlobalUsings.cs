@@ -33,7 +33,6 @@ global using ASC.Api.Core;
 global using ASC.Api.Core.Extensions;
 global using ASC.Common;
 global using ASC.Common.Caching;
-global using ASC.Common.Logging;
 global using ASC.Core;
 global using ASC.Core.Common.Configuration;
 global using ASC.Core.Common.Notify;
@@ -47,6 +46,7 @@ global using Autofac;
 
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.Extensions.Hosting.WindowsServices;
+global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Options;
 
 global using Telegram.Bot;

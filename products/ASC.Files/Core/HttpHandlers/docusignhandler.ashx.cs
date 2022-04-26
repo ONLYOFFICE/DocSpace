@@ -46,14 +46,14 @@ public class DocuSignHandlerService
         return filesLinkUtility.FilesBaseAbsolutePath + "httphandlers/docusignhandler.ashx";
     }
 
-    private readonly ILog _log;
+    private readonly ILogger _log;
     private readonly TenantExtra _tenantExtra;
     private readonly DocuSignHelper _docuSignHelper;
     private readonly SecurityContext _securityContext;
     private readonly NotifyClient _notifyClient;
 
     public DocuSignHandlerService(
-        IOptionsMonitor<ILog> optionsMonitor,
+        ILogger<DocuSignHandlerService> logger,
         TenantExtra tenantExtra,
         DocuSignHelper docuSignHelper,
         SecurityContext securityContext,
@@ -63,7 +63,7 @@ public class DocuSignHandlerService
         _docuSignHelper = docuSignHelper;
         _securityContext = securityContext;
         _notifyClient = notifyClient;
-        _log = optionsMonitor.CurrentValue;
+        _log = logger;
     }
 
     public async Task Invoke(HttpContext context)

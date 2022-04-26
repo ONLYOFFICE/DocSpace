@@ -62,7 +62,7 @@ public class TransferProgressItem : BaseBackupProgressItem
     private TransferPortalTask _transferPortalTask;
 
     public TransferProgressItem(
-        ILog logger,
+        ILogger<TransferProgressItem> logger,
         IServiceScopeFactory serviceScopeFactory,
         NotifyHelper notifyHelper) :
         base(logger, serviceScopeFactory)

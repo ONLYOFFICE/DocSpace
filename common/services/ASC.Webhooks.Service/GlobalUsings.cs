@@ -33,7 +33,6 @@ global using ASC.Api.Core;
 global using ASC.Api.Core.Extensions;
 global using ASC.Common;
 global using ASC.Common.Caching;
-global using ASC.Common.Logging;
 global using ASC.Common.Utils;
 global using ASC.Web.Webhooks;
 global using ASC.Webhooks.Core;
@@ -41,4 +40,4 @@ global using ASC.Webhooks.Service.Services;
 
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.Extensions.Hosting.WindowsServices;
-global using Microsoft.Extensions.Options;
+global using Microsoft.Extensions.Logging;

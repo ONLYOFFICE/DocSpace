@@ -138,8 +138,7 @@ public class ReportState
     {
         using var scope = _serviceScopeFactory.CreateScope();
         var scopeClass = scope.ServiceProvider.GetService<ReportStateScope>();
-        var (options, tenantManager, authContext, securityContext, documentServiceConnector) = scopeClass;
-        var logger = options.CurrentValue;
+        var (logger, tenantManager, authContext, securityContext, documentServiceConnector) = scopeClass;
         try
         {
             tenantManager.SetCurrentTenant(TenantId);
@@ -210,7 +209,7 @@ public class ReportState
         return TaskInfo;
     }
 
-    protected void PublishTaskInfo(ILog logger)
+    protected void PublishTaskInfo(ILogger logger)
     {
         var tries = 3;
         while (tries-- > 0)
@@ -364,14 +363,14 @@ public class DocbuilderReportsUtilityHelper
 
 public class ReportStateScope
 {
-    private readonly IOptionsMonitor<ILog> _options;
+    private readonly ILogger _options;
     private readonly TenantManager _tenantManager;
     private readonly AuthContext _authContext;
     private readonly SecurityContext _securityContext;
     private readonly DocumentServiceConnector _documentServiceConnector;
 
     public ReportStateScope(
-        IOptionsMonitor<ILog> options,
+        ILogger<ReportStateScope> options,
         TenantManager tenantManager,
         AuthContext authContext,
         SecurityContext securityContext,
@@ -384,7 +383,7 @@ public class ReportStateScope
         _documentServiceConnector = documentServiceConnector;
     }
 
-    public void Deconstruct(out IOptionsMonitor<ILog> optionsMonitor,
+    public void Deconstruct(out ILogger optionsMonitor,
         out TenantManager tenantManager,
         out AuthContext authContext,
         out SecurityContext securityContext,

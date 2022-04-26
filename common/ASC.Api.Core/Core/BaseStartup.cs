@@ -24,6 +24,12 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Common.Logging;
+
+using NLog;
+using NLog.Config;
+using NLog.Extensions.Logging;
+
 using JsonConverter = System.Text.Json.Serialization.JsonConverter;
 
 namespace ASC.Api.Core;
@@ -214,11 +220,6 @@ public static class LogNLogConfigureExtenstion
     {
         return hostBuilder.ConfigureLogging((hostBuildexContext, r) =>
         {
-            r.Services.ConfigureOptions<ConfigureLogNLog>();
-            r.Services.AddSingleton(resolver => (IOptionsMonitor<ILog>)resolver.GetRequiredService<IOptionsMonitor<LogNLog>>());
-            r.Services.AddSingleton(resolver => (ILog)resolver.GetRequiredService<IOptionsMonitor<LogNLog>>().CurrentValue);
-            r.Services.AddSingleton(typeof(ILog<>), typeof(Common.Logging.LogFactory<>));
-
             LogManager.ThrowConfigExceptions = false;
 
             r.AddNLog(GetXmlLoggingConfiguration(hostBuildexContext.HostingEnvironment, hostBuildexContext.Configuration));

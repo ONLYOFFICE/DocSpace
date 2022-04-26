@@ -29,7 +29,7 @@ namespace ASC.Core.Notify.Senders;
 [Singletone]
 public class SmtpSender : INotifySender
 {
-    protected ILog _logger;
+    protected ILogger _logger;
     protected readonly IConfiguration _configuration;
     protected IServiceProvider _serviceProvider;
 
@@ -43,9 +43,9 @@ public class SmtpSender : INotifySender
     public SmtpSender(
         IConfiguration configuration,
         IServiceProvider serviceProvider,
-        IOptionsMonitor<ILog> options)
+        ILoggerProvider options)
     {
-        _logger = options.Get("ASC.Notify");
+        _logger = options.CreateLogger("ASC.Notify");
         _configuration = configuration;
         _serviceProvider = serviceProvider;
     }

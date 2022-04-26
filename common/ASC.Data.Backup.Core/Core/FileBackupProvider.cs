@@ -32,11 +32,11 @@ public class FileBackupProvider : IBackupProvider
     public string Name => "Files";
 
     private readonly IEnumerable<string> _allowedModules;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly StorageFactory _storageFactory;
     private readonly StorageFactoryConfig _storageFactoryConfig;
 
-    public FileBackupProvider(ILog logger, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig)
+    public FileBackupProvider(ILogger<FileBackupProvider> logger, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig)
     {
         _storageFactory = storageFactory;
         _storageFactoryConfig = storageFactoryConfig;

@@ -30,16 +30,16 @@ public class DefaultRabbitMQPersistentConnection
     : IRabbitMQPersistentConnection
 {
     private readonly IConnectionFactory _connectionFactory;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly int _retryCount;
     private IConnection _connection;
     private bool _disposed;
     readonly object sync_root = new object();
 
-    public DefaultRabbitMQPersistentConnection(IConnectionFactory connectionFactory, IOptionsMonitor<ILog> options, int retryCount = 5)
+    public DefaultRabbitMQPersistentConnection(IConnectionFactory connectionFactory, ILogger<DefaultRabbitMQPersistentConnection> logger, int retryCount = 5)
     {
         _connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
-        _logger = options.CurrentValue ?? throw new ArgumentNullException(nameof(options.CurrentValue));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _retryCount = retryCount;
     }
 

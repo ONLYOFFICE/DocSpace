@@ -33,7 +33,7 @@ public class FactoryIndexerFolder : FactoryIndexer<DbFolder>
     private readonly Settings _settings;
 
     public FactoryIndexerFolder(
-        IOptionsMonitor<ILog> options,
+        ILoggerProvider options,
         TenantManager tenantManager,
         SearchSettingsHelper searchSettingsHelper,
         FactoryIndexer factoryIndexer,

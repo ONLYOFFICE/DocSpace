@@ -34,7 +34,7 @@ public class KafkaCacheNotify<T> : IDisposable, ICacheNotify<T> where T : IMessa
     private bool _disposedValue; // To detect redundant calls
     private readonly ClientConfig _clientConfig;
     private readonly AdminClientConfig _adminClientConfig;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly ConcurrentDictionary<string, CancellationTokenSource> _cancelationToken;
     private readonly ConcurrentDictionary<string, Action<T>> _actions;
     private readonly ProtobufSerializer<T> _valueSerializer = new ProtobufSerializer<T>();
@@ -43,7 +43,7 @@ public class KafkaCacheNotify<T> : IDisposable, ICacheNotify<T> where T : IMessa
     private readonly ProtobufDeserializer<AscCacheItem> _keyDeserializer = new ProtobufDeserializer<AscCacheItem>();
     private readonly Guid _key;
 
-    public KafkaCacheNotify(ConfigurationExtension configuration, ILog logger)
+    public KafkaCacheNotify(ConfigurationExtension configuration, ILogger<KafkaCacheNotify<T>> logger)
     {
         _logger = logger;
         _cancelationToken = new ConcurrentDictionary<string, CancellationTokenSource>();

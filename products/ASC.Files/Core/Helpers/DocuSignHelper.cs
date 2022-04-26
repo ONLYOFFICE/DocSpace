@@ -31,7 +31,7 @@ namespace ASC.Web.Files.Helpers;
 [Scope]
 public class DocuSignToken
 {
-    public ILog Logger { get; set; }
+    public ILogger Logger { get; set; }
 
     public const string AppAttr = "docusign";
 
@@ -41,7 +41,7 @@ public class DocuSignToken
 
     public DocuSignToken(
         TokenHelper tokenHelper,
-        ILog logger,
+        ILogger<DocuSignToken> logger,
         AuthContext authContext,
         ConsumerFactory consumerFactory)
     {
@@ -101,7 +101,7 @@ public class DocuSignToken
 [Scope]
 public class DocuSignHelper
 {
-    public ILog Logger { get; set; }
+    public ILogger Logger { get; set; }
 
     public const string UserField = "userId";
 
@@ -137,7 +137,7 @@ public class DocuSignHelper
         DocuSignToken docuSignToken,
         FileSecurity fileSecurity,
         IDaoFactory daoFactory,
-        IOptionsMonitor<ILog> options,
+        ILogger<DocuSignHelper> logger,
         BaseCommonLinkUtility baseCommonLinkUtility,
         UserManager userManager,
         AuthContext authContext,
@@ -163,7 +163,7 @@ public class DocuSignHelper
         _filesLinkUtility = filesLinkUtility;
         _serviceProvider = serviceProvider;
         _consumerFactory = consumerFactory;
-        Logger = options.CurrentValue;
+        Logger = logger;
         _requestHelper = requestHelper;
     }
 

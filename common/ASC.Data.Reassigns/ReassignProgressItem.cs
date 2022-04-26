@@ -74,7 +74,7 @@ public class ReassignProgressItem : DistributedTaskProgress
         var scopeClass = scope.ServiceProvider.GetService<ReassignProgressItemScope>();
         var queueWorkerRemove = scope.ServiceProvider.GetService<QueueWorkerRemove>();
         var (tenantManager, coreBaseSettings, messageService, studioNotifyService, securityContext, userManager, userPhotoManager, displayUserSettingsHelper, messageTarget, options) = scopeClass;
-        var logger = options.Get("ASC.Web");
+        var logger = options.CreateLogger("ASC.Web");
         tenantManager.SetCurrentTenant(_tenantId);
 
         try
@@ -206,7 +206,7 @@ public class ReassignProgressItemScope
     private readonly UserPhotoManager _userPhotoManager;
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
     private readonly MessageTarget _messageTarget;
-    private readonly IOptionsMonitor<ILog> _options;
+    private readonly ILoggerProvider _options;
 
     public ReassignProgressItemScope(TenantManager tenantManager,
         CoreBaseSettings coreBaseSettings,
@@ -217,7 +217,7 @@ public class ReassignProgressItemScope
         UserPhotoManager userPhotoManager,
         DisplayUserSettingsHelper displayUserSettingsHelper,
         MessageTarget messageTarget,
-        IOptionsMonitor<ILog> options)
+        ILoggerProvider options)
     {
         _tenantManager = tenantManager;
         _coreBaseSettings = coreBaseSettings;
@@ -240,7 +240,7 @@ public class ReassignProgressItemScope
         out UserPhotoManager userPhotoManager,
         out DisplayUserSettingsHelper displayUserSettingsHelper,
         out MessageTarget messageTarget,
-        out IOptionsMonitor<ILog> optionsMonitor)
+        out ILoggerProvider optionsMonitor)
     {
         tenantManager = _tenantManager;
         coreBaseSettings = _coreBaseSettings;

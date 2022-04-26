@@ -129,7 +129,7 @@ internal class FileConverterQueue<T> : IDisposable
             EntryStatusManager entryManager;
             FileConverter fileConverter;
 
-            var logger = scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
+            var logger = scope.ServiceProvider.GetService<ILogger<FileConverterQueue<T>>>();
 
             try
             {
@@ -417,7 +417,7 @@ internal class FileConverterQueue<T> : IDisposable
 [Scope]
 public class FileConverterQueueScope
 {
-    private readonly IOptionsMonitor<ILog> _options;
+    private readonly ILogger _options;
     private readonly TenantManager _tenantManager;
     private readonly UserManager _userManager;
     private readonly SecurityContext _securityContext;
@@ -431,7 +431,8 @@ public class FileConverterQueueScope
     private readonly EntryStatusManager _entryManager;
     private readonly FileConverter _fileConverter;
 
-    public FileConverterQueueScope(IOptionsMonitor<ILog> options,
+    public FileConverterQueueScope(
+        ILogger<FileConverterQueueScope> options,
         TenantManager tenantManager,
         UserManager userManager,
         SecurityContext securityContext,
@@ -461,7 +462,7 @@ public class FileConverterQueueScope
     }
 
 
-    public void Deconstruct(out IOptionsMonitor<ILog> optionsMonitor,
+    public void Deconstruct(out ILogger optionsMonitor,
         out TenantManager tenantManager,
         out UserManager userManager,
         out SecurityContext securityContext,

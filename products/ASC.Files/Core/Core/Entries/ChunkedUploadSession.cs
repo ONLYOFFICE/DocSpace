@@ -73,10 +73,10 @@ public class ChunkedUploadSession<T> : CommonChunkedUploadSession
 [Scope]
 public class ChunkedUploadSessionHelper
 {
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly EntryManager _entryManager;
 
-    public ChunkedUploadSessionHelper(ILog logger, EntryManager entryManager)
+    public ChunkedUploadSessionHelper(ILogger<ChunkedUploadSessionHelper> logger, EntryManager entryManager)
     {
         _entryManager = entryManager;
         _logger = logger;

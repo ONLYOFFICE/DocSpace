@@ -42,7 +42,7 @@ public abstract class PortalTaskBase
 
     protected StorageFactory StorageFactory { get; set; }
     protected StorageFactoryConfig StorageFactoryConfig { get; set; }
-    protected ILog Logger { get; set; }
+    protected ILogger Logger { get; set; }
     public int Progress { get; private set; }
     public int TenantId { get; private set; }
     public string ConfigPath { get; private set; }
@@ -53,9 +53,9 @@ public abstract class PortalTaskBase
     protected readonly List<ModuleName> _ignoredModules = new List<ModuleName>();
     protected readonly List<string> _ignoredTables = new List<string>(); //todo: add using to backup and transfer tasks
 
-    protected PortalTaskBase(DbFactory dbFactory, IOptionsMonitor<ILog> options, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider)
+    protected PortalTaskBase(DbFactory dbFactory, ILogger logger, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider)
     {
-        Logger = options.CurrentValue;
+        Logger = logger;
         ProcessStorage = true;
         StorageFactory = storageFactory;
         StorageFactoryConfig = storageFactoryConfig;

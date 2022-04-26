@@ -39,13 +39,13 @@ public class TelegramHelper
     private readonly ConsumerFactory _consumerFactory;
     private readonly CachedTelegramDao _cachedTelegramDao;
     private readonly TelegramServiceClient _telegramServiceClient;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
 
     public TelegramHelper(
         ConsumerFactory consumerFactory,
         IOptionsSnapshot<CachedTelegramDao> cachedTelegramDao,
         TelegramServiceClient telegramServiceClient,
-        ILog logger)
+        ILogger<TelegramHelper> logger)
     {
         _consumerFactory = consumerFactory;
         _cachedTelegramDao = cachedTelegramDao.Value;

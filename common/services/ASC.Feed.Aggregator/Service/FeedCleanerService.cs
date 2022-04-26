@@ -34,7 +34,7 @@ public class FeedCleanerService : FeedBaseService
     public FeedCleanerService(
         FeedSettings feedSettings,
         IServiceScopeFactory serviceScopeFactory,
-        IOptionsMonitor<ILog> optionsMonitor)
+        ILoggerProvider optionsMonitor)
         : base(feedSettings, serviceScopeFactory, optionsMonitor)
     {
     }

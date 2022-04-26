@@ -36,7 +36,17 @@ internal class RestoreDbModuleTask : PortalTaskBase
     private readonly bool _replaceDate;
     private readonly bool _dump;
 
-    public RestoreDbModuleTask(IOptionsMonitor<ILog> options, IModuleSpecifics module, IDataReadOperator reader, ColumnMapper columnMapper, DbFactory factory, bool replaceDate, bool dump, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider)
+    public RestoreDbModuleTask(
+        ILogger options,
+        IModuleSpecifics module,
+        IDataReadOperator reader,
+        ColumnMapper columnMapper,
+        DbFactory factory,
+        bool replaceDate,
+        bool dump,
+        StorageFactory storageFactory,
+        StorageFactoryConfig storageFactoryConfig,
+        ModuleProvider moduleProvider)
         : base(factory, options, storageFactory, storageFactoryConfig, moduleProvider)
     {
         _reader = reader ?? throw new ArgumentNullException(nameof(reader));

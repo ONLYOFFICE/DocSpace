@@ -44,7 +44,7 @@ public class RackspaceCloudStorage : BaseStorage
     private Uri _cname;
     private Uri _cnameSSL;
     private readonly List<string> _domains = new List<string>();
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
 
     public RackspaceCloudStorage(
         TempPath tempPath,
@@ -53,11 +53,12 @@ public class RackspaceCloudStorage : BaseStorage
         PathUtils pathUtils,
         EmailValidationKeyProvider emailValidationKeyProvider,
         IHttpContextAccessor httpContextAccessor,
-            IOptionsMonitor<ILog> options,
-            IHttpClientFactory httpClient)
-            : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options, httpClient)
+        ILoggerProvider options,
+        ILogger<RackspaceCloudStorage> logger,
+        IHttpClientFactory httpClient)
+        : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options, logger, httpClient)
     {
-        _logger = options.Get("ASC.Data.Storage.Rackspace.RackspaceCloudStorage");
+        _logger = options.CreateLogger("ASC.Data.Storage.Rackspace.RackspaceCloudStorage");
         TempPath = tempPath;
     }
 

@@ -29,14 +29,14 @@ namespace ASC.Webhooks.Service.Services;
 [Singletone]
 public class WorkerService : BackgroundService
 {
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly ConcurrentQueue<WebhookRequest> _queue;
     private readonly int? _threadCount = 10;
     private readonly WebhookSender _webhookSender;
     private readonly TimeSpan _waitingPeriod;
 
     public WorkerService(WebhookSender webhookSender,
-        ILog logger,
+        ILogger<WorkerService> logger,
         BuildQueueService buildQueueService,
         Settings settings)
     {

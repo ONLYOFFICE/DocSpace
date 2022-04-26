@@ -28,7 +28,6 @@ global using ASC.Api.Core;
 global using ASC.Api.Core.Extensions;
 global using ASC.Common;
 global using ASC.Common.Caching;
-global using ASC.Common.Logging;
 global using ASC.Common.Utils;
 global using ASC.Core;
 global using ASC.Core.Billing;
@@ -51,6 +50,6 @@ global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Hosting;
 global using Microsoft.Extensions.Hosting.WindowsServices;
-global using Microsoft.Extensions.Options;
+global using Microsoft.Extensions.Logging;
 
 global using Newtonsoft.Json;

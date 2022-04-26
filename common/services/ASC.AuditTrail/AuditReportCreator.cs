@@ -33,11 +33,11 @@ public class AuditReportCreator
     private readonly FileUploader _fileUploader;
     private readonly FilesLinkUtility _filesLinkUtility;
     private readonly CommonLinkUtility _commonLinkUtility;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
 
     public AuditReportCreator(
         GlobalFolderHelper globalFolderHelper,
-        ILog logger,
+        ILogger<AuditReportCreator> logger,
         FileUploader fileUploader,
         FilesLinkUtility filesLinkUtility,
         CommonLinkUtility commonLinkUtility)

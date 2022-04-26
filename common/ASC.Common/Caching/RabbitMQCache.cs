@@ -37,15 +37,15 @@ public class RabbitMQCache<T> : IDisposable, ICacheNotify<T> where T : IMessage<
     private readonly string _exchangeName;
     private readonly string _queueName;
 
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly ConcurrentDictionary<string, List<Action<T>>> _actions;
 
     private readonly object _lock = new object();
     private bool _disposed;
 
-    public RabbitMQCache(IConfiguration configuration, IOptionsMonitor<ILog> options)
+    public RabbitMQCache(IConfiguration configuration, ILogger<RabbitMQCache<T>> logger)
     {
-        _logger = options.CurrentValue;
+        _logger = logger;
         _instanceId = Guid.NewGuid();
         _exchangeName = $"asc:cache_notify:event_bus:{typeof(T).FullName}";
         _queueName = $"asc:cache_notify:queue:{typeof(T).FullName}:{_instanceId}";

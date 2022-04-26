@@ -73,7 +73,7 @@ public class Token : OAuth20Token
 [Scope]
 public class TokenHelper
 {
-    public ILog Logger;
+    public ILogger Logger;
     private readonly Lazy<FilesDbContext> _lazyFilesDbContext;
     private FilesDbContext FilesDbContext => _lazyFilesDbContext.Value;
     private readonly InstanceCrypto _instanceCrypto;
@@ -82,12 +82,12 @@ public class TokenHelper
 
     public TokenHelper(
         DbContextManager<FilesDbContext> dbContextManager,
-        IOptionsMonitor<ILog> option,
+        ILogger<TokenHelper> logger,
         InstanceCrypto instanceCrypto,
         AuthContext authContext,
         TenantManager tenantManager)
     {
-        Logger = option.CurrentValue;
+        Logger = logger;
         _lazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
         _instanceCrypto = instanceCrypto;
         _authContext = authContext;

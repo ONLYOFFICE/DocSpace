@@ -76,7 +76,7 @@ public class WordpressToken
 [Singletone]
 public class WordpressHelper
 {
-    public ILog Logger { get; set; }
+    public ILogger Logger { get; set; }
     public RequestHelper RequestHelper { get; }
 
     public enum WordpressStatus
@@ -85,9 +85,9 @@ public class WordpressHelper
         publish = 1
     }
 
-    public WordpressHelper(IOptionsMonitor<ILog> optionsMonitor, RequestHelper requestHelper)
+    public WordpressHelper(ILogger<WordpressHelper> logger, RequestHelper requestHelper)
     {
-        Logger = optionsMonitor.CurrentValue;
+        Logger = logger;
         RequestHelper = requestHelper;
     }
 

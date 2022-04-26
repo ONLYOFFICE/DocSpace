@@ -67,7 +67,7 @@ public class BaseIndexer<T> where T : class, ISearchItem
 
     private bool _isExist;
     private readonly Client _client;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     protected readonly TenantManager _tenantManager;
     private readonly BaseIndexerHelper _baseIndexerHelper;
     private readonly Settings _settings;
@@ -77,7 +77,7 @@ public class BaseIndexer<T> where T : class, ISearchItem
 
     public BaseIndexer(
         Client client,
-        IOptionsMonitor<ILog> log,
+        ILogger<BaseIndexer<T>> logger,
         DbContextManager<WebstudioDbContext> dbContextManager,
         TenantManager tenantManager,
         BaseIndexerHelper baseIndexerHelper,
@@ -85,7 +85,7 @@ public class BaseIndexer<T> where T : class, ISearchItem
         IServiceProvider serviceProvider)
     {
         _client = client;
-        _logger = log.CurrentValue;
+        _logger = logger;
         _tenantManager = tenantManager;
         _baseIndexerHelper = baseIndexerHelper;
         _settings = settings;

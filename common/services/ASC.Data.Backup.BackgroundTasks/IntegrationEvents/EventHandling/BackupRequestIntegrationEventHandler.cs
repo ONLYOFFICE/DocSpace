@@ -32,7 +32,7 @@ namespace ASC.Data.Backup.IntegrationEvents.EventHandling;
 public class BackupRequestIntegrationEventHandler : IIntegrationEventHandler<BackupRequestIntegrationEvent>
 {
     private readonly BackupAjaxHandler _backupAjaxHandler;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly TenantManager _tenantManager;
     private readonly SecurityContext _securityContext;
     private readonly AuthManager _authManager;
@@ -40,7 +40,7 @@ public class BackupRequestIntegrationEventHandler : IIntegrationEventHandler<Bac
 
     public BackupRequestIntegrationEventHandler(
         BackupAjaxHandler backupAjaxHandler,
-        IOptionsMonitor<ILog> logger,
+        ILogger<BackupRequestIntegrationEventHandler> logger,
         TenantManager tenantManager,
         SecurityContext securityContext,
         AuthManager authManager,
@@ -50,7 +50,7 @@ public class BackupRequestIntegrationEventHandler : IIntegrationEventHandler<Bac
         _authManager = authManager;
         _securityContext = securityContext;
         _backupAjaxHandler = backupAjaxHandler;
-        _logger = logger.CurrentValue;
+        _logger = logger;
         _backupWorker = backupWorker;
     }
 

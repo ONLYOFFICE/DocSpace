@@ -30,9 +30,9 @@ namespace ASC.Files.ThumbnailBuilder;
 public class ThumbnailService : IHostedService
 {
     private readonly ICacheNotify<ThumbnailRequest> _cacheNotify;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
 
-    public ThumbnailService(ICacheNotify<ThumbnailRequest> cacheNotify, ILog<ThumbnailService> logger)
+    public ThumbnailService(ICacheNotify<ThumbnailRequest> cacheNotify, ILogger<ThumbnailService> logger)
     {
         _cacheNotify = cacheNotify;
         _logger = logger;

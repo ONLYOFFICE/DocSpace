@@ -32,7 +32,7 @@ internal class MailModuleSpecifics : ModuleSpecificsBase
     public override IEnumerable<TableInfo> Tables => _tables;
     public override IEnumerable<RelationInfo> TableRelations => _tableRelations;
 
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly Helpers _helpers;
 
     private readonly TableInfo[] _tables = new[]
@@ -91,7 +91,7 @@ internal class MailModuleSpecifics : ModuleSpecificsBase
             new RelationInfo("mail_mailbox_server", "id", "mail_mailbox", "id_in_server")
         };
 
-    public MailModuleSpecifics(ILog logger, Helpers helpers) : base(helpers)
+    public MailModuleSpecifics(ILogger logger, Helpers helpers) : base(helpers)
     {
         _logger = logger;
         _helpers = helpers;

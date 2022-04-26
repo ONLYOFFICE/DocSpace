@@ -125,7 +125,7 @@ public class EncryptionOperation : DistributedTaskProgress
         }
     }
 
-    private async Task EncryptStoreAsync(Tenant tenant, string module, DiscDataStore store, StorageFactoryConfig storageFactoryConfig, ILog log)
+    private async Task EncryptStoreAsync(Tenant tenant, string module, DiscDataStore store, StorageFactoryConfig storageFactoryConfig, ILogger log)
     {
         var domains = storageFactoryConfig.GetDomainList(ConfigPath, module).ToList();
 
@@ -206,7 +206,7 @@ public class EncryptionOperation : DistributedTaskProgress
         return files;
     }
 
-    private void EncryptFiles(DiscDataStore store, string domain, IEnumerable<string> files, string logParent, ILog log)
+    private void EncryptFiles(DiscDataStore store, string domain, IEnumerable<string> files, string logParent, ILogger log)
     {
         foreach (var file in files)
         {
@@ -266,7 +266,7 @@ public class EncryptionOperation : DistributedTaskProgress
         }
     }
 
-    private void SaveNewSettings(EncryptionSettingsHelper encryptionSettingsHelper, ILog log)
+    private void SaveNewSettings(EncryptionSettingsHelper encryptionSettingsHelper, ILogger log)
     {
         if (_isEncryption)
         {
@@ -283,7 +283,7 @@ public class EncryptionOperation : DistributedTaskProgress
         log.LogDebug("Save new EncryptionSettings");
     }
 
-    private void ActivateTenants(TenantManager tenantManager, ILog log, NotifyHelper notifyHelper)
+    private void ActivateTenants(TenantManager tenantManager, ILogger log, NotifyHelper notifyHelper)
     {
         foreach (var tenant in _tenants)
         {
@@ -331,7 +331,7 @@ public class EncryptionOperation : DistributedTaskProgress
 [Scope]
 public class EncryptionOperationScope
 {
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly EncryptionSettingsHelper _encryptionSettingsHelper;
     private readonly TenantManager _tenantManager;
     private readonly NotifyHelper _notifyHelper;
@@ -340,7 +340,8 @@ public class EncryptionOperationScope
     private readonly StorageFactory _storageFactory;
     private readonly IConfiguration _configuration;
 
-    public EncryptionOperationScope(ILog logger,
+    public EncryptionOperationScope(
+        ILogger<EncryptionOperationScope> logger,
        StorageFactoryConfig storageFactoryConfig,
        StorageFactory storageFactory,
        TenantManager tenantManager,
@@ -359,7 +360,7 @@ public class EncryptionOperationScope
         _configuration = configuration;
     }
 
-    public void Deconstruct(out ILog log, out EncryptionSettingsHelper encryptionSettingsHelper, out TenantManager tenantManager, out NotifyHelper notifyHelper, out CoreBaseSettings coreBaseSettings, out StorageFactoryConfig storageFactoryConfig, out StorageFactory storageFactory, out IConfiguration configuration)
+    public void Deconstruct(out ILogger log, out EncryptionSettingsHelper encryptionSettingsHelper, out TenantManager tenantManager, out NotifyHelper notifyHelper, out CoreBaseSettings coreBaseSettings, out StorageFactoryConfig storageFactoryConfig, out StorageFactory storageFactory, out IConfiguration configuration)
     {
         log = _logger;
         encryptionSettingsHelper = _encryptionSettingsHelper;

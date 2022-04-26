@@ -29,14 +29,14 @@ namespace ASC.Notify.Services;
 [Singletone]
 public class NotifyCleanerService : BackgroundService
 {
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly NotifyServiceCfg _notifyServiceCfg;
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly TimeSpan _waitingPeriod = TimeSpan.FromHours(8);
 
-    public NotifyCleanerService(IOptions<NotifyServiceCfg> notifyServiceCfg, IServiceScopeFactory serviceScopeFactory, IOptionsMonitor<ILog> options)
+    public NotifyCleanerService(IOptions<NotifyServiceCfg> notifyServiceCfg, IServiceScopeFactory serviceScopeFactory, ILoggerProvider options)
     {
-        _logger = options.Get("ASC.NotifyCleaner");
+        _logger = options.CreateLogger("ASC.NotifyCleaner");
         _notifyServiceCfg = notifyServiceCfg.Value;
         _serviceScopeFactory = serviceScopeFactory;
     }

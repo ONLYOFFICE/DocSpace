@@ -60,7 +60,7 @@ internal class ProviderAccountDao : IProviderDao
     }
     private readonly Lazy<FilesDbContext> _lazyFilesDbContext;
     private FilesDbContext FilesDbContext => _lazyFilesDbContext.Value;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly IServiceProvider _serviceProvider;
     private readonly TenantUtil _tenantUtil;
     private readonly TenantManager _tenantManager;
@@ -79,11 +79,11 @@ internal class ProviderAccountDao : IProviderDao
         ConsumerFactory consumerFactory,
         ThirdpartyConfiguration thirdpartyConfiguration,
         DbContextManager<FilesDbContext> dbContextManager,
-            OAuth20TokenHelper oAuth20TokenHelper,
-        IOptionsMonitor<ILog> options)
+        OAuth20TokenHelper oAuth20TokenHelper,
+        ILoggerProvider options)
     {
         _lazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
-        _logger = options.Get("ASC.Files");
+        _logger = options.CreateLogger("ASC.Files");
         _serviceProvider = serviceProvider;
         _tenantUtil = tenantUtil;
         _tenantManager = tenantManager;

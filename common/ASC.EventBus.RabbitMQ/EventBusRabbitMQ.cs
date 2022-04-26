@@ -38,7 +38,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
     const string AUTOFAC_SCOPE_NAME = "asc_event_bus";
 
     private readonly IRabbitMQPersistentConnection _persistentConnection;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly IEventBusSubscriptionsManager _subsManager;
     private readonly ILifetimeScope _autofac;
     private readonly int _retryCount;
@@ -52,7 +52,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
     private static ConcurrentQueue<Guid> _rejectedEvents;
 
     public EventBusRabbitMQ(IRabbitMQPersistentConnection persistentConnection,
-                            IOptionsMonitor<ILog> options,
+                            ILogger<EventBusRabbitMQ> logger,
                             ILifetimeScope autofac,
                             IEventBusSubscriptionsManager subsManager,
                             IIntegrationEventSerializer serializer,
@@ -60,7 +60,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
                             int retryCount = 5)
     {
         _persistentConnection = persistentConnection ?? throw new ArgumentNullException(nameof(persistentConnection));
-        _logger = options.CurrentValue ?? throw new ArgumentNullException(nameof(options.CurrentValue));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _subsManager = subsManager ?? new InMemoryEventBusSubscriptionsManager();
         _queueName = queueName;
         _deadLetterQueueName = $"{_queueName}_dlx";

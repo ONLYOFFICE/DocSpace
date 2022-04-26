@@ -28,11 +28,11 @@ namespace ASC.Web.Files.Services.WCFService;
 
 class FileExceptionFilterAttribute : IExceptionFilter
 {
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
 
-    public FileExceptionFilterAttribute(IOptionsMonitor<ILog> options)
+    public FileExceptionFilterAttribute(ILoggerProvider options)
     {
-        _logger = options.Get("ASC.Files");
+        _logger = options.CreateLogger("ASC.Files");
     }
 
     public void OnException(ExceptionContext actionExecutedContext)

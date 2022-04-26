@@ -30,14 +30,14 @@ namespace ASC.Data.Backup.Services;
 public sealed class BackupSchedulerService : BackgroundService
 {
     private readonly TimeSpan _backupSchedulerPeriod;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
 
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly IEventBus _eventBus;
 
     public BackupSchedulerService(
-        ILog<BackupSchedulerService> logger,
+        ILogger<BackupSchedulerService> logger,
         IServiceScopeFactory scopeFactory,
         ConfigurationExtension configuration,
         CoreBaseSettings coreBaseSettings,
@@ -140,7 +140,7 @@ public sealed class BackupSchedulerService : BackgroundService
             }
             catch (Exception error)
             {
-                _logger.LogError(error, "error while scheduling backups: {0}");
+                _logger.LogError(error, "error while scheduling backups");
             }
         }
     }

@@ -43,7 +43,7 @@ public class LicenseReader
     private readonly TenantManager _tenantManager;
     private readonly PaymentManager _paymentManager;
     private readonly CoreSettings _coreSettings;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     public readonly string LicensePath;
     private readonly string _licensePathTemp;
 
@@ -56,7 +56,7 @@ public class LicenseReader
         PaymentManager paymentManager,
         CoreSettings coreSettings,
         LicenseReaderConfig licenseReaderConfig,
-        ILog logger)
+        ILogger<LicenseReader> logger)
     {
         _userManager = userManager;
         _tenantManager = tenantManager;
@@ -284,7 +284,7 @@ public class LicenseReader
         }
         else
         {
-            if (_logger.IsDebugEnabled)
+            if (_logger.IsEnabled(LogLevel.Debug))
             {
                 _logger.LogError(error, error.Message);
             }

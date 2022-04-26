@@ -30,11 +30,11 @@ namespace ASC.Api.Core.Middleware;
 public class TenantStatusFilter : IResourceFilter
 {
     private readonly TenantManager _tenantManager;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly string[] _passthroughtRequestEndings = new[] { "preparation-portal", "getrestoreprogress", "settings", "settings.json" }; //TODO add or update when "preparation-portal" will be done
 
 
-    public TenantStatusFilter(ILog logger, TenantManager tenantManager)
+    public TenantStatusFilter(ILogger<TenantStatusFilter> logger, TenantManager tenantManager)
     {
         _logger = logger;
         _tenantManager = tenantManager;

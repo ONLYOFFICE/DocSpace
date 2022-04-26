@@ -29,27 +29,31 @@ namespace ASC.Data.Storage;
 [Singletone]
 public class StorageUploader
 {
-    protected readonly DistributedTaskQueue Queue;
+    protected readonly DistributedTaskQueue _queue;
 
     private static readonly object _locker;
     private readonly IServiceProvider _serviceProvider;
     private readonly TempStream _tempStream;
     private readonly ICacheNotify<MigrationProgress> _cacheMigrationNotify;
+    private readonly ILogger _logger;
 
     static StorageUploader()
     {
         _locker = new object();
     }
 
-    public StorageUploader(IServiceProvider serviceProvider,
-                          TempStream tempStream,
-                          ICacheNotify<MigrationProgress> cacheMigrationNotify,
-                          IDistributedTaskQueueFactory queueFactory)
+    public StorageUploader(
+        IServiceProvider serviceProvider,
+        TempStream tempStream,
+        ICacheNotify<MigrationProgress> cacheMigrationNotify,
+        IDistributedTaskQueueFactory queueFactory,
+        ILogger<StorageUploader> logger)
     {
         _serviceProvider = serviceProvider;
         _tempStream = tempStream;
         _cacheMigrationNotify = cacheMigrationNotify;
-        Queue = queueFactory.CreateQueue();
+        _logger = logger;
+        _queue = queueFactory.CreateQueue();
     }
 
     public void Start(int tenantId, StorageSettings newStorageSettings, StorageFactoryConfig storageFactoryConfig)
@@ -58,13 +62,13 @@ public class StorageUploader
         {
             var id = GetCacheKey(tenantId);
 
-            if (Queue.GetAllTasks().Any(x => x.Id == id))
+            if (_queue.GetAllTasks().Any(x => x.Id == id))
             {
                 return;
             }
 
-            var migrateOperation = new MigrateOperation(_serviceProvider, _cacheMigrationNotify, id, tenantId, newStorageSettings, storageFactoryConfig, _tempStream);
-            Queue.EnqueueTask(migrateOperation);
+            var migrateOperation = new MigrateOperation(_serviceProvider, _cacheMigrationNotify, id, tenantId, newStorageSettings, storageFactoryConfig, _tempStream, _logger);
+            _queue.EnqueueTask(migrateOperation);
         }
     }
 
@@ -72,15 +76,15 @@ public class StorageUploader
     {
         lock (_locker)
         {
-            return Queue.PeekTask<MigrateOperation>(GetCacheKey(tenantId));
+            return _queue.PeekTask<MigrateOperation>(GetCacheKey(tenantId));
         }
     }
 
     public void Stop()
     {
-        foreach (var task in Queue.GetAllTasks(DistributedTaskQueue.INSTANCE_ID).Where(r => r.Status == DistributedTaskStatus.Running))
+        foreach (var task in _queue.GetAllTasks(DistributedTaskQueue.INSTANCE_ID).Where(r => r.Status == DistributedTaskStatus.Running))
         {
-            Queue.DequeueTask(task.Id);
+            _queue.DequeueTask(task.Id);
         }
     }
 
@@ -94,7 +98,7 @@ public class StorageUploader
 public class MigrateOperation : DistributedTaskProgress
 {
     private static readonly string _configPath;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly IEnumerable<string> _modules;
     private readonly StorageSettings _settings;
     private readonly int _tenantId;
@@ -115,7 +119,8 @@ public class MigrateOperation : DistributedTaskProgress
         int tenantId,
         StorageSettings settings,
         StorageFactoryConfig storageFactoryConfig,
-        TempStream tempStream)
+        TempStream tempStream,
+        ILogger logger)
     {
         Id = id;
         Status = DistributedTaskStatus.Created;
@@ -128,7 +133,7 @@ public class MigrateOperation : DistributedTaskProgress
         _tempStream = tempStream;
         _modules = storageFactoryConfig.GetModuleList(_configPath, true);
         StepCount = _modules.Count();
-        _logger = serviceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
+        _logger = logger;
     }
 
     public object Clone()
@@ -225,14 +230,14 @@ public class MigrateOperationScope
     private readonly TenantManager _tenantManager;
     private readonly SecurityContext _securityContext;
     private readonly StorageFactory _storageFactory;
-    private readonly IOptionsMonitor<ILog> _options;
+    private readonly ILogger _options;
     private readonly StorageSettingsHelper _storageSettingsHelper;
     private readonly SettingsManager _settingsManager;
 
     public MigrateOperationScope(TenantManager tenantManager,
         SecurityContext securityContext,
         StorageFactory storageFactory,
-        IOptionsMonitor<ILog> options,
+        ILogger<MigrateOperationScope> options,
         StorageSettingsHelper storageSettingsHelper,
         SettingsManager settingsManager)
     {
@@ -247,7 +252,7 @@ public class MigrateOperationScope
     public void Deconstruct(out TenantManager tenantManager,
         out SecurityContext securityContext,
         out StorageFactory storageFactory,
-        out IOptionsMonitor<ILog> options,
+        out ILogger options,
         out StorageSettingsHelper storageSettingsHelper,
         out SettingsManager settingsManager)
     {

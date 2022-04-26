@@ -31,14 +31,14 @@ namespace ASC.Data.Backup.IntegrationEvents.EventHandling;
 [Scope]
 public class BackupDeleteScheldureRequestIntegrationEventHandler : IIntegrationEventHandler<IntegrationEvent>
 {
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly BackupService _backupService;
 
     public BackupDeleteScheldureRequestIntegrationEventHandler(
-        IOptionsMonitor<ILog> logger,
+        ILogger<BackupDeleteScheldureRequestIntegrationEventHandler> logger,
         BackupService backupService)
     {
-        _logger = logger.CurrentValue;
+        _logger = logger;
         _backupService = backupService;
     }
 

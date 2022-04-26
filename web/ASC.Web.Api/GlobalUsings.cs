@@ -47,7 +47,6 @@ global using ASC.AuditTrail.Models;
 global using ASC.AuditTrail.Repositories;
 global using ASC.Common;
 global using ASC.Common.Caching;
-global using ASC.Common.Logging;
 global using ASC.Common.Mapping;
 global using ASC.Common.Security.Authorizing;
 global using ASC.Common.Threading;
@@ -122,6 +121,7 @@ global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.AspNetCore.Mvc.ModelBinding;
 global using Microsoft.Extensions.Caching.Memory;
 global using Microsoft.Extensions.Hosting.WindowsServices;
+global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Options;
 
 global using MimeKit;

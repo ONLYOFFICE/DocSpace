@@ -30,13 +30,13 @@ namespace ASC.Webhooks.Service;
 public class WebhookSender
 {
     private readonly IHttpClientFactory _clientFactory;
-    private readonly ILog _log;
+    private readonly ILogger _log;
     public int? RepeatCount { get; init; }
     private readonly IServiceScopeFactory _scopeFactory;
 
-    public WebhookSender(IOptionsMonitor<ILog> options, IServiceScopeFactory scopeFactory, Settings settings, IHttpClientFactory clientFactory)
+    public WebhookSender(ILoggerProvider options, IServiceScopeFactory scopeFactory, Settings settings, IHttpClientFactory clientFactory)
     {
-        _log = options.Get("ASC.Webhooks.Core");
+        _log = options.CreateLogger("ASC.Webhooks.Core");
         _scopeFactory = scopeFactory;
         RepeatCount = settings.RepeatCount;
         _clientFactory = clientFactory;

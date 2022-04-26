@@ -36,14 +36,14 @@ public class EmailValidationKeyProvider
         Expired
     }
 
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private static readonly DateTime _from = new DateTime(2010, 01, 01, 0, 0, 0, DateTimeKind.Utc);
     internal readonly TimeSpan _validEmailKeyInterval;
     internal readonly TimeSpan _validAuthKeyInterval;
     private readonly MachinePseudoKeys _machinePseudoKeys;
     private readonly TenantManager _tenantManager;
 
-    public EmailValidationKeyProvider(MachinePseudoKeys machinePseudoKeys, TenantManager tenantManager, IConfiguration configuration, ILog logger)
+    public EmailValidationKeyProvider(MachinePseudoKeys machinePseudoKeys, TenantManager tenantManager, IConfiguration configuration, ILogger<EmailValidationKeyProvider> logger)
     {
         _machinePseudoKeys = machinePseudoKeys;
         _tenantManager = tenantManager;

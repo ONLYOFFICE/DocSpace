@@ -31,15 +31,15 @@ internal class SharpBoxProviderInfo : IProviderInfo
 {
     public int ID { get; set; }
     public Guid Owner { get; set; }
-    public ILog Logger { get; private set; }
+    public ILogger Logger { get; private set; }
 
     private nSupportedCloudConfigurations _providerKey;
     public AuthData AuthData { get; set; }
 
-    public SharpBoxProviderInfo(SharpBoxStorageDisposableWrapper storageDisposableWrapper, IOptionsMonitor<ILog> monitor)
+    public SharpBoxProviderInfo(SharpBoxStorageDisposableWrapper storageDisposableWrapper, ILogger<SharpBoxProviderInfo> logger)
     {
         _wrapper = storageDisposableWrapper;
-        Logger = monitor.CurrentValue;
+        Logger = logger;
     }
 
     public void Dispose()

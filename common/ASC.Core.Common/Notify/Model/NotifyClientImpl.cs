@@ -29,13 +29,13 @@ namespace ASC.Notify.Model;
 class NotifyClientImpl : INotifyClient
 {
     private readonly InterceptorStorage _interceptors = new InterceptorStorage();
-    private readonly IOptionsMonitor<ILog> _options;
+    private readonly ILoggerProvider _loggerFactory;
     private readonly NotifyEngineQueue _notifyEngineQueue;
     private readonly INotifySource _notifySource;
 
-    public NotifyClientImpl(IOptionsMonitor<ILog> options, NotifyEngineQueue notifyEngineQueue, INotifySource notifySource)
+    public NotifyClientImpl(ILoggerProvider loggerFactory, NotifyEngineQueue notifyEngineQueue, INotifySource notifySource)
     {
-        _options = options;
+        _loggerFactory = loggerFactory;
         _notifyEngineQueue = notifyEngineQueue;
         _notifySource = notifySource ?? throw new ArgumentNullException(nameof(notifySource));
     }
@@ -121,7 +121,7 @@ class NotifyClientImpl : INotifyClient
         ArgumentNullException.ThrowIfNull(action);
         ArgumentNullException.ThrowIfNull(recipient);
 
-        var request = new NotifyRequest(_options, _notifySource, action, objectID, recipient)
+        var request = new NotifyRequest(_loggerFactory, _notifySource, action, objectID, recipient)
         {
             _senderNames = senders,
             _isNeedCheckSubscriptions = checkSubsciption

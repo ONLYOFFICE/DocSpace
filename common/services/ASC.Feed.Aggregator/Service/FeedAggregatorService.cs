@@ -36,7 +36,7 @@ public class FeedAggregatorService : FeedBaseService
     public FeedAggregatorService(
         FeedSettings feedSettings,
         IServiceScopeFactory serviceScopeFactory,
-        IOptionsMonitor<ILog> optionsMonitor,
+        ILoggerProvider optionsMonitor,
         SignalrServiceClient signalrServiceClient)
         : base(feedSettings, serviceScopeFactory, optionsMonitor)
     {

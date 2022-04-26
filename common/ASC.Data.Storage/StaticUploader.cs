@@ -168,20 +168,20 @@ public class UploadOperation
 {
     public string Result { get; private set; }
 
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly TenantManager _tenantManager;
     private readonly SecurityContext _securityContext;
     private readonly SettingsManager _settingsManager;
     private readonly StorageSettingsHelper _storageSettingsHelper;
 
     public UploadOperation(
-        IOptionsMonitor<ILog> options,
+        ILogger<UploadOperation> logger,
         TenantManager tenantManager,
         SecurityContext securityContext,
         SettingsManager settingsManager,
         StorageSettingsHelper storageSettingsHelper)
     {
-        _logger = options.CurrentValue;
+        _logger = logger;
         Result = string.Empty;
         _tenantManager = tenantManager;
         _securityContext = securityContext;

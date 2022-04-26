@@ -28,24 +28,22 @@ namespace ASC.Data.Storage;
 
 public class CrossModuleTransferUtility
 {
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly IDataStore _source;
     private readonly IDataStore _destination;
     private readonly long _maxChunkUploadSize;
     private readonly int _chunkSize;
-    private readonly IOptionsMonitor<ILog> _option;
     private readonly TempStream _tempStream;
     private readonly TempPath _tempPath;
 
     public CrossModuleTransferUtility(
-        IOptionsMonitor<ILog> option,
+        ILogger option,
         TempStream tempStream,
         TempPath tempPath,
         IDataStore source,
         IDataStore destination)
     {
-        _logger = option.Get("ASC.CrossModuleTransferUtility");
-        _option = option;
+        _logger = option;
         _tempStream = tempStream;
         _tempPath = tempPath;
         _source = source ?? throw new ArgumentNullException(nameof(source));
@@ -74,7 +72,7 @@ public class CrossModuleTransferUtility
         else
         {
             var session = new CommonChunkedUploadSession(stream.Length);
-            var holder = new CommonChunkedUploadSessionHolder(_tempPath, _option, _destination, destDomain);
+            var holder = new CommonChunkedUploadSessionHolder(_tempPath, _logger, _destination, destDomain);
             await holder.InitAsync(session);
             try
             {

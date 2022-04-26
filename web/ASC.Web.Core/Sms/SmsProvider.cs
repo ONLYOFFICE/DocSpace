@@ -95,7 +95,7 @@ public class SmsProviderManager
 
 public abstract class SmsProvider : Consumer
 {
-    protected ILog Log { get; }
+    protected ILogger Log { get; }
     protected IHttpClientFactory ClientFactory { get; }
     protected ICache MemoryCache { get; set; }
 
@@ -116,14 +116,14 @@ public abstract class SmsProvider : Consumer
         IConfiguration configuration,
         ICacheNotify<ConsumerCacheItem> cache,
         ConsumerFactory consumerFactory,
-        IOptionsMonitor<ILog> options,
+        ILogger logger,
         IHttpClientFactory clientFactory,
         ICache memCache,
         string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
         : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, props, additional)
     {
         MemoryCache = memCache;
-        Log = options.CurrentValue;
+        Log = logger;
         ClientFactory = clientFactory;
     }
 
@@ -187,7 +187,7 @@ public class SmscProvider : SmsProvider, IValidateKeysProvider
         IConfiguration configuration,
         ICacheNotify<ConsumerCacheItem> cache,
         ConsumerFactory consumerFactory,
-        IOptionsMonitor<ILog> options,
+        ILogger<SmscProvider> options,
         IHttpClientFactory clientFactory,
         ICache memCache,
         string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
@@ -329,7 +329,7 @@ public class ClickatellProvider : SmsProvider
         IConfiguration configuration,
         ICacheNotify<ConsumerCacheItem> cache,
         ConsumerFactory consumerFactory,
-        IOptionsMonitor<ILog> options,
+        ILogger<ClickatellProvider> options,
         IHttpClientFactory clientFactory,
         ICache memCache,
         string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
@@ -351,7 +351,7 @@ public class ClickatellUSAProvider : ClickatellProvider
         IConfiguration configuration,
         ICacheNotify<ConsumerCacheItem> cache,
         ConsumerFactory consumerFactory,
-        IOptionsMonitor<ILog> options,
+        ILogger<ClickatellUSAProvider> options,
         IHttpClientFactory clientFactory,
         ICache memCache,
         string name, int order, Dictionary<string, string> additional = null)
@@ -435,7 +435,7 @@ public class TwilioProvider : SmsProvider, IValidateKeysProvider
         IConfiguration configuration,
         ICacheNotify<ConsumerCacheItem> cache,
         ConsumerFactory consumerFactory,
-        IOptionsMonitor<ILog> options,
+        ILogger<TwilioProvider> options,
         IHttpClientFactory clientFactory,
         ICache memCache,
         string name, int order, Dictionary<string, string> props)
@@ -487,7 +487,7 @@ public class TwilioSaaSProvider : TwilioProvider
         IConfiguration configuration,
         ICacheNotify<ConsumerCacheItem> cache,
         ConsumerFactory consumerFactory,
-        IOptionsMonitor<ILog> options,
+        ILogger<TwilioSaaSProvider> options,
         IHttpClientFactory clientFactory,
         ICache memCache,
         string name, int order)

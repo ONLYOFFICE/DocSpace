@@ -31,11 +31,11 @@ public class IpSecurityFilter : IResourceFilter
 {
     private readonly AuthContext _authContext;
     private readonly IPSecurity.IPSecurity _iPSecurity;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly SettingsManager _settingsManager;
 
     public IpSecurityFilter(
-        ILog logger,
+        ILogger<IpSecurityFilter> logger,
         AuthContext authContext,
         IPSecurity.IPSecurity IPSecurity,
         SettingsManager settingsManager)

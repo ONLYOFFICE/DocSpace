@@ -38,19 +38,19 @@ public class BackupWorker
     private Dictionary<string, string> _configPaths;
     private int _limit;
     private string _upgradesPath;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly TempPath _tempPath;
     private readonly IServiceProvider _serviceProvider;
     private readonly object _synchRoot = new object();
 
     public BackupWorker(
-        IOptionsMonitor<ILog> options,
+        ILogger<BackupWorker> logger,
         IDistributedTaskQueueFactory queueFactory,
         IServiceProvider serviceProvider,
         TempPath tempPath)
     {
         _serviceProvider = serviceProvider;
-        _logger = options.CurrentValue;
+        _logger = logger;
         _progressQueue = queueFactory.CreateQueue(CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME);
         _tempPath = tempPath;
     }

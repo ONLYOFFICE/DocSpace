@@ -35,9 +35,9 @@ public class TimeZoneConverter
     private bool _isMono;
     private Dictionary<string, string> _translations;
     private readonly IConfiguration _configuration;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
 
-    public TimeZoneConverter(IConfiguration configuration, ILog logger)
+    public TimeZoneConverter(IConfiguration configuration, ILogger<TimeZoneConverter> logger)
     {
         _logger = logger;
         _configuration = configuration;

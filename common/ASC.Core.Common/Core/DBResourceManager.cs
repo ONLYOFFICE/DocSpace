@@ -38,7 +38,7 @@ public class DBResourceManager : ResourceManager
 
     public DBResourceManager(
         IConfiguration configuration,
-        IOptionsMonitor<ILog> option,
+        ILogger<DBResourceManager> option,
         DbContextManager<ResourceDbContext> dbContext,
         string filename,
         Assembly assembly)
@@ -49,15 +49,15 @@ public class DBResourceManager : ResourceManager
         _dbContext = dbContext;
     }
 
-    public static void PatchAssemblies(IOptionsMonitor<ILog> option)
+    public static void PatchAssemblies(ILogger option)
     {
         AppDomain.CurrentDomain.AssemblyLoad += (_, a) => PatchAssembly(option, a.LoadedAssembly);
         Array.ForEach(AppDomain.CurrentDomain.GetAssemblies(), a => PatchAssembly(option, a));
     }
 
-    public static void PatchAssembly(IOptionsMonitor<ILog> option, Assembly a, bool onlyAsc = true)
+    public static void PatchAssembly(ILogger logger, Assembly a, bool onlyAsc = true)
     {
-        var log = option.CurrentValue;
+        var log = logger;
 
         if (!onlyAsc || Accept(a))
         {
@@ -109,7 +109,7 @@ public class DBResourceManager : ResourceManager
     public override Type ResourceSetType => typeof(DBResourceSet);
 
     private readonly IConfiguration _configuration;
-    private readonly IOptionsMonitor<ILog> _option;
+    private readonly ILogger _option;
     private readonly DbContextManager<ResourceDbContext> _dbContext;
 
     protected override ResourceSet InternalGetResourceSet(CultureInfo culture, bool createIfNotExists, bool tryParents)
@@ -135,12 +135,12 @@ public class DBResourceManager : ResourceManager
         private readonly ResourceSet _invariant;
         private readonly string _culture;
         private readonly string _fileName;
-        private readonly ILog _logger;
+        private readonly ILogger _logger;
         private readonly DbContextManager<ResourceDbContext> _dbContext;
 
         public DBResourceSet(
             IConfiguration configuration,
-            IOptionsMonitor<ILog> option,
+            ILogger logger,
             DbContextManager<ResourceDbContext> dbContext,
             ResourceSet invariant,
             CultureInfo culture,
@@ -150,7 +150,7 @@ public class DBResourceManager : ResourceManager
             ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(filename);
 
             _dbContext = dbContext;
-            _logger = option.CurrentValue;
+            _logger = logger;
 
             try
             {
@@ -252,15 +252,15 @@ public class DBResourceManager : ResourceManager
 [Singletone]
 public class WhiteLabelHelper
 {
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly ConcurrentDictionary<int, string> _whiteLabelDictionary;
     public string DefaultLogoText { get; set; }
 
     private readonly IConfiguration _configuration;
 
-    public WhiteLabelHelper(IConfiguration configuration, IOptionsMonitor<ILog> option)
+    public WhiteLabelHelper(IConfiguration configuration, ILoggerProvider option)
     {
-        _logger = option.Get("ASC.Resources");
+        _logger = option.CreateLogger("ASC.Resources");
         _whiteLabelDictionary = new ConcurrentDictionary<int, string>();
         DefaultLogoText = string.Empty;
         _configuration = configuration;

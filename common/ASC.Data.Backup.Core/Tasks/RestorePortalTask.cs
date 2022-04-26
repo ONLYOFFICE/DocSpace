@@ -40,11 +40,11 @@ public class RestorePortalTask : PortalTaskBase
     private readonly LicenseReader _licenseReader;
     private readonly TenantManager _tenantManager;
     private readonly AscCacheNotify _ascCacheNotify;
-    private readonly IOptionsMonitor<ILog> _options;
+    private readonly ILogger _options;
 
     public RestorePortalTask(
         DbFactory dbFactory,
-        IOptionsMonitor<ILog> options,
+        ILogger<RestorePortalTask> options,
         StorageFactory storageFactory,
         StorageFactoryConfig storageFactoryConfig,
         CoreBaseSettings coreBaseSettings,

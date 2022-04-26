@@ -33,12 +33,12 @@ public class NotifyHelper
 
     private string _serverRootPath;
     private readonly NotifyServiceClient _notifyServiceClient;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
 
-    public NotifyHelper(IOptionsMonitor<ILog> option, NotifyServiceClient notifyServiceClient)
+    public NotifyHelper(ILogger<NotifyHelper> logger, NotifyServiceClient notifyServiceClient)
     {
         _notifyServiceClient = notifyServiceClient;
-        _logger = option.CurrentValue;
+        _logger = logger;
     }
 
     public void Init(string serverRootPath)

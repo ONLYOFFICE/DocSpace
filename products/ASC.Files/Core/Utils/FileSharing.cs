@@ -265,7 +265,7 @@ public class FileSharingHelper
 [Scope]
 public class FileSharing
 {
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly Global _global;
     private readonly FileSecurity _fileSecurity;
     private readonly AuthContext _authContext;
@@ -280,7 +280,7 @@ public class FileSharing
         FileSecurity fileSecurity,
         AuthContext authContext,
         UserManager userManager,
-        IOptionsMonitor<ILog> optionsMonitor,
+        ILogger<FileSharing> logger,
         DisplayUserSettingsHelper displayUserSettingsHelper,
         FileShareLink fileShareLink,
         IDaoFactory daoFactory,
@@ -294,7 +294,7 @@ public class FileSharing
         _fileShareLink = fileShareLink;
         _daoFactory = daoFactory;
         _fileSharingHelper = fileSharingHelper;
-        _logger = optionsMonitor.CurrentValue;
+        _logger = logger;
     }
 
     public Task<bool> CanSetAccessAsync<T>(FileEntry<T> entry)

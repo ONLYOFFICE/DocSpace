@@ -103,14 +103,14 @@ public class StorageHelper
     private readonly UserPhotoManager _userPhotoManager;
     private readonly StorageFactory _storageFactory;
     private readonly TenantManager _tenantManager;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
 
-    public StorageHelper(UserPhotoManager userPhotoManager, StorageFactory storageFactory, TenantManager tenantManager, IOptionsMonitor<ILog> options)
+    public StorageHelper(UserPhotoManager userPhotoManager, StorageFactory storageFactory, TenantManager tenantManager, ILogger<StorageHelper> logger)
     {
         _userPhotoManager = userPhotoManager;
         _storageFactory = storageFactory;
         _tenantManager = tenantManager;
-        _logger = options.CurrentValue;
+        _logger = logger;
     }
 
     public string SaveTmpLogo(string tmpLogoPath)

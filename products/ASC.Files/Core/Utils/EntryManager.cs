@@ -276,7 +276,7 @@ public class EntryManager
     private readonly TenantManager _tenantManager;
     private readonly SettingsManager _settingsManager;
     private readonly IServiceProvider _serviceProvider;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly IHttpClientFactory _clientFactory;
 
     public EntryManager(
@@ -292,7 +292,7 @@ public class EntryManager
         CoreBaseSettings coreBaseSettings,
         FilesSettingsHelper filesSettingsHelper,
         UserManager userManager,
-        ILog logger,
+        ILogger<EntryManager> logger,
         FileShareLink fileShareLink,
         DocumentServiceHelper documentServiceHelper,
         ThirdpartyConfiguration thirdpartyConfiguration,

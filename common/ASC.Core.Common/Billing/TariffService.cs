@@ -63,6 +63,15 @@ public class TariffServiceStorage
 [Scope]
 class ConfigureTariffService : IConfigureNamedOptions<TariffService>
 {
+    private readonly IOptionsSnapshot<CachedQuotaService> _quotaService;
+    private readonly IOptionsSnapshot<CachedTenantService> _tenantService;
+    private readonly CoreBaseSettings _coreBaseSettings;
+    private readonly CoreSettings _coreSettings;
+    private readonly IConfiguration _configuration;
+    private readonly DbContextManager<CoreDbContext> _coreDbContextManager;
+    private readonly TariffServiceStorage _tariffServiceStorage;
+    private readonly ILogger _logger;
+
     public ConfigureTariffService(
         IOptionsSnapshot<CachedQuotaService> quotaService,
         IOptionsSnapshot<CachedTenantService> tenantService,
@@ -71,7 +80,7 @@ class ConfigureTariffService : IConfigureNamedOptions<TariffService>
         IConfiguration configuration,
         DbContextManager<CoreDbContext> coreDbContextManager,
         TariffServiceStorage tariffServiceStorage,
-        IOptionsMonitor<ILog> options)
+        ILogger<TariffService> options)
     {
         _quotaService = quotaService;
         _tenantService = tenantService;
@@ -80,17 +89,9 @@ class ConfigureTariffService : IConfigureNamedOptions<TariffService>
         _configuration = configuration;
         _coreDbContextManager = coreDbContextManager;
         _tariffServiceStorage = tariffServiceStorage;
-        _options = options;
+        _logger = options;
     }
 
-    private readonly IOptionsSnapshot<CachedQuotaService> _quotaService;
-    private readonly IOptionsSnapshot<CachedTenantService> _tenantService;
-    private readonly CoreBaseSettings _coreBaseSettings;
-    private readonly CoreSettings _coreSettings;
-    private readonly IConfiguration _configuration;
-    private readonly DbContextManager<CoreDbContext> _coreDbContextManager;
-    private readonly TariffServiceStorage _tariffServiceStorage;
-    private readonly IOptionsMonitor<ILog> _options;
 
     public void Configure(string name, TariffService options)
     {
@@ -102,11 +103,10 @@ class ConfigureTariffService : IConfigureNamedOptions<TariffService>
 
     public void Configure(TariffService options)
     {
-        options.Logger = _options.CurrentValue;
+        options.Logger = _logger;
         options.CoreSettings = _coreSettings;
         options.Configuration = _configuration;
         options.TariffServiceStorage = _tariffServiceStorage;
-        options.Options = _options;
         options.CoreBaseSettings = _coreBaseSettings;
         options.Test = _configuration["core:payment:test"] == "true";
         int.TryParse(_configuration["core:payment:delay"], out var paymentDelay);
@@ -128,7 +128,7 @@ public class TariffService : ITariffService
 
     internal ICache Cache { get; set; }
     internal ICacheNotify<TariffCacheItem> Notify { get; set; }
-    internal ILog Logger { get; set; }
+    internal ILogger Logger { get; set; }
     internal IQuotaService QuotaService { get; set; }
     internal ITenantService TenantService { get; set; }
     internal bool Test { get; set; }
@@ -141,7 +141,6 @@ public class TariffService : ITariffService
     internal CoreDbContext CoreDbContext => LazyCoreDbContext.Value;
     internal Lazy<CoreDbContext> LazyCoreDbContext;
     internal TariffServiceStorage TariffServiceStorage { get; set; }
-    internal IOptionsMonitor<ILog> Options { get; set; }
 
     private readonly BillingClient _billingClient;
     private readonly IHttpClientFactory _httpClientFactory;
@@ -161,20 +160,18 @@ public class TariffService : ITariffService
         IConfiguration configuration,
         DbContextManager<CoreDbContext> coreDbContextManager,
         TariffServiceStorage tariffServiceStorage,
-        IOptionsMonitor<ILog> options,
-        Users.Constants constants,
+        ILogger<TariffService> logger,
         BillingClient billingClient,
         IHttpClientFactory httpClientFactory)
         : this()
 
     {
-        Logger = options.CurrentValue;
+        Logger = logger;
         QuotaService = quotaService;
         TenantService = tenantService;
         CoreSettings = coreSettings;
         Configuration = configuration;
         TariffServiceStorage = tariffServiceStorage;
-        Options = options;
         _billingClient = billingClient;
         _httpClientFactory = httpClientFactory;
         CoreBaseSettings = coreBaseSettings;
@@ -705,7 +702,7 @@ public class TariffService : ITariffService
         }
         else
         {
-            if (Logger.IsDebugEnabled)
+            if (Logger.IsEnabled(LogLevel.Debug))
             {
                 Logger.LogError(error, "Billing tenant " + tenantId);
             }

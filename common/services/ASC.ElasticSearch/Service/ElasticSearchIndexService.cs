@@ -28,7 +28,7 @@ namespace ASC.ElasticSearch;
 
 public class ElasticSearchIndexService : BackgroundService
 {
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly ICacheNotify<AscCacheItem> _notify;
     private readonly ICacheNotify<IndexAction> _indexNotify;
     private readonly IServiceScopeFactory _serviceScopeFactory;
@@ -36,13 +36,13 @@ public class ElasticSearchIndexService : BackgroundService
     private bool _isStarted;
 
     public ElasticSearchIndexService(
-        IOptionsMonitor<ILog> options,
+        ILoggerProvider options,
         ICacheNotify<AscCacheItem> notify,
         ICacheNotify<IndexAction> indexNotify,
         IServiceScopeFactory serviceScopeFactory,
         Settings settings)
     {
-        _logger = options.Get("ASC.Indexer");
+        _logger = options.CreateLogger("ASC.Indexer");
         _notify = notify;
         _indexNotify = indexNotify;
         _serviceScopeFactory = serviceScopeFactory;

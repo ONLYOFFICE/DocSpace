@@ -29,15 +29,15 @@ namespace ASC.Notify.Engine;
 [Singletone]
 public class DispatchEngine
 {
-    private readonly ILog _logger;
-    private readonly ILog _messagesLogger;
+    private readonly ILogger _logger;
+    private readonly ILogger _messagesLogger;
     private readonly Context _context;
     private readonly bool _logOnly;
 
-    public DispatchEngine(Context context, IConfiguration configuration, IOptionsMonitor<ILog> options)
+    public DispatchEngine(Context context, IConfiguration configuration, ILoggerProvider options)
     {
-        _logger = options.Get("ASC.Notify");
-        _messagesLogger = options.Get("ASC.Notify.Messages");
+        _logger = options.CreateLogger("ASC.Notify");
+        _messagesLogger = options.CreateLogger("ASC.Notify.Messages");
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _logOnly = "log".Equals(configuration["core:notify:postman"], StringComparison.InvariantCultureIgnoreCase);
         _logger.LogDebug("LogOnly: {0}", _logOnly);
@@ -87,7 +87,7 @@ public class DispatchEngine
     {
         try
         {
-            if (_messagesLogger.IsDebugEnabled)
+            if (_messagesLogger.IsEnabled(LogLevel.Debug))
             {
                 _messagesLogger.LogDebug("[{5}]->[{1}] by [{6}] to [{2}] at {0}\r\n\r\n[{3}]\r\n{4}\r\n{7}",
                     DateTime.Now,

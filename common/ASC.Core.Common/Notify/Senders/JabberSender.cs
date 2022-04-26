@@ -29,13 +29,13 @@ namespace ASC.Core.Notify.Senders;
 [Singletone(Additional = typeof(JabberSenderExtension))]
 public class JabberSender : INotifySender
 {
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly IServiceProvider _serviceProvider;
 
-    public JabberSender(IServiceProvider serviceProvider, IOptionsMonitor<ILog> optionsMonitor)
+    public JabberSender(IServiceProvider serviceProvider, ILogger<JabberSender> logger)
     {
         _serviceProvider = serviceProvider;
-        _logger = optionsMonitor.CurrentValue;
+        _logger = logger;
     }
 
     public void Init(IDictionary<string, string> properties) { }

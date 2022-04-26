@@ -29,17 +29,18 @@ namespace ASC.Core.Common.Hosting;
 [Singletone]
 public class RegisterInstanceWorkerService<T> : BackgroundService where T : IHostedService
 {
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly IHostApplicationLifetime _applicationLifetime;
     private readonly IServiceProvider _serviceProvider;
     public static readonly string InstanceId =
         $"{typeof(T).Name}_{DateTime.UtcNow.Ticks}";
 
-    public RegisterInstanceWorkerService(IOptionsMonitor<ILog> options,
-                                         IServiceProvider serviceProvider,
-                                         IHostApplicationLifetime applicationLifetime)
+    public RegisterInstanceWorkerService(
+        ILogger<RegisterInstanceWorkerService<T>> logger,
+        IServiceProvider serviceProvider,
+        IHostApplicationLifetime applicationLifetime)
     {
-        _logger = options.CurrentValue;
+        _logger = logger;
         _serviceProvider = serviceProvider;
         _applicationLifetime = applicationLifetime;
     }

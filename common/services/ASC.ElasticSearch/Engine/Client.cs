@@ -55,7 +55,7 @@ public class Client
                     .MaximumRetries(10)
                     .ThrowExceptions();
 
-                if (_logger.IsTraceEnabled)
+                if (_logger.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Trace))
                 {
                     settings.DisableDirectStreaming().PrettyJson().EnableDebugMode(r =>
                     {
@@ -98,13 +98,13 @@ public class Client
 
     private static volatile ElasticClient _client;
     private static readonly object _locker = new object();
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly Settings _settings;
     private readonly IServiceProvider _serviceProvider;
 
-    public Client(IOptionsMonitor<ILog> option, IServiceProvider serviceProvider, Settings settings)
+    public Client(ILoggerProvider option, IServiceProvider serviceProvider, Settings settings)
     {
-        _logger = option.Get("ASC.Indexer");
+        _logger = option.CreateLogger("ASC.Indexer");
         _settings = settings;
         _serviceProvider = serviceProvider;
     }

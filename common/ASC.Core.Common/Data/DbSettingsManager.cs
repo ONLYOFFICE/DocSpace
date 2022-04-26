@@ -52,7 +52,7 @@ class ConfigureDbSettingsManager : IConfigureNamedOptions<DbSettingsManager>
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly DbSettingsManagerCache _dbSettingsManagerCache;
-    private readonly IOptionsMonitor<ILog> _logger;
+    private readonly ILogger _logger;
     private readonly AuthContext _authContext;
     private readonly IOptionsSnapshot<TenantManager> _tenantManager;
     private readonly DbContextManager<WebstudioDbContext> _dbContextManager;
@@ -60,7 +60,7 @@ class ConfigureDbSettingsManager : IConfigureNamedOptions<DbSettingsManager>
     public ConfigureDbSettingsManager(
         IServiceProvider serviceProvider,
         DbSettingsManagerCache dbSettingsManagerCache,
-        IOptionsMonitor<ILog> iLog,
+        ILogger<DbSettingsManager> iLog,
         AuthContext authContext,
         IOptionsSnapshot<TenantManager> tenantManager,
         DbContextManager<WebstudioDbContext> dbContextManager
@@ -87,7 +87,7 @@ class ConfigureDbSettingsManager : IConfigureNamedOptions<DbSettingsManager>
         options.ServiceProvider = _serviceProvider;
         options.DbSettingsManagerCache = _dbSettingsManagerCache;
         options.AuthContext = _authContext;
-        options.Logger = _logger.CurrentValue;
+        options.Logger = _logger;
 
         options.TenantManager = _tenantManager.Value;
         options.LazyWebstudioDbContext = new Lazy<WebstudioDbContext>(() => _dbContextManager.Value);
@@ -99,7 +99,7 @@ public class DbSettingsManager
 {
     private readonly TimeSpan _expirationTimeout = TimeSpan.FromMinutes(5);
 
-    internal ILog Logger { get; set; }
+    internal ILogger Logger { get; set; }
     internal ICache Cache { get; set; }
     internal IServiceProvider ServiceProvider { get; set; }
     internal DbSettingsManagerCache DbSettingsManagerCache { get; set; }
@@ -113,7 +113,7 @@ public class DbSettingsManager
     public DbSettingsManager(
         IServiceProvider serviceProvider,
         DbSettingsManagerCache dbSettingsManagerCache,
-        IOptionsMonitor<ILog> option,
+        ILogger<DbSettingsManager> logger,
         AuthContext authContext,
         TenantManager tenantManager,
         DbContextManager<WebstudioDbContext> dbContextManager)
@@ -123,7 +123,7 @@ public class DbSettingsManager
         AuthContext = authContext;
         TenantManager = tenantManager;
         Cache = dbSettingsManagerCache.Cache;
-        Logger = option.CurrentValue;
+        Logger = logger;
         LazyWebstudioDbContext = new Lazy<WebstudioDbContext>(() => dbContextManager.Value);
     }
 

@@ -85,7 +85,7 @@ public abstract class PrivacyRoomControllerCommon : ControllerBase
 {
     private readonly AuthContext _authContext;
     private readonly EncryptionKeyPairDtoHelper _encryptionKeyPairHelper;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly MessageService _messageService;
     private readonly PermissionContext _permissionContext;
     private readonly SettingsManager _settingsManager;
@@ -98,7 +98,7 @@ public abstract class PrivacyRoomControllerCommon : ControllerBase
         TenantManager tenantManager,
         EncryptionKeyPairDtoHelper encryptionKeyPairHelper,
         MessageService messageService,
-        IOptionsMonitor<ILog> option)
+        ILoggerProvider option)
     {
         _authContext = authContext;
         _permissionContext = permissionContext;
@@ -106,7 +106,7 @@ public abstract class PrivacyRoomControllerCommon : ControllerBase
         _tenantManager = tenantManager;
         _encryptionKeyPairHelper = encryptionKeyPairHelper;
         _messageService = messageService;
-        _logger = option.Get("ASC.Api.Documents");
+        _logger = option.CreateLogger("ASC.Api.Documents");
     }
 
     /// <summary>

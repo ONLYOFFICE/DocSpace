@@ -229,7 +229,7 @@ abstract class FileOperation<T, TId> : FileOperation where T : FileOperationData
     protected ITagDao<TId> TagDao { get; private set; }
     protected ILinkDao LinkDao { get; private set; }
     protected IProviderDao ProviderDao { get; private set; }
-    protected ILog Logger { get; private set; }
+    protected ILogger Logger { get; private set; }
     protected CancellationToken CancellationToken { get; private set; }
     protected List<TId> Folders { get; private set; }
     protected List<TId> Files { get; private set; }
@@ -264,7 +264,7 @@ abstract class FileOperation<T, TId> : FileOperation where T : FileOperationData
 
             using var scope = _serviceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<FileOperationScope>();
-            var (tenantManager, daoFactory, fileSecurity, options) = scopeClass;
+            var (tenantManager, daoFactory, fileSecurity, logger) = scopeClass;
             tenantManager.SetCurrentTenant(CurrentTenant);
 
 
@@ -279,7 +279,7 @@ abstract class FileOperation<T, TId> : FileOperation where T : FileOperationData
             ProviderDao = daoFactory.ProviderDao;
             FilesSecurity = fileSecurity;
 
-            Logger = options.CurrentValue;
+            Logger = logger;
 
             await DoAsync(scope);
         }
@@ -384,9 +384,9 @@ public class FileOperationScope
     private readonly TenantManager _tenantManager;
     private readonly IDaoFactory _daoFactory;
     private readonly FileSecurity _fileSecurity;
-    private readonly IOptionsMonitor<ILog> _options;
+    private readonly ILogger _options;
 
-    public FileOperationScope(TenantManager tenantManager, IDaoFactory daoFactory, FileSecurity fileSecurity, IOptionsMonitor<ILog> options)
+    public FileOperationScope(TenantManager tenantManager, IDaoFactory daoFactory, FileSecurity fileSecurity, ILogger<FileOperationScope> options)
     {
         _tenantManager = tenantManager;
         _daoFactory = daoFactory;
@@ -394,7 +394,7 @@ public class FileOperationScope
         _options = options;
     }
 
-    public void Deconstruct(out TenantManager tenantManager, out IDaoFactory daoFactory, out FileSecurity fileSecurity, out IOptionsMonitor<ILog> optionsMonitor)
+    public void Deconstruct(out TenantManager tenantManager, out IDaoFactory daoFactory, out FileSecurity fileSecurity, out ILogger optionsMonitor)
     {
         tenantManager = _tenantManager;
         daoFactory = _daoFactory;

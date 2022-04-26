@@ -40,7 +40,7 @@ internal class SharePointFileDao : SharePointDaoBase, IFileDao<string>
         TenantUtil tenantUtil,
         DbContextManager<FilesDbContext> dbContextManager,
         SetupInfo setupInfo,
-        IOptionsMonitor<ILog> monitor,
+        ILogger<SharePointFileDao> monitor,
         FileUtility fileUtility,
         CrossDao crossDao,
         SharePointDaoSelector sharePointDaoSelector,

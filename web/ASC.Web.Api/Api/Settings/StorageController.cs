@@ -47,10 +47,10 @@ public class StorageController : BaseSettingsController
     private readonly BackupAjaxHandler _backupAjaxHandler;
     private readonly ICacheNotify<DeleteSchedule> _cacheDeleteSchedule;
     private readonly EncryptionWorker _encryptionWorker;
-    private readonly ILog _log;
+    private readonly ILogger _log;
 
     public StorageController(
-        IOptionsMonitor<ILog> option,
+        ILoggerProvider option,
         ServiceClient serviceClient,
         MessageService messageService,
         StudioNotifyService studioNotifyService,
@@ -73,7 +73,7 @@ public class StorageController : BaseSettingsController
         EncryptionWorker encryptionWorker,
         IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
-        _log = option.Get("ASC.Api");
+        _log = option.CreateLogger("ASC.Api");
         _serviceClient = serviceClient;
         _webHostEnvironment = webHostEnvironment;
         _consumerFactory = consumerFactory;
