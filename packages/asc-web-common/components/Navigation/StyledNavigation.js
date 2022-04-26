@@ -16,6 +16,12 @@ const StyledContainer = styled.div`
     min-width: 17px;
   }
 
+  .headline-heading {
+    display: flex;
+    height: 32px;
+    align-items: center;
+  }
+
   @media ${tablet} {
     width: 100%;
     grid-template-columns: ${(props) =>
