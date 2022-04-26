@@ -83,7 +83,9 @@ const CatalogItem = (props) => {
         )}
       </StyledCatalogItemImg>
 
-      {showText && <StyledCatalogItemText>{text}</StyledCatalogItemText>}
+      {showText && (
+        <StyledCatalogItemText noSelect={true}>{text}</StyledCatalogItemText>
+      )}
 
       {showBadge && showText && (
         <StyledCatalogItemBadgeWrapper
