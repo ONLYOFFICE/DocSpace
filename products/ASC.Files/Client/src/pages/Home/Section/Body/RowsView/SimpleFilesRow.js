@@ -266,4 +266,4 @@ export default withTranslation([
   "Translations",
   "InfoPanel",
   "VersionBadge",
-])(withFileActions(withRouter(withQuickButtons(SimpleFilesRow))));
+])(withRouter(withFileActions(withQuickButtons(SimpleFilesRow))));

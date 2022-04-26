@@ -5,7 +5,7 @@ import toastr from "studio/toastr";
 
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { withRouter } from "react-router";
-
+import withCultureNames from "@appserver/common/hoc/withCultureNames";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 
@@ -136,5 +136,7 @@ export default withRouter(
       setLoadedProfile,
       showCatalog: auth.settingsStore.showCatalog,
     };
-  })(observer(withTranslation(["Profile", "Common"])(Profile)))
+  })(
+    observer(withTranslation(["Profile", "Common"])(withCultureNames(Profile)))
+  )
 );

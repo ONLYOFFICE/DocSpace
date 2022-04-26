@@ -31,11 +31,7 @@ import {
   providersData,
   ThemeKeys,
 } from "@appserver/common/constants";
-import {
-  unlinkOAuth,
-  linkOAuth,
-  changeTheme,
-} from "@appserver/common/api/people";
+import { unlinkOAuth, linkOAuth } from "@appserver/common/api/people";
 import { getAuthProviders } from "@appserver/common/api/settings";
 import { Trans, useTranslation } from "react-i18next";
 import {

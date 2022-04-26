@@ -12,8 +12,8 @@ const StyledContent = styled.div`
   grid-template-columns: 1fr;
   grid-template-rows: ${(props) =>
     props.isNotifyUsers
-      ? "53px calc(100% - 253px) 200px"
-      : "53px calc(100% - 161px) 108px"};
+      ? "53px calc(100% - 254px) 201px"
+      : "53px calc(100% - 162px) 109px"};
 `;
 
 const StyledHeaderContent = styled.div`
@@ -31,17 +31,6 @@ const StyledHeaderContent = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-
-  @media (max-width: 500px) {
-    width: 100vw;
-    max-width: 100vw;
-  }
-
-  ${isMobileOnly &&
-  css`
-    width: 100vw;
-    max-width: 100vw;
-  `}
 
   .sharing_panel-header-info {
     display: flex;

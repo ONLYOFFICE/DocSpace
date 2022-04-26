@@ -40,10 +40,12 @@ const StyledTableContainer = styled.div`
     border-image-source: ${(props) =>
       props.theme.tableContainer.header.borderImageSource};
     border-top: 0;
-  }
-  .lengthen-header {
-    border-bottom: ${(props) => props.theme.tableContainer.header.borderBottom};
-    border-image-source: none;
+
+    .lengthen-header {
+      border-bottom: ${(props) =>
+        props.theme.tableContainer.header.borderBottom};
+      border-image-source: none;
+    }
   }
 
   .content-container {
@@ -79,7 +81,7 @@ const StyledTableGroupMenu = styled.div`
   align-items: center;
   width: 100%;
   z-index: 199;
-  height: 53px;
+  height: 52px;
   box-shadow: ${(props) => props.theme.tableContainer.groupMenu.boxShadow};
   border-radius: 0px 0px 6px 6px;
   margin: 0;

@@ -1227,6 +1227,7 @@ const Base = {
   },
 
   treeNode: {
+    background: "#f3f4f4",
     dragging: {
       draggable: {
         background: lightCumulus,
@@ -2060,7 +2061,7 @@ const Base = {
 
     groupMenu: {
       background: white,
-      borderBottom: "none",
+      borderBottom: "1px solid transparent",
       borderRight: `1px solid ${grayMid}`,
       boxShadow: "0px 5px 20px rgba(4, 15, 27, 7%)",
     },
@@ -2410,6 +2411,7 @@ const Base = {
   newContextMenu: {
     background: white,
     borderRadius: "6px",
+    mobileBorderRadius: "6px 6px 0 0",
     boxShadow: "0px 12px 40px rgba(4, 15, 27, 0.12)",
     padding: "6px 0px",
     border: "none",

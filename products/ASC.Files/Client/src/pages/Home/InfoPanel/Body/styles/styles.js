@@ -65,8 +65,13 @@ const StyledTitle = styled.div`
 `;
 
 const StyledGalleryThumbnail = styled.div`
-  max-height: 200px;
+  box-sizing: border-box;
+  width: 100%;
+  height: 346px;
   overflow: hidden;
+  border: 1px solid #d0d5da;
+  border-radius: 6px;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   .info-panel_gallery-img {
     display: block;
@@ -120,6 +125,14 @@ const StyledProperties = styled.div`
 
       font-weight: 600;
       font-size: 13px;
+    }
+  }
+
+  .oforms-description {
+    margin-top: 36px;
+
+    .oforms-description-text {
+      margin: 0;
     }
   }
 `;

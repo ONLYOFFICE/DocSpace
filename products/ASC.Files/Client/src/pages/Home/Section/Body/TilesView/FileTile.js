@@ -115,8 +115,8 @@ export default inject(({ settingsStore }) => {
   return { getIcon };
 })(
   withTranslation(["Home", "VersionBadge", "InfoPanel"])(
-    withFileActions(
-      withRouter(withBadges(withQuickButtons(observer(FileTile))))
+    withRouter(
+      withFileActions(withBadges(withQuickButtons(observer(FileTile))))
     )
   )
 );

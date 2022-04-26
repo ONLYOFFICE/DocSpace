@@ -1017,6 +1017,7 @@ class FilesActionStore {
       .set("delete", {
         label: t("Common:Delete"),
         alt: t("RemoveFromFavorites"),
+        iconUrl: "/static/images/delete.react.svg",
         onClick: () => {
           const items = selection.map((item) => item.id);
           this.setFavoriteAction("remove", items)
@@ -1080,6 +1081,8 @@ class FilesActionStore {
     return this.getAnotherFolderOptions(itemsCollection, t);
   };
 
+  onMarkAsRead = (item) => this.markAsRead([], [`${item.id}`], item);
+
   openFileAction = (item) => {
     const {
       setIsLoading,
@@ -1130,7 +1133,7 @@ class FilesActionStore {
       }
 
       if ((fileStatus & FileStatus.IsNew) === FileStatus.IsNew)
-        this.onMarkAsRead(id);
+        this.onMarkAsRead(item);
 
       if (canWebEdit || canViewedDocs) {
         let tab =

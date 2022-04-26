@@ -484,6 +484,7 @@ class Tile extends React.PureComponent {
                 getContextModel={getContextModel}
                 ref={this.cm}
                 header={contextMenuHeader}
+                withBackdrop={true}
               />
             </StyledOptionButton>
           </>

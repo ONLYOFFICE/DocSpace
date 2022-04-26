@@ -98,7 +98,7 @@ const MainButtonMobile = (props) => {
 
   const [isOpen, setIsOpen] = useState(opened);
   const [isUploading, setIsUploading] = useState(false);
-  const [height, setHeight] = useState("90vh");
+  const [height, setHeight] = useState("calc(100% - 48px)");
 
   const divRef = useRef();
 
@@ -111,7 +111,10 @@ const MainButtonMobile = (props) => {
   useEffect(() => {
     let height =
       divRef?.current?.getBoundingClientRect()?.height || window.innerHeight;
-    height >= window.innerHeight ? setHeight("90vh") : setHeight(height + "px");
+
+    height >= window.innerHeight
+      ? setHeight("calc(100% - 48px)")
+      : setHeight(height + "px");
   }, [isOpen, isOpenButton, window.innerHeight, isUploading]);
 
   const ref = useRef();
@@ -242,6 +245,7 @@ const MainButtonMobile = (props) => {
         >
           {isMobile || isTablet ? (
             <Scrollbar
+              style={{ position: "absolute" }}
               scrollclass="section-scroll"
               stype="mediumBlack"
               ref={dropDownRef}
