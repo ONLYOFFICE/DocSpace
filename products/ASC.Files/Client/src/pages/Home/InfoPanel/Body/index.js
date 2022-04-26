@@ -51,6 +51,8 @@ const InfoPanelBodyContent = ({
     );
   };
 
+  console.log(selectedItems);
+
   return isGallery ? (
     !gallerySelected ? (
       <GalleryEmptyScreen />
@@ -90,6 +92,7 @@ export default inject(
   }) => {
     const {
       selection,
+      bufferSelection,
       getFolderInfo,
       getShareUsers,
       gallerySelected,
@@ -103,9 +106,16 @@ export default inject(
       isFavoritesFolder,
     } = treeFoldersStore;
 
+    const selectedItems =
+      selection?.length > 0
+        ? [...selection]
+        : bufferSelection
+        ? [bufferSelection]
+        : [];
+
     return {
       selectedFolder: { ...selectedFolderStore },
-      selectedItems: [...selection],
+      selectedItems: selectedItems,
       getFolderInfo,
       getShareUsers,
       getIcon,
