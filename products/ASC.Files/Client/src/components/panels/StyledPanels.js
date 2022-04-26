@@ -102,6 +102,7 @@ const StyledAsidePanel = styled.div`
     @media (max-width: 500px) {
       position: fixed;
 
+      top: 64px;
       bottom: 0;
       right: 0;
 
@@ -163,7 +164,7 @@ const StyledAddUsersPanelPanel = styled.div`
 
     @media (max-width: 500px) {
       position: fixed;
-
+      top: 64px;
       bottom: 0;
       right: 0;
 
@@ -187,7 +188,7 @@ const StyledAddGroupsPanel = styled.div`
 
     @media (max-width: 500px) {
       position: fixed;
-
+      top: 64px;
       bottom: 0;
       right: 0;
 
@@ -211,7 +212,7 @@ const StyledEmbeddingPanel = styled.div`
 
     @media (max-width: 500px) {
       position: fixed;
-
+      top: 64px;
       bottom: 0;
       right: 0;
 
