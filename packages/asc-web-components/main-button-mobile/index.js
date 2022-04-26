@@ -245,7 +245,7 @@ const MainButtonMobile = (props) => {
         >
           {isMobile || isTablet ? (
             <Scrollbar
-              style={{ height: manualWidth || "400px" }}
+              style={{ position: "absolute" }}
               scrollclass="section-scroll"
               stype="mediumBlack"
               ref={dropDownRef}
