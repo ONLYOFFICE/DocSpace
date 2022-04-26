@@ -267,10 +267,12 @@ const AccessComboBox = (props) => {
       forwardRef={ref}
       fixedDirection={fixedDirection}
     >
-      <ReactSVG
-        src={selectedOption.icon}
-        className="sharing-access-combo-box-icon"
-      />
+      {selectedOption?.icon && (
+        <ReactSVG
+          src={selectedOption?.icon}
+          className="sharing-access-combo-box-icon"
+        />
+      )}
     </ComboBox>
   );
 };

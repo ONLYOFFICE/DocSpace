@@ -716,14 +716,18 @@ class SharingPanelComponent extends React.Component {
             )}
           </>
         ) : (
-          <>
+          <StyledAsidePanel visible={visible}>
             <Backdrop
               onClick={this.onClose}
               visible={visible}
               zIndex={zIndex}
               isAside={true}
             />
-            <StyledContainer className="header_aside-panel" visible={visible}>
+            <Aside
+              className="header_aside-panel"
+              visible={visible}
+              withoutBodyScroll={true}
+            >
               {!isLoading ? (
                 <StyledContent isNotifyUsers={isNotifyUsers}>
                   <Header
@@ -770,7 +774,7 @@ class SharingPanelComponent extends React.Component {
               ) : (
                 <SharingPanelLoader />
               )}
-            </StyledContainer>
+            </Aside>
 
             {showAddUsersPanel && (
               <AddUsersPanel
@@ -816,7 +820,7 @@ class SharingPanelComponent extends React.Component {
                 embeddingLink={externalItem[0].sharedTo.shareLink}
               />
             )}
-          </>
+          </StyledAsidePanel>
         )}
       </>
     );
@@ -869,6 +873,9 @@ const SharingPanel = inject(
       updateUploadedItem,
     } = uploadDataStore;
 
+    const isShared =
+      selection.length > 0 && selection[0].shared ? selection[0].shared : false;
+
     return {
       theme: auth.settingsStore.theme,
       isPersonal: personal,
@@ -905,7 +912,7 @@ const SharingPanel = inject(
       id,
       setBufferSelection,
       access,
-      isShared: selection[0]?.shared ? selection[0].shared : false,
+      isShared: isShared,
     };
   }
 )(
