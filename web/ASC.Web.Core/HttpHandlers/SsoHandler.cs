@@ -79,7 +79,7 @@ public class SsoHandlerService
         MessageService messageService,
         DisplayUserSettingsHelper displayUserSettingsHelper)
     {
-        _log = optionsMonitor.Get("ASC");
+        _log = optionsMonitor.CurrentValue;
         _coreBaseSettings = coreBaseSettings;
         _userManager = userManager;
         _tenantManager = tenantManager;
@@ -206,9 +206,11 @@ public class SsoHandlerService
 
                 _cookiesManager.ResetUserCookie();
                 _securityContext.Logout();
-
-                context.Response.Redirect(AUTH_PAGE, false);
             }
+        }
+        catch (SsoException ex)
+        {
+            throw ex;
         }
         catch (Exception e)
         {
@@ -216,7 +218,7 @@ public class SsoHandlerService
         }
         finally
         {
-            await context.Response.CompleteAsync();
+            //await context.Response.CompleteAsync();
             //context.ApplicationInstance.CompleteRequest();
         }
     }
@@ -224,7 +226,7 @@ public class SsoHandlerService
     private void ErrorWithStatus(string errorText, object errorArg = null)
     {
         _log.ErrorFormat(errorText, errorArg);
-        throw new Exception(string.Format(errorText, errorArg));
+        throw new SsoException(errorText, errorArg);
     }
 
     private UserInfo AddUser(UserInfo userInfo)
@@ -272,6 +274,11 @@ public class SsoHandlerService
         return newUserInfo;
 
     }
+}
+
+public class SsoException : Exception
+{
+    public SsoException(string message, object errorArg) : base(string.Format(message, errorArg)) { }
 }
 
 public static class SsoHandlerExtensions
