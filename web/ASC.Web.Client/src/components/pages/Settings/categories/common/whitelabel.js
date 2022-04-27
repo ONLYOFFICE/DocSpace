@@ -80,6 +80,10 @@ const StyledComponent = styled.div`
     background-color: ${(props) =>
       props.theme.studio.settings.common.whiteLabel.orangeBackgroundColor};
   }
+
+  .display {
+    display: none;
+  }
 `;
 
 StyledComponent.defaultProps = { theme: Base };
@@ -126,6 +130,7 @@ class WhiteLabel extends React.Component {
       logoText,
       logoSizes,
       logoUrls,
+      logoUrlsChange: null,
       ...labels,
     };
   }
@@ -221,7 +226,6 @@ class WhiteLabel extends React.Component {
 
   onRestoreLogo = () => {
     const { restoreWhiteLabelSettings } = this.props;
-    console.log("restore button action");
     restoreWhiteLabelSettings(true);
     this.setState({ isCanvasProcessing: false });
   };
@@ -241,34 +245,59 @@ class WhiteLabel extends React.Component {
   };
 
   onSave = () => {
-    const { setWhiteLabelSettings } = this.props;
-    const { logoText } = this.state;
+    const { setWhiteLabelSettings, logoUrls } = this.props;
+    const { logoText, logoUrlsChange } = this.state;
 
-    // TODO: Add logic to all pictures
-    let fd = new FormData();
-    fd.append("logoText", logoText);
+    console.log("save");
+
+    if (logoUrlsChange) {
+      // TODO: Add logic to all pictures
+      let fd = new FormData();
+      fd.append("logoText", logoText);
+
+      fd.append(`logo[${0}][key]`, 1);
+      fd.append(`logo[${0}][value]`, logoUrlsChange.src);
+
+      const data = new URLSearchParams(fd);
+
+      setWhiteLabelSettings(data);
+    }
 
     let elem = document.getElementById("canvas_logo_1");
-    let dataURL = elem.toDataURL();
 
-    fd.append(`logo[${0}][key]`, 1);
-    fd.append(`logo[${0}][value]`, dataURL);
+    if (elem) {
+      let dataURL = elem.toDataURL();
 
-    // for (let i = 1; i < logoUrls.length; i++) {
-    //   fd.append(`logo[${i}][key]`, i);
-    //   console.log(this.onSaveImageBase64(logoUrls[i]));
-    //   fd.append(`logo[${i}][value]`, this.onSaveImageBase64(logoUrls[i - 1]));
-    // }
+      let fd = new FormData();
+      fd.append("logoText", logoText);
+      fd.append(`logo[${0}][key]`, 1);
+      fd.append(`logo[${0}][value]`, dataURL);
 
-    const data = new URLSearchParams(fd);
+      // for (let i = 1; i < logoUrls.length; i++) {
+      //   fd.append(`logo[${i - 1}][key]`, i);
+      //   console.log(
+      //     "this.onSaveImageBase64(logoUrls[i])",
+      //     i,
+      //     this.onSaveImageBase64(logoUrls[i - 1])
+      //   );
+      //   fd.append(
+      //     `logo[${i - 1}][value]`,
+      //     this.onSaveImageBase64(logoUrls[i - 1])
+      //   );
+      // }
 
-    setWhiteLabelSettings(data);
+      const data = new URLSearchParams(fd);
+
+      setWhiteLabelSettings(data);
+    }
   };
 
   onChangeHandler = (e) => {
     const { setWhiteLabelSettings } = this.props;
-
+    const { logoUrlsChange } = this.state;
     // TODO: Add size check
+
+    const id = e.target.id;
 
     let file = e.target.files[0];
 
@@ -277,13 +306,25 @@ class WhiteLabel extends React.Component {
     reader.onload = (e) => {
       this.imgsrc = e.target.result;
 
+      const changeImg = {
+        id,
+        src: this.imgsrc,
+      };
+
+      this.setState({ logoUrlsChange: changeImg });
+
+      // let image = new Image();
+      // image.src = this.imgsrc;
+      // console.log("image", image);
+      //document.body.appendChild(image);
+
       let fd = new FormData();
       fd.append("logoText", "asas");
       fd.append(`logo[${0}][key]`, 1);
       fd.append(`logo[${0}][value]`, e.target.result);
 
       const data = new URLSearchParams(fd);
-      setWhiteLabelSettings(data);
+      //  setWhiteLabelSettings(data);
     };
   };
 
@@ -299,14 +340,14 @@ class WhiteLabel extends React.Component {
       editorsHeaderLabel,
       logoUrls,
       isCanvasProcessing,
+      logoUrlsChange,
     } = this.state;
-    console.log("WhiteLabelSettings render");
 
-    return <>In development</>;
+    // return !isLoadedData ? (
+    //   <Loader className="pageLoader" type="rombs" size="40px" />
+    // ) : (
 
-    return !isLoadedData ? (
-      <Loader className="pageLoader" type="rombs" size="40px" />
-    ) : (
+    return (
       <>
         <StyledComponent>
           <div className="settings-block">
@@ -369,16 +410,26 @@ class WhiteLabel extends React.Component {
                 ) : (
                   <img
                     className="border-img logo-light-small"
-                    src={logoUrls[0]}
+                    //src={logoUrls[0]}
+                    src={
+                      logoUrlsChange && logoUrlsChange.id === "logoUploader_1"
+                        ? logoUrlsChange.src
+                        : logoUrls[0]
+                    }
                     alt={t("LogoLightSmall")}
                   />
                 )}
               </div>
               {isPortalPaid && (
-                <FileInput
-                  placeholder={t("ChangeLogoButton")}
-                  onChange={this.onChangeHandler}
-                />
+                <label>
+                  <input
+                    id="logoUploader_1"
+                    type="file"
+                    className="display"
+                    onChange={this.onChangeHandler}
+                  />
+                  <a>{t("ChangeLogoButton")}</a>
+                </label>
               )}
             </FieldContainer>
 
@@ -538,7 +589,6 @@ class WhiteLabel extends React.Component {
               label={t("Common:SaveButton")}
               isLoading={false}
               isDisabled={false}
-              //onClick={() => console.log("Save button action")}
               onClick={this.onSave}
             />
 
