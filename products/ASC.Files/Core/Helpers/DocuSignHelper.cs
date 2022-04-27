@@ -181,10 +181,10 @@ public class DocuSignHelper
         var token = _docuSignToken.GetToken();
         var account = GetDocuSignAccount(token);
 
-        var configuration = GetConfiguration(account, token);
+        var apiClient = GetApiClient(account, token);
         var (document, sourceFile) = await CreateDocumentAsync(fileId, docuSignData.Name, docuSignData.FolderId);
 
-        var url = CreateEnvelope(account.AccountId, document, docuSignData, configuration);
+        var url = CreateEnvelope(account.AccountId, document, docuSignData, apiClient);
 
         _filesMessageService.Send(sourceFile, requestHeaders, MessageAction.DocumentSendToSign, "DocuSign", sourceFile.Title);
 
@@ -212,17 +212,16 @@ public class DocuSignHelper
         return account;
     }
 
-    private DocuSign.eSign.Client.Configuration GetConfiguration(DocuSignAccount account, OAuth20Token token)
+    private ApiClient GetApiClient(DocuSignAccount account, OAuth20Token token)
     {
         ArgumentNullException.ThrowIfNull(account);
         ArgumentNullException.ThrowIfNull(token);
 
         var apiClient = new ApiClient(account.BaseUri + "/restapi");
 
-        var configuration = new DocuSign.eSign.Client.Configuration { ApiClient = apiClient };
-        configuration.AddDefaultHeader("Authorization", "Bearer " + _docuSignToken.GetRefreshedToken(token));
+        apiClient.Configuration.DefaultHeader.Add("Authorization", "Bearer " + _docuSignToken.GetRefreshedToken(token));
 
-        return configuration;
+        return apiClient;
     }
 
     private async Task<(Document document, File<T> file)> CreateDocumentAsync<T>(T fileId, string documentName, string folderId)
@@ -281,7 +280,7 @@ public class DocuSignHelper
         return (document, file);
     }
 
-    private string CreateEnvelope(string accountId, Document document, DocuSignData docuSignData, DocuSign.eSign.Client.Configuration configuration)
+    private string CreateEnvelope(string accountId, Document document, DocuSignData docuSignData, ApiClient apiClient)
     {
         var eventNotification = new EventNotification
         {
@@ -347,7 +346,7 @@ public class DocuSignHelper
             Status = "created",
         };
 
-        var envelopesApi = new EnvelopesApi(configuration);
+        var envelopesApi = new EnvelopesApi(apiClient);
         var envelopeSummary = envelopesApi.CreateEnvelope(accountId, envelopeDefinition);
 
         Logger.Debug("DocuSign createdEnvelope: " + envelopeSummary.EnvelopeId);
@@ -369,7 +368,7 @@ public class DocuSignHelper
 
         var token = _docuSignToken.GetToken();
         var account = GetDocuSignAccount(token);
-        var configuration = GetConfiguration(account, token);
+        var apiClient = GetApiClient(account, token);
 
         var fileDao = _daoFactory.GetFileDao<T>();
         var folderDao = _daoFactory.GetFolderDao<T>();
@@ -399,7 +398,7 @@ public class DocuSignHelper
         file.Comment = FilesCommonResource.CommentCreateByDocuSign;
         file.Title = FileUtility.ReplaceFileExtension(documentName, ".pdf");
 
-        var envelopesApi = new EnvelopesApi(configuration);
+        var envelopesApi = new EnvelopesApi(apiClient);
         Logger.Info("DocuSign webhook get stream: " + documentId);
         using (var stream = await envelopesApi.GetDocumentAsync(account.AccountId, envelopeId, documentId))
         {

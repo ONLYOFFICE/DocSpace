@@ -53,7 +53,9 @@ public static class JsonWebToken
 
     private static (IJsonSerializer, IJwtAlgorithm, IBase64UrlEncoder) GetSettings(bool baseSerializer = false)
     {
+#pragma warning disable CS0618 // Type or member is obsolete
         return (baseSerializer ? (IJsonSerializer)new JsonNetSerializer() : new JwtSerializer(), new HMACSHA256Algorithm(), new JwtBase64UrlEncoder());
+#pragma warning restore CS0618 // Type or member is obsolete
     }
 }
 
