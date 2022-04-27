@@ -685,7 +685,8 @@ class UpdateUserForm extends React.Component {
         <Link
           color="#316DAA"
           isHovered={true}
-          href="https://helpcenter.onlyoffice.com/ru/gettingstarted/people.aspx#ManagingAccessRights_block"
+          href={`https://helpcenter.onlyoffice.com/${language}/gettingstarted/people.aspx#ManagingAccessRights_block`}
+          target="_blank"
           style={{ marginTop: 23 }}
         >
           {t("TermsOfUsePopupHelperLink")}
