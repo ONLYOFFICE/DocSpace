@@ -12,6 +12,7 @@ import withQuickButtons from "../../../../../HOCs/withQuickButtons";
 import ItemIcon from "../../../../../components/ItemIcon";
 import marginStyles from "./CommonStyles";
 import { Base } from "@appserver/components/themes";
+import { tablet } from "@appserver/components/utils/device";
 
 const checkedStyle = css`
   background: ${(props) => props.theme.filesSection.rowView.checkedBackground};
@@ -72,6 +73,13 @@ const StyledSimpleFilesRow = styled(Row)`
         padding-right: 24px;
         margin-left: -24px;
         margin-right: -24px;
+
+        @media ${tablet} {
+          margin-left: -16px;
+          margin-right: -16px;
+          padding-left: 16px;
+          padding-right: 16px;
+        }
       `}
   }
 
@@ -98,8 +106,7 @@ const StyledSimpleFilesRow = styled(Row)`
 
   .row_content {
     ${(props) =>
-      props.sectionWidth > 500 &&
-      `max-width: fit-content;`}//min-width: auto;;;;;;;
+      props.sectionWidth > 500 && `max-width: fit-content;`}//min-width: auto
   }
 
   .badges {
