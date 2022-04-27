@@ -92,4 +92,15 @@ public class JwtSerializer : IJsonSerializer
 
         return JsonConvert.DeserializeObject<T>(json, settings);
     }
+
+    public object Deserialize(Type type, string json)
+    {
+        var settings = new JsonSerializerSettings
+        {
+            ContractResolver = new CamelCaseExceptDictionaryKeysResolver(),
+            NullValueHandling = NullValueHandling.Ignore,
+        };
+
+        return JsonConvert.DeserializeObject(json, type, settings);
+    }
 }
