@@ -51,8 +51,6 @@ const InfoPanelBodyContent = ({
     );
   };
 
-  console.log(selectedItems);
-
   return isGallery ? (
     !gallerySelected ? (
       <GalleryEmptyScreen />

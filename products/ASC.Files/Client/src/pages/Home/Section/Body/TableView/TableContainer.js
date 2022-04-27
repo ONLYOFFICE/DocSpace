@@ -32,10 +32,6 @@ const StyledTableContainer = styled(TableContainer)`
     .table-row {
       .table-container_file-name-cell,
       .table-container_row-context-menu-wrapper {
-        margin-top: -1px;
-        border-top: ${(props) =>
-          `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
-
         border-bottom: ${(props) =>
           `1px solid ${props.theme.filesSection.tableView.row.borderColor}`};
       }

@@ -121,7 +121,7 @@ export default function withFileActions(WrappedFileItem) {
     };
 
     onFilesClick = (e) => {
-      const { item, openFileAction } = this.props;
+      const { item, openFileAction, setParentId } = this.props;
       if (
         (e && e.target.tagName === "INPUT") ||
         !!e.target.closest(".lock-file")
@@ -129,6 +129,16 @@ export default function withFileActions(WrappedFileItem) {
         return;
 
       e.preventDefault();
+
+      if (
+        item.isFolder &&
+        item.parentId !== 0 &&
+        item.filesCount === 0 &&
+        item.foldersCount === 0
+      ) {
+        setParentId(item.parentId);
+      }
+
       openFileAction(item);
     };
 
@@ -222,7 +232,7 @@ export default function withFileActions(WrappedFileItem) {
         filesActionsStore,
         dialogsStore,
         treeFoldersStore,
-        //selectedFolderStore,
+        selectedFolderStore,
         filesStore,
         uploadDataStore,
         settingsStore,
@@ -313,6 +323,7 @@ export default function withFileActions(WrappedFileItem) {
         actionId: id,
         checked: isFileSelected(item.id, item.parentId),
         //parentFolder: selectedFolderStore.parentId,
+        setParentId: selectedFolderStore.setParentId,
         canWebEdit,
         canViewedDocs,
         isTrashFolder: isRecycleBinFolder,
