@@ -268,7 +268,7 @@ class ProfileInfo extends React.PureComponent {
         <Link
           color={theme.profileInfo.tooltipLinkColor}
           isHovered={true}
-          href="https://helpcenter.onlyoffice.com/ru/guides/become-translator.aspx"
+          href={`https://helpcenter.onlyoffice.com/${language}/guides/become-translator.aspx`}
           target="_blank"
         >
           {t("Common:LearnMore")}
