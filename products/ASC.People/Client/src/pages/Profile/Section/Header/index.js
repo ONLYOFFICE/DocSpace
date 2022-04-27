@@ -326,7 +326,7 @@ class SectionHeaderContent extends React.PureComponent {
           {
             key: "edit",
             className: "header-context-menu_edit",
-            label: t("EditUser"),
+            label: t("Profile:EditUser"),
             onClick: this.onEditClick,
           },
           {
