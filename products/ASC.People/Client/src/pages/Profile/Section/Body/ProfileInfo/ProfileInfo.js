@@ -93,6 +93,10 @@ const IconButtonWrapper = styled.div`
   }
 `;
 
+const LangSelectorContainer = styled.div`
+  display: flex;
+`;
+
 class ProfileInfo extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -376,7 +380,7 @@ class ProfileInfo extends React.PureComponent {
             <InfoItemLabel>{t("Common:Language")}:</InfoItemLabel>
             <InfoItemValue>
               {cultureNames ? (
-                <>
+                <LangSelectorContainer>
                   <ComboBox
                     directionY="both"
                     options={cultureNames}
@@ -400,7 +404,7 @@ class ProfileInfo extends React.PureComponent {
                     helpButtonHeaderContent={t("Common:Language")}
                     className="help-icon"
                   />
-                </>
+                </LangSelectorContainer>
               ) : (
                 <Loaders.Text />
               )}
