@@ -40,12 +40,17 @@ const StyledTableContainer = styled.div`
     border-image-source: ${(props) =>
       props.theme.tableContainer.header.borderImageSource};
     border-top: 0;
+  }
 
-    .lengthen-header {
-      border-bottom: ${(props) =>
-        props.theme.tableContainer.header.borderBottom};
-      border-image-source: none;
-    }
+  .lengthen-header {
+    border-bottom: ${(props) => props.theme.tableContainer.header.borderBottom};
+    border-image-source: none;
+  }
+
+  .hotkeys-lengthen-header {
+    border-bottom: ${(props) =>
+      props.theme.tableContainer.header.hotkeyBorderBottom};
+    border-image-source: none;
   }
 
   .content-container {
