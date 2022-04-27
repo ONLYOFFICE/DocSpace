@@ -35,9 +35,9 @@
     <PackageReference Include="AWSSDK.S3" Version="3.7.8.23" />
     <PackageReference Include="Google.Api.Gax" Version="3.7.0" />
     <PackageReference Include="Google.Api.Gax.Rest" Version="3.7.0" />
-    <PackageReference Include="Google.Apis.Auth" Version="1.56.0" />
-    <PackageReference Include="Google.Apis.Core" Version="1.56.0" />
-    <PackageReference Include="Google.Apis.Storage.v1" Version="1.56.0.2597" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.57.0" />
+    <PackageReference Include="Google.Apis.Core" Version="1.57.0" />
+    <PackageReference Include="Google.Apis.Storage.v1" Version="1.57.0.2647" />
     <PackageReference Include="Google.Cloud.Storage.V1" Version="3.7.0" />
     <PackageReference Include="Grpc.Tools" Version="2.45.0">
       <PrivateAssets>all</PrivateAssets>
