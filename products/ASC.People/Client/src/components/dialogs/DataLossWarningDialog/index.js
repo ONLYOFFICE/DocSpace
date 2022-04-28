@@ -50,6 +50,7 @@ class DataLossWarningDialogComponent extends React.Component {
             key="LeaveForm"
             label={t("DataLossWarningLeaveBtn")}
             size="normal"
+            scale
             primary={true}
             onClick={this.onSubmit}
           />
@@ -58,6 +59,7 @@ class DataLossWarningDialogComponent extends React.Component {
             key="StayOnPage"
             label={t("Common:CancelButton")}
             size="normal"
+            scale
             onClick={this.onClose}
           />
         </ModalDialog.Footer>

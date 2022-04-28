@@ -52,9 +52,8 @@ const RegisterModalDialog = ({
     <ModalDialogContainer
       displayType="modal"
       visible={visible}
-      modalBodyPadding="12px 0 0 0"
-      asideBodyPadding="16px 0 0 0"
       onClose={onRegisterModalClose}
+      isLarge
     >
       <ModalDialog.Header>
         <Text isBold={true} fontSize="21px">

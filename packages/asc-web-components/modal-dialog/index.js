@@ -153,12 +153,12 @@ ModalDialog.propTypes = {
 
 ModalDialog.defaultProps = {
   displayType: "modal",
-  displayTypeDetailed: {
-    desktop: "modal",
-    tablet: "aside",
-    smallTablet: "aside",
-    mobile: "aside",
-  },
+  // displayTypeDetailed: {
+  //   desktop: "modal",
+  //   tablet: "aside",
+  //   smallTablet: "aside",
+  //   mobile: "aside",
+  // },
   zIndex: 310,
   isLarge: false,
   isLoading: false,

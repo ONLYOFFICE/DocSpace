@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
 import Base from "../themes/base";
 import Box from "../box";
-import { smallTablet } from "../utils/device";
+import { smallTablet, tablet } from "../utils/device";
 
 const StyledModal = styled.div`
   pointer-events: none;
@@ -119,8 +119,12 @@ const StyledFooter = styled.div`
   ${(props) =>
     props.withFooterBorder &&
     `border-top: 1px solid ${props.theme.modalDialog.headerBorderColor}`};
-  gap: 10px;
   padding: 16px;
+
+  gap: 8px;
+  @media ${tablet} {
+    gap: 10px;
+  }
 `;
 
 Dialog.defaultProps = { theme: Base };

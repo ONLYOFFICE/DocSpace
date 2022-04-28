@@ -18,11 +18,6 @@ const ModalDialogContainer = styled(ModalDialog)`
   }
   .modal-dialog-button {
     display: inline-block;
-    margin-right: 10px;
-
-    @media (max-width: 1024px) {
-      margin-right: 8px;
-    }
   }
   .field-body {
     margin-top: 16px;
@@ -30,7 +25,7 @@ const ModalDialogContainer = styled(ModalDialog)`
 
   .email-reg-field {
     height: 46px;
-    margin-bottom: 18px;
+    margin: 0;
   }
 `;
 

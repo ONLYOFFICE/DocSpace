@@ -142,6 +142,7 @@ class ChangeEmailDialogComponent extends React.Component {
             <Text className="text-body">{t("EmailActivationDescription")}</Text>
             <FieldContainer
               isVertical
+              style={{ margin: "0" }}
               //labelText={t("EnterEmail")}
               errorMessage={errorMessage}
               hasError={hasError}

@@ -43,6 +43,7 @@ const tests = isTranslation
       "./tests/filter_tests.js",
       "./tests/catalog_tests.js",
       "./tests/duplicate-id_tests.js",
+      "./tests/modal_tests.js",
     ];
 
 const reportDir = isTranslation
