@@ -161,11 +161,6 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                 {
                     throw new InvalidOperationException("Can not copy from Trash.");
                 }
-                
-                if (rootFrom.FolderType == FolderType.VirtualRooms)
-                {
-                    throw new InvalidOperationException("Can not copy from VirtualRooms.");
-                }
 
                 if (rootFrom.FolderType == FolderType.Archive)
                 {
@@ -176,11 +171,6 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             if (toFolder.RootFolderType == FolderType.TRASH)
             {
                 throw new InvalidOperationException("Can not copy to Trash.");
-            }
-
-            if (toFolder.RootFolderType == FolderType.VirtualRooms)
-            {
-                throw new InvalidOperationException("Can not copy to VirtualRooms");
             }
 
             if (toFolder.RootFolderType == FolderType.Archive)

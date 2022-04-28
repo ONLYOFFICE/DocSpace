@@ -142,6 +142,11 @@ public class FileSecurity : IFileSecurity
         return CanAsync(entry, userId, FilesSecurityActions.RoomEdit);
     }
 
+    public Task<bool> CanRenameAsync<T>(FileEntry<T> entry, Guid userId)
+    {
+        return CanAsync(entry, userId, FilesSecurityActions.Rename);
+    }
+
     public Task<bool> CanReadAsync<T>(FileEntry<T> entry)
     {
         return CanReadAsync(entry, _authContext.CurrentAccount.ID);
@@ -175,6 +180,11 @@ public class FileSecurity : IFileSecurity
     public Task<bool> CanEditAsync<T>(FileEntry<T> entry)
     {
         return CanEditAsync(entry, _authContext.CurrentAccount.ID);
+    }
+
+    public Task<bool> CanRenameAsync<T>(FileEntry<T> entry)
+    {
+        return CanRenameAsync(entry, _authContext.CurrentAccount.ID);
     }
 
     public Task<bool> CanDeleteAsync<T>(FileEntry<T> entry)
@@ -634,23 +644,27 @@ public class FileSecurity : IFileSecurity
                 {
                     result.Add(e);
                 }
-                else if (action == FilesSecurityActions.Comment && (e.Access == FileShare.Comment || e.Access == FileShare.Review || e.Access == FileShare.CustomFilter || e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomManager))
+                else if (action == FilesSecurityActions.Comment && (e.Access == FileShare.Comment || e.Access == FileShare.Review || e.Access == FileShare.CustomFilter || e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomManager || e.Access == FileShare.Editing))
                 {
                     result.Add(e);
                 }
-                else if (action == FilesSecurityActions.FillForms && (e.Access == FileShare.FillForms || e.Access == FileShare.Review || e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomManager))
+                else if (action == FilesSecurityActions.FillForms && (e.Access == FileShare.FillForms || e.Access == FileShare.Review || e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomManager || e.Access == FileShare.Editing))
                 {
                     result.Add(e);
                 }
-                else if (action == FilesSecurityActions.Review && (e.Access == FileShare.Review || e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomManager))
+                else if (action == FilesSecurityActions.Review && (e.Access == FileShare.Review || e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomManager || e.Access == FileShare.Editing))
                 {
                     result.Add(e);
                 }
-                else if (action == FilesSecurityActions.CustomFilter && (e.Access == FileShare.CustomFilter || e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomManager))
+                else if (action == FilesSecurityActions.CustomFilter && (e.Access == FileShare.CustomFilter || e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomManager || e.Access == FileShare.Editing))
                 {
                     result.Add(e);
                 }
-                else if (action == FilesSecurityActions.Edit && (e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomManager))
+                else if (action == FilesSecurityActions.Edit && (e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomManager || e.Access == FileShare.Editing))
+                {
+                    result.Add(e);
+                }
+                else if (action == FilesSecurityActions.Rename && (e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomManager))
                 {
                     result.Add(e);
                 }
@@ -1225,5 +1239,6 @@ public class FileSecurity : IFileSecurity
         Delete,
         CustomFilter,
         RoomEdit,
+        Rename
     }
 }
