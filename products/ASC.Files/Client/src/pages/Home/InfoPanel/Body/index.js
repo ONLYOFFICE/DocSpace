@@ -24,6 +24,7 @@ const InfoPanelBodyContent = ({
   isFavoritesFolder,
   isGallery,
   gallerySelected,
+  personal,
 }) => {
   const singleItem = (item) => {
     const dontShowLocation = item.isFolder && item.parentId === 0;
@@ -47,6 +48,7 @@ const InfoPanelBodyContent = ({
         dontShowLocation={dontShowLocation}
         dontShowSize={dontShowSize}
         dontShowAccess={dontShowAccess}
+        personal={personal}
       />
     );
   };
@@ -81,6 +83,7 @@ InfoPanelBodyContent.defaultProps = { theme: Base };
 
 export default inject(
   ({
+    auth,
     filesStore,
     settingsStore,
     filesActionsStore,
@@ -88,6 +91,8 @@ export default inject(
     treeFoldersStore,
     selectedFolderStore,
   }) => {
+    const { personal } = auth.settingsStore;
+
     const {
       selection,
       bufferSelection,
@@ -124,6 +129,7 @@ export default inject(
       isRecentFolder,
       isFavoritesFolder,
       gallerySelected,
+      personal,
     };
   }
 )(
