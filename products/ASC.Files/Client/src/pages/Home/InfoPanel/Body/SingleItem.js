@@ -30,6 +30,7 @@ const SingleItem = (props) => {
     dontShowSize,
     dontShowLocation,
     dontShowAccess,
+    personal,
   } = props;
 
   let updateSubscription = true;
@@ -338,7 +339,7 @@ const SingleItem = (props) => {
         })}
       </StyledProperties>
 
-      {!dontShowAccess && item.access && (
+      {!dontShowAccess && item.access && !personal && (
         <>
           <StyledSubtitle>
             <Text fontWeight="600" fontSize="14px">
