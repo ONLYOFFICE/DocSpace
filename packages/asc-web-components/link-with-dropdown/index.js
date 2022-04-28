@@ -72,6 +72,8 @@ class LinkWithDropdown extends React.Component {
       id,
       style,
       isDisabled,
+      directionY,
+      theme,
       ...rest
     } = this.props;
 
@@ -109,6 +111,8 @@ class LinkWithDropdown extends React.Component {
           className="fixed-max-width"
           open={this.state.isOpen}
           withArrow={false}
+          forwardedRef={this.ref}
+          directionY={directionY}
           clickOutsideAction={this.onClose}
           {...rest}
         >
@@ -119,6 +123,7 @@ class LinkWithDropdown extends React.Component {
               {...item}
               onClick={this.onClickDropDownItem}
               data-key={item.key}
+              textOverflow={isTextOverflow}
             />
           ))}
         </DropDown>
@@ -159,10 +164,11 @@ LinkWithDropdown.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   /** Set disabled view */
   isDisabled: PropTypes.bool,
+  /** Sets the opening direction relative to the parent */
+  directionY: PropTypes.oneOf(["bottom", "top", "both"]),
 };
 
 LinkWithDropdown.defaultProps = {
-  color: "#333333",
   data: [],
   dropdownType: "alwaysDashed",
   fontSize: "13px",

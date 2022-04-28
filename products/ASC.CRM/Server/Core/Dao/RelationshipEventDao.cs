@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Caching;
@@ -126,16 +127,22 @@ namespace ASC.CRM.Core.Dao
             }
         }
 
-        public int GetFilesCount(int[] contactID, EntityType entityType, int entityID)
+        public async System.Threading.Tasks.Task<int> GetFilesCountAsync(int[] contactID, EntityType entityType, int entityID)
         {
-            return GetFilesIDs(contactID, entityType, entityID).Length;
+            var filesIds = await GetFilesIDsAsync(contactID, entityType, entityID).ToArrayAsync();
+            return filesIds.Length;
         }
 
-        private int[] GetFilesIDs(int[] contactID, EntityType entityType, int entityID)
+        private IAsyncEnumerable<int> GetFilesIDsAsync(int[] contactID, EntityType entityType, int entityID)
         {
             if (entityID > 0 && entityType != EntityType.Opportunity && entityType != EntityType.Case)
                 throw new ArgumentException();
 
+            return InternalGetFilesIDsAsync(contactID, entityType, entityID);
+        }
+
+        private async IAsyncEnumerable<int> InternalGetFilesIDsAsync(int[] contactID, EntityType entityType, int entityID)
+        {
             var sqlQuery = Query(CrmDbContext.RelationshipEvent);
 
             if (contactID != null && contactID.Length > 0)
@@ -146,124 +153,145 @@ namespace ASC.CRM.Core.Dao
 
             sqlQuery = sqlQuery.Where(x => x.HaveFiles);
 
-            var tagNames = sqlQuery.Select(x => String.Format("RelationshipEvent_{0}", x.Id));
+            var tagNames = await sqlQuery.Select(x => String.Format("RelationshipEvent_{0}", x.Id)).ToArrayAsync();
             var tagdao = _filesIntegration.DaoFactory.GetTagDao<int>();
 
-            return tagdao.GetTags(tagNames.ToArray(), TagType.System)
+            var ids = tagdao.GetTagsAsync(tagNames.ToArray(), TagType.System)
                .Where(t => t.EntryType == FileEntryType.File)
-               .Select(t => Convert.ToInt32(t.EntryId)).ToArray();
+               .Select(t => Convert.ToInt32(t.EntryId));
+
+            await foreach (var id in ids)
+                yield return id;
 
         }
 
-        public List<File<int>> GetAllFiles(int[] contactID, EntityType entityType, int entityID)
+        public async IAsyncEnumerable<File<int>> GetAllFilesAsync(int[] contactID, EntityType entityType, int entityID)
         {
             var filedao = _filesIntegration.DaoFactory.GetFileDao<int>();
 
-            var ids = GetFilesIDs(contactID, entityType, entityID);
-            var files = 0 < ids.Length ? filedao.GetFiles(ids) : new List<File<int>>();
+            var ids = await GetFilesIDsAsync(contactID, entityType, entityID).ToArrayAsync();
+            var files = 0 < ids.Length ? filedao.GetFilesAsync(ids) : AsyncEnumerable.Empty<File<int>>();
 
-            files.ForEach(_crmSecurity.SetAccessTo);
-
-            return files.ToList();
+            await foreach(var file in files)
+            {
+                _crmSecurity.SetAccessTo(file);
+                yield return file;
+            }
         }
 
-        public Dictionary<int, List<File<int>>> GetFiles(int[] eventID)
+        public Task<Dictionary<int, List<File<int>>>> GetFilesAsync(int[] eventID)
         {
             if (eventID == null || eventID.Length == 0)
                 throw new ArgumentException("eventID");
 
+            return InternalGetFilesAsync(eventID);
+        }
+
+        public async Task<Dictionary<int, List<File<int>>>> InternalGetFilesAsync(int[] eventID)
+        {
             var tagdao = _filesIntegration.DaoFactory.GetTagDao<int>();
             var filedao = _filesIntegration.DaoFactory.GetFileDao<int>();
 
-            var findedTags = tagdao.GetTags(eventID.Select(item => String.Concat("RelationshipEvent_", item)).ToArray(),
-                TagType.System).Where(t => t.EntryType == FileEntryType.File);
+            var findedTags = await tagdao.GetTagsAsync(eventID.Select(item => String.Concat("RelationshipEvent_", item)).ToArray(),
+                TagType.System).Where(t => t.EntryType == FileEntryType.File).ToArrayAsync();
 
             var filesID = findedTags.Select(t => Convert.ToInt32(t.EntryId)).ToArray();
 
-            var files = 0 < filesID.Length ? filedao.GetFiles(filesID) : new List<File<int>>();
+            var files = 0 < filesID.Length ? filedao.GetFilesAsync(filesID) : AsyncEnumerable.Empty<File<int>>();
 
             var filesTemp = new Dictionary<object, File<int>>();
 
-            files.ForEach(item =>
-                              {
-                                  if (!filesTemp.ContainsKey(item.ID))
-                                      filesTemp.Add(item.ID, item);
-                              });
+            await files.ForEachAsync(item =>
+            {
+                if (!filesTemp.ContainsKey(item.ID))
+                    filesTemp.Add(item.ID, item);
+            });
 
             return findedTags.Where(x => filesTemp.ContainsKey(x.EntryId)).GroupBy(x => x.TagName).ToDictionary(x => Convert.ToInt32(x.Key.Split(new[] { '_' })[1]),
                                                               x => x.Select(item => filesTemp[item.EntryId]).ToList());
         }
 
-        public List<File<int>> GetFiles(int eventID)
+        public IAsyncEnumerable<File<int>> GetFilesAsync(int eventID)
         {
             if (eventID == 0)
                 throw new ArgumentException("eventID");
 
+            return InternalGetFilesAsync(eventID);
+        }
+
+        private async IAsyncEnumerable<File<int>> InternalGetFilesAsync(int eventID)
+        {
             var tagdao = _filesIntegration.DaoFactory.GetTagDao<int>();
             var filedao = _filesIntegration.DaoFactory.GetFileDao<int>();
 
-            var ids = tagdao.GetTags(String.Concat("RelationshipEvent_", eventID), TagType.System).Where(t => t.EntryType == FileEntryType.File).Select(t => Convert.ToInt32(t.EntryId)).ToArray();
-            var files = 0 < ids.Length ? filedao.GetFiles(ids) : new List<File<int>>();
+            var ids = await tagdao.GetTagsAsync(String.Concat("RelationshipEvent_", eventID), TagType.System).Where(t => t.EntryType == FileEntryType.File).Select(t => Convert.ToInt32(t.EntryId)).ToArrayAsync();
+            var files = 0 < ids.Length ? filedao.GetFilesAsync(ids) : AsyncEnumerable.Empty<File<int>>();
 
-            files.ForEach(_crmSecurity.SetAccessTo);
-
-            return files.ToList();
+            await foreach (var file in files)
+            {
+                _crmSecurity.SetAccessTo(file);
+                yield return file;
+            }
         }
 
-        private void RemoveAllFiles(int[] contactID, EntityType entityType, int entityID)
+        private System.Threading.Tasks.Task RemoveAllFilesAsync(int[] contactID, EntityType entityType, int entityID)
         {
             if (entityID > 0 && entityType != EntityType.Opportunity && entityType != EntityType.Case)
             {
                 throw new ArgumentException();
             }
 
-            var files = GetAllFiles(contactID, entityType, entityID);
+            return InternalRemoveAllFilesAsync(contactID, entityType, entityID);
+        }
+
+        private async System.Threading.Tasks.Task InternalRemoveAllFilesAsync(int[] contactID, EntityType entityType, int entityID)
+        {
+            var files = GetAllFilesAsync(contactID, entityType, entityID);
 
             var dao = _filesIntegration.DaoFactory.GetFileDao<int>();
 
-            foreach (var file in files)
+            await foreach (var file in files)
             {
-                dao.DeleteFile(file.ID);
+                await dao.DeleteFileAsync(file.ID);
             }
         }
 
-        public List<int> RemoveFile(File<int> file)
+        public async IAsyncEnumerable<int> RemoveFileAsync(File<int> file)
         {
             _crmSecurity.DemandDelete(file);
 
-            List<int> eventIDs;
 
             var tagdao = _filesIntegration.DaoFactory.GetTagDao<int>();
 
-            var tags = tagdao.GetTags(file.ID, FileEntryType.File, TagType.System).ToList().FindAll(tag => tag.TagName.StartsWith("RelationshipEvent_"));
+            var tags = tagdao.GetTagsAsync(file.ID, FileEntryType.File, TagType.System).Where(tag => tag.TagName.StartsWith("RelationshipEvent_"));
 
-            eventIDs = tags.Select(item => Convert.ToInt32(item.TagName.Split(new[] { '_' })[1])).ToList();
+            var eventIDs = tags.Select(item => Convert.ToInt32(item.TagName.Split(new[] { '_' })[1]));
 
             var dao = _filesIntegration.DaoFactory.GetFileDao<int>();
 
-            dao.DeleteFile(file.ID);
+            await dao.DeleteFileAsync(file.ID);
 
-            foreach (var eventID in eventIDs)
+            await foreach (var eventID in eventIDs)
             {
-                if (GetFiles(eventID).Count == 0)
+                if (await GetFilesAsync(eventID).CountAsync() == 0)
                 {
-                    var dbEntity = CrmDbContext.RelationshipEvent.Find(eventID);
+                    var dbEntity = await CrmDbContext.RelationshipEvent.FindAsync(eventID);
 
                     if (dbEntity.TenantId != TenantID) continue;
 
                     dbEntity.HaveFiles = false;
 
-                    CrmDbContext.SaveChanges();
+                    await CrmDbContext.SaveChangesAsync();
                 }
+
+                yield return eventID;
             }
 
-            var itemToUpdate = Query(CrmDbContext.Invoices).FirstOrDefault(x => x.FileId == file.ID);
+            var itemToUpdate = await Query(CrmDbContext.Invoices).FirstOrDefaultAsync(x => x.FileId == file.ID);
 
             itemToUpdate.FileId = 0;
 
-            CrmDbContext.SaveChanges();
-
-            return eventIDs;
+            await CrmDbContext.SaveChangesAsync();
         }
 
 
@@ -549,26 +577,34 @@ namespace ASC.CRM.Core.Dao
             return _mapper.Map<List<DbRelationshipEvent>, List<RelationshipEvent>>(sqlQuery.ToList());
         }
 
-        public void DeleteItem(int id)
+        public System.Threading.Tasks.Task DeleteItemAsync(int id)
         {
             var item = GetByID(id);
             if (item == null) throw new ArgumentException();
 
-            DeleteItem(item);
+            return InternalDeleteItemAsync(item);
         }
 
-        public void DeleteItem(RelationshipEvent item)
+        private async System.Threading.Tasks.Task InternalDeleteItemAsync(RelationshipEvent item)
+        {
+            await DeleteItemAsync(item);
+        }
+
+        public async System.Threading.Tasks.Task DeleteItemAsync(RelationshipEvent item)
         {
             _crmSecurity.DemandDelete(item);
 
-            var relativeFiles = GetFiles(item.ID);
+            var relativeFiles = await GetFilesAsync(item.ID).ToListAsync();
 
             var nowFilesEditing = relativeFiles.Where(file => (file.FileStatus & FileStatus.IsEditing) == FileStatus.IsEditing);
 
             if (nowFilesEditing.Count() != 0)
                 throw new ArgumentException();
 
-            relativeFiles.ForEach(f => RemoveFile(f));
+            foreach (var file in relativeFiles)
+            {
+                await RemoveFileAsync(file).ToListAsync();
+            }
 
             var itemToDelete = Query(CrmDbContext.RelationshipEvent).Where(x => x.Id == item.ID).Single();
 
@@ -576,7 +612,7 @@ namespace ASC.CRM.Core.Dao
 
             CrmDbContext.RelationshipEvent.Remove(itemToDelete);
 
-            CrmDbContext.SaveChanges();
+            await CrmDbContext.SaveChangesAsync();
 
         }
 

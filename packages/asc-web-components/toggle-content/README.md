@@ -16,10 +16,11 @@ import ToggleContent from "@appserver/components/toggle-content";
 
 #### Properties
 
-| Props       |      Type      | Required | Values |   Default    | Description             |
-| ----------- | :------------: | :------: | :----: | :----------: | ----------------------- |
-| `className` |    `string`    |    -     |   -    |      -       | Accepts class           |
-| `id`        |    `string`    |    -     |   -    |      -       | Accepts id              |
-| `isOpen`    |     `bool`     |    -     |   -    |   `false`    | State of component      |
-| `label`     |     `text`     |    ✅    |   -    | `Some label` | Define label for header |
-| `style`     | `obj`, `array` |    -     |   -    |      -       | Accepts css style       |
+| Props          |      Type      | Required | Values |   Default    | Description                 |
+| -------------- | :------------: | :------: | :----: | :----------: | --------------------------- |
+| `className`    |    `string`    |    -     |   -    |      -       | Accepts class               |
+| `id`           |    `string`    |    -     |   -    |      -       | Accepts id                  |
+| `isOpen`       |     `bool`     |    -     |   -    |   `false`    | State of component          |
+| `label`        |     `text`     |    ✅    |   -    | `Some label` | Define label for header     |
+| `style`        | `obj`, `array` |    -     |   -    |      -       | Accepts css style           |
+| `enableToggle` |     `bool`     |    -     |   -    |    `true`    | Show/hide toggle functional |

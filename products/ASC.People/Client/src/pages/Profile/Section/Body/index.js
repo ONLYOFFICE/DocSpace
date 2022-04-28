@@ -5,6 +5,8 @@ import Text from "@appserver/components/text";
 import SocialButton from "@appserver/components/social-button";
 import FacebookButton from "@appserver/components/facebook-button";
 import ToggleContent from "@appserver/components/toggle-content";
+import ToggleButton from "@appserver/components/toggle-button";
+import Box from "@appserver/components/box";
 import Link from "@appserver/components/link";
 import ProfileInfo from "./ProfileInfo/ProfileInfo";
 import toastr from "studio/toastr";
@@ -24,8 +26,16 @@ import {
   getUserRole,
 } from "../../../../helpers/people-helpers";
 import config from "../../../../../package.json";
-import { AppServerConfig, providersData } from "@appserver/common/constants";
-import { unlinkOAuth, linkOAuth } from "@appserver/common/api/people";
+import {
+  AppServerConfig,
+  providersData,
+  ThemeKeys,
+} from "@appserver/common/constants";
+import {
+  unlinkOAuth,
+  linkOAuth,
+  changeTheme,
+} from "@appserver/common/api/people";
 import { getAuthProviders } from "@appserver/common/api/settings";
 import { Trans, useTranslation } from "react-i18next";
 import {
@@ -35,12 +45,21 @@ import {
 
 import Loaders from "@appserver/common/components/Loaders";
 import withLoader from "../../../../HOCs/withLoader";
+import RadioButtonGroup from "@appserver/components/radio-button-group";
 
 const ProfileWrapper = styled.div`
   display: flex;
   align-items: flex-start;
   flex-direction: row;
   flex-wrap: wrap;
+
+  .toggle-btn {
+    position: relative;
+
+    .toggle-button-text {
+      margin-top: -1px;
+    }
+  }
 `;
 
 const AvatarWrapper = styled.div`
@@ -98,7 +117,7 @@ const ProviderButtonsWrapper = styled.div`
   }
 `;
 
-const createContacts = (contacts) => {
+const createContacts = (contacts, theme) => {
   const styledContacts = contacts.map((contact, index) => {
     let url = null;
     if (contact.link && contact.link.length > 0) {
@@ -108,7 +127,7 @@ const createContacts = (contacts) => {
       <ContactWrapper key={index}>
         <IconButton
           className="icon-button"
-          color="#333333"
+          color={theme ? theme.profileInfo.iconButtonColor : "#333333"}
           size={16}
           iconName={contact.icon}
           isFill={true}
@@ -255,7 +274,7 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   providerButtons = () => {
-    const { t, providers } = this.props;
+    const { t, providers, theme } = this.props;
 
     const providerButtons =
       providers &&
@@ -289,7 +308,7 @@ class SectionBodyContent extends React.PureComponent {
               <div>
                 <Link
                   type="action"
-                  color="A3A9AE"
+                  color={theme.profileInfo.linkColor}
                   onClick={(e) => this.unlinkAccount(item.provider, e)}
                   isHovered={true}
                 >
@@ -300,11 +319,11 @@ class SectionBodyContent extends React.PureComponent {
               <div>
                 <Link
                   type="action"
-                  color="A3A9AE"
+                  color={theme.profileInfo.linkColor}
                   onClick={(e) => this.linkAccount(item.provider, item.url, e)}
                   isHovered={true}
                 >
-                  {t("Connect")}
+                  {t("Common:Connect")}
                 </Link>
               </div>
             )}
@@ -328,6 +347,24 @@ class SectionBodyContent extends React.PureComponent {
     return !!existProviders;
   };
 
+  onChangeEmailSubscription = (e) => {
+    const checked = e.currentTarget.checked;
+
+    this.props.changeEmailSubscription(checked);
+  };
+
+  onChangeTheme = async (e) => {
+    const { setIsLoading, changeTheme, setTheme } = this.props;
+
+    const value = e.currentTarget.value;
+
+    setIsLoading(true);
+
+    await changeTheme(value);
+
+    setIsLoading(false);
+  };
+
   render() {
     const { resetAppDialogVisible, backupCodesDialogVisible, tfa } = this.state;
     const {
@@ -341,6 +378,10 @@ class SectionBodyContent extends React.PureComponent {
       providers,
       backupCodes,
       personal,
+      tipsSubscription,
+      theme,
+      setTheme,
+      selectedTheme,
     } = this.props;
     const contacts = profile.contacts && getUserContacts(profile.contacts);
     const role = getUserRole(profile);
@@ -348,9 +389,9 @@ class SectionBodyContent extends React.PureComponent {
       (contacts &&
         contacts.social &&
         contacts.social.length > 0 &&
-        createContacts(contacts.social)) ||
+        createContacts(contacts.social, theme)) ||
       null;
-    const infoContacts = contacts && createContacts(contacts.contact);
+    const infoContacts = contacts && createContacts(contacts.contact, theme);
     //const isSelf = isMe(viewer, profile.userName);
 
     let backupCodesCount = 0;
@@ -375,11 +416,12 @@ class SectionBodyContent extends React.PureComponent {
           {profile.status !== 2 && (isAdmin || isSelf) && (
             <EditButtonWrapper>
               <Button
-                size="big"
+                size="normal"
                 scale={true}
                 label={t("EditUser")}
                 title={t("EditUser")}
                 onClick={this.onEditProfileClick}
+                className="edit-profile-button"
               />
             </EditButtonWrapper>
           )}
@@ -402,12 +444,28 @@ class SectionBodyContent extends React.PureComponent {
             </ToggleContent>
           </ToggleWrapper>
         )}
+        {personal && isSelf && (
+          <ToggleWrapper isSelf={true}>
+            <ToggleContent
+              label={t("Subscriptions")}
+              isOpen={true}
+              enableToggle={false}
+            >
+              <ToggleButton
+                className="toggle-btn"
+                label={t("SubscriptionEmailTipsToggleLbl")}
+                onChange={this.onChangeEmailSubscription}
+                isChecked={tipsSubscription}
+              />
+            </ToggleContent>
+          </ToggleWrapper>
+        )}
         {!personal && isSelf && false && (
           <ToggleWrapper isSelf={true}>
             <ToggleContent label={t("Subscriptions")} isOpen={true}>
               <Text as="span">
                 <Button
-                  size="big"
+                  size="normal"
                   label={t("EditSubscriptionsBtn")}
                   primary={true}
                   onClick={this.onEditSubscriptionsClick}
@@ -440,7 +498,7 @@ class SectionBodyContent extends React.PureComponent {
                   {t("ShowBackupCodes")}
                 </Link>
 
-                <Link color="#A3A9AE" noHover={true}>
+                <Link color={theme.profileInfo.linkColor} noHover={true}>
                   ({backupCodesCount} {t("CountCodesRemaining")})
                 </Link>
               </LinkActionWrapper>
@@ -448,10 +506,31 @@ class SectionBodyContent extends React.PureComponent {
           </ToggleWrapper>
         )}
 
-        {profile.notes && (
+        {isSelf && (
           <ToggleWrapper>
+            <ToggleContent label={t("InterfaceTheme")} isOpen={true}>
+              <RadioButtonGroup
+                orientation={"vertical"}
+                name={"interface-theme"}
+                options={[
+                  { value: ThemeKeys.SystemStr, label: t("SystemTheme") },
+                  { value: ThemeKeys.BaseStr, label: t("LightTheme") },
+                  { value: ThemeKeys.DarkStr, label: t("DarkTheme") },
+                ]}
+                onClick={this.onChangeTheme}
+                selected={selectedTheme}
+                spacing={"10px"}
+              />
+            </ToggleContent>
+          </ToggleWrapper>
+        )}
+
+        {profile.notes && (
+          <ToggleWrapper isContacts={true}>
             <ToggleContent label={t("Translations:Comments")} isOpen={true}>
-              <Text as="span">{profile.notes}</Text>
+              <Text className="profile-comments" as="span">
+                {profile.notes}
+              </Text>
             </ToggleContent>
           </ToggleWrapper>
         )}
@@ -477,6 +556,7 @@ class SectionBodyContent extends React.PureComponent {
             visible={resetAppDialogVisible}
             onClose={this.toggleResetAppDialogVisible}
             resetTfaApp={this.props.resetTfaApp}
+            id={profile.id}
           />
         )}
         {backupCodesDialogVisible && (
@@ -497,13 +577,27 @@ class SectionBodyContent extends React.PureComponent {
 export default withRouter(
   inject(({ auth, peopleStore }) => {
     const { isAdmin, userStore, settingsStore, tfaStore } = auth;
-    const { user: viewer } = userStore;
-    const { isTabletView, getOAuthToken, getLoginLink } = settingsStore;
-    const { targetUserStore, avatarEditorStore, usersStore } = peopleStore;
+    const { user: viewer, changeTheme } = userStore;
+
+    const {
+      isTabletView,
+      getOAuthToken,
+      getLoginLink,
+      theme,
+      setTheme,
+    } = settingsStore;
+    const {
+      targetUserStore,
+      avatarEditorStore,
+      usersStore,
+      loadingStore,
+    } = peopleStore;
     const {
       targetUser: profile,
       isMe: isSelf,
       setIsEditTargetUser,
+      changeEmailSubscription,
+      tipsSubscription,
     } = targetUserStore;
     const { avatarMax, setAvatarMax } = avatarEditorStore;
     const { providers, setProviders } = usersStore;
@@ -536,6 +630,13 @@ export default withRouter(
       setBackupCodes,
       setIsEditTargetUser,
       personal: auth.settingsStore.personal,
+      changeEmailSubscription,
+      tipsSubscription,
+      theme,
+      setTheme,
+      changeTheme,
+      selectedTheme: viewer.theme,
+      setIsLoading: loadingStore.setIsLoading,
     };
   })(
     observer(

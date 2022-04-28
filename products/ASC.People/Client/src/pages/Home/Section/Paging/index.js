@@ -20,7 +20,7 @@ const PureSectionPagingContent = ({
         e.preventDefault();
         return;
       }
-      console.log("Next Clicked", e);
+      //console.log("Next Clicked", e);
 
       const newFilter = filter.clone();
       newFilter.page++;
@@ -38,7 +38,7 @@ const PureSectionPagingContent = ({
         return;
       }
 
-      console.log("Prev Clicked", e);
+      //console.log("Prev Clicked", e);
 
       const newFilter = filter.clone();
       newFilter.page--;
@@ -51,7 +51,7 @@ const PureSectionPagingContent = ({
 
   const onChangePageSize = useCallback(
     (pageItem) => {
-      console.log("Paging onChangePageSize", pageItem);
+      //console.log("Paging onChangePageSize", pageItem);
 
       const newFilter = filter.clone();
       newFilter.page = 0;
@@ -65,7 +65,7 @@ const PureSectionPagingContent = ({
 
   const onChangePage = useCallback(
     (pageItem) => {
-      console.log("Paging onChangePage", pageItem);
+      //console.log("Paging onChangePage", pageItem);
 
       const newFilter = filter.clone();
       newFilter.page = pageItem.key;
@@ -126,7 +126,7 @@ const PureSectionPagingContent = ({
   //console.log("SectionPagingContent render", filter);
 
   return isLoaded ? (
-    !filter || filter.total < filter.pageCount || !tReady ? (
+    !tReady || !filter || filter.total < filter.pageCount ? (
       <></>
     ) : (
       <Paging
@@ -142,7 +142,7 @@ const PureSectionPagingContent = ({
         disableHover={isMobile}
         previousAction={onPrevClick}
         nextAction={onNextClick}
-        openDirection="top"
+        openDirection="both"
         selectedPageItem={selectedPageItem} //FILTER CURRENT PAGE
         selectedCountItem={selectedCountItem} //FILTER PAGE COUNT
       />

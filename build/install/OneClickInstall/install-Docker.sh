@@ -70,6 +70,7 @@ KAFKA_HOST=""
 
 ELK_HOST=""
 
+DOCUMENT_SERVER_IMAGE_NAME=onlyoffice/4testing-documentserver-ee:latest
 DOCUMENT_SERVER_JWT_SECRET=""
 DOCUMENT_SERVER_HOST=""
 
@@ -282,6 +283,13 @@ while [ "$1" != "" ]; do
 				shift
 			fi
 		;;
+		
+		-di | --documentserverimage )
+			if [ "$2" != "" ]; then
+				DOCUMENT_SERVER_IMAGE_NAME=$2
+				shift
+			fi
+		;;
 
 		-? | -h | --help )
 			echo "  Usage: bash $HELP_TARGET [PARAMETER] [[PARAMETER], ...]"
@@ -291,8 +299,9 @@ while [ "$1" != "" ]; do
 			echo "      -un, --username                   dockerhub username"
 			echo "      -p, --password                    dockerhub password"
 			echo "      -ias, --installappserver          install or update appserver (true|false)"
-			echo "      -vas, --versionappserver          select the version to install appserver (latest|develop|version number)"
+			echo "      -tag, --dockertag                 select the version to install appserver (latest|develop|version number)"
 			echo "      -ids, --installdocumentserver     install or update document server (true|false)"
+			echo "      -di, --documentserverimage        document server image name"
 			echo "      -imysql, --installmysql           install or update mysql (true|false)"			
 			echo "      -ikafka, --installkafka           install or update kafka (true|false)"
 			echo "      -mysqlrp, --mysqlrootpassword     mysql server root password"
@@ -497,8 +506,8 @@ check_hardware () {
 }
 
 install_service () {
-	COMMAND_NAME=$1
-	PACKAGE_NAME=$2
+	local COMMAND_NAME=$1
+	local PACKAGE_NAME=$2
 
 	PACKAGE_NAME=${PACKAGE_NAME:-"$COMMAND_NAME"}
 
@@ -698,8 +707,8 @@ create_network () {
 }
 
 get_container_env_parameter () {
-	CONTAINER_NAME=$1;
-	PARAMETER_NAME=$2;
+	local CONTAINER_NAME=$1;
+	local PARAMETER_NAME=$2;
 	VALUE="";
 
 	if [[ -z ${CONTAINER_NAME} ]]; then
@@ -770,45 +779,28 @@ set_core_machinekey () {
 
 	if [[ -z ${CORE_MACHINEKEY} ]] && [[ "$UPDATE" != "true" ]]; then
 		APP_CORE_MACHINEKEY=$(get_random_str 12);
+		mkdir -p ${BASE_DIR}/.private/
 		echo $APP_CORE_MACHINEKEY > ${BASE_DIR}/.private/machinekey
 	fi
 }
 
 download_files () {
-	mkdir -p ${BASE_DIR}
-	mkdir -p ${BASE_DIR}/.private/
-	mkdir -p ${BASE_DIR}/config/mysql/conf.d/
-
-	if ! command_exists wget; then
-		install_service wget
+	if ! command_exists svn; then
+		install_service svn subversion
 	fi
-	
-	DOWNLOAD_URL_PREFIX="https://raw.githubusercontent.com/ONLYOFFICE/${PRODUCT}/${GIT_BRANCH}/build/install/docker"
-	wget -q -O $BASE_DIR/.env "${DOWNLOAD_URL_PREFIX}/.env"
-	wget -q -O $BASE_DIR/db.yml "${DOWNLOAD_URL_PREFIX}/db.yml"
-	wget -q -O $BASE_DIR/ds.yml "${DOWNLOAD_URL_PREFIX}/ds.yml"
-	wget -q -O $BASE_DIR/kafka.yml "${DOWNLOAD_URL_PREFIX}/kafka.yml"
-	wget -q -O $BASE_DIR/appserver.yml "${DOWNLOAD_URL_PREFIX}/appserver.yml"
-	wget -q -O $BASE_DIR/config/createdb.sql "${DOWNLOAD_URL_PREFIX}/config/createdb.sql"
-	wget -q -O $BASE_DIR/config/onlyoffice.sql "${DOWNLOAD_URL_PREFIX}/config/onlyoffice.sql"
-	wget -q -O $BASE_DIR/config/onlyoffice.data.sql "${DOWNLOAD_URL_PREFIX}/config/onlyoffice.data.sql"
-	wget -q -O $BASE_DIR/config/mysql/conf.d/mysql.cnf "${DOWNLOAD_URL_PREFIX}/config/mysql/conf.d/mysql.cnf"
-	wget -q -O $BASE_DIR/config/onlyoffice.resources.sql "${DOWNLOAD_URL_PREFIX}/config/onlyoffice.resources.sql"
-	wget -q -O $BASE_DIR/config/onlyoffice.upgradev110.sql "${DOWNLOAD_URL_PREFIX}/config/onlyoffice.upgradev110.sql"
-	wget -q -O $BASE_DIR/config/onlyoffice.upgradev111.sql "${DOWNLOAD_URL_PREFIX}/config/onlyoffice.upgradev111.sql"
-	wget -q -O $BASE_DIR/config/onlyoffice.upgradev115.sql "${DOWNLOAD_URL_PREFIX}/config/onlyoffice.upgradev115.sql"
 
-	if [[ -n ${STATUS} ]]; then
-		sed -i "s/STATUS=.*/STATUS=\"${STATUS}\"/g" $BASE_DIR/.env
-	fi
+	svn export --force https://github.com/ONLYOFFICE/${PRODUCT}/branches/${GIT_BRANCH}/build/install/docker/ ${BASE_DIR}
+	svn export --force https://github.com/ONLYOFFICE/CommunityServer/branches/master/build/sql/ ${BASE_DIR}/config/ #Download SQL scripts
+
+	reconfigure STATUS ${STATUS}
 }
 
 reconfigure () {
-	VARIABLE_NAME=$1
-	VARIABLE_VALUE=$(echo $2 | sed -e 's/;/%/g' -e 's/=/%/g' -e 's/!/%/g')
+	local VARIABLE_NAME=$1
+	local VARIABLE_VALUE=$2
 
 	if [[ -n ${VARIABLE_VALUE} ]]; then
-		sed -i "s/${VARIABLE_NAME}=.*/${VARIABLE_NAME}=${VARIABLE_VALUE}/g" $BASE_DIR/.env
+		sed -i "s~${VARIABLE_NAME}=.*~${VARIABLE_NAME}=${VARIABLE_VALUE}~g" $BASE_DIR/.env
 	fi
 }
 
@@ -818,8 +810,8 @@ install_mysql_server () {
 	fi
 
 	if [[ -z ${MYSQL_PASSWORD} ]] && [[ -z ${MYSQL_ROOT_PASSWORD} ]]; then
-		MYSQL_PASSWORD=$(get_random_str 20);
-		MYSQL_ROOT_PASSWORD=$(get_random_str 20);
+		MYSQL_PASSWORD=$(get_random_str 20 | sed -e 's/;/%/g' -e 's/=/%/g' -e 's/!/%/g');
+		MYSQL_ROOT_PASSWORD=$(get_random_str 20 | sed -e 's/;/%/g' -e 's/=/%/g' -e 's/!/%/g');
 	elif [[ -z ${MYSQL_PASSWORD} ]] || [[ -z ${MYSQL_ROOT_PASSWORD} ]]; then
 		MYSQL_PASSWORD=${MYSQL_PASSWORD:-"$MYSQL_ROOT_PASSWORD"}
 		MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-"$MYSQL_PASSWORD"}
@@ -839,6 +831,7 @@ install_document_server () {
 		install_docker_compose
 	fi
 
+	reconfigure DOCUMENT_SERVER_IMAGE_NAME ${DOCUMENT_SERVER_IMAGE_NAME}
 	reconfigure DOCUMENT_SERVER_JWT_SECRET ${DOCUMENT_SERVER_JWT_SECRET}
 	reconfigure DOCUMENT_SERVER_HOST ${DOCUMENT_SERVER_HOST}
 
@@ -868,6 +861,89 @@ install_appserver () {
 	fi
 
 	docker-compose -f $BASE_DIR/appserver.yml up -d
+	docker-compose -f $BASE_DIR/notify.yml up -d
+}
+
+get_local_image_RepoDigests() {
+   local CONTAINER_IMAGE=$1;
+   LOCAL_IMAGE_RepoDigest=$(docker inspect --format='{{index .RepoDigests 0}}' $CONTAINER_IMAGE)
+   if [ -z ${LOCAL_IMAGE_RepoDigest} ]; then
+        echo "Local docker image not found, check the name of docker image $CONTAINER_IMAGE"
+        exit 1 
+   fi
+   echo $LOCAL_IMAGE_RepoDigest
+}
+
+check_pull_image() {
+    local CONTAINER_IMAGE=$1;
+    CHECK_STATUS_IMAGE="$(docker pull  $CONTAINER_IMAGE | grep Status | awk '{print $2" "$3" "$4" "$5" "$6}')"
+    if [ "${CHECK_STATUS_IMAGE}" == "Image is up to date" ]; then
+        echo "No updates required"
+    fi
+}
+
+check_image_RepoDigest() {
+    local OLD_LOCAL_IMAGE_RepoDigest=$1
+    local NEW_LOCAL_IMAGE_RepoDigest=$2
+    if [ "${OLD_LOCAL_IMAGE_RepoDigest}" == "${NEW_LOCAL_IMAGE_RepoDigest}" ]; then
+       CHECK_RepoDigest="false";
+    else
+       CHECK_RepoDigest="true";
+    fi
+}
+
+docker_image_update() {
+    docker-compose -f $BASE_DIR/notify.yml -f $BASE_DIR/appserver.yml down --volumes
+    docker-compose -f $BASE_DIR/build.yml pull
+}
+
+update_appserver () {
+	if ! command_exists docker-compose; then
+		install_docker_compose
+	fi
+	
+	IMAGE_NAME="onlyoffice-api"
+	CONTAINER_IMAGE=$(docker inspect --format='{{.Config.Image}}' $IMAGE_NAME)
+	
+	OLD_LOCAL_IMAGE_RepoDigest=$(get_local_image_RepoDigests "${CONTAINER_IMAGE}")
+	check_pull_image "${CONTAINER_IMAGE}"
+	NEW_LOCAL_IMAGE_RepoDigest=$(get_local_image_RepoDigests "${CONTAINER_IMAGE}")
+	check_image_RepoDigest ${OLD_LOCAL_IMAGE_RepoDigest} ${NEW_LOCAL_IMAGE_RepoDigest}
+
+	if [ ${CHECK_RepoDigest} == "true" ]; then
+		docker_image_update
+	fi
+}
+
+save_parameter() {
+	local VARIABLE_NAME=$1
+	local VARIABLE_VALUE=$2
+
+	if [[ -z ${VARIABLE_VALUE} ]]; then
+		sed -n "/.*${VARIABLE_NAME}=/s///p" $BASE_DIR/.env
+	else
+		echo $VARIABLE_VALUE
+	fi
+}
+
+save_parameters_from_configs() {
+	MYSQL_DATABASE=$(save_parameter MYSQL_DATABASE $MYSQL_DATABASE)
+	MYSQL_USER=$(save_parameter MYSQL_USER $MYSQL_USER)
+	MYSQL_PASSWORD=$(save_parameter MYSQL_PASSWORD $MYSQL_PASSWORD)
+	MYSQL_ROOT_PASSWORD=$(save_parameter MYSQL_ROOT_PASSWORD $MYSQL_ROOT_PASSWORD)
+	MYSQL_HOST=$(save_parameter MYSQL_HOST $MYSQL_HOST)
+	DOCUMENT_SERVER_JWT_SECRET=$(save_parameter DOCUMENT_SERVER_JWT_SECRET $DOCUMENT_SERVER_JWT_SECRET)
+	DOCUMENT_SERVER_HOST=$(save_parameter DOCUMENT_SERVER_HOST $DOCUMENT_SERVER_HOST)
+	ZOO_PORT=$(save_parameter ZOO_PORT $ZOO_PORT)
+	ZOO_HOST=$(save_parameter ZOO_HOST $ZOO_HOST)
+	KAFKA_HOST=$(save_parameter KAFKA_HOST $KAFKA_HOST)
+	ELK_HOST=$(save_parameter ELK_HOST $ELK_HOST)
+	SERVICE_PORT=$(save_parameter SERVICE_PORT $SERVICE_PORT)
+	APP_CORE_MACHINEKEY=$(save_parameter APP_CORE_MACHINEKEY $APP_CORE_MACHINEKEY)
+	APP_CORE_BASE_DOMAIN=$(save_parameter APP_CORE_BASE_DOMAIN $APP_CORE_BASE_DOMAIN)
+	if [ ${EXTERNAL_PORT} = "8092" ]; then 
+		EXTERNAL_PORT=$(grep -oP '(?<=- ).*?(?=:8092)' /app/onlyoffice/appserver.yml)
+	fi
 }
 
 start_installation () {
@@ -894,6 +970,10 @@ start_installation () {
 
 	docker_login
 
+	if [ "$UPDATE" = "true" ]; then
+		save_parameters_from_configs
+	fi
+
 	download_files
 
 	set_jwt_secret
@@ -901,6 +981,10 @@ start_installation () {
 	set_core_machinekey
 
 	create_network
+
+	if [ "$UPDATE" = "true" ]; then
+		update_appserver
+	fi
 
 	if [ "$INSTALL_MYSQL_SERVER" == "true" ]; then
 		install_mysql_server

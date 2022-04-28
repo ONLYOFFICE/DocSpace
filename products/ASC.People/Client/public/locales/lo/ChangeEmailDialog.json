@@ -1,17 +1,5 @@
 ﻿{
-  "DomainIpAddress": "ທີ່ຢູ່ IP ໂດເມນຍັງບໍ່ຮອງຮັບ",
   "EmailActivationDescription": "ຄຳແນະນຳກ່ຽວກັບການເປີດໃຊ້ງານຈະຖືກສົ່ງໄປທີ່ອີເມວທີ່ປ້ອນເຂົ້າ",
   "EmailChangeTitle": "ປ່ຽນອີເມວ",
-  "EmptyEmail": "ບໍ່ແບ່ງແຍກອີເມວ",
-  "EnterEmail": "ໃສ່ທີ່ຢູ່ອີເມວໃໝ່",
-  "IncorrectDomain": "Domain ບໍ່ຖືກຕ້ອງ",
-  "IncorrectEmail": "ອີເມວບໍ່ຖືກຕ້ອງ",
-  "IncorrectLocalPart": "ທ້ອງຖິ່ນບໍ່ຖືກຕ້ອງ",
-  "LocalDomain": "ໂດເມນທ້ອງຖິ່ນບໍ່ໄດ້ຮັບການສະໜັບສະໜູນ",
-  "ManyEmails": "ແບ່ງແຍກອີເມວຫຼາຍເກີນໄປ",
-  "MaxLengthExceeded": "ຄວາມຍາວສູງສຸດຂອງຊື່ຜູ້ໃຊ້ຫລືພາກສ່ວນພື້ນຖານອື່ນໆແມ່ນ 64 ໂຕອັກສອນ.",
-  "PunycodeDomain": "ບໍ່ຮອງຮັບໂດເມນ Punycode",
-  "PunycodeLocalPart": "ພື້ນທີ່ບໍ່ຮອງຮັບ Punycode",
-  "SameEmail": "ທີ່ບໍ່ສາມາດໃຊ້ອີເມວຊໍ່າກັນ",
-  "SpacesInLocalPart": "ພື່ນທີ່ທ້ອງຖິ້ນບໍ່ພຽງພໍ"
+  "EnterEmail": "ໃສ່ທີ່ຢູ່ອີເມວໃໝ່"
 }

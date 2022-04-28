@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Caching;
@@ -70,42 +71,42 @@ namespace ASC.CRM.Core.Dao
         {
             var dao = _filesIntegration.DaoFactory.GetFileDao<int>();
 
-            var file = 0 < version ? dao.GetFile(id, version) : dao.GetFile(id);
+            var file = 0 < version ? dao.GetFileAsync(id, version).Result : dao.GetFileAsync(id).Result;
 
             return file;
         }
 
-        public void DeleteFile(int id)
+        public async Task DeleteFileAsync(int id)
         {
             var dao = _filesIntegration.DaoFactory.GetFileDao<int>();
 
-            dao.DeleteFile(id);
+            await dao.DeleteFileAsync(id);
         }
 
-        public int GetRoot()
+        public Task<int> GetRootAsync()
         {
-            return _filesIntegration.RegisterBunch<int>("crm", "crm_common", "");
+            return _filesIntegration.RegisterBunchAsync<int>("crm", "crm_common", "");
         }
 
-        public int GetMy()
+        public Task<int> GetMyAsync()
         {
-            return _filesIntegration.RegisterBunch<int>("files", "my", _securityContext.CurrentAccount.ID.ToString());
+            return _filesIntegration.RegisterBunchAsync<int>("files", "my", _securityContext.CurrentAccount.ID.ToString());
         }
 
-        public File<int> SaveFile(File<int> file, System.IO.Stream stream)
+        public Task<File<int>> SaveFileAsync(File<int> file, System.IO.Stream stream)
         {
             var dao = _filesIntegration.DaoFactory.GetFileDao<int>();
 
-            return dao.SaveFile(file, stream);
+            return dao.SaveFileAsync(file, stream);
         }
 
-        public List<int> GetEventsByFile(int id)
+        public IAsyncEnumerable<int> GetEventsByFileAsync(int id)
         {
             var tagdao = _filesIntegration.DaoFactory.GetTagDao<int>();
 
-            var tags = tagdao.GetTags(id, FileEntryType.File, TagType.System).ToList().FindAll(tag => tag.TagName.StartsWith("RelationshipEvent_"));
+            var tags = tagdao.GetTagsAsync(id, FileEntryType.File, TagType.System).Where(tag => tag.TagName.StartsWith("RelationshipEvent_"));
 
-            return tags.Select(item => Convert.ToInt32(item.TagName.Split(new[] { '_' })[1])).ToList();
+            return tags.Select(item => Convert.ToInt32(item.TagName.Split(new[] { '_' })[1]));
         }
 
     }

@@ -47,8 +47,32 @@ const StyledInputGroup = styled(CustomInputGroup)`
     margin: ${(props) => props.theme.inputBlock.margin};
   }
 
-  ${commonInputStyle} :focus-within {
-    border-color: ${(props) => props.theme.inputBlock.borderColor};
+  ${commonInputStyle}
+
+  :focus-within {
+    border-color: ${(props) =>
+      (props.hasError && props.theme.input.focusErrorBorderColor) ||
+      props.theme.inputBlock.borderColor};
+  }
+
+  svg {
+    path {
+      fill: ${(props) =>
+        props.color
+          ? props.color
+          : props.theme.inputBlock.iconColor} !important;
+    }
+  }
+
+  &:hover {
+    svg {
+      path {
+        fill: ${(props) =>
+          props.hoverColor
+            ? props.hoverColor
+            : props.theme.inputBlock.hoverIconColor} !important;
+      }
+    }
   }
 `;
 StyledInputGroup.defaultProps = { theme: Base };

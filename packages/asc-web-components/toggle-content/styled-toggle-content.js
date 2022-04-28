@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import Base from "../themes/base";
 
@@ -9,7 +9,18 @@ const StyledContainer = styled.div`
     cursor: pointer;
     user-select: none;
 
+    display: grid;
+    grid-template-columns: 16px 1fr;
+    grid-column-gap: 9px;
+    max-width: 660px;
+
     svg {
+      ${(props) =>
+        !props.enableToggle &&
+        css`
+          display: none;
+        `}
+
       path {
         fill: ${(props) => props.theme.toggleContent.iconColor};
       }
@@ -17,10 +28,9 @@ const StyledContainer = styled.div`
   }
 
   .arrow-toggle-content {
-    margin-right: ${(props) => props.theme.toggleContent.arrowMarginRight};
-    margin-bottom: ${(props) => props.theme.toggleContent.arrowMarginBottom};
-
-    transform: ${(props) => props.open && props.theme.toggleContent.transform};
+    margin: auto 0;
+    transform: ${(props) =>
+      props.isOpen && props.theme.toggleContent.transform};
   }
 
   .heading-toggle-content {
@@ -29,9 +39,17 @@ const StyledContainer = styled.div`
     box-sizing: border-box;
     font-style: normal;
 
-    &:hover {
-      border-bottom: ${(props) => props.theme.toggleContent.hoverBorderBottom};
-    }
+    ${(props) =>
+      props.enableToggle
+        ? css`
+            &:hover {
+              border-bottom: ${(props) =>
+                props.theme.toggleContent.hoverBorderBottom};
+            }
+          `
+        : css`
+            cursor: default;
+          `}
   }
 `;
 StyledContainer.defaultProps = { theme: Base };

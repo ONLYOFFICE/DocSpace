@@ -1,10 +1,12 @@
 ### STAGE 1: Base image ######
 ARG SRC_PATH=/app/onlyoffice/src
 ARG BUILD_PATH=/var/www
-ARG REPO_TAG=5.0.202-focal-amd64
-ARG REPO=mcr.microsoft.com/dotnet/sdk
+ARG REPO_SDK=mcr.microsoft.com/dotnet/sdk
+ARG REPO_SDK_TAG=6.0
+ARG REPO_RUN=mcr.microsoft.com/dotnet/aspnet
+ARG REPO_RUN_TAG=6.0
 
-FROM $REPO:$REPO_TAG AS base
+FROM $REPO_SDK:$REPO_SDK_TAG AS base
 ARG RELEASE_DATE="2016-06-21"
 ARG DEBIAN_FRONTEND=noninteractive
 ARG PRODUCT_VERSION=0.0.0
@@ -67,7 +69,7 @@ COPY config/mysql/conf.d/mysql.cnf /etc/mysql/conf.d/mysql.cnf
 RUN rm -rf /var/lib/apt/lists/*
 
 ### STAGE 2: Build ###
-FROM mcr.microsoft.com/dotnet/aspnet:5.0.4-focal-amd64 as builder
+FROM $REPO_RUN:$REPO_RUN_TAG as builder
 ARG BUILD_PATH
 ENV BUILD_PATH=${BUILD_PATH}
 
@@ -85,9 +87,9 @@ RUN mkdir -p /var/log/onlyoffice && \
 RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
     apt-get -y update && \
     apt-get -y upgrade && \
-    apt-get install -yq nano && \
-    apt-get install -yq jq && \
-    apt-get install -yq nodejs && \
+    apt-get install -yq sudo nano curl vim && \
+    curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash - && \
+    apt-get install -y nodejs && \
     apt-get install -yq libgdiplus
     
 #USER onlyoffice
@@ -136,6 +138,7 @@ RUN chown nginx:nginx /etc/nginx/* -R && \
     sed -i 's/localhost:5000/$service_api/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/localhost:5003/$service_studio/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/localhost:5023/$service_calendar/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/localhost:9899/$service_socket/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/localhost:5022/$service_mail/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/localhost:9999/$service_urlshortener/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/172.*/$document_server;/' /etc/nginx/conf.d/onlyoffice.conf
@@ -157,24 +160,6 @@ COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Data.Backup/service .
 
 CMD ["ASC.Data.Backup.dll", "ASC.Data.Backup", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
-
-## ASC.Calendar ##
-FROM builder AS calendar
-WORKDIR ${BUILD_PATH}/products/ASC.Calendar/server/
-
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/products/ASC.Calendar/server/ .
-
-CMD ["ASC.Calendar.dll", "ASC.Calendar"]
-
-## ASC.CRM ##
-FROM builder AS crm
-WORKDIR ${BUILD_PATH}/products/ASC.CRM/server/
-
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/products/ASC.CRM/server/ .
-
-CMD ["ASC.CRM.dll", "ASC.CRM"]
 
 ## ASC.Data.Storage.Encryption ##
 FROM builder AS data_storage_encryption
@@ -203,15 +188,6 @@ COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Files.
 
 CMD ["ASC.Files.Service.dll", "ASC.Files.Service", "core:products:folder=/var/www/products/", "core:products:subfolder=server", "disable_elastic=true"]
 
-## ASC.Mail ##
-FROM builder AS mail
-WORKDIR ${BUILD_PATH}/products/ASC.Mail/server/
-
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/products/ASC.Mail/server/ .
-
-CMD ["ASC.Mail.dll", "ASC.Mail"]
-
 ## ASC.Data.Storage.Migration ##
 FROM builder AS data_storage_migration
 WORKDIR ${BUILD_PATH}/services/storage.migration/service/
@@ -238,15 +214,6 @@ COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/products/ASC.People/server/ .
 
 CMD ["ASC.People.dll", "ASC.People"]
-
-## ASC.Projects ##
-FROM builder AS projects_server
-WORKDIR ${BUILD_PATH}/products/ASC.Projects/server/
-
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/products/ASC.Projects/server/ .
-
-CMD ["ASC.Projects.dll", "ASC.Projects"]
 
 ## ASC.Socket.IO.Svc ##
 FROM builder AS socket
@@ -338,10 +305,10 @@ RUN mkdir -p /app/appserver/ASC.Files/server && \
 COPY bin-share-docker-entrypoint.sh /app/docker-entrypoint.sh
 COPY --from=base /var/www/products/ASC.Files/server/ /app/appserver/ASC.Files/server/
 COPY --from=base /var/www/products/ASC.People/server/ /app/appserver/ASC.People/server/
-COPY --from=base /var/www/products/ASC.CRM/server/ /app/appserver/ASC.CRM/server/
-COPY --from=base /var/www/products/ASC.Projects/server/ /app/appserver/ASC.Projects/server/
-COPY --from=base /var/www/products/ASC.Calendar/server/ /app/appserver/ASC.Calendar/server/
-COPY --from=base /var/www/products/ASC.Mail/server/ /app/appserver/ASC.Mail/server/
+# COPY --from=base /var/www/products/ASC.CRM/server/ /app/appserver/ASC.CRM/server/
+# COPY --from=base /var/www/products/ASC.Projects/server/ /app/appserver/ASC.Projects/server/
+# COPY --from=base /var/www/products/ASC.Calendar/server/ /app/appserver/ASC.Calendar/server/
+# COPY --from=base /var/www/products/ASC.Mail/server/ /app/appserver/ASC.Mail/server/
 ENTRYPOINT ["./app/docker-entrypoint.sh"]
 
 ## image for k8s wait-bin-share ##

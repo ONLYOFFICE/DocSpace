@@ -39,10 +39,16 @@ class ComboBox extends React.Component {
   };
 
   comboBoxClick = (e) => {
-    const { disableIconClick, isDisabled, toggleAction } = this.props;
+    const {
+      disableIconClick,
+      disableItemClick,
+      isDisabled,
+      toggleAction,
+    } = this.props;
 
     if (
       isDisabled ||
+      disableItemClick ||
       (disableIconClick && e && e.target.closest(".optionalBlock"))
     )
       return;
@@ -92,15 +98,23 @@ class ComboBox extends React.Component {
       comboIcon,
       manualY,
       manualX,
+      isDefaultMode,
+      manualWidth,
+      displaySelectedOption,
+      fixedDirection,
     } = this.props;
     const { isOpen, selectedOption } = this.state;
 
     const dropDownMaxHeightProp = dropDownMaxHeight
       ? { maxHeight: dropDownMaxHeight }
       : {};
-    const dropDownManualWidthProp = scaledOptions
-      ? { manualWidth: "100%" }
-      : {};
+
+    const dropDownManualWidthProp =
+      scaledOptions && !isDefaultMode
+        ? { manualWidth: "100%" }
+        : scaledOptions && this.ref.current
+        ? { manualWidth: this.ref.current.clientWidth + "px" }
+        : { manualWidth: manualWidth };
 
     const optionsLength = options.length
       ? options.length
@@ -145,24 +159,33 @@ class ComboBox extends React.Component {
             manualY={manualY}
             manualX={manualX}
             open={isOpen}
+            forwardedRef={this.ref}
             clickOutsideAction={this.handleClickOutside}
+            style={advancedOptions && { padding: "6px 0px" }}
             {...dropDownMaxHeightProp}
             {...dropDownManualWidthProp}
             showDisabledItems={showDisabledItems}
+            isDefaultMode={isDefaultMode}
+            fixedDirection={fixedDirection}
           >
             {advancedOptions
               ? advancedOptions
-              : options.map((option) => (
-                  <DropDownItem
-                    {...option}
-                    textOverflow={textOverflow}
-                    key={option.key}
-                    disabled={
-                      option.disabled || option.label === selectedOption.label
-                    }
-                    onClick={this.optionClick.bind(this, option)}
-                  />
-                ))}
+              : options.map((option) => {
+                  const disabled =
+                    option.disabled ||
+                    (!displaySelectedOption &&
+                      option.label === selectedOption.label);
+
+                  return (
+                    <DropDownItem
+                      {...option}
+                      textOverflow={textOverflow}
+                      key={option.key}
+                      disabled={disabled}
+                      onClick={this.optionClick.bind(this, option)}
+                    />
+                  );
+                })}
           </DropDown>
         )}
       </StyledComboBox>
@@ -180,7 +203,7 @@ ComboBox.propTypes = {
   /** X direction selection */
   directionX: PropTypes.oneOf(["left", "right"]),
   /** Y direction selection */
-  directionY: PropTypes.oneOf(["bottom", "top"]),
+  directionY: PropTypes.oneOf(["bottom", "top", "both"]),
   /** Component Display Type */
   displayType: PropTypes.oneOf(["default", "toggle"]),
   /** Height of Dropdown */
@@ -215,9 +238,19 @@ ComboBox.propTypes = {
   textOverflow: PropTypes.bool,
   /** Disables clicking on the icon */
   disableIconClick: PropTypes.bool,
+  /** Defines the operation mode of the component, by default with the portal */
+  isDefaultMode: PropTypes.bool,
+  /** Y offset */
+  offsetDropDownY: PropTypes.string,
   comboIcon: PropTypes.string,
   manualY: PropTypes.string,
   manualX: PropTypes.string,
+  //** Dropdown manual width */
+  manualWidth: PropTypes.string,
+  displaySelectedOption: PropTypes.bool,
+  fixedDirection: PropTypes.bool,
+  /** Disable clicking on the item */
+  disableItemClick: PropTypes.bool,
 };
 
 ComboBox.defaultProps = {
@@ -230,6 +263,11 @@ ComboBox.defaultProps = {
   disableIconClick: true,
   showDisabledItems: false,
   manualY: "102%",
+  isDefaultMode: true,
+  manualWidth: "200px",
+  displaySelectedOption: false,
+  fixedDirection: false,
+  disableItemClick: false,
 };
 
 export default ComboBox;

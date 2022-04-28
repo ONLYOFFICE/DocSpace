@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import Button from "@appserver/components/button";
-import TextInput from "@appserver/components/text-input";
+import EmailInput from "@appserver/components/email-input";
 import Text from "@appserver/components/text";
 import ModalDialog from "@appserver/components/modal-dialog";
 import FieldContainer from "@appserver/components/field-container";
@@ -17,10 +17,15 @@ const RegisterModalDialog = ({
   emailErr,
   t,
   onChangeEmail,
+  onValidateEmail,
+  onBlurEmail,
   onRegisterModalClose,
   onSendRegisterRequest,
+  onKeyDown,
   trustedDomainsType,
   trustedDomains,
+  errorText,
+  isShowError,
 }) => {
   const getDomains = () => {
     return trustedDomains.map((domain, i) => (
@@ -45,6 +50,7 @@ const RegisterModalDialog = ({
 
   return (
     <ModalDialogContainer
+      displayType="modal"
       visible={visible}
       modalBodyPadding="12px 0 0 0"
       asideBodyPadding="16px 0 0 0"
@@ -62,25 +68,32 @@ const RegisterModalDialog = ({
         </Text>
 
         <FieldContainer
+          className="email-reg-field"
           key="e-mail"
           isVertical={true}
-          hasError={emailErr}
+          hasError={isShowError && emailErr}
           labelVisible={false}
-          errorMessage={t("Common:RequiredField")}
+          errorMessage={
+            errorText ? t(`Common:${errorText}`) : t("Common:RequiredField")
+          }
         >
-          <TextInput
-            hasError={emailErr}
+          <EmailInput
+            hasError={isShowError && emailErr}
             placeholder={t("RegistrationEmail")}
             isAutoFocussed={true}
             id="e-mail"
             name="e-mail"
-            type="text"
+            type="email"
             size="base"
             scale={true}
-            tabIndex={3}
+            tabIndex={1}
             isDisabled={loading}
             value={email}
             onChange={onChangeEmail}
+            onValidateInput={onValidateEmail}
+            onBlur={onBlurEmail}
+            autoComplete="username"
+            onKeyDown={onKeyDown}
           />
         </FieldContainer>
       </ModalDialog.Body>
@@ -89,13 +102,26 @@ const RegisterModalDialog = ({
           className="modal-dialog-button"
           key="SendBtn"
           label={loading ? t("Common:Sending") : t("RegisterSendButton")}
-          size="big"
+          size="normal"
           scale={false}
           primary={true}
           onClick={onSendRegisterRequest}
           isLoading={loading}
           isDisabled={loading}
           tabIndex={3}
+        />
+
+        <Button
+          className="modal-dialog-button"
+          key="CancelBtn"
+          label={t("Common:CancelButton")}
+          size="normal"
+          scale={false}
+          primary={false}
+          onClick={onRegisterModalClose}
+          isLoading={loading}
+          isDisabled={loading}
+          tabIndex={2}
         />
       </ModalDialog.Footer>
     </ModalDialogContainer>
@@ -109,10 +135,15 @@ RegisterModalDialog.propTypes = {
   emailErr: PropTypes.bool.isRequired,
   t: PropTypes.func.isRequired,
   onChangeEmail: PropTypes.func.isRequired,
+  onValidateEmail: PropTypes.func.isRequired,
+  onBlurEmail: PropTypes.func.isRequired,
   onSendRegisterRequest: PropTypes.func.isRequired,
+  onKeyDown: PropTypes.func.isRequired,
   onRegisterModalClose: PropTypes.func.isRequired,
   trustedDomainsType: PropTypes.number,
   trustedDomains: PropTypes.array,
+  errorText: PropTypes.string,
+  isShowError: PropTypes.bool,
 };
 
 export default RegisterModalDialog;

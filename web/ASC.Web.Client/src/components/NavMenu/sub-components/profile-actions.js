@@ -1,10 +1,28 @@
 import React from "react";
 import PropTypes from "prop-types";
+import styled from "styled-components";
 import Avatar from "@appserver/components/avatar";
 import DropDownItem from "@appserver/components/drop-down-item";
 import Link from "@appserver/components/link";
 import ProfileMenu from "./profile-menu";
 import api from "@appserver/common/api";
+
+import ToggleButton from "@appserver/components/toggle-button";
+import Button from "@appserver/components/button";
+
+const StyledDiv = styled.div`
+  width: 32px;
+  height: 32px;
+`;
+
+const StyledButtonWrapper = styled.div`
+  width: 100%;
+
+  padding: 12px 16px;
+
+  box-sizing: border-box;
+`;
+
 class ProfileActions extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -86,8 +104,9 @@ class ProfileActions extends React.PureComponent {
     const userRole = this.getUserRole(user);
 
     return (
-      <div ref={this.ref}>
+      <StyledDiv isProduct={this.props.isProduct} ref={this.ref}>
         <Avatar
+          style={{ width: "32px", height: "32px" }}
           onClick={this.onClick}
           role={userRole}
           size="min"
@@ -103,21 +122,37 @@ class ProfileActions extends React.PureComponent {
           email={user.email}
           open={opened}
           clickOutsideAction={this.onClose}
+          forwardedRef={this.ref}
         >
           <div style={{ paddingTop: "8px" }}>
-            {this.props.userActions.map((action) => (
-              <Link
-                noHover={true}
-                key={action.key}
-                href={action.url}
-                onClick={this.onClickItemLink}
-              >
-                <DropDownItem {...action} />
-              </Link>
-            ))}
+            {this.props.userActions.map((action, index) =>
+              action ? (
+                action?.isButton ? (
+                  <StyledButtonWrapper key={action.key}>
+                    <Button
+                      size={"small"}
+                      scale={true}
+                      label={action.label}
+                      onClick={action.onClick}
+                    />
+                  </StyledButtonWrapper>
+                ) : (
+                  <Link
+                    noHover={true}
+                    key={action.key}
+                    href={action.url}
+                    onClick={this.onClickItemLink}
+                  >
+                    <DropDownItem {...action} />
+                  </Link>
+                )
+              ) : (
+                <React.Fragment key="index"></React.Fragment>
+              )
+            )}
           </div>
         </ProfileMenu>
-      </div>
+      </StyledDiv>
     );
   }
 }
@@ -128,6 +163,7 @@ ProfileActions.propTypes = {
   userActions: PropTypes.array,
   userIsUpdate: PropTypes.bool,
   setUserIsUpdate: PropTypes.func,
+  isProduct: PropTypes.bool,
 };
 
 ProfileActions.defaultProps = {
@@ -135,6 +171,7 @@ ProfileActions.defaultProps = {
   user: {},
   userActions: [],
   userIsUpdate: false,
+  isProduct: false,
 };
 
 export default ProfileActions;

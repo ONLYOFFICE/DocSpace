@@ -14,13 +14,17 @@ import ExternalLinkIcon from "../../../../../public/images/external.link.react.s
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import { inject, observer } from "mobx-react";
 import toastr from "studio/toastr";
+import { Encoder } from "@appserver/common/utils/encoder";
+import { Base } from "@appserver/components/themes";
 
 const StyledExternalLinkIcon = styled(ExternalLinkIcon)`
   ${commonIconsStyles}
   path {
-    fill: "#333333";
+    fill: ${(props) => props.theme.filesVersionHistory.fill};
   }
 `;
+
+StyledExternalLinkIcon.defaultProps = { theme: Base };
 const VersionRow = (props) => {
   const {
     info,
@@ -35,22 +39,24 @@ const VersionRow = (props) => {
     isTabletView,
     onUpdateHeight,
     versionsListLength,
+    isEditing,
+    theme,
   } = props;
   const [showEditPanel, setShowEditPanel] = useState(false);
   const [commentValue, setCommentValue] = useState(info.comment);
   const [isSavingComment, setIsSavingComment] = useState(false);
 
-  const canEdit = info.access === 1 || info.access === 0;
+  const canEdit = (info.access === 1 || info.access === 0) && !isEditing;
 
-  const title = `${new Date(info.updated).toLocaleString(culture)} ${
-    info.updatedBy.displayName
-  }`;
+  const title = `${new Date(info.updated).toLocaleString(
+    culture
+  )} ${Encoder.htmlDecode(info.updatedBy.displayName)}`;
 
   const linkStyles = { isHovered: true, type: "action" };
 
   const onDownloadAction = () =>
     window.open(`${info.viewUrl}&version=${info.version}`, "_self");
-  const onEditComment = () => setShowEditPanel(!showEditPanel);
+  const onEditComment = () => !isEditing && setShowEditPanel(!showEditPanel);
 
   const onChange = (e) => setCommentValue(e.target.value);
 
@@ -89,7 +95,7 @@ const VersionRow = (props) => {
     canEdit && { key: "edit", label: t("EditComment"), onClick: onEditComment },
     canEdit && {
       key: "restore",
-      label: t("Translations:Restore"),
+      label: t("Common:Restore"),
       onClick: onRestoreClick,
     },
     {
@@ -116,10 +122,12 @@ const VersionRow = (props) => {
       canEdit={canEdit}
       isTabletView={isTabletView}
       isSavingComment={isSavingComment}
+      isEditing={isEditing}
     >
       <div className={`version-row_${index}`}>
         <Box displayProp="flex">
           <VersionBadge
+            theme={theme}
             className={`version_badge ${
               isVersion ? "versioned" : "not-versioned"
             }`}
@@ -145,7 +153,7 @@ const VersionRow = (props) => {
           <Text
             className="version_content-length"
             fontWeight={600}
-            color="#A3A9AE"
+            color={theme.filesVersionHistory.color}
             fontSize="14px"
           >
             {info.contentLength}
@@ -192,7 +200,7 @@ const VersionRow = (props) => {
                         isDisabled={isSavingComment}
                         className="version_save-button"
                         label={t("Common:SaveButton")}
-                        size="big"
+                        size="normal"
                         primary
                         onClick={onSaveClick}
                       />
@@ -204,7 +212,8 @@ const VersionRow = (props) => {
 
             <Link
               type="action"
-              isHovered
+              isHovered={!isEditing}
+              noHover={isEditing}
               onClick={onEditComment}
               className="version_link"
             >
@@ -240,7 +249,7 @@ const VersionRow = (props) => {
             >
               <Button
                 isDisabled={isSavingComment}
-                size="base"
+                size="extraSmall"
                 scale={true}
                 primary
                 onClick={onSaveClick}
@@ -253,7 +262,7 @@ const VersionRow = (props) => {
             >
               <Button
                 isDisabled={isSavingComment}
-                size="base"
+                size="extraSmall"
                 scale={true}
                 onClick={onCancelClick}
                 label={t("Common:CancelButton")}
@@ -269,20 +278,24 @@ const VersionRow = (props) => {
 export default inject(({ auth, versionHistoryStore }) => {
   const { user } = auth.userStore;
   const { culture, isTabletView } = auth.settingsStore;
-  const language = (user && user.cultureName) || culture || "en-US";
+  const language = (user && user.cultureName) || culture || "en";
 
   const {
     markAsVersion,
     restoreVersion,
     updateCommentVersion,
+    isEditing,
+    isEditingVersion,
   } = versionHistoryStore;
 
   return {
+    theme: auth.settingsStore.theme,
     culture: language,
     isTabletView,
     markAsVersion,
     restoreVersion,
     updateCommentVersion,
+    isEditing: isEditingVersion || isEditing,
   };
 })(
   withRouter(

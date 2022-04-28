@@ -2,7 +2,6 @@
   "Authorization": "許可",
   "CookieSettingsTitle": "セッション期間",
   "ForgotPassword": "パスワードをお忘れですか？",
-  "LoginButton": "サインイン",
   "MessageAuthorize": "ログインして続ける",
   "MessageEmailConfirmed": "あなたのメールは正常に作動しました。",
   "MessageSendPasswordRecoveryInstructionsOnEmail": "登録時に使用したメールアドレスを入力してください。パスワード回復の手順がそれに送られます。",

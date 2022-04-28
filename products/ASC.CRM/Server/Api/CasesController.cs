@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 using ASC.Api.Core;
 using ASC.Api.CRM;
@@ -536,11 +537,16 @@ namespace ASC.CRM.Api
         ///    Case
         /// </returns>
         [Delete(@"case/{caseid:int}")]
-        public CasesDto DeleteCase(int caseid)
+        public Task<CasesDto> DeleteCaseAsync(int caseid)
         {
             if (caseid <= 0) throw new ArgumentException();
 
-            var cases = _daoFactory.GetCasesDao().DeleteCases(caseid);
+            return InternalDeleteCaseAsync(caseid);
+        }
+
+        private async Task<CasesDto> InternalDeleteCaseAsync(int caseid)
+        {
+            var cases = await _daoFactory.GetCasesDao().DeleteCasesAsync(caseid);
 
             if (cases == null) throw new ItemNotFoundException();
 
@@ -561,12 +567,17 @@ namespace ASC.CRM.Api
         ///   Case list
         /// </returns>
         [Update(@"case")]
-        public IEnumerable<CasesDto> DeleteBatchCases([FromBody] IEnumerable<int> casesids)
+        public Task<IEnumerable<CasesDto>> DeleteBatchCasesAsync([FromBody] IEnumerable<int> casesids)
         {
             if (casesids == null) throw new ArgumentException();
 
+            return InternalDeleteBatchCasesAsync(casesids);
+        }
+
+        private async Task<IEnumerable<CasesDto>> InternalDeleteBatchCasesAsync([FromBody] IEnumerable<int> casesids)
+        {
             casesids = casesids.Distinct();
-            var caseses = _daoFactory.GetCasesDao().DeleteBatchCases(casesids.ToArray());
+            var caseses = await _daoFactory.GetCasesDao().DeleteBatchCasesAsync(casesids.ToArray());
 
             if (caseses == null || !caseses.Any()) return new List<CasesDto>();
 
@@ -589,12 +600,17 @@ namespace ASC.CRM.Api
         ///   Case list
         /// </returns>
         [Delete(@"case/filter")]
-        public IEnumerable<CasesDto> DeleteBatchCases(int contactid, bool? isClosed, IEnumerable<string> tags)
+        public Task<IEnumerable<CasesDto>> DeleteBatchCasesAsync(int contactid, bool? isClosed, IEnumerable<string> tags)
         {
             var caseses = _daoFactory.GetCasesDao().GetCases(_apiContext.FilterValue, contactid, isClosed, tags, 0, 0, null);
-            if (!caseses.Any()) return new List<CasesDto>();
+            if (caseses.Count == 0) return System.Threading.Tasks.Task.FromResult<IEnumerable<CasesDto>>(new List<CasesDto>());
 
-            caseses = _daoFactory.GetCasesDao().DeleteBatchCases(caseses);
+            return InternalDeleteBatchCasesAsync(caseses);
+        }
+
+        private async Task<IEnumerable<CasesDto>> InternalDeleteBatchCasesAsync(List<Cases> caseses)
+        {
+            caseses = await _daoFactory.GetCasesDao().DeleteBatchCasesAsync(caseses);
 
             _messageService.Send(MessageAction.CasesDeleted, _messageTarget.Create(caseses.Select(c => c.ID)), caseses.Select(c => c.Title));
 

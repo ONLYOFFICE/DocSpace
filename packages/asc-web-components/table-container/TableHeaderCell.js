@@ -13,16 +13,19 @@ const TableHeaderCell = ({
   sortBy,
   sorted,
   defaultSize,
+  sortingVisible,
 }) => {
   const { title, enable, active, minWidth } = column;
 
   const isActive = (sortBy && column.sortBy === sortBy) || active;
 
   const onClick = (e) => {
+    if (!sortingVisible) return;
     column.onClick && column.onClick(column.sortBy, e);
   };
 
   const onIconClick = (e) => {
+    if (!sortingVisible) return;
     column.onIconClick();
     e.stopPropagation();
   };
@@ -38,25 +41,23 @@ const TableHeaderCell = ({
       data-min-width={minWidth}
       data-default-size={defaultSize}
       onClick={onClick}
+      sortingVisible={sortingVisible}
     >
       <div className="table-container_header-item">
         <div className="header-container-text-wrapper">
-          <Text
-            fontWeight={600}
-            color={isActive ? globalColors.grayMain : globalColors.gray}
-            className="header-container-text"
-          >
+          <Text fontWeight={600} className="header-container-text">
             {enable ? title : ""}
           </Text>
 
-          <IconButton
-            onClick={column.onIconClick ? onIconClick : onClick}
-            iconName="/static/images/sort.desc.react.svg"
-            className="header-container-text-icon"
-            size="small"
-            hoverColor="#657077"
-            color={isActive ? globalColors.grayMain : globalColors.gray}
-          />
+          {sortingVisible && (
+            <IconButton
+              onClick={column.onIconClick ? onIconClick : onClick}
+              iconName="/static/images/sort.desc.react.svg"
+              className="header-container-text-icon"
+              size="small"
+              color={isActive ? globalColors.grayMain : globalColors.gray}
+            />
+          )}
         </div>
         {resizable && (
           <div
@@ -78,6 +79,7 @@ TableHeaderCell.propTypes = {
   sorted: PropTypes.bool,
   sortBy: PropTypes.string,
   defaultSize: PropTypes.number,
+  sortingVisible: PropTypes.bool,
 };
 
 export default TableHeaderCell;

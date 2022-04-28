@@ -1,24 +1,26 @@
 import React, { useCallback, useState } from "react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import NavItem from "./nav-item";
 import ProfileActions from "./profile-actions";
 import { useTranslation } from "react-i18next";
-import { tablet } from "@appserver/components/utils/device";
+import { tablet, mobile } from "@appserver/components/utils/device";
 import { combineUrl, deleteCookie } from "@appserver/common/utils";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
 import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../../../package.json";
-import { isDesktop } from "react-device-detect";
+import { isDesktop, isMobile, isMobileOnly } from "react-device-detect";
 import AboutDialog from "../../pages/About/AboutDialog";
 import DebugInfoDialog from "../../pages/DebugInfo";
+import HeaderCatalogBurger from "./header-catalog-burger";
 
 const { proxyURL } = AppServerConfig;
 const homepage = config.homepage;
 
 const PROXY_HOMEPAGE_URL = combineUrl(proxyURL, homepage);
 const ABOUT_URL = combineUrl(PROXY_HOMEPAGE_URL, "/about");
+const SETTINGS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/settings");
 const PROFILE_SELF_URL = combineUrl(
   PROXY_HOMEPAGE_URL,
   "/products/people/view/@self"
@@ -32,16 +34,7 @@ const StyledNav = styled.nav`
   position: absolute;
   right: 0;
   height: 48px;
-  z-index: 190 !important;
-
-  .profile-menu {
-    right: 12px;
-    top: 66px;
-
-    @media ${tablet} {
-      right: 6px;
-    }
-  }
+  z-index: 203 !important;
 
   & > div {
     margin: 0 0 0 16px;
@@ -55,6 +48,20 @@ const StyledNav = styled.nav`
   .icon-profile-menu {
     cursor: pointer;
   }
+
+  ${isMobile &&
+  css`
+    padding: 0 16px 0 16px !important;
+  `}
+
+  @media ${mobile} {
+    padding: 0 0 0 16px;
+  }
+
+  ${isMobileOnly &&
+  css`
+    padding: 0 0 0 16px !important;
+  `}
 `;
 const HeaderNav = ({
   history,
@@ -68,6 +75,7 @@ const HeaderNav = ({
   setUserIsUpdate,
   buildVersionInfo,
   debugInfo,
+  settingsModule,
 }) => {
   const { t } = useTranslation(["NavMenu", "Common", "About"]);
   const [visibleAboutDialog, setVisibleAboutDialog] = useState(false);
@@ -87,6 +95,7 @@ const HeaderNav = ({
     }
   }, []);
 
+  const onCloseDialog = () => setVisibleDialog(false);
   const onDebugClick = useCallback(() => {
     setVisibleDebugDialog(true);
   }, []);
@@ -106,7 +115,22 @@ const HeaderNav = ({
 
   const onLogoutClick = useCallback(() => logout && logout(), [logout]);
 
+  const settingsUrl =
+    settingsModule && combineUrl(PROXY_HOMEPAGE_URL, settingsModule.link);
+  const onSettingsClick =
+    settingsModule && useCallback(() => history.push(settingsUrl), []);
+
   const getCurrentUserActions = useCallback(() => {
+    const settings =
+      settingsModule && !isPersonal
+        ? {
+            key: "SettingsBtn",
+            label: t("Common:Settings"),
+            onClick: onSettingsClick,
+            url: settingsUrl,
+          }
+        : null;
+
     const actions = [
       {
         key: "ProfileBtn",
@@ -114,6 +138,7 @@ const HeaderNav = ({
         onClick: onProfileClick,
         url: peopleAvailable ? PROFILE_SELF_URL : PROFILE_MY_URL,
       },
+      settings,
       {
         key: "SwitchToBtn",
         ...(!isPersonal && {
@@ -133,6 +158,7 @@ const HeaderNav = ({
         key: "LogoutBtn",
         label: t("LogoutButton"),
         onClick: onLogoutClick,
+        isButton: true,
       },
     ];
 
@@ -146,34 +172,22 @@ const HeaderNav = ({
 
     return actions;
   }, [onProfileClick, onAboutClick, onLogoutClick]);
-
   //console.log("HeaderNav render");
   return (
     <StyledNav className="profileMenuIcon hidingHeader">
-      {modules
-        .filter((m) => m.isolateMode)
-        .map((m) => (
-          <NavItem
-            key={m.id}
-            iconName={m.iconName}
-            iconUrl={m.iconUrl}
-            badgeNumber={m.notifications}
-            url={m.link}
-            onClick={(e) => {
-              history.push(m.link);
-              e.preventDefault();
-            }}
-            onBadgeClick={(e) => console.log(m.iconName + "Badge Clicked", e)}
-            noHover={true}
-          />
-        ))}
       {isAuthenticated && user ? (
-        <ProfileActions
-          userActions={getCurrentUserActions()}
-          user={user}
-          userIsUpdate={userIsUpdate}
-          setUserIsUpdate={setUserIsUpdate}
-        />
+        <>
+          <ProfileActions
+            userActions={getCurrentUserActions()}
+            user={user}
+            userIsUpdate={userIsUpdate}
+            setUserIsUpdate={setUserIsUpdate}
+          />
+          {/* <HeaderCatalogBurger
+            isProduct={currentProductId !== "home"}
+            onClick={toggleArticleOpen}
+          /> */}
+        </>
       ) : (
         <></>
       )}
@@ -205,6 +219,8 @@ HeaderNav.propTypes = {
   logout: PropTypes.func,
   isAuthenticated: PropTypes.bool,
   isLoaded: PropTypes.bool,
+  currentProductId: PropTypes.string,
+  toggleArticleOpen: PropTypes.func,
 };
 
 export default withRouter(
@@ -220,11 +236,15 @@ export default withRouter(
     const {
       defaultPage,
       personal: isPersonal,
+      version: versionAppServer,
+      currentProductId,
+      toggleArticleOpen,
       buildVersionInfo,
       debugInfo,
     } = settingsStore;
     const { user, userIsUpdate, setUserIsUpdate } = userStore;
     const modules = auth.availableModules;
+    const settingsModule = modules.find((module) => module.id === "settings");
 
     return {
       isPersonal,
@@ -236,10 +256,14 @@ export default withRouter(
       modules,
       logout,
       peopleAvailable: modules.some((m) => m.appName === "people"),
+      versionAppServer,
       userIsUpdate,
       setUserIsUpdate,
+      currentProductId,
+      toggleArticleOpen,
       buildVersionInfo,
       debugInfo,
+      settingsModule,
     };
   })(observer(HeaderNav))
 );

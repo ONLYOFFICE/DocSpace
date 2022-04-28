@@ -90,7 +90,7 @@ public class LdapOperationJob : DistributedTaskProgress
     {
         _currentUser = userId != null ? _userManager.GetUsers(Guid.Parse(userId)) : null;
 
-        _tenantId = tenant.TenantId;
+        _tenantId = tenant.Id;
         _tenantManager.SetCurrentTenant(tenant);
         _ldapChanges.Tenant = tenant;
 
@@ -454,7 +454,7 @@ public class LdapOperationJob : DistributedTaskProgress
 
             _log.DebugFormat("SyncLdapAvatar() Found photo for '{0}'", ldapUser.Sid);
 
-            if (photoSettings.CurrentPhotos.ContainsKey(user.ID) && photoSettings.CurrentPhotos[user.ID] == hash)
+            if (photoSettings.CurrentPhotos.ContainsKey(user.Id) && photoSettings.CurrentPhotos[user.Id] == hash)
             {
                 _log.Debug("SyncLdapAvatar() Same hash, skipping.");
                 continue;
@@ -465,23 +465,23 @@ public class LdapOperationJob : DistributedTaskProgress
                 SetProgress((int)(currentPercent += step),
                     string.Format("{0}: {1}", Resource.LdapSettingsStatusSavingUserPhoto, _userFormatter.GetUserName(user, DisplayUserNameFormat.Default)));
 
-                _userPhotoManager.SyncPhoto(user.ID, (byte[])image);
+                _userPhotoManager.SyncPhoto(user.Id, (byte[])image);
 
-                if (photoSettings.CurrentPhotos.ContainsKey(user.ID))
+                if (photoSettings.CurrentPhotos.ContainsKey(user.Id))
                 {
-                    photoSettings.CurrentPhotos[user.ID] = hash;
+                    photoSettings.CurrentPhotos[user.Id] = hash;
                 }
                 else
                 {
-                    photoSettings.CurrentPhotos.Add(user.ID, hash);
+                    photoSettings.CurrentPhotos.Add(user.Id, hash);
                 }
             }
             catch
             {
-                _log.DebugFormat("SyncLdapAvatar() Couldn't save photo for '{0}'", user.ID);
-                if (photoSettings.CurrentPhotos.ContainsKey(user.ID))
+                _log.DebugFormat("SyncLdapAvatar() Couldn't save photo for '{0}'", user.Id);
+                if (photoSettings.CurrentPhotos.ContainsKey(user.Id))
                 {
-                    photoSettings.CurrentPhotos.Remove(user.ID);
+                    photoSettings.CurrentPhotos.Remove(user.Id);
                 }
             }
         }
@@ -525,7 +525,7 @@ public class LdapOperationJob : DistributedTaskProgress
             foreach (var user in right.Value)
             {
                 var userId = Guid.Parse(user);
-                if (_currentUser != null && _currentUser.ID == userId)
+                if (_currentUser != null && _currentUser.Id == userId)
                 {
                     _log.DebugFormat("TakeUsersRights() Attempting to take admin rights from yourself `{0}`, skipping", user);
                     if (currentUserRights != null)

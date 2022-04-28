@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+	  <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -212,7 +213,7 @@
 
   <ItemGroup>
     <PackageReference Include="GoogleAuthenticator" Version="2.4.0" />
-    <PackageReference Include="Grpc.Tools" Version="2.43.0">
+    <PackageReference Include="Grpc.Tools" Version="2.44.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

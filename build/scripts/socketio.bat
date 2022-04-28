@@ -1,0 +1,1 @@
+yarn install --cwd %~dp0../../common/ASC.Socket.IO/ --frozen-lockfile

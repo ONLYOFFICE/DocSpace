@@ -42,6 +42,23 @@ export function getUser(userName = null) {
     return user;
   });
 }
+
+export function getUserFromConfirm(userId, confirmKey = null) {
+  const options = {
+    method: "get",
+    url: `/people/${userId}.json`,
+  };
+
+  if (confirmKey) options.headers = { confirm: confirmKey };
+
+  return request(options).then((user) => {
+    if (user && user.displayName) {
+      user.displayName = Encoder.htmlDecode(user.displayName);
+    }
+    return user;
+  });
+}
+
 export function getUserPhoto(userId) {
   return request({
     method: "get",
@@ -284,5 +301,15 @@ export function getSelectorUserList() {
   return request({
     method: "get",
     url: "/people/filter.json?fields=id,displayName,groups",
+  });
+}
+
+export function changeTheme(key) {
+  const data = { Theme: key };
+
+  return request({
+    method: "put",
+    url: `/people/theme.json`,
+    data,
   });
 }

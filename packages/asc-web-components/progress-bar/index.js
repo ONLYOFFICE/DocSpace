@@ -52,7 +52,7 @@ const ProgressBar = (props) => {
       </div>
       <div className="progress-bar_field" />
       {dropDownContent && (
-        <DropDown open={isOpen} clickOutsideAction={onClose}>
+        <DropDown open={isOpen} clickOutsideAction={onClose} forwardedRef={ref}>
           <div className="progress-bar_drop-down">{dropDownContent}</div>
         </DropDown>
       )}

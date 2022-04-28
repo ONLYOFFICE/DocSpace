@@ -1,767 +1,297 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Text.Json;
-using System.Text.RegularExpressions;
-using System.Web;
+﻿// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Api.Core;
-using ASC.Api.Documents;
-using ASC.Api.Utils;
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Common.Web;
-using ASC.Core;
-using ASC.Core.Common.Settings;
-using ASC.FederatedLogin.Helpers;
-using ASC.Files.Core;
-using ASC.Files.Core.Model;
-using ASC.Files.Model;
-using ASC.Web.Core.Files;
-using ASC.Web.Core.Users;
-using ASC.Web.Files.Classes;
-using ASC.Web.Files.Core.Entries;
-using ASC.Web.Files.Services.DocumentService;
-using ASC.Web.Files.Services.WCFService;
-using ASC.Web.Files.Utils;
-using ASC.Web.Studio.Core;
+namespace ASC.Files.Helpers;
 
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
-
-using Newtonsoft.Json.Linq;
-
-using static ASC.Api.Documents.FilesController;
-
-using FileShare = ASC.Files.Core.Security.FileShare;
-using MimeMapping = ASC.Common.Web.MimeMapping;
-using SortedByType = ASC.Files.Core.SortedByType;
-
-namespace ASC.Files.Helpers
+public class FilesControllerHelper<T> : FilesHelperBase<T>
 {
-    [Scope]
-    public class FilesControllerHelper<T>
+    private readonly IServiceProvider _serviceProvider;
+    private readonly ILog _logger;
+    private readonly ApiDateTimeHelper _apiDateTimeHelper;
+    private readonly UserManager _userManager;
+    private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
+    private readonly FileConverter _fileConverter;
+    private readonly FileOperationDtoHelper _fileOperationDtoHelper;
+
+    public FilesControllerHelper(
+        IServiceProvider serviceProvider,
+        FilesSettingsHelper filesSettingsHelper,
+        FileUploader fileUploader,
+        SocketManager socketManager,
+        FileDtoHelper fileDtoHelper,
+        ApiContext apiContext,
+        FileStorageService<T> fileStorageService,
+        FolderContentDtoHelper folderContentDtoHelper,
+        IHttpContextAccessor httpContextAccessor,
+        FolderDtoHelper folderDtoHelper,
+        ILog logger,
+        ApiDateTimeHelper apiDateTimeHelper,
+        UserManager userManager,
+        DisplayUserSettingsHelper displayUserSettingsHelper,
+        FileConverter fileConverter,
+        FileOperationDtoHelper fileOperationDtoHelper)
+        : base(
+            filesSettingsHelper,
+            fileUploader,
+            socketManager,
+            fileDtoHelper,
+            apiContext,
+            fileStorageService,
+            folderContentDtoHelper,
+            httpContextAccessor,
+            folderDtoHelper)
     {
-        private readonly ApiContext ApiContext;
-        private readonly FileStorageService<T> FileStorageService;
+        _serviceProvider = serviceProvider;
+        _logger = logger;
+        _apiDateTimeHelper = apiDateTimeHelper;
+        _fileConverter = fileConverter;
+        _userManager = userManager;
+        _displayUserSettingsHelper = displayUserSettingsHelper;
+        _fileOperationDtoHelper = fileOperationDtoHelper;
+    }
 
-        private FileWrapperHelper FileWrapperHelper { get; }
-        private FilesSettingsHelper FilesSettingsHelper { get; }
-        private FilesLinkUtility FilesLinkUtility { get; }
-        private FileUploader FileUploader { get; }
-        private DocumentServiceHelper DocumentServiceHelper { get; }
-        private TenantManager TenantManager { get; }
-        private SecurityContext SecurityContext { get; }
-        private FolderWrapperHelper FolderWrapperHelper { get; }
-        private FileOperationWraperHelper FileOperationWraperHelper { get; }
-        private FileShareWrapperHelper FileShareWrapperHelper { get; }
-        private FileShareParamsHelper FileShareParamsHelper { get; }
-        private EntryManager EntryManager { get; }
-        private FolderContentWrapperHelper FolderContentWrapperHelper { get; }
-        private ChunkedUploadSessionHelper ChunkedUploadSessionHelper { get; }
-        private DocumentServiceTrackerHelper DocumentServiceTracker { get; }
-        private SettingsManager SettingsManager { get; }
-        private EncryptionKeyPairHelper EncryptionKeyPairHelper { get; }
-        private IHttpContextAccessor HttpContextAccessor { get; }
-        private FileConverter FileConverter { get; }
-        private ApiDateTimeHelper ApiDateTimeHelper { get; }
-        private UserManager UserManager { get; }
-        private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-        private ILog Logger { get; set; }
-        private IHttpClientFactory ClientFactory { get; set; }
+    public async Task<IEnumerable<FileDto<T>>> ChangeHistoryAsync(T fileId, int version, bool continueVersion)
+    {
+        var pair = await _fileStorageService.CompleteVersionAsync(fileId, version, continueVersion);
+        var history = pair.Value;
 
-        /// <summary>
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="fileStorageService"></param>
-        public FilesControllerHelper(
-            ApiContext context,
-            FileStorageService<T> fileStorageService,
-            FileWrapperHelper fileWrapperHelper,
-            FilesSettingsHelper filesSettingsHelper,
-            FilesLinkUtility filesLinkUtility,
-            FileUploader fileUploader,
-            DocumentServiceHelper documentServiceHelper,
-            TenantManager tenantManager,
-            SecurityContext securityContext,
-            FolderWrapperHelper folderWrapperHelper,
-            FileOperationWraperHelper fileOperationWraperHelper,
-            FileShareWrapperHelper fileShareWrapperHelper,
-            FileShareParamsHelper fileShareParamsHelper,
-            EntryManager entryManager,
-            FolderContentWrapperHelper folderContentWrapperHelper,
-            ChunkedUploadSessionHelper chunkedUploadSessionHelper,
-            DocumentServiceTrackerHelper documentServiceTracker,
-            IOptionsMonitor<ILog> optionMonitor,
-            SettingsManager settingsManager,
-            EncryptionKeyPairHelper encryptionKeyPairHelper,
-            IHttpContextAccessor httpContextAccessor,
-            FileConverter fileConverter,
-            ApiDateTimeHelper apiDateTimeHelper,
-            UserManager userManager,
-            DisplayUserSettingsHelper displayUserSettingsHelper,
-            IHttpClientFactory clientFactory)
+        var result = new List<FileDto<T>>();
+
+        foreach (var e in history)
         {
-            ApiContext = context;
-            FileStorageService = fileStorageService;
-            FileWrapperHelper = fileWrapperHelper;
-            FilesSettingsHelper = filesSettingsHelper;
-            FilesLinkUtility = filesLinkUtility;
-            FileUploader = fileUploader;
-            DocumentServiceHelper = documentServiceHelper;
-            TenantManager = tenantManager;
-            SecurityContext = securityContext;
-            FolderWrapperHelper = folderWrapperHelper;
-            FileOperationWraperHelper = fileOperationWraperHelper;
-            FileShareWrapperHelper = fileShareWrapperHelper;
-            FileShareParamsHelper = fileShareParamsHelper;
-            EntryManager = entryManager;
-            FolderContentWrapperHelper = folderContentWrapperHelper;
-            ChunkedUploadSessionHelper = chunkedUploadSessionHelper;
-            DocumentServiceTracker = documentServiceTracker;
-            SettingsManager = settingsManager;
-            EncryptionKeyPairHelper = encryptionKeyPairHelper;
-            ApiDateTimeHelper = apiDateTimeHelper;
-            UserManager = userManager;
-            DisplayUserSettingsHelper = displayUserSettingsHelper;
-            HttpContextAccessor = httpContextAccessor;
-            FileConverter = fileConverter;
-            Logger = optionMonitor.Get("ASC.Files");
-            ClientFactory = clientFactory;
+            result.Add(await _fileDtoHelper.GetAsync(e));
         }
 
-        public FolderContentWrapper<T> GetFolder(T folderId, Guid userIdOrGroupId, FilterType filterType, bool withSubFolders)
+        return result;
+    }
+
+    public async IAsyncEnumerable<ConversationResultDto<T>> CheckConversionAsync(CheckConversionRequestDto<T> cheqConversionRequestDto)
+    {
+        var checkConversaion = _fileStorageService.CheckConversionAsync(new List<CheckConversionRequestDto<T>>() { cheqConversionRequestDto }, cheqConversionRequestDto.Sync);
+
+        await foreach (var r in checkConversaion)
         {
-            return ToFolderContentWrapper(folderId, userIdOrGroupId, filterType, withSubFolders).NotFoundIfNull();
-        }
-
-        public object UploadFile(T folderId, UploadModel uploadModel)
-        {
-            if (uploadModel.StoreOriginalFileFlag.HasValue)
+            var o = new ConversationResultDto<T>
             {
-                FilesSettingsHelper.StoreOriginalFiles = uploadModel.StoreOriginalFileFlag.Value;
-            }
+                Id = r.Id,
+                Error = r.Error,
+                OperationType = r.OperationType,
+                Processed = r.Processed,
+                Progress = r.Progress,
+                Source = r.Source,
+            };
 
-            IEnumerable<IFormFile> files = HttpContextAccessor.HttpContext.Request.Form.Files;
-            if (files == null || !files.Any())
+            if (!string.IsNullOrEmpty(r.Result))
             {
-                files = uploadModel.Files;
-            }
-
-            if (files != null && files.Any())
-            {
-                if (files.Count() == 1)
+                try
                 {
-                    //Only one file. return it
-                    var postedFile = files.First();
-                    return InsertFile(folderId, postedFile.OpenReadStream(), postedFile.FileName, uploadModel.CreateNewIfExist, uploadModel.KeepConvertStatus);
-                }
-
-                //For case with multiple files
-                return uploadModel.Files.Select(postedFile => InsertFile(folderId, postedFile.OpenReadStream(), postedFile.FileName, uploadModel.CreateNewIfExist, uploadModel.KeepConvertStatus)).ToList();
-            }
-
-            if (uploadModel.File != null)
-            {
-                var fileName = "file" + MimeMapping.GetExtention(uploadModel.ContentType.MediaType);
-                if (uploadModel.ContentDisposition != null)
-                {
-                    fileName = uploadModel.ContentDisposition.FileName;
-                }
-
-                return new List<FileWrapper<T>>
-                {
-                    InsertFile(folderId, uploadModel.File.OpenReadStream(), fileName, uploadModel.CreateNewIfExist, uploadModel.KeepConvertStatus)
-                };
-            }
-
-            throw new InvalidOperationException("No input files");
-        }
-
-        public FileWrapper<T> InsertFile(T folderId, Stream file, string title, bool? createNewIfExist, bool keepConvertStatus = false)
-        {
-            try
-            {
-                var resultFile = FileUploader.Exec(folderId, title, file.Length, file, createNewIfExist ?? !FilesSettingsHelper.UpdateIfExist, !keepConvertStatus);
-                return FileWrapperHelper.Get(resultFile);
-            }
-            catch (FileNotFoundException e)
-            {
-                throw new ItemNotFoundException("File not found", e);
-            }
-            catch (DirectoryNotFoundException e)
-            {
-                throw new ItemNotFoundException("Folder not found", e);
-            }
-        }
-
-        public FileWrapper<T> UpdateFileStream(Stream file, T fileId, string fileExtension, bool encrypted = false, bool forcesave = false)
-        {
-            try
-            {
-                var resultFile = FileStorageService.UpdateFileStream(fileId, file, fileExtension, encrypted, forcesave);
-                return FileWrapperHelper.Get(resultFile);
-            }
-            catch (FileNotFoundException e)
-            {
-                throw new ItemNotFoundException("File not found", e);
-            }
-        }
-
-        public FileWrapper<T> SaveEditing(T fileId, string fileExtension, string downloadUri, Stream stream, string doc, bool forcesave)
-        {
-            return FileWrapperHelper.Get(FileStorageService.SaveEditing(fileId, fileExtension, downloadUri, stream, doc, forcesave));
-        }
-
-        public string StartEdit(T fileId, bool editingAlone, string doc)
-        {
-            return FileStorageService.StartEdit(fileId, editingAlone, doc);
-        }
-
-        public KeyValuePair<bool, string> TrackEditFile(T fileId, Guid tabId, string docKeyForTrack, string doc, bool isFinish)
-        {
-            return FileStorageService.TrackEditFile(fileId, tabId, docKeyForTrack, doc, isFinish);
-        }
-
-        public Configuration<T> OpenEdit(T fileId, int version, string doc, bool view)
-        {
-            DocumentServiceHelper.GetParams(fileId, version, doc, true, !view, true, out var configuration);
-            configuration.EditorType = EditorType.External;
-            if (configuration.EditorConfig.ModeWrite)
-            {
-                configuration.EditorConfig.CallbackUrl = DocumentServiceTracker.GetCallbackUrl(configuration.Document.Info.GetFile().ID.ToString());
-            }
-
-            if (configuration.Document.Info.GetFile().RootFolderType == FolderType.Privacy && PrivacyRoomSettings.GetEnabled(SettingsManager))
-            {
-                var keyPair = EncryptionKeyPairHelper.GetKeyPair();
-                if (keyPair != null)
-                {
-                    configuration.EditorConfig.EncryptionKeys = new EncryptionKeysConfig
+                    var options = new JsonSerializerOptions
                     {
-                        PrivateKeyEnc = keyPair.PrivateKeyEnc,
-                        PublicKey = keyPair.PublicKey,
+                        AllowTrailingCommas = true,
+                        PropertyNameCaseInsensitive = true
                     };
+
+                    var jResult = JsonSerializer.Deserialize<FileJsonSerializerData<T>>(r.Result, options);
+                    o.File = await GetFileInfoAsync(jResult.Id, jResult.Version);
+                }
+                catch (Exception e)
+                {
+                    o.File = r.Result;
+                    _logger.Error(e);
                 }
             }
 
-            if (!configuration.Document.Info.GetFile().Encrypted && !configuration.Document.Info.GetFile().ProviderEntry) EntryManager.MarkAsRecent(configuration.Document.Info.GetFile());
+            yield return o;
+        }
+    }
 
-            configuration.Token = DocumentServiceHelper.GetSignature(configuration);
-            return configuration;
+    public async Task<FileDto<T>> CreateFileAsync(T folderId, string title, JsonElement templateId, int formId, bool enableExternalExt = false)
+    {
+        File<T> file;
+
+        if (templateId.ValueKind == JsonValueKind.Number)
+        {
+            file = await _fileStorageService.CreateNewFileAsync(new FileModel<T, int> { ParentId = folderId, Title = title, TemplateId = templateId.GetInt32() }, enableExternalExt);
+        }
+        else if (templateId.ValueKind == JsonValueKind.String)
+        {
+            file = await _fileStorageService.CreateNewFileAsync(new FileModel<T, string> { ParentId = folderId, Title = title, TemplateId = templateId.GetString() }, enableExternalExt);
+        }
+        else
+        {
+            file = await _fileStorageService.CreateNewFileAsync(new FileModel<T, int> { ParentId = folderId, Title = title, TemplateId = 0, FormId = formId }, enableExternalExt);
         }
 
-        public object CreateUploadSession(T folderId, string fileName, long fileSize, string relativePath, bool encrypted)
-        {
-            var file = FileUploader.VerifyChunkedUpload(folderId, fileName, fileSize, FilesSettingsHelper.UpdateIfExist, relativePath);
+        return await _fileDtoHelper.GetAsync(file);
+    }
 
-            if (FilesLinkUtility.IsLocalFileUploader)
+    public Task<FileDto<T>> CreateHtmlFileAsync(T folderId, string title, string content)
+    {
+        ArgumentNullException.ThrowIfNull(title);
+
+        return CreateFileAsync(folderId, title, content, ".html");
+    }
+
+    public Task<FileDto<T>> CreateTextFileAsync(T folderId, string title, string content)
+    {
+        ArgumentNullException.ThrowIfNull(title);
+
+        //Try detect content
+        var extension = ".txt";
+        if (!string.IsNullOrEmpty(content))
+        {
+            if (Regex.IsMatch(content, @"<([^\s>]*)(\s[^<]*)>"))
             {
-                var session = FileUploader.InitiateUpload(file.FolderID, file.ID ?? default, file.Title, file.ContentLength, encrypted);
-
-                var responseObject = ChunkedUploadSessionHelper.ToResponseObject(session, true);
-                return new
-                {
-                    success = true,
-                    data = responseObject
-                };
-            }
-
-            var createSessionUrl = FilesLinkUtility.GetInitiateUploadSessionUrl(TenantManager.GetCurrentTenant().TenantId, file.FolderID, file.ID, file.Title, file.ContentLength, encrypted, SecurityContext);
-
-            var httpClient = ClientFactory.CreateClient();
-
-            var request = new HttpRequestMessage();
-            request.RequestUri = new Uri(createSessionUrl);
-            request.Method = HttpMethod.Post;
-
-            // hack for uploader.onlyoffice.com in api requests
-            var rewriterHeader = ApiContext.HttpContextAccessor.HttpContext.Request.Headers[HttpRequestExtensions.UrlRewriterHeader];
-            if (!string.IsNullOrEmpty(rewriterHeader))
-            {
-                request.Headers.Add(HttpRequestExtensions.UrlRewriterHeader, rewriterHeader.ToString());
-            }
-
-            using var response = httpClient.Send(request);
-            using var responseStream = response.Content.ReadAsStream();
-            using var streamReader = new StreamReader(responseStream);
-            return JObject.Parse(streamReader.ReadToEnd()); //result is json string
-        }
-
-        public FileWrapper<T> CreateTextFile(T folderId, string title, string content)
-        {
-            if (title == null) throw new ArgumentNullException(nameof(title));
-            //Try detect content
-            var extension = ".txt";
-            if (!string.IsNullOrEmpty(content))
-            {
-                if (Regex.IsMatch(content, @"<([^\s>]*)(\s[^<]*)>"))
-                {
-                    extension = ".html";
-                }
-            }
-            return CreateFile(folderId, title, content, extension);
-        }
-
-        private FileWrapper<T> CreateFile(T folderId, string title, string content, string extension)
-        {
-            using var memStream = new MemoryStream(Encoding.UTF8.GetBytes(content));
-            var file = FileUploader.Exec(folderId,
-                              title.EndsWith(extension, StringComparison.OrdinalIgnoreCase) ? title : (title + extension),
-                              memStream.Length, memStream);
-            return FileWrapperHelper.Get(file);
-        }
-
-        public FileWrapper<T> CreateHtmlFile(T folderId, string title, string content)
-        {
-            if (title == null) throw new ArgumentNullException(nameof(title));
-            return CreateFile(folderId, title, content, ".html");
-        }
-
-        public FolderWrapper<T> CreateFolder(T folderId, string title)
-        {
-            var folder = FileStorageService.CreateNewFolder(folderId, title);
-            return FolderWrapperHelper.Get(folder);
-        }
-
-        public FileWrapper<T> CreateFile(T folderId, string title, JsonElement templateId, bool enableExternalExt = false)
-        {
-            File<T> file;
-
-            if (templateId.ValueKind == JsonValueKind.Number)
-            {
-                file = FileStorageService.CreateNewFile(new FileModel<T, int> { ParentId = folderId, Title = title, TemplateId = templateId.GetInt32() }, enableExternalExt);
-            }
-            else if (templateId.ValueKind == JsonValueKind.String)
-            {
-                file = FileStorageService.CreateNewFile(new FileModel<T, string> { ParentId = folderId, Title = title, TemplateId = templateId.GetString() }, enableExternalExt);
-            }
-            else
-            {
-                file = FileStorageService.CreateNewFile(new FileModel<T, int> { ParentId = folderId, Title = title, TemplateId = 0 }, enableExternalExt);
-            }
-
-            return FileWrapperHelper.Get(file);
-        }
-
-        public FolderWrapper<T> RenameFolder(T folderId, string title)
-        {
-            var folder = FileStorageService.FolderRename(folderId, title);
-            return FolderWrapperHelper.Get(folder);
-        }
-
-        public FolderWrapper<T> GetFolderInfo(T folderId)
-        {
-            var folder = FileStorageService.GetFolder(folderId).NotFoundIfNull("Folder not found");
-
-            return FolderWrapperHelper.Get(folder);
-        }
-
-        public IEnumerable<FileEntryWrapper> GetFolderPath(T folderId)
-        {
-            return EntryManager.GetBreadCrumbs(folderId).Select(GetFileEntryWrapper);
-        }
-
-        public FileWrapper<T> GetFileInfo(T fileId, int version = -1)
-        {
-            var file = FileStorageService.GetFile(fileId, version).NotFoundIfNull("File not found");
-            return FileWrapperHelper.Get(file);
-        }
-        public FileWrapper<T> CopyFileAs(T fileId, T destFolderId, string destTitle)
-        {
-            var file = FileStorageService.GetFile(fileId, -1);
-            var ext = FileUtility.GetFileExtension(file.Title);
-            var destExt = FileUtility.GetFileExtension(destTitle);
-
-            if (ext == destExt)
-            {
-                var newFile = FileStorageService.CreateNewFile(new FileModel<T, T> { ParentId = destFolderId, Title = destTitle, TemplateId = fileId }, false);
-                return FileWrapperHelper.Get(newFile);
-            }
-
-            using (var fileStream = FileConverter.Exec(file, destExt))
-            {
-                return InsertFile(destFolderId, fileStream, destTitle, true);
+                extension = ".html";
             }
         }
 
-        public FileWrapper<T> AddToRecent(T fileId, int version = -1)
+        return CreateFileAsync(folderId, title, content, extension);
+    }
+
+    private async Task<FileDto<T>> CreateFileAsync(T folderId, string title, string content, string extension)
+    {
+        using var memStream = new MemoryStream(Encoding.UTF8.GetBytes(content));
+        var file = await _fileUploader.ExecAsync(folderId,
+                          title.EndsWith(extension, StringComparison.OrdinalIgnoreCase) ? title : (title + extension),
+                          memStream.Length, memStream);
+
+        return await _fileDtoHelper.GetAsync(file);
+    }
+
+    public Task<EditHistoryDataDto> GetEditDiffUrlAsync(T fileId, int version = 0, string doc = null)
+    {
+        return _fileStorageService.GetEditDiffUrlAsync(fileId, version, doc);
+    }
+
+    public async Task<List<EditHistoryDto>> GetEditHistoryAsync(T fileId, string doc = null)
+    {
+        var result = await _fileStorageService.GetEditHistoryAsync(fileId, doc);
+
+        return result.Select(r => new EditHistoryDto(r, _apiDateTimeHelper, _userManager, _displayUserSettingsHelper)).ToList();
+    }
+
+    public async Task<IEnumerable<FileDto<T>>> GetFileVersionInfoAsync(T fileId)
+    {
+        var files = await _fileStorageService.GetFileHistoryAsync(fileId);
+        var result = new List<FileDto<T>>();
+
+        foreach (var e in files)
         {
-            var file = FileStorageService.GetFile(fileId, version).NotFoundIfNull("File not found");
-            EntryManager.MarkAsRecent(file);
-            return FileWrapperHelper.Get(file);
+            result.Add(await _fileDtoHelper.GetAsync(e));
         }
 
-        public List<FileEntryWrapper> GetNewItems(T folderId)
+        return result;
+    }
+
+    public async Task<FileDto<T>> LockFileAsync(T fileId, bool lockFile)
+    {
+        var result = await _fileStorageService.LockFileAsync(fileId, lockFile);
+
+        return await _fileDtoHelper.GetAsync(result);
+    }
+
+    public async Task<List<EditHistoryDto>> RestoreVersionAsync(T fileId, int version = 0, string url = null, string doc = null)
+    {
+        var result = await _fileStorageService.RestoreVersionAsync(fileId, version, url, doc);
+
+        return result.Select(r => new EditHistoryDto(r, _apiDateTimeHelper, _userManager, _displayUserSettingsHelper)).ToList();
+    }
+
+    public IAsyncEnumerable<ConversationResultDto<T>> StartConversionAsync(CheckConversionRequestDto<T> cheqConversionRequestDto)
+    {
+        cheqConversionRequestDto.StartConvert = true;
+
+        return CheckConversionAsync(cheqConversionRequestDto);
+    }
+
+    public Task<string> UpdateCommentAsync(T fileId, int version, string comment)
+    {
+        return _fileStorageService.UpdateCommentAsync(fileId, version, comment);
+    }
+
+    public async Task<FileDto<T>> UpdateFileAsync(T fileId, string title, int lastVersion)
+    {
+        if (!string.IsNullOrEmpty(title))
         {
-            return FileStorageService.GetNewItems(folderId)
-                .Select(GetFileEntryWrapper)
-                .ToList();
+            await _fileStorageService.FileRenameAsync(fileId, title);
         }
 
-        public FileWrapper<T> UpdateFile(T fileId, string title, int lastVersion)
+        if (lastVersion > 0)
         {
-            File<T> newFile = null;
-            if (!string.IsNullOrEmpty(title))
-            {
-                newFile = FileStorageService.FileRename(fileId, title);
-            }
-
-            if (lastVersion > 0)
-            {
-                var pair = FileStorageService.UpdateToVersion(fileId, lastVersion);
-                newFile = pair.Key;
-            }
-
-            return newFile != null ? FileWrapperHelper.Get(newFile) : GetFileInfo(fileId);
+            await _fileStorageService.UpdateToVersionAsync(fileId, lastVersion);
         }
 
-        public IEnumerable<FileOperationWraper> DeleteFile(T fileId, bool deleteAfter, bool immediately)
+        return await GetFileInfoAsync(fileId);
+    }
+
+    public async Task<FileDto<T>> UpdateFileStreamAsync(Stream file, T fileId, string fileExtension, bool encrypted = false, bool forcesave = false)
+    {
+        try
         {
-            return FileStorageService.DeleteFile("delete", fileId, false, deleteAfter, immediately)
-                .Select(FileOperationWraperHelper.Get);
+            var resultFile = await _fileStorageService.UpdateFileStreamAsync(fileId, file, fileExtension, encrypted, forcesave);
+
+            return await _fileDtoHelper.GetAsync(resultFile);
+        }
+        catch (FileNotFoundException e)
+        {
+            throw new ItemNotFoundException("File not found", e);
+        }
+    }
+
+    public async Task<FileDto<TTemplate>> CopyFileAsAsync<TTemplate>(T fileId, TTemplate destFolderId, string destTitle, string password = null)
+    {
+        var service = _serviceProvider.GetService<FileStorageService<TTemplate>>();
+        var file = await _fileStorageService.GetFileAsync(fileId, -1);
+        var ext = FileUtility.GetFileExtension(file.Title);
+        var destExt = FileUtility.GetFileExtension(destTitle);
+
+        if (ext == destExt)
+        {
+            var newFile = await service.CreateNewFileAsync(new FileModel<TTemplate, T> { ParentId = destFolderId, Title = destTitle, TemplateId = fileId }, false);
+
+            return await _fileDtoHelper.GetAsync(newFile);
         }
 
-        public IEnumerable<ConversationResult<T>> StartConversion(T fileId, bool sync = false)
+        using (var fileStream = await _fileConverter.ExecAsync(file, destExt, password))
         {
-            return CheckConversion(fileId, true, sync);
+            var controller = _serviceProvider.GetService<FilesControllerHelper<TTemplate>>();
+            return await controller.InsertFileAsync(destFolderId, fileStream, destTitle, true);
+        }
+    }
+
+    public async Task<IEnumerable<FileOperationDto>> DeleteFileAsync(T fileId, bool deleteAfter, bool immediately)
+    {
+        var result = new List<FileOperationDto>();
+
+        foreach (var e in _fileStorageService.DeleteFile("delete", fileId, false, deleteAfter, immediately))
+        {
+            result.Add(await _fileOperationDtoHelper.GetAsync(e));
         }
 
-        public IEnumerable<ConversationResult<T>> CheckConversion(T fileId, bool start, bool sync = false)
-        {
-            return FileStorageService.CheckConversion(new List<List<string>>
-            {
-                new List<string> { fileId.ToString(), "0", start.ToString() }
-            }, sync)
-            .Select(r =>
-            {
-                var o = new ConversationResult<T>
-                {
-                    Id = r.Id,
-                    Error = r.Error,
-                    OperationType = r.OperationType,
-                    Processed = r.Processed,
-                    Progress = r.Progress,
-                    Source = r.Source,
-                };
-                if (!string.IsNullOrEmpty(r.Result))
-                {
-                    try
-                    {
-                        var options = new JsonSerializerOptions
-                        {
-                            AllowTrailingCommas = true,
-                            PropertyNameCaseInsensitive = true
-                        };
-                        var jResult = JsonSerializer.Deserialize<FileJsonSerializerData<T>>(r.Result, options);
-                        o.File = GetFileInfo(jResult.Id, jResult.Version);
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.Error(e);
-                    }
-                }
-                return o;
-            });
-        }
-
-        public string CheckFillFormDraft(T fileId, int version, string doc, bool editPossible, bool view)
-        {
-            return FileStorageService.CheckFillFormDraft(fileId, version, doc, editPossible, view);
-        }
-
-        public IEnumerable<FileOperationWraper> DeleteFolder(T folderId, bool deleteAfter, bool immediately)
-        {
-            return FileStorageService.DeleteFolder("delete", folderId, false, deleteAfter, immediately)
-                    .Select(FileOperationWraperHelper.Get)
-                    .ToList();
-        }
-
-        public IEnumerable<FileEntryWrapper> MoveOrCopyBatchCheck(BatchModel batchModel)
-        {
-            List<object> checkedFiles;
-            List<object> checkedFolders;
-
-            if (batchModel.DestFolderId.ValueKind == JsonValueKind.Number)
-            {
-                (checkedFiles, checkedFolders) = FileStorageService.MoveOrCopyFilesCheck(batchModel.FileIds.ToList(), batchModel.FolderIds.ToList(), batchModel.DestFolderId.GetInt32());
-            }
-            else
-            {
-                (checkedFiles, checkedFolders) = FileStorageService.MoveOrCopyFilesCheck(batchModel.FileIds.ToList(), batchModel.FolderIds.ToList(), batchModel.DestFolderId.GetString());
-            }
-
-            var entries = FileStorageService.GetItems(checkedFiles.OfType<int>().Select(Convert.ToInt32), checkedFiles.OfType<int>().Select(Convert.ToInt32), FilterType.FilesOnly, false, "", "");
-
-            entries.AddRange(FileStorageService.GetItems(checkedFiles.OfType<string>(), checkedFiles.OfType<string>(), FilterType.FilesOnly, false, "", ""));
-
-            return entries.Select(GetFileEntryWrapper).ToList();
-        }
-
-        public IEnumerable<FileOperationWraper> MoveBatchItems(BatchModel batchModel)
-        {
-            return FileStorageService.MoveOrCopyItems(batchModel.FolderIds.ToList(), batchModel.FileIds.ToList(), batchModel.DestFolderId, batchModel.ConflictResolveType, false, batchModel.DeleteAfter)
-                .Select(FileOperationWraperHelper.Get)
-                .ToList();
-        }
-
-        public IEnumerable<FileOperationWraper> CopyBatchItems(BatchModel batchModel)
-        {
-            return FileStorageService.MoveOrCopyItems(batchModel.FolderIds.ToList(), batchModel.FileIds.ToList(), batchModel.DestFolderId, batchModel.ConflictResolveType, true, batchModel.DeleteAfter)
-                .Select(FileOperationWraperHelper.Get)
-                .ToList();
-        }
-
-        public IEnumerable<FileOperationWraper> MarkAsRead(BaseBatchModel model)
-        {
-            return FileStorageService.MarkAsRead(model.FolderIds.ToList(), model.FileIds.ToList()).Select(FileOperationWraperHelper.Get).ToList();
-        }
-
-        public IEnumerable<FileOperationWraper> TerminateTasks()
-        {
-            return FileStorageService.TerminateTasks().Select(FileOperationWraperHelper.Get);
-        }
-
-        public IEnumerable<FileOperationWraper> GetOperationStatuses()
-        {
-            return FileStorageService.GetTasksStatuses().Select(FileOperationWraperHelper.Get);
-        }
-
-        public IEnumerable<FileOperationWraper> BulkDownload(DownloadModel model)
-        {
-            var folders = new Dictionary<JsonElement, string>();
-            var files = new Dictionary<JsonElement, string>();
-
-            foreach (var fileId in model.FileConvertIds.Where(fileId => !files.ContainsKey(fileId.Key)))
-            {
-                files.Add(fileId.Key, fileId.Value);
-            }
-
-            foreach (var fileId in model.FileIds.Where(fileId => !files.ContainsKey(fileId)))
-            {
-                files.Add(fileId, string.Empty);
-            }
-
-            foreach (var folderId in model.FolderIds.Where(folderId => !folders.ContainsKey(folderId)))
-            {
-                folders.Add(folderId, string.Empty);
-            }
-
-            return FileStorageService.BulkDownload(folders, files).Select(FileOperationWraperHelper.Get).ToList();
-        }
-
-        public IEnumerable<FileOperationWraper> EmptyTrash()
-        {
-            return FileStorageService.EmptyTrash().Select(FileOperationWraperHelper.Get).ToList();
-        }
-
-        public IEnumerable<FileWrapper<T>> GetFileVersionInfo(T fileId)
-        {
-            var files = FileStorageService.GetFileHistory(fileId);
-            return files.Select(r => FileWrapperHelper.Get(r)).ToList();
-        }
-
-        public IEnumerable<FileWrapper<T>> ChangeHistory(T fileId, int version, bool continueVersion)
-        {
-            var history = FileStorageService.CompleteVersion(fileId, version, continueVersion).Value;
-            return history.Select(r => FileWrapperHelper.Get(r)).ToList();
-        }
-
-        public FileWrapper<T> LockFile(T fileId, bool lockFile)
-        {
-            var result = FileStorageService.LockFile(fileId, lockFile);
-            return FileWrapperHelper.Get(result);
-        }
-
-        public DocumentService.FileLink GetPresignedUri(T fileId)
-        {
-            return FileStorageService.GetPresignedUri(fileId);
-        }
-
-        public List<EditHistoryWrapper> GetEditHistory(T fileId, string doc = null)
-        {
-            var result = FileStorageService.GetEditHistory(fileId, doc);
-            return result.Select(r => new EditHistoryWrapper(r, ApiDateTimeHelper, UserManager, DisplayUserSettingsHelper)).ToList();
-        }
-
-        public EditHistoryData GetEditDiffUrl(T fileId, int version = 0, string doc = null)
-        {
-            return FileStorageService.GetEditDiffUrl(fileId, version, doc);
-        }
-
-        public List<EditHistoryWrapper> RestoreVersion(T fileId, int version = 0, string url = null, string doc = null)
-        {
-            var result = FileStorageService.RestoreVersion(fileId, version, url, doc);
-            return result.Select(r => new EditHistoryWrapper(r, ApiDateTimeHelper, UserManager, DisplayUserSettingsHelper)).ToList();
-        }
-
-        public string UpdateComment(T fileId, int version, string comment)
-        {
-            return FileStorageService.UpdateComment(fileId, version, comment);
-        }
-
-        public IEnumerable<FileShareWrapper> GetFileSecurityInfo(T fileId)
-        {
-            return GetSecurityInfo(new List<T> { fileId }, new List<T> { });
-        }
-
-        public IEnumerable<FileShareWrapper> GetFolderSecurityInfo(T folderId)
-        {
-            return GetSecurityInfo(new List<T> { }, new List<T> { folderId });
-        }
-
-        public IEnumerable<FileEntryWrapper> GetFolders(T folderId)
-        {
-            return FileStorageService.GetFolders(folderId)
-                                .Select(GetFileEntryWrapper)
-                                .ToList();
-        }
-
-        public IEnumerable<FileShareWrapper> GetSecurityInfo(IEnumerable<T> fileIds, IEnumerable<T> folderIds)
-        {
-            var fileShares = FileStorageService.GetSharedInfo(fileIds, folderIds);
-            return fileShares.Select(FileShareWrapperHelper.Get).ToList();
-        }
-
-        public IEnumerable<FileShareWrapper> SetFileSecurityInfo(T fileId, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
-        {
-            return SetSecurityInfo(new List<T> { fileId }, new List<T>(), share, notify, sharingMessage);
-        }
-
-        public IEnumerable<FileShareWrapper> SetFolderSecurityInfo(T folderId, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
-        {
-            return SetSecurityInfo(new List<T>(), new List<T> { folderId }, share, notify, sharingMessage);
-        }
-
-        public IEnumerable<FileShareWrapper> SetSecurityInfo(IEnumerable<T> fileIds, IEnumerable<T> folderIds, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
-        {
-            if (share != null && share.Any())
-            {
-                var list = new List<AceWrapper>(share.Select(FileShareParamsHelper.ToAceObject));
-                var aceCollection = new AceCollection<T>
-                {
-                    Files = fileIds,
-                    Folders = folderIds,
-                    Aces = list,
-                    Message = sharingMessage
-                };
-                FileStorageService.SetAceObject(aceCollection, notify);
-            }
-
-            return GetSecurityInfo(fileIds, folderIds);
-        }
-
-        public bool RemoveSecurityInfo(List<T> fileIds, List<T> folderIds)
-        {
-            FileStorageService.RemoveAce(fileIds, folderIds);
-
-            return true;
-        }
-
-        public string GenerateSharedLink(T fileId, FileShare share)
-        {
-            var sharedInfo = FileStorageService.GetSharedInfo(new List<T> { fileId }, new List<T> { }).Find(r => r.SubjectId == FileConstant.ShareLinkId);
-            if (sharedInfo == null || sharedInfo.Share != share)
-            {
-                var list = new List<AceWrapper>
-                    {
-                        new AceWrapper
-                            {
-                                SubjectId = FileConstant.ShareLinkId,
-                                SubjectGroup = true,
-                                Share = share
-                            }
-                    };
-                var aceCollection = new AceCollection<T>
-                {
-                    Files = new List<T> { fileId },
-                    Aces = list
-                };
-                FileStorageService.SetAceObject(aceCollection, false);
-                sharedInfo = FileStorageService.GetSharedInfo(new List<T> { fileId }, new List<T> { }).Find(r => r.SubjectId == FileConstant.ShareLinkId);
-            }
-
-            return sharedInfo.Link;
-        }
-
-        public bool SetAceLink(T fileId, FileShare share)
-        {
-            return FileStorageService.SetAceLink(fileId, share);
-        }
-
-        ///// <summary>
-        ///// 
-        ///// </summary>
-        ///// <param name="query"></param>
-        ///// <returns></returns>
-        //[Read(@"@search/{query}")]
-        //public IEnumerable<FileEntryWrapper> Search(string query)
-        //{
-        //    var searcher = new SearchHandler();
-        //    var files = searcher.SearchFiles(query).Select(r => (FileEntryWrapper)FileWrapperHelper.Get(r));
-        //    var folders = searcher.SearchFolders(query).Select(f => (FileEntryWrapper)FolderWrapperHelper.Get(f));
-
-        //    return files.Concat(folders);
-        //}
-
-
-        private FolderContentWrapper<T> ToFolderContentWrapper(T folderId, Guid userIdOrGroupId, FilterType filterType, bool withSubFolders)
-        {
-            OrderBy orderBy = null;
-            if (Enum.TryParse(ApiContext.SortBy, true, out SortedByType sortBy))
-            {
-                orderBy = new OrderBy(sortBy, !ApiContext.SortDescending);
-            }
-
-            var startIndex = Convert.ToInt32(ApiContext.StartIndex);
-            return FolderContentWrapperHelper.Get(FileStorageService.GetFolderItems(folderId,
-                                                                               startIndex,
-                                                                               Convert.ToInt32(ApiContext.Count),
-                                                                               filterType,
-                                                                               filterType == FilterType.ByUser,
-                                                                               userIdOrGroupId.ToString(),
-                                                                               ApiContext.FilterValue,
-                                                                               false,
-                                                                               withSubFolders,
-                                                                               orderBy),
-                                            startIndex);
-        }
-
-        internal FileEntryWrapper GetFileEntryWrapper(FileEntry r)
-        {
-            FileEntryWrapper wrapper = null;
-            if (r is Folder<int> fol1)
-            {
-                wrapper = FolderWrapperHelper.Get(fol1);
-            }
-            else if (r is Folder<string> fol2)
-            {
-                wrapper = FolderWrapperHelper.Get(fol2);
-            }
-            else if (r is File<int> file1)
-            {
-                wrapper = FileWrapperHelper.Get(file1);
-            }
-            else if (r is File<string> file2)
-            {
-                wrapper = FileWrapperHelper.Get(file2);
-            }
-
-            return wrapper;
-        }
-
-        internal IFormFile GetFileFromRequest(IModelWithFile model)
-        {
-            IEnumerable<IFormFile> files = HttpContextAccessor.HttpContext.Request.Form.Files;
-            if (files != null && files.Any())
-            {
-                return files.First();
-            }
-
-            return model.File;
-        }
+        return result;
     }
 }

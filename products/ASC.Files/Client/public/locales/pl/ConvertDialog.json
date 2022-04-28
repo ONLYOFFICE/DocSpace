@@ -4,5 +4,7 @@
   "ConversionTitle": "Wgrywanie dokumentu",
   "ConvertAndOpenTitle": "Przekonwertuj i otwórz dokument",
   "HideMessage": "Nie wyświetlaj więcej tego komunikatu",
-  "SaveOriginalFormatMessage": "Zapisz kopię pliku w oryginalnym formacie"
+  "SaveOriginalFormatMessage": "Zapisz kopię pliku w oryginalnym formacie",
+  "ConvertedFileDestination": "Kopia pliku zostanie umieszczona w folderze <strong>{{folderTitle}}</strong>",
+  "InfoCreateFileIn": "Nowy '{{fileTitle}}' plik zostanie utworzony w '{{folderTitle}}'"
 }

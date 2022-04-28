@@ -1,12 +1,11 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { withRouter } from "react-router";
-import ModalDialog from "@appserver/components/modal-dialog";
 import { withTranslation } from "react-i18next";
-import { StyledAsidePanel } from "../StyledPanels";
-import TreeFolders from "../../Article/Body/TreeFolders";
 import { inject, observer } from "mobx-react";
 import toastr from "studio/toastr";
+import SelectFolderDialog from "../SelectFolderDialog";
 
+let operationData, fileWithConflicts, timerId;
 const OperationsPanelComponent = (props) => {
   const {
     t,
@@ -25,16 +24,39 @@ const OperationsPanelComponent = (props) => {
     setCopyPanelVisible,
     setExpandedPanelKeys,
     setMoveToPanelVisible,
-    checkOperationConflict,
+    setConflictDialogData,
+    itemOperationToFolder,
+    checkFileConflicts,
     setThirdPartyMoveDialogVisible,
     parentFolderId,
+    conflictResolveDialogVisible,
+    clearActiveOperations,
   } = props;
 
-  const zIndex = 310;
   const deleteAfter = false; // TODO: get from settings
 
-  const expandedKeys = props.expandedKeys.map((item) => item.toString());
+  const [isLoading, setIsLoading] = useState(false);
+  const [intermediateHidden, setIntermediateHidden] = useState(false);
 
+  useEffect(() => {
+    if (conflictResolveDialogVisible === false) {
+      intermediateHidden && setIntermediateHidden(false);
+    } else {
+      isLoading && setIsLoading(false);
+    }
+  }, [conflictResolveDialogVisible]);
+
+  useEffect(() => {
+    intermediateHidden &&
+      setConflictDialogData(fileWithConflicts, operationData);
+  }, [intermediateHidden]);
+
+  useEffect(() => {
+    return () => {
+      clearTimeout(timerId);
+      timerId = null;
+    };
+  });
   const onClose = () => {
     if (isCopy) {
       setCopyPanelVisible(false);
@@ -45,35 +67,24 @@ const OperationsPanelComponent = (props) => {
     setExpandedPanelKeys(null);
   };
 
-  const onSelect = (folder, treeNode) => {
-    const folderTitle = treeNode.node.props.title;
-    const destFolderId = isNaN(+folder[0]) ? folder[0] : +folder[0];
-
-    if (isFolderActions && destFolderId === parentFolderId) {
-      return onClose();
-    }
-
-    if (currentFolderId === destFolderId) {
-      return onClose();
+  const onSubmit = (selectedFolder, folderTitle, providerKey) => {
+    if (currentFolderId === selectedFolder) {
+      return;
     }
 
     if (isCopy) {
-      startOperation(isCopy, destFolderId, folderTitle);
+      startOperation(isCopy, selectedFolder, folderTitle);
     } else {
-      if (
-        provider &&
-        treeNode.node.props.providerKey !== provider.providerKey
-      ) {
-        setDestFolderId(destFolderId);
+      if (provider && providerKey !== provider.providerKey) {
+        setDestFolderId(selectedFolder);
         setThirdPartyMoveDialogVisible(true);
       } else {
-        startOperation(isCopy, destFolderId, folderTitle);
+        startOperation(isCopy, selectedFolder, folderTitle);
       }
     }
-    onClose();
   };
 
-  const startOperation = (isCopy, destFolderId, folderTitle) => {
+  const startOperation = async (isCopy, destFolderId, folderTitle) => {
     const isProviderFolder = selection.find((x) => !x.providerKey);
     const items =
       isProviderFolder && !isCopy
@@ -82,7 +93,6 @@ const OperationsPanelComponent = (props) => {
 
     let fileIds = [];
     let folderIds = [];
-
 
     for (let item of items) {
       if (item.fileExst || item.contentLength) {
@@ -103,7 +113,7 @@ const OperationsPanelComponent = (props) => {
 
     if (!folderIds.length && !fileIds.length) return;
 
-    checkOperationConflict({
+    operationData = {
       destFolderId,
       folderIds,
       fileIds,
@@ -111,63 +121,95 @@ const OperationsPanelComponent = (props) => {
       isCopy,
       folderTitle,
       translations: {
-        copy: t("Translations:CopyOperation"),
+        copy: t("Common:CopyOperation"),
         move: t("Translations:MoveToOperation"),
       },
-    });
+    };
+
+    if (!timerId)
+      timerId = setTimeout(() => {
+        setIsLoading(true);
+      }, 500);
+
+    checkFileConflicts(destFolderId, folderIds, fileIds)
+      .then(async (conflicts) => {
+        if (conflicts.length) {
+          fileWithConflicts = conflicts;
+          setIntermediateHidden(true);
+          setIsLoading(false);
+        } else {
+          setIsLoading(false);
+          onClose();
+          await itemOperationToFolder(operationData);
+        }
+      })
+      .catch((e) => {
+        toastr.error(e);
+        setIsLoading(false);
+        clearActiveOperations(fileIds, folderIds);
+      })
+      .finally(() => {
+        clearTimeout(timerId);
+        timerId = null;
+      });
   };
 
-  //console.log("Operations panel render");
+  // console.log("Operations panel render", expandedKeys);
+  const isVisible = intermediateHidden ? false : visible;
   return (
-    <StyledAsidePanel visible={visible}>
-      <ModalDialog
-        visible={visible}
-        displayType="aside"
-        zIndex={zIndex}
-        onClose={onClose}
-        isLoading={!tReady}
-      >
-        <ModalDialog.Header>
-          {isRecycleBin
-            ? t("Translations:Restore")
-            : isCopy
-            ? t("Translations:Copy")
-            : t("Translations:Move")}
-        </ModalDialog.Header>
-        <ModalDialog.Body>
-          <TreeFolders
-            expandedPanelKeys={expandedKeys}
-            data={operationsFolders}
-            filter={filter}
-            onSelect={onSelect}
-            needUpdate={false}
-          />
-        </ModalDialog.Body>
-      </ModalDialog>
-    </StyledAsidePanel>
+    <SelectFolderDialog
+      isDisableTree={isLoading}
+      foldersType="exceptSortedByTags"
+      isPanelVisible={isVisible}
+      onSubmit={onSubmit}
+      onClose={onClose}
+      id={isRecycleBin ? null : currentFolderId}
+      withoutImmediatelyClose
+      dialogName={
+        isRecycleBin
+          ? t("Common:Restore")
+          : isCopy
+          ? t("Translations:Copy")
+          : t("Home:MoveTo")
+      }
+      buttonName={
+        isRecycleBin
+          ? t("Common:RestoreHere")
+          : isCopy
+          ? t("Translations:CopyHere")
+          : t("Translations:MoveHere")
+      }
+    ></SelectFolderDialog>
   );
 };
 
-const OperationsPanel = withTranslation(["OperationsPanel", "Translations"])(
-  OperationsPanelComponent
-);
+const OperationsPanel = withTranslation([
+  "OperationsPanel",
+  "Translations",
+  "Common",
+  "Home",
+])(OperationsPanelComponent);
 
 export default inject(
-  ({
-    filesStore,
-    treeFoldersStore,
-    selectedFolderStore,
-    dialogsStore,
-    filesActionsStore,
-  }) => {
+  (
+    {
+      filesStore,
+      treeFoldersStore,
+      selectedFolderStore,
+      dialogsStore,
+      filesActionsStore,
+      uploadDataStore,
+    },
+    { isCopy }
+  ) => {
     const { filter, selection, bufferSelection } = filesStore;
     const {
       isRecycleBinFolder,
       operationsFolders,
       setExpandedPanelKeys,
-      expandedPanelKeys,
     } = treeFoldersStore;
-    const { checkOperationConflict } = filesActionsStore;
+    const { setConflictDialogData, checkFileConflicts } = filesActionsStore;
+    const { itemOperationToFolder, clearActiveOperations } = uploadDataStore;
 
     const {
       moveToPanelVisible,
@@ -178,16 +220,17 @@ export default inject(
       setDestFolderId,
       setThirdPartyMoveDialogVisible,
       setIsFolderActions,
+      conflictResolveDialogVisible,
     } = dialogsStore;
 
     const selections = selection.length ? selection : [bufferSelection];
+    const selectionsWithoutEditing = isCopy
+      ? selections
+      : selections.filter((f) => !f.isEditing);
 
     const provider = selections.find((x) => x.providerKey);
 
     return {
-      expandedKeys: expandedPanelKeys
-        ? expandedPanelKeys
-        : selectedFolderStore.pathParts,
       currentFolderId: selectedFolderStore.id,
       parentFolderId: selectedFolderStore.parentId,
       isRecycleBin: isRecycleBinFolder,
@@ -195,7 +238,7 @@ export default inject(
       operationsFolders,
       visible: copyPanelVisible || moveToPanelVisible,
       provider,
-      selection: selections,
+      selection: selectionsWithoutEditing,
       isFolderActions,
 
       setCopyPanelVisible,
@@ -203,8 +246,12 @@ export default inject(
       setDestFolderId,
       setIsFolderActions,
       setThirdPartyMoveDialogVisible,
-      checkOperationConflict,
+      setConflictDialogData,
       setExpandedPanelKeys,
+      itemOperationToFolder,
+      checkFileConflicts,
+      conflictResolveDialogVisible,
+      clearActiveOperations,
     };
   }
 )(withRouter(observer(OperationsPanel)));

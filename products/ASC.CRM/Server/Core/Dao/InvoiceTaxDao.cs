@@ -69,7 +69,7 @@ namespace ASC.CRM.Core.Dao
 
         public Boolean IsExist(int id)
         {
-            return CrmDbContext.InvoiceTax.Where(x => x.Id == id).Any();
+            return CrmDbContext.InvoiceTax.AsQueryable().Where(x => x.Id == id).Any();
         }
 
         public Boolean IsExist(String invoiceName)

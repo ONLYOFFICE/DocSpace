@@ -4,5 +4,7 @@
   "ConversionTitle": "Передавання документів",
   "ConvertAndOpenTitle": "Конвертувати та відкрити документ",
   "HideMessage": "Більше не показувати це повідомлення",
-  "SaveOriginalFormatMessage": "Зберегти копію файлу в оригінальному форматі"
+  "SaveOriginalFormatMessage": "Зберегти копію файлу в оригінальному форматі",
+  "ConvertedFileDestination": "Копію файлу буде створено у папці  <strong>{{folderTitle}}</strong>",
+  "InfoCreateFileIn": "Новий файл '{{fileTitle}}' створено в '{{folderTitle}}'"
 }

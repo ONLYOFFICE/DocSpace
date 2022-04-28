@@ -35,16 +35,17 @@ class Tooltip extends Component {
 
     const renderTooltip = () => (
       <StyledTooltip
+        theme={this.props.theme}
         className={className}
         style={style}
         color={color}
         maxWidth={maxWidth}
       >
         <ReactTooltip
+          theme={this.props.theme}
           id={id}
           ref={reference}
           getContent={getContent}
-          type="light"
           effect={effect}
           place={place}
           offset={{
@@ -109,7 +110,6 @@ Tooltip.defaultProps = {
   offsetRight: 0,
   offsetBottom: 0,
   offsetLeft: 0,
-  color: "#f8f7bf",
 };
 
 export default Tooltip;
