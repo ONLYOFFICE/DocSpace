@@ -104,7 +104,7 @@ const Badges = ({
 
   const lineHeightBadge = isTile || tabletViewBadge ? "1.46" : "1.34";
 
-  const paddingBadge = isTile || tabletViewBadge ? "0 5px" : "0 3px";
+  const paddingBadge = "0 5px";
 
   const fontSizeBadge = isTile || tabletViewBadge ? "11px" : "9px";
 

@@ -15,6 +15,7 @@ import { isMobile } from "react-device-detect";
 const StyledInfoPanelWrapper = styled.div.attrs(({ id }) => ({
   id: id,
 }))`
+  user-select: none;
   height: auto;
   width: auto;
   background: rgba(6, 22, 38, 0.2);

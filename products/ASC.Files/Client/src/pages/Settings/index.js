@@ -46,7 +46,7 @@ const PureSettings = ({
   }, [title, t]);
 
   return (
-    <Section>
+    <Section isInfoPanelAvailable={false}>
       <Section.SectionHeader>
         {(!isLoadedSettingsTree && isLoading) || isLoading || !tReady ? (
           <Loaders.SectionHeader />
