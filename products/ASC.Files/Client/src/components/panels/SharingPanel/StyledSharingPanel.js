@@ -37,8 +37,7 @@ const StyledHeaderContent = styled.div`
     align-items: center;
     justify-content: start;
 
-    width: calc(100% - 33px);
-    max-width: calc(100% - 33px);
+    width: 100%;
 
     .sharing_panel-arrow {
       .icon-button_svg {

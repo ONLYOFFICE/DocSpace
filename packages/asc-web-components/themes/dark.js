@@ -579,7 +579,7 @@ const Dark = {
       asidePadding: "0 16px 16px",
 
       heading: {
-        maxWidth: "500px",
+        maxWidth: "calc(100% - 18px)",
         margin: "0",
         fontWeight: "700",
         modalLineHeight: "40px",

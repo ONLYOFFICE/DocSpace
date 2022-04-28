@@ -580,7 +580,7 @@ const Base = {
       modalBorderRadius: "6px",
       asidePadding: "0 16px 16px",
       heading: {
-        maxWidth: "500px",
+        maxWidth: "calc(100% - 18px)",
         margin: "0",
         modalLineHeight: "40px",
         asideLineHeight: "56px",
