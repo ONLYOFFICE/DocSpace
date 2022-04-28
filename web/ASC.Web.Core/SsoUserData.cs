@@ -24,15 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-
-using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-using System.Text.Json;
-
-using ASC.Core;
-using ASC.Core.Tenants;
-using ASC.Core.Users;
+using Constants = ASC.Core.Users.Constants;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace ASC.Web.Studio.UserControls.Management.SingleSignOnSettings;
 

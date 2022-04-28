@@ -24,17 +24,11 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-
-using ASC.Core.Common.Settings;
-
 namespace ASC.Web.Studio.UserControls.Management.SingleSignOnSettings;
 
 [Serializable]
 [DataContract]
-public class SsoSettingsV2 : ISettings
+public class SsoSettingsV2 : ISettings<SsoSettingsV2>
 {
     public Guid ID
     {
@@ -43,7 +37,7 @@ public class SsoSettingsV2 : ISettings
 
     public const string SSO_SP_LOGIN_LABEL = "Single Sign-on";
 
-    public ISettings GetDefault(IServiceProvider serviceProvider)
+    public SsoSettingsV2 GetDefault()
     {
         return new SsoSettingsV2
         {
