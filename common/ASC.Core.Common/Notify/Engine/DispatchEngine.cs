@@ -40,7 +40,7 @@ public class DispatchEngine
         _messagesLogger = options.CreateLogger("ASC.Notify.Messages");
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _logOnly = "log".Equals(configuration["core:notify:postman"], StringComparison.InvariantCultureIgnoreCase);
-        _logger.LogDebug("LogOnly: {LogOnly}", _logOnly);
+        _logger.LogOnly(_logOnly);
     }
 
     public SendResponse Dispatch(INoticeMessage message, string senderName)
@@ -68,18 +68,17 @@ public class DispatchEngine
 
     private void LogResponce(INoticeMessage message, SendResponse response, string senderName)
     {
-        var logmsg = string.Format("[{0}] sended to [{1}] over {2}, status: {3} ", message.Subject, message.Recipient, senderName, response.Result);
         if (response.Result == SendResult.Inprogress)
         {
-            _logger.LogDebug(response.Exception, logmsg);
+            DispatchEngineLogger.LogDebugResponceWithException(_logger, message.Subject, message.Recipient, senderName, response.Result, response.Exception);
         }
         else if (response.Result == SendResult.Impossible)
         {
-            _logger.LogError(response.Exception, logmsg);
+            DispatchEngineLogger.LogErrorResponceWithException(_logger, message.Subject, message.Recipient, senderName, response.Result, response.Exception);
         }
         else
         {
-            _logger.LogDebug(logmsg);
+            _logger.LogDebugResponce(message.Subject, message.Recipient, senderName, response.Result);
         }
     }
 
@@ -87,18 +86,15 @@ public class DispatchEngine
     {
         try
         {
-            if (_messagesLogger.IsEnabled(LogLevel.Debug))
-            {
-                _messagesLogger.LogDebug("[{action}]->[{recipient}] by [{senderName}] to [{address}] at {date}\r\n\r\n[{subject}]\r\n{body}\r\n{dots}",
-                    message.Action,
-                    message.Recipient.Name,
-                    senderName,
-                    0 < message.Recipient.Addresses.Length ? message.Recipient.Addresses[0] : string.Empty,
-                    DateTime.Now,
-                    message.Subject,
-                    (message.Body ?? string.Empty).Replace(Environment.NewLine, Environment.NewLine + @"   "),
-                    new string('-', 80));
-            }
+            _messagesLogger.LogMessage(
+                message.Action,
+                message.Recipient.Name,
+                senderName,
+                0 < message.Recipient.Addresses.Length ? message.Recipient.Addresses[0] : string.Empty,
+                DateTime.Now,
+                message.Subject,
+                (message.Body ?? string.Empty).Replace(Environment.NewLine, Environment.NewLine + @"   "),
+                new string('-', 80));
         }
         catch { }
     }
