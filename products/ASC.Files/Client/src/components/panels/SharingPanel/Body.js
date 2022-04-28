@@ -109,8 +109,9 @@ const Body = ({
     setExternalLinkVisible(
       selection?.length === 1 && !!externalItem?.sharedTo?.shareLink
     );
-    setExternalLinkOpen(externalItem?.access !== ShareAccessRights.DenyAccess);
-  }, [externalItem, selection]);
+
+    setExternalLinkOpen(isShared);
+  }, [externalItem, selection, isShared]);
 
   const getItemSize = React.useCallback(
     (index) => {

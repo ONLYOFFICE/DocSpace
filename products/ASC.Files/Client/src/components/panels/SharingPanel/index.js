@@ -870,7 +870,13 @@ const SharingPanel = inject(
     } = uploadDataStore;
 
     const isShared =
-      selection.length > 0 && selection[0].shared ? selection[0].shared : false;
+      selection.length > 0 && selection[0].shared
+        ? selection[0].shared
+        : bufferSelection?.shared
+        ? bufferSelection.shared
+        : false;
+
+    console.log(isShared, bufferSelection, selection);
 
     return {
       theme: auth.settingsStore.theme,
