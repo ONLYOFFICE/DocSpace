@@ -107,11 +107,11 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     }
 
     [Read("rooms/{id}")]
-    public async Task<FolderContentDto<T>> GetRoomAsync(T id, Guid userOrGroupId, FilterType filterType, bool withSubFolders)
+    public async Task<FolderContentDto<T>> GetRoomAsync(T id, Guid userOrGroupId, FilterType filterType, bool searchInContent, bool withSubFolders)
     {
         ErrorIfNotDocSpace();
 
-        return await _foldersControllerHelper.GetFolderAsync(id, userOrGroupId, filterType, withSubFolders);
+        return await _foldersControllerHelper.GetFolderAsync(id, userOrGroupId, filterType, searchInContent, withSubFolders);
     }
 
     [Update("rooms/{id}")]
