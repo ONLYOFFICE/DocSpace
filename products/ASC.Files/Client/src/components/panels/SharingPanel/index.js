@@ -862,8 +862,6 @@ const SharingPanel = inject(
         ? bufferSelection.shared
         : false;
 
-    console.log(isShared, bufferSelection, selection);
-
     return {
       theme: auth.settingsStore.theme,
       isPersonal: personal,
