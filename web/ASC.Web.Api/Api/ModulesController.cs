@@ -59,12 +59,12 @@ public class ModulesController : ControllerBase
     {
         foreach (var a in _webItemManagerSecurity.GetItems(WebZoneType.StartProductList))
         {
-            if(a is Product product)
+            if (a is Product product)
             {
                 product.Init();
                 yield return new Module(product);
             }
-                
+
         }
     }
 }

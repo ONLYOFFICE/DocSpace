@@ -24,86 +24,88 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Core
+namespace ASC.Web.Core;
+
+public static class CommonPhotoManager
 {
-    public static class CommonPhotoManager
+
+    public static Image DoThumbnail(Image image, Size size, bool crop, bool transparent, bool rectangle)
     {
+        var width = size.Width;
+        var height = size.Height;
+        var realWidth = image.Width;
+        var realHeight = image.Height;
 
-        public static Image DoThumbnail(Image image, Size size, bool crop, bool transparent, bool rectangle)
+        Image thumbnail;
+
+        var maxSide = realWidth > realHeight ? realWidth : realHeight;
+        var minSide = realWidth < realHeight ? realWidth : realHeight;
+
+        var alignWidth = crop ? (minSide == realWidth) : (maxSide == realWidth);
+
+        var scaleFactor = alignWidth ? (realWidth / (1.0 * width)) : (realHeight / (1.0 * height));
+
+        if (scaleFactor < 1)
         {
-            var width = size.Width;
-            var height = size.Height;
-            var realWidth = image.Width;
-            var realHeight = image.Height;
+            scaleFactor = 1;
+        }
 
-            Image thumbnail;
+        int locationX, locationY;
+        int finalWidth, finalHeigth;
 
-            var maxSide = realWidth > realHeight ? realWidth : realHeight;
-            var minSide = realWidth < realHeight ? realWidth : realHeight;
-            
-            var alignWidth = crop ? (minSide == realWidth) : (maxSide == realWidth);
-
-            var scaleFactor = alignWidth ? (realWidth / (1.0 * width)) : (realHeight / (1.0 * height));
-
-            if (scaleFactor < 1) scaleFactor = 1;
-
-            int locationX, locationY;
-            int finalWidth, finalHeigth;
-
-            finalWidth = (int)(realWidth / scaleFactor);
-            finalHeigth = (int)(realHeight / scaleFactor);
+        finalWidth = (int)(realWidth / scaleFactor);
+        finalHeigth = (int)(realHeight / scaleFactor);
 
 
-            if (rectangle)
+        if (rectangle)
+        {
+            thumbnail = new Image<Rgba32>(width, height);
+            locationY = (int)((height / 2.0) - (finalHeigth / 2.0));
+            locationX = (int)((width / 2.0) - (finalWidth / 2.0));
+
+            if (!transparent)
             {
-                thumbnail = new Image<Rgba32>(width, height);
-                locationY = (int)((height / 2.0) - (finalHeigth / 2.0));
-                locationX = (int)((width / 2.0) - (finalWidth / 2.0));
-
-                if (!transparent)
-                {
-                    thumbnail.Mutate(x=> x.Clear(Color.White));
-                }
-                var point = new Point(locationX, locationY);
-                image.Mutate(y => y.Resize(finalWidth, finalHeigth));
-                thumbnail.Mutate(x => x.DrawImage(image, point, 1));
+                thumbnail.Mutate(x => x.Clear(Color.White));
             }
-            else
+            var point = new Point(locationX, locationY);
+            image.Mutate(y => y.Resize(finalWidth, finalHeigth));
+            thumbnail.Mutate(x => x.DrawImage(image, point, 1));
+        }
+        else
+        {
+            thumbnail = new Image<Rgba32>(finalWidth, finalHeigth);
+
+            if (!transparent)
             {
-                thumbnail = new Image<Rgba32>(finalWidth, finalHeigth);
-
-                if (!transparent)
-                {
-                    thumbnail.Mutate(x => x.Clear(Color.White));
-                }
-                image.Mutate(y => y.Resize(finalWidth, finalHeigth));
-                thumbnail.Mutate(x => x.DrawImage(image, 1));
+                thumbnail.Mutate(x => x.Clear(Color.White));
             }
-
-            return thumbnail;
+            image.Mutate(y => y.Resize(finalWidth, finalHeigth));
+            thumbnail.Mutate(x => x.DrawImage(image, 1));
         }
 
-        public static byte[] SaveToBytes(Image img)
+        return thumbnail;
+    }
+
+    public static byte[] SaveToBytes(Image img)
+    {
+        using var memoryStream = new MemoryStream();
+        img.Save(memoryStream, PngFormat.Instance);
+        return memoryStream.ToArray();
+    }
+
+    public static byte[] SaveToBytes(Image img, IImageFormat imageFormat)
+    {
+        byte[] data;
+        using (var memoryStream = new MemoryStream())
         {
-            using var memoryStream = new MemoryStream();
-            img.Save(memoryStream, PngFormat.Instance);
-            return memoryStream.ToArray();
+            img.Save(memoryStream, imageFormat);
+            data = memoryStream.ToArray();
         }
+        return data;
+    }
 
-        public static byte[] SaveToBytes(Image img, IImageFormat imageFormat)
-        {
-            byte[] data;
-            using (var memoryStream = new MemoryStream())
-            {
-                img.Save(memoryStream, imageFormat);
-                data = memoryStream.ToArray();
-            }
-            return data;
-        }
-
-        public static string GetImgFormatName(IImageFormat format)
-        {
-            return format.Name.ToLower();
-        }
+    public static string GetImgFormatName(IImageFormat format)
+    {
+        return format.Name.ToLower();
     }
 }

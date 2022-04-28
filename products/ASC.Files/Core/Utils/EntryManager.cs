@@ -250,7 +250,7 @@ public class EntryStatusManager
 [Scope]
 public class EntryManager
 {
-    private const string UpdateList = "filesUpdateList";
+    private const string _updateList = "filesUpdateList";
 
     private readonly ICache _cache;
     private readonly FileTrackerHelper _fileTracker;
@@ -341,7 +341,7 @@ public class EntryManager
     public async Task<(IEnumerable<FileEntry> Entries, int Total)> GetEntriesAsync<T>(Folder<T> parent, int from, int count, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy,
         SearchArea searchArea = SearchArea.Active)
     {
-        int total = 0;
+        var total = 0;
 
         if (parent == null)
         {
@@ -670,27 +670,27 @@ public class EntryManager
         var tagDao = _daoFactory.GetTagDao<int>();
         var tags = await tagDao.GetTagsAsync(_authContext.CurrentAccount.ID, TagType.Recent).ToListAsync();
 
-            var fileIds = tags.Where(tag => tag.EntryType == FileEntryType.File).Select(r => r.EntryId).ToList();
+        var fileIds = tags.Where(tag => tag.EntryType == FileEntryType.File).Select(r => r.EntryId).ToList();
 
-            var files = await GetRecentByIdsAsync(fileIds.OfType<int>(), filter, subjectGroup, subjectId, searchText, searchInContent);
-            files.Concat(await GetRecentByIdsAsync(fileIds.OfType<string>(), filter, subjectGroup, subjectId, searchText, searchInContent));
+        var files = await GetRecentByIdsAsync(fileIds.OfType<int>(), filter, subjectGroup, subjectId, searchText, searchInContent);
+        files.Concat(await GetRecentByIdsAsync(fileIds.OfType<string>(), filter, subjectGroup, subjectId, searchText, searchInContent));
 
-            var listFileIds = fileIds.Select(tag => tag.ToString()).ToList();
+        var listFileIds = fileIds.Select(tag => tag.ToString()).ToList();
 
-            return files.OrderBy(file =>
+        return files.OrderBy(file =>
+    {
+        var fileId = "";
+        if (file is File<int> fileInt)
         {
-            var fileId = "";
-            if (file is File<int> fileInt)
-            {
-                fileId = fileInt.Id.ToString();
-            }
-            else if (file is File<string> fileString)
-            {
-                fileId = fileString.Id;
-            }
+            fileId = fileInt.Id.ToString();
+        }
+        else if (file is File<string> fileString)
+        {
+            fileId = fileString.Id;
+        }
 
-                return listFileIds.IndexOf(fileId.ToString());
-        }).ToList();
+        return listFileIds.IndexOf(fileId.ToString());
+    }).ToList();
 
         async Task<IEnumerable<FileEntry>> GetRecentByIdsAsync<T>(IEnumerable<T> fileIds, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent)
         {
@@ -832,7 +832,9 @@ public class EntryManager
             {
                 var cmp = 0;
                 if (x.FileEntryType == FileEntryType.File && y.FileEntryType == FileEntryType.File)
+                {
                     cmp = c * FileUtility.GetFileExtension(x.Title).CompareTo(FileUtility.GetFileExtension(y.Title));
+                }
 
                 return cmp == 0 ? x.Title.EnumerableComparer(y.Title) : cmp;
             }
@@ -848,7 +850,9 @@ public class EntryManager
             {
                 var cmp = 0;
                 if (x.FileEntryType == FileEntryType.File && y.FileEntryType == FileEntryType.File)
+                {
                     cmp = c * ((File<T>)x).ContentLength.CompareTo(((File<T>)y).ContentLength);
+                }
 
                 return cmp == 0 ? x.Title.EnumerableComparer(y.Title) : cmp;
             }
@@ -1170,8 +1174,7 @@ public class EntryManager
 
         if (file.ProviderEntry && !newExtension.Equals(currentExt))
         {
-            if (_fileUtility.ExtsConvertible.Keys.Contains(newExtension)
-                && _fileUtility.ExtsConvertible[newExtension].Contains(currentExt))
+            if (_fileUtility.ExtsConvertible.ContainsKey(newExtension) && _fileUtility.ExtsConvertible[newExtension].Contains(currentExt))
             {
                 if (stream != null)
                 {
@@ -1204,8 +1207,10 @@ public class EntryManager
             else
             {
 
-                var request = new HttpRequestMessage();
-                request.RequestUri = new Uri(downloadUri);
+                var request = new HttpRequestMessage
+                {
+                    RequestUri = new Uri(downloadUri)
+                };
 
                 var httpClient = _clientFactory.CreateClient();
                 using var response = await httpClient.SendAsync(request);
@@ -1353,14 +1358,14 @@ public class EntryManager
             throw new Exception(FilesCommonResource.ErrorMassage_NotSupportedFormat);
         }
 
-        var exists = _cache.Get<string>(UpdateList + fileId.ToString()) != null;
+        var exists = _cache.Get<string>(_updateList + fileId.ToString()) != null;
         if (exists)
         {
             throw new Exception(FilesCommonResource.ErrorMassage_UpdateEditingFile);
         }
         else
         {
-            _cache.Insert(UpdateList + fileId.ToString(), fileId.ToString(), TimeSpan.FromMinutes(2));
+            _cache.Insert(_updateList + fileId.ToString(), fileId.ToString(), TimeSpan.FromMinutes(2));
         }
 
         try
@@ -1426,7 +1431,7 @@ public class EntryManager
         }
         finally
         {
-            _cache.Remove(UpdateList + fromFile.Id);
+            _cache.Remove(_updateList + fromFile.Id);
         }
     }
 

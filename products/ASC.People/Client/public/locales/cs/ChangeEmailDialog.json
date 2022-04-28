@@ -1,17 +1,5 @@
 ﻿{
-  "DomainIpAddress": "Domény jako IP adresa nejsou podporovány",
   "EmailActivationDescription": "Pokyny k aktivaci budou zaslány na zadaný e-mail",
   "EmailChangeTitle": "Změna e-mailu",
-  "EmptyEmail": "Nebyl analyzován žádný e-mail",
-  "EnterEmail": "Zadejte novou e-mailovou adresu",
-  "IncorrectDomain": "Nesprávná doména",
-  "IncorrectEmail": "Nesprávná emailová adresa",
-  "IncorrectLocalPart": "Nesprávná místní část",
-  "LocalDomain": "Místní domény nejsou podporovány",
-  "ManyEmails": "Příliš mnoho e-mailů analyzovaných",
-  "MaxLengthExceeded": "Maximální délka uživatelského jména nebo jiné místní části je 64 znaků.",
-  "PunycodeDomain": "Domény Punycode nejsou podporovány",
-  "PunycodeLocalPart": "Místní část Punycode není podporována",
-  "SameEmail": "Nelze použít stejný e-mail",
-  "SpacesInLocalPart": "Místní část nemůže obsahovat mezery"
+  "EnterEmail": "Zadejte novou e-mailovou adresu"
 }

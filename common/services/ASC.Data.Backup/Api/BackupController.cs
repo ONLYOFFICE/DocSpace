@@ -1,4 +1,4 @@
-﻿// (c) Copyright Ascensio System SIA 2010-2022
+// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -29,20 +29,29 @@ namespace ASC.Data.Backup.Controllers;
 [Scope]
 [DefaultRoute]
 [ApiController]
-public class BackupController
+public class BackupController : ControllerBase
 {
     private readonly BackupAjaxHandler _backupHandler;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly TenantExtra _tenantExtra;
+    private readonly IEventBus _eventBus;
+    private readonly Guid _currentUserId;
+    private readonly int _tenantId;
 
     public BackupController(
         BackupAjaxHandler backupAjaxHandler,
         CoreBaseSettings coreBaseSettings,
-        TenantExtra tenantExtra)
+        TenantManager tenantManager,
+        SecurityContext securityContext,
+        TenantExtra tenantExtra,
+        IEventBus eventBus)
     {
+        _currentUserId = securityContext.CurrentAccount.ID;
+        _tenantId = tenantManager.GetCurrentTenant().Id;
         _backupHandler = backupAjaxHandler;
         _coreBaseSettings = coreBaseSettings;
         _tenantExtra = tenantExtra;
+        _eventBus = eventBus;
     }
     /// <summary>
     /// Returns the backup schedule of the current portal
@@ -147,7 +156,15 @@ public class BackupController
         }
         var storageType = backup.StorageType == null ? BackupStorageType.Documents : (BackupStorageType)Int32.Parse(backup.StorageType);
         var storageParams = backup.StorageParams == null ? new Dictionary<string, string>() : backup.StorageParams.ToDictionary(r => r.Key.ToString(), r => r.Value.ToString());
-        _backupHandler.StartBackup(storageType, storageParams, backup.BackupMail);
+
+        _eventBus.Publish(new BackupRequestIntegrationEvent(
+             tenantId: _tenantId,
+             storageParams: storageParams,
+             storageType: storageType,
+             backupMail: backup.BackupMail,
+             createBy: _currentUserId
+        ));
+
         return _backupHandler.GetBackupProgress();
     }
 
@@ -245,7 +262,17 @@ public class BackupController
             _tenantExtra.DemandControlPanelPermission();
         }
         var storageParams = backupRestore.StorageParams == null ? new Dictionary<string, string>() : backupRestore.StorageParams.ToDictionary(r => r.Key.ToString(), r => r.Value.ToString());
-        _backupHandler.StartRestore(backupRestore.BackupId, (BackupStorageType)Int32.Parse(backupRestore.StorageType.ToString()), storageParams, backupRestore.Notify);
+
+        _eventBus.Publish(new BackupRestoreRequestIntegrationEvent(
+                             tenantId: _tenantId,
+                             createBy: _currentUserId,
+                             storageParams: storageParams,
+                             storageType: (BackupStorageType)Int32.Parse(backupRestore.StorageType.ToString()),
+                             notify: backupRestore.Notify,
+                             backupId: backupRestore.BackupId
+                        ));
+
+
         return _backupHandler.GetBackupProgress();
     }
 

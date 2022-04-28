@@ -28,7 +28,7 @@
 
 namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql;
 
-public partial class FilesDbContextMySql_Upgrade1 : Microsoft.EntityFrameworkCore.Migrations.Migration
+public partial class FilesDbContextMySql_Upgrade1 : Migration
 {
     protected override void Up(MigrationBuilder migrationBuilder)
     {

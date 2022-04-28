@@ -45,7 +45,7 @@ public class WebhookSender
     public async Task Send(WebhookRequest webhookRequest, CancellationToken cancellationToken)
     {
         using var scope = _scopeFactory.CreateScope();
-        var dbWorker = scope.ServiceProvider.GetService<DbWorker>();
+        var dbWorker = scope.ServiceProvider.GetRequiredService<DbWorker>();
 
         var entry = dbWorker.ReadFromJournal(webhookRequest.Id);
         var id = entry.Id;
@@ -53,10 +53,10 @@ public class WebhookSender
         var secretKey = entry.SecretKey;
         var data = entry.Payload;
 
-        HttpResponseMessage response = new HttpResponseMessage();
-        HttpRequestMessage request = new HttpRequestMessage();
+        var response = new HttpResponseMessage();
+        var request = new HttpRequestMessage();
 
-        for (int i = 0; i < RepeatCount; i++)
+        for (var i = 0; i < RepeatCount; i++)
         {
             try
             {

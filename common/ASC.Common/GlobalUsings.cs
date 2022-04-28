@@ -50,9 +50,9 @@ global using ARSoft.Tools.Net.Dns;
 
 global using ASC.Common;
 global using ASC.Common.Caching;
-global using ASC.Common.Mapping.PrimitiveTypeConverters;
 global using ASC.Common.DependencyInjection;
 global using ASC.Common.Logging;
+global using ASC.Common.Mapping.PrimitiveTypeConverters;
 global using ASC.Common.Security;
 global using ASC.Common.Security.Authorizing;
 global using ASC.Common.Utils;
@@ -72,7 +72,6 @@ global using JWT;
 global using JWT.Algorithms;
 global using JWT.Serializers;
 
-global using log4net.Appender;
 global using log4net.Config;
 global using log4net.Core;
 global using log4net.Util;
@@ -88,7 +87,6 @@ global using Microsoft.Extensions.Caching.Memory;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.DependencyInjection.Extensions;
-global using Microsoft.Extensions.Hosting;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Options;
 global using Microsoft.Net.Http.Headers;
@@ -97,11 +95,14 @@ global using Newtonsoft.Json;
 global using Newtonsoft.Json.Serialization;
 
 global using NLog;
-global using NLog.Common;
-global using NLog.Targets;
 
 global using NVelocity;
 global using NVelocity.App;
 global using NVelocity.Runtime.Resource.Loader;
+
+global using ProtoBuf;
+
+global using RabbitMQ.Client;
+global using RabbitMQ.Client.Events;
 
 global using StackExchange.Redis.Extensions.Core.Abstractions;

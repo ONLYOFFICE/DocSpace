@@ -26,7 +26,7 @@
 
 namespace Textile.States;
 
-[FormatterState(SimpleBlockFormatterState.PatternBegin + @"bc" + SimpleBlockFormatterState.PatternEnd)]
+[FormatterState(PatternBegin + @"bc" + PatternEnd)]
 public class PreCodeFormatterState : SimpleBlockFormatterState
 {
     public PreCodeFormatterState(TextileFormatter formatter)
@@ -52,7 +52,10 @@ public class PreCodeFormatterState : SimpleBlockFormatterState
     public override bool ShouldExit(string input)
     {
         if (Regex.IsMatch(input, @"^\s*$"))
+        {
             return true;
+        }
+
         Formatter.Output.WriteLine("<br />");
         return false;
     }

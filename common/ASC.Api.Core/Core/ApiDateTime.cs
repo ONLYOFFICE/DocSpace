@@ -34,14 +34,14 @@ public sealed class ApiDateTime : IComparable<ApiDateTime>, IComparable
 
     internal static readonly string[] Formats = new[]
     {
-            "o",
-            "yyyy'-'MM'-'dd'T'HH'-'mm'-'ss'.'fffffffK",
-            "yyyy'-'MM'-'dd'T'HH'-'mm'-'ss'.'fffK",
-            "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffK",
-            "yyyy'-'MM'-'dd'T'HH'-'mm'-'ssK",
-            "yyyy'-'MM'-'dd'T'HH':'mm':'ssK",
-            "yyyy'-'MM'-'dd"
-        };
+        "o",
+        "yyyy'-'MM'-'dd'T'HH'-'mm'-'ss'.'fffffffK",
+        "yyyy'-'MM'-'dd'T'HH'-'mm'-'ss'.'fffK",
+        "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffK",
+        "yyyy'-'MM'-'dd'T'HH'-'mm'-'ssK",
+        "yyyy'-'MM'-'dd'T'HH':'mm':'ssK",
+        "yyyy'-'MM'-'dd"
+    };
 
     private readonly TenantManager _tenantManager;
     private readonly TimeZoneConverter _timeZoneConverter;
@@ -278,9 +278,21 @@ public sealed class ApiDateTime : IComparable<ApiDateTime>, IComparable
 
     public override bool Equals(object obj)
     {
-        if (obj is null) return false;
-        if (ReferenceEquals(this, obj)) return true;
-        if (!(obj is ApiDateTime)) return false;
+        if (obj is null)
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, obj))
+        {
+            return true;
+        }
+
+        if (obj is not ApiDateTime)
+        {
+            return false;
+        }
+
         return Equals((ApiDateTime)obj);
     }
 

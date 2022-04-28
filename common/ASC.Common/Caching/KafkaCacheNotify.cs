@@ -31,7 +31,7 @@ public class KafkaCacheNotify<T> : IDisposable, ICacheNotify<T> where T : IMessa
 {
     private IProducer<AscCacheItem, T> _producer;
 
-    private bool _disposedValue = false; // To detect redundant calls
+    private bool _disposedValue; // To detect redundant calls
     private readonly ClientConfig _clientConfig;
     private readonly AdminClientConfig _adminClientConfig;
     private readonly ILog _logger;

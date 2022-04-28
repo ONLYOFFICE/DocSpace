@@ -33,7 +33,7 @@ public class TempPath
 
     public TempPath(IConfiguration configuration)
     {
-        string rootFolder = AppContext.BaseDirectory;
+        var rootFolder = AppContext.BaseDirectory;
         if (string.IsNullOrEmpty(rootFolder))
         {
             rootFolder = Assembly.GetEntryAssembly().Location;

@@ -28,14 +28,16 @@ using Constants = ASC.Core.Users.Constants;
 
 namespace ASC.Web.Api.Controllers.Settings;
 
-public class MessageSettingsController: BaseSettingsController
+public class MessageSettingsController : BaseSettingsController
 {
-    private Tenant Tenant { get { return _apiContext.Tenant; } }
+    private Tenant Tenant { get { return ApiContext.Tenant; } }
 
     private readonly MessageService _messageService;
     private readonly StudioNotifyService _studioNotifyService;
     private readonly CustomNamingPeople _customNamingPeople;
     private readonly IPSecurity.IPSecurity _ipSecurity;
+    private readonly TenantManager _tenantManager;
+    private readonly CookiesManager _cookiesManager;
     private readonly UserManager _userManager;
     private readonly TenantExtra _tenantExtra;
     private readonly TenantStatisticsProvider _tenantStatisticsProvider;
@@ -56,10 +58,15 @@ public class MessageSettingsController: BaseSettingsController
         CoreBaseSettings coreBaseSettings,
         CustomNamingPeople customNamingPeople,
         IPSecurity.IPSecurity ipSecurity,
-        IMemoryCache memoryCache) : base(apiContext, memoryCache, webItemManager)
+        IMemoryCache memoryCache,
+        IHttpContextAccessor httpContextAccessor,
+        TenantManager tenantManager,
+        CookiesManager cookiesManager) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _customNamingPeople = customNamingPeople;
         _ipSecurity = ipSecurity;
+        _tenantManager = tenantManager;
+        _cookiesManager = cookiesManager;
         _messageService = messageService;
         _studioNotifyService = studioNotifyService;
         _userManager = userManager;
@@ -94,6 +101,41 @@ public class MessageSettingsController: BaseSettingsController
         return Resource.SuccessfullySaveSettingsMessage;
     }
 
+    [Read("cookiesettings")]
+    public int GetCookieSettings()
+    {
+        return _cookiesManager.GetLifeTime(_tenantManager.GetCurrentTenant().Id);
+    }
+
+    [Update("cookiesettings")]
+    public object UpdateCookieSettingsFromBody([FromBody] CookieSettingsModel model)
+    {
+        return UpdateCookieSettings(model);
+    }
+
+    [Update("messagesettings")]
+    [Consumes("application/x-www-form-urlencoded")]
+    public object UpdateCookieSettingsFromForm([FromForm] CookieSettingsModel model)
+    {
+        return UpdateCookieSettings(model);
+    }
+
+    private object UpdateCookieSettings(CookieSettingsModel model)
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+        if (!SetupInfo.IsVisibleSettings("CookieSettings"))
+        {
+            throw new BillingException(Resource.ErrorNotAllowedOption, "CookieSettings");
+        }
+
+        _cookiesManager.SetLifeTime(model.LifeTime);
+
+        _messageService.Send(MessageAction.CookieSettingsUpdated);
+
+        return Resource.SuccessfullySaveSettingsMessage;
+    }
+
     [AllowAnonymous]
     [Create("sendadmmail")]
     public object SendAdmMailFromBody([FromBody] AdminMessageSettingsRequestsDto inDto)
@@ -115,13 +157,19 @@ public class MessageSettingsController: BaseSettingsController
         var enableAdmMess = studioAdminMessageSettings.Enable || _tenantExtra.IsNotPaid();
 
         if (!enableAdmMess)
+        {
             throw new MethodAccessException("Method not available");
+        }
 
         if (!inDto.Email.TestEmailRegex())
+        {
             throw new Exception(Resource.ErrorNotCorrectEmail);
+        }
 
         if (string.IsNullOrEmpty(inDto.Message))
+        {
             throw new Exception(Resource.ErrorEmptyMessage);
+        }
 
         CheckCache("sendadmmail");
 
@@ -155,21 +203,29 @@ public class MessageSettingsController: BaseSettingsController
                 (Tenant.TrustedDomainsType == TenantTrustedDomainsType.Custom &&
                 Tenant.TrustedDomains.Count > 0) ||
                 Tenant.TrustedDomainsType == TenantTrustedDomainsType.All))
+            {
                 throw new MethodAccessException("Method not available");
+            }
 
             if (!email.TestEmailRegex())
+            {
                 throw new Exception(Resource.ErrorNotCorrectEmail);
+            }
 
             CheckCache("sendjoininvite");
 
             var user = _userManager.GetUserByEmail(email);
             if (!user.Id.Equals(Constants.LostUser.Id))
+            {
                 throw new Exception(_customNamingPeople.Substitute<Resource>("ErrorEmailAlreadyExists"));
+            }
 
             var settings = _settingsManager.Load<IPRestrictionsSettings>();
 
             if (settings.Enable && !_ipSecurity.Verify())
+            {
                 throw new Exception(Resource.ErrorAccessRestricted);
+            }
 
             var trustedDomainSettings = _settingsManager.Load<StudioTrustedDomainSettings>();
             var emplType = trustedDomainSettings.InviteUsersAsVisitors ? EmployeeType.Visitor : EmployeeType.User;
@@ -178,29 +234,31 @@ public class MessageSettingsController: BaseSettingsController
                 var enableInviteUsers = _tenantStatisticsProvider.GetUsersCount() < _tenantExtra.GetTenantQuota().ActiveUsers;
 
                 if (!enableInviteUsers)
+                {
                     emplType = EmployeeType.Visitor;
+                }
             }
 
             switch (Tenant.TrustedDomainsType)
             {
                 case TenantTrustedDomainsType.Custom:
-                {
-                    var address = new MailAddress(email);
-                    if (Tenant.TrustedDomains.Any(d => address.Address.EndsWith("@" + d.Replace("*", ""), StringComparison.InvariantCultureIgnoreCase)))
+                    {
+                        var address = new MailAddress(email);
+                        if (Tenant.TrustedDomains.Any(d => address.Address.EndsWith("@" + d.Replace("*", ""), StringComparison.InvariantCultureIgnoreCase)))
+                        {
+                            _studioNotifyService.SendJoinMsg(email, emplType);
+                            _messageService.Send(MessageInitiator.System, MessageAction.SentInviteInstructions, email);
+                            return Resource.FinishInviteJoinEmailMessage;
+                        }
+
+                        throw new Exception(Resource.ErrorEmailDomainNotAllowed);
+                    }
+                case TenantTrustedDomainsType.All:
                     {
                         _studioNotifyService.SendJoinMsg(email, emplType);
                         _messageService.Send(MessageInitiator.System, MessageAction.SentInviteInstructions, email);
                         return Resource.FinishInviteJoinEmailMessage;
                     }
-
-                    throw new Exception(Resource.ErrorEmailDomainNotAllowed);
-                }
-                case TenantTrustedDomainsType.All:
-                {
-                    _studioNotifyService.SendJoinMsg(email, emplType);
-                    _messageService.Send(MessageInitiator.System, MessageAction.SentInviteInstructions, email);
-                    return Resource.FinishInviteJoinEmailMessage;
-                }
                 default:
                     throw new Exception(Resource.ErrorNotCorrectEmail);
             }

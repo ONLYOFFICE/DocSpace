@@ -48,7 +48,7 @@ public class UploadControllerHelper<T> : FilesHelperBase<T>
         ChunkedUploadSessionHelper chunkedUploadSessionHelper,
         TenantManager tenantManager,
         IHttpClientFactory httpClientFactory,
-        SecurityContext securityContext) 
+        SecurityContext securityContext)
         : base(
             filesSettingsHelper,
             fileUploader,
@@ -88,12 +88,14 @@ public class UploadControllerHelper<T> : FilesHelperBase<T>
 
         var httpClient = _httpClientFactory.CreateClient();
 
-        var request = new HttpRequestMessage();
-        request.RequestUri = new Uri(createSessionUrl);
-        request.Method = HttpMethod.Post;
+        var request = new HttpRequestMessage
+        {
+            RequestUri = new Uri(createSessionUrl),
+            Method = HttpMethod.Post
+        };
 
         // hack for uploader.onlyoffice.com in api requests
-        var rewriterHeader = _apiContext.HttpContextAccessor.HttpContext.Request.Headers[HttpRequestExtensions.UrlRewriterHeader];
+        var rewriterHeader = _httpContextAccessor.HttpContext.Request.Headers[HttpRequestExtensions.UrlRewriterHeader];
         if (!string.IsNullOrEmpty(rewriterHeader))
         {
             request.Headers.Add(HttpRequestExtensions.UrlRewriterHeader, rewriterHeader.ToString());

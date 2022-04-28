@@ -34,8 +34,8 @@ public class NotifySenderService : BackgroundService
     private readonly NotifyServiceCfg _notifyServiceCfg;
 
     public NotifySenderService(
-        IOptions<NotifyServiceCfg> notifyServiceCfg, 
-        DbWorker dbWorker, 
+        IOptions<NotifyServiceCfg> notifyServiceCfg,
+        DbWorker dbWorker,
         IOptionsMonitor<ILog> options)
     {
         _logger = options.Get("ASC.NotifySender");

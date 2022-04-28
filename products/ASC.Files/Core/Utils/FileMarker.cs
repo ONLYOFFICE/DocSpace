@@ -29,23 +29,24 @@ namespace ASC.Web.Files.Utils;
 [Singletone]
 public class FileMarkerHelper<T>
 {
+    public const string CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME = "file_marker";
     private readonly IServiceProvider _serviceProvider;
-    public ILog Logger { get; }
+    private readonly ILog _logger;
     public DistributedTaskQueue Tasks { get; set; }
 
     public FileMarkerHelper(
         IServiceProvider serviceProvider,
         IOptionsMonitor<ILog> optionsMonitor,
-        DistributedTaskQueueOptionsManager distributedTaskQueueOptionsManager)
+        IDistributedTaskQueueFactory queueFactory)
     {
         _serviceProvider = serviceProvider;
-        Logger = optionsMonitor.CurrentValue;
-        Tasks = distributedTaskQueueOptionsManager.Get<AsyncTaskData<T>>();
+        _logger = optionsMonitor.CurrentValue;
+        Tasks = queueFactory.CreateQueue(CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME);
     }
 
     internal void Add(AsyncTaskData<T> taskData)
     {
-        Tasks.QueueTask(async (d, c) => await ExecMarkFileAsNewAsync(taskData), taskData);
+        Tasks.EnqueueTask(async (d, c) => await ExecMarkFileAsNewAsync(taskData), taskData);
     }
 
     private async Task ExecMarkFileAsNewAsync(AsyncTaskData<T> obj)
@@ -58,7 +59,7 @@ public class FileMarkerHelper<T>
         }
         catch (Exception e)
         {
-            Logger.Error(e);
+            _logger.Error(e);
         }
     }
 }
@@ -68,7 +69,7 @@ public class FileMarker
 {
     private readonly ICache _cache;
 
-    private const string CacheKeyFormat = "MarkedAsNew/{0}/folder_{1}";
+    private const string _cacheKeyFormat = "MarkedAsNew/{0}/folder_{1}";
 
     private readonly TenantManager _tenantManager;
     private readonly UserManager _userManager;
@@ -421,9 +422,8 @@ public class FileMarker
 
         T folderID;
         int valueNew;
-        var userFolderIdTask = internalFolderDao.GetFolderIDUserAsync(false, userID);
-        var privacyFolderIdTask = internalFolderDao.GetFolderIDPrivacyAsync(false, userID);
-        var userFolderId = await userFolderIdTask;
+        var userFolderId = await internalFolderDao.GetFolderIDUserAsync(false, userID);
+        var privacyFolderId = await internalFolderDao.GetFolderIDPrivacyAsync(false, userID);
 
         var removeTags = new List<Tag>();
 
@@ -458,8 +458,6 @@ public class FileMarker
 
             removeTags.AddRange(listTags);
         }
-
-        var privacyFolderId = await privacyFolderIdTask;
 
         var parentFolders = await folderDao.GetParentFoldersAsync(folderID);
         parentFolders.Reverse();
@@ -624,9 +622,9 @@ public class FileMarker
         var tagDao = _daoFactory.GetTagDao<T>();
         var providerFolderDao = _daoFactory.GetFolderDao<string>();
         var providerTagDao = _daoFactory.GetTagDao<string>();
-        var tags = (tagDao.GetNewTagsAsync(_authContext.CurrentAccount.ID, folder, true) ?? AsyncEnumerable.Empty<Tag>());
+        var tags = await (tagDao.GetNewTagsAsync(_authContext.CurrentAccount.ID, folder, true) ?? AsyncEnumerable.Empty<Tag>()).ToListAsync();
 
-        if (!(await tags.CountAsync() == 0))
+        if (!tags.Any())
         {
             return new List<FileEntry>();
         }
@@ -637,25 +635,33 @@ public class FileMarker
         {
             var folderTags = tags.Where(tag => tag.EntryType == FileEntryType.Folder && (tag.EntryId is string));
 
-            var providerFolderTags = folderTags
-                .SelectAwait(async tag => new KeyValuePair<Tag, Folder<string>>(tag, await providerFolderDao.GetFolderAsync(tag.EntryId.ToString())))
-                .Where(pair => pair.Value != null && pair.Value.ProviderEntry);
+            var providerFolderTags = new List<KeyValuePair<Tag, Folder<string>>>();
 
-            providerFolderTags = providerFolderTags.Reverse();
-
-            await foreach (var providerFolderTag in providerFolderTags)
+            foreach (var tag in folderTags)
             {
-                tags.Concat(providerTagDao.GetNewTagsAsync(_authContext.CurrentAccount.ID, providerFolderTag.Value, true));
+                var pair = new KeyValuePair<Tag, Folder<string>>(tag, await providerFolderDao.GetFolderAsync(tag.EntryId.ToString()));
+                if (pair.Value != null && pair.Value.ProviderEntry)
+                {
+                    providerFolderTags.Add(pair);
+                }
+            }
+
+            providerFolderTags.Reverse();
+
+            foreach (var providerFolderTag in providerFolderTags)
+            {
+                tags.AddRange(await providerTagDao.GetNewTagsAsync(_authContext.CurrentAccount.ID, providerFolderTag.Value, true).ToListAsync());
             }
         }
 
         tags = tags
             .Where(r => !Equals(r.EntryId, folder.Id))
-            .Distinct();
+                .Distinct()
+                .ToList();
 
         //TODO: refactoring
-        var entryTagsProvider = await GetEntryTagsAsync<string>(tags.Where(r => r.EntryId is string));
-        var entryTagsInternal = await GetEntryTagsAsync<int>(tags.Where(r => r.EntryId is int));
+        var entryTagsProvider = await GetEntryTagsAsync<string>(tags.Where(r => r.EntryId is string).ToAsyncEnumerable());
+        var entryTagsInternal = await GetEntryTagsAsync<int>(tags.Where(r => r.EntryId is int).ToAsyncEnumerable());
 
         foreach (var entryTag in entryTagsInternal)
         {
@@ -865,13 +871,13 @@ public class FileMarker
 
     private void InsertToCahce(object folderId, int count)
     {
-        var key = string.Format(CacheKeyFormat, _authContext.CurrentAccount.ID, folderId);
+        var key = string.Format(_cacheKeyFormat, _authContext.CurrentAccount.ID, folderId);
         _cache.Insert(key, count.ToString(), TimeSpan.FromMinutes(10));
     }
 
     private int GetCountFromCahce(object folderId)
     {
-        var key = string.Format(CacheKeyFormat, _authContext.CurrentAccount.ID, folderId);
+        var key = string.Format(_cacheKeyFormat, _authContext.CurrentAccount.ID, folderId);
         var count = _cache.Get<string>(key);
 
         return count == null ? -1 : int.Parse(count);
@@ -884,7 +890,7 @@ public class FileMarker
 
     private void RemoveFromCahce(object folderId, Guid userId)
     {
-        var key = string.Format(CacheKeyFormat, userId, folderId);
+        var key = string.Format(_cacheKeyFormat, userId, folderId);
         _cache.Remove(key);
     }
 }
@@ -910,10 +916,8 @@ public static class FileMarkerExtention
     {
         services.TryAdd<AsyncTaskData<int>>();
         services.TryAdd<FileMarkerHelper<int>>();
-        services.AddDistributedTaskQueueService<AsyncTaskData<int>>(1);
 
         services.TryAdd<AsyncTaskData<string>>();
         services.TryAdd<FileMarkerHelper<string>>();
-        services.AddDistributedTaskQueueService<AsyncTaskData<string>>(1);
     }
 }

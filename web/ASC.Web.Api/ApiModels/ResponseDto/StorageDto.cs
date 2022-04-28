@@ -44,7 +44,7 @@ public class StorageDto
         StorageWrapperInit(consumer, current);
     }
 
-    private void StorageWrapperInit<T>(DataStoreConsumer consumer, BaseStorageSettings<T> current) where T : class, ISettings, new()
+    private void StorageWrapperInit<T>(DataStoreConsumer consumer, BaseStorageSettings<T> current) where T : class, ISettings<T>, new()
     {
         Id = consumer.Name;
         Title = ConsumerExtension.GetResourceString(consumer.Name) ?? consumer.Name;

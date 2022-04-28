@@ -24,70 +24,66 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Studio.Core.Quota
+namespace ASC.Web.Studio.Core.Quota;
+
+public class QuotaSync
 {
-    public class QuotaSync
+    public const string TenantIdKey = "tenantID";
+    protected DistributedTask TaskInfo { get; private set; }
+    private readonly int _tenantId;
+    private readonly IServiceProvider _serviceProvider;
+
+    public QuotaSync(int tenantId, IServiceProvider serviceProvider)
     {
-        public const string TenantIdKey = "tenantID";
-        protected DistributedTask TaskInfo { get; private set; }
-        private int TenantId { get; set; }
-        private IServiceProvider ServiceProvider { get; }
-
-        public QuotaSync(int tenantId, IServiceProvider serviceProvider)
-        {
-            TenantId = tenantId;
-            TaskInfo = new DistributedTask();
-            ServiceProvider = serviceProvider;
-        }
-
-        public void RunJob()//DistributedTask distributedTask, CancellationToken cancellationToken)
-        {
-            using var scope = ServiceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<QuotaSyncScope>();
-            var (tenantManager, storageFactoryConfig, storageFactory) = scopeClass;
-            tenantManager.SetCurrentTenant(TenantId);
-
-            var storageModules = storageFactoryConfig.GetModuleList(string.Empty);
-
-            foreach (var module in storageModules)
-            {
-                var storage = storageFactory.GetStorage(TenantId.ToString(), module);
-                storage.ResetQuotaAsync("").Wait();
-
-                var domains = storageFactoryConfig.GetDomainList(string.Empty, module);
-                foreach (var domain in domains)
-                {
-                    storage.ResetQuotaAsync(domain).Wait();
-                }
-
-            }
-        }
-
-        public virtual DistributedTask GetDistributedTask()
-        {
-            TaskInfo.SetProperty(TenantIdKey, TenantId);
-            return TaskInfo;
-        }
+        _tenantId = tenantId;
+        TaskInfo = new DistributedTask();
+        _serviceProvider = serviceProvider;
     }
 
-    class QuotaSyncScope
+    public void RunJob()//DistributedTask distributedTask, CancellationToken cancellationToken)
     {
-        private TenantManager TenantManager { get; }
-        private StorageFactoryConfig StorageFactoryConfig { get; }
-        private StorageFactory StorageFactory { get; }
+        using var scope = _serviceProvider.CreateScope();
+        var scopeClass = scope.ServiceProvider.GetService<QuotaSyncJob>();
+        scopeClass.RunJob(_tenantId);
+    }
 
-        public QuotaSyncScope(TenantManager tenantManager, StorageFactoryConfig storageFactoryConfig, StorageFactory storageFactory)
-        {
-            TenantManager = tenantManager;
-            StorageFactoryConfig = storageFactoryConfig;
-            StorageFactory = storageFactory;
-        }
+    public virtual DistributedTask GetDistributedTask()
+    {
+        TaskInfo[TenantIdKey] = _tenantId;
+        return TaskInfo;
+    }
+}
 
-        public void Deconstruct(out TenantManager tenantManager, out StorageFactoryConfig storageFactoryConfig, out StorageFactory storageFactory)
+class QuotaSyncJob
+{
+    private readonly TenantManager _tenantManager;
+    private readonly StorageFactoryConfig _storageFactoryConfig;
+    private readonly StorageFactory _storageFactory;
+
+    public QuotaSyncJob(TenantManager tenantManager, StorageFactoryConfig storageFactoryConfig, StorageFactory storageFactory)
+    {
+        _tenantManager = tenantManager;
+        _storageFactoryConfig = storageFactoryConfig;
+        _storageFactory = storageFactory;
+    }
+
+    public void RunJob(int tenantId)
+    {
+        _tenantManager.SetCurrentTenant(tenantId);
+
+        var storageModules = _storageFactoryConfig.GetModuleList(string.Empty);
+
+        foreach (var module in storageModules)
         {
-            tenantManager = TenantManager;
-            storageFactoryConfig = StorageFactoryConfig;
-            storageFactory = StorageFactory;
+            var storage = _storageFactory.GetStorage(tenantId.ToString(), module);
+            storage.ResetQuotaAsync("").Wait();
+
+            var domains = _storageFactoryConfig.GetDomainList(string.Empty, module);
+            foreach (var domain in domains)
+            {
+                storage.ResetQuotaAsync(domain).Wait();
+            }
+
         }
     }
 }

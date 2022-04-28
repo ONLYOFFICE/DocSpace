@@ -244,8 +244,7 @@ internal class DropboxStorage : IDisposable
     {
         return await _dropboxClient.Files.UploadSessionFinishAsync(
             new UploadSessionCursor(dropboxSession, (ulong)offset),
-            new CommitInfo(dropboxFilePath, WriteMode.Overwrite.Instance),
-            new MemoryStream());
+            new CommitInfo(dropboxFilePath, WriteMode.Overwrite.Instance));
     }
 
     public void Dispose()

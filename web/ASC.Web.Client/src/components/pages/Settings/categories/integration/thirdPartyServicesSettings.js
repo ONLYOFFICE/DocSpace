@@ -11,8 +11,13 @@ import { showLoader, hideLoader } from "@appserver/common/utils";
 import ConsumerItem from "./sub-components/consumerItem";
 import ConsumerModalDialog from "./sub-components/consumerModalDialog";
 import { inject, observer } from "mobx-react";
+import { Base } from "@appserver/components/themes";
 
 const RootContainer = styled(Box)`
+  .title-description-container {
+    max-width: 700px;
+  }
+
   @media ${tablet} {
     margin: 0;
 
@@ -39,8 +44,10 @@ const StyledConsumer = styled(Box)`
   }
 `;
 const Separator = styled.div`
-  border: 1px solid #eceef1;
+  border: ${(props) => props.theme.studio.settings.integration.separatorBorder};
 `;
+
+Separator.defaultProps = { theme: Base };
 
 class ThirdPartyServices extends React.Component {
   constructor(props) {
@@ -120,7 +127,14 @@ class ThirdPartyServices extends React.Component {
   };
 
   render() {
-    const { t, i18n, consumers, updateConsumerProps, urlAuthKeys } = this.props;
+    const {
+      t,
+      i18n,
+      consumers,
+      updateConsumerProps,
+      urlAuthKeys,
+      theme,
+    } = this.props;
     const { dialogVisible, isLoading } = this.state;
     const { onModalClose, onModalOpen, setConsumer, onChangeLoading } = this;
 
@@ -135,7 +149,7 @@ class ThirdPartyServices extends React.Component {
             <Text>{t("ThirdPartyTitleDescription")}</Text>
             <Box marginProp="16px 0 0 0">
               <Link
-                color="#316DAA"
+                color={theme.studio.settings.integration.linkColor}
                 isHovered={false}
                 target="_blank"
                 href={urlAuthKeys}
@@ -203,7 +217,7 @@ ThirdPartyServices.propTypes = {
 
 export default inject(({ setup, auth }) => {
   const { settingsStore, setDocumentTitle } = auth;
-  const { urlAuthKeys } = settingsStore;
+  const { urlAuthKeys, theme } = settingsStore;
   const {
     getConsumers,
     integration,
@@ -213,6 +227,7 @@ export default inject(({ setup, auth }) => {
   const { consumers } = integration;
 
   return {
+    theme,
     consumers,
     urlAuthKeys,
     getConsumers,

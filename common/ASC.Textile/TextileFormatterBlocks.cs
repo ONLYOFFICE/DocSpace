@@ -53,9 +53,13 @@ public partial class TextileFormatter
     public void SwitchBlockModifier(Type type, bool onOff)
     {
         if (onOff)
+        {
             _disabledBlockModifiers.Remove(type);
+        }
         else if (!_disabledBlockModifiers.Contains(type))
+        {
             _disabledBlockModifiers.Add(type);
+        }
     }
 
     #endregion

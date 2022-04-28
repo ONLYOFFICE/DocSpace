@@ -26,22 +26,21 @@
 
 namespace ASC.Data.Storage;
 
-[Scope(Additional = typeof(StaticUploaderExtension))]
+[Scope]
 public class StaticUploader
 {
-    protected readonly DistributedTaskQueue Queue;
-    private ICache _cache;
-    private static readonly TaskScheduler _scheduler;
-    private static readonly CancellationTokenSource _tokenSource;
+    protected readonly DistributedTaskQueue _queue;
+    private readonly ICache _cache;
+    public const string CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME = "static_upload"; private static readonly CancellationTokenSource _tokenSource;
     private static readonly object _locker;
     private readonly IServiceProvider _serviceProvider;
     private readonly TenantManager _tenantManager;
     private readonly SettingsManager _settingsManager;
     private readonly StorageSettingsHelper _storageSettingsHelper;
+    private readonly UploadOperation _uploadOperation;
 
     static StaticUploader()
     {
-        _scheduler = new ConcurrentExclusiveSchedulerPair(TaskScheduler.Default, 4).ConcurrentScheduler;
         _locker = new object();
         _tokenSource = new CancellationTokenSource();
     }
@@ -51,18 +50,20 @@ public class StaticUploader
         TenantManager tenantManager,
         SettingsManager settingsManager,
         StorageSettingsHelper storageSettingsHelper,
+        UploadOperation uploadOperation,
         ICache cache,
-        DistributedTaskQueueOptionsManager options)
+        IDistributedTaskQueueFactory queueFactory)
     {
         _cache = cache;
         _serviceProvider = serviceProvider;
         _tenantManager = tenantManager;
         _settingsManager = settingsManager;
         _storageSettingsHelper = storageSettingsHelper;
-        Queue = options.Get<UploadOperationProgress>();
+        _queue = queueFactory.CreateQueue(CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME);
+        _uploadOperation = uploadOperation;
     }
 
-    public string UploadFile(string relativePath, string mappedPath, Action<string> onComplete = null)
+    public async Task<string> UploadFileAsync(string relativePath, string mappedPath, Action<string> onComplete = null)
     {
         if (_tokenSource.Token.IsCancellationRequested)
         {
@@ -80,45 +81,26 @@ public class StaticUploader
         }
 
         var tenantId = _tenantManager.GetCurrentTenant().Id;
-        UploadOperation uploadOperation;
         var key = GetCacheKey(tenantId.ToString(), relativePath);
 
         lock (_locker)
         {
-            uploadOperation = _cache.Get<UploadOperation>(key);
-            if (uploadOperation != null)
+            var result = _cache.Get<string>(key);
+            if (!string.IsNullOrEmpty(result))
             {
-                return !string.IsNullOrEmpty(uploadOperation.Result) ? uploadOperation.Result : string.Empty;
+                return result;
             }
-
-            uploadOperation = new UploadOperation(_serviceProvider, tenantId, relativePath, mappedPath);
-            _cache.Insert(key, uploadOperation, DateTime.MaxValue);
         }
 
-            uploadOperation.DoJobAsync().Wait();
-        onComplete?.Invoke(uploadOperation.Result);
+        await _uploadOperation.DoJobAsync(tenantId, relativePath, mappedPath);
+        onComplete?.Invoke(_uploadOperation.Result);
 
-        return uploadOperation.Result;
-    }
-
-    public Task<string> UploadFileAsync(string relativePath, string mappedPath, Action<string> onComplete = null)
-    {
-        var tenantId = _tenantManager.GetCurrentTenant().Id;
-        var task = new Task<string>(() =>
+        lock (_locker)
         {
-            using var scope = _serviceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<StaticUploaderScope>();
-            var (tenantManager, staticUploader, _, _, _) = scopeClass;
-            tenantManager.SetCurrentTenant(tenantId);
+            _cache.Insert(key, _uploadOperation.Result, DateTime.MaxValue);
+        }
 
-            return staticUploader.UploadFile(relativePath, mappedPath, onComplete);
-        }, TaskCreationOptions.LongRunning);
-
-        task.ConfigureAwait(false);
-
-        task.Start(_scheduler);
-
-        return task;
+        return _uploadOperation.Result;
     }
 
     public void UploadDir(string relativePath, string mappedPath)
@@ -135,18 +117,17 @@ public class StaticUploader
 
         var tenant = _tenantManager.GetCurrentTenant();
         var key = typeof(UploadOperationProgress).FullName + tenant.Id;
-        UploadOperationProgress uploadOperation;
 
         lock (_locker)
         {
-            uploadOperation = Queue.GetTask<UploadOperationProgress>(key);
-            if (uploadOperation != null)
+            if (_queue.GetAllTasks().Any(x => x.Id != key))
             {
                 return;
             }
 
-            uploadOperation = new UploadOperationProgress(_serviceProvider, key, tenant.Id, relativePath, mappedPath);
-            Queue.QueueTask(uploadOperation);
+            var uploadOperation = new UploadOperationProgress(_serviceProvider, key, tenant.Id, relativePath, mappedPath);
+
+            _queue.EnqueueTask(uploadOperation);
         }
     }
 
@@ -172,7 +153,7 @@ public class StaticUploader
         {
             var key = typeof(UploadOperationProgress).FullName + tenantId;
 
-            return Queue.GetTask<UploadOperationProgress>(key);
+            return _queue.PeekTask<UploadOperationProgress>(key);
         }
     }
 
@@ -182,50 +163,53 @@ public class StaticUploader
     }
 }
 
+[Scope]
 public class UploadOperation
 {
     public string Result { get; private set; }
 
     private readonly ILog _logger;
-    private readonly int _tenantId;
-    private readonly string _path;
-    private readonly string _mappedPath;
+    private readonly TenantManager _tenantManager;
+    private readonly SecurityContext _securityContext;
+    private readonly SettingsManager _settingsManager;
+    private readonly StorageSettingsHelper _storageSettingsHelper;
 
-    private readonly IServiceProvider _serviceProvider;
-
-    public UploadOperation(IServiceProvider serviceProvider, int tenantId, string path, string mappedPath)
+    public UploadOperation(
+        IOptionsMonitor<ILog> options,
+        TenantManager tenantManager,
+        SecurityContext securityContext,
+        SettingsManager settingsManager,
+        StorageSettingsHelper storageSettingsHelper)
     {
-        _serviceProvider = serviceProvider;
-        _logger = _serviceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
-        _tenantId = tenantId;
-        _path = path.TrimStart('/');
-        _mappedPath = mappedPath;
+        _logger = options.CurrentValue;
         Result = string.Empty;
+        _tenantManager = tenantManager;
+        _securityContext = securityContext;
+        _settingsManager = settingsManager;
+        _storageSettingsHelper = storageSettingsHelper;
     }
 
-        public async Task<string> DoJobAsync()
+    public async Task<string> DoJobAsync(int tenantId, string path, string mappedPath)
     {
         try
         {
-            using var scope = _serviceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<StaticUploaderScope>();
-            var (tenantManager, _, securityContext, settingsManager, storageSettingsHelper) = scopeClass;
-            var tenant = tenantManager.GetTenant(_tenantId);
-            tenantManager.SetCurrentTenant(tenant);
-            securityContext.AuthenticateMeWithoutCookie(tenant.OwnerId);
+            path = path.TrimStart('/');
+            var tenant = _tenantManager.GetTenant(tenantId);
+            _tenantManager.SetCurrentTenant(tenant);
+            _securityContext.AuthenticateMeWithoutCookie(tenant.OwnerId);
 
-            var dataStore = storageSettingsHelper.DataStore(settingsManager.Load<CdnStorageSettings>());
+            var dataStore = _storageSettingsHelper.DataStore(_settingsManager.Load<CdnStorageSettings>());
 
-            if (File.Exists(_mappedPath))
+            if (File.Exists(mappedPath))
             {
-                    if (!await dataStore.IsFileAsync(_path))
+                if (!await dataStore.IsFileAsync(path))
                 {
-                        using var stream = File.OpenRead(_mappedPath);
-                        await dataStore.SaveAsync(_path, stream);
+                    using var stream = File.OpenRead(mappedPath);
+                    await dataStore.SaveAsync(path, stream);
                 }
-                    var uri = await dataStore.GetInternalUriAsync("", _path, TimeSpan.Zero, null);
-                    Result = uri.AbsoluteUri.ToLower();
-                    _logger.DebugFormat("UploadFile {0}", Result);
+                var uri = await dataStore.GetInternalUriAsync("", path, TimeSpan.Zero, null);
+                Result = uri.AbsoluteUri.ToLower();
+                _logger.DebugFormat("UploadFile {0}", Result);
                 return Result;
             }
         }
@@ -259,7 +243,7 @@ public class UploadOperationProgress : DistributedTaskProgress
         _relativePath = relativePath;
         _mappedPath = mappedPath;
 
-            const string extensions = ".png|.jpeg|.jpg|.gif|.ico|.swf|.mp3|.ogg|.eot|.svg|.ttf|.woff|.woff2|.css|.less|.js";
+        const string extensions = ".png|.jpeg|.jpg|.gif|.ico|.swf|.mp3|.ogg|.eot|.svg|.ttf|.woff|.woff2|.css|.less|.js";
         var extensionsArray = extensions.Split('|');
 
         _directoryFiles = Directory.GetFiles(mappedPath, "*", SearchOption.AllDirectories)
@@ -284,7 +268,7 @@ public class UploadOperationProgress : DistributedTaskProgress
         foreach (var file in _directoryFiles)
         {
             var filePath = file.Substring(_mappedPath.TrimEnd('/').Length);
-            staticUploader.UploadFile(CrossPlatform.PathCombine(_relativePath, filePath), file, (res) => StepDone());
+            staticUploader.UploadFileAsync(CrossPlatform.PathCombine(_relativePath, filePath), file, (res) => StepDone()).Wait();
         }
 
         tenant.SetStatus(TenantStatus.Active);
@@ -294,51 +278,5 @@ public class UploadOperationProgress : DistributedTaskProgress
     public object Clone()
     {
         return MemberwiseClone();
-    }
-}
-
-[Scope]
-public class StaticUploaderScope
-{
-    private readonly TenantManager _tenantManager;
-    private readonly StaticUploader _staticUploader;
-    private readonly SecurityContext _securityContext;
-    private readonly SettingsManager _settingsManager;
-    private readonly StorageSettingsHelper _storageSettingsHelper;
-
-    public StaticUploaderScope(TenantManager tenantManager,
-        StaticUploader staticUploader,
-        SecurityContext securityContext,
-        SettingsManager settingsManager,
-        StorageSettingsHelper storageSettingsHelper)
-    {
-        _tenantManager = tenantManager;
-        _staticUploader = staticUploader;
-        _securityContext = securityContext;
-        _settingsManager = settingsManager;
-        _storageSettingsHelper = storageSettingsHelper;
-    }
-
-    public void Deconstruct(
-        out TenantManager tenantManager,
-        out StaticUploader staticUploader,
-        out SecurityContext securityContext,
-        out SettingsManager settingsManager,
-        out StorageSettingsHelper storageSettingsHelper)
-    {
-        tenantManager = _tenantManager;
-        staticUploader = _staticUploader;
-        securityContext = _securityContext;
-        settingsManager = _settingsManager;
-        storageSettingsHelper = _storageSettingsHelper;
-    }
-}
-
-public static class StaticUploaderExtension
-{
-    public static void Register(DIHelper services)
-    {
-        services.TryAdd<StaticUploaderScope>();
-        services.AddDistributedTaskQueueService<UploadOperationProgress>(1);
     }
 }

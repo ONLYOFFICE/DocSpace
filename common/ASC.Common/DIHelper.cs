@@ -105,9 +105,9 @@ public class SingletoneAttribute : DIAttribute
 public abstract class DIAttribute : Attribute
 {
     public abstract DIAttributeEnum DIAttributeEnum { get; }
-    public Type Implementation { get; }
-    public Type Service { get; }
-    public Type Additional { get; set; }
+    protected internal Type Implementation { get; }
+    protected internal Type Service { get; }
+    public Type Additional { get; init; }
 
     protected DIAttribute() { }
 

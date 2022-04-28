@@ -27,8 +27,11 @@
 namespace ASC.Web.Core.WhiteLabel;
 
 [Serializable]
-public class MailWhiteLabelSettings : ISettings
+public class MailWhiteLabelSettings : ISettings<MailWhiteLabelSettings>
 {
+    private readonly MailWhiteLabelSettingsHelper _mailWhiteLabelSettingsHelper;
+    private readonly IConfiguration _configuration;
+
     public bool FooterEnabled { get; set; }
     public bool FooterSocialEnabled { get; set; }
     public string SupportUrl { get; set; }
@@ -39,29 +42,34 @@ public class MailWhiteLabelSettings : ISettings
 
     public Guid ID => new Guid("{C3602052-5BA2-452A-BD2A-ADD0FAF8EB88}");
 
-    public ISettings GetDefault(IConfiguration configuration)
+    public MailWhiteLabelSettings(IConfiguration configuration)
     {
-        var mailWhiteLabelSettingsHelper = new MailWhiteLabelSettingsHelper(configuration);
+        _mailWhiteLabelSettingsHelper = new MailWhiteLabelSettingsHelper(configuration);
+        _configuration = configuration;
+    }
 
-        return new MailWhiteLabelSettings
+    public MailWhiteLabelSettings()
+    {
+
+    }
+
+    public MailWhiteLabelSettings GetDefault()
+    {
+        return new MailWhiteLabelSettings(_configuration)
         {
             FooterEnabled = true,
             FooterSocialEnabled = true,
-            SupportUrl = mailWhiteLabelSettingsHelper.DefaultMailSupportUrl,
-            SupportEmail = mailWhiteLabelSettingsHelper.DefaultMailSupportEmail,
-            SalesEmail = mailWhiteLabelSettingsHelper.DefaultMailSalesEmail,
-            DemoUrl = mailWhiteLabelSettingsHelper.DefaultMailDemoUrl,
-            SiteUrl = mailWhiteLabelSettingsHelper.DefaultMailSiteUrl
+            SupportUrl = _mailWhiteLabelSettingsHelper?.DefaultMailSupportUrl,
+            SupportEmail = _mailWhiteLabelSettingsHelper?.DefaultMailSupportEmail,
+            SalesEmail = _mailWhiteLabelSettingsHelper?.DefaultMailSalesEmail,
+            DemoUrl = _mailWhiteLabelSettingsHelper?.DefaultMailDemoUrl,
+            SiteUrl = _mailWhiteLabelSettingsHelper?.DefaultMailSiteUrl
         };
     }
 
-    public bool IsDefault(IConfiguration configuration)
+    public bool IsDefault()
     {
-        if (!(GetDefault(configuration) is MailWhiteLabelSettings defaultSettings))
-        {
-            return false;
-        }
-
+        var defaultSettings = GetDefault();
         return FooterEnabled == defaultSettings.FooterEnabled &&
                 FooterSocialEnabled == defaultSettings.FooterSocialEnabled &&
                 SupportUrl == defaultSettings.SupportUrl &&
@@ -75,20 +83,18 @@ public class MailWhiteLabelSettings : ISettings
     {
         return settingsManager.LoadForDefaultTenant<MailWhiteLabelSettings>();
     }
-    public static bool IsDefault(SettingsManager settingsManager, IConfiguration configuration)
-    {
-        return Instance(settingsManager).IsDefault(configuration);
-    }
 
-    public ISettings GetDefault(IServiceProvider serviceProvider)
+    public static bool IsDefault(SettingsManager settingsManager)
     {
-        return GetDefault(serviceProvider.GetService<IConfiguration>());
+        return Instance(settingsManager).IsDefault();
     }
 }
 
 [Singletone]
 public class MailWhiteLabelSettingsHelper
 {
+    private readonly IConfiguration _configuration;
+
     public MailWhiteLabelSettingsHelper(IConfiguration configuration)
     {
         _configuration = configuration;
@@ -143,6 +149,4 @@ public class MailWhiteLabelSettingsHelper
             return !string.IsNullOrEmpty(url) ? url : "http://www.onlyoffice.com";
         }
     }
-
-    private readonly IConfiguration _configuration;
 }

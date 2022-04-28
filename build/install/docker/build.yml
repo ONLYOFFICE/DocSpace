@@ -1,4 +1,4 @@
-version: "3.6"
+version: "3.8"
 
 services: 
   onlyoffice-api-system:
@@ -14,21 +14,7 @@ services:
       dockerfile: "${DOCKERFILE}"
       target: backup
     image: "${REPO}/${STATUS}appserver-backup:${DOCKER_TAG}"
-
-  onlyoffice-calendar:
-    build:
-      context: ./
-      dockerfile: "${DOCKERFILE}"
-      target: calendar
-    image: "${REPO}/${STATUS}appserver-calendar:${DOCKER_TAG}"
-
-  onlyoffice-crm:
-    build:
-      context: ./
-      dockerfile: "${DOCKERFILE}"
-      target: crm
-    image: "${REPO}/${STATUS}appserver-crm:${DOCKER_TAG}"
-
+  
   onlyoffice-storage-encryption:
     build:
       context: ./
@@ -50,13 +36,6 @@ services:
       target: files_services
     image: "${REPO}/${STATUS}appserver-files-services:${DOCKER_TAG}"
 
-  onlyoffice-mail:
-    build:
-      context: ./
-      dockerfile: "${DOCKERFILE}"
-      target: mail
-    image: "${REPO}/${STATUS}appserver-mail:${DOCKER_TAG}"
-
   onlyoffice-storage-migration:
     build:
       context: ./
@@ -77,13 +56,6 @@ services:
       dockerfile: "${DOCKERFILE}"
       target: people_server
     image: "${REPO}/${STATUS}appserver-people-server:${DOCKER_TAG}"
-    
-  onlyoffice-projects-server:
-    build:
-      context: ./
-      dockerfile: "${DOCKERFILE}"
-      target: projects_server
-    image: "${REPO}/${STATUS}appserver-projects-server:${DOCKER_TAG}"
 
   onlyoffice-socket:
     build:

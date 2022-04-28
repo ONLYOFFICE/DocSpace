@@ -32,15 +32,15 @@ public abstract class FeedModule : IFeedModule
     public abstract string Product { get; }
     public abstract Guid ProductID { get; }
     protected abstract string DbId { get; }
-    protected int Tenant => TenantManager.GetCurrentTenant().Id;
+    protected int Tenant => _tenantManager.GetCurrentTenant().Id;
 
-    protected readonly TenantManager TenantManager;
-    protected readonly WebItemSecurity WebItemSecurity;
+    protected readonly TenantManager _tenantManager;
+    protected readonly WebItemSecurity _webItemSecurity;
 
     protected FeedModule(TenantManager tenantManager, WebItemSecurity webItemSecurity)
     {
-        TenantManager = tenantManager;
-        WebItemSecurity = webItemSecurity;
+        _tenantManager = tenantManager;
+        _webItemSecurity = webItemSecurity;
     }
 
     public abstract IEnumerable<Tuple<Feed, object>> GetFeeds(FeedFilter filter);
@@ -49,7 +49,7 @@ public abstract class FeedModule : IFeedModule
 
     public virtual void VisibleFor(List<Tuple<FeedRow, object>> feed, Guid userId)
     {
-        if (!WebItemSecurity.IsAvailableForUser(ProductID, userId))
+        if (!_webItemSecurity.IsAvailableForUser(ProductID, userId))
         {
             return;
         }
@@ -65,7 +65,7 @@ public abstract class FeedModule : IFeedModule
 
     public virtual bool VisibleFor(Feed feed, object data, Guid userId)
     {
-        return WebItemSecurity.IsAvailableForUser(ProductID, userId);
+        return _webItemSecurity.IsAvailableForUser(ProductID, userId);
     }
 
     protected static Guid ToGuid(object guid)

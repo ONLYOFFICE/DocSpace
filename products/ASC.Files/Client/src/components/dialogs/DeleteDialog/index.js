@@ -258,7 +258,7 @@ class DeleteDialogComponent extends React.Component {
             className="button-dialog-accept"
             key="OkButton"
             label={accessButtonLabel}
-            size="medium"
+            size="small"
             primary
             onClick={unsubscribe ? this.onUnsubscribe : this.onDelete}
             isLoading={isLoading}
@@ -268,7 +268,7 @@ class DeleteDialogComponent extends React.Component {
             className="button-dialog"
             key="CancelButton"
             label={t("Common:CancelButton")}
-            size="medium"
+            size="small"
             onClick={this.onClose}
             isLoading={isLoading}
           />

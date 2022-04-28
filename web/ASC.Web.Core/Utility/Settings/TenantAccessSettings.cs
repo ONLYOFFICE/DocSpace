@@ -24,23 +24,22 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Core.Utility.Settings
+namespace ASC.Web.Core.Utility.Settings;
+
+[Serializable]
+public class TenantAccessSettings : ISettings<TenantAccessSettings>
 {
-    [Serializable]
-    public class TenantAccessSettings : ISettings
+    public bool Anyone { get; set; }
+
+    public bool RegisterUsersImmediately { get; set; }
+
+    public Guid ID
     {
-        public bool Anyone { get; set; }
+        get { return new Guid("{0CB4C871-0040-45AB-AE79-4CC292B91EF1}"); }
+    }
 
-        public bool RegisterUsersImmediately { get; set; }
-
-        public Guid ID
-        {
-            get { return new Guid("{0CB4C871-0040-45AB-AE79-4CC292B91EF1}"); }
-        }
-
-        public ISettings GetDefault(IServiceProvider serviceProvider)
-        {
-            return new TenantAccessSettings { Anyone = false, RegisterUsersImmediately = false };
-        }
+    public TenantAccessSettings GetDefault()
+    {
+        return new TenantAccessSettings { Anyone = false, RegisterUsersImmediately = false };
     }
 }

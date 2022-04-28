@@ -24,74 +24,73 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Studio.UserControls.Management
+namespace ASC.Web.Studio.UserControls.Management;
+
+[Serializable]
+public class TariffSettings : ISettings<TariffSettings>
 {
-    [Serializable]
-    public class TariffSettings : ISettings
+    private static readonly CultureInfo _cultureInfo = CultureInfo.CreateSpecificCulture("en-US");
+
+    [JsonPropertyName("HideNotify")]
+    public bool HideNotifySetting { get; set; }
+
+    [JsonPropertyName("HidePricingPage")]
+    public bool HidePricingPageForUsers { get; set; }
+
+    [JsonPropertyName("LicenseAccept")]
+    public string LicenseAcceptSetting { get; set; }
+
+    public TariffSettings GetDefault()
     {
-        private static readonly CultureInfo CultureInfo = CultureInfo.CreateSpecificCulture("en-US");
-
-        [JsonPropertyName("HideNotify")]
-        public bool HideNotifySetting { get; set; }
-
-        [JsonPropertyName("HidePricingPage")]
-        public bool HidePricingPageForUsers { get; set; }
-
-        [JsonPropertyName("LicenseAccept")]
-        public string LicenseAcceptSetting { get; set; }
-
-        public ISettings GetDefault(IServiceProvider serviceProvider)
+        return new TariffSettings
         {
-            return new TariffSettings
-            {
-                HideNotifySetting = false,
-                HidePricingPageForUsers = false,
-                LicenseAcceptSetting = DateTime.MinValue.ToString(CultureInfo),
-            };
-        }
+            HideNotifySetting = false,
+            HidePricingPageForUsers = false,
+            LicenseAcceptSetting = DateTime.MinValue.ToString(_cultureInfo),
+        };
+    }
 
-        public Guid ID
-        {
-            get { return new Guid("{07956D46-86F7-433b-A657-226768EF9B0D}"); }
-        }
+    public Guid ID
+    {
+        get { return new Guid("{07956D46-86F7-433b-A657-226768EF9B0D}"); }
+    }
 
-        public static bool GetHideNotify(SettingsManager settingsManager)
-        {
-            return settingsManager.LoadForCurrentUser<TariffSettings>().HideNotifySetting;
-        }
+    public static bool GetHideNotify(SettingsManager settingsManager)
+    {
+        return settingsManager.LoadForCurrentUser<TariffSettings>().HideNotifySetting;
+    }
 
-        public static void SetHideNotify(SettingsManager settingsManager, bool newVal)
-        {
-            var tariffSettings = settingsManager.LoadForCurrentUser<TariffSettings>();
-            tariffSettings.HideNotifySetting = newVal;
-            settingsManager.SaveForCurrentUser(tariffSettings);
-        }
+    public static void SetHideNotify(SettingsManager settingsManager, bool newVal)
+    {
+        var tariffSettings = settingsManager.LoadForCurrentUser<TariffSettings>();
+        tariffSettings.HideNotifySetting = newVal;
+        settingsManager.SaveForCurrentUser(tariffSettings);
+    }
 
-        public static bool GetHidePricingPage(SettingsManager settingsManager)
-        {
-            return settingsManager.Load<TariffSettings>().HidePricingPageForUsers;
-        }
+    public static bool GetHidePricingPage(SettingsManager settingsManager)
+    {
+        return settingsManager.Load<TariffSettings>().HidePricingPageForUsers;
+    }
 
-        public static void SetHidePricingPage(SettingsManager settingsManager, bool newVal)
-        {
-            var tariffSettings = settingsManager.Load<TariffSettings>();
-            tariffSettings.HidePricingPageForUsers = newVal;
-            settingsManager.Save<TariffSettings>(tariffSettings);
-        }
+    public static void SetHidePricingPage(SettingsManager settingsManager, bool newVal)
+    {
+        var tariffSettings = settingsManager.Load<TariffSettings>();
+        tariffSettings.HidePricingPageForUsers = newVal;
+        settingsManager.Save(tariffSettings);
+    }
 
-        public static bool GetLicenseAccept(SettingsManager settingsManager)
-        {
-            return !DateTime.MinValue.ToString(CultureInfo).Equals(settingsManager.LoadForDefaultTenant<TariffSettings>().LicenseAcceptSetting);
-        }
+    public static bool GetLicenseAccept(SettingsManager settingsManager)
+    {
+        return !DateTime.MinValue.ToString(_cultureInfo).Equals(settingsManager.LoadForDefaultTenant<TariffSettings>().LicenseAcceptSetting);
+    }
 
-        public static void SetLicenseAccept(SettingsManager settingsManager)
+    public static void SetLicenseAccept(SettingsManager settingsManager)
+    {
+        var tariffSettings = settingsManager.LoadForDefaultTenant<TariffSettings>();
+        if (DateTime.MinValue.ToString(_cultureInfo).Equals(tariffSettings.LicenseAcceptSetting))
         {
-            var tariffSettings = settingsManager.LoadForDefaultTenant<TariffSettings>();
-            if (DateTime.MinValue.ToString(CultureInfo).Equals(tariffSettings.LicenseAcceptSetting))
-            {
-                tariffSettings.LicenseAcceptSetting = DateTime.UtcNow.ToString(CultureInfo);
-                settingsManager.SaveForDefaultTenant(tariffSettings);
-            }
+            tariffSettings.LicenseAcceptSetting = DateTime.UtcNow.ToString(_cultureInfo);
+            settingsManager.SaveForDefaultTenant(tariffSettings);
         }
     }
 }

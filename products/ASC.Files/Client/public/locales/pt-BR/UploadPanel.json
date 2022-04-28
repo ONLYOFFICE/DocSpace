@@ -1,3 +1,7 @@
 ﻿{
-  "Uploads": "Uploads"
+    "Uploads": "Uploads",
+    "EnterPassword": "Inserir senha",
+    "HideInput": "Oculta",
+    "Ready": "Concluído",
+    "UploadAndConvert": "Fazer upload e converter arquivos"
 }

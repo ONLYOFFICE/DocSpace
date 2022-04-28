@@ -24,136 +24,141 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Core.Users
+namespace ASC.Web.Core.Users;
+
+public static class UserPhotoThumbnailManager
 {
-    public static class UserPhotoThumbnailManager
+    public static List<ThumbnailItem> SaveThumbnails(UserPhotoManager userPhotoManager, SettingsManager settingsManager, int x, int y, int width, int height, Guid userId)
     {
-        public static List<ThumbnailItem> SaveThumbnails(UserPhotoManager userPhotoManager, SettingsManager settingsManager, int x, int y, int width, int height, Guid userId)
-        {
-            return SaveThumbnails(userPhotoManager, settingsManager, new UserPhotoThumbnailSettings(x, y, width, height), userId);
-        }
-
-        public static List<ThumbnailItem> SaveThumbnails(UserPhotoManager userPhotoManager, SettingsManager settingsManager, Point point, Size size, Guid userId)
-        {
-            return SaveThumbnails(userPhotoManager, settingsManager, new UserPhotoThumbnailSettings(point, size), userId);
-        }
-
-        public static List<ThumbnailItem> SaveThumbnails(UserPhotoManager userPhotoManager, SettingsManager settingsManager, UserPhotoThumbnailSettings thumbnailSettings, Guid userId)
-        {
-            if (thumbnailSettings.Size.IsEmpty) return null;
-
-            var thumbnailsData = new ThumbnailsData(userId, userPhotoManager);
-
-            var resultBitmaps = new List<ThumbnailItem>();
-
-            using var img = thumbnailsData.MainImgBitmap(out var format);
-
-            if (img == null) return null;
-
-            foreach (var thumbnail in thumbnailsData.ThumbnailList())
-            {
-                thumbnail.Image = GetImage(img, thumbnail.Size, thumbnailSettings);
-
-                resultBitmaps.Add(thumbnail);
-            }
-
-            thumbnailsData.Save(resultBitmaps);
-
-            settingsManager.SaveForUser(thumbnailSettings, userId);
-
-            return thumbnailsData.ThumbnailList();
-        }
-
-        public static Image GetImage(Image mainImg, Size size, UserPhotoThumbnailSettings thumbnailSettings)
-        {
-            var x = thumbnailSettings.Point.X > 0 ? thumbnailSettings.Point.X : 0;
-            var y = thumbnailSettings.Point.Y > 0 ? thumbnailSettings.Point.Y : 0;
-            var width = x + thumbnailSettings.Size.Width > mainImg.Width ? mainImg.Width : thumbnailSettings.Size.Width;
-            var height = y + thumbnailSettings.Size.Height > mainImg.Height ? mainImg.Height : thumbnailSettings.Size.Height;
-
-            var rect = new Rectangle(x,
-                                     y,
-                                     width,
-                                     height);
-
-            var destRound = mainImg.Clone(x => x.Crop(rect).Resize(new ResizeOptions
-            {
-                Size = size
-            }));
-
-            return destRound;
-        }
+        return SaveThumbnails(userPhotoManager, settingsManager, new UserPhotoThumbnailSettings(x, y, width, height), userId);
     }
 
-    public class ThumbnailItem
+    public static List<ThumbnailItem> SaveThumbnails(UserPhotoManager userPhotoManager, SettingsManager settingsManager, Point point, Size size, Guid userId)
     {
-        public Size Size { get; set; }
-        public string ImgUrl { get; set; }
-        public Image Image { get; set; }
+        return SaveThumbnails(userPhotoManager, settingsManager, new UserPhotoThumbnailSettings(point, size), userId);
     }
 
-    public class ThumbnailsData
+    public static List<ThumbnailItem> SaveThumbnails(UserPhotoManager userPhotoManager, SettingsManager settingsManager, UserPhotoThumbnailSettings thumbnailSettings, Guid userId)
     {
-        private Guid UserId { get; set; }
-        private UserPhotoManager UserPhotoManager { get; }
-
-        public ThumbnailsData(Guid userId, UserPhotoManager userPhotoManager)
+        if (thumbnailSettings.Size.IsEmpty)
         {
-            UserId = userId;
-            UserPhotoManager = userPhotoManager;
+            return null;
         }
 
-        public Image MainImgBitmap(out IImageFormat format)
+        var thumbnailsData = new ThumbnailsData(userId, userPhotoManager);
+
+        var resultBitmaps = new List<ThumbnailItem>();
+
+        using var img = thumbnailsData.MainImgBitmap(out var format);
+
+        if (img == null)
         {
-            var img = UserPhotoManager.GetPhotoImage(UserId, out var imageFormat);
-            format = imageFormat;
-            return img;
+            return null;
         }
 
-        public string MainImgUrl()
+        foreach (var thumbnail in thumbnailsData.ThumbnailList())
         {
-            return UserPhotoManager.GetPhotoAbsoluteWebPath(UserId);
+            thumbnail.Image = GetImage(img, thumbnail.Size, thumbnailSettings);
+
+            resultBitmaps.Add(thumbnail);
         }
 
-        public List<ThumbnailItem> ThumbnailList()
+        thumbnailsData.Save(resultBitmaps);
+
+        settingsManager.SaveForUser(thumbnailSettings, userId);
+
+        return thumbnailsData.ThumbnailList();
+    }
+
+    public static Image GetImage(Image mainImg, Size size, UserPhotoThumbnailSettings thumbnailSettings)
+    {
+        var x = thumbnailSettings.Point.X > 0 ? thumbnailSettings.Point.X : 0;
+        var y = thumbnailSettings.Point.Y > 0 ? thumbnailSettings.Point.Y : 0;
+        var width = x + thumbnailSettings.Size.Width > mainImg.Width ? mainImg.Width : thumbnailSettings.Size.Width;
+        var height = y + thumbnailSettings.Size.Height > mainImg.Height ? mainImg.Height : thumbnailSettings.Size.Height;
+
+        var rect = new Rectangle(x,
+                                 y,
+                                 width,
+                                 height);
+
+        var destRound = mainImg.Clone(x => x.Crop(rect).Resize(new ResizeOptions
         {
-            return new List<ThumbnailItem>
+            Size = size
+        }));
+
+        return destRound;
+    }
+}
+
+public class ThumbnailItem
+{
+    public Size Size { get; set; }
+    public string ImgUrl { get; set; }
+    public Image Image { get; set; }
+}
+
+public class ThumbnailsData
+{
+    private readonly Guid _userId;
+    private readonly UserPhotoManager _userPhotoManager;
+
+    public ThumbnailsData(Guid userId, UserPhotoManager userPhotoManager)
+    {
+        _userId = userId;
+        _userPhotoManager = userPhotoManager;
+    }
+
+    public Image MainImgBitmap(out IImageFormat format)
+    {
+        var img = _userPhotoManager.GetPhotoImage(_userId, out var imageFormat);
+        format = imageFormat;
+        return img;
+    }
+
+    public string MainImgUrl()
+    {
+        return _userPhotoManager.GetPhotoAbsoluteWebPath(_userId);
+    }
+
+    public List<ThumbnailItem> ThumbnailList()
+    {
+        return new List<ThumbnailItem>
                 {
                     new ThumbnailItem
                         {
                             Size = UserPhotoManager.RetinaFotoSize,
-                            ImgUrl = UserPhotoManager.GetRetinaPhotoURL(UserId)
+                            ImgUrl = _userPhotoManager.GetRetinaPhotoURL(_userId)
                         },
                     new ThumbnailItem
                         {
                             Size = UserPhotoManager.MaxFotoSize,
-                            ImgUrl = UserPhotoManager.GetMaxPhotoURL(UserId)
+                            ImgUrl = _userPhotoManager.GetMaxPhotoURL(_userId)
                         },
                     new ThumbnailItem
                         {
                             Size = UserPhotoManager.BigFotoSize,
-                            ImgUrl = UserPhotoManager.GetBigPhotoURL(UserId)
+                            ImgUrl = _userPhotoManager.GetBigPhotoURL(_userId)
                         },
                     new ThumbnailItem
                         {
                             Size = UserPhotoManager.MediumFotoSize,
-                            ImgUrl = UserPhotoManager.GetMediumPhotoURL(UserId)
+                            ImgUrl = _userPhotoManager.GetMediumPhotoURL(_userId)
                         },
                     new ThumbnailItem
                         {
                             Size = UserPhotoManager.SmallFotoSize,
-                            ImgUrl = UserPhotoManager.GetSmallPhotoURL(UserId)
+                            ImgUrl = _userPhotoManager.GetSmallPhotoURL(_userId)
                         }
             };
-        }
+    }
 
-        public void Save(List<ThumbnailItem> bitmaps)
+    public void Save(List<ThumbnailItem> bitmaps)
+    {
+        foreach (var item in bitmaps)
         {
-            foreach (var item in bitmaps)
-            {
-                using var mainImgBitmap = MainImgBitmap(out var format);
-                UserPhotoManager.SaveThumbnail(UserId, item.Image, format);
-            }
+            using var mainImgBitmap = MainImgBitmap(out var format);
+            _userPhotoManager.SaveThumbnail(_userId, item.Image, format);
         }
     }
 }

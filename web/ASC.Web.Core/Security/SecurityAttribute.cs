@@ -24,10 +24,9 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Core.Security
+namespace ASC.Web.Core.Security;
+
+public abstract class SecurityAttribute : Attribute
 {
-    public abstract class SecurityAttribute : Attribute
-    {
-        public abstract bool CheckAuthorization(HttpContext context);
-    }
+    public abstract bool CheckAuthorization(HttpContext context);
 }

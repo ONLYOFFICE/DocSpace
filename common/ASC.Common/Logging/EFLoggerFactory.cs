@@ -81,9 +81,9 @@ public class EFLogger : ILogger
         CustomLogger = customLogger;
     }
 
-    public IDisposable BeginScope<TState>(TState state) 
-    { 
-        return null; 
+    public IDisposable BeginScope<TState>(TState state)
+    {
+        return null;
     }
 
     public bool IsEnabled(LogLevel logLevel)

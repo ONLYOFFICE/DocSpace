@@ -27,12 +27,12 @@
 namespace ASC.Core.Tenants;
 
 [Serializable]
-public class TenantCookieSettings : ISettings
+public class TenantCookieSettings : ISettings<TenantCookieSettings>
 {
     public int Index { get; set; }
     public int LifeTime { get; set; }
 
-    public ISettings GetDefault(IServiceProvider serviceProvider)
+    public TenantCookieSettings GetDefault()
     {
         return GetInstance();
     }

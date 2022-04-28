@@ -53,7 +53,7 @@ public class TelegramDbContext : BaseDbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ModelBuilderWrapper
-            .From(modelBuilder, Provider)
+            .From(modelBuilder, _provider)
             .AddTelegramUsers();
     }
 }

@@ -35,7 +35,7 @@ public class IPGeolocationInfo
     public string IPStart { get; set; }
     public string IPEnd { get; set; }
 
-    public readonly static IPGeolocationInfo Default = new IPGeolocationInfo
+    public static readonly IPGeolocationInfo Default = new IPGeolocationInfo
     {
         Key = string.Empty,
         IPStart = string.Empty,

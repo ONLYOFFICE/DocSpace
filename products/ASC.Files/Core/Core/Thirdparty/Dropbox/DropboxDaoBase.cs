@@ -129,12 +129,12 @@ internal abstract class DropboxDaoBase : ThirdPartyProviderDao<DropboxProviderIn
 
         if (folder.CreateOn != DateTime.MinValue && folder.CreateOn.Kind == DateTimeKind.Utc)
         {
-            folder.CreateOn = TenantUtil.DateTimeFromUtc(folder.CreateOn);
+            folder.CreateOn = _tenantUtil.DateTimeFromUtc(folder.CreateOn);
         }
 
         if (folder.ModifiedOn != DateTime.MinValue && folder.ModifiedOn.Kind == DateTimeKind.Utc)
         {
-            folder.ModifiedOn = TenantUtil.DateTimeFromUtc(folder.ModifiedOn);
+            folder.ModifiedOn = _tenantUtil.DateTimeFromUtc(folder.ModifiedOn);
         }
 
         return folder;
@@ -190,9 +190,9 @@ internal abstract class DropboxDaoBase : ThirdPartyProviderDao<DropboxProviderIn
 
         file.Id = MakeId(dropboxFile);
         file.ContentLength = (long)dropboxFile.Size;
-        file.CreateOn = TenantUtil.DateTimeFromUtc(dropboxFile.ServerModified);
+        file.CreateOn = _tenantUtil.DateTimeFromUtc(dropboxFile.ServerModified);
         file.ParentId = MakeId(GetParentFolderPath(dropboxFile));
-        file.ModifiedOn = TenantUtil.DateTimeFromUtc(dropboxFile.ServerModified);
+        file.ModifiedOn = _tenantUtil.DateTimeFromUtc(dropboxFile.ServerModified);
         file.NativeAccessor = dropboxFile;
         file.Title = MakeFileTitle(dropboxFile);
 

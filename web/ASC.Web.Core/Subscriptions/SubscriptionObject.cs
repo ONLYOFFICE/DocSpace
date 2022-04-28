@@ -24,18 +24,17 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Core.Subscriptions
+namespace ASC.Web.Core.Subscriptions;
+
+public class SubscriptionObject
 {
-    public class SubscriptionObject
-    {
-        public string ID { get; set; }
+    public string ID { get; set; }
 
-        public string URL { get; set; }
+    public string URL { get; set; }
 
-        public string Name { get; set; }
+    public string Name { get; set; }
 
-        public SubscriptionType SubscriptionType { get; set; }
+    public SubscriptionType SubscriptionType { get; set; }
 
-        public SubscriptionGroup SubscriptionGroup { get; set; }
-    }
+    public SubscriptionGroup SubscriptionGroup { get; set; }
 }

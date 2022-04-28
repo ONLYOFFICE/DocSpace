@@ -24,11 +24,10 @@
 */
 
 
-namespace ASC.ApiSystem.Interfaces
+namespace ASC.ApiSystem.Interfaces;
+
+public interface IModel
 {
-    public interface IModel
-    {
-        string PortalName { get; set; }
-        int? TenantId { get; set; }
-    }
+    string PortalName { get; set; }
+    int? TenantId { get; set; }
 }

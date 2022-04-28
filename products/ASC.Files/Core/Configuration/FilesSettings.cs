@@ -27,7 +27,7 @@
 namespace ASC.Web.Files.Classes;
 
 [Serializable]
-public class FilesSettings : ISettings
+public class FilesSettings : ISettings<FilesSettings>
 {
     [JsonPropertyName("EnableThirdpartySettings")]
     public bool EnableThirdpartySetting { get; set; }
@@ -74,7 +74,7 @@ public class FilesSettings : ISettings
     [JsonPropertyName("DownloadZip")]
     public bool DownloadTarGzSetting { get; set; }
 
-    public ISettings GetDefault(IServiceProvider serviceProvider)
+    public FilesSettings GetDefault()
     {
         return new FilesSettings
         {

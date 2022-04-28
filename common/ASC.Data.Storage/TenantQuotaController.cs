@@ -44,7 +44,7 @@ public class TenantQuotaController : IQuotaController
 
     private readonly int _tenant;
     private readonly TenantManager _tenantManager;
-    private Lazy<long> _lazyCurrentSize;
+    private readonly Lazy<long> _lazyCurrentSize;
     private long _currentSize;
 
     public TenantQuotaController(int tenant, TenantManager tenantManager)
@@ -122,9 +122,9 @@ public class TenantQuotaController : IQuotaController
 
     private void SetTenantQuotaRow(string module, string domain, long size, string dataTag, bool exchange)
     {
-            _tenantManager.SetTenantQuotaRow(
-                new TenantQuotaRow { Tenant = _tenant, Path = $"/{module}/{domain}", Counter = size, Tag = dataTag },
-                exchange);
+        _tenantManager.SetTenantQuotaRow(
+            new TenantQuotaRow { Tenant = _tenant, Path = $"/{module}/{domain}", Counter = size, Tag = dataTag },
+            exchange);
     }
 
     private bool UsedInQuota(string tag)

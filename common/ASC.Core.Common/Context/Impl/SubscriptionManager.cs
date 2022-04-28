@@ -33,7 +33,7 @@ public class SubscriptionManager
 {
     private readonly ISubscriptionService _service;
     private readonly TenantManager _tenantManager;
-    private ICache _cache;
+    private readonly ICache _cache;
     public static readonly object CacheLocker = new object();
     public static readonly List<Guid> Groups = Groups = new List<Guid>
     {

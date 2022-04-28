@@ -35,7 +35,7 @@ public class StyleReader
     public StyleReader(string styles)
     {
         //Read it
-        var matches = _styleParser.Matches(styles.Replace(System.Environment.NewLine, ""));
+        var matches = _styleParser.Matches(styles.Replace(Environment.NewLine, ""));
         foreach (Match match in matches)
         {
             if (match.Success)

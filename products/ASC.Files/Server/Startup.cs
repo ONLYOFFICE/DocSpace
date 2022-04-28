@@ -28,7 +28,7 @@ namespace ASC.Files;
 
 public class Startup : BaseStartup
 {
-    public override JsonConverter[] Converters { get => new JsonConverter[] { new FileEntryWrapperConverter(), new FileShareConverter() }; }
+    protected override JsonConverter[] Converters { get => new JsonConverter[] { new FileEntryWrapperConverter(), new FileShareConverter() }; }
 
     public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment)
         : base(configuration, hostEnvironment)
@@ -44,11 +44,18 @@ public class Startup : BaseStartup
 
         base.ConfigureServices(services);
 
+        services.Configure<DistributedTaskQueueFactoryOptions>(FileOperationsManager.CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME, x =>
+        {
+            x.MaxThreadsCount = 10;
+        });
+
         DIHelper.TryAdd<FileHandlerService>();
         DIHelper.TryAdd<ChunkedUploaderHandlerService>();
         DIHelper.TryAdd<DocuSignHandlerService>();
         DIHelper.TryAdd<ThirdPartyAppHandlerService>();
+        DIHelper.TryAdd<OFormService>();
 
+        services.AddHostedService<OFormService>();
         NotifyConfigurationExtension.Register(DIHelper);
     }
 

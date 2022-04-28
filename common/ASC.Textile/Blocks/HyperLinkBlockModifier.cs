@@ -53,12 +53,18 @@ public class HyperLinkBlockModifier : BlockModifier
         //TODO: check the URL
         var atts = BlockAttributesParser.ParseBlockAttributes(m.Groups["atts"].Value, "a");
         if (m.Groups["title"].Length > 0)
+        {
             atts += " title=\"" + m.Groups["title"].Value + "\"";
+        }
+
         var linkText = m.Groups["text"].Value.Trim(' ');
 
         var str = m.Groups["pre"].Value + "<a ";
         if (!string.IsNullOrEmpty(_rel))
+        {
             str += "ref=\"" + _rel + "\" ";
+        }
+
         str += "href=\"" +
                 m.Groups["url"].Value + m.Groups["slash"].Value + "\"" +
                 atts +

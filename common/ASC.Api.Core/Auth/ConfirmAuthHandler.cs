@@ -28,12 +28,12 @@ using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Api.Core.Auth;
 
-[Scope(Additional = typeof(ConfirmAuthHandlerExtension))]
+[Transient]
 public class ConfirmAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
 {
     private readonly SecurityContext _securityContext;
     private readonly UserManager _userManager;
-    private readonly IServiceScopeFactory _serviceScopeFactory;
+    private readonly EmailValidationKeyModelHelper _emailValidationKeyModelHelper;
 
     public ConfirmAuthHandler(
         IOptionsMonitor<AuthenticationSchemeOptions> options,
@@ -50,20 +50,17 @@ public class ConfirmAuthHandler : AuthenticationHandler<AuthenticationSchemeOpti
         ISystemClock clock,
         SecurityContext securityContext,
         UserManager userManager,
-        IServiceScopeFactory serviceScopeFactory) :
+        EmailValidationKeyModelHelper emailValidationKeyModelHelper) :
         base(options, logger, encoder, clock)
     {
         _securityContext = securityContext;
         _userManager = userManager;
-        _serviceScopeFactory = serviceScopeFactory;
+        _emailValidationKeyModelHelper = emailValidationKeyModelHelper;
     }
 
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {
-        using var scope = _serviceScopeFactory.CreateScope();
-
-        var emailValidationKeyHelper = scope.ServiceProvider.GetService<EmailValidationKeyModelHelper>();
-        var emailValidationKeyModel = emailValidationKeyHelper.GetModel();
+        var emailValidationKeyModel = _emailValidationKeyModelHelper.GetModel();
 
         if (!emailValidationKeyModel.Type.HasValue)
         {
@@ -75,7 +72,7 @@ public class ConfirmAuthHandler : AuthenticationHandler<AuthenticationSchemeOpti
         EmailValidationKeyProvider.ValidationResult checkKeyResult;
         try
         {
-            checkKeyResult = emailValidationKeyHelper.Validate(emailValidationKeyModel);
+            checkKeyResult = _emailValidationKeyModelHelper.Validate(emailValidationKeyModel);
         }
         catch (ArgumentNullException)
         {
@@ -125,13 +122,5 @@ public class ConfirmAuthHandler : AuthenticationHandler<AuthenticationSchemeOpti
         };
 
         return Task.FromResult(result);
-    }
-}
-
-public static class ConfirmAuthHandlerExtension
-{
-    public static void Register(DIHelper services)
-    {
-        services.TryAdd<EmailValidationKeyModelHelper>();
     }
 }

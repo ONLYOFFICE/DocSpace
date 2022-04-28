@@ -40,7 +40,7 @@ public class OperationControllerHelper<T> : FilesHelperBase<T>
         FolderContentDtoHelper folderContentDtoHelper,
         IHttpContextAccessor httpContextAccessor,
         FolderDtoHelper folderDtoHelper,
-        FileOperationDtoHelper fileOperationDtoHelper) 
+        FileOperationDtoHelper fileOperationDtoHelper)
         : base(
             filesSettingsHelper,
             fileUploader,

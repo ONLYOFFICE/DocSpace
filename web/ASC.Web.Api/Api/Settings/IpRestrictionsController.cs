@@ -26,9 +26,9 @@
 
 namespace ASC.Web.Api.Controllers.Settings;
 
-public class IpRestrictionsController: BaseSettingsController
+public class IpRestrictionsController : BaseSettingsController
 {
-    private Tenant Tenant { get { return _apiContext.Tenant; } }
+    private Tenant Tenant { get { return ApiContext.Tenant; } }
 
     private readonly PermissionContext _permissionContext;
     private readonly SettingsManager _settingsManager;
@@ -40,7 +40,8 @@ public class IpRestrictionsController: BaseSettingsController
         SettingsManager settingsManager,
         WebItemManager webItemManager,
         IPRestrictionsService iPRestrictionsService,
-        IMemoryCache memoryCache) : base(apiContext, memoryCache, webItemManager)
+        IMemoryCache memoryCache,
+        IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _permissionContext = permissionContext;
         _settingsManager = settingsManager;

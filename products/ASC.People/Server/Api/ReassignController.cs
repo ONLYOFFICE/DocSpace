@@ -57,7 +57,7 @@ public class ReassignController : ApiControllerBase
 
     [Read(@"reassign/progress")]
     public ReassignProgressItem GetReassignProgress(Guid userId)
-{
+    {
         _permissionContext.DemandPermissions(Constants.Action_EditUser);
 
         return _queueWorkerReassign.GetProgressItemStatus(Tenant.Id, userId);

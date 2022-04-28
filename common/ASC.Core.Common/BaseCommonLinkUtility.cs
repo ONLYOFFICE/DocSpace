@@ -41,7 +41,7 @@ public class BaseCommonLinkUtility
     private UriBuilder _serverRoot;
     private string _vpath;
 
-    protected IHttpContextAccessor HttpContextAccessor;
+    protected IHttpContextAccessor _httpContextAccessor;
 
     public BaseCommonLinkUtility(
         CoreBaseSettings coreBaseSettings,
@@ -73,11 +73,11 @@ public class BaseCommonLinkUtility
         {
             try
             {
-                HttpContextAccessor = httpContextAccessor;
+                _httpContextAccessor = httpContextAccessor;
                 var uriBuilder = new UriBuilder(Uri.UriSchemeHttp, LocalHost);
-                if (HttpContextAccessor?.HttpContext?.Request != null)
+                if (_httpContextAccessor?.HttpContext?.Request != null)
                 {
-                    var u = HttpContextAccessor?.HttpContext.Request.GetUrlRewriter();
+                    var u = _httpContextAccessor?.HttpContext.Request.GetUrlRewriter();
 
                     ArgumentNullException.ThrowIfNull(u);
 
@@ -91,16 +91,16 @@ public class BaseCommonLinkUtility
             }
         }
 
-        CoreBaseSettings = coreBaseSettings;
+        _coreBaseSettings = coreBaseSettings;
         _coreSettings = coreSettings;
-        TenantManager = tenantManager;
+        _tenantManager = tenantManager;
     }
 
     public string VirtualRoot => ToAbsolute("~");
 
-    protected CoreBaseSettings CoreBaseSettings;
+    protected CoreBaseSettings _coreBaseSettings;
     private readonly CoreSettings _coreSettings;
-    protected TenantManager TenantManager;
+    protected TenantManager _tenantManager;
 
     private string _serverRootPath;
     public string ServerRootPath
@@ -114,15 +114,15 @@ public class BaseCommonLinkUtility
 
             UriBuilder result;
             // first, take from current request
-            if (HttpContextAccessor?.HttpContext?.Request != null)
+            if (_httpContextAccessor?.HttpContext?.Request != null)
             {
-                var u = HttpContextAccessor?.HttpContext?.Request.GetUrlRewriter();
+                var u = _httpContextAccessor?.HttpContext?.Request.GetUrlRewriter();
 
                 ArgumentNullException.ThrowIfNull(u);
 
                 result = new UriBuilder(u.Scheme, u.Host, u.Port);
 
-                if (CoreBaseSettings.Standalone && !result.Uri.IsLoopback)
+                if (_coreBaseSettings.Standalone && !result.Uri.IsLoopback)
                 {
                     // save for stanalone
                     _serverRoot.Host = result.Host;
@@ -136,7 +136,7 @@ public class BaseCommonLinkUtility
             if (result.Uri.IsLoopback)
             {
                 // take values from db if localhost or no http context thread
-                var tenant = TenantManager.GetCurrentTenant();
+                var tenant = _tenantManager.GetCurrentTenant();
                 result.Host = tenant.GetTenantDomain(_coreSettings);
 
 #if DEBUG

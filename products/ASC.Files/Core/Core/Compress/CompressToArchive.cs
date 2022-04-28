@@ -36,7 +36,7 @@ public class CompressToArchive : ICompress
 
     internal static readonly string TarExt = ".tar.gz";
     internal static readonly string ZipExt = ".zip";
-    private static List<string> _exts = new List<string>(2) { TarExt, ZipExt };
+    private static readonly List<string> _exts = new List<string>(2) { TarExt, ZipExt };
 
     public CompressToArchive(FilesSettingsHelper filesSettings, CompressToTarGz compressToTarGz, CompressToZip compressToZip)
     {
@@ -45,16 +45,14 @@ public class CompressToArchive : ICompress
             : compressToZip;
     }
 
-    public static string GetExt(IServiceProvider serviceProvider, string ext)
+    public string GetExt(string ext)
     {
         if (_exts.Contains(ext))
         {
             return ext;
         }
 
-        using var zip = serviceProvider.GetService<CompressToArchive>();
-
-        return zip.ArchiveExtension;
+        return ArchiveExtension;
     }
 
     public void SetStream(Stream stream)

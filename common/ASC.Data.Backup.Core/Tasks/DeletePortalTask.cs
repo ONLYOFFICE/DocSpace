@@ -60,14 +60,14 @@ public class DeletePortalTask : PortalTaskBase
         var tablesProcessed = 0;
         using (var connection = DbFactory.OpenConnection())
         {
-            foreach (var table in module.GetTablesOrdered().Reverse().Where(t => !IgnoredTables.Contains(t.Name)))
+            foreach (var table in module.GetTablesOrdered().Reverse().Where(t => !_ignoredTables.Contains(t.Name)))
             {
                 ActionInvoker.Try(state =>
                     {
                         var t = (TableInfo)state;
                         module.CreateDeleteCommand(connection.Fix(), TenantId, t).WithTimeout(120).ExecuteNonQuery();
                     }, table, 5, onFailure: error => { throw ThrowHelper.CantDeleteTable(table.Name, error); });
-                    SetCurrentStepProgress((int)(++tablesProcessed * 100 / (double)tablesCount));
+                SetCurrentStepProgress((int)(++tablesProcessed * 100 / (double)tablesCount));
             }
         }
 
@@ -82,14 +82,14 @@ public class DeletePortalTask : PortalTaskBase
         foreach (var module in storageModules)
         {
             var storage = StorageFactory.GetStorage(ConfigPath, TenantId.ToString(), module);
-                var domains = StorageFactoryConfig.GetDomainList(ConfigPath, module);
+            var domains = StorageFactoryConfig.GetDomainList(ConfigPath, module);
             foreach (var domain in domains)
             {
-                    ActionInvoker.Try(state => storage.DeleteFilesAsync((string)state, "\\", "*.*", true).Wait(), domain, 5,
-                                  onFailure: error => Logger.WarnFormat("Can't delete files for domain {0}: \r\n{1}", domain, error));
+                ActionInvoker.Try(state => storage.DeleteFilesAsync((string)state, "\\", "*.*", true).Wait(), domain, 5,
+                              onFailure: error => Logger.WarnFormat("Can't delete files for domain {0}: \r\n{1}", domain, error));
             }
-                storage.DeleteFilesAsync("\\", "*.*", true).Wait();
-                SetCurrentStepProgress((int)(++modulesProcessed * 100 / (double)storageModules.Count));
+            storage.DeleteFilesAsync("\\", "*.*", true).Wait();
+            SetCurrentStepProgress((int)(++modulesProcessed * 100 / (double)storageModules.Count));
         }
 
         Logger.Debug("end delete storage");

@@ -146,8 +146,8 @@ public class BackupPortalTask : PortalTaskBase
 
         SetStepsCount(stepscount);
 
-        var excluded = ModuleProvider.AllModules.Where(r => IgnoredModules.Contains(r.ModuleName)).SelectMany(r => r.Tables).Select(r => r.Name).ToList();
-        excluded.AddRange(IgnoredTables);
+        var excluded = ModuleProvider.AllModules.Where(r => _ignoredModules.Contains(r.ModuleName)).SelectMany(r => r.Tables).Select(r => r.Name).ToList();
+        excluded.AddRange(_ignoredTables);
         excluded.Add("res_");
 
         var dir = Path.GetDirectoryName(BackupFilePath);
@@ -565,7 +565,7 @@ public class BackupPortalTask : PortalTaskBase
     private void DoBackupModule(IDataWriteOperator writer, IModuleSpecifics module)
     {
         Logger.DebugFormat("begin saving data for module {0}", module.ModuleName);
-        var tablesToProcess = module.Tables.Where(t => !IgnoredTables.Contains(t.Name) && t.InsertMethod != InsertMethod.None).ToList();
+        var tablesToProcess = module.Tables.Where(t => !_ignoredTables.Contains(t.Name) && t.InsertMethod != InsertMethod.None).ToList();
         var tablesCount = tablesToProcess.Count;
         var tablesProcessed = 0;
 

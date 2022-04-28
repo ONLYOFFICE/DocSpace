@@ -38,9 +38,8 @@ public class BackupAjaxHandler
     private readonly UserManager _userManager;
     private readonly TenantExtra _tenantExtra;
     private readonly ConsumerFactory _consumerFactory;
-    private readonly BackupFileUploadHandler _backupFileUploadHandler;
     private readonly BackupService _backupService;
-    private TempPath TempPath { get; }
+    private readonly TempPath _tempPath;
 
     private const string BackupTempFolder = "backup";
     private const string BackupFileName = "backup.tmp";
@@ -58,7 +57,6 @@ public class BackupAjaxHandler
         UserManager userManager,
         TenantExtra tenantExtra,
         ConsumerFactory consumerFactory,
-        BackupFileUploadHandler backupFileUploadHandler,
         TempPath tempPath)
     {
         _tenantManager = tenantManager;
@@ -70,9 +68,8 @@ public class BackupAjaxHandler
         _userManager = userManager;
         _tenantExtra = tenantExtra;
         _consumerFactory = consumerFactory;
-        _backupFileUploadHandler = backupFileUploadHandler;
         _backupService = backupService;
-        TempPath = tempPath;
+        _tempPath = tempPath;
     }
 
     public void StartBackup(BackupStorageType storageType, Dictionary<string, string> storageParams, bool backupMail)
@@ -385,7 +382,7 @@ public class BackupAjaxHandler
 
     public string GetTmpFilePath()
     {
-        var folder = Path.Combine(TempPath.GetTempPath(), BackupTempFolder, _tenantManager.GetCurrentTenant().Id.ToString());
+        var folder = Path.Combine(_tempPath.GetTempPath(), BackupTempFolder, _tenantManager.GetCurrentTenant().Id.ToString());
 
         if (!Directory.Exists(folder))
         {

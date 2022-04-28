@@ -120,7 +120,7 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
         if (subjectID != Guid.Empty)
         {
             files = files.Where(x => subjectGroup
-                                         ? UserManager.IsUserInGroup(x.CreateBy, subjectID)
+                                         ? _userManager.IsUserInGroup(x.CreateBy, subjectID)
                                          : x.CreateBy == subjectID);
         }
 
@@ -146,7 +146,7 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
             case FilterType.MediaOnly:
                 files = files.Where(x =>
                 {
-                    FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+                    var fileType = FileUtility.GetFileTypeByFileName(x.Title);
 
                     return fileType == FileType.Audio || fileType == FileType.Video;
                 });
@@ -192,7 +192,7 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
         if (subjectID != Guid.Empty)
         {
             files = files.Where(x => subjectGroup
-                                         ? UserManager.IsUserInGroup(x.CreateBy, subjectID)
+                                         ? _userManager.IsUserInGroup(x.CreateBy, subjectID)
                                          : x.CreateBy == subjectID);
         }
 
@@ -218,7 +218,7 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
             case FilterType.MediaOnly:
                 files = files.Where(x =>
                 {
-                    FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+                    var fileType = FileUtility.GetFileTypeByFileName(x.Title);
 
                     return fileType == FileType.Audio || fileType == FileType.Video;
                 });
@@ -390,7 +390,7 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
             await tx.CommitAsync().ConfigureAwait(false);
         }
 
-        if (!(onedriveFile is ErrorItem))
+        if (onedriveFile is not ErrorItem)
         {
             var storage = await ProviderInfo.StorageAsync;
             await storage.DeleteItemAsync(onedriveFile);
@@ -580,7 +580,7 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
 
     public Task<ChunkedUploadSession<string>> CreateUploadSessionAsync(File<string> file, long contentLength)
     {
-        if (SetupInfo.ChunkUploadSize > contentLength)
+        if (_setupInfo.ChunkUploadSize > contentLength)
         {
             return Task.FromResult(new ChunkedUploadSession<string>(RestoreIds(file), contentLength) { UseChunks = false });
         }
@@ -611,7 +611,7 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
         }
         else
         {
-            uploadSession.Items["TempPath"] = TempPath.GetTempFileName();
+            uploadSession.Items["TempPath"] = _tempPath.GetTempFileName();
         }
 
         uploadSession.File = RestoreIds(uploadSession.File);

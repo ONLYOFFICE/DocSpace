@@ -35,7 +35,7 @@ var builder = WebApplication.CreateBuilder(options);
 builder.Host.UseWindowsService();
 builder.Host.UseSystemd();
 
-var startup = new Startup(builder.Configuration);
+var startup = new Startup();
 
 startup.ConfigureServices(builder.Services);
 

@@ -28,15 +28,16 @@ namespace ASC.Files.Helpers;
 
 public class FilesControllerHelper<T> : FilesHelperBase<T>
 {
+    private readonly IServiceProvider _serviceProvider;
     private readonly ILog _logger;
     private readonly ApiDateTimeHelper _apiDateTimeHelper;
     private readonly UserManager _userManager;
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
-    private readonly IServiceProvider _serviceProvider;
     private readonly FileConverter _fileConverter;
     private readonly FileOperationDtoHelper _fileOperationDtoHelper;
 
     public FilesControllerHelper(
+        IServiceProvider serviceProvider,
         FilesSettingsHelper filesSettingsHelper,
         FileUploader fileUploader,
         SocketManager socketManager,
@@ -50,9 +51,8 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
         ApiDateTimeHelper apiDateTimeHelper,
         UserManager userManager,
         DisplayUserSettingsHelper displayUserSettingsHelper,
-        IServiceProvider serviceProvider,
         FileConverter fileConverter,
-        FileOperationDtoHelper fileOperationDtoHelper) 
+        FileOperationDtoHelper fileOperationDtoHelper)
         : base(
             filesSettingsHelper,
             fileUploader,
@@ -64,11 +64,11 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
             httpContextAccessor,
             folderDtoHelper)
     {
+        _serviceProvider = serviceProvider;
         _logger = logger;
         _apiDateTimeHelper = apiDateTimeHelper;
         _fileConverter = fileConverter;
         _userManager = userManager;
-        _serviceProvider = serviceProvider;
         _displayUserSettingsHelper = displayUserSettingsHelper;
         _fileOperationDtoHelper = fileOperationDtoHelper;
     }
@@ -128,7 +128,7 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
         }
     }
 
-    public async Task<FileDto<T>> CreateFileAsync(T folderId, string title, JsonElement templateId, bool enableExternalExt = false)
+    public async Task<FileDto<T>> CreateFileAsync(T folderId, string title, JsonElement templateId, int formId, bool enableExternalExt = false)
     {
         File<T> file;
 
@@ -142,7 +142,7 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
         }
         else
         {
-            file = await _fileStorageService.CreateNewFileAsync(new FileModel<T, int> { ParentId = folderId, Title = title, TemplateId = 0 }, enableExternalExt);
+            file = await _fileStorageService.CreateNewFileAsync(new FileModel<T, int> { ParentId = folderId, Title = title, TemplateId = 0, FormId = formId }, enableExternalExt);
         }
 
         return await _fileDtoHelper.GetAsync(file);
@@ -265,7 +265,6 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
     public async Task<FileDto<TTemplate>> CopyFileAsAsync<TTemplate>(T fileId, TTemplate destFolderId, string destTitle, string password = null)
     {
         var service = _serviceProvider.GetService<FileStorageService<TTemplate>>();
-        var controller = _serviceProvider.GetService<FilesControllerHelper<TTemplate>>();
         var file = await _fileStorageService.GetFileAsync(fileId, -1);
         var ext = FileUtility.GetFileExtension(file.Title);
         var destExt = FileUtility.GetFileExtension(destTitle);
@@ -279,6 +278,7 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
 
         using (var fileStream = await _fileConverter.ExecAsync(file, destExt, password))
         {
+            var controller = _serviceProvider.GetService<FilesControllerHelper<TTemplate>>();
             return await controller.InsertFileAsync(destFolderId, fileStream, destTitle, true);
         }
     }

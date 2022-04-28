@@ -44,32 +44,32 @@ class ConfigureTenantUtil : IConfigureNamedOptions<TenantUtil>
     public void Configure(string name, TenantUtil options)
     {
         Configure(options);
-        options.TenantManager = _tenantManager.Get(name);
+        options._tenantManager = _tenantManager.Get(name);
     }
 
     public void Configure(TenantUtil options)
     {
-        options.TimeZoneConverter = _timeZoneConverter;
-        options.TenantManager = _tenantManager.Value;
+        options._timeZoneConverter = _timeZoneConverter;
+        options._tenantManager = _tenantManager.Value;
     }
 }
 
 [Scope(typeof(ConfigureTenantUtil))]
 public class TenantUtil
 {
-    internal TenantManager TenantManager;
-    internal TimeZoneConverter TimeZoneConverter;
+    internal TenantManager _tenantManager;
+    internal TimeZoneConverter _timeZoneConverter;
 
     public TenantUtil() { }
 
     public TenantUtil(TenantManager tenantManager, TimeZoneConverter timeZoneConverter)
     {
-        TenantManager = tenantManager;
-        TimeZoneConverter = timeZoneConverter;
+        _tenantManager = tenantManager;
+        _timeZoneConverter = timeZoneConverter;
     }
 
     private TimeZoneInfo _timeZoneInfo;
-    private TimeZoneInfo TimeZoneInfo => _timeZoneInfo ??= TimeZoneConverter.GetTimeZone(TenantManager.GetCurrentTenant().TimeZone);
+    private TimeZoneInfo TimeZoneInfo => _timeZoneInfo ??= _timeZoneConverter.GetTimeZone(_tenantManager.GetCurrentTenant().TimeZone);
 
     public DateTime DateTimeFromUtc(DateTime utc)
     {
@@ -78,7 +78,7 @@ public class TenantUtil
 
     public DateTime DateTimeFromUtc(string timeZone, DateTime utc)
     {
-        return DateTimeFromUtc(TimeZoneConverter.GetTimeZone(timeZone), utc);
+        return DateTimeFromUtc(_timeZoneConverter.GetTimeZone(timeZone), utc);
     }
 
     public static DateTime DateTimeFromUtc(TimeZoneInfo timeZone, DateTime utc)
@@ -130,6 +130,6 @@ public class TenantUtil
     }
     public DateTime DateTimeNow(string timeZone)
     {
-        return DateTimeNow(TimeZoneConverter.GetTimeZone(timeZone));
+        return DateTimeNow(_timeZoneConverter.GetTimeZone(timeZone));
     }
 }

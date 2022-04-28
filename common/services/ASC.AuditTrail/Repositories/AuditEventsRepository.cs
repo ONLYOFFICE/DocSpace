@@ -73,12 +73,12 @@ public class AuditEventsRepository
            from p in AuditTrailContext.Users.Where(p => q.UserId == p.Id).DefaultIfEmpty()
            where q.TenantId == tenant
            orderby q.Date descending
-           select new AuditEventQuery 
-           {   
-               Event = q, 
-               FirstName = p.FirstName, 
-               LastName = p.LastName, 
-               UserName = p.UserName 
+           select new AuditEventQuery
+           {
+               Event = q,
+               FirstName = p.FirstName,
+               LastName = p.LastName,
+               UserName = p.UserName
            };
 
         if (fromDate.HasValue && to.HasValue)

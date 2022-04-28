@@ -26,7 +26,14 @@
 
 namespace ASC.Notify.Engine;
 
-public class NotifyEngine : INotifyEngine
+public interface INotifyEngineAction
+{
+    void BeforeTransferRequest(NotifyRequest request);
+    void AfterTransferRequest(NotifyRequest request);
+}
+
+[Singletone]
+public class NotifyEngine : INotifyEngine, IDisposable
 {
     private readonly ILog _logger;
     private readonly Context _context;
@@ -39,25 +46,27 @@ public class NotifyEngine : INotifyEngine
     private readonly Dictionary<string, IPatternStyler> _stylers = new Dictionary<string, IPatternStyler>();
     private readonly IPatternFormatter _sysTagFormatter = new ReplacePatternFormatter(@"_#(?<tagName>[A-Z0-9_\-.]+)#_", true);
     private readonly TimeSpan _defaultSleep = TimeSpan.FromSeconds(10);
-    private readonly IServiceProvider _serviceProvider;
-
-    public event Action<NotifyEngine, NotifyRequest, IServiceScope> BeforeTransferRequest;
-    public event Action<NotifyEngine, NotifyRequest, IServiceScope> AfterTransferRequest;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
+    internal readonly ICollection<Type> Actions;
 
 
-    public NotifyEngine(Context context, IServiceProvider serviceProvider)
+    public NotifyEngine(Context context, IOptionsMonitor<ILog> options, IServiceScopeFactory serviceScopeFactory)
     {
+        Actions = new List<Type>();
         _context = context ?? throw new ArgumentNullException(nameof(context));
-        _logger = serviceProvider.GetService<IOptionsMonitor<ILog>>().Get("ASC.Notify");
-        _serviceProvider = serviceProvider;
+        _logger = options.Get("ASC.Notify");
+        _serviceScopeFactory = serviceScopeFactory;
         _notifyScheduler = new Thread(NotifyScheduler) { IsBackground = true, Name = "NotifyScheduler" };
         _notifySender = new Thread(NotifySender) { IsBackground = true, Name = "NotifySender" };
     }
 
-
-    public virtual void QueueRequest(NotifyRequest request, IServiceScope serviceScope)
+    public void AddAction<T>() where T : INotifyEngineAction
     {
-        BeforeTransferRequest?.Invoke(this, request, serviceScope);
+        Actions.Add(typeof(T));
+    }
+
+    public void QueueRequest(NotifyRequest request)
+    {
         lock (_requests)
         {
             if (!_notifySender.IsAlive)
@@ -184,8 +193,12 @@ public class NotifyEngine : INotifyEngine
                 }
                 if (request != null)
                 {
-                    using var scope = _serviceProvider.CreateScope();
-                    AfterTransferRequest?.Invoke(this, request, scope);
+                    using var scope = _serviceScopeFactory.CreateScope();
+                    foreach (var action in Actions)
+                    {
+                        ((INotifyEngineAction)scope.ServiceProvider.GetRequiredService(action)).AfterTransferRequest(request);
+                    }
+
                     try
                     {
                         SendNotify(request, scope);
@@ -258,7 +271,7 @@ public class NotifyEngine : INotifyEngine
         if (request.Recipient is IDirectRecipient)
         {
             var subscriptionSource = request.GetSubscriptionProvider(serviceScope);
-            if (!request.IsNeedCheckSubscriptions || !subscriptionSource.IsUnsubscribe(request.Recipient as IDirectRecipient, request.NotifyAction, request.ObjectID))
+            if (!request._isNeedCheckSubscriptions || !subscriptionSource.IsUnsubscribe(request.Recipient as IDirectRecipient, request.NotifyAction, request.ObjectID))
             {
                 var directresponses = new List<SendResponse>(1);
                 try
@@ -321,7 +334,7 @@ public class NotifyEngine : INotifyEngine
 
     private List<SendResponse> SendDirectNotify(NotifyRequest request, IServiceScope serviceScope)
     {
-        if (!(request.Recipient is IDirectRecipient))
+        if (request.Recipient is not IDirectRecipient)
         {
             throw new ArgumentException("request.Recipient not IDirectRecipient", nameof(request));
         }
@@ -347,11 +360,11 @@ public class NotifyEngine : INotifyEngine
             _logger.Error("Prepare", ex);
         }
 
-        if (request.SenderNames != null && request.SenderNames.Length > 0)
+        if (request._senderNames != null && request._senderNames.Length > 0)
         {
-            foreach (var sendertag in request.SenderNames)
+            foreach (var sendertag in request._senderNames)
             {
-                var channel = _context.NotifyService.GetSender(sendertag);
+                var channel = _context.GetSender(sendertag);
                 if (channel != null)
                 {
                     try
@@ -382,7 +395,7 @@ public class NotifyEngine : INotifyEngine
 
     private SendResponse SendDirectNotify(NotifyRequest request, ISenderChannel channel, IServiceScope serviceScope)
     {
-        if (!(request.Recipient is IDirectRecipient))
+        if (request.Recipient is not IDirectRecipient)
         {
             throw new ArgumentException("request.Recipient not IDirectRecipient", nameof(request));
         }
@@ -493,7 +506,7 @@ public class NotifyEngine : INotifyEngine
 
     private void PrepareRequestFillSenders(NotifyRequest request, IServiceScope serviceScope)
     {
-        if (request.SenderNames == null)
+        if (request._senderNames == null)
         {
             var subscriptionProvider = request.GetSubscriptionProvider(serviceScope);
 
@@ -501,24 +514,24 @@ public class NotifyEngine : INotifyEngine
             senderNames.AddRange(subscriptionProvider.GetSubscriptionMethod(request.NotifyAction, request.Recipient) ?? Array.Empty<string>());
             senderNames.AddRange(request.Arguments.OfType<AdditionalSenderTag>().Select(tag => (string)tag.Value));
 
-            request.SenderNames = senderNames.ToArray();
+            request._senderNames = senderNames.ToArray();
         }
     }
 
     private void PrepareRequestFillPatterns(NotifyRequest request, IServiceScope serviceScope)
     {
-        if (request.Patterns == null)
+        if (request._patterns == null)
         {
-            request.Patterns = new IPattern[request.SenderNames.Length];
-            if (request.Patterns.Length == 0)
+            request._patterns = new IPattern[request._senderNames.Length];
+            if (request._patterns.Length == 0)
             {
                 return;
             }
 
             var apProvider = request.GetPatternProvider(serviceScope);
-            for (var i = 0; i < request.SenderNames.Length; i++)
+            for (var i = 0; i < request._senderNames.Length; i++)
             {
-                var senderName = request.SenderNames[i];
+                var senderName = request._senderNames[i];
                 IPattern pattern = null;
                 if (apProvider.GetPatternMethod != null)
                 {
@@ -529,7 +542,7 @@ public class NotifyEngine : INotifyEngine
                     pattern = apProvider.GetPattern(request.NotifyAction, senderName);
                 }
 
-                request.Patterns[i] = pattern ?? throw new NotifyException($"For action \"{request.NotifyAction.ID}\" by sender \"{senderName}\" no one patterns getted.");
+                request._patterns[i] = pattern ?? throw new NotifyException($"For action \"{request.NotifyAction.ID}\" by sender \"{senderName}\" no one patterns getted.");
             }
         }
     }
@@ -537,7 +550,7 @@ public class NotifyEngine : INotifyEngine
     private void PrepareRequestFillTags(NotifyRequest request, IServiceScope serviceScope)
     {
         var patternProvider = request.GetPatternProvider(serviceScope);
-        foreach (var pattern in request.Patterns)
+        foreach (var pattern in request._patterns)
         {
             IPatternFormatter formatter;
             try
@@ -561,9 +574,9 @@ public class NotifyEngine : INotifyEngine
                 throw new NotifyException(string.Format("Get tags from formatter of pattern \"{0}\" failed.", pattern), exc);
             }
 
-            foreach (var tag in tags.Where(tag => !request.Arguments.Exists(tagValue => Equals(tagValue.Tag, tag)) && !request.RequaredTags.Exists(rtag => Equals(rtag, tag))))
+            foreach (var tag in tags.Where(tag => !request.Arguments.Exists(tagValue => Equals(tagValue.Tag, tag)) && !request._requaredTags.Exists(rtag => Equals(rtag, tag))))
             {
-                request.RequaredTags.Add(tag);
+                request._requaredTags.Add(tag);
             }
         }
     }
@@ -632,5 +645,41 @@ public class NotifyEngine : INotifyEngine
         {
             return _method.GetHashCode();
         }
+    }
+
+    public void Dispose()
+    {
+        if (_methodsEvent != null)
+        {
+            _methodsEvent.Dispose();
+        }
+
+        if (_requestsEvent != null)
+        {
+            _requestsEvent.Dispose();
+        }
+    }
+}
+
+[Scope]
+public class NotifyEngineQueue
+{
+    private readonly NotifyEngine _notifyEngine;
+    private readonly IServiceProvider _serviceProvider;
+
+    public NotifyEngineQueue(NotifyEngine notifyEngine, IServiceProvider serviceProvider)
+    {
+        _notifyEngine = notifyEngine;
+        _serviceProvider = serviceProvider;
+    }
+
+    public void QueueRequest(NotifyRequest request)
+    {
+        foreach (var action in _notifyEngine.Actions)
+        {
+            ((INotifyEngineAction)_serviceProvider.GetRequiredService(action)).BeforeTransferRequest(request);
+        }
+
+        _notifyEngine.QueueRequest(request);
     }
 }

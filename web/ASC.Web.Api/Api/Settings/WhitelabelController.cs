@@ -26,11 +26,10 @@
 
 namespace ASC.Web.Api.Controllers.Settings;
 
-public class WhitelabelController: BaseSettingsController
+public class WhitelabelController : BaseSettingsController
 {
-    private Tenant Tenant { get { return _apiContext.Tenant; } }
+    private Tenant Tenant { get { return ApiContext.Tenant; } }
 
-    private readonly IServiceProvider _serviceProvider;
     private readonly TenantManager _tenantManager;
     private readonly TenantExtra _tenantExtra;
     private readonly PermissionContext _permissionContext;
@@ -40,8 +39,6 @@ public class WhitelabelController: BaseSettingsController
     private readonly TenantLogoManager _tenantLogoManager;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly CommonLinkUtility _commonLinkUtility;
-    private readonly IConfiguration _configuration;
-    private readonly CoreSettings _coreSettings;
     private readonly StorageFactory _storageFactory;
 
     public WhitelabelController(
@@ -56,13 +53,10 @@ public class WhitelabelController: BaseSettingsController
         TenantLogoManager tenantLogoManager,
         CoreBaseSettings coreBaseSettings,
         CommonLinkUtility commonLinkUtility,
-        IConfiguration configuration,
-        CoreSettings coreSettings,
-        IServiceProvider serviceProvider,
         IMemoryCache memoryCache,
-        StorageFactory storageFactory) : base(apiContext, memoryCache, webItemManager)
+        StorageFactory storageFactory,
+        IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
-        _serviceProvider = serviceProvider;
         _tenantManager = tenantManager;
         _tenantExtra = tenantExtra;
         _permissionContext = permissionContext;
@@ -72,8 +66,6 @@ public class WhitelabelController: BaseSettingsController
         _tenantLogoManager = tenantLogoManager;
         _coreBaseSettings = coreBaseSettings;
         _commonLinkUtility = commonLinkUtility;
-        _configuration = configuration;
-        _coreSettings = coreSettings;
         _storageFactory = storageFactory;
     }
 
@@ -217,11 +209,11 @@ public class WhitelabelController: BaseSettingsController
         return
         new[]
         {
-            new {type = (int)WhiteLabelLogoTypeEnum.LightSmall, name = nameof(WhiteLabelLogoTypeEnum.LightSmall), height = TenantWhiteLabelSettings.logoLightSmallSize.Height, width = TenantWhiteLabelSettings.logoLightSmallSize.Width},
-            new {type = (int)WhiteLabelLogoTypeEnum.Dark, name = nameof(WhiteLabelLogoTypeEnum.Dark), height = TenantWhiteLabelSettings.logoDarkSize.Height, width = TenantWhiteLabelSettings.logoDarkSize.Width},
-            new {type = (int)WhiteLabelLogoTypeEnum.Favicon, name = nameof(WhiteLabelLogoTypeEnum.Favicon), height = TenantWhiteLabelSettings.logoFaviconSize.Height, width = TenantWhiteLabelSettings.logoFaviconSize.Width},
-            new {type = (int)WhiteLabelLogoTypeEnum.DocsEditor, name = nameof(WhiteLabelLogoTypeEnum.DocsEditor), height = TenantWhiteLabelSettings.logoDocsEditorSize.Height, width = TenantWhiteLabelSettings.logoDocsEditorSize.Width},
-            new {type = (int)WhiteLabelLogoTypeEnum.DocsEditorEmbed, name =  nameof(WhiteLabelLogoTypeEnum.DocsEditorEmbed), height = TenantWhiteLabelSettings.logoDocsEditorEmbedSize.Height, width = TenantWhiteLabelSettings.logoDocsEditorEmbedSize.Width}
+            new {type = (int)WhiteLabelLogoTypeEnum.LightSmall, name = nameof(WhiteLabelLogoTypeEnum.LightSmall), height = TenantWhiteLabelSettings.LogoLightSmallSize.Height, width = TenantWhiteLabelSettings.LogoLightSmallSize.Width},
+            new {type = (int)WhiteLabelLogoTypeEnum.Dark, name = nameof(WhiteLabelLogoTypeEnum.Dark), height = TenantWhiteLabelSettings.LogoDarkSize.Height, width = TenantWhiteLabelSettings.LogoDarkSize.Width},
+            new {type = (int)WhiteLabelLogoTypeEnum.Favicon, name = nameof(WhiteLabelLogoTypeEnum.Favicon), height = TenantWhiteLabelSettings.LogoFaviconSize.Height, width = TenantWhiteLabelSettings.LogoFaviconSize.Width},
+            new {type = (int)WhiteLabelLogoTypeEnum.DocsEditor, name = nameof(WhiteLabelLogoTypeEnum.DocsEditor), height = TenantWhiteLabelSettings.LogoDocsEditorSize.Height, width = TenantWhiteLabelSettings.LogoDocsEditorSize.Width},
+            new {type = (int)WhiteLabelLogoTypeEnum.DocsEditorEmbed, name =  nameof(WhiteLabelLogoTypeEnum.DocsEditorEmbed), height = TenantWhiteLabelSettings.LogoDocsEditorEmbedSize.Height, width = TenantWhiteLabelSettings.LogoDocsEditorEmbedSize.Width}
 
         };
     }
@@ -340,9 +332,9 @@ public class WhitelabelController: BaseSettingsController
 
         result.Add(instance);
 
-        if (!instance.IsDefault(_coreSettings) && !instance.IsLicensor)
+        if (!instance.IsDefault() && !instance.IsLicensor)
         {
-            result.Add(instance.GetDefault(_serviceProvider) as CompanyWhiteLabelSettings);
+            result.Add(_settingsManager.GetDefault<CompanyWhiteLabelSettings>());
         }
 
         return result;
@@ -364,7 +356,10 @@ public class WhitelabelController: BaseSettingsController
 
     private bool SaveCompanyWhiteLabelSettings(CompanyWhiteLabelSettingsWrapper companyWhiteLabelSettingsWrapper)
     {
-        if (companyWhiteLabelSettingsWrapper.Settings == null) throw new ArgumentNullException("settings");
+        if (companyWhiteLabelSettingsWrapper.Settings == null)
+        {
+            throw new ArgumentNullException("settings");
+        }
 
         DemandRebrandingPermission();
 
@@ -387,12 +382,13 @@ public class WhitelabelController: BaseSettingsController
     {
         DemandRebrandingPermission();
 
-        var defaultSettings = (CompanyWhiteLabelSettings)_settingsManager.LoadForDefaultTenant<CompanyWhiteLabelSettings>().GetDefault(_coreSettings);
+        var defaultSettings = _settingsManager.GetDefault<CompanyWhiteLabelSettings>();
 
         _settingsManager.SaveForDefaultTenant(defaultSettings);
 
         return defaultSettings;
     }
+
     ///<visible>false</visible>
     [Create("rebranding/additional")]
     public bool SaveAdditionalWhiteLabelSettingsFromBody([FromBody] AdditionalWhiteLabelSettingsWrapper wrapper)
@@ -409,7 +405,10 @@ public class WhitelabelController: BaseSettingsController
 
     private bool SaveAdditionalWhiteLabelSettings(AdditionalWhiteLabelSettingsWrapper wrapper)
     {
-        if (wrapper.Settings == null) throw new ArgumentNullException("settings");
+        if (wrapper.Settings == null)
+        {
+            throw new ArgumentNullException("settings");
+        }
 
         DemandRebrandingPermission();
 
@@ -430,7 +429,7 @@ public class WhitelabelController: BaseSettingsController
     {
         DemandRebrandingPermission();
 
-        var defaultSettings = (AdditionalWhiteLabelSettings)_settingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>().GetDefault(_configuration);
+        var defaultSettings = _settingsManager.GetDefault<AdditionalWhiteLabelSettings>();
 
         _settingsManager.SaveForDefaultTenant(defaultSettings);
 
@@ -501,7 +500,7 @@ public class WhitelabelController: BaseSettingsController
     {
         DemandRebrandingPermission();
 
-        var defaultSettings = (MailWhiteLabelSettings)_settingsManager.LoadForDefaultTenant<MailWhiteLabelSettings>().GetDefault(_configuration);
+        var defaultSettings = _settingsManager.GetDefault<MailWhiteLabelSettings>();
 
         _settingsManager.SaveForDefaultTenant(defaultSettings);
 

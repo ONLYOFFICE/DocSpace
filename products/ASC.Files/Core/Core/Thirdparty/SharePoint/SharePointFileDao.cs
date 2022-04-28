@@ -112,7 +112,7 @@ internal class SharePointFileDao : SharePointDaoBase, IFileDao<string>
         if (subjectID != Guid.Empty)
         {
             files = files.Where(x => subjectGroup
-                                         ? UserManager.IsUserInGroup(x.CreateBy, subjectID)
+                                         ? _userManager.IsUserInGroup(x.CreateBy, subjectID)
                                          : x.CreateBy == subjectID);
         }
 
@@ -138,7 +138,7 @@ internal class SharePointFileDao : SharePointDaoBase, IFileDao<string>
             case FilterType.MediaOnly:
                 files = files.Where(x =>
                 {
-                    FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+                    var fileType = FileUtility.GetFileTypeByFileName(x.Title);
 
                     return fileType == FileType.Audio || fileType == FileType.Video;
                 });
@@ -182,7 +182,7 @@ internal class SharePointFileDao : SharePointDaoBase, IFileDao<string>
         if (subjectID != Guid.Empty)
         {
             files = files.Where(x => subjectGroup
-                                         ? UserManager.IsUserInGroup(x.CreateBy, subjectID)
+                                         ? _userManager.IsUserInGroup(x.CreateBy, subjectID)
                                          : x.CreateBy == subjectID);
         }
 
@@ -208,7 +208,7 @@ internal class SharePointFileDao : SharePointDaoBase, IFileDao<string>
             case FilterType.MediaOnly:
                 files = files.Where(x =>
                 {
-                    FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+                    var fileType = FileUtility.GetFileTypeByFileName(x.Title);
 
                     return fileType == FileType.Audio || fileType == FileType.Video;
                 });

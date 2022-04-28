@@ -28,6 +28,7 @@ const FloatingButton = ({ id, className, style, ...rest }) => {
 
   return (
     <StyledCircleWrap
+      color={color}
       id={id}
       className={`${className} not-selectable`}
       style={style}
@@ -42,7 +43,7 @@ const FloatingButton = ({ id, className, style, ...rest }) => {
           <div className="circle__fill"></div>
         </div>
 
-        <StyledFloatingButton color={color}>
+        <StyledFloatingButton className="circle__background" color={color}>
           <IconBox>
             {icon == "upload" ? (
               <ButtonUploadIcon />

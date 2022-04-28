@@ -1,6 +1,6 @@
 ﻿{
-  "ConflictResolveDescription": "Fails ar nosaukumu {{file}} jau pastāv mapē {{folder}}.",
-  "ConflictResolveDescriptionFiles": "{{filesCount}} dokumenti ar tādu pašu nosaukumu jau pastāv mapē '{{folder}}'.",
+  "ConflictResolveDescription": "Fails ar nosaukumu <1>{{file}}</1> jau pastāv mapē <1>{{folder}}</1>.",
+  "ConflictResolveDescriptionFiles": "{{filesCount}} dokumenti ar tādu pašu nosaukumu jau pastāv mapē <1>{{folder}}</1>.",
   "ConflictResolveSelectAction": "Lūdzu, atlasiet darbību:",
   "ConflictResolveTitle": "Pārrakstiet apstiprinājumu",
   "CreateDescription": "Mapē būs divi dažādi faili.",

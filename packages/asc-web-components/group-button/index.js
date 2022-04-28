@@ -16,9 +16,6 @@ import ExpanderDownIcon from "../../../public/images/expander-down.react.svg";
 import commonIconsStyles from "../utils/common-icons-style";
 import Base from "../themes/base";
 
-const textColor = "#333333",
-  disabledTextColor = "#A3A9AE";
-
 const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
   ${commonIconsStyles}
   path {
@@ -26,7 +23,10 @@ const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
       props.disabled
         ? props.theme.groupButton.disableColor
         : props.theme.groupButton.color};
-    fill: ${(props) => props.color};
+    fill: ${(props) =>
+      props.disabled
+        ? props.theme.groupButton.disableColor
+        : props.theme.groupButton.color};
   }
 `;
 StyledExpanderDownIcon.defaultProps = { theme: Base };

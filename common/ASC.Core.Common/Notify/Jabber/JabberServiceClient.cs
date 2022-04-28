@@ -30,7 +30,7 @@ namespace ASC.Core.Notify.Jabber;
 public class JabberServiceClient
 {
     private static readonly TimeSpan _timeout = TimeSpan.FromMinutes(2);
-    private static DateTime _lastErrorTime = default;
+    private static DateTime _lastErrorTime;
     private readonly UserManager _userManager;
     private readonly AuthContext _authContext;
     private readonly TenantManager _tenantManager;
@@ -49,7 +49,10 @@ public class JabberServiceClient
 
     public bool SendMessage(int tenantId, string from, string to, string text, string subject)
     {
-        if (IsServiceProbablyNotAvailable()) return false;
+        if (IsServiceProbablyNotAvailable())
+        {
+            return false;
+        }
 
         using (var service = GetService())
         {

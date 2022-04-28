@@ -24,20 +24,19 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Core.Users
+namespace ASC.Core.Users;
+
+public static class StudioUserInfoExtension
 {
-    public static class StudioUserInfoExtension
+    public static string GetUserProfilePageURL(this UserInfo userInfo, CommonLinkUtility commonLinkUtility)
     {
-        public static string GetUserProfilePageURL(this UserInfo userInfo, CommonLinkUtility commonLinkUtility)
-        {
-            return userInfo == null ? "" : commonLinkUtility.GetUserProfile(userInfo);
-        }
+        return userInfo == null ? "" : commonLinkUtility.GetUserProfile(userInfo);
+    }
 
-        public static List<string> GetListAdminModules(this UserInfo ui, WebItemSecurity webItemSecurity)
-        {
-            var products = webItemSecurity.WebItemManager.GetItemsAll().Where(i => i is IProduct || i.ID == WebItemManager.MailProductID);
+    public static List<string> GetListAdminModules(this UserInfo ui, WebItemSecurity webItemSecurity, WebItemManager webItemManager)
+    {
+        var products = webItemManager.GetItemsAll().Where(i => i is IProduct || i.ID == WebItemManager.MailProductID);
 
-            return (from product in products where webItemSecurity.IsProductAdministrator(product.ID, ui.Id) select product.ProductClassName).ToList();
-        }
+        return (from product in products where webItemSecurity.IsProductAdministrator(product.ID, ui.Id) select product.ProductClassName).ToList();
     }
 }

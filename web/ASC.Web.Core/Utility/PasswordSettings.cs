@@ -24,53 +24,57 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Core.Utility
+namespace ASC.Web.Core.Utility;
+
+[Serializable]
+public sealed class PasswordSettings : ISettings<PasswordSettings>
 {
-    [Serializable]
-    public sealed class PasswordSettings : ISettings
+    public Guid ID
     {
-        public Guid ID
+        get { return new Guid("aa93a4d1-012d-4ccd-895a-e094e809c840"); }
+    }
+
+    public const int MaxLength = 30;
+    private readonly IConfiguration _configuration;
+
+    /// <summary>
+    /// Minimal length password has
+    /// </summary>
+    public int MinLength { get; set; }
+
+    /// <summary>
+    /// Password must contains upper case
+    /// </summary>
+    public bool UpperCase { get; set; }
+
+    /// <summary>
+    /// Password must contains digits
+    /// </summary>
+    public bool Digits { get; set; }
+
+    /// <summary>
+    /// Password must contains special symbols
+    /// </summary>
+    public bool SpecSymbols { get; set; }
+
+    public PasswordSettings(IConfiguration configuration)
+    {
+        _configuration = configuration;
+    }
+
+    public PasswordSettings()
+    {
+    }
+
+    public PasswordSettings GetDefault()
+    {
+        var def = new PasswordSettings(_configuration) { MinLength = 8, UpperCase = false, Digits = false, SpecSymbols = false };
+
+        if (_configuration != null && int.TryParse(_configuration["web:password:min"], out var defaultMinLength))
         {
-            get { return new Guid("aa93a4d1-012d-4ccd-895a-e094e809c840"); }
+            def.MinLength = Math.Max(1, Math.Min(MaxLength, defaultMinLength));
         }
 
-        public const int MaxLength = 30;
-
-        /// <summary>
-        /// Minimal length password has
-        /// </summary>
-        public int MinLength { get; set; }
-
-        /// <summary>
-        /// Password must contains upper case
-        /// </summary>
-        public bool UpperCase { get; set; }
-
-        /// <summary>
-        /// Password must contains digits
-        /// </summary>
-        public bool Digits { get; set; }
-
-        /// <summary>
-        /// Password must contains special symbols
-        /// </summary>
-        public bool SpecSymbols { get; set; }
-
-        public ISettings GetDefault(IConfiguration configuration)
-        {
-            var def = new PasswordSettings { MinLength = 8, UpperCase = false, Digits = false, SpecSymbols = false };
-
-            if (int.TryParse(configuration["web.password.min"], out var defaultMinLength))
-            {
-                def.MinLength = Math.Max(1, Math.Min(MaxLength, defaultMinLength));
-            }
-
-            return def;
-        }
-
-        public ISettings GetDefault(IServiceProvider serviceProvider)
-        {
-            return GetDefault(serviceProvider.GetService<IConfiguration>());
-        }
+        return def;
     }
 }

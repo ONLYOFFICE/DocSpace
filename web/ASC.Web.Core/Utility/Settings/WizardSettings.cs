@@ -24,25 +24,24 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Core.Utility.Settings
+namespace ASC.Web.Core.Utility.Settings;
+
+[Serializable]
+public class WizardSettings : ISettings<WizardSettings>
 {
-    [Serializable]
-    public class WizardSettings : ISettings
+    public bool Completed { get; set; }
+
+    public Guid ID
     {
-        public bool Completed { get; set; }
+        get { return new Guid("{9A925891-1F92-4ed7-B277-D6F649739F06}"); }
+    }
 
-        public Guid ID
+
+    public WizardSettings GetDefault()
+    {
+        return new WizardSettings
         {
-            get { return new Guid("{9A925891-1F92-4ed7-B277-D6F649739F06}"); }
-        }
-
-
-        public ISettings GetDefault(IServiceProvider serviceProvider)
-        {
-            return new WizardSettings
-            {
-                Completed = true
-            };
-        }
+            Completed = true
+        };
     }
 }

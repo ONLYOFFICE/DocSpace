@@ -50,7 +50,10 @@ public class ImageBlockModifier : BlockModifier
     {
         var atts = BlockAttributesParser.ParseBlockAttributes(m.Groups["atts"].Value, "img");
         if (m.Groups["algn"].Length > 0)
+        {
             atts += " align=\"" + Globals.ImageAlign[m.Groups["algn"].Value] + "\"";
+        }
+
         if (m.Groups["title"].Length > 0)
         {
             atts += " title=\"" + m.Groups["title"].Value + "\"";

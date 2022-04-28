@@ -98,7 +98,7 @@ internal class GoogleDriveFolderDao : GoogleDriveDaoBase, IFolderDao<string>
         if (subjectID != Guid.Empty)
         {
             folders = folders.Where(x => subjectGroup
-                                             ? UserManager.IsUserInGroup(x.CreateBy, subjectID)
+                                             ? _userManager.IsUserInGroup(x.CreateBy, subjectID)
                                              : x.CreateBy == subjectID);
         }
 
@@ -139,7 +139,7 @@ internal class GoogleDriveFolderDao : GoogleDriveDaoBase, IFolderDao<string>
         if (subjectID.HasValue && subjectID != Guid.Empty)
         {
             folders = folders.Where(x => subjectGroup
-                                             ? UserManager.IsUserInGroup(x.CreateBy, subjectID.Value)
+                                             ? _userManager.IsUserInGroup(x.CreateBy, subjectID.Value)
                                              : x.CreateBy == subjectID);
         }
 
@@ -198,7 +198,10 @@ internal class GoogleDriveFolderDao : GoogleDriveDaoBase, IFolderDao<string>
 
             await ProviderInfo.CacheResetAsync(driveFolder).ConfigureAwait(false);
             var parentDriveId = GetParentDriveId(driveFolder);
-            if (parentDriveId != null) await ProviderInfo.CacheResetAsync(parentDriveId, true).ConfigureAwait(false);
+            if (parentDriveId != null)
+            {
+                await ProviderInfo.CacheResetAsync(parentDriveId, true).ConfigureAwait(false);
+            }
 
             return MakeId(driveFolder);
         }
@@ -249,7 +252,7 @@ internal class GoogleDriveFolderDao : GoogleDriveDaoBase, IFolderDao<string>
             await tx.CommitAsync().ConfigureAwait(false);
         }
 
-        if (!(driveFolder is ErrorDriveEntry))
+        if (driveFolder is not ErrorDriveEntry)
         {
             var storage = await ProviderInfo.StorageAsync;
             await storage.DeleteEntryAsync(driveFolder.Id).ConfigureAwait(false);
@@ -468,6 +471,6 @@ internal class GoogleDriveFolderDao : GoogleDriveDaoBase, IFolderDao<string>
         var storage = await ProviderInfo.StorageAsync.ConfigureAwait(false);
         var storageMaxUploadSize = await storage.GetMaxUploadSizeAsync();
 
-        return chunkedUpload ? storageMaxUploadSize : Math.Min(storageMaxUploadSize, SetupInfo.AvailableFileSize);
+        return chunkedUpload ? storageMaxUploadSize : Math.Min(storageMaxUploadSize, _setupInfo.AvailableFileSize);
     }
 }

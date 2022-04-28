@@ -74,7 +74,7 @@ class FileDownloadOperation : ComposeFileOperation<FileDownloadOperationData<str
             }
 
             stream.Position = 0;
-            string fileName = FileConstant.DownloadTitle + archiveExtension;
+            var fileName = FileConstant.DownloadTitle + archiveExtension;
             var store = globalStore.GetStore();
             var path = string.Format(@"{0}\{1}", ((IAccount)Thread.CurrentPrincipal.Identity).ID, fileName);
 
@@ -94,7 +94,7 @@ class FileDownloadOperation : ComposeFileOperation<FileDownloadOperationData<str
         }
 
         FillDistributedTask();
-        TaskInfo.PublishChanges();
+        _taskInfo.PublishChanges();
     }
 
     public override void PublishChanges(DistributedTask task)
@@ -102,8 +102,8 @@ class FileDownloadOperation : ComposeFileOperation<FileDownloadOperationData<str
         var thirdpartyTask = ThirdPartyOperation.GetDistributedTask();
         var daoTask = DaoOperation.GetDistributedTask();
 
-        var error1 = thirdpartyTask.GetProperty<string>(Err);
-        var error2 = daoTask.GetProperty<string>(Err);
+        var error1 = thirdpartyTask[Err];
+        var error2 = daoTask[Err];
 
         if (!string.IsNullOrEmpty(error1))
         {
@@ -114,16 +114,16 @@ class FileDownloadOperation : ComposeFileOperation<FileDownloadOperationData<str
             Error = error2;
         }
 
-        SuccessProcessed = thirdpartyTask.GetProperty<int>(Process) + daoTask.GetProperty<int>(Process);
+        _successProcessed = thirdpartyTask[Process] + daoTask[Process];
 
         var progressSteps = ThirdPartyOperation.Total + DaoOperation.Total + 1;
 
-        var progress = (int)(SuccessProcessed / (double)progressSteps * 100);
+        var progress = (int)(_successProcessed / (double)progressSteps * 100);
 
         base.FillDistributedTask();
 
-        TaskInfo.SetProperty(Progress, progress);
-        TaskInfo.PublishChanges();
+        _taskInfo[Progress] = progress;
+        _taskInfo.PublishChanges();
     }
 }
 
@@ -163,7 +163,7 @@ class FileDownloadOperation<T> : FileOperation<FileDownloadOperationData<T>, T>
 
         Total = _entriesPathId.Count;
 
-        TaskInfo.PublishChanges();
+        _taskInfo.PublishChanges();
     }
 
     private async Task<ItemNameValueCollection<T>> ExecPathFromFileAsync(IServiceScope scope, File<T> file, string path)

@@ -28,11 +28,11 @@ namespace ASC.Core.Common.EF;
 
 public class BaseDbContextManager<T> : OptionsManager<T>, IDisposable where T : class, IDisposable, IAsyncDisposable, new()
 {
-    private Dictionary<string, T> _pairs;
-    private MigrationHistory _migrationHistory;
-    private List<T> _asyncList;
-    private IOptionsFactory<T> _factory;
-    private IConfiguration _configuration;
+    private readonly Dictionary<string, T> _pairs;
+    private readonly MigrationHistory _migrationHistory;
+    private readonly List<T> _asyncList;
+    private readonly IOptionsFactory<T> _factory;
+    private readonly IConfiguration _configuration;
 
     public BaseDbContextManager(IOptionsFactory<T> factory, IConfiguration configuration,
         MigrationHistory migrationHistory) : base(factory)

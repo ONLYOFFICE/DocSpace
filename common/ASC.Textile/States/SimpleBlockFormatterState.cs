@@ -31,11 +31,11 @@ public abstract class SimpleBlockFormatterState : FormatterState
     internal const string PatternBegin = @"^\s*(?<tag>";
     internal const string PatternEnd = @")" + Globals.AlignPattern + Globals.BlockModifiersPattern + @"\.(?:\s+)?(?<content>.*)$";
 
-    public string Tag { get; private set; } = null;
+    public string Tag { get; private set; }
 
-    public string AlignInfo { get; private set; } = null;
+    public string AlignInfo { get; private set; }
 
-    public string AttInfo { get; private set; } = null;
+    public string AttInfo { get; private set; }
 
     protected SimpleBlockFormatterState(TextileFormatter formatter)
         : base(formatter)
@@ -74,16 +74,16 @@ public abstract class SimpleBlockFormatterState : FormatterState
     /// <returns></returns>
     protected string FormattedAlignment()
     {
-        return Blocks.BlockAttributesParser.ParseBlockAttributes(AlignInfo);
+        return BlockAttributesParser.ParseBlockAttributes(AlignInfo);
     }
 
     protected string FormattedStyles(string element)
     {
-        return Blocks.BlockAttributesParser.ParseBlockAttributes(AttInfo, element);
+        return BlockAttributesParser.ParseBlockAttributes(AttInfo, element);
     }
 
     protected string FormattedStylesAndAlignment(string element)
     {
-        return Blocks.BlockAttributesParser.ParseBlockAttributes(AlignInfo + AttInfo, element);
+        return BlockAttributesParser.ParseBlockAttributes(AlignInfo + AttInfo, element);
     }
 }

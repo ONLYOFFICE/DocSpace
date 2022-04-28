@@ -1,17 +1,5 @@
 ﻿{
-  "DomainIpAddress": "Domēni kā IP adrese netiek atbalstīti",
   "EmailActivationDescription": "Aktivizācijas norādījumi tiks nosūtīti uz ievadīto e -pastu",
   "EmailChangeTitle": "E-pasta maiņa",
-  "EmptyEmail": "Neviens e-pasts nav parsēts",
-  "EnterEmail": "Ievadiet jaunu e-pasta adresi",
-  "IncorrectDomain": "Nepareizs domēns",
-  "IncorrectEmail": "Nepareiza e-pasta adrese",
-  "IncorrectLocalPart": "Nepareiza lokālā daļa",
-  "LocalDomain": "Lokālie domēni netiek atbalstīti",
-  "ManyEmails": "Pārāk daudz e-pasta ziņojumu parsēts",
-  "MaxLengthExceeded": "Maksimālais lietotājvārda vai citas vietējās daļas garums ir 64 rakstzīmes.",
-  "PunycodeDomain": "Punycode domēni netiek atbalstīti",
-  "PunycodeLocalPart": "Punycode lokālā daļa netiek atbalstīta",
-  "SameEmail": "Jūs nevarat izmantot to pašu e-pastu",
-  "SpacesInLocalPart": "Lokālajā daļā nedrīkst būt atstarpes"
+  "EnterEmail": "Ievadiet jaunu e-pasta adresi"
 }

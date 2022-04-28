@@ -88,7 +88,7 @@ public partial class TextileFormatter
     /// The ouputter to which the formatted text
     /// is sent to.
     /// </summary>
-    public IOutputter Output { get; } = null;
+    public IOutputter Output { get; }
 
     /// <summary>
     /// The offset for the header tags.
@@ -96,7 +96,7 @@ public partial class TextileFormatter
     /// When the formatted text is inserted into another page
     /// there might be a need to offset all headers (h1 becomes
     /// h4, for instance). The header offset allows this.
-    public int HeaderOffset { get; set; } = 0;
+    public int HeaderOffset { get; set; }
 
     #endregion
 

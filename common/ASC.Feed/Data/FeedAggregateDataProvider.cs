@@ -33,17 +33,15 @@ public class FeedAggregateDataProvider
 
     private readonly AuthContext _authContext;
     private readonly TenantManager _tenantManager;
-    private readonly TenantUtil _tenantUtil;
     private readonly Lazy<FeedDbContext> _lazyFeedDbContext;
-    private IMapper _mapper;
+    private readonly IMapper _mapper;
 
     public FeedAggregateDataProvider(
         AuthContext authContext,
         TenantManager tenantManager,
-        TenantUtil tenantUtil,
         DbContextManager<FeedDbContext> dbContextManager,
         IMapper mapper)
-        : this(authContext, tenantManager, tenantUtil, mapper)
+        : this(authContext, tenantManager, mapper)
     {
         _lazyFeedDbContext = new Lazy<FeedDbContext>(() => dbContextManager.Get(Constants.FeedDbId));
     }
@@ -51,12 +49,10 @@ public class FeedAggregateDataProvider
     public FeedAggregateDataProvider(
         AuthContext authContext,
         TenantManager tenantManager,
-        TenantUtil tenantUtil,
         IMapper mapper)
     {
         _authContext = authContext;
         _tenantManager = tenantManager;
-        _tenantUtil = tenantUtil;
         _mapper = mapper;
     }
 
@@ -265,7 +261,7 @@ public class FeedAggregateDataProvider
             .ToList();
     }
 
-    public FeedResultItem GetFeedItem(string id, TenantUtil tenantUtil)
+    public FeedResultItem GetFeedItem(string id)
     {
         var news =
             FeedDbContext.FeedAggregates

@@ -1,24 +1,23 @@
 import styled from "styled-components";
 
+import { Base } from "@appserver/components/themes";
+
 const StyledErrorContainer = styled.div`
-  //background: #ffffff;
+  background: ${(props) => props.theme.errorContainer.background};
   cursor: default;
-  height: 100%;
   width: 100%;
-  min-height: 100%;
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
   margin: 0;
-  padding: 36px 36px 0 36px;
+  padding-top: 36px;
   border: 0;
   box-sizing: border-box;
 
   #container {
     position: relative;
     margin: 12px 0 60px 0;
-    max-width: 90vh;
   }
 
   #header {
@@ -1035,5 +1034,7 @@ const StyledErrorContainer = styled.div`
     }
   }
 `;
+
+StyledErrorContainer.defaultProps = { theme: Base };
 
 export default StyledErrorContainer;

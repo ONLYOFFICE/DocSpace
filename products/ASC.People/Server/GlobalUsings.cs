@@ -25,14 +25,13 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 global using System.Net.Mail;
-global using System.Runtime.InteropServices;
 global using System.Security;
 global using System.ServiceModel.Security;
 global using System.Web;
 
 global using ASC.Api.Core;
-global using ASC.Api.Core.Extensions;
 global using ASC.Api.Core.Convention;
+global using ASC.Api.Core.Extensions;
 global using ASC.Api.Utils;
 global using ASC.Common;
 global using ASC.Common.Logging;
@@ -65,13 +64,12 @@ global using ASC.Web.Studio.UserControls.Statistics;
 global using ASC.Web.Studio.Utility;
 
 global using Autofac;
-global using Autofac.Extensions.DependencyInjection;
 
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Http.Extensions;
 global using Microsoft.AspNetCore.Mvc;
-global using Microsoft.Extensions.Options;
 global using Microsoft.Extensions.Hosting.WindowsServices;
+global using Microsoft.Extensions.Options;
 
 global using SixLabors.ImageSharp;
 global using SixLabors.ImageSharp.Formats;

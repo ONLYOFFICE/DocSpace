@@ -10,6 +10,7 @@ export function login(userName, passwordHash, session) {
   return request({
     method: "post",
     url: "/authentication.json",
+    skipLogout: true,
     data,
   });
 }
@@ -58,6 +59,7 @@ export function loginWithTfaCode(userName, passwordHash, code) {
   return request({
     method: "post",
     url: `/authentication/${code}`,
+    skipLogout: true,
     data,
   });
 }

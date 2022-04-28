@@ -37,11 +37,11 @@ public enum EditorType
 public class Configuration<T>
 {
     internal static readonly Dictionary<FileType, string> DocType = new Dictionary<FileType, string>
-        {
-            { FileType.Document, "text" },
-            { FileType.Spreadsheet, "spreadsheet" },
-            { FileType.Presentation, "presentation" }
-        };
+    {
+        { FileType.Document, "text" },
+        { FileType.Spreadsheet, "spreadsheet" },
+        { FileType.Presentation, "presentation" }
+    };
 
     private FileType _fileTypeCache = FileType.Unknown;
 
@@ -118,7 +118,7 @@ public class DocumentConfig<T>
 
     private string _key = string.Empty;
     private string _fileUri;
-    private string _title = null;
+    private string _title;
 
 
     public string FileType => Info.GetFile().ConvertedExtension.Trim('.');
@@ -258,7 +258,7 @@ public class InfoConfig<T>
 public class PermissionsConfig
 {
     //todo: obsolete since DS v5.5
-    public bool ChangeHistory { get; set; } = false;
+    public bool ChangeHistory { get; set; }
     public bool Comment { get; set; } = true;
     public bool Download { get; set; } = true;
     public bool Edit { get; set; } = true;
@@ -267,7 +267,7 @@ public class PermissionsConfig
     public bool ModifyFilter { get; set; } = true;
 
     //todo: obsolete since DS v6.0
-    public bool Rename { get; set; } = false;
+    public bool Rename { get; set; }
     public bool Review { get; set; } = true;
 }
 
@@ -311,7 +311,7 @@ public class EditorConfiguration<T>
         }
     }
 
-    public bool ModeWrite { get; set; } = false;
+    public bool ModeWrite { get; set; }
 
     private Configuration<T> _configuration;
 
@@ -659,7 +659,7 @@ public class CustomizationConfig<T>
     }
 
     //private string _gobackUrl;
-    public bool IsRetina { get; set; } = false;
+    public bool IsRetina { get; set; }
 
     public bool About => !_coreBaseSettings.Standalone && !_coreBaseSettings.CustomMode;
 

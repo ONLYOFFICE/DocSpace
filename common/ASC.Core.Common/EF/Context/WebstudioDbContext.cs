@@ -49,7 +49,7 @@ public class WebstudioDbContext : BaseDbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ModelBuilderWrapper
-            .From(modelBuilder, Provider)
+            .From(modelBuilder, _provider)
             .AddWebstudioSettings()
             .AddWebstudioUserVisit()
             .AddDbWebstudioIndex();

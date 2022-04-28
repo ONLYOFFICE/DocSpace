@@ -41,6 +41,10 @@
     "cSpell.words": ["appserver", "browserslist", "debuginfo", "doceditor"]
   },
   "extensions": {
-    "recommendations": ["folke.vscode-monorepo-workspace"]
+    "recommendations": [
+      "folke.vscode-monorepo-workspace",
+      "orta.vscode-jest",
+      "firsttris.vscode-jest-runner"
+    ]
   }
 }

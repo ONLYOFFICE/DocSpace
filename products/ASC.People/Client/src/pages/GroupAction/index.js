@@ -1,11 +1,7 @@
 import React from "react";
 import Loader from "@appserver/components/loader";
-import PageLayout from "@appserver/common/components/PageLayout";
-import {
-  ArticleHeaderContent,
-  ArticleMainButtonContent,
-  ArticleBodyContent,
-} from "../../components/Article";
+import Section from "@appserver/common/components/Section";
+
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
@@ -38,52 +34,28 @@ class GroupAction extends React.Component {
   }
 
   render() {
-    console.log("GroupAction render");
+    // console.log("GroupAction render");
 
-    const { group, match, tReady } = this.props;
+    const { group, match, tReady, isAdmin, showCatalog } = this.props;
 
     return (
       <>
         {group || !match.params.groupId ? (
-          <PageLayout withBodyScroll={true}>
-            <PageLayout.ArticleHeader>
-              <ArticleHeaderContent />
-            </PageLayout.ArticleHeader>
-
-            <PageLayout.ArticleMainButton>
-              <ArticleMainButtonContent />
-            </PageLayout.ArticleMainButton>
-
-            <PageLayout.ArticleBody>
-              <ArticleBodyContent />
-            </PageLayout.ArticleBody>
-
-            <PageLayout.SectionHeader>
+          <Section withBodyScroll={true}>
+            <Section.SectionHeader>
               <SectionHeaderContent />
-            </PageLayout.SectionHeader>
+            </Section.SectionHeader>
 
-            <PageLayout.SectionBody>
+            <Section.SectionBody>
               <SectionBodyContent tReady={tReady} />
-            </PageLayout.SectionBody>
-          </PageLayout>
+            </Section.SectionBody>
+          </Section>
         ) : (
-          <PageLayout>
-            <PageLayout.ArticleHeader>
-              <ArticleHeaderContent />
-            </PageLayout.ArticleHeader>
-
-            <PageLayout.ArticleMainButton>
-              <ArticleMainButtonContent />
-            </PageLayout.ArticleMainButton>
-
-            <PageLayout.ArticleBody>
-              <ArticleBodyContent />
-            </PageLayout.ArticleBody>
-
-            <PageLayout.SectionBody>
+          <Section>
+            <Section.SectionBody>
               <Loader className="pageLoader" type="rombs" size="40px" />
-            </PageLayout.SectionBody>
-          </PageLayout>
+            </Section.SectionBody>
+          </Section>
         )}
       </>
     );
@@ -109,6 +81,8 @@ export default withRouter(
       group,
       resetGroup,
       setFirstLoad,
+      isAdmin: auth.isAdmin,
+      showCatalog: auth.settingsStore.showCatalog,
     };
   })(observer(GroupActionContainer))
 );

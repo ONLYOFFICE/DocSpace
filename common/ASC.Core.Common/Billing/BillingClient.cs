@@ -31,24 +31,24 @@ namespace ASC.Core.Billing;
 [Singletone]
 public class BillingClient
 {
-    public readonly bool Configured = false;
+    public readonly bool Configured;
     private readonly string _billingDomain;
     private readonly string _billingKey;
     private readonly string _billingSecret;
     private readonly bool _test;
-        private readonly IHttpClientFactory _httpClientFactory;
+    private readonly IHttpClientFactory _httpClientFactory;
     private const int AvangatePaymentSystemId = 1;
 
 
-        public BillingClient(IConfiguration configuration, IHttpClientFactory httpClientFactory)
-            : this(false, configuration, httpClientFactory)
+    public BillingClient(IConfiguration configuration, IHttpClientFactory httpClientFactory)
+        : this(false, configuration, httpClientFactory)
     {
     }
 
-        public BillingClient(bool test, IConfiguration configuration, IHttpClientFactory httpClientFactory)
+    public BillingClient(bool test, IConfiguration configuration, IHttpClientFactory httpClientFactory)
     {
         _test = test;
-            _httpClientFactory = httpClientFactory;
+        _httpClientFactory = httpClientFactory;
         var billingDomain = configuration["core:payment-url"];
 
         _billingDomain = (billingDomain ?? "").Trim().TrimEnd('/');
@@ -78,7 +78,7 @@ public class BillingClient
 
     public IEnumerable<PaymentInfo> GetPayments(string portalId)
     {
-        string result = Request("GetPayments", portalId);
+        var result = Request("GetPayments", portalId);
         var payments = JsonSerializer.Deserialize<List<PaymentInfo>>(result);
 
         return payments;
@@ -209,16 +209,18 @@ public class BillingClient
     {
         var url = _billingDomain + method;
 
-        var request = new HttpRequestMessage();
-        request.RequestUri = new Uri(url);
-        request.Method = HttpMethod.Post;
+        var request = new HttpRequestMessage
+        {
+            RequestUri = new Uri(url),
+            Method = HttpMethod.Post
+        };
         if (!string.IsNullOrEmpty(_billingKey))
         {
             request.Headers.Add("Authorization", CreateAuthToken(_billingKey, _billingSecret));
         }
 
-            var httpClient = _httpClientFactory.CreateClient();
-            httpClient.Timeout = TimeSpan.FromMilliseconds(60000);
+        var httpClient = _httpClientFactory.CreateClient();
+        httpClient.Timeout = TimeSpan.FromMilliseconds(60000);
 
         var data = new Dictionary<string, List<string>>();
         if (!string.IsNullOrEmpty(portalId))
@@ -241,7 +243,7 @@ public class BillingClient
         request.Content = new StringContent(body, Encoding.UTF8, "application/json");
 
         string result;
-            using (var response = httpClient.Send(request))
+        using (var response = httpClient.Send(request))
         using (var stream = response.Content.ReadAsStream())
         {
             if (stream == null)

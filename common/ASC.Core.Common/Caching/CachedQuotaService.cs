@@ -31,8 +31,6 @@ class QuotaServiceCache
 {
     internal const string KeyQuota = "quota";
     internal const string KeyQuotaRows = "quotarows";
-
-    internal TrustInterval Interval;
     internal readonly ICache Cache;
     internal readonly ICacheNotify<QuotaCacheItem> CacheNotify;
     internal readonly bool QuotaCacheEnabled;
@@ -50,7 +48,6 @@ class QuotaServiceCache
 
         CacheNotify = cacheNotify;
         Cache = cache;
-        Interval = new TrustInterval();
 
         cacheNotify.Subscribe((i) =>
         {
@@ -98,18 +95,16 @@ class ConfigureCachedQuotaService : IConfigureNamedOptions<CachedQuotaService>
 [Scope]
 class CachedQuotaService : IQuotaService
 {
-    internal IQuotaService Service;
-    internal ICache Cache;
-    internal ICacheNotify<QuotaCacheItem> CacheNotify;
-    internal TrustInterval Interval;
+    internal IQuotaService Service { get; set; }
+    internal ICache Cache { get; set; }
+    internal ICacheNotify<QuotaCacheItem> CacheNotify { get; set; }
+    internal QuotaServiceCache QuotaServiceCache { get; set; }
 
-    internal TimeSpan CacheExpiration;
-    internal QuotaServiceCache QuotaServiceCache;
+    private readonly TimeSpan _cacheExpiration;
 
     public CachedQuotaService()
     {
-        Interval = new TrustInterval();
-        CacheExpiration = TimeSpan.FromMinutes(10);
+        _cacheExpiration = TimeSpan.FromMinutes(10);
     }
 
     public CachedQuotaService(DbQuotaService service, QuotaServiceCache quotaServiceCache) : this()
@@ -128,7 +123,7 @@ class CachedQuotaService : IQuotaService
             quotas = Service.GetTenantQuotas();
             if (QuotaServiceCache.QuotaCacheEnabled)
             {
-                Cache.Insert(QuotaServiceCache.KeyQuota, quotas, DateTime.UtcNow.Add(CacheExpiration));
+                Cache.Insert(QuotaServiceCache.KeyQuota, quotas, DateTime.UtcNow.Add(_cacheExpiration));
             }
         }
 
@@ -167,7 +162,7 @@ class CachedQuotaService : IQuotaService
         if (result == null)
         {
             result = Service.FindTenantQuotaRows(tenantId);
-            Cache.Insert(key, result, DateTime.UtcNow.Add(CacheExpiration));
+            Cache.Insert(key, result, DateTime.UtcNow.Add(_cacheExpiration));
         }
 
         return result;

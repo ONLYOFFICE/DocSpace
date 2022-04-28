@@ -24,21 +24,20 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Studio.Core
+namespace ASC.Web.Studio.Core;
+
+[Serializable]
+public class EmailActivationSettings : ISettings<EmailActivationSettings>
 {
-    [Serializable]
-    public class EmailActivationSettings : ISettings
+    public bool Show { get; set; }
+
+    public Guid ID
     {
-        public bool Show { get; set; }
+        get { return new Guid("{85987929-1339-48EB-B06D-B9D097BDACF6}"); }
+    }
 
-        public Guid ID
-        {
-            get { return new Guid("{85987929-1339-48EB-B06D-B9D097BDACF6}"); }
-        }
-
-        public ISettings GetDefault(IServiceProvider serviceProvider)
-        {
-            return new EmailActivationSettings { Show = true };
-        }
+    public EmailActivationSettings GetDefault()
+    {
+        return new EmailActivationSettings { Show = true };
     }
 }

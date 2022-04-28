@@ -23,19 +23,18 @@
  *
 */
 
-namespace ASC.ApiSystem.Classes
-{
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-    public sealed class EmailAttribute : DataTypeAttribute
-    {
-        public EmailAttribute() : base(DataType.EmailAddress)
-        {
-            ErrorMessage = "emailIncorrect";
-        }
+namespace ASC.ApiSystem.Classes;
 
-        public override bool IsValid(object value)
-        {
-            return value != null && (value as string).TestEmailRegex();
-        }
+[AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
+public sealed class EmailAttribute : DataTypeAttribute
+{
+    public EmailAttribute() : base(DataType.EmailAddress)
+    {
+        ErrorMessage = "emailIncorrect";
+    }
+
+    public override bool IsValid(object value)
+    {
+        return value != null && (value as string).TestEmailRegex();
     }
 }

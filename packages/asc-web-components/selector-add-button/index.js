@@ -5,7 +5,7 @@ import StyledButton from "./styled-selector-add-button";
 import IconButton from "../icon-button";
 
 const SelectorAddButton = (props) => {
-  const { isDisabled, title, className, id, style } = props;
+  const { isDisabled, title, className, id, style, iconName } = props;
 
   const onClick = (e) => {
     !isDisabled && props.onClick && props.onClick(e);
@@ -21,9 +21,8 @@ const SelectorAddButton = (props) => {
       style={style}
     >
       <IconButton
-        color="#979797"
         size={14}
-        iconName="/static/images/actions.header.touch.react.svg"
+        iconName={iconName}
         isFill={true}
         isDisabled={isDisabled}
         isClickable={!isDisabled}
@@ -45,10 +44,13 @@ SelectorAddButton.propTypes = {
   id: PropTypes.string,
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  /** Specifies the icon name */
+  iconName: PropTypes.string,
 };
 
 SelectorAddButton.defaultProps = {
   isDisabled: false,
+  iconName: "/static/images/actions.header.touch.react.svg",
 };
 
 export default SelectorAddButton;

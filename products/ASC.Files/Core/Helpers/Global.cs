@@ -101,7 +101,7 @@ public class Global
         _customNamingPeople = customNamingPeople;
         _fileSecurityCommon = fileSecurityCommon;
 
-            ThumbnailExtension = configuration["files:thumbnail:exts"] ?? "jpg";
+        ThumbnailExtension = configuration["files:thumbnail:exts"] ?? "jpg";
     }
 
     #region Property
@@ -302,7 +302,7 @@ public class GlobalFolder
         {
             result = await folderDao.GetFolderIDProjectsAsync(true);
 
-                ProjectsRootFolderCache[_tenantManager.GetCurrentTenant().Id] = result;
+            ProjectsRootFolderCache[_tenantManager.GetCurrentTenant().Id] = result;
         }
 
         return result;

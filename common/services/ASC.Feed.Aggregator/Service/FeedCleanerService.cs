@@ -38,12 +38,12 @@ public class FeedCleanerService : FeedBaseService
         : base(feedSettings, serviceScopeFactory, optionsMonitor)
     {
     }
-    
+
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        Logger.Info("Feed Cleaner Service running.");
+        _logger.Info("Feed Cleaner Service running.");
 
-        var cfg = FeedSettings;
+        var cfg = _feedSettings;
 
         while (!stoppingToken.IsCancellationRequested)
         {
@@ -52,23 +52,23 @@ public class FeedCleanerService : FeedBaseService
             RemoveFeeds(cfg.AggregateInterval);
         }
 
-        Logger.Info("Feed Cleaner Service stopping.");
+        _logger.Info("Feed Cleaner Service stopping.");
     }
 
     private void RemoveFeeds(object interval)
     {
         try
         {
-            using var scope = ServiceScopeFactory.CreateScope();
+            using var scope = _serviceScopeFactory.CreateScope();
             var feedAggregateDataProvider = scope.ServiceProvider.GetService<FeedAggregateDataProvider>();
 
-            Logger.DebugFormat("Start of removing old news");
+            _logger.DebugFormat("Start of removing old news");
 
             feedAggregateDataProvider.RemoveFeedAggregate(DateTime.UtcNow.Subtract((TimeSpan)interval));
         }
         catch (Exception ex)
         {
-            Logger.Error(ex);
+            _logger.Error(ex);
         }
     }
 }

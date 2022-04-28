@@ -87,8 +87,8 @@ public class FileEntryDtoHelper
 {
     private readonly ApiDateTimeHelper _apiDateTimeHelper;
     private readonly EmployeeDtoHelper _employeeWraperHelper;
-    public readonly FileSharingHelper _fileSharingHelper;
-    public readonly FileSecurity _fileSecurity;
+    private readonly FileSharingHelper _fileSharingHelper;
+    protected readonly FileSecurity _fileSecurity;
 
     public FileEntryDtoHelper(
         ApiDateTimeHelper apiDateTimeHelper,

@@ -45,11 +45,11 @@ public class GroupSummaryDto
 
     public static GroupSummaryDto GetSample()
     {
-        return new GroupSummaryDto 
+        return new GroupSummaryDto
         {
-            Id = Guid.Empty, 
-            Manager = "Jake.Zazhitski", 
-            Name = "Group Name" 
+            Id = Guid.Empty,
+            Manager = "Jake.Zazhitski",
+            Name = "Group Name"
         };
     }
 }

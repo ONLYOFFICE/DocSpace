@@ -29,7 +29,6 @@ namespace ASC.Web.Api.Controllers.Settings;
 public class SecurityController : BaseSettingsController
 {
     private readonly MessageService _messageService;
-    private readonly IServiceProvider _serviceProvider;
     private readonly EmployeeDtoHelper _employeeHelperDto;
     private readonly UserManager _userManager;
     private readonly AuthContext _authContext;
@@ -51,12 +50,11 @@ public class SecurityController : BaseSettingsController
         WebItemManager webItemManager,
         WebItemManagerSecurity webItemManagerSecurity,
         DisplayUserSettingsHelper displayUserSettingsHelper,
-        IServiceProvider serviceProvider,
         EmployeeDtoHelper employeeWraperHelper,
         MessageTarget messageTarget,
-        IMemoryCache memoryCache) : base(apiContext, memoryCache, webItemManager)
+        IMemoryCache memoryCache,
+        IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
-        _serviceProvider = serviceProvider;
         _employeeHelperDto = employeeWraperHelper;
         _messageService = messageService;
         _userManager = userManager;
@@ -74,10 +72,10 @@ public class SecurityController : BaseSettingsController
     {
         if (ids == null || !ids.Any())
         {
-            ids = _webItemManager.GetItemsAll().Select(i => i.ID.ToString());
+            ids = WebItemManager.GetItemsAll().Select(i => i.ID.ToString());
         }
 
-        var subItemList = _webItemManager.GetItemsAll().Where(item => item.IsSubItem()).Select(i => i.ID.ToString());
+        var subItemList = WebItemManager.GetItemsAll().Where(item => item.IsSubItem()).Select(i => i.ID.ToString());
 
         return ids.Select(r => _webItemSecurity.GetSecurityInfo(r))
                     .Select(i => new SecurityDto
@@ -93,7 +91,7 @@ public class SecurityController : BaseSettingsController
     [Read("security/{id}")]
     public bool GetWebItemSecurityInfo(Guid id)
     {
-        var module = _webItemManager[id];
+        var module = WebItemManager[id];
 
         return module != null && !module.IsDisabled(_webItemSecurity, _authContext);
     }
@@ -114,11 +112,29 @@ public class SecurityController : BaseSettingsController
 
     [Read("security/password", Check = false)]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Everyone")]
-    public object GetPasswordSettings()
+    public PasswordSettings GetPasswordSettings()
     {
-        var UserPasswordSettings = _settingsManager.Load<PasswordSettings>();
+        return _settingsManager.Load<PasswordSettings>();
+    }
 
-        return UserPasswordSettings;
+    [Update("security/password")]
+    public PasswordSettings UpdatePasswordSettings(PasswordSettingsModel model)
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+        var userPasswordSettings = _settingsManager.Load<PasswordSettings>();
+
+        userPasswordSettings.MinLength = model.MinLength;
+        userPasswordSettings.UpperCase = model.UpperCase;
+        userPasswordSettings.Digits = model.Digits;
+        userPasswordSettings.SpecSymbols = model.SpecSymbols;
+
+        _settingsManager.Save(userPasswordSettings);
+
+        _messageService.Send(MessageAction.PasswordStrengthSettingsUpdated);
+
+        return userPasswordSettings;
+
     }
 
     [Update("security")]
@@ -141,7 +157,10 @@ public class SecurityController : BaseSettingsController
         _webItemSecurity.SetSecurity(inDto.Id, inDto.Enabled, inDto.Subjects?.ToArray());
         var securityInfo = GetWebItemSecurityInfo(new List<string> { inDto.Id });
 
-        if (inDto.Subjects == null) return securityInfo;
+        if (inDto.Subjects == null)
+        {
+            return securityInfo;
+        }
 
         var productName = GetProductName(new Guid(inDto.Id));
 
@@ -189,7 +208,9 @@ public class SecurityController : BaseSettingsController
         foreach (var item in inDto.Items)
         {
             if (!itemList.ContainsKey(item.Key))
+            {
                 itemList.Add(item.Key, item.Value);
+            }
         }
 
         var defaultPageSettings = _settingsManager.Load<StudioDefaultPageSettings>();
@@ -201,7 +222,7 @@ public class SecurityController : BaseSettingsController
 
             if (item.Value)
             {
-                if (_webItemManager[productId] is IProduct webItem || productId == WebItemManager.MailProductID)
+                if (WebItemManager[productId] is IProduct webItem || productId == WebItemManager.MailProductID)
                 {
                     var productInfo = _webItemSecurity.GetSecurityInfo(item.Key);
                     var selectedGroups = productInfo.Groups.Select(group => group.ID).ToList();
@@ -215,7 +236,7 @@ public class SecurityController : BaseSettingsController
             }
             else if (productId == defaultPageSettings.DefaultProductID)
             {
-                _settingsManager.Save((StudioDefaultPageSettings)defaultPageSettings.GetDefault(_serviceProvider));
+                _settingsManager.Save(_settingsManager.GetDefault<StudioDefaultPageSettings>());
             }
 
             _webItemSecurity.SetSecurity(item.Key, item.Value, subjects);

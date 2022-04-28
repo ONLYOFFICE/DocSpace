@@ -24,89 +24,91 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Core.Utility.Skins
+namespace ASC.Web.Core.Utility.Skins;
+
+[Scope]
+public class WebImageSupplier
 {
-    [Scope]
-    public class WebImageSupplier
+    private readonly string _folderName;
+    private readonly WebItemManager _webItemManager;
+    private readonly WebPath _webPath;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+
+    public WebImageSupplier(WebItemManager webItemManager, WebPath webPath, IConfiguration configuration)
     {
-        private string FolderName { get; }
-        private WebItemManager WebItemManager { get; }
-        private WebPath WebPath { get; }
-        private IHttpContextAccessor HttpContextAccessor { get; }
+        _webItemManager = webItemManager;
+        _webPath = webPath;
+        _folderName = configuration["web:images"];
+    }
+    public WebImageSupplier(WebItemManager webItemManager, WebPath webPath, IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
+        : this(webItemManager, webPath, configuration)
+    {
+        _httpContextAccessor = httpContextAccessor;
+    }
 
-        public WebImageSupplier(WebItemManager webItemManager, WebPath webPath, IConfiguration configuration)
-        {
-            WebItemManager = webItemManager;
-            WebPath = webPath;
-            FolderName = configuration["web:images"];
-        }
-        public WebImageSupplier(WebItemManager webItemManager, WebPath webPath, IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
-            : this(webItemManager, webPath, configuration)
-        {
-            HttpContextAccessor = httpContextAccessor;
-        }
+    public string GetAbsoluteWebPath(string imgFileName)
+    {
+        return GetAbsoluteWebPath(imgFileName, Guid.Empty);
+    }
 
-        public string GetAbsoluteWebPath(string imgFileName)
-        {
-            return GetAbsoluteWebPath(imgFileName, Guid.Empty);
-        }
+    public string GetAbsoluteWebPath(string imgFileName, Guid moduleID)
+    {
+        return GetImageAbsoluteWebPath(imgFileName, moduleID);
+    }
 
-        public string GetAbsoluteWebPath(string imgFileName, Guid moduleID)
-        {
-            return GetImageAbsoluteWebPath(imgFileName, moduleID);
-        }
+    public string GetImageFolderAbsoluteWebPath()
+    {
+        return GetImageFolderAbsoluteWebPath(Guid.Empty);
+    }
 
-        public string GetImageFolderAbsoluteWebPath()
+    public string GetImageFolderAbsoluteWebPath(Guid moduleID)
+    {
+        if (_httpContextAccessor?.HttpContext == null)
         {
-            return GetImageFolderAbsoluteWebPath(Guid.Empty);
-        }
-
-        public string GetImageFolderAbsoluteWebPath(Guid moduleID)
-        {
-            if (HttpContextAccessor?.HttpContext == null) return string.Empty;
-
-            var currentThemePath = GetPartImageFolderRel(moduleID);
-            return WebPath.GetPathAsync(currentThemePath).Result;
+            return string.Empty;
         }
 
-        private string GetImageAbsoluteWebPath(string fileName, Guid partID)
+        var currentThemePath = GetPartImageFolderRel(moduleID);
+        return _webPath.GetPathAsync(currentThemePath).Result;
+    }
+
+    private string GetImageAbsoluteWebPath(string fileName, Guid partID)
+    {
+        if (string.IsNullOrEmpty(fileName))
         {
-            if (string.IsNullOrEmpty(fileName))
+            return string.Empty;
+        }
+        var filepath = GetPartImageFolderRel(partID) + "/" + fileName;
+        return _webPath.GetPathAsync(filepath).Result;
+    }
+
+    private string GetPartImageFolderRel(Guid partID)
+    {
+        var folderName = _folderName;
+        string itemFolder = null;
+        if (!Guid.Empty.Equals(partID))
+        {
+            var product = _webItemManager[partID];
+            if (product != null && product.Context != null)
             {
-                return string.Empty;
-            }
-            var filepath = GetPartImageFolderRel(partID) + "/" + fileName;
-            return WebPath.GetPathAsync(filepath).Result;
-        }
-
-        private string GetPartImageFolderRel(Guid partID)
-        {
-            var folderName = FolderName;
-            string itemFolder = null;
-            if (!Guid.Empty.Equals(partID))
-            {
-                var product = WebItemManager[partID];
-                if (product != null && product.Context != null)
-                {
-                    itemFolder = GetAppThemeVirtualPath(product) + "/default/images";
-                }
-
-                folderName = itemFolder ?? folderName;
-            }
-            return folderName.TrimStart('~');
-        }
-
-        private static string GetAppThemeVirtualPath(IWebItem webitem)
-        {
-            if (webitem == null || string.IsNullOrEmpty(webitem.StartURL))
-            {
-                return string.Empty;
+                itemFolder = GetAppThemeVirtualPath(product) + "/default/images";
             }
 
-            var dir = webitem.StartURL.Contains('.') ?
-                          webitem.StartURL.Substring(0, webitem.StartURL.LastIndexOf('/')) :
-                          webitem.StartURL.TrimEnd('/');
-            return dir + "/App_Themes";
+            folderName = itemFolder ?? folderName;
         }
+        return folderName.TrimStart('~');
+    }
+
+    private static string GetAppThemeVirtualPath(IWebItem webitem)
+    {
+        if (webitem == null || string.IsNullOrEmpty(webitem.StartURL))
+        {
+            return string.Empty;
+        }
+
+        var dir = webitem.StartURL.Contains('.') ?
+                      webitem.StartURL.Substring(0, webitem.StartURL.LastIndexOf('/')) :
+                      webitem.StartURL.TrimEnd('/');
+        return dir + "/App_Themes";
     }
 }

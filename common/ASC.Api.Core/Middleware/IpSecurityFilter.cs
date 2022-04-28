@@ -32,27 +32,34 @@ public class IpSecurityFilter : IResourceFilter
     private readonly AuthContext _authContext;
     private readonly IPSecurity.IPSecurity _iPSecurity;
     private readonly ILog _logger;
+    private readonly SettingsManager _settingsManager;
 
     public IpSecurityFilter(
         ILog logger,
         AuthContext authContext,
-        IPSecurity.IPSecurity IPSecurity)
+        IPSecurity.IPSecurity IPSecurity,
+        SettingsManager settingsManager)
     {
         _logger = logger;
         _authContext = authContext;
         _iPSecurity = IPSecurity;
+        _settingsManager = settingsManager;
     }
 
     public void OnResourceExecuted(ResourceExecutedContext context) { }
 
     public void OnResourceExecuting(ResourceExecutingContext context)
     {
-        if (_authContext.IsAuthenticated && !_iPSecurity.Verify())
+        if (_authContext.IsAuthenticated)
         {
-            context.Result = new StatusCodeResult((int)HttpStatusCode.Forbidden);
-            _logger.WarnFormat("IPSecurity: user {0}", _authContext.CurrentAccount.ID);
+            var enable = _settingsManager.Load<IPRestrictionsSettings>().Enable;
 
-            return;
+            if (enable && !_iPSecurity.Verify())
+            {
+                context.Result = new StatusCodeResult((int)HttpStatusCode.Forbidden);
+                _logger.WarnFormat("IPSecurity: user {0}", _authContext.CurrentAccount.ID);
+                return;
+            }
         }
     }
 }

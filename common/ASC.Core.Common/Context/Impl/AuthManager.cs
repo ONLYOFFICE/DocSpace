@@ -60,7 +60,7 @@ public class AuthManager
 
     public IAccount GetAccountByID(int tenantId, Guid id)
     {
-        var s = ASC.Core.Configuration.Constants.SystemAccounts.FirstOrDefault(a => a.ID == id);
+        var s = Configuration.Constants.SystemAccounts.FirstOrDefault(a => a.ID == id);
         if (s != null)
         {
             return s;
@@ -68,7 +68,7 @@ public class AuthManager
 
         var u = _userManager.GetUsers(id);
 
-        return !Users.Constants.LostUser.Equals(u) && u.Status == EmployeeStatus.Active ? (IAccount)ToAccount(tenantId, u) : ASC.Core.Configuration.Constants.Guest;
+        return !Users.Constants.LostUser.Equals(u) && u.Status == EmployeeStatus.Active ? (IAccount)ToAccount(tenantId, u) : Configuration.Constants.Guest;
     }
 
     private IUserAccount ToAccount(int tenantId, UserInfo u)

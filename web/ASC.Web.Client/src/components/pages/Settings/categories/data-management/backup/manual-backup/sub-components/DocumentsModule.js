@@ -5,20 +5,17 @@ import Button from "@appserver/components/button";
 import { getFromSessionStorage } from "../../../../../utils";
 import { BackupStorageType } from "@appserver/common/constants";
 
-let folderPath = "";
 let folder = "";
 class DocumentsModule extends React.Component {
   constructor(props) {
     super(props);
 
-    folderPath = getFromSessionStorage("LocalCopyPath");
     folder = getFromSessionStorage("LocalCopyFolder");
 
     this.state = {
       isStartCopy: false,
       selectedFolder: folder || "",
       isPanelVisible: false,
-      folderPath: folderPath || "",
     };
   }
 
@@ -62,13 +59,8 @@ class DocumentsModule extends React.Component {
   };
 
   render() {
-    const { isMaxProgress, t } = this.props;
-    const {
-      isPanelVisible,
-      isStartCopy,
-      folderPath,
-      selectedFolder,
-    } = this.state;
+    const { isMaxProgress, t, buttonSize } = this.props;
+    const { isPanelVisible, isStartCopy, selectedFolder } = this.state;
 
     const isModuleDisabled = !isMaxProgress || isStartCopy || !selectedFolder;
     return (
@@ -79,12 +71,11 @@ class DocumentsModule extends React.Component {
             name={"common"}
             onClose={this.onClose}
             onClickInput={this.onClickInput}
-            folderPath={folderPath}
             isPanelVisible={isPanelVisible}
-            isSavingProcess={isModuleDisabled}
+            isDisabled={isModuleDisabled}
             foldersType="common"
             withoutProvider
-            fontSizeInput={"13px"}
+            ignoreSelectedFolderTree
           />
         </div>
         <div className="manual-backup_buttons">
@@ -93,14 +84,13 @@ class DocumentsModule extends React.Component {
             onClick={this.onMakeCopy}
             primary
             isDisabled={isModuleDisabled}
-            size="medium"
+            size={buttonSize}
           />
           {!isMaxProgress && (
             <Button
               label={t("Common:CopyOperation") + "..."}
               isDisabled={true}
-              size="medium"
-              style={{ marginLeft: "8px" }}
+              size={buttonSize}
             />
           )}
         </div>

@@ -169,7 +169,9 @@ public class AuthenticationController : ControllerBase
     public void Logout()
     {
         if (_securityContext.IsAuthenticated)
+        {
             _cookiesManager.ResetUserCookie(_securityContext.CurrentAccount.ID);
+        }
 
         _cookiesManager.ClearCookies(CookiesType.AuthKey);
         _cookiesManager.ClearCookies(CookiesType.SocketIO);
@@ -254,11 +256,13 @@ public class AuthenticationController : ControllerBase
         if (_studioSmsNotificationSettingsHelper.IsVisibleSettings() && _studioSmsNotificationSettingsHelper.Enable)
         {
             if (string.IsNullOrEmpty(user.MobilePhone) || user.MobilePhoneActivationStatus == MobilePhoneActivationStatus.NotActivated)
+            {
                 return new AuthenticationTokenDto
                 {
                     Sms = true,
                     ConfirmUrl = _commonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.PhoneActivation)
                 };
+            }
 
             await _smsManager.PutAuthCodeAsync(user, false);
 
@@ -274,12 +278,14 @@ public class AuthenticationController : ControllerBase
         if (TfaAppAuthSettings.IsVisibleSettings && _settingsManager.Load<TfaAppAuthSettings>().EnableSetting)
         {
             if (!TfaAppUserSettings.EnableForUser(_settingsManager, user.Id))
+            {
                 return new AuthenticationTokenDto
                 {
                     Tfa = true,
                     TfaKey = _tfaManager.GenerateSetupCode(user).ManualEntryKey,
                     ConfirmUrl = _commonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.TfaActivation)
                 };
+            }
 
             return new AuthenticationTokenDto
             {
@@ -337,7 +343,7 @@ public class AuthenticationController : ControllerBase
             }
             else
             {
-                throw new System.Security.SecurityException("Auth code is not available");
+                throw new SecurityException("Auth code is not available");
             }
 
             var token = _securityContext.AuthenticateMe(user.Id);
@@ -580,10 +586,16 @@ public class AuthenticationController : ControllerBase
 
     private UserInfo ProfileToUserInfo(LoginProfile loginProfile)
     {
-        if (string.IsNullOrEmpty(loginProfile.EMail)) throw new Exception(Resource.ErrorNotCorrectEmail);
+        if (string.IsNullOrEmpty(loginProfile.EMail))
+        {
+            throw new Exception(Resource.ErrorNotCorrectEmail);
+        }
 
         var firstName = loginProfile.FirstName;
-        if (string.IsNullOrEmpty(firstName)) firstName = loginProfile.DisplayName;
+        if (string.IsNullOrEmpty(firstName))
+        {
+            firstName = loginProfile.DisplayName;
+        }
 
         var userInfo = new UserInfo
         {
@@ -608,12 +620,18 @@ public class AuthenticationController : ControllerBase
     private bool TryGetUserByHash(string hashId, out Guid userId)
     {
         userId = Guid.Empty;
-        if (string.IsNullOrEmpty(hashId)) return false;
+        if (string.IsNullOrEmpty(hashId))
+        {
+            return false;
+        }
 
         var linkedProfiles = _accountLinker.Get("webstudio").GetLinkedObjectsByHashId(hashId);
         var tmp = Guid.Empty;
         if (linkedProfiles.Any(profileId => Guid.TryParse(profileId, out tmp) && _userManager.UserExists(tmp)))
+        {
             userId = tmp;
+        }
+
         return true;
     }
 }

@@ -40,7 +40,8 @@ public class CustomSchemasController : BaseSettingsController
         PermissionContext permissionContext,
         WebItemManager webItemManager,
         CustomNamingPeople customNamingPeople,
-        IMemoryCache memoryCache) : base(apiContext, memoryCache, webItemManager)
+        IMemoryCache memoryCache,
+        IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _messageService = messageService;
         _customNamingPeople = customNamingPeople;

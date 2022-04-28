@@ -24,30 +24,28 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Core.Calendars
+namespace ASC.Web.Core.Calendars;
+
+public class TodoContext : ICloneable
 {
+    #region ICloneable Members
 
-    public class TodoContext : ICloneable
+    public object Clone()
     {
-        #region ICloneable Members
-
-        public object Clone()
-        {
-            return this.MemberwiseClone();
-        }
-
-        #endregion
+        return this.MemberwiseClone();
     }
 
-    public interface ITodo : IICalFormatView
-    {
-        string Id { get; }
-        string Uid { get; }
-        string CalendarId { get; }
-        string Name { get; }
-        string Description { get; }
-        Guid OwnerId { get; }
-        DateTime UtcStartDate { get; }
-        DateTime Completed { get; }
-    }
+    #endregion
+}
+
+public interface ITodo : IICalFormatView
+{
+    string Id { get; }
+    string Uid { get; }
+    string CalendarId { get; }
+    string Name { get; }
+    string Description { get; }
+    Guid OwnerId { get; }
+    DateTime UtcStartDate { get; }
+    DateTime Completed { get; }
 }

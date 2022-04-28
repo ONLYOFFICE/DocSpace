@@ -114,7 +114,9 @@ public class FirstTimeTenantSettings
             }
 
             if (string.IsNullOrEmpty(passwordHash))
+            {
                 throw new Exception(Resource.ErrorPasswordEmpty);
+            }
 
             _securityContext.SetUserPasswordHash(currentUser.Id, passwordHash);
 
@@ -196,7 +198,10 @@ public class FirstTimeTenantSettings
 
     private void TrySetLanguage(Tenant tenant, string lng)
     {
-        if (string.IsNullOrEmpty(lng)) return;
+        if (string.IsNullOrEmpty(lng))
+        {
+            return;
+        }
 
         try
         {
@@ -214,13 +219,18 @@ public class FirstTimeTenantSettings
     private bool IncorrectAmiId(string customAmiId)
     {
         customAmiId = (customAmiId ?? "").Trim();
-        if (string.IsNullOrEmpty(customAmiId)) return true;
+        if (string.IsNullOrEmpty(customAmiId))
+        {
+            return true;
+        }
 
         if (string.IsNullOrEmpty(_amiId))
         {
             var getAmiIdUrl = _setupInfo.AmiMetaUrl + "instance-id";
-            var request = new HttpRequestMessage();
-            request.RequestUri = new Uri(getAmiIdUrl);
+            var request = new HttpRequestMessage
+            {
+                RequestUri = new Uri(getAmiIdUrl)
+            };
 
             try
             {
@@ -249,11 +259,16 @@ public class FirstTimeTenantSettings
         {
             var url = (_setupInfo.TeamlabSiteRedirect ?? "").Trim().TrimEnd('/');
 
-            if (string.IsNullOrEmpty(url)) return;
+            if (string.IsNullOrEmpty(url))
+            {
+                return;
+            }
 
             url += "/post.ashx";
-            var request = new HttpRequestMessage();
-            request.RequestUri = new Uri(url);
+            var request = new HttpRequestMessage
+            {
+                RequestUri = new Uri(url)
+            };
             var values = new NameValueCollection
                     {
                         { "type", "sendsubscription" },

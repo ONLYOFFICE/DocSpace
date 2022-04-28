@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using System.Security.Claims;
+
 using Module = ASC.Api.Core.Module;
 using SecurityContext = ASC.Core.SecurityContext;
 
@@ -59,6 +61,7 @@ public class UserController : PeopleControllerBase
     private readonly MessageService _messageService;
     private readonly AuthContext _authContext;
     private readonly SetupInfo _setupInfo;
+    private readonly SettingsManager _settingsManager;
 
     public UserController(
         Constants constants,
@@ -91,8 +94,10 @@ public class UserController : PeopleControllerBase
         PermissionContext permissionContext,
         ApiContext apiContext,
         UserPhotoManager userPhotoManager,
-        IHttpClientFactory httpClientFactory)
-        : base(userManager, permissionContext, apiContext, userPhotoManager, httpClientFactory)
+        IHttpClientFactory httpClientFactory,
+        IHttpContextAccessor httpContextAccessor,
+        SettingsManager settingsManager)
+        : base(userManager, permissionContext, apiContext, userPhotoManager, httpClientFactory, httpContextAccessor)
     {
         _constants = constants;
         _cookiesManager = cookiesManager;
@@ -120,6 +125,7 @@ public class UserController : PeopleControllerBase
         _messageService = messageService;
         _authContext = authContext;
         _setupInfo = setupInfo;
+        _settingsManager = settingsManager;
     }
 
     [Create("active")]
@@ -217,7 +223,7 @@ public class UserController : PeopleControllerBase
             throw new SecurityException();
         }
 
-        _securityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
+        _securityContext.AuthenticateMeWithoutCookie(Core.Configuration.Constants.CoreSystem);
         user.Status = EmployeeStatus.Terminated;
 
         _userManager.SaveUserInfo(user);
@@ -297,19 +303,25 @@ public class UserController : PeopleControllerBase
         return _employeeFullDtoHelper.GetFull(user);
     }
 
+    [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Everyone")]
     [Read("{username}", order: int.MaxValue)]
     public EmployeeDto GetById(string username)
     {
         if (_coreBaseSettings.Personal)
         {
             throw new MethodAccessException("Method not available");
-}
+        }
+
+        var isInvite = _httpContextAccessor.HttpContext.User.Claims
+               .Any(role => role.Type == ClaimTypes.Role && Enum.TryParse<ConfirmType>(role.Value, out var confirmType) && confirmType == ConfirmType.LinkInvite);
+
+        _apiContext.AuthByClaim();
 
         var user = _userManager.GetUserByUserName(username);
         if (user.Id == Constants.LostUser.Id)
         {
             if (Guid.TryParse(username, out var userId))
-{
+            {
                 user = _userManager.GetUsers(userId);
             }
             else
@@ -321,6 +333,11 @@ public class UserController : PeopleControllerBase
         if (user.Id == Constants.LostUser.Id)
         {
             throw new ItemNotFoundException("User not found");
+        }
+
+        if (isInvite)
+        {
+            return _employeeFullDtoHelper.GetSimple(user);
         }
 
         return _employeeFullDtoHelper.GetFull(user);
@@ -441,12 +458,47 @@ public class UserController : PeopleControllerBase
         return ResendUserInvites(inDto);
     }
 
+    [Read("theme")]
+    public DarkThemeSettings GetTheme()
+    {
+        return _settingsManager.LoadForCurrentUser<DarkThemeSettings>();
+    }
+
+    [Update("theme")]
+    public DarkThemeSettings ChangeThemeFromBody([FromBody] DarkThemeSettingsRequestDto model)
+    {
+        return ChangeTheme(model);
+    }
+
+    [Update("theme")]
+    [Consumes("application/x-www-form-urlencoded")]
+    public DarkThemeSettings ChangeThemeFromForm([FromForm] DarkThemeSettingsRequestDto model)
+    {
+        return ChangeTheme(model);
+    }
+
+    private DarkThemeSettings ChangeTheme(DarkThemeSettingsRequestDto model)
+    {
+        var darkThemeSettings = new DarkThemeSettings
+        {
+            Theme = model.Theme
+        };
+
+        _settingsManager.SaveForCurrentUser(darkThemeSettings);
+
+        return darkThemeSettings;
+    }
+
     [Read("@self")]
     public EmployeeDto Self()
     {
         var user = _userManager.GetUser(_securityContext.CurrentAccount.ID, EmployeeFullDtoHelper.GetExpression(_apiContext));
 
-        return _employeeFullDtoHelper.GetFull(user);
+        var result = _employeeFullDtoHelper.GetFull(user);
+
+        result.Theme = _settingsManager.LoadForCurrentUser<DarkThemeSettings>().Theme;
+
+        return result;
     }
 
     [Create("email", false)]
@@ -657,7 +709,10 @@ public class UserController : PeopleControllerBase
     {
         try
         {
-            if (_coreBaseSettings.CustomMode) inDto.Lang = "ru-RU";
+            if (_coreBaseSettings.CustomMode)
+            {
+                inDto.Lang = "ru-RU";
+            }
 
             var cultureInfo = _setupInfo.GetPersonalCulture(inDto.Lang).Value;
 
@@ -668,7 +723,10 @@ public class UserController : PeopleControllerBase
 
             inDto.Email.ThrowIfNull(new ArgumentException(Resource.ErrorEmailEmpty, "email"));
 
-            if (!inDto.Email.TestEmailRegex()) throw new ArgumentException(Resource.ErrorNotCorrectEmail, "email");
+            if (!inDto.Email.TestEmailRegex())
+            {
+                throw new ArgumentException(Resource.ErrorNotCorrectEmail, "email");
+            }
 
             if (!SetupInfo.IsSecretEmail(inDto.Email)
                 && !string.IsNullOrEmpty(_setupInfo.RecaptchaPublicKey) && !string.IsNullOrEmpty(_setupInfo.RecaptchaPrivateKey))
@@ -1043,7 +1101,7 @@ public class UserController : PeopleControllerBase
 
     public object SendUserPassword(MemberRequestDto inDto)
     {
-        string error = _userManagerWrapper.SendUserPassword(inDto.Email);
+        var error = _userManagerWrapper.SendUserPassword(inDto.Email);
         if (!string.IsNullOrEmpty(error))
         {
             _logger.ErrorFormat("Password recovery ({0}): {1}", inDto.Email, error);
@@ -1187,7 +1245,7 @@ public class UserController : PeopleControllerBase
         }
 
         // change user type
-        var canBeGuestFlag = !user.IsOwner(Tenant) && !user.IsAdmin(_userManager) && user.GetListAdminModules(_webItemSecurity).Count == 0 && !user.IsMe(_authContext);
+        var canBeGuestFlag = !user.IsOwner(Tenant) && !user.IsAdmin(_userManager) && user.GetListAdminModules(_webItemSecurity, _webItemManager).Count == 0 && !user.IsMe(_authContext);
 
         if (inDto.IsVisitor && !user.IsVisitor(_userManager) && canBeGuestFlag)
         {
@@ -1273,7 +1331,7 @@ public class UserController : PeopleControllerBase
         foreach (var user in users)
         {
             if (user.IsOwner(Tenant) || user.IsAdmin(_userManager)
-                || user.IsMe(_authContext) || user.GetListAdminModules(_webItemSecurity).Count > 0)
+                || user.IsMe(_authContext) || user.GetListAdminModules(_webItemSecurity, _webItemManager).Count > 0)
             {
                 continue;
             }

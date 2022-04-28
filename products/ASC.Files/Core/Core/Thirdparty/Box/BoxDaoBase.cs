@@ -116,8 +116,8 @@ internal abstract class BoxDaoBase : ThirdPartyProviderDao<BoxProviderInfo>
 
         folder.Id = MakeId(boxFolder.Id);
         folder.ParentId = isRoot ? null : MakeId(GetParentFolderId(boxFolder));
-        folder.CreateOn = isRoot ? ProviderInfo.CreateOn : (boxFolder.CreatedAt ?? default);
-        folder.ModifiedOn = isRoot ? ProviderInfo.CreateOn : (boxFolder.ModifiedAt ?? default);
+        folder.CreateOn = isRoot ? ProviderInfo.CreateOn : (boxFolder.CreatedAt?.UtcDateTime ?? default);
+        folder.ModifiedOn = isRoot ? ProviderInfo.CreateOn : (boxFolder.ModifiedAt?.UtcDateTime ?? default);
 
         folder.Title = MakeFolderTitle(boxFolder);
         folder.FilesCount = boxFolder.ItemCollection != null ? boxFolder.ItemCollection.Entries.Count(item => item is BoxFile) : 0;
@@ -125,12 +125,12 @@ internal abstract class BoxDaoBase : ThirdPartyProviderDao<BoxProviderInfo>
 
         if (folder.CreateOn != DateTime.MinValue && folder.CreateOn.Kind == DateTimeKind.Utc)
         {
-            folder.CreateOn = TenantUtil.DateTimeFromUtc(folder.CreateOn);
+            folder.CreateOn = _tenantUtil.DateTimeFromUtc(folder.CreateOn);
         }
 
         if (folder.ModifiedOn != DateTime.MinValue && folder.ModifiedOn.Kind == DateTimeKind.Utc)
         {
-            folder.ModifiedOn = TenantUtil.DateTimeFromUtc(folder.ModifiedOn);
+            folder.ModifiedOn = _tenantUtil.DateTimeFromUtc(folder.ModifiedOn);
         }
 
         return folder;
@@ -186,9 +186,9 @@ internal abstract class BoxDaoBase : ThirdPartyProviderDao<BoxProviderInfo>
 
         file.Id = MakeId(boxFile.Id);
         file.ContentLength = boxFile.Size.HasValue ? (long)boxFile.Size : 0;
-        file.CreateOn = boxFile.CreatedAt.HasValue ? TenantUtil.DateTimeFromUtc(boxFile.CreatedAt.Value) : default;
+        file.CreateOn = boxFile.CreatedAt.HasValue ? _tenantUtil.DateTimeFromUtc(boxFile.CreatedAt.Value.UtcDateTime) : default;
         file.ParentId = MakeId(GetParentFolderId(boxFile));
-        file.ModifiedOn = boxFile.ModifiedAt.HasValue ? TenantUtil.DateTimeFromUtc(boxFile.ModifiedAt.Value) : default;
+        file.ModifiedOn = boxFile.ModifiedAt.HasValue ? _tenantUtil.DateTimeFromUtc(boxFile.ModifiedAt.Value.UtcDateTime) : default;
         file.NativeAccessor = boxFile;
         file.Title = MakeFileTitle(boxFile);
 

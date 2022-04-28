@@ -59,7 +59,7 @@ public class TableInfo
         IdColumn = idColumn;
         IdType = idType;
         TenantColumn = tenantColumn;
-            UserIDColumns = new string[0];
+        UserIDColumns = new string[0];
         DateColumns = new Dictionary<string, bool>();
         InsertMethod = InsertMethod.Insert;
     }
@@ -71,7 +71,7 @@ public class TableInfo
 
     public bool HasDateColumns()
     {
-            return DateColumns.Count > 0;
+        return DateColumns.Count > 0;
     }
 
     public bool HasTenantColumn()

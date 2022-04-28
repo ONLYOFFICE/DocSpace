@@ -24,23 +24,24 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace System
-{
-    public static class TimeZoneExtension
-    {
-        /// <summary>
-        /// Get utc offset
-        /// </summary>
-        /// <param name="timeZone">timeZone</param>
-        /// <param name="baseOffset">return BaseUtcOffset</param>
-        /// <param name="dateTime">return GetUtcOffset(dateTime ?? DateTime.UtcNow)</param>
-        /// <returns></returns>
-        public static TimeSpan GetOffset(this TimeZoneInfo timeZone, bool baseOffset = false, DateTime dateTime = default)
-        {
-            if (baseOffset)
-                return timeZone.BaseUtcOffset;
+namespace System;
 
-            return timeZone.GetUtcOffset(dateTime == default ? DateTime.UtcNow : dateTime);
+public static class TimeZoneExtension
+{
+    /// <summary>
+    /// Get utc offset
+    /// </summary>
+    /// <param name="timeZone">timeZone</param>
+    /// <param name="baseOffset">return BaseUtcOffset</param>
+    /// <param name="dateTime">return GetUtcOffset(dateTime ?? DateTime.UtcNow)</param>
+    /// <returns></returns>
+    public static TimeSpan GetOffset(this TimeZoneInfo timeZone, bool baseOffset = false, DateTime dateTime = default)
+    {
+        if (baseOffset)
+        {
+            return timeZone.BaseUtcOffset;
         }
+
+        return timeZone.GetUtcOffset(dateTime == default ? DateTime.UtcNow : dateTime);
     }
 }

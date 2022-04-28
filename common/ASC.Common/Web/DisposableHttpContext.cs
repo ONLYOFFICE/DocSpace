@@ -40,7 +40,7 @@ public class DisposableHttpContext : IDisposable
                 throw new ArgumentNullException();
             }
 
-            if (!(value is IDisposable))
+            if (value is not IDisposable)
             {
                 throw new ArgumentException("Only IDisposable may be added!");
             }

@@ -55,7 +55,7 @@ internal class OneDriveProviderInfo : IProviderInfo
     public string ProviderKey { get; set; }
     public FolderType RootFolderType { get; set; }
 
-    private OneDriveStorageDisposableWrapper _wrapper;
+    private readonly OneDriveStorageDisposableWrapper _wrapper;
     private readonly OneDriveProviderInfoHelper _oneDriveProviderInfoHelper;
 
     public OneDriveProviderInfo(
@@ -127,7 +127,7 @@ internal class OneDriveProviderInfo : IProviderInfo
 internal class OneDriveStorageDisposableWrapper : IDisposable
 {
     internal OneDriveStorage Storage { get; private set; }
-        private readonly OAuth20TokenHelper _oAuth20TokenHelper;
+    private readonly OAuth20TokenHelper _oAuth20TokenHelper;
 
     internal readonly ConsumerFactory ConsumerFactory;
     internal readonly IServiceProvider ServiceProvider;
@@ -136,7 +136,7 @@ internal class OneDriveStorageDisposableWrapper : IDisposable
     {
         ConsumerFactory = consumerFactory;
         ServiceProvider = serviceProvider;
-       _oAuth20TokenHelper = oAuth20TokenHelper;
+        _oAuth20TokenHelper = oAuth20TokenHelper;
     }
 
     public Task<OneDriveStorage> CreateStorageAsync(OAuth20Token token, int id)
@@ -174,7 +174,7 @@ internal class OneDriveStorageDisposableWrapper : IDisposable
     {
         if (token.IsExpired)
         {
-                token = _oAuth20TokenHelper.RefreshToken<OneDriveLoginProvider>(ConsumerFactory, token);
+            token = _oAuth20TokenHelper.RefreshToken<OneDriveLoginProvider>(ConsumerFactory, token);
 
             var dbDao = ServiceProvider.GetService<ProviderAccountDao>();
             var authData = new AuthData(token: token.ToJson());
@@ -255,13 +255,13 @@ public class OneDriveProviderInfoHelper
         var key = id + "-";
         if (string.IsNullOrEmpty(onedriveId))
         {
-            await _cacheNotify.PublishAsync(new OneDriveCacheItem { ResetAll = true, Key = key }, Common.Caching.CacheNotifyAction.Remove).ConfigureAwait(false);
+            await _cacheNotify.PublishAsync(new OneDriveCacheItem { ResetAll = true, Key = key }, CacheNotifyAction.Remove).ConfigureAwait(false);
         }
         else
         {
             key += onedriveId;
 
-            await _cacheNotify.PublishAsync(new OneDriveCacheItem { Key = key }, Common.Caching.CacheNotifyAction.Remove).ConfigureAwait(false);
+            await _cacheNotify.PublishAsync(new OneDriveCacheItem { Key = key }, CacheNotifyAction.Remove).ConfigureAwait(false);
         }
     }
 }

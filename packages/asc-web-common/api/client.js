@@ -81,6 +81,7 @@ export const request = function (options) {
     switch (error.response?.status) {
       case 401:
         if (options.skipUnauthorized) return Promise.resolve();
+        if (options.skipLogout) return Promise.reject(errorText || error);
 
         request({
           method: "post",

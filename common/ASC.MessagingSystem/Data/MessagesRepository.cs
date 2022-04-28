@@ -39,7 +39,7 @@ public class MessagesRepository : IDisposable
     private readonly IMapper _mapper;
     private readonly ILog _logger;
     private readonly Timer _timer;
-    private Parser _parser; 
+    private Parser _parser;
 
     public MessagesRepository(IServiceScopeFactory serviceScopeFactory, ILog logger, IMapper mapper)
     {

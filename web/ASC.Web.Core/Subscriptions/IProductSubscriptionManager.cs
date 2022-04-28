@@ -24,18 +24,16 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Core.Subscriptions
-{
-    public enum GroupByType
-    {
-        Modules,
-        Groups,
-        Simple
-    }
-    public interface IProductSubscriptionManager : ISubscriptionManager
-    {
-        GroupByType GroupByType { get; }
-        List<SubscriptionGroup> GetSubscriptionGroups();
-    }
+namespace ASC.Web.Core.Subscriptions;
 
+public enum GroupByType
+{
+    Modules,
+    Groups,
+    Simple
+}
+public interface IProductSubscriptionManager : ISubscriptionManager
+{
+    GroupByType GroupByType { get; }
+    List<SubscriptionGroup> GetSubscriptionGroups();
 }

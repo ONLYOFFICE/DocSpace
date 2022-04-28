@@ -126,52 +126,54 @@ public class GoogleCloudStorage : BaseStorage
         using var storage = GetStorage();
 
         using var stream = new MemoryStream(Encoding.UTF8.GetBytes(_json ?? ""));
-        var preSignedURL = await UrlSigner.FromServiceAccountData(stream).SignAsync(_bucket, MakePath(domain, path), expire, HttpMethod.Get);
+        var preSignedURL = await FromServiceAccountData(stream).SignAsync(_bucket, MakePath(domain, path), expire, HttpMethod.Get);
 
         return MakeUri(preSignedURL);
     }
 
     public Uri GetUriShared(string domain, string path)
     {
-        return new Uri(SecureHelper.IsSecure(HttpContextAccessor.HttpContext, Options) ? _bucketSSlRoot : _bucketRoot, MakePath(domain, path));
+        return new Uri(SecureHelper.IsSecure(_httpContextAccessor.HttpContext, _options) ? _bucketSSlRoot : _bucketRoot, MakePath(domain, path));
     }
-    public override Task<System.IO.Stream> GetReadStreamAsync(string domain, string path)
+    public override Task<Stream> GetReadStreamAsync(string domain, string path)
     {
         return GetReadStreamAsync(domain, path, 0);
     }
 
-    public override async Task<System.IO.Stream> GetReadStreamAsync(string domain, string path, int offset)
+    public override async Task<Stream> GetReadStreamAsync(string domain, string path, int offset)
     {
-        var tempStream = TempStream.Create();
+        var tempStream = _tempStream.Create();
 
         var storage = GetStorage();
 
         await storage.DownloadObjectAsync(_bucket, MakePath(domain, path), tempStream);
 
         if (offset > 0)
+        {
             tempStream.Seek(offset, SeekOrigin.Begin);
+        }
 
         tempStream.Position = 0;
 
         return tempStream;
     }
 
-    public override Task<Uri> SaveAsync(string domain, string path, System.IO.Stream stream)
+    public override Task<Uri> SaveAsync(string domain, string path, Stream stream)
     {
         return SaveAsync(domain, path, stream, string.Empty, string.Empty);
     }
 
-    public override Task<Uri> SaveAsync(string domain, string path, System.IO.Stream stream, Configuration.ACL acl)
+    public override Task<Uri> SaveAsync(string domain, string path, Stream stream, ACL acl)
     {
         return SaveAsync(domain, path, stream, null, null, acl);
     }
 
-    public override Task<Uri> SaveAsync(string domain, string path, System.IO.Stream stream, string contentType, string contentDisposition)
+    public override Task<Uri> SaveAsync(string domain, string path, Stream stream, string contentType, string contentDisposition)
     {
         return SaveAsync(domain, path, stream, contentType, contentDisposition, ACL.Auto);
     }
 
-    public override Task<Uri> SaveAsync(string domain, string path, System.IO.Stream stream, string contentEncoding, int cacheDays)
+    public override Task<Uri> SaveAsync(string domain, string path, Stream stream, string contentEncoding, int cacheDays)
     {
         return SaveAsync(domain, path, stream, string.Empty, string.Empty, ACL.Auto, contentEncoding, cacheDays);
     }
@@ -180,7 +182,7 @@ public class GoogleCloudStorage : BaseStorage
                   string contentDisposition, ACL acl, string contentEncoding = null, int cacheDays = 5)
     {
 
-        var buffered = TempStream.GetBuffered(stream);
+        var buffered = _tempStream.GetBuffered(stream);
 
         if (QuotaController != null)
         {
@@ -268,7 +270,10 @@ public class GoogleCloudStorage : BaseStorage
 
     public override Task DeleteFilesAsync(string domain, List<string> paths)
     {
-        if (paths.Count == 0) return Task.CompletedTask;
+        if (paths.Count == 0)
+        {
+            return Task.CompletedTask;
+        }
 
         return InternalDeleteFilesAsync(domain, paths);
     }
@@ -299,7 +304,10 @@ public class GoogleCloudStorage : BaseStorage
             }
         }
 
-        if (keysToDel.Count == 0) return;
+        if (keysToDel.Count == 0)
+        {
+            return;
+        }
 
         using var storage = GetStorage();
 
@@ -369,7 +377,7 @@ public class GoogleCloudStorage : BaseStorage
         return await GetUriAsync(newdomain, newpath);
     }
 
-    public override Task<Uri> SaveTempAsync(string domain, out string assignedPath, System.IO.Stream stream)
+    public override Task<Uri> SaveTempAsync(string domain, out string assignedPath, Stream stream)
     {
         assignedPath = Guid.NewGuid().ToString();
 
@@ -402,7 +410,10 @@ public class GoogleCloudStorage : BaseStorage
 
         var items = storage.ListObjectsAsync(_bucket, MakePath(domain, path));
 
-        if (recursive) return items;
+        if (recursive)
+        {
+            return items;
+        }
 
         return items.Where(x => x.Name.IndexOf('/', MakePath(domain, path + "/").Length) == -1);
     }
@@ -557,11 +568,11 @@ public class GoogleCloudStorage : BaseStorage
         }
     }
 
-    public override async Task<string> SavePrivateAsync(string domain, string path, System.IO.Stream stream, DateTime expires)
+    public override async Task<string> SavePrivateAsync(string domain, string path, Stream stream, DateTime expires)
     {
         using var storage = GetStorage();
 
-        var buffered = TempStream.GetBuffered(stream);
+        var buffered = _tempStream.GetBuffered(stream);
 
         var uploadObjectOptions = new UploadObjectOptions
         {
@@ -660,9 +671,11 @@ public class GoogleCloudStorage : BaseStorage
 
         var contentRangeHeader = $"bytes {bytesRangeStart}-{bytesRangeEnd}/{totalBytes}";
 
-        var request = new HttpRequestMessage();
-        request.RequestUri = new Uri(uploadUri);
-        request.Method = HttpMethod.Put;
+        var request = new HttpRequestMessage
+        {
+            RequestUri = new Uri(uploadUri),
+            Method = HttpMethod.Put
+        };
         request.Headers.Add("Content-Range", contentRangeHeader);
         request.Content = new StreamContent(stream);
 
@@ -675,7 +688,7 @@ public class GoogleCloudStorage : BaseStorage
 
             try
             {
-                var httpClient = ClientFactory.CreateClient();
+                var httpClient = _clientFactory.CreateClient();
                 using var response = await httpClient.SendAsync(request);
 
                 break;
@@ -744,7 +757,7 @@ public class GoogleCloudStorage : BaseStorage
         throw new NotImplementedException();
     }
 
-    protected override Task<Uri> SaveWithAutoAttachmentAsync(string domain, string path, System.IO.Stream stream, string attachmentFileName)
+    protected override Task<Uri> SaveWithAutoAttachmentAsync(string domain, string path, Stream stream, string attachmentFileName)
     {
         var contentDisposition = $"attachment; filename={HttpUtility.UrlPathEncode(attachmentFileName)};";
         if (attachmentFileName.Any(c => c >= 0 && c <= 127))
@@ -777,12 +790,18 @@ public class GoogleCloudStorage : BaseStorage
         if (!string.IsNullOrEmpty(_subDir))
         {
             if (_subDir.Length == 1 && (_subDir[0] == '/' || _subDir[0] == '\\'))
+            {
                 result = path;
+            }
             else
+            {
                 result = $"{_subDir}/{path}"; // Ignory all, if _subDir is not null
+            }
         }
         else//Key combined from module+domain+filename
+        {
             result = $"{Tenant}/{Modulename}/{domain}/{path}";
+        }
 
         result = result.Replace("//", "/").TrimStart('/');
         if (_lowerCasing)

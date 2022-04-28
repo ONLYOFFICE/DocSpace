@@ -26,34 +26,35 @@
 
 namespace ASC.Core.Notify.Senders;
 
-[Singletone(Additional = typeof(SmtpSenderExtension))]
+[Singletone]
 public class SmtpSender : INotifySender
 {
-    protected ILog Logger { get; set; }
-    protected readonly IConfiguration Configuration;
-    protected IServiceProvider ServiceProvider;
+    protected ILog _logger;
+    protected readonly IConfiguration _configuration;
+    protected IServiceProvider _serviceProvider;
 
     private string _host;
     private int _port;
     private bool _ssl;
     private ICredentials _credentials;
-    protected bool UseCoreSettings;
+    protected bool _useCoreSettings;
     const int NetworkTimeout = 30000;
 
     public SmtpSender(
+        IConfiguration configuration,
         IServiceProvider serviceProvider,
         IOptionsMonitor<ILog> options)
     {
-        Logger = options.Get("ASC.Notify");
-        Configuration = serviceProvider.GetService<IConfiguration>();
-        ServiceProvider = serviceProvider;
+        _logger = options.Get("ASC.Notify");
+        _configuration = configuration;
+        _serviceProvider = serviceProvider;
     }
 
     public virtual void Init(IDictionary<string, string> properties)
     {
         if (properties.ContainsKey("useCoreSettings") && bool.Parse(properties["useCoreSettings"]))
         {
-            UseCoreSettings = true;
+            _useCoreSettings = true;
         }
         else
         {
@@ -81,10 +82,11 @@ public class SmtpSender : INotifySender
 
     public virtual NoticeSendResult Send(NotifyMessage m)
     {
-        using var scope = ServiceProvider.CreateScope();
-        var scopeClass = scope.ServiceProvider.GetService<SmtpSenderScope>();
-        var (tenantManager, configuration) = scopeClass;
+        using var scope = _serviceProvider.CreateScope();
+        var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
         tenantManager.SetCurrentTenant(m.TenantId);
+
+        var configuration = scope.ServiceProvider.GetService<CoreConfiguration>();
 
         var smtpClient = GetSmtpClient();
         var result = NoticeSendResult.TryOnceAgain;
@@ -92,14 +94,14 @@ public class SmtpSender : INotifySender
         {
             try
             {
-                if (UseCoreSettings)
+                if (_useCoreSettings)
                 {
                     InitUseCoreSettings(configuration);
                 }
 
                 var mail = BuildMailMessage(m);
 
-                Logger.DebugFormat("SmtpSender - host={0}; port={1}; enableSsl={2} enableAuth={3}", _host, _port, _ssl, _credentials != null);
+                _logger.DebugFormat("SmtpSender - host={0}; port={1}; enableSsl={2} enableAuth={3}", _host, _port, _ssl, _credentials != null);
 
                 smtpClient.Connect(_host, _port,
                     _ssl ? SecureSocketOptions.Auto : SecureSocketOptions.None);
@@ -114,7 +116,7 @@ public class SmtpSender : INotifySender
             }
             catch (Exception e)
             {
-                Logger.ErrorFormat("Tenant: {0}, To: {1} - {2}", m.TenantId, m.Reciever, e);
+                _logger.ErrorFormat("Tenant: {0}, To: {1} - {2}", m.TenantId, m.Reciever, e);
 
                 throw;
             }
@@ -302,31 +304,5 @@ public class SmtpSender : INotifySender
         {
             return null;
         }
-    }
-}
-
-[Scope]
-public class SmtpSenderScope
-{
-    private readonly TenantManager _tenantManager;
-    private readonly CoreConfiguration _coreConfiguration;
-
-    public SmtpSenderScope(TenantManager tenantManager, CoreConfiguration coreConfiguration)
-    {
-        _tenantManager = tenantManager;
-        _coreConfiguration = coreConfiguration;
-    }
-
-    public void Deconstruct(out TenantManager tenantManager, out CoreConfiguration coreConfiguration)
-    {
-        (tenantManager, coreConfiguration) = (_tenantManager, _coreConfiguration);
-    }
-}
-
-public static class SmtpSenderExtension
-{
-    public static void Register(DIHelper services)
-    {
-        services.TryAdd<SmtpSenderScope>();
     }
 }

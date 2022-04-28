@@ -53,7 +53,9 @@ public static class JsonWebToken
 
     private static (IJsonSerializer, IJwtAlgorithm, IBase64UrlEncoder) GetSettings(bool baseSerializer = false)
     {
+#pragma warning disable CS0618 // Type or member is obsolete
         return (baseSerializer ? (IJsonSerializer)new JsonNetSerializer() : new JwtSerializer(), new HMACSHA256Algorithm(), new JwtBase64UrlEncoder());
+#pragma warning restore CS0618 // Type or member is obsolete
     }
 }
 
@@ -91,5 +93,16 @@ public class JwtSerializer : IJsonSerializer
         };
 
         return JsonConvert.DeserializeObject<T>(json, settings);
+    }
+
+    public object Deserialize(Type type, string json)
+    {
+        var settings = new JsonSerializerSettings
+        {
+            ContractResolver = new CamelCaseExceptDictionaryKeysResolver(),
+            NullValueHandling = NullValueHandling.Ignore,
+        };
+
+        return JsonConvert.DeserializeObject(json, type, settings);
     }
 }

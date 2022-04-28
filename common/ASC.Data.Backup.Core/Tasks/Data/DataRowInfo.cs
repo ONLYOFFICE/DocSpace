@@ -66,7 +66,7 @@ public class DataRowInfo
         while (i < _values.Count && sb.Length <= maxStrLength)
         {
             var strVal = Convert.ToString(_values[i]);
-                sb.Append($"\"{strVal}\", ");
+            sb.Append($"\"{strVal}\", ");
             i++;
         }
 

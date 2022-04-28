@@ -95,7 +95,10 @@ public static class ModelBindingContextExtension
                 bindingContext.ModelState.SetModelValue(modelName, keyProviderResult);
                 bindingContext.ModelState.SetModelValue(modelName, valueProviderResult);
 
-                result.Add(new ItemKeyValuePair<JsonElement, string> { Key = ParseQueryParam(keyProviderResult.FirstValue), Value = valueProviderResult.FirstValue });
+                if (!string.IsNullOrEmpty(keyProviderResult.FirstValue) && !string.IsNullOrEmpty(valueProviderResult.FirstValue))
+                {
+                    result.Add(new ItemKeyValuePair<JsonElement, string> { Key = ParseQueryParam(keyProviderResult.FirstValue), Value = valueProviderResult.FirstValue });
+                }
             }
             else
             {

@@ -29,7 +29,7 @@ using Constants = ASC.Core.Users.Constants;
 namespace ASC.Web.Api.Controllers.Settings;
 public class SettingsController : BaseSettingsController
 {
-    private Tenant Tenant { get { return _apiContext.Tenant; } }
+    private Tenant Tenant { get { return ApiContext.Tenant; } }
 
     private readonly MessageService _messageService;
     private readonly ConsumerFactory _consumerFactory;
@@ -59,6 +59,7 @@ public class SettingsController : BaseSettingsController
     private readonly ILog _log;
     private readonly TelegramHelper _telegramHelper;
     private readonly Constants _constants;
+    private readonly DnsSettings _dnsSettings;
 
     public SettingsController(
         IOptionsMonitor<ILog> option,
@@ -91,8 +92,10 @@ public class SettingsController : BaseSettingsController
         TelegramHelper telegramHelper,
         UrlShortener urlShortener,
         PasswordHasher passwordHasher,
-        Constants constants
-        ) : base(apiContext, memoryCache, webItemManager)
+        Constants constants,
+        IHttpContextAccessor httpContextAccessor,
+        DnsSettings dnsSettings
+        ) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _log = option.Get("ASC.Api");
         _consumerFactory = consumerFactory;
@@ -122,19 +125,24 @@ public class SettingsController : BaseSettingsController
         _urlShortener = urlShortener;
         _telegramHelper = telegramHelper;
         _constants = constants;
+        _dnsSettings = dnsSettings;
     }
 
     [Read("", Check = false)]
     [AllowAnonymous]
     public SettingsDto GetSettings(bool? withpassword)
     {
+        var studioAdminMessageSettings = _settingsManager.Load<StudioAdminMessageSettings>();
+
         var settings = new SettingsDto
         {
             Culture = Tenant.GetCulture().ToString(),
             GreetingSettings = Tenant.Name,
             Personal = _coreBaseSettings.Personal,
             Version = _configuration["version:number"] ?? "",
-            TenantStatus = _tenantManager.GetCurrentTenant().Status
+            TenantStatus = _tenantManager.GetCurrentTenant().Status,
+            TenantAlias = Tenant.Alias,
+            EnableAdmMess = studioAdminMessageSettings.Enable || _tenantExtra.IsNotPaid()
         };
 
         if (_authContext.IsAuthenticated)
@@ -184,10 +192,6 @@ public class SettingsController : BaseSettingsController
                 settings.TrustedDomains = Tenant.TrustedDomains;
             }
 
-            var studioAdminMessageSettings = _settingsManager.Load<StudioAdminMessageSettings>();
-
-            settings.EnableAdmMess = studioAdminMessageSettings.Enable || _tenantExtra.IsNotPaid();
-
             settings.ThirdpartyEnable = _setupInfo.ThirdPartyAuthEnabled && _providerManager.IsNotEmpty;
 
             settings.RecaptchaPublicKey = _setupInfo.RecaptchaPublicKey;
@@ -224,13 +228,17 @@ public class SettingsController : BaseSettingsController
             foreach (var d in inDto.Domains.Select(domain => (domain ?? "").Trim().ToLower()))
             {
                 if (!(!string.IsNullOrEmpty(d) && new Regex("^[a-z0-9]([a-z0-9-.]){1,98}[a-z0-9]$").IsMatch(d)))
+                {
                     return Resource.ErrorNotCorrectTrustedDomain;
+                }
 
                 Tenant.TrustedDomains.Add(d);
             }
 
             if (Tenant.TrustedDomains.Count == 0)
+            {
                 inDto.Type = TenantTrustedDomainsType.None;
+            }
         }
 
         Tenant.TrustedDomainsType = inDto.Type;
@@ -247,7 +255,7 @@ public class SettingsController : BaseSettingsController
     [Read("quota")]
     public QuotaDto GetQuotaUsed()
     {
-        return new QuotaDto(Tenant, _coreBaseSettings, _coreConfiguration, _tenantExtra, _tenantStatisticsProvider, _authContext, _settingsManager, _webItemManager, _constants);
+        return new QuotaDto(Tenant, _coreBaseSettings, _coreConfiguration, _tenantExtra, _tenantStatisticsProvider, _authContext, _settingsManager, WebItemManager, _constants);
     }
 
     [AllowAnonymous]
@@ -261,7 +269,7 @@ public class SettingsController : BaseSettingsController
     [Read("timezones", Check = false)]
     public List<TimezonesRequestsDto> GetTimeZones()
     {
-        _apiContext.AuthByClaim();
+        ApiContext.AuthByClaim();
         var timeZones = TimeZoneInfo.GetSystemTimeZones().ToList();
 
         if (timeZones.All(tz => tz.Id != "UTC"))
@@ -288,6 +296,12 @@ public class SettingsController : BaseSettingsController
     public object GetMachineName()
     {
         return Dns.GetHostName().ToLowerInvariant();
+    }
+
+    [Update("dns")]
+    public object SaveDnsSettings(DnsSettingsModel model)
+    {
+        return _dnsSettings.SaveDnsSettings(model.DnsName, model.Enable);
     }
 
     //[Read("recalculatequota")]
@@ -347,7 +361,7 @@ public class SettingsController : BaseSettingsController
 
     private WizardSettings CompleteWizard(WizardRequestsDto wizardModel)
     {
-        _apiContext.AuthByClaim();
+        ApiContext.AuthByClaim();
 
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -363,7 +377,9 @@ public class SettingsController : BaseSettingsController
         var collaboratorPopupSettings = _settingsManager.LoadForCurrentUser<CollaboratorSettings>();
 
         if (!(currentUser.IsVisitor(_userManager) && collaboratorPopupSettings.FirstVisit && !currentUser.IsOutsider(_userManager)))
+        {
             throw new NotSupportedException("Not available.");
+        }
 
         collaboratorPopupSettings.FirstVisit = false;
         _settingsManager.SaveForCurrentUser(collaboratorPopupSettings);
@@ -496,7 +512,10 @@ public class SettingsController : BaseSettingsController
                                                    item.Context != null &&
                                                    item.Context.SpaceUsageStatManager != null);
 
-        if (webitem == null) return Task.FromResult(new List<UsageSpaceStatItemDto>());
+        if (webitem == null)
+        {
+            return Task.FromResult(new List<UsageSpaceStatItemDto>());
+        }
 
         return InternalGetSpaceUsageStatistics(webitem);
     }
@@ -525,7 +544,10 @@ public class SettingsController : BaseSettingsController
 
         var points = new List<ChartPointDto>();
 
-        if (from.CompareTo(to) >= 0) return points;
+        if (from.CompareTo(to) >= 0)
+        {
+            return points;
+        }
 
         for (var d = new DateTime(from.Ticks); d.Date.CompareTo(to.Date) <= 0; d = d.AddDays(1))
         {
@@ -541,7 +563,10 @@ public class SettingsController : BaseSettingsController
         var hits = _statisticManager.GetHitsByPeriod(Tenant.Id, from, to);
         var hosts = _statisticManager.GetHostsByPeriod(Tenant.Id, from, to);
 
-        if (hits.Count == 0 || hosts.Count == 0) return points;
+        if (hits.Count == 0 || hosts.Count == 0)
+        {
+            return points;
+        }
 
         hits.Sort((x, y) => x.VisitDate.CompareTo(y.VisitDate));
         hosts.Sort((x, y) => x.VisitDate.CompareTo(y.VisitDate));
@@ -615,7 +640,9 @@ public class SettingsController : BaseSettingsController
         var saveAvailable = _coreBaseSettings.Standalone || _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).ThirdParty;
         if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.ThirdPartyAuthorization))
             || !saveAvailable)
+        {
             throw new BillingException(Resource.ErrorNotAllowedOption, "ThirdPartyAuthorization");
+        }
 
         var changed = false;
         var consumer = _consumerFactory.GetByKey<Consumer>(inDto.Name);
@@ -667,7 +694,9 @@ public class SettingsController : BaseSettingsController
         }
 
         if (changed)
+        {
             _messageService.Send(MessageAction.AuthorizationKeysSetting);
+        }
 
         return changed;
     }

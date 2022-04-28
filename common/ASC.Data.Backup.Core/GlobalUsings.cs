@@ -73,6 +73,7 @@ global using ASC.Data.Backup.Tasks.Modules;
 global using ASC.Data.Backup.Utils;
 global using ASC.Data.Storage;
 global using ASC.Data.Storage.Configuration;
+global using ASC.EventBus.Events;
 global using ASC.Files.Core;
 global using ASC.MessagingSystem.Core;
 global using ASC.Notify.Cron;
@@ -85,7 +86,6 @@ global using ASC.Web.Core.Users;
 global using ASC.Web.Core.Utility;
 global using ASC.Web.Core.WhiteLabel;
 global using ASC.Web.Studio.Core;
-global using ASC.Web.Studio.Core.Backup;
 global using ASC.Web.Studio.Core.Notify;
 global using ASC.Web.Studio.Utility;
 
@@ -105,3 +105,5 @@ global using MySql.Data.MySqlClient;
 
 global using Newtonsoft.Json;
 global using Newtonsoft.Json.Linq;
+
+global using ProtoBuf;

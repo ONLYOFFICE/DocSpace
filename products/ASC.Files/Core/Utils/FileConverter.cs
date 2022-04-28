@@ -36,7 +36,7 @@ internal class FileConverterQueue<T> : IDisposable
     private readonly Timer _timer;
     private readonly object _locker;
     private readonly ICache _cache;
-    private const int TimerPeriod = 500;
+    private const int _timerPeriod = 500;
 
     private readonly IServiceScopeFactory _serviceScopeFactory;
 
@@ -178,7 +178,7 @@ internal class FileConverterQueue<T> : IDisposable
 
                         lock (_locker)
                         {
-                            if (!_conversionQueue.Keys.Contains(file))
+                            if (!_conversionQueue.ContainsKey(file))
                             {
                                 continue;
                             }
@@ -241,8 +241,8 @@ internal class FileConverterQueue<T> : IDisposable
                     }
                     catch (Exception exception)
                     {
-                        var password = exception.InnerException is DocumentService.DocumentServiceException documentServiceException
-                                       && documentServiceException.Code == DocumentService.DocumentServiceException.ErrorCode.ConvertPassword;
+                        var password = exception.InnerException is DocumentServiceException documentServiceException
+                                       && documentServiceException.Code == DocumentServiceException.ErrorCode.ConvertPassword;
 
                         logger.Error(string.Format("Error convert {0} with url {1}", file.Id, fileUri), exception);
                         lock (_locker)
@@ -259,7 +259,11 @@ internal class FileConverterQueue<T> : IDisposable
                                     operationResult.Progress = 100;
                                     operationResult.StopDateTime = DateTime.UtcNow;
                                     operationResult.Error = exception.Message;
-                                    if (password) operationResult.Result = "password";
+                                    if (password)
+                                    {
+                                        operationResult.Result = "password";
+                                    }
+
                                     _cache.Insert(GetKey(file), operationResult, TimeSpan.FromMinutes(10));
                                 }
                             }
@@ -350,7 +354,7 @@ internal class FileConverterQueue<T> : IDisposable
 
                 lock (_locker)
                 {
-                    _timer.Change(TimerPeriod, TimerPeriod);
+                    _timer.Change(_timerPeriod, _timerPeriod);
                 }
             }
             catch (Exception exception)
@@ -633,12 +637,12 @@ public class FileConverter
         }
 
         fileExtension = FileUtility.GetFileExtension(file.Title);
-        if (_fileUtility.InternalExtension.Values.Contains(toExtension))
+        if (_fileUtility.InternalExtension.ContainsValue(toExtension))
         {
             return true;
         }
 
-        return _fileUtility.ExtsConvertible.Keys.Contains(fileExtension) && _fileUtility.ExtsConvertible[fileExtension].Contains(toExtension);
+        return _fileUtility.ExtsConvertible.ContainsKey(fileExtension) && _fileUtility.ExtsConvertible[fileExtension].Contains(toExtension);
     }
 
     public Task<Stream> ExecAsync<T>(File<T> file)
@@ -666,11 +670,13 @@ public class FileConverter
 
         var uriTuple = await _documentServiceConnector.GetConvertedUriAsync(fileUri, file.ConvertedExtension, toExtension, docKey, password, null, null, false);
         var convertUri = uriTuple.ConvertedDocumentUri;
-        var request = new HttpRequestMessage();
-        request.RequestUri = new Uri(convertUri);
+        var request = new HttpRequestMessage
+        {
+            RequestUri = new Uri(convertUri)
+        };
 
-        using var httpClient = _clientFactory.CreateClient();
-        using var response = await httpClient.SendAsync(request);
+        var httpClient = _clientFactory.CreateClient();
+        var response = await httpClient.SendAsync(request);
 
         return new ResponseStream(response);
     }
@@ -749,7 +755,7 @@ public class FileConverter
         {
             throw new ArgumentException(FilesCommonResource.ErrorMassage_NotSupportedFormat);
         }
-        if (!string.IsNullOrEmpty(file.ConvertedType) || _fileUtility.InternalExtension.Values.Contains(FileUtility.GetFileExtension(file.Title)))
+        if (!string.IsNullOrEmpty(file.ConvertedType) || _fileUtility.InternalExtension.ContainsValue(FileUtility.GetFileExtension(file.Title)))
         {
             return;
         }
@@ -839,8 +845,10 @@ public class FileConverter
         newFile.Comment = string.Format(FilesCommonResource.CommentConvert, file.Title);
         newFile.ThumbnailStatus = Thumbnail.Waiting;
 
-        var request = new HttpRequestMessage();
-        request.RequestUri = new Uri(convertedFileUrl);
+        var request = new HttpRequestMessage
+        {
+            RequestUri = new Uri(convertedFileUrl)
+        };
 
         var httpClient = _clientFactory.CreateClient();
 

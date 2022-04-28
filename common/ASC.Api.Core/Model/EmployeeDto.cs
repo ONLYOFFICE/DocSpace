@@ -49,8 +49,8 @@ public class EmployeeDto
 [Scope]
 public class EmployeeDtoHelper
 {
-    protected readonly UserPhotoManager UserPhotoManager;
-    protected readonly UserManager UserManager;
+    protected readonly UserPhotoManager _userPhotoManager;
+    protected readonly UserManager _userManager;
 
     private readonly ApiContext _httpContext;
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
@@ -63,8 +63,8 @@ public class EmployeeDtoHelper
         CommonLinkUtility commonLinkUtility,
         UserManager userManager)
     {
-        UserPhotoManager = userPhotoManager;
-        UserManager = userManager;
+        _userPhotoManager = userPhotoManager;
+        _userManager = userManager;
         _httpContext = httpContext;
         _displayUserSettingsHelper = displayUserSettingsHelper;
         _commonLinkUtility = commonLinkUtility;
@@ -79,11 +79,11 @@ public class EmployeeDtoHelper
     {
         try
         {
-            return Get(UserManager.GetUsers(userId));
+            return Get(_userManager.GetUsers(userId));
         }
         catch (Exception)
         {
-            return Get(Constants.LostUser);
+            return Get(ASC.Core.Users.Constants.LostUser);
         }
     }
 
@@ -101,9 +101,9 @@ public class EmployeeDtoHelper
 
         if (_httpContext.Check("avatarSmall"))
         {
-            result.AvatarSmall = UserPhotoManager.GetSmallPhotoURL(userInfo.Id, out var isdef) 
+            result.AvatarSmall = _userPhotoManager.GetSmallPhotoURL(userInfo.Id, out var isdef)
                 + (isdef ? "" : $"?_={userInfoLM}");
-        }     
+        }
 
         if (result.Id != Guid.Empty)
         {

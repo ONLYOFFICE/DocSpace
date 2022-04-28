@@ -54,7 +54,7 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
         GlobalFolderHelper globalFolderHelper,
         CoreBaseSettings coreBaseSettings,
         FileUtility fileUtility,
-        TenantManager tenantManager) 
+        TenantManager tenantManager)
         : base(
             filesSettingsHelper,
             fileUploader,
@@ -95,9 +95,9 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
         return result;
     }
 
-    public async Task<FolderContentDto<T>> GetFolderAsync(T folderId, Guid userIdOrGroupId, FilterType filterType, bool withSubFolders)
+    public async Task<FolderContentDto<T>> GetFolderAsync(T folderId, Guid userIdOrGroupId, FilterType filterType, bool searchInContent, bool withSubFolders)
     {
-        var folderContentWrapper = await ToFolderContentWrapperAsync(folderId, userIdOrGroupId, filterType, withSubFolders);
+        var folderContentWrapper = await ToFolderContentWrapperAsync(folderId, userIdOrGroupId, filterType, searchInContent, withSubFolders);
 
         return folderContentWrapper.NotFoundIfNull();
     }
@@ -217,7 +217,7 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
         return await _folderDtoHelper.GetAsync(folder);
     }
 
-    private async Task<FolderContentDto<T>> ToFolderContentWrapperAsync(T folderId, Guid userIdOrGroupId, FilterType filterType, bool withSubFolders)
+    private async Task<FolderContentDto<T>> ToFolderContentWrapperAsync(T folderId, Guid userIdOrGroupId, FilterType filterType, bool searchInContent, bool withSubFolders)
     {
         OrderBy orderBy = null;
         if (Enum.TryParse(_apiContext.SortBy, true, out SortedByType sortBy))
@@ -227,7 +227,7 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
 
         var startIndex = Convert.ToInt32(_apiContext.StartIndex);
         var items = await _fileStorageService.GetFolderItemsAsync(folderId, startIndex, Convert.ToInt32(_apiContext.Count), filterType,
-            filterType == FilterType.ByUser, userIdOrGroupId.ToString(), _apiContext.FilterValue, false, withSubFolders, orderBy);
+            filterType == FilterType.ByUser, userIdOrGroupId.ToString(), _apiContext.FilterValue, searchInContent, withSubFolders, orderBy);
 
         return await _folderContentDtoHelper.GetAsync(items, startIndex);
     }

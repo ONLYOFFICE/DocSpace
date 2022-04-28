@@ -24,31 +24,30 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Core.WebZones
+namespace ASC.Web.Core.WebZones;
+
+[Flags]
+public enum WebZoneType
 {
-    [Flags]
-    public enum WebZoneType
+    Nowhere = 1,
+    StartProductList = 2,
+    TopNavigationProductList = 4,
+    CustomProductList = 8,
+
+    All = Nowhere | StartProductList | TopNavigationProductList | CustomProductList
+}
+
+[AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
+public class WebZoneAttribute : Attribute
+{
+    public WebZoneType Type { get; private set; }
+
+    public WebZoneAttribute(WebZoneType type)
     {
-        Nowhere = 1,
-        StartProductList = 2,
-        TopNavigationProductList = 4,
-        CustomProductList = 8,
-
-        All = Nowhere | StartProductList | TopNavigationProductList | CustomProductList
+        Type = type;
     }
+}
 
-    [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
-    public class WebZoneAttribute : Attribute
-    {
-        public WebZoneType Type { get; private set; }
-
-        public WebZoneAttribute(WebZoneType type)
-        {
-            Type = type;
-        }
-    }
-
-    public interface IRenderWebItem
-    {
-    }
+public interface IRenderWebItem
+{
 }

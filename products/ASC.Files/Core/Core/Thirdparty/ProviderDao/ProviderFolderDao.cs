@@ -119,7 +119,7 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
             var selectorLocal = selector;
             var matchedIds = folderIds.Where(selectorLocal.IsMatch).ToList();
 
-            if (matchedIds.Count > 0)
+            if (matchedIds.Count == 0)
             {
                 continue;
             }

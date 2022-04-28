@@ -36,7 +36,7 @@ class InterceptorStorage
     {
         get
         {
-            if (!(CallContext.GetData(_callContextPrefix) is Dictionary<string, ISendInterceptor> storage))
+            if (CallContext.GetData(_callContextPrefix) is not Dictionary<string, ISendInterceptor> storage)
             {
                 storage = new Dictionary<string, ISendInterceptor>(10);
                 CallContext.SetData(_callContextPrefix, storage);
@@ -49,7 +49,10 @@ class InterceptorStorage
     public void Add(ISendInterceptor interceptor)
     {
         ArgumentNullException.ThrowIfNull(interceptor);
-        if (string.IsNullOrEmpty(interceptor.Name)) throw new ArgumentException("empty name property", nameof(interceptor));
+        if (string.IsNullOrEmpty(interceptor.Name))
+        {
+            throw new ArgumentException("empty name property", nameof(interceptor));
+        }
 
         switch (interceptor.Lifetime)
         {

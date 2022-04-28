@@ -114,11 +114,11 @@ public class ReportState
         Guid userId)
     {
         var data = new ReportStateData(
-            task.GetProperty<string>("fileName"),
-            task.GetProperty<string>("tmpFileName"),
-            task.GetProperty<string>("script"),
-            task.GetProperty<int>("reportType"),
-            task.GetProperty<ReportOrigin>("reportOrigin"),
+            task["fileName"],
+            task["tmpFileName"],
+            task["script"],
+            task["reportType"],
+            (ReportOrigin)task["reportOrigin"],
             null,
             null,
             tenantId,
@@ -126,10 +126,10 @@ public class ReportState
 
         return new ReportState(null, data, httpContextAccessor)
         {
-            Id = task.GetProperty<string>("id"),
-            FileId = task.GetProperty<int>("fileId"),
-            Status = task.GetProperty<ReportStatus>("status"),
-            Exception = task.GetProperty<string>("exception")
+            Id = task["id"],
+            FileId = task["fileId"],
+            Status = (ReportStatus)task["status"],
+            Exception = task["exception"]
         };
 
     }
@@ -235,14 +235,14 @@ public class ReportState
 
     protected void FillDistributedTask()
     {
-        TaskInfo.SetProperty("id", Id);
-        TaskInfo.SetProperty("fileName", FileName);
-        TaskInfo.SetProperty("tmpFileName", TmpFileName);
-        TaskInfo.SetProperty("reportType", ReportType);
-        TaskInfo.SetProperty("fileId", FileId);
-        TaskInfo.SetProperty("status", Status);
-        TaskInfo.SetProperty("reportOrigin", Origin);
-        TaskInfo.SetProperty("exception", Exception);
+        TaskInfo["id"] = Id;
+        TaskInfo["fileName"] = FileName;
+        TaskInfo["tmpFileName"] = TmpFileName;
+        TaskInfo["reportType"] = ReportType;
+        TaskInfo["fileId"] = FileId;
+        TaskInfo["status"] = (int)Status;
+        TaskInfo["reportOrigin"] = (int)Origin;
+        TaskInfo["exception"] = Exception;
     }
 }
 [Scope]
@@ -253,9 +253,9 @@ public class DocbuilderReportsUtility
 
     public static string TmpFileName => $"tmp{DateTime.UtcNow.Ticks}.xlsx";
 
-    public DocbuilderReportsUtility(DistributedTaskQueueOptionsManager distributedTaskQueueOptionsManager)
+    public DocbuilderReportsUtility(IDistributedTaskQueueFactory queueFactory)
     {
-        _tasks = distributedTaskQueueOptionsManager.Get("DocbuilderReportsUtility");
+        _tasks = queueFactory.CreateQueue();
         _locker = new object();
     }
 
@@ -263,7 +263,7 @@ public class DocbuilderReportsUtility
     {
         lock (_locker)
         {
-            _tasks.QueueTask(state.GenerateReportAsync, state.GetDistributedTask());
+            _tasks.EnqueueTask(state.GenerateReportAsync, state.GetDistributedTask());
         }
     }
 
@@ -271,11 +271,11 @@ public class DocbuilderReportsUtility
     {
         lock (_locker)
         {
-            var result = _tasks.GetTasks().Where(Predicate(origin, tenantId, userId));
+            var result = _tasks.GetAllTasks().Where(Predicate(origin, tenantId, userId));
 
             foreach (var t in result)
             {
-                _tasks.CancelTask(t.Id);
+                _tasks.DequeueTask(t.Id);
             }
         }
     }
@@ -284,18 +284,18 @@ public class DocbuilderReportsUtility
     {
         lock (_locker)
         {
-            var task = _tasks.GetTasks().LastOrDefault(Predicate(origin, tenantId, userId));
+            var task = _tasks.GetAllTasks().LastOrDefault(Predicate(origin, tenantId, userId));
             if (task == null)
             {
                 return null;
             }
 
             var result = ReportState.FromTask(task, httpContextAccessor, tenantId, userId);
-            var status = task.GetProperty<ReportStatus>("status");
+            var status = (ReportStatus)task["status"];
 
             if ((int)status > 1)
             {
-                _tasks.RemoveTask(task.Id);
+                _tasks.DequeueTask(task.Id);
             }
 
             return result;
@@ -304,7 +304,7 @@ public class DocbuilderReportsUtility
 
     private static Func<DistributedTask, bool> Predicate(ReportOrigin origin, int tenantId, Guid userId)
     {
-        return t => t.GetProperty<string>("id") == GetCacheKey(origin, tenantId, userId);
+        return t => t["id"] == GetCacheKey(origin, tenantId, userId);
     }
 
     internal static string GetCacheKey(ReportOrigin origin, int tenantId, Guid userId)
@@ -316,7 +316,7 @@ public class DocbuilderReportsUtility
 [Scope]
 public class DocbuilderReportsUtilityHelper
 {
-    public DocbuilderReportsUtility DocbuilderReportsUtility { get; }
+    private readonly DocbuilderReportsUtility _docbuilderReportsUtility;
     private readonly AuthContext _authContext;
     private readonly TenantManager _tenantManager;
     private readonly IHttpContextAccessor _httpContextAccessor;
@@ -326,7 +326,7 @@ public class DocbuilderReportsUtilityHelper
         AuthContext authContext,
         TenantManager tenantManager)
     {
-        DocbuilderReportsUtility = docbuilderReportsUtility;
+        _docbuilderReportsUtility = docbuilderReportsUtility;
         _authContext = authContext;
         _tenantManager = tenantManager;
         TenantId = _tenantManager.GetCurrentTenant().Id;
@@ -348,17 +348,17 @@ public class DocbuilderReportsUtilityHelper
 
     public void Enqueue(ReportState state)
     {
-        DocbuilderReportsUtility.Enqueue(state);
+        _docbuilderReportsUtility.Enqueue(state);
     }
 
     public void Terminate(ReportOrigin origin)
     {
-        DocbuilderReportsUtility.Terminate(origin, TenantId, UserId);
+        _docbuilderReportsUtility.Terminate(origin, TenantId, UserId);
     }
 
     public ReportState Status(ReportOrigin origin)
     {
-        return DocbuilderReportsUtility.Status(origin, _httpContextAccessor, TenantId, UserId);
+        return _docbuilderReportsUtility.Status(origin, _httpContextAccessor, TenantId, UserId);
     }
 }
 

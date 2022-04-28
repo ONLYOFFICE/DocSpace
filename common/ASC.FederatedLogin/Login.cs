@@ -66,20 +66,17 @@ public class Login
 
     private Dictionary<string, string> _params;
     private readonly IWebHostEnvironment _webHostEnvironment;
-    private readonly IMemoryCache _memoryCache;
     private readonly Signature _signature;
     private readonly InstanceCrypto _instanceCrypto;
     private readonly ProviderManager _providerManager;
 
     public Login(
         IWebHostEnvironment webHostEnvironment,
-        IMemoryCache memoryCache,
         Signature signature,
         InstanceCrypto instanceCrypto,
         ProviderManager providerManager)
     {
         _webHostEnvironment = webHostEnvironment;
-        _memoryCache = memoryCache;
         _signature = signature;
         _instanceCrypto = instanceCrypto;
         _providerManager = providerManager;
@@ -173,20 +170,12 @@ public class Login
 
 public class LoginHandler
 {
-    private readonly RequestDelegate _next;
-    private readonly IServiceScopeFactory _serviceScopeFactory;
-
-    public LoginHandler(RequestDelegate next, IServiceScopeFactory serviceScopeFactory)
+    public LoginHandler(RequestDelegate next)
     {
-        _next = next;
-        _serviceScopeFactory = serviceScopeFactory;
     }
 
-    public async Task InvokeAsync(HttpContext context)
+    public async Task InvokeAsync(HttpContext context, Login login)
     {
-        using var scope = _serviceScopeFactory.CreateScope();
-        var login = scope.ServiceProvider.GetService<Login>();
-
         await login.InvokeAsync(context);
     }
 }

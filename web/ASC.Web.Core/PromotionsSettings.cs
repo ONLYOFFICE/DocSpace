@@ -24,21 +24,20 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Studio.Core
+namespace ASC.Web.Studio.Core;
+
+[Serializable]
+public class PromotionsSettings : ISettings<PromotionsSettings>
 {
-    [Serializable]
-    public class PromotionsSettings : ISettings
+    public bool Show { get; set; }
+
+    public Guid ID
     {
-        public bool Show { get; set; }
+        get { return new Guid("{D291A4C1-179D-4ced-895A-E094E809C859}"); }
+    }
 
-        public Guid ID
-        {
-            get { return new Guid("{D291A4C1-179D-4ced-895A-E094E809C859}"); }
-        }
-
-        public ISettings GetDefault(IServiceProvider serviceProvider)
-        {
-            return new PromotionsSettings { Show = true };
-        }
+    public PromotionsSettings GetDefault()
+    {
+        return new PromotionsSettings { Show = true };
     }
 }

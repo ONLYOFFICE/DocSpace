@@ -68,7 +68,7 @@ public class NotificationController : ApiControllerBase
 
     private object SendNotificationToChange(string userId)
     {
-        var user = _userManager.GetUsers(string.IsNullOrEmpty(userId) 
+        var user = _userManager.GetUsers(string.IsNullOrEmpty(userId)
             ? _securityContext.CurrentAccount.ID : new Guid(userId));
 
         var canChange = user.IsMe(_authContext) || _permissionContext.CheckPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);

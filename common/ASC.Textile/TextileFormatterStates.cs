@@ -35,14 +35,20 @@ public partial class TextileFormatter
     public static void RegisterFormatterState(Type formatterStateType)
     {
         if (!formatterStateType.IsSubclassOf(typeof(FormatterState)))
+        {
             throw new ArgumentException("The formatter state must be a sub-public class of FormatterStateBase.");
+        }
 
         if (formatterStateType.GetConstructor(new Type[] { typeof(TextileFormatter) }) == null)
+        {
             throw new ArgumentException("The formatter state must have a constructor that takes a TextileFormatter reference.");
+        }
 
         var att = FormatterStateAttribute.Get(formatterStateType);
         if (att == null)
+        {
             throw new ArgumentException("The formatter state must have the FormatterStateAttribute.");
+        }
 
         _registeredStates.Add(formatterStateType);
         _registeredStatesAttributes.Add(att);
@@ -63,9 +69,13 @@ public partial class TextileFormatter
     private void SwitchFormatterState(Type type, bool onOff)
     {
         if (onOff)
+        {
             _disabledFormatterStates.Remove(type);
+        }
         else if (!_disabledFormatterStates.Contains(type))
+        {
             _disabledFormatterStates.Add(type);
+        }
     }
 
     /// <summary>
@@ -97,9 +107,13 @@ public partial class TextileFormatter
         get
         {
             if (_stackOfStates.Count > 0)
+            {
                 return _stackOfStates.Peek();
+            }
             else
+            {
                 return null;
+            }
         }
     }
 
@@ -108,7 +122,9 @@ public partial class TextileFormatter
         if (CurrentState != null && CurrentState.GetType() == formatterState.GetType())
         {
             if (!CurrentState.ShouldNestState(formatterState))
+            {
                 return;
+            }
         }
         PushState(formatterState);
     }
@@ -156,7 +172,7 @@ public partial class TextileFormatter
         }
         else
         {
-            ChangeState(new States.ParagraphFormatterState(this));
+            ChangeState(new ParagraphFormatterState(this));
         }
         return input;
     }

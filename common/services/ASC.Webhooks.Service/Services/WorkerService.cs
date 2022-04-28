@@ -65,7 +65,7 @@ public class WorkerService : BackgroundService
             var tasks = new List<Task>();
             var counter = 0;
 
-            for (int i = 0; i < queueSize; i++)
+            for (var i = 0; i < queueSize; i++)
             {
                 if (stoppingToken.IsCancellationRequested)
                 {

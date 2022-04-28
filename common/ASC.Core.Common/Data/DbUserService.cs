@@ -32,7 +32,6 @@ namespace ASC.Core.Data;
 public class ConfigureEFUserService : IConfigureNamedOptions<EFUserService>
 {
     private readonly DbContextManager<UserDbContext> _dbContextManager;
-    public string DbId { get; set; }
 
     public ConfigureEFUserService(DbContextManager<UserDbContext> dbContextManager)
     {
@@ -41,7 +40,7 @@ public class ConfigureEFUserService : IConfigureNamedOptions<EFUserService>
 
     public void Configure(string name, EFUserService options)
     {
-        DbId = name;
+        options.DbId = name;
         options.LazyUserDbContext = new Lazy<UserDbContext>(() => _dbContextManager.Get(name));
         options.UserDbContextManager = _dbContextManager;
     }
@@ -60,8 +59,8 @@ public class EFUserService : IUserService
     internal Lazy<UserDbContext> LazyUserDbContext;
     internal DbContextManager<UserDbContext> UserDbContextManager;
     private readonly PasswordHasher _passwordHasher;
-    public readonly MachinePseudoKeys _machinePseudoKeys;
-    internal string DbId;
+    public readonly MachinePseudoKeys MachinePseudoKeys;
+    internal string DbId { get; set; }
     private readonly IMapper _mapper;
 
     public EFUserService(
@@ -72,7 +71,7 @@ public class EFUserService : IUserService
     {
         UserDbContextManager = userDbContextManager;
         _passwordHasher = passwordHasher;
-        _machinePseudoKeys = machinePseudoKeys;
+        MachinePseudoKeys = machinePseudoKeys;
         LazyUserDbContext = new Lazy<UserDbContext>(() => UserDbContextManager.Value);
         _mapper = mapper;
     }
@@ -649,7 +648,11 @@ public class EFUserService : IUserService
                     }
                     break;
                 case EmployeeStatus.All:
-                    if (!isAdmin) q = q.Where(r => r.Status != EmployeeStatus.Terminated);
+                    if (!isAdmin)
+                    {
+                        q = q.Where(r => r.Status != EmployeeStatus.Terminated);
+                    }
+
                     break;
                 case EmployeeStatus.Default:
                 case EmployeeStatus.Active:
@@ -712,7 +715,7 @@ public class EFUserService : IUserService
 
     protected string GetPasswordHash(Guid userId, string password)
     {
-        return Hasher.Base64Hash(password + userId + Encoding.UTF8.GetString(_machinePseudoKeys.GetMachineConstant()), HashAlg.SHA512);
+        return Hasher.Base64Hash(password + userId + Encoding.UTF8.GetString(MachinePseudoKeys.GetMachineConstant()), HashAlg.SHA512);
     }
 }
 

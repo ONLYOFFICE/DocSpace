@@ -37,7 +37,7 @@ public class SecurityController : ControllerBase
     private readonly MessageService _messageService;
     private readonly LoginEventsRepository _loginEventsRepository;
     private readonly AuditEventsRepository _auditEventsRepository;
-    private readonly AuditReportCreator auditReportCreator;
+    private readonly AuditReportCreator _auditReportCreator;
     private readonly SettingsManager _settingsManager;
 
     public SecurityController(
@@ -56,7 +56,7 @@ public class SecurityController : ControllerBase
         _messageService = messageService;
         _loginEventsRepository = loginEventsRepository;
         _auditEventsRepository = auditEventsRepository;
-        this.auditReportCreator = auditReportCreator;
+        this._auditReportCreator = auditReportCreator;
         _settingsManager = settingsManager;
     }
 
@@ -94,7 +94,9 @@ public class SecurityController : ControllerBase
         var tenantId = _tenantManager.GetCurrentTenant().Id;
 
         if (!_tenantExtra.GetTenantQuota().Audit || !SetupInfo.IsVisibleSettings(nameof(ManagementType.LoginHistory)))
+        {
             throw new BillingException(Resource.ErrorNotAllowedOption, "Audit");
+        }
 
         var settings = _settingsManager.LoadForTenant<TenantAuditSettings>(_tenantManager.GetCurrentTenant().Id);
 
@@ -103,7 +105,7 @@ public class SecurityController : ControllerBase
 
         var reportName = string.Format(AuditReportResource.LoginHistoryReportName + ".csv", from.ToShortDateString(), to.ToShortDateString());
         var events = _loginEventsRepository.Get(tenantId, from, to);
-        var result = auditReportCreator.CreateCsvReport(events, reportName);
+        var result = _auditReportCreator.CreateCsvReport(events, reportName);
 
         _messageService.Send(MessageAction.LoginHistoryReportDownloaded);
         return result;
@@ -117,7 +119,9 @@ public class SecurityController : ControllerBase
         var tenantId = _tenantManager.GetCurrentTenant().Id;
 
         if (!_tenantExtra.GetTenantQuota().Audit || !SetupInfo.IsVisibleSettings(nameof(ManagementType.AuditTrail)))
+        {
             throw new BillingException(Resource.ErrorNotAllowedOption, "Audit");
+        }
 
         var settings = _settingsManager.LoadForTenant<TenantAuditSettings>(_tenantManager.GetCurrentTenant().Id);
 
@@ -127,7 +131,7 @@ public class SecurityController : ControllerBase
         var reportName = string.Format(AuditReportResource.AuditTrailReportName + ".csv", from.ToString("MM.dd.yyyy"), to.ToString("MM.dd.yyyy"));
 
         var events = _auditEventsRepository.Get(tenantId, from, to);
-        var result = auditReportCreator.CreateCsvReport(events, reportName);
+        var result = _auditReportCreator.CreateCsvReport(events, reportName);
 
         _messageService.Send(MessageAction.AuditTrailReportDownloaded);
         return result;
@@ -162,19 +166,25 @@ public class SecurityController : ControllerBase
     private TenantAuditSettings SetAuditSettings(TenantAuditSettingsWrapper wrapper)
     {
         if (!_tenantExtra.GetTenantQuota().Audit || !SetupInfo.IsVisibleSettings(nameof(ManagementType.LoginHistory)))
+        {
             throw new BillingException(Resource.ErrorNotAllowedOption, "Audit");
+        }
 
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        if (wrapper.settings.LoginHistoryLifeTime <= 0 || wrapper.settings.LoginHistoryLifeTime > TenantAuditSettings.MaxLifeTime)
+        if (wrapper.Settings.LoginHistoryLifeTime <= 0 || wrapper.Settings.LoginHistoryLifeTime > TenantAuditSettings.MaxLifeTime)
+        {
             throw new ArgumentException("LoginHistoryLifeTime");
+        }
 
-        if (wrapper.settings.AuditTrailLifeTime <= 0 || wrapper.settings.AuditTrailLifeTime > TenantAuditSettings.MaxLifeTime)
+        if (wrapper.Settings.AuditTrailLifeTime <= 0 || wrapper.Settings.AuditTrailLifeTime > TenantAuditSettings.MaxLifeTime)
+        {
             throw new ArgumentException("AuditTrailLifeTime");
+        }
 
-        _settingsManager.SaveForTenant(wrapper.settings, _tenantManager.GetCurrentTenant().Id);
+        _settingsManager.SaveForTenant(wrapper.Settings, _tenantManager.GetCurrentTenant().Id);
         _messageService.Send(MessageAction.AuditSettingsUpdated);
 
-        return wrapper.settings;
+        return wrapper.Settings;
     }
 }

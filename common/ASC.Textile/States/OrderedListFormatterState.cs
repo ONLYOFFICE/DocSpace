@@ -29,7 +29,7 @@ namespace Textile.States;
 /// <summary>
 /// Formatting state for a numbered list.
 /// </summary>
-[FormatterState(ListFormatterState.PatternBegin + @"#+" + ListFormatterState.PatternEnd)]
+[FormatterState(PatternBegin + @"#+" + PatternEnd)]
 public class OrderedListFormatterState : ListFormatterState
 {
     public OrderedListFormatterState(TextileFormatter formatter)

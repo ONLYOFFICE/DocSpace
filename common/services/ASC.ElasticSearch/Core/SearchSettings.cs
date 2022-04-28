@@ -27,7 +27,7 @@
 namespace ASC.ElasticSearch.Core;
 
 [Serializable]
-public class SearchSettings : ISettings
+public class SearchSettings : ISettings<SearchSettings>
 {
     public string Data { get; set; }
     public Guid ID => new Guid("{93784AB2-10B5-4C2F-9B36-F2662CCCF316}");
@@ -52,7 +52,7 @@ public class SearchSettings : ISettings
 
     private List<SearchSettingsItem> _items;
 
-    public ISettings GetDefault(IServiceProvider serviceProvider)
+    public SearchSettings GetDefault()
     {
         return new SearchSettings();
     }
@@ -68,10 +68,10 @@ public class SearchSettings : ISettings
 [Scope]
 public class SearchSettingsHelper
 {
-    public IConfiguration Configuration { get; }
     internal IEnumerable<IFactoryIndexer> AllItems =>
         _allItems ??= _serviceProvider.GetService<IEnumerable<IFactoryIndexer>>();
 
+    private readonly IConfiguration _configuration;
     private readonly TenantManager _tenantManager;
     private readonly SettingsManager _settingsManager;
     private readonly CoreBaseSettings _coreBaseSettings;
@@ -92,7 +92,7 @@ public class SearchSettingsHelper
         _coreBaseSettings = coreBaseSettings;
         _cacheNotify = cacheNotify;
         _serviceProvider = serviceProvider;
-        Configuration = configuration;
+        _configuration = configuration;
     }
 
     public List<SearchSettingsItem> GetAllItems()
@@ -146,7 +146,7 @@ public class SearchSettingsHelper
             return false;
         }
 
-        if (Convert.ToBoolean(Configuration["core:search-by-content"] ?? "false"))
+        if (Convert.ToBoolean(_configuration["core:search-by-content"] ?? "false"))
         {
             return true;
         }

@@ -24,85 +24,95 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Core.Files
+namespace ASC.Web.Core.Files;
+
+[Scope]
+public class DocumentServiceLicense
 {
-    [Scope]
-    public class DocumentServiceLicense
+    private static readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(15);
+
+    private readonly ICache _cache;
+    private readonly CoreBaseSettings _coreBaseSettings;
+    private readonly FilesLinkUtility _filesLinkUtility;
+    private readonly FileUtility _fileUtility;
+    private readonly IHttpClientFactory _clientFactory;
+
+
+    public DocumentServiceLicense(
+        ICache cache,
+        CoreBaseSettings coreBaseSettings,
+        FilesLinkUtility filesLinkUtility,
+        FileUtility fileUtility,
+        IHttpClientFactory clientFactory)
     {
-        private static readonly TimeSpan CACHE_EXPIRATION = TimeSpan.FromMinutes(15);
+        _cache = cache;
+        _coreBaseSettings = coreBaseSettings;
+        _filesLinkUtility = filesLinkUtility;
+        _fileUtility = fileUtility;
+        _clientFactory = clientFactory;
+    }
 
-        private ICache Cache { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        private FilesLinkUtility FilesLinkUtility { get; }
-        private FileUtility FileUtility { get; }
-        private IHttpClientFactory ClientFactory { get; }
-
-
-        public DocumentServiceLicense(
-            ICache cache,
-            CoreBaseSettings coreBaseSettings,
-            FilesLinkUtility filesLinkUtility,
-            FileUtility fileUtility,
-            IHttpClientFactory clientFactory)
+    private Task<CommandResponse> GetDocumentServiceLicenseAsync()
+    {
+        if (!_coreBaseSettings.Standalone)
         {
-            Cache = cache;
-            CoreBaseSettings = coreBaseSettings;
-            FilesLinkUtility = filesLinkUtility;
-            FileUtility = fileUtility;
-            ClientFactory = clientFactory;
+            return Task.FromResult<CommandResponse>(null);
         }
 
-        private Task<CommandResponse> GetDocumentServiceLicenseAsync()
+        if (string.IsNullOrEmpty(_filesLinkUtility.DocServiceCommandUrl))
         {
-            if (!CoreBaseSettings.Standalone) return Task.FromResult<CommandResponse>(null);
-            if (string.IsNullOrEmpty(FilesLinkUtility.DocServiceCommandUrl)) return Task.FromResult<CommandResponse>(null);
-
-            return InternalGetDocumentServiceLicenseAsync();
+            return Task.FromResult<CommandResponse>(null);
         }
 
-        private async Task<CommandResponse> InternalGetDocumentServiceLicenseAsync()
-        {
-            var cacheKey = "DocumentServiceLicense";
-            var commandResponse = Cache.Get<CommandResponse>(cacheKey);
-            if (commandResponse == null)
-            {
-                commandResponse = await DocumentService.CommandRequestAsync(
-                       FileUtility,
-                       FilesLinkUtility.DocServiceCommandUrl,
-                       DocumentService.CommandMethod.License,
-                       null,
-                       null,
-                       null,
-                       null,
-                       FileUtility.SignatureSecret,
-                       ClientFactory
-                       );
-                Cache.Insert(cacheKey, commandResponse, DateTime.UtcNow.Add(CACHE_EXPIRATION));
-            }
+        return InternalGetDocumentServiceLicenseAsync();
+    }
 
-            return commandResponse;
+    private async Task<CommandResponse> InternalGetDocumentServiceLicenseAsync()
+    {
+        var cacheKey = "DocumentServiceLicense";
+        var commandResponse = _cache.Get<CommandResponse>(cacheKey);
+        if (commandResponse == null)
+        {
+            commandResponse = await CommandRequestAsync(
+                   _fileUtility,
+                   _filesLinkUtility.DocServiceCommandUrl,
+                   CommandMethod.License,
+                   null,
+                   null,
+                   null,
+                   null,
+                   _fileUtility.SignatureSecret,
+                   _clientFactory
+                   );
+            _cache.Insert(cacheKey, commandResponse, DateTime.UtcNow.Add(_cacheExpiration));
         }
 
-        public async Task<Dictionary<string, DateTime>> GetLicenseQuotaAsync()
-        {
-            var commandResponse = await GetDocumentServiceLicenseAsync();
-            if (commandResponse == null
-                || commandResponse.Quota == null
-                || commandResponse.Quota.Users == null)
-                return null;
+        return commandResponse;
+    }
 
-            var result = new Dictionary<string, DateTime>();
-            commandResponse.Quota.Users.ForEach(user => result.Add(user.UserId, user.Expire));
-            return result;
+    public async Task<Dictionary<string, DateTime>> GetLicenseQuotaAsync()
+    {
+        var commandResponse = await GetDocumentServiceLicenseAsync();
+        if (commandResponse == null
+            || commandResponse.Quota == null
+            || commandResponse.Quota.Users == null)
+        {
+            return null;
         }
 
-        public async Task<License> GetLicenseAsync()
-        {
-            var commandResponse = await GetDocumentServiceLicenseAsync();
-            if (commandResponse == null)
-                return null;
+        var result = new Dictionary<string, DateTime>();
+        commandResponse.Quota.Users.ForEach(user => result.Add(user.UserId, user.Expire));
+        return result;
+    }
 
-            return commandResponse.License;
+    public async Task<License> GetLicenseAsync()
+    {
+        var commandResponse = await GetDocumentServiceLicenseAsync();
+        if (commandResponse == null)
+        {
+            return null;
         }
+
+        return commandResponse.License;
     }
 }

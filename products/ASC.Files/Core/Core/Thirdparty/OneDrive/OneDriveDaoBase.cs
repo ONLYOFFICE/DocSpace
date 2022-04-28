@@ -123,8 +123,8 @@ internal abstract class OneDriveDaoBase : ThirdPartyProviderDao<OneDriveProvider
 
         folder.Id = MakeId(isRoot ? string.Empty : onedriveFolder.Id);
         folder.ParentId = isRoot ? null : MakeId(GetParentFolderId(onedriveFolder));
-        folder.CreateOn = isRoot ? ProviderInfo.CreateOn : (onedriveFolder.CreatedDateTime.HasValue ? TenantUtil.DateTimeFromUtc(onedriveFolder.CreatedDateTime.Value.DateTime) : default);
-        folder.ModifiedOn = isRoot ? ProviderInfo.CreateOn : (onedriveFolder.LastModifiedDateTime.HasValue ? TenantUtil.DateTimeFromUtc(onedriveFolder.LastModifiedDateTime.Value.DateTime) : default);
+        folder.CreateOn = isRoot ? ProviderInfo.CreateOn : (onedriveFolder.CreatedDateTime.HasValue ? _tenantUtil.DateTimeFromUtc(onedriveFolder.CreatedDateTime.Value.DateTime) : default);
+        folder.ModifiedOn = isRoot ? ProviderInfo.CreateOn : (onedriveFolder.LastModifiedDateTime.HasValue ? _tenantUtil.DateTimeFromUtc(onedriveFolder.LastModifiedDateTime.Value.DateTime) : default);
 
         folder.Title = MakeItemTitle(onedriveFolder);
 
@@ -186,9 +186,9 @@ internal abstract class OneDriveDaoBase : ThirdPartyProviderDao<OneDriveProvider
 
         file.Id = MakeId(onedriveFile.Id);
         file.ContentLength = onedriveFile.Size.HasValue ? (long)onedriveFile.Size : 0;
-        file.CreateOn = onedriveFile.CreatedDateTime.HasValue ? TenantUtil.DateTimeFromUtc(onedriveFile.CreatedDateTime.Value.DateTime) : default;
+        file.CreateOn = onedriveFile.CreatedDateTime.HasValue ? _tenantUtil.DateTimeFromUtc(onedriveFile.CreatedDateTime.Value.DateTime) : default;
         file.ParentId = MakeId(GetParentFolderId(onedriveFile));
-        file.ModifiedOn = onedriveFile.LastModifiedDateTime.HasValue ? TenantUtil.DateTimeFromUtc(onedriveFile.LastModifiedDateTime.Value.DateTime) : default;
+        file.ModifiedOn = onedriveFile.LastModifiedDateTime.HasValue ? _tenantUtil.DateTimeFromUtc(onedriveFile.LastModifiedDateTime.Value.DateTime) : default;
         file.NativeAccessor = onedriveFile;
         file.Title = MakeItemTitle(onedriveFile);
 

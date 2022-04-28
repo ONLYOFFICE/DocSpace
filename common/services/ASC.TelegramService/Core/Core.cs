@@ -64,7 +64,10 @@ public class CommandModule
 
         foreach (var t in assembly.GetExportedTypes())
         {
-            if (t.IsAbstract) continue;
+            if (t.IsAbstract)
+            {
+                continue;
+            }
 
             if (t.IsSubclassOf(typeof(CommandContext)))
             {
@@ -100,7 +103,11 @@ public class CommandModule
 
         var cmdArgs = cmd.GetParameters();
 
-        if (cmdArgs.Length > 0 && args == null || cmdArgs.Length != args.Length) throw new Exception("Wrong parameters count");
+        if (cmdArgs.Length > 0 && args == null || cmdArgs.Length != args.Length)
+        {
+            throw new Exception("Wrong parameters count");
+        }
+
         for (var i = 0; i < cmdArgs.Length; i++)
         {
             var type = cmdArgs[i].ParameterType;
@@ -111,7 +118,10 @@ public class CommandModule
                 continue;
             }
 
-            if (!_parsers.ContainsKey(type)) throw new Exception(string.Format("No parser found for type '{0}'", type));
+            if (!_parsers.ContainsKey(type))
+            {
+                throw new Exception(string.Format("No parser found for type '{0}'", type));
+            }
 
             parsedParams.Add(_parsers[type].FromString(arg));
         }
@@ -125,7 +135,10 @@ public class CommandModule
         {
             var cmd = ParseCommand(msg);
 
-            if (!_commands.ContainsKey(cmd.CommandName)) throw new Exception($"No handler found for command '{cmd.CommandName}'");
+            if (!_commands.ContainsKey(cmd.CommandName))
+            {
+                throw new Exception($"No handler found for command '{cmd.CommandName}'");
+            }
 
             var command = _commands[cmd.CommandName];
             var context = (CommandContext)_scopeFactory.CreateScope().ServiceProvider.GetService(_contexts[cmd.CommandName]);
@@ -157,11 +170,11 @@ public abstract class CommandContext
 
 public abstract class ParamParser
 {
-    protected Type type;
+    protected Type _type;
 
     protected ParamParser(Type type)
     {
-        this.type = type;
+        _type = type;
     }
 
     public abstract object FromString(string arg);
@@ -172,6 +185,6 @@ public abstract class ParamParser<T> : ParamParser
 {
     protected ParamParser() : base(typeof(T)) { }
 
-    public override abstract object FromString(string arg);
-    public override abstract string ToString(object arg);
+    public abstract override object FromString(string arg);
+    public abstract override string ToString(object arg);
 }

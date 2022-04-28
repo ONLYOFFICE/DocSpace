@@ -24,47 +24,52 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Core.Utility.Settings
+namespace ASC.Web.Core.Utility.Settings;
+
+public class WebItemSettings : ISettings<WebItemSettings>
 {
-    public class WebItemSettings : ISettings
+    private readonly WebItemManager _webItemManager;
+
+    public Guid ID
     {
-        public Guid ID
+        get { return new Guid("{C888CF56-585B-4c78-9E64-FE1093649A62}"); }
+    }
+
+    [JsonPropertyName("Settings")]
+    public List<WebItemOption> SettingsCollection { get; set; }
+
+    public WebItemSettings(WebItemManager webItemManager) : this()
+    {
+        _webItemManager = webItemManager;
+    }
+    public WebItemSettings()
+    {
+        SettingsCollection = new List<WebItemOption>();
+    }
+
+    public WebItemSettings GetDefault()
+    {
+        var settings = new WebItemSettings(_webItemManager);
+        _webItemManager.GetItemsAll().ForEach(w =>
+    {
+        var opt = new WebItemOption
         {
-            get { return new Guid("{C888CF56-585B-4c78-9E64-FE1093649A62}"); }
-        }
-        [JsonPropertyName("Settings")]
-        public List<WebItemOption> SettingsCollection { get; set; }
+            ItemID = w.ID,
+            SortOrder = _webItemManager.GetSortOrder(w),
+            Disabled = false,
+        };
+        settings.SettingsCollection.Add(opt);
+    });
+        return settings;
+    }
 
-        public WebItemSettings()
-        {
-            SettingsCollection = new List<WebItemOption>();
-        }
+    [Serializable]
+    public class WebItemOption
+    {
+        public Guid ItemID { get; set; }
 
-        public ISettings GetDefault(IServiceProvider serviceProvider)
-        {
-            var settings = new WebItemSettings();
-            var webItemManager = serviceProvider.GetService<WebItemManager>();
-            webItemManager.GetItemsAll().ForEach(w =>
-            {
-                var opt = new WebItemOption
-                {
-                    ItemID = w.ID,
-                    SortOrder = webItemManager.GetSortOrder(w),
-                    Disabled = false,
-                };
-                settings.SettingsCollection.Add(opt);
-            });
-            return settings;
-        }
+        public int SortOrder { get; set; }
 
-        [Serializable]
-        public class WebItemOption
-        {
-            public Guid ItemID { get; set; }
-
-            public int SortOrder { get; set; }
-
-            public bool Disabled { get; set; }
-        }
+        public bool Disabled { get; set; }
     }
 }

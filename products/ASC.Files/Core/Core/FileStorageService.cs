@@ -31,9 +31,9 @@ namespace ASC.Web.Files.Services.WCFService;
 [Scope]
 public class FileStorageService<T> //: IFileStorageService
 {
-    public CompressToArchive CompressToArchive { get; }
-
     private static readonly FileEntrySerializer _serializer = new FileEntrySerializer();
+    private readonly CompressToArchive _compressToArchive;
+    private readonly OFormRequestManager _oFormRequestManager;
     private readonly Global _global;
     private readonly GlobalStore _globalStore;
     private readonly GlobalFolderHelper _globalFolderHelper;
@@ -75,7 +75,7 @@ public class FileStorageService<T> //: IFileStorageService
     private readonly FileTrackerHelper _fileTracker;
     private readonly ICacheNotify<ThumbnailRequest> _thumbnailNotify;
     private readonly EntryStatusManager _entryStatusManager;
-    private ILog _logger;
+    private readonly ILog _logger;
 
     public FileStorageService(
         Global global,
@@ -120,7 +120,8 @@ public class FileStorageService<T> //: IFileStorageService
         FileTrackerHelper fileTracker,
         ICacheNotify<ThumbnailRequest> thumbnailNotify,
         EntryStatusManager entryStatusManager,
-        CompressToArchive compressToArchive)
+        CompressToArchive compressToArchive,
+        OFormRequestManager oFormRequestManager)
     {
         _global = global;
         _globalStore = globalStore;
@@ -164,7 +165,8 @@ public class FileStorageService<T> //: IFileStorageService
         _fileTracker = fileTracker;
         _thumbnailNotify = thumbnailNotify;
         _entryStatusManager = entryStatusManager;
-        CompressToArchive = compressToArchive;
+        _compressToArchive = compressToArchive;
+        _oFormRequestManager = oFormRequestManager;
     }
 
     public async Task<Folder<T>> GetFolderAsync(T folderId)
@@ -642,7 +644,7 @@ public class FileStorageService<T> //: IFileStorageService
         if (fileExt != _fileUtility.MasterFormExtension)
         {
             fileExt = _fileUtility.GetInternalExtension(title);
-            if (!_fileUtility.InternalExtension.Values.Contains(fileExt))
+            if (!_fileUtility.InternalExtension.ContainsValue(fileExt))
             {
                 fileExt = _fileUtility.InternalExtension[FileType.Document];
                 file.Title = title + fileExt;
@@ -657,7 +659,15 @@ public class FileStorageService<T> //: IFileStorageService
             file.Title = FileUtility.ReplaceFileExtension(title, fileExt);
         }
 
-        if (EqualityComparer<TTemplate>.Default.Equals(fileWrapper.TemplateId, default(TTemplate)))
+        if (fileWrapper.FormId != 0)
+        {
+            using (var stream = await _oFormRequestManager.Get(fileWrapper.FormId))
+            {
+                file.ContentLength = stream.Length;
+                file = await fileDao.SaveFileAsync(file, stream);
+            }
+        }
+        else if (EqualityComparer<TTemplate>.Default.Equals(fileWrapper.TemplateId, default(TTemplate)))
         {
             var culture = _userManager.GetUsers(_authContext.CurrentAccount.ID).GetCulture();
             var storeTemplate = GetStoreTemplate();
@@ -766,7 +776,7 @@ public class FileStorageService<T> //: IFileStorageService
             if (isFinish)
             {
                 _fileTracker.Remove(id, tabId);
-                await _socketManager.StopEditAsync(id);
+                _socketManager.StopEdit(id);
             }
             else
             {
@@ -816,7 +826,7 @@ public class FileStorageService<T> //: IFileStorageService
             if (!forcesave && _fileTracker.IsEditingAlone(fileId))
             {
                 _fileTracker.Remove(fileId);
-                await _socketManager.StopEditAsync(fileId);
+                _socketManager.StopEdit(fileId);
             }
 
             var file = await _entryManager.SaveEditingAsync(fileId, fileExtension, fileuri, stream, doc, forcesave: forcesave ? ForcesaveType.User : ForcesaveType.None, keepLink: true);
@@ -841,7 +851,7 @@ public class FileStorageService<T> //: IFileStorageService
             if (!forcesave && _fileTracker.IsEditing(fileId))
             {
                 _fileTracker.Remove(fileId);
-                await _socketManager.StopEditAsync(fileId);
+                _socketManager.StopEdit(fileId);
             }
 
             var file = await _entryManager.SaveEditingAsync(fileId,
@@ -1190,7 +1200,7 @@ public class FileStorageService<T> //: IFileStorageService
 
         return result;
 
-        string GetFileExtensionWithoutDot(string ext)
+        static string GetFileExtensionWithoutDot(string ext)
         {
             return ext.Substring(ext.IndexOf('.') + 1);
         }
@@ -1220,10 +1230,10 @@ public class FileStorageService<T> //: IFileStorageService
         return new List<EditHistory>(await fileDao.GetEditHistoryAsync(_documentServiceHelper, file.Id));
     }
 
-    public async Task<Web.Core.Files.DocumentService.FileLink> GetPresignedUriAsync(T fileId)
+    public async Task<FileLink> GetPresignedUriAsync(T fileId)
     {
         var file = await GetFileAsync(fileId, -1);
-        var result = new Web.Core.Files.DocumentService.FileLink
+        var result = new FileLink
         {
             FileType = FileUtility.GetFileExtension(file.Title),
             Url = _documentServiceConnector.ReplaceCommunityAdress(_pathProvider.GetFileStreamUrl(file))
@@ -1684,7 +1694,7 @@ public class FileStorageService<T> //: IFileStorageService
                 {
                     if (sync)
                     {
-                        results.Append(await _fileConverter.ExecSynchronouslyAsync(file, fileInfo.Password));
+                        results = results.Append(await _fileConverter.ExecSynchronouslyAsync(file, fileInfo.Password));
                     }
                     else
                     {
@@ -1898,7 +1908,10 @@ public class FileStorageService<T> //: IFileStorageService
 
     public Task<List<FileEntry<T>>> AddToFavoritesAsync(IEnumerable<T> foldersId, IEnumerable<T> filesId)
     {
-        if (_userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
+        if (_userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager))
+        {
+            throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
+        }
 
         return InternalAddToFavoritesAsync(foldersId, filesId);
     }
@@ -2090,8 +2103,8 @@ public class FileStorageService<T> //: IFileStorageService
 
         var fileDao = GetFileDao();
         var folderDao = GetFolderDao();
-        entries.Concat(filesId.ToAsyncEnumerable().SelectAwait(async fileId => await fileDao.GetFileAsync(fileId)));
-        entries.Concat(foldersId.ToAsyncEnumerable().SelectAwait(async e => await folderDao.GetFolderAsync(e)));
+        entries = entries.Concat(filesId.ToAsyncEnumerable().SelectAwait(async fileId => await fileDao.GetFileAsync(fileId)));
+        entries = entries.Concat(foldersId.ToAsyncEnumerable().SelectAwait(async e => await folderDao.GetFolderAsync(e)));
 
         return _fileSharingAceHelper.RemoveAceAsync(entries);
     }
@@ -2328,16 +2341,16 @@ public class FileStorageService<T> //: IFileStorageService
         //return new List<string>(accounts);
     }
 
-    public async IAsyncEnumerable<FileEntry> ChangeOwnerAsync(IEnumerable<T> foldersId, IEnumerable<T> filesId, Guid userId)
+    public async Task<IEnumerable<FileEntry>> ChangeOwnerAsync(IEnumerable<T> foldersId, IEnumerable<T> filesId, Guid userId)
     {
         var userInfo = _userManager.GetUsers(userId);
         ErrorIf(Equals(userInfo, Constants.LostUser) || userInfo.IsVisitor(_userManager), FilesCommonResource.ErrorMassage_ChangeOwner);
 
-        var entries = AsyncEnumerable.Empty<FileEntry>();
+        var entries = new List<FileEntry>();
 
         var folderDao = GetFolderDao();
-        var folders = folderDao.GetFoldersAsync(foldersId);
-        await foreach (var folder in folders)
+        var folders = await folderDao.GetFoldersAsync(foldersId).ToListAsync();
+        foreach (var folder in folders)
         {
             ErrorIf(!await _fileSecurity.CanEditAsync(folder), FilesCommonResource.ErrorMassage_SecurityException);
             ErrorIf(folder.RootFolderType != FolderType.COMMON, FilesCommonResource.ErrorMassage_SecurityException);
@@ -2359,13 +2372,13 @@ public class FileStorageService<T> //: IFileStorageService
 
                 _filesMessageService.Send(newFolder, GetHttpHeaders(), MessageAction.FileChangeOwner, new[] { newFolder.Title, userInfo.DisplayUserName(false, _displayUserSettingsHelper) });
             }
-            entries.Append(newFolder);
+            entries.Add(newFolder);
         }
 
         var fileDao = GetFileDao();
-        var files = fileDao.GetFilesAsync(filesId);
+        var files = await fileDao.GetFilesAsync(filesId).ToListAsync();
 
-        await foreach (var file in files)
+        foreach (var file in files)
         {
             ErrorIf(!await _fileSecurity.CanEditAsync(file), FilesCommonResource.ErrorMassage_SecurityException);
             ErrorIf(await _entryManager.FileLockedForMeAsync(file.Id), FilesCommonResource.ErrorMassage_LockedFile);
@@ -2413,13 +2426,10 @@ public class FileStorageService<T> //: IFileStorageService
 
                 _filesMessageService.Send(newFile, GetHttpHeaders(), MessageAction.FileChangeOwner, new[] { newFile.Title, userInfo.DisplayUserName(false, _displayUserSettingsHelper) });
             }
-            entries.Append(newFile);
+            entries.Add(newFile);
         }
 
-        await foreach (var entrie in entries)
-        {
-            yield return entrie;
-        }
+        return entries;
     }
 
     public bool StoreOriginal(bool set)
@@ -2510,7 +2520,7 @@ public class FileStorageService<T> //: IFileStorageService
     {
         _filesSettingsHelper.DownloadTarGz = set;
 
-        return CompressToArchive;
+        return _compressToArchive;
     }
 
     public bool ChangeDeleteConfrim(bool set)
@@ -2537,7 +2547,7 @@ public class FileStorageService<T> //: IFileStorageService
                 req.Files.Add(f);
             }
 
-            _thumbnailNotify.Publish(req, Common.Caching.CacheNotifyAction.Insert);
+            _thumbnailNotify.Publish(req, CacheNotifyAction.Insert);
         }
         catch (Exception e)
         {
@@ -2647,4 +2657,5 @@ public class FileModel<T, TTempate>
     public T ParentId { get; set; }
     public string Title { get; set; }
     public TTempate TemplateId { get; set; }
+    public int FormId { get; set; }
 }

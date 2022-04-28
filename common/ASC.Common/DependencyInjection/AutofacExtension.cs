@@ -126,7 +126,7 @@ public static class AutofacExtension
                 LoadAssembly(component.Type);
                 types.Add(component.Type);
             }
-            catch (System.Exception)
+            catch (Exception)
             {
                 //TODO
             }

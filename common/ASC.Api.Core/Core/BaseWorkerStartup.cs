@@ -28,17 +28,17 @@ namespace ASC.Api.Core;
 
 public class BaseWorkerStartup
 {
-    public IConfiguration Configuration { get; }
+    private readonly IConfiguration _configuration;
 
     public BaseWorkerStartup(IConfiguration configuration)
     {
-        Configuration = configuration;
+        _configuration = configuration;
     }
 
     public virtual void ConfigureServices(IServiceCollection services)
     {
         services.AddHttpContextAccessor();
-        services.AddCustomHealthCheck(Configuration);
+        services.AddCustomHealthCheck(_configuration);
     }
 
     public virtual void Configure(IApplicationBuilder app)

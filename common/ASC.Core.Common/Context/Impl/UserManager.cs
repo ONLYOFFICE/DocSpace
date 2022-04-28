@@ -165,7 +165,7 @@ public class UserManager
     public UserInfo GetUserBySid(string sid)
     {
         return GetUsersInternal()
-            .FirstOrDefault(u => u.Sid != null && string.Equals(u.Sid, sid, StringComparison.CurrentCultureIgnoreCase)) ?? Constants.LostUser;
+                .FirstOrDefault(u => u.Sid != null && string.Equals(u.Sid, sid, StringComparison.CurrentCultureIgnoreCase)) ?? Constants.LostUser;
     }
 
     public UserInfo GetSsoUserByNameId(string nameId)
@@ -560,6 +560,11 @@ public class UserManager
     public GroupInfo GetGroupInfo(Guid groupID)
     {
         var group = _userService.GetGroup(Tenant.Id, groupID);
+
+        if (group == null)
+        {
+            group = ToGroup(Constants.BuildinGroups.FirstOrDefault(r => r.ID == groupID));
+        }
 
         return new GroupInfo
         {

@@ -59,14 +59,14 @@ public class Client
                 {
                     settings.DisableDirectStreaming().PrettyJson().EnableDebugMode(r =>
                     {
-                            //Log.Trace(r.DebugInformation);
+                        //Log.Trace(r.DebugInformation);
 
-                            //if (r.RequestBodyInBytes != null)
-                            //{
-                            //    Log.TraceFormat("Request: {0}", Encoding.UTF8.GetString(r.RequestBodyInBytes));
-                            //}
+                        //if (r.RequestBodyInBytes != null)
+                        //{
+                        //    Log.TraceFormat("Request: {0}", Encoding.UTF8.GetString(r.RequestBodyInBytes));
+                        //}
 
-                            if (r.HttpStatusCode != null && (r.HttpStatusCode == 403 || r.HttpStatusCode == 500) && r.ResponseBodyInBytes != null)
+                        if (r.HttpStatusCode != null && (r.HttpStatusCode == 403 || r.HttpStatusCode == 500) && r.ResponseBodyInBytes != null)
                         {
                             _logger.TraceFormat("Response: {0}", Encoding.UTF8.GetString(r.ResponseBodyInBytes));
                         }

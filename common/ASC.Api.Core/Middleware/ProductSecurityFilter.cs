@@ -89,7 +89,7 @@ public class ProductSecurityFilter : IResourceFilter
                 if (CallContext.GetData("asc.web.product_id") == null)
                 {
                     CallContext.SetData("asc.web.product_id", pid);
-                } 
+                }
 
                 if (!_webItemSecurity.IsAvailableForMe(pid))
                 {
@@ -114,17 +114,17 @@ public class ProductSecurityFilter : IResourceFilter
             if (!string.IsNullOrEmpty(url))
             {
                 var module = url.Split('/')[0];
-                    if (_products.TryGetValue(module, out var communityProduct))
-                    {
-                        return communityProduct;
-                    }
+                if (_products.TryGetValue(module, out var communityProduct))
+                {
+                    return communityProduct;
+                }
             }
         }
 
-            if (_products.TryGetValue(name, out var product))
-            {
-                return product;
-            }
+        if (_products.TryGetValue(name, out var product))
+        {
+            return product;
+        }
 
         return default;
     }

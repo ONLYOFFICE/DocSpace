@@ -177,7 +177,7 @@ public class SmtpOperation
         {
             try
             {
-                TaskInfo.SetProperty(FINISHED, true);
+                TaskInfo[FINISHED] = true;
                 PublishTaskInfo();
 
                 _securityContext.Logout();
@@ -207,11 +207,11 @@ public class SmtpOperation
 
     protected virtual void FillDistributedTask()
     {
-        TaskInfo.SetProperty(SOURCE, Source);
-        TaskInfo.SetProperty(OWNER, CurrentTenant);
-        TaskInfo.SetProperty(PROGRESS, Progress < 100 ? Progress : 100);
-        TaskInfo.SetProperty(RESULT, Status);
-        TaskInfo.SetProperty(ERROR, Error);
+        TaskInfo[SOURCE] = Source;
+        TaskInfo[OWNER] = CurrentTenant;
+        TaskInfo[PROGRESS] = Progress < 100 ? Progress : 100;
+        TaskInfo[RESULT] = Status;
+        TaskInfo[ERROR] = Error;
         //TaskInfo.SetProperty(PROCESSED, successProcessed);
     }
 
@@ -220,23 +220,31 @@ public class SmtpOperation
         return Progress;
     }
 
-    const string PROGRESS_STRING = "Progress: {0}% {1} {2}";
+    const string ProgerssString = "Progress: {0}% {1} {2}";
 
     public void SetProgress(int? currentPercent = null, string currentStatus = null, string currentSource = null)
     {
         if (!currentPercent.HasValue && currentStatus == null && currentSource == null)
+        {
             return;
+        }
 
         if (currentPercent.HasValue)
+        {
             Progress = currentPercent.Value;
+        }
 
         if (currentStatus != null)
+        {
             Status = currentStatus;
+        }
 
         if (currentSource != null)
+        {
             Source = currentSource;
+        }
 
-        _logger.InfoFormat(PROGRESS_STRING, Progress, Status, Source);
+        _logger.InfoFormat(ProgerssString, Progress, Status, Source);
 
         PublishTaskInfo();
     }
