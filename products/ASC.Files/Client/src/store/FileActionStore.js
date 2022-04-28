@@ -1,4 +1,4 @@
-import { makeObservable, action, observable } from "mobx";
+import { makeAutoObservable } from "mobx";
 
 class FileActionStore {
   id = null;
@@ -6,20 +6,15 @@ class FileActionStore {
   extension = null;
   title = "";
   templateId = null;
+  fromTemplate = null;
 
   constructor() {
-    makeObservable(this, {
-      type: observable,
-      extension: observable,
-      id: observable,
-      title: observable,
-      templateId: observable,
-
-      setAction: action,
-    });
+    makeAutoObservable(this);
   }
 
   setAction = (fileAction) => {
+    if (fileAction.fromTemplate === undefined && this.fromTemplate) return;
+
     const fileActionItems = Object.keys(fileAction);
     for (let key of fileActionItems) {
       if (key in this) {

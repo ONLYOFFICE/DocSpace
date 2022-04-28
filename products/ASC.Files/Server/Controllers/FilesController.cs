@@ -975,14 +975,14 @@ namespace ASC.Api.Documents
         [Create("@my/file")]
         public Task<FileWrapper<int>> CreateFileFromBodyAsync([FromBody] CreateFileModel<JsonElement> model)
         {
-            return FilesControllerHelperInt.CreateFileAsync(GlobalFolderHelper.FolderMy, model.Title, model.TemplateId, model.EnableExternalExt);
+            return FilesControllerHelperInt.CreateFileAsync(GlobalFolderHelper.FolderMy, model.Title, model.TemplateId, model.FormId, model.EnableExternalExt);
         }
 
         [Create("@my/file")]
         [Consumes("application/x-www-form-urlencoded")]
         public Task<FileWrapper<int>> CreateFileFromFormAsync([FromForm] CreateFileModel<JsonElement> model)
         {
-            return FilesControllerHelperInt.CreateFileAsync(GlobalFolderHelper.FolderMy, model.Title, model.TemplateId, model.EnableExternalExt);
+            return FilesControllerHelperInt.CreateFileAsync(GlobalFolderHelper.FolderMy, model.Title, model.TemplateId, model.FormId, model.EnableExternalExt);
         }
 
         /// <summary>
@@ -997,27 +997,27 @@ namespace ASC.Api.Documents
         [Create("{folderId}/file")]
         public Task<FileWrapper<string>> CreateFileFromBodyAsync(string folderId, [FromBody] CreateFileModel<JsonElement> model)
         {
-            return FilesControllerHelperString.CreateFileAsync(folderId, model.Title, model.TemplateId, model.EnableExternalExt);
+            return FilesControllerHelperString.CreateFileAsync(folderId, model.Title, model.TemplateId, model.FormId, model.EnableExternalExt);
         }
 
         [Create("{folderId}/file")]
         [Consumes("application/x-www-form-urlencoded")]
         public Task<FileWrapper<string>> CreateFileFromFormAsync(string folderId, [FromForm] CreateFileModel<JsonElement> model)
         {
-            return FilesControllerHelperString.CreateFileAsync(folderId, model.Title, model.TemplateId, model.EnableExternalExt);
+            return FilesControllerHelperString.CreateFileAsync(folderId, model.Title, model.TemplateId, model.FormId, model.EnableExternalExt);
         }
 
         [Create("{folderId:int}/file")]
         public Task<FileWrapper<int>> CreateFileFromBodyAsync(int folderId, [FromBody] CreateFileModel<JsonElement> model)
         {
-            return FilesControllerHelperInt.CreateFileAsync(folderId, model.Title, model.TemplateId, model.EnableExternalExt);
+            return FilesControllerHelperInt.CreateFileAsync(folderId, model.Title, model.TemplateId, model.FormId, model.EnableExternalExt);
         }
 
         [Create("{folderId:int}/file")]
         [Consumes("application/x-www-form-urlencoded")]
         public Task<FileWrapper<int>> CreateFileFromFormAsync(int folderId, [FromForm] CreateFileModel<JsonElement> model)
         {
-            return FilesControllerHelperInt.CreateFileAsync(folderId, model.Title, model.TemplateId, model.EnableExternalExt);
+            return FilesControllerHelperInt.CreateFileAsync(folderId, model.Title, model.TemplateId, model.FormId, model.EnableExternalExt);
         }
 
         /// <summary>

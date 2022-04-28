@@ -3,7 +3,7 @@ import MyProfileI18n from "./i18n";
 import PeopleStore from "../../store/PeopleStore";
 
 import PropTypes from "prop-types";
-import PageLayout from "@appserver/common/components/PageLayout";
+import Section from "@appserver/common/components/Section";
 import toastr from "studio/toastr";
 import { withRouter } from "react-router";
 
@@ -103,23 +103,23 @@ class My extends React.Component {
     //console.log("My Profile render", this.props, isEdit);
 
     return (
-      <PageLayout withBodyAutoFocus>
-        <PageLayout.SectionHeader>
+      <Section withBodyAutoFocus>
+        <Section.SectionHeader>
           {isEdit ? (
             <EditHeaderContent isMy={true} tReady={tReady} />
           ) : (
             <ViewHeaderContent isMy={true} tReady={tReady} />
           )}
-        </PageLayout.SectionHeader>
+        </Section.SectionHeader>
 
-        <PageLayout.SectionBody>
+        <Section.SectionBody>
           {isEdit ? (
             <EditBodyContent isMy={true} tReady={tReady} />
           ) : (
             <ViewBodyContent isMy={true} tReady={tReady} />
           )}
-        </PageLayout.SectionBody>
-      </PageLayout>
+        </Section.SectionBody>
+      </Section>
     );
   }
 }

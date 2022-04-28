@@ -38,31 +38,47 @@ class SaveCancelButtons extends React.Component {
     const {
       onSaveClick,
       onCancelClick,
+      displaySettings,
       showReminder,
       reminderTest,
       saveButtonLabel,
       cancelButtonLabel,
+      hasScroll,
+      isFirstWelcomePageSettings,
       className,
       id,
-      isDisabled,
+      isSaving,
     } = this.props;
+
+    const cancelButtonDisabled =
+      isFirstWelcomePageSettings === "true" ? false : !showReminder;
+
     return (
-      <StyledSaveCancelButtons className={className} id={id}>
-        <div>
+      <StyledSaveCancelButtons
+        className={className}
+        id={id}
+        displaySettings={displaySettings}
+        showReminder={showReminder}
+        hasScroll={hasScroll}
+      >
+        <div className="buttons-flex">
           <Button
             className="save-button"
-            size="big"
-            isDisabled={isDisabled}
+            size="normal"
+            isDisabled={!showReminder}
             primary
             onClick={onSaveClick}
             label={saveButtonLabel}
+            minwidth={displaySettings && "auto"}
+            isLoading={isSaving}
           />
           <Button
             className="cancel-button"
-            size="big"
-            isDisabled={isDisabled}
+            size="normal"
+            isDisabled={cancelButtonDisabled || isSaving}
             onClick={onCancelClick}
             label={cancelButtonLabel}
+            minwidth={displaySettings && "auto"}
           />
         </div>
         {showReminder && (
@@ -91,13 +107,16 @@ SaveCancelButtons.propTypes = {
   /** Show message about unsaved changes (Only shown on desktops) */
   showReminder: PropTypes.bool,
   /** Tells when the button should present a disabled state */
-  isDisabled: PropTypes.bool,
+  displaySettings: PropTypes.bool,
+  hasScroll: PropTypes.bool,
+  minwidth: PropTypes.string,
+  isFirstWelcomePageSettings: PropTypes.string,
+  isSaving: PropTypes.bool,
 };
 
 SaveCancelButtons.defaultProps = {
   saveButtonLabel: "Save",
   cancelButtonLabel: "Cancel",
-  isDisabled: false,
 };
 
 export default SaveCancelButtons;

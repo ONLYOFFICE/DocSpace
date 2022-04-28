@@ -3,7 +3,7 @@ import { withRouter } from "react-router";
 import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import Loader from "@appserver/components/loader";
-import PageLayout from "@appserver/common/components/PageLayout";
+import Section from "@appserver/common/components/Section";
 import { combineUrl } from "@appserver/common/utils";
 import tryRedirectTo from "@appserver/common/utils/tryRedirectTo";
 import { AppServerConfig } from "@appserver/common/constants";
@@ -61,11 +61,11 @@ ChangeEmail.propTypes = {
   changeEmail: PropTypes.func.isRequired,
 };
 const ChangeEmailForm = (props) => (
-  <PageLayout>
-    <PageLayout.SectionBody>
+  <Section>
+    <Section.SectionBody>
       <ChangeEmail {...props} />
-    </PageLayout.SectionBody>
-  </PageLayout>
+    </Section.SectionBody>
+  </Section>
 );
 
 export default inject(({ auth }) => {

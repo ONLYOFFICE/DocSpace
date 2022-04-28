@@ -1,8 +1,37 @@
 import React from "react";
+import { ReactSVG } from "react-svg";
 import PropTypes from "prop-types";
+import styled, { css } from "styled-components";
 import Box from "@appserver/components/box";
 import Text from "@appserver/components/text";
 import ConsumerToggle from "./consumerToggle";
+import { Base } from "@appserver/components/themes";
+
+const StyledBox = styled(Box)`
+  .consumer-icon {
+    ${(props) =>
+      !props.theme.isBase &&
+      css`
+        path {
+          fill: #ffffff;
+          opacity: ${props.isSet ? 1 : 0.16};
+        }
+        ${props.isLinkedIn &&
+        css`
+          path:nth-child(8) {
+            fill: #333333;
+            opacity: 1;
+          }
+          path:nth-child(9) {
+            fill: #333333;
+            opacity: 1;
+          }
+        `}
+      `}
+  }
+`;
+
+StyledBox.defaultProps = { theme: Base };
 
 class ConsumerItem extends React.Component {
   render() {
@@ -26,9 +55,20 @@ class ConsumerItem extends React.Component {
             widthProp="100%"
             heightProp="56px"
           >
-            <Box>
-              <img src={logo} alt={consumer.name} />
-            </Box>
+            <StyledBox
+              isSet={
+                !consumer.canSet || consumer.props.find((p) => p.value)
+                  ? true
+                  : false
+              }
+              isLinkedIn={consumer.name === "linkedin"}
+            >
+              <ReactSVG
+                src={logo}
+                className={"consumer-icon"}
+                alt={consumer.name}
+              />
+            </StyledBox>
             <Box onClick={setConsumer} data-consumer={consumer.name}>
               <ConsumerToggle
                 consumer={consumer}

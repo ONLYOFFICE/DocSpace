@@ -1,22 +1,23 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import api from "@appserver/common/api";
 import {
-  FolderType,
-  FilterType,
-  FileType,
-  FileAction,
   AppServerConfig,
+  FileAction,
+  FileType,
+  FilterType,
+  FolderType,
   FileStatus,
 } from "@appserver/common/constants";
 import history from "@appserver/common/history";
-import { loopTreeFolders } from "../helpers/files-helpers";
-import config from "../../package.json";
 import { combineUrl } from "@appserver/common/utils";
 import { updateTempContent } from "@appserver/common/utils";
-import { thumbnailStatuses } from "../helpers/constants";
 import { isMobile } from "react-device-detect";
-import { openDocEditor as openEditor } from "../helpers/utils";
 import toastr from "studio/toastr";
+
+import config from "../../package.json";
+import { thumbnailStatuses } from "../helpers/constants";
+import { loopTreeFolders } from "../helpers/files-helpers";
+import { openDocEditor as openEditor } from "../helpers/utils";
 
 const { FilesFilter } = api;
 const storageViewAs = localStorage.getItem("viewAs");
@@ -45,6 +46,7 @@ class FilesStore {
   startDrag = false;
 
   firstLoad = true;
+
   files = [];
   folders = [];
   selection = [];
@@ -52,12 +54,18 @@ class FilesStore {
   selected = "close";
   filter = FilesFilter.getDefault(); //TODO: FILTER
   loadTimeout = null;
+  hotkeyCaret = null;
+  hotkeyCaretStart = null;
   activeFiles = [];
   activeFolders = [];
 
   firstElemChecked = false;
+  headerBorder = false;
 
   isPrevSettingsModule = false;
+  enabledHotkeys = true;
+  oformFiles = null;
+  gallerySelected = null;
 
   constructor(
     authStore,
@@ -143,23 +151,12 @@ class FilesStore {
       );
     });
 
-    socketHelper.on("s:stop-edit-file", (id, data) => {
-      //console.log(`Call s:stop-edit-file (id=${id})`);
+    socketHelper.on("s:stop-edit-file", (id) => {
+      console.log(`Call s:stop-edit-file (id=${id})`);
       const foundIndex = this.files.findIndex((x) => x.id === id);
       if (foundIndex == -1) return;
 
-      let file;
-
-      if (data) {
-        file = JSON.parse(data);
-        console.log(`socket stop-edit-file (id=${id}`, file);
-      }
-
-      this.updateFileStatus(
-        foundIndex,
-        this.files[foundIndex].fileStatus & ~FileStatus.IsEditing,
-        file
-      );
+      this.getFileInfo(id);
     });
   }
 
@@ -283,8 +280,25 @@ class FilesStore {
       }
     }
     requests.push(getFilesSettings());
+    requests.push(this.getOforms());
 
     return Promise.all(requests).then(() => (this.isInit = true));
+  };
+
+  getOforms = async () => {
+    const oformData = await this.authStore.getOforms();
+
+    runInAction(() => {
+      this.oformFiles = oformData?.data?.data ? oformData.data.data : [];
+    });
+  };
+
+  get hasGalleryFiles() {
+    return this.oformFiles && !!this.oformFiles.length;
+  }
+
+  setGallerySelected = (gallerySelected) => {
+    this.gallerySelected = gallerySelected;
   };
 
   setFirstLoad = (firstLoad) => {
@@ -381,12 +395,27 @@ class FilesStore {
   };
 
   setSelected = (selected) => {
-    if (selected === "close" || selected === "none")
+    if (selected === "close" || selected === "none") {
       this.setBufferSelection(null);
+      this.setHotkeyCaretStart(null);
+      this.setHotkeyCaret(null);
+    }
 
     this.selected = selected;
     const files = this.files.concat(this.folders);
     this.selection = this.getFilesBySelected(files, selected);
+  };
+
+  setHotkeyCaret = (hotkeyCaret) => {
+    if (hotkeyCaret) {
+      this.hotkeyCaret = hotkeyCaret;
+    } else if (this.hotkeyCaret) {
+      this.hotkeyCaret = hotkeyCaret;
+    }
+  };
+
+  setHotkeyCaretStart = (hotkeyCaretStart) => {
+    this.hotkeyCaretStart = hotkeyCaretStart;
   };
 
   setSelection = (selection) => {
@@ -530,10 +559,23 @@ class FilesStore {
             this.setSelected("close");
           }
 
+          const navigationPath = await Promise.all(
+            data.pathParts.map(async (folder) => {
+              const data = await api.files.getFolderInfo(folder);
+
+              return { id: folder, title: data.title };
+            })
+          ).then((res) => {
+            return res
+              .filter((item, index) => index !== res.length - 1)
+              .reverse();
+          });
+
           this.selectedFolderStore.setSelectedFolder({
             folders: data.folders,
             ...data.current,
             pathParts: data.pathParts,
+            navigationPath: navigationPath,
             ...{ new: data.new },
           });
 
@@ -611,8 +653,17 @@ class FilesStore {
   deselectFile = (file) => {
     const { id, parentId } = file;
     const isFileSelected = this.isFileSelected(id, parentId);
-    if (isFileSelected)
-      this.selection = this.selection.filter((x) => x.id !== id);
+    if (isFileSelected) {
+      let selectionIndex = this.selection.findIndex(
+        (x) => x.parentId === parentId && x.id === id
+      );
+
+      if (selectionIndex !== -1) {
+        this.selection = this.selection.filter(
+          (x, index) => index !== selectionIndex
+        );
+      }
+    }
   };
 
   removeOptions = (options, toRemoveArray) =>
@@ -629,7 +680,7 @@ class FilesStore {
     const isThirdPartyItem = !!item.providerKey;
     const hasNew =
       item.new > 0 || (item.fileStatus & FileStatus.IsNew) === FileStatus.IsNew;
-    const canConvert = false; //TODO: fix of added convert check;
+    const canConvert = this.filesSettingsStore.extsConvertible[item.fileExst];
     const isEncrypted = item.encrypted;
     const isDocuSign = false; //TODO: need this prop;
     const isEditing =
@@ -685,6 +736,7 @@ class FilesStore {
         "version", //category
         "finalize-version",
         "show-version-history",
+        "show-info",
         "block-unblock-version", //need split
         "separator1",
         "open-location",
@@ -725,7 +777,7 @@ class FilesStore {
         }
       }
 
-      if (!this.canConvertSelected) {
+      if (!canConvert) {
         fileOptions = this.removeOptions(fileOptions, ["download-as"]);
       }
 
@@ -972,6 +1024,7 @@ class FilesStore {
         "separator0",
         "sharing-settings",
         "owner-change",
+        "show-info",
         "link-for-portal-users",
         "separator1",
         "open-location",
@@ -1137,10 +1190,12 @@ class FilesStore {
     return api.files.addFileToRecentlyViewed(fileId);
   };
 
-  createFile = (folderId, title, templateId) => {
-    return api.files.createFile(folderId, title, templateId).then((file) => {
-      return Promise.resolve(file);
-    });
+  createFile = (folderId, title, templateId, formId) => {
+    return api.files
+      .createFile(folderId, title, templateId, formId)
+      .then((file) => {
+        return Promise.resolve(file);
+      });
   };
 
   createFolder(parentFolderId, title) {
@@ -1295,6 +1350,10 @@ class FilesStore {
     this.firstElemChecked = checked;
   };
 
+  setHeaderBorder = (headerBorder) => {
+    this.headerBorder = headerBorder;
+  };
+
   get canCreate() {
     switch (this.selectedFolderStore.rootFolderType) {
       case FolderType.USER:
@@ -1412,7 +1471,7 @@ class FilesStore {
 
       let isFolder = false;
       this.folders.map((x) => {
-        if (x.id === item.id) isFolder = true;
+        if (x.id === item.id && x.parentId === item.parentId) isFolder = true;
       });
 
       const { isRecycleBinFolder } = this.treeFoldersStore;
@@ -1902,6 +1961,10 @@ class FilesStore {
 
   setPasswordEntryProcess = (process) => {
     this.passwordEntryProcess = process;
+  };
+
+  setEnabledHotkeys = (enabledHotkeys) => {
+    this.enabledHotkeys = enabledHotkeys;
   };
 }
 

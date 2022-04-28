@@ -1,8 +1,9 @@
+import { Base } from "@appserver/components/themes";
 import styled from "styled-components";
 
 const StyledDialogLoader = styled.div`
   .dialog-loader-header {
-    border-bottom: 1px solid rgb(222, 226, 230);
+    border-bottom: ${(props) => props.theme.dialogLoader.borderBottom};
     display: flex;
     padding: 12px 0;
   }
@@ -23,5 +24,7 @@ const StyledDialogLoader = styled.div`
     margin-left: auto;
   }
 `;
+
+StyledDialogLoader.defaultProps = { theme: Base };
 
 export default StyledDialogLoader;

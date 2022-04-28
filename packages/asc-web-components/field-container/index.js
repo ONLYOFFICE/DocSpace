@@ -115,7 +115,6 @@ FieldContainer.defaultProps = {
   place: "bottom",
   labelVisible: true,
   maxLabelWidth: "110px",
-  errorColor: "#C96C27",
   errorMessageWidth: "293px",
 };
 

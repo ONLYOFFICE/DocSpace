@@ -25,7 +25,6 @@ const ViewSelector = ({
   };
 
   const lastIndx = viewSettings && viewSettings.length - 1;
-  const loadingSVG = () => <svg></svg>;
 
   const { t } = useTranslation("Common");
 
@@ -47,6 +46,7 @@ const ViewSelector = ({
               firstItem={indx === 0}
               lastItem={indx === lastIndx}
               key={value}
+              name={`view-selector-name_${value}`}
               className="view-selector-icon"
               data-view={value}
               title={
@@ -55,7 +55,7 @@ const ViewSelector = ({
                   : t("Common:SwitchToThumbnails")
               }
             >
-              <ReactSVG src={icon} loading={loadingSVG} />
+              <ReactSVG src={icon} />
             </IconWrapper>
           );
         })}

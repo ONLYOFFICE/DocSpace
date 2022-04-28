@@ -7,12 +7,11 @@ import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
-
-const backgroundColor = "#0F4071";
+import { Base } from "@appserver/components/themes";
 
 const Header = styled.header`
   align-items: left;
-  background-color: ${backgroundColor};
+  background-color: ${(props) => props.theme.header.backgroundColor};
   display: flex;
   width: calc(100vw - 64px);
   height: 48px;
@@ -49,6 +48,8 @@ const Header = styled.header`
     cursor: pointer;
   }
 `;
+
+Header.defaultProps = { theme: Base };
 
 const HeaderUnAuth = ({
   enableAdmMess,

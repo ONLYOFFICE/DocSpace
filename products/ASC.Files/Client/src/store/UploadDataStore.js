@@ -844,8 +844,8 @@ class UploadDataStore {
         if (this.files[indexOfFile] === undefined) {
           this.primaryProgressDataStore.setPrimaryProgressBarData({
             icon: "upload",
-            percent: 100,
-            visible: true,
+            percent: 0,
+            visible: false,
             alert: true,
           });
           return Promise.resolve();
@@ -869,6 +869,8 @@ class UploadDataStore {
   };
 
   finishUploadFiles = () => {
+    const { fetchFiles, filter } = this.filesStore;
+
     const totalErrorsCount = sumBy(this.files, (f) => (f.error ? 1 : 0));
 
     if (totalErrorsCount > 0) console.log("Errors: ", totalErrorsCount);
@@ -885,6 +887,8 @@ class UploadDataStore {
 
     if (this.files.length > 0) {
       const toFolderId = this.files[0]?.toFolderId;
+      fetchFiles(toFolderId, filter);
+
       if (toFolderId) {
         const { socketHelper } = this.filesStore.settingsStore;
 
@@ -938,7 +942,8 @@ class UploadDataStore {
 
         const data = res[0] ? res[0] : null;
         const pbData = { icon: "duplicate" };
-        return this.loopFilesOperations(data, pbData).then(() =>
+
+        return this.loopFilesOperations(data, fileIds.length, pbData).then(() =>
           this.moveToCopyTo(destFolderId, pbData, true, fileIds, folderIds)
         );
       })
@@ -975,6 +980,7 @@ class UploadDataStore {
       .then((res) => {
         const data = res[0] ? res[0] : null;
         const pbData = { icon: "move" };
+
         return this.loopFilesOperations(data, pbData).then(() =>
           this.moveToCopyTo(destFolderId, pbData, false, fileIds, folderIds)
         );
@@ -1024,6 +1030,7 @@ class UploadDataStore {
       percent: 0,
       label: isCopy ? translations.copy : translations.move,
       alert: false,
+      filesCount: this.secondaryProgressDataStore.filesCount + fileIds.length,
     });
 
     return isCopy
@@ -1063,6 +1070,7 @@ class UploadDataStore {
     while (!finished) {
       const item = await this.getOperationProgress(data.id);
       operationItem = item;
+
       progress = item ? item.progress : 100;
       finished = item ? item.finished : true;
 
@@ -1072,6 +1080,7 @@ class UploadDataStore {
         percent: progress,
         visible: true,
         alert: false,
+        currentFile: item,
       });
     }
 
@@ -1160,7 +1169,7 @@ class UploadDataStore {
     return promise;
   };
 
-  clearActiveOperations = (fileIds, folderIds) => {
+  clearActiveOperations = (fileIds = [], folderIds = []) => {
     const {
       activeFiles,
       activeFolders,
@@ -1168,7 +1177,7 @@ class UploadDataStore {
       setActiveFolders,
     } = this.filesStore;
 
-    const newActiveFiles = activeFiles.filter((el) => !fileIds.includes(el));
+    const newActiveFiles = activeFiles.filter((el) => !fileIds?.includes(el));
     const newActiveFolders = activeFolders.filter(
       (el) => !folderIds.includes(el)
     );

@@ -253,7 +253,7 @@ namespace ASC.Web.Files.Services.DocumentService
                 case TrackerStatus.NotFound:
                 case TrackerStatus.Closed:
                     FileTracker.Remove(fileId);
-                    await SocketManager.StopEditAsync(fileId);
+                    SocketManager.StopEdit(fileId);
 
                     break;
 
@@ -456,7 +456,7 @@ namespace ASC.Web.Files.Services.DocumentService
             if (!forcesave)
             {
                 FileTracker.Remove(fileId);
-                await SocketManager.StopEditAsync(fileId);
+                SocketManager.StopEdit(fileId);
             }
 
             if (file != null)

@@ -1,17 +1,5 @@
 ﻿{
-  "DomainIpAddress": "IP adresi olarak alan adları desteklenmez",
   "EmailActivationDescription": "Aktivasyon talimatları girilen e-postaya gönderilecektir",
   "EmailChangeTitle": "E-posta değişikliği",
-  "EmptyEmail": "Hiçbir e-posta ayrıştırılmadı",
-  "EnterEmail": "Yeni e-posta adresi girin",
-  "IncorrectDomain": "Yanlış domain",
-  "IncorrectEmail": "Yanlış e-posta",
-  "IncorrectLocalPart": "Yanlış yerel kısım",
-  "LocalDomain": "Yerel domainler desteklenmemektedir",
-  "ManyEmails": "Çok fazla e-posta ayrıştırıldı",
-  "MaxLengthExceeded": "Bir kullanıcı adının veya başka bir yerel bölümün maksimum uzunluğu 64 karakterdir.",
-  "PunycodeDomain": "Punycode domainler desteklenmemektedir",
-  "PunycodeLocalPart": "Punycode yerel kısmı desteklenmiyor",
-  "SameEmail": "Aynı e-postayı kullanamazsınız",
-  "SpacesInLocalPart": "Yerel kısım boşluk içeremez"
+  "EnterEmail": "Yeni e-posta adresi girin"
 }

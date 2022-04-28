@@ -1,17 +1,5 @@
 ﻿{
-  "DomainIpAddress": "Domains as IP address are not supported",
   "EmailActivationDescription": "The activation instructions will be sent to the entered email",
   "EmailChangeTitle": "Email change",
-  "EmptyEmail": "No email parsed",
-  "EnterEmail": "Enter a new email address",
-  "IncorrectDomain": "Incorrect domain",
-  "IncorrectEmail": "Incorrect email",
-  "IncorrectLocalPart": "Incorrect local part",
-  "LocalDomain": "Local domains are not supported",
-  "ManyEmails": "Too many emails parsed",
-  "MaxLengthExceeded": "The maximum length of a user name or other local part is 64 characters.",
-  "PunycodeDomain": "Punycode domains are not supported",
-  "PunycodeLocalPart": "Punycode local part is not supported",
-  "SameEmail": "You can't use the same email",
-  "SpacesInLocalPart": "Local part can't contain spaces"
+  "EnterEmail": "Enter a new email address"
 }

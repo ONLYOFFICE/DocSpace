@@ -14,7 +14,8 @@ const DotWrapper = styled.div`
 `;
 
 const Dot = styled.div`
-  background-color: ${(props) => props.color};
+  background-color: ${(props) =>
+    props.color ? props.color : props.theme.loader.color};
   border-radius: ${(props) => props.theme.loader.borderRadius};
   width: ${(props) => props.size / 9}px;
   height: ${(props) => props.size / 9}px;

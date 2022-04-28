@@ -38,7 +38,7 @@ const CampaignsBanner = (props) => {
       <Button
         className="banner-btn"
         primary
-        size="medium"
+        size="small"
         isDisabled={false}
         disableHover={true}
         label={btnLabel}

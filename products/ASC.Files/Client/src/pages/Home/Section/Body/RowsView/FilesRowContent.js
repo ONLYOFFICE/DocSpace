@@ -1,4 +1,5 @@
 import React, { useCallback } from "react";
+import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
@@ -10,8 +11,7 @@ import RowContent from "@appserver/components/row-content";
 
 import withContent from "../../../../../HOCs/withContent";
 import withBadges from "../../../../../HOCs/withBadges";
-
-const sideColor = "#A3A9AE";
+import { Base } from "@appserver/components/themes";
 
 const SimpleFilesRowContent = styled(RowContent)`
   .row-main-container-wrapper {
@@ -41,11 +41,6 @@ const SimpleFilesRowContent = styled(RowContent)`
     width: max-content;
   }
 
-  .is-editing {
-    path {
-      fill: #3b72a7;
-    }
-  }
   ${(props) =>
     ((props.sectionWidth <= 1024 && props.sectionWidth > 500) || isTablet) &&
     `
@@ -80,6 +75,8 @@ const SimpleFilesRowContent = styled(RowContent)`
   `}
 `;
 
+SimpleFilesRowContent.defaultProps = { theme: Base };
+
 const FilesRowContent = ({
   t,
   item,
@@ -89,6 +86,7 @@ const FilesRowContent = ({
   linkStyles,
   badgesComponent,
   quickButtons,
+  theme,
 }) => {
   const {
     contentLength,
@@ -104,10 +102,10 @@ const FilesRowContent = ({
       <SimpleFilesRowContent
         sectionWidth={sectionWidth}
         isMobile={isMobile}
-        sideColor={sideColor}
         isFile={fileExst || contentLength}
       >
         <Link
+          className="row-content-link"
           containerWidth="55%"
           type="page"
           title={title}
@@ -115,7 +113,6 @@ const FilesRowContent = ({
           fontSize="15px"
           target="_blank"
           {...linkStyles}
-          color="#333"
           isTextOverflow={true}
         >
           {titleWithoutExt}
@@ -130,7 +127,7 @@ const FilesRowContent = ({
             containerWidth="15%"
             fontSize="12px"
             fontWeight={400}
-            color={sideColor}
+            // color={sideColor}
             className="row_update-text"
           >
             {updatedDate && updatedDate}
@@ -140,7 +137,7 @@ const FilesRowContent = ({
           containerMinWidth="90px"
           containerWidth="10%"
           as="div"
-          color={sideColor}
+          className="row-content-text"
           fontSize="12px"
           fontWeight={400}
           title=""
@@ -155,8 +152,14 @@ const FilesRowContent = ({
   );
 };
 
-export default withRouter(
-  withTranslation(["Home", "Translations", "VersionBadge"])(
-    withContent(withBadges(FilesRowContent))
+export default inject(({ auth }) => {
+  return { theme: auth.settingsStore.theme };
+})(
+  observer(
+    withRouter(
+      withTranslation(["Home", "Translations"])(
+        withContent(withBadges(FilesRowContent))
+      )
+    )
   )
 );

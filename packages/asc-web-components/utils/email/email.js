@@ -4,60 +4,63 @@ import punycode from "punycode";
 import { parseErrorTypes, errorKeys } from "./../constants";
 import { EmailSettings } from "./emailSettings";
 
-const getParts = (string) => {
-  let mass = [];
-  let e = string.replace(/[\s,;]*$/, ",");
-  for (let t, i = false, o = 0, a = 0, s = e.length; s > a; a += 1) {
-    switch (e.charAt(a)) {
+const getParts = (str) => {
+  const parts = [];
+  let newStr = str.replace(/[\s,;]*$/, ",");
+  const n = newStr.length;
+  let flag = false,
+    boundaryIndex = 0,
+    index;
+  for (index = 0; index < n; index++) {
+    switch (newStr.charAt(index)) {
       case ",":
       case ";":
-        if (!i) {
-          t = e.substring(o, a);
-          t = t.trim();
-          if (t) {
-            mass.push(t);
-          }
-          o = a + 1;
+        if (flag) continue;
+
+        let part = newStr.substring(boundaryIndex, index);
+        part = part.trim();
+        if (part) {
+          parts.push(part);
         }
+        boundaryIndex = index + 1;
+
         break;
       case '"':
-        "\\" !== e.charAt(a - 1) && '"' !== e.charAt(a + 1) && (i = !i);
+        if (
+          "\\" !== newStr.charAt(index - 1) &&
+          '"' !== newStr.charAt(index + 1)
+        ) {
+          flag = !flag;
+        }
     }
   }
-  return mass;
-};
 
-const str2Obj = (str) => {
-  let t = /^"(.*)"\s*<([^>]+)>$/,
-    n = /^(.*)<([^>]+)>$/,
-    i = str.match(t) || str.match(n);
-  return i
-    ? {
-        name: i[1].replace(/\\"/g, '"').replace(/\\\\/g, "\\").trim(),
-        email: i[2].trim(),
-      }
-    : {
-        email: str,
-      };
-};
-
-const obj2str = (object) => {
-  let t = undefined;
-  if (object.email) {
-    t = object.email;
-    object.name &&
-      (t =
-        '"' +
-        object.name.replace(/\\/g, "\\\\").replace(/"/g, '\\"') +
-        '" <' +
-        t +
-        ">");
+  if (!parts.length) {
+    parts.push(str.replace(/,\s*$/, ""));
   }
-  return t;
+
+  return parts;
 };
 
 const normalizeString = (str) => {
-  return obj2str(str2Obj(str));
+  let r1 = /^"(.*)"\s*<([^>]+)>$/,
+    r2 = /^(.*)<([^>]+)>$/,
+    match = str.match(r1) || str.match(r2);
+
+  let name, email;
+
+  if (match) {
+    name = match[1].replace(/\\"/g, '"').replace(/\\\\/g, "\\").trim();
+    email = match[2].trim();
+  } else {
+    email = str;
+  }
+
+  const result = name
+    ? `"${name.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}" <${email}>`
+    : email;
+
+  return result;
 };
 
 const checkErrors = (parsedAddress, options) => {
@@ -170,6 +173,28 @@ const checkErrors = (parsedAddress, options) => {
   return errors;
 };
 
+const parseOneAddress = (str, options) => {
+  const normalizedStr = normalizeString(str);
+  const parsedAddress = emailAddresses.parseOneAddress(normalizedStr);
+
+  const errors = [];
+
+  if (!parsedAddress || (parsedAddress.name && !options.allowName)) {
+    errors.push({
+      message: "Incorrect email",
+      type: parseErrorTypes.IncorrectEmail,
+      errorKey: errorKeys.IncorrectEmail,
+    });
+  } else {
+    const checkOptionErrors = checkErrors(parsedAddress, options);
+    checkOptionErrors.length && errors.push(...checkOptionErrors);
+  }
+
+  return parsedAddress
+    ? new Email(parsedAddress.name, parsedAddress.address, errors)
+    : new Email(null, str, errors);
+};
+
 /**
  * Parse addresses from string
  * @param {String} str
@@ -179,33 +204,18 @@ export const parseAddresses = (str, options = new EmailSettings()) => {
   if (!(options instanceof EmailSettings))
     throw new TypeError("Invalid options");
 
-  const parts = getParts(str);
   const resultEmails = [];
+
+  if (!str || !str.trim()) {
+    return resultEmails;
+  }
+
+  const parts = getParts(str);
 
   let i,
     n = parts.length;
   for (i = 0; i < n; i++) {
-    const normalizedStr = normalizeString(parts[i]);
-    const parsedAddress = emailAddresses.parseOneAddress(normalizedStr);
-
-    const errors = [];
-
-    if (!parsedAddress || (parsedAddress.name && !options.allowName)) {
-      errors.push({
-        message: "Incorrect email",
-        type: parseErrorTypes.IncorrectEmail,
-        errorKey: errorKeys.IncorrectEmail,
-      });
-    } else {
-      const checkOptionErrors = checkErrors(parsedAddress, options);
-      checkOptionErrors.length && errors.push(...checkOptionErrors);
-    }
-
-    resultEmails.push(
-      parsedAddress
-        ? new Email(parsedAddress.name, parsedAddress.address, errors)
-        : new Email(null, parts[i], errors)
-    );
+    resultEmails.push(parseOneAddress(parts[i], options));
   }
 
   return resultEmails;

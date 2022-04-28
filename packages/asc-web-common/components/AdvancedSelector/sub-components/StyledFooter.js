@@ -1,8 +1,9 @@
 import styled, { css } from "styled-components";
+import Base from "../../../../asc-web-components/themes/base";
 
 const StyledFooter = styled.div`
   box-sizing: border-box;
-  border-top: 1px solid #eceef1;
+  border-top: ${(props) => props.theme.advancedSelector.footerBorder};
   padding: 16px;
   height: 69px;
 
@@ -18,5 +19,7 @@ const StyledFooter = styled.div`
       display: none;
     `}
 `;
+
+StyledFooter.defaultProps = { theme: Base };
 
 export default StyledFooter;
