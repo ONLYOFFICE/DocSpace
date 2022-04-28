@@ -173,7 +173,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
 
     private void ErrorIfNotDocSpace()
     {
-        if (!_coreBaseSettings.DocSpace)
+        if (_coreBaseSettings.DisableDocSpace)
         {
             throw new NotSupportedException();
         }

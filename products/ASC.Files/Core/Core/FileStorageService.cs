@@ -2060,7 +2060,7 @@ public class FileStorageService<T> //: IFileStorageService
         {
             try
             {
-                var changed = await _fileSharingAceHelper.SetAceObjectAsync(aceCollection.Aces, entry, notify, aceCollection.Message, _coreBaseSettings.DocSpace);
+                var changed = await _fileSharingAceHelper.SetAceObjectAsync(aceCollection.Aces, entry, notify, aceCollection.Message, !_coreBaseSettings.DisableDocSpace);
                 if (changed)
                 {
                     _filesMessageService.Send(entry, GetHttpHeaders(),

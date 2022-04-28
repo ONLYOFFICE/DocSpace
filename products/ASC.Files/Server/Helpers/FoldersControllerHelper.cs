@@ -158,7 +158,7 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
             folders.Add(_globalFolderHelper.FolderMy);
         }
 
-        if (!_coreBaseSettings.Personal && !_coreBaseSettings.DocSpace 
+        if (!_coreBaseSettings.Personal && _coreBaseSettings.DisableDocSpace 
             && !_userManager.GetUsers(_securityContext.CurrentAccount.ID).IsOutsider(_userManager))
         {
             folders.Add(await _globalFolderHelper.FolderShareAsync);
@@ -175,20 +175,20 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
                 folders.Add(await _globalFolderHelper.FolderRecentAsync);
             }
 
-            if (!_coreBaseSettings.Personal && !_coreBaseSettings.DocSpace
+            if (!_coreBaseSettings.Personal && _coreBaseSettings.DisableDocSpace
                 && PrivacyRoomSettings.IsAvailable(_tenantManager))
             {
                 folders.Add(await _globalFolderHelper.FolderPrivacyAsync);
             }
         }
 
-        if (!_coreBaseSettings.Personal && !_coreBaseSettings.DocSpace)
+        if (!_coreBaseSettings.Personal && _coreBaseSettings.DisableDocSpace)
         {
             folders.Add(await _globalFolderHelper.FolderCommonAsync);
         }
 
         if (!IsVisitor
-           && !_coreBaseSettings.DocSpace
+           && _coreBaseSettings.DisableDocSpace
            && !withoutAdditionalFolder
            && _fileUtility.ExtsWebTemplate.Count > 0
            && _filesSettingsHelper.TemplatesSection)
@@ -201,7 +201,7 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
             folders.Add((int)_globalFolderHelper.FolderTrash);
         }
 
-        if (_coreBaseSettings.DocSpace)
+        if (!_coreBaseSettings.DisableDocSpace)
         {
             folders.Add(await _globalFolderHelper.FolderVirtualRoomsAsync);
             folders.Add(await _globalFolderHelper.FolderArchiveAsync);

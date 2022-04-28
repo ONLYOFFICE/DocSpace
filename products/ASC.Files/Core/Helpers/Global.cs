@@ -318,7 +318,7 @@ public class GlobalFolder
 
     public async ValueTask<int> GetFolderVirtualRooms(IDaoFactory daoFactory)
     {
-        if (!_coreBaseSettings.DocSpace)
+        if (_coreBaseSettings.DisableDocSpace)
         {
             return default;
         }
@@ -342,7 +342,7 @@ public class GlobalFolder
 
     public async ValueTask<int> GetFolderArchive(IDaoFactory daoFactory)
     {
-        if (!_coreBaseSettings.DocSpace)
+        if (_coreBaseSettings.DisableDocSpace)
         {
             return default;
         }
