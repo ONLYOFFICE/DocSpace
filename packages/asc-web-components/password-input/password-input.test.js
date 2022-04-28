@@ -13,9 +13,6 @@ const baseProps = {
   inputName: "demoPasswordInput",
   emailInputName: "demoEmailInput",
   inputValue: "",
-  clipActionResource: "Copy e-mail and password",
-  clipEmailResource: "E-mail: ",
-  clipPasswordResource: "Password: ",
   tooltipPasswordTitle: "Password must contain:",
   tooltipPasswordLength: "from 6 to 30 characters",
   tooltipPasswordDigits: "digits",
@@ -27,7 +24,6 @@ const baseProps = {
   placeholder: "password",
   onChange: () => jest.fn(),
   onValidateInput: () => jest.fn(),
-  onCopyToClipboard: () => jest.fn(),
 };
 
 describe("<PasswordInput />", () => {
@@ -137,9 +133,6 @@ describe("<PasswordInput />", () => {
         inputName: "demoPasswordInput",
         emailInputName: "demoEmailInput",
         inputValue: "",
-        clipActionResource: "Copy e-mail and password",
-        clipEmailResource: "E-mail: ",
-        clipPasswordResource: "Password: ",
         tooltipPasswordTitle: "Password must contain:",
         tooltipPasswordLength: "from 6 to 30 characters",
         tooltipPasswordDigits: "digits",
@@ -156,7 +149,6 @@ describe("<PasswordInput />", () => {
         placeholder: "password",
         onChange: () => jest.fn(),
         onValidateInput: () => jest.fn(),
-        onCopyToClipboard: () => jest.fn(),
       },
       wrapper.state
     );
@@ -180,7 +172,6 @@ describe("<PasswordInput />", () => {
     instance.onGeneratePassword();
 
     expect(wrapper.state("type")).toBe("text");
-    expect(wrapper.state("progressWidth")).toBe(100);
   });
 
   it("generate password with props: 10 , true , false , false", () => {
@@ -199,7 +190,6 @@ describe("<PasswordInput />", () => {
     instance.onGeneratePassword();
 
     expect(wrapper.state("type")).toBe("text");
-    expect(wrapper.state("progressWidth")).toBe(100);
   });
 
   it("generate password with props: 10 , true , true , false", () => {
@@ -218,7 +208,6 @@ describe("<PasswordInput />", () => {
     instance.onGeneratePassword();
 
     expect(wrapper.state("type")).toBe("text");
-    expect(wrapper.state("progressWidth")).toBe(100);
   });
 
   it("generate password with props: 10 , true , true , true", () => {
@@ -237,7 +226,6 @@ describe("<PasswordInput />", () => {
     instance.onGeneratePassword();
 
     expect(wrapper.state("type")).toBe("text");
-    expect(wrapper.state("progressWidth")).toBe(100);
   });
 
   it("accepts style", () => {
@@ -252,14 +240,6 @@ describe("<PasswordInput />", () => {
     const wrapper = mount(<PasswordInput {...baseProps} className="test" />);
 
     expect(wrapper.prop("className")).toEqual("test");
-  });
-
-  it("NewPasswordButton hidden when hideNewPasswordButton is true", () => {
-    const wrapper = mount(
-      <PasswordInput {...baseProps} hideNewPasswordButton={true} />
-    );
-
-    expect(wrapper.prop("hideNewPasswordButton")).toEqual(true);
   });
 
   it("Tooltip disabled when isDisableTooltip is true", () => {

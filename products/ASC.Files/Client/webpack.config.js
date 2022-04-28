@@ -160,13 +160,23 @@ var config = {
           AppServerConfig.proxyURL,
           "/products/people/remoteEntry.js"
         )}`,
+        files: `files@${combineUrl(
+          AppServerConfig.proxyURL,
+          "/products/files/remoteEntry.js"
+        )}`,
       },
       exposes: {
         "./app": "./src/Files.jsx",
         "./SharingDialog": "./src/components/panels/SharingDialog",
         "./utils": "./src/helpers/utils.js",
-        "./SelectFileDialog": "./src/components/panels/SelectFileDialog",
-        "./SelectFolderDialog": "./src/components/panels/SelectFolderDialog",
+        "./SelectFileDialog":
+          "./src/components/panels/SelectFileDialog/SelectFileDialogWrapper",
+        "./SelectFileInput":
+          "./src/components/panels/SelectFileInput/SelectFileInputWrapper",
+        "./SelectFolderDialog":
+          "./src/components/panels/SelectFolderDialog/SelectFolderDialogWrapper",
+        "./SelectFolderInput":
+          "./src/components/panels/SelectFolderInput/SelectFolderInputWrapper",
       },
       shared: {
         ...deps,

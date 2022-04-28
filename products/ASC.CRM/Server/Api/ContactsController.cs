@@ -1409,7 +1409,7 @@ namespace ASC.CRM.Api
         ///<exception cref="SecurityException"></exception>
         /// <returns>User list</returns>
         [Read(@"contact/{contactid:int}/access")]
-        public IEnumerable<EmployeeWraper> GetContactAccessList(int contactid)
+        public IEnumerable<EmployeeDto> GetContactAccessList(int contactid)
         {
             if (contactid <= 0) throw new ArgumentException();
 
@@ -1422,7 +1422,7 @@ namespace ASC.CRM.Api
             return _crmSecurity.IsPrivate(contact)
                        ? _crmSecurity.GetAccessSubjectTo(contact)
                                     .Select(item => _employeeWraperHelper.Get(item.Key))
-                       : new List<EmployeeWraper>();
+                       : new List<EmployeeDto>();
         }
 
         /// <summary>

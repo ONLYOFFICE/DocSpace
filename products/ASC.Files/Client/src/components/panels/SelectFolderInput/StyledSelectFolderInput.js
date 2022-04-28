@@ -1,11 +1,11 @@
 import styled from "styled-components";
 
 const StyledComponent = styled.div`
-  .input-with-folder-path {
+  .select-folder_file-input {
     margin-bottom: 16px;
     margin-top: 3px;
     width: 100%;
-    max-width: 820px;
+    max-width: ${(props) => (props.maxWidth ? props.maxWidth : "350px")};
   }
 
   .panel-loader-wrapper {

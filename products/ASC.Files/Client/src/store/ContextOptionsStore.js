@@ -7,6 +7,10 @@ import config from "../../package.json";
 import toastr from "studio/toastr";
 import { FileAction, AppServerConfig } from "@appserver/common/constants";
 import combineUrl from "@appserver/common/utils/combineUrl";
+import {
+  isMobile as isMobileUtils,
+  isTablet as isTabletUtils,
+} from "@appserver/components/utils/device";
 
 class ContextOptionsStore {
   authStore;
@@ -18,6 +22,7 @@ class ContextOptionsStore {
   uploadDataStore;
   versionHistoryStore;
   settingsStore;
+  infoPanelStore;
 
   constructor(
     authStore,
@@ -28,7 +33,8 @@ class ContextOptionsStore {
     treeFoldersStore,
     uploadDataStore,
     versionHistoryStore,
-    settingsStore
+    settingsStore,
+    infoPanelStore
   ) {
     makeAutoObservable(this);
     this.authStore = authStore;
@@ -40,6 +46,7 @@ class ContextOptionsStore {
     this.uploadDataStore = uploadDataStore;
     this.versionHistoryStore = versionHistoryStore;
     this.settingsStore = settingsStore;
+    this.infoPanelStore = infoPanelStore;
   }
 
   onOpenFolder = (item) => {
@@ -56,7 +63,7 @@ class ContextOptionsStore {
     const {
       setConvertPasswordDialogVisible,
       setFormCreationInfo,
-    } = dialogsStore;
+    } = this.dialogsStore;
     const { title, id, folderId, fileExst } = item;
 
     const newTitle =
@@ -238,7 +245,7 @@ class ContextOptionsStore {
 
   onDuplicate = (item, t) => {
     this.filesActionsStore
-      .duplicateAction(item, t("Translations:CopyOperation"))
+      .duplicateAction(item, t("Common:CopyOperation"))
       .catch((err) => toastr.error(err));
   };
 
@@ -331,6 +338,11 @@ class ContextOptionsStore {
     return options;
   };
 
+  onShowInfoPanel = () => {
+    const { setIsVisible } = this.infoPanelStore;
+    setIsVisible(true);
+  };
+
   getFilesContextOptions = (item, t) => {
     const { contextOptions } = item;
     const isRootThirdPartyFolder =
@@ -338,96 +350,98 @@ class ContextOptionsStore {
 
     const isShareable = item.canShare;
 
-    const versionActions = !isMobile
-      ? [
-          {
-            key: "version",
-            label: t("VersionHistory"),
-            icon: "images/history-finalized.react.svg",
-            items: [
-              {
-                key: "finalize-version",
-                label: t("FinalizeVersion"),
-                onClick: () => this.finalizeVersion(item.id),
-                disabled: false,
-              },
-              {
-                key: "show-version-history",
-                label: t("ShowVersionHistory"),
-                onClick: () => this.showVersionHistory(item.id),
-                disabled: false,
-              },
-            ],
-          },
-        ]
-      : [
-          {
-            key: "finalize-version",
-            label: t("FinalizeVersion"),
-            icon: "images/history-finalized.react.svg",
-            onClick: () => this.finalizeVersion(item.id),
-            disabled: false,
-          },
-          {
-            key: "show-version-history",
-            label: t("ShowVersionHistory"),
-            icon: "images/history.react.svg",
-            onClick: () => this.showVersionHistory(item.id),
-            disabled: false,
-          },
-        ];
+    const versionActions =
+      !isMobile && !isMobileUtils() && !isTabletUtils()
+        ? [
+            {
+              key: "version",
+              label: t("VersionHistory"),
+              icon: "images/history-finalized.react.svg",
+              items: [
+                {
+                  key: "finalize-version",
+                  label: t("FinalizeVersion"),
+                  onClick: () => this.finalizeVersion(item.id),
+                  disabled: false,
+                },
+                {
+                  key: "show-version-history",
+                  label: t("ShowVersionHistory"),
+                  onClick: () => this.showVersionHistory(item.id),
+                  disabled: false,
+                },
+              ],
+            },
+          ]
+        : [
+            {
+              key: "finalize-version",
+              label: t("FinalizeVersion"),
+              icon: "images/history-finalized.react.svg",
+              onClick: () => this.finalizeVersion(item.id),
+              disabled: false,
+            },
+            {
+              key: "show-version-history",
+              label: t("ShowVersionHistory"),
+              icon: "images/history.react.svg",
+              onClick: () => this.showVersionHistory(item.id),
+              disabled: false,
+            },
+          ];
 
-    const moveActions = !isMobile
-      ? [
-          {
-            key: "move",
-            label: t("MoveOrCopy"),
-            icon: "/static/images/copy.react.svg",
-            items: [
-              {
-                key: "move-to",
-                label: t("MoveTo"),
-                onClick: this.onMoveAction,
-                disabled: false,
-              },
-              {
-                key: "copy-to",
-                label: t("Translations:Copy"),
-                onClick: this.onCopyAction,
-                disabled: false,
-              },
-              {
-                key: "copy",
-                label: t("Duplicate"),
-                onClick: () => this.onDuplicate(item, t),
-                disabled: false,
-              },
-            ],
-          },
-        ]
-      : [
-          {
-            key: "move-to",
-            label: t("MoveTo"),
-            icon: "images/move.react.svg",
-            onClick: this.onMoveAction,
-            disabled: false,
-          },
-          {
-            key: "copy-to",
-            label: t("Translations:Copy"),
-            icon: "/static/images/copy.react.svg",
-            onClick: this.onCopyAction,
-            disabled: false,
-          },
-          {
-            key: "copy",
-            label: t("Duplicate"),
-            icon: "/static/images/copy.react.svg",
-            onClick: () => this.onDuplicate(item, t),
-            disabled: false,
-          },
-        ];
+    const moveActions =
+      !isMobile && !isMobileUtils() && !isTabletUtils()
+        ? [
+            {
+              key: "move",
+              label: t("MoveOrCopy"),
+              icon: "/static/images/copy.react.svg",
+              items: [
+                {
+                  key: "move-to",
+                  label: t("MoveTo"),
+                  onClick: this.onMoveAction,
+                  disabled: false,
+                },
+                {
+                  key: "copy-to",
+                  label: t("Translations:Copy"),
+                  onClick: this.onCopyAction,
+                  disabled: false,
+                },
+                {
+                  key: "copy",
+                  label: t("Common:Duplicate"),
+                  onClick: () => this.onDuplicate(item, t),
+                  disabled: false,
+                },
+              ],
+            },
+          ]
+        : [
+            {
+              key: "move-to",
+              label: t("MoveTo"),
+              icon: "images/move.react.svg",
+              onClick: this.onMoveAction,
+              disabled: false,
+            },
+            {
+              key: "copy-to",
+              label: t("Translations:Copy"),
+              icon: "/static/images/copy.react.svg",
+              onClick: this.onCopyAction,
+              disabled: false,
+            },
+            {
+              key: "copy",
+              label: t("Common:Duplicate"),
+              icon: "/static/images/copy.react.svg",
+              onClick: () => this.onDuplicate(item, t),
+              disabled: false,
+            },
+          ];
 
     const optionsModel = [
       {
@@ -505,6 +519,13 @@ class ContextOptionsStore {
       },
       ...versionActions,
       {
+        key: "show-info",
+        label: t("InfoPanel:ViewDetails"),
+        icon: "/static/images/info.outline.react.svg",
+        onClick: this.onShowInfoPanel,
+        disabled: false,
+      },
+      {
         key: "block-unblock-version",
         label: t("UnblockVersion"),
         icon: "images/lock.react.svg",
@@ -564,7 +585,7 @@ class ContextOptionsStore {
       ...moveActions,
       {
         key: "restore",
-        label: t("Translations:Restore"),
+        label: t("Common:Restore"),
         icon: "images/move.react.svg",
         onClick: this.onMoveAction,
         disabled: false,

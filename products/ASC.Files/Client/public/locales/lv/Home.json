@@ -13,7 +13,6 @@
     "CopyItem": "<strong>{{title}}</strong> nokopēts",
     "CopyItems": "<strong>{{qty}}</strong> elementi nokopēti",
     "Document": "Dokuments",
-    "Duplicate": "Izveidojiet kopiju",
     "EmptyFile": "Tukšs fails",
     "EmptyFilterDescriptionText": "Šim filtram neatbilst neviens fails vai mape. Lai skatītu visus failus, izmēģiniet citu filtru vai notīriet filtru. ",
     "EmptyFilterSubheadingText": "Netiek parādīti faili šim filtram šeit",

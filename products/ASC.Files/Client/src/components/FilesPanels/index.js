@@ -9,6 +9,7 @@ import {
   ChangeOwnerPanel,
   NewFilesPanel,
   SelectFileDialog,
+  HotkeyPanel,
 } from "../panels";
 import {
   ThirdPartyMoveDialog,
@@ -44,6 +45,7 @@ const Panels = (props) => {
     createMasterForm,
     selectFileDialogVisible,
     setSelectFileDialogVisible,
+    hotkeyPanelVisible,
     convertPasswordDialogVisible,
   } = props;
 
@@ -87,19 +89,20 @@ const Panels = (props) => {
     selectFileDialogVisible && (
       <SelectFileDialog
         key="select-file-dialog"
-        resetTreeFolders
+        //resetTreeFolders
         onSelectFile={createMasterForm}
         isPanelVisible={selectFileDialogVisible}
         onClose={onClose}
         foldersType="exceptPrivacyTrashFolders"
         ByExtension
         searchParam={".docx"}
-        headerName={t("Translations:CreateMasterFormFromFile")}
-        titleFilesList={t("SelectFile:SelectDOCXFormat")}
+        dialogName={t("Translations:CreateMasterFormFromFile")}
+        filesListTitle={t("SelectFile:SelectDOCXFormat")}
         creationButtonPrimary
         withSubfolders={false}
       />
     ),
+    hotkeyPanelVisible && <HotkeyPanel key="hotkey-panel" />,
     convertPasswordDialogVisible && (
       <ConvertPasswordDialog key="convert-password-dialog" />
     ),
@@ -129,6 +132,7 @@ export default inject(
       createMasterForm,
       selectFileDialogVisible,
       setSelectFileDialogVisible,
+      hotkeyPanelVisible,
     } = dialogsStore;
 
     const { uploadPanelVisible } = uploadDataStore;
@@ -155,6 +159,7 @@ export default inject(
       selectFileDialogVisible,
       createMasterForm,
       setSelectFileDialogVisible,
+      hotkeyPanelVisible,
     };
   }
 )(observer(Panels));

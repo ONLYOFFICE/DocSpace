@@ -800,15 +800,15 @@ namespace ASC.CRM.Api
             var call = dao.GetCall(callId) ?? new VoipCall();
 
             call.Id = callId;
-            call.From = Update.IfNotEmptyAndNotEquals(call.From, from);
-            call.To = Update.IfNotEmptyAndNotEquals(call.To, to);
+            call.NumberFrom = Update.IfNotEmptyAndNotEquals(call.NumberFrom, from);
+            call.NumberTo = Update.IfNotEmptyAndNotEquals(call.NumberTo, to);
             call.AnsweredBy = Update.IfNotEmptyAndNotEquals(call.AnsweredBy, answeredBy);
 
             try
             {
                 if (call.ContactId == 0)
                 {
-                    var contactPhone = call.Status == VoipCallStatus.Incoming || call.Status == VoipCallStatus.Answered ? call.From : call.To;
+                    var contactPhone = call.Status == VoipCallStatus.Incoming || call.Status == VoipCallStatus.Answered ? call.NumberFrom : call.NumberTo;
                     if (!string.IsNullOrEmpty(contactId))
                     {
                         call.ContactId = Convert.ToInt32(contactId);

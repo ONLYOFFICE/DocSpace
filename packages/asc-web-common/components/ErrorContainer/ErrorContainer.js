@@ -5,10 +5,21 @@ import Headline from "../Headline";
 import Text from "@appserver/components/text";
 import Button from "@appserver/components/button";
 
+import store from "studio/store";
+
+const theme = store.auth.settingsStore.theme;
+
 const ErrorContainer = (props) => {
   //console.log("ErrorContainer render");
 
-  const { headerText, bodyText, buttonText, buttonUrl, ...rest } = props;
+  const {
+    headerText,
+    bodyText,
+    buttonText,
+    buttonUrl,
+    children,
+    ...rest
+  } = props;
 
   return (
     <StyledErrorContainer {...rest}>
@@ -335,7 +346,7 @@ const ErrorContainer = (props) => {
         <div id="button-container">
           <Button
             id="button"
-            size="big"
+            size="normal"
             scale
             primary
             label={buttonText}
@@ -343,6 +354,7 @@ const ErrorContainer = (props) => {
           />
         </div>
       )}
+      {children}
     </StyledErrorContainer>
   );
 };
@@ -352,6 +364,7 @@ ErrorContainer.propTypes = {
   bodyText: PropTypes.string,
   buttonText: PropTypes.string,
   buttonUrl: PropTypes.string,
+  children: PropTypes.any,
 };
 
 export default ErrorContainer;

@@ -21,10 +21,12 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
+using JsonSerializer = System.Text.Json.JsonSerializer;
+
 namespace ASC.Web.Core.HttpHandlers;
 public class SsoHandler
 {
-    private RequestDelegate _next;
+    private readonly RequestDelegate _next;
 
     public SsoHandler(RequestDelegate next)
     {
@@ -103,7 +105,7 @@ public class SsoHandlerService
                 await WriteErrorToResponse(context, "Single sign-on settings are disabled");
                 return;
             }
-            if (!(_coreBaseSettings.Standalone || _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().TenantId).Sso))
+            if (!(_coreBaseSettings.Standalone || _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Sso))
             {
                 await WriteErrorToResponse(context, "Single sign-on settings are not paid");
                 return;

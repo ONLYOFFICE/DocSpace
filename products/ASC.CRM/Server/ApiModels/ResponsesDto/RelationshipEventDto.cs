@@ -113,7 +113,7 @@ namespace ASC.CRM.ApiModels
         }
 
         public int Id { get; set; }
-        public EmployeeWraper CreateBy { get; set; }
+        public EmployeeDto CreateBy { get; set; }
 
         public ApiDateTime Created { get; set; }
         public String Content { get; set; }
@@ -131,7 +131,7 @@ namespace ASC.CRM.ApiModels
                 Entity = EntityDto.GetSample(),
                 Contact = ContactBaseDto.GetSample(),
                 Created = ApiDateTime.GetSample(),
-                CreateBy = EmployeeWraper.GetSample(),
+                CreateBy = EmployeeDto.GetSample(),
                 Files = new[] { FileWrapper<int>.GetSample() },
                 Content = @"Agreed to meet at lunch and discuss the client commercial offer"
             };

@@ -157,7 +157,7 @@ class NewFilesPanel extends React.Component {
 
   render() {
     //console.log("NewFiles panel render");
-    const { t, visible, isLoading, newFiles } = this.props;
+    const { t, visible, isLoading, newFiles, theme } = this.props;
     const zIndex = 310;
 
     return (
@@ -200,7 +200,19 @@ class NewFilesPanel extends React.Component {
                           data-id={file.id}
                           data-extension={file.fileExst}
                         >
-                          {file.title}
+                          <Link
+                            containerWidth="100%"
+                            type="page"
+                            fontWeight="bold"
+                            color={theme.filesPanels.color}
+                            isTextOverflow
+                            truncate
+                            title={file.title}
+                            fontSize="14px"
+                            className="files-new-link"
+                          >
+                            {file.title}
+                          </Link>
                         </Link>
                       </Row>
                     );
@@ -219,14 +231,14 @@ class NewFilesPanel extends React.Component {
               <Button
                 className="new_files_panel-button"
                 label={t("MarkAsRead")}
-                size="big"
+                size="normal"
                 primary
                 onClick={this.onMarkAsRead}
               />
               <Button
                 className="sharing_panel-button"
                 label={t("Common:CloseButton")}
-                size="big"
+                size="normal"
                 onClick={this.onClose}
               />
             </StyledFooter>
@@ -239,6 +251,7 @@ class NewFilesPanel extends React.Component {
 
 export default inject(
   ({
+    auth,
     filesStore,
     mediaViewerDataStore,
     treeFoldersStore,
@@ -290,6 +303,8 @@ export default inject(
       updateFolderBadge,
       updateFoldersBadge,
       updateFilesBadge,
+
+      theme: auth.settingsStore.theme,
     };
   }
 )(

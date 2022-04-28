@@ -13,7 +13,6 @@
     "CopyItem": "<strong>{{title}}</strong> gekopieerd",
     "CopyItems": "<strong>{{qty}}</strong> elementen gekopieerd",
     "Document": "Document",
-    "Duplicate": "Maak een kopie",
     "EmptyFile": "Leeg bestand",
     "EmptyFilterDescriptionText": "Geen bestanden of mappen komen overeen met dit filter. Probeer een andere of verwijder de filter om alle bestanden te zien. ",
     "EmptyFilterSubheadingText": "Geen bestanden die hier voor dit filter moeten worden weergegeven",

@@ -86,7 +86,7 @@ namespace ASC.Web.CRM.Classes
             var dao = _daoFactory.GetVoipDao();
             var call = dao.GetCall(callHistory.Id) ?? callHistory;
 
-            if (string.IsNullOrEmpty(call.ParentID))
+            if (string.IsNullOrEmpty(call.ParentCallId))
             {
                 GetContact(call);
             }
@@ -121,9 +121,9 @@ namespace ASC.Web.CRM.Classes
                 call.VoipRecord = new VoipRecord();
             }
 
-            if (string.IsNullOrEmpty(call.VoipRecord.Id))
+            if (string.IsNullOrEmpty(call.VoipRecord.Sid))
             {
-                call.VoipRecord.Id = callHistory.VoipRecord.Id;
+                call.VoipRecord.Sid = callHistory.VoipRecord.Sid;
             }
 
             if (call.VoipRecord.Price == default(decimal))
@@ -193,7 +193,7 @@ namespace ASC.Web.CRM.Classes
                 return null;
             }
 
-            var contactPhone = call.Status == VoipCallStatus.Incoming || call.Status == VoipCallStatus.Answered ? call.From : call.To;
+            var contactPhone = call.Status == VoipCallStatus.Incoming || call.Status == VoipCallStatus.Answered ? call.NumberFrom : call.NumberTo;
 
             var newContactIds = _daoFactory.GetContactDao().GetContactIDsByContactInfo(ContactInfoType.Phone, contactPhone.TrimStart('+'), null, true);
 
@@ -262,9 +262,9 @@ namespace ASC.Web.CRM.Classes
 
                 call = voipEngine.SaveOrUpdateCall(call);
 
-                if (!string.IsNullOrEmpty(call.VoipRecord.Id))
+                if (!string.IsNullOrEmpty(call.VoipRecord.Sid))
                 {
-                    call.VoipRecord = _voipDao.GetProvider().GetRecord((string)call.Id, (string)call.VoipRecord.Id);
+                    call.VoipRecord = _voipDao.GetProvider().GetRecord((string)call.Id, (string)call.VoipRecord.Sid);
                     voipEngine.SaveOrUpdateCall(call);
                 }
 

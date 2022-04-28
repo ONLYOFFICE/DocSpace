@@ -75,7 +75,14 @@ class ChangeOwnerComponent extends React.Component {
   };
 
   render() {
-    const { visible, t, selection, groupsCaption, isLoading } = this.props;
+    const {
+      visible,
+      t,
+      selection,
+      groupsCaption,
+      isLoading,
+      theme,
+    } = this.props;
     const { showPeopleSelector, owner } = this.state;
 
     const ownerName = owner.displayName ? owner.displayName : owner.label;
@@ -115,7 +122,7 @@ class ChangeOwnerComponent extends React.Component {
             <StyledFooter>
               <Button
                 label={t("Common:SaveButton")}
-                size="medium"
+                size="small"
                 scale
                 primary
                 onClick={this.onOwnerChange}
@@ -126,7 +133,8 @@ class ChangeOwnerComponent extends React.Component {
         </Aside>
         {showPeopleSelector && (
           <OwnerSelector
-            ownerLabel={ownerName}
+            theme={theme}
+            ownerLabel={t("ChangeOwner")}
             isOpen={showPeopleSelector}
             groupsCaption={groupsCaption}
             onOwnerSelect={this.onOwnerSelect}
@@ -158,6 +166,7 @@ export default inject(({ auth, filesStore, dialogsStore }) => {
 
   return {
     groupsCaption: auth.settingsStore.customNames.groupsCaption,
+    theme: auth.settingsStore.theme,
     selection: selection.length ? selection : [bufferSelection],
     isLoading,
     visible: ownerPanelVisible,
