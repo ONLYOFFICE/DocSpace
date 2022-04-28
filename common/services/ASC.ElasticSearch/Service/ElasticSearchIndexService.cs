@@ -104,12 +104,12 @@ public class ElasticSearchIndexService : BackgroundService
                     return;
                 }
 
-                _logger.LogDebug("Product reindex {0}", product.IndexName);
+                _logger.LogDebug("Product reindex {indexName}", product.IndexName);
                 product.ReIndex();
             }
             catch (Exception e)
             {
-                _logger.LogError(e, string.Format("Product reindex {0}", product.IndexName));
+                _logger.LogError(e, "Product reindex {indexName}", product.IndexName);
             }
         }
 
@@ -120,7 +120,7 @@ public class ElasticSearchIndexService : BackgroundService
                 return;
             }
 
-            _logger.LogDebug("Product {0}", product.IndexName);
+            _logger.LogDebug("Product {indexName}", product.IndexName);
             _indexNotify.Publish(new IndexAction() { Indexing = product.IndexName, LastIndexed = 0 }, CacheNotifyAction.Any);
             product.IndexAll();
         }

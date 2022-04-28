@@ -115,7 +115,7 @@ public sealed class BackupSchedulerService : BackgroundService
 
                         backupRepository.SaveBackupSchedule(schedule);
 
-                        _logger.LogDebug("Start scheduled backup: {0}, {1}, {2}, {3}", schedule.TenantId, schedule.BackupMail, schedule.StorageType, schedule.StorageBasePath);
+                        _logger.LogDebug("Start scheduled backup: {tenantId}, {backupMail}, {storageType}, {storageBasePath}", schedule.TenantId, schedule.BackupMail, schedule.StorageType, schedule.StorageBasePath);
 
                         _eventBus.Publish(new BackupRequestIntegrationEvent(
                                                  tenantId: schedule.TenantId,
@@ -130,12 +130,12 @@ public sealed class BackupSchedulerService : BackgroundService
                     }
                     else
                     {
-                        _logger.LogDebug("Skip portal {0} not paid", schedule.TenantId);
+                        _logger.LogDebug("Skip portal {tenantId} not paid", schedule.TenantId);
                     }
                 }
                 else
                 {
-                    _logger.LogDebug("Skip portal {0} haven't access", schedule.TenantId);
+                    _logger.LogDebug("Skip portal {tenantId} haven't access", schedule.TenantId);
                 }
             }
             catch (Exception error)

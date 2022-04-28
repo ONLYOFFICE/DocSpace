@@ -56,7 +56,7 @@ public class PaymentFilter : IResourceFilter
             if (_tenantExtra.IsNotPaid())
             {
                 context.Result = new StatusCodeResult((int)HttpStatusCode.PaymentRequired);
-                _logger.LogWarning("Payment Required {0}.", context.HttpContext.Request.Url());
+                _logger.LogWarning("Payment Required {url}.", context.HttpContext.Request.Url());
             }
         }
     }

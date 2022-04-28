@@ -162,7 +162,7 @@ public abstract class SmsProvider : Consumer
             {
                 using var reader = new StreamReader(stream);
                 var result = await reader.ReadToEndAsync();
-                Log.LogInformation("SMS was sent to {0}, service returned: {1}", number, result);
+                Log.LogInformation("SMS was sent to {number}, service returned: {result}", number, result);
                 return true;
             }
         }
@@ -260,7 +260,7 @@ public class SmscProvider : SmsProvider, IValidateKeysProvider
                 {
                     using var reader = new StreamReader(stream);
                     var result = await reader.ReadToEndAsync();
-                    Log.LogInformation("SMS balance service returned: {0}", result);
+                    Log.LogInformation("SMS balance service returned: {result}", result);
 
                     balance = result;
                 }
@@ -404,12 +404,12 @@ public class TwilioProvider : SmsProvider, IValidateKeysProvider
         try
         {
             var smsMessage = MessageResource.Create(new PhoneNumber(number), body: message, @from: new PhoneNumber(Sender), client: twilioRestClient);
-            Log.LogInformation("SMS was sent to {0}, status: {1}", number, smsMessage.Status);
+            Log.LogInformation("SMS was sent to {number}, status: {status}", number, smsMessage.Status);
             if (!smsMessage.ErrorCode.HasValue)
             {
                 return Task.FromResult(true);
             }
-            Log.LogError(("Failed to send sms. code: " + smsMessage.ErrorCode.Value + " " + smsMessage.ErrorMessage));
+            Log.LogError("Failed to send sms. code: {code} {message}", smsMessage.ErrorCode.Value, smsMessage.ErrorMessage);
         }
         catch (Exception ex)
         {

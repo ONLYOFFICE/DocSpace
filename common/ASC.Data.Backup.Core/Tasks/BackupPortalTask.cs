@@ -71,7 +71,7 @@ public class BackupPortalTask : PortalTaskBase
 
     public override void RunJob()
     {
-        Logger.LogDebug("begin backup {0}", TenantId);
+        Logger.LogDebug("begin backup {tenantId}", TenantId);
         _tenantManager.SetCurrentTenant(TenantId);
 
 
@@ -101,7 +101,7 @@ public class BackupPortalTask : PortalTaskBase
             }
         }
 
-        Logger.LogDebug("end backup {0}", TenantId);
+        Logger.LogDebug("end backup {tenantId}", TenantId);
     }
 
     public List<object[]> ExecuteList(DbCommand command)
@@ -150,7 +150,7 @@ public class BackupPortalTask : PortalTaskBase
             }
 
             stepscount += files.Count * 2 + 1;
-            Logger.LogDebug("files:" + files.Count);
+            Logger.LogDebug("files: {count}", files.Count);
         }
 
         SetStepsCount(stepscount);
@@ -198,9 +198,9 @@ public class BackupPortalTask : PortalTaskBase
             ArchiveDir(writer, subDir);
         }
 
-        Logger.LogDebug("dir remove start {0}", subDir);
+        Logger.LogDebug("dir remove start {subDir}", subDir);
         Directory.Delete(subDir, true);
-        Logger.LogDebug("dir remove end {0}", subDir);
+        Logger.LogDebug("dir remove end {subDir}", subDir);
 
         if (ProcessStorage)
         {
@@ -221,7 +221,7 @@ public class BackupPortalTask : PortalTaskBase
     {
         try
         {
-            Logger.LogDebug("dump table scheme start {0}", t);
+            Logger.LogDebug("dump table scheme start {table}", t);
             using (var connection = DbFactory.OpenConnection())
             {
                 var command = connection.CreateCommand();
@@ -245,7 +245,7 @@ public class BackupPortalTask : PortalTaskBase
                 SetStepCompleted();
             }
 
-            Logger.LogDebug("dump table scheme stop {0}", t);
+            Logger.LogDebug("dump table scheme stop {table}", t);
         }
         catch (Exception e)
         {
@@ -282,13 +282,13 @@ public class BackupPortalTask : PortalTaskBase
         {
             if (count == 0)
             {
-                Logger.LogDebug("dump table data stop {0}", t);
+                Logger.LogDebug("dump table data stop {table}", t);
                 SetStepCompleted(2);
 
                 return;
             }
 
-            Logger.LogDebug("dump table data start {0}", t);
+            Logger.LogDebug("dump table data start {table}", t);
             bool searchWithPrimary;
             string primaryIndex;
             var primaryIndexStep = 0;
@@ -375,7 +375,7 @@ public class BackupPortalTask : PortalTaskBase
 
 
             SetStepCompleted();
-            Logger.LogDebug("dump table data stop {0}", t);
+            Logger.LogDebug("dump table data stop {table}", t);
         }
         catch (Exception e)
         {
@@ -406,7 +406,7 @@ public class BackupPortalTask : PortalTaskBase
 
     private void SaveToFile(string path, string t, IReadOnlyCollection<string> columns, List<object[]> data)
     {
-        Logger.LogDebug("save to file {0}", t);
+        Logger.LogDebug("save to file {table}", t);
         List<object[]> portion;
         while ((portion = data.Take(BatchLimit).ToList()).Count > 0)
         {
@@ -518,7 +518,7 @@ public class BackupPortalTask : PortalTaskBase
         var filePath = CrossPlatform.PathCombine(dir, file.GetZipKey());
         var dirName = Path.GetDirectoryName(filePath);
 
-        Logger.LogDebug("backup file {0}", filePath);
+        Logger.LogDebug("backup file {path}", filePath);
 
         if (!Directory.Exists(dirName) && !string.IsNullOrEmpty(dirName))
         {
@@ -541,7 +541,7 @@ public class BackupPortalTask : PortalTaskBase
 
     private void ArchiveDir(IDataWriteOperator writer, string subDir)
     {
-        Logger.LogDebug("archive dir start {0}", subDir);
+        Logger.LogDebug("archive dir start {subDir}", subDir);
         foreach (var enumerateFile in Directory.EnumerateFiles(subDir, "*", SearchOption.AllDirectories))
         {
             var f = enumerateFile;
@@ -558,7 +558,7 @@ public class BackupPortalTask : PortalTaskBase
             SetStepCompleted();
         }
 
-        Logger.LogDebug("archive dir end {0}", subDir);
+        Logger.LogDebug("archive dir end {subDir}", subDir);
     }
 
     private List<IGrouping<string, BackupFileInfo>> GetFilesGroup()
@@ -573,7 +573,7 @@ public class BackupPortalTask : PortalTaskBase
 
     private void DoBackupModule(IDataWriteOperator writer, IModuleSpecifics module)
     {
-        Logger.LogDebug("begin saving data for module {0}", module.ModuleName);
+        Logger.LogDebug("begin saving data for module {name}", module.ModuleName);
         var tablesToProcess = module.Tables.Where(t => !_ignoredTables.Contains(t.Name) && t.InsertMethod != InsertMethod.None).ToList();
         var tablesCount = tablesToProcess.Count;
         var tablesProcessed = 0;
@@ -582,7 +582,7 @@ public class BackupPortalTask : PortalTaskBase
         {
             foreach (var table in tablesToProcess)
             {
-                Logger.LogDebug("begin load table {0}", table.Name);
+                Logger.LogDebug("begin load table {table}", table.Name);
                 using (var data = new DataTable(table.Name))
                 {
                     ActionInvoker.Try(
@@ -613,9 +613,9 @@ public class BackupPortalTask : PortalTaskBase
 
                     module.PrepareData(data);
 
-                    Logger.LogDebug("end load table {0}", table.Name);
+                    Logger.LogDebug("end load table {table}", table.Name);
 
-                    Logger.LogDebug("begin saving table {0}", table.Name);
+                    Logger.LogDebug("begin saving table {table}", table.Name);
 
                     using (var file = _tempStream.Create())
                     {
@@ -625,14 +625,14 @@ public class BackupPortalTask : PortalTaskBase
                         writer.WriteEntry(KeyHelper.GetTableZipKey(module, data.TableName), file);
                     }
 
-                    Logger.LogDebug("end saving table {0}", table.Name);
+                    Logger.LogDebug("end saving table {table}", table.Name);
                 }
 
                 SetCurrentStepProgress((int)(++tablesProcessed * 100 / (double)tablesCount));
             }
         }
 
-        Logger.LogDebug("end saving data for module {0}", module.ModuleName);
+        Logger.LogDebug("end saving data for module {table}", module.ModuleName);
     }
 
     private void DoBackupStorage(IDataWriteOperator writer, List<IGrouping<string, BackupFileInfo>> fileGroups)
@@ -653,7 +653,7 @@ public class BackupPortalTask : PortalTaskBase
                     var f = (BackupFileInfo)state;
                     using var fileStream = storage.GetReadStreamAsync(f.Domain, f.Path).Result;
                     writer.WriteEntry(file1.GetZipKey(), fileStream);
-                }, file, 5, error => Logger.LogWarning("can't backup file ({0}:{1}): {2}", file1.Module, file1.Path, error));
+                }, file, 5, error => Logger.LogWarning(error, "can't backup file ({module}:{path})", file1.Module, file1.Path));
 
                 SetCurrentStepProgress((int)(++filesProcessed * 100 / (double)filesCount));
             }

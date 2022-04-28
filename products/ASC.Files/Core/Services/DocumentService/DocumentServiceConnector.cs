@@ -80,7 +80,7 @@ public class DocumentServiceConnector
                                       SpreadsheetLayout spreadsheetLayout,
                                       bool isAsync)
     {
-        _logger.LogDebug($"DocService convert from {fromExtension} to {toExtension} - {documentUri}, DocServiceConverterUrl:{_filesLinkUtility.DocServiceConverterUrl}");
+        _logger.LogDebug("DocService convert from {fromExtension} to {toExtension} - {documentUri}, DocServiceConverterUrl:{docServiceConverterUrl}", fromExtension, toExtension, documentUri, _filesLinkUtility.DocServiceConverterUrl);
         try
         {
             return Web.Core.Files.DocumentService.GetConvertedUriAsync(
@@ -110,7 +110,7 @@ public class DocumentServiceConnector
                                string[] users = null,
                                MetaData meta = null)
     {
-        _logger.LogDebug("DocService command {0} fileId '{1}' docKey '{2}' callbackUrl '{3}' users '{4}' meta '{5}'", method, fileId, docKeyForTrack, callbackUrl, users != null ? string.Join(", ", users) : null, JsonConvert.SerializeObject(meta));
+        _logger.LogDebug("DocService command {method} fileId '{fileId}' docKey '{docKey}' callbackUrl '{callbackUrl}' users '{users}' meta '{meta}'", method, fileId, docKeyForTrack, callbackUrl, users != null ? string.Join(", ", users) : null, JsonConvert.SerializeObject(meta));
         try
         {
             var commandResponse = await CommandRequestAsync(
@@ -129,7 +129,7 @@ public class DocumentServiceConnector
                 return true;
             }
 
-            _logger.LogError("DocService command response: '{0}' {1}", commandResponse.Error, commandResponse.ErrorString);
+            _logger.LogError("DocService command response: '{error}' {errorString}", commandResponse.Error, commandResponse.ErrorString);
         }
         catch (Exception e)
         {
@@ -159,7 +159,7 @@ public class DocumentServiceConnector
             requestKey = null;
         }
 
-        _logger.LogDebug("DocService builder requestKey {0} async {1}", requestKey, isAsync);
+        _logger.LogDebug("DocService builder requestKey {requestKey} async {isAsync}", requestKey, isAsync);
         try
         {
             return await Web.Core.Files.DocumentService.DocbuilderRequestAsync(
@@ -204,7 +204,7 @@ public class DocumentServiceConnector
                 return version;
             }
 
-            _logger.LogError("DocService command response: '{0}' {1}", commandResponse.Error, commandResponse.ErrorString);
+            _logger.LogError("DocService command response: '{error}' {errorString}", commandResponse.Error, commandResponse.ErrorString);
         }
         catch (Exception e)
         {

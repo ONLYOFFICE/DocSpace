@@ -71,7 +71,7 @@ public class TelegramHandler
 
             if (tgUser == null)
             {
-                _log.LogDebug("Couldn't find telegramId for user '{0}'", msg.Reciever);
+                _log.LogDebug("Couldn't find telegramId for user '{reciever}'", msg.Reciever);
                 return;
             }
 
@@ -80,7 +80,7 @@ public class TelegramHandler
         }
         catch (Exception e)
         {
-            _log.LogDebug("Couldn't send message for user '{0}' got an '{1}'", msg.Reciever, e.Message);
+            _log.LogDebug("Couldn't send message for user '{reciever}' got an '{message}'", msg.Reciever, e.Message);
         }
     }
 

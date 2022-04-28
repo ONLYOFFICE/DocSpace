@@ -149,7 +149,7 @@ internal class FileConverterQueue<T> : IDisposable
                         _cache.Remove(GetKey(q.Key));
                     }
 
-                    logger.LogDebug("Run CheckConvertFilesStatus: count {0}", _conversionQueue.Count);
+                    logger.LogDebug("Run CheckConvertFilesStatus: count {count}", _conversionQueue.Count);
 
                     if (_conversionQueue.Count == 0)
                     {
@@ -283,7 +283,7 @@ internal class FileConverterQueue<T> : IDisposable
                                 {
                                     operationResult.StopDateTime = DateTime.UtcNow;
                                     operationResult.Error = FilesCommonResource.ErrorMassage_ConvertTimeout;
-                                    logger.LogError("CheckConvertFilesStatus timeout: {0} ({1})", file.Id, file.ContentLengthString);
+                                    logger.LogError("CheckConvertFilesStatus timeout: {fileId} ({contentLengthString})", file.Id, file.ContentLengthString);
                                 }
                                 else
                                 {
@@ -310,7 +310,7 @@ internal class FileConverterQueue<T> : IDisposable
                     {
                         operationResultError = e.Message;
 
-                        logger.LogError("{0} ConvertUrl: {1} fromUrl: {2}: {3}", operationResultError, convertedFileUrl, fileUri, e);
+                        logger.LogError(e, "{operationResultError} ConvertUrl: {convertedFileUrl} fromUrl: {fileUri}", operationResultError, convertedFileUrl, fileUri);
 
                         continue;
                     }

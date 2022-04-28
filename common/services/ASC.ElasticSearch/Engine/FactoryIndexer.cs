@@ -700,7 +700,7 @@ public class FactoryIndexer
 
             var isValid = result.IsValid;
 
-            Log.LogDebug("CheckState ping {0}", result.DebugInformation);
+            Log.LogDebug("CheckState ping {debugInfo}", result.DebugInformation);
 
             if (cacheState)
             {

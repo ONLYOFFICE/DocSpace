@@ -125,7 +125,7 @@ public class StudioWhatsNewNotify
             _tenantManager.SetCurrentTenant(tenant);
             var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifyHelper.NotifySource);
 
-            _log.LogInformation("Start send whats new in {0} ({1}).", tenant.GetTenantDomain(_coreSettings), tenantid);
+            _log.LogInformation("Start send whats new in {domain} ({tenantId}).", tenant.GetTenantDomain(_coreSettings), tenantid);
             foreach (var user in _userManager.GetUsers())
             {
                 if (!_studioNotifyHelper.IsSubscribedToNotify(user, Actions.SendWhatsNew))
@@ -226,7 +226,7 @@ public class StudioWhatsNewNotify
 
                 if (activities.Count > 0)
                 {
-                    _log.LogInformation("Send whats new to {0}", user.Email);
+                    _log.LogInformation("Send whats new to {email}", user.Email);
                     client.SendNoticeAsync(
                         Actions.SendWhatsNew, null, user,
                         new TagValue(Tags.Activities, activities),

@@ -68,7 +68,7 @@ public class DBResourceManager : ResourceManager
             }
             catch (ReflectionTypeLoadException rtle)
             {
-                log.LogWarning("Can not GetTypes() from assembly {0}, try GetExportedTypes(), error: {1}", a.FullName, rtle.Message);
+                log.LogWarning(rtle, "Can not GetTypes() from assembly {assemblyName}, try GetExportedTypes()", a.FullName);
                 foreach (var e in rtle.LoaderExceptions)
                 {
                     log.LogInformation(e.Message);
@@ -80,7 +80,7 @@ public class DBResourceManager : ResourceManager
                 }
                 catch (Exception err)
                 {
-                    log.LogError("Can not GetExportedTypes() from assembly {0}: {1}", a.FullName, err.Message);
+                    log.LogError(err, "Can not GetExportedTypes() from assembly {assemblyName}", a.FullName);
                 }
             }
             foreach (var type in types)
@@ -178,7 +178,7 @@ public class DBResourceManager : ResourceManager
             }
             catch (Exception err)
             {
-                _logger.LogError("Can not get resource from {0} for {1}: GetString({2}), {3}", _fileName, _culture, name, err);
+                _logger.LogError(err, "Can not get resource from {fileName} for {culture}: GetString({name})", _fileName, _culture, name);
             }
 
             if (_invariant != null && result == null)

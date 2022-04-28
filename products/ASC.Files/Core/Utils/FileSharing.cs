@@ -311,7 +311,7 @@ public class FileSharing
 
         if (!await CanSetAccessAsync(entry))
         {
-            _logger.LogError("User {0} can't get shared info for {1} {2}", _authContext.CurrentAccount.ID, entry.FileEntryType == FileEntryType.File ? "file" : "folder", entry.Id);
+            _logger.LogError("User {userId} can't get shared info for {fileEntryType} {entryId}", _authContext.CurrentAccount.ID, entry.FileEntryType == FileEntryType.File ? "file" : "folder", entry.Id);
 
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
         }

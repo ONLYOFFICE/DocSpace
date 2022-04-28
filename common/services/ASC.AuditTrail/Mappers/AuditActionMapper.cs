@@ -53,7 +53,7 @@ public class AuditActionMapper
         var action = (MessageAction)evt.Action;
         if (!_actions.ContainsKey(action))
         {
-            _logger.LogError("There is no action text for \"{0}\" type of event", action);
+            _logger.LogError("There is no action text for \"{action}\" type of event", action);
 
             return string.Empty;
         }

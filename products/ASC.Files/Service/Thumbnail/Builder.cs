@@ -109,7 +109,7 @@ public class Builder<T>
             var fileDao = _daoFactory.GetFileDao<T>();
             if (fileDao == null)
             {
-                _logger.LogError("BuildThumbnail: TenantId: {0}. FileDao could not be null.", fileData.TenantId);
+                _logger.LogError("BuildThumbnail: TenantId: {tenantId}. FileDao could not be null.", fileData.TenantId);
 
                 return;
             }
@@ -118,7 +118,7 @@ public class Builder<T>
         }
         catch (Exception exception)
         {
-            _logger.LogError(exception, string.Format("BuildThumbnail: TenantId: {0}.", fileData.TenantId));
+            _logger.LogError(exception, string.Format("BuildThumbnail: TenantId: {tenantId}.", fileData.TenantId));
         }
         finally
         {
@@ -136,14 +136,14 @@ public class Builder<T>
 
             if (file == null)
             {
-                _logger.LogError("GenerateThumbnail: FileId: {0}. File not found.", fileData.FileId);
+                _logger.LogError("GenerateThumbnail: FileId: {fileId}. File not found.", fileData.FileId);
 
                 return;
             }
 
             if (file.ThumbnailStatus != Thumbnail.Waiting)
             {
-                _logger.LogInformation("GenerateThumbnail: FileId: {0}. Thumbnail already processed.", fileData.FileId);
+                _logger.LogInformation("GenerateThumbnail: FileId: {fileId}. Thumbnail already processed.", fileData.FileId);
 
                 return;
             }
@@ -180,7 +180,7 @@ public class Builder<T>
 
     private async Task MakeThumbnail(IFileDao<T> fileDao, File<T> file)
     {
-        _logger.LogDebug("MakeThumbnail: FileId: {0}.", file.Id);
+        _logger.LogDebug("MakeThumbnail: FileId: {fileId}.", file.Id);
 
         string thumbnailUrl = null;
         var attempt = 1;
@@ -222,7 +222,7 @@ public class Builder<T>
             }
             else
             {
-                _logger.LogDebug("MakeThumbnail: FileId: {0}. Sleep {1} after attempt #{2}. ", file.Id, _config.AttemptWaitInterval, attempt);
+                _logger.LogDebug("MakeThumbnail: FileId: {fileId}. Sleep {sleep} after attempt #{attempt}. ", file.Id, _config.AttemptWaitInterval, attempt);
                 attempt++;
             }
 
@@ -277,7 +277,7 @@ public class Builder<T>
 
     private async Task SaveThumbnail(IFileDao<T> fileDao, File<T> file, string thumbnailUrl)
     {
-        _logger.LogDebug("SaveThumbnail: FileId: {0}. ThumbnailUrl {1}.", file.Id, thumbnailUrl);
+        _logger.LogDebug("SaveThumbnail: FileId: {fileId}. ThumbnailUrl {url}.", file.Id, thumbnailUrl);
 
         using var request = new HttpRequestMessage();
         request.RequestUri = new Uri(thumbnailUrl);
@@ -289,7 +289,7 @@ public class Builder<T>
             await Crop(fileDao, file, stream);
         }
 
-        _logger.LogDebug("SaveThumbnail: FileId: {0}. Successfully saved.", file.Id);
+        _logger.LogDebug("SaveThumbnail: FileId: {fileId}. Successfully saved.", file.Id);
     }
 
     private bool IsImage(File<T> file)
@@ -301,14 +301,14 @@ public class Builder<T>
 
     private async Task CropImage(IFileDao<T> fileDao, File<T> file)
     {
-        _logger.LogDebug("CropImage: FileId: {0}.", file.Id);
+        _logger.LogDebug("CropImage: FileId: {fileId}.", file.Id);
 
         using (var stream = await fileDao.GetFileStreamAsync(file))
         {
             await Crop(fileDao, file, stream);
         }
 
-        _logger.LogDebug("CropImage: FileId: {0}. Successfully saved.", file.Id);
+        _logger.LogDebug("CropImage: FileId: {fileId}. Successfully saved.", file.Id);
     }
 
     private async Task Crop(IFileDao<T> fileDao, File<T> file, Stream stream)

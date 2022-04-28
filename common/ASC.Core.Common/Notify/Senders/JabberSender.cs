@@ -56,8 +56,7 @@ public class JabberSender : INotifySender
         }
         catch (Exception e)
         {
-            _logger.LogError("Unexpected error, {0}, {1}, {2}",
-                   e.Message, e.StackTrace, e.InnerException != null ? e.InnerException.Message : string.Empty);
+            _logger.LogError(e, "Unexpected error");
         }
 
         return NoticeSendResult.OK;

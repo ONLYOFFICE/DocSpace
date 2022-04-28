@@ -153,7 +153,7 @@ public class DbHelper : IDisposable
         }
         catch (Exception error)
         {
-            _logger.LogError("Table {0}: {1}", table, error);
+            _logger.LogError(error, "Table {table}", table);
             throw;
         }
     }
@@ -226,7 +226,7 @@ public class DbHelper : IDisposable
         }
         catch (Exception e)
         {
-            _logger.LogError("Table {0}: {1}", table, e);
+            _logger.LogError(e, "Table {table}", table);
         }
     }
 

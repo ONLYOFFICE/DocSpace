@@ -84,7 +84,7 @@ public class ReassignProgressItem : DistributedTaskProgress
 
             securityContext.AuthenticateMeWithoutCookie(_currentUserId);
 
-            logger.LogInformation("reassignment of data from {0} to {1}", FromUser, ToUser);
+            logger.LogInformation("reassignment of data from {fromUser} to {toUser}", FromUser, ToUser);
 
             logger.LogInformation("reassignment of data from documents");
 

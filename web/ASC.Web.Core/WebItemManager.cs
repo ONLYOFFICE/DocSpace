@@ -175,7 +175,7 @@ public class WebItemManager
             }
 
             result.TryAdd(webitem.ID, webitem);
-            _log.LogDebug("Web item {0} loaded", webitem.Name);
+            _log.LogDebug("Web item {webitem} loaded", webitem.Name);
         }
     }
 

@@ -74,7 +74,7 @@ public class ThumbnailBuilderService : BackgroundService
 
         if (filesWithoutThumbnails.Count == 0)
         {
-            _logger.LogTrace("Procedure: Waiting for data. Sleep {0}.", _thumbnailSettings.LaunchFrequency);
+            _logger.LogTrace("Procedure: Waiting for data. Sleep {frequency}.", _thumbnailSettings.LaunchFrequency);
 
             await Task.Delay(TimeSpan.FromSeconds(_thumbnailSettings.LaunchFrequency), stoppingToken);
 

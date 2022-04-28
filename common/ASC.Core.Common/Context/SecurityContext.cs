@@ -108,7 +108,7 @@ public class SecurityContext
                     ipFrom = "from " + (request.Headers["X-Forwarded-For"].ToString() ?? request.GetUserHostAddress());
                     address = "for " + request.GetUrlRewriter();
                 }
-                _logger.LogInformation("Empty Bearer cookie: {0} {1}", ipFrom, address);
+                _logger.LogInformation("Empty Bearer cookie: {ipFrom} {address}", ipFrom, address);
             }
             else if (_cookieStorage.DecryptCookie(cookie, out var tenant, out var userid, out var indexTenant, out var expire, out var indexUser))
             {
@@ -142,15 +142,15 @@ public class SecurityContext
                 }
                 catch (InvalidCredentialException ice)
                 {
-                    _logger.LogDebug("{0}: cookie {1}, tenant {2}, userid {3}", ice.Message, cookie, tenant, userid);
+                    _logger.LogDebug(ice, "cookie {cookie}, tenant {tenant}, userid {userid}", cookie, tenant, userid);
                 }
                 catch (SecurityException se)
                 {
-                    _logger.LogDebug("{0}: cookie {1}, tenant {2}, userid {3}", se.Message, cookie, tenant, userid);
+                    _logger.LogDebug(se, "cookie {cookie}, tenant {tenant}, userid {userid}", cookie, tenant, userid);
                 }
                 catch (Exception err)
                 {
-                    _logger.LogError("Authenticate error: cookie {0}, tenant {1}, userid {2}, : {3}", cookie, tenant, userid, err);
+                    _logger.LogError(err, "Authenticate error: cookie {cookie}, tenant {tenant}, userid {userid}", cookie, tenant, userid);
                 }
             }
             else
@@ -167,7 +167,7 @@ public class SecurityContext
                     ipFrom = "from " + (request.Headers["X-Forwarded-For"].ToString() ?? request.GetUserHostAddress());
                 }
 
-                _logger.LogWarning("Can not decrypt cookie: {0} {1} {2}", cookie, ipFrom, address);
+                _logger.LogWarning("Can not decrypt cookie: {cookie} {ipFrom} {address}", cookie, ipFrom, address);
             }
         }
 

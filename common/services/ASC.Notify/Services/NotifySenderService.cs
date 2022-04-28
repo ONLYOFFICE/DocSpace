@@ -114,7 +114,7 @@ public class NotifySenderService : BackgroundService
                         result = MailSendingState.FatalError;
                     }
 
-                    _logger.LogDebug("Notify #{0} has been sent.", m.Key);
+                    _logger.LogDebug("Notify #{id} has been sent.", m.Key);
                 }
                 catch (Exception e)
                 {

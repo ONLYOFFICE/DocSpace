@@ -137,7 +137,7 @@ public class TimeZoneConverter
                     return TimeZoneInfo.FindSystemTimeZoneById(mapZone.OlsonTimeZoneId);
                 }
 
-                _logger.LogInformation("TimeZone {0} not found", timeZoneId);
+                _logger.LogInformation("TimeZone {timeZoneId} not found", timeZoneId);
 
                 return defaultIfNoMatch ? GetTimeZoneByOffset(timeZoneId) ?? defaultTimezone : null;
             }

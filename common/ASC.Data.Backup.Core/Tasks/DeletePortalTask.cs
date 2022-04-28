@@ -43,7 +43,7 @@ public class DeletePortalTask : PortalTaskBase
 
     public override void RunJob()
     {
-        Logger.LogDebug("begin delete {0}", TenantId);
+        Logger.LogDebug("begin delete {tenantId}", TenantId);
         var modulesToProcess = GetModulesToProcess().Reverse().ToList();
         SetStepsCount(ProcessStorage ? modulesToProcess.Count + 1 : modulesToProcess.Count);
 
@@ -57,12 +57,12 @@ public class DeletePortalTask : PortalTaskBase
             DoDeleteStorage();
         }
 
-        Logger.LogDebug("end delete {0}", TenantId);
+        Logger.LogDebug("end delete {tenantId}", TenantId);
     }
 
     private void DoDeleteModule(IModuleSpecifics module)
     {
-        Logger.LogDebug("begin delete data for module ({0})", module.ModuleName);
+        Logger.LogDebug("begin delete data for module ({name})", module.ModuleName);
         var tablesCount = module.Tables.Count();
         var tablesProcessed = 0;
         using (var connection = DbFactory.OpenConnection())
@@ -78,7 +78,7 @@ public class DeletePortalTask : PortalTaskBase
             }
         }
 
-        Logger.LogDebug("end delete data for module ({0})", module.ModuleName);
+        Logger.LogDebug("end delete data for module ({name})", module.ModuleName);
     }
 
     private void DoDeleteStorage()
@@ -93,7 +93,7 @@ public class DeletePortalTask : PortalTaskBase
             foreach (var domain in domains)
             {
                 ActionInvoker.Try(state => storage.DeleteFilesAsync((string)state, "\\", "*.*", true).Wait(), domain, 5,
-                              onFailure: error => Logger.LogWarning("Can't delete files for domain {0}: \r\n{1}", domain, error));
+                              onFailure: error => Logger.LogWarning(error, "Can't delete files for domain {domain}", domain));
             }
             storage.DeleteFilesAsync("\\", "*.*", true).Wait();
             SetCurrentStepProgress((int)(++modulesProcessed * 100 / (double)storageModules.Count));

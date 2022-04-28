@@ -129,7 +129,7 @@ public class NotifyService : IHostedService
         _notifyConfiguration.Configure();
         foreach (var pair in _notifyServiceCfg.Schedulers.Where(r => r.MethodInfo != null))
         {
-            _logger.LogDebug("Start scheduler {0} ({1})", pair.Name, pair.MethodInfo);
+            _logger.LogDebug("Start scheduler {notifyInfo} ({notifyMethodIndo})", pair.Name, pair.MethodInfo);
             pair.MethodInfo.Invoke(null, null);
         }
     }

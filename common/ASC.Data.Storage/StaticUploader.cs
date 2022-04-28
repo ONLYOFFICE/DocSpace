@@ -209,7 +209,7 @@ public class UploadOperation
                 }
                 var uri = await dataStore.GetInternalUriAsync("", path, TimeSpan.Zero, null);
                 Result = uri.AbsoluteUri.ToLower();
-                _logger.LogDebug("UploadFile {0}", Result);
+                _logger.LogDebug("UploadFile {result}", Result);
                 return Result;
             }
         }

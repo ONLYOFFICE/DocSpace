@@ -83,14 +83,14 @@ public class FileBackupProvider : IBackupProvider
                         errors++;
                         if (20 < errors)
                         {
-                            _logger.LogError("Can not backup file {0}: {1}", file.Path, error);
+                            _logger.LogError(error, "Can not backup file {path}", file.Path);
                             break;
                         }
                     }
                 }
                 elements.Add(file.ToXElement());
                 backupKeys.Add(backupPath);
-                _logger.LogDebug("Backup file {0}", file.Path);
+                _logger.LogDebug("Backup file {path}", file.Path);
             }
             InvokeProgressChanged("Saving file " + file.Path, counter++ / totalCount * 100);
         }
@@ -119,7 +119,7 @@ public class FileBackupProvider : IBackupProvider
                     }
                     catch (Exception error)
                     {
-                        _logger.LogError("Can not restore file {0}: {1}", file, error);
+                        _logger.LogError(error, "Can not restore file {0}", file);
                     }
                 }
                 InvokeProgressChanged("Restoring file " + backupInfo.Path, current++ / files.Count() * 100);

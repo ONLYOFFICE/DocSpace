@@ -61,7 +61,7 @@ public class SmsSender
             var tenant = _tenantManager.GetCurrentTenant(false);
             var tenantId = tenant == null ? Tenant.DefaultTenant : tenant.Id;
 
-            _log.LogInformation("Tenant {0} send sms to phoneNumber {1} {2}", tenantId, number, message);
+            _log.LogInformation("Tenant {tenantId} send sms to phoneNumber {number} {message}", tenantId, number, message);
             return Task.FromResult(false);
         }
 

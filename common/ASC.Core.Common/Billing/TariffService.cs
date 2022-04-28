@@ -650,10 +650,7 @@ public class TariffService : ITariffService
         }
         catch (ReflectionTypeLoadException rtle)
         {
-            Logger.LogError("{0}{1}LoaderExceptions: {2}",
-                rtle,
-                Environment.NewLine,
-                string.Join(Environment.NewLine, rtle.LoaderExceptions.Select(e => e.ToString())));
+            Logger.LogError(rtle, "LoaderExceptions: {exception}", string.Join(Environment.NewLine, rtle.LoaderExceptions.Select(e => e.ToString())));
             throw;
         }
     }
@@ -694,21 +691,21 @@ public class TariffService : ITariffService
     {
         if (error is BillingNotFoundException)
         {
-            Logger.LogDebug("Payment tenant {0} not found: {1}", tenantId, error.Message);
+            Logger.LogDebug("Payment tenant {tenantId} not found: {message}", tenantId, error.Message);
         }
         else if (error is BillingNotConfiguredException)
         {
-            Logger.LogDebug("Billing tenant {0} not configured: {1}", tenantId, error.Message);
+            Logger.LogDebug("Billing tenant {tenantId} not configured: {message}", tenantId, error.Message);
         }
         else
         {
             if (Logger.IsEnabled(LogLevel.Debug))
             {
-                Logger.LogError(error, "Billing tenant " + tenantId);
+                Logger.LogError(error, "Billing tenant {tenantId}", tenantId);
             }
             else
             {
-                Logger.LogError("Billing tenant {0}: {1}", tenantId, error.Message);
+                Logger.LogError("Billing tenant {tenantId}: {message}", tenantId, error.Message);
             }
         }
     }

@@ -363,8 +363,7 @@ public class SignalrServiceClient
 
     private void ProcessError(Exception e)
     {
-        _logger.LogError("Service Error: {0}, {1}, {2}", e.Message, e.StackTrace,
-            (e.InnerException != null) ? e.InnerException.Message : string.Empty);
+        _logger.LogError(e, "Service Error");
 
         if (e is HttpRequestException)
         {
@@ -385,7 +384,7 @@ public class SignalrServiceClient
         request.RequestUri = new Uri(GetMethod(method));
 
         var jsonData = JsonConvert.SerializeObject(data);
-        _logger.LogDebug("Method:{0}, Data:{1}", method, jsonData);
+        _logger.LogDebug("Method:{method}, Data:{data}", method, jsonData);
 
         request.Content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 

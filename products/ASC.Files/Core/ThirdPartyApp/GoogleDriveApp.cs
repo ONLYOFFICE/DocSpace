@@ -171,7 +171,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
 
     public File<string> GetFile(string fileId, out bool editable)
     {
-        _logger.LogDebug("GoogleDriveApp: get file " + fileId);
+        _logger.LogDebug("GoogleDriveApp: get file {fileId}", fileId);
         fileId = ThirdPartySelector.GetFileId(fileId);
 
         var token = _tokenHelper.GetToken(AppAttr);
@@ -219,7 +219,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
 
     private string GetFileStreamUrl(string fileId)
     {
-        _logger.LogDebug("GoogleDriveApp: get file stream url " + fileId);
+        _logger.LogDebug("GoogleDriveApp: get file stream url {fileId}", fileId);
 
         var uriBuilder = new UriBuilder(_baseCommonLinkUtility.GetFullAbsolutePath(_thirdPartyAppHandlerService.HandlerPath));
         if (uriBuilder.Uri.IsLoopback)
@@ -239,10 +239,10 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
 
     public async Task SaveFileAsync(string fileId, string fileType, string downloadUrl, Stream stream)
     {
-        _logger.LogDebug("GoogleDriveApp: save file stream " + fileId +
+        _logger.LogDebug("GoogleDriveApp: save file stream {fileId}" +
                             (stream == null
                                  ? " from - " + downloadUrl
-                                 : " from stream"));
+                                 : " from stream"), fileId);
         fileId = ThirdPartySelector.GetFileId(fileId);
 
         var token = _tokenHelper.GetToken(AppAttr);
@@ -267,7 +267,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
                     downloadUrl = _documentServiceConnector.ReplaceCommunityAdress(downloadUrl);
                 }
 
-                _logger.LogDebug("GoogleDriveApp: GetConvertedUri from " + fileType + " to " + currentType + " - " + downloadUrl);
+                _logger.LogDebug("GoogleDriveApp: GetConvertedUri from {fileType} to {currentType} - {downloadUrl}", fileType, currentType, downloadUrl);
 
                 var key = DocumentServiceConnector.GenerateRevisionId(downloadUrl);
 
@@ -315,7 +315,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
                 result = await readStream.ReadToEndAsync();
             }
 
-            _logger.LogDebug("GoogleDriveApp: save file stream response - " + result);
+            _logger.LogDebug("GoogleDriveApp: save file stream response - {result}", result);
         }
         catch (HttpRequestException e)
         {
@@ -332,7 +332,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
     private async Task RequestCodeAsync(HttpContext context)
     {
         var state = context.Request.Query["state"];
-        _logger.LogDebug("GoogleDriveApp: state - " + state);
+        _logger.LogDebug("GoogleDriveApp: state - {state}", state);
         if (string.IsNullOrEmpty(state))
         {
             _logger.LogError("GoogleDriveApp: empty state");
@@ -356,7 +356,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
         {
             if (!CurrentUser(googleUserId))
             {
-                _logger.LogDebug("GoogleDriveApp: logout for " + googleUserId);
+                _logger.LogDebug("GoogleDriveApp: logout for {googleUserId}", googleUserId);
                 _cookiesManager.ClearCookies(CookiesType.AuthKey);
                 _authContext.Logout();
             }
@@ -454,7 +454,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
             var auth = context.Request.Query[FilesLinkUtility.AuthKey];
             var userId = context.Request.Query[CommonLinkUtility.ParamName_UserUserID];
 
-            _logger.LogDebug("GoogleDriveApp: get file stream " + fileId);
+            _logger.LogDebug("GoogleDriveApp: get file stream {fileId}", fileId);
 
             var validateResult = _emailValidationKeyProvider.ValidateEmailKey(fileId + userId, auth, _global.StreamUrlExpire);
             if (validateResult != EmailValidationKeyProvider.ValidationResult.Ok)
@@ -493,7 +493,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
                 throw new Exception("downloadUrl is null");
             }
 
-            _logger.LogDebug("GoogleDriveApp: get file stream downloadUrl - " + downloadUrl);
+            _logger.LogDebug("GoogleDriveApp: get file stream downloadUrl - {downloadUrl}", downloadUrl);
 
             var request = new HttpRequestMessage
             {
@@ -508,7 +508,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
             await stream.CopyToAsync(context.Response.Body);
 
             var contentLength = jsonFile.Value<string>("size");
-            _logger.LogDebug("GoogleDriveApp: get file stream contentLength - " + contentLength);
+            _logger.LogDebug("GoogleDriveApp: get file stream contentLength - {contentLength}", contentLength);
             context.Response.Headers.Add("Content-Length", contentLength);
         }
         catch (Exception ex)
@@ -533,7 +533,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
     private async Task ConfirmConvertFileAsync(HttpContext context)
     {
         var fileId = context.Request.Query[FilesLinkUtility.FileId];
-        _logger.LogDebug("GoogleDriveApp: ConfirmConvertFile - " + fileId);
+        _logger.LogDebug("GoogleDriveApp: ConfirmConvertFile - {fileId}", fileId);
 
         var token = _tokenHelper.GetToken(AppAttr);
 
@@ -554,7 +554,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
     {
         var folderId = context.Request.Query[FilesLinkUtility.FolderId];
         var fileName = context.Request.Query[FilesLinkUtility.FileTitle];
-        _logger.LogDebug("GoogleDriveApp: CreateFile folderId - " + folderId + " fileName - " + fileName);
+        _logger.LogDebug("GoogleDriveApp: CreateFile folderId - {folderId} fileName - {fileName}", folderId, fileName);
 
         var token = _tokenHelper.GetToken(AppAttr);
 
@@ -593,7 +593,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
     {
         try
         {
-            _logger.LogDebug("GoogleDriveApp: GetAccessToken by code " + code);
+            _logger.LogDebug("GoogleDriveApp: GetAccessToken by code {code}", code);
             var token = _oAuth20TokenHelper.GetAccessToken<GoogleDriveApp>(ConsumerFactory, code);
 
             return new Token(token, AppAttr);
@@ -617,7 +617,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
 
     private void AddLinker(string googleUserId)
     {
-        _logger.LogDebug("GoogleDriveApp: AddLinker " + googleUserId);
+        _logger.LogDebug("GoogleDriveApp: AddLinker {googleUserId}", googleUserId);
         var linker = _snapshot.Get("webstudio");
         linker.AddLink(_authContext.CurrentAccount.ID.ToString(), googleUserId, ProviderConstants.Google);
     }
@@ -667,7 +667,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
             }
             else
             {
-                _logger.LogDebug("From google app new personal user '{0}' without culture {1}", userInfo.Email, cultureName);
+                _logger.LogDebug("From google app new personal user '{email}' without culture {culture}", userInfo.Email, cultureName);
             }
 
             try
@@ -682,7 +682,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
 
             isNew = true;
 
-            _logger.LogDebug("GoogleDriveApp: new user " + userInfo.Id);
+            _logger.LogDebug("GoogleDriveApp: new user {userId}", userInfo.Id);
         }
 
         return userInfo;
@@ -701,7 +701,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
             var requestUrl = GoogleLoginProvider.GoogleUrlFile + googleFileId + "?fields=" + HttpUtility.UrlEncode(GoogleLoginProvider.FilesFields);
             var resultResponse = _requestHelper.PerformRequest(requestUrl,
                                                           headers: new Dictionary<string, string> { { "Authorization", "Bearer " + token } });
-            _logger.LogDebug("GoogleDriveApp: file response - " + resultResponse);
+            _logger.LogDebug("GoogleDriveApp: file response - {response}", resultResponse);
 
             return resultResponse;
         }
@@ -721,7 +721,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
             throw new Exception("downloadUrl is null");
         }
 
-        _logger.LogDebug("GoogleDriveApp: create from - " + contentUrl);
+        _logger.LogDebug("GoogleDriveApp: create from - {url}", contentUrl);
 
         var request = new HttpRequestMessage
         {
@@ -770,7 +770,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
             request.Headers.Add("Authorization", "Bearer " + token);
             request.Content.Headers.ContentType = new MediaTypeHeaderValue("multipart/related; boundary=" + boundary);
 
-            _logger.LogDebug("GoogleDriveApp: create file totalSize - " + tmpStream.Length);
+            _logger.LogDebug("GoogleDriveApp: create file totalSize - {size}", tmpStream.Length);
 
             request.Content = new StreamContent(tmpStream);
         }
@@ -786,7 +786,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
                 result = await readStream.ReadToEndAsync();
             }
 
-            _logger.LogDebug("GoogleDriveApp: create file response - " + result);
+            _logger.LogDebug("GoogleDriveApp: create file response - {response}", result);
 
             return result;
         }
@@ -812,7 +812,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
         var toExt = _fileUtility.GetInternalExtension(fromExt);
         try
         {
-            _logger.LogDebug("GoogleDriveApp: GetConvertedUri- " + downloadUrl);
+            _logger.LogDebug("GoogleDriveApp: GetConvertedUri- {downloadUrl}", downloadUrl);
 
             var key = DocumentServiceConnector.GenerateRevisionId(downloadUrl);
 
@@ -835,7 +835,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
 
         var folderId = (string)jsonFile.SelectToken("parents[0]");
 
-        _logger.LogInformation("GoogleDriveApp: create copy - " + fileName);
+        _logger.LogInformation("GoogleDriveApp: create copy - {fileName}", fileName);
 
         var ext = GetCorrectExt(jsonFile);
         var fileId = jsonFile.Value<string>("id");
@@ -857,7 +857,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
             };
             request.Headers.Add("Authorization", "Bearer " + token);
 
-            _logger.LogDebug("GoogleDriveApp: download exportLink - " + downloadUrl);
+            _logger.LogDebug("GoogleDriveApp: download exportLink - {downloadUrl}", downloadUrl);
             try
             {
                 using var response = await httpClient.SendAsync(request);
@@ -880,7 +880,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
 
             if (string.IsNullOrEmpty(convertedUrl))
             {
-                _logger.LogError("GoogleDriveApp: Error convertUrl. size {0}", FileSizeComment.FilesSizeToString(jsonFile.Value<int>("size")));
+                _logger.LogError("GoogleDriveApp: Error convertUrl. size {size}", FileSizeComment.FilesSizeToString(jsonFile.Value<int>("size")));
 
                 throw new Exception(FilesCommonResource.ErrorMassage_DocServiceException + " (convert)");
             }
@@ -929,7 +929,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
                 {
                     ext = MimeMapping.GetExtention(mimeType);
 
-                    _logger.LogDebug("GoogleDriveApp: Try GetCorrectExt - " + ext + " for - " + mimeType);
+                    _logger.LogDebug("GoogleDriveApp: Try GetCorrectExt - {ext} for - {mimeType}", ext, mimeType);
                 }
             }
         }

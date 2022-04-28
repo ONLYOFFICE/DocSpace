@@ -40,7 +40,7 @@ public class DispatchEngine
         _messagesLogger = options.CreateLogger("ASC.Notify.Messages");
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _logOnly = "log".Equals(configuration["core:notify:postman"], StringComparison.InvariantCultureIgnoreCase);
-        _logger.LogDebug("LogOnly: {0}", _logOnly);
+        _logger.LogDebug("LogOnly: {LogOnly}", _logOnly);
     }
 
     public SendResponse Dispatch(INoticeMessage message, string senderName)
@@ -89,14 +89,14 @@ public class DispatchEngine
         {
             if (_messagesLogger.IsEnabled(LogLevel.Debug))
             {
-                _messagesLogger.LogDebug("[{5}]->[{1}] by [{6}] to [{2}] at {0}\r\n\r\n[{3}]\r\n{4}\r\n{7}",
-                    DateTime.Now,
+                _messagesLogger.LogDebug("[{action}]->[{recipient}] by [{senderName}] to [{address}] at {date}\r\n\r\n[{subject}]\r\n{body}\r\n{dots}",
+                    message.Action,
                     message.Recipient.Name,
+                    senderName,
                     0 < message.Recipient.Addresses.Length ? message.Recipient.Addresses[0] : string.Empty,
+                    DateTime.Now,
                     message.Subject,
                     (message.Body ?? string.Empty).Replace(Environment.NewLine, Environment.NewLine + @"   "),
-                    message.Action,
-                    senderName,
                     new string('-', 80));
             }
         }

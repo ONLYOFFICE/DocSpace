@@ -209,7 +209,7 @@ public class FileHandlerService
 
         if (!await store.IsFileAsync(FileConstant.StorageDomainTmp, path))
         {
-            _logger.LogError("BulkDownload file error. File is not exist on storage. UserId: {0}.", _authContext.CurrentAccount.ID);
+            _logger.LogError("BulkDownload file error. File is not exist on storage. UserId: {userId}.", _authContext.CurrentAccount.ID);
             context.Response.StatusCode = (int)HttpStatusCode.NotFound;
             return;
         }
@@ -308,7 +308,7 @@ public class FileHandlerService
 
             if (!await fileDao.IsExistOnStorageAsync(file))
             {
-                _logger.LogError("Download file error. File is not exist on storage. File id: {0}.", file.Id);
+                _logger.LogError("Download file error. File is not exist on storage. File id: {fileId}.", file.Id);
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
 
                 return;
@@ -364,7 +364,7 @@ public class FileHandlerService
                             {
                                 fileStream = await fileDao.GetFileStreamAsync(file);
 
-                                _logger.LogInformation("Converting {0} (fileId: {1}) to mp4", file.Title, file.Id);
+                                _logger.LogInformation("Converting {fileTitle} (fileId: {fileId}) to mp4", file.Title, file.Id);
                                 var stream = await _fFmpegService.Convert(fileStream, ext);
                                 await store.SaveAsync(string.Empty, mp4Path, stream, mp4Name);
                             }
@@ -477,7 +477,7 @@ public class FileHandlerService
             // Get the line number from the stack frame
             var line = frame.GetFileLineNumber();
 
-            _logger.LogError("Url: {0} {1} IsClientConnected:{2}, line number:{3} frame:{4}", context.Request.Url(), ex, !context.RequestAborted.IsCancellationRequested, line, frame);
+            _logger.LogError(ex, "Url: {0} IsClientConnected:{1}, line number:{2} frame:{3}", context.Request.Url(), !context.RequestAborted.IsCancellationRequested, line, frame);
             if (!flushed && !context.RequestAborted.IsCancellationRequested)
             {
                 context.Response.StatusCode = 400;
@@ -518,7 +518,7 @@ public class FileHandlerService
             throw new HttpException(HttpStatusCode.RequestedRangeNotSatisfiable);
         }
 
-        _logger.LogInformation("Starting file download (chunk {0}-{1})", offset, endOffset);
+        _logger.LogInformation("Starting file download (chunk {offset}-{endOffset})", offset, endOffset);
         if (length < fullLength)
         {
             context.Response.StatusCode = (int)HttpStatusCode.PartialContent;
@@ -609,7 +609,7 @@ public class FileHandlerService
 
                         var stringPayload = JsonWebToken.Decode(header, _fileUtility.SignatureSecret);
 
-                        _logger.LogDebug("DocService StreamFile payload: " + stringPayload);
+                        _logger.LogDebug("DocService StreamFile payload: {payload}", stringPayload);
                         //var data = JObject.Parse(stringPayload);
                         //if (data == null)
                         //{
@@ -693,7 +693,7 @@ public class FileHandlerService
         }
         catch (HttpException he)
         {
-            _logger.LogError("StreamFile", (object)he);
+            _logger.LogError(he, "StreamFile");
         }
     }
 
@@ -716,7 +716,7 @@ public class FileHandlerService
 
                     var stringPayload = JsonWebToken.Decode(header, _fileUtility.SignatureSecret);
 
-                    _logger.LogDebug("DocService EmptyFile payload: " + stringPayload);
+                    _logger.LogDebug("DocService EmptyFile payload: {payload}", stringPayload);
                     //var data = JObject.Parse(stringPayload);
                     //if (data == null)
                     //{
@@ -786,7 +786,7 @@ public class FileHandlerService
         }
         catch (HttpException he)
         {
-            _logger.LogError("EmptyFile", (object)he);
+            _logger.LogError(he, "EmptyFile");
         }
     }
 
@@ -838,7 +838,7 @@ public class FileHandlerService
         }
         catch (HttpException he)
         {
-            _logger.LogError("TempFile", (object)he);
+            _logger.LogError(he, "TempFile");
         }
     }
 
@@ -933,7 +933,7 @@ public class FileHandlerService
         }
         catch (HttpException he)
         {
-            _logger.LogError("DifferenceFile", (object)he);
+            _logger.LogError(he, "DifferenceFile");
         }
     }
 
@@ -1016,7 +1016,7 @@ public class FileHandlerService
         }
         catch (HttpException he)
         {
-            _logger.LogError("Thumbnail", (object)he);
+            _logger.LogError(he, "Thumbnail");
         }
     }
 
@@ -1298,13 +1298,13 @@ public class FileHandlerService
     private Task TrackFile<T>(HttpContext context, T fileId)
     {
         var auth = context.Request.Query[FilesLinkUtility.AuthKey].FirstOrDefault();
-        _logger.LogDebug("DocService track fileid: " + fileId);
+        _logger.LogDebug("DocService track fileid: {fileId}", fileId);
 
         var callbackSpan = TimeSpan.FromDays(128);
         var validateResult = _emailValidationKeyProvider.ValidateEmailKey(fileId.ToString(), auth ?? "", callbackSpan);
         if (validateResult != EmailValidationKeyProvider.ValidationResult.Ok)
         {
-            _logger.LogError("DocService track auth error: {0}, {1}: {2}", validateResult.ToString(), FilesLinkUtility.AuthKey, auth);
+            _logger.LogError("DocService track auth error: {validateResult}, {authKey}: {auth}", validateResult.ToString(), FilesLinkUtility.AuthKey, auth);
             throw new HttpException((int)HttpStatusCode.Forbidden, FilesCommonResource.ErrorMassage_SecurityException);
         }
 
@@ -1321,7 +1321,7 @@ public class FileHandlerService
             using var readStream = new StreamReader(receiveStream);
             body = await readStream.ReadToEndAsync();
 
-            _logger.LogDebug("DocService track body: " + body);
+            _logger.LogDebug("DocService track body: {body}", body);
             if (string.IsNullOrEmpty(body))
             {
                 throw new ArgumentException("DocService request body is incorrect");
@@ -1380,7 +1380,7 @@ public class FileHandlerService
                 {
                     var stringPayload = JsonWebToken.Decode(header, _fileUtility.SignatureSecret);
 
-                    _logger.LogDebug("DocService track payload: " + stringPayload);
+                    _logger.LogDebug("DocService track payload: {payload}", stringPayload);
                     var jsonPayload = JObject.Parse(stringPayload);
                     var data = jsonPayload["payload"];
                     if (data == null)

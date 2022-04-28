@@ -99,8 +99,8 @@ public class CookieStorage
         }
         catch (Exception err)
         {
-            _logger.LogError("Authenticate error: cookie {0}, tenant {1}, userid {2}, indexTenant {3}, expire {4}: {5}",
-                        cookie, tenant, userid, indexTenant, expire.ToString(DateTimeFormat), err);
+            _logger.LogError(err, "Authenticate error: cookie {cookie}, tenant {tenant}, userid {userid}, indexTenant {indexTenant}, expire {expire}",
+                        cookie, tenant, userid, indexTenant, expire.ToString(DateTimeFormat));
         }
 
         return false;

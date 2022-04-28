@@ -74,7 +74,7 @@ public class BackupWorker
 
         if (invalidConfigPath != null)
         {
-            _logger.LogWarning("Configuration file {0} not found", invalidConfigPath);
+            _logger.LogWarning("Configuration file {invalidConfigPath} not found", invalidConfigPath);
         }
     }
 

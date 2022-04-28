@@ -106,7 +106,7 @@ public class FFmpegService
                     if (File.Exists(path))
                     {
                         _fFmpegPath = path;
-                        _logger.LogInformation("FFmpeg found in {0}", path);
+                        _logger.LogInformation("FFmpeg found in {path}", path);
 
                         break;
                     }

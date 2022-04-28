@@ -110,12 +110,12 @@ public class IPSecurity
         }
         catch (Exception ex)
         {
-            _logger.LogError("Can't verify request with IP-address: {0}. Tenant: {1}. Error: {2} ", requestIps ?? "", tenant, ex);
+            _logger.LogError(ex, "Can't verify request with IP-address: {requestIps}. Tenant: {tenant}.", requestIps ?? "", tenant);
 
             return false;
         }
 
-        _logger.LogInformation("Restricted from IP-address: {0}. Tenant: {1}. Request to: {2}", requestIps ?? "", tenant, _httpContextAccessor.HttpContext.Request.GetDisplayUrl());
+        _logger.LogInformation("Restricted from IP-address: {ip}. Tenant: {tenant}. Request to: {url}", requestIps ?? "", tenant, _httpContextAccessor.HttpContext.Request.GetDisplayUrl());
 
         return false;
     }

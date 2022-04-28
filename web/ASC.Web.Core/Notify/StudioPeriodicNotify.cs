@@ -323,13 +323,13 @@ public class StudioPeriodicNotify
                         {
                             try
                             {
-                                _log.LogInformation("start CreateCoupon to {0}", tenant.Alias);
+                                _log.LogInformation("start CreateCoupon to {alias}", tenant.Alias);
 
                                 coupon = SetupInfo.IsSecretEmail(_userManager.GetUsers(tenant.OwnerId).Email)
                                         ? tenant.Alias
                                             : _couponManager.CreateCoupon(_tenantManager);
 
-                                _log.LogInformation("end CreateCoupon to {0} coupon = {1}", tenant.Alias, coupon);
+                                _log.LogInformation("end CreateCoupon to {alias} coupon = {coupon}", tenant.Alias, coupon);
                             }
                             catch (AggregateException ae)
                             {
@@ -964,7 +964,7 @@ public class StudioPeriodicNotify
                 _tenantManager.SetCurrentTenant(tenant.Id);
                 var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifyHelper.NotifySource);
 
-                _log.LogInformation("Current tenant: {0}", tenant.Id);
+                _log.LogInformation("Current tenant: {tenantId}", tenant.Id);
 
                 var users = _userManager.GetUsers(EmployeeStatus.Active);
 
@@ -1033,8 +1033,8 @@ public class StudioPeriodicNotify
                         continue;
                     }
 
-                    _log.LogInformation(@"Send letter personal '{1}'  to {0} culture {2}. tenant id: {3} user culture {4} create on {5} now date {6}",
-                      user.Email, action.ID, culture, tenant.Id, user.GetCulture(), user.CreateDate, scheduleDate.Date);
+                    _log.LogInformation(@"Send letter personal '{id}' to {email} culture {culture}. tenant id: {tenantId} user culture {culture} create on {createDate} now date {scheduleDate}",
+                      action.ID, user.Email, culture, tenant.Id, user.GetCulture(), user.CreateDate, scheduleDate.Date);
 
                     sendCount++;
 
@@ -1049,7 +1049,7 @@ public class StudioPeriodicNotify
                           new TagValue(CommonTags.Footer, _coreBaseSettings.CustomMode ? "personalCustomMode" : "personal"));
                 }
 
-                _log.LogInformation("Total send count: {0}", sendCount);
+                _log.LogInformation("Total send count: {sendCount}", sendCount);
             }
             catch (Exception err)
             {

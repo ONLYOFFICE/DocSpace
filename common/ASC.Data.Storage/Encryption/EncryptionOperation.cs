@@ -78,7 +78,7 @@ public class EncryptionOperation : DistributedTaskProgress
 
             if (_encryptionSettings.Status == EncryprtionStatus.Encrypted || _encryptionSettings.Status == EncryprtionStatus.Decrypted)
             {
-                log.LogDebug("Storage already " + _encryptionSettings.Status);
+                log.LogDebug("Storage already {status}", _encryptionSettings.Status);
 
                 return;
             }
@@ -144,7 +144,7 @@ public class EncryptionOperation : DistributedTaskProgress
 
         StepDone();
 
-        log.LogDebug("Percentage: {0}", Percentage);
+        log.LogDebug("Percentage: {percentage}", Percentage);
     }
 
     private Task<List<string>> ReadProgressAsync(DiscDataStore store)
@@ -293,7 +293,7 @@ public class EncryptionOperation : DistributedTaskProgress
 
                 tenant.SetStatus(TenantStatus.Active);
                 tenantManager.SaveTenant(tenant);
-                log.LogDebug("Tenant {0} SetStatus Active", tenant.Alias);
+                log.LogDebug("Tenant {tenantAlias} SetStatus Active", tenant.Alias);
 
                 if (!_hasErrors)
                 {
@@ -307,7 +307,7 @@ public class EncryptionOperation : DistributedTaskProgress
                         {
                             notifyHelper.SendStorageDecryptionSuccess(tenant.Id);
                         }
-                        log.LogDebug("Tenant {0} SendStorageEncryptionSuccess", tenant.Alias);
+                        log.LogDebug("Tenant {tenantAlias} SendStorageEncryptionSuccess", tenant.Alias);
                     }
                 }
                 else
@@ -321,7 +321,7 @@ public class EncryptionOperation : DistributedTaskProgress
                         notifyHelper.SendStorageDecryptionError(tenant.Id);
                     }
 
-                    log.LogDebug("Tenant {0} SendStorageEncryptionError", tenant.Alias);
+                    log.LogDebug("Tenant {tenantAlias} SendStorageEncryptionError", tenant.Alias);
                 }
             }
         }

@@ -1757,7 +1757,7 @@ public class FileStorageService<T> //: IFileStorageService
             //move common thirdparty storage userFrom
             foreach (var commonProviderInfo in commonProvidersInfo)
             {
-                _logger.LogInformation("Reassign provider {0} from {1} to {2}", commonProviderInfo.ID, userFrom.Id, userTo.Id);
+                _logger.LogInformation("Reassign provider {providerId} from {fromUser} to {toUser}", commonProviderInfo.ID, userFrom.Id, userTo.Id);
                 await providerDao.UpdateProviderInfoAsync(commonProviderInfo.ID, null, null, FolderType.DEFAULT, userTo.Id);
             }
         }
@@ -1805,7 +1805,7 @@ public class FileStorageService<T> //: IFileStorageService
             //delete thirdparty storage
             foreach (var myProviderInfo in providersInfo)
             {
-                _logger.LogInformation("Delete provider {0} for {1}", myProviderInfo.ID, userId);
+                _logger.LogInformation("Delete provider {providerId} for {userId}", myProviderInfo.ID, userId);
                 await providerDao.RemoveProviderInfoAsync(myProviderInfo.ID);
             }
         }

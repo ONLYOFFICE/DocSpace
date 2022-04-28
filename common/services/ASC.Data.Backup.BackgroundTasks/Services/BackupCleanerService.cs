@@ -85,7 +85,7 @@ internal sealed class BackupCleanerService : BackgroundService
 
         var backupsToRemove = backupRepository.GetExpiredBackupRecords();
 
-        _logger.LogDebug("found {0} backups which are expired", backupsToRemove.Count);
+        _logger.LogDebug("found {count} backups which are expired", backupsToRemove.Count);
 
         foreach (var scheduledBackups in backupRepository.GetScheduledBackupRecords().GroupBy(r => r.TenantId))
         {
@@ -101,7 +101,7 @@ internal sealed class BackupCleanerService : BackgroundService
                 var scheduledBackupsToRemove = scheduledBackups.OrderByDescending(r => r.CreatedOn).Skip(schedule.BackupsStored).ToList();
                 if (scheduledBackupsToRemove.Any())
                 {
-                    _logger.LogDebug("only last {0} scheduled backup records are to keep for tenant {1} so {2} records must be removed", schedule.BackupsStored, schedule.TenantId, scheduledBackupsToRemove.Count);
+                    _logger.LogDebug("only last {storedCount} scheduled backup records are to keep for tenant {tenantId} so {removeCount} records must be removed", schedule.BackupsStored, schedule.TenantId, scheduledBackupsToRemove.Count);
                     backupsToRemove.AddRange(scheduledBackupsToRemove);
                 }
             }

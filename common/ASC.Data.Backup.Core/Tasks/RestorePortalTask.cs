@@ -204,7 +204,7 @@ public class RestorePortalTask : PortalTaskBase
 
     private async Task RestoreFromDumpFile(IDataReadOperator dataReader, string fileName)
     {
-        Logger.LogDebug("Restore from {0}", fileName);
+        Logger.LogDebug("Restore from {fileName}", fileName);
         using (var stream = dataReader.GetEntry(fileName))
         {
             await RunMysqlFile(stream);
@@ -294,7 +294,7 @@ public class RestorePortalTask : PortalTaskBase
                         }
                         catch (Exception error)
                         {
-                            Logger.LogWarning("can't restore file ({0}:{1}): {2}", file.Module, file.Path, error);
+                            Logger.LogWarning(error, "can't restore file ({module}:{path})", file.Module, file.Path);
                         }
                     }
                 }
@@ -343,7 +343,7 @@ public class RestorePortalTask : PortalTaskBase
                         },
                         domain,
                         5,
-                        onFailure: error => Logger.LogWarning("Can't delete files for domain {0}: \r\n{1}", domain, error)
+                        onFailure: error => Logger.LogWarning(error, "Can't delete files for domain {domain}", domain)
                     );
                 }
 

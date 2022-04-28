@@ -110,7 +110,7 @@ public class BaseIndexer<T> where T : class, ISearchItem
         }
 
         var (count, max, min) = getCount(lastIndexed);
-        _logger.LogDebug($"Index: {IndexName}, Count {count}, Max: {max}, Min: {min}");
+        _logger.LogDebug($"Index: {IndexName}, Count {count}, Max: {max}, Min: {min}", IndexName, count, max, min);
 
         var ids = new List<int>() { min };
         ids.AddRange(getIds(lastIndexed));
@@ -129,7 +129,7 @@ public class BaseIndexer<T> where T : class, ISearchItem
 
         WebstudioDbContext.SaveChanges();
 
-        _logger.LogDebug($"index completed {Wrapper.IndexName}");
+        _logger.LogDebug("index completed {indexName}", Wrapper.IndexName);
     }
 
     public Task ReIndex()
@@ -542,7 +542,7 @@ public class BaseIndexer<T> where T : class, ISearchItem
 
         WebstudioDbContext.SaveChanges();
 
-        _logger.LogDebug("Delete {0}", Wrapper.IndexName);
+        _logger.LogDebug("Delete {indexName}", Wrapper.IndexName);
         _client.Instance.Indices.Delete(Wrapper.IndexName);
         _baseIndexerHelper.Clear(Wrapper);
         CreateIfNotExist(Wrapper);

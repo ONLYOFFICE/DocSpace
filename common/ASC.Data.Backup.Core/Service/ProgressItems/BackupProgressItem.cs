@@ -193,7 +193,7 @@ public class BackupProgressItem : BaseBackupProgressItem
         }
         catch (Exception error)
         {
-            Logger.LogError("RunJob - Params: {0}, Error = {1}", new { Id, Tenant = TenantId, File = tempFile, BasePath = _storageBasePath, }, error);
+            Logger.LogError(error, "RunJob - Params: {data}", new { Id, Tenant = TenantId, File = tempFile, BasePath = _storageBasePath, });
             Exception = error;
             IsCompleted = true;
         }

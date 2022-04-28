@@ -318,7 +318,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
 
         channel.CallbackException += (sender, ea) =>
         {
-            _logger.LogWarning("Recreating RabbitMQ consumer channel", (object)ea.Exception);
+            _logger.LogWarning(ea.Exception, "Recreating RabbitMQ consumer channel");
 
             _consumerChannel.Dispose();
             _consumerChannel = CreateConsumerChannel();

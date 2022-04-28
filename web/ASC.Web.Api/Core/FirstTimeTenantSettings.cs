@@ -102,7 +102,7 @@ public class FirstTimeTenantSettings
                 tenant = _tenantManager.GetTenant(tenant.Id);
                 if (tenant.OwnerId == Guid.Empty)
                 {
-                    _log.LogError((tenant.Id + ": owner id is empty."));
+                    _log.LogError("{tenantId}: owner id is empty.", tenant.Id);
                 }
             }
 
@@ -242,7 +242,7 @@ public class FirstTimeTenantSettings
                     _amiId = reader.ReadToEnd();
                 }
 
-                _log.LogDebug("Instance id: " + _amiId);
+                _log.LogDebug("Instance id: {amiId}", _amiId);
             }
             catch (Exception e)
             {
@@ -281,7 +281,7 @@ public class FirstTimeTenantSettings
             var httpClient = _clientFactory.CreateClient();
             using var response = httpClient.Send(request);
 
-            _log.LogDebug("Subscribe response: " + response);//toto write
+            _log.LogDebug("Subscribe response: {response}", response);//toto write
 
         }
         catch (Exception e)

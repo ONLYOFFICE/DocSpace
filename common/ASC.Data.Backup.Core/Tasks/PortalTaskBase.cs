@@ -160,7 +160,7 @@ public abstract class PortalTaskBase
             throw new ArgumentOutOfRangeException(nameof(value));
         }
         _stepsCount = value;
-        Logger.LogDebug("Steps: " + _stepsCount);
+        Logger.LogDebug("Steps: {stepsCount}", +_stepsCount);
     }
 
     protected void SetStepCompleted(int increment = 1)
@@ -247,7 +247,7 @@ public abstract class PortalTaskBase
         }
 
         args.Append($"-e \" source {file}\"");
-        Logger.LogDebug("run mysql file {0} {1}", file, args.ToString());
+        Logger.LogDebug("run mysql file {file} {args}", file, args.ToString());
 
         var startInfo = new ProcessStartInfo
         {
@@ -271,7 +271,7 @@ public abstract class PortalTaskBase
             }
         }
 
-        Logger.LogDebug("complete mysql file {0}", file);
+        Logger.LogDebug("complete mysql file {file}", file);
     }
 
     protected Task RunMysqlFile(Stream stream, string delimiter = ";")

@@ -90,7 +90,7 @@ public class ChunkedUploadSessionHelper
             {
                 if (f == null)
                 {
-                    _logger.LogError("GetBreadCrumbs {0} with null", session.FolderId);
+                    _logger.LogError("GetBreadCrumbs {folderId} with null", session.FolderId);
 
                     return default;
                 }

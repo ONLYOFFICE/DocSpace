@@ -123,7 +123,7 @@ internal class MailModuleSpecifics : ModuleSpecificsBase
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Can not prepare data {0}: {1}", row[address] as string, ex);
+                    _logger.LogError(ex, "Can not prepare data {data}", row[address] as string);
                     data.Rows.Remove(row);
                     i--;
                 }
@@ -292,7 +292,7 @@ internal class MailModuleSpecifics : ModuleSpecificsBase
             }
             catch (Exception err)
             {
-                _logger.LogError("Can not prepare value {0}: {1}", value, err);
+                _logger.LogError(err, "Can not prepare value {value}", value);
                 value = null;
             }
 

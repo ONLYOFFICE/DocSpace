@@ -44,7 +44,7 @@ public class Token : OAuth20Token
             var app = ThirdPartySelector.GetApp(App);
             try
             {
-                tokenHelper.Logger.LogDebug("Refresh token for app: " + App);
+                tokenHelper.Logger.LogDebug("Refresh token for app: {App}", App);
 
                 var refreshUrl = app.GetRefreshUrl();
 

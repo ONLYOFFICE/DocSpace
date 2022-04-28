@@ -73,7 +73,7 @@ public class NotifyCleanerService : BackgroundService
             dbContext.SaveChanges();
             tx.Commit();
 
-            _logger.LogInformation("Clear notify messages: notify_info({0}), notify_queue ({1})", info.Count, queue.Count);
+            _logger.LogInformation("Clear notify messages: notify_info({infoCount}), notify_queue ({queueCount})", info.Count, queue.Count);
 
         }
         catch (ThreadAbortException)

@@ -264,7 +264,7 @@ public class DocumentServiceTrackerHelper
 
         if (!fileData.Key.Equals(docKey))
         {
-            _logger.LogInformation("DocService editing file {0} ({1}) with key {2} for {3}", fileId, docKey, fileData.Key, string.Join(", ", fileData.Users));
+            _logger.LogInformation("DocService editing file {fileId} ({docKey}) with key {fileKey} for {users}", fileId, docKey, fileData.Key, string.Join(", ", fileData.Users));
             usersDrop = fileData.Users;
         }
         else
@@ -273,7 +273,7 @@ public class DocumentServiceTrackerHelper
             {
                 if (!Guid.TryParse(user, out var userId))
                 {
-                    _logger.LogInformation("DocService userId is not Guid: " + user);
+                    _logger.LogInformation("DocService userId is not Guid: {user}", user);
                     continue;
                 }
 
@@ -286,7 +286,7 @@ public class DocumentServiceTrackerHelper
                 }
                 catch (Exception e)
                 {
-                    _logger.LogDebug("Drop command: fileId '{0}' docKey '{1}' for user {2} : {3}", fileId, fileData.Key, user, e.Message);
+                    _logger.LogDebug("Drop command: fileId '{fileId}' docKey '{fileKey}' for user {user} : {message}", fileId, fileData.Key, user, e.Message);
                     usersDrop.Add(userId.ToString());
                 }
             }
@@ -296,7 +296,7 @@ public class DocumentServiceTrackerHelper
         {
             if (!await _documentServiceHelper.DropUserAsync(fileData.Key, usersDrop.ToArray(), fileId))
             {
-                _logger.LogError(("DocService drop failed for users " + string.Join(",", (IEnumerable<string>)usersDrop)));
+                _logger.LogError("DocService drop failed for users {users}", string.Join(",", (IEnumerable<string>)usersDrop));
             }
         }
 
@@ -333,7 +333,7 @@ public class DocumentServiceTrackerHelper
             var docKey = _documentServiceHelper.GetDocKey(fileStable);
             if (!fileData.Key.Equals(docKey))
             {
-                _logger.LogError("DocService saving file {0} ({1}) with key {2}", fileId, docKey, fileData.Key);
+                _logger.LogError("DocService saving file {fileId} ({docKey}) with key {fileData}", fileId, docKey, fileData.Key);
 
                 await StoringFileAfterErrorAsync(fileId, userId.ToString(), _documentServiceConnector.ReplaceDocumentAdress(fileData.Url));
 
@@ -374,11 +374,11 @@ public class DocumentServiceTrackerHelper
                 await _daoFactory.GetFileDao<T>().UpdateCommentAsync(file.Id, file.Version, string.Join("; ", comments));
 
                 file = null;
-                _logger.LogError("DocService save error. Empty url. File id: '{0}'. UserId: {1}. DocKey '{2}'", fileId, userId, fileData.Key);
+                _logger.LogError("DocService save error. Empty url. File id: '{fileId}'. UserId: {userId}. DocKey '{key}'", fileId, userId, fileData.Key);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, string.Format("DocService save error. Version update. File id: '{0}'. UserId: {1}. DocKey '{2}'", fileId, userId, fileData.Key));
+                _logger.LogError(ex, string.Format("DocService save error. Version update. File id: '{fileId}'. UserId: {userId}. DocKey '{fileData}'", fileId, userId, fileData.Key));
             }
         }
         else
@@ -549,7 +549,7 @@ public class DocumentServiceTrackerHelper
                 })
             {
                 var response = await _mailMergeTaskRunner.RunAsync(mailMergeTask, _clientFactory);
-                _logger.LogInformation("DocService mailMerge {0}/{1} send: {2}",
+                _logger.LogInformation("DocService mailMerge {index}/{count} send: {response}",
                                          fileData.MailMerge.RecordIndex + 1, fileData.MailMerge.RecordCount, response);
             }
             saveMessage = null;
@@ -558,7 +558,7 @@ public class DocumentServiceTrackerHelper
         {
             _logger.LogError(
                 ex,
-                string.Format("DocService mailMerge{0} error: userId - {1}, url - {2}",
+                string.Format("DocService mailMerge{index} error: userId - {userId}, url - {url}",
                               fileData.MailMerge == null ? "" : " " + fileData.MailMerge.RecordIndex + "/" + fileData.MailMerge.RecordCount,
                               userId, fileData.Url));
             saveMessage = ex.Message;
@@ -604,7 +604,7 @@ public class DocumentServiceTrackerHelper
             {
                 await store.SaveAsync(FileConstant.StorageDomainTmp, path, fileStream);
             }
-            _logger.LogDebug("DocService storing to {0}", path);
+            _logger.LogDebug("DocService storing to {path}", path);
         }
         catch (Exception ex)
         {

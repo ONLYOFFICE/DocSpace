@@ -125,7 +125,7 @@ public class FeedAggregatorService : FeedBaseService
                 var toTime = DateTime.UtcNow;
 
                 var tenants = Attempt(10, () => module.GetTenantsWithFeeds(fromTime)).ToList();
-                _logger.LogDebug("Find {1} tenants for module {0}.", module.GetType().Name, tenants.Count);
+                _logger.LogDebug("Find {tenantsCount} tenants for module {moduleName}.", tenants.Count, module.GetType().Name);
 
                 foreach (var tenant in tenants)
                 {
@@ -146,7 +146,7 @@ public class FeedAggregatorService : FeedBaseService
                         var users = userManager.GetUsers();
 
                         var feeds = Attempt(10, () => module.GetFeeds(new FeedFilter(fromTime, toTime) { Tenant = tenant }).Where(r => r.Item1 != null).ToList());
-                        _logger.LogDebug("{0} feeds in {1} tenant.", feeds.Count, tenant);
+                        _logger.LogDebug("{count} feeds in {tenant} tenant.", feeds.Count, tenant);
 
                         var tenant1 = tenant;
                         var module1 = module;
@@ -172,7 +172,7 @@ public class FeedAggregatorService : FeedBaseService
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError("Tenant: {0}, {1}", tenant, ex);
+                        _logger.LogError(ex, "Tenant: {tenant}", tenant);
                     }
                 }
 
@@ -202,7 +202,7 @@ public class FeedAggregatorService : FeedBaseService
 
             _signalrServiceClient.SendUnreadUsers(unreadUsers);
 
-            _logger.LogDebug("Time of collecting news: {0}", DateTime.UtcNow - start);
+            _logger.LogDebug("Time of collecting news: {date}", DateTime.UtcNow - start);
         }
         catch (Exception ex)
         {

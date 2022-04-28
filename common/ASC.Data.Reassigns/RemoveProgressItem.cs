@@ -84,7 +84,7 @@ public class RemoveProgressItem : DistributedTaskProgress
             long crmSpace;
             GetUsageSpace(webItemManagerSecurity, out var docsSpace, out var mailSpace, out var talkSpace);
 
-            logger.LogInformation("deleting user data for {0} ", FromUser);
+            logger.LogInformation("deleting user data for {fromUser} ", FromUser);
 
             logger.LogInformation("deleting of data from documents");
 

@@ -65,7 +65,7 @@ public class MessageFactory
         }
         catch (Exception ex)
         {
-            _logger.LogError("Error while parse Http Request for {0} type of event: {1}", action, ex);
+            _logger.LogError(ex, "Error while parse Http Request for {action} type of event", action);
 
             return null;
         }
@@ -101,7 +101,7 @@ public class MessageFactory
         }
         catch (Exception ex)
         {
-            _logger.LogError(string.Format("Error while parse Http Message for \"{0}\" type of event: {1}", action, ex));
+            _logger.LogError(ex, "Error while parse Http Message for \"{action}\" type of event", action);
 
             return null;
         }
@@ -123,7 +123,7 @@ public class MessageFactory
         }
         catch (Exception ex)
         {
-            _logger.LogError(string.Format("Error while parse Initiator Message for \"{0}\" type of event: {1}", action, ex));
+            _logger.LogError(ex, "Error while parse Initiator Message for \"{action}\" type of event: {1}", action);
 
             return null;
         }

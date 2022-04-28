@@ -326,7 +326,7 @@ public class UserController : PeopleControllerBase
             }
             else
             {
-                _logger.LogError(string.Format("Account {0} сould not get user by name {1}", _securityContext.CurrentAccount.ID, username));
+                _logger.LogError("Account {userId} сould not get user by name {userName}", _securityContext.CurrentAccount.ID, username);
             }
         }
 
@@ -777,7 +777,7 @@ public class UserController : PeopleControllerBase
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogDebug($"ERROR write to template_unsubscribe {ex.Message}, email:{inDto.Email.ToLowerInvariant()}");
+                    _logger.LogDebug(ex, $"ERROR write to template_unsubscribe {ex.Message}, email:{inDto.Email.ToLowerInvariant()}");
                 }
             }
 
@@ -1104,7 +1104,7 @@ public class UserController : PeopleControllerBase
         var error = _userManagerWrapper.SendUserPassword(inDto.Email);
         if (!string.IsNullOrEmpty(error))
         {
-            _logger.LogError("Password recovery ({0}): {1}", inDto.Email, error);
+            _logger.LogError(error, "Password recovery ({email})", inDto.Email);
         }
 
         return string.Format(Resource.MessageYourPasswordSendedToEmail, inDto.Email);

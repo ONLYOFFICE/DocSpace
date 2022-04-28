@@ -76,7 +76,7 @@ public class TransferPortalTask : PortalTaskBase
 
     public override void RunJob()
     {
-        Logger.LogDebug("begin transfer {0}", TenantId);
+        Logger.LogDebug("begin transfer {tenantId}", TenantId);
         var fromDbFactory = new DbFactory(null, null);
         var toDbFactory = new DbFactory(null, null);
         var tenantAlias = GetTenantAlias(fromDbFactory);
@@ -149,7 +149,7 @@ public class TransferPortalTask : PortalTaskBase
             {
                 File.Delete(backupFilePath);
             }
-            Logger.LogDebug("end transfer {0}", TenantId);
+            Logger.LogDebug("end transfer {tenantId}", TenantId);
         }
     }
 
@@ -177,12 +177,12 @@ public class TransferPortalTask : PortalTaskBase
                     }
                     catch (Exception error)
                     {
-                        Logger.LogWarning("Can't copy file ({0}:{1}): {2}", file.Module, file.Path, error);
+                        Logger.LogWarning(error, "Can't copy file ({module}:{path})", file.Module, file.Path);
                     }
                 }
                 else
                 {
-                    Logger.LogWarning("Can't adjust file path \"{0}\".", file.Path);
+                    Logger.LogWarning("Can't adjust file path \"{path}\".", file.Path);
                 }
             }
             SetCurrentStepProgress((int)(++groupsProcessed * 100 / (double)fileGroups.Count));

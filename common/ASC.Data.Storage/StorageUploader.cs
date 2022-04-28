@@ -145,7 +145,7 @@ public class MigrateOperation : DistributedTaskProgress
     {
         try
         {
-            _logger.LogDebug("Tenant: {0}", _tenantId);
+            _logger.LogDebug("Tenant: {tenantId}", _tenantId);
             Status = DistributedTaskStatus.Running;
 
             using var scope = _serviceProvider.CreateScope();
@@ -169,12 +169,12 @@ public class MigrateOperation : DistributedTaskProgress
                 foreach (var domain in domains)
                 {
                     //Status = module + domain;
-                    _logger.LogDebug("Domain: {0}", domain);
+                    _logger.LogDebug("Domain: {domain}", domain);
                     files = oldStore.ListFilesRelativeAsync(domain, "\\", "*.*", true).ToArrayAsync().Result;
 
                     foreach (var file in files)
                     {
-                        _logger.LogDebug("File: {0}", file);
+                        _logger.LogDebug("File: {file}", file);
                         crossModuleTransferUtility.CopyFileAsync(domain, file, domain, file).Wait();
                     }
                 }
@@ -187,7 +187,7 @@ public class MigrateOperation : DistributedTaskProgress
 
                 foreach (var file in files)
                 {
-                    _logger.LogDebug("File: {0}", file);
+                    _logger.LogDebug("File: {file}", file);
                     crossModuleTransferUtility.CopyFileAsync("", file, "", file).Wait();
                 }
 
