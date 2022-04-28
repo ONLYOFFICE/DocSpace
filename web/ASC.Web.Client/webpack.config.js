@@ -256,11 +256,8 @@ module.exports = (env, argv) => {
       const today = new Date(timeElapsed);
       return JSON.stringify(today.toISOString().split(".")[0] + "Z");
     }, true),
+    IS_PERSONAL: env.personal || false,
   };
-
-  if (env.personal) {
-    defines.IS_PERSONAL = env.personal;
-  }
 
   config.plugins.push(new DefinePlugin(defines));
 

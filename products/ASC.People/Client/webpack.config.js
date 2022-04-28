@@ -242,13 +242,11 @@ module.exports = (env, argv) => {
     config.devtool = "cheap-module-source-map";
   }
 
-  if (env.personal) {
-    config.plugins.push(
-      new DefinePlugin({
-        IS_PERSONAL: env.personal,
-      })
-    );
-  }
+  config.plugins.push(
+    new DefinePlugin({
+      IS_PERSONAL: env.personal || false,
+    })
+  );
 
   return config;
 };
