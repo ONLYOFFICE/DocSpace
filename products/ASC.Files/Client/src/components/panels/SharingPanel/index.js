@@ -3,7 +3,7 @@ import Backdrop from "@appserver/components/backdrop";
 import Button from "@appserver/components/button";
 
 import Aside from "@appserver/components/aside";
-
+import SaveCancelButton from "@appserver/components/save-cancel-buttons";
 import { withTranslation, Trans } from "react-i18next";
 import toastr from "studio/toastr";
 import { ShareAccessRights } from "@appserver/common/constants";
@@ -624,18 +624,11 @@ class SharingPanelComponent extends React.Component {
                 {!showEmbeddingContent && (
                   <ModalDialog.Footer>
                     <StyledModalFooter>
-                      <Button
-                        size={"normal"}
-                        label={t("Common:SaveButton")}
-                        primary
-                        onClick={this.onSaveClick}
-                        scale
-                      />
-                      <Button
-                        size={"normal"}
-                        label={t("Common:CancelButton")}
-                        scale
-                        onClick={this.onClose}
+                      <SaveCancelButton
+                        saveButtonLabel={t("Common:SaveButton")}
+                        onSaveClick={this.onSaveClick}
+                        cancelButtonLabel={t("Common:CancelButton")}
+                        onCancelClick={this.onClose}
                       />
                     </StyledModalFooter>
                   </ModalDialog.Footer>
@@ -692,18 +685,11 @@ class SharingPanelComponent extends React.Component {
                 {!showEmbeddingContent && (
                   <ModalDialog.Footer>
                     <StyledModalFooter>
-                      <Button
-                        size={"normal"}
-                        label={t("Common:SaveButton")}
-                        primary
-                        onClick={this.onSaveClick}
-                        scale
-                      />
-                      <Button
-                        size={"normal"}
-                        label={t("Common:CancelButton")}
-                        scale
-                        onClick={this.onClose}
+                      <SaveCancelButton
+                        saveButtonLabel={t("Common:SaveButton")}
+                        onSaveClick={this.onSaveClick}
+                        cancelButtonLabel={t("Common:CancelButton")}
+                        onCancelClick={this.onClose}
                       />
                     </StyledModalFooter>
                   </ModalDialog.Footer>
