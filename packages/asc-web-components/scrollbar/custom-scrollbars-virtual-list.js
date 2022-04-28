@@ -39,7 +39,7 @@ export class CustomScrollbars extends React.Component {
 }
 
 CustomScrollbars.defaultProps = {
-  stype: "smallBlack",
+  stype: "mediumBlack",
 };
 
 const CustomScrollbarsVirtualList = React.forwardRef((props, ref) => (
