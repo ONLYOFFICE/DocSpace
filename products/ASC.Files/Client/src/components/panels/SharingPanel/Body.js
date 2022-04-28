@@ -101,7 +101,6 @@ const Body = ({
   const listRef = React.useRef();
 
   const onToggleExternalLinkOpen = React.useCallback(() => {
-    setExternalLinkOpen((oldState) => !oldState);
     onToggleLink && onToggleLink(externalItem);
   }, [externalItem, onToggleLink]);
 
@@ -110,8 +109,8 @@ const Body = ({
       selection?.length === 1 && !!externalItem?.sharedTo?.shareLink
     );
 
-    setExternalLinkOpen(isShared);
-  }, [externalItem, selection, isShared]);
+    setExternalLinkOpen(externalItem?.access !== ShareAccessRights.DenyAccess);
+  }, [externalItem, selection]);
 
   const getItemSize = React.useCallback(
     (index) => {
