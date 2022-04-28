@@ -250,6 +250,57 @@ namespace ASC.Core.Common.Migrations
 
                 b.ToTable("files_file");
             });
+
+            modelBuilder.Entity("ASC.Files.Core.EF.DbFilesSecurity", b =>
+            {
+                b.Property<int>("TenantId")
+                    .HasColumnType("int")
+                    .HasColumnName("tenant_id");
+
+                b.Property<string>("EntryId")
+                    .HasColumnType("varchar(50)")
+                    .HasColumnName("entry_id")
+                    .UseCollation("utf8_general_ci")
+                    .HasAnnotation("MySql:CharSet", "utf8");
+
+                b.Property<int>("EntryType")
+                    .HasColumnType("int")
+                    .HasColumnName("entry_type");
+
+                b.Property<string>("Subject")
+                    .HasColumnType("char(38)")
+                    .HasColumnName("subject")
+                    .UseCollation("utf8_general_ci")
+                    .HasAnnotation("MySql:CharSet", "utf8");
+
+                b.Property<string>("Owner")
+                    .IsRequired()
+                    .HasColumnType("char(38)")
+                    .HasColumnName("owner")
+                    .UseCollation("utf8_general_ci")
+                    .HasAnnotation("MySql:CharSet", "utf8");
+
+                b.Property<int>("Security")
+                    .HasColumnType("int")
+                    .HasColumnName("security");
+
+                b.Property<DateTime>("TimeStamp")
+                    .ValueGeneratedOnAddOrUpdate()
+                    .HasColumnType("timestamp")
+                    .HasColumnName("timestamp")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                b.HasKey("TenantId", "EntryId", "EntryType", "Subject")
+                    .HasName("PRIMARY");
+
+                b.HasIndex("Owner")
+                    .HasDatabaseName("owner");
+
+                b.HasIndex("TenantId", "EntryType", "EntryId", "Owner")
+                    .HasDatabaseName("tenant_id");
+
+                b.ToTable("files_security");
+            });
 #pragma warning restore 612, 618
         }
     }

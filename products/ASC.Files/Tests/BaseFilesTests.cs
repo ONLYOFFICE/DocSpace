@@ -71,12 +71,12 @@ public class MySetUpClass
     [OneTimeSetUp]
     public void CreateDb()
     {
-        var host = new FilesApplication(new Dictionary<string, string>
+           var host = new FilesApplication(new Dictionary<string, string>
                 {
                     { "pathToConf", Path.Combine("..","..", "..", "config") },
                     { "ConnectionStrings:default:connectionString", BaseFilesTests.TestConnection },
                     { "migration:enabled", "true" },
-                    { "core:products:folder", Path.Combine("..","..", "..", "products") },
+                    { "core:products:folder", Path.Combine("..", "..", "..", "products") },
                     { "web:hub::internal", "" }
                 })
             .WithWebHostBuilder(builder =>
@@ -116,25 +116,10 @@ public class MySetUpClass
 
 public class BaseFilesTests
 {
-    protected ILog _log;
-    protected TagsController<int> _tagsController;
-    protected SecurityControllerHelper<int> _securityControllerHelper;
-    protected FilesControllerHelper<int> _filesControllerHelper;
-    protected OperationControllerHelper<int> _operationControllerHelper;
-    protected FoldersControllerHelper<int> _foldersControllerHelper;
-    protected GlobalFolderHelper _globalFolderHelper;
-    protected FileStorageService<int> _fileStorageService;
-    protected FileDtoHelper _fileDtoHelper;
-    protected EntryManager _entryManager;
     protected UserManager _userManager;
-    protected Tenant _currentTenant;
-    protected SecurityContext _securityContext;
-    protected UserOptions _userOptions;
-    protected IServiceScope _scope;
-    protected HttpClient _client;
+    private protected HttpClient _client;
 
-    public const string TestConnection = "Server=localhost;Database=onlyoffice_test;User ID=root;Password=root;Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;AllowPublicKeyRetrieval=True";
-
+    public static readonly string TestConnection = string.Format("Server=localhost;Database=onlyoffice_test.{0};User ID=root;Password=root;Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;AllowPublicKeyRetrieval=True", DateTime.Now.Ticks);
     public virtual Task SetUp()
     {
         var host = new FilesApplication(new Dictionary<string, string>
@@ -146,33 +131,23 @@ public class BaseFilesTests
             })
              .WithWebHostBuilder(a => { });
 
+        var rnd = new Random();
         _client = host.CreateClient(new WebApplicationFactoryClientOptions()
         {
-            BaseAddress = new Uri(@"http://localhost:5007/api/2.0/files/")
+            BaseAddress = new Uri(@"http://localhost:" + rnd.Next(5000, 6000) + "/api/2.0/files/")
         });
 
-        _scope = host.Services.CreateScope();
+        var scope = host.Services.CreateScope();
 
-        var tenantManager = _scope.ServiceProvider.GetService<TenantManager>();
+        _userManager = scope.ServiceProvider.GetService<UserManager>();
+
+        var tenantManager = scope.ServiceProvider.GetService<TenantManager>();    
         var tenant = tenantManager.GetTenant(1);
         tenantManager.SetCurrentTenant(tenant);
-        _currentTenant = tenant;
 
-        _fileDtoHelper = _scope.ServiceProvider.GetService<FileDtoHelper>();
-        _entryManager = _scope.ServiceProvider.GetService<EntryManager>();
-        _tagsController = _scope.ServiceProvider.GetService<TagsController<int>>();
-        _securityControllerHelper = _scope.ServiceProvider.GetService<SecurityControllerHelper<int>>();
-        _operationControllerHelper = _scope.ServiceProvider.GetService<OperationControllerHelper<int>>();
-        _foldersControllerHelper = _scope.ServiceProvider.GetService<FoldersControllerHelper<int>>();
-        _filesControllerHelper = _scope.ServiceProvider.GetService<FilesControllerHelper<int>>();
-        _globalFolderHelper = _scope.ServiceProvider.GetService<GlobalFolderHelper>();
-        _userManager = _scope.ServiceProvider.GetService<UserManager>();
-        _securityContext = _scope.ServiceProvider.GetService<SecurityContext>();
-        _userOptions = _scope.ServiceProvider.GetService<IOptions<UserOptions>>().Value;
-        _fileStorageService = _scope.ServiceProvider.GetService<FileStorageService<int>>();
-        _log = _scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
+        var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+        var cookie = securityContext.AuthenticateMe(tenant.OwnerId);
 
-        var cookie = _securityContext.AuthenticateMe(_currentTenant.OwnerId);
         _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", cookie);
         _client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
         _client.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/json;");
@@ -180,29 +155,14 @@ public class BaseFilesTests
         return Task.CompletedTask;
     }
 
-    public async Task DeleteFolderAsync(int folder)
+    [OneTimeTearDown]
+    public void DropFolderWithFiles()
     {
-        await _foldersControllerHelper.DeleteFolder(folder, false, true);
-        while (true)
+        try
         {
-            var statuses = _fileStorageService.GetTasksStatuses();
-
-            if (statuses.TrueForAll(r => r.Finished))
-                break;
-            await Task.Delay(100);
+            Directory.Delete(Path.Combine("..", "..", "..", "..", "Data"), true);
         }
-    }
-    public async Task DeleteFileAsync(int file)
-    {
-        await _filesControllerHelper.DeleteFileAsync(file, false, true);
-        while (true)
-        {
-            var statuses = _fileStorageService.GetTasksStatuses();
-
-            if (statuses.TrueForAll(r => r.Finished))
-                break;
-            await Task.Delay(100);
-        }
+        catch { }
     }
 
     public BatchRequestDto GetBatchModel(string text)
@@ -225,5 +185,83 @@ public class BaseFilesTests
         };
 
         return batchModel;
+    }
+
+    protected async Task<T> GetAsync<T>(string url, JsonSerializerOptions options)
+    {
+        var request = await _client.GetAsync(url);
+        var result = await request.Content.ReadFromJsonAsync<SuccessApiResponse>();
+
+        if (result.Response is JsonElement jsonElement)
+        {
+            return jsonElement.Deserialize<T>(options);
+        }
+        throw new Exception("can't parsing result");
+    }
+
+    protected async Task<T> GetAsync<T>(string url, HttpContent content, JsonSerializerOptions options)
+    {
+        var request = new HttpRequestMessage
+        {
+            RequestUri = new Uri(@"http://localhost:5007/api/2.0/files/" + url),
+            Method = HttpMethod.Delete,
+            Content = content
+        };
+
+        var result = await request.Content.ReadFromJsonAsync<SuccessApiResponse>();
+
+        if (result.Response is JsonElement jsonElement)
+        {
+            return jsonElement.Deserialize<T>(options);
+        }
+        throw new Exception("can't parsing result");
+    }
+
+    protected async Task<T> PostAsync<T>(string url, HttpContent content, JsonSerializerOptions options)
+    {
+        var request = await _client.PostAsync(url, content);
+        var result = await request.Content.ReadFromJsonAsync<SuccessApiResponse>();
+
+        if (result.Response is JsonElement jsonElement)
+        {
+            return jsonElement.Deserialize<T>(options);
+        }
+        throw new Exception("can't parsing result");
+    }
+
+    protected async Task<T> PutAsync<T>(string url, HttpContent content, JsonSerializerOptions options)
+    {
+        var request = await _client.PutAsync(url, content);
+        var result = await request.Content.ReadFromJsonAsync<SuccessApiResponse>();
+
+        if (result.Response is JsonElement jsonElement)
+        {
+            return jsonElement.Deserialize<T>(options);
+        }
+        throw new Exception("can't parsing result");
+    }
+
+    private protected async Task<HttpResponseMessage> DeleteAsync(string url, JsonContent content)
+    {
+        var request = new HttpRequestMessage
+        {
+            RequestUri = new Uri(@"http://localhost:5007/api/2.0/files/" + url),
+            Method = HttpMethod.Delete,
+            Content = content
+        };
+
+        return await _client.SendAsync(request);
+    }
+
+    protected async Task<T> DeleteAsync<T>(string url, JsonContent content, JsonSerializerOptions options)
+    {
+        var sendRequest = await DeleteAsync(url, content);
+        var result = await sendRequest.Content.ReadFromJsonAsync<SuccessApiResponse>();
+
+        if (result.Response is JsonElement jsonElement)
+        {
+            return jsonElement.Deserialize<T>(options);
+        }
+        throw new Exception("can't parsing result");
     }
 }

@@ -29,63 +29,45 @@ namespace ASC.Files.Tests;
 [TestFixture]
 class Trash : BaseFilesTests
 {
-    private FolderDto<int> TestFolder { get; set; }
-    public FileDto<int> TestFile { get; private set; }
+    private readonly JsonSerializerOptions _options;
+    public Trash()
+    {
+        _options = new JsonSerializerOptions()
+        {
+            AllowTrailingCommas = true,
+            PropertyNameCaseInsensitive = true
+        };
+
+        _options.Converters.Add(new ApiDateTimeConverter());
+        _options.Converters.Add(new FileEntryWrapperConverter());
+        _options.Converters.Add(new FileShareConverter());
+    }
 
     [OneTimeSetUp]
     public override async Task SetUp()
     {
         await base.SetUp();
-        TestFolder = await _foldersControllerHelper.CreateFolderAsync(_globalFolderHelper.FolderMy, "TestFolder");
-        TestFile = await _filesControllerHelper.CreateFileAsync(_globalFolderHelper.FolderMy, "TestFile", default, default);
-
-    }
-
-    [OneTimeSetUp]
-    public void Authenticate()
-    {
-        _securityContext.AuthenticateMe(_currentTenant.OwnerId);
-    }
-
-    [OneTimeTearDown]
-    public async Task TearDown()
-    {
-        await DeleteFileAsync(TestFile.Id);
-        await DeleteFolderAsync(TestFolder.Id);
-    }
-
-    [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCreateFolderItems))]
-    [Category("Folder")]
-    [Order(1)]
-    public void CreateFolderReturnsFolderWrapper(string folderTitle)
-    {
-        var folderWrapper = Assert.ThrowsAsync<InvalidOperationException>(async () => await _foldersControllerHelper.CreateFolderAsync((int)_globalFolderHelper.FolderTrash, folderTitle));
-        Assert.That(folderWrapper.Message == "You don't have enough permission to create");
-    }
-    [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCreateFileItems))]
-    [Category("File")]
-    [Order(2)]
-    public async Task CreateFileReturnsFolderWrapper(string fileTitle)
-    {
-        var fileWrapper = await _filesControllerHelper.CreateFileAsync((int)_globalFolderHelper.FolderTrash, fileTitle, default, default);
-        Assert.AreEqual(fileWrapper.FolderId, _globalFolderHelper.FolderMy);
     }
 
     [Test]
     [Category("Folder")]
-    [Order(2)]
+    [Order(1)]
+    [Description("put - files/fileops/emptytrash - empty trash")]
     public async Task DeleteFileFromTrash()
     {
-        var Empty = await _operationControllerHelper.EmptyTrashAsync();
+        var Empty = await PutAsync<IEnumerable<FileOperationDto>>("fileops/emptytrash", null, _options);
 
         List<FileOperationResult> statuses;
 
         while (true)
         {
-            statuses = _fileStorageService.GetTasksStatuses();
+            statuses = await GetAsync<List<FileOperationResult>>("fileops", _options);
 
             if (statuses.TrueForAll(r => r.Finished))
+            {
                 break;
+            }
+
             await Task.Delay(100);
         }
         Assert.IsTrue(statuses.TrueForAll(r => string.IsNullOrEmpty(r.Error)));

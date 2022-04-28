@@ -29,101 +29,71 @@ namespace ASC.Files.Tests;
 [TestFixture]
 class Recent : BaseFilesTests
 {
-    private FolderDto<int> TestFolder { get; set; }
-    public FileDto<int> TestFile { get; private set; }
-    public IEnumerable<FileShareParams> TestFileShare { get; private set; }
-    public UserInfo NewUser { get; set; }
+    private readonly JsonSerializerOptions _options;
+
+    public Recent()
+    {
+        _options = new JsonSerializerOptions()
+        {
+            AllowTrailingCommas = true,
+            PropertyNameCaseInsensitive = true
+        };
+
+        _options.Converters.Add(new ApiDateTimeConverter());
+        _options.Converters.Add(new FileEntryWrapperConverter());
+        _options.Converters.Add(new FileShareConverter());
+    }
 
     [OneTimeSetUp]
     public override async Task SetUp()
     {
         await base.SetUp();
-        TestFolder = await _foldersControllerHelper.CreateFolderAsync(_globalFolderHelper.FolderMy, "TestFolder");
-        TestFile = await _filesControllerHelper.CreateFileAsync(_globalFolderHelper.FolderMy, "TestFile", default, default);
-        NewUser = _userManager.GetUsers(Guid.Parse("005bb3ff-7de3-47d2-9b3d-61b9ec8a76a5"));
-        TestFileShare = new List<FileShareParams> { new FileShareParams { Access = Core.Security.FileShare.Read, ShareTo = NewUser.Id } };
     }
 
-    [OneTimeSetUp]
-    public void Authenticate()
-    {
-        _securityContext.AuthenticateMe(_currentTenant.OwnerId);
-    }
-
-    [OneTimeTearDown]
-    public async Task TearDown()
-    {
-        await DeleteFolderAsync(TestFolder.Id);
-        await DeleteFileAsync(TestFile.Id);
-    }
-
-    [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCreateFolderItems))]
-    [Category("Folder")]
-    [Order(1)]
-    public void CreateFolderReturnsFolderWrapper(string folderTitle)
-    {
-        var folderWrapper = Assert.ThrowsAsync<InvalidOperationException>(async () => await _foldersControllerHelper.CreateFolderAsync(await _globalFolderHelper.FolderRecentAsync, folderTitle));
-        Assert.That(folderWrapper.Message == "You don't have enough permission to create");
-    }
-
-    [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetFolderInfoItems))]
+    [TestCase(DataTests.FileIdForRecent, DataTests.FileNameForRecent)]
     [Category("File")]
     [Order(1)]
-    public void CreateFileReturnsFolderWrapper(string folderTitle)
+    [Description("post - file/{fileId}/recent - add file to recent")]
+    public async Task RecentFileReturnsFolderWrapper(int fileId, string fileName)
     {
-        var folderWrapper = Assert.ThrowsAsync<InvalidOperationException>(async () => await _foldersControllerHelper.CreateFolderAsync(await _globalFolderHelper.FolderRecentAsync, folderTitle));
-        Assert.That(folderWrapper.Message == "You don't have enough permission to create");
+        var file = await PostAsync<FileDto<int>>("file/" + fileId + "/recent", null, _options);
+        Assert.IsNotNull(file);
+        Assert.AreEqual(fileName, file.Title);
     }
 
-    [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetFileInfoItems))]
+    [TestCase(DataTests.FileIdForRecent, DataTests.FileNameForRecent)]
     [Category("File")]
     [Order(2)]
-    public async Task RecentFileReturnsFolderWrapper(string fileTitleExpected)
+    [Description("delete - file/{fileId}/recent - delete file which added to recent")]
+    public async Task DeleteRecentFileReturnsFolderWrapper(int fileId, string fileTitleExpected)
     {
-        var RecentFolder = await AddToRecentAsync(TestFile.Id);
-        Assert.IsNotNull(RecentFolder);
-        Assert.AreEqual(fileTitleExpected + ".docx", RecentFolder.Title);
-    }
-    [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetFileInfoItems))]
-    [Category("File")]
-    [Order(4)]
-    public async Task DeleteRecentFileReturnsFolderWrapper(string fileTitleExpected)
-    {
-        var RecentFolder = await AddToRecentAsync(TestFile.Id);
-        await _filesControllerHelper.DeleteFileAsync(
-            TestFile.Id,
-            false,
-            true);
+        await PostAsync<FileDto<int>>("file/" + fileId + "/recent", null, _options);
+        await DeleteAsync("file/" + fileId, JsonContent.Create(new { DeleteAfter = false, Immediately = true }));
 
         while (true)
         {
-            var statuses = _fileStorageService.GetTasksStatuses();
+            var statuses = await GetAsync<List<FileOperationResult>>("fileops", _options);
 
             if (statuses.TrueForAll(r => r.Finished))
+            {
                 break;
+            }
+
             await Task.Delay(100);
         }
-        Assert.IsNotNull(RecentFolder);
-        Assert.AreEqual(fileTitleExpected + ".docx", RecentFolder.Title);
+
+        var recents = await GetAsync<FolderContentDto<int>>("@recent", _options);
+        Assert.IsTrue(!recents.Files.Any(r=> r.Title == fileTitleExpected + ".docx"));
     }
 
-    [TestCaseSource(typeof(DocumentData), nameof(DocumentData.ShareParamToRecentFile))]
+    [TestCase(DataTests.SharedForReadFileId, DataTests.FileName)]
     [Category("File")]
     [Order(3)]
-    public async Task ShareFileToAnotherUserAddToRecent(string fileTitleExpected, bool notify, string message)
+    public async Task ShareFileToAnotherUserAddToRecent(int fileId, string fileName)
     {
-        await _securityControllerHelper.SetFileSecurityInfoAsync(TestFile.Id, TestFileShare, notify, message);
-        _securityContext.AuthenticateMe(NewUser.Id);
-        var RecentFile = await AddToRecentAsync(TestFile.Id);
-        Assert.IsNotNull(RecentFile);
-        Assert.AreEqual(fileTitleExpected + ".docx", RecentFile.Title);
-    }
+         var file = await PostAsync<FileDto<int>>("file/" + fileId + "/recent", null, _options);
 
-    private async Task<FileDto<int>> AddToRecentAsync(int fileId)
-    {
-        var file = await _fileStorageService.GetFileAsync(fileId, -1);
-        _entryManager.MarkAsRecent(file);
-
-        return await _fileDtoHelper.GetAsync(file);
+        Assert.IsNotNull(file);
+        Assert.AreEqual(fileName, file.Title);
     }
 }

@@ -29,71 +29,48 @@ namespace ASC.Files.Tests;
 [TestFixture]
 class Favorites : BaseFilesTests
 {
-    private FolderDto<int> TestFolder { get; set; }
-    public FileDto<int> TestFile { get; private set; }
+    private readonly JsonSerializerOptions _options;
 
-    public IEnumerable<int> folderIds;
-    public IEnumerable<int> fileIds;
+    public Favorites()
+    {
+        _options = new JsonSerializerOptions()
+        {
+            AllowTrailingCommas = true,
+            PropertyNameCaseInsensitive = true
+        };
+
+        _options.Converters.Add(new ApiDateTimeConverter());
+        _options.Converters.Add(new FileEntryWrapperConverter());
+        _options.Converters.Add(new FileShareConverter());
+    }
 
     [OneTimeSetUp]
     public override async Task SetUp()
     {
         await base.SetUp();
-        TestFolder = await _foldersControllerHelper.CreateFolderAsync(_globalFolderHelper.FolderMy, "TestFolder").ConfigureAwait(false);
-        TestFile = await _filesControllerHelper.CreateFileAsync(_globalFolderHelper.FolderMy, "TestFile", default, default).ConfigureAwait(false);
-        folderIds = new List<int> { TestFolder.Id };
-        fileIds = new List<int> { TestFile.Id };
     }
 
-    [OneTimeSetUp]
-    public void Authenticate()
-    {
-        _securityContext.AuthenticateMe(_currentTenant.OwnerId);
-    }
-
-    [OneTimeTearDown]
-    public async Task TearDown()
-    {
-        await DeleteFolderAsync(TestFolder.Id);
-        await DeleteFileAsync(TestFile.Id);
-    }
-
-    [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCreateFolderItems))]
-    [Category("Folder")]
+    [TestCase(DataTests.SubFolderId, DataTests.FileId)]
+    [Category("Favorite")]
     [Order(1)]
-    public void CreateFolderReturnsFolderWrapper(string folderTitle)
+    [Description("post - files/favorites - add file and folder to favorites")]
+    public async Task AddFavoriteFolderAndFileToFolderWrapper(int folderID, int fileId)
     {
-        var folderWrapper = Assert.ThrowsAsync<InvalidOperationException>(async () => await _foldersControllerHelper.CreateFolderAsync(await _globalFolderHelper.FolderFavoritesAsync, folderTitle));
-        Assert.That(folderWrapper.Message == "You don't have enough permission to create");
+        
+        var favorite = await PostAsync<bool>("favorites", JsonContent.Create(new { FolderIds = new List<int> { folderID }, FileIds = new List<int> { fileId } }), _options);
+
+        Assert.IsTrue(favorite);
     }
 
-    [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCreateFileItems))]
-    [Category("File")]
-    [Order(1)]
-    public async Task CreateFileReturnsFolderWrapper(string fileTitle)
-    {
-        var fileWrapper = await _filesControllerHelper.CreateFileAsync(await _globalFolderHelper.FolderShareAsync, fileTitle, default, default);
-        Assert.AreEqual(fileWrapper.FolderId, _globalFolderHelper.FolderMy);
-    }
-
-    [Test]
+    [TestCase(DataTests.SubFolderId, DataTests.FileId)]
     [Category("Favorite")]
     [Order(2)]
-    public async Task GetFavoriteFolderToFolderWrapper()
+    [Description("delete - files/favorites - delete file and folder from favorites")]
+    public async Task DeleteFavoriteFolderAndFileToFolderWrapper(int folderID, int fileId)
     {
-        var favorite = await _fileStorageService.AddToFavoritesAsync(folderIds, fileIds);
+        var favorite = await DeleteAsync<bool>("favorites", JsonContent.Create(new { FolderIds = new List<int> { folderID }, FileIds = new List<int> { fileId } }), _options);
 
-        Assert.IsNotNull(favorite);
-    }
-    [Test]
-    [Category("Favorite")]
-    [Order(3)]
-    public async Task DeleteFavoriteFolderToFolderWrapper()
-    {
-        var favorite = await _fileStorageService.DeleteFavoritesAsync(folderIds, fileIds);
-
-        Assert.IsNotNull(favorite);
-
+        Assert.IsTrue(favorite);
     }
 
 
