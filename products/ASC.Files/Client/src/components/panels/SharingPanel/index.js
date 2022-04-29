@@ -629,6 +629,7 @@ class SharingPanelComponent extends React.Component {
                         onSaveClick={this.onSaveClick}
                         cancelButtonLabel={t("Common:CancelButton")}
                         onCancelClick={this.onClose}
+                        showReminder={true}
                       />
                     </StyledModalFooter>
                   </ModalDialog.Footer>
@@ -690,6 +691,7 @@ class SharingPanelComponent extends React.Component {
                         onSaveClick={this.onSaveClick}
                         cancelButtonLabel={t("Common:CancelButton")}
                         onCancelClick={this.onClose}
+                        showReminder={true}
                       />
                     </StyledModalFooter>
                   </ModalDialog.Footer>
