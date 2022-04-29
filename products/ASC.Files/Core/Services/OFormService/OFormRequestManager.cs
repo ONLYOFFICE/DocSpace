@@ -81,6 +81,10 @@ public class OFormRequestManager
             using var combined = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, cts.Token);
             _data = JsonSerializer.Deserialize<OFromRequestData>(await response.Content.ReadAsStringAsync(combined.Token), options);
         }
+        catch (Exception)
+        {
+
+        }
         finally
         {
             _semaphoreSlim.Release();
