@@ -230,6 +230,7 @@ class Section extends React.Component {
       showText,
       infoPanelIsVisible,
       isInfoPanelAvailable,
+      settingsStudio,
     } = this.props;
 
     let sectionHeaderContent = null;
@@ -366,6 +367,7 @@ class Section extends React.Component {
                           autoFocus={isMobile || isTabletView ? false : true}
                           viewAs={viewAs}
                           isHomepage={isHomepage}
+                          settingsStudio={settingsStudio}
                         >
                           {isMobile && (
                             <StyledMainBar
@@ -545,12 +547,14 @@ Section.propTypes = {
   firstLoad: PropTypes.bool,
   isHomepage: PropTypes.bool,
   isInfoPanelAvailable: PropTypes.bool,
+  settingsStudio: PropTypes.bool,
 };
 
 Section.defaultProps = {
   withBodyScroll: true,
   withBodyAutoFocus: false,
   isInfoPanelAvailable: true,
+  settingsStudio: false,
 };
 
 Section.InfoPanelHeader = InfoPanelHeader;
