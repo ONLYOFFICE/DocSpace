@@ -240,6 +240,7 @@ const PortalRenaming = (props) => {
           onChange={onChangePortalName}
           isDisabled={isLoadingPortalNameSave}
           hasError={hasError}
+          placeholder={`${t("EnterName")}`}
         />
         <div className="errorText">{errorValue}</div>
       </FieldContainer>
