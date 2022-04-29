@@ -104,7 +104,7 @@ const Badges = ({
 
   const lineHeightBadge = isTile || tabletViewBadge ? "1.46" : "1.34";
 
-  const paddingBadge = "0 5px";
+  const paddingBadge = isTile || tabletViewBadge ? "0 3px" : "0 5px";
 
   const fontSizeBadge = isTile || tabletViewBadge ? "11px" : "9px";
 
@@ -116,6 +116,17 @@ const Badges = ({
     maxWidth: "50px",
     padding: paddingBadge,
     lineHeight: lineHeightBadge,
+    "data-id": id,
+  };
+
+  const versionBadgeProps = {
+    borderRadius: "50px",
+    color: theme.filesBadges.color,
+    fontSize: "9px",
+    fontWeight: 800,
+    maxWidth: "50px",
+    padding: isTile || tabletViewBadge ? "2px 5px" : "0 4px",
+    lineHeight: "12px",
     "data-id": id,
   };
 
@@ -160,11 +171,12 @@ const Badges = ({
       {version > 1 && (
         <BadgeWrapper onClick={onShowVersionHistory} isTile={isTile}>
           <Badge
-            {...commonBadgeProps}
+            {...versionBadgeProps}
             className="badge-version badge-version-current tablet-badge icons-group"
             backgroundColor={theme.filesBadges.backgroundColor}
             label={t("VersionBadge:Version", { version: countVersions })}
             onClick={onShowVersionHistory}
+            noHover={true}
           />
         </BadgeWrapper>
       )}
