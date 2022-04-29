@@ -45,28 +45,28 @@ public class SsoUserData
 
     private const int MAX_NUMBER_OF_SYMBOLS = 64;
 
-    [DataMember(Name = "nameID")]
+    [JsonPropertyName("nameID")]
     public string NameId { get; set; }
 
-    [DataMember(Name = "sessionID")]
+    [JsonPropertyName("sessionID")]
     public string SessionId { get; set; }
 
-    [DataMember(Name = "email")]
+    [JsonPropertyName("email")]
     public string Email { get; set; }
 
-    [DataMember(Name = "firstName")]
+    [JsonPropertyName("firstName")]
     public string FirstName { get; set; }
 
-    [DataMember(Name = "lastName")]
+    [JsonPropertyName("lastName")]
     public string LastName { get; set; }
 
-    [DataMember(Name = "location")]
+    [JsonPropertyName("location")]
     public string Location { get; set; }
 
-    [DataMember(Name = "phone")]
+    [JsonPropertyName("phone")]
     public string Phone { get; set; }
 
-    [DataMember(Name = "title")]
+    [JsonPropertyName("title")]
     public string Title { get; set; }
 
     public override string ToString()
@@ -199,9 +199,9 @@ public class SsoUserData
 [Serializable]
 public class LogoutSsoUserData
 {
-    [DataMember(Name = "nameID")]
+    [JsonPropertyName("nameID")]
     public string NameId { get; set; }
 
-    [DataMember(Name = "sessionID")]
+    [JsonPropertyName("sessionID")]
     public string SessionId { get; set; }
 }
