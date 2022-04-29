@@ -423,9 +423,7 @@ public class FileStorageService<T> //: IFileStorageService
         var folderDao = GetFolderDao();
 
         var parent = await folderDao.GetFolderAsync(parentId);
-        var isRoom = folderType == FolderType.CustomRoom || folderType == FolderType.FillingFormsRoom 
-            || folderType == FolderType.ReadOnlyRoom || folderType == FolderType.ReviewRoom
-            || folderType == FolderType.EditingRoom;
+        var isRoom = DocSpaceHelper.IsRoom(folderType);
 
         ErrorIf(parent == null, FilesCommonResource.ErrorMassage_FolderNotFound);
         ErrorIf(!await _fileSecurity.CanCreateAsync(parent), FilesCommonResource.ErrorMassage_SecurityException_Create);
@@ -442,7 +440,15 @@ public class FileStorageService<T> //: IFileStorageService
 
             var folderId = await folderDao.SaveFolderAsync(newFolder);
             var folder = await folderDao.GetFolderAsync(folderId);
-            _filesMessageService.Send(folder, GetHttpHeaders(), MessageAction.FolderCreated, folder.Title);
+            
+            if (isRoom)
+            {
+                _filesMessageService.Send(folder, GetHttpHeaders(), MessageAction.RoomCreated, folder.Title);
+            }
+            else
+            {
+                _filesMessageService.Send(folder, GetHttpHeaders(), MessageAction.FolderCreated, folder.Title);
+            }
 
             return folder;
         }
@@ -480,7 +486,14 @@ public class FileStorageService<T> //: IFileStorageService
             folder = await folderDao.GetFolderAsync(newFolderID);
             folder.Access = folderAccess;
 
-            _filesMessageService.Send(folder, GetHttpHeaders(), MessageAction.FolderRenamed, folder.Title);
+            if (DocSpaceHelper.IsRoom(folder.FolderType))
+            {
+                _filesMessageService.Send(folder, GetHttpHeaders(), MessageAction.RoomRenamed, folder.Title);
+            }
+            else
+            {
+                _filesMessageService.Send(folder, GetHttpHeaders(), MessageAction.FolderRenamed, folder.Title);
+            }
 
             //if (!folder.ProviderEntry)
             //{
@@ -2076,9 +2089,16 @@ public class FileStorageService<T> //: IFileStorageService
                 var changed = await _fileSharingAceHelper.SetAceObjectAsync(aceCollection.Aces, entry, notify, aceCollection.Message, !_coreBaseSettings.DisableDocSpace);
                 if (changed)
                 {
-                    _filesMessageService.Send(entry, GetHttpHeaders(),
+                    if (entry.FileEntryType == FileEntryType.Folder && DocSpaceHelper.IsRoom(((Folder<T>)entry).FolderType))
+                    {
+                        _filesMessageService.Send(entry, GetHttpHeaders(), MessageAction.RoomUpdateAccess, entry.Title);
+                    }
+                    else
+                    {
+                        _filesMessageService.Send(entry, GetHttpHeaders(),
                                                 entry.FileEntryType == FileEntryType.Folder ? MessageAction.FolderUpdatedAccess : MessageAction.FileUpdatedAccess,
                                                 entry.Title);
+                    }
                 }
             }
             catch (Exception e)

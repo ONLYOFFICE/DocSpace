@@ -174,7 +174,15 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                             if (immediately)
                             {
                                 await FolderDao.DeleteFolderAsync(folder.Id);
-                                filesMessageService.Send(folder, _headers, MessageAction.FolderDeleted, folder.Title);
+
+                                if (DocSpaceHelper.IsRoom(folder.FolderType))
+                                {
+                                    filesMessageService.Send(folder, _headers, MessageAction.RoomDeleted, folder.Title);
+                                }
+                                else
+                                {
+                                    filesMessageService.Send(folder, _headers, MessageAction.FolderDeleted, folder.Title);
+                                }
                             }
                             else
                             {

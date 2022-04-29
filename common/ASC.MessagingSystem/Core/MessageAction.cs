@@ -437,6 +437,13 @@ public enum MessageAction
     DocumentSignComplete = 5046,
     DocumentSendToSign = 5045,
 
+    RoomCreated = 5050,
+    RoomRenamed = 5051,
+    RoomArchived = 5052,
+    RoomUnarchived = 5053,
+    RoomDeleted = 5054,
+    RoomUpdateAccess = 5055,
+
     #endregion
 
     #region Settings

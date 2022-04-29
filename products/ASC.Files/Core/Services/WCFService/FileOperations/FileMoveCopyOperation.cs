@@ -219,9 +219,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             var folder = await FolderDao.GetFolderAsync(folderId);
             var (isError, message) = await WithErrorAsync(scope, await FileDao.GetFilesAsync(folder.Id, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, string.Empty, false, true).ToListAsync());
 
-            var isRoom = folder.FolderType == FolderType.CustomRoom || folder.FolderType == FolderType.EditingRoom
-                || folder.FolderType == FolderType.ReviewRoom || folder.FolderType == FolderType.ReadOnlyRoom
-                || folder.FolderType == FolderType.FillingFormsRoom;
+            var isRoom = DocSpaceHelper.IsRoom(folder.FolderType);
 
             var canEditRoom = await FilesSecurity.CanEditRoomAsync(folder);
 
@@ -389,13 +387,27 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                             var newFolderId = await FolderDao.MoveFolderAsync(folder.Id, toFolderId, CancellationToken);
                             newFolder = await folderDao.GetFolderAsync(newFolderId);
 
-                            if (folder.RootFolderType != FolderType.USER)
+                            if (isRoom)
                             {
-                                filesMessageService.Send(folder, toFolder, _headers, MessageAction.FolderMoved, folder.Title, toFolder.Title);
+                                if (toFolder.FolderType == FolderType.Archive)
+                                {
+                                    filesMessageService.Send(folder, _headers, MessageAction.RoomArchived, folder.Title);
+                                }
+                                else
+                                {
+                                    filesMessageService.Send(folder, _headers, MessageAction.RoomUnarchived, folder.Title);
+                                }
                             }
                             else
                             {
-                                filesMessageService.Send(newFolder, toFolder, _headers, MessageAction.FolderMoved, folder.Title, toFolder.Title);
+                                if (folder.RootFolderType != FolderType.USER)
+                                {
+                                    filesMessageService.Send(folder, toFolder, _headers, MessageAction.FolderMoved, folder.Title, toFolder.Title);
+                                }
+                                else
+                                {
+                                    filesMessageService.Send(newFolder, toFolder, _headers, MessageAction.FolderMoved, folder.Title, toFolder.Title);
+                                }
                             }
 
                             if (isToFolder)
