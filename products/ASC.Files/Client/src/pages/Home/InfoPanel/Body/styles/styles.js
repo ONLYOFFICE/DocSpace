@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Base } from "@appserver/components/themes";
 
 const StyledInfoRoomBody = styled.div`
-  padding: 0px 0px 0 16px;
+  padding-left: 20px;
   height: auto;
   background-color: ${(props) => props.theme.infoPanel.backgroundColor};
   color: ${(props) => props.theme.infoPanel.textColor};

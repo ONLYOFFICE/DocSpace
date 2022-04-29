@@ -85,14 +85,6 @@ const Badges = ({
   const isForm = fileExst === ".oform";
   const isTile = viewAs === "tile";
 
-  const iconEdit = isForm
-    ? "/static/images/access.edit.form.react.svg"
-    : "/static/images/file.actions.convert.edit.doc.react.svg";
-
-  const iconForm = "/static/images/access.edit.form.react.svg";
-
-  const iconRefresh = "/static/images/refresh.react.svg";
-
   const countVersions = versionGroup > 999 ? "999+" : versionGroup;
 
   const contentNewItems = newItems > 999 ? "999+" : newItems;
@@ -107,6 +99,17 @@ const Badges = ({
   const paddingBadge = isTile || tabletViewBadge ? "0 3px" : "0 5px";
 
   const fontSizeBadge = isTile || tabletViewBadge ? "11px" : "9px";
+
+  const iconForm =
+    sizeBadge === "medium"
+      ? "/static/images/access.edit.form.medium.react.svg"
+      : "/static/images/access.edit.form.react.svg";
+
+  const iconEdit = !isForm
+    ? "/static/images/file.actions.convert.edit.doc.react.svg"
+    : iconForm;
+
+  const iconRefresh = "/static/images/refresh.react.svg";
 
   const commonBadgeProps = {
     borderRadius: "11px",

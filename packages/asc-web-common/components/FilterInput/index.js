@@ -80,7 +80,8 @@ const FilterInput = React.memo(
         !isMobile &&
         viewSelectorVisible &&
         !isMobileUtils() &&
-        !isTabletUtils() ? (
+        !isTabletUtils() &&
+        viewAs !== "row" ? (
           <ViewSelector
             style={{ marginLeft: "8px" }}
             onChangeView={onChangeViewAs}
@@ -89,7 +90,10 @@ const FilterInput = React.memo(
           />
         ) : (
           <>
-            {(isMobile || isTabletUtils() || isMobileUtils()) && (
+            {(isMobile ||
+              isTabletUtils() ||
+              isMobileUtils() ||
+              viewAs === "row") && (
               <SortButton
                 t={t}
                 selectedFilterData={selectedFilterData}

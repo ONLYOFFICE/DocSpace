@@ -92,6 +92,7 @@ const ControlButtons = ({
   isInfoPanelVisible,
   toggleInfoPanel,
   toggleDropBox,
+  isDesktop,
 }) => {
   const toggleInfoPanelAction = () => {
     toggleInfoPanel && toggleInfoPanel();
@@ -122,20 +123,22 @@ const ControlButtons = ({
               isDisabled={false}
             />
           )}
-          <StyledInfoPanelToggleWrapper
-            isRootFolder={isRootFolder}
-            isInfoPanelVisible={isInfoPanelVisible}
-          >
-            <div className="info-panel-toggle-bg">
-              <IconButton
-                className="info-panel-toggle"
-                iconName="images/panel.react.svg"
-                size="16"
-                isFill={true}
-                onClick={toggleInfoPanelAction}
-              />
-            </div>
-          </StyledInfoPanelToggleWrapper>
+          {!isDesktop && (
+            <StyledInfoPanelToggleWrapper
+              isRootFolder={isRootFolder}
+              isInfoPanelVisible={isInfoPanelVisible}
+            >
+              <div className="info-panel-toggle-bg">
+                <IconButton
+                  className="info-panel-toggle"
+                  iconName="images/panel.react.svg"
+                  size="16"
+                  isFill={true}
+                  onClick={toggleInfoPanelAction}
+                />
+              </div>
+            </StyledInfoPanelToggleWrapper>
+          )}
         </>
       ) : canCreate ? (
         <>
@@ -189,7 +192,6 @@ const ControlButtons = ({
         </>
       ) : (
         <>
-          {" "}
           <StyledInfoPanelToggleWrapper
             isRootFolder={isRootFolder}
             isInfoPanelVisible={isInfoPanelVisible}

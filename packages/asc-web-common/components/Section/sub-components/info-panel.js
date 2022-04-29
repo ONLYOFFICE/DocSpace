@@ -91,12 +91,12 @@ const StyledControlContainer = styled.div`
   align-items: center;
   justify-content: center;
   z-index: 450;
-  background: ${(props) => props.theme.catalog.control.background};
+  /* background: ${(props) => props.theme.catalog.control.background}; */
 
   @media ${tablet} {
     display: flex;
 
-    top: 18px;
+    top: 16px;
     left: -34px;
   }
 
@@ -120,8 +120,8 @@ const StyledControlContainer = styled.div`
 StyledControlContainer.defaultProps = { theme: Base };
 
 const StyledCrossIcon = styled(CrossIcon)`
-  width: 12px;
-  height: 12px;
+  width: 17px;
+  height: 17px;
   z-index: 455;
   path {
     fill: ${(props) => props.theme.catalog.control.fill};

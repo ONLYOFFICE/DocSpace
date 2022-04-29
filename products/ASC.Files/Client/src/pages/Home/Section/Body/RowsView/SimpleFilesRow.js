@@ -141,7 +141,7 @@ const StyledSimpleFilesRow = styled(Row)`
   }
 
   .expandButton {
-    margin-left: 12px;
+    margin-left: 6px;
     padding-top: 7px;
   }
 
