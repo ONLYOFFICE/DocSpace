@@ -397,6 +397,7 @@ class Section extends React.Component {
                               viewAs={viewAs}
                               showText={showText}
                               infoPanelIsVisible={infoPanelIsVisible}
+                              settingsStudio={settingsStudio}
                             >
                               {sectionHeaderContent
                                 ? sectionHeaderContent.props.children
