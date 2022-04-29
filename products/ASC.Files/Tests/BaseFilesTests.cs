@@ -120,6 +120,8 @@ public class BaseFilesTests
     private protected HttpClient _client;
 
     public static readonly string TestConnection = string.Format("Server=localhost;Database=onlyoffice_test.{0};User ID=root;Password=root;Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;AllowPublicKeyRetrieval=True", DateTime.Now.Ticks);
+
+    private readonly string _pathToProducts = Path.Combine("..", "..", "..", "Data.Test");
     public virtual Task SetUp()
     {
         var host = new FilesApplication(new Dictionary<string, string>
@@ -127,7 +129,9 @@ public class BaseFilesTests
                 { "pathToConf", Path.Combine("..","..", "..", "config") },
                 { "ConnectionStrings:default:connectionString", TestConnection },
                 { "migration:enabled", "true" },
-                { "web:hub:internal", "" }
+                { "web:hub:internal", "" },
+                { "$STORAGE_ROOT", Path.Combine("..", "..", "..", "Data.Test") },
+                { "log:dir", Path.Combine("..", "..", "..", "Logs", "Test") },
             })
              .WithWebHostBuilder(a => { });
 
@@ -160,7 +164,7 @@ public class BaseFilesTests
     {
         try
         {
-            Directory.Delete(Path.Combine("..", "..", "..", "..", "Data"), true);
+            Directory.Delete(Path.Combine("..", "..", "..", _pathToProducts), true);
         }
         catch { }
     }
