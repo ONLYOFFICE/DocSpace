@@ -57,7 +57,6 @@ public class SsoHandlerService
     private readonly Signature _signature;
     private readonly SecurityContext _securityContext;
     private readonly TenantExtra _tenantExtra;
-    private readonly CommonLinkUtility _commonLinkUtility;
     private readonly TenantStatisticsProvider _tenantStatisticsProvider;
     private readonly UserFormatter _userFormatter;
     private readonly UserManagerWrapper _userManagerWrapper;
@@ -75,7 +74,6 @@ public class SsoHandlerService
         Signature signature,
         SecurityContext securityContext,
         TenantExtra tenantExtra,
-        CommonLinkUtility commonLinkUtility,
         TenantStatisticsProvider tenantStatisticsProvider,
         UserFormatter userFormatter,
         UserManagerWrapper userManagerWrapper,
@@ -91,7 +89,6 @@ public class SsoHandlerService
         _signature = signature;
         _securityContext = securityContext;
         _tenantExtra = tenantExtra;
-        _commonLinkUtility = commonLinkUtility;
         _tenantStatisticsProvider = tenantStatisticsProvider;
         _userFormatter = userFormatter;
         _userManagerWrapper = userManagerWrapper;
