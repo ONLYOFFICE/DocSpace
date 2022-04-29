@@ -165,6 +165,7 @@ const Badges = ({
             backgroundColor={theme.filesBadges.backgroundColor}
             label={t("VersionBadge:Version", { version: countVersions })}
             onClick={onShowVersionHistory}
+            noHover={true}
           />
         </BadgeWrapper>
       )}
