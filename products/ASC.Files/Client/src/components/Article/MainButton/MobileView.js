@@ -10,6 +10,8 @@ import MainButtonMobile from "@appserver/components/main-button-mobile";
 const StyledMainButtonMobile = styled(MainButtonMobile)`
   position: fixed;
 
+  z-index: 200;
+
   right: 24px;
   bottom: 24px;
 
