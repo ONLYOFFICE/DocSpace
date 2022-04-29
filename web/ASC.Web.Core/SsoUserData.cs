@@ -24,7 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using Constants = ASC.Core.Users.Constants;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace ASC.Web.Studio.UserControls.Management.SingleSignOnSettings;
@@ -32,19 +31,6 @@ namespace ASC.Web.Studio.UserControls.Management.SingleSignOnSettings;
 [Serializable]
 public class SsoUserData
 {
-    private readonly UserManager _userManager;
-    private readonly TenantUtil _tenantUtil;
-
-    public SsoUserData(
-        UserManager userManager,
-        TenantUtil tenantUtil)
-    {
-        _userManager = userManager;
-        _tenantUtil = tenantUtil;
-    }
-
-    private const int MAX_NUMBER_OF_SYMBOLS = 64;
-
     [JsonPropertyName("nameID")]
     public string NameId { get; set; }
 
@@ -72,127 +58,6 @@ public class SsoUserData
     public override string ToString()
     {
         return JsonSerializer.Serialize(this);
-    }
-
-    private const string MOB_PHONE = "mobphone";
-    private const string EXT_MOB_PHONE = "extmobphone";
-
-    public UserInfo ToUserInfo(bool checkExistance = false)
-    {
-        var firstName = TrimToLimit(FirstName);
-        var lastName = TrimToLimit(LastName);
-
-        if (string.IsNullOrEmpty(Email) || string.IsNullOrEmpty(firstName) || string.IsNullOrEmpty(lastName))
-        {
-            return Constants.LostUser;
-        }
-
-        var userInfo = Constants.LostUser;
-
-        if (checkExistance)
-        {
-            userInfo = _userManager.GetSsoUserByNameId(NameId);
-
-            if (Equals(userInfo, Constants.LostUser))
-            {
-                userInfo = _userManager.GetUserByEmail(Email);
-            }
-        }
-
-        if (Equals(userInfo, Constants.LostUser))
-        {
-            userInfo = new UserInfo
-            {
-                Email = Email,
-                FirstName = firstName,
-                LastName = lastName,
-                SsoNameId = NameId,
-                SsoSessionId = SessionId,
-                Location = Location,
-                Title = Title,
-                ActivationStatus = EmployeeActivationStatus.NotActivated,
-                WorkFromDate = _tenantUtil.DateTimeNow()
-            };
-
-            if (string.IsNullOrEmpty(Phone))
-                return userInfo;
-
-            var contacts = new List<string> { EXT_MOB_PHONE, Phone };
-            userInfo.ContactsList = contacts;
-        }
-        else
-        {
-            userInfo.Email = Email;
-            userInfo.FirstName = firstName;
-            userInfo.LastName = lastName;
-            userInfo.SsoNameId = NameId;
-            userInfo.SsoSessionId = SessionId;
-            userInfo.Location = Location;
-            userInfo.Title = Title;
-
-            var portalUserContacts = userInfo.ContactsList;
-
-            var newContacts = new List<string>();
-            var phones = new List<string>();
-            var otherContacts = new List<string>();
-
-            for (int i = 0, n = portalUserContacts.Count; i < n; i += 2)
-            {
-                if (i + 1 >= portalUserContacts.Count)
-                    continue;
-
-                var type = portalUserContacts[i];
-                var value = portalUserContacts[i + 1];
-
-                switch (type)
-                {
-                    case EXT_MOB_PHONE:
-                        break;
-                    case MOB_PHONE:
-                        phones.Add(value);
-                        break;
-                    default:
-                        otherContacts.Add(type);
-                        otherContacts.Add(value);
-                        break;
-                }
-            }
-
-            if (!string.IsNullOrEmpty(Phone))
-            {
-                if (phones.Exists(p => p.Equals(Phone)))
-                {
-                    phones.Remove(Phone);
-                }
-
-                newContacts.Add(EXT_MOB_PHONE);
-                newContacts.Add(Phone);
-            }
-
-            phones.ForEach(p =>
-            {
-                newContacts.Add(MOB_PHONE);
-                newContacts.Add(p);
-            });
-
-            newContacts.AddRange(otherContacts);
-
-            userInfo.ContactsList = newContacts;
-        }
-
-        return userInfo;
-    }
-
-    private static string TrimToLimit(string str, int limit = MAX_NUMBER_OF_SYMBOLS)
-    {
-        if (string.IsNullOrEmpty(str))
-            return "";
-
-        var newStr = str.Trim();
-
-        return newStr.Length > limit
-                ? newStr.Substring(0, MAX_NUMBER_OF_SYMBOLS)
-                : newStr;
     }
 }
 

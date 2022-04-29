@@ -62,6 +62,12 @@ public class SsoHandlerService
     private readonly UserManagerWrapper _userManagerWrapper;
     private readonly MessageService _messageService;
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
+    private readonly TenantUtil _tenantUtil;
+
+    private const string MOB_PHONE = "mobphone";
+    private const string EXT_MOB_PHONE = "extmobphone";
+
+    private const int MAX_NUMBER_OF_SYMBOLS = 64;
 
 
     public SsoHandlerService(
@@ -78,7 +84,8 @@ public class SsoHandlerService
         UserFormatter userFormatter,
         UserManagerWrapper userManagerWrapper,
         MessageService messageService,
-        DisplayUserSettingsHelper displayUserSettingsHelper)
+        DisplayUserSettingsHelper displayUserSettingsHelper,
+        TenantUtil tenantUtil)
     {
         _log = optionsMonitor.CurrentValue;
         _coreBaseSettings = coreBaseSettings;
@@ -94,6 +101,7 @@ public class SsoHandlerService
         _userManagerWrapper = userManagerWrapper;
         _messageService = messageService;
         _displayUserSettingsHelper = displayUserSettingsHelper;
+        _tenantUtil = tenantUtil;
 
     }
 
@@ -146,7 +154,7 @@ public class SsoHandlerService
                     return;
                 }
 
-                var userInfo = userData.ToUserInfo(true);
+                var userInfo = ToUserInfo(userData, true);
 
                 if (Equals(userInfo, Constants.LostUser))
                 {
@@ -279,6 +287,130 @@ public class SsoHandlerService
 
         return newUserInfo;
 
+    }
+
+    private UserInfo ToUserInfo(SsoUserData UserData, bool checkExistance = false)
+    {
+        var firstName = TrimToLimit(UserData.FirstName);
+        var lastName = TrimToLimit(UserData.LastName);
+        var email = UserData.Email;
+        var nameId = UserData.NameId;
+        var sessionId = UserData.SessionId;
+        var location = UserData.Location;
+        var title = UserData.Title;
+        var phone = UserData.Phone;
+
+        if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(firstName) || string.IsNullOrEmpty(lastName))
+        {
+            return Constants.LostUser;
+        }
+
+        var userInfo = Constants.LostUser;
+
+        if (checkExistance)
+        {
+            userInfo = _userManager.GetSsoUserByNameId(nameId);
+
+            if (Equals(userInfo, Constants.LostUser))
+            {
+                userInfo = _userManager.GetUserByEmail(email);
+            }
+        }
+
+        if (Equals(userInfo, Constants.LostUser))
+        {
+            userInfo = new UserInfo
+            {
+                Email = email,
+                FirstName = firstName,
+                LastName = lastName,
+                SsoNameId = nameId,
+                SsoSessionId = sessionId,
+                Location = location,
+                Title = title,
+                ActivationStatus = EmployeeActivationStatus.NotActivated,
+                WorkFromDate = _tenantUtil.DateTimeNow()
+            };
+
+            if (string.IsNullOrEmpty(phone))
+                return userInfo;
+
+            var contacts = new List<string> { EXT_MOB_PHONE, phone };
+            userInfo.ContactsList = contacts;
+        }
+        else
+        {
+            userInfo.Email = email;
+            userInfo.FirstName = firstName;
+            userInfo.LastName = lastName;
+            userInfo.SsoNameId = nameId;
+            userInfo.SsoSessionId = sessionId;
+            userInfo.Location = location;
+            userInfo.Title = title;
+
+            var portalUserContacts = userInfo.ContactsList;
+
+            var newContacts = new List<string>();
+            var phones = new List<string>();
+            var otherContacts = new List<string>();
+
+            for (int i = 0, n = portalUserContacts.Count; i < n; i += 2)
+            {
+                if (i + 1 >= portalUserContacts.Count)
+                    continue;
+
+                var type = portalUserContacts[i];
+                var value = portalUserContacts[i + 1];
+
+                switch (type)
+                {
+                    case EXT_MOB_PHONE:
+                        break;
+                    case MOB_PHONE:
+                        phones.Add(value);
+                        break;
+                    default:
+                        otherContacts.Add(type);
+                        otherContacts.Add(value);
+                        break;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(phone))
+            {
+                if (phones.Exists(p => p.Equals(phone)))
+                {
+                    phones.Remove(phone);
+                }
+
+                newContacts.Add(EXT_MOB_PHONE);
+                newContacts.Add(phone);
+            }
+
+            phones.ForEach(p =>
+            {
+                newContacts.Add(MOB_PHONE);
+                newContacts.Add(p);
+            });
+
+            newContacts.AddRange(otherContacts);
+
+            userInfo.ContactsList = newContacts;
+        }
+
+        return userInfo;
+    }
+
+    private static string TrimToLimit(string str, int limit = MAX_NUMBER_OF_SYMBOLS)
+    {
+        if (string.IsNullOrEmpty(str))
+            return "";
+
+        var newStr = str.Trim();
+
+        return newStr.Length > limit
+                ? newStr.Substring(0, MAX_NUMBER_OF_SYMBOLS)
+                : newStr;
     }
 }
 
