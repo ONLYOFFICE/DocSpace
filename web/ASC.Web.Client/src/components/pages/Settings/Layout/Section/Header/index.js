@@ -27,6 +27,10 @@ const HeaderContainer = styled.div`
   align-items: center;
   max-width: calc(100vw - 32px);
 
+  h1 {
+    line-height: 53px;
+  }
+
   .action-wrapper {
     flex-grow: 1;
 
@@ -41,6 +45,12 @@ const HeaderContainer = styled.div`
     @media ${tablet} {
       padding: 8px 0 8px 8px;
       margin-left: -8px;
+    }
+  }
+
+  @media (min-width: 600px) and (max-width: 1024px) {
+    h1 {
+      line-height: 61px;
     }
   }
 `;
