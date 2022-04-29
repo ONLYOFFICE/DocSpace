@@ -19,7 +19,7 @@ import {
 } from "../../../utils";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
-import { isMobile } from "react-device-detect";
+import { isMobile, isTablet } from "react-device-detect";
 
 const HeaderContainer = styled.div`
   position: relative;
@@ -47,6 +47,13 @@ const HeaderContainer = styled.div`
       margin-left: -8px;
     }
   }
+
+  ${isTablet &&
+  css`
+    h1 {
+      line-height: 61px;
+    }
+  `};
 
   @media (min-width: 600px) and (max-width: 1024px) {
     h1 {
