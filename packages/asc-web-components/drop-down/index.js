@@ -62,7 +62,7 @@ class DropDown extends React.PureComponent {
   componentDidUpdate(prevProps) {
     if (this.props.open !== prevProps.open) {
       if (this.props.open) {
-        this.props.enableOnClickOutside();
+        !isMobile && this.props.enableOnClickOutside(); //fixed main-button-mobile click, remove !isMobile if have dd problem
         this.bindDocumentResizeListener();
         if (this.props.isDefaultMode) {
           return this.checkPositionPortal();
