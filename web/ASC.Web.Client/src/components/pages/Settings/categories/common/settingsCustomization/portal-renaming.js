@@ -264,7 +264,7 @@ const PortalRenaming = (props) => {
         </div>
       )}
       {(isMobileOnly && isSmallTablet()) || isSmallTablet() ? (
-        <StyledScrollbar stype="smallBlack">{settingsBlock}</StyledScrollbar>
+        <StyledScrollbar stype="mediumBlack">{settingsBlock}</StyledScrollbar>
       ) : (
         <> {settingsBlock}</>
       )}

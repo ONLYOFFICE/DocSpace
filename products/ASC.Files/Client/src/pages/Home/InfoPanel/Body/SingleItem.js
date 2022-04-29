@@ -1,5 +1,6 @@
 import { FileType } from "@appserver/common/constants";
 import { LANGUAGE } from "@appserver/common/constants";
+import { sleep } from "@appserver/common/utils";
 import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
 import Tooltip from "@appserver/components/tooltip";
@@ -30,6 +31,9 @@ const SingleItem = (props) => {
     dontShowSize,
     dontShowLocation,
     dontShowAccess,
+    personal,
+    createThumbnail,
+    getFileInfo,
   } = props;
 
   let updateSubscription = true;
@@ -197,46 +201,70 @@ const SingleItem = (props) => {
   const loadAsyncData = async (displayedItem, selectedItem) => {
     if (!updateSubscription) return;
 
-    const updateLoadedItemProperties = async (displayedItem, selectedItem) => {
-      const parentFolderId = selectedItem.isFolder
-        ? selectedItem.parentId
-        : selectedItem.folderId;
+    if (
+      !selectedItem.thumbnailUrl &&
+      !selectedItem.isFolder &&
+      selectedItem.thumbnailStatus === 0 &&
+      (selectedItem.fileType === FileType.Image ||
+        selectedItem.fileType === FileType.Spreadsheet ||
+        selectedItem.fileType === FileType.Presentation ||
+        selectedItem.fileType === FileType.Document)
+    ) {
+      await createThumbnail(selectedItem.id);
 
-      const noLocationProperties = [...displayedItem.properties].filter(
-        (dip) => dip.id !== "Location"
-      );
+      await sleep(5000);
 
-      let result;
-      await getFolderInfo(parentFolderId)
-        .catch(() => {
-          result = noLocationProperties;
-        })
-        .then((data) => {
-          if (!data) {
-            result = noLocationProperties;
-            return;
-          }
-          result = [...displayedItem.properties].map((dip) =>
-            dip.id === "Location"
-              ? {
-                  id: "Location",
-                  title: t("Location"),
-                  content: (
-                    <Link
-                      className="property-content"
-                      href={`/products/files/filter?folder=${parentFolderId}`}
-                      isHovered={true}
-                    >
-                      {data.title}
-                    </Link>
-                  ),
-                }
-              : dip
-          );
+      const newFileInfo = await getFileInfo(selectedItem.id);
+
+      if (newFileInfo.thumbnailUrl) {
+        displayedItem.thumbnailUrl = newFileInfo.thumbnailUrl;
+
+        setItem({
+          ...displayedItem,
         });
+      }
+    }
 
-      return result;
-    };
+    // const updateLoadedItemProperties = async (displayedItem, selectedItem) => {
+    //   const parentFolderId = selectedItem.isFolder
+    //     ? selectedItem.parentId
+    //     : selectedItem.folderId;
+
+    //   const noLocationProperties = [...displayedItem.properties].filter(
+    //     (dip) => dip.id !== "Location"
+    //   );
+
+    //   let result;
+    //   await getFolderInfo(parentFolderId)
+    //     .catch(() => {
+    //       result = noLocationProperties;
+    //     })
+    //     .then((data) => {
+    //       if (!data) {
+    //         result = noLocationProperties;
+    //         return;
+    //       }
+    //       result = [...displayedItem.properties].map((dip) =>
+    //         dip.id === "Location"
+    //           ? {
+    //               id: "Location",
+    //               title: t("Location"),
+    //               content: (
+    //                 <Link
+    //                   className="property-content"
+    //                   href={`/products/files/filter?folder=${parentFolderId}`}
+    //                   isHovered={true}
+    //                 >
+    //                   {data.title}
+    //                 </Link>
+    //               ),
+    //             }
+    //           : dip
+    //       );
+    //     });
+
+    //   return result;
+    // };
 
     const updateLoadedItemAccess = async (selectedItem) => {
       const accesses = await getShareUsers(
@@ -282,12 +310,14 @@ const SingleItem = (props) => {
       return;
     }
 
-    const access = await updateLoadedItemAccess(selectedItem);
-    setItem({
-      ...displayedItem,
-      // properties: properties,
-      access: access,
-    });
+    if (!personal) {
+      const access = await updateLoadedItemAccess(selectedItem);
+      setItem({
+        ...displayedItem,
+        // properties: properties,
+        access: access,
+      });
+    }
   };
 
   const openSharingPanel = () => {
@@ -309,7 +339,7 @@ const SingleItem = (props) => {
         <Text className="text">{item.title}</Text>
       </StyledTitle>
 
-      {selectedItem.thumbnailUrl ? (
+      {item.thumbnailUrl ? (
         <StyledThumbnail>
           <img src={item.thumbnailUrl} alt="" />
         </StyledThumbnail>
@@ -338,7 +368,7 @@ const SingleItem = (props) => {
         })}
       </StyledProperties>
 
-      {!dontShowAccess && item.access && (
+      {!dontShowAccess && item.access && !personal && (
         <>
           <StyledSubtitle>
             <Text fontWeight="600" fontSize="14px">

@@ -229,6 +229,7 @@ class Section extends React.Component {
       snackbarExist,
       showText,
       infoPanelIsVisible,
+      isInfoPanelAvailable,
     } = this.props;
 
     let sectionHeaderContent = null;
@@ -467,12 +468,16 @@ class Section extends React.Component {
                       <></>
                     )}
                   </SectionContainer>
-                  <InfoPanel>
-                    <SubInfoPanelHeader>
-                      {infoPanelHeaderContent}
-                    </SubInfoPanelHeader>
-                    <SubInfoPanelBody>{infoPanelBodyContent}</SubInfoPanelBody>
-                  </InfoPanel>
+                  {isInfoPanelAvailable && (
+                    <InfoPanel>
+                      <SubInfoPanelHeader>
+                        {infoPanelHeaderContent}
+                      </SubInfoPanelHeader>
+                      <SubInfoPanelBody>
+                        {infoPanelBodyContent}
+                      </SubInfoPanelBody>
+                    </InfoPanel>
+                  )}
                 </Provider>
               )}
             </ReactResizeDetector>
@@ -539,11 +544,13 @@ Section.propTypes = {
   isHeaderVisible: PropTypes.bool,
   firstLoad: PropTypes.bool,
   isHomepage: PropTypes.bool,
+  isInfoPanelAvailable: PropTypes.bool,
 };
 
 Section.defaultProps = {
   withBodyScroll: true,
   withBodyAutoFocus: false,
+  isInfoPanelAvailable: true,
 };
 
 Section.InfoPanelHeader = InfoPanelHeader;

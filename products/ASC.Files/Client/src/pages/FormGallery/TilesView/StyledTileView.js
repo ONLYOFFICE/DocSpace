@@ -70,9 +70,9 @@ const StyledFileTileTop = styled.div`
     .thumbnail-image {
       pointer-events: none;
       position: relative;
-      height: 100%;
+      /* height: 100%;
       width: 100%;
-      object-fit: cover;
+      object-fit: cover; */
       border-radius: 6px 6px 0 0;
       z-index: 0;
     }

@@ -49,6 +49,8 @@ const withHotkeys = (Component) => {
       filterPreventDefault: false,
       enableOnTags: ["INPUT"],
       enabled: !someDialogIsOpen && enabledHotkeys && !mediaViewerIsVisible,
+      keyup: true,
+      keydown: false,
     };
 
     const onKeyDown = (e) => activateHotkeys(e);

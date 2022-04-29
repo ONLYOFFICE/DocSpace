@@ -29,6 +29,8 @@ class FieldContainer extends React.Component {
       errorMessage,
       errorColor,
       errorMessageWidth,
+      offsetRight,
+      tooltipMaxWidth,
     } = this.props;
 
     return (
@@ -53,7 +55,9 @@ class FieldContainer extends React.Component {
               <HelpButton
                 tooltipContent={tooltipContent}
                 place={place}
+                offsetRight={offsetRight}
                 helpButtonHeaderContent={helpButtonHeaderContent}
+                tooltipMaxWidth={tooltipMaxWidth}
               />
             )}
           </div>
@@ -109,6 +113,8 @@ FieldContainer.propTypes = {
   id: PropTypes.string,
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  offsetRight: PropTypes.number,
+  tooltipMaxWidth: PropTypes.string,
 };
 
 FieldContainer.defaultProps = {
@@ -116,6 +122,7 @@ FieldContainer.defaultProps = {
   labelVisible: true,
   maxLabelWidth: "110px",
   errorMessageWidth: "293px",
+  offsetRight: 0,
 };
 
 export default FieldContainer;

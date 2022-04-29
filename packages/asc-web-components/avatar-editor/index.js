@@ -96,6 +96,20 @@ class AvatarEditor extends React.Component {
     }
   }
 
+  keyPress = (e) => {
+    if (e.keyCode === 13) {
+      this.onSaveButtonClick();
+    }
+  };
+
+  componentDidMount() {
+    addEventListener("keydown", this.keyPress, false);
+  }
+
+  componentWillUnmount() {
+    removeEventListener("keydown", this.keyPress, false);
+  }
+
   render() {
     const {
       displayType,

@@ -37,8 +37,7 @@ const StyledHeaderContent = styled.div`
     align-items: center;
     justify-content: start;
 
-    width: calc(100% - 33px);
-    max-width: calc(100% - 33px);
+    width: 100%;
 
     .sharing_panel-arrow {
       .icon-button_svg {
@@ -341,10 +340,29 @@ const StyledModalFooter = styled.div`
   align-items: center;
   justify-content: space-between;
 
+  div:first-child {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    width: 100%;
+
+    padding: 0;
+  }
+
   button {
+    width: 100%;
     height: 40px;
 
     box-sizing: border-box;
+
+    .button-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
   }
 
   button:first-child {

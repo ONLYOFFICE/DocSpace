@@ -343,3 +343,7 @@ export function getFolderOptions(folderId, filter) {
 
   return options;
 }
+
+export function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}

@@ -154,7 +154,7 @@ const StyledBadgesContainer = styled.div`
 
   .badge-version {
     width: max-content;
-    margin: -2px 6px -2px -2px;
+    margin: 0 6px -2px -2px;
   }
 
   .badge-new-version {
@@ -265,7 +265,7 @@ const FilesTableRow = (props) => {
 
   React.useEffect(() => {
     if (index === 0) {
-      if (checkedProps || isActive) {
+      if (checkedProps || isActive || showHotkeyBorder) {
         setFirsElemChecked(true);
       } else {
         setFirsElemChecked(false);
@@ -273,8 +273,6 @@ const FilesTableRow = (props) => {
       if (showHotkeyBorder) {
         setHeaderBorder(true);
       } else {
-        const elem = document.getElementById("table-container_caption-header");
-        if (elem) elem.style.borderColor = "#ECEEF1";
         setHeaderBorder(false);
       }
     }
