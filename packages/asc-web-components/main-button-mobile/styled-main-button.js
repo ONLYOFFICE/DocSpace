@@ -12,6 +12,8 @@ const StyledFloatingButton = styled(FloatingButton)`
   z-index: 1010;
   background: ${(props) => props.theme.mainButtonMobile.buttonColor} !important;
 
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
   .circle__mask + div {
     display: flex;
     align-items: center;

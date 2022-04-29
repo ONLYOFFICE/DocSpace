@@ -16,7 +16,7 @@ import IconButton from "../icon-button";
 import Button from "../button";
 import Text from "../text";
 import Scrollbar from "@appserver/components/scrollbar";
-import { isMobile, isTablet } from "react-device-detect";
+import { isMobile } from "react-device-detect";
 import Backdrop from "../backdrop";
 
 const ProgressBarMobile = ({
@@ -237,13 +237,13 @@ const MainButtonMobile = (props) => {
           manualWidth={manualWidth || "400px"}
           directionY="top"
           directionX="right"
-          isMobile={isMobile || isTablet}
+          isMobile={isMobile}
           fixedDirection={true}
           heightProp={height}
           sectionWidth={sectionWidth}
           isDefaultMode={false}
         >
-          {isMobile || isTablet ? (
+          {isMobile ? (
             <Scrollbar
               style={{ position: "absolute" }}
               scrollclass="section-scroll"
