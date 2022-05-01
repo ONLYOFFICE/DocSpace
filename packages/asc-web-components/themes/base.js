@@ -2679,6 +2679,7 @@ const Base = {
 
   submenu: {
     lineColor: "#eceef1",
+    backgroundColor: white,
   },
 };
 

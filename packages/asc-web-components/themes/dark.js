@@ -2690,6 +2690,7 @@ const Dark = {
 
   submenu: {
     lineColor: "#474747",
+    backgroundColor: "#333",
   },
 };
 
