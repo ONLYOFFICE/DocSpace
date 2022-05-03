@@ -99,6 +99,7 @@ class AxiosClient {
         switch (error.response?.status) {
           case 401:
             if (options.skipUnauthorized) return Promise.resolve();
+            if (options.skipLogout) return Promise.reject(errorText || error);
 
             this.request({
               method: "post",
@@ -118,6 +119,7 @@ class AxiosClient {
           default:
             break;
         }
+
         return Promise.reject(errorText || error);
       } else {
         switch (error.response?.status) {
@@ -127,8 +129,9 @@ class AxiosClient {
           default:
             break;
         }
+
         return Promise.reject(errorText || error);
-      } // adapt to ssr
+      }
     };
     return this.client(options).then(onSuccess).catch(onError);
   };
