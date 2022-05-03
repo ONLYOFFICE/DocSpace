@@ -2,6 +2,7 @@ import api from "@appserver/common/api";
 import { makeAutoObservable } from "mobx";
 const { Filter } = api;
 import SelectionStore from "./SelectionStore";
+import CommonStore from "./CommonStore";
 import authStore from "@appserver/common/store/AuthStore";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
@@ -12,13 +13,6 @@ class SettingsSetupStore {
   authStore = null;
   isInit = false;
 
-  common = {
-    whiteLabel: {
-      logoSizes: [],
-      logoText: null,
-      logoUrls: [],
-    },
-  };
   security = {
     accessRight: {
       options: [],
@@ -94,18 +88,6 @@ class SettingsSetupStore {
 
   setFilter = (filter) => {
     this.security.accessRight.filter = filter;
-  };
-
-  setLogoText = (text) => {
-    this.common.whiteLabel.logoText = text;
-  };
-
-  setLogoSizes = (sizes) => {
-    this.common.whiteLabel.logoSizes = sizes;
-  };
-
-  setLogoUrls = (urls) => {
-    this.common.whiteLabel.logoUrls = urls;
   };
 
   setConsumers = (consumers) => {
@@ -211,21 +193,6 @@ class SettingsSetupStore {
     this.setAdmins(admins.items);
     this.setTotalAdmins(admins.total - 1);
     this.setFilter(filterData);
-  };
-
-  getWhiteLabelLogoText = async () => {
-    const res = await api.settings.getLogoText();
-    this.setLogoText(res);
-  };
-
-  getWhiteLabelLogoSizes = async () => {
-    const res = await api.settings.getLogoSizes();
-    this.setLogoSizes(res);
-  };
-
-  getWhiteLabelLogoUrls = async () => {
-    const res = await api.settings.getLogoUrls();
-    this.setLogoUrls(Object.values(res));
   };
 
   setWhiteLabelSettings = async (data) => {

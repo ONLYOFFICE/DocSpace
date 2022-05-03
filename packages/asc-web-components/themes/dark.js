@@ -579,7 +579,7 @@ const Dark = {
       asidePadding: "0 16px 16px",
 
       heading: {
-        maxWidth: "500px",
+        maxWidth: "calc(100% - 18px)",
         margin: "0",
         fontWeight: "700",
         modalLineHeight: "40px",
@@ -1224,6 +1224,7 @@ const Dark = {
   },
 
   treeNode: {
+    background: "#3D3D3D",
     dragging: {
       draggable: {
         background: "rgba(230, 211, 138, 0.12)",
@@ -2080,6 +2081,7 @@ const Dark = {
       hoverIconColor: grayMaxLight,
 
       borderImageSource: `linear-gradient(to right,${black} 21px,#474747 21px,#474747 calc(100% - 20px),${black} calc(100% - 20px))`,
+      hotkeyBorderBottom: `1px solid ${globalColors.blueMain}`,
     },
 
     tableCell: {
@@ -2141,7 +2143,7 @@ const Dark = {
           "linear-gradient(to right, #333333 25px, #474747 24px)",
         borderImageLeft: "linear-gradient(to left, #333333 20px, #474747 24px)",
 
-        borderColor: "#858585",
+        borderColor: "#474747",
         borderColorTransition: "#474747",
       },
     },
@@ -2420,6 +2422,7 @@ const Dark = {
   newContextMenu: {
     background: "#3D3D3D",
     borderRadius: "6px",
+    mobileBorderRadius: "6px 6px 0 0",
     boxShadow:
       "0px 12px 24px rgba(0, 0, 0, 0.12), 0px 8px 16px rgba(0, 0, 0, 0.08), 0px 3.2px 2.6px rgba(0, 0, 0, 0.08)",
     padding: "6px 0px",
@@ -2687,6 +2690,7 @@ const Dark = {
 
   submenu: {
     lineColor: "#474747",
+    backgroundColor: "#333",
   },
 };
 

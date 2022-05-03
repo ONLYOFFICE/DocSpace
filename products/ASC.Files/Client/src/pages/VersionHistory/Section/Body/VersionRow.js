@@ -229,7 +229,7 @@ const VersionRow = (props) => {
                 {...linkStyles}
                 className="version_link-action"
               >
-                {t("Translations:Restore")}
+                {t("Common:Restore")}
               </Link>
             )}
             <Link

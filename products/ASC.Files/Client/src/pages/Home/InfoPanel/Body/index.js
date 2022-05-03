@@ -24,6 +24,9 @@ const InfoPanelBodyContent = ({
   isFavoritesFolder,
   isGallery,
   gallerySelected,
+  personal,
+  createThumbnail,
+  getFileInfo,
 }) => {
   const singleItem = (item) => {
     const dontShowLocation = item.isFolder && item.parentId === 0;
@@ -47,6 +50,9 @@ const InfoPanelBodyContent = ({
         dontShowLocation={dontShowLocation}
         dontShowSize={dontShowSize}
         dontShowAccess={dontShowAccess}
+        personal={personal}
+        createThumbnail={createThumbnail}
+        getFileInfo={getFileInfo}
       />
     );
   };
@@ -81,6 +87,7 @@ InfoPanelBodyContent.defaultProps = { theme: Base };
 
 export default inject(
   ({
+    auth,
     filesStore,
     settingsStore,
     filesActionsStore,
@@ -88,11 +95,16 @@ export default inject(
     treeFoldersStore,
     selectedFolderStore,
   }) => {
+    const { personal } = auth.settingsStore;
+
     const {
       selection,
+      bufferSelection,
       getFolderInfo,
       getShareUsers,
       gallerySelected,
+      createThumbnail,
+      getFileInfo,
     } = filesStore;
     const { getIcon, getFolderIcon } = settingsStore;
     const { onSelectItem } = filesActionsStore;
@@ -103,9 +115,16 @@ export default inject(
       isFavoritesFolder,
     } = treeFoldersStore;
 
+    const selectedItems =
+      selection?.length > 0
+        ? [...selection]
+        : bufferSelection
+        ? [bufferSelection]
+        : [];
+
     return {
       selectedFolder: { ...selectedFolderStore },
-      selectedItems: [...selection],
+      selectedItems: selectedItems,
       getFolderInfo,
       getShareUsers,
       getIcon,
@@ -116,6 +135,9 @@ export default inject(
       isRecentFolder,
       isFavoritesFolder,
       gallerySelected,
+      personal,
+      createThumbnail,
+      getFileInfo,
     };
   }
 )(

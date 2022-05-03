@@ -23,7 +23,7 @@ const FolderTreeBody = ({
       {isAvailable ? (
         <StyledTree theme={theme}>
           <div className="selection-panel_tree-folder">
-            <Scrollbar id="folder-tree-scroll-bar">
+            <Scrollbar id="folder-tree-scroll-bar" stype="mediumBlack">
               <TreeFolders
                 isPanel={true}
                 expandedPanelKeys={expandedKeys}

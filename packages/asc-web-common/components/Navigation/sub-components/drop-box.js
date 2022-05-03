@@ -17,6 +17,7 @@ import {
   mobile,
   isMobile as isMobileUtils,
   isTablet as isTabletUtils,
+  isDesktop as isDesktopUtils,
 } from "@appserver/components/utils/device";
 
 import { Base } from "@appserver/components/themes";
@@ -28,7 +29,7 @@ const StyledBox = styled.div`
 
   padding: ${isMobile ? "0 16px " : "0 20px"};
 
-  width: ${(props) => props.dropBoxWidth}px;
+  ${(props) => !props.isDesktop && `width: ${props.dropBoxWidth}px;`};
 
   height: ${(props) => (props.height ? `${props.height}px` : "fit-content")};
   max-height: calc(100vh - 48px);
@@ -90,11 +91,14 @@ const DropBox = React.forwardRef(
       onClickAvailable,
       isInfoPanelVisible,
       maxHeight,
+      isOpen,
     },
     ref
   ) => {
     const [dropBoxHeight, setDropBoxHeight] = React.useState(0);
     const countItems = navigationItems.length;
+
+    const isDesktop = !isMobile || isDesktopUtils();
 
     const getItemSize = (index) => {
       if (index === countItems - 1) return 51;
@@ -133,6 +137,7 @@ const DropBox = React.forwardRef(
           height={sectionHeight < dropBoxHeight ? sectionHeight : null}
           showText={showText}
           dropBoxWidth={dropBoxWidth}
+          isDesktop={isDesktop}
         >
           <StyledContainer canCreate={canCreate} isDropBox={true}>
             <ArrowButton
@@ -141,6 +146,7 @@ const DropBox = React.forwardRef(
             />
             <Text title={title} isOpen={true} onClick={toggleDropBox} />
             <ControlButtons
+              isDesktop={isDesktop}
               personal={personal}
               isRootFolder={isRootFolder}
               isDropBox={true}

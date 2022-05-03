@@ -6,11 +6,19 @@ import RowContainer from "@appserver/components/row-container";
 import Text from "@appserver/components/text";
 import LinkWithDropdown from "@appserver/components/link-with-dropdown";
 import styled from "styled-components";
+import { tablet } from "@appserver/components/utils/device";
 
 const StyledDownloadContent = styled.div`
   .row_content,
   .row-content_tablet-side-info {
     overflow: unset;
+  }
+
+  @media (${tablet}) {
+    .row-content_tablet-side-info {
+      display: flex;
+      gap: 5px;
+    }
   }
 `;
 

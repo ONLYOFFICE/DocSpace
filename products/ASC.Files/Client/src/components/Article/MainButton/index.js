@@ -263,6 +263,7 @@ const ArticleMainButtonContent = (props) => {
             !isArticleLoading &&
             canCreate && (
               <MobileView
+                t={t}
                 titleProp={t("Upload")}
                 actionOptions={actions}
                 buttonOptions={uploadActions}
@@ -361,7 +362,7 @@ export default inject(
     };
   }
 )(
-  withTranslation(["Article", "Common"])(
+  withTranslation(["Article", "UploadPanel", "Common"])(
     withLoader(observer(withRouter(ArticleMainButtonContent)))(
       <Loaders.ArticleButton />
     )

@@ -1955,6 +1955,12 @@ class FilesStore {
     if (fileIds.length) return api.files.createThumbnails(fileIds);
   };
 
+  createThumbnail = async (fileId) => {
+    if (!fileId) return;
+
+    await api.files.createThumbnails([fileId]);
+  };
+
   setIsUpdatingRowItem = (updating) => {
     this.isUpdatingRowItem = updating;
   };

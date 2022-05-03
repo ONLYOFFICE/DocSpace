@@ -16,12 +16,23 @@ export const StyledSubmenu = styled.div`
     display: inline-block;
     position: absolute;
   }
+
+  .sticky {
+    position: sticky;
+    top: 0;
+    background: ${(props) => props.theme.submenu.backgroundColor};
+    z-index: 1;
+  }
+
+  .sticky-indent {
+    height: 15px;
+  }
 `;
 
 export const StyledSubmenuBottomLine = styled.div`
   height: 1px;
   width: 100%;
-  margin: -1px 0 15px 0;
+  margin-top: -1px;
   background: ${(props) => props.theme.submenu.lineColor};
 `;
 

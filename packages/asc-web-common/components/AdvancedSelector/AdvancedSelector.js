@@ -12,8 +12,8 @@ import Backdrop from "@appserver/components/backdrop";
 const mobileView = css`
   top: 64px;
 
-  width: 100vw !important;
-  height: calc(100vh - 64px) !important;
+  width: 100% !important;
+  height: calc(100% - 64px) !important;
 `;
 
 const StyledBlock = styled.div`
@@ -22,8 +22,8 @@ const StyledBlock = styled.div`
   right: 0;
 
   width: 480px;
-  max-width: 100vw;
-  height: 100vh;
+  max-width: 100%;
+  height: 100%;
 
   z-index: 400;
 
