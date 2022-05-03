@@ -79,7 +79,9 @@ class HotkeyStore {
       ) {
         //console.log("element is visible");
       } else {
+        if (scroll) scroll.style.overflowX = "hidden"; //hack to fix react-custom-scrollbar bug with horizontal scroll
         el.scrollIntoView({ block: "center" });
+        if (scroll) scroll.style.overflowX = null;
         //console.log("element is not visible");
       }
     }
@@ -472,7 +474,10 @@ class HotkeyStore {
 
   get caretIndex() {
     const { filesList, hotkeyCaret, selection } = this.filesStore;
-    const id = selection.length ? selection[0].id : hotkeyCaret?.id;
+    const id =
+      selection.length && selection.length === 1 && !hotkeyCaret
+        ? selection[0].id
+        : hotkeyCaret?.id;
     const caretIndex = filesList.findIndex((f) => f.id === id);
 
     if (caretIndex !== -1) return caretIndex;
@@ -522,7 +527,7 @@ class HotkeyStore {
   }
 
   get prevFile() {
-    const { filesList, selection, hotkeyCaret } = this.filesStore;
+    const { filesList } = this.filesStore;
 
     if (this.caretIndex !== -1) {
       const prevCaretIndex = this.caretIndex - 1;

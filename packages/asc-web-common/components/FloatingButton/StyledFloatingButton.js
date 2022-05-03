@@ -2,6 +2,8 @@ import Base from "@appserver/components/themes/base";
 import styled, { keyframes, css } from "styled-components";
 
 const StyledCircleWrap = styled.div`
+  position: relative;
+  z-index: 500;
   width: 48px;
   height: 48px;
   background: ${(props) =>

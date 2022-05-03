@@ -63,6 +63,9 @@ class FilesStore {
   headerBorder = false;
 
   isPrevSettingsModule = false;
+  enabledHotkeys = true;
+  oformFiles = null;
+  gallerySelected = null;
 
   constructor(
     authStore,
@@ -148,23 +151,12 @@ class FilesStore {
       );
     });
 
-    socketHelper.on("s:stop-edit-file", (id, data) => {
-      //console.log(`Call s:stop-edit-file (id=${id})`);
+    socketHelper.on("s:stop-edit-file", (id) => {
+      console.log(`Call s:stop-edit-file (id=${id})`);
       const foundIndex = this.files.findIndex((x) => x.id === id);
       if (foundIndex == -1) return;
 
-      let file;
-
-      if (data) {
-        file = JSON.parse(data);
-        console.log(`socket stop-edit-file (id=${id}`, file);
-      }
-
-      this.updateFileStatus(
-        foundIndex,
-        this.files[foundIndex].fileStatus & ~FileStatus.IsEditing,
-        file
-      );
+      this.getFileInfo(id);
     });
   }
 
@@ -288,8 +280,25 @@ class FilesStore {
       }
     }
     requests.push(getFilesSettings());
+    requests.push(this.getOforms());
 
     return Promise.all(requests).then(() => (this.isInit = true));
+  };
+
+  getOforms = async () => {
+    const oformData = await this.authStore.getOforms();
+
+    runInAction(() => {
+      this.oformFiles = oformData?.data?.data ? oformData.data.data : [];
+    });
+  };
+
+  get hasGalleryFiles() {
+    return this.oformFiles && !!this.oformFiles.length;
+  }
+
+  setGallerySelected = (gallerySelected) => {
+    this.gallerySelected = gallerySelected;
   };
 
   setFirstLoad = (firstLoad) => {
@@ -644,8 +653,17 @@ class FilesStore {
   deselectFile = (file) => {
     const { id, parentId } = file;
     const isFileSelected = this.isFileSelected(id, parentId);
-    if (isFileSelected)
-      this.selection = this.selection.filter((x) => x.id !== id);
+    if (isFileSelected) {
+      let selectionIndex = this.selection.findIndex(
+        (x) => x.parentId === parentId && x.id === id
+      );
+
+      if (selectionIndex !== -1) {
+        this.selection = this.selection.filter(
+          (x, index) => index !== selectionIndex
+        );
+      }
+    }
   };
 
   removeOptions = (options, toRemoveArray) =>
@@ -1172,10 +1190,12 @@ class FilesStore {
     return api.files.addFileToRecentlyViewed(fileId);
   };
 
-  createFile = (folderId, title, templateId) => {
-    return api.files.createFile(folderId, title, templateId).then((file) => {
-      return Promise.resolve(file);
-    });
+  createFile = (folderId, title, templateId, formId) => {
+    return api.files
+      .createFile(folderId, title, templateId, formId)
+      .then((file) => {
+        return Promise.resolve(file);
+      });
   };
 
   createFolder(parentFolderId, title) {
@@ -1451,7 +1471,7 @@ class FilesStore {
 
       let isFolder = false;
       this.folders.map((x) => {
-        if (x.id === item.id) isFolder = true;
+        if (x.id === item.id && x.parentId === item.parentId) isFolder = true;
       });
 
       const { isRecycleBinFolder } = this.treeFoldersStore;
@@ -1935,12 +1955,22 @@ class FilesStore {
     if (fileIds.length) return api.files.createThumbnails(fileIds);
   };
 
+  createThumbnail = async (fileId) => {
+    if (!fileId) return;
+
+    await api.files.createThumbnails([fileId]);
+  };
+
   setIsUpdatingRowItem = (updating) => {
     this.isUpdatingRowItem = updating;
   };
 
   setPasswordEntryProcess = (process) => {
     this.passwordEntryProcess = process;
+  };
+
+  setEnabledHotkeys = (enabledHotkeys) => {
+    this.enabledHotkeys = enabledHotkeys;
   };
 }
 

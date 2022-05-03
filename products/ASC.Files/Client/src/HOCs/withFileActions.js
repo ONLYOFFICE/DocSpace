@@ -21,8 +21,16 @@ export default function withFileActions(WrappedFileItem) {
       id !== -1 && onSelectItem({ id, isFolder });
     };
 
+    onFileContextClick = () => {
+      const { onSelectItem } = this.props;
+      const { id, isFolder } = this.props.item;
+
+      id !== -1 && onSelectItem({ id, isFolder }, true);
+    };
+
     onHideContextMenu = () => {
       //this.props.setBufferSelection(null);
+      this.props.setEnabledHotkeys(true);
     };
 
     onDropZoneUpload = (files, uploadToFolder) => {
@@ -113,7 +121,7 @@ export default function withFileActions(WrappedFileItem) {
     };
 
     onFilesClick = (e) => {
-      const { item, openFileAction } = this.props;
+      const { item, openFileAction, setParentId } = this.props;
       if (
         (e && e.target.tagName === "INPUT") ||
         !!e.target.closest(".lock-file")
@@ -121,10 +129,23 @@ export default function withFileActions(WrappedFileItem) {
         return;
 
       e.preventDefault();
+
+      if (
+        item.isFolder &&
+        item.parentId !== 0 &&
+        item.filesCount === 0 &&
+        item.foldersCount === 0
+      ) {
+        setParentId(item.parentId);
+      }
+
       openFileAction(item);
     };
 
-    getContextModel = () => this.props.getModel(this.props.item, this.props.t);
+    getContextModel = () => {
+      const { getModel, item, t, history } = this.props;
+      return getModel(item, t, history);
+    };
 
     render() {
       const {
@@ -181,7 +202,7 @@ export default function withFileActions(WrappedFileItem) {
       return (
         <WrappedFileItem
           onContentFileSelect={this.onContentFileSelect}
-          fileContextClick={this.fileContextClick}
+          fileContextClick={this.onFileContextClick}
           onDrop={this.onDrop}
           onMouseDown={this.onMouseDown}
           onFilesClick={this.onFilesClick}
@@ -211,7 +232,7 @@ export default function withFileActions(WrappedFileItem) {
         filesActionsStore,
         dialogsStore,
         treeFoldersStore,
-        //selectedFolderStore,
+        selectedFolderStore,
         filesStore,
         uploadDataStore,
         settingsStore,
@@ -246,6 +267,7 @@ export default function withFileActions(WrappedFileItem) {
         hotkeyCaret,
         activeFiles,
         activeFolders,
+        setEnabledHotkeys,
       } = filesStore;
 
       const { startUpload } = uploadDataStore;
@@ -301,6 +323,7 @@ export default function withFileActions(WrappedFileItem) {
         actionId: id,
         checked: isFileSelected(item.id, item.parentId),
         //parentFolder: selectedFolderStore.parentId,
+        setParentId: selectedFolderStore.setParentId,
         canWebEdit,
         canViewedDocs,
         isTrashFolder: isRecycleBinFolder,
@@ -316,6 +339,7 @@ export default function withFileActions(WrappedFileItem) {
         getModel: contextOptionsStore.getModel,
         showHotkeyBorder,
         openFileAction,
+        setEnabledHotkeys,
       };
     }
   )(observer(WithFileActions));

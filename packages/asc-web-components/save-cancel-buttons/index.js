@@ -47,6 +47,7 @@ class SaveCancelButtons extends React.Component {
       isFirstWelcomePageSettings,
       className,
       id,
+      isSaving,
     } = this.props;
 
     const cancelButtonDisabled =
@@ -69,11 +70,12 @@ class SaveCancelButtons extends React.Component {
             onClick={onSaveClick}
             label={saveButtonLabel}
             minwidth={displaySettings && "auto"}
+            isLoading={isSaving}
           />
           <Button
             className="cancel-button"
             size="normal"
-            isDisabled={cancelButtonDisabled}
+            isDisabled={cancelButtonDisabled || isSaving}
             onClick={onCancelClick}
             label={cancelButtonLabel}
             minwidth={displaySettings && "auto"}
@@ -109,6 +111,7 @@ SaveCancelButtons.propTypes = {
   hasScroll: PropTypes.bool,
   minwidth: PropTypes.string,
   isFirstWelcomePageSettings: PropTypes.string,
+  isSaving: PropTypes.bool,
 };
 
 SaveCancelButtons.defaultProps = {

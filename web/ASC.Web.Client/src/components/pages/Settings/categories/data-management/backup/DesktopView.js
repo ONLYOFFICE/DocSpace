@@ -14,12 +14,11 @@ import { StyledBackup } from "./StyledBackup";
 import AutoBackup from "./auto-backup";
 import ManualBackup from "./manual-backup";
 import RestoreBackup from "./restore-backup";
-import SelectFolderDialog from "files/SelectFolderDialog";
 import toastr from "@appserver/components/toast/toastr";
 import moment from "moment";
 import { getBackupStorage } from "@appserver/common/api/settings";
 import HelpButton from "@appserver/components/help-button";
-
+import { getThirdPartyCommonFolderTree } from "@appserver/common/api/files";
 class BackupDesktopView extends React.Component {
   constructor(props) {
     super(props);
@@ -57,7 +56,7 @@ class BackupDesktopView extends React.Component {
       enableAutoBackup(),
       getBackupSchedule(),
       getBackupStorage(),
-      SelectFolderDialog.getCommonThirdPartyList(),
+      getThirdPartyCommonFolderTree(),
     ];
 
     try {

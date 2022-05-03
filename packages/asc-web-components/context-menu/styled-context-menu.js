@@ -21,6 +21,7 @@ const styledMobileView = css`
   max-height: ${(props) => props.theme.newContextMenu.devices.maxHeight};
   left: ${(props) => props.theme.newContextMenu.devices.left};
   bottom: ${(props) => props.theme.newContextMenu.devices.bottom};
+  border-radius: ${(props) => props.theme.newContextMenu.mobileBorderRadius};
 `;
 
 const StyledContextMenu = styled.div`

@@ -7,8 +7,9 @@ import Headline from "@appserver/common/components/Headline";
 import IconButton from "@appserver/components/icon-button";
 import GroupButtonsMenu from "@appserver/components/group-buttons-menu";
 import DropDownItem from "@appserver/components/drop-down-item";
-
+import LoaderSectionHeader from "../loaderSectionHeader";
 import { tablet, desktop } from "@appserver/components/utils/device";
+import withLoading from "../../../../../../HOCs/withLoading";
 
 import {
   getKeyByLink,
@@ -18,13 +19,17 @@ import {
 } from "../../../utils";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
-import { isMobile } from "react-device-detect";
+import { isMobile, isTablet } from "react-device-detect";
 
 const HeaderContainer = styled.div`
   position: relative;
   display: flex;
   align-items: center;
   max-width: calc(100vw - 32px);
+
+  h1 {
+    line-height: 53px;
+  }
 
   .action-wrapper {
     flex-grow: 1;
@@ -40,6 +45,19 @@ const HeaderContainer = styled.div`
     @media ${tablet} {
       padding: 8px 0 8px 8px;
       margin-left: -8px;
+    }
+  }
+
+  ${isTablet &&
+  css`
+    h1 {
+      line-height: 61px;
+    }
+  `};
+
+  @media (min-width: 600px) and (max-width: 1024px) {
+    h1 {
+      line-height: 61px;
     }
   }
 `;
@@ -132,6 +150,12 @@ class SectionHeaderContent extends React.Component {
   }
 
   componentDidUpdate() {
+    const { isLoaded, tReady, setIsLoadedSectionHeader } = this.props;
+
+    const isLoadedSetting = isLoaded && tReady;
+
+    if (isLoadedSetting) setIsLoadedSectionHeader(isLoadedSetting);
+
     const arrayOfParams = this.getArrayOfParams();
 
     const key = getKeyByLink(arrayOfParams, settingsTree);
@@ -214,6 +238,8 @@ class SectionHeaderContent extends React.Component {
       isHeaderChecked,
       isHeaderVisible,
       selection,
+      isLoadedPage,
+      location,
     } = this.props;
     const { header, isCategoryOrHeader } = this.state;
     const arrayOfParams = this.getArrayOfParams();
@@ -241,6 +267,10 @@ class SectionHeaderContent extends React.Component {
       },
     ];
 
+    const commonSettings =
+      location.pathname.includes("common/customization") ||
+      location.pathname === "/settings";
+    const showLoader = commonSettings ? !isLoadedPage : false;
     return (
       <StyledContainer isHeaderVisible={isHeaderVisible}>
         {isHeaderVisible ? (
@@ -257,6 +287,8 @@ class SectionHeaderContent extends React.Component {
               selected={menuItems[0].label}
             />
           </div>
+        ) : showLoader ? (
+          <LoaderSectionHeader />
         ) : (
           <HeaderContainer>
             {!isCategoryOrHeader && arrayOfParams[0] && (
@@ -289,7 +321,7 @@ class SectionHeaderContent extends React.Component {
   }
 }
 
-export default inject(({ auth, setup }) => {
+export default inject(({ auth, setup, common }) => {
   const { customNames } = auth.settingsStore;
   const { addUsers, removeAdmins } = setup.headerAction;
   const { toggleSelector } = setup;
@@ -304,7 +336,7 @@ export default inject(({ auth, setup }) => {
     selection,
   } = setup.selectionStore;
   const { admins, selectorIsOpen } = setup.security.accessRight;
-
+  const { isLoaded, setIsLoadedSectionHeader } = common;
   return {
     addUsers,
     removeAdmins,
@@ -320,9 +352,13 @@ export default inject(({ auth, setup }) => {
     toggleSelector,
     selectorIsOpen,
     selection,
+    isLoaded,
+    setIsLoadedSectionHeader,
   };
 })(
-  withRouter(
-    withTranslation(["Settings", "Common"])(observer(SectionHeaderContent))
+  withLoading(
+    withRouter(
+      withTranslation(["Settings", "Common"])(observer(SectionHeaderContent))
+    )
   )
 );

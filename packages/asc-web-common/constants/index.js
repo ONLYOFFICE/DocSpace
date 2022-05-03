@@ -199,3 +199,16 @@ export const FileStatus = Object.freeze({
 export const TenantStatus = Object.freeze({
   PortalRestore: 4,
 });
+
+/**
+ * Enum for theme keys.
+ * @readonly
+ */
+export const ThemeKeys = Object.freeze({
+  Base: "0",
+  BaseStr: "Base",
+  Dark: "1",
+  DarkStr: "Dark",
+  System: "2",
+  SystemStr: "System",
+});

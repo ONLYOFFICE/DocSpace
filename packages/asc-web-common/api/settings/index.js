@@ -1,4 +1,5 @@
 import { request } from "../client";
+import axios from "axios";
 
 export function getSettings() {
   return request({
@@ -429,13 +430,6 @@ export function validateTfaCode(code) {
   });
 }
 
-export function getCommonThirdPartyList() {
-  const options = {
-    method: "get",
-    url: "/files/thirdparty/common",
-  };
-  return request(options);
-}
 export function getBackupStorage() {
   const options = {
     method: "get",
@@ -474,4 +468,8 @@ export function toggleTipsSubscription() {
     url: "/settings/tips/change/subscription",
   };
   return request(options);
+}
+
+export function getOforms(url) {
+  return axios.get(url);
 }

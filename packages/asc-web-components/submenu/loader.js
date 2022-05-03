@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Loaders from "@appserver/common/components/Loaders";
 import { isTablet } from "react-device-detect";
 

@@ -95,9 +95,9 @@ const UserFields = (props) => {
           const error = !regexp.test(input);
 
           return (
-            <StyledInputWrapper key={`domain-input-${index}`}>
+            <StyledInputWrapper key={`user-input-${index}`}>
               <TextInput
-                id={`domain-input-${index}`}
+                id={`user-input-${index}`}
                 isAutoFocussed={true}
                 value={input}
                 onChange={(e) => onChangeInput(e, index)}

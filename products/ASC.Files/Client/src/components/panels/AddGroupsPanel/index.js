@@ -111,7 +111,7 @@ class AddGroupsPanelComponent extends React.Component {
     const selectedOptions = [];
     shareDataItems.forEach((item) => {
       const { sharedTo } = item;
-      if (!sharedTo.groups && !sharedTo.shareLink) {
+      if (item?.isGroup) {
         selectedOptions.push({ id: sharedTo.id, key: sharedTo.id });
       }
     });
@@ -141,9 +141,11 @@ class AddGroupsPanelComponent extends React.Component {
                     t={t}
                     access={accessRight}
                     directionX="right"
+                    directionY="top"
                     onAccessChange={this.onAccessChange}
                     accessOptions={accessOptions}
                     arrowIconColor={theme.filesPanels.addGroups.arrowColor}
+                    isEmbedded={true}
                   />
                 }
                 headerLabel={t("AddGroupsForSharingButton")}

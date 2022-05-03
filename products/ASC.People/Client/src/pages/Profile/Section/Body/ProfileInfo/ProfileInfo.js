@@ -31,7 +31,7 @@ const InfoItem = styled.div`
   font-size: 13px;
   line-height: 24px;
   display: flex;
-  width: 360px;
+  width: 358px;
 `;
 
 const InfoItemLabel = styled.div`
@@ -91,6 +91,10 @@ const IconButtonWrapper = styled.div`
       fill: #3b72a7;
     }
   }
+`;
+
+const LangSelectorContainer = styled.div`
+  display: flex;
 `;
 
 class ProfileInfo extends React.PureComponent {
@@ -268,7 +272,7 @@ class ProfileInfo extends React.PureComponent {
         <Link
           color={theme.profileInfo.tooltipLinkColor}
           isHovered={true}
-          href="https://helpcenter.onlyoffice.com/ru/guides/become-translator.aspx"
+          href={`https://helpcenter.onlyoffice.com/${language}/guides/become-translator.aspx`}
           target="_blank"
         >
           {t("Common:LearnMore")}
@@ -376,7 +380,7 @@ class ProfileInfo extends React.PureComponent {
             <InfoItemLabel>{t("Common:Language")}:</InfoItemLabel>
             <InfoItemValue>
               {cultureNames ? (
-                <>
+                <LangSelectorContainer>
                   <ComboBox
                     directionY="both"
                     options={cultureNames}
@@ -400,7 +404,7 @@ class ProfileInfo extends React.PureComponent {
                     helpButtonHeaderContent={t("Common:Language")}
                     className="help-icon"
                   />
-                </>
+                </LangSelectorContainer>
               ) : (
                 <Loaders.Text />
               )}

@@ -333,6 +333,7 @@ class SectionHeaderContent extends React.Component {
       isHeaderChecked,
       isHeaderIndeterminate,
       showText,
+      toggleInfoPanel,
     } = this.props;
     const menuItems = this.getMenuItems();
     const isLoading = !title || !tReady;
@@ -360,8 +361,8 @@ class SectionHeaderContent extends React.Component {
                 isChecked={isHeaderChecked}
                 isIndeterminate={isHeaderIndeterminate}
                 headerMenu={headerMenu}
-                isInfoPanelVisible={this.props.isInfoPanelVisible}
-                toggleInfoPanel={this.props.toggleInfoPanel}
+                isInfoPanelVisible={isInfoPanelVisible}
+                toggleInfoPanel={toggleInfoPanel}
               />
             ) : (
               <div className="header-container">
@@ -388,8 +389,8 @@ class SectionHeaderContent extends React.Component {
                     isEmptyFilesList={isEmptyFilesList}
                     clearTrash={this.onEmptyTrashAction}
                     onBackToParentFolder={this.onBackToParentFolder}
-                    toggleInfoPanel={this.props.toggleInfoPanel}
-                    isInfoPanelVisible={this.props.isInfoPanelVisible}
+                    toggleInfoPanel={toggleInfoPanel}
+                    isInfoPanelVisible={isInfoPanelVisible}
                   />
                 )}
               </div>

@@ -37,21 +37,9 @@ const StyledSettingsComponent = styled.div`
     font-weight: 400;
   }
 
-  .field-container-flex {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 8px;
-    margin-bottom: 12px;
-  }
-
   .toggle {
     position: inherit;
     grid-gap: inherit;
-  }
-
-  .field-title {
-    font-weight: 600;
-    line-height: 20px;
   }
 
   .errorText {

@@ -25,9 +25,9 @@ class DocumentsModule extends React.PureComponent {
     });
   };
 
-  onSelectFolder = (selectedFolder) => {
+  onSelectFolder = (id) => {
     const { setSelectedFolder } = this.props;
-    setSelectedFolder(selectedFolder);
+    setSelectedFolder(`${id}`);
   };
 
   render() {
@@ -52,7 +52,7 @@ class DocumentsModule extends React.PureComponent {
             isError={isError}
             foldersType="common"
             withoutProvider
-            isSavingProcess={isLoadingData}
+            isDisabled={isLoadingData}
             id={passedId}
             isReset={isReset}
             isSuccessSave={isSuccessSave}
@@ -65,7 +65,12 @@ class DocumentsModule extends React.PureComponent {
 }
 
 export default inject(({ backup }) => {
-  const { setSelectedFolder, defaultFolderId, defaultStorageType } = backup;
+  const {
+    setSelectedFolder,
+    selectedFolderId,
+    defaultStorageType,
+    defaultFolderId,
+  } = backup;
 
   const isDocumentsDefault =
     defaultStorageType === `${BackupStorageType.DocumentModuleType}`;

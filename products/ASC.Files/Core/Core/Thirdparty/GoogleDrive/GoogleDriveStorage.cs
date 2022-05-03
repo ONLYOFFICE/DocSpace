@@ -289,7 +289,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             request.Headers.Add("Authorization", "Bearer " + AccessToken);
 
             var httpClient = _clientFactory.CreateClient();
-            using var response = await httpClient.SendAsync(request);
+            var response = await httpClient.SendAsync(request);
 
             if (offset == 0 && file.Size.HasValue && file.Size > 0)
             {

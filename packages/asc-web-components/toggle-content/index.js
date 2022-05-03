@@ -50,20 +50,22 @@ class ToggleContent extends React.Component {
         style={style}
         enableToggle={enableToggle}
       >
-        <span className="span-toggle-content" onClick={this.toggleContent}>
-          <StyledArrowContentIcon
-            className="arrow-toggle-content"
-            size="medium"
-          />
-          <Heading
-            className="heading-toggle-content"
-            level={2}
-            size="small"
-            isInline={true}
-          >
-            {label}
-          </Heading>
-        </span>
+        <div className="toggle-container">
+          <span className="span-toggle-content" onClick={this.toggleContent}>
+            <StyledArrowContentIcon
+              className="arrow-toggle-content"
+              size="medium"
+            />
+            <Heading
+              className="heading-toggle-content"
+              level={2}
+              size="small"
+              isInline={true}
+            >
+              {label}
+            </Heading>
+          </span>
+        </div>
         <StyledContent isOpen={isOpen}>{children}</StyledContent>
       </StyledContainer>
     );

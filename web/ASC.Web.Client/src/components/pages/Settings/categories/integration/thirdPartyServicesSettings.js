@@ -14,6 +14,10 @@ import { inject, observer } from "mobx-react";
 import { Base } from "@appserver/components/themes";
 
 const RootContainer = styled(Box)`
+  .title-description-container {
+    max-width: 700px;
+  }
+
   @media ${tablet} {
     margin: 0;
 

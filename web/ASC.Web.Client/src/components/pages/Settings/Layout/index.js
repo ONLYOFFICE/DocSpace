@@ -4,11 +4,11 @@ import { ArticleHeaderContent, ArticleBodyContent } from "./Article";
 import { SectionHeaderContent, SectionPagingContent } from "./Section";
 import { inject, observer } from "mobx-react";
 import Section from "@appserver/common/components/Section";
-import LoaderSectionHeader from "./Section/loaderSectionHeader";
-
-const ArticleSettings = React.memo(() => {
+import withLoading from "../../../../HOCs/withLoading";
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+const ArticleSettings = React.memo(({ isLoadedPage }) => {
   return (
-    <Article>
+    <Article isLoadedPage={isLoadedPage}>
       <Article.Header>
         <ArticleHeaderContent />
       </Article.Header>
@@ -26,6 +26,7 @@ const Layout = ({
   language,
   children,
   addUsers,
+  isLoadedPage,
 }) => {
   useEffect(() => {
     currentProductId !== "settings" && setCurrentProductId("settings");
@@ -33,8 +34,8 @@ const Layout = ({
 
   return (
     <>
-      <ArticleSettings />
-      <Section withBodyScroll={true}>
+      <ArticleSettings isLoadedPage={isLoadedPage} />
+      <Section withBodyScroll={true} settingsStudio={true}>
         <Section.SectionHeader>
           <SectionHeaderContent />
         </Section.SectionHeader>
@@ -53,9 +54,10 @@ const Layout = ({
 export default inject(({ auth, setup }) => {
   const { language, settingsStore } = auth;
   const { addUsers } = setup.headerAction;
+
   return {
     language,
     setCurrentProductId: settingsStore.setCurrentProductId,
     addUsers,
   };
-})(observer(Layout));
+})(withLoading(observer(Layout)));

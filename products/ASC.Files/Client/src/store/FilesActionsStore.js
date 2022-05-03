@@ -168,8 +168,8 @@ class FilesActionStore {
       this.isMediaOpen();
 
       try {
-        await removeFiles(folderIds, fileIds, deleteAfter, immediately).then(
-          async (res) => {
+        await removeFiles(folderIds, fileIds, deleteAfter, immediately)
+          .then(async (res) => {
             if (res[0]?.error) return Promise.reject(res[0].error);
             const data = res[0] ? res[0] : null;
             const pbData = {
@@ -199,8 +199,10 @@ class FilesActionStore {
               return toastr.success(translations.FileRemoved);
             }
             return toastr.success(translations.FolderRemoved);
-          }
-        );
+          })
+          .finally(() => {
+            clearActiveOperations(fileIds, folderIds);
+          });
       } catch (err) {
         clearActiveOperations(fileIds, folderIds);
         setSecondaryProgressBarData({
@@ -390,6 +392,7 @@ class FilesActionStore {
         extension: null,
         title: "",
         templateId: null,
+        fromTemplate: null,
       });
       setIsLoading(false);
       type === FileAction.Rename &&
@@ -408,6 +411,7 @@ class FilesActionStore {
       setSelection,
       setHotkeyCaretStart,
       setHotkeyCaret,
+      setEnabledHotkeys,
       filesList,
     } = this.filesStore;
     /* selected === "close" &&  */ setSelected("none");
@@ -419,8 +423,10 @@ class FilesActionStore {
     );
 
     if (item) {
-      if (isBuffer) setBufferSelection(item);
-      else {
+      if (isBuffer) {
+        setBufferSelection(item);
+        setEnabledHotkeys(false);
+      } else {
         setSelection([item]);
         setHotkeyCaret(null);
         setHotkeyCaretStart(null);
@@ -1011,6 +1017,7 @@ class FilesActionStore {
       .set("delete", {
         label: t("Common:Delete"),
         alt: t("RemoveFromFavorites"),
+        iconUrl: "/static/images/delete.react.svg",
         onClick: () => {
           const items = selection.map((item) => item.id);
           this.setFavoriteAction("remove", items)
@@ -1074,6 +1081,8 @@ class FilesActionStore {
     return this.getAnotherFolderOptions(itemsCollection, t);
   };
 
+  onMarkAsRead = (item) => this.markAsRead([], [`${item.id}`], item);
+
   openFileAction = (item) => {
     const {
       setIsLoading,
@@ -1124,7 +1133,7 @@ class FilesActionStore {
       }
 
       if ((fileStatus & FileStatus.IsNew) === FileStatus.IsNew)
-        this.onMarkAsRead(id);
+        this.onMarkAsRead(item);
 
       if (canWebEdit || canViewedDocs) {
         let tab =

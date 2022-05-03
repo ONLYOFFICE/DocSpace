@@ -26,16 +26,26 @@ const MainContainer = styled.div`
   }
 
   .checkboxes {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+    display: inline-block;
     margin-top: 18px;
     margin-bottom: 24px;
+
+    .second-checkbox {
+      margin: 8px 0;
+    }
   }
 `;
 
 const PasswordStrength = (props) => {
-  const { t, history, setPortalPasswordSettings, passwordSettings } = props;
+  const {
+    t,
+    history,
+    setPortalPasswordSettings,
+    passwordSettings,
+    initSettings,
+    isInit,
+  } = props;
+
   const [passwordLen, setPasswordLen] = useState(8);
   const [useUpperCase, setUseUpperCase] = useState(false);
   const [useDigits, setUseDigits] = useState(false);
@@ -43,22 +53,18 @@ const PasswordStrength = (props) => {
 
   const [showReminder, setShowReminder] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const getSettings = () => {
     const currentSettings = getFromSessionStorage("currentPasswordSettings");
-    const defaultSettings = getFromSessionStorage("defaultPasswordSettings");
 
-    if (defaultSettings) {
-      saveToSessionStorage("defaultPasswordSettings", defaultSettings);
-    } else {
-      const defaultData = {
-        minLength: passwordSettings.minLength,
-        upperCase: passwordSettings.upperCase,
-        digits: passwordSettings.digits,
-        specSymbols: passwordSettings.specSymbols,
-      };
-      saveToSessionStorage("defaultPasswordSettings", defaultData);
-    }
+    const defaultData = {
+      minLength: passwordSettings.minLength,
+      upperCase: passwordSettings.upperCase,
+      digits: passwordSettings.digits,
+      specSymbols: passwordSettings.specSymbols,
+    };
+    saveToSessionStorage("defaultPasswordSettings", defaultData);
 
     if (currentSettings) {
       setPasswordLen(currentSettings.minLength);
@@ -71,15 +77,21 @@ const PasswordStrength = (props) => {
       setUseDigits(passwordSettings.digits);
       setUseSpecialSymbols(passwordSettings.specSymbols);
     }
-
-    setIsLoading(true);
   };
 
   useEffect(() => {
     checkWidth();
-    getSettings();
     window.addEventListener("resize", checkWidth);
+
+    if (!isInit) initSettings().then(() => setIsLoading(true));
+    else setIsLoading(true);
+
     return () => window.removeEventListener("resize", checkWidth);
+  }, []);
+
+  useEffect(() => {
+    if (!isInit) return;
+    getSettings();
   }, [isLoading]);
 
   useEffect(() => {
@@ -93,10 +105,11 @@ const PasswordStrength = (props) => {
       specSymbols: useSpecialSymbols,
     };
 
+    saveToSessionStorage("currentPasswordSettings", newSettings);
+
     if (isEqual(defaultSettings, newSettings)) {
       setShowReminder(false);
     } else {
-      saveToSessionStorage("currentPasswordSettings", newSettings);
       setShowReminder(true);
     }
   }, [passwordLen, useUpperCase, useDigits, useSpecialSymbols]);
@@ -125,26 +138,31 @@ const PasswordStrength = (props) => {
     }
   };
 
-  const onSaveClick = () => {
-    setPortalPasswordSettings(
-      passwordLen,
-      useUpperCase,
-      useDigits,
-      useSpecialSymbols
-    )
-      .then(() => {
-        setShowReminder(false);
-        const data = {
-          minLength: passwordLen,
-          upperCase: useUpperCase,
-          digits: useDigits,
-          specSymbols: useSpecialSymbols,
-        };
-        saveToSessionStorage("currentPasswordSettings", data);
-        saveToSessionStorage("defaultPasswordSettings", data);
-        toastr.success(t("SuccessfullySaveSettingsMessage"));
-      })
-      .catch((e) => toastr.error(e));
+  const onSaveClick = async () => {
+    setIsSaving(true);
+
+    try {
+      const data = {
+        minLength: passwordLen,
+        upperCase: useUpperCase,
+        digits: useDigits,
+        specSymbols: useSpecialSymbols,
+      };
+      await setPortalPasswordSettings(
+        passwordLen,
+        useUpperCase,
+        useDigits,
+        useSpecialSymbols
+      );
+      setShowReminder(false);
+      saveToSessionStorage("currentPasswordSettings", data);
+      saveToSessionStorage("defaultPasswordSettings", data);
+      toastr.success(t("SuccessfullySaveSettingsMessage"));
+    } catch (error) {
+      toastr.error(e);
+    }
+
+    setIsSaving(false);
   };
 
   const onCancelClick = () => {
@@ -204,6 +222,7 @@ const PasswordStrength = (props) => {
           value="upperCase"
         />
         <Checkbox
+          className="second-checkbox"
           onChange={onClickCheckbox}
           label={t("UseDigits")}
           isChecked={useDigits}
@@ -227,17 +246,21 @@ const PasswordStrength = (props) => {
         cancelButtonLabel={t("Common:CancelButton")}
         displaySettings={true}
         hasScroll={false}
+        isSaving={isSaving}
       />
     </MainContainer>
   );
 };
 
-export default inject(({ auth }) => {
+export default inject(({ auth, setup }) => {
   const { setPortalPasswordSettings, passwordSettings } = auth.settingsStore;
+  const { initSettings, isInit } = setup;
 
   return {
     setPortalPasswordSettings,
     passwordSettings,
+    initSettings,
+    isInit,
   };
 })(
   withTranslation(["Settings", "Common"])(
