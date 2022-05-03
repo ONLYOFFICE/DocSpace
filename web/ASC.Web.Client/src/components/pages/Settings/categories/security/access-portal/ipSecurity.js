@@ -45,6 +45,8 @@ const IpSecurity = (props) => {
     setIpRestrictionsEnable,
     ipRestrictions,
     setIpRestrictions,
+    initSettings,
+    isInit,
   } = props;
 
   const regexp = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/; //check ip valid
@@ -53,20 +55,15 @@ const IpSecurity = (props) => {
   const [ips, setIps] = useState();
   const [showReminder, setShowReminder] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const getSettings = () => {
     const currentSettings = getFromSessionStorage("currentIPSettings");
-    const defaultSettings = getFromSessionStorage("defaultIPSettings");
-
-    if (defaultSettings) {
-      saveToSessionStorage("defaultIPSettings", defaultSettings);
-    } else {
-      const defaultData = {
-        enable: ipRestrictionEnable,
-        ips: ipRestrictions,
-      };
-      saveToSessionStorage("defaultIPSettings", defaultData);
-    }
+    const defaultData = {
+      enable: ipRestrictionEnable,
+      ips: ipRestrictions,
+    };
+    saveToSessionStorage("defaultIPSettings", defaultData);
 
     if (currentSettings) {
       setEnable(currentSettings.enable);
@@ -75,15 +72,21 @@ const IpSecurity = (props) => {
       setEnable(ipRestrictionEnable);
       setIps(ipRestrictions);
     }
-
-    setIsLoading(true);
   };
 
   useEffect(() => {
     checkWidth();
-    getSettings();
     window.addEventListener("resize", checkWidth);
+
+    if (!isInit) initSettings().then(() => setIsLoading(true));
+    else setIsLoading(true);
+
     return () => window.removeEventListener("resize", checkWidth);
+  }, []);
+
+  useEffect(() => {
+    if (!isInit) return;
+    getSettings();
   }, [isLoading]);
 
   useEffect(() => {
@@ -130,8 +133,10 @@ const IpSecurity = (props) => {
   };
 
   const onSaveClick = async () => {
+    setIsSaving(true);
     const valid = ips.map((ip) => regexp.test(ip));
     if (valid.includes(false)) {
+      setIsSaving(false);
       return;
     }
 
@@ -148,6 +153,8 @@ const IpSecurity = (props) => {
     } catch (error) {
       toastr.error(error);
     }
+
+    setIsSaving(false);
   };
 
   const onCancelClick = () => {
@@ -220,12 +227,13 @@ const IpSecurity = (props) => {
         cancelButtonLabel={t("Common:CancelButton")}
         displaySettings={true}
         hasScroll={false}
+        isSaving={isSaving}
       />
     </MainContainer>
   );
 };
 
-export default inject(({ auth }) => {
+export default inject(({ auth, setup }) => {
   const {
     ipRestrictionEnable,
     setIpRestrictionsEnable,
@@ -233,10 +241,14 @@ export default inject(({ auth }) => {
     setIpRestrictions,
   } = auth.settingsStore;
 
+  const { initSettings, isInit } = setup;
+
   return {
     ipRestrictionEnable,
     setIpRestrictionsEnable,
     ipRestrictions,
     setIpRestrictions,
+    initSettings,
+    isInit,
   };
 })(withTranslation(["Settings", "Common"])(withRouter(observer(IpSecurity))));

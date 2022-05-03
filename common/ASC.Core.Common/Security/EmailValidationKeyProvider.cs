@@ -275,7 +275,12 @@ namespace ASC.Security.Cryptography
                 case ConfirmType.PhoneAuth:
                 case ConfirmType.TfaActivation:
                 case ConfirmType.TfaAuth:
+                case ConfirmType.Auth:
                     checkKeyResult = Provider.ValidateEmailKey(email + type, key, Provider.ValidAuthKeyInterval);
+                    break;
+
+                case ConfirmType.PortalContinue:
+                    checkKeyResult = Provider.ValidateEmailKey(email + type, key);
                     break;
 
                 default:

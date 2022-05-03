@@ -204,7 +204,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 CancellationToken.ThrowIfCancellationRequested();
 
                 var folder = await FolderDao.GetFolderAsync(folderId);
-                var taskError = WithErrorAsync(scope, await FileDao.GetFilesAsync(folder.ID, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, string.Empty, false, true).ToListAsync());
+                var (isError, message) = await WithErrorAsync(scope, await FileDao.GetFilesAsync(folder.ID, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, string.Empty, false, true).ToListAsync());
 
                 if (folder == null)
                 {
@@ -298,9 +298,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                     {
                                         Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
                                     }
-                                    else if ((await taskError).isError)
+                                    else if (isError)
                                     {
-                                        Error = (await taskError).message;
+                                        Error = message;
                                     }
                                     else
                                     {
@@ -335,9 +335,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                             {
                                 Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
                             }
-                            else if ((await taskError).isError)
+                            else if (isError)
                             {
-                                Error = (await taskError).message;
+                                Error = message;
                             }
                             else
                             {
@@ -398,7 +398,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 CancellationToken.ThrowIfCancellationRequested();
 
                 var file = await FileDao.GetFileAsync(fileId);
-                var taskError = WithErrorAsync(scope, new[] { file });
+                var (isError, message) = await WithErrorAsync(scope, new[] { file });
 
                 if (file == null)
                 {
@@ -460,9 +460,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                             }
                             else
                             {
-                                if ((await taskError).isError)
+                                if (isError)
                                 {
-                                    Error = (await taskError).message;
+                                    Error = message;
                                 }
                                 else
                                 {
@@ -575,9 +575,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                         }
                                         else
                                         {
-                                            if ((await taskError).isError)
+                                            if (isError)
                                             {
-                                                Error = (await taskError).message;
+                                                Error = message;
                                             }
                                             else
                                             {

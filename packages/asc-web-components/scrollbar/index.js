@@ -114,7 +114,7 @@ Scrollbar.propTypes = {
 };
 
 Scrollbar.defaultProps = {
-  stype: "smallBlack",
+  stype: "mediumBlack",
 };
 
 export default Scrollbar;

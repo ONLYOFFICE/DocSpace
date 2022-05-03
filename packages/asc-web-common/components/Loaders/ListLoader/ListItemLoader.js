@@ -3,7 +3,14 @@ import PropTypes from "prop-types";
 import { StyledRow } from "./StyledListLoader";
 import RectangleLoader from "../RectangleLoader";
 
-const ListItemLoader = ({ id, className, style, isRectangle, ...rest }) => {
+const ListItemLoader = ({
+  id,
+  className,
+  style,
+  withoutFirstRectangle,
+  withoutLastRectangle,
+  ...rest
+}) => {
   const {
     title,
     borderRadius,
@@ -16,8 +23,14 @@ const ListItemLoader = ({ id, className, style, isRectangle, ...rest }) => {
   } = rest;
 
   return (
-    <StyledRow id={id} className={className} style={style}>
-      {isRectangle && (
+    <StyledRow
+      id={id}
+      className={className}
+      style={style}
+      withoutFirstRectangle={withoutFirstRectangle}
+      withoutLastRectangle={withoutLastRectangle}
+    >
+      {!withoutFirstRectangle && (
         <RectangleLoader
           title={title}
           width="16"
@@ -60,18 +73,20 @@ const ListItemLoader = ({ id, className, style, isRectangle, ...rest }) => {
         animate={animate}
       />
 
-      <RectangleLoader
-        title={title}
-        width="16"
-        height="16"
-        borderRadius={borderRadius}
-        backgroundColor={backgroundColor}
-        foregroundColor={foregroundColor}
-        backgroundOpacity={backgroundOpacity}
-        foregroundOpacity={foregroundOpacity}
-        speed={speed}
-        animate={animate}
-      />
+      {!withoutLastRectangle && (
+        <RectangleLoader
+          title={title}
+          width="16"
+          height="16"
+          borderRadius={borderRadius}
+          backgroundColor={backgroundColor}
+          foregroundColor={foregroundColor}
+          backgroundOpacity={backgroundOpacity}
+          foregroundOpacity={foregroundOpacity}
+          speed={speed}
+          animate={animate}
+        />
+      )}
     </StyledRow>
   );
 };
@@ -80,14 +95,16 @@ ListItemLoader.propTypes = {
   id: PropTypes.string,
   className: PropTypes.string,
   style: PropTypes.object,
-  isRectangle: PropTypes.bool,
+  withoutFirstRectangle: PropTypes.bool,
+  withoutLastRectangle: PropTypes.bool,
 };
 
 ListItemLoader.defaultProps = {
   id: undefined,
   className: undefined,
   style: undefined,
-  isRectangle: true,
+  withoutFirstRectangle: false,
+  withoutLastRectangle: false,
 };
 
 export default ListItemLoader;

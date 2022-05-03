@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import Text from "@appserver/components/text";
@@ -11,9 +11,8 @@ import withCultureNames from "@appserver/common/hoc/withCultureNames";
 import history from "@appserver/common/history";
 import { Base } from "@appserver/components/themes";
 import LoaderCustomizationNavbar from "./sub-components/loaderCustomizationNavbar";
-
 import { StyledArrowRightIcon } from "../common/settingsCustomization/StyledSettings";
-
+import { withRouter } from "react-router";
 const StyledComponent = styled.div`
   padding-top: 13px;
 
@@ -47,15 +46,28 @@ const StyledComponent = styled.div`
 
 StyledComponent.defaultProps = { theme: Base };
 
-const CustomizationNavbar = ({ t, theme, helpUrlCommonSettings }) => {
+const CustomizationNavbar = ({
+  t,
+  theme,
+  helpUrlCommonSettings,
+  isLoaded,
+  tReady,
+  setIsLoadedCustomizationNavbar,
+  isLoadedPage,
+}) => {
+  const isLoadedSetting = isLoaded && tReady;
+  useEffect(() => {
+    if (isLoadedSetting) setIsLoadedCustomizationNavbar(isLoadedSetting);
+  }, [isLoadedSetting]);
+
   const onClickLink = (e) => {
     e.preventDefault();
     history.push(e.target.pathname);
   };
 
-  //return <LoaderCustomizationNavbar />;
-
-  return (
+  return !isLoadedPage ? (
+    <LoaderCustomizationNavbar />
+  ) : (
     <StyledComponent>
       <div className="category-item-wrapper">
         <div className="category-item-heading">
@@ -128,14 +140,19 @@ const CustomizationNavbar = ({ t, theme, helpUrlCommonSettings }) => {
   );
 };
 
-export default inject(({ auth }) => {
+export default inject(({ auth, common }) => {
   const { helpUrlCommonSettings, theme } = auth.settingsStore;
+  const { isLoaded, setIsLoadedCustomizationNavbar } = common;
   return {
     theme,
     helpUrlCommonSettings,
+    isLoaded,
+    setIsLoadedCustomizationNavbar,
   };
 })(
-  withCultureNames(
-    observer(withTranslation(["Settings", "Common"])(CustomizationNavbar))
+  withRouter(
+    withCultureNames(
+      observer(withTranslation(["Settings", "Common"])(CustomizationNavbar))
+    )
   )
 );

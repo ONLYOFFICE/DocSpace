@@ -65,22 +65,11 @@ namespace ASC.Web.Files.Utils
             _signalrServiceClient.StartEdit(fileId, room);
         }
 
-        public async Task StopEditAsync<T>(T fileId)
+        public void StopEdit<T>(T fileId)
         {
             var room = GetFileRoom(fileId);
-            var file = await DaoFactory.GetFileDao<T>().GetFileStableAsync(fileId);
 
-            var serializerSettings = new JsonSerializerOptions()
-            {
-                WriteIndented = false,
-                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            };
-            serializerSettings.Converters.Add(new ApiDateTimeConverter());
-            serializerSettings.Converters.Add(new FileEntryWrapperConverter());
-            var data = JsonSerializer.Serialize(await FilesWrapperHelper.GetAsync(file), serializerSettings);
-
-            _signalrServiceClient.StopEdit(fileId, room, data);
+            _signalrServiceClient.StopEdit(fileId, room);
         }
 
         public async Task CreateFileAsync<T>(File<T> file)

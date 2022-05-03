@@ -24,7 +24,7 @@ newInstance.use(Backend).init({
     loadPath: loadLanguagePath(config.homepage),
   },
 
-  ns: ["SelectFolder", "Common", "Translations"],
+  ns: ["SelectFolder"],
   defaultNS: "SelectFolder",
 
   react: {

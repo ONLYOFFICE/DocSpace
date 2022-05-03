@@ -38,6 +38,7 @@ const FileTile = (props) => {
     badgesComponent,
     t,
     getContextModel,
+    onHideContextMenu,
   } = props;
 
   const temporaryExtension =
@@ -88,6 +89,7 @@ const FileTile = (props) => {
           inProgress={inProgress}
           isEdit={isEdit}
           getContextModel={getContextModel}
+          hideContextMenu={onHideContextMenu}
           t={t}
           title={
             item.isFolder
@@ -112,9 +114,9 @@ export default inject(({ settingsStore }) => {
   const { getIcon } = settingsStore;
   return { getIcon };
 })(
-  withTranslation(["Home", "VersionBadge"])(
-    withFileActions(
-      withRouter(withBadges(withQuickButtons(observer(FileTile))))
+  withTranslation(["Home", "VersionBadge", "InfoPanel"])(
+    withRouter(
+      withFileActions(withBadges(withQuickButtons(observer(FileTile))))
     )
   )
 );

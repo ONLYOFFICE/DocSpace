@@ -17,6 +17,7 @@ const PureSettings = ({
   isLoadedSettingsTree,
   history,
   setFirstLoad,
+  capabilities,
   tReady,
 }) => {
   const [title, setTitle] = useState("");
@@ -45,7 +46,7 @@ const PureSettings = ({
   }, [title, t]);
 
   return (
-    <Section>
+    <Section isInfoPanelAvailable={false}>
       <Section.SectionHeader>
         {(!isLoadedSettingsTree && isLoading) || isLoading || !tReady ? (
           <Loaders.SectionHeader />
@@ -55,7 +56,10 @@ const PureSettings = ({
       </Section.SectionHeader>
 
       <Section.SectionBody>
-        {(!isLoadedSettingsTree && isLoading) || isLoading || !tReady ? (
+        {(!isLoadedSettingsTree && isLoading) ||
+        isLoading ||
+        !tReady ||
+        !capabilities ? (
           setting === "thirdParty" ? (
             <Loaders.Rows />
           ) : (
@@ -79,7 +83,12 @@ const Settings = withTranslation(["Settings", "Common"])(PureSettings);
 export default inject(({ filesStore, settingsStore, treeFoldersStore }) => {
   const { setFirstLoad, isLoading } = filesStore;
   const { setSelectedNode } = treeFoldersStore;
-  const { getFilesSettings, isLoadedSettingsTree } = settingsStore;
+  const {
+    getFilesSettings,
+    isLoadedSettingsTree,
+    thirdPartyStore,
+  } = settingsStore;
+  const { capabilities } = thirdPartyStore;
 
   return {
     isLoading,
@@ -87,5 +96,6 @@ export default inject(({ filesStore, settingsStore, treeFoldersStore }) => {
     setFirstLoad,
     setSelectedNode,
     getFilesSettings,
+    capabilities,
   };
 })(withRouter(observer(Settings)));

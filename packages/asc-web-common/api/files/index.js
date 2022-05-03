@@ -3,6 +3,7 @@ import axios from "axios";
 import FilesFilter from "./filter";
 import { FolderType } from "../../constants";
 import find from "lodash/find";
+import { getFolderOptions } from "../../utils";
 
 export function openEdit(fileId, version, doc, view) {
   const params = []; // doc ? `?doc=${doc}` : "";
@@ -48,19 +49,7 @@ export function getFolderPath(folderId) {
 }
 
 export function getFolder(folderId, filter) {
-  if (folderId && typeof folderId === "string") {
-    folderId = encodeURIComponent(folderId.replace(/\\\\/g, "\\"));
-  }
-
-  const params =
-    filter && filter instanceof FilesFilter
-      ? `${folderId}?${filter.toApiUrlParams()}`
-      : folderId;
-  const options = {
-    method: "get",
-    url: `/files/${params}`,
-  };
-
+  const options = getFolderOptions(folderId, filter);
   return request(options);
 }
 
@@ -181,6 +170,38 @@ export function getFoldersTree() {
   );
 }
 
+export function getCommonFoldersTree() {
+  const index = 1;
+  return request({ method: "get", url: "/files/@common" }).then(
+    (commonFolders) => {
+      return [
+        {
+          id: commonFolders.current.id,
+          key: `0-${index}`,
+          parentId: commonFolders.current.parentId,
+          title: commonFolders.current.title,
+          rootFolderType: +commonFolders.current.rootFolderType,
+          rootFolderName: "@common",
+          pathParts: commonFolders.pathParts,
+          foldersCount: commonFolders.current.foldersCount,
+          newItems: commonFolders.new,
+        },
+      ];
+    }
+  );
+}
+
+export function getThirdPartyCommonFolderTree() {
+  return request({ method: "get", url: "/files/thirdparty/common" }).then(
+    (commonThirdPartyArray) => {
+      commonThirdPartyArray.map((currentValue, index) => {
+        commonThirdPartyArray[index].key = `0-${index}`;
+      });
+      return commonThirdPartyArray;
+    }
+  );
+}
+
 export function getMyFolderList(filter = FilesFilter.getDefault()) {
   const options = {
     method: "get",
@@ -277,8 +298,8 @@ export function deleteFolder(folderId, deleteAfter, immediately) {
   return request(options);
 }
 
-export function createFile(folderId, title, templateId) {
-  const data = { title, templateId };
+export function createFile(folderId, title, templateId, formId) {
+  const data = { title, templateId, formId };
   const options = {
     method: "post",
     url: `/files/${folderId}/file`,

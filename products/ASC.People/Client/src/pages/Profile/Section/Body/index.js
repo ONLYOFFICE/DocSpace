@@ -26,7 +26,11 @@ import {
   getUserRole,
 } from "../../../../helpers/people-helpers";
 import config from "../../../../../package.json";
-import { AppServerConfig, providersData } from "@appserver/common/constants";
+import {
+  AppServerConfig,
+  providersData,
+  ThemeKeys,
+} from "@appserver/common/constants";
 import { unlinkOAuth, linkOAuth } from "@appserver/common/api/people";
 import { getAuthProviders } from "@appserver/common/api/settings";
 import { Trans, useTranslation } from "react-i18next";
@@ -37,6 +41,7 @@ import {
 
 import Loaders from "@appserver/common/components/Loaders";
 import withLoader from "../../../../HOCs/withLoader";
+import RadioButtonGroup from "@appserver/components/radio-button-group";
 
 const ProfileWrapper = styled.div`
   display: flex;
@@ -314,7 +319,7 @@ class SectionBodyContent extends React.PureComponent {
                   onClick={(e) => this.linkAccount(item.provider, item.url, e)}
                   isHovered={true}
                 >
-                  {t("Connect")}
+                  {t("Common:Connect")}
                 </Link>
               </div>
             )}
@@ -344,6 +349,18 @@ class SectionBodyContent extends React.PureComponent {
     this.props.changeEmailSubscription(checked);
   };
 
+  onChangeTheme = async (e) => {
+    const { setIsLoading, changeTheme, setTheme } = this.props;
+
+    const value = e.currentTarget.value;
+
+    setIsLoading(true);
+
+    await changeTheme(value);
+
+    setIsLoading(false);
+  };
+
   render() {
     const { resetAppDialogVisible, backupCodesDialogVisible, tfa } = this.state;
     const {
@@ -359,6 +376,8 @@ class SectionBodyContent extends React.PureComponent {
       personal,
       tipsSubscription,
       theme,
+      setTheme,
+      selectedTheme,
     } = this.props;
     const contacts = profile.contacts && getUserContacts(profile.contacts);
     const role = getUserRole(profile);
@@ -483,8 +502,27 @@ class SectionBodyContent extends React.PureComponent {
           </ToggleWrapper>
         )}
 
-        {profile.notes && (
+        {isSelf && (
           <ToggleWrapper>
+            <ToggleContent label={t("InterfaceTheme")} isOpen={true}>
+              <RadioButtonGroup
+                orientation={"vertical"}
+                name={"interface-theme"}
+                options={[
+                  { value: ThemeKeys.SystemStr, label: t("SystemTheme") },
+                  { value: ThemeKeys.BaseStr, label: t("LightTheme") },
+                  { value: ThemeKeys.DarkStr, label: t("DarkTheme") },
+                ]}
+                onClick={this.onChangeTheme}
+                selected={selectedTheme}
+                spacing={"10px"}
+              />
+            </ToggleContent>
+          </ToggleWrapper>
+        )}
+
+        {profile.notes && (
+          <ToggleWrapper isContacts={true}>
             <ToggleContent label={t("Translations:Comments")} isOpen={true}>
               <Text className="profile-comments" as="span">
                 {profile.notes}
@@ -535,9 +573,21 @@ class SectionBodyContent extends React.PureComponent {
 export default withRouter(
   inject(({ auth, peopleStore }) => {
     const { isAdmin, userStore, settingsStore, tfaStore } = auth;
-    const { user: viewer } = userStore;
-    const { isTabletView, getOAuthToken, getLoginLink, theme } = settingsStore;
-    const { targetUserStore, avatarEditorStore, usersStore } = peopleStore;
+    const { user: viewer, changeTheme } = userStore;
+
+    const {
+      isTabletView,
+      getOAuthToken,
+      getLoginLink,
+      theme,
+      setTheme,
+    } = settingsStore;
+    const {
+      targetUserStore,
+      avatarEditorStore,
+      usersStore,
+      loadingStore,
+    } = peopleStore;
     const {
       targetUser: profile,
       isMe: isSelf,
@@ -579,6 +629,10 @@ export default withRouter(
       changeEmailSubscription,
       tipsSubscription,
       theme,
+      setTheme,
+      changeTheme,
+      selectedTheme: viewer.theme,
+      setIsLoading: loadingStore.setIsLoading,
     };
   })(
     observer(

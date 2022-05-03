@@ -107,22 +107,26 @@ class FilesTableHeader extends React.Component {
   }
 
   onBeginScroll = () => {
-    const { firstElemChecked, headerBorder } = this.props;
+    const { firstElemChecked } = this.props;
 
     const currentScrollPosition = this.customScrollElm.scrollTop;
-
     const elem = document.getElementById("table-container_caption-header");
-    if (elem && headerBorder) elem.style.borderColor = "#2da7db";
 
     if (currentScrollPosition === 0) {
       this.isBeginScrolling = false;
+
+      this.props.firstElemChecked &&
+        this.props.headerBorder &&
+        elem?.classList?.add("hotkeys-lengthen-header");
 
       !firstElemChecked && elem?.classList?.remove("lengthen-header");
       return;
     }
 
-    if (elem) elem.style.borderColor = "#ECEEF1";
-    !this.isBeginScrolling && elem?.classList?.add("lengthen-header");
+    if (!this.isBeginScrolling) {
+      elem?.classList?.remove("hotkeys-lengthen-header");
+      elem?.classList?.add("lengthen-header");
+    }
 
     this.isBeginScrolling = true;
   };
@@ -138,7 +142,7 @@ class FilesTableHeader extends React.Component {
 
     if (this.props.firstElemChecked && this.props.headerBorder) {
       const elem = document.getElementById("table-container_caption-header");
-      if (elem) elem.style.borderColor = "#2da7db";
+      elem?.classList?.add("hotkeys-lengthen-header");
     }
   }
 

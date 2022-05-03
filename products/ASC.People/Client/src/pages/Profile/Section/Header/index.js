@@ -14,6 +14,7 @@ import {
   deleteAvatar,
 } from "@appserver/common/api/people";
 import { AppServerConfig, EmployeeStatus } from "@appserver/common/constants";
+import withCultureNames from "@appserver/common/hoc/withCultureNames";
 import {
   DeleteSelfProfileDialog,
   ChangePasswordDialog,
@@ -325,7 +326,7 @@ class SectionHeaderContent extends React.PureComponent {
           {
             key: "edit",
             className: "header-context-menu_edit",
-            label: t("EditUser"),
+            label: t("Profile:EditUser"),
             onClick: this.onEditClick,
           },
           {
@@ -551,7 +552,9 @@ export default withRouter(
   })(
     observer(
       withTranslation(["Profile", "Common", "Translations"])(
-        withLoader(SectionHeaderContent)(<Loaders.SectionHeader />)
+        withCultureNames(
+          withLoader(SectionHeaderContent)(<Loaders.SectionHeader />)
+        )
       )
     )
   )

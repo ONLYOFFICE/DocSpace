@@ -229,6 +229,8 @@ class Section extends React.Component {
       snackbarExist,
       showText,
       infoPanelIsVisible,
+      isInfoPanelAvailable,
+      settingsStudio,
     } = this.props;
 
     let sectionHeaderContent = null;
@@ -365,6 +367,7 @@ class Section extends React.Component {
                           autoFocus={isMobile || isTabletView ? false : true}
                           viewAs={viewAs}
                           isHomepage={isHomepage}
+                          settingsStudio={settingsStudio}
                         >
                           {isMobile && (
                             <StyledMainBar
@@ -394,6 +397,7 @@ class Section extends React.Component {
                               viewAs={viewAs}
                               showText={showText}
                               infoPanelIsVisible={infoPanelIsVisible}
+                              settingsStudio={settingsStudio}
                             >
                               {sectionHeaderContent
                                 ? sectionHeaderContent.props.children
@@ -467,12 +471,16 @@ class Section extends React.Component {
                       <></>
                     )}
                   </SectionContainer>
-                  <InfoPanel>
-                    <SubInfoPanelHeader>
-                      {infoPanelHeaderContent}
-                    </SubInfoPanelHeader>
-                    <SubInfoPanelBody>{infoPanelBodyContent}</SubInfoPanelBody>
-                  </InfoPanel>
+                  {isInfoPanelAvailable && (
+                    <InfoPanel>
+                      <SubInfoPanelHeader>
+                        {infoPanelHeaderContent}
+                      </SubInfoPanelHeader>
+                      <SubInfoPanelBody>
+                        {infoPanelBodyContent}
+                      </SubInfoPanelBody>
+                    </InfoPanel>
+                  )}
                 </Provider>
               )}
             </ReactResizeDetector>
@@ -539,11 +547,15 @@ Section.propTypes = {
   isHeaderVisible: PropTypes.bool,
   firstLoad: PropTypes.bool,
   isHomepage: PropTypes.bool,
+  isInfoPanelAvailable: PropTypes.bool,
+  settingsStudio: PropTypes.bool,
 };
 
 Section.defaultProps = {
   withBodyScroll: true,
   withBodyAutoFocus: false,
+  isInfoPanelAvailable: true,
+  settingsStudio: false,
 };
 
 Section.InfoPanelHeader = InfoPanelHeader;

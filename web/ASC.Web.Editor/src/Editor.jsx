@@ -73,11 +73,11 @@ let fileInfo;
 let successAuth;
 let isSharingAccess;
 let user = null;
-let personal;
+let personal = IS_PERSONAL || null;
 let config;
 let url = window.location.href;
 const filesUrl = url.substring(0, url.indexOf("/doceditor"));
-const doc = url.indexOf("doc=") !== -1 ? url.split("doc=")[1] : null;
+//const doc = url.indexOf("doc=") !== -1 ? url.split("doc=")[1] : null;
 
 toast.configure();
 
@@ -101,6 +101,8 @@ const Editor = () => {
   const [openNewTab, setNewOpenTab] = useState(false);
   const [typeInsertImageAction, setTypeInsertImageAction] = useState();
   const throttledChangeTitle = throttle(() => changeTitle(), 500);
+
+  const [settings, setSettings] = useState(null);
 
   const [
     preparationPortalDialogVisible,
@@ -228,7 +230,10 @@ const Editor = () => {
       try {
         await authStore.init(true);
         user = authStore.userStore.user;
-        if (user) filesSettings = await getSettingsFiles();
+        if (user) {
+          filesSettings = await getSettingsFiles();
+          setSettings(filesSettings);
+        }
         personal = authStore.settingsStore.personal;
         successAuth = !!user;
 
@@ -341,13 +346,13 @@ const Editor = () => {
     if (!favicon) return;
     let icon = null;
     switch (documentType) {
-      case "text":
+      case text:
         icon = "text.ico";
         break;
-      case "presentation":
+      case presentation:
         icon = "presentation.ico";
         break;
-      case "spreadsheet":
+      case spreadSheet:
         icon = "spreadsheet.ico";
         break;
       default:
@@ -912,30 +917,30 @@ const Editor = () => {
 
             {isFileDialogVisible && (
               <SelectFileDialog
+                settings={settings}
                 resetTreeFolders
                 onSelectFile={onSelectFile}
                 isPanelVisible={isFileDialogVisible}
                 onClose={onCloseFileDialog}
                 foldersType="exceptPrivacyTrashFolders"
                 {...fileTypeDetection()}
-                titleFilesList={selectFilesListTitle()}
-                headerName={i18n.t("SelectFileTitle")}
+                filesListTitle={selectFilesListTitle()}
               />
             )}
 
             {isFolderDialogVisible && (
               <SelectFolderDialog
-                resetTreeFolders
-                showButtons
                 isPanelVisible={isFolderDialogVisible}
-                isSetFolderImmediately
-                asideHeightContent="calc(100% - 50px)"
                 onClose={onCloseFolderDialog}
                 foldersType="exceptSortedByTags"
                 onSave={onClickSaveSelectFolder}
+                isDisableButton={!titleSelectorFolder.trim()}
                 header={
                   <StyledSelectFolder>
-                    <Text className="editor-select-folder_text">
+                    <Text
+                      className="editor-select-folder_text"
+                      fontWeight={600}
+                    >
                       {i18n.t("FileName")}
                     </Text>
                     <TextInput
@@ -946,7 +951,6 @@ const Editor = () => {
                     />
                   </StyledSelectFolder>
                 }
-                headerName={i18n.t("FolderForSave")}
                 {...(extension !== "fb2" && {
                   footer: (
                     <StyledSelectFolder>

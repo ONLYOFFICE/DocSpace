@@ -55,7 +55,9 @@ const DebugInfoDialog = (props) => {
           overflowProp="auto"
           heightProp={modalType === "modal" ? "300px" : "70vh"}
         >
-          <Scrollbar>{md && <ReactMarkdown children={md} />}</Scrollbar>
+          <Scrollbar stype="mediumBlack">
+            {md && <ReactMarkdown children={md} />}
+          </Scrollbar>
         </Box>
       </ModalDialog.Body>
     </ModalDialog>

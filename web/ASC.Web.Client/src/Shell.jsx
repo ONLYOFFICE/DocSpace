@@ -61,9 +61,10 @@ const About = React.lazy(() => import("./components/pages/About"));
 const Wizard = React.lazy(() => import("./components/pages/Wizard"));
 const Settings = React.lazy(() => import("./components/pages/Settings"));
 const ComingSoon = React.lazy(() => import("./components/pages/ComingSoon"));
-const Confirm = React.lazy(() => import("./components/pages/Confirm"));
+const Confirm =
+  !IS_PERSONAL && React.lazy(() => import("./components/pages/Confirm"));
 const MyProfile = React.lazy(() => import("people/MyProfile"));
-const EnterCode = React.lazy(() => import("login/codeLogin"));
+const EnterCode = !IS_PERSONAL && React.lazy(() => import("login/codeLogin"));
 const InvalidError = React.lazy(() =>
   import("./components/pages/Errors/Invalid")
 );
@@ -109,13 +110,15 @@ const HomeRoute = (props) => (
   </React.Suspense>
 );
 
-const ConfirmRoute = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <Confirm {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
+const ConfirmRoute =
+  !IS_PERSONAL &&
+  ((props) => (
+    <React.Suspense fallback={<AppLoader />}>
+      <ErrorBoundary>
+        <Confirm {...props} />
+      </ErrorBoundary>
+    </React.Suspense>
+  ));
 
 const PreparationPortalRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
@@ -157,13 +160,15 @@ const MyProfileRoute = (props) => (
   </React.Suspense>
 );
 
-const EnterCodeRoute = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <EnterCode {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
+const EnterCodeRoute =
+  !IS_PERSONAL &&
+  ((props) => (
+    <React.Suspense fallback={<AppLoader />}>
+      <ErrorBoundary>
+        <EnterCode {...props} />
+      </ErrorBoundary>
+    </React.Suspense>
+  ));
 
 const InvalidRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
@@ -174,21 +179,6 @@ const InvalidRoute = (props) => (
 );
 
 const RedirectToHome = () => <Redirect to={PROXY_HOMEPAGE_URL} />;
-
-const checkTheme = () => {
-  const theme = localStorage.getItem("theme");
-
-  if (theme) return theme;
-
-  if (
-    window.matchMedia &&
-    window.matchMedia("(prefers-color-scheme: dark)").matches
-  ) {
-    return "Dark";
-  }
-
-  return "Base";
-};
 
 const Shell = ({ items = [], page = "home", ...rest }) => {
   const {
@@ -206,6 +196,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     setMaintenanceExist,
     roomsMode,
     setSnackbarExist,
+    userTheme,
   } = rest;
 
   useEffect(() => {
@@ -431,8 +422,8 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   }, [page]);
 
   useEffect(() => {
-    setTheme(checkTheme());
-  }, []);
+    if (userTheme) setTheme(userTheme);
+  }, [userTheme]);
 
   const pathname = window.location.pathname.toLowerCase();
   const isEditor = pathname.indexOf("doceditor") !== -1;
@@ -483,7 +474,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
   const loginRoutes = [];
 
-  if (isLoaded && !personal) {
+  if (isLoaded && !IS_PERSONAL) {
     let module;
     if (roomsMode) {
       module = "./roomsLogin";
@@ -509,7 +500,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
   const roomsRoutes = [];
 
-  if (roomsMode) {
+  if (!IS_PERSONAL && roomsMode) {
     roomsRoutes.push(
       <Route path={ENTER_CODE_URL} component={EnterCodeRoute} />
     );
@@ -528,18 +519,22 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
               <PrivateRoute path={ABOUT_URL} component={AboutRoute} />
               {loginRoutes}
               {roomsRoutes}
-              <Route path={CONFIRM_URL} component={ConfirmRoute} />
+              {!IS_PERSONAL && (
+                <Route path={CONFIRM_URL} component={ConfirmRoute} />
+              )}
               <Route path={INVALID_URL} component={InvalidRoute} />
               <PrivateRoute
                 path={COMING_SOON_URLS}
                 component={ComingSoonRoute}
               />
               <PrivateRoute path={PAYMENTS_URL} component={PaymentsRoute} />
-              <PrivateRoute
-                restricted
-                path={SETTINGS_URL}
-                component={SettingsRoute}
-              />
+              {!personal && (
+                <PrivateRoute
+                  restricted
+                  path={SETTINGS_URL}
+                  component={SettingsRoute}
+                />
+              )}
               <PrivateRoute
                 exact
                 allowForMe
@@ -565,6 +560,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
 const ShellWrapper = inject(({ auth, backup }) => {
   const { init, isLoaded, settingsStore, setProductVersion, language } = auth;
+
   const {
     personal,
     roomsMode,
@@ -603,11 +599,13 @@ const ShellWrapper = inject(({ auth, backup }) => {
     setTheme,
     roomsMode,
     setSnackbarExist,
+    userTheme: auth?.userStore?.user?.theme,
   };
 })(observer(Shell));
 
 const ThemeProviderWrapper = inject(({ auth }) => {
   const { settingsStore } = auth;
+
   return { theme: settingsStore.theme };
 })(observer(ThemeProvider));
 

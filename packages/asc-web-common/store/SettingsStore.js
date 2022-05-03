@@ -3,7 +3,7 @@ import api from "../api";
 import { LANGUAGE, TenantStatus } from "../constants";
 import { combineUrl } from "../utils";
 import FirebaseHelper from "../utils/firebase";
-import { AppServerConfig } from "../constants";
+import { AppServerConfig, ThemeKeys } from "../constants";
 import { version } from "../package.json";
 import SocketIOHelper from "../utils/socket";
 
@@ -26,9 +26,7 @@ class SettingsStore {
   currentProductId = "";
   culture = "en";
   cultures = [];
-  theme = !!localStorage.getItem("theme")
-    ? themes[localStorage.getItem("theme")]
-    : Base;
+  theme = Base;
   trustedDomains = [];
   trustedDomainsType = 0;
   ipRestrictionEnable = false;
@@ -36,6 +34,7 @@ class SettingsStore {
   sessionLifetime = "1440";
   timezone = "UTC";
   timezones = [];
+  tenantAlias = "";
   utcOffset = "00:00:00";
   utcHoursOffset = 0;
   defaultPage = "/";
@@ -54,6 +53,8 @@ class SettingsStore {
   enabledJoin = false;
   urlLicense = "https://gnu.org/licenses/gpl-3.0.html";
   urlSupport = "https://helpdesk.onlyoffice.com/";
+  urlOforms = "https://cmsoforms.onlyoffice.com/api/oforms?populate=*&locale=";
+
   logoUrl = combineUrl(proxyURL, "/static/images/nav.logo.opened.react.svg");
   customNames = {
     id: "Common",
@@ -224,6 +225,10 @@ class SettingsStore {
     ) {
       this.getCurrentCustomSchema(origSettings.nameSchemaId);
     }
+
+    if (origSettings.tenantAlias) {
+      this.setTenantAlias(origSettings.tenantAlias);
+    }
   };
 
   init = async () => {
@@ -253,8 +258,13 @@ class SettingsStore {
     this.isLoaded = isLoaded;
   };
 
+  setCultures = (cultures) => {
+    this.cultures = cultures;
+  };
+
   getPortalCultures = async () => {
-    this.cultures = await api.settings.getPortalCultures();
+    const cultures = await api.settings.getPortalCultures();
+    this.setCultures(cultures);
   };
 
   setIsEncryptionSupport = (isEncryptionSupport) => {
@@ -431,19 +441,28 @@ class SettingsStore {
       this.buildVersionInfo.documentServer = "6.4.1";
   };
 
-  changeTheme = () => {
-    const currentTheme =
-      JSON.stringify(this.theme) === JSON.stringify(Base) ? Dark : Base;
-    localStorage.setItem(
-      "theme",
-      JSON.stringify(this.theme) === JSON.stringify(Base) ? "Dark" : "Base"
-    );
-    this.theme = currentTheme;
-  };
+  setTheme = (key) => {
+    let theme = null;
+    switch (key) {
+      case ThemeKeys.Base:
+      case ThemeKeys.BaseStr:
+        theme = ThemeKeys.BaseStr;
+        break;
+      case ThemeKeys.Dark:
+      case ThemeKeys.DarkStr:
+        theme = ThemeKeys.DarkStr;
+        break;
+      case ThemeKeys.System:
+      case ThemeKeys.SystemStr:
+      default:
+        theme =
+          window.matchMedia &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? ThemeKeys.DarkStr
+            : ThemeKeys.BaseStr;
+    }
 
-  setTheme = (theme) => {
     this.theme = themes[theme];
-    localStorage.setItem("theme", theme);
   };
 
   setMailDomainSettings = async (data) => {
@@ -451,6 +470,10 @@ class SettingsStore {
     this.trustedDomainsType = data.type;
     this.trustedDomains = data.domains;
     return res;
+  };
+
+  setTenantAlias = (tenantAlias) => {
+    this.tenantAlias = tenantAlias;
   };
 
   getIpRestrictions = async () => {

@@ -1,10 +1,10 @@
-import React, { lazy, Suspense } from "react";
+import React, { lazy, Suspense, useEffect } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { withRouter } from "react-router";
 import Layout from "./Layout";
 import { combineUrl } from "@appserver/common/utils";
 import AppServerConfig from "@appserver/common/constants/AppServerConfig";
-
+import { inject, observer } from "mobx-react";
 const SecuritySettings = lazy(() => import("./categories/security/index.js"));
 const Admins = lazy(() => import("./categories/security/access-rights/admins"));
 const TfaPage = lazy(() => import("./categories/security/access-portal/tfa"));
@@ -126,7 +126,13 @@ const DATA_MANAGEMENT_URL = combineUrl(
 
 const ERROR_404_URL = combineUrl(AppServerConfig.proxyURL, "/error/404");
 
-const Settings = () => {
+const Settings = (props) => {
+  const { loadBaseInfo } = props;
+
+  useEffect(() => {
+    loadBaseInfo();
+  }, []);
+
   return (
     <Layout key="1">
       <Suspense fallback={null}>
@@ -191,4 +197,10 @@ const Settings = () => {
   );
 };
 
-export default withRouter(Settings);
+export default inject(({ common }) => {
+  return {
+    loadBaseInfo: async () => {
+      await common.initSettings();
+    },
+  };
+})(withRouter(observer(Settings)));

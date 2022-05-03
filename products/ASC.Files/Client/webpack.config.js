@@ -5,6 +5,8 @@ const ModuleFederationPlugin = require("webpack").container
   .ModuleFederationPlugin;
 const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
+const DefinePlugin = require("webpack").DefinePlugin;
+
 const combineUrl = require("@appserver/common/utils/combineUrl");
 const AppServerConfig = require("@appserver/common/constants/AppServerConfig");
 const sharedDeps = require("@appserver/common/constants/sharedDependencies");
@@ -169,10 +171,14 @@ var config = {
         "./app": "./src/Files.jsx",
         "./SharingDialog": "./src/components/panels/SharingDialog",
         "./utils": "./src/helpers/utils.js",
-        "./SelectFileDialog": "./src/components/panels/SelectFileDialog",
-        "./SelectFolderDialog": "./src/components/panels/SelectFolderDialog",
-        "./SelectFolderInput": "./src/components/panels/SelectFolderInput",
-        "./SelectFileInput": "./src/components/panels/SelectFileInput",
+        "./SelectFileDialog":
+          "./src/components/panels/SelectFileDialog/SelectFileDialogWrapper",
+        "./SelectFileInput":
+          "./src/components/panels/SelectFileInput/SelectFileInputWrapper",
+        "./SelectFolderDialog":
+          "./src/components/panels/SelectFolderDialog/SelectFolderDialogWrapper",
+        "./SelectFolderInput":
+          "./src/components/panels/SelectFolderInput/SelectFolderInputWrapper",
       },
       shared: {
         ...deps,
@@ -244,6 +250,12 @@ module.exports = (env, argv) => {
   } else {
     config.devtool = "cheap-module-source-map";
   }
+
+  config.plugins.push(
+    new DefinePlugin({
+      IS_PERSONAL: env.personal || false,
+    })
+  );
 
   return config;
 };

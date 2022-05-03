@@ -127,14 +127,6 @@ const Dark = {
       medium: "0 32px",
     },
 
-    minWidth: {
-      extraSmall: "none",
-      small: "100px",
-      normalDesktop: "100px",
-      normalTouchscreen: "100px",
-      medium: "100px",
-    },
-
     color: {
       base: "#CCCCCC",
       baseHover: "#FAFAFA",
@@ -517,6 +509,7 @@ const Dark = {
     minHeight: "47px",
     width: "100%",
     borderBottom: "#474747",
+    backgroundColor: globalColors.veryDarkGrey,
     minWidth: "160px",
     overflow: "hidden",
     textOverflow: "ellipsis",
@@ -586,7 +579,7 @@ const Dark = {
       asidePadding: "0 16px 16px",
 
       heading: {
-        maxWidth: "500px",
+        maxWidth: "calc(100% - 18px)",
         margin: "0",
         fontWeight: "700",
         modalLineHeight: "40px",
@@ -1231,6 +1224,7 @@ const Dark = {
   },
 
   treeNode: {
+    background: "#3D3D3D",
     dragging: {
       draggable: {
         background: "rgba(230, 211, 138, 0.12)",
@@ -1930,10 +1924,8 @@ const Dark = {
   },
 
   menuContainer: {
-    background:
-      "linear-gradient(226.22deg, #EBB67A 0.24%, #E9AC6B 11.61%, #E8A25D 22.98%, #E69850 34.34%, #E58D42 45.71%, #E38235 57.08%, #E27628 68.44%, #E06A1B 79.81%)",
-    arrowTop: "#EAB274",
-    color: "#22221f",
+    background: "linear-gradient(226.22deg, #606060 0.24%, #1F1F1F 79.81%)",
+    color: "rgba(255, 255, 255, 0.92)",
   },
 
   article: {
@@ -2089,6 +2081,7 @@ const Dark = {
       hoverIconColor: grayMaxLight,
 
       borderImageSource: `linear-gradient(to right,${black} 21px,#474747 21px,#474747 calc(100% - 20px),${black} calc(100% - 20px))`,
+      hotkeyBorderBottom: `1px solid ${globalColors.blueMain}`,
     },
 
     tableCell: {
@@ -2150,7 +2143,7 @@ const Dark = {
           "linear-gradient(to right, #333333 25px, #474747 24px)",
         borderImageLeft: "linear-gradient(to left, #333333 20px, #474747 24px)",
 
-        borderColor: "#858585",
+        borderColor: "#474747",
         borderColorTransition: "#474747",
       },
     },
@@ -2344,6 +2337,17 @@ const Dark = {
       fill: grayMaxLight,
       loadingFill: grayMaxLight,
 
+      borderBottom: "1px solid #474747",
+      borderTop: "1px solid #474747",
+      externalLinkBackground: "#292929",
+      externalLinkSvg: "#858585",
+
+      internalLinkBorder: "1px dashed #eeeeee",
+
+      itemBorder: "1px dashed #333333",
+
+      itemOwnerColor: "#858585",
+
       dropdownColor: grayMaxLight,
 
       loader: {
@@ -2418,6 +2422,7 @@ const Dark = {
   newContextMenu: {
     background: "#3D3D3D",
     borderRadius: "6px",
+    mobileBorderRadius: "6px 6px 0 0",
     boxShadow:
       "0px 12px 24px rgba(0, 0, 0, 0.12), 0px 8px 16px rgba(0, 0, 0, 0.08), 0px 3.2px 2.6px rgba(0, 0, 0, 0.08)",
     padding: "6px 0px",
@@ -2453,6 +2458,13 @@ const Dark = {
     color: grayMaxLight,
     border: "1px solid #474747",
     borderBottom: "1px solid #474747",
+
+    tile: {
+      background: globalColors.black,
+      itemBackground: "#242424",
+      itemBorder: gray,
+      itemActiveBorder: "#eeeeee",
+    },
 
     fill: "#858585",
     hoverFill: "#eeeeee",
@@ -2678,6 +2690,7 @@ const Dark = {
 
   submenu: {
     lineColor: "#474747",
+    backgroundColor: "#333",
   },
 };
 

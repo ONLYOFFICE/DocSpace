@@ -222,14 +222,14 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 CancellationToken.ThrowIfCancellationRequested();
 
                 var file = await FileDao.GetFileAsync(fileId);
-                var tmp = WithErrorAsync(scope, new[] { file }, false);
+                var (isError, message) = await WithErrorAsync(scope, new[] { file }, false);
                 if (file == null)
                 {
                     Error = FilesCommonResource.ErrorMassage_FileNotFound;
                 }
-                else if (!_ignoreException && (await tmp).isError)
+                else if (!_ignoreException && isError)
                 {
-                    Error = (await tmp).message;
+                    Error = message;
                 }
                 else
                 {

@@ -16,7 +16,7 @@ import IconButton from "../icon-button";
 import Button from "../button";
 import Text from "../text";
 import Scrollbar from "@appserver/components/scrollbar";
-import { isMobile, isTablet } from "react-device-detect";
+import { isMobile } from "react-device-detect";
 import Backdrop from "../backdrop";
 
 const ProgressBarMobile = ({
@@ -98,7 +98,7 @@ const MainButtonMobile = (props) => {
 
   const [isOpen, setIsOpen] = useState(opened);
   const [isUploading, setIsUploading] = useState(false);
-  const [height, setHeight] = useState("90vh");
+  const [height, setHeight] = useState("calc(100% - 48px)");
 
   const divRef = useRef();
 
@@ -111,7 +111,10 @@ const MainButtonMobile = (props) => {
   useEffect(() => {
     let height =
       divRef?.current?.getBoundingClientRect()?.height || window.innerHeight;
-    height >= window.innerHeight ? setHeight("90vh") : setHeight(height + "px");
+
+    height >= window.innerHeight
+      ? setHeight("calc(100% - 48px)")
+      : setHeight(height + "px");
   }, [isOpen, isOpenButton, window.innerHeight, isUploading]);
 
   const ref = useRef();
@@ -127,7 +130,6 @@ const MainButtonMobile = (props) => {
   };
 
   const onMainButtonClick = (e) => {
-    if (isOpen && ref.current.contains(e.target)) return;
     toggle(!isOpen);
   };
 
@@ -191,8 +193,8 @@ const MainButtonMobile = (props) => {
               />
             ))}
         </StyledProgressContainer>
-        <StyledButtonOptions isOpenButton={isOpenButton}>
-          {isOpenButton && buttonOptions
+        <StyledButtonOptions>
+          {buttonOptions
             ? buttonOptions.map((option) =>
                 option.isSeparator ? (
                   <div key={option.key} className="separator-wrapper">
@@ -213,20 +215,6 @@ const MainButtonMobile = (props) => {
               )
             : ""}
         </StyledButtonOptions>
-        {withButton && (
-          <StyledButtonWrapper
-            isUploading={isUploading}
-            isOpenButton={isOpenButton}
-          >
-            <Button
-              label={title}
-              className="action-mobile-button"
-              primary
-              size="medium"
-              onClick={onUploadClick}
-            />
-          </StyledButtonWrapper>
-        )}
       </div>
     );
   };
@@ -249,13 +237,15 @@ const MainButtonMobile = (props) => {
           manualWidth={manualWidth || "400px"}
           directionY="top"
           directionX="right"
-          isMobile={isMobile || isTablet}
+          isMobile={isMobile}
+          fixedDirection={true}
           heightProp={height}
           sectionWidth={sectionWidth}
           isDefaultMode={false}
         >
-          {isMobile || isTablet ? (
+          {isMobile ? (
             <Scrollbar
+              style={{ position: "absolute" }}
               scrollclass="section-scroll"
               stype="mediumBlack"
               ref={dropDownRef}

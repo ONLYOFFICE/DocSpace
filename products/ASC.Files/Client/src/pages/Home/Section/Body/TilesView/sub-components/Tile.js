@@ -55,7 +55,7 @@ const StyledTile = styled.div`
   border: ${(props) => props.theme.filesSection.tilesView.tile.border};
   border-radius: 6px;
   ${(props) => props.showHotkeyBorder && "border-color: #2DA7DB"};
-  ${(props) => props.isFolder && "border-top-left-radius: 0px;"}
+  ${(props) => props.isFolder && "border-top-left-radius: 6px;"}
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   ${(props) => props.isFolder && FlexBoxStyles}
@@ -69,7 +69,13 @@ const StyledTile = styled.div`
 
   &:before, 
   &:after {
-    ${(props) => props.isFolder && props.dragging && draggingStyle};
+    ${(props) =>
+      props.isFolder &&
+      props.dragging &&
+      css`
+        background: ${(props) =>
+          props.theme.filesSection.rowView.draggingBackground};
+      `};
     ${(props) => props.showHotkeyBorder && "border-color: #2DA7DB"};
   }
 
@@ -80,7 +86,13 @@ const StyledTile = styled.div`
 
   &:hover:before,
   &:hover:after {
-    ${(props) => props.isFolder && props.dragging && draggingHoverStyle};
+    ${(props) =>
+      props.isFolder &&
+      props.dragging &&
+      css`
+        background: ${(props) =>
+          props.theme.filesSection.rowView.draggingHoverBackground};
+      `};
   }
 
   .checkbox {
@@ -366,6 +378,7 @@ class Tile extends React.PureComponent {
       title,
       getContextModel,
       showHotkeyBorder,
+      hideContextMenu,
     } = this.props;
     const { isFolder, id, fileExst } = item;
 
@@ -467,9 +480,11 @@ class Tile extends React.PureComponent {
                 <div className="expandButton" />
               )}
               <ContextMenu
+                onHide={hideContextMenu}
                 getContextModel={getContextModel}
                 ref={this.cm}
                 header={contextMenuHeader}
+                withBackdrop={true}
               />
             </StyledOptionButton>
           </>
@@ -540,6 +555,7 @@ class Tile extends React.PureComponent {
                   ref={this.cm}
                   header={contextMenuHeader}
                   withBackdrop={true}
+                  onHide={hideContextMenu}
                 />
               </StyledOptionButton>
             </StyledFileTileBottom>

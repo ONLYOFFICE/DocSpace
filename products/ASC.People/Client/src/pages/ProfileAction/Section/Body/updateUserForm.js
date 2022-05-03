@@ -241,6 +241,8 @@ class UpdateUserForm extends React.Component {
   };
 
   onBirthdayDateChange = (value) => {
+    value.setHours(0, -value.getTimezoneOffset(), 0, 0);
+
     var stateCopy = Object.assign({}, this.state);
     const birthday = value ? value.toJSON() : stateCopy.profile.workFrom;
     stateCopy.profile.birthday = birthday;
@@ -254,7 +256,10 @@ class UpdateUserForm extends React.Component {
   };
 
   onWorkFromDateChange = (value) => {
+    value.setHours(0, -value.getTimezoneOffset(), 0, 0);
+
     var stateCopy = Object.assign({}, this.state);
+
     stateCopy.profile.workFrom = value ? value.toJSON() : null;
     this.setState(stateCopy);
     this.setIsEdit();
@@ -685,7 +690,8 @@ class UpdateUserForm extends React.Component {
         <Link
           color="#316DAA"
           isHovered={true}
-          href="https://helpcenter.onlyoffice.com/ru/gettingstarted/people.aspx#ManagingAccessRights_block"
+          href={`https://helpcenter.onlyoffice.com/${language}/gettingstarted/people.aspx#ManagingAccessRights_block`}
+          target="_blank"
           style={{ marginTop: 23 }}
         >
           {t("TermsOfUsePopupHelperLink")}

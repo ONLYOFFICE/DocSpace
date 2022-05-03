@@ -11,6 +11,8 @@ import CustomizationNavbar from "./customization-navbar";
 import { Base } from "@appserver/components/themes";
 import { setDocumentTitle } from "../../../../../helpers/utils";
 import LoaderDescriptionCustomization from "./sub-components/loaderDescriptionCustomization";
+import { withRouter } from "react-router";
+import withLoading from "../../../../../HOCs/withLoading";
 
 const StyledComponent = styled.div`
   width: 100%;
@@ -65,9 +67,24 @@ const StyledComponent = styled.div`
 
 StyledComponent.defaultProps = { theme: Base };
 
-const Customization = ({ t, setIsLoadingArticleSettings }) => {
+const Customization = (props) => {
+  const { t, isLoaded, tReady, setIsLoadedCustomization, isLoadedPage } = props;
   const [mobileView, setMobileView] = useState(true);
-  const [isLoadingCustomization, setIsLoadingCustomization] = useState(false);
+
+  const isLoadedSetting = isLoaded && tReady;
+
+  useEffect(() => {
+    setDocumentTitle(t("Customization"));
+    window.addEventListener("resize", checkInnerWidth);
+
+    return () => window.removeEventListener("resize", checkInnerWidth);
+  }, []);
+
+  useEffect(() => {
+    if (isLoadedSetting) {
+      setIsLoadedCustomization(isLoadedSetting);
+    }
+  }, [isLoadedSetting]);
 
   const checkInnerWidth = () => {
     if (isSmallTablet()) {
@@ -77,47 +94,35 @@ const Customization = ({ t, setIsLoadingArticleSettings }) => {
     }
   };
 
-  useEffect(() => {
-    setDocumentTitle(t("Customization"));
-    //TODO: Add method to get the portal name
-    setIsLoadingArticleSettings(true);
-    setTimeout(() => {
-      setIsLoadingCustomization(false);
-      setIsLoadingArticleSettings(isLoadingCustomization);
-    }, 3000);
-
-    window.addEventListener("resize", checkInnerWidth);
-    return () => window.removeEventListener("resize", checkInnerWidth);
-  }, []);
-
   const isMobile = !!(isSmallTablet() && mobileView);
 
   return isMobile ? (
-    <CustomizationNavbar />
+    <CustomizationNavbar isLoadedPage={isLoadedPage} />
   ) : (
     <StyledComponent>
-      <div className="category-description">{`${t(
-        "Settings:CustomizationDescription"
-      )}`}</div>
-      {/* <LoaderDescriptionCustomization /> */}
-      <LanguageAndTimeZone
-        isLoadingCustomization={isLoadingCustomization}
-        isMobileView={isMobile}
-      />
+      {!isLoadedPage ? (
+        <LoaderDescriptionCustomization />
+      ) : (
+        <div className="category-description">{`${t(
+          "Settings:CustomizationDescription"
+        )}`}</div>
+      )}
+      <LanguageAndTimeZone isMobileView={isMobile} />
       <WelcomePageSettings isMobileView={isMobile} />
       <PortalRenaming isMobileView={isMobile} />
     </StyledComponent>
   );
 };
 
-export default inject(({ setup }) => {
-  const { setIsLoadingArticleSettings } = setup;
+export default inject(({ common }) => {
+  const { isLoaded, setIsLoadedCustomization } = common;
 
   return {
-    setIsLoadingArticleSettings,
+    isLoaded,
+    setIsLoadedCustomization,
   };
 })(
-  withCultureNames(
-    withTranslation(["Settings", "Common"])(observer(Customization))
+  withLoading(
+    withRouter(withTranslation(["Settings", "Common"])(observer(Customization)))
   )
 );
