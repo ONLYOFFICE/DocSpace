@@ -223,7 +223,6 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
 
   .icon {
     width: auto;
-    height: 100%;
     display: flex;
     align-items: center;
   }

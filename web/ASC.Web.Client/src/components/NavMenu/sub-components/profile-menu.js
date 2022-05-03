@@ -5,12 +5,7 @@ import DropDown from "@appserver/components/drop-down";
 
 import styled, { css } from "styled-components";
 import DropDownItem from "@appserver/components/drop-down-item";
-import {
-  isDesktop,
-  isTablet,
-  isMobile,
-  isMobileOnly,
-} from "react-device-detect";
+import { isMobile } from "react-device-detect";
 import { Base } from "@appserver/components/themes";
 import { mobile, tablet } from "@appserver/components/utils/device";
 import CrossIcon from "@appserver/components/public/static/images/cross.react.svg";
@@ -25,12 +20,7 @@ const StyledDropDown = styled(DropDown)`
     right: 16px !important;
   }
 
-  ${isMobile &&
-  css`
-    right: 16px !important;
-  `}
-
-  @media ${mobile} {
+  @media (max-width: 428px) {
     position: fixed;
 
     top: unset !important;
@@ -43,22 +33,6 @@ const StyledDropDown = styled(DropDown)`
 
     border-radius: 6px 6px 0px 0px !important;
   }
-
-  ${isMobileOnly &&
-  css`
-    position: fixed;
-
-    top: unset !important;
-    right: 0 !important;
-    left: 0 !important;
-    bottom: 0 !important;
-
-    width: 100vw;
-
-    border: none !important;
-
-    border-radius: 6px 6px 0px 0px !important;
-  `}
 `;
 
 const StyledControlContainer = styled.div`
@@ -70,12 +44,12 @@ const StyledControlContainer = styled.div`
   right: 10px;
   border-radius: 100px;
   cursor: pointer;
-  display: ${isMobileOnly ? "flex" : "none"};
+  display: none;
   align-items: center;
   justify-content: center;
   z-index: 290;
 
-  @media ${mobile} {
+  @media (max-width: 428px) {
     display: flex;
   }
 `;
@@ -96,8 +70,6 @@ const commonStyle = css`
   font-family: "Open Sans", sans-serif, Arial;
   font-style: normal;
   color: ${(props) => props.theme.menuContainer.color};
-  margin-left: 60px;
-  margin-top: -3px;
   max-width: 300px;
   white-space: nowrap;
   overflow: hidden;
@@ -114,6 +86,10 @@ export const StyledProfileMenu = styled(DropDownItem)`
 `;
 
 export const MenuContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
   position: relative;
   height: 76px;
   background: ${(props) => props.theme.menuContainer.background};
@@ -121,14 +97,14 @@ export const MenuContainer = styled.div`
   padding: 16px;
   cursor: default;
   box-sizing: border-box;
+
+  .avatar {
+    height: 40px;
+    width: 40px;
+  }
 `;
 
 MenuContainer.defaultProps = { theme: Base };
-
-export const AvatarContainer = styled.div`
-  display: inline-block;
-  float: left;
-`;
 
 export const MainLabelContainer = styled.div`
   font-size: 16px;
@@ -178,19 +154,20 @@ class ProfileMenu extends React.Component {
       >
         <StyledProfileMenu>
           <MenuContainer>
-            <AvatarContainer>
-              <Avatar
-                size="medium"
-                role={avatarRole}
-                source={avatarSource}
-                userName={displayName}
-              />
-            </AvatarContainer>
-            <MainLabelContainer>{displayName}</MainLabelContainer>
-            <LabelContainer>{email}</LabelContainer>
-            <StyledControlContainer onClick={clickOutsideAction}>
-              <StyledCrossIcon />
-            </StyledControlContainer>
+            <Avatar
+              className="avatar"
+              size="medium"
+              role={avatarRole}
+              source={avatarSource}
+              userName={displayName}
+            />
+            <div>
+              <MainLabelContainer>{displayName}</MainLabelContainer>
+              <LabelContainer>{email}</LabelContainer>
+              <StyledControlContainer onClick={clickOutsideAction}>
+                <StyledCrossIcon />
+              </StyledControlContainer>
+            </div>
           </MenuContainer>
         </StyledProfileMenu>
         {children}

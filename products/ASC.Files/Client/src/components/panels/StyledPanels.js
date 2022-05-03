@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
 import Scrollbar from "@appserver/components/scrollbar";
-import { desktop, tablet } from "@appserver/components/utils/device";
-import { isMobile } from "react-device-detect";
+import { desktop, mobile, tablet } from "@appserver/components/utils/device";
+import { isMobile, isMobileOnly } from "react-device-detect";
 import { Base } from "@appserver/components/themes";
 
 const PanelStyles = css`
@@ -37,8 +37,8 @@ const PanelStyles = css`
   }
 
   .footer {
-    padding: 16px 0;
-    width: calc(100% - 32px);
+    padding: 16px;
+    width: 100%;
     margin: auto;
     left: 0;
     right: 0;
@@ -80,6 +80,7 @@ const StyledAsidePanel = styled.div`
     padding-top: ${isMobile ? "55px" : "48px"};
     height: ${isMobile ? "calc(100vh - 55px)" : "calc(100vh - 48px)"};
   }
+
   .modal-dialog-aside {
     padding: 0;
     transform: translateX(${(props) => (props.visible ? "0" : "500px")});
@@ -93,17 +94,20 @@ const StyledAsidePanel = styled.div`
 
   .header_aside-panel {
     transition: unset;
-    transform: translateX(${(props) => (props.visible ? "0" : "500px")});
-    width: 500px;
+    transform: translateX(${(props) => (props.visible ? "0" : "480px")});
+    width: 480px;
+    max-width: 480px;
     overflow-y: hidden;
 
-    @media (max-width: 550px) {
-      width: 320px;
-      transform: translateX(${(props) => (props.visible ? "0" : "320px")});
-    }
+    @media (max-width: 500px) {
+      position: fixed;
 
-    .sharing_panel-header-container {
-      padding-right: 0;
+      top: 64px;
+      bottom: 0;
+      right: 0;
+
+      width: 100%;
+      height: calc(100% - 64px);
     }
   }
   ${PanelStyles}
@@ -152,12 +156,20 @@ StyledVersionHistoryPanel.defaultProps = { theme: Base };
 
 const StyledAddUsersPanelPanel = styled.div`
   .header_aside-panel {
-    transform: translateX(${(props) => (props.visible ? "0" : "500px")});
-    width: 500px;
+    transition: unset;
+    transform: translateX(${(props) => (props.visible ? "0" : "480px")});
+    width: 480px;
+    max-width: 480px;
+    overflow-y: hidden;
 
-    @media (max-width: 550px) {
-      width: 320px;
-      transform: translateX(${(props) => (props.visible ? "0" : "320px")});
+    @media (max-width: 500px) {
+      position: fixed;
+      top: 64px;
+      bottom: 0;
+      right: 0;
+
+      width: 100%;
+      height: calc(100% - 64px);
     }
   }
   ${PanelStyles}
@@ -168,12 +180,20 @@ const StyledAddUsersPanelPanel = styled.div`
 
 const StyledAddGroupsPanel = styled.div`
   .header_aside-panel {
-    transform: translateX(${(props) => (props.visible ? "0" : "500px")});
-    width: 500px;
+    transition: unset;
+    transform: translateX(${(props) => (props.visible ? "0" : "480px")});
+    width: 480px;
+    max-width: 480px;
+    overflow-y: hidden;
 
-    @media (max-width: 550px) {
-      width: 320px;
-      transform: translateX(${(props) => (props.visible ? "0" : "320px")});
+    @media (max-width: 500px) {
+      position: fixed;
+      top: 64px;
+      bottom: 0;
+      right: 0;
+
+      width: 100%;
+      height: calc(100% - 64px);
     }
   }
   ${PanelStyles}
@@ -184,12 +204,20 @@ const StyledAddGroupsPanel = styled.div`
 
 const StyledEmbeddingPanel = styled.div`
   .header_aside-panel {
-    transform: translateX(${(props) => (props.visible ? "0" : "500px")});
-    width: 500px;
+    transition: unset;
+    transform: translateX(${(props) => (props.visible ? "0" : "480px")});
+    width: 480px;
+    max-width: 480px;
+    overflow-y: hidden;
 
-    @media (max-width: 550px) {
-      width: 320px;
-      transform: translateX(${(props) => (props.visible ? "0" : "320px")});
+    @media (max-width: 500px) {
+      position: fixed;
+      top: 64px;
+      bottom: 0;
+      right: 0;
+
+      width: 100%;
+      height: calc(100% - 64px);
     }
   }
   ${PanelStyles}
@@ -258,21 +286,6 @@ const StyledHeaderContent = styled.div`
   align-items: center;
   padding: 0 16px;
 
-  .sharing_panel-icons-container {
-    display: flex;
-    margin-left: auto;
-    .sharing_panel-drop-down-wrapper {
-      position: relative;
-
-      .sharing_panel-drop-down {
-        padding: 4px 0;
-      }
-      .sharing_panel-plus-icon {
-        //margin-right: 12px;
-      }
-    }
-  }
-
   .upload_panel-icons-container {
     display: flex;
     margin-left: auto;
@@ -305,10 +318,6 @@ const StyledBody = styled.div`
     .styled-element {
       margin-left: -2px;
     }
-  }
-
-  .embedding-panel_body {
-    padding: 0 16px;
   }
 
   .change-owner_body {
@@ -353,42 +362,6 @@ const StyledBody = styled.div`
         width: 100%;
       }
     }
-  }
-
-  .embedding-panel_links-container {
-    display: flex;
-    .embedding-panel_link {
-      margin-right: 8px;
-      height: 32px;
-      background-color: ${(props) =>
-        props.theme.filesPanels.body.backgroundColor};
-      line-height: 30px;
-      padding: 0px 8px;
-    }
-  }
-
-  .embedding-panel_inputs-container {
-    display: flex;
-
-    .embedding-panel_input {
-      margin-right: 8px;
-      width: 94px;
-    }
-  }
-
-  .embedding-panel_code-container {
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  }
-
-  .embedding-panel_text {
-    padding: 8px 0 4px 0;
-  }
-
-  .embedding-panel_copy-icon {
-    position: absolute;
-    z-index: 1;
-    margin: 8px;
-    right: 16px;
   }
 
   .sharing-access-combo-box-icon {
@@ -542,8 +515,8 @@ const StyledFooter = styled.div`
   display: flex;
   position: fixed;
   bottom: 0;
-  padding: 16px 0;
-  width: calc(100% - 32px);
+  padding: 16px;
+  width: 100%;
   margin: auto;
   left: 0;
   right: 0;
@@ -571,7 +544,7 @@ const StyledFooter = styled.div`
   }
 
   @media ${desktop} {
-    padding: 10px 0;
+    padding: 16px;
     min-height: 57px;
 
     .sharing_panel-checkbox {
@@ -723,13 +696,14 @@ const StyledModalRowContainer = styled.div`
 
   .embedding-panel_links-container {
     display: flex;
+
     .embedding-panel_link {
       margin-right: 8px;
-      height: 32px;
-      background-color: ${(props) =>
-        props.theme.filesPanels.modalRow.backgroundColor};
+
+      border: 1px solid #eceef1;
+      border-radius: 16px;
       line-height: 30px;
-      padding: 0px 8px;
+      padding: 4px 15px;
     }
   }
 

@@ -36,36 +36,31 @@ const StyledArticle = styled.article`
 
   @media ${mobile} {
     display: ${(props) => (props.articleOpen ? "flex" : "none")};
-    min-width: 100vw;
-    width: 100vw;
-    height: calc(100vh - 64px) !important;
+    min-width: 100%;
+    width: 100%;
+    position: fixed;
+
+    height: calc(100% - 64px) !important;
     margin: 0;
+    margin-top: 16px;
     padding: 0;
-    padding-bottom: 0px;
   }
 
   ${isMobileOnly &&
   css`
     display: ${(props) => (props.articleOpen ? "flex" : "none")} !important;
-    min-width: 100vw !important;
-    width: 100vw;
+    min-width: 100% !important;
+    width: 100%;
     position: fixed;
+
     margin-top: 64px !important;
-    height: calc(100vh - 64px) !important;
+    height: calc(100% - 64px) !important;
     margin: 0;
     padding: 0;
-    padding-bottom: 0px;
   `}
 
-  @media ${mobile} {
-    position: fixed;
-    margin-top: 16px;
-    height: calc(100vh - 64px) !important;
-    z-index: 400;
-  }
-
   z-index: ${(props) =>
-    props.showText && (isMobileOnly || isMobileUtils()) ? "205" : "100"};
+    props.showText && (isMobileOnly || isMobileUtils()) ? "230" : "100"};
 
   .resizable-block {
     overflow: hidden;
@@ -97,12 +92,11 @@ const StyledArticle = styled.article`
 
     @media ${mobile} {
       display: ${(props) => (props.articleOpen ? "flex" : "none")};
-      min-width: 100vw;
-      width: 100vw;
-      height: calc(100vh - 64px) !important;
+      min-width: 100%;
+      width: 100%;
+
       margin: 0;
       padding: 0;
-      padding-bottom: 0px;
     }
 
     ${isMobile &&
@@ -117,18 +111,25 @@ const StyledArticle = styled.article`
     ${isMobileOnly &&
     css`
       display: ${(props) => (props.articleOpen ? "flex" : "none")};
-      min-width: 100vw !important;
-      width: 100vw;
-      height: calc(100vh - 64px) !important;
+      min-width: 100% !important;
+      width: 100%;
       margin: 0;
       padding: 0;
-      padding-bottom: 0px;
     `}
   }
 
   .article-body__scrollbar {
     .scroll-body {
       padding-right: 0px !important;
+
+      @media ${mobile} {
+        padding-bottom: 20px;
+      }
+
+      ${isMobileOnly &&
+      css`
+        padding-bottom: 20px;
+      `}
     }
   }
 `;

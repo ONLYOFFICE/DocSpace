@@ -580,7 +580,7 @@ const Base = {
       modalBorderRadius: "6px",
       asidePadding: "0 16px 16px",
       heading: {
-        maxWidth: "500px",
+        maxWidth: "calc(100% - 18px)",
         margin: "0",
         modalLineHeight: "40px",
         asideLineHeight: "56px",
@@ -1227,6 +1227,7 @@ const Base = {
   },
 
   treeNode: {
+    background: "#f3f4f4",
     dragging: {
       draggable: {
         background: lightCumulus,
@@ -2060,7 +2061,7 @@ const Base = {
 
     groupMenu: {
       background: white,
-      borderBottom: "none",
+      borderBottom: "1px solid transparent",
       borderRight: `1px solid ${grayMid}`,
       boxShadow: "0px 5px 20px rgba(4, 15, 27, 7%)",
     },
@@ -2070,13 +2071,14 @@ const Base = {
       borderBottom: `1px solid ${grayLightMid}`,
       textColor: gray,
       activeTextColor: grayMain,
-      hoverTextColor: grayMaxLight,
+      hoverTextColor: grayMain,
 
       iconColor: gray,
       activeIconColor: grayMain,
       hoverIconColor: grayMain,
 
       borderImageSource: `linear-gradient(to right,${white} 21px,${grayLightMid} 21px,${grayLightMid} calc(100% - 20px),${white} calc(100% - 20px))`,
+      hotkeyBorderBottom: `1px solid ${globalColors.blueMain}`,
     },
 
     tableCell: {
@@ -2325,6 +2327,17 @@ const Base = {
       fill: gray,
       loadingFill: grayMid,
 
+      borderBottom: "1px solid #eceef1",
+      borderTop: "1px solid #eceef1",
+      externalLinkBackground: "#f8f9f9",
+      externalLinkSvg: "#333333",
+
+      internalLinkBorder: "1px dashed #333333",
+
+      itemBorder: "1px dashed #333333",
+
+      itemOwnerColor: "rgb(163, 169, 174)",
+
       dropdownColor: black,
 
       loader: {
@@ -2399,6 +2412,7 @@ const Base = {
   newContextMenu: {
     background: white,
     borderRadius: "6px",
+    mobileBorderRadius: "6px 6px 0 0",
     boxShadow: "0px 12px 40px rgba(4, 15, 27, 0.12)",
     padding: "6px 0px",
     border: "none",
@@ -2665,6 +2679,7 @@ const Base = {
 
   submenu: {
     lineColor: "#eceef1",
+    backgroundColor: white,
   },
 };
 

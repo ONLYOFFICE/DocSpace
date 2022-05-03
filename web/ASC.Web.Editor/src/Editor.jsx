@@ -73,11 +73,11 @@ let fileInfo;
 let successAuth;
 let isSharingAccess;
 let user = null;
-let personal;
+let personal = IS_PERSONAL || null;
 let config;
 let url = window.location.href;
 const filesUrl = url.substring(0, url.indexOf("/doceditor"));
-const doc = url.indexOf("doc=") !== -1 ? url.split("doc=")[1] : null;
+//const doc = url.indexOf("doc=") !== -1 ? url.split("doc=")[1] : null;
 
 toast.configure();
 
@@ -346,13 +346,13 @@ const Editor = () => {
     if (!favicon) return;
     let icon = null;
     switch (documentType) {
-      case "text":
+      case text:
         icon = "text.ico";
         break;
-      case "presentation":
+      case presentation:
         icon = "presentation.ico";
         break;
-      case "spreadsheet":
+      case spreadSheet:
         icon = "spreadsheet.ico";
         break;
       default:

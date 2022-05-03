@@ -410,7 +410,6 @@ const Form = (props) => {
 
           <form className="auth-form-container">
             <FieldContainer
-              className="form-field"
               isVertical={true}
               labelVisible={false}
               hasError={isEmailErrorShow}
@@ -438,7 +437,6 @@ const Form = (props) => {
               />
             </FieldContainer>
             <FieldContainer
-              className="form-field"
               isVertical={true}
               labelVisible={false}
               hasError={!passwordValid}
@@ -465,19 +463,24 @@ const Form = (props) => {
 
             <div className="login-forgot-wrapper">
               <div className="login-checkbox-wrapper">
-                <Checkbox
-                  className="login-checkbox"
-                  isChecked={isChecked}
-                  onChange={onChangeCheckbox}
-                  label={<Text fontSize="13px">{t("Remember")}</Text>}
-                />
-                <HelpButton
-                  className="login-tooltip"
-                  helpButtonHeaderContent={t("CookieSettingsTitle")}
-                  tooltipContent={
-                    <Text fontSize="12px">{t("RememberHelper")}</Text>
-                  }
-                />
+                <div className="remember-wrapper">
+                  <Checkbox
+                    className="login-checkbox"
+                    isLogin={true}
+                    isChecked={isChecked}
+                    onChange={onChangeCheckbox}
+                    label={t("Remember")}
+                    helpButton={
+                      <HelpButton
+                        helpButtonHeaderContent={t("CookieSettingsTitle")}
+                        tooltipContent={
+                          <Text fontSize="12px">{t("RememberHelper")}</Text>
+                        }
+                      />
+                    }
+                  />
+                </div>
+
                 <Link
                   fontSize="13px"
                   color="#316DAA"

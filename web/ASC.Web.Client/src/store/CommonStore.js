@@ -1,8 +1,14 @@
 import { makeAutoObservable, runInAction } from "mobx";
-
 import authStore from "@appserver/common/store/AuthStore";
+import api from "@appserver/common/api";
 
 class CommonStore {
+  whiteLabel = {
+    logoSizes: [],
+    logoText: null,
+    logoUrls: [],
+  };
+
   isInit = false;
   isLoaded = false;
   isLoadedArticleBody = false;
@@ -27,10 +33,40 @@ class CommonStore {
     const requests = [];
     requests.push(
       authStore.settingsStore.getPortalTimezones(),
-      authStore.settingsStore.getPortalCultures()
+      authStore.settingsStore.getPortalCultures(),
+      this.getWhiteLabelLogoText(),
+      this.getWhiteLabelLogoSizes(),
+      this.getWhiteLabelLogoUrls()
     );
 
     return Promise.all(requests).finally(() => this.setIsLoaded(true));
+  };
+
+  setLogoText = (text) => {
+    this.whiteLabel.logoText = text;
+  };
+
+  setLogoSizes = (sizes) => {
+    this.whiteLabel.logoSizes = sizes;
+  };
+
+  setLogoUrls = (urls) => {
+    this.whiteLabel.logoUrls = urls;
+  };
+
+  getWhiteLabelLogoText = async () => {
+    const res = await api.settings.getLogoText();
+    this.setLogoText(res);
+  };
+
+  getWhiteLabelLogoSizes = async () => {
+    const res = await api.settings.getLogoSizes();
+    this.setLogoSizes(res);
+  };
+
+  getWhiteLabelLogoUrls = async () => {
+    const res = await api.settings.getLogoUrls();
+    this.setLogoUrls(Object.values(res));
   };
 
   setIsLoadedArticleBody = (isLoadedArticleBody) => {

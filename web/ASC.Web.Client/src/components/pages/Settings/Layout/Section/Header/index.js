@@ -19,13 +19,17 @@ import {
 } from "../../../utils";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
-import { isMobile } from "react-device-detect";
+import { isMobile, isTablet } from "react-device-detect";
 
 const HeaderContainer = styled.div`
   position: relative;
   display: flex;
   align-items: center;
   max-width: calc(100vw - 32px);
+
+  h1 {
+    line-height: 53px;
+  }
 
   .action-wrapper {
     flex-grow: 1;
@@ -41,6 +45,19 @@ const HeaderContainer = styled.div`
     @media ${tablet} {
       padding: 8px 0 8px 8px;
       margin-left: -8px;
+    }
+  }
+
+  ${isTablet &&
+  css`
+    h1 {
+      line-height: 61px;
+    }
+  `};
+
+  @media (min-width: 600px) and (max-width: 1024px) {
+    h1 {
+      line-height: 61px;
     }
   }
 `;
@@ -222,6 +239,7 @@ class SectionHeaderContent extends React.Component {
       isHeaderVisible,
       selection,
       isLoadedPage,
+      location,
     } = this.props;
     const { header, isCategoryOrHeader } = this.state;
     const arrayOfParams = this.getArrayOfParams();
@@ -249,7 +267,9 @@ class SectionHeaderContent extends React.Component {
       },
     ];
 
-    const commonSettings = location.pathname.includes("common");
+    const commonSettings =
+      location.pathname.includes("common/customization") ||
+      location.pathname === "/settings";
     const showLoader = commonSettings ? !isLoadedPage : false;
     return (
       <StyledContainer isHeaderVisible={isHeaderVisible}>

@@ -250,6 +250,10 @@ const StyledCatalogItemSibling = styled.div`
   css`
     min-height: ${(props) => props.theme.catalogItem.container.tablet.height};
     max-height: ${(props) => props.theme.catalogItem.container.tablet.height};
+
+    &:hover {
+      background-color: transparent;
+    }
   `}
 
   ${(props) => props.isDragging && draggingSiblingCss}

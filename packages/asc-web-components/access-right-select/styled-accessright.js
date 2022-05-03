@@ -3,14 +3,28 @@ import Base from "../themes/base";
 
 const StyledAccessRightWrapper = styled.div`
   display: flex;
+  align-items: center;
+
+  .access-right__icon {
+    display: flex;
+    align-items: center;
+    path {
+      fill: ${(props) => props.theme.dropDownItem.icon.color};
+    }
+  }
+
+  .combo-button {
+    padding-left: 4px;
+  }
 `;
+StyledAccessRightWrapper.defaultProps = { theme: Base };
 
 const StyledAccessRightIcon = styled.img`
-  margin-right: 4.18px;
+  margin-right: 4px;
 `;
 
 const StyledAccessRightItem = styled.div`
-  width: 424px;
+  width: auto;
 
   display: flex;
   align-items: flex-start;

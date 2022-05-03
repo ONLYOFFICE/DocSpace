@@ -57,8 +57,6 @@ const Header = styled.header`
   }
 
   .header-logo-icon {
-    ${(props) =>
-      (props.isPersonal || props.isPreparationPortal) && `margin-left: 20px;`}
     height: 24px;
     position: relative;
     padding-right: 20px;
@@ -226,7 +224,8 @@ const HeaderComponent = ({
         needNavMenu={needNavMenu}
         isDesktopView={isDesktopView}
       >
-        {currentProductId !== "home" && (
+        {((isPersonal && location.pathname.includes("files")) ||
+          (!isPersonal && currentProductId !== "home")) && (
           <HeaderCatalogBurger onClick={toggleArticleOpen} />
         )}
         <LinkWithoutRedirect className="header-logo-wrapper" to={defaultPage}>

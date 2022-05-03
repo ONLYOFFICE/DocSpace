@@ -35,7 +35,7 @@ const Layout = ({
   return (
     <>
       <ArticleSettings isLoadedPage={isLoadedPage} />
-      <Section withBodyScroll={true}>
+      <Section withBodyScroll={true} settingsStudio={true}>
         <Section.SectionHeader>
           <SectionHeaderContent />
         </Section.SectionHeader>

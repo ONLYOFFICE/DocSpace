@@ -15,6 +15,10 @@ class InfoPanelStore {
     this.isVisible = !this.isVisible;
   };
 
+  setInfoPanelIsVisible = (isVisible) => {
+    this.isVisible = isVisible;
+  };
+
   setVisible = () => {
     this.isVisible = true;
   };

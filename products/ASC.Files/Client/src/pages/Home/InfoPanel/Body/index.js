@@ -1,9 +1,11 @@
 import { inject, observer } from "mobx-react";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import SeveralItems from "./SeveralItems";
 import SingleItem from "./SingleItem";
+import GalleryItem from "./GalleryItem";
+import GalleryEmptyScreen from "./GalleryEmptyScreen";
 import { StyledInfoRoomBody } from "./styles/styles.js";
 import { Base } from "@appserver/components/themes";
 
@@ -20,6 +22,11 @@ const InfoPanelBodyContent = ({
   isRecycleBinFolder,
   isRecentFolder,
   isFavoritesFolder,
+  isGallery,
+  gallerySelected,
+  personal,
+  createThumbnail,
+  getFileInfo,
 }) => {
   const singleItem = (item) => {
     const dontShowLocation = item.isFolder && item.parentId === 0;
@@ -43,11 +50,22 @@ const InfoPanelBodyContent = ({
         dontShowLocation={dontShowLocation}
         dontShowSize={dontShowSize}
         dontShowAccess={dontShowAccess}
+        personal={personal}
+        createThumbnail={createThumbnail}
+        getFileInfo={getFileInfo}
       />
     );
   };
 
-  return (
+  return isGallery ? (
+    !gallerySelected ? (
+      <GalleryEmptyScreen />
+    ) : (
+      <StyledInfoRoomBody>
+        <GalleryItem selectedItem={gallerySelected} />
+      </StyledInfoRoomBody>
+    )
+  ) : (
     <StyledInfoRoomBody>
       <>
         {selectedItems.length === 0 ? (
@@ -69,6 +87,7 @@ InfoPanelBodyContent.defaultProps = { theme: Base };
 
 export default inject(
   ({
+    auth,
     filesStore,
     settingsStore,
     filesActionsStore,
@@ -76,7 +95,17 @@ export default inject(
     treeFoldersStore,
     selectedFolderStore,
   }) => {
-    const { selection, getFolderInfo, getShareUsers } = filesStore;
+    const { personal } = auth.settingsStore;
+
+    const {
+      selection,
+      bufferSelection,
+      getFolderInfo,
+      getShareUsers,
+      gallerySelected,
+      createThumbnail,
+      getFileInfo,
+    } = filesStore;
     const { getIcon, getFolderIcon } = settingsStore;
     const { onSelectItem } = filesActionsStore;
     const { setSharingPanelVisible } = dialogsStore;
@@ -86,9 +115,16 @@ export default inject(
       isFavoritesFolder,
     } = treeFoldersStore;
 
+    const selectedItems =
+      selection?.length > 0
+        ? [...selection]
+        : bufferSelection
+        ? [bufferSelection]
+        : [];
+
     return {
       selectedFolder: { ...selectedFolderStore },
-      selectedItems: [...selection],
+      selectedItems: selectedItems,
       getFolderInfo,
       getShareUsers,
       getIcon,
@@ -98,6 +134,10 @@ export default inject(
       isRecycleBinFolder,
       isRecentFolder,
       isFavoritesFolder,
+      gallerySelected,
+      personal,
+      createThumbnail,
+      getFileInfo,
     };
   }
 )(

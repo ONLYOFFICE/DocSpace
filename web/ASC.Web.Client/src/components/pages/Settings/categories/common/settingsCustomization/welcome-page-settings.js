@@ -45,11 +45,22 @@ class WelcomePageSettings extends React.Component {
 
     setDocumentTitle(t("CustomTitlesWelcome"));
 
+    const greetingTitle =
+      greetingTitleFromSessionStorage === null ||
+      greetingTitleFromSessionStorage === "none"
+        ? greetingSettings
+        : greetingTitleFromSessionStorage;
+
+    const greetingTitleDefault =
+      greetingTitleDefaultFromSessionStorage === null ||
+      greetingTitleDefaultFromSessionStorage === "none"
+        ? greetingSettings
+        : greetingTitleDefaultFromSessionStorage;
+
     this.state = {
       isLoading: false,
-      greetingTitle: greetingTitleFromSessionStorage || greetingSettings,
-      greetingTitleDefault:
-        greetingTitleDefaultFromSessionStorage || greetingSettings,
+      greetingTitle,
+      greetingTitleDefault,
       isLoadingGreetingSave: false,
       isLoadingGreetingRestore: false,
       hasChanged: false,
@@ -60,7 +71,17 @@ class WelcomePageSettings extends React.Component {
   }
 
   componentDidMount() {
+    const { isLoaded, setIsLoadedWelcomePageSettings, tReady } = this.props;
+    const { greetingTitleDefault, greetingTitle } = this.state;
     window.addEventListener("resize", this.checkInnerWidth);
+
+    const isLoadedSetting = isLoaded && tReady;
+
+    if (isLoadedSetting) setIsLoadedWelcomePageSettings(isLoadedSetting);
+
+    if (greetingTitleDefault || greetingTitle) {
+      this.checkChanges();
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -68,9 +89,13 @@ class WelcomePageSettings extends React.Component {
 
     const { hasScroll } = this.state;
 
-    const isLoadedSetting = isLoaded && tReady;
+    if (isLoaded !== prevProps.isLoaded || tReady !== prevProps.tReady) {
+      const isLoadedSetting = isLoaded && tReady;
 
-    if (isLoadedSetting) setIsLoadedWelcomePageSettings(isLoadedSetting);
+      if (isLoadedSetting) {
+        setIsLoadedWelcomePageSettings(isLoadedSetting);
+      }
+    }
 
     const checkScroll = checkScrollSettingsBlock();
 
@@ -92,7 +117,7 @@ class WelcomePageSettings extends React.Component {
       settingsMobile.style.display = "none";
     }
 
-    if (this.state.greetingTitleDefault) {
+    if (this.state.greetingTitleDefault || this.state.greetingTitle) {
       this.checkChanges();
     }
   }
@@ -109,8 +134,8 @@ class WelcomePageSettings extends React.Component {
     this.setState({ greetingTitle: e.target.value });
 
     if (this.settingIsEqualInitialValue("greetingTitle", e.target.value)) {
-      saveToSessionStorage("greetingTitle", "");
-      saveToSessionStorage("greetingTitleDefault", "");
+      saveToSessionStorage("greetingTitle", "none");
+      saveToSessionStorage("greetingTitleDefault", "none");
     } else {
       saveToSessionStorage("greetingTitle", e.target.value);
       this.setState({
@@ -160,7 +185,11 @@ class WelcomePageSettings extends React.Component {
             greetingTitleDefault: this.props.greetingSettings,
             showReminder: false,
           });
-          saveToSessionStorage("greetingTitle", "");
+          saveToSessionStorage("greetingTitle", this.props.greetingSettings);
+          saveToSessionStorage(
+            "greetingTitleDefault",
+            this.props.greetingSettings
+          );
           toastr.success(t("SuccessfullySaveGreetingSettingsMessage"));
         })
         .catch((error) => toastr.error(error))
@@ -180,7 +209,8 @@ class WelcomePageSettings extends React.Component {
     settingNames.forEach((settingName) => {
       const valueFromSessionStorage = getFromSessionStorage(settingName);
       if (
-        valueFromSessionStorage &&
+        valueFromSessionStorage !== "none" &&
+        valueFromSessionStorage !== null &&
         !this.settingIsEqualInitialValue(settingName, valueFromSessionStorage)
       )
         hasChanged = true;
@@ -265,7 +295,7 @@ class WelcomePageSettings extends React.Component {
           </div>
         )}
         {(isMobileOnly && isSmallTablet()) || isSmallTablet() ? (
-          <StyledScrollbar stype="smallBlack">{settingsBlock}</StyledScrollbar>
+          <StyledScrollbar stype="mediumBlack">{settingsBlock}</StyledScrollbar>
         ) : (
           <> {settingsBlock}</>
         )}

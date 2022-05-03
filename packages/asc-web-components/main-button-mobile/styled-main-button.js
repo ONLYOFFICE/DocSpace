@@ -12,6 +12,8 @@ const StyledFloatingButton = styled(FloatingButton)`
   z-index: 1010;
   background: ${(props) => props.theme.mainButtonMobile.buttonColor} !important;
 
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
   .circle__mask + div {
     display: flex;
     align-items: center;
@@ -56,7 +58,9 @@ const StyledFloatingButton = styled(FloatingButton)`
 StyledFloatingButton.defaultProps = { theme: Base };
 
 const mobileDropDown = css`
-  width: ${(props) => props.theme.mainButtonMobile.dropDown.mobile.width};
+  @media (max-width: 428px) {
+    width: ${(props) => props.theme.mainButtonMobile.dropDown.mobile.width};
+  }
 
   right: ${(props) => props.theme.mainButtonMobile.dropDown.mobile.right};
   bottom: ${(props) => props.theme.mainButtonMobile.dropDown.mobile.bottom};
@@ -65,7 +69,7 @@ const mobileDropDown = css`
 const StyledDropDown = styled(DropDown)`
   position: ${(props) => props.theme.mainButtonMobile.dropDown.position};
   width: ${(props) => props.theme.mainButtonMobile.dropDown.width};
-  max-width: calc(100vw - 64px);
+  max-width: calc(100vw - 48px);
 
   right: ${(props) => props.theme.mainButtonMobile.dropDown.right};
   bottom: ${(props) => props.theme.mainButtonMobile.dropDown.bottom};

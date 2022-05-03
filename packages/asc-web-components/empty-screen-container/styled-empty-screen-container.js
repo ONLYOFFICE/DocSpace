@@ -58,8 +58,7 @@ const EmptyContentBody = styled.div`
       }
     }
 
-    @media ${mobile} {
-      min-width: 343px;
+    @media (max-width: 428px) {
       grid-template-areas:
         "img img img"
         "headerText headerText headerText"

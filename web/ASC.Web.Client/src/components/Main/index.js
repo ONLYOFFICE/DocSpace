@@ -1,11 +1,17 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import { isIOS, isFirefox, isMobile, isMobileOnly } from "react-device-detect";
+import {
+  isIOS,
+  isFirefox,
+  isSafari,
+  isMobile,
+  isMobileOnly,
+} from "react-device-detect";
 
 const StyledMain = styled.main`
   height: ${(props) =>
     isIOS && !isFirefox
-      ? "calc(100vh - 48px)"
+      ? "calc(var(--vh, 1vh) * 100)"
       : props.isDesktop
       ? "100vh"
       : "calc(100vh - 48px)"};
@@ -14,11 +20,6 @@ const StyledMain = styled.main`
   display: flex;
   flex-direction: row;
   box-sizing: border-box;
-
-  ${isMobile &&
-  css`
-    height: calc(100vh - 48px);
-  `}
 
   ${isMobileOnly &&
   css`
@@ -29,10 +30,22 @@ const StyledMain = styled.main`
 `;
 
 const Main = React.memo((props) => {
-  if (isIOS && !isFirefox) {
-    const vh = (window.innerHeight - 57) * 0.01;
-    document.documentElement.style.setProperty("--vh", `${vh}px`);
-  }
+  const orientationChanged = React.useCallback(() => {
+    if (isIOS && !isFirefox) {
+      let vh = (window.innerHeight - 48) * 0.01;
+
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
+    }
+  }, []);
+
+  React.useEffect(() => {
+    orientationChanged();
+    if (isIOS && !isFirefox) {
+      window.addEventListener("resize", orientationChanged);
+    }
+    return () => window.removeEventListener("resize", orientationChanged);
+  }, []);
+
   //console.log("Main render");
   return <StyledMain className="main" {...props} />;
 });

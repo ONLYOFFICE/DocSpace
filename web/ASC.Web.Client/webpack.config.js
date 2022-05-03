@@ -170,46 +170,6 @@ const config = {
 
   plugins: [
     new CleanWebpackPlugin(),
-    new ModuleFederationPlugin({
-      name: "studio",
-      filename: "remoteEntry.js",
-      remotes: {
-        studio: `studio@${combineUrl(
-          AppServerConfig.proxyURL,
-          "/remoteEntry.js"
-        )}`,
-        people: `people@${combineUrl(
-          AppServerConfig.proxyURL,
-          "/products/people/remoteEntry.js"
-        )}`,
-        login: `login@${combineUrl(
-          AppServerConfig.proxyURL,
-          "/login/remoteEntry.js"
-        )}`,
-        files: `files@${combineUrl(
-          AppServerConfig.proxyURL,
-          "/products/files/remoteEntry.js"
-        )}`,
-      },
-      exposes: {
-        "./shell": "./src/Shell",
-        "./store": "./src/store",
-        "./Error404": "./src/components/pages/Errors/404/",
-        "./Error401": "./src/components/pages/Errors/401",
-        "./Error403": "./src/components/pages/Errors/403",
-        "./Error520": "./src/components/pages/Errors/520",
-        "./Layout": "./src/components/Layout",
-        "./Layout/context": "./src/components/Layout/context.js",
-        "./Main": "./src/components/Main",
-        "./toastr": "./src/helpers/toastr",
-        "./PreparationPortalDialog":
-          "./src/components/dialogs/PreparationPortalDialog/PreparationPortalDialogWrapper.js",
-      },
-      shared: {
-        ...deps,
-        ...sharedDeps,
-      },
-    }),
     new ExternalTemplateRemotesPlugin(),
     new HtmlWebpackPlugin({
       template: "./public/index.html",
@@ -229,14 +189,6 @@ const config = {
         },
       ],
     }),
-    new DefinePlugin({
-      VERSION: JSON.stringify(version),
-      BUILD_AT: DefinePlugin.runtimeValue(function () {
-        const timeElapsed = Date.now();
-        const today = new Date(timeElapsed);
-        return JSON.stringify(today.toISOString().split(".")[0] + "Z");
-      }, true),
-    }),
   ],
 };
 
@@ -251,6 +203,63 @@ module.exports = (env, argv) => {
   } else {
     config.devtool = "cheap-module-source-map";
   }
+
+  const remotes = {
+    studio: `studio@${combineUrl(AppServerConfig.proxyURL, "/remoteEntry.js")}`,
+    people: `people@${combineUrl(
+      AppServerConfig.proxyURL,
+      "/products/people/remoteEntry.js"
+    )}`,
+    files: `files@${combineUrl(
+      AppServerConfig.proxyURL,
+      "/products/files/remoteEntry.js"
+    )}`,
+  };
+
+  if (!env.personal) {
+    remotes.login = `login@${combineUrl(
+      AppServerConfig.proxyURL,
+      "/login/remoteEntry.js"
+    )}`;
+  }
+
+  config.plugins.push(
+    new ModuleFederationPlugin({
+      name: "studio",
+      filename: "remoteEntry.js",
+      remotes: remotes,
+      exposes: {
+        "./shell": "./src/Shell",
+        "./store": "./src/store",
+        "./Error404": "./src/components/pages/Errors/404/",
+        "./Error401": "./src/components/pages/Errors/401",
+        "./Error403": "./src/components/pages/Errors/403",
+        "./Error520": "./src/components/pages/Errors/520",
+        "./Layout": "./src/components/Layout",
+        "./Layout/context": "./src/components/Layout/context.js",
+        "./Main": "./src/components/Main",
+        "./toastr": "./src/helpers/toastr",
+        "./PreparationPortalDialog":
+          "./src/components/dialogs/PreparationPortalDialog/PreparationPortalDialogWrapper.js",
+      },
+      shared: {
+        ...deps,
+        ...sharedDeps,
+      },
+    })
+  );
+
+  const defines = {
+    VERSION: JSON.stringify(version),
+    BUILD_AT: DefinePlugin.runtimeValue(function () {
+      const timeElapsed = Date.now();
+      const today = new Date(timeElapsed);
+      return JSON.stringify(today.toISOString().split(".")[0] + "Z");
+    }, true),
+    IS_PERSONAL: env.personal || false,
+  };
+
+  config.plugins.push(new DefinePlugin(defines));
 
   return config;
 };
