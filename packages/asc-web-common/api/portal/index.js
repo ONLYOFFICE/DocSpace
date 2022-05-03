@@ -165,3 +165,38 @@ export function setPortalRename(alias) {
     data: { alias },
   });
 }
+
+export function sendSuspendPortalEmail() {
+  return request({
+    method: "post",
+    url: "/portal/suspend.json",
+  });
+}
+
+export function sendDeletePortalEmail() {
+  return request({
+    method: "post",
+    url: "/portal/delete.json",
+  });
+}
+
+export function suspendPortal() {
+  return request({
+    method: "put",
+    url: "/portal/suspend.json",
+  });
+}
+
+export function continuePortal() {
+  return request({
+    method: "put",
+    url: "/portal/continue.json",
+  });
+}
+
+export function deletePortal() {
+  return request({
+    method: "delete",
+    url: "/portal/delete.json",
+  });
+}
