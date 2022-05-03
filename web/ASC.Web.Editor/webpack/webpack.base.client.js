@@ -15,15 +15,9 @@ const deps = pkg.dependencies || {};
 
 const BUILD_DIR = path.resolve(process.cwd(), "dist");
 
-const getDeps = () => {
-  for (dep in sharedDeps) {
-    sharedDeps[dep].eager = true;
-  }
-  return {
-    ...deps,
-    ...sharedDeps,
-  };
-};
+for (dep in sharedDeps) {
+  sharedDeps[dep].eager = true;
+}
 
 const clientBaseConfig = {
   target: "web",
@@ -99,7 +93,7 @@ const clientBaseConfig = {
       exposes: {
         "./app": "./src/client/index.js",
       },
-      shared: getDeps(),
+      shared: { ...sharedDeps },
     }),
     new ExternalTemplateRemotesPlugin(),
     new CopyPlugin({
