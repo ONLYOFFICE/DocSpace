@@ -116,17 +116,11 @@ const StyledVersionList = styled.div`
 StyledVersionList.defaultProps = { theme: Base };
 
 const StyledVersionRow = styled(Row)`
-  @media ${tablet} {
-    box-sizing: border-box;
-    position: relative;
-  }
-
   .row_content {
     position: relative;
     padding-top: 12px;
     padding-bottom: 12px;
-
-    ${(props) => props.isTabletView && "height: 42px"};
+    height: auto;
     ${(props) => !props.isTabletView && "padding-right:16px"};
   }
 
@@ -161,21 +155,8 @@ const StyledVersionRow = styled(Row)`
     }
   }
 
-  .version_modal-dialog {
-    display: none;
-
-    @media ${tablet} {
-      display: block;
-    }
-  }
-
   .version_edit-comment {
     display: block;
-
-    @media ${tablet} {
-      display: none;
-      margin-left: 63px;
-    }
   }
 
   .textarea-desktop {
@@ -213,7 +194,7 @@ const StyledVersionRow = styled(Row)`
     margin-top: 5px;
 
     @media ${tablet} {
-      display: inline-block;
+      display: ${(props) => (props.showEditPanel ? "none" : "inline-block")};
       margin-left: -7px;
       margin-top: 5px;
     }

@@ -173,38 +173,6 @@ const VersionRow = (props) => {
                   value={commentValue}
                   isDisabled={isSavingComment}
                 />
-                <Box className="version_modal-dialog">
-                  <ModalDialog
-                    displayType="aside"
-                    visible={showEditPanel}
-                    onClose={onEditComment}
-                  >
-                    <ModalDialog.Header className="header-version-modal-dialog">
-                      {t("EditComment")}
-                    </ModalDialog.Header>
-                    <ModalDialog.Body>
-                      <Textarea
-                        className="text-area-mobile-edit-comment"
-                        style={{ margin: "8px 24px 8px 0" }}
-                        //placeholder="Add comment"
-                        onChange={onChange}
-                        heightTextArea={298}
-                        value={commentValue}
-                        isDisabled={isSavingComment}
-                      />
-                    </ModalDialog.Body>
-                    <ModalDialog.Footer>
-                      <Button
-                        isDisabled={isSavingComment}
-                        className="version_save-button"
-                        label={t("Common:SaveButton")}
-                        size="normal"
-                        primary
-                        onClick={onSaveClick}
-                      />
-                    </ModalDialog.Footer>
-                  </ModalDialog>
-                </Box>
               </>
             )}
 
