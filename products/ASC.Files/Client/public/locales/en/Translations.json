@@ -16,6 +16,8 @@
   "EncryptedFileSaving": "Saving encrypted file",
   "Files": "Files",
   "FileProtected": "The file is password protected",
+  "FileLocked": "File locked",
+  "FileUnlocked": "File unlocked",
   "Folders": "Folders",
   "FolderSelection": "Folder selection",
   "FolderTitleBoxNet": "Box directory",
