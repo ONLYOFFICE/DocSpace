@@ -119,7 +119,7 @@ Backdrop.propTypes = {
 
 Backdrop.defaultProps = {
   visible: false,
-  zIndex: 200,
+  zIndex: 203,
   withBackground: false,
   isAside: false,
   isModalDialog: false,
