@@ -310,6 +310,7 @@ class Section extends React.Component {
                     isSectionBarAvailable={isSectionBarAvailable}
                     isSectionHeaderAvailable={isSectionHeaderAvailable}
                     infoPanelIsVisible={infoPanelIsVisible}
+                    settingsStudio={settingsStudio}
                   >
                     {!isMobile && (
                       <StyledMainBar
