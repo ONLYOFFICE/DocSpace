@@ -117,14 +117,34 @@ StyledAsidePanel.defaultProps = { theme: Base };
 
 const StyledVersionHistoryPanel = styled.div`
   ${PanelStyles}
+
   .version-history-modal-dialog {
-    transform: translateX(${(props) => (props.visible ? "0" : "720px")});
-    width: 500px;
+    transition: unset;
+    transform: translateX(${(props) => (props.visible ? "0" : "480px")});
+    width: 480px;
+    max-width: 480px;
+    overflow-y: hidden;
   }
+
   .version-history-aside-panel {
-    transform: translateX(${(props) => (props.visible ? "0" : "720px")});
-    width: 500px;
+    transition: unset;
+    transform: translateX(${(props) => (props.visible ? "0" : "480px")});
+    width: 480px;
+    max-width: 480px;
+    overflow-y: hidden;
+
+    @media (max-width: 500px) {
+      position: fixed;
+
+      top: 64px;
+      bottom: 0;
+      right: 0;
+
+      width: 100%;
+      height: calc(100% - 64px);
+    }
   }
+
   .version-history-panel-header {
     height: 53px;
     margin-left: 0px;
@@ -134,6 +154,7 @@ const StyledVersionHistoryPanel = styled.div`
       margin-top: 12px;
     }
   }
+
   .version-history-panel-body {
     padding-top: ${(props) => (props.isLoading ? "16px" : null)};
     padding-bottom: ${(props) => (props.isLoading ? "0px" : null)};
@@ -146,6 +167,7 @@ const StyledVersionHistoryPanel = styled.div`
     .version-comment-wrapper {
       margin-left: 79px;
     }
+
     .version_edit-comment {
       padding-left: 2px;
     }
