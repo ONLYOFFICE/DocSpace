@@ -189,7 +189,7 @@ const StyledVersionRow = styled(Row)`
   }
 
   .version_text {
-    display: ${(props) => (props.canEdit ? "none" : "block")};
+    display: ${(props) => (props.showEditPanel ? "none" : "block")};
     margin-left: -7px;
     margin-top: 5px;
 
@@ -200,37 +200,15 @@ const StyledVersionRow = styled(Row)`
     }
   }
 
-  .version_links-container {
-    display: flex;
-    margin-left: auto;
-
-    .version_link-action {
-      display: block;
-      margin-left: auto;
-      margin-top: 5px;
-      ${(props) =>
-        props.isRestoring &&
-        css`
-          cursor: default;
-        `}
-      :last-child {
-        margin-left: 8px;
-      }
-
-      @media ${tablet} {
-        display: none;
-      }
-    }
-  }
-
   .version-comment-wrapper {
     white-space: normal !important;
   }
 
   .row_context-menu-wrapper {
-    display: none;
-
+    display: block;
+    position: absolute;
     right: 16px !important;
+    top: 6px;
 
     .expandButton {
       ${(props) =>
@@ -249,13 +227,6 @@ const StyledVersionRow = styled(Row)`
             `};
         }
       }
-    }
-
-    @media ${tablet} {
-      display: block;
-      position: absolute;
-      right: 0px;
-      top: 6px;
     }
   }
 

@@ -148,14 +148,14 @@ const VersionRow = (props) => {
             {title}
           </Link>
 
-          <Text
+          {/*<Text
             className="version_content-length"
             fontWeight={600}
             color={theme.filesVersionHistory.color}
             fontSize="14px"
           >
             {info.contentLength}
-          </Text>
+          </Text>*/}
         </Box>
         <Box
           className="version-comment-wrapper"
@@ -176,36 +176,8 @@ const VersionRow = (props) => {
               </>
             )}
 
-            <Link
-              type="action"
-              isHovered={!isEditing}
-              noHover={isEditing}
-              onClick={onEditComment}
-              className="version_link"
-            >
-              {info.comment}
-            </Link>
             <Text className="version_text">{info.comment}</Text>
           </>
-
-          <div className="version_links-container">
-            {canEdit && (
-              <Link
-                onClick={onRestoreClick}
-                {...linkStyles}
-                className="version_link-action"
-              >
-                {t("Common:Restore")}
-              </Link>
-            )}
-            <Link
-              onClick={onDownloadAction}
-              {...linkStyles}
-              className="version_link-action"
-            >
-              {t("Common:Download")}
-            </Link>
-          </div>
         </Box>
         {showEditPanel && (
           <Box className="version_edit-comment" marginProp="8px 0 2px 70px">
