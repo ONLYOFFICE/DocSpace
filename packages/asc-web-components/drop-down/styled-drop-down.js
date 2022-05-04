@@ -35,7 +35,8 @@ const StyledDropdown = styled.div`
     css`
       left: ${(props) => (props.manualX ? props.manualX : "0px")};
     `}
-  z-index: ${(props) => props.theme.dropDown.zIndex};
+  z-index: ${(props) =>
+    props.zIndex ? props.zIndex : props.theme.dropDown.zIndex};
   display: ${(props) =>
     props.open ? (props.columnCount ? "block" : "table") : "none"};
   background: ${(props) => props.theme.dropDown.background};

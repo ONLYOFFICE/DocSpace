@@ -105,6 +105,7 @@ const ControlButtons = ({
         <>
           {!isMobile && (
             <ContextMenuButton
+              zIndex={402}
               className="add-button"
               directionX="right"
               iconName="images/plus.svg"
@@ -146,6 +147,7 @@ const ControlButtons = ({
         <>
           {!isMobile && (
             <ContextMenuButton
+              zIndex={402}
               className="add-button"
               directionX="right"
               iconName="images/plus.svg"
