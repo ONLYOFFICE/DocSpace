@@ -87,7 +87,7 @@ const FilesSection = React.memo(() => {
   return (
     <Switch>
       <PrivateRoute exact path={SETTINGS_URL} component={Settings} />
-      <PrivateRoute exact path={HISTORY_URL} component={VersionHistory} />
+      {/*<PrivateRoute exact path={HISTORY_URL} component={VersionHistory} />*/}
       <PrivateRoute path={PRIVATE_ROOMS_URL} component={PrivateRoomsPage} />
       <PrivateRoute exact path={HOME_URL} component={Home} />
       <PrivateRoute path={FILTER_URL} component={Home} />

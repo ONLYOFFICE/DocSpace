@@ -164,6 +164,7 @@ class ContextMenuButton extends React.Component {
       asideHeader, // eslint-disable-line react/prop-types
       isNew,
       title,
+      zIndex,
     } = this.props;
 
     const { isOpen, displayType, offsetX, offsetY } = this.state;
@@ -202,6 +203,7 @@ class ContextMenuButton extends React.Component {
             clickOutsideAction={this.clickOutsideAction}
             columnCount={columnCount}
             withBackdrop={!!isMobile}
+            zIndex={zIndex}
           >
             {this.state.data.map(
               (item, index) =>

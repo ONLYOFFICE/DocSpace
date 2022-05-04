@@ -214,7 +214,7 @@ const StyledVersionRow = styled(Row)`
 
     @media ${tablet} {
       display: inline-block;
-      margin-left: 1px;
+      margin-left: -7px;
       margin-top: 5px;
     }
   }
