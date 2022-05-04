@@ -31,14 +31,14 @@ dotnet publish "%PathToRepository%\common\services\ASC.Data.Storage.Encryption\A
 dotnet publish "%PathToRepository%\products\ASC.Files\service\ASC.Files.Service.csproj" -c Release --self-contained false -o "%PathToAppFolder%\services\ASC.Files.Service\service"
 dotnet publish "%PathToRepository%\common\services\ASC.Data.Storage.Migration\ASC.Data.Storage.Migration.csproj" -c Release --self-contained false -o "%PathToAppFolder%\services\ASC.Data.Storage.Migration\service"
 dotnet publish "%PathToRepository%\common\services\ASC.Notify\ASC.Notify.csproj" -c Release --self-contained false -o "%PathToAppFolder%\services\ASC.Notify\service"
-dotnet publish "%PathToRepository%\common\services\ASC.Socket.IO.Svc\ASC.Socket.IO.Svc.csproj" -c Release --self-contained false -o "%PathToAppFolder%\services\ASC.Socket.IO.Svc\service"
+REM dotnet publish "%PathToRepository%\common\services\ASC.Socket.IO.Svc\ASC.Socket.IO.Svc.csproj" -c Release --self-contained false -o "%PathToAppFolder%\services\ASC.Socket.IO.Svc\service"
 dotnet publish "%PathToRepository%\common\services\ASC.Studio.Notify\ASC.Studio.Notify.csproj" -c Release --self-contained false -o "%PathToAppFolder%\services\ASC.Studio.Notify\service"
 dotnet publish "%PathToRepository%\common\services\ASC.TelegramService\ASC.TelegramService.csproj" -c Release --self-contained false -o "%PathToAppFolder%\services\ASC.TelegramService\service"
 dotnet publish "%PathToRepository%\common\services\ASC.Thumbnails.Svc\ASC.Thumbnails.Svc.csproj" -c Release --self-contained false -o "%PathToAppFolder%\services\ASC.Thumbnails.Svc\service"
-dotnet publish "%PathToRepository%\common\services\ASC.UrlShortener.Svc\ASC.UrlShortener.Svc.csproj" -c Release --self-contained false -o "%PathToAppFolder%\services\ASC.UrlShortener.Svc\service"
+REM dotnet publish "%PathToRepository%\common\services\ASC.UrlShortener.Svc\ASC.UrlShortener.Svc.csproj" -c Release --self-contained false -o "%PathToAppFolder%\services\ASC.UrlShortener.Svc\service"
 dotnet publish "%PathToRepository%\web\ASC.Web.Api\ASC.Web.Api.csproj" -c Release --self-contained false -o "%PathToAppFolder%\services\ASC.Web.Api\service"
 dotnet publish "%PathToRepository%\web\ASC.Web.Studio\ASC.Web.Studio.csproj" -c Release --self-contained false -o "%PathToAppFolder%\services\ASC.Web.Studio\service"
-dotnet publish "%PathToRepository%\common\services\ASC.SsoAuth.Svc\ASC.SsoAuth.Svc.csproj" -c Release --self-contained false -o "%PathToAppFolder%\services\ASC.SsoAuth.Svc\service"
+REM dotnet publish "%PathToRepository%\common\services\ASC.SsoAuth.Svc\ASC.SsoAuth.Svc.csproj" -c Release --self-contained false -o "%PathToAppFolder%\services\ASC.SsoAuth.Svc\service"
 
 rem Publish backend services (Nodejs)
 mkdir "%PathToAppFolder%\services\ASC.Thumbnails\service"

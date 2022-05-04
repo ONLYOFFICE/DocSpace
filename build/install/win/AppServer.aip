@@ -94,12 +94,9 @@
     <ROW Directory="ASC.Files_Dir" Directory_Parent="products_Dir" DefaultDir="ASC~1.FIL|ASC.Files"/>
     <ROW Directory="ASC.Notify_Dir" Directory_Parent="services_Dir" DefaultDir="ASC~1.NOT|ASC.Notify"/>
     <ROW Directory="ASC.People_Dir" Directory_Parent="products_Dir" DefaultDir="ASC~1.PEO|ASC.People"/>
-    <ROW Directory="ASC.Socket.IO.Svc_Dir" Directory_Parent="services_Dir" DefaultDir="ASCSOC~1.SVC|ASC.Socket.IO.Svc"/>
-    <ROW Directory="ASC.SsoAuth.Svc_Dir" Directory_Parent="services_Dir" DefaultDir="ASCSSO~1.SVC|ASC.SsoAuth.Svc"/>
     <ROW Directory="ASC.Studio.Notify_Dir" Directory_Parent="services_Dir" DefaultDir="ASCSTU~1.NOT|ASC.Studio.Notify"/>
     <ROW Directory="ASC.TelegramService_Dir" Directory_Parent="services_Dir" DefaultDir="ASC~1.TEL|ASC.TelegramService"/>
     <ROW Directory="ASC.Thumbnails.Svc_Dir" Directory_Parent="services_Dir" DefaultDir="ASCTHU~1.SVC|ASC.Thumbnails.Svc"/>
-    <ROW Directory="ASC.UrlShortener.Svc_Dir" Directory_Parent="services_Dir" DefaultDir="ASCURL~1.SVC|ASC.UrlShortener.Svc"/>
     <ROW Directory="ASC.Web.Api_Dir" Directory_Parent="services_Dir" DefaultDir="ASCWEB~1.API|ASC.Web.Api"/>
     <ROW Directory="ASC.Web.Studio_Dir" Directory_Parent="services_Dir" DefaultDir="ASCWEB~1.STU|ASC.Web.Studio"/>
     <ROW Directory="TARGETDIR" DefaultDir="SourceDir"/>
@@ -107,14 +104,11 @@
     <ROW Directory="products_Dir" Directory_Parent="APPDIR" DefaultDir="products"/>
     <ROW Directory="server_2_Dir" Directory_Parent="ASC.Files_Dir" DefaultDir="server"/>
     <ROW Directory="server_5_Dir" Directory_Parent="ASC.People_Dir" DefaultDir="server"/>
-    <ROW Directory="service_10_Dir" Directory_Parent="ASC.Socket.IO.Svc_Dir" DefaultDir="service"/>
     <ROW Directory="service_11_Dir" Directory_Parent="ASC.Studio.Notify_Dir" DefaultDir="service"/>
     <ROW Directory="service_12_Dir" Directory_Parent="ASC.TelegramService_Dir" DefaultDir="service"/>
     <ROW Directory="service_13_Dir" Directory_Parent="ASC.Thumbnails.Svc_Dir" DefaultDir="service"/>
-    <ROW Directory="service_14_Dir" Directory_Parent="ASC.UrlShortener.Svc_Dir" DefaultDir="service"/>
     <ROW Directory="service_15_Dir" Directory_Parent="ASC.Web.Api_Dir" DefaultDir="service"/>
     <ROW Directory="service_16_Dir" Directory_Parent="ASC.Web.Studio_Dir" DefaultDir="service"/>
-    <ROW Directory="service_1_Dir" Directory_Parent="ASC.SsoAuth.Svc_Dir" DefaultDir="service"/>
     <ROW Directory="service_2_Dir" Directory_Parent="ASC.Data.Backup_Dir" DefaultDir="service"/>
     <ROW Directory="service_3_Dir" Directory_Parent="ASC.Data.Storage.Encryption_Dir" DefaultDir="service"/>
     <ROW Directory="service_4_Dir" Directory_Parent="ASC.Data.Storage.Migration_Dir" DefaultDir="service"/>
@@ -139,15 +133,15 @@
     <ROW Component="ASC.Files.exe_1" ComponentId="{1FCFC78C-9BF5-412A-AA03-732736177E66}" Directory_="service_8_Dir" Attributes="256" KeyPath="ASC.Files.exe_1"/>
     <ROW Component="ASC.Notify.exe" ComponentId="{7457E31A-B6FC-4A71-A5C0-174C9E965051}" Directory_="service_9_Dir" Attributes="256" KeyPath="ASC.Notify.exe"/>
     <ROW Component="ASC.People.exe" ComponentId="{044D57BC-8BAC-4D64-AB36-141BAA1F2E15}" Directory_="server_5_Dir" Attributes="256" KeyPath="ASC.People.exe"/>
-    <ROW Component="ASC.Socket.IO.Svc.exe" ComponentId="{724F0928-0373-4D30-847A-F42FCD66FA2B}" Directory_="service_10_Dir" Attributes="256" KeyPath="ASC.Socket.IO.Svc.exe"/>
-    <ROW Component="ASC.SsoAuth.Svc.exe" ComponentId="{B5363297-DED7-433C-9D20-A31DD47B0980}" Directory_="service_1_Dir" Attributes="256" KeyPath="ASC.SsoAuth.Svc.exe"/>
     <ROW Component="ASC.Studio.Notify.exe" ComponentId="{AFB3D13A-4F5B-46E1-8819-3517A228C22B}" Directory_="service_11_Dir" Attributes="256" KeyPath="ASC.Studio.Notify.exe"/>
     <ROW Component="ASC.TelegramService.exe" ComponentId="{475A1DBC-3864-434E-86E2-497D70D39BDE}" Directory_="service_12_Dir" Attributes="256" KeyPath="ASC.TelegramService.exe"/>
     <ROW Component="ASC.Thumbnails.Svc.exe" ComponentId="{4ACF16C8-A598-4036-BA3B-6B60D4D8BD2B}" Directory_="service_13_Dir" Attributes="256" KeyPath="ASC.Thumbnails.Svc.exe"/>
-    <ROW Component="ASC.UrlShortener.Svc.exe" ComponentId="{9C4DF952-CF5B-4B0E-8377-383F20F39FD3}" Directory_="service_14_Dir" Attributes="256" KeyPath="ASC.UrlShortener.Svc.exe"/>
     <ROW Component="ASC.Web.Api.exe" ComponentId="{E726DF21-2E7E-4C62-8F6E-C63C65B041EC}" Directory_="service_15_Dir" Attributes="256" KeyPath="ASC.Web.Api.exe"/>
     <ROW Component="ASC.Web.Studio.exe" ComponentId="{00F95035-98D9-44AD-9DB4-B34306EE2170}" Directory_="service_16_Dir" Attributes="256" KeyPath="ASC.Web.Studio.exe"/>
     <ROW Component="ProductInformation" ComponentId="{5FB28D19-6A7D-4078-901F-58C2DF0DE176}" Directory_="APPDIR" Attributes="4" KeyPath="Version"/>
+    <ROW Component="Socket.IO.exe" ComponentId="{D08CDE1C-FB16-49AB-98A2-92FD887774F1}" Directory_="tools_Dir" Attributes="0" KeyPath="Socket.IO.exe"/>
+    <ROW Component="SsoAuth.exe" ComponentId="{B4A48C44-5FC0-43D8-9CFB-EB4A4AAB4169}" Directory_="tools_Dir" Attributes="0" KeyPath="SsoAuth.exe"/>
+    <ROW Component="UrlShortener.exe" ComponentId="{1F1D4189-385A-4AE1-8011-A82ED137DA22}" Directory_="tools_Dir" Attributes="0" KeyPath="UrlShortener.exe"/>
     <ROW Component="config" ComponentId="{B58E086D-0CB4-4F53-8411-3AE5A46D1DE4}" Directory_="config_Dir" Attributes="0"/>
     <ROW Component="proxy.exe" ComponentId="{913596AD-5C75-4418-8C3A-FAB2A70530DB}" Directory_="tools_Dir" Attributes="0" KeyPath="proxy.exe"/>
     <ROW Component="proxy.xml" ComponentId="{92B2BA6A-009B-4731-A0E2-A6C729DC8A68}" Directory_="tools_Dir" Attributes="0" KeyPath="proxy.xml" Type="0"/>
@@ -166,16 +160,19 @@
     <ROW File="ASC.Files.Service.exe" Component_="ASC.Files.Service.exe" FileName="ASCFIL~1.EXE|ASC.Files.Service.exe" Attributes="0" SourcePath="Files\services\ASC.Files.Service\service\ASC.Files.Service.exe" SelfReg="false" DigSign="true"/>
     <ROW File="ASC.Files.exe_1" Component_="ASC.Files.exe_1" FileName="ASCFIL~1.EXE|ASC.Files.exe" Attributes="0" SourcePath="Files\services\ASC.Files.Tests\service\ASC.Files.exe" SelfReg="false" DigSign="true"/>
     <ROW File="ASC.Notify.exe" Component_="ASC.Notify.exe" FileName="ASCNOT~1.EXE|ASC.Notify.exe" Attributes="0" SourcePath="Files\services\ASC.Notify\service\ASC.Notify.exe" SelfReg="false" DigSign="true"/>
-    <ROW File="ASC.Socket.IO.Svc.exe" Component_="ASC.Socket.IO.Svc.exe" FileName="ASCSOC~1.EXE|ASC.Socket.IO.Svc.exe" Attributes="0" SourcePath="Files\services\ASC.Socket.IO.Svc\service\ASC.Socket.IO.Svc.exe" SelfReg="false" DigSign="true"/>
     <ROW File="ASC.Studio.Notify.exe" Component_="ASC.Studio.Notify.exe" FileName="ASCSTU~1.EXE|ASC.Studio.Notify.exe" Attributes="0" SourcePath="Files\services\ASC.Studio.Notify\service\ASC.Studio.Notify.exe" SelfReg="false" DigSign="true"/>
     <ROW File="ASC.TelegramService.exe" Component_="ASC.TelegramService.exe" FileName="ASCTEL~1.EXE|ASC.TelegramService.exe" Attributes="0" SourcePath="Files\services\ASC.TelegramService\service\ASC.TelegramService.exe" SelfReg="false" DigSign="true"/>
     <ROW File="ASC.Thumbnails.Svc.exe" Component_="ASC.Thumbnails.Svc.exe" FileName="ASCTHU~1.EXE|ASC.Thumbnails.Svc.exe" Attributes="0" SourcePath="Files\services\ASC.Thumbnails.Svc\service\ASC.Thumbnails.Svc.exe" SelfReg="false" DigSign="true"/>
-    <ROW File="ASC.UrlShortener.Svc.exe" Component_="ASC.UrlShortener.Svc.exe" FileName="ASCURL~1.EXE|ASC.UrlShortener.Svc.exe" Attributes="0" SourcePath="Files\services\ASC.UrlShortener.Svc\service\ASC.UrlShortener.Svc.exe" SelfReg="false" DigSign="true"/>
     <ROW File="ASC.Web.Studio.exe" Component_="ASC.Web.Studio.exe" FileName="ASCWEB~1.EXE|ASC.Web.Studio.exe" Attributes="0" SourcePath="Files\services\ASC.Web.Studio\service\ASC.Web.Studio.exe" SelfReg="false" DigSign="true"/>
     <ROW File="ASC.Web.Api.exe" Component_="ASC.Web.Api.exe" FileName="ASCWEB~1.EXE|ASC.Web.Api.exe" Attributes="0" SourcePath="Files\services\ASC.Web.Api\service\ASC.Web.Api.exe" SelfReg="false" DigSign="true"/>
     <ROW File="proxy.exe" Component_="proxy.exe" FileName="ONLYO~13.EXE|proxy.exe" Attributes="0" SourcePath="Files\tools\proxy.exe" SelfReg="false" DigSign="true"/>
     <ROW File="proxy.xml" Component_="proxy.xml" FileName="ONLYO~13.XML|proxy.xml" Attributes="0" SourcePath="Files\tools\proxy.xml" SelfReg="false"/>
-    <ROW File="ASC.SsoAuth.Svc.exe" Component_="ASC.SsoAuth.Svc.exe" FileName="ASCSSO~1.EXE|ASC.SsoAuth.Svc.exe" Attributes="0" SourcePath="Files\services\ASC.SsoAuth.Svc\service\ASC.SsoAuth.Svc.exe" SelfReg="false" DigSign="true"/>
+    <ROW File="Socket.IO.exe" Component_="Socket.IO.exe" FileName="SOCKET~1.EXE|Socket.IO.exe" Attributes="0" SourcePath="Files\tools\Socket.IO.exe" SelfReg="false" DigSign="true"/>
+    <ROW File="Socket.IO.xml" Component_="proxy.xml" FileName="SOCKET~1.XML|Socket.IO.xml" Attributes="0" SourcePath="Files\tools\Socket.IO.xml" SelfReg="false"/>
+    <ROW File="SsoAuth.exe" Component_="SsoAuth.exe" FileName="SsoAuth.exe" Attributes="0" SourcePath="Files\tools\SsoAuth.exe" SelfReg="false" DigSign="true"/>
+    <ROW File="SsoAuth.xml" Component_="proxy.xml" FileName="SsoAuth.xml" Attributes="0" SourcePath="Files\tools\SsoAuth.xml" SelfReg="false"/>
+    <ROW File="UrlShortener.exe" Component_="UrlShortener.exe" FileName="URLSHO~1.EXE|UrlShortener.exe" Attributes="0" SourcePath="Files\tools\UrlShortener.exe" SelfReg="false" DigSign="true"/>
+    <ROW File="UrlShortener.xml" Component_="proxy.xml" FileName="URLSHO~1.XML|UrlShortener.xml" Attributes="0" SourcePath="Files\tools\UrlShortener.xml" SelfReg="false"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BootstrOptComponent">
     <ROW BootstrOptKey="GlobalOptions" DownloadFolder="[AppDataFolder][|Manufacturer]\[|ProductName]\prerequisites" Options="2"/>
@@ -247,11 +244,12 @@
     <ROW Name="Prereq.dll" SourcePath="&lt;AI_CUSTACTS&gt;Prereq.dll"/>
     <ROW Name="SoftwareDetector.dll" SourcePath="&lt;AI_CUSTACTS&gt;SoftwareDetector.dll"/>
     <ROW Name="TxtUpdater.dll" SourcePath="&lt;AI_CUSTACTS&gt;TxtUpdater.dll"/>
+    <ROW Name="Utils.CA.dll" SourcePath="Utils.CA.dll"/>
     <ROW Name="aicustact.dll" SourcePath="&lt;AI_CUSTACTS&gt;aicustact.dll"/>
     <ROW Name="jsonCfg.dll" SourcePath="&lt;AI_CUSTACTS&gt;jsonCfg.dll"/>
     <ROW Name="lzmaextractor.dll" SourcePath="&lt;AI_CUSTACTS&gt;lzmaextractor.dll"/>
     <ROW Name="utils.vbs" SourcePath="utils.vbs"/>
-    <ROW Name="Utils.CA.dll" SourcePath="Utils.CA.dll"/>
+    <ROW Name="viewer.exe" SourcePath="&lt;AI_CUSTACTS&gt;viewer.exe"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiControlComponent">
     <ROW Dialog_="AdminInstallPointDlg" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Back]" Order="600" TextLocId="-" MsiKey="AdminInstallPointDlg#Back" Options="1"/>
@@ -445,6 +443,13 @@
     <ROW Action="AI_ConfigFailActions" Type="11265" Source="aicustact.dll" Target="ConfigureServFailActions" WithoutSeq="true"/>
     <ROW Action="AI_DATA_SETTER" Type="51" Source="CustomActionData" Target="[ELASTICSEARCH_MSG]&#13;\n[ELASTICSEARCH_SCHEME]://[ELASTICSEARCH_HOST]:[ELASTICSEARCH_PORT] |[ProductName] Setup |MB_OK,MB_ICONWARNING,MB_DEFBUTTON1||[CLIENTPROCESSID]"/>
     <ROW Action="AI_DATA_SETTER_1" Type="51" Source="CustomActionData" Target="HOST=[ELASTICSEARCH_HOST];PORT=[ELASTICSEARCH_PORT];OUTPUT=ELK_CONNECTION"/>
+    <ROW Action="AI_DATA_SETTER_10" Type="51" Source="CustomActionData" Target="MySQL80"/>
+    <ROW Action="AI_DATA_SETTER_11" Type="51" Source="CustomActionData" Target="MySQL80"/>
+    <ROW Action="AI_DATA_SETTER_12" Type="51" Source="CustomActionData" Target="Elasticsearch"/>
+    <ROW Action="AI_DATA_SETTER_13" Type="51" Source="StartElasticSearchService" Target="Elasticsearch"/>
+    <ROW Action="AI_DATA_SETTER_14" Type="51" Source="CustomActionData" Target="[ZOOKEEPER_MSG]&#13;\n[ZOOKEEPER_SCHEME]://[ZOOKEEPER_HOST]:[ZOOKEEPER_PORT] |[ProductName] Setup |MB_OK,MB_ICONWARNING,MB_DEFBUTTON1||[CLIENTPROCESSID]"/>
+    <ROW Action="AI_DATA_SETTER_15" Type="51" Source="CustomActionData" Target="HOST=[KAFKA_HOST];PORT=[KAFKA_PORT];OUTPUT=KAFKA_CONNECTION"/>
+    <ROW Action="AI_DATA_SETTER_16" Type="51" Source="CustomActionData" Target="[KAFKA_MSG]&#13;\n[KAFKA_SCHEME]://[KAFKA_HOST]:[KAFKA_PORT] |[ProductName] Setup |MB_OK,MB_ICONWARNING,MB_DEFBUTTON1||[CLIENTPROCESSID]"/>
     <ROW Action="AI_DATA_SETTER_2" Type="51" Source="CustomActionData" Target="[AI_SETUPEXEPATH]"/>
     <ROW Action="AI_DATA_SETTER_3" Type="51" Source="CustomActionData" Target="[~]"/>
     <ROW Action="AI_DATA_SETTER_4" Type="51" Source="CustomActionData" Target="HOST=[ZOOKEEPER_HOST];PORT=[ZOOKEEPER_PORT];OUTPUT=ZK_CONNECTION"/>
@@ -453,13 +458,6 @@
     <ROW Action="AI_DATA_SETTER_7" Type="51" Source="CustomActionData" Target="[~]"/>
     <ROW Action="AI_DATA_SETTER_8" Type="51" Source="CustomActionData" Target="[~]"/>
     <ROW Action="AI_DATA_SETTER_9" Type="51" Source="CustomActionData" Target="MySQL80"/>
-    <ROW Action="AI_DATA_SETTER_10" Type="51" Source="CustomActionData" Target="MySQL80"/>
-    <ROW Action="AI_DATA_SETTER_11" Type="51" Source="CustomActionData" Target="MySQL80"/>
-    <ROW Action="AI_DATA_SETTER_12" Type="51" Source="CustomActionData" Target="Elasticsearch"/>
-    <ROW Action="AI_DATA_SETTER_13" Type="51" Source="StartElasticSearchService" Target="Elasticsearch"/>
-    <ROW Action="AI_DATA_SETTER_14" Type="51" Source="CustomActionData" Target="[ZOOKEEPER_MSG]&#13;\n[ZOOKEEPER_SCHEME]://[ZOOKEEPER_HOST]:[ZOOKEEPER_PORT] |[ProductName] Setup |MB_OK,MB_ICONWARNING,MB_DEFBUTTON1||[CLIENTPROCESSID]"/>
-    <ROW Action="AI_DATA_SETTER_15" Type="51" Source="CustomActionData" Target="HOST=[KAFKA_HOST];PORT=[KAFKA_PORT];OUTPUT=KAFKA_CONNECTION"/>
-    <ROW Action="AI_DATA_SETTER_16" Type="51" Source="CustomActionData" Target="[KAFKA_MSG]&#13;\n[KAFKA_SCHEME]://[KAFKA_HOST]:[KAFKA_PORT] |[ProductName] Setup |MB_OK,MB_ICONWARNING,MB_DEFBUTTON1||[CLIENTPROCESSID]"/>
     <ROW Action="AI_DOWNGRADE" Type="19" Target="4010"/>
     <ROW Action="AI_DeleteCadLzma" Type="51" Source="AI_DeleteLzma" Target="[AI_SETUPEXEPATH]"/>
     <ROW Action="AI_DeleteLzma" Type="1025" Source="lzmaextractor.dll" Target="DeleteLZMAFiles"/>
@@ -536,20 +534,20 @@
     <ROW Feature_="MainFeature" Component_="ASC.Files.Service.exe"/>
     <ROW Feature_="MainFeature" Component_="ASC.Files.exe_1"/>
     <ROW Feature_="MainFeature" Component_="ASC.Notify.exe"/>
-    <ROW Feature_="MainFeature" Component_="ASC.Socket.IO.Svc.exe"/>
     <ROW Feature_="MainFeature" Component_="ASC.Studio.Notify.exe"/>
     <ROW Feature_="MainFeature" Component_="ASC.TelegramService.exe"/>
     <ROW Feature_="MainFeature" Component_="ASC.Thumbnails.Svc.exe"/>
-    <ROW Feature_="MainFeature" Component_="ASC.UrlShortener.Svc.exe"/>
     <ROW Feature_="MainFeature" Component_="ASC.Web.Studio.exe"/>
     <ROW Feature_="MainFeature" Component_="ASC.Files.exe"/>
     <ROW Feature_="MainFeature" Component_="ASC.Web.Api.exe"/>
     <ROW Feature_="MainFeature" Component_="proxy.xml"/>
     <ROW Feature_="MainFeature" Component_="proxy.exe"/>
-    <ROW Feature_="MainFeature" Component_="ASC.SsoAuth.Svc.exe"/>
     <ROW Feature_="MainFeature" Component_="config"/>
     <ROW Feature_="MainFeature" Component_="AI_CustomARPName"/>
     <ROW Feature_="MainFeature" Component_="AI_DisableModify"/>
+    <ROW Feature_="MainFeature" Component_="Socket.IO.exe"/>
+    <ROW Feature_="MainFeature" Component_="SsoAuth.exe"/>
+    <ROW Feature_="MainFeature" Component_="UrlShortener.exe"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiIconsComponent">
     <ROW Name="icon.exe" SourcePath="Resources\icon.ico" Index="0"/>
@@ -663,12 +661,12 @@
     <ROW MsiServiceConfig="ServiceName_NotifyService" Name="[ServiceName_NotifyService]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Notify.exe"/>
     <ROW MsiServiceConfig="ServiceName_PeopleServer" Name="[ServiceName_PeopleServer]" Event="1" ConfigType="3" Argument="1" Component_="ASC.People.exe"/>
     <ROW MsiServiceConfig="ServiceName_Proxy" Name="[ServiceName_Proxy]" Event="1" ConfigType="3" Argument="1" Component_="proxy.exe"/>
-    <ROW MsiServiceConfig="ServiceName_Socket.IO" Name="[ServiceName_Socket.IO]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Socket.IO.Svc.exe"/>
-    <ROW MsiServiceConfig="ServiceName_SsoAuth" Name="[ServiceName_SsoAuth]" Event="1" ConfigType="3" Argument="1" Component_="ASC.SsoAuth.Svc.exe"/>
+    <ROW MsiServiceConfig="ServiceName_Socket.IO" Name="[ServiceName_Socket.IO]" Event="1" ConfigType="3" Argument="1" Component_="Socket.IO.exe"/>
+    <ROW MsiServiceConfig="ServiceName_SsoAuth" Name="[ServiceName_SsoAuth]" Event="1" ConfigType="3" Argument="1" Component_="SsoAuth.exe"/>
     <ROW MsiServiceConfig="ServiceName_StudioNotifyService" Name="[ServiceName_StudioNotifyService]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Studio.Notify.exe"/>
     <ROW MsiServiceConfig="ServiceName_TelegramService" Name="[ServiceName_TelegramService]" Event="1" ConfigType="3" Argument="1" Component_="ASC.TelegramService.exe"/>
     <ROW MsiServiceConfig="ServiceName_Thumbnails" Name="[ServiceName_Thumbnails]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Thumbnails.Svc.exe"/>
-    <ROW MsiServiceConfig="ServiceName_UrlShortenerService" Name="[ServiceName_UrlShortenerService]" Event="1" ConfigType="3" Argument="1" Component_="ASC.UrlShortener.Svc.exe"/>
+    <ROW MsiServiceConfig="ServiceName_UrlShortenerService" Name="[ServiceName_UrlShortenerService]" Event="1" ConfigType="3" Argument="1" Component_="UrlShortener.exe"/>
     <ROW MsiServiceConfig="ServiceName_WebApi" Name="[ServiceName_WebApi]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Web.Api.exe"/>
     <ROW MsiServiceConfig="ServiceName_WebStudio" Name="[ServiceName_WebStudio]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Web.Studio.exe"/>
   </COMPONENT>
@@ -682,12 +680,12 @@
     <ROW MsiServiceConfigFailureActions="ServiceName_NotifyService" Name="[ServiceName_NotifyService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Notify.exe"/>
     <ROW MsiServiceConfigFailureActions="ServiceName_PeopleServer" Name="[ServiceName_PeopleServer]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.People.exe"/>
     <ROW MsiServiceConfigFailureActions="ServiceName_Proxy" Name="[ServiceName_Proxy]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="proxy.exe"/>
-    <ROW MsiServiceConfigFailureActions="ServiceName_Socket.IO" Name="[ServiceName_Socket.IO]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Socket.IO.Svc.exe"/>
-    <ROW MsiServiceConfigFailureActions="ServiceName_SsoAuth" Name="[ServiceName_SsoAuth]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.SsoAuth.Svc.exe"/>
+    <ROW MsiServiceConfigFailureActions="ServiceName_Socket.IO" Name="[ServiceName_Socket.IO]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="Socket.IO.exe"/>
+    <ROW MsiServiceConfigFailureActions="ServiceName_SsoAuth" Name="[ServiceName_SsoAuth]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="SsoAuth.exe"/>
     <ROW MsiServiceConfigFailureActions="ServiceName_StudioNotifyService" Name="[ServiceName_StudioNotifyService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Studio.Notify.exe"/>
     <ROW MsiServiceConfigFailureActions="ServiceName_TelegramService" Name="[ServiceName_TelegramService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.TelegramService.exe"/>
     <ROW MsiServiceConfigFailureActions="ServiceName_Thumbnails" Name="[ServiceName_Thumbnails]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Thumbnails.Svc.exe"/>
-    <ROW MsiServiceConfigFailureActions="ServiceName_UrlShortenerService" Name="[ServiceName_UrlShortenerService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.UrlShortener.Svc.exe"/>
+    <ROW MsiServiceConfigFailureActions="ServiceName_UrlShortenerService" Name="[ServiceName_UrlShortenerService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="UrlShortener.exe"/>
     <ROW MsiServiceConfigFailureActions="ServiceName_WebApi" Name="[ServiceName_WebApi]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Web.Api.exe"/>
     <ROW MsiServiceConfigFailureActions="ServiceName_WebStudio" Name="[ServiceName_WebStudio]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Web.Studio.exe"/>
   </COMPONENT>
@@ -701,12 +699,12 @@
     <ROW ServiceControl="ServiceName_NotifyService" Name="[ServiceName_NotifyService]" Event="161" Wait="0" Component_="ASC.Notify.exe"/>
     <ROW ServiceControl="ServiceName_PeopleServer" Name="[ServiceName_PeopleServer]" Event="161" Wait="0" Component_="ASC.People.exe"/>
     <ROW ServiceControl="ServiceName_Proxy" Name="[ServiceName_Proxy]" Event="161" Wait="0" Component_="proxy.exe"/>
-    <ROW ServiceControl="ServiceName_Socket.IO" Name="[ServiceName_Socket.IO]" Event="161" Wait="0" Component_="ASC.Socket.IO.Svc.exe"/>
-    <ROW ServiceControl="ServiceName_SsoAuth" Name="[ServiceName_SsoAuth]" Event="161" Wait="0" Component_="ASC.SsoAuth.Svc.exe"/>
+    <ROW ServiceControl="ServiceName_Socket.IO" Name="[ServiceName_Socket.IO]" Event="161" Wait="0" Component_="Socket.IO.exe"/>
+    <ROW ServiceControl="ServiceName_SsoAuth" Name="[ServiceName_SsoAuth]" Event="161" Wait="0" Component_="SsoAuth.exe"/>
     <ROW ServiceControl="ServiceName_StudioNotifyService" Name="[ServiceName_StudioNotifyService]" Event="161" Wait="0" Component_="ASC.Studio.Notify.exe"/>
     <ROW ServiceControl="ServiceName_TelegramService" Name="[ServiceName_TelegramService]" Event="161" Wait="0" Component_="ASC.TelegramService.exe"/>
     <ROW ServiceControl="ServiceName_Thumbnails" Name="[ServiceName_Thumbnails]" Event="161" Wait="0" Component_="ASC.Thumbnails.Svc.exe"/>
-    <ROW ServiceControl="ServiceName_UrlShortenerService" Name="[ServiceName_UrlShortenerService]" Event="161" Wait="0" Component_="ASC.UrlShortener.Svc.exe"/>
+    <ROW ServiceControl="ServiceName_UrlShortenerService" Name="[ServiceName_UrlShortenerService]" Event="161" Wait="0" Component_="UrlShortener.exe"/>
     <ROW ServiceControl="ServiceName_WebApi" Name="[ServiceName_WebApi]" Event="161" Wait="0" Component_="ASC.Web.Api.exe"/>
     <ROW ServiceControl="ServiceName_WebStudio" Name="[ServiceName_WebStudio]" Event="161" Wait="0" Component_="ASC.Web.Studio.exe"/>
   </COMPONENT>
@@ -720,12 +718,12 @@
     <ROW ServiceInstall="ServiceName_NotifyService" Name="[ServiceName_NotifyService]" DisplayName="[ServiceName_NotifyService]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5005 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_NotifyService] --core:products:folder=&quot;[APPDIR]products&quot; [SUBFOLDER_SERVER]" Component_="ASC.Notify.exe"/>
     <ROW ServiceInstall="ServiceName_PeopleServer" Name="[ServiceName_PeopleServer]" DisplayName="[ServiceName_PeopleServer]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5004 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_PeopleServer]" Component_="ASC.People.exe"/>
     <ROW ServiceInstall="ServiceName_Proxy" Name="[ServiceName_Proxy]" DisplayName="[ServiceName_Proxy]" ServiceType="16" StartType="2" ErrorControl="1" Component_="proxy.exe"/>
-    <ROW ServiceInstall="ServiceName_Socket.IO" Name="[ServiceName_Socket.IO]" DisplayName="[ServiceName_Socket.IO]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:9898 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_Socket.IO]" Component_="ASC.Socket.IO.Svc.exe"/>
-    <ROW ServiceInstall="ServiceName_SsoAuth" Name="[ServiceName_SsoAuth]" DisplayName="[ServiceName_SsoAuth]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:9833 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_SsoAuth]" Component_="ASC.SsoAuth.Svc.exe"/>
+    <ROW ServiceInstall="ServiceName_Socket.IO" Name="[ServiceName_Socket.IO]" DisplayName="[ServiceName_Socket.IO]" ServiceType="16" StartType="2" ErrorControl="1" Component_="Socket.IO.exe"/>
+    <ROW ServiceInstall="ServiceName_SsoAuth" Name="[ServiceName_SsoAuth]" DisplayName="[ServiceName_SsoAuth]" ServiceType="16" StartType="2" ErrorControl="1" Component_="SsoAuth.exe"/>
     <ROW ServiceInstall="ServiceName_StudioNotifyService" Name="[ServiceName_StudioNotifyService]" DisplayName="[ServiceName_StudioNotifyService]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5006 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_StudioNotifyService] --core:products:folder=&quot;[APPDIR]products&quot; [SUBFOLDER_SERVER]" Component_="ASC.Studio.Notify.exe"/>
     <ROW ServiceInstall="ServiceName_TelegramService" Name="[ServiceName_TelegramService]" DisplayName="[ServiceName_TelegramService]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:51702 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_TelegramService]" Component_="ASC.TelegramService.exe"/>
     <ROW ServiceInstall="ServiceName_Thumbnails" Name="[ServiceName_Thumbnails]" DisplayName="[ServiceName_Thumbnails]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:9799 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_Thumbnails]" Component_="ASC.Thumbnails.Svc.exe"/>
-    <ROW ServiceInstall="ServiceName_UrlShortenerService" Name="[ServiceName_UrlShortenerService]" DisplayName="[ServiceName_UrlShortenerService]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:9998 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_UrlShortenerService]" Component_="ASC.UrlShortener.Svc.exe"/>
+    <ROW ServiceInstall="ServiceName_UrlShortenerService" Name="[ServiceName_UrlShortenerService]" DisplayName="[ServiceName_UrlShortenerService]" ServiceType="16" StartType="2" ErrorControl="1" Component_="UrlShortener.exe"/>
     <ROW ServiceInstall="ServiceName_WebApi" Name="[ServiceName_WebApi]" DisplayName="[ServiceName_WebApi]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5000 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_WebApi]" Component_="ASC.Web.Api.exe"/>
     <ROW ServiceInstall="ServiceName_WebStudio" Name="[ServiceName_WebStudio]" DisplayName="[ServiceName_WebStudio]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5003 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_WebStudio]" Component_="ASC.Web.Studio.exe"/>
   </COMPONENT>
