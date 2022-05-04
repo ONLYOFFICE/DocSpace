@@ -201,6 +201,10 @@ const FilterBlock = ({
                 headerLabel={headerLabel}
               />
             )}
+
+            <StyledControlContainer onClick={hideFilterBlock}>
+              <StyledCrossIcon />
+            </StyledControlContainer>
           </StyledFilterBlock>
         </>
       ) : (
@@ -242,6 +246,10 @@ const FilterBlock = ({
               onClick={onFilterAction}
             />
           </StyledFilterBlockFooter>
+
+          <StyledControlContainer onClick={hideFilterBlock}>
+            <StyledCrossIcon />
+          </StyledControlContainer>
         </StyledFilterBlock>
       )}
 
@@ -250,10 +258,6 @@ const FilterBlock = ({
         withBackground={true}
         onClick={hideFilterBlock}
       />
-
-      <StyledControlContainer onClick={hideFilterBlock}>
-        <StyledCrossIcon />
-      </StyledControlContainer>
     </>
   );
 };
