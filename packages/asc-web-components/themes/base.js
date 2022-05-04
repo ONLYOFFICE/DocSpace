@@ -1218,7 +1218,7 @@ const Base = {
   },
 
   backdrop: {
-    backgroundColor: "rgba(6, 22, 38, 0.1)",
+    backgroundColor: "rgba(6, 22, 38, 0.2)",
     unsetBackgroundColor: "unset",
   },
 
