@@ -114,7 +114,7 @@ const Selector = (props) => {
 
       if (groups.length === 1) return setGroupHeader(newGroupList[0]);
       selectedOptions.forEach((option) => {
-        option.groups.forEach((group) => {
+        option?.groups?.forEach((group) => {
           const groupIndex = newGroupList.findIndex(
             (newGroup) => group === newGroup.id
           );
