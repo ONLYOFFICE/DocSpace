@@ -1600,8 +1600,8 @@ const Base = {
     disableFillColor: grayLightMid,
     disableFillColorOff: grayLightMid,
 
-    borderColor: blueMain,
-    borderColorOff: gray,
+    borderColor: "unset",
+    borderColorOff: "unset",
 
     disableBorderColor: grayLightMid,
     disableBorderColorOff: grayLightMid,
