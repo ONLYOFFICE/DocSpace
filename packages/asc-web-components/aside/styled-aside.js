@@ -23,10 +23,10 @@ const StyledAside = styled(Container)`
   right: ${(props) => props.theme.aside.right};
   top: ${(props) => props.theme.aside.top};
   transform: translateX(
-    ${(props) => (props.visible ? "0" : props.scale ? "100%" : "325px")}
+    ${(props) => (props.visible ? "0" : props.scale ? "100%" : "480px")}
   );
   transition: ${(props) => props.theme.aside.transition};
-  width: ${(props) => (props.scale ? "100%" : "325px")};
+  width: ${(props) => (props.scale ? "100%" : "480px")};
   z-index: ${(props) => props.zIndex};
   box-sizing: border-box;
 
