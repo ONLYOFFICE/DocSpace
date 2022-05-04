@@ -147,9 +147,7 @@ const VersionRow = (props) => {
           >
             {title}
           </Link>
-          <Link className="icon-link" onClick={onOpenFile}>
-            <StyledExternalLinkIcon size="scale" />
-          </Link>
+
           <Text
             className="version_content-length"
             fontWeight={600}
