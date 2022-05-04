@@ -116,17 +116,11 @@ const StyledVersionList = styled.div`
 StyledVersionList.defaultProps = { theme: Base };
 
 const StyledVersionRow = styled(Row)`
-  @media ${tablet} {
-    box-sizing: border-box;
-    position: relative;
-  }
-
   .row_content {
     position: relative;
     padding-top: 12px;
     padding-bottom: 12px;
-
-    ${(props) => props.isTabletView && "height: 42px"};
+    height: auto;
     ${(props) => !props.isTabletView && "padding-right:16px"};
   }
 
@@ -161,21 +155,8 @@ const StyledVersionRow = styled(Row)`
     }
   }
 
-  .version_modal-dialog {
-    display: none;
-
-    @media ${tablet} {
-      display: block;
-    }
-  }
-
   .version_edit-comment {
     display: block;
-
-    @media ${tablet} {
-      display: none;
-      margin-left: 63px;
-    }
   }
 
   .textarea-desktop {
@@ -208,37 +189,14 @@ const StyledVersionRow = styled(Row)`
   }
 
   .version_text {
-    display: ${(props) => (props.canEdit ? "none" : "block")};
+    display: ${(props) => (props.showEditPanel ? "none" : "block")};
     margin-left: -7px;
     margin-top: 5px;
 
     @media ${tablet} {
-      display: inline-block;
-      margin-left: 1px;
+      display: ${(props) => (props.showEditPanel ? "none" : "inline-block")};
+      margin-left: -7px;
       margin-top: 5px;
-    }
-  }
-
-  .version_links-container {
-    display: flex;
-    margin-left: auto;
-
-    .version_link-action {
-      display: block;
-      margin-left: auto;
-      margin-top: 5px;
-      ${(props) =>
-        props.isRestoring &&
-        css`
-          cursor: default;
-        `}
-      :last-child {
-        margin-left: 8px;
-      }
-
-      @media ${tablet} {
-        display: none;
-      }
     }
   }
 
@@ -247,9 +205,10 @@ const StyledVersionRow = styled(Row)`
   }
 
   .row_context-menu-wrapper {
-    display: none;
-
+    display: block;
+    position: absolute;
     right: 16px !important;
+    top: 6px;
 
     .expandButton {
       ${(props) =>
@@ -268,13 +227,6 @@ const StyledVersionRow = styled(Row)`
             `};
         }
       }
-    }
-
-    @media ${tablet} {
-      display: block;
-      position: absolute;
-      right: 0px;
-      top: 6px;
     }
   }
 

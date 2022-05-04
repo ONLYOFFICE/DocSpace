@@ -351,7 +351,11 @@ class ContextMenu extends Component {
     return (
       <>
         {this.props.withBackdrop && (
-          <Backdrop visible={this.state.visible} withBackground={true} />
+          <Backdrop
+            visible={this.state.visible}
+            withBackground={false}
+            isContextMenu={true}
+          />
         )}
         <Portal element={element} appendTo={this.props.appendTo} />
       </>

@@ -1218,7 +1218,7 @@ const Base = {
   },
 
   backdrop: {
-    backgroundColor: "rgba(6, 22, 38, 0.1)",
+    backgroundColor: "rgba(6, 22, 38, 0.2)",
     unsetBackgroundColor: "unset",
   },
 
@@ -1600,8 +1600,8 @@ const Base = {
     disableFillColor: grayLightMid,
     disableFillColorOff: grayLightMid,
 
-    borderColor: blueMain,
-    borderColorOff: gray,
+    borderColor: "unset",
+    borderColorOff: "unset",
 
     disableBorderColor: grayLightMid,
     disableBorderColorOff: grayLightMid,

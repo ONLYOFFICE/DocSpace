@@ -395,7 +395,7 @@ class SectionHeaderContent extends React.PureComponent {
           {
             key: "invite-again",
             className: "header-context-menu_invite-again",
-            label: t("InviteAgainLbl"),
+            label: t("Profile:InviteAgainLbl"),
             onClick: this.onInviteAgainClick,
           },
           !isMe &&

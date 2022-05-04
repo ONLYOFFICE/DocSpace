@@ -103,15 +103,18 @@ const ControlButtons = ({
     <StyledContainer isDropBox={isDropBox}>
       {!isRootFolder && canCreate ? (
         <>
-          <ContextMenuButton
-            className="add-button"
-            directionX="right"
-            iconName="images/plus.svg"
-            size={15}
-            isFill
-            getData={getContextOptionsPlus}
-            isDisabled={false}
-          />
+          {!isMobile && (
+            <ContextMenuButton
+              zIndex={402}
+              className="add-button"
+              directionX="right"
+              iconName="images/plus.svg"
+              size={15}
+              isFill
+              getData={getContextOptionsPlus}
+              isDisabled={false}
+            />
+          )}
           {!personal && (
             <ContextMenuButton
               className="option-button"
@@ -142,15 +145,18 @@ const ControlButtons = ({
         </>
       ) : canCreate ? (
         <>
-          <ContextMenuButton
-            className="add-button"
-            directionX="right"
-            iconName="images/plus.svg"
-            size={15}
-            isFill
-            getData={getContextOptionsPlus}
-            isDisabled={false}
-          />
+          {!isMobile && (
+            <ContextMenuButton
+              zIndex={402}
+              className="add-button"
+              directionX="right"
+              iconName="images/plus.svg"
+              size={15}
+              isFill
+              getData={getContextOptionsPlus}
+              isDisabled={false}
+            />
+          )}
           <StyledInfoPanelToggleWrapper
             isRootFolder={isRootFolder}
             isInfoPanelVisible={isInfoPanelVisible}
