@@ -36,6 +36,9 @@ global using System.Text.Json.Serialization;
 global using System.Text.RegularExpressions;
 global using System.Web;
 
+global using ASC.ActiveDirectory.Base;
+global using ASC.ActiveDirectory.Base.Settings;
+global using ASC.ActiveDirectory.ComplexOperations;
 global using ASC.Api.Collections;
 global using ASC.Api.Core;
 global using ASC.Api.Core.Convention;
@@ -76,6 +79,7 @@ global using ASC.FederatedLogin.Profile;
 global using ASC.IPSecurity;
 global using ASC.MessagingSystem.Core;
 global using ASC.MessagingSystem.Models;
+global using ASC.Notify.Cron;
 global using ASC.Security.Cryptography;
 global using ASC.Web.Api;
 global using ASC.Web.Api.ApiModel.RequestsDto;

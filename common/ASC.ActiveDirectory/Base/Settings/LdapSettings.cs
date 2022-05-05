@@ -1,26 +1,36 @@
-﻿/*
- *
- * (c) Copyright Ascensio System Limited 2010-2021
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
-*/
-
+﻿// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.ActiveDirectory.Base.Settings;
+
 [Scope]
 [Serializable]
-[DataContract]
-public class LdapSettings : ISettings, ICloneable
+public class LdapSettings : ISettings<LdapSettings>, ICloneable
 {
+    [JsonIgnore]
     public Guid ID
     {
         get { return new Guid("{197149b3-fbc9-44c2-b42a-232f7e729c16}"); }
@@ -72,7 +82,7 @@ public class LdapSettings : ISettings, ICloneable
             { AccessRight.Mail, WebItemManager.MailProductID }
         };
 
-    public ISettings GetDefault(IServiceProvider serviceProvider)
+    public LdapSettings GetDefault()
     {
         var isMono = WorkContext.IsMono;
 
@@ -188,42 +198,31 @@ public class LdapSettings : ISettings, ICloneable
         return MemberwiseClone();
     }
 
-    [DataMember]
     public bool EnableLdapAuthentication { get; set; }
 
-    [DataMember]
     public bool StartTls { get; set; }
 
-    [DataMember]
     public bool Ssl { get; set; }
 
-    [DataMember]
     public bool SendWelcomeEmail { get; set; }
 
-    [DataMember]
     public string Server { get; set; }
 
-    [DataMember]
     // ReSharper disable once InconsistentNaming
     public string UserDN { get; set; }
 
-    [DataMember]
+    [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
     public int PortNumber { get; set; }
 
-    [DataMember]
     public string UserFilter { get; set; }
 
-    [DataMember]
     public string LoginAttribute { get; set; }
 
-    [DataMember]
     public Dictionary<MappingFields, string> LdapMapping { get; set; }
 
     //ToDo: use SId instead of group name
-    [DataMember]
     public Dictionary<AccessRight, string> AccessRights { get; set; }
 
-    [DataMember]
     public string FirstNameAttribute
     {
         get
@@ -237,7 +236,6 @@ public class LdapSettings : ISettings, ICloneable
         }
     }
 
-    [DataMember]
     public string SecondNameAttribute
     {
         get
@@ -251,7 +249,6 @@ public class LdapSettings : ISettings, ICloneable
         }
     }
 
-    [DataMember]
     public string MailAttribute
     {
         get
@@ -265,7 +262,6 @@ public class LdapSettings : ISettings, ICloneable
         }
     }
 
-    [DataMember]
     public string TitleAttribute
     {
         get
@@ -279,7 +275,6 @@ public class LdapSettings : ISettings, ICloneable
         }
     }
 
-    [DataMember]
     public string MobilePhoneAttribute
     {
         get
@@ -293,7 +288,6 @@ public class LdapSettings : ISettings, ICloneable
         }
     }
 
-    [DataMember]
     public string LocationAttribute
     {
         get
@@ -307,44 +301,31 @@ public class LdapSettings : ISettings, ICloneable
         }
     }
 
-    [DataMember]
     public bool GroupMembership { get; set; }
 
-    [DataMember]
     // ReSharper disable once InconsistentNaming
     public string GroupDN { get; set; }
 
-    [DataMember]
     public string GroupNameAttribute { get; set; }
 
-    [DataMember]
     public string GroupFilter { get; set; }
 
-    [DataMember]
     public string UserAttribute { get; set; }
 
-    [DataMember]
     public string GroupAttribute { get; set; }
 
-    [DataMember]
     public bool Authentication { get; set; }
 
-    [DataMember]
     public string Login { get; set; }
 
-    [DataMember]
     public string Password { get; set; }
 
-    [DataMember]
     public byte[] PasswordBytes { get; set; }
 
-    [DataMember]
     public bool IsDefault { get; set; }
 
-    [DataMember]
     public bool AcceptCertificate { get; set; }
 
-    [DataMember]
     public string AcceptCertificateHash { get; set; }
 
     private string GetOldSetting(MappingFields field)
@@ -384,15 +365,15 @@ public class LdapSettings : ISettings, ICloneable
 
 [Scope]
 [Serializable]
-[DataContract]
-public class LdapCronSettings : ISettings
+public class LdapCronSettings : ISettings<LdapCronSettings>
 {
+    [JsonIgnore]
     public Guid ID
     {
         get { return new Guid("{58C42C54-56CD-4BEF-A3ED-C60ACCF6E975}"); }
     }
 
-    public ISettings GetDefault(IServiceProvider serviceProvider)
+    public LdapCronSettings GetDefault()
     {
         return new LdapCronSettings()
         {
@@ -400,20 +381,19 @@ public class LdapCronSettings : ISettings
         };
     }
 
-    [DataMember]
     public string Cron { get; set; }
 }
 
 [Serializable]
-[DataContract]
-public class LdapCurrentAcccessSettings : ISettings
+public class LdapCurrentAcccessSettings : ISettings<LdapCurrentAcccessSettings>
 {
+    [JsonIgnore]
     public Guid ID
     {
         get { return new Guid("{134B5EAA-F612-4834-AEAB-34C90515EA4E}"); }
     }
 
-    public ISettings GetDefault(IServiceProvider serviceProvider)
+    public LdapCurrentAcccessSettings GetDefault()
     {
         return new LdapCurrentAcccessSettings() { CurrentAccessRights = null };
     }
@@ -423,20 +403,19 @@ public class LdapCurrentAcccessSettings : ISettings
         CurrentAccessRights = new Dictionary<LdapSettings.AccessRight, List<string>>();
     }
 
-    [DataMember]
     public Dictionary<LdapSettings.AccessRight, List<string>> CurrentAccessRights { get; set; }
 }
 
 [Serializable]
-[DataContract]
-public class LdapCurrentUserPhotos : ISettings
+public class LdapCurrentUserPhotos : ISettings<LdapCurrentUserPhotos>
 {
+    [JsonIgnore]
     public Guid ID
     {
         get { return new Guid("{50AE3C2B-0783-480F-AF30-679D0F0A2D3E}"); }
     }
 
-    public ISettings GetDefault(IServiceProvider serviceProvider)
+    public LdapCurrentUserPhotos GetDefault()
     {
         return new LdapCurrentUserPhotos() { CurrentPhotos = null };
     }
@@ -446,24 +425,22 @@ public class LdapCurrentUserPhotos : ISettings
         CurrentPhotos = new Dictionary<Guid, string>();
     }
 
-    [DataMember]
     public Dictionary<Guid, string> CurrentPhotos { get; set; }
 }
 
 [Serializable]
-[DataContract]
-public class LdapCurrentDomain : ISettings
+public class LdapCurrentDomain : ISettings<LdapCurrentDomain>
 {
+    [JsonIgnore]
     public Guid ID
     {
         get { return new Guid("{75A5F745-F697-4418-B38D-0FE0D277E258}"); }
     }
 
-    public ISettings GetDefault(IServiceProvider serviceProvider)
+    public LdapCurrentDomain GetDefault()
     {
         return new LdapCurrentDomain() { CurrentDomain = null };
     }
 
-    [DataMember]
     public string CurrentDomain { get; set; }
 }

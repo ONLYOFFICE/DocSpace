@@ -60,7 +60,7 @@ public class InstanceCrypto
 
     public string Decrypt(string data) => Decrypt(Convert.FromBase64String(data));
 
-    public string Decrypt(byte[] data, , Encoding encoding = null)
+    public string Decrypt(byte[] data, Encoding encoding = null)
     {
         using var hasher = Aes.Create();
         hasher.Key = _eKey;

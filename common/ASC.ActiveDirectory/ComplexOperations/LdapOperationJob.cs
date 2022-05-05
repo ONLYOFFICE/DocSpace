@@ -1,4 +1,30 @@
-﻿using Constants = ASC.Core.Users.Constants;
+﻿// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
+
+using Constants = ASC.Core.Users.Constants;
 using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.ActiveDirectory.ComplexOperations;
@@ -19,12 +45,12 @@ public class LdapOperationJob : DistributedTaskProgress
     {
         get
         {
-            return _tenantId ?? GetProperty<int>(nameof(_tenantId));
+            return _tenantId ?? this[nameof(_tenantId)];
         }
         set
         {
             _tenantId = value;
-            SetProperty(nameof(_tenantId), value);
+            this[nameof(_tenantId)] = value;
         }
     }
 
@@ -162,8 +188,7 @@ public class LdapOperationJob : DistributedTaskProgress
                         {
                             if (result == LdapSettingsStatus.CertificateRequest)
                             {
-                                SetProperty(LdapTaskProperty.CERT_REQUEST,
-                                    _novellLdapSettingsChecker.CertificateConfirmRequest);
+                                this[LdapTaskProperty.CERT_REQUEST] = _novellLdapSettingsChecker.CertificateConfirmRequest;
                             }
 
                             Error = GetError(result);
@@ -215,7 +240,7 @@ public class LdapOperationJob : DistributedTaskProgress
         {
             try
             {
-                SetProperty(LdapTaskProperty.FINISHED, true);
+                this[LdapTaskProperty.FINISHED] = true;
                 PublishChanges();
                 _securityContext.Logout();
             }
@@ -234,7 +259,7 @@ public class LdapOperationJob : DistributedTaskProgress
             {
                 SetProgress(10, Resource.LdapSettingsStatusSavingSettings);
 
-                LDAPSettings.IsDefault = LDAPSettings.Equals(LDAPSettings.GetDefault(null));
+                LDAPSettings.IsDefault = LDAPSettings.Equals(LDAPSettings.GetDefault());
 
                 if (!_settingsManager.Save(LDAPSettings))
                 {
@@ -277,10 +302,10 @@ public class LdapOperationJob : DistributedTaskProgress
                 _log.Debug("TurnOffLDAP()");
 
                 TurnOffLDAP();
-                var ldapCurrentUserPhotos = _settingsManager.Load<LdapCurrentUserPhotos>().GetDefault(null);
+                var ldapCurrentUserPhotos = _settingsManager.Load<LdapCurrentUserPhotos>().GetDefault();
                 _settingsManager.Save(ldapCurrentUserPhotos);
 
-                var ldapCurrentAcccessSettings = _settingsManager.Load<LdapCurrentAcccessSettings>().GetDefault(null);
+                var ldapCurrentAcccessSettings = _settingsManager.Load<LdapCurrentAcccessSettings>().GetDefault();
                 _settingsManager.Save(ldapCurrentAcccessSettings);
                 //не снимать права при выключении
                 //var rights = new List<LdapSettings.AccessRight>();
@@ -583,9 +608,9 @@ public class LdapOperationJob : DistributedTaskProgress
                 {
                     if (!user.Equals(Constants.LostUser) && !user.IsVisitor(_userManager))
                     {
-                        if (!usersWithRightsFlat.Contains(user.ID.ToString()))
+                        if (!usersWithRightsFlat.Contains(user.Id.ToString()))
                         {
-                            usersWithRightsFlat.Add(user.ID.ToString());
+                            usersWithRightsFlat.Add(user.Id.ToString());
 
                             var cleared = false;
 
@@ -593,10 +618,10 @@ public class LdapOperationJob : DistributedTaskProgress
                             {
                                 var prodId = LdapSettings.AccessRightsGuids[r];
 
-                                if (_webItemSecurity.IsProductAdministrator(prodId, user.ID))
+                                if (_webItemSecurity.IsProductAdministrator(prodId, user.Id))
                                 {
                                     cleared = true;
-                                    _webItemSecurity.SetProductAdministrator(prodId, user.ID, false);
+                                    _webItemSecurity.SetProductAdministrator(prodId, user.Id, false);
                                 }
                             }
 
@@ -610,11 +635,11 @@ public class LdapOperationJob : DistributedTaskProgress
                         {
                             currentAccessRights.Add(access.Key, new List<string>());
                         }
-                        currentAccessRights[access.Key].Add(user.ID.ToString());
+                        currentAccessRights[access.Key].Add(user.Id.ToString());
 
                         SetProgress((int)currentPercent,
                             string.Format(Resource.LdapSettingsStatusGivingRights, _userFormatter.GetUserName(user, DisplayUserNameFormat.Default), access.Key));
-                        _webItemSecurity.SetProductAdministrator(LdapSettings.AccessRightsGuids[access.Key], user.ID, true);
+                        _webItemSecurity.SetProductAdministrator(LdapSettings.AccessRightsGuids[access.Key], user.Id, true);
 
                         if (currentUserRights != null && currentUserRights.Contains(access.Key))
                         {
@@ -794,7 +819,7 @@ public class LdapOperationJob : DistributedTaskProgress
                                     ++index, count,
                                     _userFormatter.GetUserName(userBySid, DisplayUserNameFormat.Default)));
 
-                        _userManager.AddUserIntoGroup(userBySid.ID, ldapGroup.ID);
+                        _userManager.AddUserIntoGroup(userBySid.Id, ldapGroup.ID);
                     }
                     break;
                 case LdapOperationType.SaveTest:
@@ -874,7 +899,7 @@ public class LdapOperationJob : DistributedTaskProgress
                                 ++index, count,
                                 _userFormatter.GetUserName(dbUser, DisplayUserNameFormat.Default)));
 
-                    _userManager.RemoveUserFromGroup(dbUser.ID, dbLdapGroup.ID);
+                    _userManager.RemoveUserFromGroup(dbUser.Id, dbLdapGroup.ID);
                 }
 
                 index = 0;
@@ -890,10 +915,10 @@ public class LdapOperationJob : DistributedTaskProgress
                                 ++index, count,
                                 _userFormatter.GetUserName(userInfo, DisplayUserNameFormat.Default)));
 
-                    _userManager.AddUserIntoGroup(userInfo.ID, dbLdapGroup.ID);
+                    _userManager.AddUserIntoGroup(userInfo.Id, dbLdapGroup.ID);
                 }
 
-                if (dbGroupMembers.All(dbUser => groupMembersToRemove.Exists(u => u.ID.Equals(dbUser.ID)))
+                if (dbGroupMembers.All(dbUser => groupMembersToRemove.Exists(u => u.Id.Equals(dbUser.Id)))
                     && !groupMembersToAdd.Any())
                 {
                     SetProgress(currentSource:
@@ -914,7 +939,7 @@ public class LdapOperationJob : DistributedTaskProgress
                 if (groupMembersToAdd.Any())
                     _ldapChanges.SetAddGroupMembersChange(dbLdapGroup, groupMembersToAdd);
 
-                if (dbGroupMembers.All(dbUser => groupMembersToRemove.Exists(u => u.ID.Equals(dbUser.ID)))
+                if (dbGroupMembers.All(dbUser => groupMembersToRemove.Exists(u => u.Id.Equals(dbUser.Id)))
                     && !groupMembersToAdd.Any())
                 {
                     _ldapChanges.SetRemoveGroupChange(dbLdapGroup, _log);
@@ -1016,14 +1041,14 @@ public class LdapOperationJob : DistributedTaskProgress
                 case LdapOperationType.Save:
                 case LdapOperationType.Sync:
                     removedUser.Sid = null;
-                    if (!removedUser.IsOwner(_tenantManager.GetCurrentTenant()) && !(_currentUser != null && _currentUser.ID == removedUser.ID && removedUser.IsAdmin(_userManager)))
+                    if (!removedUser.IsOwner(_tenantManager.GetCurrentTenant()) && !(_currentUser != null && _currentUser.Id == removedUser.Id && removedUser.IsAdmin(_userManager)))
                     {
                         removedUser.Status = EmployeeStatus.Terminated; // Disable user on portal
                     }
                     else
                     {
                         Warning = Resource.LdapSettingsErrorRemovedYourself;
-                        _log.DebugFormat("RemoveOldDbUsers() Attempting to exclude yourself `{0}` from group or user filters, skipping.", removedUser.ID);
+                        _log.DebugFormat("RemoveOldDbUsers() Attempting to exclude yourself `{0}` from group or user filters, skipping.", removedUser.Id);
                     }
 
                     removedUser.ConvertExternalContactsToOrdinary();
@@ -1045,7 +1070,7 @@ public class LdapOperationJob : DistributedTaskProgress
 
         dbLdapUsers.RemoveAll(removedUsers.Contains);
 
-        var newLdapUsers = ldapUsers.Where(u => !removedUsers.Exists(ru => ru.ID.Equals(u.ID))).ToList();
+        var newLdapUsers = ldapUsers.Where(u => !removedUsers.Exists(ru => ru.Id.Equals(u.Id))).ToList();
 
         return newLdapUsers;
     }
@@ -1197,13 +1222,13 @@ public class LdapOperationJob : DistributedTaskProgress
 
     private void FillDistributedTask()
     {
-        SetProperty(LdapTaskProperty.SOURCE, Source);
-        SetProperty(LdapTaskProperty.OPERATION_TYPE, OperationType);
-        SetProperty(LdapTaskProperty.OWNER, _tenantId);
-        SetProperty(LdapTaskProperty.PROGRESS, Percentage < 100 ? Percentage : 100);
-        SetProperty(LdapTaskProperty.RESULT, Status);
-        SetProperty(LdapTaskProperty.ERROR, Error);
-        SetProperty(LdapTaskProperty.WARNING, Warning);
+        this[LdapTaskProperty.SOURCE] = Source;
+        this[LdapTaskProperty.OPERATION_TYPE] = OperationType;
+        this[LdapTaskProperty.OWNER] = _tenantId;
+        this[LdapTaskProperty.PROGRESS] = Percentage < 100 ? Percentage : 100;
+        this[LdapTaskProperty.RESULT] = Status;
+        this[LdapTaskProperty.ERROR] = Error;
+        this[LdapTaskProperty.WARNING] = Warning;
         //SetProperty(PROCESSED, successProcessed);
     }
 

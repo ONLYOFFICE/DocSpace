@@ -52,7 +52,7 @@ public class WebstudioDbContext : BaseDbContext
             .From(modelBuilder, _provider)
             .AddWebstudioSettings()
             .AddWebstudioUserVisit()
-            .AddDbWebstudioIndex();
+            .AddDbWebstudioIndex()
 			.AddDbFunction();
     }
 }
