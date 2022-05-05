@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 import Text from "@appserver/components/text";
@@ -18,6 +18,18 @@ const FolderTreeBody = ({
   isDisableTree,
 }) => {
   const { t } = useTranslation(["SelectFolder", "Common"]);
+
+  useEffect(() => {
+    const selectedNode = document.getElementsByClassName(
+      "rc-tree-node-selected"
+    )[0];
+
+    selectedNode &&
+      document
+        .querySelector("#folder-tree-scroll-bar > .scroll-body")
+        .scrollTo(0, selectedNode.parentElement.offsetTop + 70);
+  }, []);
+
   return (
     <>
       {isAvailable ? (
