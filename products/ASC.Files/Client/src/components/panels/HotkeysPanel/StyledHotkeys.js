@@ -1,22 +1,17 @@
 import styled from "styled-components";
 import Scrollbar from "@appserver/components/scrollbar";
+import { Base } from "@appserver/components/themes";
 
 const StyledHotkeysPanel = styled.div`
   .hotkeys-panel {
-    width: 500px;
-
-    @media (max-width: 550px) {
-      width: 320px;
-    }
-
     .scroll-body {
       padding-right: 0 !important;
     }
   }
 
   .hotkeys_header {
-    margin: 0 16px;
-    border-bottom: 1px solid #eceef1;
+    padding: 0 16px;
+    border-bottom: ${(props) => props.theme.filesPanels.sharing.borderBottom};
 
     .hotkeys_heading {
       font-weight: 700;
@@ -52,6 +47,8 @@ const StyledHotkeysPanel = styled.div`
     width: 112px;
   }
 `;
+
+StyledHotkeysPanel.defaultProps = { theme: Base };
 
 const StyledScrollbar = styled(Scrollbar)`
   position: relative;
