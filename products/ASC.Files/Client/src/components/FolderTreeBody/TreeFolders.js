@@ -239,9 +239,7 @@ class TreeFolders extends React.Component {
 
         if (selectedNode) {
           this.needToScroll = false;
-          document
-            .querySelector("#folder-tree-scroll-bar > .scroll-body")
-            .scrollTo(0, selectedNode.parentElement.offsetTop + 70);
+          selectedNode.scrollIntoView();
         }
       }
 

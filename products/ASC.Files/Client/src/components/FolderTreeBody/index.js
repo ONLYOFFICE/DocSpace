@@ -20,14 +20,9 @@ const FolderTreeBody = ({
   const { t } = useTranslation(["SelectFolder", "Common"]);
 
   useEffect(() => {
-    const selectedNode = document.getElementsByClassName(
-      "rc-tree-node-selected"
-    )[0];
-
-    selectedNode &&
-      document
-        .querySelector("#folder-tree-scroll-bar > .scroll-body")
-        .scrollTo(0, selectedNode.parentElement.offsetTop + 70);
+    document
+      .getElementsByClassName("rc-tree-node-selected")[0]
+      ?.scrollIntoView();
   }, []);
 
   return (
