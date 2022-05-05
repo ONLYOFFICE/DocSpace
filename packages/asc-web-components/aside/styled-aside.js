@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Base from "../themes/base";
 
 import CrossIcon from "@appserver/components/public/static/images/cross.react.svg";
