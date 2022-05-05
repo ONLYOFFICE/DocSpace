@@ -18,20 +18,9 @@ import { inject, observer } from "mobx-react";
 import config from "../../../../package.json";
 
 class PureVersionHistoryPanel extends React.Component {
-  componentDidUpdate(preProps) {
-    const { isTabletView, fileId } = this.props;
-    if (isTabletView !== preProps.isTabletView && isTabletView) {
-      this.redirectToPage(fileId);
-    }
-  }
-
-  redirectToPage = (fileId) => {
-    this.onClose();
-    history.replace(`${this.props.homepage}/${fileId}/history`);
-  };
-
   onClose = () => {
-    this.props.setIsVerHistoryPanel(false);
+    const { setIsVerHistoryPanel } = this.props;
+    setIsVerHistoryPanel(false);
   };
 
   render() {
