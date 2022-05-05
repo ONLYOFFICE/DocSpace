@@ -36,6 +36,8 @@ const StyledButton = styled.div`
       !props.isDisabled &&
       `background-color: ${props.theme.selectorAddButton.activeBackground};`}
   }
+
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 `;
 
 StyledButton.defaultProps = { theme: Base };
