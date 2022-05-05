@@ -51,7 +51,12 @@ class PureVersionHistoryPanel extends React.Component {
           zIndex={zIndex}
           isAside={true}
         />
-        <Aside className="version-history-aside-panel" withoutBodyScroll>
+        <Aside
+          className="version-history-aside-panel"
+          visible={visible}
+          onClose={this.onClose}
+          withoutBodyScroll
+        >
           <StyledContent>
             <StyledHeaderContent className="version-history-panel-header">
               {versions && !isLoading ? (
