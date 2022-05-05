@@ -92,24 +92,6 @@ const StyledAsidePanel = styled.div`
     }
   }
 
-  .header_aside-panel {
-    transition: unset;
-    transform: translateX(${(props) => (props.visible ? "0" : "480px")});
-    width: 480px;
-    max-width: 480px;
-    overflow-y: hidden;
-
-    @media (max-width: 500px) {
-      position: fixed;
-
-      top: 64px;
-      bottom: 0;
-      right: 0;
-
-      width: 100%;
-      height: calc(100% - 64px);
-    }
-  }
   ${PanelStyles}
 `;
 
@@ -123,26 +105,6 @@ const StyledVersionHistoryPanel = styled.div`
     transform: translateX(${(props) => (props.visible ? "0" : "480px")});
     width: 480px;
     max-width: 480px;
-    overflow-y: hidden;
-  }
-
-  .version-history-aside-panel {
-    transition: unset;
-    transform: translateX(${(props) => (props.visible ? "0" : "480px")});
-    width: 480px;
-    max-width: 480px;
-    overflow-y: hidden;
-
-    @media (max-width: 500px) {
-      position: fixed;
-
-      top: 64px;
-      bottom: 0;
-      right: 0;
-
-      width: 100%;
-      height: calc(100% - 64px);
-    }
   }
 
   .version-history-panel-header {
@@ -159,7 +121,6 @@ const StyledVersionHistoryPanel = styled.div`
     padding-top: ${(props) => (props.isLoading ? "16px" : null)};
     padding-bottom: ${(props) => (props.isLoading ? "0px" : null)};
     margin-left: 16px;
-    border-top: ${(props) => props.theme.filesPanels.versionHistory.borderTop};
 
     height: calc(100% - 53px);
     box-sizing: border-box;
@@ -253,6 +214,10 @@ const StyledContent = styled.div`
   background-color: ${(props) =>
     props.theme.filesPanels.content.backgroundColor};
 
+  .upload-panel_header-content {
+    margin-right: 0 !important;
+  }
+
   .header_aside-panel-header {
     max-width: 500px;
     margin: 0 0 0 16px;
@@ -308,6 +273,10 @@ const StyledHeaderContent = styled.div`
   align-items: center;
   padding: 0 16px;
 
+  margin-right: -16px;
+
+  border-bottom: ${(props) => props.theme.filesPanels.sharing.borderBottom};
+
   .upload_panel-icons-container {
     display: flex;
     margin-left: auto;
@@ -329,6 +298,8 @@ const StyledHeaderContent = styled.div`
     }
   }
 `;
+
+StyledHeaderContent.defaultProps = { theme: Base };
 
 const StyledBody = styled.div`
   &.files-operations-body {
