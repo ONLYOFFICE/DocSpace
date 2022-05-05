@@ -231,12 +231,14 @@ class SectionHeaderContent extends React.Component {
         label: t("SharingSettings"),
         onClick: this.onOpenSharingPanel,
         disabled: personal ? true : false,
+        icon: "/static/images/share.react.svg",
       },
       {
         key: "link-portal-users",
         label: t("LinkForPortalUsers"),
         onClick: this.createLinkForPortalUsers,
         disabled: personal ? true : false,
+        icon: "/static/images/invitation.link.react.svg",
       },
       { key: "separator-2", isSeparator: true },
       {
@@ -244,30 +246,35 @@ class SectionHeaderContent extends React.Component {
         label: t("MoveTo"),
         onClick: this.onMoveAction,
         disabled: false,
+        icon: "images/move.react.svg",
       },
       {
         key: "copy",
         label: t("Translations:Copy"),
         onClick: this.onCopyAction,
         disabled: false,
+        icon: "/static/images/copy.react.svg",
       },
       {
         key: "download",
         label: t("Common:Download"),
         onClick: this.downloadAction,
         disabled: false,
+        icon: "images/download.react.svg",
       },
       {
         key: "rename",
         label: t("Rename"),
         onClick: this.renameAction,
         disabled: true,
+        icon: "images/rename.react.svg",
       },
       {
         key: "delete",
         label: t("Common:Delete"),
         onClick: this.onDeleteAction,
         disabled: false,
+        icon: "/static/images/catalog.trash.react.svg",
       },
     ];
   };
