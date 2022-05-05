@@ -22,6 +22,7 @@ const backgroundDragColor = "#EFEFB2";
 const backgroundDragEnterColor = "#F8F7BF";
 
 const StyledTreeMenu = styled(TreeMenu)`
+  width: 100%;
   .rc-tree-node-content-wrapper {
     background: ${(props) => !props.dragging && "none !important"};
   }
