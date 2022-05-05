@@ -302,6 +302,8 @@ const StyledCatalogItemContainer = styled.div`
       props.isEndOfBlock &&
       props.theme.catalogItem.container.tablet.marginBottom};
   `}
+
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 `;
 StyledCatalogItemContainer.defaultProps = { theme: Base };
 
