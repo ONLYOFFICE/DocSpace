@@ -235,6 +235,10 @@ const StyledContent = styled.div`
   background-color: ${(props) =>
     props.theme.filesPanels.content.backgroundColor};
 
+  .upload-panel_header-content {
+    margin-right: 0 !important;
+  }
+
   .header_aside-panel-header {
     max-width: 500px;
     margin: 0 0 0 16px;
