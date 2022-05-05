@@ -60,6 +60,7 @@ global using Amazon.SimpleEmail.Model;
 global using ASC.Collections;
 global using ASC.Common;
 global using ASC.Common.Caching;
+global using ASC.Common.Log;
 global using ASC.Common.Logging;
 global using ASC.Common.Mapping;
 global using ASC.Common.Module;
