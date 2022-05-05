@@ -43,6 +43,7 @@ using ASC.FederatedLogin.Helpers;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.Files.Core;
 using ASC.Files.Core.Model;
+using ASC.Files.Core.Security;
 using ASC.Files.Helpers;
 using ASC.Files.Model;
 using ASC.MessagingSystem;
@@ -55,6 +56,7 @@ using ASC.Web.Files.Helpers;
 using ASC.Web.Files.Services.DocumentService;
 using ASC.Web.Files.Services.WCFService;
 using ASC.Web.Files.Services.WCFService.FileOperations;
+using ASC.Web.Files.ThirdPartyApp;
 using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Core;
 using ASC.Web.Studio.Utility;
@@ -77,6 +79,8 @@ namespace ASC.Api.Documents
     {
         private readonly FileStorageService<string> FileStorageService;
         private readonly RequestHelper _requestHelper;
+        private readonly ThirdPartySelector _thirdPartySelector;
+        private readonly DocumentServiceHelper _documentServiceHelper;
 
         private FilesControllerHelper<string> FilesControllerHelperString { get; }
         private FilesControllerHelper<int> FilesControllerHelperInt { get; }
@@ -131,6 +135,8 @@ namespace ASC.Api.Documents
             FileUtility fileUtility,
             ConsumerFactory consumerFactory,
             RequestHelper requestHelper,
+            ThirdPartySelector thirdPartySelector,
+            DocumentServiceHelper documentServiceHelper,
             IServiceProvider serviceProvider)
         {
             FilesControllerHelperString = filesControllerHelperString;
@@ -156,7 +162,9 @@ namespace ASC.Api.Documents
             ProductEntryPoint = productEntryPoint;
             TenantManager = tenantManager;
             FileUtility = fileUtility;
-            this._requestHelper = requestHelper;
+            _requestHelper = requestHelper;
+            _thirdPartySelector = thirdPartySelector;
+            _documentServiceHelper = documentServiceHelper;
             ServiceProvider = serviceProvider;
         }
 
@@ -688,6 +696,22 @@ namespace ASC.Api.Documents
         }
 
         [AllowAnonymous]
+        [Read("file/app-{fileId}/openedit", Check = false)]
+        public async Task<Configuration<string>> OpenEditThirdPartyAsync(string fileId, int version, string doc, bool view)
+        {
+            fileId = "app-" + fileId;
+            var app = _thirdPartySelector.GetAppByFileId(fileId?.ToString());
+            bool editable;
+            var file = app.GetFile(fileId?.ToString(), out editable);
+            var docParams = await _documentServiceHelper.GetParamsAsync(file, true, editable ? FileShare.ReadWrite : FileShare.Read, false, editable, editable, editable, false);
+            var configuration = docParams.Configuration;
+            configuration.Document.Url = app.GetFileStreamUrl(file);
+            configuration.Document.Info.Favorite = null;
+            configuration.EditorConfig.Customization.GobackUrl = string.Empty;
+            return FilesControllerHelperString.OpenEditAsync(configuration);
+        }
+
+        [AllowAnonymous]
         [Read("file/{fileId:int}/openedit", Check = false)]
         public Task<Configuration<int>> OpenEditAsync(int fileId, int version, string doc, bool view)
         {
@@ -1139,6 +1163,16 @@ namespace ASC.Api.Documents
         public Task<FileWrapper<string>> GetFileInfoAsync(string fileId, int version = -1)
         {
             return FilesControllerHelperString.GetFileInfoAsync(fileId, version);
+        }
+
+        [Read("file/app-{fileId}", order: int.MaxValue, DisableFormat = true)]
+        public async Task<FileEntryWrapper> GetFileInfoThirdPartyAsync(string fileId, int version = -1)
+        {
+            fileId = "app-" + fileId;
+            var app = _thirdPartySelector.GetAppByFileId(fileId?.ToString());
+            var file = app.GetFile(fileId?.ToString(), out var editable);
+            var docParams = await _documentServiceHelper.GetParamsAsync(file, true, editable ? FileShare.ReadWrite : FileShare.Read, false, editable, editable, editable, false);
+            return await FilesControllerHelperString.GetFileEntryWrapperAsync(docParams.File);
         }
 
         [Read("file/{fileId:int}")]
