@@ -24,12 +24,14 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Web.Core;
+
 namespace ASC.Files.Api;
 
 [ConstraintRoute("int")]
 public class VirtualRoomsControllerInternal : VirtualRoomsController<int>
 {
-    public VirtualRoomsControllerInternal(FoldersControllerHelper<int> foldersControllerHelper, GlobalFolderHelper globalFolderHelper, FileStorageService<int> fileStorageService, FolderDtoHelper folderDtoHelper, FileOperationDtoHelper fileOperationDtoHelper, SecurityControllerHelper<int> securityControllerHelper, CoreBaseSettings coreBaseSettings, FolderContentDtoHelper folderContentDtoHelper, ApiContext apiContext) : base(foldersControllerHelper, globalFolderHelper, fileStorageService, folderDtoHelper, fileOperationDtoHelper, securityControllerHelper, coreBaseSettings, folderContentDtoHelper, apiContext)
+    public VirtualRoomsControllerInternal(FoldersControllerHelper<int> foldersControllerHelper, GlobalFolderHelper globalFolderHelper, FileStorageService<int> fileStorageService, FolderDtoHelper folderDtoHelper, FileOperationDtoHelper fileOperationDtoHelper, SecurityControllerHelper<int> securityControllerHelper, CoreBaseSettings coreBaseSettings, FolderContentDtoHelper folderContentDtoHelper, ApiContext apiContext, WebItemSecurity webItemSecurity, AuthContext authContext, RoomLinksManager roomLinksManager) : base(foldersControllerHelper, globalFolderHelper, fileStorageService, folderDtoHelper, fileOperationDtoHelper, securityControllerHelper, coreBaseSettings, folderContentDtoHelper, apiContext, webItemSecurity, authContext, roomLinksManager)
     {
     }
 }
@@ -45,11 +47,15 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     private readonly SecurityControllerHelper<T> _securityControllerHelper;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly ApiContext _apiContext;
+    private readonly WebItemSecurity _webItemSecurity;
+    private readonly AuthContext _authContext;
+    private readonly RoomLinksManager _roomLinksManager;
 
     public VirtualRoomsController(FoldersControllerHelper<T> foldersControllerHelper, GlobalFolderHelper globalFolderHelper,
         FileStorageService<T> fileStorageService, FolderDtoHelper folderDtoHelper, FileOperationDtoHelper fileOperationDtoHelper,
         SecurityControllerHelper<T> securityControllerHelper, CoreBaseSettings coreBaseSettings,
-        FolderContentDtoHelper folderContentDtoHelper, ApiContext apiContext)
+        FolderContentDtoHelper folderContentDtoHelper, ApiContext apiContext, WebItemSecurity webItemSecurity, AuthContext authContext,
+        RoomLinksManager roomLinksManager)
     {
         _foldersControllerHelper = foldersControllerHelper;
         _globalFolderHelper = globalFolderHelper;
@@ -60,6 +66,9 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         _coreBaseSettings = coreBaseSettings;
         _folderContentDtoHelper = folderContentDtoHelper;
         _apiContext = apiContext;
+        _webItemSecurity = webItemSecurity;
+        _authContext = authContext;
+        _roomLinksManager = roomLinksManager;
     }
 
     [Read("rooms")]
@@ -169,6 +178,14 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         ErrorIfNotDocSpace();
 
         return _securityControllerHelper.SetFolderSecurityInfoAsync(id, inDto.Share, inDto.Notify, inDto.SharingMessage);
+    }
+
+    [Read("rooms/{id}/invite")]
+    public object GetInvitationLink(T id, [FromBody] InviteUserRequestDto inDto)
+    {
+        ErrorIfNotDocSpace();
+
+        return _roomLinksManager.GenerateLink(id, inDto.Email, inDto.Access, inDto.EmployeeType, _authContext.CurrentAccount.ID);
     }
 
     private void ErrorIfNotDocSpace()
