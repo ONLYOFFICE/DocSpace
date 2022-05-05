@@ -115,6 +115,10 @@ const Layout = (props) => {
       //     height = window.screen.availHeight - correctorTabletSafari;
       //   }
       // }
+
+      let vh = (height - 48) * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
+
       setContentHeight(height);
     };
     intervalHandler = setInterval(() => {

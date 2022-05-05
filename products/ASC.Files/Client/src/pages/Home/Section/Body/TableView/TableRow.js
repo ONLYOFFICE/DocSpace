@@ -91,20 +91,25 @@ const StyledTableRow = styled(TableRow)`
   }
 
   .table-container_file-name-cell {
-    margin-left: -24px;
-    padding-left: 24px;
-
-    ${(props) => props.showHotkeyBorder && hotkeyBorderStyle};
+    ${(props) =>
+      props.showHotkeyBorder &&
+      css`
+        margin-left: -24px;
+        padding-left: 24px;
+        ${hotkeyBorderStyle}
+      `};
     ${(props) => props.dragging && rowCheckboxDraggingStyle};
   }
 
   .table-container_row-context-menu-wrapper {
-    width: 28px;
-    margin-right: -20x;
-    padding-right: 18px;
-
     ${(props) => props.dragging && contextMenuWrapperDraggingStyle};
-    ${(props) => props.showHotkeyBorder && hotkeyBorderStyle};
+    ${(props) =>
+      props.showHotkeyBorder &&
+      css`
+        margin-right: -20px;
+        padding-right: 18px;
+        ${hotkeyBorderStyle}
+      `};
   }
 
   .edit {
@@ -265,7 +270,7 @@ const FilesTableRow = (props) => {
 
   React.useEffect(() => {
     if (index === 0) {
-      if (checkedProps || isActive || showHotkeyBorder) {
+      if (checkedProps || isActive) {
         setFirsElemChecked(true);
       } else {
         setFirsElemChecked(false);

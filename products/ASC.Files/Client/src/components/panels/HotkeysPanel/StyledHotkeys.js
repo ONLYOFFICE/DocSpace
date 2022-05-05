@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import Scrollbar from "@appserver/components/scrollbar";
 import { Base } from "@appserver/components/themes";
+import { tablet } from "@appserver/components/utils/device";
 
 const StyledHotkeysPanel = styled.div`
   .hotkeys-panel {
@@ -35,16 +36,31 @@ const StyledHotkeysPanel = styled.div`
 
     .row_content {
       margin: 12px 0 12px 0px;
+
+      @media ${tablet} {
+        height: unset;
+      }
     }
   }
 
   .hotkey-key-description {
     max-width: 320px;
+    width: 100%;
+
+    @media (max-width: 550px) {
+      max-width: 140px;
+      word-wrap: break-word;
+      white-space: normal;
+    }
   }
 
   .hotkeys-key {
-    margin-left: auto;
-    width: 112px;
+    margin: 0 auto 0 0;
+
+    @media (max-width: 550px) {
+      margin: 0 0 0 auto;
+      width: fit-content;
+    }
   }
 `;
 

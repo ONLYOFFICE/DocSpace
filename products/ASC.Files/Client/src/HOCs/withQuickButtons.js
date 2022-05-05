@@ -2,18 +2,23 @@ import React from "react";
 import { inject, observer } from "mobx-react";
 
 import { ShareAccessRights } from "@appserver/common/constants";
-import toastr from "@appserver/components/toast/toastr";
+import toastr from "studio/toastr";
 import QuickButtons from "../components/QuickButtons";
 
 export default function withQuickButtons(WrappedComponent) {
   class WithQuickButtons extends React.Component {
     onClickLock = () => {
-      const { item, lockFileAction, isAdmin, setIsLoading } = this.props;
+      const { item, lockFileAction, isAdmin, setIsLoading, t } = this.props;
       const { locked, id, access } = item;
 
       if (isAdmin || access === 0) {
         setIsLoading(true);
         return lockFileAction(id, !locked)
+          .then(() =>
+            locked
+              ? toastr.success(t("Translations:FileUnlocked"))
+              : toastr.success(t("Translations:FileLocked"))
+          )
           .catch((err) => toastr.error(err))
           .finally(() => setIsLoading(false));
       }

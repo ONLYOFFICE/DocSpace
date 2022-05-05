@@ -142,11 +142,16 @@ class ContextOptionsStore {
       .catch((err) => toastr.error(err));
   };
 
-  lockFile = (item) => {
+  lockFile = (item, t) => {
     const { id, locked } = item;
 
     this.filesActionsStore
       .lockFileAction(id, !locked)
+      .then(() =>
+        locked
+          ? toastr.success(t("Translations:FileUnlocked"))
+          : toastr.success(t("Translations:FileLocked"))
+      )
       .catch((err) => toastr.error(err));
   };
 
@@ -528,7 +533,7 @@ class ContextOptionsStore {
         key: "block-unblock-version",
         label: t("UnblockVersion"),
         icon: "/static/images/locked.react.svg",
-        onClick: () => this.lockFile(item),
+        onClick: () => this.lockFile(item, t),
         disabled: false,
       },
       {
