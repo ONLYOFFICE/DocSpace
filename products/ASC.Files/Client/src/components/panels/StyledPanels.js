@@ -92,24 +92,6 @@ const StyledAsidePanel = styled.div`
     }
   }
 
-  .header_aside-panel {
-    transition: unset;
-    transform: translateX(${(props) => (props.visible ? "0" : "480px")});
-    width: 480px;
-    max-width: 480px;
-    overflow-y: hidden;
-
-    @media (max-width: 500px) {
-      position: fixed;
-
-      top: 64px;
-      bottom: 0;
-      right: 0;
-
-      width: 100%;
-      height: calc(100% - 64px);
-    }
-  }
   ${PanelStyles}
 `;
 
@@ -308,6 +290,10 @@ const StyledHeaderContent = styled.div`
   align-items: center;
   padding: 0 16px;
 
+  margin-right: -16px;
+
+  border-bottom: ${(props) => props.theme.filesPanels.sharing.borderBottom};
+
   .upload_panel-icons-container {
     display: flex;
     margin-left: auto;
@@ -329,6 +315,8 @@ const StyledHeaderContent = styled.div`
     }
   }
 `;
+
+StyledHeaderContent.defaultProps = { theme: Base };
 
 const StyledBody = styled.div`
   &.files-operations-body {
