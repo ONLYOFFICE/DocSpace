@@ -138,23 +138,6 @@ const StyledVersionHistoryPanel = styled.div`
 StyledVersionHistoryPanel.defaultProps = { theme: Base };
 
 const StyledAddUsersPanelPanel = styled.div`
-  .header_aside-panel {
-    transition: unset;
-    transform: translateX(${(props) => (props.visible ? "0" : "480px")});
-    width: 480px;
-    max-width: 480px;
-    overflow-y: hidden;
-
-    @media (max-width: 500px) {
-      position: fixed;
-      top: 64px;
-      bottom: 0;
-      right: 0;
-
-      width: 100%;
-      height: calc(100% - 64px);
-    }
-  }
   ${PanelStyles}
   .combo-button-label {
     font-size: 14px;
@@ -162,23 +145,6 @@ const StyledAddUsersPanelPanel = styled.div`
 `;
 
 const StyledAddGroupsPanel = styled.div`
-  .header_aside-panel {
-    transition: unset;
-    transform: translateX(${(props) => (props.visible ? "0" : "480px")});
-    width: 480px;
-    max-width: 480px;
-    overflow-y: hidden;
-
-    @media (max-width: 500px) {
-      position: fixed;
-      top: 64px;
-      bottom: 0;
-      right: 0;
-
-      width: 100%;
-      height: calc(100% - 64px);
-    }
-  }
   ${PanelStyles}
   .combo-button-label {
     font-size: 14px;
@@ -186,23 +152,6 @@ const StyledAddGroupsPanel = styled.div`
 `;
 
 const StyledEmbeddingPanel = styled.div`
-  .header_aside-panel {
-    transition: unset;
-    transform: translateX(${(props) => (props.visible ? "0" : "480px")});
-    width: 480px;
-    max-width: 480px;
-    overflow-y: hidden;
-
-    @media (max-width: 500px) {
-      position: fixed;
-      top: 64px;
-      bottom: 0;
-      right: 0;
-
-      width: 100%;
-      height: calc(100% - 64px);
-    }
-  }
   ${PanelStyles}
 `;
 
