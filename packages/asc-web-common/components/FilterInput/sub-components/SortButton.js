@@ -253,12 +253,12 @@ const SortButton = ({
                 viewSettings={viewSettings}
               />
             </DropDownItem>
-            {!isFavoritesFolder && !isRecentFolder && (
+            {!isRecentFolder && (
               <DropDownItem isSeparator={true}></DropDownItem>
             )}
           </>
         )}
-        {!isFavoritesFolder && !isRecentFolder && (
+        {!isRecentFolder && (
           <>
             {data.map((item, index) => (
               <DropDownItem
@@ -286,7 +286,6 @@ const SortButton = ({
     viewAs,
     viewSettings,
     getSortData,
-    isFavoritesFolder,
     isRecentFolder,
   ]);
 
