@@ -17043,14 +17043,12 @@ react-textarea-autosize@^8.3.0:
     use-composed-ref "^1.0.0"
     use-latest "^1.0.0"
 
-react-toastify@^6.2.0:
-  version "6.2.0"
-  resolved "https://registry.yarnpkg.com/react-toastify/-/react-toastify-6.2.0.tgz#f2d76747c70b9de91f71f253d9feae6b53dc836c"
-  integrity sha512-XpjFrcBhQ0/nBOL4syqgP/TywFnOyxmstYLWgSQWcj39qpp+WU4vPt3C/ayIDx7RFyxRWfzWTdR2qOcDGo7G0w==
+react-toastify@^7.0.0:
+  version "7.0.4"
+  resolved "https://registry.yarnpkg.com/react-toastify/-/react-toastify-7.0.4.tgz#7d0b743f2b96f65754264ca6eae31911a82378db"
+  integrity sha512-Rol7+Cn39hZp5hQ/k6CbMNE2CKYV9E5OQdC/hBLtIQU2xz7DdAm7xil4NITQTHR6zEbE5RVFbpgSwTD7xRGLeQ==
   dependencies:
     clsx "^1.1.1"
-    prop-types "^15.7.2"
-    react-transition-group "^4.4.1"
 
 react-tooltip@^4.2.21:
   version "4.2.21"
