@@ -100,6 +100,7 @@ class UploadPanelComponent extends React.Component {
           className="header_aside-panel"
           visible={visible}
           withoutBodyScroll
+          onClose={this.onClose}
         >
           <StyledContent>
             <StyledHeaderContent className="upload-panel_header-content">
