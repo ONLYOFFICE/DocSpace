@@ -119,6 +119,28 @@ class FilesStore {
             if (!file || !file.id) return;
 
             this.setFile(file);
+
+            if (this.selection) {
+              const foundIndex = this.selection.findIndex(
+                (x) => x.id === file.id
+              );
+              if (foundIndex > -1) {
+                runInAction(() => {
+                  this.selection[foundIndex] = file;
+                });
+              }
+            }
+
+            if (this.bufferSelection) {
+              const foundIndex = this.bufferSelection.findIndex(
+                (x) => x.id === file.id
+              );
+              if (foundIndex > -1) {
+                runInAction(() => {
+                  this.bufferSelection[foundIndex] = file;
+                });
+              }
+            }
           }
           break;
         case "delete":

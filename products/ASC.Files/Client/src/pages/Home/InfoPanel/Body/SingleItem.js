@@ -1,11 +1,9 @@
+import React, { useEffect, useState } from "react";
 import { FileType } from "@appserver/common/constants";
 import { LANGUAGE } from "@appserver/common/constants";
-import { sleep } from "@appserver/common/utils";
 import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
 import Tooltip from "@appserver/components/tooltip";
-import React, { useEffect, useState } from "react";
-import { ReactSVG } from "react-svg";
 import {
   StyledAccess,
   StyledAccessItem,
@@ -24,7 +22,7 @@ const SingleItem = (props) => {
     selectedItem,
     onSelectItem,
     setSharingPanelVisible,
-    getFolderInfo,
+    //getFolderInfo,
     getIcon,
     getFolderIcon,
     getShareUsers,
@@ -33,10 +31,8 @@ const SingleItem = (props) => {
     dontShowAccess,
     personal,
     createThumbnail,
-    getFileInfo,
   } = props;
 
-  let updateSubscription = true;
   const [item, setItem] = useState({
     id: "",
     isFolder: false,
@@ -199,8 +195,6 @@ const SingleItem = (props) => {
   };
 
   const loadAsyncData = async (displayedItem, selectedItem) => {
-    if (!updateSubscription) return;
-
     if (
       !selectedItem.thumbnailUrl &&
       !selectedItem.isFolder &&
@@ -211,18 +205,6 @@ const SingleItem = (props) => {
         selectedItem.fileType === FileType.Document)
     ) {
       await createThumbnail(selectedItem.id);
-
-      await sleep(5000);
-
-      const newFileInfo = await getFileInfo(selectedItem.id);
-
-      if (newFileInfo.thumbnailUrl) {
-        displayedItem.thumbnailUrl = newFileInfo.thumbnailUrl;
-
-        setItem({
-          ...displayedItem,
-        });
-      }
     }
 
     // const updateLoadedItemProperties = async (displayedItem, selectedItem) => {
@@ -327,25 +309,32 @@ const SingleItem = (props) => {
   };
 
   useEffect(() => {
-    if (selectedItem.id !== item.id && updateSubscription)
-      updateItemsInfo(selectedItem);
-    return () => (updateSubscription = false);
+    updateItemsInfo(selectedItem);
   }, [selectedItem]);
 
   return (
     <>
       <StyledTitle>
-        <ReactSVG className="icon" src={item.iconUrl} />
+        <img className="icon" src={item.iconUrl} alt="thumbnail-icon" />
         <Text className="text">{item.title}</Text>
       </StyledTitle>
 
-      {item.thumbnailUrl ? (
+      {selectedItem?.thumbnailUrl ? (
         <StyledThumbnail>
-          <img src={item.thumbnailUrl} alt="" />
+          <img
+            src={selectedItem.thumbnailUrl}
+            alt="thumbnail-image"
+            height={260}
+            width={360}
+          />
         </StyledThumbnail>
       ) : (
         <div className="no-thumbnail-img-wrapper">
-          <ReactSVG className="no-thumbnail-img" src={item.thumbnailUrl} />
+          <img
+            className="no-thumbnail-img"
+            src={item.thumbnailUrl}
+            alt="thumbnail-icon-big"
+          />
         </div>
       )}
 
