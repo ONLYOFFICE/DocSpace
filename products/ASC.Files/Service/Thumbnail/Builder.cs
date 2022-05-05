@@ -33,6 +33,7 @@ using ASC.Web.Core.Users;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Core;
 using ASC.Web.Files.Services.DocumentService;
+using ASC.Web.Files.Utils;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -95,6 +96,8 @@ namespace ASC.Files.ThumbnailBuilder
         private PathProvider PathProvider { get; }
         private IHttpClientFactory ClientFactory { get; }
 
+        public SocketManager SocketManager { get; }
+
         public Builder(
             ThumbnailSettings settings,
             TenantManager tenantManager,
@@ -104,7 +107,8 @@ namespace ASC.Files.ThumbnailBuilder
             Global global,
             PathProvider pathProvider,
             IOptionsMonitor<ILog> log,
-            IHttpClientFactory clientFactory)
+            IHttpClientFactory clientFactory,
+            SocketManager socketManager)
         {
             this.config = settings;
             TenantManager = tenantManager;
@@ -115,6 +119,7 @@ namespace ASC.Files.ThumbnailBuilder
             PathProvider = pathProvider;
             logger = log.Get("ASC.Files.ThumbnailBuilder");
             ClientFactory = clientFactory;
+            SocketManager = socketManager;
         }
 
         internal async Task BuildThumbnail(FileData<T> fileData)
@@ -179,6 +184,10 @@ namespace ASC.Files.ThumbnailBuilder
                 {
                     await MakeThumbnail(fileDao, file);
                 }
+
+                var newFile = await fileDao.GetFileStableAsync(file.ID);
+
+                await SocketManager.UpdateFileAsync(newFile);
             }
             catch (Exception exception)
             {

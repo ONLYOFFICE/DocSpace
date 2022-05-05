@@ -112,6 +112,15 @@ class FilesStore {
             this.setFiles(newFiles);
           }
           break;
+        case "update":
+          if (opt?.type == "file" && opt?.data) {
+            const file = JSON.parse(opt?.data);
+
+            if (!file || !file.id) return;
+
+            this.setFile(file);
+          }
+          break;
         case "delete":
           if (opt?.type == "file" && opt?.id) {
             const foundIndex = this.files.findIndex((x) => x.id === opt?.id);
