@@ -19,7 +19,7 @@ const StyledInfoPanelWrapper = styled.div.attrs(({ id }) => ({
   height: auto;
   width: auto;
   background: rgba(6, 22, 38, 0.2);
-  backdrop-filter: blur(18px);
+  backdrop-filter: blur(3px);
 
   @media ${tablet} {
     z-index: 309;
