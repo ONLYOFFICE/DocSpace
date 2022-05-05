@@ -140,6 +140,10 @@ const StyledVersionRow = styled(Row)`
   }
 
   .version-link-file {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
     @media ${tablet} {
       margin-top: -1px;
     }
@@ -265,6 +269,10 @@ const StyledVersionRow = styled(Row)`
   }
   .version_modal-dialog .modal-dialog-aside-body {
     margin-top: -24px;
+  }
+
+  .row-header {
+    max-width: 350px;
   }
 `;
 

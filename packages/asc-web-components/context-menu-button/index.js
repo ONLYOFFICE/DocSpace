@@ -225,7 +225,12 @@ class ContextMenuButton extends React.Component {
               zIndex={310}
               isAside={true}
             />
-            <Aside visible={isOpen} scale={false} zIndex={310}>
+            <Aside
+              visible={isOpen}
+              scale={false}
+              zIndex={310}
+              onClose={this.onClose}
+            >
               <StyledContent>
                 <StyledHeaderContent>
                   <Heading className="header" size="medium" truncate={true}>

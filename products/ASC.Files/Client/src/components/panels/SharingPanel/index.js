@@ -711,6 +711,7 @@ class SharingPanelComponent extends React.Component {
               className="header_aside-panel"
               visible={visible}
               withoutBodyScroll={true}
+              onClose={this.onClose}
             >
               {!isLoading ? (
                 <StyledContent isNotifyUsers={isNotifyUsers}>

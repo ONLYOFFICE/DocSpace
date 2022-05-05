@@ -125,7 +125,7 @@ const VersionRow = (props) => {
       isEditing={isEditing}
     >
       <div className={`version-row_${index}`}>
-        <Box displayProp="flex">
+        <Box displayProp="flex" className="row-header">
           <VersionBadge
             theme={theme}
             className={`version_badge ${
