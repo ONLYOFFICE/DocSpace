@@ -105,26 +105,6 @@ const StyledVersionHistoryPanel = styled.div`
     transform: translateX(${(props) => (props.visible ? "0" : "480px")});
     width: 480px;
     max-width: 480px;
-    overflow-y: hidden;
-  }
-
-  .version-history-aside-panel {
-    transition: unset;
-    transform: translateX(${(props) => (props.visible ? "0" : "480px")});
-    width: 480px;
-    max-width: 480px;
-    overflow-y: hidden;
-
-    @media (max-width: 500px) {
-      position: fixed;
-
-      top: 64px;
-      bottom: 0;
-      right: 0;
-
-      width: 100%;
-      height: calc(100% - 64px);
-    }
   }
 
   .version-history-panel-header {
@@ -141,7 +121,6 @@ const StyledVersionHistoryPanel = styled.div`
     padding-top: ${(props) => (props.isLoading ? "16px" : null)};
     padding-bottom: ${(props) => (props.isLoading ? "0px" : null)};
     margin-left: 16px;
-    border-top: ${(props) => props.theme.filesPanels.versionHistory.borderTop};
 
     height: calc(100% - 53px);
     box-sizing: border-box;
