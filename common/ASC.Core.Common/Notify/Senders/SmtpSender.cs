@@ -101,7 +101,7 @@ public class SmtpSender : INotifySender
 
                 var mail = BuildMailMessage(m);
 
-                _logger.LogDebug("SmtpSender - host={host}; port={port}; enableSsl={ssl} enableAuth={enableAuth}", _host, _port, _ssl, _credentials != null);
+                _logger.DebugSmtpSender(_host, _port, _ssl, _credentials != null);
 
                 smtpClient.Connect(_host, _port,
                     _ssl ? SecureSocketOptions.Auto : SecureSocketOptions.None);
@@ -116,7 +116,7 @@ public class SmtpSender : INotifySender
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Tenant: {tenantId}, To: {reciever}", m.TenantId, m.Reciever);
+                _logger.ErrorSend(m.TenantId, m.Reciever, e);
 
                 throw;
             }

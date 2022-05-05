@@ -65,7 +65,7 @@ public static class SubscriptionProviderHelper
         }
         catch (Exception exception)
         {
-            log.LogError(exception, "IsSubscribed");
+            log.ErrorIsSubscribed(exception);
         }
 
         return result;

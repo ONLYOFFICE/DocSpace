@@ -88,7 +88,7 @@ public class EmailValidationKeyProvider
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, "Failed to format tenant specific email");
+            _logger.CriticalFormatEmail(e);
 
             return email.ToLowerInvariant();
         }
@@ -102,7 +102,7 @@ public class EmailValidationKeyProvider
     public ValidationResult ValidateEmailKey(string email, string key, TimeSpan validInterval)
     {
         var result = ValidateEmailKeyInternal(email, key, validInterval);
-        _logger.LogDebug("validation result: {result}, source: {email} with key: {key} interval: {interval} tenant: {tenantId}", result, email, key, validInterval, _tenantManager.GetCurrentTenant().Id);
+        _logger.DebugValidationResult(result, email, key, validInterval, _tenantManager.GetCurrentTenant().Id);
 
         return result;
     }

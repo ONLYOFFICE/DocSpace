@@ -70,11 +70,11 @@ public class DispatchEngine
     {
         if (response.Result == SendResult.Inprogress)
         {
-            DispatchEngineLogger.LogDebugResponceWithException(_logger, message.Subject, message.Recipient, senderName, response.Result, response.Exception);
+            _logger.LogDebugResponceWithException(message.Subject, message.Recipient, senderName, response.Result, response.Exception);
         }
         else if (response.Result == SendResult.Impossible)
         {
-            DispatchEngineLogger.LogErrorResponceWithException(_logger, message.Subject, message.Recipient, senderName, response.Result, response.Exception);
+            _logger.LogErrorResponceWithException( message.Subject, message.Recipient, senderName, response.Result, response.Exception);
         }
         else
         {

@@ -56,7 +56,7 @@ public class TelegramSender : INotifySender
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Unexpected error");
+            _logger.ErrorUnexpected(e);
         }
 
         return NoticeSendResult.OK;

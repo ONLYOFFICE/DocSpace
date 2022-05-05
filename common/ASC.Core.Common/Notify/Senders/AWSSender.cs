@@ -63,7 +63,7 @@ public class AWSSender : SmtpSender, IDisposable
         {
             try
             {
-                _logger.LogDebug("Tenant: {tenantId}, To: {reciever}", m.TenantId, m.Reciever);
+                _logger.DebugSendTo(m.TenantId, m.Reciever);
                 using var scope = _serviceProvider.CreateScope();
                 var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
                 tenantManager.SetCurrentTenant(m.TenantId);
@@ -80,11 +80,11 @@ public class AWSSender : SmtpSender, IDisposable
                     result = SendMessage(m);
                 }
 
-                _logger.LogDebug(result.ToString());
+                _logger.Debug(result.ToString());
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Tenant: {tenantId}, To: {reciever}", m.TenantId, m.Reciever);
+                _logger.ErrorSend(m.TenantId, m.Reciever, e);
                 throw;
             }
         }
@@ -107,7 +107,7 @@ public class AWSSender : SmtpSender, IDisposable
 
         if (result == NoticeSendResult.MessageIncorrect || result == NoticeSendResult.SendingImpossible)
         {
-            _logger.LogDebug("Amazon sending failed: {result}, fallback to smtp", result);
+            _logger.DebugAmazonSendingFailed(result);
             result = base.Send(m);
         }
 
@@ -126,7 +126,7 @@ public class AWSSender : SmtpSender, IDisposable
                 {
                     //Quota exceeded, queue next refresh to +24 hours
                     _lastRefresh = DateTime.UtcNow.AddHours(24);
-                    _logger.LogWarning("Quota limit reached. setting next check to: {lastRefresh}", _lastRefresh);
+                    _logger.WarningQuotaLimit(_lastRefresh);
 
                     return NoticeSendResult.SendingImpossible;
                 }
@@ -178,7 +178,7 @@ public class AWSSender : SmtpSender, IDisposable
             {
                 //Possible BUG: at high frequncies maybe bug with to little differences
                 //This means that time passed from last send is less then message per second
-                _logger.LogDebug("Send rate doesn't fit in send window. sleeping for: {interval}", _sendWindow);
+                _logger.DebugSendRate(_sendWindow);
                 Thread.Sleep(_sendWindow);
             }
         }
@@ -195,7 +195,7 @@ public class AWSSender : SmtpSender, IDisposable
         {
             if (IsRefreshNeeded())//Double check
             {
-                _logger.LogDebug("refreshing qouta. interval: {timeout} Last refresh was at: {refreshDate}", _refreshTimeout, _lastRefresh);
+                _logger.DebugRefreshingQuota(_refreshTimeout, _lastRefresh);
 
                 //Do quota refresh
                 _lastRefresh = DateTime.UtcNow.AddMinutes(1);
@@ -204,11 +204,11 @@ public class AWSSender : SmtpSender, IDisposable
                     var r = new GetSendQuotaRequest();
                     _quota = _amazonEmailServiceClient.GetSendQuotaAsync(r).Result;
                     _sendWindow = TimeSpan.FromSeconds(1.0 / _quota.MaxSendRate);
-                    _logger.LogDebug("quota: {lastCount}/{maxCount} at {rate} mps. send window:{interval}", _quota.SentLast24Hours, _quota.Max24HourSend, _quota.MaxSendRate, _sendWindow);
+                    _logger.DebugQuota(_quota.SentLast24Hours, _quota.Max24HourSend, _quota.MaxSendRate, _sendWindow);
                 }
                 catch (Exception e)
                 {
-                    _logger.LogError(e, "error refreshing quota");
+                    _logger.ErrorRefreshingQuota(e);
                 }
             }
         }

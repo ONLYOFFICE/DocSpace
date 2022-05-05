@@ -108,7 +108,7 @@ public class SecurityContext
                     ipFrom = "from " + (request.Headers["X-Forwarded-For"].ToString() ?? request.GetUserHostAddress());
                     address = "for " + request.GetUrlRewriter();
                 }
-                _logger.LogInformation("Empty Bearer cookie: {ipFrom} {address}", ipFrom, address);
+                _logger.InformationEmptyBearer(ipFrom, address);
             }
             else if (_cookieStorage.DecryptCookie(cookie, out var tenant, out var userid, out var indexTenant, out var expire, out var indexUser))
             {
@@ -142,15 +142,15 @@ public class SecurityContext
                 }
                 catch (InvalidCredentialException ice)
                 {
-                    _logger.LogDebug(ice, "cookie {cookie}, tenant {tenant}, userid {userid}", cookie, tenant, userid);
+                    _logger.AuthenticateDebug(cookie, tenant, userid, ice);
                 }
                 catch (SecurityException se)
                 {
-                    _logger.LogDebug(se, "cookie {cookie}, tenant {tenant}, userid {userid}", cookie, tenant, userid);
+                    _logger.AuthenticateDebug(cookie, tenant, userid, se);
                 }
                 catch (Exception err)
                 {
-                    _logger.LogError(err, "Authenticate error: cookie {cookie}, tenant {tenant}, userid {userid}", cookie, tenant, userid);
+                    _logger.AuthenticateError(cookie, tenant, userid, err);
                 }
             }
             else
@@ -167,7 +167,7 @@ public class SecurityContext
                     ipFrom = "from " + (request.Headers["X-Forwarded-For"].ToString() ?? request.GetUserHostAddress());
                 }
 
-                _logger.LogWarning("Can not decrypt cookie: {cookie} {ipFrom} {address}", cookie, ipFrom, address);
+                _logger.WarningCanNotDecrypt(cookie, ipFrom, address);
             }
         }
 

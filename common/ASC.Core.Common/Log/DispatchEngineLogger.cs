@@ -32,17 +32,17 @@ internal static partial class DispatchEngineLogger
 {
     public const string ResponseMessage = "[{subject}] sended to [{recipient}] over {senderName}, status: {result}";
 
-    [LoggerMessage(EventId = 0, Level = LogLevel.Debug, Message = "[{action}]->[{recipient}] by [{senderName}] to [{address}] at {date}\r\n\r\n[{subject}]\r\n{body}\r\n{dots}")]
+    [LoggerMessage(Level = LogLevel.Debug, Message = "[{action}]->[{recipient}] by [{senderName}] to [{address}] at {date}\r\n\r\n[{subject}]\r\n{body}\r\n{dots}")]
     public static partial void LogMessage(this ILogger logger, INotifyAction action, string recipient, string senderName, string address, DateTime date, string subject, string body, string dots);
 
-    [LoggerMessage(EventId = 1, Level = LogLevel.Debug, Message = ResponseMessage)]
+    [LoggerMessage(Level = LogLevel.Debug, Message = ResponseMessage)]
     public static partial void LogDebugResponce(this ILogger logger, string subject, IDirectRecipient recipient, string senderName, SendResult result);
 
-    public static readonly Action<ILogger, string, IDirectRecipient, string, SendResult, Exception?> LogDebugResponceWithException =
-    LoggerMessage.Define<string, IDirectRecipient, string, SendResult>(LogLevel.Debug, 0, ResponseMessage);
+    [LoggerMessage(Level = LogLevel.Debug, Message = ResponseMessage)]
+    public static partial void LogDebugResponceWithException(this ILogger logger, string subject, IDirectRecipient recipient, string senderName, SendResult result, Exception? exception);
 
-    public static readonly Action<ILogger, string, IDirectRecipient, string, SendResult, Exception?> LogErrorResponceWithException =
-    LoggerMessage.Define<string, IDirectRecipient, string, SendResult>(LogLevel.Error, 0, ResponseMessage);
+    [LoggerMessage(Level = LogLevel.Error, Message = ResponseMessage)]
+    public static partial void LogErrorResponceWithException(this ILogger logger, string subject, IDirectRecipient recipient, string senderName, SendResult result, Exception? exception);
 
     [LoggerMessage(Level = LogLevel.Debug, Message = "LogOnly: {LogOnly}")]
     public static partial void LogOnly(this ILogger logger, bool logOnly);

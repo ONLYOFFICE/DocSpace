@@ -72,12 +72,12 @@ class PushSenderSink : Sink
                 catch (InvalidOperationException)
                 {
                     _configured = false;
-                    _logger.LogDebug("push sender endpoint is not configured!");
+                    _logger.DebugPushSender();
                 }
             }
             else
             {
-                _logger.LogDebug("push sender endpoint is not configured!");
+                _logger.DebugPushSender();
             }
 
             return new SendResponse(message, Constants.NotifyPushSenderSysName, SendResult.OK);

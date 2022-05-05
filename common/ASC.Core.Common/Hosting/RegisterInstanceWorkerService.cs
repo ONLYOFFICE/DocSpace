@@ -58,13 +58,13 @@ public class RegisterInstanceWorkerService<T> : BackgroundService where T : IHos
                 await registerInstanceService.Register(InstanceId);
                 await registerInstanceService.DeleteOrphanInstances();
 
-                _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+                _logger.InformationWorkingRunnging(DateTimeOffset.Now);
 
                 await Task.Delay(1000, stoppingToken);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Critical error forced worker to shutdown");
+                _logger.CriticalError(ex);
                 _applicationLifetime.StopApplication();
             }
         }
@@ -79,11 +79,11 @@ public class RegisterInstanceWorkerService<T> : BackgroundService where T : IHos
 
             await registerInstanceService.UnRegister(InstanceId);
 
-            _logger.LogInformation("UnRegister Instance {instanceName} running at: {time}.", InstanceId, DateTimeOffset.Now);
+            _logger.InformationUnRegister(InstanceId, DateTimeOffset.Now);
         }
         catch
         {
-            _logger.LogError("Unable to UnRegister Instance {instanceName} running at: {time}.", InstanceId, DateTimeOffset.Now);
+            _logger.ErrorUnableToUnRegister(InstanceId, DateTimeOffset.Now);
         }
 
         await base.StopAsync(cancellationToken);

@@ -70,7 +70,7 @@ public class CouponManager : IDisposable
             _baseAddress = new Uri(AvangateCfgSectionHandler.DefaultAdress);
             _apiVersion = AvangateCfgSectionHandler.DefaultApiVersion;
             _groups = new List<string>();
-            _logger.LogCritical(e, "CouponManager");
+            _logger.CriticalCouponManager(e);
         }
     }
 
@@ -98,7 +98,7 @@ public class CouponManager : IDisposable
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message);
+            _logger.Error(ex, ex.Message);
             throw;
         }
     }
@@ -129,7 +129,7 @@ public class CouponManager : IDisposable
             }
 
             var result = await response.Content.ReadAsStringAsync();
-            _logger.LogDebug(result);
+            _logger.Debug(result);
 
             var products = JsonConvert.DeserializeObject<List<AvangateProduct>>(result);
             products = products.Where(r => r.ProductGroup != null && _groups.Contains(r.ProductGroup.Code)).ToList();
@@ -138,7 +138,7 @@ public class CouponManager : IDisposable
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message);
+            _logger.Error(ex, ex.Message);
 
             throw;
         }
@@ -244,7 +244,7 @@ class Promotion
         }
         catch (Exception ex)
         {
-            log.LogError(ex, ex.Message);
+            log.Error(ex, ex.Message);
 
             throw;
         }

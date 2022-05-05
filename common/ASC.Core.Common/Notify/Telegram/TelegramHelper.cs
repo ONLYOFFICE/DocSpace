@@ -159,7 +159,7 @@ public class TelegramHelper
         }
         catch (Exception e)
         {
-            _logger.LogDebug(e, "Couldn't test api connection");
+            _logger.DebugCouldNotTest(e);
 
             return false;
         }

@@ -68,10 +68,10 @@ public class DBResourceManager : ResourceManager
             }
             catch (ReflectionTypeLoadException rtle)
             {
-                log.LogWarning(rtle, "Can not GetTypes() from assembly {assemblyName}, try GetExportedTypes()", a.FullName);
+                log.CanNotGetType(nameof(a.GetType) ,a.FullName, nameof(a.GetExportedTypes), rtle);
                 foreach (var e in rtle.LoaderExceptions)
                 {
-                    log.LogInformation(e.Message);
+                    log.Information(e.Message);
                 }
 
                 try
@@ -80,7 +80,7 @@ public class DBResourceManager : ResourceManager
                 }
                 catch (Exception err)
                 {
-                    log.LogError(err, "Can not GetExportedTypes() from assembly {assemblyName}", a.FullName);
+                    log.CanNotGetExportedTypes(a.FullName, nameof(a.GetExportedTypes), rtle);
                 }
             }
             foreach (var type in types)
@@ -159,7 +159,7 @@ public class DBResourceManager : ResourceManager
             }
             catch (Exception err)
             {
-                _logger.LogError(err, "DBResourceSet");
+                _logger.ErrorDBResourceSet(err);
             }
 
             _invariant = invariant;
@@ -178,7 +178,7 @@ public class DBResourceManager : ResourceManager
             }
             catch (Exception err)
             {
-                _logger.LogError(err, "Can not get resource from {fileName} for {culture}: GetString({name})", _fileName, _culture, name);
+                _logger.CanNotGetResource(_fileName, _culture, name, err);
             }
 
             if (_invariant != null && result == null)
@@ -209,7 +209,7 @@ public class DBResourceManager : ResourceManager
             }
             catch (Exception err)
             {
-                _logger.LogError(err, "DBResourceSet");
+                _logger.ErrorDBResourceSet(err);
             }
 
             return result.GetEnumerator();
@@ -274,7 +274,7 @@ public class WhiteLabelHelper
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "SetNewText");
+            _logger.ErrorSetNewText(e);
         }
     }
 
@@ -286,7 +286,7 @@ public class WhiteLabelHelper
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "RestoreOldText");
+            _logger.RestoreOldText(e);
         }
     }
 
@@ -334,7 +334,7 @@ public class WhiteLabelHelper
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "ReplaceLogo");
+                _logger.ErrorReplaceLogo(e);
             }
         }
 

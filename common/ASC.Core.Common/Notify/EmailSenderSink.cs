@@ -127,7 +127,7 @@ public class EmailSenderSinkMessageCreator : SinkMessageCreator
             }
             catch (Exception e)
             {
-                _logger.LogError(e, ("Error creating reply to tag for: " + replyTag.Value));
+                _logger.ErrorCreatingTag(replyTag.Value, e);
             }
         }
 
@@ -152,7 +152,7 @@ public class EmailSenderSinkMessageCreator : SinkMessageCreator
             }
             catch (Exception e)
             {
-                _logger.LogError(e, ("Error creating AutoSubmitted tag for: " + autoSubmittedTag.Value));
+                _logger.ErrorCreatingAutoSubmitted(replyTag.Value, e);
             }
         }
 

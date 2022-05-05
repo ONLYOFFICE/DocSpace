@@ -76,7 +76,7 @@ public class NotifyRequest
                 }
                 catch (Exception err)
                 {
-                    _log.LogError(err, "{name} {action} {recipient}", interceptor.Name, NotifyAction, Recipient);
+                    _log.ErrorIntercept(interceptor.Name, NotifyAction, Recipient, err);
                 }
             }
         }
