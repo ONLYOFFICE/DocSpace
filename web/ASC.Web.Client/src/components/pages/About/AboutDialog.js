@@ -17,6 +17,7 @@ const AboutDialog = (props) => {
           isLoading={!ready}
           visible={visible}
           onClose={onClose}
+          withoutBodyScroll={true}
         >
           <ModalDialog.Header>{t("AboutHeader")}</ModalDialog.Header>
           <ModalDialog.Body>
