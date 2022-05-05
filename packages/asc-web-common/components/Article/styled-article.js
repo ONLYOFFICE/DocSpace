@@ -181,6 +181,8 @@ const StyledArticleHeader = styled.div`
     padding: 12px 16px 12px !important;
     margin-bottom: 16px !important;
   `}
+
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 `;
 
 StyledArticleHeader.defaultProps = { theme: Base };

@@ -207,6 +207,7 @@ class ModalDialog extends React.Component {
             visible={visible}
             scale={scale}
             zIndex={zIndex}
+            onClose={onClose}
             contentPaddingBottom={contentPaddingBottom}
             className="modal-dialog-aside not-selectable"
             withoutBodyScroll={withoutBodyScroll}
