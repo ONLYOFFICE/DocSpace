@@ -38,8 +38,7 @@ const StyledAside = styled(Container)`
   @media ${tablet} {
     max-width: calc(100% - 69px);
     transform: translateX(
-      ${(props) =>
-        props.visible ? "0" : props.scale ? "100%" : "calc(100% - 69px)"}
+      ${(props) => (props.visible ? "0" : props.scale ? "100%" : "480px")}
     );
   }
 
@@ -47,8 +46,7 @@ const StyledAside = styled(Container)`
   css`
     max-width: calc(100% - 69px);
     transform: translateX(
-      ${(props) =>
-        props.visible ? "0" : props.scale ? "100%" : "calc(100% - 69px)"}
+      ${(props) => (props.visible ? "0" : props.scale ? "100%" : "480px")}
     );
   `}
 
