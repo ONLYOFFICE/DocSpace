@@ -26,7 +26,7 @@
 
 namespace ASC.Data.Backup.BackgroundTasks.Log;
 
-public static partial class BackupDeleteScheldureRequestIntegrationEventHandlerLogger
+internal static partial class BackupDeleteScheldureRequestIntegrationEventHandlerLogger
 {
     [LoggerMessage(Level = LogLevel.Information, Message = "----- Handling integration event: {integrationEventId} at {appName} - ({integrationEvent})")]
     public static partial void InformationHandlingIntegrationEvent(this ILogger logger, Guid integrationEventId, string appName, IntegrationEvent integrationEvent);

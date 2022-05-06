@@ -26,7 +26,7 @@
 
 namespace ASC.Data.Backup.BackgroundTasks.Log;
 
-public static partial class BackupCleanerServiceLogger
+internal static partial class BackupCleanerServiceLogger
 {
     [LoggerMessage(Level = LogLevel.Debug, Message = "BackupCleanerService is starting.")]
     public static partial void DebugBackupCleanerServiceStarting(this ILogger logger);

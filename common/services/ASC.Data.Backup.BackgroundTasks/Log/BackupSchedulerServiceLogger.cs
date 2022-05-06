@@ -26,7 +26,7 @@
 
 namespace ASC.Data.Backup.BackgroundTasks.Log;
 
-public static partial class BackupSchedulerServiceLogger
+internal static partial class BackupSchedulerServiceLogger
 {
     [LoggerMessage(Level = LogLevel.Debug, Message = "BackupSchedulerService is starting.")]
     public static partial void DebugBackupSchedulerServiceStarting(this ILogger logger);
