@@ -16,17 +16,13 @@ const StyledContainer = styled.div`
     margin-right: 16px;
     min-width: 15px;
 
-    ${(props) =>
-      !props.isDropBox &&
-      css`
-        @media ${tablet} {
-          display: none;
-        }
-      `}
+    @media ${tablet} {
+      display: none;
+    }
 
     ${isMobile &&
     css`
-      ${(props) => !props.isDropBox && "display: none"};
+      display: none;
     `}
   }
 
