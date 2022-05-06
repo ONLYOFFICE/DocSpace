@@ -34,12 +34,14 @@ global using ASC.Core.Billing;
 global using ASC.Core.Common.Hosting;
 global using ASC.Core.Common.Hosting.Interfaces;
 global using ASC.Data.Backup.BackgroundTasks;
+global using ASC.Data.Backup.BackgroundTasks.Log;
 global using ASC.Data.Backup.Contracts;
 global using ASC.Data.Backup.Core.IntegrationEvents.Events;
 global using ASC.Data.Backup.IntegrationEvents.EventHandling;
 global using ASC.Data.Backup.Services;
 global using ASC.Data.Backup.Storage;
 global using ASC.EventBus.Abstractions;
+global using ASC.EventBus.Events;
 global using ASC.Files.Core;
 global using ASC.Web.Studio.Core.Notify;
 

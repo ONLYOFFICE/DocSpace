@@ -52,9 +52,9 @@ public sealed class BackupSchedulerService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogDebug("BackupSchedulerService is starting.");
+        _logger.DebugBackupSchedulerServiceStarting();
 
-        stoppingToken.Register(() => _logger.LogDebug("#1 BackupSchedulerService background task is stopping."));
+        stoppingToken.Register(() => _logger.DebugBackupSchedulerServiceStopping());
 
         while (!stoppingToken.IsCancellationRequested)
         {
@@ -64,21 +64,21 @@ public sealed class BackupSchedulerService : BackgroundService
 
             if (!await registerInstanceService.IsActive(RegisterInstanceWorkerService<BackupSchedulerService>.InstanceId))
             {
-                _logger.LogDebug($"BackupSchedulerService background task with instance id {RegisterInstanceWorkerService<BackupSchedulerService>.InstanceId} is't active.");
+                _logger.DebugBackupSchedulerServiceIsNotActive(RegisterInstanceWorkerService<BackupSchedulerService>.InstanceId);
 
                 await Task.Delay(1000, stoppingToken);
 
                 continue;
             }
 
-            _logger.LogDebug("BackupSchedulerService background task is doing background work.");
+            _logger.DebugBackupSchedulerServiceDoingWork();
 
             ExecuteBackupScheduler(stoppingToken);
 
             await Task.Delay(_backupSchedulerPeriod, stoppingToken);
         }
 
-        _logger.LogDebug("BackupSchedulerService background task is stopping.");
+        _logger.DebugBackupSchedulerServiceStopping();
     }
 
     private void ExecuteBackupScheduler(CancellationToken stoppingToken)
@@ -90,11 +90,11 @@ public sealed class BackupSchedulerService : BackgroundService
         var backupSchedule = serviceScope.ServiceProvider.GetRequiredService<Schedule>();
         var tenantManager = serviceScope.ServiceProvider.GetRequiredService<TenantManager>();
 
-        _logger.LogDebug("started to schedule backups");
+        _logger.DebugStartedToSchedule();
 
         var backupsToSchedule = backupRepository.GetBackupSchedules().Where(schedule => backupSchedule.IsToBeProcessed(schedule)).ToList();
 
-        _logger.LogDebug("{0} backups are to schedule", backupsToSchedule.Count);
+        _logger.DebugBackupsSchedule(backupsToSchedule.Count);
 
         foreach (var schedule in backupsToSchedule)
         {
@@ -115,7 +115,7 @@ public sealed class BackupSchedulerService : BackgroundService
 
                         backupRepository.SaveBackupSchedule(schedule);
 
-                        _logger.LogDebug("Start scheduled backup: {tenantId}, {backupMail}, {storageType}, {storageBasePath}", schedule.TenantId, schedule.BackupMail, schedule.StorageType, schedule.StorageBasePath);
+                        _logger.DebugStartScheduledBackup(schedule.TenantId, schedule.BackupMail, schedule.StorageType, schedule.StorageBasePath);
 
                         _eventBus.Publish(new BackupRequestIntegrationEvent(
                                                  tenantId: schedule.TenantId,
@@ -130,17 +130,17 @@ public sealed class BackupSchedulerService : BackgroundService
                     }
                     else
                     {
-                        _logger.LogDebug("Skip portal {tenantId} not paid", schedule.TenantId);
+                        _logger.DebugNotPaid(schedule.TenantId);
                     }
                 }
                 else
                 {
-                    _logger.LogDebug("Skip portal {tenantId} haven't access", schedule.TenantId);
+                    _logger.DebugHaveNotAccess(schedule.TenantId);
                 }
             }
             catch (Exception error)
             {
-                _logger.LogError(error, "error while scheduling backups");
+                _logger.ErrorBackups(error);
             }
         }
     }

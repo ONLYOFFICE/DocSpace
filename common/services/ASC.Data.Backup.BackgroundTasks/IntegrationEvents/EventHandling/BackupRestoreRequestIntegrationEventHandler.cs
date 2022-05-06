@@ -56,7 +56,7 @@ public class BackupRestoreRequestIntegrationEventHandler : IIntegrationEventHand
 
     public async Task Handle(BackupRestoreRequestIntegrationEvent @event)
     {
-        _logger.LogInformation("----- Handling integration event: {IntegrationEventId} at {AppName} - ({@IntegrationEvent})", @event.Id, Program.AppName, @event);
+        _logger.InformationHandlingIntegrationEvent(@event.Id, Program.AppName, @event);
 
         if (!@event.Redelivered)
         {
