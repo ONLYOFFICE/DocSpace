@@ -63,7 +63,7 @@ public class KafkaCacheNotify<T> : IDisposable, ICacheNotify<T> where T : IMessa
             if (_producer == null)
             {
                 _producer = new ProducerBuilder<AscCacheItem, T>(new ProducerConfig(_clientConfig))
-                .SetErrorHandler((_, e) => _logger.LogError(e.ToString()))
+                .SetErrorHandler((_, e) => _logger.Error(e.ToString()))
                 .SetKeySerializer(_keySerializer)
                 .SetValueSerializer(_valueSerializer)
                 .Build();
@@ -89,11 +89,11 @@ public class KafkaCacheNotify<T> : IDisposable, ICacheNotify<T> where T : IMessa
         }
         catch (ProduceException<Null, string> e)
         {
-            _logger.LogError(e, "KafkaCacheNotify Publish");
+            _logger.ErrorKafkaCacheNotifyPublish(e);
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "KafkaCacheNotify Publish");
+            _logger.ErrorKafkaCacheNotifyPublish(e);
         }
     }
 
@@ -104,7 +104,7 @@ public class KafkaCacheNotify<T> : IDisposable, ICacheNotify<T> where T : IMessa
             if (_producer == null)
             {
                 _producer = new ProducerBuilder<AscCacheItem, T>(new ProducerConfig(_clientConfig))
-                .SetErrorHandler((_, e) => _logger.LogError(e.ToString()))
+                .SetErrorHandler((_, e) => _logger.Error(e.ToString()))
                 .SetKeySerializer(_keySerializer)
                 .SetValueSerializer(_valueSerializer)
                 .Build();
@@ -130,11 +130,11 @@ public class KafkaCacheNotify<T> : IDisposable, ICacheNotify<T> where T : IMessa
         }
         catch (ProduceException<Null, string> e)
         {
-            _logger.LogError(e, "KafkaCacheNotify PublishAsync");
+            _logger.ErrorKafkaCacheNotifyPublishAsync(e);
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "KafkaCacheNotify PublishAsync");
+            _logger.ErrorKafkaCacheNotifyPublishAsync(e);
         }
     }
 
@@ -154,7 +154,7 @@ public class KafkaCacheNotify<T> : IDisposable, ICacheNotify<T> where T : IMessa
 
 
             using (var adminClient = new AdminClientBuilder(_adminClientConfig)
-                .SetErrorHandler((_, e) => _logger.LogError(e.ToString()))
+                .SetErrorHandler((_, e) => _logger.Error(e.ToString()))
                 .Build())
             {
                 try
@@ -175,7 +175,7 @@ public class KafkaCacheNotify<T> : IDisposable, ICacheNotify<T> where T : IMessa
             }
 
             using var c = new ConsumerBuilder<AscCacheItem, T>(conf)
-                .SetErrorHandler((_, e) => _logger.LogError(e.ToString()))
+                .SetErrorHandler((_, e) => _logger.Error(e.ToString()))
                 .SetKeyDeserializer(_keyDeserializer)
                 .SetValueDeserializer(_valueDeserializer)
                 .Build();
@@ -197,13 +197,13 @@ public class KafkaCacheNotify<T> : IDisposable, ICacheNotify<T> where T : IMessa
                             }
                             catch (Exception e)
                             {
-                                _logger.LogError(e, "Kafka onmessage");
+                                _logger.ErrorKafkaOnmessage(e);
                             }
                         }
                     }
                     catch (ConsumeException e)
                     {
-                        _logger.LogError(e, "Subscribe");
+                        _logger.ErrorSubscribe(e);
                     }
                 }
             }

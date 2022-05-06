@@ -25,17 +25,17 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Common.Log;
-public static partial class CommonLogger
+public static partial class KafkaCacheNotifyLogger
 {
-    [LoggerMessage(Level = LogLevel.Error)]
-    public static partial void ErrorWithException(this ILogger logger, Exception exception);
+    [LoggerMessage(Level = LogLevel.Error, Message = "KafkaCacheNotify Publish")]
+    public static partial void ErrorKafkaCacheNotifyPublish(this ILogger logger, Exception exception);
 
-    [LoggerMessage(Level = LogLevel.Error)]
-    public static partial void Error(this ILogger logger, string message);
+    [LoggerMessage(Level = LogLevel.Error, Message = "KafkaCacheNotify PublishAsync")]
+    public static partial void ErrorKafkaCacheNotifyPublishAsync(this ILogger logger, Exception exception);
 
-    [LoggerMessage(Level = LogLevel.Debug)]
-    public static partial void Debug(this ILogger logger, string message);
-
-    [LoggerMessage(Level = LogLevel.Information)]
-    public static partial void Information(this ILogger logger, string message);
+    [LoggerMessage(Level = LogLevel.Error, Message = "Kafka onmessage")]
+    public static partial void ErrorKafkaOnmessage(this ILogger logger, Exception exception);   
+    
+    [LoggerMessage(Level = LogLevel.Error, Message = "Subscribe")]
+    public static partial void ErrorSubscribe(this ILogger logger, Exception exception);
 }
