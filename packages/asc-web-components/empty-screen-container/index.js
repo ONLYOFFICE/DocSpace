@@ -7,6 +7,8 @@ import {
   EmptyContentImage,
 } from "./styled-empty-screen-container";
 
+import { isMobile } from "react-device-detect";
+
 const EmptyScreenContainer = (props) => {
   const {
     imageSrc,
@@ -15,12 +17,15 @@ const EmptyScreenContainer = (props) => {
     subheadingText,
     descriptionText,
     buttons,
+    imageStyle,
+    buttonStyle,
   } = props;
   return (
     <EmptyContentBody {...props}>
       <EmptyContentImage
         imageSrc={imageSrc}
         imageAlt={imageAlt}
+        style={!isMobile ? imageStyle : {}}
         className="ec-image"
       />
 
@@ -54,7 +59,11 @@ const EmptyScreenContainer = (props) => {
         </Text>
       )}
 
-      {buttons && <div className="ec-buttons">{buttons}</div>}
+      {buttons && (
+        <div className="ec-buttons" style={buttonStyle}>
+          {buttons}
+        </div>
+      )}
     </EmptyContentBody>
   );
 };
