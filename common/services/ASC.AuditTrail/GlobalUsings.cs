@@ -29,6 +29,7 @@ global using System.Reflection;
 global using System.Text;
 
 global using ASC.AuditTrail.Attributes;
+global using ASC.AuditTrail.Log;
 global using ASC.AuditTrail.Mappers;
 global using ASC.AuditTrail.Models;
 global using ASC.AuditTrail.Models.Mappings;
