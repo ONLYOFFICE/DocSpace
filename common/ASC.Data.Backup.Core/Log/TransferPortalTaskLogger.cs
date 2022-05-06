@@ -24,53 +24,27 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Data.Backup;
-
-[Scope]
-public class Schedule
+namespace ASC.Data.Backup.Core.Log;
+internal static partial class TransferPortalTaskLogger
 {
-    private readonly TenantManager _tenantManager;
-    private readonly ILogger _logger;
-    private readonly TenantUtil _tenantUtil;
+    [LoggerMessage(Level = LogLevel.Debug, Message = "begin transfer {tenantId}")]
+    public static partial void DebugBeginTransfer(this ILogger logger, int tenantId);
 
-    public Schedule(ILogger<Schedule> options, TenantManager tenantManager, TenantUtil tenantUtil)
-    {
-        _logger = options;
-        _tenantManager = tenantManager;
-        _tenantUtil = tenantUtil;
-    }
+    [LoggerMessage(Level = LogLevel.Debug, Message = "end transfer {tenantId}")]
+    public static partial void DebugEndTransfer(this ILogger logger, int tenantId);
 
-    public bool IsToBeProcessed(BackupSchedule backupSchedule)
-    {
-        try
-        {
-            var cron = new CronExpression(backupSchedule.Cron);
-            var tenant = _tenantManager.GetTenant(backupSchedule.TenantId);
-            var tenantTimeZone = tenant.TimeZone;
-            var culture = tenant.GetCulture();
-            Thread.CurrentThread.CurrentCulture = culture;
+    [LoggerMessage(Level = LogLevel.Debug, Message = "begin transfer storage")]
+    public static partial void DebugBeginTransferStorage(this ILogger logger);
 
-            var lastBackupTime = backupSchedule.LastBackupTime.Equals(default)
-                ? DateTime.UtcNow.Date.AddSeconds(-1)
-                : _tenantUtil.DateTimeFromUtc(tenantTimeZone, backupSchedule.LastBackupTime);
+    [LoggerMessage(Level = LogLevel.Debug, Message = "end transfer storage")]
+    public static partial void DebugEndTransferStorage(this ILogger logger);
 
-            var nextBackupTime = cron.GetTimeAfter(lastBackupTime);
+    [LoggerMessage(Level = LogLevel.Error, Message = "TransferProgressItem")]
+    public static partial void ErrorTransferProgressItem(this ILogger logger, Exception exception);
 
-            if (!nextBackupTime.HasValue)
-            {
-                return false;
-            }
-
-            var now = _tenantUtil.DateTimeFromUtc(tenantTimeZone, DateTime.UtcNow);
-
-            return nextBackupTime <= now;
-        }
-        catch (Exception e)
-        {
-            var log = _logger;
-            log.ErrorSchedule(backupSchedule.TenantId, e);
-
-            return false;
-        }
-    }
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Can't copy file ({module}:{path})")]
+    public static partial void WarningCantCopyFile(this ILogger logger, string module, string path, Exception exception);  
+    
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Can't adjust file path \"{path}\".")]
+    public static partial void WarningCantAdjustFilePath(this ILogger logger, string path);
 }

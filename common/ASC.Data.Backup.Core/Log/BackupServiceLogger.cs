@@ -24,53 +24,9 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Data.Backup;
-
-[Scope]
-public class Schedule
+namespace ASC.Data.Backup.Core.Log;
+internal static partial class BackupServiceLogger
 {
-    private readonly TenantManager _tenantManager;
-    private readonly ILogger _logger;
-    private readonly TenantUtil _tenantUtil;
-
-    public Schedule(ILogger<Schedule> options, TenantManager tenantManager, TenantUtil tenantUtil)
-    {
-        _logger = options;
-        _tenantManager = tenantManager;
-        _tenantUtil = tenantUtil;
-    }
-
-    public bool IsToBeProcessed(BackupSchedule backupSchedule)
-    {
-        try
-        {
-            var cron = new CronExpression(backupSchedule.Cron);
-            var tenant = _tenantManager.GetTenant(backupSchedule.TenantId);
-            var tenantTimeZone = tenant.TimeZone;
-            var culture = tenant.GetCulture();
-            Thread.CurrentThread.CurrentCulture = culture;
-
-            var lastBackupTime = backupSchedule.LastBackupTime.Equals(default)
-                ? DateTime.UtcNow.Date.AddSeconds(-1)
-                : _tenantUtil.DateTimeFromUtc(tenantTimeZone, backupSchedule.LastBackupTime);
-
-            var nextBackupTime = cron.GetTimeAfter(lastBackupTime);
-
-            if (!nextBackupTime.HasValue)
-            {
-                return false;
-            }
-
-            var now = _tenantUtil.DateTimeFromUtc(tenantTimeZone, DateTime.UtcNow);
-
-            return nextBackupTime <= now;
-        }
-        catch (Exception e)
-        {
-            var log = _logger;
-            log.ErrorSchedule(backupSchedule.TenantId, e);
-
-            return false;
-        }
-    }
+    [LoggerMessage(Level = LogLevel.Warning, Message = "error while removing backup record")]
+    public static partial void WarningErrorWhileBackupRecord(this ILogger logger, Exception exception);
 }

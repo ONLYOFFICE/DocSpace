@@ -24,53 +24,24 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Data.Backup;
-
-[Scope]
-public class Schedule
+namespace ASC.Data.Backup.Core.Log;
+internal static partial class RestoreDbModuleTaskLogger
 {
-    private readonly TenantManager _tenantManager;
-    private readonly ILogger _logger;
-    private readonly TenantUtil _tenantUtil;
+    [LoggerMessage(Level = LogLevel.Debug, Message = "begin restore data for module {moduleName}")]
+    public static partial void DebugBeginRestoreDataForModule(this ILogger logger, ModuleName moduleName);
 
-    public Schedule(ILogger<Schedule> options, TenantManager tenantManager, TenantUtil tenantUtil)
-    {
-        _logger = options;
-        _tenantManager = tenantManager;
-        _tenantUtil = tenantUtil;
-    }
+    [LoggerMessage(Level = LogLevel.Debug, Message = "begin restore table {tableName}")]
+    public static partial void DebugBeginRestoreTable(this ILogger logger, string tableName);
 
-    public bool IsToBeProcessed(BackupSchedule backupSchedule)
-    {
-        try
-        {
-            var cron = new CronExpression(backupSchedule.Cron);
-            var tenant = _tenantManager.GetTenant(backupSchedule.TenantId);
-            var tenantTimeZone = tenant.TimeZone;
-            var culture = tenant.GetCulture();
-            Thread.CurrentThread.CurrentCulture = culture;
+    [LoggerMessage(Level = LogLevel.Debug, Message = "{rows} rows inserted for table {tableName}")]
+    public static partial void DebugRowsInserted(this ILogger logger, int rows, string tableName);
 
-            var lastBackupTime = backupSchedule.LastBackupTime.Equals(default)
-                ? DateTime.UtcNow.Date.AddSeconds(-1)
-                : _tenantUtil.DateTimeFromUtc(tenantTimeZone, backupSchedule.LastBackupTime);
+    [LoggerMessage(Level = LogLevel.Debug, Message = "end restore data for module {moduleName}")]
+    public static partial void DebugEndRestoreDataForModule(this ILogger logger, ModuleName moduleName);
 
-            var nextBackupTime = cron.GetTimeAfter(lastBackupTime);
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Can't create command to insert row to {tableInfo} with values [{row}]")]
+    public static partial void WarningCantCreateCommand(this ILogger logger, TableInfo tableInfo, DataRowInfo row);
 
-            if (!nextBackupTime.HasValue)
-            {
-                return false;
-            }
-
-            var now = _tenantUtil.DateTimeFromUtc(tenantTimeZone, DateTime.UtcNow);
-
-            return nextBackupTime <= now;
-        }
-        catch (Exception e)
-        {
-            var log = _logger;
-            log.ErrorSchedule(backupSchedule.TenantId, e);
-
-            return false;
-        }
-    }
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Table {name} does not contain tenant id column. Can't apply low importance relations on such tables.")]
+    public static partial void WarningTableDoesNotContainTenantIdColumn(this ILogger logger, string name);
 }

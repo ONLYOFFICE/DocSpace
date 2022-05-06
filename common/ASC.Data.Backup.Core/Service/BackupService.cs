@@ -89,7 +89,7 @@ public class BackupService : IBackupService
             }
             catch (Exception error)
             {
-                _logger.LogWarning(error, "error while removing backup record");
+                _logger.WarningErrorWhileBackupRecord(error);
             }
         }
     }

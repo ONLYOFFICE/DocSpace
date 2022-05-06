@@ -24,53 +24,18 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Data.Backup;
-
-[Scope]
-public class Schedule
+namespace ASC.Data.Backup.Core.Log;
+internal static partial class PortalTaskBaseLogger
 {
-    private readonly TenantManager _tenantManager;
-    private readonly ILogger _logger;
-    private readonly TenantUtil _tenantUtil;
+    [LoggerMessage(Level = LogLevel.Debug, Message = "Steps: {stepsCount}")]
+    public static partial void DebugCountSteps(this ILogger logger, int stepsCount);
 
-    public Schedule(ILogger<Schedule> options, TenantManager tenantManager, TenantUtil tenantUtil)
-    {
-        _logger = options;
-        _tenantManager = tenantManager;
-        _tenantUtil = tenantUtil;
-    }
+    [LoggerMessage(Level = LogLevel.Debug, Message = "run mysql file {file} {args}")]
+    public static partial void DebugRunMySQlFile(this ILogger logger, string file, string args);
 
-    public bool IsToBeProcessed(BackupSchedule backupSchedule)
-    {
-        try
-        {
-            var cron = new CronExpression(backupSchedule.Cron);
-            var tenant = _tenantManager.GetTenant(backupSchedule.TenantId);
-            var tenantTimeZone = tenant.TimeZone;
-            var culture = tenant.GetCulture();
-            Thread.CurrentThread.CurrentCulture = culture;
+    [LoggerMessage(Level = LogLevel.Debug, Message = "complete mysql file {file}")]
+    public static partial void DebugCompleteMySQlFile(this ILogger logger, string file);
 
-            var lastBackupTime = backupSchedule.LastBackupTime.Equals(default)
-                ? DateTime.UtcNow.Date.AddSeconds(-1)
-                : _tenantUtil.DateTimeFromUtc(tenantTimeZone, backupSchedule.LastBackupTime);
-
-            var nextBackupTime = cron.GetTimeAfter(lastBackupTime);
-
-            if (!nextBackupTime.HasValue)
-            {
-                return false;
-            }
-
-            var now = _tenantUtil.DateTimeFromUtc(tenantTimeZone, DateTime.UtcNow);
-
-            return nextBackupTime <= now;
-        }
-        catch (Exception e)
-        {
-            var log = _logger;
-            log.ErrorSchedule(backupSchedule.TenantId, e);
-
-            return false;
-        }
-    }
+    [LoggerMessage(Level = LogLevel.Error, Message = "Restore")]
+    public static partial void ErrorRestore(this ILogger logger, Exception exception);
 }
