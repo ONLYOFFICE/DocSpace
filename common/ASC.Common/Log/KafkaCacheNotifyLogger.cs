@@ -25,7 +25,7 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Common.Log;
-public static partial class KafkaCacheNotifyLogger
+internal static partial class KafkaCacheNotifyLogger
 {
     [LoggerMessage(Level = LogLevel.Error, Message = "KafkaCacheNotify Publish")]
     public static partial void ErrorKafkaCacheNotifyPublish(this ILogger logger, Exception exception);

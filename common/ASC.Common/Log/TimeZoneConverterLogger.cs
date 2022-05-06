@@ -25,7 +25,7 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Common.Log;
-public static partial class TimeZoneConverterLogger
+internal static partial class TimeZoneConverterLogger
 {
     [LoggerMessage(Level = LogLevel.Information, Message = "TimeZone {timeZoneId} not found")]
     public static partial void InformationTimeZoneNotFound(this ILogger logger, string timeZoneId);

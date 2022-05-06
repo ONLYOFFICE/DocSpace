@@ -25,7 +25,7 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Common.Log;
-public static partial class DistributedTaskQueueLogger
+internal static partial class DistributedTaskQueueLogger
 {
     [LoggerMessage(Level = LogLevel.Trace, Message = "EnqueueTask '{distributedTaskId}' by instanse id '{instanceId}'")]
     public static partial void TraceEnqueueTask(this ILogger logger, string DistributedTaskId, int instanceId);

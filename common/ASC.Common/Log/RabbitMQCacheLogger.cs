@@ -25,7 +25,7 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Common.Log;
-public static partial class RabbitMQCacheLogger
+internal static partial class RabbitMQCacheLogger
 {
     [LoggerMessage(Level = LogLevel.Trace, Message = "Creating RabbitMQ consumer channel")]
     public static partial void TraceCreatingRabbitMQ(this ILogger logger);
