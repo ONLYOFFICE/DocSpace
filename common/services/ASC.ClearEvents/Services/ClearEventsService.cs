@@ -41,7 +41,7 @@ public class ClearEventsService : IHostedService, IDisposable
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Timer Clear Events Service running.");
+        _logger.InformationTimerRunnig();
 
         _timer = new Timer(DeleteOldEvents, null, TimeSpan.Zero,
             TimeSpan.FromDays(1));
@@ -84,7 +84,7 @@ public class ClearEventsService : IHostedService, IDisposable
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message);
+            _logger.ErrorWithException(ex);
         }
     }
 
