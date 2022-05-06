@@ -50,6 +50,7 @@ const StyledToastContainer = styled(ToastContainer)`
     }
 
     50% {
+      visibility: hidden;
       transform: translate3d(0, 0, 0);
     }
   }
