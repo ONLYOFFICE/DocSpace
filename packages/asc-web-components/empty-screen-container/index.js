@@ -28,7 +28,7 @@ const EmptyScreenContainer = (props) => {
         <Text
           as="span"
           fontSize="19px"
-          fontWeight="600"
+          fontWeight="700"
           className="ec-header"
           noSelect
         >

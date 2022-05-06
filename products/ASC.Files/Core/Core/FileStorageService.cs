@@ -82,6 +82,7 @@ namespace ASC.Web.Files.Services.WCFService
     {
         private static readonly FileEntrySerializer serializer = new FileEntrySerializer();
         private readonly OFormRequestManager _oFormRequestManager;
+        private readonly ThirdPartySelector _thirdPartySelector;
 
         private Global Global { get; }
         private GlobalStore GlobalStore { get; }
@@ -171,7 +172,8 @@ namespace ASC.Web.Files.Services.WCFService
             ICacheNotify<ThumbnailRequest> thumbnailNotify,
             EntryStatusManager entryStatusManager,
             CompressToArchive compressToArchive,
-            OFormRequestManager oFormRequestManager)
+            OFormRequestManager oFormRequestManager,
+            ThirdPartySelector thirdPartySelector)
         {
             Global = global;
             GlobalStore = globalStore;
@@ -217,6 +219,7 @@ namespace ASC.Web.Files.Services.WCFService
             EntryStatusManager = entryStatusManager;
             CompressToArchive = compressToArchive;
             _oFormRequestManager = oFormRequestManager;
+            _thirdPartySelector = thirdPartySelector;
         }
 
         public async Task<Folder<T>> GetFolderAsync(T folderId)
@@ -838,7 +841,7 @@ namespace ASC.Web.Files.Services.WCFService
                 {
                     ErrorIf(FileTracker.IsEditing(fileId), FilesCommonResource.ErrorMassage_SecurityException_EditFileTwice);
 
-                    app = ThirdPartySelector.GetAppByFileId(fileId.ToString());
+                    app = _thirdPartySelector.GetAppByFileId(fileId.ToString());
                     if (app == null)
                     {
                         await EntryManager.TrackEditingAsync(fileId, Guid.Empty, AuthContext.CurrentAccount.ID, doc, true);
@@ -850,7 +853,7 @@ namespace ASC.Web.Files.Services.WCFService
 
                 (File<string> File, Configuration<string> Configuration) fileOptions;
 
-                app = ThirdPartySelector.GetAppByFileId(fileId.ToString());
+                app = _thirdPartySelector.GetAppByFileId(fileId.ToString());
                 if (app == null)
                 {
                     fileOptions = await DocumentServiceHelper.GetParamsAsync(fileId.ToString(), -1, doc, true, true, false);

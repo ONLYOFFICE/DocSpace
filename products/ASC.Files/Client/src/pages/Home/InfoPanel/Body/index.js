@@ -26,7 +26,6 @@ const InfoPanelBodyContent = ({
   gallerySelected,
   personal,
   createThumbnail,
-  getFileInfo,
 }) => {
   const singleItem = (item) => {
     const dontShowLocation = item.isFolder && item.parentId === 0;
@@ -52,7 +51,6 @@ const InfoPanelBodyContent = ({
         dontShowAccess={dontShowAccess}
         personal={personal}
         createThumbnail={createThumbnail}
-        getFileInfo={getFileInfo}
       />
     );
   };
@@ -104,7 +102,6 @@ export default inject(
       getShareUsers,
       gallerySelected,
       createThumbnail,
-      getFileInfo,
     } = filesStore;
     const { getIcon, getFolderIcon } = settingsStore;
     const { onSelectItem } = filesActionsStore;
@@ -137,7 +134,6 @@ export default inject(
       gallerySelected,
       personal,
       createThumbnail,
-      getFileInfo,
     };
   }
 )(
