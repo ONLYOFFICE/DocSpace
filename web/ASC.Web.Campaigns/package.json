@@ -34,6 +34,7 @@
     "clean": "gatsby clean",
     "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1",
     "firebase:login": "firebase login",
+    "firebase:logout": "firebase logout",
     "firebase:deploy": "firebase deploy"
   }
 }
