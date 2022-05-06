@@ -18,6 +18,7 @@ import { connectedCloudsTypeTitleTranslation } from "../../../../helpers/utils";
 import Loaders from "@appserver/common/components/Loaders";
 import { tablet } from "@appserver/components/utils/device";
 import { ReactSVG } from "react-svg";
+import { isMobile } from "react-device-detect";
 
 const linkStyles = {
   isHovered: true,
@@ -28,7 +29,7 @@ const linkStyles = {
 };
 
 const StyledHeader = styled.div`
-  display: flex;
+  display: ${isMobile ? "none" : "flex"};
   border-bottom: 1px solid #eceef1;
   padding-bottom: 12px;
 
