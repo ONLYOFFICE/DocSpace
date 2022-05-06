@@ -25,10 +25,10 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Common.Log;
-internal static partial class CommonLogger
+public static partial class CommonLogger
 {
     [LoggerMessage(Level = LogLevel.Error)]
-    public static partial void Error(this ILogger logger, Exception exception, string message);
+    public static partial void ErrorWithException(this ILogger logger, Exception exception);
 
     [LoggerMessage(Level = LogLevel.Debug)]
     public static partial void Debug(this ILogger logger, string message);

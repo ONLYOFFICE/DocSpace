@@ -40,7 +40,7 @@ internal static partial class TariffServiceLogger
     public static partial void ErrorLoaderExceptions(this ILogger logger, string text, Exception exception);
 
     [LoggerMessage(Level = LogLevel.Error, Message = "Billing tenant {tenantId}")]
-    public static partial void ErrorBilling(this ILogger logger, string tenantId, Exception exception);
+    public static partial void ErrorBillingWithException(this ILogger logger, string tenantId, Exception exception);
 
     [LoggerMessage(Level = LogLevel.Error, Message = "Billing tenant {tenantId}: {message}")]
     public static partial void ErrorBilling(this ILogger logger, string tenantId, string message);

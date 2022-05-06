@@ -98,7 +98,7 @@ public class CouponManager : IDisposable
         }
         catch (Exception ex)
         {
-            _logger.Error(ex, ex.Message);
+            _logger.ErrorWithException(ex);
             throw;
         }
     }
@@ -138,7 +138,7 @@ public class CouponManager : IDisposable
         }
         catch (Exception ex)
         {
-            _logger.Error(ex, ex.Message);
+            _logger.ErrorWithException(ex);
 
             throw;
         }
@@ -244,7 +244,7 @@ class Promotion
         }
         catch (Exception ex)
         {
-            log.Error(ex, ex.Message);
+            log.ErrorWithException(ex);
 
             throw;
         }

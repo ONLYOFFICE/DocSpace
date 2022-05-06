@@ -87,7 +87,7 @@ public class BaseCommonLinkUtility
             }
             catch (Exception error)
             {
-                options.CreateLogger("ASC.Web").Error(error, error.Message);
+                options.CreateLogger("ASC.Web").ErrorWithException(error);
             }
         }
 

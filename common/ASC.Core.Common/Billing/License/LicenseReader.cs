@@ -286,11 +286,11 @@ public class LicenseReader
         {
             if (_logger.IsEnabled(LogLevel.Debug))
             {
-                _logger.Error(error, error.Message);
+                _logger.ErrorWithException(error);
             }
             else
             {
-                _logger.Error(error.Message);
+                _logger.ErrorWithException(error);
             }
         }
     }

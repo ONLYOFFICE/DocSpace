@@ -701,7 +701,7 @@ public class TariffService : ITariffService
         {
             if (Logger.IsEnabled(LogLevel.Debug))
             {
-                Logger.ErrorBilling(tenantId, error);
+                Logger.ErrorBillingWithException(tenantId, error);
             }
             else
             {

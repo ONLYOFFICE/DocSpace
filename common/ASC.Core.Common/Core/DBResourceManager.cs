@@ -80,7 +80,7 @@ public class DBResourceManager : ResourceManager
                 }
                 catch (Exception err)
                 {
-                    log.CanNotGetExportedTypes(a.FullName, nameof(a.GetExportedTypes), rtle);
+                    log.CanNotGetExportedTypes(a.FullName, nameof(a.GetExportedTypes), err);
                 }
             }
             foreach (var type in types)
@@ -286,7 +286,7 @@ public class WhiteLabelHelper
         }
         catch (Exception e)
         {
-            _logger.RestoreOldText(e);
+            _logger.ErrorRestoreOldText(e);
         }
     }
 
