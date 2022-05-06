@@ -98,7 +98,8 @@ const DropBox = React.forwardRef(
     const [dropBoxHeight, setDropBoxHeight] = React.useState(0);
     const countItems = navigationItems.length;
 
-    const isDesktop = !isMobile || isDesktopUtils();
+    const isDesktop =
+      (!isMobile && !isTabletUtils() && !isMobileUtils()) || isDesktopUtils();
 
     const getItemSize = (index) => {
       if (index === countItems - 1) return 51;

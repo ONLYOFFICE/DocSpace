@@ -12,6 +12,8 @@ const StyledContainer = styled.div`
   display: flex;
   align-items: center;
 
+  height: 32px;
+
   .add-button {
     margin-right: 16px;
     min-width: 15px;
