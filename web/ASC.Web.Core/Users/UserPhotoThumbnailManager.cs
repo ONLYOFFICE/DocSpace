@@ -85,7 +85,7 @@ namespace ASC.Web.Core.Users
                                      width,
                                      height);
 
-            mainImg.Mutate(x => x.Crop(rect).Resize(new ResizeOptions
+            mainImg.Mutate(x => x.BackgroundColor(Color.White).Crop(rect).Resize(new ResizeOptions
             {
                 Size = size
             }));

@@ -37,7 +37,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats.Png;
 
 namespace ASC.Files.ThumbnailBuilder
 {
@@ -338,14 +337,7 @@ namespace ASC.Files.ThumbnailBuilder
                 {
                     using (var targetStream = new MemoryStream())
                     {
-                        var pngEncoderOptions = new PngEncoder()
-                        {
-                            CompressionLevel = PngCompressionLevel.BestCompression,
-                            BitDepth = PngBitDepth.Bit8,
-                            ColorType = PngColorType.Palette
-                        };
-
-                        await targetImg.SaveAsPngAsync(targetStream, pngEncoderOptions);
+                        await targetImg.SaveAsJpegAsync(targetStream);
                         //targetImg.Save(targetStream, JpegFormat.Instance);
                         await fileDao.SaveThumbnailAsync(file, targetStream);
                     }
