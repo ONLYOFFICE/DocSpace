@@ -85,12 +85,12 @@ namespace ASC.Web.Core.Users
                                      width,
                                      height);
 
-            var destRound = mainImg.Clone(x => x.Crop(rect).Resize(new ResizeOptions
+            mainImg.Mutate(x => x.Crop(rect).Resize(new ResizeOptions
             {
                 Size = size
             }));
 
-            return destRound;
+            return mainImg;
         }
     }
 
