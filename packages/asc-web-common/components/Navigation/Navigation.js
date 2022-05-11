@@ -119,15 +119,13 @@ const Navigation = ({
         <>
           {isOpen && (
             <>
-              {isMobileOnly && (
-                <Backdrop
-                  isAside={true}
-                  visible={isOpen}
-                  withBackground={false}
-                  withoutBlur={true}
-                  zIndex={400}
-                />
-              )}
+              <Backdrop
+                visible={isOpen}
+                withBackground={false}
+                withoutBlur={true}
+                zIndex={400}
+              />
+
               <DropBox
                 {...rest}
                 isDesktop={isDesktop}
