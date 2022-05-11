@@ -69,9 +69,9 @@ namespace ASC.Web.Files.Services.DocumentService
     {
         internal static readonly Dictionary<FileType, string> DocType = new Dictionary<FileType, string>
             {
-                { FileType.Document, "text" },
-                { FileType.Spreadsheet, "spreadsheet" },
-                { FileType.Presentation, "presentation" }
+                { FileType.Document, "word" },
+                { FileType.Spreadsheet, "cell" },
+                { FileType.Presentation, "slide" }
             };
 
         private FileType _fileTypeCache = FileType.Unknown;
