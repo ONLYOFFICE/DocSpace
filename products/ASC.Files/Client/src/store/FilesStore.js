@@ -121,7 +121,7 @@ class FilesStore {
             this.setFile(file);
 
             if (this.selection) {
-              const foundIndex = this.selection.findIndex(
+              const foundIndex = this.selection?.findIndex(
                 (x) => x.id === file.id
               );
               if (foundIndex > -1) {
@@ -132,7 +132,7 @@ class FilesStore {
             }
 
             if (this.bufferSelection) {
-              const foundIndex = this.bufferSelection.findIndex(
+              const foundIndex = this.bufferSelection?.findIndex(
                 (x) => x.id === file.id
               );
               if (foundIndex > -1) {
