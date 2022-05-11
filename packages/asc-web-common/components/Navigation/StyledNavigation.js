@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
-import { isMobileOnly } from "react-device-detect";
-import { tablet, mobile, isMobile } from "@appserver/components/utils/device";
+import { isMobile, isMobileOnly } from "react-device-detect";
+import { tablet, mobile } from "@appserver/components/utils/device";
 
 const StyledContainer = styled.div`
   ${(props) =>
