@@ -11,7 +11,7 @@ import { mobile, tablet } from "@appserver/components/utils/device";
 import CrossIcon from "@appserver/components/public/static/images/cross.react.svg";
 
 const StyledDropDown = styled(DropDown)`
-  z-index: 500;
+  z-index: 500 !important;
 
   top: 54px !important;
   right: 20px !important;

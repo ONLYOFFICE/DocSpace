@@ -223,8 +223,8 @@ const MainButtonMobile = (props) => {
 
   return (
     <>
-      <Backdrop zIndex={200} visible={isOpen} onClick={outsideClick} />
-      <div ref={ref} className={className} style={{ zIndex: "201", ...style }}>
+      <Backdrop zIndex={199} visible={isOpen} onClick={outsideClick} />
+      <div ref={ref} className={className} style={{ zIndex: "200", ...style }}>
         <StyledFloatingButton
           icon={isOpen ? "minus" : "plus"}
           isOpen={isOpen}
