@@ -22,7 +22,8 @@ const dialogsDataset = {
 };
 
 const AvatarEditorBody = styled.div`
-  margin-bottom: 24px;
+  margin-right: 6px;
+  //margin-bottom: 24px;
 `;
 
 class AvatarEditorPage extends React.PureComponent {
