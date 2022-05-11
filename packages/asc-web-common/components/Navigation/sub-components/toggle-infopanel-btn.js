@@ -45,6 +45,8 @@ const StyledInfoPanelToggleWrapper = styled.div`
   justify-content: center;
   margin-left: auto;
 
+  margin-bottom: 1px;
+
   @media ${tablet} {
     margin-left: ${(props) => (props.isRootFolder ? "auto" : "0")};
   }
