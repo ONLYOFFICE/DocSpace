@@ -123,7 +123,8 @@ const Navigation = ({
                 <Backdrop
                   isAside={true}
                   visible={isOpen}
-                  withBackground={true}
+                  withBackground={false}
+                  withoutBlur={true}
                   zIndex={400}
                 />
               )}

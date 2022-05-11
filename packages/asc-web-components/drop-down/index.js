@@ -300,7 +300,12 @@ class DropDownContainer extends React.Component {
     return (
       <>
         {withBackdrop ? (
-          <Backdrop visible={open} zIndex={199} onClick={this.toggleDropDown} />
+          <Backdrop
+            visible={open}
+            zIndex={199}
+            onClick={this.toggleDropDown}
+            withoutBlur={true}
+          />
         ) : null}
         <EnhancedComponent
           {...eventTypesProp}

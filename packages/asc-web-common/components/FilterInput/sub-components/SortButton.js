@@ -295,6 +295,7 @@ const SortButton = ({
         visible={isOpen}
         withBackground={true}
         onClick={toggleCombobox}
+        withoutBlur={true}
       />
       <StyledSortButton
         viewAs={viewAs}
