@@ -239,7 +239,11 @@ class TreeFolders extends React.Component {
 
         if (selectedNode) {
           this.needToScroll = false;
-          selectedNode.scrollIntoView();
+
+          selectedNode.scrollIntoView({
+            block: "nearest",
+            inline: "nearest",
+          });
         }
       }
 

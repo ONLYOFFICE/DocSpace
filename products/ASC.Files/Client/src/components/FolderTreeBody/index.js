@@ -20,9 +20,15 @@ const FolderTreeBody = ({
   const { t } = useTranslation(["SelectFolder", "Common"]);
 
   useEffect(() => {
-    document
-      .getElementsByClassName("rc-tree-node-selected")[0]
-      ?.scrollIntoView();
+    const selectedNode = document.getElementsByClassName(
+      "rc-tree-node-selected"
+    )[0];
+    if (selectedNode) {
+      selectedNode.scrollIntoView({
+        block: "nearest",
+        inline: "nearest",
+      });
+    }
   }, []);
 
   return (

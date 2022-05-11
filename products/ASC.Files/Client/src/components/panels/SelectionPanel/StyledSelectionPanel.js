@@ -235,6 +235,7 @@ const StyledTree = styled.div`
 
   .files-tree-menu {
     margin-bottom: 22px;
+    margin-top: 12px !important;
   }
   .selection-panel_tree-folder {
     height: 100%;
