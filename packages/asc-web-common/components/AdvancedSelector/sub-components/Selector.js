@@ -37,6 +37,7 @@ const getCurrentGroup = (items) => {
   return currentGroup;
 };
 
+let countLoad;
 const Selector = (props) => {
   const {
     groups,
@@ -72,6 +73,9 @@ const Selector = (props) => {
     resetCache();
   }, [searchValue, currentGroup, hasNextPage]);
 
+  useEffect(() => {
+    countLoad = 0;
+  }, []);
   const resetCache = useCallback(() => {
     if (listOptionsRef && listOptionsRef.current) {
       listOptionsRef.current.resetloadMoreItemsCache(true);
@@ -148,6 +152,7 @@ const Selector = (props) => {
 
   const onSearchChange = useCallback(
     (value) => {
+      countLoad = 0;
       setSearchValue(value);
       onSearchChanged && onSearchChanged(value);
     },
@@ -155,6 +160,7 @@ const Selector = (props) => {
   );
 
   const onSearchReset = useCallback(() => {
+    countLoad = 0;
     onSearchChanged && onSearchChange("");
   }, [onSearchChanged]);
 
@@ -258,7 +264,7 @@ const Selector = (props) => {
         searchValue: searchValue,
         currentGroup: currentGroup ? currentGroup.key : null,
       };
-
+      countLoad++;
       loadNextPage && loadNextPage(options);
     },
     [isNextPageLoading, searchValue, currentGroup, options]
@@ -295,6 +301,8 @@ const Selector = (props) => {
   );
 
   const onArrowClickAction = useCallback(() => {
+    countLoad = 0;
+
     if (groupHeader && groups.length !== 1) {
       setGroupHeader(null);
 
@@ -308,7 +316,7 @@ const Selector = (props) => {
 
   const renderGroupsList = useCallback(() => {
     if (groupList.length === 0) {
-      return <Option isLoader={true} loadingLabel={loadingLabel} />;
+      return <Option isLoader={true} />;
     }
 
     return (
@@ -318,7 +326,7 @@ const Selector = (props) => {
         onGroupClick={onGroupClick}
       />
     );
-  }, [isMultiSelect, groupList, onGroupClick, loadingLabel]);
+  }, [isMultiSelect, groupList, onGroupClick]);
 
   const itemCount = hasNextPage ? options.length + 1 : options.length;
   const hasSelected = selectedOptionList.length > 0;
@@ -373,7 +381,6 @@ const Selector = (props) => {
               ) : (
                 <OptionList
                   listOptionsRef={listOptionsRef}
-                  loadingLabel={loadingLabel}
                   options={options}
                   itemCount={itemCount}
                   isMultiSelect={isMultiSelect}
@@ -382,6 +389,7 @@ const Selector = (props) => {
                   isItemLoaded={isItemLoaded}
                   isOptionChecked={isOptionChecked}
                   loadMoreItems={loadMoreItems}
+                  countLoad={countLoad}
                 />
               )}
             </>
