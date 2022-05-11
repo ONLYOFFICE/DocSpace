@@ -79,13 +79,13 @@ public class DefaultRabbitMQPersistentConnection
         }
         catch (IOException ex)
         {
-            _logger.LogCritical(ex, "DefaultRabbitMQPersistentConnection");
+            _logger.CriticalDefaultRabbitMQPersistentConnection(ex);
         }
     }
 
     public bool TryConnect()
     {
-        _logger.LogInformation("RabbitMQ Client is trying to connect");
+        _logger.InformationRabbitMQTryingConnect();
 
         lock (sync_root)
         {
@@ -93,7 +93,7 @@ public class DefaultRabbitMQPersistentConnection
                 .Or<BrokerUnreachableException>()
                 .WaitAndRetry(_retryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time) =>
                 {
-                    _logger.LogWarning("RabbitMQ Client could not connect after {TimeOut}s ({ExceptionMessage})", $"{time.TotalSeconds:n1}", ex.Message);
+                    _logger.WarningRabbitMQCouldNotConnect(time.TotalSeconds, ex);
                 }
             );
 
@@ -109,13 +109,13 @@ public class DefaultRabbitMQPersistentConnection
                 _connection.CallbackException += OnCallbackException;
                 _connection.ConnectionBlocked += OnConnectionBlocked;
 
-                _logger.LogInformation("RabbitMQ Client acquired a persistent connection to '{HostName}' and is subscribed to failure events", _connection.Endpoint.HostName);
+                _logger.InformationRabbitMQAcquiredPersistentConnection(_connection.Endpoint.HostName);
 
                 return true;
             }
             else
             {
-                _logger.LogCritical("FATAL ERROR: RabbitMQ connections could not be created and opened");
+                _logger.CriticalRabbitMQCouldNotBeCreated();
 
                 return false;
             }
@@ -129,7 +129,7 @@ public class DefaultRabbitMQPersistentConnection
             return;
         }
 
-        _logger.LogWarning("A RabbitMQ connection is shutdown. Trying to re-connect...");
+        _logger.WarningRabbitMQConnectionShutdown();
 
         TryConnect();
     }
@@ -141,7 +141,7 @@ public class DefaultRabbitMQPersistentConnection
             return;
         }
 
-        _logger.LogWarning("A RabbitMQ connection throw exception. Trying to re-connect...");
+        _logger.WarningRabbitMQConnectionThrowException();
 
         TryConnect();
     }
@@ -153,7 +153,7 @@ public class DefaultRabbitMQPersistentConnection
             return;
         }
 
-        _logger.LogWarning("A RabbitMQ connection is on shutdown. Trying to re-connect...");
+        _logger.WarningRabbitMQConnectionIsOnShutDown();
 
         TryConnect();
     }

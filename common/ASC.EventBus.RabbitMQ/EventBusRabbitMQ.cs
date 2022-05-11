@@ -105,16 +105,16 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
             .Or<SocketException>()
             .WaitAndRetry(_retryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time) =>
             {
-                _logger.LogWarning(ex, string.Format("Could not publish event: {EventId} after {Timeout}s ({ExceptionMessage})", @event.Id, $"{time.TotalSeconds:n1}", ex.Message));
+                _logger.WarningCouldNotPublishEvent(@event.Id, time.TotalSeconds, ex);
             });
 
         var eventName = @event.GetType().Name;
 
-        _logger.LogTrace("Creating RabbitMQ channel to publish event: {EventId} ({EventName})", @event.Id, eventName);
+        _logger.TraceCreatingRabbitMQChannel(@event.Id, eventName);
 
         using (var channel = _persistentConnection.CreateModel())
         {
-            _logger.LogTrace("Declaring RabbitMQ exchange to publish event: {EventId}", @event.Id);
+            _logger.TraceDeclaringRabbitMQChannel(@event.Id);
 
             channel.ExchangeDeclare(exchange: EXCHANGE_NAME, type: "direct");
 
@@ -125,7 +125,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
                 var properties = channel.CreateBasicProperties();
                 properties.DeliveryMode = 2; // persistent
 
-                _logger.LogTrace("Publishing event to RabbitMQ: {EventId}", @event.Id);
+                _logger.TracePublishingEvent(@event.Id);
 
                 channel.BasicPublish(
                     exchange: EXCHANGE_NAME,
@@ -140,7 +140,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
     public void SubscribeDynamic<TH>(string eventName)
         where TH : IDynamicIntegrationEventHandler
     {
-        _logger.LogInformation("Subscribing to dynamic event {EventName} with {EventHandler}", eventName, typeof(TH).GetGenericTypeName());
+        _logger.InformationSubscribingDynamic(eventName, typeof(TH).GetGenericTypeName());
 
         DoInternalSubscription(eventName);
         _subsManager.AddDynamicSubscription<TH>(eventName);
@@ -154,7 +154,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
         var eventName = _subsManager.GetEventKey<T>();
         DoInternalSubscription(eventName);
 
-        _logger.LogInformation("Subscribing to event {EventName} with {EventHandler}", eventName, typeof(TH).GetGenericTypeName());
+        _logger.InformationSubscribing(eventName, typeof(TH).GetGenericTypeName());
 
         _subsManager.AddSubscription<T, TH>();
         StartBasicConsume();
@@ -209,13 +209,13 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
 
     private void StartBasicConsume()
     {
-        _logger.LogTrace("Starting RabbitMQ basic consume");
+        _logger.TraceStartingBasicConsume();
 
         if (_consumerChannel != null)
         {
             if (!String.IsNullOrEmpty(_consumerTag))
             {
-                _logger.LogTrace("Consumer tag {ConsumerTag} already exist. Cancelled BasicConsume again", _consumerTag);
+                _logger.TraceConsumerTagExist(_consumerTag);
 
                 return;
             }
@@ -231,7 +231,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
         }
         else
         {
-            _logger.LogError("StartBasicConsume can't call on _consumerChannel == null");
+            _logger.ErrorStartBasicConsumeCantCall();
         }
     }
 
@@ -255,7 +255,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
         }
         catch (IntegrationEventRejectExeption ex)
         {
-            _logger.LogWarning(ex, string.Format("----- ERROR Processing message \"{0}\"", message));
+            _logger.WarningProcessingMessage(message, ex);
 
             if (eventArgs.Redelivered)
             {
@@ -276,7 +276,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex, string.Format("----- ERROR Processing message \"{0}\"", message));
+            _logger.WarningProcessingMessage(message, ex);
 
             _consumerChannel.BasicAck(eventArgs.DeliveryTag, multiple: false);
         }
@@ -289,7 +289,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
             _persistentConnection.TryConnect();
         }
 
-        _logger.LogTrace("Creating RabbitMQ consumer channel");
+        _logger.TraceCreatingConsumerChannel();
 
         var channel = _persistentConnection.CreateModel();
 
@@ -318,7 +318,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
 
         channel.CallbackException += (sender, ea) =>
         {
-            _logger.LogWarning(ea.Exception, "Recreating RabbitMQ consumer channel");
+            _logger.WarningRecreatingConsumerChannel(ea.Exception);
 
             _consumerChannel.Dispose();
             _consumerChannel = CreateConsumerChannel();
@@ -354,7 +354,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
 
     private async Task ProcessEvent(string eventName, IntegrationEvent @event)
     {
-        _logger.LogTrace("Processing RabbitMQ event: {EventName}", eventName);
+        _logger.TraceProcessingEvent(eventName);
 
         PreProcessEvent(@event);
 
@@ -397,7 +397,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
         }
         else
         {
-            _logger.LogWarning("No subscription for RabbitMQ event: {EventName}", eventName);
+            _logger.WarningNoSubscription(eventName);
         }
     }
 }
