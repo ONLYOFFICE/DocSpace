@@ -652,7 +652,7 @@ class CreateUserForm extends React.Component {
           </MainFieldsContainer>
         </MainContainer>
         <InfoFieldContainer
-          headerText={t("Translations:Comments")}
+          headerText={t("Common:Comments")}
           marginBottom={"42px"}
         >
           <Textarea

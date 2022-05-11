@@ -943,7 +943,7 @@ class UpdateUserForm extends React.Component {
         </MainContainer>
         {!personal && (
           <InfoFieldContainer
-            headerText={t("Translations:Comments")}
+            headerText={t("Common:Comments")}
             marginBottom={"42px"}
           >
             <Textarea

@@ -166,7 +166,7 @@ const SingleItem = (props) => {
         },
         {
           id: "Comments",
-          title: t("Comments"),
+          title: t("Common:Comments"),
           content: styledText(item.comment),
         }
       );
