@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
 
 using ASC.Common;
@@ -31,7 +30,6 @@ using ASC.Files.Core;
 using ASC.Web.Core.Files;
 using ASC.Web.Core.Users;
 using ASC.Web.Files.Classes;
-using ASC.Web.Files.Core;
 using ASC.Web.Files.Services.DocumentService;
 using ASC.Web.Files.Utils;
 
@@ -39,7 +37,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats.Png;
 
 namespace ASC.Files.ThumbnailBuilder
 {
@@ -248,7 +245,7 @@ namespace ASC.Files.ThumbnailBuilder
                     attempt++;
                 }
 
-                Thread.Sleep(config.AttemptWaitInterval);
+                await Task.Delay(config.AttemptWaitInterval);
             }
             while (string.IsNullOrEmpty(thumbnailUrl));
 
@@ -306,7 +303,7 @@ namespace ASC.Files.ThumbnailBuilder
 
             var httpClient = ClientFactory.CreateClient();
             using var response = httpClient.Send(request);
-            using (var stream = new ResponseStream(response))
+            using (var stream = await response.Content.ReadAsStreamAsync())
             {
                 await Crop(fileDao, file, stream);
             }
@@ -334,13 +331,13 @@ namespace ASC.Files.ThumbnailBuilder
 
         private async Task Crop(IFileDao<T> fileDao, File<T> file, Stream stream)
         {
-            using (var sourceImg = Image.Load(stream))
+            using (var sourceImg = await Image.LoadAsync(stream))
             {
                 using (var targetImg = GetImageThumbnail(sourceImg))
                 {
                     using (var targetStream = new MemoryStream())
                     {
-                        targetImg.Save(targetStream, PngFormat.Instance);
+                        await targetImg.SaveAsJpegAsync(targetStream);
                         //targetImg.Save(targetStream, JpegFormat.Instance);
                         await fileDao.SaveThumbnailAsync(file, targetStream);
                     }

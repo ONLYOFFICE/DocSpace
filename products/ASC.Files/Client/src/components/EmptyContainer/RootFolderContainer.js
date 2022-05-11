@@ -12,6 +12,7 @@ const RootFolderContainer = (props) => {
     t,
     theme,
     isPrivacyFolder,
+    isRecycleBinFolder,
     isDesktop,
     isEncryptionSupport,
     organizationName,
@@ -29,7 +30,8 @@ const RootFolderContainer = (props) => {
   const myDescription = t("MyEmptyContainerDescription");
   const shareDescription = t("SharedEmptyContainerDescription");
   const commonDescription = t("CommonEmptyContainerDescription");
-  const trashDescription = t("TrashEmptyContainerDescription");
+  const trashHeader = t("EmptyScreenFolder");
+  const trashDescription = t("TrashEmptyDescription");
   const favoritesDescription = t("FavoritesEmptyContainerDescription");
   const recentDescription = t("RecentEmptyContainerDescription");
 
@@ -70,6 +72,7 @@ const RootFolderContainer = (props) => {
       case FolderType.Favorites:
         return {
           descriptionText: favoritesDescription,
+          imageStyle: { margin: "0px 0 0 auto" },
           imageSrc: "images/empty_screen_favorites.png",
         };
       case FolderType.Recent:
@@ -85,10 +88,12 @@ const RootFolderContainer = (props) => {
         };
       case FolderType.TRASH:
         return {
+          headerText: trashHeader,
           descriptionText: trashDescription,
+          style: { gridColumnGap: "39px", gridTemplateColumns: "150px" },
           imageSrc: theme.isBase
-            ? "images/empty_screen_trash.png"
-            : "images/empty_screen_trash_dark.png",
+            ? "images/empty_screen_trash_alt.png"
+            : "images/empty_screen_trash_alt.png",
           buttons: trashButtons,
         };
       default:
@@ -186,7 +191,8 @@ const RootFolderContainer = (props) => {
   );
 
   const headerText = isPrivacyFolder ? privateRoomHeader : title;
-  const subheadingTextProp = isPrivacyFolder ? {} : { subheadingText };
+  const subheadingTextProp =
+    isPrivacyFolder || isRecycleBinFolder ? {} : { subheadingText };
   const emptyFolderProps = getEmptyFolderProps();
 
   return (
@@ -214,11 +220,16 @@ export default inject(
       setIsLoading,
     } = filesStore;
     const { title, rootFolderType } = selectedFolderStore;
-    const { isPrivacyFolder, myFolderId } = treeFoldersStore;
+    const {
+      isPrivacyFolder,
+      myFolderId,
+      isRecycleBinFolder,
+    } = treeFoldersStore;
 
     return {
       theme,
       isPrivacyFolder,
+      isRecycleBinFolder,
       isDesktop: isDesktopClient,
       isEncryptionSupport,
       organizationName,

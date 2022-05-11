@@ -265,9 +265,11 @@ class ConnectClouds extends React.Component {
           </>
         ) : (
           <EmptyFolderContainer
-            headerText={t("ConnectAccounts")}
-            subheadingText={t("ConnectAccountsSubTitle")}
-            imageSrc="/static/images/empty_screen.png"
+            headerText={t("ConnectEmpty")}
+            descriptionText={t("ConnectDescriptionText")}
+            style={{ gridColumnGap: "39px" }}
+            buttonStyle={{ marginTop: "16px" }}
+            imageSrc="/static/images/empty_screen_alt.svg"
             buttons={
               <div className="empty-folder_container-links empty-connect_container-links">
                 <img
@@ -278,7 +280,7 @@ class ConnectClouds extends React.Component {
                 />
                 <Box className="flex-wrapper_container">
                   <Link onClick={this.onShowThirdPartyDialog} {...linkStyles}>
-                    {t("Translations:AddAccount")}
+                    {t("Common:Connect")}
                   </Link>
                 </Box>
               </div>
@@ -327,7 +329,7 @@ export default inject(
     };
   }
 )(
-  withTranslation(["Settings", "Translations"])(
+  withTranslation(["Settings", "Translations", "Common"])(
     observer(withRouter(ConnectClouds))
   )
 );
