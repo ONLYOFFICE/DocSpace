@@ -143,6 +143,9 @@ class FilesTableHeader extends React.Component {
     if (this.props.firstElemChecked && this.props.headerBorder) {
       const elem = document.getElementById("table-container_caption-header");
       elem?.classList?.add("hotkeys-lengthen-header");
+    } else {
+      const elem = document.getElementById("table-container_caption-header");
+      elem?.classList?.remove("hotkeys-lengthen-header");
     }
   }
 

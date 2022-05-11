@@ -40,13 +40,8 @@ const StyledMainBar = styled.div`
   box-sizing: border-box;
 
   margin-left: -20px;
-  /* width: calc(100vw - 256px);
-  max-width: calc(100vw - 256px); */
 
-  width: ${(props) =>
-    props.infoPanelIsVisible ? "calc(100vw - 657px)" : "calc(100vw - 256px)"};
-  max-width: ${(props) =>
-    props.infoPanelIsVisible ? "calc(100vw - 657px)" : "calc(100vw - 256px)"};
+  width: calc(100% + 20px);
 
   #bar-banner {
     margin-bottom: -3px;
@@ -58,19 +53,13 @@ const StyledMainBar = styled.div`
   }
 
   @media ${tablet} {
-    width: ${(props) =>
-      props.showText ? "calc(100vw - 240px)" : "calc(100vw - 52px)"};
-    max-width: ${(props) =>
-      props.showText ? "calc(100vw - 240px)" : "calc(100vw - 52px)"};
+    width: calc(100% + 16px);
     margin-left: -16px;
   }
 
   ${isMobile &&
   css`
-    width: ${(props) =>
-      props.showText ? "calc(100vw - 240px)" : "calc(100vw - 52px)"} !important;
-    max-width: ${(props) =>
-      props.showText ? "calc(100vw - 240px)" : "calc(100vw - 52px)"} !important;
+    width: calc(100% + 32px) !important;
     margin-left: -16px;
   `}
 
@@ -310,6 +299,7 @@ class Section extends React.Component {
                     isSectionBarAvailable={isSectionBarAvailable}
                     isSectionHeaderAvailable={isSectionHeaderAvailable}
                     infoPanelIsVisible={infoPanelIsVisible}
+                    settingsStudio={settingsStudio}
                   >
                     {!isMobile && (
                       <StyledMainBar

@@ -28,6 +28,8 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
+using ASC.Common;
+using ASC.Core.Common.Configuration;
 using ASC.Files.Core;
 
 using Microsoft.AspNetCore.Http;
@@ -46,10 +48,17 @@ namespace ASC.Web.Files.ThirdPartyApp
         Task SaveFileAsync(string fileId, string fileType, string downloadUrl, Stream stream);
     }
 
-    public static class ThirdPartySelector
+    [Scope(Additional = typeof(ThirdPartySelectorExtension))]
+    public class ThirdPartySelector
     {
         public const string AppAttr = "app";
         public static readonly Regex AppRegex = new Regex("^" + AppAttr + @"-(\S+)\|(\S+)$", RegexOptions.Singleline | RegexOptions.Compiled);
+        private readonly ConsumerFactory _consumerFactory;
+
+        public ThirdPartySelector(ConsumerFactory consumerFactory)
+        {
+            _consumerFactory = consumerFactory;
+        }
 
         public static string BuildAppFileId(string app, object fileId)
         {
@@ -61,7 +70,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             return AppRegex.Match(appFileId).Groups[2].Value;
         }
 
-        public static IThirdPartyApp GetAppByFileId(string fileId)
+        public IThirdPartyApp GetAppByFileId(string fileId)
         {
             if (string.IsNullOrEmpty(fileId)) return null;
             var match = AppRegex.Match(fileId);
@@ -70,14 +79,23 @@ namespace ASC.Web.Files.ThirdPartyApp
                        : null;
         }
 
-        public static IThirdPartyApp GetApp(string app)
+        public IThirdPartyApp GetApp(string app)
         {
             return app switch
             {
-                GoogleDriveApp.AppAttr => new GoogleDriveApp(),
-                BoxApp.AppAttr => new BoxApp(),
-                _ => new GoogleDriveApp(),
+                GoogleDriveApp.AppAttr => _consumerFactory.Get<GoogleDriveApp>(),
+                BoxApp.AppAttr => _consumerFactory.Get<BoxApp>(),
+                _ => _consumerFactory.Get<GoogleDriveApp>(),
             };
+        }
+    }
+
+    public class ThirdPartySelectorExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<GoogleDriveApp>();
+            services.TryAdd<BoxApp>();
         }
     }
 }

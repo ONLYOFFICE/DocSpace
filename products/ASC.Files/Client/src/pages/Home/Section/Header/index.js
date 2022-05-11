@@ -108,37 +108,44 @@ class SectionHeaderContent extends React.Component {
         key: "new-document",
         label: t("NewDocument"),
         onClick: this.createDocument,
+        icon: "images/actions.documents.react.svg",
       },
       {
         key: "new-spreadsheet",
         label: t("NewSpreadsheet"),
         onClick: this.createSpreadsheet,
+        icon: "images/spreadsheet.react.svg",
       },
       {
         key: "new-presentation",
         label: t("NewPresentation"),
         onClick: this.createPresentation,
+        icon: "images/actions.presentation.react.svg",
       },
       {
         label: t("Translations:NewForm"),
+        icon: "images/form.react.svg",
         onClick: this.createForm,
       },
       {
         label: t("Translations:NewFormFile"),
         onClick: this.createFormFromFile,
         disabled: isPrivacyFolder,
+        icon: "images/form.file.react.svg",
       },
       {
         key: "new-folder",
         label: t("NewFolder"),
         onClick: this.createFolder,
+        icon: "images/catalog.folder.react.svg",
       },
       { key: "separator", isSeparator: true },
       {
-        key: "make-invitation-link",
+        key: "upload-to-folder",
         label: t("UploadToFolder"),
         onClick: this.uploadToFolder,
         disabled: true,
+        icon: "images/actions.upload.react.svg",
       },
     ];
   };
@@ -224,12 +231,14 @@ class SectionHeaderContent extends React.Component {
         label: t("SharingSettings"),
         onClick: this.onOpenSharingPanel,
         disabled: personal ? true : false,
+        icon: "/static/images/share.react.svg",
       },
       {
         key: "link-portal-users",
         label: t("LinkForPortalUsers"),
         onClick: this.createLinkForPortalUsers,
         disabled: personal ? true : false,
+        icon: "/static/images/invitation.link.react.svg",
       },
       { key: "separator-2", isSeparator: true },
       {
@@ -237,30 +246,35 @@ class SectionHeaderContent extends React.Component {
         label: t("MoveTo"),
         onClick: this.onMoveAction,
         disabled: false,
+        icon: "images/move.react.svg",
       },
       {
         key: "copy",
         label: t("Translations:Copy"),
         onClick: this.onCopyAction,
         disabled: false,
+        icon: "/static/images/copy.react.svg",
       },
       {
         key: "download",
         label: t("Common:Download"),
         onClick: this.downloadAction,
         disabled: false,
+        icon: "images/download.react.svg",
       },
       {
         key: "rename",
         label: t("Rename"),
         onClick: this.renameAction,
         disabled: true,
+        icon: "images/rename.react.svg",
       },
       {
         key: "delete",
         label: t("Common:Delete"),
         onClick: this.onDeleteAction,
         disabled: false,
+        icon: "/static/images/catalog.trash.react.svg",
       },
     ];
   };

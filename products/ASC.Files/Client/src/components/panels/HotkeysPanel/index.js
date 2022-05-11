@@ -46,7 +46,7 @@ const HotkeyPanel = ({ visible, setHotkeyPanelVisible, t, tReady }) => {
   return (
     <StyledHotkeysPanel>
       <Backdrop onClick={onClose} visible={visible} isAside={true} />
-      <Aside className="hotkeys-panel" visible={visible}>
+      <Aside className="hotkeys-panel" visible={visible} onClose={onClose}>
         <div className="hotkeys_header">
           <Heading className="hotkeys_heading">{t("Hotkeys")}</Heading>
         </div>

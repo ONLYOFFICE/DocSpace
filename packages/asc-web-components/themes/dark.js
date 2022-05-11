@@ -2691,6 +2691,8 @@ const Dark = {
   submenu: {
     lineColor: "#474747",
     backgroundColor: "#333",
+    textColor: "#E06A1B",
+    bottomLineColor: "#E06A1B",
   },
 };
 

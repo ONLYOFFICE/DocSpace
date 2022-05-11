@@ -30,13 +30,12 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Security;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Common.Web;
@@ -74,6 +73,7 @@ using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Web.Files.ThirdPartyApp
 {
+    [Scope]
     public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
     {
         public const string AppAttr = "box";
@@ -331,40 +331,32 @@ namespace ASC.Web.Files.ThirdPartyApp
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(BoxUrlUpload.Replace("{fileId}", fileId));
 
-            using (var tmpStream = new MemoryStream())
+            StreamContent streamContent;
+
+            using var multipartFormContent = new MultipartFormDataContent();
+
+            if (stream != null)
             {
-                var boundary = DateTime.UtcNow.Ticks.ToString("x");
-
-                var metadata = $"Content-Disposition: form-data; name=\"filename\"; filename=\"{title}\"\r\nContent-Type: application/octet-stream\r\n\r\n";
-                var metadataPart = $"--{boundary}\r\n{metadata}";
-                var bytes = Encoding.UTF8.GetBytes(metadataPart);
-                await tmpStream.WriteAsync(bytes, 0, bytes.Length);
-
-                if (stream != null)
-                {
-                    await stream.CopyToAsync(tmpStream);
-                }
-                else
-                {
-                    var downloadRequest = new HttpRequestMessage();
-                    downloadRequest.RequestUri = new Uri(downloadUrl);
-                    using var response = await httpClient.SendAsync(request);
-                    using var downloadStream = new ResponseStream(response);
-                    await downloadStream.CopyToAsync(tmpStream);
-                }
-
-                var mediaPartEnd = $"\r\n--{boundary}--\r\n";
-                bytes = Encoding.UTF8.GetBytes(mediaPartEnd);
-                await tmpStream.WriteAsync(bytes, 0, bytes.Length);
-
-                request.Method = HttpMethod.Post;
-                request.Headers.Add("Authorization", "Bearer " + token);
-                request.Content.Headers.ContentType = new MediaTypeHeaderValue("multipart/form-data; boundary=" + boundary);
-                Logger.Debug("BoxApp: save file totalSize - " + tmpStream.Length);
-
-                tmpStream.Seek(0, SeekOrigin.Begin);
-                request.Content = new StreamContent(tmpStream);
+                streamContent = new StreamContent(stream);
             }
+            else
+            {
+                var downloadRequest = new HttpRequestMessage();
+                downloadRequest.RequestUri = new Uri(downloadUrl);
+                var response = await httpClient.SendAsync(downloadRequest);
+                var downloadStream = new ResponseStream(response);
+
+                streamContent = new StreamContent(downloadStream);
+            }
+
+            streamContent.Headers.TryAddWithoutValidation("Content-Type", MimeMapping.GetMimeMapping(title));
+            multipartFormContent.Add(streamContent, name: "filename", fileName: title);
+
+            request.Content = multipartFormContent;
+            request.Method = HttpMethod.Post;
+            request.Headers.Add("Authorization", "Bearer " + token);
+            //request.Content.Headers.ContentType = new MediaTypeHeaderValue("multipart/form-data; boundary=" + boundary);
+            //Logger.Debug("BoxApp: save file totalSize - " + tmpStream.Length);
 
             try
             {
