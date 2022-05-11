@@ -1,5 +1,4 @@
 ﻿{
-  "AccessRights": "Права за достъп",
   "AccessRightsAccessToProduct": "Достъпът до {{product}} модула е даден на",
   "AccessRightsAllUsers": "Всички {{users}}",
   "AccessRightsChangeOwnerConfirmText": "Промените ще бъдат приложени след потвърждението по имейла.",

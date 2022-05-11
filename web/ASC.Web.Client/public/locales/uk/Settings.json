@@ -1,5 +1,4 @@
 ﻿{
-  "AccessRights": "Права доступу",
   "AccessRightsAccessToProduct": "Доступ до модуля {{product}} надано",
   "AccessRightsAllUsers": "Усі {{users}}",
   "AccessRightsChangeOwnerConfirmText": "Зміни будуть застосовані після підтвердження за допомогою електронної пошти.",
