@@ -116,6 +116,7 @@ const ControlButtons = ({
           )}
           {!personal && (
             <ContextMenuButton
+              zIndex={402}
               className="option-button"
               directionX="right"
               iconName="images/vertical-dots.react.svg"
