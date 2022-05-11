@@ -109,7 +109,11 @@ const StyledSelector = styled.div`
           right: 10px !important;
         }
       }
-
+      .option-loader {
+        width: 100%;
+        height: 100%;
+        margin-top: 16px;    
+      }
       .row-option {
         box-sizing: border-box;
         height: 48px;
