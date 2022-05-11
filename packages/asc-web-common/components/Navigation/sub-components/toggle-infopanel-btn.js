@@ -79,7 +79,7 @@ StyledInfoPanelToggleWrapper.defaultProps = { theme: Base };
 const ToggleInfoPanelButton = ({
   isRootFolder,
   isInfoPanelVisible,
-  toggleInfoPanelAction,
+  toggleInfoPanel,
 }) => {
   return (
     <StyledInfoPanelToggleWrapper
@@ -92,7 +92,7 @@ const ToggleInfoPanelButton = ({
           iconName="images/panel.react.svg"
           size="16"
           isFill={true}
-          onClick={toggleInfoPanelAction}
+          onClick={toggleInfoPanel}
         />
       </div>
     </StyledInfoPanelToggleWrapper>

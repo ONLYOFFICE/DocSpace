@@ -59,7 +59,7 @@ const StyledExpanderDownIconRotate = styled(ExpanderDownIcon)`
   min-width: 8px !important;
   width: 8px !important;
   min-height: 18px !important;
-  padding: 0 4px 0 1px;
+  padding: 0 4px 0 2px;
   transform: rotate(-180deg);
 
   path {

@@ -14,10 +14,8 @@ import StyledContainer from "../StyledNavigation";
 import { isMobile, isMobileOnly } from "react-device-detect";
 import {
   tablet,
-  mobile,
   isMobile as isMobileUtils,
   isTablet as isTabletUtils,
-  isDesktop as isDesktopUtils,
 } from "@appserver/components/utils/device";
 
 import { Base } from "@appserver/components/themes";
@@ -29,7 +27,7 @@ const StyledBox = styled.div`
 
   padding: ${isMobile ? "0 16px " : "0 20px"};
 
-  ${(props) => !props.isDesktop && `width: ${props.dropBoxWidth}px;`};
+  ${(props) => `width: ${props.dropBoxWidth}px;`};
 
   height: ${(props) => (props.height ? `${props.height}px` : "fit-content")};
   max-height: calc(100vh - 48px);
@@ -92,14 +90,12 @@ const DropBox = React.forwardRef(
       isInfoPanelVisible,
       maxHeight,
       isOpen,
+      isDesktop,
     },
     ref
   ) => {
     const [dropBoxHeight, setDropBoxHeight] = React.useState(0);
     const countItems = navigationItems.length;
-
-    const isDesktop =
-      (!isMobile && !isTabletUtils() && !isMobileUtils()) || isDesktopUtils();
 
     const getItemSize = (index) => {
       if (index === countItems - 1) return 51;

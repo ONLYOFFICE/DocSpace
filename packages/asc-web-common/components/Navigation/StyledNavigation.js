@@ -1,9 +1,16 @@
 import styled, { css } from "styled-components";
 import { isMobileOnly } from "react-device-detect";
-import { tablet, mobile } from "@appserver/components/utils/device";
+import { tablet, mobile, isMobile } from "@appserver/components/utils/device";
 
 const StyledContainer = styled.div`
-  width: 100% !important;
+  ${(props) =>
+    !props.isDropBox &&
+    props.isDesktop &&
+    css`
+      width: fit-content;
+      max-width: calc(100% - 72px);
+    `}
+
   display: grid;
   align-items: center;
   grid-template-columns: ${(props) =>
@@ -28,6 +35,14 @@ const StyledContainer = styled.div`
       props.isRootFolder ? "auto 1fr" : "29px 1fr auto"};
     padding: ${(props) => (props.isDropBox ? "14px 0 5px" : "14px 0 15px")};
   }
+
+  ${isMobile &&
+  css`
+    width: 100%;
+    grid-template-columns: ${(props) =>
+      props.isRootFolder ? "auto 1fr" : "29px 1fr auto"};
+    padding: ${(props) => (props.isDropBox ? "14px 0 5px" : "14px 0 15px")};
+  `}
 
   @media ${mobile} {
     padding: ${(props) =>
