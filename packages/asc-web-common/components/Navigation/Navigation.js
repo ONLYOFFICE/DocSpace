@@ -54,8 +54,6 @@ const Navigation = ({
     (!isMobile && !isTabletUtils() && !isMobileUtils()) ||
     (isDesktopUtils() && !isMobile);
 
-  console.log(isDesktop);
-
   const onMissClick = (e) => {
     e.preventDefault;
     const path = e.path || (e.composedPath && e.composedPath());
