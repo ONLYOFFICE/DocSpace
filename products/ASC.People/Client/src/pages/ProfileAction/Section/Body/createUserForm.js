@@ -620,7 +620,7 @@ class CreateUserForm extends React.Component {
               locale={language}
             />
             <TextField
-              labelText={`${t("Translations:Location")}:`}
+              labelText={`${t("Common:Location")}:`}
               inputName="location"
               inputValue={profile.location}
               inputIsDisabled={isLoading}

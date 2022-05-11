@@ -903,7 +903,7 @@ class UpdateUserForm extends React.Component {
               />
             )}
             <TextField
-              labelText={`${t("Translations:Location")}:`}
+              labelText={`${t("Common:Location")}:`}
               inputName="location"
               inputValue={profile.location}
               inputIsDisabled={isLoading}

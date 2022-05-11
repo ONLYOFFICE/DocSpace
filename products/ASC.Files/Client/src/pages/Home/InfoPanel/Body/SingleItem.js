@@ -230,7 +230,7 @@ const SingleItem = (props) => {
     //         dip.id === "Location"
     //           ? {
     //               id: "Location",
-    //               title: t("Location"),
+    //               title: t("Common:Location"),
     //               content: (
     //                 <Link
     //                   className="property-content"
