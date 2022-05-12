@@ -278,7 +278,7 @@ class PeopleSelector extends React.Component {
         embeddedComponent={embeddedComponent}
         showCounter={showCounter}
         onArrowClick={onArrowClick}
-        headerLabel={headerLabel ? headerLabel : `${t("AddUsers")}`}
+        headerLabel={headerLabel ? headerLabel : `${t("Common:AddUsers")}`}
         total={total}
       />
     );

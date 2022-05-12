@@ -11,7 +11,6 @@
   "ExternalLink": "外部链接",
   "FormFilling": "表单填写",
   "InternalLink": "内部链接",
-  "LinkText": "添加用户",
   "Notify users": "通知用户",
   "ReadOnly": "只读",
   "ShareEmailBody": "您已获得{{itemName}}文档的访问权限。点击下方的链接以立即打开文档：{{shareLink}}",
