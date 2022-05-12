@@ -2235,6 +2235,12 @@ const Dark = {
     border: "1px solid #474747",
   },
 
+  connectedClouds: {
+    color: "#eeeeee",
+    borderBottom: `1px solid #474747`,
+    borderRight: `1px solid #474747`,
+  },
+
   filesModalDialog: {
     border: `1px solid #474747`,
   },

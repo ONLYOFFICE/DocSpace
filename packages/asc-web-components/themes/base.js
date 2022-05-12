@@ -2226,6 +2226,11 @@ const Base = {
     border: "1px solid #d1d1d1",
   },
 
+  connectedClouds: {
+    borderBottom: `1px solid #eceef1`,
+    borderRight: `1px solid #d0d5da`,
+  },
+
   filesModalDialog: {
     border: `1px solid lightgray`,
   },
