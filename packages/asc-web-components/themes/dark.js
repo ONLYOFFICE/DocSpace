@@ -1809,7 +1809,7 @@ const Dark = {
     },
     control: {
       background: "#a3a3a3",
-      fill: "#333333",
+      fill: "#ffffff",
     },
 
     headerBurgerColor: "#606060",
@@ -2233,6 +2233,12 @@ const Dark = {
 
   filesThirdPartyDialog: {
     border: "1px solid #474747",
+  },
+
+  connectedClouds: {
+    color: "#eeeeee",
+    borderBottom: `1px solid #474747`,
+    borderRight: `1px solid #474747`,
   },
 
   filesModalDialog: {

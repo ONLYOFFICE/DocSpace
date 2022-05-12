@@ -166,7 +166,7 @@ const SingleItem = (props) => {
         },
         {
           id: "Comments",
-          title: t("Comments"),
+          title: t("Common:Comments"),
           content: styledText(item.comment),
         }
       );
@@ -230,7 +230,7 @@ const SingleItem = (props) => {
     //         dip.id === "Location"
     //           ? {
     //               id: "Location",
-    //               title: t("Location"),
+    //               title: t("Common:Location"),
     //               content: (
     //                 <Link
     //                   className="property-content"

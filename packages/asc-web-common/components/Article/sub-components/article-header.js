@@ -20,6 +20,7 @@ const ArticleHeader = ({
   isLoaded,
   tReady,
   setIsLoadedArticleHeader,
+  isBurgerLoading,
   ...rest
 }) => {
   const location = useLocation();
@@ -34,19 +35,19 @@ const ArticleHeader = ({
     if (isLoadedSetting) setIsLoadedArticleHeader(isLoadedSetting);
   }, [isLoadedSetting]);
 
-  const heightLoader = isTabletUtils() || isTablet ? "20px" : "32px";
-
   const showLoader = commonSettings ? !isLoadedPage : false;
 
-  return showLoader ? (
-    <StyledArticleHeader>
-      <Loaders.ArticleHeader height={heightLoader} className="loader" />
-    </StyledArticleHeader>
-  ) : (
+  const isTabletView = isTabletUtils() || isTablet;
+
+  return (
     <StyledArticleHeader showText={showText} {...rest}>
-      <StyledIconBox name="article-burger">
-        <StyledMenuIcon onClick={onClick} />
-      </StyledIconBox>
+      {isTabletView && (isBurgerLoading || showLoader) ? (
+        <Loaders.ArticleHeader height="20px" />
+      ) : (
+        <StyledIconBox name="article-burger">
+          <StyledMenuIcon onClick={onClick} />
+        </StyledIconBox>
+      )}
 
       <StyledHeading showText={showText} size="large">
         {children}
@@ -63,11 +64,13 @@ ArticleHeader.propTypes = {
 
 ArticleHeader.displayName = "Header";
 
-export default inject(({ common }) => {
+export default inject(({ common, auth }) => {
   const { isLoaded, setIsLoadedArticleHeader } = common;
-
+  const { settingsStore } = auth;
+  const { isBurgerLoading } = settingsStore;
   return {
     isLoaded,
     setIsLoadedArticleHeader,
+    isBurgerLoading,
   };
 })(observer(ArticleHeader));

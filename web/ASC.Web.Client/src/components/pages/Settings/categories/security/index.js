@@ -24,7 +24,7 @@ const SecurityWrapper = (props) => {
     },
     {
       id: "access-rights",
-      name: t("AccessRights"),
+      name: t("Common:AccessRights"),
       content: <AccessRights />,
     },
   ];
@@ -69,4 +69,6 @@ export default inject(({ setup }) => {
       await initSettings();
     },
   };
-})(withTranslation("Settings")(withRouter(observer(SecurityWrapper))));
+})(
+  withTranslation(["Settings", "Common"])(withRouter(observer(SecurityWrapper)))
+);

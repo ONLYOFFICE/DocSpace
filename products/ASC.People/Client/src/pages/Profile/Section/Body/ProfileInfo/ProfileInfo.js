@@ -361,7 +361,7 @@ class ProfileInfo extends React.PureComponent {
         )}
         {location && (
           <InfoItem>
-            <InfoItemLabel>{t("Translations:Location")}:</InfoItemLabel>
+            <InfoItemLabel>{t("Common:Location")}:</InfoItemLabel>
             <InfoItemValue className="profile-info_location">
               {location}
             </InfoItemValue>

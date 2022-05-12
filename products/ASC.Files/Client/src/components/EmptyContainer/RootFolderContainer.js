@@ -6,6 +6,7 @@ import EmptyContainer from "./EmptyContainer";
 import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
 import Box from "@appserver/components/box";
+import Loaders from "@appserver/common/components/Loaders";
 
 const RootFolderContainer = (props) => {
   const {
@@ -25,6 +26,8 @@ const RootFolderContainer = (props) => {
     setIsLoading,
     rootFolderType,
     linkStyles,
+    isLoading,
+    viewAs,
   } = props;
   const subheadingText = t("SubheadingEmptyText");
   const myDescription = t("MyEmptyContainerDescription");
@@ -43,6 +46,8 @@ const RootFolderContainer = (props) => {
     t("PrivateRoomDescriptionEncrypted"),
     t("PrivateRoomDescriptionUnbreakable"),
   ];
+
+  const [showLoader, setShowLoader] = React.useState(false);
 
   const onGoToMyDocuments = () => {
     const newFilter = filter.clone();
@@ -195,12 +200,30 @@ const RootFolderContainer = (props) => {
     isPrivacyFolder || isRecycleBinFolder ? {} : { subheadingText };
   const emptyFolderProps = getEmptyFolderProps();
 
+  React.useEffect(() => {
+    if (isLoading) {
+      setShowLoader(isLoading);
+    } else {
+      setTimeout(() => setShowLoader(isLoading), 300);
+    }
+  }, [isLoading]);
+
   return (
-    <EmptyContainer
-      headerText={headerText}
-      {...subheadingTextProp}
-      {...emptyFolderProps}
-    />
+    <>
+      {showLoader ? (
+        viewAs === "tile" ? (
+          <Loaders.Tiles />
+        ) : (
+          <Loaders.Rows />
+        )
+      ) : (
+        <EmptyContainer
+          headerText={headerText}
+          {...subheadingTextProp}
+          {...emptyFolderProps}
+        />
+      )}
+    </>
   );
 };
 
@@ -217,7 +240,9 @@ export default inject(
       filter,
       fetchFiles,
       privacyInstructions,
+      isLoading,
       setIsLoading,
+      viewAs,
     } = filesStore;
     const { title, rootFolderType } = selectedFolderStore;
     const {
@@ -238,8 +263,10 @@ export default inject(
       myFolderId,
       filter,
       fetchFiles,
+      isLoading,
       setIsLoading,
       rootFolderType,
+      viewAs,
     };
   }
 )(withTranslation("Home")(observer(RootFolderContainer)));

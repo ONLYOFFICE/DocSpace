@@ -1,7 +1,6 @@
 ﻿{
   "AddMembers": "Dodaj člane",
   "Birthdate": "Datum rojstva",
-  "Comments": "Komentarji",
   "DeleteSelfProfile": "Izbriši profil",
   "DisabledEmployeeStatus": "Onemogočeno",
   "DisableUserButton": "Onemogoči",
@@ -11,7 +10,6 @@
   "FemaleSexStatus": "Ženska",
   "InviteLinkTitle": "Povezava do povabila",
   "LDAPLbl": "LDAP",
-  "Location": "Lokacija",
   "MaleSexStatus": "Moški",
   "maxSizeFileError": "Največja velikost datoteke je presežena",
   "MaxSizeLabel": "(JPG ali PNG, max 1 MB)",

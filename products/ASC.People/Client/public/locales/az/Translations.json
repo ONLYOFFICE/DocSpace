@@ -1,7 +1,6 @@
 ﻿{
   "AddMembers": "Üzvlərin əlavə edilməsi",
   "Birthdate": "Doğum tarixi",
-  "Comments": "Şərhlər",
   "DeleteSelfProfile": "Profilin silinməsi",
   "DisabledEmployeeStatus": "Söndürülüb",
   "DisableUserButton": "Bloklamaq",
@@ -11,7 +10,6 @@
   "FemaleSexStatus": "Qadın",
   "InviteLinkTitle": "Dəvət üçün link",
   "LDAPLbl": "LDAP",
-  "Location": "Yer",
   "MaleSexStatus": "Kişi",
   "maxSizeFileError": "Faylın həcmi, maksimum izin verilən həcmdən böyükdür",
   "MaxSizeLabel": "(JPG və ya PNG, ən çox 1 MB)",
