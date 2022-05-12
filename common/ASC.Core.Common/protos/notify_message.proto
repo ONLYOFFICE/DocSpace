@@ -3,17 +3,17 @@
 package ASC.Notify.Messages;
 
 message NotifyMessage {
-    int32 tenant = 1;
-    string sender = 2;
-    string from = 3;
-    string to = 4;
+    int32 tenant_id = 1;
+    string sender_type = 2;
+    string sender = 3;
+    string reciever = 4;
     string reply_to = 5;
     string subject = 6;
     string content_type = 7;
     string content = 8;
     int64 creation_date = 9;
     int32 priority = 10;
-    repeated NotifyMessageAttachment embedded_attachments = 11;
+    repeated NotifyMessageAttachment attachments = 11;
     string auto_submitted = 12;
 }
 message NotifyMessageAttachment {

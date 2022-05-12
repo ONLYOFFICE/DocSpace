@@ -26,9 +26,9 @@ class ThirdPartyModule extends React.PureComponent {
     });
   };
 
-  onSelectFolder = (selectedFolder) => {
+  onSelectFolder = (id) => {
     const { setSelectedFolder } = this.props;
-    setSelectedFolder(selectedFolder);
+    setSelectedFolder(`${id}`);
   };
 
   render() {
@@ -53,7 +53,7 @@ class ThirdPartyModule extends React.PureComponent {
             isPanelVisible={isPanelVisible}
             isError={isError}
             foldersType="third-party"
-            isSavingProcess={isLoadingData}
+            isDisabled={isLoadingData}
             id={passedId}
             isReset={isReset}
             isSuccessSave={isSuccessSave}
@@ -69,13 +69,15 @@ class ThirdPartyModule extends React.PureComponent {
 export default inject(({ backup }) => {
   const {
     setSelectedFolder,
-    defaultFolderId,
+    selectedFolderId,
     defaultStorageType,
     commonThirdPartyList,
+    defaultFolderId,
   } = backup;
 
   const isResourcesDefault =
     defaultStorageType === `${BackupStorageType.ResourcesModuleType}`;
+
   const passedId = isResourcesDefault ? defaultFolderId : "";
 
   return {

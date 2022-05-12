@@ -40,7 +40,6 @@ const Template = ({ optionsMultiSelect, onChange, ...args }) => {
               size={16}
               color=""
               key={i}
-              color="#d0d5da"
               iconName="static/images/settings.react.svg"
             />
           );
@@ -82,6 +81,5 @@ Default.args = {
   mask: null,
   isDisabled: false,
   iconName: "static/images/search.react.svg",
-  iconColor: "#D0D5DA",
   isIconFill: false,
 };

@@ -1,12 +1,14 @@
 import React from "react";
-import { StyledText, StyledAuthorAvatar } from "./CellStyles";
+import { StyledText, StyledAuthorCell } from "./CellStyles";
+import Avatar from "@appserver/components/avatar";
 
 const AuthorCell = ({ fileOwner, sideColor, item }) => {
   return (
-    <>
-      <StyledAuthorAvatar
-        src={item.createdBy.avatarSmall}
+    <StyledAuthorCell>
+      <Avatar
+        source={item.createdBy.avatarSmall}
         className="author-avatar-cell"
+        role="user"
       />
       <StyledText
         color={sideColor}
@@ -17,7 +19,7 @@ const AuthorCell = ({ fileOwner, sideColor, item }) => {
       >
         {fileOwner}
       </StyledText>
-    </>
+    </StyledAuthorCell>
   );
 };
 

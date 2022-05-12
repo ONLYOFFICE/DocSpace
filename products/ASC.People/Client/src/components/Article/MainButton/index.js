@@ -2,8 +2,7 @@ import React from "react";
 //import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import MainButton from "@appserver/components/main-button";
-import DropDownItem from "@appserver/components/drop-down-item";
-import InviteDialog from "./../../dialogs/InviteDialog/index";
+import InviteDialog from "../../dialogs/InviteDialog/index";
 import { withTranslation } from "react-i18next";
 import toastr from "studio/toastr";
 import Loaders from "@appserver/common/components/Loaders";
@@ -11,6 +10,13 @@ import { inject, observer } from "mobx-react";
 import config from "../../../../package.json";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
+import { isMobile } from "react-device-detect";
+import {
+  isMobile as isMobileUtils,
+  isTablet as isTabletUtils,
+} from "@appserver/components/utils/device";
+import MobileView from "./MobileView";
+
 import withLoader from "../../../HOCs/withLoader";
 
 class ArticleMainButtonContent extends React.Component {
@@ -26,6 +32,7 @@ class ArticleMainButtonContent extends React.Component {
     history.push(
       combineUrl(AppServerConfig.proxyURL, homepage, "${homepage}/import")
     );
+    if (isMobile || isMobileUtils()) this.props.toggleShowText();
   };
 
   goToEmployeeCreate = () => {
@@ -33,6 +40,7 @@ class ArticleMainButtonContent extends React.Component {
     history.push(
       combineUrl(AppServerConfig.proxyURL, homepage, "/create/user")
     );
+    if (isMobile || isMobileUtils()) this.props.toggleShowText();
   };
 
   goToGuestCreate = () => {
@@ -40,6 +48,7 @@ class ArticleMainButtonContent extends React.Component {
     history.push(
       combineUrl(AppServerConfig.proxyURL, homepage, "/create/guest")
     );
+    if (isMobile || isMobileUtils()) this.props.toggleShowText();
   };
 
   goToGroupCreate = () => {
@@ -47,6 +56,7 @@ class ArticleMainButtonContent extends React.Component {
     history.push(
       combineUrl(AppServerConfig.proxyURL, homepage, "/group/create")
     );
+    if (isMobile || isMobileUtils()) this.props.toggleShowText();
   };
 
   onNotImplementedClick = (text) => {
@@ -65,12 +75,21 @@ class ArticleMainButtonContent extends React.Component {
       userCaption,
       guestCaption,
       groupCaption,
+      sectionWidth,
+
+      isMobileArticle,
     } = this.props;
 
     const { dialogVisible } = this.state;
 
+    const separator = {
+      key: "separator",
+      isSeparator: true,
+    };
+
     const menuModel = [
       {
+        key: "create-user",
         icon: combineUrl(
           AppServerConfig.proxyURL,
           homepage,
@@ -78,9 +97,9 @@ class ArticleMainButtonContent extends React.Component {
         ),
         label: userCaption,
         onClick: this.goToEmployeeCreate,
-        className: "main-button_create-user",
       },
       {
+        key: "create-guest",
         icon: combineUrl(
           AppServerConfig.proxyURL,
           homepage,
@@ -88,9 +107,9 @@ class ArticleMainButtonContent extends React.Component {
         ),
         label: guestCaption,
         onClick: this.goToGuestCreate,
-        className: "main-button_create-guest",
       },
       {
+        key: "create-group",
         icon: combineUrl(
           AppServerConfig.proxyURL,
           homepage,
@@ -98,19 +117,18 @@ class ArticleMainButtonContent extends React.Component {
         ),
         label: groupCaption,
         onClick: this.goToGroupCreate,
-        className: "main-button_create-group",
       },
+    ];
+
+    const links = [
       {
-        isSeparator: true,
-      },
-      {
+        key: "invite-link",
         icon: combineUrl(
           AppServerConfig.proxyURL,
           "/static/images/invitation.link.react.svg"
         ),
         label: t("Translations:InviteLinkTitle"),
         onClick: this.onInvitationDialogClick,
-        className: "main-button_invitation-link",
       },
       /* {
         icon: combineUrl(
@@ -120,6 +138,7 @@ class ArticleMainButtonContent extends React.Component {
         label: t("SendInvitesAgain"),
         onClick: this.onNotImplementedClick.bind(this, t("SendInvitesAgain")),
       },
+      separator,
       {
         icon: combineUrl(
           AppServerConfig.proxyURL,
@@ -132,13 +151,23 @@ class ArticleMainButtonContent extends React.Component {
 
     return isAdmin ? (
       <>
-        <MainButton
-          isDisabled={false}
-          isDropdown={true}
-          text={t("Common:Actions")}
-          model={menuModel}
-          className="main-button_invitation-link people_main-button"
-        />
+        {isMobileArticle ? (
+          <MobileView
+            labelProps={t("OtherOperations")}
+            actionOptions={menuModel}
+            buttonOptions={links}
+            sectionWidth={sectionWidth}
+          />
+        ) : (
+          <MainButton
+            isDisabled={false}
+            isDropdown={true}
+            text={t("Common:Actions")}
+            model={[...menuModel, separator, ...links]}
+            className="main-button_invitation-link"
+          />
+        )}
+
         {dialogVisible && (
           <InviteDialog
             visible={dialogVisible}
@@ -160,16 +189,20 @@ export default withRouter(
       guestCaption,
       groupCaption,
     } = auth.settingsStore.customNames;
+
     return {
       isAdmin: auth.isAdmin,
       homepage: config.homepage,
       userCaption,
       guestCaption,
       groupCaption,
+      toggleShowText: auth.settingsStore.toggleShowText,
+      isMobileArticle: auth.settingsStore.isMobileArticle,
+      showText: auth.settingsStore.showText,
     };
   })(
     withTranslation(["Article", "Common", "Translations"])(
-      withLoader(observer(ArticleMainButtonContent))(<Loaders.MainButton />)
+      withLoader(observer(ArticleMainButtonContent))(<Loaders.ArticleButton />)
     )
   )
 );

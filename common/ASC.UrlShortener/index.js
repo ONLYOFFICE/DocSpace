@@ -38,8 +38,6 @@ const query = require('./app/sqlConsts');
 const config = require('./config');
 const co = require('co');
 
-
-
 var app = express();
 
 app.use(cookieParser());

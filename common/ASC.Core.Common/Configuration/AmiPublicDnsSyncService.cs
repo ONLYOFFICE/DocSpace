@@ -1,123 +1,102 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2018
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 
-using System;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Text.RegularExpressions;
 
-using ASC.Common.Module;
+namespace ASC.Core.Configuration;
 
-using Microsoft.Extensions.DependencyInjection;
-
-namespace ASC.Core.Configuration
+[Scope]
+public class AmiPublicDnsSyncService : BackgroundService
 {
-    public class AmiPublicDnsSyncService : IServiceController
+    private readonly TenantManager _tenantManager;
+    private readonly CoreBaseSettings _coreBaseSettings;
+    private readonly IHttpClientFactory _clientFactory;
+
+    public AmiPublicDnsSyncService(TenantManager tenantManager, CoreBaseSettings coreBaseSettings, IHttpClientFactory clientFactory)
     {
-        public static IServiceProvider ServiceProvider { get; set; }
-        public void Start()
-        {
-            Synchronize();
-        }
+        _tenantManager = tenantManager;
+        _coreBaseSettings = coreBaseSettings;
+        _clientFactory = clientFactory;
+    }
 
-        public void Stop()
-        {
+    protected override Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        Synchronize();
+        return Task.CompletedTask;
+    }
 
-        }
-
-        public static void Synchronize()
+    private void Synchronize()
+    {
+        if (_coreBaseSettings.Standalone)
         {
-            using var scope = ServiceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<AmiPublicDnsSyncServiceScope>();
-            var (tenantManager, coreBaseSettings, clientFactory) = scopeClass;
-            if (coreBaseSettings.Standalone)
+            var tenants = _tenantManager.GetTenants(false).Where(t => MappedDomainNotSettedByUser(t.MappedDomain));
+            if (tenants.Any())
             {
-                var tenants = tenantManager.GetTenants(false).Where(t => MappedDomainNotSettedByUser(t.MappedDomain));
-                if (tenants.Any())
+                var dnsname = GetAmiPublicDnsName(_clientFactory);
+                foreach (var tenant in tenants.Where(t => !string.IsNullOrEmpty(dnsname) && t.MappedDomain != dnsname))
                 {
-                    var dnsname = GetAmiPublicDnsName(clientFactory);
-                    foreach (var tenant in tenants.Where(t => !string.IsNullOrEmpty(dnsname) && t.MappedDomain != dnsname))
-                    {
-                        tenant.MappedDomain = dnsname;
-                        tenantManager.SaveTenant(tenant);
-                    }
+                    tenant.MappedDomain = dnsname;
+                    _tenantManager.SaveTenant(tenant);
                 }
             }
-        }
-
-        private static bool MappedDomainNotSettedByUser(string domain)
-        {
-            return string.IsNullOrEmpty(domain) || Regex.IsMatch(domain, "^ec2.+\\.compute\\.amazonaws\\.com$", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
-        }
-
-        private static string GetAmiPublicDnsName(IHttpClientFactory clientFactory)
-        {
-            try
-            {
-                var request = new HttpRequestMessage();
-                request.RequestUri = new Uri("http://169.254.169.254/latest/meta-data/public-hostname");
-                request.Method = HttpMethod.Get;
-
-                var httpClient = clientFactory.CreateClient();
-                httpClient.Timeout = TimeSpan.FromMilliseconds(5000);
-
-                using var responce = httpClient.Send(request);
-                using var stream = responce.Content.ReadAsStream();
-                using var reader = new StreamReader(stream);
-                return reader.ReadToEnd();
-            }
-            catch (HttpRequestException ex)
-            {
-                if (ex.StatusCode == HttpStatusCode.NotFound || ex.StatusCode == HttpStatusCode.Conflict)
-                {
-                    throw;
-                }
-            }
-            return null;
         }
     }
 
-    public class AmiPublicDnsSyncServiceScope
+    private static bool MappedDomainNotSettedByUser(string domain)
     {
-        private TenantManager TenantManager { get; }
-        private CoreBaseSettings CoreBaseSettings { get; }
-        private IHttpClientFactory ClientFactory { get; }
+        return string.IsNullOrEmpty(domain) || Regex.IsMatch(domain, "^ec2.+\\.compute\\.amazonaws\\.com$", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+    }
 
-        public AmiPublicDnsSyncServiceScope(TenantManager tenantManager, CoreBaseSettings coreBaseSettings, IHttpClientFactory clientFactory)
+    private static string GetAmiPublicDnsName(IHttpClientFactory clientFactory)
+    {
+        try
         {
-            TenantManager = tenantManager;
-            CoreBaseSettings = coreBaseSettings;
-            ClientFactory = clientFactory;
+            var request = new HttpRequestMessage
+            {
+                RequestUri = new Uri("http://169.254.169.254/latest/meta-data/public-hostname"),
+                Method = HttpMethod.Get
+            };
+
+            var httpClient = clientFactory.CreateClient();
+            httpClient.Timeout = TimeSpan.FromMilliseconds(5000);
+
+            using var responce = httpClient.Send(request);
+            using var stream = responce.Content.ReadAsStream();
+            using var reader = new StreamReader(stream);
+
+            return reader.ReadToEnd();
+        }
+        catch (HttpRequestException ex)
+        {
+            if (ex.StatusCode == HttpStatusCode.NotFound || ex.StatusCode == HttpStatusCode.Conflict)
+            {
+                throw;
+            }
         }
 
-        public void Deconstruct(out TenantManager tenantManager, out CoreBaseSettings coreBaseSettings, out IHttpClientFactory clientFactory)
-        {
-            (tenantManager, coreBaseSettings, clientFactory) = (TenantManager, CoreBaseSettings, ClientFactory);
-        }
+        return null;
     }
 }

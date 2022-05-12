@@ -24,6 +24,7 @@ class Textarea extends React.PureComponent {
       fontSize,
       heightTextArea,
       color,
+      theme,
     } = this.props;
 
     return (
@@ -100,7 +101,6 @@ Textarea.defaultProps = {
   tabIndex: -1,
   value: "",
   fontSize: 13,
-  color: "#333333",
 };
 
 export default Textarea;

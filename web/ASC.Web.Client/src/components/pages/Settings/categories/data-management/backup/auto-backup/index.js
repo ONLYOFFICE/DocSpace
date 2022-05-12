@@ -24,7 +24,7 @@ import { StyledModules, StyledAutoBackup } from "../StyledBackup";
 import ThirdPartyModule from "./sub-components/ThirdPartyModule";
 import DocumentsModule from "./sub-components/DocumentsModule";
 import ThirdPartyStorageModule from "./sub-components/ThirdPartyStorageModule";
-
+import { getThirdPartyCommonFolderTree } from "@appserver/common/api/files";
 const {
   DocumentModuleType,
   ResourcesModuleType,
@@ -93,7 +93,7 @@ class AutomaticBackup extends React.PureComponent {
         backupSchedule,
         backupStorage,
       ] = await Promise.all([
-        SelectFolderDialog.getCommonThirdPartyList(),
+        getThirdPartyCommonFolderTree,
         getBackupSchedule(),
         getBackupStorage(),
       ]);
@@ -475,6 +475,7 @@ class AutomaticBackup extends React.PureComponent {
       isCheckedThirdParty,
       isCheckedDocuments,
       commonThirdPartyList,
+      buttonSize,
     } = this.props;
 
     const {
@@ -598,7 +599,7 @@ class AutomaticBackup extends React.PureComponent {
               onClick={this.onSaveModuleSettings}
               primary
               isDisabled={isLoadingData}
-              size="medium"
+              size={buttonSize}
               className="save-button"
             />
 
@@ -606,7 +607,7 @@ class AutomaticBackup extends React.PureComponent {
               label={t("Common:CancelButton")}
               isDisabled={isLoadingData}
               onClick={this.onCancelModuleSettings}
-              size="medium"
+              size={buttonSize}
             />
           </div>
         )}

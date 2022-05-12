@@ -157,7 +157,7 @@ class AvatarEditor extends React.Component {
             label={saveButtonLabel}
             isLoading={saveButtonLoading}
             primary={true}
-            size="big"
+            size="normal"
             onClick={this.onSaveButtonClick}
           />
         </ModalDialog.Footer>
@@ -191,14 +191,14 @@ class AvatarEditor extends React.Component {
             label={saveButtonLabel}
             isLoading={saveButtonLoading}
             primary={true}
-            size="big"
+            size="normal"
             onClick={this.onSaveButtonClick}
           />
           <Button
             key="CancelBtn"
             label={cancelButtonLabel}
             primary={false}
-            size="big"
+            size="normal"
             onClick={this.onCancelButtonClick}
           />
         </StyledButtonsWrapper>

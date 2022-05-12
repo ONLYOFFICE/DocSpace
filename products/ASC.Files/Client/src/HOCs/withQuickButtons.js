@@ -46,6 +46,7 @@ export default function withQuickButtons(WrappedComponent) {
     render() {
       const {
         t,
+        theme,
         item,
         isTrashFolder,
         isAdmin,
@@ -66,6 +67,7 @@ export default function withQuickButtons(WrappedComponent) {
       const quickButtonsComponent = !isEdit ? (
         <QuickButtons
           t={t}
+          theme={theme}
           item={item}
           sectionWidth={sectionWidth}
           isAdmin={isAdmin}
@@ -110,6 +112,7 @@ export default function withQuickButtons(WrappedComponent) {
       } = filesStore.fileActionStore;
       const { setSharingPanelVisible } = dialogsStore;
       return {
+        theme: auth.settingsStore.theme,
         isAdmin: auth.isAdmin,
         isTrashFolder: isRecycleBinFolder,
         lockFileAction,

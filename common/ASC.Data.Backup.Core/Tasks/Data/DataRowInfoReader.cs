@@ -1,100 +1,91 @@
-﻿/*
- *
- * (c) Copyright Ascensio System Limited 2010-2020
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
+﻿// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+namespace ASC.Data.Backup.Tasks.Data;
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Xml;
-using System.Xml.Linq;
-
-using ASC.Data.Backup.Extensions;
-
-namespace ASC.Data.Backup.Tasks.Data
+internal static class DataRowInfoReader
 {
-    internal static class DataRowInfoReader
+    private const string XmlSchemaNamespace = "http://www.w3.org/2001/XMLSchema";
+
+    public static IEnumerable<DataRowInfo> ReadFromStream(Stream stream)
     {
-        private const string XmlSchemaNamespace = "http://www.w3.org/2001/XMLSchema";
-
-        public static IEnumerable<DataRowInfo> ReadFromStream(Stream stream)
+        var readerSettings = new XmlReaderSettings
         {
-            var readerSettings = new XmlReaderSettings
+            CheckCharacters = false,
+            CloseInput = false
+        };
+
+        using var xmlReader = XmlReader.Create(stream, readerSettings);
+        xmlReader.MoveToContent();
+        xmlReader.ReadToFollowing("schema", XmlSchemaNamespace);
+
+        var schema = new Dictionary<string, string>();
+
+        if (XNode.ReadFrom(xmlReader) is XElement schemaElement)
+        {
+            foreach (var entry in schemaElement.Descendants(XName.Get("sequence", XmlSchemaNamespace)).Single().Elements(XName.Get("element", XmlSchemaNamespace)))
             {
-                CheckCharacters = false,
-                CloseInput = false
-            };
-
-            using var xmlReader = XmlReader.Create(stream, readerSettings);
-            xmlReader.MoveToContent();
-            xmlReader.ReadToFollowing("schema", XmlSchemaNamespace);
-
-            var schema = new Dictionary<string, string>();
-
-            if (XNode.ReadFrom(xmlReader) is XElement schemaElement)
-            {
-                foreach (var entry in schemaElement.Descendants(XName.Get("sequence", XmlSchemaNamespace)).Single().Elements(XName.Get("element", XmlSchemaNamespace)))
-                {
-                    schema.Add(entry.Attribute("name").ValueOrDefault(), entry.Attribute("type").ValueOrDefault());
-                }
+                schema.Add(entry.Attribute("name").ValueOrDefault(), entry.Attribute("type").ValueOrDefault());
             }
+        }
 
-            while (xmlReader.Read())
+        while (xmlReader.Read())
+        {
+            if (xmlReader.NodeType == XmlNodeType.Element)
             {
-                if (xmlReader.NodeType == XmlNodeType.Element)
+                if (XNode.ReadFrom(xmlReader) is XElement el)
                 {
-                    if (XNode.ReadFrom(xmlReader) is XElement el)
+                    var dataRowInfo = new DataRowInfo(el.Name.LocalName);
+                    foreach (var column in schema)
                     {
-                        var dataRowInfo = new DataRowInfo(el.Name.LocalName);
-                        foreach (var column in schema)
-                        {
-                            var value = ConvertToType(el.Element(column.Key).ValueOrDefault(), column.Value);
-                            dataRowInfo.SetValue(column.Key, value);
-                        }
-
-                        yield return dataRowInfo;
+                        var value = ConvertToType(el.Element(column.Key).ValueOrDefault(), column.Value);
+                        dataRowInfo.SetValue(column.Key, value);
                     }
+
+                    yield return dataRowInfo;
                 }
             }
         }
+    }
 
-        private static object ConvertToType(string str, string schemaType)
+    private static object ConvertToType(string str, string schemaType)
+    {
+        if (str == null)
         {
-            if (str == null)
-            {
-                return null;
-            }
-            if (schemaType == "xs:boolean")
-            {
-                return Convert.ToBoolean(str);
-            }
-            if (schemaType == "xs:base64Binary")
-            {
-                return Convert.FromBase64String(str);
-            }
-            return str;
+            return null;
         }
+        if (schemaType == "xs:boolean")
+        {
+            return Convert.ToBoolean(str);
+        }
+        if (schemaType == "xs:base64Binary")
+        {
+            return Convert.FromBase64String(str);
+        }
+
+        return str;
     }
 }

@@ -236,7 +236,7 @@ const Template = (args) => (
           <div style={{ display: "flex" }}>
             <div style={{ marginRight: 16 }}>
               <Button
-                size="big"
+                size="normal"
                 isDisabled={false}
                 onClick={() => {}}
                 label="Button"
@@ -245,7 +245,7 @@ const Template = (args) => (
             </div>
 
             <Button
-              size="big"
+              size="normal"
               isDisabled={false}
               onClick={() => {}}
               label="Button"

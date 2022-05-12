@@ -163,7 +163,10 @@ class BackupListModalDialog extends React.Component {
       >
         <ModalDialog.Header>{t("BackupList")}</ModalDialog.Header>
         <ModalDialog.Body>
-          <StyledBackupList isCopyingToLocal={isCopyingToLocal}>
+          <StyledBackupList
+            isCopyingToLocal={isCopyingToLocal}
+            isEmpty={filesList?.length === 0}
+          >
             <div className="backup-list_content">
               {filesList.length > 0 && (
                 <div className="backup-restore_dialog-header">
@@ -231,13 +234,13 @@ class BackupListModalDialog extends React.Component {
                     <div className="restore_dialog-button">
                       <Button
                         primary
-                        size="medium"
+                        size="normal"
                         label={t("Common:Restore")}
                         onClick={this.onRestorePortal}
                         isDisabled={isCopyingToLocal || !isChecked}
                       />
                       <Button
-                        size="medium"
+                        size="normal"
                         label={t("Common:CloseButton")}
                         onClick={onModalClose}
                       />

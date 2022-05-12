@@ -15,7 +15,6 @@ import {
   BackupStorageType,
 } from "@appserver/common/constants";
 import { request } from "@appserver/common/api/client";
-import SelectFolderDialog from "files/SelectFolderDialog";
 import { StyledRestoreBackup } from "./../StyledBackup";
 import BackupListModalDialog from "./sub-components/backup-list";
 import Documents from "./sub-components/DocumentsModule";
@@ -23,6 +22,7 @@ import ThirdPartyResources from "./sub-components/ThirdPartyResourcesModule";
 import ThirdPartyStorages from "./sub-components/ThirdPartyStoragesModule";
 import LocalFile from "./sub-components/LocalFileModule";
 import config from "../../../../../../../../package.json";
+import { getThirdPartyCommonFolderTree } from "@appserver/common/api/files";
 
 const {
   DocumentModuleType,
@@ -68,7 +68,7 @@ class RestoreBackup extends React.Component {
     try {
       getProgress(t);
 
-      const commonThirdPartyList = await SelectFolderDialog.getCommonThirdPartyList();
+      const commonThirdPartyList = await getThirdPartyCommonFolderTree();
       commonThirdPartyList && setCommonThirdPartyList(commonThirdPartyList);
     } catch (error) {
       toastr.error(error);
@@ -334,6 +334,7 @@ class RestoreBackup extends React.Component {
       history,
       downloadingProgress,
       commonThirdPartyList,
+      buttonSize,
     } = this.props;
     const {
       isChecked,
@@ -410,6 +411,7 @@ class RestoreBackup extends React.Component {
         <div className="restore-backup_modules">
           {isCheckedDocuments && (
             <Documents
+              t={t}
               isPanelVisible={isPanelVisible}
               onClose={this.onPanelClose}
               onClickInput={this.onClickInput}
@@ -419,6 +421,7 @@ class RestoreBackup extends React.Component {
           )}
           {isCheckedThirdParty && (
             <ThirdPartyResources
+              t={t}
               isPanelVisible={isPanelVisible}
               onClose={this.onPanelClose}
               onClickInput={this.onClickInput}
@@ -490,7 +493,7 @@ class RestoreBackup extends React.Component {
           primary
           isDisabled={checkingRecoveryData || !isMaxProgress || !isChecked}
           isLoading={checkingRecoveryData}
-          size="medium"
+          size={buttonSize}
           tabIndex={10}
         />
       </StyledRestoreBackup>

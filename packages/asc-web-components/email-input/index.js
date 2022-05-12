@@ -21,30 +21,16 @@ class EmailInput extends React.Component {
     super(props);
 
     const { value, emailSettings } = this.props;
-    const validatedSettings = EmailSettings.parse(emailSettings);
-    const isValidEmail = this.checkEmail(value, validatedSettings);
+    const isValidEmail = this.checkEmail(value, emailSettings);
 
     this.state = {
       isValidEmail,
-      emailSettings: validatedSettings,
       inputValue: value,
     };
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return !equal(this.props, nextProps) || !equal(this.state, nextState);
-  }
-
   componentDidUpdate(prevProps) {
-    const { emailSettings, value } = this.props;
-
-    if (!EmailSettings.equals(emailSettings, prevProps.emailSettings)) {
-      const validatedSettings = EmailSettings.parse(emailSettings);
-
-      this.setState({ emailSettings: validatedSettings }, () => {
-        this.validate(this.state.inputValue);
-      });
-    }
+    const { value } = this.props;
 
     if (value !== prevProps.value) {
       this.validate(value);
@@ -61,8 +47,8 @@ class EmailInput extends React.Component {
     onValidateInput && onValidateInput(isValidEmail);
   };
 
-  checkEmail = (value, emailSettings = this.state.emailSettings) => {
-    const { customValidate } = this.props;
+  checkEmail = (value) => {
+    const { customValidate, emailSettings } = this.props;
     if (customValidate) {
       return customValidate(value);
     } else {
@@ -82,12 +68,17 @@ class EmailInput extends React.Component {
 
   onChange = (e) => {
     const { onChange, onValidateInput } = this.props;
-    onChange ? onChange(e) : this.setState({ inputValue: e.target.value });
 
+    onChange && onChange(e);
     const isValidEmail = this.checkEmail(e.target.value);
-    this.setState({ isValidEmail });
+    this.setState({ isValidEmail, inputValue: e.target.value });
 
     onValidateInput && onValidateInput(isValidEmail);
+  };
+
+  onBlur = (e) => {
+    const { onBlur } = this.props;
+    onBlur && onBlur(e);
   };
 
   render() {
@@ -109,6 +100,7 @@ class EmailInput extends React.Component {
         onChange={this.onChange}
         type="text"
         onValidateInput={onValidateInput}
+        onBlur={this.onBlur}
       />
     );
   }
@@ -120,10 +112,7 @@ EmailInput.propTypes = {
   /** Function for your custom validation input value. Function must return object with following parameters: `value`: string value of input, `isValid`: boolean result of validating, `errors`(optional): array of errors */
   customValidate: PropTypes.func,
   /** { allowDomainPunycode: false, allowLocalPartPunycode: false, allowDomainIp: false, allowStrictLocalPart: true, allowSpaces: false, allowName: false, allowLocalDomainName: false } | Settings for validating email  */
-  emailSettings: PropTypes.oneOfType([
-    PropTypes.instanceOf(EmailSettings),
-    PropTypes.objectOf(PropTypes.bool),
-  ]),
+  emailSettings: PropTypes.instanceOf(EmailSettings),
   /** Used in your custom validation  */
   hasError: PropTypes.bool,
   /** Supported size of the input fields.  */
@@ -132,6 +121,8 @@ EmailInput.propTypes = {
   id: PropTypes.string,
   /** Function for your custom handling changes in input */
   onChange: PropTypes.func,
+
+  onBlur: PropTypes.func,
   /** Will be validate our value, return object with following parameters: `isValid`: boolean result of validating, `errors`: array of errors */
   onValidateInput: PropTypes.func,
   /** Accepts css style */
