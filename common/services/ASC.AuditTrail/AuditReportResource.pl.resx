@@ -59,1341 +59,1271 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActionCol" xml:space="preserve">
-    <value>Aktion</value>
-  </data>
-  <data name="ActionIdCol" xml:space="preserve">
-    <value>Aktions-ID</value>
+    <value>Akcja
+</value>
   </data>
   <data name="ActionTypeCol" xml:space="preserve">
-    <value>Typ der Aktion</value>
+    <value>Typ akcji</value>
   </data>
   <data name="AdministratorAdded" xml:space="preserve">
-    <value>Administrator hinzugefügt: {0}</value>
+    <value>Administrator Dodany: {0}</value>
   </data>
   <data name="AdministratorDeleted" xml:space="preserve">
-    <value>Administrator gelöscht: {0}</value>
+    <value>Usunięty administrator: {0}</value>
   </data>
   <data name="AdministratorMessageSettingsUpdated" xml:space="preserve">
-    <value>Einstellungen der Nachrichten des Administrators aktualisiert</value>
+    <value>Ustawienia wiadomości administratora zostały zaktualizowane</value>
   </data>
   <data name="AdministratorOpenedFullAccess" xml:space="preserve">
-    <value>Administratoren [{0}]. Vollzugriff geöffnet</value>
+    <value>Administratorzy [{0}]. Otwarty pełny dostęp</value>
   </data>
   <data name="AttachActionType" xml:space="preserve">
-    <value>Beifügen</value>
-  </data>
-  <data name="AuditSettingsUpdated" xml:space="preserve">
-    <value>Audit Lifetime-Einstellungen sind aktualisiert</value>
+    <value>Dołączyć</value>
   </data>
   <data name="AuditTrailReportDownloaded" xml:space="preserve">
-    <value>Bericht vom Audit-Trail wurde heruntergeladen</value>
+    <value>Raport ze ścieżki audytu został pobrany</value>
   </data>
   <data name="AuditTrailReportName" xml:space="preserve">
-    <value>Audit-Trail-Bericht ({0}-{1})</value>
+    <value>Raport ścieżki audytu ({0} - {1})</value>
   </data>
   <data name="AuthorizationKeysSetting" xml:space="preserve">
-    <value>Drittanbietern-Berechtigungsschlüssel aktualisiert</value>
+    <value>Zaktualizowano klucz autoryzacji innej firmy</value>
   </data>
   <data name="BrowserCol" xml:space="preserve">
-    <value>Browser</value>
+    <value>Przeglądarka</value>
   </data>
   <data name="CaseAttachedFiles" xml:space="preserve">
-    <value>Veranstaltungen[{0}]. Dateien angehängt: {1}</value>
+    <value>Sprawy [{0}]. Dołączone pliki: {1}</value>
   </data>
   <data name="CaseClosed" xml:space="preserve">
-    <value>Veranstaltung geschlossen: {0}</value>
+    <value>Sprawa zamknięta: {0}</value>
   </data>
   <data name="CaseCreated" xml:space="preserve">
-    <value>Veranstaltung erstellt: {0}</value>
+    <value>Sprawa utworzona: {0}</value>
   </data>
   <data name="CaseCreatedHistoryEvent" xml:space="preserve">
-    <value>Veranstaltungen [{0}]. Ereignis der Historie erstellt: {1}</value>
+    <value>Sprawy [{0}]. Historię Utworzono: {1}</value>
   </data>
   <data name="CaseCreatedTag" xml:space="preserve">
-    <value>Veranstaltungen[{0}]. Tag erstellt: {1}</value>
+    <value>Sprawy [{0}]. Tag utworzony: {1}</value>
   </data>
   <data name="CaseDeleted" xml:space="preserve">
-    <value>Veranstaltung gelöscht: {0}</value>
+    <value>Usunięto sprawę: {0}</value>
   </data>
   <data name="CaseDeletedHistoryEvent" xml:space="preserve">
-    <value>Veranstaltungen [{0}]. Ereignis der Historie gelöscht: {1}</value>
+    <value>Sprawy [{0}]. Historia usunięta: {1}</value>
   </data>
   <data name="CaseDeletedTag" xml:space="preserve">
-    <value>Veranstaltungen[{0}]. Tag gelöscht: {1}</value>
+    <value>Sprawy [{0}]. Usunięty tag: {1}</value>
   </data>
   <data name="CaseDetachedFile" xml:space="preserve">
-    <value>Veranstaltungen [{0}]. Datei getrennt: {1}</value>
+    <value>Sprawy [{0}]. Plik odłączony: {1}</value>
   </data>
   <data name="CaseLinkedCompany" xml:space="preserve">
-    <value>Veranstaltungen [{0}]. Unternehmen verknüpft: {1}</value>
+    <value>Sprawy [{0}]. Powiązane z firmą: {1}</value>
   </data>
   <data name="CaseLinkedPerson" xml:space="preserve">
-    <value>Veranstaltungen[{0}]. Person verknüpft: {1}</value>
+    <value>Sprawy [{0}]. Osoba powiązana: {1}</value>
   </data>
   <data name="CaseOpened" xml:space="preserve">
-    <value>Veranstaltung geöffnet: {0}</value>
+    <value>Sprawa została otwarta: {0}</value>
   </data>
   <data name="CaseOpenedAccess" xml:space="preserve">
-    <value>Veranstaltungen [{0}]. Zugriff geöffnet</value>
+    <value>Sprawy [{0}]. Dostęp otwarty</value>
   </data>
   <data name="CaseRestrictedAccess" xml:space="preserve">
-    <value>Veranstaltungen [{0}]. Zugriff beschränkt: {1}</value>
+    <value>Sprawy [{0}]. Dostęp zabroniony: {1}</value>
   </data>
   <data name="CasesCreatedTag" xml:space="preserve">
-    <value>Veranstaltungen. Tag erstellt: {0}</value>
+    <value>Sprawy. Tag utworzony: {0}</value>
   </data>
   <data name="CasesDeleted" xml:space="preserve">
-    <value>Veranstaltungen gelöscht: {0}</value>
+    <value>Skasowane sprawy: {0}</value>
   </data>
   <data name="CasesDeletedTag" xml:space="preserve">
-    <value>Veranstaltungen. Tag gelöscht: {0}</value>
+    <value>Sprawy. Usunięty tag: {0}</value>
   </data>
   <data name="CasesExportedToCsv" xml:space="preserve">
-    <value>Veranstaltungen in CSV-Datei exportiert: {0}</value>
+    <value>Sprawy eksportowane do pliku CSV: {0}</value>
   </data>
   <data name="CasesImportedFromCSV" xml:space="preserve">
-    <value>Veranstaltungen aus der CSV-Datei importiert</value>
+    <value>Przypadki zaimportowane z pliku CSV</value>
   </data>
   <data name="CasesModule" xml:space="preserve">
-    <value>Veranstaltungen</value>
+    <value>Sprawy</value>
   </data>
   <data name="CaseUnlinkedCompany" xml:space="preserve">
-    <value>Veranstaltungen [{0}]. Unternehmen unverknüpft: {1}</value>
+    <value>Sprawy [{0}]. Firma odłączona: {1}</value>
   </data>
   <data name="CaseUnlinkedPerson" xml:space="preserve">
-    <value>Veranstaltungen[{0}]. Person unverknüpft: {1}</value>
+    <value>Sprawy [{0}]. Osoba niepowiązana: {1}</value>
   </data>
   <data name="CaseUpdated" xml:space="preserve">
-    <value>Veranstaltung aktualisiert: {0}</value>
+    <value>Sprawa została zaktualizowana: {0}</value>
   </data>
   <data name="CaseUserFieldCreated" xml:space="preserve">
-    <value>Benutzerfeld für Veranstaltungen erstellt: {0}</value>
+    <value>Pole użytkowników stworzono: {0}</value>
   </data>
   <data name="CaseUserFieldDeleted" xml:space="preserve">
-    <value>Benutzerfeld für Veranstaltungen gelöscht: {0}</value>
+    <value>Usunięto pole użytkownika: {0}</value>
   </data>
   <data name="CaseUserFieldsUpdatedOrder" xml:space="preserve">
-    <value>Reihenfolge von Benutzerfeldern für Veranstaltungen aktualisiert: {0}</value>
+    <value>Zaktualizowana kolejność pól niestandardowych dla imprez: {0}</value>
   </data>
   <data name="CaseUserFieldUpdated" xml:space="preserve">
-    <value>Benutzerfeld für Veranstaltungen aktualisiert: {0}</value>
+    <value>Aktualizacja pola użytkownika przypadków: {0}</value>
   </data>
   <data name="ColorThemeChanged" xml:space="preserve">
-    <value>Farbschema wurde geändert</value>
+    <value>Zmieniono temat kolorów</value>
   </data>
   <data name="CommonCrmSettingsModule" xml:space="preserve">
-    <value>Allgemeine Einstellungen</value>
+    <value>Wspólne ustawienia</value>
   </data>
   <data name="CompaniesMerged" xml:space="preserve">
-    <value>Unternehmen zusammengeführt: {0} - {1}</value>
+    <value>Połączone firmy: {0} - {1}</value>
   </data>
   <data name="CompaniesModule" xml:space="preserve">
-    <value>Unternehmen</value>
+    <value>Firmy</value>
   </data>
   <data name="CompanyAttachedFiles" xml:space="preserve">
-    <value>Unternehmen [{0}]. Dateien angehängt: {1}</value>
+    <value>Firmy [{0}]. Dołączone pliki: {1}</value>
   </data>
   <data name="CompanyCreated" xml:space="preserve">
-    <value>Unternehmen erstellt: {0}</value>
+    <value>Firma utworzona: {0}</value>
   </data>
   <data name="CompanyCreatedHistoryEvent" xml:space="preserve">
-    <value>Unternehmen [{0}]. Ereignis der Historie erstellt: {1}</value>
+    <value>Firmy [{0}]. Historię Utworzono: {1}</value>
   </data>
   <data name="CompanyCreatedPersonsTag" xml:space="preserve">
-    <value>Unternehmen [{0}]. Tag für die Person erstellt: {1}</value>
+    <value>Firmy [{0}]. Tag osób utworzony: {1}</value>
   </data>
   <data name="CompanyCreatedTag" xml:space="preserve">
-    <value>Unternehmen [{0}]. Tag erstellt: {1}</value>
+    <value>Firmy [{0}]. Stworzony tag: {1}</value>
   </data>
   <data name="CompanyCreatedWithWebForm" xml:space="preserve">
-    <value>Unternehmen mithilfe des Web-Formulars erstellt: {0}</value>
+    <value>Firma utworzona z formularza internetowego: {0}</value>
   </data>
   <data name="CompanyDeleted" xml:space="preserve">
-    <value>Unternehmen gelöscht: {0}</value>
+    <value>Usunięta firma: {0}</value>
   </data>
   <data name="CompanyDeletedHistoryEvent" xml:space="preserve">
-    <value>Unternehmen [{0}]. Ereignis der Historie gelöscht: {1}</value>
+    <value>Firmy [{0}]. Historia usunięta: {1}</value>
   </data>
   <data name="CompanyDeletedTag" xml:space="preserve">
-    <value>Unternehmen [{0}]. Tag gelöscht: {1}</value>
+    <value>Firmy [{0}]. Usunięty tag: {1}</value>
   </data>
   <data name="CompanyDetachedFile" xml:space="preserve">
-    <value>Unternehmen [{0}]. Datei getrennt: {1}</value>
+    <value>Firmy [{0}]. Plik odłączony: {1}</value>
   </data>
   <data name="CompanyLinkedPerson" xml:space="preserve">
-    <value>Unternehmen [{0}]. Person verknüpft: {1}</value>
+    <value>Firmy [{0}]. Osoba powiązana: {1}</value>
   </data>
   <data name="CompanyLinkedProject" xml:space="preserve">
-    <value>Unternehmen [{0}]. Projekt verknüpft: {1}</value>
+    <value>Firmy [{0}]. Powiązany projekt: {1}</value>
   </data>
   <data name="CompanyUnlinkedPerson" xml:space="preserve">
-    <value>Unternehmen [{0}]. Person unverknüpft: {1}</value>
+    <value>Firmy [{0}]. Osoba odłączona: {1}</value>
   </data>
   <data name="CompanyUnlinkedProject" xml:space="preserve">
-    <value>Unternehmen [{0}]. Projekt unverknüpft: {1}</value>
+    <value>Firmy [{0}]. Projekt Unlinked: {1}</value>
   </data>
   <data name="CompanyUpdated" xml:space="preserve">
-    <value>Unternehmen aktualisiert: {0}</value>
+    <value>Firmę Zaktualizowano: {0}</value>
   </data>
   <data name="CompanyUpdatedPersonsTemperatureLevel" xml:space="preserve">
-    <value>Unternehmen [{0}]. Temperaturniveau der Person aktualisiert</value>
+    <value>Firmy [{0}]. Zaktualizowano poziom temperatury osobisty</value>
   </data>
   <data name="CompanyUpdatedPhoto" xml:space="preserve">
-    <value>Unternehmen [{0}]. Foto aktualisiert</value>
+    <value>Firmy [{0}]. Zdjęcie zostało zaktualizowane</value>
   </data>
   <data name="CompanyUpdatedPrincipalInfo" xml:space="preserve">
-    <value>Unternehmen [{0}]. Hauptinformation aktualisiert</value>
+    <value>Firmy [{0}]. Zaktualizowano informacje podstawowe</value>
   </data>
   <data name="CompanyUpdatedTemperatureLevel" xml:space="preserve">
-    <value>Unternehmen [{0}]. Temperaturniveau aktualisiert</value>
+    <value>Firmy [{0}]. Zaktualizowany poziom ciepła</value>
   </data>
   <data name="CompanyUserFieldCreated" xml:space="preserve">
-    <value>Benutzerfeld für Unternehmen erstellt: {0}</value>
+    <value>Pole użytkownika utworzono: {0}</value>
   </data>
   <data name="CompanyUserFieldDeleted" xml:space="preserve">
-    <value>Benutzerfeld für Unternehmen gelöscht: {0}</value>
+    <value>Pole użytkownika utworzono: {0}</value>
   </data>
   <data name="CompanyUserFieldsUpdatedOrder" xml:space="preserve">
-    <value>Reihenfolge von Benutzerfeldern für Unternehmen aktualisiert: {0}</value>
+    <value>Zaktualizowano zamówienie biznesowe użytkowników biznesowych: {0}</value>
   </data>
   <data name="CompanyUserFieldUpdated" xml:space="preserve">
-    <value>Benutzerfeld für Unternehmen aktualisiert: {0}</value>
+    <value>Aktualizowane pole użytkownika firmy: {0}</value>
   </data>
   <data name="ContactAdminMailSent" xml:space="preserve">
-    <value>Nachricht an den Administrator gesendet</value>
+    <value>Skontaktuj się z Admin Mail Sent</value>
   </data>
   <data name="ContactsCreatedCrmTasks" xml:space="preserve">
-    <value>Kontakte [{0}]. Aufgabe erstellt: {1}</value>
+    <value>Kontakty [{0}]. Utworzono zadanie: {1}</value>
   </data>
   <data name="ContactsCreatedTag" xml:space="preserve">
-    <value>Kontakte. Tag erstellt: {0}</value>
+    <value>Kontakty. Tag utworzony: {0}</value>
   </data>
   <data name="ContactsDeleted" xml:space="preserve">
-    <value>Kontakte gelöscht: {0}</value>
+    <value>Kontakty usunięte: {0}</value>
   </data>
   <data name="ContactsDeletedTag" xml:space="preserve">
-    <value>Kontakte. Tag gelöscht: {0}</value>
+    <value>Kontakty. Tag usunięty: {0}</value>
   </data>
   <data name="ContactsExportedToCsv" xml:space="preserve">
-    <value>Kontakte in CSV-Datei exportiert: {0}</value>
+    <value>Kontakty eksportowane do pliku CSV: {0}</value>
   </data>
   <data name="ContactsImportedFromCSV" xml:space="preserve">
-    <value>Kontakte aus der CSV-Datei importiert</value>
+    <value>Kontakty zaimportowane z pliku CSV</value>
   </data>
   <data name="ContactsModule" xml:space="preserve">
-    <value>Kontakte</value>
+    <value>Kontakty</value>
   </data>
   <data name="ContactsSettingsModule" xml:space="preserve">
-    <value>Einstellungen</value>
+    <value>Ustawienia</value>
   </data>
   <data name="ContactsTagSettingsUpdated" xml:space="preserve">
-    <value>Tag-Einstellungen für Kontakte aktualisiert</value>
+    <value>Kontaktne Ustawienia tagów zostały zaktualizowane</value>
   </data>
   <data name="ContactTemperatureLevelCreated" xml:space="preserve">
-    <value>Kontakttemperaturniveau erstellt: {0}</value>
+    <value>Kontakt Poziom Temperaturowy Utworzony: {0}</value>
   </data>
   <data name="ContactTemperatureLevelDeleted" xml:space="preserve">
-    <value>Kontakttemperaturniveau gelöscht: {0}</value>
+    <value>Poziom temperatury kontaktu usunięty: {0}</value>
   </data>
   <data name="ContactTemperatureLevelSettingsUpdated" xml:space="preserve">
-    <value>Einstellungen der Kontakttemperaturniveaus wurden aktualisiert</value>
+    <value>Skontaktuj się z ustawieniami poziomu temperatury Aktualizacja</value>
   </data>
   <data name="ContactTemperatureLevelsUpdatedOrder" xml:space="preserve">
-    <value>Reihenfolge der Kontakttemperaturniveaus aktualisiert: {0}</value>
+    <value>Poziomy temperatur kontaktu zaktualizowane: {0}</value>
   </data>
   <data name="ContactTemperatureLevelUpdated" xml:space="preserve">
-    <value>Kontakttemperaturniveau aktualisiert: {0}</value>
+    <value>Poziom temperatury kontaktu zaktualizowano: {0}</value>
   </data>
   <data name="ContactTemperatureLevelUpdatedColor" xml:space="preserve">
-    <value>Kontakttemperaturniveau [{0}]. Farbe aktualisiert</value>
+    <value>Poziom temperatury kontaktu [{0}]. Zaktualizowano kolor</value>
   </data>
   <data name="ContactTypeCreated" xml:space="preserve">
-    <value>Kontakttyp erstellt: {0}</value>
+    <value>Typ kontaktu: Utworzono: {0}</value>
   </data>
   <data name="ContactTypeDeleted" xml:space="preserve">
-    <value>Kontakttyp gelöscht: {0}</value>
+    <value>Typ kontaktu został usunięty: {0}</value>
   </data>
   <data name="ContactTypesModule" xml:space="preserve">
-    <value>Kontakttypen</value>
+    <value>Typy kontaktów</value>
   </data>
   <data name="ContactTypesUpdatedOrder" xml:space="preserve">
-    <value>Reihenfolge von Kontakttypen aktualisiert: {0}</value>
+    <value>Rodzaje Kontaktów Zaktualizowano: {0}</value>
   </data>
   <data name="ContactTypeUpdated" xml:space="preserve">
-    <value>Kontakttyp aktualisiert: {0}</value>
+    <value>Typ kontaktu: {0}</value>
   </data>
   <data name="ContactUserFieldCreated" xml:space="preserve">
-    <value>Benutzerfeld für Kontakte erstellt: {0}</value>
+    <value>Utworzono niestandardowe pole do kontaktów: {0}</value>
   </data>
   <data name="ContactUserFieldDeleted" xml:space="preserve">
-    <value>Benutzerfeld für Kontakte gelöscht: {0}</value>
+    <value>Usunięto niestandardowe pole do kontaktów: {0}</value>
   </data>
   <data name="ContactUserFieldsUpdatedOrder" xml:space="preserve">
-    <value>Reihenfolge von Benutzerfeldern für Kontakte aktualisiert: {0}</value>
+    <value>Kontaktne Obszary użytkowników Zaktualizowano: {0}</value>
   </data>
   <data name="ContactUserFieldUpdated" xml:space="preserve">
-    <value>Benutzerfeld für Kontakte aktualisiert: {0}</value>
+    <value>Pole kontaktu z użytkownikiem: {0}</value>
   </data>
   <data name="CookieSettingsUpdated" xml:space="preserve">
-    <value>Cookie-Einstellungen sind aktualisiert</value>
+    <value>Zaktualizowano ustawienia Cookie</value>
   </data>
   <data name="CopyActionType" xml:space="preserve">
-    <value>Kopieren</value>
+    <value>Kopiuj</value>
   </data>
   <data name="CreateActionType" xml:space="preserve">
-    <value>Erstellen</value>
+    <value>Stwórz</value>
   </data>
   <data name="CrmAllDataExported" xml:space="preserve">
-    <value>Alle Daten wurden exportiert</value>
+    <value>Wszystkie dane zostały wyeksportowane</value>
   </data>
   <data name="CrmDefaultCurrencyUpdated" xml:space="preserve">
-    <value>Standardwährung aktualisiert</value>
+    <value>Domyślna waluta została uaktualniona</value>
   </data>
   <data name="CrmProduct" xml:space="preserve">
     <value>CRM</value>
   </data>
   <data name="CrmSmtpMailSent" xml:space="preserve">
-    <value>Verschikte Mails per SMTP Server</value>
+    <value>Poczta SMTP wysyłana do kontaktów: {0}</value>
   </data>
   <data name="CrmSmtpSettingsUpdated" xml:space="preserve">
-    <value>SMTP-Einstellungen wurden aktualisiert</value>
+    <value>Ustawienia SMTP zostały zaktualizowane</value>
   </data>
   <data name="CrmTaskCategoriesUpdatedOrder" xml:space="preserve">
-    <value>Reihenfolge von Kategorien der CRM-Aufgaben aktualisiert: {0}</value>
+    <value>Kategorie zadań CRM Zaktualizowano: {0}</value>
   </data>
   <data name="CrmTaskCategoryCreated" xml:space="preserve">
-    <value>CRM-Aufgabenkategorie erstellt: {0}</value>
+    <value>Kategoria zadań CRM utworzona: {0}</value>
   </data>
   <data name="CrmTaskCategoryDeleted" xml:space="preserve">
-    <value>CRM-Aufgabenkategorie gelöscht: {0}</value>
+    <value>Usunięto grupę zadań CRM: {0}</value>
   </data>
   <data name="CrmTaskCategoryUpdated" xml:space="preserve">
-    <value>CRM-Aufgabenkategorie aktualisiert: {0}</value>
+    <value>Kategoria zadań CRM została zaktualizowana: {0}</value>
   </data>
   <data name="CrmTaskCategoryUpdatedIcon" xml:space="preserve">
-    <value>Symbol der CRM-Aufgabenkategorie aktualisiert: {0}</value>
+    <value>Ikona kategorii zadań CRM została zaktualizowana: {0}</value>
   </data>
   <data name="CrmTaskClosed" xml:space="preserve">
-    <value>CRM-Aufgabe geschlossen: {0}</value>
+    <value>Zadanie CRM zamknięte: {0}</value>
   </data>
   <data name="CrmTaskCreated" xml:space="preserve">
-    <value>CRM-Aufgabe erstellt: {0}</value>
+    <value>Stworzono zadanie CRM: {0}</value>
   </data>
   <data name="CrmTaskDeleted" xml:space="preserve">
-    <value>CRM-Aufgabe gelöscht: {0}</value>
+    <value>Zadanie CRM usunięte: {0}</value>
   </data>
   <data name="CrmTaskOpened" xml:space="preserve">
-    <value>CRM-Aufgabe geöffnet: {0}</value>
+    <value>Zadanie CRM otwarte: {0}</value>
   </data>
   <data name="CrmTasksExportedToCsv" xml:space="preserve">
-    <value>CRM-Aufgaben in die CSV-Datei exportiert: {0}</value>
+    <value>Zadania CRM eksportowane do pliku CSV: {0}</value>
   </data>
   <data name="CrmTasksImportedFromCSV" xml:space="preserve">
-    <value>CRM-Aufgaben aus der CSV-Datei importiert</value>
+    <value>Zadania CRM Importowane z pliku CSV</value>
   </data>
   <data name="CrmTasksModule" xml:space="preserve">
-    <value>CRM-Aufgaben</value>
+    <value>Zadania CRM</value>
   </data>
   <data name="CrmTaskUpdated" xml:space="preserve">
-    <value>CRM-Aufgaben aktualisiert: {0}</value>
+    <value>Zadania CRM Zaktualizowano: {0}</value>
   </data>
   <data name="CrmTestMailSent" xml:space="preserve">
-    <value>Testnachricht wurde gesendet</value>
+    <value>Wysłano pocztę testową</value>
   </data>
   <data name="CurrencyRateUpdated" xml:space="preserve">
-    <value>Währungskurs aktualisiert: {0} - {1}</value>
-  </data>
-  <data name="CustomNavigationSettingsUpdated" xml:space="preserve">
-    <value>Benutzerdefinierte Navigationseinstellungen sind aktualisiert</value>
+    <value>Kurs walutowy Aktualizacja: {0} - {1}</value>
   </data>
   <data name="DateCol" xml:space="preserve">
-    <value>Datum</value>
+    <value>Data</value>
   </data>
   <data name="DefaultStartPageSettingsUpdated" xml:space="preserve">
-    <value>Einstellungen der Standardstartseite wurden aktualisiert</value>
+    <value>Domyślne ustawienia strony początkowej zostały zaktualizowane</value>
   </data>
   <data name="DeleteActionType" xml:space="preserve">
-    <value>Löschen</value>
+    <value>Usunąć</value>
   </data>
   <data name="DetachActionType" xml:space="preserve">
-    <value>Abtrennen</value>
+    <value>Odłączyć</value>
   </data>
   <data name="DiscussionAttachedFiles" xml:space="preserve">
-    <value>Projekte [{0}]. Diskussionen [{1}]. Dateien angehängt: {2}</value>
+    <value>Projekty [{0}]. Dyskusje [{1}]. Dołączone pliki: {2}</value>
   </data>
   <data name="DiscussionCommentCreated" xml:space="preserve">
-    <value>Projekte [{0}]. Diskussionen [{1}]. Kommentar erstellt</value>
+    <value>Projekty [{0}]. Dyskusje [{1}]. Utworzono komentarz</value>
   </data>
   <data name="DiscussionCommentDeleted" xml:space="preserve">
-    <value>Projekte [{0}]. Diskussionen [{1}]. Kommentar gelöscht</value>
+    <value>Projekty [{0}]. Dyskusje [{1}]. Komentarz usunięty</value>
   </data>
   <data name="DiscussionCommentUpdated" xml:space="preserve">
-    <value>Projekte [{0}]. Diskussionen [{1}]. Kommentar aktualisiert</value>
+    <value>Projekty [{0}]. Dyskusje [{1}]. Zaktualizowano komentarz</value>
   </data>
   <data name="DiscussionCreated" xml:space="preserve">
-    <value>Projekte [{0}]. Diskussion erstellt: {1}</value>
+    <value>Projekty [{0}]. Dyskusja utworzona: {1}</value>
   </data>
   <data name="DiscussionDeleted" xml:space="preserve">
-    <value>Projekte [{0}]. Diskussion gelöscht: {1}</value>
+    <value>Projekty [{0}]. Dyskusja usunięta: {1}</value>
   </data>
   <data name="DiscussionDetachedFile" xml:space="preserve">
-    <value>Projekte [{0}]. Diskussionen [{1}]. Datei getrennt: {2}</value>
+    <value>Projekty [{0}]. Dyskusje [{1}]. Plik odłączony: {2}</value>
   </data>
   <data name="DiscussionsModule" xml:space="preserve">
-    <value>Diskussionen</value>
+    <value>Dyskusje</value>
   </data>
   <data name="DiscussionUpdated" xml:space="preserve">
-    <value>Projekte [{0}]. Diskussion aktualisiert: {1}</value>
+    <value>Projekty [{0}]. Dyskusja została zaktualizowana: {1}</value>
   </data>
   <data name="DiscussionUpdatedFollowing" xml:space="preserve">
-    <value>Projekte [{0}]. Verfolgung der Diskussion aktualisiert: {1}</value>
+    <value>Projekty [{0}]. Dyskusja po zaktualizowaniu: {1}</value>
   </data>
   <data name="DnsSettingsUpdated" xml:space="preserve">
-    <value>DNS-Einstellungen aktualisiert</value>
+    <value>Zaktualizowano ustawienia DNS</value>
   </data>
   <data name="DocumentServiceLocationSetting" xml:space="preserve">
-    <value>Document Service Lage Aktualisiert</value>
-  </data>
-  <data name="DocumentsForcesave" xml:space="preserve">
-    <value>Forcesave-Einstellungen wurden aktualisiert</value>
+    <value>Usługa Document Service Location Aktualizacja</value>
   </data>
   <data name="DocumentsOverwritingSettingsUpdated" xml:space="preserve">
-    <value>Einstellungen vom Überschreiben wurden aktualisiert</value>
+    <value>Nadpisywane ustawienia zostały zaktualizowane</value>
   </data>
   <data name="DocumentsProduct" xml:space="preserve">
-    <value>Dokumente</value>
+    <value>Dokumenty</value>
   </data>
   <data name="DocumentsSettingsModule" xml:space="preserve">
-    <value>Einstellungen</value>
-  </data>
-  <data name="DocumentsStoreForcesave" xml:space="preserve">
-    <value>Force-Save-Speichereinstellungen wurden aktualisiert</value>
+    <value>Ustawienia</value>
   </data>
   <data name="DocumentsThirdPartySettingsUpdated" xml:space="preserve">
-    <value>Drittanbieter-Einstellungen aktualisiert</value>
+    <value>Zaktualizowano ustawienia strony trzeciej</value>
   </data>
   <data name="DocumentsUploadingFormatsSettingsUpdated" xml:space="preserve">
-    <value>Einstellungen der Formate beim Hochladen wurden aktualisiert</value>
+    <value>Aktualizowanie ustawień formatu plików</value>
   </data>
   <data name="DownloadActionType" xml:space="preserve">
-    <value>Herunterladen</value>
+    <value>Pobieranie</value>
   </data>
   <data name="ExportActionType" xml:space="preserve">
-    <value>Export</value>
+    <value>Eksport</value>
   </data>
   <data name="FileChangeOwner" xml:space="preserve">
-    <value>Besitzer von [{0}] [{1}] wird festgestellt</value>
+    <value>Ustaw właściciel [{0}] na [{1}]</value>
   </data>
   <data name="FileConverted" xml:space="preserve">
-    <value>Datei ins interne Format konvertiert: {0}</value>
+    <value>Plik Konwertowany na format wewnętrzny: {0}</value>
   </data>
   <data name="FileCopied" xml:space="preserve">
-    <value>Dateien [{0}]. Vom Ordner "{1}" auf den Ordner "{2}" kopiert</value>
+    <value>Pliki [{0}]. Skopiowany z folderu "{1}" Do folderu: "{2}"</value>
   </data>
   <data name="FileCopiedWithOverwriting" xml:space="preserve">
-    <value>Dateien [{0}]. Vom Ordner "{1}" auf den Ordner "{2}" mit Überschreiben kopiert</value>
+    <value>Pliki [{0}]. Skopiowany z zastąpieniem z folderu "{1}" do folderu: "{2}"</value>
   </data>
   <data name="FileCreated" xml:space="preserve">
-    <value>Datei erstellt: {0}</value>
+    <value>Plik utworzony: {0}</value>
   </data>
   <data name="FileCreatedVersion" xml:space="preserve">
-    <value>Dateien [{0}]. Revision {1}. Version erstellt</value>
+    <value>Pliki [{0}]. Poprawka {1}. Powstała wersja</value>
   </data>
   <data name="FileDeleted" xml:space="preserve">
-    <value>Datei gelöscht: {0}</value>
+    <value>Usunięty plik: {0}</value>
   </data>
   <data name="FileDeletedVersion" xml:space="preserve">
-    <value>Dateien [{0}]. Revision {1}. Version gelöscht</value>
+    <value>Pliki [{0}]. Poprawka {1}. Usunięty wersja</value>
   </data>
   <data name="FileDownloaded" xml:space="preserve">
-    <value>Datei heruntergeladen: {0}</value>
+    <value>Pobrane pliki: {0}</value>
   </data>
   <data name="FileDownloadedAs" xml:space="preserve">
-    <value>Files [{0}]. Heruntergeladen als: {1}</value>
+    <value>Pliki [{0}]. Pobrany jak: {1}</value>
   </data>
   <data name="FileImported" xml:space="preserve">
-    <value>Ordner [{0}]. Datei importiert: {1}. Provider: {2}</value>
+    <value>Foldery [{0}]. Plik importowany: {1}. Dostawca: {2}</value>
   </data>
   <data name="FileLocked" xml:space="preserve">
-    <value>Datei gesperrt: {0}</value>
+    <value>Plik zablokowany: {0}</value>
   </data>
   <data name="FileMoved" xml:space="preserve">
-    <value>Dateien [{0}]. Aus dem Ordner "{1}" in den Ordner: "{2}" verschoben</value>
+    <value>Pliki [{0}]. Przeniesiony z folderu "{1}" do folderu: "{2}"</value>
   </data>
   <data name="FileMovedToTrash" xml:space="preserve">
-    <value>Dateien [{0}]. In den Papierkorb verschoben</value>
+    <value>Pliki [{0}]. Przeniesiony do Kosza</value>
   </data>
   <data name="FileMovedWithOverwriting" xml:space="preserve">
-    <value>Dateien [{0}]. Vom Ordner "{1}" nach Ordner "{2}" mit Überschreiben verschoben</value>
+    <value>Pliki [{0}]. Przeniesiony z zastąpieniem z folderu "{1}" do folderu: "{2}"</value>
   </data>
   <data name="FileRenamed" xml:space="preserve">
-    <value>Datei umbenannt: {0}</value>
+    <value>Zmieniona nazwa pliku: {0}</value>
   </data>
   <data name="FileRestoreVersion" xml:space="preserve">
-    <value>Dateien[{0}].Revision:{1}.Version ist wiederhergestellt</value>
+    <value>Pliki [{0}]. Wersja: {1}. Przywrócona wersja</value>
   </data>
   <data name="FilesDocumentSigned" xml:space="preserve">
-    <value>Dokument {1} ist via {0}unterschrieben</value>
+    <value>Dokument {1} podpisany przez {0}</value>
   </data>
   <data name="FileSendAccessLink" xml:space="preserve">
-    <value>Senden Sie teilten Link zu der [{0}] Datei. Empfänger: [{1}]</value>
+    <value>Wysłano link udostępniony do pliku [{0}]. Odbiorcy: [{1}]</value>
   </data>
   <data name="FilesModule" xml:space="preserve">
-    <value>Dateien</value>
+    <value>Pliki</value>
   </data>
   <data name="FilesRequestSign" xml:space="preserve">
-    <value>Dokument {1} ist zur Signatur via {0}gesendet</value>
+    <value>Dokument {1} wysłany do podpisania przez {0}</value>
   </data>
   <data name="FileUnlocked" xml:space="preserve">
-    <value>Datei nicht gesperrt: {0}</value>
+    <value>Odblokowany plik: {0}</value>
   </data>
   <data name="FileUpdated" xml:space="preserve">
-    <value>Datei aktualisiert: {0}</value>
+    <value>Zaktualizowano plik: {0}</value>
   </data>
   <data name="FileUpdatedAccess" xml:space="preserve">
-    <value>Dateien [{0}]. Zugriff aktualisiert</value>
+    <value>Pliki [{0}]. Dostęp został zaktualizowany</value>
   </data>
   <data name="FileUpdatedRevisionComment" xml:space="preserve">
-    <value>Dateien [{0}]. Revision {1}. Kommentar aktualisiert</value>
+    <value>Pliki [{0}]. Poprawka {1}. Zaktualizowany komentarz</value>
   </data>
   <data name="FileUploaded" xml:space="preserve">
-    <value>Datei hochgeladen: {0}</value>
+    <value>Przesłany plik: {0}</value>
   </data>
   <data name="FolderCopied" xml:space="preserve">
-    <value>Ordner [{0}]. In Ordner kopiert: {1}</value>
+    <value>Foldery [{0}]. Skopiowano do folderu: {1}</value>
   </data>
   <data name="FolderCopiedWithOverwriting" xml:space="preserve">
-    <value>Ordner [{0}]. In Ordner mit Überschreiben kopiert: {1}</value>
+    <value>Foldery [{0}]. Skopiowano z nadpisaniem do folderu: {1}</value>
   </data>
   <data name="FolderCreated" xml:space="preserve">
-    <value>Ordner erstellt: {0}</value>
+    <value>Folder utworzony: {0}</value>
   </data>
   <data name="FolderDeleted" xml:space="preserve">
-    <value>Ordner gelöscht: {0}</value>
+    <value>Usunięty folder: {0}</value>
   </data>
   <data name="FolderMoved" xml:space="preserve">
-    <value>Ordner [{0}]. Verschoben in den Ordner: {1}</value>
+    <value>Foldery [{0}]. Przeniesiono do folderu: {1}</value>
   </data>
   <data name="FolderMovedToTrash" xml:space="preserve">
-    <value>Ordner [{0}]. Verschoben in den Papierkorb</value>
+    <value>Foldery [{0}]. Przeniesiono do folderu kosza</value>
   </data>
   <data name="FolderMovedWithOverwriting" xml:space="preserve">
-    <value>Ordner [{0}]. Nach Ordner mit Überschreiben verschoben: {1}</value>
+    <value>Foldery [{0}]. Przeniesiono z nadpisaniem do folderu: {1}</value>
   </data>
   <data name="FolderRenamed" xml:space="preserve">
-    <value>Ordner umbenannt: {0}</value>
+    <value>Folder Zmieniony: {0}</value>
   </data>
   <data name="FoldersModule" xml:space="preserve">
-    <value>Ordner</value>
+    <value>Foldery</value>
   </data>
   <data name="FolderUpdatedAccess" xml:space="preserve">
-    <value>Ordner [{0}]. Zugriff aktualisiert</value>
+    <value>Foldery [{0}]. Dostęp został zaktualizowany</value>
   </data>
   <data name="FollowActionType" xml:space="preserve">
-    <value>Verfolgen</value>
+    <value>Śledzić</value>
   </data>
   <data name="FullTextSearchSetting" xml:space="preserve">
-    <value>Sphinx Einstellungen aktualisiert</value>
+    <value>Sfinksy zostały zaktualizowane</value>
   </data>
   <data name="GeneralModule" xml:space="preserve">
-    <value>Allgemeines</value>
+    <value>Ogólny</value>
   </data>
   <data name="GreetingSettingsUpdated" xml:space="preserve">
-    <value>Begrüßungseinstellungen aktualisiert</value>
+    <value>Ustawienia strony powitalnej zostały zaktualizowane</value>
   </data>
   <data name="GroupCreated" xml:space="preserve">
-    <value>Gruppe erstellt: {0}</value>
+    <value>Utworzona grupa: {0}</value>
   </data>
   <data name="GroupDeleted" xml:space="preserve">
-    <value>Gruppe gelöscht: {0}</value>
+    <value>Usunięta grupa: {0}</value>
   </data>
   <data name="GroupsModule" xml:space="preserve">
-    <value>Gruppen</value>
+    <value>Grupy</value>
   </data>
   <data name="GroupUpdated" xml:space="preserve">
-    <value>Gruppe aktualisiert: {0}</value>
+    <value>Grupa zaktualizowana: {0}</value>
   </data>
   <data name="GuestAccount" xml:space="preserve">
-    <value>Gastkonto</value>
+    <value>Konto Gość</value>
   </data>
   <data name="GuestActivated" xml:space="preserve">
-    <value>Gast aktiviert: {0}</value>
+    <value>Gość aktywowany: {0}</value>
   </data>
   <data name="GuestCreated" xml:space="preserve">
-    <value>Gast erstellt: {0}</value>
+    <value>Gość utworzony: {0}</value>
   </data>
   <data name="GuestCreatedViaInvite" xml:space="preserve">
-    <value>Gast per Einladung erstellt: {0}</value>
+    <value>Gość utworzony przez zaproszenie: {0}</value>
   </data>
   <data name="GuestImported" xml:space="preserve">
-    <value>Gast importiert: {0}</value>
+    <value>Gość importowany: {0}</value>
   </data>
   <data name="HistoryEventCategoriesUpdatedOrder" xml:space="preserve">
-    <value>Kategorien vom Ereignis der Historie. Reihenfolge aktualisiert: {0}</value>
+    <value>Kategorie zdarzeń historii. Zaktualizowano zamówienie: {0}</value>
   </data>
   <data name="HistoryEventCategoryCreated" xml:space="preserve">
-    <value>Kategorie vom Ereignis der Historie erstellt: {0}</value>
+    <value>Historia Kategoria zdarzenia Utworzono: {0}</value>
   </data>
   <data name="HistoryEventCategoryDeleted" xml:space="preserve">
-    <value>Kategorie vom Ereignis der Historie gelöscht: {0}</value>
+    <value>Historia Zdarzenia usunięta: {0}</value>
   </data>
   <data name="HistoryEventCategoryUpdated" xml:space="preserve">
-    <value>Kategorie vom Ereignis der Historie aktualisiert: {0}</value>
+    <value>Historia Kategorii wydarzenia została zaktualizowana: {0}</value>
   </data>
   <data name="HistoryEventCategoryUpdatedIcon" xml:space="preserve">
-    <value>Kategorien der Ereignisse der Historie [{0}]. Symbol aktualisiert</value>
+    <value>Kategorie zdarzeń historii [{0}]. Ikonę Zaktualizowano</value>
   </data>
   <data name="ImportActionType" xml:space="preserve">
     <value>Import</value>
   </data>
   <data name="InvoiceCreated" xml:space="preserve">
-    <value>Rechnung erstellt: {0} </value>
+    <value>Faktura utworzona: {0}</value>
   </data>
   <data name="InvoiceDefaultTermsUpdated" xml:space="preserve">
-    <value>Standardmäßige Rechnungsbedingungen aktualisiert</value>
+    <value>Ustawiono domyślne warunki faktury</value>
   </data>
   <data name="InvoiceDeleted" xml:space="preserve">
-    <value>Rechnung gelöscht: {0}</value>
+    <value>Faktura została usunięta: {0}</value>
   </data>
   <data name="InvoiceDownloaded" xml:space="preserve">
-    <value>heruntergeladene Rechnung: {0}</value>
+    <value>Pobrana faktura: {0}</value>
   </data>
   <data name="InvoiceItemCreated" xml:space="preserve">
-    <value>Artikel der Rechnungen erstellt: {0}</value>
+    <value>Utworzono fakturę: {0}</value>
   </data>
   <data name="InvoiceItemDeleted" xml:space="preserve">
-    <value>Artikel der Rechnungen gelöscht: {0}</value>
+    <value>Usunięto fakturę: {0}</value>
   </data>
   <data name="InvoiceItemsDeleted" xml:space="preserve">
-    <value>Artikel der Rechnungen gelöscht: {0}</value>
+    <value>Usunięte elementy faktury: {0}</value>
   </data>
   <data name="InvoiceItemUpdated" xml:space="preserve">
-    <value>Artikel der Rechnungen aktualisiert: {0}</value>
+    <value>Pozycja faktury została zaktualizowana: {0}</value>
   </data>
   <data name="InvoiceNumberFormatUpdated" xml:space="preserve">
-    <value>Nummerformat der Rechnungen aktualisiert</value>
+    <value>Format numeru faktury został zaktualizowany</value>
   </data>
   <data name="InvoicesDeleted" xml:space="preserve">
-    <value>Rechnungen gelöscht: {0}</value>
+    <value>Faktury usunięte: {0}</value>
   </data>
   <data name="InvoiceSettingsModule" xml:space="preserve">
-    <value>Einstellungen der Rechnungen</value>
+    <value>Ustawienia faktury</value>
   </data>
   <data name="InvoicesModule" xml:space="preserve">
-    <value>Rechnungen</value>
+    <value>Faktury</value>
   </data>
   <data name="InvoicesUpdatedStatus" xml:space="preserve">
-    <value>Rechnungen [{0}]. Status aktualisiert: {1}</value>
+    <value>Faktury [{0}]. Status Aktualizacja: {1}</value>
   </data>
   <data name="InvoiceTaxCreated" xml:space="preserve">
-    <value>Steuer der Rechnungen erstellt: {0}</value>
+    <value>Utworzono fakturę VAT: {0}</value>
   </data>
   <data name="InvoiceTaxDeleted" xml:space="preserve">
-    <value>Steuer der Rechnungen gelöscht: {0}</value>
+    <value>Usunięto fakturę VAT: {0}</value>
   </data>
   <data name="InvoiceTaxUpdated" xml:space="preserve">
-    <value>Steuer der Rechnungen aktualisiert: {0}</value>
+    <value>Podatek fakturowy został zaktualizowany: {0}</value>
   </data>
   <data name="InvoiceUpdated" xml:space="preserve">
-    <value>Rechnung aktualisiert: {0}</value>
+    <value>Zaktualizowano fakturę: {0}</value>
   </data>
   <data name="IpCol" xml:space="preserve">
     <value>IP</value>
   </data>
   <data name="LanguageSettingsUpdated" xml:space="preserve">
-    <value>Einstellungen der Sprache wurden aktualisiert</value>
+    <value>Ustawienia językowe zostały zaktualizowane</value>
   </data>
   <data name="LicenseKeyUploaded" xml:space="preserve">
-    <value>Lizenzschlüssel ist hochgeladen</value>
+    <value>Klucz licencyjny został przesłany</value>
   </data>
   <data name="LinkActionType" xml:space="preserve">
-    <value>Verknüpfen</value>
+    <value>plik</value>
   </data>
   <data name="LoginFail" xml:space="preserve">
-    <value>Anmeldung fehlgeschlagen</value>
-  </data>
-  <data name="LoginFailBruteForce" xml:space="preserve">
-    <value>Fehlgeschlagene Anmeldung. Zu viele Anmeldeversuche</value>
+    <value>Błąd logowania</value>
   </data>
   <data name="LoginFailDisabledProfile" xml:space="preserve">
-    <value>Anmeldung fehlgeschlagen. Profil deaktiviert</value>
+    <value>Błąd logowania. Profil wyłączony</value>
   </data>
   <data name="LoginFailInvalidCombination" xml:space="preserve">
-    <value>Anmeldung fehlgeschlagen. Ungültige Kombination Benutzername-Kennwort</value>
+    <value>Błąd logowania. Niewłaściwa kombinacja hasła i nazwy użytkownika
+</value>
   </data>
   <data name="LoginFailIpSecurity" xml:space="preserve">
-    <value>IP-Sicherheit: Anmeldung fehlgeschlagen</value>
-  </data>
-  <data name="LoginFailRecaptcha" xml:space="preserve">
-    <value>Anmeldung fehlgeschlagen. Ungültiges Recaptcha</value>
+    <value>Zabezpieczenie IP: logowanie nie powiodło się</value>
   </data>
   <data name="LoginFailSocialAccountNotFound" xml:space="preserve">
-    <value>Anmeldung fehlgeschlagen. Verbundenes Konto des sozialen Netzwerks ist nicht gefunden.</value>
+    <value>Błąd logowania. Powiązane konto społecznościowe nie zostało odnalezione</value>
   </data>
   <data name="LoginFailViaApi" xml:space="preserve">
-    <value>Fehlgeschlagene Anmeldung via API</value>
+    <value>Nieudane logowanie za pośrednictwem interfejsu API</value>
   </data>
   <data name="LoginFailViaApiSms" xml:space="preserve">
-    <value>Fehlgeschlagene Anmeldung via API und SMS-Code</value>
+    <value>Nieudane logowanie za pośrednictwem interfejsu API i SMS</value>
   </data>
   <data name="LoginFailViaApiSocialAccount" xml:space="preserve">
-    <value>Die Anmeldung über API &amp; soziale Netzwerke ist ausgefallen </value>
-  </data>
-  <data name="LoginFailViaApiTfa" xml:space="preserve">
-    <value>Anmeldung über API und Authentifizierungsanwendung ist fehlgeschlagen</value>
+    <value>Logowanie za pośrednictwem API i mediów społecznościowych nie powiodło się</value>
   </data>
   <data name="LoginFailViaSms" xml:space="preserve">
-    <value>Login über SMS fehlgeschlagen</value>
+    <value>Logowanie się przez SMS nie powiodło się</value>
   </data>
   <data name="LoginFailViaSSO" xml:space="preserve">
-    <value>Anmeldung über SSO ist ausgefallen</value>
-  </data>
-  <data name="LoginFailViaTfaApp" xml:space="preserve">
-    <value>Anmeldung über Authentifizierungs-App fehlgeschlagen</value>
+    <value>Logowanie się przez SSO nie powiodło się</value>
   </data>
   <data name="LoginHistoryReportDownloaded" xml:space="preserve">
-    <value>Bericht über Anmeldehistorie heruntergeladen</value>
+    <value>Raport z historii logowania został pobrany</value>
   </data>
   <data name="LoginHistoryReportName" xml:space="preserve">
-    <value>Bericht über Anmeldehistorie ({0}-{1})</value>
+    <value>Raport historii logowania ({0} - {1})</value>
   </data>
   <data name="LoginSuccess" xml:space="preserve">
-    <value>Erfolgreiche Anmeldung </value>
+    <value>Sukces logowania</value>
   </data>
   <data name="LoginSuccessSocialAccount" xml:space="preserve">
-    <value>Login über Konto im sozialen Netzwerk ist erfolgreich</value>
-  </data>
-  <data name="LoginSuccessSocialApp" xml:space="preserve">
-    <value>Erfolgreiche Anmeldung über soziale Anwendung</value>
+    <value>Zaloguj się za pomocą konta społecznościowego</value>
   </data>
   <data name="LoginSuccessViaApi" xml:space="preserve">
-    <value>Erfolgreiche Anmeldung via API</value>
+    <value>Pomyślne logowanie przez interfejs API</value>
   </data>
   <data name="LoginSuccessViaApiSms" xml:space="preserve">
-    <value>Erfolgreiche Anmeldung via API und SMS-Code</value>
-  </data>
-  <data name="LoginSuccessViaApiTfa" xml:space="preserve">
-    <value>Erfolgreiche Anmeldung über API &amp; Authentifizierungs-App</value>
+    <value>Pomyślne logowanie za pośrednictwem interfejsu API i SMS</value>
   </data>
   <data name="LoginSuccessViaSms" xml:space="preserve">
-    <value>Login über SMS erfolgreich</value>
+    <value>Zaloguj się za pośrednictwem wiadomości SMS</value>
   </data>
   <data name="LoginSuccessViaSocialAccount" xml:space="preserve">
-    <value>Erfolgreiche Anmeldung über API &amp; soziale Netzwerke</value>
+    <value>Logowanie za pośrednictwem interfejsu API i social media Udane</value>
   </data>
   <data name="LoginSuccessViaSSO" xml:space="preserve">
-    <value>Erfolgreiche Anmeldung via SSO</value>
-  </data>
-  <data name="LoginSuccesViaTfaApp" xml:space="preserve">
-    <value>Erfolgreicher Login über Authenticator-App</value>
+    <value>Pomyślne logowanie przez SSO</value>
   </data>
   <data name="Logout" xml:space="preserve">
-    <value>Abmelden</value>
+    <value>Wyloguj</value>
   </data>
   <data name="MailServiceSettingsUpdated" xml:space="preserve">
-    <value>Mail Service Einstellungen sind aktualisiert</value>
+    <value>Ustawienia usługi pocztowej zostały uaktualnione</value>
   </data>
   <data name="MilestoneCreated" xml:space="preserve">
-    <value>Projekte [{0}]. Meilenstein erstellt: {1}</value>
+    <value>Projekty [{0}]. Etap Stworzono: {1}</value>
   </data>
   <data name="MilestoneDeleted" xml:space="preserve">
-    <value>Projekte [{0}]. Meilenstein gelöscht: {1}</value>
+    <value>Projekty [{0}]. Usunięto etap: {1}</value>
   </data>
   <data name="MilestonesModule" xml:space="preserve">
-    <value>Meilensteine</value>
+    <value>Etapy</value>
   </data>
   <data name="MilestoneUpdated" xml:space="preserve">
-    <value>Projekte [{0}]. Meilenstein aktualisiert: {1}</value>
+    <value>Projekty [{0}]. Etap zaktualizowano: {1}</value>
   </data>
   <data name="MilestoneUpdatedStatus" xml:space="preserve">
-    <value>Projekte [{0}]. Meilensteine [{1}]. Status aktualisiert: {2}</value>
+    <value>Projekty [{0}]. Etapy [{1}]. Status Aktualizacja: {2}</value>
   </data>
   <data name="ModuleCol" xml:space="preserve">
-    <value>Modul</value>
+    <value>Moduł</value>
   </data>
   <data name="MoveActionType" xml:space="preserve">
-    <value>Verschieben</value>
+    <value>Rusz</value>
   </data>
   <data name="OpportunitiesCreatedTag" xml:space="preserve">
-    <value>Verkaufschancen. Tag erstellt: {0}</value>
+    <value>Umowy. Tag utworzony: {0}</value>
   </data>
   <data name="OpportunitiesDeleted" xml:space="preserve">
-    <value>Verkaufschancen gelöscht: {0}</value>
+    <value>Umowy usunięte: {0}</value>
   </data>
   <data name="OpportunitiesDeletedTag" xml:space="preserve">
-    <value>Verkaufschancen. Tag gelöscht: {0}</value>
+    <value>Umowy. Usunięty tag: {0}</value>
   </data>
   <data name="OpportunitiesExportedToCsv" xml:space="preserve">
-    <value>Verkaufschancen in CSV-Datei exportiert: {0}</value>
+    <value>Umowy eksportowane do pliku CSV: {0}</value>
   </data>
   <data name="OpportunitiesImportedFromCSV" xml:space="preserve">
-    <value>Verkaufschancen aus der CSV-Datei importiert</value>
+    <value>Umowy importowane z pliku CSV</value>
   </data>
   <data name="OpportunitiesModule" xml:space="preserve">
-    <value>Verkaufschancen</value>
+    <value>Umowy</value>
   </data>
   <data name="OpportunityAttachedFiles" xml:space="preserve">
-    <value>Verkaufschancen [{0}]. Dateien angehängt: {1}</value>
+    <value>Umowy [{0}]. Dołączone pliki: {1}</value>
   </data>
   <data name="OpportunityCreated" xml:space="preserve">
-    <value>Verkaufschance erstellt: {0}</value>
+    <value>Umowa utworzona: {0}</value>
   </data>
   <data name="OpportunityCreatedHistoryEvent" xml:space="preserve">
-    <value>Verkaufschancen [{0}]. Ereignis der Historie erstellt: {1}</value>
+    <value>Umowy [{0}]. Historię Utworzono: {1}</value>
   </data>
   <data name="OpportunityCreatedTag" xml:space="preserve">
-    <value>Verkaufschancen [{0}]. Tag erstellt: {1}</value>
+    <value>Umowy [{0}]. Tag utworzony: {1}</value>
   </data>
   <data name="OpportunityDeleted" xml:space="preserve">
-    <value>Verkaufschance gelöscht: {0}</value>
+    <value>Usunięto umowę: {0}</value>
   </data>
   <data name="OpportunityDeletedHistoryEvent" xml:space="preserve">
-    <value>Verkaufschancen [{0}]. Ereignis der Historie gelöscht: {1}</value>
+    <value>Umowy [{0}]. Historia usunięta: {1}</value>
   </data>
   <data name="OpportunityDeletedTag" xml:space="preserve">
-    <value>Verkaufschancen [{0}]. Tag gelöscht: {1}</value>
+    <value>Umowy [{0}]. Usunięty tag: {1}</value>
   </data>
   <data name="OpportunityDetachedFile" xml:space="preserve">
-    <value>Verkaufschancen [{0}]. Datei getrennt: {1}</value>
+    <value>Umowy [{0}]. Plik odłączony: {1}</value>
   </data>
   <data name="OpportunityLinkedCompany" xml:space="preserve">
-    <value>Verkaufschancen [{0}]. Unternehmen verknüpft: {1}</value>
+    <value>Umowy [{0}]. Powiązane z firmą: {1}</value>
   </data>
   <data name="OpportunityLinkedPerson" xml:space="preserve">
-    <value>Verkaufschancen [{0}]. Person verknüpft: {1}</value>
+    <value>Umowy [{0}]. Osoba powiązana: {1}</value>
   </data>
   <data name="OpportunityOpenedAccess" xml:space="preserve">
-    <value>Verkaufschancen [{0}]. Zugriff geöffnet</value>
+    <value>Umowy [{0}]. Dostęp otwarty</value>
   </data>
   <data name="OpportunityRestrictedAccess" xml:space="preserve">
-    <value>Verkaufschancen [{0}]. Zugriff beschränkt: {1}</value>
+    <value>Umowy [{0}]. Dostęp zabroniony: {1}</value>
   </data>
   <data name="OpportunityStageCreated" xml:space="preserve">
-    <value>Phase der Verkaufschance erstellt: {0}</value>
+    <value>Stworzony etap ewentualnej transakcji: {0}</value>
   </data>
   <data name="OpportunityStageDeleted" xml:space="preserve">
-    <value>Phase der Verkaufschance gelöscht: {0}</value>
+    <value>Usunięty etap ewentualnej transakcji: {0}</value>
   </data>
   <data name="OpportunityStagesUpdatedOrder" xml:space="preserve">
-    <value>Reihenfolge von Phasen der Verkaufschancen aktualisiert: {0}</value>
+    <value>Kolejność kroków umowy: {0}</value>
   </data>
   <data name="OpportunityStageUpdated" xml:space="preserve">
-    <value>Phase der Verkaufschance aktualisiert: {0}</value>
+    <value>Przeglad zrobiono etap ewentualnej transakcji: {0}</value>
   </data>
   <data name="OpportunityStageUpdatedColor" xml:space="preserve">
-    <value>Farbe von Phase der Verkaufschance aktualisiert: {0}</value>
+    <value>Kolor etapu omowy: {0}</value>
   </data>
   <data name="OpportunityUnlinkedCompany" xml:space="preserve">
-    <value>Verkaufschancen [{0}]. Unternehmen unverknüpft: {1}</value>
+    <value>Umowy [{0}]. Firma odłączona: {1}</value>
   </data>
   <data name="OpportunityUnlinkedPerson" xml:space="preserve">
-    <value>Verkaufschancen [{0}]. Person unverknüpft: {1}</value>
+    <value>Umowy [{0}]. Osoba odłączona: {1}</value>
   </data>
   <data name="OpportunityUpdated" xml:space="preserve">
-    <value>Verkaufschance aktualisiert: {0}</value>
+    <value>Umowa zaktualizowana: {0}</value>
   </data>
   <data name="OpportunityUpdatedStage" xml:space="preserve">
-    <value>Phase der Verkaufschance aktualisiert: {0}</value>
+    <value>Zaktualizowano etap ewentualnej transakcji: {0}</value>
   </data>
   <data name="OpportunityUserFieldCreated" xml:space="preserve">
-    <value>Benutzerfeld für Verkaufschance erstellt: {0}</value>
+    <value>Utworzono pole użytkownika umowy: {0}</value>
   </data>
   <data name="OpportunityUserFieldDeleted" xml:space="preserve">
-    <value>Benutzerfeld für Verkaufschance gelöscht: {0}</value>
+    <value>Usunięto pole użytkownika umowy: {0}</value>
   </data>
   <data name="OpportunityUserFieldsUpdatedOrder" xml:space="preserve">
-    <value>Reihenfolge der Benutzerfelder für Verkaufschance aktualisiert: {0}</value>
+    <value>Zaktualizowany kolejność pól dla ewentualnych transakcji: {0}</value>
   </data>
   <data name="OpportunityUserFieldUpdated" xml:space="preserve">
-    <value>Benutzerfeld für Verkaufschance aktualisiert: {0}</value>
+    <value>Zaktualizowano pole użytkownika umowy: {0}</value>
   </data>
   <data name="OrganizationProfileUpdatedAddress" xml:space="preserve">
-    <value>Profil des Unternehmens. Adresse aktualisiert.</value>
+    <value>Profil organizacji. Zaktualizowano adres</value>
   </data>
   <data name="OrganizationProfileUpdatedCompanyName" xml:space="preserve">
-    <value>Profil des Unternehmens. Unternehmensname aktualisiert: {0}</value>
+    <value>Profil organizacji. Nazwa firmy aktualizowana: {0}</value>
   </data>
   <data name="OrganizationProfileUpdatedInvoiceLogo" xml:space="preserve">
-    <value>Profil des Unternehmens. Logo der Rechnung aktualisiert</value>
+    <value>Profil organizacji. Zaktualizowane logo rachunków</value>
   </data>
   <data name="OtherCrmSettingsModule" xml:space="preserve">
-    <value>Andere Einstellungen</value>
+    <value>Inne ustawienia</value>
   </data>
   <data name="OthersProduct" xml:space="preserve">
-    <value>Sonstiges</value>
+    <value>Inne</value>
   </data>
   <data name="OwnerChanged" xml:space="preserve">
-    <value>Besitzer geändert: {0}</value>
+    <value>Właściciel został zmieniony: {0}</value>
   </data>
   <data name="OwnerSentChangeOwnerInstructions" xml:space="preserve">
-    <value>Besitzer [{0}]. Anweisungen zur Änderung des Besitzers wurden gesendet</value>
+    <value>Właściciel [{0}]. Wysłano instrukcje dotyczące zmiany właściciela</value>
   </data>
   <data name="OwnerSentPortalDeactivationInstructions" xml:space="preserve">
-    <value>Besitzer [{0}]. Anweisungen zur Deaktivierung des Portals wurden gesendet</value>
+    <value>Właściciel [{0}]. Wysłano instrukcje dezaktywacji portalu</value>
   </data>
   <data name="OwnerSentPortalDeleteInstructions" xml:space="preserve">
-    <value>Besitzer [{0}]. Anweisungen zum Löschen des Portals wurden gesendet</value>
+    <value>Właściciel [{0}]. Wysłano instrukcję usunięcia z portalu</value>
   </data>
   <data name="PageCol" xml:space="preserve">
-    <value>Seite</value>
+    <value>Strona</value>
   </data>
   <data name="PasswordStrengthSettingsUpdated" xml:space="preserve">
-    <value>Einstellungen der Kennwortstärke sind aktualisiert</value>
+    <value>Ustawienia siły haseł zostały zaktualizowane</value>
   </data>
   <data name="PeopleProduct" xml:space="preserve">
-    <value>Personen</value>
+    <value>Ludzie</value>
   </data>
   <data name="PersonAttachedFiles" xml:space="preserve">
-    <value>Personen [{0}]. Dateien angehängt: {1}</value>
+    <value>Osoby [{0}]. Dołączone pliki: {1}</value>
   </data>
   <data name="PersonCreated" xml:space="preserve">
-    <value>Person erstellt: {0}</value>
+    <value>Osoba Utworzona: {0}</value>
   </data>
   <data name="PersonCreatedCompanyTag" xml:space="preserve">
-    <value>Personen [{0}]. Tag für das Unternehmen erstellt: {1}</value>
+    <value>Osoby [{0}]. Tag firmy utworzony: {1}</value>
   </data>
   <data name="PersonCreatedHistoryEvent" xml:space="preserve">
-    <value>Personen [{0}]. Ereignis der Historie erstellt: {1}</value>
+    <value>Osoby [{0}]. Wydarzenie historii Utworzono: {1}</value>
   </data>
   <data name="PersonCreatedTag" xml:space="preserve">
-    <value>Personen [{0}]. Tag erstellt: {1}</value>
+    <value>Osoby [{0}]. Tag utworzony: {1}</value>
   </data>
   <data name="PersonCreatedWithWebForm" xml:space="preserve">
-    <value>Person mithilfe des Web-Formulars erstellt: {0}</value>
+    <value>Osoba utworzona w formularzu internetowym: {0}</value>
   </data>
   <data name="PersonDeleted" xml:space="preserve">
-    <value>Person gelöscht: {0}</value>
+    <value>Osoba usunięta: {0}</value>
   </data>
   <data name="PersonDeletedHistoryEvent" xml:space="preserve">
-    <value>Personen [{0}]. Ereignis der Historie gelöscht: {1}</value>
+    <value>Osoby [{0}]. Wydarzenie historii Usunięto: {1}</value>
   </data>
   <data name="PersonDeletedTag" xml:space="preserve">
-    <value>Personen [{0}]. Tag gelöscht: {1}</value>
+    <value>Osoby [{0}]. Usunięty tag: {1}</value>
   </data>
   <data name="PersonDetachedFile" xml:space="preserve">
-    <value>Personen [{0}]. Datei getrennt: {1}</value>
+    <value>Osoby [{0}]. Plik odłączony: {1}</value>
   </data>
   <data name="PersonLinkedProject" xml:space="preserve">
-    <value>Personen [{0}]. Projekt verknüpft: {1}</value>
+    <value>Osoby [{0}]. Powiązany projekt: {1}</value>
   </data>
   <data name="PersonsCreated" xml:space="preserve">
-    <value>Personen erstellt: {0}</value>
+    <value>Osoby utworzone: {0}</value>
   </data>
   <data name="PersonsMerged" xml:space="preserve">
-    <value>Personen zusammengeführt: {0} - {1}</value>
+    <value>Osoby połączone: {0} - {1}</value>
   </data>
   <data name="PersonsModule" xml:space="preserve">
-    <value>Personen</value>
+    <value>Osoby</value>
   </data>
   <data name="PersonUnlinkedProject" xml:space="preserve">
-    <value>Personen [{0}]. Projekt unverknüpft: {1}</value>
+    <value>Osoby [{0}]. Projekt odwiązany: {1}</value>
   </data>
   <data name="PersonUpdated" xml:space="preserve">
-    <value>Person aktualisiert: {0}</value>
+    <value>Osobę Zaktualizowano: {0}</value>
   </data>
   <data name="PersonUpdatedCompanyTemperatureLevel" xml:space="preserve">
-    <value>Personen [{0}]. Temperaturniveau des Unternehmens aktualisiert</value>
+    <value>Osoby [{0}]. Aktualizowany poziom temperatury firmy</value>
   </data>
   <data name="PersonUpdatedPhoto" xml:space="preserve">
-    <value>Personen [{0}]. Foto aktualisiert</value>
+    <value>Osoby [{0}]. Zdjęcie zostało zaktualizowane</value>
   </data>
   <data name="PersonUpdatedPrincipalInfo" xml:space="preserve">
-    <value>Personen [{0}]. Grundinformation aktualisiert</value>
+    <value>Osoby [{0}]. Zaktualizowano informacje podstawowe</value>
   </data>
   <data name="PersonUpdatedTemperatureLevel" xml:space="preserve">
-    <value>Personen [{0}]. Temperaturniveau aktualisiert</value>
+    <value>Osoby [{0}]. Zaktualizowano poziom temperatury</value>
   </data>
   <data name="PersonUserFieldCreated" xml:space="preserve">
-    <value>Benutzerfeld für Personen erstellt: {0}</value>
+    <value>Utworzono pole użytkownika dla: {0}</value>
   </data>
   <data name="PersonUserFieldDeleted" xml:space="preserve">
-    <value>Benutzerfeld für Personen gelöscht: {0}</value>
+    <value>Usunięto pole użytkownika: {0}</value>
   </data>
   <data name="PersonUserFieldsUpdatedOrder" xml:space="preserve">
-    <value>Reihenfolge der Benutzerfelder für Personen aktualisiert: {0}</value>
+    <value>Konto użytkownika Zaktualizowano: {0}</value>
   </data>
   <data name="PersonUserFieldUpdated" xml:space="preserve">
-    <value>Benutzerfeld für Personen aktualisiert: {0}</value>
+    <value>Osoba użytkownika Pole Aktualizacja: {0}</value>
   </data>
   <data name="PlatformCol" xml:space="preserve">
-    <value>Plattform</value>
+    <value>Platforma</value>
   </data>
   <data name="PortalAccessSettingsUpdated" xml:space="preserve">
-    <value>Zugriffeinstellungen zu dem Portal sind aktualisiert</value>
+    <value>Zaktualizowano ustawienia dostępu do portalu</value>
   </data>
   <data name="PortalDeactivated" xml:space="preserve">
-    <value>Portal ist deaktiviert</value>
+    <value>Portal wyłaczony</value>
   </data>
   <data name="PortalDeleted" xml:space="preserve">
-    <value>Das Portal ist gelöscht</value>
-  </data>
-  <data name="PrivacyRoomDisable" xml:space="preserve">
-    <value>Privater Raum deaktiviert</value>
-  </data>
-  <data name="PrivacyRoomEnable" xml:space="preserve">
-    <value>Privater Raum aktiviert</value>
+    <value>Usunięty portal</value>
   </data>
   <data name="ProductAccessOpened" xml:space="preserve">
-    <value>Produkte [{0}]. Zugriff geöffnet</value>
+    <value>Produkty [{0}]. Dostęp otwarty</value>
   </data>
   <data name="ProductAccessOpenedForGroups" xml:space="preserve">
-    <value>Produkte: [{0}]. Gruppen [{1}].  Zugriff geöffnet</value>
+    <value>Produkty: [{0}]. Grupy [{1}]. Dostęp otwarty</value>
   </data>
   <data name="ProductAccessOpenedForUsers" xml:space="preserve">
-    <value>Produkte: [{0}]. Benutzer [{1}].  Zugriff geöffnet</value>
+    <value>Produkty: [{0}]. Użytkownicy [{1}]. Dostęp otwarty</value>
   </data>
   <data name="ProductAccessRestricted" xml:space="preserve">
-    <value>Produkte [{0}]. Zugriff beschränkt</value>
+    <value>Products [{0}]. Dostęp ograniczony</value>
   </data>
   <data name="ProductAddedAdministrator" xml:space="preserve">
-    <value>Produkte [{0}]. Administrator hinzugefügt: {1}</value>
+    <value>Produkty [{0}]. Administratora Dodano: {1}</value>
   </data>
   <data name="ProductCol" xml:space="preserve">
     <value>Produkt</value>
   </data>
   <data name="ProductDeletedAdministrator" xml:space="preserve">
-    <value>Produkte [{0}]. Administrator gelöscht: {1}</value>
+    <value>Produkty [{0}]. Usunięty przez administratora: {1}</value>
   </data>
   <data name="ProductsListUpdated" xml:space="preserve">
-    <value>Produktliste aktualisiert</value>
+    <value>Lista produktów została zaktualizowana</value>
   </data>
   <data name="ProductsModule" xml:space="preserve">
-    <value>Produkte</value>
+    <value>Produkty</value>
   </data>
   <data name="ProjectCreated" xml:space="preserve">
-    <value>Projekt erstellt: {0}</value>
+    <value>Utworzony projekt: {0}</value>
   </data>
   <data name="ProjectCreatedFromTemplate" xml:space="preserve">
-    <value>Vorlagen [{0}]. Projekt erstellt: {1}</value>
+    <value>Szablony [{0}]. Utworzony projekt: {1}</value>
   </data>
   <data name="ProjectDeleted" xml:space="preserve">
-    <value>Projekt gelöscht: {0}</value>
+    <value>Usunięty projekt: {0}</value>
   </data>
   <data name="ProjectDeletedMember" xml:space="preserve">
-    <value>Projekte [{0}]. Mitglied gelöscht: {1}</value>
+    <value>Projekty [{0}]. Użytkownik usunięty: {1}</value>
   </data>
   <data name="ProjectFollowed" xml:space="preserve">
-    <value>Projekt gefolgt: {0}</value>
+    <value>Następujący projekt: {0}</value>
   </data>
   <data name="ProjectLinkedCompany" xml:space="preserve">
-    <value>Projekte [{0}]. Unternehmen verknüpft: {1}</value>
+    <value>Projekty [{0}]. Powiązane z firmą: {1}</value>
   </data>
   <data name="ProjectLinkedContacts" xml:space="preserve">
-    <value>Projekte [{0}]. Kontakte verknüpft: {1}</value>
+    <value>Projekty [{0}]. Kontakty połączone: {1}</value>
   </data>
   <data name="ProjectLinkedPerson" xml:space="preserve">
-    <value>Projekte [{0}]. Person verknüpft: {1}</value>
+    <value>Projekty [{0}]. Osoba powiązana: {1}</value>
   </data>
   <data name="ProjectsImportedFromBasecamp" xml:space="preserve">
-    <value>Projekte aus Basecamp importiert: {0}</value>
+    <value>Projekty importowane z bazą danych: {0}</value>
   </data>
   <data name="ProjectsModule" xml:space="preserve">
-    <value>Projekte</value>
+    <value>Projekty</value>
   </data>
   <data name="ProjectsProduct" xml:space="preserve">
-    <value>Projekte</value>
+    <value>Projekty</value>
   </data>
   <data name="ProjectsSettingsModule" xml:space="preserve">
-    <value>Einstellungen</value>
+    <value>Ustawienia</value>
   </data>
   <data name="ProjectTemplateCreated" xml:space="preserve">
-    <value>Vorlage des Projektes erstellt: {0}</value>
+    <value>Szablon projektu Utworzono: {0}</value>
   </data>
   <data name="ProjectTemplateDeleted" xml:space="preserve">
-    <value>Vorlage des Projektes gelöscht: {0}</value>
+    <value>Usunięto szablon projektu: {0}</value>
   </data>
   <data name="ProjectTemplateUpdated" xml:space="preserve">
-    <value>Vorlage des Projektes aktualisiert: {0}</value>
+    <value>Szablon projektu Zaktualizowano: {0}</value>
   </data>
   <data name="ProjectUnfollowed" xml:space="preserve">
-    <value>Projekt nicht mehr verfolgt: {0}</value>
+    <value>Przerwać śledzenie projektu: {0}</value>
   </data>
   <data name="ProjectUnlinkedCompany" xml:space="preserve">
-    <value>Projekte [{0}]. Unternehmen unverknüpft: {1}</value>
+    <value>Projekty [{0}]. Firma odłączona: {1}</value>
   </data>
   <data name="ProjectUnlinkedPerson" xml:space="preserve">
-    <value>Projekte [{0}]. Person unverknüpft: {1}</value>
+    <value>Projekty [{0}]. Osoba odłączona: {1}</value>
   </data>
   <data name="ProjectUpdated" xml:space="preserve">
-    <value>Projekt aktualisiert: {0}</value>
+    <value>Zaktualizowano projekt: {0}</value>
   </data>
   <data name="ProjectUpdatedMemberRights" xml:space="preserve">
-    <value>Projekte [{0}]. Mitglieder [{1}]. Zugriffsrechte aktualisiert</value>
+    <value>Projekty [{0}]. Członkowie [{1}]. Aktualizowano prawa dostępu</value>
   </data>
   <data name="ProjectUpdatedStatus" xml:space="preserve">
-    <value>Projekte [{0}]. Status aktualisiert: {1}</value>
+    <value>Projekty [{0}]. Status Aktualizacja: {1}</value>
   </data>
   <data name="ProjectUpdatedTeam" xml:space="preserve">
-    <value>Projekte [{0}]. Team aktualisiert: {1}</value>
+    <value>Projekty [{0}]. Zespół zaktualizowany: {1}</value>
   </data>
   <data name="ReassignsActionType" xml:space="preserve">
-    <value>Erneut zuweisen</value>
+    <value>Ponowne przypisanie</value>
   </data>
   <data name="ReportsModule" xml:space="preserve">
-    <value>Berichte</value>
+    <value>Raporty</value>
   </data>
   <data name="ReportTemplateCreated" xml:space="preserve">
-    <value>Berichtsvorlage des Projektes erstellt: {0}</value>
+    <value>Szablon raportu projektu utworzony: {0}</value>
   </data>
   <data name="ReportTemplateDeleted" xml:space="preserve">
-    <value>Berichtsvorlage des Projektes gelöscht: {0}</value>
+    <value>Szablon raportu projektu usunięty: {0}</value>
   </data>
   <data name="ReportTemplateUpdated" xml:space="preserve">
-    <value>Berichtsvorlage des Projektes aktualisiert: {0}</value>
+    <value>Szablon raportu projektu został zaktualizowany: {0}</value>
   </data>
   <data name="SendActionType" xml:space="preserve">
-    <value>Senden</value>
+    <value>Wysłać</value>
   </data>
   <data name="SentInviteInstructions" xml:space="preserve">
-    <value>Anweisungen zur Einladung wurden gesendet: {0}</value>
+    <value>Zaproś instrukcje wysłane: {0}</value>
   </data>
   <data name="SessionCompleted" xml:space="preserve">
-    <value>Sitzung abgeschlossen</value>
+    <value>Sesja zakończona</value>
   </data>
   <data name="SessionStarted" xml:space="preserve">
-    <value>Sitzung gestartet</value>
+    <value>Uruchomienie sesji</value>
   </data>
   <data name="SettingsProduct" xml:space="preserve">
-    <value>Einstellungen</value>
+    <value>Ustawienia</value>
   </data>
   <data name="SSODisabled" xml:space="preserve">
-    <value>SSO deaktiviert</value>
+    <value>Wyłączona możliwość SSO</value>
   </data>
   <data name="SSOEnabled" xml:space="preserve">
-    <value>SSO aktiviert</value>
+    <value>Włączona możliwość SSO</value>
   </data>
   <data name="StartBackupSetting" xml:space="preserve">
-    <value>Backup starten </value>
-  </data>
-  <data name="StartStorageDecryption" xml:space="preserve">
-    <value>Entschlüsselung des Speichers anfangen</value>
-  </data>
-  <data name="StartStorageEncryption" xml:space="preserve">
-    <value>Starten Sie die Verschlüsselung des Speichers</value>
+    <value>Uruchom kopię zapasową</value>
   </data>
   <data name="StartTransferSetting" xml:space="preserve">
-    <value>Regionsmigration des Portals starten</value>
+    <value>Uruchom migrację regionów portalu</value>
   </data>
   <data name="SubtaskCreated" xml:space="preserve">
-    <value>Projekte [{0}]. Aufgaben [{1}]. Teilaufgabe erstellt: {2}</value>
+    <value>Projekty [{0}]. Zadania [{1}]. Anulowanie Utworzono: {2}</value>
   </data>
   <data name="SubtaskDeleted" xml:space="preserve">
-    <value>Projekte [{0}]. Aufgaben [{1}]. Teilaufgabe gelöscht: {2}</value>
+    <value>Projekty [{0}]. Zadania [{1}]. Odesłanie usunięto: {2}</value>
   </data>
   <data name="SubtaskUpdated" xml:space="preserve">
-    <value>Projekte [{0}]. Aufgaben [{1}]. Teilaufgabe aktualisiert: {2}</value>
+    <value>Projekty [{0}]. Zadania [{1}]. Anulowanie zaktualizowano: {2}</value>
   </data>
   <data name="SubtaskUpdatedStatus" xml:space="preserve">
-    <value>Projekte [{0}]. Aufgaben [{1}]. Teilaufgaben [{2}]. Status aktualisiert: {3}</value>
+    <value>Projekty [{0}]. Zadania [{1}]. Zadania [{2}]. Status Aktualizacja: {3}</value>
   </data>
   <data name="SystemAccount" xml:space="preserve">
-    <value>Systemkonto</value>
-  </data>
-  <data name="TargetIdCol" xml:space="preserve">
-    <value>Ziel-ID</value>
+    <value>Konto systemowe</value>
   </data>
   <data name="TaskAttachedFiles" xml:space="preserve">
-    <value>Projekte [{0}]. Aufgaben [{1}]. Dateien angehängt: {2}</value>
+    <value>Projekty [{0}]. Zadania [{1}]. Dołączone pliki: {2}</value>
   </data>
   <data name="TaskCommentCreated" xml:space="preserve">
-    <value>Projekte [{0}]. Aufgaben [{1}]. Kommentar erstellt</value>
+    <value>Projekty [{0}]. Zadania [{1}]. Utworzono komentarz</value>
   </data>
   <data name="TaskCommentDeleted" xml:space="preserve">
-    <value>Projekte [{0}]. Aufgaben [{1}]. Kommentar gelöscht</value>
+    <value>Projekty [{0}]. Zadania [{1}]. Komentarz usunięty</value>
   </data>
   <data name="TaskCommentUpdated" xml:space="preserve">
-    <value>Projekte [{0}]. Aufgaben [{1}]. Kommentar aktualisiert</value>
+    <value>Projekty [{0}]. Zadania [{1}]. Zaktualizowano komentarz</value>
   </data>
   <data name="TaskCreated" xml:space="preserve">
-    <value>Projekte [{0}]. Aufgabe erstellt: {1}</value>
+    <value>Projekty [{0}]. Utworzono zadanie: {1}</value>
   </data>
   <data name="TaskCreatedFromDiscussion" xml:space="preserve">
-    <value>Projekte [{0}]. Diskussionen [{1}]. Aufgabe erstellt: {2}</value>
+    <value>Projekty [{0}]. Dyskusje [{1}]. Utworzono zadanie: {2}</value>
   </data>
   <data name="TaskDeleted" xml:space="preserve">
-    <value>Projekte [{0}]. Aufgabe gelöscht: {1}</value>
+    <value>Projekty [{0}]. Zadanie usunięte: {1}</value>
   </data>
   <data name="TaskDetachedFile" xml:space="preserve">
-    <value>Projekte [{0}]. Aufgabe: {1}. Datei getrennt: {2}</value>
+    <value>Projekty [{0}]. Zadanie 1}. Plik odłączony: {2}</value>
   </data>
   <data name="TaskMovedToMilestone" xml:space="preserve">
-    <value>Projekte [{0}]. Meilensteine [{1}]. Aufgabe verschoben: {2}</value>
+    <value>Projekty [{0}]. Etapy [{1}]. Zadanie przeniesione: {2}</value>
   </data>
   <data name="TasksLinked" xml:space="preserve">
-    <value>Projekte [{0}]. Aufgaben verknüpft: {1} - {2}</value>
+    <value>Projekty [{0}]. Zadania połączone: {1} - {2}</value>
   </data>
   <data name="TasksModule" xml:space="preserve">
-    <value>Aufgaben</value>
+    <value>Zadania</value>
   </data>
   <data name="TasksUnlinked" xml:space="preserve">
-    <value>Projekte [{0}]. Aufgaben unverknüpft: {1} - {2}</value>
+    <value>Projekty [{0}]. Zadania Odłączone: {1} - {2}</value>
   </data>
   <data name="TaskTimeCreated" xml:space="preserve">
-    <value>Projekte [{0}]. Aufgaben [{1}]. Arbeitszeit an der Aufgabe erstellt: {2}</value>
+    <value>Projekty [{0}]. Zadania [{1}]. Czas utworzenia zadania: {2}</value>
   </data>
   <data name="TaskTimesDeleted" xml:space="preserve">
-    <value>Arbeitszeit an der Aufgabe gelöscht: {0}</value>
+    <value>Usunięte czasy zadania: {0}</value>
   </data>
   <data name="TaskTimesUpdatedStatus" xml:space="preserve">
-    <value>Arbeitszeit an der Aufgabe[{0}]. Status aktualisiert: {1}</value>
+    <value>Task Times [{0}]. Status Aktualizacja: {1}</value>
   </data>
   <data name="TaskTimeUpdated" xml:space="preserve">
-    <value>Projekte [{0}]. Aufgaben [{1}]. Arbeitszeit an der Aufgabe aktualisiert: {2}</value>
+    <value>Projekty [{0}]. Zadania [{1}]. Czas realizacji zadania: {2}</value>
   </data>
   <data name="TaskUnlinkedMilestone" xml:space="preserve">
-    <value>Projekte [{0}]. Aufgaben [{1}]. Von Meilensteinen unverknüpft.</value>
+    <value>Projekty [{0}]. Zadania [{1}]. Odłączone etapy.</value>
   </data>
   <data name="TaskUpdated" xml:space="preserve">
-    <value>Projekte [{0}]. Aufgabe aktualisiert: {1}</value>
+    <value>Projekty [{0}]. Zaktualizowano zadanie: {1}</value>
   </data>
   <data name="TaskUpdatedFollowing" xml:space="preserve">
-    <value>Projekte [{0}]. Verfolgung der Aufgabe aktualisiert: {1}</value>
+    <value>Projekty [{0}]. Zaktualizowano zadanie: {1}</value>
   </data>
   <data name="TaskUpdatedStatus" xml:space="preserve">
-    <value>Projekte [{0}]. Aufgaben [{1}]. Status aktualisiert: {2}</value>
+    <value>Projekty [{0}]. Zadania [{1}]. Status Aktualizacja: {2}</value>
   </data>
   <data name="TeamTemplateChanged" xml:space="preserve">
-    <value>Team-Vorlage wurde geändert</value>
+    <value>Zmieniono szablon zespołu</value>
   </data>
   <data name="ThirdPartyCreated" xml:space="preserve">
-    <value>Drittanbieter erstellt: {0}. Provider: {1}</value>
+    <value>Utworzona strona trzecia: {0}. Dostawca: {1}</value>
   </data>
   <data name="ThirdPartyDeleted" xml:space="preserve">
-    <value>Drittanbieter gelöscht: {0}. Provider: {1}</value>
+    <value>Usunięta strona trzecia: {0}. Dostawca: {1}</value>
   </data>
   <data name="ThirdPartyUpdated" xml:space="preserve">
-    <value>Drittanbieter aktualisiert: {0}. Provider: {1}</value>
+    <value>Zaktualizowano stronę trzecią: {0}. Dostawca: {1}</value>
   </data>
   <data name="TimeTrackingModule" xml:space="preserve">
-    <value>Zeitverfolgung</value>
+    <value>Śledzenie czasu</value>
   </data>
   <data name="TimeZoneSettingsUpdated" xml:space="preserve">
-    <value>Einstellungen der Zeitzone aktualisiert</value>
+    <value>Zaktualizowano ustawienia strefy czasowej</value>
   </data>
   <data name="TrustedMailDomainSettingsUpdated" xml:space="preserve">
-    <value>Einstellungen der vertrauenswürdigen Mail-Domänen wurden aktualisiert</value>
-  </data>
-  <data name="TwoFactorAuthenticationSettingsDisabled" xml:space="preserve">
-    <value>Zwei-Faktor-Authentifizierungseinstellungen sind aktualisiert: Zwei-Faktor-Authentifizierung wurde deaktiviert</value>
-  </data>
-  <data name="TwoFactorAuthenticationSettingsEnabledBySms" xml:space="preserve">
-    <value>Zwei-Faktor-Authentifizierungseinstellungen sind aktualisiert: SMS-Bestätigung wurde aktiviert</value>
-  </data>
-  <data name="TwoFactorAuthenticationSettingsEnabledByTfaApp" xml:space="preserve">
-    <value>Zwei-Faktor-Authentifizierungseinstellungen sind aktualisiert: Authentifizierungs-App wurde aktiviert</value>
+    <value>Ustawienia domen zaufanych poczty zostały zaktualizowane</value>
   </data>
   <data name="TwoFactorAuthenticationSettingsUpdated" xml:space="preserve">
-    <value>Einstellungen der Zwei-Faktor-Authentifizierung aktualisiert</value>
+    <value>Uaktualnione zostały ustawienia uwierzytelniania dwuskładnikowego</value>
   </data>
   <data name="UnfollowActionType" xml:space="preserve">
-    <value>Nicht mehr verfolgen</value>
+    <value>Zaprzestanie śledzenia</value>
   </data>
   <data name="UnknownAccount" xml:space="preserve">
-    <value>Unbekanntes Konto</value>
+    <value>Nieznane konto</value>
   </data>
   <data name="UnlinkActionType" xml:space="preserve">
-    <value>Verknüpfung aufheben</value>
+    <value>Odczepić</value>
   </data>
   <data name="UpdateAccessActionType" xml:space="preserve">
-    <value>Aktualisierung des Zugriffs</value>
+    <value>Uaktualniony dostęp</value>
   </data>
   <data name="UpdateActionType" xml:space="preserve">
-    <value>Aktualisierung</value>
+    <value>Aktualizacja</value>
   </data>
   <data name="UploadActionType" xml:space="preserve">
-    <value>Hochladen</value>
+    <value>Przekazać plik</value>
   </data>
   <data name="UserActivated" xml:space="preserve">
-    <value>Benutzer aktiviert: {0}</value>
+    <value>Aktywowany użytkownik: {0}</value>
   </data>
   <data name="UserAddedAvatar" xml:space="preserve">
-    <value>Benutzer [{0}]. Avatar hinzugefügt</value>
+    <value>Użytkownicy [{0}]. Awatar został dodany</value>
   </data>
   <data name="UserCol" xml:space="preserve">
-    <value>Benutzer</value>
+    <value>Użytkownik</value>
   </data>
   <data name="UserCreated" xml:space="preserve">
-    <value>Benutzer erstellt: {0}</value>
+    <value>Użytkownik utworzony: {0}</value>
   </data>
   <data name="UserCreatedViaInvite" xml:space="preserve">
-    <value>Benutzer per Einladung erstellt: {0}</value>
+    <value>Użytkownik utworzony przez zaproszenie: {0}</value>
   </data>
   <data name="UserDataReassigns" xml:space="preserve">
-    <value>Neuzugewiesen: von Benutzer{0} zu Benutzer{1}</value>
-  </data>
-  <data name="UserDataRemoving" xml:space="preserve">
-    <value>Benutzerdaten für {0} wurden gelöscht</value>
+    <value>Ponowne przypisanie danych: od użytkownika {0} do użytkownika {1}</value>
   </data>
   <data name="UserDeleted" xml:space="preserve">
-    <value>Benutzer gelöscht: {0}</value>
+    <value>Usunięty użytkownik: {0}</value>
   </data>
   <data name="UserDeletedAvatar" xml:space="preserve">
-    <value>Benutzer [{0}]. Avatar gelöscht</value>
+    <value>Użytkownicy [{0}]. Avatar usunięty</value>
   </data>
   <data name="UserFileUpdated" xml:space="preserve">
-    <value>Benutzer [{0}]. Datei aktualisiert: {1}</value>
+    <value>Użytkownicy [{0}]. Zaktualizowano plik: {1}</value>
   </data>
   <data name="UserImported" xml:space="preserve">
-    <value>Benutzer importiert: {0}</value>
+    <value>Użytkownik zaimportował: {0}</value>
   </data>
   <data name="UserLinkedSocialAccount" xml:space="preserve">
-    <value>Konto im sozialen Netzwerk verknüpft. Provider: {0}</value>
+    <value>Powiązane konto społecznościowe. Dostawca: {0}</value>
   </data>
   <data name="UsersDeleted" xml:space="preserve">
-    <value>Benutzer gelöscht: {0}</value>
+    <value>Usunięte użytkownicy: {0}</value>
   </data>
   <data name="UserSentActivationInstructions" xml:space="preserve">
-    <value>Benutzer [{0}]. Anweisungen zur Aktivierung wurden gesendet</value>
+    <value>Użytkownicy [{0}]. Wysłano instrukcje aktywacji</value>
   </data>
   <data name="UserSentDeleteInstructions" xml:space="preserve">
-    <value>Anweisungen zum Löschen des Profils wurden gesendet</value>
+    <value>Instrukcje dotyczące wysłania usuniętych plików</value>
   </data>
   <data name="UserSentEmailInstructions" xml:space="preserve">
-    <value>Benutzer [{0}]. Anweisungen zur E-Mail-Änderung wurden gesendet</value>
+    <value>Użytkownicy [{0}]. Wysłane instrukcje dotyczące zmiany adresu e-mail</value>
   </data>
   <data name="UserSentPasswordInstructions" xml:space="preserve">
-    <value>Benutzer [{0}]. Anweisungen zur Änderung des Kennwortes wurden gesendet</value>
+    <value>Użytkownicy [{0}]. Instrukcje dotyczące wysyłania hasła</value>
   </data>
   <data name="UsersModule" xml:space="preserve">
-    <value>Benutzer</value>
+    <value>Użytkownicy</value>
   </data>
   <data name="UsersSentActivationInstructions" xml:space="preserve">
-    <value>Benutzer [{0}]. Anweisungen zur Aktivierung wurden gesendet</value>
+    <value>Użytkownicy [{0}]. Wysłano instrukcje aktywacji</value>
   </data>
   <data name="UsersUpdatedStatus" xml:space="preserve">
-    <value>Benutzer [{0}]. Status aktualisiert</value>
+    <value>Użytkownicy [{0}]. Zaktualizowany status</value>
   </data>
   <data name="UsersUpdatedType" xml:space="preserve">
-    <value>Benutzer [{0}]. Typ aktualisiert</value>
-  </data>
-  <data name="UserTfaDisconnected" xml:space="preserve">
-    <value>Authenticator App ist unterbrochen: {0}</value>
-  </data>
-  <data name="UserTfaGenerateCodes" xml:space="preserve">
-    <value>Neue Sicherheitscodes werden erstellt</value>
+    <value>Użytkownicy [{0}]. Zaktualizowany typ</value>
   </data>
   <data name="UserUnlinkedSocialAccount" xml:space="preserve">
-    <value>Konto im sozialen Netzwerk unverknüpft. Provider: {0}</value>
+    <value>Konto społecznościowe zostało odłączone. Dostawca: {0}</value>
   </data>
   <data name="UserUpdated" xml:space="preserve">
-    <value>Benutzer aktualisiert: {0}</value>
+    <value>Zaktualizowano użytkownika: {0}</value>
   </data>
   <data name="UserUpdatedAvatarThumbnails" xml:space="preserve">
-    <value>Benutzer [{0}]. Miniaturansichten des Avatars aktualisiert</value>
-  </data>
-  <data name="UserUpdatedEmail" xml:space="preserve">
-    <value>E-Mail wurde aktualisiert</value>
+    <value>Użytkownicy [{0}]. Miniatury Avatar zostały zaktualizowane</value>
   </data>
   <data name="UserUpdatedLanguage" xml:space="preserve">
-    <value>Sprache wurde aktualisiert</value>
+    <value>Język został zaktualizowany</value>
   </data>
   <data name="UserUpdatedMobileNumber" xml:space="preserve">
-    <value>Benutzer [{0}].Handynummer aktualisieren: {1}</value>
+    <value>Użytkownicy [{0}]. Numer telefonu komórkowego: {1}</value>
   </data>
   <data name="UserUpdatedPassword" xml:space="preserve">
-    <value>Kennwort aktualisiert</value>
+    <value>Hasło zaktualizowane</value>
   </data>
   <data name="WebsiteContactFormUpdatedKey" xml:space="preserve">
-    <value>Schlüssel des Formulars Kontakte der Webseite wurde aktualisiert</value>
+    <value>Został zaktualizowany klucz kontaktowy strony internetowej</value>
   </data>
 </root>
