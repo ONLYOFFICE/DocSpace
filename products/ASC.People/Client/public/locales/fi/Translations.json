@@ -1,7 +1,6 @@
 ﻿{
   "AddMembers": "Lisää jäseniä",
   "Birthdate": "Syntymäaika",
-  "Comments": "Kommentit",
   "DeleteSelfProfile": "Poista profiili",
   "DisabledEmployeeStatus": "Poistettu käytöstä",
   "DisableUserButton": "Poisteta käytöstä",
@@ -11,7 +10,6 @@
   "FemaleSexStatus": "Nainen",
   "InviteLinkTitle": "Kutsulinkki",
   "LDAPLbl": "LDAP",
-  "Location": "Sijainti",
   "MaleSexStatus": "Mies",
   "maxSizeFileError": "Tiedoston enimmäiskoko ylitetty",
   "MaxSizeLabel": "(JPG tai PNG, max 1 Mt)",

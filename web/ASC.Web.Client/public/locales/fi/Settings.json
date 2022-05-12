@@ -1,5 +1,4 @@
 ﻿{
-  "AccessRights": "Käyttöoikeudet",
   "AccessRightsAccessToProduct": "Pääsy moduuliin {{product}} on myönnetty",
   "AccessRightsAllUsers": "Kaikki {{users}}",
   "AccessRightsChangeOwnerConfirmText": "Muutokset otetaan käyttöön sähköpostivahvistuksen jälkeen.",

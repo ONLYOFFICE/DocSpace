@@ -1,5 +1,4 @@
 ﻿{
-  "AccessRights": "Zugriffsrechte",
   "AccessRightsAccessToProduct": "Das Modul {{product}} ist zugreifbar für",
   "AccessRightsAllUsers": "Alle Mitglieder mit dem Status {{users}}",
   "AccessRightsChangeOwnerConfirmText": "Die Änderungen werden nach der Bestätigung per E-Mail übernommen.",

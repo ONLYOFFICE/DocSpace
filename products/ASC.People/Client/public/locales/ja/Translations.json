@@ -1,7 +1,6 @@
 ﻿{
   "AddMembers": "メンバーの追加",
   "Birthdate": "誕生日",
-  "Comments": "コメント",
   "DeleteSelfProfile": "プロファイルの削除",
   "DisabledEmployeeStatus": "無効化",
   "DisableUserButton": "無効にする",
@@ -11,7 +10,6 @@
   "FemaleSexStatus": "女性",
   "InviteLinkTitle": "招待状リンク",
   "LDAPLbl": "LDAP",
-  "Location": "ロケーション",
   "MaleSexStatus": "男性",
   "maxSizeFileError": "最大ファイルサイズを超えました",
   "MaxSizeLabel": "(JPGまたはPNG、最大 1 MB)",

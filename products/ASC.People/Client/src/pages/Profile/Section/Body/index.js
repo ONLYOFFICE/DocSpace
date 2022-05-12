@@ -523,7 +523,7 @@ class SectionBodyContent extends React.PureComponent {
 
         {profile.notes && (
           <ToggleWrapper isContacts={true}>
-            <ToggleContent label={t("Translations:Comments")} isOpen={true}>
+            <ToggleContent label={t("Common:Comments")} isOpen={true}>
               <Text className="profile-comments" as="span">
                 {profile.notes}
               </Text>

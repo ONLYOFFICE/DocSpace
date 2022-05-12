@@ -219,7 +219,11 @@ const EditingWrapperComponent = (props) => {
 
   const onFocus = (e) => e.target.select();
   const onBlur = (e) => {
-    if (e.relatedTarget && e.relatedTarget.classList.contains("edit-button"))
+    if (
+      (e.relatedTarget && e.relatedTarget.classList.contains("edit-button")) ||
+      OkIconIsHovered ||
+      CancelIconIsHovered
+    )
       return false;
 
     !passwordEntryProcess && onClickUpdateItem(e, false);

@@ -1,5 +1,4 @@
 ﻿{
-  "AccessRights": "Quyền truy cập",
   "AccessRightsAccessToProduct": "Quyền truy cập vào mô-đun {{product}} được cấp cho",
   "AccessRightsAllUsers": "Tất cả {{users}}",
   "AccessRightsChangeOwnerConfirmText": "Các thay đổi sẽ được áp dụng sau khi xác nhận qua email.",
