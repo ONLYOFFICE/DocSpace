@@ -193,7 +193,7 @@ public abstract class PrivacyRoomControllerCommon : ControllerBase
                 return new { isset = true };
             }
 
-            _logger.LogInformation("User {userId} updates address", _authContext.CurrentAccount.ID);
+            _logger.InformationUpdateAddress(_authContext.CurrentAccount.ID);
         }
 
         _encryptionKeyPairHelper.SetKeyPair(inDto.PublicKey, inDto.PrivateKeyEnc);
