@@ -29,6 +29,17 @@ namespace ASC.ElasticSearch;
 [Singletone]
 public class Client
 {
+    private static volatile ElasticClient _client;
+    private static readonly object _locker = new object();
+    private readonly ILog _logger;
+    private readonly Settings _settings;
+
+    public Client(IOptionsMonitor<ILog> option, CoreConfiguration configuration, Settings settings)
+    {
+        _logger = option.Get("ASC.Indexer");
+        _settings = configuration.GetSection<Settings>(Tenant.DefaultTenant) ?? settings;
+    }
+
     public ElasticClient Instance
     {
         get
@@ -45,11 +56,7 @@ public class Client
                     return _client;
                 }
 
-                using var scope = _serviceProvider.CreateScope();
-                var CoreConfiguration = _serviceProvider.GetService<CoreConfiguration>();
-                var launchSettings = CoreConfiguration.GetSection<Settings>(Tenant.DefaultTenant) ?? _settings;
-
-                var uri = new Uri(string.Format("{0}://{1}:{2}", launchSettings.Scheme, launchSettings.Host, launchSettings.Port));
+                var uri = new Uri(string.Format("{0}://{1}:{2}", _settings.Scheme, _settings.Host, _settings.Port));
                 var settings = new ConnectionSettings(new SingleNodeConnectionPool(uri))
                     .RequestTimeout(TimeSpan.FromMinutes(5))
                     .MaximumRetries(10)
@@ -75,9 +82,10 @@ public class Client
 
                 try
                 {
-                    if (Ping(new ElasticClient(settings)))
+                    var client = new ElasticClient(settings);
+                    if (Ping(client))
                     {
-                        _client = new ElasticClient(settings);
+                        _client = client;
 
                         _client.Ingest.PutPipeline("attachments", p => p
                         .Processors(pp => pp
@@ -94,19 +102,6 @@ public class Client
                 return _client;
             }
         }
-    }
-
-    private static volatile ElasticClient _client;
-    private static readonly object _locker = new object();
-    private readonly ILog _logger;
-    private readonly Settings _settings;
-    private readonly IServiceProvider _serviceProvider;
-
-    public Client(IOptionsMonitor<ILog> option, IServiceProvider serviceProvider, Settings settings)
-    {
-        _logger = option.Get("ASC.Indexer");
-        _settings = settings;
-        _serviceProvider = serviceProvider;
     }
 
     public bool Ping()
