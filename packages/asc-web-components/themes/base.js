@@ -2227,7 +2227,7 @@ const Base = {
   },
 
   connectedClouds: {
-    color: "#657077",
+    color: '#657077'
     borderBottom: `1px solid #eceef1`,
     borderRight: `1px solid #d0d5da`,
   },
