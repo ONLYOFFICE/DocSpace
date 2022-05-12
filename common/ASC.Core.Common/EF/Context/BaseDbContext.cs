@@ -74,12 +74,15 @@ public class BaseDbContext : DbContext
         switch (_provider)
         {
             case Provider.MySql:
-                optionsBuilder.UseMySql(ConnectionStringSettings.ConnectionString, ServerVersion, r =>
+                optionsBuilder.UseMySql(ConnectionStringSettings.ConnectionString, ServerVersion, sqlOptions =>
                 {
                     if (!string.IsNullOrEmpty(MigrateAssembly))
                     {
-                        r.MigrationsAssembly(MigrateAssembly);
+                        sqlOptions.MigrationsAssembly(MigrateAssembly);
                     }
+
+                    //Configuring Connection Resiliency: https://docs.microsoft.com/en-us/ef/core/miscellaneous/connection-resiliency 
+                    sqlOptions.EnableRetryOnFailure(maxRetryCount: 15, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);
                 });
                 break;
             case Provider.PostgreSql:
