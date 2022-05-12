@@ -9,9 +9,9 @@ rmdir build\install\win\kafka-zookeeper /s /q
 md build\install\win\kafka-zookeeper
 md build\install\win\Files\nginx\temp
 md build\install\win\Files\nginx\logs
-%tar% -xvf build\install\win\apache-zookeeper-3.7.0-bin.tar.gz -C build\install\win\kafka-zookeeper
+%tar% -xvf build\install\win\apache-zookeeper-3.7.1-bin.tar.gz -C build\install\win\kafka-zookeeper
 %tar% -xvf build\install\win\kafka_2.12-2.8.0.tgz -C build\install\win\kafka-zookeeper
-ren build\install\win\kafka-zookeeper\apache-zookeeper-3.7.0-bin zookeeper
+ren build\install\win\kafka-zookeeper\apache-zookeeper-3.7.1-bin zookeeper
 ren build\install\win\kafka-zookeeper\kafka_2.12-2.8.0 kafka
 md build\install\win\kafka-zookeeper\kafka\tools
 md build\install\win\Files\tools
@@ -19,7 +19,7 @@ copy build\install\win\WinSW.NET4new.exe "build\install\win\kafka-zookeeper\kafk
 copy build\install\win\WinSW.NET4new.exe "build\install\win\kafka-zookeeper\kafka\tools\zookeeper.exe" /y
 copy build\install\win\tools\zookeeper.xml "build\install\win\kafka-zookeeper\kafka\tools\zookeeper.xml" /y
 copy build\install\win\tools\kafka.xml "build\install\win\kafka-zookeeper\kafka\tools\kafka.xml" /y
-del /f /q build\install\win\apache-zookeeper-3.7.0-bin.*
+del /f /q build\install\win\apache-zookeeper-3.7.1-bin.*
 del /f /q build\install\win\kafka_2.12-2.8.0.*
 copy build\install\win\WinSW.NET4.exe "build\install\win\Files\tools\proxy.exe" /y
 copy build\install\win\tools\proxy.xml "build\install\win\Files\tools\proxy.xml" /y
