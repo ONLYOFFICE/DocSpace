@@ -10,7 +10,14 @@ const isEditor = pathname.indexOf("doceditor") !== -1;
 let loadTimeout = null;
 const withLoader = (WrappedComponent) => (Loader) => {
   const withLoader = (props) => {
-    const { tReady, firstLoad, isLoaded, isLoading, viewAs } = props;
+    const {
+      tReady,
+      firstLoad,
+      isLoaded,
+      isLoading,
+      viewAs,
+      setIsBurgerLoading,
+    } = props;
     const [inLoad, setInLoad] = useState(false);
 
     const cleanTimer = () => {
@@ -36,6 +43,14 @@ const withLoader = (WrappedComponent) => (Loader) => {
       };
     }, [isLoading]);
 
+    useEffect(() => {
+      if ((!isEditor && firstLoad) || !isLoaded || (isMobile && inLoad)) {
+        setIsBurgerLoading(true);
+      } else {
+        setIsBurgerLoading(false);
+      }
+    }, [isEditor, firstLoad, isLoaded, isMobile, inLoad]);
+
     return (!isEditor && firstLoad) ||
       !isLoaded ||
       (isMobile && inLoad) ||
@@ -54,11 +69,14 @@ const withLoader = (WrappedComponent) => (Loader) => {
 
   return inject(({ auth, filesStore }) => {
     const { firstLoad, isLoading, viewAs } = filesStore;
+    const { settingsStore } = auth;
+    const { setIsBurgerLoading } = settingsStore;
     return {
       firstLoad,
       isLoaded: auth.isLoaded,
       isLoading,
       viewAs,
+      setIsBurgerLoading,
     };
   })(observer(withLoader));
 };
