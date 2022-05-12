@@ -221,18 +221,6 @@ const MainButtonMobile = (props) => {
 
   const children = renderItems();
 
-  //   <<<<<<< HEAD
-  //       <Backdrop zIndex={199} visible={isOpen} onClick={outsideClick} />
-  //       <div ref={ref} className={className} style={{ zIndex: "200", ...style }}>
-  // =======
-  //       <Backdrop zIndex={210} visible={isOpen} onClick={outsideClick} />
-  //       <div
-  //         ref={ref}
-  //         className={className}
-  //         style={{ zIndex: `${isOpen ? "211" : "201"}`, ...style }}
-  //       >
-  // >>>>>>> 9fdafab467b8ead52d22b0d5ca28a83d4d741bb1
-
   return (
     <>
       <Backdrop zIndex={210} visible={isOpen} onClick={outsideClick} />
