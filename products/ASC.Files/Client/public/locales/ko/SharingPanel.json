@@ -11,7 +11,6 @@
   "ExternalLink": "외부 링크",
   "FormFilling": "양식 작성",
   "InternalLink": "내부 링크",
-  "LinkText": "사용자 추가",
   "Notify users": "사용자에게 알림",
   "ReadOnly": "읽기 전용",
   "ShareEmailBody": "{{itemName}} 문서에 대한 액세스 권한을 부여 받았습니다. 아래 링크를 클릭하여 지금 바로 문서를 여세요: {{shareLink}}",

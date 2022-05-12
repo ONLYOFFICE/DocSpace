@@ -11,7 +11,6 @@
   "ExternalLink": "Zunanja povezava",
   "FormFilling": "Izpolnjevanje obrazca",
   "InternalLink": "Interna povezava",
-  "LinkText": "Dodaj uporabnike",
   "Notify users": "Obvesti uporabnike",
   "ReadOnly": "Samo za branje",
   "ShareEmailBody": "Omogočen vam je dostop do {{itemName}} dokumenta. Če želite dokument odpreti, kliknite spodnjo povezavo: {{shareLink}}",

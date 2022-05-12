@@ -66,7 +66,7 @@ const SelectFolderDialogAsideView = ({
             <div className="selection-panel_aside-header">
               <div>{header}</div>
               <Text fontWeight="700" fontSize="18px">
-                {t("Translations:Documents")}
+                {t("Common:Documents")}
               </Text>
             </div>
 

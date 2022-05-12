@@ -183,7 +183,9 @@ class AddUsersPanelComponent extends React.Component {
                 showCounter
                 onArrowClick={this.onArrowClick}
                 headerLabel={
-                  isMultiSelect ? t("LinkText") : t("Translations:OwnerChange")
+                  isMultiSelect
+                    ? t("Common:AddUsers")
+                    : t("Translations:OwnerChange")
                 }
                 //onCancel={onClose}
               />
@@ -205,7 +207,7 @@ export default inject(({ auth }) => {
   return { theme: auth.settingsStore.theme };
 })(
   observer(
-    withTranslation(["SharingPanel", "Translations"])(
+    withTranslation(["SharingPanel", "Translations", "Common"])(
       withLoader(AddUsersPanelComponent)(<Loaders.DialogAsideLoader isPanel />)
     )
   )

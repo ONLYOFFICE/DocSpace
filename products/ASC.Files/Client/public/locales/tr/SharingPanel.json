@@ -11,7 +11,6 @@
   "ExternalLink": "Harici bağlantı",
   "FormFilling": "Form doldurma",
   "InternalLink": "Dahili bağlantı",
-  "LinkText": "Kullanıcılar ekle",
   "Notify users": "Kullanıcıları bilgilendir",
   "ReadOnly": "Salt okunur",
   "ShareEmailBody": "{{itemName}} belgesine erişim izni aldınız. Belgeyi hemen açmak için aşağıdaki bağlantıya tıklayın: {{shareLink}}",

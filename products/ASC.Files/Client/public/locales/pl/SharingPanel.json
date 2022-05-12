@@ -11,7 +11,6 @@
   "ExternalLink": "Link zewnętrzny",
   "FormFilling": "Wypełnianie formularza",
   "InternalLink": "Link wewnętrzny",
-  "LinkText": "Dodaj użytkowników",
   "Notify users": "Powiadom użytkowników",
   "ReadOnly": "Tylko do odczytu",
   "ShareEmailBody": "Udzielono Ci dostępu do dokumentu {{itemName}}. Kliknij poniższy link, aby otworzyć go już teraz: {{shareLink}}",
