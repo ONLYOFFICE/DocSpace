@@ -59,30 +59,30 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="LicenseException" xml:space="preserve">
-    <value>License expired or user quota does not match the license</value>
+    <value>Термін дії ліцензії минув або квота користувача не відповідає ліцензії</value>
   </data>
   <data name="LicenseKeyNotCorrect" xml:space="preserve">
-    <value>License key is not correct</value>
+    <value>Ключ ліцензії невірний</value>
   </data>
   <data name="LicenseKeyNotFound" xml:space="preserve">
-    <value>You must enter a license key</value>
+    <value>Ви повинні ввести ліцензійний ключ</value>
   </data>
   <data name="NewDocument" xml:space="preserve">
-    <value>New Document</value>
+    <value>Новий документ</value>
   </data>
   <data name="TariffPerMonth" xml:space="preserve">
-    <value>month</value>
+    <value>місяць</value>
   </data>
   <data name="TariffPerYear" xml:space="preserve">
-    <value>year</value>
+    <value>рік</value>
   </data>
   <data name="TariffPerYear3" xml:space="preserve">
-    <value>3 year</value>
+    <value>3 роки</value>
   </data>
   <data name="UnknownFirstName" xml:space="preserve">
-    <value>First Name</value>
+    <value>Ім'я</value>
   </data>
   <data name="UnknownLastName" xml:space="preserve">
-    <value>Last Name</value>
+    <value>Призвіще</value>
   </data>
 </root>

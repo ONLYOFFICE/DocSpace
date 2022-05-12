@@ -59,30 +59,30 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="LicenseException" xml:space="preserve">
-    <value>License expired or user quota does not match the license</value>
+    <value>Giấy phép đã hết hạn hoặc chỉ tiêu người dùng không khớp với giấy phép</value>
   </data>
   <data name="LicenseKeyNotCorrect" xml:space="preserve">
-    <value>License key is not correct</value>
+    <value>License key không chính xác</value>
   </data>
   <data name="LicenseKeyNotFound" xml:space="preserve">
-    <value>You must enter a license key</value>
+    <value>Bạn phải nhập license key</value>
   </data>
   <data name="NewDocument" xml:space="preserve">
-    <value>New Document</value>
+    <value>Tài liệu mới</value>
   </data>
   <data name="TariffPerMonth" xml:space="preserve">
-    <value>month</value>
+    <value>tháng</value>
   </data>
   <data name="TariffPerYear" xml:space="preserve">
-    <value>year</value>
+    <value>năm</value>
   </data>
   <data name="TariffPerYear3" xml:space="preserve">
-    <value>3 year</value>
+    <value>3 năm</value>
   </data>
   <data name="UnknownFirstName" xml:space="preserve">
-    <value>First Name</value>
+    <value>Tên</value>
   </data>
   <data name="UnknownLastName" xml:space="preserve">
-    <value>Last Name</value>
+    <value>Họ</value>
   </data>
 </root>

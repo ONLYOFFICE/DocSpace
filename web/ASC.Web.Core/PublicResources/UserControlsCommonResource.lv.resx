@@ -59,30 +59,30 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="LicenseException" xml:space="preserve">
-    <value>License expired or user quota does not match the license</value>
+    <value>Licencei beidzies termiņš vai lietotāju kvota tai neatbilst</value>
   </data>
   <data name="LicenseKeyNotCorrect" xml:space="preserve">
-    <value>License key is not correct</value>
+    <value>Licences atslēga nav pareiza</value>
   </data>
   <data name="LicenseKeyNotFound" xml:space="preserve">
-    <value>You must enter a license key</value>
+    <value>Jums ir jāievada licences atslēga</value>
   </data>
   <data name="NewDocument" xml:space="preserve">
-    <value>New Document</value>
+    <value>Jauns dokuments</value>
   </data>
   <data name="TariffPerMonth" xml:space="preserve">
-    <value>month</value>
+    <value>mēnesis</value>
   </data>
   <data name="TariffPerYear" xml:space="preserve">
-    <value>year</value>
+    <value>gads</value>
   </data>
   <data name="TariffPerYear3" xml:space="preserve">
-    <value>3 year</value>
+    <value>3 gadi</value>
   </data>
   <data name="UnknownFirstName" xml:space="preserve">
-    <value>First Name</value>
+    <value>Vārds</value>
   </data>
   <data name="UnknownLastName" xml:space="preserve">
-    <value>Last Name</value>
+    <value>Uzvārds</value>
   </data>
 </root>
