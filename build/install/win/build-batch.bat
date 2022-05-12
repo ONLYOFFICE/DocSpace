@@ -70,6 +70,9 @@ REM echo ######## Edit json files ########
 %sed% -i "s!\(\"path\":\).\".*\"!\1 \"{APPDIRCONF}services\/ASC.SsoAuth\/service\"!g" build/install/win/Files/config/ssoauth*.json
 %sed% -i "s!\(\"path\":\).\".*\"!\1 \"{APPDIRCONF}services\/ASC.UrlShortener\/service\/index.js\"!g" build/install/win/Files/config/appsettings.services.json
 %sed% -i "s!\(\"log\":\).\".*\"!\1 \"{APPDIRCONF}Logs\/urlshortener.log\"!g" build/install/win/Files/config/appsettings.services.json
+%sed% -i "s!\(\"appsettings\":\).\".*\"!\1 \"{APPDIRCONF}config\"!g" build/install/win/Files/services/ASC.UrlShortener/service/config/config.json
+%sed% -i "s!\(\"appsettings\":\).\".*\"!\1 \"{APPDIRCONF}config\"!g" build/install/win/Files/services/ASC.Socket.IO/service/config/config.json
+%sed% -i "s!\(\"appsettings\":\).\".*\"!\1 \"{APPDIRCONF}config\"!g" build/install/win/Files/services/ASC.SsoAuth/service/config/config.json
 
 REM echo ######## Delete temp files ########
 del /f /q build\install\win\Files\config\sed*
