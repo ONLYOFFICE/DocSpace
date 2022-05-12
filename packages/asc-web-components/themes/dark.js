@@ -1809,7 +1809,7 @@ const Dark = {
     },
     control: {
       background: "#a3a3a3",
-      fill: "#333333",
+      fill: "#ffffff",
     },
 
     headerBurgerColor: "#606060",
