@@ -39,11 +39,13 @@ const StyledContainer = styled.div`
 `;
 
 const StyledInfoPanelToggleWrapper = styled.div`
-  display: flex;
+  display: ${(props) => (props.isInfoPanelVisible ? "none" : "flex")};
   align-items: center;
   align-self: center;
   justify-content: center;
   margin-left: auto;
+
+  margin-bottom: 1px;
 
   @media ${tablet} {
     margin-left: ${(props) => (props.isRootFolder ? "auto" : "0")};
@@ -57,7 +59,9 @@ const StyledInfoPanelToggleWrapper = styled.div`
   .info-panel-toggle-bg {
     height: 32px;
     width: 32px;
+
     display: flex;
+
     align-items: center;
     justify-content: center;
     border-radius: 50%;

@@ -130,7 +130,7 @@ const ControlButtons = ({
             <ToggleInfoPanelButton
               isRootFolder={isRootFolder}
               isInfoPanelVisible={isInfoPanelVisible}
-              toggleInfoPanelAction={toggleInfoPanelAction}
+              toggleInfoPanel={toggleInfoPanelAction}
             />
           )}
         </>
@@ -169,7 +169,7 @@ const ControlButtons = ({
             <ToggleInfoPanelButton
               isRootFolder={isRootFolder}
               isInfoPanelVisible={isInfoPanelVisible}
-              toggleInfoPanelAction={toggleInfoPanelAction}
+              toggleInfoPanel={toggleInfoPanelAction}
             />
           )}
         </>
@@ -179,7 +179,7 @@ const ControlButtons = ({
             <ToggleInfoPanelButton
               isRootFolder={isRootFolder}
               isInfoPanelVisible={isInfoPanelVisible}
-              toggleInfoPanelAction={toggleInfoPanelAction}
+              toggleInfoPanel={toggleInfoPanelAction}
             />
           )}
         </>

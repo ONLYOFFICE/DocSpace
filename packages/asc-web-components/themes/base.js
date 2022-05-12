@@ -383,14 +383,14 @@ const Base = {
     background: grayLight,
     activeBackground: grayLightMid,
 
-    border: `1px solid ${globalColors.grayLightMid}`,
+    border: `none`,
     boxSizing: "border-box",
     borderRadius: "3px",
-    height: " 34px",
-    width: "34px",
+    height: " 32px",
+    width: "32px",
     padding: "9px",
-    color: "#979797",
-    hoverColor: black,
+    color: black,
+    hoverColor: darkBlack,
   },
 
   saveCancelButtons: {
@@ -2224,6 +2224,12 @@ const Base = {
 
   filesThirdPartyDialog: {
     border: "1px solid #d1d1d1",
+  },
+
+  connectedClouds: {
+    color: "#657077",
+    borderBottom: `1px solid #eceef1`,
+    borderRight: `1px solid #d0d5da`,
   },
 
   filesModalDialog: {
