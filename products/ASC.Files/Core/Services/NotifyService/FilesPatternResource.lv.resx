@@ -59,68 +59,56 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="pattern_DocuSignComplete" xml:space="preserve">
-    <value>h1. Работа с документом завершена $DocumentTitle
+    <value>h1. Visas parakstošās puses pabeidza $DocumentTitle
 
-Все стороны подписали конверт "$DocumentTitle":"$DocumentURL".</value>
+Šis ir e-pasta paziņojums, lai informētu jūs, ka visas parakstošās puses ir aizpildījušas "$DocumentTitle":"$DocumentURL".
+
+^Jūs saņēmāt šo ziņu, jo esat reģistrēts lietotājs portālā "${__VirtualRootPath}":"${__VirtualRootPath}".^</value>
   </data>
   <data name="pattern_DocuSignStatus" xml:space="preserve">
     <value>h1. $Message: $DocumentTitle
 
-Для получения дополнительной информации зайдите в свой аккаунт DocuSign.</value>
-  </data>
-  <data name="pattern_EditorMentions" xml:space="preserve">
-    <value>h1. "$__AuthorName":"$__AuthorUrl" упомянул(а) вас в комментарии к документу
-
-"$__AuthorName":"$__AuthorUrl" упомянул(а) вас в комментарии к документу "$DocumentTitle":"$DocumentURL":
-
-$Message</value>
+Lai saņemtu papildu informāciju, ieejiet savā DocuSign kontā.
+^Jūs saņēmāt šo ziņu, jo esat reģistrēts lietotājs portālā "${__VirtualRootPath}":"${__VirtualRootPath}".^</value>
   </data>
   <data name="pattern_MailMergeEnd" xml:space="preserve">
-    <value>h1. Рассылка завершена
+    <value>h1. Sūtīšana pabeigta
 
-Завершена отправка $MailsCount сообщений, которую вы запросили.
+Šis ir e-pasta paziņojums, lai jūs informētu par to, ka esat pieprasījuši $MailsCount ziņu nosūtīšanu un ka process ir pabeigts. $Message
 
-Статус этих писем можно проверить в папке "Отправленные":"$__VirtualRootPath/addons/mail/#sent" модуля "Почта".</value>
+Veiksmīgi nosūtītās ziņas varat atrast savā Pasta moduļa mapē "Nosūtītās":"$__VirtualRootPath/addons/mail/#sent".
+
+^Jūs saņēmāt šo ziņu, jo esat reģistrēts lietotājs portālā "${__VirtualRootPath}":"${__VirtualRootPath}".^</value>
   </data>
   <data name="pattern_ShareDocument" xml:space="preserve">
-    <value>h1.Предоставлен доступ к документу: "$DocumentTitle":"$DocumentURL"
+    <value>h1.Piekļuve piešķirta dokumentam: "$DocumentTitle":"$DocumentURL"
 
-$__DateTime Пользователь "$__AuthorName":"$__AuthorUrl" предоставил Вам доступ к документу "$DocumentTitle":"$DocumentURL" с правами доступа: "$AccessRights". 
+$__DateTime "$__AuthorName":"$__AuthorUrl" piešķir jums piekļuvi dokumentam "$DocumentTitle":"$DocumentURL" 
+
+ar piekļuves tiesībām: "$AccessRights".
 
 $Message</value>
   </data>
   <data name="pattern_ShareFolder" xml:space="preserve">
-    <value>h1.Предоставлен доступ к папке: "$DocumentTitle":"$DocumentURL"
+    <value>h1.Piekļiuve piešķirta mapei: "$DocumentTitle":"$DocumentURL"
 
-$__DateTime Пользователь "$__AuthorName":"$__AuthorUrl" предоставил Вам доступ к папке "$DocumentTitle":"$DocumentURL" с правами доступа: "$AccessRights".
+$__DateTime "$__AuthorName":"$__AuthorUrl" piešķir jums piekļuvi mapei "$DocumentTitle":"$DocumentURL" ar piekļuves tiesībām: "$AccessRights".
 
 $Message</value>
   </data>
   <data name="subject_DocuSignComplete" xml:space="preserve">
-    <value>Документы. Все стороны подписали $DocumentTitle</value>
-  </data>
-  <data name="subject_DocuSignComplete_tg" xml:space="preserve">
-    <value>Документы. Все стороны подписали [$DocumentTitle]($DocumentURL)</value>
+    <value>Dokumenti. Visas parakstošās puses ir pabeigušas $DocumentTitle.</value>
   </data>
   <data name="subject_DocuSignStatus" xml:space="preserve">
-    <value>Документы. Изменен статус подписания</value>
-  </data>
-  <data name="subject_EditorMentions" xml:space="preserve">
-    <value>Документы. Упоминание в документе</value>
+    <value>Dokumenti. Mainīts paraksta statuss</value>
   </data>
   <data name="subject_MailMergeEnd" xml:space="preserve">
-    <value>Документы. Рассылка завершена.</value>
+    <value>Dokumenti. Sūtīšana pabeigta.</value>
   </data>
   <data name="subject_ShareDocument" xml:space="preserve">
-    <value>Документы. Предоставлен доступ к документу $DocumentTitle</value>
-  </data>
-  <data name="subject_ShareDocument_tg" xml:space="preserve">
-    <value>Документы. Предоставлен доступ к документу: [$DocumentTitle]($DocumentURL)</value>
+    <value>Dokumenti. Piešķirta piekļuve dokumentam $DocumentTitle</value>
   </data>
   <data name="subject_ShareFolder" xml:space="preserve">
-    <value>Документы. Предоставлен доступ к папке $DocumentTitle</value>
-  </data>
-  <data name="subject_ShareFolder_tg" xml:space="preserve">
-    <value>Документы. Предоставлен доступ к папке: [$DocumentTitle]($DocumentURL)</value>
+    <value>Dokumenti. Nodrošināta piekļuve mapei $DocumentTitle</value>
   </data>
 </root>

@@ -58,71 +58,27 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="pattern_DocuSignComplete" xml:space="preserve">
-    <value>h1. Tutti i firmatari hanno firmato $DocumentTitle
-
-Questa è una email di notifica per informarti che tutti i firmatari hanno firmato "$DocumentTitle":"$DocumentURL".</value>
-  </data>
-  <data name="pattern_DocuSignStatus" xml:space="preserve">
-    <value>h1. $Message: $DocumentTitle
-
-Accedi al tuo account DocuSign per maggiori informazioni.</value>
-  </data>
   <data name="pattern_EditorMentions" xml:space="preserve">
-    <value>h1. "$$__AuthorName":"$__AuthorUrl" ti ha menzionato nel commento al documento
+    <value>h1. "$__AuthorName":"$__AuthorUrl" v-a menționat în comentariul documentului
 
-Hai ricevuto questo messaggio di posta elettronica per informarti che sei stato menzionato da "$__AuthorName":"$__AuthorUrl" nel commento al documento "$DocumentTitle":"$DocumentURL".
+Acesta este un mesaj de e-mail pentru a anunța că ați fost menționat de "$__AuthorName":"$__AuthorUrl" în comentariul la documentul "$DocumentTitle":"$DocumentURL":
 
 $Message</value>
   </data>
-  <data name="pattern_MailMergeEnd" xml:space="preserve">
-    <value>h1. Invio completato
-
-Questa è una email di notifica per informarti che hai richiesto l'invio di $MailsCount messaggi e che il processo è ora stato completato. $Message
-
-Puoi controllare le mail inviate con successo possono nella cartella "Inviati":"$__VirtualRootPath/addons/mail/#sent" del Modulo mail.</value>
-  </data>
   <data name="pattern_ShareDocument" xml:space="preserve">
-    <value>h1. Accesso consentito al documento: "$DocumentTitle":"$DocumentURL"
+    <value>h1. Acces acordat la documentul: "$DocumentTitle":"$DocumentURL"
 
-$__DateTime "$__AuthorName":"$__AuthorUrl" ti ha concesso l'accesso al documento "$DocumentTitle":"$DocumentURL" con i seguenti diritti di accesso: "$AccessRights".
-
-$Message
-
-^Ricevi questa email perché sei un utente registrato del portale "${__VirtualRootPath}":"${__VirtualRootPath}". Se non desideri ricevere le notifiche relative ai documenti condivisi, si prega di gestire le "opzioni di iscrizione":"$RecipientSubscriptionConfigURL".^</value>
-  </data>
-  <data name="pattern_ShareFolder" xml:space="preserve">
-    <value>h1. Accesso concesso alla cartella: "$DocumentTitle":"$DocumentURL"
-
-$__DateTime "$__AuthorName":"$__AuthorUrl" ti ha concesso l'accesso alla cartella "$DocumentTitle":"$DocumentURL" con i diritti di accesso: "$AccessRights".
+$__DateTime "$__AuthorName":"$__AuthorUrl" v-a acordat accesul la documentulȘ "$DocumentTitle":"$DocumentURL" cu următoarele drepturi de acces: "$AccessRights".
 
 $Message</value>
   </data>
   <data name="subject_DocuSignComplete" xml:space="preserve">
-    <value>Documenti. Tutti i firmatari hanno firmato $DocumentTitle</value>
-  </data>
-  <data name="subject_DocuSignComplete_tg" xml:space="preserve">
-    <value>Documenti. Tutti i firmatari hanno completato [$DocumentTitle]($DocumentURL)</value>
-  </data>
-  <data name="subject_DocuSignStatus" xml:space="preserve">
-    <value>Documenti. Lo status della firma è cambiato</value>
-  </data>
-  <data name="subject_EditorMentions" xml:space="preserve">
-    <value>Documenti. Menzionato nel documento</value>
-  </data>
-  <data name="subject_MailMergeEnd" xml:space="preserve">
-    <value>Documenti. L'invio è stato completato.</value>
+    <value>Toți semnatarii au completat $DocumentTitle</value>
   </data>
   <data name="subject_ShareDocument" xml:space="preserve">
-    <value>Documenti. Accesso concesso al documento: $DocumentTitle</value>
-  </data>
-  <data name="subject_ShareDocument_tg" xml:space="preserve">
-    <value>Documenti. Accesso concesso al documento: [$DocumentTitle]($DocumentURL)</value>
+    <value>Documente. Acces permis la documentul: $DocumentTitle</value>
   </data>
   <data name="subject_ShareFolder" xml:space="preserve">
-    <value>Documenti. Accesso concesso alla cartella: $DocumentTitle</value>
-  </data>
-  <data name="subject_ShareFolder_tg" xml:space="preserve">
-    <value>Documenti. Accesso concesso alla cartella: [$DocumentTitle]($DocumentURL)</value>
+    <value>Documente. Acces permis la dosarul: $DocumentTitle</value>
   </data>
 </root>

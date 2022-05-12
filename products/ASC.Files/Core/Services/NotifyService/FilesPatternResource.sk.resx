@@ -59,68 +59,49 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="pattern_DocuSignComplete" xml:space="preserve">
-    <value>h1. Работа с документом завершена $DocumentTitle
+    <value>h1. Všetci signatári vyplnili $DocumentTitle
 
-Все стороны подписали конверт "$DocumentTitle":"$DocumentURL".</value>
+Toto je e-mailové upozornenie, ktoré vás informuje, že všetci signatári vyplnili "$DocumentTitle":"$DocumentURL".</value>
   </data>
   <data name="pattern_DocuSignStatus" xml:space="preserve">
     <value>h1. $Message: $DocumentTitle
 
-Для получения дополнительной информации зайдите в свой аккаунт DocuSign.</value>
-  </data>
-  <data name="pattern_EditorMentions" xml:space="preserve">
-    <value>h1. "$__AuthorName":"$__AuthorUrl" упомянул(а) вас в комментарии к документу
-
-"$__AuthorName":"$__AuthorUrl" упомянул(а) вас в комментарии к документу "$DocumentTitle":"$DocumentURL":
-
-$Message</value>
+Ak chcete získať ďalšie informácie, prihláste sa do svojho účtu DocuSign.</value>
   </data>
   <data name="pattern_MailMergeEnd" xml:space="preserve">
-    <value>h1. Рассылка завершена
+    <value>h1. Odoslanie pošty je dokončené
 
-Завершена отправка $MailsCount сообщений, которую вы запросили.
+Požiadali ste o zasielanie správ v účte $MailsCount a toto e-mailové upozornenie Vás informuje o tom, že odosielanie je dokončené. $Message
 
-Статус этих писем можно проверить в папке "Отправленные":"$__VirtualRootPath/addons/mail/#sent" модуля "Почта".</value>
+Úspešne odoslané e-mailové správy môžete nájsť v priečinku "Odoslané":"$__VirtualRootPath/addons/mail/#sent" v module MAIL.</value>
   </data>
   <data name="pattern_ShareDocument" xml:space="preserve">
-    <value>h1.Предоставлен доступ к документу: "$DocumentTitle":"$DocumentURL"
+    <value>h1.Prístup k dokumentu: "$DocumentTitle":"$DocumentURL" bol udelený
 
-$__DateTime Пользователь "$__AuthorName":"$__AuthorUrl" предоставил Вам доступ к документу "$DocumentTitle":"$DocumentURL" с правами доступа: "$AccessRights". 
+$__DateTime "$__AuthorName":"$__AuthorUrl" Vám udelil prístup k dokumentu "$DocumentTitle":"$DocumentURL" s právami: "$AccessRights".
 
 $Message</value>
   </data>
   <data name="pattern_ShareFolder" xml:space="preserve">
-    <value>h1.Предоставлен доступ к папке: "$DocumentTitle":"$DocumentURL"
+    <value>h1.Prístup k priečinku "$DocumentTitle":"$DocumentURL" bol udelený.
 
-$__DateTime Пользователь "$__AuthorName":"$__AuthorUrl" предоставил Вам доступ к папке "$DocumentTitle":"$DocumentURL" с правами доступа: "$AccessRights".
+$__DateTime "$__AuthorName":"$__AuthorUrl" Vám povolil prístup k priečinku "$DocumentTitle":"$DocumentURL" s právami: "$AccessRights".
 
 $Message</value>
   </data>
   <data name="subject_DocuSignComplete" xml:space="preserve">
-    <value>Документы. Все стороны подписали $DocumentTitle</value>
-  </data>
-  <data name="subject_DocuSignComplete_tg" xml:space="preserve">
-    <value>Документы. Все стороны подписали [$DocumentTitle]($DocumentURL)</value>
+    <value>Dokumenty. Všetci signatári vyplnili $DocumentTitle</value>
   </data>
   <data name="subject_DocuSignStatus" xml:space="preserve">
-    <value>Документы. Изменен статус подписания</value>
-  </data>
-  <data name="subject_EditorMentions" xml:space="preserve">
-    <value>Документы. Упоминание в документе</value>
+    <value>Dokumenty. Stav prihlásenia sa zmenil</value>
   </data>
   <data name="subject_MailMergeEnd" xml:space="preserve">
-    <value>Документы. Рассылка завершена.</value>
+    <value>Dokumenty. Pošta je odoslaná.</value>
   </data>
   <data name="subject_ShareDocument" xml:space="preserve">
-    <value>Документы. Предоставлен доступ к документу $DocumentTitle</value>
-  </data>
-  <data name="subject_ShareDocument_tg" xml:space="preserve">
-    <value>Документы. Предоставлен доступ к документу: [$DocumentTitle]($DocumentURL)</value>
+    <value>Dokumenty. Prístup umožnený k dokumentu $DocumentTitle</value>
   </data>
   <data name="subject_ShareFolder" xml:space="preserve">
-    <value>Документы. Предоставлен доступ к папке $DocumentTitle</value>
-  </data>
-  <data name="subject_ShareFolder_tg" xml:space="preserve">
-    <value>Документы. Предоставлен доступ к папке: [$DocumentTitle]($DocumentURL)</value>
+    <value>Dokumenty. Prístup umožnený k priečinku: $DocumentTitle</value>
   </data>
 </root>
