@@ -294,7 +294,7 @@ class DropDownContainer extends React.Component {
     this.props.clickOutsideAction({}, !this.props.open);
   };
   render() {
-    const { withBackdrop = true, open, theme } = this.props;
+    const { withBackdrop = true, withBlur = false, open } = this.props;
     const eventTypesProp = isMobile ? { eventTypes: ["touchend"] } : {};
 
     return (
@@ -304,7 +304,7 @@ class DropDownContainer extends React.Component {
             visible={open}
             zIndex={199}
             onClick={this.toggleDropDown}
-            withoutBlur={true}
+            withoutBlur={!withBlur}
           />
         ) : null}
         <EnhancedComponent
@@ -360,6 +360,8 @@ DropDownContainer.propTypes = {
   smallSectionWidth: PropTypes.bool,
   /** It is necessary when we explicitly set the direction, disables check position */
   fixedDirection: PropTypes.bool,
+  /**Enable blur for backdrop */
+  withBlur: PropTypes.bool,
 };
 
 DropDownContainer.defaultProps = {
