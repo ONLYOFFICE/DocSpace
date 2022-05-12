@@ -11,7 +11,6 @@
   "ExternalLink": "外部リンク",
   "FormFilling": "フォームの入力",
   "InternalLink": "内部リンク",
-  "LinkText": "ユーザーの追加",
   "Notify users": "ユーザーへの通知",
   "ReadOnly": "読み取り専用",
   "ShareEmailBody": "あなたは{{itemName}}ドキュメントへのアクセスを許可されています。以下のリンクをクリックして、今すぐドキュメントを開いてください。{{shareLink}}をクリックしてください。",

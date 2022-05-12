@@ -97,7 +97,7 @@ class ArticleBodyContent extends React.Component {
       case "AccessRights":
         return t("Common:AccessRights");
       case "ManagementCategoryCommon":
-        return t("ManagementCategoryCommon");
+        return t("Common:Common");
       case "Customization":
         return t("Customization");
       case "StudioTimeLanguageSettings":
@@ -176,6 +176,8 @@ export default inject(({ auth, common }) => {
   };
 })(
   withLoading(
-    withRouter(withTranslation(["Settings", "Common"])(observer(ArticleBodyContent)))
+    withRouter(
+      withTranslation(["Settings", "Common"])(observer(ArticleBodyContent))
+    )
   )
 );
