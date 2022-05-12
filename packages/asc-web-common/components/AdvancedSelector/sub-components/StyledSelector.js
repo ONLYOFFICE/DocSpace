@@ -112,7 +112,7 @@ const StyledSelector = styled.div`
       .option-loader {
         width: 100%;
         height: 100%;
-        margin-top: 16px;    
+        margin-top: 16px;
       }
       .row-option {
         box-sizing: border-box;
@@ -167,7 +167,8 @@ const StyledSelector = styled.div`
       }
       .option-separator {
         height: 1px;
-        background: #dfe2e3;
+        background: ${(props) =>
+          props.theme.advancedSelector.selectedBackgroundColor};
         margin: 8px 16px;
       }
 
