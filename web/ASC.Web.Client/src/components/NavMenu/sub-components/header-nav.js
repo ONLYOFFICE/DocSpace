@@ -34,7 +34,7 @@ const StyledNav = styled.nav`
   position: absolute;
   right: 0;
   height: 48px;
-  z-index: 201 !important;
+  z-index: 180 !important;
 
   & > div {
     margin: 0 0 0 16px;
