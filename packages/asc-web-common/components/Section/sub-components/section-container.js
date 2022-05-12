@@ -17,7 +17,7 @@ const tabletProps = css`
     position: sticky;
     top: 0;
     background: ${(props) => props.theme.section.header.background};
-    z-index: 203;
+    z-index: 202;
 
     ${isMobileOnly &&
     css`
