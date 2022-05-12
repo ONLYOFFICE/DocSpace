@@ -59,316 +59,294 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AceShareLink" xml:space="preserve">
-    <value>Fuera de portal</value>
+    <value>Външен портал</value>
   </data>
   <data name="AceStatusEnum_Comment" xml:space="preserve">
-    <value>Comentarios</value>
-  </data>
-  <data name="AceStatusEnum_CustomFilter" xml:space="preserve">
-    <value>Filtro personalizado</value>
+    <value>Коментар</value>
   </data>
   <data name="AceStatusEnum_FillForms" xml:space="preserve">
-    <value>Relleno de formulario</value>
+    <value>Попълване на формуляр</value>
   </data>
   <data name="AceStatusEnum_Read" xml:space="preserve">
-    <value>Sólo lectura</value>
+    <value>Само за четене</value>
   </data>
   <data name="AceStatusEnum_ReadWrite" xml:space="preserve">
-    <value>Acceso completo</value>
+    <value>Пълен достъп</value>
   </data>
   <data name="AceStatusEnum_Restrict" xml:space="preserve">
-    <value>Prohibir acceso</value>
+    <value>Отказвам достъп</value>
   </data>
   <data name="AceStatusEnum_Review" xml:space="preserve">
-    <value>Revisión</value>
+    <value>Преглед</value>
   </data>
   <data name="Admin" xml:space="preserve">
-    <value>Administrador</value>
+    <value>Администратор</value>
   </data>
   <data name="AppAccessDenied" xml:space="preserve">
-    <value>Para trabajar con el archivo, Usted debe conceder acceso</value>
+    <value>За да работите с файла, трябва да предоставите достъп до него</value>
   </data>
   <data name="Author_Me" xml:space="preserve">
-    <value>Yo</value>
+    <value>Аз</value>
   </data>
   <data name="CommentAutosave" xml:space="preserve">
-    <value>Autoguardado</value>
+    <value>Автоматично записани</value>
   </data>
   <data name="CommentChangeOwner" xml:space="preserve">
-    <value>Propietario ha sido cambiado</value>
+    <value>Смени собственика</value>
   </data>
   <data name="CommentConvert" xml:space="preserve">
-    <value>Convertido de {0}</value>
+    <value>Преобразувано от {0}</value>
   </data>
   <data name="CommentCopy" xml:space="preserve">
-    <value>Copiada</value>
+    <value>Копирани</value>
   </data>
   <data name="CommentCreate" xml:space="preserve">
-    <value>Creada</value>
+    <value>Създаден</value>
   </data>
   <data name="CommentCreateByDocuSign" xml:space="preserve">
-    <value>Creada con ayuda de DocuSign</value>
-  </data>
-  <data name="CommentCreateFillFormDraft" xml:space="preserve">
-    <value>Creado para rellenar el formulario</value>
+    <value>Създадено от DocuSign</value>
   </data>
   <data name="CommentEdit" xml:space="preserve">
-    <value>Editado</value>
+    <value>Редактирано</value>
   </data>
   <data name="CommentEditEncrypt" xml:space="preserve">
-    <value>Editado con encriptación</value>
+    <value>Редактирано с криптиране</value>
   </data>
   <data name="CommentEncrypted" xml:space="preserve">
-    <value>Encriptado</value>
+    <value>Криптиран</value>
   </data>
   <data name="CommentForcesave" xml:space="preserve">
-    <value>Guardado</value>
+    <value>Записан</value>
   </data>
   <data name="CommentOverwrite" xml:space="preserve">
-    <value>Sobrescrito</value>
+    <value>Презаписани</value>
   </data>
   <data name="CommentRevert" xml:space="preserve">
-    <value>Restaurado de revisión de {0}</value>
+    <value>Възстановен от ревизията на {0}</value>
   </data>
   <data name="CommentRevertChanges" xml:space="preserve">
-    <value>Restaurada del cambio de documento de {0}</value>
+    <value>Възстановено от промяната на документа на {0}</value>
   </data>
   <data name="CommentUpload" xml:space="preserve">
-    <value>Subido</value>
+    <value>Качено</value>
   </data>
   <data name="DocuSignStatusDeclined" xml:space="preserve">
-    <value>Rechazado</value>
+    <value>Отхвърлена</value>
   </data>
   <data name="DocuSignStatusError" xml:space="preserve">
-    <value>Durante el envío ocurrió un error</value>
+    <value>Възникна грешка по време на операцията за изпращане</value>
   </data>
   <data name="DocuSignStatusNotSended" xml:space="preserve">
-    <value>Envío del documento con ayuda de DocuSign ha sido cancelado</value>
+    <value>Изпращането на документа чрез DocuSign е отменено</value>
   </data>
   <data name="DocuSignStatusSended" xml:space="preserve">
-    <value>Documento fue enviado para firmar con ayuda de DocuSign</value>
+    <value>Документът бе изпратен да подпише чрез DocuSign</value>
   </data>
   <data name="DocuSignStatusVoided" xml:space="preserve">
-    <value>Anulado</value>
+    <value>Анулира</value>
   </data>
   <data name="EditorMentions" xml:space="preserve">
-    <value>Notificar cuando se menciona en documento</value>
+    <value>Уведомяване, когато е споменат в документ</value>
   </data>
   <data name="ErrorMassage_BadRequest" xml:space="preserve">
-    <value>Solicitud incorrecta.</value>
+    <value>Неправилна заявка.</value>
   </data>
   <data name="ErrorMassage_ChangeOwner" xml:space="preserve">
-    <value>No se puede seleccionar este usuario</value>
+    <value>Не можете да изберете този потребител</value>
   </data>
   <data name="ErrorMassage_ConvertTimeout" xml:space="preserve">
-    <value>Conversión toma demasiado tiempo.</value>
-  </data>
-  <data name="ErrorMassage_CreateNewFolderInTrash" xml:space="preserve">
-    <value>No es posible crear carpetas en la papelera de reciclaje</value>
+    <value>Конверсията отнема твърде много време.</value>
   </data>
   <data name="ErrorMassage_DocServiceException" xml:space="preserve">
-    <value>Se ha producido un error en el servicio de documentos</value>
+    <value>Възникна грешка в услугата 'Документи'</value>
   </data>
   <data name="ErrorMassage_EditingCoauth" xml:space="preserve">
-    <value>El archivo es abierto para editar por usuario {0}. En este momento la edición colaborativa no es soportada para este formato. </value>
+    <value>Файлът се отваря за редактиране от {0}. Понастоящем функцията за съвместно редактиране не се поддържа за този файлов формат.</value>
   </data>
   <data name="ErrorMassage_EditingMobile" xml:space="preserve">
-    <value>{0}abrió el archivo para la edición en la aplicación móvil </value>
+    <value>Файлът е отворен за редактиране в мобилно приложение от {0}</value>
   </data>
   <data name="ErrorMassage_EmptyFile" xml:space="preserve">
-    <value>Archivo vacío </value>
+    <value>Празен файл</value>
   </data>
   <data name="ErrorMassage_FileNotFound" xml:space="preserve">
-    <value>El archivo solicitado no es encontrado</value>
+    <value>Необходимият файл не бе намерен</value>
   </data>
   <data name="ErrorMassage_FileSizeConvert" xml:space="preserve">
-    <value>Archivo más de {0} no será convertido</value>
+    <value>Файл, по-голям от {0}, няма да бъде преобразуван</value>
   </data>
   <data name="ErrorMassage_FileSizeCopy" xml:space="preserve">
-    <value>Archivo más de {0} no será copiado</value>
+    <value>Файл, по-голям от {0}, няма да бъде копиран</value>
   </data>
   <data name="ErrorMassage_FileSizeEdit" xml:space="preserve">
-    <value>Archivo más grande que {0} no será editado</value>
+    <value>Файл, по-голям от {0}, няма да се редактира</value>
   </data>
   <data name="ErrorMassage_FileSizeMove" xml:space="preserve">
-    <value>Archivo más de {0} no será movido</value>
-  </data>
-  <data name="ErrorMassage_FileSizeZip" xml:space="preserve">
-    <value>Archivo más de {0} no será comprimido</value>
+    <value>Файл, по-голям от {0}, няма да бъде преместен</value>
   </data>
   <data name="ErrorMassage_FolderCopyError" xml:space="preserve">
-    <value>No se puede copiar la carpeta a su subcarpeta</value>
+    <value>Не можете да копирате папката в нейната подпапка</value>
   </data>
   <data name="ErrorMassage_FolderNotFound" xml:space="preserve">
-    <value>La carpeta solicitada no es encontrada</value>
+    <value>Исканата папка не бе намерена</value>
   </data>
   <data name="ErrorMassage_InvalidTitle" xml:space="preserve">
-    <value>Título incorrecto</value>
+    <value>Неправилно заглавие</value>
   </data>
   <data name="ErrorMassage_LockedFile" xml:space="preserve">
-    <value>El archivo se está bloqueando por otro usuario</value>
+    <value>Понастоящем файлът е заключен от друг потребител</value>
   </data>
   <data name="ErrorMassage_MailAccountNotFound" xml:space="preserve">
-    <value>No hay cuentas disponibles para enviar el mensaje. Vaya al Correo y conecte un buzón.</value>
+    <value>Няма налични профили за изпращане на съобщението. Отидете в Поща и свържете пощенска кутия</value>
   </data>
   <data name="ErrorMassage_MailMergeCount" xml:space="preserve">
-    <value>Por lo menos {0} mensajes de correo no consiguió enviar. Por favor, visite el módulo "Correo" para enterarse de una razón de este fallo posible.</value>
+    <value>Не може да се изпратят най-малко {0} имейли. Моля, посетете модула Поща, за да видите каква е причината за провала.</value>
   </data>
   <data name="ErrorMassage_ManyDownloads" xml:space="preserve">
-    <value>Demasiadas descargas</value>
+    <value>Твърде много изтегляния.</value>
   </data>
   <data name="ErrorMassage_NotSupportedFormat" xml:space="preserve">
-    <value>Lo sentimos, pero el formato de archivo no se admite</value>
+    <value>За съжаление този файлов формат не се поддържа</value>
   </data>
   <data name="ErrorMassage_OperationCanceledException" xml:space="preserve">
-    <value>La operación se canceló</value>
+    <value>Операцията беше отменена</value>
   </data>
   <data name="ErrorMassage_SaveAnonymous" xml:space="preserve">
-    <value>Autor de la versión guardada es desconocido</value>
+    <value>Авторът на записа е неизвестен</value>
   </data>
   <data name="ErrorMassage_SaveCorrupted" xml:space="preserve">
-    <value>El archivo fue dañado cuando Usted trataba de guardarlo</value>
+    <value>Файлът е повреден, когато сте се опитали да го запазите</value>
   </data>
   <data name="ErrorMassage_SaveUrlLost" xml:space="preserve">
-    <value>Imposible obtener el archivo para guardarlo</value>
+    <value>Неуспешно получаване на файла за запазване</value>
   </data>
   <data name="ErrorMassage_SecurityException" xml:space="preserve">
-    <value>No hay suficiente permiso para realizar operacion</value>
+    <value>Нямате достатъчно разрешение за извършване на операцията</value>
   </data>
   <data name="ErrorMassage_SecurityException_Auth" xml:space="preserve">
-    <value>Es imposible conectarse a proveedor {0} con los datos de acceso proporcionados.</value>
+    <value>Не може да се упълномощи в {0} доставчика с дадени идентификационни данни.</value>
   </data>
   <data name="ErrorMassage_SecurityException_Create" xml:space="preserve">
-    <value>Usted no tiene permisos suficientes para crear</value>
+    <value>Нямате достатъчно разрешение за създаване</value>
   </data>
   <data name="ErrorMassage_SecurityException_DeleteEditingFile" xml:space="preserve">
-    <value>No es posible eliminar el archivo, porque está abierto para la edición</value>
+    <value>Файлът не може да бъде изтрит, защото е отворен за редактиране</value>
   </data>
   <data name="ErrorMassage_SecurityException_DeleteEditingFolder" xml:space="preserve">
-    <value>No es posible eliminar la carpeta, porque uno de los archivos está abierto para la edición</value>
+    <value>Папката не може да бъде изтрита, защото един от файловете е отворен за редактиране</value>
   </data>
   <data name="ErrorMassage_SecurityException_DeleteFile" xml:space="preserve">
-    <value>No hay permiso para eliminar el archivo</value>
+    <value>Нямате достатъчно разрешение да изтриете файла</value>
   </data>
   <data name="ErrorMassage_SecurityException_DeleteFolder" xml:space="preserve">
-    <value>No hay suficiente permiso para eliminar la carpeta</value>
+    <value>Нямате достатъчно разрешение да изтриете папката</value>
   </data>
   <data name="ErrorMassage_SecurityException_EditFile" xml:space="preserve">
-    <value>Usted no tiene suficientes permisos para editar el archivo</value>
+    <value>Нямате достатъчно разрешения за редактиране на файла</value>
   </data>
   <data name="ErrorMassage_SecurityException_EditFileTwice" xml:space="preserve">
-    <value>Este documento se está editando por Usted en otra pestaña</value>
+    <value>Този документ се редактира от вас в друг раздел</value>
   </data>
   <data name="ErrorMassage_SecurityException_MoveFile" xml:space="preserve">
-    <value>No tiene permiso para mover el archivo</value>
+    <value>Нямате достатъчно разрешение за преместване на файла</value>
   </data>
   <data name="ErrorMassage_SecurityException_MoveFolder" xml:space="preserve">
-    <value>No tiene permiso para mover la carpeta</value>
+    <value>Нямате достатъчно разрешение, за да преместите папката</value>
   </data>
   <data name="ErrorMassage_SecurityException_ReadFile" xml:space="preserve">
-    <value>No hay permiso suficiente para ver el archivo</value>
+    <value>Нямате достатъчно разрешение, за да видите файла</value>
   </data>
   <data name="ErrorMassage_SecurityException_ReadFolder" xml:space="preserve">
-    <value>No hay suficiente permiso para ver la carpeta</value>
+    <value>Нямате достатъчно разрешение, за да видите съдържанието на папката</value>
   </data>
   <data name="ErrorMassage_SecurityException_RenameFile" xml:space="preserve">
-    <value>No hay suficiente permiso para renombrar el archivo</value>
+    <value>Нямате достатъчно разрешение, за да преименувате файла</value>
   </data>
   <data name="ErrorMassage_SecurityException_RenameFolder" xml:space="preserve">
-    <value>No hay suficiente permiso para renombrar la carpeta</value>
+    <value>Нямате достатъчно разрешение, за да преименувате папката</value>
   </data>
   <data name="ErrorMassage_SecurityException_UpdateEditingFile" xml:space="preserve">
-    <value>No es posible actualizar el archivo, porque está abierto para la edición</value>
+    <value>Файлът не може да се актуализира, защото е отворен за редактиране</value>
   </data>
   <data name="ErrorMassage_SecurityException_ViewFolder" xml:space="preserve">
-    <value>No hay suficiente permiso para ver la carpeta</value>
+    <value>Нямате достатъчно разрешение, за да видите съдържанието на папката</value>
   </data>
   <data name="ErrorMassage_SharpBoxException" xml:space="preserve">
-    <value>El contenido de la carpeta de terceros no está disponible. Trate de volver a conectar la cuenta.</value>
+    <value>Съдържанието на папката на трети страни не е налично. Опитайте да свържете отново сметката.</value>
   </data>
   <data name="ErrorMassage_StartEditing" xml:space="preserve">
-    <value>Error de comienzo de edición de archivo</value>
+    <value>Грешка при стартирането на файла</value>
   </data>
   <data name="ErrorMassage_UpdateEditingFile" xml:space="preserve">
-    <value>No es posible actualizar el archivo, cual está abierto para la edición</value>
+    <value>Не можете да актуализирате файл, който е отворен за редактиране</value>
   </data>
   <data name="ErrorMassage_UserNotFound" xml:space="preserve">
-    <value>No se pudo encontrar al usuario</value>
+    <value>Потребителят не можа да бъде намерен</value>
   </data>
   <data name="ErrorMassage_ViewTrashItem" xml:space="preserve">
-    <value>No hay permiso para ver los elementos en la papelera de reciclaje</value>
+    <value>Не ви е позволено да визуализирате елементите в кошчето</value>
   </data>
   <data name="Everyone" xml:space="preserve">
-    <value>Todos</value>
+    <value>Всички</value>
   </data>
   <data name="Guest" xml:space="preserve">
-    <value>Anónimo</value>
+    <value>Анонимен</value>
   </data>
   <data name="IndexTitle" xml:space="preserve">
-    <value>Buscar por el contenido de documentos</value>
+    <value>Търсене по съдържание на документи</value>
   </data>
   <data name="MessageFileCreated" xml:space="preserve">
-    <value>Archivo creado en la carpeta "{0}"</value>
-  </data>
-  <data name="MessageFileCreatedForm" xml:space="preserve">
-    <value>El documento OFORM rellenable está listo. Se guarda en la carpeta {0}</value>
-  </data>
-  <data name="MessageFillFormDraftCreated" xml:space="preserve">
-    <value>La copia OFORM se ha creado en la carpeta {0}. Rellene el formulario y descargue el resultado como archivo PDF o DOCX.</value>
-  </data>
-  <data name="MessageFillFormDraftDiscard" xml:space="preserve">
-    <value>El archivo ya no es un borrador para rellenar el formulario.</value>
+    <value>Файлът е създаден в папка "{0}"</value>
   </data>
   <data name="ProductAdminOpportunities" xml:space="preserve">
-    <value>Haga lo mismo que un usuario|Enlace Dropbox, Box y otras cuentas en la sección 'Documentos comunes'|Configure derechos de acceso a los documentos y carpetas en la sección 'Documentos comunes'</value>
+    <value>Направете същото като потребител | Link Dropbox, Box и други профили в секцията "Общи документи" | Настройване на права за достъп до документите и папките в раздела "Общи документи"</value>
   </data>
   <data name="ProductDescription" xml:space="preserve">
-    <value>Cree, edite y comparta documentos de oficina. Colabore en ellos en tiempo real. Se garantiza la máxima compatibilidad con docx, xlsx, pptx.</value>
+    <value>Създавайте, редактирайте и споделяйте документи. Сътрудничество с тях в реално време. 100% съвместимост с гарантираните формати MS Office.</value>
   </data>
   <data name="ProductDescriptionEx" xml:space="preserve">
-    <value>Edite, comparta y colabore en documentos de oficina en tiempo real. Cree y gestione documentos comunes para que todo el equipo tenga acceso a ellos. 
-100% de compatibilidad con docx, xlsx, pptx. </value>
+    <value>Създавайте, редактирайте и споделяйте документи. Сътрудничество с тях в реално време. 100% съвместимост с гарантираните формати MS Office.</value>
   </data>
   <data name="ProductDescriptionShort" xml:space="preserve">
-    <value>Vea y descargue los documentos compartidos. Suba archivos a las carpetas compartidas. Se garantiza la máxima compatibilidad con docx, xlsx, pptx.</value>
+    <value>Създавайте, редактирайте, запазвайте и споделяйте документи. Свържете профилите си в Google Drive, Dropbox и Box и разполагайте с всички документи на едно място.</value>
   </data>
   <data name="ProductName" xml:space="preserve">
-    <value>Documentos</value>
+    <value>Документи</value>
   </data>
   <data name="ProductUserOpportunities" xml:space="preserve">
-    <value>Crear y editar sus propios documentos y documentos compartidos con los derechos de acceso propios|Dar derechos de acceso a otros usuarios para leer/editar los documentos y carpetas|Enlazar Dropbox, Box y otras cuentas en la sección de 'Mis documentos' </value>
+    <value>Създаване и редактиране на собствени документи, както и споделени документи с подходящи права за достъп | Даване на четене/редактиране на достъп до други потребители към документите и папките | Link Dropbox, Box и други профили в секцията "Моите документи"</value>
   </data>
   <data name="ProfileRemoved" xml:space="preserve">
-    <value>{!User} eliminado</value>
+    <value>{!User} премахнат</value>
   </data>
   <data name="Search" xml:space="preserve">
-    <value>Búsqueda</value>
+    <value>Търсене</value>
   </data>
   <data name="ShareFolder" xml:space="preserve">
-    <value>Notificar al compartir una carpeta</value>
+    <value>Уведомяване при споделяне на папка</value>
   </data>
   <data name="SubscriptDocuSignComplete" xml:space="preserve">
-    <value>Notificar cuando el documento es firmado con ayuda de DocuSign</value>
+    <value>Уведомете кога документът е подписан чрез DocuSign</value>
   </data>
   <data name="SubscriptDocuSignStatus" xml:space="preserve">
-    <value>Notificar sobre el cambio de estado de documento en DocuSign</value>
+    <value>Уведомява, когато документът в DocuSign промени статуса</value>
   </data>
   <data name="SubscriptForAccess" xml:space="preserve">
-    <value>Notificar al compartir un documento</value>
+    <value>Уведомяване при споделяне на документ</value>
   </data>
   <data name="SubscriptForMailMerge" xml:space="preserve">
-    <value>Notificar cuando el correo masivo es terminado</value>
+    <value>Уведомяване при завършване на изпращането</value>
   </data>
   <data name="TitleDeletedUserFolder" xml:space="preserve">
-    <value>Documentos de {!user}{0}</value>
+    <value>Документи на {!user} {0}</value>
   </data>
   <data name="UnknownFirstName" xml:space="preserve">
-    <value>Nombre </value>
+    <value>Име</value>
   </data>
   <data name="UnknownLastName" xml:space="preserve">
-    <value>Apellido</value>
+    <value>Фамилия</value>
   </data>
   <data name="UnlockComment" xml:space="preserve">
-    <value>El archivo es desbloqueado</value>
+    <value>Файлът е отключен</value>
   </data>
 </root>
