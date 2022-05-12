@@ -47,7 +47,7 @@ const SectionBodyContent = (props) => {
       customScrollElm && customScrollElm.scrollTo(0, 0);
     }
 
-    !isMobile && window.addEventListener("mousedown", onMouseDown);
+    window.addEventListener("mousedown", onMouseDown);
     startDrag && window.addEventListener("mouseup", onMouseUp);
     startDrag && document.addEventListener("mousemove", onMouseMove);
 

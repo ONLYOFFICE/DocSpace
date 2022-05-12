@@ -270,9 +270,6 @@ class PeopleSelector extends React.Component {
         selectButtonLabel={t("Translations:AddMembers")}
         emptySearchOptionsLabel={t("EmptySearchUsersResult")}
         emptyOptionsLabel={t("EmptyUsers")}
-        loadingLabel={`${t("Common:LoadingProcessing")} ${t(
-          "Common:LoadingDescription"
-        )}`}
         onSelect={onSelect}
         onSearchChanged={this.onSearchChanged}
         onGroupChanged={this.onGroupChanged}

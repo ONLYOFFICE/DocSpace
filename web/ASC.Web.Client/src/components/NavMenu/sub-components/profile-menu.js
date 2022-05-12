@@ -5,7 +5,7 @@ import DropDown from "@appserver/components/drop-down";
 
 import styled, { css } from "styled-components";
 import DropDownItem from "@appserver/components/drop-down-item";
-import { isMobile } from "react-device-detect";
+import { isMobileOnly } from "react-device-detect";
 import { Base } from "@appserver/components/themes";
 import { mobile, tablet } from "@appserver/components/utils/device";
 import CrossIcon from "@appserver/components/public/static/images/cross.react.svg";
@@ -151,6 +151,7 @@ class ProfileMenu extends React.Component {
         clickOutsideAction={clickOutsideAction}
         forwardedRef={forwardedRef}
         isDefaultMode={false}
+        withBlur={window.innerWidth <= 428}
       >
         <StyledProfileMenu>
           <MenuContainer>

@@ -88,6 +88,22 @@ namespace ASC.Web.Files.Utils
             _signalrServiceClient.CreateFile(file.ID, room, data);
         }
 
+        public async Task UpdateFileAsync<T>(File<T> file)
+        {
+            var room = GetFolderRoom(file.FolderID);
+            var serializerSettings = new JsonSerializerOptions()
+            {
+                WriteIndented = false,
+                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+            serializerSettings.Converters.Add(new ApiDateTimeConverter());
+            serializerSettings.Converters.Add(new FileEntryWrapperConverter());
+            var data = JsonSerializer.Serialize(await FilesWrapperHelper.GetAsync(file), serializerSettings);
+
+            _signalrServiceClient.UpdateFile(file.ID, room, data);
+        }
+
         public void DeleteFile<T>(File<T> file)
         {
             var room = GetFolderRoom(file.FolderID);

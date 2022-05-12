@@ -42,6 +42,7 @@ const DebugInfoDialog = (props) => {
           onClose={onClose}
           contentHeight="500px"
           onResize={onResize}
+          withoutBodyScroll={true}
         >
           <ModalDialog.Header>Debug Info</ModalDialog.Header>
           <ModalDialog.Body>

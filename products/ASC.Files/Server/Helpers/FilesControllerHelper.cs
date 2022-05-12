@@ -248,8 +248,11 @@ namespace ASC.Files.Helpers
         public async Task<Configuration<T>> OpenEditAsync(T fileId, int version, string doc, bool view)
         {
             var docParams = await DocumentServiceHelper.GetParamsAsync(fileId, version, doc, true, !view, true);
-            var configuration = docParams.Configuration;
+            return OpenEditAsync(docParams.Configuration);
+        }
 
+        public Configuration<T> OpenEditAsync(Configuration<T> configuration)
+        {
             configuration.EditorType = EditorType.External;
             if (configuration.EditorConfig.ModeWrite)
             {

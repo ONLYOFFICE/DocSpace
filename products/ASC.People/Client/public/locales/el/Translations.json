@@ -1,7 +1,6 @@
 ﻿{
   "AddMembers": "Προσθήκη μελών",
   "Birthdate": "Ημερομηνία γέννησης",
-  "Comments": "Σχόλια",
   "DeleteSelfProfile": "Διαγραφή προφίλ",
   "DisabledEmployeeStatus": "Απενεργοποιημένο",
   "DisableUserButton": "Απενεργοποίηση",
@@ -11,7 +10,6 @@
   "FemaleSexStatus": "Θήλυ",
   "InviteLinkTitle": "Σύνδεσμος πρόσκλησης",
   "LDAPLbl": "LDAP",
-  "Location": "Τοποθεσία",
   "MaleSexStatus": "Άρρεν",
   "maxSizeFileError": "Υπέρβαση μέγιστου μεγέθους αρχείου",
   "MaxSizeLabel": "(JPG ή PNG, μέγιστο 1 MB)",

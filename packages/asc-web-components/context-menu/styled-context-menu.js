@@ -195,7 +195,9 @@ const StyledContextMenu = styled.div`
       height: 16px;
       width: 16px;
     }
-    path {
+    path,
+    circle,
+    rect {
       fill: ${(props) => props.theme.dropDownItem.icon.color};
     }
 

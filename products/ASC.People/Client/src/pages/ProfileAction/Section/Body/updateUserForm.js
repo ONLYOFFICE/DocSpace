@@ -903,7 +903,7 @@ class UpdateUserForm extends React.Component {
               />
             )}
             <TextField
-              labelText={`${t("Translations:Location")}:`}
+              labelText={`${t("Common:Location")}:`}
               inputName="location"
               inputValue={profile.location}
               inputIsDisabled={isLoading}
@@ -943,7 +943,7 @@ class UpdateUserForm extends React.Component {
         </MainContainer>
         {!personal && (
           <InfoFieldContainer
-            headerText={t("Translations:Comments")}
+            headerText={t("Common:Comments")}
             marginBottom={"42px"}
           >
             <Textarea

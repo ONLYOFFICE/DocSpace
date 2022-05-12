@@ -114,6 +114,37 @@ class FilesStore {
             this.setFiles(newFiles);
           }
           break;
+        case "update":
+          if (opt?.type == "file" && opt?.data) {
+            const file = JSON.parse(opt?.data);
+
+            if (!file || !file.id) return;
+
+            this.setFile(file);
+
+            if (this.selection) {
+              const foundIndex = this.selection?.findIndex(
+                (x) => x.id === file.id
+              );
+              if (foundIndex > -1) {
+                runInAction(() => {
+                  this.selection[foundIndex] = file;
+                });
+              }
+            }
+
+            if (this.bufferSelection) {
+              const foundIndex = this.bufferSelection?.findIndex(
+                (x) => x.id === file.id
+              );
+              if (foundIndex > -1) {
+                runInAction(() => {
+                  this.bufferSelection[foundIndex] = file;
+                });
+              }
+            }
+          }
+          break;
         case "delete":
           if (opt?.type == "file" && opt?.id) {
             const foundIndex = this.files.findIndex((x) => x.id === opt?.id);
