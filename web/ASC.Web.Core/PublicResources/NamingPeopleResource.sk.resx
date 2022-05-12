@@ -59,102 +59,102 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CommonAddUsers" xml:space="preserve">
-    <value>Добавить пользователей</value>
+    <value>Pridať používateľov</value>
   </data>
   <data name="CommonGroup" xml:space="preserve">
-    <value>Группа</value>
+    <value>Skupina</value>
   </data>
   <data name="CommonGroupHead" xml:space="preserve">
-    <value>Руководитель</value>
+    <value>Vedúci</value>
   </data>
   <data name="CommonGroups" xml:space="preserve">
-    <value>Группы</value>
+    <value>Skupiny</value>
   </data>
   <data name="CommonGuest" xml:space="preserve">
-    <value>Гость</value>
+    <value>Návštevník</value>
   </data>
   <data name="CommonGuests" xml:space="preserve">
-    <value>Гости</value>
+    <value>Návštevníci</value>
   </data>
   <data name="CommonRegDate" xml:space="preserve">
-    <value>Дата регистрации</value>
+    <value>Dátum registrácie</value>
   </data>
   <data name="CommonSchemaName" xml:space="preserve">
-    <value>Общий</value>
+    <value>Všeobecné</value>
   </data>
   <data name="CommonUser" xml:space="preserve">
-    <value>Пользователь</value>
+    <value>Používateľ</value>
   </data>
   <data name="CommonUsers" xml:space="preserve">
-    <value>Пользователи</value>
+    <value>Používatelia</value>
   </data>
   <data name="CommonUserTitle" xml:space="preserve">
-    <value>Позиция</value>
+    <value>Názov</value>
   </data>
   <data name="DefaultAddUsers" xml:space="preserve">
-    <value>Добавить сотрудников</value>
+    <value>Pridať zamestnancov</value>
   </data>
   <data name="DefaultGroup" xml:space="preserve">
-    <value>Отдел</value>
+    <value>Oddelenie</value>
   </data>
   <data name="DefaultGroupHead" xml:space="preserve">
-    <value>Руководитель</value>
+    <value>Vedúci</value>
   </data>
   <data name="DefaultGroups" xml:space="preserve">
-    <value>Отделы</value>
+    <value>Oddelenia</value>
   </data>
   <data name="DefaultGuest" xml:space="preserve">
-    <value>Гость</value>
+    <value>Návštevník</value>
   </data>
   <data name="DefaultGuests" xml:space="preserve">
-    <value>Гости</value>
+    <value>Návštevníci</value>
   </data>
   <data name="DefaultRegDate" xml:space="preserve">
-    <value>Дата приема</value>
+    <value>Zamestnaný od roku</value>
   </data>
   <data name="DefaultSchemaName" xml:space="preserve">
-    <value>Корпоративный</value>
+    <value>Firemný</value>
   </data>
   <data name="DefaultUser" xml:space="preserve">
-    <value>Сотрудник</value>
+    <value>Zamestnanec</value>
   </data>
   <data name="DefaultUsers" xml:space="preserve">
-    <value>Сотрудники</value>
+    <value>Zamestnanci</value>
   </data>
   <data name="DefaultUserTitle" xml:space="preserve">
-    <value>Должность</value>
+    <value>Pozícia</value>
   </data>
   <data name="EducationAddUsers" xml:space="preserve">
-    <value>Добавить преподавателей/студентов</value>
+    <value>Pridajte Učiteľov / Študentov</value>
   </data>
   <data name="EducationGroup" xml:space="preserve">
-    <value>Группа</value>
+    <value>Skupina</value>
   </data>
   <data name="EducationGroupHead" xml:space="preserve">
-    <value>Руководитель группы</value>
+    <value>Vedúci skupiny</value>
   </data>
   <data name="EducationGroups" xml:space="preserve">
-    <value>Группы</value>
+    <value>Skupiny</value>
   </data>
   <data name="EducationGuest" xml:space="preserve">
-    <value>Гость</value>
+    <value>Návštevník</value>
   </data>
   <data name="EducationGuests" xml:space="preserve">
-    <value>Гости</value>
+    <value>Návštevníci</value>
   </data>
   <data name="EducationRegDate" xml:space="preserve">
-    <value>Дата регистрации</value>
+    <value>Dátum registrácie</value>
   </data>
   <data name="EducationSchemaName" xml:space="preserve">
-    <value>Учебное заведение</value>
+    <value>Vzdelávacia inštitúcia</value>
   </data>
   <data name="EducationUser" xml:space="preserve">
-    <value>Преподаватель/Студент</value>
+    <value>Učiteľ / Študent</value>
   </data>
   <data name="EducationUsers" xml:space="preserve">
-    <value>Преподаватели/Студенты</value>
+    <value>Učitelia / Študenti</value>
   </data>
   <data name="EducationUserTitle" xml:space="preserve">
-    <value>Позиция</value>
+    <value>Názov</value>
   </data>
 </root>

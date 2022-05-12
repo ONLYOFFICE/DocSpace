@@ -59,102 +59,106 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CommonAddUsers" xml:space="preserve">
-    <value>Добавить пользователей</value>
+    <value>Додати користувачів</value>
   </data>
   <data name="CommonGroup" xml:space="preserve">
-    <value>Группа</value>
+    <value>Група</value>
   </data>
   <data name="CommonGroupHead" xml:space="preserve">
-    <value>Руководитель</value>
+    <value>Керівник</value>
   </data>
   <data name="CommonGroups" xml:space="preserve">
-    <value>Группы</value>
+    <value>Групи</value>
   </data>
   <data name="CommonGuest" xml:space="preserve">
-    <value>Гость</value>
+    <value>Гість</value>
   </data>
   <data name="CommonGuests" xml:space="preserve">
-    <value>Гости</value>
+    <value>Гості
+</value>
   </data>
   <data name="CommonRegDate" xml:space="preserve">
-    <value>Дата регистрации</value>
+    <value>Дата реєстрації</value>
   </data>
   <data name="CommonSchemaName" xml:space="preserve">
-    <value>Общий</value>
+    <value>Загальний</value>
   </data>
   <data name="CommonUser" xml:space="preserve">
-    <value>Пользователь</value>
+    <value>Користувач</value>
   </data>
   <data name="CommonUsers" xml:space="preserve">
-    <value>Пользователи</value>
+    <value>Користувачі</value>
   </data>
   <data name="CommonUserTitle" xml:space="preserve">
-    <value>Позиция</value>
+    <value>Назва</value>
   </data>
   <data name="DefaultAddUsers" xml:space="preserve">
-    <value>Добавить сотрудников</value>
+    <value>Додати співробітників</value>
   </data>
   <data name="DefaultGroup" xml:space="preserve">
-    <value>Отдел</value>
+    <value>Відділ</value>
   </data>
   <data name="DefaultGroupHead" xml:space="preserve">
-    <value>Руководитель</value>
+    <value>Керівник</value>
   </data>
   <data name="DefaultGroups" xml:space="preserve">
-    <value>Отделы</value>
+    <value>Відділи</value>
   </data>
   <data name="DefaultGuest" xml:space="preserve">
-    <value>Гость</value>
+    <value>Гість</value>
   </data>
   <data name="DefaultGuests" xml:space="preserve">
-    <value>Гости</value>
+    <value>Гості
+</value>
   </data>
   <data name="DefaultRegDate" xml:space="preserve">
-    <value>Дата приема</value>
+    <value>Дата прийому</value>
   </data>
   <data name="DefaultSchemaName" xml:space="preserve">
-    <value>Корпоративный</value>
+    <value>Корпоративний</value>
   </data>
   <data name="DefaultUser" xml:space="preserve">
-    <value>Сотрудник</value>
+    <value>Співробітник</value>
   </data>
   <data name="DefaultUsers" xml:space="preserve">
-    <value>Сотрудники</value>
+    <value>Співробітники</value>
   </data>
   <data name="DefaultUserTitle" xml:space="preserve">
-    <value>Должность</value>
+    <value>Посада</value>
   </data>
   <data name="EducationAddUsers" xml:space="preserve">
-    <value>Добавить преподавателей/студентов</value>
+    <value>Додати вчителів/студентів</value>
   </data>
   <data name="EducationGroup" xml:space="preserve">
-    <value>Группа</value>
+    <value>Група</value>
   </data>
   <data name="EducationGroupHead" xml:space="preserve">
-    <value>Руководитель группы</value>
+    <value>Керівник групи</value>
   </data>
   <data name="EducationGroups" xml:space="preserve">
-    <value>Группы</value>
+    <value>Групи</value>
   </data>
   <data name="EducationGuest" xml:space="preserve">
-    <value>Гость</value>
+    <value>Гість</value>
   </data>
   <data name="EducationGuests" xml:space="preserve">
-    <value>Гости</value>
+    <value>Гості
+</value>
   </data>
   <data name="EducationRegDate" xml:space="preserve">
-    <value>Дата регистрации</value>
+    <value>Дата реєстрації</value>
   </data>
   <data name="EducationSchemaName" xml:space="preserve">
-    <value>Учебное заведение</value>
+    <value>Навчальний заклад
+</value>
   </data>
   <data name="EducationUser" xml:space="preserve">
-    <value>Преподаватель/Студент</value>
+    <value>Вчитель/Студент</value>
   </data>
   <data name="EducationUsers" xml:space="preserve">
-    <value>Преподаватели/Студенты</value>
+    <value>Вчителі/Студенти</value>
   </data>
   <data name="EducationUserTitle" xml:space="preserve">
-    <value>Позиция</value>
+    <value>Назва</value>
   </data>
 </root>

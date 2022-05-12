@@ -59,102 +59,102 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CommonAddUsers" xml:space="preserve">
-    <value>Добавить пользователей</value>
+    <value>添加用户</value>
   </data>
   <data name="CommonGroup" xml:space="preserve">
-    <value>Группа</value>
+    <value>团队</value>
   </data>
   <data name="CommonGroupHead" xml:space="preserve">
-    <value>Руководитель</value>
+    <value>组长</value>
   </data>
   <data name="CommonGroups" xml:space="preserve">
-    <value>Группы</value>
+    <value>团队</value>
   </data>
   <data name="CommonGuest" xml:space="preserve">
-    <value>Гость</value>
+    <value>游客</value>
   </data>
   <data name="CommonGuests" xml:space="preserve">
-    <value>Гости</value>
+    <value>游客</value>
   </data>
   <data name="CommonRegDate" xml:space="preserve">
-    <value>Дата регистрации</value>
+    <value>注册日期</value>
   </data>
   <data name="CommonSchemaName" xml:space="preserve">
-    <value>Общий</value>
+    <value>通用</value>
   </data>
   <data name="CommonUser" xml:space="preserve">
-    <value>Пользователь</value>
+    <value>用户</value>
   </data>
   <data name="CommonUsers" xml:space="preserve">
-    <value>Пользователи</value>
+    <value>用户</value>
   </data>
   <data name="CommonUserTitle" xml:space="preserve">
-    <value>Позиция</value>
+    <value>头衔</value>
   </data>
   <data name="DefaultAddUsers" xml:space="preserve">
-    <value>Добавить сотрудников</value>
+    <value>添加员工</value>
   </data>
   <data name="DefaultGroup" xml:space="preserve">
-    <value>Отдел</value>
+    <value>部门</value>
   </data>
   <data name="DefaultGroupHead" xml:space="preserve">
-    <value>Руководитель</value>
+    <value>部门负责人</value>
   </data>
   <data name="DefaultGroups" xml:space="preserve">
-    <value>Отделы</value>
+    <value>部门</value>
   </data>
   <data name="DefaultGuest" xml:space="preserve">
-    <value>Гость</value>
+    <value>游客</value>
   </data>
   <data name="DefaultGuests" xml:space="preserve">
-    <value>Гости</value>
+    <value>游客</value>
   </data>
   <data name="DefaultRegDate" xml:space="preserve">
-    <value>Дата приема</value>
+    <value>入职时间</value>
   </data>
   <data name="DefaultSchemaName" xml:space="preserve">
-    <value>Корпоративный</value>
+    <value>企业</value>
   </data>
   <data name="DefaultUser" xml:space="preserve">
-    <value>Сотрудник</value>
+    <value>员工</value>
   </data>
   <data name="DefaultUsers" xml:space="preserve">
-    <value>Сотрудники</value>
+    <value>员工</value>
   </data>
   <data name="DefaultUserTitle" xml:space="preserve">
-    <value>Должность</value>
+    <value>职位</value>
   </data>
   <data name="EducationAddUsers" xml:space="preserve">
-    <value>Добавить преподавателей/студентов</value>
+    <value>添加老师/学生</value>
   </data>
   <data name="EducationGroup" xml:space="preserve">
-    <value>Группа</value>
+    <value>小组</value>
   </data>
   <data name="EducationGroupHead" xml:space="preserve">
-    <value>Руководитель группы</value>
+    <value>小组负责人</value>
   </data>
   <data name="EducationGroups" xml:space="preserve">
-    <value>Группы</value>
+    <value>小组</value>
   </data>
   <data name="EducationGuest" xml:space="preserve">
-    <value>Гость</value>
+    <value>宾客</value>
   </data>
   <data name="EducationGuests" xml:space="preserve">
-    <value>Гости</value>
+    <value>宾客</value>
   </data>
   <data name="EducationRegDate" xml:space="preserve">
-    <value>Дата регистрации</value>
+    <value>注册日期</value>
   </data>
   <data name="EducationSchemaName" xml:space="preserve">
-    <value>Учебное заведение</value>
+    <value>教育机构</value>
   </data>
   <data name="EducationUser" xml:space="preserve">
-    <value>Преподаватель/Студент</value>
+    <value>老师/学生</value>
   </data>
   <data name="EducationUsers" xml:space="preserve">
-    <value>Преподаватели/Студенты</value>
+    <value>老师/学生</value>
   </data>
   <data name="EducationUserTitle" xml:space="preserve">
-    <value>Позиция</value>
+    <value>标题</value>
   </data>
 </root>
