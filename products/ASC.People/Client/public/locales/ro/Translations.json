@@ -1,7 +1,6 @@
 ﻿{
   "AddMembers": "Adăugați membrii",
   "Birthdate": "Data de naștere",
-  "Comments": "Comentarii",
   "DeleteSelfProfile": "Ștergere profil",
   "DisabledEmployeeStatus": "Dezactivat",
   "DisableUserButton": "Dezactivează",
@@ -11,7 +10,6 @@
   "FemaleSexStatus": "Femenin",
   "InviteLinkTitle": "Link-ul de invitație",
   "LDAPLbl": "LDAP",
-  "Location": "Locația",
   "MaleSexStatus": "Masculin",
   "maxSizeFileError": "Fişierul depăşeşte limita maximă de dimensiune",
   "MaxSizeLabel": "((JPG sau PNG, max 1 MB))",

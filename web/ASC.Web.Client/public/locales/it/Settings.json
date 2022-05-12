@@ -1,5 +1,4 @@
 ﻿{
-  "AccessRights": "Diritti di accesso",
   "AccessRightsAccessToProduct": "Viene concesso l'accesso al modulo {{product}}",
   "AccessRightsAllUsers": "Tutti {{users}}",
   "AccessRightsChangeOwnerConfirmText": "Le modifiche verranno applicate dopo la conferma via email.",

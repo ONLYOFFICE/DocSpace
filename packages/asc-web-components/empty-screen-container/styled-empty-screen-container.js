@@ -24,7 +24,7 @@ const EmptyContentBody = styled.div`
   grid-template-rows: max-content;
   .ec-image {
     grid-area: img;
-    margin: 0 0 0 auto;
+    margin: 16px 0 0 auto;
     ${NoUserSelect}
   }
 

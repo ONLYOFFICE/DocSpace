@@ -345,6 +345,18 @@ namespace ASC.Core.Notify.Signalr
             }
         }
 
+        public void UpdateFile<T>(T fileId, string room, string data)
+        {
+            try
+            {
+                MakeRequest("update-file", new { room, fileId, data });
+            }
+            catch (Exception error)
+            {
+                ProcessError(error);
+            }
+        }
+
         public void DeleteFile<T>(T fileId, string room)
         {
             try

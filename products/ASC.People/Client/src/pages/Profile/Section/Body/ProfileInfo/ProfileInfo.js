@@ -31,7 +31,7 @@ const InfoItem = styled.div`
   font-size: 13px;
   line-height: 24px;
   display: flex;
-  width: 358px;
+  width: 344px;
 `;
 
 const InfoItemLabel = styled.div`
@@ -361,7 +361,7 @@ class ProfileInfo extends React.PureComponent {
         )}
         {location && (
           <InfoItem>
-            <InfoItemLabel>{t("Translations:Location")}:</InfoItemLabel>
+            <InfoItemLabel>{t("Common:Location")}:</InfoItemLabel>
             <InfoItemValue className="profile-info_location">
               {location}
             </InfoItemValue>

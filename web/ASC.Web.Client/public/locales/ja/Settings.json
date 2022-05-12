@@ -1,5 +1,4 @@
 ﻿{
-  "AccessRights": "アクセス権限",
   "AccessRightsAccessToProduct": "{{product}} モジュールへのアクセス権は",
   "AccessRightsAllUsers": "すべて {{users}}",
   "AccessRightsChangeOwnerConfirmText": "変更内容は、メールでの確認後に適用されます。.",
