@@ -29,24 +29,29 @@ function DownloadComponents {
   }
 }
 
+$zookeeper_version = '3.7.1'
+$kafka_version = '2.8.0'
+$scala_version = '2.12'
+$nginx_version = '1.21.1'
+
 $path_prereq = "${pwd}\build\install\win\"
 
 $prerequisites = @(
   @{  
     download_allways = $false; 
-    name = "nginx-1.21.1.zip"; 
-    link = "https://nginx.org/download/nginx-1.21.1.zip";
+    name = "nginx-${nginx_version}.zip"; 
+    link = "https://nginx.org/download/nginx-${nginx_version}.zip";
   }
 
   @{  
     download_allways = $false; 
-    name = "apache-zookeeper-3.7.1-bin.tar.gz"; 
-    link = "https://dlcdn.apache.org/zookeeper/zookeeper-3.7.1/apache-zookeeper-3.7.1-bin.tar.gz";
+    name = "apache-zookeeper-${zookeeper_version}-bin.tar.gz"; 
+    link = "https://dlcdn.apache.org/zookeeper/zookeeper-${zookeeper_version}/apache-zookeeper-${zookeeper_version}-bin.tar.gz";
   }
   @{  
     download_allways = $false; 
-    name = "kafka_2.12-2.8.0.tgz"; 
-    link = "https://archive.apache.org/dist/kafka/2.8.0/kafka_2.12-2.8.0.tgz";
+    name = "kafka_${scala_version}-${kafka_version}.tgz"; 
+    link = "https://archive.apache.org/dist/kafka/${kafka_version}/kafka_${scala_version}-${kafka_version}.tgz";
   }
 
   @{  
