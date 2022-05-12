@@ -1415,7 +1415,7 @@ public class EntryManager
         }
         catch (Exception e)
         {
-            _logger.LogError(e, string.Format("Error on update {0} to version {1}", fileId, version));
+            _logger.ErrorUpdateFile(fileId.ToString(), version, e);
 
             throw new Exception(e.Message, e);
         }
@@ -1574,14 +1574,14 @@ public class EntryManager
         {
             await DeleteSubitemsAsync(folder.Id, folderDao, fileDao, linkDao);
 
-            _logger.LogInformation("Delete folder {folderId} in {parentId}", folder.Id, parentId);
+            _logger.InformationDeleteFolder(folder.Id.ToString(), parentId.ToString());
             await folderDao.DeleteFolderAsync(folder.Id);
         }
 
         var files = fileDao.GetFilesAsync(parentId, null, FilterType.None, false, Guid.Empty, string.Empty, true);
         await foreach (var file in files)
         {
-            _logger.LogInformation("Delete file {fileId} in {parentId}", file.Id, parentId);
+            _logger.InformationDeletefile(file.Id.ToString(), parentId.ToString());
             await fileDao.DeleteFileAsync(file.Id);
 
             await linkDao.DeleteAllLinkAsync(file.Id.ToString());
@@ -1600,7 +1600,7 @@ public class EntryManager
                          && shares.Any(record => record.Share != FileShare.Restrict);
             if (shared)
             {
-                _logger.LogInformation("Move shared folder {folderId} from {parentId} to {toId}", folder.Id, parentId, toId);
+                _logger.InformationMoveSharedFolder(folder.Id.ToString(), parentId.ToString(), toId.ToString());
                 await folderDao.MoveFolderAsync(folder.Id, toId, null);
             }
             else
@@ -1615,7 +1615,7 @@ public class EntryManager
 
         await foreach (var file in files)
         {
-            _logger.LogInformation("Move shared file {fileId} from {parentId} to {toId}", file.Id, parentId, toId);
+            _logger.InformationMoveSharedFile(file.Id.ToString(), parentId.ToString(), toId.ToString());
             await fileDao.MoveFileAsync(file.Id, toId);
         }
     }

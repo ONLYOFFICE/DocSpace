@@ -264,7 +264,7 @@ public class DocumentServiceTrackerHelper
 
         if (!fileData.Key.Equals(docKey))
         {
-            _logger.LogInformation("DocService editing file {fileId} ({docKey}) with key {fileKey} for {users}", fileId, docKey, fileData.Key, string.Join(", ", fileData.Users));
+            _logger.InformationDocServiceEditingFile(fileId.ToString(), docKey, fileData.Key, fileData.Users);
             usersDrop = fileData.Users;
         }
         else
@@ -273,7 +273,7 @@ public class DocumentServiceTrackerHelper
             {
                 if (!Guid.TryParse(user, out var userId))
                 {
-                    _logger.LogInformation("DocService userId is not Guid: {user}", user);
+                    _logger.InformationDocServiceUserIdIsNotGuid(user);
                     continue;
                 }
 
@@ -286,7 +286,7 @@ public class DocumentServiceTrackerHelper
                 }
                 catch (Exception e)
                 {
-                    _logger.LogDebug("Drop command: fileId '{fileId}' docKey '{fileKey}' for user {user} : {message}", fileId, fileData.Key, user, e.Message);
+                    _logger.DebugDropCommand(fileId.ToString(), fileData.Key, user, e);
                     usersDrop.Add(userId.ToString());
                 }
             }
@@ -296,7 +296,7 @@ public class DocumentServiceTrackerHelper
         {
             if (!await _documentServiceHelper.DropUserAsync(fileData.Key, usersDrop.ToArray(), fileId))
             {
-                _logger.LogError("DocService drop failed for users {users}", string.Join(",", (IEnumerable<string>)usersDrop));
+                _logger.ErrorDocServiceDropFailed(usersDrop);
             }
         }
 
@@ -333,7 +333,7 @@ public class DocumentServiceTrackerHelper
             var docKey = _documentServiceHelper.GetDocKey(fileStable);
             if (!fileData.Key.Equals(docKey))
             {
-                _logger.LogError("DocService saving file {fileId} ({docKey}) with key {fileData}", fileId, docKey, fileData.Key);
+                _logger.ErrorDocServiceSavingFile(fileId.ToString(), docKey, fileData.Key);
 
                 await StoringFileAfterErrorAsync(fileId, userId.ToString(), _documentServiceConnector.ReplaceDocumentAdress(fileData.Url));
 
@@ -353,7 +353,7 @@ public class DocumentServiceTrackerHelper
         }
         catch (Exception ex)
         {
-            _logger.LogInformation(ex, "DocService save error: anonymous author - " + userId);
+            _logger.InformationDocServiceSaveError(userId, ex);
             if (!userId.Equals(ASC.Core.Configuration.Constants.Guest.ID))
             {
                 comments.Add(FilesCommonResource.ErrorMassage_SaveAnonymous);
@@ -374,11 +374,11 @@ public class DocumentServiceTrackerHelper
                 await _daoFactory.GetFileDao<T>().UpdateCommentAsync(file.Id, file.Version, string.Join("; ", comments));
 
                 file = null;
-                _logger.LogError("DocService save error. Empty url. File id: '{fileId}'. UserId: {userId}. DocKey '{key}'", fileId, userId, fileData.Key);
+                _logger.ErrorDocServiceSave2(fileId.ToString(), userId, fileData.Key);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, string.Format("DocService save error. Version update. File id: '{fileId}'. UserId: {userId}. DocKey '{fileData}'", fileId, userId, fileData.Key));
+                _logger.ErrorDocServiceSaveVersionUpdate(fileId.ToString(), userId, fileData.Key, ex);
             }
         }
         else
@@ -415,7 +415,7 @@ public class DocumentServiceTrackerHelper
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, string.Format("DocService save error. File id: '{0}'. UserId: {1}. DocKey '{2}'. DownloadUri: {3}", fileId, userId, fileData.Key, fileData.Url));
+                _logger.ErrorDocServiceSave(fileId.ToString(), userId, fileData.Key, fileData.Url, ex);
                 saveMessage = ex.Message;
 
                 await StoringFileAfterErrorAsync(fileId, userId.ToString(), _documentServiceConnector.ReplaceDocumentAdress(fileData.Url));
@@ -549,18 +549,14 @@ public class DocumentServiceTrackerHelper
                 })
             {
                 var response = await _mailMergeTaskRunner.RunAsync(mailMergeTask, _clientFactory);
-                _logger.LogInformation("DocService mailMerge {index}/{count} send: {response}",
-                                         fileData.MailMerge.RecordIndex + 1, fileData.MailMerge.RecordCount, response);
+                _logger.InformationDocServiceMailMerge(fileData.MailMerge.RecordIndex + 1, fileData.MailMerge.RecordCount, response);
             }
             saveMessage = null;
         }
         catch (Exception ex)
         {
-            _logger.LogError(
-                ex,
-                string.Format("DocService mailMerge{index} error: userId - {userId}, url - {url}",
-                              fileData.MailMerge == null ? "" : " " + fileData.MailMerge.RecordIndex + "/" + fileData.MailMerge.RecordCount,
-                              userId, fileData.Url));
+            _logger.ErrorDocServiceMailMerge(fileData.MailMerge == null ? "" : " " + fileData.MailMerge.RecordIndex + "/" + fileData.MailMerge.RecordCount,
+                              userId, fileData.Url, ex);
             saveMessage = ex.Message;
         }
 
@@ -604,11 +600,11 @@ public class DocumentServiceTrackerHelper
             {
                 await store.SaveAsync(FileConstant.StorageDomainTmp, path, fileStream);
             }
-            _logger.LogDebug("DocService storing to {path}", path);
+            _logger.DebugDocServiceStoring(path);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "DocService Error on save file to temp store");
+            _logger.ErrorDocServiceSaveFileToTempStore(ex);
         }
     }
 
@@ -646,7 +642,7 @@ public class DocumentServiceTrackerHelper
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "DocService save history error");
+            _logger.ErrorDocServiceSavehistory(ex);
         }
     }
 }

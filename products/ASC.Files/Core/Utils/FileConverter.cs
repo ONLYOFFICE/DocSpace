@@ -24,6 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+
 using Timeout = System.Threading.Timeout;
 
 namespace ASC.Web.Files.Utils;
@@ -149,7 +150,7 @@ internal class FileConverterQueue<T> : IDisposable
                         _cache.Remove(GetKey(q.Key));
                     }
 
-                    logger.LogDebug("Run CheckConvertFilesStatus: count {count}", _conversionQueue.Count);
+                    logger.DebugRunCheckConvertFilesStatus(_conversionQueue.Count);
 
                     if (_conversionQueue.Count == 0)
                     {
@@ -244,7 +245,7 @@ internal class FileConverterQueue<T> : IDisposable
                         var password = exception.InnerException is DocumentServiceException documentServiceException
                                        && documentServiceException.Code == DocumentServiceException.ErrorCode.ConvertPassword;
 
-                        logger.LogError(exception, string.Format("Error convert {0} with url {1}", file.Id, fileUri));
+                        logger.ErrorConvertFileWithUrl(file.Id.ToString(), fileUri, exception);
                         lock (_locker)
                         {
                             if (_conversionQueue.TryGetValue(file, out var operationResult))
@@ -283,7 +284,7 @@ internal class FileConverterQueue<T> : IDisposable
                                 {
                                     operationResult.StopDateTime = DateTime.UtcNow;
                                     operationResult.Error = FilesCommonResource.ErrorMassage_ConvertTimeout;
-                                    logger.LogError("CheckConvertFilesStatus timeout: {fileId} ({contentLengthString})", file.Id, file.ContentLengthString);
+                                    logger.ErrorCheckConvertFilesStatus(file.Id.ToString(), file.ContentLength);
                                 }
                                 else
                                 {
@@ -294,7 +295,7 @@ internal class FileConverterQueue<T> : IDisposable
                             }
                         }
 
-                        logger.LogDebug("CheckConvertFilesStatus iteration continue");
+                        logger.DebugCheckConvertFilesStatusIterationContinue();
 
                         continue;
                     }
@@ -310,7 +311,7 @@ internal class FileConverterQueue<T> : IDisposable
                     {
                         operationResultError = e.Message;
 
-                        logger.LogError(e, "{operationResultError} ConvertUrl: {convertedFileUrl} fromUrl: {fileUri}", operationResultError, convertedFileUrl, fileUri);
+                        logger.ErrorOperation(operationResultError, convertedFileUrl, fileUri, e);
 
                         continue;
                     }
@@ -349,7 +350,7 @@ internal class FileConverterQueue<T> : IDisposable
                         }
                     }
 
-                    logger.LogDebug("CheckConvertFilesStatus iteration end");
+                    logger.DebugCheckConvertFilesStatusIterationEnd();
                 }
 
                 lock (_locker)
@@ -359,7 +360,7 @@ internal class FileConverterQueue<T> : IDisposable
             }
             catch (Exception exception)
             {
-                logger.LogError(exception, exception.Message);
+                logger.ErrorWithException(exception);
                 lock (_locker)
                 {
                     _timer.Change(Timeout.Infinite, Timeout.Infinite);

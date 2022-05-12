@@ -97,7 +97,7 @@ public class DocuSignHandlerService
 
     private void Redirect(HttpContext context)
     {
-        _log.LogInformation("DocuSign redirect query: {queryString}", context.Request.QueryString);
+        _log.InformationDocuSignRedirectQuery(context.Request.QueryString);
 
         var eventRedirect = context.Request.Query["event"].FirstOrDefault();
         switch (eventRedirect.ToLower())
@@ -121,12 +121,12 @@ public class DocuSignHandlerService
 
     private async Task WebhookAsync(HttpContext context)
     {
-        _log.LogInformation("DocuSign webhook: {QueryString}", context.Request.QueryString);
+        _log.InformationDocuSignWebhook(context.Request.QueryString);
         try
         {
             var xmldoc = new XmlDocument();
             xmldoc.Load(context.Request.Body);
-            _log.LogInformation("DocuSign webhook outerXml: {outerXml}", xmldoc.OuterXml);
+            _log.InformationDocuSignWebhookOuterXml(xmldoc.OuterXml);
 
             var mgr = new XmlNamespaceManager(xmldoc.NameTable);
             mgr.AddNamespace(XmlPrefix, "http://www.docusign.net/API/3.0");
@@ -141,7 +141,7 @@ public class DocuSignHandlerService
                 throw new Exception("DocuSign webhook unknown status: " + statusString);
             }
 
-            _log.LogInformation("DocuSign webhook: {envelopeId} {subject} {status}", envelopeId, subject, status);
+            _log.InformationDocuSignWebhook2(envelopeId, subject, status);
 
             var customFieldUserIdNode = GetSingleNode(envelopeStatusNode, "CustomFields/" + XmlPrefix + ":CustomField[" + XmlPrefix + ":Name='" + DocuSignHelper.UserField + "']", mgr);
             var userIdString = GetSingleNode(customFieldUserIdNode, "Value", mgr).InnerText;
@@ -183,7 +183,7 @@ public class DocuSignHandlerService
                         }
                         catch (Exception ex)
                         {
-                            _log.LogError(ex, ("DocuSign webhook save document: " + documentStatus.InnerText));
+                            _log.ErrorDocuSignWebhookSaveDocument(documentStatus.InnerText, ex);
                         }
                     }
                     break;
@@ -198,7 +198,7 @@ public class DocuSignHandlerService
         }
         catch (Exception e)
         {
-            _log.LogError(e, "DocuSign webhook");
+            _log.ErrorDocuSignWebhook(e);
 
             throw new HttpException((int)HttpStatusCode.BadRequest, e.Message);
         }

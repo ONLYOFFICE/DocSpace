@@ -80,7 +80,7 @@ public class DocumentServiceConnector
                                       SpreadsheetLayout spreadsheetLayout,
                                       bool isAsync)
     {
-        _logger.LogDebug("DocService convert from {fromExtension} to {toExtension} - {documentUri}, DocServiceConverterUrl:{docServiceConverterUrl}", fromExtension, toExtension, documentUri, _filesLinkUtility.DocServiceConverterUrl);
+        _logger.DebugDocServiceConvert(fromExtension, toExtension, documentUri, _filesLinkUtility.DocServiceConverterUrl);
         try
         {
             return Web.Core.Files.DocumentService.GetConvertedUriAsync(
@@ -110,7 +110,7 @@ public class DocumentServiceConnector
                                string[] users = null,
                                MetaData meta = null)
     {
-        _logger.LogDebug("DocService command {method} fileId '{fileId}' docKey '{docKey}' callbackUrl '{callbackUrl}' users '{users}' meta '{meta}'", method, fileId, docKeyForTrack, callbackUrl, users != null ? string.Join(", ", users) : null, JsonConvert.SerializeObject(meta));
+        _logger.DebugDocServiceCommand(method, fileId.ToString(), docKeyForTrack, callbackUrl, users != null ? string.Join(", ", users) : null, JsonConvert.SerializeObject(meta));
         try
         {
             var commandResponse = await CommandRequestAsync(
@@ -129,11 +129,11 @@ public class DocumentServiceConnector
                 return true;
             }
 
-            _logger.LogError("DocService command response: '{error}' {errorString}", commandResponse.Error, commandResponse.ErrorString);
+            _logger.ErrorDocServiceCommandResponse(commandResponse.Error, commandResponse.ErrorString);
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "DocService command error");
+            _logger.ErrorDocServiceCommandError(e);
         }
 
         return false;
@@ -159,7 +159,7 @@ public class DocumentServiceConnector
             requestKey = null;
         }
 
-        _logger.LogDebug("DocService builder requestKey {requestKey} async {isAsync}", requestKey, isAsync);
+        _logger.DebugDocServiceBuilderRequestKey(requestKey, isAsync);
         try
         {
             return await Web.Core.Files.DocumentService.DocbuilderRequestAsync(
@@ -179,7 +179,7 @@ public class DocumentServiceConnector
 
     public async Task<string> GetVersionAsync()
     {
-        _logger.LogDebug("DocService request version");
+        _logger.DebugDocServiceRequestVersion();
         try
         {
             var commandResponse = await CommandRequestAsync(
@@ -204,11 +204,11 @@ public class DocumentServiceConnector
                 return version;
             }
 
-            _logger.LogError("DocService command response: '{error}' {errorString}", commandResponse.Error, commandResponse.ErrorString);
+            _logger.ErrorDocServiceCommandResponse(commandResponse.Error, commandResponse.ErrorString);
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "DocService command error");
+            _logger.ErrorDocServiceCommandError(e);
         }
 
         return "4.1.5.1";
@@ -227,7 +227,7 @@ public class DocumentServiceConnector
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Healthcheck DocService check error");
+                _logger.ErrorDocServiceHealthcheck(ex);
 
                 throw new Exception("Healthcheck url: " + ex.Message);
             }
@@ -250,7 +250,7 @@ public class DocumentServiceConnector
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Converter DocService check error");
+                _logger.ErrorConverterDocServiceCheckError(ex);
 
                 throw new Exception("Converter url: " + ex.Message);
             }
@@ -272,7 +272,7 @@ public class DocumentServiceConnector
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Document DocService check error");
+                _logger.ErrorDocumentDocServiceCheckError(ex);
 
                 throw new Exception("Document server: " + ex.Message);
             }
@@ -287,7 +287,7 @@ public class DocumentServiceConnector
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Command DocService check error");
+                _logger.ErrorCommandDocServiceCheckError(ex);
 
                 throw new Exception("Command url: " + ex.Message);
             }
@@ -306,7 +306,7 @@ public class DocumentServiceConnector
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "DocService check error");
+                _logger.ErrorDocServiceCheck(ex);
 
                 throw new Exception("Docbuilder url: " + ex.Message);
             }
@@ -382,7 +382,7 @@ public class DocumentServiceConnector
             error += $" ({ex.Message})";
         }
 
-        _logger.LogError(ex, "DocService error");
+        _logger.ErrorDocServiceError(ex);
 
         return new Exception(error, ex);
     }

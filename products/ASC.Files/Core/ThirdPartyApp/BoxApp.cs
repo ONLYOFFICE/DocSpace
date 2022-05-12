@@ -154,7 +154,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
 
     public File<string> GetFile(string fileId, out bool editable)
     {
-        _logger.LogDebug("BoxApp: get file {fileId}", fileId);
+        _logger.DebugBoxAppGetFile(fileId);
         fileId = ThirdPartySelector.GetFileId(fileId);
 
         var token = _tokenHelper.GetToken(AppAttr);
@@ -197,7 +197,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
             if (lockedBy != null)
             {
                 var lockedUserId = lockedBy.Value<string>("id");
-                _logger.LogDebug("BoxApp: locked by {userId}", lockedUserId);
+                _logger.DebugBoxAppLockedBy(lockedUserId);
 
                 editable = CurrentUser(lockedUserId);
             }
@@ -215,7 +215,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
 
         var fileId = ThirdPartySelector.GetFileId(file.Id);
 
-        _logger.LogDebug("BoxApp: get file stream url {url}", fileId);
+        _logger.DebugBoxAppGetFileStreamUrl(fileId);
 
         var uriBuilder = new UriBuilder(_baseCommonLinkUtility.GetFullAbsolutePath(_thirdPartyAppHandlerService.HandlerPath));
         if (uriBuilder.Uri.IsLoopback)
@@ -235,10 +235,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
 
     public async Task SaveFileAsync(string fileId, string fileType, string downloadUrl, Stream stream)
     {
-        _logger.LogDebug("BoxApp: save file stream {fileId}" +
-                            (stream == null
-                                 ? " from - " + downloadUrl
-                                 : " from stream"), fileId);
+        _logger.DebugBoxAppSaveFileStream(fileId, stream == null ? downloadUrl : "stream");
         fileId = ThirdPartySelector.GetFileId(fileId);
 
         var token = _tokenHelper.GetToken(AppAttr);
@@ -246,7 +243,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
         var boxFile = GetBoxFile(fileId, token);
         if (boxFile == null)
         {
-            _logger.LogError("BoxApp: file is null");
+            _logger.ErrorBoxAppFileIsNull();
 
             throw new Exception("File not found");
         }
@@ -264,7 +261,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
                     downloadUrl = _documentServiceConnector.ReplaceCommunityAdress(downloadUrl);
                 }
 
-                _logger.LogDebug("BoxApp: GetConvertedUri from {fileType} to {currentType} - {downloadUrl}", fileType, currentType, downloadUrl);
+                _logger.DebugBoxAppGetConvertedUri(fileType, currentType, downloadUrl);
 
                 var key = DocumentServiceConnector.GenerateRevisionId(downloadUrl);
 
@@ -275,7 +272,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "BoxApp: Error convert");
+                _logger.ErrorBoxAppConvert(e);
             }
         }
 
@@ -317,7 +314,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
             request.Method = HttpMethod.Post;
             request.Headers.Add("Authorization", "Bearer " + token);
             request.Content.Headers.ContentType = new MediaTypeHeaderValue("multipart/form-data; boundary=" + boundary);
-            _logger.LogDebug("BoxApp: save file totalSize - {streamLength}", tmpStream.Length);
+            _logger.DebugBoxAppSaveFileTotalSize(tmpStream.Length);
 
             tmpStream.Seek(0, SeekOrigin.Begin);
             request.Content = new StreamContent(tmpStream);
@@ -334,11 +331,11 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
                 result = await readStream.ReadToEndAsync();
             }
 
-            _logger.LogDebug("BoxApp: save file response - {response}", result);
+            _logger.DebugBoxAppSaveFileResponse(result);
         }
         catch (HttpRequestException e)
         {
-            _logger.LogError(e, "BoxApp: Error save file");
+            _logger.ErrorBoxAppSaveFile(e);
             if (e.StatusCode == HttpStatusCode.Forbidden || e.StatusCode == HttpStatusCode.Unauthorized)
             {
                 throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException, e);
@@ -354,7 +351,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
         var token = GetToken(context.Request.Query["code"]);
         if (token == null)
         {
-            _logger.LogError("BoxApp: token is null");
+            _logger.ErrorBoxAppTokenIsNull();
 
             throw new SecurityException("Access token is null");
         }
@@ -365,7 +362,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
         {
             if (!CurrentUser(boxUserId))
             {
-                _logger.LogDebug("BoxApp: logout for {boxUserId}", boxUserId);
+                _logger.DebugBoxAppLogout(boxUserId);
                 _cookiesManager.ClearCookies(CookiesType.AuthKey);
                 _authContext.Logout();
             }
@@ -377,7 +374,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
 
             if (userInfo == null)
             {
-                _logger.LogError("BoxApp: UserInfo is null");
+                _logger.ErrorBoxAppUserInfoIsNull();
 
                 throw new Exception("Profile is null");
             }
@@ -417,14 +414,14 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
             var auth = context.Request.Query[FilesLinkUtility.AuthKey];
             var userId = context.Request.Query[CommonLinkUtility.ParamName_UserUserID];
 
-            _logger.LogDebug("BoxApp: get file stream {fileId}", fileId);
+            _logger.DebugBoxAppGetFileStream(fileId);
 
             var validateResult = _emailValidationKeyProvider.ValidateEmailKey(fileId + userId, auth, _global.StreamUrlExpire);
             if (validateResult != EmailValidationKeyProvider.ValidationResult.Ok)
             {
                 var exc = new HttpException((int)HttpStatusCode.Forbidden, FilesCommonResource.ErrorMassage_SecurityException);
 
-                _logger.LogError(exc, string.Format("BoxApp: validate error {0} {1}: {2}", FilesLinkUtility.AuthKey, validateResult, context.Request.Url()));
+                _logger.ErrorBoxAppValidateError(FilesLinkUtility.AuthKey, validateResult, context.Request.Url(), exc);
 
                 throw exc;
             }
@@ -438,7 +435,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
 
             if (token == null)
             {
-                _logger.LogError("BoxApp: token is null");
+                _logger.ErrorBoxAppTokenIsNull();
 
                 throw new SecurityException("Access token is null");
             }
@@ -459,7 +456,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
         {
             context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
             await context.Response.WriteAsync(ex.Message);
-            _logger.LogError(ex, ("BoxApp: Error request " + context.Request.Url()));
+            _logger.ErrorBoxAppErrorRequest(context.Request.Url(), ex);
         }
 
         try
@@ -471,7 +468,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
         }
         catch (HttpException ex)
         {
-            _logger.LogError(ex, "BoxApp StreamFile");
+            _logger.ErrorBoxAppStreamFile(ex);
         }
     }
 
@@ -485,7 +482,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
 
     private void AddLinker(string boxUserId)
     {
-        _logger.LogDebug("BoxApp: AddLinker {boxUserId}", boxUserId);
+        _logger.DebugBoxAppAddLinker(boxUserId);
         var linker = _snapshot.Get("webstudio");
         linker.AddLink(_authContext.CurrentAccount.ID.ToString(), boxUserId, ProviderConstants.Box);
     }
@@ -495,7 +492,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
         isNew = false;
         if (token == null)
         {
-            _logger.LogError("BoxApp: token is null");
+            _logger.ErrorBoxAppTokenIsNull();
 
             throw new SecurityException("Access token is null");
         }
@@ -505,17 +502,17 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
         {
             resultResponse = _requestHelper.PerformRequest(_boxUrlUserInfo,
                                                           headers: new Dictionary<string, string> { { "Authorization", "Bearer " + token } });
-            _logger.LogDebug("BoxApp: userinfo response - {response}", resultResponse);
+            _logger.DebugBoxAppUserInfoResponse(resultResponse);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "BoxApp: userinfo request");
+            _logger.ErrorBoxAppUserinfoRequest(ex);
         }
 
         var boxUserInfo = JObject.Parse(resultResponse);
         if (boxUserInfo == null)
         {
-            _logger.LogError("Error in userinfo request");
+            _logger.ErrorInUserInfoRequest();
 
             return null;
         }
@@ -544,7 +541,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
             }
             else
             {
-                _logger.LogDebug("From box app new personal user '{email}' without culture {culture}", userInfo.Email, cultureName);
+                _logger.DebugBoxAppFromBoxAppNewPersonalUser(userInfo.Email, cultureName);
             }
 
             if (string.IsNullOrEmpty(userInfo.FirstName))
@@ -568,7 +565,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
 
             isNew = true;
 
-            _logger.LogDebug("BoxApp: new user {userId}", userInfo.Id);
+            _logger.DebugBoxAppNewUser(userInfo.Id);
         }
 
         return userInfo;
@@ -578,7 +575,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
     {
         if (token == null)
         {
-            _logger.LogError("BoxApp: token is null");
+            _logger.ErrorBoxAppTokenIsNull();
 
             throw new SecurityException("Access token is null");
         }
@@ -587,13 +584,13 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
         {
             var resultResponse = _requestHelper.PerformRequest(_boxUrlFile.Replace("{fileId}", boxFileId),
                                                               headers: new Dictionary<string, string> { { "Authorization", "Bearer " + token } });
-            _logger.LogDebug("BoxApp: file response - {response}", resultResponse);
+            _logger.DebugBoxAppFileResponse(resultResponse);
 
             return resultResponse;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "BoxApp: file request");
+            _logger.ErrorBoxAppFileRequest(ex);
         }
         return null;
     }
@@ -602,14 +599,14 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
     {
         try
         {
-            _logger.LogDebug("BoxApp: GetAccessToken by code {code}", code);
+            _logger.DebugBoxAppGetAccessTokenByCode(code);
             var token = _oAuth20TokenHelper.GetAccessToken<BoxApp>(ConsumerFactory, code);
 
             return new Token(token, AppAttr);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "GetToken");
+            _logger.ErrorGetToken(ex);
         }
 
         return null;

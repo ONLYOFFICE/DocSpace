@@ -44,7 +44,7 @@ public class Token : OAuth20Token
             var app = ThirdPartySelector.GetApp(App);
             try
             {
-                tokenHelper.Logger.LogDebug("Refresh token for app: {App}", App);
+                tokenHelper.Logger.DebugRefreshToken(App);
 
                 var refreshUrl = app.GetRefreshUrl();
 
@@ -62,7 +62,7 @@ public class Token : OAuth20Token
             }
             catch (Exception ex)
             {
-                tokenHelper.Logger.LogError(ex, ("Refresh token for app: " + app));
+                tokenHelper.Logger.ErrorRefreshToken(App, ex);
             }
         }
 
