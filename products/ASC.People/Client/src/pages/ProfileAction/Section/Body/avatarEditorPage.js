@@ -4,14 +4,13 @@ import styled from "styled-components";
 import { withTranslation } from "react-i18next";
 import AvatarEditor from "@appserver/components/avatar-editor";
 import Loader from "@appserver/components/loader";
-import { isTablet } from "@appserver/components/utils/device";
+import { isTablet, isMobile } from "@appserver/components/utils/device";
 import {
   createThumbnailsAvatar,
   loadAvatar,
   deleteAvatar,
 } from "@appserver/common/api/people";
 import toastr from "studio/toastr";
-import { isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 import { toEmployeeWrapper } from "../../../../helpers/people-helpers";
 
@@ -22,8 +21,8 @@ const dialogsDataset = {
 };
 
 const AvatarEditorBody = styled.div`
-  margin-right: 6px;
-  //margin-bottom: 24px;
+  ${isMobile() && "margin-left: -8px"}
+  margin-bottom: 24px;
 `;
 
 class AvatarEditorPage extends React.PureComponent {
