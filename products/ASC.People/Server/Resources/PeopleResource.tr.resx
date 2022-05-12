@@ -59,27 +59,27 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
-    <value>Die hochgeladene Datei konnte nicht gefunden werden</value>
+    <value>Yüklenen dosya bulunamadı</value>
   </data>
   <data name="ErrorImageSizetLimit" xml:space="preserve">
-    <value>Das Bild ist zu groß</value>
+    <value>Resim boyutu çok büyük</value>
   </data>
   <data name="ErrorImageWeightLimit" xml:space="preserve">
-    <value>Die Bilddatei ist zu groß</value>
+    <value>Resim dosyası boyutu çok büyük</value>
   </data>
   <data name="ErrorUnknownFileImageType" xml:space="preserve">
-    <value>Unbekannter Bilddateityp</value>
+    <value>Bilinmeyen resim dosyası tipi</value>
   </data>
   <data name="ProductAdminOpportunities" xml:space="preserve">
-    <value>Das gleiche wie der Benutzer tun|Profile und Gruppen erstellen|Profile importieren|Nutzer einladen</value>
+    <value>Kullanıcı gibi davranın|Profil ve grup oluşturun|Profil içe aktarın|Kullanıcı davet edin</value>
   </data>
   <data name="ProductDescription" xml:space="preserve">
-    <value>Fügen Sie neue Benutzer hinzu, importieren oder laden Sie diese ein. Verwalten Sie die Benutzer und sehen Sie detaillierte Informationen über sie.</value>
+    <value>Yeni kullanıcıları ekleyin, davet edin yada aktarın. Kullanıcıları yönetin ve detaylı bilgilerine bakın.</value>
   </data>
   <data name="ProductName" xml:space="preserve">
-    <value>Personen</value>
+    <value>Kişiler</value>
   </data>
   <data name="ProductUserOpportunities" xml:space="preserve">
-    <value>Profile und Gruppen anschauen</value>
+    <value>Profil ve grupları görüntüle</value>
   </data>
 </root>

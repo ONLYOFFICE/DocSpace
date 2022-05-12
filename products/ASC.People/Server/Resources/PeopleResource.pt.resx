@@ -58,28 +58,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
-    <value>Die hochgeladene Datei konnte nicht gefunden werden</value>
-  </data>
-  <data name="ErrorImageSizetLimit" xml:space="preserve">
-    <value>Das Bild ist zu groß</value>
-  </data>
-  <data name="ErrorImageWeightLimit" xml:space="preserve">
-    <value>Die Bilddatei ist zu groß</value>
-  </data>
-  <data name="ErrorUnknownFileImageType" xml:space="preserve">
-    <value>Unbekannter Bilddateityp</value>
-  </data>
-  <data name="ProductAdminOpportunities" xml:space="preserve">
-    <value>Das gleiche wie der Benutzer tun|Profile und Gruppen erstellen|Profile importieren|Nutzer einladen</value>
-  </data>
-  <data name="ProductDescription" xml:space="preserve">
-    <value>Fügen Sie neue Benutzer hinzu, importieren oder laden Sie diese ein. Verwalten Sie die Benutzer und sehen Sie detaillierte Informationen über sie.</value>
-  </data>
-  <data name="ProductName" xml:space="preserve">
-    <value>Personen</value>
-  </data>
-  <data name="ProductUserOpportunities" xml:space="preserve">
-    <value>Profile und Gruppen anschauen</value>
-  </data>
 </root>

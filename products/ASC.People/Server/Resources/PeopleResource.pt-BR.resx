@@ -59,27 +59,27 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
-    <value>Die hochgeladene Datei konnte nicht gefunden werden</value>
+    <value>Não foi possível encontrar o arquivo enviado</value>
   </data>
   <data name="ErrorImageSizetLimit" xml:space="preserve">
-    <value>Das Bild ist zu groß</value>
+    <value>O tamanho da imagem é muito grande</value>
   </data>
   <data name="ErrorImageWeightLimit" xml:space="preserve">
-    <value>Die Bilddatei ist zu groß</value>
+    <value>O tamanho do arquivo de imagem é muito grande</value>
   </data>
   <data name="ErrorUnknownFileImageType" xml:space="preserve">
-    <value>Unbekannter Bilddateityp</value>
+    <value>Tipo desconhcido de arquivo de imagem</value>
   </data>
   <data name="ProductAdminOpportunities" xml:space="preserve">
-    <value>Das gleiche wie der Benutzer tun|Profile und Gruppen erstellen|Profile importieren|Nutzer einladen</value>
+    <value>Faça o mesmo que um usuário|Crie perfis e grupos|Importe perfis|Convide usuários</value>
   </data>
   <data name="ProductDescription" xml:space="preserve">
-    <value>Fügen Sie neue Benutzer hinzu, importieren oder laden Sie diese ein. Verwalten Sie die Benutzer und sehen Sie detaillierte Informationen über sie.</value>
+    <value>Adicionar novos usuários, convide ou importe. Gerencie usuários e veja suas informações detalhadas.</value>
   </data>
   <data name="ProductName" xml:space="preserve">
-    <value>Personen</value>
+    <value>Pessoas</value>
   </data>
   <data name="ProductUserOpportunities" xml:space="preserve">
-    <value>Profile und Gruppen anschauen</value>
+    <value>Visualizar perfis e grupos</value>
   </data>
 </root>

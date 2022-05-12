@@ -59,27 +59,27 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
-    <value>Die hochgeladene Datei konnte nicht gefunden werden</value>
+    <value>无法找到上传的文件</value>
   </data>
   <data name="ErrorImageSizetLimit" xml:space="preserve">
-    <value>Das Bild ist zu groß</value>
+    <value>图片尺寸过大</value>
   </data>
   <data name="ErrorImageWeightLimit" xml:space="preserve">
-    <value>Die Bilddatei ist zu groß</value>
+    <value>图片尺寸过大</value>
   </data>
   <data name="ErrorUnknownFileImageType" xml:space="preserve">
-    <value>Unbekannter Bilddateityp</value>
+    <value>未知的图片类型</value>
   </data>
   <data name="ProductAdminOpportunities" xml:space="preserve">
-    <value>Das gleiche wie der Benutzer tun|Profile und Gruppen erstellen|Profile importieren|Nutzer einladen</value>
+    <value>像用户一样操作|创建用户信息和组|导入用户信息|邀请用户</value>
   </data>
   <data name="ProductDescription" xml:space="preserve">
-    <value>Fügen Sie neue Benutzer hinzu, importieren oder laden Sie diese ein. Verwalten Sie die Benutzer und sehen Sie detaillierte Informationen über sie.</value>
+    <value>添加、邀请，或导入用户。管理工作站用户账户，查看用户详细信息。</value>
   </data>
   <data name="ProductName" xml:space="preserve">
-    <value>Personen</value>
+    <value>成员</value>
   </data>
   <data name="ProductUserOpportunities" xml:space="preserve">
-    <value>Profile und Gruppen anschauen</value>
+    <value>查看用户信息与组</value>
   </data>
 </root>
