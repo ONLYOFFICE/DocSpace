@@ -59,33 +59,33 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CorporateFiles" xml:space="preserve">
-    <value>Documenti comuni</value>
+    <value>Ortak Belgeler</value>
   </data>
   <data name="Favorites" xml:space="preserve">
-    <value>Preferiti</value>
+    <value>Favoriler</value>
   </data>
   <data name="FilesWillBeCompressedTarGz" xml:space="preserve">
-    <value>‎I file verranno compressi‎ nel file {0}.tar.gz{1}</value>
+    <value>Dosyalar, {0}.tar.gz dosyasına{1} sıkıştırılacak</value>
   </data>
   <data name="FilesWillBeCompressedZip" xml:space="preserve">
-    <value>‎I file verranno compressi nel file {0}.zip{1}‎</value>
+    <value>Dosyalar, {0}.zip dosyasına{1} sıkıştırılacak</value>
   </data>
   <data name="MyFiles" xml:space="preserve">
-    <value>I miei documenti</value>
+    <value>Belgelerim</value>
   </data>
   <data name="PrivacyRoom" xml:space="preserve">
-    <value>Stanza Privata</value>
+    <value>Özel oda</value>
   </data>
   <data name="ProjectFiles" xml:space="preserve">
-    <value>Documenti del progetto</value>
+    <value>Proje belgeleri</value>
   </data>
   <data name="Recent" xml:space="preserve">
-    <value>Recente</value>
+    <value>Son</value>
   </data>
   <data name="SharedForMe" xml:space="preserve">
-    <value>Condivisi con me</value>
+    <value>Benimle Paylaşılan</value>
   </data>
   <data name="Trash" xml:space="preserve">
-    <value>Cestino</value>
+    <value>Çöp</value>
   </data>
 </root>

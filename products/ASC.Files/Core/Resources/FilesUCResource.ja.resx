@@ -59,33 +59,27 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CorporateFiles" xml:space="preserve">
-    <value>Documenti comuni</value>
+    <value>共有文書</value>
   </data>
   <data name="Favorites" xml:space="preserve">
-    <value>Preferiti</value>
-  </data>
-  <data name="FilesWillBeCompressedTarGz" xml:space="preserve">
-    <value>‎I file verranno compressi‎ nel file {0}.tar.gz{1}</value>
-  </data>
-  <data name="FilesWillBeCompressedZip" xml:space="preserve">
-    <value>‎I file verranno compressi nel file {0}.zip{1}‎</value>
+    <value>お気に入り</value>
   </data>
   <data name="MyFiles" xml:space="preserve">
-    <value>I miei documenti</value>
+    <value>私の文書</value>
   </data>
   <data name="PrivacyRoom" xml:space="preserve">
-    <value>Stanza Privata</value>
+    <value>個室</value>
   </data>
   <data name="ProjectFiles" xml:space="preserve">
-    <value>Documenti del progetto</value>
+    <value>プロジェクト文書</value>
   </data>
   <data name="Recent" xml:space="preserve">
-    <value>Recente</value>
+    <value>最近</value>
   </data>
   <data name="SharedForMe" xml:space="preserve">
-    <value>Condivisi con me</value>
+    <value>ミーと共有</value>
   </data>
   <data name="Trash" xml:space="preserve">
-    <value>Cestino</value>
+    <value>ごみ箱</value>
   </data>
 </root>
