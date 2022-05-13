@@ -1952,6 +1952,7 @@ const Base = {
     sectionHeaderToggleBgActive: grayLight,
 
     backgroundColor: white,
+    blurColor: "rgba(6, 22, 38, 0.2)",
     borderColor: grayLightMid,
     thumbnailBorderColor: grayLightMid,
     textColor: black,
