@@ -96,7 +96,7 @@ class ArticleBodyContent extends React.Component {
     switch (tKey) {
       case "AccessRights":
         return t("Common:AccessRights");
-      case "ManagementCategoryCommon":
+      case "Common:Common":
         return t("Common:Common");
       case "Customization":
         return t("Customization");
