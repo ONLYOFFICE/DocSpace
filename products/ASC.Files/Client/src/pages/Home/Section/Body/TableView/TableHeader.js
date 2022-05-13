@@ -205,6 +205,7 @@ class FilesTableHeader extends React.Component {
       userId,
       firstElemChecked,
       sortingVisible,
+      infoPanelVisible,
     } = this.props;
 
     const { sortBy, sortOrder } = filter;
@@ -222,13 +223,22 @@ class FilesTableHeader extends React.Component {
         sectionWidth={sectionWidth}
         resetColumnsSize={resetColumnsSize}
         sortingVisible={sortingVisible}
+        infoPanelVisible={infoPanelVisible}
       />
     );
   }
 }
 
 export default inject(
-  ({ auth, filesStore, selectedFolderStore, treeFoldersStore }) => {
+  ({
+    auth,
+    filesStore,
+    selectedFolderStore,
+    treeFoldersStore,
+    infoPanelStore,
+  }) => {
+    const { isVisible: infoPanelVisible } = infoPanelStore;
+
     const {
       isHeaderChecked,
       setIsLoading,
@@ -258,6 +268,8 @@ export default inject(
 
       firstElemChecked,
       headerBorder,
+
+      infoPanelVisible,
     };
   }
 )(
