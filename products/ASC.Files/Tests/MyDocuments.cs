@@ -27,30 +27,8 @@
 namespace ASC.Files.Tests;
 
 [TestFixture]
-
 public class MyDocuments : BaseFilesTests
 {
-    readonly JsonSerializerOptions _options;
-
-    public MyDocuments()
-    {
-        _options = new JsonSerializerOptions()
-        {
-            AllowTrailingCommas = true,
-            PropertyNameCaseInsensitive = true
-        };
-
-        _options.Converters.Add(new ApiDateTimeConverter());
-        _options.Converters.Add(new FileEntryWrapperConverter());
-        _options.Converters.Add(new FileShareConverter());
-    }
-
-    [OneTimeSetUp]
-    public override async Task SetUp()
-    {
-        await base.SetUp();
-    }
-
     [TestCase(DataTests.MyId, DataTests.NewTitle)]
     [Category("Folder")]
     [Order(5)]
@@ -63,8 +41,8 @@ public class MyDocuments : BaseFilesTests
         Assert.AreEqual(folderId, folder.ParentId);
     }
 
-    [TestCase(DataTests.EmptyFolderId , 0)]
-    [TestCase(DataTests.NotEmptyFolderId , 1)]
+    [TestCase(DataTests.EmptyFolderId, 0)]
+    [TestCase(DataTests.NotEmptyFolderId, 1)]
     [Category("Folder")]
     [Order(6)]
     [Description("get - files/{folderId} - get empty folder / get not empty folder")]
@@ -95,7 +73,7 @@ public class MyDocuments : BaseFilesTests
     [Category("Folder")]
     [Order(9)]
     [Description("put - files/folder/{folderId} - rename folder")]
-    public async Task RenameFolderReturnsFolderWrapper(int folderId,string newTitle)
+    public async Task RenameFolderReturnsFolderWrapper(int folderId, string newTitle)
     {
         var folder = await PutAsync<FolderDto<int>>("folder/" + folderId, JsonContent.Create(new { Title = newTitle }), _options);
 
@@ -111,17 +89,7 @@ public class MyDocuments : BaseFilesTests
     public async Task DeleteFolderReturnsFolderWrapper(int folderId, bool deleteAfter, bool immediately)
     {
         await DeleteAsync("folder/" + folderId, JsonContent.Create(new { DeleteAfter = deleteAfter, Immediately = immediately }));
-        List<FileOperationResult> statuses = null;
-        while (true)
-        {
-            statuses = await GetAsync<List<FileOperationResult>>("fileops", _options);
-
-            if (statuses.TrueForAll(r => r.Finished))
-            {
-                break;
-            }
-            await Task.Delay(100);
-        }
+        var statuses = await WaitLongOperation();
         Assert.IsTrue(statuses.TrueForAll(r => string.IsNullOrEmpty(r.Error)));
     }
 
@@ -169,18 +137,7 @@ public class MyDocuments : BaseFilesTests
     public async Task DeleteFileReturnsFileWrapper(int fileId, bool deleteAfter, bool immediately)
     {
         await DeleteAsync("file/" + fileId, JsonContent.Create(new { DeleteAfter = deleteAfter, Immediately = immediately }));
-        
-        List<FileOperationResult> statuses = null;
-        while (true)
-        {
-            statuses = await GetAsync<List<FileOperationResult>>("fileops", _options);
-
-            if (statuses.TrueForAll(r => r.Finished))
-            {
-                break;
-            }
-            await Task.Delay(100);
-        }
+        var statuses = await WaitLongOperation();
         Assert.IsTrue(statuses.TrueForAll(r => string.IsNullOrEmpty(r.Error)));
     }
 

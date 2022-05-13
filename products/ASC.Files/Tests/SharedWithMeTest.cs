@@ -31,24 +31,11 @@ class SharedWithMeTest : BaseFilesTests
 {
     private IEnumerable<FileShareParams> _testFolderParamRead;
     private IEnumerable<FileShareParams> _testFolderParamReadAndWrite;
-    private readonly JsonSerializerOptions _options;
-    public SharedWithMeTest()
-    {
-        _options = new JsonSerializerOptions()
-        {
-            AllowTrailingCommas = true,
-            PropertyNameCaseInsensitive = true
-        };
 
-        _options.Converters.Add(new ApiDateTimeConverter());
-        _options.Converters.Add(new FileEntryWrapperConverter());
-        _options.Converters.Add(new FileShareConverter());
-    }
 
     [OneTimeSetUp]
-    public override async Task SetUp()
+    public void SetUp()
     {
-        await base.SetUp();
         var newUser = _userManager.GetUsers(Guid.Parse("005bb3ff-7de3-47d2-9b3d-61b9ec8a76a5"));
         _testFolderParamRead = new List<FileShareParams> { new FileShareParams { Access = Core.Security.FileShare.Read, ShareTo = newUser.Id } };
         _testFolderParamReadAndWrite = new List<FileShareParams> { new FileShareParams { Access = Core.Security.FileShare.ReadWrite, ShareTo = newUser.Id } };
@@ -60,7 +47,7 @@ class SharedWithMeTest : BaseFilesTests
     [Category("Folder Read")]
     [Order(2)]
     [Description("put - files/folder/{folderId}/share - share folder to another user for read")]
-    public async Task ShareFolderToAnotherUserRead(int folderId ,bool notify, string message)
+    public async Task ShareFolderToAnotherUserRead(int folderId, bool notify, string message)
     {
         var share = await PutAsync<IEnumerable<FileShareDto>>("folder/" + folderId + "/share", JsonContent.Create(new { Share = _testFolderParamRead, Notify = notify, SharingMessage = message }), _options);
         Assert.IsNotNull(share);
@@ -207,18 +194,7 @@ class SharedWithMeTest : BaseFilesTests
             return;
         }
 
-        List<FileOperationResult> statuses;
-        while (true)
-        {
-            statuses = await GetAsync<List<FileOperationResult>>("fileops", _options);
-
-            if (statuses.TrueForAll(r => r.Finished))
-            {
-                break;
-            }
-
-            await Task.Delay(100);
-        }
+        var statuses = await WaitLongOperation();
 
         var error = string.Join(",", statuses.Select(r => r.Error));
         Assert.That(error == assertError, error);

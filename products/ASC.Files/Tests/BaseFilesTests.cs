@@ -67,26 +67,31 @@ class FilesApplication : WebApplicationFactory<Program>
 public class MySetUpClass
 {
     protected IServiceScope Scope { get; set; }
+    private readonly string _pathToProducts = Path.Combine("..", "..", "..", "Data.Test");
 
     [OneTimeSetUp]
     public void CreateDb()
     {
-           var host = new FilesApplication(new Dictionary<string, string>
+        var host = new FilesApplication(new Dictionary<string, string>
                 {
                     { "pathToConf", Path.Combine("..","..", "..", "config") },
                     { "ConnectionStrings:default:connectionString", BaseFilesTests.TestConnection },
                     { "migration:enabled", "true" },
                     { "core:products:folder", Path.Combine("..", "..", "..", "products") },
-                    { "web:hub::internal", "" }
+                    { "web:hub:internal", "" }
                 })
-            .WithWebHostBuilder(builder =>
-            {
-            });
+                   .WithWebHostBuilder(builder =>
+                   {
+                   });
 
         Migrate(host.Services);
         Migrate(host.Services, Assembly.GetExecutingAssembly().GetName().Name);
 
         Scope = host.Services.CreateScope();
+
+        //var tenantManager = Scope.ServiceProvider.GetService<TenantManager>();
+        //var tenant = tenantManager.GetTenant(1);
+        //tenantManager.SetCurrentTenant(tenant);
     }
 
     [OneTimeTearDown]
@@ -94,6 +99,12 @@ public class MySetUpClass
     {
         var context = Scope.ServiceProvider.GetService<DbContextManager<UserDbContext>>();
         context.Value.Database.EnsureDeleted();
+
+        try
+        {
+            Directory.Delete(Path.Combine("..", "..", "..", _pathToProducts), true);
+        }
+        catch { }
     }
 
     private void Migrate(IServiceProvider serviceProvider, string testAssembly = null)
@@ -116,13 +127,29 @@ public class MySetUpClass
 
 public class BaseFilesTests
 {
+    protected readonly JsonSerializerOptions _options;
     protected UserManager _userManager;
     private protected HttpClient _client;
+    private readonly string _baseAddress;
 
     public static readonly string TestConnection = string.Format("Server=localhost;Database=onlyoffice_test.{0};User ID=root;Password=root;Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;AllowPublicKeyRetrieval=True", DateTime.Now.Ticks);
 
-    private readonly string _pathToProducts = Path.Combine("..", "..", "..", "Data.Test");
-    public virtual Task SetUp()
+    public BaseFilesTests()
+    {
+        _options = new JsonSerializerOptions()
+        {
+            AllowTrailingCommas = true,
+            PropertyNameCaseInsensitive = true
+        };
+
+        _options.Converters.Add(new ApiDateTimeConverter());
+        _options.Converters.Add(new FileEntryWrapperConverter());
+        _options.Converters.Add(new FileShareConverter());
+        _baseAddress = @$"http://localhost:{new Random().Next(5000, 6000)}/api/2.0/files/";
+    }
+
+    [OneTimeSetUp]
+    public Task OneTimeSetup()
     {
         var host = new FilesApplication(new Dictionary<string, string>
             {
@@ -135,17 +162,16 @@ public class BaseFilesTests
             })
              .WithWebHostBuilder(a => { });
 
-        var rnd = new Random();
         _client = host.CreateClient(new WebApplicationFactoryClientOptions()
         {
-            BaseAddress = new Uri(@"http://localhost:" + rnd.Next(5000, 6000) + "/api/2.0/files/")
+            BaseAddress = new Uri(_baseAddress)
         });
 
         var scope = host.Services.CreateScope();
 
         _userManager = scope.ServiceProvider.GetService<UserManager>();
 
-        var tenantManager = scope.ServiceProvider.GetService<TenantManager>();    
+        var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
         var tenant = tenantManager.GetTenant(1);
         tenantManager.SetCurrentTenant(tenant);
 
@@ -157,16 +183,6 @@ public class BaseFilesTests
         _client.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/json;");
 
         return Task.CompletedTask;
-    }
-
-    [OneTimeTearDown]
-    public void DropFolderWithFiles()
-    {
-        try
-        {
-            Directory.Delete(Path.Combine("..", "..", "..", _pathToProducts), true);
-        }
-        catch { }
     }
 
     public BatchRequestDto GetBatchModel(string text)
@@ -207,7 +223,7 @@ public class BaseFilesTests
     {
         var request = new HttpRequestMessage
         {
-            RequestUri = new Uri(@"http://localhost:5007/api/2.0/files/" + url),
+            RequestUri = new Uri(_baseAddress + url),
             Method = HttpMethod.Delete,
             Content = content
         };
@@ -249,7 +265,7 @@ public class BaseFilesTests
     {
         var request = new HttpRequestMessage
         {
-            RequestUri = new Uri(@"http://localhost:5007/api/2.0/files/" + url),
+            RequestUri = new Uri(_baseAddress + url),
             Method = HttpMethod.Delete,
             Content = content
         };
@@ -267,5 +283,23 @@ public class BaseFilesTests
             return jsonElement.Deserialize<T>(options);
         }
         throw new Exception("can't parsing result");
+    }
+
+    protected async Task<List<FileOperationResult>> WaitLongOperation()
+    {
+        List<FileOperationResult> statuses = null;
+
+        while (true)
+        {
+            statuses = await GetAsync<List<FileOperationResult>>("fileops", _options);
+
+            if (statuses.TrueForAll(r => r.Finished))
+            {
+                break;
+            }
+            await Task.Delay(100);
+        }
+
+        return statuses;
     }
 }

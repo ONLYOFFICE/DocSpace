@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -162,7 +162,7 @@ namespace ASC.Webhooks.Tests
 
             Assert.IsTrue(requestHistory.SuccessCounter == 1, "Problem with successed request");
             Assert.IsTrue(requestHistory.FailedCounter == webhookSender.RepeatCount, "Problem with failed request");
-            Assert.IsTrue(requestHistory.?orrectSignature, "Problem with signature");
+            Assert.IsTrue(requestHistory.СorrectSignature, "Problem with signature");
         }
 
         [Test]

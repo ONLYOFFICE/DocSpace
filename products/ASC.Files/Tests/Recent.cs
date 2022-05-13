@@ -29,27 +29,6 @@ namespace ASC.Files.Tests;
 [TestFixture]
 class Recent : BaseFilesTests
 {
-    private readonly JsonSerializerOptions _options;
-
-    public Recent()
-    {
-        _options = new JsonSerializerOptions()
-        {
-            AllowTrailingCommas = true,
-            PropertyNameCaseInsensitive = true
-        };
-
-        _options.Converters.Add(new ApiDateTimeConverter());
-        _options.Converters.Add(new FileEntryWrapperConverter());
-        _options.Converters.Add(new FileShareConverter());
-    }
-
-    [OneTimeSetUp]
-    public override async Task SetUp()
-    {
-        await base.SetUp();
-    }
-
     [TestCase(DataTests.FileIdForRecent, DataTests.FileNameForRecent)]
     [Category("File")]
     [Order(1)]
@@ -69,21 +48,9 @@ class Recent : BaseFilesTests
     {
         await PostAsync<FileDto<int>>("file/" + fileId + "/recent", null, _options);
         await DeleteAsync("file/" + fileId, JsonContent.Create(new { DeleteAfter = false, Immediately = true }));
-
-        while (true)
-        {
-            var statuses = await GetAsync<List<FileOperationResult>>("fileops", _options);
-
-            if (statuses.TrueForAll(r => r.Finished))
-            {
-                break;
-            }
-
-            await Task.Delay(100);
-        }
-
+        _ = await WaitLongOperation();
         var recents = await GetAsync<FolderContentDto<int>>("@recent", _options);
-        Assert.IsTrue(!recents.Files.Any(r=> r.Title == fileTitleExpected + ".docx"));
+        Assert.IsTrue(!recents.Files.Any(r => r.Title == fileTitleExpected + ".docx"));
     }
 
     [TestCase(DataTests.SharedForReadFileId, DataTests.FileName)]
@@ -91,7 +58,7 @@ class Recent : BaseFilesTests
     [Order(3)]
     public async Task ShareFileToAnotherUserAddToRecent(int fileId, string fileName)
     {
-         var file = await PostAsync<FileDto<int>>("file/" + fileId + "/recent", null, _options);
+        var file = await PostAsync<FileDto<int>>("file/" + fileId + "/recent", null, _options);
 
         Assert.IsNotNull(file);
         Assert.AreEqual(fileName, file.Title);

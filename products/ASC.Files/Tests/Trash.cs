@@ -29,26 +29,6 @@ namespace ASC.Files.Tests;
 [TestFixture]
 class Trash : BaseFilesTests
 {
-    private readonly JsonSerializerOptions _options;
-    public Trash()
-    {
-        _options = new JsonSerializerOptions()
-        {
-            AllowTrailingCommas = true,
-            PropertyNameCaseInsensitive = true
-        };
-
-        _options.Converters.Add(new ApiDateTimeConverter());
-        _options.Converters.Add(new FileEntryWrapperConverter());
-        _options.Converters.Add(new FileShareConverter());
-    }
-
-    [OneTimeSetUp]
-    public override async Task SetUp()
-    {
-        await base.SetUp();
-    }
-
     [Test]
     [Category("Folder")]
     [Order(1)]
@@ -56,20 +36,7 @@ class Trash : BaseFilesTests
     public async Task DeleteFileFromTrash()
     {
         var Empty = await PutAsync<IEnumerable<FileOperationDto>>("fileops/emptytrash", null, _options);
-
-        List<FileOperationResult> statuses;
-
-        while (true)
-        {
-            statuses = await GetAsync<List<FileOperationResult>>("fileops", _options);
-
-            if (statuses.TrueForAll(r => r.Finished))
-            {
-                break;
-            }
-
-            await Task.Delay(100);
-        }
+        var statuses = await WaitLongOperation();
         Assert.IsTrue(statuses.TrueForAll(r => string.IsNullOrEmpty(r.Error)));
     }
 }

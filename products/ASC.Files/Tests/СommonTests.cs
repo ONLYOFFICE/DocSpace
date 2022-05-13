@@ -27,28 +27,8 @@
 namespace ASC.Files.Tests;
 
 [TestFixture]
-public class СommonTests: BaseFilesTests
+public class СommonTests : BaseFilesTests
 {
-    private readonly JsonSerializerOptions _options;
-    public СommonTests()
-    {
-        _options = new JsonSerializerOptions()
-        {
-            AllowTrailingCommas = true,
-            PropertyNameCaseInsensitive = true
-        };
-
-        _options.Converters.Add(new ApiDateTimeConverter());
-        _options.Converters.Add(new FileEntryWrapperConverter());
-        _options.Converters.Add(new FileShareConverter());
-    }
-
-    [OneTimeSetUp]
-    public override async Task SetUp()
-    {
-        await base.SetUp();
-    }
-
     [TestCase(DataTests.ShareId)]
     [TestCase(DataTests.FavoritesId)]
     [TestCase(DataTests.RecentId)]

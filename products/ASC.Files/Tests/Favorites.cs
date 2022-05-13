@@ -29,34 +29,12 @@ namespace ASC.Files.Tests;
 [TestFixture]
 class Favorites : BaseFilesTests
 {
-    private readonly JsonSerializerOptions _options;
-
-    public Favorites()
-    {
-        _options = new JsonSerializerOptions()
-        {
-            AllowTrailingCommas = true,
-            PropertyNameCaseInsensitive = true
-        };
-
-        _options.Converters.Add(new ApiDateTimeConverter());
-        _options.Converters.Add(new FileEntryWrapperConverter());
-        _options.Converters.Add(new FileShareConverter());
-    }
-
-    [OneTimeSetUp]
-    public override async Task SetUp()
-    {
-        await base.SetUp();
-    }
-
     [TestCase(DataTests.SubFolderId, DataTests.FileId)]
     [Category("Favorite")]
     [Order(1)]
     [Description("post - files/favorites - add file and folder to favorites")]
     public async Task AddFavoriteFolderAndFileToFolderWrapper(int folderID, int fileId)
     {
-        
         var favorite = await PostAsync<bool>("favorites", JsonContent.Create(new { FolderIds = new List<int> { folderID }, FileIds = new List<int> { fileId } }), _options);
 
         Assert.IsTrue(favorite);
@@ -72,6 +50,4 @@ class Favorites : BaseFilesTests
 
         Assert.IsTrue(favorite);
     }
-
-
 }
