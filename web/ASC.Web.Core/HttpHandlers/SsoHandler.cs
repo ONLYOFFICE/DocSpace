@@ -30,17 +30,13 @@ using JsonSerializer = System.Text.Json.JsonSerializer;
 namespace ASC.Web.Core.HttpHandlers;
 public class SsoHandler
 {
-    private readonly RequestDelegate _next;
-
     public SsoHandler(RequestDelegate next)
     {
-        _next = next;
     }
 
     public async Task Invoke(HttpContext context, SsoHandlerService ssoHandlerService)
     {
         await ssoHandlerService.InvokeAsync(context).ConfigureAwait(false);
-        await _next.Invoke(context).ConfigureAwait(false);
     }
 
 }
@@ -111,14 +107,14 @@ public class SsoHandlerService
         {
             if (!SetupInfo.IsVisibleSettings(ManagementType.SingleSignOnSettings.ToString()) && !_coreBaseSettings.Standalone)
             {
-                await WriteErrorToResponse(context, "Single sign-on settings are disabled");
-                return;
+                throw new SSOException("Single sign-on settings are disabled", MessageKey.SsoSettingsDisabled);
             }
+
             if (!(_coreBaseSettings.Standalone || _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Sso))
             {
-                await WriteErrorToResponse(context, "Single sign-on settings are not paid");
-                return;
+                throw new SSOException("Single sign-on settings are not paid", MessageKey.ErrorNotAllowedOption);
             }
+
             var settings = _settingsManager.Load<SsoSettingsV2>();
 
             if (context.Request.Query["config"] == "saml")
@@ -132,16 +128,14 @@ public class SsoHandlerService
 
             if (!settings.EnableSso)
             {
-                await WriteErrorToResponse(context, "Single sign-on is disabled");
-                return;
+                throw new SSOException("Single sign-on is disabled", MessageKey.SsoSettingsDisabled);
             }
 
             var data = context.Request.Query["data"];
 
             if (string.IsNullOrEmpty(data))
             {
-                await WriteErrorToResponse(context, "SAML response is null or empty");
-                return;
+                throw new SSOException("SAML response is null or empty", MessageKey.SsoSettingsEmptyToken);
             }
 
             if (context.Request.Query["auth"] == "true")
@@ -150,22 +144,20 @@ public class SsoHandlerService
 
                 if (userData == null)
                 {
-                    await WriteErrorToResponse(context, "SAML response is not valid");
-                    return;
+                    _messageService.Send(MessageAction.LoginFailViaSSO);
+                    throw new SSOException("SAML response is not valid", MessageKey.SsoSettingsNotValidToken);
                 }
 
                 var userInfo = ToUserInfo(userData, true);
 
                 if (Equals(userInfo, Constants.LostUser))
                 {
-                    await WriteErrorToResponse(context, "Can't create userInfo using current SAML response (fields Email, FirstName, LastName are required)");
-                    return;
+                    throw new SSOException("Can't create userInfo using current SAML response (fields Email, FirstName, LastName are required)", MessageKey.SsoSettingsCantCreateUser);
                 }
 
                 if (userInfo.Status == EmployeeStatus.Terminated)
                 {
-                    await WriteErrorToResponse(context, "Current user is terminated");
-                    return;
+                    throw new SSOException("Current user is terminated", MessageKey.SsoSettingsUserTerminated);
                 }
 
                 if (context.User != null && context.User.Identity != null && context.User.Identity.IsAuthenticated)
@@ -199,22 +191,20 @@ public class SsoHandlerService
 
                 if (logoutSsoUserData == null)
                 {
-                    await WriteErrorToResponse(context, "SAML Logout response is not valid");
-                    return;
+                    throw new SSOException("SAML Logout response is not valid", MessageKey.SsoSettingsNotValidToken);
                 }
 
                 var userInfo = _userManager.GetSsoUserByNameId(logoutSsoUserData.NameId);
 
                 if (Equals(userInfo, Constants.LostUser))
                 {
-                    await WriteErrorToResponse(context, "Can't logout userInfo using current SAML response");
-                    return;
+                    _messageService.Send(MessageAction.LoginFailViaSSO);
+                    throw new SSOException("Can't logout userInfo using current SAML response", MessageKey.SsoSettingsNotValidToken);
                 }
 
                 if (userInfo.Status == EmployeeStatus.Terminated)
                 {
-                    await WriteErrorToResponse(context, "Current user is terminated");
-                    return;
+                    throw new SSOException("Current user is terminated", MessageKey.SsoSettingsUserTerminated);
                 }
 
                 _securityContext.AuthenticateMeWithoutCookie(userInfo.Id);
@@ -226,9 +216,15 @@ public class SsoHandlerService
                 _securityContext.Logout();
             }
         }
+        catch (SSOException e)
+        {
+            _log.Error(e);
+            await WriteErrorToResponse(context, e.MessageKey);
+        }
         catch (Exception e)
         {
-            await WriteErrorToResponse(context, $"Unexpected error. {e}");
+            _log.Error(e);
+            await WriteErrorToResponse(context, MessageKey.Error);
         }
         finally
         {
@@ -237,10 +233,11 @@ public class SsoHandlerService
         }
     }
 
-    private async Task WriteErrorToResponse(HttpContext context, string errorText)
+    private async Task WriteErrorToResponse(HttpContext context, MessageKey messageKey)
     {
-        _log.ErrorFormat(errorText);
-        await context.Response.WriteAsync(errorText);
+        context.Response.StatusCode = 500;
+        context.Response.ContentType = "text/plain";
+        await context.Response.WriteAsync(((int)messageKey).ToString());
     }
 
     private UserInfo AddUser(UserInfo userInfo)
@@ -252,7 +249,9 @@ public class SsoHandlerService
             newUserInfo = userInfo.Clone() as UserInfo;
 
             if (newUserInfo == null)
+            {
                 return Constants.LostUser;
+            }
 
             _log.DebugFormat("Adding or updating user in database, userId={0}", userInfo.Id);
 
@@ -268,7 +267,9 @@ public class SsoHandlerService
             else
             {
                 if (!_userFormatter.IsValidUserName(userInfo.FirstName, userInfo.LastName))
+                {
                     throw new Exception(Resource.ErrorIncorrectUserName);
+                }
 
                 _userManager.SaveUserInfo(newUserInfo);
             }
@@ -333,7 +334,9 @@ public class SsoHandlerService
             };
 
             if (string.IsNullOrEmpty(phone))
+            {
                 return userInfo;
+            }
 
             var contacts = new List<string> { EXT_MOB_PHONE, phone };
             userInfo.ContactsList = contacts;
@@ -357,7 +360,9 @@ public class SsoHandlerService
             for (int i = 0, n = portalUserContacts.Count; i < n; i += 2)
             {
                 if (i + 1 >= portalUserContacts.Count)
+                {
                     continue;
+                }
 
                 var type = portalUserContacts[i];
                 var value = portalUserContacts[i + 1];
@@ -404,13 +409,48 @@ public class SsoHandlerService
     private static string TrimToLimit(string str, int limit = MAX_NUMBER_OF_SYMBOLS)
     {
         if (string.IsNullOrEmpty(str))
+        {
             return "";
+        }
 
         var newStr = str.Trim();
 
         return newStr.Length > limit
                 ? newStr.Substring(0, MAX_NUMBER_OF_SYMBOLS)
                 : newStr;
+    }
+}
+public enum MessageKey
+{
+    None,
+    Error,
+    ErrorUserNotFound,
+    ErrorExpiredActivationLink,
+    ErrorInvalidActivationLink,
+    ErrorConfirmURLError,
+    ErrorNotCorrectEmail,
+    LoginWithBruteForce,
+    RecaptchaInvalid,
+    LoginWithAccountNotFound,
+    InvalidUsernameOrPassword,
+    SsoSettingsDisabled,
+    ErrorNotAllowedOption,
+    SsoSettingsEmptyToken,
+    SsoSettingsNotValidToken,
+    SsoSettingsCantCreateUser,
+    SsoSettingsUserTerminated,
+    SsoError,
+    SsoAuthFailed,
+    SsoAttributesNotFound,
+}
+
+public class SSOException : Exception
+{
+    public MessageKey MessageKey { get; }
+
+    public SSOException(string message, MessageKey messageKey) : base(message)
+    {
+        MessageKey = messageKey;
     }
 }
 

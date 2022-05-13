@@ -71,7 +71,9 @@ public class SsoController : BaseSettingsController
         var settings = _settingsManager.Load<SsoSettingsV2>();
 
         if (string.IsNullOrEmpty(settings.SpLoginLabel))
+        {
             settings.SpLoginLabel = SsoSettingsV2.SSO_SP_LOGIN_LABEL;
+        }
 
         return settings;
     }
@@ -88,7 +90,7 @@ public class SsoController : BaseSettingsController
     public SsoSettingsV2 GetDefaultSsoSettingsV2()
     {
         CheckSsoPermissions();
-        return new SsoSettingsV2().GetDefault();
+        return _settingsManager.GetDefault<SsoSettingsV2>();
     }
 
     /// <summary>
@@ -123,19 +125,19 @@ public class SsoController : BaseSettingsController
     /// <param name="serializeSettings">Serialized SSO settings</param>
     /// <returns>SSO settings</returns>
     [Create("ssov2")]
-    public SsoSettingsV2 SaveSsoSettingsV2FromBody([FromBody] SsoSettingsModel model)
+    public SsoSettingsV2 SaveSsoSettingsV2FromBody([FromBody] SsoSettingsRequestsDto model)
     {
         return SaveSsoSettingsV2(model);
     }
 
     [Create("ssov2")]
     [Consumes("application/x-www-form-urlencoded")]
-    public SsoSettingsV2 SaveSsoSettingsV2FromForm([FromForm] SsoSettingsModel model)
+    public SsoSettingsV2 SaveSsoSettingsV2FromForm([FromForm] SsoSettingsRequestsDto model)
     {
         return SaveSsoSettingsV2(model);
     }
 
-    private SsoSettingsV2 SaveSsoSettingsV2(SsoSettingsModel model)
+    private SsoSettingsV2 SaveSsoSettingsV2(SsoSettingsRequestsDto model)
     {
         CheckSsoPermissions();
 
@@ -214,9 +216,9 @@ public class SsoController : BaseSettingsController
     {
         CheckSsoPermissions();
 
-        var defaultSettings = new SsoSettingsV2().GetDefault() as SsoSettingsV2;
+        var defaultSettings = _settingsManager.GetDefault<SsoSettingsV2>();
 
-        if (defaultSettings != null && !_settingsManager.Save(defaultSettings))
+        if (!_settingsManager.Save(defaultSettings))
         {
             throw new Exception(Resource.SsoSettingsCantSaveSettings);
         }
@@ -233,7 +235,9 @@ public class SsoController : BaseSettingsController
         var ssoUsers = _userManager.GetUsers().Where(u => u.IsSSO()).ToList();
 
         if (!ssoUsers.Any())
+        {
             return;
+        }
 
         foreach (var existingSsoUser in ssoUsers)
         {
@@ -248,8 +252,7 @@ public class SsoController : BaseSettingsController
 
     private static bool CheckUri(string uriName)
     {
-        Uri uriResult;
-        return Uri.TryCreate(uriName, UriKind.Absolute, out uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+        return Uri.TryCreate(uriName, UriKind.Absolute, out var uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
     }
 
     private void CheckSsoPermissions()

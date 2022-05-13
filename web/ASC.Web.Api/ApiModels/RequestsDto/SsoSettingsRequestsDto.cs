@@ -24,9 +24,9 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Api.Models;
+namespace ASC.Web.Api.ApiModel.RequestsDto;
 
-public class SsoSettingsModel
+public class SsoSettingsRequestsDto
 {
     public string SerializeSettings { get; set; }
 }

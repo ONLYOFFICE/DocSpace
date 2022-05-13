@@ -29,6 +29,7 @@ global using ASC.Api.Core.Extensions;
 global using ASC.Data.Storage;
 global using ASC.FederatedLogin;
 global using ASC.FederatedLogin.LoginProviders;
+global using ASC.Web.Core.HttpHandlers;
 global using ASC.Web.Studio;
 
 global using Autofac;
@@ -38,4 +39,3 @@ global using Microsoft.AspNetCore.Builder;
 global using Microsoft.AspNetCore.Hosting;
 global using Microsoft.AspNetCore.HttpOverrides;
 global using Microsoft.Extensions.Hosting.WindowsServices;
-global using ASC.Web.Core.HttpHandlers;
