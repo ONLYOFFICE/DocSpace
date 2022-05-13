@@ -356,6 +356,8 @@ class DatePicker extends Component {
                 clickOutsideAction={this.onClose}
                 isDefaultMode={false}
                 fixedDirection={fixedDirection}
+                withBlur={window.innerWidth <= 428}
+                zIndex={220}
               >
                 {this.renderBody()}
               </DropDown>
