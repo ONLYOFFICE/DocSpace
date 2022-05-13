@@ -39,8 +39,14 @@ namespace Frontend.Translations.Tests
 
         private static string _md5ExcludesPath = "../../../md5-excludes.json";
 
+        private static string _encodingExcludesPath = "../../../encoding-excludes.json";
+
         private static List<string> md5Excludes = File.Exists(_md5ExcludesPath)
             ? JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(_md5ExcludesPath))
+            : new List<string>();
+
+        private static List<string> encodingExcludes = File.Exists(_encodingExcludesPath)
+            ? JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(_encodingExcludesPath))
             : new List<string>();
 
         [OneTimeSetUp]
@@ -78,8 +84,7 @@ namespace Frontend.Translations.Tests
                 {
                     var result = CharsetDetector.DetectFromFile(path);
 
-                    if (result.Detected.EncodingName != "utf-8"
-                    && result.Detected.EncodingName != "ascii")
+                    if (!encodingExcludes.Contains(result.Detected.EncodingName))
                     {
                         WrongEncodingJsonErrors.Add(
                             new JsonEncodingError(path, result.Detected));
