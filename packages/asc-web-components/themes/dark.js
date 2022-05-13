@@ -2059,7 +2059,7 @@ const Dark = {
   },
 
   tableContainer: {
-    borderRight: "2px solid #474747",
+    borderRight: "1px solid #474747",
     hoverBorderColor: "#474747",
     tableCellBorder: "1px solid #474747",
 

@@ -2056,7 +2056,7 @@ const Base = {
   },
 
   tableContainer: {
-    borderRight: `2px solid ${grayMid}`,
+    borderRight: `1px solid ${grayMid}`,
     hoverBorderColor: grayMain,
     tableCellBorder: `1px solid ${grayLightMid}`,
 
