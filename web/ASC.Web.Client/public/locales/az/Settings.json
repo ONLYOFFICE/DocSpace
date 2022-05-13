@@ -1,5 +1,4 @@
 ﻿{
-  "AccessRights": "Giriş hüququ verin",
   "AccessRightsAccessToProduct": "{{product}} moduluna giriş hüququ verilmişdir",
   "AccessRightsAllUsers": "Bütün {{users}}",
   "AccessRightsChangeOwnerConfirmText": "Dəyişikliklər e-poçt vasitəsilə təsdiqlənmə məktubundan sonra tətbiq olunacaq.",
@@ -42,7 +41,6 @@
   "LogoLightSmall": "Portal başlığı üçün loqo",
   "LogoSettings": "Portal loqosu üçün Ayarlar",
   "LogoUploadRecommendation": "Sizə şəffaf arxa fonlu <1>PNG</1> formatlı şəkillərdən istifadə etməyi tövsiyə edirik",
-  "ManagementCategoryCommon": "Ümumi",
   "ManagementCategoryIntegration": "İnteqrasiya",
   "ManagementCategorySecurity": "Təhlükəsizlik",
   "Migration": "Köçürülmə",

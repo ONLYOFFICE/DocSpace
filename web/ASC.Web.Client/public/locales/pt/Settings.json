@@ -1,5 +1,4 @@
 ﻿{
-  "AccessRights": "Direitos de acesso",
   "AccessRightsAccessToProduct": "Accesso ao módulo {{product}} dado a",
   "AccessRightsAllUsers": "Todos {{users}}",
   "AccessRightsChangeOwnerConfirmText": "As mudanças serão aplicadas depois da confirmação via email.",
@@ -42,7 +41,6 @@
   "LogoLightSmall": "Logo for the portal header",
   "LogoSettings": "Definições do Logótipo do Portal",
   "LogoUploadRecommendation": "Recomendamos que utilize imagens no formato <1>PNG</1> com um fundo transparente",
-  "ManagementCategoryCommon": "Comum",
   "ManagementCategoryIntegration": "Integração",
   "ManagementCategorySecurity": "Segurança",
   "Migration": "Migração",

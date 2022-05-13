@@ -1,7 +1,6 @@
 ﻿{
   "AddMembers": "Pievienot dalībniekus",
   "Birthdate": "Dzimšanas datums",
-  "Comments": "Komentāri",
   "DeleteSelfProfile": "Dzēst profilu",
   "DisabledEmployeeStatus": "Atspējots",
   "DisableUserButton": "Atspējot",
@@ -11,7 +10,6 @@
   "FemaleSexStatus": "Sieviete",
   "InviteLinkTitle": "Uzaicinājuma saite",
   "LDAPLbl": "LDAP",
-  "Location": "Atrašanās vieta",
   "MaleSexStatus": "Vīrietis",
   "maxSizeFileError": "Pārsniegts maksimālais faila lielums",
   "MaxSizeLabel": "(JPG vai PNG, maks. 1 MB)",

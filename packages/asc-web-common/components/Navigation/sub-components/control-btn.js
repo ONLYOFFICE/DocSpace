@@ -116,6 +116,7 @@ const ControlButtons = ({
           )}
           {!personal && (
             <ContextMenuButton
+              zIndex={402}
               className="option-button"
               directionX="right"
               iconName="images/vertical-dots.react.svg"
@@ -129,7 +130,7 @@ const ControlButtons = ({
             <ToggleInfoPanelButton
               isRootFolder={isRootFolder}
               isInfoPanelVisible={isInfoPanelVisible}
-              toggleInfoPanelAction={toggleInfoPanelAction}
+              toggleInfoPanel={toggleInfoPanelAction}
             />
           )}
         </>
@@ -168,7 +169,7 @@ const ControlButtons = ({
             <ToggleInfoPanelButton
               isRootFolder={isRootFolder}
               isInfoPanelVisible={isInfoPanelVisible}
-              toggleInfoPanelAction={toggleInfoPanelAction}
+              toggleInfoPanel={toggleInfoPanelAction}
             />
           )}
         </>
@@ -178,7 +179,7 @@ const ControlButtons = ({
             <ToggleInfoPanelButton
               isRootFolder={isRootFolder}
               isInfoPanelVisible={isInfoPanelVisible}
-              toggleInfoPanelAction={toggleInfoPanelAction}
+              toggleInfoPanel={toggleInfoPanelAction}
             />
           )}
         </>

@@ -1,5 +1,4 @@
 ﻿{
-  "AccessRights": "Prístupové práva",
   "AccessRightsAccessToProduct": "Prístup do modulu {{product}} má",
   "AccessRightsAllUsers": "Všetci {{users}}",
   "AccessRightsChangeOwnerConfirmText": "Zmeny sa vykonajú po potvrdení e-mailu.",
@@ -44,7 +43,6 @@
   "LogoLightSmall": "Logo pre hlavičku portálu",
   "LogoSettings": "Nastavenia loga portálu",
   "LogoUploadRecommendation": "Odporúčame používať obrázky <1> PNG </1> s priehľadným pozadím",
-  "ManagementCategoryCommon": "Všeobecné",
   "ManagementCategoryIntegration": "Integrácia",
   "ManagementCategorySecurity": "Bezpečnosť",
   "ManualBackupDescription": "Túto možnosť použite, ak chcete získať všetky údaje obsiahnuté na portáli ako súbor.",

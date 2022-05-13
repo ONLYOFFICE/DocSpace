@@ -1,64 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
-    Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
-    associated with the data types.
-    
-    Example:
-    
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
-                
-    There are any number of "resheader" rows that contain simple 
-    name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
-    mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
-    extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
-    read any of the formats listed below.
-    
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-    
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
@@ -112,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
     <value>Il campo Valida codice non può essere vuoto</value>
@@ -295,7 +236,7 @@
     <value>Carrello</value>
   </data>
   <data name="ConsumersGoogleCloudbucketDescription" xml:space="preserve">
-    <value>Inserisci il nome del carrello di Google Cloud in cui desideri archiviare i tuoi backup.</value>
+    <value>Immettere il nome del carrello di Google Cloud per l'archiviazione dei backup.</value>
   </data>
   <data name="ConsumersGoogleCloudDescription" xml:space="preserve">
     <value>Connetti Google Cloud Storage al backup e archivia i dati del tuo portale.</value>
@@ -355,13 +296,13 @@
     <value>Contenitore privato</value>
   </data>
   <data name="ConsumersRackspaceprivate_containerDescription" xml:space="preserve">
-    <value>Immettere l'indirizzo URL del contenitore privato Rackspace in cui si desidera archiviare i backup.</value>
+    <value>Immettere l'indirizzo URL del contenitore privato Rackspace per l'archiviazione dei backup.</value>
   </data>
   <data name="ConsumersRackspacepublic_container" xml:space="preserve">
     <value>Contenitore pubblico</value>
   </data>
   <data name="ConsumersRackspacepublic_containerDescription" xml:space="preserve">
-    <value>Immettere l'indirizzo URL del contenitore pubblico Rackspace in cui si desidera archiviare i backup.</value>
+    <value>Immettere l'indirizzo URL del contenitore pubblico Rackspace per l'archiviazione dei backup.</value>
   </data>
   <data name="ConsumersRackspaceregion" xml:space="preserve">
     <value>Regione</value>
@@ -376,7 +317,7 @@
     <value>Carrello</value>
   </data>
   <data name="ConsumersS3bucketDescription" xml:space="preserve">
-    <value>Immettere il nome univoco del carrello Amazon in cui si desidera archiviare i backup.</value>
+    <value>Immettere il nome univoco del carrello Amazon per l'archiviazione dei backup.</value>
   </data>
   <data name="ConsumersS3Description" xml:space="preserve">
     <value>Connetti Amazon AWS S3 al backup e archivia i dati del tuo portale.</value>
@@ -412,13 +353,13 @@
     <value>Contenitore privato</value>
   </data>
   <data name="ConsumersSelectelprivate_containerDescription" xml:space="preserve">
-    <value>Immettere il nome del contenitore privato Selectel in cui si desidera archiviare i backup.</value>
+    <value>Immettere il nome del contenitore privato Selectel per l'archiviazione dei backup.</value>
   </data>
   <data name="ConsumersSelectelpublic_container" xml:space="preserve">
     <value>Contenitore pubblico</value>
   </data>
   <data name="ConsumersSelectelpublic_containerDescription" xml:space="preserve">
-    <value>Immettere il nome del contenitore pubblico Selectel in cui si desidera archiviare i backup.</value>
+    <value>Immettere il nome del contenitore pubblico Selectel per l'archiviazione dei backup.</value>
   </data>
   <data name="ConsumersSkyDrive" xml:space="preserve">
     <value>OneDrive</value>
@@ -659,7 +600,7 @@
     <value>E' impossibile trovare l'utente con l'indirizzo email "{0}"</value>
   </data>
   <data name="EuServerRegion" xml:space="preserve">
-    <value>Regione UE (Irlanda)</value>
+    <value>Regione UE (Francoforte)</value>
   </data>
   <data name="FileSizeMaxExceed" xml:space="preserve">
     <value>E' stata superata la dimensione file massima</value>
@@ -715,9 +656,6 @@
   <data name="PersonalFreeSpaceException" xml:space="preserve">
     <value>Quota di spazio su disco superata</value>
   </data>
-  <data name="PortalAccessSettingsTariffException" xml:space="preserve">
-    <value>Questa funzione è attiva solo per il piano tariffario gratuito</value>
-  </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Accesso al portale</value>
   </data>
@@ -760,9 +698,6 @@
   <data name="SsoSettingsInvalidMapping" xml:space="preserve">
     <value>Mappatura campi non valida</value>
   </data>
-  <data name="SuccessfullyPortalRenameMessage" xml:space="preserve">
-    <value>Il portale è stato rinominato con successo.</value>
-  </data>
   <data name="SuccessfullySaveGreetingSettingsMessage" xml:space="preserve">
     <value>Le impostazioni della pagina di saluto sono state salvate con successo</value>
   </data>
@@ -786,8 +721,5 @@
   </data>
   <data name="WhatsNewSubscriptionName" xml:space="preserve">
     <value>Cosa c'è di nuovo</value>
-  </data>
-  <data name="ProfileRemoved" xml:space="preserve">
-    <value>Il profilo è stato eliminato</value>
   </data>
 </root>

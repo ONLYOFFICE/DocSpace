@@ -1,5 +1,4 @@
 ﻿{
-  "AccessRights": "Права доступа",
   "AccessRightsAccessToProduct": "Доступ к модулю {{product}} предоставлен для",
   "AccessRightsAllUsers": "Всех участников со статусом {{users}}",
   "AccessRightsChangeOwnerConfirmText": "Изменения будут применены после подтверждения по электронной почте.",
@@ -77,7 +76,6 @@
   "LogoLightSmall": "Логотип для шапки портала",
   "LogoSettings": "Настройки логотипа портала",
   "LogoUploadRecommendation": "Рекомендуется использовать изображения в формате <1>PNG</1> с прозрачным фоном",
-  "ManagementCategoryCommon": "Общие",
   "ManagementCategoryIntegration": "Интеграция",
   "ManagementCategorySecurity": "Безопасность",
   "ManagementCategoryDataManagement": "Управление данными",
@@ -151,5 +149,6 @@
   "UseSpecialChar": "Использовать специальные символы",
   "UseUpperCase": "Использовать заглавные буквы",
   "WelcomePageTitle": "Заголовок страницы приветствия",
+  "WhiteLabel": "Ребрендинг",
   "YouHaveUnsavedChanges": "Имеются несохраненные изменения"
 }

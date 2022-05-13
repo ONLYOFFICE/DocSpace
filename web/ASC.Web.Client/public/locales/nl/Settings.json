@@ -1,5 +1,4 @@
 ﻿{
-  "AccessRights": "Toegangsrechten",
   "AccessRightsAccessToProduct": "Toegang tot {{product}} module wordt gegeven aan",
   "AccessRightsAllUsers": "Alle {{users}}",
   "AccessRightsChangeOwnerConfirmText": "Wijzigingen zullen worden toegepast na de bevestiging via e-mail.",
@@ -43,7 +42,6 @@
   "LogoLightSmall": "Logo voor de koptekst van het portaal",
   "LogoSettings": "Portaal Logo Instellingen",
   "LogoUploadRecommendation": "Wij raden u aan afbeeldingen te gebruiken in <1>PNG</1> formaat met transparante achtergrond",
-  "ManagementCategoryCommon": "Gemeenschappelijk",
   "ManagementCategoryIntegration": "Integratie",
   "ManagementCategorySecurity": "Veiligheid",
   "Migration": "Migratie",

@@ -1,5 +1,4 @@
 ﻿{
-  "AccessRights": "Piekļuves tiesības",
   "AccessRightsAccessToProduct": "{{product}} piekļuves tiesību modulis ir piešķirts",
   "AccessRightsAllUsers": "Visi {{users}}",
   "AccessRightsChangeOwnerConfirmText": "Izmaiņas tiks piemērotas pēc apstiprinājuma saņemšanas pa e -pastu.",
@@ -44,7 +43,6 @@
   "LogoLightSmall": "Logotips portāla galvenei",
   "LogoSettings": "Portāla logotipa iestatījumi",
   "LogoUploadRecommendation": "Mēs iesakām izmantot attēlus <1>PNG</1> formātā ar caurspīdīgu fonu",
-  "ManagementCategoryCommon": "Kopēji",
   "ManagementCategoryIntegration": "Integrācija",
   "ManagementCategorySecurity": "Drošība",
   "ManualBackupDescription": "Izmantojiet šo iespēju, ka vēlaties visus portāla datus iegūt faila veidā.",

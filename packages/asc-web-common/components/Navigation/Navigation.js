@@ -54,8 +54,6 @@ const Navigation = ({
     (!isMobile && !isTabletUtils() && !isMobileUtils()) ||
     (isDesktopUtils() && !isMobile);
 
-  console.log(isDesktop);
-
   const onMissClick = (e) => {
     e.preventDefault;
     const path = e.path || (e.composedPath && e.composedPath());
@@ -119,14 +117,13 @@ const Navigation = ({
         <>
           {isOpen && (
             <>
-              {isMobileOnly && (
-                <Backdrop
-                  isAside={true}
-                  visible={isOpen}
-                  withBackground={true}
-                  zIndex={400}
-                />
-              )}
+              <Backdrop
+                visible={isOpen}
+                withBackground={false}
+                withoutBlur={true}
+                zIndex={400}
+              />
+
               <DropBox
                 {...rest}
                 isDesktop={isDesktop}

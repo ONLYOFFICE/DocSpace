@@ -1,7 +1,6 @@
 ﻿{
   "AddMembers": "Pridať členov",
   "Birthdate": "Dátum narodenia",
-  "Comments": "Komentáre",
   "DeleteSelfProfile": "Odstrániť profil",
   "DisabledEmployeeStatus": "Deaktivovaný",
   "DisableUserButton": "Deaktivovať",
@@ -11,7 +10,6 @@
   "FemaleSexStatus": "Ženský",
   "InviteLinkTitle": "Odkaz na pozvánie",
   "LDAPLbl": "LDAP",
-  "Location": "Lokalita",
   "MaleSexStatus": "Mužský",
   "maxSizeFileError": "Bola prekročená maximálna veľkosť súboru",
   "MaxSizeLabel": "(JPG alebo PNG, max 1 MB)",

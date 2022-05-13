@@ -1,5 +1,4 @@
 ﻿{
-  "AccessRights": "Права за достъп",
   "AccessRightsAccessToProduct": "Достъпът до {{product}} модула е даден на",
   "AccessRightsAllUsers": "Всички {{users}}",
   "AccessRightsChangeOwnerConfirmText": "Промените ще бъдат приложени след потвърждението по имейла.",
@@ -44,7 +43,6 @@
   "LogoLightSmall": "Лого за заглавието на портала",
   "LogoSettings": "Настройки за Логото на Портала",
   "LogoUploadRecommendation": "Препоръчваме да използвате изображение във формат <1>PNG</1> с прозрачен фон",
-  "ManagementCategoryCommon": "Често срещани",
   "ManagementCategoryIntegration": "Интеграция",
   "ManagementCategorySecurity": "Защита",
   "ManualBackupDescription": "Използвайте тази опция, ако искате да получите всички данни, съдържащи се на портала, като файл.",

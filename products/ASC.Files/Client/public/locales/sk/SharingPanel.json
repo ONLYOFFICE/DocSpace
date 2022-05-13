@@ -11,7 +11,6 @@
   "ExternalLink": "Externý odkaz",
   "FormFilling": "Vyplnenie formulára",
   "InternalLink": "Interný odkaz",
-  "LinkText": "Pridať používateľov",
   "Notify users": "Upozorniť používateľov",
   "ReadOnly": "Iba na čítanie",
   "ShareEmailBody": "Bol vám udelený prístup k dokumentu {{itemName}}. Kliknutím na odkaz nižšie otvoríte dokument hneď teraz: {{shareLink}}",

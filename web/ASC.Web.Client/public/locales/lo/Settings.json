@@ -1,5 +1,4 @@
 ﻿{
-  "AccessRights": "ສິດການເຂົ້າເຖິງ",
   "AccessRightsAccessToProduct": "ການເຂົ້າເຖິງໂມດູນ {{product}} ທີ່ມອບໃຫ້",
   "AccessRightsAllUsers": "{{users}} ທັງຫມົດ",
   "AccessRightsChangeOwnerConfirmText": "ການປ່ຽນແປງດັ່ງກວ່າຈະຖືກນຳໃຊ້ຫຼັງຈາກທ່ານໄດ້ຢືນຢັນຜ່ານທາງອີເມວ",
@@ -42,7 +41,6 @@
   "LogoLightSmall": "ໂລໂກສຳລັບແກ້ໄຂສ່ວນຫົວຂອງ portal ",
   "LogoSettings": "ການຕັ້ງຄ່າໂລໂກຂອງ Portal ",
   "LogoUploadRecommendation": "ເຮົາແນະນຳໃຫ້ທ່ານໃຊ້ຮູບພາບໃນຮູບແບບທີ່ມີພາບພື້ນຫຼັງໂປ່ງໃ່ສ <1> PNG </1> ",
-  "ManagementCategoryCommon": "ທຳມະດາ, ສາທາລະນະ",
   "ManagementCategoryIntegration": "ການເຊື່ອມໂຍງ",
   "ManagementCategorySecurity": "ຄວາມປອດໄພ",
   "Migration": "ຍົກຍ້າຍ",

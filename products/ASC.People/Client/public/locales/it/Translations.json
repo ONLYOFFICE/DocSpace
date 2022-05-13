@@ -1,7 +1,6 @@
 ﻿{
   "AddMembers": "Aggiungi membri",
   "Birthdate": "Data di nascita",
-  "Comments": "Commenti",
   "DeleteSelfProfile": "Eliminare il profilo",
   "DisabledEmployeeStatus": "Disabilitato",
   "DisableUserButton": "Disattivare",
@@ -11,7 +10,6 @@
   "FemaleSexStatus": "Femminile",
   "InviteLinkTitle": "Link di invito",
   "LDAPLbl": "LDAP",
-  "Location": "Posizione",
   "MaleSexStatus": "Maschile",
   "maxSizeFileError": "È superata massima dimensione del file",
   "MaxSizeLabel": "(JPG o PNG, max 1 MB)",

@@ -1,5 +1,4 @@
 ﻿{
-  "AccessRights": "Derechos de acceso",
   "AccessRightsAccessToProduct": "El acceso al módulo {{product}} se otorga a",
   "AccessRightsAllUsers": "Todos {{users}}",
   "AccessRightsChangeOwnerConfirmText": "Los cambios se aplicarán después de la confirmación por e-mail.",
@@ -46,7 +45,6 @@
   "LogoLightSmall": "Logo para el encabezado del portal",
   "LogoSettings": "Ajustes de logo del portal",
   "LogoUploadRecommendation": "Le recomendamos que utilice imágenes en formato <1>PNG</1> con fondo transparente",
-  "ManagementCategoryCommon": "Documentos comunes",
   "ManagementCategoryIntegration": "Integración",
   "ManagementCategorySecurity": "Seguridad",
   "ManualBackupDescription": "Use esta opción si quiere recibir todos los datos del portal en un archivo.",

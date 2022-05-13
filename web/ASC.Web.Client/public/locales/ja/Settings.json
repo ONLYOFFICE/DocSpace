@@ -1,5 +1,4 @@
 ﻿{
-  "AccessRights": "アクセス権限",
   "AccessRightsAccessToProduct": "{{product}} モジュールへのアクセス権は",
   "AccessRightsAllUsers": "すべて {{users}}",
   "AccessRightsChangeOwnerConfirmText": "変更内容は、メールでの確認後に適用されます。.",
@@ -46,7 +45,6 @@
   "LogoLightSmall": "ポータルサイトのヘッダーのロゴ",
   "LogoSettings": "ポータルロゴの設定",
   "LogoUploadRecommendation": "背景が透明な<1>PNG</1>形式の画像を使用することを推奨します。",
-  "ManagementCategoryCommon": "共通",
   "ManagementCategoryIntegration": "統合",
   "ManagementCategorySecurity": "セキュリティ",
   "ManualBackupHelp": "<strong>データ バックアップ</strong>  はポータルデータの写しを取って保管し、ローカルサーバに復元するのために使用される機能です。",

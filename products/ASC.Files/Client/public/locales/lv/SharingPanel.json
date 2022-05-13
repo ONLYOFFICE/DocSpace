@@ -11,7 +11,6 @@
   "ExternalLink": "Ārējā saite",
   "FormFilling": "Veidlapas aizpildīšana",
   "InternalLink": "Iekšējā saite",
-  "LinkText": "Pievienot lietotājus",
   "Notify users": "Paziņot lietotājiem",
   "ReadOnly": "Tikai lasīt",
   "ShareEmailBody": "Jums ir piešķirta piekļuve dokumentam {{itemName}}. Noklikšķiniet uz tālāk esošās saites, lai tūlīt atvērtu dokumentu: {{shareLink}}",
