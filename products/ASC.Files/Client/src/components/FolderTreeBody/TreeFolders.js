@@ -80,7 +80,6 @@ class TreeFolders extends React.Component {
     super(props);
 
     this.state = { isExpand: false };
-    this.needToScroll = true;
   }
 
   onBadgeClick = (e) => {
@@ -232,21 +231,6 @@ class TreeFolders extends React.Component {
 
       let value = "";
       if (dragging) value = `${item.id} dragging ${provider}`;
-
-      if (this.needToScroll) {
-        const selectedNode = document.getElementsByClassName(
-          "rc-tree-node-selected"
-        )[0];
-
-        if (selectedNode) {
-          this.needToScroll = false;
-
-          selectedNode.scrollIntoView({
-            block: "nearest",
-            inline: "nearest",
-          });
-        }
-      }
 
       if ((item.folders && item.folders.length > 0) || serviceFolder) {
         return (
@@ -414,7 +398,7 @@ class TreeFolders extends React.Component {
   };
 
   onExpand = (expandedKeys, treeNode) => {
-    if (treeNode.node && !treeNode.node.props.children) {
+    if (treeNode.node && !treeNode.node.children) {
       if (treeNode.expanded) {
         this.onLoadData(treeNode.node, true);
       }

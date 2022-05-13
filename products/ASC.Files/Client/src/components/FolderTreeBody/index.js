@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 import Text from "@appserver/components/text";
 import Scrollbar from "@appserver/components/scrollbar";
-import TreeFolders from "./TreeFolders";
 import { StyledTree } from "../panels/SelectionPanel/StyledSelectionPanel";
+import TreeFolders from "./TreeFolders";
 const FolderTreeBody = ({
   expandedKeys,
   folderTree,
@@ -24,10 +24,9 @@ const FolderTreeBody = ({
       "rc-tree-node-selected"
     )[0];
     if (selectedNode) {
-      selectedNode.scrollIntoView({
-        block: "nearest",
-        inline: "nearest",
-      });
+      document
+        .querySelector("#folder-tree-scroll-bar > .scroll-body")
+        .scrollTo(0, selectedNode.offsetTop);
     }
   }, []);
 
@@ -48,6 +47,7 @@ const FolderTreeBody = ({
                 selectedKeys={selectedKeys}
                 disabled={isDisableTree}
                 needUpdate={false}
+                defaultExpandAll
               />
             </Scrollbar>
           </div>
