@@ -47,6 +47,7 @@ global using ASC.Api.Core.Core;
 global using ASC.Api.Core.Extensions;
 global using ASC.Api.Core.Middleware;
 global using ASC.Api.Core.Routing;
+global using ASC.Api.Core.Security;
 global using ASC.Common;
 global using ASC.Common.Caching;
 global using ASC.Common.DependencyInjection;
@@ -67,6 +68,9 @@ global using ASC.EventBus;
 global using ASC.EventBus.Abstractions;
 global using ASC.EventBus.RabbitMQ;
 global using ASC.IPSecurity;
+global using ASC.MessagingSystem.Data;
+global using ASC.MessagingSystem.Core;
+global using ASC.MessagingSystem.Models;
 global using ASC.Security.Cryptography;
 global using ASC.Web.Api.Routing;
 global using ASC.Web.Core;
@@ -100,6 +104,7 @@ global using Microsoft.AspNetCore.Routing;
 global using Microsoft.AspNetCore.Routing.Constraints;
 global using Microsoft.AspNetCore.Routing.Patterns;
 global using Microsoft.AspNetCore.Server.Kestrel.Core;
+global using Microsoft.AspNetCore.WebUtilities;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -116,6 +121,8 @@ global using NLog.Config;
 global using NLog.Extensions.Logging;
 
 global using RabbitMQ.Client;
+
+global using AutoMapper;
 
 global using StackExchange.Redis.Extensions.Core.Configuration;
 global using StackExchange.Redis.Extensions.Newtonsoft;

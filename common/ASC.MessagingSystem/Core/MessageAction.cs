@@ -525,6 +525,7 @@ public enum MessageAction
     #region others
 
     ContactAdminMailSent = 7000,
+    RoomInviteLinkUsed = 7001,
 
     #endregion
 
