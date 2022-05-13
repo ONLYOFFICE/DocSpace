@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,45 +24,34 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Files.ThumbnailBuilder;
+namespace ASC.Thumbnail.IntegrationEvents.EventHandling;
 
-[Singletone]
-public class ThumbnailService : IHostedService
+[Scope]
+public class ThumbnailRequestedIntegrationEventHandler : IIntegrationEventHandler<ThumbnailRequestedIntegrationEvent>
 {
-    private readonly ICacheNotify<ThumbnailRequest> _cacheNotify;
     private readonly ILog _logger;
 
-    public ThumbnailService(ICacheNotify<ThumbnailRequest> cacheNotify, ILog<ThumbnailService> logger)
+    private ThumbnailRequestedIntegrationEventHandler() : base()
     {
-        _cacheNotify = cacheNotify;
-        _logger = logger;
+
     }
 
-    public Task StartAsync(CancellationToken cancellationToken)
+    public ThumbnailRequestedIntegrationEventHandler(IOptionsMonitor<ILog> logger)
     {
-        _logger.Info("Thumbnail Service running.");
-
-        _cacheNotify.Subscribe(BuildThumbnails, CacheNotifyAction.Insert);
-
-        return Task.CompletedTask;
+        _logger = logger.CurrentValue;
     }
 
-    public Task StopAsync(CancellationToken cancellationToken)
+    public async Task Handle(ThumbnailRequestedIntegrationEvent @event)
     {
-        _logger.Info("Thumbnail Service is stopping.");
+        _logger.InfoFormat("----- Handling integration event: {ThumbnailRequestedIntegrationEvent} at {AppName} - ({@IntegrationEvent})", @event.Id, Program.AppName, @event);
 
-        _cacheNotify.Unsubscribe(CacheNotifyAction.Insert);
-
-        return Task.CompletedTask;
-    }
-
-    public void BuildThumbnails(ThumbnailRequest request)
-    {
-        foreach (var fileId in request.Files)
-        {
-            var fileData = new FileData<int>(request.Tenant, fileId, request.BaseUrl);
+        foreach (var fileId in @event.FileIds)
+        {   
+            var fileData = new FileData<int>(@event.TenantId, Convert.ToInt32(fileId), @event.BaseUrl);
 
             FileDataQueue.Queue.TryAdd(fileId, fileData);
         }
+
+        await Task.CompletedTask;      
     }
 }

@@ -58,3 +58,12 @@ global using Microsoft.Extensions.Hosting.WindowsServices;
 global using Microsoft.Extensions.Options;
 
 global using Newtonsoft.Json;
+
+global using ASC.EventBus.Abstractions;
+global using ASC.EventBus.Events;
+global using ASC.Notify.IntegrationEvents.EventHandling;
+global using ASC.Core.Common.Notify.IntegrationEvents.Events;
+
+global using ASC.Core.Common.Hosting;
+global using ASC.Core.Common.Hosting.Interfaces;
+

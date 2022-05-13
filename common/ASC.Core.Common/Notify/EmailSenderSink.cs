@@ -91,7 +91,7 @@ public class EmailSenderSinkMessageCreator : SinkMessageCreator
             ContentType = message.ContentType,
             Content = message.Body,
             SenderType = senderName,
-            CreationDate = DateTime.UtcNow.Ticks,
+            CreationDate = DateTime.UtcNow,
         };
 
         var tenant = _tenantManager.GetCurrentTenant(false);
@@ -140,7 +140,7 @@ public class EmailSenderSinkMessageCreator : SinkMessageCreator
         var attachmentTag = message.Arguments.FirstOrDefault(x => x.Tag == "EmbeddedAttachments");
         if (attachmentTag != null && attachmentTag.Value != null)
         {
-            m.Attachments.AddRange(attachmentTag.Value as NotifyMessageAttachment[]);
+            m.Attachments = attachmentTag.Value as NotifyMessageAttachment[];
         }
 
         var autoSubmittedTag = message.Arguments.FirstOrDefault(x => x.Tag == "AutoSubmitted");

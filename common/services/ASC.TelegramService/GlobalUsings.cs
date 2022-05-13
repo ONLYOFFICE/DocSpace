@@ -52,3 +52,5 @@ global using Microsoft.Extensions.Options;
 global using Telegram.Bot;
 global using Telegram.Bot.Args;
 global using Telegram.Bot.Types;
+global using ASC.EventBus.Abstractions;
+global using ASC.TelegramService.IntegrationEvents.EventHandling;

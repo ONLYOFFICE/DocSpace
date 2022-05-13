@@ -29,28 +29,32 @@ namespace ASC.Core.Common.Notify;
 [Singletone]
 public class TelegramServiceClient : ITelegramService
 {
-    private readonly ICacheNotify<NotifyMessage> _cacheMessage;
     private readonly ICacheNotify<RegisterUserProto> _cacheRegisterUser;
     private readonly ICacheNotify<CreateClientProto> _cacheCreateClient;
     private readonly ICacheNotify<DisableClientProto> _cacheDisableClient;
     private readonly ICache _cache;
+    private readonly IEventBus _eventBus;
 
-    public TelegramServiceClient(ICacheNotify<NotifyMessage> cacheMessage,
+    public TelegramServiceClient(
+        IEventBus eventBus,
         ICacheNotify<RegisterUserProto> cacheRegisterUser,
         ICacheNotify<CreateClientProto> cacheCreateClient,
         ICacheNotify<DisableClientProto> cacheDisableClient,
         ICache cache)
     {
-        _cacheMessage = cacheMessage;
         _cacheRegisterUser = cacheRegisterUser;
         _cacheCreateClient = cacheCreateClient;
         _cacheDisableClient = cacheDisableClient;
         _cache = cache;
+        _eventBus = eventBus;
     }
 
     public void SendMessage(NotifyMessage m)
     {
-        _cacheMessage.Publish(m, CacheNotifyAction.Insert);
+        _eventBus.Publish(new NotifySendMessageRequestedIntegrationEvent(Guid.Empty, m.TenantId)
+        {
+            NotifyMessage = m
+        });
     }
 
     public void RegisterUser(string userId, int tenantId, string token)

@@ -21,6 +21,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\ASC.Common\ASC.Common.csproj" />
+    <ProjectReference Include="..\ASC.EventBus\ASC.EventBus.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
@@ -36,8 +37,6 @@
     <None Remove="protos\disable_client_proto.proto" />
     <None Remove="protos\encryption_settings_proto.proto" />
     <None Remove="protos\group_cache_item.proto" />
-    <None Remove="protos\notify_invoke.proto" />
-    <None Remove="protos\notify_message.proto" />
     <None Remove="protos\quota_cache_item.proto" />
     <None Remove="protos\register_user_proto.proto" />
     <None Remove="protos\settings_cache_item.proto" />
@@ -66,8 +65,6 @@
   <ItemGroup>
     <Protobuf Include="protos\create_client_proto.proto" />
     <Protobuf Include="protos\encryption_settings_proto.proto" />
-    <Protobuf Include="protos\notify_invoke.proto" />
-    <Protobuf Include="protos\notify_message.proto" />
     <Protobuf Include="protos\disable_client_proto.proto" />
     <Protobuf Include="protos\register_user_proto.proto" />
     <Protobuf Include="protos\settings_cache_item.proto" />

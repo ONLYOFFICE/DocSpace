@@ -24,13 +24,25 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Notify.Messages;
+using ASC.EventBus.Events;
+using ProtoBuf;
 
-public partial class NotifyMessage : IMapFrom<NotifyQueue>
+namespace ASC.Core.Common.Notify.IntegrationEvents.Events;
+
+[ProtoContract]
+public record NotifySendMessageRequestedIntegrationEvent : IntegrationEvent
 {
-    public void Mapping(Profile profile)
+    private NotifySendMessageRequestedIntegrationEvent() : base()
     {
-        profile.CreateMap<NotifyQueue, NotifyMessage>()
-            .ForMember(dest => dest.Attachments, opt => opt.Ignore());
+
     }
+
+    public NotifySendMessageRequestedIntegrationEvent(Guid createBy, int tenantId) :
+        base(createBy, tenantId)
+    {
+
+    }
+
+    [ProtoMember(1)]
+    public NotifyMessage NotifyMessage { get; set; }
 }

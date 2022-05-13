@@ -139,3 +139,6 @@ global using NVelocity.App.Events;
 global using Telegram.Bot;
 
 global using static ASC.Security.Cryptography.EmailValidationKeyProvider;
+
+global using ASC.Core.Common.Notify.IntegrationEvents.Events;
+global using ASC.EventBus.Abstractions;

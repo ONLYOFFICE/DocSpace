@@ -211,3 +211,6 @@ global using JsonTokenType = System.Text.Json.JsonTokenType;
 global using JsonConverter = System.Text.Json.Serialization.JsonConverter;
 global using JsonConverterAttribute = System.Text.Json.Serialization.JsonConverterAttribute;
 global using JsonIgnoreAttribute = System.Text.Json.Serialization.JsonIgnoreAttribute;
+global using ASC.EventBus.Events;
+global using ProtoBuf;
+global using ASC.Files.Core.IntegrationEvents.Events;

@@ -53,4 +53,13 @@ var app = builder.Build();
 
 startup.Configure(app, app.Environment);
 
-await app.RunAsync();
+var eventBus = ((IApplicationBuilder)app).ApplicationServices.GetRequiredService<IEventBus>();
+
+eventBus.Subscribe<ASC.Core.Common.Notify.IntegrationEvents.Events.NotifySendMessageRequestedIntegrationEvent, ASC.TelegramService.IntegrationEvents.EventHandling.TelegramSendMessageRequestedIntegrationEventHandler>();
+
+app.Run();
+
+public partial class Program
+{
+    public static string AppName = Assembly.GetExecutingAssembly().GetName().Name;
+}

@@ -38,6 +38,7 @@ public class Startup : BaseStartup
         base.ConfigureServices(services);
 
         DIHelper.TryAdd<TelegramListenerService>();
+        DIHelper.TryAdd<TelegramSendMessageRequestedIntegrationEventHandler>();
 
         services.AddHostedService<TelegramListenerService>();
     }
