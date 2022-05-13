@@ -192,7 +192,7 @@ public class MessageService
 
         if (_request == null)
         {
-            _logger.LogDebug("Empty Http Request for \"{action}\" type of event", action);
+            _logger.DebugEmptyHttpRequest(action);
 
             return;
         }
