@@ -43,7 +43,7 @@ public class NotifyCleanerService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation("Notify Cleaner Service running.");
+        _logger.InformationNotifyCleanerRunning();
 
         while (!stoppingToken.IsCancellationRequested)
         {
@@ -52,7 +52,7 @@ public class NotifyCleanerService : BackgroundService
             await Task.Delay(_waitingPeriod, stoppingToken);
         }
 
-        _logger.LogInformation("Notify Cleaner Service is stopping.");
+        _logger.InformationNotifyCleanerStopping();
     }
 
     private void Clear()
@@ -73,7 +73,7 @@ public class NotifyCleanerService : BackgroundService
             dbContext.SaveChanges();
             tx.Commit();
 
-            _logger.LogInformation("Clear notify messages: notify_info({infoCount}), notify_queue ({queueCount})", info.Count, queue.Count);
+            _logger.InformationClearNotifyMessages(info.Count, queue.Count);
 
         }
         catch (ThreadAbortException)
@@ -82,7 +82,7 @@ public class NotifyCleanerService : BackgroundService
         }
         catch (Exception err)
         {
-            _logger.LogError(err, "Clear");
+            _logger.ErrorClear(err);
         }
     }
 }
