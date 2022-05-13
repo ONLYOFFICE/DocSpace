@@ -269,6 +269,7 @@ class WelcomePageSettings extends React.Component {
             value={greetingTitle}
             onChange={this.onChangeGreetingTitle}
             isDisabled={isLoadingGreetingSave || isLoadingGreetingRestore}
+            placeholder={t("EnterTitle")}
           />
         </FieldContainer>
       </div>
