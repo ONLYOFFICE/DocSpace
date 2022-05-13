@@ -49,6 +49,7 @@ global using ASC.Files.Core;
 global using ASC.Files.Core.Core.Entries;
 global using ASC.Files.Core.EF;
 global using ASC.Files.Core.Security;
+global using ASC.Files.Service.Log;
 global using ASC.Files.ThumbnailBuilder;
 global using ASC.Web.Core;
 global using ASC.Web.Core.Files;

@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,45 +24,21 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Files.ThumbnailBuilder;
-
-[Singletone]
-public class ThumbnailService : IHostedService
+namespace ASC.Files.Service.Log;
+internal static partial class ThumbnailBuilderServiceLogger
 {
-    private readonly ICacheNotify<ThumbnailRequest> _cacheNotify;
-    private readonly ILogger _logger;
-
-    public ThumbnailService(ICacheNotify<ThumbnailRequest> cacheNotify, ILogger<ThumbnailService> logger)
-    {
-        _cacheNotify = cacheNotify;
-        _logger = logger;
-    }
-
-    public Task StartAsync(CancellationToken cancellationToken)
-    {
-        _logger.InformationThumbnailServiceRunning();
-
-        _cacheNotify.Subscribe(BuildThumbnails, CacheNotifyAction.Insert);
-
-        return Task.CompletedTask;
-    }
-
-    public Task StopAsync(CancellationToken cancellationToken)
-    {
-        _logger.InformationThumbnailServiceStopping();
-
-        _cacheNotify.Unsubscribe(CacheNotifyAction.Insert);
-
-        return Task.CompletedTask;
-    }
-
-    public void BuildThumbnails(ThumbnailRequest request)
-    {
-        foreach (var fileId in request.Files)
-        {
-            var fileData = new FileData<int>(request.Tenant, fileId, request.BaseUrl);
-
-            FileDataQueue.Queue.TryAdd(fileId, fileData);
-        }
-    }
+    [LoggerMessage(Level = LogLevel.Information, Message = "Thumbnail Worker running.")]
+    public static partial void InformationThumbnailWorkerRunnig(this ILogger logger);
+    
+    [LoggerMessage(Level = LogLevel.Information, Message = "Thumbnail Worker is stopping.")]
+    public static partial void InformationThumbnailWorkerStopping(this ILogger logger);  
+    
+    [LoggerMessage(Level = LogLevel.Trace, Message = "Procedure: Start.")]
+    public static partial void TraceProcedureStart(this ILogger logger);   
+    
+    [LoggerMessage(Level = LogLevel.Trace, Message = "Procedure: Waiting for data. Sleep {frequency}.")]
+    public static partial void TraceProcedureWaiting(this ILogger logger, int frequency);   
+    
+    [LoggerMessage(Level = LogLevel.Trace, Message = "Procedure: Finish.")]
+    public static partial void TraceProcedureFinish(this ILogger logger);
 }
