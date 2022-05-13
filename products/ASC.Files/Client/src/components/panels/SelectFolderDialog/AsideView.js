@@ -84,7 +84,9 @@ const SelectFolderDialogAsideView = ({
                   displayType="aside"
                 />
               ) : (
-                <Loaders.NewTreeFolders />
+                <div className="selection-panel_aside-loader">
+                  <Loaders.NewTreeFolders />
+                </div>
               )}
             </div>
 
