@@ -63,7 +63,6 @@
   "RegistrationDate": "Data di registrazione",
   "RestoreBackupDescription": "Utilizza questa opzione per ripristinare il portale dal file di backup precedentemente salvato.",
   "RestoreDefaultButton": "Ripristina le impostazioni predefinite",
-  "SetDefaultTitle": "Imposta titolo predefinito",
   "StudioTimeLanguageSettings": "Impostazioni della lingua e del fuso orario",
   "SuccessfullySaveGreetingSettingsMessage": "Le impostazioni della pagina di benvenuto sono state salvate con successo",
   "SuccessfullySaveSettingsMessage": "Le impostazioni sono state aggiornate con successo",
@@ -83,6 +82,5 @@
   "TwoFactorAuthDescription": "Autenticazione a due fattori offre un modo più sicuro per effettuare il log in. Dopo aver inserito le credenziali, l'utente dovrà inserire un codice da un SMS o dalla app di autenticazione.",
   "UseAsLogoButton": "Usa come logo",
   "Users": "Utenti",
-  "WelcomePageTitle": "Titolo pagina di benvenuto",
   "YouHaveUnsavedChanges": "Hai delle modifiche non salvate"
 }

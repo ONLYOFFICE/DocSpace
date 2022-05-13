@@ -106,7 +106,6 @@
   "PortalOwner": "Portal Owner",
   "PortalRenaming": "Portal Renaming",
   "PortalRenamingDescription": "Here you can change your portal address.",
-  "PortalRenamingDescriptionTooltip": "Enter the part that will appear next to the onlyoffice.com/onlyoffice.eu portal address.",
   "PortalRenamingLabelText": "New portal name",
   "PortalRenamingMobile": "Enter the part that will appear next to the onlyoffice.com/onlyoffice.eu portal address. Please note: your old portal address will become available to new ©linney users once you click the Save button.",
   "PortalRenamingSettingsTooltip": "<0>{{text}}</0> Enter the part that will appear next to the onlyoffice.com/onlyoffice.eu portal address.",
@@ -120,7 +119,6 @@
   "RestoreBackupHelpNote": "Select the storage where the data is saved, enter necessary details and check the <strong>Send notification to portal users</strong> to alert your portal users about the backup/restore operations.",
   "RestoreDefaultButton": "Restore to Default",
   "RecoveryFileNotSelected": "Recovery error. Recovery file not selected",
-  "SetDefaultTitle": "Set default title",
   "SettingPasswordStrength": "Setting password strength",
   "SettingPasswordStrengthDescription": "Password Strength Settings is a way to determine the effectiveness of a password in resisting guessing and brute-force attacks.",
   "SettingPasswordStrengthHelper": "Use the Minimum Password Length bar to determine how long the password should be. Check the appropriate boxes below to determine the character set that must be used in the password.",
@@ -162,7 +160,6 @@
   "UseHttp": "Use Http",
   "UseSpecialChar": "Use special characters",
   "UseUpperCase": "Use capital letters",
-  "WelcomePageTitle": "Welcome page title",
   "WhiteLabel": "White label",
   "YouHaveUnsavedChanges": "You have unsaved changes"
 }

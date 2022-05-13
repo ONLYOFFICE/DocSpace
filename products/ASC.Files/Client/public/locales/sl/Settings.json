@@ -1,10 +1,7 @@
 ﻿{
   "CommonSettings": "Skupne nastavitve",
-  "ConnectAccounts": "Poveži račun",
-  "ConnectAccountsSubTitle": "Ni povezanih računov",
   "ConnectAdminDescription": "Za uspešno povezavo vnesite potrebne podatke na <1>tej strani</1>.",
   "ConnectDescription": "Naslednje račune lahko povežete z dokumenti ONLYOFFICE. Dokumenti iz teh računov bodo na voljo za urejanje v razdelku 'Moji dokumenti'. ",
-  "ConnectedCloud": "Povezan oblak",
   "ConnectMakeShared": "Naredi deljeno in premakni v 'Skupno' mapo",
   "ConnextOtherAccount": "Drugi račun",
   "DisplayFavorites": "Prikaži priljubljene",

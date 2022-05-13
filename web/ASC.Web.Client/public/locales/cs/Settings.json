@@ -60,7 +60,6 @@
   "RegistrationDate": "Datum registrace",
   "RestoreBackupDescription": "Použijte tuto možnost pro obnovu Vašeho portálu z předchozího souboru obnovy.",
   "RestoreDefaultButton": "Restore to Default",
-  "SetDefaultTitle": "Obnovit výchozí nastavení",
   "StudioTimeLanguageSettings": "Nastavení jazyka a časového pásma",
   "SuccessfullySaveGreetingSettingsMessage": "Nastavení uvítací stránky bylo úspěšně uloženo",
   "SuccessfullySaveSettingsMessage": "Nastavení bylo úspěšně aktualizováno",
@@ -79,6 +78,5 @@
   "TwoFactorAuthDescription": "Dvoufázové ověřování poskytuje bezpečnější způsob přihlašování. Po zadání přihlašovacích údajů bude muset uživatel zadat kód z SMS nebo z ověřovací aplikace.",
   "UseAsLogoButton": "Použít jako logo",
   "Users": "Uživatelé",
-  "WelcomePageTitle": "Název uvítací stránky",
   "YouHaveUnsavedChanges": "Máte neuložené změny"
 }

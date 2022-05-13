@@ -60,7 +60,6 @@
   "RegistrationDate": "注册日期",
   "RestoreBackupDescription": "使用此选项，以从先前保存的备份文件中恢复您的门户。",
   "RestoreDefaultButton": "恢复至默认",
-  "SetDefaultTitle": "设置默认标题",
   "StudioTimeLanguageSettings": "语言和时区设置",
   "SuccessfullySaveGreetingSettingsMessage": "欢迎页面设置已成功保存",
   "SuccessfullySaveSettingsMessage": "设置已成功更新",
@@ -80,6 +79,5 @@
   "TwoFactorAuthDescription": "双因素身份验证提供了一种更安全的登录方式。在输入凭据后，用户将需要输入短信或身份验证应用中的代码。",
   "UseAsLogoButton": "作为Logo",
   "Users": "用户",
-  "WelcomePageTitle": "欢迎页面标题",
   "YouHaveUnsavedChanges": "您有未保存的变更"
 }

@@ -1,13 +1,9 @@
 ﻿{
-  "Admin": "Admin",
   "CommonSettings": "Common settings",
-  "ConnectAccounts": "Connect Accounts",
   "ConnectEmpty": "There's nothing here",
-  "ConnectAccountsSubTitle": "No connected accounts",
   "ConnectAdminDescription": "For successful connection, enter the necessary data on <1>this page</1>.",
   "ConnectDescription": "You can connect the following accounts to the ONLYOFFICE Documents. The documents from these accounts will be available for editing in 'My Documents' section. ",
   "ConnectDescriptionText": "You haven't connected any third-party clouds yet.",
-  "ConnectedCloud": "Connected cloud",
   "ConnectMakeShared": "Make shared and put into the 'Common' folder",
   "ConnextOtherAccount": "Other account",
   "DisplayFavorites": "Display Favorites",

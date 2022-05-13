@@ -65,7 +65,6 @@
   "RestoreBackupHelp": "<strong>データリストア(Data Restore)</strong>は以前に取っておいたポータルデータ（Saasポータルあるいはローカルサーバデータ）の複製を書き戻すなどして復元する機能です。",
   "RestoreBackupHelpNote": "データは保存しているストレージを選択し、必要な詳細を入力し、<strong>ポータルユーザに通知を送信する</strong>というオプションにチェックを付け、ポータルユーザをバックアップ／リストア過程を知らせてください。",
   "RestoreDefaultButton": "デフォルトに戻す",
-  "SetDefaultTitle": "デフォルトタイトルの設定",
   "StudioTimeLanguageSettings": "言語とタイムゾーンの設定",
   "SuccessfullySaveGreetingSettingsMessage": "ようこそページの設定が正常に保存されました。",
   "SuccessfullySaveSettingsMessage": "設定の更新が完了しました。",
@@ -85,6 +84,5 @@
   "TwoFactorAuthDescription": "2ファクタ認証は、より安全なログイン方法を提供します。認証情報を入力した後、ユーザーはSMSまたは認証アプリからコードを入力する必要があります。",
   "UseAsLogoButton": "ロゴとして使用",
   "Users": "ユーザー",
-  "WelcomePageTitle": "ようこそページのタイトル",
   "YouHaveUnsavedChanges": "未保存変更はあります。"
 }
