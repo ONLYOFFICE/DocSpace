@@ -413,6 +413,7 @@ class TableHeader extends React.Component {
       sorted,
       isLengthenHeader,
       sortingVisible,
+      infoPanelVisible,
       ...rest
     } = this.props;
 
@@ -462,6 +463,7 @@ class TableHeader extends React.Component {
 
 TableHeader.defaultProps = {
   sortingVisible: true,
+  infoPanelVisible: false,
 };
 
 TableHeader.propTypes = {
@@ -475,6 +477,7 @@ TableHeader.propTypes = {
   resetColumnsSize: PropTypes.bool,
   isLengthenHeader: PropTypes.bool,
   sortingVisible: PropTypes.bool,
+  infoPanelVisible: PropTypes.bool,
 };
 
 export default TableHeader;
