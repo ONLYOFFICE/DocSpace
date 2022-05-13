@@ -13,6 +13,7 @@
   "AutoBackupHelp": "The <strong>Automatic backup</strong> option is used to automate the portal data backup process to be able to restore it later to a local server.",
   "AutoBackupHelpNote": "Choose the data storage, automatic backup period and maximal number of saved copies.<br/><strong>Note:</strong> before you can save the backup data to a third-party account (DropBox, Box.com, OneDrive or Google Drive), you will need to connect this account to {{organizationName}} Common folder.",
   "AutoSavePeriod": "Autosave period",
+  "AutoSavePeriodHelp": "The time shown below corresponds to the time zone set in the portal.",
   "AddAdmins": "Add admins",
   "AddName": "Add Name",
   "AdminInModules": "Admin in modules",
