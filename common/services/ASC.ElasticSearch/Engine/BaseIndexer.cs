@@ -568,7 +568,7 @@ public class BaseIndexer<T> where T : class, ISearchItem
     {
         var result = desc.Index(IndexName).Id(data.Id);
 
-        if (data is ISearchItemDocument)
+        if (data is ISearchItemDocument doc && doc.Document != null)
         {
             result.Pipeline("attachments");
         }

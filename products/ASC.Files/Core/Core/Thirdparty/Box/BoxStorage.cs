@@ -78,10 +78,11 @@ internal class BoxStorage
         }
         catch (Exception ex)
         {
-            if (ex.InnerException is BoxSDK.Exceptions.BoxException boxException && boxException.Error.Status == ((int)HttpStatusCode.NotFound).ToString())
+            if (ex.InnerException is BoxSDK.Exceptions.BoxAPIException boxException && boxException.Error.Status == ((int)HttpStatusCode.NotFound).ToString())
             {
                 return null;
             }
+
             throw;
         }
     }
@@ -91,10 +92,10 @@ internal class BoxStorage
         try
         {
             return new ValueTask<BoxFile>(_boxClient.FilesManager.GetInformationAsync(fileId, _boxFields));
-        }
+        }       
         catch (Exception ex)
         {
-            if (ex.InnerException is BoxSDK.Exceptions.BoxException boxException && boxException.Error.Status == ((int)HttpStatusCode.NotFound).ToString())
+            if (ex.InnerException is BoxSDK.Exceptions.BoxAPIException boxException && boxException.Error.Status == ((int)HttpStatusCode.NotFound).ToString())
             {
                 return ValueTask.FromResult<BoxFile>(null);
             }

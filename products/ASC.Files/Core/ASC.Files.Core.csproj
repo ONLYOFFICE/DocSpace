@@ -20,11 +20,11 @@
 
   <ItemGroup>
     <PackageReference Include="AppLimit.CloudComputing.SharpBox" Version="1.2.0.1" />
-    <PackageReference Include="Box.V2.Core" Version="3.24.0" />
-    <PackageReference Include="DocuSign.eSign.dll" Version="4.4.1" />
-    <PackageReference Include="Dropbox.Api" Version="4.10.0" />
-    <PackageReference Include="Google.Apis.Drive.v3" Version="1.56.0.2601" />
-    <PackageReference Include="Grpc.Tools" Version="2.44.0">
+    <PackageReference Include="Box.V2.Core" Version="4.3.1" />
+    <PackageReference Include="DocuSign.eSign.dll" Version="5.10.0" />
+    <PackageReference Include="Dropbox.Api" Version="6.27.0" />
+    <PackageReference Include="Google.Apis.Drive.v3" Version="1.57.0.2663" />
+    <PackageReference Include="Grpc.Tools" Version="2.45.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
