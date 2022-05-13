@@ -41,6 +41,7 @@ global using ASC.FederatedLogin.LoginProviders;
 global using ASC.Notify.Messages;
 global using ASC.TelegramService;
 global using ASC.TelegramService.Core;
+global using ASC.TelegramService.Log;
 
 global using Autofac;
 
