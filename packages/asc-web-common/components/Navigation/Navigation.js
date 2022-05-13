@@ -40,6 +40,7 @@ const Navigation = ({
   isCurrentFolderInfo,
   toggleInfoPanel,
   isInfoPanelVisible,
+  titles,
   ...rest
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -179,6 +180,7 @@ const Navigation = ({
               toggleInfoPanel={toggleInfoPanel}
               isInfoPanelVisible={isInfoPanelVisible}
               isDesktop={isDesktop}
+              titles={titles}
             />
           </StyledContainer>
           {isDesktop && (
@@ -207,6 +209,7 @@ Navigation.propTypes = {
   getContextOptionsPlus: PropTypes.func,
   getContextOptionsFolder: PropTypes.func,
   onBackToParentFolder: PropTypes.func,
+  titles: PropTypes.object,
 };
 
 export default React.memo(Navigation);

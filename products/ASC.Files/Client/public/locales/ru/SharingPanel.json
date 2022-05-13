@@ -3,10 +3,8 @@
   "AddShareMessage": "Добавить сообщение",
   "Comment": "Комментирование",
   "CopyExternalLink": "Скопировать внешнюю ссылку",
-  "CopyInternalLink": "Скопировать внутреннюю ссылку",
   "CustomFilter": "Пользовательский фильтр",
   "DenyAccess": "Доступ запрещён",
-  "Embedding": "Встраивание",
   "EncryptedFileSharing": "К файлу <strong>{{title}}</strong> успешно предоставлен доступ",
   "ExternalLink": "Внешняя ссылка",
   "FormFilling": "Заполнение форм",
@@ -15,7 +13,6 @@
   "ReadOnly": "Только чтение",
   "ShareEmailBody": "Вам предоставлен доступ к документу {{itemName}}. Нажмите на ссылку ниже, чтобы открыть документ прямо сейчас: {{shareLink}}",
   "ShareEmailSubject": "Вам предоставлен доступ к документу {{itemName}}",
-  "ShareEveryone": "Все",
   "ShareVia": "Отправить по",
   "SharingSettingsTitle": "Настройки совместного доступа"
 }

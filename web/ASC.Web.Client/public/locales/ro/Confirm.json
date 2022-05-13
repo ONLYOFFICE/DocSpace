@@ -14,7 +14,6 @@
   "FirstName": "Prenume",
   "InviteTitle": "Sunteți invitați să aderați la acest portal!",
   "LoginRegistryButton": "Înregistrați-vă",
-  "LoginWithAccount": "sau conectați-vă prin:",
   "PassworResetTitle": "Acum puteți crea o parolă nouă",
   "SetAppButton": "Conectarea aplicației",
   "SetAppDescription": "Autentificarea cu doi factori este activată. Configurați aplicația de autentificare dvs ca să lucrați mai departe în portal. Puteți utiliza Google Authenticator pentru <1>Android</1> și <4>iOS</4> sau Authenticator pentru <8>Windows Phone</8>.",

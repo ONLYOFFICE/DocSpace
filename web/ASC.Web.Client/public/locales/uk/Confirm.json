@@ -14,7 +14,6 @@
   "FirstName": "Ім'я",
   "InviteTitle": "Вас запросили приєднатися до цього порталу",
   "LoginRegistryButton": "Приєднатися",
-  "LoginWithAccount": "або увійти за допомогою:",
   "PassworResetTitle": "Тепер ви можете створити новий пароль.",
   "SetAppButton": "Підключити програму",
   "SetAppDescription": "Включено двофакторну автентифікацію. Налаштуйте програму автентифікації, щоб продовжити роботу на порталі. Можна використовувати Google Authenticator для <1>Android</1> та <4>iOS</4> або Authenticator для <8>Windows Phone</8>.",

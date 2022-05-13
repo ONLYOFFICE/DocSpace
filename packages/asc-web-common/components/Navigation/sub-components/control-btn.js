@@ -92,6 +92,7 @@ const ControlButtons = ({
   toggleInfoPanel,
   toggleDropBox,
   isDesktop,
+  titles,
 }) => {
   const toggleInfoPanelAction = () => {
     toggleInfoPanel && toggleInfoPanel();
@@ -164,6 +165,7 @@ const ControlButtons = ({
             isFill={true}
             onClick={clearTrash}
             className="trash-button"
+            title={(titles && titles["trash"]) || ""}
           />
           {!isDesktop && (
             <ToggleInfoPanelButton
