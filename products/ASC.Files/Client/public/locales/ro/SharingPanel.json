@@ -11,7 +11,6 @@
   "ExternalLink": "Link extern",
   "FormFilling": "Completare formular",
   "InternalLink": "Link intern",
-  "LinkText": "Adăugați utilizatorii",
   "Notify users": "Notifică utilizatorii",
   "ReadOnly": "Doar în citire",
   "ShareEmailBody": "V-a fost acordat accesul la document {{itemName}}. Faceți clic pe link-ul de mai jos ca să descideți documentul chiar acum: {{shareLink}}",

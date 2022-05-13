@@ -11,7 +11,6 @@
   "ExternalLink": "External link",
   "FormFilling": "Form filling",
   "InternalLink": "Internal link",
-  "LinkText": "Add users",
   "Notify users": "Notify users",
   "ReadOnly": "Read only",
   "ShareEmailBody": "You have been granted access to the {{itemName}} document. Click the link below to open the document right now: {{shareLink}}",

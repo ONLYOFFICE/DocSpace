@@ -11,7 +11,6 @@
   "ExternalLink": "Externe link",
   "FormFilling": "Formulieren invullen",
   "InternalLink": "Interne link",
-  "LinkText": "Gebruikers toevoegen",
   "Notify users": "Gebruikers informeren",
   "ReadOnly": "Alleen lezen",
   "ShareEmailBody": "U heeft toegang gekregen tot het {{itemName}} document. Klik op de onderstaande link om het document nu meteen te openen: {{shareLink}}",
