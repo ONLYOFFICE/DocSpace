@@ -873,7 +873,10 @@ class UploadDataStore {
 
     const totalErrorsCount = sumBy(this.files, (f) => (f.error ? 1 : 0));
 
-    if (totalErrorsCount > 0) console.log("Errors: ", totalErrorsCount);
+    if (totalErrorsCount > 0) {
+      this.primaryProgressDataStore.setPrimaryProgressBarShowError(true); // for empty file
+      console.log("Errors: ", totalErrorsCount);
+    }
 
     this.uploaded = true;
     this.converted = true;
