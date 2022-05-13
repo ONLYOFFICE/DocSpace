@@ -16,6 +16,8 @@
   "EncryptedFileSaving": "Сохранение зашифрованного файла",
   "Files": "Файлы",
   "FileProtected": "Файл защищен с помощью пароля",
+  "FileLocked": "Заблокирован файл",
+  "FileUnlocked": "Разблокирован файл",
   "Folders": "Папки",
   "FolderSelection": "Выбор папки",
   "FolderTitleBoxNet": "Каталог Box",
