@@ -68,6 +68,7 @@ class FilesStore {
   gallerySelected = null;
 
   createdFolderId = null;
+  scrollToFolderId = null;
 
   constructor(
     authStore,
@@ -623,7 +624,10 @@ class FilesStore {
               (item) => item.id === this.createdFolderId
             );
 
-            if (newFolder) this.setSelection([newFolder]);
+            if (newFolder) {
+              this.setSelection([newFolder]);
+              this.setScrollToFolderId(newFolder.id);
+            }
 
             this.setCreatedFolderId(null);
           }
@@ -2019,6 +2023,10 @@ class FilesStore {
 
   setCreatedFolderId = (createdFolderId) => {
     this.createdFolderId = createdFolderId;
+  };
+
+  setScrollToFolderId = (folderId) => {
+    this.scrollToFolderId = folderId;
   };
 }
 
