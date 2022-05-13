@@ -34,7 +34,6 @@ public class LdapOperationJob : DistributedTaskProgress
     private string _culture;
 
     public LdapSettings LDAPSettings { get; private set; }
-    protected DistributedTask TaskInfo { get; private set; }
     protected string Source { get; private set; }
     protected new string Status { get; set; }
     protected string Error { get; set; }
@@ -47,7 +46,7 @@ public class LdapOperationJob : DistributedTaskProgress
         {
             return _tenantId ?? this[nameof(_tenantId)];
         }
-        set
+        private set
         {
             _tenantId = value;
             this[nameof(_tenantId)] = value;
@@ -116,7 +115,7 @@ public class LdapOperationJob : DistributedTaskProgress
     {
         _currentUser = userId != null ? _userManager.GetUsers(Guid.Parse(userId)) : null;
 
-        _tenantId = tenant.Id;
+        TenantId = tenant.Id;
         _tenantManager.SetCurrentTenant(tenant);
         _ldapChanges.Tenant = tenant;
 
@@ -131,17 +130,17 @@ public class LdapOperationJob : DistributedTaskProgress
         Status = "";
         Error = "";
         Warning = "";
-        Source = "";
 
         Resource = resource ?? new LdapLocalization();
         _lDAPUserManager.Init(Resource);
+
+        InitDisturbedTask();
     }
 
     protected override void DoJob()
     {
         try
-        {
-            FillDistributedTask();
+        {           
             _securityContext.AuthenticateMe(Core.Configuration.Constants.CoreSystem);
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(_culture);
@@ -241,7 +240,7 @@ public class LdapOperationJob : DistributedTaskProgress
             try
             {
                 this[LdapTaskProperty.FINISHED] = true;
-                PublishChanges();
+                PublishTaskInfo();
                 _securityContext.Logout();
             }
             catch (Exception ex)
@@ -1217,7 +1216,19 @@ public class LdapOperationJob : DistributedTaskProgress
 
         _log.InfoFormat(PROGRESS_STRING, Percentage, Status, Source);
 
+        PublishTaskInfo();
+    }
+    private void PublishTaskInfo()
+    {
+        FillDistributedTask();
         PublishChanges();
+    }
+
+    private void InitDisturbedTask()
+    {
+        this[LdapTaskProperty.FINISHED] = false;
+        this[LdapTaskProperty.CERT_REQUEST] = null;
+        FillDistributedTask();
     }
 
     private void FillDistributedTask()

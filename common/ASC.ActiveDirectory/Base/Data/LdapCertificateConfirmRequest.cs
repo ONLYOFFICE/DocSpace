@@ -161,4 +161,9 @@ public class LdapCertificateConfirmRequest
             return null;
         }
     }
+
+    public override string ToString()
+    {
+        return JsonSerializer.Serialize(this);
+    }
 }

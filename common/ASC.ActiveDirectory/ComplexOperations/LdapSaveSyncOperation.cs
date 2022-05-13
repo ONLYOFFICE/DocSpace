@@ -63,7 +63,7 @@ public class LdapSaveSyncOperation
 
     public LdapOperationStatus TestLdapSave(LdapSettings ldapSettings, Tenant tenant, string userId)
     {
-        var operations = _progressQueue.GetAllTasks()
+        var operations = _progressQueue.GetAllTasks<LdapOperationJob>()
             .Where(t => t[LdapTaskProperty.OWNER] == tenant.Id)
             .ToList();
 
@@ -183,7 +183,7 @@ public class LdapSaveSyncOperation
 
     public LdapOperationStatus ToLdapOperationStatus(int tenantId)
     {
-        var operations = _progressQueue.GetAllTasks().ToList();
+        var operations = _progressQueue.GetAllTasks<LdapOperationJob>().ToList();
 
         foreach (var o in operations)
         {
@@ -209,8 +209,6 @@ public class LdapSaveSyncOperation
             _progressQueue.DequeueTask(operation.Id);
         }
 
-        var certificateConfirmRequest = operation[LdapTaskProperty.CERT_REQUEST];
-
         var result = new LdapOperationStatus
         {
             Id = operation.Id,
@@ -218,10 +216,9 @@ public class LdapSaveSyncOperation
             Percents = operation[LdapTaskProperty.PROGRESS],
             Status = operation[LdapTaskProperty.RESULT],
             Error = operation[LdapTaskProperty.ERROR],
-            CertificateConfirmRequest = certificateConfirmRequest,
+            CertificateConfirmRequest = operation[LdapTaskProperty.CERT_REQUEST] != "" ? operation[LdapTaskProperty.CERT_REQUEST] : null,
             Source = operation[LdapTaskProperty.SOURCE],
-            OperationType = Enum.GetName(typeof(LdapOperationType),
-                (LdapOperationType)operation[LdapTaskProperty.OPERATION_TYPE]),
+            OperationType = operation[LdapTaskProperty.OPERATION_TYPE],
             Warning = operation[LdapTaskProperty.WARNING]
         };
 

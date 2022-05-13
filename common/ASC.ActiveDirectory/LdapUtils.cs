@@ -149,7 +149,7 @@ public static class LdapUtils
 
     public static string GetContactsString(this UserInfo userInfo)
     {
-        if (userInfo.ContactsList.Count == 0) return null;
+        if (userInfo.ContactsList == null || userInfo.ContactsList.Count == 0) return null;
         var sBuilder = new StringBuilder();
         foreach (var contact in userInfo.Contacts)
         {

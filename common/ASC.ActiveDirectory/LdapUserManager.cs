@@ -347,7 +347,7 @@ public class LdapUserManager
 
     private static void UpdateLdapUserContacts(UserInfo ldapUser, List<string> portalUserContacts)
     {
-        if (!portalUserContacts.Any())
+        if (portalUserContacts == null || !portalUserContacts.Any())
             return;
 
         var ldapUserContacts = ldapUser.Contacts;
@@ -458,8 +458,8 @@ public class LdapUserManager
                 needUpdate = true;
             }
 
-            if (ldapUser.ContactsList.Count != portalUser.ContactsList.Count ||
-                !ldapUser.Contacts.All(portalUser.Contacts.Contains))
+            if (portalUser.ContactsList == null && ldapUser.ContactsList.Count != 0 || portalUser.ContactsList != null && (ldapUser.ContactsList.Count != portalUser.ContactsList.Count ||
+                !ldapUser.Contacts.All(portalUser.Contacts.Contains)))
             {
                 _log.DebugFormat("NeedUpdateUser by Contacts -> portal: '{0}', ldap: '{1}'",
                     string.Join("|", portalUser.Contacts),
