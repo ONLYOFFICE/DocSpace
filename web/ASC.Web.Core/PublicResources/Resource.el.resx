@@ -1,0 +1,214 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ActivateMobilePhoneEmptyPhoneNumber" xml:space="preserve">
+    <value>Εισάγετε αριθμό κινητού τηλεφώνου</value>
+  </data>
+  <data name="AdministratorNotifySenderTypeName" xml:space="preserve">
+    <value>Ειδοποιήσεις Διαχειριστού</value>
+  </data>
+  <data name="ButtonSmsEnable" xml:space="preserve">
+    <value>Μέσω SMS</value>
+  </data>
+  <data name="ButtonTfaAppEnable" xml:space="preserve">
+    <value>Μέσω εφαρμογής αυθεντικοποίησης</value>
+  </data>
+  <data name="ChangePortalOwnerMsg" xml:space="preserve">
+    <value>Ένας σύνδεσμος για να επιβεβαιώσετε τη λειτουργία έχει σταλεί στο: e-mail (η διεύθυνση ηλεκτρονικού ταχυδρομείου του ιδιοκτήτη της δικτυακής πύλης ).</value>
+  </data>
+  <data name="CustomNamingPeopleSchema" xml:space="preserve">
+    <value>Προσαρμογή</value>
+  </data>
+  <data name="DnsChangeMsg" xml:space="preserve">
+    <value>Ένας σύνδεσμος για να επιβεβαιώσετε τη λειτουργία έχει σταλεί στο {0} (η διεύθυνση ηλεκτρονικού ταχυδρομείου του ιδιοκτήτη της δικτυακής πύλης ).</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
+    <value>Λανθασμένη διεύθυνση email</value>
+  </data>
+  <data name="ErrorAccessDenied" xml:space="preserve">
+    <value>Δεν έχετε δικαιώματα για να εκτελέσετε αυτήν την ενέργεια</value>
+  </data>
+  <data name="ErrorDisabledProfile" xml:space="preserve">
+    <value>Το προφίλ σας βρίσκεται σε αναστολή</value>
+  </data>
+  <data name="ErrorEmailAlreadyExists" xml:space="preserve">
+    <value>{!User} με αυτό το email έχει ήδη καταχωρηθεί</value>
+  </data>
+  <data name="ErrorEmailEmpty" xml:space="preserve">
+    <value>Το πεδίο email είναι κενό</value>
+  </data>
+  <data name="ErrorEmailsAreTheSame" xml:space="preserve">
+    <value>Το τρέχον email και το νέο email είναι ίδια</value>
+  </data>
+  <data name="ErrorEmptyFields" xml:space="preserve">
+    <value>Παρακαλώ συμπληρώστε όλα τα πεδία</value>
+  </data>
+  <data name="ErrorEmptyMessage" xml:space="preserve">
+    <value>Το κείμενο του μηνύματος είναι άδειο</value>
+  </data>
+  <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
+    <value>Το αρχείο δεν βρέθηκε</value>
+  </data>
+  <data name="ErrorImageWeightLimit" xml:space="preserve">
+    <value>Το μέγεθος του αρχείου εικόνας είναι πολύ μεγάλο</value>
+  </data>
+  <data name="ErrorIncorrectUserName" xml:space="preserve">
+    <value>Λανθασμένο όνομα ή επώνυμο</value>
+  </data>
+  <data name="ErrorNotCorrectEmail" xml:space="preserve">
+    <value>Άκυρα email</value>
+  </data>
+  <data name="ErrorNotCorrectTrustedDomain" xml:space="preserve">
+    <value>Μη έγκυρο όνομα Domain</value>
+  </data>
+  <data name="ErrorPasswordEmpty" xml:space="preserve">
+    <value>Ο κωδικός πρόσβασης είναι άδειος.</value>
+  </data>
+  <data name="ErrorPasswordMessage" xml:space="preserve">
+    <value>Το συνθηματικό πρέπει να περιέχει</value>
+  </data>
+  <data name="ErrorPasswordMessageStart" xml:space="preserve">
+    <value>Το συνθηματικό πρέπει να περιέχει</value>
+  </data>
+  <data name="ErrorPasswordNoDigits" xml:space="preserve">
+    <value>ψηφία</value>
+  </data>
+  <data name="ErrorPasswordNoSpecialSymbols" xml:space="preserve">
+    <value>ειδικοί χαρακτήρες</value>
+  </data>
+  <data name="ErrorPasswordNoUpperCase" xml:space="preserve">
+    <value>κεφαλαία γράμματα</value>
+  </data>
+  <data name="ErrorUserNotFound" xml:space="preserve">
+    <value>Ο χρήστης δε βρέθηκε</value>
+  </data>
+  <data name="ErrorUserNotFoundByEmail" xml:space="preserve">
+    <value>Ο χρήστης με το "{0}" email δεν μπορούσε να βρεθεί</value>
+  </data>
+  <data name="FileSizeMaxExceed" xml:space="preserve">
+    <value>Έχετε υπερβεί το μέγιστο μέγεθος αρχείου</value>
+  </data>
+  <data name="FileSizeNote" xml:space="preserve">
+    <value>Σημείωση: το μέγεθος του αρχείου δεν μπορεί να υπερβεί τα {1}{0}{2}</value>
+  </data>
+  <data name="FileSizePostfix" xml:space="preserve">
+    <value>b, KB, MB, GB</value>
+  </data>
+  <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
+    <value>Ο σύνδεσμος για την επιβεβαίωση του λογαριασμού σας έχει σταλεί στο συγκεκριμένο e-mail</value>
+  </data>
+  <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
+    <value>Ο εξυπηρετητής δεν μπόρεσε να αποθηκεύσει ρυθμίσεις.</value>
+  </data>
+  <data name="LicenseError" xml:space="preserve">
+    <value>Η άδεια δεν είναι σωστή</value>
+  </data>
+  <data name="LicenseErrorQuota" xml:space="preserve">
+    <value>Ο αριθμός των χρηστών υπερβαίνει εκείνον που επιτρέπεται από την άδεια</value>
+  </data>
+  <data name="LicenseUploaded" xml:space="preserve">
+    <value>Μεταφορτώθηκε με επιτυχία</value>
+  </data>
+  <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
+    <value>Οι οδηγίες αλλαγής email έχουν αποσταλεί με επιτυχία</value>
+  </data>
+  <data name="MobilePhoneMustErase" xml:space="preserve">
+    <value>Για να αλλάξετε τον αριθμό, χρειάζεται να διαγράψετε τον τρέχοντα αριθμό τηλεφώνου σας</value>
+  </data>
+  <data name="Owner" xml:space="preserve">
+    <value>Κάτοχος</value>
+  </data>
+  <data name="SgServerRegion" xml:space="preserve">
+    <value>Δημοκρατία της Σιγκαπούρης</value>
+  </data>
+  <data name="SmsAuthenticationMessageError" xml:space="preserve">
+    <value>Λανθασμένος κωδικός</value>
+  </data>
+  <data name="SmsAuthenticationMessageToUser" xml:space="preserve">
+    <value>Κωδικός: {0}</value>
+  </data>
+  <data name="SmsAuthenticationTimeout" xml:space="preserve">
+    <value>Ο χρόνος χρήσης του κωδικού έχει λήξει. Παρακαλώ αιτηθείτε ένα νέο γραπτό μήνυμα.</value>
+  </data>
+  <data name="SmsNotAvailable" xml:space="preserve">
+    <value>Οι ρυθμίσεις SMS δεν είναι διαθέσιμες</value>
+  </data>
+  <data name="SsoSettingsCantSaveSettings" xml:space="preserve">
+    <value>Αδυναμία αποθήκευσης ρυθμίσεων</value>
+  </data>
+  <data name="SsoSettingsInvalidEntityId" xml:space="preserve">
+    <value>Μη έγκυρο entityID</value>
+  </data>
+  <data name="SuccessfullySaveGreetingSettingsMessage" xml:space="preserve">
+    <value>Οι ρυθμίσεις χαιρετισμού έχουν αποθηκευτεί επιτυχώς</value>
+  </data>
+  <data name="SuccessfullySaveSettingsMessage" xml:space="preserve">
+    <value>Ρυθμίσεις έχουν ενημερωθεί με επιτυχία</value>
+  </data>
+  <data name="SuccessfullySentNotificationDeleteUserInfoMessage" xml:space="preserve">
+    <value>Οδηγίες για να διαγράψετε το προφίλ σας έχουν σταλεί στη {0} διεύθυνση email</value>
+  </data>
+  <data name="TfaAppAuthMessageError" xml:space="preserve">
+    <value>Λανθασμένος κωδικός</value>
+  </data>
+  <data name="WhatsNewSubscriptionName" xml:space="preserve">
+    <value>Τι νέο υπάρχει</value>
+  </data>
+</root>
