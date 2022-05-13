@@ -73,7 +73,7 @@ class FilesTableHeader extends React.Component {
         key: "QuickButtons",
         title: "",
         enable: true,
-        defaultSize: 120,
+        defaultSize: 95,
         resizable: false,
       },
     ];
