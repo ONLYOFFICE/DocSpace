@@ -150,25 +150,14 @@ class SectionBodyContent extends React.PureComponent {
       tfa: null,
     };
   }
-  async componentDidMount() {
+
+  fetchData = async () => {
     const {
-      //cultures,
-      //getPortalCultures,
-      //profile,
-      //viewer,
-      isSelf,
       setProviders,
       getTfaType,
       getBackupCodes,
       setBackupCodes,
     } = this.props;
-
-    //const isSelf = isMe(viewer, profile.userName);
-    //if (isSelf && !cultures.length) {
-    //getPortalCultures();
-    //}
-
-    if (!isSelf) return;
 
     try {
       await getAuthProviders().then((providers) => {
@@ -185,7 +174,30 @@ class SectionBodyContent extends React.PureComponent {
       const codes = await getBackupCodes();
       setBackupCodes(codes);
     }
+  };
+
+  componentDidMount() {
+    const {
+      //cultures,
+      //getPortalCultures,
+      //profile,
+      //viewer,
+      isSelf,
+    } = this.props;
+
+    //const isSelf = isMe(viewer, profile.userName);
+    //if (isSelf && !cultures.length) {
+    //getPortalCultures();
+    //}
+
+    if (!isSelf) return;
+
+    this.fetchData();
     window.loginCallback = this.loginCallback;
+  }
+
+  componentWillUnmount() {
+    window.loginCallback = null;
   }
 
   onEditSubscriptionsClick = () => console.log("Edit subscriptions onClick()");
