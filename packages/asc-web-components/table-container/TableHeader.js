@@ -216,6 +216,7 @@ class TableHeader extends React.Component {
       columnStorageName,
       resetColumnsSize,
       sectionWidth,
+      infoPanelVisible,
     } = this.props;
 
     let activeColumnIndex = null;
@@ -224,7 +225,7 @@ class TableHeader extends React.Component {
       ? containerRef.current
       : document.getElementById("table-container");
 
-    const minSize = size.tablet;
+    const minSize = infoPanelVisible ? 0 : size.tablet;
 
     if (
       !container ||
