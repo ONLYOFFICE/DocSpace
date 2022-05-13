@@ -155,7 +155,7 @@ public class PortalController : ControllerBase
         }
         catch (Exception ex)
         {
-            _log.LogError(ex, "getshortenlink");
+            _log.ErrorGetShortenLink(ex);
             return inDto.Link;
         }
     }
@@ -275,7 +275,7 @@ public class PortalController : ControllerBase
         }
         catch (Exception ex)
         {
-            _log.LogError(ex, "MarkPresentAsReaded");
+            _log.ErrorMarkPresentAsReaded(ex);
         }
     }
 

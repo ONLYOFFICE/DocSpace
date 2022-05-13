@@ -102,7 +102,7 @@ public class FirstTimeTenantSettings
                 tenant = _tenantManager.GetTenant(tenant.Id);
                 if (tenant.OwnerId == Guid.Empty)
                 {
-                    _log.LogError("{tenantId}: owner id is empty.", tenant.Id);
+                    _log.ErrorOwnerEmpty(tenant.Id);
                 }
             }
 
@@ -136,7 +136,7 @@ public class FirstTimeTenantSettings
                 }
                 catch (Exception err)
                 {
-                    _log.LogError(err, ("Incorrect Promo: " + promocode));
+                    _log.ErrorIncorrectPromo(promocode, err);
                     throw new Exception(Resource.EmailAndPasswordIncorrectPromocode);
                 }
             }
@@ -182,7 +182,7 @@ public class FirstTimeTenantSettings
         }
         catch (Exception ex)
         {
-            _log.LogError(ex, "FirstTimeTenantSettings");
+            _log.ErrorFirstTimeTenantSettings(ex);
             throw;
         }
     }
@@ -210,7 +210,7 @@ public class FirstTimeTenantSettings
         }
         catch (Exception err)
         {
-            _log.LogError(err, "TrySetLanguage");
+            _log.ErrorTrySetLanguage(err);
         }
     }
 
@@ -242,11 +242,11 @@ public class FirstTimeTenantSettings
                     _amiId = reader.ReadToEnd();
                 }
 
-                _log.LogDebug("Instance id: {amiId}", _amiId);
+                _log.DebugInstanceId(_amiId);
             }
             catch (Exception e)
             {
-                _log.LogError(e, "Request AMI id");
+                _log.ErrorRequestAMIId(e);
             }
         }
 
@@ -281,12 +281,12 @@ public class FirstTimeTenantSettings
             var httpClient = _clientFactory.CreateClient();
             using var response = httpClient.Send(request);
 
-            _log.LogDebug("Subscribe response: {response}", response);//toto write
+            _log.DebugSubscribeResponse(response);//toto write
 
         }
         catch (Exception e)
         {
-            _log.LogError(e, "Subscribe request");
+            _log.ErrorSubscribeRequest(e);
         }
     }
 }

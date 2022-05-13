@@ -664,7 +664,7 @@ public class SettingsController : BaseSettingsController
             }
             catch (Exception e)
             {
-                _log.LogError(e, "SaveAuthKeys");
+                _log.ErrorSaveAuthKeys(e);
             }
         }
 
