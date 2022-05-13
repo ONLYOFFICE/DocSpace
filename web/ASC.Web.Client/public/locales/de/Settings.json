@@ -39,7 +39,7 @@
   "Groups": "Gruppen",
   "Guests": "Gäste",
   "Job/Title": "Aufgabe/Titel",
-  "LanguageAndTimeZoneSettingsDescription": "Die Sprach- und Zeitzoneneinstellungen lassen Sie die Sprache des kompletten Portals für alle Benutzer ändern und die Zeitzone konfigurieren, so dass alle Ereignisse des ©linney-Portals mit einem richtigen Datum und der Uhrzeit angezeigt werden.",
+  "LanguageAndTimeZoneSettingsDescription": "Die Sprach- und Zeitzoneneinstellungen lassen Sie die Sprache des kompletten Portals für alle Benutzer ändern und die Zeitzone konfigurieren, so dass alle Ereignisse des Portals mit einem richtigen Datum und der Uhrzeit angezeigt werden.",
   "LanguageTimeSettingsTooltip": "Die <0>{{text}}</0> lassen Sie die Sprache des kompletten Portals für alle Benutzer ändern und die Zeitzone konfigurieren, so dass alle Ereignisse des ONLYOFFICE-Portals mit einem richtigen Datum und der Uhrzeit angezeigt werden.",
   "LanguageTimeSettingsTooltipDescription": "Um die Änderungen zu übernehmen, klicken Sie auf den Button <1>{{save}}</1> im unteren Bereich der Sektion.<3>{{learnMore}}</3>",
   "LogoDark": "Logo für die Login- und Informationsseite",
