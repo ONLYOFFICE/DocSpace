@@ -47,6 +47,7 @@ global using System.Xml;
 
 global using ASC.Common;
 global using ASC.Common.Caching;
+global using ASC.Common.Log;
 global using ASC.Common.Logging;
 global using ASC.Common.Notify.Engine;
 global using ASC.Common.Security;
@@ -88,6 +89,7 @@ global using ASC.Security.Cryptography;
 global using ASC.VoipService.Dao;
 global using ASC.Web.Core;
 global using ASC.Web.Core.Helpers;
+global using ASC.Web.Core.Log;
 global using ASC.Web.Core.ModuleManagement.Common;
 global using ASC.Web.Core.Notify;
 global using ASC.Web.Core.PublicResources;

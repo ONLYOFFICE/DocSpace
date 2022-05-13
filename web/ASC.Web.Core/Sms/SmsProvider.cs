@@ -162,13 +162,13 @@ public abstract class SmsProvider : Consumer
             {
                 using var reader = new StreamReader(stream);
                 var result = await reader.ReadToEndAsync();
-                Log.LogInformation("SMS was sent to {number}, service returned: {result}", number, result);
+                Log.InformationSMSWasSend(number, result);
                 return true;
             }
         }
         catch (Exception ex)
         {
-            Log.LogError(ex, "Failed to send sms message");
+            Log.ErrorSendSms(ex);
         }
         return false;
     }
@@ -260,14 +260,14 @@ public class SmscProvider : SmsProvider, IValidateKeysProvider
                 {
                     using var reader = new StreamReader(stream);
                     var result = await reader.ReadToEndAsync();
-                    Log.LogInformation("SMS balance service returned: {result}", result);
+                    Log.InformationSmsBalaceReturned(result);
 
                     balance = result;
                 }
             }
             catch (Exception ex)
             {
-                Log.LogError(ex, "Failed request sms balance");
+                Log.ErrorRequestSms(ex);
                 balance = string.Empty;
             }
 
@@ -404,16 +404,16 @@ public class TwilioProvider : SmsProvider, IValidateKeysProvider
         try
         {
             var smsMessage = MessageResource.Create(new PhoneNumber(number), body: message, @from: new PhoneNumber(Sender), client: twilioRestClient);
-            Log.LogInformation("SMS was sent to {number}, status: {status}", number, smsMessage.Status);
+            Log.InformationSmsWasSendTo(number, smsMessage.Status);
             if (!smsMessage.ErrorCode.HasValue)
             {
                 return Task.FromResult(true);
             }
-            Log.LogError("Failed to send sms. code: {code} {message}", smsMessage.ErrorCode.Value, smsMessage.ErrorMessage);
+            Log.ErrorSendSmsWithCode(smsMessage.ErrorCode.Value, smsMessage.ErrorMessage);
         }
         catch (Exception ex)
         {
-            Log.LogError(ex, "Failed to send sms message via tiwilio");
+            Log.ErrorSendSmsViaTiwilio(ex);
         }
 
         return Task.FromResult(false);

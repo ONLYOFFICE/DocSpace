@@ -514,7 +514,7 @@ public class UserPhotoManager
                 }
                 catch (Exception err)
                 {
-                    _log.LogError(err, "LoadDiskCache");
+                    _log.ErrorLoadDiskCache(err);
                 }
             }
         }
@@ -540,7 +540,7 @@ public class UserPhotoManager
         }
         catch (DirectoryNotFoundException e)
         {
-            _log.LogError(e, "RemovePhoto");
+            _log.ErrorRemovePhoto(e);
         }
 
         _userManager.SaveUserPhoto(idUser, null);
@@ -904,7 +904,7 @@ public class UserPhotoManager
         }
         catch (Exception err)
         {
-            _log.LogError(err, "GetUserPhotoData");
+            _log.ErrorGetUserPhotoData(err);
             return null;
         }
     }
