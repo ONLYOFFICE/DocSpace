@@ -103,11 +103,17 @@ const Table = ({
   setFirsElemChecked,
   setHeaderBorder,
   theme,
+  infoPanelVisible,
 }) => {
   const ref = useRef(null);
 
   useEffect(() => {
-    if ((viewAs !== "table" && viewAs !== "row") || !setViewAs) return;
+    if (
+      (viewAs !== "table" && viewAs !== "row") ||
+      !setViewAs ||
+      infoPanelVisible
+    )
+      return;
 
     if (sectionWidth < 1025 || isMobile) {
       viewAs !== "row" && setViewAs("row");
@@ -135,7 +141,9 @@ const Table = ({
   );
 };
 
-export default inject(({ filesStore, auth }) => {
+export default inject(({ filesStore, infoPanelStore, auth }) => {
+  const { isVisible: infoPanelVisible } = infoPanelStore;
+
   const {
     filesList,
     viewAs,
@@ -151,5 +159,6 @@ export default inject(({ filesStore, auth }) => {
     setFirsElemChecked,
     setHeaderBorder,
     theme: auth.settingsStore.theme,
+    infoPanelVisible,
   };
 })(observer(Table));
