@@ -82,6 +82,7 @@ REM echo ######## Delete temp files ########
 del /f /q build\install\win\Files\config\sed*
 del /f /q build\install\win\Files\nginx\conf\sed*
 del /f /q build\install\win\Files\nginx\conf\includes\sed*
+del /f /q build\install\win\Files\services\*\service\config\sed*
 del /f /q build\install\win\kafka-zookeeper\zookeeper\conf\sed*
 del /f /q build\install\win\kafka-zookeeper\kafka\config\sed*
 del /f /q build\install\win\*.back.*
