@@ -2426,7 +2426,7 @@ const Dark = {
     },
   },
   newContextMenu: {
-    background: "#3D3D3D",
+    background: black,
     borderRadius: "6px",
     mobileBorderRadius: "6px 6px 0 0",
     boxShadow:
