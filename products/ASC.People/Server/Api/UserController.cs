@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System.Security.Claims;
-
 using Module = ASC.Api.Core.Module;
 using SecurityContext = ASC.Core.SecurityContext;
 
@@ -62,6 +60,8 @@ public class UserController : PeopleControllerBase
     private readonly AuthContext _authContext;
     private readonly SetupInfo _setupInfo;
     private readonly SettingsManager _settingsManager;
+    private readonly FileSecurity _fileSecurity;
+    private readonly IDaoFactory _daoFactory;
 
     public UserController(
         Constants constants,
@@ -96,7 +96,9 @@ public class UserController : PeopleControllerBase
         UserPhotoManager userPhotoManager,
         IHttpClientFactory httpClientFactory,
         IHttpContextAccessor httpContextAccessor,
-        SettingsManager settingsManager)
+        SettingsManager settingsManager,
+        FileSecurity fileSecurity,
+        IDaoFactory daoFactory)
         : base(userManager, permissionContext, apiContext, userPhotoManager, httpClientFactory, httpContextAccessor)
     {
         _constants = constants;
@@ -126,6 +128,8 @@ public class UserController : PeopleControllerBase
         _authContext = authContext;
         _setupInfo = setupInfo;
         _settingsManager = settingsManager;
+        _fileSecurity = fileSecurity;
+        _daoFactory = daoFactory;
     }
 
     [Create("active")]
@@ -797,6 +801,32 @@ public class UserController : PeopleControllerBase
 
         _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
 
+        var success = int.TryParse(inDto.RoomId, out var id);
+
+        if (inDto.FromInviteLink && !string.IsNullOrEmpty(inDto.RoomId))
+        {
+            if (success)
+            {
+                var folderDao = _daoFactory.GetFolderDao<int>();
+                var folder = folderDao.GetFolderAsync(id).Result;
+
+                if (folder == null)
+                {
+                    throw new Exception();
+                }
+            }
+            else
+            {
+                var folderDao = _daoFactory.GetFolderDao<string>();
+                var folder = folderDao.GetFolderAsync(inDto.RoomId);
+
+                if (folder == null)
+                {
+                    throw new Exception();
+                }
+            }
+        }
+
         inDto.PasswordHash = (inDto.PasswordHash ?? "").Trim();
         if (string.IsNullOrEmpty(inDto.PasswordHash))
         {
@@ -843,6 +873,20 @@ public class UserController : PeopleControllerBase
         if (inDto.Files != _userPhotoManager.GetDefaultPhotoAbsoluteWebPath())
         {
             UpdatePhotoUrl(inDto.Files, user);
+        }
+
+        if (inDto.FromInviteLink && !string.IsNullOrEmpty(inDto.RoomId))
+        {
+            if (success)
+            {
+                _fileSecurity.ShareAsync(id, FileEntryType.Folder, user.Id, (Files.Core.Security.FileShare)inDto.RoomAccess)
+                    .GetAwaiter().GetResult();
+            }
+            else
+            {
+                _fileSecurity.ShareAsync(inDto.RoomId, FileEntryType.Folder, user.Id, (Files.Core.Security.FileShare)inDto.RoomAccess)
+                    .GetAwaiter().GetResult();
+            }
         }
 
         return _employeeFullDtoHelper.GetFull(user);

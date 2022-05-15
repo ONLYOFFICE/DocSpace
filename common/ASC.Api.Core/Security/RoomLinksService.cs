@@ -68,7 +68,7 @@ public class RoomLinksService
             throw new Exception();
         }
 
-        var postifx = ((int)employeeType + fileShare) + id.ToString();
+        var postifx = (int)employeeType + fileShare + id.ToString();
 
         var link = _commonLinkUtility.GetConfirmationUrl(email, ConfirmType.RoomInvite, postifx, guid)
             + $"&emplType={employeeType:d}&roomId={id}&access={fileShare}";

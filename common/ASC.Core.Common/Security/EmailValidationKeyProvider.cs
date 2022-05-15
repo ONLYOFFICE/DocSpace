@@ -58,7 +58,7 @@ public class EmailValidationKeyProvider
             authValidInterval = TimeSpan.FromHours(1);
         }
 
-        ValidVisitLinkInterval = TimeSpan.FromMinutes(1);
+        ValidVisitLinkInterval = TimeSpan.FromMinutes(15);
         ValidEmailKeyInterval = validInterval;
         ValidAuthKeyInterval = authValidInterval;
         _logger = logger;
@@ -165,11 +165,11 @@ public class EmailValidationKeyModel
     public string Email { get; set; }
     public Guid? UiD { get; set; }
     public ConfirmType? Type { get; set; }
-    public int? FileShare { get; set; }
+    public int? RoomAccess { get; set; }
     public string RoomId { get; set; }
 
     public void Deconstruct(out string key, out EmployeeType? emplType, out string email, out Guid? uiD, out ConfirmType? type, out int? fileShare, out string roomId)
     {
-        (key, emplType, email, uiD, type, fileShare, roomId) = (Key, EmplType, Email, UiD, Type, FileShare, RoomId);
+        (key, emplType, email, uiD, type, fileShare, roomId) = (Key, EmplType, Email, UiD, Type, RoomAccess, RoomId);
     }
 }

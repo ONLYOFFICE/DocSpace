@@ -110,7 +110,7 @@ public class EmailValidationKeyModelHelper
                 break;
 
             case ConfirmType.RoomInvite:
-                checkKeyResult = _provider.ValidateEmailKey(email + type + ((int)emplType + (int)fileShare + roomId), key, _provider.ValidAuthKeyInterval);
+                checkKeyResult = _provider.ValidateEmailKey(email + type + ((int)emplType + (int)fileShare + roomId), key, _provider.ValidEmailKeyInterval);
                 if (checkKeyResult == ValidationResult.Ok && 
                     !_roomLinksService.VisitProcess(roomId, email, key, _provider.ValidVisitLinkInterval))
                 {

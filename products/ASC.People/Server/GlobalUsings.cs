@@ -26,6 +26,7 @@
 
 global using System.Net.Mail;
 global using System.Security;
+global using System.Security.Claims;
 global using System.ServiceModel.Security;
 global using System.Web;
 
@@ -45,6 +46,8 @@ global using ASC.Data.Reassigns;
 global using ASC.FederatedLogin;
 global using ASC.FederatedLogin.LoginProviders;
 global using ASC.FederatedLogin.Profile;
+global using ASC.Files.Core;
+global using ASC.Files.Core.Security;
 global using ASC.MessagingSystem.Core;
 global using ASC.MessagingSystem.Models;
 global using ASC.People;
