@@ -72,8 +72,14 @@ public class EmailValidationKeyModelHelper
         Enum.TryParse<EmployeeType>(emplType, out var employeeType);
 
         request.TryGetValue("email", out var _email);
+
         request.TryGetValue("uid", out var userIdKey);
         Guid.TryParse(userIdKey, out var userId);
+
+        request.TryGetValue("access", out var fileShareRaw);
+        int.TryParse(fileShareRaw, out var fileShare);
+
+        request.TryGetValue("roomId", out var roomId);
 
         return new EmailValidationKeyModel
         {
@@ -81,7 +87,9 @@ public class EmailValidationKeyModelHelper
             EmplType = employeeType,
             Key = key,
             Type = cType,
-            UiD = userId
+            UiD = userId,
+            RoomAccess = fileShare,
+            RoomId = roomId
         };
     }
 
