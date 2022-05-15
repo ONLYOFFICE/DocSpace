@@ -168,8 +168,7 @@ class SectionBodyContent extends React.PureComponent {
     }
 
     const type = await getTfaType();
-    this.setState({ tfa: type });
-
+    this._isMounted && this.setState({ tfa: type });
     if (type && type !== "none") {
       const codes = await getBackupCodes();
       setBackupCodes(codes);
@@ -184,7 +183,7 @@ class SectionBodyContent extends React.PureComponent {
       //viewer,
       isSelf,
     } = this.props;
-
+    this._isMounted = true;
     //const isSelf = isMe(viewer, profile.userName);
     //if (isSelf && !cultures.length) {
     //getPortalCultures();
@@ -198,6 +197,7 @@ class SectionBodyContent extends React.PureComponent {
 
   componentWillUnmount() {
     window.loginCallback = null;
+    this._isMounted = false;
   }
 
   onEditSubscriptionsClick = () => console.log("Edit subscriptions onClick()");
