@@ -25,23 +25,23 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Common.Log;
-public static partial class CommonLogger
+internal static partial class TimeZoneConverterLogger
 {
-    [LoggerMessage(Level = LogLevel.Error)]
-    public static partial void ErrorWithException(this ILogger logger, Exception exception);
+    [LoggerMessage(Level = LogLevel.Information, Message = "TimeZone {timeZoneId} not found")]
+    public static partial void InformationTimeZoneNotFound(this ILogger logger, string timeZoneId);
 
-    [LoggerMessage(Level = LogLevel.Error)]
-    public static partial void Error(this ILogger logger, string message);
+    [LoggerMessage(Level = LogLevel.Error, Message = "OlsonTimeZone {olsonTimeZoneId} not found")]
+    public static partial void ErrorOlsonTimeZoneNotFound(this ILogger logger, string olsonTimeZoneId);
 
-    [LoggerMessage(Level = LogLevel.Debug)]
-    public static partial void Debug(this ILogger logger, string message);
+    [LoggerMessage(Level = LogLevel.Error, Message = "WindowsTimeZone {windowsTimeZoneId} not found")]
+    public static partial void ErrorWindowsTimeZoneNotFound(this ILogger logger, string windowsTimeZoneId);
 
-    [LoggerMessage(Level = LogLevel.Information)]
-    public static partial void Information(this ILogger logger, string message);
+    [LoggerMessage(Level = LogLevel.Error, Message = "GetTimeZone")]
+    public static partial void ErrorGetTimeZone(this ILogger logger, Exception exception);
 
-    [LoggerMessage(Level = LogLevel.Warning)]
-    public static partial void Warning(this ILogger logger, string message);
-
-    [LoggerMessage(Level = LogLevel.Warning)]
-    public static partial void WarningWithException(this ILogger logger, Exception exception);
+    [LoggerMessage(Level = LogLevel.Error, Message = "InitMapZones")]
+    public static partial void ErrorInitMapZones(this ILogger logger, Exception exception);  
+    
+    [LoggerMessage(Level = LogLevel.Error, Message = "InitTranslations")]
+    public static partial void ErrorInitTranslations(this ILogger logger, Exception exception);
 }
