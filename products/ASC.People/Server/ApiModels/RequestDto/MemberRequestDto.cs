@@ -46,6 +46,7 @@ public class MemberRequestDto
     public bool FromInviteLink { get; set; }
     public int RoomAccess { get; set; }
     public string RoomId { get; set; }
+    public string Key { get; set; }
 }
 
 public class UpdateMemberRequestDto : MemberRequestDto
