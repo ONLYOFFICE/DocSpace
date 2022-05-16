@@ -71,7 +71,6 @@
   "TooltipElementCopyMessage": "Copiar {{element}}",
   "TooltipElementsCopyMessage": "Copiar {{element}} elementos",
   "TooltipElementsMoveMessage": "Mover {{element}} elementos",
-  "TrashEmptyContainerDescription": "O Lixo é para onde todos os ficheiros eliminados são movidos. Pode restaurá-los ou eliminá-los permanentemente, esvaziando o Lixo. ",
   "UnblockVersion": "Desbloquear/Check-in",
   "UploadToFolder": "Carregar para a pasta",
   "ViewList": "Lista",

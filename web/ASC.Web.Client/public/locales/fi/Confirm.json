@@ -14,7 +14,6 @@
   "FirstName": "Etunimi",
   "InviteTitle": "Sinut on kutsuttu liittymään tähän portaaliin!",
   "LoginRegistryButton": "Liity",
-  "LoginWithAccount": "tai kirjaudu sisään:",
   "PassworResetTitle": "Nyt voit luoda uuden salasanan.",
   "SetAppButton": "Yhdistä sovellus",
   "SetAppDescription": "Kaksivaiheinen todennus on käytössä. Määritä autentikointisovelluksesi jatkaaksesi työskentelyä portaalissa. Voit käyttää Google Authenticatoria <1> Android</1> ja <4> iOS</4>-järjestelmällä tai Authenticatoria <8> Windows-puhelimella</8>.",

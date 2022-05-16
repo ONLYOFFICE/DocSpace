@@ -14,7 +14,6 @@
   "FirstName": "Nome",
   "InviteTitle": "Sei invitato/a invitata a unirti al portale!",
   "LoginRegistryButton": "Registrati",
-  "LoginWithAccount": "oppure accedi con:",
   "PassworResetTitle": "Ora puoi creare una nuova password.",
   "SetAppButton": "Collegare l'app",
   "SetAppDescription": "Autenticazione a due fattori è attivata. Configura l'app di autenticazione per continuare a lavorare sul portale. Puoi usare Google Authenticator per <1>Android</1> e <4>iOS</4> o Authenticator per <8>Windows Phone</8>.",

@@ -60,7 +60,6 @@
   "RegistrationDate": "Rekisteröinti päivämäärä",
   "RestoreDefaultButton": "Palauta oletusarvoon",
   "RestoreBackupDescription": "Käytä tätä, jos haluat palauttaa sivuston sisällön aiemmin tehdyltä varmuuskopiolta.",
-  "SetDefaultTitle": "Aseta oletusnimi",
   "StudioTimeLanguageSettings": "Kieli- ja aikavyöhykeasetukset",
   "SuccessfullySaveGreetingSettingsMessage": "Tervetuloa-sivun asetukset on tallennettu onnistuneesti",
   "SuccessfullySaveSettingsMessage": "Asetusten päivittäminen onnistui",
@@ -79,6 +78,5 @@
   "TwoFactorAuthDescription": "Kaksivaiheinen todennus tarjoaa turvallisemman tavan kirjautua sisään. Kirjautumistietojen syöttämisen jälkeen käyttäjän on annettava koodi tekstiviestistä tai todennussovelluksesta. ",
   "UseAsLogoButton": "Käytä logona",
   "Users": "Käyttäjät",
-  "WelcomePageTitle": "Tervetuloa-sivun otsikko",
   "YouHaveUnsavedChanges": "Sinulla on tallentamattomia muutoksia"
 }

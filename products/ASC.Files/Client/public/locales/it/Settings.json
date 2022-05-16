@@ -1,10 +1,7 @@
 ﻿{
   "CommonSettings": "Impostazioni generali",
-  "ConnectAccounts": "Connetti Account",
-  "ConnectAccountsSubTitle": "Non ci sono account collegati",
   "ConnectAdminDescription": "Per una connessione con successo, inserisci i dati necessari in <1>questa pagina</1>.",
   "ConnectDescription": "Puoi collegare i seguenti account ai documenti di ONLYOFFICE. I documenti di questi account saranno disponibili per la modifica nella sezione \"Miei Documenti\".",
-  "ConnectedCloud": "Connesso al cloud",
   "ConnectMakeShared": "Condiviso e inserito nella cartella \"Comune\"",
   "ConnextOtherAccount": "Altro account",
   "DisplayFavorites": "Visualizza i preferiti",

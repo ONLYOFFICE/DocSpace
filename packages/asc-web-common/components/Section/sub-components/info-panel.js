@@ -18,7 +18,7 @@ const StyledInfoPanelWrapper = styled.div.attrs(({ id }) => ({
   user-select: none;
   height: auto;
   width: auto;
-  background: rgba(6, 22, 38, 0.2);
+  background: ${(props) => props.theme.infoPanel.blurColor};
   backdrop-filter: blur(3px);
 
   @media ${tablet} {

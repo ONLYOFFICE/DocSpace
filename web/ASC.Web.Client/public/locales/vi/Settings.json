@@ -63,7 +63,6 @@
   "RestoreBackupDescription": "Sử dụng tùy chọn này để khôi phục lại cổng của bạn từ file sao lưu đã lưu trước đó",
   "RestoreBackupHelp": "Tùy chọn <strong>Khôi phục dữ liệu</strong> được sử dụng để khôi phục lại dữ liệu cổng thông tin được lưu trữ trước đó (từ server cục bộ hoặc cổng SaaS). Chọn bộ nhớ để lưu dữ liệu, nhập thông tin cần thiết và kiểm tra <strong>Gửi thông báo tới người dùng cổng thông tin </strong> để thông báo cho người dùng cổng thông tin về các thao tác sao lưu/khôi phục.",
   "RestoreDefaultButton": "Khôi phục về mặc định",
-  "SetDefaultTitle": "Đặt tiêu đề mặc định",
   "StudioTimeLanguageSettings": "Cài đặt ngôn ngữ và múi giờ",
   "SuccessfullySaveGreetingSettingsMessage": "Cài đặt Trang Chào mừng đã được lưu thành công",
   "SuccessfullySaveSettingsMessage": "Cài đặt đã được cập nhật thành công",
@@ -82,6 +81,5 @@
   "TwoFactorAuthDescription": "Xác thực hai yếu tố cung cấp cách đăng nhập an toàn hơn. Sau khi nhập thông tin đăng nhập, người dùng sẽ phải nhập mã nhận được qua SMS hoặc ứng dụng xác thực. ",
   "UseAsLogoButton": "Sử dụng làm logo",
   "Users": "\"Người dùng\";",
-  "WelcomePageTitle": "Tiêu đề trang chào mừng",
   "YouHaveUnsavedChanges": "Bạn có các thay đổi chưa được lưu"
 }

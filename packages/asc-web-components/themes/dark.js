@@ -1953,6 +1953,7 @@ const Dark = {
     sectionHeaderToggleBgActive: "#292929",
 
     backgroundColor: black,
+    blurColor: "rgba(20, 20, 20, 0.8)",
     borderColor: "#292929",
     thumbnailBorderColor: grayLightMid,
     textColor: white,

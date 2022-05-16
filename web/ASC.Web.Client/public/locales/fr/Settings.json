@@ -39,7 +39,7 @@
   "Groups": "Groupes",
   "Guests": "Invités",
   "Job/Title": "Emploi/Titre",
-  "LanguageAndTimeZoneSettingsDescription": "Les paramètres de langue et fuseau horaire est un moyen de changer la langue du portail pour tous les utilisateurs et de configurer le fuseau horaire afin que tous les événements du portail ©linney seront affichés avec la date et l'heure correctes.",
+  "LanguageAndTimeZoneSettingsDescription": "Les paramètres de langue et fuseau horaire est un moyen de changer la langue du portail pour tous les utilisateurs et de configurer le fuseau horaire afin que tous les événements du portail seront affichés avec la date et l'heure correctes.",
   "LanguageTimeSettingsTooltip": "Les <0>{{text}}</0> est un moyen de changer la langue du portail pour tous les utilisateurs et de configurer le fuseau horaire afin que tous les événements du portail ONLYOFFICE seront affichés avec la date et l'heure correctes.",
   "LanguageTimeSettingsTooltipDescription": "Pour valider les changements effectués, utilisez le bouton <1>{{save}}</1> en bas de la section.<3>{{learnMore}}</3>",
   "LogoDark": "Logo pour les pages de Connexion et À propos",
@@ -71,7 +71,6 @@
   "RestoreBackupWarningText": "Le portail ne sera pas disponible pendant le processus de restauration. Une fois la restauration terminée toutes les modifications apportées après la date du point de restauration sélectionné seront perdues.",
   "RestoreBackupResetInfoWarningText": "Tous les mots de passe existants seront restaurés. Les utilisateurs du portail vont recevoir le mail avec le lien de récupération.",
   "RestoreDefaultButton": "Restaurer les paramètres par défaut",
-  "SetDefaultTitle": "Définir le titre par défaut",
   "StudioTimeLanguageSettings": "Paramètres de langue et fuseau horaire",
   "SuccessfullySaveGreetingSettingsMessage": "Les paramètres de la page d'accueil ont été enregistrés avec succès",
   "SuccessfullySaveSettingsMessage": "Les paramètres ont été mis à jour avec succès",
@@ -91,6 +90,5 @@
   "TwoFactorAuthDescription": "L'authentification à deux facteurs offre un moyen plus sûr de se connecter. Après avoir saisi les informations d'identification, l'utilisateur devra entrer un code provenant d'un SMS ou de l'application d'authentification. ",
   "UseAsLogoButton": "Utiliser comme logo",
   "Users": "Utilisateurs",
-  "WelcomePageTitle": "Titre de la page d'accueil",
   "YouHaveUnsavedChanges": "Vous avec des modifications non-sauvegardées"
 }

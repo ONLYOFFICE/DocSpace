@@ -71,7 +71,6 @@
   "TooltipElementCopyMessage": "ຄັດລອກ {{element}}",
   "TooltipElementsCopyMessage": "ຄັດລອກ {{element}} ອົງປະກອບ",
   "TooltipElementsMoveMessage": "ຍ້າຍ {{element}} ອົງປະກອບ",
-  "TrashEmptyContainerDescription": "ຖັງຂີ້ເຫຍື້ອແມ່ນບ່ອນທີ່ຍ້າຍໄຟລ໌ທີ່ຖືກລົບທັງໝົດທ່ານສາມາດກູ້ຄືນ ຫຼື ລົບອອກຢ່າງຖາວອນໂດຍການລ້າງຖັງຂີ້ເຫຍື້ອ",
   "UnblockVersion": "ເລິກການບ໋ອກ/ເຊັກອິນ",
   "UploadToFolder": "ອັບໂຫລດໄປຍັງໂຟຣເດີ",
   "ViewList": "ລາຍການ",

@@ -46,6 +46,8 @@ let userFromSessionStorage,
   guestsFromSessionStorage,
   selectedOptionFromSessionStorage;
 
+//Use for title t("CustomTitles") and for tooltip t("TeamTemplateSettingsDescription")
+
 const settingNames = [
   "userCaption",
   "usersCaption",

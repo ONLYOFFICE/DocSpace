@@ -15,5 +15,12 @@
   "RegistrationEmail": "Su email de registro",
   "RegistrationEmailWatermark": "Email",
   "Remember": "Recordarme",
-  "RememberHelper": "La duración de la sesión por defecto es de 20 minutos. Marque esta opción para establecerla en 1 año. Para establecer su propio valor, vaya a Ajustes."
+  "RememberHelper": "La duración de la sesión por defecto es de 20 minutos. Marque esta opción para establecerla en 1 año. Para establecer su propio valor, vaya a Ajustes.",
+  "LoginDescription": "Le enviaremos por correo electrónico un código mágico para iniciar sesión sin contraseña. O también podrá <1>iniciar sesión manualmente.</1>",
+  "CodeTitle": "Se le ha enviado el código por correo electrónico",
+  "CodeSubtitle": "Hemos enviado un código de 6 dígitos a {{email}}. El código tiene un periodo de validez limitado, introdúzcalo lo antes posible.",
+  "NotFoundCode": "¿No encuentra el código? Compruebe su carpeta de correo no deseado.",
+  "InvalidCode": "Este código no es válido. Inténtelo de nuevo",
+  "ExpiredCode": "Este código ya no es válido. Solicite un nuevo código e inténtelo de nuevo",
+  "ResendCode": "Reenviar código"
 }

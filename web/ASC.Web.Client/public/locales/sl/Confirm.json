@@ -14,7 +14,6 @@
   "FirstName": "Ime",
   "InviteTitle": "Vabljeni ste, da se pridružite temu portalu!",
   "LoginRegistryButton": "Pridruži se",
-  "LoginWithAccount": "ali prijavi z:",
   "PassworResetTitle": "Zdaj lahko ustvarite novo geslo.",
   "SetAppButton": "Aplikacija za prijavo",
   "SetAppDescription": "Omogočena je dvofaktorska avtentikacija. Za nadaljevanje dela na portalu konfigurirajte aplikacijo za avtentikacijo. Google Authenticator lahko uporabite za <1>Android</1> in <4>iOS</4> ali Avtentikator za <8>Windows Telefon</8>.",

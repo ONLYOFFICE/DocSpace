@@ -14,7 +14,6 @@
   "FirstName": "名字",
   "InviteTitle": "欢迎您加入此门户！",
   "LoginRegistryButton": "加入",
-  "LoginWithAccount": "或使用以下方式登录：",
   "PassworResetTitle": "现在您可创建新密码。",
   "SetAppButton": "连接应用",
   "SetAppDescription": "双因素身份验证功能已启用。请配置您的身份验证应用，以便继续使用门户。如果您使用的是<1>Android</1>与<4>iOS</4>系统，则可使用Google Authenticator。<8>Windows Phone</8>可使用Authenticator。",
