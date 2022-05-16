@@ -97,13 +97,13 @@ const Navigation = ({
       window.addEventListener("resize", onResize);
     } else {
       window.removeEventListener("click", onMissClick);
-      window.addEventListener("resize", onResize);
+      window.removeEventListener("resize", onResize);
       setFirstClick(true);
     }
 
     return () => {
       window.removeEventListener("click", onMissClick);
-      window.addEventListener("resize", onResize);
+      window.removeEventListener("resize", onResize);
     };
   }, [isOpen, onResize, onMissClick]);
 
