@@ -25,17 +25,17 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Common.Log;
-public static partial class CommonLogger
+internal static partial class RabbitMQCacheLogger
 {
-    [LoggerMessage(Level = LogLevel.Error)]
-    public static partial void ErrorWithException(this ILogger logger, Exception exception);
+    [LoggerMessage(Level = LogLevel.Trace, Message = "Creating RabbitMQ consumer channel")]
+    public static partial void TraceCreatingRabbitMQ(this ILogger logger);
 
-    [LoggerMessage(Level = LogLevel.Error)]
-    public static partial void Error(this ILogger logger, string message);
+    [LoggerMessage(Level = LogLevel.Trace, Message = "Starting RabbitMQ basic consume")]
+    public static partial void TraceStartingRabbitMQ(this ILogger logger);
 
-    [LoggerMessage(Level = LogLevel.Debug)]
-    public static partial void Debug(this ILogger logger, string message);
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Recreating RabbitMQ consumer channel")]
+    public static partial void WarningRecreatingRabbitMQ(this ILogger logger, Exception exception);
 
-    [LoggerMessage(Level = LogLevel.Information)]
-    public static partial void Information(this ILogger logger, string message);
+    [LoggerMessage(Level = LogLevel.Error, Message = "StartBasicConsume can't call on _consumerChannel == null")]
+    public static partial void ErrorStartBasicConsumeCanNotCall(this ILogger logger);
 }

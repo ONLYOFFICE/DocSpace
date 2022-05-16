@@ -25,17 +25,11 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Common.Log;
-public static partial class CommonLogger
+internal static partial class DistributedTaskQueueLogger
 {
-    [LoggerMessage(Level = LogLevel.Error)]
-    public static partial void ErrorWithException(this ILogger logger, Exception exception);
+    [LoggerMessage(Level = LogLevel.Trace, Message = "EnqueueTask '{distributedTaskId}' by instanse id '{instanceId}'")]
+    public static partial void TraceEnqueueTask(this ILogger logger, string DistributedTaskId, int instanceId);
 
-    [LoggerMessage(Level = LogLevel.Error)]
-    public static partial void Error(this ILogger logger, string message);
-
-    [LoggerMessage(Level = LogLevel.Debug)]
-    public static partial void Debug(this ILogger logger, string message);
-
-    [LoggerMessage(Level = LogLevel.Information)]
-    public static partial void Information(this ILogger logger, string message);
+    [LoggerMessage(Level = LogLevel.Trace, Message = "Publication DistributedTask '{DistributedTaskId}' by instanse id '{InstanceId}' ")]
+    public static partial void TracePublicationDistributedTask(this ILogger logger, string DistributedTaskId, int instanceId);
 }
