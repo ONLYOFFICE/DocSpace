@@ -201,11 +201,15 @@ const RootFolderContainer = (props) => {
   const emptyFolderProps = getEmptyFolderProps();
 
   React.useEffect(() => {
+    let timeout;
+
     if (isLoading) {
       setShowLoader(isLoading);
     } else {
-      setTimeout(() => setShowLoader(isLoading), 300);
+      timeout = setTimeout(() => setShowLoader(isLoading), 300);
     }
+
+    return () => clearTimeout(timeout);
   }, [isLoading]);
 
   return (
