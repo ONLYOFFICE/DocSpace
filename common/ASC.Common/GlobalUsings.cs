@@ -51,6 +51,7 @@ global using ARSoft.Tools.Net.Dns;
 global using ASC.Common;
 global using ASC.Common.Caching;
 global using ASC.Common.DependencyInjection;
+global using ASC.Common.Log;
 global using ASC.Common.Mapping.PrimitiveTypeConverters;
 global using ASC.Common.Security;
 global using ASC.Common.Security.Authorizing;
