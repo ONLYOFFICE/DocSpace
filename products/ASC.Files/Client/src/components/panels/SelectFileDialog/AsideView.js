@@ -77,7 +77,7 @@ const SelectFileDialogAsideView = ({
                   folderTree={resultingFolderTree}
                   isFolderTreeLoading={!!!resultingFolderTree}
                   isNeedArrowIcon
-                  maxInputWidth={maxInputWidth}
+                  maxInputWidth={maxInputWidth ? maxInputWidth : "446px"}
                 />
 
                 <Text color="#A3A9AE" className="selection-panel_aside-title">
