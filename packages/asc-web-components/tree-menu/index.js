@@ -20,7 +20,8 @@ const StyledTree = styled(Tree)`
         margin-right: 10px;
         vertical-align: 1px;
         height: 24px;
-        width: 8px;
+        min-width: 8px;
+        max-width: 9px;
         margin-top: -5px;
       }
       span.rc-tree-node-content-wrapper {
