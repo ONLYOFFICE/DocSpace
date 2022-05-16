@@ -21,7 +21,7 @@ class FilesTableHeader extends React.Component {
         enable: true,
         default: true,
         sortBy: "AZ",
-        minWidth: 201,
+        minWidth: 210,
         onClick: this.onFilter,
       },
       {
@@ -73,7 +73,7 @@ class FilesTableHeader extends React.Component {
         key: "QuickButtons",
         title: "",
         enable: true,
-        defaultSize: 95,
+        defaultSize: 75,
         resizable: false,
       },
     ];
