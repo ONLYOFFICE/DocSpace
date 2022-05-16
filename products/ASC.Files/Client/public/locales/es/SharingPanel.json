@@ -3,10 +3,8 @@
   "AddShareMessage": "Añadir mensaje",
   "Comment": "Comentario",
   "CopyExternalLink": "Copiar enlace externo",
-  "CopyInternalLink": "Copiar enlace interno",
   "CustomFilter": "Filtro personalizado",
   "DenyAccess": "Denegar acceso",
-  "Embedding": "Incrustar",
   "EncryptedFileSharing": "Archivo <strong>{{title}}</strong> se ha compartido correctamente",
   "ExternalLink": "Enlace externo",
   "FormFilling": "Relleno de formularios",
@@ -15,7 +13,6 @@
   "ReadOnly": "Sólo lectura",
   "ShareEmailBody": "Se le ha concedido acceso al documento {{itemName}}. Haga clic en el siguiente enlace para abrir el documento ahora mismo: {{shareLink}}",
   "ShareEmailSubject": "Se le ha concedido acceso al documento {{itemName}}",
-  "ShareEveryone": "Todos",
   "ShareVia": "Compartir vía",
   "SharingSettingsTitle": "Configuración de uso compartido"
 }

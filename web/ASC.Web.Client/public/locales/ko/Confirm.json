@@ -14,7 +14,6 @@
   "FirstName": "이름",
   "InviteTitle": "이 포털에 초대 받으셨습니다!",
   "LoginRegistryButton": "참여",
-  "LoginWithAccount": "아니면 계정으로 로그인해주세요:",
   "PassworResetTitle": "이제 새 비밀번호를 설정하실 수 있습니다.",
   "SetAppButton": "앱 연결",
   "SetAppDescription": "이중 인증이 활성화되었습니다. 계속하시려면 인증 앱을 구성하세요. <1>Android</1> 및 <4>iOS</4>의 경우 Google Authenticator, <8>Windows Phone</8>의 경우 Authenticator를 사용하실 수 있습니다.",

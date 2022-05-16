@@ -66,7 +66,6 @@
   "RestoreBackupHelp": "La opción <strong>Restauración de datos</strong> se usa para restaurar los datos de portal guardados antes (de servidor local o portal SaaS).",
   "RestoreBackupHelpNote": "Seleccione el almacenamiento donde están guardados los datos, introduzca los detalles y marque la opción <strong>Enviar notificación a usuarios de portal</strong> para avisar a los usuarios de su portal sobre backup/restauración.",
   "RestoreDefaultButton": "Restablecer como predeterminado",
-  "SetDefaultTitle": "Establecer título predeterminado",
   "StudioTimeLanguageSettings": "Ajustes de idioma y zona horaria",
   "SuccessfullySaveGreetingSettingsMessage": "Los ajustes de la página de bienvenida han sido guardados con éxito",
   "SuccessfullySaveSettingsMessage": "Ajustes se han actualizado correctamente",
@@ -86,6 +85,5 @@
   "TwoFactorAuthDescription": "La autenticación de dos factores proporciona una forma más segura de iniciar la sesión. Tras introducir las credenciales, el usuario tendrá que introducir un código desde un SMS o la app de autenticación. ",
   "UseAsLogoButton": "Usar como logo",
   "Users": "Usuarios",
-  "WelcomePageTitle": "Título de la página de bienvenida",
   "YouHaveUnsavedChanges": "Tiene cambios no guardados"
 }
