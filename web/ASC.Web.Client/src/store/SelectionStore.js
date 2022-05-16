@@ -78,11 +78,11 @@ class SelectionStore {
   };
 
   get isHeaderVisible() {
-    return !!this.selection.length || this.selected !== "none";
+    return !!this.selection.length;
   }
 
   get isHeaderIndeterminate() {
-    console.log("RUN isHeaderIndeterminate");
+    //console.log("RUN isHeaderIndeterminate");
     const { admins } = this.settingsSetupStore.security.accessRight;
     return (
       this.isHeaderVisible &&
