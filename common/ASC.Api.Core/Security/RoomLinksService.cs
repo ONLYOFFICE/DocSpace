@@ -24,10 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.MessagingSystem.Models;
-
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-
 namespace ASC.Api.Core.Security;
 
 [Scope]
@@ -37,26 +33,23 @@ public class RoomLinksService
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly MessageTarget _messageTarget;
     private readonly UserManager _userManager;
-    private readonly MessageFactory _messageFactory;
     private readonly Lazy<MessagesContext> _messagesContext;
-    private readonly IMapper _mapper;
+    private readonly MessageService _messageService;
 
     public RoomLinksService(
         CommonLinkUtility commonLinkUtility,
         IHttpContextAccessor httpContextAccessor,
         MessageTarget messageTarget,
         UserManager userManager,
-        MessageFactory messageFactory,
         DbContextManager<MessagesContext> dbContextManager,
-        IMapper mapper)
+        MessageService messageService)
     {
         _commonLinkUtility = commonLinkUtility;
         _httpContextAccessor = httpContextAccessor;
         _messageTarget = messageTarget;
         _userManager = userManager;
-        _messageFactory = messageFactory;
         _messagesContext = new Lazy<MessagesContext>(() => dbContextManager.Value);
-        _mapper = mapper;
+        _messageService = messageService;
     }
 
     public string GenerateLink<T>(T id, string email, int fileShare, EmployeeType employeeType, Guid guid)
@@ -89,47 +82,35 @@ public class RoomLinksService
 
         if (message == null)
         {
-            SaveVisitLinkInfo(id, email, key, interval);
+            SaveVisitLinkInfo(id, email, key);
 
             return true;
         }
 
-        return message.Date <= DateTime.Now ? false : true;
+        return message.Date + interval > DateTime.Now ? true : false;
     }
 
-    private void SaveVisitLinkInfo(string id, string email, string key, TimeSpan interval)
+    private void SaveVisitLinkInfo(string id, string email, string key)
     {
         var headers = _httpContextAccessor?.HttpContext?.Request?.Headers;
         var target = _messageTarget.Create(new[] {id, email});
 
-        var message = _messageFactory.Create(null, headers, MessageAction.RoomInviteLinkUsed, target);
-        var audit = _mapper.Map<EventMessage, AuditEvent>(message);
-
-        audit.Date = DateTime.Now + interval;
-        audit.DescriptionRaw = Serialize(new[] { key });
-
-        var context = _messagesContext.Value;
-        context.AuditEvents.Add(audit);
-        context.SaveChanges();
+        _messageService.Send(headers, MessageAction.RoomInviteLinkUsed, target, key);
     }
 
     private AuditEvent GetLinkInfo(string id, string email, string key)
     {
         var context = _messagesContext.Value;
         var target = _messageTarget.Create(new[] { id, email });
-
-        var message = context.AuditEvents.Where(a => a.Target == target.ToString() && 
-            a.DescriptionRaw == Serialize(new[] { key })).FirstOrDefault();
-
-        return message;
-    }
-
-    private string Serialize(IEnumerable<string> description)
-    {
-        return JsonConvert.SerializeObject(description,
+        var description = JsonConvert.SerializeObject(new[] { key },
             new JsonSerializerSettings
             {
                 DateTimeZoneHandling = DateTimeZoneHandling.Utc
             });
+
+        var message = context.AuditEvents.Where(a => a.Target == target.ToString() && 
+            a.DescriptionRaw == description).FirstOrDefault();
+
+        return message;
     }
 }
