@@ -223,7 +223,7 @@ class SectionHeaderContent extends React.Component {
   onEmptyTrashAction = () => this.props.setEmptyTrashDialogVisible(true);
 
   getContextOptionsFolder = () => {
-    const { t, personal } = this.props;
+    const { t, toggleInfoPanel, personal } = this.props;
 
     return [
       {
@@ -239,6 +239,13 @@ class SectionHeaderContent extends React.Component {
         onClick: this.createLinkForPortalUsers,
         disabled: personal ? true : false,
         icon: "/static/images/invitation.link.react.svg",
+      },
+      {
+        key: "show-info",
+        label: t("InfoPanel:ViewDetails"),
+        onClick: toggleInfoPanel,
+        disabled: false,
+        icon: "/static/images/info.react.svg",
       },
       { key: "separator-2", isSeparator: true },
       {
@@ -515,7 +522,7 @@ export default inject(
     };
   }
 )(
-  withTranslation(["Home", "Common", "Translations"])(
+  withTranslation(["Home", "Common", "Translations", "InfoPanel"])(
     withRouter(observer(SectionHeaderContent))
   )
 );
