@@ -38,4 +38,10 @@ public static partial class CommonLogger
 
     [LoggerMessage(Level = LogLevel.Information)]
     public static partial void Information(this ILogger logger, string message);
+
+    [LoggerMessage(Level = LogLevel.Warning)]
+    public static partial void Warning(this ILogger logger, string message);
+
+    [LoggerMessage(Level = LogLevel.Warning)]
+    public static partial void WarningWithException(this ILogger logger, Exception exception);
 }
