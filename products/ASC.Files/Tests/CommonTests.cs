@@ -27,7 +27,7 @@
 namespace ASC.Files.Tests;
 
 [TestFixture]
-public class СommonTests : BaseFilesTests
+public class CommonTests : BaseFilesTests
 {
     [TestCase(DataTests.ShareId)]
     [TestCase(DataTests.FavoritesId)]
