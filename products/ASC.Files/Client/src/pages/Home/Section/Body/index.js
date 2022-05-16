@@ -90,9 +90,8 @@ const SectionBodyContent = (props) => {
             : rectNewFolder.bottom - window.innerHeight + 300;
 
         bodyScroll.scrollTo(0, count);
-      } else {
-        setScrollToFolderId(null);
       }
+      setScrollToFolderId(null);
     }
   }, [scrollToFolderId]);
 
