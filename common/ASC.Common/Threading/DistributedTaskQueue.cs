@@ -154,7 +154,7 @@ public class DistributedTaskQueue
 
         task.Start(Scheduler);
 
-        _logger.LogTrace("EnqueueTask '{DistributedTaskId}' by instanse id '{InstanceId}'", distributedTask.Id, INSTANCE_ID);
+        _logger.TraceEnqueueTask(distributedTask.Id, INSTANCE_ID);
 
     }
 
@@ -191,7 +191,7 @@ public class DistributedTaskQueue
 
         task.Start(Scheduler);
 
-        _logger.LogTrace("EnqueueTask '{DistributedTaskId}' by instanse id '{InstanceId}'", distributedTask.Id, INSTANCE_ID);
+        _logger.TraceEnqueueTask(distributedTask.Id, INSTANCE_ID);
 
     }
 
@@ -256,7 +256,7 @@ public class DistributedTaskQueue
             SaveToCache(queueTasks);
         }
 
-        _logger.LogTrace("DequeueTask '{DistributedTaskId}' by instanse id '{InstanceId}'", id, INSTANCE_ID);
+        _logger.TraceEnqueueTask(id, INSTANCE_ID);
 
     }
 
@@ -298,7 +298,7 @@ public class DistributedTaskQueue
 
             SaveToCache(queueTasks);
 
-            _logger.LogTrace("Publication DistributedTask '{DistributedTaskId}' by instanse id '{InstanceId}' ", task.Id, task.InstanceId);
+            _logger.TracePublicationDistributedTask(task.Id, task.InstanceId);
         };
     }
 
