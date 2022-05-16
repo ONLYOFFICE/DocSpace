@@ -11,7 +11,7 @@ import TableHeaderCell from "./TableHeaderCell";
 import { size } from "../utils/device";
 
 const minColumnSize = 150;
-const defaultMinColumnSize = 90;
+const defaultMinColumnSize = 110;
 const settingsSize = 24;
 const containerMargin = 25;
 
