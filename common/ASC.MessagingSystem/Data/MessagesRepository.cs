@@ -40,6 +40,7 @@ public class MessagesRepository : IDisposable
     private readonly ILog _logger;
     private readonly Timer _timer;
     private Parser _parser;
+    private readonly HashSet<MessageAction> _forceSaveAuditActions = new HashSet<MessageAction> { MessageAction.RoomInviteLinkUsed };
 
     public MessagesRepository(IServiceScopeFactory serviceScopeFactory, ILog logger, IMapper mapper)
     {
@@ -57,13 +58,34 @@ public class MessagesRepository : IDisposable
 
     public void Add(EventMessage message)
     {
+        var contains = _forceSaveAuditActions.Contains(message.Action);
+
         // messages with action code < 2000 are related to login-history
-        if ((int)message.Action < 2000)
+        if ((int)message.Action < 2000 || contains)
         {
             using var scope = _serviceScopeFactory.CreateScope();
             using var ef = scope.ServiceProvider.GetService<DbContextManager<MessagesContext>>().Get("messages");
 
-            AddLoginEvent(message, ef);
+            if (contains)
+            {
+                try
+                {
+                    if (!string.IsNullOrEmpty(message.UAHeader))
+                    {
+                        AddClientInfo(message, null);
+                    }
+
+                    AddAuditEvent(message, ef);
+                }
+                catch (Exception e)
+                {
+                    _logger.Error("ForceSave " + message.Id, e);
+                }
+            }
+            else
+            {
+                AddLoginEvent(message, ef);
+            }
 
             return;
         }
@@ -117,25 +139,11 @@ public class MessagesRepository : IDisposable
             {
                 try
                 {
+                    dict.TryGetValue(message.UAHeader, out var clientInfo);
 
-                    ClientInfo clientInfo;
+                    AddClientInfo(message, clientInfo);
 
-                    if (dict.TryGetValue(message.UAHeader, out clientInfo))
-                    {
-
-                    }
-                    else
-                    {
-                        _parser = _parser ?? Parser.GetDefault();
-                        clientInfo = _parser.Parse(message.UAHeader);
-                        dict.Add(message.UAHeader, clientInfo);
-                    }
-
-                    if (clientInfo != null)
-                    {
-                        message.Browser = GetBrowser(clientInfo);
-                        message.Platform = GetPlatform(clientInfo);
-                    }
+                    dict.Add(message.UAHeader, clientInfo);
                 }
                 catch (Exception e)
                 {
@@ -159,6 +167,21 @@ public class MessagesRepository : IDisposable
 
         dbContext.LoginEvents.Add(loginEvent);
         dbContext.SaveChanges();
+    }
+
+    private void AddClientInfo(EventMessage message, ClientInfo clientInfo)
+    {
+        if (clientInfo == null)
+        {
+            _parser ??= Parser.GetDefault();
+            clientInfo = _parser.Parse(message.UAHeader);
+        }
+
+        if (clientInfo != null)
+        {
+            message.Browser = GetBrowser(clientInfo);
+            message.Platform = GetPlatform(clientInfo);
+        }
     }
 
     private void AddAuditEvent(EventMessage message, MessagesContext dbContext)
