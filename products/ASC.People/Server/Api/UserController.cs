@@ -62,6 +62,7 @@ public class UserController : PeopleControllerBase
     private readonly SettingsManager _settingsManager;
     private readonly FileSecurity _fileSecurity;
     private readonly IDaoFactory _daoFactory;
+    private readonly EmailValidationKeyProvider _validationKeyProvider;
 
     public UserController(
         Constants constants,
@@ -98,7 +99,8 @@ public class UserController : PeopleControllerBase
         IHttpContextAccessor httpContextAccessor,
         SettingsManager settingsManager,
         FileSecurity fileSecurity,
-        IDaoFactory daoFactory)
+        IDaoFactory daoFactory,
+        EmailValidationKeyProvider validationKeyProvider)
         : base(userManager, permissionContext, apiContext, userPhotoManager, httpClientFactory, httpContextAccessor)
     {
         _constants = constants;
@@ -130,6 +132,7 @@ public class UserController : PeopleControllerBase
         _settingsManager = settingsManager;
         _fileSecurity = fileSecurity;
         _daoFactory = daoFactory;
+        _validationKeyProvider = validationKeyProvider;
     }
 
     [Create("active")]
@@ -795,7 +798,7 @@ public class UserController : PeopleControllerBase
         return string.Empty;
     }
 
-    public EmployeeDto AddMember(MemberRequestDto inDto)
+    private EmployeeDto AddMember(MemberRequestDto inDto)
     {
         _apiContext.AuthByClaim();
 
@@ -805,6 +808,16 @@ public class UserController : PeopleControllerBase
 
         if (inDto.FromInviteLink && !string.IsNullOrEmpty(inDto.RoomId))
         {
+            var employeeType = inDto.IsVisitor ? EmployeeType.Visitor : EmployeeType.User;
+
+            var result = _validationKeyProvider.ValidateEmailKey(inDto.Email + ConfirmType.RoomInvite + ((int)employeeType + inDto.RoomAccess + inDto.RoomId), inDto.Key, 
+                _validationKeyProvider.ValidEmailKeyInterval);
+
+            if (result != EmailValidationKeyProvider.ValidationResult.Ok)
+            {
+                throw new SecurityException("Invalid data");
+            }
+
             if (success)
             {
                 var folderDao = _daoFactory.GetFolderDao<int>();
@@ -812,17 +825,17 @@ public class UserController : PeopleControllerBase
 
                 if (folder == null)
                 {
-                    throw new Exception();
+                    throw new ItemNotFoundException("Virtual room not found");
                 }
             }
             else
             {
                 var folderDao = _daoFactory.GetFolderDao<string>();
-                var folder = folderDao.GetFolderAsync(inDto.RoomId);
+                var folder = folderDao.GetFolderAsync(inDto.RoomId).Result;
 
                 if (folder == null)
                 {
-                    throw new Exception();
+                    throw new ItemNotFoundException("Virtual room not found");
                 }
             }
         }
@@ -865,9 +878,6 @@ public class UserController : PeopleControllerBase
 
         user = _userManagerWrapper.AddUser(user, inDto.PasswordHash, inDto.FromInviteLink, true, inDto.IsVisitor, inDto.FromInviteLink);
 
-        var messageAction = inDto.IsVisitor ? MessageAction.GuestCreated : MessageAction.UserCreated;
-        _messageService.Send(messageAction, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
-
         UpdateDepartments(inDto.Department, user);
 
         if (inDto.Files != _userPhotoManager.GetDefaultPhotoAbsoluteWebPath())
@@ -887,6 +897,14 @@ public class UserController : PeopleControllerBase
                 _fileSecurity.ShareAsync(inDto.RoomId, FileEntryType.Folder, user.Id, (Files.Core.Security.FileShare)inDto.RoomAccess)
                     .GetAwaiter().GetResult();
             }
+
+            var messageAction = inDto.IsVisitor ? MessageAction.GuestCreatedAndAddedToRoom : MessageAction.UserCreatedAndAddedToRoom;
+            _messageService.Send(messageAction, _messageTarget.Create(new[] {user.Id.ToString(), inDto.RoomId}), user.DisplayUserName(false, _displayUserSettingsHelper));
+        }
+        else
+        {
+            var messageAction = inDto.IsVisitor ? MessageAction.GuestCreated : MessageAction.UserCreated;
+            _messageService.Send(messageAction, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
         }
 
         return _employeeFullDtoHelper.GetFull(user);
