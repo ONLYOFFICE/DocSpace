@@ -167,9 +167,5 @@
       <DependentUpon>FilesUCResource.resx</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
-  
-  <ItemGroup>
-    <Folder Include="ApiModels\RequestDto\" />
-  </ItemGroup>
 
 </Project>

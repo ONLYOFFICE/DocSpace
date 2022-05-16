@@ -35,9 +35,9 @@ public static class HostBuilderExtension
         hostBuilder.UseSystemd();
         hostBuilder.UseWindowsService();
         hostBuilder.UseServiceProviderFactory(new AutofacServiceProviderFactory());
-        hostBuilder.ConfigureNLogLogging();
         hostBuilder.ConfigureDefaultAppConfiguration(args, configureApp);
         hostBuilder.ConfigureDefaultServices(configureServices);
+        hostBuilder.ConfigureNLogLogging();
 
         return hostBuilder;
     }

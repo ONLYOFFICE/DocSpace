@@ -24,34 +24,35 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-global using System.Net;
-global using System.Net.Http.Json;
-global using System.Reflection;
-global using System.Text.Json;
+namespace ASC.Files.Tests;
 
-global using ASC.Api.Core;
-global using ASC.Api.Core.Middleware;
-global using ASC.Common;
-global using ASC.Core;
-global using ASC.Core.Common.EF;
-global using ASC.Core.Common.EF.Context;
-global using ASC.Files.Core.ApiModels;
-global using ASC.Files.Core.ApiModels.RequestDto;
-global using ASC.Files.Core.ApiModels.ResponseDto;
-global using ASC.Files.Core.Resources;
-global using ASC.Files.Core.Security;
-global using ASC.Files.Tests.Infrastructure;
-global using ASC.Web.Files.Services.WCFService.FileOperations;
+[TestFixture]
+public class СommonTests : BaseFilesTests
+{
+    [TestCase(DataTests.ShareId)]
+    [TestCase(DataTests.FavoritesId)]
+    [TestCase(DataTests.RecentId)]
+    [TestCase(DataTests.TrashId)]
+    [Category("Folder")]
+    [Order(1)]
+    [Description("post - files/folder/{folderId} - attempt to create a folder when it is forbidden")]
+    public async Task CreateFolderReturnsFolderWrapperAsync(int folderId)
+    {
+        var request = await _client.PostAsync("folder/" + folderId, JsonContent.Create(new { Title = "test" }));
+        var result = await request.Content.ReadFromJsonAsync<SuccessApiResponse>();
+        Assert.AreEqual(HttpStatusCode.Forbidden, result.StatusCode);
+    }
 
-global using Autofac;
-
-global using Microsoft.AspNetCore.Hosting;
-global using Microsoft.AspNetCore.Mvc;
-global using Microsoft.AspNetCore.Mvc.Testing;
-global using Microsoft.EntityFrameworkCore.Infrastructure;
-global using Microsoft.EntityFrameworkCore.Migrations;
-global using Microsoft.Extensions.Configuration;
-global using Microsoft.Extensions.DependencyInjection;
-
-global using NUnit.Framework;
-global using NUnit.Framework.Internal;
+    [TestCase(DataTests.ShareId)]
+    [TestCase(DataTests.FavoritesId)]
+    [TestCase(DataTests.RecentId)]
+    [TestCase(DataTests.TrashId)]
+    [Category("File")]
+    [Description("post - files/{folderId}/file - attempt to create a file when it is forbidden")]
+    [Order(1)]
+    public async Task CreateFileReturnsFolderWrapperAsync(int folderId)
+    {
+        var file = await PostAsync<FileDto<int>>(folderId + "/file", JsonContent.Create(new { Title = "test" }), _options);
+        Assert.AreEqual(file.FolderId, 1);
+    }
+}
