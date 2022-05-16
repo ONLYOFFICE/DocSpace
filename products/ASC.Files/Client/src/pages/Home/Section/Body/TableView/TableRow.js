@@ -374,7 +374,11 @@ const FilesTableRow = (props) => {
           />
         </TableCell>
 
-        <TableCell {...dragStyles} {...selectionProp}>
+        <TableCell
+          {...dragStyles}
+          {...selectionProp}
+          style={{ paddingRight: "0px" }}
+        >
           <StyledQuickButtonsContainer>
             {quickButtonsComponent}
           </StyledQuickButtonsContainer>
