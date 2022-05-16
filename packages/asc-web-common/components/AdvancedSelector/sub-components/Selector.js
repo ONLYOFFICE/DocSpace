@@ -37,7 +37,6 @@ const getCurrentGroup = (items) => {
   return currentGroup;
 };
 
-let countLoad;
 const Selector = (props) => {
   const {
     groups,
@@ -63,6 +62,7 @@ const Selector = (props) => {
     onArrowClick,
     headerLabel,
     total,
+    isFirstLoad,
   } = props;
 
   const listOptionsRef = useRef(null);
@@ -73,9 +73,6 @@ const Selector = (props) => {
     resetCache();
   }, [searchValue, currentGroup, hasNextPage]);
 
-  useEffect(() => {
-    countLoad = 0;
-  }, []);
   const resetCache = useCallback(() => {
     if (listOptionsRef && listOptionsRef.current) {
       listOptionsRef.current.resetloadMoreItemsCache(true);
@@ -152,7 +149,6 @@ const Selector = (props) => {
 
   const onSearchChange = useCallback(
     (value) => {
-      countLoad = 0;
       setSearchValue(value);
       onSearchChanged && onSearchChanged(value);
     },
@@ -160,7 +156,6 @@ const Selector = (props) => {
   );
 
   const onSearchReset = useCallback(() => {
-    countLoad = 0;
     onSearchChanged && onSearchChange("");
   }, [onSearchChanged]);
 
@@ -264,7 +259,7 @@ const Selector = (props) => {
         searchValue: searchValue,
         currentGroup: currentGroup ? currentGroup.key : null,
       };
-      countLoad++;
+
       loadNextPage && loadNextPage(options);
     },
     [isNextPageLoading, searchValue, currentGroup, options]
@@ -301,8 +296,6 @@ const Selector = (props) => {
   );
 
   const onArrowClickAction = useCallback(() => {
-    countLoad = 0;
-
     if (groupHeader && groups.length !== 1) {
       setGroupHeader(null);
 
@@ -389,7 +382,7 @@ const Selector = (props) => {
                   isItemLoaded={isItemLoaded}
                   isOptionChecked={isOptionChecked}
                   loadMoreItems={loadMoreItems}
-                  countLoad={countLoad}
+                  isFirstLoad={isFirstLoad}
                 />
               )}
             </>
@@ -429,6 +422,7 @@ Selector.propTypes = {
   isDisabled: PropTypes.bool,
   isMultiSelect: PropTypes.bool,
   allowGroupSelection: PropTypes.bool,
+  isFirstLoad: PropTypes.bool,
 
   selectButtonLabel: PropTypes.string,
   selectAllLabel: PropTypes.string,

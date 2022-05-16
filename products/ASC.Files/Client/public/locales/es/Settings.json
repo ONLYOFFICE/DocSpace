@@ -1,7 +1,9 @@
 ﻿{
   "CommonSettings": "Configuración común",
+  "ConnectEmpty": "No hay nada aquí",
   "ConnectAdminDescription": "Para que la conexión tenga éxito, introduzca los datos necesarios en <1>esta página</1>.",
   "ConnectDescription": "Usted puede conectar las siguientes cuentas a ONLYOFFICE Documents. Los documentos de estas cuentas estarán disponibles para editar en la sección 'Mis Documentos'. ",
+  "ConnectDescriptionText": "Todavía no se han conectado nubes de terceros.",
   "ConnectMakeShared": "Hacer que sea compartido y ponerlo en la carpeta 'Documentos comunes'",
   "ConnextOtherAccount": "Otra cuenta",
   "DisplayFavorites": "Mostrar Favoritos",
@@ -15,4 +17,5 @@
   "ThirdPartyBtn": "Permitir que los usuarios conecten almacenamientos de terceros",
   "ThirdPartySettings": "Nubes conectadas",
   "UpdateOrCreate": "Actualice la versión del archivo existente con el mismo nombre. En caso contrario, se creará una copia del archivo."
+  "Clouds": "Nubes"
 }

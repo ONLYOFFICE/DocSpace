@@ -16,14 +16,14 @@ const OptionList = ({
   isItemLoaded,
   itemCount,
   loadMoreItems,
-  countLoad,
+  isFirstLoad,
 }) => {
   const renderOption = React.useCallback(
     ({ index, style }) => {
       const isLoaded = isItemLoaded(index);
-
+   
       if (!isLoaded) {
-        if (countLoad >= 1) {
+        if (!isFirstLoad) {
           return (
             <div style={style}>
               <Option isLoader={true} countLoaderRows={2} />
