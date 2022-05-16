@@ -38,6 +38,7 @@ const MobileView = ({
   primaryProgressDataVisible,
   primaryProgressDataPercent,
   primaryProgressDataLoadingFile,
+  primaryProgressDataAlert,
   clearPrimaryProgressData,
   secondaryProgressDataStoreVisible,
   secondaryProgressDataStorePercent,
@@ -157,6 +158,7 @@ const MobileView = ({
       progressOptions={progressOptions}
       title={titleProp}
       withButton={true}
+      alert={primaryProgressDataAlert}
     />
   );
 };
@@ -174,6 +176,7 @@ export default inject(({ uploadDataStore }) => {
     visible: primaryProgressDataVisible,
     percent: primaryProgressDataPercent,
     loadingFile: primaryProgressDataLoadingFile,
+    alert: primaryProgressDataAlert,
     clearPrimaryProgressData,
   } = primaryProgressDataStore;
 
@@ -192,6 +195,7 @@ export default inject(({ uploadDataStore }) => {
     primaryProgressDataVisible,
     primaryProgressDataPercent,
     primaryProgressDataLoadingFile,
+    primaryProgressDataAlert,
     clearPrimaryProgressData,
     secondaryProgressDataStoreVisible,
     secondaryProgressDataStorePercent,

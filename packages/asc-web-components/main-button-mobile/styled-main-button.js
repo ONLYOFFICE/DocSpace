@@ -236,6 +236,15 @@ const StyledBar = styled.div`
       : props.theme.mainButtonMobile.bar.background};
 `;
 
+const StyledAlertIcon = styled.div`
+  position: absolute;
+  z-index: 1010;
+  width: 12px;
+  height: 12px;
+  left: 26px;
+  top: 6px;
+`;
+
 StyledBar.defaultProps = { theme: Base };
 
 export {
@@ -249,4 +258,5 @@ export {
   StyledBar,
   StyledButtonWrapper,
   StyledButtonOptions,
+  StyledAlertIcon,
 };

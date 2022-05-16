@@ -295,6 +295,7 @@ class PureHome extends React.Component {
       primaryProgressDataPercent,
       primaryProgressDataIcon,
       primaryProgressDataAlert,
+      clearPrimaryProgressData,
 
       secondaryProgressDataStoreVisible,
       secondaryProgressDataStorePercent,
@@ -328,6 +329,7 @@ class PureHome extends React.Component {
           secondaryProgressBarValue={secondaryProgressDataStorePercent}
           secondaryProgressBarIcon={secondaryProgressDataStoreIcon}
           showSecondaryButtonAlert={secondaryProgressDataStoreAlert}
+          clearPrimaryProgressData={clearPrimaryProgressData}
           viewAs={viewAs}
           hideAside={
             !!fileActionId ||
