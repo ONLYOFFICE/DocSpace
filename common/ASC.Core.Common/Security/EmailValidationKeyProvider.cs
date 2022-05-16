@@ -57,8 +57,11 @@ public class EmailValidationKeyProvider
         {
             authValidInterval = TimeSpan.FromHours(1);
         }
-
-        ValidVisitLinkInterval = TimeSpan.FromMinutes(15);
+        if (!TimeSpan.TryParse(configuration["visit:validinterval"], out var validVisitLinkInterval))
+        {
+            ValidVisitLinkInterval = TimeSpan.FromMinutes(15);
+        }
+       
         ValidEmailKeyInterval = validInterval;
         ValidAuthKeyInterval = authValidInterval;
         _logger = logger;
