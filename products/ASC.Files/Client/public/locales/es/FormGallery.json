@@ -1,7 +1,7 @@
-{
-  "GalleryEmptyScreenHeader": "Failed to load form templates",
-  "GalleryEmptyScreenDescription": "Select any form template to see the details",
-  "EmptyScreenDescription": "Please check your Internet connection and refresh the page or try later",
-  "TemplateInfo": "Template info",
-  "FormTemplateInfo": "Form template info"
+﻿{
+  "GalleryEmptyScreenHeader": "Error al cargar las plantillas de formulario",
+  "GalleryEmptyScreenDescription": "Seleccione cualquier plantilla de formulario para ver los detalles",
+  "EmptyScreenDescription": "Por favor, compruebe su conexión a Internet y actualice la página o inténtelo más tarde",
+  "TemplateInfo": "Información sobre la plantilla",
+  "FormTemplateInfo": "Información sobre la plantilla de formulario"
 }
