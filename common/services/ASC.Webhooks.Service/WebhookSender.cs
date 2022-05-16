@@ -75,13 +75,13 @@ public class WebhookSender
                 if (response.IsSuccessStatusCode)
                 {
                     UpdateDb(dbWorker, id, response, request, ProcessStatus.Success);
-                    _log.LogDebug("Response: {response}", response);
+                    _log.DebugResponse(response);
                     break;
                 }
                 else if (i == RepeatCount - 1)
                 {
                     UpdateDb(dbWorker, id, response, request, ProcessStatus.Failed);
-                    _log.LogDebug("Response: {response}", response);
+                    _log.DebugResponse(response);
                 }
             }
             catch (Exception ex)
@@ -91,7 +91,7 @@ public class WebhookSender
                     UpdateDb(dbWorker, id, response, request, ProcessStatus.Failed);
                 }
 
-                _log.LogError(ex.Message);
+                _log.ErrorWithException(ex);
                 continue;
             }
         }
