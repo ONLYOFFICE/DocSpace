@@ -358,7 +358,7 @@ class TableHeader extends React.Component {
             }
           });
 
-          const newOldWidth =
+          const changedWidth =
             tableInfoPanelContainer
               .map((column) => this.getSubstring(column))
               .reduce((x, y) => x + y) -
@@ -371,6 +371,8 @@ class TableHeader extends React.Component {
           ) {
             const currentContentWidth =
               contentWidth - +this.getSubstring(tableInfoPanelContainer[0]);
+
+            let overWidth = 0;
 
             tableInfoPanelContainer.forEach((item, index) => {
               if (index == 0) {
@@ -389,7 +391,7 @@ class TableHeader extends React.Component {
                 } else if (item !== `${settingsSize}px`) {
                   const percent =
                     (this.getSubstring(item) /
-                      (newOldWidth -
+                      (changedWidth -
                         +this.getSubstring(tableInfoPanelContainer[0]))) *
                     100;
 
@@ -400,12 +402,51 @@ class TableHeader extends React.Component {
                     ? (currentContentWidth * percent) / 100 + "px"
                     : defaultMinColumnSize + "px";
 
+                  if (
+                    (currentContentWidth * percent) / 100 <
+                      defaultMinColumnSize &&
+                    !defaultColumnSize
+                  ) {
+                    overWidth +=
+                      defaultMinColumnSize -
+                      (currentContentWidth * percent) / 100;
+                  }
+
                   gridTemplateColumns.push(newItemWidth);
                 } else {
                   gridTemplateColumns.push(item);
                 }
               }
             });
+
+            if (overWidth > 0) {
+              gridTemplateColumns.forEach((column, index) => {
+                const columnWidth = this.getSubstring(column);
+
+                if (
+                  index !== 0 &&
+                  column !== "0px" &&
+                  column !== `${defaultSize}px` &&
+                  column !== `${settingsSize}px` &&
+                  columnWidth > defaultMinColumnSize
+                ) {
+                  const availableWidth = columnWidth - defaultMinColumnSize;
+
+                  if (availableWidth < Math.abs(overWidth)) {
+                    overWidth = Math.abs(overWidth) - availableWidth;
+                    return (gridTemplateColumns[index] =
+                      columnWidth - availableWidth + "px");
+                  } else {
+                    const temp = overWidth;
+
+                    overWidth = 0;
+
+                    return (gridTemplateColumns[index] =
+                      columnWidth - Math.abs(temp) + "px");
+                  }
+                }
+              });
+            }
           } else {
             tableInfoPanelContainer.forEach((item, index) => {
               const column = document.getElementById("column_" + index);
