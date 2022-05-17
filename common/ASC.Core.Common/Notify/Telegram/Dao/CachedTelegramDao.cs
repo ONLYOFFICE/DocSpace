@@ -114,7 +114,7 @@ public class CachedTelegramDao
         return users;
     }
 
-    public void RegisterUser(Guid userId, int tenantId, int telegramId)
+    public void RegisterUser(Guid userId, int tenantId, long telegramId)
     {
         TgDao.RegisterUser(userId, tenantId, telegramId);
 

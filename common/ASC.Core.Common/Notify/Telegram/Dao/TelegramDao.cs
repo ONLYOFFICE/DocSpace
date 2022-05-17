@@ -58,7 +58,7 @@ public class TelegramDao
         TelegramDbContext = dbContextManager.Value;
     }
 
-    public void RegisterUser(Guid userId, int tenantId, int telegramId)
+    public void RegisterUser(Guid userId, int tenantId, long telegramId)
     {
         var user = new TelegramUser
         {

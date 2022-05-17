@@ -39,17 +39,20 @@ public class TelegramHelper
     private readonly ConsumerFactory _consumerFactory;
     private readonly CachedTelegramDao _cachedTelegramDao;
     private readonly TelegramServiceClient _telegramServiceClient;
+    private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILog _logger;
 
     public TelegramHelper(
         ConsumerFactory consumerFactory,
         IOptionsSnapshot<CachedTelegramDao> cachedTelegramDao,
         TelegramServiceClient telegramServiceClient,
+        IHttpClientFactory httpClientFactory,
         ILog logger)
     {
         _consumerFactory = consumerFactory;
         _cachedTelegramDao = cachedTelegramDao.Value;
         _telegramServiceClient = telegramServiceClient;
+        _httpClientFactory = httpClientFactory;
         _logger = logger;
     }
 
@@ -169,6 +172,10 @@ public class TelegramHelper
 
     public TelegramBotClient InitClient(string token, string proxy)
     {
-        return string.IsNullOrEmpty(proxy) ? new TelegramBotClient(token) : new TelegramBotClient(token, new WebProxy(proxy));
+        var httpClient = _httpClientFactory.CreateClient();
+
+        httpClient.BaseAddress = new Uri(proxy);
+
+        return string.IsNullOrEmpty(proxy) ? new TelegramBotClient(token) : new TelegramBotClient(token, httpClient);
     }
 }
