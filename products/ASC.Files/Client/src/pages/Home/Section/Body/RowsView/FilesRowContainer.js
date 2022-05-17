@@ -18,13 +18,19 @@ const StyledRowContainer = styled(RowContainer)`
   }
 
   .row-wrapper:not(.row-selected)
-    + .row-wrapper:not(.row-hotkey-border)
+    //+ .row-wrapper:not(.row-hotkey-border)
     + .row-selected {
     .files-row {
       border-top: ${(props) =>
         `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
       margin-top: -3px;
       ${marginStyles}
+    }
+  }
+
+  .row-hotkey-border + .row-selected {
+    .files-row {
+      border-top: 1px solid #2da7db !important;
     }
   }
 

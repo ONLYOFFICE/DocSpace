@@ -405,6 +405,9 @@ class SectionHeaderContent extends React.Component {
                     onBackToParentFolder={this.onBackToParentFolder}
                     toggleInfoPanel={toggleInfoPanel}
                     isInfoPanelVisible={isInfoPanelVisible}
+                    titles={{
+                      trash: t("EmptyRecycleBin"),
+                    }}
                   />
                 )}
               </div>

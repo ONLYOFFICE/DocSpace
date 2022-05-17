@@ -14,7 +14,6 @@
   "FirstName": "Imię",
   "InviteTitle": "Zaproszono Cię, aby dołączyć do tego portalu!",
   "LoginRegistryButton": "Dołącz",
-  "LoginWithAccount": "lub zaloguj się poprzez:",
   "PassworResetTitle": "Teraz możesz utworzyć nowe hasło.",
   "SetAppButton": "Podłącz aplikację",
   "SetAppDescription": "Weryfikacja dwuetapowa jest włączona. Skonfiguruj swoją aplikację uwierzytelniającą, aby kontynuować pracę w portalu. Możesz użyć aplikacji Google Authenticator dla systemów <1>Android</1> i <4>iOS</4> lub Authenticator dla <8>Windows Phone</8>.",

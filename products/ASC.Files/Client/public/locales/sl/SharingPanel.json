@@ -3,10 +3,8 @@
   "AddShareMessage": "Dodaj sporočilo",
   "Comment": "Komentar",
   "CopyExternalLink": "Kopiraj zunanjo povezavo",
-  "CopyInternalLink": "Kopiraj interno povezavo",
   "CustomFilter": "Filter po meri",
   "DenyAccess": "Zavrni dostop",
-  "Embedding": "Vgrajevanje",
   "EncryptedFileSharing": "Datoteka <strong>{{title}}</strong> uspešno deljena",
   "ExternalLink": "Zunanja povezava",
   "FormFilling": "Izpolnjevanje obrazca",
@@ -15,7 +13,6 @@
   "ReadOnly": "Samo za branje",
   "ShareEmailBody": "Omogočen vam je dostop do {{itemName}} dokumenta. Če želite dokument odpreti, kliknite spodnjo povezavo: {{shareLink}}",
   "ShareEmailSubject": "Omogočen vam je dostop do {{itemName}} dokumenta",
-  "ShareEveryone": "Vsi",
   "ShareVia": "Deli preko",
   "SharingSettingsTitle": "Nastavitve deljenja"
 }

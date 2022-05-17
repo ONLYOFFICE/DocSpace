@@ -56,7 +56,7 @@ const StyledToastContainer = styled(ToastContainer)`
   }
 
   .SlideIn {
-    animation-name: SlideIn;
+    animation: SlideIn 0.7s ease-out both;
   }
 
   @keyframes SlideOut {
@@ -70,7 +70,7 @@ const StyledToastContainer = styled(ToastContainer)`
   }
 
   .SlideOut {
-    animation-name: SlideOut;
+    animation: SlideOut 0.3s ease-out both;
   }
 
   @keyframes Toastify__trackProgress {

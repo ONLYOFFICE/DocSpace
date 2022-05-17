@@ -56,7 +56,6 @@
   "ProductUserOpportunities": "Afișați profile și grupe",
   "RegistrationDate": "Data de înregistrare",
   "RestoreDefaultButton": "Restabilirea setărilor implicite",
-  "SetDefaultTitle": "Titlul implicit",
   "StudioTimeLanguageSettings": "Setări limbă si fus orar",
   "SuccessfullySaveGreetingSettingsMessage": "Setările paginii principale au fost salvate cu succes",
   "SuccessfullySaveSettingsMessage": "Setările au fost actualizate cu succes",
@@ -75,6 +74,5 @@
   "TwoFactorAuthDescription": "Autentificarea cu doi factori vă oferă o securitate suplimentară la intrarea în cont. După introducerea informațiilor de identificare, utilizatorul trebuie să introducă codul de verificare din SMS-ul sau aplicația de autentificare.",
   "UseAsLogoButton": "Utilizează ca logo-ul",
   "Users": "Utilizatori",
-  "WelcomePageTitle": "Titlul paginii principale",
   "YouHaveUnsavedChanges": "Nu ați salvat modificările efectuate de dvs"
 }

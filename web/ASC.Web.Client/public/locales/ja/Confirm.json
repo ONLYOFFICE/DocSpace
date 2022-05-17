@@ -14,7 +14,6 @@
   "FirstName": "お名前",
   "InviteTitle": "このポータルに参加してみませんか！",
   "LoginRegistryButton": "参加",
-  "LoginWithAccount": "でログイン:",
   "PassworResetTitle": "これで新しいパスワードが作成できます。",
   "SetAppButton": "アプリを接続する",
   "SetAppDescription": "2ファクタ認証が有効になっています。ポータルでの作業を続けるために、認証アプリを設定します。 <1>Android</1> と <4>iOS</4> のためグーグルオーセンティケーターまたは <8>Windows Phone</8>のためオーセンティケーターをご利用頂けます。",

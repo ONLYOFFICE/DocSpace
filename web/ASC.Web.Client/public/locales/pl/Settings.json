@@ -57,7 +57,6 @@
   "ProductUserOpportunities": "Zobacz profile i grupy",
   "RegistrationDate": "Data rejestracji",
   "RestoreDefaultButton": "Przywróć ustawienia domyślne",
-  "SetDefaultTitle": "Ustaw domyślny tytuł",
   "StudioTimeLanguageSettings": "Ustawienia języka i strefy czasowej",
   "SuccessfullySaveGreetingSettingsMessage": "Ustawienia strony startowej zostały pomyślnie zapisane",
   "SuccessfullySaveSettingsMessage": "Ustawienia zostały pomyślnie zaktualizowane",
@@ -76,6 +75,5 @@
   "TwoFactorAuthDescription": "Weryfikacja dwuetapowa pozwala na bezpieczniejsze logowanie. Po wpisaniu swoich danych logowania użytkownik będzie musiał podać kod uzyskany za pośrednictwem wiadomości SMS lub aplikacji uwierzytelniającej.",
   "UseAsLogoButton": "Użyj jako logo",
   "Users": "Użytkownicy",
-  "WelcomePageTitle": "Tytuł strony startowej",
   "YouHaveUnsavedChanges": "Masz niezapisane zmiany"
 }

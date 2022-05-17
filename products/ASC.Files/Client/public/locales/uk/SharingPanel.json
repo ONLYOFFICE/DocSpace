@@ -3,10 +3,8 @@
   "AddShareMessage": "Додати повідомлення",
   "Comment": "Коментар",
   "CopyExternalLink": "Скопіювати зовнішнє посилання",
-  "CopyInternalLink": "Скопіювати внутрішнє посилання",
   "CustomFilter": "Настроюваний фільтр",
   "DenyAccess": "Заборонити доступ",
-  "Embedding": "Вбудовування",
   "EncryptedFileSharing": "Спільний доступ до файлу <strong>{{title}}</strong> успішно надано",
   "ExternalLink": "Зовнішнє посилання",
   "FormFilling": "Заповнення форми",
@@ -15,7 +13,6 @@
   "ReadOnly": "Лише читання",
   "ShareEmailBody": "Вам надано доступ до документа {{itemName}}. Клацніть посилання нижче, щоб відкрити документ зараз: {{shareLink}}",
   "ShareEmailSubject": "Вам надано доступ до документа {{itemName}}",
-  "ShareEveryone": "Усі",
   "ShareVia": "Поділитися через",
   "SharingSettingsTitle": "Параметри спільного доступу"
 }
