@@ -2,5 +2,6 @@
   "CustomAllGroups": "Alle {{ groupsCaption, lowercase }}",
   "EmptySearchUsersResult": "Keine Benutzer mit diesem Namen",
   "EmptyUsers": "Keine Benutzer",
-  "SearchUsersPlaceholder": "Benutzer suchen"
+  "SearchUsersPlaceholder": "Benutzer suchen",
+  "AllUsers": "Alle Benutzer"
 }
