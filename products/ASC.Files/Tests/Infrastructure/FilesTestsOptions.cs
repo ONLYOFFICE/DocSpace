@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ASC.Files.Tests.Infrastructure;
+﻿namespace ASC.Files.Tests.Infrastructure;
 
 public class UserOptions
 {
