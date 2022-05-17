@@ -51,7 +51,7 @@ public class TelegramServiceClient : ITelegramService
 
     public void SendMessage(NotifyMessage m)
     {
-        _eventBus.Publish(new NotifySendMessageRequestedIntegrationEvent(Guid.Empty, m.TenantId)
+        _eventBus.Publish(new NotifySendTelegramMessageRequestedIntegrationEvent(Guid.Empty, m.TenantId)
         {
             NotifyMessage = m
         });

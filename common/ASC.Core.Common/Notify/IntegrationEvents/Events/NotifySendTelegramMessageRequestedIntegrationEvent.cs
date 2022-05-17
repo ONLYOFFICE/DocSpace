@@ -24,34 +24,25 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Core.Common.Notify.IntegrationEvents.Events;
+using ASC.EventBus.Events;
+using ProtoBuf;
 
-namespace ASC.TelegramService.IntegrationEvents.EventHandling;
+namespace ASC.Core.Common.Notify.IntegrationEvents.Events;
 
-[Scope]
-public class TelegramSendMessageRequestedIntegrationEventHandler : IIntegrationEventHandler<NotifySendTelegramMessageRequestedIntegrationEvent>
+[ProtoContract]
+public record NotifySendTelegramMessageRequestedIntegrationEvent : IntegrationEvent
 {
-    private readonly ILog _logger;
-    private readonly TelegramHandler _telegramHandler;
-
-    private TelegramSendMessageRequestedIntegrationEventHandler() : base()
+    private NotifySendTelegramMessageRequestedIntegrationEvent() : base()
     {
 
     }
 
-    public TelegramSendMessageRequestedIntegrationEventHandler(
-        IOptionsMonitor<ILog> logger,
-        TelegramHandler telegramHandler
-      )
+    public NotifySendTelegramMessageRequestedIntegrationEvent(Guid createBy, int tenantId) :
+        base(createBy, tenantId)
     {
-        _logger = logger.CurrentValue;
-        _telegramHandler = telegramHandler;
+
     }
 
-    public async Task Handle(NotifySendTelegramMessageRequestedIntegrationEvent @event)
-    {
-        _logger.InfoFormat("----- Handling integration event: {IntegrationEventId} at {AppName} - ({@IntegrationEvent})", @event.Id, Program.AppName, @event);
-
-        await _telegramHandler.SendMessage(@event.NotifyMessage);
-    }
+    [ProtoMember(1)]
+    public NotifyMessage NotifyMessage { get; set; }
 }

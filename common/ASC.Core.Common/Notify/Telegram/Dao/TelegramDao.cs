@@ -71,7 +71,7 @@ public class TelegramDao
         TelegramDbContext.SaveChanges();
     }
 
-    public TelegramUser GetUser(Guid userId, int tenantId)
+    public TelegramUser GetUser(Guid userId, long tenantId)
     {
         return TelegramDbContext.Users
             .AsNoTracking()
@@ -80,7 +80,7 @@ public class TelegramDao
             .FirstOrDefault();
     }
 
-    public List<TelegramUser> GetUser(int telegramId)
+    public List<TelegramUser> GetUser(long telegramId)
     {
         return TelegramDbContext.Users
             .AsNoTracking()
@@ -99,7 +99,7 @@ public class TelegramDao
         TelegramDbContext.SaveChanges();
     }
 
-    public void Delete(int telegramId)
+    public void Delete(long telegramId)
     {
         var toRemove = TelegramDbContext.Users
             .Where(r => r.TelegramUserId == telegramId)

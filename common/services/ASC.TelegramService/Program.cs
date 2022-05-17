@@ -55,7 +55,7 @@ startup.Configure(app, app.Environment);
 
 var eventBus = ((IApplicationBuilder)app).ApplicationServices.GetRequiredService<IEventBus>();
 
-eventBus.Subscribe<ASC.Core.Common.Notify.IntegrationEvents.Events.NotifySendMessageRequestedIntegrationEvent, ASC.TelegramService.IntegrationEvents.EventHandling.TelegramSendMessageRequestedIntegrationEventHandler>();
+eventBus.Subscribe<ASC.Core.Common.Notify.IntegrationEvents.Events.NotifySendTelegramMessageRequestedIntegrationEvent, TelegramSendMessageRequestedIntegrationEventHandler>();
 
 app.Run();
 
