@@ -309,7 +309,9 @@ const StyledTableCell = styled.div`
 
   padding-right: 30px;
 
-  margin-top: 2px;
+  .react-svg-icon svg {
+    margin-top: 2px;
+  }
 
   .table-container_element {
     display: ${(props) => (props.checked ? "none" : "flex")};
