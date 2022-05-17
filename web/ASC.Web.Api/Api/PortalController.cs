@@ -280,15 +280,7 @@ public class PortalController : ControllerBase
     }
 
     [Create("mobile/registration")]
-    public void RegisterMobileAppInstallFromBody([FromBody] MobileAppRequestsDto inDto)
-    {
-        var currentUser = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
-        _mobileAppInstallRegistrator.RegisterInstall(currentUser.Email, inDto.Type);
-    }
-
-    [Create("mobile/registration")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public void RegisterMobileAppInstallFromForm([FromForm] MobileAppRequestsDto inDto)
+    public void RegisterMobileAppInstall(MobileAppRequestsDto inDto)
     {
         var currentUser = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
         _mobileAppInstallRegistrator.RegisterInstall(currentUser.Email, inDto.Type);

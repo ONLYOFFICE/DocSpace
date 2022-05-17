@@ -62,19 +62,7 @@ public class SmtpSettingsController : ControllerBase
     }
 
     [Create("smtp")]
-    public SmtpSettingsDto SaveSmtpSettingsFromBody([FromBody] SmtpSettingsDto inDto)
-    {
-        return SaveSmtpSettings(inDto);
-    }
-
-    [Create("smtp")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public SmtpSettingsDto SaveSmtpSettingsFromForm([FromForm] SmtpSettingsDto inDto)
-    {
-        return SaveSmtpSettings(inDto);
-    }
-
-    private SmtpSettingsDto SaveSmtpSettings(SmtpSettingsDto inDto)
+    public SmtpSettingsDto SaveSmtpSettings( SmtpSettingsDto inDto)
     {
         CheckSmtpPermissions();
 

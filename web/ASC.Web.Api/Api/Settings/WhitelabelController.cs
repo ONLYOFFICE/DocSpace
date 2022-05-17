@@ -71,19 +71,7 @@ public class WhitelabelController : BaseSettingsController
 
     ///<visible>false</visible>
     [Create("whitelabel/save")]
-    public bool SaveWhiteLabelSettingsFromBody([FromBody] WhiteLabelRequestsDto inDto, [FromQuery] WhiteLabelQueryRequestsDto inQueryDto)
-    {
-        return SaveWhiteLabelSettings(inDto, inQueryDto);
-    }
-
-    [Create("whitelabel/save")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public bool SaveWhiteLabelSettingsFromForm([FromForm] WhiteLabelRequestsDto inDto, [FromQuery] WhiteLabelQueryRequestsDto inQueryDto)
-    {
-        return SaveWhiteLabelSettings(inDto, inQueryDto);
-    }
-
-    private bool SaveWhiteLabelSettings(WhiteLabelRequestsDto inDto, WhiteLabelQueryRequestsDto inQueryDto)
+    public bool SaveWhiteLabelSettings(WhiteLabelRequestsDto inDto, [FromQuery] WhiteLabelQueryRequestsDto inQueryDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -342,19 +330,7 @@ public class WhitelabelController : BaseSettingsController
 
     ///<visible>false</visible>
     [Create("rebranding/company")]
-    public bool SaveCompanyWhiteLabelSettingsFromBody([FromBody] CompanyWhiteLabelSettingsWrapper companyWhiteLabelSettingsWrapper)
-    {
-        return SaveCompanyWhiteLabelSettings(companyWhiteLabelSettingsWrapper);
-    }
-
-    [Create("rebranding/company")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public bool SaveCompanyWhiteLabelSettingsFromForm([FromForm] CompanyWhiteLabelSettingsWrapper companyWhiteLabelSettingsWrapper)
-    {
-        return SaveCompanyWhiteLabelSettings(companyWhiteLabelSettingsWrapper);
-    }
-
-    private bool SaveCompanyWhiteLabelSettings(CompanyWhiteLabelSettingsWrapper companyWhiteLabelSettingsWrapper)
+    public bool SaveCompanyWhiteLabelSettings(CompanyWhiteLabelSettingsWrapper companyWhiteLabelSettingsWrapper)
     {
         if (companyWhiteLabelSettingsWrapper.Settings == null)
         {
@@ -391,19 +367,7 @@ public class WhitelabelController : BaseSettingsController
 
     ///<visible>false</visible>
     [Create("rebranding/additional")]
-    public bool SaveAdditionalWhiteLabelSettingsFromBody([FromBody] AdditionalWhiteLabelSettingsWrapper wrapper)
-    {
-        return SaveAdditionalWhiteLabelSettings(wrapper);
-    }
-
-    [Create("rebranding/additional")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public bool SaveAdditionalWhiteLabelSettingsFromForm([FromForm] AdditionalWhiteLabelSettingsWrapper wrapper)
-    {
-        return SaveAdditionalWhiteLabelSettings(wrapper);
-    }
-
-    private bool SaveAdditionalWhiteLabelSettings(AdditionalWhiteLabelSettingsWrapper wrapper)
+    public bool SaveAdditionalWhiteLabelSettings(AdditionalWhiteLabelSettingsWrapper wrapper)
     {
         if (wrapper.Settings == null)
         {
@@ -462,19 +426,7 @@ public class WhitelabelController : BaseSettingsController
 
     ///<visible>false</visible>
     [Update("rebranding/mail")]
-    public bool UpdateMailWhiteLabelSettingsFromBody([FromBody] MailWhiteLabelSettingsRequestsDto inDto)
-    {
-        return UpdateMailWhiteLabelSettings(inDto);
-    }
-
-    [Update("rebranding/mail")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public bool UpdateMailWhiteLabelSettingsFromForm([FromForm] MailWhiteLabelSettingsRequestsDto inDto)
-    {
-        return UpdateMailWhiteLabelSettings(inDto);
-    }
-
-    private bool UpdateMailWhiteLabelSettings(MailWhiteLabelSettingsRequestsDto inDto)
+    public bool UpdateMailWhiteLabelSettings(MailWhiteLabelSettingsRequestsDto inDto)
     {
         DemandRebrandingPermission();
 

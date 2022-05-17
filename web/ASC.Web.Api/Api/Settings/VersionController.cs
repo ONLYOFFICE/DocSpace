@@ -62,19 +62,7 @@ public class VersionController : BaseSettingsController
     }
 
     [Update("version")]
-    public TenantVersionDto SetVersionFromBody([FromBody] SettingsRequestsDto inDto)
-    {
-        return SetVersion(inDto);
-    }
-
-    [Update("version")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public TenantVersionDto SetVersionFromForm([FromForm] SettingsRequestsDto inDto)
-    {
-        return SetVersion(inDto);
-    }
-
-    private TenantVersionDto SetVersion(SettingsRequestsDto inDto)
+    public TenantVersionDto SetVersion(SettingsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 

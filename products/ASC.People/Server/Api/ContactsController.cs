@@ -44,45 +44,7 @@ public class ContactsController : PeopleControllerBase
     }
 
     [Delete("{userid}/contacts")]
-    public EmployeeFullDto DeleteMemberContactsFromBody(string userid, [FromBody] UpdateMemberRequestDto inDto)
-    {
-        return DeleteMemberContacts(userid, inDto);
-    }
-
-    [Delete("{userid}/contacts")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public EmployeeFullDto DeleteMemberContactsFromForm(string userid, [FromForm] UpdateMemberRequestDto inDto)
-    {
-        return DeleteMemberContacts(userid, inDto);
-    }
-
-    [Create("{userid}/contacts")]
-    public EmployeeFullDto SetMemberContactsFromBody(string userid, [FromBody] UpdateMemberRequestDto inDto)
-    {
-        return SetMemberContacts(userid, inDto);
-    }
-
-    [Create("{userid}/contacts")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public EmployeeFullDto SetMemberContactsFromForm(string userid, [FromForm] UpdateMemberRequestDto inDto)
-    {
-        return SetMemberContacts(userid, inDto);
-    }
-
-    [Update("{userid}/contacts")]
-    public EmployeeFullDto UpdateMemberContactsFromBody(string userid, [FromBody] UpdateMemberRequestDto inDto)
-    {
-        return UpdateMemberContacts(userid, inDto);
-    }
-
-    [Update("{userid}/contacts")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public EmployeeFullDto UpdateMemberContactsFromForm(string userid, [FromForm] UpdateMemberRequestDto inDto)
-    {
-        return UpdateMemberContacts(userid, inDto);
-    }
-
-    private EmployeeFullDto DeleteMemberContacts(string userid, UpdateMemberRequestDto inDto)
+    public EmployeeFullDto DeleteMemberContacts(string userid, UpdateMemberRequestDto inDto)
     {
         var user = GetUserInfo(userid);
 
@@ -97,7 +59,8 @@ public class ContactsController : PeopleControllerBase
         return _employeeFullDtoHelper.GetFull(user);
     }
 
-    private EmployeeFullDto SetMemberContacts(string userid, UpdateMemberRequestDto inDto)
+    [Create("{userid}/contacts")]
+    public EmployeeFullDto SetMemberContacts(string userid, UpdateMemberRequestDto inDto)
     {
         var user = GetUserInfo(userid);
 
@@ -113,7 +76,8 @@ public class ContactsController : PeopleControllerBase
         return _employeeFullDtoHelper.GetFull(user);
     }
 
-    private EmployeeFullDto UpdateMemberContacts(string userid, UpdateMemberRequestDto inDto)
+    [Update("{userid}/contacts")]
+    public EmployeeFullDto UpdateMemberContacts(string userid, UpdateMemberRequestDto inDto)
     {
         var user = GetUserInfo(userid);
 

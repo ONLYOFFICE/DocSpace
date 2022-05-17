@@ -151,19 +151,7 @@ public class SecurityController : ControllerBase
     }
 
     [Create("audit/settings/lifetime")]
-    public TenantAuditSettings SetAuditSettingsFromBody([FromBody] TenantAuditSettingsWrapper wrapper)
-    {
-        return SetAuditSettings(wrapper);
-    }
-
-    [Create("audit/settings/lifetime")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public TenantAuditSettings SetAuditSettingsFromForm([FromForm] TenantAuditSettingsWrapper wrapper)
-    {
-        return SetAuditSettings(wrapper);
-    }
-
-    private TenantAuditSettings SetAuditSettings(TenantAuditSettingsWrapper wrapper)
+    public TenantAuditSettings SetAuditSettings(TenantAuditSettingsWrapper wrapper)
     {
         if (!_tenantExtra.GetTenantQuota().Audit || !SetupInfo.IsVisibleSettings(nameof(ManagementType.LoginHistory)))
         {

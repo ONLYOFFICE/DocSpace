@@ -53,14 +53,7 @@ public class SettingsController : ApiControllerBase
     /// <param name="set"></param>
     /// <returns></returns>
     [Update(@"thirdparty")]
-    public bool ChangeAccessToThirdpartyFromBody([FromBody] SettingsRequestDto inDto)
-    {
-        return _fileStorageServiceString.ChangeAccessToThirdparty(inDto.Set);
-    }
-
-    [Update(@"thirdparty")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public bool ChangeAccessToThirdpartyFromForm([FromForm] SettingsRequestDto inDto)
+    public bool ChangeAccessToThirdparty(SettingsRequestDto inDto)
     {
         return _fileStorageServiceString.ChangeAccessToThirdparty(inDto.Set);
     }
@@ -71,14 +64,7 @@ public class SettingsController : ApiControllerBase
     /// <param name="set"></param>
     /// <returns></returns>
     [Update(@"changedeleteconfrim")]
-    public bool ChangeDeleteConfrimFromBody([FromBody] SettingsRequestDto inDto)
-    {
-        return _fileStorageServiceString.ChangeDeleteConfrim(inDto.Set);
-    }
-
-    [Update(@"changedeleteconfrim")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public bool ChangeDeleteConfrimFromForm([FromForm] SettingsRequestDto inDto)
+    public bool ChangeDeleteConfrim(SettingsRequestDto inDto)
     {
         return _fileStorageServiceString.ChangeDeleteConfrim(inDto.Set);
     }
@@ -108,14 +94,7 @@ public class SettingsController : ApiControllerBase
     /// <category>Settings</category>
     /// <returns></returns>
     [Update(@"settings/favorites")]
-    public bool DisplayFavoriteFromBody([FromBody] DisplayRequestDto inDto)
-    {
-        return _fileStorageServiceString.DisplayFavorite(inDto.Set);
-    }
-
-    [Update(@"settings/favorites")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public bool DisplayFavoriteFromForm([FromForm] DisplayRequestDto inDto)
+    public bool DisplayFavorite(DisplayRequestDto inDto)
     {
         return _fileStorageServiceString.DisplayFavorite(inDto.Set);
     }
@@ -127,14 +106,7 @@ public class SettingsController : ApiControllerBase
     /// <category>Settings</category>
     /// <returns></returns>
     [Update(@"displayRecent")]
-    public bool DisplayRecentFromBody([FromBody] DisplayRequestDto inDto)
-    {
-        return _fileStorageServiceString.DisplayRecent(inDto.Set);
-    }
-
-    [Update(@"displayRecent")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public bool DisplayRecentFromForm([FromForm] DisplayRequestDto inDto)
+    public bool DisplayRecent(DisplayRequestDto inDto)
     {
         return _fileStorageServiceString.DisplayRecent(inDto.Set);
     }
@@ -146,14 +118,7 @@ public class SettingsController : ApiControllerBase
     /// <category>Settings</category>
     /// <returns></returns>
     [Update(@"settings/templates")]
-    public bool DisplayTemplatesFromBody([FromBody] DisplayRequestDto inDto)
-    {
-        return _fileStorageServiceString.DisplayTemplates(inDto.Set);
-    }
-
-    [Update(@"settings/templates")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public bool DisplayTemplatesFromForm([FromForm] DisplayRequestDto inDto)
+    public bool DisplayTemplates(DisplayRequestDto inDto)
     {
         return _fileStorageServiceString.DisplayTemplates(inDto.Set);
     }
@@ -164,14 +129,7 @@ public class SettingsController : ApiControllerBase
     /// <param name="set"></param>
     /// <returns></returns>
     [Update(@"forcesave")]
-    public bool ForcesaveFromBody([FromBody] SettingsRequestDto inDto)
-    {
-        return _fileStorageServiceString.Forcesave(inDto.Set);
-    }
-
-    [Update(@"forcesave")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public bool ForcesaveFromForm([FromForm] SettingsRequestDto inDto)
+    public bool Forcesave(SettingsRequestDto inDto)
     {
         return _fileStorageServiceString.Forcesave(inDto.Set);
     }
@@ -200,14 +158,7 @@ public class SettingsController : ApiControllerBase
     /// <visible>false</visible>
     /// <returns></returns>
     [Update(@"hideconfirmconvert")]
-    public bool HideConfirmConvertFromBody([FromBody] HideConfirmConvertRequestDto inDto)
-    {
-        return _fileStorageServiceString.HideConfirmConvert(inDto.Save);
-    }
-
-    [Update(@"hideconfirmconvert")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public bool HideConfirmConvertFromForm([FromForm] HideConfirmConvertRequestDto inDto)
+    public bool HideConfirmConvert(HideConfirmConvertRequestDto inDto)
     {
         return _fileStorageServiceString.HideConfirmConvert(inDto.Save);
     }
@@ -224,14 +175,7 @@ public class SettingsController : ApiControllerBase
     /// <param name="set"></param>
     /// <returns></returns>
     [Update(@"storeforcesave")]
-    public bool StoreForcesaveFromBody([FromBody] SettingsRequestDto inDto)
-    {
-        return _fileStorageServiceString.StoreForcesave(inDto.Set);
-    }
-
-    [Update(@"storeforcesave")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public bool StoreForcesaveFromForm([FromForm] SettingsRequestDto inDto)
+    public bool StoreForcesave(SettingsRequestDto inDto)
     {
         return _fileStorageServiceString.StoreForcesave(inDto.Set);
     }
@@ -242,31 +186,18 @@ public class SettingsController : ApiControllerBase
     /// <param name="set"></param>
     /// <returns></returns>
     [Update(@"storeoriginal")]
-    public bool StoreOriginalFromBody([FromBody] SettingsRequestDto inDto)
+    public bool StoreOriginal(SettingsRequestDto inDto)
     {
         return _fileStorageServiceString.StoreOriginal(inDto.Set);
     }
 
-    [Update(@"storeoriginal")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public bool StoreOriginalFromForm([FromForm] SettingsRequestDto inDto)
-    {
-        return _fileStorageServiceString.StoreOriginal(inDto.Set);
-    }
     /// <summary>
     /// 
     /// </summary>
     /// <param name="set"></param>
     /// <returns></returns>
     [Update(@"updateifexist")]
-    public bool UpdateIfExistFromBody([FromBody] SettingsRequestDto inDto)
-    {
-        return _fileStorageServiceString.UpdateIfExist(inDto.Set);
-    }
-
-    [Update(@"updateifexist")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public bool UpdateIfExistFromForm([FromForm] SettingsRequestDto inDto)
+    public bool UpdateIfExist(SettingsRequestDto inDto)
     {
         return _fileStorageServiceString.UpdateIfExist(inDto.Set);
     }

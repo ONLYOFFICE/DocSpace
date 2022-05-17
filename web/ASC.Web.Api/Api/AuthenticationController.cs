@@ -139,116 +139,71 @@ public class AuthenticationController : ControllerBase
     }
 
     [Create("{code}", false, order: int.MaxValue)]
-    public AuthenticationTokenDto AuthenticateMeFromBodyWithCode([FromBody] AuthRequestsDto inDto)
+    public AuthenticationTokenDto AuthenticateMeFromBodyWithCode(AuthRequestsDto inDto)
     {
-        return AuthenticateMeWithCode(inDto);
-    }
-
-    [Create("{code}", false, order: int.MaxValue)]
-    [Consumes("application/x-www-form-urlencoded")]
-    public AuthenticationTokenDto AuthenticateMeFromFormWithCode([FromForm] AuthRequestsDto inDto)
-    {
-        return AuthenticateMeWithCode(inDto);
-    }
-
-    [Create(false)]
-    public Task<AuthenticationTokenDto> AuthenticateMeFromBodyAsync([FromBody] AuthRequestsDto inDto)
-    {
-        return AuthenticateMeAsync(inDto);
-    }
-
-    [Create(false)]
-    [Consumes("application/x-www-form-urlencoded")]
-    public Task<AuthenticationTokenDto> AuthenticateMeFromFormAsync([FromForm] AuthRequestsDto inDto)
-    {
-        return AuthenticateMeAsync(inDto);
-    }
-
-    [Create("logout")]
-    [Read("logout")]// temp fix
-    public void Logout()
-    {
-        if (_securityContext.IsAuthenticated)
-        {
-            _cookiesManager.ResetUserCookie(_securityContext.CurrentAccount.ID);
-        }
-
-        _cookiesManager.ClearCookies(CookiesType.AuthKey);
-        _cookiesManager.ClearCookies(CookiesType.SocketIO);
-
-        _securityContext.Logout();
-    }
-
-    [Create("confirm", false)]
-    public ValidationResult CheckConfirmFromBody([FromBody] EmailValidationKeyModel inDto)
-    {
-        return _emailValidationKeyModelHelper.Validate(inDto);
-    }
-
-    [Create("confirm", false)]
-    [Consumes("application/x-www-form-urlencoded")]
-    public ValidationResult CheckConfirmFromForm([FromForm] EmailValidationKeyModel inDto)
-    {
-        return _emailValidationKeyModelHelper.Validate(inDto);
-    }
-
-    [Authorize(AuthenticationSchemes = "confirm", Roles = "PhoneActivation")]
-    [Create("setphone", false)]
-    public Task<AuthenticationTokenDto> SaveMobilePhoneFromBodyAsync([FromBody] MobileRequestsDto inDto)
-    {
-        return SaveMobilePhoneAsync(inDto);
-    }
-
-    [Authorize(AuthenticationSchemes = "confirm", Roles = "PhoneActivation")]
-    [Create("setphone", false)]
-    [Consumes("application/x-www-form-urlencoded")]
-    public Task<AuthenticationTokenDto> SaveMobilePhoneFromFormAsync([FromForm] MobileRequestsDto inDto)
-    {
-        return SaveMobilePhoneAsync(inDto);
-    }
-
-    private async Task<AuthenticationTokenDto> SaveMobilePhoneAsync(MobileRequestsDto inDto)
-    {
-        _apiContext.AuthByClaim();
-        var user = _userManager.GetUsers(_authContext.CurrentAccount.ID);
-        inDto.MobilePhone = await _smsManager.SaveMobilePhoneAsync(user, inDto.MobilePhone);
-        _messageService.Send(MessageAction.UserUpdatedMobileNumber, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper), inDto.MobilePhone);
-
-        return new AuthenticationTokenDto
-        {
-            Sms = true,
-            PhoneNoise = SmsSender.BuildPhoneNoise(inDto.MobilePhone),
-            Expires = new ApiDateTime(_tenantManager, _timeZoneConverter, DateTime.UtcNow.Add(_smsKeyStorage.StoreInterval))
-        };
-    }
-
-    [Create(@"sendsms", false)]
-    public Task<AuthenticationTokenDto> SendSmsCodeFromBodyAsync([FromBody] AuthRequestsDto inDto)
-    {
-        return SendSmsCodeAsync(inDto);
-    }
-
-    [Create(@"sendsms", false)]
-    [Consumes("application/x-www-form-urlencoded")]
-    public Task<AuthenticationTokenDto> SendSmsCodeFromFormAsync([FromForm] AuthRequestsDto inDto)
-    {
-        return SendSmsCodeAsync(inDto);
-    }
-
-    private async Task<AuthenticationTokenDto> SendSmsCodeAsync(AuthRequestsDto inDto)
-    {
+        var tenant = _tenantManager.GetCurrentTenant().Id;
         var user = GetUser(inDto, out _);
-        await _smsManager.PutAuthCodeAsync(user, true);
 
-        return new AuthenticationTokenDto
+        var sms = false;
+        try
         {
-            Sms = true,
-            PhoneNoise = SmsSender.BuildPhoneNoise(user.MobilePhone),
-            Expires = new ApiDateTime(_tenantManager, _timeZoneConverter, DateTime.UtcNow.Add(_smsKeyStorage.StoreInterval))
-        };
+            if (_studioSmsNotificationSettingsHelper.IsVisibleSettings() && _studioSmsNotificationSettingsHelper.Enable)
+            {
+                sms = true;
+                _smsManager.ValidateSmsCode(user, inDto.Code);
+            }
+            else if (TfaAppAuthSettings.IsVisibleSettings && _settingsManager.Load<TfaAppAuthSettings>().EnableSetting)
+            {
+                if (_tfaManager.ValidateAuthCode(user, inDto.Code))
+                {
+                    _messageService.Send(MessageAction.UserConnectedTfaApp, _messageTarget.Create(user.Id));
+                }
+            }
+            else
+            {
+                throw new SecurityException("Auth code is not available");
+            }
+
+            var token = _securityContext.AuthenticateMe(user.Id);
+
+            _messageService.Send(sms ? MessageAction.LoginSuccessViaApiSms : MessageAction.LoginSuccessViaApiTfa);
+
+            var expires = _tenantCookieSettingsHelper.GetExpiresTime(tenant);
+
+            var result = new AuthenticationTokenDto
+            {
+                Token = token,
+                Expires = new ApiDateTime(_tenantManager, _timeZoneConverter, expires)
+            };
+
+            if (sms)
+            {
+                result.Sms = true;
+                result.PhoneNoise = SmsSender.BuildPhoneNoise(user.MobilePhone);
+            }
+            else
+            {
+                result.Tfa = true;
+            }
+
+            return result;
+        }
+        catch
+        {
+            _messageService.Send(user.DisplayUserName(false, _displayUserSettingsHelper), sms
+                                                                          ? MessageAction.LoginFailViaApiSms
+                                                                          : MessageAction.LoginFailViaApiTfa,
+                                _messageTarget.Create(user.Id));
+            throw new AuthenticationException("User authentication failed");
+        }
+        finally
+        {
+            _securityContext.Logout();
+        }
     }
 
-    private async Task<AuthenticationTokenDto> AuthenticateMeAsync(AuthRequestsDto inDto)
+    [Create(false)]
+    public async Task<AuthenticationTokenDto> AuthenticateMeAsync(AuthRequestsDto inDto)
     {
         bool viaEmail;
         var user = GetUser(inDto, out viaEmail);
@@ -321,67 +276,56 @@ public class AuthenticationController : ControllerBase
         }
     }
 
-    private AuthenticationTokenDto AuthenticateMeWithCode(AuthRequestsDto inDto)
+    [Create("logout")]
+    [Read("logout")]// temp fix
+    public void Logout()
     {
-        var tenant = _tenantManager.GetCurrentTenant().Id;
+        if (_securityContext.IsAuthenticated)
+        {
+            _cookiesManager.ResetUserCookie(_securityContext.CurrentAccount.ID);
+        }
+
+        _cookiesManager.ClearCookies(CookiesType.AuthKey);
+        _cookiesManager.ClearCookies(CookiesType.SocketIO);
+
+        _securityContext.Logout();
+    }
+
+    [Create("confirm", false)]
+    public ValidationResult CheckConfirm(EmailValidationKeyModel inDto)
+    {
+        return _emailValidationKeyModelHelper.Validate(inDto);
+    }
+
+    [Authorize(AuthenticationSchemes = "confirm", Roles = "PhoneActivation")]
+    [Create("setphone", false)]
+    public async Task<AuthenticationTokenDto> SaveMobilePhoneAsync(MobileRequestsDto inDto)
+    {
+        _apiContext.AuthByClaim();
+        var user = _userManager.GetUsers(_authContext.CurrentAccount.ID);
+        inDto.MobilePhone = await _smsManager.SaveMobilePhoneAsync(user, inDto.MobilePhone);
+        _messageService.Send(MessageAction.UserUpdatedMobileNumber, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper), inDto.MobilePhone);
+
+        return new AuthenticationTokenDto
+        {
+            Sms = true,
+            PhoneNoise = SmsSender.BuildPhoneNoise(inDto.MobilePhone),
+            Expires = new ApiDateTime(_tenantManager, _timeZoneConverter, DateTime.UtcNow.Add(_smsKeyStorage.StoreInterval))
+        };
+    }
+
+    [Create(@"sendsms", false)]
+    public async Task<AuthenticationTokenDto> SendSmsCodeAsync(AuthRequestsDto inDto)
+    {
         var user = GetUser(inDto, out _);
+        await _smsManager.PutAuthCodeAsync(user, true);
 
-        var sms = false;
-        try
+        return new AuthenticationTokenDto
         {
-            if (_studioSmsNotificationSettingsHelper.IsVisibleSettings() && _studioSmsNotificationSettingsHelper.Enable)
-            {
-                sms = true;
-                _smsManager.ValidateSmsCode(user, inDto.Code);
-            }
-            else if (TfaAppAuthSettings.IsVisibleSettings && _settingsManager.Load<TfaAppAuthSettings>().EnableSetting)
-            {
-                if (_tfaManager.ValidateAuthCode(user, inDto.Code))
-                {
-                    _messageService.Send(MessageAction.UserConnectedTfaApp, _messageTarget.Create(user.Id));
-                }
-            }
-            else
-            {
-                throw new SecurityException("Auth code is not available");
-            }
-
-            var token = _securityContext.AuthenticateMe(user.Id);
-
-            _messageService.Send(sms ? MessageAction.LoginSuccessViaApiSms : MessageAction.LoginSuccessViaApiTfa);
-
-            var expires = _tenantCookieSettingsHelper.GetExpiresTime(tenant);
-
-            var result = new AuthenticationTokenDto
-            {
-                Token = token,
-                Expires = new ApiDateTime(_tenantManager, _timeZoneConverter, expires)
-            };
-
-            if (sms)
-            {
-                result.Sms = true;
-                result.PhoneNoise = SmsSender.BuildPhoneNoise(user.MobilePhone);
-            }
-            else
-            {
-                result.Tfa = true;
-            }
-
-            return result;
-        }
-        catch
-        {
-            _messageService.Send(user.DisplayUserName(false, _displayUserSettingsHelper), sms
-                                                                          ? MessageAction.LoginFailViaApiSms
-                                                                          : MessageAction.LoginFailViaApiTfa,
-                                _messageTarget.Create(user.Id));
-            throw new AuthenticationException("User authentication failed");
-        }
-        finally
-        {
-            _securityContext.Logout();
-        }
+            Sms = true,
+            PhoneNoise = SmsSender.BuildPhoneNoise(user.MobilePhone),
+            Expires = new ApiDateTime(_tenantManager, _timeZoneConverter, DateTime.UtcNow.Add(_smsKeyStorage.StoreInterval))
+        };
     }
 
     private UserInfo GetUser(AuthRequestsDto inDto, out bool viaEmail)

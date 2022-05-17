@@ -107,14 +107,7 @@ public abstract class EditorController<T> : ApiControllerBase
     /// <category>Files</category>
     /// <returns></returns>
     [Create("file/{fileId}/startedit")]
-    public async Task<object> StartEditFromBodyAsync(T fileId, [FromBody] StartEditRequestDto inDto)
-    {
-        return await _fileStorageService.StartEditAsync(fileId, inDto.EditingAlone, inDto.Doc);
-    }
-
-    [Create("file/{fileId}/startedit")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public async Task<object> StartEditFromFormAsync(T fileId, [FromForm] StartEditRequestDto inDto)
+    public async Task<object> StartEditAsync(T fileId, StartEditRequestDto inDto)
     {
         return await _fileStorageService.StartEditAsync(fileId, inDto.EditingAlone, inDto.Doc);
     }
@@ -214,16 +207,22 @@ public class EditorController : ApiControllerBase
     /// <param name="docServiceUrlPortal">Community Server Address</param>
     /// <returns></returns>
     [Update("docservice")]
-    public Task<IEnumerable<string>> CheckDocServiceUrlFromBodyAsync([FromBody] CheckDocServiceUrlRequestDto inDto)
+    public Task<IEnumerable<string>> CheckDocServiceUrl(CheckDocServiceUrlRequestDto inDto)
     {
-        return CheckDocServiceUrlAsync(inDto);
-    }
+        _filesLinkUtility.DocServiceUrl = inDto.DocServiceUrl;
+        _filesLinkUtility.DocServiceUrlInternal = inDto.DocServiceUrlInternal;
+        _filesLinkUtility.DocServicePortalUrl = inDto.DocServiceUrlPortal;
 
-    [Update("docservice")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public Task<IEnumerable<string>> CheckDocServiceUrlFromFormAsync([FromForm] CheckDocServiceUrlRequestDto inDto)
-    {
-        return CheckDocServiceUrlAsync(inDto);
+        _messageService.Send(MessageAction.DocumentServiceLocationSetting);
+
+        var https = new Regex(@"^https://", RegexOptions.IgnoreCase);
+        var http = new Regex(@"^http://", RegexOptions.IgnoreCase);
+        if (https.IsMatch(_commonLinkUtility.GetFullAbsolutePath("")) && http.IsMatch(_filesLinkUtility.DocServiceUrl))
+        {
+            throw new Exception("Mixed Active Content is not allowed. HTTPS address for Document Server is required.");
+        }
+
+        return InternalCheckDocServiceUrlAsync();
     }
 
     /// <visible>false</visible>
@@ -249,24 +248,6 @@ public class EditorController : ApiControllerBase
             version = dsVersion,
             docServiceUrlApi = url,
         };
-    }
-
-    private Task<IEnumerable<string>> CheckDocServiceUrlAsync(CheckDocServiceUrlRequestDto inDto)
-    {
-        _filesLinkUtility.DocServiceUrl = inDto.DocServiceUrl;
-        _filesLinkUtility.DocServiceUrlInternal = inDto.DocServiceUrlInternal;
-        _filesLinkUtility.DocServicePortalUrl = inDto.DocServiceUrlPortal;
-
-        _messageService.Send(MessageAction.DocumentServiceLocationSetting);
-
-        var https = new Regex(@"^https://", RegexOptions.IgnoreCase);
-        var http = new Regex(@"^http://", RegexOptions.IgnoreCase);
-        if (https.IsMatch(_commonLinkUtility.GetFullAbsolutePath("")) && http.IsMatch(_filesLinkUtility.DocServiceUrl))
-        {
-            throw new Exception("Mixed Active Content is not allowed. HTTPS address for Document Server is required.");
-        }
-
-        return InternalCheckDocServiceUrlAsync();
     }
 
     private async Task<IEnumerable<string>> InternalCheckDocServiceUrlAsync()

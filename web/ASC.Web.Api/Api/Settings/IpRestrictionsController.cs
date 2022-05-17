@@ -56,38 +56,14 @@ public class IpRestrictionsController : BaseSettingsController
     }
 
     [Update("iprestrictions")]
-    public IEnumerable<string> SaveIpRestrictionsFromBody([FromBody] IpRestrictionsRequestsDto inDto)
-    {
-        return SaveIpRestrictions(inDto);
-    }
-
-    [Update("iprestrictions")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public IEnumerable<string> SaveIpRestrictionsFromForm([FromForm] IpRestrictionsRequestsDto inDto)
-    {
-        return SaveIpRestrictions(inDto);
-    }
-
-    private IEnumerable<string> SaveIpRestrictions(IpRestrictionsRequestsDto inDto)
+    public IEnumerable<string> SaveIpRestrictions(IpRestrictionsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
         return _iPRestrictionsService.Save(inDto.Ips, Tenant.Id);
     }
 
     [Update("iprestrictions/settings")]
-    public IPRestrictionsSettings UpdateIpRestrictionsSettingsFromBody([FromBody] IpRestrictionsRequestsDto inDto)
-    {
-        return UpdateIpRestrictionsSettings(inDto);
-    }
-
-    [Update("iprestrictions/settings")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public IPRestrictionsSettings UpdateIpRestrictionsSettingsFromForm([FromForm] IpRestrictionsRequestsDto inDto)
-    {
-        return UpdateIpRestrictionsSettings(inDto);
-    }
-
-    private IPRestrictionsSettings UpdateIpRestrictionsSettings(IpRestrictionsRequestsDto inDto)
+    public IPRestrictionsSettings UpdateIpRestrictionsSettings(IpRestrictionsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 

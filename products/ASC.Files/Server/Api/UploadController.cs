@@ -83,14 +83,7 @@ public abstract class UploadController<T> : ApiControllerBase
     /// ]]>
     /// </returns>
     [Create("{folderId}/upload/create_session")]
-    public Task<object> CreateUploadSessionFromBodyAsync(T folderId, [FromBody] SessionRequestDto inDto)
-    {
-        return _filesControllerHelper.CreateUploadSessionAsync(folderId, inDto.FileName, inDto.FileSize, inDto.RelativePath, inDto.LastModified, inDto.Encrypted);
-    }
-
-    [Create("{folderId}/upload/create_session")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public Task<object> CreateUploadSessionFromFormAsync(T folderId, [FromForm] SessionRequestDto inDto)
+    public Task<object> CreateUploadSessionAsync(T folderId, SessionRequestDto inDto)
     {
         return _filesControllerHelper.CreateUploadSessionAsync(folderId, inDto.FileName, inDto.FileSize, inDto.RelativePath, inDto.LastModified, inDto.Encrypted);
     }

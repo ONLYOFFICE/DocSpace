@@ -59,14 +59,7 @@ public abstract class FilesController<T> : ApiControllerBase
     /// <category>Files</category>
     /// <returns></returns>
     [Update("file/{fileId}/history")]
-    public Task<IEnumerable<FileDto<T>>> ChangeHistoryFromBodyAsync(T fileId, [FromBody] ChangeHistoryRequestDto inDto)
-    {
-        return _filesControllerHelper.ChangeHistoryAsync(fileId, inDto.Version, inDto.ContinueVersion);
-    }
-
-    [Update("file/{fileId}/history")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public Task<IEnumerable<FileDto<T>>> ChangeHistoryFromFormAsync(T fileId, [FromForm] ChangeHistoryRequestDto inDto)
+    public Task<IEnumerable<FileDto<T>>> ChangeHistoryAsync(T fileId, ChangeHistoryRequestDto inDto)
     {
         return _filesControllerHelper.ChangeHistoryAsync(fileId, inDto.Version, inDto.ContinueVersion);
     }
@@ -90,16 +83,18 @@ public abstract class FilesController<T> : ApiControllerBase
     }
 
     [Create("file/{fileId}/copyas", order: int.MaxValue)]
-    public Task<FileEntryDto> CopyFileAsFromBody(T fileId, [FromBody] CopyAsRequestDto<JsonElement> inDto)
+    public async Task<FileEntryDto> CopyFileAs(T fileId, CopyAsRequestDto<JsonElement> inDto)
     {
-        return CopyFile(fileId, inDto, _filesControllerHelper);
-    }
+        if (inDto.DestFolderId.ValueKind == JsonValueKind.Number)
+        {
+            return await _filesControllerHelper.CopyFileAsAsync(fileId, inDto.DestFolderId.GetInt32(), inDto.DestTitle, inDto.Password);
+        }
+        else if (inDto.DestFolderId.ValueKind == JsonValueKind.String)
+        {
+            return await _filesControllerHelper.CopyFileAsAsync(fileId, inDto.DestFolderId.GetString(), inDto.DestTitle, inDto.Password);
+        }
 
-    [Create("file/{fileId}/copyas", order: int.MaxValue)]
-    [Consumes("application/x-www-form-urlencoded")]
-    public Task<FileEntryDto> CopyFileAsFromForm(T fileId, [FromForm] CopyAsRequestDto<JsonElement> inDto)
-    {
-        return CopyFile(fileId, inDto, _filesControllerHelper);
+        return null;
     }
 
     /// <summary>
@@ -112,14 +107,7 @@ public abstract class FilesController<T> : ApiControllerBase
     /// <remarks>In case the extension for the file title differs from DOCX/XLSX/PPTX and belongs to one of the known text, spreadsheet or presentation formats, it will be changed to DOCX/XLSX/PPTX accordingly. If the file extension is not set or is unknown, the DOCX extension will be added to the file title.</remarks>
     /// <returns>New file info</returns>
     [Create("{folderId}/file")]
-    public Task<FileDto<T>> CreateFileFromBodyAsync(T folderId, [FromBody] CreateFileRequestDto<JsonElement> inDto)
-    {
-        return _filesControllerHelper.CreateFileAsync(folderId, inDto.Title, inDto.TemplateId, inDto.FormId, inDto.EnableExternalExt);
-    }
-
-    [Create("{folderId}/file")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public Task<FileDto<T>> CreateFileFromFormAsync(T folderId, [FromForm] CreateFileRequestDto<JsonElement> inDto)
+    public Task<FileDto<T>> CreateFileAsync(T folderId, CreateFileRequestDto<JsonElement> inDto)
     {
         return _filesControllerHelper.CreateFileAsync(folderId, inDto.Title, inDto.TemplateId, inDto.FormId, inDto.EnableExternalExt);
     }
@@ -134,14 +122,7 @@ public abstract class FilesController<T> : ApiControllerBase
     /// <param name="content">File contents</param>
     /// <returns>Folder contents</returns>
     [Create("{folderId}/html")]
-    public Task<FileDto<T>> CreateHtmlFileFromBodyAsync(T folderId, [FromBody] CreateTextOrHtmlFileRequestDto inDto)
-    {
-        return _filesControllerHelper.CreateHtmlFileAsync(folderId, inDto.Title, inDto.Content);
-    }
-
-    [Create("{folderId}/html")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public Task<FileDto<T>> CreateHtmlFileFromFormAsync(T folderId, [FromForm] CreateTextOrHtmlFileRequestDto inDto)
+    public Task<FileDto<T>> CreateHtmlFileAsync(T folderId, CreateTextOrHtmlFileRequestDto inDto)
     {
         return _filesControllerHelper.CreateHtmlFileAsync(folderId, inDto.Title, inDto.Content);
     }
@@ -156,14 +137,7 @@ public abstract class FilesController<T> : ApiControllerBase
     /// <param name="content">File contents</param>
     /// <returns>Folder contents</returns>
     [Create("{folderId}/text")]
-    public Task<FileDto<T>> CreateTextFileFromBodyAsync(T folderId, [FromBody] CreateTextOrHtmlFileRequestDto inDto)
-    {
-        return _filesControllerHelper.CreateTextFileAsync(folderId, inDto.Title, inDto.Content);
-    }
-
-    [Create("{folderId}/text")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public Task<FileDto<T>> CreateTextFileFromFormAsync(T folderId, [FromForm] CreateTextOrHtmlFileRequestDto inDto)
+    public Task<FileDto<T>> CreateTextFileAsync(T folderId, CreateTextOrHtmlFileRequestDto inDto)
     {
         return _filesControllerHelper.CreateTextFileAsync(folderId, inDto.Title, inDto.Content);
     }
@@ -223,14 +197,7 @@ public abstract class FilesController<T> : ApiControllerBase
     }
 
     [Update("file/{fileId}/lock")]
-    public Task<FileDto<T>> LockFileFromBodyAsync(T fileId, [FromBody] LockFileRequestDto inDto)
-    {
-        return _filesControllerHelper.LockFileAsync(fileId, inDto.LockFile);
-    }
-
-    [Update("file/{fileId}/lock")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public Task<FileDto<T>> LockFileFromFormAsync(T fileId, [FromForm] LockFileRequestDto inDto)
+    public Task<FileDto<T>> LockFileAsync(T fileId, LockFileRequestDto inDto)
     {
         return _filesControllerHelper.LockFileAsync(fileId, inDto.LockFile);
     }
@@ -262,14 +229,7 @@ public abstract class FilesController<T> : ApiControllerBase
     }
 
     [Update("file/{fileId}/comment")]
-    public async Task<object> UpdateCommentFromBodyAsync(T fileId, [FromBody] UpdateCommentRequestDto inDto)
-    {
-        return await _filesControllerHelper.UpdateCommentAsync(fileId, inDto.Version, inDto.Comment);
-    }
-
-    [Update("file/{fileId}/comment")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public async Task<object> UpdateCommentFromFormAsync(T fileId, [FromForm] UpdateCommentRequestDto inDto)
+    public async Task<object> UpdateCommentAsync(T fileId, UpdateCommentRequestDto inDto)
     {
         return await _filesControllerHelper.UpdateCommentAsync(fileId, inDto.Version, inDto.Comment);
     }
@@ -284,14 +244,7 @@ public abstract class FilesController<T> : ApiControllerBase
     /// <param name="lastVersion">File last version number</param>
     /// <returns>File info</returns>
     [Update("file/{fileId}", order: int.MaxValue, DisableFormat = true)]
-    public Task<FileDto<T>> UpdateFileFromBodyAsync(T fileId, [FromBody] UpdateFileRequestDto inDto)
-    {
-        return _filesControllerHelper.UpdateFileAsync(fileId, inDto.Title, inDto.LastVersion);
-    }
-
-    [Update("file/{fileId}", order: int.MaxValue, DisableFormat = true)]
-    [Consumes("application/x-www-form-urlencoded")]
-    public Task<FileDto<T>> UpdateFileFromFormAsync(T fileId, [FromForm] UpdateFileRequestDto inDto)
+    public Task<FileDto<T>> UpdateFileAsync(T fileId, UpdateFileRequestDto inDto)
     {
         return _filesControllerHelper.UpdateFileAsync(fileId, inDto.Title, inDto.LastVersion);
     }
@@ -308,21 +261,6 @@ public abstract class FilesController<T> : ApiControllerBase
     public Task<FileDto<T>> UpdateFileStreamFromFormAsync(T fileId, [FromForm] FileStreamRequestDto inDto)
     {
         return _filesControllerHelper.UpdateFileStreamAsync(_filesControllerHelper.GetFileFromRequest(inDto).OpenReadStream(), fileId, inDto.FileExtension, inDto.Encrypted, inDto.Forcesave);
-    }
-
-
-    private async Task<FileEntryDto> CopyFile(T fileId, CopyAsRequestDto<JsonElement> inDto, FilesControllerHelper<T> helper)
-    {
-        if (inDto.DestFolderId.ValueKind == JsonValueKind.Number)
-        {
-            return await helper.CopyFileAsAsync(fileId, inDto.DestFolderId.GetInt32(), inDto.DestTitle, inDto.Password);
-        }
-        else if (inDto.DestFolderId.ValueKind == JsonValueKind.String)
-        {
-            return await helper.CopyFileAsAsync(fileId, inDto.DestFolderId.GetString(), inDto.DestTitle, inDto.Password);
-        }
-
-        return null;
     }
 }
 
@@ -351,14 +289,7 @@ public class FilesControllerCommon : ApiControllerBase
     /// <remarks>In case the extension for the file title differs from DOCX/XLSX/PPTX and belongs to one of the known text, spreadsheet or presentation formats, it will be changed to DOCX/XLSX/PPTX accordingly. If the file extension is not set or is unknown, the DOCX extension will be added to the file title.</remarks>
     /// <returns>New file info</returns>
     [Create("@my/file")]
-    public Task<FileDto<int>> CreateFileFromBodyAsync([FromBody] CreateFileRequestDto<JsonElement> inDto)
-    {
-        return _filesControllerHelperInternal.CreateFileAsync(_globalFolderHelper.FolderMy, inDto.Title, inDto.TemplateId, inDto.FormId, inDto.EnableExternalExt);
-    }
-
-    [Create("@my/file")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public Task<FileDto<int>> CreateFileFromFormAsync([FromForm] CreateFileRequestDto<JsonElement> inDto)
+    public Task<FileDto<int>> CreateFileAsync(CreateFileRequestDto<JsonElement> inDto)
     {
         return _filesControllerHelperInternal.CreateFileAsync(_globalFolderHelper.FolderMy, inDto.Title, inDto.TemplateId, inDto.FormId, inDto.EnableExternalExt);
     }
@@ -372,14 +303,7 @@ public class FilesControllerCommon : ApiControllerBase
     /// <param name="content">File contents</param>
     /// <returns>Folder contents</returns>        
     [Create("@common/html")]
-    public async Task<FileDto<int>> CreateHtmlFileInCommonFromBodyAsync([FromBody] CreateTextOrHtmlFileRequestDto inDto)
-    {
-        return await _filesControllerHelperInternal.CreateHtmlFileAsync(await _globalFolderHelper.FolderCommonAsync, inDto.Title, inDto.Content);
-    }
-
-    [Create("@common/html")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public async Task<FileDto<int>> CreateHtmlFileInCommonFromFormAsync([FromForm] CreateTextOrHtmlFileRequestDto inDto)
+    public async Task<FileDto<int>> CreateHtmlFileInCommonAsync(CreateTextOrHtmlFileRequestDto inDto)
     {
         return await _filesControllerHelperInternal.CreateHtmlFileAsync(await _globalFolderHelper.FolderCommonAsync, inDto.Title, inDto.Content);
     }
@@ -393,14 +317,7 @@ public class FilesControllerCommon : ApiControllerBase
     /// <param name="content">File contents</param>
     /// <returns>Folder contents</returns>
     [Create("@my/html")]
-    public Task<FileDto<int>> CreateHtmlFileInMyFromBodyAsync([FromBody] CreateTextOrHtmlFileRequestDto inDto)
-    {
-        return _filesControllerHelperInternal.CreateHtmlFileAsync(_globalFolderHelper.FolderMy, inDto.Title, inDto.Content);
-    }
-
-    [Create("@my/html")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public Task<FileDto<int>> CreateHtmlFileInMyFromFormAsync([FromForm] CreateTextOrHtmlFileRequestDto inDto)
+    public Task<FileDto<int>> CreateHtmlFileInMyAsync(CreateTextOrHtmlFileRequestDto inDto)
     {
         return _filesControllerHelperInternal.CreateHtmlFileAsync(_globalFolderHelper.FolderMy, inDto.Title, inDto.Content);
     }
@@ -414,14 +331,7 @@ public class FilesControllerCommon : ApiControllerBase
     /// <param name="content">File contents</param>
     /// <returns>Folder contents</returns>
     [Create("@common/text")]
-    public async Task<FileDto<int>> CreateTextFileInCommonFromBodyAsync([FromBody] CreateTextOrHtmlFileRequestDto inDto)
-    {
-        return await _filesControllerHelperInternal.CreateTextFileAsync(await _globalFolderHelper.FolderCommonAsync, inDto.Title, inDto.Content);
-    }
-
-    [Create("@common/text")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public async Task<FileDto<int>> CreateTextFileInCommonFromFormAsync([FromForm] CreateTextOrHtmlFileRequestDto inDto)
+    public async Task<FileDto<int>> CreateTextFileInCommonAsync(CreateTextOrHtmlFileRequestDto inDto)
     {
         return await _filesControllerHelperInternal.CreateTextFileAsync(await _globalFolderHelper.FolderCommonAsync, inDto.Title, inDto.Content);
     }
@@ -435,28 +345,14 @@ public class FilesControllerCommon : ApiControllerBase
     /// <param name="content">File contents</param>
     /// <returns>Folder contents</returns>
     [Create("@my/text")]
-    public Task<FileDto<int>> CreateTextFileInMyFromBodyAsync([FromBody] CreateTextOrHtmlFileRequestDto inDto)
-    {
-        return _filesControllerHelperInternal.CreateTextFileAsync(_globalFolderHelper.FolderMy, inDto.Title, inDto.Content);
-    }
-
-    [Create("@my/text")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public Task<FileDto<int>> CreateTextFileInMyFromFormAsync([FromForm] CreateTextOrHtmlFileRequestDto inDto)
+    public Task<FileDto<int>> CreateTextFileInMyAsync(CreateTextOrHtmlFileRequestDto inDto)
     {
         return _filesControllerHelperInternal.CreateTextFileAsync(_globalFolderHelper.FolderMy, inDto.Title, inDto.Content);
     }
 
     [Create("thumbnails")]
-    public Task<IEnumerable<JsonElement>> CreateThumbnailsFromBodyAsync([FromBody] BaseBatchRequestDto inDto)
+    public Task<IEnumerable<JsonElement>> CreateThumbnailsAsync(BaseBatchRequestDto inDto)
     {
         return _fileStorageServiceThirdparty.CreateThumbnailsAsync(inDto.FileIds.ToList());
-    }
-
-    [Create("thumbnails")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public async Task<IEnumerable<JsonElement>> CreateThumbnailsFromFormAsync([FromForm][ModelBinder(BinderType = typeof(BaseBatchModelBinder))] BaseBatchRequestDto inDto)
-    {
-        return await _fileStorageServiceThirdparty.CreateThumbnailsAsync(inDto.FileIds.ToList());
     }
 }

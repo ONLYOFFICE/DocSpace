@@ -125,19 +125,7 @@ public class SsoController : BaseSettingsController
     /// <param name="serializeSettings">Serialized SSO settings</param>
     /// <returns>SSO settings</returns>
     [Create("ssov2")]
-    public SsoSettingsV2 SaveSsoSettingsV2FromBody([FromBody] SsoSettingsRequestsDto model)
-    {
-        return SaveSsoSettingsV2(model);
-    }
-
-    [Create("ssov2")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public SsoSettingsV2 SaveSsoSettingsV2FromForm([FromForm] SsoSettingsRequestsDto model)
-    {
-        return SaveSsoSettingsV2(model);
-    }
-
-    private SsoSettingsV2 SaveSsoSettingsV2(SsoSettingsRequestsDto model)
+    public SsoSettingsV2 SaveSsoSettingsV2(SsoSettingsRequestsDto model)
     {
         CheckSsoPermissions();
 

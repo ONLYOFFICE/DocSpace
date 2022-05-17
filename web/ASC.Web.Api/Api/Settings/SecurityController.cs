@@ -138,19 +138,7 @@ public class SecurityController : BaseSettingsController
     }
 
     [Update("security")]
-    public IEnumerable<SecurityDto> SetWebItemSecurityFromBody([FromBody] WebItemSecurityRequestsDto inDto)
-    {
-        return SetWebItemSecurity(inDto);
-    }
-
-    [Update("security")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public IEnumerable<SecurityDto> SetWebItemSecurityFromForm([FromForm] WebItemSecurityRequestsDto inDto)
-    {
-        return SetWebItemSecurity(inDto);
-    }
-
-    private IEnumerable<SecurityDto> SetWebItemSecurity(WebItemSecurityRequestsDto inDto)
+    public IEnumerable<SecurityDto> SetWebItemSecurity(WebItemSecurityRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -187,19 +175,7 @@ public class SecurityController : BaseSettingsController
     }
 
     [Update("security/access")]
-    public IEnumerable<SecurityDto> SetAccessToWebItemsFromBody([FromBody] WebItemSecurityRequestsDto inDto)
-    {
-        return SetAccessToWebItems(inDto);
-    }
-
-    [Update("security/access")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public IEnumerable<SecurityDto> SetAccessToWebItemsFromForm([FromForm] WebItemSecurityRequestsDto inDto)
-    {
-        return SetAccessToWebItems(inDto);
-    }
-
-    private IEnumerable<SecurityDto> SetAccessToWebItems(WebItemSecurityRequestsDto inDto)
+    public IEnumerable<SecurityDto> SetAccessToWebItems(WebItemSecurityRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -263,19 +239,7 @@ public class SecurityController : BaseSettingsController
     }
 
     [Update("security/administrator")]
-    public object SetProductAdministratorFromBody([FromBody] SecurityRequestsDto inDto)
-    {
-        return SetProductAdministrator(inDto);
-    }
-
-    [Update("security/administrator")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public object SetProductAdministratorFromForm([FromForm] SecurityRequestsDto inDto)
-    {
-        return SetProductAdministrator(inDto);
-    }
-
-    private object SetProductAdministrator(SecurityRequestsDto inDto)
+    public object SetProductAdministrator(SecurityRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 

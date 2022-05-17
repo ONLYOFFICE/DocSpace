@@ -54,22 +54,10 @@ public class NotificationController : ApiControllerBase
     }
 
     [Create("phone")]
-    public object SendNotificationToChangeFromBody([FromBody] UpdateMemberRequestDto inDto)
+    public object SendNotificationToChange(UpdateMemberRequestDto inDto)
     {
-        return SendNotificationToChange(inDto.UserId);
-    }
-
-    [Create("phone")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public object SendNotificationToChangeFromForm([FromForm] UpdateMemberRequestDto inDto)
-    {
-        return SendNotificationToChange(inDto.UserId);
-    }
-
-    private object SendNotificationToChange(string userId)
-    {
-        var user = _userManager.GetUsers(string.IsNullOrEmpty(userId)
-            ? _securityContext.CurrentAccount.ID : new Guid(userId));
+        var user = _userManager.GetUsers(string.IsNullOrEmpty(inDto.UserId)
+            ? _securityContext.CurrentAccount.ID : new Guid(inDto.UserId));
 
         var canChange = user.IsMe(_authContext) || _permissionContext.CheckPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
 

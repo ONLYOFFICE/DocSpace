@@ -206,19 +206,7 @@ public class SettingsController : BaseSettingsController
     }
 
     [Create("maildomainsettings")]
-    public object SaveMailDomainSettingsFromBody([FromBody] MailDomainSettingsRequestsDto inDto)
-    {
-        return SaveMailDomainSettings(inDto);
-    }
-
-    [Create("maildomainsettings")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public object SaveMailDomainSettingsFromForm([FromForm] MailDomainSettingsRequestsDto inDto)
-    {
-        return SaveMailDomainSettings(inDto);
-    }
-
-    private object SaveMailDomainSettings(MailDomainSettingsRequestsDto inDto)
+    public object SaveMailDomainSettings(MailDomainSettingsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -346,26 +334,13 @@ public class SettingsController : BaseSettingsController
 
     [Update("wizard/complete", Check = false)]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
-    public WizardSettings CompleteWizardFromBody([FromBody] WizardRequestsDto inDto)
-    {
-        return CompleteWizard(inDto);
-    }
-
-    [Update("wizard/complete", Check = false)]
-    [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public WizardSettings CompleteWizardFromForm([FromForm] WizardRequestsDto inDto)
-    {
-        return CompleteWizard(inDto);
-    }
-
-    private WizardSettings CompleteWizard(WizardRequestsDto wizardModel)
+    public WizardSettings CompleteWizard(WizardRequestsDto inDto)
     {
         ApiContext.AuthByClaim();
 
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        return _firstTimeTenantSettings.SaveData(wizardModel);
+        return _firstTimeTenantSettings.SaveData(inDto);
     }
 
     ///<visible>false</visible>
@@ -387,39 +362,16 @@ public class SettingsController : BaseSettingsController
 
     ///<visible>false</visible>
     [Update("colortheme")]
-    public void SaveColorThemeFromBody([FromBody] SettingsRequestsDto inDto)
-    {
-        SaveColorTheme(inDto);
-    }
-
-    [Update("colortheme")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public void SaveColorThemeFromForm([FromForm] SettingsRequestsDto inDto)
-    {
-        SaveColorTheme(inDto);
-    }
-
-    private void SaveColorTheme(SettingsRequestsDto inDto)
+    public void SaveColorTheme(SettingsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
         _colorThemesSettingsHelper.SaveColorTheme(inDto.Theme);
         _messageService.Send(MessageAction.ColorThemeChanged);
     }
+
     ///<visible>false</visible>
     [Update("timeandlanguage")]
-    public object TimaAndLanguageFromBody([FromBody] SettingsRequestsDto inDto)
-    {
-        return TimaAndLanguage(inDto);
-    }
-
-    [Update("timeandlanguage")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public object TimaAndLanguageFromForm([FromForm] SettingsRequestsDto inDto)
-    {
-        return TimaAndLanguage(inDto);
-    }
-
-    private object TimaAndLanguage(SettingsRequestsDto inDto)
+    public object TimaAndLanguage(SettingsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -462,19 +414,7 @@ public class SettingsController : BaseSettingsController
 
     ///<visible>false</visible>
     [Update("defaultpage")]
-    public object SaveDefaultPageSettingsFromBody([FromBody] SettingsRequestsDto inDto)
-    {
-        return SaveDefaultPageSettings(inDto);
-    }
-
-    [Update("defaultpage")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public object SaveDefaultPageSettingsFromForm([FromForm] SettingsRequestsDto inDto)
-    {
-        return SaveDefaultPageSettings(inDto);
-    }
-
-    private object SaveDefaultPageSettings(SettingsRequestsDto inDto)
+    public object SaveDefaultPageSetting(SettingsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -486,15 +426,7 @@ public class SettingsController : BaseSettingsController
     }
 
     [Update("emailactivation")]
-    public EmailActivationSettings UpdateEmailActivationSettingsFromBody([FromBody] EmailActivationSettings settings)
-    {
-        _settingsManager.SaveForCurrentUser(settings);
-        return settings;
-    }
-
-    [Update("emailactivation")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public EmailActivationSettings UpdateEmailActivationSettingsFromForm([FromForm] EmailActivationSettings settings)
+    public EmailActivationSettings UpdateEmailActivationSettings(EmailActivationSettings settings)
     {
         _settingsManager.SaveForCurrentUser(settings);
         return settings;
@@ -621,19 +553,7 @@ public class SettingsController : BaseSettingsController
     }
 
     [Create("authservice")]
-    public bool SaveAuthKeysFromBody([FromBody] AuthServiceRequestsDto inDto)
-    {
-        return SaveAuthKeys(inDto);
-    }
-
-    [Create("authservice")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public bool SaveAuthKeysFromForm([FromForm] AuthServiceRequestsDto inDto)
-    {
-        return SaveAuthKeys(inDto);
-    }
-
-    private bool SaveAuthKeys(AuthServiceRequestsDto inDto)
+    public bool SaveAuthKeys(AuthServiceRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 

@@ -154,19 +154,7 @@ public class TfaappController : BaseSettingsController
     }
 
     [Update("tfaapp")]
-    public bool TfaSettingsFromBody([FromBody] TfaRequestsDto inDto)
-    {
-        return TfaSettingsUpdate(inDto);
-    }
-
-    [Update("tfaapp")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public bool TfaSettingsFromForm([FromForm] TfaRequestsDto inDto)
-    {
-        return TfaSettingsUpdate(inDto);
-    }
-
-    private bool TfaSettingsUpdate(TfaRequestsDto inDto)
+    public bool TfaSettings(TfaRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -308,19 +296,7 @@ public class TfaappController : BaseSettingsController
     }
 
     [Update("tfaappnewapp")]
-    public object TfaAppNewAppFromBody([FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] TfaRequestsDto inDto)
-    {
-        return TfaAppNewApp(inDto);
-    }
-
-    [Update("tfaappnewapp")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public object TfaAppNewAppFromForm([FromForm] TfaRequestsDto inDto)
-    {
-        return TfaAppNewApp(inDto);
-    }
-
-    private object TfaAppNewApp(TfaRequestsDto inDto)
+    public object TfaAppNewApp(TfaRequestsDto inDto)
     {
         var id = inDto?.Id ?? Guid.Empty;
         var isMe = id.Equals(Guid.Empty);

@@ -51,14 +51,7 @@ public abstract class MasterFormController<T> : ApiControllerBase
     }
 
     [Create("masterform/{fileId}/checkfillformdraft")]
-    public async Task<object> CheckFillFormDraftFromBodyAsync(T fileId, [FromBody] CheckFillFormDraftRequestDto inDto)
-    {
-        return await _fileStorageService.CheckFillFormDraftAsync(fileId, inDto.Version, inDto.Doc, !inDto.RequestEmbedded, inDto.RequestView);
-    }
-
-    [Create("masterform/{fileId}/checkfillformdraft")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public async Task<object> CheckFillFormDraftFromFormAsync(T fileId, [FromForm] CheckFillFormDraftRequestDto inDto)
+    public async Task<object> CheckFillFormDraftAsync(T fileId, CheckFillFormDraftRequestDto inDto)
     {
         return await _fileStorageService.CheckFillFormDraftAsync(fileId, inDto.Version, inDto.Doc, !inDto.RequestEmbedded, inDto.RequestView);
     }

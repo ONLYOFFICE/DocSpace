@@ -145,38 +145,7 @@ public abstract class PrivacyRoomControllerCommon : ControllerBase
     /// </summary>
     /// <visible>false</visible>
     [Update("keys")]
-    public object SetKeysFromBody([FromBody] PrivacyRoomRequestDto inDto)
-    {
-        return SetKeys(inDto);
-    }
-
-    [Update("keys")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public object SetKeysFromForm([FromForm] PrivacyRoomRequestDto inDto)
-    {
-        return SetKeys(inDto);
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="enable"></param>
-    /// <returns></returns>
-    /// <visible>false</visible>
-    [Update("")]
-    public bool SetPrivacyRoomFromBody([FromBody] PrivacyRoomRequestDto inDto)
-    {
-        return SetPrivacyRoom(inDto);
-    }
-
-    [Update("")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public bool SetPrivacyRoomFromForm([FromForm] PrivacyRoomRequestDto inDto)
-    {
-        return SetPrivacyRoom(inDto);
-    }
-
-    private object SetKeys(PrivacyRoomRequestDto inDto)
+    public object SetKeys(PrivacyRoomRequestDto inDto)
     {
         _permissionContext.DemandPermissions(new UserSecurityProvider(_authContext.CurrentAccount.ID), Constants.Action_EditUser);
 
@@ -204,7 +173,14 @@ public abstract class PrivacyRoomControllerCommon : ControllerBase
         };
     }
 
-    private bool SetPrivacyRoom(PrivacyRoomRequestDto inDto)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="enable"></param>
+    /// <returns></returns>
+    /// <visible>false</visible>
+    [Update("")]
+    public bool SetPrivacyRoom(PrivacyRoomRequestDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 

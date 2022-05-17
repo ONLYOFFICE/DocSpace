@@ -121,19 +121,7 @@ public class StorageController : BaseSettingsController
     public readonly object Locker = new object();
 
     [Create("encryption/start")]
-    public bool StartStorageEncryptionFromBody([FromBody] StorageEncryptionRequestsDto inDto)
-    {
-        return StartStorageEncryption(inDto);
-    }
-
-    [Create("encryption/start")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public bool StartStorageEncryptionFromForm([FromForm] StorageEncryptionRequestsDto inDto)
-    {
-        return StartStorageEncryption(inDto);
-    }
-
-    private bool StartStorageEncryption(StorageEncryptionRequestsDto inDto)
+    public bool StartStorageEncryption(StorageEncryptionRequestsDto inDto)
     {
         if (_coreBaseSettings.CustomMode)
         {
@@ -327,19 +315,7 @@ public class StorageController : BaseSettingsController
     }
 
     [Update("storage")]
-    public StorageSettings UpdateStorageFromBody([FromBody] StorageRequestsDto inDto)
-    {
-        return UpdateStorage(inDto);
-    }
-
-    [Update("storage")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public StorageSettings UpdateStorageFromForm([FromForm] StorageRequestsDto inDto)
-    {
-        return UpdateStorage(inDto);
-    }
-
-    private StorageSettings UpdateStorage(StorageRequestsDto inDto)
+    public StorageSettings UpdateStorage(StorageRequestsDto inDto)
     {
         try
         {
@@ -421,19 +397,7 @@ public class StorageController : BaseSettingsController
     }
 
     [Update("storage/cdn")]
-    public CdnStorageSettings UpdateCdnFromBody([FromBody] StorageRequestsDto inDto)
-    {
-        return UpdateCdn(inDto);
-    }
-
-    [Update("storage/cdn")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public CdnStorageSettings UpdateCdnFromForm([FromForm] StorageRequestsDto inDto)
-    {
-        return UpdateCdn(inDto);
-    }
-
-    private CdnStorageSettings UpdateCdn(StorageRequestsDto inDto)
+    public CdnStorageSettings UpdateCdn(StorageRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
         if (!_coreBaseSettings.Standalone)

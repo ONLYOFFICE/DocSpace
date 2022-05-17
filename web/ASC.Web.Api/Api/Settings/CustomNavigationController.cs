@@ -68,19 +68,7 @@ public class CustomNavigationController : BaseSettingsController
     }
 
     [Create("customnavigation/create")]
-    public CustomNavigationItem CreateCustomNavigationItemFromBody([FromBody] CustomNavigationItem item)
-    {
-        return CreateCustomNavigationItem(item);
-    }
-
-    [Create("customnavigation/create")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public CustomNavigationItem CreateCustomNavigationItemFromForm([FromForm] CustomNavigationItem item)
-    {
-        return CreateCustomNavigationItem(item);
-    }
-
-    private CustomNavigationItem CreateCustomNavigationItem(CustomNavigationItem item)
+    public CustomNavigationItem CreateCustomNavigationItem(CustomNavigationItem item)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 

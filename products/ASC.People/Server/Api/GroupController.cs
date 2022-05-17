@@ -91,29 +91,55 @@ public class GroupController : ControllerBase
     }
 
     [Create]
-    public GroupDto AddGroupFromBody([FromBody] GroupRequestDto inDto)
+    public GroupDto AddGroup(GroupRequestDto inDto)
     {
-        return AddGroup(inDto);
-    }
+        _permissionContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
 
-    [Create]
-    [Consumes("application/x-www-form-urlencoded")]
-    public GroupDto AddGroupFromForm([FromForm] GroupRequestDto inDto)
-    {
-        return AddGroup(inDto);
+        var group = _userManager.SaveGroupInfo(new GroupInfo { Name = inDto.GroupName });
+
+        TransferUserToDepartment(inDto.GroupManager, @group, true);
+
+        if (inDto.Members != null)
+        {
+            foreach (var member in inDto.Members)
+            {
+                TransferUserToDepartment(member, group, false);
+            }
+        }
+
+        _messageService.Send(MessageAction.GroupCreated, _messageTarget.Create(group.ID), group.Name);
+
+        return _groupFullDtoHelper.Get(group, true);
     }
 
     [Update("{groupid}")]
-    public GroupDto UpdateGroupFromBody(Guid groupid, [FromBody] GroupRequestDto inDto)
+    public GroupDto UpdateGroup(Guid groupid, GroupRequestDto inDto)
     {
-        return UpdateGroup(groupid, inDto);
-    }
+        _permissionContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
+        var group = _userManager.GetGroups().SingleOrDefault(x => x.ID == groupid).NotFoundIfNull("group not found");
+        if (groupid == Constants.LostGroupInfo.ID)
+        {
+            throw new ItemNotFoundException("group not found");
+        }
 
-    [Update("{groupid}")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public GroupDto UpdateGroupFromForm(Guid groupid, [FromForm] GroupRequestDto inDto)
-    {
-        return UpdateGroup(groupid, inDto);
+        group.Name = inDto.GroupName ?? group.Name;
+        _userManager.SaveGroupInfo(group);
+
+        RemoveMembersFrom(groupid, new GroupRequestDto { Members = _userManager.GetUsersByGroup(groupid, EmployeeStatus.All).Select(u => u.Id).Where(id => !inDto.Members.Contains(id)) });
+
+        TransferUserToDepartment(inDto.GroupManager, @group, true);
+
+        if (inDto.Members != null)
+        {
+            foreach (var member in inDto.Members)
+            {
+                TransferUserToDepartment(member, group, false);
+            }
+        }
+
+        _messageService.Send(MessageAction.GroupUpdated, _messageTarget.Create(groupid), group.Name);
+
+        return GetById(groupid);
     }
 
     [Delete("{groupid}")]
@@ -150,55 +176,58 @@ public class GroupController : ControllerBase
     }
 
     [Create("{groupid}/members")]
-    public GroupDto SetMembersToFromBody(Guid groupid, [FromBody] GroupRequestDto inDto)
+    public GroupDto SetMembersTo(Guid groupid, GroupRequestDto inDto)
     {
-        return SetMembersTo(groupid, inDto);
-    }
+        RemoveMembersFrom(groupid, new GroupRequestDto { Members = _userManager.GetUsersByGroup(groupid).Select(x => x.Id) });
+        AddMembersTo(groupid, inDto);
 
-    [Create("{groupid}/members")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public GroupDto SetMembersToFromForm(Guid groupid, [FromForm] GroupRequestDto inDto)
-    {
-        return SetMembersTo(groupid, inDto);
+        return GetById(groupid);
     }
 
     [Update("{groupid}/members")]
-    public GroupDto AddMembersToFromBody(Guid groupid, [FromBody] GroupRequestDto inDto)
+    public GroupDto AddMembersTo(Guid groupid, GroupRequestDto inDto)
     {
-        return AddMembersTo(groupid, inDto);
-    }
+        _permissionContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
 
-    [Update("{groupid}/members")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public GroupDto AddMembersToFromForm(Guid groupid, [FromForm] GroupRequestDto inDto)
-    {
-        return AddMembersTo(groupid, inDto);
-    }
+        var group = GetGroupInfo(groupid);
 
-    [Update("{groupid}/manager")]
-    public GroupDto SetManagerFromBody(Guid groupid, [FromBody] SetManagerRequestDto inDto)
-    {
-        return SetManager(groupid, inDto);
+        foreach (var userId in inDto.Members)
+        {
+            TransferUserToDepartment(userId, group, false);
+        }
+
+        return GetById(group.ID);
     }
 
     [Update("{groupid}/manager")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public GroupDto SetManagerFromForm(Guid groupid, [FromForm] SetManagerRequestDto inDto)
+    public GroupDto SetManager(Guid groupid, SetManagerRequestDto inDto)
     {
-        return SetManager(groupid, inDto);
+        var group = GetGroupInfo(groupid);
+        if (_userManager.UserExists(inDto.UserId))
+        {
+            _userManager.SetDepartmentManager(group.ID, inDto.UserId);
+        }
+        else
+        {
+            throw new ItemNotFoundException("user not found");
+        }
+
+        return GetById(groupid);
     }
 
     [Delete("{groupid}/members")]
-    public GroupDto RemoveMembersFromFromBody(Guid groupid, [FromBody] GroupRequestDto inDto)
+    public GroupDto RemoveMembersFrom(Guid groupid, GroupRequestDto inDto)
     {
-        return RemoveMembersFrom(groupid, inDto);
-    }
+        _permissionContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
 
-    [Delete("{groupid}/members")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public GroupDto RemoveMembersFromFromForm(Guid groupid, [FromForm] GroupRequestDto inDto)
-    {
-        return RemoveMembersFrom(groupid, inDto);
+        var group = GetGroupInfo(groupid);
+
+        foreach (var userId in inDto.Members)
+        {
+            RemoveUserFromDepartment(userId, group);
+        }
+
+        return GetById(group.ID);
     }
 
     private GroupInfo GetGroupInfo(Guid groupid)
@@ -210,56 +239,6 @@ public class GroupController : ControllerBase
         }
 
         return @group;
-    }
-
-    private GroupDto AddGroup(GroupRequestDto inDto)
-    {
-        _permissionContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
-
-        var group = _userManager.SaveGroupInfo(new GroupInfo { Name = inDto.GroupName });
-
-        TransferUserToDepartment(inDto.GroupManager, @group, true);
-
-        if (inDto.Members != null)
-        {
-            foreach (var member in inDto.Members)
-            {
-                TransferUserToDepartment(member, group, false);
-            }
-        }
-
-        _messageService.Send(MessageAction.GroupCreated, _messageTarget.Create(group.ID), group.Name);
-
-        return _groupFullDtoHelper.Get(group, true);
-    }
-
-    private GroupDto UpdateGroup(Guid groupid, GroupRequestDto inDto)
-    {
-        _permissionContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
-        var group = _userManager.GetGroups().SingleOrDefault(x => x.ID == groupid).NotFoundIfNull("group not found");
-        if (groupid == Constants.LostGroupInfo.ID)
-        {
-            throw new ItemNotFoundException("group not found");
-        }
-
-        group.Name = inDto.GroupName ?? group.Name;
-        _userManager.SaveGroupInfo(group);
-
-        RemoveMembersFrom(groupid, new GroupRequestDto { Members = _userManager.GetUsersByGroup(groupid, EmployeeStatus.All).Select(u => u.Id).Where(id => !inDto.Members.Contains(id)) });
-
-        TransferUserToDepartment(inDto.GroupManager, @group, true);
-
-        if (inDto.Members != null)
-        {
-            foreach (var member in inDto.Members)
-            {
-                TransferUserToDepartment(member, group, false);
-            }
-        }
-
-        _messageService.Send(MessageAction.GroupUpdated, _messageTarget.Create(groupid), group.Name);
-
-        return GetById(groupid);
     }
 
     private void TransferUserToDepartment(Guid userId, GroupInfo group, bool setAsManager)
@@ -274,57 +253,6 @@ public class GroupController : ControllerBase
             _userManager.SetDepartmentManager(@group.ID, userId);
         }
         _userManager.AddUserIntoGroup(userId, @group.ID);
-    }
-
-    private GroupDto SetMembersTo(Guid groupid, GroupRequestDto inDto)
-    {
-        RemoveMembersFrom(groupid, new GroupRequestDto { Members = _userManager.GetUsersByGroup(groupid).Select(x => x.Id) });
-        AddMembersTo(groupid, inDto);
-
-        return GetById(groupid);
-    }
-
-    private GroupDto RemoveMembersFrom(Guid groupid, GroupRequestDto inDto)
-    {
-        _permissionContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
-
-        var group = GetGroupInfo(groupid);
-
-        foreach (var userId in inDto.Members)
-        {
-            RemoveUserFromDepartment(userId, group);
-        }
-
-        return GetById(group.ID);
-    }
-
-    private GroupDto AddMembersTo(Guid groupid, GroupRequestDto inDto)
-    {
-        _permissionContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
-
-        var group = GetGroupInfo(groupid);
-
-        foreach (var userId in inDto.Members)
-        {
-            TransferUserToDepartment(userId, group, false);
-        }
-
-        return GetById(group.ID);
-    }
-
-    private GroupDto SetManager(Guid groupid, SetManagerRequestDto inDto)
-    {
-        var group = GetGroupInfo(groupid);
-        if (_userManager.UserExists(inDto.UserId))
-        {
-            _userManager.SetDepartmentManager(group.ID, inDto.UserId);
-        }
-        else
-        {
-            throw new ItemNotFoundException("user not found");
-        }
-
-        return GetById(groupid);
     }
 
     private void RemoveUserFromDepartment(Guid userId, GroupInfo @group)

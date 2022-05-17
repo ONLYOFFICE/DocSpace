@@ -64,32 +64,7 @@ public class ReassignController : ApiControllerBase
     }
 
     [Create(@"reassign/start")]
-    public ReassignProgressItem StartReassignFromBody([FromBody] StartReassignRequestDto inDto)
-    {
-        return StartReassign(inDto);
-    }
-
-    [Create(@"reassign/start")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public ReassignProgressItem StartReassignFromForm([FromForm] StartReassignRequestDto inDto)
-    {
-        return StartReassign(inDto);
-    }
-
-    [Update(@"reassign/terminate")]
-    public void TerminateReassignFromBody([FromBody] TerminateRequestDto inDto)
-    {
-        TerminateReassign(inDto);
-    }
-
-    [Update(@"reassign/terminate")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public void TerminateReassignFromForm([FromForm] TerminateRequestDto inDto)
-    {
-        TerminateReassign(inDto);
-    }
-
-    private ReassignProgressItem StartReassign(StartReassignRequestDto inDto)
+    public ReassignProgressItem StartReassign(StartReassignRequestDto inDto)
     {
         _permissionContext.DemandPermissions(Constants.Action_EditUser);
 
@@ -120,7 +95,8 @@ public class ReassignController : ApiControllerBase
         return _queueWorkerReassign.Start(Tenant.Id, inDto.FromUserId, inDto.ToUserId, _securityContext.CurrentAccount.ID, inDto.DeleteProfile);
     }
 
-    private void TerminateReassign(TerminateRequestDto inDto)
+    [Update(@"reassign/terminate")]
+    public void TerminateReassign(TerminateRequestDto inDto)
     {
         _permissionContext.DemandPermissions(Constants.Action_EditUser);
 

@@ -79,19 +79,7 @@ public class BackupController : ControllerBase
     /// <param name="backupMail">Include mail in the backup</param>
     /// <category>Backup</category>
     [Create("createbackupschedule")]
-    public bool CreateBackupScheduleFromBody([FromBody] BackupScheduleDto backupSchedule)
-    {
-        return CreateBackupSchedule(backupSchedule);
-    }
-
-    [Create("createbackupschedule")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public bool CreateBackupScheduleFromForm([FromForm] BackupScheduleDto backupSchedule)
-    {
-        return CreateBackupSchedule(backupSchedule);
-    }
-
-    private bool CreateBackupSchedule(BackupScheduleDto backupSchedule)
+    public bool CreateBackupSchedule(BackupScheduleDto backupSchedule)
     {
         if (_coreBaseSettings.Standalone)
         {
@@ -136,19 +124,7 @@ public class BackupController : ControllerBase
     /// <category>Backup</category>
     /// <returns>Backup Progress</returns>
     [Create("startbackup")]
-    public BackupProgress StartBackupFromBody([FromBody] BackupDto backup)
-    {
-        return StartBackup(backup);
-    }
-
-    [Create("startbackup")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public BackupProgress StartBackupFromForm([FromForm] BackupDto backup)
-    {
-        return StartBackup(backup);
-    }
-
-    private BackupProgress StartBackup(BackupDto backup)
+    public BackupProgress StartBackup(BackupDto backup)
     {
         if (_coreBaseSettings.Standalone)
         {
@@ -243,19 +219,7 @@ public class BackupController : ControllerBase
     /// <category>Backup</category>
     /// <returns>Restore Progress</returns>
     [Create("startrestore")]
-    public BackupProgress StartBackupRestoreFromBody([FromBody] BackupRestoreDto backupRestore)
-    {
-        return StartBackupRestore(backupRestore);
-    }
-
-    [Create("startrestore")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public BackupProgress StartBackupRestoreFromForm([FromForm] BackupRestoreDto backupRestore)
-    {
-        return StartBackupRestore(backupRestore);
-    }
-
-    private BackupProgress StartBackupRestore(BackupRestoreDto backupRestore)
+    public BackupProgress StartBackupRestore(BackupRestoreDto backupRestore)
     {
         if (_coreBaseSettings.Standalone)
         {

@@ -67,19 +67,7 @@ public class OwnerController : BaseSettingsController
     }
 
     [Create("owner")]
-    public object SendOwnerChangeInstructionsFromBody([FromBody] SettingsRequestsDto inDto)
-    {
-        return SendOwnerChangeInstructions(inDto);
-    }
-
-    [Create("owner")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public object SendOwnerChangeInstructionsFromForm([FromForm] SettingsRequestsDto inDto)
-    {
-        return SendOwnerChangeInstructions(inDto);
-    }
-
-    private object SendOwnerChangeInstructions(SettingsRequestsDto inDto)
+    public object SendOwnerChangeInstructions(SettingsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -108,20 +96,7 @@ public class OwnerController : BaseSettingsController
 
     [Update("owner")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PortalOwnerChange")]
-    public void OwnerFromBody([FromBody] SettingsRequestsDto inDto)
-    {
-        Owner(inDto);
-    }
-
-    [Update("owner")]
-    [Authorize(AuthenticationSchemes = "confirm", Roles = "PortalOwnerChange")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public void OwnerFromForm([FromForm] SettingsRequestsDto inDto)
-    {
-        Owner(inDto);
-    }
-
-    private void Owner(SettingsRequestsDto inDto)
+    public void Owner(SettingsRequestsDto inDto)
     {
         var newOwner = Constants.LostUser;
         try

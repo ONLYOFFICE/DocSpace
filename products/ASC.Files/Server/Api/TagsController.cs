@@ -95,16 +95,15 @@ public class TagsControllerCommon : ApiControllerBase
     /// <param name="fileIds">File IDs</param>
     /// <returns></returns>
     [Create("favorites")]
-    public Task<bool> AddFavoritesFromBodyAsync([FromBody] BaseBatchRequestDto inDto)
+    public async Task<bool> AddFavoritesAsync(BaseBatchRequestDto inDto)
     {
-        return AddFavoritesAsync(inDto);
-    }
+        var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(inDto.FolderIds);
+        var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(inDto.FileIds);
 
-    [Create("favorites")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public async Task<bool> AddFavoritesFromFormAsync([FromForm][ModelBinder(BinderType = typeof(BaseBatchModelBinder))] BaseBatchRequestDto inDto)
-    {
-        return await AddFavoritesAsync(inDto);
+        await _fileStorageService.AddToFavoritesAsync(folderIntIds, fileIntIds);
+        await _fileStorageServiceThirdparty.AddToFavoritesAsync(folderStringIds, fileStringIds);
+
+        return true;
     }
 
     /// <summary>
@@ -115,16 +114,7 @@ public class TagsControllerCommon : ApiControllerBase
     /// <param name="fileIds">File IDs</param>
     /// <returns></returns>
     [Create("templates")]
-    public async Task<bool> AddTemplatesFromBodyAsync([FromBody] TemplatesRequestDto inDto)
-    {
-        await _fileStorageService.AddToTemplatesAsync(inDto.FileIds);
-
-        return true;
-    }
-
-    [Create("templates")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public async Task<bool> AddTemplatesFromFormAsync([FromForm] TemplatesRequestDto inDto)
+    public async Task<bool> AddTemplatesAsync(TemplatesRequestDto inDto)
     {
         await _fileStorageService.AddToTemplatesAsync(inDto.FileIds);
 
@@ -163,17 +153,6 @@ public class TagsControllerCommon : ApiControllerBase
     public async Task<bool> DeleteTemplatesAsync(IEnumerable<int> fileIds)
     {
         await _fileStorageService.DeleteTemplatesAsync(fileIds);
-
-        return true;
-    }
-
-    private async Task<bool> AddFavoritesAsync(BaseBatchRequestDto inDto)
-    {
-        var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(inDto.FolderIds);
-        var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(inDto.FileIds);
-
-        await _fileStorageService.AddToFavoritesAsync(folderIntIds, fileIntIds);
-        await _fileStorageServiceThirdparty.AddToFavoritesAsync(folderStringIds, fileStringIds);
 
         return true;
     }

@@ -86,39 +86,7 @@ public class RemoveUserDataController : ApiControllerBase
     }
 
     [Create(@"remove/start")]
-    public RemoveProgressItem StartRemoveFromBody([FromBody] TerminateRequestDto inDto)
-    {
-        return StartRemove(inDto);
-    }
-
-    [Create(@"remove/start")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public RemoveProgressItem StartRemoveFromForm([FromForm] TerminateRequestDto inDto)
-    {
-        return StartRemove(inDto);
-    }
-
-    [Update(@"remove/terminate")]
-    public void TerminateRemoveFromBody([FromBody] TerminateRequestDto inDto)
-    {
-        TerminateRemove(inDto);
-    }
-
-    [Update(@"remove/terminate")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public void TerminateRemoveFromForm([FromForm] TerminateRequestDto inDto)
-    {
-        TerminateRemove(inDto);
-    }
-
-    private void TerminateRemove(TerminateRequestDto inDto)
-    {
-        _permissionContext.DemandPermissions(Constants.Action_EditUser);
-
-        _queueWorkerRemove.Terminate(Tenant.Id, inDto.UserId);
-    }
-
-    private RemoveProgressItem StartRemove(TerminateRequestDto inDto)
+    public RemoveProgressItem StartRemove(TerminateRequestDto inDto)
     {
         _permissionContext.DemandPermissions(Constants.Action_EditUser);
 
@@ -135,5 +103,13 @@ public class RemoveUserDataController : ApiControllerBase
         }
 
         return _queueWorkerRemove.Start(Tenant.Id, user, _securityContext.CurrentAccount.ID, true);
+    }
+
+    [Update(@"remove/terminate")]
+    public void TerminateRemove(TerminateRequestDto inDto)
+    {
+        _permissionContext.DemandPermissions(Constants.Action_EditUser);
+
+        _queueWorkerRemove.Terminate(Tenant.Id, inDto.UserId);
     }
 }
