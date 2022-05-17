@@ -220,6 +220,7 @@ class Section extends React.Component {
       infoPanelIsVisible,
       isInfoPanelAvailable,
       settingsStudio,
+      clearPrimaryProgressData,
     } = this.props;
 
     let sectionHeaderContent = null;
@@ -445,6 +446,7 @@ class Section extends React.Component {
                           percent={primaryProgressBarValue}
                           alert={showPrimaryButtonAlert}
                           onClick={onOpenUploadPanel}
+                          clearPrimaryProgressData={clearPrimaryProgressData}
                         />
                       ) : !showPrimaryProgressBar &&
                         showSecondaryProgressBar ? (
