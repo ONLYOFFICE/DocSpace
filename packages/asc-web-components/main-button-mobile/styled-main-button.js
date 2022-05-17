@@ -202,7 +202,7 @@ const StyledProgressBarContainer = styled.div`
     color: ${(props) => props.theme.mainButtonMobile.textColor};
     width: 42%;
     text-align: right;
-    margin-right: 6px;
+    margin-right: 12px;
   }
 
   .progress_icon {
