@@ -2,5 +2,6 @@
   "AddDepartmentsButtonLabel": "Departament nou",
   "EmptyOptionsLabel": "Departamente nu s-au găsit",
   "EmptySearchOptionsLabel": "Departamente cu acest nume nu s-au găsit",
-  "SearchPlaceholder": "Căutare după grupe"
+  "SearchPlaceholder": "Căutare după grupe",
+  "AllGroups": "Toate grupurile"
 }
