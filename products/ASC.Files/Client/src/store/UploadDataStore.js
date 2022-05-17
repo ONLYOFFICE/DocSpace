@@ -946,7 +946,7 @@ class UploadDataStore {
         const data = res[0] ? res[0] : null;
         const pbData = { icon: "duplicate" };
 
-        return this.loopFilesOperations(data, fileIds.length, pbData).then(() =>
+        return this.loopFilesOperations(data, pbData).then(() =>
           this.moveToCopyTo(destFolderId, pbData, true, fileIds, folderIds)
         );
       })
