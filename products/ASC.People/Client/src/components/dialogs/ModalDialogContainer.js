@@ -72,6 +72,28 @@ const ModalDialogContainer = styled(ModalDialog)`
       }
     }
   }
+
+  .backup-codes-description-one {
+    margin-bottom: 8px;
+  }
+
+  .backup-codes-description-two {
+    margin-bottom: 16px;
+  }
+
+  .backup-codes-counter {
+    opacity: 0.5;
+    margin-bottom: 4px;
+  }
+
+  .backup-codes-print-link-wrapper {
+    width: auto;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    text-underline-offset: 2px;
+    margin-left: 8px;
+  }
 `;
 
 ModalDialogContainer.defaultProps = { theme: Base };

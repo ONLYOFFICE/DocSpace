@@ -7,7 +7,6 @@ import IconButton from "../../icon-button";
 import Base from "../../themes/base";
 
 const StyledCloseButtonWrapper = styled.div`
-  position: absolute;
   width: 24px;
   height: 24px;
 
@@ -42,7 +41,7 @@ const StyledCloseButtonWrapper = styled.div`
           }
         `}
 
-  .close-button {
+  .close-button, .close-button:hover {
     cursor: pointer;
     path {
       fill: ${(props) => props.theme.modalDialog.closeButton.fillColor};
@@ -60,7 +59,7 @@ const CloseButton = ({ currentDisplayType, zIndex, onClick }) => {
       currentDisplayType={currentDisplayType}
     >
       <IconButton
-        size={12}
+        size="12px"
         className="close-button"
         iconName="/static/images/cross.react.svg"
       />

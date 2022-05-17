@@ -155,7 +155,9 @@ Scenario("Test context menu render", async ({ I }) => {
   }
 });
 
-Scenario("Modal test - invitation link", async ({ I }) => {
+//  Modal Tests //
+
+Scenario("Modal test - Create invitation link", async ({ I }) => {
   I.mockEndpoint(Endpoints.group, "empty");
   I.mockEndpoint(Endpoints.filter, "empty");
 
@@ -232,7 +234,6 @@ Scenario("Modal test - Change password", async ({ I }) => {
 });
 
 Scenario("Modal test - Data loss warning", async ({ I }) => {
-  I.mockEndpoint(Endpoints.providers, "providers");
   I.mockEndpoint(Endpoints.group, "empty");
   I.mockEndpoint(Endpoints.filter, "one");
 
@@ -248,10 +249,25 @@ Scenario("Modal test - Data loss warning", async ({ I }) => {
   I.wait(5);
 });
 
-Scenario("Modal test - Data send invite link again", async ({ I }) => {
-  I.mockEndpoint(Endpoints.providers, "providers");
+Scenario("Modal test - Send invite link again", async ({ I }) => {
   I.mockEndpoint(Endpoints.group, "empty");
   I.mockEndpoint(Endpoints.filter, "many");
 
   I.openPage();
+});
+
+Scenario("Modal test - Backup codes", async ({ I }) => {
+  I.mockEndpoint(Endpoints.group, "empty");
+  I.mockEndpoint(Endpoints.filter, "one");
+
+  I.openPage();
+
+  I.click({
+    react: "Avatar",
+    role: "owner",
+  });
+  I.wait(2);
+
+  I.click("Profile");
+  I.wait(2);
 });
