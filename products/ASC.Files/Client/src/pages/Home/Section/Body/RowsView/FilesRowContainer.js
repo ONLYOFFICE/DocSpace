@@ -67,7 +67,7 @@ const FilesRowContainer = ({
 }) => {
   useEffect(() => {
     if ((viewAs !== "table" && viewAs !== "row") || !sectionWidth) return;
-
+    // 400 - it is desktop info panel width
     if (
       (sectionWidth < 1025 && !infoPanelVisible) ||
       (sectionWidth < 625 && infoPanelVisible) ||

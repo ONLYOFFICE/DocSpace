@@ -110,7 +110,7 @@ const Table = ({
 
   useEffect(() => {
     if ((viewAs !== "table" && viewAs !== "row") || !setViewAs) return;
-
+    // 400 - it is desktop info panel width
     if (
       (sectionWidth < 1025 && !infoPanelVisible) ||
       (sectionWidth < 625 && infoPanelVisible) ||

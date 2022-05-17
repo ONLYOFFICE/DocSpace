@@ -279,11 +279,7 @@ class Section extends React.Component {
       return (
         <>
           {isSectionAvailable && (
-            <ReactResizeDetector
-              refreshRate={100}
-              refreshMode="debounce"
-              refreshOptions={{ trailing: true }}
-            >
+            <ReactResizeDetector>
               {({ width, height }) => (
                 <Provider
                   value={{
