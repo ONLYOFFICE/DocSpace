@@ -47,18 +47,16 @@ const ProgressBarMobile = ({
   };
 
   return (
-    <StyledProgressBarContainer
-      onClick={onClickHeaderAction}
-      isUploading={open}
-    >
+    <StyledProgressBarContainer isUploading={open}>
       <Text
         className="progress-header"
         fontSize={`14`}
         // color="#657077"
+        onClick={onClickHeaderAction}
       >
         {label}
       </Text>
-      <Text className="progress_count" fontSize={`13`}>
+      <Text className="progress_count" fontSize={`13`} truncate>
         {status}
       </Text>
       <IconButton
