@@ -39,7 +39,7 @@
   "Groups": "Gruppen",
   "Guests": "Gäste",
   "Job/Title": "Aufgabe/Titel",
-  "LanguageAndTimeZoneSettingsDescription": "Die Sprach- und Zeitzoneneinstellungen lassen Sie die Sprache des kompletten Portals für alle Benutzer ändern und die Zeitzone konfigurieren, so dass alle Ereignisse des ©linney-Portals mit einem richtigen Datum und der Uhrzeit angezeigt werden.",
+  "LanguageAndTimeZoneSettingsDescription": "Die Sprach- und Zeitzoneneinstellungen lassen Sie die Sprache des kompletten Portals für alle Benutzer ändern und die Zeitzone konfigurieren, so dass alle Ereignisse des Portals mit einem richtigen Datum und der Uhrzeit angezeigt werden.",
   "LanguageTimeSettingsTooltip": "Die <0>{{text}}</0> lassen Sie die Sprache des kompletten Portals für alle Benutzer ändern und die Zeitzone konfigurieren, so dass alle Ereignisse des ONLYOFFICE-Portals mit einem richtigen Datum und der Uhrzeit angezeigt werden.",
   "LanguageTimeSettingsTooltipDescription": "Um die Änderungen zu übernehmen, klicken Sie auf den Button <1>{{save}}</1> im unteren Bereich der Sektion.<3>{{learnMore}}</3>",
   "LogoDark": "Logo für die Login- und Informationsseite",
@@ -48,7 +48,6 @@
   "LogoLightSmall": "Logo für Kopfzeile des Portals",
   "LogoSettings": "Einstellungen des Portallogos",
   "LogoUploadRecommendation": "Für Bilder ist <1>PNG</1>-Format mit durchsichtigen Hintergründen empfohlen",
-  "ManagementCategoryCommon": "Allgemeine",
   "ManagementCategoryIntegration": "Integration",
   "ManagementCategorySecurity": "Sicherheit",
   "ManualBackupDescription": "Nutzen Sie diese Option, wenn Sie alle auf dem Portal enthaltenen Daten als Datei erhalten möchten.",
@@ -71,7 +70,6 @@
   "RestoreBackupHelpNote": "Wählen Sie den Speicher, wo die Daten gespeichert sind, geben Sie die erforderlichen Angaben ein und aktivieren Sie die Option <strong>Portalbenutzer benachrichtigen</strong>, um Ihre Portalbenutzer über Backup/Wiederherstellung zu informieren.",
   "RestoreBackupWarningText": "Während der Wiederherstellung wird das Portal nicht verfügbar sein. Nach der Wiederherstellung gehen alle Änderungen, die nach dem Datum des gewählten Wiederherstellungspunktes vorgenommen werden, verloren.",
   "RestoreDefaultButton": "Standardmäßige Einstellungen",
-  "SetDefaultTitle": "Standardtitel setzen",
   "StudioTimeLanguageSettings": "Sprach- und Zeitzoneneinstellungen",
   "SuccessfullySaveGreetingSettingsMessage": "Die Begrüßungseinstellungen wurden gespeichert",
   "SuccessfullySaveSettingsMessage": "Die Einstellungen wurden erfolgreich aktualisiert",
@@ -91,6 +89,5 @@
   "TwoFactorAuthDescription": "Zwei-Faktor-Authentifizierung macht das Einloggen sicherer. Nachdem User Anmeldedaten eingeben, sollen sie auch einen Code aus der Authentifizierungs-App oder SMS einfügen.",
   "UseAsLogoButton": "Als Logo verwenden",
   "Users": "Nutzer",
-  "WelcomePageTitle": "Titel der Begrüßungsseite",
   "YouHaveUnsavedChanges": "Sie haben nicht gespeicherte Änderungen."
 }

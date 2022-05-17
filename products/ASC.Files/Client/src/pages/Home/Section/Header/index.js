@@ -220,7 +220,14 @@ class SectionHeaderContent extends React.Component {
     }
   };
 
-  onEmptyTrashAction = () => this.props.setEmptyTrashDialogVisible(true);
+  onEmptyTrashAction = () => {
+    const { activeFiles, activeFolders } = this.props;
+    const isExistActiveItems = [...activeFiles, ...activeFolders].length > 0;
+
+    if (isExistActiveItems) return;
+
+    this.props.setEmptyTrashDialogVisible(true);
+  };
 
   getContextOptionsFolder = () => {
     const { t, toggleInfoPanel, personal } = this.props;
@@ -412,6 +419,9 @@ class SectionHeaderContent extends React.Component {
                     onBackToParentFolder={this.onBackToParentFolder}
                     toggleInfoPanel={toggleInfoPanel}
                     isInfoPanelVisible={isInfoPanelVisible}
+                    titles={{
+                      trash: t("EmptyRecycleBin"),
+                    }}
                   />
                 )}
               </div>
@@ -451,6 +461,8 @@ export default inject(
       viewAs,
       setIsLoading,
       fetchFiles,
+      activeFiles,
+      activeFolders,
     } = filesStore;
     const { setAction } = fileActionStore;
     const {
@@ -519,6 +531,9 @@ export default inject(
 
       setIsLoading,
       fetchFiles,
+
+      activeFiles,
+      activeFolders,
     };
   }
 )(

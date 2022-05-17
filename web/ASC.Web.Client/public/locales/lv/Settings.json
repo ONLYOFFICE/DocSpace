@@ -43,7 +43,6 @@
   "LogoLightSmall": "Logotips portāla galvenei",
   "LogoSettings": "Portāla logotipa iestatījumi",
   "LogoUploadRecommendation": "Mēs iesakām izmantot attēlus <1>PNG</1> formātā ar caurspīdīgu fonu",
-  "ManagementCategoryCommon": "Kopēji",
   "ManagementCategoryIntegration": "Integrācija",
   "ManagementCategorySecurity": "Drošība",
   "ManualBackupDescription": "Izmantojiet šo iespēju, ka vēlaties visus portāla datus iegūt faila veidā.",
@@ -61,7 +60,6 @@
   "RegistrationDate": "Reģistrācijas datums",
   "RestoreBackupDescription": "Izmantojiet šo iespēju, lai atjaunotu portālu no iepriekš noglabāta rezerves faila.",
   "RestoreDefaultButton": "Atjaunot uz noklusējumu",
-  "SetDefaultTitle": "Iestatiet noklusējuma nosaukumu",
   "StudioTimeLanguageSettings": "Valodas un laika joslas iestatījumi",
   "SuccessfullySaveGreetingSettingsMessage": "Sveiciena lapas iestatījumi ir veiksmīgi saglabāti",
   "SuccessfullySaveSettingsMessage": "Iestatījumi ir veiksmīgi atjaunināti",
@@ -80,6 +78,5 @@
   "TwoFactorAuthDescription": "Divu faktoru autentifikācija nodrošina drošāku pieteikšanās veidu. Pēc akreditācijas datu ievadīšanas lietotājam būs jāievada kods no īsziņas vai autentifikācijas lietotnes. ",
   "UseAsLogoButton": "Izmantot kā logotipu",
   "Users": "Lietotāji",
-  "WelcomePageTitle": "Iepazīšanās lapas nosaukums",
   "YouHaveUnsavedChanges": "Jums ir nesaglabātas izmaiņas"
 }

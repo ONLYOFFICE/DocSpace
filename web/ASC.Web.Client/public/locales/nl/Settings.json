@@ -42,7 +42,6 @@
   "LogoLightSmall": "Logo voor de koptekst van het portaal",
   "LogoSettings": "Portaal Logo Instellingen",
   "LogoUploadRecommendation": "Wij raden u aan afbeeldingen te gebruiken in <1>PNG</1> formaat met transparante achtergrond",
-  "ManagementCategoryCommon": "Gemeenschappelijk",
   "ManagementCategoryIntegration": "Integratie",
   "ManagementCategorySecurity": "Veiligheid",
   "Migration": "Migratie",
@@ -58,7 +57,6 @@
   "ProductUserOpportunities": "Bekijk profielen en groepen",
   "RegistrationDate": "Registratiedatum",
   "RestoreDefaultButton": "Terugzetten naar Standaardwaarden",
-  "SetDefaultTitle": "Stel standaard titel in",
   "StudioTimeLanguageSettings": "Taal- en Tijdzone Instellingen",
   "SuccessfullySaveGreetingSettingsMessage": "Welkomstpagina Instellingen zijn met succes opgeslagen",
   "SuccessfullySaveSettingsMessage": "De instellingen zijn met succes bijgewerkt",
@@ -77,6 +75,5 @@
   "TwoFactorAuthDescription": "Two-factor authenticatie biedt een veiligere manier om in te loggen. Na het invoeren van de inloggegevens moet de gebruiker een code invoeren uit een SMS of de authenticatie app.. ",
   "UseAsLogoButton": "Gebruik als logo",
   "Users": "Gebruikers",
-  "WelcomePageTitle": "Welkomstpagina titel",
   "YouHaveUnsavedChanges": "U hebt niet opgeslagen wijzigingen"
 }

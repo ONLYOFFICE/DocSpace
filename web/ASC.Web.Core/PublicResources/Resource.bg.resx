@@ -1,0 +1,298 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
+    <value>Полето за валидиране не може да бъде празно</value>
+  </data>
+  <data name="ActivateMobilePhoneEmptyPhoneNumber" xml:space="preserve">
+    <value>Въведете номер на мобилен телефон</value>
+  </data>
+  <data name="ActivateTfaAppEmptyCode" xml:space="preserve">
+    <value>Полето за валидиране не може да бъде празно</value>
+  </data>
+  <data name="AdministratorNotifySenderTypeName" xml:space="preserve">
+    <value>Уведомления на администратор</value>
+  </data>
+  <data name="AdminMessageSent" xml:space="preserve">
+    <value>Съобщението ви бе изпратено успешно. Администраторът на портала ще се свърже с вас.</value>
+  </data>
+  <data name="ButtonSmsEnable" xml:space="preserve">
+    <value>С SMS</value>
+  </data>
+  <data name="ButtonTfaAppEnable" xml:space="preserve">
+    <value>Чрез приложението за удостоверяване</value>
+  </data>
+  <data name="ChangePortalOwnerMsg" xml:space="preserve">
+    <value>Връзка за потвърждаване на операцията е изпратена на: email (имейл адреса на собственика на портала).</value>
+  </data>
+  <data name="CouldNotRecoverPasswordForLdapUser" xml:space="preserve">
+    <value>Операцията по възстановяване на парола е забранена за LDAP потребител</value>
+  </data>
+  <data name="CouldNotRecoverPasswordForSsoUser" xml:space="preserve">
+    <value>Операцията по възстановяване на парола е забранена за потребители на SSO</value>
+  </data>
+  <data name="CustomNamingPeopleSchema" xml:space="preserve">
+    <value>Персонализиран</value>
+  </data>
+  <data name="DnsChangeMsg" xml:space="preserve">
+    <value>Връзка за потвърждаване на операцията е изпратена на {0} (имейл адреса на собственика на портала).</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
+    <value>Грешен имейл адрес</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
+    <value>Неправилен промо код</value>
+  </data>
+  <data name="ErrorAccessDenied" xml:space="preserve">
+    <value>Няма разрешения за извършване на това действие</value>
+  </data>
+  <data name="ErrorAccessRestricted" xml:space="preserve">
+    <value>Достъпът до портала е ограничен.</value>
+  </data>
+  <data name="ErrorBadKeys" xml:space="preserve">
+    <value>Лоши ключове</value>
+  </data>
+  <data name="ErrorDisabledProfile" xml:space="preserve">
+    <value>Потребителският ви профил е спрян</value>
+  </data>
+  <data name="ErrorEmailAlreadyExists" xml:space="preserve">
+    <value>{!User} с този имейл вече е регистриран</value>
+  </data>
+  <data name="ErrorEmailDomainNotAllowed" xml:space="preserve">
+    <value>Имейлите от този домейн не са разрешени за регистрация</value>
+  </data>
+  <data name="ErrorEmailEmpty" xml:space="preserve">
+    <value>Полето за имейл е празно</value>
+  </data>
+  <data name="ErrorEmailsAreTheSame" xml:space="preserve">
+    <value>Текущият имейл и новият имейл са едни и същи</value>
+  </data>
+  <data name="ErrorEmptyFields" xml:space="preserve">
+    <value>Моля, попълнете всички полета</value>
+  </data>
+  <data name="ErrorEmptyMessage" xml:space="preserve">
+    <value>Текстът на съобщението е празен</value>
+  </data>
+  <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
+    <value>Каченият файл не можа да бъде намерен</value>
+  </data>
+  <data name="ErrorImageWeightLimit" xml:space="preserve">
+    <value>Размерът на файла с изображение е твърде голям</value>
+  </data>
+  <data name="ErrorIncorrectUserName" xml:space="preserve">
+    <value>Неправилно първо име или фамилия</value>
+  </data>
+  <data name="ErrorNotAllowedOption" xml:space="preserve">
+    <value>Вашият ценови план не поддържа тази опция</value>
+  </data>
+  <data name="ErrorNotCorrectEmail" xml:space="preserve">
+    <value>Неправилен имейл</value>
+  </data>
+  <data name="ErrorNotCorrectTrustedDomain" xml:space="preserve">
+    <value>Невалидно име на домейн</value>
+  </data>
+  <data name="ErrorPasswordEmpty" xml:space="preserve">
+    <value>Паролата е празна.</value>
+  </data>
+  <data name="ErrorPasswordLength" xml:space="preserve">
+    <value>от {0} до {1} символа</value>
+  </data>
+  <data name="ErrorPasswordMessage" xml:space="preserve">
+    <value>Паролата трябва да съдържа</value>
+  </data>
+  <data name="ErrorPasswordMessageStart" xml:space="preserve">
+    <value>Паролата трябва да съдържа</value>
+  </data>
+  <data name="ErrorPasswordNoDigits" xml:space="preserve">
+    <value>цифри</value>
+  </data>
+  <data name="ErrorPasswordNoSpecialSymbols" xml:space="preserve">
+    <value>специални символи</value>
+  </data>
+  <data name="ErrorPasswordNoUpperCase" xml:space="preserve">
+    <value>главни букви</value>
+  </data>
+  <data name="ErrorRequestLimitExceeded" xml:space="preserve">
+    <value>Ограничението на заявката е превишено</value>
+  </data>
+  <data name="ErrorUserNotFound" xml:space="preserve">
+    <value>Потребителят не можа да бъде намерен</value>
+  </data>
+  <data name="ErrorUserNotFoundByEmail" xml:space="preserve">
+    <value>Потребителят с имейл '{0}' не можа да бъде намерен</value>
+  </data>
+  <data name="EuServerRegion" xml:space="preserve">
+    <value>Регион на ЕС (Франкфурт)</value>
+  </data>
+  <data name="FileSizeMaxExceed" xml:space="preserve">
+    <value>Максималният размер на файла е надвишен</value>
+  </data>
+  <data name="FileSizeNote" xml:space="preserve">
+    <value>Забележка: размерът на файла не може да надвишава {1} {0} {2}</value>
+  </data>
+  <data name="FileSizePostfix" xml:space="preserve">
+    <value>байта, KB, MB, GB, TB</value>
+  </data>
+  <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
+    <value>Връзката за потвърждаване на профила ви е изпратена на посочения имейл</value>
+  </data>
+  <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
+    <value>Сървърът не може да запази настройки.</value>
+  </data>
+  <data name="LdapSettingsTooManyOperations" xml:space="preserve">
+    <value>Твърде много LDAP операции.</value>
+  </data>
+  <data name="LicenseError" xml:space="preserve">
+    <value>Лицензът не е правилен</value>
+  </data>
+  <data name="LicenseErrorExpired" xml:space="preserve">
+    <value>Лицензът не е валиден за тази версия на портала.</value>
+  </data>
+  <data name="LicenseErrorPortal" xml:space="preserve">
+    <value>Броят на порталите надвишава този, разрешен от лиценза</value>
+  </data>
+  <data name="LicenseErrorQuota" xml:space="preserve">
+    <value>Броят на потребителите надвишава този, разрешен от лиценза</value>
+  </data>
+  <data name="LicenseUploaded" xml:space="preserve">
+    <value>Качено успешно</value>
+  </data>
+  <data name="LicenseUploadedOverdue" xml:space="preserve">
+    <value>Качено успешно. {0} Поддръжката и актуализациите не са налице за този лиценз след {2}. {1}</value>
+  </data>
+  <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
+    <value>Указанията за промяна на имейла са изпратени успешно</value>
+  </data>
+  <data name="MobilePhoneMustErase" xml:space="preserve">
+    <value>За да промените номера, трябва да изтриете текущия си телефонен номер</value>
+  </data>
+  <data name="OrgServerRegion" xml:space="preserve">
+    <value>ORG Region</value>
+  </data>
+  <data name="Owner" xml:space="preserve">
+    <value>Собственик</value>
+  </data>
+  <data name="PersonalFreeSpaceException" xml:space="preserve">
+    <value>Превишена е квотата за дисково пространство</value>
+  </data>
+  <data name="PortalSecurity" xml:space="preserve">
+    <value>Достъп до портала</value>
+  </data>
+  <data name="ReassignDataRemoveUserError" xml:space="preserve">
+    <value>Процесът на превъзлагане на данни за {0} не е завършен.</value>
+  </data>
+  <data name="SgServerRegion" xml:space="preserve">
+    <value>Тихоокеанска Азия (Сингапур)</value>
+  </data>
+  <data name="SmsAuthenticationMessageError" xml:space="preserve">
+    <value>Грешен код</value>
+  </data>
+  <data name="SmsAuthenticationMessageToUser" xml:space="preserve">
+    <value>Код: {0}</value>
+  </data>
+  <data name="SmsAuthenticationTimeout" xml:space="preserve">
+    <value>Времето за използване на кода е изтекло. Моля, заявете ново текстово съобщение.</value>
+  </data>
+  <data name="SmsNotAvailable" xml:space="preserve">
+    <value>Настройките за SMS не са налични</value>
+  </data>
+  <data name="SmsTooMuchError" xml:space="preserve">
+    <value>Изпратили сте твърде много текстови съобщения. Моля, опитайте отново по-късно.</value>
+  </data>
+  <data name="SsoSettingsCantSaveSettings" xml:space="preserve">
+    <value>Настройките не можаха да се запазят</value>
+  </data>
+  <data name="SsoSettingsCouldNotBeNull" xml:space="preserve">
+    <value>Настройките не можаха да бъдат нули</value>
+  </data>
+  <data name="SsoSettingsInvalidBinding" xml:space="preserve">
+    <value>Невалидно свързване: {0}</value>
+  </data>
+  <data name="SsoSettingsInvalidEntityId" xml:space="preserve">
+    <value>Невалиден идентификатор на субект</value>
+  </data>
+  <data name="SsoSettingsInvalidMapping" xml:space="preserve">
+    <value>Невалидно картографиране на полета</value>
+  </data>
+  <data name="SuccessfullySaveGreetingSettingsMessage" xml:space="preserve">
+    <value>Настройките на страницата за добре дошли са запазени успешно</value>
+  </data>
+  <data name="SuccessfullySaveSettingsMessage" xml:space="preserve">
+    <value>Настройките са актуализирани успешно</value>
+  </data>
+  <data name="SuccessfullySentNotificationDeleteUserInfoMessage" xml:space="preserve">
+    <value>Инструкции за изтриване на потребителския ви профил са изпратени на адрес {0}</value>
+  </data>
+  <data name="TfaAppAuthMessageError" xml:space="preserve">
+    <value>Грешен код</value>
+  </data>
+  <data name="TfaAppNotAvailable" xml:space="preserve">
+    <value>Настройките на TFA приложението не са налични</value>
+  </data>
+  <data name="TfaTooMuchError" xml:space="preserve">
+    <value>Изпратили сте твърде много текстови съобщения. Моля, опитайте отново по-късно.</value>
+  </data>
+  <data name="UsServerRegion" xml:space="preserve">
+    <value>Регион Западен Орегон</value>
+  </data>
+  <data name="WhatsNewSubscriptionName" xml:space="preserve">
+    <value>Какво ново</value>
+  </data>
+</root>

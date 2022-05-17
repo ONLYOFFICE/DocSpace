@@ -15,5 +15,12 @@
   "RegistrationEmail": "您的注册邮箱",
   "RegistrationEmailWatermark": "邮箱",
   "Remember": "记住我",
-  "RememberHelper": "默认会话寿命为20分钟。勾选此选项以将其设为1年。如需自行设置其值，请前往设置。"
+  "RememberHelper": "默认会话寿命为20分钟。勾选此选项以将其设为1年。如需自行设置其值，请前往设置。",
+  "LoginDescription": "我们将通过电子邮件发给您神奇代码，以便在没有密码的情况下登录。或者您可以<1>手动登录。</1>",
+  "CodeTitle": "代码已通过电子邮件发送给您的",
+  "CodeSubtitle": "我们向{{email}}发送了6位数的代码。该代码有有限的有效期，请尽快输入它。",
+  "NotFoundCode": "找不到代码？检查您的 '垃圾邮件' 文件夹。",
+  "InvalidCode": "代码无效。请再试一次",
+  "ExpiredCode": "此代码已不再有效。请求新的代码并重试",
+  "ResendCode": "重新发送代码"
 }

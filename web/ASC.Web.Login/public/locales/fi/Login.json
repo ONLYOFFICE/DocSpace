@@ -15,5 +15,12 @@
   "RegistrationEmail": "Rekisteröitymisen sähköpostiosoitteesi",
   "RegistrationEmailWatermark": "sähköposti",
   "Remember": "Muista minut",
-  "RememberHelper": "Istunnon oletuskesto on 20 minuuttia. Valitse tämä vaihtoehto, jos haluat asettaa sen 1 vuodeksi. Voit asettaa oman arvon Asetuksissa."
+  "RememberHelper": "Istunnon oletuskesto on 20 minuuttia. Valitse tämä vaihtoehto, jos haluat asettaa sen 1 vuodeksi. Voit asettaa oman arvon Asetuksissa.",
+  "LoginDescription": "Lähetämme sinulle taikakoodin, jotta voit kirjautua sisään ilman salasanaa. Tai voit <1>kirjautua manuaalisesti.</1>",
+  "CodeTitle": "Koodi lähetettiin sinulle sähköpostitse",
+  "CodeSubtitle": "Lähetimme 6-numeroisen koodin osoitteeseen {{email}}. Koodilla on rajoitettu voimassaoloaika, syötä se mahdollisimman pian.",
+  "NotFoundCode": "Etkö löydä koodia? Tarkista «Roskaposti» -kansiosi.",
+  "InvalidCode": "Tämä koodi ei kelpaa. Yritä uudelleen",
+  "ExpiredCode": "Tämä koodi ei ole enää voimassa. Pyydä uutta koodia ja yritä uudelleen",
+  "ResendCode": "Lähetä koodi uudelleen"
 }

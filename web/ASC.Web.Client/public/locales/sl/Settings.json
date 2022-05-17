@@ -41,7 +41,6 @@
   "LogoLightSmall": "Logotip za glavo portala",
   "LogoSettings": "Nastavitve Logo portala",
   "LogoUploadRecommendation": "Priporočamo, da slike uporabite v <1>PNG</1> formatu s transparentnim ozadjem",
-  "ManagementCategoryCommon": "Skupaj",
   "ManagementCategoryIntegration": "Integracija",
   "ManagementCategorySecurity": "Varnost",
   "Migration": "Migracija",
@@ -57,7 +56,6 @@
   "ProductUserOpportunities": "Oglejte si profile in skupine",
   "RegistrationDate": "Datum registracije",
   "RestoreDefaultButton": "Obnovi na privzeto",
-  "SetDefaultTitle": "Nastavi privzeti naslov",
   "StudioTimeLanguageSettings": "Nastavi jezik in časovni pas",
   "SuccessfullySaveGreetingSettingsMessage": "Nastavitve strani dobrodošlice so bile uspešno shranjene",
   "SuccessfullySaveSettingsMessage": "Nastavitve so bile uspešno posodobljene",
@@ -76,6 +74,5 @@
   "TwoFactorAuthDescription": "Dvofaktorska avtentikacija omogoča varnejši način prijave. Po vnosu poverilnic bo moral uporabnik vnesti kodo iz SMS ali aplikacije za avtentikacijo. ",
   "UseAsLogoButton": "Uporabi kot logo",
   "Users": "Uporabniki",
-  "WelcomePageTitle": "Naslov pozdravne strani",
   "YouHaveUnsavedChanges": "Imate neshranjene spremembe"
 }

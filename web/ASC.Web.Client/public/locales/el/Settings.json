@@ -41,7 +41,6 @@
   "LogoLightSmall": "Λογότυπο για την επικεφαλίδα της πύλης",
   "LogoSettings": "Ρυθμίσεις λογότυπου πύλης",
   "LogoUploadRecommendation": "Συνιστούμε να χρησιμοποιείτε εικόνες σε μορφή <1>PNG</1> με διαφανές φόντο",
-  "ManagementCategoryCommon": "Κοινό",
   "ManagementCategoryIntegration": "Ενσωμάτωση",
   "ManagementCategorySecurity": "Ασφάλεια",
   "Migration": "Μετεγκατάσταση",
@@ -57,7 +56,6 @@
   "ProductUserOpportunities": "Προβολή προφίλ και ομάδων",
   "RegistrationDate": "Ημερομηνία εγγραφής",
   "RestoreDefaultButton": "Επαναφορά στην προεπιλογή",
-  "SetDefaultTitle": "Ορισμός προεπιλεγμένου τίτλου",
   "StudioTimeLanguageSettings": "Ρυθμίσεις γλώσσας και ζώνης ώρας",
   "SuccessfullySaveGreetingSettingsMessage": "Οι ρυθμίσεις της σελίδας υποδοχής έχουν αποθηκευτεί με επιτυχία",
   "SuccessfullySaveSettingsMessage": "Οι ρυθμίσεις ενημερώθηκαν με επιτυχία",
@@ -76,6 +74,5 @@
   "TwoFactorAuthDescription": "Ο έλεγχος ταυτότητας δύο παραγόντων παρέχει έναν πιο ασφαλή τρόπο σύνδεσης. Μετά την εισαγωγή των διαπιστευτηρίων, ο χρήστης θα πρέπει να εισάγει έναν κωδικό από ένα SMS ή την εφαρμογή επαληθευτή",
   "UseAsLogoButton": "Χρήση ως λογότυπο",
   "Users": "Χρήστες",
-  "WelcomePageTitle": "Τίτλος σελίδας υποδοχής",
   "YouHaveUnsavedChanges": "Έχετε μη αποθηκευμένες αλλαγές"
 }

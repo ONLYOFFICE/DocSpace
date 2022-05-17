@@ -41,7 +41,6 @@
   "LogoLightSmall": "포털 헤더 로고",
   "LogoSettings": "포털 로고 설정",
   "LogoUploadRecommendation": "투명 배경의 <1>PNG</1> 이미지 사용을 권장합니다",
-  "ManagementCategoryCommon": "공통",
   "ManagementCategoryIntegration": "통합",
   "ManagementCategorySecurity": "보안",
   "Migration": "마이그레이션",
@@ -57,7 +56,6 @@
   "ProductUserOpportunities": "프로필 및 그룹 보기",
   "RegistrationDate": "등록일",
   "RestoreDefaultButton": "기본값으로 복원",
-  "SetDefaultTitle": " 기본 제목 설정",
   "StudioTimeLanguageSettings": "언어 및 시간대 설정",
   "SuccessfullySaveGreetingSettingsMessage": "환영 페이지 설정이 성공적으로 저장되었습니다",
   "SuccessfullySaveSettingsMessage": "설정이 성공적으로 업데이트되었습니다",
@@ -76,6 +74,5 @@
   "TwoFactorAuthDescription": "이중 인증은 더욱 안전한 로그인 방법입니다. 사용자는 자격 증명을 입력한 후 SMS 또는 인증 앱의 코드를 입력해야 합니다.",
   "UseAsLogoButton": "로고로 사용",
   "Users": "사용자",
-  "WelcomePageTitle": "환영 페이지 제목",
   "YouHaveUnsavedChanges": "저장하지 않은 변경 사항이 있습니다"
 }

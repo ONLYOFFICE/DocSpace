@@ -43,7 +43,6 @@
   "LogoLightSmall": "Logo pre hlavičku portálu",
   "LogoSettings": "Nastavenia loga portálu",
   "LogoUploadRecommendation": "Odporúčame používať obrázky <1> PNG </1> s priehľadným pozadím",
-  "ManagementCategoryCommon": "Všeobecné",
   "ManagementCategoryIntegration": "Integrácia",
   "ManagementCategorySecurity": "Bezpečnosť",
   "ManualBackupDescription": "Túto možnosť použite, ak chcete získať všetky údaje obsiahnuté na portáli ako súbor.",
@@ -61,7 +60,6 @@
   "RegistrationDate": "Dátum registrácie",
   "RestoreBackupDescription": "Túto možnosť použite na obnovenie Vášho portálu z predtým uloženého záložného súboru.",
   "RestoreDefaultButton": "Obnoviť predvolené",
-  "SetDefaultTitle": "Nastaviť názov ako predvolený",
   "StudioTimeLanguageSettings": "Nastavenia jazyka a časového pásma",
   "SuccessfullySaveGreetingSettingsMessage": "Nastavenia uvítacej stránky boli úspešne uložené",
   "SuccessfullySaveSettingsMessage": "Nastavenia boli úspešne aktualizované",
@@ -80,6 +78,5 @@
   "TwoFactorAuthDescription": "Dvojfaktorová autentifikácia poskytuje bezpečnejší spôsob prihlásenia. Po zadaní prihlasovacích údajov bude musieť používateľ zadať kód z aplikácie SMS alebo autentifikácie.",
   "UseAsLogoButton": "Použiť ako logo",
   "Users": "Užívatelia",
-  "WelcomePageTitle": "Názov úvodnej stránky",
   "YouHaveUnsavedChanges": "Máte neuložené zmeny"
 }

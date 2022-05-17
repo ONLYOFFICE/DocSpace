@@ -42,7 +42,6 @@
   "LogoLightSmall": "Portal başlığı için logo",
   "LogoSettings": "Portal Logo Ayarları",
   "LogoUploadRecommendation": "<1>PNG</1> formatında ve arka planı saydam olan görseller kullanmanızı öneririz.",
-  "ManagementCategoryCommon": "Ortak",
   "ManagementCategoryIntegration": "Entegrasyon",
   "ManagementCategorySecurity": "Güvenlik",
   "Migration": "Yer Değiştirme",
@@ -58,7 +57,6 @@
   "ProductUserOpportunities": "Profilleri ve grupları görüntüle",
   "RegistrationDate": "Kayıt tarihi",
   "RestoreDefaultButton": "Fabrika ayarlarına geri dön",
-  "SetDefaultTitle": "Varsayılan başlığı ayarla",
   "StudioTimeLanguageSettings": "Dil ve Saat Dilimi Ayarları",
   "SuccessfullySaveGreetingSettingsMessage": "Hoş Geldiniz Sayfası ayarları başarıyla kaydedildi",
   "SuccessfullySaveSettingsMessage": "Ayarlar başarıyla güncellendi",
@@ -77,6 +75,5 @@
   "TwoFactorAuthDescription": "İki faktörlü kimlik doğrulama, oturum açmak için daha güvenli bir yol sağlar. Kimlik bilgilerini girdikten sonra, kullanıcının bir SMS veya kimlik doğrulama uygulamasından bir kod girmesi gerekecektir. ",
   "UseAsLogoButton": "Logo olarak kullan",
   "Users": "Kullanıcılar",
-  "WelcomePageTitle": "Hoş Geldiniz sayfası başlığı",
   "YouHaveUnsavedChanges": "Kaydedilmemiş değişiklikleriniz var"
 }

@@ -41,7 +41,6 @@
   "LogoLightSmall": "ໂລໂກສຳລັບແກ້ໄຂສ່ວນຫົວຂອງ portal ",
   "LogoSettings": "ການຕັ້ງຄ່າໂລໂກຂອງ Portal ",
   "LogoUploadRecommendation": "ເຮົາແນະນຳໃຫ້ທ່ານໃຊ້ຮູບພາບໃນຮູບແບບທີ່ມີພາບພື້ນຫຼັງໂປ່ງໃ່ສ <1> PNG </1> ",
-  "ManagementCategoryCommon": "ທຳມະດາ, ສາທາລະນະ",
   "ManagementCategoryIntegration": "ການເຊື່ອມໂຍງ",
   "ManagementCategorySecurity": "ຄວາມປອດໄພ",
   "Migration": "ຍົກຍ້າຍ",
@@ -57,7 +56,6 @@
   "ProductUserOpportunities": "ເບິ່ງໂປຣໄຟລ໌ແລະກຸ່ມ",
   "RegistrationDate": "ວັນທີ ລົງທະບຽນ",
   "RestoreDefaultButton": "ກູ້ຄືນເປັນຄ່າເລີ່ມຕົ້ນ",
-  "SetDefaultTitle": "ຕັ້ງຄ່າຫົວຂໍ້ເລີ່ມຕົ້ນ",
   "StudioTimeLanguageSettings": "ພາສາ ແລະ ເຂດເວລາ",
   "SuccessfullySaveGreetingSettingsMessage": "ການຕັ້ງຄ່າຫນ້າຕອນຮັບໄດ້ບັນທຶກສຳເລັດ",
   "SuccessfullySaveSettingsMessage": "ການຕັ້ງຄ່າໄດ້ຖືກອັບເດດສຳເລັດແລ້ວ",
@@ -76,6 +74,5 @@
   "TwoFactorAuthDescription": "ການພິສູດຢືນຢັນ 2 ຊັ້ນໃຫ້ວິທີ ເຂົ້າສູ່ລະບົບມີຄວາມປອດໄພຫຼາຍຂື້ນ. ຫຼັງຈາກໃສ່ຂໍ້ມູນຮັບຮອງແລ້ວ, ຜູ້ໃຊ້ຈະຕ້ອງໃສ່ລະຫັດຈາກ SMS ຫຼື ແອັບເພື່ອຢືນຢັນ.",
   "UseAsLogoButton": "ໃຊ້ເປັນໂລໂກ້",
   "Users": "ຜູ້ໃຊ້",
-  "WelcomePageTitle": "ຫົວຂໍ້ຫນ້າຕອນຮັບ",
   "YouHaveUnsavedChanges": "ທ່ານມີການປ່ຽນແປງທີ່ຍັງບໍ່ໄດ້ບັນທຶກ"
 }

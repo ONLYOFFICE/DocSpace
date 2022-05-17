@@ -217,7 +217,7 @@ const SectionFilterContent = ({
         {
           key: "user",
           group: "filter-author",
-          label: t("SharingPanel:LinkText"),
+          label: t("Translations:AddAuthor"),
           isSelector: true,
         }
       );
@@ -333,8 +333,8 @@ const SectionFilterContent = ({
       viewAs={viewAs}
       placeholder={t("Common:Search")}
       {...filterColumnCount}
-      contextMenuHeader={t("Common:AddFilter")}
-      headerLabel={t("SharingPanel:LinkText")}
+      contextMenuHeader={t("Filter")}
+      headerLabel={t("Translations:AddAuthor")}
       viewSelectorVisible={true}
       isFavoritesFolder={isFavoritesFolder}
       isRecentFolder={isRecentFolder}
@@ -390,7 +390,7 @@ export default inject(
 )(
   withRouter(
     withLayoutSize(
-      withTranslation(["Home", "Common", "SharingPanel", "Translations"])(
+      withTranslation(["Home", "Common", "Translations"])(
         withLoader(observer(SectionFilterContent))(<Loaders.Filter />)
       )
     )

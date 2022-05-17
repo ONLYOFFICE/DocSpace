@@ -41,7 +41,6 @@
   "LogoLightSmall": "Portal başlığı üçün loqo",
   "LogoSettings": "Portal loqosu üçün Ayarlar",
   "LogoUploadRecommendation": "Sizə şəffaf arxa fonlu <1>PNG</1> formatlı şəkillərdən istifadə etməyi tövsiyə edirik",
-  "ManagementCategoryCommon": "Ümumi",
   "ManagementCategoryIntegration": "İnteqrasiya",
   "ManagementCategorySecurity": "Təhlükəsizlik",
   "Migration": "Köçürülmə",
@@ -57,7 +56,6 @@
   "ProductUserOpportunities": "Profillərə və qruplara baxın",
   "RegistrationDate": "Qeydiyyat tarixi",
   "RestoreDefaultButton": "İlkin vəziyyətə bərpa edin",
-  "SetDefaultTitle": "İlkin başlığı təyin edin",
   "StudioTimeLanguageSettings": "Dil və Saat Qurşağı Ayarları",
   "SuccessfullySaveGreetingSettingsMessage": "Salamlama Səhifəsi ayarları uğurla yenilənmişdir",
   "SuccessfullySaveSettingsMessage": "Ayarlar uğurla yenilənmişdir",
@@ -76,6 +74,5 @@
   "TwoFactorAuthDescription": "İki faktorlu avtorizasiya giriş etmək üçün daha təhlükəsiz yol təmin edir. Məlumatlarınızı daxil etdikdən sonra istifadəçi SMS və ya doğrulama tətbiqi vasitəsilə əldə etdiyi kodu daxil etməlidir.",
   "UseAsLogoButton": "Loqo kimi istifadə edin",
   "Users": "İstifadəçilər",
-  "WelcomePageTitle": "Salamlama səhifəsi başlığı",
   "YouHaveUnsavedChanges": "Yadda saxlanmayan dəyişiklikləriniz var"
 }

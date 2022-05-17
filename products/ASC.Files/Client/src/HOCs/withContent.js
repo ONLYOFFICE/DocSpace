@@ -197,6 +197,7 @@ export default function withContent(WrappedContent) {
         fileCopyAs,
         fromTemplate,
         gallerySelected,
+        setCreatedFolderId,
       } = this.props;
       const { itemTitle } = this.state;
       const { parentId, fileExst } = item;
@@ -239,6 +240,7 @@ export default function withContent(WrappedContent) {
           .then((folder) => {
             createdFolderId = folder.id;
             addActiveItems(null, [folder.id]);
+            setCreatedFolderId(createdFolderId);
           })
           .then(() => this.completeAction(itemId))
           .catch((e) => toastr.error(e))
@@ -499,6 +501,7 @@ export default function withContent(WrappedContent) {
         passwordEntryProcess,
         addActiveItems,
         gallerySelected,
+        setCreatedFolderId,
       } = filesStore;
       const { clearActiveOperations, fileCopyAs } = uploadDataStore;
       const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
@@ -563,6 +566,7 @@ export default function withContent(WrappedContent) {
         titleWithoutExt,
         fromTemplate,
         gallerySelected,
+        setCreatedFolderId,
       };
     }
   )(observer(WithContent));

@@ -873,7 +873,10 @@ class UploadDataStore {
 
     const totalErrorsCount = sumBy(this.files, (f) => (f.error ? 1 : 0));
 
-    if (totalErrorsCount > 0) console.log("Errors: ", totalErrorsCount);
+    if (totalErrorsCount > 0) {
+      this.primaryProgressDataStore.setPrimaryProgressBarShowError(true); // for empty file
+      console.log("Errors: ", totalErrorsCount);
+    }
 
     this.uploaded = true;
     this.converted = true;
@@ -901,17 +904,17 @@ class UploadDataStore {
 
     setTimeout(() => {
       if (!this.primaryProgressDataStore.alert) {
-        this.primaryProgressDataStore.clearPrimaryProgressData();
+        //this.primaryProgressDataStore.clearPrimaryProgressData();
       }
 
       if (this.uploadPanelVisible || this.primaryProgressDataStore.alert) {
         uploadData.files = this.files;
         uploadData.filesToConversion = this.filesToConversion;
       } else {
-        uploadData.files = [];
-        uploadData.filesToConversion = [];
-        this.isUploadingAndConversion = false;
-        this.isUploading = false;
+        // uploadData.files = [];
+        // uploadData.filesToConversion = [];
+        // this.isUploadingAndConversion = false;
+        // this.isUploading = false;
       }
 
       this.setUploadData(uploadData);

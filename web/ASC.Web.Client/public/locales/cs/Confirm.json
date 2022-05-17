@@ -14,7 +14,6 @@
   "FirstName": "Křestní jméno",
   "InviteTitle": "Zveme vás, abyste se připojili k tomuto portálu!",
   "LoginRegistryButton": "Připojit se",
-  "LoginWithAccount": "nebo se přihlaste pomocí:",
   "PassworResetTitle": "Nyní si můžete vytvořit nové heslo.",
   "SetAppButton": "Připojit aplikaci",
   "SetAppDescription": "Dvoufázové ověřování je povoleno. Nakonfigurujte aplikaci autentizátoru, abyste mohli pokračovat v práci na portálu. Můžete použít aplikaci Google Authenticator pro <1>Android</1> a <4>iOS</4> nebo Authenticator pro <8>Windows Phone</8>.",

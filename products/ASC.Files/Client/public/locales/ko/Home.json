@@ -71,7 +71,6 @@
   "TooltipElementCopyMessage": "{{element}} 복사",
   "TooltipElementsCopyMessage": "{{element}} 요소 복사",
   "TooltipElementsMoveMessage": "{{element}} 요소 이동",
-  "TrashEmptyContainerDescription": "휴지통은 삭제된 모든 파일이 이동되는 곳입니다. 이러한 파일을 복원하거나 휴지통을 비워 영구적으로 삭제할 수 있습니다.",
   "UnblockVersion": "차단 해제/체크인",
   "UploadToFolder": "폴더에 업로드",
   "ViewList": "목록",
