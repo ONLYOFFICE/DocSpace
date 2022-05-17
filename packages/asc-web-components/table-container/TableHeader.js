@@ -236,7 +236,7 @@ class TableHeader extends React.Component {
       ? containerRef.current
       : document.getElementById("table-container");
 
-    const minSize = infoPanelVisible ? 0 : size.tablet;
+    const minSize = infoPanelVisible ? size.tablet - 400 : size.tablet;
 
     if (
       !container ||

@@ -70,7 +70,7 @@ const FilesRowContainer = ({
 
     if (
       (sectionWidth < 1025 && !infoPanelVisible) ||
-      (isTablet() && infoPanelVisible) ||
+      (sectionWidth < 625 && infoPanelVisible) ||
       isMobile
     ) {
       viewAs !== "row" && setViewAs("row");
