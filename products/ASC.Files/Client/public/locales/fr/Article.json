@@ -10,5 +10,6 @@
   "NewSpreadsheet": "Nouvelle feuille de calcul",
   "UploadFiles": "Télécharger les fichiers",
   "UploadFolder": "Télécharger le dossier",
-  "Upload": "Télécharger"
+  "Upload": "Télécharger",
+  "FilesUploaded": "Fichiers chargés"
 }

@@ -101,6 +101,7 @@
   "NewVersionAvailable": "有新版本的网站可用",
   "Next": "下一个",
   "NotFoundLanguage": "找不到您的语言？请通过<1>{{supportEmail}}</1>联系我们，参与翻译工作并获得奖励。",
+  "NotFoundTitle": "什么也没找到",
   "OKButton": "确定",
   "OpenApp": "打开您的{{title}}应用",
   "Owner": "所有者",

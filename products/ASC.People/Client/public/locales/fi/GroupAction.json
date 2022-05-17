@@ -4,5 +4,6 @@
   "Members": "Jäsenet",
   "SearchAddedMembers": "Hae lisättyjä jäseniä",
   "SelectAction": "Valitse",
-  "SuccessSaveGroup": "{{groupCaption}} ’{{groupName}}’ on tallennettu onnistuneesti"
+  "SuccessSaveGroup": "{{groupCaption}} ’{{groupName}}’ on tallennettu onnistuneesti",
+  "AddHeadOfDepartment": "Lisää osastopäällikkö"
 }

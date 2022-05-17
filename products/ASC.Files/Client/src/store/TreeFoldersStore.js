@@ -11,6 +11,7 @@ class TreeFoldersStore {
   expandedKeys = [];
   expandedPanelKeys = null;
   rootFoldersTitles = {};
+  isLoadingNodes = false;
 
   constructor(selectedFolderStore) {
     makeAutoObservable(this);
@@ -36,6 +37,9 @@ class TreeFoldersStore {
     this.treeFolders = treeFolders;
   };
 
+  setIsLoadingNodes = (isLoadingNodes) => {
+    this.isLoadingNodes = isLoadingNodes;
+  };
   setSelectedNode = (node) => {
     if (node[0]) {
       this.selectedTreeNode = node;

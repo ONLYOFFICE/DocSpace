@@ -11,6 +11,7 @@ import {
   StyledBar,
   StyledButtonWrapper,
   StyledButtonOptions,
+  StyledAlertIcon,
 } from "./styled-main-button";
 import IconButton from "../icon-button";
 import Button from "../button";
@@ -18,6 +19,14 @@ import Text from "../text";
 import Scrollbar from "@appserver/components/scrollbar";
 import { isMobile } from "react-device-detect";
 import Backdrop from "../backdrop";
+
+import styled from "styled-components";
+import ButtonAlertIcon from "../../../public/images/main-button.alert.react.svg";
+import commonIconsStyles from "../utils/common-icons-style";
+
+const StyledButtonAlertIcon = styled(ButtonAlertIcon)`
+  ${commonIconsStyles}
+`;
 
 const ProgressBarMobile = ({
   label,
@@ -40,14 +49,14 @@ const ProgressBarMobile = ({
   return (
     <StyledProgressBarContainer isUploading={open}>
       <Text
-        onClick={onClickHeaderAction}
         className="progress-header"
         fontSize={`14`}
         // color="#657077"
+        onClick={onClickHeaderAction}
       >
         {label}
       </Text>
-      <Text className="progress_count" fontSize={`13`}>
+      <Text className="progress_count" fontSize={`13`} truncate>
         {status}
       </Text>
       <IconButton
@@ -94,6 +103,7 @@ const MainButtonMobile = (props) => {
     isOpenButton,
     onClose,
     sectionWidth,
+    alert,
   } = props;
 
   const [isOpen, setIsOpen] = useState(opened);
@@ -260,6 +270,9 @@ const MainButtonMobile = (props) => {
             children
           )}
         </StyledDropDown>
+        <StyledAlertIcon>
+          {alert && !isOpen ? <StyledButtonAlertIcon size="small" /> : <></>}
+        </StyledAlertIcon>
       </div>
     </>
   );

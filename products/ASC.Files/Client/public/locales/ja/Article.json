@@ -10,5 +10,6 @@
     "NewSpreadsheet": "新しいスプレッドシート",
     "UploadFiles": "ファイルのアップロード",
     "UploadFolder": "フォルダのアップロード",
-    "Upload": "アップロード"
+    "Upload": "アップロード",
+    "FilesUploaded": "アップロードされたファイル"
 }

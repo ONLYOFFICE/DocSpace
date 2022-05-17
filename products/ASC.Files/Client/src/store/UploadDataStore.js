@@ -904,17 +904,17 @@ class UploadDataStore {
 
     setTimeout(() => {
       if (!this.primaryProgressDataStore.alert) {
-        this.primaryProgressDataStore.clearPrimaryProgressData();
+        //this.primaryProgressDataStore.clearPrimaryProgressData();
       }
 
       if (this.uploadPanelVisible || this.primaryProgressDataStore.alert) {
         uploadData.files = this.files;
         uploadData.filesToConversion = this.filesToConversion;
       } else {
-        uploadData.files = [];
-        uploadData.filesToConversion = [];
-        this.isUploadingAndConversion = false;
-        this.isUploading = false;
+        // uploadData.files = [];
+        // uploadData.filesToConversion = [];
+        // this.isUploadingAndConversion = false;
+        // this.isUploading = false;
       }
 
       this.setUploadData(uploadData);

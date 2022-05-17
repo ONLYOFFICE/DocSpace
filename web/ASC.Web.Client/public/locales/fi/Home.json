@@ -1,0 +1,5 @@
+﻿{
+  "GoodMorning": "Hyvää huomenta, {{displayName}}!",
+  "GoodAfternoon": "Hyvää iltapäivää, {{displayName}}!",
+  "GoodEvening": "Hyvää iltaa, {{displayName}}!"
+}

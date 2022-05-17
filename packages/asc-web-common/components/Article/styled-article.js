@@ -60,7 +60,7 @@ const StyledArticle = styled.article`
   `}
 
   z-index: ${(props) =>
-    props.showText && (isMobileOnly || isMobileUtils()) ? "230" : "100"};
+    props.showText && (isMobileOnly || isMobileUtils()) ? "230" : "205"};
 
   .resizable-block {
     overflow: hidden;

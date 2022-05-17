@@ -1,3 +1,4 @@
 ﻿{
-  "NotAvailableFolder": "表示するフォルダーがありません"
+  "NotAvailableFolder": "表示するフォルダーがありません",
+  "FolderContents": "'{{folderTitle}}'フォルダの内容"
 }
