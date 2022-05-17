@@ -155,7 +155,10 @@ class SelectFolderDialog extends React.Component {
       providerKey,
       folderTitle,
       folderId,
+      setSelectedItems,
     } = this.props;
+
+    setSelectedItems();
 
     onSubmit && onSubmit(folderId, folderTitle, providerKey);
     onSave && onSave(e, folderId);
@@ -285,10 +288,13 @@ export default inject(
     selectFolderDialogStore,
     filesStore,
     auth,
+    filesActionsStore,
   }) => {
     const { treeFolders, setExpandedPanelKeys } = treeFoldersStore;
 
     const { filter } = filesStore;
+    const { setSelectedItems } = filesActionsStore;
+
     const { id } = selectedFolderStore;
     const {
       setFolderId,
@@ -314,6 +320,7 @@ export default inject(
       setProviderKey,
       treeFolders,
       filter,
+      setSelectedItems,
     };
   }
 )(
