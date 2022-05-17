@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 import Text from "@appserver/components/text";
 import Scrollbar from "@appserver/components/scrollbar";
-import TreeFolders from "./TreeFolders";
 import { StyledTree } from "../panels/SelectionPanel/StyledSelectionPanel";
+import TreeFolders from "./TreeFolders";
 const FolderTreeBody = ({
   expandedKeys,
   folderTree,
@@ -16,12 +16,26 @@ const FolderTreeBody = ({
   selectedKeys,
   theme,
   isDisableTree,
+  parentId,
+  isLoadingNodes,
 }) => {
   const { t } = useTranslation(["SelectFolder", "Common"]);
+
+  useEffect(() => {
+    const selectedNode = document.getElementsByClassName(
+      "rc-tree-node-selected"
+    )[0];
+    if (selectedNode) {
+      document
+        .querySelector("#folder-tree-scroll-bar > .scroll-body")
+        .scrollTo(0, selectedNode.offsetTop);
+    }
+  }, []);
+
   return (
     <>
       {isAvailable ? (
-        <StyledTree theme={theme}>
+        <StyledTree theme={theme} isLoadingNodes={isLoadingNodes}>
           <div className="selection-panel_tree-folder">
             <Scrollbar id="folder-tree-scroll-bar" stype="mediumBlack">
               <TreeFolders
@@ -35,6 +49,8 @@ const FolderTreeBody = ({
                 selectedKeys={selectedKeys}
                 disabled={isDisableTree}
                 needUpdate={false}
+                defaultExpandAll
+                parentId={parentId}
               />
             </Scrollbar>
           </div>
@@ -58,7 +74,7 @@ FolderTreeBody.defaultProps = {
 export default inject(
   ({ filesStore, treeFoldersStore, selectedFolderStore }) => {
     const { filter, isLoading } = filesStore;
-    const { expandedPanelKeys } = treeFoldersStore;
+    const { expandedPanelKeys, isLoadingNodes } = treeFoldersStore;
 
     const expandedKeysProp = expandedPanelKeys
       ? expandedPanelKeys
@@ -70,6 +86,7 @@ export default inject(
 
       filter,
       isLoading,
+      isLoadingNodes,
     };
   }
 )(observer(FolderTreeBody));

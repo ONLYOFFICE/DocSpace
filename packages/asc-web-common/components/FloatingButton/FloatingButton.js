@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 
 import {
+  StyledFloatingButtonWrapper,
   StyledFloatingButton,
   StyledAlertIcon,
   StyledCircleWrap,
@@ -19,54 +20,75 @@ import ButtonAlertIcon from "../../../../public/images/button.alert.react.svg";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import ButtonPlusIcon from "../../../../public/images/actions.button.plus.react.svg";
 import ButtonMinusIcon from "../../../../public/images/actions.button.minus.react.svg";
+import CloseIcon from "../../../../public/images/close-icon.react.svg";
 
 const StyledButtonAlertIcon = styled(ButtonAlertIcon)`
   ${commonIconsStyles}
 `;
 const FloatingButton = ({ id, className, style, ...rest }) => {
-  const { icon, alert, percent, onClick, color } = rest;
+  const {
+    icon,
+    alert,
+    percent,
+    onClick,
+    color,
+    clearPrimaryProgressData,
+  } = rest;
+
+  const onProgressClear = () => {
+    clearPrimaryProgressData();
+  };
 
   return (
-    <StyledCircleWrap
-      color={color}
-      id={id}
-      className={`${className} not-selectable`}
-      style={style}
-      icon={icon}
-      onClick={onClick}
-    >
-      <StyledCircle percent={percent}>
-        <div className="circle__mask circle__full">
-          <div className="circle__fill"></div>
-        </div>
-        <div className="circle__mask">
-          <div className="circle__fill"></div>
-        </div>
+    <StyledFloatingButtonWrapper>
+      <StyledCircleWrap
+        color={color}
+        id={id}
+        className={`${className} not-selectable`}
+        style={style}
+        icon={icon}
+        onClick={onClick}
+      >
+        <StyledCircle
+          displayProgress={icon != "minus" && percent !== 100}
+          percent={percent}
+        >
+          <div className="circle__mask circle__full">
+            <div className="circle__fill"></div>
+          </div>
+          <div className="circle__mask">
+            <div className="circle__fill"></div>
+          </div>
 
-        <StyledFloatingButton className="circle__background" color={color}>
-          <IconBox>
-            {icon == "upload" ? (
-              <ButtonUploadIcon />
-            ) : icon == "file" ? (
-              <ButtonFileIcon />
-            ) : icon == "trash" ? (
-              <ButtonTrashIcon />
-            ) : icon == "move" ? (
-              <ButtonMoveIcon />
-            ) : icon == "plus" ? (
-              <ButtonPlusIcon />
-            ) : icon == "minus" ? (
-              <ButtonMinusIcon />
-            ) : (
-              <ButtonDuplicateIcon />
-            )}
-          </IconBox>
-          <StyledAlertIcon>
-            {alert ? <StyledButtonAlertIcon size="medium" /> : <></>}
-          </StyledAlertIcon>
-        </StyledFloatingButton>
-      </StyledCircle>
-    </StyledCircleWrap>
+          <StyledFloatingButton className="circle__background" color={color}>
+            <IconBox>
+              {icon == "upload" ? (
+                <ButtonUploadIcon />
+              ) : icon == "file" ? (
+                <ButtonFileIcon />
+              ) : icon == "trash" ? (
+                <ButtonTrashIcon />
+              ) : icon == "move" ? (
+                <ButtonMoveIcon />
+              ) : icon == "plus" ? (
+                <ButtonPlusIcon />
+              ) : icon == "minus" ? (
+                <ButtonMinusIcon />
+              ) : (
+                <ButtonDuplicateIcon />
+              )}
+            </IconBox>
+            <StyledAlertIcon>
+              {alert ? <StyledButtonAlertIcon size="medium" /> : <></>}
+            </StyledAlertIcon>
+          </StyledFloatingButton>
+        </StyledCircle>
+      </StyledCircleWrap>
+      <CloseIcon
+        className="layout-progress-bar_close-icon"
+        onClick={onProgressClear}
+      />
+    </StyledFloatingButtonWrapper>
   );
 };
 
