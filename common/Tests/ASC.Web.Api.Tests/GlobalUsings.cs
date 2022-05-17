@@ -43,9 +43,17 @@ global using ASC.Web.Api.Tests.Infrastructure;
 global using ASC.Web.Core.Utility.Settings;
 global using ASC.Web.Studio.UserControls.FirstTime;
 
+global using Autofac;
+
+global using Microsoft.AspNetCore.Hosting;
 global using Microsoft.AspNetCore.Identity;
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.AspNetCore.Mvc.Testing;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Options;
+global using Microsoft.VisualStudio.TestPlatform.TestHost;
 
 global using NUnit.Framework;
+
+global using SecurityContext = ASC.Core.SecurityContext;

@@ -24,34 +24,9 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-global using System.Net;
-global using System.Net.Http.Json;
-global using System.Reflection;
-global using System.Text.Json;
+namespace ASC.Web.Api.ApiModel.RequestsDto;
 
-global using ASC.Api.Core;
-global using ASC.Api.Core.Middleware;
-global using ASC.Common;
-global using ASC.Core;
-global using ASC.Core.Common.EF;
-global using ASC.Core.Common.EF.Context;
-global using ASC.Files.Core.ApiModels;
-global using ASC.Files.Core.ApiModels.RequestDto;
-global using ASC.Files.Core.ApiModels.ResponseDto;
-global using ASC.Files.Core.Resources;
-global using ASC.Files.Core.Security;
-global using ASC.Files.Tests.Infrastructure;
-global using ASC.Web.Files.Services.WCFService.FileOperations;
-
-global using Autofac;
-
-global using Microsoft.AspNetCore.Hosting;
-global using Microsoft.AspNetCore.Mvc;
-global using Microsoft.AspNetCore.Mvc.Testing;
-global using Microsoft.EntityFrameworkCore.Infrastructure;
-global using Microsoft.EntityFrameworkCore.Migrations;
-global using Microsoft.Extensions.Configuration;
-global using Microsoft.Extensions.DependencyInjection;
-
-global using NUnit.Framework;
-global using NUnit.Framework.Internal;
+public class SsoSettingsRequestsDto
+{
+    public string SerializeSettings { get; set; }
+}

@@ -83,9 +83,16 @@ public abstract class FoldersController<T> : ApiControllerBase
     /// <param name="immediately">Don't move to the Recycle Bin</param>
     /// <returns>Operation result</returns>
     [Delete("folder/{folderId}", order: int.MaxValue - 1, DisableFormat = true)]
-    public Task<IEnumerable<FileOperationDto>> DeleteFolder(T folderId, bool deleteAfter, bool immediately)
+    public Task<IEnumerable<FileOperationDto>> DeleteFolderFromBody(T folderId, [FromBody] DeleteFolderDto model)
     {
-        return _foldersControllerHelper.DeleteFolder(folderId, deleteAfter, immediately);
+        return _foldersControllerHelper.DeleteFolder(folderId, model.DeleteAfter, model.Immediately);
+    }
+
+    [Delete("folder/{folderId}", order: int.MaxValue - 1, DisableFormat = true)]
+    [Consumes("application/x-www-form-urlencoded")]
+    public Task<IEnumerable<FileOperationDto>> DeleteFolderFromForm(T folderId, [FromForm] DeleteFolderDto model)
+    {
+        return _foldersControllerHelper.DeleteFolder(folderId, model.DeleteAfter, model.Immediately);
     }
 
     /// <summary>

@@ -24,34 +24,49 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-global using System.Net;
-global using System.Net.Http.Json;
-global using System.Reflection;
-global using System.Text.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
-global using ASC.Api.Core;
-global using ASC.Api.Core.Middleware;
-global using ASC.Common;
-global using ASC.Core;
-global using ASC.Core.Common.EF;
-global using ASC.Core.Common.EF.Context;
-global using ASC.Files.Core.ApiModels;
-global using ASC.Files.Core.ApiModels.RequestDto;
-global using ASC.Files.Core.ApiModels.ResponseDto;
-global using ASC.Files.Core.Resources;
-global using ASC.Files.Core.Security;
-global using ASC.Files.Tests.Infrastructure;
-global using ASC.Web.Files.Services.WCFService.FileOperations;
+namespace ASC.Web.Studio.UserControls.Management.SingleSignOnSettings;
 
-global using Autofac;
+[Serializable]
+public class SsoUserData
+{
+    [JsonPropertyName("nameID")]
+    public string NameId { get; set; }
 
-global using Microsoft.AspNetCore.Hosting;
-global using Microsoft.AspNetCore.Mvc;
-global using Microsoft.AspNetCore.Mvc.Testing;
-global using Microsoft.EntityFrameworkCore.Infrastructure;
-global using Microsoft.EntityFrameworkCore.Migrations;
-global using Microsoft.Extensions.Configuration;
-global using Microsoft.Extensions.DependencyInjection;
+    [JsonPropertyName("sessionID")]
+    public string SessionId { get; set; }
 
-global using NUnit.Framework;
-global using NUnit.Framework.Internal;
+    [JsonPropertyName("email")]
+    public string Email { get; set; }
+
+    [JsonPropertyName("firstName")]
+    public string FirstName { get; set; }
+
+    [JsonPropertyName("lastName")]
+    public string LastName { get; set; }
+
+    [JsonPropertyName("location")]
+    public string Location { get; set; }
+
+    [JsonPropertyName("phone")]
+    public string Phone { get; set; }
+
+    [JsonPropertyName("title")]
+    public string Title { get; set; }
+
+    public override string ToString()
+    {
+        return JsonSerializer.Serialize(this);
+    }
+}
+
+[Serializable]
+public class LogoutSsoUserData
+{
+    [JsonPropertyName("nameID")]
+    public string NameId { get; set; }
+
+    [JsonPropertyName("sessionID")]
+    public string SessionId { get; set; }
+}
