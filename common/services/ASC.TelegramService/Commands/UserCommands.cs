@@ -29,11 +29,11 @@ namespace ASC.TelegramService.Commands;
 [Scope]
 public class UserCommands : CommandContext
 {
-    private readonly CachedTelegramDao _cachedTelegramDao;
+    private readonly TelegramDao _telegramDao;
 
-    public UserCommands(IOptionsSnapshot<CachedTelegramDao> cachedTelegramDao)
+    public UserCommands(TelegramDao telegramDao)
     {
-        _cachedTelegramDao = cachedTelegramDao.Value;
+        _telegramDao = telegramDao;
     }
 
     [Command("start")]
@@ -61,8 +61,10 @@ public class UserCommands : CommandContext
 
             if (tenant == TenantId)
             {
-                _cachedTelegramDao.RegisterUser(guid, tenant, Context.User.Id);
+                _telegramDao.RegisterUser(guid, tenant, Context.User.Id);
+
                 await ReplyAsync("Ok!");
+
                 return;
             }
         }

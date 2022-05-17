@@ -26,28 +26,7 @@
 
 namespace ASC.Core.Common.Notify.Telegram;
 
-public class ConfigureTelegramDaoService : IConfigureNamedOptions<TelegramDao>
-{
-    private readonly DbContextManager<TelegramDbContext> _dbContextManager;
-
-    public ConfigureTelegramDaoService(DbContextManager<TelegramDbContext> dbContextManager)
-    {
-        _dbContextManager = dbContextManager;
-    }
-
-    public void Configure(string name, TelegramDao options)
-    {
-        Configure(options);
-        options.TelegramDbContext = _dbContextManager.Get(name);
-    }
-
-    public void Configure(TelegramDao options)
-    {
-        options.TelegramDbContext = _dbContextManager.Value;
-    }
-}
-
-[Scope(typeof(ConfigureTelegramDaoService))]
+[Scope]
 public class TelegramDao
 {
     public TelegramDbContext TelegramDbContext { get; set; }
@@ -71,13 +50,9 @@ public class TelegramDao
         TelegramDbContext.SaveChanges();
     }
 
-    public TelegramUser GetUser(Guid userId, long tenantId)
+    public TelegramUser GetUser(Guid userId, int tenantId)
     {
-        return TelegramDbContext.Users
-            .AsNoTracking()
-            .Where(r => r.PortalUserId == userId)
-            .Where(r => r.TenantId == tenantId)
-            .FirstOrDefault();
+        return TelegramDbContext.Users.Find(tenantId, userId);
     }
 
     public List<TelegramUser> GetUser(long telegramId)

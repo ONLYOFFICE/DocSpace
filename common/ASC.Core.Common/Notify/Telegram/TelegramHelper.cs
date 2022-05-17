@@ -37,20 +37,20 @@ public class TelegramHelper
     }
 
     private readonly ConsumerFactory _consumerFactory;
-    private readonly CachedTelegramDao _cachedTelegramDao;
+    private readonly TelegramDao _telegramDao;
     private readonly TelegramServiceClient _telegramServiceClient;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILog _logger;
 
     public TelegramHelper(
         ConsumerFactory consumerFactory,
-        IOptionsSnapshot<CachedTelegramDao> cachedTelegramDao,
+        TelegramDao telegramDao,
         TelegramServiceClient telegramServiceClient,
         IHttpClientFactory httpClientFactory,
         ILog logger)
     {
         _consumerFactory = consumerFactory;
-        _cachedTelegramDao = cachedTelegramDao.Value;
+        _telegramDao = telegramDao;
         _telegramServiceClient = telegramServiceClient;
         _httpClientFactory = httpClientFactory;
         _logger = logger;
@@ -87,7 +87,7 @@ public class TelegramHelper
 
     public RegStatus UserIsConnected(Guid userId, int tenantId)
     {
-        if (_cachedTelegramDao.GetUser(userId, tenantId) != null)
+        if (_telegramDao.GetUser(userId, tenantId) != null)
         {
             return RegStatus.Registered;
         }
@@ -113,7 +113,7 @@ public class TelegramHelper
 
     public void Disconnect(Guid userId, int tenantId)
     {
-        _cachedTelegramDao.Delete(userId, tenantId);
+        _telegramDao.Delete(userId, tenantId);
     }
 
     private bool IsAwaitingRegistration(Guid userId, int tenantId)

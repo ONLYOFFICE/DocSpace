@@ -49,13 +49,13 @@ public class TelegramHandler
         if (!_clients.ContainsKey(msg.TenantId)) return;
 
         var scope = _scopeFactory.CreateScope();
-        var cachedTelegramDao = scope.ServiceProvider.GetService<IOptionsSnapshot<CachedTelegramDao>>().Value;
+        var telegramDao = scope.ServiceProvider.GetService<TelegramDao>();
 
         var client = _clients[msg.TenantId].Client;
 
         try
         {
-            var tgUser = cachedTelegramDao.GetUser(Guid.Parse(msg.Reciever), msg.TenantId);
+            var tgUser = telegramDao.GetUser(Guid.Parse(msg.Reciever), msg.TenantId);
 
             if (tgUser == null)
             {
