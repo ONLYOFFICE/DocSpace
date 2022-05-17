@@ -6,6 +6,7 @@ import TableHeader from "./TableHeader";
 import TableBody from "@appserver/components/table-container/TableBody";
 import { isMobile } from "react-device-detect";
 import styled, { css } from "styled-components";
+import { isTablet } from "@appserver/components/utils/device";
 import { Base } from "@appserver/components/themes";
 
 const marginCss = css`
@@ -108,14 +109,13 @@ const Table = ({
   const ref = useRef(null);
 
   useEffect(() => {
-    if (
-      (viewAs !== "table" && viewAs !== "row") ||
-      !setViewAs ||
-      infoPanelVisible
-    )
-      return;
+    if ((viewAs !== "table" && viewAs !== "row") || !setViewAs) return;
 
-    if (sectionWidth < 1025 || isMobile) {
+    if (
+      (sectionWidth < 1025 && !infoPanelVisible) ||
+      (isTablet() && infoPanelVisible) ||
+      isMobile
+    ) {
       viewAs !== "row" && setViewAs("row");
     } else {
       viewAs !== "table" && setViewAs("table");
