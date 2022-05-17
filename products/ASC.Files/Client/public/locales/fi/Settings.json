@@ -14,5 +14,6 @@
   "StoringFileVersion": "Tiedostoversioiden tallentaminen",
   "ThirdPartyBtn": "Salli käyttäjien yhdistää kolmannen osapuolen tallennustilat",
   "ThirdPartySettings": "Yhdistetyt pilvet",
-  "UpdateOrCreate": "Päivitä samannimisen tiedoston tiedostoversio. Muussa tapauksessa tiedostosta luodaan kopio."
+  "UpdateOrCreate": "Päivitä samannimisen tiedoston tiedostoversio. Muussa tapauksessa tiedostosta luodaan kopio.",
+  "Clouds": "Pilvet"
 }
