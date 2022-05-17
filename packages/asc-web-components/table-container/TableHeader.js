@@ -629,7 +629,10 @@ class TableHeader extends React.Component {
             })}
 
             <div className="table-container_header-settings">
-              {!infoPanelVisible && <TableSettings columns={columns} />}
+              <TableSettings
+                columns={columns}
+                infoPanelVisible={infoPanelVisible}
+              />
             </div>
           </StyledTableRow>
         </StyledTableHeader>
