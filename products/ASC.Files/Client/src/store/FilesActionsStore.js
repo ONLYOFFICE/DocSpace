@@ -538,6 +538,8 @@ class FilesActionStore {
       filesCount,
     } = this.uploadDataStore.secondaryProgressDataStore;
 
+    this.setSelectedItems();
+
     //TODO: duplicate for folders?
     const folderIds = [];
     const fileIds = [];
@@ -744,7 +746,7 @@ class FilesActionStore {
     const selectionLength = this.filesStore.selection.length;
     const selectionTitle = this.filesStore.selectionTitle;
 
-    if (selectionLength && selectionTitle) {
+    if (selectionLength !== undefined && selectionTitle) {
       this.uploadDataStore.secondaryProgressDataStore.setItemsSelectionLength(
         selectionLength
       );
