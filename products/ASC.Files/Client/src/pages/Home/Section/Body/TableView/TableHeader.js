@@ -6,6 +6,7 @@ import { withTranslation } from "react-i18next";
 const TABLE_VERSION = "2";
 const TABLE_COLUMNS = `filesTableColumns_ver-${TABLE_VERSION}`;
 const COLUMNS_SIZE = `filesColumnsSize_ver-${TABLE_VERSION}`;
+const COLUMNS_SIZE_INFO_PANEL = `filesColumnsSizeInfoPanel_ver-${TABLE_VERSION}`;
 
 class FilesTableHeader extends React.Component {
   constructor(props) {
@@ -211,6 +212,9 @@ class FilesTableHeader extends React.Component {
     const { sortBy, sortOrder } = filter;
     const { columns, resetColumnsSize } = this.state;
 
+    const columnStorageName = `${COLUMNS_SIZE}=${userId}`;
+    const columnInfoPanelStorageName = `${COLUMNS_SIZE_INFO_PANEL}=${userId}`;
+
     return (
       <TableHeader
         isLengthenHeader={firstElemChecked || isHeaderChecked}
@@ -219,7 +223,8 @@ class FilesTableHeader extends React.Component {
         sortBy={sortBy}
         containerRef={containerRef}
         columns={columns}
-        columnStorageName={`${COLUMNS_SIZE}=${userId}`}
+        columnStorageName={columnStorageName}
+        columnInfoPanelStorageName={columnInfoPanelStorageName}
         sectionWidth={sectionWidth}
         resetColumnsSize={resetColumnsSize}
         sortingVisible={sortingVisible}
