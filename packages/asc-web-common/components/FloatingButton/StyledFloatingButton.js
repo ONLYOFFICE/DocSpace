@@ -5,6 +5,7 @@ import { desktop, tablet } from "@appserver/components/utils/device";
 const StyledFloatingButtonWrapper = styled.div`
   @media ${desktop} {
     position: absolute;
+    z-index: 300;
     width: 100px;
     height: 70px;
     right: 0;

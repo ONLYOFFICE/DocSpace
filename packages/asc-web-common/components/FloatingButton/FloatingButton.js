@@ -49,7 +49,10 @@ const FloatingButton = ({ id, className, style, ...rest }) => {
         icon={icon}
         onClick={onClick}
       >
-        <StyledCircle displayProgress={icon != "minus"} percent={percent}>
+        <StyledCircle
+          displayProgress={icon != "minus" && percent !== 100}
+          percent={percent}
+        >
           <div className="circle__mask circle__full">
             <div className="circle__fill"></div>
           </div>

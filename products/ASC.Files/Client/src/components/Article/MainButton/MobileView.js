@@ -93,13 +93,12 @@ const MobileView = ({
         key: "primary-progress",
         open: primaryProgressDataVisible,
         label: t("UploadPanel:Uploads"),
-        icon: "/static/images/mobile.actions.remove.react.svg",
+        icon: "/static/images/cross.sidebar.react.svg",
         percent: primaryProgressDataPercent,
-        status: `${
+        status:
           primaryProgressDataPercent === 100
-            ? files.length
-            : currentPrimaryNumEl
-        }/${files.length}`,
+            ? t("FilesUploaded")
+            : `${currentPrimaryNumEl}/${files.length}`,
         onClick: showUploadPanel,
         onCancel: clearUploadPanel,
       },
