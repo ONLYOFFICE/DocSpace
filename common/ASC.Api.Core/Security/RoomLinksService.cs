@@ -87,7 +87,7 @@ public class RoomLinksService
             return true;
         }
 
-        return message.Date + interval > DateTime.Now ? true : false;
+        return message.Date + interval > DateTime.UtcNow ? true : false;
     }
 
     private void SaveVisitLinkInfo(string id, string email, string key)

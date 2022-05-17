@@ -168,11 +168,11 @@ public class EmailValidationKeyModel
     public string Email { get; set; }
     public Guid? UiD { get; set; }
     public ConfirmType? Type { get; set; }
-    public int? RoomAccess { get; set; }
+    public int RoomAccess { get; set; }
     public string RoomId { get; set; }
 
-    public void Deconstruct(out string key, out EmployeeType? emplType, out string email, out Guid? uiD, out ConfirmType? type, out int? fileShare, out string roomId)
+    public void Deconstruct(out string key, out EmployeeType? emplType, out string email, out Guid? uiD, out ConfirmType? type, out int roomAccess, out string roomId)
     {
-        (key, emplType, email, uiD, type, fileShare, roomId) = (Key, EmplType, Email, UiD, Type, RoomAccess, RoomId);
+        (key, emplType, email, uiD, type, roomAccess, roomId) = (Key, EmplType, Email, UiD, Type, RoomAccess, RoomId);
     }
 }
