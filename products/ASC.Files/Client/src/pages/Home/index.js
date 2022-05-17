@@ -262,8 +262,8 @@ class PureHome extends React.Component {
     const {
       isProgressFinished,
       secondaryProgressDataStoreIcon,
-      selectionLength,
-      selectionTitle,
+      itemsSelectionLength,
+      itemsSelectionTitle,
     } = this.props;
 
     if (this.props.isHeaderVisible !== prevProps.isHeaderVisible) {
@@ -275,8 +275,8 @@ class PureHome extends React.Component {
     ) {
       this.showOperationToast(
         secondaryProgressDataStoreIcon,
-        selectionLength,
-        selectionTitle
+        itemsSelectionLength,
+        itemsSelectionTitle
       );
     }
   }
@@ -295,6 +295,7 @@ class PureHome extends React.Component {
       primaryProgressDataPercent,
       primaryProgressDataIcon,
       primaryProgressDataAlert,
+      clearPrimaryProgressData,
 
       secondaryProgressDataStoreVisible,
       secondaryProgressDataStorePercent,
@@ -328,6 +329,7 @@ class PureHome extends React.Component {
           secondaryProgressBarValue={secondaryProgressDataStorePercent}
           secondaryProgressBarIcon={secondaryProgressDataStoreIcon}
           showSecondaryButtonAlert={secondaryProgressDataStoreAlert}
+          clearPrimaryProgressData={clearPrimaryProgressData}
           viewAs={viewAs}
           hideAside={
             !!fileActionId ||
@@ -440,6 +442,8 @@ export default inject(
       icon: secondaryProgressDataStoreIcon,
       alert: secondaryProgressDataStoreAlert,
       isSecondaryProgressFinished: isProgressFinished,
+      itemsSelectionLength,
+      itemsSelectionTitle,
     } = secondaryProgressDataStore;
 
     const {
@@ -493,6 +497,9 @@ export default inject(
       selectionLength,
       isProgressFinished,
       selectionTitle,
+
+      itemsSelectionLength,
+      itemsSelectionTitle,
 
       setExpandedKeys,
       setFirstLoad,
