@@ -4,5 +4,6 @@
   "Members": "メンバー",
   "SearchAddedMembers": "追加されたメンバーの検索",
   "SelectAction": "選択",
-  "SuccessSaveGroup": "{{groupCaption}}の '{{ groupName }}'が正常に保存されました。"
+  "SuccessSaveGroup": "{{groupCaption}}の '{{ groupName }}'が正常に保存されました。",
+  "AddHeadOfDepartment": "部長を追加"
 }
