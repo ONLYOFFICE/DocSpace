@@ -14,13 +14,14 @@ const StyledFloatingButton = styled(FloatingButton)`
 
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
+  .circle__background {
+    background: ${(props) => props.theme.mainButtonMobile.buttonColor};
+  }
+
   .circle__mask + div {
     display: flex;
     align-items: center;
     justify-content: center;
-
-    background: ${(props) =>
-      props.theme.mainButtonMobile.buttonColor} !important;
 
     div {
       padding-top: 0;
