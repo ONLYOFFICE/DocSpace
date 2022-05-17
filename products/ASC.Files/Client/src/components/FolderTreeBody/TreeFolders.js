@@ -2,7 +2,11 @@ import React from "react";
 import TreeMenu from "@appserver/components/tree-menu";
 import TreeNode from "@appserver/components/tree-menu/sub-components/tree-node";
 import styled from "styled-components";
-import { FolderType, ShareAccessRights } from "@appserver/common/constants";
+import {
+  ConflictResolveType,
+  FolderType,
+  ShareAccessRights,
+} from "@appserver/common/constants";
 import toastr from "studio/toastr";
 
 import { onConvertFiles } from "../../helpers/files-converter";
@@ -215,8 +219,8 @@ class TreeFolders extends React.Component {
   };
 
   getItems = (data) => {
-    const { withoutProvider, theme } = this.props;
-    return data.map((item) => {
+    const { withoutProvider, theme, parentId } = this.props;
+    return data.map((item, index) => {
       const dragging = this.props.dragging ? this.showDragItems(item) : false;
 
       const showBadge = item.newItems
@@ -231,6 +235,23 @@ class TreeFolders extends React.Component {
 
       let value = "";
       if (dragging) value = `${item.id} dragging ${provider}`;
+
+      if (this.needScroll) {
+        console.log("this.needScroll", this.needScroll);
+        if (item.parentId.toString() === parentId.toString()) {
+          if (index === this.child) {
+            this.props.setIsLoadingNodes(false);
+            const selectedNode = document.getElementsByClassName(
+              "rc-tree-node-selected"
+            )[0];
+            if (selectedNode) {
+              document
+                .querySelector("#folder-tree-scroll-bar > .scroll-body")
+                .scrollTo(0, selectedNode.offsetTop + index * 36);
+            }
+          }
+        }
+      }
 
       if ((item.folders && item.folders.length > 0) || serviceFolder) {
         return (
@@ -322,6 +343,12 @@ class TreeFolders extends React.Component {
   };
 
   getNewTreeData(treeData, curId, child, pos) {
+    this.child = null;
+    !this.expand && this.props.setIsLoadingNodes(true);
+    if (!this.expand && curId.toString() === this.props.parentId.toString()) {
+      this.needScroll = true;
+      this.child = child.length - 1;
+    }
     this.loop(treeData, child, pos);
     this.setLeaf(treeData, curId, 10);
   }
@@ -398,6 +425,8 @@ class TreeFolders extends React.Component {
   };
 
   onExpand = (expandedKeys, treeNode) => {
+    this.needScroll = false;
+    this.expand = true;
     if (treeNode.node && !treeNode.node.children) {
       if (treeNode.expanded) {
         this.onLoadData(treeNode.node, true);
@@ -461,6 +490,7 @@ class TreeFolders extends React.Component {
       disabled,
       theme,
       isPanel,
+      isLoadingNodes,
     } = this.props;
 
     return (
@@ -469,7 +499,7 @@ class TreeFolders extends React.Component {
         className="files-tree-menu"
         checkable={false}
         draggable={dragging}
-        disabled={isLoading || disabled}
+        disabled={isLoadingNodes || isLoading || disabled}
         multiple={false}
         showIcon
         switcherIcon={this.switcherIcon}
@@ -520,6 +550,8 @@ export default inject(
       setExpandedKeys,
       setExpandedPanelKeys,
       getSubfolders,
+      setIsLoadingNodes,
+      isLoadingNodes,
     } = treeFoldersStore;
     const { id /* rootFolderType */ } = selectedFolderStore;
 
@@ -545,6 +577,8 @@ export default inject(
       setExpandedKeys,
       setExpandedPanelKeys,
       getSubfolders,
+      setIsLoadingNodes,
+      isLoadingNodes,
     };
   }
 )(withTranslation(["Home", "Common"])(observer(TreeFolders)));

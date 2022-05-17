@@ -262,6 +262,7 @@ const StyledTree = styled.div`
       `}
 
     .scroll-body {
+      ${(props) => props.isLoadingNodes && "overflow-y: hidden !important"};
       overflow-x: hidden !important;
       padding-right: 0px !important;
     }

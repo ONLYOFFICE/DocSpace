@@ -16,6 +16,8 @@ const FolderTreeBody = ({
   selectedKeys,
   theme,
   isDisableTree,
+  parentId,
+  isLoadingNodes,
 }) => {
   const { t } = useTranslation(["SelectFolder", "Common"]);
 
@@ -33,7 +35,7 @@ const FolderTreeBody = ({
   return (
     <>
       {isAvailable ? (
-        <StyledTree theme={theme}>
+        <StyledTree theme={theme} isLoadingNodes={isLoadingNodes}>
           <div className="selection-panel_tree-folder">
             <Scrollbar id="folder-tree-scroll-bar" stype="mediumBlack">
               <TreeFolders
@@ -48,6 +50,7 @@ const FolderTreeBody = ({
                 disabled={isDisableTree}
                 needUpdate={false}
                 defaultExpandAll
+                parentId={parentId}
               />
             </Scrollbar>
           </div>
@@ -71,7 +74,7 @@ FolderTreeBody.defaultProps = {
 export default inject(
   ({ filesStore, treeFoldersStore, selectedFolderStore }) => {
     const { filter, isLoading } = filesStore;
-    const { expandedPanelKeys } = treeFoldersStore;
+    const { expandedPanelKeys, isLoadingNodes } = treeFoldersStore;
 
     const expandedKeysProp = expandedPanelKeys
       ? expandedPanelKeys
@@ -83,6 +86,7 @@ export default inject(
 
       filter,
       isLoading,
+      isLoadingNodes,
     };
   }
 )(observer(FolderTreeBody));

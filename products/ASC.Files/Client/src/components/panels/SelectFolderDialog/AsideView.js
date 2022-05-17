@@ -35,6 +35,7 @@ const SelectFolderDialogAsideView = ({
   primaryButtonName,
   isDisableTree,
   isDisableButton,
+  parentId,
 }) => {
   return (
     <StyledModalDialog
@@ -73,6 +74,7 @@ const SelectFolderDialogAsideView = ({
             <div className="selection-panel_aside-tree">
               {folderId && resultingFolderTree ? (
                 <FolderTreeBody
+                  parentId={parentId}
                   theme={theme}
                   folderTree={resultingFolderTree}
                   onSelect={onSelectFolder}
