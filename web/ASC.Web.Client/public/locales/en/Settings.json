@@ -105,7 +105,6 @@
   "PortalOwner": "Portal Owner",
   "PortalRenaming": "Portal Renaming",
   "PortalRenamingDescription": "Here you can change your portal address.",
-  "PortalRenamingDescriptionTooltip": "",
   "PortalRenamingLabelText": "New portal name",
   "PortalRenamingMobile": "Enter the part that will appear next to the onlyoffice.com/onlyoffice.eu portal address. Please note: your old portal address will become available to new users once you click the Save button.",
   "PortalRenamingSettingsTooltip": "<0>{{text}}</0> Enter the part that will appear next to the onlyoffice.com/onlyoffice.eu portal address.",
