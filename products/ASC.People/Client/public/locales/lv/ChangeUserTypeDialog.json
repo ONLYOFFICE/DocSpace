@@ -1,4 +1,4 @@
-﻿{
+{
   "ChangeUserTypeButton": "Mainīt veidu",
   "ChangeUserTypeHeader": "Mainiet lietotāja veidu",
   "ChangeUserTypeMessage": "Lietotāji ar '{{ firstType }}' veidu tiks pārvietoti uz '{{ secondType }}' veidu.",

@@ -8,7 +8,9 @@ const StyledContainer = styled.div`
     props.isDesktop &&
     css`
       width: fit-content;
-      max-width: calc(100% - 72px);
+      max-width: ${props.isInfoPanelVisible
+        ? `calc(100%)`
+        : `calc(100% - 72px)`};
     `}
 
   display: grid;

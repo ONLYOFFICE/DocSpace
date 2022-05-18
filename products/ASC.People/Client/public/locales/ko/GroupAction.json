@@ -1,5 +1,6 @@
-﻿{
-  "CustomNewDepartment": "{{groupCaption}} (creation)",
+{
+  "AddHeadOfDepartment": "부서장 추가",
+  "CustomNewDepartment": "{{groupCaption}} (창조)",
   "GroupAction": "그룹 액션",
   "Members": "멤버",
   "SearchAddedMembers": "추가된 멤버 검색",

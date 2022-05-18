@@ -16,8 +16,10 @@
   "EmptyFile": "Leere Datei",
   "EmptyFilterDescriptionText": "Keine Dateien oder Ordner entsprechen diesem Filter. Versuchen Sie einen anderen Filter oder entfernen Sie diesen, um alle Dateien zu sehen.",
   "EmptyFilterSubheadingText": "Hier gibt es keine Dateien, die diesem Filter entsprechen",
+  "EmptyFolderDecription": "Dateien hier ablegen oder neue erstellen.",
   "EmptyFolderHeader": "Keine Dateien in diesem Ordner",
   "EmptyRecycleBin": "Papierkorb leeren",
+  "EmptyScreenFolder": "Keine Dokumente hier",
   "FavoritesEmptyContainerDescription": "Benutzen Sie das Kontext-Menü, um Dateien als Favoriten zu kennzeichnen oder sie aus dieser Liste zu entfernen.",
   "FileRemoved": "Die Datei wurde in den Papierkorb verschoben",
   "FileRenamed": "Das Dokument wurde von '{{oldTitle}}' in '{{newTitle}}' umbenannt",
@@ -35,6 +37,7 @@
   "Media": "Medien",
   "MoveItem": "<strong>{{title}}</strong> verschoben",
   "MoveItems": "Elemente verschoben: <strong>{{qty}}</strong>",
+  "MoveOrCopy": "Verschieben oder kopieren",
   "MoveTo": "Verschieben",
   "MyEmptyContainerDescription": "Von Ihnen erstellte oder hochgeladene Dokumente werden im Abschnitt \"Meine Dokumente\" gespeichert. Sie können diese bearbeiten, freigeben und mit Ihrem Team an diesen zusammenarbeiten.",
   "New": "Erstellen",
@@ -71,10 +74,10 @@
   "TooltipElementCopyMessage": "Kopieren {{element}}",
   "TooltipElementsCopyMessage": "Kopieren {{element}} Element(e)",
   "TooltipElementsMoveMessage": "{{element}} Element(e) verschieben",
+  "TrashEmptyDescription": "Die Sektion 'Papierkorb' enthält alle gelöschten Dateien. Sie können diese Dokumente entweder wiederherstellen, wenn sie versehentlich gelöscht wurden, oder unwiderruflich entfernen. Bitte beachten Sie, wenn Sie die Dateien aus dem 'Papierkorb' entfernen, können diese nicht mehr wiederhergestellt werden.",
   "UnblockVersion": "Entsperren/Einchecken",
   "UploadToFolder": "In den Ordner hochladen",
-  "ViewList": "Liste",
-  "ViewTiles": "Tiles",
   "VersionHistory": "Versionshistorie",
-  "MoveOrCopy": "Verschieben oder kopieren"
+  "ViewList": "Liste",
+  "ViewTiles": "Tiles"
 }

@@ -220,6 +220,7 @@ class Section extends React.Component {
       infoPanelIsVisible,
       isInfoPanelAvailable,
       settingsStudio,
+      clearUploadedFilesHistory,
     } = this.props;
 
     let sectionHeaderContent = null;
@@ -429,6 +430,9 @@ class Section extends React.Component {
                             percent={primaryProgressBarValue}
                             alert={showPrimaryButtonAlert}
                             onClick={onOpenUploadPanel}
+                            clearUploadedFilesHistory={
+                              clearUploadedFilesHistory
+                            }
                           />
                           <FloatingButton
                             className="layout-progress-second-bar"
@@ -445,6 +449,7 @@ class Section extends React.Component {
                           percent={primaryProgressBarValue}
                           alert={showPrimaryButtonAlert}
                           onClick={onOpenUploadPanel}
+                          clearUploadedFilesHistory={clearUploadedFilesHistory}
                         />
                       ) : !showPrimaryProgressBar &&
                         showSecondaryProgressBar ? (
@@ -462,7 +467,7 @@ class Section extends React.Component {
                     )}
                   </SectionContainer>
                   {isInfoPanelAvailable && (
-                    <InfoPanel>
+                    <InfoPanel viewAs={viewAs}>
                       <SubInfoPanelHeader>
                         {infoPanelHeaderContent}
                       </SubInfoPanelHeader>
@@ -531,7 +536,6 @@ Section.propTypes = {
   uploadFiles: PropTypes.bool,
   hideAside: PropTypes.bool,
   viewAs: PropTypes.string,
-  uploadPanelVisible: PropTypes.bool,
   onOpenUploadPanel: PropTypes.func,
   isTabletView: PropTypes.bool,
   isHeaderVisible: PropTypes.bool,

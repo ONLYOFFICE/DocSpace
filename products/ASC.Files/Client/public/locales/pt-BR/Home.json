@@ -35,6 +35,7 @@
   "Media": "Média",
   "MoveItem": "<strong>{{title}}</strong> movido",
   "MoveItems": "<strong>{{qty}}</strong> elementos foram movidos",
+  "MoveOrCopy": "Mover ou copiar",
   "MoveTo": "Mover para",
   "MyEmptyContainerDescription": "Os documentos que você cria ou carrega são mantidos na seção 'Meus Documentos'. Você pode editar, compartilhar e colaborar neles com sua equipe.",
   "New": "Novo",
@@ -73,8 +74,7 @@
   "TooltipElementsMoveMessage": "Mover {{element}} elementos",
   "UnblockVersion": "Desbloqueio/Check-in",
   "UploadToFolder": "Upload para pasta",
-  "ViewList": "Lista",
-  "ViewTiles": "Azulejos",
   "VersionHistory": "Histórico de Versão",
-  "MoveOrCopy": "Mover ou copiar"
+  "ViewList": "Lista",
+  "ViewTiles": "Azulejos"
 }

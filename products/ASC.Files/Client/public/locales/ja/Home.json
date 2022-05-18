@@ -16,8 +16,10 @@
   "EmptyFile": "空きファイル",
   "EmptyFilterDescriptionText": "このフィルターに一致するファイルやフォルダーはありません。別のフィルタを試すか、フィルタを解除してすべてのファイルを表示してください。 ",
   "EmptyFilterSubheadingText": "このフィルターで表示されるファイルはありません。",
+  "EmptyFolderDecription": "ファイルをここにドロップするか新しく作成する",
   "EmptyFolderHeader": "このフォルダにはファイルがありません",
   "EmptyRecycleBin": "空きゴミ箱",
+  "EmptyScreenFolder": "ここにはドキュメントがまだありません",
   "FavoritesEmptyContainerDescription": "ファイルをお気に入りとしてマークしたり、このリストから削除するには、コンテキストメニューを使用します。",
   "FileRemoved": "ファイルがゴミ箱に移動",
   "FileRenamed": "ドキュメント'{{oldTitle}}'の名前が'{{newTitle}}'に変更されます。'",
@@ -35,6 +37,7 @@
   "Media": "メディア",
   "MoveItem": "<strong>{{title}}</strong>を移動した",
   "MoveItems": "<strong>{{qty}}</strong>の要素が移動しました",
+  "MoveOrCopy": "移動またはコピーする",
   "MoveTo": "に移動します",
   "MyEmptyContainerDescription": "作成されたまたはアップロードされたドキュメントは、「マイドキュメント」セクションに保管されます。チームで編集、共有、共同作業ができます。",
   "New": "新しい",
@@ -71,10 +74,10 @@
   "TooltipElementCopyMessage": "{{element}}をコピー",
   "TooltipElementsCopyMessage": " {{element}} 要素をコピー",
   "TooltipElementsMoveMessage": " {{element}} 要素を移動",
+  "TrashEmptyDescription": "すべての削除されたファイルは「ごみ箱」に移動されます。間違って削除されたファイルをを復元するか、完全に削除することができます。「ごみ箱」から削除されたファイルは、もう復元できないことにご注意ください。",
   "UnblockVersion": "アンブロック/チェックイン",
   "UploadToFolder": "フォルダへのアップロード",
-  "ViewList": "リスト",
-  "ViewTiles": "タイル",
   "VersionHistory": "バージョン履歴",
-  "MoveOrCopy": "移動またはコピーする"
+  "ViewList": "リスト",
+  "ViewTiles": "タイル"
 }
