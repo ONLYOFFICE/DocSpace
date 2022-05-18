@@ -1,13 +1,15 @@
-const Endpoints = require('./mocking/endpoints.js');
-const changeCulture = require('./helpers/changeCulture.js');
-const config = require('../../../../config/appsettings.json');
-const ignoringCultures = require('./ignoringCultures.json');
-
-const cultures = config.web.cultures.split(',');
+const Endpoints = require("./mocking/endpoints.js");
+const changeCulture = require("./helpers/changeCulture.js");
+const config = require("../../../../config/appsettings.json");
+const ignoringCultures = require("./ignoringCultures.json");
 
 const isModel = !!process.env.MODEL;
 
-const featureName = isModel ? `People translation(model) ` : `People translation tests`;
+const cultures = isModel ? ["en"] : config.web.cultures.split(",");
+
+const featureName = isModel
+  ? `People translation(model) `
+  : `People translation tests`;
 
 Feature(featureName, { timeout: 90 });
 
@@ -17,12 +19,12 @@ Before(async ({ I }) => {
 for (const culture of cultures) {
   Scenario(`Main page test ${culture}`, { timeout: 30 }, ({ I }) => {
     changeCulture(culture);
-    const isExсeption = ignoringCultures.mainPage.indexOf(culture) != -1;
+    const isException = ignoringCultures.mainPage.indexOf(culture) != -1;
 
-    I.mockEndpoint(Endpoints.filter, 'many');
-    I.mockEndpoint(Endpoints.group, 'many');
+    I.mockEndpoint(Endpoints.filter, "many");
+    I.mockEndpoint(Endpoints.group, "many");
 
-    if (!isModel || isExсeption) {
+    if (!isException) {
       I.mockEndpoint(Endpoints.self, `selfTranslation`);
       I.mockEndpoint(Endpoints.settings, `settingsTranslation`);
     }
@@ -39,20 +41,20 @@ for (const culture of cultures) {
 
   Scenario(`Main button test ${culture}`, { timeout: 30 }, ({ I }) => {
     changeCulture(culture);
-    const isExсeption = ignoringCultures.mainButton.indexOf(culture) != -1;
+    const isException = ignoringCultures.mainButton.indexOf(culture) != -1;
 
-    I.mockEndpoint(Endpoints.filter, 'many');
-    I.mockEndpoint(Endpoints.group, 'many');
+    I.mockEndpoint(Endpoints.filter, "many");
+    I.mockEndpoint(Endpoints.group, "many");
 
-    if (!isModel || isExсeption) {
+    if (!isException) {
       I.mockEndpoint(Endpoints.self, `selfTranslation`);
       I.mockEndpoint(Endpoints.settings, `settingsTranslation`);
     }
 
     I.openPage();
 
-    I.seeElement({ react: 'ArticleMainButton' });
-    I.click({ react: 'ArticleMainButton' });
+    I.seeElement({ react: "MainButton" });
+    I.click({ react: "MainButton" });
 
     I.wait(3);
 
@@ -66,20 +68,20 @@ for (const culture of cultures) {
 
   Scenario(`Table settings test ${culture}`, { timeout: 30 }, async ({ I }) => {
     changeCulture(culture);
-    const isExсeption = ignoringCultures.tableSettings.indexOf(culture) != -1;
+    const isException = ignoringCultures.tableSettings.indexOf(culture) != -1;
 
-    await I.mockEndpoint(Endpoints.filter, 'many');
-    await I.mockEndpoint(Endpoints.group, 'many');
+    await I.mockEndpoint(Endpoints.filter, "many");
+    await I.mockEndpoint(Endpoints.group, "many");
 
-    if (!isModel || isExсeption) {
+    if (!isException) {
       await I.mockEndpoint(Endpoints.self, `selfTranslation`);
       await I.mockEndpoint(Endpoints.settings, `settingsTranslation`);
     }
 
     I.openPage();
 
-    I.seeElement({ react: 'TableSettings' });
-    I.click({ react: 'TableSettings' });
+    I.seeElement({ react: "TableSettings" });
+    I.click({ react: "TableSettings" });
 
     I.wait(3);
 
