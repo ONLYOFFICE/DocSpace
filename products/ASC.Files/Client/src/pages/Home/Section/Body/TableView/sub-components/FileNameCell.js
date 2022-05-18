@@ -34,7 +34,6 @@ const FileNameCell = ({
           className="table-container_element-wrapper"
           hasAccess={true}
           checked={checked}
-          style={{ paddingRight: "0px" }}
         >
           <div className="table-container_element">{element}</div>
           <Checkbox

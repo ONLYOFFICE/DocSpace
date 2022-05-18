@@ -49,7 +49,7 @@ const TableRow = (props) => {
       <div>
         <TableCell
           {...selectionProp}
-          style={{ ...style, paddingRight: "0px" }}
+          style={style}
           forwardedRef={row}
           className={`${selectionProp?.className} table-container_row-context-menu-wrapper`}
         >

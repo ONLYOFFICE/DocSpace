@@ -66,6 +66,11 @@ const StyledTableRow = styled(TableRow)`
   }
 
   .table-container_element-wrapper,
+  .table-container_quick-buttons-wrapper {
+    padding-right: 0px !important;
+  }
+
+  .table-container_element-wrapper,
   .table-container_row-loader {
     min-width: 36px;
   }
@@ -102,6 +107,8 @@ const StyledTableRow = styled(TableRow)`
   }
 
   .table-container_row-context-menu-wrapper {
+    padding-right: 0px !important;
+
     ${(props) => props.dragging && contextMenuWrapperDraggingStyle};
     ${(props) =>
       props.showHotkeyBorder &&
@@ -110,6 +117,8 @@ const StyledTableRow = styled(TableRow)`
         padding-right: 18px;
         ${hotkeyBorderStyle}
       `};
+
+    padding-right: 0px !important;
   }
 
   .edit {
@@ -377,7 +386,7 @@ const FilesTableRow = (props) => {
         <TableCell
           {...dragStyles}
           {...selectionProp}
-          style={{ paddingRight: "0px" }}
+          className={`${selectionProp?.className} table-container_quick-buttons-wrapper`}
         >
           <StyledQuickButtonsContainer>
             {quickButtonsComponent}
