@@ -1,9 +1,9 @@
-﻿{
+{
   "NewDocument": "ເອກະສານໃໝ່",
   "NewFolder": "ແຟ້ມໃໝ່",
   "NewPresentation": "ບົດນຳສະເໜີໃໝ່",
   "NewSpreadsheet": "ຕາຕະລາງໃໝ່",
+  "Upload": "ອັບໂຫລດ",
   "UploadFiles": "ອັບໂຫລດຟາຍ",
-  "UploadFolder": "ອັບໂຫລດ ໂຟຣເດີ",
-  "Upload": "ອັບໂຫລດ"
+  "UploadFolder": "ອັບໂຫລດ ໂຟຣເດີ"
 }

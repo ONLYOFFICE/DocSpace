@@ -1,4 +1,4 @@
-﻿{
+{
   "ButtonAddBoxNet": "Voeg Box-account toe",
   "ButtonAddDropBox": "Voeg Dropbox-account toe",
   "ButtonAddGoogle": "Voeg Google-account toe",
@@ -8,7 +8,7 @@
   "NewFolder": "Nieuwe Map",
   "NewPresentation": "Nieuwe Presentatie",
   "NewSpreadsheet": "Nieuw Spreadsheet",
+  "Upload": "Uploaden",
   "UploadFiles": "Upload bestanden",
-  "UploadFolder": "Upload map",
-  "Upload": "Uploaden"
+  "UploadFolder": "Upload map"
 }

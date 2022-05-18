@@ -1,7 +1,7 @@
-﻿{
-  "GalleryEmptyScreenHeader": "フォームテンプレートの読み込みに失敗しました",
-  "GalleryEmptyScreenDescription": "フォームテンプレートを選択すると、詳細が表示されます",
+{
   "EmptyScreenDescription": "インターネット接続をご確認のうえ、ページを更新するか、後でお試しください",
-  "TemplateInfo": "テンプレート情報",
-  "FormTemplateInfo": "フォームテンプレート情報"
+  "FormTemplateInfo": "フォームテンプレート情報",
+  "GalleryEmptyScreenDescription": "フォームテンプレートを選択すると、詳細が表示されます",
+  "GalleryEmptyScreenHeader": "フォームテンプレートの読み込みに失敗しました",
+  "TemplateInfo": "テンプレート情報"
 }

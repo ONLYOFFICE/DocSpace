@@ -1,10 +1,10 @@
-﻿{
+{
   "ConversionFileMessage": "Fișierul va fi convertit în formatul OOXML (docx, xlsx, or pptx) pentru o afișare și editatree mai rapidă.",
   "ConversionMessage": "Toate documentele încărcate vor fi convertite în format Office Open XML (docx, xlsx sau pptx) pentru editarea mai rapidă.",
   "ConversionTitle": "Încărcare document",
   "ConvertAndOpenTitle": "Convertire și deschidere document",
-  "HideMessage": "Nu afișa acest mesaj din nou",
-  "SaveOriginalFormatMessage": "Salvează copia în formatul original",
   "ConvertedFileDestination": "Copia fișierului va fi creată în folderul <strong>{{folderTitle}}</strong>",
-  "InfoCreateFileIn": "Fișierul nou '{{fileTitle}}' este creat în '{{folderTitle}}'"
+  "HideMessage": "Nu afișa acest mesaj din nou",
+  "InfoCreateFileIn": "Fișierul nou '{{fileTitle}}' este creat în '{{folderTitle}}'",
+  "SaveOriginalFormatMessage": "Salvează copia în formatul original"
 }

@@ -35,6 +35,7 @@
   "Media": "Multivide",
   "MoveItem": "<strong>{{title}}</strong> pārvietots",
   "MoveItems": "<strong>{{qty}}</strong> elementi ir pārvietoti",
+  "MoveOrCopy": "Pārvietot vai kopēt",
   "MoveTo": "Pārvietot uz",
   "MyEmptyContainerDescription": "Jūsu izveidotie vai augšupielādētie dokumenti tiek glabāti sadaļā Mani dokumenti. Jūs varat tos rediģēt, koplietot un sadarboties ar savu darba grupu.",
   "New": "Jauns",
@@ -73,8 +74,7 @@
   "TooltipElementsMoveMessage": "Pārvietot {{element}} elementus",
   "UnblockVersion": "Atbloķēt/reģistrēties",
   "UploadToFolder": "Augšupielādēt mapē",
-  "ViewList": "Saraksts",
-  "ViewTiles": "Elementi",
   "VersionHistory": "Versijas vēsture",
-  "MoveOrCopy": "Pārvietot vai kopēt"
+  "ViewList": "Saraksts",
+  "ViewTiles": "Elementi"
 }

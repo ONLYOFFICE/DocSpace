@@ -1,4 +1,4 @@
-﻿{
+{
   "About": "Σχετικά",
   "AccessRights": "Δικαιώματα πρόσβασης",
   "Actions": "Ενέργειες",
@@ -13,7 +13,6 @@
   "BarMaintenanceDisclaimer": "Βεβαιωθείτε ότι όλες οι αλλαγές έχουν αποθηκευτεί επιτυχώς κατά τη διάρκεια της ημέρας.",
   "ByFirstNameSorting": "Με το μικρό όνομα",
   "ByLastNameSorting": "Με το επώνυμο",
-  "Sorting": "Ταξινόμηση",
   "CancelButton": "Ακύρωση",
   "ClearButton": "Επαναφορά φίλτρου",
   "CloseButton": "Κλείσιμο",
@@ -22,6 +21,7 @@
   "Common": "Κοινό",
   "CommunityProduct": "Κοινότητα",
   "Confirmation": "Επιβεβαίωση",
+  "Connect": "Σύνδεση",
   "ContinueButton": "Συνέχιση",
   "CopyEmailAndPassword": "Αντιγραφή email και κωδικού πρόσβασης",
   "CopyOperation": "Αντιγραφή",
@@ -56,12 +56,12 @@
   "Culture_uk": "Ουκρανικά (Ουκρανία)",
   "Culture_vi": "Βιετναμέζικα (Βιετνάμ)",
   "Culture_zh-CN": "Κινεζικά (Απλοποιημένα, ΛΔΚ)",
-  "Duplicate": "Δημιουργήστε ένα αντίγραφο",
   "Delete": "Διαγραφή",
   "Department": "Τμήμα",
   "Documents": "Έγγραφα",
   "DomainIpAddress": "Οι τομείς ως διεύθυνση IP δεν υποστηρίζονται",
   "Download": "Λήψη",
+  "Duplicate": "Δημιουργήστε ένα αντίγραφο",
   "EditAvatar": "Επεξεργασία",
   "EditButton": "Επεξεργασία",
   "Email": "Email",
@@ -139,6 +139,7 @@
   "SignInWithTwitter": "Συνδεθείτε με το Twitter",
   "Size": "Μέγεθος",
   "SomethingWentWrong": "Κάτι πήγε στραβά.",
+  "Sorting": "Ταξινόμηση",
   "SpacesInLocalPart": "Το τοπικό τμήμα δεν μπορεί να περιέχει κενά",
   "Type": "Τύπος",
   "Unknown": "Άγνωστο",
@@ -148,6 +149,5 @@
   "Video": "Βίντεο",
   "View": "Προβολή",
   "ViewWeb": "Προβολή διαδικτυακής έκδοσης",
-  "Warning": "Προειδοποίηση",
-  "Connect": "Σύνδεση"
+  "Warning": "Προειδοποίηση"
 }

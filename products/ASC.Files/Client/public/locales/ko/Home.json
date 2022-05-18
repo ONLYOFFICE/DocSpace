@@ -1,4 +1,4 @@
-﻿{
+{
   "All": "전체",
   "AllFiles": "전체 파일",
   "Archives": "아카이브",
@@ -30,16 +30,18 @@
   "Images": "이미지",
   "LinkForPortalUsers": "포털 사용자를 위한 링크",
   "MarkAsFavorite": "즐겨 찾기로 표시",
-  "MarkedAsFavorite": "즐겨 찾기에 추가되었습니다",
   "MarkRead": "읽은 것으로 표시",
+  "MarkedAsFavorite": "즐겨 찾기에 추가되었습니다",
   "Media": "미디어",
   "MoveItem": "<strong>{{title}}</strong> 이동 완료",
   "MoveItems": "<strong>{{qty}}</strong> 요소 이동 완료",
+  "MoveOrCopy": "이동 또는 복사",
   "MoveTo": "이동 위치",
   "MyEmptyContainerDescription": "생성 또는 업로드한 문서는 '내 문서' 섹션에 보관됩니다. 팀원과 함께 문서를 편집, 공유, 공동 작업하세요.",
   "New": "신규",
   "NewDocument": "새 문서",
   "NewFolder": "새 폴더",
+  "NewMasterForm": "새 양식 템플릿",
   "NewPresentation": "새 프레젠테이션",
   "NewSpreadsheet": "새 스프레드시트",
   "NoSubfolders": "하위 폴더 없음",
@@ -54,9 +56,9 @@
   "PrivateRoomHeader": "입력한 모든 문자가 암호화되는 ONLYOFFICE Private Room에 오신 것을 환영합니다",
   "PrivateRoomSupport": "{{organizationName}} 데스크탑 앱을 통해 Private Room에서 작업할 수 있습니다. <3>설명</3>",
   "RecentEmptyContainerDescription": "'최근' 섹션을 마지막으로 확인 또는 편집한 파일이 표시됩니다.",
-  "RemovedFromFavorites": "즐겨 찾기에서 제거되었습니다",
   "RemoveFromFavorites": "즐겨 찾기에서 제거",
   "RemoveFromList": "목록에서 제거",
+  "RemovedFromFavorites": "즐겨 찾기에서 제거되었습니다",
   "Rename": "이름 변경",
   "SendByEmail": "이메일로 전송",
   "Share": "공유",
@@ -73,9 +75,7 @@
   "TrashEmptyDescription": "모든 삭제 된 파일이 이동되는 위치는 '휴지통'섹션입니다. 실수로 삭제된 경우, 복원하거나 완전삭제를 할수있습니다. 참고하시기 바랍니다, '휴지통'에서 파일을 삭제하변 더 이상 복원 할수없습니다.",
   "UnblockVersion": "차단 해제/체크인",
   "UploadToFolder": "폴더에 업로드",
-  "ViewList": "목록",
-  "ViewTiles": "제목",
-  "NewMasterForm": "새 양식 템플릿",
   "VersionHistory": "버전 기록",
-  "MoveOrCopy": "이동 또는 복사"
+  "ViewList": "목록",
+  "ViewTiles": "제목"
 }
