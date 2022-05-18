@@ -1,4 +1,4 @@
-﻿{
-  "NotAvailableFolder": "Kansioita ei ole käytettävissä",
-  "FolderContents": "Kansion {{folderTitle}} sisältö"
+{
+  "FolderContents": "Kansion {{folderTitle}} sisältö",
+  "NotAvailableFolder": "Kansioita ei ole käytettävissä"
 }

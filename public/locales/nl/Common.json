@@ -1,4 +1,4 @@
-﻿{
+{
   "About": "Over",
   "AccessRights": "Toegangsrechten",
   "Actions": "Acties",
@@ -13,7 +13,6 @@
   "BarMaintenanceDisclaimer": "Zorg ervoor dat alle wijzigingen deze dag succesvol worden opgeslagen.",
   "ByFirstNameSorting": "Op voornaam",
   "ByLastNameSorting": "Op achternaam",
-  "Sorting": "Sorteren",
   "CancelButton": "Annuleren",
   "ClearButton": "Reset filter",
   "CloseButton": "Sluiten",
@@ -22,6 +21,7 @@
   "Common": "Gemeenschappelijk",
   "CommunityProduct": "Community",
   "Confirmation": "Bevestiging",
+  "Connect": "Verbinden",
   "ContinueButton": "Doorgaan",
   "CopyEmailAndPassword": "Kopieer e-mail en wachtwoord",
   "CopyOperation": "Kopiëren",
@@ -56,12 +56,12 @@
   "Culture_uk": "Oekraïens (Oekraïne)",
   "Culture_vi": "Vietnamees (Vietnam)",
   "Culture_zh-CN": "Chinees (Vereenvoudigd, Volksrepubliek China)",
-  "Duplicate": "Maak een kopie",
   "Delete": "Verwijder",
   "Department": "Afdeling",
   "Documents": "Documenten",
   "DomainIpAddress": "Domeinen als IP-adres worden niet ondersteund",
   "Download": "Download",
+  "Duplicate": "Maak een kopie",
   "EditAvatar": "Bewerk",
   "EditButton": "Bewerk",
   "Email": "E-mail",
@@ -99,6 +99,7 @@
   "NewVersionAvailable": "Een nieuwe versie van de website beschikbaar",
   "Next": "Volgende",
   "NotFoundLanguage": "Kunt u uw taal niet vinden? Neem contact met ons op via <1>{supportEmail}}</1> om deel te nemen aan de vertaling en beloningen te krijgen.",
+  "NotFoundTitle": "Niets gevonden",
   "OKButton": "OK",
   "OpenApp": "Open uw {{title}} app",
   "Owner": "Eigenaar",
@@ -138,6 +139,7 @@
   "SignInWithTwitter": "Aanmelden met Twitter",
   "Size": "Formaat",
   "SomethingWentWrong": "Er is iets fout gegaan.",
+  "Sorting": "Sorteren",
   "SpacesInLocalPart": "Lokaal deel kan geen spaties bevatten",
   "Type": "Type",
   "Unknown": "Onbekend",
@@ -147,6 +149,5 @@
   "Video": "Video",
   "View": "Bekijk",
   "ViewWeb": "Webversie bekijken",
-  "Warning": "Waarschuwing",
-  "Connect": "Verbinden"
+  "Warning": "Waarschuwing"
 }

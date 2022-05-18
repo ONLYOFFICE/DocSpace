@@ -1,7 +1,7 @@
-﻿{
+{
   "AddDepartmentsButtonLabel": "Abteilung hinzufügen",
+  "AllGroups": "Alle Gruppen",
   "EmptyOptionsLabel": "Keine Abteilungen",
   "EmptySearchOptionsLabel": "Keine Abteilungen mit dem solchen Namen",
-  "SearchPlaceholder": "Gruppen suchen",
-  "AllGroups": "Alle Gruppen"
+  "SearchPlaceholder": "Gruppen suchen"
 }

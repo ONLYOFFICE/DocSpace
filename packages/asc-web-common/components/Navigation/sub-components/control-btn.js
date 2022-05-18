@@ -32,6 +32,10 @@ const StyledContainer = styled.div`
   .option-button {
     margin-right: 16px;
     min-width: 15px;
+
+    @media ${tablet} {
+      margin-right: 9px;
+    }
   }
 
   .trash-button {

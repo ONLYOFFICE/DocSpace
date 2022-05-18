@@ -1,7 +1,7 @@
-﻿{
+{
   "AddDepartmentsButtonLabel": "部門の追加",
+  "AllGroups": "全グループ",
   "EmptyOptionsLabel": "部門はありません。",
   "EmptySearchOptionsLabel": "このような名称の部署はありません",
-  "SearchPlaceholder": "グループ検索",
-  "AllGroups": "全グループ"
+  "SearchPlaceholder": "グループ検索"
 }

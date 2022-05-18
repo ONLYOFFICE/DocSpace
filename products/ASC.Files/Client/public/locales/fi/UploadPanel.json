@@ -1,7 +1,7 @@
-﻿{
-  "Uploads": "Lataukset",
+{
   "EnterPassword": "Anna salasana",
   "HideInput": "Piilota",
   "Ready": "Valmis",
-  "UploadAndConvert": "Lataa ja muunna tiedostoja"
+  "UploadAndConvert": "Lataa ja muunna tiedostoja",
+  "Uploads": "Lataukset"
 }

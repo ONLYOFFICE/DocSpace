@@ -1,4 +1,4 @@
-﻿{
+{
   "AccessRightsAccessToProduct": "Accesso ao módulo {{product}} dado a",
   "AccessRightsAllUsers": "Todos {{users}}",
   "AccessRightsChangeOwnerConfirmText": "As mudanças serão aplicadas depois da confirmação via email.",
@@ -21,9 +21,9 @@
   "ChooseOwner": "Escolher o proprietário",
   "CompanyNameForCanvasLogo": "Nome da empresa",
   "ConfirmEmailSended": "Um email de confirmação foi enviado para {{ownerName}}",
-  "Customization": "Customização",
   "CustomTitles": "Títulos customizados",
   "CustomTitlesSettingsDescription": "Será exibido na sua página de boas-vindas e nas notificações de email (do Campo). Customizar o nome do domínio é uma forma de definir um URL alternativo para o seu portal. O nome customizado do portal irá aparecer ao lado do endereço onlyoffice.com/onlyoffice.eu.",
+  "Customization": "Customização",
   "DeactivateOrDeletePortal": "Desativar ou eliminar portal.",
   "Disabled": "Desativado",
   "DocumentsAdministratorsCan": "Os administradores dos documentos podem ligar a Dropbox, Box, e outras contas a Documentos Comuns e configurar os direitos de acesso nesta secção",
@@ -47,7 +47,6 @@
   "NoAdmins": "Ainda não tem administradores",
   "NoAdminsDescription": "Pode adicionar um novo administrador manualmente",
   "NotFoundDescription": "Altere as configurações dos filtros ou adicione pessoas à secção.",
-  "NotFoundTitle": "Nenhum resultado encontrado",
   "PeopleAdministratorsCan": "Os administradores dos módulos de pessoas podem criar perfis e grupos, importar pessoas, e convidar utilizadores.",
   "PortalAccess": "Acesso ao Portal",
   "PortalAdmins": "Administradores do Portal",

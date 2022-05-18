@@ -2,7 +2,7 @@ import styled, { css } from "styled-components";
 import Base from "../themes/base";
 import { mobile, tablet } from "../utils/device";
 import Scrollbar from "../scrollbar";
-import { isMobile } from "react-device-detect";
+import { isDesktop, isMobile } from "react-device-detect";
 
 const StyledTableContainer = styled.div`
   -moz-user-select: none;
@@ -23,7 +23,7 @@ const StyledTableContainer = styled.div`
     display: block;
     cursor: ew-resize;
     height: 10px;
-    margin: 14px 8px 0 auto;
+    margin: 14px 0px 0 auto;
     z-index: 1;
     border-right: ${(props) => props.theme.tableContainer.borderRight};
     &:hover {
@@ -144,6 +144,7 @@ const StyledInfoPanelToggleWrapper = styled.div`
   padding-left: 20px;
 
   @media ${tablet} {
+    display: none;
     margin: 0 16px 0 auto;
   }
 
@@ -242,7 +243,11 @@ const StyledTableHeaderCell = styled.div`
   }
 
   .table-container_header-item {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 22px;
+
+    margin-right: 8px;
+
     user-select: none;
   }
 
@@ -302,6 +307,8 @@ const StyledTableCell = styled.div`
 
   display: flex;
   align-items: center;
+
+  padding-right: 30px;
 
   .react-svg-icon svg {
     margin-top: 2px;

@@ -28,6 +28,7 @@ class UploadDataStore {
   settingsStore;
 
   files = [];
+  uploadedFilesHistory = [];
   filesSize = 0;
   tempConversionFiles = [];
   filesToConversion = [];
@@ -95,6 +96,7 @@ class UploadDataStore {
   clearUploadData = () => {
     this.files = [];
     this.filesToConversion = [];
+    this.uploadedFilesHistory = [];
     this.filesSize = 0;
     this.uploadedFiles = 0;
     this.percent = 0;
@@ -500,6 +502,13 @@ class UploadDataStore {
       this.settingsStore.hideConfirmConvertSave
         ? this.convertUploadedFiles(t)
         : this.dialogsStore.setConvertDialogVisible(true);
+
+    const clearArray = this.removeDuplicate([
+      ...newFiles,
+      ...this.uploadedFilesHistory,
+    ]);
+
+    this.uploadedFilesHistory = clearArray;
 
     const newUploadData = {
       files: newFiles,
@@ -946,7 +955,7 @@ class UploadDataStore {
         const data = res[0] ? res[0] : null;
         const pbData = { icon: "duplicate" };
 
-        return this.loopFilesOperations(data, fileIds.length, pbData).then(() =>
+        return this.loopFilesOperations(data, pbData).then(() =>
           this.moveToCopyTo(destFolderId, pbData, true, fileIds, folderIds)
         );
       })
@@ -1189,6 +1198,20 @@ class UploadDataStore {
       setActiveFiles(newActiveFiles);
       setActiveFolders(newActiveFolders);
     }, TIMEOUT);
+  };
+
+  clearUploadedFilesHistory = () => {
+    this.primaryProgressDataStore.clearPrimaryProgressData();
+    this.uploadedFilesHistory = [];
+  };
+
+  removeDuplicate = (items) => {
+    let obj = {};
+    return items.filter((x) => {
+      if (obj[x.uniqueId]) return false;
+      obj[x.uniqueId] = true;
+      return true;
+    });
   };
 }
 

@@ -1,4 +1,4 @@
-﻿{
+{
   "About": "Sobre",
   "AccessRights": "Direitos de Acesso.",
   "Actions": "Ações",
@@ -13,7 +13,6 @@
   "BarMaintenanceDisclaimer": "Certifique-se de que todas as alterações tenham sido salvas com sucesso durante este dia.",
   "ByFirstNameSorting": "Pelo primeiro nome",
   "ByLastNameSorting": "Pelo sobrenome",
-  "Sorting": "Classificação",
   "CancelButton": "Cancelar",
   "ClearButton": "Zerar filtro",
   "CloseButton": "Fechar",
@@ -22,6 +21,7 @@
   "Common": "Comum",
   "CommunityProduct": "Comunidade",
   "Confirmation": "Confirmação",
+  "Connect": "Conectar",
   "ContinueButton": "Continue",
   "CopyEmailAndPassword": "Copiar e-mail e senha",
   "CopyOperation": "Copiando",
@@ -56,12 +56,12 @@
   "Culture_uk": "Ucraniano (Ucrânia)",
   "Culture_vi": "Vietnamita (Vietnã)",
   "Culture_zh-CN": "Chinês (Simplificado, PRC)",
-  "Duplicate": "Criar uma cópia",
   "Delete": "Excluir",
   "Department": "Departamento",
   "Documents": "Documentos",
   "DomainIpAddress": "Os domínios como endereço IP não são suportados",
   "Download": "Baixar",
+  "Duplicate": "Criar uma cópia",
   "EditAvatar": "Editar",
   "EditButton": "Editar",
   "Email": "Email",
@@ -100,6 +100,7 @@
   "NewVersionAvailable": "Uma nova versão do site está disponível",
   "Next": "Próximo",
   "NotFoundLanguage": "Não consegue encontrar seu idioma? Entre em contato conosco em <1>{{supportEmail}}</1> para participar da tradução e receber recompensas.",
+  "NotFoundTitle": "Nada encontrado",
   "OKButton": "OK",
   "OpenApp": "Abra seu {{title}} app",
   "Owner": "Proprietário",
@@ -139,6 +140,7 @@
   "SignInWithTwitter": "Entrar com Twitter",
   "Size": "Tamanho",
   "SomethingWentWrong": "Algo deu errado.",
+  "Sorting": "Classificação",
   "SpacesInLocalPart": "A parte local não pode conter espaços",
   "SwitchToThumbnails": "Mudar para a visualização em miniaturas",
   "SwitchViewToCompact": "Alternar para visualização compacta",
@@ -152,6 +154,5 @@
   "Video": "Vídeo",
   "View": "Ver",
   "ViewWeb": "Veja a versão web",
-  "Warning": "Aviso",
-  "Connect": "Conectar"
+  "Warning": "Aviso"
 }

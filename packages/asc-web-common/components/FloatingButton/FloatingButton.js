@@ -32,11 +32,11 @@ const FloatingButton = ({ id, className, style, ...rest }) => {
     percent,
     onClick,
     color,
-    clearPrimaryProgressData,
+    clearUploadedFilesHistory,
   } = rest;
 
   const onProgressClear = () => {
-    clearPrimaryProgressData();
+    clearUploadedFilesHistory && clearUploadedFilesHistory();
   };
 
   return (
@@ -84,10 +84,12 @@ const FloatingButton = ({ id, className, style, ...rest }) => {
           </StyledFloatingButton>
         </StyledCircle>
       </StyledCircleWrap>
-      <CloseIcon
-        className="layout-progress-bar_close-icon"
-        onClick={onProgressClear}
-      />
+      {clearUploadedFilesHistory && percent === 100 && (
+        <CloseIcon
+          className="layout-progress-bar_close-icon"
+          onClick={onProgressClear}
+        />
+      )}
     </StyledFloatingButtonWrapper>
   );
 };

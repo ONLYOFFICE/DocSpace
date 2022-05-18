@@ -60,6 +60,7 @@ const SectionFilterContent = ({
   setIsLoading,
   selectedFolderId,
   fetchFiles,
+  infoPanelVisible,
 }) => {
   const filterColumnCount =
     window.innerWidth < 500
@@ -112,8 +113,15 @@ const SectionFilterContent = ({
 
   const onChangeViewAs = (view) => {
     if (view === "row") {
-      if (sectionWidth < 1025 || isMobile) setViewAs("row");
-      else setViewAs("table");
+      if (
+        (sectionWidth < 1025 && !infoPanelVisible) ||
+        (sectionWidth < 625 && infoPanelVisible) ||
+        isMobile
+      ) {
+        setViewAs("row");
+      } else {
+        setViewAs("table");
+      }
     } else {
       setViewAs(view);
     }
@@ -343,7 +351,13 @@ const SectionFilterContent = ({
 };
 
 export default inject(
-  ({ auth, filesStore, treeFoldersStore, selectedFolderStore }) => {
+  ({
+    auth,
+    filesStore,
+    treeFoldersStore,
+    selectedFolderStore,
+    infoPanelStore,
+  }) => {
     const {
       fetchFiles,
       filter,
@@ -368,6 +382,8 @@ export default inject(
         authorType) &&
       !(treeFoldersStore.isPrivacyFolder && isMobile);
 
+    const { isVisible: infoPanelVisible } = infoPanelStore;
+
     return {
       customNames,
       user,
@@ -385,6 +401,7 @@ export default inject(
       createThumbnails,
 
       personal,
+      infoPanelVisible,
     };
   }
 )(
