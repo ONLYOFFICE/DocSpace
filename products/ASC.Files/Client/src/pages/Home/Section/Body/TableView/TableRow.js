@@ -66,6 +66,11 @@ const StyledTableRow = styled(TableRow)`
   }
 
   .table-container_element-wrapper,
+  .table-container_quick-buttons-wrapper {
+    padding-right: 0px;
+  }
+
+  .table-container_element-wrapper,
   .table-container_row-loader {
     min-width: 36px;
   }
@@ -102,6 +107,8 @@ const StyledTableRow = styled(TableRow)`
   }
 
   .table-container_row-context-menu-wrapper {
+    padding-right: 0px;
+
     ${(props) => props.dragging && contextMenuWrapperDraggingStyle};
     ${(props) =>
       props.showHotkeyBorder &&
@@ -374,7 +381,11 @@ const FilesTableRow = (props) => {
           />
         </TableCell>
 
-        <TableCell {...dragStyles} {...selectionProp}>
+        <TableCell
+          {...dragStyles}
+          {...selectionProp}
+          className={`${selectionProp?.className} table-container_quick-buttons-wrapper`}
+        >
           <StyledQuickButtonsContainer>
             {quickButtonsComponent}
           </StyledQuickButtonsContainer>

@@ -136,7 +136,11 @@ const DropBox = React.forwardRef(
           dropBoxWidth={dropBoxWidth}
           isDesktop={isDesktop}
         >
-          <StyledContainer canCreate={canCreate} isDropBox={true}>
+          <StyledContainer
+            canCreate={canCreate}
+            isDropBox={true}
+            isInfoPanelVisible={isInfoPanelVisible}
+          >
             <ArrowButton
               isRootFolder={isRootFolder}
               onBackToParentFolder={onBackToParentFolder}

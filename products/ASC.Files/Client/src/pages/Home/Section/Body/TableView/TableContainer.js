@@ -6,6 +6,7 @@ import TableHeader from "./TableHeader";
 import TableBody from "@appserver/components/table-container/TableBody";
 import { isMobile } from "react-device-detect";
 import styled, { css } from "styled-components";
+import { isTablet } from "@appserver/components/utils/device";
 import { Base } from "@appserver/components/themes";
 
 const marginCss = css`
@@ -103,13 +104,19 @@ const Table = ({
   setFirsElemChecked,
   setHeaderBorder,
   theme,
+  infoPanelVisible,
 }) => {
   const ref = useRef(null);
 
   useEffect(() => {
     if ((viewAs !== "table" && viewAs !== "row") || !setViewAs) return;
-
-    if (sectionWidth < 1025 || isMobile) {
+    // 400 - it is desktop info panel width
+    if (
+      (sectionWidth < 1025 && !infoPanelVisible) ||
+      ((sectionWidth < 625 || (viewAs === "row" && sectionWidth < 1025)) &&
+        infoPanelVisible) ||
+      isMobile
+    ) {
       viewAs !== "row" && setViewAs("row");
     } else {
       viewAs !== "table" && setViewAs("table");
@@ -135,7 +142,9 @@ const Table = ({
   );
 };
 
-export default inject(({ filesStore, auth }) => {
+export default inject(({ filesStore, infoPanelStore, auth }) => {
+  const { isVisible: infoPanelVisible } = infoPanelStore;
+
   const {
     filesList,
     viewAs,
@@ -151,5 +160,6 @@ export default inject(({ filesStore, auth }) => {
     setFirsElemChecked,
     setHeaderBorder,
     theme: auth.settingsStore.theme,
+    infoPanelVisible,
   };
 })(observer(Table));
