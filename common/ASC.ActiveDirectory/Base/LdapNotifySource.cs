@@ -29,25 +29,28 @@ namespace ASC.ActiveDirectory.Base;
 [Scope]
 public class LdapNotifySource : INotifySource
 {
-    public Tenant Tenant { get; set; }
+    private Tenant _tenant;
     private LdapNotifyHelper _ldapNotifyHelper;
 
     public string Id
     {
-        get { return "asc.activedirectory." + Tenant.Id; }
+        get { return "asc.activedirectory." + _tenant.Id; }
     }
 
     public LdapNotifySource(
-        Tenant tenant,
         LdapNotifyHelper ldapNotifyHelper)
     {
         _ldapNotifyHelper = ldapNotifyHelper;
-        Tenant = tenant;
+    }
+
+    public void Init(Tenant tenant)
+    {
+        _tenant = tenant;
     }
 
     public void AutoSync(DateTime date)
     {
-        _ldapNotifyHelper.AutoSync(Tenant);
+        _ldapNotifyHelper.AutoSync(_tenant);
     }
 
     public IActionProvider GetActionProvider()

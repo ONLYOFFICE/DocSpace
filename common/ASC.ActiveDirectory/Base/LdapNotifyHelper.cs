@@ -24,24 +24,18 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Notify.Engine;
-
 namespace ASC.ActiveDirectory.Base;
-[Singletone(Additional = typeof(DbHelperExtension))]
+[Singletone(Additional = typeof(LdapNotifyHelperExtension))]
 public class LdapNotifyHelper
 {
-    public const string CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME = "ldapRegistration";
 
     private readonly Dictionary<int, Tuple<INotifyClient, LdapNotifySource>> _clients;
-    private readonly DistributedTaskQueue _progressQueue;
     private readonly IServiceProvider _serviceProvider;
 
     public LdapNotifyHelper(
-        IServiceProvider serviceProvider,
-        IDistributedTaskQueueFactory queueFactory)
+        IServiceProvider serviceProvider)
     {
         _clients = new Dictionary<int, Tuple<INotifyClient, LdapNotifySource>>();
-        _progressQueue = queueFactory.CreateQueue(CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME);
         _serviceProvider = serviceProvider;
     }
 
@@ -77,7 +71,8 @@ public class LdapNotifyHelper
         if (!_clients.ContainsKey(tenant.Id))
         {
             using var scope = _serviceProvider.CreateScope();
-            var source = new LdapNotifySource(tenant, this);
+            var source = scope.ServiceProvider.GetRequiredService<LdapNotifySource>();
+            source.Init(tenant);
             var workContext = scope.ServiceProvider.GetRequiredService<WorkContext>();
             var notifyEngineQueue = scope.ServiceProvider.GetRequiredService<NotifyEngineQueue>();
             var client = workContext.NotifyContext.RegisterClient(notifyEngineQueue, source);
@@ -118,11 +113,13 @@ public class LdapNotifyHelper
         op.RunJob(ldapSettings, tenant, LdapOperationType.Sync);
     }
 
-    public static class DbHelperExtension
+    public static class LdapNotifyHelperExtension
     {
         public static void Register(DIHelper services)
         {
             services.TryAdd<DbHelper>();
+            services.TryAdd<LdapNotifySource>();
+            services.TryAdd<NotifyEngineQueue>();
         }
     }
 }

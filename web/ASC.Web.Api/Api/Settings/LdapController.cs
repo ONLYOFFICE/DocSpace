@@ -329,13 +329,13 @@ public class LdapController : BaseSettingsController
 
     private void CheckLdapPermissions()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        //_permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        if (!_coreBaseSettings.Standalone
-            && (!SetupInfo.IsVisibleSettings(ManagementType.LdapSettings.ToString())
-                || !_tenantExtra.GetTenantQuota().Ldap))
-        {
-            throw new BillingException(Resource.ErrorNotAllowedOption, "Ldap");
-        }
+        //if (!_coreBaseSettings.Standalone
+        //    && (!SetupInfo.IsVisibleSettings(ManagementType.LdapSettings.ToString())
+        //        || !_tenantExtra.GetTenantQuota().Ldap))
+        //{
+        //    throw new BillingException(Resource.ErrorNotAllowedOption, "Ldap");
+        //}
     }
 }

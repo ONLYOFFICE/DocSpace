@@ -53,7 +53,7 @@ public class LdapSaveSyncOperation
         if (item == null)
         {
             using var scope = _serviceProvider.CreateScope();
-            item = scope.ServiceProvider.GetService<LdapOperationJob>();
+            item = scope.ServiceProvider.GetRequiredService<LdapOperationJob>();
             item.InitJob(settings, tenant, operationType, resource, userId);
             _progressQueue.EnqueueTask(item);
         }
@@ -63,17 +63,7 @@ public class LdapSaveSyncOperation
 
     public LdapOperationStatus TestLdapSave(LdapSettings ldapSettings, Tenant tenant, string userId)
     {
-        var operations = _progressQueue.GetAllTasks<LdapOperationJob>()
-            .Where(t => t[LdapTaskProperty.OWNER] == tenant.Id)
-            .ToList();
-
-        var hasStarted = operations.Any(o =>
-        {
-            var opType = o[LdapTaskProperty.OPERATION_TYPE];
-
-            return o.Status <= DistributedTaskStatus.Running &&
-                   (opType == LdapOperationType.SyncTest || opType == LdapOperationType.SaveTest);
-        });
+        var (hasStarted, operations) = HasStarterdForTenant(tenant.Id, LdapOperationType.SyncTest, LdapOperationType.SaveTest);
 
         if (hasStarted)
         {
@@ -94,8 +84,7 @@ public class LdapSaveSyncOperation
 
     public LdapOperationStatus SaveLdapSettings(LdapSettings ldapSettings, Tenant tenant, string userId)
     {
-        var operations = _progressQueue.GetAllTasks()
-            .Where(t => t[LdapTaskProperty.OWNER] == tenant.Id).ToList();
+        var operations = GetOperationsForTenant(tenant.Id);
 
         if (operations.Any(o => o.Status <= DistributedTaskStatus.Running))
         {
@@ -119,17 +108,7 @@ public class LdapSaveSyncOperation
 
     public LdapOperationStatus SyncLdap(LdapSettings ldapSettings, Tenant tenant, string userId)
     {
-        var operations = _progressQueue.GetAllTasks()
-            .Where(t => t[LdapTaskProperty.OWNER] == tenant.Id)
-            .ToList();
-
-        var hasStarted = operations.Any(o =>
-        {
-            var opType = o[LdapTaskProperty.OPERATION_TYPE];
-
-            return o.Status <= DistributedTaskStatus.Running &&
-                   (opType == LdapOperationType.Sync || opType == LdapOperationType.Save);
-        });
+        var (hasStarted, operations) = HasStarterdForTenant(tenant.Id, LdapOperationType.Sync, LdapOperationType.Save);
 
         if (hasStarted)
         {
@@ -140,28 +119,17 @@ public class LdapSaveSyncOperation
         {
             return GetStartProcessError();
         }
-        var ldapLocalization = new LdapLocalization();
 
+        var ldapLocalization = new LdapLocalization();
         ldapLocalization.Init(Resource.ResourceManager);
 
         RunJob(ldapSettings, tenant, LdapOperationType.Sync, ldapLocalization, userId);
-
         return ToLdapOperationStatus(tenant.Id);
     }
 
     public LdapOperationStatus TestLdapSync(LdapSettings ldapSettings, Tenant tenant)
     {
-        var operations = _progressQueue.GetAllTasks()
-            .Where(t => t[LdapTaskProperty.OWNER] == tenant.Id)
-            .ToList();
-
-        var hasStarted = operations.Any(o =>
-        {
-            var opType = o[LdapTaskProperty.OPERATION_TYPE];
-
-            return o.Status <= DistributedTaskStatus.Running &&
-                   (opType == LdapOperationType.SyncTest || opType == LdapOperationType.SaveTest);
-        });
+        var (hasStarted, operations) = HasStarterdForTenant(tenant.Id, LdapOperationType.SyncTest, LdapOperationType.SaveTest);
 
         if (hasStarted)
         {
@@ -174,7 +142,6 @@ public class LdapSaveSyncOperation
         }
 
         var ldapLocalization = new LdapLocalization();
-
         ldapLocalization.Init(Resource.ResourceManager);
 
         RunJob(ldapSettings, tenant, LdapOperationType.SyncTest, ldapLocalization);
@@ -244,6 +211,28 @@ public class LdapSaveSyncOperation
         };
 
         return result;
+    }
+
+    private (bool hasStarted, List<LdapOperationJob> operations) HasStarterdForTenant(int tenantId, LdapOperationType arg1, LdapOperationType arg2)
+    {
+        var operations = GetOperationsForTenant(tenantId);
+
+        var hasStarted = operations.Any(o =>
+        {
+            var opType = o[LdapTaskProperty.OPERATION_TYPE];
+
+            return o.Status <= DistributedTaskStatus.Running &&
+                   (opType == arg1 || opType == arg2);
+        });
+
+        return (hasStarted, operations);
+    }
+
+    private List<LdapOperationJob> GetOperationsForTenant(int tenantId)
+    {
+        return _progressQueue.GetAllTasks<LdapOperationJob>()
+            .Where(t => t[LdapTaskProperty.OWNER] == tenantId)
+            .ToList();
     }
 
     public static class LdapOperationExtension
