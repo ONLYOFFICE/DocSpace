@@ -1,4 +1,4 @@
-﻿{
+{
   "ChangeEmailSuccess": "E-mail naslov je bil uspešno spremenjen ",
   "ChangesApplied": "Spremembe so uporabljene",
   "ContactInformation": "Kontaktne informacije",
@@ -17,9 +17,9 @@
   "ProviderSuccessfullyConnected": "Ponudnik je uspešno povezan",
   "ProviderSuccessfullyDisconnected": "Ponudnik je bil uspešno odklopljen",
   "ShowBackupCodes": "Prikaži nadomestne kode",
-  "Subscriptions": "Naročnine",
   "SubscriptionEmailTipsToggleLbl": "E-poštno obvestilo z nasveti in triki",
   "SubscriptionTurnOffToast": "Uspešno ste se odjavili s seznama za e-pošto. <1>Ponovna prijava</1>",
+  "Subscriptions": "Naročnine",
   "SystemTheme": "Uporabi sistemsko temo",
   "TfaLoginSettings": "Nastavitve za prijavo",
   "TwoFactorDescription": "Administrator je za vse uporabnike omogočil dvofaktorsko avtentikacijo preko aplikacije za ustvarjanje kode."
