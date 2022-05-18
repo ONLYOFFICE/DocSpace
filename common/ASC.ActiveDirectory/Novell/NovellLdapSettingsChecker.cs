@@ -41,7 +41,7 @@ public class NovellLdapSettingsChecker : LdapSettingsChecker
     {
     }
 
-    public void Init(LdapUserImporter importer)
+    public new void Init(LdapUserImporter importer)
     {
         base.Init(importer);
     }
