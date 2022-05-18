@@ -219,7 +219,7 @@ namespace ASC.Files.ThumbnailBuilder
                 {
                     try
                     {
-                        var (result, url) = await GetThumbnailUrl(file, Global.ThumbnailExtension, w.Width, w.Height);
+                        var (result, url) = await GetThumbnailUrl(file, Global.DocThumbnailExtension.ToString(), w.Width, w.Height);
                         thumbnailUrl = url;
 
                         if (result)
@@ -372,7 +372,33 @@ namespace ASC.Files.ThumbnailBuilder
             var targetSize = new Size(Math.Min(sourceImg.Width, width), Math.Min(sourceImg.Height, height));
             using var targetImg = GetImageThumbnail(sourceImg, targetSize, width, height);
             using var targetStream = new MemoryStream();
-            await targetImg.SaveAsJpegAsync(targetStream);
+            switch (Global.ThumbnailExtension)
+            {
+                case ThumbnailExtension.bmp:
+                    await targetImg.SaveAsBmpAsync(targetStream);
+                    break;
+                case ThumbnailExtension.gif:
+                    await targetImg.SaveAsGifAsync(targetStream);
+                    break;
+                case ThumbnailExtension.jpg:
+                    await targetImg.SaveAsJpegAsync(targetStream);
+                    break;
+                case ThumbnailExtension.png:
+                    await targetImg.SaveAsPngAsync(targetStream);
+                    break;
+                case ThumbnailExtension.pbm:
+                    await targetImg.SaveAsPbmAsync(targetStream);
+                    break;
+                case ThumbnailExtension.tiff:
+                    await targetImg.SaveAsTiffAsync(targetStream);
+                    break;
+                case ThumbnailExtension.tga:
+                    await targetImg.SaveAsTgaAsync(targetStream);
+                    break;
+                case ThumbnailExtension.webp:
+                    await targetImg.SaveAsWebpAsync(targetStream);
+                    break;
+            }
             await fileDao.SaveThumbnailAsync(file, targetStream, width, height);
         }
 

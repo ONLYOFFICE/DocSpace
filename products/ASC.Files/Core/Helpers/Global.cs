@@ -103,6 +103,25 @@ namespace ASC.Web.Files.Classes
         }
     }
 
+    public enum ThumbnailExtension
+    {
+        bmp,
+        gif,
+        jpg,
+        png,
+        pbm,
+        tiff,
+        tga,
+        webp
+    }
+    public enum DocThumbnailExtension
+    {
+        bmp,
+        gif,
+        jpg,
+        png
+    }
+
     [Scope]
     public class Global
     {
@@ -131,12 +150,20 @@ namespace ASC.Web.Files.Classes
             CustomNamingPeople = customNamingPeople;
             FileSecurityCommon = fileSecurityCommon;
 
-            ThumbnailExtension = configuration["files:thumbnail:exts"] ?? "jpg";
+            if (!Enum.TryParse(configuration["files:thumbnail:docs-exts"] ?? "jpg", true, out DocThumbnailExtension))
+            {
+                DocThumbnailExtension = DocThumbnailExtension.jpg;
+            }
+            if (!Enum.TryParse(configuration["files:thumbnail:exts"] ?? "webp", true, out ThumbnailExtension))
+            {
+                ThumbnailExtension = ThumbnailExtension.jpg;
+            }
         }
 
         #region Property
 
-        public string ThumbnailExtension { get; set; }
+        public DocThumbnailExtension DocThumbnailExtension;
+        public ThumbnailExtension ThumbnailExtension;
 
         public const int MaxTitle = 170;
 
