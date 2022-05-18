@@ -60,7 +60,7 @@ for (const culture of cultures) {
 
     I.saveScreenshot(`${culture}-main-button.png`);
     I.seeVisualDiff(`${culture}-main-button.png`, {
-      tolerance: 0.01,
+      tolerance: 0.32,
       prepareBaseImage: false,
       ignoredBox: { top: 0, left: 256, bottom: 0, right: 0 },
     });
