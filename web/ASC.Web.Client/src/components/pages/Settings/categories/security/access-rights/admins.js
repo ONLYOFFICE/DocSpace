@@ -974,7 +974,7 @@ class PortalAdmins extends Component {
                 <EmptyScreenContainer
                   imageSrc="products/people/images/empty_screen_filter.png"
                   imageAlt="Empty Screen Filter image"
-                  headerText={t("NotFoundTitle")}
+                  headerText={t("Common:NotFoundTitle")}
                   descriptionText={t("NotFoundDescription")}
                   buttons={
                     <>

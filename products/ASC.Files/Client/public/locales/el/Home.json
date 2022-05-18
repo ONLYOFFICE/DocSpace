@@ -1,4 +1,4 @@
-﻿{
+{
   "All": "Όλα",
   "AllFiles": "Όλα τα αρχεία",
   "Archives": "Αρχειοθετήσεις",
@@ -35,6 +35,7 @@
   "Media": "Πολυμέσα",
   "MoveItem": "Το <strong>{{{title}}</strong> μετακινήθηκε",
   "MoveItems": "<strong>{{qty}}</strong> στοιχεία έχουν μετακινηθεί",
+  "MoveOrCopy": "Μετακίνηση ή αντιγραφή",
   "MoveTo": "Μετακίνηση σε",
   "MyEmptyContainerDescription": "Τα έγγραφα που δημιουργείτε ή μεταφορτώνετε διατηρούνται στην ενότητα «Τα έγγραφά μου». Μπορείτε να τα επεξεργαστείτε, να τα μοιραστείτε και να συνεργαστείτε με την ομάδα σας.",
   "New": "Νέο",
@@ -73,8 +74,7 @@
   "TooltipElementsMoveMessage": "Μετακίνηση στοιχείων {{element}}",
   "UnblockVersion": "Αναίρεση αποκλεισμού / Check-in",
   "UploadToFolder": "Μεταφόρτωση σε φάκελο",
-  "ViewList": "Λίστα",
-  "ViewTiles": "Πλακίδια",
   "VersionHistory": "Ιστορικό Εκδόσεων",
-  "MoveOrCopy": "Μετακίνηση ή αντιγραφή"
+  "ViewList": "Λίστα",
+  "ViewTiles": "Πλακίδια"
 }

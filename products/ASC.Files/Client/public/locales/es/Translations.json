@@ -1,4 +1,4 @@
-﻿{
+{
   "AddAccount": "Añadir cuenta",
   "AddAuthor": "Agregar autor",
   "ArchivingData": "Archivando datos",
@@ -14,21 +14,21 @@
   "DownloadApps": "Descargar aplicaciones",
   "DownloadAs": "Descargar como",
   "EncryptedFileSaving": "Guardando el archivo cifrado",
-  "Files": "Archivos",
-  "FileProtected": "El archivo está protegido con contraseña",
   "FileLocked": "Archivo bloqueado",
+  "FileProtected": "El archivo está protegido con contraseña",
   "FileUnlocked": "Archivo desbloqueado",
-  "Folders": "Carpetas",
+  "Files": "Archivos",
   "FolderSelection": "Selección de carpeta",
   "FolderTitleBoxNet": "Directorio Box",
   "FolderTitleDocuSign": "Cuenta DocuSign",
   "FolderTitleDropBox": "Directorio Dropbox",
   "FolderTitleGoogle": "Directorio Google",
-  "FolderTitlekDrive": "Directorio kDrive",
   "FolderTitleSharePoint": "Directorio SharePoint",
   "FolderTitleSkyDrive": "Directorio OneDrive",
   "FolderTitleWebDav": "Directorio WebDAV",
   "FolderTitleYandex": "Directorio Yandex",
+  "FolderTitlekDrive": "Directorio kDrive",
+  "Folders": "Carpetas",
   "LinkCopySuccess": "El enlace se ha copiado en el portapapeles",
   "MediaLoadError": "No se ha podido cargar el archivo multimedia",
   "MobileAndroid": "Obtener ONLYOFFICE Documents en el Google Play",
@@ -53,9 +53,9 @@
   "TypeTitleDocuSign": "DocuSign",
   "TypeTitleDropBox": "Dropbox",
   "TypeTitleGoogle": "Google Drive",
-  "TypeTitlekDrive": "kDrive",
   "TypeTitleSharePoint": "SharePoint",
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
-  "TypeTitleYandex": "Yandex.Disk"
+  "TypeTitleYandex": "Yandex.Disk",
+  "TypeTitlekDrive": "kDrive"
 }

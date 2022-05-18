@@ -267,6 +267,7 @@ const EditingWrapperComponent = (props) => {
             onMouseEnter={setIsHoveredOkHandler}
             onMouseLeave={setIsHoveredOkHandler}
             isHovered={OkIconIsHovered}
+            title=""
           />
           <Button
             className="edit-button not-selectable"
@@ -279,6 +280,7 @@ const EditingWrapperComponent = (props) => {
             onMouseEnter={setIsHoveredCancelHandler}
             onMouseLeave={setIsHoveredCancelHandler}
             isHovered={CancelIconIsHovered}
+            title=""
           />
         </>
       )}

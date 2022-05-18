@@ -1,4 +1,4 @@
-﻿{
+{
   "ConflictResolveDescription": "Súbor s názvom <1>{{file}}</1> už v priečinku <1>{{folder}}</1> existuje.",
   "ConflictResolveDescriptionFiles": "Dokumenty {{filesCount}} s rovnakými názvami už v priečinku <1>{{folder}}</1> existujú.",
   "ConflictResolveSelectAction": "Vyberte akciu:",

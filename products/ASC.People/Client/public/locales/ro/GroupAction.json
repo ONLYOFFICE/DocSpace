@@ -1,4 +1,5 @@
-﻿{
+{
+  "AddHeadOfDepartment": "Adăugare Șef de Departament",
   "CustomNewDepartment": "{{groupCaption}} (creare)",
   "GroupAction": "Acțiune de grup",
   "Members": "Membrii",

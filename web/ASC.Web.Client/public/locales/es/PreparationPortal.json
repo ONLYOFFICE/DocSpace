@@ -1,5 +1,5 @@
-﻿{
-  "PreparationPortalTitle": "Restauración de portal está en progreso",
+{
+  "PortalRestoring": "Restauración de portal",
   "PreparationPortalDescription": "Una vez terminado el proceso de restauración, usted será redirigido a su portal.",
-  "PortalRestoring": "Restauración de portal"
+  "PreparationPortalTitle": "Restauración de portal está en progreso"
 }

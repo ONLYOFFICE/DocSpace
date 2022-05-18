@@ -35,6 +35,7 @@
   "Media": "Media",
   "MoveItem": "<strong>{{title}}</strong> verplaatst",
   "MoveItems": "<strong>{{qty}}</strong> elementen zijn verplaatst",
+  "MoveOrCopy": "Verplaats of copieer",
   "MoveTo": "Verplaats naar",
   "MyEmptyContainerDescription": "Documenten die u maakt of uploadt, worden bewaard in het gedeelte 'Mijn Documenten'. U kunt ze bewerken, delen en er met uw team aan samenwerken.",
   "New": "Nieuw",
@@ -73,8 +74,7 @@
   "TooltipElementsMoveMessage": "Kopieer {{element}} elementen",
   "UnblockVersion": "Deblokkeren/inchecken",
   "UploadToFolder": "Upload naar map",
-  "ViewList": "Lijst",
-  "ViewTiles": "Tegels",
   "VersionHistory": "Versie geschiedenis",
-  "MoveOrCopy": "Verplaats of copieer"
+  "ViewList": "Lijst",
+  "ViewTiles": "Tegels"
 }

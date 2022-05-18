@@ -14,5 +14,6 @@
   "StoringFileVersion": "Shranjevanje različic datotek",
   "ThirdPartyBtn": "Dovoli uporabnikom, da povezujejo shranjevanje pri tretjih straneh",
   "ThirdPartySettings": "Povezani oblaki",
-  "UpdateOrCreate": "Posodobite različico datoteke za obstoječo datoteko z istim imenom. V nasprotnem primeru bo ustvarjena kopija datoteke."
+  "UpdateOrCreate": "Posodobite različico datoteke za obstoječo datoteko z istim imenom. V nasprotnem primeru bo ustvarjena kopija datoteke.",
+  "Clouds": "Oblaki"
 }
