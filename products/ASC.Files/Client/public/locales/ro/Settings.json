@@ -1,10 +1,10 @@
 {
-  "Clouds": "Clouds",
+  "Clouds": "Medii Cloud",
   "CommonSettings": "Setări Comune",
   "ConnectAdminDescription": "Pentru o conexiune de succes, introduceți datele necesare pe <1>această pagină</1>.",
   "ConnectDescription": "Nu puteți conecta aceste conturile la ONLYOFFICE Documents. Documentele din aceste conturi vor fi disponiile pentru editare la secțiunea Documentele mele.",
-  "ConnectDescriptionText": "You haven't connected any third-party clouds yet.",
-  "ConnectEmpty": "There's nothing here",
+  "ConnectDescriptionText": "Nu v-ați conectat încă cu niciun cont cloud terț.",
+  "ConnectEmpty": "Nu este nimic aici",
   "ConnectMakeShared": "A fost partajat și salvat în dosarul Comune",
   "ConnextOtherAccount": "Un alt cont",
   "DisplayFavorites": "Afișare Preferințe",

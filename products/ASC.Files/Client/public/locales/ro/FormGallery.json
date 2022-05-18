@@ -1,7 +1,7 @@
 {
-  "EmptyScreenDescription": "Please check your Internet connection and refresh the page or try later",
+  "EmptyScreenDescription": "Vă rugăm să verificaţi conexiunea la Internet și reîmprospătați pagina sau încercați mai târziu",
   "FormTemplateInfo": "Form template info",
-  "GalleryEmptyScreenDescription": "Select any form template to see the details",
-  "GalleryEmptyScreenHeader": "Failed to load form templates",
-  "TemplateInfo": "Template info"
+  "GalleryEmptyScreenDescription": "Selecționați orice şablon formular pentru a vedea detalii",
+  "GalleryEmptyScreenHeader": "Failed to load form templates,\tÎncărcarea șabloanelor formular eșuată",
+  "TemplateInfo": "Informații despre șablon"
 }
