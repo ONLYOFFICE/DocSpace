@@ -113,7 +113,8 @@ const Table = ({
     // 400 - it is desktop info panel width
     if (
       (sectionWidth < 1025 && !infoPanelVisible) ||
-      ((sectionWidth < 625 || viewAs === "row") && infoPanelVisible) ||
+      ((sectionWidth < 625 || (viewAs === "row" && sectionWidth < 1025)) &&
+        infoPanelVisible) ||
       isMobile
     ) {
       viewAs !== "row" && setViewAs("row");
