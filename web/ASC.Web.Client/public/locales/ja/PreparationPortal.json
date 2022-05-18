@@ -1,5 +1,5 @@
-﻿{
-  "PreparationPortalTitle": "ポータルの復元が実施中です。",
+{
+  "PortalRestoring": "ポータルがリストア中",
   "PreparationPortalDescription": "復元過程が完了されると、自動的にポータルに移動されるようになります。",
-  "PortalRestoring": "ポータルがリストア中"
+  "PreparationPortalTitle": "ポータルの復元が実施中です。"
 }

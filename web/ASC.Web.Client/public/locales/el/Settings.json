@@ -1,4 +1,4 @@
-﻿{
+{
   "AccessRightsAccessToProduct": "Η πρόσβαση στην ενότητα του {{product}} δίνεται σε",
   "AccessRightsAllUsers": "Όλοι οι {{users}}",
   "AccessRightsChangeOwnerConfirmText": "Οι αλλαγές θα εφαρμοστούν μετά την επιβεβαίωση μέσω email.",
@@ -21,9 +21,9 @@
   "ChooseOwner": "Επιλογή κατόχου",
   "CompanyNameForCanvasLogo": "Όνομα εταιρείας",
   "ConfirmEmailSended": "Το e-mail επιβεβαίωσης έχει σταλεί στον χρήστη {{ownerName}}",
-  "Customization": "Προσαρμογή",
   "CustomTitles": "Προσαρμοσμένοι τίτλοι",
   "CustomTitlesSettingsDescription": "Θα εμφανίζεται στη σελίδα καλωσορίσματος και θα χρησιμοποιείται για ειδοποιήσεις μέσω ηλεκτρονικού ταχυδρομείου (πεδίο Από). Το προσαρμοσμένο όνομα τομέα είναι ένας τρόπος για να ορίσετε μια εναλλακτική διεύθυνση URL για την πύλη σας. Το προσαρμοσμένο όνομα της πύλης θα εμφανίζεται δίπλα στη διεύθυνση onlyoffice.com/onlyoffice.eu.",
+  "Customization": "Προσαρμογή",
   "DeactivateOrDeletePortal": "Απενεργοποίηση ή διαγραφή πύλης.",
   "Disabled": "Απενεργοποιημένο",
   "DocumentsAdministratorsCan": "Οι διαχειριστές εγγράφων μπορούν να συνδέσουν τους λογαριασμούς Dropbox, Box και άλλους λογαριασμούς με τα κοινά έγγραφα και να ορίσουν δικαιώματα πρόσβασης σε αυτό το τμήμα",
