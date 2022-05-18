@@ -65,7 +65,7 @@ function copyFile(filePath) {
   });
 }
 
-const pathToModels = "../screenshots/translation";
+const pathToModels = path.resolve(__dirname, "../screenshots/translation");
 
 function cloneModelScreenshot() {
   getFiles(pathToModels, function (err, files) {
