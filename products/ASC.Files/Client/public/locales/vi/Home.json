@@ -1,4 +1,4 @@
-﻿{
+{
   "All": "Tất cả",
   "AllFiles": "Tất cả các tệp",
   "Archives": "Lưu trữ",
@@ -35,6 +35,7 @@
   "Media": "Phương tiện",
   "MoveItem": "<strong>{{title}}</strong> đã được chuyển ",
   "MoveItems": "<strong>{{qty}}</strong> thành phần đã được chuyển ",
+  "MoveOrCopy": "Di chuyển hoặc Sao chép",
   "MoveTo": "Chuyển tới",
   "MyEmptyContainerDescription": "Tài liệu bạn tạo hoặc tải lên được lưu giữ trong phần 'Tài liệu của tôi'. Bạn có thể chỉnh sửa, chia sẻ và cùng làm việc trên chúng với nhóm của mình. ",
   "New": "Mới",
@@ -73,8 +74,7 @@
   "TooltipElementsMoveMessage": "Di chuyển {{element}} thành phần",
   "UnblockVersion": "Bỏ chặn/Đăng ký",
   "UploadToFolder": "Tải lên thư mục",
-  "ViewList": "Danh sách",
-  "ViewTiles": "Ô xếp",
   "VersionHistory": "Lịch sử phiên bản",
-  "MoveOrCopy": "Di chuyển hoặc Sao chép"
+  "ViewList": "Danh sách",
+  "ViewTiles": "Ô xếp"
 }

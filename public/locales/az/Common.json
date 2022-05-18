@@ -1,4 +1,4 @@
-﻿{
+{
   "About": "Haqqında",
   "AccessRights": "Giriş hüququ verin",
   "Actions": "Hərəkətlər",
@@ -13,7 +13,6 @@
   "BarMaintenanceDisclaimer": "Lütfən, bu gün ərzindəki bütün dəyişikliklərin uğurla yadda saxlandığına əmin olun.",
   "ByFirstNameSorting": "Ad ilə",
   "ByLastNameSorting": "Soyad ilə",
-  "Sorting": "Sıralama",
   "CancelButton": "Ləğv edin",
   "ClearButton": "Filtri sıfırlayın",
   "CloseButton": "Bağlayın",
@@ -22,6 +21,7 @@
   "Common": "Ümumi",
   "CommunityProduct": "Cəmiyyət",
   "Confirmation": "Təsdiqləmə",
+  "Connect": "Qoşulmaq",
   "ContinueButton": "Davam edin",
   "CopyEmailAndPassword": "E-poçt ünvanını və şifrəni kopyalayın",
   "CopyOperation": "Köçürülür",
@@ -56,12 +56,12 @@
   "Culture_uk": "Ukrayna (Ukrayna)",
   "Culture_vi": "Vyetnam (Vyetnam) ",
   "Culture_zh-CN": "Çin (Sadələşdirilmiş, ÇXR) ",
-  "Duplicate": "Sürətini yaratmaq",
   "Delete": "Silin",
   "Department": "Şöbə",
   "Documents": "Sənədlər",
   "DomainIpAddress": "IP ünvan kimi domen dəstəklənmir",
   "Download": "Endirin",
+  "Duplicate": "Sürətini yaratmaq",
   "EditAvatar": "Redaktə edin",
   "EditButton": "Redaktə edin",
   "Email": "E-poçt",
@@ -139,6 +139,7 @@
   "SignInWithTwitter": "Twitter ilə giriş edin",
   "Size": "Ölçü",
   "SomethingWentWrong": "Xəta baş Verdi.",
+  "Sorting": "Sıralama",
   "SpacesInLocalPart": "Lokal yolda boşluqlar icazə verilmir",
   "Type": "Növ",
   "Unknown": "Bilinməyən",
@@ -148,6 +149,5 @@
   "Video": "Video",
   "View": "Baxın",
   "ViewWeb": "Veb versiyaya baxın",
-  "Warning": "Xəbərdarlıq",
-  "Connect": "Qoşulmaq"
+  "Warning": "Xəbərdarlıq"
 }

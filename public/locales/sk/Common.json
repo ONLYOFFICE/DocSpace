@@ -1,4 +1,4 @@
-﻿{
+{
   "About": "O aplikácii",
   "AccessRights": "Prístupové práva",
   "Actions": "Akcie",
@@ -13,7 +13,6 @@
   "BarMaintenanceDisclaimer": "Prosím, uistite sa, že všetky zmeny boli úspešne uložené počas tohto dňa.",
   "ByFirstNameSorting": "Podľa prvého mena",
   "ByLastNameSorting": "Podľa posledného mena",
-  "Sorting": "Zoraďovanie",
   "CancelButton": "Zrušiť",
   "ClearButton": "Obnoviť filter",
   "CloseButton": "Zatvoriť",
@@ -22,6 +21,7 @@
   "Common": "Všeobecné",
   "CommunityProduct": "Komunita",
   "Confirmation": "Potvrdenie",
+  "Connect": "Pripojiť",
   "ContinueButton": "POKRAČOVAŤ",
   "CopyEmailAndPassword": "Skopírovať email a heslo",
   "CopyOperation": "Kopírovanie",
@@ -56,12 +56,12 @@
   "Culture_uk": "Ukrajinčina (Ukrajina)",
   "Culture_vi": "Vietnamčina (Vietnam)",
   "Culture_zh-CN": "Čínština (zjednodušená, ČĽR)",
-  "Duplicate": "Vytvoriť kópiu",
   "Delete": "Odstrániť",
   "Department": "Oddelenie",
   "Documents": "Dokumenty",
   "DomainIpAddress": "Domény ako adresa IP nie sú podporované",
   "Download": "Stiahnuť ",
+  "Duplicate": "Vytvoriť kópiu",
   "EditAvatar": "Upraviť",
   "EditButton": "Upraviť",
   "Email": "E-mail",
@@ -140,6 +140,7 @@
   "SignInWithTwitter": "Prihlásiť sa pomocou Twitteru",
   "Size": "Veľkosť",
   "SomethingWentWrong": "Niečo sa pokazilo.",
+  "Sorting": "Zoraďovanie",
   "SpacesInLocalPart": "Miestna časť nemôže obsahovať medzery",
   "SwitchViewToCompact": "Prepnúť do presného zobrazenia",
   "TitleSelectFile": "Vybrať",
@@ -151,6 +152,5 @@
   "Video": "Video",
   "View": "Vyhliadka",
   "ViewWeb": "Zobraziť webovú verziu",
-  "Warning": "Upozornenie",
-  "Connect": "Pripojiť"
+  "Warning": "Upozornenie"
 }

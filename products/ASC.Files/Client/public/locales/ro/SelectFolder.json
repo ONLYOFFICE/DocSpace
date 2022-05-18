@@ -1,4 +1,4 @@
-﻿{
-  "NotAvailableFolder": "Niciun folder nu este disponibil",
-  "FolderContents": "The contents of the '{{folderTitle}}' folder"
+{
+  "FolderContents": "The contents of the '{{folderTitle}}' folder",
+  "NotAvailableFolder": "Niciun folder nu este disponibil"
 }

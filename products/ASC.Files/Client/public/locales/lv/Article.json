@@ -1,4 +1,4 @@
-﻿{
+{
   "ButtonAddBoxNet": "Pievienot Box kontu",
   "ButtonAddDropBox": "Pievienot Dropbox kontu",
   "ButtonAddGoogle": "Pievienot Google kontu",
@@ -8,7 +8,7 @@
   "NewFolder": "Jauna mape",
   "NewPresentation": "Jauna prezentācija",
   "NewSpreadsheet": "Jauna izklājlapa",
+  "Upload": "Augšupielādēt",
   "UploadFiles": "Augšupielādējiet failus",
-  "UploadFolder": "Augšupielādēt mapi",
-  "Upload": "Augšupielādēt"
+  "UploadFolder": "Augšupielādēt mapi"
 }

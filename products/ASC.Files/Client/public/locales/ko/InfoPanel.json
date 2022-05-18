@@ -1,12 +1,12 @@
-﻿{
-  "ViewDetails": "세부 정보 보기",
-  "ItemsSelected": "선택된 항목",
-  "SystemProperties": "시스템 속성",
-  "WhoHasAccess": "액세스 권한이 있는 자",
-  "Members": "구성원",
-  "OpenSharingSettings": "공유 설정 열기",
-  "OFORMsDescription": "Fill out the form online and get a simple Design Project Proposal ready, or just download the fillable template in the desirable format: DOCXF, OFORM, or PDF. <1>Propose a project or a series of projects to an freelance designer team. Outline project and task structure, payments, and terms.</1>",
+{
   "FileExtension": "파일 확장 프로그램",
+  "ItemsSelected": "선택된 항목",
   "LastModifiedBy": "최종 편집자",
-  "Versions": "버전"
+  "Members": "구성원",
+  "OFORMsDescription": "Fill out the form online and get a simple Design Project Proposal ready, or just download the fillable template in the desirable format: DOCXF, OFORM, or PDF. <1>Propose a project or a series of projects to an freelance designer team. Outline project and task structure, payments, and terms.</1>",
+  "OpenSharingSettings": "공유 설정 열기",
+  "SystemProperties": "시스템 속성",
+  "Versions": "버전",
+  "ViewDetails": "세부 정보 보기",
+  "WhoHasAccess": "액세스 권한이 있는 자"
 }

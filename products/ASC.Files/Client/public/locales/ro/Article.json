@@ -1,15 +1,15 @@
-﻿{
+{
   "ButtonAddBoxNet": "Adaugă cont Box",
   "ButtonAddDropBox": "Adaugă cont DropBox",
   "ButtonAddGoogle": "Adaugă cont Google",
   "ButtonAddNextcloud": "Adaugă cont Nextcloud",
   "ButtonAddSkyDrive": "Adaugă cont OneDrive",
+  "FilesUploaded": "Files uploaded",
   "NewDocument": "Document nou",
   "NewFolder": "Dosar nou",
   "NewPresentation": "Prezentare nouă",
   "NewSpreadsheet": "Foaie de calcul nouă",
-  "UploadFiles": "Încarcă fișiere",
-  "UploadFolder": "Încarcă dosarul",
   "Upload": "Încarcă",
-  "FilesUploaded": "Files uploaded"
+  "UploadFiles": "Încarcă fișiere",
+  "UploadFolder": "Încarcă dosarul"
 }

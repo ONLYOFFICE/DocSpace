@@ -1,4 +1,4 @@
-﻿{
+{
   "About": "O",
   "AccessRights": "Prawa dostępu",
   "Actions": "Działania",
@@ -13,7 +13,6 @@
   "BarMaintenanceDisclaimer": "Upewnij się, że wszystkie zmiany zostały zapisane tego dnia pomyślnie.",
   "ByFirstNameSorting": "Wg imienia",
   "ByLastNameSorting": "Wg nazwiska",
-  "Sorting": "Sortowanie",
   "CancelButton": "Anuluj",
   "ClearButton": "Zresetuj filtr",
   "CloseButton": "Zamknij",
@@ -22,6 +21,7 @@
   "Common": "Ogólne",
   "CommunityProduct": "Społeczność",
   "Confirmation": "Potwierdzenie",
+  "Connect": "Podłącz",
   "ContinueButton": "Kontynuuj",
   "CopyEmailAndPassword": "Skopiuj adres e-mail oraz hasło",
   "CopyOperation": "Kopiowanie",
@@ -56,12 +56,12 @@
   "Culture_uk": "ukraiński (Ukraina)",
   "Culture_vi": "wietnamski (Wietnam)",
   "Culture_zh-CN": "chiński (uproszczony, ChRL)",
-  "Duplicate": "Utwórz kopię",
   "Delete": "Usuń",
   "Department": "Dział",
   "Documents": "Dokumenty",
   "DomainIpAddress": "Domena i adres IP nie są obsługiwane",
   "Download": "Pobierz",
+  "Duplicate": "Utwórz kopię",
   "EditAvatar": "Edytuj",
   "EditButton": "Edytuj",
   "Email": "E-mail",
@@ -139,6 +139,7 @@
   "SignInWithTwitter": "Zaloguj się przez Twitter",
   "Size": "Rozmiar",
   "SomethingWentWrong": "Coś poszło nie tak.",
+  "Sorting": "Sortowanie",
   "SpacesInLocalPart": "Identyfikator użytkownika nie może zawierać spacji",
   "Type": "Rodzaj",
   "Unknown": "Nieznany",
@@ -148,6 +149,5 @@
   "Video": "Wideo",
   "View": "Podgląd",
   "ViewWeb": "Zobacz wersję internetową",
-  "Warning": "Ostrzeżenie",
-  "Connect": "Podłącz"
+  "Warning": "Ostrzeżenie"
 }

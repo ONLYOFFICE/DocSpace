@@ -1,4 +1,4 @@
-﻿{
+{
   "About": "Giới thiệu",
   "AccessRights": "Quyền truy cập",
   "Actions": "Hành động",
@@ -13,7 +13,6 @@
   "BarMaintenanceDisclaimer": "Vui lòng đảm bảo rằng tất cả các thay đổi được lưu thành công trong ngày này.",
   "ByFirstNameSorting": "Theo tên",
   "ByLastNameSorting": "Theo họ",
-  "Sorting": "Sắp xếp",
   "CancelButton": "Hủy bỏ",
   "ClearButton": "Đặt lại bộ lọc",
   "CloseButton": "Đóng",
@@ -22,6 +21,7 @@
   "Common": "Chung",
   "CommunityProduct": "Cộng đồng",
   "Confirmation": "Xác nhận",
+  "Connect": "Kết nối",
   "ContinueButton": "Tiếp tục",
   "CopyEmailAndPassword": "Sao chép email và mật khẩu",
   "CopyOperation": "Đang sao chép",
@@ -56,12 +56,12 @@
   "Culture_uk": "Tiếng Ukraina (Ukraina)",
   "Culture_vi": "Tiếng Việt (Việt Nam)",
   "Culture_zh-CN": "Trung Quốc (tiếng Trung giản thể, tiếng Trung phồn thể)",
-  "Duplicate": "Tạo bản sao",
   "Delete": "Xóa bỏ",
   "Department": "Phòng",
   "Documents": "Các tài liệu",
   "DomainIpAddress": "Các tên miền dưới dạng địa chỉ IP không được hỗ trợ",
   "Download": "Tải xuống",
+  "Duplicate": "Tạo bản sao",
   "EditAvatar": "Chỉnh sửa",
   "EditButton": "Chỉnh sửa",
   "Email": "Email",
@@ -139,6 +139,7 @@
   "SignInWithTwitter": "Đăng nhập bằng Twitter",
   "Size": "Kích cỡ",
   "SomethingWentWrong": "Đã xảy ra lỗi.",
+  "Sorting": "Sắp xếp",
   "SpacesInLocalPart": "Phần cục bộ không được chứa khoảng trắng",
   "Type": "Kiểu",
   "Unknown": "Không xác định",
@@ -148,6 +149,5 @@
   "Video": "Video",
   "View": "Xem",
   "ViewWeb": "Xem phiên bản web",
-  "Warning": "Cảnh báo",
-  "Connect": "Kết nối"
+  "Warning": "Cảnh báo"
 }

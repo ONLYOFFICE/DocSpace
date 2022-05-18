@@ -1,7 +1,8 @@
-﻿{
+{
   "CommonSettings": "Algemene instellingen",
   "ConnectAdminDescription": "Voor een succesvolle verbinding, voer de nodige gegevens in op <1>deze pagina</1>.",
   "ConnectDescription": "U kunt de volgende accounts koppelen aan ONLYOFFICE Documenten. De documenten van deze accounts zullen beschikbaar zijn voor bewerking in 'Mijn Documenten' sectie. ",
+  "ConnectEmpty": "Er is nog niets",
   "ConnectMakeShared": "Maak gedeeld en zet in de 'Gemeenschappelijk' map",
   "ConnextOtherAccount": "Andere account",
   "DisplayFavorites": "Favorieten Tonen",

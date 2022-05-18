@@ -1,4 +1,4 @@
-﻿{
+{
   "AddAccount": "Dodaj račun",
   "AddAuthor": "Dodaj avtorja",
   "ArchivingData": "Arhiviraj podatke",
@@ -14,21 +14,21 @@
   "DownloadApps": "Prenesi aplikacije",
   "DownloadAs": "Prenesi kot",
   "EncryptedFileSaving": "Shranjevanje šifrirane datoteke",
-  "Files": "Datoteke",
-  "FileProtected": "Datoteka je zaščitena z geslom",
   "FileLocked": "Datoteka zaklenjena",
+  "FileProtected": "Datoteka je zaščitena z geslom",
   "FileUnlocked": "Datoteka odklenjena",
-  "Folders": "Mape",
+  "Files": "Datoteke",
   "FolderSelection": "Izbira mape",
   "FolderTitleBoxNet": "Box direktorij",
   "FolderTitleDocuSign": "DocuSign račun",
   "FolderTitleDropBox": "Dropbox direktorij",
   "FolderTitleGoogle": "Google direktorij",
-  "FolderTitlekDrive": "kDrive direktorij",
   "FolderTitleSharePoint": "SharePoint direktorij",
   "FolderTitleSkyDrive": "OneDrive direktorij",
   "FolderTitleWebDav": "WebDAV direktorij",
   "FolderTitleYandex": "Yandex direktorij",
+  "FolderTitlekDrive": "kDrive direktorij",
+  "Folders": "Mape",
   "LinkCopySuccess": "Povezava je bila kopirana v odložišče",
   "MediaLoadError": "Medijska datoteka ne more biti naložena",
   "MobileAndroid": "Dobi ONLYOFFICE dokumente na Google Play",
@@ -53,9 +53,9 @@
   "TypeTitleDocuSign": "DocuSign",
   "TypeTitleDropBox": "Dropbox",
   "TypeTitleGoogle": "Google Drive",
-  "TypeTitlekDrive": "kDrive",
   "TypeTitleSharePoint": "SharePoint",
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
-  "TypeTitleYandex": "Yandex.Disk"
+  "TypeTitleYandex": "Yandex.Disk",
+  "TypeTitlekDrive": "kDrive"
 }

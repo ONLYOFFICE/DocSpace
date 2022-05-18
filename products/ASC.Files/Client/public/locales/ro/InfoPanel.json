@@ -1,12 +1,12 @@
-﻿{
-  "ViewDetails": "Vezi detalii",
-  "ItemsSelected": "Elemente selectate",
-  "SystemProperties": "Proprietăți sistem",
-  "WhoHasAccess": "Cine are acces",
-  "Members": "membrii",
-  "OpenSharingSettings": "Deschide setările de partajare",
-  "OFORMsDescription": "Fill out the form online and get a simple Design Project Proposal ready, or just download the fillable template in the desirable format: DOCXF, OFORM, or PDF. <1>Propose a project or a series of projects to an freelance designer team. Outline project and task structure, payments, and terms.</1>",
+{
   "FileExtension": "Extensie de fișier",
+  "ItemsSelected": "Elemente selectate",
   "LastModifiedBy": "Modificat ultima dată de către",
-  "Versions": "Versiuni"
+  "Members": "membrii",
+  "OFORMsDescription": "Fill out the form online and get a simple Design Project Proposal ready, or just download the fillable template in the desirable format: DOCXF, OFORM, or PDF. <1>Propose a project or a series of projects to an freelance designer team. Outline project and task structure, payments, and terms.</1>",
+  "OpenSharingSettings": "Deschide setările de partajare",
+  "SystemProperties": "Proprietăți sistem",
+  "Versions": "Versiuni",
+  "ViewDetails": "Vezi detalii",
+  "WhoHasAccess": "Cine are acces"
 }

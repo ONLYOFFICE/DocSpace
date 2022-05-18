@@ -1,4 +1,4 @@
-﻿{
+{
   "About": "소개",
   "AccessRights": "액세스 권리",
   "Actions": "작업",
@@ -13,7 +13,6 @@
   "BarMaintenanceDisclaimer": "이 때 모든 변경 사항이 성공적으로 저장되었는지 확인하시기 바랍니다.",
   "ByFirstNameSorting": "이름",
   "ByLastNameSorting": "성",
-  "Sorting": "정렬",
   "CancelButton": "취소",
   "ClearButton": "필터 리셋",
   "CloseButton": "닫기",
@@ -22,6 +21,7 @@
   "Common": "공통",
   "CommunityProduct": "커뮤니티",
   "Confirmation": "확인",
+  "Connect": "연결",
   "ContinueButton": "계속",
   "CopyEmailAndPassword": "이메일 및 비밀번호 복사",
   "CopyOperation": "복사 중",
@@ -56,12 +56,12 @@
   "Culture_uk": "우크라이나어(우크라이나)",
   "Culture_vi": "베트남어(베트남) ",
   "Culture_zh-CN": "중국어(간체, 중화 인민 공화국)",
-  "Duplicate": "복사본 생성",
   "Delete": "삭제",
   "Department": "부서",
   "Documents": "문서",
   "DomainIpAddress": "지원되지 않는 도메인 IP 주소입니다",
   "Download": "다운로드",
+  "Duplicate": "복사본 생성",
   "EditAvatar": "편집",
   "EditButton": "편집",
   "Email": "이메일",
@@ -105,6 +105,7 @@
   "OpenApp": "{{title}} 앱을 여세요",
   "Owner": "소유자",
   "PageOfTotalPage": "{{page}}/{{totalPage}}",
+  "Pages": "페이지",
   "Password": "비밀번호",
   "PasswordLimitDigits": "숫자",
   "PasswordLimitLength": "{{fromNumber}}~{{toNumber}}글자",
@@ -143,6 +144,7 @@
   "SignInWithTwitter": "Twitter로 로그인",
   "Size": "크기",
   "SomethingWentWrong": "무언가 잘못됐습니다.",
+  "Sorting": "정렬",
   "SpacesInLocalPart": "로컬 파트는 공백을 포함할 수 없습니다",
   "SwitchToThumbnails": "썸네일 보기로 전환",
   "SwitchViewToCompact": "축소 보기로 전환",
@@ -155,7 +157,5 @@
   "Video": "동영상",
   "View": "보기",
   "ViewWeb": "웹 버전 보기",
-  "Warning": "경고",
-  "Connect": "연결",
-  "Pages": "페이지"
+  "Warning": "경고"
 }

@@ -1,4 +1,4 @@
-﻿{
+{
   "ButtonAddBoxNet": "Aggiungi account Box",
   "ButtonAddDropBox": "Aggiungi account Dropbox",
   "ButtonAddGoogle": "Aggiungi account Google",
@@ -8,7 +8,7 @@
   "NewFolder": "Nuova cartella",
   "NewPresentation": "Nuova presentazione",
   "NewSpreadsheet": "Nuovo foglio di calcolo elettronico",
+  "Upload": "Carica",
   "UploadFiles": "Caricamento file",
-  "UploadFolder": "Carica cartella",
-  "Upload": "Carica"
+  "UploadFolder": "Carica cartella"
 }

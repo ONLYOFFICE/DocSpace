@@ -1,4 +1,4 @@
-﻿{
+{
   "AddAccount": "Adaugă cont",
   "AddAuthor": "Adăugare autor",
   "ArchivingData": "Se arhiveaza datele",
@@ -14,21 +14,21 @@
   "DownloadApps": "Descărare aplicații",
   "DownloadAs": "Descărcare ca",
   "EncryptedFileSaving": "Salvarea fișierului criptat",
-  "Files": "Fișiere",
-  "FileProtected": "Fișierul este protejat prin parolă",
   "FileLocked": "File locked",
+  "FileProtected": "Fișierul este protejat prin parolă",
   "FileUnlocked": "File unlocked",
-  "Folders": "Dosare",
+  "Files": "Fișiere",
   "FolderSelection": "Selectare folder",
   "FolderTitleBoxNet": "Director Box",
   "FolderTitleDocuSign": "Contul DocuSign",
   "FolderTitleDropBox": "Director Dropbox",
   "FolderTitleGoogle": "Director Google",
-  "FolderTitlekDrive": "Director kDrive",
   "FolderTitleSharePoint": "Director SharePoint",
   "FolderTitleSkyDrive": "Director OneDrive",
   "FolderTitleWebDav": "Director WebDAV",
   "FolderTitleYandex": "Director Yandex",
+  "FolderTitlekDrive": "Director kDrive",
+  "Folders": "Dosare",
   "LinkCopySuccess": "Încărcarea fișierului media eșuată",
   "MediaLoadError": "Media file could not be loaded",
   "MobileAndroid": "Descarcă ONLYOFFICE Documents din Google Play",
@@ -53,9 +53,9 @@
   "TypeTitleDocuSign": "DocuSign",
   "TypeTitleDropBox": "Dropbox",
   "TypeTitleGoogle": "Google Drive",
-  "TypeTitlekDrive": "kDrive",
   "TypeTitleSharePoint": "SharePoint",
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
-  "TypeTitleYandex": "Yandex.Disk"
+  "TypeTitleYandex": "Yandex.Disk",
+  "TypeTitlekDrive": "kDrive"
 }

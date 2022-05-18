@@ -1,4 +1,4 @@
-﻿{
+{
   "AddAccount": "Додати обліковий запис",
   "ArchivingData": "Архівація даних",
   "ConnectingAccount": "Підключення облікового запису",
@@ -12,17 +12,17 @@
   "DownloadAs": "Завантажити як",
   "EncryptedFileSaving": "Збереження зашифрованого файлу",
   "Files": "Файли",
-  "Folders": "Папки",
   "FolderSelection": "Вибір папки",
   "FolderTitleBoxNet": "Каталог Box",
   "FolderTitleDocuSign": "Обліковий запис DocuSign",
   "FolderTitleDropBox": "Каталог Dropbox",
   "FolderTitleGoogle": "Каталог Google",
-  "FolderTitlekDrive": "Каталог kDrive",
   "FolderTitleSharePoint": "Каталог SharePoint",
   "FolderTitleSkyDrive": "Каталог OneDrive",
   "FolderTitleWebDav": "Каталог WebDAV",
   "FolderTitleYandex": "Каталог Yandex",
+  "FolderTitlekDrive": "Каталог kDrive",
+  "Folders": "Папки",
   "LinkCopySuccess": "Посилання скопійовано до буферу обміну",
   "MediaLoadError": "Не вдалося завантажити медіафайл",
   "Move": "Перемістити",
@@ -39,9 +39,9 @@
   "TypeTitleDocuSign": "DocuSign",
   "TypeTitleDropBox": "Dropbox",
   "TypeTitleGoogle": "Google Drive",
-  "TypeTitlekDrive": "kDrive",
   "TypeTitleSharePoint": "SharePoint",
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
-  "TypeTitleYandex": "Yandex.Disk"
+  "TypeTitleYandex": "Yandex.Disk",
+  "TypeTitlekDrive": "kDrive"
 }

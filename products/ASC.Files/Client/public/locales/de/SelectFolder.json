@@ -1,4 +1,4 @@
-﻿{
-  "NotAvailableFolder": "Keine verfügbare Ordner",
-  "FolderContents": "Der Inhalt des Ordners '{{folderTitle}}'"
+{
+  "FolderContents": "Der Inhalt des Ordners '{{folderTitle}}'",
+  "NotAvailableFolder": "Keine verfügbare Ordner"
 }

@@ -1,4 +1,5 @@
-﻿{
+{
+  "Clouds": "Oblaki",
   "CommonSettings": "Skupne nastavitve",
   "ConnectAdminDescription": "Za uspešno povezavo vnesite potrebne podatke na <1>tej strani</1>.",
   "ConnectDescription": "Naslednje račune lahko povežete z dokumenti ONLYOFFICE. Dokumenti iz teh računov bodo na voljo za urejanje v razdelku 'Moji dokumenti'. ",
@@ -14,6 +15,5 @@
   "StoringFileVersion": "Shranjevanje različic datotek",
   "ThirdPartyBtn": "Dovoli uporabnikom, da povezujejo shranjevanje pri tretjih straneh",
   "ThirdPartySettings": "Povezani oblaki",
-  "UpdateOrCreate": "Posodobite različico datoteke za obstoječo datoteko z istim imenom. V nasprotnem primeru bo ustvarjena kopija datoteke.",
-  "Clouds": "Oblaki"
+  "UpdateOrCreate": "Posodobite različico datoteke za obstoječo datoteko z istim imenom. V nasprotnem primeru bo ustvarjena kopija datoteke."
 }

@@ -17,8 +17,8 @@
   "EmptyFilterDescriptionText": "Yksikään tiedosto tai kansio ei vastaa tätä suodatinta. Kokeile toista suodatinta tai poista suodatin nähdäksesi kaikki tiedostot.",
   "EmptyFilterSubheadingText": "Tässä suodattimessa ei ole näytettäviä tiedostoja",
   "EmptyFolderHeader": "Tässä kansiossa ei ole tiedostoja",
-  "EmptyScreenFolder": "Täällä ei ole vielä asiakirjoja",
   "EmptyRecycleBin": "Tyhjennä roskakori",
+  "EmptyScreenFolder": "Täällä ei ole vielä asiakirjoja",
   "FavoritesEmptyContainerDescription": "Voit merkitä tiedostot suosikkeihin tai poistaa ne tästä luettelosta käyttämällä kontekstivalikkoa.",
   "FileRemoved": "Tiedosto on siirretty roskakoriin",
   "FileRenamed": "Asiakirjan \"{{oldTitle}}\" nimeksi on muutettu \"{{newTitle}}”",
@@ -36,6 +36,7 @@
   "Media": "Media",
   "MoveItem": "<strong> {{title}} </strong> siirretty",
   "MoveItems": "<strong> {{qty}} </strong> elementtiä on siirretty",
+  "MoveOrCopy": "Siirrä tai Kopioi",
   "MoveTo": "Siirrä",
   "MyEmptyContainerDescription": "Luomasi tai lataamasi asiakirjat säilytetään Omat asiakirjat-osiossa. Voit muokata, jakaa ja tehdä yhteistyötä tiimisi kanssa niillä.\r\n",
   "New": "Uusi",
@@ -75,8 +76,7 @@
   "TrashEmptyDescription": "Kaikki poistetut tiedostot siirretään Roskakoriin. Voit palauttaa vahingossa poistetut tiedostot tai poistaa ne pysyvästi. Huomaa, että Roskakorista poistettuja tiedostoja ei voida palauttaa.",
   "UnblockVersion": "Poista esto/sisäänkirjautuminen",
   "UploadToFolder": "Lataa kansio",
-  "ViewList": "Lista",
-  "ViewTiles": "Kuvakkeet",
   "VersionHistory": "Versiohistoria",
-  "MoveOrCopy": "Siirrä tai Kopioi"
+  "ViewList": "Lista",
+  "ViewTiles": "Kuvakkeet"
 }

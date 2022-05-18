@@ -1,4 +1,4 @@
-﻿{
+{
   "About": "Относно",
   "AccessRights": "Права за достъп",
   "Actions": "Действия",
@@ -13,7 +13,6 @@
   "BarMaintenanceDisclaimer": "Молим да се уверите, че всички промени са запазени успешно през този ден.",
   "ByFirstNameSorting": "По име",
   "ByLastNameSorting": "По фамилия",
-  "Sorting": "Сортиране",
   "CancelButton": "Отказ",
   "ClearButton": "Нулирай филтър",
   "CloseButton": "Затвори",
@@ -22,6 +21,7 @@
   "Common": "Често срещани",
   "CommunityProduct": "Общност",
   "Confirmation": "Потвърждение",
+  "Connect": "Свържи",
   "ContinueButton": "Продължи",
   "CopyEmailAndPassword": "Копирай имейл и парола",
   "CopyOperation": "Копиране",
@@ -56,12 +56,12 @@
   "Culture_uk": "Украински (Украйна)",
   "Culture_vi": "Виетнамски (Виетнам)",
   "Culture_zh-CN": "Китайски (Опростен, Народна Република Китай)",
-  "Duplicate": "Суздай копие",
   "Delete": "Изтрий",
   "Department": "Отдел",
   "Documents": "Документи",
   "DomainIpAddress": "Домейни като IP адрес не се поддържат",
   "Download": "Изтегли",
+  "Duplicate": "Суздай копие",
   "EditAvatar": "Редактирай",
   "EditButton": "Редактирай",
   "Email": "Имейл",
@@ -139,6 +139,7 @@
   "SignInWithTwitter": "Влез с Twitter",
   "Size": "Размер",
   "SomethingWentWrong": "Нещо се обърка.",
+  "Sorting": "Сортиране",
   "SpacesInLocalPart": "Местната част не може да съдържа интервали",
   "Type": "Закачи",
   "Unknown": "Неизвестен",
@@ -148,6 +149,5 @@
   "Video": "Видео",
   "View": "Преглед",
   "ViewWeb": "Отиди към уеб версия",
-  "Warning": "Внимание",
-  "Connect": "Свържи"
+  "Warning": "Внимание"
 }

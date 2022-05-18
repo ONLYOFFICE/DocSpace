@@ -1,4 +1,4 @@
-﻿{
+{
   "AddAccount": "Adicionar conta",
   "ArchivingData": "Arquivar dados",
   "ConnectingAccount": "A ligar conta",
@@ -12,17 +12,17 @@
   "DownloadAs": "Descarregar como",
   "EncryptedFileSaving": "Guardar ficheiro encriptado",
   "Files": "Ficheiros",
-  "Folders": "Pastas",
   "FolderSelection": "Seleção de pastas",
   "FolderTitleBoxNet": "Diretório da Caixa",
   "FolderTitleDocuSign": "Conta DocuSign",
   "FolderTitleDropBox": "Diretório Dropbox",
   "FolderTitleGoogle": "Diretório Google",
-  "FolderTitlekDrive": "Diretório kDrive",
   "FolderTitleSharePoint": "Diretório SharePoint",
   "FolderTitleSkyDrive": "Diretório OneDrive",
   "FolderTitleWebDav": "Diretório WebDAV",
   "FolderTitleYandex": "Diretório Yandex",
+  "FolderTitlekDrive": "Diretório kDrive",
+  "Folders": "Pastas",
   "LinkCopySuccess": "A ligação foi copiada para a área de transferência",
   "MediaLoadError": "Não foi possível carregar o ficheiro multimédia",
   "Move": "Mover",
@@ -39,9 +39,9 @@
   "TypeTitleDocuSign": "DocuSign",
   "TypeTitleDropBox": "Dropbox",
   "TypeTitleGoogle": "Google Drive",
-  "TypeTitlekDrive": "kDrive",
   "TypeTitleSharePoint": "SharePoint",
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
-  "TypeTitleYandex": "Yandex.Disk"
+  "TypeTitleYandex": "Yandex.Disk",
+  "TypeTitlekDrive": "kDrive"
 }

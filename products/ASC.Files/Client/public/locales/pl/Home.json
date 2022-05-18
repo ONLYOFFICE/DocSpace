@@ -35,6 +35,7 @@
   "Media": "Media",
   "MoveItem": "Przeniesiono <strong>{{title}}</strong>",
   "MoveItems": "Przeniesiono <strong>{{qty}}</strong> element(y/ów)",
+  "MoveOrCopy": "Przenieś lub kopiuj",
   "MoveTo": "Przenieś do",
   "MyEmptyContainerDescription": "Tworzone lub wgrywane przez Ciebie dokumenty są przechowywane w sekcji 'Moje dokumenty'. Możesz je edytować, udostępniać i współpracować nad nimi ze swoim zespołem.",
   "New": "Nowe",
@@ -73,8 +74,7 @@
   "TooltipElementsMoveMessage": "Przenieś elementy {{element}}",
   "UnblockVersion": "Odblokuj/Check-in",
   "UploadToFolder": "Wgraj do folderu",
-  "ViewList": "Lista",
-  "ViewTiles": "Tytuły",
   "VersionHistory": "Historia wersji",
-  "MoveOrCopy": "Przenieś lub kopiuj"
+  "ViewList": "Lista",
+  "ViewTiles": "Tytuły"
 }

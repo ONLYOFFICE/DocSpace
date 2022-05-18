@@ -1,12 +1,12 @@
-﻿{
-  "ViewDetails": "Details ansehen",
-  "ItemsSelected": "Ausgewählte Elemente",
-  "SystemProperties": "Eigenschaften des Systems",
-  "WhoHasAccess": "Wer hat Zugriff",
-  "Members": "mitglieder",
-  "OpenSharingSettings": "Freigabeeinstellungen öffnen",
-  "OFORMsDescription": "Füllen Sie das Formular online aus und erhalten Sie einen einfachen Projektvorschlag oder laden Sie eine ausfüllbare Vorlage im gewünschten Format herunter: DOCXF, OFORM oder PDF. <1>Schlagen Sie dem freiberuflichen Entwicklungsteam ein Projekt oder eine Reihe von Projekten vor. Beschreiben Sie die Projekt- und Aufgabenstruktur, die Zahlungsmöglichkeiten und Bedingungen.</1>",
+{
   "FileExtension": "Dateierweiterung",
+  "ItemsSelected": "Ausgewählte Elemente",
   "LastModifiedBy": "Zuletzt geändert von",
-  "Versions": "Versionen"
+  "Members": "mitglieder",
+  "OFORMsDescription": "Füllen Sie das Formular online aus und erhalten Sie einen einfachen Projektvorschlag oder laden Sie eine ausfüllbare Vorlage im gewünschten Format herunter: DOCXF, OFORM oder PDF. <1>Schlagen Sie dem freiberuflichen Entwicklungsteam ein Projekt oder eine Reihe von Projekten vor. Beschreiben Sie die Projekt- und Aufgabenstruktur, die Zahlungsmöglichkeiten und Bedingungen.</1>",
+  "OpenSharingSettings": "Freigabeeinstellungen öffnen",
+  "SystemProperties": "Eigenschaften des Systems",
+  "Versions": "Versionen",
+  "ViewDetails": "Details ansehen",
+  "WhoHasAccess": "Wer hat Zugriff"
 }
