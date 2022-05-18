@@ -1,7 +1,9 @@
 ﻿{
   "CommonSettings": "Setări Comune",
+  "ConnectEmpty": "There's nothing here",
   "ConnectAdminDescription": "Pentru o conexiune de succes, introduceți datele necesare pe <1>această pagină</1>.",
   "ConnectDescription": "Nu puteți conecta aceste conturile la ONLYOFFICE Documents. Documentele din aceste conturi vor fi disponiile pentru editare la secțiunea Documentele mele.",
+  "ConnectDescriptionText": "You haven't connected any third-party clouds yet.",
   "ConnectMakeShared": "A fost partajat și salvat în dosarul Comune",
   "ConnextOtherAccount": "Un alt cont",
   "DisplayFavorites": "Afișare Preferințe",
@@ -14,5 +16,6 @@
   "StoringFileVersion": "Stocarea versiunilor fișierelor",
   "ThirdPartyBtn": "Permiteţi utilizatorilor să conecteze serviciile de stocare terțe",
   "ThirdPartySettings": "Serviciile cloud conectate",
-  "UpdateOrCreate": "Actualizați versiunea fișierului pentru fișierul existent cu același nume. În caz contrar, copia fișerului nu va fi creată."
+  "UpdateOrCreate": "Actualizați versiunea fișierului pentru fișierul existent cu același nume. În caz contrar, copia fișerului nu va fi creată.",
+  "Clouds": "Clouds"
 }

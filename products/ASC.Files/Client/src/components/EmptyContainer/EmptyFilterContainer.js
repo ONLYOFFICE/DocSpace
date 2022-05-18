@@ -42,7 +42,7 @@ const EmptyFilterContainer = ({
 
   return (
     <EmptyContainer
-      headerText={t("NotFoundFilterTitle")}
+      headerText={t("Common:NotFoundTitle")}
       descriptionText={descriptionText}
       imageSrc="images/empty_screen_filter_alt.svg"
       buttons={buttons}

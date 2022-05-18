@@ -15,5 +15,12 @@
   "RegistrationEmail": "Ihr Registrierungsemail",
   "RegistrationEmailWatermark": "E-Mail",
   "Remember": "Anmeldedaten speichern",
-  "RememberHelper": "Lebensdauer der Sitzung ist standardmäßig 20 Minuten. Wählen Sie diese Option aus, um den Wert 1 Jahr zu setzen. Für benutzerdefinierte Werte öffnen Sie Einstellungen."
+  "RememberHelper": "Lebensdauer der Sitzung ist standardmäßig 20 Minuten. Wählen Sie diese Option aus, um den Wert 1 Jahr zu setzen. Für benutzerdefinierte Werte öffnen Sie Einstellungen.",
+  "LoginDescription": "Wir schicken Ihnen einen geheimen Code per E-Mail, mit dem Sie sich ohne Passwort anmelden können. Oder Sie können sich <1>manuell anmelden.</1>",
+  "CodeTitle": "Der Code wurde Ihnen per E-Mail geschickt",
+  "CodeSubtitle": "Wir haben einen 6-stelligen Code an {{email}} geschickt. Der Code hat eine begrenzte Lebensdauer, geben Sie ihn so schnell wie möglich ein.",
+  "NotFoundCode": "Sie können den Code nicht finden? Prüfen Sie Ihren Spam-Ordner.",
+  "InvalidCode": "Dieser Code ist ungültig. Versuchen Sie es erneut",
+  "ExpiredCode": "Dieser Code ist nicht mehr gültig. Fordern Sie einen neuen Code an und versuchen Sie es erneut",
+  "ResendCode": "Code nochmals senden"
 }
