@@ -4,5 +4,7 @@
   "ConversionTitle": "Încărcare document",
   "ConvertAndOpenTitle": "Convertire și deschidere document",
   "HideMessage": "Nu afișa acest mesaj din nou",
-  "SaveOriginalFormatMessage": "Salvează copia în formatul original"
+  "SaveOriginalFormatMessage": "Salvează copia în formatul original",
+  "ConvertedFileDestination": "Copia fișierului va fi creată în folderul <strong>{{folderTitle}}</strong>",
+  "InfoCreateFileIn": "Fișierul nou '{{fileTitle}}' este creat în '{{folderTitle}}'"
 }

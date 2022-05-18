@@ -1,3 +1,4 @@
 ﻿{
-  "NotAvailableFolder": "Na voljo ni nobene mape"
+  "NotAvailableFolder": "Na voljo ni nobene mape",
+  "FolderContents": "Vsebina mape '{{folderTitle}}'"
 }

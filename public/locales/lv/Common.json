@@ -99,6 +99,7 @@
   "NewVersionAvailable": "Ir pieejama jauna tīmekļa vietnes versija",
   "Next": "Tālāk",
   "NotFoundLanguage": "Vai nevarat atrast savu valodu? Sazinieties ar mums, rakstot e-pastu uz <1>{{supportEmail}}</1>, lai tulkotu un saņemtu atlīdzību",
+  "NotFoundTitle": "Nekas nav atrasts",
   "OKButton": "Labi",
   "OpenApp": "Atveriet savu {{title}} lietotni",
   "Owner": "Īpašnieks",
