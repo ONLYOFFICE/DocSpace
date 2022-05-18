@@ -464,7 +464,7 @@ class Section extends React.Component {
                     )}
                   </SectionContainer>
                   {isInfoPanelAvailable && (
-                    <InfoPanel>
+                    <InfoPanel viewAs={viewAs}>
                       <SubInfoPanelHeader>
                         {infoPanelHeaderContent}
                       </SubInfoPanelHeader>
