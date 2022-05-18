@@ -99,6 +99,7 @@
   "NewVersionAvailable": "Web sitesinin yeni bir sürümü mevcut",
   "Next": "Sonraki",
   "NotFoundLanguage": "Dilinizi bulamıyor musunuz? Çeviride yer almak için <1>{{supportEmail}}</1> adresinden bize ulaşın ve ödüller kazanın.",
+  "NotFoundTitle": "Bir şey bulunamadı",
   "OKButton": "Tamam",
   "OpenApp": "{{title}} uygulamanızı açın",
   "Owner": "Sahibi",

@@ -40,7 +40,6 @@
   "New": "신규",
   "NewDocument": "새 문서",
   "NewFolder": "새 폴더",
-  "NewMasterForm": "새 양식 템플릿",
   "NewPresentation": "새 프레젠테이션",
   "NewSpreadsheet": "새 스프레드시트",
   "NoSubfolders": "하위 폴더 없음",
@@ -71,8 +70,12 @@
   "TooltipElementCopyMessage": "{{element}} 복사",
   "TooltipElementsCopyMessage": "{{element}} 요소 복사",
   "TooltipElementsMoveMessage": "{{element}} 요소 이동",
+  "TrashEmptyDescription": "모든 삭제 된 파일이 이동되는 위치는 '휴지통'섹션입니다. 실수로 삭제된 경우, 복원하거나 완전삭제를 할수있습니다. 참고하시기 바랍니다, '휴지통'에서 파일을 삭제하변 더 이상 복원 할수없습니다.",
   "UnblockVersion": "차단 해제/체크인",
   "UploadToFolder": "폴더에 업로드",
   "ViewList": "목록",
-  "ViewTiles": "제목"
+  "ViewTiles": "제목",
+  "NewMasterForm": "새 양식 템플릿",
+  "VersionHistory": "버전 기록",
+  "MoveOrCopy": "이동 또는 복사"
 }

@@ -4,5 +4,6 @@
   "Members": "Mitglieder",
   "SearchAddedMembers": "Hinzugefügte Mitglieder suchen",
   "SelectAction": "Auswählen",
-  "SuccessSaveGroup": "{{groupCaption}} '{{ groupName }}' wurde erfolgreich gespeichert"
+  "SuccessSaveGroup": "{{groupCaption}} '{{ groupName }}' wurde erfolgreich gespeichert",
+  "AddHeadOfDepartment": "Abteilungsleiter/in hinzufügen"
 }

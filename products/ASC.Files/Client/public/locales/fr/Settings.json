@@ -16,6 +16,6 @@
   "StoringFileVersion": "Stockage des versions de fichier",
   "ThirdPartyBtn": "Activer les paramètres de tiers liés aux stockages pour les utilisateurs",
   "ThirdPartySettings": "Cloud connectés",
-  "UpdateOrCreate": "Mettre à jour la version du fichier pour le fichier existant avec le même nom. Sinon, une copie du fichier sera créée."
+  "UpdateOrCreate": "Mettre à jour la version du fichier pour le fichier existant avec le même nom. Sinon, une copie du fichier sera créée.",
   "Clouds": "Clouds"
 }

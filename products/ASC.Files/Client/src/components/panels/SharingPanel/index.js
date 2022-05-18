@@ -351,15 +351,16 @@ class SharingPanelComponent extends React.Component {
           ? shareDataItems.find((x) => x.sharedTo.shareLink)?.access
           : null;
 
-        this.setState({
-          baseShareData,
-          shareDataItems,
-          accessOptions,
-          externalAccessOptions,
-          //showPanel: true,
-          filesOwnerId,
-          baseExternalAccess,
-        });
+        this._isMounted &&
+          this.setState({
+            baseShareData,
+            shareDataItems,
+            accessOptions,
+            externalAccessOptions,
+            //showPanel: true,
+            filesOwnerId,
+            baseExternalAccess,
+          });
       })
 
       .catch((err) => {
@@ -368,9 +369,10 @@ class SharingPanelComponent extends React.Component {
       })
       .finally(() => {
         setTimeout(() => {
-          return this.setState({
-            isLoading: false,
-          });
+          if (this._isMounted)
+            return this.setState({
+              isLoading: false,
+            });
         }, 500);
       });
   };
@@ -419,11 +421,15 @@ class SharingPanelComponent extends React.Component {
   componentDidMount() {
     this.getShareData();
 
+    this._isMounted = true;
     document.addEventListener("keyup", this.onKeyPress);
+    window.addEventListener("popstate", () => this.onClose());
   }
 
   componentWillUnmount() {
+    this._isMounted = false;
     document.removeEventListener("keyup", this.onKeyPress);
+    window.removeEventListener("popstate", () => this.onClose());
   }
 
   onKeyPress = (event) => {
