@@ -44,6 +44,7 @@
   "NewPresentation": "Nova predstavitev",
   "NewSpreadsheet": "Nova tabela",
   "NoSubfolders": "Ni podmap",
+  "NotFoundFilterTitle": "Nič ni najdeno",
   "Open": "Odpri",
   "OpenLocation": "Odpri lokacijo",
   "Presentation": "Predstavitev",
@@ -71,8 +72,11 @@
   "TooltipElementCopyMessage": "Kopiraj {{element}}",
   "TooltipElementsCopyMessage": "Kopiraj {{element}} elemente",
   "TooltipElementsMoveMessage": "Premakni {{element}} elemente",
+  "TrashEmptyDescription": "Oddelek 'koš' je prostor, kamor so premaknjene vse izbrisane datoteke. Če ste jih izbrisali po pomoti jih lahko obnovite, ali pa jih popolnoma izbrišete. Prosim vedite, da, ko datoteke izbrišete iz 'koša' teh ni več mogoče obnoviti.",
   "UnblockVersion": "Odblokiraj/prijavi se",
   "UploadToFolder": "Naloži v mapo",
   "ViewList": "Seznam",
-  "ViewTiles": "Plošče"
+  "ViewTiles": "Plošče",
+  "VersionHistory": "Zgodovina verzij",
+  "MoveOrCopy": "Premakni ali kopiraj"
 }
