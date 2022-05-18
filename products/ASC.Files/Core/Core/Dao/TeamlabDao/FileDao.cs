@@ -1439,7 +1439,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     #endregion
 
-    private Func<Selector<DbFile>, Selector<DbFile>> GetFuncForSearch(object parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
+    private Func<Selector<DbFile>, Selector<DbFile>> GetFuncForSearch(int? parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
     {
         return s =>
        {
@@ -1451,11 +1451,11 @@ internal class FileDao : AbstractDao, IFileDao<int>
            {
                if (withSubfolders)
                {
-                   result.In(a => a.Folders.Select(r => r.FolderId), new[] { parentId });
+                   result.In(a => a.Folders.Select(r => r.ParentId), new[] { parentId });
                }
                else
                {
-                   result.InAll(a => a.Folders.Select(r => r.FolderId), new[] { parentId });
+                   result.InAll(a => a.Folders.Select(r => r.ParentId), new[] { parentId });
                }
            }
 
