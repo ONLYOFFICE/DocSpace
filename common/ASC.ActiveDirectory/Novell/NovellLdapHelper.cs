@@ -42,7 +42,7 @@ public class NovellLdapHelper : LdapHelper
         _serviceProvider = serviceProvider;
     }
 
-    public void Init(LdapSettings settings)
+    public new void Init(LdapSettings settings)
     {
         var password = string.IsNullOrEmpty(settings.Password)
             ? GetPassword(settings.PasswordBytes)

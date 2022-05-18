@@ -469,7 +469,7 @@ public class LdapOperationJob : DistributedTaskProgress
             }
 
             string hash;
-            using (MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider())
+            using (var md5 = new MD5CryptoServiceProvider())
             {
                 hash = Convert.ToBase64String(md5.ComputeHash((byte[])image));
             }

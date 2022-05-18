@@ -439,7 +439,7 @@ public class NovellLdapSearcher : IDisposable
             else
             {
                 // Multiple controls could have been returned
-                foreach (LdapControl control in controls)
+                foreach (var control in controls)
                 {
                     /* Is this the LdapPagedResultsResponse control? */
                     if (!(control is SimplePagedResultsControl))
