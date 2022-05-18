@@ -1,13 +1,15 @@
-const Endpoints = require('./mocking/endpoints.js');
-const changeCulture = require('./helpers/changeCulture.js');
-const config = require('../../../../config/appsettings.json');
-const ignoringCultures = require('./ignoringCultures.json');
-
-const cultures = config.web.cultures.split(',');
+const Endpoints = require("./mocking/endpoints.js");
+const changeCulture = require("./helpers/changeCulture.js");
+const config = require("../../../../config/appsettings.json");
+const ignoringCultures = require("./ignoringCultures.json");
 
 const isModel = !!process.env.MODEL;
 
-const featureName = isModel ? `Files translation(model) ` : `Files translation tests`;
+const cultures = isModel ? ["en"] : config.web.cultures.split(",");
+
+const featureName = isModel
+  ? `Files translation(model) `
+  : `Files translation tests`;
 
 Feature(featureName, { timeout: 90 });
 
@@ -18,20 +20,21 @@ Before(async ({ I }) => {
 for (const culture of cultures) {
   Scenario(`Main page test ${culture}`, { timeout: 30 }, ({ I }) => {
     changeCulture(culture);
-    const isExсeption = ignoringCultures.mainPage.indexOf(culture) != -1;
-    console.log(isExсeption || !isModel, culture);
-    I.mockEndpoint(Endpoints.root, 'empty');
-    I.mockEndpoint(Endpoints.my, 'default');
 
-    if (!isModel || isExсeption) {
+    const isException = ignoringCultures.mainPage.indexOf(culture) != -1;
+
+    I.mockEndpoint(Endpoints.root, "empty");
+    I.mockEndpoint(Endpoints.my, "default");
+
+    if (!isException) {
       I.mockEndpoint(Endpoints.self, `selfTranslation`);
       I.mockEndpoint(Endpoints.settings, `settingsTranslation`);
     }
 
-    I.amOnPage('/products/files');
+    I.amOnPage("/products/files");
     I.wait(3);
 
-    I.see('My documents');
+    I.see("My documents");
 
     I.saveScreenshot(`${culture}-main-page.png`);
     I.seeVisualDiff(`${culture}-main-page.png`, {
@@ -43,17 +46,17 @@ for (const culture of cultures) {
 
   Scenario(`Profile menu test ${culture}`, { timeout: 30 }, ({ I }) => {
     changeCulture(culture);
-    const isExсeption = ignoringCultures.profileMenu.indexOf(culture) != -1;
+    const isException = ignoringCultures.profileMenu.indexOf(culture) != -1;
 
-    I.mockEndpoint(Endpoints.root, 'empty');
-    I.mockEndpoint(Endpoints.my, 'default');
+    I.mockEndpoint(Endpoints.root, "empty");
+    I.mockEndpoint(Endpoints.my, "default");
 
-    if (!isModel || isExсeption) {
+    if (!isException) {
       I.mockEndpoint(Endpoints.self, `selfTranslation`);
       I.mockEndpoint(Endpoints.settings, `settingsTranslation`);
     }
 
-    I.amOnPage('/products/files');
+    I.amOnPage("/products/files");
     I.wait(3);
 
     I.openProfileMenu();
@@ -69,21 +72,21 @@ for (const culture of cultures) {
 
   Scenario(`Main button test ${culture}`, { timeout: 30 }, ({ I }) => {
     changeCulture(culture);
-    const isExсeption = ignoringCultures.mainButton.indexOf(culture) != -1;
+    const isException = ignoringCultures.mainButton.indexOf(culture) != -1;
 
-    I.mockEndpoint(Endpoints.root, 'empty');
-    I.mockEndpoint(Endpoints.my, 'default');
+    I.mockEndpoint(Endpoints.root, "empty");
+    I.mockEndpoint(Endpoints.my, "default");
 
-    if (!isModel || isExсeption) {
+    if (!isException) {
       I.mockEndpoint(Endpoints.self, `selfTranslation`);
       I.mockEndpoint(Endpoints.settings, `settingsTranslation`);
     }
 
-    I.amOnPage('/products/files');
+    I.amOnPage("/products/files");
     I.wait(3);
 
-    I.seeElement({ react: 'ArticleMainButton' });
-    I.click({ react: 'ArticleMainButton' });
+    I.seeElement({ react: "MainButton" });
+    I.click({ react: "MainButton" });
 
     I.wait(3);
 
@@ -96,21 +99,21 @@ for (const culture of cultures) {
   });
 
   Scenario(`Table settings test ${culture}`, { timeout: 30 }, ({ I }) => {
-    const isExсeption = ignoringCultures.tableSettings.indexOf(culture) != -1;
+    const isException = ignoringCultures.tableSettings.indexOf(culture) != -1;
 
-    I.mockEndpoint(Endpoints.root, 'empty');
-    I.mockEndpoint(Endpoints.my, 'default');
+    I.mockEndpoint(Endpoints.root, "empty");
+    I.mockEndpoint(Endpoints.my, "default");
 
-    if (!isModel || isExсeption) {
+    if (!isException) {
       I.mockEndpoint(Endpoints.self, `selfTranslation`);
       I.mockEndpoint(Endpoints.settings, `settingsTranslation`);
     }
 
-    I.amOnPage('/products/files');
+    I.amOnPage("/products/files");
     I.wait(3);
 
-    I.seeElement({ react: 'TableSettings' });
-    I.click({ react: 'TableSettings' });
+    I.seeElement({ react: "TableSettings" });
+    I.click({ react: "TableSettings" });
 
     I.wait(3);
 
