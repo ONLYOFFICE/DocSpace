@@ -83,6 +83,7 @@ namespace ASC.Files.ThumbnailBuilder
     internal class Builder<T>
     {
         private readonly ThumbnailSettings config;
+        private readonly ThumbnailSettings _thumbnailSettings;
         private readonly ILog logger;
 
         private TenantManager TenantManager { get; }
@@ -105,7 +106,8 @@ namespace ASC.Files.ThumbnailBuilder
             PathProvider pathProvider,
             IOptionsMonitor<ILog> log,
             IHttpClientFactory clientFactory,
-            SocketManager socketManager)
+            SocketManager socketManager,
+            ThumbnailSettings thumbnailSettings)
         {
             this.config = settings;
             TenantManager = tenantManager;
@@ -117,6 +119,7 @@ namespace ASC.Files.ThumbnailBuilder
             logger = log.Get("ASC.Files.ThumbnailBuilder");
             ClientFactory = clientFactory;
             SocketManager = socketManager;
+            _thumbnailSettings = thumbnailSettings;
         }
 
         internal async Task BuildThumbnail(FileData<T> fileData)
@@ -169,7 +172,10 @@ namespace ASC.Files.ThumbnailBuilder
                 if (!config.FormatsArray.Contains(ext) || file.Encrypted || file.RootFolderType == FolderType.TRASH || file.ContentLength > config.AvailableFileSize)
                 {
                     file.ThumbnailStatus = Thumbnail.NotRequired;
-                    await fileDao.SaveThumbnailAsync(file, null);
+                    foreach (var size in _thumbnailSettings.Sizes)
+                    {
+                        await fileDao.SaveThumbnailAsync(file, null, size.Width, size.Height);
+                    }
                     return;
                 }
 
@@ -192,67 +198,73 @@ namespace ASC.Files.ThumbnailBuilder
                 if (file != null)
                 {
                     file.ThumbnailStatus = Thumbnail.Error;
-                    await fileDao.SaveThumbnailAsync(file, null);
+                    foreach (var size in _thumbnailSettings.Sizes)
+                    {
+                        await fileDao.SaveThumbnailAsync(file, null, size.Width, size.Height);
+                    }
                 }
             }
         }
 
         private async Task MakeThumbnail(IFileDao<T> fileDao, File<T> file)
         {
-            logger.DebugFormat("MakeThumbnail: FileId: {0}.", file.ID);
-
-            string thumbnailUrl = null;
-            var attempt = 1;
-
-            do
+            foreach (var w in config.Sizes)
             {
-                try
-                {
-                    var (result, url) = await GetThumbnailUrl(file, Global.ThumbnailExtension);
-                    thumbnailUrl = url;
+                logger.DebugFormat("MakeThumbnail: FileId: {0}.", file.ID);
 
-                    if (result)
-                    {
-                        break;
-                    }
-                }
-                catch (Exception exception)
+                string thumbnailUrl = null;
+                var attempt = 1;
+
+                do
                 {
-                    if (exception.InnerException != null)
+                    try
                     {
-                        var documentServiceException = exception.InnerException as DocumentService.DocumentServiceException;
-                        if (documentServiceException != null)
+                        var (result, url) = await GetThumbnailUrl(file, Global.ThumbnailExtension, w.Width, w.Height);
+                        thumbnailUrl = url;
+
+                        if (result)
                         {
-                            if (documentServiceException.Code == DocumentService.DocumentServiceException.ErrorCode.ConvertPassword)
+                            break;
+                        }
+                    }
+                    catch (Exception exception)
+                    {
+                        if (exception.InnerException != null)
+                        {
+                            var documentServiceException = exception.InnerException as DocumentService.DocumentServiceException;
+                            if (documentServiceException != null)
                             {
-                                throw new Exception(string.Format("MakeThumbnail: FileId: {0}. Encrypted file.", file.ID));
-                            }
-                            if (documentServiceException.Code == DocumentService.DocumentServiceException.ErrorCode.Convert)
-                            {
-                                throw new Exception(string.Format("MakeThumbnail: FileId: {0}. Could not convert.", file.ID));
+                                if (documentServiceException.Code == DocumentService.DocumentServiceException.ErrorCode.ConvertPassword)
+                                {
+                                    throw new Exception(string.Format("MakeThumbnail: FileId: {0}. Encrypted file.", file.ID));
+                                }
+                                if (documentServiceException.Code == DocumentService.DocumentServiceException.ErrorCode.Convert)
+                                {
+                                    throw new Exception(string.Format("MakeThumbnail: FileId: {0}. Could not convert.", file.ID));
+                                }
                             }
                         }
                     }
-                }
 
-                if (attempt >= config.AttemptsLimit)
-                {
-                    throw new Exception(string.Format("MakeThumbnail: FileId: {0}. Attempts limmit exceeded.", file.ID));
-                }
-                else
-                {
-                    logger.DebugFormat("MakeThumbnail: FileId: {0}. Sleep {1} after attempt #{2}. ", file.ID, config.AttemptWaitInterval, attempt);
-                    attempt++;
-                }
+                    if (attempt >= config.AttemptsLimit)
+                    {
+                        throw new Exception(string.Format("MakeThumbnail: FileId: {0}. Attempts limmit exceeded.", file.ID));
+                    }
+                    else
+                    {
+                        logger.DebugFormat("MakeThumbnail: FileId: {0}. Sleep {1} after attempt #{2}. ", file.ID, config.AttemptWaitInterval, attempt);
+                        attempt++;
+                    }
 
-                await Task.Delay(config.AttemptWaitInterval);
+                    await Task.Delay(config.AttemptWaitInterval);
+                }
+                while (string.IsNullOrEmpty(thumbnailUrl));
+
+                await SaveThumbnail(fileDao, file, thumbnailUrl, w.Width, w.Height);
             }
-            while (string.IsNullOrEmpty(thumbnailUrl));
-
-            await SaveThumbnail(fileDao, file, thumbnailUrl);
         }
 
-        private async Task<(bool, string)> GetThumbnailUrl(File<T> file, string toExtension)
+        private async Task<(bool, string)> GetThumbnailUrl(File<T> file, string toExtension, int width, int height)
         {
             var fileUri = PathProvider.GetFileStreamUrl(file);
             fileUri = DocumentServiceConnector.ReplaceCommunityAdress(fileUri);
@@ -283,8 +295,8 @@ namespace ASC.Files.ThumbnailBuilder
                 },
                 PageSize = new DocumentService.SpreadsheetLayout.LayoutPageSize
                 {
-                    Width = (config.ThumbnaillWidth * 1.5) + "mm", // 192 * 1.5 = "288mm",
-                    Height = (config.ThumbnaillHeight * 1.5) + "mm" // 128 * 1.5 = "192mm"
+                    Width = (width * 1.5) + "mm", // 192 * 1.5 = "288mm",
+                    Height = (height * 1.5) + "mm" // 128 * 1.5 = "192mm"
                 }
             };
 
@@ -294,7 +306,7 @@ namespace ASC.Files.ThumbnailBuilder
             return (operationResultProgress == 100, url);
         }
 
-        private async Task SaveThumbnail(IFileDao<T> fileDao, File<T> file, string thumbnailUrl)
+        private async Task SaveThumbnail(IFileDao<T> fileDao, File<T> file, string thumbnailUrl, int width, int height)
         {
             logger.DebugFormat("SaveThumbnail: FileId: {0}. ThumbnailUrl {1}.", file.ID, thumbnailUrl);
 
@@ -305,7 +317,10 @@ namespace ASC.Files.ThumbnailBuilder
             using var response = httpClient.Send(request);
             using (var stream = await response.Content.ReadAsStreamAsync())
             {
-                await Crop(fileDao, file, stream);
+                using (var sourceImg = await Image.LoadAsync(stream))
+                {
+                    await CropAsync(sourceImg, fileDao, file, width, height);
+                }
             }
 
             logger.DebugFormat("SaveThumbnail: FileId: {0}. Successfully saved.", file.ID);
@@ -333,38 +348,51 @@ namespace ASC.Files.ThumbnailBuilder
         {
             using (var sourceImg = await Image.LoadAsync(stream))
             {
-                using (var targetImg = GetImageThumbnail(sourceImg))
+                //var tasks = new List<Task>();
+
+                //foreach (var w in config.Sizes)
+                //{
+                //    tasks.Add(CropAsync(sourceImg, fileDao, file, w.Width, w.Height));
+                //}
+
+                //await Task.WhenAll(tasks.ToArray());
+
+                //await Parallel.ForEachAsync(config.Sizes, (w, b) => CropAsync(sourceImg, fileDao, file, w.Width, w.Height));
+
+                foreach (var w in config.Sizes)
                 {
-                    using (var targetStream = new MemoryStream())
-                    {
-                        await targetImg.SaveAsJpegAsync(targetStream);
-                        //targetImg.Save(targetStream, JpegFormat.Instance);
-                        await fileDao.SaveThumbnailAsync(file, targetStream);
-                    }
+                    await CropAsync(sourceImg, fileDao, file, w.Width, w.Height);
                 }
             }
             GC.Collect();
         }
 
-        private Image GetImageThumbnail(Image sourceBitmap)
+        private async ValueTask CropAsync(Image sourceImg, IFileDao<T> fileDao, File<T> file, int width, int height)
+        {
+            var targetSize = new Size(Math.Min(sourceImg.Width, width), Math.Min(sourceImg.Height, height));
+            using var targetImg = GetImageThumbnail(sourceImg, targetSize, width, height);
+            using var targetStream = new MemoryStream();
+            await targetImg.SaveAsJpegAsync(targetStream);
+            await fileDao.SaveThumbnailAsync(file, targetStream, width, height);
+        }
+
+        private Image GetImageThumbnail(Image sourceBitmap, Size targetSize, int thumbnaillWidth, int thumbnaillHeight)
         {
             //bad for small or disproportionate images
             //return sourceBitmap.GetThumbnailImage(config.ThumbnaillWidth, config.ThumbnaillHeight, () => false, IntPtr.Zero);
-
-            var targetSize = new Size(Math.Min(sourceBitmap.Width, config.ThumbnaillWidth), Math.Min(sourceBitmap.Height, config.ThumbnaillHeight));
             var point = new Point(0, 0);
             var size = targetSize;
 
-            if (sourceBitmap.Width > config.ThumbnaillWidth && sourceBitmap.Height > config.ThumbnaillHeight)
+            if (sourceBitmap.Width > thumbnaillWidth && sourceBitmap.Height > thumbnaillHeight)
             {
                 if (sourceBitmap.Width > sourceBitmap.Height)
                 {
-                    var width = (int)(config.ThumbnaillWidth * (sourceBitmap.Height / (1.0 * config.ThumbnaillHeight)));
+                    var width = (int)(thumbnaillWidth * (sourceBitmap.Height / (1.0 * thumbnaillHeight)));
                     size = new Size(width, sourceBitmap.Height);
                 }
                 else
                 {
-                    var height = (int)(config.ThumbnaillHeight * (sourceBitmap.Width / (1.0 * config.ThumbnaillWidth)));
+                    var height = (int)(thumbnaillWidth * (sourceBitmap.Width / (1.0 * thumbnaillWidth)));
                     size = new Size(sourceBitmap.Width, height);
                 }
             }

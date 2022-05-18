@@ -985,6 +985,17 @@ namespace ASC.Web.Files
         {
             try
             {
+                var width = 360;
+                var height = 260;
+
+                var size = context.Request.Query["size"].ToString() ?? "360x260";
+                var sizes = size.Split('x');
+                if (sizes.Length == 2)
+                {
+                    _ = int.TryParse(sizes[0], out width);
+                    _ = int.TryParse(sizes[1], out height);
+                }
+
                 var fileDao = DaoFactory.GetFileDao<T>();
                 var file = int.TryParse(context.Request.Query[FilesLinkUtility.Version], out var version) && version > 0
                    ? await fileDao.GetFileAsync(id, version)
@@ -1018,7 +1029,7 @@ namespace ASC.Web.Files
                 context.Response.Headers.Add("Content-Disposition", ContentDispositionUtil.GetHeaderValue("." + Global.ThumbnailExtension));
                 context.Response.ContentType = MimeMapping.GetMimeMapping("." + Global.ThumbnailExtension);
 
-                using (var stream = await fileDao.GetThumbnailAsync(file))
+                using (var stream = await fileDao.GetThumbnailAsync(file, width, height))
                 {
                     context.Response.Headers.Add("Content-Length", stream.Length.ToString(CultureInfo.InvariantCulture));
                     await stream.CopyToAsync(context.Response.Body);

@@ -280,7 +280,8 @@ namespace ASC.Web.Files.Classes
             GlobalStore globalStore,
             IOptionsMonitor<ILog> options,
             IServiceProvider serviceProvider,
-            Global global
+            Global global,
+            ThumbnailSettings thumbnailSettings
         )
         {
             CoreBaseSettings = coreBaseSettings;
@@ -293,6 +294,7 @@ namespace ASC.Web.Files.Classes
             GlobalStore = globalStore;
             ServiceProvider = serviceProvider;
             Global = global;
+            _thumbnailSettings = thumbnailSettings;
             Logger = options.Get("ASC.Files");
         }
 
@@ -498,6 +500,7 @@ namespace ASC.Web.Files.Classes
 
         internal static readonly IDictionary<string, object> TrashFolderCache =
             new ConcurrentDictionary<string, object>(); /*Use SYNCHRONIZED for cross thread blocks*/
+        private readonly ThumbnailSettings _thumbnailSettings;
 
         public async Task<T> GetFolderTrashAsync<T>(IDaoFactory daoFactory)
         {
@@ -601,15 +604,20 @@ namespace ASC.Web.Files.Classes
                     file = await fileDao.SaveFileAsync(file, stream, false);
                 }
 
-                var pathThumb = filePath + "." + Global.ThumbnailExtension;
-                if (await storeTemp.IsFileAsync("", pathThumb))
+
+                foreach (var size in _thumbnailSettings.Sizes)
                 {
-                    using (var streamThumb = await storeTemp.GetReadStreamAsync("", pathThumb))
+                    var pathThumb = $"{filePath}.{size.Width}x{size.Height}.{Global.ThumbnailExtension}";
+                    if (await storeTemp.IsFileAsync("", pathThumb))
                     {
-                        await fileDao.SaveThumbnailAsync(file, streamThumb);
+                        using (var streamThumb = await storeTemp.GetReadStreamAsync("", pathThumb))
+                        {
+                            await fileDao.SaveThumbnailAsync(file, streamThumb, size.Width, size.Height);
+                        }
                     }
-                    file.ThumbnailStatus = Thumbnail.Created;
                 }
+
+                file.ThumbnailStatus = Thumbnail.Created;
 
                 await fileMarker.MarkAsNewAsync(file);
             }
