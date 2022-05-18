@@ -142,3 +142,4 @@ global using static ASC.Security.Cryptography.EmailValidationKeyProvider;
 
 global using ASC.Core.Common.Notify.IntegrationEvents.Events;
 global using ASC.EventBus.Abstractions;
+global using Microsoft.Extensions.Caching.Memory;
