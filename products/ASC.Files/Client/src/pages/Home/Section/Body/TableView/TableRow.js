@@ -67,7 +67,7 @@ const StyledTableRow = styled(TableRow)`
 
   .table-container_element-wrapper,
   .table-container_quick-buttons-wrapper {
-    padding-right: 0px !important;
+    padding-right: 0px;
   }
 
   .table-container_element-wrapper,
@@ -107,7 +107,7 @@ const StyledTableRow = styled(TableRow)`
   }
 
   .table-container_row-context-menu-wrapper {
-    padding-right: 0px !important;
+    padding-right: 0px;
 
     ${(props) => props.dragging && contextMenuWrapperDraggingStyle};
     ${(props) =>
@@ -117,8 +117,6 @@ const StyledTableRow = styled(TableRow)`
         padding-right: 18px;
         ${hotkeyBorderStyle}
       `};
-
-    padding-right: 0px !important;
   }
 
   .edit {
