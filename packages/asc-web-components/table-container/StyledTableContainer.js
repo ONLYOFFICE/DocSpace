@@ -2,7 +2,7 @@ import styled, { css } from "styled-components";
 import Base from "../themes/base";
 import { mobile, tablet } from "../utils/device";
 import Scrollbar from "../scrollbar";
-import { isMobile } from "react-device-detect";
+import { isDesktop, isMobile } from "react-device-detect";
 
 const StyledTableContainer = styled.div`
   -moz-user-select: none;
@@ -144,6 +144,7 @@ const StyledInfoPanelToggleWrapper = styled.div`
   padding-left: 20px;
 
   @media ${tablet} {
+    display: none;
     margin: 0 16px 0 auto;
   }
 
