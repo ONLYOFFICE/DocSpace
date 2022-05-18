@@ -84,10 +84,12 @@ const FloatingButton = ({ id, className, style, ...rest }) => {
           </StyledFloatingButton>
         </StyledCircle>
       </StyledCircleWrap>
-      <CloseIcon
-        className="layout-progress-bar_close-icon"
-        onClick={onProgressClear}
-      />
+      {percent === 100 && (
+        <CloseIcon
+          className="layout-progress-bar_close-icon"
+          onClick={onProgressClear}
+        />
+      )}
     </StyledFloatingButtonWrapper>
   );
 };
