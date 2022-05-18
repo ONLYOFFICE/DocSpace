@@ -47,7 +47,6 @@ using ASC.Files.Core.Resources;
 using ASC.Files.Core.Security;
 using ASC.MessagingSystem;
 using ASC.Security.Cryptography;
-using ASC.Web.Core;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Core.Compress;
@@ -89,6 +88,8 @@ namespace ASC.Web.Files
     [Scope]
     public class FileHandlerService
     {
+        private readonly ThumbnailSettings _thumbnailSettings;
+
         public string FileHandlerPath
         {
             get { return FilesLinkUtility.FileHandlerPath; }
@@ -123,7 +124,6 @@ namespace ASC.Web.Files
         public FileHandlerService(
             FilesLinkUtility filesLinkUtility,
             TenantExtra tenantExtra,
-            CookiesManager cookiesManager,
             AuthContext authContext,
             SecurityContext securityContext,
             GlobalStore globalStore,
@@ -147,7 +147,8 @@ namespace ASC.Web.Files
             IServiceProvider serviceProvider,
             TempStream tempStream,
             SocketManager socketManager,
-            IHttpClientFactory clientFactory)
+            IHttpClientFactory clientFactory,
+            ThumbnailSettings thumbnailSettings)
         {
             FilesLinkUtility = filesLinkUtility;
             TenantExtra = tenantExtra;
@@ -175,6 +176,7 @@ namespace ASC.Web.Files
             UserManager = userManager;
             Logger = optionsMonitor.CurrentValue;
             ClientFactory = clientFactory;
+            this._thumbnailSettings = thumbnailSettings;
         }
 
         public Task Invoke(HttpContext context)
@@ -985,10 +987,18 @@ namespace ASC.Web.Files
         {
             try
             {
-                var width = 360;
-                var height = 260;
+                var defaultSize = _thumbnailSettings.Sizes.FirstOrDefault();
 
-                var size = context.Request.Query["size"].ToString() ?? "360x260";
+                if (defaultSize == null)
+                {
+                    context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                    return;
+                }
+
+                var width = defaultSize.Width;
+                var height = defaultSize.Height;
+
+                var size = context.Request.Query["size"].ToString() ?? "";
                 var sizes = size.Split('x');
                 if (sizes.Length == 2)
                 {
