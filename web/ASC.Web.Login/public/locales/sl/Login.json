@@ -15,5 +15,12 @@
   "RegistrationEmail": "Vaš email za registracijo",
   "RegistrationEmailWatermark": "Email",
   "Remember": "Zapomni si me",
-  "RememberHelper": "Privzeta življenjska doba seje je 20 minut. Preverite to možnost, če jo želite nastaviti na 1 leto. Če želite nastaviti poljubno vrednost, pojdite v Nastavitve."
+  "RememberHelper": "Privzeta življenjska doba seje je 20 minut. Preverite to možnost, če jo želite nastaviti na 1 leto. Če želite nastaviti poljubno vrednost, pojdite v Nastavitve.",
+  "LoginDescription": "Po e-pošti vam bomo poslali čarobno kodo za prijavo brez gesla. Lahko pa se <1>prijavite ročno.</1>",
+  "CodeTitle": "Koda vam je bila poslana po e-pošti",
+  "CodeSubtitle": "Na {{email}} smo poslali 6-mestno kodo. Koda ima omejeno trajanje veljavnosti, vnesite jo čim prej.",
+  "NotFoundCode": "Ne najdete kode? Preverite vašo mapo z «Vsiljeno pošto».",
+  "InvalidCode": "Ta koda je napačna. Poskusite znova",
+  "ExpiredCode": "Ta koda ni več veljavna. Zahtevajte novo kodo in poskusite znova",
+  "ResendCode": "Ponovno pošlji kodo"
 }
