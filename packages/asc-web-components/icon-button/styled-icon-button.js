@@ -22,7 +22,11 @@ const StyledOuter = styled.div`
     svg {
       path {
         fill: ${(props) =>
-          props.color ? props.color : props.theme.iconButton.hoverColor};
+          props.isDisabled
+            ? props.theme.iconButton.color
+            : props.color
+            ? props.color
+            : props.theme.iconButton.hoverColor};
       }
     }
   }
