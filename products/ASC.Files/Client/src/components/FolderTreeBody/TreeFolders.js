@@ -86,6 +86,10 @@ class TreeFolders extends React.Component {
     this.state = { isExpand: false };
   }
 
+  componentDidMount() {
+    this.props.isLoadingNodes && this.props.setIsLoadingNodes(false);
+  }
+
   onBadgeClick = (e) => {
     e.stopPropagation();
     const id = e.currentTarget.dataset.id;
@@ -219,7 +223,7 @@ class TreeFolders extends React.Component {
   };
 
   getItems = (data) => {
-    const { withoutProvider, theme, parentId } = this.props;
+    const { withoutProvider, theme, parentId, setIsLoadingNodes } = this.props;
     return data.map((item, index) => {
       const dragging = this.props.dragging ? this.showDragItems(item) : false;
 
@@ -237,14 +241,14 @@ class TreeFolders extends React.Component {
       if (dragging) value = `${item.id} dragging ${provider}`;
 
       if (this.needScroll) {
-        console.log("this.needScroll", this.needScroll);
-        if (item.parentId.toString() === parentId.toString()) {
-          if (index === this.child) {
-            this.props.setIsLoadingNodes(false);
+        if (parentId && item.parentId.toString() === parentId.toString()) {
+          if (index === this.childLength) {
+            setIsLoadingNodes(false);
             const selectedNode = document.getElementsByClassName(
               "rc-tree-node-selected"
             )[0];
             if (selectedNode) {
+              this.needScroll = false;
               document
                 .querySelector("#folder-tree-scroll-bar > .scroll-body")
                 .scrollTo(0, selectedNode.offsetTop + index * 36);
@@ -343,11 +347,12 @@ class TreeFolders extends React.Component {
   };
 
   getNewTreeData(treeData, curId, child, pos) {
-    this.child = null;
-    !this.expand && this.props.setIsLoadingNodes(true);
-    if (!this.expand && curId.toString() === this.props.parentId.toString()) {
+    const { parentId, setIsLoadingNodes } = this.props;
+    this.childLength = null;
+    !this.expand && parentId && setIsLoadingNodes(true);
+    if (!this.expand && parentId && curId.toString() === parentId?.toString()) {
       this.needScroll = true;
-      this.child = child.length - 1;
+      this.childLength = child.length - 1;
     }
     this.loop(treeData, child, pos);
     this.setLeaf(treeData, curId, 10);

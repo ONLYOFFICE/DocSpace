@@ -1,4 +1,4 @@
-﻿{
+{
   "AddAccount": "Hesap ekle",
   "ArchivingData": "Veriler arşivleniyor",
   "ConnectingAccount": "Hesap bağlanıyor",
@@ -12,17 +12,17 @@
   "DownloadAs": "Olarak indir",
   "EncryptedFileSaving": "Şifreli dosya kaydediliyor",
   "Files": "Dosyalar",
-  "Folders": "Klasörler",
   "FolderSelection": "Klasör seçimi",
   "FolderTitleBoxNet": "Kutu dizini",
   "FolderTitleDocuSign": "DocuSign hesabı",
   "FolderTitleDropBox": "Dropbox dizini",
   "FolderTitleGoogle": "Google dizini",
-  "FolderTitlekDrive": "kDrive dizini",
   "FolderTitleSharePoint": "SharePoint dizini",
   "FolderTitleSkyDrive": "OneDrive dizini",
   "FolderTitleWebDav": "WebDAV Dizini",
   "FolderTitleYandex": "Yandex Dizini",
+  "FolderTitlekDrive": "kDrive dizini",
+  "Folders": "Klasörler",
   "LinkCopySuccess": "Bağlantı panoya kopyalandı",
   "MediaLoadError": "Medya dosyası yüklenemedi",
   "Move": "Taşı",
@@ -39,9 +39,9 @@
   "TypeTitleDocuSign": "DocuSign",
   "TypeTitleDropBox": "Dropbox",
   "TypeTitleGoogle": "Google sürücü",
-  "TypeTitlekDrive": "kDrive",
   "TypeTitleSharePoint": "SharePoint",
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
-  "TypeTitleYandex": "Yandex.Disk"
+  "TypeTitleYandex": "Yandex.Disk",
+  "TypeTitlekDrive": "kDrive"
 }

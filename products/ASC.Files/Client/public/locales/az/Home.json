@@ -35,6 +35,7 @@
   "Media": "Media",
   "MoveItem": "<strong>{{title}}</strong> yerdəyişdirildi",
   "MoveItems": "<strong>{{qty}}</strong> elementlərin yeri dəyişdirildi",
+  "MoveOrCopy": "Köçür və ya Kopyala",
   "MoveTo": "Yerini dəyiş",
   "MyEmptyContainerDescription": "Yaratdığınız və ya yüklədiyiniz sənədlər 'Sənədlərim' bölməsində saxlanılır. Onları redaktə edə, paylaşa və kollektiv iş edə bilərsiniz.",
   "New": "Yeni",
@@ -73,8 +74,7 @@
   "TooltipElementsMoveMessage": "{{element}} elementinin yerdəyişməsi",
   "UnblockVersion": "Blokdan çıxar",
   "UploadToFolder": "Qovluğua yüklə",
-  "ViewList": "Siyahı",
-  "ViewTiles": "Plitkalar",
   "VersionHistory": "Versiya tarixçəsi",
-  "MoveOrCopy": "Köçür və ya Kopyala"
+  "ViewList": "Siyahı",
+  "ViewTiles": "Plitkalar"
 }
