@@ -7,6 +7,14 @@ const isModel = !!process.env.MODEL;
 
 const cultures = isModel ? ["en"] : config.web.cultures.split(",");
 
+const isPersonal = !!process.env.PERSONAL;
+
+const settingsFile = isPersonal ? `settingsPersonal` : `settings`;
+
+const settingsTranslationFile = isPersonal
+  ? `settingsTranslationPersonal`
+  : `settingsTranslation`;
+
 const featureName = isModel
   ? `Files translation(model) `
   : `Files translation tests`;
@@ -15,6 +23,10 @@ Feature(featureName, { timeout: 90 });
 
 Before(async ({ I }) => {
   I.mockData();
+  if (isPersonal) {
+    I.mockEndpoint(Endpoints.settings, settingsFile);
+    I.mockEndpoint(Endpoints.root, "personal");
+  }
 });
 
 for (const culture of cultures) {
@@ -23,12 +35,11 @@ for (const culture of cultures) {
 
     const isException = ignoringCultures.mainPage.indexOf(culture) != -1;
 
-    I.mockEndpoint(Endpoints.root, "empty");
     I.mockEndpoint(Endpoints.my, "default");
 
     if (!isException) {
       I.mockEndpoint(Endpoints.self, `selfTranslation`);
-      I.mockEndpoint(Endpoints.settings, `settingsTranslation`);
+      I.mockEndpoint(Endpoints.settings, settingsTranslationFile);
     }
 
     I.amOnPage("/products/files");
@@ -48,12 +59,11 @@ for (const culture of cultures) {
     changeCulture(culture);
     const isException = ignoringCultures.profileMenu.indexOf(culture) != -1;
 
-    I.mockEndpoint(Endpoints.root, "empty");
     I.mockEndpoint(Endpoints.my, "default");
 
     if (!isException) {
       I.mockEndpoint(Endpoints.self, `selfTranslation`);
-      I.mockEndpoint(Endpoints.settings, `settingsTranslation`);
+      I.mockEndpoint(Endpoints.settings, settingsTranslationFile);
     }
 
     I.amOnPage("/products/files");
@@ -74,12 +84,11 @@ for (const culture of cultures) {
     changeCulture(culture);
     const isException = ignoringCultures.mainButton.indexOf(culture) != -1;
 
-    I.mockEndpoint(Endpoints.root, "empty");
     I.mockEndpoint(Endpoints.my, "default");
 
     if (!isException) {
       I.mockEndpoint(Endpoints.self, `selfTranslation`);
-      I.mockEndpoint(Endpoints.settings, `settingsTranslation`);
+      I.mockEndpoint(Endpoints.settings, settingsTranslationFile);
     }
 
     I.amOnPage("/products/files");
@@ -101,12 +110,11 @@ for (const culture of cultures) {
   Scenario(`Table settings test ${culture}`, { timeout: 30 }, ({ I }) => {
     const isException = ignoringCultures.tableSettings.indexOf(culture) != -1;
 
-    I.mockEndpoint(Endpoints.root, "empty");
     I.mockEndpoint(Endpoints.my, "default");
 
     if (!isException) {
       I.mockEndpoint(Endpoints.self, `selfTranslation`);
-      I.mockEndpoint(Endpoints.settings, `settingsTranslation`);
+      I.mockEndpoint(Endpoints.settings, settingsTranslationFile);
     }
 
     I.amOnPage("/products/files");
