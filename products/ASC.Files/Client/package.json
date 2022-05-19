@@ -60,6 +60,7 @@
     "codeceptjs-resemblehelper": "^1.9.5",
     "copy-webpack-plugin": "^9.0.1",
     "css-loader": "^6.2.0",
+    "element-resize-detector": "^1.2.4",
     "external-remotes-plugin": "^1.0.0",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "5.3.2",

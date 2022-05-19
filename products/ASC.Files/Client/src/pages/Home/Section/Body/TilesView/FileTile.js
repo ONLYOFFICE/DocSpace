@@ -39,6 +39,7 @@ const FileTile = (props) => {
     t,
     getContextModel,
     onHideContextMenu,
+    thumbSize,
   } = props;
 
   const temporaryExtension =
@@ -71,7 +72,11 @@ const FileTile = (props) => {
           key={item.id}
           item={item}
           temporaryIcon={temporaryIcon}
-          thumbnail={thumbnailUrl}
+          thumbnail={
+            thumbnailUrl && thumbSize
+              ? `${thumbnailUrl}&size=${thumbSize}`
+              : thumbnailUrl
+          }
           element={element}
           sectionWidth={sectionWidth}
           contentElement={quickButtonsComponent}
