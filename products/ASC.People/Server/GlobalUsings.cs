@@ -26,6 +26,7 @@
 
 global using System.Net.Mail;
 global using System.Security;
+global using System.Security.Claims;
 global using System.ServiceModel.Security;
 global using System.Web;
 
@@ -49,6 +50,7 @@ global using ASC.MessagingSystem.Models;
 global using ASC.People;
 global using ASC.People.ApiModels.RequestDto;
 global using ASC.People.ApiModels.ResponseDto;
+global using ASC.People.Log;
 global using ASC.People.Resources;
 global using ASC.Security.Cryptography;
 global using ASC.Web.Api.Models;

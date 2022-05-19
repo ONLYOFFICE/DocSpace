@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System.Security.Claims;
-
 using Module = ASC.Api.Core.Module;
 using SecurityContext = ASC.Core.SecurityContext;
 
@@ -274,7 +272,7 @@ public class UserController : PeopleControllerBase
         }
         catch (Exception error)
         {
-            _logger.LogError(error, "GetAdvanced");
+            _logger.ErrorGetAdvanced(error);
         }
 
         return null;
@@ -326,7 +324,7 @@ public class UserController : PeopleControllerBase
             }
             else
             {
-                _logger.LogError("Account {userId} сould not get user by name {userName}", _securityContext.CurrentAccount.ID, username);
+                _logger.ErrorCouldNotGetUserByName(_securityContext.CurrentAccount.ID, username);
             }
         }
 
@@ -406,7 +404,7 @@ public class UserController : PeopleControllerBase
         }
         catch (Exception error)
         {
-            _logger.LogError(error, "GetSearch");
+            _logger.ErrorGetSearch(error);
         }
 
         return null;
@@ -777,7 +775,7 @@ public class UserController : PeopleControllerBase
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogDebug(ex, $"ERROR write to template_unsubscribe {ex.Message}, email:{inDto.Email.ToLowerInvariant()}");
+                    _logger.DebugWriteToTemplateUnsubscribe(inDto.Email.ToLowerInvariant(), ex);
                 }
             }
 
@@ -1104,7 +1102,7 @@ public class UserController : PeopleControllerBase
         var error = _userManagerWrapper.SendUserPassword(inDto.Email);
         if (!string.IsNullOrEmpty(error))
         {
-            _logger.LogError(error, "Password recovery ({email})", inDto.Email);
+            _logger.ErrorPasswordRecovery(inDto.Email, error);
         }
 
         return string.Format(Resource.MessageYourPasswordSendedToEmail, inDto.Email);
