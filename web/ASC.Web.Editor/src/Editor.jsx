@@ -58,9 +58,9 @@ const theme = store.auth.settingsStore.theme;
 
 let documentIsReady = false;
 
-const text = "text";
-const spreadSheet = "spreadsheet";
-const presentation = "presentation";
+const text = "word";
+const spreadSheet = "cell";
+const presentation = "slide";
 const insertImageAction = "imageFileType";
 const mailMergeAction = "mailMergeFileType";
 const compareFilesAction = "documentsFileType";
@@ -359,6 +359,7 @@ const Editor = () => {
         break;
     }
 
+    console.log("icon", icon);
     if (icon) favicon.href = `${homepage}/images/${icon}`;
   };
 
