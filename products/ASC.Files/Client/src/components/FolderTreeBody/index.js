@@ -18,12 +18,13 @@ const FolderTreeBody = ({
   isDisableTree,
   parentId,
   isLoadingNodes,
+  setIsLoadingNodes,
 }) => {
   const { t } = useTranslation(["SelectFolder", "Common"]);
 
   useEffect(() => {
     const selectedNode = document.getElementsByClassName(
-      "rc-tree-node-selected"
+      "rc-tree-treenode-selected"
     )[0];
     if (selectedNode) {
       document
@@ -32,6 +33,19 @@ const FolderTreeBody = ({
     }
   }, []);
 
+  const firstLoadScroll = () => {
+    setIsLoadingNodes(false);
+
+    const selectedNode = document.getElementsByClassName(
+      "rc-tree-treenode-selected"
+    )[0];
+
+    if (selectedNode) {
+      document
+        .querySelector("#folder-tree-scroll-bar > .scroll-body")
+        .scrollTo(0, selectedNode.offsetTop);
+    }
+  };
   return (
     <>
       {isAvailable ? (
@@ -51,6 +65,7 @@ const FolderTreeBody = ({
                 needUpdate={false}
                 defaultExpandAll
                 parentId={parentId}
+                firstLoadScroll={firstLoadScroll}
               />
             </Scrollbar>
           </div>
@@ -74,8 +89,11 @@ FolderTreeBody.defaultProps = {
 export default inject(
   ({ filesStore, treeFoldersStore, selectedFolderStore }) => {
     const { filter, isLoading } = filesStore;
-    const { expandedPanelKeys, isLoadingNodes } = treeFoldersStore;
-
+    const {
+      expandedPanelKeys,
+      isLoadingNodes,
+      setIsLoadingNodes,
+    } = treeFoldersStore;
     const expandedKeysProp = expandedPanelKeys
       ? expandedPanelKeys
       : selectedFolderStore.pathParts;
@@ -87,6 +105,7 @@ export default inject(
       filter,
       isLoading,
       isLoadingNodes,
+      setIsLoadingNodes,
     };
   }
 )(observer(FolderTreeBody));
