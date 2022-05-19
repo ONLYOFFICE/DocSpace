@@ -63,6 +63,12 @@ if (isTranslation) {
   fs.mkdir(diffFolder, { recursive: true }, (err) => {
     if (err) throw err;
   });
+
+  if (isModel) {
+    fs.rmdir(screenshotOutput, { recursive: true }, (err) => {
+      if (err) throw err;
+    });
+  }
 }
 
 exports.config = {
@@ -72,7 +78,7 @@ exports.config = {
     Playwright: {
       url: "http://localhost:8092",
       // show browser window
-      show: false,
+      show: true,
       browser: browser,
       // restart browser between tests
       restart: true,

@@ -58,6 +58,12 @@ if (isTranslation) {
   fs.mkdir(diffFolder, { recursive: true }, (err) => {
     if (err) throw err;
   });
+
+  if (isModel) {
+    fs.rmdir(screenshotOutput, { recursive: true }, (err) => {
+      if (err) throw err;
+    });
+  }
 }
 
 exports.config = {
