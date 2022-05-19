@@ -5,5 +5,6 @@
   "ConvertAndOpenTitle": "Açıq sənədi konvertasiya et",
   "ConvertedFileDestination": "Faylın nüsxəsi <strong>{{folderTitle}}</strong> qovluğunda yaradılacaq",
   "HideMessage": "Bu bildirişi bir daha göstərmə",
+  "InfoCreateFileIn": "Yeni fayl '{{fileTitle}}' '{{folderTitle}}' qovluğunda yaradıldı",
   "SaveOriginalFormatMessage": "Faylın nüsxəsini orijinal formatda yadda saxla"
 }
