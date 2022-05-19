@@ -64,7 +64,7 @@ namespace ASC.Web.CRM.Classes
         public VoipEngine(DaoFactory daoFactory,
                          CrmSecurity crmSecurity,
                          TenantUtil tenantUtil,
-                         DistributedTaskQueueOptionsManager optionsManager,
+                         IDistributedTaskQueueFactory factory,
                          SecurityContext securityContext,
                          IOptionsMonitor<ILog> logger,
                          TenantManager tenantManager,
@@ -73,7 +73,7 @@ namespace ASC.Web.CRM.Classes
             _crmSecurity = crmSecurity;
             _tenantUtil = tenantUtil;
             _securityContext = securityContext;
-            _queue = optionsManager.Get<QueueItem>();
+            _queue = factory.CreateQueue<QueueItem>();
             _logger = logger.Get("ASC.CRM");
             _tenantManager = tenantManager;
             _voipDao = voipDao;
@@ -226,7 +226,7 @@ namespace ASC.Web.CRM.Classes
             {
                 var _queueItem = new QueueItem { CallID = callId, TenantID = _tenantId };
 
-                _queue.QueueTask((a, b) => SaveAdditionalInfoAction(_queueItem), _queueItem); ;
+                _queue.EnqueueTask((a, b) => SaveAdditionalInfoAction(_queueItem), _queueItem); ;
             }
         }
 

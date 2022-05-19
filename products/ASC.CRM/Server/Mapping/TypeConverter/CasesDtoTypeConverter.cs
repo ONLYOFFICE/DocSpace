@@ -48,15 +48,15 @@ namespace ASC.CRM.Mapping
         private readonly DaoFactory _daoFactory;
         private readonly CrmSecurity _CRMSecurity;
         private readonly ApiDateTimeHelper _apiDateTimeHelper;
-        private readonly EmployeeWraperHelper _employeeWraperHelper;
+        private readonly EmployeeDtoHelper _employeeDtoHelper;
 
         public CasesDtoTypeConverter(ApiDateTimeHelper apiDateTimeHelper,
-                           EmployeeWraperHelper employeeWraperHelper,
+                           EmployeeDtoHelper employeeDtoHelper,
                            CrmSecurity crmSecurity,
                            DaoFactory daoFactory)
         {
             _apiDateTimeHelper = apiDateTimeHelper;
-            _employeeWraperHelper = employeeWraperHelper;
+            _employeeDtoHelper = employeeDtoHelper;
             _CRMSecurity = crmSecurity;
             _daoFactory = daoFactory;
         }
@@ -72,14 +72,14 @@ namespace ASC.CRM.Mapping
             result.IsClosed = source.IsClosed;
             result.IsPrivate = _CRMSecurity.IsPrivate(source);
             result.Created = _apiDateTimeHelper.Get(source.CreateOn);
-            result.CreateBy = _employeeWraperHelper.Get(source.CreateBy);
+            result.CreateBy = _employeeDtoHelper.Get(source.CreateBy);
             result.CanEdit = _CRMSecurity.CanEdit(source);
 
             if (result.IsPrivate)
             {
                 result.AccessList = _CRMSecurity.GetAccessSubjectTo(source)
                                         .SkipWhile(item => item.Key == Constants.GroupEveryone.ID)
-                                        .Select(item => _employeeWraperHelper.Get(item.Key));
+                                        .Select(item => _employeeDtoHelper.Get(item.Key));
             }
 
             result.CustomFields = _daoFactory

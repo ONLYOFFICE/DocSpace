@@ -31,7 +31,6 @@ using ASC.Common;
 using ASC.Core.Common.Settings;
 
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.CRM.Classes
 {
@@ -107,11 +106,14 @@ namespace ASC.Web.CRM.Classes
         public String CompanyAddress { get; set; }
     }
 
-    public class CrmSettings : ISettings
+    public class CrmSettings : ISettings<CrmSettings>
     {
-        public CrmSettings()
+        private readonly CurrencyProvider _currencyProvider;
+        private readonly IConfiguration _configuration;
+        public CrmSettings(CurrencyProvider currencyProvider, IConfiguration configuration)
         {
-
+            _currencyProvider = currencyProvider;
+            _configuration = configuration;
         }
 
         public Guid ID
@@ -155,16 +157,13 @@ namespace ASC.Web.CRM.Classes
 
         [JsonPropertyName("IsConfiguredSmtp")]
         public bool IsConfiguredSmtp { get; set; }
-        public ISettings GetDefault(IServiceProvider serviceProvider)
+        public CrmSettings GetDefault()
         {
-            var currencyProvider = serviceProvider.GetService<CurrencyProvider>();
-            var configuration = serviceProvider.GetService<IConfiguration>();
-
             var languageName = System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
 
-            var findedCurrency = currencyProvider.GetAll().Find(item => string.Equals(item.CultureName, languageName, StringComparison.OrdinalIgnoreCase));
+            var findedCurrency = _currencyProvider.GetAll().Find(item => string.Equals(item.CultureName, languageName, StringComparison.OrdinalIgnoreCase));
 
-            return new CrmSettings()
+            return new CrmSettings(_currencyProvider, _configuration)
             {
                 DefaultCurrency = findedCurrency != null ? findedCurrency.Abbreviation : "USD",
                 IsConfiguredPortal = false,
@@ -172,12 +171,12 @@ namespace ASC.Web.CRM.Classes
                 AddTagToContactGroupAuto = null,
                 WriteMailToHistoryAuto = false,
                 WebFormKey = Guid.Empty,
-                InvoiceSetting = new InvoiceSetting(configuration).DefaultSettings
+                InvoiceSetting = new InvoiceSetting(_configuration).DefaultSettings
             };
         }
     }
 
-    public class CrmReportSampleSettings : ISettings
+    public class CrmReportSampleSettings : ISettings<CrmReportSampleSettings>
     {
         [JsonPropertyName("NeedToGenerate")]
         public bool NeedToGenerate { get; set; }
@@ -187,7 +186,7 @@ namespace ASC.Web.CRM.Classes
             get { return new Guid("{54CD64AD-E73B-45A3-89E4-4D42A234D7A3}"); }
         }
 
-        public ISettings GetDefault(IServiceProvider serviceProvider)
+        public CrmReportSampleSettings GetDefault()
         {
             return new CrmReportSampleSettings { NeedToGenerate = true };
         }
