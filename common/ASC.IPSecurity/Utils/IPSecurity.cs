@@ -110,12 +110,12 @@ public class IPSecurity
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Can't verify request with IP-address: {requestIps}. Tenant: {tenant}.", requestIps ?? "", tenant);
+            _logger.ErrorCantVerifyRequest(requestIps ?? "", tenant, ex);
 
             return false;
         }
 
-        _logger.LogInformation("Restricted from IP-address: {ip}. Tenant: {tenant}. Request to: {url}", requestIps ?? "", tenant, _httpContextAccessor.HttpContext.Request.GetDisplayUrl());
+        _logger.InformationRestricted(requestIps ?? "", tenant, _httpContextAccessor.HttpContext.Request.GetDisplayUrl());
 
         return false;
     }
@@ -174,7 +174,7 @@ public class IPSecurity
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Can't verify local network from request with IP-address: {0}", string.Join(",", ips));
+            _logger.ErrorCantVerifyLocalNetWork(string.Join(",", ips), ex);
         }
 
         return false;
