@@ -43,9 +43,9 @@ const StyledTableContainer = styled.div`
   }
 
   .lengthen-header {
-    padding-left: 23px;
-    border-bottom: ${(props) => props.theme.tableContainer.header.borderBottom};
-    border-image-source: none;
+    border-image-slice: 1;
+    border-image-source: ${(props) =>
+      props.theme.tableContainer.header.lengthenBorderImageSource};
   }
 
   .hotkeys-lengthen-header {
