@@ -9,8 +9,6 @@ const cultures = isModel ? ["en"] : config.web.cultures.split(",");
 
 const isPersonal = !!process.env.PERSONAL;
 
-console.log(process.env.PERSONAL);
-
 const settingsFile = isPersonal ? `settingsPersonal` : `settings`;
 
 const settingsTranslationFile = isPersonal
@@ -25,13 +23,17 @@ Feature(featureName, { timeout: 90 });
 
 Before(async ({ I }) => {
   I.mockData();
-  I.mockEndpoint(Endpoints.settings, settingsFile);
+  if (isPersonal) {
+    I.mockEndpoint(Endpoints.settings, settingsFile);
+    I.mockEndpoint(Endpoints.subscription, "subscription");
+    I.mockEndpoint(Endpoints.tfaapp, "tfaapp");
+  }
 });
 
 for (const culture of cultures) {
   if (!isPersonal) {
     Scenario(`Main page test ${culture}`, { timeout: 30 }, ({ I }) => {
-      changeCulture(culture);
+      changeCulture(culture, isPersonal);
       const isException = ignoringCultures.mainPage.indexOf(culture) != -1;
 
       I.mockEndpoint(Endpoints.filter, "many");
@@ -53,7 +55,7 @@ for (const culture of cultures) {
     });
 
     Scenario(`Main button test ${culture}`, { timeout: 30 }, ({ I }) => {
-      changeCulture(culture);
+      changeCulture(culture, isPersonal);
       const isException = ignoringCultures.mainButton.indexOf(culture) != -1;
 
       I.mockEndpoint(Endpoints.filter, "many");
@@ -83,7 +85,7 @@ for (const culture of cultures) {
       `Table settings test ${culture}`,
       { timeout: 30 },
       async ({ I }) => {
-        changeCulture(culture);
+        changeCulture(culture, isPersonal);
         const isException =
           ignoringCultures.tableSettings.indexOf(culture) != -1;
 
@@ -110,5 +112,30 @@ for (const culture of cultures) {
         });
       }
     );
+  }
+
+  if (isPersonal) {
+    Scenario(`Profile page test ${culture}`, { timeout: 30 }, async ({ I }) => {
+      changeCulture(culture, isPersonal);
+      const isException = ignoringCultures.profilePage.indexOf(culture) != -1;
+
+      await I.mockEndpoint(Endpoints.filter, "many");
+      await I.mockEndpoint(Endpoints.group, "many");
+
+      if (!isException) {
+        await I.mockEndpoint(Endpoints.self, `selfTranslation`);
+        await I.mockEndpoint(Endpoints.settings, settingsTranslationFile);
+      }
+
+      I.amOnPage("/my");
+
+      I.wait(3);
+
+      I.saveScreenshot(`${culture}-profile-page.png`);
+      await I.seeVisualDiff(`${culture}-profile-page.png`, {
+        tolerance: 0.07,
+        prepareBaseImage: false,
+      });
+    });
   }
 }
