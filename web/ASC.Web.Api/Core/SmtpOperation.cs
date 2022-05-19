@@ -152,7 +152,7 @@ public class SmtpOperation
         catch (AuthorizingException authError)
         {
             Error = Resource.ErrorAccessDenied; // "No permissions to perform this action";
-            _logger.LogError(new SecurityException(Error, authError), Error);
+            _logger.ErrorWithException(new SecurityException(Error, authError));
         }
         catch (AggregateException ae)
         {
@@ -161,17 +161,17 @@ public class SmtpOperation
         catch (SocketException ex)
         {
             Error = ex.Message; //TODO: Add translates of ordinary cases
-            _logger.LogError(ex.ToString());
+            _logger.ErrorWithException(ex);
         }
         catch (AuthenticationException ex)
         {
             Error = ex.Message; //TODO: Add translates of ordinary cases
-            _logger.LogError(ex.ToString());
+            _logger.ErrorWithException(ex);
         }
         catch (Exception ex)
         {
             Error = ex.Message; //TODO: Add translates of ordinary cases
-            _logger.LogError(ex.ToString());
+            _logger.ErrorWithException(ex);
         }
         finally
         {
@@ -184,7 +184,7 @@ public class SmtpOperation
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "LdapOperation finalization problem");
+                _logger.ErrorLdapOperationFinalizationProblem(ex);
             }
         }
     }
@@ -220,8 +220,6 @@ public class SmtpOperation
         return Progress;
     }
 
-    const string ProgerssString = "Progress: {0}% {1} {2}";
-
     public void SetProgress(int? currentPercent = null, string currentStatus = null, string currentSource = null)
     {
         if (!currentPercent.HasValue && currentStatus == null && currentSource == null)
@@ -244,7 +242,7 @@ public class SmtpOperation
             Source = currentSource;
         }
 
-        _logger.LogInformation(ProgerssString, Progress, Status, Source);
+        _logger.InformationProgress(Progress, Status, Source);
 
         PublishTaskInfo();
     }
