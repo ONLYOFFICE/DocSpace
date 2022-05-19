@@ -139,7 +139,7 @@ public class MessagesRepository : IDisposable
                 }
                 catch (Exception e)
                 {
-                    _logger.LogError(e, ("FlushCache " + message.Id));
+                    _logger.ErrorFlushCache(message.Id, e);
                 }
             }
 

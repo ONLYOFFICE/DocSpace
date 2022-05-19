@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,42 +24,9 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.MessagingSystem.Core.Sender;
-
-[Singletone]
-public class DbMessageSender : IMessageSender
+namespace ASC.MessagingSystem.Log;
+internal static partial class DbMessageSenderLogger
 {
-    private readonly ILogger _logger;
-    private readonly MessagesRepository _messagesRepository;
-    private readonly bool _messagingEnabled;
-
-    public DbMessageSender(IConfiguration configuration, MessagesRepository messagesRepository, ILoggerProvider options)
-    {
-        var setting = configuration["messaging:enabled"];
-        _messagingEnabled = !string.IsNullOrEmpty(setting) && setting == "true";
-        _messagesRepository = messagesRepository;
-        _logger = options.CreateLogger("ASC.Messaging");
-    }
-
-    public void Send(EventMessage message)
-    {
-        try
-        {
-            if (!_messagingEnabled)
-            {
-                return;
-            }
-
-            if (message == null)
-            {
-                return;
-            }
-
-            _messagesRepository.Add(message);
-        }
-        catch (Exception ex)
-        {
-            _logger.ErrorFailedSend(ex);
-        }
-    }
+    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to send a message")]
+    public static partial void ErrorFailedSend(this ILogger logger, Exception exception);
 }
