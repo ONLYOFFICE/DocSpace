@@ -418,7 +418,7 @@ namespace ASC.Files.ThumbnailBuilder
                 }
                 else
                 {
-                    var height = (int)(thumbnaillWidth * (sourceBitmap.Width / (1.0 * thumbnaillWidth)));
+                    var height = (int)(thumbnaillHeight * (sourceBitmap.Width / (1.0 * thumbnaillWidth)));
                     size = new Size(sourceBitmap.Width, height);
                 }
             }
