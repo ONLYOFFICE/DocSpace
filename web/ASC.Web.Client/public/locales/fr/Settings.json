@@ -94,7 +94,7 @@
   "Path": "Chemin",
   "PeopleAdministratorsCan": "Les administrateurs du module Personnes peuvent créer des profils et des groupes, importer des personnes et inviter des utilisateurs.",
   "PleaseNote": "Veuillez noter",
-  "PleaseNoteDescription": "<0>{{pleaseNote}}</0>: votre ancienne adresse du portail sera disponible pour les nouveaux utilisateurs une fois que vous cliquez sur le bouton <2>{{Enregistrer}}</2>.",
+  "PleaseNoteDescription": "<0>{{pleaseNote}}</0>: votre ancienne adresse du portail sera disponible pour les nouveaux utilisateurs une fois que vous cliquez sur le bouton <2>{{save}}</2>.",
   "PortalAccess": "Accès au portail",
   "PortalAccessSubTitle": "Cette section vous permet de fournir aux utilisateurs des moyens sûrs et pratiques d&apos;accéder au portail.",
   "PortalAdmins": "Administrateurs du portail",
@@ -159,6 +159,6 @@
   "UseUpperCase": "Utiliser majuscules",
   "UserAgreement": "Je confirme et je veux continuer",
   "Users": "Utilisateurs",
-  "WhiteLabel": "White label",
+  "WhiteLabel": "Marque blanche",
   "YouHaveUnsavedChanges": "Vous avec des modifications non-sauvegardées"
 }

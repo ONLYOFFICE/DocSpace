@@ -3,7 +3,6 @@
   "ConnectFolderTitle": "Заглавие на папката",
   "ConnectMakeShared": "Сподели и постави в папка 'Често срещани'",
   "ConnectionUrl": "Свързващ url",
-  "ConvertedFileDestination": "Копие на файла ще бъде създадено в папката <strong>{{folderTitle}}</strong>",
   "Login": "Вписване",
   "Reconnect": "Повторно свързване"
 }

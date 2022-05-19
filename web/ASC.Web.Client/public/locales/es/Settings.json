@@ -94,7 +94,7 @@
   "Path": "Ruta",
   "PeopleAdministratorsCan": "Los administradores del módulo Personas pueden crear perfiles y grupos, importar personas e invitar a usuarios.",
   "PleaseNote": "Note, por favor",
-  "PleaseNoteDescription": "<0>{{pleaseNote}}</0>: su dirección de portal anterior estará disponible para nuevos usuarios al hacer clic en el botón <2>{{Guardar}}</2>.",
+  "PleaseNoteDescription": "<0>{{pleaseNote}}</0>: su dirección de portal anterior estará disponible para nuevos usuarios al hacer clic en el botón <2>{{save}}</2>.",
   "PortalAccess": "Acceso al portal",
   "PortalAccessSubTitle": "Esta sección le permite ofrecer a los usuarios formas seguras y cómodas de acceder al portal.",
   "PortalAdmins": "Administradores del portal",
