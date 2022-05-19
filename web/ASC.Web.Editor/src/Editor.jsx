@@ -908,6 +908,7 @@ const Editor = () => {
             <div id="editor"></div>
             {isSharingAccess && isVisible && (
               <SharingDialog
+                settings={settings} //TODO: Maybe init filesSettings in editor?
                 isVisible={isVisible}
                 sharingObject={fileInfo}
                 onCancel={onCancel}
@@ -917,7 +918,7 @@ const Editor = () => {
 
             {isFileDialogVisible && (
               <SelectFileDialog
-                settings={settings}
+                settings={settings} //TODO: Maybe init filesSettings in editor?
                 resetTreeFolders
                 onSelectFile={onSelectFile}
                 isPanelVisible={isFileDialogVisible}
