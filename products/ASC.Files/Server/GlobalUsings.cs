@@ -52,6 +52,7 @@ global using ASC.Files.Core.ApiModels.ResponseDto;
 global using ASC.Files.Core.Security;
 global using ASC.Files.Core.Services.OFormService;
 global using ASC.Files.Helpers;
+global using ASC.Files.Log;
 global using ASC.MessagingSystem.Core;
 global using ASC.Web.Api.Routing;
 global using ASC.Web.Core.Files;
