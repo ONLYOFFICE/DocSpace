@@ -12,6 +12,7 @@
   "EnterAppCodeDescription": "Uygulamanızdan oluşturulan 6 haneli kodu girin. Eğer telefonunuza erişiminiz yoksa yedek kodları kullanın.",
   "EnterAppCodeTitle": "Kimlik doğrulama uygulamasından kodu girin",
   "EnterCodePlaceholder": "Kodu girin",
+  "EnterPhone": "Cep telefonu numarası giriniz",
   "FirstName": "İsim",
   "GetCode": "Kod al",
   "InviteTitle": "Bu portala katılmaya davet edildiniz!",
