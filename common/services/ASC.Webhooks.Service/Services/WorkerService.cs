@@ -55,7 +55,7 @@ public class WorkerService : BackgroundService
 
             if (queueSize == 0) // change to "<= threadCount"
             {
-                _logger.LogTrace("Procedure: Waiting for data. Sleep {waitingPeriod}.", _waitingPeriod);
+                _logger.TraceProcedure(_waitingPeriod);
 
                 await Task.Delay(_waitingPeriod, stoppingToken);
 
@@ -89,7 +89,7 @@ public class WorkerService : BackgroundService
             }
 
             Task.WaitAll(tasks.ToArray());
-            _logger.LogDebug("Procedure: Finish.");
+            _logger.DebugProcedureFinish();
         }
     }
 }
