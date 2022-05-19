@@ -86,6 +86,10 @@ class TreeFolders extends React.Component {
     this.state = { isExpand: false };
   }
 
+  componentDidMount() {
+    this.props.isLoadingNodes && this.props.setIsLoadingNodes(false);
+  }
+
   onBadgeClick = (e) => {
     e.stopPropagation();
     const id = e.currentTarget.dataset.id;
@@ -219,7 +223,7 @@ class TreeFolders extends React.Component {
   };
 
   getItems = (data) => {
-    const { withoutProvider, theme, parentId } = this.props;
+    const { withoutProvider, theme, parentId, setIsLoadingNodes } = this.props;
     return data.map((item, index) => {
       const dragging = this.props.dragging ? this.showDragItems(item) : false;
 
@@ -237,9 +241,9 @@ class TreeFolders extends React.Component {
       if (dragging) value = `${item.id} dragging ${provider}`;
 
       if (this.needScroll) {
-        if (item.parentId.toString() === parentId?.toString()) {
+        if (parentId && item.parentId.toString() === parentId.toString()) {
           if (index === this.childLength) {
-            this.props.setIsLoadingNodes(false);
+            setIsLoadingNodes(false);
             const selectedNode = document.getElementsByClassName(
               "rc-tree-node-selected"
             )[0];
@@ -343,9 +347,10 @@ class TreeFolders extends React.Component {
   };
 
   getNewTreeData(treeData, curId, child, pos) {
+    const { parentId, setIsLoadingNodes } = this.props;
     this.childLength = null;
-    !this.expand && this.props.setIsLoadingNodes(true);
-    if (!this.expand && curId.toString() === this.props.parentId?.toString()) {
+    !this.expand && parentId && setIsLoadingNodes(true);
+    if (!this.expand && parentId && curId.toString() === parentId?.toString()) {
       this.needScroll = true;
       this.childLength = child.length - 1;
     }
