@@ -29,6 +29,7 @@ global using System.Net.Sockets;
 global using ASC.EventBus.Abstractions;
 global using ASC.EventBus.Events;
 global using ASC.EventBus.Extensions;
+global using ASC.EventBus.RabbitMQ.Log;
 
 global using Autofac;
 
