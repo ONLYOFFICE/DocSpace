@@ -125,6 +125,7 @@ export default function withFileActions(WrappedFileItem) {
       if (
         (e && e.target.tagName === "INPUT") ||
         !!e.target.closest(".lock-file") ||
+        !!e.target.closest(".additional-badges") ||
         isTrashFolder
       )
         return;
