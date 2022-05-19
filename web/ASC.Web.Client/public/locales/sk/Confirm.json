@@ -1,4 +1,4 @@
-﻿{
+{
   "ChangePasswordSuccess": "Heslo bolo úspešne zmenené",
   "ConfirmOwnerPortalSuccessMessage": "Vlastník portálu bol úspešne zmenený. O 10 sekúnd budete presmerovaní",
   "ConfirmOwnerPortalTitle": "Potvrďte, že chcete zmeniť vlastníka portálu na {{newOwner}}",
@@ -14,7 +14,6 @@
   "FirstName": "Krstné meno",
   "InviteTitle": "Ste pozvaní pripojiť sa k tomuto portálu!",
   "LoginRegistryButton": "Pripojiť",
-  "LoginWithAccount": "alebo sa prihláste s:",
   "PassworResetTitle": "Teraz si môžete vytvoriť nové heslo.",
   "SetAppButton": "Pripojiť aplikáciu",
   "SetAppDescription": "Dvojfaktorové overenie je povolené. Nakonfigurujte si overovaciu aplikáciu, aby ste mohli pokračovať v práci na portáli. Môžete použiť Google Authenticator pre <1>Android</1> a<4>iOS</4> alebo Authenticator pre <8>Windows Phone</8>.",

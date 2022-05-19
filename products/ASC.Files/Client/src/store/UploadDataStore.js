@@ -28,6 +28,7 @@ class UploadDataStore {
   settingsStore;
 
   files = [];
+  uploadedFilesHistory = [];
   filesSize = 0;
   tempConversionFiles = [];
   filesToConversion = [];
@@ -95,6 +96,7 @@ class UploadDataStore {
   clearUploadData = () => {
     this.files = [];
     this.filesToConversion = [];
+    this.uploadedFilesHistory = [];
     this.filesSize = 0;
     this.uploadedFiles = 0;
     this.percent = 0;
@@ -501,6 +503,13 @@ class UploadDataStore {
         ? this.convertUploadedFiles(t)
         : this.dialogsStore.setConvertDialogVisible(true);
 
+    const clearArray = this.removeDuplicate([
+      ...newFiles,
+      ...this.uploadedFilesHistory,
+    ]);
+
+    this.uploadedFilesHistory = clearArray;
+
     const newUploadData = {
       files: newFiles,
       filesSize,
@@ -873,7 +882,10 @@ class UploadDataStore {
 
     const totalErrorsCount = sumBy(this.files, (f) => (f.error ? 1 : 0));
 
-    if (totalErrorsCount > 0) console.log("Errors: ", totalErrorsCount);
+    if (totalErrorsCount > 0) {
+      this.primaryProgressDataStore.setPrimaryProgressBarShowError(true); // for empty file
+      console.log("Errors: ", totalErrorsCount);
+    }
 
     this.uploaded = true;
     this.converted = true;
@@ -901,17 +913,17 @@ class UploadDataStore {
 
     setTimeout(() => {
       if (!this.primaryProgressDataStore.alert) {
-        this.primaryProgressDataStore.clearPrimaryProgressData();
+        //this.primaryProgressDataStore.clearPrimaryProgressData();
       }
 
       if (this.uploadPanelVisible || this.primaryProgressDataStore.alert) {
         uploadData.files = this.files;
         uploadData.filesToConversion = this.filesToConversion;
       } else {
-        uploadData.files = [];
-        uploadData.filesToConversion = [];
-        this.isUploadingAndConversion = false;
-        this.isUploading = false;
+        // uploadData.files = [];
+        // uploadData.filesToConversion = [];
+        // this.isUploadingAndConversion = false;
+        // this.isUploading = false;
       }
 
       this.setUploadData(uploadData);
@@ -943,7 +955,7 @@ class UploadDataStore {
         const data = res[0] ? res[0] : null;
         const pbData = { icon: "duplicate" };
 
-        return this.loopFilesOperations(data, fileIds.length, pbData).then(() =>
+        return this.loopFilesOperations(data, pbData).then(() =>
           this.moveToCopyTo(destFolderId, pbData, true, fileIds, folderIds)
         );
       })
@@ -1186,6 +1198,20 @@ class UploadDataStore {
       setActiveFiles(newActiveFiles);
       setActiveFolders(newActiveFolders);
     }, TIMEOUT);
+  };
+
+  clearUploadedFilesHistory = () => {
+    this.primaryProgressDataStore.clearPrimaryProgressData();
+    this.uploadedFilesHistory = [];
+  };
+
+  removeDuplicate = (items) => {
+    let obj = {};
+    return items.filter((x) => {
+      if (obj[x.uniqueId]) return false;
+      obj[x.uniqueId] = true;
+      return true;
+    });
   };
 }
 

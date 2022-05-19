@@ -1,4 +1,4 @@
-﻿{
+{
   "AccessRightsAccessToProduct": "Η πρόσβαση στην ενότητα του {{product}} δίνεται σε",
   "AccessRightsAllUsers": "Όλοι οι {{users}}",
   "AccessRightsChangeOwnerConfirmText": "Οι αλλαγές θα εφαρμοστούν μετά την επιβεβαίωση μέσω email.",
@@ -21,9 +21,9 @@
   "ChooseOwner": "Επιλογή κατόχου",
   "CompanyNameForCanvasLogo": "Όνομα εταιρείας",
   "ConfirmEmailSended": "Το e-mail επιβεβαίωσης έχει σταλεί στον χρήστη {{ownerName}}",
-  "Customization": "Προσαρμογή",
   "CustomTitles": "Προσαρμοσμένοι τίτλοι",
   "CustomTitlesSettingsDescription": "Θα εμφανίζεται στη σελίδα καλωσορίσματος και θα χρησιμοποιείται για ειδοποιήσεις μέσω ηλεκτρονικού ταχυδρομείου (πεδίο Από). Το προσαρμοσμένο όνομα τομέα είναι ένας τρόπος για να ορίσετε μια εναλλακτική διεύθυνση URL για την πύλη σας. Το προσαρμοσμένο όνομα της πύλης θα εμφανίζεται δίπλα στη διεύθυνση onlyoffice.com/onlyoffice.eu.",
+  "Customization": "Προσαρμογή",
   "DeactivateOrDeletePortal": "Απενεργοποίηση ή διαγραφή πύλης.",
   "Disabled": "Απενεργοποιημένο",
   "DocumentsAdministratorsCan": "Οι διαχειριστές εγγράφων μπορούν να συνδέσουν τους λογαριασμούς Dropbox, Box και άλλους λογαριασμούς με τα κοινά έγγραφα και να ορίσουν δικαιώματα πρόσβασης σε αυτό το τμήμα",
@@ -41,14 +41,12 @@
   "LogoLightSmall": "Λογότυπο για την επικεφαλίδα της πύλης",
   "LogoSettings": "Ρυθμίσεις λογότυπου πύλης",
   "LogoUploadRecommendation": "Συνιστούμε να χρησιμοποιείτε εικόνες σε μορφή <1>PNG</1> με διαφανές φόντο",
-  "ManagementCategoryCommon": "Κοινό",
   "ManagementCategoryIntegration": "Ενσωμάτωση",
   "ManagementCategorySecurity": "Ασφάλεια",
   "Migration": "Μετεγκατάσταση",
   "NoAdmins": "Δεν υπάρχουν ακόμη διαχειριστές εδώ",
   "NoAdminsDescription": "Μπορείτε να προσθέσετε νέο διαχειριστή χειροκίνητα",
   "NotFoundDescription": "Αλλαγή των ρυθμίσεων του φίλτρου ή προσθήκη ατόμων στο τμήμα.",
-  "NotFoundTitle": "Δεν βρέθηκε τίποτα",
   "PeopleAdministratorsCan": "Οι διαχειριστές της ενότητας Άτομα μπορούν να δημιουργούν προφίλ και ομάδες, να εισάγουν άτομα και να προσκαλούν χρήστες.",
   "PortalAccess": "Πρόσβαση στην πύλη",
   "PortalAdmins": "Διαχειριστές πύλης",
@@ -57,7 +55,6 @@
   "ProductUserOpportunities": "Προβολή προφίλ και ομάδων",
   "RegistrationDate": "Ημερομηνία εγγραφής",
   "RestoreDefaultButton": "Επαναφορά στην προεπιλογή",
-  "SetDefaultTitle": "Ορισμός προεπιλεγμένου τίτλου",
   "StudioTimeLanguageSettings": "Ρυθμίσεις γλώσσας και ζώνης ώρας",
   "SuccessfullySaveGreetingSettingsMessage": "Οι ρυθμίσεις της σελίδας υποδοχής έχουν αποθηκευτεί με επιτυχία",
   "SuccessfullySaveSettingsMessage": "Οι ρυθμίσεις ενημερώθηκαν με επιτυχία",
@@ -76,6 +73,5 @@
   "TwoFactorAuthDescription": "Ο έλεγχος ταυτότητας δύο παραγόντων παρέχει έναν πιο ασφαλή τρόπο σύνδεσης. Μετά την εισαγωγή των διαπιστευτηρίων, ο χρήστης θα πρέπει να εισάγει έναν κωδικό από ένα SMS ή την εφαρμογή επαληθευτή",
   "UseAsLogoButton": "Χρήση ως λογότυπο",
   "Users": "Χρήστες",
-  "WelcomePageTitle": "Τίτλος σελίδας υποδοχής",
   "YouHaveUnsavedChanges": "Έχετε μη αποθηκευμένες αλλαγές"
 }

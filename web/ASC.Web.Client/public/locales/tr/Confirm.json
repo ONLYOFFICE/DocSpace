@@ -1,4 +1,4 @@
-﻿{
+{
   "ChangePasswordSuccess": "Şifre başarıyla değiştirildi",
   "ConfirmOwnerPortalSuccessMessage": "Portal sahibi başarıyla değiştirildi. 10 saniye içinde yönlendirileceksiniz",
   "ConfirmOwnerPortalTitle": "Portal sahibini {{newOwner}} olarak değiştirmek istediğinizi lütfen onaylayın",
@@ -14,7 +14,6 @@
   "FirstName": "İsim",
   "InviteTitle": "Bu portala katılmaya davet edildiniz!",
   "LoginRegistryButton": "Katıl",
-  "LoginWithAccount": "veya şununla giriş yap:",
   "PassworResetTitle": "Şimdi yeni şifre oluşturabilirsiniz.",
   "SetAppButton": "Uygulamaya bağlan",
   "SetAppDescription": "İki faktörlü kimlik doğrulama etkinleştirildi. Portal üzerinde çalışmaya devam etmek için kimlik doğrulama uygulamanızı yapılandırın. <1>Android</1> ve <4>iOS</4> için Google Authenticator'ı veya <8>Windows Phone</8> için Authenticator'ı kullanabilirsiniz.",

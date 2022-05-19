@@ -50,8 +50,6 @@ const StyledSectionHeader = styled.div`
 
     padding-right: 16px !important;
 
-    margin-top: -2px !important;
-
     margin-bottom: ${(props) =>
       props.settingsStudio ? "8px !important" : "0"};
   `}

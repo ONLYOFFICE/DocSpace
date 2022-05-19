@@ -5,6 +5,7 @@ import SimpleFilesRow from "./SimpleFilesRow";
 import { isMobile } from "react-device-detect";
 import styled from "styled-components";
 import marginStyles from "./CommonStyles";
+import { isTablet } from "@appserver/components/utils/device";
 import { Base } from "@appserver/components/themes";
 
 const StyledRowContainer = styled(RowContainer)`
@@ -18,13 +19,19 @@ const StyledRowContainer = styled(RowContainer)`
   }
 
   .row-wrapper:not(.row-selected)
-    + .row-wrapper:not(.row-hotkey-border)
+    //+ .row-wrapper:not(.row-hotkey-border)
     + .row-selected {
     .files-row {
       border-top: ${(props) =>
         `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
       margin-top: -3px;
       ${marginStyles}
+    }
+  }
+
+  .row-hotkey-border + .row-selected {
+    .files-row {
+      border-top: 1px solid #2da7db !important;
     }
   }
 
@@ -51,11 +58,22 @@ const StyledRowContainer = styled(RowContainer)`
 
 StyledRowContainer.defaultProps = { theme: Base };
 
-const FilesRowContainer = ({ filesList, sectionWidth, viewAs, setViewAs }) => {
+const FilesRowContainer = ({
+  filesList,
+  sectionWidth,
+  viewAs,
+  setViewAs,
+  infoPanelVisible,
+}) => {
   useEffect(() => {
     if ((viewAs !== "table" && viewAs !== "row") || !sectionWidth) return;
-
-    if (sectionWidth < 1025 || isMobile) {
+    // 400 - it is desktop info panel width
+    if (
+      (sectionWidth < 1025 && !infoPanelVisible) ||
+      ((sectionWidth < 625 || (viewAs === "row" && sectionWidth < 1025)) &&
+        infoPanelVisible) ||
+      isMobile
+    ) {
       viewAs !== "row" && setViewAs("row");
     } else {
       viewAs !== "table" && setViewAs("table");
@@ -79,12 +97,14 @@ const FilesRowContainer = ({ filesList, sectionWidth, viewAs, setViewAs }) => {
   );
 };
 
-export default inject(({ filesStore }) => {
+export default inject(({ filesStore, infoPanelStore }) => {
   const { filesList, viewAs, setViewAs } = filesStore;
 
+  const { isVisible: infoPanelVisible } = infoPanelStore;
   return {
     filesList,
     viewAs,
     setViewAs,
+    infoPanelVisible,
   };
 })(observer(FilesRowContainer));

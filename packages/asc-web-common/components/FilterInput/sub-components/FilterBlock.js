@@ -257,6 +257,7 @@ const FilterBlock = ({
         visible={true}
         withBackground={true}
         onClick={hideFilterBlock}
+        zIndex={215}
       />
     </>
   );

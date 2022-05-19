@@ -383,14 +383,14 @@ const Base = {
     background: grayLight,
     activeBackground: grayLightMid,
 
-    border: `1px solid ${globalColors.grayLightMid}`,
+    border: `none`,
     boxSizing: "border-box",
     borderRadius: "3px",
-    height: " 34px",
-    width: "34px",
+    height: " 32px",
+    width: "32px",
     padding: "9px",
-    color: "#979797",
-    hoverColor: black,
+    color: black,
+    hoverColor: darkBlack,
   },
 
   saveCancelButtons: {
@@ -1952,6 +1952,7 @@ const Base = {
     sectionHeaderToggleBgActive: grayLight,
 
     backgroundColor: white,
+    blurColor: "rgba(6, 22, 38, 0.2)",
     borderColor: grayLightMid,
     thumbnailBorderColor: grayLightMid,
     textColor: black,
@@ -2078,6 +2079,7 @@ const Base = {
       hoverIconColor: grayMain,
 
       borderImageSource: `linear-gradient(to right,${white} 21px,${grayLightMid} 21px,${grayLightMid} calc(100% - 20px),${white} calc(100% - 20px))`,
+      lengthenBorderImageSource: `linear-gradient(to right, ${white}, ${grayLightMid})`,
       hotkeyBorderBottom: `1px solid ${globalColors.blueMain}`,
     },
 

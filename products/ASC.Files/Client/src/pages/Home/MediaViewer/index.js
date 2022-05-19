@@ -42,6 +42,8 @@ const FilesMediaViewer = (props) => {
 
   useEffect(() => {
     window.addEventListener("popstate", onButtonBackHandler);
+
+    return () => window.removeEventListener("popstate", onButtonBackHandler);
   }, [onButtonBackHandler]);
 
   const onButtonBackHandler = () => {

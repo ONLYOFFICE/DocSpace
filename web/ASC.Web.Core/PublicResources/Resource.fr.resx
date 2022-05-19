@@ -1,64 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
-    Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
-    associated with the data types.
-    
-    Example:
-    
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
-                
-    There are any number of "resheader" rows that contain simple 
-    name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
-    mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
-    extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
-    read any of the formats listed below.
-    
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-    
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
@@ -112,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
     <value>Le champ du code de validation ne peut pas être vide</value>
@@ -313,7 +254,7 @@
     <value>Seau</value>
   </data>
   <data name="ConsumersGoogleCloudbucketDescription" xml:space="preserve">
-    <value>Saisissez le nom du conteneur Google Cloud bucket où vous voulez stocker vos sauvegardes.</value>
+    <value>Saisissez le nom du conteneur Google Cloud bucket pour stocker vos sauvegardes.</value>
   </data>
   <data name="ConsumersGoogleCloudDescription" xml:space="preserve">
     <value>Connecter service Google Cloud Storage pour créer des copies de sauvegarde et stocker des données de votre portail. </value>
@@ -379,13 +320,13 @@
     <value>Conteneur Privé</value>
   </data>
   <data name="ConsumersRackspaceprivate_containerDescription" xml:space="preserve">
-    <value>Saisissez l'adresse URL du conteneur privé Rackspace où vous voulez stocker vos sauvegardes.</value>
+    <value>Saisissez l'adresse URL du conteneur privé Rackspace pour stocker vos sauvegardes.</value>
   </data>
   <data name="ConsumersRackspacepublic_container" xml:space="preserve">
     <value>Conteneur public</value>
   </data>
   <data name="ConsumersRackspacepublic_containerDescription" xml:space="preserve">
-    <value>Saisissez l'adresse URL du conteneur public Rackspace où vous voulez stocker vos sauvegardes.</value>
+    <value>Saisissez l'adresse URL du conteneur public Rackspace pour stocker vos sauvegardes.</value>
   </data>
   <data name="ConsumersRackspaceregion" xml:space="preserve">
     <value>Région</value>
@@ -400,7 +341,7 @@
     <value>Conteneur</value>
   </data>
   <data name="ConsumersS3bucketDescription" xml:space="preserve">
-    <value>Saisissez un nom unique du conteneur Amazon où vous voulez stocker vos sauvegardes.</value>
+    <value>Saisissez un nom unique du conteneur Amazon pour stocker vos sauvegardes.</value>
   </data>
   <data name="ConsumersS3Description" xml:space="preserve">
     <value>Connecter Amazon AWS S3 pour créer des copies de sauvegarde et stocker des données de votre portail.</value>
@@ -436,13 +377,13 @@
     <value>Conteneur Privé</value>
   </data>
   <data name="ConsumersSelectelprivate_containerDescription" xml:space="preserve">
-    <value>Saisissez le nom du conteneur privé Selectel où vous voulez stocker vos sauvegardes.</value>
+    <value>Saisissez le nom du conteneur privé Selectel pour stocker vos sauvegardes.</value>
   </data>
   <data name="ConsumersSelectelpublic_container" xml:space="preserve">
     <value>Conteneur public</value>
   </data>
   <data name="ConsumersSelectelpublic_containerDescription" xml:space="preserve">
-    <value>Saisissez le nom du conteneur public Selectel où vous voulez stocker vos sauvegardes.</value>
+    <value>Saisissez le nom du conteneur public Selectel pour stocker vos sauvegardes.</value>
   </data>
   <data name="ConsumersSkyDrive" xml:space="preserve">
     <value>OneDrive</value>
@@ -697,7 +638,7 @@
     <value>L'utilisateur avec l'adresse email "{0}" ne peut pas être trouvé</value>
   </data>
   <data name="EuServerRegion" xml:space="preserve">
-    <value>Région EU (Irlande)</value>
+    <value>Région EU (Francfort)</value>
   </data>
   <data name="FileSizeMaxExceed" xml:space="preserve">
     <value>La taille de fichier maximale est dépassée</value>
@@ -758,9 +699,6 @@
   <data name="PersonalFreeSpaceException" xml:space="preserve">
     <value>Quota d'espace disque est dépassé</value>
   </data>
-  <data name="PortalAccessSettingsTariffException" xml:space="preserve">
-    <value>Cette fonctionalité n'est activée que pour le tarif gratuit</value>
-  </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Accès au portail</value>
   </data>
@@ -803,9 +741,6 @@
   <data name="SsoSettingsInvalidMapping" xml:space="preserve">
     <value>Mappage des champs non valides</value>
   </data>
-  <data name="SuccessfullyPortalRenameMessage" xml:space="preserve">
-    <value>Le portail a été renommé avec succès</value>
-  </data>
   <data name="SuccessfullySaveGreetingSettingsMessage" xml:space="preserve">
     <value>Les paramètres de la page d'accueil ont été enregistrés avec succès</value>
   </data>
@@ -829,8 +764,5 @@
   </data>
   <data name="WhatsNewSubscriptionName" xml:space="preserve">
     <value>Quoi de neuf</value>
-  </data>
-  <data name="ProfileRemoved" xml:space="preserve">
-    <value>Le profil a été supprimé</value>
   </data>
 </root>

@@ -23,10 +23,14 @@ namespace ASC.Resource.Manager
     class Program
     {
         private const string CsProjScheme = "http://schemas.microsoft.com/developer/msbuild/2003";
-        private static readonly XName ItemGroupXname = XName.Get("ItemGroup", CsProjScheme);
-        private static readonly XName EmbededXname = XName.Get("EmbeddedResource", CsProjScheme);
-        private static readonly XName DependentUpon = XName.Get("DependentUpon", CsProjScheme);
+        //private static readonly XName ItemGroupXname = XName.Get("ItemGroup", CsProjScheme);
+        //private static readonly XName EmbededXname = XName.Get("EmbeddedResource", CsProjScheme);
+        //private static readonly XName DependentUpon = XName.Get("DependentUpon", CsProjScheme);
+        private static readonly XName ItemGroupXname = XName.Get("ItemGroup");
+        private static readonly XName EmbededXname = XName.Get("EmbeddedResource");
+        private static readonly XName DependentUpon = XName.Get("DependentUpon");
         private const string IncludeAttribute = "Include";
+        private const string UpdateAttribute = "Update";
         private const string ConditionAttribute = "Condition";
         public static string[] Args;
         public static void Main(string[] args)
@@ -50,6 +54,11 @@ namespace ASC.Resource.Manager
 
         public static void Export(Options options)
         {
+            //var csPath = @"C:\Git\portals_core\web\ASC.Web.Core\";
+            //AddResourceForCsproj($"{csPath}ASC.Web.Core.csproj",
+            //    Directory.EnumerateFiles(csPath, "*.resx", SearchOption.AllDirectories).Select(r => new Tuple<string, string>("", r.Substring(csPath.Length))));
+
+            //return;
 
             var services = new ServiceCollection();
             var startup = new Startup(Args);
@@ -69,8 +78,8 @@ namespace ASC.Resource.Manager
                 var (project, module, filePath, exportPath, culture, format, key) = options;
 
                 project = "WebStudio";
-                module = "WebStudio";
-                filePath = "Resource.resx";
+                module = "Notify";
+                filePath = "WebstudioNotifyPatternResource.resx";
                 //culture = "ru";
                 exportPath = @"C:\Git\portals_core\";
                 //key = "*,HtmlMaster*";
@@ -102,7 +111,7 @@ namespace ASC.Resource.Manager
                 }
 
                 enabledSettings = scopeClass.Configuration.GetSetting<EnabledSettings>("enabled");
-                cultures = scopeClass.ResourceData.GetCultures().Where(r => r.Available).Select(r => r.Title).ToList();//.Intersect(enabledSettings.Langs).ToList();
+                cultures = scopeClass.ResourceData.GetCultures().Where(r => r.Available).Select(r => r.Title).Intersect(enabledSettings.Langs).ToList();
                 projects = scopeClass.ResourceData.GetAllFiles();
 
                 ExportWithProject(project, module, filePath, culture, exportPath, key);
@@ -278,7 +287,7 @@ namespace ASC.Resource.Manager
 
                     Console.WriteLine(filePath);
                     if (string.IsNullOrEmpty(asmbl)) return;
-                    AddResourceForCsproj(asmbl, filePath.Substring(assmlPath.Length + 1), resultFiles.OrderBy(r => r.Item2));
+                    AddResourceForCsproj(asmbl, resultFiles.OrderBy(r => r.Item2));
                     var assmblName = Path.GetFileNameWithoutExtension(asmbl);
                     var f = Path.GetDirectoryName(filePath.Substring(assmlPath.Length + 1)).Replace('\\', '.');
                     nsp = assmblName;
@@ -402,7 +411,7 @@ namespace ASC.Resource.Manager
             return string.Join(',', bag.ToArray().Distinct());
         }
 
-        private static void AddResourceForCsproj(string csproj, string fileName, IEnumerable<Tuple<string, string>> files)
+        private static void AddResourceForCommunityCsproj(string csproj, string fileName, IEnumerable<Tuple<string, string>> files)
         {
             if (!files.Any()) return;
 
@@ -457,6 +466,69 @@ namespace ASC.Resource.Manager
                 {
                     reference.SetAttributeValue(IncludeAttribute, file.Item2);
                     reference.SetAttributeValue(ConditionAttribute, string.Format("$(Cultures.Contains('{0}'))", file.Item1));
+                    node.Add(reference);
+                }
+            }
+
+            doc.Save(csproj);
+        }
+
+        private static void AddResourceForCsproj(string csproj, IEnumerable<Tuple<string, string>> files)
+        {
+            if (!files.Any()) return;
+
+            var doc = XDocument.Parse(File.ReadAllText(csproj));
+            if (doc.Root == null) return;
+
+            foreach (var file in files)
+            {
+                var fileName = $"{file.Item2.Split('.')[0]}.resx";
+                var node = doc.Root.Elements().FirstOrDefault(r =>
+                r.Name == ItemGroupXname &&
+                r.Elements(EmbededXname).Any(x =>
+                {
+                    var attr = x.Attribute(UpdateAttribute);
+                    return attr != null && attr.Value == fileName;
+                })) ??
+                doc.Root.Elements().FirstOrDefault(r =>
+                r.Name == ItemGroupXname &&
+                r.Elements(EmbededXname).Any());
+
+                XElement reference;
+                bool referenceNotExist;
+
+                if (node == null)
+                {
+                    node = new XElement(ItemGroupXname);
+                    doc.Root.Add(node);
+                    reference = new XElement(EmbededXname);
+                    referenceNotExist = true;
+                }
+                else
+                {
+                    var embeded = node.Elements(EmbededXname).ToList();
+
+                    reference = embeded.FirstOrDefault(r =>
+                    {
+                        var attr = r.Attribute(UpdateAttribute);
+                        return attr != null && attr.Value == file.Item2;
+                    });
+
+                    referenceNotExist = reference == null;
+                    if (referenceNotExist)
+                    {
+                        reference = new XElement(EmbededXname);
+                        if (file.Item2 != fileName)
+                        {
+                            reference.Add(new XElement(DependentUpon, Path.GetFileName(fileName)));
+                        }
+                    }
+                }
+
+                if (referenceNotExist)
+                {
+                    reference.SetAttributeValue(UpdateAttribute, file.Item2);
+                    //reference.SetAttributeValue(ConditionAttribute, string.Format("$(Cultures.Contains('{0}'))", file.Item1));
                     node.Add(reference);
                 }
             }

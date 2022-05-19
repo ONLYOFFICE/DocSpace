@@ -1,4 +1,4 @@
-﻿{
+{
   "ConflictResolveDescription": "Datoteka z imenom <1>{{file}}</1> že obstaja v mapi <1>{{folder}}</1>.",
   "ConflictResolveDescriptionFiles": "{{filesCount}} dokumentov z enakim imenom že obstaja v mapi <1>{{folder}}</1>.",
   "ConflictResolveSelectAction": "Prosim, izberite akcijo:",

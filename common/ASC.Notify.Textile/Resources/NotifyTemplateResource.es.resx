@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="FooterCommonV10" xml:space="preserve">
     <value>&lt;tr border="0" cellspacing="0" cellpadding="0"&gt;&lt;td colspan="3" style="height: 10px; line-height: 10px; background: #fff; padding: 0; margin: 0;"&gt; &lt;/td&gt;&lt;/tr&gt;
@@ -193,9 +193,9 @@
         &lt;/tr&gt;</value>
   </data>
   <data name="TextForFooterWithUnsubscribeLink" xml:space="preserve">
-    <value>Este correo electrónico se genera automáticamente y no es necesario responder.
-&lt;br /&gt;Usted recibe este correo electrónico porque usted es un usuario registrado de &lt;a href="{0}" style="color: #7b7b7b;" target="_blank"&gt;{0}&lt;/a&gt;
-&lt;br /&gt;Si ya no desea recibir estos mensajes de correo electrónico, haga click en el siguiente enlace: &lt;a href="{1}" style="color: #7b7b7b;" target="_blank"&gt;Unsubscribe&lt;/a&gt;
+    <value>Este correo electrónico se genera automáticamente y no es necesario responderlo.
+&lt;br /&gt;Ha recibido este correo electrónico porque es un usuario registrado de &lt;a href="{0}" style="color: #7b7b7b;" target="_blank"&gt;{0}&lt;/a&gt;
+&lt;br /&gt;Haga clic aquí para cancelar la suscripción a los correos electrónicos informativos: &lt;a href="{1}" style="color: #7b7b7b;" target="_blank"&gt;Cancelar la suscripción&lt;/a&gt;
 &lt;br /&gt;</value>
   </data>
 </root>

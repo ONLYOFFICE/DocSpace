@@ -1,10 +1,7 @@
-﻿{
+{
   "CommonSettings": "Ustawienia ogólne",
-  "ConnectAccounts": "Podłącz konta",
-  "ConnectAccountsSubTitle": "Niepodłączone konta",
   "ConnectAdminDescription": "Aby podłączyć, wpisz wymagane dane na <1>tej stronie</1>.",
   "ConnectDescription": "Następujące konta mogą być podłączone do ONLYOFFICE Documents. Dostępne na nich dokumenty będzie można edytować w sekcji 'Moje dokumenty'. ",
-  "ConnectedCloud": "Podłączona chmura",
   "ConnectMakeShared": "Udostępnij i umieść w folderze 'Wspólne'",
   "ConnextOtherAccount": "Inne konta",
   "DisplayFavorites": "Wyświetlaj ulubione",

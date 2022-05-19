@@ -351,15 +351,16 @@ class SharingPanelComponent extends React.Component {
           ? shareDataItems.find((x) => x.sharedTo.shareLink)?.access
           : null;
 
-        this.setState({
-          baseShareData,
-          shareDataItems,
-          accessOptions,
-          externalAccessOptions,
-          //showPanel: true,
-          filesOwnerId,
-          baseExternalAccess,
-        });
+        this._isMounted &&
+          this.setState({
+            baseShareData,
+            shareDataItems,
+            accessOptions,
+            externalAccessOptions,
+            //showPanel: true,
+            filesOwnerId,
+            baseExternalAccess,
+          });
       })
 
       .catch((err) => {
@@ -368,9 +369,10 @@ class SharingPanelComponent extends React.Component {
       })
       .finally(() => {
         setTimeout(() => {
-          return this.setState({
-            isLoading: false,
-          });
+          if (this._isMounted)
+            return this.setState({
+              isLoading: false,
+            });
         }, 500);
       });
   };
@@ -417,13 +419,20 @@ class SharingPanelComponent extends React.Component {
   };
 
   componentDidMount() {
+    const { settings, setFilesSettings } = this.props;
+    settings && setFilesSettings(settings); // Remove after initialization settings in Editor
+
     this.getShareData();
 
+    this._isMounted = true;
     document.addEventListener("keyup", this.onKeyPress);
+    window.addEventListener("popstate", () => this.onClose());
   }
 
   componentWillUnmount() {
+    this._isMounted = false;
     document.removeEventListener("keyup", this.onKeyPress);
+    window.removeEventListener("popstate", () => this.onClose());
   }
 
   onKeyPress = (event) => {
@@ -821,12 +830,13 @@ const SharingPanel = inject(
       dialogsStore,
       treeFoldersStore,
       selectedFolderStore,
+      settingsStore,
     },
     { uploadPanelVisible }
   ) => {
     const { replaceFileStream, setEncryptionAccess } = auth;
     const { personal, customNames, isDesktopClient } = auth.settingsStore;
-    const { user } = auth.userStore;
+    const { setFilesSettings } = settingsStore;
 
     const { id, access } = selectedFolderStore;
 
@@ -902,6 +912,7 @@ const SharingPanel = inject(
       setBufferSelection,
       access,
       isShared: isShared,
+      setFilesSettings,
     };
   }
 )(

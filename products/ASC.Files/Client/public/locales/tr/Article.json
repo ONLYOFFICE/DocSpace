@@ -1,4 +1,4 @@
-﻿{
+{
   "ButtonAddBoxNet": "Box hesabı ekle",
   "ButtonAddDropBox": "Dropbox hesabı ekle",
   "ButtonAddGoogle": "Google hesabı ekle",
@@ -8,7 +8,7 @@
   "NewFolder": "Yeni Klasör",
   "NewPresentation": "Yeni Sunum",
   "NewSpreadsheet": "Yeni elektronik tablo",
+  "Upload": "Yükle",
   "UploadFiles": "Dosya yükle",
-  "UploadFolder": "Klasör yükle",
-  "Upload": "Yükle"
+  "UploadFolder": "Klasör yükle"
 }

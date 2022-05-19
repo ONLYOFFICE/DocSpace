@@ -1,4 +1,4 @@
-﻿{
+{
   "ChangePasswordSuccess": "Паролата е сменена успешно",
   "ConfirmOwnerPortalSuccessMessage": "Собственикът на портала бе сменен успешно. След 10 секунди ще бъдете пренасочени",
   "ConfirmOwnerPortalTitle": "Молим да потвърдите, че искате да смените собственика на портала с {{newOwner}}",
@@ -14,7 +14,6 @@
   "FirstName": "Име",
   "InviteTitle": "Поканени сте да се присъедините към този портал!",
   "LoginRegistryButton": "Присъединяване",
-  "LoginWithAccount": "или вписване с:",
   "PassworResetTitle": "Сега можете да създадете нова парола.",
   "SetAppButton": "Свържи приложение",
   "SetAppDescription": "Двуфакторното удостоверяване е активирано. Конфигурирайте приложението си за удостоверяване, за да продължите работата в портала. Можете да използвате Google Authenticator за <1>Android</1> и <4>iOS</4> или Authenticator за <8>Windows телефон</8>.",

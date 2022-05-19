@@ -380,13 +380,13 @@ const Dark = {
   iconButton: { color: "#858585", hoverColor: grayMaxLight },
   selectorAddButton: {
     background: "#292929",
-    activeBackground: black,
+    activeBackground: darkBlack,
 
-    border: `1px solid ${black}`,
+    border: `none`,
     boxSizing: "border-box",
     borderRadius: "3px",
-    height: " 34px",
-    width: "34px",
+    height: " 32px",
+    width: "32px",
     padding: "9px",
     color: "#858585",
     hoverColor: grayMaxLight,
@@ -1953,6 +1953,7 @@ const Dark = {
     sectionHeaderToggleBgActive: "#292929",
 
     backgroundColor: black,
+    blurColor: "rgba(20, 20, 20, 0.8)",
     borderColor: "#292929",
     thumbnailBorderColor: grayLightMid,
     textColor: white,
@@ -2081,6 +2082,7 @@ const Dark = {
       hoverIconColor: grayMaxLight,
 
       borderImageSource: `linear-gradient(to right,${black} 21px,#474747 21px,#474747 calc(100% - 20px),${black} calc(100% - 20px))`,
+      lengthenBorderImageSource: `linear-gradient(to right, ${black}, #474747)`,
       hotkeyBorderBottom: `1px solid ${globalColors.blueMain}`,
     },
 
@@ -2426,7 +2428,7 @@ const Dark = {
     },
   },
   newContextMenu: {
-    background: "#3D3D3D",
+    background: black,
     borderRadius: "6px",
     mobileBorderRadius: "6px 6px 0 0",
     boxShadow:

@@ -14,13 +14,14 @@ const StyledFloatingButton = styled(FloatingButton)`
 
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
+  .circle__background {
+    background: ${(props) => props.theme.mainButtonMobile.buttonColor};
+  }
+
   .circle__mask + div {
     display: flex;
     align-items: center;
     justify-content: center;
-
-    background: ${(props) =>
-      props.theme.mainButtonMobile.buttonColor} !important;
 
     div {
       padding-top: 0;
@@ -201,7 +202,7 @@ const StyledProgressBarContainer = styled.div`
     color: ${(props) => props.theme.mainButtonMobile.textColor};
     width: 42%;
     text-align: right;
-    margin-right: 6px;
+    margin-right: 12px;
   }
 
   .progress_icon {
@@ -236,6 +237,15 @@ const StyledBar = styled.div`
       : props.theme.mainButtonMobile.bar.background};
 `;
 
+const StyledAlertIcon = styled.div`
+  position: absolute;
+  z-index: 1010;
+  width: 12px;
+  height: 12px;
+  left: 26px;
+  top: 6px;
+`;
+
 StyledBar.defaultProps = { theme: Base };
 
 export {
@@ -249,4 +259,5 @@ export {
   StyledBar,
   StyledButtonWrapper,
   StyledButtonOptions,
+  StyledAlertIcon,
 };

@@ -1,4 +1,4 @@
-﻿{
+{
   "AddAccount": "ເພີ່ມບັນຊີ",
   "ArchivingData": "ການເກັບກໍາຂໍ້ມູນ",
   "ConnectingAccount": "ການເຊື່ອມໂຍງບັນຊີ",
@@ -12,17 +12,17 @@
   "DownloadAs": "ດາວໂຫລດທີ່",
   "EncryptedFileSaving": "ການເກັບຮັກສາໄຟລ໌ທີ່ເຂົ້າລະຫັດ",
   "Files": "ໄຟລ໌",
-  "Folders": "ໂຟນເດີ",
   "FolderSelection": "ການຄັດເລືອກໂຟນເດີ",
   "FolderTitleBoxNet": "Box directory",
   "FolderTitleDocuSign": "ບັນຊີ DocuSign",
   "FolderTitleDropBox": "Dropbox directory",
   "FolderTitleGoogle": "Google directory",
-  "FolderTitlekDrive": "kDrive directory",
   "FolderTitleSharePoint": "SharePoint directory",
   "FolderTitleSkyDrive": "OneDrive directory",
   "FolderTitleWebDav": "WebDAV Directory",
   "FolderTitleYandex": "Yandex Directory",
+  "FolderTitlekDrive": "kDrive directory",
+  "Folders": "ໂຟນເດີ",
   "LinkCopySuccess": "ລິ້ງໄດ້ຖືກສໍາເນົາໄປ clipboard",
   "MediaLoadError": "ໄຟລ໌ Media ບໍ່ສາມາດໂຫຼດໄດ້",
   "Move": "ຍ້າຍ",
@@ -39,9 +39,9 @@
   "TypeTitleDocuSign": "DocuSign",
   "TypeTitleDropBox": "Dropbox",
   "TypeTitleGoogle": "Google Drive",
-  "TypeTitlekDrive": "kDrive",
   "TypeTitleSharePoint": "SharePoint",
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
-  "TypeTitleYandex": "Yandex.Disk"
+  "TypeTitleYandex": "Yandex.Disk",
+  "TypeTitlekDrive": "kDrive"
 }

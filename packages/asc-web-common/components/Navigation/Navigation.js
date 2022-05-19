@@ -40,6 +40,7 @@ const Navigation = ({
   isCurrentFolderInfo,
   toggleInfoPanel,
   isInfoPanelVisible,
+  titles,
   ...rest
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -96,13 +97,13 @@ const Navigation = ({
       window.addEventListener("resize", onResize);
     } else {
       window.removeEventListener("click", onMissClick);
-      window.addEventListener("resize", onResize);
+      window.removeEventListener("resize", onResize);
       setFirstClick(true);
     }
 
     return () => {
       window.removeEventListener("click", onMissClick);
-      window.addEventListener("resize", onResize);
+      window.removeEventListener("resize", onResize);
     };
   }, [isOpen, onResize, onMissClick]);
 
@@ -156,6 +157,7 @@ const Navigation = ({
             isTabletView={isTabletView}
             isRecycleBinFolder={isRecycleBinFolder}
             isDesktop={isDesktop}
+            isInfoPanelVisible={isInfoPanelVisible}
           >
             <ArrowButton
               isRootFolder={isRootFolder}
@@ -179,6 +181,7 @@ const Navigation = ({
               toggleInfoPanel={toggleInfoPanel}
               isInfoPanelVisible={isInfoPanelVisible}
               isDesktop={isDesktop}
+              titles={titles}
             />
           </StyledContainer>
           {isDesktop && (
@@ -207,6 +210,7 @@ Navigation.propTypes = {
   getContextOptionsPlus: PropTypes.func,
   getContextOptionsFolder: PropTypes.func,
   onBackToParentFolder: PropTypes.func,
+  titles: PropTypes.object,
 };
 
 export default React.memo(Navigation);

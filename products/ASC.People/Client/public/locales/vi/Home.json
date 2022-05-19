@@ -1,4 +1,4 @@
-﻿{
+{
   "Administrator": "Quản trị viên",
   "ChangeToGuest": "Thay đổi thành {{guestCaption}}",
   "ChangeToUser": "Thay đổi thành {{userCaption}}",
@@ -6,7 +6,6 @@
   "EmptyGroupTitle": "Chưa có đồng đội nào ở đây",
   "LblInviteAgain": "Mời lại",
   "LblInvited": "Đã mời",
-  "LblOther": "Khác",
   "LblSendEmail": "Gửi email",
   "LblSendMessage": "Gửi tin nhắn ",
   "LblSetActive": "Kích hoạt ",

@@ -8,8 +8,33 @@ DateInputStyle.defaultProps = { theme: Base };
 
 const DropDownStyle = styled.div`
   .drop-down {
+    > div {
+      > div {
+        margin: auto;
+      }
+      margin: auto;
+    }
     padding: ${(props) => props.theme.datePicker.dropDownPadding};
+
+    @media (max-width: 428px) {
+      position: fixed;
+      top: unset;
+      right: 0;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      width: -moz-available;
+      width: -webkit-fill-available;
+      width: fill-available;
+      border: none;
+      border-radius: 6px 6px 0px 0px;
+    }
   }
+
+  .backdrop-active {
+    z-index: 210;
+  }
+
   position: relative;
 `;
 DropDownStyle.defaultProps = { theme: Base };

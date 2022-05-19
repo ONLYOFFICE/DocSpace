@@ -67,6 +67,9 @@ class FilesStore {
   oformFiles = null;
   gallerySelected = null;
 
+  createdFolderId = null;
+  scrollToFolderId = null;
+
   constructor(
     authStore,
     settingsStore,
@@ -613,7 +616,21 @@ class FilesStore {
           const selectedFolder = {
             selectedFolder: { ...this.selectedFolderStore },
           };
+
           this.viewAs === "tile" && this.createThumbnails();
+
+          if (this.createdFolderId) {
+            const newFolder = this.filesList.find(
+              (item) => item.id === this.createdFolderId
+            );
+
+            if (newFolder) {
+              this.setSelection([newFolder]);
+              this.setScrollToFolderId(newFolder.id);
+            }
+
+            this.setCreatedFolderId(null);
+          }
           return Promise.resolve(selectedFolder);
         })
         .catch((err) => {
@@ -2002,6 +2019,14 @@ class FilesStore {
 
   setEnabledHotkeys = (enabledHotkeys) => {
     this.enabledHotkeys = enabledHotkeys;
+  };
+
+  setCreatedFolderId = (createdFolderId) => {
+    this.createdFolderId = createdFolderId;
+  };
+
+  setScrollToFolderId = (folderId) => {
+    this.scrollToFolderId = folderId;
   };
 }
 

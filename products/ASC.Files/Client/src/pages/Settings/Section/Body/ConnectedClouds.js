@@ -167,6 +167,7 @@ class ConnectClouds extends React.Component {
         label: t("Translations:ThirdPartyInfo"),
         onClick: this.onChangeThirdPartyInfo,
       },
+      { key: "separator", isSeparator: true },
       {
         key: `${index}_delete`,
         "data-id": item.provider_id,

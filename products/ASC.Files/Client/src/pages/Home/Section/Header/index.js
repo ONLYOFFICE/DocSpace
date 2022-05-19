@@ -220,10 +220,17 @@ class SectionHeaderContent extends React.Component {
     }
   };
 
-  onEmptyTrashAction = () => this.props.setEmptyTrashDialogVisible(true);
+  onEmptyTrashAction = () => {
+    const { activeFiles, activeFolders } = this.props;
+    const isExistActiveItems = [...activeFiles, ...activeFolders].length > 0;
+
+    if (isExistActiveItems) return;
+
+    this.props.setEmptyTrashDialogVisible(true);
+  };
 
   getContextOptionsFolder = () => {
-    const { t, personal } = this.props;
+    const { t, toggleInfoPanel, personal } = this.props;
 
     return [
       {
@@ -239,6 +246,13 @@ class SectionHeaderContent extends React.Component {
         onClick: this.createLinkForPortalUsers,
         disabled: personal ? true : false,
         icon: "/static/images/invitation.link.react.svg",
+      },
+      {
+        key: "show-info",
+        label: t("InfoPanel:ViewDetails"),
+        onClick: toggleInfoPanel,
+        disabled: false,
+        icon: "/static/images/info.react.svg",
       },
       { key: "separator-2", isSeparator: true },
       {
@@ -405,6 +419,9 @@ class SectionHeaderContent extends React.Component {
                     onBackToParentFolder={this.onBackToParentFolder}
                     toggleInfoPanel={toggleInfoPanel}
                     isInfoPanelVisible={isInfoPanelVisible}
+                    titles={{
+                      trash: t("EmptyRecycleBin"),
+                    }}
                   />
                 )}
               </div>
@@ -444,6 +461,8 @@ export default inject(
       viewAs,
       setIsLoading,
       fetchFiles,
+      activeFiles,
+      activeFolders,
     } = filesStore;
     const { setAction } = fileActionStore;
     const {
@@ -512,10 +531,13 @@ export default inject(
 
       setIsLoading,
       fetchFiles,
+
+      activeFiles,
+      activeFolders,
     };
   }
 )(
-  withTranslation(["Home", "Common", "Translations"])(
+  withTranslation(["Home", "Common", "Translations", "InfoPanel"])(
     withRouter(observer(SectionHeaderContent))
   )
 );

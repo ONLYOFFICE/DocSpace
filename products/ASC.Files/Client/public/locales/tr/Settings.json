@@ -1,10 +1,7 @@
-﻿{
+{
   "CommonSettings": "Ortak ayarlar",
-  "ConnectAccounts": "Hesapları Bağla",
-  "ConnectAccountsSubTitle": "Bağlı hesap yok",
   "ConnectAdminDescription": "Başarılı bağlantı için gerekli verileri <1>bu sayfaya</1> girin.",
   "ConnectDescription": "Aşağıdaki hesapları ONLYOFFICE Belgelerine bağlayabilirsiniz. Bu hesaplardaki belgeler, 'Belgelerim' bölümünde düzenlenebilecektir. ",
-  "ConnectedCloud": "Bağlı bulut",
   "ConnectMakeShared": "Paylaşıldı yapın ve 'Ortak' klasörüne koyun",
   "ConnextOtherAccount": "Diğer hesap",
   "DisplayFavorites": "Favorileri Görüntüle",

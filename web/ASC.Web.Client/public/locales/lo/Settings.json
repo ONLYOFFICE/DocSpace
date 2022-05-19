@@ -1,4 +1,4 @@
-﻿{
+{
   "AccessRightsAccessToProduct": "ການເຂົ້າເຖິງໂມດູນ {{product}} ທີ່ມອບໃຫ້",
   "AccessRightsAllUsers": "{{users}} ທັງຫມົດ",
   "AccessRightsChangeOwnerConfirmText": "ການປ່ຽນແປງດັ່ງກວ່າຈະຖືກນຳໃຊ້ຫຼັງຈາກທ່ານໄດ້ຢືນຢັນຜ່ານທາງອີເມວ",
@@ -21,9 +21,9 @@
   "ChooseOwner": "ເລືອກເຈົ້າຂອງ",
   "CompanyNameForCanvasLogo": "ຊື່ບໍລິສັດ",
   "ConfirmEmailSended": "ອີເມລຢືນຢັນໄດ້ຖືກສົ່ງໄປຫາ {{ownerName}}",
-  "Customization": "ການປັບແຕ່ງ",
   "CustomTitles": "ກຳນົດຫົວຂໍ້",
   "CustomTitlesSettingsDescription": "ຈະສະແດງຫນ້າຕອ້ນຮັບຂອງທ່ານ ແລະ ໃຊ້ເພື່ອເຕືອນຜ່ານທາງອີເມວ(ຈາກຟີວ) ຊື່ໂດເມນທີ່ກຳນົດເອງເປັນວິທີການຕັ້ງຄ່າ URL ທາງເລືອກສຳລັບ  portal ຂອງທ່ານ. ຊື່  portal ທີ່ກຳນົດເອງຈະປະກົດຈາກທີ່ຢູ່ onlyoffice.com/onlyoffice.eu",
+  "Customization": "ການປັບແຕ່ງ",
   "DeactivateOrDeletePortal": "ປິດການນຳໃຊ້ ຫຼື ລືບສາຍ.",
   "Disabled": "ປິດສິດ",
   "DocumentsAdministratorsCan": "ຜູ້ດູແລລະບົບເອກະສານສາມາດເຊື່ອມຕໍ່ Dropbox, Box ແລະ ບັນຊີອື່ນໆ ກັບເອກະສານທົ່ວໄປ ແລະ ຕັ້ງຄ່າການເຂົ້າເຖິງສິດສ່ວນນີ້",
@@ -41,14 +41,12 @@
   "LogoLightSmall": "ໂລໂກສຳລັບແກ້ໄຂສ່ວນຫົວຂອງ portal ",
   "LogoSettings": "ການຕັ້ງຄ່າໂລໂກຂອງ Portal ",
   "LogoUploadRecommendation": "ເຮົາແນະນຳໃຫ້ທ່ານໃຊ້ຮູບພາບໃນຮູບແບບທີ່ມີພາບພື້ນຫຼັງໂປ່ງໃ່ສ <1> PNG </1> ",
-  "ManagementCategoryCommon": "ທຳມະດາ, ສາທາລະນະ",
   "ManagementCategoryIntegration": "ການເຊື່ອມໂຍງ",
   "ManagementCategorySecurity": "ຄວາມປອດໄພ",
   "Migration": "ຍົກຍ້າຍ",
   "NoAdmins": "ທີ່ນີ້ຍັງບໍ່ມີຜູ້ດູແລລະບົບ",
   "NoAdminsDescription": "ທ່ານສາມາດເພີ່ມຜູ້ດູແລລະບົບດ້ວຍໂຕຂອງທ່ານເອງ",
   "NotFoundDescription": "ປ່ຽນການຕັ້ງຄ່າຕົວກອງຫຼືເພີ່ມຄົນເຂົ້າໃນພາກສ່ວນ.",
-  "NotFoundTitle": "ບໍ່ພົບ",
   "PeopleAdministratorsCan": "ອົງປະກອບຜູ້ດຸແລລະບົບຂອງບຸກຄົນສາມາດສ້າງໂປຣໄຟລ໌ ແລະ ສ້າງກຸ່ມ, ສາມາດນຳຄົນເຂົ້າ ແລະ ເຊີນຜູ້ໃຊ້ໄດ້.",
   "PortalAccess": "ການເຂົ້າເຖິງສາຍ",
   "PortalAdmins": "ຜູ້ດູແລລະບົບສາຍ",
@@ -57,7 +55,6 @@
   "ProductUserOpportunities": "ເບິ່ງໂປຣໄຟລ໌ແລະກຸ່ມ",
   "RegistrationDate": "ວັນທີ ລົງທະບຽນ",
   "RestoreDefaultButton": "ກູ້ຄືນເປັນຄ່າເລີ່ມຕົ້ນ",
-  "SetDefaultTitle": "ຕັ້ງຄ່າຫົວຂໍ້ເລີ່ມຕົ້ນ",
   "StudioTimeLanguageSettings": "ພາສາ ແລະ ເຂດເວລາ",
   "SuccessfullySaveGreetingSettingsMessage": "ການຕັ້ງຄ່າຫນ້າຕອນຮັບໄດ້ບັນທຶກສຳເລັດ",
   "SuccessfullySaveSettingsMessage": "ການຕັ້ງຄ່າໄດ້ຖືກອັບເດດສຳເລັດແລ້ວ",
@@ -76,6 +73,5 @@
   "TwoFactorAuthDescription": "ການພິສູດຢືນຢັນ 2 ຊັ້ນໃຫ້ວິທີ ເຂົ້າສູ່ລະບົບມີຄວາມປອດໄພຫຼາຍຂື້ນ. ຫຼັງຈາກໃສ່ຂໍ້ມູນຮັບຮອງແລ້ວ, ຜູ້ໃຊ້ຈະຕ້ອງໃສ່ລະຫັດຈາກ SMS ຫຼື ແອັບເພື່ອຢືນຢັນ.",
   "UseAsLogoButton": "ໃຊ້ເປັນໂລໂກ້",
   "Users": "ຜູ້ໃຊ້",
-  "WelcomePageTitle": "ຫົວຂໍ້ຫນ້າຕອນຮັບ",
   "YouHaveUnsavedChanges": "ທ່ານມີການປ່ຽນແປງທີ່ຍັງບໍ່ໄດ້ບັນທຶກ"
 }

@@ -1,4 +1,4 @@
-﻿{
+{
   "ChangePasswordSuccess": "Wachtwoord is succesvol gewijzigd",
   "ConfirmOwnerPortalSuccessMessage": "Portaal eigenaar is met succes gewijzigd. Over 10 seconden wordt u doorgestuurd",
   "ConfirmOwnerPortalTitle": "Bevestig dat u de eigenaar van het portaal wilt wijzigen naar {{newOwner}}",
@@ -14,7 +14,6 @@
   "FirstName": "Voornaam",
   "InviteTitle": "U bent uitgenodigd om lid te worden van dit portaal!",
   "LoginRegistryButton": "Lid worden van",
-  "LoginWithAccount": "of log in met:",
   "PassworResetTitle": "Nu kunt u een nieuw wachtwoord aanmaken.",
   "SetAppButton": "App verbinden",
   "SetAppDescription": "Twee-factor authenticatie is ingeschakeld. Configureer uw authenticator app om op het portaal te kunnen blijven werken. U kunt Google Authenticator voor <1>Android</1> en <4>iOS</4> of Authenticator voor <8>Windows Phone</8> gebruiken.",

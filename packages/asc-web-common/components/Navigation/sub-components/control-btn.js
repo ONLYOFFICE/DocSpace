@@ -32,6 +32,10 @@ const StyledContainer = styled.div`
   .option-button {
     margin-right: 16px;
     min-width: 15px;
+
+    @media ${tablet} {
+      margin-right: 9px;
+    }
   }
 
   .trash-button {
@@ -92,6 +96,7 @@ const ControlButtons = ({
   toggleInfoPanel,
   toggleDropBox,
   isDesktop,
+  titles,
 }) => {
   const toggleInfoPanelAction = () => {
     toggleInfoPanel && toggleInfoPanel();
@@ -164,6 +169,7 @@ const ControlButtons = ({
             isFill={true}
             onClick={clearTrash}
             className="trash-button"
+            title={(titles && titles["trash"]) || ""}
           />
           {!isDesktop && (
             <ToggleInfoPanelButton

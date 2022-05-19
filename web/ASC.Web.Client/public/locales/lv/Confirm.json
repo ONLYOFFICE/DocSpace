@@ -1,4 +1,4 @@
-﻿{
+{
   "ChangePasswordSuccess": "Parole ir veiksmīgi nomainīta",
   "ConfirmOwnerPortalSuccessMessage": "Portāla īpašnieks ir veiksmīgi nomainīts. Jūs tiksiet novirzīts pēc 10 sekundēm",
   "ConfirmOwnerPortalTitle": "Lūdzu, apstipriniet, ka vēlaties mainīt portāla īpašnieku uz {{newOwner}}",
@@ -14,7 +14,6 @@
   "FirstName": "Vārds",
   "InviteTitle": "Jūs esat aicināti pievienoties šim portālam!",
   "LoginRegistryButton": "Pievienoties",
-  "LoginWithAccount": "vai pieteikties ar:",
   "PassworResetTitle": "Tagad jūs varat izveidot jaunu paroli.",
   "SetAppButton": "Savienot lietotni",
   "SetAppDescription": "Ir iespējota divu faktoru autentifikācija. Konfigurējiet savu autentifikatora lietotni, lai turpinātu darbu portālā. Varat izmantot Google autentifikatoru <1>Android</1> un <4>iOS</4> vai autentifikatoru <8>Windows Phone</8>.",

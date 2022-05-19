@@ -132,4 +132,4 @@ export default inject(({ dialogsStore }) => {
     visible: hotkeyPanelVisible,
     setHotkeyPanelVisible,
   };
-})(withTranslation("HotkeysPanel")(observer(HotkeyPanel)));
+})(withTranslation(["HotkeysPanel", "Article"])(observer(HotkeyPanel)));
