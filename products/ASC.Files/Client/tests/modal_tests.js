@@ -89,8 +89,8 @@ Scenario("Modal test - Trash", ({ I }) => {
   I.amOnPage("/products/files");
   I.wait(3);
 
-  I.mockEndpoint(Endpoints.getFolder(7), "emptyTrash");
-  I.mockEndpoint(Endpoints.getFileOperation(7), "7-empty");
+  I.mockEndpoint(Endpoints.getFolder(7), "1");
+  //I.mockEndpoint(Endpoints.getFileOperation(7), "7-empty");
   I.click({ react: "CatalogItem", props: { id: 7 } });
   I.wait(3);
 });

@@ -271,3 +271,15 @@ Scenario("Modal test - Backup codes", async ({ I }) => {
   I.click("Profile");
   I.wait(2);
 });
+
+Scenario("Modal test - Change", async ({ I }) => {
+  I.mockEndpoint(Endpoints.group, "empty");
+  I.mockEndpoint(Endpoints.filter, "one");
+
+  I.openPage();
+
+  I.click({
+    react: "Checkbox",
+    role: "owner",
+  });
+});
