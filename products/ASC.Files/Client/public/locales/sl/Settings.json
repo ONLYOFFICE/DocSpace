@@ -1,4 +1,5 @@
-﻿{
+{
+  "Clouds": "Oblaki",
   "CommonSettings": "Skupne nastavitve",
   "ConnectAdminDescription": "Za uspešno povezavo vnesite potrebne podatke na <1>tej strani</1>.",
   "ConnectDescription": "Naslednje račune lahko povežete z dokumenti ONLYOFFICE. Dokumenti iz teh računov bodo na voljo za urejanje v razdelku 'Moji dokumenti'. ",

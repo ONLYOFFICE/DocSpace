@@ -1,4 +1,4 @@
-﻿{
+{
   "About": "O nás",
   "AccessRights": "Přístupová práva",
   "Actions": "Akce",
@@ -13,7 +13,6 @@
   "BarMaintenanceDisclaimer": "Ujistěte se prosím, že všechny změny byly během tohoto dne úspěšně uloženy.",
   "ByFirstNameSorting": "Podle jména",
   "ByLastNameSorting": "Podle příjmení",
-  "Sorting": "Řazení",
   "CancelButton": "Zrušit",
   "ClearButton": "Obnovit filtr",
   "CloseButton": "Zavřít",
@@ -22,6 +21,7 @@
   "Common": "Běžná",
   "CommunityProduct": "Komunita",
   "Confirmation": "Potvrzení",
+  "Connect": "Připojit",
   "ContinueButton": "Pokračovat",
   "CopyEmailAndPassword": "Zkopírovat e-mail a heslo",
   "CopyOperation": "Kopírování",
@@ -56,12 +56,12 @@
   "Culture_uk": "ukrajinština (Ukrajina)",
   "Culture_vi": "vietnamština (Vietnam)",
   "Culture_zh-CN": "čínština (zjednodušená, ČLR)",
-  "Duplicate": "Vytvořit kopii",
   "Delete": "Smazat",
   "Department": "Oddělení",
   "Documents": "Dokumenty",
   "DomainIpAddress": "Domény jako IP adresa nejsou podporovány",
   "Download": "Stáhnout",
+  "Duplicate": "Vytvořit kopii",
   "EditAvatar": "Upravit",
   "EditButton": "Upravit",
   "Email": "E-mail",
@@ -139,6 +139,7 @@
   "SignInWithTwitter": "Přihlásit se pomocí Twitteru",
   "Size": "Velikost",
   "SomethingWentWrong": "Něco se pokazilo.",
+  "Sorting": "Řazení",
   "SpacesInLocalPart": "Místní část nemůže obsahovat mezery",
   "Type": "Typ",
   "Unknown": "Neznámý",
@@ -148,6 +149,5 @@
   "Video": "Video",
   "View": "Zobrazit",
   "ViewWeb": "Zobrazit webovou verzi",
-  "Warning": "Varování",
-  "Connect": "Připojit"
+  "Warning": "Varování"
 }

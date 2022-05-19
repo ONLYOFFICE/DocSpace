@@ -1,4 +1,4 @@
-﻿{
+{
   "About": "ກ່ຽວກັບ",
   "AccessRights": "ສິດການເຂົ້າເຖິງ",
   "Actions": "ການດໍາເນີນການ",
@@ -13,7 +13,6 @@
   "BarMaintenanceDisclaimer": "ກະລຸນາ, ກວດເພື່ອໃຫ້ແນ່ໃຈວ່າການປ່ຽນແປງທັງຫມົດໄດ້ຖືກບັນທຶກສໍາເລັດໃນລະຫວ່າງວັນນີ້.",
   "ByFirstNameSorting": "ຕາມຊື່ແທ້",
   "ByLastNameSorting": "ຕາມນາມສະກຸນ",
-  "Sorting": "ການລຽງລຳດັບ",
   "CancelButton": "ຍົກເລີກ",
   "ClearButton": "ຮີເຊັດ filter",
   "CloseButton": "ປິດ",
@@ -22,6 +21,7 @@
   "Common": "ທຳມະດາ, ສາທາລະນະ",
   "CommunityProduct": "ຊຸມຊົນ",
   "Confirmation": "ການຢັ້ງຢືນຕົວຕົນ",
+  "Connect": "ຕິດຕໍ່",
   "ContinueButton": "ສືບຕໍ່",
   "CopyEmailAndPassword": "ສຳເນົາອີເມວ ແລະ ລະຫັດຜ່ານ",
   "CopyOperation": "ການສໍາເນົາ",
@@ -56,12 +56,12 @@
   "Culture_uk": "Ukrainian (Ukraine)",
   "Culture_vi": "Vietnamese (Vietnam)",
   "Culture_zh-CN": "Chinese (Simplified, PRC)",
-  "Duplicate": "ສ້າງສຳເນົາ",
   "Delete": "ລົບ",
   "Department": "ກົມ",
   "Documents": "ເອກະສານ",
   "DomainIpAddress": "ທີ່ຢູ່ IP ໂດເມນຍັງບໍ່ຮອງຮັບ",
   "Download": "ດາວໂຫຼດ",
+  "Duplicate": "ສ້າງສຳເນົາ",
   "EditAvatar": "ແກ້ໄຂ",
   "EditButton": "ແກ້ໄຂ",
   "Email": "ອີເມວ",
@@ -86,8 +86,8 @@
   "Load": "ໂຫລດ",
   "LoadingDescription": "ກະລຸນາລໍຖ້າ",
   "LoadingProcessing": "ກໍາລັງດາວໂຫລດ...",
-  "Location": "ທີ່ຕັ້ງ",
   "LocalDomain": "ໂດເມນທ້ອງຖິ່ນບໍ່ໄດ້ຮັບການສະໜັບສະໜູນ",
+  "Location": "ທີ່ຕັ້ງ",
   "LoginButton": "ເຂົ້າສູ່ລະບົບ",
   "Mail": "ເມວ",
   "MakeForm": "ບັນທຶກເປັນ oform",
@@ -139,6 +139,7 @@
   "SignInWithTwitter": "ເຂົ້າລະບົບດ້ວຍ Twitter",
   "Size": "ຂະໜາດ",
   "SomethingWentWrong": "ມີບາງຢ່າງຜິດພາດ",
+  "Sorting": "ການລຽງລຳດັບ",
   "SpacesInLocalPart": "ພື່ນທີ່ທ້ອງຖິ້ນບໍ່ພຽງພໍ",
   "Type": "ປະເພດ",
   "Unknown": "ບໍ່ຊາບ",
@@ -148,6 +149,5 @@
   "Video": "ວິດີໂອ",
   "View": "ມຸມມອງ",
   "ViewWeb": "ເປີດຜ່ານຫນ້າເວັບ",
-  "Warning": "ແຈ້ງເຕືອນ",
-  "Connect": "ຕິດຕໍ່"
+  "Warning": "ແຈ້ງເຕືອນ"
 }

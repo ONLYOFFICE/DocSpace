@@ -121,10 +121,11 @@ export default function withFileActions(WrappedFileItem) {
     };
 
     onFilesClick = (e) => {
-      const { item, openFileAction, setParentId } = this.props;
+      const { item, openFileAction, setParentId, isTrashFolder } = this.props;
       if (
         (e && e.target.tagName === "INPUT") ||
-        !!e.target.closest(".lock-file")
+        !!e.target.closest(".lock-file") ||
+        isTrashFolder
       )
         return;
 

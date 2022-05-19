@@ -1,4 +1,4 @@
-﻿{
+{
   "ChangePasswordSuccess": "Ο κωδικός πρόσβασης άλλαξε με επιτυχία",
   "ConfirmOwnerPortalSuccessMessage": "Ο κάτοχος της πύλης άλλαξε επιτυχώς. Σε 10 δευτερόλεπτα θα ανακατευθυνθείτε",
   "ConfirmOwnerPortalTitle": "Επιβεβαιώστε ότι θέλετε να αλλάξετε τον κάτοχο της πύλης σε {{newOwner}}",

@@ -1,4 +1,4 @@
-﻿{
+{
   "ChangeUserTypeButton": "Thay đổi loại",
   "ChangeUserTypeHeader": "Thay đổi loại người dùng",
   "ChangeUserTypeMessage": "Người dùng loại '{{ firstType }}' sẽ được chuyển sang loại '{{ secondType }}'.",

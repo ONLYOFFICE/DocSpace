@@ -1,4 +1,4 @@
-﻿{
+{
   "ChangeEmailSuccess": "メールの変更が完了しました 。",
   "ChangesApplied": "変更が適用されました。",
   "ContactInformation": "連絡先",
@@ -17,9 +17,9 @@
   "ProviderSuccessfullyConnected": "プロバイダが正常に接続されました",
   "ProviderSuccessfullyDisconnected": "プロバイダが正常に切断された",
   "ShowBackupCodes": "バックアップコードの表示",
-  "Subscriptions": "サブスクリプション",
   "SubscriptionEmailTipsToggleLbl": "ヒントとトリックを含むメール通知",
   "SubscriptionTurnOffToast": "メーリングリストの登録が解除されました。<1>再登録</1>",
+  "Subscriptions": "サブスクリプション",
   "SystemTheme": "システムテーマのように",
   "TfaLoginSettings": "ログイン設定",
   "TwoFactorDescription": "管理者がすべてのユーザーに対して、コード生成アプリによる二要素認証を有効にしました。"

@@ -1,4 +1,4 @@
-﻿{
+{
   "ButtonAddBoxNet": "Přidat Box účet",
   "ButtonAddDropBox": "Přidat Dropbox účet",
   "ButtonAddGoogle": "Přidat Google účet",
@@ -8,7 +8,7 @@
   "NewFolder": "Nová složka",
   "NewPresentation": "Nová prezentaec",
   "NewSpreadsheet": "Nová tabulka",
+  "Upload": "Nahrát",
   "UploadFiles": "Nahrát soubory",
-  "UploadFolder": "Nahrát složku",
-  "Upload": "Nahrát"
+  "UploadFolder": "Nahrát složku"
 }

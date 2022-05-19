@@ -1,4 +1,4 @@
-﻿{
+{
   "About": "Sobre",
   "AccessRights": "Direitos de acesso",
   "Actions": "Ações",
@@ -21,6 +21,7 @@
   "Common": "Comum",
   "CommunityProduct": "Comunidade",
   "Confirmation": "Confirmação",
+  "Connect": "Ligar",
   "ContinueButton": "Continuar",
   "CopyEmailAndPassword": "Copiar email e palavra-chave",
   "CopyOperation": "A copiar",
@@ -55,12 +56,12 @@
   "Culture_uk": "Ucraniano (Ucrânia)",
   "Culture_vi": "Vietnamita (Vietname)",
   "Culture_zh-CN": "Chinês (Simplificado, PRC)",
-  "Duplicate": "Criar uma cópia",
   "Delete": "Eliminar",
   "Department": "Departmento",
   "Documents": "Documentos",
   "DomainIpAddress": "Os domínios como endereço IP não são suportados",
   "Download": "Download",
+  "Duplicate": "Criar uma cópia",
   "EditAvatar": "Editar",
   "EditButton": "Editar",
   "Email": "Email",
@@ -147,6 +148,5 @@
   "Video": "Vídeo",
   "View": "Ver",
   "ViewWeb": "Ver versão web",
-  "Warning": "Aviso",
-  "Connect": "Ligar"
+  "Warning": "Aviso"
 }

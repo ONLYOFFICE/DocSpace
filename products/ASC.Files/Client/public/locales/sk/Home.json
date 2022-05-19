@@ -35,6 +35,7 @@
   "Media": "Médiá",
   "MoveItem": "<strong> {{title}} </strong> bolo presunuté",
   "MoveItems": "<strong>{{qty}}</strong> prvkov bolo presunutých",
+  "MoveOrCopy": "Presunúť alebo Kopírovať",
   "MoveTo": "Presunúť do",
   "MyEmptyContainerDescription": "Dokumenty, ktoré vytvoríte alebo nahráte, sa uložia v sekcii „Moje dokumenty“. Môžete ich upravovať, zdieľať a spolupracovať na nich so svojim tímom.",
   "New": "Nový",
@@ -73,8 +74,7 @@
   "TooltipElementsMoveMessage": "\"Presunúť prvky {{element}},",
   "UnblockVersion": "Odblokovať/nahlásiť sa",
   "UploadToFolder": "Nahrať do priečinka",
-  "ViewList": "Zoznam",
-  "ViewTiles": "Dlaždice",
   "VersionHistory": "História verzií",
-  "MoveOrCopy": "Presunúť alebo Kopírovať"
+  "ViewList": "Zoznam",
+  "ViewTiles": "Dlaždice"
 }

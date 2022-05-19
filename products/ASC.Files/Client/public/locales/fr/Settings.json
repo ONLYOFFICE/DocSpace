@@ -1,9 +1,10 @@
-﻿{
+{
+  "Clouds": "Clouds",
   "CommonSettings": "Paramètres communs",
-  "ConnectEmpty": "Il n'y a rien ici",
   "ConnectAdminDescription": "Pour une connexion réussie, saisissez les données nécessaires sur <1>cette page</1>.",
   "ConnectDescription": "Vous pouvez connecter les comptes suivants aux documents ONLYOFFICE. Les documents de ces comptes seront disponibles pour être édités dans la section 'Mes documents'. ",
   "ConnectDescriptionText": "Pas de clouds tiers connectés.",
+  "ConnectEmpty": "Il n'y a rien ici",
   "ConnectMakeShared": "Rendre partagé et mettre dans le dossier 'communs'",
   "ConnextOtherAccount": "Autre compte",
   "DisplayFavorites": "Afficher les favoris",
@@ -16,6 +17,5 @@
   "StoringFileVersion": "Stockage des versions de fichier",
   "ThirdPartyBtn": "Activer les paramètres de tiers liés aux stockages pour les utilisateurs",
   "ThirdPartySettings": "Cloud connectés",
-  "UpdateOrCreate": "Mettre à jour la version du fichier pour le fichier existant avec le même nom. Sinon, une copie du fichier sera créée.",
-  "Clouds": "Clouds"
+  "UpdateOrCreate": "Mettre à jour la version du fichier pour le fichier existant avec le même nom. Sinon, une copie du fichier sera créée."
 }

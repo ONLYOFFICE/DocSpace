@@ -16,6 +16,7 @@
   "EmptyFile": "Leeg bestand",
   "EmptyFilterDescriptionText": "Geen bestanden of mappen komen overeen met dit filter. Probeer een andere of verwijder de filter om alle bestanden te zien. ",
   "EmptyFilterSubheadingText": "Geen bestanden die hier voor dit filter moeten worden weergegeven",
+  "EmptyFolderDecription": "Sleep bestanden hierheen of maak nieuwe aan",
   "EmptyFolderHeader": "Geen bestanden in deze map",
   "EmptyRecycleBin": "Leeg de Prullenbak",
   "FavoritesEmptyContainerDescription": "Om bestanden als favorieten te markeren of ze uit deze lijst te verwijderen, gebruikt u het contextmenu.",
@@ -35,6 +36,7 @@
   "Media": "Media",
   "MoveItem": "<strong>{{title}}</strong> verplaatst",
   "MoveItems": "<strong>{{qty}}</strong> elementen zijn verplaatst",
+  "MoveOrCopy": "Verplaats of copieer",
   "MoveTo": "Verplaats naar",
   "MyEmptyContainerDescription": "Documenten die u maakt of uploadt, worden bewaard in het gedeelte 'Mijn Documenten'. U kunt ze bewerken, delen en er met uw team aan samenwerken.",
   "New": "Nieuw",
@@ -73,8 +75,7 @@
   "TooltipElementsMoveMessage": "Kopieer {{element}} elementen",
   "UnblockVersion": "Deblokkeren/inchecken",
   "UploadToFolder": "Upload naar map",
-  "ViewList": "Lijst",
-  "ViewTiles": "Tegels",
   "VersionHistory": "Versie geschiedenis",
-  "MoveOrCopy": "Verplaats of copieer"
+  "ViewList": "Lijst",
+  "ViewTiles": "Tegels"
 }

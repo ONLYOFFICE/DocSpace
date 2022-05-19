@@ -1,4 +1,4 @@
-﻿{
+{
   "About": "Hakkında",
   "AccessRights": "Erişim hakları",
   "Actions": "Eylemler",
@@ -13,7 +13,6 @@
   "BarMaintenanceDisclaimer": "Lütfen, bu gün boyunca bütün değişikliklerin başarıyla kaydedildiğinden emin olun.",
   "ByFirstNameSorting": "İsme göre",
   "ByLastNameSorting": "Soy isme göre",
-  "Sorting": "Sıralama",
   "CancelButton": "İptal",
   "ClearButton": "Filtreleri sıfırla",
   "CloseButton": "Kapat",
@@ -22,6 +21,7 @@
   "Common": "Ortak",
   "CommunityProduct": "Topluluk",
   "Confirmation": "Onay",
+  "Connect": "Bağlan",
   "ContinueButton": "Devam et",
   "CopyEmailAndPassword": "E-posta ve şifreyi kopyala",
   "CopyOperation": "Kopyalanıyor",
@@ -56,12 +56,12 @@
   "Culture_uk": "Ukraynaca (Ukrayna)",
   "Culture_vi": "Vietnamca (Vietnam)",
   "Culture_zh-CN": "Çince (Basitleştirilmiş, ÇHC)",
-  "Duplicate": "Bir kopya oluştur",
   "Delete": "Sil",
   "Department": "Departman",
   "Documents": "Belgeler",
   "DomainIpAddress": "IP adresi olarak alan adları desteklenmez",
   "Download": "İndir",
+  "Duplicate": "Bir kopya oluştur",
   "EditAvatar": "Düzenle",
   "EditButton": "Düzenle",
   "Email": "E-posta",
@@ -86,8 +86,8 @@
   "Load": "Yükle",
   "LoadingDescription": "Lütfen bekleyin...",
   "LoadingProcessing": "Yükleniyor...",
-  "Location": "Konum",
   "LocalDomain": "Yerel domainler desteklenmemektedir",
+  "Location": "Konum",
   "LoginButton": "Oturum aç",
   "Mail": "Posta",
   "MakeForm": "oform olarak Kaydet",
@@ -139,6 +139,7 @@
   "SignInWithTwitter": "Twitter hesabınız ile giriş yapın",
   "Size": "Boyut",
   "SomethingWentWrong": "Bir şeyler ters gitti.",
+  "Sorting": "Sıralama",
   "SpacesInLocalPart": "Yerel kısım boşluk içeremez",
   "Type": "Tür",
   "Unknown": "Bilinmeyen",
@@ -148,6 +149,5 @@
   "Video": "Video",
   "View": "Görüntüle",
   "ViewWeb": "Web sürümünü görüntüle",
-  "Warning": "Uyarı",
-  "Connect": "Bağlan"
+  "Warning": "Uyarı"
 }

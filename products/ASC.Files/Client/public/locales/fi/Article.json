@@ -1,4 +1,4 @@
-﻿{
+{
   "ButtonAddBoxNet": "Liitä Box-tili",
   "ButtonAddDropBox": "Liitä Dropbox-tili",
   "ButtonAddGoogle": "Liitä Google-tili",
@@ -8,7 +8,7 @@
   "NewFolder": "Uusi kansio",
   "NewPresentation": "Uusi esitys",
   "NewSpreadsheet": "Uusi",
+  "Upload": "Lataa",
   "UploadFiles": "Lataa tiedostoja",
-  "UploadFolder": "Lataa kansio",
-  "Upload": "Lataa"
+  "UploadFolder": "Lataa kansio"
 }

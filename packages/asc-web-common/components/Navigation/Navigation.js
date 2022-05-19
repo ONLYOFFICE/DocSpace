@@ -157,6 +157,7 @@ const Navigation = ({
             isTabletView={isTabletView}
             isRecycleBinFolder={isRecycleBinFolder}
             isDesktop={isDesktop}
+            isInfoPanelVisible={isInfoPanelVisible}
           >
             <ArrowButton
               isRootFolder={isRootFolder}
