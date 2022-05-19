@@ -359,7 +359,6 @@ const Editor = () => {
         break;
     }
 
-    console.log("icon", icon);
     if (icon) favicon.href = `${homepage}/images/${icon}`;
   };
 
