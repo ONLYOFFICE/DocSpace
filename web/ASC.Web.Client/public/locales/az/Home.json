@@ -1,5 +1,5 @@
 {
-  "GoodAfternoon": "Hərvaxtınız xeyir, {{ekranAdı}}!",
-  "GoodEvening": "Axşamınız xeyir, {{ekranAdı}}!",
-  "GoodMorning": "Sabahınız xeyir, {{ekranAdı}}!"
+  "GoodAfternoon": "Hərvaxtınız xeyir, {{displayName}}!",
+  "GoodEvening": "Axşamınız xeyir, {{displayName}}!",
+  "GoodMorning": "Sabahınız xeyir, {{displayName}}!"
 }
