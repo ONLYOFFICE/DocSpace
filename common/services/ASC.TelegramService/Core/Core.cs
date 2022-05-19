@@ -151,7 +151,7 @@ public class CommandModule
         }
         catch (Exception ex)
         {
-            _log.LogDebug(ex, "Couldn't handle ({text}) message", msg.Text);
+            _log.DebugCouldntHandle(msg.Text, ex);
         }
     }
 }
