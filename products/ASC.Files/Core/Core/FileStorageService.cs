@@ -225,7 +225,7 @@ public class FileStorageService<T> //: IFileStorageService
     }
 
     public async Task<DataWrapper<T>> GetFolderItemsAsync(T parentId, int from, int count, FilterType filter, bool subjectGroup, string ssubject, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy,
-        SearchArea searchArea = SearchArea.Active)
+        SearchArea searchArea = SearchArea.Active, IEnumerable<int> tagIds = null)
     {
         var subjectId = string.IsNullOrEmpty(ssubject) ? Guid.Empty : new Guid(ssubject);
 
@@ -272,7 +272,7 @@ public class FileStorageService<T> //: IFileStorageService
         IEnumerable<FileEntry> entries;
         try
         {
-            (entries, total) = await _entryManager.GetEntriesAsync(parent, from, count, filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, orderBy, searchArea);
+            (entries, total) = await _entryManager.GetEntriesAsync(parent, from, count, filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, orderBy, searchArea, tagIds);
         }
         catch (Exception e)
         {

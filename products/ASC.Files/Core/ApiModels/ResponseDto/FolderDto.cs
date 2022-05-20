@@ -33,6 +33,7 @@ public class FolderDto<T> : FileEntryWrapper<T>
     public int FoldersCount { get; set; }
     public bool? IsShareable { get; set; }
     public int New { get; set; }
+    public IEnumerable<TagInfo> Tags { get; set; }
 
     public FolderDto() { }
 
@@ -84,6 +85,28 @@ public class FolderDtoHelper : FileEntryDtoHelper
         var result = await GetFolderWrapperAsync(folder);
 
         result.ParentId = folder.ParentId;
+
+        if (DocSpaceHelper.IsRoom(folder.FolderType))
+        {
+            if (folder.Tags == null)
+            {
+                var tagDao = _daoFactory.GetTagDao<T>();
+
+                var tags = await tagDao.GetTagsAsync(TagType.Custom, new[] { folder }).Select(t => new TagInfo
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                    Owner = t.Owner,
+                    Type = t.Type,
+                }).ToListAsync();
+
+                result.Tags = tags;
+            }
+            else
+            {
+                result.Tags = folder.Tags;
+            }
+        }
 
         if (folder.RootFolderType == FolderType.USER
             && !Equals(folder.RootCreateBy, _authContext.CurrentAccount.ID))

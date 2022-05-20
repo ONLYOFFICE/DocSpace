@@ -159,7 +159,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         return GetFoldersAsync(parentId, default, default, false, default, string.Empty);
     }
 
-    public IAsyncEnumerable<Folder<int>> GetFoldersAsync(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
+    public IAsyncEnumerable<Folder<int>> GetFoldersAsync(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false, 
+        IEnumerable<int> tagIds = null)
     {
         if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
             || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
@@ -227,12 +228,20 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             }
         }
 
+        if (tagIds != null && tagIds.Any())
+        {
+            q = q.Join(FilesDbContext.TagLink, f => f.Id.ToString(), t => t.EntryId, (folder, tag) => new { folder, tag.TagId })
+                .Where(r => tagIds.Contains(r.TagId))
+                .Select(r => r.folder).Distinct();
+        }
+
         var dbFolders = FromQueryWithShared(q).AsAsyncEnumerable();
 
         return dbFolders.Select(_mapper.Map<DbFolderQuery, Folder<int>>);
     }
 
-    public IAsyncEnumerable<Folder<int>> GetFoldersAsync(IEnumerable<int> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
+    public IAsyncEnumerable<Folder<int>> GetFoldersAsync(IEnumerable<int> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true,
+        IEnumerable<int> tagIds = null)
     {
         if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
             || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
@@ -291,6 +300,13 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             {
                 q = q.Where(r => r.CreateBy == subjectID);
             }
+        }
+
+        if (tagIds != null && tagIds.Any())
+        {
+            q = q.Join(FilesDbContext.TagLink, f => f.Id.ToString(), t => t.EntryId, (folder, tag) => new { folder, tag.TagId })
+                .Where(r => tagIds.Contains(r.TagId))
+                .Select(r => r.folder).Distinct();
         }
 
         var dbFolders = (checkShare ? FromQueryWithShared(q) : FromQuery(q)).AsAsyncEnumerable();

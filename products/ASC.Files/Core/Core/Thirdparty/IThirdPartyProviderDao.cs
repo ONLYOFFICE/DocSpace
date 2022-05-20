@@ -467,6 +467,21 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         return AsyncEnumerable.Empty<Tag>();
     }
 
+    public IAsyncEnumerable<TagInfo> GetTagsInfoAsync(string searchText, TagType tagType, bool byName)
+    {
+        return AsyncEnumerable.Empty<TagInfo>();
+    }
+
+    public IAsyncEnumerable<TagInfo> GetTagsInfoAsync(IEnumerable<int> ids)
+    {
+        return AsyncEnumerable.Empty<TagInfo>();
+    }
+
+    public Task<TagInfo> SaveTagInfoAsync(TagInfo tagInfo)
+    {
+        return Task.FromResult(tagInfo);
+    }
+
     public IEnumerable<Tag> SaveTags(IEnumerable<Tag> tag)
     {
         return new List<Tag>();
@@ -483,6 +498,16 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
 
     public void UpdateNewTags(Tag tag)
     {
+    }
+
+    public Task RemoveTagsAsync(FileEntry<string> entry, IEnumerable<int> tagsIds)
+    {
+        return Task.CompletedTask;
+    }
+
+    public Task RemoveTagsAsync(IEnumerable<int> tagsIds)
+    {
+        return Task.CompletedTask;
     }
 
     public void RemoveTags(IEnumerable<Tag> tag)

@@ -103,6 +103,7 @@ public class FolderContentDtoHelper
         }
 
         var folderEntries = folderItems.Entries.Where(r => r.FileEntryType == FileEntryType.Folder);
+
         foreach (var r in folderEntries)
         {
             FileEntryDto wrapper = null;

@@ -83,6 +83,7 @@ public abstract class FileEntry : ICloneable
     public Guid RootCreateBy { get; set; }
     public abstract bool IsNew { get; set; }
     public FileEntryType FileEntryType { get; set; }
+    public IEnumerable<TagInfo> Tags { get; set; }
 
     private string _modifiedByString;
     private string _createByString;

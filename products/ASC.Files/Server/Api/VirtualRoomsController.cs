@@ -29,7 +29,34 @@ namespace ASC.Files.Api;
 [ConstraintRoute("int")]
 public class VirtualRoomsControllerInternal : VirtualRoomsController<int>
 {
-    public VirtualRoomsControllerInternal(FoldersControllerHelper<int> foldersControllerHelper, GlobalFolderHelper globalFolderHelper, FileStorageService<int> fileStorageService, FolderDtoHelper folderDtoHelper, FileOperationDtoHelper fileOperationDtoHelper, SecurityControllerHelper<int> securityControllerHelper, CoreBaseSettings coreBaseSettings, FolderContentDtoHelper folderContentDtoHelper, ApiContext apiContext, WebItemSecurity webItemSecurity, AuthContext authContext, RoomLinksService roomLinksManager) : base(foldersControllerHelper, globalFolderHelper, fileStorageService, folderDtoHelper, fileOperationDtoHelper, securityControllerHelper, coreBaseSettings, folderContentDtoHelper, apiContext, webItemSecurity, authContext, roomLinksManager)
+    public VirtualRoomsControllerInternal(
+        FoldersControllerHelper<int> foldersControllerHelper,
+        GlobalFolderHelper globalFolderHelper,
+        FileStorageService<int> fileStorageService,
+        FolderDtoHelper folderDtoHelper,
+        FileOperationDtoHelper fileOperationDtoHelper,
+        SecurityControllerHelper<int> securityControllerHelper,
+        CoreBaseSettings coreBaseSettings,
+        FolderContentDtoHelper folderContentDtoHelper,
+        ApiContext apiContext,
+        WebItemSecurity webItemSecurity,
+        AuthContext authContext,
+        RoomLinksService roomLinksManager,
+        CustomTagsService<int> customTagsService) 
+        : base(
+            foldersControllerHelper,
+            globalFolderHelper,
+            fileStorageService,
+            folderDtoHelper,
+            fileOperationDtoHelper,
+            securityControllerHelper,
+            coreBaseSettings,
+            folderContentDtoHelper,
+            apiContext,
+            webItemSecurity,
+            authContext,
+            roomLinksManager,
+            customTagsService)
     {
     }
 }
@@ -48,12 +75,13 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     private readonly WebItemSecurity _webItemSecurity;
     private readonly AuthContext _authContext;
     private readonly RoomLinksService _roomLinksManager;
+    private readonly CustomTagsService<T> _customTagsService;
 
     public VirtualRoomsController(FoldersControllerHelper<T> foldersControllerHelper, GlobalFolderHelper globalFolderHelper,
         FileStorageService<T> fileStorageService, FolderDtoHelper folderDtoHelper, FileOperationDtoHelper fileOperationDtoHelper,
         SecurityControllerHelper<T> securityControllerHelper, CoreBaseSettings coreBaseSettings,
         FolderContentDtoHelper folderContentDtoHelper, ApiContext apiContext, WebItemSecurity webItemSecurity, AuthContext authContext,
-        RoomLinksService roomLinksManager)
+        RoomLinksService roomLinksManager, CustomTagsService<T> customTagsService)
     {
         _foldersControllerHelper = foldersControllerHelper;
         _globalFolderHelper = globalFolderHelper;
@@ -67,10 +95,11 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         _webItemSecurity = webItemSecurity;
         _authContext = authContext;
         _roomLinksManager = roomLinksManager;
+        _customTagsService = customTagsService;
     }
 
     [Read("rooms")]
-    public async Task<FolderContentDto<T>> GetRoomsFolderAsync(RoomType type, string subjectId, bool searchInContent, bool withSubfolders, SearchArea searchArea)
+    public async Task<FolderContentDto<T>> GetRoomsFolderAsync(RoomType type, string subjectId, bool searchInContent, bool withSubfolders, SearchArea searchArea, string tags)
     {
         ErrorIfNotDocSpace();
 
@@ -86,6 +115,9 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
             _ => FilterType.None
         };
 
+
+        var tagIds = JsonSerializer.Deserialize<IEnumerable<int>>(tags);
+
         OrderBy orderBy = null;
         if (Enum.TryParse(_apiContext.SortBy, true, out SortedByType sortBy))
         {
@@ -96,7 +128,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         var count = Convert.ToInt32(_apiContext.Count);
         var filterValue = _apiContext.FilterValue;
 
-        var content = await _fileStorageService.GetFolderItemsAsync(parentId, startIndex, count, filter, false, subjectId, filterValue, searchInContent, withSubfolders, orderBy, searchArea);
+        var content = await _fileStorageService.GetFolderItemsAsync(parentId, startIndex, count, filter, false, subjectId, filterValue, searchInContent, withSubfolders, orderBy, searchArea, tagIds);
 
         var dto = await _folderContentDtoHelper.GetAsync(content, startIndex);
 
@@ -184,6 +216,47 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         ErrorIfNotDocSpace();
 
         return _roomLinksManager.GenerateLink(id, inDto.Email, (int)inDto.Access, inDto.EmployeeType, _authContext.CurrentAccount.ID);
+    }
+
+    [Create("rooms/{id}/tags")]
+    public async Task<FolderDto<T>> AddTags(T id, [FromBody] UpdateTagsRequestDto inDto)
+    {
+        ErrorIfNotDocSpace();
+
+        var room = await _customTagsService.AddRoomTagsAsync(id, inDto.TagsIds);
+
+        return await _folderDtoHelper.GetAsync(room);
+    }
+
+    [Delete("rooms/{id}/tags")]
+    public async Task<FolderDto<T>> DeleteTags(T id, [FromBody] UpdateTagsRequestDto inDto)
+    {
+        ErrorIfNotDocSpace();
+
+        var room = await _customTagsService.DeleteRoomTagsAsync(id, inDto.TagsIds);
+
+        return await _folderDtoHelper.GetAsync(room);
+    }
+
+    [Create("rooms/tags")]
+    public async Task<TagInfo> CreateTag(CreateTagRequestDto inDto)
+    {
+        ErrorIfNotDocSpace();
+
+        return await _customTagsService.CreateTagAsync(inDto.Name);
+    }
+
+    [Read("rooms/tags")]
+    public async IAsyncEnumerable<TagInfo> GetTagsInfoAsync()
+    {
+        ErrorIfNotDocSpace();
+
+        var filterValue = _apiContext.FilterValue;
+
+        await foreach (var tag in _customTagsService.GetTagsInfoAsync(filterValue, TagType.Custom))
+        {
+            yield return tag;
+        }
     }
 
     private void ErrorIfNotDocSpace()

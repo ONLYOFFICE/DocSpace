@@ -89,7 +89,8 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
         }
     }
 
-    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
+    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false, 
+        IEnumerable<int> tagIds = null)
     {
         if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
             || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
@@ -131,7 +132,8 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
         return folders;
     }
 
-    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
+    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true,
+        IEnumerable<int> tagIds = null)
     {
         if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
             || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly

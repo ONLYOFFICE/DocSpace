@@ -215,6 +215,47 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
         }
     }
 
+    public async IAsyncEnumerable<TagInfo> GetTagsInfoAsync(string searchText, TagType tagType, bool byName)
+    {
+        var q = Query(FilesDbContext.Tag).AsNoTracking().Where(r => r.Type == tagType);
+
+        if (byName)
+        {
+            q = q.Where(r => r.Name == searchText);
+        }
+        else if (!string.IsNullOrEmpty(searchText))
+        {
+            var lowerText = searchText.ToLower().Trim().Replace("%", "\\%").Replace("_", "\\_");
+            q = q.Where(r => r.Name.ToLower().Contains(lowerText));
+        }
+
+        await foreach (var tag in FromQueryAsync(q).ConfigureAwait(false))
+        {
+            yield return tag;
+        }
+    }
+
+    public async IAsyncEnumerable<TagInfo> GetTagsInfoAsync(IEnumerable<int> ids)
+    {
+        var q = Query(FilesDbContext.Tag).AsNoTracking().Where(r => ids.Contains(r.Id));
+
+        await foreach (var tag in FromQueryAsync(q).ConfigureAwait(false))
+        {
+            yield return tag;
+        }
+    }
+
+    public async Task<TagInfo> SaveTagInfoAsync(TagInfo tagInfo)
+    {
+        var tagDb = _mapper.Map<TagInfo, DbFilesTag>(tagInfo);
+        tagDb.TenantId = TenantID;
+
+        var tag = await FilesDbContext.Tag.AddAsync(tagDb).ConfigureAwait(false);
+        await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+
+        return _mapper.Map<DbFilesTag, TagInfo>(tag.Entity);
+    }
+
     public IEnumerable<Tag> SaveTags(IEnumerable<Tag> tags)
     {
         var result = new List<Tag>();
@@ -456,6 +497,35 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
             tx.Commit();
         }
+    }
+
+    public async Task RemoveTagsAsync(FileEntry<T> entry, IEnumerable<int> tagsIds)
+    {
+        var entryId = (await MappingIDAsync(entry.Id).ConfigureAwait(false)).ToString();
+
+        var toDelete = await Query(FilesDbContext.TagLink)
+            .Where(r => tagsIds.Contains(r.TagId) && r.EntryId == entryId && r.EntryType == entry.FileEntryType)
+            .ToListAsync().ConfigureAwait(false);
+
+        FilesDbContext.TagLink.RemoveRange(toDelete);
+        await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+    }
+
+    public async Task RemoveTagsAsync(IEnumerable<int> tagsIds)
+    {
+        var toDeleteTags = await Query(FilesDbContext.Tag)
+            .Where(r => tagsIds.Contains(r.Id)).ToListAsync().ConfigureAwait(false);
+        var toDeleteLinks = await Query(FilesDbContext.TagLink)
+            .Where(r => toDeleteTags.Select(t => t.Id).Contains(r.TagId)).ToListAsync().ConfigureAwait(false);
+
+        using var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false);
+
+        FilesDbContext.RemoveRange(toDeleteTags);
+        FilesDbContext.RemoveRange(toDeleteLinks);
+
+        await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+
+        await tx.CommitAsync().ConfigureAwait(false);
     }
 
     private Task RemoveTagInDbAsync(Tag tag)
@@ -842,6 +912,18 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
         foreach (var file in files)
         {
             yield return await ToTagAsync(file).ConfigureAwait(false);
+        }
+    }
+
+    protected async IAsyncEnumerable<TagInfo> FromQueryAsync(IQueryable<DbFilesTag> dbFilesTags)
+    {
+        var tags = await dbFilesTags
+            .ToListAsync()
+            .ConfigureAwait(false);
+
+        foreach (var tag in tags)
+        {
+            yield return _mapper.Map<DbFilesTag, TagInfo>(tag);
         }
     }
 

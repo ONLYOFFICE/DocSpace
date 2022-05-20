@@ -965,7 +965,7 @@ public class FileSecurity : IFileSecurity
     }
 
     public async Task<List<FileEntry>> GetVirtualRoomsAsync(FilterType filterType, Guid subjectId, string searchText, bool searchInContent, bool withSubfolders,
-        OrderBy orderBy, SearchArea searchArea)
+        OrderBy orderBy, SearchArea searchArea, IEnumerable<int> tagIds)
     {
         var securityDao = _daoFactory.GetSecurityDao<int>();
         var subjects = GetUserSubjects(_authContext.CurrentAccount.ID);
@@ -973,14 +973,14 @@ public class FileSecurity : IFileSecurity
 
         var result = new List<FileEntry>();
 
-        var entries = await GetVirtualRoomsAsync<int>(records, subjects, filterType, subjectId, searchText, searchInContent, withSubfolders, orderBy, searchArea);
+        var entries = await GetVirtualRoomsAsync<int>(records, subjects, filterType, subjectId, searchText, searchInContent, withSubfolders, orderBy, searchArea, tagIds);
         result.AddRange(entries);
 
         return result;
     }
 
     private async Task<List<FileEntry>> GetVirtualRoomsAsync<T>(IEnumerable<FileShareRecord> records, List<Guid> subjects, FilterType filterType, Guid subjectId, string search, bool searchInContent, bool withSubfolders, 
-        OrderBy orderBy, SearchArea searchArea)
+        OrderBy orderBy, SearchArea searchArea, IEnumerable<int> tagIds)
     {
         var folderDao = _daoFactory.GetFolderDao<T>();
         var fileDao = _daoFactory.GetFileDao<T>();
@@ -988,12 +988,13 @@ public class FileSecurity : IFileSecurity
 
         if (_fileSecurityCommon.IsAdministrator(_authContext.CurrentAccount.ID))
         {
+            var rooms = new List<Folder<T>>();
+
             if (searchArea == SearchArea.Any || searchArea == SearchArea.Active)
             {
                 var roomsFolderId = await _globalFolder.GetFolderVirtualRooms<T>(_daoFactory);
 
-                var rooms = await folderDao.GetFoldersAsync(roomsFolderId, orderBy, filterType, false, subjectId, search, withSubfolders).ToListAsync();
-                entries.AddRange(rooms);
+                rooms = await folderDao.GetFoldersAsync(roomsFolderId, orderBy, filterType, false, subjectId, search, withSubfolders, tagIds).ToListAsync();
 
                 if (withSubfolders)
                 {
@@ -1005,8 +1006,7 @@ public class FileSecurity : IFileSecurity
             {
                 var archiveFolderId = await _globalFolder.GetFolderArchive<T>(_daoFactory);
 
-                var archivedRooms = await folderDao.GetFoldersAsync(archiveFolderId, orderBy, filterType, false, subjectId, search, withSubfolders).ToListAsync();
-                entries.AddRange(archivedRooms);
+                rooms = await folderDao.GetFoldersAsync(archiveFolderId, orderBy, filterType, false, subjectId, search, withSubfolders, tagIds).ToListAsync();
 
                 if (withSubfolders)
                 {
@@ -1014,6 +1014,9 @@ public class FileSecurity : IFileSecurity
                     entries.AddRange(files);
                 }
             }
+
+            var roomsWithTags = await SetTags(rooms);
+            entries.AddRange(roomsWithTags);
         }
         else
         {
@@ -1056,7 +1059,9 @@ public class FileSecurity : IFileSecurity
             var rooms = await folderDao.GetFoldersAsync(folderIds.Keys, filterType, false, subjectId, search, withSubfolders, false)
                 .ToListAsync();
 
-            entries.AddRange(rooms.Where(filter));
+            var roomsWithTags = await SetTags(rooms.Where(filter));
+
+            entries.AddRange(roomsWithTags);
 
             if (withSubfolders)
             {
@@ -1066,6 +1071,26 @@ public class FileSecurity : IFileSecurity
         }
 
         return entries;
+    }
+
+    private async Task<IEnumerable<FileEntry<T>>> SetTags<T>(IEnumerable<FileEntry<T>> rooms)
+    {
+        var tagDao = _daoFactory.GetTagDao<T>();
+
+        var tags = await tagDao.GetTagsAsync(TagType.Custom, rooms).ToLookupAsync(f => (T)f.EntryId);
+
+        foreach (var room in rooms)
+        {
+            room.Tags = tags[room.Id].Select(t => new TagInfo
+            {
+                Id = t.Id,
+                Name = t.Name,
+                Owner = t.Owner,
+                Type = t.Type,
+            });
+        }
+
+        return rooms;
     }
 
     public async Task<List<FileEntry>> GetPrivacyForMeAsync(FilterType filterType, bool subjectGroup, Guid subjectID, string searchText = "", bool searchInContent = false, bool withSubfolders = false)

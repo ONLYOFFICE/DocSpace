@@ -39,10 +39,15 @@ public interface ITagDao<T>
     IAsyncEnumerable<Tag> GetTagsAsync(Guid owner, TagType tagType);
     IAsyncEnumerable<Tag> GetTagsAsync(string name, TagType tagType);
     IAsyncEnumerable<Tag> GetTagsAsync(string[] names, TagType tagType);
+    IAsyncEnumerable<TagInfo> GetTagsInfoAsync(string searchText, TagType tagType, bool byName);
+    IAsyncEnumerable<TagInfo> GetTagsInfoAsync(IEnumerable<int> ids);
     IEnumerable<Tag> SaveTags(IEnumerable<Tag> tag);
     IEnumerable<Tag> SaveTags(Tag tag);
+    Task<TagInfo> SaveTagInfoAsync(TagInfo tagInfo);
     void UpdateNewTags(IEnumerable<Tag> tag);
     void UpdateNewTags(Tag tag);
+    Task RemoveTagsAsync(IEnumerable<int> tagsIds);
+    Task RemoveTagsAsync(FileEntry<T> entry, IEnumerable<int> tagsIds);
     void RemoveTags(IEnumerable<Tag> tag);
     void RemoveTags(Tag tag);
 }
