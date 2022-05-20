@@ -18,6 +18,7 @@ import withCultureNames from "@appserver/common/hoc/withCultureNames";
 import config from "../../../../../../package.json";
 import NoUserSelect from "@appserver/components/utils/commonStyles";
 import { Base } from "@appserver/components/themes";
+import { isMobileOnly } from "react-device-detect";
 
 const InfoContainer = styled.div`
   margin-bottom: 24px;
@@ -395,8 +396,8 @@ class ProfileInfo extends React.PureComponent {
                     showDisabledItems={true}
                     dropDownMaxHeight={364}
                     manualWidth="320px"
-                    isDefaultMode={false}
-                    withBlur={window.innerWidth <= 428}
+                    isDefaultMode={!isMobileOnly}
+                    withBlur={isMobileOnly}
                   />
                   <HelpButton
                     place="bottom"
