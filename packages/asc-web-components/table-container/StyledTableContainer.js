@@ -263,7 +263,7 @@ const StyledTableHeaderCell = styled.div`
     color: ${(props) =>
       props.isActive
         ? props.theme.tableContainer.header.activeTextColor
-        : props.theme.tableContainer.header.textColor} !important;
+        : props.theme.tableContainer.header.textColor};
 
     &:hover {
       color: ${(props) =>

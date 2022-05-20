@@ -102,6 +102,7 @@ class ComboBox extends React.Component {
       manualWidth,
       displaySelectedOption,
       fixedDirection,
+      withBlur,
     } = this.props;
     const { isOpen, selectedOption } = this.state;
 
@@ -165,6 +166,7 @@ class ComboBox extends React.Component {
             showDisabledItems={showDisabledItems}
             isDefaultMode={isDefaultMode}
             fixedDirection={fixedDirection}
+            withBlur={withBlur}
           >
             {advancedOptions
               ? advancedOptions

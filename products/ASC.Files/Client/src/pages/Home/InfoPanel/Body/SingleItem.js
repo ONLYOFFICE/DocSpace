@@ -134,7 +134,7 @@ const SingleItem = (props) => {
         },
         {
           id: "Size",
-          title: t("Common:Size"),
+          title: item.fileType ? t("Common:Size") : t("Common:Content"),
           content: styledText(itemSize),
         },
         {

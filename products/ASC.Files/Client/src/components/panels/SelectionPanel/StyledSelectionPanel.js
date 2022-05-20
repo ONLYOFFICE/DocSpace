@@ -103,6 +103,8 @@ const StyledRow = styled.div`
 
   padding-left: 16px;
 
+  cursor: pointer;
+
   ${(props) =>
     props.isChecked && `background: ${props.theme.row.backgroundColor}`};
 
@@ -195,7 +197,6 @@ const StyledAsideBody = styled.div`
     max-width: 477px;
     overflow: hidden;
     .selection-panel_aside-loader {
-    
       overflow: auto;
       padding-left: 16px;
     }
