@@ -40,7 +40,7 @@
   "CustomTitles": "Titoli personalizzati",
   "CustomTitlesFrom": "Da",
   "CustomTitlesSettingsDescription": "Impostazioni di benvenuto ti permettono di cambiare il nome da visualizzare nella Pagina di benvenuti del tuo portale. Lo stesso nome si usa nel campo Da nei messaggi di notifica del tuo portale.",
-  "CustomTitlesSettingsTooltip": "0>{{welcomeText}}</0> ti permettono di cambiare il nome da visualizzare nella <2>{{text}}</2> del tuo portale. Lo stesso nome si usa nel campo <4>{{da}}</4> nei messaggi di notifica del tuo portale.",
+  "CustomTitlesSettingsTooltip": "0>{{welcomeText}}</0> ti permettono di cambiare il nome da visualizzare nella <2>{{text}}</2> del tuo portale. Lo stesso nome si usa nel campo <4>{{from}}</4> nei messaggi di notifica del tuo portale.",
   "CustomTitlesSettingsTooltipDescription": "Inserisci il nome desiderato nel campo <1>{{header }}</1>.",
   "CustomTitlesText": "Pagina di benvenuto",
   "CustomTitlesWelcome": "Le impostazioni della pagina di saluto",

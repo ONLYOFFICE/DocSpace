@@ -40,7 +40,7 @@
   "CustomTitles": "Títulos personalizados",
   "CustomTitlesFrom": "De",
   "CustomTitlesSettingsDescription": "Se mostrará en su página de bienvenida y se utilizará para las notificaciones por correo electrónico (campo De). El nombre de dominio personalizado es una forma de establecer una URL alternativa para su portal. El nombre personalizado del portal aparecerá junto a la dirección onlyoffice.com/onlyoffice.eu.",
-  "CustomTitlesSettingsTooltip": "<0>{{welcomeText}}</0> es un modo de cambiar el título predeterminado en la <2>{{text}}</2> de su portal. El mismo nombre se usa en el campo <4>{{de}}</4> para las notificaciones electrónicas de su portal.",
+  "CustomTitlesSettingsTooltip": "<0>{{welcomeText}}</0> es un modo de cambiar el título predeterminado en la <2>{{text}}</2> de su portal. El mismo nombre se usa en el campo <4>{{ from }}</4> para las notificaciones electrónicas de su portal.",
   "CustomTitlesSettingsTooltipDescription": "Introduzca el nombre necesario en el campo <1>{{header}}</1>.",
   "CustomTitlesText": "Página de bienvenida",
   "CustomTitlesWelcome": "Ajustes de bienvenida",
