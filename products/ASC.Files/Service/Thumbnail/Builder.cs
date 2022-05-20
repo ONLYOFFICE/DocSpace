@@ -275,15 +275,15 @@ namespace ASC.Files.ThumbnailBuilder
             {
                 Aspect = 2,
                 First = true,
-                //Height = config.ThumbnaillHeight,
-                //Width = config.ThumbnaillWidth
+                //Height = height,
+                //Width = width
             };
             var spreadsheetLayout = new DocumentService.SpreadsheetLayout
             {
                 IgnorePrintArea = true,
                 //Orientation = "landscape", // "297mm" x "210mm"
-                FitToHeight = 0,
-                FitToWidth = 1,
+                FitToHeight = height,
+                FitToWidth = width,
                 Headings = false,
                 GridLines = false,
                 Margins = new DocumentService.SpreadsheetLayout.LayoutMargins
@@ -295,8 +295,6 @@ namespace ASC.Files.ThumbnailBuilder
                 },
                 PageSize = new DocumentService.SpreadsheetLayout.LayoutPageSize
                 {
-                    Width = (width * 1.5) + "mm", // 192 * 1.5 = "288mm",
-                    Height = (height * 1.5) + "mm" // 128 * 1.5 = "192mm"
                 }
             };
 
