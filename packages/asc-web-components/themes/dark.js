@@ -1879,7 +1879,7 @@ const Dark = {
       marginLeft: "8px",
       marginRight: "-2px",
       tablet: {
-        width: "48px",
+        width: "44px",
         height: "44px",
         marginRight: "-16px",
       },
@@ -2082,6 +2082,7 @@ const Dark = {
       hoverIconColor: grayMaxLight,
 
       borderImageSource: `linear-gradient(to right,${black} 21px,#474747 21px,#474747 calc(100% - 20px),${black} calc(100% - 20px))`,
+      lengthenBorderImageSource: `linear-gradient(to right, #474747, #474747)`,
       hotkeyBorderBottom: `1px solid ${globalColors.blueMain}`,
     },
 

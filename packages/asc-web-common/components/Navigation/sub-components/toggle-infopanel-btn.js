@@ -40,6 +40,7 @@ const StyledContainer = styled.div`
 
 const StyledInfoPanelToggleWrapper = styled.div`
   display: ${(props) => (props.isInfoPanelVisible ? "none" : "flex")};
+
   align-items: center;
   align-self: center;
   justify-content: center;
@@ -48,6 +49,7 @@ const StyledInfoPanelToggleWrapper = styled.div`
   margin-bottom: 1px;
 
   @media ${tablet} {
+    display: none;
     margin-left: ${(props) => (props.isRootFolder ? "auto" : "0")};
   }
 

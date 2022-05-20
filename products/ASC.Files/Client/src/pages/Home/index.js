@@ -248,12 +248,11 @@ class PureHome extends React.Component {
     const {
       uploaded,
       converted,
-      uploadPanelVisible,
       setUploadPanelVisible,
       clearPrimaryProgressData,
       primaryProgressDataVisible,
     } = this.props;
-    setUploadPanelVisible(!uploadPanelVisible);
+    setUploadPanelVisible(true);
 
     if (primaryProgressDataVisible && uploaded && converted)
       clearPrimaryProgressData();
@@ -262,8 +261,8 @@ class PureHome extends React.Component {
     const {
       isProgressFinished,
       secondaryProgressDataStoreIcon,
-      selectionLength,
-      selectionTitle,
+      itemsSelectionLength,
+      itemsSelectionTitle,
     } = this.props;
 
     if (this.props.isHeaderVisible !== prevProps.isHeaderVisible) {
@@ -275,8 +274,8 @@ class PureHome extends React.Component {
     ) {
       this.showOperationToast(
         secondaryProgressDataStoreIcon,
-        selectionLength,
-        selectionTitle
+        itemsSelectionLength,
+        itemsSelectionTitle
       );
     }
   }
@@ -295,6 +294,7 @@ class PureHome extends React.Component {
       primaryProgressDataPercent,
       primaryProgressDataIcon,
       primaryProgressDataAlert,
+      clearUploadedFilesHistory,
 
       secondaryProgressDataStoreVisible,
       secondaryProgressDataStorePercent,
@@ -328,6 +328,7 @@ class PureHome extends React.Component {
           secondaryProgressBarValue={secondaryProgressDataStorePercent}
           secondaryProgressBarIcon={secondaryProgressDataStoreIcon}
           showSecondaryButtonAlert={secondaryProgressDataStoreAlert}
+          clearUploadedFilesHistory={clearUploadedFilesHistory}
           viewAs={viewAs}
           hideAside={
             !!fileActionId ||
@@ -398,6 +399,7 @@ export default inject(
     const {
       secondaryProgressDataStore,
       primaryProgressDataStore,
+      clearUploadedFilesHistory,
     } = uploadDataStore;
     const {
       firstLoad,
@@ -440,6 +442,8 @@ export default inject(
       icon: secondaryProgressDataStoreIcon,
       alert: secondaryProgressDataStoreAlert,
       isSecondaryProgressFinished: isProgressFinished,
+      itemsSelectionLength,
+      itemsSelectionTitle,
     } = secondaryProgressDataStore;
 
     const {
@@ -485,6 +489,8 @@ export default inject(
       primaryProgressDataAlert,
       clearPrimaryProgressData,
 
+      clearUploadedFilesHistory,
+
       secondaryProgressDataStoreVisible,
       secondaryProgressDataStorePercent,
       secondaryProgressDataStoreIcon,
@@ -493,6 +499,9 @@ export default inject(
       selectionLength,
       isProgressFinished,
       selectionTitle,
+
+      itemsSelectionLength,
+      itemsSelectionTitle,
 
       setExpandedKeys,
       setFirstLoad,

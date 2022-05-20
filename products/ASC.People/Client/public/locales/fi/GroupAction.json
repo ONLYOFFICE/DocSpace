@@ -1,4 +1,5 @@
-﻿{
+{
+  "AddHeadOfDepartment": "Lisää osastopäällikkö",
   "CustomNewDepartment": "{{groupCaption}} (luominen)",
   "GroupAction": "Ryhmätoiminta",
   "Members": "Jäsenet",

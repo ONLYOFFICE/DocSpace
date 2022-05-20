@@ -35,6 +35,7 @@
   "Media": "Medya",
   "MoveItem": "<strong>{{title}}</strong> taşındı",
   "MoveItems": "<strong>{{qty}}</strong> öğeler taşındı",
+  "MoveOrCopy": "Taşı veya kopyala",
   "MoveTo": "Şuraya taşı",
   "MyEmptyContainerDescription": "Oluşturduğunuz veya yüklediğiniz belgeler 'Belgelerim' bölümünde tutulur. Bunları düzenleyebilir, paylaşabilir ve ekibinizle üzerinde çalışabilirsiniz.",
   "New": "Yeni",
@@ -71,10 +72,10 @@
   "TooltipElementCopyMessage": "Kopyala {{element}}",
   "TooltipElementsCopyMessage": "{{element}} öğelerini kopyala",
   "TooltipElementsMoveMessage": "{{element}} öğelerini taşı",
+  "TrashEmptyDescription": "'Çöp Kutusu' bölümü silinen dosyalarınızın taşındığı bölümdür. Yanlışlıkla sildiyseniz geri alabilir yada kalıcı olarak silebilirsiniz. Lütfen unutmayın, 'Çöp kutusundan' dosyaları sildiğiniz zaman artık bir daha geri alamazsınız.",
   "UnblockVersion": "Engellemeyi Kaldır/Giriş Yap",
   "UploadToFolder": "Klasöre yükle",
-  "ViewList": "Liste",
-  "ViewTiles": "Kareler",
   "VersionHistory": " Versiyon Geçmişi",
-  "MoveOrCopy": "Taşı veya kopyala"
+  "ViewList": "Liste",
+  "ViewTiles": "Kareler"
 }

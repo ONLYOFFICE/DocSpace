@@ -1,5 +1,6 @@
-﻿{
+{
   "AddAccount": "Dodaj konto",
+  "AddAuthor": "Dodaj autora",
   "ArchivingData": "Archiwizacja danych",
   "ConnectingAccount": "Podłączanie konta",
   "Copy": "Skopiuj",
@@ -12,17 +13,17 @@
   "DownloadAs": "Pobierz jako",
   "EncryptedFileSaving": "Zapisywanie szyfrowanego pliku",
   "Files": "Pliki",
-  "Folders": "Foldery",
   "FolderSelection": "Wybór foldera",
   "FolderTitleBoxNet": "Katalog Box",
   "FolderTitleDocuSign": "Konto DocuSign",
   "FolderTitleDropBox": "Katalog Dropbox",
   "FolderTitleGoogle": "Katalog Google",
-  "FolderTitlekDrive": "Katalog kDrive",
   "FolderTitleSharePoint": "Katalog SharePoint",
   "FolderTitleSkyDrive": "Katalog OneDrive",
   "FolderTitleWebDav": "Katalog WebDAV",
   "FolderTitleYandex": "Katalog Yandex",
+  "FolderTitlekDrive": "Katalog kDrive",
+  "Folders": "Foldery",
   "LinkCopySuccess": "Link został skopiowany do schowka",
   "MediaLoadError": "Plik multimedialny nie mógł zostać załadowany",
   "Move": "Przenieś",
@@ -39,9 +40,9 @@
   "TypeTitleDocuSign": "DocuSign",
   "TypeTitleDropBox": "Dropbox",
   "TypeTitleGoogle": "Google Drive",
-  "TypeTitlekDrive": "kDrive",
   "TypeTitleSharePoint": "SharePoint",
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
-  "TypeTitleYandex": "Yandex.Disk"
+  "TypeTitleYandex": "Yandex.Disk",
+  "TypeTitlekDrive": "kDrive"
 }

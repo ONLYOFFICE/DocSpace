@@ -1,9 +1,9 @@
-﻿{
+{
   "AddMembers": "ເພີ່ມສະມາຊິກ",
   "Birthdate": "ວັນເກີດ",
   "DeleteSelfProfile": "ລຶບ profile",
-  "DisabledEmployeeStatus": "ປິດ",
   "DisableUserButton": "ປິດ",
+  "DisabledEmployeeStatus": "ປິດ",
   "EmailChangeButton": "ປ່ຽນອີເມວ",
   "EnableUserButton": "ປິດ",
   "ErrorUnknownFileImageType": "ປະເພດ file ຮູບທີ່ບໍ່ຮູ້ຈັກ",
@@ -11,19 +11,19 @@
   "InviteLinkTitle": "link ຄໍາເຊີນ",
   "LDAPLbl": "LDAP",
   "MaleSexStatus": "ຜູ່ຊາຍ",
-  "maxSizeFileError": "ເກີນຂະໜາດfileສູງສຸດ",
   "MaxSizeLabel": "(JPG ຫຼື PNG ສູງສຸດ 1 MB)",
   "NotBeUndone": "ໝາຍເຫດ: ຄຳສັ່ງນີ້ບໍ່ສາມາດຍົກເລີກໄດ້.",
-  "orDropFileHereLabel": "ຫຼືວາງໄຟລ໌ທີ່ນີ້",
   "PasswordChangeButton": "ປ່ຽນລະຫັດຜ່ານ",
   "PendingTitle": "Pending",
   "ReassignData": "Reassign ຂໍ້ມູນ",
   "RemoveData": "ລຶບຂໍ້ມູນສ່ວນຕົວ",
-  "selectNewPhotoLabel": "ເລືອກຮູບໃຫມ່",
   "SendInviteAgain": "ສົ່ງຄໍາເຊີນອີກເທື່ອຫນຶ່ງ",
   "Sex": "ເພດ",
   "SocialProfiles": "Social profiles",
   "SuccessChangeUserStatus": "ຖານະຜູ້ໃຊ້ໄດ້ຖືກປ່ຽນແປງສໍາເລັດ",
   "SuccessDeletePersonalData": "ຂໍ້ມູນສ່ວນຕົວໄດ້ຖືກລຶບອອກສໍາເລັດ",
-  "SuccessSentInvitation": "ການເຊື້ອເຊີນໄດ້ຖືກສົ່ງສໍາເລັດ"
+  "SuccessSentInvitation": "ການເຊື້ອເຊີນໄດ້ຖືກສົ່ງສໍາເລັດ",
+  "maxSizeFileError": "ເກີນຂະໜາດfileສູງສຸດ",
+  "orDropFileHereLabel": "ຫຼືວາງໄຟລ໌ທີ່ນີ້",
+  "selectNewPhotoLabel": "ເລືອກຮູບໃຫມ່"
 }

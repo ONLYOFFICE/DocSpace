@@ -451,7 +451,7 @@ class ContextOptionsStore {
       {
         key: "open",
         label: t("Open"),
-        icon: "images/catalog.folder.react.svg",
+        icon: "images/folder.react.svg",
         onClick: () => this.onOpenFolder(item),
         disabled: false,
       },
@@ -624,7 +624,7 @@ class ContextOptionsStore {
         label: isRootThirdPartyFolder
           ? t("Translations:DeleteThirdParty")
           : t("Common:Delete"),
-        icon: "/static/images/catalog.trash.react.svg",
+        icon: "images/trash.react.svg",
         onClick: () => this.onClickDelete(item, t),
         disabled: false,
       },

@@ -1,5 +1,6 @@
-﻿{
+{
   "AddAccount": "Thêm tài khoản",
+  "AddAuthor": "Thêm Tác giả",
   "ArchivingData": "Lưu trữ dữ liệu",
   "ConnectingAccount": "Đang kết nối tài khoản",
   "Copy": "Sao chép",
@@ -12,17 +13,17 @@
   "DownloadAs": "Tải xuống dưới dạng",
   "EncryptedFileSaving": "Đang lưu tệp được mã hóa",
   "Files": "Tệp",
-  "Folders": "Thư mục",
   "FolderSelection": "Chọn thư mục",
   "FolderTitleBoxNet": "Thư mục Box",
   "FolderTitleDocuSign": "Tài khoản DocuSign",
   "FolderTitleDropBox": "Thư mục Dropbox",
   "FolderTitleGoogle": "Thư mục Google",
-  "FolderTitlekDrive": "Thư mục kDrive",
   "FolderTitleSharePoint": "Thư mục SharePoint",
   "FolderTitleSkyDrive": "Thư mục OneDrive",
   "FolderTitleWebDav": "Thư mục WebDAV",
   "FolderTitleYandex": "Thư mục Yandex",
+  "FolderTitlekDrive": "Thư mục kDrive",
+  "Folders": "Thư mục",
   "LinkCopySuccess": "Liên kết đã được sao chép vào bộ nhớ tạm",
   "MediaLoadError": "Không thể tải tệp media/tệp phương tiện",
   "Move": "Di chuyển",
@@ -31,7 +32,6 @@
   "NewFormFile": "Mẫu biểu mẫu từ tệp",
   "OwnerChange": "Thay đổi chủ sở hữu",
   "Presentations": "Bản trình bày",
-
   "Spreadsheets": "Bảng tính",
   "SubNewForm": "Trống",
   "SubNewFormFile": "Từ một tệp văn bản",
@@ -40,9 +40,9 @@
   "TypeTitleDocuSign": "DocuSign",
   "TypeTitleDropBox": "Dropbox",
   "TypeTitleGoogle": "Google Drive",
-  "TypeTitlekDrive": "kDrive",
   "TypeTitleSharePoint": "SharePoint",
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
-  "TypeTitleYandex": "Yandex.Disk"
+  "TypeTitleYandex": "Yandex.Disk",
+  "TypeTitlekDrive": "kDrive"
 }

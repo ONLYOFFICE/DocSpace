@@ -31,7 +31,11 @@ class HotkeyStore {
   }
 
   activateHotkeys = (e) => {
-    if (this.dialogsStore.someDialogIsOpen || e.target?.tagName === "INPUT")
+    if (
+      this.dialogsStore.someDialogIsOpen ||
+      e.target?.tagName === "INPUT" ||
+      e.target?.tagName === "TEXTAREA"
+    )
       return e;
 
     const isDefaultKeys =

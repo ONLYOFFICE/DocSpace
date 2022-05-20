@@ -8,6 +8,7 @@ const StyledText = styled(Text)`
 
 const StyledAuthorCell = styled.div`
   display: flex;
+  width: 100%;
 
   .author-avatar-cell {
     width: 16px;

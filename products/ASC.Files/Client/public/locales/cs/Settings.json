@@ -1,4 +1,5 @@
-﻿{
+{
+  "Clouds": "Cloudy",
   "CommonSettings": "Společná nastavení",
   "ConnectAdminDescription": "Pro úspěšné připojení zadejte potřebné údaje na <1>této stránce</1>.",
   "ConnectDescription": "K dokumentům ONLYOFFICE můžete připojit následující účty. Dokumenty z těchto účtů budou k dispozici k úpravám v sekci 'Moje dokumenty'.",

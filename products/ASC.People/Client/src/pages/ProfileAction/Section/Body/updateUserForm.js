@@ -840,18 +840,20 @@ class UpdateUserForm extends React.Component {
               maxLength={50}
               maxLabelWidth={maxLabelWidth}
             />
-            <DateField
-              calendarHeaderContent={`${t("CalendarSelectDate")}:`}
-              labelText={`${t("Translations:Birthdate")}:`}
-              inputName="birthday"
-              inputClassName="date-picker_input-birthday"
-              inputValue={birthdayDateValue}
-              inputIsDisabled={isLoading}
-              inputOnChange={this.onBirthdayDateChange}
-              inputTabIndex={6}
-              locale={language}
-              maxLabelWidth={maxLabelWidth}
-            />
+            {!personal && (
+              <DateField
+                calendarHeaderContent={`${t("CalendarSelectDate")}:`}
+                labelText={`${t("Translations:Birthdate")}:`}
+                inputName="birthday"
+                inputClassName="date-picker_input-birthday"
+                inputValue={birthdayDateValue}
+                inputIsDisabled={isLoading}
+                inputOnChange={this.onBirthdayDateChange}
+                inputTabIndex={6}
+                locale={language}
+                maxLabelWidth={maxLabelWidth}
+              />
+            )}
             <RadioField
               labelText={`${t("Translations:Sex")}:`}
               radioName="sex"
@@ -865,127 +867,128 @@ class UpdateUserForm extends React.Component {
               maxLabelWidth={maxLabelWidth}
             />
             {!personal && (
-              <RadioField
-                labelText={`${t("Common:Type")}:`}
-                radioName="isVisitor"
-                radioValue={profile.isVisitor.toString()}
-                radioOptions={[
-                  { value: "true", label: guestCaption },
-                  { value: "false", label: userCaption },
-                ]}
-                radioIsDisabled={
-                  isLoading || disableProfileType || radioIsDisabled || isMy
-                }
-                radioOnChange={this.onUserTypeChange}
-                tooltipContent={tooltipTypeContent}
-                helpButtonHeaderContent={t("Common:Type")}
-                maxLabelWidth={maxLabelWidth}
-              />
-            )}
-            {!personal && (
-              <DateField
-                calendarHeaderContent={`${t("CalendarSelectDate")}:`}
-                labelText={`${regDateCaption}:`}
-                inputName="workFrom"
-                inputClassName="date-picker_input-reg-date"
-                inputValue={calendarWorkFrom}
-                inputIsDisabled={
-                  isLoading ||
-                  !isAdmin ||
-                  calendarMinDate >= new Date().setHours(0, 0, 0, 0)
-                }
-                inputOnChange={this.onWorkFromDateChange}
-                inputTabIndex={7}
-                calendarMinDate={calendarMinDate}
-                locale={language}
-                maxLabelWidth={maxLabelWidth}
-                //calendarMaxDate={calendarMinDate}
-              />
-            )}
-            <TextField
-              labelText={`${t("Common:Location")}:`}
-              inputName="location"
-              inputValue={profile.location}
-              inputIsDisabled={isLoading}
-              inputOnChange={this.onInputChange}
-              inputTabIndex={8}
-              maxLabelWidth={maxLabelWidth}
-            />
-            {!personal && (
-              <TextField
-                labelText={`${userPostCaption}:`}
-                inputName="title"
-                inputValue={profile.title}
-                inputIsDisabled={isLoading || !isAdmin}
-                inputOnChange={this.onInputChange}
-                inputTabIndex={9}
-                maxLabelWidth={maxLabelWidth}
-              />
-            )}
-            {!isMy && !personal && (
-              <DepartmentField
-                labelText={`${groupCaption}:`}
-                isDisabled={isLoading || !isAdmin}
-                showGroupSelectorButtonTitle={t("Common:AddButton")}
-                onShowGroupSelector={this.onShowGroupSelector}
-                onCloseGroupSelector={this.onCloseGroupSelector}
-                onRemoveGroup={this.onRemoveGroup}
-                selectorIsVisible={selector.visible}
-                selectorOptions={selector.options}
-                selectorSelectedOptions={selector.selected}
-                selectorSelectAllText={t("Common:SelectAll")}
-                selectorOnSearchGroups={this.onSearchGroups}
-                selectorOnSelectGroups={this.onSelectGroups}
-                maxLabelWidth={maxLabelWidth}
-              />
+              <>
+                <RadioField
+                  labelText={`${t("Common:Type")}:`}
+                  radioName="isVisitor"
+                  radioValue={profile.isVisitor.toString()}
+                  radioOptions={[
+                    { value: "true", label: guestCaption },
+                    { value: "false", label: userCaption },
+                  ]}
+                  radioIsDisabled={
+                    isLoading || disableProfileType || radioIsDisabled || isMy
+                  }
+                  radioOnChange={this.onUserTypeChange}
+                  tooltipContent={tooltipTypeContent}
+                  helpButtonHeaderContent={t("Common:Type")}
+                  maxLabelWidth={maxLabelWidth}
+                />
+                <DateField
+                  calendarHeaderContent={`${t("CalendarSelectDate")}:`}
+                  labelText={`${regDateCaption}:`}
+                  inputName="workFrom"
+                  inputClassName="date-picker_input-reg-date"
+                  inputValue={calendarWorkFrom}
+                  inputIsDisabled={
+                    isLoading ||
+                    !isAdmin ||
+                    calendarMinDate >= new Date().setHours(0, 0, 0, 0)
+                  }
+                  inputOnChange={this.onWorkFromDateChange}
+                  inputTabIndex={7}
+                  calendarMinDate={calendarMinDate}
+                  locale={language}
+                  maxLabelWidth={maxLabelWidth}
+                  //calendarMaxDate={calendarMinDate}
+                />
+                <TextField
+                  labelText={`${t("Common:Location")}:`}
+                  inputName="location"
+                  inputValue={profile.location}
+                  inputIsDisabled={isLoading}
+                  inputOnChange={this.onInputChange}
+                  inputTabIndex={8}
+                  maxLabelWidth={maxLabelWidth}
+                />
+                <TextField
+                  labelText={`${userPostCaption}:`}
+                  inputName="title"
+                  inputValue={profile.title}
+                  inputIsDisabled={isLoading || !isAdmin}
+                  inputOnChange={this.onInputChange}
+                  inputTabIndex={9}
+                  maxLabelWidth={maxLabelWidth}
+                />
+                {!isMy && (
+                  <DepartmentField
+                    labelText={`${groupCaption}:`}
+                    isDisabled={isLoading || !isAdmin}
+                    showGroupSelectorButtonTitle={t("Common:AddButton")}
+                    onShowGroupSelector={this.onShowGroupSelector}
+                    onCloseGroupSelector={this.onCloseGroupSelector}
+                    onRemoveGroup={this.onRemoveGroup}
+                    selectorIsVisible={selector.visible}
+                    selectorOptions={selector.options}
+                    selectorSelectedOptions={selector.selected}
+                    selectorSelectAllText={t("Common:SelectAll")}
+                    selectorOnSearchGroups={this.onSearchGroups}
+                    selectorOnSelectGroups={this.onSelectGroups}
+                    maxLabelWidth={maxLabelWidth}
+                  />
+                )}
+              </>
             )}
           </MainFieldsContainer>
         </MainContainer>
         {!personal && (
-          <InfoFieldContainer
-            headerText={t("Common:Comments")}
-            marginBottom={"42px"}
-          >
-            <Textarea
-              placeholder={t("WriteComment")}
-              name="notes"
-              value={profile.notes}
-              isDisabled={isLoading}
-              onChange={this.onInputChange}
-              tabIndex={10}
-            />
-          </InfoFieldContainer>
+          <>
+            <InfoFieldContainer
+              headerText={t("Common:Comments")}
+              marginBottom={"42px"}
+            >
+              <Textarea
+                placeholder={t("WriteComment")}
+                name="notes"
+                value={profile.notes}
+                isDisabled={isLoading}
+                onChange={this.onInputChange}
+                tabIndex={10}
+              />
+            </InfoFieldContainer>
+
+            <InfoFieldContainer
+              headerText={t("ContactInformation")}
+              marginBottom={"42px"}
+            >
+              <ContactsField
+                pattern={pattern.contact}
+                contacts={contacts.contact}
+                isDisabled={isLoading}
+                addItemText={t("AddContact")}
+                onItemAdd={this.onContactsItemAdd}
+                onItemTypeChange={this.onContactsItemTypeChange}
+                onItemTextChange={this.onContactsItemTextChange}
+                onItemRemove={this.onContactsItemRemove}
+              />
+            </InfoFieldContainer>
+            <InfoFieldContainer
+              headerText={t("Translations:SocialProfiles")}
+              {...(isTabletView && { marginBottom: "36px" })}
+            >
+              <ContactsField
+                pattern={pattern.social}
+                contacts={contacts.social}
+                isDisabled={isLoading}
+                addItemText={t("AddContact")}
+                onItemAdd={this.onContactsItemAdd}
+                onItemTypeChange={this.onContactsItemTypeChange}
+                onItemTextChange={this.onContactsItemTextChange}
+                onItemRemove={this.onContactsItemRemove}
+              />
+            </InfoFieldContainer>
+          </>
         )}
-        <InfoFieldContainer
-          headerText={t("ContactInformation")}
-          marginBottom={"42px"}
-        >
-          <ContactsField
-            pattern={pattern.contact}
-            contacts={contacts.contact}
-            isDisabled={isLoading}
-            addItemText={t("AddContact")}
-            onItemAdd={this.onContactsItemAdd}
-            onItemTypeChange={this.onContactsItemTypeChange}
-            onItemTextChange={this.onContactsItemTextChange}
-            onItemRemove={this.onContactsItemRemove}
-          />
-        </InfoFieldContainer>
-        <InfoFieldContainer
-          headerText={t("Translations:SocialProfiles")}
-          {...(isTabletView && { marginBottom: "36px" })}
-        >
-          <ContactsField
-            pattern={pattern.social}
-            contacts={contacts.social}
-            isDisabled={isLoading}
-            addItemText={t("AddContact")}
-            onItemAdd={this.onContactsItemAdd}
-            onItemTypeChange={this.onContactsItemTypeChange}
-            onItemTextChange={this.onContactsItemTextChange}
-            onItemRemove={this.onContactsItemRemove}
-          />
-        </InfoFieldContainer>
         <div>
           <Button
             label={t("Common:SaveButton")}
