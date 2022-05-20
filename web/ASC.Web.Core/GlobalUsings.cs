@@ -38,6 +38,7 @@ global using System.Runtime.Serialization;
 global using System.Security;
 global using System.Security.Authentication;
 global using System.Security.Cryptography;
+global using System.Security.Principal;
 global using System.Text;
 global using System.Text.Encodings.Web;
 global using System.Text.Json.Serialization;

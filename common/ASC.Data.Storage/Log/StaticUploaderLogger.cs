@@ -24,38 +24,12 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-global using System.Collections;
-global using System.Collections.Concurrent;
-global using System.Data;
-global using System.Globalization;
-global using System.Linq.Expressions;
-global using System.Text;
+namespace ASC.Data.Storage.Log;
+internal static partial class StaticUploaderLogger
+{
+    [LoggerMessage(Level = LogLevel.Debug, Message = "UploadFile {result}")]
+    public static partial void DebugUploadFile(this ILogger logger, string result);
 
-global using ASC.Common;
-global using ASC.Common.Caching;
-global using ASC.Common.Log;
-global using ASC.Common.Utils;
-global using ASC.Core;
-global using ASC.Core.Common.EF;
-global using ASC.Core.Common.EF.Context;
-global using ASC.Core.Common.EF.Model;
-global using ASC.Core.Common.Settings;
-global using ASC.Core.Tenants;
-global using ASC.ElasticSearch.Core;
-global using ASC.ElasticSearch.Log;
-global using ASC.ElasticSearch.Service;
-
-global using Autofac;
-
-global using Elasticsearch.Net;
-
-global using Microsoft.Extensions.Configuration;
-global using Microsoft.Extensions.DependencyInjection;
-global using Microsoft.Extensions.Hosting;
-global using Microsoft.Extensions.Logging;
-
-global using Nest;
-
-global using Newtonsoft.Json;
-
-global using LogLevel = Microsoft.Extensions.Logging.LogLevel;
+    [LoggerMessage(Level = LogLevel.Error, Message = "UploadOperation")]
+    public static partial void ErrorUploadOperation(this ILogger logger, Exception exception);
+}

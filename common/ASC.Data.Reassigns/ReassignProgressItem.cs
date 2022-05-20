@@ -127,7 +127,7 @@ public class ReassignProgressItem : DistributedTaskProgress
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "ReassignProgressItem");
+            logger.ErrorReassignProgressItem(ex);
             Status = DistributedTaskStatus.Failted;
             Exception = ex;
             SendErrorNotify(userManager, studioNotifyService, ex.Message);

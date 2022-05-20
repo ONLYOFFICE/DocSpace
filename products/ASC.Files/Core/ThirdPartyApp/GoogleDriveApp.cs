@@ -505,7 +505,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
             await stream.CopyToAsync(context.Response.Body);
 
             var contentLength = jsonFile.Value<string>("size");
-            _logger.LogDebug("GoogleDriveApp: get file stream contentLength - {contentLength}", contentLength);
+            _logger.DebugGoogleDriveAppGetFileStreamcontentLength(contentLength);
             context.Response.Headers.Add("Content-Length", contentLength);
         }
         catch (Exception ex)

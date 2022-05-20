@@ -130,7 +130,7 @@ public class RemoveProgressItem : DistributedTaskProgress
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "RemoveProgressItem");
+            logger.ErrorRemoveProgressItem(ex);
             Status = DistributedTaskStatus.Failted;
             Exception = ex;
             SendErrorNotify(studioNotifyService, ex.Message, userName);

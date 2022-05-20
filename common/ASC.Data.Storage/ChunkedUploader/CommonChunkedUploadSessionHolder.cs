@@ -61,7 +61,7 @@ public class CommonChunkedUploadSessionHolder
         }
         catch (Exception err)
         {
-            _logger.LogError(err, "DeleteExpired");
+            _logger.ErrorDeleteExpired(err);
         }
     }
 

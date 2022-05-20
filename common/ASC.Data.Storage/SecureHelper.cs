@@ -36,7 +36,7 @@ public static class SecureHelper
         }
         catch (Exception err)
         {
-            options.CreateLogger("ASC.Data.Storage.SecureHelper").LogError(err, "IsSecure");
+            options.CreateLogger("ASC.Data.Storage.SecureHelper").ErrorIsSecure(err);
 
             return false;
         }

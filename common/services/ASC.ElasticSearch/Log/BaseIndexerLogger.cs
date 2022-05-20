@@ -24,38 +24,21 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-global using System.Collections;
-global using System.Collections.Concurrent;
-global using System.Data;
-global using System.Globalization;
-global using System.Linq.Expressions;
-global using System.Text;
+namespace ASC.ElasticSearch.Log;
+internal static partial class BaseIndexerLogger
+{
+    [LoggerMessage(Level = LogLevel.Debug, Message = "Index: {indexName}, Count {count}, Max: {max}, Min: {min}")]
+    public static partial void DebugIndex(this ILogger logger, string indexName, int count, int max, int min);  
+    
+    [LoggerMessage(Level = LogLevel.Debug, Message = "index completed {indexName}")]
+    public static partial void DebugIndexCompleted(this ILogger logger, string indexName);  
+    
+    [LoggerMessage(Level = LogLevel.Debug, Message = "Delete {indexName}")]
+    public static partial void DebugIndexDeleted(this ILogger logger, string indexName);
 
-global using ASC.Common;
-global using ASC.Common.Caching;
-global using ASC.Common.Log;
-global using ASC.Common.Utils;
-global using ASC.Core;
-global using ASC.Core.Common.EF;
-global using ASC.Core.Common.EF.Context;
-global using ASC.Core.Common.EF.Model;
-global using ASC.Core.Common.Settings;
-global using ASC.Core.Tenants;
-global using ASC.ElasticSearch.Core;
-global using ASC.ElasticSearch.Log;
-global using ASC.ElasticSearch.Service;
-
-global using Autofac;
-
-global using Elasticsearch.Net;
-
-global using Microsoft.Extensions.Configuration;
-global using Microsoft.Extensions.DependencyInjection;
-global using Microsoft.Extensions.Hosting;
-global using Microsoft.Extensions.Logging;
-
-global using Nest;
-
-global using Newtonsoft.Json;
-
-global using LogLevel = Microsoft.Extensions.Logging.LogLevel;
+    [LoggerMessage(Level = LogLevel.Error, Message = "CreateIfNotExist")]
+    public static partial void ErrorCreateIfNotExist(this ILogger logger, Exception exception); 
+    
+    [LoggerMessage(Level = LogLevel.Error, Message = "CheckExist {indexName}")]
+    public static partial void ErrorCheckExist(this ILogger logger, string indexName, Exception exception); 
+}

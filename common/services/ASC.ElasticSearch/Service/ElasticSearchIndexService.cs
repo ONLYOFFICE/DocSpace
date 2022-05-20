@@ -66,7 +66,7 @@ public class ElasticSearchIndexService : BackgroundService
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Subscribe on start");
+            _logger.ErrorSubscribeOnStart(e);
         }
 
         using var scope = _serviceScopeFactory.CreateScope();
@@ -104,12 +104,12 @@ public class ElasticSearchIndexService : BackgroundService
                     return;
                 }
 
-                _logger.LogDebug("Product reindex {indexName}", product.IndexName);
+                _logger.DebugProductReindex(product.IndexName);
                 product.ReIndex();
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Product reindex {indexName}", product.IndexName);
+                _logger.ErrorProductReindex(product.IndexName, e);
             }
         }
 
@@ -120,13 +120,13 @@ public class ElasticSearchIndexService : BackgroundService
                 return;
             }
 
-            _logger.LogDebug("Product {indexName}", product.IndexName);
+            _logger.DebugProduct(product.IndexName);
             _indexNotify.Publish(new IndexAction() { Indexing = product.IndexName, LastIndexed = 0 }, CacheNotifyAction.Any);
             product.IndexAll();
         }
         catch (Exception e)
         {
-            _logger.LogError(e, string.Format("Product {0}", product.IndexName));
+            _logger.ErrorProductReindex(product.IndexName, e);
         }
     }
 
@@ -157,7 +157,7 @@ public class ElasticSearchIndexService : BackgroundService
         }
         catch (Exception e)
         {
-            _logger.LogCritical(e, "IndexAll");
+            _logger.CriticalIndexAll(e);
 
             throw;
         }

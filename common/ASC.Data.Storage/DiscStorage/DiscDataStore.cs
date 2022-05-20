@@ -143,7 +143,7 @@ public class DiscDataStore : BaseStorage
 
     public override Task<Uri> SaveAsync(string domain, string path, Stream stream)
     {
-        Logger.LogDebug("Save {path}", path);
+        Logger.DebugSavePath(path);
 
         var buffered = _tempStream.GetBuffered(stream);
         if (QuotaController != null)

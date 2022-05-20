@@ -102,6 +102,9 @@ internal static partial class GoogleDriveAppLogger
     [LoggerMessage(Level = LogLevel.Debug, Message = "GoogleDriveApp: Try GetCorrectExt - {ext} for - {mimeType}")]
     public static partial void DebugGoogleDriveAppTryGetCorrectExt(this ILogger logger, string ext, string mimeType);
 
+    [LoggerMessage(Level = LogLevel.Debug, Message = "GoogleDriveApp: get file stream contentLength - {contentLength}")]
+    public static partial void DebugGoogleDriveAppGetFileStreamcontentLength(this ILogger logger, string contentLength);
+
     [LoggerMessage(Level = LogLevel.Error, Message = "GoogleDriveApp: Error convert")]
     public static partial void ErrorGoogleDriveAppConvert(this ILogger logger, Exception exception);
 

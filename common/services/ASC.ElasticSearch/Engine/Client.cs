@@ -75,7 +75,7 @@ public class Client
 
                         if (r.HttpStatusCode != null && (r.HttpStatusCode == 403 || r.HttpStatusCode == 500) && r.ResponseBodyInBytes != null)
                         {
-                            _logger.LogTrace("Response: {response}", Encoding.UTF8.GetString(r.ResponseBodyInBytes));
+                            _logger.TraceResponse(Encoding.UTF8.GetString(r.ResponseBodyInBytes));
                         }
                     });
                 }
@@ -96,7 +96,7 @@ public class Client
                 }
                 catch (Exception e)
                 {
-                    _logger.LogError(e, "Client");
+                    _logger.ErrorClient(e);
                 }
 
                 return _client;
@@ -118,7 +118,7 @@ public class Client
 
         var result = elasticClient.Ping(new PingRequest());
 
-        _logger.LogDebug("Ping {ping}", result.DebugInformation);
+        _logger.DebugPing(result.DebugInformation);
 
         return result.IsValid;
     }

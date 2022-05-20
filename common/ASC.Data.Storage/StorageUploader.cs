@@ -145,7 +145,7 @@ public class MigrateOperation : DistributedTaskProgress
     {
         try
         {
-            _logger.LogDebug("Tenant: {tenantId}", _tenantId);
+            _logger.DebugTenant(_tenantId);
             Status = DistributedTaskStatus.Running;
 
             using var scope = _serviceProvider.CreateScope();
@@ -169,17 +169,15 @@ public class MigrateOperation : DistributedTaskProgress
                 foreach (var domain in domains)
                 {
                     //Status = module + domain;
-                    _logger.LogDebug("Domain: {domain}", domain);
+                    _logger.DebugDomain(domain);
                     files = oldStore.ListFilesRelativeAsync(domain, "\\", "*.*", true).ToArrayAsync().Result;
 
                     foreach (var file in files)
                     {
-                        _logger.LogDebug("File: {file}", file);
+                        _logger.DebugFile(file);
                         crossModuleTransferUtility.CopyFileAsync(domain, file, domain, file).Wait();
                     }
                 }
-
-                _logger.LogDebug("Domain:");
 
                 files = oldStore.ListFilesRelativeAsync(string.Empty, "\\", "*.*", true).ToArrayAsync().Result
                 .Where(path => domains.All(domain => !path.Contains(domain + "/")))
@@ -187,7 +185,7 @@ public class MigrateOperation : DistributedTaskProgress
 
                 foreach (var file in files)
                 {
-                    _logger.LogDebug("File: {file}", file);
+                    _logger.DebugFile(file);
                     crossModuleTransferUtility.CopyFileAsync("", file, "", file).Wait();
                 }
 
@@ -206,7 +204,7 @@ public class MigrateOperation : DistributedTaskProgress
         {
             Status = DistributedTaskStatus.Failted;
             Exception = e;
-            _logger.LogError(e, "MigrateOperation");
+            _logger.ErrorMigrateOperation(e);
         }
 
         MigrationPublish();

@@ -173,7 +173,7 @@ public class SsoHandlerService
                     }
                     else
                     {
-                        _log.LogDebug("User {0} already authenticated", context.User.Identity);
+                        _log.DebugUserAlreadyAuthenticated(context.User.Identity);
                     }
                 }
 
@@ -253,7 +253,7 @@ public class SsoHandlerService
                 return Constants.LostUser;
             }
 
-            _log.LogDebug("Adding or updating user in database, userId={0}", userInfo.Id);
+            _log.DebugAddingOrUpdatingUser(userInfo.Id);
 
             _securityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
 

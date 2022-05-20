@@ -93,7 +93,7 @@ public class NotifyHelper
         }
         catch (Exception error)
         {
-            _logger.LogWarning(error, "Error while sending notification");
+            _logger.WarningErrorWhileSending(error);
         }
     }
 }

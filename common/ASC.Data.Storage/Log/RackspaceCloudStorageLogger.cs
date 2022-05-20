@@ -24,38 +24,9 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-global using System.Collections;
-global using System.Collections.Concurrent;
-global using System.Data;
-global using System.Globalization;
-global using System.Linq.Expressions;
-global using System.Text;
-
-global using ASC.Common;
-global using ASC.Common.Caching;
-global using ASC.Common.Log;
-global using ASC.Common.Utils;
-global using ASC.Core;
-global using ASC.Core.Common.EF;
-global using ASC.Core.Common.EF.Context;
-global using ASC.Core.Common.EF.Model;
-global using ASC.Core.Common.Settings;
-global using ASC.Core.Tenants;
-global using ASC.ElasticSearch.Core;
-global using ASC.ElasticSearch.Log;
-global using ASC.ElasticSearch.Service;
-
-global using Autofac;
-
-global using Elasticsearch.Net;
-
-global using Microsoft.Extensions.Configuration;
-global using Microsoft.Extensions.DependencyInjection;
-global using Microsoft.Extensions.Hosting;
-global using Microsoft.Extensions.Logging;
-
-global using Nest;
-
-global using Newtonsoft.Json;
-
-global using LogLevel = Microsoft.Extensions.Logging.LogLevel;
+namespace ASC.Data.Storage.Log;
+internal static partial class RackspaceCloudStorageLogger
+{
+    [LoggerMessage(Level = LogLevel.Error, Message = "The invalidation {path} failed")]
+    public static partial void ErrorInvalidationFailed(this ILogger logger, string path, Exception exception); 
+}

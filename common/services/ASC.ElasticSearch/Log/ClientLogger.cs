@@ -24,38 +24,15 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-global using System.Collections;
-global using System.Collections.Concurrent;
-global using System.Data;
-global using System.Globalization;
-global using System.Linq.Expressions;
-global using System.Text;
+namespace ASC.ElasticSearch.Log;
+internal static partial class ClientLogger
+{
+    [LoggerMessage(Level = LogLevel.Debug, Message = "Ping {ping}")]
+    public static partial void DebugPing(this ILogger logger, string ping);
 
-global using ASC.Common;
-global using ASC.Common.Caching;
-global using ASC.Common.Log;
-global using ASC.Common.Utils;
-global using ASC.Core;
-global using ASC.Core.Common.EF;
-global using ASC.Core.Common.EF.Context;
-global using ASC.Core.Common.EF.Model;
-global using ASC.Core.Common.Settings;
-global using ASC.Core.Tenants;
-global using ASC.ElasticSearch.Core;
-global using ASC.ElasticSearch.Log;
-global using ASC.ElasticSearch.Service;
+    [LoggerMessage(Level = LogLevel.Trace, Message = "Response: {response}")]
+    public static partial void TraceResponse(this ILogger logger, string response);
 
-global using Autofac;
-
-global using Elasticsearch.Net;
-
-global using Microsoft.Extensions.Configuration;
-global using Microsoft.Extensions.DependencyInjection;
-global using Microsoft.Extensions.Hosting;
-global using Microsoft.Extensions.Logging;
-
-global using Nest;
-
-global using Newtonsoft.Json;
-
-global using LogLevel = Microsoft.Extensions.Logging.LogLevel;
+    [LoggerMessage(Level = LogLevel.Error, Message = "Client")]
+    public static partial void ErrorClient(this ILogger logger, Exception exception);
+}

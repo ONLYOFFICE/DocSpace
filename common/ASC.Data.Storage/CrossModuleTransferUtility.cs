@@ -99,7 +99,7 @@ public class CrossModuleTransferUtility
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Copy File");
+                _logger.ErrorCopyFile(ex);
                 await holder.AbortAsync(session);
             }
         }

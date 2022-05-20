@@ -24,38 +24,18 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-global using System.Collections;
-global using System.Collections.Concurrent;
-global using System.Data;
-global using System.Globalization;
-global using System.Linq.Expressions;
-global using System.Text;
-
-global using ASC.Common;
-global using ASC.Common.Caching;
-global using ASC.Common.Log;
-global using ASC.Common.Utils;
-global using ASC.Core;
-global using ASC.Core.Common.EF;
-global using ASC.Core.Common.EF.Context;
-global using ASC.Core.Common.EF.Model;
-global using ASC.Core.Common.Settings;
-global using ASC.Core.Tenants;
-global using ASC.ElasticSearch.Core;
-global using ASC.ElasticSearch.Log;
-global using ASC.ElasticSearch.Service;
-
-global using Autofac;
-
-global using Elasticsearch.Net;
-
-global using Microsoft.Extensions.Configuration;
-global using Microsoft.Extensions.DependencyInjection;
-global using Microsoft.Extensions.Hosting;
-global using Microsoft.Extensions.Logging;
-
-global using Nest;
-
-global using Newtonsoft.Json;
-
-global using LogLevel = Microsoft.Extensions.Logging.LogLevel;
+namespace ASC.Data.Storage.Log;
+internal static partial class StorageUploaderLogger
+{
+    [LoggerMessage(Level = LogLevel.Debug, Message = "Tenant: {tenantId}")]
+    public static partial void DebugTenant(this ILogger logger, int tenantId);    
+    
+    [LoggerMessage(Level = LogLevel.Debug, Message = "Domain: {domain}")]
+    public static partial void DebugDomain(this ILogger logger, string domain);  
+    
+    [LoggerMessage(Level = LogLevel.Debug, Message = "File: {file}")]
+    public static partial void DebugFile(this ILogger logger, string file);  
+    
+    [LoggerMessage(Level = LogLevel.Error, Message = "MigrateOperation")]
+    public static partial void ErrorMigrateOperation(this ILogger logger, Exception exception);   
+}

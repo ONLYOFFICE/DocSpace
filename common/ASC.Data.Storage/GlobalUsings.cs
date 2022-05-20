@@ -45,6 +45,7 @@ global using Amazon.Util;
 
 global using ASC.Common;
 global using ASC.Common.Caching;
+global using ASC.Common.Log;
 global using ASC.Common.Threading;
 global using ASC.Common.Utils;
 global using ASC.Core;
@@ -59,6 +60,7 @@ global using ASC.Data.Storage.Configuration;
 global using ASC.Data.Storage.DiscStorage;
 global using ASC.Data.Storage.Encryption;
 global using ASC.Data.Storage.GoogleCloud;
+global using ASC.Data.Storage.Log;
 global using ASC.Data.Storage.RackspaceCloud;
 global using ASC.Data.Storage.S3;
 global using ASC.Notify.Messages;
