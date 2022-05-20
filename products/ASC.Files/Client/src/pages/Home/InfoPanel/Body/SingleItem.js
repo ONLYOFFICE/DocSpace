@@ -58,13 +58,20 @@ const SingleItem = (props) => {
 
     const getSingleItemProperties = (item) => {
       const styledLink = (text, href) => (
-        <Link className="property-content" href={href} isHovered={true}>
+        <Link
+          isTextOverflow
+          className="property-content"
+          href={href}
+          isHovered={true}
+        >
           {text}
         </Link>
       );
 
       const styledText = (text) => (
-        <Text className="property-content">{text}</Text>
+        <Text truncate className="property-content">
+          {text}
+        </Text>
       );
 
       const parseAndFormatDate = (date) => {
