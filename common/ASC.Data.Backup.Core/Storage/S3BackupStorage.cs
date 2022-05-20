@@ -108,7 +108,7 @@ internal class S3BackupStorage : IBackupStorage
         }
         catch (AmazonS3Exception ex)
         {
-            _logger.LogWarning(ex, "");
+            _logger.WarningWithException(ex);
 
             return false;
         }

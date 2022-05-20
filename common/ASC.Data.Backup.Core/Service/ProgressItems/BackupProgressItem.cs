@@ -193,7 +193,7 @@ public class BackupProgressItem : BaseBackupProgressItem
         }
         catch (Exception error)
         {
-            Logger.LogError(error, "RunJob - Params: {data}", new { Id, Tenant = TenantId, File = tempFile, BasePath = _storageBasePath, });
+            Logger.ErrorRunJob(Id, TenantId, tempFile, _storageBasePath, error);
             Exception = error;
             IsCompleted = true;
         }
@@ -205,7 +205,7 @@ public class BackupProgressItem : BaseBackupProgressItem
             }
             catch (Exception error)
             {
-                Logger.LogError(error, "publish");
+                Logger.ErrorPublish(error);
             }
 
             try
@@ -217,7 +217,7 @@ public class BackupProgressItem : BaseBackupProgressItem
             }
             catch (Exception error)
             {
-                Logger.LogError(error, "can't delete file");
+                Logger.ErrorCantDeleteFile(error);
             }
         }
     }

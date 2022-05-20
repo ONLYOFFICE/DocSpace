@@ -199,7 +199,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
         }
         catch (Exception error)
         {
-            Logger.LogError(error, "RestoreProgressItem");
+            Logger.ErrorRestoreProgressItem(error);
             Exception = error;
 
             if (tenant != null)
@@ -216,7 +216,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
             }
             catch (Exception error)
             {
-                Logger.LogError(error, "publish");
+                Logger.ErrorPublish(error);
             }
 
             if (File.Exists(tempFile))

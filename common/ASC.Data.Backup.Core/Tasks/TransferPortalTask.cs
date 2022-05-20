@@ -76,7 +76,7 @@ public class TransferPortalTask : PortalTaskBase
 
     public override void RunJob()
     {
-        Logger.LogDebug("begin transfer {tenantId}", TenantId);
+        Logger.DebugBeginTransfer(TenantId);
         var fromDbFactory = new DbFactory(null, null);
         var toDbFactory = new DbFactory(null, null);
         var tenantAlias = GetTenantAlias(fromDbFactory);
@@ -149,13 +149,13 @@ public class TransferPortalTask : PortalTaskBase
             {
                 File.Delete(backupFilePath);
             }
-            Logger.LogDebug("end transfer {tenantId}", TenantId);
+            Logger.DebugEndTransfer(TenantId);
         }
     }
 
     private void DoTransferStorage(ColumnMapper columnMapper)
     {
-        Logger.LogDebug("begin transfer storage");
+        Logger.DebugBeginTransferStorage();
         var fileGroups = GetFilesToProcess(TenantId).GroupBy(file => file.Module).ToList();
         var groupsProcessed = 0;
         foreach (var group in fileGroups)
@@ -177,12 +177,12 @@ public class TransferPortalTask : PortalTaskBase
                     }
                     catch (Exception error)
                     {
-                        Logger.LogWarning(error, "Can't copy file ({module}:{path})", file.Module, file.Path);
+                        Logger.WarningCantCopyFile(file.Module, file.Path, error);
                     }
                 }
                 else
                 {
-                    Logger.LogWarning("Can't adjust file path \"{path}\".", file.Path);
+                    Logger.WarningCantAdjustFilePath(file.Path);
                 }
             }
             SetCurrentStepProgress((int)(++groupsProcessed * 100 / (double)fileGroups.Count));
@@ -193,7 +193,7 @@ public class TransferPortalTask : PortalTaskBase
             SetStepCompleted();
         }
 
-        Logger.LogDebug("end transfer storage");
+        Logger.DebugEndTransferStorage();
     }
 
     private void SaveTenant(DbFactory dbFactory, string alias, TenantStatus status, string newAlias = null, string whereCondition = null)

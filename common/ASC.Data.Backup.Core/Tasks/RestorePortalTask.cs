@@ -78,9 +78,9 @@ public class RestorePortalTask : PortalTaskBase
 
     public override void RunJob()
     {
-        Logger.LogDebug("begin restore portal");
+        Logger.DebugBeginRestorePortal();
 
-        Logger.LogDebug("begin restore data");
+        Logger.DebugBeginRestoreData();
 
         using (var dataReader = new ZipReadOperator(BackupFilePath))
         {
@@ -112,13 +112,13 @@ public class RestorePortalTask : PortalTaskBase
                 }
             }
 
-            Logger.LogDebug("end restore data");
+            Logger.DebugEndRestoreData();
 
             if (ProcessStorage)
             {
                 if (_coreBaseSettings.Standalone)
                 {
-                    Logger.LogDebug("clear cache");
+                    Logger.DebugClearCache();
                     _ascCacheNotify.ClearCache();
                 }
 
@@ -133,21 +133,21 @@ public class RestorePortalTask : PortalTaskBase
 
         if (_coreBaseSettings.Standalone)
         {
-            Logger.LogDebug("refresh license");
+            Logger.DebugRefreshLicense();
             try
             {
                 _licenseReader.RejectLicense();
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "RunJob");
+                Logger.ErrorRunJob(ex);
             }
 
-            Logger.LogDebug("clear cache");
+            Logger.DebugClearCache();
             _ascCacheNotify.ClearCache();
         }
 
-        Logger.LogDebug("end restore portal");
+        Logger.DebugEndRestorePortal();
     }
 
     private void RestoreFromDump(IDataReadOperator dataReader)
@@ -204,7 +204,7 @@ public class RestorePortalTask : PortalTaskBase
 
     private async Task RestoreFromDumpFile(IDataReadOperator dataReader, string fileName)
     {
-        Logger.LogDebug("Restore from {fileName}", fileName);
+        Logger.DebugRestoreFrom(fileName);
         using (var stream = dataReader.GetEntry(fileName))
         {
             await RunMysqlFile(stream);
@@ -264,7 +264,7 @@ public class RestorePortalTask : PortalTaskBase
 
     private void DoRestoreStorage(IDataReadOperator dataReader)
     {
-        Logger.LogDebug("begin restore storage");
+        Logger.DebugBeginRestoreStorage();
 
         var fileGroups = GetFilesToProcess(dataReader).GroupBy(file => file.Module).ToList();
         var groupsProcessed = 0;
@@ -294,7 +294,7 @@ public class RestorePortalTask : PortalTaskBase
                         }
                         catch (Exception error)
                         {
-                            Logger.LogWarning(error, "can't restore file ({module}:{path})", file.Module, file.Path);
+                            Logger.WarningCantRestoreFile(file.Module, file.Path, error);
                         }
                     }
                 }
@@ -315,12 +315,12 @@ public class RestorePortalTask : PortalTaskBase
             SetStepCompleted();
         }
 
-        Logger.LogDebug("end restore storage");
+        Logger.DebugEndRestoreStorage();
     }
 
     private void DoDeleteStorage(IEnumerable<string> storageModules, IEnumerable<Tenant> tenants)
     {
-        Logger.LogDebug("begin delete storage");
+        Logger.DebugBeginDeleteStorage();
 
         foreach (var tenant in tenants)
         {
@@ -343,7 +343,7 @@ public class RestorePortalTask : PortalTaskBase
                         },
                         domain,
                         5,
-                        onFailure: error => Logger.LogWarning(error, "Can't delete files for domain {domain}", domain)
+                        onFailure: error => Logger.WarningCanNotDeleteFilesForDomain(domain, error)
                     );
                 }
 
@@ -351,7 +351,7 @@ public class RestorePortalTask : PortalTaskBase
             }
         }
 
-        Logger.LogDebug("end delete storage");
+        Logger.DebugEndDeleteStorage();
     }
 
     private IEnumerable<BackupFileInfo> GetFilesToProcess(IDataReadOperator dataReader)

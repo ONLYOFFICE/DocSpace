@@ -60,14 +60,14 @@ internal class RestoreDbModuleTask : PortalTaskBase
 
     public override void RunJob()
     {
-        Logger.LogDebug("begin restore data for module {moduleName}", _module.ModuleName);
+        Logger.DebugBeginRestoreDataForModule(_module.ModuleName);
         SetStepsCount(_module.Tables.Count(t => !_ignoredTables.Contains(t.Name)));
 
         using (var connection = DbFactory.OpenConnection())
         {
             foreach (var table in _module.GetTablesOrdered().Where(t => !_ignoredTables.Contains(t.Name) && t.InsertMethod != InsertMethod.None))
             {
-                Logger.LogDebug("begin restore table {tableName}", table.Name);
+                Logger.DebugBeginRestoreTable(table.Name);
 
                 var transactionsCommited = 0;
                 var rowsInserted = 0;
@@ -79,11 +79,11 @@ internal class RestoreDbModuleTask : PortalTaskBase
                     onFailure: error => { throw ThrowHelper.CantRestoreTable(table.Name, error); });
 
                 SetStepCompleted();
-                Logger.LogDebug("{rows} rows inserted for table {tableName}", rowsInserted, table.Name);
+                Logger.DebugRowsInserted(rowsInserted, table.Name);
             }
         }
 
-        Logger.LogDebug("end restore data for module {moduleName}", _module.ModuleName);
+        Logger.DebugEndRestoreDataForModule(_module.ModuleName);
     }
 
     public string[] ExecuteArray(DbCommand command)
@@ -163,7 +163,7 @@ internal class RestoreDbModuleTask : PortalTaskBase
                     row);
                 if (insertCommand == null)
                 {
-                    Logger.LogWarning("Can't create command to insert row to {tableInfo} with values [{row}]", tableInfo, row);
+                    Logger.WarningCantCreateCommand(tableInfo, row);
                     _columnMapper.Rollback();
 
                     continue;
@@ -185,7 +185,7 @@ internal class RestoreDbModuleTask : PortalTaskBase
                 {
                     if (!relation.Item2.HasTenantColumn())
                     {
-                        Logger.LogWarning("Table {name} does not contain tenant id column. Can't apply low importance relations on such tables.", relation.Item2.Name);
+                        Logger.WarningTableDoesNotContainTenantIdColumn(relation.Item2.Name);
 
                         continue;
                     }
