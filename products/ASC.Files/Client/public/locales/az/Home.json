@@ -16,8 +16,10 @@
   "EmptyFile": "Boş fayl",
   "EmptyFilterDescriptionText": "Heç bir fayl və ya qovluq bu süzgəcə uyğun deyil. Xahiş edirik digər süzgəc parametrindən istifadə edin və ya bütün faylların göstərilməsi üçün süzgəci sıfırlayın.",
   "EmptyFilterSubheadingText": "Bu süzgəc üçün heç bir fayl tapılmadı",
+  "EmptyFolderDecription": "Faylları buraya çəkin və ya yenilərini yaradın",
   "EmptyFolderHeader": "Bu qovluqda heç bir fayl yoxdur",
   "EmptyRecycleBin": "Boş zibil qutusu",
+  "EmptyScreenFolder": "Burada hələ ki, heç bir sənəd yoxdur",
   "FavoritesEmptyContainerDescription": "Faylları favorit kimi qeyd etmək və ya bu siyahıdan çıxarmaq üçün kontekst menyusundan istifadə edin. ",
   "FileRemoved": "Fayl zibil qutusuna göndərildi",
   "FileRenamed": "'{{oldTitle}}' sənəd adı '{{newTitle}}'adına dəyişdirildi",
@@ -35,6 +37,7 @@
   "Media": "Media",
   "MoveItem": "<strong>{{title}}</strong> yerdəyişdirildi",
   "MoveItems": "<strong>{{qty}}</strong> elementlərin yeri dəyişdirildi",
+  "MoveOrCopy": "Köçür və ya Kopyala",
   "MoveTo": "Yerini dəyiş",
   "MyEmptyContainerDescription": "Yaratdığınız və ya yüklədiyiniz sənədlər 'Sənədlərim' bölməsində saxlanılır. Onları redaktə edə, paylaşa və kollektiv iş edə bilərsiniz.",
   "New": "Yeni",
@@ -71,10 +74,10 @@
   "TooltipElementCopyMessage": "{{element}} köçür",
   "TooltipElementsCopyMessage": "{{element}} elementlərini köçürmək",
   "TooltipElementsMoveMessage": "{{element}} elementinin yerdəyişməsi",
+  "TrashEmptyDescription": "'Səbət' bölməsinə bütün silinmiş fayllar yerləşdirilirlər. Əgər onlar səhvən siliniblərsə, Siz onları bərpa edə bilərsiniz, və ya onları ömürlük silə bilərsiniz. Lütfən, nəzərə alın ki, 'Səbətdən' silinən fayllar bir də bərpa oluna bilməyəcəklər.",
   "UnblockVersion": "Blokdan çıxar",
   "UploadToFolder": "Qovluğua yüklə",
-  "ViewList": "Siyahı",
-  "ViewTiles": "Plitkalar",
   "VersionHistory": "Versiya tarixçəsi",
-  "MoveOrCopy": "Köçür və ya Kopyala"
+  "ViewList": "Siyahı",
+  "ViewTiles": "Plitkalar"
 }

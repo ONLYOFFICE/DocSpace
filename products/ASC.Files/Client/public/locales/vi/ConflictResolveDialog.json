@@ -1,4 +1,4 @@
-﻿{
+{
   "ConflictResolveDescription": " Tệp có tên <1>{{file}}</1> đã tồn tại trong thư mục <1>{{folder}}</1>.",
   "ConflictResolveDescriptionFiles": " {{filesCount}} tài liệu có cùng tên đã tồn tại trong thư mục <1>{{folder}}</1>.",
   "ConflictResolveSelectAction": "Vui lòng chọn hành động:",

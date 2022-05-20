@@ -1,8 +1,8 @@
-﻿{
+{
   "Account": "Hesap",
   "ConnectFolderTitle": "Klasör başlığı",
-  "ConnectionUrl": "Bağlantı url'si",
   "ConnectMakeShared": "Paylaş ve 'Ortak' klasörüne koy",
+  "ConnectionUrl": "Bağlantı url'si",
   "Login": "Giriş",
   "Reconnect": "Yeniden bağlan"
 }

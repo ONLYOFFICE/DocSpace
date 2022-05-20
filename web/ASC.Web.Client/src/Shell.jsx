@@ -325,7 +325,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
     const barConfig = {
       parentElementId: "main-bar",
-      headerText: "Atention",
+      headerText: t("Attention"),
       text: `${t("BarMaintenanceDescription", {
         targetDate: targetDate,
         productName: "ONLYOFFICE Personal",

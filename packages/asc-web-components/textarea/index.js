@@ -25,6 +25,7 @@ class Textarea extends React.PureComponent {
       heightTextArea,
       color,
       theme,
+      autoFocus,
     } = this.props;
 
     return (
@@ -50,6 +51,7 @@ class Textarea extends React.PureComponent {
           value={value}
           fontSize={fontSize}
           color={color}
+          autoFocus={autoFocus}
         />
       </StyledScrollbar>
     );
@@ -89,6 +91,7 @@ Textarea.propTypes = {
   heightTextArea: PropTypes.number,
   /** Specifies the text color */
   color: PropTypes.string,
+  autoFocus: PropTypes.bool,
 };
 
 Textarea.defaultProps = {
@@ -101,6 +104,7 @@ Textarea.defaultProps = {
   tabIndex: -1,
   value: "",
   fontSize: 13,
+  isAutoFocussed: false,
 };
 
 export default Textarea;

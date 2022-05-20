@@ -12,7 +12,7 @@
   "MessageSendPasswordRecoveryInstructionsOnEmail": "Introduza o e-mail que utilizou para o registo. A palavra-passe de recuperação será enviada para esse e-mail.",
   "NotFoundCode": "Não encontra o código? Verifique a pasta de «Spam».",
   "Or": "OU",
-  "PasswordRecoveryTitle": "Recuperação de senha",
+  "PasswordRecoveryTitle": "Recuperação de palavra-passe",
   "Register": "Registar",
   "RegisterSendButton": "Enviar pedido",
   "RegisterTextBodyAfterDomainsList": "Para registar-se, introduza o seu e-mail e clique em Enviar pedido. Ser-lhe-á enviado uma ligação de ativação.",

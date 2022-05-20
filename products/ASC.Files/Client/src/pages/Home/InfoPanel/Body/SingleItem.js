@@ -108,10 +108,12 @@ const SingleItem = (props) => {
         {
           id: "Owner",
           title: t("Common:Owner"),
-          content: styledLink(
-            item.createdBy?.displayName,
-            item.createdBy?.profileUrl
-          ),
+          content: personal
+            ? styledText(item.createdBy?.displayName)
+            : styledLink(
+                item.createdBy?.displayName,
+                item.createdBy?.profileUrl
+              ),
         },
         // {
         //   id: "Location",
@@ -125,7 +127,7 @@ const SingleItem = (props) => {
         },
         {
           id: "Size",
-          title: t("Common:Size"),
+          title: item.fileType ? t("Common:Size") : t("Common:Content"),
           content: styledText(itemSize),
         },
         {
@@ -136,10 +138,12 @@ const SingleItem = (props) => {
         {
           id: "LastModifiedBy",
           title: t("LastModifiedBy"),
-          content: styledLink(
-            item.updatedBy?.displayName,
-            item.updatedBy?.profileUrl
-          ),
+          content: personal
+            ? styledText(item.updatedBy?.displayName)
+            : styledLink(
+                item.updatedBy?.displayName,
+                item.updatedBy?.profileUrl
+              ),
         },
         {
           id: "ByCreationDate",

@@ -419,6 +419,9 @@ class SharingPanelComponent extends React.Component {
   };
 
   componentDidMount() {
+    const { settings, setFilesSettings } = this.props;
+    settings && setFilesSettings(settings); // Remove after initialization settings in Editor
+
     this.getShareData();
 
     this._isMounted = true;
@@ -827,12 +830,13 @@ const SharingPanel = inject(
       dialogsStore,
       treeFoldersStore,
       selectedFolderStore,
+      settingsStore,
     },
     { uploadPanelVisible }
   ) => {
     const { replaceFileStream, setEncryptionAccess } = auth;
     const { personal, customNames, isDesktopClient } = auth.settingsStore;
-    const { user } = auth.userStore;
+    const { setFilesSettings } = settingsStore;
 
     const { id, access } = selectedFolderStore;
 
@@ -908,6 +912,7 @@ const SharingPanel = inject(
       setBufferSelection,
       access,
       isShared: isShared,
+      setFilesSettings,
     };
   }
 )(
