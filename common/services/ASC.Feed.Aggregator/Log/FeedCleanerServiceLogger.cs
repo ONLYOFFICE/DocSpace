@@ -27,7 +27,7 @@
 namespace ASC.Feed.Aggregator.Log;
 internal static partial class FeedCleanerServiceLogger
 {
-    [LoggerMessage(Level = LogLevel.Debug, Message = "Feed Cleaner Service running.")]
+    [LoggerMessage(Level = LogLevel.Information, Message = "Feed Cleaner Service running.")]
     public static partial void InformationFeedCleanerRunning(this ILogger logger); 
     
     [LoggerMessage(Level = LogLevel.Information, Message = "Feed Cleaner Service stopping.")]
