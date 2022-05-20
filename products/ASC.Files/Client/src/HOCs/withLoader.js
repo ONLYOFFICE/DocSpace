@@ -17,6 +17,7 @@ const withLoader = (WrappedComponent) => (Loader) => {
       isLoading,
       viewAs,
       setIsBurgerLoading,
+      isLoadingFilesFind,
     } = props;
     const [inLoad, setInLoad] = useState(false);
 
@@ -54,6 +55,7 @@ const withLoader = (WrappedComponent) => (Loader) => {
     return (!isEditor && firstLoad) ||
       !isLoaded ||
       (isMobile && inLoad) ||
+      (isLoadingFilesFind && !Loader) ||
       !tReady ? (
       Loader ? (
         Loader
@@ -68,7 +70,7 @@ const withLoader = (WrappedComponent) => (Loader) => {
   };
 
   return inject(({ auth, filesStore }) => {
-    const { firstLoad, isLoading, viewAs } = filesStore;
+    const { firstLoad, isLoading, viewAs, isLoadingFilesFind } = filesStore;
     const { settingsStore } = auth;
     const { setIsBurgerLoading } = settingsStore;
     return {
@@ -77,6 +79,7 @@ const withLoader = (WrappedComponent) => (Loader) => {
       isLoading,
       viewAs,
       setIsBurgerLoading,
+      isLoadingFilesFind,
     };
   })(observer(withLoader));
 };

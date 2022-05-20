@@ -70,6 +70,10 @@ class FilesStore {
   createdFolderId = null;
   scrollToFolderId = null;
 
+  isLoadingFilesFind = false;
+  pageItemsLength = null;
+  isHidePagination = false;
+
   constructor(
     authStore,
     settingsStore,
@@ -156,6 +160,21 @@ class FilesStore {
                 return index !== foundIndex;
               })
             );
+
+            // Hide pagination when deleting files
+            runInAction(() => {
+              this.isHidePagination = true;
+            });
+
+            runInAction(() => {
+              if (
+                this.files.length === 0 &&
+                this.folders.length === 0 &&
+                this.pageItemsLength > 1
+              ) {
+                this.isLoadingFilesFind = true;
+              }
+            });
           }
           break;
       }
@@ -231,6 +250,10 @@ class FilesStore {
   setViewAs = (viewAs) => {
     this.viewAs = viewAs;
     localStorage.setItem("viewAs", viewAs);
+  };
+
+  setPageItemsLength = (pageItemsLength) => {
+    this.pageItemsLength = pageItemsLength;
   };
 
   setDragging = (dragging) => {
@@ -468,6 +491,18 @@ class FilesStore {
 
     !isPrefSettings && this.setFilterUrl(filter);
     this.filter = filter;
+
+    runInAction(() => {
+      if (filter && this.isHidePagination) {
+        this.isHidePagination = false;
+      }
+    });
+
+    runInAction(() => {
+      if (filter && this.isLoadingFilesFind) {
+        this.isLoadingFilesFind = false;
+      }
+    });
   };
 
   setFilter = (filter) => {
