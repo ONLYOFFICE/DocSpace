@@ -41,7 +41,7 @@
   "CustomTitlesFrom": "Kimdən",
   "CustomTitlesSettingsDescription": "Sizin salamlama səhifəsində görüntülənəcək və e-poçt bildirişləri üçün istifadə olunacaq (Xanadan). Fərdi domen adı portalınız üçün alternativ URL keçidi yaratmaq üçün bir yoldur. Fərdi portal adı onlyoffice.com/onlyoffice.eu ünvanının yanında əks olunacaq.",
   "CustomTitlesSettingsTooltip": "<0>{{ welcomeText }}</0> portalınızda nümayiş olunacaq defolt mətn başlığını <2>{{ text }}</2> dəyişmə yoludur. Eyni qayda sizin portalın e-poçt bildirişləri <4>{{ from }}</4> sahəsinə də aiddir.",
-  "CustomTitlesSettingsTooltipDescription": "Adınızı <1>{{ başlıq }}</1> sahəsində olduğu kimi daxil edin.",
+  "CustomTitlesSettingsTooltipDescription": "Adınızı <1>{{ header }}</1> sahəsində olduğu kimi daxil edin.",
   "CustomTitlesText": "Salamlama Səhifəsi",
   "CustomTitlesWelcome": "Salamlama ayarları",
   "Customization": "Fərdiləşdirmə",

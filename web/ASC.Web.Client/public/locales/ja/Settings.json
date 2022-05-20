@@ -41,7 +41,7 @@
   "CustomTitlesFrom": "から",
   "CustomTitlesSettingsDescription": "ウェルカムページに表示され、メール通知にも使用されます（フィールドより）。カスタムドメイン名は、ポータルの代替URLを設定するためのものです。カスタムポータル名は、onlyoffice.com/onlyoffice.euのアドレスの隣に表示されます。",
   "CustomTitlesSettingsTooltip": "<0>{{welcomeText}}</0>は、あなたのポータルの<2>{{text}}</2>に表示されるポータルのデフォルトタイトルを変更する方法です。このタイトルを同じくポータルメール通知の<4>{{from}}</4>というフィールドに使用されます。",
-  "CustomTitlesSettingsTooltipDescription": "<1>{{header}}</1>のフィールドに名前をお好みで入力してください。",
+  "CustomTitlesSettingsTooltipDescription": "<1>{{ header }}</1>のフィールドに名前をお好みで入力してください。",
   "CustomTitlesText": "ウエルカムページ",
   "CustomTitlesWelcome": "「開始ページ」設定",
   "Customization": "カスタマイズ",
