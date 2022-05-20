@@ -72,6 +72,7 @@
   "TooltipElementCopyMessage": "Копіювати {{element}}",
   "TooltipElementsCopyMessage": "Копіювати елементи {{element}}",
   "TooltipElementsMoveMessage": "Перемістити елементи {{element}}",
+  "TrashEmptyDescription": "У розділі 'Кошик' розміщуються всі видалені файли. Ви можете або відновити їх, якщо вони віддалені помилково, або видалити їх остаточно. Будь ласка, зверніть увагу, що при видаленні файлів з 'Кошика' їх вже не можна буде відновити.",
   "UnblockVersion": "Розблокувати/повернути",
   "UploadToFolder": "Передати в папку",
   "VersionHistory": "Історія версій",
