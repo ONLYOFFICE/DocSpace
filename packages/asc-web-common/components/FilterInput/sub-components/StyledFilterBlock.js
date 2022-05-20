@@ -95,6 +95,7 @@ const StyledFilterBlockItem = styled.div`
 const StyledFilterBlockItemHeader = styled.div`
   height: 16px;
   line-height: 16px;
+  margin-right: -16px;
 
   display: flex;
   align-items: center;
@@ -102,6 +103,7 @@ const StyledFilterBlockItemHeader = styled.div`
 
 const StyledFilterBlockItemContent = styled.div`
   margin-top: ${(props) => !props.withoutHeader && "12px"};
+  margin-right: -16px;
 
   height: fit-content;
 
@@ -215,6 +217,8 @@ const StyledFilterBlockItemToggleText = styled(Text)`
 
 const StyledFilterBlockItemToggleButton = styled(ToggleButton)`
   position: static;
+
+  grid-gap: 0px;
 `;
 
 const StyledFilterBlockItemSeparator = styled.div`
