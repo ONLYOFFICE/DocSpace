@@ -343,7 +343,7 @@ public class RestorePortalTask : PortalTaskBase
                         },
                         domain,
                         5,
-                        onFailure: error => Logger.DebugCanNotDeleteFilesForDomain(domain, error)
+                        onFailure: error => Logger.WarningCanNotDeleteFilesForDomain(domain, error)
                     );
                 }
 

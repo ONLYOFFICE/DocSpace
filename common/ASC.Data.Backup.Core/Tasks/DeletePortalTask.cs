@@ -93,7 +93,7 @@ public class DeletePortalTask : PortalTaskBase
             foreach (var domain in domains)
             {
                 ActionInvoker.Try(state => storage.DeleteFilesAsync((string)state, "\\", "*.*", true).Wait(), domain, 5,
-                              onFailure: error => Logger.DebugCanNotDeleteFilesForDomain(domain, error));
+                              onFailure: error => Logger.WarningCanNotDeleteFilesForDomain(domain, error));
             }
             storage.DeleteFilesAsync("\\", "*.*", true).Wait();
             SetCurrentStepProgress((int)(++modulesProcessed * 100 / (double)storageModules.Count));

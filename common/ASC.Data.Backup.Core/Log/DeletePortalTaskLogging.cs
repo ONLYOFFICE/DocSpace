@@ -46,5 +46,5 @@ internal static partial class DeletePortalTaskLogging
     public static partial void DebugEndDeleteStorage(this ILogger logger);
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Can't delete files for domain {domain}")]
-    public static partial void DebugCanNotDeleteFilesForDomain(this ILogger logger, string domain, Exception exception);
+    public static partial void WarningCanNotDeleteFilesForDomain(this ILogger logger, string domain, Exception exception);
 }
