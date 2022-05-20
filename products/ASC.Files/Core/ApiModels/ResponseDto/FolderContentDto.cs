@@ -154,6 +154,51 @@ public class FileEntryWrapperConverter : System.Text.Json.Serialization.JsonConv
 {
     public override FileEntryDto Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
+        try
+        {
+            return JsonSerializer.Deserialize<FileDto<int>>(ref reader, options);
+        }
+        catch (Exception)
+        {
+
+        }
+
+        try
+        {
+            return JsonSerializer.Deserialize<FileDto<string>>(ref reader, options);
+        }
+        catch (Exception)
+        {
+
+        }
+
+        try
+        {
+            return JsonSerializer.Deserialize<FileDto<string>>(ref reader, options);
+        }
+        catch (Exception)
+        {
+
+        }
+
+        try
+        {
+            return JsonSerializer.Deserialize<FolderDto<int>>(ref reader, options);
+        }
+        catch (Exception)
+        {
+
+        }
+
+        try
+        {
+            return JsonSerializer.Deserialize<FolderDto<string>>(ref reader, options);
+        }
+        catch (Exception)
+        {
+
+        }
+
         return null;
     }
 

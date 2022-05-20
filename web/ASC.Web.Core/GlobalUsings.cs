@@ -51,6 +51,7 @@ global using ASC.Common.Log;
 global using ASC.Common.Logging;
 global using ASC.Common.Notify.Engine;
 global using ASC.Common.Security;
+global using ASC.Common.Security.Authentication;
 global using ASC.Common.Security.Authorizing;
 global using ASC.Common.Threading;
 global using ASC.Common.Utils;
@@ -104,6 +105,7 @@ global using ASC.Web.Core.WhiteLabel;
 global using ASC.Web.Studio.Core;
 global using ASC.Web.Studio.Core.Notify;
 global using ASC.Web.Studio.UserControls.Management;
+global using ASC.Web.Studio.UserControls.Management.SingleSignOnSettings;
 global using ASC.Web.Studio.UserControls.Statistics;
 global using ASC.Web.Studio.Utility;
 
@@ -112,6 +114,7 @@ global using AutoMapper;
 global using Google.Authenticator;
 global using Google.Protobuf;
 
+global using Microsoft.AspNetCore.Builder;
 global using Microsoft.AspNetCore.Hosting;
 global using Microsoft.AspNetCore.Http;
 global using Microsoft.AspNetCore.Mvc;

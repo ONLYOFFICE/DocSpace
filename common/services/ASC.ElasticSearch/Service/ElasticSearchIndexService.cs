@@ -136,15 +136,21 @@ public class ElasticSearchIndexService : BackgroundService
         {
             _isStarted = true;
 
+            IEnumerable<Type> wrappers;
+
             using (var scope = _serviceScopeFactory.CreateScope())
             {
-                var wrappers = scope.ServiceProvider.GetService<IEnumerable<IFactoryIndexer>>();
-
-                Parallel.ForEach(wrappers, wrapper =>
-                {
-                    IndexProduct(wrapper, reindex);
-                });
+                wrappers = scope.ServiceProvider.GetService<IEnumerable<IFactoryIndexer>>().Select(r => r.GetType()).ToList();
             }
+
+            Parallel.ForEach(wrappers, wrapper =>
+            {
+                using (var scope = _serviceScopeFactory.CreateScope())
+                {
+                    IndexProduct((IFactoryIndexer)scope.ServiceProvider.GetRequiredService(wrapper), reindex);
+                }
+            });
+
 
             _indexNotify.Publish(new IndexAction() { Indexing = "", LastIndexed = DateTime.Now.Ticks }, CacheNotifyAction.Any);
             _isStarted = false;
