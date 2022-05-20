@@ -13,11 +13,11 @@ echo "mode="
 REM call yarn wipe
 call yarn install
 
-REM call yarn build
-call yarn build:test.translation
+call yarn build:test.translation:personal
 
 REM call yarn wipe
-call yarn deploy
+call yarn deploy:personal
+
 
 
 REM copy nginx configurations to deploy folder
@@ -46,7 +46,7 @@ call sc start nginx > nul
 REM sleep 5 seconds
 call ping 127.0.0.1 -n 6 > nul
 
-call yarn e2e.test:translation
+call yarn e2e.test:translation:personal
 
 exit
 
