@@ -1,4 +1,4 @@
-﻿{
+{
   "AddAccount": "Lisää tili",
   "AddAuthor": "Lisää kirjoittaja",
   "ArchivingData": "Tietojen arkistointi",
@@ -14,21 +14,21 @@
   "DownloadApps": "Lataa sovelluksia",
   "DownloadAs": "Lataa nimellä",
   "EncryptedFileSaving": "Tallennetaan salattua tiedostoa",
-  "Files": "Tiedostot",
-  "FileProtected": "Tiedosto on suojattu salasanalla",
   "FileLocked": "Asiakirjat. Lukittu",
+  "FileProtected": "Tiedosto on suojattu salasanalla",
   "FileUnlocked": "Asiakirjat. Lukitus poistettu",
-  "Folders": "Kansiot",
+  "Files": "Tiedostot",
   "FolderSelection": "Kansion valinta",
   "FolderTitleBoxNet": "Laatikkohakemisto",
   "FolderTitleDocuSign": "DocuSign-tili",
   "FolderTitleDropBox": "Dropbox-hakemisto",
   "FolderTitleGoogle": "Google-hakemisto",
-  "FolderTitlekDrive": "kDrive-hakemisto",
   "FolderTitleSharePoint": "SharePoint-hakemisto",
   "FolderTitleSkyDrive": "OneDrive-hakemisto",
   "FolderTitleWebDav": "WebDAV-hakemisto",
   "FolderTitleYandex": "Yandex-hakemisto",
+  "FolderTitlekDrive": "kDrive-hakemisto",
+  "Folders": "Kansiot",
   "LinkCopySuccess": "Linkki on kopioitu leikepöydälle",
   "MediaLoadError": "Mediatiedostoa ei voitu ladata",
   "MobileAndroid": "Hanki ONLYOFFICE-dokumentteja Google Playsta",
@@ -53,9 +53,9 @@
   "TypeTitleDocuSign": "DocuSign",
   "TypeTitleDropBox": "Dropbox",
   "TypeTitleGoogle": "Google Drive",
-  "TypeTitlekDrive": "kDrive",
   "TypeTitleSharePoint": "SharePoint",
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
-  "TypeTitleYandex": "Yandex.Disk"
+  "TypeTitleYandex": "Yandex.Disk",
+  "TypeTitlekDrive": "kDrive"
 }

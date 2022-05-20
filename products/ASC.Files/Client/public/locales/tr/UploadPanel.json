@@ -1,6 +1,7 @@
-﻿{
-  "Uploads": "Yüklemeler",
+{
   "EnterPassword": "Parola giriniz",
   "HideInput": "Gizle",
-  "Ready": "Bitti"
+  "Ready": "Bitti",
+  "UploadAndConvert": "Dosyaları yükleyin ve dönüştürün",
+  "Uploads": "Yüklemeler"
 }

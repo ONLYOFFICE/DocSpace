@@ -1,7 +1,7 @@
-﻿{
-    "Uploads": "Uploads",
-    "EnterPassword": "Voer wachtwoord in",
-    "HideInput": "Verbergen",
-    "Ready": "Gereed",
-    "UploadAndConvert": "Bestanden uploaden en converteren"
+{
+  "EnterPassword": "Voer wachtwoord in",
+  "HideInput": "Verbergen",
+  "Ready": "Gereed",
+  "UploadAndConvert": "Bestanden uploaden en converteren",
+  "Uploads": "Uploads"
 }

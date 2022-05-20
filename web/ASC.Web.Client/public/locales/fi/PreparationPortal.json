@@ -1,5 +1,5 @@
-﻿{
-  "PreparationPortalTitle": "Portaalin palautus on käynnissä.",
+{
+  "PortalRestoring": "Portaalin palauttaminen",
   "PreparationPortalDescription": "Siinä vaiheessa kun palautuksen prosessi on ohi, sinut siirretään automaattisesti portaaliisi.",
-  "PortalRestoring": "Portaalin palauttaminen"
+  "PreparationPortalTitle": "Portaalin palautus on käynnissä."
 }

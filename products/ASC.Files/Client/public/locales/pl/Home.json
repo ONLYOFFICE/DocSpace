@@ -35,6 +35,7 @@
   "Media": "Media",
   "MoveItem": "Przeniesiono <strong>{{title}}</strong>",
   "MoveItems": "Przeniesiono <strong>{{qty}}</strong> element(y/ów)",
+  "MoveOrCopy": "Przenieś lub kopiuj",
   "MoveTo": "Przenieś do",
   "MyEmptyContainerDescription": "Tworzone lub wgrywane przez Ciebie dokumenty są przechowywane w sekcji 'Moje dokumenty'. Możesz je edytować, udostępniać i współpracować nad nimi ze swoim zespołem.",
   "New": "Nowe",
@@ -71,10 +72,10 @@
   "TooltipElementCopyMessage": "Skopiuj {{element}}",
   "TooltipElementsCopyMessage": "Skopiuj elementy {{element}}",
   "TooltipElementsMoveMessage": "Przenieś elementy {{element}}",
+  "TrashEmptyDescription": "Dział 'Kosz' zawiera wszystkie usunięte pliki. Możesz przywrócić pliki jeśli zostały one usunięte przez pomyłkę lub usunąć ostatecznie. Po usunięciu ostatecznym przywrócenie już nie będzie możliwe.",
   "UnblockVersion": "Odblokuj/Check-in",
   "UploadToFolder": "Wgraj do folderu",
-  "ViewList": "Lista",
-  "ViewTiles": "Tytuły",
   "VersionHistory": "Historia wersji",
-  "MoveOrCopy": "Przenieś lub kopiuj"
+  "ViewList": "Lista",
+  "ViewTiles": "Tytuły"
 }

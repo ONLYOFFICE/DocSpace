@@ -198,6 +198,12 @@ class FilesStore {
       const foundIndex = this.files.findIndex((x) => x.id === id);
       if (foundIndex == -1) return;
 
+      this.updateSelectionStatus(
+        id,
+        this.files[foundIndex].fileStatus | FileStatus.IsEditing,
+        true
+      );
+
       this.updateFileStatus(
         foundIndex,
         this.files[foundIndex].fileStatus | FileStatus.IsEditing
@@ -209,9 +215,24 @@ class FilesStore {
       const foundIndex = this.files.findIndex((x) => x.id === id);
       if (foundIndex == -1) return;
 
+      this.updateSelectionStatus(
+        id,
+        this.files[foundIndex].fileStatus & ~FileStatus.IsEditing,
+        false
+      );
+
       this.getFileInfo(id);
     });
   }
+
+  updateSelectionStatus = (id, status, isEditing) => {
+    const index = this.selection.findIndex((x) => x.id === id && x.fileExst);
+
+    if (index !== -1) {
+      this.selection[index].fileStatus = status;
+      this.selection[index].isEditing = isEditing;
+    }
+  };
 
   setIsPrevSettingsModule = (isSettings) => {
     this.isPrevSettingsModule = isSettings;

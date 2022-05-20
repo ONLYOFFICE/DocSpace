@@ -1,5 +1,6 @@
-﻿{
+{
   "AddAccount": "Προσθήκη λογαριασμού",
+  "AddAuthor": "Προσθήκη Συγγραφέα",
   "ArchivingData": "Αρχειοθέτηση δεδομένων",
   "ConnectingAccount": "Σύνδεση λογαριασμού",
   "Copy": "Αντιγραφή",
@@ -12,17 +13,17 @@
   "DownloadAs": "Λήψη ως",
   "EncryptedFileSaving": "Αποθήκευση κρυπτογραφημένου αρχείου",
   "Files": "Αρχεία",
-  "Folders": "Φάκελοι",
   "FolderSelection": "Επιλογή φακέλου",
   "FolderTitleBoxNet": "Κατάλογος Box",
   "FolderTitleDocuSign": "Λογαριασμός DocuSign",
   "FolderTitleDropBox": "Κατάλογος Dropbox",
   "FolderTitleGoogle": "Κατάλογος Google",
-  "FolderTitlekDrive": "Κατάλογος kDrive",
   "FolderTitleSharePoint": "Κατάλογος SharePoint",
   "FolderTitleSkyDrive": "Κατάλογος OneDrive",
   "FolderTitleWebDav": "Κατάλογος WebDAV",
   "FolderTitleYandex": "Κατάλογος Yandex",
+  "FolderTitlekDrive": "Κατάλογος kDrive",
+  "Folders": "Φάκελοι",
   "LinkCopySuccess": "Ο σύνδεσμος έχει αντιγραφεί στο πρόχειρο",
   "MediaLoadError": "Το αρχείο πολυμέσων δεν μπόρεσε να φορτωθεί",
   "Move": "Μετακίνηση",
@@ -39,9 +40,9 @@
   "TypeTitleDocuSign": "DocuSign",
   "TypeTitleDropBox": "Dropbox",
   "TypeTitleGoogle": "Google Drive",
-  "TypeTitlekDrive": "kDrive",
   "TypeTitleSharePoint": "SharePoint",
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
-  "TypeTitleYandex": "Yandex.Disk"
+  "TypeTitleYandex": "Yandex.Disk",
+  "TypeTitlekDrive": "kDrive"
 }

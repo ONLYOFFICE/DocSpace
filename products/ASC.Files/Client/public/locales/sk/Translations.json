@@ -1,5 +1,6 @@
-﻿{
+{
   "AddAccount": "Pridať účet",
+  "AddAuthor": "Pridať autora",
   "ArchivingData": "Archivácia údajov",
   "ButtonShareAccess": "Nastavenie zdieľania",
   "ConnectingAccount": "Pripojenie účtu",
@@ -13,17 +14,17 @@
   "DownloadAs": "Stiahnuť ako",
   "EncryptedFileSaving": "Ukladanie zašifrovaného súboru",
   "Files": "Súbory",
-  "Folders": "Priečinky",
   "FolderSelection": "Výber priečinka",
   "FolderTitleBoxNet": "Priečinok Box",
   "FolderTitleDocuSign": "Účet DocuSign",
   "FolderTitleDropBox": "Priečinok Dropbox",
   "FolderTitleGoogle": "Priečinok Google",
-  "FolderTitlekDrive": "Priečinok kDrive",
   "FolderTitleSharePoint": "Priečinok SharePoint",
   "FolderTitleSkyDrive": "Priečinok OneDrive",
   "FolderTitleWebDav": "Priečinok WebDAV",
   "FolderTitleYandex": "Priečinok Yandex",
+  "FolderTitlekDrive": "Priečinok kDrive",
+  "Folders": "Priečinky",
   "LinkCopySuccess": "Odkaz bol skopírovaný do schránky",
   "MediaLoadError": "Nepodarilo sa načítať mediálny súbor",
   "Move": "Presunúť",
@@ -42,9 +43,9 @@
   "TypeTitleDocuSign": "DocuSign",
   "TypeTitleDropBox": "Dropbox",
   "TypeTitleGoogle": "Google Drive",
-  "TypeTitlekDrive": "kDrive",
   "TypeTitleSharePoint": "SharePoint",
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
-  "TypeTitleYandex": "Yandex.Disk"
+  "TypeTitleYandex": "Yandex.Disk",
+  "TypeTitlekDrive": "kDrive"
 }

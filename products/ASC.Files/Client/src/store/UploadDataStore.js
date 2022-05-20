@@ -28,6 +28,7 @@ class UploadDataStore {
   settingsStore;
 
   files = [];
+  uploadedFilesHistory = [];
   filesSize = 0;
   tempConversionFiles = [];
   filesToConversion = [];
@@ -95,6 +96,7 @@ class UploadDataStore {
   clearUploadData = () => {
     this.files = [];
     this.filesToConversion = [];
+    this.uploadedFilesHistory = [];
     this.filesSize = 0;
     this.uploadedFiles = 0;
     this.percent = 0;
@@ -177,9 +179,13 @@ class UploadDataStore {
 
   cancelCurrentUpload = (id) => {
     const newFiles = this.files.filter((el) => el.uniqueId !== id);
+    const uploadedFilesHistory = this.uploadedFilesHistory.filter(
+      (el) => el.uniqueId !== id
+    );
 
     const newUploadData = {
       files: newFiles,
+      uploadedFilesHistory,
       filesSize: this.filesSize,
       uploadedFiles: this.uploadedFiles,
       percent: this.percent,
@@ -237,9 +243,11 @@ class UploadDataStore {
 
       if (!this.filesToConversion.length) {
         this.filesToConversion.push(file);
+        this.uploadedFilesHistory.push(file);
         this.startConversion(t);
       } else {
         this.filesToConversion.push(file);
+        this.uploadedFilesHistory.push(file);
       }
     }
   };
@@ -321,6 +329,11 @@ class UploadDataStore {
       const file = this.files.find((f) => f.fileId === fileId);
       if (file) runInAction(() => (file.inConversion = true));
 
+      const historyFile = this.uploadedFilesHistory.find(
+        (f) => f.fileId === fileId
+      );
+      if (historyFile) runInAction(() => (historyFile.inConversion = true));
+
       const data = await convertFile(fileId, itemPassword);
 
       if (data && data[0]) {
@@ -336,6 +349,11 @@ class UploadDataStore {
           runInAction(() => {
             const file = this.files.find((file) => file.fileId === fileId);
             if (file) file.convertProgress = progress;
+
+            const historyFile = this.uploadedFilesHistory.find(
+              (file) => file.fileId === fileId
+            );
+            if (historyFile) historyFile.convertProgress = progress;
           });
 
           error = res && res[0] && res[0].error;
@@ -349,6 +367,16 @@ class UploadDataStore {
                 file.error = error;
                 file.inConversion = false;
                 if (fileInfo === "password") file.needPassword = true;
+              }
+
+              const historyFile = this.uploadedFilesHistory.find(
+                (file) => file.fileId === fileId
+              );
+
+              if (historyFile) {
+                historyFile.error = error;
+                historyFile.inConversion = false;
+                if (fileInfo === "password") historyFile.needPassword = true;
               }
             });
 
@@ -369,12 +397,23 @@ class UploadDataStore {
               file.inConversion = false;
               file.action = "converted";
             }
+
+            const historyFile = this.uploadedFilesHistory.find(
+              (file) => file.fileId === fileId
+            );
+
+            if (historyFile) {
+              historyFile.convertProgress = progress;
+              historyFile.inConversion = false;
+              historyFile.action = "converted";
+            }
           });
 
           storeOriginalFiles && this.refreshFiles(file);
 
           if (fileInfo && fileInfo !== "password") {
             file.fileInfo = fileInfo;
+            historyFile.fileInfo = fileInfo;
             needToRefreshFilesList && this.refreshFiles(file);
           }
 
@@ -418,6 +457,10 @@ class UploadDataStore {
 
   convertUploadedFiles = (t) => {
     this.files = [...this.files, ...this.tempConversionFiles];
+    this.uploadedFilesHistory = [
+      ...this.uploadedFilesHistory,
+      ...this.tempConversionFiles,
+    ];
 
     if (this.uploaded) {
       const newUploadData = {
@@ -500,6 +543,13 @@ class UploadDataStore {
       this.settingsStore.hideConfirmConvertSave
         ? this.convertUploadedFiles(t)
         : this.dialogsStore.setConvertDialogVisible(true);
+
+    const clearArray = this.removeDuplicate([
+      ...newFiles,
+      ...this.uploadedFilesHistory,
+    ]);
+
+    this.uploadedFilesHistory = clearArray;
 
     const newUploadData = {
       files: newFiles,
@@ -1189,6 +1239,20 @@ class UploadDataStore {
       setActiveFiles(newActiveFiles);
       setActiveFolders(newActiveFolders);
     }, TIMEOUT);
+  };
+
+  clearUploadedFilesHistory = () => {
+    this.primaryProgressDataStore.clearPrimaryProgressData();
+    this.uploadedFilesHistory = [];
+  };
+
+  removeDuplicate = (items) => {
+    let obj = {};
+    return items.filter((x) => {
+      if (obj[x.uniqueId]) return false;
+      obj[x.uniqueId] = true;
+      return true;
+    });
   };
 }
 
