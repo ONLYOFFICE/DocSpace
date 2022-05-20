@@ -14,7 +14,8 @@ const StyledContainer = styled.div`
     user-select: none;
 
     display: grid;
-    grid-template-columns: 16px 1fr;
+    grid-template-columns: ${(props) =>
+      props.enableToggle ? "16px 1fr" : "1fr"};
     grid-column-gap: 9px;
     max-width: 660px;
 
