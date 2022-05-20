@@ -19,6 +19,7 @@
   "EmptyFolderDecription": "Nometiet failus šeit vai izveidojiet jaunus",
   "EmptyFolderHeader": "Šajā mapē nav failu",
   "EmptyRecycleBin": "Iztukšot atkritni",
+  "EmptyScreenFolder": "Šeit vēl nav neviena dokumenta",
   "FavoritesEmptyContainerDescription": "Izmantojiet konteksta izvēlni, lai failus atzīmētu kā izlases vai noņemtu no šī saraksta.",
   "FileRemoved": "Fails ir pārvietots uz atkritni",
   "FileRenamed": "Dokuments '{{oldTitle}}' ir pārdevēts par '{{newTitle}}'",
