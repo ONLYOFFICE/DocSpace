@@ -17,8 +17,26 @@ const StyledComboBox = styled.div`
   .dropdown-container {
     padding: ${(props) =>
       props.advancedOptions && props.theme.comboBox.padding};
+
+    @media (max-width: 428px) {
+      position: fixed;
+      top: unset;
+      right: 0;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      width: -moz-available;
+      width: -webkit-fill-available;
+      width: fill-available;
+      border: none;
+      border-radius: 6px 6px 0px 0px;
+    }
   }
   -webkit-user-select: none;
+
+  .backdrop-active {
+    z-index: 210;
+  }
 `;
 
 StyledComboBox.defaultProps = {

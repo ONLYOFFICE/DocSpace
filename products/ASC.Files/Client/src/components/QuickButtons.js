@@ -17,6 +17,7 @@ const QuickButtons = ({
   accessToEdit,
   showShare,
   onClickLock,
+  isDisabled,
   onClickFavorite,
   onClickShare,
   viewAs,
@@ -81,6 +82,7 @@ const QuickButtons = ({
           data-id={id}
           data-locked={locked ? true : false}
           onClick={onClickLock}
+          isDisabled={isDisabled}
           color={colorLock}
           hoverColor={theme.filesQuickButtons.sharedColor}
         />
