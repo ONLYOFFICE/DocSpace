@@ -24,51 +24,18 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Feed.Aggregator.Service;
-
-[Singletone]
-public class FeedCleanerService : FeedBaseService
+namespace ASC.Feed.Aggregator.Log;
+internal static partial class FeedCleanerServiceLogger
 {
-    protected override string LoggerName { get; set; } = "ASC.Feed.Cleaner";
+    [LoggerMessage(Level = LogLevel.Information, Message = "Feed Cleaner Service running.")]
+    public static partial void InformationFeedCleanerRunning(this ILogger logger); 
+    
+    [LoggerMessage(Level = LogLevel.Information, Message = "Feed Cleaner Service stopping.")]
+    public static partial void InformationFeedCleanerStopping(this ILogger logger);
 
-    public FeedCleanerService(
-        FeedSettings feedSettings,
-        IServiceScopeFactory serviceScopeFactory,
-        ILoggerProvider optionsMonitor)
-        : base(feedSettings, serviceScopeFactory, optionsMonitor)
-    {
-    }
-
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-    {
-        _logger.InformationFeedCleanerRunning();
-
-        var cfg = _feedSettings;
-
-        while (!stoppingToken.IsCancellationRequested)
-        {
-            await Task.Delay(cfg.RemovePeriod, stoppingToken);
-
-            RemoveFeeds(cfg.AggregateInterval);
-        }
-
-        _logger.InformationFeedCleanerStopping();
-    }
-
-    private void RemoveFeeds(object interval)
-    {
-        try
-        {
-            using var scope = _serviceScopeFactory.CreateScope();
-            var feedAggregateDataProvider = scope.ServiceProvider.GetService<FeedAggregateDataProvider>();
-
-            _logger.DebugStartRemoving();
-
-            feedAggregateDataProvider.RemoveFeedAggregate(DateTime.UtcNow.Subtract((TimeSpan)interval));
-        }
-        catch (Exception ex)
-        {
-            _logger.ErrorRemoveFeeds(ex);
-        }
-    }
+    [LoggerMessage(Level = LogLevel.Debug, Message = "Start of removing old news")]
+    public static partial void DebugStartRemoving(this ILogger logger); 
+    
+    [LoggerMessage(Level = LogLevel.Error, Message = "RemoveFeeds")]
+    public static partial void ErrorRemoveFeeds(this ILogger logger, Exception exception);
 }
