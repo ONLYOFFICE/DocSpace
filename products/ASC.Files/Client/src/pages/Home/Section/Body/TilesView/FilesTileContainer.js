@@ -60,6 +60,8 @@ const FilesTileContainer = ({ filesList, t, sectionWidth }) => {
       `Body width: ${document.body.clientWidth} Tile width: ${width} ThumbSize: ${size}`
     );
 
+    if (size === thumbSize) return;
+
     setThumbSize(size);
   }, [firstRef]);
 
