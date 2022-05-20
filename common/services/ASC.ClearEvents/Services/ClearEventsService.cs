@@ -51,7 +51,7 @@ public class ClearEventsService : IHostedService, IDisposable
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Timed Clear Events Service is stopping.");
+        _logger.InformationTimerStopping();
 
         _timer?.Change(Timeout.Infinite, 0);
 
