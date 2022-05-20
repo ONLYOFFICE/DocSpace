@@ -323,11 +323,11 @@ class ProfileInfo extends React.PureComponent {
         )}
         {mobilePhone && (
           <InfoItem>
-            <InfoItemLabel>{t("PhoneLbl")}:</InfoItemLabel>
+            <InfoItemLabel>{t("Profile:PhoneLbl")}:</InfoItemLabel>
             <InfoItemValue>{mobilePhone}</InfoItemValue>
           </InfoItem>
         )}
-        {sex && (
+        {!personal && sex && (
           <InfoItem>
             <InfoItemLabel>{t("Translations:Sex")}:</InfoItemLabel>
             <InfoItemValue className="profile-info_sex">
@@ -335,7 +335,7 @@ class ProfileInfo extends React.PureComponent {
             </InfoItemValue>
           </InfoItem>
         )}
-        {birthday && (
+        {!personal && birthday && (
           <InfoItem>
             <InfoItemLabel>{t("Translations:Birthdate")}:</InfoItemLabel>
             <InfoItemValue className="profile-info_birthdate">
@@ -359,7 +359,7 @@ class ProfileInfo extends React.PureComponent {
             </InfoItemValue>
           </InfoItem>
         )}
-        {location && (
+        {!personal && location && (
           <InfoItem>
             <InfoItemLabel>{t("Common:Location")}:</InfoItemLabel>
             <InfoItemValue className="profile-info_location">
@@ -394,7 +394,9 @@ class ProfileInfo extends React.PureComponent {
                     className="language-combo"
                     showDisabledItems={true}
                     dropDownMaxHeight={364}
-                    manualWidth="240px"
+                    manualWidth="320px"
+                    isDefaultMode={false}
+                    withBlur={window.innerWidth <= 428}
                   />
                   <HelpButton
                     place="bottom"
