@@ -49,7 +49,7 @@ const FilesTileContainer = ({ filesList, t, sectionWidth }) => {
 
       elementResizeDetector.uninstall(firstRef.current);
     };
-  }, [firstRef]);
+  }, [firstRef, filesList]);
 
   const onResize = useCallback(() => {
     const { width } = firstRef.current.getBoundingClientRect();
