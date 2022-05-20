@@ -55,7 +55,7 @@ class FileExceptionFilterAttribute : IExceptionFilter
     {
         while (err != null)
         {
-            _logger.LogError(err, "LogException");
+            _logger.ErrorLogException(err);
             err = err.InnerException;
         }
     }

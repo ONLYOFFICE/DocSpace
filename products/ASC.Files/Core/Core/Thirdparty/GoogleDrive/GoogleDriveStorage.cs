@@ -314,7 +314,7 @@ internal class GoogleDriveStorage : IDisposable
                 throw result.Exception;
             }
 
-            _logger.LogError(result.Exception, "Error while trying to insert entity. GoogleDrive insert returned an error.");
+            _logger.ErrorWhileTryingToInsertEntity(result.Exception);
         }
 
         return request.ResponseBody;
@@ -345,7 +345,7 @@ internal class GoogleDriveStorage : IDisposable
                 throw result.Exception;
             }
 
-            _logger.LogError(result.Exception, "Error while trying to insert entity. GoogleDrive insert returned an error.");
+            _logger.ErrorWhileTryingToInsertEntity(result.Exception);
         }
 
         return request.ResponseBody;
@@ -468,7 +468,7 @@ internal class GoogleDriveStorage : IDisposable
                 throw result.Exception;
             }
 
-            _logger.LogError(result.Exception, "Error while trying to insert entity. GoogleDrive save returned an error.");
+            _logger.ErrorWhileTryingToInsertEntity(result.Exception);
         }
 
         return request.ResponseBody;
@@ -489,7 +489,7 @@ internal class GoogleDriveStorage : IDisposable
                 throw result.Exception;
             }
 
-            _logger.LogError(result.Exception, "Error while trying to insert entity. GoogleDrive save returned an error.");
+            _logger.ErrorWhileTryingToInsertEntity(result.Exception);
         }
 
         return request.ResponseBody;

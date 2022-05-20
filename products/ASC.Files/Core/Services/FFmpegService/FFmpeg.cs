@@ -106,7 +106,7 @@ public class FFmpegService
                     if (File.Exists(path))
                     {
                         _fFmpegPath = path;
-                        _logger.LogInformation("FFmpeg found in {path}", path);
+                        _logger.InformationFFmpegFoundIn(path);
 
                         break;
                     }
@@ -138,7 +138,7 @@ public class FFmpegService
 
         if (string.IsNullOrEmpty(_fFmpegPath))
         {
-            _logger.LogError("FFmpeg/avconv was not found in PATH or 'files.ffmpeg' setting");
+            _logger.ErrorFFmpeg();
             throw new Exception("no ffmpeg");
         }
 
@@ -199,7 +199,7 @@ public class FFmpegService
         string line;
         while ((line = await reader.ReadLineAsync()) != null)
         {
-            _logger.LogInformation(line);
+            _logger.Information(line);
         }
     }
 }

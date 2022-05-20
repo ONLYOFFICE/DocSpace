@@ -160,12 +160,12 @@ public class ChunkedUploaderHandlerService
         }
         catch (FileNotFoundException error)
         {
-            _logger.LogError(error, "ChunkedUploaderHandlerService");
+            _logger.ErrorChunkedUploaderHandlerService(error);
             await WriteError(context, FilesCommonResource.ErrorMassage_FileNotFound);
         }
         catch (Exception error)
         {
-            _logger.LogError(error, "ChunkedUploaderHandlerService");
+            _logger.ErrorChunkedUploaderHandlerService(error);
             await WriteError(context, error.Message);
         }
     }

@@ -1713,7 +1713,7 @@ public class FileStorageService<T> //: IFileStorageService
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "DocEditor");
+                    _logger.ErrorDocEditor(ex);
                     throw;
                 }
 
@@ -1757,7 +1757,7 @@ public class FileStorageService<T> //: IFileStorageService
             //move common thirdparty storage userFrom
             foreach (var commonProviderInfo in commonProvidersInfo)
             {
-                _logger.LogInformation("Reassign provider {providerId} from {fromUser} to {toUser}", commonProviderInfo.ID, userFrom.Id, userTo.Id);
+                _logger.InformationReassignProvider(commonProviderInfo.ID, userFrom.Id, userTo.Id);
                 await providerDao.UpdateProviderInfoAsync(commonProviderInfo.ID, null, null, FolderType.DEFAULT, userTo.Id);
             }
         }
@@ -1805,7 +1805,7 @@ public class FileStorageService<T> //: IFileStorageService
             //delete thirdparty storage
             foreach (var myProviderInfo in providersInfo)
             {
-                _logger.LogInformation("Delete provider {providerId} for {userId}", myProviderInfo.ID, userId);
+                _logger.InformationDeleteProvider(myProviderInfo.ID, userId);
                 await providerDao.RemoveProviderInfoAsync(myProviderInfo.ID);
             }
         }
@@ -2516,7 +2516,7 @@ public class FileStorageService<T> //: IFileStorageService
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "CreateThumbnails");
+            _logger.ErrorCreateThumbnails(e);
         }
 
         return fileIds;
@@ -2543,7 +2543,7 @@ public class FileStorageService<T> //: IFileStorageService
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "CreateThumbnails");
+            _logger.ErrorCreateThumbnails(e);
         }
 
         return fileIds;
@@ -2601,11 +2601,11 @@ public class FileStorageService<T> //: IFileStorageService
     {
         if (warning)
         {
-            _logger.LogInformation(error, "");
+            _logger.Information(error.ToString());
         }
         else
         {
-            _logger.LogError(error, "FileStorageService");
+            _logger.ErrorFileStorageService(error);
         }
 
         return new InvalidOperationException(error.Message, error);

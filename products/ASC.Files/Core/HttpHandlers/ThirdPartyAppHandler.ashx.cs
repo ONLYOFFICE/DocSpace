@@ -61,14 +61,14 @@ public class ThirdPartyAppHandlerService
 
     public async Task InvokeAsync(HttpContext context)
     {
-        _log.LogDebug("ThirdPartyApp: handler request - {url}", context.Request.Url());
+        _log.DebugThirdPartyAppHandlerRequest(context.Request.Url());
 
         var message = string.Empty;
 
         try
         {
             var app = ThirdPartySelector.GetApp(context.Request.Query[ThirdPartySelector.AppAttr]);
-            _log.LogDebug("ThirdPartyApp: app - {app}", app);
+            _log.DebugThirdPartyAppApp(app);
 
             if (await app.RequestAsync(context))
             {
@@ -82,7 +82,7 @@ public class ThirdPartyAppHandlerService
         }
         catch (Exception e)
         {
-            _log.LogError(e, "ThirdPartyApp");
+            _log.ErrorThirdPartyApp(e);
             message = e.Message;
         }
 

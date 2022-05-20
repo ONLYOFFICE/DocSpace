@@ -286,7 +286,7 @@ abstract class FileOperation<T, TId> : FileOperation where T : FileOperationData
         catch (AuthorizingException authError)
         {
             Error = FilesCommonResource.ErrorMassage_SecurityException;
-            Logger.LogError(new SecurityException(Error, authError), Error);
+            Logger.ErrorWithException(new SecurityException(Error, authError));
         }
         catch (AggregateException ae)
         {
@@ -294,10 +294,7 @@ abstract class FileOperation<T, TId> : FileOperation where T : FileOperationData
         }
         catch (Exception error)
         {
-            Error = error is TaskCanceledException || error is OperationCanceledException
-                        ? FilesCommonResource.ErrorMassage_OperationCanceledException
-                        : error.Message;
-            Logger.LogError(error, Error);
+            Logger.ErrorWithException(error);
         }
         finally
         {

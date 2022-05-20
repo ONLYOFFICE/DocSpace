@@ -144,7 +144,7 @@ public class FactoryIndexerFolder : FactoryIndexer<DbFolder>
         }
         catch (Exception e)
         {
-            Logger.LogError(e, "FactoryIndexerFolder");
+            Logger.ErrorFactoryIndexerFolder(e);
             throw;
         }
     }
