@@ -244,8 +244,6 @@ module.exports = (env, argv) => {
     })
   );
 
-  console.log(env.hideText);
-
   if (!!env.hideText) {
     config.plugins.push(
       new HtmlWebpackPlugin({
