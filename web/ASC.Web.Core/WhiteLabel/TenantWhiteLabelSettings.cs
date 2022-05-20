@@ -269,7 +269,7 @@ public class TenantWhiteLabelSettingsHelper
         }
         catch (Exception e)
         {
-            _log.LogError(e, "TenantWhiteLabelSettingsHelper RestoreDefault");
+            _log.ErrorRestoreDefault(e);
         }
 
         Save(tenantWhiteLabelSettings, tenantId, tenantLogoManager, true);
@@ -287,7 +287,7 @@ public class TenantWhiteLabelSettingsHelper
             }
             catch (Exception e)
             {
-                _log.LogError(e, "TenantWhiteLabelSettingsHelper RestoreDefault");
+                _log.ErrorRestoreDefault(e);
             }
         }
     }
@@ -312,7 +312,7 @@ public class TenantWhiteLabelSettingsHelper
             }
             catch (Exception e)
             {
-                _log.LogError(e, "TenantWhiteLabelSettingsHelper SetLogo");
+                _log.ErrorSetLogo(e);
             }
         }
         #endregion
@@ -358,7 +358,7 @@ public class TenantWhiteLabelSettingsHelper
                     }
                     catch (Exception ex)
                     {
-                        _log.LogError(ex, "TenantWhiteLabelSettingsHelper SetLogo");
+                        _log.ErrorSetLogo(ex);
                     }
                 }
                 else

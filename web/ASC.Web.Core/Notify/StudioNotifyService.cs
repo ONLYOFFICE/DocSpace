@@ -539,7 +539,7 @@ public class StudioNotifyService
             }
             catch (Exception ex)
             {
-                _log.LogError(ex, "SendMsgProfileHasDeletedItself");
+                _log.ErrorSendMsgProfileHasDeletedItself(ex);
             }
         });
 
@@ -761,7 +761,7 @@ public class StudioNotifyService
         }
         catch (Exception error)
         {
-            _log.LogError(error, "SendCongratulations");
+            _log.ErrorSendCongratulations(error);
         }
     }
 
@@ -858,7 +858,7 @@ public class StudioNotifyService
         }
         catch (Exception ex)
         {
-            _log.LogError(ex, "PortalRenameNotify");
+            _log.ErrorPortalRenameNotify(ex);
         }
     }
 
@@ -924,7 +924,7 @@ public class StudioNotifyService
         }
         catch (Exception error)
         {
-            _log.LogError(error, "SendRegData");
+            _log.ErrorSendRegData(error);
         }
     }
 
