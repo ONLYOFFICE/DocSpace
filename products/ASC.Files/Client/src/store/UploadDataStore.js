@@ -420,6 +420,10 @@ class UploadDataStore {
 
   convertUploadedFiles = (t) => {
     this.files = [...this.files, ...this.tempConversionFiles];
+    this.uploadedFilesHistory = [
+      ...this.uploadedFilesHistory,
+      ...this.tempConversionFiles,
+    ];
 
     if (this.uploaded) {
       const newUploadData = {
