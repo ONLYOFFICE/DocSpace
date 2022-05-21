@@ -18,6 +18,7 @@
   "EmptyFilterSubheadingText": "Nenhum ficheiro a ser exibido para este filtro aqui",
   "EmptyFolderHeader": "Não há ficheiros nesta pasta",
   "EmptyRecycleBin": "Esvaziar lixo",
+  "EmptyScreenFolder": "Ainda não há documentos aqui",
   "FavoritesEmptyContainerDescription": "Para marcar os ficheiros como favoritos ou removê-los desta lista, use o menu de contexto.",
   "FileRemoved": "Ficheiro movido para o lixo",
   "FileRenamed": "O documento '{{oldTitle}}' é renomeado para '{{newTitle}}'",
