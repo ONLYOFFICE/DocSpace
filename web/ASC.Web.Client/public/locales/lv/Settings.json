@@ -94,7 +94,7 @@
   "Path": "Ceļš",
   "PeopleAdministratorsCan": "Cilvēku moduļa administratori var izveidot profilus un grupas, importēt cilvēkus un uzaicināt lietotājus.",
   "PleaseNote": "Lūdzu, ņemiet vērā",
-  "PleaseNoteDescription": "<0>{pleaseNote}}</0>: jūsu vecā portāla adrese kļūs pieejama jaunajiem lietotājiem, ja nospiedīsit <2>{{save}}</2>.",
+  "PleaseNoteDescription": "<0>{{pleaseNote}}</0>: jūsu vecā portāla adrese kļūs pieejama jaunajiem lietotājiem, ja nospiedīsit <2>{{save}}</2>.",
   "PortalAccess": "Piekļuve portālam",
   "PortalAccessSubTitle": "Šī sadaļa ļauj lietotājiem nodrošināt drošus un ērtus veidus, kā piekļūt portālam.",
   "PortalAdmins": "Portāla administratori",
