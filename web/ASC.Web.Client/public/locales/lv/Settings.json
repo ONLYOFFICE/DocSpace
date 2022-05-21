@@ -40,7 +40,7 @@
   "CustomTitles": "Pielāgoti nosaukumi",
   "CustomTitlesFrom": "No",
   "CustomTitlesSettingsDescription": "Tiks parādīts jūsu sveiciena lapā un tiks izmantots e-pasta paziņojumiem (no lauka). Pielāgotais domēna nosaukums ir veids, kā savam portālam iestatīt alternatīvu vietrāža URL. Pielāgotā portāla nosaukums tiks parādīts blakus adresei onlyoffice.com/onlyoffice.eu.",
-  "CustomTitlesSettingsTooltip": "<0>{{ Sagaidīšanas iestatījumi }}</0> ir veids, kādā mainīt portāla noklusējuma nosaukumu, kas parādīsies jūsu portāla <2>{{sākumlapā}}</2>. Tas pats nosaukums arī tiek izmantots jūsu e-pasta ziņu laukā <4>{{No}}</4>.",
+  "CustomTitlesSettingsTooltip": "<0>{{ welcomeText }}</0> ir veids, kādā mainīt portāla noklusējuma nosaukumu, kas parādīsies jūsu portāla <2>{{ text }}</2>. Tas pats nosaukums arī tiek izmantots jūsu e-pasta ziņu laukā <4>{{ from }}</4>.",
   "CustomTitlesSettingsTooltipDescription": "Laukā <1>{{ header }}</1> ievadiet vēlamo tekstu.",
   "CustomTitlesWelcome": "Sākumlapas iestatījumi",
   "Customization": "Pielāgošana",

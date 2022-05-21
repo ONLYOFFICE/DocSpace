@@ -39,7 +39,7 @@
   "CustomTitles": "Vlastní názvy",
   "CustomTitlesFrom": "Od",
   "CustomTitlesSettingsDescription": "Zobrazí se na vaší uvítací stránce a použijí se pro e-mailová oznámení (pole Od). Vlastní název domény je způsob, jak nastavit alternativní adresu URL pro váš portál. Vlastní název portálu se zobrazí vedle adresy onlyoffice.com/onlyoffice.eu.",
-  "CustomTitlesSettingsTooltip": "<0>{{ welcomeText }}</0> je možnost, kterou změníte výchozí název portálu, který je zobrazen na <2>{{ text }}</2> Vašeho portálu. Stejný název se také používá pro pole<4>{{od}}</4> ve vašich emailových upozornění Vašeho portálu.",
+  "CustomTitlesSettingsTooltip": "<0>{{ welcomeText }}</0> je možnost, kterou změníte výchozí název portálu, který je zobrazen na <2>{{ text }}</2> Vašeho portálu. Stejný název se také používá pro pole<4>{{ from }}</4> ve vašich emailových upozornění Vašeho portálu.",
   "CustomTitlesSettingsTooltipDescription": "Zadejte název, který chcete, do pole <1>{{ header }}</1>",
   "CustomTitlesWelcome": "Nastavení úvodní stránky",
   "Customization": "Přizpůsobení",

@@ -41,7 +41,7 @@
   "CustomTitlesFrom": "Kaynak",
   "CustomTitlesSettingsDescription": "Karşılama sayfanızda görüntülenecek ve e-posta bildirimleri için kullanılacaktır (Alandan). Özel alan adı portalınız için alternatif bir URL belirlemenin bir yoludur. Özel portal adı, onlyoffice.com/onlyoffice.eu adresinin yanında görünecektir.",
   "CustomTitlesSettingsTooltip": "<0>{{ welcomeText }}</0> portalınızın <2>{{text}}</2> varsayılan portal başlığını değiştirmeniz için kullanılabilir. Aynı ad portal e-posta bildirimlerinizdeki <4>{{ from }}</4> bölümünde de kullanılmaktadır.",
-  "CustomTitlesSettingsTooltipDescription": "Dilediğiniz adı <1>{{Başlık}}</1> alanına giriniz.",
+  "CustomTitlesSettingsTooltipDescription": "Dilediğiniz adı <1>{{ header }}</1> alanına giriniz.",
   "CustomTitlesWelcome": "Hoş Geldiniz Sayfası Ayarları",
   "Customization": "Özelleştirme",
   "CustomizationDescription": "Bu alt bölüm, portalınızın görünümünü ve tasarımını değiştirmenizi sağlar. Kuruluşunuzun markasına uygun kendi şirket logonuzu, adınızı ve metninizi kullanabilirsiniz.",

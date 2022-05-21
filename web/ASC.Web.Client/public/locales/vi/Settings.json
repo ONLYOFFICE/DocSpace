@@ -40,7 +40,7 @@
   "CustomTitles": "Tiêu đề tùy chỉnh",
   "CustomTitlesFrom": "Từ",
   "CustomTitlesSettingsDescription": "Sẽ được hiển thị trên trang chào mừng của bạn và được sử dụng cho các thông báo qua email (Trường từ người gửi). Tên miền tùy chỉnh là một cách để đặt URL thay thế cho cổng thông tin của bạn. Tên cổng thông tin tùy chỉnh sẽ xuất hiện bên cạnh địa chỉ onlyoffice.com/onlyoffice.eu",
-  "CustomTitlesSettingsTooltip": "<0>{{Thiết lập Trang Chào mừng}}</0> cho phép thay đổi tiêu đề mặc định của cổng thông tin được hiển thị trên <2>{{ Trang Chào mừng}}</2> của cổng thông tin của bạn. Tên này cũng được sử dụng cho trường <4>{{Từ}}</4> trong thông báo email của cổng thông tin.",
+  "CustomTitlesSettingsTooltip": "<0>{{ welcomeText }}</0> cho phép thay đổi tiêu đề mặc định của cổng thông tin được hiển thị trên <2>{{ text }}</2> của cổng thông tin của bạn. Tên này cũng được sử dụng cho trường <4>{{ from }}</4> trong thông báo email của cổng thông tin.",
   "CustomTitlesSettingsTooltipDescription": "Nhập tên mà bạn thích trong trường <1>{{ header }}</1>.",
   "CustomTitlesWelcome": "Thiết Lập Trang Chào Mừng",
   "Customization": "Tùy chỉnh",

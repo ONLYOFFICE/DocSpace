@@ -40,7 +40,7 @@
   "CustomTitles": "Aangepaste titels",
   "CustomTitlesFrom": "Vam",
   "CustomTitlesSettingsDescription": "Wordt weergegeven op uw welkomstpagina en gebruikt voor e-mailberichten (Van veld). De aangepaste domeinnaam is een manier om een alternatieve URL voor uw portaal in te stellen. De aangepaste portaalnaam zal naast het onlyoffice.com/onlyoffice.eu adres verschijnen.",
-  "CustomTitlesSettingsTooltip": "<0>{{Welkomsttekst Instellingen}}</0> is een manier om de standaard portaaltitel die wordt weergegeven op de <2>{{Welkomstpagina}}</2> te veranderen. Dezelfde naam wordt ook gebruikt voor het <4>{{Van}}</4> veld van de e-mailnotificaties van uw portaal.",
+  "CustomTitlesSettingsTooltip": "<0>{{ welcomeText }}</0> is een manier om de standaard portaaltitel die wordt weergegeven op de <2>{{ text }}</2> te veranderen. Dezelfde naam wordt ook gebruikt voor het <4>{{ from }}</4> veld van de e-mailnotificaties van uw portaal.",
   "CustomTitlesSettingsTooltipDescription": "Voer de naam die u leuk vindt in, in het <1>{{ header }}</1> veld.",
   "CustomTitlesWelcome": "Welkomstpagina Instellingen",
   "Customization": "Aanpassing",
