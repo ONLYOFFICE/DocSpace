@@ -36,6 +36,7 @@
   "Media": "Multimédia",
   "MoveItem": "<strong>{{title}}</strong> movido",
   "MoveItems": "<strong>{{qty}}</strong> elementos foram movidos",
+  "MoveOrCopy": "Mover ou copiar",
   "MoveTo": "Mover para",
   "MyEmptyContainerDescription": "Os documentos que cria ou envia são mantidos na secção 'Meus Documentos'. Pode editar, partilhar e colaborar neles com a sua equipa.",
   "New": "Novo",
@@ -75,6 +76,7 @@
   "TrashEmptyDescription": "A secção 'Lixo' é para onde todos os arquivos eliminados são movidos. Pode recuperá-los no caso de terem sido eliminados por engano ou excluí-los permanentemente. Por favor, note que quando eliminar os ficheiros do 'Lixo' não podem ser recuperados no futuro.",
   "UnblockVersion": "Desbloquear/Check-in",
   "UploadToFolder": "Carregar para a pasta",
+  "VersionHistory": "Histórico de Versões",
   "ViewList": "Lista",
   "ViewTiles": "Títulos"
 }
