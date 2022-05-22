@@ -18,7 +18,6 @@ import {
   StyledFilterBlockItemSeparator,
 } from "./StyledFilterBlock";
 
-import TickIcon from "../svg/tick.react.svg";
 import XIcon from "../svg/x.react.svg";
 
 const FilterBlockItem = ({
@@ -121,11 +120,6 @@ const FilterBlockItem = ({
         >
           {item.label.toLowerCase()}
         </StyledFilterBlockItemTagText>
-        {item.isSelected && (
-          <StyledFilterBlockItemTagIcon>
-            <TickIcon />
-          </StyledFilterBlockItemTagIcon>
-        )}
       </StyledFilterBlockItemTag>
     );
   };

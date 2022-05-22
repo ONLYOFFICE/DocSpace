@@ -1,10 +1,10 @@
-﻿{
+{
+  "Clouds": "Nuvens",
   "CommonSettings": "Configurações comuns",
-  "ConnectAccounts": "Contas conectadas",
-  "ConnectAccountsSubTitle": "Sem contas conectadas",
   "ConnectAdminDescription": "Para uma conexão bem sucedida, digite os dados necessários em <1> esta página</1>.",
   "ConnectDescription": "Você pode conectar as seguintes contas aos documentos do ONLYOFFICE. Os documentos dessas contas estarão disponíveis para edição na seção 'Meus Documentos'. ",
-  "ConnectedCloud": "Nuvem conectada",
+  "ConnectDescriptionText": "Você ainda não conectou nenhuma nuvem de terceiros.",
+  "ConnectEmpty": "Não há nada aqui",
   "ConnectMakeShared": "Compartilhado e colocado em pasta 'Comum'.",
   "ConnextOtherAccount": "Outra conta",
   "DisplayFavorites": "Mostrar Favoritos",

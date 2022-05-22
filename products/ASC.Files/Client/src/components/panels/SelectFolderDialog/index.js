@@ -155,7 +155,10 @@ class SelectFolderDialog extends React.Component {
       providerKey,
       folderTitle,
       folderId,
+      setSelectedItems,
     } = this.props;
+
+    setSelectedItems();
 
     onSubmit && onSubmit(folderId, folderTitle, providerKey);
     onSave && onSave(e, folderId);
@@ -187,6 +190,7 @@ class SelectFolderDialog extends React.Component {
       folderTitle,
       expandedKeys,
       isDisableButton,
+      storeParentId,
     } = this.props;
     const {
       displayType,
@@ -226,6 +230,7 @@ class SelectFolderDialog extends React.Component {
         isAvailable={isAvailable}
         isDisableTree={isDisableTree}
         isDisableButton={isDisableButton}
+        parentId={storeParentId}
       />
     ) : (
       <SelectionPanel
@@ -250,6 +255,7 @@ class SelectFolderDialog extends React.Component {
         folderSelection
         newFilter={this.newFilter}
         isDisableButton={isDisableButton}
+        parentId={storeParentId}
       />
     );
   }
@@ -285,11 +291,14 @@ export default inject(
     selectFolderDialogStore,
     filesStore,
     auth,
+    filesActionsStore,
   }) => {
     const { treeFolders, setExpandedPanelKeys } = treeFoldersStore;
 
     const { filter } = filesStore;
-    const { id } = selectedFolderStore;
+    const { setSelectedItems } = filesActionsStore;
+
+    const { id, parentId } = selectedFolderStore;
     const {
       setFolderId,
       setFolderTitle,
@@ -305,6 +314,7 @@ export default inject(
     return {
       theme: theme,
       storeFolderId: id,
+      storeParentId: parentId,
       providerKey,
       folderTitle,
       folderId,
@@ -314,6 +324,7 @@ export default inject(
       setProviderKey,
       treeFolders,
       filter,
+      setSelectedItems,
     };
   }
 )(

@@ -247,9 +247,10 @@ class FilesActionStore {
           icon: "trash",
           label: translations.deleteOperation,
         };
-        await this.uploadDataStore.loopFilesOperations(data, pbData);
+        await loopFilesOperations(data, pbData);
         toastr.success(translations.successOperation);
         this.updateCurrentFolder(fileIds, folderIds);
+        clearActiveOperations(fileIds, folderIds);
       });
     } catch (err) {
       clearActiveOperations(fileIds, folderIds);
@@ -538,6 +539,8 @@ class FilesActionStore {
       filesCount,
     } = this.uploadDataStore.secondaryProgressDataStore;
 
+    this.setSelectedItems();
+
     //TODO: duplicate for folders?
     const folderIds = [];
     const fileIds = [];
@@ -612,21 +615,15 @@ class FilesActionStore {
     }
   };
 
-  openLocationAction = (locationId, isFolder) => {
+  openLocationAction = (locationId) => {
     const { createNewExpandedKeys, setExpandedKeys } = this.treeFoldersStore;
 
-    const locationFilter = isFolder ? this.filesStore.filter : null;
     this.filesStore.setBufferSelection(null);
-    return this.filesStore
-      .fetchFiles(locationId, locationFilter)
-      .then((data) => {
-        const pathParts = data.selectedFolder.pathParts;
-        const newExpandedKeys = createNewExpandedKeys(pathParts);
-        setExpandedKeys(newExpandedKeys);
-      });
-    /*.then(() =>
-      //isFolder ? null : this.selectRowAction(!checked, item)
-    );*/
+    return this.filesStore.fetchFiles(locationId, null).then((data) => {
+      const pathParts = data.selectedFolder.pathParts;
+      const newExpandedKeys = createNewExpandedKeys(pathParts);
+      setExpandedKeys(newExpandedKeys);
+    });
   };
 
   setThirdpartyInfo = (providerKey) => {
@@ -746,9 +743,25 @@ class FilesActionStore {
     this.dialogsStore.setConflictResolveDialogVisible(true);
   };
 
+  setSelectedItems = () => {
+    const selectionLength = this.filesStore.selection.length;
+    const selectionTitle = this.filesStore.selectionTitle;
+
+    if (selectionLength !== undefined && selectionTitle) {
+      this.uploadDataStore.secondaryProgressDataStore.setItemsSelectionLength(
+        selectionLength
+      );
+      this.uploadDataStore.secondaryProgressDataStore.setItemsSelectionTitle(
+        selectionTitle
+      );
+    }
+  };
+
   checkOperationConflict = async (operationData) => {
     const { destFolderId, folderIds, fileIds } = operationData;
     const { setBufferSelection } = this.filesStore;
+
+    this.setSelectedItems();
 
     this.filesStore.setSelected("none");
     let conflicts;

@@ -84,7 +84,7 @@ const StyledSimpleFilesRow = styled(Row)`
   }
 
   ${(props) =>
-    !props.contextOptions &&
+    (!props.contextOptions || props.isEdit) &&
     `
     & > div:last-child {
         width: 0px;

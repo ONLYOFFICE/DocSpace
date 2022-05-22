@@ -24,6 +24,10 @@ const StyledSectionHeader = styled.div`
   width: 100%;
   max-width: 100%;
 
+  .header-container {
+    display: flex;
+  }
+
   @media ${tablet} {
     padding-right: 16px;
     margin-right: 0px;
@@ -45,8 +49,6 @@ const StyledSectionHeader = styled.div`
     max-width: 100vw !important;
 
     padding-right: 16px !important;
-
-    margin-top: -2px !important;
 
     margin-bottom: ${(props) =>
       props.settingsStudio ? "8px !important" : "0"};

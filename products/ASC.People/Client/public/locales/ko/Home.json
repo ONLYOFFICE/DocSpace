@@ -1,4 +1,4 @@
-﻿{
+{
   "Administrator": "관리자",
   "ChangeToGuest": "{{guestCaption}}로 변경",
   "ChangeToUser": "{{userCaption}}로 변경",
@@ -6,7 +6,6 @@
   "EmptyGroupTitle": "아직 팀원이 없습니다",
   "LblInviteAgain": "다시 초대",
   "LblInvited": "초대 완료",
-  "LblOther": "기타",
   "LblSendEmail": "이메일 전송",
   "LblSendMessage": "메시지 전송",
   "LblSetActive": "활성화 설정",

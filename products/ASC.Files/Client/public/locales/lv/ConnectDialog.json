@@ -1,8 +1,8 @@
-﻿{
+{
   "Account": "Konts",
   "ConnectFolderTitle": "Mapes nosaukums",
-  "ConnectionUrl": "Savienojuma vietrādis URL",
   "ConnectMakeShared": "Kopīgojiet un ievietojiet mapē Kopēji",
+  "ConnectionUrl": "Savienojuma vietrādis URL",
   "Login": "Piesakieties",
   "Reconnect": "Atkārtoti izveidojiet savienojumu"
 }

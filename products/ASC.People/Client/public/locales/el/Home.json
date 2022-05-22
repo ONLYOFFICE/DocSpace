@@ -1,4 +1,4 @@
-﻿{
+{
   "Administrator": "Διαχειριστής",
   "ChangeToGuest": "Αλλαγή σε {{guestCaption}}",
   "ChangeToUser": "Αλλαγή σε {{userCaption}}",
@@ -6,7 +6,6 @@
   "EmptyGroupTitle": "Δεν υπάρχουν ακόμη συνάδελφοι εδώ",
   "LblInviteAgain": "Πρόσκληση ξανά",
   "LblInvited": "Προσκεκλημένος",
-  "LblOther": "Άλλα",
   "LblSendEmail": "Αποστολή email",
   "LblSendMessage": "Αποστολή μηνύματος",
   "LblSetActive": "Ορισμός ως ενεργού",

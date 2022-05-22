@@ -1,4 +1,5 @@
-﻿{
+{
+  "AddHeadOfDepartment": "Bölüm başkanı ekle",
   "CustomNewDepartment": "{{groupCaption}} (creation)",
   "GroupAction": "Grup eylemi",
   "Members": "Üyeler",

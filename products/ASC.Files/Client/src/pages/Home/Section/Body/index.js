@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
-import { isMobile } from "react-device-detect";
+import { isMobile, isMobileOnly } from "react-device-detect";
 
 import { observer, inject } from "mobx-react";
 import FilesRowContainer from "./RowsView/FilesRowContainer";
@@ -11,6 +11,7 @@ import withLoader from "../../../../HOCs/withLoader";
 import TableView from "./TableView/TableContainer";
 import withHotkeys from "../../../../HOCs/withHotkeys";
 import { Consumer } from "@appserver/components/utils/context";
+import { isElementInViewport } from "@appserver/common/utils";
 
 let currentDroppable = null;
 let isDragActive = false;
@@ -36,6 +37,9 @@ const SectionBodyContent = (props) => {
     tooltipPageY,
     setHotkeyCaretStart,
     setHotkeyCaret,
+    scrollToFolderId,
+    setScrollToFolderId,
+    filesList,
   } = props;
 
   useEffect(() => {
@@ -47,7 +51,7 @@ const SectionBodyContent = (props) => {
       customScrollElm && customScrollElm.scrollTo(0, 0);
     }
 
-    !isMobile && window.addEventListener("mousedown", onMouseDown);
+    window.addEventListener("mousedown", onMouseDown);
     startDrag && window.addEventListener("mouseup", onMouseUp);
     startDrag && document.addEventListener("mousemove", onMouseMove);
 
@@ -65,6 +69,31 @@ const SectionBodyContent = (props) => {
       document.removeEventListener("drop", onDropEvent);
     };
   }, [onMouseUp, onMouseMove, startDrag, folderId, viewAs]);
+
+  useEffect(() => {
+    if (scrollToFolderId) {
+      const newFolder = document.querySelector(
+        `div[value='folder_${scrollToFolderId}_draggable']`
+      );
+
+      let isInViewport = isElementInViewport(newFolder);
+
+      if (!isInViewport || viewAs === "table") {
+        const bodyScroll = isMobileOnly
+          ? document.querySelector("#customScrollBar > div")
+          : document.querySelector(".section-scroll");
+
+        const rectNewFolder = newFolder.getBoundingClientRect();
+        const count =
+          viewAs === "table"
+            ? filesList.findIndex((elem) => elem.id === scrollToFolderId) * 40
+            : rectNewFolder.bottom - window.innerHeight + 300;
+
+        bodyScroll.scrollTo(0, count);
+      }
+      setScrollToFolderId(null);
+    }
+  }, [scrollToFolderId]);
 
   const onMouseDown = (e) => {
     if (
@@ -247,6 +276,9 @@ export default inject(
       setBufferSelection,
       setHotkeyCaretStart,
       setHotkeyCaret,
+      scrollToFolderId,
+      setScrollToFolderId,
+      filesList,
     } = filesStore;
 
     return {
@@ -267,6 +299,9 @@ export default inject(
       tooltipPageY,
       setHotkeyCaretStart,
       setHotkeyCaret,
+      scrollToFolderId,
+      setScrollToFolderId,
+      filesList,
     };
   }
 )(

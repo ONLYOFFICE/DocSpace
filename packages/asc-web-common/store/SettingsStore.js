@@ -19,6 +19,7 @@ const themes = {
 class SettingsStore {
   isLoading = false;
   isLoaded = false;
+  isBurgerLoading = false;
 
   checkedMaintenance = false;
   maintenanceExist = false;
@@ -124,6 +125,7 @@ class SettingsStore {
   setTenantStatus = (tenantStatus) => {
     this.tenantStatus = tenantStatus;
   };
+
   get urlAuthKeys() {
     const splitted = this.culture.split("-");
     const lang = splitted.length > 0 ? splitted[0] : "en";
@@ -500,6 +502,10 @@ class SettingsStore {
     };
     const res = await api.settings.setIpRestrictionsEnable(data);
     this.ipRestrictionEnable = res.enable;
+  };
+
+  setIsBurgerLoading = (isBurgerLoading) => {
+    this.isBurgerLoading = isBurgerLoading;
   };
 }
 

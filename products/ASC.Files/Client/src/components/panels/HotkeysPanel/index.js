@@ -45,8 +45,13 @@ const HotkeyPanel = ({ visible, setHotkeyPanelVisible, t, tReady }) => {
 
   return (
     <StyledHotkeysPanel>
-      <Backdrop onClick={onClose} visible={visible} isAside={true} />
-      <Aside className="hotkeys-panel" visible={visible}>
+      <Backdrop
+        onClick={onClose}
+        visible={visible}
+        isAside={true}
+        zIndex={210}
+      />
+      <Aside className="hotkeys-panel" visible={visible} onClose={onClose}>
         <div className="hotkeys_header">
           <Heading className="hotkeys_heading">{t("Hotkeys")}</Heading>
         </div>
@@ -132,4 +137,4 @@ export default inject(({ dialogsStore }) => {
     visible: hotkeyPanelVisible,
     setHotkeyPanelVisible,
   };
-})(withTranslation("HotkeysPanel")(observer(HotkeyPanel)));
+})(withTranslation(["HotkeysPanel", "Article"])(observer(HotkeyPanel)));

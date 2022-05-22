@@ -90,6 +90,8 @@ class ModalDialog extends React.Component {
   componentWillUnmount() {
     window.removeEventListener("resize", this.throttledResize);
     window.removeEventListener("keyup", this.onKeyPress);
+
+    window.onpopstate = null;
   }
 
   onKeyPress = (event) => {
@@ -207,6 +209,7 @@ class ModalDialog extends React.Component {
             visible={visible}
             scale={scale}
             zIndex={zIndex}
+            onClose={onClose}
             contentPaddingBottom={contentPaddingBottom}
             className="modal-dialog-aside not-selectable"
             withoutBodyScroll={withoutBodyScroll}

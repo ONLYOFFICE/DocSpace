@@ -205,12 +205,13 @@ class AvatarEditor extends React.Component {
   };
 
   componentDidMount() {
+    this._isMounted = true;
     // scaling by the devicePixelRatio can impact performance on mobile as it creates a very large canvas. This is an override to increase performance.
     if (this.props.disableHiDPIScaling) {
       pixelRatio = 1;
     }
     const context = this.canvas.getContext("2d");
-    if (this.props.image) {
+    if (this.props.image && this._isMounted) {
       this.loadImage(this.props.image);
     }
     this.paint(context);
@@ -277,6 +278,7 @@ class AvatarEditor extends React.Component {
   }
 
   componentWillUnmount() {
+    this._isMounted = false;
     if (document) {
       const nativeEvents = deviceEvents.native;
       document.removeEventListener(

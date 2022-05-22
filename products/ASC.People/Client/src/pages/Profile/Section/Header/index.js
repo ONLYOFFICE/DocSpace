@@ -395,7 +395,7 @@ class SectionHeaderContent extends React.PureComponent {
           {
             key: "invite-again",
             className: "header-context-menu_invite-again",
-            label: t("InviteAgainLbl"),
+            label: t("Profile:InviteAgainLbl"),
             onClick: this.onInviteAgainClick,
           },
           !isMe &&
@@ -477,22 +477,23 @@ class SectionHeaderContent extends React.PureComponent {
             isDisabled={false}
           />
         )}
-
-        <AvatarEditor
-          image={avatar.image}
-          visible={visibleAvatarEditor}
-          onClose={this.onCloseAvatarEditor}
-          onSave={this.onSaveAvatar}
-          onLoadFile={this.onLoadFileAvatar}
-          headerLabel={t("Common:EditAvatar")}
-          selectNewPhotoLabel={t("Translations:selectNewPhotoLabel")}
-          orDropFileHereLabel={t("Translations:orDropFileHereLabel")}
-          unknownTypeError={t("Translations:ErrorUnknownFileImageType")}
-          maxSizeFileError={t("Translations:maxSizeFileError")}
-          unknownError={t("Common:Error")}
-          saveButtonLabel={t("Common:SaveButton")}
-          maxSizeLabel={t("Translations:MaxSizeLabel")}
-        />
+        {visibleAvatarEditor && (
+          <AvatarEditor
+            image={avatar.image}
+            visible={visibleAvatarEditor}
+            onClose={this.onCloseAvatarEditor}
+            onSave={this.onSaveAvatar}
+            onLoadFile={this.onLoadFileAvatar}
+            headerLabel={t("Common:EditAvatar")}
+            selectNewPhotoLabel={t("Translations:selectNewPhotoLabel")}
+            orDropFileHereLabel={t("Translations:orDropFileHereLabel")}
+            unknownTypeError={t("Translations:ErrorUnknownFileImageType")}
+            maxSizeFileError={t("Translations:maxSizeFileError")}
+            unknownError={t("Common:Error")}
+            saveButtonLabel={t("Common:SaveButton")}
+            maxSizeLabel={t("Translations:MaxSizeLabel")}
+          />
+        )}
 
         {dialogsVisible.deleteSelfProfile && (
           <DeleteSelfProfileDialog
