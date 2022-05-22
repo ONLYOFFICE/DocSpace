@@ -1,4 +1,5 @@
-﻿{
+{
+  "AddHeadOfDepartment": "Afdelingshoofd toevoegen",
   "CustomNewDepartment": "{{groupCaption}} (creation)",
   "GroupAction": "Groepsactie",
   "Members": "Leden",

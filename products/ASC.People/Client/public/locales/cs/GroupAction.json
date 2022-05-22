@@ -1,4 +1,5 @@
-﻿{
+{
+  "AddHeadOfDepartment": "Přidat vedoucího oddělení",
   "CustomNewDepartment": "{{groupCaption}} (vytvoření)",
   "GroupAction": "Skupinová akce",
   "Members": "Členové",

@@ -1,4 +1,4 @@
-﻿{
+{
   "ChangeUserTypeButton": "Növün dəyişdirilməsi",
   "ChangeUserTypeHeader": "İstifadəçi növünün dəyişdirilməsi",
   "ChangeUserTypeMessage": "'{{ firstType }}' tipinə malik olan istifadəçilər '{{ secondType }}' istifadəçi tipinə dəyişdirildi.",

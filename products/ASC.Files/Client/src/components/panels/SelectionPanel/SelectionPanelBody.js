@@ -45,6 +45,7 @@ const SelectionPanelBody = ({
   page,
   newFilter,
   isDisableButton,
+  parentId,
 }) => {
   const onMouseEvent = (event) => {
     event.stopPropagation();
@@ -75,7 +76,7 @@ const SelectionPanelBody = ({
                   fontSize="18px"
                   className="selection-panel_folder-title"
                 >
-                  {t("Translations:Documents")}
+                  {t("Common:Documents")}
                 </Text>
 
                 {folderId && resultingFolderTree ? (
@@ -87,9 +88,11 @@ const SelectionPanelBody = ({
                     certainFolders
                     isAvailable={isAvailable}
                     selectedKeys={[`${folderId}`]}
+                    parentId={parentId}
                     expandedKeys={expandedKeys}
                     isDisableTree={isDisableTree}
                     displayType="modal"
+                    treeHeight={388}
                   />
                 ) : (
                   <Loaders.NewTreeFolders />

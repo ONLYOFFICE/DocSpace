@@ -31,6 +31,11 @@ const Content = styled.div`
   border-radius: ${(props) =>
     props.theme.modalDialog.content.modalBorderRadius};
 
+  .modal-dialog-aside-header {
+    margin: 0 -16px;
+    padding: 0 16px;
+  }
+
   .heading {
     max-width: ${(props) => props.theme.modalDialog.content.heading.maxWidth};
     margin: ${(props) => props.theme.modalDialog.content.heading.margin};

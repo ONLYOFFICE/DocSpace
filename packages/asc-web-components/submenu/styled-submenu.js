@@ -1,6 +1,7 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import { tablet } from "../utils/device";
+import { isMobileOnly } from "react-device-detect";
 
 export const StyledSubmenu = styled.div`
   display: flex;
@@ -23,6 +24,13 @@ export const StyledSubmenu = styled.div`
     background: ${(props) => props.theme.submenu.backgroundColor};
     z-index: 1;
   }
+
+  ${isMobileOnly &&
+  css`
+    .sticky {
+      top: 52px;
+    }
+  `}
 
   .sticky-indent {
     height: 15px;

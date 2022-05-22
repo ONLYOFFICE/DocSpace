@@ -51,14 +51,6 @@ StyledContent.defaultProps = { theme: Base };
 
 const StyledCheckbox = styled.div`
   flex: 0 0 16px;
-
-  .checkbox {
-    padding: 7px 0;
-
-    @media ${tablet} {
-      padding: 10px 0;
-    }
-  }
 `;
 
 const StyledElement = styled.div`

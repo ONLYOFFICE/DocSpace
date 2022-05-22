@@ -253,12 +253,12 @@ const SortButton = ({
                 viewSettings={viewSettings}
               />
             </DropDownItem>
-            {!isFavoritesFolder && !isRecentFolder && (
+            {!isRecentFolder && (
               <DropDownItem isSeparator={true}></DropDownItem>
             )}
           </>
         )}
-        {!isFavoritesFolder && !isRecentFolder && (
+        {!isRecentFolder && (
           <>
             {data.map((item, index) => (
               <DropDownItem
@@ -286,7 +286,6 @@ const SortButton = ({
     viewAs,
     viewSettings,
     getSortData,
-    isFavoritesFolder,
     isRecentFolder,
   ]);
 
@@ -294,8 +293,9 @@ const SortButton = ({
     <>
       <Backdrop
         visible={isOpen}
-        withBackground={true}
+        withBackground={false}
         onClick={toggleCombobox}
+        withoutBlur={true}
       />
       <StyledSortButton
         viewAs={viewAs}

@@ -171,12 +171,7 @@ const config = {
   plugins: [
     new CleanWebpackPlugin(),
     new ExternalTemplateRemotesPlugin(),
-    new HtmlWebpackPlugin({
-      template: "./public/index.html",
-      publicPath: homepage,
-      title: title,
-      base: `${homepage}/`,
-    }),
+
     new CopyPlugin({
       patterns: [
         {
@@ -248,6 +243,42 @@ module.exports = (env, argv) => {
       },
     })
   );
+
+  if (!!env.hideText) {
+    config.plugins.push(
+      new HtmlWebpackPlugin({
+        template: "./public/index.html",
+        publicPath: homepage,
+        title: title,
+        base: `${homepage}/`,
+        custom: `<style type="text/css">
+          div,
+          p,
+          a,
+          span,
+          button,
+          h1,
+          h2,
+          h3,
+          h4,
+          h5,
+          h6,
+          ::placeholder {
+            color: rgba(0, 0, 0, 0) !important;
+        }
+        </style>`,
+      })
+    );
+  } else {
+    config.plugins.push(
+      new HtmlWebpackPlugin({
+        template: "./public/index.html",
+        publicPath: homepage,
+        title: title,
+        base: `${homepage}/`,
+      })
+    );
+  }
 
   const defines = {
     VERSION: JSON.stringify(version),

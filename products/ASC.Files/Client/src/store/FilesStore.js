@@ -67,6 +67,13 @@ class FilesStore {
   oformFiles = null;
   gallerySelected = null;
 
+  createdFolderId = null;
+  scrollToFolderId = null;
+
+  isLoadingFilesFind = false;
+  pageItemsLength = null;
+  isHidePagination = false;
+
   constructor(
     authStore,
     settingsStore,
@@ -112,6 +119,37 @@ class FilesStore {
             this.setFiles(newFiles);
           }
           break;
+        case "update":
+          if (opt?.type == "file" && opt?.data) {
+            const file = JSON.parse(opt?.data);
+
+            if (!file || !file.id) return;
+
+            this.setFile(file);
+
+            if (this.selection) {
+              const foundIndex = this.selection?.findIndex(
+                (x) => x.id === file.id
+              );
+              if (foundIndex > -1) {
+                runInAction(() => {
+                  this.selection[foundIndex] = file;
+                });
+              }
+            }
+
+            if (this.bufferSelection) {
+              const foundIndex = this.bufferSelection?.findIndex(
+                (x) => x.id === file.id
+              );
+              if (foundIndex > -1) {
+                runInAction(() => {
+                  this.bufferSelection[foundIndex] = file;
+                });
+              }
+            }
+          }
+          break;
         case "delete":
           if (opt?.type == "file" && opt?.id) {
             const foundIndex = this.files.findIndex((x) => x.id === opt?.id);
@@ -122,6 +160,21 @@ class FilesStore {
                 return index !== foundIndex;
               })
             );
+
+            // Hide pagination when deleting files
+            runInAction(() => {
+              this.isHidePagination = true;
+            });
+
+            runInAction(() => {
+              if (
+                this.files.length === 0 &&
+                this.folders.length === 0 &&
+                this.pageItemsLength > 1
+              ) {
+                this.isLoadingFilesFind = true;
+              }
+            });
           }
           break;
       }
@@ -145,6 +198,12 @@ class FilesStore {
       const foundIndex = this.files.findIndex((x) => x.id === id);
       if (foundIndex == -1) return;
 
+      this.updateSelectionStatus(
+        id,
+        this.files[foundIndex].fileStatus | FileStatus.IsEditing,
+        true
+      );
+
       this.updateFileStatus(
         foundIndex,
         this.files[foundIndex].fileStatus | FileStatus.IsEditing
@@ -156,9 +215,24 @@ class FilesStore {
       const foundIndex = this.files.findIndex((x) => x.id === id);
       if (foundIndex == -1) return;
 
+      this.updateSelectionStatus(
+        id,
+        this.files[foundIndex].fileStatus & ~FileStatus.IsEditing,
+        false
+      );
+
       this.getFileInfo(id);
     });
   }
+
+  updateSelectionStatus = (id, status, isEditing) => {
+    const index = this.selection.findIndex((x) => x.id === id && x.fileExst);
+
+    if (index !== -1) {
+      this.selection[index].fileStatus = status;
+      this.selection[index].isEditing = isEditing;
+    }
+  };
 
   setIsPrevSettingsModule = (isSettings) => {
     this.isPrevSettingsModule = isSettings;
@@ -197,6 +271,10 @@ class FilesStore {
   setViewAs = (viewAs) => {
     this.viewAs = viewAs;
     localStorage.setItem("viewAs", viewAs);
+  };
+
+  setPageItemsLength = (pageItemsLength) => {
+    this.pageItemsLength = pageItemsLength;
   };
 
   setDragging = (dragging) => {
@@ -434,6 +512,18 @@ class FilesStore {
 
     !isPrefSettings && this.setFilterUrl(filter);
     this.filter = filter;
+
+    runInAction(() => {
+      if (filter && this.isHidePagination) {
+        this.isHidePagination = false;
+      }
+    });
+
+    runInAction(() => {
+      if (filter && this.isLoadingFilesFind) {
+        this.isLoadingFilesFind = false;
+      }
+    });
   };
 
   setFilter = (filter) => {
@@ -582,7 +672,21 @@ class FilesStore {
           const selectedFolder = {
             selectedFolder: { ...this.selectedFolderStore },
           };
+
           this.viewAs === "tile" && this.createThumbnails();
+
+          if (this.createdFolderId) {
+            const newFolder = this.filesList.find(
+              (item) => item.id === this.createdFolderId
+            );
+
+            if (newFolder) {
+              this.setSelection([newFolder]);
+              this.setScrollToFolderId(newFolder.id);
+            }
+
+            this.setCreatedFolderId(null);
+          }
           return Promise.resolve(selectedFolder);
         })
         .catch((err) => {
@@ -1971,6 +2075,14 @@ class FilesStore {
 
   setEnabledHotkeys = (enabledHotkeys) => {
     this.enabledHotkeys = enabledHotkeys;
+  };
+
+  setCreatedFolderId = (createdFolderId) => {
+    this.createdFolderId = createdFolderId;
+  };
+
+  setScrollToFolderId = (folderId) => {
+    this.scrollToFolderId = folderId;
   };
 }
 

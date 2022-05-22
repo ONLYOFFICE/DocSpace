@@ -18,20 +18,9 @@ import { inject, observer } from "mobx-react";
 import config from "../../../../package.json";
 
 class PureVersionHistoryPanel extends React.Component {
-  componentDidUpdate(preProps) {
-    const { isTabletView, fileId } = this.props;
-    if (isTabletView !== preProps.isTabletView && isTabletView) {
-      this.redirectToPage(fileId);
-    }
-  }
-
-  redirectToPage = (fileId) => {
-    this.onClose();
-    history.replace(`${this.props.homepage}/${fileId}/history`);
-  };
-
   onClose = () => {
-    this.props.setIsVerHistoryPanel(false);
+    const { setIsVerHistoryPanel } = this.props;
+    setIsVerHistoryPanel(false);
   };
 
   render() {
@@ -51,7 +40,12 @@ class PureVersionHistoryPanel extends React.Component {
           zIndex={zIndex}
           isAside={true}
         />
-        <Aside className="version-history-aside-panel" withoutBodyScroll>
+        <Aside
+          className="version-history-aside-panel"
+          visible={visible}
+          onClose={this.onClose}
+          withoutBodyScroll
+        >
           <StyledContent>
             <StyledHeaderContent className="version-history-panel-header">
               {versions && !isLoading ? (

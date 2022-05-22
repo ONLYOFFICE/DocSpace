@@ -7,7 +7,7 @@ export const settingsTree = [
     key: "0",
     icon: "/static/images/settings.react.svg",
     link: "common",
-    tKey: "ManagementCategoryCommon",
+    tKey: "Common:Common",
     isHeader: true,
     children: [
       {

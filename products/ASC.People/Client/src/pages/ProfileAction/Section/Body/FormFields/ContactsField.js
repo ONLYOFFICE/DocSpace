@@ -88,6 +88,8 @@ class ContactsField extends React.Component {
 
     const prefix = "null_";
     const options = getOptions(pattern, prefix);
+    const setDropDownMaxHeight =
+      options && options.length > 6 ? { dropDownMaxHeight: 200 } : {};
 
     return (
       <Container>
@@ -95,7 +97,7 @@ class ContactsField extends React.Component {
         <ComboBox
           options={options}
           onSelect={onItemAdd}
-          scaledOptions={true}
+          scaledOptions={options.length < 6}
           selectedOption={{
             key: prefix,
             label: addItemText,
@@ -106,6 +108,7 @@ class ContactsField extends React.Component {
           scaled={true}
           className="field-select"
           directionY="both"
+          {...setDropDownMaxHeight}
         />
       </Container>
     );

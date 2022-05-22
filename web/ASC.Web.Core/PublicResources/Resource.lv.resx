@@ -1,0 +1,265 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
+    <value>Validācijas koda lauks nedrīkst būt tukšs</value>
+  </data>
+  <data name="ActivateMobilePhoneEmptyPhoneNumber" xml:space="preserve">
+    <value>Ievadiet mobilā tālruņa numuru</value>
+  </data>
+  <data name="AdministratorNotifySenderTypeName" xml:space="preserve">
+    <value>Paziņojums no administrātora</value>
+  </data>
+  <data name="AdminMessageSent" xml:space="preserve">
+    <value>Ziņojums ir veiksmīgi nosūtīts. Portāla administrators sazināsies ar Jums.</value>
+  </data>
+  <data name="ChangePortalOwnerMsg" xml:space="preserve">
+    <value>Operāciju apstiprinošs links tika nosūtīts uz :email (portāla īpašnieka e-pasta adrese).</value>
+  </data>
+  <data name="CouldNotRecoverPasswordForLdapUser" xml:space="preserve">
+    <value>Paroles atjaunošanas darbība nav atļauta LDAP lietotājam</value>
+  </data>
+  <data name="CouldNotRecoverPasswordForSsoUser" xml:space="preserve">
+    <value>Paroles atjaunošanas darbība nav atļauta SSO lietotājam</value>
+  </data>
+  <data name="CustomNamingPeopleSchema" xml:space="preserve">
+    <value>Pielāgotos iestatījumus</value>
+  </data>
+  <data name="DnsChangeMsg" xml:space="preserve">
+    <value>Operāciju apstiprinošs links tika nosūtīts uz {0} (portāla īpašnieka e-pasta adrese).</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
+    <value>Nepareiza e-pasta adrese</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
+    <value>Nepareizs promo kods</value>
+  </data>
+  <data name="ErrorAccessDenied" xml:space="preserve">
+    <value>Nav atļaujas šajai darbībai</value>
+  </data>
+  <data name="ErrorAccessRestricted" xml:space="preserve">
+    <value>Piekļuve portālam ir ierobežota</value>
+  </data>
+  <data name="ErrorBadKeys" xml:space="preserve">
+    <value>Nepareizas atslēgas</value>
+  </data>
+  <data name="ErrorDisabledProfile" xml:space="preserve">
+    <value>Jūsu profila darbība apturēta</value>
+  </data>
+  <data name="ErrorEmailAlreadyExists" xml:space="preserve">
+    <value>{!User} ar šo e-pastu jau ir reģistrēts</value>
+  </data>
+  <data name="ErrorEmailDomainNotAllowed" xml:space="preserve">
+    <value>Nav atļauta šī domēna e-pastu reģistrācija</value>
+  </data>
+  <data name="ErrorEmailEmpty" xml:space="preserve">
+    <value>E-pasta lauks ir tukšs</value>
+  </data>
+  <data name="ErrorEmailsAreTheSame" xml:space="preserve">
+    <value>Pašreizējā e-pasta adrese un jauna e-pasta adrese ir vienādi</value>
+  </data>
+  <data name="ErrorEmptyFields" xml:space="preserve">
+    <value>Lūdzu aizpildiet visus laukus</value>
+  </data>
+  <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
+    <value>Nav iespējams atrast augšupielādētu failu</value>
+  </data>
+  <data name="ErrorImageWeightLimit" xml:space="preserve">
+    <value>Attēla faila izmērs ir pārāk liels</value>
+  </data>
+  <data name="ErrorNotAllowedOption" xml:space="preserve">
+    <value>Jūsu maksājumu plāns neatbalsta šo iespēju</value>
+  </data>
+  <data name="ErrorNotCorrectEmail" xml:space="preserve">
+    <value>Nepareizs e-pasts</value>
+  </data>
+  <data name="ErrorNotCorrectTrustedDomain" xml:space="preserve">
+    <value>Nepareizs domēna nosaukums</value>
+  </data>
+  <data name="ErrorPasswordEmpty" xml:space="preserve">
+    <value>Parole ir tukša.</value>
+  </data>
+  <data name="ErrorPasswordLength" xml:space="preserve">
+    <value>no {0} līdz {1} zīmēm</value>
+  </data>
+  <data name="ErrorPasswordMessage" xml:space="preserve">
+    <value>Parolei ir jāsatur</value>
+  </data>
+  <data name="ErrorPasswordMessageStart" xml:space="preserve">
+    <value>Tā jābūt</value>
+  </data>
+  <data name="ErrorPasswordNoDigits" xml:space="preserve">
+    <value>cipari</value>
+  </data>
+  <data name="ErrorPasswordNoSpecialSymbols" xml:space="preserve">
+    <value>Speciālās rakstzīmes</value>
+  </data>
+  <data name="ErrorPasswordNoUpperCase" xml:space="preserve">
+    <value>Lielie burti</value>
+  </data>
+  <data name="ErrorUserNotFound" xml:space="preserve">
+    <value>Lietotājs nevar būt atrasts</value>
+  </data>
+  <data name="ErrorUserNotFoundByEmail" xml:space="preserve">
+    <value>Nav iespējams atrast lietotāju ar "{0}" e-pastu</value>
+  </data>
+  <data name="EuServerRegion" xml:space="preserve">
+    <value>ES (Frankfurte)</value>
+  </data>
+  <data name="FileSizeMaxExceed" xml:space="preserve">
+    <value>Maksimālais faila izmērs bija pārsniegts</value>
+  </data>
+  <data name="FileSizeNote" xml:space="preserve">
+    <value>Piezīme: faila izmērs nevar pārsniegt {1}{0}{2}</value>
+  </data>
+  <data name="FileSizePostfix" xml:space="preserve">
+    <value>bytes,KB,MB,GB, TB</value>
+  </data>
+  <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
+    <value>Links jūsu akaunta apstiprinājumam tika nosūtīts uz noradītu e-pastu</value>
+  </data>
+  <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
+    <value>Serverim neizdevās noglabāt iestatījumus.</value>
+  </data>
+  <data name="LdapSettingsTooManyOperations" xml:space="preserve">
+    <value>Par daudz LDAP darbību</value>
+  </data>
+  <data name="LicenseError" xml:space="preserve">
+    <value>Licence nav pareiza</value>
+  </data>
+  <data name="LicenseErrorExpired" xml:space="preserve">
+    <value>Licencei beidzies termiņš</value>
+  </data>
+  <data name="LicenseErrorPortal" xml:space="preserve">
+    <value>Portālu skaits pārsniedz licencē atļauto</value>
+  </data>
+  <data name="LicenseErrorQuota" xml:space="preserve">
+    <value>Lietotāju skaits pārsniedz licencē atļauto</value>
+  </data>
+  <data name="LicenseUploaded" xml:space="preserve">
+    <value>Veiksmīgi augšupielādēts</value>
+  </data>
+  <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
+    <value>E-pasta maiņas instrukcijas veiksmīgi nosūtītas</value>
+  </data>
+  <data name="MobilePhoneMustErase" xml:space="preserve">
+    <value>Lai mainītu numuru, jums ir jādzēš šībrīža tālruņa numurs</value>
+  </data>
+  <data name="OrgServerRegion" xml:space="preserve">
+    <value>ORG reģions</value>
+  </data>
+  <data name="Owner" xml:space="preserve">
+    <value>Īpašnieks</value>
+  </data>
+  <data name="PortalSecurity" xml:space="preserve">
+    <value>Piekļuve portālam</value>
+  </data>
+  <data name="ReassignDataRemoveUserError" xml:space="preserve">
+    <value>Datu pārneses process {0} nav pabeigts.</value>
+  </data>
+  <data name="SgServerRegion" xml:space="preserve">
+    <value>Singapūra</value>
+  </data>
+  <data name="SmsAuthenticationMessageError" xml:space="preserve">
+    <value>Nepareizs kods</value>
+  </data>
+  <data name="SmsAuthenticationMessageToUser" xml:space="preserve">
+    <value>Kods: {0}</value>
+  </data>
+  <data name="SmsAuthenticationTimeout" xml:space="preserve">
+    <value>Laiks koda izmantošanai ir iztecējis. Lūdzu, lūdziet jaunu ziņu.</value>
+  </data>
+  <data name="SmsNotAvailable" xml:space="preserve">
+    <value>SMS uzstādījumi nav pieejami</value>
+  </data>
+  <data name="SmsTooMuchError" xml:space="preserve">
+    <value>Jūs esat nosūtījušī pārāk daudz īsziņu. Lūdzu, mēģiniet vēlāk vēlreiz.</value>
+  </data>
+  <data name="SsoSettingsCantSaveSettings" xml:space="preserve">
+    <value>Neizdevās saglabāt uzstādījumus</value>
+  </data>
+  <data name="SsoSettingsCouldNotBeNull" xml:space="preserve">
+    <value>Uzstādījumi nevar būt tukši</value>
+  </data>
+  <data name="SsoSettingsInvalidBinding" xml:space="preserve">
+    <value>Nepieejama saite: {0}</value>
+  </data>
+  <data name="SsoSettingsInvalidEntityId" xml:space="preserve">
+    <value>Nederīgs elementa ID</value>
+  </data>
+  <data name="SsoSettingsInvalidMapping" xml:space="preserve">
+    <value>Nederīga lauku kartēšana</value>
+  </data>
+  <data name="SuccessfullySaveGreetingSettingsMessage" xml:space="preserve">
+    <value>Sākumlapas iestatījumi veiksmīgi saglabāti</value>
+  </data>
+  <data name="SuccessfullySaveSettingsMessage" xml:space="preserve">
+    <value>Iestatījumi tika veiksmīgi  atjaunoti</value>
+  </data>
+  <data name="SuccessfullySentNotificationDeleteUserInfoMessage" xml:space="preserve">
+    <value>Norādījumi par to, kā dzēst savu profilu, ir nosūtīti uz {0} e-pasta adresi</value>
+  </data>
+  <data name="UsServerRegion" xml:space="preserve">
+    <value>ASV rietumu reģions (Oregon)</value>
+  </data>
+  <data name="WhatsNewSubscriptionName" xml:space="preserve">
+    <value>Kas Jauns</value>
+  </data>
+</root>

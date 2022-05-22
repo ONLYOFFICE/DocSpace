@@ -219,7 +219,11 @@ const EditingWrapperComponent = (props) => {
 
   const onFocus = (e) => e.target.select();
   const onBlur = (e) => {
-    if (e.relatedTarget && e.relatedTarget.classList.contains("edit-button"))
+    if (
+      (e.relatedTarget && e.relatedTarget.classList.contains("edit-button")) ||
+      OkIconIsHovered ||
+      CancelIconIsHovered
+    )
       return false;
 
     !passwordEntryProcess && onClickUpdateItem(e, false);
@@ -263,6 +267,7 @@ const EditingWrapperComponent = (props) => {
             onMouseEnter={setIsHoveredOkHandler}
             onMouseLeave={setIsHoveredOkHandler}
             isHovered={OkIconIsHovered}
+            title=""
           />
           <Button
             className="edit-button not-selectable"
@@ -275,6 +280,7 @@ const EditingWrapperComponent = (props) => {
             onMouseEnter={setIsHoveredCancelHandler}
             onMouseLeave={setIsHoveredCancelHandler}
             isHovered={CancelIconIsHovered}
+            title=""
           />
         </>
       )}

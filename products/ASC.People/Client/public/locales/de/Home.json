@@ -1,4 +1,4 @@
-﻿{
+{
   "Administrator": "Administrator",
   "ChangeToGuest": "Zu {{guestCaption}} ändern",
   "ChangeToUser": "Zu {{userCaption}} ändern",
@@ -6,7 +6,6 @@
   "EmptyGroupTitle": "Keine Teammitglieder hier",
   "LblInviteAgain": "Erneut einladen",
   "LblInvited": "Eingeladen",
-  "LblOther": "Sonstiges",
   "LblSendEmail": "E-Mail senden",
   "LblSendMessage": "Nachricht senden",
   "LblSetActive": "Aktivieren",

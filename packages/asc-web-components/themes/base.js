@@ -383,14 +383,14 @@ const Base = {
     background: grayLight,
     activeBackground: grayLightMid,
 
-    border: `1px solid ${globalColors.grayLightMid}`,
+    border: `none`,
     boxSizing: "border-box",
     borderRadius: "3px",
-    height: " 34px",
-    width: "34px",
+    height: " 32px",
+    width: "32px",
     padding: "9px",
-    color: "#979797",
-    hoverColor: black,
+    color: black,
+    hoverColor: darkBlack,
   },
 
   saveCancelButtons: {
@@ -1218,7 +1218,7 @@ const Base = {
   },
 
   backdrop: {
-    backgroundColor: "rgba(6, 22, 38, 0.1)",
+    backgroundColor: "rgba(6, 22, 38, 0.2)",
     unsetBackgroundColor: "unset",
   },
 
@@ -1600,8 +1600,8 @@ const Base = {
     disableFillColor: grayLightMid,
     disableFillColorOff: grayLightMid,
 
-    borderColor: blueMain,
-    borderColorOff: gray,
+    borderColor: "unset",
+    borderColorOff: "unset",
 
     disableBorderColor: grayLightMid,
     disableBorderColorOff: grayLightMid,
@@ -1878,7 +1878,7 @@ const Base = {
       marginLeft: "8px",
       marginRight: "-2px",
       tablet: {
-        width: "48px",
+        width: "44px",
         height: "44px",
         marginRight: "-16px",
       },
@@ -1952,6 +1952,7 @@ const Base = {
     sectionHeaderToggleBgActive: grayLight,
 
     backgroundColor: white,
+    blurColor: "rgba(6, 22, 38, 0.2)",
     borderColor: grayLightMid,
     thumbnailBorderColor: grayLightMid,
     textColor: black,
@@ -2078,6 +2079,7 @@ const Base = {
       hoverIconColor: grayMain,
 
       borderImageSource: `linear-gradient(to right,${white} 21px,${grayLightMid} 21px,${grayLightMid} calc(100% - 20px),${white} calc(100% - 20px))`,
+      lengthenBorderImageSource: `linear-gradient(to right, ${grayLightMid}, ${grayLightMid})`,
       hotkeyBorderBottom: `1px solid ${globalColors.blueMain}`,
     },
 
@@ -2224,6 +2226,12 @@ const Base = {
 
   filesThirdPartyDialog: {
     border: "1px solid #d1d1d1",
+  },
+
+  connectedClouds: {
+    color: "#657077",
+    borderBottom: `1px solid #eceef1`,
+    borderRight: `1px solid #d0d5da`,
   },
 
   filesModalDialog: {
@@ -2680,6 +2688,8 @@ const Base = {
   submenu: {
     lineColor: "#eceef1",
     backgroundColor: white,
+    textColor: "#316DAA",
+    bottomLineColor: "#316DAA",
   },
 };
 

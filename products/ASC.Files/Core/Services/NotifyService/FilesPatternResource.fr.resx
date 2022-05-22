@@ -53,83 +53,74 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="pattern_DocuSignComplete" xml:space="preserve">
     <value>h1. Tous les signataires ont signé $DocumentTitle
 
-Ce courriel est pour vous informer que tous les signataires ont signé "$DocumentTitle":"$DocumentURL".
-
-^Vous avez reçu ce courriel parce que vous êtes un utilisateur enregistré sur le portail "${__VirtualRootPath}":"${__VirtualRootPath}" .^</value>
+Ce courriel est pour vous informer que tous les signataires ont signé "$DocumentTitle":"$DocumentURL".</value>
   </data>
   <data name="pattern_DocuSignStatus" xml:space="preserve">
     <value>h1. $Message: $DocumentTitle
 
-Pour en savoir plus, connectez-vous à votre compte.
-
-^Vous avez reçu cet e-mail parce que vous êtes un utilisateur enregistré sur le portail "${__VirtualRootPath}":"${__VirtualRootPath}" portal.^</value>
+Pour en savoir plus, connectez-vous à votre compte.</value>
   </data>
   <data name="pattern_EditorMentions" xml:space="preserve">
     <value>h1. "$__AuthorName":"$__AuthorUrl" vous a mentionné dans le commentaire du document
 
 Ce courriel vous est envoyé parce que vous avez été mentionné par "$__AuthorName":"$__AuthorUrl" dans le commentaire du document "$DocumentTitle":"$DocumentURL" :
 
-$Message
-
-^Vous avez reçu ce courriel parce que vous êtes un utilisateur enregistré de "${__VirtualRootPath}":"${__VirtualRootPath}" portail.^</value>
+$Message</value>
   </data>
   <data name="pattern_MailMergeEnd" xml:space="preserve">
     <value>h1. Diffusion terminée
 
 Ce courriel est pour vous informer que la diffusion des messages $MailsCount que vous avez demandée est maintenant terminée.
 
-Vous pouvez vérifier le statut de ces messages dans votre dossier "Envoyés":"$__VirtualRootPath/addons/mail/#sent" du module "Mail".
-
-^Vous recevez cet email car vous êtes un utilisateur enregistré du portail "${__VirtualRootPath}":"${__VirtualRootPath}".^
-</value>
+Vous pouvez vérifier le statut de ces messages dans votre dossier "Envoyés":"$__VirtualRootPath/addons/mail/#sent" du module "Mail".</value>
   </data>
   <data name="pattern_ShareDocument" xml:space="preserve">
-    <value>h1. L'accès est autorisé au document: "$DocumentTitle":"$DocumentURL"
+    <value>h1. Accès accordé au document: "$DocumentTitle":"$DocumentURL"
 
 $__DateTime "$__AuthorName":"$__AuthorUrl" vous a accordé l'accès au document "$DocumentTitle":"$DocumentURL" avec les droits d'accès: "$AccessRights". 
 
 $Message</value>
   </data>
   <data name="pattern_ShareFolder" xml:space="preserve">
-    <value>h1. L'accès est autorisé au dossier: "$DocumentTitle":"$DocumentURL"
+    <value>h1. Accès accordé au dossier: "$DocumentTitle":"$DocumentURL"
 
 $__DateTime "$__AuthorName":"$__AuthorUrl" vous a accordé l'accès au dossier "$DocumentTitle":"$DocumentURL" avec les droits d'accès: "$AccessRights". 
 
 $Message</value>
   </data>
   <data name="subject_DocuSignComplete" xml:space="preserve">
-    <value>Documents. Tous les signataires ont signé $DocumentTitle</value>
+    <value>[OnlyOffice - Documents] Tous les signataires ont signé $DocumentTitle</value>
   </data>
   <data name="subject_DocuSignComplete_tg" xml:space="preserve">
-    <value>Documents. Tous les signataires ont complété le document [$DocumentTitle]($DocumentURL)</value>
+    <value>[OnlyOffice - Documents] Tous les signataires ont complété le document [$DocumentTitle]($DocumentURL)</value>
   </data>
   <data name="subject_DocuSignStatus" xml:space="preserve">
-    <value>Documents.Le statut de la signature modifié</value>
+    <value>[OnlyOffice - Documents] Le statut de la signature modifié</value>
   </data>
   <data name="subject_EditorMentions" xml:space="preserve">
-    <value>Documents. Mentionné dans un document</value>
+    <value>[OnlyOffice - Documents] Vous avez été mentionné dans un document</value>
   </data>
   <data name="subject_MailMergeEnd" xml:space="preserve">
-    <value>Documents. Diffusion est terminée. </value>
+    <value>[OnlyOffice - Documents] Diffusion est terminée. </value>
   </data>
   <data name="subject_ShareDocument" xml:space="preserve">
-    <value>Documents. L'accès est autorisé au document $DocumentTitle</value>
+    <value>[OnlyOffice - Documents] Accès accordé au document $DocumentTitle</value>
   </data>
   <data name="subject_ShareDocument_tg" xml:space="preserve">
-    <value>Documents. L'accès au document est autorisé :[$DocumentTitle]($DocumentURL)</value>
+    <value>[OnlyOffice - Documents] Accès accordé au document [$DocumentTitle]($DocumentURL)</value>
   </data>
   <data name="subject_ShareFolder" xml:space="preserve">
-    <value>Documents. L'accès est autorisé au dossier: $DocumentTitle</value>
+    <value>[OnlyOffice - Documents] Accès accordé au dossier $DocumentTitle</value>
   </data>
   <data name="subject_ShareFolder_tg" xml:space="preserve">
-    <value>Documents. L'accès au dossier est autorisé : [$DocumentTitle]($DocumentURL)</value>
+    <value>[OnlyOffice - Documents] Accès accordé au dossier [$DocumentTitle]($DocumentURL)</value>
   </data>
 </root>

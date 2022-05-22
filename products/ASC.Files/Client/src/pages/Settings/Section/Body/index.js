@@ -94,7 +94,7 @@ const SectionBodyContent = ({
     <Error403 />
   ) : isErrorSettings ? (
     <Error520 />
-  ) : (
+  ) : !isPersonal ? (
     <div>
       <TabsContainer
         elements={elements}
@@ -102,6 +102,8 @@ const SectionBodyContent = ({
         selectedItem={selectedTab()}
       />
     </div>
+  ) : (
+    <div>{elements[0].content}</div>
   );
 };
 

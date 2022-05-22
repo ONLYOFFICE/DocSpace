@@ -1,4 +1,4 @@
-﻿{
+{
   "Administrator": "Администратор",
   "ChangeToGuest": "Промени на {{guestCaption}}",
   "ChangeToUser": "Промени на {{userCaption}}",
@@ -6,7 +6,6 @@
   "EmptyGroupTitle": "Тук още няма съотборници",
   "LblInviteAgain": "Покани отново",
   "LblInvited": "Поканен",
-  "LblOther": "Други",
   "LblSendEmail": "Изпрати имейл",
   "LblSendMessage": "Изпрати съобщение",
   "LblSetActive": "Задай като активен",

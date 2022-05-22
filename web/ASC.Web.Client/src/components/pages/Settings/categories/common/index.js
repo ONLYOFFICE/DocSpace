@@ -43,7 +43,7 @@ const SubmenuCommon = (props) => {
     },
     {
       id: "whitelabel",
-      name: t("White label"),
+      name: t("WhiteLabel"),
       content: <WhiteLabel />,
     },
   ];

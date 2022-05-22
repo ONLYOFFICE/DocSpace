@@ -1,5 +1,5 @@
 {
-    "GoodMorning": "Goedemorgen, {{displayName}}!",
-    "GoodAfternoon": "Goedemiddag, {{displayName}}!",
-    "GoodEvening": "Goedenavond, {{displayName}}!"
+  "GoodAfternoon": "Goedemiddag, {{displayName}}!",
+  "GoodEvening": "Goedenavond, {{displayName}}!",
+  "GoodMorning": "Goedemorgen, {{displayName}}!"
 }
