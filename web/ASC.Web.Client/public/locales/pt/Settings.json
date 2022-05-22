@@ -42,6 +42,7 @@
   "CustomTitlesSettingsDescription": "Será exibido na sua página de boas-vindas e nas notificações de email (do Campo). Customizar o nome do domínio é uma forma de definir um URL alternativo para o seu portal. O nome customizado do portal irá aparecer ao lado do endereço onlyoffice.com/onlyoffice.eu.",
   "CustomTitlesSettingsTooltip": "<0>{{ welcomeText }}</0> é uma forma de alterar o título predefinido do portal a ser exibido no <2>{{ text }}</2> do seu portal. O mesmo nome também será utilizado para o <4>{{ from }}</4> campo das notificações de email do seu portal.",
   "CustomTitlesSettingsTooltipDescription": "Introduza o nome que gosta no campo <1>{{ header }}</1>.",
+  "CustomTitlesText": "Título da página",
   "CustomTitlesWelcome": "Configurações de saudação",
   "Customization": "Customização",
   "CustomizationDescription": "Esta subsecção permite-lhe alterar o aspeto do seu portal. Pode utilizar o logótipo da sua própria empresa, nome e texto para que se encaixe com a marca da sua organização.",
