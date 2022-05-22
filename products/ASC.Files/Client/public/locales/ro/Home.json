@@ -19,7 +19,7 @@
   "EmptyFolderDecription": "Plasaţi fişierele aici sau creaţi cele noi.",
   "EmptyFolderHeader": "Niciun fișier în dosarul",
   "EmptyRecycleBin": "Golire Coş de gunoi",
-  "EmptyScreenFolder": "No docs here yet",
+  "EmptyScreenFolder": "Niciun document încă nu există aici",
   "FavoritesEmptyContainerDescription": "Marcați fișiere ca preferate sau le ștergeți din lista prin intermediu meniului contextual. ",
   "FileRemoved": "Fișierul mutat în Coșul de gunoi",
   "FileRenamed": "Documentul '{{oldTitle}}' este redenumit în '{{newTitle}}'",
