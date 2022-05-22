@@ -94,7 +94,7 @@
   "Path": "Cesta",
   "PeopleAdministratorsCan": "Administrátori skupiny ľudí môžu vytvárať profily a skupiny, importovať ľudí a pozývať užívateľov.",
   "PleaseNote": "Upozornenie",
-  "PleaseNoteDescription": "<0>{{Upozornenie}}</0>: Po kliknutí na tlačidlo <2>{{Uložiť}}</2> bude Vaša stará adresa portálu dostupná novým používateľom.",
+  "PleaseNoteDescription": "<0>{{pleaseNote}}</0>: Po kliknutí na tlačidlo <2>{{save}}</2> bude Vaša stará adresa portálu dostupná novým používateľom.",
   "PortalAccess": "Prístup k portálu",
   "PortalAccessSubTitle": "Tu môžete vytvoriť pre používateľov bezpečné a pohodlné spôsoby prístupu na portál.",
   "PortalAdmins": "Administrátori portálu",
