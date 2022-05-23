@@ -19,6 +19,7 @@
   "EmptyFolderDecription": "Перетягніть файли сюди або створіть нові.",
   "EmptyFolderHeader": "У цій папці немає файлів",
   "EmptyRecycleBin": "Очистити кошик",
+  "EmptyScreenFolder": "Тут ще немає документів",
   "FavoritesEmptyContainerDescription": "Щоб додати файли до вподобань або видалити їх із цього списку, скористайтеся контекстним меню.",
   "FileRemoved": "Файл переміщено до кошика",
   "FileRenamed": "Документ \"{{oldTitle}}\" перейменовано на \"{{newTitle}}\"",
