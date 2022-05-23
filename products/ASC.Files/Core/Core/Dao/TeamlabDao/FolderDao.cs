@@ -306,7 +306,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         {
             q = q.Join(FilesDbContext.TagLink, f => f.Id.ToString(), t => t.EntryId, (folder, tag) => new { folder, tag.TagId })
                 .Where(r => tagIds.Contains(r.TagId))
-                .Select(r => r.folder).Distinct();
+                .Select(r => r.folder);
         }
 
         var dbFolders = (checkShare ? FromQueryWithShared(q) : FromQuery(q)).AsAsyncEnumerable();

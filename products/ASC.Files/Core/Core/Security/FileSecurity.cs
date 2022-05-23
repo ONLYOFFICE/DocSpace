@@ -1056,7 +1056,7 @@ public class FileSecurity : IFileSecurity
                 return false;
             };
 
-            var rooms = await folderDao.GetFoldersAsync(folderIds.Keys, filterType, false, subjectId, search, withSubfolders, false)
+            var rooms = await folderDao.GetFoldersAsync(folderIds.Keys, filterType, false, subjectId, search, withSubfolders, false, tagIds)
                 .ToListAsync();
 
             var roomsWithTags = await SetTags(rooms.Where(filter));
