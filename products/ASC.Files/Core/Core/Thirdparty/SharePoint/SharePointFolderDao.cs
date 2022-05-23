@@ -210,6 +210,8 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
     {
         var folder = await ProviderInfo.GetFolderByIdAsync(folderId).ConfigureAwait(false);
 
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         using (var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false))
         {
             var hashIDs = await Query(FilesDbContext.ThirdpartyIdMapping)

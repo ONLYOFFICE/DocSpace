@@ -45,6 +45,9 @@ public class AbstractDao
             return _tenantID;
         }
     }
+
+    protected DbContextManager<FilesDbContext> DbContextManager { get; }
+
     protected readonly UserManager _userManager;
     protected readonly TenantManager _tenantManager;
     protected readonly TenantUtil _tenantUtil;
@@ -74,6 +77,7 @@ public class AbstractDao
     {
         _cache = cache;
         _lazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
+        DbContextManager = dbContextManager;
         _userManager = userManager;
         _tenantManager = tenantManager;
         _tenantUtil = tenantUtil;
@@ -97,12 +101,16 @@ public class AbstractDao
 
     protected internal IQueryable<DbFile> GetFileQuery(Expression<Func<DbFile, bool>> where)
     {
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         return Query(FilesDbContext.Files)
             .Where(where);
     }
 
     protected async Task GetRecalculateFilesCountUpdateAsync(int folderId)
     {
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         var folders = await FilesDbContext.Folders
             .AsQueryable()
             .Where(r => r.TenantId == TenantID)
@@ -145,6 +153,8 @@ public class AbstractDao
     private async ValueTask<object> InternalMappingIDAsync(object id, bool saveIfNotExist = false)
     {
         object result;
+
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
 
         if (id.ToString().StartsWith("sbox")
             || id.ToString().StartsWith("box")

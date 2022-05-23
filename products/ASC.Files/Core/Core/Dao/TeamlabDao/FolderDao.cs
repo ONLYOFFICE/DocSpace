@@ -117,6 +117,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     public async Task<Folder<int>> GetRootFolderAsync(int folderId)
     {
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         var id = await FilesDbContext.Tree
             .AsNoTracking()
             .Where(r => r.FolderId == folderId)
@@ -133,6 +135,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     public async Task<Folder<int>> GetRootFolderByFileAsync(int fileId)
     {
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         var subq = Query(FilesDbContext.Files).AsNoTracking()
             .Where(r => r.Id == fileId && r.CurrentVersion)
             .Select(r => r.ParentId)
@@ -173,6 +177,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         }
 
         var q = GetFolderQuery(r => r.ParentId == parentId).AsNoTracking();
+
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
 
         if (withSubfolders)
         {
@@ -232,6 +238,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
         var q = GetFolderQuery(r => folderIds.Contains(r.Id)).AsNoTracking();
 
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         if (searchSubfolders)
         {
             q = GetFolderQuery()
@@ -278,6 +286,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     public async Task<List<Folder<int>>> GetParentFoldersAsync(int folderId)
     {
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         var q = GetFolderQuery()
             .AsNoTracking()
             .Join(FilesDbContext.Tree, r => r.Id, a => a.ParentId, (folder, tree) => new { folder, tree })
@@ -319,6 +329,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         }
 
         var isnew = false;
+
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
 
         var tx = transaction ?? FilesDbContext.Database.BeginTransaction();
 
@@ -416,6 +428,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     private Task<bool> IsExistAsync(int folderId)
     {
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         return Query(FilesDbContext.Folders).AsNoTracking()
             .AnyAsync(r => r.Id == folderId);
     }
@@ -432,6 +446,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     private async Task InternalDeleteFolderAsync(int id)
     {
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         using var tx = FilesDbContext.Database.BeginTransaction();
         var subfolders =
             await FilesDbContext.Tree
@@ -513,6 +529,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     public async Task<int> MoveFolderAsync(int folderId, int toFolderId, CancellationToken? cancellationToken)
     {
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         using (var tx = FilesDbContext.Database.BeginTransaction())
         {
             var folder = await GetFolderAsync(folderId).ConfigureAwait(false);
@@ -687,6 +705,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     {
         var result = new Dictionary<int, string>();
 
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         foreach (var folderId in folderIds)
         {
             var exists = await FilesDbContext.Tree
@@ -748,6 +768,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     public async Task<int> RenameFolderAsync(Folder<int> folder, string newTitle)
     {
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         var toUpdate = await Query(FilesDbContext.Folders)
             .Where(r => r.Id == folder.Id)
             .FirstOrDefaultAsync()
@@ -772,6 +794,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     private async Task<int> GetFoldersCountAsync(int parentId)
     {
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         var count = await FilesDbContext.Tree
             .AsQueryable()
             .CountAsync(r => r.ParentId == parentId && r.Level > 0)
@@ -782,6 +806,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     private async Task<int> GetFilesCountAsync(int folderId)
     {
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         var count = await Query(FilesDbContext.Files)
             .Join(FilesDbContext.Tree, r => r.ParentId, r => r.FolderId, (file, tree) => new { tree, file })
             .Where(r => r.tree.ParentId == folderId)
@@ -837,6 +863,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     private async Task RecalculateFoldersCountAsync(int id)
     {
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         var toUpdate = await Query(FilesDbContext.Folders)
             .Join(FilesDbContext.Tree, r => r.Id, r => r.ParentId, (file, tree) => new { file, tree })
             .Where(r => r.tree.FolderId == id)
@@ -857,6 +885,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     public Task ReassignFoldersAsync(int[] folderIds, Guid newOwnerId)
     {
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         var toUpdate = Query(FilesDbContext.Folders)
             .Where(r => folderIds.Contains(r.Id));
 
@@ -907,6 +937,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     private async Task<IEnumerable<int>> InternalGetFolderIDsAsync(string module, string bunch, IEnumerable<string> data, bool createIfNotExists)
     {
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         var keys = data.Select(id => $"{module}/{bunch}/{id}").ToArray();
 
         var folderIdsDictionary = await Query(FilesDbContext.BunchObjects)
@@ -999,6 +1031,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     private async Task<int> InternalGetFolderIDAsync(string module, string bunch, string data, bool createIfNotExists)
     {
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         var key = $"{module}/{bunch}/{data}";
         var folderId = await Query(FilesDbContext.BunchObjects)
             .Where(r => r.RightNode == key)
@@ -1129,6 +1163,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     protected internal IQueryable<DbFolder> GetFolderQuery(Expression<Func<DbFolder, bool>> where = null)
     {
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         var q = Query(FilesDbContext.Folders);
         if (where != null)
         {
@@ -1140,6 +1176,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     protected IQueryable<DbFolderQuery> FromQueryWithShared(IQueryable<DbFolder> dbFiles)
     {
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         var e = from r in dbFiles
                 select new DbFolderQuery
                 {
@@ -1165,6 +1203,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     protected IQueryable<DbFolderQuery> FromQuery(IQueryable<DbFolder> dbFiles)
     {
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         return dbFiles
             .Select(r => new DbFolderQuery
             {
@@ -1185,6 +1225,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     public Task<string> GetBunchObjectIDAsync(int folderID)
     {
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         return Query(FilesDbContext.BunchObjects)
             .Where(r => r.LeftNode == folderID.ToString())
             .Select(r => r.RightNode)
@@ -1193,6 +1235,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     public Task<Dictionary<string, string>> GetBunchObjectIDsAsync(List<int> folderIDs)
     {
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         var folderSIds = folderIDs.Select(r => r.ToString()).ToList();
 
         return Query(FilesDbContext.BunchObjects)
@@ -1202,6 +1246,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     public async Task<IEnumerable<FolderWithShare>> GetFeedsForFoldersAsync(int tenant, DateTime from, DateTime to)
     {
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         var q1 = FilesDbContext.Folders
             .AsQueryable()
             .Where(r => r.TenantId == tenant)
@@ -1234,6 +1280,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     public async Task<IEnumerable<int>> GetTenantsWithFeedsForFoldersAsync(DateTime fromTime)
     {
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         var q1 = await FilesDbContext.Files
             .AsQueryable()
             .Where(r => r.ModifiedOn > fromTime)

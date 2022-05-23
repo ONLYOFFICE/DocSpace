@@ -144,6 +144,8 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
             return;
         }
 
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         using var tx = FilesDbContext.Database.BeginTransaction();
         var oldIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
             .Where(r => r.Id.StartsWith(oldValue))

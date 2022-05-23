@@ -64,6 +64,8 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
 
     public async Task DeleteShareRecordsAsync(IEnumerable<FileShareRecord> records)
     {
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         using var tx = await FilesDbContext.Database.BeginTransactionAsync();
 
         foreach (var record in records)
@@ -85,6 +87,8 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
 
     public ValueTask<bool> IsSharedAsync(object entryId, FileEntryType type)
     {
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         return Query(FilesDbContext.Security)
             .AsAsyncEnumerable()
             .AnyAwaitAsync(async r => r.EntryId == (await MappingIDAsync(entryId)).ToString() &&
@@ -93,6 +97,8 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
 
     public async Task SetShareAsync(FileShareRecord r)
     {
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         if (r.Share == FileShare.None)
         {
             var entryId = (await MappingIDAsync(r.EntryId) ?? "").ToString();
@@ -339,6 +345,8 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
 
     private async Task<IEnumerable<FileShareRecord>> SaveFilesAndFoldersForShareAsync(List<string> files, List<int> folders)
     {
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         var q = await Query(FilesDbContext.Security)
             .Join(FilesDbContext.Tree, r => r.EntryId, a => a.ParentId.ToString(), (security, tree) => new SecurityTreeRecord { DbFilesSecurity = security, DbFolderTree = tree })
             .Where(r => folders.Contains(r.DbFolderTree.FolderId) &&
@@ -363,6 +371,8 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
 
     public async Task RemoveSubjectAsync(Guid subject)
     {
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         using var tr = await FilesDbContext.Database.BeginTransactionAsync();
 
         var toDelete1 = await FilesDbContext.Security.AsQueryable().Where(r => r.Subject == subject).ToListAsync();
@@ -379,6 +389,8 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
 
     private IQueryable<DbFilesSecurity> GetQuery(Expression<Func<DbFilesSecurity, bool>> where = null)
     {
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         var q = Query(FilesDbContext.Security);
         if (q != null)
         {

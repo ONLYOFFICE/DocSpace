@@ -44,7 +44,6 @@ public class FilesDbContext : BaseDbContext
     public DbSet<DbTariff> Tariffs { get; set; }
     public DbSet<DbQuota> Quotas { get; set; }
     public DbSet<DbTenant> Tenants { get; set; }
-
     protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
     {
         get

@@ -60,6 +60,9 @@ internal class ProviderAccountDao : IProviderDao
     }
     private readonly Lazy<FilesDbContext> _lazyFilesDbContext;
     private FilesDbContext FilesDbContext => _lazyFilesDbContext.Value;
+
+    protected DbContextManager<FilesDbContext> DbContextManager { get; }
+
     private readonly ILog _logger;
     private readonly IServiceProvider _serviceProvider;
     private readonly TenantUtil _tenantUtil;
@@ -91,6 +94,7 @@ internal class ProviderAccountDao : IProviderDao
         _securityContext = securityContext;
         _consumerFactory = consumerFactory;
         _thirdpartyConfiguration = thirdpartyConfiguration;
+        DbContextManager = dbContextManager;
         _oAuth20TokenHelper = oAuth20TokenHelper;
     }
 
@@ -115,6 +119,8 @@ internal class ProviderAccountDao : IProviderDao
     {
         try
         {
+            using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
             var thirdpartyAccounts = FilesDbContext.ThirdpartyAccount
                 .Where(r => r.TenantId == TenantID)
                 .Where(r => r.UserId == userId)
@@ -207,6 +213,8 @@ internal class ProviderAccountDao : IProviderDao
 
     public virtual async Task<int> UpdateProviderInfoAsync(int linkId, AuthData authData)
     {
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         var forUpdate = await FilesDbContext.ThirdpartyAccount
             .AsQueryable()
             .Where(r => r.Id == linkId)
@@ -230,6 +238,9 @@ internal class ProviderAccountDao : IProviderDao
     public virtual async Task<int> UpdateProviderInfoAsync(int linkId, string customerTitle, AuthData newAuthData, FolderType folderType, Guid? userId = null)
     {
         var authData = new AuthData();
+
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         if (newAuthData != null && !newAuthData.IsEmpty())
         {
             var querySelect =
@@ -311,6 +322,8 @@ internal class ProviderAccountDao : IProviderDao
 
     public virtual async Task RemoveProviderInfoAsync(int linkId)
     {
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         using var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false);
         var folderId = (await GetProviderInfoAsync(linkId)).RootFolderId;
 

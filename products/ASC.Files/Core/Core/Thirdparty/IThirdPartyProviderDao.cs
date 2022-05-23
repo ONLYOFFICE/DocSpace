@@ -219,6 +219,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
     protected string PathPrefix { get; private set; }
 
     protected abstract string Id { get; }
+    protected DbContextManager<FilesDbContext> DbContextManager { get; }
 
     protected ThirdPartyProviderDao(
         IServiceProvider serviceProvider,
@@ -234,6 +235,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         _serviceProvider = serviceProvider;
         _userManager = userManager;
         _tenantUtil = tenantUtil;
+        DbContextManager = dbContextManager;
         _lazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
         _setupInfo = setupInfo;
         _logger = monitor.CurrentValue;

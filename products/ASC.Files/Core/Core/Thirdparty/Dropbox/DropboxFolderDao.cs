@@ -224,6 +224,8 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
         var dropboxFolder = await GetDropboxFolderAsync(folderId).ConfigureAwait(false);
         var id = MakeId(dropboxFolder);
 
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         using (var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false))
         {
             var hashIDs = await Query(FilesDbContext.ThirdpartyIdMapping)

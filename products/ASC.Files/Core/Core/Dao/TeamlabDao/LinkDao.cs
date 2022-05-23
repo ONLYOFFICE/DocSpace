@@ -61,6 +61,8 @@ internal class LinkDao : AbstractDao, ILinkDao
 
     public async Task AddLinkAsync(string sourceId, string linkedId)
     {
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         await FilesDbContext.AddOrUpdateAsync(r => r.FilesLink, new DbFilesLink()
         {
             TenantId = TenantID,
@@ -74,6 +76,8 @@ internal class LinkDao : AbstractDao, ILinkDao
 
     public Task<string> GetSourceAsync(string linkedId)
     {
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         return FilesDbContext.FilesLink
             .Where(r => r.TenantId == TenantID && r.LinkedId == linkedId && r.LinkedFor == _authContext.CurrentAccount.ID)
             .Select(r => r.SourceId)
@@ -82,6 +86,8 @@ internal class LinkDao : AbstractDao, ILinkDao
 
     public Task<string> GetLinkedAsync(string sourceId)
     {
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         return FilesDbContext.FilesLink
             .Where(r => r.TenantId == TenantID && r.SourceId == sourceId && r.LinkedFor == _authContext.CurrentAccount.ID)
             .Select(r => r.LinkedId)
@@ -90,6 +96,8 @@ internal class LinkDao : AbstractDao, ILinkDao
 
     public async Task DeleteLinkAsync(string sourceId)
     {
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         var link = await FilesDbContext.FilesLink
             .Where(r => r.TenantId == TenantID && r.SourceId == sourceId && r.LinkedFor == _authContext.CurrentAccount.ID)
             .SingleOrDefaultAsync();
@@ -101,6 +109,8 @@ internal class LinkDao : AbstractDao, ILinkDao
 
     public async Task DeleteAllLinkAsync(string fileId)
     {
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         var link = await FilesDbContext.FilesLink.Where(r => r.TenantId == TenantID && (r.SourceId == fileId || r.LinkedId == fileId)).ToListAsync();
 
         FilesDbContext.FilesLink.RemoveRange(link);

@@ -348,6 +348,8 @@ internal class DropboxFileDao : DropboxDaoBase, IFileDao<string>
 
         var id = MakeId(dropboxFile);
 
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         using (var tx = await FilesDbContext.Database.BeginTransactionAsync())
         {
             var hashIDs = await Query(FilesDbContext.ThirdpartyIdMapping)

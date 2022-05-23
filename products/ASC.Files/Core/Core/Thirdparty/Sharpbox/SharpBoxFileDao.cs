@@ -363,6 +363,8 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
 
         var id = MakeId(file);
 
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
         using (var tx = FilesDbContext.Database.BeginTransaction())
         {
             var hashIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
