@@ -114,6 +114,7 @@ const EditingWrapper = styled.div`
 
     ${(props) =>
       props.viewAs === "tile" &&
+      !props.isUpdatingRowItem &&
       css`
         background: #fff;
         border: ${(props) =>
