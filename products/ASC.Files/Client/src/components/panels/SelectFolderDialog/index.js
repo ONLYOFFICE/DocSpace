@@ -190,7 +190,6 @@ class SelectFolderDialog extends React.Component {
       folderTitle,
       expandedKeys,
       isDisableButton,
-      storeParentId,
     } = this.props;
     const {
       displayType,
@@ -230,7 +229,6 @@ class SelectFolderDialog extends React.Component {
         isAvailable={isAvailable}
         isDisableTree={isDisableTree}
         isDisableButton={isDisableButton}
-        parentId={storeParentId}
       />
     ) : (
       <SelectionPanel
@@ -255,7 +253,6 @@ class SelectFolderDialog extends React.Component {
         folderSelection
         newFilter={this.newFilter}
         isDisableButton={isDisableButton}
-        parentId={storeParentId}
       />
     );
   }
@@ -285,20 +282,23 @@ SelectFolderDialog.defaultProps = {
 };
 
 export default inject(
-  ({
-    treeFoldersStore,
-    selectedFolderStore,
-    selectFolderDialogStore,
-    filesStore,
-    auth,
-    filesActionsStore,
-  }) => {
+  (
+    {
+      treeFoldersStore,
+      selectedFolderStore,
+      selectFolderDialogStore,
+      filesStore,
+      auth,
+      filesActionsStore,
+    },
+    { selectedId }
+  ) => {
     const { treeFolders, setExpandedPanelKeys } = treeFoldersStore;
 
     const { filter } = filesStore;
     const { setSelectedItems } = filesActionsStore;
 
-    const { id, parentId } = selectedFolderStore;
+    const { id } = selectedFolderStore;
     const {
       setFolderId,
       setFolderTitle,
@@ -310,11 +310,11 @@ export default inject(
 
     const { settingsStore } = auth;
     const { theme } = settingsStore;
+    const selectedFolderId = selectedId ? selectedId : id;
 
     return {
       theme: theme,
-      storeFolderId: id,
-      storeParentId: parentId,
+      storeFolderId: selectedFolderId,
       providerKey,
       folderTitle,
       folderId,
