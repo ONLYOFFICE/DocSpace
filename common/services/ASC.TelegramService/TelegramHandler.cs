@@ -33,13 +33,19 @@ public class TelegramHandler
     private readonly CommandModule _command;
     private readonly ILog _log;
     private readonly IServiceScopeFactory _scopeFactory;
-
-    public TelegramHandler(CommandModule command, IOptionsMonitor<ILog> option, IServiceScopeFactory scopeFactory)
+    private readonly IDistributedCache _distributedCache;
+    
+    public TelegramHandler(IDistributedCache distributedCache,
+                           CommandModule command, 
+                           IOptionsMonitor<ILog> option, 
+                           IServiceScopeFactory scopeFactory)
     {
         _command = command;
         _log = option.CurrentValue;
         _scopeFactory = scopeFactory;
         _clients = new Dictionary<int, TenantTgClient>();
+        _distributedCache = distributedCache;
+
         ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13;
     }
 
@@ -155,7 +161,11 @@ public class TelegramHandler
 
         var userKey = UserKey(userId, tenantId);
         var dateExpires = DateTimeOffset.Now.AddMinutes(_clients[tenantId].TokenLifeSpan);
-        MemoryCache.Default.Set(token, userKey, dateExpires);
+
+        _distributedCache.SetString(token, userKey, new DistributedCacheEntryOptions
+        {
+             AbsoluteExpiration = dateExpires
+        });
     }
 
     private void BindClient(TelegramBotClient client, int tenantId, CancellationToken cancellationToken)

@@ -59,8 +59,6 @@ public class TelegramListenerService : BackgroundService
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _stoppingToken = stoppingToken;
-
-        stoppingToken.Register(() => _logger.Debug("TelegramListenerService background task is stopping."));
          
         CreateClients();
 
@@ -70,6 +68,8 @@ public class TelegramListenerService : BackgroundService
 
         stoppingToken.Register(() =>
         {
+            _logger.Debug("TelegramListenerService background task is stopping.");
+
             _cacheRegisterUser.Unsubscribe(CacheNotifyAction.Insert);
             _cacheCreateClient.Unsubscribe(CacheNotifyAction.Insert);
             _cacheDisableClient.Unsubscribe(CacheNotifyAction.Insert);
@@ -96,9 +96,11 @@ public class TelegramListenerService : BackgroundService
     private void CreateClients()
     {
         var tenants = _tenantManager.GetTenants();
+
         foreach (var tenant in tenants)
         {
             _tenantManager.SetCurrentTenant(tenant);
+        
             if (_telegramLoginProvider.IsEnabled())
             {
                 _telegramHandler.CreateOrUpdateClientForTenant(tenant.Id, _telegramLoginProvider.TelegramBotToken, _telegramLoginProvider.TelegramAuthTokenLifespan, _telegramLoginProvider.TelegramProxy, true, _stoppingToken, true);

@@ -56,4 +56,6 @@ global using ASC.EventBus.Abstractions;
 global using ASC.TelegramService.IntegrationEvents.EventHandling;
 global using Telegram.Bot.Exceptions;
 global using Telegram.Bot.Types.Enums;
+global using Microsoft.Extensions.Caching.Distributed;
+
 
