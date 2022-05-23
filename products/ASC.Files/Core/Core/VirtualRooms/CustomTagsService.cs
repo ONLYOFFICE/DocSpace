@@ -47,7 +47,7 @@ public class CustomTagsService<T>
 
     public async Task<TagInfo> CreateTagAsync(string name)
     {
-        if (_fileSecurityCommon.IsAdministrator(_authContext.CurrentAccount.ID))
+        if (!_fileSecurityCommon.IsAdministrator(_authContext.CurrentAccount.ID))
         {
             throw new SecurityException("You do not have permission to create tags");
         }
@@ -71,9 +71,9 @@ public class CustomTagsService<T>
         return await TagDao.SaveTagInfoAsync(tagInfo);
     }
 
-    public async IAsyncEnumerable<TagInfo> DeleteTagsAsync(IEnumerable<int> tagIds)
+    public async Task DeleteTagsAsync(IEnumerable<int> tagIds)
     {
-        if (_fileSecurityCommon.IsAdministrator(_authContext.CurrentAccount.ID))
+        if (!_fileSecurityCommon.IsAdministrator(_authContext.CurrentAccount.ID))
         {
             throw new SecurityException("You do not have permission to remove tags");
         }
@@ -81,11 +81,6 @@ public class CustomTagsService<T>
         var tagDao = TagDao;
 
         await tagDao.RemoveTagsAsync(tagIds);
-
-        await foreach (var tag in GetTagsInfoAsync(string.Empty, TagType.Custom))
-        {
-            yield return tag;
-        }
     }
 
     public async Task<Folder<T>> AddRoomTagsAsync(T folderId, IEnumerable<int> tagsIds)
@@ -94,7 +89,7 @@ public class CustomTagsService<T>
 
         if (!await _fileSecurity.CanEditRoomAsync(folder))
         {
-            throw new SecurityException("You do not have rights to edit the room");
+            throw new SecurityException("You do not have permission to edit the room");
         }
 
         var tagDao = TagDao;
@@ -110,16 +105,11 @@ public class CustomTagsService<T>
 
     public async Task<Folder<T>> DeleteRoomTagsAsync(T folderId, IEnumerable<int> tagsIds)
     {
-        if (_fileSecurityCommon.IsAdministrator(_authContext.CurrentAccount.ID))
-        {
-            throw new SecurityException("You do not have permission to create tags");
-        }
-
         var folder = await FolderDao.GetFolderAsync(folderId);
 
         if (!await _fileSecurity.CanEditRoomAsync(folder))
         {
-            throw new SecurityException("You do not have rights to edit the room");
+            throw new SecurityException("You do not have permission to edit the room");
         }
 
         var tagDao = TagDao;
