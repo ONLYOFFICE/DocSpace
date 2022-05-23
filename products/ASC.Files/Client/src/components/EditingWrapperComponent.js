@@ -191,7 +191,6 @@ const EditingWrapperComponent = (props) => {
     isFolder,
   } = props;
 
-  console.log("isFolder", isFolder);
   const isTable = viewAs === "table";
 
   const [OkIconIsHovered, setIsHoveredOk] = useState(false);
