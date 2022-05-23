@@ -19,6 +19,7 @@
   "EmptyFolderDecription": "Vložte sem soubory nebo vytvořte nové.",
   "EmptyFolderHeader": "V této složce nejsou žádné soubory",
   "EmptyRecycleBin": "Vysypat kos",
+  "EmptyScreenFolder": "Zatím zde nejsou žádné dokumenty",
   "FavoritesEmptyContainerDescription": "Chcete-li označit soubory jako oblíbené nebo je z tohoto seznamu odstranit, použijte kontextovou nabídku.",
   "FileRemoved": "Soubor přesunut do koše",
   "FileRenamed": "Dokument '{{oldTitle}}' je přejmenován na '{{newTitle}}'",
