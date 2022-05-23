@@ -69,8 +69,6 @@
   "ShowVersionHistory": "Показать историю версий",
   "Spreadsheet": "Таблица",
   "SubheadingEmptyText": "Нет файлов для отображения в этом разделе",
-  "TitleDocuments": "Файлы",
-  "TitleSubfolders": "Папки",
   "TooltipElementCopyMessage": "Скопировать {{element}}",
   "TooltipElementsCopyMessage": "Скопировать {{element}} элемента(ов)",
   "TooltipElementsMoveMessage": "Переместить {{element}} элемента(ов)",

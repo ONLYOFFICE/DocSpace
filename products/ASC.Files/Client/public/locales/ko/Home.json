@@ -69,8 +69,6 @@
   "ShowVersionHistory": "버전 기록 표시",
   "Spreadsheet": "스프레드시트",
   "SubheadingEmptyText": "이 섹션에 표시할 파일이 없습니다",
-  "TitleDocuments": "문서",
-  "TitleSubfolders": "폴더",
   "TooltipElementCopyMessage": "{{element}} 복사",
   "TooltipElementsCopyMessage": "{{element}} 요소 복사",
   "TooltipElementsMoveMessage": "{{element}} 요소 이동",

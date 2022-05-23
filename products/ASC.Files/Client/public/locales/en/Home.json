@@ -69,8 +69,6 @@
   "ShowVersionHistory": "Show version history",
   "Spreadsheet": "Spreadsheet",
   "SubheadingEmptyText": "No files to be displayed in this section",
-  "TitleDocuments": "Dcs",
-  "TitleSubfolders": "Flds",
   "TooltipElementCopyMessage": "Copy {{element}}",
   "TooltipElementsCopyMessage": "Copy {{element}} elements",
   "TooltipElementsMoveMessage": "Move {{element}} elements",

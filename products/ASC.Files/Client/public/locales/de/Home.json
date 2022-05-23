@@ -69,8 +69,6 @@
   "ShowVersionHistory": "Versionshistorie anzeigen",
   "Spreadsheet": "Tabellenkalkulation",
   "SubheadingEmptyText": "In dieser Sektion gibt es keine Dateien zum Anzeigen.",
-  "TitleDocuments": "Dateien",
-  "TitleSubfolders": "Ordner",
   "TooltipElementCopyMessage": "Kopieren {{element}}",
   "TooltipElementsCopyMessage": "Kopieren {{element}} Element(e)",
   "TooltipElementsMoveMessage": "{{element}} Element(e) verschieben",

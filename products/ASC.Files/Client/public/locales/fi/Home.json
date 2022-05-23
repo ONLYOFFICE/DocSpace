@@ -69,8 +69,6 @@
   "ShowVersionHistory": "Näytä versiohistoria",
   "Spreadsheet": "Laskentataulukko",
   "SubheadingEmptyText": "Tässä osiossa ei näytetä tiedostoja",
-  "TitleDocuments": "Dc:t",
-  "TitleSubfolders": "Fld:t",
   "TooltipElementCopyMessage": "Kopioi {{element}}",
   "TooltipElementsCopyMessage": "Kopioi {{element}} elementit",
   "TooltipElementsMoveMessage": "Siirrä {{element}} elementit",

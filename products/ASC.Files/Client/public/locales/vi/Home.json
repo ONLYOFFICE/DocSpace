@@ -69,8 +69,6 @@
   "ShowVersionHistory": "Hiển thị lịch sử phiên bản",
   "Spreadsheet": "Bảng tính",
   "SubheadingEmptyText": "Không có tệp nào được hiển thị trong phần này",
-  "TitleDocuments": "Dcs",
-  "TitleSubfolders": "Flds",
   "TooltipElementCopyMessage": "Sao chép {{element}}",
   "TooltipElementsCopyMessage": "Sao chép {{element}} thành phần",
   "TooltipElementsMoveMessage": "Di chuyển {{element}} thành phần",

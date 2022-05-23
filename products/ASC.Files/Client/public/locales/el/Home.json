@@ -69,8 +69,6 @@
   "ShowVersionHistory": "Εμφάνιση ιστορικού έκδοσης",
   "Spreadsheet": "Υπολογιστικό φύλλο",
   "SubheadingEmptyText": "Δεν υπάρχουν αρχεία που θα εμφανιστούν σε αυτήν την ενότητα",
-  "TitleDocuments": "Έγγραφα",
-  "TitleSubfolders": "Φάκελοι",
   "TooltipElementCopyMessage": "Αντιγραφή {{element}}",
   "TooltipElementsCopyMessage": "Αντιγραφή στοιχείων {{element}}",
   "TooltipElementsMoveMessage": "Μετακίνηση στοιχείων {{element}}",

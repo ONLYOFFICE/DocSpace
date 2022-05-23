@@ -69,8 +69,6 @@
   "ShowVersionHistory": "显示版本历史记录",
   "Spreadsheet": "电子表格",
   "SubheadingEmptyText": "此部分中无可展示的文件",
-  "TitleDocuments": "Dcs",
-  "TitleSubfolders": "Flds",
   "TooltipElementCopyMessage": "复制{{element}}",
   "TooltipElementsCopyMessage": "复制{{element}}元素",
   "TooltipElementsMoveMessage": "移动{{element}}元素",
