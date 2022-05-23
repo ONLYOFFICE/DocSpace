@@ -345,6 +345,17 @@ namespace Frontend.Translations.Tests
 
         [Test]
         [Category("FastRunning")]
+        public void SingleKeyFilesTest()
+        {
+            var singleKeyTranslationFiles = TranslationFiles
+                .Where(t => t.Language == "en" && t.Translations.Count == 1)
+                .ToList();
+
+            Assert.AreEqual(0, singleKeyTranslationFiles.Count, "Translations files with single key:\r\n" + string.Join("\r\n", singleKeyTranslationFiles.Select(d => $"\r\nKey='{d.Translations.First().Key}':\r\n{d.FilePath}'")));
+        }
+
+        [Test]
+        [Category("FastRunning")]
         public void DublicatesFilesByMD5HashTest()
         {
             var duplicatesByMD5 = TranslationFiles
