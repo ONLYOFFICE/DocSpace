@@ -67,7 +67,7 @@ const EditingWrapper = styled.div`
         props.theme.filesEditingWrapper.tile.background};
 
       border: ${(props) => props.theme.filesEditingWrapper.border};
-      border-radius: 0 0 6px 6px;
+      border-radius: ${(props) => (props.isFolder ? "6px" : "0 0 6px 6px")};
 
       height: 43px;
       bottom: 0;
@@ -188,8 +188,10 @@ const EditingWrapperComponent = (props) => {
     elementIcon,
     isUpdatingRowItem,
     passwordEntryProcess,
+    isFolder,
   } = props;
 
+  console.log("isFolder", isFolder);
   const isTable = viewAs === "table";
 
   const [OkIconIsHovered, setIsHoveredOk] = useState(false);
@@ -233,6 +235,7 @@ const EditingWrapperComponent = (props) => {
     <EditingWrapper
       viewAs={viewAs}
       isUpdatingRowItem={isUpdatingRowItem && !isTable}
+      isFolder={isFolder}
     >
       {isTable && elementIcon}
       {isUpdatingRowItem && !isTable ? (
