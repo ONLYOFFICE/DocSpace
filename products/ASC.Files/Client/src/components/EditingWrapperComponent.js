@@ -78,7 +78,7 @@ const EditingWrapper = styled.div`
 
 
   @media ${tablet} {
-    height: 56px;
+    height: ${(props) => (props.viewAs === "tile" ? "43px" : "56px")};
   }
 
   .edit-text {
