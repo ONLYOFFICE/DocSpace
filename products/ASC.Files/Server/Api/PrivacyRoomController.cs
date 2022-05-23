@@ -65,7 +65,7 @@ internal abstract class PrivacyRoomController<T> : ControllerBase
     /// 
     /// </summary>
     /// <visible>false</visible>
-    [Read("access/{fileId}")]
+    [HttpGet("access/{fileId}")]
     public Task<IEnumerable<EncryptionKeyPairDto>> GetPublicKeysWithAccess(T fileId)
     {
         if (!PrivacyRoomSettings.GetEnabled(_settingsManager))
@@ -113,7 +113,7 @@ public abstract class PrivacyRoomControllerCommon : ControllerBase
     /// 
     /// </summary>
     /// <visible>false</visible>
-    [Read("keys")]
+    [HttpGet("keys")]
     public EncryptionKeyPairDto GetKeys()
     {
         _permissionContext.DemandPermissions(new UserSecurityProvider(_authContext.CurrentAccount.ID), Constants.Action_EditUser);
@@ -132,7 +132,7 @@ public abstract class PrivacyRoomControllerCommon : ControllerBase
     /// </summary>
     /// <returns></returns>
     /// <visible>false</visible>
-    [Read("")]
+    [HttpGet("")]
     public bool PrivacyRoom()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
@@ -144,7 +144,7 @@ public abstract class PrivacyRoomControllerCommon : ControllerBase
     /// 
     /// </summary>
     /// <visible>false</visible>
-    [Update("keys")]
+    [HttpPut("keys")]
     public object SetKeys(PrivacyRoomRequestDto inDto)
     {
         _permissionContext.DemandPermissions(new UserSecurityProvider(_authContext.CurrentAccount.ID), Constants.Action_EditUser);
@@ -179,7 +179,7 @@ public abstract class PrivacyRoomControllerCommon : ControllerBase
     /// <param name="enable"></param>
     /// <returns></returns>
     /// <visible>false</visible>
-    [Update("")]
+    [HttpPut("")]
     public bool SetPrivacyRoom(PrivacyRoomRequestDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);

@@ -67,7 +67,7 @@ public class SecurityController : BaseSettingsController
         _messageTarget = messageTarget;
     }
 
-    [Read("security")]
+    [HttpGet("security")]
     public IEnumerable<SecurityDto> GetWebItemSecurityInfo([FromQuery] IEnumerable<string> ids)
     {
         if (ids == null || !ids.Any())
@@ -88,7 +88,7 @@ public class SecurityController : BaseSettingsController
                     }).ToList();
     }
 
-    [Read("security/{id}")]
+    [HttpGet("security/{id}")]
     public bool GetWebItemSecurityInfo(Guid id)
     {
         var module = WebItemManager[id];
@@ -96,7 +96,7 @@ public class SecurityController : BaseSettingsController
         return module != null && !module.IsDisabled(_webItemSecurity, _authContext);
     }
 
-    [Read("security/modules")]
+    [HttpGet("security/modules")]
     public object GetEnabledModules()
     {
         var EnabledModules = _webItemManagerSecurity.GetItems(WebZoneType.All, ItemAvailableState.Normal)
@@ -110,14 +110,15 @@ public class SecurityController : BaseSettingsController
         return EnabledModules;
     }
 
-    [Read("security/password", Check = false)]
+    [HttpGet("security/password")]
+    [AllowNotPayment]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Everyone")]
     public PasswordSettings GetPasswordSettings()
     {
         return _settingsManager.Load<PasswordSettings>();
     }
 
-    [Update("security/password")]
+    [HttpPut("security/password")]
     public PasswordSettings UpdatePasswordSettings(PasswordSettingsModel model)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
@@ -137,7 +138,7 @@ public class SecurityController : BaseSettingsController
 
     }
 
-    [Update("security")]
+    [HttpPut("security")]
     public IEnumerable<SecurityDto> SetWebItemSecurity(WebItemSecurityRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
@@ -174,7 +175,7 @@ public class SecurityController : BaseSettingsController
         return securityInfo;
     }
 
-    [Update("security/access")]
+    [HttpPut("security/access")]
     public IEnumerable<SecurityDto> SetAccessToWebItems(WebItemSecurityRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
@@ -223,7 +224,7 @@ public class SecurityController : BaseSettingsController
         return GetWebItemSecurityInfo(itemList.Keys.ToList());
     }
 
-    [Read("security/administrator/{productid}")]
+    [HttpGet("security/administrator/{productid}")]
     public IEnumerable<EmployeeDto> GetProductAdministrators(Guid productid)
     {
         return _webItemSecurity.GetProductAdministrators(productid)
@@ -231,14 +232,14 @@ public class SecurityController : BaseSettingsController
                                 .ToList();
     }
 
-    [Read("security/administrator")]
+    [HttpGet("security/administrator")]
     public object IsProductAdministrator(Guid productid, Guid userid)
     {
         var result = _webItemSecurity.IsProductAdministrator(productid, userid);
         return new { ProductId = productid, UserId = userid, Administrator = result };
     }
 
-    [Update("security/administrator")]
+    [HttpPut("security/administrator")]
     public object SetProductAdministrator(SecurityRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);

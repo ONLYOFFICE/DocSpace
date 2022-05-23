@@ -57,7 +57,7 @@ public abstract class TagsController<T> : ApiControllerBase
         _fileDtoHelper = fileDtoHelper;
     }
 
-    [Create("file/{fileId}/recent", order: int.MaxValue)]
+    [HttpPost("file/{fileId}/recent")]
     public async Task<FileDto<T>> AddToRecentAsync(T fileId)
     {
         var file = await _fileStorageServiceString.GetFileAsync(fileId, -1).NotFoundIfNull("File not found");
@@ -66,7 +66,7 @@ public abstract class TagsController<T> : ApiControllerBase
         return await _fileDtoHelper.GetAsync(file);
     }
 
-    [Read("favorites/{fileId}")]
+    [HttpGet("favorites/{fileId}")]
     public Task<bool> ToggleFileFavoriteAsync(T fileId, bool favorite)
     {
         return _fileStorageServiceString.ToggleFileFavoriteAsync(fileId, favorite);
@@ -94,7 +94,7 @@ public class TagsControllerCommon : ApiControllerBase
     /// <param name="folderIds" visible="false"></param>
     /// <param name="fileIds">File IDs</param>
     /// <returns></returns>
-    [Create("favorites")]
+    [HttpPost("favorites")]
     public async Task<bool> AddFavoritesAsync(BaseBatchRequestDto inDto)
     {
         var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(inDto.FolderIds);
@@ -113,7 +113,7 @@ public class TagsControllerCommon : ApiControllerBase
     /// <category>Files</category>
     /// <param name="fileIds">File IDs</param>
     /// <returns></returns>
-    [Create("templates")]
+    [HttpPost("templates")]
     public async Task<bool> AddTemplatesAsync(TemplatesRequestDto inDto)
     {
         await _fileStorageService.AddToTemplatesAsync(inDto.FileIds);
@@ -129,14 +129,14 @@ public class TagsControllerCommon : ApiControllerBase
     /// <param name="folderIds" visible="false"></param>
     /// <param name="fileIds">File IDs</param>
     /// <returns></returns>
-    [Delete("favorites")]
+    [HttpDelete("favorites")]
     [Consumes("application/json")]
     public Task<bool> DeleteFavoritesFromBodyAsync([FromBody] BaseBatchRequestDto inDto)
     {
         return DeleteFavoritesAsync(inDto);
     }
 
-    [Delete("favorites")]
+    [HttpDelete("favorites")]
     public async Task<bool> DeleteFavoritesFromQueryAsync([FromQuery][ModelBinder(BinderType = typeof(BaseBatchModelBinder))] BaseBatchRequestDto inDto)
     {
         return await DeleteFavoritesAsync(inDto);
@@ -149,7 +149,7 @@ public class TagsControllerCommon : ApiControllerBase
     /// <category>Files</category>
     /// <param name="fileIds">File IDs</param>
     /// <returns></returns>
-    [Delete("templates")]
+    [HttpDelete("templates")]
     public async Task<bool> DeleteTemplatesAsync(IEnumerable<int> fileIds)
     {
         await _fileStorageService.DeleteTemplatesAsync(fileIds);

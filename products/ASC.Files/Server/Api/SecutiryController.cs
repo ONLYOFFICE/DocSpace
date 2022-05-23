@@ -62,7 +62,7 @@ public abstract class SecutiryController<T> : ApiControllerBase
     /// <param name="share">Access right</param>
     /// <category>Files</category>
     /// <returns>Shared file link</returns>
-    [Update("{fileId}/sharedlinkAsync")]
+    [HttpPut("{fileId}/sharedlinkAsync")]
     public async Task<object> GenerateSharedLinkAsync(T fileId, GenerateSharedLinkRequestDto inDto)
     {
         return await _securityControllerHelper.GenerateSharedLinkAsync(fileId, inDto.Share);
@@ -75,7 +75,7 @@ public abstract class SecutiryController<T> : ApiControllerBase
     /// <category>Sharing</category>
     /// <param name="fileId">File ID</param>
     /// <returns>Shared file information</returns>
-    [Read("file/{fileId}/share")]
+    [HttpGet("file/{fileId}/share")]
     public Task<IEnumerable<FileShareDto>> GetFileSecurityInfoAsync(T fileId)
     {
         return _securityControllerHelper.GetFileSecurityInfoAsync(fileId);
@@ -88,13 +88,13 @@ public abstract class SecutiryController<T> : ApiControllerBase
     /// <param name="folderId">Folder ID</param>
     /// <category>Sharing</category>
     /// <returns>Shared folder information</returns>
-    [Read("folder/{folderId}/share")]
+    [HttpGet("folder/{folderId}/share")]
     public Task<IEnumerable<FileShareDto>> GetFolderSecurityInfoAsync(T folderId)
     {
         return _securityControllerHelper.GetFolderSecurityInfoAsync(folderId);
     }
 
-    [Update("{fileId}/setacelink")]
+    [HttpPut("{fileId}/setacelink")]
     public Task<bool> SetAceLinkAsync(T fileId, [FromBody] GenerateSharedLinkRequestDto inDto)
     {
         return _fileStorageService.SetAceLinkAsync(fileId, inDto.Share);
@@ -113,7 +113,7 @@ public abstract class SecutiryController<T> : ApiControllerBase
     /// Each of the FileShareParams must contain two parameters: 'ShareTo' - ID of the user with whom we want to share and 'Access' - access type which we want to grant to the user (Read, ReadWrite, etc) 
     /// </remarks>
     /// <returns>Shared file information</returns>
-    [Update("file/{fileId}/share")]
+    [HttpPut("file/{fileId}/share")]
     public Task<IEnumerable<FileShareDto>> SetFileSecurityInfoAsync(T fileId, SecurityInfoRequestDto inDto)
     {
         return _securityControllerHelper.SetFileSecurityInfoAsync(fileId, inDto.Share, inDto.Notify, inDto.SharingMessage);
@@ -132,7 +132,7 @@ public abstract class SecutiryController<T> : ApiControllerBase
     /// </remarks>
     /// <category>Sharing</category>
     /// <returns>Shared folder information</returns>
-    [Update("folder/{folderId}/share")]
+    [HttpPut("folder/{folderId}/share")]
     public Task<IEnumerable<FileShareDto>> SetFolderSecurityInfoAsync(T folderId, SecurityInfoRequestDto inDto)
     {
         return _securityControllerHelper.SetFolderSecurityInfoAsync(folderId, inDto.Share, inDto.Notify, inDto.SharingMessage);
@@ -158,7 +158,7 @@ public class SecutiryControllerCommon : ApiControllerBase
         _securityControllerHelperString = securityControllerHelperString;
     }
 
-    [Create("owner")]
+    [HttpPost("owner")]
     public async Task<IEnumerable<FileEntryDto>> ChangeOwnerAsync(ChangeOwnerRequestDto inDto)
     {
         var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(inDto.FolderIds);
@@ -178,7 +178,7 @@ public class SecutiryControllerCommon : ApiControllerBase
         return result;
     }
 
-    [Create("share")]
+    [HttpPost("share")]
     public async Task<IEnumerable<FileShareDto>> GetSecurityInfoAsync(BaseBatchRequestDto inDto)
     {
         var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(inDto.FolderIds);
@@ -199,7 +199,7 @@ public class SecutiryControllerCommon : ApiControllerBase
     /// <short>Remove group sharing rights</short>
     /// <category>Sharing</category>
     /// <returns>Shared file information</returns>
-    [Delete("share")]
+    [HttpDelete("share")]
     public async Task<bool> RemoveSecurityInfoAsync(BaseBatchRequestDto inDto)
     {
         var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(inDto.FolderIds);
@@ -212,7 +212,7 @@ public class SecutiryControllerCommon : ApiControllerBase
     }
 
 
-    [Update("share")]
+    [HttpPut("share")]
     public async Task<IEnumerable<FileShareDto>> SetSecurityInfoAsync(SecurityInfoRequestDto inDto)
     {
         var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(inDto.FolderIds);

@@ -63,7 +63,7 @@ public class SsoController : BaseSettingsController
     /// </short>
     /// <category>SSO</category>
     /// <returns>SSO settings</returns>
-    [Read("ssov2")]
+    [HttpGet("ssov2")]
     public SsoSettingsV2 GetSsoSettingsV2()
     {
         CheckSsoPermissions();
@@ -86,7 +86,7 @@ public class SsoController : BaseSettingsController
     /// </short>
     /// <category>SSO</category>
     /// <returns>Default SSO settings</returns>
-    [Read("ssov2/default")]
+    [HttpGet("ssov2/default")]
     public SsoSettingsV2 GetDefaultSsoSettingsV2()
     {
         CheckSsoPermissions();
@@ -101,7 +101,7 @@ public class SsoController : BaseSettingsController
     /// </short>
     /// <category>SSO</category>
     /// <returns>Constants of the SSO settings</returns>
-    [Read("ssov2/constants")]
+    [HttpGet("ssov2/constants")]
     public object GetSsoSettingsV2Constants()
     {
         return new
@@ -124,7 +124,7 @@ public class SsoController : BaseSettingsController
     /// <category>SSO</category>
     /// <param name="serializeSettings">Serialized SSO settings</param>
     /// <returns>SSO settings</returns>
-    [Create("ssov2")]
+    [HttpPost("ssov2")]
     public SsoSettingsV2 SaveSsoSettingsV2(SsoSettingsRequestsDto model)
     {
         CheckSsoPermissions();
@@ -199,7 +199,7 @@ public class SsoController : BaseSettingsController
     /// </short>
     /// <category>SSO</category>
     /// <returns>Default SSO settings</returns>
-    [Delete("ssov2")]
+    [HttpDelete("ssov2")]
     public SsoSettingsV2 ResetSsoSettingsV2()
     {
         CheckSsoPermissions();

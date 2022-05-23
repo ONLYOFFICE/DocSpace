@@ -58,7 +58,7 @@ public class BackupController : ControllerBase
     /// </summary>
     /// <category>Backup</category>
     /// <returns>Backup Schedule</returns>
-    [Read("getbackupschedule")]
+    [HttpGet("getbackupschedule")]
     public BackupAjaxHandler.Schedule GetBackupSchedule()
     {
         if (_coreBaseSettings.Standalone)
@@ -78,7 +78,7 @@ public class BackupController : ControllerBase
     /// <param name="cronParams">Cron parameters</param>
     /// <param name="backupMail">Include mail in the backup</param>
     /// <category>Backup</category>
-    [Create("createbackupschedule")]
+    [HttpPost("createbackupschedule")]
     public bool CreateBackupSchedule(BackupScheduleDto backupSchedule)
     {
         if (_coreBaseSettings.Standalone)
@@ -102,7 +102,7 @@ public class BackupController : ControllerBase
     /// Delete the backup schedule of the current portal
     /// </summary>
     /// <category>Backup</category>
-    [Delete("deletebackupschedule")]
+    [HttpDelete("deletebackupschedule")]
     public bool DeleteBackupSchedule()
     {
         if (_coreBaseSettings.Standalone)
@@ -123,7 +123,7 @@ public class BackupController : ControllerBase
     /// <param name="backupMail">Include mail in the backup</param>
     /// <category>Backup</category>
     /// <returns>Backup Progress</returns>
-    [Create("startbackup")]
+    [HttpPost("startbackup")]
     public BackupProgress StartBackup(BackupDto backup)
     {
         if (_coreBaseSettings.Standalone)
@@ -149,7 +149,7 @@ public class BackupController : ControllerBase
     /// </summary>
     /// <category>Backup</category>
     /// <returns>Backup Progress</returns>
-    [Read("getbackupprogress")]
+    [HttpGet("getbackupprogress")]
     public BackupProgress GetBackupProgress()
     {
         if (_coreBaseSettings.Standalone)
@@ -165,7 +165,7 @@ public class BackupController : ControllerBase
     /// </summary>
     /// <category>Backup</category>
     /// <returns>Backup History</returns>
-    [Read("getbackuphistory")]
+    [HttpGet("getbackuphistory")]
     public List<BackupHistoryRecord> GetBackupHistory()
     {
         if (_coreBaseSettings.Standalone)
@@ -180,7 +180,7 @@ public class BackupController : ControllerBase
     /// Delete the backup with the specified id
     /// </summary>
     /// <category>Backup</category>
-    [Delete("deletebackup/{id}")]
+    [HttpDelete("deletebackup/{id}")]
     public bool DeleteBackup(Guid id)
     {
         if (_coreBaseSettings.Standalone)
@@ -197,7 +197,7 @@ public class BackupController : ControllerBase
     /// </summary>
     /// <category>Backup</category>
     /// <returns>Backup History</returns>
-    [Delete("deletebackuphistory")]
+    [HttpDelete("deletebackuphistory")]
     public bool DeleteBackupHistory()
     {
         if (_coreBaseSettings.Standalone)
@@ -218,7 +218,7 @@ public class BackupController : ControllerBase
     /// <param name="notify">Notify about backup to users</param>
     /// <category>Backup</category>
     /// <returns>Restore Progress</returns>
-    [Create("startrestore")]
+    [HttpPost("startrestore")]
     public BackupProgress StartBackupRestore(BackupRestoreDto backupRestore)
     {
         if (_coreBaseSettings.Standalone)
@@ -245,7 +245,8 @@ public class BackupController : ControllerBase
     /// </summary>
     /// <category>Backup</category>
     /// <returns>Restore Progress</returns>
-    [Read("getrestoreprogress", true)]  //NOTE: this method doesn't check payment!!!
+    [HttpGet("getrestoreprogress")]  //NOTE: this method doesn't check payment!!!
+    [AllowNotPayment]
     public BackupProgress GetRestoreProgress()
     {
         if (_coreBaseSettings.Standalone)
@@ -257,7 +258,7 @@ public class BackupController : ControllerBase
     }
 
     ///<visible>false</visible>
-    [Read("backuptmp")]
+    [HttpGet("backuptmp")]
     public object GetTempPath()
     {
         if (_coreBaseSettings.Standalone)
@@ -269,7 +270,7 @@ public class BackupController : ControllerBase
     }
 
     ///<visible>false</visible>
-    [Read("enablerestore")]
+    [HttpGet("enablerestore")]
     public bool EnableRestore()
     {
         try
@@ -288,7 +289,7 @@ public class BackupController : ControllerBase
     }
 
     ///<visible>false</visible>
-    [Read("enableAutoBackup")]
+    [HttpGet("enableAutoBackup")]
     public bool EnableAutoBackup()
     {
         try

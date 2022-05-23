@@ -49,25 +49,25 @@ public class CustomNavigationController : BaseSettingsController
         _storageHelper = storageHelper;
     }
 
-    [Read("customnavigation/getall")]
+    [HttpGet("customnavigation/getall")]
     public List<CustomNavigationItem> GetCustomNavigationItems()
     {
         return _settingsManager.Load<CustomNavigationSettings>().Items;
     }
 
-    [Read("customnavigation/getsample")]
+    [HttpGet("customnavigation/getsample")]
     public CustomNavigationItem GetCustomNavigationItemSample()
     {
         return CustomNavigationItem.GetSample();
     }
 
-    [Read("customnavigation/get/{id}")]
+    [HttpGet("customnavigation/get/{id}")]
     public CustomNavigationItem GetCustomNavigationItem(Guid id)
     {
         return _settingsManager.Load<CustomNavigationSettings>().Items.FirstOrDefault(item => item.Id == id);
     }
 
-    [Create("customnavigation/create")]
+    [HttpPost("customnavigation/create")]
     public CustomNavigationItem CreateCustomNavigationItem(CustomNavigationItem item)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
@@ -120,7 +120,7 @@ public class CustomNavigationController : BaseSettingsController
         return item;
     }
 
-    [Delete("customnavigation/delete/{id}")]
+    [HttpDelete("customnavigation/delete/{id}")]
     public void DeleteCustomNavigationItem(Guid id)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);

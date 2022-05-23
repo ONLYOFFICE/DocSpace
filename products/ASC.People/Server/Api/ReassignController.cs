@@ -55,7 +55,7 @@ public class ReassignController : ApiControllerBase
         _securityContext = securityContext;
     }
 
-    [Read(@"reassign/progress")]
+    [HttpGet("reassign/progress")]
     public ReassignProgressItem GetReassignProgress(Guid userId)
     {
         _permissionContext.DemandPermissions(Constants.Action_EditUser);
@@ -63,7 +63,7 @@ public class ReassignController : ApiControllerBase
         return _queueWorkerReassign.GetProgressItemStatus(Tenant.Id, userId);
     }
 
-    [Create(@"reassign/start")]
+    [HttpPost("reassign/start")]
     public ReassignProgressItem StartReassign(StartReassignRequestDto inDto)
     {
         _permissionContext.DemandPermissions(Constants.Action_EditUser);
@@ -95,7 +95,7 @@ public class ReassignController : ApiControllerBase
         return _queueWorkerReassign.Start(Tenant.Id, inDto.FromUserId, inDto.ToUserId, _securityContext.CurrentAccount.ID, inDto.DeleteProfile);
     }
 
-    [Update(@"reassign/terminate")]
+    [HttpPut("reassign/terminate")]
     public void TerminateReassign(TerminateRequestDto inDto)
     {
         _permissionContext.DemandPermissions(Constants.Action_EditUser);

@@ -50,7 +50,7 @@ public class SmtpSettingsController : ControllerBase
     }
 
 
-    [Read("smtp")]
+    [HttpGet("smtp")]
     public SmtpSettingsDto GetSmtpSettings()
     {
         CheckSmtpPermissions();
@@ -61,7 +61,7 @@ public class SmtpSettingsController : ControllerBase
         return settings;
     }
 
-    [Create("smtp")]
+    [HttpPost("smtp")]
     public SmtpSettingsDto SaveSmtpSettings( SmtpSettingsDto inDto)
     {
         CheckSmtpPermissions();
@@ -82,7 +82,7 @@ public class SmtpSettingsController : ControllerBase
         return settings;
     }
 
-    [Delete("smtp")]
+    [HttpDelete("smtp")]
     public SmtpSettingsDto ResetSmtpSettings()
     {
         CheckSmtpPermissions();
@@ -101,7 +101,7 @@ public class SmtpSettingsController : ControllerBase
         return settings;
     }
 
-    //[Read("smtp/test")]
+    //[HttpGet("smtp/test")]
     //public SmtpOperationStatus TestSmtpSettings()
     //{
     //    CheckSmtpPermissions();
@@ -116,7 +116,7 @@ public class SmtpSettingsController : ControllerBase
     //    return ToSmtpOperationStatus();
     //}
 
-    //[Read("smtp/test/status")]
+    //[HttpGet("smtp/test/status")]
     //public SmtpOperationStatus GetSmtpOperationStatus()
     //{
     //    CheckSmtpPermissions();

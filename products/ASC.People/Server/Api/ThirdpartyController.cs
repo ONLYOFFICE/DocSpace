@@ -96,7 +96,7 @@ public class ThirdpartyController : ApiControllerBase
     }
 
     [AllowAnonymous]
-    [Read("thirdparty/providers")]
+    [HttpGet("thirdparty/providers")]
     public ICollection<AccountInfoDto> GetAuthProviders(bool inviteView, bool settingsView, string clientCallback, string fromOnly)
     {
         ICollection<AccountInfoDto> infos = new List<AccountInfoDto>();
@@ -136,7 +136,7 @@ public class ThirdpartyController : ApiControllerBase
         return infos;
     }
 
-    [Update("thirdparty/linkaccount")]
+    [HttpPut("thirdparty/linkaccount")]
     public void LinkAccount(LinkAccountRequestDto inDto)
     {
         var profile = new LoginProfile(_signature, _instanceCrypto, inDto.SerializedProfile);
@@ -162,7 +162,7 @@ public class ThirdpartyController : ApiControllerBase
     }
 
     [AllowAnonymous]
-    [Create("thirdparty/signup")]
+    [HttpPost("thirdparty/signup")]
     public void SignupAccount(SignupAccountRequestDto inDto)
     {
         var employeeType = inDto.EmplType ?? EmployeeType.User;
@@ -229,7 +229,7 @@ public class ThirdpartyController : ApiControllerBase
         }
     }
 
-    [Delete("thirdparty/unlinkaccount")]
+    [HttpDelete("thirdparty/unlinkaccount")]
     public void UnlinkAccount(string provider)
     {
         GetLinker().RemoveProvider(_securityContext.CurrentAccount.ID.ToString(), provider);

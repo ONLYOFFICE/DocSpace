@@ -72,7 +72,8 @@ public class LicenseController : BaseSettingsController
         _paymentManager = paymentManager;
     }
 
-    [Read("license/refresh", Check = false)]
+    [HttpGet("license/refresh")]
+    [AllowNotPayment]
     public bool RefreshLicense()
     {
         if (!_coreBaseSettings.Standalone)
@@ -84,7 +85,8 @@ public class LicenseController : BaseSettingsController
         return true;
     }
 
-    [Create("license/accept", Check = false)]
+    [AllowNotPayment]
+    [HttpPost("license/accept")]
     public object AcceptLicense()
     {
         if (!_coreBaseSettings.Standalone)
@@ -120,7 +122,7 @@ public class LicenseController : BaseSettingsController
     }
 
     ///<visible>false</visible>
-    [Create("license/trial")]
+    [HttpPost("license/trial")]
     public bool ActivateTrial()
     {
         if (!_coreBaseSettings.Standalone)
@@ -178,14 +180,16 @@ public class LicenseController : BaseSettingsController
     }
 
     [AllowAnonymous]
-    [Read("license/required", Check = false)]
+    [AllowNotPayment]
+    [HttpGet("license/required")]
     public bool RequestLicense()
     {
         return _firstTimeTenantSettings.RequestLicense;
     }
 
 
-    [Create("license", Check = false)]
+    [AllowNotPayment]
+    [HttpPost("license")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard, Administrators")]
     public object UploadLicense([FromForm] UploadLicenseRequestsDto inDto)
     {

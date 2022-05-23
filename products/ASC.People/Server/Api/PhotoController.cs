@@ -63,7 +63,7 @@ public class PhotoController : PeopleControllerBase
         _setupInfo = setupInfo;
     }
 
-    [Create("{userid}/photo/thumbnails")]
+    [HttpPost("{userid}/photo/thumbnails")]
     public ThumbnailsDataDto CreateMemberPhotoThumbnails(string userid, ThumbnailsRequestDto inDto)
     {
         var user = GetUserInfo(userid);
@@ -98,7 +98,7 @@ public class PhotoController : PeopleControllerBase
         return new ThumbnailsDataDto(user.Id, _userPhotoManager);
     }
 
-    [Delete("{userid}/photo")]
+    [HttpDelete("{userid}/photo")]
     public ThumbnailsDataDto DeleteMemberPhoto(string userid)
     {
         var user = GetUserInfo(userid);
@@ -117,7 +117,7 @@ public class PhotoController : PeopleControllerBase
         return new ThumbnailsDataDto(user.Id, _userPhotoManager);
     }
 
-    [Read("{userid}/photo")]
+    [HttpGet("{userid}/photo")]
     public ThumbnailsDataDto GetMemberPhoto(string userid)
     {
         var user = GetUserInfo(userid);
@@ -130,7 +130,7 @@ public class PhotoController : PeopleControllerBase
         return new ThumbnailsDataDto(user.Id, _userPhotoManager);
     }
 
-    [Update("{userid}/photo")]
+    [HttpPut("{userid}/photo")]
     public ThumbnailsDataDto UpdateMemberPhoto(string userid, UpdateMemberRequestDto inDto)
     {
         var user = GetUserInfo(userid);
@@ -151,7 +151,7 @@ public class PhotoController : PeopleControllerBase
         return new ThumbnailsDataDto(user.Id, _userPhotoManager);
     }
 
-    [Create("{userid}/photo")]
+    [HttpPost("{userid}/photo")]
     public FileUploadResultDto UploadMemberPhoto(string userid, IFormCollection formCollection)
     {
         var result = new FileUploadResultDto();

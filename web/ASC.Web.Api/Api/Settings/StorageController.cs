@@ -93,7 +93,7 @@ public class StorageController : BaseSettingsController
         _encryptionWorker = encryptionWorker;
     }
 
-    [Read("storage")]
+    [HttpGet("storage")]
     public List<StorageDto> GetAllStorages()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
@@ -105,7 +105,8 @@ public class StorageController : BaseSettingsController
         return consumers.Select(consumer => new StorageDto(consumer, current)).ToList();
     }
 
-    [Read("storage/progress", false)]
+    [AllowNotPayment]
+    [HttpGet("storage/progress")]
     public double GetStorageProgress()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
@@ -120,7 +121,7 @@ public class StorageController : BaseSettingsController
 
     public readonly object Locker = new object();
 
-    [Create("encryption/start")]
+    [HttpPost("encryption/start")]
     public bool StartStorageEncryption(StorageEncryptionRequestsDto inDto)
     {
         if (_coreBaseSettings.CustomMode)
@@ -246,7 +247,7 @@ public class StorageController : BaseSettingsController
     /// </summary>
     /// <returns>EncryptionSettings</returns>
     /// <visible>false</visible>
-    [Read("encryption/settings")]
+    [HttpGet("encryption/settings")]
     public EncryptionSettings GetStorageEncryptionSettings()
     {
         try
@@ -288,7 +289,7 @@ public class StorageController : BaseSettingsController
         }
     }
 
-    [Read("encryption/progress")]
+    [HttpGet("encryption/progress")]
     public double? GetStorageEncryptionProgress()
     {
         if (_coreBaseSettings.CustomMode)
@@ -314,7 +315,7 @@ public class StorageController : BaseSettingsController
         return _encryptionWorker.GetEncryptionProgress();
     }
 
-    [Update("storage")]
+    [HttpPut("storage")]
     public StorageSettings UpdateStorage(StorageRequestsDto inDto)
     {
         try
@@ -352,7 +353,7 @@ public class StorageController : BaseSettingsController
         }
     }
 
-    [Delete("storage")]
+    [HttpDelete("storage")]
     public void ResetStorageToDefault()
     {
         try
@@ -380,7 +381,7 @@ public class StorageController : BaseSettingsController
         }
     }
 
-    [Read("storage/cdn")]
+    [HttpGet("storage/cdn")]
     public List<StorageDto> GetAllCdnStorages()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
@@ -396,7 +397,7 @@ public class StorageController : BaseSettingsController
         return consumers.Select(consumer => new StorageDto(consumer, current)).ToList();
     }
 
-    [Update("storage/cdn")]
+    [HttpPut("storage/cdn")]
     public CdnStorageSettings UpdateCdn(StorageRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
@@ -435,7 +436,7 @@ public class StorageController : BaseSettingsController
         return settings;
     }
 
-    [Delete("storage/cdn")]
+    [HttpDelete("storage/cdn")]
     public void ResetCdnToDefault()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
@@ -449,7 +450,7 @@ public class StorageController : BaseSettingsController
         _storageSettingsHelper.Clear(_settingsManager.Load<CdnStorageSettings>());
     }
 
-    [Read("storage/backup")]
+    [HttpGet("storage/backup")]
     public List<StorageDto> GetAllBackupStorages()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);

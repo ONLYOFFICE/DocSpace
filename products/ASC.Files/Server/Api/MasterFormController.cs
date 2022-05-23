@@ -50,7 +50,7 @@ public abstract class MasterFormController<T> : ApiControllerBase
         _fileStorageService = fileStorageServiceString;
     }
 
-    [Create("masterform/{fileId}/checkfillformdraft")]
+    [HttpPost("masterform/{fileId}/checkfillformdraft")]
     public async Task<object> CheckFillFormDraftAsync(T fileId, CheckFillFormDraftRequestDto inDto)
     {
         return await _fileStorageService.CheckFillFormDraftAsync(fileId, inDto.Version, inDto.Doc, !inDto.RequestEmbedded, inDto.RequestView);

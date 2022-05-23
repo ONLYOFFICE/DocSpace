@@ -132,13 +132,14 @@ public class AuthenticationController : ControllerBase
     }
 
 
-    [Read]
+    [HttpGet]
     public bool GetIsAuthentificated()
     {
         return _securityContext.IsAuthenticated;
     }
 
-    [Create("{code}", false, order: int.MaxValue)]
+    [AllowNotPayment]
+    [HttpPost("{code}", Order = int.MaxValue)]
     public AuthenticationTokenDto AuthenticateMeFromBodyWithCode(AuthRequestsDto inDto)
     {
         var tenant = _tenantManager.GetCurrentTenant().Id;
@@ -202,7 +203,8 @@ public class AuthenticationController : ControllerBase
         }
     }
 
-    [Create(false)]
+    [AllowNotPayment]
+    [HttpPost]
     public async Task<AuthenticationTokenDto> AuthenticateMeAsync(AuthRequestsDto inDto)
     {
         bool viaEmail;
@@ -276,8 +278,8 @@ public class AuthenticationController : ControllerBase
         }
     }
 
-    [Create("logout")]
-    [Read("logout")]// temp fix
+    [HttpPost("logout")]
+    [HttpGet("logout")]// temp fix
     public void Logout()
     {
         if (_securityContext.IsAuthenticated)
@@ -291,14 +293,16 @@ public class AuthenticationController : ControllerBase
         _securityContext.Logout();
     }
 
-    [Create("confirm", false)]
+    [AllowNotPayment]
+    [HttpPost("confirm")]
     public ValidationResult CheckConfirm(EmailValidationKeyModel inDto)
     {
         return _emailValidationKeyModelHelper.Validate(inDto);
     }
 
+    [AllowNotPayment]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PhoneActivation")]
-    [Create("setphone", false)]
+    [HttpPost("setphone")]
     public async Task<AuthenticationTokenDto> SaveMobilePhoneAsync(MobileRequestsDto inDto)
     {
         _apiContext.AuthByClaim();
@@ -314,7 +318,8 @@ public class AuthenticationController : ControllerBase
         };
     }
 
-    [Create(@"sendsms", false)]
+    [AllowNotPayment]
+    [HttpPost("sendsms")]
     public async Task<AuthenticationTokenDto> SendSmsCodeAsync(AuthRequestsDto inDto)
     {
         var user = GetUser(inDto, out _);

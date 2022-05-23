@@ -77,7 +77,7 @@ public class MessageSettingsController : BaseSettingsController
         _coreBaseSettings = coreBaseSettings;
     }
 
-    [Create("messagesettings")]
+    [HttpPost("messagesettings")]
     public object EnableAdminMessageSettings(AdminMessageSettingsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
@@ -89,13 +89,13 @@ public class MessageSettingsController : BaseSettingsController
         return Resource.SuccessfullySaveSettingsMessage;
     }
 
-    [Read("cookiesettings")]
+    [HttpGet("cookiesettings")]
     public int GetCookieSettings()
     {
         return _cookiesManager.GetLifeTime(_tenantManager.GetCurrentTenant().Id);
     }
 
-    [Update("cookiesettings")]
+    [HttpPut("cookiesettings")]
     public object UpdateCookieSettings(CookieSettingsModel model)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
@@ -113,7 +113,7 @@ public class MessageSettingsController : BaseSettingsController
     }
 
     [AllowAnonymous]
-    [Create("sendadmmail")]
+    [HttpPost("sendadmmail")]
     public object SendAdmMail(AdminMessageSettingsRequestsDto inDto)
     {
         var studioAdminMessageSettings = _settingsManager.Load<StudioAdminMessageSettings>();
@@ -143,7 +143,7 @@ public class MessageSettingsController : BaseSettingsController
     }
 
     [AllowAnonymous]
-    [Create("sendjoininvite")]
+    [HttpPost("sendjoininvite")]
     public object SendJoinInviteMail(AdminMessageSettingsRequestsDto inDto)
     {
         try

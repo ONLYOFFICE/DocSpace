@@ -128,7 +128,7 @@ public class UserController : PeopleControllerBase
         _settingsManager = settingsManager;
     }
 
-    [Create("active")]
+    [HttpPost("active")]
     public EmployeeDto AddMemberAsActivated(MemberRequestDto inDto)
     {
         _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
@@ -184,7 +184,7 @@ public class UserController : PeopleControllerBase
         return _employeeFullDtoHelper.GetFull(user);
     }
 
-    [Create]
+    [HttpPost]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Everyone")]
     public EmployeeDto AddMember(MemberRequestDto inDto)
     {
@@ -243,7 +243,7 @@ public class UserController : PeopleControllerBase
         return _employeeFullDtoHelper.GetFull(user);
     }
 
-    [Update("{userid}/password")]
+    [HttpPut("{userid}/password")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PasswordChange,EmailChange,Activation,EmailActivation,Everyone")]
     public EmployeeDto ChangeUserPassword(Guid userid, MemberRequestDto inDto)
     {
@@ -297,7 +297,7 @@ public class UserController : PeopleControllerBase
         return _employeeFullDtoHelper.GetFull(GetUserInfo(userid.ToString()));
     }
 
-    [Delete("{userid}")]
+    [HttpDelete("{userid}")]
     public EmployeeDto DeleteMember(string userid)
     {
         _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
@@ -326,7 +326,7 @@ public class UserController : PeopleControllerBase
         return _employeeFullDtoHelper.GetFull(user);
     }
 
-    [Delete("@self")]
+    [HttpDelete("@self")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "ProfileRemove")]
     public EmployeeDto DeleteProfile()
     {
@@ -374,7 +374,7 @@ public class UserController : PeopleControllerBase
         return _employeeFullDtoHelper.GetFull(user);
     }
 
-    [Read("status/{status}/search")]
+    [HttpGet("status/{status}/search")]
     public IEnumerable<EmployeeDto> GetAdvanced(EmployeeStatus status, [FromQuery] string query)
     {
         if (_coreBaseSettings.Personal)
@@ -406,13 +406,13 @@ public class UserController : PeopleControllerBase
         return null;
     }
 
-    [Read]
+    [HttpGet]
     public IEnumerable<EmployeeDto> GetAll()
     {
         return GetByStatus(EmployeeStatus.Active);
     }
 
-    [Read("email")]
+    [HttpGet("email")]
     public EmployeeDto GetByEmail([FromQuery] string email)
     {
         if (_coreBaseSettings.Personal && !_userManager.GetUsers(_securityContext.CurrentAccount.ID).IsOwner(Tenant))
@@ -430,7 +430,7 @@ public class UserController : PeopleControllerBase
     }
 
     [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Everyone")]
-    [Read("{username}", order: int.MaxValue)]
+    [HttpGet("{username}", Order = 1)]
     public EmployeeDto GetById(string username)
     {
         if (_coreBaseSettings.Personal)
@@ -469,7 +469,7 @@ public class UserController : PeopleControllerBase
         return _employeeFullDtoHelper.GetFull(user);
     }
 
-    [Read("status/{status}")]
+    [HttpGet("status/{status}")]
     public IEnumerable<EmployeeDto> GetByStatus(EmployeeStatus status)
     {
         if (_coreBaseSettings.Personal)
@@ -487,7 +487,7 @@ public class UserController : PeopleControllerBase
         return GetFullByFilter(status, groupId, null, null, null);
     }
 
-    [Read("filter")]
+    [HttpGet("filter")]
     public IEnumerable<EmployeeDto> GetFullByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator)
     {
         var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator);
@@ -495,7 +495,7 @@ public class UserController : PeopleControllerBase
         return users.Select(r => _employeeFullDtoHelper.GetFull(r));
     }
 
-    [Read("info")]
+    [HttpGet("info")]
     public Module GetModule()
     {
         var product = new PeopleProduct();
@@ -504,13 +504,13 @@ public class UserController : PeopleControllerBase
         return new Module(product);
     }
 
-    [Read("search")]
+    [HttpGet("search")]
     public IEnumerable<EmployeeDto> GetPeopleSearch([FromQuery] string query)
     {
         return GetSearch(query);
     }
 
-    [Read("@search/{query}")]
+    [HttpGet("@search/{query}")]
     public IEnumerable<EmployeeDto> GetSearch(string query)
     {
         if (_coreBaseSettings.Personal)
@@ -538,7 +538,7 @@ public class UserController : PeopleControllerBase
         return null;
     }
 
-    [Read("simple/filter")]
+    [HttpGet("simple/filter")]
     public IEnumerable<EmployeeDto> GetSimpleByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator)
     {
         var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator);
@@ -547,7 +547,7 @@ public class UserController : PeopleControllerBase
     }
 
     [AllowAnonymous]
-    [Create(@"register")]
+    [HttpPost("register")]
     public Task<string> RegisterUserOnPersonalAsync(RegisterPersonalUserRequestDto inDto)
     {
         if (!_coreBaseSettings.Personal)
@@ -558,7 +558,7 @@ public class UserController : PeopleControllerBase
         return InternalRegisterUserOnPersonalAsync(inDto);
     }
 
-    [Update("delete", Order = -1)]
+    [HttpPut("delete", Order = -1)]
     public IEnumerable<EmployeeDto> RemoveUsers(UpdateMembersRequestDto inDto)
     {
         _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
@@ -588,7 +588,7 @@ public class UserController : PeopleControllerBase
         return users.Select(u => _employeeFullDtoHelper.GetFull(u));
     }
 
-    [Update("invite")]
+    [HttpPut("invite")]
     public IEnumerable<EmployeeDto> ResendUserInvites(UpdateMembersRequestDto inDto)
     {
         var users = inDto.UserIds
@@ -646,13 +646,13 @@ public class UserController : PeopleControllerBase
         return users.Select(u => _employeeFullDtoHelper.GetFull(u));
     }
 
-    [Read("theme")]
+    [HttpGet("theme")]
     public DarkThemeSettings GetTheme()
     {
         return _settingsManager.LoadForCurrentUser<DarkThemeSettings>();
     }
 
-    [Update("theme")]
+    [HttpPut("theme")]
     public DarkThemeSettings ChangeTheme(DarkThemeSettingsRequestDto model)
     {
         var darkThemeSettings = new DarkThemeSettings
@@ -665,7 +665,7 @@ public class UserController : PeopleControllerBase
         return darkThemeSettings;
     }
 
-    [Read("@self")]
+    [HttpGet("@self")]
     public EmployeeDto Self()
     {
         var user = _userManager.GetUser(_securityContext.CurrentAccount.ID, EmployeeFullDtoHelper.GetExpression(_apiContext));
@@ -677,7 +677,8 @@ public class UserController : PeopleControllerBase
         return result;
     }
 
-    [Create("email", false)]
+    [AllowNotPayment]
+    [HttpPost("email")]
     public object SendEmailChangeInstructions(UpdateMemberRequestDto inDto)
     {
         Guid.TryParse(inDto.UserId, out var userid);
@@ -741,8 +742,9 @@ public class UserController : PeopleControllerBase
         return string.Format(Resource.MessageEmailChangeInstuctionsSentOnEmail, email);
     }
 
+    [AllowNotPayment]
     [AllowAnonymous]
-    [Create("password", false)]
+    [HttpPost("password")]
     public object SendUserPassword(MemberRequestDto inDto)
     {
         var error = _userManagerWrapper.SendUserPassword(inDto.Email);
@@ -754,7 +756,7 @@ public class UserController : PeopleControllerBase
         return string.Format(Resource.MessageYourPasswordSendedToEmail, inDto.Email);
     }
 
-    [Update("activationstatus/{activationstatus}")]
+    [HttpPut("activationstatus/{activationstatus}")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Activation,Everyone")]
     public IEnumerable<EmployeeDto> UpdateEmployeeActivationStatus(EmployeeActivationStatus activationstatus, UpdateMembersRequestDto inDto)
     {
@@ -778,7 +780,7 @@ public class UserController : PeopleControllerBase
         return retuls;
     }
 
-    [Update("{userid}/culture")]
+    [HttpPut("{userid}/culture")]
     public EmployeeDto UpdateMemberCulture(string userid, UpdateMemberRequestDto inDto)
     {
         var user = GetUserInfo(userid);
@@ -816,7 +818,7 @@ public class UserController : PeopleControllerBase
         return _employeeFullDtoHelper.GetFull(user);
     }
 
-    [Update("{userid}")]
+    [HttpPut("{userid}")]
     public EmployeeDto UpdateMember(string userid, UpdateMemberRequestDto inDto)
     {
         var user = GetUserInfo(userid);
@@ -927,7 +929,7 @@ public class UserController : PeopleControllerBase
         return _employeeFullDtoHelper.GetFull(user);
     }
 
-    [Update("status/{status}")]
+    [HttpPut("status/{status}")]
     public IEnumerable<EmployeeDto> UpdateUserStatus(EmployeeStatus status, UpdateMembersRequestDto inDto)
     {
         _permissionContext.DemandPermissions(Constants.Action_EditUser);
@@ -970,7 +972,7 @@ public class UserController : PeopleControllerBase
         return users.Select(u => _employeeFullDtoHelper.GetFull(u));
     }
 
-    [Update("type/{type}")]
+    [HttpPut("type/{type}")]
     public IEnumerable<EmployeeDto> UpdateUserType(EmployeeType type, UpdateMembersRequestDto inDto)
     {
         var users = inDto.UserIds
@@ -1212,7 +1214,7 @@ public class UserController : PeopleControllerBase
     ///// <param name="userList">The list of users to add</param>
     ///// <param name="importUsersAsCollaborators" optional="true">Add users as guests (bool type: false|true)</param>
     ///// <returns>Newly created users</returns>
-    //[Create("import/save")]
+    //[HttpPost("import/save")]
     //public void SaveUsers(string userList, bool importUsersAsCollaborators)
     //{
     //    lock (progressQueue.SynchRoot)
@@ -1235,7 +1237,7 @@ public class UserController : PeopleControllerBase
     //    }
     //}
 
-    //[Read("import/status")]
+    //[HttpGet("import/status")]
     //public object GetStatus()
     //{
     //    lock (progressQueue.SynchRoot)

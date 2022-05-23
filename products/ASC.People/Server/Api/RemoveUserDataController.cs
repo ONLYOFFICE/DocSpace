@@ -61,7 +61,7 @@ public class RemoveUserDataController : ApiControllerBase
         _apiContext = apiContext;
     }
 
-    [Read(@"remove/progress")]
+    [HttpGet("remove/progress")]
     public RemoveProgressItem GetRemoveProgress(Guid userId)
     {
         _permissionContext.DemandPermissions(Constants.Action_EditUser);
@@ -69,7 +69,7 @@ public class RemoveUserDataController : ApiControllerBase
         return _queueWorkerRemove.GetProgressItemStatus(Tenant.Id, userId);
     }
 
-    [Update("self/delete")]
+    [HttpPut("self/delete")]
     public object SendInstructionsToDelete()
     {
         var user = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
@@ -85,7 +85,7 @@ public class RemoveUserDataController : ApiControllerBase
         return string.Format(Resource.SuccessfullySentNotificationDeleteUserInfoMessage, "<b>" + user.Email + "</b>");
     }
 
-    [Create(@"remove/start")]
+    [HttpPost("remove/start")]
     public RemoveProgressItem StartRemove(TerminateRequestDto inDto)
     {
         _permissionContext.DemandPermissions(Constants.Action_EditUser);
@@ -105,7 +105,7 @@ public class RemoveUserDataController : ApiControllerBase
         return _queueWorkerRemove.Start(Tenant.Id, user, _securityContext.CurrentAccount.ID, true);
     }
 
-    [Update(@"remove/terminate")]
+    [HttpPut("remove/terminate")]
     public void TerminateRemove(TerminateRequestDto inDto)
     {
         _permissionContext.DemandPermissions(Constants.Action_EditUser);

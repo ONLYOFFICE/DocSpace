@@ -48,21 +48,21 @@ public class IpRestrictionsController : BaseSettingsController
         _iPRestrictionsService = iPRestrictionsService;
     }
 
-    [Read("iprestrictions")]
+    [HttpGet("iprestrictions")]
     public IEnumerable<IPRestriction> GetIpRestrictions()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
         return _iPRestrictionsService.Get(Tenant.Id);
     }
 
-    [Update("iprestrictions")]
+    [HttpPut("iprestrictions")]
     public IEnumerable<string> SaveIpRestrictions(IpRestrictionsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
         return _iPRestrictionsService.Save(inDto.Ips, Tenant.Id);
     }
 
-    [Update("iprestrictions/settings")]
+    [HttpPut("iprestrictions/settings")]
     public IPRestrictionsSettings UpdateIpRestrictionsSettings(IpRestrictionsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);

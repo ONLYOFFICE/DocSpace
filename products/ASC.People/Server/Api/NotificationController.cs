@@ -53,7 +53,7 @@ public class NotificationController : ApiControllerBase
         _studioNotifyService = studioNotifyService;
     }
 
-    [Create("phone")]
+    [HttpPost("phone")]
     public object SendNotificationToChange(UpdateMemberRequestDto inDto)
     {
         var user = _userManager.GetUsers(string.IsNullOrEmpty(inDto.UserId)

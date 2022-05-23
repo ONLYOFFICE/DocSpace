@@ -54,7 +54,7 @@ public class GroupController : ControllerBase
         _permissionContext = permissionContext;
     }
 
-    [Read]
+    [HttpGet]
     public IEnumerable<GroupSummaryDto> GetAll()
     {
         var result = _userManager.GetDepartments().Select(r => r);
@@ -66,7 +66,7 @@ public class GroupController : ControllerBase
         return result.Select(x => new GroupSummaryDto(x, _userManager));
     }
 
-    [Read("full")]
+    [HttpGet("full")]
     public IEnumerable<GroupDto> GetAllWithMembers()
     {
         var result = _userManager.GetDepartments().Select(r => r);
@@ -78,19 +78,19 @@ public class GroupController : ControllerBase
         return result.Select(r => _groupFullDtoHelper.Get(r, true));
     }
 
-    [Read("{groupid}")]
+    [HttpGet("{groupid}")]
     public GroupDto GetById(Guid groupid)
     {
         return _groupFullDtoHelper.Get(GetGroupInfo(groupid), true);
     }
 
-    [Read("user/{userid}")]
+    [HttpGet("user/{userid}")]
     public IEnumerable<GroupSummaryDto> GetByUserId(Guid userid)
     {
         return _userManager.GetUserGroups(userid).Select(x => new GroupSummaryDto(x, _userManager));
     }
 
-    [Create]
+    [HttpPost]
     public GroupDto AddGroup(GroupRequestDto inDto)
     {
         _permissionContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
@@ -112,7 +112,7 @@ public class GroupController : ControllerBase
         return _groupFullDtoHelper.Get(group, true);
     }
 
-    [Update("{groupid}")]
+    [HttpPut("{groupid}")]
     public GroupDto UpdateGroup(Guid groupid, GroupRequestDto inDto)
     {
         _permissionContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
@@ -142,7 +142,7 @@ public class GroupController : ControllerBase
         return GetById(groupid);
     }
 
-    [Delete("{groupid}")]
+    [HttpDelete("{groupid}")]
     public GroupDto DeleteGroup(Guid groupid)
     {
         _permissionContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
@@ -157,7 +157,7 @@ public class GroupController : ControllerBase
         return groupWrapperFull;
     }
 
-    [Update("{groupid}/members/{newgroupid}")]
+    [HttpPut("{groupid}/members/{newgroupid}")]
     public GroupDto TransferMembersTo(Guid groupid, Guid newgroupid)
     {
         _permissionContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
@@ -175,7 +175,7 @@ public class GroupController : ControllerBase
         return GetById(newgroupid);
     }
 
-    [Create("{groupid}/members")]
+    [HttpPost("{groupid}/members")]
     public GroupDto SetMembersTo(Guid groupid, GroupRequestDto inDto)
     {
         RemoveMembersFrom(groupid, new GroupRequestDto { Members = _userManager.GetUsersByGroup(groupid).Select(x => x.Id) });
@@ -184,7 +184,7 @@ public class GroupController : ControllerBase
         return GetById(groupid);
     }
 
-    [Update("{groupid}/members")]
+    [HttpPut("{groupid}/members")]
     public GroupDto AddMembersTo(Guid groupid, GroupRequestDto inDto)
     {
         _permissionContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
@@ -199,7 +199,7 @@ public class GroupController : ControllerBase
         return GetById(group.ID);
     }
 
-    [Update("{groupid}/manager")]
+    [HttpPut("{groupid}/manager")]
     public GroupDto SetManager(Guid groupid, SetManagerRequestDto inDto)
     {
         var group = GetGroupInfo(groupid);
@@ -215,7 +215,7 @@ public class GroupController : ControllerBase
         return GetById(groupid);
     }
 
-    [Delete("{groupid}/members")]
+    [HttpDelete("{groupid}/members")]
     public GroupDto RemoveMembersFrom(Guid groupid, GroupRequestDto inDto)
     {
         _permissionContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);

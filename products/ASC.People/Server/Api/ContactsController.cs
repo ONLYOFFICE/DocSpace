@@ -43,7 +43,7 @@ public class ContactsController : PeopleControllerBase
         _employeeFullDtoHelper = employeeFullDtoHelper;
     }
 
-    [Delete("{userid}/contacts")]
+    [HttpDelete("{userid}/contacts")]
     public EmployeeFullDto DeleteMemberContacts(string userid, UpdateMemberRequestDto inDto)
     {
         var user = GetUserInfo(userid);
@@ -59,7 +59,7 @@ public class ContactsController : PeopleControllerBase
         return _employeeFullDtoHelper.GetFull(user);
     }
 
-    [Create("{userid}/contacts")]
+    [HttpPost("{userid}/contacts")]
     public EmployeeFullDto SetMemberContacts(string userid, UpdateMemberRequestDto inDto)
     {
         var user = GetUserInfo(userid);
@@ -76,7 +76,7 @@ public class ContactsController : PeopleControllerBase
         return _employeeFullDtoHelper.GetFull(user);
     }
 
-    [Update("{userid}/contacts")]
+    [HttpPut("{userid}/contacts")]
     public EmployeeFullDto UpdateMemberContacts(string userid, UpdateMemberRequestDto inDto)
     {
         var user = GetUserInfo(userid);

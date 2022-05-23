@@ -52,7 +52,7 @@ public class SettingsController : ApiControllerBase
     /// </summary>
     /// <param name="set"></param>
     /// <returns></returns>
-    [Update(@"thirdparty")]
+    [HttpPut("thirdparty")]
     public bool ChangeAccessToThirdparty(SettingsRequestDto inDto)
     {
         return _fileStorageServiceString.ChangeAccessToThirdparty(inDto.Set);
@@ -63,7 +63,7 @@ public class SettingsController : ApiControllerBase
     /// </summary>
     /// <param name="set"></param>
     /// <returns></returns>
-    [Update(@"changedeleteconfrim")]
+    [HttpPut("changedeleteconfrim")]
     public bool ChangeDeleteConfrim(SettingsRequestDto inDto)
     {
         return _fileStorageServiceString.ChangeDeleteConfrim(inDto.Set);
@@ -75,13 +75,13 @@ public class SettingsController : ApiControllerBase
     /// <param name="set"></param>
     /// <category>Settings</category>
     /// <returns></returns>
-    [Update(@"settings/downloadtargz")]
+    [HttpPut("settings/downloadtargz")]
     public ICompress ChangeDownloadZipFromBody([FromBody] DisplayRequestDto inDto)
     {
         return _fileStorageServiceString.ChangeDownloadTarGz(inDto.Set);
     }
 
-    [Update(@"settings/downloadtargz")]
+    [HttpPut("settings/downloadtargz")]
     public ICompress ChangeDownloadZipFromForm([FromForm] DisplayRequestDto inDto)
     {
         return _fileStorageServiceString.ChangeDownloadTarGz(inDto.Set);
@@ -93,7 +93,7 @@ public class SettingsController : ApiControllerBase
     /// <param name="set"></param>
     /// <category>Settings</category>
     /// <returns></returns>
-    [Update(@"settings/favorites")]
+    [HttpPut("settings/favorites")]
     public bool DisplayFavorite(DisplayRequestDto inDto)
     {
         return _fileStorageServiceString.DisplayFavorite(inDto.Set);
@@ -105,7 +105,7 @@ public class SettingsController : ApiControllerBase
     /// <param name="set"></param>
     /// <category>Settings</category>
     /// <returns></returns>
-    [Update(@"displayRecent")]
+    [HttpPut("displayRecent")]
     public bool DisplayRecent(DisplayRequestDto inDto)
     {
         return _fileStorageServiceString.DisplayRecent(inDto.Set);
@@ -117,7 +117,7 @@ public class SettingsController : ApiControllerBase
     /// <param name="set"></param>
     /// <category>Settings</category>
     /// <returns></returns>
-    [Update(@"settings/templates")]
+    [HttpPut("settings/templates")]
     public bool DisplayTemplates(DisplayRequestDto inDto)
     {
         return _fileStorageServiceString.DisplayTemplates(inDto.Set);
@@ -128,7 +128,7 @@ public class SettingsController : ApiControllerBase
     /// </summary>
     /// <param name="set"></param>
     /// <returns></returns>
-    [Update(@"forcesave")]
+    [HttpPut("forcesave")]
     public bool Forcesave(SettingsRequestDto inDto)
     {
         return _fileStorageServiceString.Forcesave(inDto.Set);
@@ -138,13 +138,13 @@ public class SettingsController : ApiControllerBase
     /// 
     /// </summary>
     /// <returns></returns>
-    [Read(@"settings")]
+    [HttpGet("settings")]
     public FilesSettingsHelper GetFilesSettings()
     {
         return _filesSettingsHelper;
     }
 
-    [Read("info")]
+    [HttpGet("info")]
     public Module GetModule()
     {
         _productEntryPoint.Init();
@@ -157,13 +157,13 @@ public class SettingsController : ApiControllerBase
     /// <param name="save"></param>
     /// <visible>false</visible>
     /// <returns></returns>
-    [Update(@"hideconfirmconvert")]
+    [HttpPut("hideconfirmconvert")]
     public bool HideConfirmConvert(HideConfirmConvertRequestDto inDto)
     {
         return _fileStorageServiceString.HideConfirmConvert(inDto.Save);
     }
 
-    [Read("@privacy/available")]
+    [HttpGet("@privacy/available")]
     public bool IsAvailablePrivacyRoomSettings()
     {
         return PrivacyRoomSettings.IsAvailable(_tenantManager);
@@ -174,7 +174,7 @@ public class SettingsController : ApiControllerBase
     /// </summary>
     /// <param name="set"></param>
     /// <returns></returns>
-    [Update(@"storeforcesave")]
+    [HttpPut("storeforcesave")]
     public bool StoreForcesave(SettingsRequestDto inDto)
     {
         return _fileStorageServiceString.StoreForcesave(inDto.Set);
@@ -185,7 +185,7 @@ public class SettingsController : ApiControllerBase
     /// </summary>
     /// <param name="set"></param>
     /// <returns></returns>
-    [Update(@"storeoriginal")]
+    [HttpPut("storeoriginal")]
     public bool StoreOriginal(SettingsRequestDto inDto)
     {
         return _fileStorageServiceString.StoreOriginal(inDto.Set);
@@ -196,7 +196,7 @@ public class SettingsController : ApiControllerBase
     /// </summary>
     /// <param name="set"></param>
     /// <returns></returns>
-    [Update(@"updateifexist")]
+    [HttpPut("updateifexist")]
     public bool UpdateIfExist(SettingsRequestDto inDto)
     {
         return _fileStorageServiceString.UpdateIfExist(inDto.Set);

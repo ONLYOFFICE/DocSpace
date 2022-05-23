@@ -122,19 +122,19 @@ public class PortalController : ControllerBase
         _displayUserSettingsHelper = displayUserSettingsHelper;
     }
 
-    [Read("")]
+    [HttpGet("")]
     public Tenant Get()
     {
         return Tenant;
     }
 
-    [Read("users/{userID}")]
+    [HttpGet("users/{userID}")]
     public UserInfo GetUser(Guid userID)
     {
         return _userManager.GetUsers(userID);
     }
 
-    [Read("users/invite/{employeeType}")]
+    [HttpGet("users/invite/{employeeType}")]
     public object GeInviteLink(EmployeeType employeeType)
     {
         if (!_webItemSecurity.IsProductAdministrator(WebItemManager.PeopleProductID, _authContext.CurrentAccount.ID))
@@ -146,7 +146,7 @@ public class PortalController : ControllerBase
                 + $"&emplType={employeeType:d}";
     }
 
-    [Update("getshortenlink")]
+    [HttpPut("getshortenlink")]
     public async Task<object> GetShortenLinkAsync(ShortenLinkRequestsDto inDto)
     {
         try
@@ -160,7 +160,7 @@ public class PortalController : ControllerBase
         }
     }
 
-    [Read("tenantextra")]
+    [HttpGet("tenantextra")]
     public async Task<object> GetTenantExtraAsync()
     {
         return new
@@ -182,7 +182,7 @@ public class PortalController : ControllerBase
     }
 
 
-    [Read("usedspace")]
+    [HttpGet("usedspace")]
     public double GetUsedSpace()
     {
         return Math.Round(
@@ -192,25 +192,25 @@ public class PortalController : ControllerBase
     }
 
 
-    [Read("userscount")]
+    [HttpGet("userscount")]
     public long GetUsersCount()
     {
         return _coreBaseSettings.Personal ? 1 : _userManager.GetUserNames(EmployeeStatus.Active).Length;
     }
 
-    [Read("tariff")]
+    [HttpGet("tariff")]
     public Tariff GetTariff()
     {
         return _paymentManager.GetTariff(Tenant.Id);
     }
 
-    [Read("quota")]
+    [HttpGet("quota")]
     public TenantQuota GetQuota()
     {
         return _tenantManager.GetTenantQuota(Tenant.Id);
     }
 
-    [Read("quota/right")]
+    [HttpGet("quota/right")]
     public TenantQuota GetRightQuota()
     {
         var usedSpace = GetUsedSpace();
@@ -224,13 +224,13 @@ public class PortalController : ControllerBase
     }
 
 
-    [Read("path")]
+    [HttpGet("path")]
     public object GetFullAbsolutePath(string virtualPath)
     {
         return _commonLinkUtility.GetFullAbsolutePath(virtualPath);
     }
 
-    [Read("thumb")]
+    [HttpGet("thumb")]
     public FileResult GetThumb(string url)
     {
         if (!_securityContext.IsAuthenticated || _configuration["bookmarking:thumbnail-url"] == null)
@@ -264,7 +264,7 @@ public class PortalController : ControllerBase
         return File(bytes, type);
     }
 
-    [Create("present/mark")]
+    [HttpPost("present/mark")]
     public void MarkPresentAsReaded()
     {
         try
@@ -279,14 +279,14 @@ public class PortalController : ControllerBase
         }
     }
 
-    [Create("mobile/registration")]
+    [HttpPost("mobile/registration")]
     public void RegisterMobileAppInstall(MobileAppRequestsDto inDto)
     {
         var currentUser = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
         _mobileAppInstallRegistrator.RegisterInstall(currentUser.Email, inDto.Type);
     }
 
-    [Create("mobile/registration")]
+    [HttpPost("mobile/registration")]
     public void RegisterMobileAppInstall(MobileAppType type)
     {
         var currentUser = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
@@ -300,7 +300,7 @@ public class PortalController : ControllerBase
     /// <param name="alias">New portal name</param>
     /// <returns>Message about renaming a portal</returns>
     ///<visible>false</visible>
-    [Update("portalrename")]
+    [HttpPut("portalrename")]
     public async Task<object> UpdatePortalName(PortalRenameRequestsDto model)
     {
         if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.PortalSecurity)))
@@ -369,7 +369,7 @@ public class PortalController : ControllerBase
         return _commonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.Auth);
     }
 
-    [Create("suspend")]
+    [HttpPost("suspend")]
     public void SendSuspendInstructions()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
@@ -383,7 +383,7 @@ public class PortalController : ControllerBase
         _messageService.Send(MessageAction.OwnerSentPortalDeactivationInstructions, _messageTarget.Create(owner.Id), owner.DisplayUserName(false, _displayUserSettingsHelper));
     }
 
-    [Create("delete")]
+    [HttpPost("delete")]
     public void SendDeleteInstructions()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
@@ -398,7 +398,7 @@ public class PortalController : ControllerBase
         _messageService.Send(MessageAction.OwnerSentPortalDeleteInstructions, _messageTarget.Create(owner.Id), owner.DisplayUserName(false, _displayUserSettingsHelper));
     }
 
-    [Update("continue")]
+    [HttpPut("continue")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PortalContinue")]
     public void ContinuePortal()
     {
@@ -406,7 +406,7 @@ public class PortalController : ControllerBase
         _tenantManager.SaveTenant(Tenant);
     }
 
-    [Update("suspend")]
+    [HttpPut("suspend")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PortalSuspend")]
     public void SuspendPortal()
     {
@@ -415,7 +415,7 @@ public class PortalController : ControllerBase
         _messageService.Send(MessageAction.PortalDeactivated);
     }
 
-    [Delete("delete")]
+    [HttpDelete("delete")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "ProfileRemove")]
     public async Task<object> DeletePortal()
     {

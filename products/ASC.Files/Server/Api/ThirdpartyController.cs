@@ -79,7 +79,7 @@ public class ThirdpartyController : ApiControllerBase
     /// <returns>List of provider key</returns>
     /// <remarks>List of provider key: DropboxV2, Box, WebDav, Yandex, OneDrive, SharePoint, GoogleDrive</remarks>
     /// <returns></returns>
-    [Read("thirdparty/capabilities")]
+    [HttpGet("thirdparty/capabilities")]
     public List<List<string>> Capabilities()
     {
         var result = new List<List<string>>();
@@ -95,7 +95,7 @@ public class ThirdpartyController : ApiControllerBase
     }
 
     /// <visible>false</visible>
-    [Create("wordpress")]
+    [HttpPost("wordpress")]
     public bool CreateWordpressPost(CreateWordpressPostRequestDto inDto)
     {
         try
@@ -135,7 +135,7 @@ public class ThirdpartyController : ApiControllerBase
     /// <category>Third-Party Integration</category>
     /// <returns>Folder id</returns>
     ///<exception cref="ArgumentException"></exception>
-    [Delete("thirdparty/{providerId:int}")]
+    [HttpDelete("thirdparty/{providerId:int}")]
     public Task<object> DeleteThirdPartyAsync(int providerId)
     {
         return _fileStorageServiceThirdparty.DeleteThirdPartyAsync(providerId.ToString(CultureInfo.InvariantCulture));
@@ -143,7 +143,7 @@ public class ThirdpartyController : ApiControllerBase
     }
 
     /// <visible>false</visible>
-    [Read("wordpress-delete")]
+    [HttpGet("wordpress-delete")]
     public object DeleteWordpressInfo()
     {
         var token = _wordpressToken.GetToken();
@@ -167,7 +167,7 @@ public class ThirdpartyController : ApiControllerBase
     /// <category>Third-Party Integration</category>
     /// <short>Get third party folder</short>
     /// <returns>Connected providers folder</returns>
-    [Read("thirdparty/common")]
+    [HttpGet("thirdparty/common")]
     public async Task<IEnumerable<FolderDto<string>>> GetCommonThirdPartyFoldersAsync()
     {
         var parent = await _fileStorageService.GetFolderAsync(await _globalFolderHelper.FolderCommonAsync);
@@ -187,14 +187,14 @@ public class ThirdpartyController : ApiControllerBase
     /// <category>Third-Party Integration</category>
     /// <short>Get third party list</short>
     /// <returns>Connected providers</returns>
-    [Read("thirdparty")]
+    [HttpGet("thirdparty")]
     public async Task<IEnumerable<ThirdPartyParams>> GetThirdPartyAccountsAsync()
     {
         return await _fileStorageServiceThirdparty.GetThirdPartyAsync();
     }
 
     /// <visible>false</visible>
-    [Read("wordpress-info")]
+    [HttpGet("wordpress-info")]
     public object GetWordpressInfo()
     {
         var token = _wordpressToken.GetToken();
@@ -237,7 +237,7 @@ public class ThirdpartyController : ApiControllerBase
     /// <returns>Folder contents</returns>
     /// <remarks>List of provider key: DropboxV2, Box, WebDav, Yandex, OneDrive, SharePoint, GoogleDrive</remarks>
     /// <exception cref="ArgumentException"></exception>
-    [Create("thirdparty")]
+    [HttpPost("thirdparty")]
     public async Task<FolderDto<string>> SaveThirdPartyAsync(ThirdPartyRequestDto inDto)
     {
         var thirdPartyParams = new ThirdPartyParams
@@ -255,7 +255,7 @@ public class ThirdpartyController : ApiControllerBase
     }
 
     /// <visible>false</visible>
-    [Create("wordpress-save")]
+    [HttpPost("wordpress-save")]
     public object WordpressSave(WordpressSaveRequestDto inDto)
     {
         if (inDto.Code.Length == 0)

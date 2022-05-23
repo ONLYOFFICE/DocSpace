@@ -66,7 +66,7 @@ public class OwnerController : BaseSettingsController
         _messageTarget = messageTarget;
     }
 
-    [Create("owner")]
+    [HttpPost("owner")]
     public object SendOwnerChangeInstructions(SettingsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
@@ -94,7 +94,7 @@ public class OwnerController : BaseSettingsController
         return new { Status = 1, Message = Resource.ChangePortalOwnerMsg.Replace(":email", emailLink) };
     }
 
-    [Update("owner")]
+    [HttpPut("owner")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PortalOwnerChange")]
     public void Owner(SettingsRequestsDto inDto)
     {

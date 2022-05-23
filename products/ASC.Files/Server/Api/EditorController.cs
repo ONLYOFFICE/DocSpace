@@ -83,7 +83,7 @@ public abstract class EditorController<T> : ApiControllerBase
     /// <param name="forcesave"></param>
     /// <category>Files</category>
     /// <returns></returns>
-    [Update("file/{fileId}/saveediting")]
+    [HttpPut("file/{fileId}/saveediting")]
     public async Task<FileDto<T>> SaveEditingFromFormAsync(T fileId, [FromForm] SaveEditingRequestDto inDto)
     {
         var file = inDto.File;
@@ -106,7 +106,7 @@ public abstract class EditorController<T> : ApiControllerBase
     /// <param name="doc"></param>
     /// <category>Files</category>
     /// <returns></returns>
-    [Create("file/{fileId}/startedit")]
+    [HttpPost("file/{fileId}/startedit")]
     public async Task<object> StartEditAsync(T fileId, StartEditRequestDto inDto)
     {
         return await _fileStorageService.StartEditAsync(fileId, inDto.EditingAlone, inDto.Doc);
@@ -122,7 +122,7 @@ public abstract class EditorController<T> : ApiControllerBase
     /// <param name="isFinish"></param>
     /// <category>Files</category>
     /// <returns></returns>
-    [Read("file/{fileId}/trackeditfile")]
+    [HttpGet("file/{fileId}/trackeditfile")]
     public Task<KeyValuePair<bool, string>> TrackEditFileAsync(T fileId, Guid tabId, string docKeyForTrack, string doc, bool isFinish)
     {
         return _fileStorageService.TrackEditFileAsync(fileId, tabId, docKeyForTrack, doc, isFinish);
@@ -137,7 +137,8 @@ public abstract class EditorController<T> : ApiControllerBase
     /// <category>Files</category>
     /// <returns></returns>
     [AllowAnonymous]
-    [Read("file/{fileId}/openedit", Check = false)]
+    [AllowNotPayment]
+    [HttpGet("file/{fileId}/openedit")]
     public async Task<Configuration<T>> OpenEditAsync(T fileId, int version, string doc, bool view)
     {
         var docParams = await _documentServiceHelper.GetParamsAsync(fileId, version, doc, true, !view, true);
@@ -172,7 +173,7 @@ public abstract class EditorController<T> : ApiControllerBase
         return configuration;
     }
 
-    [Read("file/{fileId}/presigned")]
+    [HttpGet("file/{fileId}/presigned")]
     public Task<DocumentService.FileLink> GetPresignedUriAsync(T fileId)
     {
         return _fileStorageService.GetPresignedUriAsync(fileId);
@@ -206,7 +207,7 @@ public class EditorController : ApiControllerBase
     /// <param name="docServiceUrlInternal">Document command service Domain</param>
     /// <param name="docServiceUrlPortal">Community Server Address</param>
     /// <returns></returns>
-    [Update("docservice")]
+    [HttpPut("docservice")]
     public Task<IEnumerable<string>> CheckDocServiceUrl(CheckDocServiceUrlRequestDto inDto)
     {
         _filesLinkUtility.DocServiceUrl = inDto.DocServiceUrl;
@@ -227,7 +228,7 @@ public class EditorController : ApiControllerBase
 
     /// <visible>false</visible>
     [AllowAnonymous]
-    [Read("docservice")]
+    [HttpGet("docservice")]
     public Task<object> GetDocServiceUrlAsync(bool version)
     {
         var url = _commonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.DocServiceApiUrl);
