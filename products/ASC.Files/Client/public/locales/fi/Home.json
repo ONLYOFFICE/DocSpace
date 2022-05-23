@@ -74,7 +74,7 @@
   "TooltipElementCopyMessage": "Kopioi {{element}}",
   "TooltipElementsCopyMessage": "Kopioi {{element}} elementit",
   "TooltipElementsMoveMessage": "Siirrä {{element}} elementit",
-  "TrashEmptyDescription": "Kaikki poistetut tiedostot siirretään Roskakoriin. Voit palauttaa vahingossa poistetut tiedostot tai poistaa ne pysyvästi. Huomaa, että Roskakorista poistettuja tiedostoja ei voida palauttaa.",
+  "TrashEmptyDescription": "Kaikki poistetut tiedostot siirretään 'Roskakoriin'. Voit palauttaa vahingossa poistetut tiedostot tai poistaa ne pysyvästi. Huomaa, että 'Roskakorista' poistettuja tiedostoja ei voida palauttaa.",
   "UnblockVersion": "Poista esto/sisäänkirjautuminen",
   "UploadToFolder": "Lataa kansio",
   "VersionHistory": "Versiohistoria",
