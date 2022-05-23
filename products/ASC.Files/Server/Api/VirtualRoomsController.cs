@@ -115,8 +115,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
             _ => FilterType.None
         };
 
-
-        var tagIds = JsonSerializer.Deserialize<IEnumerable<int>>(tags);
+        var tagIds = !string.IsNullOrEmpty(tags) ? JsonSerializer.Deserialize<IEnumerable<int>>(tags) : null;
 
         OrderBy orderBy = null;
         if (Enum.TryParse(_apiContext.SortBy, true, out SortedByType sortBy))
