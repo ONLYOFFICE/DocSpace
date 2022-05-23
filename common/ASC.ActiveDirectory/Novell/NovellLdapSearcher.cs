@@ -89,10 +89,21 @@ public class NovellLdapSearcher : IDisposable
         if (Server.StartsWith("LDAP://"))
             Server = Server.Substring("LDAP://".Length);
 
-        var ldapConnection = new LdapConnection();
+        //var ldapConnection = new LdapConnection();
+
+        LdapConnection ldapConnection;
 
         if (StartTls || Ssl)
-            ldapConnection.UserDefinedServerCertValidationDelegate += ServerCertValidationHandler;
+        {
+            var ldapConnectionOptions = new LdapConnectionOptions();
+            ldapConnectionOptions.ConfigureRemoteCertificateValidationCallback(ServerCertValidationHandler);
+            ldapConnection = new LdapConnection(ldapConnectionOptions);
+        }
+            //ldapConnection.UserDefinedServerCertValidationDelegate += ServerCertValidationHandler;
+        else
+        {
+            ldapConnection = new LdapConnection();
+        }
 
         if (Ssl)
             ldapConnection.SecureSocketLayer = true;
