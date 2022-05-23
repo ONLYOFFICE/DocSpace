@@ -40,6 +40,7 @@ const Navigation = ({
   isCurrentFolderInfo,
   toggleInfoPanel,
   isInfoPanelVisible,
+  isShowRootFolder,
   titles,
   ...rest
 }) => {
@@ -189,6 +190,7 @@ const Navigation = ({
               isRootFolder={isRootFolder}
               toggleInfoPanel={toggleInfoPanel}
               isInfoPanelVisible={isInfoPanelVisible}
+              isShowRootFolder={isShowRootFolder}
             />
           )}
         </>

@@ -133,8 +133,22 @@ const StyledCrossIcon = styled(CrossIcon)`
 
 StyledCrossIcon.defaultProps = { theme: Base };
 
-const InfoPanel = ({ children, isVisible, setIsVisible, viewAs }) => {
+const InfoPanel = ({
+  children,
+  isVisible,
+  setIsVisible,
+  viewAs,
+  isRootFolder,
+  selectedItems,
+
+  isShowRootFolder,
+  setIsShowRootFolder,
+}) => {
+  if (isRootFolder && selectedItems.length === 0) setIsShowRootFolder(true);
+  else setIsShowRootFolder(false);
+
   if (!isVisible) return null;
+  if (isShowRootFolder) return null;
 
   const closeInfoPanel = () => setIsVisible(false);
 
@@ -182,17 +196,44 @@ StyledInfoPanelWrapper.defaultProps = { theme: Base };
 StyledInfoPanel.defaultProps = { theme: Base };
 InfoPanel.defaultProps = { theme: Base };
 
-export default inject(({ infoPanelStore }) => {
-  let isVisible = false;
-  let setIsVisible = () => {};
+export default inject(({ infoPanelStore, selectedFolderStore, filesStore }) => {
+  let isVisible = false,
+    isRootFolder = false,
+    setIsVisible = () => {},
+    selection = [],
+    bufferSelection = null,
+    isShowRootFolder = false,
+    setIsShowRootFolder = () => {};
 
   if (infoPanelStore) {
     isVisible = infoPanelStore.isVisible;
     setIsVisible = infoPanelStore.setIsVisible;
+    isShowRootFolder = infoPanelStore.isShowRootFolder;
+    setIsShowRootFolder = infoPanelStore.setIsShowRootFolder;
   }
+
+  if (selectedFolderStore) {
+    isRootFolder = selectedFolderStore.isRootFolder;
+  }
+
+  if (filesStore) {
+    selection = filesStore.selection;
+    bufferSelection = filesStore.bufferSelection;
+  }
+
+  const selectedItems =
+    selection?.length > 0
+      ? [...selection]
+      : bufferSelection
+      ? [bufferSelection]
+      : [];
 
   return {
     isVisible,
     setIsVisible,
+    isRootFolder,
+    selectedItems,
+    isShowRootFolder,
+    setIsShowRootFolder,
   };
 })(InfoPanel);
