@@ -24,26 +24,15 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ProtoBuf;
+
 namespace ASC.Core.Encryption;
 
+[ProtoContract]
 public class EncryptionSettings
 {
+    [ProtoMember(1)]
     internal string Pass;
-    public string Password
-    {
-        get => Pass;
-        set => Pass = (value ?? string.Empty).Replace('#', '_');
-    }
-
-    public EncryprtionStatus Status { get; set; }
-    public bool NotifyUsers { get; set; }
-
-    public EncryptionSettings(EncryptionSettingsProto encryptionSettingsProto)
-    {
-        Password = encryptionSettingsProto.Password;
-        Status = encryptionSettingsProto.Status;
-        NotifyUsers = encryptionSettingsProto.NotifyUsers;
-    }
 
     public EncryptionSettings()
     {
@@ -51,6 +40,19 @@ public class EncryptionSettings
         Status = EncryprtionStatus.Decrypted;
         NotifyUsers = true;
     }
+
+    public string Password
+    {
+        get => Pass;
+        set => Pass = (value ?? string.Empty).Replace('#', '_');
+    }
+
+    [ProtoMember(2)]
+    public EncryprtionStatus Status { get; set; }
+
+    [ProtoMember(3)]
+    public bool NotifyUsers { get; set; }
+
 }
 
 [Scope]

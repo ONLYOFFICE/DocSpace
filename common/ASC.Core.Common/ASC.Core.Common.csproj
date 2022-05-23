@@ -35,7 +35,6 @@
     <None Remove="protos\consumer_cache_item.proto" />
     <None Remove="protos\create_client_proto.proto" />
     <None Remove="protos\disable_client_proto.proto" />
-    <None Remove="protos\encryption_settings_proto.proto" />
     <None Remove="protos\group_cache_item.proto" />
     <None Remove="protos\quota_cache_item.proto" />
     <None Remove="protos\register_user_proto.proto" />
@@ -65,7 +64,6 @@
   </ItemGroup>
   <ItemGroup>
     <Protobuf Include="protos\create_client_proto.proto" />
-    <Protobuf Include="protos\encryption_settings_proto.proto" />
     <Protobuf Include="protos\disable_client_proto.proto" />
     <Protobuf Include="protos\register_user_proto.proto" />
     <Protobuf Include="protos\settings_cache_item.proto" />

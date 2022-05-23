@@ -24,6 +24,9 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Data.Storage.Encryption.IntegrationEvents.Events;
+using ASC.EventBus.Abstractions;
+
 namespace ASC.Web.Api.Controllers.Settings;
 
 public class StorageController : BaseSettingsController
@@ -42,17 +45,19 @@ public class StorageController : BaseSettingsController
     private readonly CommonLinkUtility _commonLinkUtility;
     private readonly StorageSettingsHelper _storageSettingsHelper;
     private readonly ServiceClient _serviceClient;
-    private readonly EncryptionServiceClient _encryptionServiceClient;
     private readonly EncryptionSettingsHelper _encryptionSettingsHelper;
     private readonly BackupAjaxHandler _backupAjaxHandler;
     private readonly ICacheNotify<DeleteSchedule> _cacheDeleteSchedule;
     private readonly EncryptionWorker _encryptionWorker;
     private readonly ILog _log;
+    private readonly IEventBus _eventBus;
+    private readonly ASC.Core.SecurityContext _securityContext;
 
     public StorageController(
         IOptionsMonitor<ILog> option,
         ServiceClient serviceClient,
         MessageService messageService,
+        ASC.Core.SecurityContext securityContext,
         StudioNotifyService studioNotifyService,
         ApiContext apiContext,
         TenantManager tenantManager,
@@ -66,7 +71,7 @@ public class StorageController : BaseSettingsController
         IWebHostEnvironment webHostEnvironment,
         ConsumerFactory consumerFactory,
         IMemoryCache memoryCache,
-        EncryptionServiceClient encryptionServiceClient,
+        IEventBus eventBus,
         EncryptionSettingsHelper encryptionSettingsHelper,
         BackupAjaxHandler backupAjaxHandler,
         ICacheNotify<DeleteSchedule> cacheDeleteSchedule,
@@ -74,6 +79,7 @@ public class StorageController : BaseSettingsController
         IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _log = option.Get("ASC.Api");
+        _eventBus = eventBus;
         _serviceClient = serviceClient;
         _webHostEnvironment = webHostEnvironment;
         _consumerFactory = consumerFactory;
@@ -86,11 +92,11 @@ public class StorageController : BaseSettingsController
         _coreBaseSettings = coreBaseSettings;
         _commonLinkUtility = commonLinkUtility;
         _storageSettingsHelper = storageSettingsHelper;
-        _encryptionServiceClient = encryptionServiceClient;
         _encryptionSettingsHelper = encryptionSettingsHelper;
         _backupAjaxHandler = backupAjaxHandler;
         _cacheDeleteSchedule = cacheDeleteSchedule;
         _encryptionWorker = encryptionWorker;
+        _securityContext = securityContext;
     }
 
     [Read("storage")]
@@ -243,14 +249,19 @@ public class StorageController : BaseSettingsController
 
         _encryptionSettingsHelper.Save(settings);
 
-        var encryptionSettingsProto = new EncryptionSettingsProto
-        {
-            NotifyUsers = settings.NotifyUsers,
-            Password = settings.Password,
-            Status = settings.Status,
-            ServerRootPath = serverRootPath
-        };
-        _encryptionServiceClient.Start(encryptionSettingsProto);
+        _eventBus.Publish(new EncryptionDataStorageRequestedIntegration
+        (
+              encryptionSettings: new EncryptionSettings
+              {
+                  NotifyUsers = settings.NotifyUsers,
+                  Password = settings.Password,
+                  Status = settings.Status
+              },
+              serverRootPath: serverRootPath,
+              createBy: _securityContext.CurrentAccount.ID,
+              tenantId: _tenantManager.GetCurrentTenant().Id
+
+        ));
     }
 
     /// <summary>

@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,11 +24,35 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Data.Storage.Encryption;
+using ASC.Data.Storage.Encryption.IntegrationEvents.Events;
+using ASC.EventBus.Abstractions;
 
-public interface IEncryptionService
+namespace ASC.Notify.IntegrationEvents.EventHandling;
+
+[Scope]
+public class EncryptionDataStorageRequestedIntegrationEventHandler : IIntegrationEventHandler<EncryptionDataStorageRequestedIntegration>
 {
-    void Start(EncryptionSettingsProto encryptionSettingsProto);
+    private readonly ILog _logger;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
+    private readonly EncryptionWorker _encryptionWorker;
 
-    void Stop();
+    public EncryptionDataStorageRequestedIntegrationEventHandler(
+        IOptionsMonitor<ILog> logger,
+        EncryptionWorker encryptionWorker,
+        IServiceScopeFactory serviceScopeFactory)
+    {
+        _logger = logger.CurrentValue;
+        _encryptionWorker = encryptionWorker;
+        _serviceScopeFactory = serviceScopeFactory;
+    }
+
+    public async Task Handle(EncryptionDataStorageRequestedIntegration @event)
+    {
+
+        //       _logger.InfoFormat("----- Handling integration event: {IntegrationEventId} at {AppName} - ({@IntegrationEvent})", @event.Id, Program.AppName, @event);
+
+        _encryptionWorker.Start(@event.EncryptionSettings, @event.ServerRootPath);
+
+        await Task.CompletedTask;
+    }
 }
