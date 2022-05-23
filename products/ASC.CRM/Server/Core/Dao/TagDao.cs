@@ -75,14 +75,14 @@ namespace ASC.CRM.Core.Dao
         private bool IsExistInDb(EntityType entityType, String tagName)
         {
             return Query(CrmDbContext.Tags)
-                    .Where(x => x.EntityType == entityType && String.Compare(x.Title, tagName, true) == 0)
+                    .Where(x => x.EntityType == entityType && x.Title.ToLower() == tagName.ToLower())
                     .Any();
         }
 
         private int GetTagId(EntityType entityType, String tagName)
         {
             return Query(CrmDbContext.Tags)
-                    .Where(x => x.EntityType == entityType && String.Compare(x.Title, tagName, true) == 0)
+                    .Where(x => x.EntityType == entityType && x.Title.ToLower() == tagName.ToLower())
                     .Select(x => x.Id)
                     .SingleOrDefault();
         }

@@ -65,6 +65,7 @@ namespace ASC.Web.CRM.Classes
     }
 
     [Scope]
+    [Serializable]
     public class InvoiceSetting
     {
         public InvoiceSetting()
@@ -79,6 +80,7 @@ namespace ASC.Web.CRM.Classes
 
         public IConfiguration Configuration { get; }
 
+        [JsonIgnore]
         public InvoiceSetting DefaultSettings
         {
             get
@@ -106,6 +108,7 @@ namespace ASC.Web.CRM.Classes
         public String CompanyAddress { get; set; }
     }
 
+    [Serializable]
     public class CrmSettings : ISettings<CrmSettings>
     {
         private readonly CurrencyProvider _currencyProvider;
@@ -121,15 +124,11 @@ namespace ASC.Web.CRM.Classes
             get { return new Guid("fdf39b9a-ec96-4eb7-aeab-63f2c608eada"); }
         }
 
-        [JsonPropertyName("SMTPServerSetting")]
         public SMTPServerSetting SMTPServerSettingOld { get; set; }
         public InvoiceSetting InvoiceSetting { get; set; }
         public Guid WebFormKey { get; set; }
-
-        [JsonPropertyName("DefaultCurrency")]
         public String DefaultCurrency { get; set; }
 
-        [JsonPropertyName("ChangeContactStatusGroupAuto")]
         public string ChangeContactStatusGroupAutoDto { get; set; }
 
         [JsonIgnore]
@@ -138,8 +137,6 @@ namespace ASC.Web.CRM.Classes
             get { return string.IsNullOrEmpty(ChangeContactStatusGroupAutoDto) ? null : (bool?)bool.Parse(ChangeContactStatusGroupAutoDto); }
             set { ChangeContactStatusGroupAutoDto = value.HasValue ? value.Value.ToString().ToLowerInvariant() : null; }
         }
-
-        [JsonPropertyName("AddTagToContactGroupAuto")]
         public string AddTagToContactGroupAutoDto { get; set; }
 
         [JsonIgnore]
@@ -149,13 +146,10 @@ namespace ASC.Web.CRM.Classes
             set { AddTagToContactGroupAutoDto = value.HasValue ? value.Value.ToString().ToLowerInvariant() : null; }
         }
 
-        [JsonPropertyName("WriteMailToHistoryAuto")]
         public Boolean WriteMailToHistoryAuto { get; set; }
 
-        [JsonPropertyName("IsConfiguredPortal")]
         public bool IsConfiguredPortal { get; set; }
 
-        [JsonPropertyName("IsConfiguredSmtp")]
         public bool IsConfiguredSmtp { get; set; }
         public CrmSettings GetDefault()
         {
@@ -178,7 +172,6 @@ namespace ASC.Web.CRM.Classes
 
     public class CrmReportSampleSettings : ISettings<CrmReportSampleSettings>
     {
-        [JsonPropertyName("NeedToGenerate")]
         public bool NeedToGenerate { get; set; }
 
         public Guid ID

@@ -121,7 +121,12 @@ namespace ASC.CRM.Core.Dao
                 throw new ArgumentException();
 
             if (item.SortOrder == 0)
-                item.SortOrder = Query(CrmDbContext.DealMilestones).Select(x => x.SortOrder).Max() + 1;
+            {
+                if (Query(CrmDbContext.DealMilestones).Any())
+                {
+                    item.SortOrder = Query(CrmDbContext.DealMilestones).Select(x => x.SortOrder).Max() + 1;
+                }
+            }
 
             var dbEntity = new DbDealMilestone
             {
