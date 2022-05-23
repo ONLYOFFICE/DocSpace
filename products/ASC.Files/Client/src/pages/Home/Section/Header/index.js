@@ -362,6 +362,7 @@ class SectionHeaderContent extends React.Component {
       isHeaderIndeterminate,
       showText,
       toggleInfoPanel,
+      isShowRootFolder,
     } = this.props;
     const menuItems = this.getMenuItems();
     const isLoading = !title || !tReady;
@@ -419,6 +420,7 @@ class SectionHeaderContent extends React.Component {
                     onBackToParentFolder={this.onBackToParentFolder}
                     toggleInfoPanel={toggleInfoPanel}
                     isInfoPanelVisible={isInfoPanelVisible}
+                    isShowRootFolder={isShowRootFolder}
                     titles={{
                       trash: t("EmptyRecycleBin"),
                     }}
@@ -483,7 +485,7 @@ export default inject(
       backToParentFolder,
     } = filesActionsStore;
 
-    const { toggleIsVisible, isVisible } = infoPanelStore;
+    const { isVisible, isShowRootFolder, toggleIsVisible } = infoPanelStore;
 
     return {
       showText: auth.settingsStore.showText,
@@ -496,6 +498,7 @@ export default inject(
       canCreate,
       toggleInfoPanel: toggleIsVisible,
       isInfoPanelVisible: isVisible,
+      isShowRootFolder,
       isHeaderVisible,
       isHeaderIndeterminate,
       isHeaderChecked,

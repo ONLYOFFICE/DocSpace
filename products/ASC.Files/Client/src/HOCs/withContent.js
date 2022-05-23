@@ -413,7 +413,16 @@ export default function withContent(WrappedContent) {
         isEdit,
         titleWithoutExt,
       } = this.props;
-      const { access, createdBy, fileExst, fileStatus, href, icon, id } = item;
+      const {
+        access,
+        createdBy,
+        fileExst,
+        fileStatus,
+        href,
+        icon,
+        id,
+        isFolder,
+      } = item;
 
       const updatedDate = this.getStatusByDate(false);
       const createdDate = this.getStatusByDate(true);
@@ -456,6 +465,7 @@ export default function withContent(WrappedContent) {
           cancelUpdateItem={this.cancelUpdateItem}
           isUpdatingRowItem={isUpdatingRowItem}
           passwordEntryProcess={passwordEntryProcess}
+          isFolder={item.fileExst ? false : true}
         />
       ) : (
         <WrappedContent
