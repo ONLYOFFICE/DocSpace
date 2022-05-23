@@ -75,6 +75,7 @@
   "TrashEmptyDescription": "All deleted files are moved to 'Trash'. Restore files deleted by mistake or delete them permanently. Please note, that the files deleted from the 'Trash' cannot be restored any longer.",
   "UnblockVersion": "Unblock/Check-in",
   "UploadToFolder": "Upload to folder",
+  "VersionBadge": "V.{{version}}",
   "VersionHistory": "Version history",
   "ViewList": "List",
   "ViewTiles": "Tiles"

@@ -75,6 +75,7 @@
   "TrashEmptyDescription": "'Səbət' bölməsinə bütün silinmiş fayllar yerləşdirilirlər. Əgər onlar səhvən siliniblərsə, Siz onları bərpa edə bilərsiniz, və ya onları ömürlük silə bilərsiniz. Lütfən, nəzərə alın ki, 'Səbətdən' silinən fayllar bir də bərpa oluna bilməyəcəklər.",
   "UnblockVersion": "Blokdan çıxar",
   "UploadToFolder": "Qovluğua yüklə",
+  "VersionBadge": "V.{{version}}",
   "VersionHistory": "Versiya tarixçəsi",
   "ViewList": "Siyahı",
   "ViewTiles": "Plitkalar"

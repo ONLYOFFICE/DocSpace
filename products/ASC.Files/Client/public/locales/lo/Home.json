@@ -71,6 +71,7 @@
   "TooltipElementsMoveMessage": "ຍ້າຍ {{element}} ອົງປະກອບ",
   "UnblockVersion": "ເລິກການບ໋ອກ/ເຊັກອິນ",
   "UploadToFolder": "ອັບໂຫລດໄປຍັງໂຟຣເດີ",
+  "VersionBadge": "V.{{version}}",
   "ViewList": "ລາຍການ",
   "ViewTiles": "ຫົວຂໍ້"
 }

@@ -75,6 +75,7 @@
   "TrashEmptyDescription": "Oddelek 'koš' je prostor, kamor so premaknjene vse izbrisane datoteke. Če ste jih izbrisali po pomoti jih lahko obnovite, ali pa jih popolnoma izbrišete. Prosim vedite, da, ko datoteke izbrišete iz 'koša' teh ni več mogoče obnoviti.",
   "UnblockVersion": "Odblokiraj/prijavi se",
   "UploadToFolder": "Naloži v mapo",
+  "VersionBadge": "R.{{version}}",
   "VersionHistory": "Zgodovina verzij",
   "ViewList": "Seznam",
   "ViewTiles": "Plošče"

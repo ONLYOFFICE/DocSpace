@@ -75,6 +75,7 @@
   "TrashEmptyDescription": "Kaikki poistetut tiedostot siirretään 'Roskakoriin'. Voit palauttaa vahingossa poistetut tiedostot tai poistaa ne pysyvästi. Huomaa, että 'Roskakorista' poistettuja tiedostoja ei voida palauttaa.",
   "UnblockVersion": "Poista esto/sisäänkirjautuminen",
   "UploadToFolder": "Lataa kansio",
+  "VersionBadge": "V.{{version}}",
   "VersionHistory": "Versiohistoria",
   "ViewList": "Lista",
   "ViewTiles": "Kuvakkeet"
