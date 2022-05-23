@@ -50,8 +50,7 @@ public class DbHelper
             .Join(ActiveDirectoryDbContext.Tenants, r => r.TenantId, r => r.Id, (settings, tenant) => new { settings, tenant })
             .Select(r => JsonExtensions.JsonValue(nameof(r.settings.Data).ToLower(), enableLdapAuthentication.ToString()))
             .Distinct()
-            .ToList()
-            .Select(r => Convert.ToInt32(r))
+            .Select(r => r != null ? Convert.ToInt32(r) : 0)
             .ToList();
 
         return data;

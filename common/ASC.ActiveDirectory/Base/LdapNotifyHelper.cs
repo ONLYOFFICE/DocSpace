@@ -30,20 +30,20 @@ public class LdapNotifyHelper
 {
 
     private readonly Dictionary<int, Tuple<INotifyClient, LdapNotifySource>> _clients;
-    private readonly IServiceProvider _serviceProvider;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
 
     public LdapNotifyHelper(
-        IServiceProvider serviceProvider)
+        IServiceScopeFactory serviceScopeFactory)
     {
         _clients = new Dictionary<int, Tuple<INotifyClient, LdapNotifySource>>();
-        _serviceProvider = serviceProvider;
+        _serviceScopeFactory = serviceScopeFactory;
     }
 
     public void RegisterAll()
     {
         var task = new Task(() =>
         {
-            using var scope = _serviceProvider.CreateScope();
+            using var scope = _serviceScopeFactory.CreateScope();
             var tenantManager = scope.ServiceProvider.GetRequiredService<TenantManager>();
             var settingsManager = scope.ServiceProvider.GetRequiredService<SettingsManager>();
             var dbHelper = scope.ServiceProvider.GetRequiredService<DbHelper>();
@@ -70,7 +70,7 @@ public class LdapNotifyHelper
     {
         if (!_clients.ContainsKey(tenant.Id))
         {
-            using var scope = _serviceProvider.CreateScope();
+            using var scope = _serviceScopeFactory.CreateScope();
             var source = scope.ServiceProvider.GetRequiredService<LdapNotifySource>();
             source.Init(tenant);
             var workContext = scope.ServiceProvider.GetRequiredService<WorkContext>();
@@ -85,7 +85,7 @@ public class LdapNotifyHelper
     {
         if (_clients.ContainsKey(tenant.Id))
         {
-            using var scope = _serviceProvider.CreateScope();
+            using var scope = _serviceScopeFactory.CreateScope();
             var workContext = scope.ServiceProvider.GetRequiredService<WorkContext>();
             var client = _clients[tenant.Id];
             workContext.UnregisterSendMethod(client.Item2.AutoSync);
@@ -95,7 +95,7 @@ public class LdapNotifyHelper
 
     public void AutoSync(Tenant tenant)
     {
-        using var scope = _serviceProvider.CreateScope();
+        using var scope = _serviceScopeFactory.CreateScope();
         var settingsManager = scope.ServiceProvider.GetRequiredService<SettingsManager>();
         var ldapSettings = settingsManager.LoadForTenant<LdapSettings>(tenant.Id);
 

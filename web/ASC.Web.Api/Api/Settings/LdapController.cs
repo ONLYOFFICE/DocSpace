@@ -108,7 +108,7 @@ public class LdapController : BaseSettingsController
     /// <category>LDAP</category>
     /// <returns>Cron expression or null</returns>
     [Read("ldap/cron")]
-    public string GetLdapCronSettings()
+    public object GetLdapCronSettings()
     {
         CheckLdapPermissions();
 
@@ -131,13 +131,6 @@ public class LdapController : BaseSettingsController
     /// </short>
     /// <category>LDAP</category>
     /// <param name="cron">Cron expression</param>
-    [Create("ldap/cron")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public void SetLdapCronSettingsFromForm([FromForm] LdapCronModel model)
-    {
-        SetLdapCronSettings(model);
-    }
-
 
     [Create("ldap/cron")]
     public void SetLdapCronSettingsFromBody([FromBody] LdapCronModel model)
@@ -229,21 +222,9 @@ public class LdapController : BaseSettingsController
     /// <param name="settings">LDAP settings in the serialized string format</param>
     /// <param name="acceptCertificate">Specifies if the errors of checking certificates are allowed (true) or not (false)</param>
     /// <returns>Operation status</returns>
+    /// 
     [Create("ldap")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public LdapOperationStatus SaveLdapSettingsFromForm([FromForm] LdapSettingsModel model)
-    {
-        return SaveLdapSettings(model);
-    }
-
-
-    [Create("ldap")]
-    public LdapOperationStatus SaveLdapSettingsFromBody([FromBody] LdapSettingsModel model)
-    {
-        return SaveLdapSettings(model);
-    }
-
-    private LdapOperationStatus SaveLdapSettings(LdapSettingsModel model)
+    public LdapOperationStatus SaveLdapSettings([FromBody] LdapSettingsModel model)
     {
         CheckLdapPermissions();
 
@@ -270,20 +251,9 @@ public class LdapController : BaseSettingsController
     /// <param name="settings">LDAP settings in the serialized string format</param>
     /// <param name="acceptCertificate">Specifies if the errors of checking certificates are allowed (true) or not (false)</param>
     /// <returns>Operation status</returns>
-    [Create("ldap/save/test")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public LdapOperationStatus TestLdapSaveFromForm([FromForm] LdapSettingsModel model)
-    {
-        return TestLdapSave(model);
-    }
 
     [Create("ldap/save/test")]
-    public LdapOperationStatus TestLdapSaveFromBody([FromBody] LdapSettingsModel model)
-    {
-        return TestLdapSave(model);
-    }
-
-    private LdapOperationStatus TestLdapSave(LdapSettingsModel model)
+    public LdapOperationStatus TestLdapSave([FromBody] LdapSettingsModel model)
     {
         CheckLdapPermissions();
 
