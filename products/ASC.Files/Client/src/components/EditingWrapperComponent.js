@@ -114,6 +114,7 @@ const EditingWrapper = styled.div`
 
     ${(props) =>
       props.viewAs === "tile" &&
+      !props.isUpdatingRowItem &&
       css`
         background: #fff;
         border: ${(props) =>
@@ -191,7 +192,6 @@ const EditingWrapperComponent = (props) => {
     isFolder,
   } = props;
 
-  console.log("isFolder", isFolder);
   const isTable = viewAs === "table";
 
   const [OkIconIsHovered, setIsHoveredOk] = useState(false);

@@ -177,7 +177,7 @@ const Badges = ({
             {...versionBadgeProps}
             className="badge-version badge-version-current tablet-badge icons-group"
             backgroundColor={theme.filesBadges.backgroundColor}
-            label={t("VersionBadge:Version", { version: countVersions })}
+            label={t("VersionBadge", { version: countVersions })}
             onClick={onShowVersionHistory}
             noHover={true}
           />
