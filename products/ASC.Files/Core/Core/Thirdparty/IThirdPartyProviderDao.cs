@@ -72,13 +72,13 @@ namespace ASC.Files.Thirdparty
             return Task.FromResult(false);
         }
 
-        public Task SaveThumbnailAsync(File<string> file, Stream thumbnail)
+        public Task SaveThumbnailAsync(File<string> file, Stream thumbnail, int width, int height)
         {
             //Do nothing
             return Task.CompletedTask;
         }
 
-        public Task<Stream> GetThumbnailAsync(File<string> file)
+        public Task<Stream> GetThumbnailAsync(File<string> file, int width, int height)
         {
             return Task.FromResult<Stream>(null);
         }

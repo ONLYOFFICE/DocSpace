@@ -8874,7 +8874,7 @@ electron@^12.0.4:
     "@types/node" "^14.6.2"
     extract-zip "^1.0.3"
 
-element-resize-detector@^1.2.2:
+element-resize-detector@^1.2.2, element-resize-detector@^1.2.4:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/element-resize-detector/-/element-resize-detector-1.2.4.tgz#3e6c5982dd77508b5fa7e6d5c02170e26325c9b1"
   integrity sha512-Fl5Ftk6WwXE0wqCgNoseKWndjzZlDCwuPTcoVZfCP9R3EHQF8qUtr3YUPNETegRBOKqQKPW3n4kiIWngGi8tKg==
