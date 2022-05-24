@@ -59,10 +59,13 @@ global using ASC.Data.Storage;
 global using ASC.Data.Storage.Configuration;
 global using ASC.Data.Storage.DiscStorage;
 global using ASC.Data.Storage.Encryption;
+global using ASC.Data.Storage.Encryption.IntegrationEvents.Events;
 global using ASC.Data.Storage.GoogleCloud;
 global using ASC.Data.Storage.Log;
 global using ASC.Data.Storage.RackspaceCloud;
 global using ASC.Data.Storage.S3;
+global using ASC.EventBus.Abstractions;
+global using ASC.EventBus.Events;
 global using ASC.Notify.Messages;
 global using ASC.Protos.Migration;
 global using ASC.Security.Cryptography;
@@ -82,7 +85,8 @@ global using Microsoft.Extensions.Logging;
 global using net.openstack.Core.Domain;
 global using net.openstack.Providers.Rackspace;
 
+global using ProtoBuf;
+
 global using static Google.Cloud.Storage.V1.UrlSigner;
 
 global using MimeMapping = ASC.Common.Web.MimeMapping;
-

@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,45 +24,25 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Files.ThumbnailBuilder;
+namespace ASC.Notify.IntegrationEvents.EventHandling;
 
-[Singletone]
-public class ThumbnailService : IHostedService
+[Scope]
+public class EncryptionDataStorageRequestedIntegrationEventHandler : IIntegrationEventHandler<EncryptionDataStorageRequestedIntegration>
 {
-    private readonly ICacheNotify<ThumbnailRequest> _cacheNotify;
-    private readonly ILogger _logger;
+    private readonly EncryptionWorker _encryptionWorker;
 
-    public ThumbnailService(ICacheNotify<ThumbnailRequest> cacheNotify, ILogger<ThumbnailService> logger)
+    public EncryptionDataStorageRequestedIntegrationEventHandler(EncryptionWorker encryptionWorker)
     {
-        _cacheNotify = cacheNotify;
-        _logger = logger;
+        _encryptionWorker = encryptionWorker;
     }
 
-    public Task StartAsync(CancellationToken cancellationToken)
+    public async Task Handle(EncryptionDataStorageRequestedIntegration @event)
     {
-        _logger.InformationThumbnailServiceRunning();
 
-        _cacheNotify.Subscribe(BuildThumbnails, CacheNotifyAction.Insert);
+        //       _logger.InformationHandlingIntegrationEvent(@event.Id, Program.AppName, @event);
 
-        return Task.CompletedTask;
-    }
+        _encryptionWorker.Start(@event.EncryptionSettings, @event.ServerRootPath);
 
-    public Task StopAsync(CancellationToken cancellationToken)
-    {
-        _logger.InformationThumbnailServiceStopping();
-
-        _cacheNotify.Unsubscribe(CacheNotifyAction.Insert);
-
-        return Task.CompletedTask;
-    }
-
-    public void BuildThumbnails(ThumbnailRequest request)
-    {
-        foreach (var fileId in request.Files)
-        {
-            var fileData = new FileData<int>(request.Tenant, fileId, request.BaseUrl);
-
-            FileDataQueue.Queue.TryAdd(fileId, fileData);
-        }
+        await Task.CompletedTask;
     }
 }

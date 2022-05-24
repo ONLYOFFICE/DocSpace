@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.EventBus.Events;
-
 var options = new WebApplicationOptions
 {
     Args = args,
@@ -58,9 +56,9 @@ startup.Configure(app, app.Environment);
 
 var eventBus = ((IApplicationBuilder)app).ApplicationServices.GetRequiredService<IEventBus>();
 
-eventBus.Subscribe<BackupRequestIntegrationEvent, BackupRequestIntegrationEventHandler>();
-eventBus.Subscribe<BackupRestoreRequestIntegrationEvent, BackupRestoreRequestIntegrationEventHandler>();
-eventBus.Subscribe<IntegrationEvent, BackupDeleteScheldureRequestIntegrationEventHandler>();
+eventBus.Subscribe<BackupRequestIntegrationEvent, BackupRequestedIntegrationEventHandler>();
+eventBus.Subscribe<BackupRestoreRequestIntegrationEvent, BackupRestoreRequestedIntegrationEventHandler>();
+eventBus.Subscribe<IntegrationEvent, BackupDeleteScheldureRequestedIntegrationEventHandler>();
 
 app.Run();
 

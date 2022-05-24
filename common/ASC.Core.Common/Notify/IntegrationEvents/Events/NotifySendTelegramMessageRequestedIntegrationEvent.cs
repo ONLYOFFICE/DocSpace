@@ -24,10 +24,22 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Data.Backup.BackgroundTasks.Log;
+namespace ASC.Core.Common.Notify.IntegrationEvents.Events;
 
-internal static partial class BackupDeleteScheldureRequestIntegrationEventHandlerLogger
+[ProtoContract]
+public record NotifySendTelegramMessageRequestedIntegrationEvent : IntegrationEvent
 {
-    [LoggerMessage(Level = LogLevel.Information, Message = "----- Handling integration event: {integrationEventId} at {appName} - ({integrationEvent})")]
-    public static partial void InformationHandlingIntegrationEvent(this ILogger logger, Guid integrationEventId, string appName, IntegrationEvent integrationEvent);
+    private NotifySendTelegramMessageRequestedIntegrationEvent() : base()
+    {
+
+    }
+
+    public NotifySendTelegramMessageRequestedIntegrationEvent(Guid createBy, int tenantId) :
+        base(createBy, tenantId)
+    {
+
+    }
+
+    [ProtoMember(1)]
+    public NotifyMessage NotifyMessage { get; set; }
 }

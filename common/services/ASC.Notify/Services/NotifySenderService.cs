@@ -32,27 +32,64 @@ public class NotifySenderService : BackgroundService
     private readonly DbWorker _db;
     private readonly ILogger _logger;
     private readonly NotifyServiceCfg _notifyServiceCfg;
+    private readonly NotifyConfiguration _notifyConfiguration;
+    private readonly IServiceScopeFactory _scopeFactory;
 
     public NotifySenderService(
         IOptions<NotifyServiceCfg> notifyServiceCfg,
+        NotifyConfiguration notifyConfiguration,
         DbWorker dbWorker,
+        IServiceScopeFactory scopeFactory,
         ILoggerProvider options)
     {
         _logger = options.CreateLogger("ASC.NotifySender");
         _notifyServiceCfg = notifyServiceCfg.Value;
+        _notifyConfiguration = notifyConfiguration;
         _db = dbWorker;
+        _scopeFactory = scopeFactory;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _logger.InformationNotifySenderRunning();
 
+        stoppingToken.Register(() => _logger.Debug("NotifySenderService background task is stopping."));
+
+        if (0 < _notifyServiceCfg.Schedulers.Count)
+        {
+            InitializeNotifySchedulers();
+        }
+
         while (!stoppingToken.IsCancellationRequested)
         {
+            using var serviceScope = _scopeFactory.CreateScope();
+
+            var registerInstanceService = serviceScope.ServiceProvider.GetService<IRegisterInstanceManager<NotifySenderService>>();
+
+            if (!await registerInstanceService.IsActive(RegisterInstanceWorkerService<NotifySenderService>.InstanceId))
+            {
+                _logger.Debug($"Notify Sender Service background task with instance id {RegisterInstanceWorkerService<NotifySenderService>.InstanceId} is't active.");
+
+                await Task.Delay(1000, stoppingToken);
+
+                continue;
+            }
+
             await ThreadManagerWork(stoppingToken);
         }
 
         _logger.InformationNotifySenderStopping();
+    }
+
+    private void InitializeNotifySchedulers()
+    {
+        _notifyConfiguration.Configure();
+
+        foreach (var pair in _notifyServiceCfg.Schedulers.Where(r => r.MethodInfo != null))
+        {
+            _logger.DebugStartScheduler(pair.Name, pair.MethodInfo);
+            pair.MethodInfo.Invoke(null, null);
+        }
     }
 
     private async Task ThreadManagerWork(CancellationToken stoppingToken)

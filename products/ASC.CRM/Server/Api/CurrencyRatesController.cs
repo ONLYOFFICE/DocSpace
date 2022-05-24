@@ -35,7 +35,7 @@ using ASC.CRM.ApiModels;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Resources;
-using ASC.MessagingSystem;
+using ASC.MessagingSystem.Core;
 using ASC.Web.Api.Routing;
 using ASC.Web.CRM.Classes;
 

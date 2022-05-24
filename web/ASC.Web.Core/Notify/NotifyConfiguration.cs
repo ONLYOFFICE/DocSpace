@@ -389,7 +389,7 @@ public class NotifyTransferRequest : INotifyEngineAction
                     var attachment = new NotifyMessageAttachment
                     {
                         FileName = "logo.png",
-                        Content = ByteString.CopyFrom(logoData),
+                        Content = logoData,
                         ContentId = MimeUtils.GenerateMessageId()
                     };
 

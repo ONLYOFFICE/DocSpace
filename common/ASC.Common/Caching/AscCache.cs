@@ -24,7 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using MemoryCache = System.Runtime.Caching.MemoryCache;
 
 namespace ASC.Common.Caching;
 
@@ -32,32 +31,30 @@ namespace ASC.Common.Caching;
 public class AscCacheNotify
 {
     private readonly ICacheNotify<AscCacheItem> _cacheNotify;
+    private readonly ICache _cache;
 
-    public AscCacheNotify(ICacheNotify<AscCacheItem> cacheNotify)
+    public AscCacheNotify(ICacheNotify<AscCacheItem> cacheNotify, ICache cache)
     {
         _cacheNotify = cacheNotify;
+        _cache = cache;
 
         _cacheNotify.Subscribe((item) => { OnClearCache(); }, CacheNotifyAction.Any);
     }
 
     public void ClearCache() => _cacheNotify.Publish(new AscCacheItem { Id = Guid.NewGuid().ToString() }, CacheNotifyAction.Any);
 
-    public static void OnClearCache()
+    public void OnClearCache()
     {
-        var keys = MemoryCache.Default.Select(r => r.Key);
-
-        foreach (var k in keys)
-        {
-            MemoryCache.Default.Remove(k);
+        _cache.Reset();
         }
     }
-}
 
 [Singletone]
 public class AscCache : ICache
 {
     private readonly IMemoryCache _memoryCache;
     private readonly ConcurrentDictionary<string, object> _memoryCacheKeys;
+    private static CancellationTokenSource _resetCacheToken = new CancellationTokenSource();
 
     public AscCache(IMemoryCache memoryCache)
     {
@@ -74,7 +71,8 @@ public class AscCache : ICache
     {
         var options = new MemoryCacheEntryOptions()
             .SetSlidingExpiration(sligingExpiration)
-            .RegisterPostEvictionCallback(EvictionCallback);
+            .RegisterPostEvictionCallback(EvictionCallback)
+            .AddExpirationToken(new CancellationChangeToken(_resetCacheToken.Token));
 
         _memoryCache.Set(key, value, options);
         _memoryCacheKeys.TryAdd(key, null);
@@ -84,7 +82,9 @@ public class AscCache : ICache
     {
         var options = new MemoryCacheEntryOptions()
             .SetAbsoluteExpiration(absolutExpiration == DateTime.MaxValue ? DateTimeOffset.MaxValue : new DateTimeOffset(absolutExpiration))
-            .RegisterPostEvictionCallback(EvictionCallback);
+            .RegisterPostEvictionCallback(EvictionCallback)
+            .AddExpirationToken(new CancellationChangeToken(_resetCacheToken.Token));
+
 
         _memoryCache.Set(key, value, options);
         _memoryCacheKeys.TryAdd(key, null);
@@ -106,6 +106,17 @@ public class AscCache : ICache
         }
     }
 
+    public void Reset()
+    {
+        if (_resetCacheToken != null && !_resetCacheToken.IsCancellationRequested && _resetCacheToken.Token.CanBeCanceled)
+        {
+            _resetCacheToken.Cancel();
+            _resetCacheToken.Dispose();
+        }
+
+        _resetCacheToken = new CancellationTokenSource();
+    }
+
     public ConcurrentDictionary<string, T> HashGetAll<T>(string key) =>
         _memoryCache.GetOrCreate(key, r => new ConcurrentDictionary<string, T>());
 
@@ -122,11 +133,17 @@ public class AscCache : ICache
 
     public void HashSet<T>(string key, string field, T value)
     {
+        var options = new MemoryCacheEntryOptions()
+                .SetAbsoluteExpiration(DateTime.MaxValue)
+                .AddExpirationToken(new CancellationChangeToken(_resetCacheToken.Token));
+
         var dic = HashGetAll<T>(key);
+
         if (value != null)
         {
             dic.AddOrUpdate(field, value, (k, v) => value);
-            _memoryCache.Set(key, dic, DateTime.MaxValue);
+
+            _memoryCache.Set(key, dic, options);
         }
         else if (dic != null)
         {
@@ -138,7 +155,7 @@ public class AscCache : ICache
             }
             else
             {
-                _memoryCache.Set(key, dic, DateTime.MaxValue);
+                _memoryCache.Set(key, dic, options);
             }
         }
     }

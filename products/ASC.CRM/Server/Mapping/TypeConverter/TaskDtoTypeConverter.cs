@@ -44,18 +44,18 @@ namespace ASC.CRM.Mapping
     {
         private readonly CrmSecurity _crmSecurity;
         private readonly ApiDateTimeHelper _apiDateTimeHelper;
-        private readonly EmployeeWraperHelper _employeeWraperHelper;
+        private readonly EmployeeDtoHelper _employeeDtoHelper;
         private readonly DaoFactory _daoFactory;
         private readonly EntityDtoHelper _entityDtoHelper;
 
         public TaskDtoTypeConverter(ApiDateTimeHelper apiDateTimeHelper,
-                                 EmployeeWraperHelper employeeWraperHelper,
+                                 EmployeeDtoHelper employeeDtoHelper,
                                  CrmSecurity crmSecurity,
                                  DaoFactory daoFactory,
                                  EntityDtoHelper entityDtoHelper)
         {
             _apiDateTimeHelper = apiDateTimeHelper;
-            _employeeWraperHelper = employeeWraperHelper;
+            _employeeDtoHelper = employeeDtoHelper;
             _crmSecurity = crmSecurity;
             _daoFactory = daoFactory;
             _entityDtoHelper = entityDtoHelper;
@@ -68,7 +68,7 @@ namespace ASC.CRM.Mapping
                 Title = source.Title,
                 Description = source.Description,
                 DeadLine = _apiDateTimeHelper.Get(source.DeadLine),
-                Responsible = _employeeWraperHelper.Get(source.ResponsibleID),
+                Responsible = _employeeDtoHelper.Get(source.ResponsibleID),
                 IsClosed = source.IsClosed,
                 AlertValue = source.AlertValue,
                 Created = _apiDateTimeHelper.Get(source.CreateOn)
@@ -111,7 +111,7 @@ namespace ASC.CRM.Mapping
                 Title = source.Title,
                 Description = source.Description,
                 DeadLine = _apiDateTimeHelper.Get(source.DeadLine),
-                Responsible = _employeeWraperHelper.Get(source.ResponsibleID),
+                Responsible = _employeeDtoHelper.Get(source.ResponsibleID),
                 IsClosed = source.IsClosed,
                 AlertValue = source.AlertValue
             };

@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,11 +24,32 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Data.Storage.Encryption;
+namespace ASC.TelegramService.IntegrationEvents.EventHandling;
 
-public interface IEncryptionService
+[Scope]
+public class TelegramSendMessageRequestedIntegrationEventHandler : IIntegrationEventHandler<NotifySendTelegramMessageRequestedIntegrationEvent>
 {
-    void Start(EncryptionSettingsProto encryptionSettingsProto);
+    private readonly ILogger _logger;
+    private readonly TelegramHandler _telegramHandler;
 
-    void Stop();
+    private TelegramSendMessageRequestedIntegrationEventHandler() : base()
+    {
+
+    }
+
+    public TelegramSendMessageRequestedIntegrationEventHandler(
+        ILogger<TelegramSendMessageRequestedIntegrationEventHandler> logger,
+        TelegramHandler telegramHandler
+      )
+    {
+        _logger = logger;
+        _telegramHandler = telegramHandler;
+    }
+
+    public async Task Handle(NotifySendTelegramMessageRequestedIntegrationEvent @event)
+    {
+        _logger.InformationHandlingIntegrationEvent(@event.Id, Program.AppName, @event);
+
+        await _telegramHandler.SendMessage(@event.NotifyMessage);
+    }
 }

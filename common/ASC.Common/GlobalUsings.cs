@@ -32,7 +32,6 @@ global using System.Globalization;
 global using System.Net;
 global using System.Net.Mail;
 global using System.Reflection;
-global using System.Runtime.Caching;
 global using System.Runtime.CompilerServices;
 global using System.Runtime.Loader;
 global using System.Runtime.Serialization;
@@ -88,6 +87,7 @@ global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.DependencyInjection.Extensions;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Options;
+global using Microsoft.Extensions.Primitives;
 global using Microsoft.Net.Http.Headers;
 
 global using Newtonsoft.Json;

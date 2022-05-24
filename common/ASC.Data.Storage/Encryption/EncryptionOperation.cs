@@ -48,12 +48,12 @@ public class EncryptionOperation : DistributedTaskProgress
         _serviceScopeFactory = serviceScopeFactory;
     }
 
-    public void Init(EncryptionSettingsProto encryptionSettingsProto, string id)
+    public void Init(EncryptionSettings encryptionSettings, string id, string serverRootPath)
     {
         Id = id;
-        _encryptionSettings = new EncryptionSettings(encryptionSettingsProto);
+        _encryptionSettings = encryptionSettings;
         _isEncryption = _encryptionSettings.Status == EncryprtionStatus.EncryptionStarted;
-        _serverRootPath = encryptionSettingsProto.ServerRootPath;
+        _serverRootPath = serverRootPath;
     }
 
     protected override void DoJob()

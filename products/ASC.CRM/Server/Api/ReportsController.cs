@@ -30,12 +30,12 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using ASC.Api.CRM;
-using ASC.Api.Documents;
 using ASC.Common.Web;
 using ASC.Core.Common.Settings;
 using ASC.CRM.ApiModels;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
+using ASC.Files.Core.ApiModels.ResponseDto;
 using ASC.Web.Api.Routing;
 using ASC.Web.CRM.Classes;
 using ASC.Web.Files.Services.DocumentService;
@@ -49,7 +49,7 @@ namespace ASC.CRM.Api
     public class ReportsController : BaseApiController
     {
         private readonly DocbuilderReportsUtilityHelper _docbuilderReportsUtilityHelper;
-        private readonly FileDtoHelper _fileWrapperHelper;
+        private readonly FileDtoHelper _fileDtoHelper;
         private readonly ReportHelper _reportHelper;
         private readonly Global _global;
         private readonly SettingsManager _settingsManager;
@@ -59,7 +59,7 @@ namespace ASC.CRM.Api
                      SettingsManager settingsManager,
                      Global global,
                      ReportHelper reportHelper,
-                     FileDtoHelper fileWrapperHelper,
+                     FileDtoHelper fileDtoHelper,
                      DocbuilderReportsUtilityHelper docbuilderReportsUtilityHelper,
                      IMapper mapper
                      )
@@ -68,7 +68,7 @@ namespace ASC.CRM.Api
             _settingsManager = settingsManager;
             _global = global;
             _reportHelper = reportHelper;
-            _fileWrapperHelper = fileWrapperHelper;
+            _fileDtoHelper = fileDtoHelper;
             _docbuilderReportsUtilityHelper = docbuilderReportsUtilityHelper;
         }
 
@@ -79,7 +79,7 @@ namespace ASC.CRM.Api
         /// <returns>Report files</returns>
         /// <exception cref="SecurityException">if user can't create reports</exception>
         [Read(@"report/files")]
-        public Task<IEnumerable<FileWrapper<int>>> GetFilesAsync()
+        public Task<IEnumerable<FileDto<int>>> GetFilesAsync()
         {
             if (!_global.CanCreateReports)
                 throw _crmSecurity.CreateSecurityException();
@@ -87,7 +87,7 @@ namespace ASC.CRM.Api
             return InternalGetFilesAsync();
             }
 
-        private async Task<IEnumerable<FileWrapper<int>>> InternalGetFilesAsync()
+        private async Task<IEnumerable<FileDto<int>>> InternalGetFilesAsync()
         {
             var reportDao = _daoFactory.GetReportDao();
 
@@ -107,10 +107,10 @@ namespace ASC.CRM.Api
                 }
             }
 
-            List<FileWrapper<int>> result = new List<FileWrapper<int>>(files.Count);
+            List<FileDto<int>> result = new List<FileDto<int>>(files.Count);
             foreach (var file in files)
             {
-                result.Add(await _fileWrapperHelper.GetAsync<int>(file));
+                result.Add(await _fileDtoHelper.GetAsync<int>(file));
             }
 
             return result.OrderByDescending(file => file.Id);

@@ -24,11 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System.Collections.Concurrent;
-
-using ASC.EventBus.Exceptions;
-using ASC.EventBus.Serializers;
-
 namespace ASC.EventBus.RabbitMQ;
 
 public class EventBusRabbitMQ : IEventBus, IDisposable
@@ -186,7 +181,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
     {
         var eventName = _subsManager.GetEventKey<T>();
 
-        _logger.LogInformation("Unsubscribing from event {EventName}", eventName);
+        _logger.InformationUnsubscribing(eventName);
 
         _subsManager.RemoveSubscription<T, TH>();
     }

@@ -41,16 +41,16 @@ namespace ASC.CRM.Mapping
     public class VoipCallDtoTypeConverter : ITypeConverter<VoipCall, VoipCallDto>
     {
         private readonly ApiDateTimeHelper _apiDateTimeHelper;
-        private readonly EmployeeWraperHelper _employeeWraperHelper;
+        private readonly EmployeeDtoHelper _employeeDtoHelper;
         private readonly DaoFactory _daoFactory;
 
         public VoipCallDtoTypeConverter(ApiDateTimeHelper apiDateTimeHelper,
-                                 EmployeeWraperHelper employeeWraperHelper,
+                                 EmployeeDtoHelper employeeDtoHelper,
                                  DaoFactory daoFactory)
         {
             _daoFactory = daoFactory;
             _apiDateTimeHelper = apiDateTimeHelper;
-            _employeeWraperHelper = employeeWraperHelper;
+            _employeeDtoHelper = employeeDtoHelper;
         }
 
         public VoipCallDto Convert(VoipCall source, VoipCallDto destination, ResolutionContext context)
@@ -64,7 +64,7 @@ namespace ASC.CRM.Mapping
                 From = source.NumberFrom,
                 To = source.NumberTo,
                 Status = source.Status,
-                AnsweredBy = _employeeWraperHelper.Get(source.AnsweredBy),
+                AnsweredBy = _employeeDtoHelper.Get(source.AnsweredBy),
                 DialDate = _apiDateTimeHelper.Get(source.DialDate),
                 DialDuration = source.DialDuration,
                 Cost = source.Price + source.ChildCalls.Sum(r => r.Price) + source.VoipRecord.Price,

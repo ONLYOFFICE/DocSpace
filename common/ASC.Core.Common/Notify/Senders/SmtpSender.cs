@@ -210,7 +210,7 @@ public class SmtpSender : INotifySender
                 ContentTransferEncoding = ContentEncoding.QuotedPrintable
             };
 
-            if (m.Attachments != null && m.Attachments.Count > 0)
+            if (m.Attachments != null && m.Attachments.Length > 0)
             {
                 var multipartRelated = new MultipartRelated
                 {
@@ -294,7 +294,7 @@ public class SmtpSender : INotifySender
             return new MimePart("image", extension.TrimStart('.'))
             {
                 ContentId = attachment.ContentId,
-                Content = new MimeContent(new MemoryStream(attachment.Content.ToByteArray())),
+                Content = new MimeContent(new MemoryStream(attachment.Content)),
                 ContentDisposition = new ContentDisposition(ContentDisposition.Attachment),
                 ContentTransferEncoding = ContentEncoding.Base64,
                 FileName = attachment.FileName

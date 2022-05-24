@@ -30,6 +30,7 @@ public class DBResourceManager : ResourceManager
 {
     public static readonly bool WhiteLableEnabled;
     private readonly ConcurrentDictionary<string, ResourceSet> _resourceSets = new ConcurrentDictionary<string, ResourceSet>();
+    private readonly IMemoryCache _memoryCache;
 
     public DBResourceManager(string filename, Assembly assembly)
                 : base(filename, assembly)
@@ -37,6 +38,7 @@ public class DBResourceManager : ResourceManager
     }
 
     public DBResourceManager(
+        IMemoryCache memoryCache,
         IConfiguration configuration,
         ILogger<DBResourceManager> option,
         DbContextManager<ResourceDbContext> dbContext,
@@ -44,6 +46,7 @@ public class DBResourceManager : ResourceManager
         Assembly assembly)
                 : base(filename, assembly)
     {
+        _memoryCache = memoryCache;
         _configuration = configuration;
         _option = option;
         _dbContext = dbContext;
@@ -118,7 +121,7 @@ public class DBResourceManager : ResourceManager
         if (set == null)
         {
             var invariant = culture == CultureInfo.InvariantCulture ? base.InternalGetResourceSet(CultureInfo.InvariantCulture, true, true) : null;
-            set = new DBResourceSet(_configuration, _option, _dbContext, invariant, culture, BaseName);
+            set = new DBResourceSet(_memoryCache, _configuration, _option, _dbContext, invariant, culture, BaseName);
             _resourceSets.AddOrUpdate(culture.Name, set, (k, v) => set);
         }
 
@@ -131,7 +134,7 @@ public class DBResourceManager : ResourceManager
 
         private readonly TimeSpan _cacheTimeout = TimeSpan.FromMinutes(120); // for performance
         private readonly object _locker = new object();
-        private readonly MemoryCache _cache;
+        private readonly IMemoryCache _cache;
         private readonly ResourceSet _invariant;
         private readonly string _culture;
         private readonly string _fileName;
@@ -139,6 +142,7 @@ public class DBResourceManager : ResourceManager
         private readonly DbContextManager<ResourceDbContext> _dbContext;
 
         public DBResourceSet(
+            IMemoryCache memoryCache,
             IConfiguration configuration,
             ILogger logger,
             DbContextManager<ResourceDbContext> dbContext,
@@ -165,7 +169,7 @@ public class DBResourceManager : ResourceManager
             _invariant = invariant;
             _culture = invariant != null ? NeutralCulture : culture.Name;
             _fileName = filename.Split('.').Last() + ".resx";
-            _cache = MemoryCache.Default;
+            _cache = memoryCache;
         }
 
         public override string GetString(string name, bool ignoreCase)
@@ -223,11 +227,21 @@ public class DBResourceManager : ResourceManager
                 lock (_locker)
                 {
                     dic = _cache.Get(key) as Dictionary<string, string>;
+                    
                     if (dic == null)
                     {
-                        var policy = _cacheTimeout == TimeSpan.Zero ? null : new CacheItemPolicy() { AbsoluteExpiration = DateTimeOffset.Now.Add(_cacheTimeout) };
+                        
                         dic = LoadResourceSet(_fileName, _culture);
-                        _cache.Set(key, dic, policy);
+                        
+                        if (_cacheTimeout == TimeSpan.Zero)
+                        {
+                            _cache.Set(key, dic);
+                        }
+                        else
+                        {
+                            _cache.Set(key, dic, DateTimeOffset.Now.Add(_cacheTimeout));
+                        }
+
                     }
                 }
             }

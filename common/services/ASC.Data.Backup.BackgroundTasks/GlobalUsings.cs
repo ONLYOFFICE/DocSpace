@@ -42,6 +42,8 @@ global using ASC.Data.Backup.Services;
 global using ASC.Data.Backup.Storage;
 global using ASC.EventBus.Abstractions;
 global using ASC.EventBus.Events;
+global using ASC.EventBus.Exceptions;
+global using ASC.EventBus.Log;
 global using ASC.Files.Core;
 global using ASC.Web.Studio.Core.Notify;
 

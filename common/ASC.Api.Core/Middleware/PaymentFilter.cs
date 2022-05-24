@@ -43,7 +43,7 @@ public class PaymentFilter : IResourceFilter
     public void OnResourceExecuting(ResourceExecutingContext context)
     {
         if (context.ActionDescriptor is ControllerActionDescriptor controllerActionDescriptor
-            && !controllerActionDescriptor.EndpointMetadata.OfType<CustomHttpMethodAttribute>().FirstOrDefault().Check)
+            && !controllerActionDescriptor.EndpointMetadata.OfType<AllowNotPaymentAttribute>().Any())
         {
             _logger.DebugPaymentIsNotRequired();
 

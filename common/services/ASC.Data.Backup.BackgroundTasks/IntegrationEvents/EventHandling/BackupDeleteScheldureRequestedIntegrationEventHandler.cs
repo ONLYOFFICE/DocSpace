@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,30 +24,28 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using CacheNotifyAction = ASC.Common.Caching.CacheNotifyAction;
-
-namespace ASC.Data.Storage.Encryption;
+namespace ASC.Data.Backup.IntegrationEvents.EventHandling;
 
 [Scope]
-public class EncryptionServiceClient : IEncryptionService
+public class BackupDeleteScheldureRequestedIntegrationEventHandler : IIntegrationEventHandler<IntegrationEvent>
 {
-    private readonly ICacheNotify<EncryptionSettingsProto> _notifySetting;
-    private readonly ICacheNotify<EncryptionStop> _notifyStop;
+    private readonly ILogger _logger;
+    private readonly BackupService _backupService;
 
-    public EncryptionServiceClient(
-        ICacheNotify<EncryptionSettingsProto> notifySetting, ICacheNotify<EncryptionStop> notifyStop)
+    public BackupDeleteScheldureRequestedIntegrationEventHandler(
+        ILogger<BackupDeleteScheldureRequestedIntegrationEventHandler> logger,
+        BackupService backupService)
     {
-        _notifySetting = notifySetting;
-        _notifyStop = notifyStop;
+        _logger = logger;
+        _backupService = backupService;
     }
 
-    public void Start(EncryptionSettingsProto encryptionSettingsProto)
+    public async Task Handle(IntegrationEvent @event)
     {
-        _notifySetting.Publish(encryptionSettingsProto, CacheNotifyAction.Insert);
-    }
+        _logger.InformationHandlingIntegrationEvent(@event.Id, Program.AppName, @event);
 
-    public void Stop()
-    {
-        _notifyStop.Publish(new EncryptionStop(), CacheNotifyAction.Insert);
+        _backupService.DeleteSchedule(@event.TenantId);
+
+        await Task.CompletedTask;
     }
 }

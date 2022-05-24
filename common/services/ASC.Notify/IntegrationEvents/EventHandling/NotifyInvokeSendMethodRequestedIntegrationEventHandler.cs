@@ -24,72 +24,20 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Notify.Services;
+namespace ASC.Notify.IntegrationEvents.EventHandling;
 
-[Singletone]
-public class NotifyService : IHostedService
+[Scope]
+public class NotifyInvokeSendMethodRequestedIntegrationEventHandler : IIntegrationEventHandler<NotifyInvokeSendMethodRequestedIntegrationEvent>
 {
-    private readonly DbWorker _db;
-    private readonly ICacheNotify<NotifyInvoke> _cacheInvoke;
-    private readonly ICacheNotify<NotifyMessage> _cacheNotify;
     private readonly ILogger _logger;
     private readonly IServiceScopeFactory _serviceScopeFactory;
-    private readonly NotifyConfiguration _notifyConfiguration;
-    private readonly NotifyServiceCfg _notifyServiceCfg;
 
-    public NotifyService(
-        IOptions<NotifyServiceCfg> notifyServiceCfg,
-        DbWorker db,
-        ICacheNotify<NotifyInvoke> cacheInvoke,
-        ICacheNotify<NotifyMessage> cacheNotify,
+    public NotifyInvokeSendMethodRequestedIntegrationEventHandler(
         ILoggerProvider options,
-        IServiceScopeFactory serviceScopeFactory,
-        NotifyConfiguration notifyConfiguration)
+        IServiceScopeFactory serviceScopeFactory)
     {
-        _cacheInvoke = cacheInvoke;
-        _cacheNotify = cacheNotify;
-        _db = db;
         _logger = options.CreateLogger("ASC.NotifyService");
-        _notifyConfiguration = notifyConfiguration;
-        _notifyServiceCfg = notifyServiceCfg.Value;
         _serviceScopeFactory = serviceScopeFactory;
-    }
-
-    public Task StartAsync(CancellationToken cancellationToken)
-    {
-        _logger.InformationNotifyServiceRunning();
-
-        _cacheNotify.Subscribe((n) => SendNotifyMessage(n), CacheNotifyAction.InsertOrUpdate);
-        _cacheInvoke.Subscribe((n) => InvokeSendMethod(n), CacheNotifyAction.InsertOrUpdate);
-
-        if (0 < _notifyServiceCfg.Schedulers.Count)
-        {
-            InitializeNotifySchedulers();
-        }
-
-        return Task.CompletedTask;
-    }
-
-    public Task StopAsync(CancellationToken cancellationToken)
-    {
-        _logger.InformationNotifyServiceStopping();
-
-        _cacheNotify.Unsubscribe(CacheNotifyAction.InsertOrUpdate);
-        _cacheInvoke.Unsubscribe(CacheNotifyAction.InsertOrUpdate);
-
-        return Task.CompletedTask;
-    }
-
-    private void SendNotifyMessage(NotifyMessage notifyMessage)
-    {
-        try
-        {
-            _db.SaveMessage(notifyMessage);
-        }
-        catch (Exception e)
-        {
-            _logger.ErrorSendNotifyMessage(e);
-        }
     }
 
     private void InvokeSendMethod(NotifyInvoke notifyInvoke)
@@ -124,13 +72,13 @@ public class NotifyService : IHostedService
         methodInfo.Invoke(instance, parameters.ToArray());
     }
 
-    private void InitializeNotifySchedulers()
+
+    public async Task Handle(NotifyInvokeSendMethodRequestedIntegrationEvent @event)
     {
-        _notifyConfiguration.Configure();
-        foreach (var pair in _notifyServiceCfg.Schedulers.Where(r => r.MethodInfo != null))
-        {
-            _logger.DebugStartScheduler(pair.Name, pair.MethodInfo);
-            pair.MethodInfo.Invoke(null, null);
-        }
+        _logger.InformationHandlingIntegrationEvent(@event.Id, Program.AppName, @event);
+
+        InvokeSendMethod(@event.NotifyInvoke);
+
+        await Task.CompletedTask;
     }
 }

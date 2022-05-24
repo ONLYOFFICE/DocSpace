@@ -24,13 +24,25 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Notify.Messages;
+namespace ASC.Files.Core.IntegrationEvents.Events;
 
-public partial class NotifyMessage : IMapFrom<NotifyQueue>
+[ProtoContract]
+public record ThumbnailRequestedIntegrationEvent : IntegrationEvent
 {
-    public void Mapping(Profile profile)
+    private ThumbnailRequestedIntegrationEvent() : base()
     {
-        profile.CreateMap<NotifyQueue, NotifyMessage>()
-            .ForMember(dest => dest.Attachments, opt => opt.Ignore());
+
     }
+
+    public ThumbnailRequestedIntegrationEvent(Guid createBy, int tenantId)
+    : base(createBy, tenantId)
+    {
+
+    }
+
+    [ProtoMember(1)]
+    public string BaseUrl { get; set; }
+
+    [ProtoMember(2)]
+    public IEnumerable<int> FileIds { get; set; }
 }

@@ -54,6 +54,7 @@ namespace ASC.Data.Backup.Services;
 [Transient]
 public class RestoreProgressItem : BaseBackupProgressItem
 {
+    private readonly ICache _cache;
     private TenantManager _tenantManager;
     private BackupStorageFactory _backupStorageFactory;
     private readonly NotifyHelper _notifyHelper;
@@ -67,12 +68,13 @@ public class RestoreProgressItem : BaseBackupProgressItem
 
     public RestoreProgressItem(
         ILogger<RestoreProgressItem> logger,
+        ICache cache,
         IServiceScopeFactory serviceScopeFactory,
         NotifyHelper notifyHelper,
         CoreBaseSettings coreBaseSettings)
         : base(logger, serviceScopeFactory)
     {
-
+        _cache = cache;
         _notifyHelper = notifyHelper;
         _coreBaseSettings = coreBaseSettings;
 
@@ -155,7 +157,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
 
             if (restoreTask.Dump)
             {
-                AscCacheNotify.OnClearCache();
+                _cache.Reset();
 
                 if (Notify)
                 {

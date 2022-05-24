@@ -33,7 +33,6 @@ using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Enums;
 
@@ -70,7 +69,7 @@ namespace ASC.CRM.Core.Dao
             _cache = ascCache;
 
             LazyCrmDbContext = new Lazy<CrmDbContext>(() => dbContextManager.Get(CrmConstants.DatabaseId));
-            TenantID = tenantManager.GetCurrentTenant().TenantId;
+            TenantID = tenantManager.GetCurrentTenant().Id;
             _securityContext = securityContext;
 
             _supportedEntityType.Add(EntityType.Company);

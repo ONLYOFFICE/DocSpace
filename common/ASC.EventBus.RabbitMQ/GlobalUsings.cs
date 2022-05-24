@@ -24,12 +24,15 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+global using System.Collections.Concurrent;
 global using System.Net.Sockets;
 
 global using ASC.EventBus.Abstractions;
 global using ASC.EventBus.Events;
+global using ASC.EventBus.Exceptions;
 global using ASC.EventBus.Extensions;
 global using ASC.EventBus.RabbitMQ.Log;
+global using ASC.EventBus.Serializers;
 
 global using Autofac;
 

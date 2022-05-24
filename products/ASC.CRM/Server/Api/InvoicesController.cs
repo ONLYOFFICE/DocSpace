@@ -31,7 +31,6 @@ using System.Threading.Tasks;
 
 using ASC.Api.Core;
 using ASC.Api.CRM;
-using ASC.Api.Documents;
 using ASC.Common.Web;
 using ASC.Core.Common.Settings;
 using ASC.CRM.ApiModels;
@@ -42,7 +41,9 @@ using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
-using ASC.MessagingSystem;
+using ASC.Files.Core.ApiModels.ResponseDto;
+using ASC.MessagingSystem.Core;
+using ASC.MessagingSystem.Models;
 using ASC.Web.Api.Routing;
 using ASC.Web.CRM.Classes;
 
@@ -57,7 +58,7 @@ namespace ASC.CRM.Api
 
         private readonly PdfQueueWorker _pdfQueueWorker;
         private readonly Global _global;
-        private readonly FileDtoHelper _fileWrapperHelper;
+        private readonly FileDtoHelper _fileDtoHelper;
         private readonly PdfCreator _pdfCreator;
         private readonly SettingsManager _settingsManager;
         private readonly ApiDateTimeHelper _apiDateTimeHelper;
@@ -73,7 +74,7 @@ namespace ASC.CRM.Api
                      MessageService messageService,
                      ApiDateTimeHelper apiDateTimeHelper,
                      SettingsManager settingsManager,
-                     FileDtoHelper fileWrapperHelper,
+                     FileDtoHelper fileDtoHelper,
                      PdfCreator pdfCreator,
                      Global global,
                      PdfQueueWorker pdfQueueWorker,
@@ -87,7 +88,7 @@ namespace ASC.CRM.Api
             _apiDateTimeHelper = apiDateTimeHelper;
             _settingsManager = settingsManager;
             _pdfCreator = pdfCreator;
-            _fileWrapperHelper = fileWrapperHelper;
+            _fileDtoHelper = fileDtoHelper;
             _global = global;
             _pdfQueueWorker = pdfQueueWorker;
             _mapper = mapper;
@@ -754,7 +755,7 @@ namespace ASC.CRM.Api
         /// <category>Invoices</category>
         /// <returns>File</returns>
         [Read(@"invoice/{invoiceid:int}/pdf")]
-        public Task<FileWrapper<int>> GetInvoicePdfExistOrCreateAsync(int invoiceid)
+        public Task<FileDto<int>> GetInvoicePdfExistOrCreateAsync(int invoiceid)
         {
             if (invoiceid <= 0) throw new ArgumentException();
 
@@ -769,9 +770,9 @@ namespace ASC.CRM.Api
             return internalGetInvoicePdfExistOrCreateAsync(invoice);
         }
 
-        private async Task<FileWrapper<int>> internalGetInvoicePdfExistOrCreateAsync(Invoice invoice)
+        private async Task<FileDto<int>> internalGetInvoicePdfExistOrCreateAsync(Invoice invoice)
         {
-            return await _fileWrapperHelper.GetAsync(await GetInvoicePdfExistingOrCreateAsync(invoice));
+            return await _fileDtoHelper.GetAsync(await GetInvoicePdfExistingOrCreateAsync(invoice));
         }
 
         private async Task<ASC.Files.Core.File<int>> GetInvoicePdfExistingOrCreateAsync(ASC.CRM.Core.Entities.Invoice invoice)
@@ -786,7 +787,7 @@ namespace ASC.CRM.Api
             {
                 var newFile = await _pdfCreator.CreateFileAsync(invoice, _daoFactory);
 
-                invoice.FileID = Int32.Parse(newFile.ID.ToString());
+                invoice.FileID = Int32.Parse(newFile.Id.ToString());
 
                 _daoFactory.GetInvoiceDao().UpdateInvoiceFileID(invoice.ID, invoice.FileID);
 
@@ -855,7 +856,7 @@ namespace ASC.CRM.Api
                 var convertedFile = await _pdfCreator.GetConvertedFileAsync(converterData, _daoFactory);
                 if (convertedFile != null)
                 {
-                    invoice.FileID = Int32.Parse(convertedFile.ID.ToString());
+                    invoice.FileID = Int32.Parse(convertedFile.Id.ToString());
                     _daoFactory.GetInvoiceDao().UpdateInvoiceFileID(invoice.ID, invoice.FileID);
                     _daoFactory.GetRelationshipEventDao().AttachFiles(invoice.ContactID, invoice.EntityType, invoice.EntityID, new[] { invoice.FileID });
 
