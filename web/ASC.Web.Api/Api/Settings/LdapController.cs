@@ -131,18 +131,18 @@ public class LdapController : BaseSettingsController
     /// </short>
     /// <category>LDAP</category>
     /// <param name="cron">Cron expression</param>
-
+    /// 
     [Create("ldap/cron")]
-    public void SetLdapCronSettingsFromBody([FromBody] LdapCronModel model)
+    public void SetLdapCronSettingsFromBody([FromBody] LdapCronSettings ldapCronSettings)
     {
-        SetLdapCronSettings(model);
+        SetLdapCronSettings(ldapCronSettings);
     }
 
-    private void SetLdapCronSettings(LdapCronModel model)
+    private void SetLdapCronSettings(LdapCronSettings ldapCronSettings)
     {
         CheckLdapPermissions();
 
-        var cron = model.Cron;
+        var cron = ldapCronSettings.Cron;
 
         if (!string.IsNullOrEmpty(cron))
         {
@@ -222,14 +222,10 @@ public class LdapController : BaseSettingsController
     /// <param name="settings">LDAP settings in the serialized string format</param>
     /// <param name="acceptCertificate">Specifies if the errors of checking certificates are allowed (true) or not (false)</param>
     /// <returns>Operation status</returns>
-    /// 
     [Create("ldap")]
-    public LdapOperationStatus SaveLdapSettings([FromBody] LdapSettingsModel model)
+    public LdapOperationStatus SaveLdapSettings([FromBody] LdapSettings ldapSettings)
     {
         CheckLdapPermissions();
-
-        var ldapSettings = JsonSerializer.Deserialize<LdapSettings>(model.Settings);
-        ldapSettings.AcceptCertificate = model.AcceptCertificate;
 
         if (!ldapSettings.EnableLdapAuthentication)
         {
@@ -251,14 +247,10 @@ public class LdapController : BaseSettingsController
     /// <param name="settings">LDAP settings in the serialized string format</param>
     /// <param name="acceptCertificate">Specifies if the errors of checking certificates are allowed (true) or not (false)</param>
     /// <returns>Operation status</returns>
-
     [Create("ldap/save/test")]
-    public LdapOperationStatus TestLdapSave([FromBody] LdapSettingsModel model)
+    public LdapOperationStatus TestLdapSave([FromBody] LdapSettings ldapSettings)
     {
         CheckLdapPermissions();
-
-        var ldapSettings = JsonSerializer.Deserialize<LdapSettings>(model.Settings);
-        ldapSettings.AcceptCertificate = model.AcceptCertificate;
 
         var userId = _authContext.CurrentAccount.ID.ToString();
 

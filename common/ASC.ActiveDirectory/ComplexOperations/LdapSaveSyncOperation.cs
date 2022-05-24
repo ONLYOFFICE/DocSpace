@@ -222,7 +222,7 @@ public class LdapSaveSyncOperation
             var opType = o[LdapTaskProperty.OPERATION_TYPE];
 
             return o.Status <= DistributedTaskStatus.Running &&
-                   (opType == arg1 || opType == arg2);
+                   (opType == arg1.ToString() || opType == arg2.ToString());
         });
 
         return (hasStarted, operations);
