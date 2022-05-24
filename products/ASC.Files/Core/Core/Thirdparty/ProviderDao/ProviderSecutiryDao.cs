@@ -148,7 +148,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
 
         private Task<List<FileShareRecord>> GetShareForFoldersAsync(IReadOnlyCollection<FileEntry<string>> folders)
         {
-            if (folders.Count > 0) return Task.FromResult(new List<FileShareRecord>());
+            if (folders.Count == 0) return Task.FromResult(new List<FileShareRecord>());
 
             return InternalGetShareForFoldersAsync(folders);
         }
@@ -164,7 +164,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
                 if (folderDao == null) continue;
 
                 var parentFolders = await folderDao.GetParentFoldersAsync(selector.ConvertId(folder.ID));
-                if (parentFolders == null || parentFolders.Count > 0) continue;
+                if (parentFolders == null || parentFolders.Count == 0) continue;
 
                 parentFolders.Reverse();
                 var pureShareRecords = await GetPureShareRecordsAsync(parentFolders);

@@ -16,11 +16,12 @@
 
 
 using System;
+using System.Collections.Generic;
 
 using ASC.Common;
 using ASC.Common.Utils;
 
-namespace ASC.Files.ThumbnailBuilder
+namespace ASC.Files.Core
 {
     [Singletone]
     public class ThumbnailSettings
@@ -84,12 +85,14 @@ namespace ASC.Files.ThumbnailBuilder
         private int attemptWaitInterval;
         public int AttemptWaitInterval { get => attemptWaitInterval != 0 ? attemptWaitInterval : 1000; set { attemptWaitInterval = value; } }
 
-        private int thumbnaillHeight;
-        public int ThumbnaillHeight { get => thumbnaillHeight != 0 ? thumbnaillHeight : 128; set { thumbnaillHeight = value; } }
-
-        private int thumbnaillWidth;
-        public int ThumbnaillWidth { get => thumbnaillWidth != 0 ? thumbnaillWidth : 192; set { thumbnaillWidth = value; } }
+        public IEnumerable<ThumbnailSize> Sizes { get; set; }
 
         #endregion
+    }
+
+    public class ThumbnailSize
+    {
+        public int Height { get; set; }
+        public int Width { get; set; }
     }
 }
