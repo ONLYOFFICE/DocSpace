@@ -62,7 +62,8 @@ public class CapabilitiesController : ControllerBase
     ///Get portal capabilities
     ///</short>
     ///<returns>CapabilitiesData</returns>
-    [Read(Check = false)] //NOTE: this method doesn't requires auth!!!  //NOTE: this method doesn't check payment!!!
+    [HttpGet] //NOTE: this method doesn't requires auth!!!  //NOTE: this method doesn't check payment!!!
+    [AllowNotPayment]
     public CapabilitiesDto GetPortalCapabilities()
     {
         var result = new CapabilitiesDto

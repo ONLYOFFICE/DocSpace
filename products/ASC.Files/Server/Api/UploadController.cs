@@ -82,15 +82,8 @@ public abstract class UploadController<T> : ApiControllerBase
     /// </ul>
     /// ]]>
     /// </returns>
-    [Create("{folderId}/upload/create_session")]
-    public Task<object> CreateUploadSessionFromBodyAsync(T folderId, [FromBody] SessionRequestDto inDto)
-    {
-        return _filesControllerHelper.CreateUploadSessionAsync(folderId, inDto.FileName, inDto.FileSize, inDto.RelativePath, inDto.LastModified, inDto.Encrypted);
-    }
-
-    [Create("{folderId}/upload/create_session")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public Task<object> CreateUploadSessionFromFormAsync(T folderId, [FromForm] SessionRequestDto inDto)
+    [HttpPost("{folderId}/upload/create_session")]
+    public Task<object> CreateUploadSessionAsync(T folderId, SessionRequestDto inDto)
     {
         return _filesControllerHelper.CreateUploadSessionAsync(folderId, inDto.FileName, inDto.FileSize, inDto.RelativePath, inDto.LastModified, inDto.Encrypted);
     }
@@ -105,7 +98,7 @@ public abstract class UploadController<T> : ApiControllerBase
     /// <param name="keepConvertStatus" visible="false">Keep status conversation after finishing</param>
     /// <category>Uploads</category>
     /// <returns></returns>
-    [Create("{folderId}/insert", order: int.MaxValue)]
+    [HttpPost("{folderId}/insert", Order = int.MaxValue)]
     public Task<FileDto<T>> InsertFileAsync(T folderId, [FromForm][ModelBinder(BinderType = typeof(InsertFileModelBinder))] InsertFileRequestDto inDto)
     {
         return _filesControllerHelper.InsertFileAsync(folderId, inDto.Stream, inDto.Title, inDto.CreateNewIfExist, inDto.KeepConvertStatus);
@@ -134,7 +127,7 @@ public abstract class UploadController<T> : ApiControllerBase
     /// <param name="storeOriginalFileFlag" visible="false">If True, upload documents in original formats as well</param>
     /// <param name="keepConvertStatus" visible="false">Keep status conversation after finishing</param>
     /// <returns>Uploaded file</returns>
-    [Create("{folderId}/upload", order: int.MaxValue)]
+    [HttpPost("{folderId}/upload", Order = int.MaxValue)]
     public Task<object> UploadFileAsync(T folderId, [ModelBinder(BinderType = typeof(UploadModelBinder))] UploadRequestDto inDto)
     {
         return _filesControllerHelper.UploadFileAsync(folderId, inDto);
@@ -164,7 +157,7 @@ public class UploadControllerCommon : ApiControllerBase
     /// <param name="keepConvertStatus" visible="false">Keep status conversation after finishing</param>
     /// <category>Uploads</category>
     /// <returns></returns>
-    [Create("@common/insert")]
+    [HttpPost("@common/insert")]
     public async Task<FileDto<int>> InsertFileToCommonFromBodyAsync([FromForm][ModelBinder(BinderType = typeof(InsertFileModelBinder))] InsertFileRequestDto inDto)
     {
         return await _filesControllerHelper.InsertFileAsync(await _globalFolderHelper.FolderCommonAsync, inDto.Stream, inDto.Title, inDto.CreateNewIfExist, inDto.KeepConvertStatus);
@@ -179,7 +172,7 @@ public class UploadControllerCommon : ApiControllerBase
     /// <param name="keepConvertStatus" visible="false">Keep status conversation after finishing</param>
     /// <category>Uploads</category>
     /// <returns></returns>
-    [Create("@my/insert")]
+    [HttpPost("@my/insert")]
     public Task<FileDto<int>> InsertFileToMyFromBodyAsync([FromForm][ModelBinder(BinderType = typeof(InsertFileModelBinder))] InsertFileRequestDto inDto)
     {
         return _filesControllerHelper.InsertFileAsync(_globalFolderHelper.FolderMy, inDto.Stream, inDto.Title, inDto.CreateNewIfExist, inDto.KeepConvertStatus);
@@ -203,7 +196,7 @@ public class UploadControllerCommon : ApiControllerBase
     /// <param name="contentDisposition" visible="false">Content-Disposition Header</param>
     /// <param name="files" visible="false">List of files when posted as multipart/form-data</param>
     /// <returns>Uploaded file</returns>
-    [Create("@common/upload")]
+    [HttpPost("@common/upload")]
     public async Task<object> UploadFileToCommonAsync([ModelBinder(BinderType = typeof(UploadModelBinder))] UploadRequestDto inDto)
     {
         inDto.CreateNewIfExist = false;
@@ -229,7 +222,7 @@ public class UploadControllerCommon : ApiControllerBase
     /// <param name="contentDisposition" visible="false">Content-Disposition Header</param>
     /// <param name="files" visible="false">List of files when posted as multipart/form-data</param>
     /// <returns>Uploaded file</returns>
-    [Create("@my/upload")]
+    [HttpPost("@my/upload")]
     public Task<object> UploadFileToMyAsync([ModelBinder(BinderType = typeof(UploadModelBinder))] UploadRequestDto inDto)
     {
         inDto.CreateNewIfExist = false;
