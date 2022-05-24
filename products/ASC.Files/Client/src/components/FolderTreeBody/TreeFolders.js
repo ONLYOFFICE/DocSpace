@@ -223,7 +223,7 @@ class TreeFolders extends React.Component {
   };
 
   getItems = (data) => {
-    const { withoutProvider, theme } = this.props;
+    const { theme } = this.props;
 
     return data.map((item) => {
       const dragging = this.props.dragging ? this.showDragItems(item) : false;
@@ -235,8 +235,6 @@ class TreeFolders extends React.Component {
       const provider = item.providerKey;
 
       const serviceFolder = !!item.providerKey;
-
-      if (withoutProvider && provider) return;
 
       let value = "";
       if (dragging) value = `${item.id} dragging ${provider}`;
@@ -360,10 +358,11 @@ class TreeFolders extends React.Component {
   }
 
   generateTreeNodes = (treeNode) => {
+    const { withoutProvider } = this.props;
     const folderId = treeNode.id;
     const level = treeNode.pos;
 
-    let arrayFolders;
+    let arrayFolders, proverIndex;
     return this.props.getSubfolders(folderId).then((data) => {
       arrayFolders = data;
 
@@ -372,7 +371,16 @@ class TreeFolders extends React.Component {
 
       for (let item of arrayFolders) {
         item["key"] = `${folderIndex}-${i}`;
+
+        if (withoutProvider && item.providerKey) {
+          proverIndex = i;
+        }
+
         i++;
+      }
+
+      if (proverIndex) {
+        arrayFolders.splice(proverIndex, 1);
       }
 
       return { folders: arrayFolders, listIds: [], level };
