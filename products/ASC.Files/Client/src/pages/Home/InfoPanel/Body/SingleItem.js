@@ -30,6 +30,7 @@ const SingleItem = (props) => {
     dontShowAccess,
     personal,
     createThumbnail,
+    culture,
   } = props;
 
   const [item, setItem] = useState({
