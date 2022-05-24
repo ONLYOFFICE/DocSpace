@@ -29,11 +29,14 @@ namespace ASC.TelegramService.Commands;
 [Scope]
 public class UserCommands : CommandContext
 {
-    private readonly CachedTelegramDao _cachedTelegramDao;
+    private readonly IDistributedCache _distributedCache;
+    private readonly TelegramDao _telegramDao;
 
-    public UserCommands(IOptionsSnapshot<CachedTelegramDao> cachedTelegramDao)
+    public UserCommands(TelegramDao telegramDao,
+                       IDistributedCache distributedCache)
     {
-        _cachedTelegramDao = cachedTelegramDao.Value;
+        _telegramDao = telegramDao;
+        _distributedCache = distributedCache;
     }
 
     [Command("start")]
@@ -49,20 +52,26 @@ public class UserCommands : CommandContext
 
     private async Task InternalStartCommand(string token)
     {
-        var user = MemoryCache.Default.Get(token);
+
+        var user = await _distributedCache.GetStringAsync(token);
+
         if (user != null)
         {
-            MemoryCache.Default.Remove(token);
-            MemoryCache.Default.Remove((string)user);
+            await _distributedCache.RemoveAsync(token);
+            await _distributedCache.RemoveAsync((string)user);
+            
             var split = ((string)user).Split(':');
 
-            var guid = Guid.Parse(split[0]);
-            var tenant = int.Parse(split[1]);
+            var portalUserId = Guid.Parse(split[0]);
+            var tenantId = int.Parse(split[1]);
+            var telegramUserId = Context.User.Id;
 
-            if (tenant == TenantId)
+            if (tenantId == TenantId)
             {
-                _cachedTelegramDao.RegisterUser(guid, tenant, Context.User.Id);
+                _telegramDao.RegisterUser(portalUserId, tenantId, telegramUserId);
+
                 await ReplyAsync("Ok!");
+
                 return;
             }
         }

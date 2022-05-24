@@ -76,6 +76,7 @@ global using ASC.Data.Storage;
 global using ASC.ElasticSearch;
 global using ASC.ElasticSearch.Core;
 global using ASC.ElasticSearch.Service;
+global using ASC.EventBus.Events;
 global using ASC.FederatedLogin;
 global using ASC.FederatedLogin.Helpers;
 global using ASC.FederatedLogin.LoginProviders;
@@ -86,6 +87,7 @@ global using ASC.Files.Core.ApiModels.ResponseDto;
 global using ASC.Files.Core.Core.Entries;
 global using ASC.Files.Core.Data;
 global using ASC.Files.Core.EF;
+global using ASC.Files.Core.IntegrationEvents.Events;
 global using ASC.Files.Core.Mapping;
 global using ASC.Files.Core.Resources;
 global using ASC.Files.Core.Security;
@@ -185,6 +187,8 @@ global using Nest;
 
 global using Newtonsoft.Json;
 global using Newtonsoft.Json.Linq;
+
+global using ProtoBuf;
 
 global using static ASC.Files.Core.Data.AbstractDao;
 global using static ASC.Web.Core.Files.DocumentService;

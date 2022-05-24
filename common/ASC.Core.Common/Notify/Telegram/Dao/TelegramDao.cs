@@ -26,28 +26,7 @@
 
 namespace ASC.Core.Common.Notify.Telegram;
 
-public class ConfigureTelegramDaoService : IConfigureNamedOptions<TelegramDao>
-{
-    private readonly DbContextManager<TelegramDbContext> _dbContextManager;
-
-    public ConfigureTelegramDaoService(DbContextManager<TelegramDbContext> dbContextManager)
-    {
-        _dbContextManager = dbContextManager;
-    }
-
-    public void Configure(string name, TelegramDao options)
-    {
-        Configure(options);
-        options.TelegramDbContext = _dbContextManager.Get(name);
-    }
-
-    public void Configure(TelegramDao options)
-    {
-        options.TelegramDbContext = _dbContextManager.Value;
-    }
-}
-
-[Scope(typeof(ConfigureTelegramDaoService))]
+[Scope]
 public class TelegramDao
 {
     public TelegramDbContext TelegramDbContext { get; set; }
@@ -58,7 +37,7 @@ public class TelegramDao
         TelegramDbContext = dbContextManager.Value;
     }
 
-    public void RegisterUser(Guid userId, int tenantId, int telegramId)
+    public void RegisterUser(Guid userId, int tenantId, long telegramId)
     {
         var user = new TelegramUser
         {
@@ -73,14 +52,10 @@ public class TelegramDao
 
     public TelegramUser GetUser(Guid userId, int tenantId)
     {
-        return TelegramDbContext.Users
-            .AsNoTracking()
-            .Where(r => r.PortalUserId == userId)
-            .Where(r => r.TenantId == tenantId)
-            .FirstOrDefault();
+        return TelegramDbContext.Users.Find(tenantId, userId);
     }
 
-    public List<TelegramUser> GetUser(int telegramId)
+    public List<TelegramUser> GetUser(long telegramId)
     {
         return TelegramDbContext.Users
             .AsNoTracking()
@@ -99,7 +74,7 @@ public class TelegramDao
         TelegramDbContext.SaveChanges();
     }
 
-    public void Delete(int telegramId)
+    public void Delete(long telegramId)
     {
         var toRemove = TelegramDbContext.Users
             .Where(r => r.TelegramUserId == telegramId)

@@ -44,4 +44,6 @@ public interface ICache
     T HashGet<T>(string key, string field);
 
     void HashSet<T>(string key, string field, T value);
+    
+    void Reset();
 }

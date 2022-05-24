@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,11 +24,34 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Data.Storage.Encryption;
+namespace ASC.Thumbnail.IntegrationEvents.EventHandling;
 
-public interface IEncryptionService
+[Scope]
+public class ThumbnailRequestedIntegrationEventHandler : IIntegrationEventHandler<ThumbnailRequestedIntegrationEvent>
 {
-    void Start(EncryptionSettingsProto encryptionSettingsProto);
+    private readonly ILog _logger;
 
-    void Stop();
+    private ThumbnailRequestedIntegrationEventHandler() : base()
+    {
+
+    }
+
+    public ThumbnailRequestedIntegrationEventHandler(IOptionsMonitor<ILog> logger)
+    {
+        _logger = logger.CurrentValue;
+    }
+
+    public async Task Handle(ThumbnailRequestedIntegrationEvent @event)
+    {
+        _logger.InfoFormat("----- Handling integration event: {ThumbnailRequestedIntegrationEvent} at {AppName} - ({@IntegrationEvent})", @event.Id, Program.AppName, @event);
+
+        foreach (var fileId in @event.FileIds)
+        {   
+            var fileData = new FileData<int>(@event.TenantId, Convert.ToInt32(fileId), @event.BaseUrl);
+
+            FileDataQueue.Queue.TryAdd(fileId, fileData);
+        }
+
+        await Task.CompletedTask;      
+    }
 }

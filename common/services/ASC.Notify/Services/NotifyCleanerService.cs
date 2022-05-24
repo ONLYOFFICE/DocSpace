@@ -31,22 +31,37 @@ public class NotifyCleanerService : BackgroundService
 {
     private readonly ILog _logger;
     private readonly NotifyServiceCfg _notifyServiceCfg;
-    private readonly IServiceScopeFactory _serviceScopeFactory;
+    private readonly IServiceScopeFactory _scopeFactory;
     private readonly TimeSpan _waitingPeriod = TimeSpan.FromHours(8);
 
     public NotifyCleanerService(IOptions<NotifyServiceCfg> notifyServiceCfg, IServiceScopeFactory serviceScopeFactory, IOptionsMonitor<ILog> options)
     {
         _logger = options.Get("ASC.NotifyCleaner");
         _notifyServiceCfg = notifyServiceCfg.Value;
-        _serviceScopeFactory = serviceScopeFactory;
+        _scopeFactory = serviceScopeFactory;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _logger.Info("Notify Cleaner Service running.");
 
+        stoppingToken.Register(() => _logger.Debug("NotifyCleanerService background task is stopping."));
+
         while (!stoppingToken.IsCancellationRequested)
         {
+            using var serviceScope = _scopeFactory.CreateScope();
+
+            var registerInstanceService = serviceScope.ServiceProvider.GetService<IRegisterInstanceManager<NotifyCleanerService>>();
+
+            if (!await registerInstanceService.IsActive(RegisterInstanceWorkerService<NotifyCleanerService>.InstanceId))
+            {
+                _logger.Debug($"Notify Clean Service background task with instance id {RegisterInstanceWorkerService<NotifyCleanerService>.InstanceId} is't active.");
+
+                await Task.Delay(1000, stoppingToken);
+
+                continue;
+            }
+
             Clear();
 
             await Task.Delay(_waitingPeriod, stoppingToken);
@@ -61,7 +76,7 @@ public class NotifyCleanerService : BackgroundService
         {
             var date = DateTime.UtcNow.AddDays(-_notifyServiceCfg.StoreMessagesDays);
 
-            using var scope = _serviceScopeFactory.CreateScope();
+            using var scope = _scopeFactory.CreateScope();
             using var dbContext = scope.ServiceProvider.GetService<DbContextManager<NotifyDbContext>>().Get(_notifyServiceCfg.ConnectionStringName);
             using var tx = dbContext.Database.BeginTransaction();
 
