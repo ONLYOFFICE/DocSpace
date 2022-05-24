@@ -59,15 +59,15 @@ const Body = ({
   availableModules,
   displayName,
   snackbarExist,
-  theme
+  theme,
 }) => {
-  const { t } = useTranslation(["Home", "translation"]);
+  const { t, ready } = useTranslation(["Home", "translation"]);
   const { error } = match.params;
   setDocumentTitle();
 
   useEffect(() => error && toastr.error(error), [error]);
 
-  return !isLoaded ? (
+  return !isLoaded || !ready ? (
     <></>
   ) : (
     <HomeContainer snackbarExist={snackbarExist}>
