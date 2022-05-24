@@ -24,26 +24,16 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Data.Storage.Encryption.IntegrationEvents.Events;
-using ASC.EventBus.Abstractions;
-
 namespace ASC.Notify.IntegrationEvents.EventHandling;
 
 [Scope]
 public class EncryptionDataStorageRequestedIntegrationEventHandler : IIntegrationEventHandler<EncryptionDataStorageRequestedIntegration>
 {
-    private readonly ILog _logger;
-    private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly EncryptionWorker _encryptionWorker;
 
-    public EncryptionDataStorageRequestedIntegrationEventHandler(
-        IOptionsMonitor<ILog> logger,
-        EncryptionWorker encryptionWorker,
-        IServiceScopeFactory serviceScopeFactory)
+    public EncryptionDataStorageRequestedIntegrationEventHandler(EncryptionWorker encryptionWorker)
     {
-        _logger = logger.CurrentValue;
         _encryptionWorker = encryptionWorker;
-        _serviceScopeFactory = serviceScopeFactory;
     }
 
     public async Task Handle(EncryptionDataStorageRequestedIntegration @event)

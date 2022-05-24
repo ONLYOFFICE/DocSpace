@@ -34,10 +34,10 @@ public class TelegramHandler
     private readonly ILog _log;
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly IDistributedCache _distributedCache;
-    
+
     public TelegramHandler(IDistributedCache distributedCache,
-                           CommandModule command, 
-                           IOptionsMonitor<ILog> option, 
+                           CommandModule command,
+                           IOptionsMonitor<ILog> option,
                            IServiceScopeFactory scopeFactory)
     {
         _command = command;
@@ -51,8 +51,15 @@ public class TelegramHandler
 
     public async Task SendMessage(NotifyMessage msg)
     {
-        if (string.IsNullOrEmpty(msg.Reciever)) return;
-        if (!_clients.ContainsKey(msg.TenantId)) return;
+        if (string.IsNullOrEmpty(msg.Reciever))
+        {
+            return;
+        }
+
+        if (!_clients.ContainsKey(msg.TenantId))
+        {
+            return;
+        }
 
         var scope = _scopeFactory.CreateScope();
         var telegramDao = scope.ServiceProvider.GetService<TelegramDao>();
@@ -81,7 +88,10 @@ public class TelegramHandler
 
     public void DisableClient(int tenantId)
     {
-        if (!_clients.ContainsKey(tenantId)) return;
+        if (!_clients.ContainsKey(tenantId))
+        {
+            return;
+        }
 
         var client = _clients[tenantId];
 
@@ -164,7 +174,7 @@ public class TelegramHandler
 
         _distributedCache.SetString(token, userKey, new DistributedCacheEntryOptions
         {
-             AbsoluteExpiration = dateExpires
+            AbsoluteExpiration = dateExpires
         });
     }
 
@@ -183,9 +193,20 @@ public class TelegramHandler
 
     async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken, int tenantId)
     {
-        if (update.Type != UpdateType.Message) return;
-        if (update.Message.Type != MessageType.Text) return;
-        if (String.IsNullOrEmpty(update.Message.Text) || update.Message.Text[0] != '/') return;
+        if (update.Type != UpdateType.Message)
+        {
+            return;
+        }
+
+        if (update.Message.Type != MessageType.Text)
+        {
+            return;
+        }
+
+        if (String.IsNullOrEmpty(update.Message.Text) || update.Message.Text[0] != '/')
+        {
+            return;
+        }
 
         await _command.HandleCommand(update.Message, botClient, tenantId);
     }
