@@ -245,7 +245,7 @@ const StyledOptionButton = styled.div`
   display: block;
 
   .expandButton > div:first-child {
-    padding: 8px 21px 8px 12px;
+    padding: 8px 21px 8px 8px;
   }
 `;
 
