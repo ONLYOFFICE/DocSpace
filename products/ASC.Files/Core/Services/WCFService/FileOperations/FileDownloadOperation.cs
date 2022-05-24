@@ -104,7 +104,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 stream.Position = 0;
                 string fileName = FileConstant.DownloadTitle + archiveExtension;
                 var store = globalStore.GetStore();
-                var path = string.Format(@"{0}\{1}", ((IAccount)Thread.CurrentPrincipal.Identity).ID, fileName);
+                var path = string.Format(@"{0}\{1}", ((IAccount)principal.Identity).ID, fileName);
 
                 if (await store.IsFileAsync(FileConstant.StorageDomainTmp, path))
                 {
