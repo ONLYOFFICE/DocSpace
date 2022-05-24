@@ -39,7 +39,7 @@
   "CustomDomains": "自定义域",
   "CustomTitles": "自定义标题",
   "CustomTitlesFrom": "来自",
-  "CustomTitlesSettingsDescription": "将展示在您的欢迎页中没回用于邮件消息通知（发件人字段）。自定义域名是为门户设置替代URL的一种方法。自定义门户名将展示在onlyoffice.com/onlyoffice.eu地址旁。",
+  "CustomTitlesSettingsDescription": "欢迎页设置可更改默认门户标题，并在您的门户上显示。同样的名称也用于您的门户电子邮件通知的“发送自”字段。",
   "CustomTitlesSettingsTooltip": "<0>{{ welcomeText }}</0>可更改默认门户标题，并在您的门户的<2>{{ text }}</2>上显示。同样的名称也用于您的门户电子邮件通知的<4>{{ from }}</4>字段。",
   "CustomTitlesSettingsTooltipDescription": "<1>{{ header }}</1>字段中輸入您喜歡的名稱。",
   "CustomTitlesText": "文档模块",
