@@ -92,7 +92,6 @@ const SelectionPanelBody = ({
                     expandedKeys={expandedKeys}
                     isDisableTree={isDisableTree}
                     displayType="modal"
-                    treeHeight={388}
                   />
                 ) : (
                   <Loaders.NewTreeFolders />
