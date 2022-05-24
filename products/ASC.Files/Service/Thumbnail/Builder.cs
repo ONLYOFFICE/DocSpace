@@ -28,7 +28,6 @@ using ASC.Core;
 using ASC.Core.Common;
 using ASC.Files.Core;
 using ASC.Web.Core.Files;
-using ASC.Web.Core.Users;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Services.DocumentService;
 using ASC.Web.Files.Utils;
@@ -37,6 +36,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 
 namespace ASC.Files.ThumbnailBuilder
 {
@@ -402,33 +402,7 @@ namespace ASC.Files.ThumbnailBuilder
 
         private Image GetImageThumbnail(Image sourceBitmap, Size targetSize, int thumbnaillWidth, int thumbnaillHeight)
         {
-            //bad for small or disproportionate images
-            //return sourceBitmap.GetThumbnailImage(config.ThumbnaillWidth, config.ThumbnaillHeight, () => false, IntPtr.Zero);
-            var point = new Point(0, 0);
-            var size = targetSize;
-
-            if (sourceBitmap.Width > thumbnaillWidth && sourceBitmap.Height > thumbnaillHeight)
-            {
-                if (sourceBitmap.Width > sourceBitmap.Height)
-                {
-                    var width = (int)(thumbnaillWidth * (sourceBitmap.Height / (1.0 * thumbnaillHeight)));
-                    size = new Size(width, sourceBitmap.Height);
-                }
-                else
-                {
-                    var height = (int)(thumbnaillHeight * (sourceBitmap.Width / (1.0 * thumbnaillWidth)));
-                    size = new Size(sourceBitmap.Width, height);
-                }
-            }
-
-            if (sourceBitmap.Width > sourceBitmap.Height)
-            {
-                point.X = (sourceBitmap.Width - size.Width) / 2;
-            }
-
-            var targetThumbnailSettings = new UserPhotoThumbnailSettings(point, size);
-
-            return UserPhotoThumbnailManager.GetImage(sourceBitmap, targetSize, targetThumbnailSettings);
+            return sourceBitmap.Clone(x => x.BackgroundColor(Color.White).Resize(thumbnaillWidth, 0));
         }
     }
 }
