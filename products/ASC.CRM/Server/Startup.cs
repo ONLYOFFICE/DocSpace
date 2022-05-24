@@ -137,7 +137,7 @@ namespace ASC.CRM
 
         }
 
-        public override JsonConverter[] Converters
+        protected override JsonConverter[] Converters
         {
             get
             {

@@ -86,7 +86,7 @@ namespace ASC.Web.CRM.Classes
             _dataStore = global.GetStore();
 
             _tenantManager = tenantManager;
-            _tenantID = tenantManager.GetCurrentTenant().TenantId;
+            _tenantID = tenantManager.GetCurrentTenant().Id;
             _author = _securityContext.CurrentAccount;
 
             _notifyClient = notifyClient;
