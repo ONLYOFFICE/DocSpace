@@ -97,6 +97,29 @@ EXPOSE 5050
 
 ENTRYPOINT ["./docker-entrypoint.sh"]
 
+### STAGE 2: Build ###
+FROM node:latest as builderNodejs
+ARG BUILD_PATH
+ENV BUILD_PATH=${BUILD_PATH}
+
+COPY --from=base /app/onlyoffice/config/*.json /app/onlyoffice/config/
+COPY --from=base /app/onlyoffice/config/*.config /app/onlyoffice/config/
+
+RUN mkdir -p /var/log/onlyoffice && \
+    mkdir -p /app/onlyoffice/data && \
+    addgroup --system --gid 107 onlyoffice && \
+    adduser -uid 104 --quiet --home /var/www/onlyoffice --system --gid 107 onlyoffice && \
+    chown onlyoffice:onlyoffice /app/onlyoffice -R && \
+    chown onlyoffice:onlyoffice /var/log -R  && \
+    chown onlyoffice:onlyoffice /var/www -R && \
+    apt-get -y update && \
+    apt-get -y upgrade && \
+    apt-get install -yq sudo nano curl vim
+
+EXPOSE 5050
+
+ENTRYPOINT ["./docker-entrypoint.sh"]
+
 ### STAGE 3: Run ###
 
 ## Nginx image ##
