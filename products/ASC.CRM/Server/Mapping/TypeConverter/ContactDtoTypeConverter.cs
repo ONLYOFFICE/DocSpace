@@ -60,19 +60,19 @@ namespace ASC.CRM.Mapping
         private readonly DaoFactory _daoFactory;
         private readonly CrmSecurity _crmSecurity;
         private readonly ApiDateTimeHelper _apiDateTimeHelper;
-        private readonly EmployeeWraperHelper _employeeDtoHelper;
+        private readonly EmployeeDtoHelper _employeeDtoHelper;
         private readonly CurrencyProvider _currencyProvider;
         private readonly PathProvider _pathProvider;
 
         public ContactDtoTypeConverter(ApiDateTimeHelper apiDateTimeHelper,
-                           EmployeeWraperHelper employeeWraperHelper,
+                           EmployeeDtoHelper employeeDtoHelper,
                            CrmSecurity crmSecurity,
                            CurrencyProvider currencyProvider,
                            PathProvider pathProvider,
                            DaoFactory daoFactory)
         {
             _apiDateTimeHelper = apiDateTimeHelper;
-            _employeeDtoHelper = employeeWraperHelper;
+            _employeeDtoHelper = employeeDtoHelper;
             _crmSecurity = crmSecurity;
             _currencyProvider = currencyProvider;
             _pathProvider = pathProvider;

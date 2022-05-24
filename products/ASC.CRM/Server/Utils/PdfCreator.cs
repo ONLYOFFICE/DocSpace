@@ -129,7 +129,7 @@ namespace ASC.Web.CRM.Classes
                 var file = _serviceProvider.GetService<File<int>>();
 
                 file.Title = $"{invoice.Number}{FormatPdf}";
-                file.FolderID = await _daoFactory.GetFileDao().GetRootAsync();
+                file.ParentId = await _daoFactory.GetFileDao().GetRootAsync();
 
                 var request = new HttpRequestMessage();
                 request.RequestUri = new Uri(urlToFile);
@@ -147,13 +147,13 @@ namespace ASC.Web.CRM.Classes
                     throw new Exception(CRMErrorsResource.FileCreateError);
                 }
 
-                invoice.FileID = Int32.Parse(file.ID.ToString());
+                invoice.FileID = Int32.Parse(file.Id.ToString());
 
-                _logger.DebugFormat("PdfCreator. CreateAndSaveFile. Invoice ID = {0}. UpdateInvoiceFileID. FileID = {1}", invoiceId, file.ID);
+                _logger.DebugFormat("PdfCreator. CreateAndSaveFile. Invoice ID = {0}. UpdateInvoiceFileID. FileID = {1}", invoiceId, file.Id);
 
                 _daoFactory.GetInvoiceDao().UpdateInvoiceFileID(invoice.ID, invoice.FileID);
 
-                _logger.DebugFormat("PdfCreator. CreateAndSaveFile. Invoice ID = {0}. AttachFiles. FileID = {1}", invoiceId, file.ID);
+                _logger.DebugFormat("PdfCreator. CreateAndSaveFile. Invoice ID = {0}. AttachFiles. FileID = {1}", invoiceId, file.Id);
 
                 _daoFactory.GetRelationshipEventDao().AttachFiles(invoice.ContactID, invoice.EntityType, invoice.EntityID, new[] { invoice.FileID });
             }
@@ -263,12 +263,12 @@ namespace ASC.Web.CRM.Classes
                     var document = _serviceProvider.GetService<File<int>>();
 
                     document.Title = $"{data.Number}{FormatPdf}";
-                    document.FolderID = await _daoFactory.GetFileDao().GetRootAsync();
+                    document.ParentId = await _daoFactory.GetFileDao().GetRootAsync();
                     document.ContentLength = stream.Length;
 
                     if (data.GetInvoiceFile(daoFactory) != null)
                     {
-                        document.ID = data.FileID;
+                        document.Id = data.FileID;
                     }
 
                     file = await _daoFactory.GetFileDao().SaveFileAsync(document, stream);

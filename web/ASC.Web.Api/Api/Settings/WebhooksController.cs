@@ -43,7 +43,7 @@ public class WebhooksController : BaseSettingsController
     /// <summary>
     /// Add new config for webhooks
     /// </summary>
-    [Create("webhook")]
+    [HttpPost("webhook")]
     public void CreateWebhook(WebhooksConfig model)
     {
         if (model.Uri == null)
@@ -62,7 +62,7 @@ public class WebhooksController : BaseSettingsController
     /// <summary>
     /// Update config for webhooks
     /// </summary>
-    [Update("webhook")]
+    [HttpPut("webhook")]
     public void UpdateWebhook(WebhooksConfig model)
     {
         if (model.Uri == null)
@@ -81,7 +81,7 @@ public class WebhooksController : BaseSettingsController
     /// <summary>
     /// Remove config for webhooks
     /// </summary>
-    [Delete("webhook")]
+    [HttpDelete("webhook")]
     public void RemoveWebhook(WebhooksConfig model)
     {
         if (model.Uri == null)
@@ -100,7 +100,7 @@ public class WebhooksController : BaseSettingsController
     /// <summary>
     /// Read Webhooks history for actual tenant
     /// </summary>
-    [Read("webhooks")]
+    [HttpGet("webhooks")]
     public List<WebhooksLog> TenantWebhooks()
     {
         return _webhookDbWorker.GetTenantWebhooks();

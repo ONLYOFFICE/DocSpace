@@ -41,7 +41,7 @@ public class ModulesController : ControllerBase
         _webItemManagerSecurity = webItemManagerSecurity;
     }
 
-    [Read]
+    [HttpGet]
     public IEnumerable<string> GetAll()
     {
         var result = new List<string>();
@@ -54,7 +54,7 @@ public class ModulesController : ControllerBase
         return result;
     }
 
-    [Read("info")]
+    [HttpGet("info")]
     public IEnumerable<Module> GetAllWithInfo()
     {
         foreach (var a in _webItemManagerSecurity.GetItems(WebZoneType.StartProductList))
