@@ -13,8 +13,7 @@ import {
   StyledThumbnail,
   StyledTitle,
 } from "./styles/styles.js";
-
-const moment = require("moment");
+import getCorrectDate from "@appserver/components/utils/getCorrectDate";
 
 const SingleItem = (props) => {
   const {
@@ -58,19 +57,28 @@ const SingleItem = (props) => {
 
     const getSingleItemProperties = (item) => {
       const styledLink = (text, href) => (
-        <Link className="property-content" href={href} isHovered={true}>
+        <Link
+          isTextOverflow
+          className="property-content"
+          href={href}
+          isHovered={true}
+        >
           {text}
         </Link>
       );
 
       const styledText = (text) => (
-        <Text className="property-content">{text}</Text>
+        <Text truncate className="property-content">
+          {text}
+        </Text>
       );
 
       const parseAndFormatDate = (date) => {
-        return moment(date)
-          .locale(localStorage.getItem(LANGUAGE))
-          .format("DD.MM.YY hh:mm A");
+        const locale = personal ? localStorage.getItem(LANGUAGE) : culture;
+
+        const correctDate = getCorrectDate(locale, date);
+
+        return correctDate;
       };
 
       const getItemType = (fileType) => {
@@ -127,7 +135,7 @@ const SingleItem = (props) => {
         },
         {
           id: "Size",
-          title: t("Common:Size"),
+          title: item.fileType ? t("Common:Size") : t("Common:Content"),
           content: styledText(itemSize),
         },
         {

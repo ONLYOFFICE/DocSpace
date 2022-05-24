@@ -39,7 +39,8 @@ const StyledContainer = styled.div`
 `;
 
 const StyledInfoPanelToggleWrapper = styled.div`
-  display: ${(props) => (props.isInfoPanelVisible ? "none" : "flex")};
+  display: ${(props) =>
+    props.isInfoPanelVisible && !props.isShowRootFolder ? "none" : "flex"};
 
   align-items: center;
   align-self: center;
@@ -86,11 +87,13 @@ const ToggleInfoPanelButton = ({
   isRootFolder,
   isInfoPanelVisible,
   toggleInfoPanel,
+  isShowRootFolder,
 }) => {
   return (
     <StyledInfoPanelToggleWrapper
       isRootFolder={isRootFolder}
       isInfoPanelVisible={isInfoPanelVisible}
+      isShowRootFolder={isShowRootFolder}
     >
       <div className="info-panel-toggle-bg">
         <IconButton

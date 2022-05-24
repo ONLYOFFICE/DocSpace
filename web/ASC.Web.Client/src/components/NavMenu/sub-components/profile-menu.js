@@ -11,7 +11,7 @@ import { mobile, tablet } from "@appserver/components/utils/device";
 import CrossIcon from "@appserver/components/public/static/images/cross.react.svg";
 
 const StyledDropDown = styled(DropDown)`
-  z-index: 500;
+  z-index: 500 !important;
 
   top: 54px !important;
   right: 20px !important;
@@ -71,6 +71,9 @@ const commonStyle = css`
   font-style: normal;
   color: ${(props) => props.theme.menuContainer.color};
   max-width: 300px;
+  @media ${mobile} {
+    max-width: calc(100vw - 84px);
+  }
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -98,9 +101,15 @@ export const MenuContainer = styled.div`
   cursor: default;
   box-sizing: border-box;
 
+  @media ${mobile} {
+    max-width: 100vw;
+  }
+
   .avatar {
     height: 40px;
     width: 40px;
+    min-height: 40px;
+    min-width: 40px;
   }
 `;
 
@@ -109,6 +118,12 @@ MenuContainer.defaultProps = { theme: Base };
 export const MainLabelContainer = styled.div`
   font-size: 16px;
   line-height: 28px;
+
+  width: auto;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   ${commonStyle}
 `;

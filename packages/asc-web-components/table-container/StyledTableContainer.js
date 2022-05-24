@@ -9,7 +9,7 @@ const StyledTableContainer = styled.div`
 
   width: 100%;
   max-width: 100%;
-  margin-top: -19px;
+  margin-top: -25px;
 
   display: grid;
 
@@ -263,7 +263,7 @@ const StyledTableHeaderCell = styled.div`
     color: ${(props) =>
       props.isActive
         ? props.theme.tableContainer.header.activeTextColor
-        : props.theme.tableContainer.header.textColor} !important;
+        : props.theme.tableContainer.header.textColor};
 
     &:hover {
       color: ${(props) =>

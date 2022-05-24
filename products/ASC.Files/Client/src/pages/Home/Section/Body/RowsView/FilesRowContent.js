@@ -157,7 +157,7 @@ export default inject(({ auth }) => {
 })(
   observer(
     withRouter(
-      withTranslation(["Home", "Translations", "VersionBadge"])(
+      withTranslation(["Home", "Translations"])(
         withContent(withBadges(FilesRowContent))
       )
     )
