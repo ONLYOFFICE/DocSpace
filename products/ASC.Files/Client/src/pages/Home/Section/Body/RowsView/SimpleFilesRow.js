@@ -268,9 +268,6 @@ const SimpleFilesRow = (props) => {
   );
 };
 
-export default withTranslation([
-  "Home",
-  "Translations",
-  "InfoPanel",
-  "VersionBadge",
-])(withRouter(withFileActions(withQuickButtons(SimpleFilesRow))));
+export default withTranslation(["Home", "Translations", "InfoPanel"])(
+  withRouter(withFileActions(withQuickButtons(SimpleFilesRow)))
+);

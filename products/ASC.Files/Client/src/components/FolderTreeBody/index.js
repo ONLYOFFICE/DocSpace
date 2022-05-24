@@ -22,30 +22,27 @@ const FolderTreeBody = ({
 }) => {
   const { t } = useTranslation(["SelectFolder", "Common"]);
 
-  useEffect(() => {
+  const scrollToSelectedNode = () => {
     const selectedNode = document.getElementsByClassName(
       "rc-tree-treenode-selected"
     )[0];
-    if (selectedNode) {
-      document
-        .querySelector("#folder-tree-scroll-bar > .scroll-body")
-        .scrollTo(0, selectedNode.offsetTop);
-    }
-  }, []);
-
-  const firstLoadScroll = () => {
-    setIsLoadingNodes(false);
-
-    const selectedNode = document.getElementsByClassName(
-      "rc-tree-treenode-selected"
-    )[0];
-
     if (selectedNode) {
       document
         .querySelector("#folder-tree-scroll-bar > .scroll-body")
         .scrollTo(0, selectedNode.offsetTop);
     }
   };
+
+  useEffect(() => {
+    scrollToSelectedNode();
+  }, []);
+
+  const firstLoadScroll = () => {
+    setIsLoadingNodes(false);
+
+    scrollToSelectedNode();
+  };
+
   return (
     <>
       {isAvailable ? (
