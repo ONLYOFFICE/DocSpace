@@ -188,6 +188,11 @@ const StyledFileTileBottom = styled.div`
     !props.isEdit && (props.checked || props.isActive) && checkedStyle}
 
   border-top: 1px solid transparent;
+  :hover {
+    ${bottomFileBorder}
+    ${checkedStyle}
+  }
+
   ${(props) =>
     !props.isEdit && (props.checked || props.isActive) && bottomFileBorder}
 
