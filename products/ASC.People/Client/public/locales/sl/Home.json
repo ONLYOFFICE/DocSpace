@@ -15,5 +15,6 @@
   "NotFoundDescription": "Poskusite z drugim filtrom ali filter počistite, če si želite ogledati vse osebe v razdelku.",
   "NotFoundTitle": "Ni najdenih predlog",
   "SuccessfullyRemovedGroup": "Skupina je bila uspešno odstranjena",
-  "UserStatus": "Status"
+  "UserStatus": "Status",
+  "ReassignmentData": "Prerazporeditev podatkov"
 }

@@ -15,5 +15,6 @@
   "NotFoundDescription": "Kokeile toista suodatinta tai tyhjennä se nähdäksesi kaikki osion ihmiset.",
   "NotFoundTitle": "Ryhmänjäseniä ei löytynyt",
   "SuccessfullyRemovedGroup": "Ryhmä poistettiin onnistuneesti",
-  "UserStatus": "Tila"
+  "UserStatus": "Tila",
+  "ReassignmentData": "Tietojen uudelleenmääritys"
 }

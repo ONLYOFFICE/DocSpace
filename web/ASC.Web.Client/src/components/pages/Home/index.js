@@ -62,7 +62,7 @@ const Body = ({
   snackbarExist,
   theme,
 }) => {
-  const { t, ready } = useTranslation(["Home", "translation"]);
+  const { t, ready } = useTranslation("Home");
   const { error } = match.params;
   setDocumentTitle();
 
@@ -86,7 +86,7 @@ const Body = ({
           fontSize="14px"
           color={theme.studio.home.textColorError}
         >
-          {t("translation:NoOneModulesAvailable")}
+          {t("NoOneModulesAvailable")}
         </Text>
       ) : null}
     </HomeContainer>

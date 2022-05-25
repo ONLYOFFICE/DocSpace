@@ -39,6 +39,7 @@
   "MoveItems": "<strong>{{qty}}</strong> öğeler taşındı",
   "MoveOrCopy": "Taşı veya kopyala",
   "MoveTo": "Şuraya taşı",
+  "MoveToFolderMessage": "Klasörü alt klasörüne taşıyamazsınız",
   "MyEmptyContainerDescription": "Oluşturduğunuz veya yüklediğiniz belgeler 'Belgelerim' bölümünde tutulur. Bunları düzenleyebilir, paylaşabilir ve ekibinizle üzerinde çalışabilirsiniz.",
   "New": "Yeni",
   "NewDocument": "Yeni Belge",

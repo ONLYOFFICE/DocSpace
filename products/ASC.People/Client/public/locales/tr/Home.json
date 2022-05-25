@@ -15,5 +15,6 @@
   "NotFoundDescription": "Farklı bir filtre deneyin veya bölümdeki tüm kişileri görüntülemek için filtreyi temizleyin.",
   "NotFoundTitle": "Takım arkadaşı bulunamadı",
   "SuccessfullyRemovedGroup": "Grup başarıyla kaldırıldı",
-  "UserStatus": "Durum"
+  "UserStatus": "Durum",
+  "ReassignmentData": "Veri yeniden ataması"
 }

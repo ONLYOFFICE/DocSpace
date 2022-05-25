@@ -15,5 +15,6 @@
   "NotFoundDescription": "Izmēģiniet citu filtru vai notīriet to, lai skatītu visus sadaļā esošos cilvēkus.",
   "NotFoundTitle": "Nav atrasts neviens komandas biedrs",
   "SuccessfullyRemovedGroup": "Grupa ir veiksmīgi noņemta",
-  "UserStatus": "Statuss"
+  "UserStatus": "Statuss",
+  "ReassignmentData": "Datu atkārtota piešķiršana"
 }
