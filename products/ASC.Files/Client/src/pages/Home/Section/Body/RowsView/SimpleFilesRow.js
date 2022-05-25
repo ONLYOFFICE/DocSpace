@@ -39,6 +39,12 @@ const StyledWrapper = styled.div`
 const StyledSimpleFilesRow = styled(Row)`
   ${(props) => (props.checked || props.isActive) && checkedStyle};
   ${(props) => props.dragging && draggingStyle}
+
+  :hover {
+    cursor: pointer;
+    ${checkedStyle}
+  }
+
   position: unset;
   cursor: ${(props) =>
     !props.isThirdPartyFolder &&
