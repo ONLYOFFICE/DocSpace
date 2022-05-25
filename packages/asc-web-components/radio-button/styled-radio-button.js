@@ -14,8 +14,6 @@ const Label = styled(ClearLabel)`
   position: relative;
   margin: 0;
 
-  max-height: 18px;
-
   ${NoUserSelect};
 
   cursor: ${(props) => !props.isDisabled && "pointer"};
