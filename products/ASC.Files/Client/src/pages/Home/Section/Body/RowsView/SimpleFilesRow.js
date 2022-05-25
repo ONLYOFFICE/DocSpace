@@ -47,8 +47,8 @@ const StyledSimpleFilesRow = styled(Row)`
       :hover {
         cursor: pointer;
         ${checkedStyle}
-        `}
       }
+    `};
 
   position: unset;
   cursor: ${(props) =>

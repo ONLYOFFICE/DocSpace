@@ -36,8 +36,8 @@ const rowCheckboxDraggingStyle = css`
 `;
 
 const contextMenuWrapperDraggingStyle = css`
-  margin-right: -24px;
-  padding-right: 24px;
+  margin-right: -20px;
+  padding-right: 20px;
 
   border-bottom: 1px solid;
   border-image-slice: 1;
