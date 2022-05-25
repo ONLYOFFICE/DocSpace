@@ -39,6 +39,7 @@
   "MoveItems": "<strong>{{qty}}</strong> elementen zijn verplaatst",
   "MoveOrCopy": "Verplaats of copieer",
   "MoveTo": "Verplaats naar",
+  "MoveToFolderMessage": "U kunt de map niet naar zijn submap verplaatsen",
   "MyEmptyContainerDescription": "Documenten die u maakt of uploadt, worden bewaard in het gedeelte 'Mijn Documenten'. U kunt ze bewerken, delen en er met uw team aan samenwerken.",
   "New": "Nieuw",
   "NewDocument": "Nieuw document",
