@@ -430,7 +430,6 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   }, [userTheme]);
 
   useEffect(() => {
-    console.log("Current product", currentProductId);
     if (window.location.pathname.toLowerCase().includes("files")) {
       setIsDocuments(true);
     } else {
