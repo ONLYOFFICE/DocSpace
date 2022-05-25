@@ -10,7 +10,7 @@ const Wrapper = styled.div`
 const ReactSmartBanner = () => {
   return (
     <Wrapper>
-      <SmartBanner title="Onlyoffice" author="Onlyoffice" force="ios" />
+      <SmartBanner title="Onlyoffice" author="Onlyoffice" />
     </Wrapper>
   );
 };
