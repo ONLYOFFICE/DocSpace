@@ -15,5 +15,6 @@
   "NotFoundDescription": "別のフィルタを試すか、フィルタを解除すると、セクション内のすべての人が表示されます",
   "NotFoundTitle": "チームメンバは見つかりませんでした",
   "SuccessfullyRemovedGroup": "グループの削除が完了しました。",
-  "UserStatus": "ステータス"
+  "UserStatus": "ステータス",
+  "ReassignmentData": "データの再配置"
 }

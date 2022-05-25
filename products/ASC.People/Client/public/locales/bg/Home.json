@@ -15,5 +15,6 @@
   "NotFoundDescription": "Изпробвайте различен филтър или го изчистете, за да видите всички хора в раздела.",
   "NotFoundTitle": "Няма открити съотборници",
   "SuccessfullyRemovedGroup": "Групата беше премахната успешно",
-  "UserStatus": "Статус"
+  "UserStatus": "Статус",
+  "ReassignmentData": "Пренасочване на данни"
 }
