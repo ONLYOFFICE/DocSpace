@@ -40,13 +40,15 @@ const StyledSimpleFilesRow = styled(Row)`
   ${(props) => (props.checked || props.isActive) && checkedStyle};
   ${(props) => props.dragging && draggingStyle}
 
-  :hover {
-    ${!isMobile &&
+  ${(props) =>
+    !isMobile &&
+    !props.isDragging &&
     css`
-      cursor: pointer;
-      ${checkedStyle}
-    `}
-  }
+      :hover {
+        cursor: pointer;
+        ${checkedStyle}
+        `}
+      }
 
   position: unset;
   cursor: ${(props) =>
@@ -257,6 +259,7 @@ const SimpleFilesRow = (props) => {
           contextOptions={item.contextOptions}
           contextButtonSpacerWidth={displayShareButton}
           dragging={dragging && isDragging}
+          isDragging={dragging}
           isActive={isActive}
           inProgress={inProgress}
           isThirdPartyFolder={item.isThirdPartyFolder}
