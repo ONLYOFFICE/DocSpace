@@ -14,7 +14,7 @@
   "MessageEmailActivationInstuctionsSentOnEmail": "Pokyny k aktivaci e-mailu byly zaslány na e-mailovou adresu <1>{{email}}</1>",
   "NotFoundDescription": "Zkuste použít jiný filtr nebo jej vymažte, aby se zobrazily všechny osoby v sekci.",
   "NotFoundTitle": "Nenalezeni žádní členové týmu",
+  "ReassignmentData": "Změna přiřazení dat",
   "SuccessfullyRemovedGroup": "Skupina byla úspěšně odstraněna",
-  "UserStatus": "Stav",
-  "ReassignmentData": "Změna přiřazení dat"
+  "UserStatus": "Stav"
 }

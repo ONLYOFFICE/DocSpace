@@ -14,7 +14,7 @@
   "MessageEmailActivationInstuctionsSentOnEmail": "Instrucțiunile de activare a adresei e-mail au fost trimise la <1>{{email}}</1>",
   "NotFoundDescription": "Aplicați un alt filtru sau îl eliminați ca să afișați toți utilizatorii din secțiunea.",
   "NotFoundTitle": "Niciun membru al echipei nu s-a găsit",
+  "ReassignmentData": "Reasinarea datelor",
   "SuccessfullyRemovedGroup": "Grupul a fost șters cu succes",
-  "UserStatus": "Statutul",
-  "ReassignmentData": "Reasinarea datelor"
+  "UserStatus": "Statutul"
 }
