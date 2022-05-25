@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { isMobile, isIOS } from "react-device-detect";
 import SmartBanner from "react-smartbanner";
-import "./smartbanner.css";
+import "./main.css";
 
 const Wrapper = styled.div`
   padding-bottom: 80px;
