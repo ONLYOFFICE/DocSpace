@@ -59,6 +59,11 @@ public class FilesMessageService
         SendHeadersMessage(headers, action, null);
     }
 
+    public void Send(IDictionary<string, StringValues> headers, MessageAction action, params string[] description)
+    {
+        SendHeadersMessage(headers, action, null, description);
+    }
+
     public void Send<T>(FileEntry<T> entry, IDictionary<string, StringValues> headers, MessageAction action, params string[] description)
     {
         // do not log actions in users folder

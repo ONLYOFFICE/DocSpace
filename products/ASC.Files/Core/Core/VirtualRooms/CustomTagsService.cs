@@ -33,17 +33,23 @@ public class CustomTagsService<T>
     private readonly FileSecurity _fileSecurity;
     private readonly AuthContext _authContext;
     private readonly FileSecurityCommon _fileSecurityCommon;
+    private readonly FilesMessageService _filesMessageService;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public CustomTagsService(IDaoFactory daoFactory, FileSecurity fileSecurity, AuthContext authContext, FileSecurityCommon fileSecurityCommon)
+    public CustomTagsService(IDaoFactory daoFactory, FileSecurity fileSecurity, AuthContext authContext, FileSecurityCommon fileSecurityCommon,
+        FilesMessageService filesMessageService, IHttpContextAccessor httpContextAccessor)
     {
         _daoFactory = daoFactory;
         _fileSecurity = fileSecurity;
         _authContext = authContext;
         _fileSecurityCommon = fileSecurityCommon;
+        _filesMessageService = filesMessageService;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     private ITagDao<T> TagDao => _daoFactory.GetTagDao<T>();
     private IFolderDao<T> FolderDao => _daoFactory.GetFolderDao<T>();
+    private IDictionary<string, StringValues> Headers => _httpContextAccessor?.HttpContext?.Request?.Headers;
 
     public async Task<TagInfo> CreateTagAsync(string name)
     {
@@ -68,7 +74,11 @@ public class CustomTagsService<T>
             Type = TagType.Custom
         };
 
-        return await TagDao.SaveTagInfoAsync(tagInfo);
+        var savedTag = await TagDao.SaveTagInfoAsync(tagInfo);
+
+        _filesMessageService.Send(Headers, MessageAction.TagCreated, savedTag.Name);
+
+        return savedTag;
     }
 
     public async Task DeleteTagsAsync(IEnumerable<int> tagIds)
@@ -78,9 +88,18 @@ public class CustomTagsService<T>
             throw new SecurityException("You do not have permission to remove tags");
         }
 
+        if (!tagIds.Any())
+        {
+            return;
+        }
+
         var tagDao = TagDao;
 
+        var tags = await tagDao.GetTagsInfoAsync(tagIds).Select(t => t.Name).ToArrayAsync();
+
         await tagDao.RemoveTagsAsync(tagIds);
+
+        _filesMessageService.Send(Headers, MessageAction.TagsDeleted, tags);
     }
 
     public async Task<Folder<T>> AddRoomTagsAsync(T folderId, IEnumerable<int> tagsIds)
@@ -92,6 +111,11 @@ public class CustomTagsService<T>
             throw new SecurityException("You do not have permission to edit the room");
         }
 
+        if (!tagsIds.Any())
+        {
+            return folder;
+        }
+
         var tagDao = TagDao;
 
         var tagsInfos = await tagDao.GetTagsInfoAsync(tagsIds).ToListAsync();
@@ -99,6 +123,8 @@ public class CustomTagsService<T>
         var tags = tagsInfos.Select(tagInfo => Tag.Custom(_authContext.CurrentAccount.ID, folder, tagInfo.Name));
 
         tagDao.SaveTags(tags);
+
+        _filesMessageService.Send(folder, Headers, MessageAction.AddedRoomTags, tagsInfos.Select(t => t.Name).ToArray());
 
         return folder;
     }
@@ -112,13 +138,20 @@ public class CustomTagsService<T>
             throw new SecurityException("You do not have permission to edit the room");
         }
 
+        if (!tagsIds.Any())
+        {
+            return folder;
+        }
+
         var tagDao = TagDao;
 
         await tagDao.RemoveTagsAsync(folder, tagsIds);
 
-        var updatedFolder = await FolderDao.GetFolderAsync(folderId);
+        var tagsInfos = await tagDao.GetTagsInfoAsync(tagsIds).Select(t => t.Name).ToArrayAsync();
 
-        return updatedFolder;
+        _filesMessageService.Send(folder, Headers, MessageAction.DeletedRoomTags, tagsInfos);
+
+        return folder;
     }
 
     public async IAsyncEnumerable<TagInfo> GetTagsInfoAsync(string searchText, TagType tagType)
