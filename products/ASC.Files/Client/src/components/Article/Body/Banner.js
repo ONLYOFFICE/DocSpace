@@ -61,10 +61,7 @@ const Banner = () => {
   useEffect(() => {
     getBanner();
     const adsInterval = setInterval(getBanner, ADS_TIMEOUT);
-
-    return function cleanup() {
-      clearInterval(adsInterval);
-    };
+    return () => clearInterval(adsInterval);
   }, []);
 
   return (

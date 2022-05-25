@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 //import equal from "fast-deep-equal/react";
 //import { LayoutContextConsumer } from "studio/Layout/context";
-import { isMobile, isMobileOnly } from "react-device-detect";
+import { isMobile, isMobileOnly, isDesktop } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 
 import Scrollbar from "@appserver/components/scrollbar";
@@ -82,8 +82,13 @@ const commonStyles = css`
     .files-row-container {
       margin-top: -22px;
 
+      ${isDesktop &&
+      css`
+        margin-top: -17px;
+      `}
+
       @media ${desktop} {
-        ${(props) => props.viewAs === "row" && `margin-top: -9px;`}
+        ${(props) => props.viewAs === "row" && `margin-top: -15px;`}
       }
     }
   }

@@ -1,4 +1,5 @@
-﻿{
+{
+  "AllUsers": "Přidat uživatele",
   "CustomAllGroups": "Všichni {{ groupsCaption, lowercase }}",
   "EmptySearchUsersResult": "Neexistují žádní uživatelé s tímto jménem",
   "EmptyUsers": "Nejsou žádní uživatelé",

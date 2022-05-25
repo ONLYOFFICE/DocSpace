@@ -10,6 +10,7 @@ import { setDocumentTitle } from "../../../helpers/utils";
 import { inject, observer } from "mobx-react";
 import { HomeIllustration, ModuleTile, HomeContainer } from "./sub-components";
 import Heading from "@appserver/components/heading";
+import AppLoader from "@appserver/common/components/AppLoader";
 
 const Tiles = ({ availableModules, displayName, t }) => {
   let index = 0;
@@ -59,16 +60,16 @@ const Body = ({
   availableModules,
   displayName,
   snackbarExist,
-  theme
+  theme,
 }) => {
-  const { t } = useTranslation(["Home", "translation"]);
+  const { t, ready } = useTranslation(["Home", "translation"]);
   const { error } = match.params;
   setDocumentTitle();
 
   useEffect(() => error && toastr.error(error), [error]);
 
-  return !isLoaded ? (
-    <></>
+  return !isLoaded || !ready ? (
+    <AppLoader />
   ) : (
     <HomeContainer snackbarExist={snackbarExist}>
       <Tiles

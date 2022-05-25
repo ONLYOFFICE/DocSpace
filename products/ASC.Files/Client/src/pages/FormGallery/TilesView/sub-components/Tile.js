@@ -89,13 +89,13 @@ class Tile extends React.PureComponent {
 
   onCreateForm = () => {
     const { match, history } = this.props;
-    const { setInfoPanelIsVisible } = this.props;
+    const { setInfoPanelVisible } = this.props;
 
     const filter = FilesFilter.getDefault();
     filter.folder = match.params.folderId;
     const urlFilter = filter.toUrlParams();
 
-    setInfoPanelIsVisible(false);
+    setInfoPanelVisible(false);
 
     history.push(
       combineUrl(
@@ -108,7 +108,7 @@ class Tile extends React.PureComponent {
 
   onShowTemplateInfo = () => {
     if (!this.props.isInfoPanelVisible) {
-      this.props.setInfoPanelIsVisible(true);
+      this.props.setInfoPanelVisible(true);
     }
   };
 
@@ -212,7 +212,7 @@ export default inject(
   ({ filesStore, settingsStore, infoPanelStore }, { item }) => {
     const { gallerySelected, setGallerySelected } = filesStore;
     const { getIcon } = settingsStore;
-    const { setInfoPanelIsVisible, isVisible } = infoPanelStore;
+    const { setIsVisible, isVisible } = infoPanelStore;
 
     const isSelected = item.id === gallerySelected?.id;
 
@@ -220,7 +220,7 @@ export default inject(
       isSelected,
       setGallerySelected,
       getIcon,
-      setInfoPanelIsVisible,
+      setInfoPanelVisible: setIsVisible,
       isInfoPanelVisible: isVisible,
     };
   }

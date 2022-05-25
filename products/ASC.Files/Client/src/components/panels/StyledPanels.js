@@ -49,6 +49,7 @@ const StyledAsidePanel = styled.div`
   z-index: 310;
 
   .sharing_panel-header {
+    width: 100%;
     font-weight: 700;
     margin: 14px 0;
     padding-right: 10px;

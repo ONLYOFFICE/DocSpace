@@ -230,7 +230,7 @@ class SectionHeaderContent extends React.Component {
   };
 
   getContextOptionsFolder = () => {
-    const { t, personal } = this.props;
+    const { t, toggleInfoPanel, personal } = this.props;
 
     return [
       {
@@ -246,6 +246,13 @@ class SectionHeaderContent extends React.Component {
         onClick: this.createLinkForPortalUsers,
         disabled: personal ? true : false,
         icon: "/static/images/invitation.link.react.svg",
+      },
+      {
+        key: "show-info",
+        label: t("InfoPanel:ViewDetails"),
+        onClick: toggleInfoPanel,
+        disabled: false,
+        icon: "/static/images/info.react.svg",
       },
       { key: "separator-2", isSeparator: true },
       {
@@ -355,6 +362,7 @@ class SectionHeaderContent extends React.Component {
       isHeaderIndeterminate,
       showText,
       toggleInfoPanel,
+      isShowRootFolder,
     } = this.props;
     const menuItems = this.getMenuItems();
     const isLoading = !title || !tReady;
@@ -412,6 +420,7 @@ class SectionHeaderContent extends React.Component {
                     onBackToParentFolder={this.onBackToParentFolder}
                     toggleInfoPanel={toggleInfoPanel}
                     isInfoPanelVisible={isInfoPanelVisible}
+                    isShowRootFolder={isShowRootFolder}
                     titles={{
                       trash: t("EmptyRecycleBin"),
                     }}
@@ -476,7 +485,7 @@ export default inject(
       backToParentFolder,
     } = filesActionsStore;
 
-    const { toggleIsVisible, isVisible } = infoPanelStore;
+    const { isVisible, isShowRootFolder, toggleIsVisible } = infoPanelStore;
 
     return {
       showText: auth.settingsStore.showText,
@@ -489,6 +498,7 @@ export default inject(
       canCreate,
       toggleInfoPanel: toggleIsVisible,
       isInfoPanelVisible: isVisible,
+      isShowRootFolder,
       isHeaderVisible,
       isHeaderIndeterminate,
       isHeaderChecked,
@@ -530,7 +540,7 @@ export default inject(
     };
   }
 )(
-  withTranslation(["Home", "Common", "Translations"])(
+  withTranslation(["Home", "Common", "Translations", "InfoPanel"])(
     withRouter(observer(SectionHeaderContent))
   )
 );

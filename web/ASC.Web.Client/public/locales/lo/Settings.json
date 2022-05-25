@@ -1,4 +1,4 @@
-﻿{
+{
   "AccessRightsAccessToProduct": "ການເຂົ້າເຖິງໂມດູນ {{product}} ທີ່ມອບໃຫ້",
   "AccessRightsAllUsers": "{{users}} ທັງຫມົດ",
   "AccessRightsChangeOwnerConfirmText": "ການປ່ຽນແປງດັ່ງກວ່າຈະຖືກນຳໃຊ້ຫຼັງຈາກທ່ານໄດ້ຢືນຢັນຜ່ານທາງອີເມວ",
@@ -21,9 +21,8 @@
   "ChooseOwner": "ເລືອກເຈົ້າຂອງ",
   "CompanyNameForCanvasLogo": "ຊື່ບໍລິສັດ",
   "ConfirmEmailSended": "ອີເມລຢືນຢັນໄດ້ຖືກສົ່ງໄປຫາ {{ownerName}}",
-  "Customization": "ການປັບແຕ່ງ",
   "CustomTitles": "ກຳນົດຫົວຂໍ້",
-  "CustomTitlesSettingsDescription": "ຈະສະແດງຫນ້າຕອ້ນຮັບຂອງທ່ານ ແລະ ໃຊ້ເພື່ອເຕືອນຜ່ານທາງອີເມວ(ຈາກຟີວ) ຊື່ໂດເມນທີ່ກຳນົດເອງເປັນວິທີການຕັ້ງຄ່າ URL ທາງເລືອກສຳລັບ  portal ຂອງທ່ານ. ຊື່  portal ທີ່ກຳນົດເອງຈະປະກົດຈາກທີ່ຢູ່ onlyoffice.com/onlyoffice.eu",
+  "Customization": "ການປັບແຕ່ງ",
   "DeactivateOrDeletePortal": "ປິດການນຳໃຊ້ ຫຼື ລືບສາຍ.",
   "Disabled": "ປິດສິດ",
   "DocumentsAdministratorsCan": "ຜູ້ດູແລລະບົບເອກະສານສາມາດເຊື່ອມຕໍ່ Dropbox, Box ແລະ ບັນຊີອື່ນໆ ກັບເອກະສານທົ່ວໄປ ແລະ ຕັ້ງຄ່າການເຂົ້າເຖິງສິດສ່ວນນີ້",
@@ -47,7 +46,6 @@
   "NoAdmins": "ທີ່ນີ້ຍັງບໍ່ມີຜູ້ດູແລລະບົບ",
   "NoAdminsDescription": "ທ່ານສາມາດເພີ່ມຜູ້ດູແລລະບົບດ້ວຍໂຕຂອງທ່ານເອງ",
   "NotFoundDescription": "ປ່ຽນການຕັ້ງຄ່າຕົວກອງຫຼືເພີ່ມຄົນເຂົ້າໃນພາກສ່ວນ.",
-  "NotFoundTitle": "ບໍ່ພົບ",
   "PeopleAdministratorsCan": "ອົງປະກອບຜູ້ດຸແລລະບົບຂອງບຸກຄົນສາມາດສ້າງໂປຣໄຟລ໌ ແລະ ສ້າງກຸ່ມ, ສາມາດນຳຄົນເຂົ້າ ແລະ ເຊີນຜູ້ໃຊ້ໄດ້.",
   "PortalAccess": "ການເຂົ້າເຖິງສາຍ",
   "PortalAdmins": "ຜູ້ດູແລລະບົບສາຍ",

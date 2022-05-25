@@ -48,7 +48,9 @@ const ClearTextareaAutosize = ({
   ...props
 }) => <TextareaAutosize {...props} />;
 
-const StyledTextarea = styled(ClearTextareaAutosize)`
+const StyledTextarea = styled(ClearTextareaAutosize).attrs((props) => ({
+  autoFocus: props.autoFocus,
+}))`
   ${commonInputStyle};
 
   width: ${(props) => props.theme.textArea.width};

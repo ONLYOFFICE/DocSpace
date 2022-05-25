@@ -1,4 +1,4 @@
-﻿{
+{
   "AddAccount": "添加账户",
   "AddAuthor": "添加作者",
   "ArchivingData": "归档数据",
@@ -14,21 +14,21 @@
   "DownloadApps": "下载应用程序",
   "DownloadAs": "下载为",
   "EncryptedFileSaving": "保存加密文件",
-  "Files": "文件",
-  "FileProtected": "该文件受密码保护",
   "FileLocked": "文件已锁定",
+  "FileProtected": "该文件受密码保护",
   "FileUnlocked": "文件已解锁",
-  "Folders": "文件夹",
+  "Files": "文件",
   "FolderSelection": "文件夹选择",
   "FolderTitleBoxNet": "框的目录",
   "FolderTitleDocuSign": "DocuSign账户",
   "FolderTitleDropBox": "Dropbox目录",
   "FolderTitleGoogle": "谷歌目录",
-  "FolderTitlekDrive": "kDrive目录",
   "FolderTitleSharePoint": "SharePoint目录",
   "FolderTitleSkyDrive": "OneDrive目录",
   "FolderTitleWebDav": "WebDAV目录",
   "FolderTitleYandex": "Yandex目录",
+  "FolderTitlekDrive": "kDrive目录",
+  "Folders": "文件夹",
   "LinkCopySuccess": "链接已复制到剪贴板中",
   "MediaLoadError": "无法加载媒体文件",
   "MobileAndroid": "在Google Play上下载ONLYOFFICE Documents",
@@ -53,9 +53,9 @@
   "TypeTitleDocuSign": "DocuSign",
   "TypeTitleDropBox": "Dropbox",
   "TypeTitleGoogle": "Google 云端硬盘",
-  "TypeTitlekDrive": "kDrive",
   "TypeTitleSharePoint": "SharePoint",
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
-  "TypeTitleYandex": "Yandex.Disk"
+  "TypeTitleYandex": "Yandex.Disk",
+  "TypeTitlekDrive": "kDrive"
 }

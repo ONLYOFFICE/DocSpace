@@ -2,14 +2,14 @@ import styled, { css } from "styled-components";
 import Base from "../themes/base";
 import { mobile, tablet } from "../utils/device";
 import Scrollbar from "../scrollbar";
-import { isMobile } from "react-device-detect";
+import { isDesktop, isMobile } from "react-device-detect";
 
 const StyledTableContainer = styled.div`
   -moz-user-select: none;
 
   width: 100%;
   max-width: 100%;
-  margin-top: -19px;
+  margin-top: -25px;
 
   display: grid;
 
@@ -23,7 +23,7 @@ const StyledTableContainer = styled.div`
     display: block;
     cursor: ew-resize;
     height: 10px;
-    margin: 14px 8px 0 auto;
+    margin: 14px 0px 0 auto;
     z-index: 1;
     border-right: ${(props) => props.theme.tableContainer.borderRight};
     &:hover {
@@ -43,8 +43,9 @@ const StyledTableContainer = styled.div`
   }
 
   .lengthen-header {
-    border-bottom: ${(props) => props.theme.tableContainer.header.borderBottom};
-    border-image-source: none;
+    border-image-slice: 1;
+    border-image-source: ${(props) =>
+      props.theme.tableContainer.header.lengthenBorderImageSource};
   }
 
   .hotkeys-lengthen-header {
@@ -144,6 +145,7 @@ const StyledInfoPanelToggleWrapper = styled.div`
   padding-left: 20px;
 
   @media ${tablet} {
+    display: none;
     margin: 0 16px 0 auto;
   }
 
@@ -242,7 +244,11 @@ const StyledTableHeaderCell = styled.div`
   }
 
   .table-container_header-item {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 22px;
+
+    margin-right: 8px;
+
     user-select: none;
   }
 
@@ -257,7 +263,7 @@ const StyledTableHeaderCell = styled.div`
     color: ${(props) =>
       props.isActive
         ? props.theme.tableContainer.header.activeTextColor
-        : props.theme.tableContainer.header.textColor} !important;
+        : props.theme.tableContainer.header.textColor};
 
     &:hover {
       color: ${(props) =>
@@ -302,6 +308,8 @@ const StyledTableCell = styled.div`
 
   display: flex;
   align-items: center;
+
+  padding-right: 30px;
 
   .react-svg-icon svg {
     margin-top: 2px;

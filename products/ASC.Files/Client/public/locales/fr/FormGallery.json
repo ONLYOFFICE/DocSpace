@@ -1,7 +1,7 @@
-﻿{
-    "GalleryEmptyScreenHeader": "Chargement des modèles de formulaire a échoué",
-    "GalleryEmptyScreenDescription": "Selectionnez un modèle de formulaire pour voir les détails",
-    "EmptyScreenDescription": "Veuillez vérifier votre connexion Internet et actualisez la page ou réessayez ultérieurement",
-    "TemplateInfo": "Informations sur le modèle",
-    "FormTemplateInfo": "Informations sur le modèle de formulaire"
+{
+  "EmptyScreenDescription": "Veuillez vérifier votre connexion Internet et actualisez la page ou réessayez ultérieurement",
+  "FormTemplateInfo": "Informations sur le modèle de formulaire",
+  "GalleryEmptyScreenDescription": "Sélectionnez un modèle de formulaire pour voir les détails",
+  "GalleryEmptyScreenHeader": "Chargement des modèles de formulaire a échoué",
+  "TemplateInfo": "Informations sur le modèle"
 }

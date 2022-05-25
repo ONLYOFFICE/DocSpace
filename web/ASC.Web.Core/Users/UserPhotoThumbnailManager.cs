@@ -85,12 +85,12 @@ namespace ASC.Web.Core.Users
                                      width,
                                      height);
 
-            mainImg.Mutate(x => x.BackgroundColor(Color.White).Crop(rect).Resize(new ResizeOptions
+            var result = mainImg.Clone(x => x.BackgroundColor(Color.White).Crop(rect).Resize(new ResizeOptions
             {
                 Size = size
             }));
 
-            return mainImg;
+            return result;
         }
     }
 

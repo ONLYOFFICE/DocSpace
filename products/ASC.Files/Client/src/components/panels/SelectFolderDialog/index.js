@@ -131,9 +131,15 @@ class SelectFolderDialog extends React.Component {
   };
 
   onClose = () => {
-    const { setExpandedPanelKeys, onClose, treeFolders } = this.props;
+    const {
+      setExpandedPanelKeys,
+      onClose,
+      treeFolders,
+      withInput,
+      isNeedArrowIcon,
+    } = this.props;
 
-    if (!treeFolders.length) {
+    if (!treeFolders.length && !withInput && !isNeedArrowIcon) {
       setExpandedPanelKeys(null);
     }
     onClose && onClose();
@@ -282,14 +288,17 @@ SelectFolderDialog.defaultProps = {
 };
 
 export default inject(
-  ({
-    treeFoldersStore,
-    selectedFolderStore,
-    selectFolderDialogStore,
-    filesStore,
-    auth,
-    filesActionsStore,
-  }) => {
+  (
+    {
+      treeFoldersStore,
+      selectedFolderStore,
+      selectFolderDialogStore,
+      filesStore,
+      auth,
+      filesActionsStore,
+    },
+    { selectedId }
+  ) => {
     const { treeFolders, setExpandedPanelKeys } = treeFoldersStore;
 
     const { filter } = filesStore;
@@ -307,10 +316,11 @@ export default inject(
 
     const { settingsStore } = auth;
     const { theme } = settingsStore;
+    const selectedFolderId = selectedId ? selectedId : id;
 
     return {
       theme: theme,
-      storeFolderId: id,
+      storeFolderId: selectedFolderId,
       providerKey,
       folderTitle,
       folderId,

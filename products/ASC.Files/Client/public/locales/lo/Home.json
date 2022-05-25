@@ -1,4 +1,4 @@
-﻿{
+{
   "All": "ທັງໝົດ",
   "AllFiles": "ເອກະສານທັງໝົດ",
   "Archives": "ຮວບຮວມ",
@@ -30,8 +30,8 @@
   "Images": "ຮູບພາບ",
   "LinkForPortalUsers": "ການເຊື່ອມຕໍ່ສຳລັບຜູ້ໃຊ້ປະຕູ",
   "MarkAsFavorite": "ຫມາຍດາວເອກະສານ",
-  "MarkedAsFavorite": "ເພີ່ມໃນລາຍການໂປດ",
   "MarkRead": "ເຮັດເຄື່ອງໝາຍໄວ້ອ່ານ",
+  "MarkedAsFavorite": "ເພີ່ມໃນລາຍການໂປດ",
   "Media": "ຊື່ມວນຊົນ",
   "MoveItem": "<strong>{{title}}</strong> ຍ້າຍ",
   "MoveItems": "<strong>{{qty}}</strong> ອົງປະກອບຕ່າງໆໄດ້ຖືກຍ້າຍໄປແລ້ວ",
@@ -55,9 +55,9 @@
   "PrivateRoomHeader": "ຍິນດີຕ້ອນຮັບເຂົ້າສູ່ ONLYOFFICE ສ່ວນຕົວ ທີ່ທຸກໆສັນຍາລັກທີ່ທ່ານພິມຖືກເຂົ້າລະຫັດ",
   "PrivateRoomSupport": "ເຮັດວຽກຢູ່ໃນຫ້ອງສ່ວນຕົວໄດ້ທາງ {{organizationName}} desktop app. <3> ຄຳແນະນຳ </3>",
   "RecentEmptyContainerDescription": "ສ່ວນ 'ລ້າສຸດ' ຈະສະແດງໃຫ້ທ່ານເຫັນໄຟລ໌ທີ່ຖືກເບິ່ງ ແລະ ແກ້ໄຂຄັ້ງສຸດທ້າຍ.",
-  "RemovedFromFavorites": "ລຶບອອກຈາກລາຍການທີ່ມັກແລ້ວ",
   "RemoveFromFavorites": "ລຶບອອກຈາກລາຍການທີ່ມັກ",
   "RemoveFromList": "ລຶບອອກຈາກລາຍການ",
+  "RemovedFromFavorites": "ລຶບອອກຈາກລາຍການທີ່ມັກແລ້ວ",
   "Rename": "ປ່ຽນຊື່",
   "SendByEmail": "ສົ່ງຜ່ານອີເມວ",
   "Share": "ແບ່ງປັນ",
@@ -66,13 +66,12 @@
   "ShowVersionHistory": "ສະແດງປະຫວັດສະບັບ",
   "Spreadsheet": "Spreadsheet",
   "SubheadingEmptyText": "ບໍ່ມີເອກະສານທີ່ຈະສະແດງໃນສ່ວນນີ້",
-  "TitleDocuments": "Dcs",
-  "TitleSubfolders": "Flds",
   "TooltipElementCopyMessage": "ຄັດລອກ {{element}}",
   "TooltipElementsCopyMessage": "ຄັດລອກ {{element}} ອົງປະກອບ",
   "TooltipElementsMoveMessage": "ຍ້າຍ {{element}} ອົງປະກອບ",
   "UnblockVersion": "ເລິກການບ໋ອກ/ເຊັກອິນ",
   "UploadToFolder": "ອັບໂຫລດໄປຍັງໂຟຣເດີ",
+  "VersionBadge": "V.{{version}}",
   "ViewList": "ລາຍການ",
   "ViewTiles": "ຫົວຂໍ້"
 }

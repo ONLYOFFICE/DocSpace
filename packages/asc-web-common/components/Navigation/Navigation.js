@@ -40,6 +40,7 @@ const Navigation = ({
   isCurrentFolderInfo,
   toggleInfoPanel,
   isInfoPanelVisible,
+  isShowRootFolder,
   titles,
   ...rest
 }) => {
@@ -157,6 +158,7 @@ const Navigation = ({
             isTabletView={isTabletView}
             isRecycleBinFolder={isRecycleBinFolder}
             isDesktop={isDesktop}
+            isInfoPanelVisible={isInfoPanelVisible}
           >
             <ArrowButton
               isRootFolder={isRootFolder}
@@ -188,6 +190,7 @@ const Navigation = ({
               isRootFolder={isRootFolder}
               toggleInfoPanel={toggleInfoPanel}
               isInfoPanelVisible={isInfoPanelVisible}
+              isShowRootFolder={isShowRootFolder}
             />
           )}
         </>

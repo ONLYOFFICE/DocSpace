@@ -345,6 +345,7 @@ export default inject(
       filter,
       treeFolders,
       storeFolderId,
+
       folderId,
       theme: theme,
       setExpandedPanelKeys,

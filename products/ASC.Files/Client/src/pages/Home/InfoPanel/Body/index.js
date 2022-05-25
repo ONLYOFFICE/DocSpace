@@ -26,6 +26,7 @@ const InfoPanelBodyContent = ({
   gallerySelected,
   personal,
   createThumbnail,
+  culture,
 }) => {
   const singleItem = (item) => {
     const dontShowLocation = item.isFolder && item.parentId === 0;
@@ -50,6 +51,7 @@ const InfoPanelBodyContent = ({
         dontShowSize={dontShowSize}
         dontShowAccess={dontShowAccess}
         personal={personal}
+        culture={culture}
         createThumbnail={createThumbnail}
       />
     );
@@ -93,7 +95,7 @@ export default inject(
     treeFoldersStore,
     selectedFolderStore,
   }) => {
-    const { personal } = auth.settingsStore;
+    const { personal, culture } = auth.settingsStore;
 
     const {
       selection,
@@ -134,6 +136,7 @@ export default inject(
       gallerySelected,
       personal,
       createThumbnail,
+      culture,
     };
   }
 )(

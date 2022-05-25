@@ -33,6 +33,7 @@ using System.Text.Json;
 using ASC.Common;
 using ASC.Common.Threading;
 using ASC.Core.Tenants;
+using ASC.Files.Core;
 using ASC.Files.Core.Resources;
 using ASC.Web.Files.Core.Compress;
 
@@ -44,15 +45,21 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
     public class FileOperationsManager
     {
         private readonly DistributedTaskQueue tasks;
+        private readonly ThumbnailSettings _thumbnailSettings;
 
         private TempStream TempStream { get; }
         private IServiceProvider ServiceProvider { get; }
 
-        public FileOperationsManager(TempStream tempStream, DistributedTaskQueueOptionsManager distributedTaskQueueOptionsManager, IServiceProvider serviceProvider)
+        public FileOperationsManager(
+            TempStream tempStream,
+            DistributedTaskQueueOptionsManager distributedTaskQueueOptionsManager,
+            IServiceProvider serviceProvider,
+            ThumbnailSettings thumbnailSettings)
         {
             tasks = distributedTaskQueueOptionsManager.Get<FileOperation>();
             TempStream = tempStream;
             ServiceProvider = serviceProvider;
+            _thumbnailSettings = thumbnailSettings;
         }
 
         public List<FileOperationResult> GetOperationResults(Guid userId)
@@ -146,8 +153,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             var (folderIntIds, folderStringIds) = GetIds(folders);
             var (fileIntIds, fileStringIds) = GetIds(files);
 
-            var op1 = new FileMoveCopyOperation<int>(ServiceProvider, new FileMoveCopyOperationData<int>(folderIntIds, fileIntIds, tenant, destFolderId, copy, resolveType, holdResult, headers));
-            var op2 = new FileMoveCopyOperation<string>(ServiceProvider, new FileMoveCopyOperationData<string>(folderStringIds, fileStringIds, tenant, destFolderId, copy, resolveType, holdResult, headers));
+            var op1 = new FileMoveCopyOperation<int>(ServiceProvider, new FileMoveCopyOperationData<int>(folderIntIds, fileIntIds, tenant, destFolderId, copy, resolveType, holdResult, headers), _thumbnailSettings);
+            var op2 = new FileMoveCopyOperation<string>(ServiceProvider, new FileMoveCopyOperationData<string>(folderStringIds, fileStringIds, tenant, destFolderId, copy, resolveType, holdResult, headers), _thumbnailSettings);
             var op = new FileMoveCopyOperation(ServiceProvider, op2, op1);
 
             return QueueTask(userId, op);
@@ -155,7 +162,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         public List<FileOperationResult> Delete<T>(Guid userId, Tenant tenant, IEnumerable<T> folders, IEnumerable<T> files, bool ignoreException, bool holdResult, bool immediately, IDictionary<string, StringValues> headers)
         {
-            var op = new FileDeleteOperation<T>(ServiceProvider, new FileDeleteOperationData<T>(folders, files, tenant, holdResult, ignoreException, immediately, headers));
+            var op = new FileDeleteOperation<T>(ServiceProvider, new FileDeleteOperationData<T>(folders, files, tenant, holdResult, ignoreException, immediately, headers), _thumbnailSettings);
             return QueueTask(userId, op);
         }
 
@@ -164,8 +171,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             var (folderIntIds, folderStringIds) = GetIds(folders);
             var (fileIntIds, fileStringIds) = GetIds(files);
 
-            var op1 = new FileDeleteOperation<int>(ServiceProvider, new FileDeleteOperationData<int>(folderIntIds, fileIntIds, tenant, holdResult, ignoreException, immediately, headers));
-            var op2 = new FileDeleteOperation<string>(ServiceProvider, new FileDeleteOperationData<string>(folderStringIds, fileStringIds, tenant, holdResult, ignoreException, immediately, headers));
+            var op1 = new FileDeleteOperation<int>(ServiceProvider, new FileDeleteOperationData<int>(folderIntIds, fileIntIds, tenant, holdResult, ignoreException, immediately, headers), _thumbnailSettings);
+            var op2 = new FileDeleteOperation<string>(ServiceProvider, new FileDeleteOperationData<string>(folderStringIds, fileStringIds, tenant, holdResult, ignoreException, immediately, headers), _thumbnailSettings);
             var op = new FileDeleteOperation(ServiceProvider, op2, op1);
 
             return QueueTask(userId, op);

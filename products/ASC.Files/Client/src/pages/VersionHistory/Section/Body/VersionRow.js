@@ -172,6 +172,7 @@ const VersionRow = (props) => {
                   heightTextArea={54}
                   value={commentValue}
                   isDisabled={isSavingComment}
+                  autoFocus={true}
                 />
               </>
             )}

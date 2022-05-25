@@ -247,9 +247,10 @@ class FilesActionStore {
           icon: "trash",
           label: translations.deleteOperation,
         };
-        await this.uploadDataStore.loopFilesOperations(data, pbData);
+        await loopFilesOperations(data, pbData);
         toastr.success(translations.successOperation);
         this.updateCurrentFolder(fileIds, folderIds);
+        clearActiveOperations(fileIds, folderIds);
       });
     } catch (err) {
       clearActiveOperations(fileIds, folderIds);
@@ -538,6 +539,8 @@ class FilesActionStore {
       filesCount,
     } = this.uploadDataStore.secondaryProgressDataStore;
 
+    this.setSelectedItems();
+
     //TODO: duplicate for folders?
     const folderIds = [];
     const fileIds = [];
@@ -744,7 +747,7 @@ class FilesActionStore {
     const selectionLength = this.filesStore.selection.length;
     const selectionTitle = this.filesStore.selectionTitle;
 
-    if (selectionLength && selectionTitle) {
+    if (selectionLength !== undefined && selectionTitle) {
       this.uploadDataStore.secondaryProgressDataStore.setItemsSelectionLength(
         selectionLength
       );

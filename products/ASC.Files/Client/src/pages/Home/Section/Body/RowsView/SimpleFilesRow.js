@@ -227,7 +227,7 @@ const SimpleFilesRow = (props) => {
       <DragAndDrop
         data-title={item.title}
         value={value}
-        className={`files-item ${className} ${item.id}_${item.file}`}
+        className={`files-item ${className} ${item.id}_${item.fileExst}`}
         onDrop={onDrop}
         onMouseDown={onMouseDown}
         dragging={dragging && isDragging}
@@ -268,9 +268,6 @@ const SimpleFilesRow = (props) => {
   );
 };
 
-export default withTranslation([
-  "Home",
-  "Translations",
-  "InfoPanel",
-  "VersionBadge",
-])(withRouter(withFileActions(withQuickButtons(SimpleFilesRow))));
+export default withTranslation(["Home", "Translations", "InfoPanel"])(
+  withRouter(withFileActions(withQuickButtons(SimpleFilesRow)))
+);

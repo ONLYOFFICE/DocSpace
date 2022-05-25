@@ -533,7 +533,7 @@ class SectionBodyContent extends React.PureComponent {
           </ToggleWrapper>
         )}
 
-        {profile.notes && (
+        {!personal && profile.notes && (
           <ToggleWrapper isContacts={true}>
             <ToggleContent label={t("Common:Comments")} isOpen={true}>
               <Text className="profile-comments" as="span">
@@ -542,14 +542,14 @@ class SectionBodyContent extends React.PureComponent {
             </ToggleContent>
           </ToggleWrapper>
         )}
-        {profile.contacts && (
+        {!personal && profile.contacts && (
           <ToggleWrapper isContacts={true}>
             <ToggleContent label={t("ContactInformation")} isOpen={true}>
               <Text as="span">{infoContacts}</Text>
             </ToggleContent>
           </ToggleWrapper>
         )}
-        {socialContacts && (
+        {!personal && socialContacts && (
           <ToggleWrapper isContacts={true}>
             <ToggleContent
               label={t("Translations:SocialProfiles")}

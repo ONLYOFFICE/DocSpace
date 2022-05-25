@@ -169,7 +169,7 @@ const StyledFileTileTop = styled.div`
     position: absolute;
     height: 100%;
     width: 100%;
-    object-fit: cover;
+    object-fit: ${(props) => (props.isMedia ? "cover" : "none")};
     object-position: top;
     z-index: 0;
     border-radius: 6px 6px 0 0;
@@ -245,7 +245,7 @@ const StyledOptionButton = styled.div`
   display: block;
 
   .expandButton > div:first-child {
-    padding: 8px 21px 8px 12px;
+    padding: 8px 21px 8px 8px;
   }
 `;
 

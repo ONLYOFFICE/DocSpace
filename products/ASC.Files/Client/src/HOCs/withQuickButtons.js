@@ -7,12 +7,14 @@ import QuickButtons from "../components/QuickButtons";
 
 export default function withQuickButtons(WrappedComponent) {
   class WithQuickButtons extends React.Component {
+    state = { isLoading: false };
+
     onClickLock = () => {
-      const { item, lockFileAction, isAdmin, setIsLoading, t } = this.props;
+      const { item, lockFileAction, isAdmin, t } = this.props;
       const { locked, id, access } = item;
 
-      if (isAdmin || access === 0) {
-        setIsLoading(true);
+      if ((isAdmin || access === 0) && !this.state.isLoading) {
+        this.setState({ isLoading: true });
         return lockFileAction(id, !locked)
           .then(() =>
             locked
@@ -20,7 +22,7 @@ export default function withQuickButtons(WrappedComponent) {
               : toastr.success(t("Translations:FileLocked"))
           )
           .catch((err) => toastr.error(err))
-          .finally(() => setIsLoading(false));
+          .finally(() => this.setState({ isLoading: false }));
       }
       return;
     };
@@ -80,6 +82,7 @@ export default function withQuickButtons(WrappedComponent) {
           isTrashFolder={isTrashFolder}
           accessToEdit={accessToEdit}
           viewAs={viewAs}
+          isDisabled={this.state.isLoading}
           onClickLock={this.onClickLock}
           onClickFavorite={this.onClickFavorite}
           onClickShare={this.onClickShare}
@@ -110,7 +113,6 @@ export default function withQuickButtons(WrappedComponent) {
         onSelectItem,
       } = filesActionsStore;
 
-      const { setIsLoading } = filesStore;
       const {
         extension: fileActionExt,
         id: fileActionId,
@@ -122,7 +124,6 @@ export default function withQuickButtons(WrappedComponent) {
         isTrashFolder: isRecycleBinFolder,
         lockFileAction,
         setFavoriteAction,
-        setIsLoading,
         fileActionExt,
         fileActionId,
         onSelectItem,

@@ -67,7 +67,7 @@ const EditingWrapper = styled.div`
         props.theme.filesEditingWrapper.tile.background};
 
       border: ${(props) => props.theme.filesEditingWrapper.border};
-      border-radius: 0 0 6px 6px;
+      border-radius: ${(props) => (props.isFolder ? "6px" : "0 0 6px 6px")};
 
       height: 43px;
       bottom: 0;
@@ -78,7 +78,7 @@ const EditingWrapper = styled.div`
 
 
   @media ${tablet} {
-    height: 56px;
+    height: ${(props) => (props.viewAs === "tile" ? "43px" : "56px")};
   }
 
   .edit-text {
@@ -114,6 +114,7 @@ const EditingWrapper = styled.div`
 
     ${(props) =>
       props.viewAs === "tile" &&
+      !props.isUpdatingRowItem &&
       css`
         background: #fff;
         border: ${(props) =>
@@ -188,6 +189,7 @@ const EditingWrapperComponent = (props) => {
     elementIcon,
     isUpdatingRowItem,
     passwordEntryProcess,
+    isFolder,
   } = props;
 
   const isTable = viewAs === "table";
@@ -233,6 +235,7 @@ const EditingWrapperComponent = (props) => {
     <EditingWrapper
       viewAs={viewAs}
       isUpdatingRowItem={isUpdatingRowItem && !isTable}
+      isFolder={isFolder}
     >
       {isTable && elementIcon}
       {isUpdatingRowItem && !isTable ? (
@@ -267,6 +270,7 @@ const EditingWrapperComponent = (props) => {
             onMouseEnter={setIsHoveredOkHandler}
             onMouseLeave={setIsHoveredOkHandler}
             isHovered={OkIconIsHovered}
+            title=""
           />
           <Button
             className="edit-button not-selectable"
@@ -279,6 +283,7 @@ const EditingWrapperComponent = (props) => {
             onMouseEnter={setIsHoveredCancelHandler}
             onMouseLeave={setIsHoveredCancelHandler}
             isHovered={CancelIconIsHovered}
+            title=""
           />
         </>
       )}

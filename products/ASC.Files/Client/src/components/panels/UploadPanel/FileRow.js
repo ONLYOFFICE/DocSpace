@@ -154,10 +154,13 @@ class FileRow extends Component {
       setMediaViewerData,
       setUploadPanelVisible,
       isMediaActive,
+      setCurrentItem,
+      item,
     } = this.props;
-    if (!isMediaActive) return;
-    const item = { visible: true, id: id };
-    setMediaViewerData(item);
+    if (!isMediaActive) setCurrentItem(item);
+
+    const data = { visible: true, id: id };
+    setMediaViewerData(data);
     setUploadPanelVisible(false);
   };
 
@@ -254,7 +257,7 @@ class FileRow extends Component {
                 <Link
                   className="upload-panel_file-row-link"
                   fontWeight="600"
-                  color={item.error || !isMediaActive ? "#A3A9AE" : ""}
+                  color={item.error ? "#A3A9AE" : ""}
                   truncate
                   onClick={() => this.onMediaClick(item.fileId)}
                 >
@@ -364,7 +367,11 @@ export default inject(
       convertFile,
       files: uploadedFiles,
     } = uploadDataStore;
-    const { playlist, setMediaViewerData } = mediaViewerDataStore;
+    const {
+      playlist,
+      setMediaViewerData,
+      setCurrentItem,
+    } = mediaViewerDataStore;
     const { loadingFile: file } = primaryProgressDataStore;
     const isMedia = isMediaOrImage(ext);
     const isMediaActive =
@@ -401,6 +408,8 @@ export default inject(
       cancelCurrentFileConversion,
       setMediaViewerData,
       setUploadPanelVisible,
+
+      setCurrentItem,
     };
   }
 )(withTranslation("UploadPanel")(observer(FileRow)));

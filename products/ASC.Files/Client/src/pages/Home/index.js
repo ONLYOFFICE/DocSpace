@@ -248,12 +248,11 @@ class PureHome extends React.Component {
     const {
       uploaded,
       converted,
-      uploadPanelVisible,
       setUploadPanelVisible,
       clearPrimaryProgressData,
       primaryProgressDataVisible,
     } = this.props;
-    setUploadPanelVisible(!uploadPanelVisible);
+    setUploadPanelVisible(true);
 
     if (primaryProgressDataVisible && uploaded && converted)
       clearPrimaryProgressData();
@@ -295,6 +294,7 @@ class PureHome extends React.Component {
       primaryProgressDataPercent,
       primaryProgressDataIcon,
       primaryProgressDataAlert,
+      clearUploadedFilesHistory,
 
       secondaryProgressDataStoreVisible,
       secondaryProgressDataStorePercent,
@@ -328,6 +328,7 @@ class PureHome extends React.Component {
           secondaryProgressBarValue={secondaryProgressDataStorePercent}
           secondaryProgressBarIcon={secondaryProgressDataStoreIcon}
           showSecondaryButtonAlert={secondaryProgressDataStoreAlert}
+          clearUploadedFilesHistory={clearUploadedFilesHistory}
           viewAs={viewAs}
           hideAside={
             !!fileActionId ||
@@ -398,6 +399,7 @@ export default inject(
     const {
       secondaryProgressDataStore,
       primaryProgressDataStore,
+      clearUploadedFilesHistory,
     } = uploadDataStore;
     const {
       firstLoad,
@@ -486,6 +488,8 @@ export default inject(
       primaryProgressDataIcon,
       primaryProgressDataAlert,
       clearPrimaryProgressData,
+
+      clearUploadedFilesHistory,
 
       secondaryProgressDataStoreVisible,
       secondaryProgressDataStorePercent,

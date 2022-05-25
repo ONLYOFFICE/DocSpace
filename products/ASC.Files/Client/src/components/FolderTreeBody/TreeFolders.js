@@ -2,7 +2,11 @@ import React from "react";
 import TreeMenu from "@appserver/components/tree-menu";
 import TreeNode from "@appserver/components/tree-menu/sub-components/tree-node";
 import styled from "styled-components";
-import { FolderType, ShareAccessRights } from "@appserver/common/constants";
+import {
+  ConflictResolveType,
+  FolderType,
+  ShareAccessRights,
+} from "@appserver/common/constants";
 import toastr from "studio/toastr";
 
 import { onConvertFiles } from "../../helpers/files-converter";
@@ -80,6 +84,10 @@ class TreeFolders extends React.Component {
     super(props);
 
     this.state = { isExpand: false };
+  }
+
+  componentDidMount() {
+    this.props.isLoadingNodes && this.props.setIsLoadingNodes(false);
   }
 
   onBadgeClick = (e) => {
@@ -215,7 +223,8 @@ class TreeFolders extends React.Component {
   };
 
   getItems = (data) => {
-    const { withoutProvider, theme } = this.props;
+    const { theme } = this.props;
+
     return data.map((item) => {
       const dragging = this.props.dragging ? this.showDragItems(item) : false;
 
@@ -226,8 +235,6 @@ class TreeFolders extends React.Component {
       const provider = item.providerKey;
 
       const serviceFolder = !!item.providerKey;
-
-      if (withoutProvider && provider) return;
 
       let value = "";
       if (dragging) value = `${item.id} dragging ${provider}`;
@@ -322,6 +329,9 @@ class TreeFolders extends React.Component {
   };
 
   getNewTreeData(treeData, curId, child, pos) {
+    const { selectedNodeParentId, setIsLoadingNodes } = this.props;
+    !this.expand && selectedNodeParentId && setIsLoadingNodes(true);
+
     this.loop(treeData, child, pos);
     this.setLeaf(treeData, curId, 10);
   }
@@ -348,19 +358,29 @@ class TreeFolders extends React.Component {
   }
 
   generateTreeNodes = (treeNode) => {
-    const folderId = treeNode.props.id;
-    const level = treeNode.props.pos;
+    const { withoutProvider } = this.props;
+    const folderId = treeNode.id;
+    const level = treeNode.pos;
 
-    let arrayFolders;
+    let arrayFolders, proverIndex;
     return this.props.getSubfolders(folderId).then((data) => {
       arrayFolders = data;
 
-      const folderIndex = treeNode.props.pos;
+      const folderIndex = treeNode.pos;
       let i = 0;
 
       for (let item of arrayFolders) {
         item["key"] = `${folderIndex}-${i}`;
+
+        if (withoutProvider && item.providerKey) {
+          proverIndex = i;
+        }
+
         i++;
+      }
+
+      if (proverIndex) {
+        arrayFolders.splice(proverIndex, 1);
       }
 
       return { folders: arrayFolders, listIds: [], level };
@@ -379,12 +399,12 @@ class TreeFolders extends React.Component {
 
     return this.generateTreeNodes(treeNode)
       .then((data) => {
-        const itemId = treeNode.props.id.toString();
+        const itemId = treeNode.id.toString();
         const listIds = data.listIds;
         listIds.push(itemId);
 
         const treeData = certainFolders
-          ? incomingDate
+          ? [...incomingDate]
           : [...this.props.treeFolders];
 
         this.getNewTreeData(treeData, listIds, data.folders, data.level);
@@ -398,7 +418,8 @@ class TreeFolders extends React.Component {
   };
 
   onExpand = (expandedKeys, treeNode) => {
-    if (treeNode.node && !treeNode.node.props.children) {
+    this.expand = true;
+    if (treeNode.node && !treeNode.node.children) {
       if (treeNode.expanded) {
         this.onLoadData(treeNode.node, true);
       }
@@ -447,7 +468,18 @@ class TreeFolders extends React.Component {
     promise.then((files) => onTreeDrop(files, id));
     //}
   };
+  onLoad = (loadedKeys, options) => {
+    const { firstLoadScroll, selectedNodeParentId } = this.props;
+    //console.log("onLoad tree nodes", "loadedKeys", treeNode, "options", options);
 
+    if (
+      !this.expand &&
+      selectedNodeParentId &&
+      loadedKeys.includes(selectedNodeParentId.toString())
+    ) {
+      firstLoadScroll();
+    }
+  };
   render() {
     const {
       selectedKeys,
@@ -461,6 +493,7 @@ class TreeFolders extends React.Component {
       disabled,
       theme,
       isPanel,
+      isLoadingNodes,
     } = this.props;
 
     return (
@@ -469,7 +502,7 @@ class TreeFolders extends React.Component {
         className="files-tree-menu"
         checkable={false}
         draggable={dragging}
-        disabled={isLoading || disabled}
+        disabled={isLoadingNodes || isLoading || disabled}
         multiple={false}
         showIcon
         switcherIcon={this.switcherIcon}
@@ -486,6 +519,7 @@ class TreeFolders extends React.Component {
         gapBetweenNodesTablet="26"
         isFullFillSelection={false}
         childrenCount={expandedPanelKeys?.length}
+        onLoad={this.onLoad}
       >
         {this.getItems(data || treeFolders)}
       </StyledTreeMenu>
@@ -520,8 +554,13 @@ export default inject(
       setExpandedKeys,
       setExpandedPanelKeys,
       getSubfolders,
+      setIsLoadingNodes,
+      isLoadingNodes,
     } = treeFoldersStore;
-    const { id /* rootFolderType */ } = selectedFolderStore;
+    const {
+      id,
+      parentId: selectedNodeParentId /* rootFolderType */,
+    } = selectedFolderStore;
 
     return {
       isAdmin: auth.isAdmin,
@@ -545,6 +584,9 @@ export default inject(
       setExpandedKeys,
       setExpandedPanelKeys,
       getSubfolders,
+      setIsLoadingNodes,
+      isLoadingNodes,
+      selectedNodeParentId,
     };
   }
 )(withTranslation(["Home", "Common"])(observer(TreeFolders)));
