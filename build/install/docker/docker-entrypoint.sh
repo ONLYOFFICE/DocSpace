@@ -56,15 +56,44 @@ KAFKA_HOST=${KAFKA_HOST:-"kafka"}":9092"
 
 APP_STORAGE_ROOT=${APP_STORAGE_ROOT:-"${BASE_DIR}/data/"}
 
-sed -i "s!Server=.*;Pooling=!Server=${MYSQL_HOST};Port=3306;Database=${MYSQL_DATABASE};User ID=${MYSQL_USER};Password=${MYSQL_PASSWORD};Pooling=!g" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
-sed -i "s!\"base-domain\".*,!\"base-domain\": \"${APP_CORE_BASE_DOMAIN}\",!g" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
-sed -i "s!\"machinekey\".*,!\"machinekey\": \"${APP_CORE_MACHINEKEY}\",!g" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
-sed -i "s!\"public\".*,!\"public\": \"${DOCUMENT_SERVER_URL_PUBLIC}\",!g" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
-sed -i "s!\"internal\".*,!\"internal\": \"${DOCUMENT_SERVER_URL_INTERNAL}\",!g" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
-sed -i "s!\"portal\".*!\"portal\": \"${APP_URL_PORTAL}\",!g" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
-sed -i "0,/\"value\"/s!\"value\".*,!\"value\": \"${DOCUMENT_SERVER_JWT_SECRET}\",!" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
-sed -i "s!\"header\".*!\"header\": \"${DOCUMENT_SERVER_JWT_HEADER}\"!" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
-sed -i "s!\"core\".*{!\"migration\": {\n\"enabled\": \"${DATABASE_MIGRATION}\"\n},\n\"core\": {!g" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
+function modifyJsonConfigFile {
+    if [ -f $1 ]
+    then
+        pathToJsonConfig=$1
+    else
+        echo "Can't find configure file $1"
+        return $?
+    fi
+
+    for i in ${!arrayJsonConfig[@]}; do
+    python appsettings-jsonpath.py "${pathToJsonConfig}" "${arrayJsonConfig[$i]}"
+    done
+    
+    return 1
+}
+
+arrayJsonConfig=("ConnectionStrings.default.connectionString = Server=${MYSQL_HOST};\
+                                                               Port=3306;\
+                                                               Database=${MYSQL_DATABASE};\
+                                                               User ID=${MYSQL_USER};\
+                                                               Password=${MYSQL_PASSWORD};\
+                                                               Pooling=true;\
+                                                               Character Set=utf8;\
+                                                               AutoEnlist=false;\
+                                                               SSL Mode=none;\
+                                                               AllowPublicKeyRetrieval=True;\
+                                                               ConnectionReset=false")
+
+modifyJsonConfigFile ${PATH_TO_CONF}/appsettings.json
+# sed -i "s!Server=.*;Pooling=!Server=${MYSQL_HOST};Port=3306;Database=${MYSQL_DATABASE};User ID=${MYSQL_USER};Password=${MYSQL_PASSWORD};Pooling=!g" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
+# sed -i "s!\"base-domain\".*,!\"base-domain\": \"${APP_CORE_BASE_DOMAIN}\",!g" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
+# sed -i "s!\"machinekey\".*,!\"machinekey\": \"${APP_CORE_MACHINEKEY}\",!g" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
+# sed -i "s!\"public\".*,!\"public\": \"${DOCUMENT_SERVER_URL_PUBLIC}\",!g" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
+# sed -i "s!\"internal\".*,!\"internal\": \"${DOCUMENT_SERVER_URL_INTERNAL}\",!g" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
+# sed -i "s!\"portal\".*!\"portal\": \"${APP_URL_PORTAL}\",!g" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
+# sed -i "0,/\"value\"/s!\"value\".*,!\"value\": \"${DOCUMENT_SERVER_JWT_SECRET}\",!" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
+# sed -i "s!\"header\".*!\"header\": \"${DOCUMENT_SERVER_JWT_HEADER}\"!" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
+# sed -i "s!\"core\".*{!\"migration\": {\n\"enabled\": \"${DATABASE_MIGRATION}\"\n},\n\"core\": {!g" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
 
 sed -i "s!\"Scheme\".*!\"Scheme\": \"${ELK_SHEME}\",!g" ${PATH_TO_CONF}/elastic.json
 sed -i "s!\"Host\".*!\"Host\": \"${ELK_HOST}\",!g" ${PATH_TO_CONF}/elastic.json
