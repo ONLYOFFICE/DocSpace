@@ -90,18 +90,23 @@ class DbQuotaService : IQuotaService
 
     public void RemoveTenantQuota(int id)
     {
-        using var tr = CoreDbContext.Database.BeginTransaction();
-        var d = CoreDbContext.Quotas
-             .Where(r => r.Tenant == id)
-             .SingleOrDefault();
+        var strategy = CoreDbContext.Database.CreateExecutionStrategy();
 
-        if (d != null)
+        strategy.Execute(() =>
         {
-            CoreDbContext.Quotas.Remove(d);
-            CoreDbContext.SaveChanges();
-        }
+            using var tr = CoreDbContext.Database.BeginTransaction();
+            var d = CoreDbContext.Quotas
+                 .Where(r => r.Tenant == id)
+                 .SingleOrDefault();
 
-        tr.Commit();
+            if (d != null)
+            {
+                CoreDbContext.Quotas.Remove(d);
+                CoreDbContext.SaveChanges();
+            }
+
+            tr.Commit();
+        });
     }
 
 
@@ -109,22 +114,27 @@ class DbQuotaService : IQuotaService
     {
         ArgumentNullException.ThrowIfNull(row);
 
-        using var tx = CoreDbContext.Database.BeginTransaction();
+        var strategy = CoreDbContext.Database.CreateExecutionStrategy();
 
-        var counter = CoreDbContext.QuotaRows
-            .Where(r => r.Path == row.Path && r.Tenant == row.Tenant)
-            .Select(r => r.Counter)
-            .Take(1)
-            .FirstOrDefault();
+        strategy.Execute(() =>
+        {
+            using var tx = CoreDbContext.Database.BeginTransaction();
 
-        var dbQuotaRow = _mapper.Map<TenantQuotaRow, DbQuotaRow>(row);
-        dbQuotaRow.Counter = exchange ? counter + row.Counter : row.Counter;
-        dbQuotaRow.LastModified = DateTime.UtcNow;
+            var counter = CoreDbContext.QuotaRows
+                .Where(r => r.Path == row.Path && r.Tenant == row.Tenant)
+                .Select(r => r.Counter)
+                .Take(1)
+                .FirstOrDefault();
 
-        CoreDbContext.AddOrUpdate(r => r.QuotaRows, dbQuotaRow);
-        CoreDbContext.SaveChanges();
+            var dbQuotaRow = _mapper.Map<TenantQuotaRow, DbQuotaRow>(row);
+            dbQuotaRow.Counter = exchange ? counter + row.Counter : row.Counter;
+            dbQuotaRow.LastModified = DateTime.UtcNow;
 
-        tx.Commit();
+            CoreDbContext.AddOrUpdate(r => r.QuotaRows, dbQuotaRow);
+            CoreDbContext.SaveChanges();
+
+            tx.Commit();
+        });
     }
 
     public IEnumerable<TenantQuotaRow> FindTenantQuotaRows(int tenantId)
