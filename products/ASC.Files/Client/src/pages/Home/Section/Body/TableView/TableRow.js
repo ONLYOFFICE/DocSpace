@@ -26,22 +26,23 @@ const hotkeyBorderStyle = css`
 `;
 
 const rowCheckboxDraggingStyle = css`
-  border-image-source: ${(props) =>
-    props.theme.filesSection.tableView.row.checkboxDragging};
+  margin-left: -20px;
+  padding-left: 20px;
+
+  border-bottom: 1px solid;
+  border-image-slice: 1;
+  border-image-source: ${(props) => `linear-gradient(to right, 
+          ${props.theme.filesSection.tableView.row.borderColorTransition} 17px, ${props.theme.filesSection.tableView.row.borderColor} 31px)`};
 `;
 
 const contextMenuWrapperDraggingStyle = css`
-  border-image-source: ${(props) =>
-    props.theme.filesSection.tableView.row.contextMenuWrapperDragging};
-`;
+  margin-right: -24px;
+  padding-right: 24px;
 
-const rowCheckboxDraggingHoverStyle = css`
-  border-image-source: ${(props) =>
-    props.theme.filesSection.tableView.row.checkboxDraggingHover};
-`;
-const contextMenuWrapperDraggingHoverStyle = css`
-  border-image-source: ${(props) =>
-    props.theme.filesSection.tableView.row.contextMenuWrapperDraggingHover};
+  border-bottom: 1px solid;
+  border-image-slice: 1;
+  border-image-source: ${(props) => `linear-gradient(to left,
+          ${props.theme.filesSection.tableView.row.borderColorTransition} 17px, ${props.theme.filesSection.tableView.row.borderColor} 31px)`};
 `;
 
 const StyledTableRow = styled(TableRow)`
@@ -100,15 +101,6 @@ const StyledTableRow = styled(TableRow)`
   .table-container_row-checkbox {
     padding-left: 16px;
     width: 16px;
-  }
-
-  &:hover {
-    .table-container_file-name-cell {
-      ${(props) => props.dragging && rowCheckboxDraggingHoverStyle}
-    }
-    .table-container_row-context-menu-wrapper {
-      ${(props) => props.dragging && contextMenuWrapperDraggingHoverStyle}
-    }
   }
 
   .table-container_file-name-cell {
