@@ -15,5 +15,6 @@
   "NotFoundDescription": "Попробуйте изменить или очистить настройки фильтра, чтобы увидеть всех людей в разделе.",
   "NotFoundTitle": "Сотрудников не найдено",
   "SuccessfullyRemovedGroup": "Группа была успешно удалена",
-  "UserStatus": "Статус"
+  "UserStatus": "Статус",
+  "ReassignmentData": "Переназначение данных"
 }

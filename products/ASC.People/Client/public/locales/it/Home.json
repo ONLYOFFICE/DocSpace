@@ -15,5 +15,6 @@
   "NotFoundDescription": "Prova un filtro diverso o deselezionalo per visualizzare tutte le persone nella sezione.",
   "NotFoundTitle": "Nessun utente del gruppo trovato",
   "SuccessfullyRemovedGroup": "Il gruppo è stato cancellato con successo",
-  "UserStatus": "Stato"
+  "UserStatus": "Stato",
+  "ReassignmentData": "Riassegnazione dei dati"
 }

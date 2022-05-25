@@ -15,5 +15,6 @@
   "NotFoundDescription": "尝试不同的过滤条件或将其清除以在该部分中查看所有人员。",
   "NotFoundTitle": "未找到团队成员",
   "SuccessfullyRemovedGroup": "群组已成功移除",
-  "UserStatus": "状态"
+  "UserStatus": "状态",
+  "ReassignmentData": "数据重新分配"
 }
