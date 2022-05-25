@@ -2,8 +2,8 @@
   "Error401Text": "Je nám ľúto, zdroj nie je momentálne dostupný.",
   "Error403Text": "Prepáčte, prístup odmietnutý.",
   "Error404Text": "Prepáčte, zdroj sa nedá nájsť.",
-  "ErrorOfflineText": "Nenašlo sa žiadne internetové pripojenie.",
+  "ErrorEmptyResponse": "Prázdna odpoveď",
   "ErrorInvalidHeader": "Nesprávny e-mail alebo platnosť odkazu vypršala",
   "ErrorInvalidText": "O 10 sekúnd budete presmerovaní na <1>prihlasovaciu stránku</1>",
-  "ErrorEmptyResponse": "Prázdna odpoveď"
+  "ErrorOfflineText": "Nenašlo sa žiadne internetové pripojenie."
 }

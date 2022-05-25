@@ -2,8 +2,8 @@
   "Error401Text": "Təəssüf ki, resurs hal-hazırda əlçatan deyil.",
   "Error403Text": "Təəssüf ki, giriş rədd edilmişdir.",
   "Error404Text": "Təəssüf ki, resurs tapıla bilmir.",
-  "ErrorOfflineText": "İnternet bağlantısı tapılmadı.",
+  "ErrorEmptyResponse": "Boş cavab",
   "ErrorInvalidHeader": "Yalnış e-poçt ünvanı və ya vaxtı bitmiş keçid",
   "ErrorInvalidText": "10 saniyədə <1>giriş səhifəsinə</1> yönləndiriləcəksiniz",
-  "ErrorEmptyResponse": "Boş cavab"
+  "ErrorOfflineText": "İnternet bağlantısı tapılmadı."
 }

@@ -2,8 +2,8 @@
   "Error401Text": "Ne pare rău, sursa nu este accesibilă.",
   "Error403Text": "Ne pare rău, accesul este refizat.",
   "Error404Text": "Ne pare rău, sursa nu s-a găsit.",
-  "ErrorOfflineText": "Nu există nicio conexiune la Intenet.",
+  "ErrorEmptyResponse": "Răspunsul necompletat",
   "ErrorInvalidHeader": "Adresa e-mail invalidă sau link-ul expirat",
-  "ErrorInvalidText": "Veţi fi redirecţionat în 10 secunde către <1>pagina de autentificare</1>",
-  "ErrorEmptyResponse": "Răspunsul necompletat"
+  "ErrorInvalidText": "Veţi fi redirecționat în 10 secunde către <1>pagina de autentificare</1>",
+  "ErrorOfflineText": "Nu există nicio conexiune la Internet."
 }
