@@ -39,6 +39,7 @@
   "MoveItems": "<strong>{{qty}}</strong>の要素が移動しました",
   "MoveOrCopy": "移動またはコピーする",
   "MoveTo": "に移動します",
+  "MoveToFolderMessage": "フォルダをそのサブフォルダに移動できません。",
   "MyEmptyContainerDescription": "作成されたまたはアップロードされたドキュメントは、「マイドキュメント」セクションに保管されます。チームで編集、共有、共同作業ができます。",
   "New": "新しい",
   "NewDocument": "新しいドキュメント",

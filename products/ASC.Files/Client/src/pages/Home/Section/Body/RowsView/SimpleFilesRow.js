@@ -5,7 +5,7 @@ import DragAndDrop from "@appserver/components/drag-and-drop";
 import Row from "@appserver/components/row";
 import FilesRowContent from "./FilesRowContent";
 import { withRouter } from "react-router-dom";
-import { isTablet } from "react-device-detect";
+import { isTablet, isMobile } from "react-device-detect";
 
 import withFileActions from "../../../../../HOCs/withFileActions";
 import withQuickButtons from "../../../../../HOCs/withQuickButtons";
@@ -41,8 +41,11 @@ const StyledSimpleFilesRow = styled(Row)`
   ${(props) => props.dragging && draggingStyle}
 
   :hover {
-    cursor: pointer;
-    ${checkedStyle}
+    ${!isMobile &&
+    css`
+      cursor: pointer;
+      ${checkedStyle}
+    `}
   }
 
   position: unset;

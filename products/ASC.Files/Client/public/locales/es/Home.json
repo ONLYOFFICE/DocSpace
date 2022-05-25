@@ -39,6 +39,7 @@
   "MoveItems": "<strong>{{qty}}</strong> elementos se han movido",
   "MoveOrCopy": "Mover o Copiar",
   "MoveTo": "Mover a",
+  "MoveToFolderMessage": "No se puede mover la carpeta a su subcarpeta",
   "MyEmptyContainerDescription": "Los documentos que usted crea o sube se guardan en la sección 'Mis Documentos'. Usted puede editar, compartir y colaborar en ellos con su equipo.",
   "New": "Nuevo",
   "NewDocument": "Nuevo documento",

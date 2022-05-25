@@ -15,5 +15,6 @@
   "NotFoundDescription": "Спробуйте інший фільтр або очистіть його, щоб переглянути всіх людей у розділі.",
   "NotFoundTitle": "Учасників команди не знайдено",
   "SuccessfullyRemovedGroup": "Групу успішно видалено",
-  "UserStatus": "Статус"
+  "UserStatus": "Статус",
+  "ReassignmentData": "Перепризначення даних"
 }

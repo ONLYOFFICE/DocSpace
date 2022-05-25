@@ -15,5 +15,6 @@
   "NotFoundDescription": "Skúste iný filter alebo ho vymažte, aby sa zobrazili všetci ľudia v sekcii.",
   "NotFoundTitle": "Nenašli sa žiadni členovia tímu",
   "SuccessfullyRemovedGroup": "Skupina bola úspešne odstránená",
-  "UserStatus": "Stav"
+  "UserStatus": "Stav",
+  "ReassignmentData": "Zmena priradenia údajov"
 }

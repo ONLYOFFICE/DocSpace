@@ -15,5 +15,6 @@
   "NotFoundDescription": "ລອງໃຊ້ຕົວຄົ້ນຫາ ຫຼື ລ້າງເພື່ອເບິ່ງທຸກຄົນໃນສ່ວນນີ້",
   "NotFoundTitle": "ບໍ່ພົບເພື່ອນຮ່ວມທີມ",
   "SuccessfullyRemovedGroup": "ລົບກຸ່ມສຳເລັດແລ້ວ",
-  "UserStatus": "ສະຖານະ"
+  "UserStatus": "ສະຖານະ",
+  "ReassignmentData": "ການຈັດສັນຂໍ້ມູນຄືນ"
 }
