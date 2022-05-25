@@ -15,5 +15,6 @@
   "NotFoundDescription": "Aplicați un alt filtru sau îl eliminați ca să afișați toți utilizatorii din secțiunea.",
   "NotFoundTitle": "Niciun membru al echipei nu s-a găsit",
   "SuccessfullyRemovedGroup": "Grupul a fost șters cu succes",
-  "UserStatus": "Statutul"
+  "UserStatus": "Statutul",
+  "ReassignmentData": "Reasinarea datelor"
 }

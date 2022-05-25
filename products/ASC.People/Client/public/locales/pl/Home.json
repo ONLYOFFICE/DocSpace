@@ -15,5 +15,6 @@
   "NotFoundDescription": "Spróbuj użyć innego filtra lub usuń go, aby zobaczyć wszystkich użytkowników w sekcji.",
   "NotFoundTitle": "Nie znaleziono członków zespołu",
   "SuccessfullyRemovedGroup": "Grupa została pomyślnie usunięta",
-  "UserStatus": "Status"
+  "UserStatus": "Status",
+  "ReassignmentData": "Przypisz dane innemu użytkownikowi"
 }

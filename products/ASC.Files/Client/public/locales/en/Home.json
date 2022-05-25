@@ -39,6 +39,7 @@
   "MoveItems": "<strong>{{qty}}</strong> elements have been moved",
   "MoveOrCopy": "Move or copy",
   "MoveTo": "Move to",
+  "MoveToFolderMessage": "You can't move the folder to its subfolder",
   "MyEmptyContainerDescription": "Documents you create or upload are kept in 'My Documents' section. You can edit, share, and collaborate on them with your team.",
   "New": "New",
   "NewDocument": "New document",

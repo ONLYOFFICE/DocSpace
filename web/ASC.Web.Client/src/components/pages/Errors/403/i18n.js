@@ -21,7 +21,7 @@ newInstance.use(Backend).init({
   },
 
   backend: {
-    loadPath: loadLanguagePath(config.homepage, "Error403"),
+    loadPath: loadLanguagePath(config.homepage, "Errors"),
   },
 
   react: {

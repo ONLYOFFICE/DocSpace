@@ -15,5 +15,6 @@
   "NotFoundDescription": "Tente um filtro diferente ou limpe-o para ver todas as pessoas da seção.",
   "NotFoundTitle": "Nenhum colega de equipe encontrado",
   "SuccessfullyRemovedGroup": "O grupo foi removido com sucesso",
-  "UserStatus": "Status"
+  "UserStatus": "Status",
+  "ReassignmentData": "Reatribuição de dados"
 }

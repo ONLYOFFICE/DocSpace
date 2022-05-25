@@ -6,7 +6,7 @@ import { ReactSVG } from "react-svg";
 import styled, { css } from "styled-components";
 import ContextMenu from "@appserver/components/context-menu";
 import { tablet } from "@appserver/components/utils/device";
-import { isDesktop } from "react-device-detect";
+import { isDesktop, isMobile } from "react-device-detect";
 
 import Link from "@appserver/components/link";
 import Loader from "@appserver/components/loader";
@@ -188,6 +188,14 @@ const StyledFileTileBottom = styled.div`
     !props.isEdit && (props.checked || props.isActive) && checkedStyle}
 
   border-top: 1px solid transparent;
+  :hover {
+    ${!isMobile &&
+    css`
+      ${bottomFileBorder}
+      ${checkedStyle}
+    `}
+  }
+
   ${(props) =>
     !props.isEdit && (props.checked || props.isActive) && bottomFileBorder}
 

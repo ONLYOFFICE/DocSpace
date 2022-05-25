@@ -15,5 +15,6 @@
   "NotFoundDescription": "Hãy thử một bộ lọc khác hoặc xóa bộ lọc đó để xem tất cả mọi người trong mục này.",
   "NotFoundTitle": "Không tìm thấy đồng đội",
   "SuccessfullyRemovedGroup": "Nhóm đã được xóa thành công",
-  "UserStatus": "Trạng thái"
+  "UserStatus": "Trạng thái",
+  "ReassignmentData": "Chuyển dữ liệu cho người khác"
 }

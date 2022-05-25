@@ -39,6 +39,7 @@
   "MoveItems": "<strong>{{qty}}</strong> elementov je bilo premaknjenih",
   "MoveOrCopy": "Premakni ali kopiraj",
   "MoveTo": "Premakni v",
+  "MoveToFolderMessage": "Mape ne morete premakniti v njeno podmapo",
   "MyEmptyContainerDescription": "Dokumenti, ki jih ustvarite ali naložite, so shranjeni v razdelku »Moji dokumenti«. Lahko jih urejate, delite in sodelujete z drugimi v svoji skupini.",
   "New": "Novo",
   "NewDocument": "Nov dokument",

@@ -135,23 +135,6 @@ const Badges = ({
 
   return fileExst ? (
     <div className="badges additional-badges">
-      {canWebEdit &&
-        !isEditing &&
-        !isTrashFolder &&
-        !isPrivacy &&
-        accessToEdit &&
-        showEditBadge &&
-        !canConvert &&
-        isForm && (
-          <StyledIcon
-            iconName={iconForm}
-            className="badge tablet-badge icons-group tablet-edit edit"
-            size={sizeBadge}
-            onClick={onFilesClick}
-            hoverColor={theme.filesBadges.hoverIconColor}
-            title={t("Common:FillFormButton")}
-          />
-        )}
       {isEditing && (
         <StyledEditIcon
           iconName={iconEdit}

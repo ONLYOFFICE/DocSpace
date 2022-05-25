@@ -5,7 +5,7 @@ import DragAndDrop from "@appserver/components/drag-and-drop";
 import Row from "@appserver/components/row";
 import FilesRowContent from "./FilesRowContent";
 import { withRouter } from "react-router-dom";
-import { isTablet } from "react-device-detect";
+import { isTablet, isMobile } from "react-device-detect";
 
 import withFileActions from "../../../../../HOCs/withFileActions";
 import withQuickButtons from "../../../../../HOCs/withQuickButtons";
@@ -39,6 +39,17 @@ const StyledWrapper = styled.div`
 const StyledSimpleFilesRow = styled(Row)`
   ${(props) => (props.checked || props.isActive) && checkedStyle};
   ${(props) => props.dragging && draggingStyle}
+
+  ${(props) =>
+    !isMobile &&
+    !props.isDragging &&
+    css`
+      :hover {
+        cursor: pointer;
+        ${checkedStyle}
+        `}
+      }
+
   position: unset;
   cursor: ${(props) =>
     !props.isThirdPartyFolder &&
@@ -248,6 +259,7 @@ const SimpleFilesRow = (props) => {
           contextOptions={item.contextOptions}
           contextButtonSpacerWidth={displayShareButton}
           dragging={dragging && isDragging}
+          isDragging={dragging}
           isActive={isActive}
           inProgress={inProgress}
           isThirdPartyFolder={item.isThirdPartyFolder}
