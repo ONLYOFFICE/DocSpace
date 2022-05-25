@@ -4,6 +4,6 @@
   "Error404Text": "Ne pare rău, sursa nu s-a găsit.",
   "ErrorEmptyResponse": "Răspunsul necompletat",
   "ErrorInvalidHeader": "Adresa e-mail invalidă sau link-ul expirat",
-  "ErrorInvalidText": "Veţi fi redirecţionat în 10 secunde către <1>pagina de autentificare</1>",
-  "ErrorOfflineText": "Nu există nicio conexiune la Intenet."
+  "ErrorInvalidText": "Veţi fi redirecționat în 10 secunde către <1>pagina de autentificare</1>",
+  "ErrorOfflineText": "Nu există nicio conexiune la Internet."
 }
