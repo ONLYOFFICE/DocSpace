@@ -8,7 +8,8 @@ const Wrapper = styled.div`
   padding-bottom: 80px;
 `;
 
-const ReactSmartBanner = () => {
+const ReactSmartBanner = (props) => {
+  const { t } = props;
   const [isVisible, setIsVisible] = useState(true);
   const force = isIOS ? "ios" : "android";
 
@@ -37,8 +38,9 @@ const ReactSmartBanner = () => {
     isVisible && (
       <Wrapper>
         <SmartBanner
-          title="Onlyoffice"
-          author="Onlyoffice"
+          title="ONLYOFFICE Documents"
+          author="Ascensio System SIA"
+          button={t("View")}
           force={force}
           onClose={hideBanner}
           onInstall={hideBanner}

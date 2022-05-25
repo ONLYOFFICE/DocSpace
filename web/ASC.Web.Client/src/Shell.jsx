@@ -238,7 +238,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     });
   }, [socketHelper]);
 
-  const { t } = useTranslation("Common");
+  const { t } = useTranslation(["Common"]);
 
   let snackTimer = null;
   let fbInterval = null;
@@ -522,7 +522,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     <Layout>
       <Router history={history}>
         <>
-          {isDocuments ? <ReactSmartBanner /> : <></>}
+          {isDocuments ? <ReactSmartBanner t={t} /> : <></>}
           {isEditor ? <></> : <NavMenu />}
           <ScrollToTop />
           <Main isDesktop={isDesktop}>
