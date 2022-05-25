@@ -28,7 +28,7 @@ const Template = (args) => <Layout {...args} />;
 export const Default = Template.bind({});
 
 Default.args = {
-  origin: "http://localhost:8001", // use your source
+  origin: "http://localhost:8000", // use your source
   name: "NewYear",
   language: "en",
   theme: "light"
