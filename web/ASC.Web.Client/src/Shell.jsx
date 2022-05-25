@@ -23,6 +23,7 @@ import System from "./components/System";
 import { AppServerConfig } from "@appserver/common/constants";
 import Snackbar from "@appserver/components/snackbar";
 import moment from "moment";
+import ReactSmartBanner from "./components/SmartBanner";
 
 const { proxyURL } = AppServerConfig;
 const homepage = config.homepage;
@@ -427,6 +428,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
   const pathname = window.location.pathname.toLowerCase();
   const isEditor = pathname.indexOf("doceditor") !== -1;
+  const isDocuments = pathname.indexOf("files") !== -1;
 
   if (!window.AppServer.studio) {
     window.AppServer.studio = {};
@@ -510,6 +512,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     <Layout>
       <Router history={history}>
         <>
+          {isDocuments ? <ReactSmartBanner /> : <></>}
           {isEditor ? <></> : <NavMenu />}
           <ScrollToTop />
           <Main isDesktop={isDesktop}>
