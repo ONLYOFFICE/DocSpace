@@ -37,7 +37,6 @@ global using System.Linq.Expressions;
 global using System.Net;
 global using System.Reflection;
 global using System.Resources;
-global using System.Runtime.Caching;
 global using System.Runtime.Serialization;
 global using System.Security;
 global using System.Security.Authentication;
@@ -83,6 +82,7 @@ global using ASC.Core.Common.EF.Model.Resource;
 global using ASC.Core.Common.Hosting.Extensions;
 global using ASC.Core.Common.Hosting.Interfaces;
 global using ASC.Core.Common.Notify;
+global using ASC.Core.Common.Notify.IntegrationEvents.Events;
 global using ASC.Core.Common.Notify.Jabber;
 global using ASC.Core.Common.Notify.Push;
 global using ASC.Core.Common.Notify.Telegram;
@@ -97,6 +97,8 @@ global using ASC.Core.Security.Authentication;
 global using ASC.Core.Security.Authorizing;
 global using ASC.Core.Tenants;
 global using ASC.Core.Users;
+global using ASC.EventBus.Abstractions;
+global using ASC.EventBus.Events;
 global using ASC.Notify;
 global using ASC.Notify.Channels;
 global using ASC.Notify.Cron;
@@ -123,6 +125,7 @@ global using Microsoft.EntityFrameworkCore.Metadata;
 global using Microsoft.EntityFrameworkCore.Migrations;
 global using Microsoft.EntityFrameworkCore.Query;
 global using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+global using Microsoft.Extensions.Caching.Memory;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Hosting;
@@ -135,6 +138,8 @@ global using Newtonsoft.Json;
 
 global using NVelocity;
 global using NVelocity.App.Events;
+
+global using ProtoBuf;
 
 global using Telegram.Bot;
 

@@ -68,3 +68,7 @@ global using Microsoft.Extensions.Options;
 
 global using SixLabors.ImageSharp;
 global using SixLabors.ImageSharp.Formats.Png;
+
+global using ASC.EventBus.Abstractions;
+global using ASC.Files.Core.IntegrationEvents.Events;
+global using ASC.Thumbnail.IntegrationEvents.EventHandling;

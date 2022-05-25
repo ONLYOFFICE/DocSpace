@@ -54,7 +54,7 @@ public sealed class BackupSchedulerService : BackgroundService
     {
         _logger.Debug("BackupSchedulerService is starting.");
 
-        stoppingToken.Register(() => _logger.Debug("#1 BackupSchedulerService background task is stopping."));
+        stoppingToken.Register(() => _logger.Debug("BackupSchedulerService background task is stopping."));
 
         while (!stoppingToken.IsCancellationRequested)
         {

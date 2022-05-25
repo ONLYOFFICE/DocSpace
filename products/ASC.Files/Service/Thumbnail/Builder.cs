@@ -141,7 +141,7 @@ public class Builder<T>
                 return;
             }
 
-            if (file.ThumbnailStatus != Thumbnail.Waiting)
+            if (file.ThumbnailStatus != ASC.Files.Core.Thumbnail.Waiting)
             {
                 _logger.InfoFormat("GenerateThumbnail: FileId: {0}. Thumbnail already processed.", fileData.FileId);
 
@@ -152,7 +152,7 @@ public class Builder<T>
 
             if (!_config.FormatsArray.Contains(ext) || file.Encrypted || file.RootFolderType == FolderType.TRASH || file.ContentLength > _config.AvailableFileSize)
             {
-                file.ThumbnailStatus = Thumbnail.NotRequired;
+                file.ThumbnailStatus = ASC.Files.Core.Thumbnail.NotRequired;
                 await fileDao.SaveThumbnailAsync(file, null);
 
                 return;
@@ -172,7 +172,7 @@ public class Builder<T>
             _logger.Error(string.Format("GenerateThumbnail: FileId: {0}.", fileData.FileId), exception);
             if (file != null)
             {
-                file.ThumbnailStatus = Thumbnail.Error;
+                file.ThumbnailStatus = ASC.Files.Core.Thumbnail.Error;
                 await fileDao.SaveThumbnailAsync(file, null);
             }
         }

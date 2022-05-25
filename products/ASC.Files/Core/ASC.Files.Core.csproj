@@ -15,7 +15,6 @@
     <None Remove="proto\one_drive_cache_item.proto" />
     <None Remove="proto\provider_account_cache_item.proto" />
     <None Remove="proto\share_point_provider_cache_item.proto" />
-    <None Remove="proto\thumbnail_request.proto" />
   </ItemGroup>
 
   <ItemGroup>
@@ -39,7 +38,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="proto\thumbnail_request.proto" />
     <Protobuf Include="proto\box_cache_item.proto" />
     <Protobuf Include="proto\dropbox_cache_item.proto" />
     <Protobuf Include="proto\google_drive_cache_item.proto" />

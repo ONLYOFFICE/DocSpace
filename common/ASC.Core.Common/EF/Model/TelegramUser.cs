@@ -30,7 +30,7 @@ public class TelegramUser : BaseEntity
 {
     public Guid PortalUserId { get; set; }
     public int TenantId { get; set; }
-    public int TelegramUserId { get; set; }
+    public long TelegramUserId { get; set; }
     public override object[] GetKeys()
     {
         return new object[] { TenantId, PortalUserId };
