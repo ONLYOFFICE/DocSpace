@@ -74,14 +74,11 @@ services_name_backend+=(ASC.Data.Storage.Encryption)
 services_name_backend+=(ASC.Files.Service)
 services_name_backend+=(ASC.Data.Storage.Migration)
 services_name_backend+=(ASC.Notify)
-# services_name_backend+=(ASC.Socket.IO.Svc)
 services_name_backend+=(ASC.Studio.Notify)
 services_name_backend+=(ASC.TelegramService)
-# services_name_backend+=(ASC.Thumbnails.Svc)
 services_name_backend+=(ASC.UrlShortener.Svc)
 services_name_backend+=(ASC.Web.Api)
 services_name_backend+=(ASC.Web.Studio)
-# services_name_backend+=(ASC.SsoAuth.Svc)
 
 # Publish backend services
 for i in ${!services_name_backend[@]}; do
