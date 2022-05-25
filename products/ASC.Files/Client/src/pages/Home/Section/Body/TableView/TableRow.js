@@ -45,6 +45,22 @@ const contextMenuWrapperDraggingHoverStyle = css`
 `;
 
 const StyledTableRow = styled(TableRow)`
+  :hover {
+    .table-container_cell {
+      cursor: pointer;
+      background: ${(props) =>
+        `${props.theme.filesSection.tableView.row.backgroundActive} !important`};
+    }
+    .table-container_file-name-cell {
+      margin-left: -24px;
+      padding-left: 24px;
+    }
+    .table-container_row-context-menu-wrapper {
+      margin-right: -20px;
+      padding-right: 18px;
+    }
+  }
+
   .table-container_cell {
     /* ${isSafari && `border-image-slice: 0 !important`}; */
     background: ${(props) =>
