@@ -103,14 +103,6 @@ Requires:       dotnet-sdk-5.0
 AutoReqProv:    no
 %description    studio
 
-%package        crm
-Summary:        crm
-Group:          Applications/Internet
-Requires:       %name-common
-Requires:       dotnet-sdk-5.0
-AutoReqProv:    no
-%description    crm
-
 %package        api
 Summary:        api
 Group:          Applications/Internet
@@ -135,14 +127,6 @@ Requires:       dotnet-sdk-5.0
 AutoReqProv:    no
 %description    storage-migration
 
-%package        projects-server
-Summary:        projects-server
-Group:          Applications/Internet
-Requires:       %name-common
-Requires:       dotnet-sdk-5.0
-AutoReqProv:    no
-%description    projects-server
-
 %package        telegram-service
 Summary:        telegram-service
 Group:          Applications/Internet
@@ -150,22 +134,6 @@ Requires:       %name-common
 Requires:       dotnet-sdk-5.0
 AutoReqProv:    no
 %description    telegram-service
-
-%package        calendar
-Summary:        calendar
-Group:          Applications/Internet
-Requires:       %name-common
-Requires:       dotnet-sdk-5.0
-AutoReqProv:    no
-%description    calendar
-
-%package        mail
-Summary:        mail
-Group:          Applications/Internet
-Requires:       %name-common
-Requires:       dotnet-sdk-5.0
-AutoReqProv:    no
-%description    mail
 
 %package        ssoauth
 Summary:        ssoauth

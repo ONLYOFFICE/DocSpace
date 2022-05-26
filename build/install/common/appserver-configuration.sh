@@ -220,15 +220,13 @@ install_json() {
 restart_services() {
 	echo -n "Restarting services... "
 
-	sed -i "s/Type=.*/Type=simple/" $SYSTEMD_DIR/${PRODUCT}-calendar.service >/dev/null 2>&1 #Fix non-start of service
 	sed -i "s/ENVIRONMENT=.*/ENVIRONMENT=$ENVIRONMENT/" $SYSTEMD_DIR/${PRODUCT}*.service >/dev/null 2>&1
 	systemctl daemon-reload
 
 	for SVC in nginx ${MYSQL_PACKAGE} ${PRODUCT}-api ${PRODUCT}-api-system ${PRODUCT}-urlshortener ${PRODUCT}-thumbnails \
 	${PRODUCT}-socket ${PRODUCT}-studio-notify ${PRODUCT}-notify ${PRODUCT}-people-server ${PRODUCT}-files \
 	${PRODUCT}-files-services ${PRODUCT}-studio ${PRODUCT}-backup ${PRODUCT}-storage-encryption \
-	${PRODUCT}-storage-migration ${PRODUCT}-projects-server ${PRODUCT}-telegram-service ${PRODUCT}-crm \
-	${PRODUCT}-calendar ${PRODUCT}-mail elasticsearch kafka zookeeper
+	${PRODUCT}-storage-migration ${PRODUCT}-telegram-service elasticsearch $KAFKA_SERVICE $ZOOKEEPER_SERVICE
 	do
 		systemctl enable $SVC.service >/dev/null 2>&1
 		systemctl restart $SVC.service
@@ -407,7 +405,6 @@ setup_nginx(){
 					PORTS+=('5002') #ASC.People
 					PORTS+=('5008') #ASC.Files/client
 					PORTS+=('5013') #ASC.Files/editor
-					PORTS+=('5014') #ASC.CRM
 					setsebool -P httpd_can_network_connect on
 				;;
 				disabled)
