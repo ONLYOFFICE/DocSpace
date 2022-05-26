@@ -47,6 +47,10 @@ const StyledSimpleFilesRow = styled(Row)`
       :hover {
         cursor: pointer;
         ${checkedStyle}
+
+        margin-top: -3px;
+        border-top: ${(props) =>
+          `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
       }
     `};
 

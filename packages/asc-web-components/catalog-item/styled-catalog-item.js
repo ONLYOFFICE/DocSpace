@@ -256,6 +256,13 @@ const StyledCatalogItemSibling = styled.div`
   `}
 
   ${(props) => props.isDragging && draggingSiblingCss}
+
+  ${(props) =>
+    props.isDragActive &&
+    css`
+      background: ${(props) =>
+        props.theme.dragAndDrop.acceptBackground} !important;
+    `}
 `;
 
 StyledCatalogItemSibling.defaultProps = { theme: Base };

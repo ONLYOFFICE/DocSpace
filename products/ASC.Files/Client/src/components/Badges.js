@@ -142,7 +142,7 @@ const Badges = ({
           size={sizeBadge}
           onClick={onFilesClick}
           hoverColor={theme.filesBadges.hoverIconColor}
-          title={t("Common:EditButton")}
+          title={isForm ? t("Common:FillFormButton") : t("Common:EditButton")}
         />
       )}
       {canConvert && !isTrashFolder && (
