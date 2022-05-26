@@ -58,20 +58,23 @@ const StyledTile = styled.div`
   ${(props) => props.isFolder && "border-top-left-radius: 6px;"}
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
-  ${(props) => props.isFolder && FlexBoxStyles}
-  ${(props) => (props.isFolder ? FolderStyles : FileStyles)}
+  ${(props) => props.isFolder && FlexBoxStyles};
+  ${(props) => (props.isFolder ? FolderStyles : FileStyles)};
   ${(props) =>
     !props.isEdit &&
     props.isFolder &&
     (props.checked || props.isActive) &&
-    checkedStyle}
+    checkedStyle};
 
-${(props) =>
+  ${(props) =>
     !props.isDragging &&
     !isMobile &&
     css`
       :hover {
         ${checkedStyle}
+        .file-tile-bottom {
+          ${bottomFileBorder}
+        }
       }
     `}
 
@@ -196,13 +199,6 @@ const StyledFileTileBottom = styled.div`
     !props.isEdit && (props.checked || props.isActive) && checkedStyle}
 
   border-top: 1px solid transparent;
-  :hover {
-    ${!isMobile &&
-    css`
-      ${bottomFileBorder}
-      ${checkedStyle}
-    `}
-  }
 
   ${(props) =>
     !props.isEdit && (props.checked || props.isActive) && bottomFileBorder}
@@ -385,6 +381,7 @@ class Tile extends React.PureComponent {
       indeterminate,
       tileContextClick,
       dragging,
+      isDragging,
       isRecycleBin,
       item,
       isActive,
@@ -439,8 +436,8 @@ class Tile extends React.PureComponent {
         ref={this.tile}
         {...this.props}
         onContextMenu={onContextMenu}
+        isDragging={isDragging}
         dragging={dragging && isFolder}
-        isDragging={dragging}
         isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}
         isRecycleBin={isRecycleBin}
         checked={checked}
@@ -525,6 +522,7 @@ class Tile extends React.PureComponent {
               checked={checked}
               isActive={isActive}
               isEdit={isEdit}
+              className="file-tile-bottom"
             >
               {id !== -1 && !isEdit && (
                 <>
