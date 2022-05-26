@@ -9,7 +9,10 @@ import {
     SectionContent, 
     SectionHeader, 
     SectionWrapper, 
-    StyledIframe } from "./styled-section";
+    StyledIframe, 
+    StyledAction } from "./styled-section";
+
+ import cross from './images/cross.react.svg'
 
 export const Section = ({name, origin, lang}) => {
 
@@ -31,8 +34,11 @@ export const Section = ({name, origin, lang}) => {
     }
 
     return <StyledSection>
-            <div>
+            <div style={{position: "relative"}}>
                 <StyledIframe scrolling="no" className="iframe" src={url} />
+                <StyledAction>
+                    <img style={{width: "16px"}} src={cross} />
+                </StyledAction>
             </div>
             <SectionWrapper>
                 <SectionHeader>My documents</SectionHeader>
