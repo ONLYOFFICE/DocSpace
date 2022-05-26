@@ -29,8 +29,9 @@ const ReactSmartBanner = (props) => {
   };
 
   useEffect(() => {
-    const cookie = getCookie("smartbanner-closed");
-    if (cookie) hideBanner();
+    const cookieClosed = getCookie("smartbanner-closed");
+    const cookieInstalled = getCookie("smartbanner-installed");
+    if (cookieClosed || cookieInstalled) hideBanner();
   }, []);
 
   const storeText = {
@@ -59,7 +60,7 @@ const ReactSmartBanner = (props) => {
     isVisible && (
       <Wrapper>
         <SmartBanner
-          title="ONLYOFFICE Documents"
+          title={t("SmartBanner:AppName")}
           author="Ascensio System SIA"
           button={t("Common:View")}
           force={force}
