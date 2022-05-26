@@ -2,30 +2,30 @@ Source: appserver
 Section: web
 Priority: optional
 Maintainer: onlyoffice
-Build-Depends: debhelper (>= 10), nodejs (>=10), dotnet-sdk-5.0, yarn
-Standards-Version: 0.1-10
+Build-Depends: debhelper (>= 10), nodejs (>=10), dotnet-sdk-6.0, yarn
+Standards-Version: {{package_header_tag_version}}
 Homepage: https://www.onlyoffice.com/
 Architecture: any
 
 Package: appserver
 Architecture: any
-Depends: appserver-api-system,
-         appserver-backup,
-         appserver-storage-encryption,
-         appserver-files,
-         appserver-files-services,    
-         appserver-storage-migration,
-         appserver-notify,
-         appserver-people-server,
-         appserver-socket,
-         appserver-ssoauth,
-         appserver-studio-notify,
-         appserver-telegram-service,
-         appserver-thumbnails,
-         appserver-urlshortener,
-         appserver-api,
-         appserver-studio,
-         appserver-proxy
+Depends: appserver-api-system (= {{package_header_tag_version}}),
+         appserver-backup (= {{package_header_tag_version}}),
+         appserver-storage-encryption (= {{package_header_tag_version}}),
+         appserver-files (= {{package_header_tag_version}}),
+         appserver-files-services (= {{package_header_tag_version}}),    
+         appserver-storage-migration (= {{package_header_tag_version}}),
+         appserver-notify (= {{package_header_tag_version}}),
+         appserver-people-server (= {{package_header_tag_version}}),
+         appserver-socket (= {{package_header_tag_version}}),
+         appserver-ssoauth (= {{package_header_tag_version}}),
+         appserver-studio-notify (= {{package_header_tag_version}}),
+         appserver-telegram-service (= {{package_header_tag_version}}),
+         appserver-thumbnails (= {{package_header_tag_version}}),
+         appserver-urlshortener (= {{package_header_tag_version}}),
+         appserver-api (= {{package_header_tag_version}}),
+         appserver-studio (= {{package_header_tag_version}}),
+         appserver-proxy (= {{package_header_tag_version}})
 Description: Description
 
 Package: appserver-common
@@ -40,7 +40,7 @@ Description: Description
 
 Package: appserver-api-system
 Architecture: any
-Depends: appserver-common,
+Depends: appserver-common (= {{package_header_tag_version}}),
  appserver-configuration,
  dotnet-sdk-5.0,
  ${misc:Depends},
@@ -49,7 +49,7 @@ Description: Description
 
 Package: appserver-backup
 Architecture: any
-Depends: appserver-common,
+Depends: appserver-common (= {{package_header_tag_version}}),
  appserver-configuration,
  dotnet-sdk-5.0,
  ${misc:Depends},
@@ -58,7 +58,7 @@ Description: Description
 
 Package: appserver-storage-encryption
 Architecture: any
-Depends: appserver-common,
+Depends: appserver-common (= {{package_header_tag_version}}),
  appserver-configuration,
  dotnet-sdk-5.0,
  ${misc:Depends},
@@ -67,7 +67,7 @@ Description: Description
 
 Package: appserver-files
 Architecture: any
-Depends: appserver-common,
+Depends: appserver-common (= {{package_header_tag_version}}),
  appserver-configuration,
  dotnet-sdk-5.0,
  ${misc:Depends},
@@ -76,7 +76,7 @@ Description: Description
 
 Package: appserver-files-services
 Architecture: any
-Depends: appserver-common,
+Depends: appserver-common (= {{package_header_tag_version}}),
  appserver-configuration,
  dotnet-sdk-5.0,
  ${misc:Depends},
@@ -85,7 +85,7 @@ Description: Description
 
 Package: appserver-storage-migration
 Architecture: any
-Depends: appserver-common,
+Depends: appserver-common (= {{package_header_tag_version}}),
  appserver-configuration,
  dotnet-sdk-5.0,
  ${misc:Depends},
@@ -94,7 +94,7 @@ Description: Description
 
 Package: appserver-notify
 Architecture: any
-Depends: appserver-common,
+Depends: appserver-common (= {{package_header_tag_version}}),
  appserver-configuration,
  dotnet-sdk-5.0,
  ${misc:Depends},
@@ -103,7 +103,7 @@ Description: Description
 
 Package: appserver-people-server
 Architecture: any
-Depends: appserver-common,
+Depends: appserver-common (= {{package_header_tag_version}}),
  appserver-configuration,
  dotnet-sdk-5.0,
  ${misc:Depends},
@@ -112,7 +112,7 @@ Description: Description
 
 Package: appserver-socket
 Architecture: any
-Depends: appserver-common,
+Depends: appserver-common (= {{package_header_tag_version}}),
  appserver-configuration,
  dotnet-sdk-5.0,
  nodejs (>=10),
@@ -122,7 +122,7 @@ Description: Description
 
 Package: appserver-studio-notify
 Architecture: any
-Depends: appserver-common,
+Depends: appserver-common (= {{package_header_tag_version}}),
  appserver-configuration,
  dotnet-sdk-5.0,
  ${misc:Depends},
@@ -131,7 +131,7 @@ Description: Description
 
 Package: appserver-telegram-service
 Architecture: any
-Depends: appserver-common,
+Depends: appserver-common (= {{package_header_tag_version}}),
  appserver-configuration,
  dotnet-sdk-5.0,
  ${misc:Depends},
@@ -140,7 +140,7 @@ Description: Description
 
 Package: appserver-thumbnails
 Architecture: any
-Depends: appserver-common,
+Depends: appserver-common (= {{package_header_tag_version}}),
  appserver-configuration,
  dotnet-sdk-5.0,
  nodejs (>=10),
@@ -150,7 +150,7 @@ Description: Description
 
 Package: appserver-urlshortener
 Architecture: any
-Depends: appserver-common,
+Depends: appserver-common (= {{package_header_tag_version}}),
  appserver-configuration,
  dotnet-sdk-5.0,
  nodejs (>=10),
@@ -160,7 +160,7 @@ Description: Description
 
 Package: appserver-api
 Architecture: any
-Depends: appserver-common,
+Depends: appserver-common (= {{package_header_tag_version}}),
  appserver-configuration,
  dotnet-sdk-5.0,
  ${misc:Depends},
@@ -169,7 +169,7 @@ Description: Description
 
 Package: appserver-studio
 Architecture: any
-Depends: appserver-common,
+Depends: appserver-common (= {{package_header_tag_version}}),
  appserver-configuration,
  dotnet-sdk-5.0,
  ${misc:Depends},
@@ -183,7 +183,7 @@ Description: Description
 
 Package: appserver-ssoauth
 Architecture: any
-Depends: appserver-common,
+Depends: appserver-common (= {{package_header_tag_version}}),
  appserver-configuration,
  dotnet-sdk-5.0,
  nodejs (>=10),

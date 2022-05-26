@@ -23,23 +23,23 @@ BuildRequires:  nodejs >= 12.0
 BuildRequires:  yarn
 BuildRequires:  dotnet-sdk-5.0
 
-Requires:       %name-api-system
-Requires:       %name-backup
-Requires:       %name-storage-encryption
-Requires:       %name-storage-migration
-Requires:       %name-files
-Requires:       %name-files-services
-Requires:       %name-notify
-Requires:       %name-people-server
-Requires:       %name-socket
-Requires:       %name-ssoauth
-Requires:       %name-studio-notify
-Requires:       %name-telegram-service
-Requires:       %name-thumbnails
-Requires:       %name-urlshortener
-Requires:       %name-api
-Requires:       %name-studio
-Requires:       %name-proxy
+Requires:       %name-api-system = %version-%release
+Requires:       %name-backup = %version-%release
+Requires:       %name-storage-encryption = %version-%release
+Requires:       %name-storage-migration = %version-%release
+Requires:       %name-files = %version-%release
+Requires:       %name-files-services = %version-%release
+Requires:       %name-notify = %version-%release
+Requires:       %name-people-server = %version-%release
+Requires:       %name-socket = %version-%release
+Requires:       %name-ssoauth = %version-%release
+Requires:       %name-studio-notify = %version-%release
+Requires:       %name-telegram-service = %version-%release
+Requires:       %name-thumbnails = %version-%release
+Requires:       %name-urlshortener = %version-%release
+Requires:       %name-api = %version-%release
+Requires:       %name-studio = %version-%release
+Requires:       %name-proxy = %version-%release
 
 %description
 App Server is a platform for building your own online office by connecting ONLYOFFICE modules packed as separate apps.
