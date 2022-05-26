@@ -1,4 +1,5 @@
-import styled from "styled-components";
+import styled, { css }  from "styled-components";
+import { isMobile } from "react-device-detect";
 
 const StyledSection = styled.div`
     width: 100%;
@@ -50,5 +51,21 @@ const StyledIframe = styled.iframe`
     width: 100%;
 `;
 
+const StyledAction = styled.div`
+  position: absolute;
+  right: 8px;
+  top: 10px;
+  background: inherit;
+  display: inline-block;
+  border: none;
+  font-size: inherit;
+  color: "#333";
+  cursor: pointer;
+  text-decoration: underline;
+  ${isMobile &&
+  css`
+    right: 14px;
+  `};
+`;
 
-export {StyledSection, Icon, Name, MainLoader, FilterLoader, SectionContent, SectionHeader, SectionWrapper, StyledIframe}
+export {StyledSection, Icon, Name, MainLoader, FilterLoader, SectionContent, SectionHeader, SectionWrapper, StyledIframe, StyledAction}
