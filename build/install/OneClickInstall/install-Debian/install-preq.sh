@@ -65,7 +65,7 @@ if [ "$(ls "$PRODUCT_DIR/services/kafka" 2> /dev/null)" == "" ]; then
 	KAFKA_ARCHIVE=$(curl https://downloads.apache.org/kafka/$KAFKA_VERSION/ | grep -Eo "kafka_2.[0-9][0-9]-$KAFKA_VERSION.tgz" | tail -1)
 	curl https://downloads.apache.org/kafka/$KAFKA_VERSION/$KAFKA_ARCHIVE -O
 	tar xzf $KAFKA_ARCHIVE --strip 1 && rm -rf $KAFKA_ARCHIVE
-	chown -R kafka ${PRODUCT_DIR}/services/kafka/
+	chown -R onlyoffice ${PRODUCT_DIR}/services/kafka/
 	cd -
 fi
 
@@ -76,14 +76,13 @@ Requires=network.target remote-fs.target
 After=network.target remote-fs.target
 [Service]
 Type=simple
-User=kafka
+User=onlyoffice
 ExecStart=/bin/sh -c '${PRODUCT_DIR}/services/kafka/bin/zookeeper-server-start.sh ${PRODUCT_DIR}/services/kafka/config/zookeeper.properties > ${PRODUCT_DIR}/services/kafka/zookeeper.log 2>&1'
 ExecStop=${PRODUCT_DIR}/services/kafka/bin/zookeeper-server-stop.sh
 Restart=on-abnormal
 [Install]
 WantedBy=multi-user.target
 END
-systemctl start zookeeper
 fi
 
 if [ ! -e /lib/systemd/system/kafka.service ]; then
@@ -93,14 +92,13 @@ Requires=zookeeper.service
 After=zookeeper.service
 [Service]
 Type=simple
-User=kafka
+User=onlyoffice
 ExecStart=/bin/sh -c '${PRODUCT_DIR}/services/kafka/bin/kafka-server-start.sh ${PRODUCT_DIR}/services/kafka/config/server.properties > ${PRODUCT_DIR}/services/kafka/kafka.log 2>&1'
 ExecStop=${PRODUCT_DIR}/services/kafka/bin/kafka-server-stop.sh
 Restart=on-abnormal
 [Install]
 WantedBy=multi-user.target
 END
-systemctl start kafka
 fi
 
 if ! dpkg -l | grep -q "mysql-server"; then

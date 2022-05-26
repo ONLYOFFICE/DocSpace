@@ -207,4 +207,4 @@ if [ ! -e /usr/bin/json ]; then
 fi
 
 systemctl daemon-reload
-package_services="rabbitmq-server postgresql redis supervisord nginx kafka mysqld"
+package_services="rabbitmq-server postgresql redis supervisord nginx mysqld"

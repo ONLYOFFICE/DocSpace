@@ -328,6 +328,7 @@ while [ "$1" != "" ]; do
 			echo "      -ep, --externalport               external appserver port (default value 8092)"
 			echo "      -mk, --machinekey                 setting for core.machinekey"
 			echo "      -ls, --local_scripts              run the installation from local scripts"
+			echo "      -dbm, --databasemigration         database migration (true|false)"
 			echo "      -?, -h, --help                    this help"
 			echo
 			echo "    Install all the components without document server:"

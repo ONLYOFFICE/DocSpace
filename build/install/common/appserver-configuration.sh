@@ -92,7 +92,7 @@ while [ "$1" != "" ]; do
 
 		-zkp | --zookeeperport )
 			if [ "$2" != "" ]; then
-				ZOOKEEPER_HOST=$2
+				ZOOKEEPER_PORT=$2
 				shift
 			fi
 		;;
@@ -228,8 +228,8 @@ restart_services() {
 	${PRODUCT}-files-services ${PRODUCT}-studio ${PRODUCT}-backup ${PRODUCT}-storage-encryption \
 	${PRODUCT}-storage-migration ${PRODUCT}-telegram-service elasticsearch $KAFKA_SERVICE $ZOOKEEPER_SERVICE
 	do
-		systemctl enable $SVC.service >/dev/null 2>&1
-		systemctl restart $SVC.service
+		systemctl enable $SVC >/dev/null 2>&1
+		systemctl restart $SVC
 	done
 	echo "OK"
 }
@@ -240,10 +240,27 @@ input_db_params(){
     local def_DB_NAME=$(echo $user_connectionString | grep -oP 'Database=\K.*' | grep -o '^[^;]*')
     local def_DB_USER=$(echo $user_connectionString | grep -oP 'User ID=\K.*' | grep -o '^[^;]*')
 
-	if [ -z $def_DB_HOST ] && [ -z $DB_HOST ]; then read -e -p "Database host: " -i "$DB_HOST" DB_HOST; fi
-	if [ -z $def_DB_NAME ] && [ -z $DB_NAME ]; then read -e -p "Database name: " -i "$DB_NAME" DB_NAME; fi
-	if [ -z $def_DB_USER ] && [ -z $DB_USER ]; then read -e -p "Database user: " -i "$DB_USER" DB_USER; fi
-	if [ -z $DB_PWD ]; then read -e -p "Database password: " -i "$DB_PWD" DB_PWD; fi
+	if [ -z $def_DB_HOST ] && [ -z $DB_HOST ]; then 
+		read -e -p "Database host: " -i "$DB_HOST" DB_HOST;
+	else
+		DB_HOST=${DB_HOST:-$def_DB_HOST}
+	fi
+
+	if [ -z $def_DB_NAME ] && [ -z $DB_NAME ]; then 
+		read -e -p "Database name: " -i "$DB_NAME" DB_NAME; 
+	else
+		DB_NAME=${DB_NAME:-$def_DB_NAME}
+	fi
+
+	if [ -z $def_DB_USER ] && [ -z $DB_USER ]; then 
+		read -e -p "Database user: " -i "$DB_USER" DB_USER; 
+	else
+		DB_USER=${DB_USER:-$def_DB_USER}
+	fi
+
+	if [ -z $DB_PWD ]; then 
+		read -e -p "Database password: " -i "$DB_PWD" -s DB_PWD; 
+	fi
 }
 
 establish_mysql_conn(){
@@ -510,8 +527,6 @@ change_elasticsearch_config(){
 	if [ -d /etc/elasticsearch/ ]; then 
 		chmod g+ws /etc/elasticsearch/
 	fi
-
-	systemctl start elasticsearch
 }
 
 setup_elasticsearch() {
@@ -527,7 +542,8 @@ setup_elasticsearch() {
 
 setup_kafka() {
 
-	KAFKA_SERVICE=$(systemctl list-units --no-legend "*kafka*" | cut -f1 -d' ')
+	KAFKA_SERVICE=$(systemctl list-unit-files --no-legend "*kafka*" | grep -oE '[^ ]+.service')
+	ZOOKEEPER_SERVICE=$(systemctl list-unit-files --no-legend "*zookeeper*" | grep -oE '[^ ]+.service')
 
 	if [ -n ${KAFKA_SERVICE} ]; then
 
@@ -543,7 +559,9 @@ setup_kafka() {
 		sed -i "s/bootstrap.servers=.*/bootstrap.servers=${KAFKA_HOST}:${KAFKA_PORT}/g" $KAFKA_CONF/connect-standalone.properties
 		sed -i "s/logger.kafka.controller=.*,/logger.kafka.controller=INFO,/g" $KAFKA_CONF/log4j.properties
 		sed -i "s/logger.state.change.logger=.*,/logger.state.change.logger=INFO,/g" $KAFKA_CONF/log4j.properties
-		echo "log4j.logger.kafka.producer.async.DefaultEventHandler=INFO, kafkaAppender" >> $KAFKA_CONF/log4j.properties
+		if ! grep -q "DefaultEventHandler" $KAFKA_CONF/log4j.properties; then
+			echo "log4j.logger.kafka.producer.async.DefaultEventHandler=INFO, kafkaAppender" >> $KAFKA_CONF/log4j.properties
+		fi
 		
 		#Save kafka parameters in .json
 		$JSON_USERCONF "this.kafka={'BootstrapServers': \"${KAFKA_HOST}:${KAFKA_PORT}\"}" >/dev/null 2>&1
