@@ -183,7 +183,7 @@ ${package_manager} -y install epel-release \
 			gcc-c++ \
 			make \
 			yarn \
-			dotnet-sdk-5.0 \
+			dotnet-sdk-6.0 \
 			elasticsearch-${ELASTIC_VERSION} --enablerepo=elasticsearch \
 			mysql-server \
 			nginx \

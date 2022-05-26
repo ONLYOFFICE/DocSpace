@@ -42,7 +42,7 @@ Package: appserver-api-system
 Architecture: any
 Depends: appserver-common (= {{package_header_tag_version}}),
  appserver-configuration,
- dotnet-sdk-5.0,
+ dotnet-sdk-6.0,
  ${misc:Depends},
  ${shlibs:Depends}
 Description: Description
@@ -51,7 +51,7 @@ Package: appserver-backup
 Architecture: any
 Depends: appserver-common (= {{package_header_tag_version}}),
  appserver-configuration,
- dotnet-sdk-5.0,
+ dotnet-sdk-6.0,
  ${misc:Depends},
  ${shlibs:Depends}
 Description: Description
@@ -60,7 +60,7 @@ Package: appserver-storage-encryption
 Architecture: any
 Depends: appserver-common (= {{package_header_tag_version}}),
  appserver-configuration,
- dotnet-sdk-5.0,
+ dotnet-sdk-6.0,
  ${misc:Depends},
  ${shlibs:Depends}
 Description: Description
@@ -69,7 +69,7 @@ Package: appserver-files
 Architecture: any
 Depends: appserver-common (= {{package_header_tag_version}}),
  appserver-configuration,
- dotnet-sdk-5.0,
+ dotnet-sdk-6.0,
  ${misc:Depends},
  ${shlibs:Depends}
 Description: Description
@@ -78,7 +78,7 @@ Package: appserver-files-services
 Architecture: any
 Depends: appserver-common (= {{package_header_tag_version}}),
  appserver-configuration,
- dotnet-sdk-5.0,
+ dotnet-sdk-6.0,
  ${misc:Depends},
  ${shlibs:Depends}
 Description: Description
@@ -87,7 +87,7 @@ Package: appserver-storage-migration
 Architecture: any
 Depends: appserver-common (= {{package_header_tag_version}}),
  appserver-configuration,
- dotnet-sdk-5.0,
+ dotnet-sdk-6.0,
  ${misc:Depends},
  ${shlibs:Depends}
 Description: Description
@@ -96,7 +96,7 @@ Package: appserver-notify
 Architecture: any
 Depends: appserver-common (= {{package_header_tag_version}}),
  appserver-configuration,
- dotnet-sdk-5.0,
+ dotnet-sdk-6.0,
  ${misc:Depends},
  ${shlibs:Depends}
 Description: Description
@@ -105,7 +105,7 @@ Package: appserver-people-server
 Architecture: any
 Depends: appserver-common (= {{package_header_tag_version}}),
  appserver-configuration,
- dotnet-sdk-5.0,
+ dotnet-sdk-6.0,
  ${misc:Depends},
  ${shlibs:Depends}
 Description: Description
@@ -114,7 +114,7 @@ Package: appserver-socket
 Architecture: any
 Depends: appserver-common (= {{package_header_tag_version}}),
  appserver-configuration,
- dotnet-sdk-5.0,
+ dotnet-sdk-6.0,
  nodejs (>=10),
  ${misc:Depends},
  ${shlibs:Depends}
@@ -124,7 +124,7 @@ Package: appserver-studio-notify
 Architecture: any
 Depends: appserver-common (= {{package_header_tag_version}}),
  appserver-configuration,
- dotnet-sdk-5.0,
+ dotnet-sdk-6.0,
  ${misc:Depends},
  ${shlibs:Depends}
 Description: Description
@@ -133,7 +133,7 @@ Package: appserver-telegram-service
 Architecture: any
 Depends: appserver-common (= {{package_header_tag_version}}),
  appserver-configuration,
- dotnet-sdk-5.0,
+ dotnet-sdk-6.0,
  ${misc:Depends},
  ${shlibs:Depends}
 Description: Description
@@ -142,7 +142,7 @@ Package: appserver-thumbnails
 Architecture: any
 Depends: appserver-common (= {{package_header_tag_version}}),
  appserver-configuration,
- dotnet-sdk-5.0,
+ dotnet-sdk-6.0,
  nodejs (>=10),
  ${misc:Depends},
  ${shlibs:Depends}
@@ -152,7 +152,7 @@ Package: appserver-urlshortener
 Architecture: any
 Depends: appserver-common (= {{package_header_tag_version}}),
  appserver-configuration,
- dotnet-sdk-5.0,
+ dotnet-sdk-6.0,
  nodejs (>=10),
  ${misc:Depends},
  ${shlibs:Depends}
@@ -162,7 +162,7 @@ Package: appserver-api
 Architecture: any
 Depends: appserver-common (= {{package_header_tag_version}}),
  appserver-configuration,
- dotnet-sdk-5.0,
+ dotnet-sdk-6.0,
  ${misc:Depends},
  ${shlibs:Depends}
 Description: Description
@@ -171,7 +171,7 @@ Package: appserver-studio
 Architecture: any
 Depends: appserver-common (= {{package_header_tag_version}}),
  appserver-configuration,
- dotnet-sdk-5.0,
+ dotnet-sdk-6.0,
  ${misc:Depends},
  ${shlibs:Depends}
 Description: Description
@@ -185,7 +185,7 @@ Package: appserver-ssoauth
 Architecture: any
 Depends: appserver-common (= {{package_header_tag_version}}),
  appserver-configuration,
- dotnet-sdk-5.0,
+ dotnet-sdk-6.0,
  nodejs (>=10),
  ${misc:Depends},
  ${shlibs:Depends}

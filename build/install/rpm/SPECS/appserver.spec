@@ -21,7 +21,7 @@ Source2:        https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz
 
 BuildRequires:  nodejs >= 12.0
 BuildRequires:  yarn
-BuildRequires:  dotnet-sdk-5.0
+BuildRequires:  dotnet-sdk-6.0
 
 Requires:       %name-api-system = %version-%release
 Requires:       %name-backup = %version-%release

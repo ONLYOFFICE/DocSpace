@@ -154,7 +154,7 @@ apt-get install -o DPkg::options::="--force-confnew" -yq \
 				g++ \
 				make \
 				yarn \
-				dotnet-sdk-5.0 \
+				dotnet-sdk-6.0 \
 				mysql-server \
 				mysql-client \
 				postgresql \
