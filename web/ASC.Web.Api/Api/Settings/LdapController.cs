@@ -38,6 +38,7 @@ public class LdapController : BaseSettingsController
     private readonly PermissionContext _permissionContext;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly TenantExtra _tenantExtra;
+    private readonly IMapper _mapper;
 
     public LdapController(
         ApiContext apiContext,
@@ -51,7 +52,8 @@ public class LdapController : BaseSettingsController
         PermissionContext permissionContext,
         CoreBaseSettings coreBaseSettings,
         TenantExtra tenantExtra,
-        IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
+        IHttpContextAccessor httpContextAccessor,
+        IMapper mapper) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _settingsManager = settingsManager;
         _tenantManager = tenantManager;
@@ -61,6 +63,7 @@ public class LdapController : BaseSettingsController
         _permissionContext = permissionContext;
         _coreBaseSettings = coreBaseSettings;
         _tenantExtra = tenantExtra;
+        _mapper = mapper;
     }
 
     /// <summary>
@@ -72,7 +75,7 @@ public class LdapController : BaseSettingsController
     /// <category>LDAP</category>
     /// <returns>LDAP settings</returns>
     [Read("ldap")]
-    public LdapSettings GetLdapSettings()
+    public LdapSettingsDto GetLdapSettings()
     {
         CheckLdapPermissions();
 
@@ -82,21 +85,22 @@ public class LdapController : BaseSettingsController
 
         if (settings == null)
         {
-            return new LdapSettings().GetDefault();
+            settings = new LdapSettings().GetDefault();
+            return _mapper.Map<LdapSettings, LdapSettingsDto>(settings);
         }
 
         settings.Password = null;
         settings.PasswordBytes = null;
 
         if (settings.IsDefault)
-            return settings;
+            return _mapper.Map<LdapSettings, LdapSettingsDto>(settings); ;
 
         var defaultSettings = settings.GetDefault();
 
         if (settings.Equals(defaultSettings))
             settings.IsDefault = true;
 
-        return settings;
+        return _mapper.Map<LdapSettings, LdapSettingsDto>(settings);
     }
 
     /// <summary>
@@ -108,7 +112,7 @@ public class LdapController : BaseSettingsController
     /// <category>LDAP</category>
     /// <returns>Cron expression or null</returns>
     [Read("ldap/cron")]
-    public object GetLdapCronSettings()
+    public LdapCronSettingsDto GetLdapCronSettings()
     {
         CheckLdapPermissions();
 
@@ -120,7 +124,7 @@ public class LdapController : BaseSettingsController
         if (string.IsNullOrEmpty(settings.Cron))
             return null;
 
-        return settings.Cron;
+        return _mapper.Map<LdapCronSettings, LdapCronSettingsDto>(settings);
     }
 
     /// <summary>
@@ -133,16 +137,16 @@ public class LdapController : BaseSettingsController
     /// <param name="cron">Cron expression</param>
     /// 
     [Create("ldap/cron")]
-    public void SetLdapCronSettingsFromBody([FromBody] LdapCronSettings ldapCronSettings)
+    public void SetLdapCronSettingsFromBody(LdapCronRequest ldapCronRequest)
     {
-        SetLdapCronSettings(ldapCronSettings);
+        SetLdapCronSettings(ldapCronRequest);
     }
 
-    private void SetLdapCronSettings(LdapCronSettings ldapCronSettings)
+    private void SetLdapCronSettings(LdapCronRequest ldapCronRequest)
     {
         CheckLdapPermissions();
 
-        var cron = ldapCronSettings.Cron;
+        var cron = ldapCronRequest.Cron;
 
         if (!string.IsNullOrEmpty(cron))
         {
@@ -183,7 +187,7 @@ public class LdapController : BaseSettingsController
     /// <category>LDAP</category>
     /// <returns>Operation status</returns>
     [Read("ldap/sync")]
-    public LdapOperationStatus SyncLdap()
+    public LdapStatusDto SyncLdap()
     {
         CheckLdapPermissions();
 
@@ -191,7 +195,9 @@ public class LdapController : BaseSettingsController
 
         var userId = _authContext.CurrentAccount.ID.ToString();
 
-        return _ldapSaveSyncOperation.SyncLdap(ldapSettings, Tenant, userId);
+        var result = _ldapSaveSyncOperation.SyncLdap(ldapSettings, Tenant, userId);
+
+        return _mapper.Map<LdapOperationStatus, LdapStatusDto>(result);
     }
 
     /// <summary>
@@ -203,13 +209,15 @@ public class LdapController : BaseSettingsController
     /// <category>LDAP</category>
     /// <returns>Operation status</returns>
     [Read("ldap/sync/test")]
-    public LdapOperationStatus TestLdapSync()
+    public LdapStatusDto TestLdapSync()
     {
         CheckLdapPermissions();
 
         var ldapSettings = _settingsManager.Load<LdapSettings>();
 
-        return _ldapSaveSyncOperation.TestLdapSync(ldapSettings, Tenant);
+        var result = _ldapSaveSyncOperation.TestLdapSync(ldapSettings, Tenant);
+
+        return _mapper.Map<LdapOperationStatus, LdapStatusDto>(result);
     }
 
     /// <summary>
@@ -223,8 +231,10 @@ public class LdapController : BaseSettingsController
     /// <param name="acceptCertificate">Specifies if the errors of checking certificates are allowed (true) or not (false)</param>
     /// <returns>Operation status</returns>
     [Create("ldap")]
-    public LdapOperationStatus SaveLdapSettings([FromBody] LdapSettings ldapSettings)
+    public LdapStatusDto SaveLdapSettings(LdapRequestsDto ldapRequestsDto)
     {
+        var ldapSettings = _mapper.Map<LdapRequestsDto, LdapSettings>(ldapRequestsDto);
+
         CheckLdapPermissions();
 
         if (!ldapSettings.EnableLdapAuthentication)
@@ -234,7 +244,9 @@ public class LdapController : BaseSettingsController
 
         var userId = _authContext.CurrentAccount.ID.ToString();
 
-        return _ldapSaveSyncOperation.SaveLdapSettings(ldapSettings, Tenant, userId);
+        var result =  _ldapSaveSyncOperation.SaveLdapSettings(ldapSettings, Tenant, userId);
+
+        return _mapper.Map<LdapOperationStatus, LdapStatusDto>(result);
     }
 
     /// <summary>
@@ -248,13 +260,15 @@ public class LdapController : BaseSettingsController
     /// <param name="acceptCertificate">Specifies if the errors of checking certificates are allowed (true) or not (false)</param>
     /// <returns>Operation status</returns>
     [Create("ldap/save/test")]
-    public LdapOperationStatus TestLdapSave([FromBody] LdapSettings ldapSettings)
+    public LdapStatusDto TestLdapSave(LdapSettings ldapSettings)
     {
         CheckLdapPermissions();
 
         var userId = _authContext.CurrentAccount.ID.ToString();
 
-        return _ldapSaveSyncOperation.TestLdapSave(ldapSettings, Tenant, userId);
+        var result = _ldapSaveSyncOperation.TestLdapSave(ldapSettings, Tenant, userId);
+
+        return _mapper.Map<LdapOperationStatus, LdapStatusDto>(result);
     }
 
     /// <summary>
@@ -266,11 +280,13 @@ public class LdapController : BaseSettingsController
     /// <category>LDAP</category>
     /// <returns>Operation status</returns>
     [Read("ldap/status")]
-    public LdapOperationStatus GetLdapOperationStatus()
+    public LdapStatusDto GetLdapOperationStatus()
     {
         CheckLdapPermissions();
 
-        return _ldapSaveSyncOperation.ToLdapOperationStatus(Tenant.Id);
+        var result = _ldapSaveSyncOperation.ToLdapOperationStatus(Tenant.Id);
+
+        return _mapper.Map<LdapOperationStatus, LdapStatusDto>(result);
     }
 
     /// <summary>
@@ -282,22 +298,24 @@ public class LdapController : BaseSettingsController
     /// <category>LDAP</category>
     /// <returns>LDAP default settings</returns>
     [Read("ldap/default")]
-    public LdapSettings GetDefaultLdapSettings()
+    public LdapSettingsDto GetDefaultLdapSettings()
     {
         CheckLdapPermissions();
 
-        return new LdapSettings().GetDefault();
+        var settings =  new LdapSettings().GetDefault();
+
+        return _mapper.Map<LdapSettings, LdapSettingsDto>(settings);
     }
 
     private void CheckLdapPermissions()
     {
-        //_permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        //if (!_coreBaseSettings.Standalone
-        //    && (!SetupInfo.IsVisibleSettings(ManagementType.LdapSettings.ToString())
-        //        || !_tenantExtra.GetTenantQuota().Ldap))
-        //{
-        //    throw new BillingException(Resource.ErrorNotAllowedOption, "Ldap");
-        //}
+        if (!_coreBaseSettings.Standalone
+            && (!SetupInfo.IsVisibleSettings(ManagementType.LdapSettings.ToString())
+                || !_tenantExtra.GetTenantQuota().Ldap))
+        {
+            throw new BillingException(Resource.ErrorNotAllowedOption, "Ldap");
+        }
     }
 }

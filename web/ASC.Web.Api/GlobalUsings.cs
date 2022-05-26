@@ -85,6 +85,7 @@ global using ASC.Web.Api;
 global using ASC.Web.Api.ApiModel.RequestsDto;
 global using ASC.Web.Api.ApiModel.ResponseDto;
 global using ASC.Web.Api.ApiModels.RequestsDto;
+global using ASC.Web.Api.ApiModels.ResponseDto;
 global using ASC.Web.Api.Core;
 global using ASC.Web.Api.Models;
 global using ASC.Web.Api.Routing;
@@ -131,4 +132,6 @@ global using Microsoft.Extensions.Options;
 
 global using MimeKit;
 
+global using static ASC.ActiveDirectory.Base.Settings.LdapSettings;
 global using static ASC.Security.Cryptography.EmailValidationKeyProvider;
+
