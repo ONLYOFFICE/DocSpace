@@ -66,8 +66,16 @@ const StyledTile = styled.div`
     (props.checked || props.isActive) &&
     checkedStyle}
 
+${(props) =>
+    !props.isDragging &&
+    !isMobile &&
+    css`
+      :hover {
+        ${checkedStyle}
+      }
+    `}
 
-  &:before, 
+  &:before,
   &:after {
     ${(props) =>
       props.isFolder &&
@@ -432,6 +440,7 @@ class Tile extends React.PureComponent {
         {...this.props}
         onContextMenu={onContextMenu}
         dragging={dragging && isFolder}
+        isDragging={dragging}
         isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}
         isRecycleBin={isRecycleBin}
         checked={checked}
