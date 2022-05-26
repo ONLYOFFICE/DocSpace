@@ -366,7 +366,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
             return;
           }
 
-          setTimeout(() => showSnackBar(campaign), 10000);
+          setTimeout(() => showSnackBar(campaign), 1000);
         })
         .catch((err) => {
           console.error(err);
