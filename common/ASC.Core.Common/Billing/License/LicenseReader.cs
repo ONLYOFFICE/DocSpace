@@ -43,7 +43,7 @@ public class LicenseReader
     private readonly TenantManager _tenantManager;
     private readonly PaymentManager _paymentManager;
     private readonly CoreSettings _coreSettings;
-    private readonly ILog _logger;
+    private readonly ILogger<LicenseReader> _logger;
     public readonly string LicensePath;
     private readonly string _licensePathTemp;
 
@@ -56,7 +56,7 @@ public class LicenseReader
         PaymentManager paymentManager,
         CoreSettings coreSettings,
         LicenseReaderConfig licenseReaderConfig,
-        ILog logger)
+        ILogger<LicenseReader> logger)
     {
         _userManager = userManager;
         _tenantManager = tenantManager;
@@ -106,7 +106,7 @@ public class LicenseReader
             var temp = true;
             if (!File.Exists(_licensePathTemp))
             {
-                _logger.Debug("Temp license not found");
+                _logger.DebugTempLicenseNotFound();
 
                 if (!File.Exists(LicensePath))
                 {
@@ -280,17 +280,17 @@ public class LicenseReader
     {
         if (error is BillingNotFoundException)
         {
-            _logger.DebugFormat("License not found: {0}", error.Message);
+            _logger.DebugLicenseNotFound(error.Message);
         }
         else
         {
-            if (_logger.IsDebugEnabled)
+            if (_logger.IsEnabled(LogLevel.Debug))
             {
-                _logger.Error(error);
+                _logger.ErrorWithException(error);
             }
             else
             {
-                _logger.Error(error.Message);
+                _logger.ErrorWithException(error);
             }
         }
     }

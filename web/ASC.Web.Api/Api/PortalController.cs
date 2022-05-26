@@ -52,7 +52,7 @@ public class PortalController : ControllerBase
     private readonly SetupInfo _setupInfo;
     private readonly DocumentServiceLicense _documentServiceLicense;
     private readonly TenantExtra _tenantExtra;
-    private readonly ILog _log;
+    private readonly ILogger<PortalController> _log;
     private readonly IHttpClientFactory _clientFactory;
     private readonly ApiSystemHelper _apiSystemHelper;
     private readonly CoreSettings _coreSettings;
@@ -64,7 +64,7 @@ public class PortalController : ControllerBase
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
 
     public PortalController(
-        IOptionsMonitor<ILog> options,
+        ILogger<PortalController> logger,
         ApiContext apiContext,
         UserManager userManager,
         TenantManager tenantManager,
@@ -93,7 +93,7 @@ public class PortalController : ControllerBase
         DisplayUserSettingsHelper displayUserSettingsHelper
         )
     {
-        _log = options.CurrentValue;
+        _log = logger;
         _apiContext = apiContext;
         _userManager = userManager;
         _tenantManager = tenantManager;
@@ -155,7 +155,7 @@ public class PortalController : ControllerBase
         }
         catch (Exception ex)
         {
-            _log.Error("getshortenlink", ex);
+            _log.ErrorGetShortenLink(ex);
             return inDto.Link;
         }
     }
@@ -275,7 +275,7 @@ public class PortalController : ControllerBase
         }
         catch (Exception ex)
         {
-            _log.Error("MarkPresentAsReaded", ex);
+            _log.ErrorMarkPresentAsReaded(ex);
         }
     }
 

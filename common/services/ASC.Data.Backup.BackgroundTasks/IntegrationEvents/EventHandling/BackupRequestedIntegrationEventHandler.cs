@@ -24,15 +24,13 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.EventBus.Exceptions;
-
 namespace ASC.Data.Backup.IntegrationEvents.EventHandling;
 
 [Scope]
 public class BackupRequestedIntegrationEventHandler : IIntegrationEventHandler<BackupRequestIntegrationEvent>
 {
     private readonly BackupAjaxHandler _backupAjaxHandler;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly TenantManager _tenantManager;
     private readonly SecurityContext _securityContext;
     private readonly AuthManager _authManager;
@@ -40,7 +38,7 @@ public class BackupRequestedIntegrationEventHandler : IIntegrationEventHandler<B
 
     public BackupRequestedIntegrationEventHandler(
         BackupAjaxHandler backupAjaxHandler,
-        IOptionsMonitor<ILog> logger,
+        ILogger<BackupRequestedIntegrationEventHandler> logger,
         TenantManager tenantManager,
         SecurityContext securityContext,
         AuthManager authManager,
@@ -50,13 +48,13 @@ public class BackupRequestedIntegrationEventHandler : IIntegrationEventHandler<B
         _authManager = authManager;
         _securityContext = securityContext;
         _backupAjaxHandler = backupAjaxHandler;
-        _logger = logger.CurrentValue;
+        _logger = logger;
         _backupWorker = backupWorker;
     }
 
     public async Task Handle(BackupRequestIntegrationEvent @event)
     {
-        _logger.InfoFormat("----- Handling integration event: {IntegrationEventId} at {AppName} - ({@IntegrationEvent})", @event.Id, Program.AppName, @event);
+        _logger.InformationHandlingIntegrationEvent(@event.Id, Program.AppName, @event);
 
         if (!@event.Redelivered)
         {

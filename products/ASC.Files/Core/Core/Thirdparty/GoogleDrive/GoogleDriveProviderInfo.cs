@@ -69,7 +69,7 @@ internal class GoogleDriveProviderInfo : IProviderInfo
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error("GoogleDrive error", ex);
+                    _logger.ErrorGoogleDrive(ex);
 
                     return null;
                 }
@@ -81,16 +81,16 @@ internal class GoogleDriveProviderInfo : IProviderInfo
 
     private readonly GoogleDriveStorageDisposableWrapper _wrapper;
     private readonly GoogleDriveProviderInfoHelper _googleDriveProviderInfoHelper;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
 
     public GoogleDriveProviderInfo(
         GoogleDriveStorageDisposableWrapper storageDisposableWrapper,
         GoogleDriveProviderInfoHelper googleDriveProviderInfoHelper,
-        IOptionsMonitor<ILog> options)
+        ILoggerProvider options)
     {
         _wrapper = storageDisposableWrapper;
         _googleDriveProviderInfoHelper = googleDriveProviderInfoHelper;
-        _logger = options.Get("ASC.Files");
+        _logger = options.CreateLogger("ASC.Files");
     }
 
     public void Dispose()

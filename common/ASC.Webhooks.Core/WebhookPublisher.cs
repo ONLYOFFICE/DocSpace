@@ -36,7 +36,6 @@ public class WebhookPublisher : IWebhookPublisher
     public WebhookPublisher(
         DbWorker dbWorker,
         TenantManager tenantManager,
-        IOptionsMonitor<ILog> options,
         ICacheNotify<WebhookRequest> webhookNotify)
     {
         _dbWorker = dbWorker;

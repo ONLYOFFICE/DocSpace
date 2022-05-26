@@ -39,7 +39,7 @@ public class FilesModuleSpecifics : ModuleSpecificsBase
 
     private static readonly Regex _regexIsInteger = new Regex(@"^\d+$", RegexOptions.Compiled);
     private readonly Helpers _helpers;
-    private readonly ILog _logger;
+    private readonly ILogger<ModuleProvider> _logger;
     private readonly TableInfo[] _tables = new[]
     {
             new TableInfo("files_bunch_objects", "tenant_id"),
@@ -98,7 +98,7 @@ public class FilesModuleSpecifics : ModuleSpecificsBase
             new RelationInfo("files_thirdparty_account", "id", "files_thirdparty_id_mapping", "hash_id")
         };
 
-    public FilesModuleSpecifics(ILog logger, Helpers helpers) : base(helpers)
+    public FilesModuleSpecifics(ILogger<ModuleProvider> logger, Helpers helpers) : base(helpers)
     {
         _logger = logger;
         _helpers = helpers;
@@ -145,7 +145,7 @@ public class FilesModuleSpecifics : ModuleSpecificsBase
                 }
                 catch (Exception ex)
                 {
-                    _logger.ErrorFormat("Can not prepare data {0}: {1}", row[providerColumn] as string, ex);
+                    _logger.ErrorCanNotPrepareData(row[providerColumn] as string, ex);
                     data.Rows.Remove(row);
                     i--;
                 }
@@ -269,7 +269,7 @@ public class FilesModuleSpecifics : ModuleSpecificsBase
             }
             catch (Exception err)
             {
-                _logger.ErrorFormat("Can not prepare value {0}: {1}", value, err);
+                _logger.ErrorCanNotPrepareValue(value, err);
                 value = null;
             }
             return true;

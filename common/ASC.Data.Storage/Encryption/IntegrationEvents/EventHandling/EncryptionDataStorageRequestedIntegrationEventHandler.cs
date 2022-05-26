@@ -39,7 +39,7 @@ public class EncryptionDataStorageRequestedIntegrationEventHandler : IIntegratio
     public async Task Handle(EncryptionDataStorageRequestedIntegration @event)
     {
 
-        //       _logger.InfoFormat("----- Handling integration event: {IntegrationEventId} at {AppName} - ({@IntegrationEvent})", @event.Id, Program.AppName, @event);
+        //       _logger.InformationHandlingIntegrationEvent(@event.Id, Program.AppName, @event);
 
         _encryptionWorker.Start(@event.EncryptionSettings, @event.ServerRootPath);
 

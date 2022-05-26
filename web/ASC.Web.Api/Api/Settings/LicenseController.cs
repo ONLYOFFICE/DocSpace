@@ -39,11 +39,11 @@ public class LicenseController : BaseSettingsController
     private readonly LicenseReader _licenseReader;
     private readonly SettingsManager _settingsManager;
     private readonly CoreBaseSettings _coreBaseSettings;
-    private readonly ILog _log;
+    private readonly ILogger _log;
     private readonly PaymentManager _paymentManager;
 
     public LicenseController(
-        IOptionsMonitor<ILog> option,
+        ILoggerProvider option,
         MessageService messageService,
         ApiContext apiContext,
         UserManager userManager,
@@ -59,7 +59,7 @@ public class LicenseController : BaseSettingsController
         PaymentManager paymentManager,
         IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
-        _log = option.Get("ASC.Api");
+        _log = option.CreateLogger("ASC.Api");
         _firstTimeTenantSettings = firstTimeTenantSettings;
         _messageService = messageService;
         _userManager = userManager;
@@ -221,22 +221,22 @@ public class LicenseController : BaseSettingsController
         }
         catch (LicenseExpiredException ex)
         {
-            _log.Error("License upload", ex);
+            _log.ErrorLicenseUpload(ex);
             throw new Exception(Resource.LicenseErrorExpired);
         }
         catch (LicenseQuotaException ex)
         {
-            _log.Error("License upload", ex);
+            _log.ErrorLicenseUpload(ex);
             throw new Exception(Resource.LicenseErrorQuota);
         }
         catch (LicensePortalException ex)
         {
-            _log.Error("License upload", ex);
+            _log.ErrorLicenseUpload(ex);
             throw new Exception(Resource.LicenseErrorPortal);
         }
         catch (Exception ex)
         {
-            _log.Error("License upload", ex);
+            _log.ErrorLicenseUpload(ex);
             throw new Exception(Resource.LicenseError);
         }
     }

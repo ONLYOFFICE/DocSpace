@@ -40,7 +40,7 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
         TenantUtil tenantUtil,
         DbContextManager<FilesDbContext> dbContextManager,
         SetupInfo setupInfo,
-        IOptionsMonitor<ILog> monitor,
+        ILogger<OneDriveFileDao> monitor,
         FileUtility fileUtility,
         CrossDao crossDao,
         OneDriveDaoSelector oneDriveDaoSelector,

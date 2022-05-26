@@ -29,29 +29,29 @@ namespace ASC.Thumbnail.IntegrationEvents.EventHandling;
 [Scope]
 public class ThumbnailRequestedIntegrationEventHandler : IIntegrationEventHandler<ThumbnailRequestedIntegrationEvent>
 {
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
 
     private ThumbnailRequestedIntegrationEventHandler() : base()
     {
 
     }
 
-    public ThumbnailRequestedIntegrationEventHandler(IOptionsMonitor<ILog> logger)
+    public ThumbnailRequestedIntegrationEventHandler(ILogger<ThumbnailRequestedIntegrationEventHandler> logger)
     {
-        _logger = logger.CurrentValue;
+        _logger = logger;
     }
 
     public async Task Handle(ThumbnailRequestedIntegrationEvent @event)
     {
-        _logger.InfoFormat("----- Handling integration event: {ThumbnailRequestedIntegrationEvent} at {AppName} - ({@IntegrationEvent})", @event.Id, Program.AppName, @event);
+        _logger.InformationHandlingIntegrationEvent(@event.Id, Program.AppName, @event);
 
         foreach (var fileId in @event.FileIds)
-        {   
+        {
             var fileData = new FileData<int>(@event.TenantId, Convert.ToInt32(fileId), @event.BaseUrl);
 
             FileDataQueue.Queue.TryAdd(fileId, fileData);
         }
 
-        await Task.CompletedTask;      
+        await Task.CompletedTask;
     }
 }

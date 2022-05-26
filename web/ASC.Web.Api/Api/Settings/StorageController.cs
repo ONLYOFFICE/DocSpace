@@ -49,12 +49,12 @@ public class StorageController : BaseSettingsController
     private readonly BackupAjaxHandler _backupAjaxHandler;
     private readonly ICacheNotify<DeleteSchedule> _cacheDeleteSchedule;
     private readonly EncryptionWorker _encryptionWorker;
-    private readonly ILog _log;
+    private readonly ILogger _log;
     private readonly IEventBus _eventBus;
     private readonly ASC.Core.SecurityContext _securityContext;
 
     public StorageController(
-        IOptionsMonitor<ILog> option,
+        ILoggerProvider option,
         ServiceClient serviceClient,
         MessageService messageService,
         ASC.Core.SecurityContext securityContext,
@@ -78,7 +78,7 @@ public class StorageController : BaseSettingsController
         EncryptionWorker encryptionWorker,
         IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
-        _log = option.Get("ASC.Api");
+        _log = option.CreateLogger("ASC.Api");
         _eventBus = eventBus;
         _serviceClient = serviceClient;
         _webHostEnvironment = webHostEnvironment;
@@ -241,9 +241,9 @@ public class StorageController : BaseSettingsController
         _eventBus.Publish(new EncryptionDataStorageRequestedIntegration
         (
               encryptionSettings: new EncryptionSettings
-              {
-                  NotifyUsers = settings.NotifyUsers,
-                  Password = settings.Password,
+        {
+            NotifyUsers = settings.NotifyUsers,
+            Password = settings.Password,
                   Status = settings.Status
               },
               serverRootPath: serverRootPath,
@@ -295,7 +295,7 @@ public class StorageController : BaseSettingsController
         }
         catch (Exception e)
         {
-            _log.Error("GetStorageEncryptionSettings", e);
+            _log.ErrorGetStorageEncryptionSettings(e);
             return null;
         }
     }
@@ -359,7 +359,7 @@ public class StorageController : BaseSettingsController
         }
         catch (Exception e)
         {
-            _log.Error("UpdateStorage", e);
+            _log.ErrorUpdateStorage(e);
             throw;
         }
     }
@@ -387,7 +387,7 @@ public class StorageController : BaseSettingsController
         }
         catch (Exception e)
         {
-            _log.Error("ResetStorageToDefault", e);
+            _log.ErrorResetStorageToDefault(e);
             throw;
         }
     }
@@ -440,7 +440,7 @@ public class StorageController : BaseSettingsController
         }
         catch (Exception e)
         {
-            _log.Error("UpdateCdn", e);
+            _log.ErrorUpdateCdn(e);
             throw;
         }
 

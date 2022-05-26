@@ -29,21 +29,21 @@ namespace ASC.Notify.Services;
 [Singletone]
 public class NotifyCleanerService : BackgroundService
 {
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly NotifyServiceCfg _notifyServiceCfg;
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly TimeSpan _waitingPeriod = TimeSpan.FromHours(8);
 
-    public NotifyCleanerService(IOptions<NotifyServiceCfg> notifyServiceCfg, IServiceScopeFactory serviceScopeFactory, IOptionsMonitor<ILog> options)
+    public NotifyCleanerService(IOptions<NotifyServiceCfg> notifyServiceCfg, IServiceScopeFactory serviceScopeFactory, ILoggerProvider options)
     {
-        _logger = options.Get("ASC.NotifyCleaner");
+        _logger = options.CreateLogger("ASC.NotifyCleaner");
         _notifyServiceCfg = notifyServiceCfg.Value;
         _scopeFactory = serviceScopeFactory;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.Info("Notify Cleaner Service running.");
+        _logger.InformationNotifyCleanerRunning();
 
         stoppingToken.Register(() => _logger.Debug("NotifyCleanerService background task is stopping."));
 
@@ -67,7 +67,7 @@ public class NotifyCleanerService : BackgroundService
             await Task.Delay(_waitingPeriod, stoppingToken);
         }
 
-        _logger.Info("Notify Cleaner Service is stopping.");
+        _logger.InformationNotifyCleanerStopping();
     }
 
     private void Clear()
@@ -88,7 +88,7 @@ public class NotifyCleanerService : BackgroundService
             dbContext.SaveChanges();
             tx.Commit();
 
-            _logger.InfoFormat("Clear notify messages: notify_info({0}), notify_queue ({1})", info.Count, queue.Count);
+            _logger.InformationClearNotifyMessages(info.Count, queue.Count);
 
         }
         catch (ThreadAbortException)
@@ -97,7 +97,7 @@ public class NotifyCleanerService : BackgroundService
         }
         catch (Exception err)
         {
-            _logger.Error(err);
+            _logger.ErrorClear(err);
         }
     }
 }

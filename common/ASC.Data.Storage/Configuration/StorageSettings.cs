@@ -125,7 +125,7 @@ public class StorageSettingsHelper
     private readonly StorageFactoryConfig _storageFactoryConfig;
     private readonly PathUtils _pathUtils;
     private readonly ICacheNotify<DataStoreCacheItem> _cache;
-    private readonly IOptionsMonitor<ILog> _options;
+    private readonly ILogger _options;
     private readonly TenantManager _tenantManager;
     private readonly SettingsManager _settingsManager;
     private readonly IHttpContextAccessor _httpContextAccessor;
@@ -137,7 +137,7 @@ public class StorageSettingsHelper
         StorageFactoryConfig storageFactoryConfig,
         PathUtils pathUtils,
         ICacheNotify<DataStoreCacheItem> cache,
-        IOptionsMonitor<ILog> options,
+        ILogger<StorageSettingsHelper> options,
         TenantManager tenantManager,
         SettingsManager settingsManager,
             ConsumerFactory consumerFactory)
@@ -157,7 +157,7 @@ public class StorageSettingsHelper
         StorageFactoryConfig storageFactoryConfig,
         PathUtils pathUtils,
         ICacheNotify<DataStoreCacheItem> cache,
-        IOptionsMonitor<ILog> options,
+        ILogger<StorageSettingsHelper> options,
         TenantManager tenantManager,
         SettingsManager settingsManager,
         IHttpContextAccessor httpContextAccessor,

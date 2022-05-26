@@ -30,9 +30,9 @@ namespace ASC.Api.Core.Middleware;
 public class PaymentFilter : IResourceFilter
 {
     private readonly TenantExtra _tenantExtra;
-    private readonly ILog _logger;
+    private readonly ILogger<PaymentFilter> _logger;
 
-    public PaymentFilter(ILog logger, TenantExtra tenantExtra)
+    public PaymentFilter(ILogger<PaymentFilter> logger, TenantExtra tenantExtra)
     {
         _logger = logger;
         _tenantExtra = tenantExtra;
@@ -45,7 +45,7 @@ public class PaymentFilter : IResourceFilter
         if (context.ActionDescriptor is ControllerActionDescriptor controllerActionDescriptor
             && !controllerActionDescriptor.EndpointMetadata.OfType<AllowNotPaymentAttribute>().Any())
         {
-            _logger.Debug("Payment is not required");
+            _logger.DebugPaymentIsNotRequired();
 
             return;
         }
@@ -56,7 +56,7 @@ public class PaymentFilter : IResourceFilter
             if (_tenantExtra.IsNotPaid())
             {
                 context.Result = new StatusCodeResult((int)HttpStatusCode.PaymentRequired);
-                _logger.WarnFormat("Payment Required {0}.", context.HttpContext.Request.Url());
+                _logger.WarningPaymentRequired(context.HttpContext.Request.Url());
             }
         }
     }

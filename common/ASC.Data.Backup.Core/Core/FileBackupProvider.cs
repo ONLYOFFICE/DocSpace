@@ -32,11 +32,11 @@ public class FileBackupProvider : IBackupProvider
     public string Name => "Files";
 
     private readonly IEnumerable<string> _allowedModules;
-    private readonly ILog _logger;
+    private readonly ILogger<FileBackupProvider> _logger;
     private readonly StorageFactory _storageFactory;
     private readonly StorageFactoryConfig _storageFactoryConfig;
 
-    public FileBackupProvider(ILog logger, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig)
+    public FileBackupProvider(ILogger<FileBackupProvider> logger, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig)
     {
         _storageFactory = storageFactory;
         _storageFactoryConfig = storageFactoryConfig;
@@ -83,18 +83,17 @@ public class FileBackupProvider : IBackupProvider
                         errors++;
                         if (20 < errors)
                         {
-                            _logger.ErrorFormat("Can not backup file {0}: {1}", file.Path, error);
+                            _logger.ErrorCanNotBackupFile(file.Path, error);
                             break;
                         }
                     }
                 }
                 elements.Add(file.ToXElement());
                 backupKeys.Add(backupPath);
-                _logger.DebugFormat("Backup file {0}", file.Path);
+                _logger.DebugBackupFile(file.Path);
             }
             InvokeProgressChanged("Saving file " + file.Path, counter++ / totalCount * 100);
         }
-
         return elements;
     }
 
@@ -119,7 +118,7 @@ public class FileBackupProvider : IBackupProvider
                     }
                     catch (Exception error)
                     {
-                        _logger.ErrorFormat("Can not restore file {0}: {1}", file, error);
+                        _logger.ErrorCanNotRestoreFile(file, error);
                     }
                 }
                 InvokeProgressChanged("Restoring file " + backupInfo.Path, current++ / files.Count() * 100);
@@ -172,7 +171,7 @@ public class FileBackupProvider : IBackupProvider
         }
         catch (Exception error)
         {
-            _logger.Error("InvokeProgressChanged", error);
+            _logger.ErrorInvokeProgressChanged(error);
         }
     }
 

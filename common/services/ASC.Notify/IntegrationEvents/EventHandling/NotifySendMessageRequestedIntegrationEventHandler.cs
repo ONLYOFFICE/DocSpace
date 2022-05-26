@@ -29,14 +29,14 @@ namespace ASC.Notify.IntegrationEvents.EventHandling;
 [Scope]
 public class NotifySendMessageRequestedIntegrationEventHandler : IIntegrationEventHandler<NotifySendMessageRequestedIntegrationEvent>
 {
-    private readonly ILog _logger;
+    private readonly ILogger<NotifySendMessageRequestedIntegrationEventHandler> _logger;
     private readonly DbWorker _db;
 
     public NotifySendMessageRequestedIntegrationEventHandler(
-        IOptionsMonitor<ILog> logger,
+        ILogger<NotifySendMessageRequestedIntegrationEventHandler> logger,
         DbWorker db)
     {
-        _logger = logger.CurrentValue;
+        _logger = logger;
         _db = db;
     }
 
@@ -48,13 +48,13 @@ public class NotifySendMessageRequestedIntegrationEventHandler : IIntegrationEve
         }
         catch (Exception e)
         {
-            _logger.Error(e);
+            _logger.ErrorWithException(e);
         }
     }
 
     public async Task Handle(NotifySendMessageRequestedIntegrationEvent @event)
     {
-        _logger.InfoFormat("----- Handling integration event: {IntegrationEventId} at {AppName} - ({@IntegrationEvent})", @event.Id, Program.AppName, @event);
+        _logger.InformationHandlingIntegrationEvent(@event.Id, Program.AppName, @event);
 
         SendNotifyMessage(@event.NotifyMessage);
 

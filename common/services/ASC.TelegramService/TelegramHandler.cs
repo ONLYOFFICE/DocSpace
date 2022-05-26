@@ -24,6 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+
 namespace ASC.TelegramService;
 
 [Singletone(Additional = typeof(TelegramHandlerExtension))]
@@ -31,17 +32,17 @@ public class TelegramHandler
 {
     private readonly Dictionary<int, TenantTgClient> _clients;
     private readonly CommandModule _command;
-    private readonly ILog _log;
+    private readonly ILogger<TelegramHandler> _log;
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly IDistributedCache _distributedCache;
 
     public TelegramHandler(IDistributedCache distributedCache,
                            CommandModule command,
-                           IOptionsMonitor<ILog> option,
+                           ILogger<TelegramHandler> logger,
                            IServiceScopeFactory scopeFactory)
     {
         _command = command;
-        _log = option.CurrentValue;
+        _log = logger;
         _scopeFactory = scopeFactory;
         _clients = new Dictionary<int, TenantTgClient>();
         _distributedCache = distributedCache;
@@ -72,7 +73,7 @@ public class TelegramHandler
 
             if (tgUser == null)
             {
-                _log.DebugFormat("Couldn't find telegramId for user '{0}'", msg.Reciever);
+                _log.DebugCouldntFind(msg.Reciever);
                 return;
             }
 
@@ -82,7 +83,7 @@ public class TelegramHandler
         }
         catch (Exception e)
         {
-            _log.DebugFormat("Couldn't send message for user '{0}' got an '{1}'", msg.Reciever, e.Message);
+            _log.DebugCouldntSend(msg.Reciever, e);
         }
     }
 

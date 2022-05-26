@@ -35,11 +35,11 @@ public sealed class Context : INotifyRegistry
     internal const string SysRecipientAddress = "SYS_RECIPIENT_ADDRESS";
 
     private readonly Dictionary<string, ISenderChannel> _channels = new Dictionary<string, ISenderChannel>(2);
-    private readonly IOptionsMonitor<ILog> _options;
+    private readonly ILoggerProvider _options;
 
     public event Action<Context, INotifyClient> NotifyClientRegistration;
 
-    public Context(IOptionsMonitor<ILog> options)
+    public Context(ILoggerProvider options)
     {
         _options = options;
     }

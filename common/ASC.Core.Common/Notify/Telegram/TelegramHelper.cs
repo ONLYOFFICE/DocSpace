@@ -40,14 +40,14 @@ public class TelegramHelper
     private readonly TelegramDao _telegramDao;
     private readonly TelegramServiceClient _telegramServiceClient;
     private readonly IHttpClientFactory _httpClientFactory;
-    private readonly ILog _logger;
+    private readonly ILogger<TelegramHelper> _logger;
 
     public TelegramHelper(
         ConsumerFactory consumerFactory,
         TelegramDao telegramDao,
         TelegramServiceClient telegramServiceClient,
         IHttpClientFactory httpClientFactory,
-        ILog logger)
+        ILogger<TelegramHelper> logger)
     {
         _consumerFactory = consumerFactory;
         _telegramDao = telegramDao;
@@ -162,7 +162,7 @@ public class TelegramHelper
         }
         catch (Exception e)
         {
-            _logger.DebugFormat("Couldn't test api connection: {0}", e);
+            _logger.DebugCouldNotTest(e);
 
             return false;
         }

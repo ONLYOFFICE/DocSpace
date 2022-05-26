@@ -36,7 +36,7 @@ internal class SharpBoxSecurityDao : SharpBoxDaoBase, ISecurityDao<string>
         TenantUtil tenantUtil,
         DbContextManager<FilesDbContext> dbContextManager,
         SetupInfo setupInfo,
-        IOptionsMonitor<ILog> monitor,
+        ILogger<SharpBoxSecurityDao> monitor,
         FileUtility fileUtility,
         TempPath tempPath)
         : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)

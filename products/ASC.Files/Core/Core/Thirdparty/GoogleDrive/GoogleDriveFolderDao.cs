@@ -41,7 +41,7 @@ internal class GoogleDriveFolderDao : GoogleDriveDaoBase, IFolderDao<string>
         TenantUtil tenantUtil,
         DbContextManager<FilesDbContext> dbContextManager,
         SetupInfo setupInfo,
-        IOptionsMonitor<ILog> monitor,
+        ILogger<GoogleDriveFolderDao> monitor,
         FileUtility fileUtility,
         CrossDao crossDao,
         GoogleDriveDaoSelector googleDriveDaoSelector,

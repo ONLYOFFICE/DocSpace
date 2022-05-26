@@ -33,11 +33,11 @@ public class AuditReportCreator
     private readonly FileUploader _fileUploader;
     private readonly FilesLinkUtility _filesLinkUtility;
     private readonly CommonLinkUtility _commonLinkUtility;
-    private readonly ILog _logger;
+    private readonly ILogger<AuditReportCreator> _logger;
 
     public AuditReportCreator(
         GlobalFolderHelper globalFolderHelper,
-        ILog logger,
+        ILogger<AuditReportCreator> logger,
         FileUploader fileUploader,
         FilesLinkUtility filesLinkUtility,
         CommonLinkUtility commonLinkUtility)
@@ -73,7 +73,7 @@ public class AuditReportCreator
         }
         catch (Exception ex)
         {
-            _logger.Error("Error while generating login report: " + ex);
+            _logger.ErrorWhileGenerating(ex);
             throw;
         }
     }

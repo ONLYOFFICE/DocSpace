@@ -78,7 +78,7 @@ public class EncryptionOperation : DistributedTaskProgress
 
             if (_encryptionSettings.Status == EncryprtionStatus.Encrypted || _encryptionSettings.Status == EncryprtionStatus.Decrypted)
             {
-                log.Debug("Storage already " + _encryptionSettings.Status);
+                log.DebugStorageAlready(_encryptionSettings.Status);
 
                 return;
             }
@@ -121,11 +121,11 @@ public class EncryptionOperation : DistributedTaskProgress
         catch (Exception e)
         {
             Exception = e;
-            log.Error(e);
+            log.ErrorEncryptionOperation(e);
         }
     }
 
-    private async Task EncryptStoreAsync(Tenant tenant, string module, DiscDataStore store, StorageFactoryConfig storageFactoryConfig, ILog log)
+    private async Task EncryptStoreAsync(Tenant tenant, string module, DiscDataStore store, StorageFactoryConfig storageFactoryConfig, ILogger log)
     {
         var domains = storageFactoryConfig.GetDomainList(ConfigPath, module).ToList();
 
@@ -144,7 +144,7 @@ public class EncryptionOperation : DistributedTaskProgress
 
         StepDone();
 
-        log.DebugFormat("Percentage: {0}", Percentage);
+        log.DebugPercentage(Percentage);
     }
 
     private Task<List<string>> ReadProgressAsync(DiscDataStore store)
@@ -206,7 +206,7 @@ public class EncryptionOperation : DistributedTaskProgress
         return files;
     }
 
-    private void EncryptFiles(DiscDataStore store, string domain, IEnumerable<string> files, string logParent, ILog log)
+    private void EncryptFiles(DiscDataStore store, string domain, IEnumerable<string> files, string logParent, ILogger log)
     {
         foreach (var file in files)
         {
@@ -230,7 +230,7 @@ public class EncryptionOperation : DistributedTaskProgress
             catch (Exception e)
             {
                 _hasErrors = true;
-                log.Error(logItem + " " + e.Message, e);
+                log.ErrorLogItem(logItem, e);
 
                 // ERROR_DISK_FULL: There is not enough space on the disk.
                 // if (e is IOException && e.HResult == unchecked((int)0x80070070)) break;
@@ -266,7 +266,7 @@ public class EncryptionOperation : DistributedTaskProgress
         }
     }
 
-    private void SaveNewSettings(EncryptionSettingsHelper encryptionSettingsHelper, ILog log)
+    private void SaveNewSettings(EncryptionSettingsHelper encryptionSettingsHelper, ILogger log)
     {
         if (_isEncryption)
         {
@@ -280,10 +280,10 @@ public class EncryptionOperation : DistributedTaskProgress
 
         encryptionSettingsHelper.Save(_encryptionSettings);
 
-        log.Debug("Save new EncryptionSettings");
+        log.DebugSaveNewEncryptionSettings();
     }
 
-    private void ActivateTenants(TenantManager tenantManager, ILog log, NotifyHelper notifyHelper)
+    private void ActivateTenants(TenantManager tenantManager, ILogger log, NotifyHelper notifyHelper)
     {
         foreach (var tenant in _tenants)
         {
@@ -293,7 +293,7 @@ public class EncryptionOperation : DistributedTaskProgress
 
                 tenant.SetStatus(TenantStatus.Active);
                 tenantManager.SaveTenant(tenant);
-                log.DebugFormat("Tenant {0} SetStatus Active", tenant.Alias);
+                log.DebugTenantSetStatusActive(tenant.Alias);
 
                 if (!_hasErrors)
                 {
@@ -307,7 +307,7 @@ public class EncryptionOperation : DistributedTaskProgress
                         {
                             notifyHelper.SendStorageDecryptionSuccess(tenant.Id);
                         }
-                        log.DebugFormat("Tenant {0} SendStorageEncryptionSuccess", tenant.Alias);
+                        log.DebugTenantSendStorageEncryptionSuccess(tenant.Alias);
                     }
                 }
                 else
@@ -321,7 +321,7 @@ public class EncryptionOperation : DistributedTaskProgress
                         notifyHelper.SendStorageDecryptionError(tenant.Id);
                     }
 
-                    log.DebugFormat("Tenant {0} SendStorageEncryptionError", tenant.Alias);
+                    log.DebugTenantSendStorageEncryptionError(tenant.Alias);
                 }
             }
         }
@@ -331,7 +331,7 @@ public class EncryptionOperation : DistributedTaskProgress
 [Scope]
 public class EncryptionOperationScope
 {
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly EncryptionSettingsHelper _encryptionSettingsHelper;
     private readonly TenantManager _tenantManager;
     private readonly NotifyHelper _notifyHelper;
@@ -340,7 +340,8 @@ public class EncryptionOperationScope
     private readonly StorageFactory _storageFactory;
     private readonly IConfiguration _configuration;
 
-    public EncryptionOperationScope(ILog logger,
+    public EncryptionOperationScope(
+        ILogger<EncryptionOperationScope> logger,
        StorageFactoryConfig storageFactoryConfig,
        StorageFactory storageFactory,
        TenantManager tenantManager,
@@ -359,7 +360,7 @@ public class EncryptionOperationScope
         _configuration = configuration;
     }
 
-    public void Deconstruct(out ILog log, out EncryptionSettingsHelper encryptionSettingsHelper, out TenantManager tenantManager, out NotifyHelper notifyHelper, out CoreBaseSettings coreBaseSettings, out StorageFactoryConfig storageFactoryConfig, out StorageFactory storageFactory, out IConfiguration configuration)
+    public void Deconstruct(out ILogger log, out EncryptionSettingsHelper encryptionSettingsHelper, out TenantManager tenantManager, out NotifyHelper notifyHelper, out CoreBaseSettings coreBaseSettings, out StorageFactoryConfig storageFactoryConfig, out StorageFactory storageFactory, out IConfiguration configuration)
     {
         log = _logger;
         encryptionSettingsHelper = _encryptionSettingsHelper;
