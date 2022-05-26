@@ -32,7 +32,7 @@ public class SettingsManager : DbSettingsManager
     public SettingsManager(
         IServiceProvider serviceProvider,
         DbSettingsManagerCache dbSettingsManagerCache,
-        IOptionsMonitor<ILog> option,
+        ILogger<DbSettingsManager> option,
         AuthContext authContext,
         TenantManager tenantManager,
         DbContextManager<WebstudioDbContext> dbContextManager)

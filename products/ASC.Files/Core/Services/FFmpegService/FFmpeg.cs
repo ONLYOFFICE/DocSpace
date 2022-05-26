@@ -81,7 +81,7 @@ public class FFmpegService
         }
     }
 
-    public FFmpegService(ILog logger, IConfiguration configuration)
+    public FFmpegService(ILogger<FFmpegService> logger, IConfiguration configuration)
     {
         _logger = logger;
         _fFmpegPath = configuration["files:ffmpeg:value"];
@@ -106,7 +106,7 @@ public class FFmpegService
                     if (File.Exists(path))
                     {
                         _fFmpegPath = path;
-                        _logger.InfoFormat("FFmpeg found in {0}", path);
+                        _logger.InformationFFmpegFoundIn(path);
 
                         break;
                     }
@@ -125,7 +125,7 @@ public class FFmpegService
     private readonly string _fFmpegPath;
     private readonly string _fFmpegArgs;
 
-    private readonly ILog _logger;
+    private readonly ILogger<FFmpegService> _logger;
 
     private ProcessStartInfo PrepareFFmpeg(string inputFormat)
     {
@@ -138,7 +138,7 @@ public class FFmpegService
 
         if (string.IsNullOrEmpty(_fFmpegPath))
         {
-            _logger.Error("FFmpeg/avconv was not found in PATH or 'files.ffmpeg' setting");
+            _logger.ErrorFFmpeg();
             throw new Exception("no ffmpeg");
         }
 
@@ -199,7 +199,7 @@ public class FFmpegService
         string line;
         while ((line = await reader.ReadLineAsync()) != null)
         {
-            _logger.Info(line);
+            _logger.Information(line);
         }
     }
 }

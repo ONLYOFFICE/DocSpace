@@ -33,12 +33,12 @@ public class NotifyHelper
 
     private string _serverRootPath;
     private readonly NotifyServiceClient _notifyServiceClient;
-    private readonly ILog _logger;
+    private readonly ILogger<NotifyHelper> _logger;
 
-    public NotifyHelper(IOptionsMonitor<ILog> option, NotifyServiceClient notifyServiceClient)
+    public NotifyHelper(ILogger<NotifyHelper> logger, NotifyServiceClient notifyServiceClient)
     {
         _notifyServiceClient = notifyServiceClient;
-        _logger = option.CurrentValue;
+        _logger = logger;
     }
 
     public void Init(string serverRootPath)
@@ -93,7 +93,7 @@ public class NotifyHelper
         }
         catch (Exception error)
         {
-            _logger.Warn("Error while sending notification", error);
+            _logger.WarningErrorWhileSending(error);
         }
     }
 }

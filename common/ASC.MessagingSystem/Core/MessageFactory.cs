@@ -29,7 +29,7 @@ namespace ASC.MessagingSystem.Core;
 [Scope]
 public class MessageFactory
 {
-    private readonly ILog _logger;
+    private readonly ILogger<MessageFactory> _logger;
     private const string UserAgentHeader = "User-Agent";
     private const string ForwardedHeader = "X-Forwarded-For";
     private const string HostHeader = "Host";
@@ -38,7 +38,7 @@ public class MessageFactory
     private readonly AuthContext _authContext;
     private readonly TenantManager _tenantManager;
 
-    public MessageFactory(AuthContext authContext, TenantManager tenantManager, ILog logger)
+    public MessageFactory(AuthContext authContext, TenantManager tenantManager, ILogger<MessageFactory> logger)
     {
         _authContext = authContext;
         _tenantManager = tenantManager;
@@ -65,7 +65,7 @@ public class MessageFactory
         }
         catch (Exception ex)
         {
-            _logger.ErrorFormat("Error while parse Http Request for {0} type of event: {1}", action, ex);
+            _logger.ErrorWhileParseHttpRequest(action, ex);
 
             return null;
         }
@@ -101,7 +101,7 @@ public class MessageFactory
         }
         catch (Exception ex)
         {
-            _logger.Error(string.Format("Error while parse Http Message for \"{0}\" type of event: {1}", action, ex));
+            _logger.ErrorWhileParseHttpMessage(action, ex);
 
             return null;
         }
@@ -123,7 +123,7 @@ public class MessageFactory
         }
         catch (Exception ex)
         {
-            _logger.Error(string.Format("Error while parse Initiator Message for \"{0}\" type of event: {1}", action, ex));
+            _logger.ErrorWhileParseInitiatorMessage(action, ex);
 
             return null;
         }

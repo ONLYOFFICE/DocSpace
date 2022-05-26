@@ -29,13 +29,13 @@ namespace ASC.Web.Files.Classes;
 [Singletone]
 public class GlobalNotify
 {
-    public ILog Logger { get; set; }
+    public ILogger Logger { get; set; }
     private readonly ICacheNotify<AscCacheItem> _notify;
 
-    public GlobalNotify(ICacheNotify<AscCacheItem> notify, IOptionsMonitor<ILog> options, CoreBaseSettings coreBaseSettings)
+    public GlobalNotify(ICacheNotify<AscCacheItem> notify, ILoggerProvider options, CoreBaseSettings coreBaseSettings)
     {
         _notify = notify;
-        Logger = options.Get("ASC.Files");
+        Logger = options.CreateLogger("ASC.Files");
         if (coreBaseSettings.Standalone)
         {
             ClearCache();
@@ -62,13 +62,13 @@ public class GlobalNotify
                 }
                 catch (Exception e)
                 {
-                    Logger.Fatal("ClearCache action", e);
+                    Logger.CriticalClearCacheAction(e);
                 }
             }, CacheNotifyAction.Any);
         }
         catch (Exception e)
         {
-            Logger.Fatal("ClearCache subscribe", e);
+            Logger.CriticalClearCacheSubscribe(e);
         }
     }
 }
@@ -253,7 +253,7 @@ public class GlobalFolder
     private readonly GlobalStore _globalStore;
     private readonly IServiceProvider _serviceProvider;
     private readonly Global _global;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
 
     public GlobalFolder(
         CoreBaseSettings coreBaseSettings,
@@ -264,7 +264,7 @@ public class GlobalFolder
         UserManager userManager,
         SettingsManager settingsManager,
         GlobalStore globalStore,
-        IOptionsMonitor<ILog> options,
+        ILoggerProvider options,
         IServiceProvider serviceProvider,
         Global global
     )
@@ -279,7 +279,7 @@ public class GlobalFolder
         _globalStore = globalStore;
         _serviceProvider = serviceProvider;
         _global = global;
-        _logger = options.Get("ASC.Files");
+        _logger = options.CreateLogger("ASC.Files");
     }
 
     internal static readonly IDictionary<int, int> ProjectsRootFolderCache =
@@ -612,7 +612,7 @@ public class GlobalFolder
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(ex);
+                    _logger.ErrorGetFolderIdAndProccessFirstVisit(ex);
                 }
             }
         }
@@ -676,7 +676,7 @@ public class GlobalFolder
         }
         catch (Exception ex)
         {
-            _logger.Error(ex);
+            _logger.ErrorSaveFile(ex);
         }
     }
 

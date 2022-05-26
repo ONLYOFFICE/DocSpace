@@ -29,11 +29,11 @@ global using System.Reflection;
 global using System.Text;
 
 global using ASC.AuditTrail.Attributes;
+global using ASC.AuditTrail.Log;
 global using ASC.AuditTrail.Mappers;
 global using ASC.AuditTrail.Models;
 global using ASC.AuditTrail.Models.Mappings;
 global using ASC.Common;
-global using ASC.Common.Logging;
 global using ASC.Common.Mapping;
 global using ASC.Core.Common.EF;
 global using ASC.Core.Users;
@@ -51,5 +51,7 @@ global using AutoMapper;
 
 global using CsvHelper;
 global using CsvHelper.Configuration;
+
+global using Microsoft.Extensions.Logging;
 
 global using Newtonsoft.Json;

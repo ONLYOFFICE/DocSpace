@@ -44,7 +44,7 @@ public class SsoHandler
 [Scope]
 public class SsoHandlerService
 {
-    private readonly ILog _log;
+    private readonly ILogger<SsoHandlerService> _log;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly UserManager _userManager;
     private readonly TenantManager _tenantManager;
@@ -67,7 +67,7 @@ public class SsoHandlerService
 
 
     public SsoHandlerService(
-        IOptionsMonitor<ILog> optionsMonitor,
+        ILogger<SsoHandlerService> log,
         CoreBaseSettings coreBaseSettings,
         UserManager userManager,
         TenantManager tenantManager,
@@ -83,7 +83,7 @@ public class SsoHandlerService
         DisplayUserSettingsHelper displayUserSettingsHelper,
         TenantUtil tenantUtil)
     {
-        _log = optionsMonitor.CurrentValue;
+        _log = log;
         _coreBaseSettings = coreBaseSettings;
         _userManager = userManager;
         _tenantManager = tenantManager;
@@ -173,7 +173,7 @@ public class SsoHandlerService
                     }
                     else
                     {
-                        _log.DebugFormat("User {0} already authenticated", context.User.Identity);
+                        _log.DebugUserAlreadyAuthenticated(context.User.Identity);
                     }
                 }
 
@@ -218,12 +218,12 @@ public class SsoHandlerService
         }
         catch (SSOException e)
         {
-            _log.Error(e);
+            _log.ErrorWithException(e);
             await WriteErrorToResponse(context, e.MessageKey);
         }
         catch (Exception e)
         {
-            _log.Error(e);
+            _log.ErrorWithException(e);
             await WriteErrorToResponse(context, MessageKey.Error);
         }
         finally
@@ -253,7 +253,7 @@ public class SsoHandlerService
                 return Constants.LostUser;
             }
 
-            _log.DebugFormat("Adding or updating user in database, userId={0}", userInfo.Id);
+            _log.DebugAddingOrUpdatingUser(userInfo.Id);
 
             _securityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
 

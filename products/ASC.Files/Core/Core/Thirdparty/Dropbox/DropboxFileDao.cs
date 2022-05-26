@@ -42,7 +42,7 @@ internal class DropboxFileDao : DropboxDaoBase, IFileDao<string>
         TenantUtil tenantUtil,
         DbContextManager<FilesDbContext> dbContextManager,
         SetupInfo setupInfo,
-        IOptionsMonitor<ILog> monitor,
+        ILogger<DropboxFileDao> monitor,
         FileUtility fileUtility,
         CrossDao crossDao,
         DropboxDaoSelector dropboxDaoSelector,

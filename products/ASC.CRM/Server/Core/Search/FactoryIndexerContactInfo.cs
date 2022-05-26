@@ -120,7 +120,7 @@ namespace ASC.Web.CRM.Core.Search
             }
             try
             {
-                foreach (var data in Indexer.IndexAll(getCount, getIds, getData))
+                foreach (var data in _indexer.IndexAll(getCount, getIds, getData))
                 {
                     Index(data);
                 }

@@ -37,7 +37,7 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
         TenantUtil tenantUtil,
         DbContextManager<FilesDbContext> dbContextManager,
         SetupInfo setupInfo,
-        IOptionsMonitor<ILog> monitor,
+        ILogger monitor,
         FileUtility fileUtility,
         TempPath tempPath)
         : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
@@ -217,7 +217,7 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
             }
             catch (Exception ex)
             {
-                _logger.Error("Sharpbox makeId error", ex);
+                _logger.ErrorSharpboxMakeId(ex);
             }
         }
         else if (entry != null)

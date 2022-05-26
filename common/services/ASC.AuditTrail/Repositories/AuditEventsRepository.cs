@@ -69,7 +69,7 @@ public class AuditEventsRepository
     private IEnumerable<AuditEventDto> Get(int tenant, DateTime? fromDate, DateTime? to, int? limit)
     {
         var query =
-           from q in AuditTrailContext.AuditEvents
+           (from q in AuditTrailContext.AuditEvents
            from p in AuditTrailContext.Users.Where(p => q.UserId == p.Id).DefaultIfEmpty()
            where q.TenantId == tenant
            orderby q.Date descending
@@ -79,7 +79,7 @@ public class AuditEventsRepository
                FirstName = p.FirstName,
                LastName = p.LastName,
                UserName = p.UserName
-           };
+           });
 
         if (fromDate.HasValue && to.HasValue)
         {

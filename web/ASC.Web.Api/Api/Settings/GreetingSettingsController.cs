@@ -51,26 +51,14 @@ public class GreetingSettingsController : BaseSettingsController
         _permissionContext = permissionContext;
     }
 
-    [Read("greetingsettings")]
+    [HttpGet("greetingsettings")]
     public ContentResult GetGreetingSettings()
     {
         return new ContentResult { Content = Tenant.Name };
     }
 
-    [Create("greetingsettings")]
-    public ContentResult SaveGreetingSettingsFromBody([FromBody] GreetingSettingsRequestsDto inDto)
-    {
-        return SaveGreetingSettings(inDto);
-    }
-
-    [Create("greetingsettings")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public ContentResult SaveGreetingSettingsFromForm([FromForm] GreetingSettingsRequestsDto inDto)
-    {
-        return SaveGreetingSettings(inDto);
-    }
-
-    private ContentResult SaveGreetingSettings(GreetingSettingsRequestsDto inDto)
+    [HttpPost("greetingsettings")]
+    public ContentResult SaveGreetingSettings(GreetingSettingsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -82,7 +70,7 @@ public class GreetingSettingsController : BaseSettingsController
         return new ContentResult { Content = Resource.SuccessfullySaveGreetingSettingsMessage };
     }
 
-    [Create("greetingsettings/restore")]
+    [HttpPost("greetingsettings/restore")]
     public ContentResult RestoreGreetingSettings()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);

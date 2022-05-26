@@ -105,14 +105,14 @@ namespace ASC.Web.CRM.Classes
                                    IOptionsMonitor<ILog> logger,
                                    ICache cache,
                                    ICacheNotify<ContactPhotoManagerCacheItem> cacheNotify,
-                                   DistributedTaskQueueOptionsManager optionsQueue,
+                                   IDistributedTaskQueueFactory factory,
                                    IHttpClientFactory clientFactory)
         {
             _global = global;
             _webImageSupplier = webImageSupplier;
             _cacheNotify = cacheNotify;
             _cache = cache;
-            _resizeQueue = optionsQueue.Get<ResizeWorkerItem>();
+            _resizeQueue = factory.CreateQueue<ResizeWorkerItem>();
             _logger = logger.Get("ASC.CRM");
             _clientFactory = clientFactory;
 
@@ -361,9 +361,9 @@ namespace ASC.Web.CRM.Classes
 
             lock (locker)
             {
-                foreach(var item in _resizeQueue.GetTasks<ResizeWorkerItem>().Where(item => item.ContactID == contactID))
+                foreach(var item in _resizeQueue.GetAllTasks<ResizeWorkerItem>().Where(item => item.ContactID == contactID))
                 {
-                    _resizeQueue.RemoveTask(item.Id);
+                    _resizeQueue.DequeueTask(item.Id);
                 }
                            
                 var photoDirectory = !isTmpDir
@@ -532,10 +532,10 @@ namespace ASC.Web.CRM.Classes
                 TmpDirName = tmpDirName
             };
 
-            if (!_resizeQueue.GetTasks<ResizeWorkerItem>().Contains(resizeWorkerItem))
+            if (!_resizeQueue.GetAllTasks<ResizeWorkerItem>().Contains(resizeWorkerItem))
             {
                 //Add
-                _resizeQueue.QueueTask((a, b) => ExecResizeImageAsync(resizeWorkerItem).Wait(), resizeWorkerItem);
+                _resizeQueue.EnqueueTask((a, b) => ExecResizeImageAsync(resizeWorkerItem).Wait(), resizeWorkerItem);
             }
         }
 

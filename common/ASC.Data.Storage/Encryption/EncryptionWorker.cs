@@ -30,21 +30,22 @@ namespace ASC.Data.Storage.Encryption;
 public class EncryptionWorker
 {
     private readonly object _locker;
-    private readonly FactoryOperation _factoryOperation;
     private readonly DistributedTaskQueue _queue;
+    private readonly IServiceProvider _serviceProvider;
     public const string CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME = "encryption";
 
-    public EncryptionWorker(FactoryOperation factoryOperation,
-                            IDistributedTaskQueueFactory queueFactory)
+    public EncryptionWorker(IDistributedTaskQueueFactory queueFactory,
+                            IServiceProvider serviceProvider)
     {
         _locker = new object();
-        _factoryOperation = factoryOperation;
+        _serviceProvider = serviceProvider;
         _queue = queueFactory.CreateQueue(CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME);
     }
 
-    public void Start(EncryptionSettingsProto encryptionSettings)
+    public void Start(EncryptionSettings encryptionSettings, string serverRootPath)
     {
         EncryptionOperation encryptionOperation;
+
         lock (_locker)
         {
             if (_queue.GetAllTasks().Any(x => x.Id == GetCacheId()))
@@ -52,7 +53,9 @@ public class EncryptionWorker
                 return;
             }
 
-            encryptionOperation = _factoryOperation.CreateOperation(encryptionSettings, GetCacheId());
+            encryptionOperation = _serviceProvider.GetService<EncryptionOperation>();
+            encryptionOperation.Init(encryptionSettings, GetCacheId(), serverRootPath);
+
             _queue.EnqueueTask(encryptionOperation);
         }
     }
@@ -72,32 +75,5 @@ public class EncryptionWorker
         var progress = _queue.GetAllTasks<EncryptionOperation>().FirstOrDefault();
 
         return progress.Percentage;
-    }
-}
-
-[Singletone(Additional = typeof(FactoryOperationExtension))]
-public class FactoryOperation
-{
-    private readonly IServiceProvider _serviceProvider;
-
-    public FactoryOperation(IServiceProvider serviceProvider)
-    {
-        _serviceProvider = serviceProvider;
-    }
-
-    public EncryptionOperation CreateOperation(EncryptionSettingsProto encryptionSettings, string id)
-    {
-        var item = _serviceProvider.GetService<EncryptionOperation>();
-        item.Init(encryptionSettings, id);
-
-        return item;
-    }
-}
-
-public static class FactoryOperationExtension
-{
-    public static void Register(DIHelper dIHelper)
-    {
-        dIHelper.TryAdd<EncryptionOperation>();
     }
 }

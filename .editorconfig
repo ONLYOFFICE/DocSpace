@@ -244,6 +244,8 @@ csharp_style_prefer_extended_property_pattern = true:suggestion
 dotnet_diagnostic.CA1001.severity = warning
 dotnet_diagnostic.CA1805.severity = warning
 dotnet_diagnostic.CA1841.severity = warning
+dotnet_diagnostic.SYSLIB1006.severity = silent
+dotnet_diagnostic.SYSLIB1015.severity = silent
 
 [*.{cs,vb}]
 dotnet_style_operator_placement_when_wrapping = beginning_of_line

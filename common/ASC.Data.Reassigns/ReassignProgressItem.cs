@@ -74,7 +74,7 @@ public class ReassignProgressItem : DistributedTaskProgress
         var scopeClass = scope.ServiceProvider.GetService<ReassignProgressItemScope>();
         var queueWorkerRemove = scope.ServiceProvider.GetService<QueueWorkerRemove>();
         var (tenantManager, coreBaseSettings, messageService, studioNotifyService, securityContext, userManager, userPhotoManager, displayUserSettingsHelper, messageTarget, options) = scopeClass;
-        var logger = options.Get("ASC.Web");
+        var logger = options.CreateLogger("ASC.Web");
         tenantManager.SetCurrentTenant(_tenantId);
 
         try
@@ -84,16 +84,16 @@ public class ReassignProgressItem : DistributedTaskProgress
 
             securityContext.AuthenticateMeWithoutCookie(_currentUserId);
 
-            logger.InfoFormat("reassignment of data from {0} to {1}", FromUser, ToUser);
+            logger.LogInformation("reassignment of data from {fromUser} to {toUser}", FromUser, ToUser);
 
-            logger.Info("reassignment of data from documents");
+            logger.LogInformation("reassignment of data from documents");
 
 
             //_docService.ReassignStorage(_fromUserId, _toUserId);
             Percentage = 33;
             PublishChanges();
 
-            logger.Info("reassignment of data from projects");
+            logger.LogInformation("reassignment of data from projects");
 
             //_projectsReassign.Reassign(_fromUserId, _toUserId);
             Percentage = 66;
@@ -101,7 +101,7 @@ public class ReassignProgressItem : DistributedTaskProgress
 
             if (!coreBaseSettings.CustomMode)
             {
-                logger.Info("reassignment of data from crm");
+                logger.LogInformation("reassignment of data from crm");
 
                 //using (var scope = DIHelper.Resolve(_tenantId))
                 //{
@@ -127,14 +127,14 @@ public class ReassignProgressItem : DistributedTaskProgress
         }
         catch (Exception ex)
         {
-            logger.Error(ex);
+            logger.ErrorReassignProgressItem(ex);
             Status = DistributedTaskStatus.Failted;
             Exception = ex;
             SendErrorNotify(userManager, studioNotifyService, ex.Message);
         }
         finally
         {
-            logger.Info("data reassignment is complete");
+            logger.LogInformation("data reassignment is complete");
             IsCompleted = true;
         }
 
@@ -206,7 +206,7 @@ public class ReassignProgressItemScope
     private readonly UserPhotoManager _userPhotoManager;
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
     private readonly MessageTarget _messageTarget;
-    private readonly IOptionsMonitor<ILog> _options;
+    private readonly ILoggerProvider _options;
 
     public ReassignProgressItemScope(TenantManager tenantManager,
         CoreBaseSettings coreBaseSettings,
@@ -217,7 +217,7 @@ public class ReassignProgressItemScope
         UserPhotoManager userPhotoManager,
         DisplayUserSettingsHelper displayUserSettingsHelper,
         MessageTarget messageTarget,
-        IOptionsMonitor<ILog> options)
+        ILoggerProvider options)
     {
         _tenantManager = tenantManager;
         _coreBaseSettings = coreBaseSettings;
@@ -240,7 +240,7 @@ public class ReassignProgressItemScope
         out UserPhotoManager userPhotoManager,
         out DisplayUserSettingsHelper displayUserSettingsHelper,
         out MessageTarget messageTarget,
-        out IOptionsMonitor<ILog> optionsMonitor)
+        out ILoggerProvider optionsMonitor)
     {
         tenantManager = _tenantManager;
         coreBaseSettings = _coreBaseSettings;

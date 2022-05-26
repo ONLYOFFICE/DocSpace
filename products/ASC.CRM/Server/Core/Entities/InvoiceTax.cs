@@ -28,6 +28,7 @@ using System;
 
 using ASC.Common.Mapping;
 using ASC.Common.Security;
+using ASC.Common.Security.Authorizing;
 using ASC.CRM.Core.EF;
 
 using AutoMapper;
@@ -43,11 +44,11 @@ namespace ASC.CRM.Core.Entities
         public Guid CreateBy { get; set; }
         public DateTime? LastModifedOn { get; set; }
         public Guid? LastModifedBy { get; set; }
-
         public object SecurityId
         {
             get { return ID; }
         }
+        public string FullId => AzObjectIdHelper.GetFullObjectId(this);
 
         public Type ObjectType
         {

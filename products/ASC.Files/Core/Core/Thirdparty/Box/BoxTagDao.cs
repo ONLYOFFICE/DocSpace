@@ -36,7 +36,7 @@ internal class BoxTagDao : BoxDaoBase, ITagDao<string>
         TenantUtil tenantUtil,
         DbContextManager<FilesDbContext> dbContextManager,
         SetupInfo setupInfo,
-        IOptionsMonitor<ILog> monitor,
+        ILogger<BoxTagDao> monitor,
         FileUtility fileUtility,
         TempPath tempPath) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
     {

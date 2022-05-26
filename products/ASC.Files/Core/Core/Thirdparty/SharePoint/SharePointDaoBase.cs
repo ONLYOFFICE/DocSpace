@@ -32,7 +32,16 @@ internal class SharePointDaoBase : ThirdPartyProviderDao<SharePointProviderInfo>
 {
     protected override string Id => "spoint";
 
-    public SharePointDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility, TempPath tempPath)
+    public SharePointDaoBase(
+        IServiceProvider serviceProvider,
+        UserManager userManager,
+        TenantManager tenantManager,
+        TenantUtil tenantUtil,
+        DbContextManager<FilesDbContext> dbContextManager,
+        SetupInfo setupInfo,
+        ILogger<SharePointDaoBase> monitor,
+        FileUtility fileUtility,
+        TempPath tempPath)
         : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
     {
     }

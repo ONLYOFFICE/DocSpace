@@ -34,11 +34,11 @@ public class TipsController : BaseSettingsController
     private readonly StudioNotifyHelper _studioNotifyHelper;
     private readonly SettingsManager _settingsManager;
     private readonly SetupInfo _setupInfo;
-    private readonly ILog _log;
+    private readonly ILogger _log;
     private readonly IHttpClientFactory _clientFactory;
 
     public TipsController(
-        IOptionsMonitor<ILog> option,
+        ILoggerProvider option,
         ApiContext apiContext,
         AuthContext authContext,
         StudioNotifyHelper studioNotifyHelper,
@@ -49,7 +49,7 @@ public class TipsController : BaseSettingsController
         IHttpClientFactory clientFactory,
         IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
-        _log = option.Get("ASC.Api");
+        _log = option.CreateLogger("ASC.Api");
         _authContext = authContext;
         _studioNotifyHelper = studioNotifyHelper;
         _settingsManager = settingsManager;
@@ -57,20 +57,8 @@ public class TipsController : BaseSettingsController
         _clientFactory = clientFactory;
     }
 
-    [Update("tips")]
-    public TipsSettings UpdateTipsSettingsFromBody([FromBody] SettingsRequestsDto inDto)
-    {
-        return UpdateTipsSettings(inDto);
-    }
-
-    [Update("tips")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public TipsSettings UpdateTipsSettingsFromForm([FromForm] SettingsRequestsDto inDto)
-    {
-        return UpdateTipsSettings(inDto);
-    }
-
-    private TipsSettings UpdateTipsSettings(SettingsRequestsDto inDto)
+    [HttpPut("tips")]
+    public TipsSettings UpdateTipsSettings(SettingsRequestsDto inDto)
     {
         var settings = new TipsSettings { Show = inDto.Show };
         _settingsManager.SaveForCurrentUser(settings);
@@ -98,20 +86,20 @@ public class TipsController : BaseSettingsController
             }
             catch (Exception e)
             {
-                _log.Error(e.Message, e);
+                _log.ErrorWithException(e);
             }
         }
 
         return settings;
     }
 
-    [Update("tips/change/subscription")]
+    [HttpPut("tips/change/subscription")]
     public bool UpdateTipsSubscription()
     {
         return StudioPeriodicNotify.ChangeSubscription(_authContext.CurrentAccount.ID, _studioNotifyHelper);
     }
 
-    [Read("tips/subscription")]
+    [HttpGet("tips/subscription")]
     public bool GetTipsSubscription()
     {
         return _studioNotifyHelper.IsSubscribedToNotify(_authContext.CurrentAccount.ID, Actions.PeriodicNotify);

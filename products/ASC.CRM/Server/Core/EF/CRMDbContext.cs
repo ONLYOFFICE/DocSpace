@@ -39,7 +39,7 @@ namespace ASC.CRM.Core.EF
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            ModelBuilderWrapper.From(modelBuilder, Provider)
+            ModelBuilderWrapper.From(modelBuilder, _provider)
                                .AddDbFieldValue()
                                .AddDbContact()
                                .AddDbContactInfo()

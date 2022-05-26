@@ -31,7 +31,7 @@ public class IPSecurity
 {
     public bool IpSecurityEnabled { get; }
 
-    private readonly ILog _logger;
+    private readonly ILogger<IPSecurity> _logger;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly AuthContext _authContext;
     private readonly TenantManager _tenantManager;
@@ -45,9 +45,9 @@ public class IPSecurity
         AuthContext authContext,
         TenantManager tenantManager,
         IPRestrictionsService iPRestrictionsService,
-        IOptionsMonitor<ILog> options)
+        ILogger<IPSecurity> logger)
     {
-        _logger = options.Get("ASC.IPSecurity");
+        _logger = logger;
         _httpContextAccessor = httpContextAccessor;
         _authContext = authContext;
         _tenantManager = tenantManager;
@@ -110,12 +110,12 @@ public class IPSecurity
         }
         catch (Exception ex)
         {
-            _logger.ErrorFormat("Can't verify request with IP-address: {0}. Tenant: {1}. Error: {2} ", requestIps ?? "", tenant, ex);
+            _logger.ErrorCantVerifyRequest(requestIps ?? "", tenant, ex);
 
             return false;
         }
 
-        _logger.InfoFormat("Restricted from IP-address: {0}. Tenant: {1}. Request to: {2}", requestIps ?? "", tenant, _httpContextAccessor.HttpContext.Request.GetDisplayUrl());
+        _logger.InformationRestricted(requestIps ?? "", tenant, _httpContextAccessor.HttpContext.Request.GetDisplayUrl());
 
         return false;
     }
@@ -174,7 +174,7 @@ public class IPSecurity
         }
         catch (Exception ex)
         {
-            _logger.ErrorFormat("Can't verify local network from request with IP-address: {0}", string.Join(",", ips), ex);
+            _logger.ErrorCantVerifyLocalNetWork(string.Join(",", ips), ex);
         }
 
         return false;

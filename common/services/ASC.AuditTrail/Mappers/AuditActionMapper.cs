@@ -30,9 +30,9 @@ namespace ASC.AuditTrail.Mappers;
 public class AuditActionMapper
 {
     private readonly Dictionary<MessageAction, MessageMaps> _actions;
-    private readonly ILog _logger;
+    private readonly ILogger<AuditActionMapper> _logger;
 
-    public AuditActionMapper(ILog logger)
+    public AuditActionMapper(ILogger<AuditActionMapper> logger)
     {
         _actions = new Dictionary<MessageAction, MessageMaps>();
         _logger = logger;
@@ -53,7 +53,7 @@ public class AuditActionMapper
         var action = (MessageAction)evt.Action;
         if (!_actions.ContainsKey(action))
         {
-            _logger.Error(string.Format("There is no action text for \"{0}\" type of event", action));
+            _logger.ErrorThereIsNoActionText(action);
 
             return string.Empty;
         }

@@ -30,6 +30,7 @@ public class DBResourceManager : ResourceManager
 {
     public static readonly bool WhiteLableEnabled;
     private readonly ConcurrentDictionary<string, ResourceSet> _resourceSets = new ConcurrentDictionary<string, ResourceSet>();
+    private readonly IMemoryCache _memoryCache;
 
     public DBResourceManager(string filename, Assembly assembly)
                 : base(filename, assembly)
@@ -37,27 +38,29 @@ public class DBResourceManager : ResourceManager
     }
 
     public DBResourceManager(
+        IMemoryCache memoryCache,
         IConfiguration configuration,
-        IOptionsMonitor<ILog> option,
+        ILogger<DBResourceManager> option,
         DbContextManager<ResourceDbContext> dbContext,
         string filename,
         Assembly assembly)
                 : base(filename, assembly)
     {
+        _memoryCache = memoryCache;
         _configuration = configuration;
         _option = option;
         _dbContext = dbContext;
     }
 
-    public static void PatchAssemblies(IOptionsMonitor<ILog> option)
+    public static void PatchAssemblies(ILogger<DBResourceManager> option)
     {
         AppDomain.CurrentDomain.AssemblyLoad += (_, a) => PatchAssembly(option, a.LoadedAssembly);
         Array.ForEach(AppDomain.CurrentDomain.GetAssemblies(), a => PatchAssembly(option, a));
     }
 
-    public static void PatchAssembly(IOptionsMonitor<ILog> option, Assembly a, bool onlyAsc = true)
+    public static void PatchAssembly(ILogger<DBResourceManager> logger, Assembly a, bool onlyAsc = true)
     {
-        var log = option.CurrentValue;
+        var log = logger;
 
         if (!onlyAsc || Accept(a))
         {
@@ -68,10 +71,10 @@ public class DBResourceManager : ResourceManager
             }
             catch (ReflectionTypeLoadException rtle)
             {
-                log.WarnFormat("Can not GetTypes() from assembly {0}, try GetExportedTypes(), error: {1}", a.FullName, rtle.Message);
+                log.CanNotGetType(nameof(a.GetType), a.FullName, nameof(a.GetExportedTypes), rtle);
                 foreach (var e in rtle.LoaderExceptions)
                 {
-                    log.Info(e.Message);
+                    log.Information(e.Message);
                 }
 
                 try
@@ -80,7 +83,7 @@ public class DBResourceManager : ResourceManager
                 }
                 catch (Exception err)
                 {
-                    log.ErrorFormat("Can not GetExportedTypes() from assembly {0}: {1}", a.FullName, err.Message);
+                    log.CanNotGetExportedTypes(a.FullName, nameof(a.GetExportedTypes), err);
                 }
             }
             foreach (var type in types)
@@ -109,7 +112,7 @@ public class DBResourceManager : ResourceManager
     public override Type ResourceSetType => typeof(DBResourceSet);
 
     private readonly IConfiguration _configuration;
-    private readonly IOptionsMonitor<ILog> _option;
+    private readonly ILogger<DBResourceManager> _option;
     private readonly DbContextManager<ResourceDbContext> _dbContext;
 
     protected override ResourceSet InternalGetResourceSet(CultureInfo culture, bool createIfNotExists, bool tryParents)
@@ -118,7 +121,7 @@ public class DBResourceManager : ResourceManager
         if (set == null)
         {
             var invariant = culture == CultureInfo.InvariantCulture ? base.InternalGetResourceSet(CultureInfo.InvariantCulture, true, true) : null;
-            set = new DBResourceSet(_configuration, _option, _dbContext, invariant, culture, BaseName);
+            set = new DBResourceSet(_memoryCache, _configuration, _option, _dbContext, invariant, culture, BaseName);
             _resourceSets.AddOrUpdate(culture.Name, set, (k, v) => set);
         }
 
@@ -131,16 +134,17 @@ public class DBResourceManager : ResourceManager
 
         private readonly TimeSpan _cacheTimeout = TimeSpan.FromMinutes(120); // for performance
         private readonly object _locker = new object();
-        private readonly MemoryCache _cache;
+        private readonly IMemoryCache _cache;
         private readonly ResourceSet _invariant;
         private readonly string _culture;
         private readonly string _fileName;
-        private readonly ILog _logger;
+        private readonly ILogger<DBResourceManager> _logger;
         private readonly DbContextManager<ResourceDbContext> _dbContext;
 
         public DBResourceSet(
+            IMemoryCache memoryCache,
             IConfiguration configuration,
-            IOptionsMonitor<ILog> option,
+            ILogger<DBResourceManager> logger,
             DbContextManager<ResourceDbContext> dbContext,
             ResourceSet invariant,
             CultureInfo culture,
@@ -150,7 +154,7 @@ public class DBResourceManager : ResourceManager
             ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(filename);
 
             _dbContext = dbContext;
-            _logger = option.CurrentValue;
+            _logger = logger;
 
             try
             {
@@ -159,13 +163,13 @@ public class DBResourceManager : ResourceManager
             }
             catch (Exception err)
             {
-                _logger.Error(err);
+                _logger.ErrorDBResourceSet(err);
             }
 
             _invariant = invariant;
             _culture = invariant != null ? NeutralCulture : culture.Name;
             _fileName = filename.Split('.').Last() + ".resx";
-            _cache = MemoryCache.Default;
+            _cache = memoryCache;
         }
 
         public override string GetString(string name, bool ignoreCase)
@@ -178,7 +182,7 @@ public class DBResourceManager : ResourceManager
             }
             catch (Exception err)
             {
-                _logger.ErrorFormat("Can not get resource from {0} for {1}: GetString({2}), {3}", _fileName, _culture, name, err);
+                _logger.CanNotGetResource(_fileName, _culture, name, err);
             }
 
             if (_invariant != null && result == null)
@@ -209,7 +213,7 @@ public class DBResourceManager : ResourceManager
             }
             catch (Exception err)
             {
-                _logger.Error(err);
+                _logger.ErrorDBResourceSet(err);
             }
 
             return result.GetEnumerator();
@@ -223,11 +227,21 @@ public class DBResourceManager : ResourceManager
                 lock (_locker)
                 {
                     dic = _cache.Get(key) as Dictionary<string, string>;
+
                     if (dic == null)
                     {
-                        var policy = _cacheTimeout == TimeSpan.Zero ? null : new CacheItemPolicy() { AbsoluteExpiration = DateTimeOffset.Now.Add(_cacheTimeout) };
+
                         dic = LoadResourceSet(_fileName, _culture);
-                        _cache.Set(key, dic, policy);
+
+                        if (_cacheTimeout == TimeSpan.Zero)
+                        {
+                            _cache.Set(key, dic);
+                        }
+                        else
+                        {
+                            _cache.Set(key, dic, DateTimeOffset.Now.Add(_cacheTimeout));
+                        }
+
                     }
                 }
             }
@@ -252,15 +266,15 @@ public class DBResourceManager : ResourceManager
 [Singletone]
 public class WhiteLabelHelper
 {
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly ConcurrentDictionary<int, string> _whiteLabelDictionary;
     public string DefaultLogoText { get; set; }
 
     private readonly IConfiguration _configuration;
 
-    public WhiteLabelHelper(IConfiguration configuration, IOptionsMonitor<ILog> option)
+    public WhiteLabelHelper(IConfiguration configuration, ILoggerProvider option)
     {
-        _logger = option.Get("ASC.Resources");
+        _logger = option.CreateLogger("ASC.Resources");
         _whiteLabelDictionary = new ConcurrentDictionary<int, string>();
         DefaultLogoText = string.Empty;
         _configuration = configuration;
@@ -274,7 +288,7 @@ public class WhiteLabelHelper
         }
         catch (Exception e)
         {
-            _logger.Error("SetNewText", e);
+            _logger.ErrorSetNewText(e);
         }
     }
 
@@ -286,7 +300,7 @@ public class WhiteLabelHelper
         }
         catch (Exception e)
         {
-            _logger.Error("RestoreOldText", e);
+            _logger.ErrorRestoreOldText(e);
         }
     }
 
@@ -334,7 +348,7 @@ public class WhiteLabelHelper
             }
             catch (Exception e)
             {
-                _logger.Error("ReplaceLogo", e);
+                _logger.ErrorReplaceLogo(e);
             }
         }
 

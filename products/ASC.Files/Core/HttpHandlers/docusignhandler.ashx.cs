@@ -46,14 +46,14 @@ public class DocuSignHandlerService
         return filesLinkUtility.FilesBaseAbsolutePath + "httphandlers/docusignhandler.ashx";
     }
 
-    private readonly ILog _log;
+    private readonly ILogger<DocuSignHandlerService> _log;
     private readonly TenantExtra _tenantExtra;
     private readonly DocuSignHelper _docuSignHelper;
     private readonly SecurityContext _securityContext;
     private readonly NotifyClient _notifyClient;
 
     public DocuSignHandlerService(
-        IOptionsMonitor<ILog> optionsMonitor,
+        ILogger<DocuSignHandlerService> logger,
         TenantExtra tenantExtra,
         DocuSignHelper docuSignHelper,
         SecurityContext securityContext,
@@ -63,7 +63,7 @@ public class DocuSignHandlerService
         _docuSignHelper = docuSignHelper;
         _securityContext = securityContext;
         _notifyClient = notifyClient;
-        _log = optionsMonitor.CurrentValue;
+        _log = logger;
     }
 
     public async Task Invoke(HttpContext context)
@@ -97,7 +97,7 @@ public class DocuSignHandlerService
 
     private void Redirect(HttpContext context)
     {
-        _log.Info("DocuSign redirect query: " + context.Request.QueryString);
+        _log.InformationDocuSignRedirectQuery(context.Request.QueryString);
 
         var eventRedirect = context.Request.Query["event"].FirstOrDefault();
         switch (eventRedirect.ToLower())
@@ -121,12 +121,12 @@ public class DocuSignHandlerService
 
     private async Task WebhookAsync(HttpContext context)
     {
-        _log.Info("DocuSign webhook: " + context.Request.QueryString);
+        _log.InformationDocuSignWebhook(context.Request.QueryString);
         try
         {
             var xmldoc = new XmlDocument();
             xmldoc.Load(context.Request.Body);
-            _log.Info("DocuSign webhook outerXml: " + xmldoc.OuterXml);
+            _log.InformationDocuSignWebhookOuterXml(xmldoc.OuterXml);
 
             var mgr = new XmlNamespaceManager(xmldoc.NameTable);
             mgr.AddNamespace(XmlPrefix, "http://www.docusign.net/API/3.0");
@@ -141,7 +141,7 @@ public class DocuSignHandlerService
                 throw new Exception("DocuSign webhook unknown status: " + statusString);
             }
 
-            _log.Info("DocuSign webhook: " + envelopeId + " " + subject + " " + status);
+            _log.InformationDocuSignWebhook2(envelopeId, subject, status);
 
             var customFieldUserIdNode = GetSingleNode(envelopeStatusNode, "CustomFields/" + XmlPrefix + ":CustomField[" + XmlPrefix + ":Name='" + DocuSignHelper.UserField + "']", mgr);
             var userIdString = GetSingleNode(customFieldUserIdNode, "Value", mgr).InnerText;
@@ -183,7 +183,7 @@ public class DocuSignHandlerService
                         }
                         catch (Exception ex)
                         {
-                            _log.Error("DocuSign webhook save document: " + documentStatus.InnerText, ex);
+                            _log.ErrorDocuSignWebhookSaveDocument(documentStatus.InnerText, ex);
                         }
                     }
                     break;
@@ -198,7 +198,7 @@ public class DocuSignHandlerService
         }
         catch (Exception e)
         {
-            _log.Error("DocuSign webhook", e);
+            _log.ErrorDocuSignWebhook(e);
 
             throw new HttpException((int)HttpStatusCode.BadRequest, e.Message);
         }
