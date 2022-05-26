@@ -33,6 +33,20 @@ const ReactSmartBanner = (props) => {
     if (cookie) hideBanner();
   }, []);
 
+  const storeText = {
+    ios: t("SmartBanner:AppStore"),
+    android: t("SmartBanner:GooglePlay"),
+    windows: "",
+    kindle: "",
+  };
+
+  const priceText = {
+    ios: t("SmartBanner:Price"),
+    android: t("SmartBanner:Price"),
+    windows: "",
+    kindle: "",
+  };
+
   return (
     isMobile &&
     isVisible && (
@@ -40,10 +54,12 @@ const ReactSmartBanner = (props) => {
         <SmartBanner
           title="ONLYOFFICE Documents"
           author="Ascensio System SIA"
-          button={t("View")}
+          button={t("Common:View")}
           force={force}
           onClose={hideBanner}
           onInstall={hideBanner}
+          storeText={storeText}
+          price={priceText}
         />
       </Wrapper>
     )

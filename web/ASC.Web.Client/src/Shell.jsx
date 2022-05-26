@@ -238,7 +238,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     });
   }, [socketHelper]);
 
-  const { t } = useTranslation("Common");
+  const { t } = useTranslation(["Common", "SmartBanner"]);
 
   let snackTimer = null;
   let fbInterval = null;
