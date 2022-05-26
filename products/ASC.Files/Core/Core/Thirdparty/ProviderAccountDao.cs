@@ -137,7 +137,7 @@ internal class ProviderAccountDao : IProviderDao
         .Where(r => r.TenantId == tenantId)
         .Where(r => !(folderType == FolderType.USER || folderType == FolderType.DEFAULT && linkId == -1) || r.UserId == userId)
         .Where(r => linkId == -1 || r.Id == linkId)
-        .Where(r => folderType == FolderType.DEFAULT || r.FolderType == folderType)
+        .Where(r => folderType == FolderType.DEFAULT || r.RootFolderType == folderType)
         .Where(r => searchText == "" || r.Title.ToLower().Contains(searchText)));
 
     private IAsyncEnumerable<IProviderInfo> GetProvidersInfoInternalAsync(int linkId = -1, FolderType folderType = FolderType.DEFAULT, string searchText = null)
@@ -187,7 +187,7 @@ internal class ProviderAccountDao : IProviderDao
             Title = Global.ReplaceInvalidCharsAndTruncate(customerTitle),
             UserName = authData.Login ?? "",
             Password = EncryptPassword(authData.Password),
-            FolderType = folderType,
+            RootFolderType = folderType,
             CreateOn = _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow()),
             UserId = _securityContext.CurrentAccount.ID,
             Token = EncryptPassword(authData.Token ?? ""),
@@ -287,7 +287,7 @@ internal class ProviderAccountDao : IProviderDao
 
             if (folderType != FolderType.DEFAULT)
             {
-                t.FolderType = folderType;
+                t.RootFolderType = folderType;
             }
 
             if (userId.HasValue)
@@ -366,7 +366,7 @@ internal class ProviderAccountDao : IProviderDao
             UserName = authData.Login,
             Password = EncryptPassword(authData.Password),
             UserId = owner,
-            FolderType = type,
+            RootFolderType = type,
             CreateOn = createOn,
             Provider = providerKey.ToString()
         };
@@ -385,7 +385,7 @@ internal class ProviderAccountDao : IProviderDao
         var providerTitle = input.Title ?? string.Empty;
         var token = DecryptToken(input.Token);
         var owner = input.UserId;
-        var folderType = input.FolderType;
+        var folderType = input.RootFolderType;
         var createOn = _tenantUtil.DateTimeFromUtc(input.CreateOn);
         var authData = new AuthData(input.Url, input.UserName, DecryptPassword(input.Password), token);
 

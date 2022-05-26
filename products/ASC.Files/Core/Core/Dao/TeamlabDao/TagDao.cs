@@ -698,7 +698,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
             .Where(r => r.mapping.TenantId == r.tagLink.Link.TenantId)
             .Join(ctx.ThirdpartyAccount, r => r.mapping.TenantId, r => r.TenantId, (tagLinkMapping, account) => new { tagLinkMapping.tagLink, tagLinkMapping.mapping, account })
             .Where(r => r.account.UserId != subject &&
-                        r.account.FolderType == FolderType.USER &&
+                        r.account.RootFolderType == FolderType.USER &&
                         (r.mapping.Id.StartsWith("sbox-" + r.account.Id) ||
                         r.mapping.Id.StartsWith("box-" + r.account.Id) ||
                         r.mapping.Id.StartsWith("dropbox-" + r.account.Id) ||
@@ -763,7 +763,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
     static readonly Func<FilesDbContext, int, FolderType, Guid, IAsyncEnumerable<int>> _getThirdpartyAccountQuery = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery((FilesDbContext ctx, int tenantId, FolderType folderType, Guid subject) =>
           ctx.ThirdpartyAccount
                 .Where(r => r.TenantId == tenantId)
-                .Where(r => r.FolderType == folderType)
+                .Where(r => r.RootFolderType == folderType)
                 .Where(r => folderType != FolderType.USER || r.UserId == subject)
                 .Select(r => r.Id));
 

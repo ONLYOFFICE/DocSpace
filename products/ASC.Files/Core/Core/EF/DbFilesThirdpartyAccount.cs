@@ -35,10 +35,12 @@ public class DbFilesThirdpartyAccount : BaseEntity, IDbFile, IDbSearch
     public string Password { get; set; }
     public string Token { get; set; }
     public Guid UserId { get; set; }
+    public FolderType RootFolderType { get; set; }
     public FolderType FolderType { get; set; }
     public DateTime CreateOn { get; set; }
     public string Url { get; set; }
     public int TenantId { get; set; }
+    public string FolderId { get; set; }
 
     public override object[] GetKeys()
     {
@@ -76,7 +78,8 @@ public static class DbFilesThirdpartyAccountExtension
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
 
-            entity.Property(e => e.FolderType).HasColumnName("folder_type");
+            entity.Property(e => e.RootFolderType).HasColumnName("root_folder_type");
+            entity.Property(e => e.FolderType).HasColumnType("folder_type");
 
             entity.Property(e => e.Password)
                 .IsRequired()
@@ -120,6 +123,12 @@ public static class DbFilesThirdpartyAccountExtension
                 .HasColumnType("varchar(100)")
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
+
+            entity.Property(e => e.FolderId)
+                .HasColumnName("folder_id")
+                .HasColumnType("text")
+                .HasCharSet("utf8")
+                .UseCollation("utf8_general_ci");
         });
     }
     public static void PgSqlAddDbFilesThirdpartyAccount(this ModelBuilder modelBuilder)
@@ -137,7 +146,8 @@ public static class DbFilesThirdpartyAccountExtension
                 .HasColumnName("customer_title")
                 .HasMaxLength(400);
 
-            entity.Property(e => e.FolderType).HasColumnName("folder_type");
+            entity.Property(e => e.RootFolderType).HasColumnName("root_folder_type");
+            entity.Property(e => e.FolderType).HasColumnType("folder_type");
 
             entity.Property(e => e.Password)
                 .IsRequired()
