@@ -55,7 +55,7 @@ const StyledContainer = styled.header`
 
   #ipl-progress-indicator {
     position: fixed;
-    z-index: 190;
+    z-index: 390;
     top: ${(props) => (props.isDesktop ? "0" : "48px")};
     left: -6px;
     width: 0%;

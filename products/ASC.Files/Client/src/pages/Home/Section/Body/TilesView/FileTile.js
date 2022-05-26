@@ -39,6 +39,7 @@ const FileTile = (props) => {
     t,
     getContextModel,
     onHideContextMenu,
+    thumbSize,
   } = props;
 
   const temporaryExtension =
@@ -71,13 +72,18 @@ const FileTile = (props) => {
           key={item.id}
           item={item}
           temporaryIcon={temporaryIcon}
-          thumbnail={thumbnailUrl}
+          thumbnail={
+            thumbnailUrl && thumbSize
+              ? `${thumbnailUrl}&size=${thumbSize}`
+              : thumbnailUrl
+          }
           element={element}
           sectionWidth={sectionWidth}
           contentElement={quickButtonsComponent}
           onSelect={onContentFileSelect}
           tileContextClick={fileContextClick}
           isPrivacy={isPrivacy}
+          isDragging={dragging}
           dragging={dragging && isDragging}
           onClick={onMouseClick}
           thumbnailClick={onFilesClick}
@@ -114,7 +120,7 @@ export default inject(({ settingsStore }) => {
   const { getIcon } = settingsStore;
   return { getIcon };
 })(
-  withTranslation(["Home", "VersionBadge", "InfoPanel"])(
+  withTranslation(["Home", "InfoPanel"])(
     withRouter(
       withFileActions(withBadges(withQuickButtons(observer(FileTile))))
     )

@@ -36,6 +36,7 @@
   "MoveItem": "<strong>{{title}}</strong> ຍ້າຍ",
   "MoveItems": "<strong>{{qty}}</strong> ອົງປະກອບຕ່າງໆໄດ້ຖືກຍ້າຍໄປແລ້ວ",
   "MoveTo": "ຍ້າຍ​ໄປ",
+  "MoveToFolderMessage": "ທ່ານບໍ່ສາມາດຍ້າຍໂຟຣເດີໄປທີ່ໂຟຣເດີຍ່ອຍຂອງມັນ",
   "MyEmptyContainerDescription": "ເອກະສານທີ່ທ່ານສ້າງ ຫລື ອັບໂຫລດແມ່ນຖືກເກັບຢູ່ໃນສ່ວນ 'ເອກະສານຂອງຂ້ອຍ'. ທ່ານສາມາດແກ້ໄຂ, ແບ່ງປັນ ແລະ ເຮັດວຽກຮ່ວມກັບທີມງານຂອງທ່ານໄດ້.",
   "New": "ໃໝ່",
   "NewDocument": "ເອກະສານໃໝ່",
@@ -66,13 +67,12 @@
   "ShowVersionHistory": "ສະແດງປະຫວັດສະບັບ",
   "Spreadsheet": "Spreadsheet",
   "SubheadingEmptyText": "ບໍ່ມີເອກະສານທີ່ຈະສະແດງໃນສ່ວນນີ້",
-  "TitleDocuments": "Dcs",
-  "TitleSubfolders": "Flds",
   "TooltipElementCopyMessage": "ຄັດລອກ {{element}}",
   "TooltipElementsCopyMessage": "ຄັດລອກ {{element}} ອົງປະກອບ",
   "TooltipElementsMoveMessage": "ຍ້າຍ {{element}} ອົງປະກອບ",
   "UnblockVersion": "ເລິກການບ໋ອກ/ເຊັກອິນ",
   "UploadToFolder": "ອັບໂຫລດໄປຍັງໂຟຣເດີ",
+  "VersionBadge": "V.{{version}}",
   "ViewList": "ລາຍການ",
   "ViewTiles": "ຫົວຂໍ້"
 }

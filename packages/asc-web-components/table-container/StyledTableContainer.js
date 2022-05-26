@@ -9,7 +9,7 @@ const StyledTableContainer = styled.div`
 
   width: 100%;
   max-width: 100%;
-  margin-top: -19px;
+  margin-top: -25px;
 
   display: grid;
 

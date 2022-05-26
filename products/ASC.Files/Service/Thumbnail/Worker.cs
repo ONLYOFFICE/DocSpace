@@ -21,6 +21,7 @@ using System.Threading;
 
 using ASC.Common;
 using ASC.Common.Logging;
+using ASC.Files.Core;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

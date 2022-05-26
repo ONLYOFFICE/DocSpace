@@ -6,7 +6,7 @@ import { ReactSVG } from "react-svg";
 import styled, { css } from "styled-components";
 import ContextMenu from "@appserver/components/context-menu";
 import { tablet } from "@appserver/components/utils/device";
-import { isDesktop } from "react-device-detect";
+import { isDesktop, isMobile } from "react-device-detect";
 
 import Link from "@appserver/components/link";
 import Loader from "@appserver/components/loader";
@@ -58,16 +58,27 @@ const StyledTile = styled.div`
   ${(props) => props.isFolder && "border-top-left-radius: 6px;"}
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
-  ${(props) => props.isFolder && FlexBoxStyles}
-  ${(props) => (props.isFolder ? FolderStyles : FileStyles)}
+  ${(props) => props.isFolder && FlexBoxStyles};
+  ${(props) => (props.isFolder ? FolderStyles : FileStyles)};
   ${(props) =>
     !props.isEdit &&
     props.isFolder &&
     (props.checked || props.isActive) &&
-    checkedStyle}
+    checkedStyle};
 
+  ${(props) =>
+    !props.isDragging &&
+    !isMobile &&
+    css`
+      :hover {
+        ${checkedStyle}
+        .file-tile-bottom {
+          ${bottomFileBorder}
+        }
+      }
+    `}
 
-  &:before, 
+  &:before,
   &:after {
     ${(props) =>
       props.isFolder &&
@@ -169,7 +180,7 @@ const StyledFileTileTop = styled.div`
     position: absolute;
     height: 100%;
     width: 100%;
-    object-fit: cover;
+    object-fit: ${(props) => (props.isMedia ? "cover" : "none")};
     object-position: top;
     z-index: 0;
     border-radius: 6px 6px 0 0;
@@ -188,6 +199,7 @@ const StyledFileTileBottom = styled.div`
     !props.isEdit && (props.checked || props.isActive) && checkedStyle}
 
   border-top: 1px solid transparent;
+
   ${(props) =>
     !props.isEdit && (props.checked || props.isActive) && bottomFileBorder}
 
@@ -245,7 +257,7 @@ const StyledOptionButton = styled.div`
   display: block;
 
   .expandButton > div:first-child {
-    padding: 8px 21px 8px 12px;
+    padding: 8px 21px 8px 8px;
   }
 `;
 
@@ -369,6 +381,7 @@ class Tile extends React.PureComponent {
       indeterminate,
       tileContextClick,
       dragging,
+      isDragging,
       isRecycleBin,
       item,
       isActive,
@@ -423,6 +436,7 @@ class Tile extends React.PureComponent {
         ref={this.tile}
         {...this.props}
         onContextMenu={onContextMenu}
+        isDragging={isDragging}
         dragging={dragging && isFolder}
         isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}
         isRecycleBin={isRecycleBin}
@@ -508,6 +522,7 @@ class Tile extends React.PureComponent {
               checked={checked}
               isActive={isActive}
               isEdit={isEdit}
+              className="file-tile-bottom"
             >
               {id !== -1 && !isEdit && (
                 <>

@@ -39,7 +39,7 @@
   "CustomDomains": "사용자 정의 도메인",
   "CustomTitles": "사용자 지정 제목",
   "CustomTitlesFrom": "위치",
-  "CustomTitlesSettingsDescription": "환영 페이지에 표시되고 이메일 알림에 사용됩니다. 사용자 지정 도메인명은 포털에 대한 대체 URL을 설정하는 방법입니다. 사용자 지정 포털명은 onlyoffice.com/onlyoffice.eu 주소 옆에 표시됩니다.",
+  "CustomTitlesSettingsDescription": "페이지 설정에 오신 것을 환영합니다 에서는 포털의 환영 페이지 에 표시될 기본 포털 제목을 변경할 수 잇습니다. 이 이름은 포털 이메일 알림의 위치 필드에도 사용됩니다.",
   "CustomTitlesSettingsTooltip": "<0>{{ welcomeText }}</0>에서는 포털의 <2>{{ text }}</2>에 표시될 기본 포털 제목을 변경할 수 잇습니다. 이 이름은 포털 이메일 알림의 <4>{{ from }}</4> 필드에도 사용됩니다.",
   "CustomTitlesSettingsTooltipDescription": "<1>{{ header }}</1> 필드에 원하는 이름을 입력하세요.",
   "CustomTitlesText": "환영 페이지",
