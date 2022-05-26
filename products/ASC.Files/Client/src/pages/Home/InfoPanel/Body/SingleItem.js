@@ -28,6 +28,7 @@ const SingleItem = (props) => {
     dontShowSize,
     dontShowLocation,
     dontShowAccess,
+    dontShowOwner,
     personal,
     createThumbnail,
     culture,
@@ -161,6 +162,7 @@ const SingleItem = (props) => {
         },
       ];
 
+      if (dontShowOwner) result.shift();
       if (item.isFolder) return result;
 
       result.splice(3, 0, {
