@@ -39,6 +39,7 @@
   "MoveItems": "<strong>{{qty}}</strong> elementlərin yeri dəyişdirildi",
   "MoveOrCopy": "Köçür və ya Kopyala",
   "MoveTo": "Yerini dəyiş",
+  "MoveToFolderMessage": "Qovluğu alt qovluğuna köçürə bilməzsiniz ",
   "MyEmptyContainerDescription": "Yaratdığınız və ya yüklədiyiniz sənədlər 'Sənədlərim' bölməsində saxlanılır. Onları redaktə edə, paylaşa və kollektiv iş edə bilərsiniz.",
   "New": "Yeni",
   "NewDocument": "Yeni sənəd",

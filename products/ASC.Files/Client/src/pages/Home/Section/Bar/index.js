@@ -41,7 +41,7 @@ const bannerHOC = (props) => {
   };
 
   useEffect(() => {
-    const updateTimeout = setTimeout(() => updateBanner(), 10000);
+    const updateTimeout = setTimeout(() => updateBanner(), 1000);
     const updateInterval = setInterval(updateBanner, ADS_TIMEOUT);
     return () => {
       clearTimeout(updateTimeout);

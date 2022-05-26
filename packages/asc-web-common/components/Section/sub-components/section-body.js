@@ -17,7 +17,7 @@ import {
 
 const paddingStyles = css`
   padding: ${(props) =>
-    props.settingsStudio ? "0 7px 16px 24px" : "19px 7px 16px 20px"};
+    props.settingsStudio ? "0 7px 16px 24px" : "19px 3px 16px 20px"};
 
   @media ${tablet} {
     padding: ${(props) =>
@@ -88,7 +88,12 @@ const commonStyles = css`
       `}
 
       @media ${desktop} {
-        ${(props) => props.viewAs === "row" && `margin-top: -15px;`}
+        ${(props) =>
+          props.viewAs === "row" &&
+          css`
+            margin-top: -15px;
+            margin-right: 4px;
+          `}
       }
     }
   }
