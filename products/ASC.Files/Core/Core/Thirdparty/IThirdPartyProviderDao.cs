@@ -367,10 +367,10 @@ namespace ASC.Files.Thirdparty
             return Task.CompletedTask;
         }
 
-        public ValueTask<List<FileShareRecord>> GetSharesAsync(IEnumerable<Guid> subjects)
+        public Task<List<FileShareRecord>> GetSharesAsync(IEnumerable<Guid> subjects)
         {
             List<FileShareRecord> result = null;
-            return new ValueTask<List<FileShareRecord>>(result);
+            return Task<List<FileShareRecord>>.FromResult(result);
         }
 
         public Task<IEnumerable<FileShareRecord>> GetSharesAsync(IEnumerable<FileEntry<string>> entry)

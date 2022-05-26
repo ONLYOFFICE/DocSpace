@@ -190,7 +190,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return SecurityDao.RemoveSubjectAsync(subject);
         }
 
-        public ValueTask<List<FileShareRecord>> GetSharesAsync(IEnumerable<Guid> subjects)
+        public Task<List<FileShareRecord>> GetSharesAsync(IEnumerable<Guid> subjects)
         {
             return SecurityDao.GetSharesAsync(subjects);
         }
