@@ -47,6 +47,13 @@ const ReactSmartBanner = (props) => {
     kindle: "",
   };
 
+  const appMeta = {
+    ios: "react-apple-itunes-app",
+    android: "react-google-play-app",
+    windows: "msApplication-ID",
+    kindle: "kindle-fire-app",
+  };
+
   return (
     isMobile &&
     isVisible && (
@@ -60,6 +67,7 @@ const ReactSmartBanner = (props) => {
           onInstall={hideBanner}
           storeText={storeText}
           price={priceText}
+          appMeta={appMeta}
         />
       </Wrapper>
     )
