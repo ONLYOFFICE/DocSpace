@@ -204,7 +204,7 @@ namespace ASC.Web.Files.Utils
 
                     foreach (var userID in userIDs)
                     {
-                        var userFolderId = GlobalFolder.GetFolderMy(this, DaoFactory);
+                        var userFolderId = await folderDaoInt.GetFolderIDUserAsync(false, userID);
                         if (Equals(userFolderId, 0)) continue;
 
                         Folder<int> rootFolder = null;
@@ -681,17 +681,17 @@ namespace ASC.Web.Files.Utils
         {
             var tagDao = DaoFactory.GetTagDao<T>();
             var folderDao = DaoFactory.GetFolderDao<T>();
-            var totalTags = tagDao.GetNewTagsAsync(AuthContext.CurrentAccount.ID, parent, false);
+            var totalTags = await tagDao.GetNewTagsAsync(AuthContext.CurrentAccount.ID, parent, false).ToListAsync();
 
-            if (await totalTags.CountAsync() > 0)
+            if (totalTags.Count > 0)
             {
                 var parentFolderTag = Equals(await GlobalFolder.GetFolderShareAsync<T>(DaoFactory), parent.ID)
                                             ? await tagDao.GetNewTagsAsync(AuthContext.CurrentAccount.ID, await folderDao.GetFolderAsync(await GlobalFolder.GetFolderShareAsync<T>(DaoFactory))).FirstOrDefaultAsync()
-                                            : await totalTags.FirstOrDefaultAsync(tag => tag.EntryType == FileEntryType.Folder && Equals(tag.EntryId, parent.ID));
+                                            : totalTags.FirstOrDefault(tag => tag.EntryType == FileEntryType.Folder && Equals(tag.EntryId, parent.ID));
 
-                totalTags = totalTags.Where(e => e != parentFolderTag);
+                totalTags.Remove(parentFolderTag);
                 var countSubNew = 0;
-                await totalTags.ForEachAsync(tag => countSubNew += tag.Count);
+                totalTags.ForEach(tag => countSubNew += tag.Count);
 
                 if (parentFolderTag == null)
                 {
@@ -767,10 +767,8 @@ namespace ASC.Web.Files.Utils
                     }
                 }
 
-                var tags = await totalTags.ToListAsync();
-
-                SetTagsNew(tags, entries.OfType<FileEntry<int>>().ToList());
-                SetTagsNew(tags, entries.OfType<FileEntry<string>>().ToList());
+                SetTagsNew(totalTags, entries.OfType<FileEntry<int>>().ToList());
+                SetTagsNew(totalTags, entries.OfType<FileEntry<string>>().ToList());
             }
 
             void SetTagsNew<T1>(List<Tag> tags, List<FileEntry<T1>> fileEntries)
