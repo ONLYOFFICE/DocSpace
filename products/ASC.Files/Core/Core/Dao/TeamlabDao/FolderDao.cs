@@ -91,9 +91,11 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     public async Task<Folder<int>> GetFolderAsync(int folderId)
     {
-        var query = GetFolderQuery(r => r.Id == folderId).AsNoTracking();
+        using var filesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
 
-        var dbFolder = await FromQueryWithShared(query).Take(1).SingleOrDefaultAsync().ConfigureAwait(false);
+        var query = GetFolderQuery(r => r.Id == folderId, filesDbContext).AsNoTracking();
+
+        var dbFolder = await FromQueryWithShared(query, filesDbContext).Take(1).SingleOrDefaultAsync().ConfigureAwait(false);
 
         return _mapper.Map<DbFolderQuery, Folder<int>>(dbFolder);
     }
@@ -176,16 +178,16 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             orderBy = new OrderBy(SortedByType.DateAndTime, false);
         }
 
-        var q = GetFolderQuery(r => r.ParentId == parentId).AsNoTracking();
+        var filesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
 
-        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+        var q = GetFolderQuery(r => r.ParentId == parentId, filesDbContext).AsNoTracking();
 
         if (withSubfolders)
         {
-            q = GetFolderQuery().AsNoTracking()
-                .Join(FilesDbContext.Tree, r => r.Id, a => a.FolderId, (folder, tree) => new { folder, tree })
-                .Where(r => r.tree.ParentId == parentId && r.tree.Level != 0)
-                .Select(r => r.folder);
+            q = GetFolderQuery(null, filesDbContext).AsNoTracking()
+            .Join(FilesDbContext.Tree, r => r.Id, a => a.FolderId, (folder, tree) => new { folder, tree })
+            .Where(r => r.tree.ParentId == parentId && r.tree.Level != 0)
+            .Select(r => r.folder);
         }
 
         if (!string.IsNullOrEmpty(searchText))
@@ -221,7 +223,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             }
         }
 
-        var dbFolders = FromQueryWithShared(q).AsAsyncEnumerable();
+        var dbFolders = FromQueryWithShared(q, filesDbContext).AsAsyncEnumerable();
 
         return dbFolders.Select(_mapper.Map<DbFolderQuery, Folder<int>>);
     }
@@ -236,13 +238,13 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             return AsyncEnumerable.Empty<Folder<int>>();
         }
 
-        var q = GetFolderQuery(r => folderIds.Contains(r.Id)).AsNoTracking();
+        var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
 
-        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+        var q = GetFolderQuery(r => folderIds.Contains(r.Id), FilesDbContext).AsNoTracking();
 
         if (searchSubfolders)
         {
-            q = GetFolderQuery()
+            q = GetFolderQuery(null, FilesDbContext)
                 .AsNoTracking()
                 .Join(FilesDbContext.Tree, r => r.Id, a => a.FolderId, (folder, tree) => new { folder, tree })
                 .Where(r => folderIds.Contains(r.tree.ParentId))
@@ -279,23 +281,23 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             }
         }
 
-        var dbFolders = (checkShare ? FromQueryWithShared(q) : FromQuery(q)).AsAsyncEnumerable();
+        var dbFolders = (checkShare ? FromQueryWithShared(q, FilesDbContext) : FromQuery(q, FilesDbContext)).AsAsyncEnumerable();
 
         return dbFolders.Select(_mapper.Map<DbFolderQuery, Folder<int>>).Distinct();
     }
 
     public async Task<List<Folder<int>>> GetParentFoldersAsync(int folderId)
     {
-        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+        using var filesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
 
-        var q = GetFolderQuery()
+        var q = GetFolderQuery(null, filesDbContext)
             .AsNoTracking()
-            .Join(FilesDbContext.Tree, r => r.Id, a => a.ParentId, (folder, tree) => new { folder, tree })
+            .Join(filesDbContext.Tree, r => r.Id, a => a.ParentId, (folder, tree) => new { folder, tree })
             .Where(r => r.tree.FolderId == folderId)
             .OrderByDescending(r => r.tree.Level)
             .Select(r => r.folder);
 
-        var query = await FromQueryWithShared(q).ToListAsync().ConfigureAwait(false);
+        var query = await FromQueryWithShared(q, filesDbContext).ToListAsync().ConfigureAwait(false);
 
         return _mapper.Map<List<DbFolderQuery>, List<Folder<int>>>(query);
     }
@@ -1161,11 +1163,9 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     #endregion
 
-    protected internal IQueryable<DbFolder> GetFolderQuery(Expression<Func<DbFolder, bool>> where = null)
+    protected internal IQueryable<DbFolder> GetFolderQuery(Expression<Func<DbFolder, bool>> where = null, FilesDbContext filesDbContext = null)
     {
-        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
-
-        var q = Query(FilesDbContext.Folders);
+        var q = Query(filesDbContext.Folders);
         if (where != null)
         {
             q = q.Where(where);
@@ -1174,9 +1174,9 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         return q;
     }
 
-    protected IQueryable<DbFolderQuery> FromQueryWithShared(IQueryable<DbFolder> dbFiles)
+    protected IQueryable<DbFolderQuery> FromQueryWithShared(IQueryable<DbFolder> dbFiles, FilesDbContext filesDbContext = null)
     {
-        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+        var FilesDbContext = filesDbContext ?? base.FilesDbContext;
 
         var e = from r in dbFiles
                 select new DbFolderQuery
@@ -1201,9 +1201,9 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         return e;
     }
 
-    protected IQueryable<DbFolderQuery> FromQuery(IQueryable<DbFolder> dbFiles)
+    protected IQueryable<DbFolderQuery> FromQuery(IQueryable<DbFolder> dbFiles, FilesDbContext filesDbContext = null)
     {
-        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+        var FilesDbContext = filesDbContext;
 
         return dbFiles
             .Select(r => new DbFolderQuery

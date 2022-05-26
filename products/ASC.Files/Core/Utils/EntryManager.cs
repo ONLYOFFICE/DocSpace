@@ -497,11 +497,14 @@ public class EntryManager
         {
             var folderDao = _daoFactory.GetFolderDao<T>();
             var fileDao = _daoFactory.GetFileDao<T>();
-            var folders = await folderDao.GetFoldersAsync(parent.Id, orderBy, filter, subjectGroup, subjectId, searchText, withSubfolders).ToListAsync();
-            entries = entries.Concat(await fileSecurity.FilterReadAsync(folders));
 
-            var files = await fileDao.GetFilesAsync(parent.Id, orderBy, filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders).ToListAsync();
-            entries = entries.Concat(await fileSecurity.FilterReadAsync(files));
+            var folders = folderDao.GetFoldersAsync(parent.Id, orderBy, filter, subjectGroup, subjectId, searchText, withSubfolders).ToListAsync();
+
+            entries = entries.Concat(await fileSecurity.FilterReadAsync(await folders));
+
+            var files = fileDao.GetFilesAsync(parent.Id, orderBy, filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders).ToListAsync();
+
+            entries = entries.Concat(await fileSecurity.FilterReadAsync(await files));
 
             //share
             var shared = await fileSecurity.GetPrivacyForMeAsync(filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
@@ -517,11 +520,13 @@ public class EntryManager
                 withSubfolders = false;
             }
 
-            var folders = await _daoFactory.GetFolderDao<T>().GetFoldersAsync(parent.Id, orderBy, filter, subjectGroup, subjectId, searchText, withSubfolders).ToListAsync();
-            entries = entries.Concat(await fileSecurity.FilterReadAsync(folders));
+            var files = _daoFactory.GetFileDao<T>().GetFilesAsync(parent.Id, orderBy, filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders).ToListAsync();
+            var folders = _daoFactory.GetFolderDao<T>().GetFoldersAsync(parent.Id, orderBy, filter, subjectGroup, subjectId, searchText, withSubfolders).ToListAsync();
 
-            var files = await _daoFactory.GetFileDao<T>().GetFilesAsync(parent.Id, orderBy, filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders).ToListAsync();
-            entries = entries.Concat(await fileSecurity.FilterReadAsync(files));
+
+            entries = entries.Concat(await fileSecurity.FilterReadAsync(await files));
+            entries = entries.Concat(await fileSecurity.FilterReadAsync(await folders));
+
 
             if (filter == FilterType.None || filter == FilterType.FoldersOnly)
             {

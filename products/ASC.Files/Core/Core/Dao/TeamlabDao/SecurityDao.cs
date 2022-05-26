@@ -389,7 +389,7 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
 
     private IQueryable<DbFilesSecurity> GetQuery(Expression<Func<DbFilesSecurity, bool>> where = null)
     {
-        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+        var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
 
         var q = Query(FilesDbContext.Security);
         if (q != null)

@@ -99,12 +99,12 @@ public class AbstractDao
         return set.AsQueryable().Where(r => r.TenantId == tenantId);
     }
 
-    protected internal IQueryable<DbFile> GetFileQuery(Expression<Func<DbFile, bool>> where)
+    protected internal IQueryable<DbFile>  GetFileQuery(Expression<Func<DbFile, bool>> where, FilesDbContext filesDbContext = null)
     {
-        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
-
-        return Query(FilesDbContext.Files)
+        var query = Query(filesDbContext.Files)
             .Where(where);
+
+        return query;
     }
 
     protected async Task GetRecalculateFilesCountUpdateAsync(int folderId)
