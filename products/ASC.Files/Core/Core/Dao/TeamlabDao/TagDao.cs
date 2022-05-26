@@ -215,7 +215,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
         }
     }
 
-    public async IAsyncEnumerable<TagInfo> GetTagsInfoAsync(string searchText, TagType tagType, bool byName)
+    public async IAsyncEnumerable<TagInfo> GetTagsInfoAsync(string searchText, TagType tagType, bool byName, int from = 0, int count = 0)
     {
         var q = Query(FilesDbContext.Tag).AsNoTracking().Where(r => r.Type == tagType);
 
@@ -228,6 +228,13 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
             var lowerText = searchText.ToLower().Trim().Replace("%", "\\%").Replace("_", "\\_");
             q = q.Where(r => r.Name.ToLower().Contains(lowerText));
         }
+
+        if (count != 0)
+        {
+            q = q.Take(count);
+        }
+
+        q = q.Skip(from);
 
         await foreach (var tag in FromQueryAsync(q).ConfigureAwait(false))
         {

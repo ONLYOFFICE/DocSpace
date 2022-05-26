@@ -250,9 +250,10 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     {
         ErrorIfNotDocSpace();
 
-        var filterValue = _apiContext.FilterValue;
+        var from = Convert.ToInt32(_apiContext.StartIndex);
+        var count = Convert.ToInt32(_apiContext.Count);
 
-        await foreach (var tag in _customTagsService.GetTagsInfoAsync(filterValue, TagType.Custom))
+        await foreach (var tag in _customTagsService.GetTagsInfoAsync(_apiContext.FilterValue, TagType.Custom, from, count))
         {
             yield return tag;
         }

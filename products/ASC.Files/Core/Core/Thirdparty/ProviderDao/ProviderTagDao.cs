@@ -128,9 +128,9 @@ internal class ProviderTagDao : ProviderDaoBase, ITagDao<string>
         return _tagDao.GetTagsAsync(subject, tagType, fileEntries);
     }
 
-    public IAsyncEnumerable<TagInfo> GetTagsInfoAsync(string searchText, TagType tagType, bool byName)
+    public IAsyncEnumerable<TagInfo> GetTagsInfoAsync(string searchText, TagType tagType, bool byName, int from = 0, int count = 0)
     {
-        return _tagDao.GetTagsInfoAsync(searchText, tagType, byName);
+        return _tagDao.GetTagsInfoAsync(searchText, tagType, byName, from, count);
     }
 
     public IAsyncEnumerable<TagInfo> GetTagsInfoAsync(IEnumerable<int> ids)
