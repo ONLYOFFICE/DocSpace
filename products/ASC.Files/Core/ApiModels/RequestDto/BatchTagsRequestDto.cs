@@ -26,7 +26,7 @@
 
 namespace ASC.Files.Core.ApiModels.RequestDto;
 
-public class DeleteTagsRequestDto
+public class BatchTagsRequestDto
 {
     public IEnumerable<int> TagIds { get; set; }
 }

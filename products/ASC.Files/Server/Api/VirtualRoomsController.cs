@@ -135,7 +135,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     }
 
     [Create("rooms")]
-    public async Task<FolderDto<T>> CreateRoomAsync([FromBody] CreateRoomRequestDto inDto)
+    public async Task<FolderDto<T>> CreateRoomAsync(CreateRoomRequestDto inDto)
     {
         ErrorIfNotDocSpace();
 
@@ -153,7 +153,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     }
 
     [Update("rooms/{id}")]
-    public async Task<FolderDto<T>> UpdateRoomAsync(T id, [FromBody] UpdateRoomRequestDto inDto)
+    public async Task<FolderDto<T>> UpdateRoomAsync(T id, UpdateRoomRequestDto inDto)
     {
         ErrorIfNotDocSpace();
 
@@ -202,7 +202,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     }
 
     [Update("rooms/{id}/share")]
-    public Task<IEnumerable<FileShareDto>> SetRoomSecurityAsync(T id, [FromBody] SecurityInfoRequestDto inDto)
+    public Task<IEnumerable<FileShareDto>> SetRoomSecurityAsync(T id, SecurityInfoRequestDto inDto)
     {
         ErrorIfNotDocSpace();
 
@@ -210,35 +210,35 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     }
 
     [Read("rooms/{id}/invite")]
-    public object GetInvitationLink(T id, [FromBody] InviteUserRequestDto inDto)
+    public object GetInvitationLink(T id, InviteUserRequestDto inDto)
     {
         ErrorIfNotDocSpace();
 
         return _roomLinksManager.GenerateLink(id, inDto.Email, (int)inDto.Access, inDto.EmployeeType, _authContext.CurrentAccount.ID);
     }
 
-    [Create("rooms/{id}/tags")]
-    public async Task<FolderDto<T>> AddTagsAsync(T id, [FromBody] UpdateTagsRequestDto inDto)
+    [Update("rooms/{id}/tags")]
+    public async Task<FolderDto<T>> AddTagsAsync(T id, BatchTagsRequestDto inDto)
     {
         ErrorIfNotDocSpace();
 
-        var room = await _customTagsService.AddRoomTagsAsync(id, inDto.TagsIds);
+        var room = await _customTagsService.AddRoomTagsAsync(id, inDto.TagIds);
 
         return await _folderDtoHelper.GetAsync(room);
     }
 
     [Delete("rooms/{id}/tags")]
-    public async Task<FolderDto<T>> DeleteTagsAsync(T id, [FromBody] UpdateTagsRequestDto inDto)
+    public async Task<FolderDto<T>> DeleteTagsAsync(T id, BatchTagsRequestDto inDto)
     {
         ErrorIfNotDocSpace();
 
-        var room = await _customTagsService.DeleteRoomTagsAsync(id, inDto.TagsIds);
+        var room = await _customTagsService.DeleteRoomTagsAsync(id, inDto.TagIds);
 
         return await _folderDtoHelper.GetAsync(room);
     }
 
     [Create("tags")]
-    public async Task<TagInfo> CreateTagAsync([FromBody] CreateTagRequestDto inDto)
+    public async Task<TagInfo> CreateTagAsync(CreateTagRequestDto inDto)
     {
         ErrorIfNotDocSpace();
 
@@ -259,7 +259,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     }
 
     [Delete("tags")]
-    public async Task DeleteTagsAsync([FromBody] DeleteTagsRequestDto inDto)
+    public async Task DeleteTagsAsync(BatchTagsRequestDto inDto)
     {
         ErrorIfNotDocSpace();
 
