@@ -42,7 +42,6 @@
 %defattr(-, onlyoffice, onlyoffice, -)
 %config %{_sysconfdir}/onlyoffice/%{product}/
 %{_var}/log/onlyoffice/%{product}/
-%{buildpath}/sql/
 %dir %{_sysconfdir}/onlyoffice/
 %dir %{_var}/log/onlyoffice/
 

@@ -63,6 +63,7 @@ MYSQL_USER=""
 MYSQL_PASSWORD=""
 MYSQL_ROOT_PASSWORD=""
 MYSQL_HOST=""
+DATABASE_MIGRATION="true"
 
 ZOO_PORT=""
 ZOO_HOST=""
@@ -287,6 +288,13 @@ while [ "$1" != "" ]; do
 		-di | --documentserverimage )
 			if [ "$2" != "" ]; then
 				DOCUMENT_SERVER_IMAGE_NAME=$2
+				shift
+			fi
+		;;
+		
+		-dbm | --databasemigration )
+			if [ "$2" != "" ]; then
+				DATABASE_MIGRATION=$2
 				shift
 			fi
 		;;
@@ -790,7 +798,6 @@ download_files () {
 	fi
 
 	svn export --force https://github.com/ONLYOFFICE/${PRODUCT}/branches/${GIT_BRANCH}/build/install/docker/ ${BASE_DIR}
-	svn export --force https://github.com/ONLYOFFICE/CommunityServer/branches/master/build/sql/ ${BASE_DIR}/config/ #Download SQL scripts
 
 	reconfigure STATUS ${STATUS}
 }
@@ -822,6 +829,7 @@ install_mysql_server () {
 	reconfigure MYSQL_PASSWORD ${MYSQL_PASSWORD}
 	reconfigure MYSQL_ROOT_PASSWORD ${MYSQL_ROOT_PASSWORD}
 	reconfigure MYSQL_HOST ${MYSQL_HOST}
+	reconfigure DATABASE_MIGRATION ${DATABASE_MIGRATION}
 
 	docker-compose -f $BASE_DIR/db.yml up -d
 }

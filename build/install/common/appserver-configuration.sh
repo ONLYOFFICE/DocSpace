@@ -269,6 +269,11 @@ establish_mysql_conn(){
 	$JSON_USERCONF "this.ConnectionStrings={'default': {'connectionString': \
 	\"Server=$DB_HOST;Port=$DB_PORT;Database=$DB_NAME;User ID=$DB_USER;Password=$DB_PWD;Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none\"}}" >/dev/null 2>&1
 
+	change_mysql_config
+
+	#Enable database migration
+	$JSON_USERCONF "this.migration={'enabled': \"true\"}" >/dev/null 2>&1
+
 	echo "OK"
 }
 
@@ -374,47 +379,6 @@ change_mysql_config(){
 
     systemctl daemon-reload >/dev/null 2>&1
 	systemctl restart ${MYSQL_PACKAGE} >/dev/null 2>&1
-}
-
-execute_mysql_script(){
-
-	change_mysql_config
-
-    while ! $MYSQL -e ";" >/dev/null 2>&1; do
-    	sleep 1
-	done
-    
-    if [ "$DB_USER" = "root" ] && [ ! "$(mysql -V | grep ' 5.5.')" ]; then
-	   # allow connect via mysql_native_password with root and empty password
-	   $MYSQL -D "mysql" -e "update user set plugin='mysql_native_password' where user='root';ALTER USER '${DB_USER}'@'localhost' IDENTIFIED WITH mysql_native_password BY '${DB_PWD}';" >/dev/null 2>&1
-	fi
-
-	#Checking the quantity of the tables created in the db
-    DB_TABLES_COUNT=$($MYSQL --silent --skip-column-names -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='${DB_NAME}'"); 
-    
-	local SQL_DIR="/var/www/${PRODUCT}/sql"
-    if [ "${DB_TABLES_COUNT}" -eq "0" ]; then
-
-		echo -n "Installing MYSQL database... "
-
-		#Adding data to the db
-		sed -i -e '1 s/^/SET SQL_MODE='ALLOW_INVALID_DATES';\n/;' $SQL_DIR/onlyoffice.sql #Fix a bug related to an incorrect date
-		$MYSQL -e "CREATE DATABASE IF NOT EXISTS $DB_NAME CHARACTER SET utf8 COLLATE 'utf8_general_ci';" >/dev/null 2>&1
-		echo 'CREATE TABLE IF NOT EXISTS `Tenants` ( `id` varchar(200) NOT NULL, `Status` varchar(200) NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8;' >> $SQL_DIR/onlyoffice.sql #Fix non-existent tables Tenants
-		$MYSQL "$DB_NAME" < "$SQL_DIR/createdb.sql" >/dev/null 2>&1
-		$MYSQL "$DB_NAME" < "$SQL_DIR/onlyoffice.sql" >/dev/null 2>&1
-		$MYSQL "$DB_NAME" < "$SQL_DIR/onlyoffice.data.sql" >/dev/null 2>&1
-		$MYSQL "$DB_NAME" < "$SQL_DIR/onlyoffice.resources.sql" >/dev/null 2>&1
-		for i in $(ls $SQL_DIR/*upgrade*.sql); do
-			$MYSQL "$DB_NAME" < ${i} >/dev/null 2>&1
-		done
-	else
-		echo -n "Upgrading MySQL database... "
-		for i in $(ls $SQL_DIR/*upgrade*.sql); do
-			$MYSQL "$DB_NAME" < ${i} >/dev/null 2>&1
-		done
-    fi
-    echo "OK"
 }
 
 setup_nginx(){
@@ -607,7 +571,6 @@ install_json
 if $PACKAGE_MANAGER mysql-client >/dev/null 2>&1 || $PACKAGE_MANAGER mysql-community-client >/dev/null 2>&1; then
     input_db_params
     establish_mysql_conn || exit $?
-    execute_mysql_script || exit $?
 fi 
 
 if $PACKAGE_MANAGER nginx >/dev/null 2>&1; then
