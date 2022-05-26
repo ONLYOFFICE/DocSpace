@@ -28,17 +28,17 @@ namespace ASC.Files.Core.Log;
 internal static partial class EntryManagerLogger
 {
     [LoggerMessage(Level = LogLevel.Error, Message = "Error on update {fileId} to version {version}")]
-    public static partial void ErrorUpdateFile(this ILogger logger, string fileId, int version, Exception exception); 
-    
+    public static partial void ErrorUpdateFile(this ILogger<EntryManager> logger, string fileId, int version, Exception exception);
+
     [LoggerMessage(Level = LogLevel.Information, Message = "Delete folder {folderId} in {parentId}")]
-    public static partial void InformationDeleteFolder(this ILogger logger, string folderId, string parentId); 
-    
+    public static partial void InformationDeleteFolder(this ILogger<EntryManager> logger, string folderId, string parentId);
+
     [LoggerMessage(Level = LogLevel.Information, Message = "Delete file {fileId} in {parentId}")]
-    public static partial void InformationDeletefile(this ILogger logger, string fileId, string parentId);
-    
+    public static partial void InformationDeletefile(this ILogger<EntryManager> logger, string fileId, string parentId);
+
     [LoggerMessage(Level = LogLevel.Information, Message = "Move shared folder {folderId} from {parentId} to {toId}")]
-    public static partial void InformationMoveSharedFolder(this ILogger logger, string folderId, string parentId, string toId);
+    public static partial void InformationMoveSharedFolder(this ILogger<EntryManager> logger, string folderId, string parentId, string toId);
 
     [LoggerMessage(Level = LogLevel.Information, Message = "Move shared folder {fileId} from {parentId} to {toId}")]
-    public static partial void InformationMoveSharedFile(this ILogger logger, string fileId, string parentId, string toId);
+    public static partial void InformationMoveSharedFile(this ILogger<EntryManager> logger, string fileId, string parentId, string toId);
 }

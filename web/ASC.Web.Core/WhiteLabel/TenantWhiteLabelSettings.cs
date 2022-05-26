@@ -204,7 +204,7 @@ public class TenantWhiteLabelSettingsHelper
     private readonly WhiteLabelHelper _whiteLabelHelper;
     private readonly TenantManager _tenantManager;
     private readonly SettingsManager _settingsManager;
-    private readonly ILogger _log;
+    private readonly ILogger<TenantWhiteLabelSettingsHelper> _log;
 
     public TenantWhiteLabelSettingsHelper(
         WebImageSupplier webImageSupplier,

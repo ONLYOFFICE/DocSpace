@@ -52,13 +52,13 @@ public class DBResourceManager : ResourceManager
         _dbContext = dbContext;
     }
 
-    public static void PatchAssemblies(ILogger option)
+    public static void PatchAssemblies(ILogger<DBResourceManager> option)
     {
         AppDomain.CurrentDomain.AssemblyLoad += (_, a) => PatchAssembly(option, a.LoadedAssembly);
         Array.ForEach(AppDomain.CurrentDomain.GetAssemblies(), a => PatchAssembly(option, a));
     }
 
-    public static void PatchAssembly(ILogger logger, Assembly a, bool onlyAsc = true)
+    public static void PatchAssembly(ILogger<DBResourceManager> logger, Assembly a, bool onlyAsc = true)
     {
         var log = logger;
 
@@ -71,7 +71,7 @@ public class DBResourceManager : ResourceManager
             }
             catch (ReflectionTypeLoadException rtle)
             {
-                log.CanNotGetType(nameof(a.GetType) ,a.FullName, nameof(a.GetExportedTypes), rtle);
+                log.CanNotGetType(nameof(a.GetType), a.FullName, nameof(a.GetExportedTypes), rtle);
                 foreach (var e in rtle.LoaderExceptions)
                 {
                     log.Information(e.Message);
@@ -112,7 +112,7 @@ public class DBResourceManager : ResourceManager
     public override Type ResourceSetType => typeof(DBResourceSet);
 
     private readonly IConfiguration _configuration;
-    private readonly ILogger _option;
+    private readonly ILogger<DBResourceManager> _option;
     private readonly DbContextManager<ResourceDbContext> _dbContext;
 
     protected override ResourceSet InternalGetResourceSet(CultureInfo culture, bool createIfNotExists, bool tryParents)
@@ -138,13 +138,13 @@ public class DBResourceManager : ResourceManager
         private readonly ResourceSet _invariant;
         private readonly string _culture;
         private readonly string _fileName;
-        private readonly ILogger _logger;
+        private readonly ILogger<DBResourceManager> _logger;
         private readonly DbContextManager<ResourceDbContext> _dbContext;
 
         public DBResourceSet(
             IMemoryCache memoryCache,
             IConfiguration configuration,
-            ILogger logger,
+            ILogger<DBResourceManager> logger,
             DbContextManager<ResourceDbContext> dbContext,
             ResourceSet invariant,
             CultureInfo culture,
@@ -227,12 +227,12 @@ public class DBResourceManager : ResourceManager
                 lock (_locker)
                 {
                     dic = _cache.Get(key) as Dictionary<string, string>;
-                    
+
                     if (dic == null)
                     {
-                        
+
                         dic = LoadResourceSet(_fileName, _culture);
-                        
+
                         if (_cacheTimeout == TimeSpan.Zero)
                         {
                             _cache.Set(key, dic);

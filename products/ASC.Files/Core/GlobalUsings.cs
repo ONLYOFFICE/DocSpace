@@ -118,6 +118,7 @@ global using ASC.Web.Core.Subscriptions;
 global using ASC.Web.Core.Users;
 global using ASC.Web.Core.Utility.Skins;
 global using ASC.Web.Core.WhiteLabel;
+global using ASC.Web.Files;
 global using ASC.Web.Files.Api;
 global using ASC.Web.Files.Classes;
 global using ASC.Web.Files.Configuration;

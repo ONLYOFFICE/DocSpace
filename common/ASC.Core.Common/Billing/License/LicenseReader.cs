@@ -43,7 +43,7 @@ public class LicenseReader
     private readonly TenantManager _tenantManager;
     private readonly PaymentManager _paymentManager;
     private readonly CoreSettings _coreSettings;
-    private readonly ILogger _logger;
+    private readonly ILogger<LicenseReader> _logger;
     public readonly string LicensePath;
     private readonly string _licensePathTemp;
 

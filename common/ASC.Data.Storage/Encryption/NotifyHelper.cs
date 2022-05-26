@@ -33,7 +33,7 @@ public class NotifyHelper
 
     private string _serverRootPath;
     private readonly NotifyServiceClient _notifyServiceClient;
-    private readonly ILogger _logger;
+    private readonly ILogger<NotifyHelper> _logger;
 
     public NotifyHelper(ILogger<NotifyHelper> logger, NotifyServiceClient notifyServiceClient)
     {

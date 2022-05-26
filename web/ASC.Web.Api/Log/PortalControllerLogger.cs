@@ -24,13 +24,15 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Web.Api.Controllers;
+
 namespace ASC.Web.Api.Log;
 
 internal static partial class PortalControllerLogger
 {
     [LoggerMessage(Level = LogLevel.Error, Message = "getshortenlink")]
-    public static partial void ErrorGetShortenLink(this ILogger logger, Exception exception); 
-    
+    public static partial void ErrorGetShortenLink(this ILogger<PortalController> logger, Exception exception);
+
     [LoggerMessage(Level = LogLevel.Error, Message = "MarkPresentAsReaded")]
-    public static partial void ErrorMarkPresentAsReaded(this ILogger logger, Exception exception);
+    public static partial void ErrorMarkPresentAsReaded(this ILogger<PortalController> logger, Exception exception);
 }

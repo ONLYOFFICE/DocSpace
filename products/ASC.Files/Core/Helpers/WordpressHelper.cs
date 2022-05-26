@@ -76,8 +76,8 @@ public class WordpressToken
 [Singletone]
 public class WordpressHelper
 {
-    public ILogger Logger { get; set; }
-    public RequestHelper RequestHelper { get; }
+    private readonly ILogger<WordpressHelper> _logger;
+    private readonly RequestHelper _requestHelper;
 
     public enum WordpressStatus
     {
@@ -87,19 +87,19 @@ public class WordpressHelper
 
     public WordpressHelper(ILogger<WordpressHelper> logger, RequestHelper requestHelper)
     {
-        Logger = logger;
-        RequestHelper = requestHelper;
+        _logger = logger;
+        _requestHelper = requestHelper;
     }
 
     public string GetWordpressMeInfo(string token)
     {
         try
         {
-            return WordpressLoginProvider.GetWordpressMeInfo(RequestHelper, token);
+            return WordpressLoginProvider.GetWordpressMeInfo(_requestHelper, token);
         }
         catch (Exception ex)
         {
-            Logger.ErrorGetWordpressInfo(ex);
+            _logger.ErrorGetWordpressInfo(ex);
 
             return string.Empty;
         }
@@ -111,13 +111,13 @@ public class WordpressHelper
         try
         {
             var wpStatus = ((WordpressStatus)status).ToString();
-            WordpressLoginProvider.CreateWordpressPost(RequestHelper, title, content, wpStatus, blogId, token);
+            WordpressLoginProvider.CreateWordpressPost(_requestHelper, title, content, wpStatus, blogId, token);
 
             return true;
         }
         catch (Exception ex)
         {
-            Logger.ErrorCreateWordpressPost(ex);
+            _logger.ErrorCreateWordpressPost(ex);
 
             return false;
         }

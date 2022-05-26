@@ -28,17 +28,17 @@ namespace ASC.Core.Common.Log;
 internal static partial class SecurityContextLogger
 {
     [LoggerMessage(Level = LogLevel.Debug, Message = "cookie {cookie}, tenant {tenant}, userid {userid}")]
-    public static partial void AuthenticateDebug(this ILogger logger, string cookie, int tenant, Guid userId, Exception exception);
+    public static partial void AuthenticateDebug(this ILogger<SecurityContext> logger, string cookie, int tenant, Guid userId, Exception exception);
 
     [LoggerMessage(Level = LogLevel.Error, Message = "Authenticate error: cookie {cookie}, tenant {tenant}, userid {userid}")]
-    public static partial void AuthenticateError(this ILogger logger, string cookie, int tenant, Guid userId, Exception exception);
+    public static partial void AuthenticateError(this ILogger<SecurityContext> logger, string cookie, int tenant, Guid userId, Exception exception);
 
     [LoggerMessage(Level = LogLevel.Debug, Message = "Couldn't test api connection")]
     public static partial void DebugCouldNotTest(this ILogger logger, Exception exception);
-    
+
     [LoggerMessage(Level = LogLevel.Information, Message = "Empty Bearer cookie: {ipFrom} {address}")]
-    public static partial void InformationEmptyBearer(this ILogger logger, string ipFrom, string address);
+    public static partial void InformationEmptyBearer(this ILogger<SecurityContext> logger, string ipFrom, string address);
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Can not decrypt cookie: {cookie} {ipFrom} {address}")]
-    public static partial void WarningCanNotDecrypt(this ILogger logger, string cookie, string ipFrom, string address);
+    public static partial void WarningCanNotDecrypt(this ILogger<SecurityContext> logger, string cookie, string ipFrom, string address);
 }

@@ -95,7 +95,7 @@ public class SmsProviderManager
 
 public abstract class SmsProvider : Consumer
 {
-    protected ILogger Log { get; }
+    protected ILogger<SmsProvider> Log { get; }
     protected IHttpClientFactory ClientFactory { get; }
     protected ICache MemoryCache { get; set; }
 
@@ -116,7 +116,7 @@ public abstract class SmsProvider : Consumer
         IConfiguration configuration,
         ICacheNotify<ConsumerCacheItem> cache,
         ConsumerFactory consumerFactory,
-        ILogger logger,
+        ILogger<SmsProvider> logger,
         IHttpClientFactory clientFactory,
         ICache memCache,
         string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
@@ -187,7 +187,7 @@ public class SmscProvider : SmsProvider, IValidateKeysProvider
         IConfiguration configuration,
         ICacheNotify<ConsumerCacheItem> cache,
         ConsumerFactory consumerFactory,
-        ILogger<SmscProvider> options,
+        ILogger<SmsProvider> options,
         IHttpClientFactory clientFactory,
         ICache memCache,
         string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)

@@ -209,7 +209,7 @@ public class ReportState
         return TaskInfo;
     }
 
-    protected void PublishTaskInfo(ILogger logger)
+    protected void PublishTaskInfo(ILogger<ReportStateScope> logger)
     {
         var tries = 3;
         while (tries-- > 0)
@@ -363,7 +363,7 @@ public class DocbuilderReportsUtilityHelper
 
 public class ReportStateScope
 {
-    private readonly ILogger _options;
+    private readonly ILogger<ReportStateScope> _options;
     private readonly TenantManager _tenantManager;
     private readonly AuthContext _authContext;
     private readonly SecurityContext _securityContext;
@@ -383,7 +383,7 @@ public class ReportStateScope
         _documentServiceConnector = documentServiceConnector;
     }
 
-    public void Deconstruct(out ILogger optionsMonitor,
+    public void Deconstruct(out ILogger<ReportStateScope> optionsMonitor,
         out TenantManager tenantManager,
         out AuthContext authContext,
         out SecurityContext securityContext,

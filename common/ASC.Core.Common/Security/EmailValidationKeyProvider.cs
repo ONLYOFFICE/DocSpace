@@ -36,7 +36,7 @@ public class EmailValidationKeyProvider
         Expired
     }
 
-    private readonly ILogger _logger;
+    private readonly ILogger<EmailValidationKeyProvider> _logger;
     private static readonly DateTime _from = new DateTime(2010, 01, 01, 0, 0, 0, DateTimeKind.Utc);
     internal readonly TimeSpan _validEmailKeyInterval;
     internal readonly TimeSpan _validAuthKeyInterval;

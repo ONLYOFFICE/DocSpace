@@ -29,11 +29,11 @@ namespace ASC.IPSecurity.Log;
 internal static partial class IPSecurityLogger
 {
     [LoggerMessage(Level = LogLevel.Error, Message = "Can't verify request with IP-address: {requestIps}. Tenant: {tenant}.")]
-    public static partial void ErrorCantVerifyRequest(this ILogger logger, string requestIps, Tenant tenant, Exception exception);
-    
+    public static partial void ErrorCantVerifyRequest(this ILogger<IPSecurity> logger, string requestIps, Tenant tenant, Exception exception);
+
     [LoggerMessage(Level = LogLevel.Information, Message = "Restricted from IP-address: {ip}. Tenant: {tenant}. Request to: {url}")]
-    public static partial void InformationRestricted(this ILogger logger, string ip, Tenant tenant, string url);  
-    
+    public static partial void InformationRestricted(this ILogger<IPSecurity> logger, string ip, Tenant tenant, string url);
+
     [LoggerMessage(Level = LogLevel.Error, Message = "Can't verify local network from request with IP-address: {ips}")]
-    public static partial void ErrorCantVerifyLocalNetWork(this ILogger logger, string ips, Exception exception);
+    public static partial void ErrorCantVerifyLocalNetWork(this ILogger<IPSecurity> logger, string ips, Exception exception);
 }

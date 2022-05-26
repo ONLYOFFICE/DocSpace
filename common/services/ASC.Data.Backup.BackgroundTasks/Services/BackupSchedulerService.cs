@@ -30,7 +30,7 @@ namespace ASC.Data.Backup.Services;
 public sealed class BackupSchedulerService : BackgroundService
 {
     private readonly TimeSpan _backupSchedulerPeriod;
-    private readonly ILogger _logger;
+    private readonly ILogger<BackupSchedulerService> _logger;
 
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly IServiceScopeFactory _scopeFactory;

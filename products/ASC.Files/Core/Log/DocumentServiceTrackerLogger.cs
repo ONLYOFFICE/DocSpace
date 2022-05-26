@@ -28,44 +28,44 @@ namespace ASC.Files.Core.Log;
 internal static partial class DocumentServiceTrackerLogger
 {
     [LoggerMessage(Level = LogLevel.Debug, Message = "Drop command: fileId '{fileId}' docKey '{fileKey}' for user {user}")]
-    public static partial void DebugDropCommand(this ILogger logger, string fileId, string fileKey, string user, Exception exception);
+    public static partial void DebugDropCommand(this ILogger<DocumentServiceTrackerHelper> logger, string fileId, string fileKey, string user, Exception exception);
 
     [LoggerMessage(Level = LogLevel.Debug, Message = "DocService storing to {path}")]
-    public static partial void DebugDocServiceStoring(this ILogger logger, string path);
+    public static partial void DebugDocServiceStoring(this ILogger<DocumentServiceTrackerHelper> logger, string path);
 
     [LoggerMessage(Level = LogLevel.Error, Message = "DocService save error. Version update. File id: '{fileId}'. UserId: {userId}. DocKey '{fileData}'")]
-    public static partial void ErrorDocServiceSaveVersionUpdate(this ILogger logger, string fileId, Guid userId, string fileData, Exception exception);
+    public static partial void ErrorDocServiceSaveVersionUpdate(this ILogger<DocumentServiceTrackerHelper> logger, string fileId, Guid userId, string fileData, Exception exception);
 
     [LoggerMessage(Level = LogLevel.Error, Message = "DocService save error. File id: '{fileId}'. UserId: {userId}. DocKey '{docKey}'. DownloadUri: {downloadUri}")]
-    public static partial void ErrorDocServiceSave(this ILogger logger, string fileId, Guid userId, string docKey, string downloadUri, Exception exception);
+    public static partial void ErrorDocServiceSave(this ILogger<DocumentServiceTrackerHelper> logger, string fileId, Guid userId, string docKey, string downloadUri, Exception exception);
 
     [LoggerMessage(Level = LogLevel.Error, Message = "DocService mailMerge{index} error: userId - {userId}, url - {url}")]
-    public static partial void ErrorDocServiceMailMerge(this ILogger logger, string index, Guid userId, string url, Exception exception);
+    public static partial void ErrorDocServiceMailMerge(this ILogger<DocumentServiceTrackerHelper> logger, string index, Guid userId, string url, Exception exception);
 
     [LoggerMessage(Level = LogLevel.Error, Message = "DocService Error on save file to temp store")]
-    public static partial void ErrorDocServiceSaveFileToTempStore(this ILogger logger, Exception exception);
+    public static partial void ErrorDocServiceSaveFileToTempStore(this ILogger<DocumentServiceTrackerHelper> logger, Exception exception);
 
     [LoggerMessage(Level = LogLevel.Error, Message = "DocService save history error")]
-    public static partial void ErrorDocServiceSavehistory(this ILogger logger, Exception exception); 
-    
+    public static partial void ErrorDocServiceSavehistory(this ILogger<DocumentServiceTrackerHelper> logger, Exception exception);
+
     [LoggerMessage(Level = LogLevel.Error, Message = "DocService drop failed for users {users}")]
-    public static partial void ErrorDocServiceDropFailed(this ILogger logger, List<string> users);   
-    
+    public static partial void ErrorDocServiceDropFailed(this ILogger<DocumentServiceTrackerHelper> logger, List<string> users);
+
     [LoggerMessage(Level = LogLevel.Error, Message = "DocService saving file {fileId} ({docKey}) with key {fileData}")]
-    public static partial void ErrorDocServiceSavingFile(this ILogger logger, string fileId, string docKey, string fileData);   
-    
+    public static partial void ErrorDocServiceSavingFile(this ILogger<DocumentServiceTrackerHelper> logger, string fileId, string docKey, string fileData);
+
     [LoggerMessage(Level = LogLevel.Error, Message = "DocService save error. Empty url. File id: '{fileId}'. UserId: {userId}. DocKey '{key}'")]
-    public static partial void ErrorDocServiceSave2(this ILogger logger, string fileId, Guid userId, string key);  
-    
+    public static partial void ErrorDocServiceSave2(this ILogger<DocumentServiceTrackerHelper> logger, string fileId, Guid userId, string key);
+
     [LoggerMessage(Level = LogLevel.Information, Message = "DocService save error: anonymous author - {userId}")]
-    public static partial void InformationDocServiceSaveError(this ILogger logger, Guid userId, Exception exception);   
-    
+    public static partial void InformationDocServiceSaveError(this ILogger<DocumentServiceTrackerHelper> logger, Guid userId, Exception exception);
+
     [LoggerMessage(Level = LogLevel.Information, Message = "DocService editing file {fileId} ({docKey}) with key {fileKey} for {users}")]
-    public static partial void InformationDocServiceEditingFile(this ILogger logger, string fileId, string docKey, string fileKey, List<string> users);
-    
+    public static partial void InformationDocServiceEditingFile(this ILogger<DocumentServiceTrackerHelper> logger, string fileId, string docKey, string fileKey, List<string> users);
+
     [LoggerMessage(Level = LogLevel.Information, Message = "DocService userId is not Guid: {user}")]
-    public static partial void InformationDocServiceUserIdIsNotGuid(this ILogger logger, string user); 
-    
+    public static partial void InformationDocServiceUserIdIsNotGuid(this ILogger<DocumentServiceTrackerHelper> logger, string user);
+
     [LoggerMessage(Level = LogLevel.Information, Message = "DocService mailMerge {index}/{count} send: {response}")]
-    public static partial void InformationDocServiceMailMerge(this ILogger logger, int index, int count, string response);
+    public static partial void InformationDocServiceMailMerge(this ILogger<DocumentServiceTrackerHelper> logger, int index, int count, string response);
 }

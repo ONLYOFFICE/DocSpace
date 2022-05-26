@@ -38,4 +38,13 @@ internal static partial class PortalTaskBaseLogger
 
     [LoggerMessage(Level = LogLevel.Error, Message = "Restore")]
     public static partial void ErrorRestore(this ILogger logger, Exception exception);
+
+    [LoggerMessage(Level = LogLevel.Debug, Message = "begin delete storage")]
+    public static partial void DebugBeginDeleteStorage(this ILogger logger);
+
+    [LoggerMessage(Level = LogLevel.Debug, Message = "end delete storage")]
+    public static partial void DebugEndDeleteStorage(this ILogger logger);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Can't delete files for domain {domain}")]
+    public static partial void WarningCanNotDeleteFilesForDomain(this ILogger logger, string domain, Exception exception);
 }

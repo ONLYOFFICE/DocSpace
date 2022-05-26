@@ -30,7 +30,7 @@ namespace ASC.Data.Backup;
 public class Schedule
 {
     private readonly TenantManager _tenantManager;
-    private readonly ILogger _logger;
+    private readonly ILogger<Schedule> _logger;
     private readonly TenantUtil _tenantUtil;
 
     public Schedule(ILogger<Schedule> options, TenantManager tenantManager, TenantUtil tenantUtil)
@@ -67,8 +67,7 @@ public class Schedule
         }
         catch (Exception e)
         {
-            var log = _logger;
-            log.ErrorSchedule(backupSchedule.TenantId, e);
+            _logger.ErrorSchedule(backupSchedule.TenantId, e);
 
             return false;
         }

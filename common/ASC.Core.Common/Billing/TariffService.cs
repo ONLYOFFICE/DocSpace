@@ -70,7 +70,7 @@ class ConfigureTariffService : IConfigureNamedOptions<TariffService>
     private readonly IConfiguration _configuration;
     private readonly DbContextManager<CoreDbContext> _coreDbContextManager;
     private readonly TariffServiceStorage _tariffServiceStorage;
-    private readonly ILogger _logger;
+    private readonly ILogger<TariffService> _logger;
 
     public ConfigureTariffService(
         IOptionsSnapshot<CachedQuotaService> quotaService,
@@ -128,7 +128,7 @@ public class TariffService : ITariffService
 
     internal ICache Cache { get; set; }
     internal ICacheNotify<TariffCacheItem> Notify { get; set; }
-    internal ILogger Logger { get; set; }
+    internal ILogger<TariffService> Logger { get; set; }
     internal IQuotaService QuotaService { get; set; }
     internal ITenantService TenantService { get; set; }
     internal bool Test { get; set; }

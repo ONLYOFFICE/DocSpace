@@ -52,7 +52,7 @@ class ConfigureDbSettingsManager : IConfigureNamedOptions<DbSettingsManager>
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly DbSettingsManagerCache _dbSettingsManagerCache;
-    private readonly ILogger _logger;
+    private readonly ILogger<DbSettingsManager> _logger;
     private readonly AuthContext _authContext;
     private readonly IOptionsSnapshot<TenantManager> _tenantManager;
     private readonly DbContextManager<WebstudioDbContext> _dbContextManager;
@@ -99,7 +99,7 @@ public class DbSettingsManager
 {
     private readonly TimeSpan _expirationTimeout = TimeSpan.FromMinutes(5);
 
-    internal ILogger Logger { get; set; }
+    internal ILogger<DbSettingsManager> Logger { get; set; }
     internal ICache Cache { get; set; }
     internal IServiceProvider ServiceProvider { get; set; }
     internal DbSettingsManagerCache DbSettingsManagerCache { get; set; }

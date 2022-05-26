@@ -28,8 +28,8 @@ namespace ASC.Web.Core.Log;
 internal static partial class TenantWhiteLabelSettingsHelperLogger
 {
     [LoggerMessage(Level = LogLevel.Error, Message = "TenantWhiteLabelSettingsHelper RestoreDefault")]
-    public static partial void ErrorRestoreDefault(this ILogger logger, Exception exception);   
-    
+    public static partial void ErrorRestoreDefault(this ILogger<TenantWhiteLabelSettingsHelper> logger, Exception exception);
+
     [LoggerMessage(Level = LogLevel.Error, Message = "TenantWhiteLabelSettingsHelper SetLogo")]
-    public static partial void ErrorSetLogo(this ILogger logger, Exception exception);
+    public static partial void ErrorSetLogo(this ILogger<TenantWhiteLabelSettingsHelper> logger, Exception exception);
 }

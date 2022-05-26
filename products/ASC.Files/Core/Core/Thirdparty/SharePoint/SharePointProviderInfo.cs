@@ -356,7 +356,7 @@ public class SharePointProviderInfo : IProviderInfo
         }
     }
 
-    private readonly ILogger _logger;
+    private readonly ILogger<SharePointProviderInfo> _logger;
     private readonly IServiceProvider _serviceProvider;
     private readonly TenantUtil _tenantUtil;
     private readonly SharePointProviderInfoHelper _sharePointProviderInfoHelper;

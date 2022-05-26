@@ -28,8 +28,8 @@ namespace ASC.Files.Core.Log;
 internal static partial class FFmpegServiceLogger
 {
     [LoggerMessage(Level = LogLevel.Error, Message = "FFmpeg/avconv was not found in PATH or 'files.ffmpeg' setting")]
-    public static partial void ErrorFFmpeg(this ILogger logger);  
-    
+    public static partial void ErrorFFmpeg(this ILogger<FFmpegService> logger);
+
     [LoggerMessage(Level = LogLevel.Information, Message = "FFmpeg found in {path}")]
-    public static partial void InformationFFmpegFoundIn(this ILogger logger, string path);
+    public static partial void InformationFFmpegFoundIn(this ILogger<FFmpegService> logger, string path);
 }

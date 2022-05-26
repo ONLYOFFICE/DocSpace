@@ -28,8 +28,8 @@ namespace ASC.Files.Core.Log;
 internal static partial class DocbuilderReportsUtilityLogger
 {
     [LoggerMessage(Level = LogLevel.Error, Message = "DocbuilderReportsUtility error")]
-    public static partial void ErrorDocbuilderReportsUtility(this ILogger logger, Exception exception);
+    public static partial void ErrorDocbuilderReportsUtility(this ILogger<ReportStateScope> logger, Exception exception);
 
     [LoggerMessage(Level = LogLevel.Error, Message = "PublishTaskInfo DocbuilderReportsUtility")]
-    public static partial void ErrorPublishTaskInfo(this ILogger logger, Exception exception);
+    public static partial void ErrorPublishTaskInfo(this ILogger<ReportStateScope> logger, Exception exception);
 }

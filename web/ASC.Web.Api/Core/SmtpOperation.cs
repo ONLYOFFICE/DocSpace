@@ -50,7 +50,7 @@ public class SmtpOperation
     private readonly UserManager _userManager;
     private readonly SecurityContext _securityContext;
     private readonly TenantManager _tenantManager;
-    private readonly ILogger _logger;
+    private readonly ILogger<SmtpOperation> _logger;
     private readonly SmtpSettingsDto _smtpSettings;
 
     private readonly string _messageSubject;

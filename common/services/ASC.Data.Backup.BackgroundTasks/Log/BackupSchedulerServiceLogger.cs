@@ -29,32 +29,32 @@ namespace ASC.Data.Backup.BackgroundTasks.Log;
 internal static partial class BackupSchedulerServiceLogger
 {
     [LoggerMessage(Level = LogLevel.Debug, Message = "BackupSchedulerService is starting.")]
-    public static partial void DebugBackupSchedulerServiceStarting(this ILogger logger);
+    public static partial void DebugBackupSchedulerServiceStarting(this ILogger<BackupSchedulerService> logger);
 
     [LoggerMessage(Level = LogLevel.Debug, Message = "BackupSchedulerService background task is stopping.")]
-    public static partial void DebugBackupSchedulerServiceStopping(this ILogger logger);
+    public static partial void DebugBackupSchedulerServiceStopping(this ILogger<BackupSchedulerService> logger);
 
     [LoggerMessage(Level = LogLevel.Debug, Message = "BackupSchedulerService background task with instance id {instanceId} is't active.")]
-    public static partial void DebugBackupSchedulerServiceIsNotActive(this ILogger logger, string instanceId);
+    public static partial void DebugBackupSchedulerServiceIsNotActive(this ILogger<BackupSchedulerService> logger, string instanceId);
 
     [LoggerMessage(Level = LogLevel.Debug, Message = "BackupSchedulerService background task is doing background work.")]
-    public static partial void DebugBackupSchedulerServiceDoingWork(this ILogger logger);
+    public static partial void DebugBackupSchedulerServiceDoingWork(this ILogger<BackupSchedulerService> logger);
 
     [LoggerMessage(Level = LogLevel.Debug, Message = "started to schedule backups")]
-    public static partial void DebugStartedToSchedule(this ILogger logger);
+    public static partial void DebugStartedToSchedule(this ILogger<BackupSchedulerService> logger);
 
     [LoggerMessage(Level = LogLevel.Debug, Message = "{count} backups are to schedule")]
-    public static partial void DebugBackupsSchedule(this ILogger logger, int count);  
-    
+    public static partial void DebugBackupsSchedule(this ILogger<BackupSchedulerService> logger, int count);
+
     [LoggerMessage(Level = LogLevel.Debug, Message = "Start scheduled backup: {tenantId}, {backupMail}, {storageType}, {storageBasePath}")]
-    public static partial void DebugStartScheduledBackup(this ILogger logger, int tenantId, bool backupMail, BackupStorageType storageType, string storageBasePath);
+    public static partial void DebugStartScheduledBackup(this ILogger<BackupSchedulerService> logger, int tenantId, bool backupMail, BackupStorageType storageType, string storageBasePath);
 
     [LoggerMessage(Level = LogLevel.Debug, Message = "Skip portal {tenantId} not paid")]
-    public static partial void DebugNotPaid(this ILogger logger, int tenantId);
+    public static partial void DebugNotPaid(this ILogger<BackupSchedulerService> logger, int tenantId);
 
     [LoggerMessage(Level = LogLevel.Debug, Message = "Skip portal {tenantId} haven't access")]
-    public static partial void DebugHaveNotAccess(this ILogger logger, int tenantId);
+    public static partial void DebugHaveNotAccess(this ILogger<BackupSchedulerService> logger, int tenantId);
 
     [LoggerMessage(Level = LogLevel.Error, Message = "error while scheduling backups")]
-    public static partial void ErrorBackups(this ILogger logger, Exception exception);
+    public static partial void ErrorBackups(this ILogger<BackupSchedulerService> logger, Exception exception);
 }

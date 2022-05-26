@@ -51,7 +51,7 @@ public class ChunkedUploaderHandlerService
     private readonly ChunkedUploadSessionHolder _chunkedUploadSessionHolder;
     private readonly ChunkedUploadSessionHelper _chunkedUploadSessionHelper;
     private readonly SocketManager _socketManager;
-    private readonly ILogger _logger;
+    private readonly ILogger<ChunkedUploaderHandlerService> _logger;
 
     public ChunkedUploaderHandlerService(
         ILogger<ChunkedUploaderHandlerService> logger,

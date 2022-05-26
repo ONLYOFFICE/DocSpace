@@ -28,5 +28,5 @@ namespace ASC.Files.Core.Log;
 internal static partial class SharpBoxProviderInfoLogger
 {
     [LoggerMessage(Level = LogLevel.Error, Message = "Sharpbox CheckAccess error")]
-    public static partial void ErrorSharpboxCheckAccess(this ILogger logger, Exception exception);
+    public static partial void ErrorSharpboxCheckAccess(this ILogger<SharpBoxProviderInfo> logger, Exception exception);
 }

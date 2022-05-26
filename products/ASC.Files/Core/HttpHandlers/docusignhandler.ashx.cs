@@ -46,7 +46,7 @@ public class DocuSignHandlerService
         return filesLinkUtility.FilesBaseAbsolutePath + "httphandlers/docusignhandler.ashx";
     }
 
-    private readonly ILogger _log;
+    private readonly ILogger<DocuSignHandlerService> _log;
     private readonly TenantExtra _tenantExtra;
     private readonly DocuSignHelper _docuSignHelper;
     private readonly SecurityContext _securityContext;

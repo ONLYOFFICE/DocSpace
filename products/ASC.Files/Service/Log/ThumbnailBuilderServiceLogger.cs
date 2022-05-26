@@ -28,17 +28,17 @@ namespace ASC.Files.Service.Log;
 internal static partial class ThumbnailBuilderServiceLogger
 {
     [LoggerMessage(Level = LogLevel.Information, Message = "Thumbnail Worker running.")]
-    public static partial void InformationThumbnailWorkerRunnig(this ILogger logger);
-    
+    public static partial void InformationThumbnailWorkerRunnig(this ILogger<ThumbnailBuilderService> logger);
+
     [LoggerMessage(Level = LogLevel.Information, Message = "Thumbnail Worker is stopping.")]
-    public static partial void InformationThumbnailWorkerStopping(this ILogger logger);  
-    
+    public static partial void InformationThumbnailWorkerStopping(this ILogger<ThumbnailBuilderService> logger);
+
     [LoggerMessage(Level = LogLevel.Trace, Message = "Procedure: Start.")]
-    public static partial void TraceProcedureStart(this ILogger logger);   
-    
+    public static partial void TraceProcedureStart(this ILogger<ThumbnailBuilderService> logger);
+
     [LoggerMessage(Level = LogLevel.Trace, Message = "Procedure: Waiting for data. Sleep {frequency}.")]
-    public static partial void TraceProcedureWaiting(this ILogger logger, int frequency);   
-    
+    public static partial void TraceProcedureWaiting(this ILogger<ThumbnailBuilderService> logger, int frequency);
+
     [LoggerMessage(Level = LogLevel.Trace, Message = "Procedure: Finish.")]
-    public static partial void TraceProcedureFinish(this ILogger logger);
+    public static partial void TraceProcedureFinish(this ILogger<ThumbnailBuilderService> logger);
 }

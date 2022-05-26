@@ -42,7 +42,7 @@ public class CouponManager : IDisposable
     private readonly Uri _baseAddress;
     private readonly string _apiVersion;
     private readonly SemaphoreSlim _semaphoreSlim;
-    private readonly ILogger _logger;
+    private readonly ILogger<CouponManager> _logger;
 
     public CouponManager(ILogger<CouponManager> logger, IHttpClientFactory clientFactory)
     {

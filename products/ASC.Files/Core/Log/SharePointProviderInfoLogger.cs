@@ -28,5 +28,5 @@ namespace ASC.Files.Core.Log;
 internal static partial class SharePointProviderInfoLogger
 {
     [LoggerMessage(Level = LogLevel.Warning, Message = "CheckAccess")]
-    public static partial void WarningCheckAccess(this ILogger logger, Exception exception);
+    public static partial void WarningCheckAccess(this ILogger<SharePointProviderInfo> logger, Exception exception);
 }

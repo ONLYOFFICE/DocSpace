@@ -28,5 +28,5 @@ namespace ASC.Data.Storage.Log;
 internal static partial class RackspaceCloudStorageLogger
 {
     [LoggerMessage(Level = LogLevel.Error, Message = "The invalidation {path} failed")]
-    public static partial void ErrorInvalidationFailed(this ILogger logger, string path, Exception exception); 
+    public static partial void ErrorInvalidationFailed(this ILogger<RackspaceCloudStorage> logger, string path, Exception exception);
 }

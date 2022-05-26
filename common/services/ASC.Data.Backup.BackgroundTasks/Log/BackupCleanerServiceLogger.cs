@@ -29,26 +29,26 @@ namespace ASC.Data.Backup.BackgroundTasks.Log;
 internal static partial class BackupCleanerServiceLogger
 {
     [LoggerMessage(Level = LogLevel.Debug, Message = "BackupCleanerService is starting.")]
-    public static partial void DebugBackupCleanerServiceStarting(this ILogger logger);
+    public static partial void DebugBackupCleanerServiceStarting(this ILogger<BackupCleanerService> logger);
 
     [LoggerMessage(Level = LogLevel.Debug, Message = "BackupCleanerService background task is stopping.")]
-    public static partial void DebugBackupCleanerServiceStopping(this ILogger logger);
+    public static partial void DebugBackupCleanerServiceStopping(this ILogger<BackupCleanerService> logger);
 
     [LoggerMessage(Level = LogLevel.Debug, Message = "BackupCleanerService background task is doing background work.")]
-    public static partial void DebugBackupCleanerServiceDoingWork(this ILogger logger);  
-    
+    public static partial void DebugBackupCleanerServiceDoingWork(this ILogger<BackupCleanerService> logger);
+
     [LoggerMessage(Level = LogLevel.Debug, Message = "BackupCleanerService background task with instance id {instanceId} is't active.")]
-    public static partial void DebugBackupCleanerServiceIsNotActive(this ILogger logger, string instanceId);
+    public static partial void DebugBackupCleanerServiceIsNotActive(this ILogger<BackupCleanerService> logger, string instanceId);
 
     [LoggerMessage(Level = LogLevel.Debug, Message = "started to clean expired backups")]
-    public static partial void DebugStartedClean(this ILogger logger);
+    public static partial void DebugStartedClean(this ILogger<BackupCleanerService> logger);
 
     [LoggerMessage(Level = LogLevel.Debug, Message = "found {count} backups which are expired")]
-    public static partial void DebugFoundBackups(this ILogger logger, int count);  
-    
+    public static partial void DebugFoundBackups(this ILogger<BackupCleanerService> logger, int count);
+
     [LoggerMessage(Level = LogLevel.Debug, Message = "only last {storedCount} scheduled backup records are to keep for tenant {tenantId} so {removeCount} records must be removed")]
-    public static partial void DebugOnlyLast(this ILogger logger, int storedCount, int tenantId, int removeCount);
+    public static partial void DebugOnlyLast(this ILogger<BackupCleanerService> logger, int storedCount, int tenantId, int removeCount);
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "can't remove backup record {id}")]
-    public static partial void WarningCanNotRemoveBackup(this ILogger logger, Guid id, Exception exception);
+    public static partial void WarningCanNotRemoveBackup(this ILogger<BackupCleanerService> logger, Guid id, Exception exception);
 }

@@ -30,7 +30,7 @@ namespace ASC.Api.Core.Middleware;
 public class PaymentFilter : IResourceFilter
 {
     private readonly TenantExtra _tenantExtra;
-    private readonly ILogger _logger;
+    private readonly ILogger<PaymentFilter> _logger;
 
     public PaymentFilter(ILogger<PaymentFilter> logger, TenantExtra tenantExtra)
     {

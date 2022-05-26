@@ -28,5 +28,5 @@ namespace ASC.Core.Common.Log;
 internal static partial class CouponManagerLogger
 {
     [LoggerMessage(Level = LogLevel.Critical, Message = "CouponManager")]
-    public static partial void CriticalCouponManager(this ILogger logger, Exception exception);
+    public static partial void CriticalCouponManager(this ILogger<CouponManager> logger, Exception exception);
 }

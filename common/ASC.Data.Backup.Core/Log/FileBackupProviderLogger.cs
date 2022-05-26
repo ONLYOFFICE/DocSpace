@@ -28,11 +28,14 @@ namespace ASC.Data.Backup.Core.Log;
 internal static partial class FileBackupProviderLogger
 {
     [LoggerMessage(Level = LogLevel.Error, Message = "Can not backup file {path}")]
-    public static partial void ErrorCanNotBackupFile(this ILogger logger, string path, Exception exception);
+    public static partial void ErrorCanNotBackupFile(this ILogger<FileBackupProvider> logger, string path, Exception exception);
 
     [LoggerMessage(Level = LogLevel.Error, Message = "Can not restore file {file}")]
-    public static partial void ErrorCanNotRestoreFile(this ILogger logger, XElement file, Exception exception);
+    public static partial void ErrorCanNotRestoreFile(this ILogger<FileBackupProvider> logger, XElement file, Exception exception);
 
     [LoggerMessage(Level = LogLevel.Error, Message = "InvokeProgressChanged")]
-    public static partial void ErrorInvokeProgressChanged(this ILogger logger, Exception exception);
+    public static partial void ErrorInvokeProgressChanged(this ILogger<FileBackupProvider> logger, Exception exception);
+
+    [LoggerMessage(Level = LogLevel.Debug, Message = "backup file {path}")]
+    public static partial void DebugBackupFile(this ILogger<FileBackupProvider> logger, string path);
 }

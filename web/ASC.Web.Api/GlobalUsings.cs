@@ -41,6 +41,7 @@ global using ASC.Api.Core;
 global using ASC.Api.Core.Convention;
 global using ASC.Api.Core.Extensions;
 global using ASC.Api.Settings;
+global using ASC.Api.Settings.Smtp;
 global using ASC.Api.Utils;
 global using ASC.AuditTrail;
 global using ASC.AuditTrail.Models;
@@ -121,7 +122,6 @@ global using MailKit.Security;
 
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Mvc;
-global using Microsoft.AspNetCore.Mvc.ModelBinding;
 global using Microsoft.Extensions.Caching.Memory;
 global using Microsoft.Extensions.Hosting.WindowsServices;
 global using Microsoft.Extensions.Logging;

@@ -37,7 +37,7 @@ public class MessagesRepository : IDisposable
     private readonly IDictionary<string, EventMessage> _cache;
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly IMapper _mapper;
-    private readonly ILogger _logger;
+    private readonly ILogger<MessagesRepository> _logger;
     private readonly Timer _timer;
     private Parser _parser;
 

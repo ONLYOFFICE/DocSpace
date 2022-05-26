@@ -31,7 +31,7 @@ public class IPSecurity
 {
     public bool IpSecurityEnabled { get; }
 
-    private readonly ILogger _logger;
+    private readonly ILogger<IPSecurity> _logger;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly AuthContext _authContext;
     private readonly TenantManager _tenantManager;
@@ -45,9 +45,9 @@ public class IPSecurity
         AuthContext authContext,
         TenantManager tenantManager,
         IPRestrictionsService iPRestrictionsService,
-        ILoggerProvider options)
+        ILogger<IPSecurity> logger)
     {
-        _logger = options.CreateLogger("ASC.IPSecurity");
+        _logger = logger;
         _httpContextAccessor = httpContextAccessor;
         _authContext = authContext;
         _tenantManager = tenantManager;

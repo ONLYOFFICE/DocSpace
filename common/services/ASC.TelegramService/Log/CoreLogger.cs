@@ -28,5 +28,5 @@ namespace ASC.TelegramService.Log;
 internal static partial class CoreLogger
 {
     [LoggerMessage(Level = LogLevel.Debug, Message = "Couldn't handle ({text}) message")]
-    public static partial void DebugCouldntHandle(this ILogger logger, string text, Exception exception);
+    public static partial void DebugCouldntHandle(this ILogger<CommandModule> logger, string text, Exception exception);
 }

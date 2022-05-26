@@ -32,7 +32,7 @@ public class SmsSender
     private readonly IConfiguration _configuration;
     private readonly TenantManager _tenantManager;
     private readonly SmsProviderManager _smsProviderManager;
-    private readonly ILogger _log;
+    private readonly ILogger<SmsSender> _log;
 
     public SmsSender(
         IConfiguration configuration,

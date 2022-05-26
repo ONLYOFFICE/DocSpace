@@ -28,5 +28,5 @@ namespace ASC.Web.Core.Log;
 internal static partial class StudioNotifyHelperLogger
 {
     [LoggerMessage(Level = LogLevel.Warning, Message = "Free tenant {tenantId} for today is trying to send {tryCount} more letters without checking activation. Sent {mayTake}")]
-    public static partial void WarningFreeTenant(this ILogger logger, int tenantId, int tryCount, int mayTake);
+    public static partial void WarningFreeTenant(this ILogger<StudioNotifyHelper> logger, int tenantId, int tryCount, int mayTake);
 }

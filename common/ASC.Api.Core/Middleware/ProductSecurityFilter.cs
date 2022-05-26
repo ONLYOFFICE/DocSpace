@@ -30,7 +30,7 @@ namespace ASC.Api.Core.Middleware;
 public class ProductSecurityFilter : IResourceFilter
 {
     private static readonly IDictionary<string, Guid> _products;
-    private readonly ILogger _logger;
+    private readonly ILogger<ProductSecurityFilter> _logger;
     private readonly WebItemSecurity _webItemSecurity;
     private readonly AuthContext _authContext;
 

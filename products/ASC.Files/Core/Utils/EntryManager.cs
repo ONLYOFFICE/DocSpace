@@ -276,7 +276,7 @@ public class EntryManager
     private readonly TenantManager _tenantManager;
     private readonly SettingsManager _settingsManager;
     private readonly IServiceProvider _serviceProvider;
-    private readonly ILogger _logger;
+    private readonly ILogger<EntryManager> _logger;
     private readonly IHttpClientFactory _clientFactory;
 
     public EntryManager(

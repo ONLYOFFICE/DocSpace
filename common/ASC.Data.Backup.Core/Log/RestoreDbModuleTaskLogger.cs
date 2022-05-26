@@ -28,20 +28,20 @@ namespace ASC.Data.Backup.Core.Log;
 internal static partial class RestoreDbModuleTaskLogger
 {
     [LoggerMessage(Level = LogLevel.Debug, Message = "begin restore data for module {moduleName}")]
-    public static partial void DebugBeginRestoreDataForModule(this ILogger logger, ModuleName moduleName);
+    public static partial void DebugBeginRestoreDataForModule(this ILogger<RestoreDbModuleTask> logger, ModuleName moduleName);
 
     [LoggerMessage(Level = LogLevel.Debug, Message = "begin restore table {tableName}")]
-    public static partial void DebugBeginRestoreTable(this ILogger logger, string tableName);
+    public static partial void DebugBeginRestoreTable(this ILogger<RestoreDbModuleTask> logger, string tableName);
 
     [LoggerMessage(Level = LogLevel.Debug, Message = "{rows} rows inserted for table {tableName}")]
-    public static partial void DebugRowsInserted(this ILogger logger, int rows, string tableName);
+    public static partial void DebugRowsInserted(this ILogger<RestoreDbModuleTask> logger, int rows, string tableName);
 
     [LoggerMessage(Level = LogLevel.Debug, Message = "end restore data for module {moduleName}")]
-    public static partial void DebugEndRestoreDataForModule(this ILogger logger, ModuleName moduleName);
+    public static partial void DebugEndRestoreDataForModule(this ILogger<RestoreDbModuleTask> logger, ModuleName moduleName);
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Can't create command to insert row to {tableInfo} with values [{row}]")]
-    public static partial void WarningCantCreateCommand(this ILogger logger, TableInfo tableInfo, DataRowInfo row);
+    public static partial void WarningCantCreateCommand(this ILogger<RestoreDbModuleTask> logger, TableInfo tableInfo, DataRowInfo row);
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Table {name} does not contain tenant id column. Can't apply low importance relations on such tables.")]
-    public static partial void WarningTableDoesNotContainTenantIdColumn(this ILogger logger, string name);
+    public static partial void WarningTableDoesNotContainTenantIdColumn(this ILogger<RestoreDbModuleTask> logger, string name);
 }

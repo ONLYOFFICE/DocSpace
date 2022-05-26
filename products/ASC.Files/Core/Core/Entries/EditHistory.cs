@@ -30,7 +30,7 @@ namespace ASC.Files.Core;
 [DebuggerDisplay("{ID} v{Version}")]
 public class EditHistory
 {
-    private readonly ILogger _logger;
+    private readonly ILogger<EditHistory> _logger;
     private readonly TenantUtil _tenantUtil;
     private readonly UserManager _userManager;
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;

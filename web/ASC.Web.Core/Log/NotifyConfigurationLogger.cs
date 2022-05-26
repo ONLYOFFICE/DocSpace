@@ -28,11 +28,11 @@ namespace ASC.Web.Core.Log;
 internal static partial class NotifyConfigurationLogger
 {
     [LoggerMessage(Level = LogLevel.Error, Message = "ProductSecurityInterceptor")]
-    public static partial void ErrorProductSecurityInterceptor(this ILogger logger, Exception exception);  
-    
+    public static partial void ErrorProductSecurityInterceptor(this ILogger<ProductSecurityInterceptor> logger, Exception exception);
+
     [LoggerMessage(Level = LogLevel.Error, Message = "AddLetterLogo")]
-    public static partial void ErrorAddLetterLogo(this ILogger logger, Exception exception);    
-    
+    public static partial void ErrorAddLetterLogo(this ILogger<ProductSecurityInterceptor> logger, Exception exception);
+
     [LoggerMessage(Level = LogLevel.Error, Message = "NotifyClientRegisterCallback")]
-    public static partial void ErrorNotifyClientRegisterCallback(this ILogger logger, Exception exception);
+    public static partial void ErrorNotifyClientRegisterCallback(this ILogger<ProductSecurityInterceptor> logger, Exception exception);
 }

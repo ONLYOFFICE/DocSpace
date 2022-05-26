@@ -28,5 +28,5 @@ namespace ASC.Core.Common.Log;
 internal static partial class PushSenderSingLogger
 {
     [LoggerMessage(Level = LogLevel.Debug, Message = "push sender endpoint is not configured!")]
-    public static partial void DebugPushSender(this ILogger logger);
+    public static partial void DebugPushSender(this ILogger<PushSenderSink> logger);
 }

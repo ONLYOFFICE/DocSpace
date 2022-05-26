@@ -28,8 +28,8 @@ namespace ASC.Data.Backup.Core.Log;
 internal static partial class FilesModuleSpecificsLogger
 {
     [LoggerMessage(Level = LogLevel.Error, Message = "Can not prepare data {data}")]
-    public static partial void ErrorCanNotPrepareData(this ILogger logger, string data, Exception exception);
+    public static partial void ErrorCanNotPrepareData(this ILogger<ModuleProvider> logger, string data, Exception exception);
 
     [LoggerMessage(Level = LogLevel.Error, Message = "Can not prepare value {value}")]
-    public static partial void ErrorCanNotPrepareValue(this ILogger logger, object value, Exception exception);
+    public static partial void ErrorCanNotPrepareValue(this ILogger<ModuleProvider> logger, object value, Exception exception);
 }

@@ -28,11 +28,11 @@ namespace ASC.Web.Core.Log;
 internal static partial class UserPhotoManagerLogger
 {
     [LoggerMessage(Level = LogLevel.Error, Message = "LoadDiskCache")]
-    public static partial void ErrorLoadDiskCache(this ILogger logger, Exception exception);  
-    
+    public static partial void ErrorLoadDiskCache(this ILogger<UserPhotoManager> logger, Exception exception);
+
     [LoggerMessage(Level = LogLevel.Error, Message = "RemovePhoto")]
-    public static partial void ErrorRemovePhoto(this ILogger logger, Exception exception);
-    
+    public static partial void ErrorRemovePhoto(this ILogger<UserPhotoManager> logger, Exception exception);
+
     [LoggerMessage(Level = LogLevel.Error, Message = "GetUserPhotoData")]
-    public static partial void ErrorGetUserPhotoData(this ILogger logger, Exception exception);
+    public static partial void ErrorGetUserPhotoData(this ILogger<UserPhotoManager> logger, Exception exception);
 }

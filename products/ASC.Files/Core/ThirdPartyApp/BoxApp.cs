@@ -41,7 +41,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
     public string ClientSecret => this["boxAppSecretKey"];
     public bool IsEnabled => !string.IsNullOrEmpty(ClientID) && !string.IsNullOrEmpty(ClientSecret);
 
-    private readonly ILogger _logger;
+    private readonly ILogger<BoxApp> _logger;
     private readonly PathProvider _pathProvider;
     private readonly TenantUtil _tenantUtil;
     private readonly AuthContext _authContext;

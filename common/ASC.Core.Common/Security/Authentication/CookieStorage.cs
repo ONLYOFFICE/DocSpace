@@ -34,7 +34,7 @@ public class CookieStorage
     private readonly InstanceCrypto _instanceCrypto;
     private readonly TenantCookieSettingsHelper _tenantCookieSettingsHelper;
     private readonly HttpContext _httpContext;
-    private readonly ILogger _logger;
+    private readonly ILogger<CookieStorage> _logger;
 
     public CookieStorage(
         InstanceCrypto instanceCrypto,

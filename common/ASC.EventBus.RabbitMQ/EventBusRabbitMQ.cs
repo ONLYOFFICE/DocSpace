@@ -33,7 +33,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
     const string AUTOFAC_SCOPE_NAME = "asc_event_bus";
 
     private readonly IRabbitMQPersistentConnection _persistentConnection;
-    private readonly ILogger _logger;
+    private readonly ILogger<EventBusRabbitMQ> _logger;
     private readonly IEventBusSubscriptionsManager _subsManager;
     private readonly ILifetimeScope _autofac;
     private readonly int _retryCount;

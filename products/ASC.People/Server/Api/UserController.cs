@@ -39,7 +39,7 @@ public class UserController : PeopleControllerBase
     private readonly CustomNamingPeople _customNamingPeople;
     private readonly EmployeeDtoHelper _employeeDtoHelper;
     private readonly EmployeeFullDtoHelper _employeeFullDtoHelper;
-    private readonly ILogger _logger;
+    private readonly ILogger<UserController> _logger;
     private readonly PasswordHasher _passwordHasher;
     private readonly QueueWorkerReassign _queueWorkerReassign;
     private readonly QueueWorkerRemove _queueWorkerRemove;

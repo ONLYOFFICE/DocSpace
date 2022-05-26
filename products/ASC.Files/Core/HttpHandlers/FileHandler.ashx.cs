@@ -74,7 +74,7 @@ public class FileHandlerService
     private readonly TempStream _tempStream;
     private readonly UserManager _userManager;
     private readonly SocketManager _socketManager;
-    private readonly ILogger _logger;
+    private readonly ILogger<FileHandlerService> _logger;
     private readonly IHttpClientFactory _clientFactory;
 
     public FileHandlerService(

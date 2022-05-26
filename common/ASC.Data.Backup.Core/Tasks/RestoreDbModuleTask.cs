@@ -26,18 +26,19 @@
 
 namespace ASC.Data.Backup.Tasks;
 
-internal class RestoreDbModuleTask : PortalTaskBase
+public class RestoreDbModuleTask : PortalTaskBase
 {
     private const int _transactionLength = 10000;
 
     private readonly IDataReadOperator _reader;
+    private readonly ILogger<RestoreDbModuleTask> _logger;
     private readonly IModuleSpecifics _module;
     private readonly ColumnMapper _columnMapper;
     private readonly bool _replaceDate;
     private readonly bool _dump;
 
     public RestoreDbModuleTask(
-        ILogger options,
+        ILogger<RestoreDbModuleTask> logger,
         IModuleSpecifics module,
         IDataReadOperator reader,
         ColumnMapper columnMapper,
@@ -47,11 +48,12 @@ internal class RestoreDbModuleTask : PortalTaskBase
         StorageFactory storageFactory,
         StorageFactoryConfig storageFactoryConfig,
         ModuleProvider moduleProvider)
-        : base(factory, options, storageFactory, storageFactoryConfig, moduleProvider)
+        : base(factory, logger, storageFactory, storageFactoryConfig, moduleProvider)
     {
         _reader = reader ?? throw new ArgumentNullException(nameof(reader));
         _columnMapper = columnMapper ?? throw new ArgumentNullException(nameof(columnMapper));
         DbFactory = factory ?? throw new ArgumentNullException(nameof(factory));
+        _logger = logger;
         _module = module;
         _replaceDate = replaceDate;
         _dump = dump;
@@ -60,14 +62,14 @@ internal class RestoreDbModuleTask : PortalTaskBase
 
     public override void RunJob()
     {
-        Logger.DebugBeginRestoreDataForModule(_module.ModuleName);
+        _logger.DebugBeginRestoreDataForModule(_module.ModuleName);
         SetStepsCount(_module.Tables.Count(t => !_ignoredTables.Contains(t.Name)));
 
         using (var connection = DbFactory.OpenConnection())
         {
             foreach (var table in _module.GetTablesOrdered().Where(t => !_ignoredTables.Contains(t.Name) && t.InsertMethod != InsertMethod.None))
             {
-                Logger.DebugBeginRestoreTable(table.Name);
+                _logger.DebugBeginRestoreTable(table.Name);
 
                 var transactionsCommited = 0;
                 var rowsInserted = 0;
@@ -79,11 +81,11 @@ internal class RestoreDbModuleTask : PortalTaskBase
                     onFailure: error => { throw ThrowHelper.CantRestoreTable(table.Name, error); });
 
                 SetStepCompleted();
-                Logger.DebugRowsInserted(rowsInserted, table.Name);
+                _logger.DebugRowsInserted(rowsInserted, table.Name);
             }
         }
 
-        Logger.DebugEndRestoreDataForModule(_module.ModuleName);
+        _logger.DebugEndRestoreDataForModule(_module.ModuleName);
     }
 
     public string[] ExecuteArray(DbCommand command)
@@ -163,7 +165,7 @@ internal class RestoreDbModuleTask : PortalTaskBase
                     row);
                 if (insertCommand == null)
                 {
-                    Logger.WarningCantCreateCommand(tableInfo, row);
+                    _logger.WarningCantCreateCommand(tableInfo, row);
                     _columnMapper.Rollback();
 
                     continue;
@@ -185,7 +187,7 @@ internal class RestoreDbModuleTask : PortalTaskBase
                 {
                     if (!relation.Item2.HasTenantColumn())
                     {
-                        Logger.WarningTableDoesNotContainTenantIdColumn(relation.Item2.Name);
+                        _logger.WarningTableDoesNotContainTenantIdColumn(relation.Item2.Name);
 
                         continue;
                     }

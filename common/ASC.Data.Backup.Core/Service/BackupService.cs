@@ -29,7 +29,7 @@ namespace ASC.Data.Backup.Services;
 [Scope]
 public class BackupService : IBackupService
 {
-    private readonly ILogger _logger;
+    private readonly ILogger<BackupService> _logger;
     private readonly BackupStorageFactory _backupStorageFactory;
     private readonly BackupWorker _backupWorker;
     private readonly BackupRepository _backupRepository;

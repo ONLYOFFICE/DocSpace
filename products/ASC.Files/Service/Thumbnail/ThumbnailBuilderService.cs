@@ -31,7 +31,7 @@ public class ThumbnailBuilderService : BackgroundService
 {
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly ThumbnailSettings _thumbnailSettings;
-    private readonly ILogger _logger;
+    private readonly ILogger<ThumbnailBuilderService> _logger;
     private readonly BuilderQueue<int> _builderQueue;
 
     public ThumbnailBuilderService(

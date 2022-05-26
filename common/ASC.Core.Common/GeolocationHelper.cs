@@ -31,12 +31,12 @@ namespace ASC.Geolocation;
 public class GeolocationHelper
 {
     public string Dbid { get; set; }
-    public ILogger Logger { get; }
+    private readonly ILogger<GeolocationHelper> _logger;
     private readonly DbContext _dbContext;
 
     public GeolocationHelper(DbContextManager<DbContext> dbContext, ILogger<GeolocationHelper> logger)
     {
-        Logger = logger;
+        _logger = logger;
         _dbContext = dbContext.Get(Dbid);
     }
 
@@ -64,7 +64,7 @@ public class GeolocationHelper
         }
         catch (Exception error)
         {
-            Logger.ErrorGetIPGeolocation(error);
+            _logger.ErrorGetIPGeolocation(error);
         }
 
         return IPGeolocationInfo.Default;

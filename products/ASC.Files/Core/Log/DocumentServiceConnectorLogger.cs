@@ -30,38 +30,38 @@ namespace ASC.Files.Core.Log;
 internal static partial class DocumentServiceConnectorLogger
 {
     [LoggerMessage(Level = LogLevel.Debug, Message = "DocService convert from {fromExtension} to {toExtension} - {documentUri}, DocServiceConverterUrl:{docServiceConverterUrl}")]
-    public static partial void DebugDocServiceConvert(this ILogger logger, string fromExtension, string toExtension, string documentUri, string docServiceConverterUrl);
+    public static partial void DebugDocServiceConvert(this ILogger<DocumentServiceConnector> logger, string fromExtension, string toExtension, string documentUri, string docServiceConverterUrl);
 
     [LoggerMessage(Level = LogLevel.Debug, Message = "DocService command {method} fileId '{fileId}' docKey '{docKey}' callbackUrl '{callbackUrl}' users '{users}' meta '{meta}'")]
-    public static partial void DebugDocServiceCommand(this ILogger logger, CommandMethod method, string fileId, string docKey, string callbackUrl, string users, string meta);
+    public static partial void DebugDocServiceCommand(this ILogger<DocumentServiceConnector> logger, CommandMethod method, string fileId, string docKey, string callbackUrl, string users, string meta);
 
     [LoggerMessage(Level = LogLevel.Debug, Message = "DocService builder requestKey {requestKey} async {isAsync}")]
-    public static partial void DebugDocServiceBuilderRequestKey(this ILogger logger, string requestKey, bool isAsync);
+    public static partial void DebugDocServiceBuilderRequestKey(this ILogger<DocumentServiceConnector> logger, string requestKey, bool isAsync);
 
     [LoggerMessage(Level = LogLevel.Debug, Message = "DocService request version")]
-    public static partial void DebugDocServiceRequestVersion(this ILogger logger);  
-    
+    public static partial void DebugDocServiceRequestVersion(this ILogger<DocumentServiceConnector> logger);
+
     [LoggerMessage(Level = LogLevel.Error, Message = "DocService command error")]
-    public static partial void ErrorDocServiceCommandError(this ILogger logger, Exception exception);   
-    
+    public static partial void ErrorDocServiceCommandError(this ILogger<DocumentServiceConnector> logger, Exception exception);
+
     [LoggerMessage(Level = LogLevel.Error, Message = "Healthcheck DocService check error")]
-    public static partial void ErrorDocServiceHealthcheck(this ILogger logger, Exception exception);
+    public static partial void ErrorDocServiceHealthcheck(this ILogger<DocumentServiceConnector> logger, Exception exception);
 
     [LoggerMessage(Level = LogLevel.Error, Message = "Converter DocService check error")]
-    public static partial void ErrorConverterDocServiceCheckError(this ILogger logger, Exception exception);  
-    
+    public static partial void ErrorConverterDocServiceCheckError(this ILogger<DocumentServiceConnector> logger, Exception exception);
+
     [LoggerMessage(Level = LogLevel.Error, Message = "Document DocService check error")]
-    public static partial void ErrorDocumentDocServiceCheckError(this ILogger logger, Exception exception);
+    public static partial void ErrorDocumentDocServiceCheckError(this ILogger<DocumentServiceConnector> logger, Exception exception);
 
     [LoggerMessage(Level = LogLevel.Error, Message = "Command DocService check error")]
-    public static partial void ErrorCommandDocServiceCheckError(this ILogger logger, Exception exception);   
-    
+    public static partial void ErrorCommandDocServiceCheckError(this ILogger<DocumentServiceConnector> logger, Exception exception);
+
     [LoggerMessage(Level = LogLevel.Error, Message = "DocService check error")]
-    public static partial void ErrorDocServiceCheck(this ILogger logger, Exception exception);
+    public static partial void ErrorDocServiceCheck(this ILogger<DocumentServiceConnector> logger, Exception exception);
 
     [LoggerMessage(Level = LogLevel.Error, Message = "DocService error")]
-    public static partial void ErrorDocServiceError(this ILogger logger, Exception exception);
+    public static partial void ErrorDocServiceError(this ILogger<DocumentServiceConnector> logger, Exception exception);
 
     [LoggerMessage(Level = LogLevel.Error, Message = "DocService command response: '{error}' {errorString}")]
-    public static partial void ErrorDocServiceCommandResponse(this ILogger logger, ErrorTypes error, string errorString);
+    public static partial void ErrorDocServiceCommandResponse(this ILogger<DocumentServiceConnector> logger, ErrorTypes error, string errorString);
 }

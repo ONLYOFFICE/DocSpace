@@ -201,7 +201,7 @@ public class UserPhotoManager
     private readonly StorageFactory _storageFactory;
     private readonly UserPhotoManagerCache _userPhotoManagerCache;
     private readonly SettingsManager _settingsManager;
-    private readonly ILogger _log;
+    private readonly ILogger<UserPhotoManager> _log;
 
     private Tenant _tenant;
     public Tenant Tenant { get { return _tenant ??= _tenantManager.GetCurrentTenant(); } }

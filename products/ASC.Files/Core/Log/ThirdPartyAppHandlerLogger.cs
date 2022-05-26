@@ -28,11 +28,11 @@ namespace ASC.Files.Core.Log;
 internal static partial class ThirdPartyAppHandlerLogger
 {
     [LoggerMessage(Level = LogLevel.Debug, Message = "ThirdPartyApp: handler request - {url}")]
-    public static partial void DebugThirdPartyAppHandlerRequest(this ILogger logger, Uri url);
+    public static partial void DebugThirdPartyAppHandlerRequest(this ILogger<ThirdPartyAppHandlerService> logger, Uri url);
 
     [LoggerMessage(Level = LogLevel.Debug, Message = "ThirdPartyApp: app - {app}")]
-    public static partial void DebugThirdPartyAppApp(this ILogger logger, IThirdPartyApp app); 
-    
+    public static partial void DebugThirdPartyAppApp(this ILogger<ThirdPartyAppHandlerService> logger, IThirdPartyApp app);
+
     [LoggerMessage(Level = LogLevel.Error, Message = "ThirdPartyApp")]
-    public static partial void ErrorThirdPartyApp(this ILogger logger, Exception exception);
+    public static partial void ErrorThirdPartyApp(this ILogger<ThirdPartyAppHandlerService> logger, Exception exception);
 }

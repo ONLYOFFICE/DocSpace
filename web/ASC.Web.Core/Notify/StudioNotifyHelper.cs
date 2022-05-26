@@ -45,7 +45,7 @@ public class StudioNotifyHelper
     private readonly TenantExtra _tenantExtra;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly WebImageSupplier _webImageSupplier;
-    private readonly ILogger _logger;
+    private readonly ILogger<StudioNotifyHelper> _logger;
 
     public StudioNotifyHelper(
         StudioNotifySource studioNotifySource,

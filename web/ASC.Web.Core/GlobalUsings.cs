@@ -91,6 +91,7 @@ global using ASC.Security.Cryptography;
 global using ASC.VoipService.Dao;
 global using ASC.Web.Core;
 global using ASC.Web.Core.Helpers;
+global using ASC.Web.Core.HttpHandlers;
 global using ASC.Web.Core.Log;
 global using ASC.Web.Core.ModuleManagement.Common;
 global using ASC.Web.Core.Notify;
@@ -105,6 +106,7 @@ global using ASC.Web.Core.WebZones;
 global using ASC.Web.Core.WhiteLabel;
 global using ASC.Web.Studio.Core;
 global using ASC.Web.Studio.Core.Notify;
+global using ASC.Web.Studio.UserControls.CustomNavigation;
 global using ASC.Web.Studio.UserControls.Management;
 global using ASC.Web.Studio.UserControls.Management.SingleSignOnSettings;
 global using ASC.Web.Studio.UserControls.Statistics;
@@ -113,7 +115,6 @@ global using ASC.Web.Studio.Utility;
 global using AutoMapper;
 
 global using Google.Authenticator;
-global using Google.Protobuf;
 
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.AspNetCore.Hosting;

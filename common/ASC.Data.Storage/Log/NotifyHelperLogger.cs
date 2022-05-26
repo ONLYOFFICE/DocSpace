@@ -28,5 +28,5 @@ namespace ASC.Data.Storage.Log;
 internal static partial class NotifyHelperLogger
 {
     [LoggerMessage(Level = LogLevel.Warning, Message = "Error while sending notification")]
-    public static partial void WarningErrorWhileSending(this ILogger logger, Exception exception);
+    public static partial void WarningErrorWhileSending(this ILogger<NotifyHelper> logger, Exception exception);
 }

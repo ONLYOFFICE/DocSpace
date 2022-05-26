@@ -103,7 +103,7 @@ public class StorageHelper
     private readonly UserPhotoManager _userPhotoManager;
     private readonly StorageFactory _storageFactory;
     private readonly TenantManager _tenantManager;
-    private readonly ILogger _logger;
+    private readonly ILogger<StorageHelper> _logger;
 
     public StorageHelper(UserPhotoManager userPhotoManager, StorageFactory storageFactory, TenantManager tenantManager, ILogger<StorageHelper> logger)
     {

@@ -125,7 +125,7 @@ public class FFmpegService
     private readonly string _fFmpegPath;
     private readonly string _fFmpegArgs;
 
-    private readonly ILogger _logger;
+    private readonly ILogger<FFmpegService> _logger;
 
     private ProcessStartInfo PrepareFFmpeg(string inputFormat)
     {

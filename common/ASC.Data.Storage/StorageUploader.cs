@@ -35,7 +35,7 @@ public class StorageUploader
     private readonly IServiceProvider _serviceProvider;
     private readonly TempStream _tempStream;
     private readonly ICacheNotify<MigrationProgress> _cacheMigrationNotify;
-    private readonly ILogger _logger;
+    private readonly ILogger<StorageUploader> _logger;
 
     static StorageUploader()
     {
@@ -98,7 +98,7 @@ public class StorageUploader
 public class MigrateOperation : DistributedTaskProgress
 {
     private static readonly string _configPath;
-    private readonly ILogger _logger;
+    private readonly ILogger<StorageUploader> _logger;
     private readonly IEnumerable<string> _modules;
     private readonly StorageSettings _settings;
     private readonly int _tenantId;
@@ -120,7 +120,7 @@ public class MigrateOperation : DistributedTaskProgress
         StorageSettings settings,
         StorageFactoryConfig storageFactoryConfig,
         TempStream tempStream,
-        ILogger logger)
+        ILogger<StorageUploader> logger)
     {
         Id = id;
         Status = DistributedTaskStatus.Created;

@@ -30,7 +30,7 @@ public class DefaultRabbitMQPersistentConnection
     : IRabbitMQPersistentConnection
 {
     private readonly IConnectionFactory _connectionFactory;
-    private readonly ILogger _logger;
+    private readonly ILogger<DefaultRabbitMQPersistentConnection> _logger;
     private readonly int _retryCount;
     private IConnection _connection;
     private bool _disposed;

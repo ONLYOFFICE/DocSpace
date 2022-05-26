@@ -31,7 +31,7 @@ internal class SharpBoxProviderInfo : IProviderInfo
 {
     public int ID { get; set; }
     public Guid Owner { get; set; }
-    public ILogger Logger { get; private set; }
+    private readonly ILogger<SharpBoxProviderInfo> _logger;
 
     private nSupportedCloudConfigurations _providerKey;
     public AuthData AuthData { get; set; }
@@ -39,7 +39,7 @@ internal class SharpBoxProviderInfo : IProviderInfo
     public SharpBoxProviderInfo(SharpBoxStorageDisposableWrapper storageDisposableWrapper, ILogger<SharpBoxProviderInfo> logger)
     {
         _wrapper = storageDisposableWrapper;
-        Logger = logger;
+        _logger = logger;
     }
 
     public void Dispose()
@@ -86,7 +86,7 @@ internal class SharpBoxProviderInfo : IProviderInfo
         }
         catch (SharpBoxException ex)
         {
-            Logger.ErrorSharpboxCheckAccess(ex);
+            _logger.ErrorSharpboxCheckAccess(ex);
 
             return Task.FromResult(false);
         }

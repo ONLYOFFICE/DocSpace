@@ -61,7 +61,7 @@ public class DistributedTaskQueue
     private readonly IServiceProvider _serviceProvider;
     private readonly ICacheNotify<DistributedTaskCancelation> _cancellationCacheNotify;
     private readonly IDistributedCache _distributedCache;
-    private readonly ILogger _logger;
+    private readonly ILogger<DistributedTaskQueue> _logger;
 
     /// <summary>
     /// setup -1 for infinity thread counts

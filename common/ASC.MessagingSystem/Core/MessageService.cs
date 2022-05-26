@@ -29,7 +29,7 @@ namespace ASC.MessagingSystem.Core;
 [Scope]
 public class MessageService
 {
-    private readonly ILogger _logger;
+    private readonly ILogger<MessageService> _logger;
     private readonly IMessageSender _sender;
     private readonly HttpRequest _request;
     private readonly MessageFactory _messageFactory;

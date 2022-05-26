@@ -265,7 +265,7 @@ public class FileSharingHelper
 [Scope]
 public class FileSharing
 {
-    private readonly ILogger _logger;
+    private readonly ILogger<FileSharing> _logger;
     private readonly Global _global;
     private readonly FileSecurity _fileSecurity;
     private readonly AuthContext _authContext;

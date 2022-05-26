@@ -28,26 +28,26 @@ namespace ASC.EventBus.RabbitMQ.Log;
 internal static partial class DefaultRabbitMQPersistentConnectionLogger
 {
     [LoggerMessage(Level = LogLevel.Critical, Message = "DefaultRabbitMQPersistentConnection")]
-    public static partial void CriticalDefaultRabbitMQPersistentConnection(this ILogger logger, Exception exception);
+    public static partial void CriticalDefaultRabbitMQPersistentConnection(this ILogger<DefaultRabbitMQPersistentConnection> logger, Exception exception);
 
     [LoggerMessage(Level = LogLevel.Information, Message = "RabbitMQ Client is trying to connect")]
-    public static partial void InformationRabbitMQTryingConnect(this ILogger logger);
+    public static partial void InformationRabbitMQTryingConnect(this ILogger<DefaultRabbitMQPersistentConnection> logger);
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "RabbitMQ Client could not connect after {timeOut}s")]
-    public static partial void WarningRabbitMQCouldNotConnect(this ILogger logger, double timeOut, Exception exception);
+    public static partial void WarningRabbitMQCouldNotConnect(this ILogger<DefaultRabbitMQPersistentConnection> logger, double timeOut, Exception exception);
 
     [LoggerMessage(Level = LogLevel.Information, Message = "RabbitMQ Client acquired a persistent connection to '{hostName}' and is subscribed to failure events")]
-    public static partial void InformationRabbitMQAcquiredPersistentConnection(this ILogger logger, string hostName);   
-    
+    public static partial void InformationRabbitMQAcquiredPersistentConnection(this ILogger<DefaultRabbitMQPersistentConnection> logger, string hostName);
+
     [LoggerMessage(Level = LogLevel.Critical, Message = "FATAL ERROR: RabbitMQ connections could not be created and opened")]
-    public static partial void CriticalRabbitMQCouldNotBeCreated(this ILogger logger);
+    public static partial void CriticalRabbitMQCouldNotBeCreated(this ILogger<DefaultRabbitMQPersistentConnection> logger);
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "A RabbitMQ connection is shutdown. Trying to re-connect...")]
-    public static partial void WarningRabbitMQConnectionShutdown(this ILogger logger);
+    public static partial void WarningRabbitMQConnectionShutdown(this ILogger<DefaultRabbitMQPersistentConnection> logger);
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "A RabbitMQ connection throw exception. Trying to re-connect...")]
-    public static partial void WarningRabbitMQConnectionThrowException(this ILogger logger);
+    public static partial void WarningRabbitMQConnectionThrowException(this ILogger<DefaultRabbitMQPersistentConnection> logger);
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "A RabbitMQ connection is on shutdown. Trying to re-connect...")]
-    public static partial void WarningRabbitMQConnectionIsOnShutDown(this ILogger logger);
+    public static partial void WarningRabbitMQConnectionIsOnShutDown(this ILogger<DefaultRabbitMQPersistentConnection> logger);
 }

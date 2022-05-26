@@ -31,7 +31,7 @@ namespace ASC.Web.Files.Services.DocumentService;
 [Scope]
 public class DocumentServiceConnector
 {
-    private readonly ILogger _logger;
+    private readonly ILogger<DocumentServiceConnector> _logger;
     private readonly FilesLinkUtility _filesLinkUtility;
     private readonly FileUtility _fileUtility;
     private readonly IHttpClientFactory _clientFactory;

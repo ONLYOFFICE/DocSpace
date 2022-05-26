@@ -29,7 +29,7 @@ namespace ASC.Core;
 [Scope]
 public class SecurityContext
 {
-    private readonly ILogger _logger;
+    private readonly ILogger<SecurityContext> _logger;
     public IAccount CurrentAccount => _authContext.CurrentAccount;
     public bool IsAuthenticated => _authContext.IsAuthenticated;
 

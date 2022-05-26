@@ -44,7 +44,7 @@ public class SsoHandler
 [Scope]
 public class SsoHandlerService
 {
-    private readonly ILogger _log;
+    private readonly ILogger<SsoHandlerService> _log;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly UserManager _userManager;
     private readonly TenantManager _tenantManager;
@@ -67,7 +67,7 @@ public class SsoHandlerService
 
 
     public SsoHandlerService(
-        ILoggerProvider option,
+        ILogger<SsoHandlerService> log,
         CoreBaseSettings coreBaseSettings,
         UserManager userManager,
         TenantManager tenantManager,
@@ -83,7 +83,7 @@ public class SsoHandlerService
         DisplayUserSettingsHelper displayUserSettingsHelper,
         TenantUtil tenantUtil)
     {
-        _log = option.CreateLogger("ASC.Indexer");
+        _log = log;
         _coreBaseSettings = coreBaseSettings;
         _userManager = userManager;
         _tenantManager = tenantManager;

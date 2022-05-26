@@ -28,23 +28,26 @@ namespace ASC.Data.Backup.Core.Log;
 internal static partial class TransferPortalTaskLogger
 {
     [LoggerMessage(Level = LogLevel.Debug, Message = "begin transfer {tenantId}")]
-    public static partial void DebugBeginTransfer(this ILogger logger, int tenantId);
+    public static partial void DebugBeginTransfer(this ILogger<TransferPortalTask> logger, int tenantId);
 
     [LoggerMessage(Level = LogLevel.Debug, Message = "end transfer {tenantId}")]
-    public static partial void DebugEndTransfer(this ILogger logger, int tenantId);
+    public static partial void DebugEndTransfer(this ILogger<TransferPortalTask> logger, int tenantId);
 
     [LoggerMessage(Level = LogLevel.Debug, Message = "begin transfer storage")]
-    public static partial void DebugBeginTransferStorage(this ILogger logger);
+    public static partial void DebugBeginTransferStorage(this ILogger<TransferPortalTask> logger);
 
     [LoggerMessage(Level = LogLevel.Debug, Message = "end transfer storage")]
-    public static partial void DebugEndTransferStorage(this ILogger logger);
+    public static partial void DebugEndTransferStorage(this ILogger<TransferPortalTask> logger);
 
     [LoggerMessage(Level = LogLevel.Error, Message = "TransferProgressItem")]
-    public static partial void ErrorTransferProgressItem(this ILogger logger, Exception exception);
+    public static partial void ErrorTransferProgressItem(this ILogger<TransferProgressItem> logger, Exception exception);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "publish")]
+    public static partial void ErrorPublish(this ILogger<TransferProgressItem> logger, Exception exception);
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Can't copy file ({module}:{path})")]
-    public static partial void WarningCantCopyFile(this ILogger logger, string module, string path, Exception exception);  
-    
+    public static partial void WarningCantCopyFile(this ILogger<TransferPortalTask> logger, string module, string path, Exception exception);
+
     [LoggerMessage(Level = LogLevel.Warning, Message = "Can't adjust file path \"{path}\".")]
-    public static partial void WarningCantAdjustFilePath(this ILogger logger, string path);
+    public static partial void WarningCantAdjustFilePath(this ILogger<TransferPortalTask> logger, string path);
 }

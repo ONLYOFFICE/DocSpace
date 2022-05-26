@@ -28,23 +28,14 @@ namespace ASC.Data.Backup.Core.Log;
 internal static partial class DeletePortalTaskLogging
 {
     [LoggerMessage(Level = LogLevel.Debug, Message = "begin delete {tenantId}")]
-    public static partial void DebugBeginDelete(this ILogger logger, int tenantId);
+    public static partial void DebugBeginDelete(this ILogger<DeletePortalTask> logger, int tenantId);
 
     [LoggerMessage(Level = LogLevel.Debug, Message = "end delete {tenantId}")]
-    public static partial void DebugEndDelete(this ILogger logger, int tenantId);
-    
+    public static partial void DebugEndDelete(this ILogger<DeletePortalTask> logger, int tenantId);
+
     [LoggerMessage(Level = LogLevel.Debug, Message = "begin delete data for module ({name})")]
-    public static partial void DebugBeginDeleteDataForModule(this ILogger logger, ModuleName name);
+    public static partial void DebugBeginDeleteDataForModule(this ILogger<DeletePortalTask> logger, ModuleName name);
 
     [LoggerMessage(Level = LogLevel.Debug, Message = "end delete data for module ({name})")]
-    public static partial void DebugEndDeleteDataForModule(this ILogger logger, ModuleName name);  
-    
-    [LoggerMessage(Level = LogLevel.Debug, Message = "begin delete storage")]
-    public static partial void DebugBeginDeleteStorage(this ILogger logger);
-
-    [LoggerMessage(Level = LogLevel.Debug, Message = "end delete storage")]
-    public static partial void DebugEndDeleteStorage(this ILogger logger);
-
-    [LoggerMessage(Level = LogLevel.Warning, Message = "Can't delete files for domain {domain}")]
-    public static partial void WarningCanNotDeleteFilesForDomain(this ILogger logger, string domain, Exception exception);
+    public static partial void DebugEndDeleteDataForModule(this ILogger<DeletePortalTask> logger, ModuleName name);
 }

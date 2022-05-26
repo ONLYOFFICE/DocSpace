@@ -28,5 +28,8 @@ namespace ASC.Data.Backup.Core.Log;
 internal static partial class RestoreProgressItemLogger
 {
     [LoggerMessage(Level = LogLevel.Error, Message = "RestoreProgressItem")]
-    public static partial void ErrorRestoreProgressItem(this ILogger logger, Exception exception);
+    public static partial void ErrorRestoreProgressItem(this ILogger<RestoreProgressItem> logger, Exception exception);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "publish")]
+    public static partial void ErrorPublish(this ILogger<RestoreProgressItem> logger, Exception exception);
 }

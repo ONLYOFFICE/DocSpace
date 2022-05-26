@@ -52,7 +52,7 @@ public class PortalController : ControllerBase
     private readonly SetupInfo _setupInfo;
     private readonly DocumentServiceLicense _documentServiceLicense;
     private readonly TenantExtra _tenantExtra;
-    private readonly ILogger _log;
+    private readonly ILogger<PortalController> _log;
     private readonly IHttpClientFactory _clientFactory;
     private readonly ApiSystemHelper _apiSystemHelper;
     private readonly CoreSettings _coreSettings;

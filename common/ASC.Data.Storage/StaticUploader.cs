@@ -168,7 +168,7 @@ public class UploadOperation
 {
     public string Result { get; private set; }
 
-    private readonly ILogger _logger;
+    private readonly ILogger<UploadOperation> _logger;
     private readonly TenantManager _tenantManager;
     private readonly SecurityContext _securityContext;
     private readonly SettingsManager _settingsManager;

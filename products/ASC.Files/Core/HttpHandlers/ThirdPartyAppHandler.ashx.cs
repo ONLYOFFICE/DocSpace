@@ -43,7 +43,7 @@ public class ThirdPartyAppHandlerService
 {
     private readonly AuthContext _authContext;
     private readonly CommonLinkUtility _commonLinkUtility;
-    private readonly ILogger _log;
+    private readonly ILogger<ThirdPartyAppHandlerService> _log;
 
     public string HandlerPath { get; set; }
 

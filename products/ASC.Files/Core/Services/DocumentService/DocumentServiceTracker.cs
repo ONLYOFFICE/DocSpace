@@ -146,7 +146,7 @@ public class DocumentServiceTrackerHelper
     private readonly NotifyClient _notifyClient;
     private readonly MailMergeTaskRunner _mailMergeTaskRunner;
     private readonly FileTrackerHelper _fileTracker;
-    private readonly ILogger _logger;
+    private readonly ILogger<DocumentServiceTrackerHelper> _logger;
     private readonly IHttpClientFactory _clientFactory;
 
     public DocumentServiceTrackerHelper(

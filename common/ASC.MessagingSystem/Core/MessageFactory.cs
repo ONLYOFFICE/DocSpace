@@ -29,7 +29,7 @@ namespace ASC.MessagingSystem.Core;
 [Scope]
 public class MessageFactory
 {
-    private readonly ILogger _logger;
+    private readonly ILogger<MessageFactory> _logger;
     private const string UserAgentHeader = "User-Agent";
     private const string ForwardedHeader = "X-Forwarded-For";
     private const string HostHeader = "Host";

@@ -28,11 +28,11 @@ namespace ASC.Data.Backup.Core.Log;
 internal static partial class BackupProgressItemLogger
 {
     [LoggerMessage(Level = LogLevel.Error, Message = "RunJob - Params: id: {id}, tenantId: {tenantId}, file: {file}, basePath: {basePath}")]
-    public static partial void ErrorRunJob(this ILogger logger, string id, int tenantId, string file, string basePath, Exception exception);
+    public static partial void ErrorRunJob(this ILogger<BackupProgressItem> logger, string id, int tenantId, string file, string basePath, Exception exception);
 
     [LoggerMessage(Level = LogLevel.Error, Message = "publish")]
-    public static partial void ErrorPublish(this ILogger logger, Exception exception);
+    public static partial void ErrorPublish(this ILogger<BackupProgressItem> logger, Exception exception);
 
     [LoggerMessage(Level = LogLevel.Error, Message = "can't delete file")]
-    public static partial void ErrorCantDeleteFile(this ILogger logger, Exception exception);
+    public static partial void ErrorCantDeleteFile(this ILogger<BackupProgressItem> logger, Exception exception);
 }

@@ -39,7 +39,7 @@ public class FilesModuleSpecifics : ModuleSpecificsBase
 
     private static readonly Regex _regexIsInteger = new Regex(@"^\d+$", RegexOptions.Compiled);
     private readonly Helpers _helpers;
-    private readonly ILogger _logger;
+    private readonly ILogger<ModuleProvider> _logger;
     private readonly TableInfo[] _tables = new[]
     {
             new TableInfo("files_bunch_objects", "tenant_id"),
@@ -98,7 +98,7 @@ public class FilesModuleSpecifics : ModuleSpecificsBase
             new RelationInfo("files_thirdparty_account", "id", "files_thirdparty_id_mapping", "hash_id")
         };
 
-    public FilesModuleSpecifics(ILogger logger, Helpers helpers) : base(helpers)
+    public FilesModuleSpecifics(ILogger<ModuleProvider> logger, Helpers helpers) : base(helpers)
     {
         _logger = logger;
         _helpers = helpers;

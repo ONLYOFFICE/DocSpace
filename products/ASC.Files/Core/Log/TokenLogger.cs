@@ -28,8 +28,8 @@ namespace ASC.Files.Core.Log;
 internal static partial class TokenLogger
 {
     [LoggerMessage(Level = LogLevel.Debug, Message = "Refresh token for app: {app}")]
-    public static partial void DebugRefreshToken(this ILogger logger, string app); 
-    
+    public static partial void DebugRefreshToken(this ILogger<TokenHelper> logger, string app);
+
     [LoggerMessage(Level = LogLevel.Error, Message = "Refresh token for app: {app}")]
-    public static partial void ErrorRefreshToken(this ILogger logger, string app, Exception exception);
+    public static partial void ErrorRefreshToken(this ILogger<TokenHelper> logger, string app, Exception exception);
 }

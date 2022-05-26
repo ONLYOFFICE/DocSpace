@@ -28,5 +28,5 @@ namespace ASC.Data.Backup.Core.Log;
 internal static partial class BackupServiceLogger
 {
     [LoggerMessage(Level = LogLevel.Warning, Message = "error while removing backup record")]
-    public static partial void WarningErrorWhileBackupRecord(this ILogger logger, Exception exception);
+    public static partial void WarningErrorWhileBackupRecord(this ILogger<BackupService> logger, Exception exception);
 }

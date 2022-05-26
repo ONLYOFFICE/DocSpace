@@ -138,7 +138,7 @@ public class NotifyConfiguration
                  }
                  catch (Exception error)
                  {
-                     scope.ServiceProvider.GetService<ILogger<NotifyConfiguration>>().ErrorNotifyClientRegisterCallback(error);
+                     scope.ServiceProvider.GetService<ILogger<ProductSecurityInterceptor>>().ErrorNotifyClientRegisterCallback(error);
                  }
                  return false;
              });
@@ -155,7 +155,7 @@ public class ProductSecurityInterceptor
     private readonly WebItemSecurity _webItemSecurity;
     private readonly UserManager _userManager;
     private readonly CoreBaseSettings _coreBaseSettings;
-    private readonly ILogger _log;
+    private readonly ILogger<ProductSecurityInterceptor> _log;
 
     public ProductSecurityInterceptor(
         TenantManager tenantManager,
@@ -278,14 +278,14 @@ public class NotifyTransferRequest : INotifyEngineAction
     private readonly CommonLinkUtility _commonLinkUtility;
     private readonly SettingsManager _settingsManager;
     private readonly StudioNotifyHelper _studioNotifyHelper;
-    private readonly ILogger _log;
+    private readonly ILogger<ProductSecurityInterceptor> _log;
 
     public NotifyTransferRequest(
         TenantManager tenantManager,
         AuthContext authContext,
         UserManager userManager,
         DisplayUserSettingsHelper displayUserSettingsHelper,
-        ILogger<NotifyTransferRequest> logger,
+        ILogger<ProductSecurityInterceptor> logger,
         TenantExtra tenantExtra,
         WebItemManager webItemManager,
         TenantLogoManager tenantLogoManager,

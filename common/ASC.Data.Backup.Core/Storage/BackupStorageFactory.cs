@@ -32,7 +32,7 @@ public class BackupStorageFactory
     private readonly ConfigurationExtension _configuration;
     private readonly DocumentsBackupStorage _documentsBackupStorage;
     private readonly DataStoreBackupStorage _dataStoreBackupStorage;
-    private readonly ILogger _logger;
+    private readonly ILogger<BackupStorageFactory> _logger;
     private readonly LocalBackupStorage _localBackupStorage;
     private readonly ConsumerBackupStorage _consumerBackupStorage;
     private readonly TenantManager _tenantManager;

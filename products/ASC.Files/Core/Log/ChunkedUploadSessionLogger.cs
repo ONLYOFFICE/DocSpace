@@ -28,5 +28,5 @@ namespace ASC.Files.Core.Log;
 internal static partial class ChunkedUploadSessionLogger
 {
     [LoggerMessage(Level = LogLevel.Error, Message = "GetBreadCrumbs {folderId} with null")]
-    public static partial void ErrorInUserInfoRequest(this ILogger logger, string folderId);
+    public static partial void ErrorInUserInfoRequest(this ILogger<ChunkedUploadSessionHelper> logger, string folderId);
 }

@@ -31,7 +31,7 @@ namespace ASC.Web.Studio.UserControls.FirstTime;
 [Transient]
 public class FirstTimeTenantSettings
 {
-    private readonly ILogger _log;
+    private readonly ILogger<FirstTimeTenantSettings> _log;
     private readonly TenantManager _tenantManager;
     private readonly TenantExtra _tenantExtra;
     private readonly SettingsManager _settingsManager;

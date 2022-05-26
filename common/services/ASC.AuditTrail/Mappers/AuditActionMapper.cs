@@ -30,7 +30,7 @@ namespace ASC.AuditTrail.Mappers;
 public class AuditActionMapper
 {
     private readonly Dictionary<MessageAction, MessageMaps> _actions;
-    private readonly ILogger _logger;
+    private readonly ILogger<AuditActionMapper> _logger;
 
     public AuditActionMapper(ILogger<AuditActionMapper> logger)
     {

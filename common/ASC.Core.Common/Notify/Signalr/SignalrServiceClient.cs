@@ -33,7 +33,7 @@ public class ConfigureSignalrServiceClient : IConfigureNamedOptions<SignalrServi
     internal readonly CoreSettings _coreSettings;
     internal readonly MachinePseudoKeys _machinePseudoKeys;
     internal readonly IConfiguration _configuration;
-    internal readonly ILogger logger;
+    internal readonly ILogger<SignalrServiceClient> logger;
     internal readonly IHttpClientFactory _clientFactory;
 
     public ConfigureSignalrServiceClient(
@@ -90,7 +90,7 @@ public class ConfigureSignalrServiceClient : IConfigureNamedOptions<SignalrServi
 public class SignalrServiceClient
 {
     private static readonly TimeSpan _timeout = TimeSpan.FromSeconds(1);
-    internal ILogger _logger;
+    internal ILogger<SignalrServiceClient> _logger;
     private static DateTime _lastErrorTime;
     public bool EnableSignalr { get; set; }
     internal byte[] _sKey;

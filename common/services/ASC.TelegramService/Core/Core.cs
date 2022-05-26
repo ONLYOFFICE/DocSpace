@@ -53,7 +53,7 @@ public class CommandModule
     private readonly Dictionary<Type, ParamParser> _parsers = new Dictionary<Type, ParamParser>();
 
     private readonly IServiceScopeFactory _scopeFactory;
-    private readonly ILogger _log;
+    private readonly ILogger<CommandModule> _log;
 
     public CommandModule(ILogger<CommandModule> logger, IServiceScopeFactory scopeFactory)
     {

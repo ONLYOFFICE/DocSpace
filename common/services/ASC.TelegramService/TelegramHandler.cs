@@ -32,7 +32,7 @@ public class TelegramHandler
 {
     private readonly Dictionary<int, TenantTgClient> _clients;
     private readonly CommandModule _command;
-    private readonly ILogger _log;
+    private readonly ILogger<TelegramHandler> _log;
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly IDistributedCache _distributedCache;
 

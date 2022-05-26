@@ -28,8 +28,8 @@ namespace ASC.Web.Core.Log;
 internal static partial class LogoUploaderLogger
 {
     [LoggerMessage(Level = LogLevel.Error, Message = "SaveTmpLogo")]
-    public static partial void ErrorSaveTmpLogo(this ILogger logger, Exception exception);
-    
+    public static partial void ErrorSaveTmpLogo(this ILogger<StorageHelper> logger, Exception exception);
+
     [LoggerMessage(Level = LogLevel.Error, Message = "DeleteLogo")]
-    public static partial void ErrorDeleteLogo(this ILogger logger, Exception exception);  
+    public static partial void ErrorDeleteLogo(this ILogger<StorageHelper> logger, Exception exception);
 }

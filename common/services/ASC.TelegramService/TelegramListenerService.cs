@@ -29,7 +29,7 @@ namespace ASC.TelegramService;
 [Singletone]
 public class TelegramListenerService : BackgroundService
 {
-    private readonly ILogger _logger;
+    private readonly ILogger<TelegramHandler> _logger;
     private readonly ICacheNotify<RegisterUserProto> _cacheRegisterUser;
     private readonly ICacheNotify<CreateClientProto> _cacheCreateClient;
     private readonly ICacheNotify<DisableClientProto> _cacheDisableClient;
@@ -41,7 +41,7 @@ public class TelegramListenerService : BackgroundService
     public TelegramListenerService(
         ICacheNotify<RegisterUserProto> cacheRegisterUser,
         ICacheNotify<CreateClientProto> cacheCreateClient,
-        ILogger<TelegramListenerService> logger,
+        ILogger<TelegramHandler> logger,
         TelegramHandler telegramHandler,
         ICacheNotify<DisableClientProto> cacheDisableClient,
         TenantManager tenantManager,

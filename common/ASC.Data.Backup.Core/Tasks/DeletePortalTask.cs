@@ -28,22 +28,25 @@ namespace ASC.Data.Backup.Tasks;
 
 public class DeletePortalTask : PortalTaskBase
 {
+    private readonly ILogger<DeletePortalTask> _logger;
+
     public DeletePortalTask(
         DbFactory dbFactory,
-        ILogger<DeletePortalTask> options,
+        ILogger<DeletePortalTask> logger,
         int tenantId,
         string configPath,
         StorageFactory storageFactory,
         StorageFactoryConfig storageFactoryConfig,
         ModuleProvider moduleProvider)
-        : base(dbFactory, options, storageFactory, storageFactoryConfig, moduleProvider)
+        : base(dbFactory, logger, storageFactory, storageFactoryConfig, moduleProvider)
     {
         Init(tenantId, configPath);
+        _logger = logger;
     }
 
     public override void RunJob()
     {
-        Logger.DebugBeginDelete(TenantId);
+        _logger.DebugBeginDelete(TenantId);
         var modulesToProcess = GetModulesToProcess().Reverse().ToList();
         SetStepsCount(ProcessStorage ? modulesToProcess.Count + 1 : modulesToProcess.Count);
 
@@ -57,12 +60,12 @@ public class DeletePortalTask : PortalTaskBase
             DoDeleteStorage();
         }
 
-        Logger.DebugEndDelete(TenantId);
+        _logger.DebugEndDelete(TenantId);
     }
 
     private void DoDeleteModule(IModuleSpecifics module)
     {
-        Logger.DebugBeginDeleteDataForModule(module.ModuleName);
+        _logger.DebugBeginDeleteDataForModule(module.ModuleName);
         var tablesCount = module.Tables.Count();
         var tablesProcessed = 0;
         using (var connection = DbFactory.OpenConnection())
@@ -78,12 +81,12 @@ public class DeletePortalTask : PortalTaskBase
             }
         }
 
-        Logger.DebugEndDeleteDataForModule(module.ModuleName);
+        _logger.DebugEndDeleteDataForModule(module.ModuleName);
     }
 
     private void DoDeleteStorage()
     {
-        Logger.DebugBeginDeleteStorage();
+        _logger.DebugBeginDeleteStorage();
         var storageModules = StorageFactoryConfig.GetModuleList(ConfigPath).Where(IsStorageModuleAllowed).ToList();
         var modulesProcessed = 0;
         foreach (var module in storageModules)
@@ -93,12 +96,12 @@ public class DeletePortalTask : PortalTaskBase
             foreach (var domain in domains)
             {
                 ActionInvoker.Try(state => storage.DeleteFilesAsync((string)state, "\\", "*.*", true).Wait(), domain, 5,
-                              onFailure: error => Logger.WarningCanNotDeleteFilesForDomain(domain, error));
+                              onFailure: error => _logger.WarningCanNotDeleteFilesForDomain(domain, error));
             }
             storage.DeleteFilesAsync("\\", "*.*", true).Wait();
             SetCurrentStepProgress((int)(++modulesProcessed * 100 / (double)storageModules.Count));
         }
 
-        Logger.DebugEndDeleteStorage();
+        _logger.DebugEndDeleteStorage();
     }
 }

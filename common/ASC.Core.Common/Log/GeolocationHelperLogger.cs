@@ -28,6 +28,6 @@ namespace ASC.Core.Common.Log;
 internal static partial class GeolocationHelperLogger
 {
     [LoggerMessage(Level = LogLevel.Error, Message = "GetIPGeolocation")]
-    public static partial void ErrorGetIPGeolocation(this ILogger logger, Exception exception);
+    public static partial void ErrorGetIPGeolocation(this ILogger<GeolocationHelper> logger, Exception exception);
 
 }

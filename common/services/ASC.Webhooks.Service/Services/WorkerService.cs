@@ -29,7 +29,7 @@ namespace ASC.Webhooks.Service.Services;
 [Singletone]
 public class WorkerService : BackgroundService
 {
-    private readonly ILogger _logger;
+    private readonly ILogger<WorkerService> _logger;
     private readonly ConcurrentQueue<WebhookRequest> _queue;
     private readonly int? _threadCount = 10;
     private readonly WebhookSender _webhookSender;

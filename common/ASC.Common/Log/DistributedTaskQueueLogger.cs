@@ -28,8 +28,8 @@ namespace ASC.Common.Log;
 internal static partial class DistributedTaskQueueLogger
 {
     [LoggerMessage(Level = LogLevel.Trace, Message = "EnqueueTask '{distributedTaskId}' by instanse id '{instanceId}'")]
-    public static partial void TraceEnqueueTask(this ILogger logger, string DistributedTaskId, int instanceId);
+    public static partial void TraceEnqueueTask(this ILogger<DistributedTaskQueue> logger, string DistributedTaskId, int instanceId);
 
     [LoggerMessage(Level = LogLevel.Trace, Message = "Publication DistributedTask '{DistributedTaskId}' by instanse id '{instanceId}' ")]
-    public static partial void TracePublicationDistributedTask(this ILogger logger, string DistributedTaskId, int instanceId);
+    public static partial void TracePublicationDistributedTask(this ILogger<DistributedTaskQueue> logger, string DistributedTaskId, int instanceId);
 }

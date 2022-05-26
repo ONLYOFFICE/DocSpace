@@ -28,5 +28,5 @@ namespace ASC.Data.Backup.Core.Log;
 public static partial class ScheduleLogger
 {
     [LoggerMessage(Level = LogLevel.Error, Message = "Schedule {tenantId}")]
-    public static partial void ErrorSchedule(this ILogger logger, int tenantId, Exception exception);
+    public static partial void ErrorSchedule(this ILogger<Schedule> logger, int tenantId, Exception exception);
 }

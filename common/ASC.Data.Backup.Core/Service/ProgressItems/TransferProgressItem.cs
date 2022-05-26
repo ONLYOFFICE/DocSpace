@@ -58,6 +58,7 @@ namespace ASC.Data.Backup.Services;
 public class TransferProgressItem : BaseBackupProgressItem
 {
     private TenantManager _tenantManager;
+    private readonly ILogger<TransferProgressItem> _logger;
     private readonly NotifyHelper _notifyHelper;
     private TransferPortalTask _transferPortalTask;
 
@@ -67,6 +68,7 @@ public class TransferProgressItem : BaseBackupProgressItem
         NotifyHelper notifyHelper) :
         base(logger, serviceScopeFactory)
     {
+        _logger = logger;
         _notifyHelper = notifyHelper;
         BackupProgressItemEnum = BackupProgressItemEnum.Transfer;
     }
@@ -134,7 +136,7 @@ public class TransferProgressItem : BaseBackupProgressItem
         }
         catch (Exception error)
         {
-            Logger.ErrorTransferProgressItem(error);
+            _logger.ErrorTransferProgressItem(error);
             Exception = error;
 
             Link = GetLink(alias, true);
@@ -148,7 +150,7 @@ public class TransferProgressItem : BaseBackupProgressItem
             }
             catch (Exception error)
             {
-                Logger.ErrorPublish(error);
+                _logger.ErrorPublish(error);
             }
 
             if (File.Exists(tempFile))

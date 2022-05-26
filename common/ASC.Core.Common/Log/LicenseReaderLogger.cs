@@ -28,8 +28,8 @@ namespace ASC.Core.Common.Log;
 internal static partial class LicenseReaderLogger
 {
     [LoggerMessage(Level = LogLevel.Debug, Message = "Temp license not found")]
-    public static partial void DebugTempLicenseNotFound(this ILogger logger);
+    public static partial void DebugTempLicenseNotFound(this ILogger<LicenseReader> logger);
 
     [LoggerMessage(Level = LogLevel.Debug, Message = "License not found: {message}")]
-    public static partial void DebugLicenseNotFound(this ILogger logger, string message);
+    public static partial void DebugLicenseNotFound(this ILogger<LicenseReader> logger, string message);
 }

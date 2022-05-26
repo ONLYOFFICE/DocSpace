@@ -28,20 +28,20 @@ namespace ASC.Files.Core.Log;
 internal static partial class DocuSignHandlerLogger
 {
     [LoggerMessage(Level = LogLevel.Error, Message = "DocuSign webhook save document: {text}")]
-    public static partial void ErrorDocuSignWebhookSaveDocument(this ILogger logger, string text, Exception exception);
+    public static partial void ErrorDocuSignWebhookSaveDocument(this ILogger<DocuSignHandlerService> logger, string text, Exception exception);
 
     [LoggerMessage(Level = LogLevel.Error, Message = "DocuSign webhook")]
-    public static partial void ErrorDocuSignWebhook(this ILogger logger, Exception exception); 
-    
+    public static partial void ErrorDocuSignWebhook(this ILogger<DocuSignHandlerService> logger, Exception exception);
+
     [LoggerMessage(Level = LogLevel.Information, Message = "DocuSign redirect query: {queryString}")]
-    public static partial void InformationDocuSignRedirectQuery(this ILogger logger, QueryString queryString);
-    
+    public static partial void InformationDocuSignRedirectQuery(this ILogger<DocuSignHandlerService> logger, QueryString queryString);
+
     [LoggerMessage(Level = LogLevel.Information, Message = "DocuSign webhook: {queryString}")]
-    public static partial void InformationDocuSignWebhook(this ILogger logger, QueryString queryString);   
-    
+    public static partial void InformationDocuSignWebhook(this ILogger<DocuSignHandlerService> logger, QueryString queryString);
+
     [LoggerMessage(Level = LogLevel.Information, Message = "DocuSign webhook outerXml: {outerXml}")]
-    public static partial void InformationDocuSignWebhookOuterXml(this ILogger logger, string outerXml); 
-    
+    public static partial void InformationDocuSignWebhookOuterXml(this ILogger<DocuSignHandlerService> logger, string outerXml);
+
     [LoggerMessage(Level = LogLevel.Information, Message = "DocuSign webhook: {envelopeId} {subject} {status}")]
-    public static partial void InformationDocuSignWebhook2(this ILogger logger, string envelopeId, string subject, DocuSignStatus status);
+    public static partial void InformationDocuSignWebhook2(this ILogger<DocuSignHandlerService> logger, string envelopeId, string subject, DocuSignStatus status);
 }

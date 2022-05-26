@@ -28,26 +28,26 @@ namespace ASC.Files.Core.Log;
 internal static partial class DocuSignHelperLogger
 {
     [LoggerMessage(Level = LogLevel.Debug, Message = "DocuSing userInfo: {userInfo}")]
-    public static partial void DebugDocuSingUserInfo(this ILogger logger, string userInfo);
+    public static partial void DebugDocuSingUserInfo(this ILogger<DocuSignHelper> logger, string userInfo);
 
     [LoggerMessage(Level = LogLevel.Debug, Message = "DocuSign hook url: {url}")]
-    public static partial void DebugDocuSingHookUrl (this ILogger logger, string url);
+    public static partial void DebugDocuSingHookUrl(this ILogger<DocuSignHelper> logger, string url);
 
     [LoggerMessage(Level = LogLevel.Debug, Message = "DocuSign createdEnvelope: {envelopeId}")]
-    public static partial void DebugDocuSingCreatedEnvelope(this ILogger logger, string envelopeId);
+    public static partial void DebugDocuSingCreatedEnvelope(this ILogger<DocuSignHelper> logger, string envelopeId);
 
     [LoggerMessage(Level = LogLevel.Debug, Message = "DocuSign senderView: {url}")]
-    public static partial void DebugDocuSingSenderView(this ILogger logger, string url);
+    public static partial void DebugDocuSingSenderView(this ILogger<DocuSignHelper> logger, string url);
 
     [LoggerMessage(Level = LogLevel.Error, Message = "DocuSign refresh token for user {id}")]
-    public static partial void ErrorDocuSignRefreshToken(this ILogger logger, Guid id, Exception exception);  
-    
+    public static partial void ErrorDocuSignRefreshToken(this ILogger<DocuSignHelper> logger, Guid id, Exception exception);
+
     [LoggerMessage(Level = LogLevel.Error, Message = "Signer is undefined")]
-    public static partial void ErrorSignerIsUndefined(this ILogger logger, Exception exception);    
-    
+    public static partial void ErrorSignerIsUndefined(this ILogger<DocuSignHelper> logger, Exception exception);
+
     [LoggerMessage(Level = LogLevel.Information, Message = "DocuSign refresh token for user {userId}")]
-    public static partial void InformationDocuSignRefreshToken(this ILogger logger, Guid userId);   
-    
+    public static partial void InformationDocuSignRefreshToken(this ILogger<DocuSignHelper> logger, Guid userId);
+
     [LoggerMessage(Level = LogLevel.Information, Message = "DocuSign webhook get stream: {documentId}")]
-    public static partial void InformationDocuSignWebhookGetStream(this ILogger logger, string documentId);
+    public static partial void InformationDocuSignWebhookGetStream(this ILogger<DocuSignHelper> logger, string documentId);
 }

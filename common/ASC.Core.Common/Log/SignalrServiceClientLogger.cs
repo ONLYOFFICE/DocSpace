@@ -28,8 +28,8 @@ namespace ASC.Core.Common.Log;
 internal static partial class SignalrServiceClientLogger
 {
     [LoggerMessage(Level = LogLevel.Debug, Message = "Method:{method}, Data:{data}")]
-    public static partial void DebugMakeRequest(this ILogger logger, string method, string data);
+    public static partial void DebugMakeRequest(this ILogger<SignalrServiceClient> logger, string method, string data);
 
     [LoggerMessage(Level = LogLevel.Error, Message = "Service Error")]
-    public static partial void ErrorService(this ILogger logger, Exception exception);
+    public static partial void ErrorService(this ILogger<SignalrServiceClient> logger, Exception exception);
 }

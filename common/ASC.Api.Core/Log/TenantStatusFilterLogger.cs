@@ -28,11 +28,11 @@ namespace ASC.Api.Core.Log;
 internal static partial class TenantStatusFilterLogger
 {
     [LoggerMessage(Level = LogLevel.Warning, Message = "Current tenant not found")]
-    public static partial void WarningTenantNotFound(this ILogger logger);
+    public static partial void WarningTenantNotFound(this ILogger<TenantStatusFilter> logger);
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Tenant {tenantId} is not removed or suspended")]
-    public static partial void WarningTenantIsNotRemoved(this ILogger logger, int tenantId);
+    public static partial void WarningTenantIsNotRemoved(this ILogger<TenantStatusFilter> logger, int tenantId);
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Tenant {tenantId} is {tenantStatus}")]
-    public static partial void WarningTenantStatus(this ILogger logger, int tenantId, TenantStatus tenantStatus);
+    public static partial void WarningTenantStatus(this ILogger<TenantStatusFilter> logger, int tenantId, TenantStatus tenantStatus);
 }

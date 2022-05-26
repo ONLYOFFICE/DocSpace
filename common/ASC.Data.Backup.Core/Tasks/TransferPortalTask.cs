@@ -39,7 +39,7 @@ public class TransferPortalTask : PortalTaskBase
     public int ToTenantId { get; private set; }
     public int Limit { get; private set; }
 
-    private readonly ILogger _options;
+    private readonly ILogger<TransferPortalTask> _logger;
     private readonly TempStream _tempStream;
     private readonly TempPath _tempPath;
     private readonly IServiceProvider _serviceProvider;
@@ -59,7 +59,7 @@ public class TransferPortalTask : PortalTaskBase
         DeleteBackupFileAfterCompletion = true;
         BlockOldPortalAfterStart = true;
         DeleteOldPortalAfterCompletion = true;
-        _options = options;
+        _logger = options;
         _tempStream = tempStream;
         _tempPath = tempPath;
         _serviceProvider = serviceProvider;
@@ -76,7 +76,7 @@ public class TransferPortalTask : PortalTaskBase
 
     public override void RunJob()
     {
-        Logger.DebugBeginTransfer(TenantId);
+        _logger.DebugBeginTransfer(TenantId);
         var fromDbFactory = new DbFactory(null, null);
         var toDbFactory = new DbFactory(null, null);
         var tenantAlias = GetTenantAlias(fromDbFactory);
@@ -149,20 +149,20 @@ public class TransferPortalTask : PortalTaskBase
             {
                 File.Delete(backupFilePath);
             }
-            Logger.DebugEndTransfer(TenantId);
+            _logger.DebugEndTransfer(TenantId);
         }
     }
 
     private void DoTransferStorage(ColumnMapper columnMapper)
     {
-        Logger.DebugBeginTransferStorage();
+        _logger.DebugBeginTransferStorage();
         var fileGroups = GetFilesToProcess(TenantId).GroupBy(file => file.Module).ToList();
         var groupsProcessed = 0;
         foreach (var group in fileGroups)
         {
             var baseStorage = StorageFactory.GetStorage(ConfigPath, TenantId.ToString(), group.Key);
             var destStorage = StorageFactory.GetStorage(ToConfigPath, columnMapper.GetTenantMapping().ToString(), group.Key);
-            var utility = new CrossModuleTransferUtility(_options, _tempStream, _tempPath, baseStorage, destStorage);
+            var utility = new CrossModuleTransferUtility(_logger, _tempStream, _tempPath, baseStorage, destStorage);
 
             foreach (var file in group)
             {
@@ -177,12 +177,12 @@ public class TransferPortalTask : PortalTaskBase
                     }
                     catch (Exception error)
                     {
-                        Logger.WarningCantCopyFile(file.Module, file.Path, error);
+                        _logger.WarningCantCopyFile(file.Module, file.Path, error);
                     }
                 }
                 else
                 {
-                    Logger.WarningCantAdjustFilePath(file.Path);
+                    _logger.WarningCantAdjustFilePath(file.Path);
                 }
             }
             SetCurrentStepProgress((int)(++groupsProcessed * 100 / (double)fileGroups.Count));
@@ -193,7 +193,7 @@ public class TransferPortalTask : PortalTaskBase
             SetStepCompleted();
         }
 
-        Logger.DebugEndTransferStorage();
+        _logger.DebugEndTransferStorage();
     }
 
     private void SaveTenant(DbFactory dbFactory, string alias, TenantStatus status, string newAlias = null, string whereCondition = null)
