@@ -9,7 +9,7 @@ const Wrapper = styled.div`
 `;
 
 const ReactSmartBanner = (props) => {
-  const { t } = props;
+  const { t, ready } = props;
   const [isVisible, setIsVisible] = useState(true);
   const force = isIOS ? "ios" : "android";
 
@@ -55,23 +55,22 @@ const ReactSmartBanner = (props) => {
     kindle: "kindle-fire-app",
   };
 
-  return (
-    isMobile &&
-    isVisible && (
-      <Wrapper>
-        <SmartBanner
-          title={t("SmartBanner:AppName")}
-          author="Ascensio System SIA"
-          button={t("Common:View")}
-          force={force}
-          onClose={hideBanner}
-          onInstall={hideBanner}
-          storeText={storeText}
-          price={priceText}
-          appMeta={appMeta}
-        />
-      </Wrapper>
-    )
+  return isMobile && isVisible && ready ? (
+    <Wrapper>
+      <SmartBanner
+        title={t("SmartBanner:AppName")}
+        author="Ascensio System SIA"
+        button={t("Common:View")}
+        force={force}
+        onClose={hideBanner}
+        onInstall={hideBanner}
+        storeText={storeText}
+        price={priceText}
+        appMeta={appMeta}
+      />
+    </Wrapper>
+  ) : (
+    <></>
   );
 };
 
