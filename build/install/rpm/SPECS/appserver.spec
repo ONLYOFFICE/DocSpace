@@ -24,17 +24,13 @@ BuildRequires:  yarn
 BuildRequires:  dotnet-sdk-5.0
 
 Requires:       %name-api-system
-Requires:       %name-calendar
-Requires:       %name-crm
 Requires:       %name-backup
 Requires:       %name-storage-encryption
 Requires:       %name-storage-migration
 Requires:       %name-files
 Requires:       %name-files-services
-Requires:       %name-mail
 Requires:       %name-notify
 Requires:       %name-people-server
-Requires:       %name-projects-server
 Requires:       %name-socket
 Requires:       %name-ssoauth
 Requires:       %name-studio-notify

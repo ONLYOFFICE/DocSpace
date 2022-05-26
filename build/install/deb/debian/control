@@ -11,16 +11,12 @@ Package: appserver
 Architecture: any
 Depends: appserver-api-system,
          appserver-backup,
-         appserver-calendar,
-         appserver-crm,
          appserver-storage-encryption,
          appserver-files,
          appserver-files-services,    
-         appserver-mail,
          appserver-storage-migration,
          appserver-notify,
          appserver-people-server,
-         appserver-projects-server,
          appserver-socket,
          appserver-ssoauth,
          appserver-studio-notify,
@@ -60,24 +56,6 @@ Depends: appserver-common,
  ${shlibs:Depends}
 Description: Description
 
-Package: appserver-calendar
-Architecture: any
-Depends: appserver-common,
- appserver-configuration,
- dotnet-sdk-5.0,
- ${misc:Depends},
- ${shlibs:Depends}
-Description: Description
-
-Package: appserver-crm
-Architecture: any
-Depends: appserver-common,
- appserver-configuration,
- dotnet-sdk-5.0,
- ${misc:Depends},
- ${shlibs:Depends}
-Description: Description
-
 Package: appserver-storage-encryption
 Architecture: any
 Depends: appserver-common,
@@ -105,15 +83,6 @@ Depends: appserver-common,
  ${shlibs:Depends}
 Description: Description
 
-Package: appserver-mail
-Architecture: any
-Depends: appserver-common,
- appserver-configuration,
- dotnet-sdk-5.0,
- ${misc:Depends},
- ${shlibs:Depends}
-Description: Description
-
 Package: appserver-storage-migration
 Architecture: any
 Depends: appserver-common,
@@ -133,15 +102,6 @@ Depends: appserver-common,
 Description: Description
 
 Package: appserver-people-server
-Architecture: any
-Depends: appserver-common,
- appserver-configuration,
- dotnet-sdk-5.0,
- ${misc:Depends},
- ${shlibs:Depends}
-Description: Description
-
-Package: appserver-projects-server
 Architecture: any
 Depends: appserver-common,
  appserver-configuration,

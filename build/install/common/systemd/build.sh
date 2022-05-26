@@ -55,11 +55,7 @@ SERVICE_NAME=(
 	backup
 	storage-encryption
 	storage-migration
-	projects-server
 	telegram-service
-	crm
-	calendar
-	mail
 	ssoauth
 	)
 
@@ -139,30 +135,10 @@ reassign_values (){
 		WORK_DIR="${BASE_DIR}/services/ASC.Data.Storage.Encryption/"
 		EXEC_FILE="ASC.Data.Storage.Encryption.dll"
 	;;
-	projects-server )
-		SERVICE_PORT="5020"
-		WORK_DIR="${BASE_DIR}/products/ASC.Projects/server/"
-		EXEC_FILE="ASC.Projects.dll"
-	;;
 	telegram-service )
 		SERVICE_PORT="51702"
 		WORK_DIR="${BASE_DIR}/services/ASC.TelegramService/"
 		EXEC_FILE="ASC.TelegramService.dll"
-	;;
-	crm )
-		SERVICE_PORT="5021"
-		WORK_DIR="${BASE_DIR}/products/ASC.CRM/server/"
-		EXEC_FILE="ASC.CRM.dll"
-	;;
-	calendar )
-		SERVICE_PORT="5023"
-		WORK_DIR="${BASE_DIR}/products/ASC.Calendar/server/"
-		EXEC_FILE="ASC.Calendar.dll"
-	;;
-	mail )
-		SERVICE_PORT="5022"
-		WORK_DIR="${BASE_DIR}/products/ASC.Mail/server/"
-		EXEC_FILE="ASC.Mail.dll"
 	;;
 	ssoauth )
 		SERVICE_PORT="9833"
