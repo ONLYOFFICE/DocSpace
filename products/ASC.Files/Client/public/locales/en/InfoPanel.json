@@ -8,5 +8,6 @@
   "SystemProperties": "System properties",
   "Versions": "Versions",
   "ViewDetails": "View Details",
-  "WhoHasAccess": "Who has access"
+  "WhoHasAccess": "Who has access",
+  "EmptyScreenText": "See file and folder details here"
 }
