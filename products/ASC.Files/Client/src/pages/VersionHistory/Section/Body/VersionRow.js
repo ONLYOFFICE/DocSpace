@@ -173,6 +173,7 @@ const VersionRow = (props) => {
                   value={commentValue}
                   isDisabled={isSavingComment}
                   autoFocus={true}
+                  areaSelect={true}
                 />
               </>
             )}
