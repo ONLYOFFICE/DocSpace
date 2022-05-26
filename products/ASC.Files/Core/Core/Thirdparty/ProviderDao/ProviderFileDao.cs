@@ -440,7 +440,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
         {
             var selector = GetSelector(file.ID);
             var fileDao = selector.GetFileDao(file.ID);
-            return UseTrashForRemove(file);
+            return fileDao.UseTrashForRemove(file);
         }
 
         #region chunking
