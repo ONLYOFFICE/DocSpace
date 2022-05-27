@@ -78,6 +78,11 @@ export const StyledSubmenuItem = styled.div.attrs((props) => ({
 export const StyledSubmenuItemText = styled.div`
   width: 100%;
   display: flex;
+
+  .item-text {
+    color: ${(props) =>
+      props.isActive ? props.theme.submenu.textColor : "#657077"};
+  }
 `;
 
 export const StyledSubmenuItemLabel = styled.div`
@@ -87,5 +92,6 @@ export const StyledSubmenuItemLabel = styled.div`
   height: 4px;
   bottom: 0px;
   border-radius: 4px 4px 0 0;
-  background-color: ${(props) => props.color};
+  background-color: ${(props) =>
+    props.isActive ? props.theme.submenu.bottomLineColor : "none"};
 `;
