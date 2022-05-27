@@ -136,6 +136,7 @@ namespace ASC.Data.Storage.Configuration
         private SettingsManager SettingsManager { get; }
         private IHttpContextAccessor HttpContextAccessor { get; }
         private ConsumerFactory ConsumerFactory { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public StorageSettingsHelper(
             BaseStorageSettingsListener baseStorageSettingsListener,
@@ -145,7 +146,8 @@ namespace ASC.Data.Storage.Configuration
             IOptionsMonitor<ILog> options,
             TenantManager tenantManager,
             SettingsManager settingsManager,
-            ConsumerFactory consumerFactory)
+            ConsumerFactory consumerFactory,
+            IServiceProvider serviceProvider)
         {
             baseStorageSettingsListener.Subscribe();
             StorageFactoryConfig = storageFactoryConfig;
@@ -155,6 +157,7 @@ namespace ASC.Data.Storage.Configuration
             TenantManager = tenantManager;
             SettingsManager = settingsManager;
             ConsumerFactory = consumerFactory;
+            ServiceProvider = serviceProvider;
         }
         public StorageSettingsHelper(
             BaseStorageSettingsListener baseStorageSettingsListener,
@@ -165,8 +168,9 @@ namespace ASC.Data.Storage.Configuration
             TenantManager tenantManager,
             SettingsManager settingsManager,
             IHttpContextAccessor httpContextAccessor,
-            ConsumerFactory consumerFactory)
-            : this(baseStorageSettingsListener, storageFactoryConfig, pathUtils, cache, options, tenantManager, settingsManager, consumerFactory)
+            ConsumerFactory consumerFactory,
+            IServiceProvider serviceProvider)
+            : this(baseStorageSettingsListener, storageFactoryConfig, pathUtils, cache, options, tenantManager, settingsManager, consumerFactory, serviceProvider)
         {
             HttpContextAccessor = httpContextAccessor;
         }
@@ -174,7 +178,6 @@ namespace ASC.Data.Storage.Configuration
         public bool Save<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings, new()
         {
             ClearDataStoreCache();
-            dataStoreConsumer = null;
             return SettingsManager.Save(baseStorageSettings);
         }
 
@@ -195,16 +198,15 @@ namespace ASC.Data.Storage.Configuration
             Save(baseStorageSettings);
         }
 
-        private DataStoreConsumer dataStoreConsumer;
         public DataStoreConsumer DataStoreConsumer<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings, new()
         {
-            if (string.IsNullOrEmpty(baseStorageSettings.Module) || baseStorageSettings.Props == null) return dataStoreConsumer = new DataStoreConsumer();
+            if (string.IsNullOrEmpty(baseStorageSettings.Module) || baseStorageSettings.Props == null) return new DataStoreConsumer();
 
             var consumer = ConsumerFactory.GetByKey<DataStoreConsumer>(baseStorageSettings.Module);
 
-            if (!consumer.IsSet) return dataStoreConsumer = new DataStoreConsumer();
+            if (!consumer.IsSet) return new DataStoreConsumer();
 
-            dataStoreConsumer = (DataStoreConsumer)consumer.Clone();
+            var dataStoreConsumer = (DataStoreConsumer)consumer.Clone();
 
             foreach (var prop in baseStorageSettings.Props)
             {
@@ -221,8 +223,7 @@ namespace ASC.Data.Storage.Configuration
 
             if (DataStoreConsumer(baseStorageSettings).HandlerType == null) return null;
 
-            return dataStore = ((IDataStore)
-                Activator.CreateInstance(DataStoreConsumer(baseStorageSettings).HandlerType, TenantManager, PathUtils, HttpContextAccessor, Options))
+            return dataStore = ((IDataStore)ServiceProvider.GetService(DataStoreConsumer(baseStorageSettings).HandlerType))
                 .Configure(TenantManager.GetCurrentTenant().TenantId.ToString(), null, null, DataStoreConsumer(baseStorageSettings));
         }
     }
@@ -249,7 +250,7 @@ namespace ASC.Data.Storage.Configuration
         }
     }
 
-    public class StorageSettingsExtension
+    public static class StorageSettingsExtension
     {
         public static void Register(DIHelper services)
         {

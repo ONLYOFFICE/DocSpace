@@ -43,7 +43,7 @@ namespace ASC.IPSecurity
         public IPRestrictionsServiceCache(ICacheNotify<IPRestrictionItem> notify, ICache cache)
         {
             Cache = cache;
-            notify.Subscribe((r) => Cache.Remove(GetCacheKey(r.TenantId)), CacheNotifyAction.Any);
+            notify.Subscribe((r) => Cache.Remove(GetCacheKey(r.TenantId)), CacheNotifyAction.InsertOrUpdate);
             Notify = notify;
         }
 
@@ -77,7 +77,8 @@ namespace ASC.IPSecurity
             var restrictions = cache.Get<List<IPRestriction>>(key);
             if (restrictions == null)
             {
-                cache.Insert(key, restrictions = IPRestrictionsRepository.Get(tenant), timeout);
+                restrictions = IPRestrictionsRepository.Get(tenant);
+                cache.Insert(key, restrictions, timeout);
             }
             return restrictions;
         }

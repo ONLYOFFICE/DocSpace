@@ -5,6 +5,11 @@ import styled, { css } from "styled-components";
 const ClearDiv = ({ orientation, width, ...props }) => <div {...props} />;
 
 const StyledDiv = styled(ClearDiv)`
+  .subtext {
+    margin-top: 16px;
+    margin-bottom: 8px;
+  }
+
   ${(props) =>
     (props.orientation === "horizontal" &&
       css`
@@ -12,7 +17,7 @@ const StyledDiv = styled(ClearDiv)`
       `) ||
     (props.orientation === "vertical" &&
       css`
-        display: block;
+        display: inline-block;
       `)};
 
   width: ${(props) => props.width};

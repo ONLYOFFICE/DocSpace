@@ -26,7 +26,7 @@
 
 namespace ASC.Feed
 {
-    public class Constants
+    public static class Constants
     {
         public const string FeedDbId = "core";
         public const string ProjectsDbId = "projects";

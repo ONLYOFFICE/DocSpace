@@ -1,8 +1,0 @@
-﻿syntax = "proto3";
-
-package ASC.Core.Caching;
-
-message UserInfoCacheItem {
-    bytes ID  = 1;
-    int32 Tenant  = 2;
-}

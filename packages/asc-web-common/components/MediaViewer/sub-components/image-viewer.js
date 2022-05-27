@@ -13,6 +13,8 @@ import MediaDownloadIcon from "../../../../../public/images/media.download.react
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import MediaScrollButton from "./scroll-button";
 import ControlBtn from "./control-btn";
+import equal from "fast-deep-equal/react";
+import { Base } from "@appserver/components/themes";
 
 const StyledMediaZoomInIcon = styled(MediaZoomInIcon)`
   ${commonIconsStyles}
@@ -68,8 +70,12 @@ const StyledViewer = styled(Viewer)`
   .react-viewer-btn {
     background-color: transparent;
     &:hover {
-      background-color: rgba(200, 200, 200, 0.2);
+      background-color: ${(props) =>
+        props.theme.mediaViewer.imageViewer.backgroundColor};
     }
+  }
+  .react-viewer-image-transition {
+    transition-duration: 0s;
   }
   li[data-key="prev"] {
     left: 20px;
@@ -118,7 +124,7 @@ const StyledViewer = styled(Viewer)`
 
     path,
     rect {
-      fill: #fff;
+      fill: ${(props) => props.theme.mediaViewer.imageViewer.fill};
     }
   }
 
@@ -131,7 +137,7 @@ const StyledViewer = styled(Viewer)`
 
     path,
     rect {
-      fill: #fff;
+      fill: ${(props) => props.theme.mediaViewer.imageViewer.fill};
     }
   }
   .scrollBtn {
@@ -139,10 +145,14 @@ const StyledViewer = styled(Viewer)`
     opacity: ${(props) => (props.inactive ? "0.2" : "1")};
     &:hover {
       background-color: ${(props) =>
-        !props.inactive ? "rgba(200, 200, 200, 0.2)" : "rgba(11,11,11,0.7)"};
+        !props.inactive
+          ? props.theme.mediaViewer.imageViewer.backgroundColor
+          : props.theme.mediaViewer.imageViewer.inactiveBackgroundColor};
     }
   }
 `;
+
+StyledViewer.defaultProps = { theme: Base };
 
 var customToolbar = [
   {
@@ -223,11 +233,14 @@ var customToolbar = [
 ];
 
 class ImageViewer extends React.Component {
-  componentDidUpdate() {
-    document.getElementsByClassName("iconContainer reset").length > 0 &&
-      document.getElementsByClassName("iconContainer reset")[0].click();
-  }
+  // componentDidUpdate() {
+  //   document.getElementsByClassName("iconContainer reset").length > 0 &&
+  //     document.getElementsByClassName("iconContainer reset")[0].click();
+  // }
 
+  shouldComponentUpdate(nextProps) {
+    return !equal(this.props, nextProps);
+  }
   render() {
     const {
       className,

@@ -72,6 +72,8 @@ namespace ASC.FederatedLogin.LoginProviders
             get { return this["yandexRedirectUrl"]; }
         }
 
+        private readonly RequestHelper _requestHelper;
+
         private const string YandexProfileUrl = "https://login.yandex.ru/info";
 
 
@@ -89,12 +91,14 @@ namespace ASC.FederatedLogin.LoginProviders
             ConsumerFactory consumerFactory,
             Signature signature,
             InstanceCrypto instanceCrypto,
+            RequestHelper requestHelper,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
             : base(oAuth20TokenHelper, tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, signature, instanceCrypto, name, order, props, additional)
         {
+            _requestHelper = requestHelper;
         }
 
-        public override LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params)
+        public override LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params, IDictionary<string, string> additionalStateArgs)
         {
             try
             {
@@ -103,7 +107,7 @@ namespace ASC.FederatedLogin.LoginProviders
                                                           {
                                                               { "force_confirm", "true" }
                                                           }
-                                                      : null);
+                                                      : null, additionalStateArgs);
                 if (redirect)
                 {
                     return null;
@@ -131,7 +135,7 @@ namespace ASC.FederatedLogin.LoginProviders
 
         private LoginProfile RequestProfile(string accessToken)
         {
-            var yandexProfile = RequestHelper.PerformRequest(YandexProfileUrl + "?format=json&oauth_token=" + accessToken);
+            var yandexProfile = _requestHelper.PerformRequest(YandexProfileUrl + "?format=json&oauth_token=" + accessToken);
             var loginProfile = ProfileFromYandex(yandexProfile);
 
             return loginProfile;

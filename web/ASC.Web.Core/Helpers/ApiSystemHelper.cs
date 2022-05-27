@@ -29,8 +29,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
 
 using ASC.Common;
@@ -49,18 +52,21 @@ namespace ASC.Web.Core.Helpers
     public class ApiSystemHelper
     {
         public string ApiSystemUrl { get; private set; }
-
         public string ApiCacheUrl { get; private set; }
-
         private static byte[] Skey { get; set; }
         private CommonLinkUtility CommonLinkUtility { get; }
+        private IHttpClientFactory ClientFactory { get; }
 
-        public ApiSystemHelper(IConfiguration configuration, CommonLinkUtility commonLinkUtility, MachinePseudoKeys machinePseudoKeys)
+        public ApiSystemHelper(IConfiguration configuration,
+            CommonLinkUtility commonLinkUtility,
+            MachinePseudoKeys machinePseudoKeys, 
+            IHttpClientFactory clientFactory)
         {
             ApiSystemUrl = configuration["web:api-system"];
             ApiCacheUrl = configuration["web:api-cache"];
             CommonLinkUtility = commonLinkUtility;
             Skey = machinePseudoKeys.GetMachineConstant();
+            ClientFactory = clientFactory;
         }
 
 
@@ -69,17 +75,17 @@ namespace ASC.Web.Core.Helpers
             using var hasher = new HMACSHA1(Skey);
             var now = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
             var hash = WebEncoders.Base64UrlEncode(hasher.ComputeHash(Encoding.UTF8.GetBytes(string.Join("\n", now, pkey))));
-            return string.Format("ASC {0}:{1}:{2}", pkey, now, hash);
+            return $"ASC {pkey}:{now}:{hash}";
         }
 
         #region system
 
-        public void ValidatePortalName(string domain, Guid userId)
+        public async Task ValidatePortalNameAsync(string domain, Guid userId)
         {
             try
             {
-                var data = string.Format("portalName={0}", HttpUtility.UrlEncode(domain));
-                SendToApi(ApiSystemUrl, "portal/validateportalname", WebRequestMethods.Http.Post, userId, data);
+                var data = $"portalName={HttpUtility.UrlEncode(domain)}";
+                await SendToApiAsync(ApiSystemUrl, "portal/validateportalname", WebRequestMethods.Http.Post, userId, data);
             }
             catch (WebException exception)
             {
@@ -90,7 +96,7 @@ namespace ASC.Web.Core.Helpers
                 {
                     using var stream = response.GetResponseStream();
                     using var reader = new StreamReader(stream, Encoding.UTF8);
-                    var result = reader.ReadToEnd();
+                    var result = await reader.ReadToEndAsync();
 
                     var resObj = JObject.Parse(result);
                     if (resObj["error"] != null)
@@ -118,20 +124,20 @@ namespace ASC.Web.Core.Helpers
 
         #region cache
 
-        public void AddTenantToCache(string domain, Guid userId)
+        public async Task AddTenantToCacheAsync(string domain, Guid userId)
         {
-            var data = string.Format("portalName={0}", HttpUtility.UrlEncode(domain));
-            SendToApi(ApiCacheUrl, "portal/add", WebRequestMethods.Http.Post, userId, data);
+            var data = $"portalName={HttpUtility.UrlEncode(domain)}";
+            await SendToApiAsync(ApiCacheUrl, "portal/add", WebRequestMethods.Http.Post, userId, data);
         }
 
-        public void RemoveTenantFromCache(string domain, Guid userId)
+        public async Task RemoveTenantFromCacheAsync(string domain, Guid userId)
         {
-            SendToApi(ApiCacheUrl, "portal/remove?portalname=" + HttpUtility.UrlEncode(domain), "DELETE", userId);
+            await SendToApiAsync(ApiCacheUrl, "portal/remove?portalname=" + HttpUtility.UrlEncode(domain), "DELETE", userId);
         }
 
-        public IEnumerable<string> FindTenantsInCache(string domain, Guid userId)
+        public async Task<IEnumerable<string>> FindTenantsInCacheAsync(string domain, Guid userId)
         {
-            var result = SendToApi(ApiCacheUrl, "portal/find?portalname=" + HttpUtility.UrlEncode(domain), WebRequestMethods.Http.Get, userId);
+            var result = await SendToApiAsync(ApiCacheUrl, "portal/find?portalname=" + HttpUtility.UrlEncode(domain), WebRequestMethods.Http.Get, userId);
             var resObj = JObject.Parse(result);
 
             var variants = resObj.Value<JArray>("variants");
@@ -140,35 +146,32 @@ namespace ASC.Web.Core.Helpers
 
         #endregion
 
-        private string SendToApi(string absoluteApiUrl, string apiPath, string httpMethod, Guid userId, string data = null)
+        private async Task<string> SendToApiAsync(string absoluteApiUrl, string apiPath, string httpMethod, Guid userId, string data = null)
         {
             if (!Uri.TryCreate(absoluteApiUrl, UriKind.Absolute, out var uri))
             {
                 var appUrl = CommonLinkUtility.GetFullAbsolutePath("/");
-                absoluteApiUrl = string.Format("{0}/{1}", appUrl.TrimEnd('/'), absoluteApiUrl.TrimStart('/')).TrimEnd('/');
+                absoluteApiUrl = $"{appUrl.TrimEnd('/')}/{absoluteApiUrl.TrimStart('/')}".TrimEnd('/');
             }
 
-            var url = string.Format("{0}/{1}", absoluteApiUrl, apiPath);
+            var url = $"{absoluteApiUrl}/{apiPath}";
 
-            var webRequest = (HttpWebRequest)WebRequest.Create(url);
-            webRequest.Method = httpMethod;
-            webRequest.Accept = "application/json";
-            webRequest.Headers.Add(HttpRequestHeader.Authorization, CreateAuthToken(userId.ToString()));
-            webRequest.ContentType = "application/x-www-form-urlencoded";
-            webRequest.ContentLength = 0;
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri(url);
+            request.Method = new HttpMethod(httpMethod);
+            request.Headers.Add("Authorization", CreateAuthToken(userId.ToString()));
+            request.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
             if (data != null)
             {
-                webRequest.ContentLength = data.Length;
-
-                using var writer = new StreamWriter(webRequest.GetRequestStream());
-                writer.Write(data);
+                request.Content = new StringContent(data, Encoding.UTF8, "application/x-www-form-urlencoded");
             }
 
-            using var response = webRequest.GetResponse();
-            using var stream = response.GetResponseStream();
+            var httpClient = ClientFactory.CreateClient();
+            using var response = await httpClient.SendAsync(request);
+            using var stream = await response.Content.ReadAsStreamAsync();
             using var reader = new StreamReader(stream, Encoding.UTF8);
-            return reader.ReadToEnd();
+            return await reader.ReadToEndAsync();
         }
     }
 }

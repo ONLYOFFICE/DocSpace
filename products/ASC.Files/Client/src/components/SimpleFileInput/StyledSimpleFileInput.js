@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Base from "@appserver/components/themes/base";
 
 const paddingRightStyle = (props) =>
@@ -14,7 +14,7 @@ const StyledFileInput = styled.div`
   outline: none;
   .file-text-input {
     width: 100%;
-    max-width: 820px;
+    margin: 0;
   }
   width: ${(props) =>
     (props.scale && "100%") ||
@@ -64,7 +64,7 @@ const StyledFileInput = styled.div`
 
     position: absolute;
     right: 0;
-    background: white;
+    background: ${(props) => props.theme.fileInput.icon.background};
     width: ${(props) => widthIconStyle(props)};
 
     height: ${(props) => heightIconStyle(props)};

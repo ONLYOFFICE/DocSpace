@@ -15,7 +15,7 @@ newInstance
   .init({
     lng: lng,
     fallbackLng: "en",
-    load: "all",
+    load: "currentOnly",
     //debug: true,
 
     interpolation: {

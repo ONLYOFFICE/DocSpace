@@ -1,14 +1,10 @@
 import FilesStore from "./FilesStore";
 import fileActionStore from "./FileActionStore";
-import selectedFolderStore from "./SelectedFolderStore";
+import SelectedFolderStore from "./SelectedFolderStore";
 import TreeFoldersStore from "./TreeFoldersStore";
 import thirdPartyStore from "./ThirdPartyStore";
 import SettingsStore from "./SettingsStore";
 import FilesActionsStore from "./FilesActionsStore";
-import FormatsStore from "./FormatsStore";
-import iconFormatsStore from "./IconFormatsStore";
-import mediaViewersFormatsStore from "./MediaViewersFormatsStore";
-import docserviceStore from "./DocserviceStore";
 import MediaViewerDataStore from "./MediaViewerDataStore";
 import UploadDataStore from "./UploadDataStore";
 import SecondaryProgressDataStore from "./SecondaryProgressDataStore";
@@ -16,18 +12,17 @@ import PrimaryProgressDataStore from "./PrimaryProgressDataStore";
 
 import VersionHistoryStore from "./VersionHistoryStore";
 import DialogsStore from "./DialogsStore";
-import selectedFilesStore from "./SelectedFilesStore";
+import selectFolderDialogStore from "./SelectFolderDialogStore";
+import ContextOptionsStore from "./ContextOptionsStore";
+import HotkeyStore from "./HotkeyStore";
 import store from "studio/store";
+import InfoPanelStore from "./InfoPanelStore";
+import selectFileDialogStore from "./SelectFileDialogStore";
 
-const formatsStore = new FormatsStore(
-  iconFormatsStore,
-  mediaViewersFormatsStore,
-  docserviceStore
-);
+const selectedFolderStore = new SelectedFolderStore(store.auth.settingsStore);
+
 const treeFoldersStore = new TreeFoldersStore(selectedFolderStore);
-
 const settingsStore = new SettingsStore(thirdPartyStore, treeFoldersStore);
-
 const filesStore = new FilesStore(
   store.auth,
   store.auth.settingsStore,
@@ -35,22 +30,23 @@ const filesStore = new FilesStore(
   fileActionStore,
   selectedFolderStore,
   treeFoldersStore,
-  formatsStore,
   settingsStore,
-  selectedFilesStore
+  selectFolderDialogStore,
+  selectFileDialogStore
 );
-const mediaViewerDataStore = new MediaViewerDataStore(filesStore, formatsStore);
-
+const mediaViewerDataStore = new MediaViewerDataStore(
+  filesStore,
+  settingsStore
+);
 const secondaryProgressDataStore = new SecondaryProgressDataStore();
 const primaryProgressDataStore = new PrimaryProgressDataStore();
-
 const dialogsStore = new DialogsStore(
+  store.auth,
   treeFoldersStore,
   filesStore,
   selectedFolderStore
 );
 const uploadDataStore = new UploadDataStore(
-  formatsStore,
   treeFoldersStore,
   selectedFolderStore,
   filesStore,
@@ -59,6 +55,9 @@ const uploadDataStore = new UploadDataStore(
   dialogsStore,
   settingsStore
 );
+
+const infoPanelStore = new InfoPanelStore();
+
 const filesActionsStore = new FilesActionsStore(
   store.auth,
   uploadDataStore,
@@ -67,24 +66,48 @@ const filesActionsStore = new FilesActionsStore(
   selectedFolderStore,
   settingsStore,
   dialogsStore,
-  mediaViewerDataStore
+  mediaViewerDataStore,
+  infoPanelStore
 );
 
 const versionHistoryStore = new VersionHistoryStore(filesStore);
+const contextOptionsStore = new ContextOptionsStore(
+  store.auth,
+  dialogsStore,
+  filesActionsStore,
+  filesStore,
+  mediaViewerDataStore,
+  treeFoldersStore,
+  uploadDataStore,
+  versionHistoryStore,
+  settingsStore,
+  infoPanelStore
+);
 
-//const selectedFilesStore = new SelectedFilesStore(selectedFilesStore);
+const hotkeyStore = new HotkeyStore(
+  filesStore,
+  dialogsStore,
+  settingsStore,
+  filesActionsStore,
+  treeFoldersStore,
+  uploadDataStore
+);
+
 const stores = {
   filesStore,
   settingsStore,
   mediaViewerDataStore,
-  formatsStore,
   versionHistoryStore,
   uploadDataStore,
   dialogsStore,
   treeFoldersStore,
   selectedFolderStore,
   filesActionsStore,
-  selectedFilesStore,
+  selectFolderDialogStore,
+  contextOptionsStore,
+  hotkeyStore,
+  infoPanelStore,
+  selectFileDialogStore,
 };
 
 export default stores;

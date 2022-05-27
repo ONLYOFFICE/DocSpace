@@ -173,9 +173,9 @@ namespace ASC.Web.Core
             }
         }
 
-        private DateTime GetExpiresDate(bool session)
+        private DateTime? GetExpiresDate(bool session)
         {
-            var expires = DateTime.MinValue;
+            DateTime? expires = null;
 
             if (!session)
             {

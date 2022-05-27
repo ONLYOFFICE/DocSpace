@@ -33,7 +33,6 @@ using System.Threading.Tasks;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
-using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Common;
 using ASC.Core.Notify.Signalr;
@@ -62,16 +61,16 @@ namespace ASC.Feed.Aggregator
         private readonly object aggregateLock = new object();
         private readonly object removeLock = new object();
 
-        private ConfigurationExtension Configuration { get; }
+        private FeedSettings FeedSettings { get; }
         private IServiceProvider ServiceProvider { get; }
 
         public FeedAggregatorService(
-            ConfigurationExtension configuration,
+            FeedSettings feedSettings,
             IServiceProvider serviceProvider,
             IOptionsMonitor<ILog> optionsMonitor,
             IOptionsSnapshot<SignalrServiceClient> optionsSnapshot)
         {
-            Configuration = configuration;
+            FeedSettings = feedSettings;
             ServiceProvider = serviceProvider;
             Log = optionsMonitor.Get("ASC.Feed.Agregator");
             SignalrServiceClient = optionsSnapshot.Get("counters");
@@ -79,7 +78,7 @@ namespace ASC.Feed.Aggregator
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            var cfg = FeedSettings.GetInstance(Configuration);
+            var cfg = FeedSettings;
             isStopped = false;
 
             aggregateTimer = new Timer(AggregateFeeds, cfg.AggregateInterval, TimeSpan.Zero, cfg.AggregatePeriod);
@@ -115,7 +114,7 @@ namespace ASC.Feed.Aggregator
 
             try
             {
-                var cfg = FeedSettings.GetInstance(Configuration);
+                var cfg = FeedSettings;
                 using var scope = ServiceProvider.CreateScope();
                 var scopeClass = scope.ServiceProvider.GetService<FeedAggregatorServiceScope>();
                 var cache = scope.ServiceProvider.GetService<ICache>();
@@ -136,7 +135,7 @@ namespace ASC.Feed.Aggregator
                     var toTime = DateTime.UtcNow;
 
                     var tenants = Attempt(10, () => module.GetTenantsWithFeeds(fromTime)).ToList();
-                    Log.DebugFormat("Find {1} tenants for module {0}.", module.GetType().Name, tenants.Count());
+                    Log.DebugFormat("Find {1} tenants for module {0}.", module.GetType().Name, tenants.Count);
 
                     foreach (var tenant in tenants)
                     {
@@ -337,7 +336,7 @@ namespace ASC.Feed.Aggregator
         }
     }
 
-    public class FeedAggregatorServiceExtension
+    public static class FeedAggregatorServiceExtension
     {
         public static void Register(DIHelper services)
         {

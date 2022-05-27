@@ -1,0 +1,7 @@
+{
+  "ChangeUserTypeButton": "タイプの変更",
+  "ChangeUserTypeHeader": "ユーザータイプの変更",
+  "ChangeUserTypeMessage": "「{{ firstType }}」タイプのユーザーは、「{{ secondType }}」タイプに移動します。",
+  "ChangeUserTypeMessageWarning": "ポータル管理者用と自分用のタイプを変更できません。",
+  "SuccessChangeUserType": "ユーザータイプの変更に成功しました。"
+}

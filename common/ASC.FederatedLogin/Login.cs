@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
@@ -104,10 +105,22 @@ namespace ASC.FederatedLogin
             {
                 try
                 {
-                    var profile = ProviderManager.Process(Auth, context, _params);
+                    var desktop = _params.ContainsKey("desktop") && _params["desktop"] == "true";
+                    IDictionary<string, string> additionalStateArgs = null;
+
+                    if (desktop)
+                    {
+                        additionalStateArgs = context.Request.Query.ToDictionary(r => r.Key, r => r.Value.FirstOrDefault());
+                        if (!additionalStateArgs.ContainsKey("desktop"))
+                        {
+                            additionalStateArgs.Add("desktop", "true");
+                        }
+                    }
+
+                    var profile = ProviderManager.Process(Auth, context, null, additionalStateArgs);
                     if (profile != null)
                     {
-                        await SendClientData(context, profile);
+                        await SendJsCallback(context, profile);
                     }
                 }
                 catch (ThreadAbortException)
@@ -116,7 +129,7 @@ namespace ASC.FederatedLogin
                 }
                 catch (Exception ex)
                 {
-                    await SendClientData(context, LoginProfile.FromError(Signature, InstanceCrypto, ex));
+                    await SendJsCallback(context, LoginProfile.FromError(Signature, InstanceCrypto, ex));
                 }
             }
             else
@@ -179,48 +192,16 @@ namespace ASC.FederatedLogin
             get { return false; }
         }
 
-        private async Task SendClientData(HttpContext context, LoginProfile profile)
-        {
-            switch (Mode)
-            {
-                case LoginMode.Redirect:
-                    await RedirectToReturnUrl(context, profile);
-                    break;
-                case LoginMode.Popup:
-                    await SendJsCallback(context, profile);
-                    break;
-            }
-        }
-
         private async Task SendJsCallback(HttpContext context, LoginProfile profile)
         {
             //Render a page
             context.Response.ContentType = "text/html";
-            await context.Response.WriteAsync(JsCallbackHelper.GetCallbackPage().Replace("%PROFILE%", profile.ToJson()).Replace("%CALLBACK%", Callback));
-        }
-
-        private async Task RedirectToReturnUrl(HttpContext context, LoginProfile profile)
-        {
-            var useMinimalProfile = Minimal;
-            if (useMinimalProfile)
-                profile = profile.GetMinimalProfile(); //Only id and provider
-
-            if (context.Session != null && !useMinimalProfile)
-            {
-                //Store in session
-                context.Response.Redirect(new Uri(ReturnUrl, UriKind.Absolute).AddProfileSession(profile, context).ToString(), true);
-            }
-            else if (MemoryCache != null && !useMinimalProfile)
-            {
-                context.Response.Redirect(new Uri(ReturnUrl, UriKind.Absolute).AddProfileCache(profile, MemoryCache).ToString(), true);
-            }
-            else
-            {
-                context.Response.Redirect(new Uri(ReturnUrl, UriKind.Absolute).AddProfile(profile).ToString(), true);
-            }
-
-            await context.Response.CompleteAsync();
-            return;
+            await context.Response.WriteAsync(
+                JsCallbackHelper.GetCallbackPage()
+                .Replace("%PROFILE%", $"\"{profile.Serialized}\"")
+                .Replace("%CALLBACK%", Callback)
+                .Replace("%DESKTOP%", (Mode == LoginMode.Redirect).ToString().ToLowerInvariant())
+                );
         }
     }
 

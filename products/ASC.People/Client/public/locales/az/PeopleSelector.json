@@ -1,0 +1,7 @@
+{
+  "AllUsers": "Bütün istifadəçilər",
+  "CustomAllGroups": "Hamı {{ groupsCaption, lowercase }}",
+  "EmptySearchUsersResult": "Qeyd olunan adda istifadəçilər mövcud deyil",
+  "EmptyUsers": "İstifadəçilər mövcud deyil",
+  "SearchUsersPlaceholder": "İstifadəçilərin axtarışı"
+}

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -32,6 +33,16 @@ namespace ASC.CRM
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
             base.ConfigureServices(services);
+
+            services.AddHttpClient("DownloadCurrencyPage").ConfigurePrimaryHttpMessageHandler(() =>
+            {
+                return new HttpClientHandler()
+                {
+                    AllowAutoRedirect = true,
+                    MaxAutomaticRedirections = 2,
+                    UseDefaultCredentials = true
+                };
+            });
 
             DIHelper.TryAdd<EntryPointApiController>();
             DIHelper.TryAdd<CasesController>();

@@ -26,19 +26,16 @@
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 using ASC.Common.Security;
 using ASC.Common.Security.Authorizing;
-using ASC.Calendar.Models;
 using ASC.Web.Core.Calendars;
-using ASC.Core.Tenants;
 using ASC.Core;
 using ASC.Common.Utils;
 using ASC.Calendar.iCalParser;
 
 namespace ASC.Calendar.BusinessObjects
-{    
-    
+{
+
     [AllDayLongUTCAttribute]
     public class Event : BaseEvent, ISecurityObject
     {

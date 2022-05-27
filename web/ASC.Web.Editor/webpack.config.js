@@ -5,6 +5,8 @@ const ModuleFederationPlugin = require("webpack").container
   .ModuleFederationPlugin;
 const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
+const DefinePlugin = require("webpack").DefinePlugin;
+
 const combineUrl = require("@appserver/common/utils/combineUrl");
 const AppServerConfig = require("@appserver/common/constants/AppServerConfig");
 const sharedDeps = require("@appserver/common/constants/sharedDependencies");
@@ -196,12 +198,18 @@ module.exports = (env, argv) => {
     config.mode = "production";
     config.optimization = {
       splitChunks: { chunks: "all" },
-      minimize: true,
+      minimize: !env.minimize,
       minimizer: [new TerserPlugin()],
     };
   } else {
     config.devtool = "cheap-module-source-map";
   }
+
+  config.plugins.push(
+    new DefinePlugin({
+      IS_PERSONAL: env.personal || false,
+    })
+  );
 
   return config;
 };

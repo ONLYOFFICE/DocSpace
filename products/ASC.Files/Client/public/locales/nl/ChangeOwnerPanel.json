@@ -1,0 +1,4 @@
+{
+  "ChangeOwner": "Wijzig eigenaar ({{fileName}})",
+  "ChangeOwnerDescription": "Na de wijziging van eigenaar, krijgt de huidige eigenaar hetzelfde toegangsniveau als de andere leden van de groep"
+}

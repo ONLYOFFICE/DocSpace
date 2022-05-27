@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useEffect } from "react";
 import { isMobile } from "react-device-detect";
 import Paging from "@appserver/components/paging";
 import { useTranslation } from "react-i18next";
@@ -13,6 +13,9 @@ const SectionPagingContent = ({
   selectedCount,
   selectedFolderId,
   tReady,
+  totalPages,
+  setPageItemsLength,
+  isHidePagination,
 }) => {
   const { t } = useTranslation("Home");
   const onNextClick = useCallback(
@@ -21,7 +24,7 @@ const SectionPagingContent = ({
         e.preventDefault();
         return;
       }
-      console.log("Next Clicked", e);
+      //console.log("Next Clicked", e);
 
       const newFilter = filter.clone();
       newFilter.page++;
@@ -41,7 +44,7 @@ const SectionPagingContent = ({
         return;
       }
 
-      console.log("Prev Clicked", e);
+      //console.log("Prev Clicked", e);
 
       const newFilter = filter.clone();
       newFilter.page--;
@@ -56,7 +59,7 @@ const SectionPagingContent = ({
 
   const onChangePageSize = useCallback(
     (pageItem) => {
-      console.log("Paging onChangePageSize", pageItem);
+      //console.log("Paging onChangePageSize", pageItem);
 
       const newFilter = filter.clone();
       newFilter.page = 0;
@@ -72,7 +75,7 @@ const SectionPagingContent = ({
 
   const onChangePage = useCallback(
     (pageItem) => {
-      console.log("Paging onChangePage", pageItem);
+      //console.log("Paging onChangePage", pageItem);
 
       const newFilter = filter.clone();
       newFilter.page = pageItem.key;
@@ -105,7 +108,6 @@ const SectionPagingContent = ({
 
   const pageItems = useMemo(() => {
     if (filter.total < filter.pageCount) return [];
-    const totalPages = Math.ceil(filter.total / filter.pageCount);
     return [...Array(totalPages).keys()].map((item) => {
       return {
         key: item,
@@ -115,7 +117,11 @@ const SectionPagingContent = ({
         }),
       };
     });
-  }, [filter.total, filter.pageCount, t]);
+  }, [filter.total, filter.pageCount, t, totalPages]);
+
+  useEffect(() => {
+    setPageItemsLength(pageItems.length);
+  }, [pageItems]);
 
   const emptyPageSelection = {
     key: 0,
@@ -141,7 +147,9 @@ const SectionPagingContent = ({
       );
   }, [files, folders, filter, pageItems]);
 
-  return !tReady || (filter.total < filter.pageCount && filter.total < 26) ? (
+  return !tReady ||
+    (filter.total < filter.pageCount && filter.total < 26) ||
+    isHidePagination ? (
     <></>
   ) : (
     <Paging
@@ -157,7 +165,7 @@ const SectionPagingContent = ({
       disableHover={isMobile}
       previousAction={onPrevClick}
       nextAction={onNextClick}
-      openDirection="top"
+      openDirection="both"
       selectedPageItem={selectedPageItem} //FILTER CURRENT PAGE
       selectedCountItem={selectedCountItem} //FILTER PAGE COUNT
       showCountItem={showCountItem}
@@ -166,15 +174,29 @@ const SectionPagingContent = ({
 };
 
 export default inject(({ filesStore, selectedFolderStore }) => {
-  const { files, folders, fetchFiles, filter, setIsLoading } = filesStore;
+  const {
+    files,
+    folders,
+    fetchFiles,
+    filter,
+    setIsLoading,
+    setPageItemsLength,
+    isHidePagination,
+  } = filesStore;
+
+  const totalPages = Math.ceil(filter.total / filter.pageCount);
 
   return {
     files,
     folders,
     selectedFolderId: selectedFolderStore.id,
     filter,
+    totalPages,
 
     setIsLoading,
     fetchFiles,
+
+    setPageItemsLength,
+    isHidePagination,
   };
 })(observer(SectionPagingContent));

@@ -26,25 +26,26 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
+using System.Net.Http;
 using System.Text.RegularExpressions;
+
 using ASC.Calendar.Resources;
 using ASC.Common.Utils;
-using ASC.Web.Core.Calendars;
-using System.IO;
-using System.Net;
 using ASC.Core;
+using ASC.Web.Core.Calendars;
 
 namespace ASC.Calendar.iCalParser
 {
     public class iCalendar : BaseCalendar
     {
         private TenantManager TenantManager { get; }
-       
+        private IHttpClientFactory ClientFactory { get; }
+
         public iCalendar GetFromStream(TextReader reader)
         {
-            var emitter = new iCalendarEmitter(AuthContext, TimeZoneConverter, TenantManager);
+            var emitter = new iCalendarEmitter(AuthContext, TimeZoneConverter, TenantManager, ClientFactory);
             var parser = new Parser(reader, emitter);
             parser.Parse();
             return emitter.GetCalendar();
@@ -57,7 +58,7 @@ namespace ASC.Calendar.iCalParser
 
         public iCalendar GetFromUrl(string url, string calendarId)
         {
-            var cache = new iCalendarCache(AuthContext, TimeZoneConverter, TenantManager);
+            var cache = new iCalendarCache(AuthContext, TimeZoneConverter, TenantManager, ClientFactory);
             iCalendar calendar = null;
             if (calendarId != null)
                 calendar = cache.GetCalendarFromCache(calendarId);
@@ -69,9 +70,12 @@ namespace ASC.Calendar.iCalParser
                     url = new Regex("webcal").Replace(url, "http", 1);
                 }
 
-                var req = (HttpWebRequest)WebRequest.Create(url);
-                using (var resp = req.GetResponse())
-                using (var stream = resp.GetResponseStream())
+                var request = new HttpRequestMessage();
+                request.RequestUri = new Uri(url);
+
+                var httpClient = ClientFactory.CreateClient();
+                using (var response = httpClient.Send(request))
+                using (var stream = response.Content.ReadAsStream())
                 {
                     var ms = new MemoryStream();
                     stream.CopyTo(ms);
@@ -99,15 +103,17 @@ namespace ASC.Calendar.iCalParser
 
 
         public List<iCalEvent> Events { get; set; }
-        
+
 
         public iCalendar(
             AuthContext authContext,
             TimeZoneConverter timeZoneConverter,
-            TenantManager tenantManager)
+            TenantManager tenantManager,
+            IHttpClientFactory clientFactory)
         : base(authContext, timeZoneConverter)
         {
             TenantManager = tenantManager;
+            ClientFactory = clientFactory;
             this.Context.CanChangeAlertType = false;
             this.Context.CanChangeTimeZone = false;
             this.Context.GetGroupMethod = delegate () { return Resources.CalendarApiResource.iCalCalendarsGroup; };

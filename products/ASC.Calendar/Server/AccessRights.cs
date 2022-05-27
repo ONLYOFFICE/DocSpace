@@ -25,9 +25,7 @@
 
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
 using Action = ASC.Common.Security.Authorizing.Action;
 
 namespace ASC.Calendar

@@ -30,6 +30,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 using ASC.Common.Logging;
 using ASC.Core;
@@ -51,7 +52,7 @@ namespace ASC.Files.Thirdparty.Dropbox
     {
         protected override string Id { get => "dropbox"; }
 
-        public DropboxDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility, TempPath tempPath) 
+        protected DropboxDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility, TempPath tempPath) 
             : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
         {
         }
@@ -88,7 +89,8 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         protected override string MakeId(string path = null)
         {
-            return string.Format("{0}{1}", PathPrefix, string.IsNullOrEmpty(path) || path == "/" ? "" : ("-" + path.Replace('/', '|')));
+            var p = string.IsNullOrEmpty(path) || path == "/" ? "" : ("-" + path.Replace('/', '|'));
+            return $"{PathPrefix}{p}";
         }
 
         protected string MakeFolderTitle(FolderMetadata dropboxFolder)
@@ -189,17 +191,17 @@ namespace ASC.Files.Thirdparty.Dropbox
             return file;
         }
 
-        public Folder<string> GetRootFolder(string folderId)
+        public async Task<Folder<string>> GetRootFolderAsync(string folderId)
         {
-            return ToFolder(GetDropboxFolder(string.Empty));
+            return ToFolder(await GetDropboxFolderAsync(string.Empty));
         }
 
-        protected FolderMetadata GetDropboxFolder(string folderId)
+        protected async Task<FolderMetadata> GetDropboxFolderAsync(string folderId)
         {
             var dropboxFolderPath = MakeDropboxPath(folderId);
             try
             {
-                var folder = ProviderInfo.GetDropboxFolder(dropboxFolderPath);
+                var folder = await ProviderInfo.GetDropboxFolderAsync(dropboxFolderPath);
                 return folder;
             }
             catch (Exception ex)
@@ -208,29 +210,30 @@ namespace ASC.Files.Thirdparty.Dropbox
             }
         }
 
-        protected FileMetadata GetDropboxFile(object fileId)
+        protected ValueTask<FileMetadata> GetDropboxFileAsync(object fileId)
         {
             var dropboxFilePath = MakeDropboxPath(fileId);
             try
             {
-                var file = ProviderInfo.GetDropboxFile(dropboxFilePath);
+                var file = ProviderInfo.GetDropboxFileAsync(dropboxFilePath);
                 return file;
             }
             catch (Exception ex)
             {
-                return new ErrorFile(ex, dropboxFilePath);
+                return ValueTask.FromResult<FileMetadata>(new ErrorFile(ex, dropboxFilePath));
             }
         }
 
-        protected override IEnumerable<string> GetChildren(string folderId)
+        protected override async Task<IEnumerable<string>> GetChildrenAsync(string folderId)
         {
-            return GetDropboxItems(folderId).Select(MakeId);
+            var items = await GetDropboxItemsAsync(folderId);
+            return items.Select(MakeId);
         }
 
-        protected List<Metadata> GetDropboxItems(object parentId, bool? folder = null)
+        protected async Task<List<Metadata>> GetDropboxItemsAsync(object parentId, bool? folder = null)
         {
             var dropboxFolderPath = MakeDropboxPath(parentId);
-            var items = ProviderInfo.GetDropboxItems(dropboxFolderPath);
+            var items = await ProviderInfo.GetDropboxItemsAsync(dropboxFolderPath);
 
             if (folder.HasValue)
             {
@@ -289,9 +292,9 @@ namespace ASC.Files.Thirdparty.Dropbox
             if (!match.Success)
             {
                 var insertIndex = requestTitle.Length;
-                if (requestTitle.LastIndexOf(".", StringComparison.InvariantCulture) != -1)
+                if (requestTitle.LastIndexOf('.') != -1)
                 {
-                    insertIndex = requestTitle.LastIndexOf(".", StringComparison.InvariantCulture);
+                    insertIndex = requestTitle.LastIndexOf('.');
                 }
                 requestTitle = requestTitle.Insert(insertIndex, " (1)");
             }
@@ -303,7 +306,31 @@ namespace ASC.Files.Thirdparty.Dropbox
             return requestTitle;
         }
 
-        private static string MatchEvaluator(Match match)
+        protected async Task<string> GetAvailableTitleAsync(string requestTitle, string parentFolderPath, Func<string, string, Task<bool>> isExist)
+        {
+            if (!await isExist(requestTitle, parentFolderPath)) return requestTitle;
+
+            var re = new Regex(@"( \(((?<index>[0-9])+)\)(\.[^\.]*)?)$");
+            var match = re.Match(requestTitle);
+
+            if (!match.Success)
+            {
+                var insertIndex = requestTitle.Length;
+                if (requestTitle.LastIndexOf(".", StringComparison.InvariantCulture) != -1)
+                {
+                    insertIndex = requestTitle.LastIndexOf(".", StringComparison.InvariantCulture);
+                }
+                requestTitle = requestTitle.Insert(insertIndex, " (1)");
+            }
+
+            while (await isExist(requestTitle, parentFolderPath))
+            {
+                requestTitle = re.Replace(requestTitle, MatchEvaluator);
+            }
+            return requestTitle;
+        }
+
+        private string MatchEvaluator(Match match)
         {
             var index = Convert.ToInt32(match.Groups[2].Value);
             var staticText = match.Value.Substring(string.Format(" ({0})", index).Length);

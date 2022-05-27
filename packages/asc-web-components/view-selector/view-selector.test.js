@@ -10,12 +10,15 @@ const baseProps = {
   viewSettings: [
     {
       value: "row",
+      icon: "",
     },
     {
       value: "tile",
+      icon: "",
     },
     {
       value: "some",
+      icon: "",
     },
   ],
 };

@@ -58,9 +58,9 @@ namespace ASC.FederatedLogin.LoginProviders
         public const string GoogleUrlProfile = "https://people.googleapis.com/v1/people/me";
 
         public static readonly string[] GoogleDriveExt = new[] { ".gdoc", ".gsheet", ".gslides", ".gdraw" };
-        public static string GoogleDriveMimeTypeFolder = "application/vnd.google-apps.folder";
-        public static string FilesFields = "id,name,mimeType,parents,createdTime,modifiedTime,owners/displayName,lastModifyingUser/displayName,capabilities/canEdit,size";
-        public static string ProfileFields = "emailAddresses,genders,names";
+        public static readonly string GoogleDriveMimeTypeFolder = "application/vnd.google-apps.folder";
+        public static readonly string FilesFields = "id,name,mimeType,parents,createdTime,modifiedTime,owners/displayName,lastModifyingUser/displayName,capabilities/canEdit,size";
+        public static readonly string ProfileFields = "emailAddresses,genders,names";
 
         public override string AccessTokenUrl { get { return "https://www.googleapis.com/oauth2/v4/token"; } }
         public override string CodeUrl { get { return "https://accounts.google.com/o/oauth2/v2/auth"; } }
@@ -68,6 +68,8 @@ namespace ASC.FederatedLogin.LoginProviders
         public override string ClientID { get { return this["googleClientId"]; } }
         public override string ClientSecret { get { return this["googleClientSecret"]; } }
         public override string Scopes { get { return "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email"; } }
+
+        private readonly RequestHelper _requestHelper;
 
         public GoogleLoginProvider() { }
         public GoogleLoginProvider(
@@ -80,8 +82,12 @@ namespace ASC.FederatedLogin.LoginProviders
             ConsumerFactory consumerFactory,
             Signature signature,
             InstanceCrypto instanceCrypto,
+            RequestHelper requestHelper,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(oAuth20TokenHelper, tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, signature, instanceCrypto, name, order, props, additional) { }
+            : base(oAuth20TokenHelper, tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, signature, instanceCrypto, name, order, props, additional)
+        {
+            _requestHelper = requestHelper;
+        }
 
         public override LoginProfile GetLoginProfile(string accessToken)
         {
@@ -104,7 +110,7 @@ namespace ASC.FederatedLogin.LoginProviders
 
         private LoginProfile RequestProfile(string accessToken)
         {
-            var googleProfile = RequestHelper.PerformRequest(GoogleUrlProfile + "?personFields=" + HttpUtility.UrlEncode(ProfileFields), headers: new Dictionary<string, string> { { "Authorization", "Bearer " + accessToken } });
+            var googleProfile = _requestHelper.PerformRequest(GoogleUrlProfile + "?personFields=" + HttpUtility.UrlEncode(ProfileFields), headers: new Dictionary<string, string> { { "Authorization", "Bearer " + accessToken } });
             var loginProfile = ProfileFromGoogle(googleProfile);
             return loginProfile;
         }

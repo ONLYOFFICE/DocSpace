@@ -30,7 +30,7 @@ using System.Text;
 
 namespace ASC.Security.Cryptography
 {
-    public sealed class Hasher
+    public static class Hasher
     {
         private const HashAlg DefaultAlg = HashAlg.SHA256;
 

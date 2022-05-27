@@ -345,7 +345,7 @@ namespace ASC.Web.CRM.Classes
                     stream.Position = 0;
                 }
 
-                FileUrl = _commonLinkUtility.GetFullAbsolutePath(_dataStore.SavePrivate(String.Empty, FileName, stream, DateTime.Now.AddDays(1)));
+                FileUrl = _commonLinkUtility.GetFullAbsolutePath(_dataStore.SavePrivateAsync(String.Empty, FileName, stream, DateTime.Now.AddDays(1)).Result);
 
                 _notifyClient.SendAboutExportCompleted(_author.ID, FileName, FileUrl);
             }
@@ -473,7 +473,7 @@ namespace ASC.Web.CRM.Classes
             foreach (ContactInfoType infoTypeEnum in Enum.GetValues(typeof(ContactInfoType)))
                 foreach (Enum categoryEnum in Enum.GetValues(ContactInfo.GetCategory(infoTypeEnum)))
                 {
-                    var localTitle = String.Format("{1} ({0})", categoryEnum.ToLocalizedString().ToLower(), infoTypeEnum.ToLocalizedString());
+                    var localTitle = $"{infoTypeEnum.ToLocalizedString()} ({categoryEnum.ToLocalizedString().ToLower()})";
 
                     if (infoTypeEnum == ContactInfoType.Address)
                         dataTable.Columns.AddRange((from AddressPart addressPartEnum in Enum.GetValues(typeof(AddressPart))
@@ -942,15 +942,13 @@ namespace ASC.Web.CRM.Classes
                             var casesObj = casesDao.GetByID(item.EntityID);
 
                             if (casesObj != null)
-                                entityTitle = String.Format("{0}: {1}", CRMCasesResource.Case,
-                                                            casesObj.Title);
+                                entityTitle = $"{CRMCasesResource.Case}: {casesObj.Title}";
                             break;
                         case EntityType.Opportunity:
                             var dealObj = dealDao.GetByID(item.EntityID);
 
                             if (dealObj != null)
-                                entityTitle = String.Format("{0}: {1}", CRMDealResource.Deal,
-                                                            dealObj.Title);
+                                entityTitle = $"{CRMDealResource.Deal}: {dealObj.Title}";
                             break;
                     }
 
@@ -1069,13 +1067,13 @@ namespace ASC.Web.CRM.Classes
                             var caseObj = casesDao.GetByID(item.EntityID);
 
                             if (caseObj != null)
-                                entityTitle = String.Format("{0}: {1}", CRMCasesResource.Case, caseObj.Title);
+                                entityTitle = $"{CRMCasesResource.Case}: {caseObj.Title}";
                             break;
                         case EntityType.Opportunity:
                             var dealObj = dealDao.GetByID(item.EntityID);
 
                             if (dealObj != null)
-                                entityTitle = String.Format("{0}: {1}", CRMDealResource.Deal, dealObj.Title);
+                                entityTitle = $"{CRMDealResource.Deal}: {dealObj.Title}";
                             break;
                     }
 
@@ -1212,7 +1210,7 @@ namespace ASC.Web.CRM.Classes
 
             using (var memStream = new MemoryStream(Encoding.UTF8.GetBytes(data)))
             {
-                var file = _fileUploader.Exec(_globalFolder.GetFolderMy(_fileMarker, _fileDaoFactory).ToString(), title, memStream.Length, memStream, true);
+                var file = _fileUploader.ExecAsync(_globalFolder.GetFolderMy(_fileMarker, _fileDaoFactory).ToString(), title, memStream.Length, memStream, true).Result;
 
                 if (_fileUtility.CanWebView(title) || _fileUtility.CanWebEdit(title))
                 {

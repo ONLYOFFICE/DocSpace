@@ -1,0 +1,7 @@
+{
+  "ChangeUserTypeButton": "Alterar tipo",
+  "ChangeUserTypeHeader": "Alterar tipo de utilizador",
+  "ChangeUserTypeMessage": "Os utilizadores com o tipo '{{{ firstType }}' serão movidos para o tipo '{{ secondType }}'.",
+  "ChangeUserTypeMessageWarning": "Não pode alterar o tipo para os administradores do portal e para si próprio",
+  "SuccessChangeUserType": "O tipo de utilizador foi alterado com êxito"
+}

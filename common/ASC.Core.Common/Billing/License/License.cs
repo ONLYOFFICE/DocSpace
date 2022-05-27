@@ -67,6 +67,15 @@ namespace ASC.Core.Billing
 
         public bool? DiscEncryption { get; set; }
 
+        [JsonPropertyName("users_count")]
+        public int DSUsersCount { get; set; }
+
+        [JsonPropertyName("users_expire")]
+        public int DSUsersExpire { get; set; }
+
+        [JsonPropertyName("connections")]
+        public int DSConnections { get; set; }
+
         public static License Parse(string licenseString)
         {
             if (string.IsNullOrEmpty(licenseString)) throw new BillingNotFoundException("License file is empty");

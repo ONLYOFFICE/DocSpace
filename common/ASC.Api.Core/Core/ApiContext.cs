@@ -41,8 +41,8 @@ namespace ASC.Api.Core
     {
         private static int MaxCount = 1000;
         public IHttpContextAccessor HttpContextAccessor { get; set; }
-        public Tenant tenant;
-        public Tenant Tenant { get { return tenant ??= TenantManager.GetCurrentTenant(HttpContextAccessor?.HttpContext); } }
+        private Tenant _tenant;
+        public Tenant Tenant { get { return _tenant ??= TenantManager.GetCurrentTenant(HttpContextAccessor?.HttpContext); } }
 
         public ApiContext(IHttpContextAccessor httpContextAccessor, SecurityContext securityContext, TenantManager tenantManager)
         {

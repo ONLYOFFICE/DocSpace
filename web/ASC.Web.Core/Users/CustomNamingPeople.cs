@@ -164,18 +164,11 @@ namespace ASC.Web.Core.Users
     [Scope]
     public class CustomNamingPeople
     {
-        private static object Locked;
+        private static object Locked = new object();
         private static bool loaded = false;
 
         private static readonly List<PeopleNamesItem> items = new List<PeopleNamesItem>();
         private SettingsManager SettingsManager { get; }
-
-        static CustomNamingPeople()
-        {
-            Locked = new object();
-            loaded = false;
-            items = new List<PeopleNamesItem>();
-        }
 
         public CustomNamingPeople(SettingsManager settingsManager)
         {

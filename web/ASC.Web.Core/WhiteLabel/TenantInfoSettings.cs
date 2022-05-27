@@ -25,7 +25,6 @@
 
 
 using System;
-using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Text.Json.Serialization;
@@ -37,6 +36,8 @@ using ASC.Data.Storage;
 using ASC.Web.Core.Utility.Skins;
 
 using Microsoft.Extensions.Configuration;
+
+using SixLabors.ImageSharp;
 
 namespace ASC.Web.Core.WhiteLabel
 {
@@ -105,7 +106,7 @@ namespace ASC.Web.Core.WhiteLabel
             var store = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().TenantId.ToString(), "logo");
             try
             {
-                store.DeleteFiles("", "*", false);
+                store.DeleteFilesAsync("", "*", false).Wait();
             }
             catch
             {
@@ -123,18 +124,18 @@ namespace ASC.Web.Core.WhiteLabel
             {
                 try
                 {
-                    store.DeleteFiles("", "*", false);
+                    store.DeleteFilesAsync("", "*", false).Wait();
                 }
                 catch
                 {
                 }
             }
             using (var memory = new MemoryStream(data))
-            using (var image = Image.FromStream(memory))
+            using (var image = Image.Load(memory))
             {
-                tenantInfoSettings.CompanyLogoSize = image.Size;
+                tenantInfoSettings.CompanyLogoSize = image.Size();
                 memory.Seek(0, SeekOrigin.Begin);
-                store.Save(companyLogoFileName, memory);
+                store.SaveAsync(companyLogoFileName, memory).Wait();
                 tenantInfoSettings.CompanyLogoFileName = companyLogoFileName;
             }
             tenantInfoSettings.IsDefault = false;
@@ -150,7 +151,7 @@ namespace ASC.Web.Core.WhiteLabel
             }
 
             var store = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().TenantId.ToString(), "logo");
-            return store.GetUri(tenantInfoSettings.CompanyLogoFileName ?? "").ToString();
+            return store.GetUriAsync(tenantInfoSettings.CompanyLogoFileName ?? "").Result.ToString();
         }
 
         /// <summary>
@@ -166,7 +167,7 @@ namespace ASC.Web.Core.WhiteLabel
 
             var fileName = tenantInfoSettings.CompanyLogoFileName ?? "";
 
-            return storage.IsFile(fileName) ? storage.GetReadStream(fileName) : null;
+            return storage.IsFileAsync(fileName).Result ? storage.GetReadStreamAsync(fileName).Result : null;
         }
     }
 }

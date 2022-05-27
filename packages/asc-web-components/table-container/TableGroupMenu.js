@@ -1,9 +1,15 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Checkbox from "../checkbox";
-import { StyledTableGroupMenu, StyledScrollbar } from "./StyledTableContainer";
+import {
+  StyledTableGroupMenu,
+  StyledScrollbar,
+  StyledInfoPanelToggleWrapper,
+} from "./StyledTableContainer";
 import ComboBox from "../combobox";
 import GroupMenuItem from "./GroupMenuItem";
+import { useTranslation } from "react-i18next";
+import IconButton from "../icon-button";
 
 const TableGroupMenu = (props) => {
   const {
@@ -13,13 +19,14 @@ const TableGroupMenu = (props) => {
     onChange,
     checkboxOptions,
     checkboxMargin,
+    isInfoPanelVisible,
+    toggleInfoPanel,
     ...rest
   } = props;
-
   const onCheckboxChange = (e) => {
     onChange && onChange(e.target && e.target.checked);
   };
-
+  const { t } = useTranslation("Common");
   return (
     <>
       <StyledTableGroupMenu
@@ -32,6 +39,7 @@ const TableGroupMenu = (props) => {
           onChange={onCheckboxChange}
           isChecked={isChecked}
           isIndeterminate={isIndeterminate}
+          title={t("Common:MainHeaderSelectAll")}
         />
         <ComboBox
           comboIcon="/static/images/triangle.navigation.down.react.svg"
@@ -42,6 +50,7 @@ const TableGroupMenu = (props) => {
           selectedOption={{}}
           manualY="42px"
           manualX="-32px"
+          title={t("Common:TitleSelectFile")}
         />
         <div className="table-container_group-menu-separator" />
         <StyledScrollbar>
@@ -49,11 +58,21 @@ const TableGroupMenu = (props) => {
             <GroupMenuItem key={index} item={item} />
           ))}
         </StyledScrollbar>
+        <StyledInfoPanelToggleWrapper isInfoPanelVisible={isInfoPanelVisible}>
+          <div className="info-panel-toggle-bg">
+            <IconButton
+              className="info-panel-toggle"
+              iconName="images/panel.react.svg"
+              size="16"
+              isFill={true}
+              onClick={toggleInfoPanel}
+            />
+          </div>
+        </StyledInfoPanelToggleWrapper>
       </StyledTableGroupMenu>
     </>
   );
 };
-
 TableGroupMenu.propTypes = {
   isChecked: PropTypes.bool,
   isIndeterminate: PropTypes.bool,
@@ -63,5 +82,4 @@ TableGroupMenu.propTypes = {
   onChange: PropTypes.func,
   checkboxMargin: PropTypes.string,
 };
-
 export default TableGroupMenu;

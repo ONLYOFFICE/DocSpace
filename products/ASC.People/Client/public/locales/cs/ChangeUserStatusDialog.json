@@ -1,0 +1,8 @@
+{
+  "ChangeUserStatusDialog": "Uživatelé se stavem '{{ status }}' budou {{ status }}.",
+  "ChangeUserStatusDialogHeader": "Změnit status uživatele",
+  "ChangeUserStatusDialogMessage": "Nemůžete změnit status pro vlastníka portálu a pro sebe",
+  "ChangeUsersActiveStatus": "deaktivován",
+  "ChangeUsersDisableStatus": "aktivován",
+  "ChangeUsersStatusButton": "Změnit status uživatele"
+}

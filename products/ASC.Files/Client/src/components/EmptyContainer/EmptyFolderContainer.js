@@ -38,7 +38,10 @@ const EmptyFolderContainer = ({
             {t("Spreadsheet")},
           </Link>
           <Link data-format="pptx" onClick={onCreate} {...linkStyles}>
-            {t("Presentation")}
+            {t("Presentation")},
+          </Link>
+          <Link data-format="docxf" onClick={onCreate} {...linkStyles}>
+            {t("Translations:NewForm")}
           </Link>
         </Box>
       </div>
@@ -72,8 +75,10 @@ const EmptyFolderContainer = ({
 
   return (
     <EmptyContainer
-      headerText={t("EmptyFolderHeader")}
-      imageSrc="/static/images/empty_screen.png"
+      headerText={t("EmptyScreenFolder")}
+      style={{ gridColumnGap: "39px" }}
+      descriptionText={t("EmptyFolderDecription")}
+      imageSrc="/static/images/empty_screen_alt.svg"
       buttons={buttons}
     />
   );
@@ -88,4 +93,4 @@ export default inject(({ filesStore, selectedFolderStore }) => {
     setIsLoading: filesStore.setIsLoading,
     parentId: selectedFolderStore.parentId,
   };
-})(withTranslation("Home")(observer(EmptyFolderContainer)));
+})(withTranslation(["Home", "Translations"])(observer(EmptyFolderContainer)));

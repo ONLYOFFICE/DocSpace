@@ -6,11 +6,14 @@ import EmptyContainer from "./EmptyContainer";
 import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
 import Box from "@appserver/components/box";
+import Loaders from "@appserver/common/components/Loaders";
 
 const RootFolderContainer = (props) => {
   const {
     t,
+    theme,
     isPrivacyFolder,
+    isRecycleBinFolder,
     isDesktop,
     isEncryptionSupport,
     organizationName,
@@ -23,12 +26,15 @@ const RootFolderContainer = (props) => {
     setIsLoading,
     rootFolderType,
     linkStyles,
+    isLoading,
+    viewAs,
   } = props;
   const subheadingText = t("SubheadingEmptyText");
   const myDescription = t("MyEmptyContainerDescription");
   const shareDescription = t("SharedEmptyContainerDescription");
   const commonDescription = t("CommonEmptyContainerDescription");
-  const trashDescription = t("TrashEmptyContainerDescription");
+  const trashHeader = t("EmptyScreenFolder");
+  const trashDescription = t("TrashEmptyDescription");
   const favoritesDescription = t("FavoritesEmptyContainerDescription");
   const recentDescription = t("RecentEmptyContainerDescription");
 
@@ -40,6 +46,8 @@ const RootFolderContainer = (props) => {
     t("PrivateRoomDescriptionEncrypted"),
     t("PrivateRoomDescriptionUnbreakable"),
   ];
+
+  const [showLoader, setShowLoader] = React.useState(false);
 
   const onGoToMyDocuments = () => {
     const newFilter = filter.clone();
@@ -69,6 +77,7 @@ const RootFolderContainer = (props) => {
       case FolderType.Favorites:
         return {
           descriptionText: favoritesDescription,
+          imageStyle: { margin: "0px 0 0 auto" },
           imageSrc: "images/empty_screen_favorites.png",
         };
       case FolderType.Recent:
@@ -84,8 +93,12 @@ const RootFolderContainer = (props) => {
         };
       case FolderType.TRASH:
         return {
+          headerText: trashHeader,
           descriptionText: trashDescription,
-          imageSrc: "images/empty_screen_trash.png",
+          style: { gridColumnGap: "39px", gridTemplateColumns: "150px" },
+          imageSrc: theme.isBase
+            ? "images/empty_screen_trash_alt.png"
+            : "images/empty_screen_trash_alt.png",
           buttons: trashButtons,
         };
       default:
@@ -113,7 +126,12 @@ const RootFolderContainer = (props) => {
           <Trans t={t} i18nKey="PrivateRoomSupport" ns="Home">
             Work in Private Room is available via {{ organizationName }} desktop
             app.
-            <Link isBold isHovered color="#116d9d" href={privacyInstructions}>
+            <Link
+              isBold
+              isHovered
+              color={theme.filesEmptyContainer.privateRoom.linkColor}
+              href={privacyInstructions}
+            >
               Instructions
             </Link>
           </Trans>
@@ -141,6 +159,9 @@ const RootFolderContainer = (props) => {
           </Link>
           <Link data-format="pptx" onClick={onCreate} {...linkStyles}>
             {t("Presentation")}
+          </Link>
+          <Link data-format="docxf" onClick={onCreate} {...linkStyles}>
+            {t("Translations:NewForm")}
           </Link>
         </Box>
       </div>
@@ -175,15 +196,38 @@ const RootFolderContainer = (props) => {
   );
 
   const headerText = isPrivacyFolder ? privateRoomHeader : title;
-  const subheadingTextProp = isPrivacyFolder ? {} : { subheadingText };
+  const subheadingTextProp =
+    isPrivacyFolder || isRecycleBinFolder ? {} : { subheadingText };
   const emptyFolderProps = getEmptyFolderProps();
 
+  React.useEffect(() => {
+    let timeout;
+
+    if (isLoading) {
+      setShowLoader(isLoading);
+    } else {
+      timeout = setTimeout(() => setShowLoader(isLoading), 300);
+    }
+
+    return () => clearTimeout(timeout);
+  }, [isLoading]);
+
   return (
-    <EmptyContainer
-      headerText={headerText}
-      {...subheadingTextProp}
-      {...emptyFolderProps}
-    />
+    <>
+      {showLoader ? (
+        viewAs === "tile" ? (
+          <Loaders.Tiles />
+        ) : (
+          <Loaders.Rows />
+        )
+      ) : (
+        <EmptyContainer
+          headerText={headerText}
+          {...subheadingTextProp}
+          {...emptyFolderProps}
+        />
+      )}
+    </>
   );
 };
 
@@ -193,19 +237,28 @@ export default inject(
       isDesktopClient,
       isEncryptionSupport,
       organizationName,
+      theme,
     } = auth.settingsStore;
 
     const {
       filter,
       fetchFiles,
       privacyInstructions,
+      isLoading,
       setIsLoading,
+      viewAs,
     } = filesStore;
     const { title, rootFolderType } = selectedFolderStore;
-    const { isPrivacyFolder, myFolderId } = treeFoldersStore;
+    const {
+      isPrivacyFolder,
+      myFolderId,
+      isRecycleBinFolder,
+    } = treeFoldersStore;
 
     return {
+      theme,
       isPrivacyFolder,
+      isRecycleBinFolder,
       isDesktop: isDesktopClient,
       isEncryptionSupport,
       organizationName,
@@ -214,8 +267,10 @@ export default inject(
       myFolderId,
       filter,
       fetchFiles,
+      isLoading,
       setIsLoading,
       rootFolderType,
+      viewAs,
     };
   }
 )(withTranslation("Home")(observer(RootFolderContainer)));

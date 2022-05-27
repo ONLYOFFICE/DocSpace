@@ -7,5 +7,7 @@
         public T TemplateId { get; set; }
 
         public bool EnableExternalExt { get; set; }
+
+        public int FormId { get; set; }
     }
 }

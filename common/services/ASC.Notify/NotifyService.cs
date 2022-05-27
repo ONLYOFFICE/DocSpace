@@ -142,7 +142,7 @@ namespace ASC.Notify
         }
     }
 
-    public class NotifyServiceExtension
+    public static class NotifyServiceExtension
     {
         public static void Register(DIHelper services)
         {

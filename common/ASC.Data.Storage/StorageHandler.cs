@@ -64,7 +64,7 @@ namespace ASC.Data.Storage.DiscStorage
 
         private IServiceProvider ServiceProvider { get; }
 
-        public async Task Invoke(HttpContext context)
+        public Task Invoke(HttpContext context)
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<StorageHandlerScope>();
@@ -73,11 +73,11 @@ namespace ASC.Data.Storage.DiscStorage
             if (_checkAuth && !securityContext.IsAuthenticated)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                return;
+                return Task.CompletedTask;
             }
 
             var storage = storageFactory.GetStorage(tenantManager.GetCurrentTenant().TenantId.ToString(CultureInfo.InvariantCulture), _module);
-            var path = CrossPlatform.PathCombine(_path, GetRouteValue("pathInfo").Replace('/', Path.DirectorySeparatorChar));
+            var path = CrossPlatform.PathCombine(_path, GetRouteValue("pathInfo", context).Replace('/', Path.DirectorySeparatorChar));
             var header = context.Request.Query[Constants.QUERY_HEADER].FirstOrDefault() ?? "";
 
             var auth = context.Request.Query[Constants.QUERY_AUTH].FirstOrDefault() ?? "";
@@ -92,21 +92,26 @@ namespace ASC.Data.Storage.DiscStorage
                 if (validateResult != EmailValidationKeyProvider.ValidationResult.Ok)
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                    return;
+                    return Task.CompletedTask;
                 }
             }
 
-            if (!storage.IsFile(_domain, path))
+            return InternalInvoke(context, storage, path, header);
+        }
+
+        private async Task InternalInvoke(HttpContext context, IDataStore storage, string path, string header)
+        {
+            if (!await storage.IsFileAsync(_domain, path))
             {
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                 return;
             }
 
-            var headers = header.Length > 0 ? header.Split('&').Select(HttpUtility.UrlDecode) : new string[] { };
+            var headers = header.Length > 0 ? header.Split('&').Select(HttpUtility.UrlDecode) : Array.Empty<string>();
 
             if (storage.IsSupportInternalUri)
             {
-                var uri = storage.GetInternalUri(_domain, path, TimeSpan.FromMinutes(15), headers);
+                var uri = await storage.GetInternalUriAsync(_domain, path, TimeSpan.FromMinutes(15), headers);
 
                 //TODO
                 //context.Response.Cache.SetAllowResponseInBrowserHistory(false);
@@ -117,7 +122,7 @@ namespace ASC.Data.Storage.DiscStorage
             }
 
             string encoding = null;
-            if (storage is DiscDataStore && storage.IsFile(_domain, path + ".gz"))
+            if (storage is DiscDataStore && await storage.IsFileAsync(_domain, path + ".gz"))
             {
                 path += ".gz";
                 encoding = "gzip";
@@ -143,18 +148,18 @@ namespace ASC.Data.Storage.DiscStorage
             if (encoding != null)
                 context.Response.Headers["Content-Encoding"] = encoding;
 
-            using (var stream = storage.GetReadStream(_domain, path))
+            using (var stream = await storage.GetReadStreamAsync(_domain, path))
             {
                 await stream.CopyToAsync(context.Response.Body);
             }
 
             await context.Response.Body.FlushAsync();
             await context.Response.CompleteAsync();
+        }
 
-            string GetRouteValue(string name)
-            {
-                return (context.GetRouteValue(name) ?? "").ToString();
-            }
+        private string GetRouteValue(string name, HttpContext context)
+        {
+            return (context.GetRouteValue(name) ?? "").ToString();
         }
     }
 

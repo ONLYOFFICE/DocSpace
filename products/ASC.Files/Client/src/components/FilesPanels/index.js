@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import {
   SharingPanel,
@@ -7,6 +8,8 @@ import {
   VersionHistoryPanel,
   ChangeOwnerPanel,
   NewFilesPanel,
+  SelectFileDialog,
+  HotkeyPanel,
 } from "../panels";
 import {
   ThirdPartyMoveDialog,
@@ -19,6 +22,7 @@ import {
   ConflictResolveDialog,
   ConvertDialog,
 } from "../dialogs";
+import ConvertPasswordDialog from "../dialogs/ConvertPasswordDialog";
 
 const Panels = (props) => {
   const {
@@ -38,7 +42,18 @@ const Panels = (props) => {
     newFilesPanelVisible,
     conflictResolveDialogVisible,
     convertDialogVisible,
+    createMasterForm,
+    selectFileDialogVisible,
+    setSelectFileDialogVisible,
+    hotkeyPanelVisible,
+    convertPasswordDialogVisible,
   } = props;
+
+  const { t } = useTranslation(["Translations", "SelectFile"]);
+
+  const onClose = () => {
+    setSelectFileDialogVisible(false);
+  };
 
   return [
     uploadPanelVisible && <UploadPanel key="upload-panel" />,
@@ -71,6 +86,26 @@ const Panels = (props) => {
       <ConflictResolveDialog key="conflict-resolve-dialog" />
     ),
     convertDialogVisible && <ConvertDialog key="convert-dialog" />,
+    selectFileDialogVisible && (
+      <SelectFileDialog
+        key="select-file-dialog"
+        //resetTreeFolders
+        onSelectFile={createMasterForm}
+        isPanelVisible={selectFileDialogVisible}
+        onClose={onClose}
+        foldersType="exceptPrivacyTrashFolders"
+        ByExtension
+        searchParam={".docx"}
+        dialogName={t("Translations:CreateMasterFormFromFile")}
+        filesListTitle={t("SelectFile:SelectDOCXFormat")}
+        creationButtonPrimary
+        withSubfolders={false}
+      />
+    ),
+    hotkeyPanelVisible && <HotkeyPanel key="hotkey-panel" />,
+    convertPasswordDialogVisible && (
+      <ConvertPasswordDialog key="convert-password-dialog" />
+    ),
   ];
 };
 
@@ -91,8 +126,13 @@ export default inject(
       newFilesPanelVisible,
       conflictResolveDialogVisible,
       convertDialogVisible,
-
+      convertPasswordDialogVisible,
       connectItem, //TODO:
+
+      createMasterForm,
+      selectFileDialogVisible,
+      setSelectFileDialogVisible,
+      hotkeyPanelVisible,
     } = dialogsStore;
 
     const { uploadPanelVisible } = uploadDataStore;
@@ -115,6 +155,11 @@ export default inject(
       newFilesPanelVisible,
       conflictResolveDialogVisible,
       convertDialogVisible,
+      convertPasswordDialogVisible,
+      selectFileDialogVisible,
+      createMasterForm,
+      setSelectFileDialogVisible,
+      hotkeyPanelVisible,
     };
   }
 )(observer(Panels));

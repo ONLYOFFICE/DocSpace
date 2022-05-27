@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -162,6 +163,7 @@ namespace ASC.Core.Billing
         internal TariffServiceStorage TariffServiceStorage { get; set; }
         internal IOptionsMonitor<ILog> Options { get; set; }
         public BillingClient BillingClient { get; }
+        public IHttpClientFactory HttpClientFactory { get; }
 
         public readonly int ACTIVE_USERS_MIN;
         public readonly int ACTIVE_USERS_MAX;
@@ -181,7 +183,8 @@ namespace ASC.Core.Billing
             TariffServiceStorage tariffServiceStorage,
             IOptionsMonitor<ILog> options,
             Constants constants,
-            BillingClient billingClient)
+            BillingClient billingClient,
+            IHttpClientFactory httpClientFactory)
             : this()
 
         {
@@ -193,6 +196,7 @@ namespace ASC.Core.Billing
             TariffServiceStorage = tariffServiceStorage;
             Options = options;
             BillingClient = billingClient;
+            HttpClientFactory = httpClientFactory;
             CoreBaseSettings = coreBaseSettings;
             Test = configuration["core:payment:test"] == "true";
             int.TryParse(configuration["core:payment:delay"], out var paymentDelay);
@@ -239,7 +243,7 @@ namespace ASC.Core.Billing
                               var quota = QuotaService.GetTenantQuotas().SingleOrDefault(q => q.AvangateId == lastPayment.ProductId);
                               if (quota == null)
                               {
-                                  throw new InvalidOperationException(string.Format("Quota with id {0} not found for portal {1}.", lastPayment.ProductId, GetPortalId(tenantId)));
+                                  throw new InvalidOperationException($"Quota with id {lastPayment.ProductId} not found for portal {GetPortalId(tenantId)}.");
                               }
 
                               var asynctariff = Tariff.CreateDefault();
@@ -279,7 +283,7 @@ namespace ASC.Core.Billing
         {
             if (tariff == null)
             {
-                throw new ArgumentNullException("tariff");
+                throw new ArgumentNullException(nameof(tariff));
             }
 
             var q = QuotaService.GetTenantQuota(tariff.QuotaId);
@@ -330,7 +334,7 @@ namespace ASC.Core.Billing
                 if (BillingClient.Configured)
                 {
                     try
-{
+                    {
                         var quotas = QuotaService.GetTenantQuotas();
                         var client = GetBillingClient();
                         foreach (var pi in client.GetPayments(GetPortalId(tenantId)))
@@ -362,7 +366,7 @@ namespace ASC.Core.Billing
 
             var key = tenant.HasValue
                           ? GetBillingUrlCacheKey(tenant.Value)
-                          : string.Format("notenant{0}", !string.IsNullOrEmpty(affiliateId) ? "_" + affiliateId : "");
+                          : string.Format($"notenant{(!string.IsNullOrEmpty(affiliateId) ? "_" + affiliateId : "")}");
             key += quota.Visible ? "" : "0";
             if (!(Cache.Get<Dictionary<string, Tuple<Uri, Uri>>>(key) is IDictionary<string, Tuple<Uri, Uri>> urls))
             {
@@ -432,7 +436,7 @@ namespace ASC.Core.Billing
         {
             if (productIds == null)
             {
-                throw new ArgumentNullException("productIds");
+                throw new ArgumentNullException(nameof(productIds));
             }
             try
             {
@@ -483,7 +487,7 @@ namespace ASC.Core.Billing
             var r = CoreDbContext.Tariffs
                 .Where(r => r.Tenant == tenant)
                 .OrderByDescending(r => r.Id)
-                .SingleOrDefault();
+                .FirstOrDefault();
 
             if (r == null) return Tariff.CreateDefault();
 
@@ -503,10 +507,10 @@ namespace ASC.Core.Billing
                 using var tx = CoreDbContext.Database.BeginTransaction();
 
                 // last record is not the same
-                var count = CoreDbContext.Tariffs
-                    .Count(r => r.Tenant == tenant && r.Tariff == tariffInfo.QuotaId && r.Stamp == tariffInfo.DueDate && r.Quantity == tariffInfo.Quantity);
+                var any = CoreDbContext.Tariffs
+                    .Any(r => r.Tenant == tenant && r.Tariff == tariffInfo.QuotaId && r.Stamp == tariffInfo.DueDate && r.Quantity == tariffInfo.Quantity);
 
-                if (tariffInfo.DueDate == DateTime.MaxValue || renewal || count == 0)
+                if (tariffInfo.DueDate == DateTime.MaxValue || renewal || any)
                 {
                     var efTariff = new DbTariff
                     {
@@ -640,7 +644,7 @@ namespace ASC.Core.Billing
         {
             try
             {
-                return new BillingClient(Test, Configuration);
+                return new BillingClient(Test, Configuration, HttpClientFactory);
             }
             catch (InvalidOperationException ioe)
             {

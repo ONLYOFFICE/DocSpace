@@ -1,152 +1,124 @@
-import React, { useState } from "react";
-import {
-  StyledAsidePanel,
-  StyledSelectFilePanel,
-  StyledHeaderContent,
-} from "../StyledPanels";
+import React from "react";
+import { StyledAsideBody } from "../SelectionPanel/StyledSelectionPanel";
 import Text from "@appserver/components/text";
 import SelectFolderInput from "../SelectFolderInput";
-import FilesListBody from "./FilesListBody";
-import Aside from "@appserver/components/aside";
-import Heading from "@appserver/components/heading";
-import Backdrop from "@appserver/components/backdrop";
 import Button from "@appserver/components/button";
-import Loaders from "@appserver/common/components/Loaders";
-import Loader from "@appserver/components/loader";
-import EmptyContainer from "../../EmptyContainer/EmptyContainer";
-const DISPLAY_TYPE = "aside";
+import ModalDialog from "@appserver/components/modal-dialog";
+import FilesListWrapper from "../SelectionPanel/FilesListWrapper";
+
 const SelectFileDialogAsideView = ({
   t,
   isPanelVisible,
-  zIndex,
   onClose,
-  isVisible,
   withoutProvider,
-  foldersType,
   onSelectFile,
-  onClickInput,
-  onCloseSelectFolderDialog,
-  onSelectFolder,
-  filesList,
+  files,
   hasNextPage,
   isNextPageLoading,
   loadNextPage,
-  selectedFolder,
-  header,
-  loadingText,
-  selectedFile,
-  onClickSave,
-  onSetFileName,
-  fileName,
-  displayType,
-  isTranslationsReady,
-  passedId,
-  headerName,
-  isAvailableFolderList,
+  filesListTitle,
+  dialogName,
+  primaryButtonName,
+  theme,
+  onButtonClick,
+  folderId,
+  onSelectFolder,
+  resultingFolderTree,
+  footer,
+  fileId,
+  foldersType,
+  onCloseSelectFolderDialog,
+  onClickInput,
+  isFolderPanelVisible,
+  maxInputWidth,
+  newFilter,
 }) => {
-  const [isLoadingData, setIsLoadingData] = useState(false);
-  const onSetLoadingData = (loading) => {
-    setIsLoadingData(loading);
+  const onMouseEvent = (event) => {
+    event.stopPropagation();
   };
-  const isHeaderChildren = !!header;
 
   return (
-    <StyledAsidePanel visible={isPanelVisible}>
-      <Backdrop
-        onClick={onClose}
+    <div onMouseUp={onMouseEvent} onMouseDown={onMouseEvent}>
+      <ModalDialog
         visible={isPanelVisible}
-        zIndex={zIndex}
-        isAside={true}
-      />
-      <Aside visible={isPanelVisible} zIndex={zIndex}>
-        {isTranslationsReady ? (
-          <StyledSelectFilePanel
-            displayType={DISPLAY_TYPE}
-            isHeaderChildren={isHeaderChildren}
-          >
-            <StyledHeaderContent className="select-file-dialog_aside-header">
-              <Heading
-                size="medium"
-                className="select-file-dialog_aside-header_title"
-              >
-                {headerName ? headerName : t("SelectFile")}
-              </Heading>
-            </StyledHeaderContent>
+        onClose={onClose}
+        contentHeight="100%"
+        contentPaddingBottom="0px"
+        displayType="aside"
+        withoutBodyScroll
+      >
+        <ModalDialog.Header>{dialogName}</ModalDialog.Header>
+        <ModalDialog.Body className="select-file_body-modal-dialog">
+          <StyledAsideBody theme={theme}>
+            <div className="selection-panel_aside-body">
+              <div className="selection-panel_folder-info">
+                <Text
+                  className="selection-panel_folder-selection-title"
+                  fontWeight={600}
+                >
+                  {t("Translations:FolderSelection")}
+                </Text>
 
-            <div className="select-file-dialog_aside-body_wrapper">
-              <div className="select-file-dialog_aside-children">{header}</div>
-              <Text fontWeight="600" fontSize="14px">
-                {t("Translations:SelectFolder")}
-              </Text>
-              <div className="select-file-dialog_aside_body">
                 <SelectFolderInput
+                  theme={theme}
                   onClickInput={onClickInput}
                   onClose={onCloseSelectFolderDialog}
                   onSelectFolder={onSelectFolder}
-                  onSetLoadingData={onSetLoadingData}
-                  isPanelVisible={isVisible}
+                  isPanelVisible={isFolderPanelVisible}
                   foldersType={foldersType}
-                  isNeedArrowIcon
                   withoutProvider={withoutProvider}
-                  isSetFolderImmediately
-                  selectedFolderId={selectedFolder}
-                  id={passedId}
-                  onSetFileName={onSetFileName}
-                  fileName={fileName}
-                  displayType={displayType}
-                  dialogWithFiles
+                  id={folderId}
+                  onSelectFile={onSelectFile}
+                  displayType="aside"
+                  hasNextPage={hasNextPage}
+                  isNextPageLoading={isNextPageLoading}
+                  loadNextPage={loadNextPage}
+                  files={files}
+                  folderTree={resultingFolderTree}
+                  isFolderTreeLoading={!!!resultingFolderTree}
+                  isNeedArrowIcon
+                  maxInputWidth={maxInputWidth ? maxInputWidth : "446px"}
                 />
 
-                {selectedFolder && !isLoadingData ? (
-                  <FilesListBody
-                    filesList={filesList}
-                    onSelectFile={onSelectFile}
-                    hasNextPage={hasNextPage}
-                    isNextPageLoading={isNextPageLoading}
-                    loadNextPage={loadNextPage}
-                    selectedFolder={selectedFolder}
-                    displayType={DISPLAY_TYPE}
-                    loadingText={loadingText}
-                    selectedFile={selectedFile}
+                <Text color="#A3A9AE" className="selection-panel_aside-title">
+                  {filesListTitle}
+                </Text>
+              </div>
+              <div className="selection-panel_files">
+                <FilesListWrapper
+                  theme={theme}
+                  onSelectFile={onSelectFile}
+                  folderId={folderId}
+                  displayType="aside"
+                  folderSelection={false}
+                  fileId={fileId}
+                  newFilter={newFilter}
+                />
+              </div>
+              <div className="selection-panel_aside-footer">
+                {footer}
+                <div className="selection-panel_aside-buttons">
+                  <Button
+                    theme={theme}
+                    primary
+                    size="normalTouchscreen"
+                    label={primaryButtonName}
+                    onClick={onButtonClick}
+                    isDisabled={!fileId}
                   />
-                ) : isAvailableFolderList ? (
-                  <div key="loader">
-                    <Loader type="oval" size="16px" className="panel-loader" />
-                    <Text as="span">{`${t("Common:LoadingProcessing")} ${t(
-                      "Common:LoadingDescription"
-                    )}`}</Text>
-                  </div>
-                ) : (
-                  <div className="select-file-dialog_empty-container">
-                    <EmptyContainer
-                      headerText={t("Home:EmptyFolderHeader")}
-                      imageSrc="/static/images/empty_screen.png"
-                    />
-                  </div>
-                )}
+                  <Button
+                    theme={theme}
+                    size="normalTouchscreen"
+                    label={t("Common:CancelButton")}
+                    onClick={onClose}
+                  />
+                </div>
               </div>
             </div>
-            <div className="select-file-dialog-aside_buttons">
-              <Button
-                className="select-file-dialog-buttons-save"
-                primary
-                size="big"
-                label={t("Common:SaveButton")}
-                onClick={onClickSave}
-                isDisabled={selectedFile.length === 0}
-              />
-              <Button
-                size="big"
-                label={t("Common:CloseButton")}
-                onClick={onClose}
-              />
-            </div>
-          </StyledSelectFilePanel>
-        ) : (
-          <Loaders.DialogAsideLoader withoutAside isPanel />
-        )}
-      </Aside>
-    </StyledAsidePanel>
+          </StyledAsideBody>
+        </ModalDialog.Body>
+      </ModalDialog>
+    </div>
   );
 };
 export default SelectFileDialogAsideView;

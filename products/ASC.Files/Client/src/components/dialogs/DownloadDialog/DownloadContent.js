@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { isMobile } from "react-device-detect";
 import Row from "@appserver/components/row";
 import RowContent from "@appserver/components/row-content";
@@ -6,11 +6,19 @@ import RowContainer from "@appserver/components/row-container";
 import Text from "@appserver/components/text";
 import LinkWithDropdown from "@appserver/components/link-with-dropdown";
 import styled from "styled-components";
+import { tablet } from "@appserver/components/utils/device";
 
 const StyledDownloadContent = styled.div`
   .row_content,
   .row-content_tablet-side-info {
     overflow: unset;
+  }
+
+  @media (${tablet}) {
+    .row-content_tablet-side-info {
+      display: flex;
+      gap: 5px;
+    }
   }
 `;
 
@@ -25,18 +33,19 @@ const DownloadContent = (props) => {
     getItemIcon,
     titleFormat,
     type,
-    filesConverts,
+    extsConvertible,
     title,
   } = props;
+
+  const [isScrolling, setIsScrolling] = useState(null);
+  const [isOpen, setIsOpen] = useState(null);
 
   const getTitleExtensions = () => {
     let arr = [];
     for (let item of items) {
       const exst = item.fileExst;
 
-      const exstItem = filesConverts.find((f) => f[exst]);
-      const arrayExst = exstItem ? exstItem[exst] : [];
-      arr = [...arr, ...arrayExst];
+      arr = [...arr, ...extsConvertible[exst]];
     }
 
     arr = arr.filter((x, pos) => arr.indexOf(x) !== pos);
@@ -73,10 +82,23 @@ const DownloadContent = (props) => {
     return formats;
   };
 
-  const getFormats = (item) => {
-    const arrayFormats = item && filesConverts.find((f) => f[item.fileExst]);
-    const conversionFormats = arrayFormats ? arrayFormats[item.fileExst] : [];
+  useEffect(() => {
+    if (isScrolling) {
+      setIsOpen(false);
+      const id = setTimeout(() => setIsScrolling(false), 500);
+      return () => {
+        clearTimeout(id);
+        setIsOpen(null);
+      };
+    }
+  }, [isScrolling]);
 
+  const onScroll = () => {
+    setIsScrolling(true);
+  };
+
+  const getFormats = (item) => {
+    const arrayFormats = item ? extsConvertible[item.fileExst] : [];
     const formats = [
       {
         key: "original",
@@ -87,7 +109,7 @@ const DownloadContent = (props) => {
         "data-file-id": item.id,
       },
     ];
-    for (let f of conversionFormats) {
+    for (let f of arrayFormats) {
       formats.push({
         key: f,
         label: f,
@@ -130,12 +152,12 @@ const DownloadContent = (props) => {
               {title}
             </Text>
             <></>
-            <Text fontSize="12px" containerWidth="auto">
+            <Text fontSize="12px" containerMinWidth="fit-content">
               {(checkedTitle || indeterminateTitle) && t("ConvertInto")}
             </Text>
             {checkedTitle || indeterminateTitle ? (
               <LinkWithDropdown
-                containerWidth="auto"
+                containerMinWidth="fit-content"
                 data={titleData}
                 directionX="left"
                 directionY="bottom"
@@ -155,6 +177,7 @@ const DownloadContent = (props) => {
         useReactWindow={length > 2}
         style={{ minHeight: minHeight, padding: "8px 0" }}
         itemHeight={50}
+        onScroll={onScroll}
       >
         {items.map((file) => {
           const element = getItemIcon(file);
@@ -181,17 +204,22 @@ const DownloadContent = (props) => {
                 </Text>
                 <></>
                 {file.checked && (
-                  <Text fontSize="12px" containerWidth="auto" noSelect>
+                  <Text
+                    fontSize="12px"
+                    containerMinWidth="fit-content"
+                    noSelect
+                  >
                     {t("ConvertInto")}
                   </Text>
                 )}
 
                 {file.checked ? (
                   <LinkWithDropdown
+                    isOpen={isOpen}
                     dropdownType={
                       isMobile ? "alwaysDashed" : "appearDashedAfterHover"
                     }
-                    containerWidth="auto"
+                    containerMinWidth="fit-content"
                     data={dropdownItems}
                     directionX="left"
                     directionY="bottom"

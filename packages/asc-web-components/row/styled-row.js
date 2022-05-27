@@ -27,6 +27,10 @@ const StyledRow = styled.div`
   justify-content: flex-start;
   align-items: center;
   align-content: center;
+
+  .row-loader {
+    padding: 15px 12px 12px 0px;
+  }
 `;
 StyledRow.defaultProps = { theme: Base };
 
@@ -47,14 +51,6 @@ StyledContent.defaultProps = { theme: Base };
 
 const StyledCheckbox = styled.div`
   flex: 0 0 16px;
-
-  .checkbox {
-    padding: 7px 0;
-
-    @media ${tablet} {
-      padding: 10px 0;
-    }
-  }
 `;
 
 const StyledElement = styled.div`

@@ -1,8 +1,8 @@
 import React from "react";
 import Link from "@appserver/components/link";
-import Text from "@appserver/components/text";
 import Checkbox from "@appserver/components/checkbox";
 import TableCell from "@appserver/components/table-container/TableCell";
+import Loader from "@appserver/components/loader";
 
 const FileNameCell = ({
   item,
@@ -11,9 +11,11 @@ const FileNameCell = ({
   element,
   onContentSelect,
   checked,
-  selectionProp,
+  theme,
+  t,
+  inProgress,
 }) => {
-  const { fileExst, title } = item;
+  const { title } = item;
 
   const onChange = (e) => {
     onContentSelect && onContentSelect(e.target.checked, item);
@@ -21,19 +23,27 @@ const FileNameCell = ({
 
   return (
     <>
-      <TableCell
-        hasAccess={true}
-        checked={checked}
-        {...selectionProp}
-        className={`${selectionProp?.className} table-container_row-checkbox-wrapper`}
-      >
-        <div className="table-container_element">{element}</div>
-        <Checkbox
-          className="table-container_row-checkbox"
-          onChange={onChange}
-          isChecked={checked}
+      {inProgress ? (
+        <Loader
+          className="table-container_row-loader"
+          type="oval"
+          size="16px"
         />
-      </TableCell>
+      ) : (
+        <TableCell
+          className="table-container_element-wrapper"
+          hasAccess={true}
+          checked={checked}
+        >
+          <div className="table-container_element">{element}</div>
+          <Checkbox
+            className="table-container_row-checkbox"
+            onChange={onChange}
+            isChecked={checked}
+            title={t("Common:TitleSelectFile")}
+          />
+        </TableCell>
+      )}
 
       <Link
         type="page"
@@ -41,23 +51,11 @@ const FileNameCell = ({
         fontWeight="600"
         fontSize="13px"
         {...linkStyles}
-        color="#333"
+        color={theme.filesSection.tableView.fileName.linkColor}
         isTextOverflow
         className="item-file-name"
       >
         {titleWithoutExt}
-        {fileExst ? (
-          <Text
-            className="badge-ext"
-            as="span"
-            color="#A3A9AE"
-            fontSize="13px"
-            fontWeight={600}
-            truncate={true}
-          >
-            {fileExst}
-          </Text>
-        ) : null}
       </Link>
     </>
   );

@@ -1,0 +1,8 @@
+{
+  "ChangeUserStatusDialog": "Потребителят със статус '{{ userStatus }}' ще бъде {{ status }}.",
+  "ChangeUserStatusDialogHeader": "Промени потребителски статус",
+  "ChangeUserStatusDialogMessage": "Не можете да смените статуса за собственика на портала и за себе си",
+  "ChangeUsersActiveStatus": "деактивиран",
+  "ChangeUsersDisableStatus": "активиран",
+  "ChangeUsersStatusButton": "Промени потребителския статус"
+}

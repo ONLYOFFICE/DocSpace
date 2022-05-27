@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
 import MobileLayout from "./MobileLayout";
-import { size, isSmallTablet } from "@appserver/components/utils/device";
+import { size } from "@appserver/components/utils/device";
 import {
   isIOS,
   isFirefox,
@@ -16,10 +16,11 @@ import { inject, observer } from "mobx-react";
 
 const StyledContainer = styled.div`
   width: 100%;
-  height: ${(props) =>
-    (props.isTabletView || isMobile) && !isFirefox
+  height: ${(props) => `${props.contentHeight}px`};
+  /* height: ${(props) =>
+    (props.isTabletView || isMobileOnly) && !isFirefox
       ? `${props.contentHeight}px`
-      : "100vh"};
+      : "100vh"}; */
 
   #customScrollBar {
     z-index: 0;
@@ -27,46 +28,10 @@ const StyledContainer = styled.div`
       -webkit-user-select: none;
     }
   }
-  #articleScrollBar {
-    > .scroll-body {
-      -webkit-touch-callout: none;
-      -webkit-user-select: none;
-      position: ${(props) =>
-        isMobile && !isSmallTablet()
-          ? props.isArticlePinned
-            ? "static"
-            : "absolute"
-          : "absolute"} !important;
-
-      ${(props) =>
-        isMobile &&
-        props.isArticlePinned &&
-        !isSmallTablet() &&
-        css`
-          overflow-y: hidden !important;
-          overflow-x: hidden !important;
-          width: 192px;
-        `}
-    }
-
-    .nav-thumb-horizontal {
-      ${(props) =>
-        props.isTabletView &&
-        css`
-          height: 0 !important;
-        `}
-    }
-  }
 `;
 
 const Layout = (props) => {
-  const {
-    children,
-    isTabletView,
-    setIsTabletView,
-    isArticlePinned,
-    isArticleVisibleOnUnpin,
-  } = props;
+  const { children, isTabletView, setIsTabletView } = props;
 
   const [contentHeight, setContentHeight] = useState();
   const [isPortrait, setIsPortrait] = useState();
@@ -151,6 +116,10 @@ const Layout = (props) => {
       //     height = window.screen.availHeight - correctorTabletSafari;
       //   }
       // }
+
+      let vh = (height - 48) * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
+
       setContentHeight(height);
     };
     intervalHandler = setInterval(() => {
@@ -177,9 +146,8 @@ const Layout = (props) => {
       className="Layout"
       isTabletView={isTabletView}
       contentHeight={contentHeight}
-      isArticlePinned={isArticlePinned}
     >
-      {isMobile ? <MobileLayout {...props} /> : children}
+      {isMobileOnly ? <MobileLayout {...props} /> : children}
     </StyledContainer>
   );
 };
@@ -188,14 +156,12 @@ Layout.propTypes = {
   isTabletView: PropTypes.bool,
   children: PropTypes.any,
   setIsTabletView: PropTypes.func,
-  isArticlePinned: PropTypes.bool,
 };
 
 export default inject(({ auth }) => {
   return {
     isTabletView: auth.settingsStore.isTabletView,
-    isArticlePinned: auth.settingsStore.isArticlePinned,
-    isArticleVisibleOnUnpin: auth.settingsStore.isArticleVisibleOnUnpin,
+
     setIsTabletView: auth.settingsStore.setIsTabletView,
   };
 })(observer(Layout));

@@ -5,6 +5,8 @@ const ModuleFederationPlugin = require("webpack").container
   .ModuleFederationPlugin;
 const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
+const DefinePlugin = require("webpack").DefinePlugin;
+
 const combineUrl = require("@appserver/common/utils/combineUrl");
 const AppServerConfig = require("@appserver/common/constants/AppServerConfig");
 const sharedDeps = require("@appserver/common/constants/sharedDependencies");
@@ -160,13 +162,23 @@ var config = {
           AppServerConfig.proxyURL,
           "/products/people/remoteEntry.js"
         )}`,
+        files: `files@${combineUrl(
+          AppServerConfig.proxyURL,
+          "/products/files/remoteEntry.js"
+        )}`,
       },
       exposes: {
         "./app": "./src/Files.jsx",
         "./SharingDialog": "./src/components/panels/SharingDialog",
         "./utils": "./src/helpers/utils.js",
-        "./SelectFileDialog": "./src/components/panels/SelectFileDialog",
-        "./SelectFolderDialog": "./src/components/panels/SelectFolderDialog",
+        "./SelectFileDialog":
+          "./src/components/panels/SelectFileDialog/SelectFileDialogWrapper",
+        "./SelectFileInput":
+          "./src/components/panels/SelectFileInput/SelectFileInputWrapper",
+        "./SelectFolderDialog":
+          "./src/components/panels/SelectFolderDialog/SelectFolderDialogWrapper",
+        "./SelectFolderInput":
+          "./src/components/panels/SelectFolderInput/SelectFolderInputWrapper",
       },
       shared: {
         ...deps,
@@ -174,12 +186,6 @@ var config = {
       },
     }),
     new ExternalTemplateRemotesPlugin(),
-    new HtmlWebpackPlugin({
-      template: "./public/index.html",
-      publicPath: homepage,
-      title: title,
-      base: `${homepage}/`,
-    }),
     new CopyPlugin({
       patterns: [
         {
@@ -196,16 +202,60 @@ var config = {
 };
 
 module.exports = (env, argv) => {
+  if (!!env.hideText) {
+    config.plugins = [
+      ...config.plugins,
+      new HtmlWebpackPlugin({
+        template: "./public/index.html",
+        publicPath: homepage,
+        title: title,
+        base: `${homepage}/`,
+        custom: `<style type="text/css">
+          div,
+          p,
+          a,
+          span,
+          button,
+          h1,
+          h2,
+          h3,
+          h4,
+          h5,
+          h6,
+          ::placeholder {
+            color: rgba(0, 0, 0, 0) !important;
+        }
+        </style>`,
+      }),
+    ];
+  } else {
+    config.plugins = [
+      ...config.plugins,
+      new HtmlWebpackPlugin({
+        template: "./public/index.html",
+        publicPath: homepage,
+        title: title,
+        base: `${homepage}/`,
+        custom: "",
+      }),
+    ];
+  }
   if (argv.mode === "production") {
     config.mode = "production";
     config.optimization = {
       splitChunks: { chunks: "all" },
-      minimize: true,
+      minimize: !env.minimize,
       minimizer: [new TerserPlugin()],
     };
   } else {
     config.devtool = "cheap-module-source-map";
   }
+
+  config.plugins.push(
+    new DefinePlugin({
+      IS_PERSONAL: env.personal || false,
+    })
+  );
 
   return config;
 };

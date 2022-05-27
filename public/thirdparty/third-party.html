@@ -52,10 +52,12 @@
         const searchUrl = location.search.substring(1);
         const object = JSON.parse(
           '{"' +
-            decodeURIComponent(searchUrl)
-              .replace(/"/g, '\\"')
-              .replace(/&/g, '","')
-              .replace(/=/g, '":"') +
+            decodeURIComponent(
+              searchUrl
+                .replace(/"/g, '\\"')
+                .replace(/&/g, '","')
+                .replace(/=/g, '":"')
+            ) +
             '"}'
         );
 
@@ -70,6 +72,8 @@
       const urlParams = getObjectByLocation(window.location);
       const code = urlParams ? urlParams.code || null : null;
       const error = urlParams ? urlParams.error || null : null;
+      const desktop = urlParams ? urlParams.desktop || false : false;
+      const p = urlParams ? urlParams.p || false : false;
     </script>
   </head>
   <body id="third-party-body">
@@ -78,6 +82,10 @@
   <script>
     if (code) {
       localStorage.setItem("code", code);
+
+      if (desktop && p) {
+        window.location.href = `/login.ashx?p=${p}&code=${code}&desktop=true`;
+      }
     } else if (error) {
       renderError(error);
     }

@@ -537,7 +537,7 @@ namespace ASC.CRM.Api
             return wrapper;
         }
 
-        private static ContactInfo FromContactInfoDto(ContactInfoDto contactInfoDto)
+        private ContactInfo FromContactInfoDto(ContactInfoDto contactInfoDto)
         {
             return new ContactInfo
             {

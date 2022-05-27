@@ -31,7 +31,7 @@ using ASC.MessagingSystem;
 
 namespace ASC.AuditTrail.Mappers
 {
-    internal class DocumentsActionMapper
+    internal static class DocumentsActionMapper
     {
         public static Dictionary<MessageAction, MessageMaps> GetMaps()
         {

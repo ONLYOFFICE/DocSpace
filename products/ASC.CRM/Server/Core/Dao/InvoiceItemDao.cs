@@ -54,7 +54,6 @@ namespace ASC.CRM.Core.Dao
 
         public InvoiceItemDao(
                 DbContextManager<CrmDbContext> dbContextManager,
-                DbContextManager<TenantDbContext> dbContextManager1,
                 TenantManager tenantManager,
                 SecurityContext securityContext,
                 CrmSecurity crmSecurity,
@@ -62,7 +61,6 @@ namespace ASC.CRM.Core.Dao
                 ICache ascCache,
                 IMapper mapper
             ) : base(dbContextManager,
-                 dbContextManager1,
                  tenantManager,
                  securityContext,
                  logger,

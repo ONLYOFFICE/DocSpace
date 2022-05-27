@@ -37,6 +37,11 @@ class ContactField extends React.Component {
       removeButtonOnChange,
     } = this.props;
 
+    const setDropDownMaxHeight =
+      comboBoxOptions && comboBoxOptions.length > 6
+        ? { dropDownMaxHeight: 200 }
+        : {};
+
     return (
       <Container>
         <ComboBox
@@ -46,7 +51,10 @@ class ContactField extends React.Component {
           selectedOption={comboBoxSelectedOption}
           isDisabled={isDisabled}
           scaled={true}
+          directionY="both"
           className="field-select"
+          scaledOptions={comboBoxOptions.length < 7}
+          {...setDropDownMaxHeight}
         />
         <TextInput
           name={inputName}
@@ -62,7 +70,6 @@ class ContactField extends React.Component {
           iconName={"/static/images/catalog.trash.react.svg"}
           isFill={true}
           isClickable={true}
-          color="#A3A9AE"
         />
       </Container>
     );

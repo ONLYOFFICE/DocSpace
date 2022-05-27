@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import styled from "styled-components";
 import { withRouter } from "react-router";
 import ModalDialogContainer from "../ModalDialogContainer";
 import Text from "@appserver/components/text";
@@ -6,6 +7,10 @@ import Button from "@appserver/components/button";
 import ModalDialog from "@appserver/components/modal-dialog";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
+
+const StyledModal = styled(ModalDialogContainer)`
+  max-width: 400px;
+`;
 
 const EmptyTrashDialogComponent = (props) => {
   const {
@@ -17,20 +22,31 @@ const EmptyTrashDialogComponent = (props) => {
     emptyTrash,
   } = props;
 
+  useEffect(() => {
+    window.addEventListener("keydown", onKeyPress);
+
+    return () => window.removeEventListener("keydown", onKeyPress);
+  }, []);
+
   const onClose = () => setEmptyTrashDialogVisible(false);
 
   const onEmptyTrash = () => {
     onClose();
-    const translations = { deleteOperation: t("Translations:DeleteOperation") };
+    const translations = {
+      deleteOperation: t("Translations:DeleteOperation"),
+      successOperation: t("SuccessEmptyTrash"),
+    };
     emptyTrash(translations);
   };
 
+  const onKeyPress = (e) => {
+    if (e.keyCode === 13) {
+      onEmptyTrash();
+    }
+  };
+
   return (
-    <ModalDialogContainer
-      isLoading={!tReady}
-      visible={visible}
-      onClose={onClose}
-    >
+    <StyledModal isLoading={!tReady} visible={visible} onClose={onClose}>
       <ModalDialog.Header>{t("DeleteForeverTitle")}</ModalDialog.Header>
       <ModalDialog.Body>
         <Text>{t("DeleteForeverNote")}</Text>
@@ -39,7 +55,7 @@ const EmptyTrashDialogComponent = (props) => {
         <Button
           key="OkButton"
           label={t("DeleteForeverButton")}
-          size="medium"
+          size="small"
           primary
           onClick={onEmptyTrash}
           isLoading={isLoading}
@@ -48,12 +64,12 @@ const EmptyTrashDialogComponent = (props) => {
           className="button-dialog"
           key="CancelButton"
           label={t("Common:CancelButton")}
-          size="medium"
+          size="small"
           onClick={onClose}
           isLoading={isLoading}
         />
       </ModalDialog.Footer>
-    </ModalDialogContainer>
+    </StyledModal>
   );
 };
 

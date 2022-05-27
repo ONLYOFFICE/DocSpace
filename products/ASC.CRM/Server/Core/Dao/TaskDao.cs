@@ -61,7 +61,6 @@ namespace ASC.CRM.Core.Dao
         private UserDbContext _userDbContext { get => LazyUserDbContext.Value; }
 
         public TaskDao(DbContextManager<CrmDbContext> dbContextManager,
-             DbContextManager<TenantDbContext> dbContextManager1,
                        TenantManager tenantManager,
                        SecurityContext securityContext,
                        CrmSecurity crmSecurity,
@@ -72,7 +71,6 @@ namespace ASC.CRM.Core.Dao
                        DbContextManager<UserDbContext> userDbContext,
                        IMapper mapper) :
             base(dbContextManager,
-                dbContextManager1,
                  tenantManager,
                  securityContext,
                  logger,
@@ -333,7 +331,7 @@ namespace ASC.CRM.Core.Dao
                                        int entityId)
         {
 
-            int result = 0;
+            int result;
 
             _logger.DebugFormat("Starting GetTasksCount: {0}", DateTime.Now.ToString());
 
@@ -646,7 +644,7 @@ namespace ASC.CRM.Core.Dao
                     break;
                     case TaskSortedByType.ContactManager:
                     {
-                        var sqlQueryPart = sqlQuery.GroupJoin(_userDbContext.Users.Where(x => x.Tenant == TenantID),
+                        var sqlQueryPart = sqlQuery.GroupJoin(_userDbContext.Users.AsQueryable().Where(x => x.Tenant == TenantID),
                                                       x => x.ResponsibleId,
                                                       y => y.Id,
                                                       (x, y) => new { x, y }

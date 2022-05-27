@@ -44,12 +44,16 @@ const RecoverAccessModalDialog = ({
 
   React.useEffect(() => {
     window.addEventListener("resize", () => setWidth(window.innerWidth));
+
+    return () =>
+      window.removeEventListener("resize", () => setWidth(window.innerWidth));
   }, []);
 
   return (
     <ModalDialogContainer
       visible={visible}
-      bodyPadding="16px 0 0 0"
+      modalBodyPadding="12px 0 0 0"
+      asideBodyPadding="16px 0 0 0"
       onClose={onRecoverModalClose}
     >
       <ModalDialog.Header>
@@ -111,7 +115,7 @@ const RecoverAccessModalDialog = ({
           className="recover-button-dialog"
           key="SendBtn"
           label={loading ? t("Common:Sending") : t("Common:SendButton")}
-          size="big"
+          size="normal"
           primary={true}
           onClick={onSendRecoverRequest}
           isLoading={loading}

@@ -148,7 +148,7 @@ namespace ASC.Web.CRM.Classes
 
             var values = jsonElement.EnumerateArray().Select(x => x.GetInt32()).ToList().ConvertAll(columnIndex => _columns[columnIndex]);
 
-            values.RemoveAll(item => item == String.Empty);
+            values.RemoveAll(item => item.Length == 0);
 
             return String.Join(",", values.ToArray());
         }

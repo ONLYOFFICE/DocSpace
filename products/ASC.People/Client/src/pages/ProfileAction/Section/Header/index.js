@@ -5,6 +5,7 @@ import IconButton from "@appserver/components/icon-button";
 import Headline from "@appserver/common/components/Headline";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
+import { isMobileOnly } from "react-device-detect";
 
 import config from "../../../../../package.json";
 import { combineUrl } from "@appserver/common/utils";
@@ -58,7 +59,9 @@ const SectionHeaderContent = (props) => {
       ? t("CustomCreation", { user: guestCaption })
       : t("CustomCreation", { user: userCaption })
     : profile
-    ? `${t("EditUserDialogTitle")} (${profile.displayName})`
+    ? isMobileOnly
+      ? t("Common:Editing")
+      : t("EditUserDialogTitle")
     : "";
 
   const onClickBackHandler = () => {
@@ -108,9 +111,7 @@ const SectionHeaderContent = (props) => {
     <Wrapper>
       <IconButton
         iconName="/static/images/arrow.path.react.svg"
-        color="#A3A9AE"
         size="17"
-        hoverColor="#657077"
         isFill={true}
         onClick={onClickBackHandler}
         className="arrow-button"

@@ -2,17 +2,17 @@ import React from "react";
 import TableHeader from "@appserver/components/table-container/TableHeader";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
-import { FilterType } from "@appserver/common/constants";
-import DropDownItem from "@appserver/components/drop-down-item";
 
-const TABLE_COLUMNS = "filesTableColumns";
-const COLUMNS_SIZE = "filesColumnsSize";
+const TABLE_VERSION = "2";
+const TABLE_COLUMNS = `filesTableColumns_ver-${TABLE_VERSION}`;
+const COLUMNS_SIZE = `filesColumnsSize_ver-${TABLE_VERSION}`;
+const COLUMNS_SIZE_INFO_PANEL = `filesColumnsSizeInfoPanel_ver-${TABLE_VERSION}`;
 
 class FilesTableHeader extends React.Component {
   constructor(props) {
     super(props);
 
-    const { t, withContent, personal, userId } = props;
+    const { t, personal, userId } = props;
 
     const defaultColumns = [
       {
@@ -22,13 +22,13 @@ class FilesTableHeader extends React.Component {
         enable: true,
         default: true,
         sortBy: "AZ",
-        minWidth: 180,
+        minWidth: 210,
         onClick: this.onFilter,
       },
       {
         key: "Author",
         title: t("ByAuthor"),
-        enable: true,
+        enable: false,
         resizable: true,
         sortBy: "Author",
         onClick: this.onFilter,
@@ -37,7 +37,7 @@ class FilesTableHeader extends React.Component {
       {
         key: "Created",
         title: t("ByCreationDate"),
-        enable: false,
+        enable: true,
         resizable: true,
         sortBy: "DateAndTimeCreation",
         onClick: this.onFilter,
@@ -64,17 +64,17 @@ class FilesTableHeader extends React.Component {
       {
         key: "Type",
         title: t("Common:Type"),
-        enable: false,
+        enable: true,
         resizable: true,
         sortBy: "Type",
         onClick: this.onFilter,
         onChange: this.onColumnChange,
       },
       {
-        key: "Share",
+        key: "QuickButtons",
         title: "",
-        enable: withContent,
-        defaultSize: 120,
+        enable: true,
+        defaultSize: 75,
         resizable: false,
       },
     ];
@@ -89,13 +89,48 @@ class FilesTableHeader extends React.Component {
     const tableColumns = columns.map((c) => c.enable && c.key);
     this.setTableColumns(tableColumns);
 
-    this.state = { columns, resetColumnsSize };
+    this.state = {
+      columns,
+      resetColumnsSize,
+    };
+
+    this.isBeginScrolling = false;
   }
 
   setTableColumns = (tableColumns) => {
     localStorage.setItem(`${TABLE_COLUMNS}=${this.props.userId}`, tableColumns);
   };
 
+  componentDidMount() {
+    this.customScrollElm = document.getElementsByClassName("section-scroll")[0];
+
+    this.customScrollElm.addEventListener("scroll", this.onBeginScroll);
+  }
+
+  onBeginScroll = () => {
+    const { firstElemChecked } = this.props;
+
+    const currentScrollPosition = this.customScrollElm.scrollTop;
+    const elem = document.getElementById("table-container_caption-header");
+
+    if (currentScrollPosition === 0) {
+      this.isBeginScrolling = false;
+
+      this.props.firstElemChecked &&
+        this.props.headerBorder &&
+        elem?.classList?.add("hotkeys-lengthen-header");
+
+      !firstElemChecked && elem?.classList?.remove("lengthen-header");
+      return;
+    }
+
+    if (!this.isBeginScrolling) {
+      elem?.classList?.remove("hotkeys-lengthen-header");
+      elem?.classList?.add("lengthen-header");
+    }
+
+    this.isBeginScrolling = true;
+  };
   componentDidUpdate(prevProps) {
     const { columns } = this.state;
     if (this.props.withContent !== prevProps.withContent) {
@@ -105,8 +140,19 @@ class FilesTableHeader extends React.Component {
       columns[columnIndex].enable = this.props.withContent;
       this.setState({ columns });
     }
+
+    if (this.props.firstElemChecked && this.props.headerBorder) {
+      const elem = document.getElementById("table-container_caption-header");
+      elem?.classList?.add("hotkeys-lengthen-header");
+    } else {
+      const elem = document.getElementById("table-container_caption-header");
+      elem?.classList?.remove("hotkeys-lengthen-header");
+    }
   }
 
+  componentWillUnmount() {
+    this.customScrollElm.removeEventListener("scroll", this.onBeginScroll);
+  }
   getColumns = (defaultColumns, splitColumns) => {
     const columns = [];
 
@@ -152,48 +198,83 @@ class FilesTableHeader extends React.Component {
   };
 
   render() {
-    const { containerRef, filter, sectionWidth, userId } = this.props;
+    const {
+      containerRef,
+      isHeaderChecked,
+      filter,
+      sectionWidth,
+      userId,
+      firstElemChecked,
+      sortingVisible,
+      infoPanelVisible,
+    } = this.props;
+
     const { sortBy, sortOrder } = filter;
     const { columns, resetColumnsSize } = this.state;
 
+    const columnStorageName = `${COLUMNS_SIZE}=${userId}`;
+    const columnInfoPanelStorageName = `${COLUMNS_SIZE_INFO_PANEL}=${userId}`;
+
     return (
       <TableHeader
+        isLengthenHeader={firstElemChecked || isHeaderChecked}
+        checkboxSize="32px"
         sorted={sortOrder === "descending"}
         sortBy={sortBy}
         containerRef={containerRef}
         columns={columns}
-        columnStorageName={`${COLUMNS_SIZE}=${userId}`}
+        columnStorageName={columnStorageName}
+        columnInfoPanelStorageName={columnInfoPanelStorageName}
         sectionWidth={sectionWidth}
         resetColumnsSize={resetColumnsSize}
+        sortingVisible={sortingVisible}
+        infoPanelVisible={infoPanelVisible}
       />
     );
   }
 }
 
 export default inject(
-  ({ auth, filesStore, selectedFolderStore, treeFoldersStore }) => {
+  ({
+    auth,
+    filesStore,
+    selectedFolderStore,
+    treeFoldersStore,
+    infoPanelStore,
+  }) => {
+    const { isVisible: infoPanelVisible } = infoPanelStore;
+
     const {
-      isHeaderVisible,
+      isHeaderChecked,
       setIsLoading,
       filter,
       fetchFiles,
       canShare,
+      firstElemChecked,
+      headerBorder,
     } = filesStore;
-    const { isPrivacyFolder } = treeFoldersStore;
+    const { isPrivacyFolder, isRecentFolder } = treeFoldersStore;
 
     const withContent = canShare || (canShare && isPrivacyFolder && isDesktop);
+    const sortingVisible = !isRecentFolder;
     const { personal } = auth.settingsStore;
 
     return {
-      isHeaderVisible,
+      isHeaderChecked,
       filter,
       selectedFolderId: selectedFolderStore.id,
       withContent,
       personal,
+      sortingVisible,
 
       setIsLoading,
       fetchFiles,
       userId: auth.userStore.user.id,
+
+      firstElemChecked,
+      headerBorder,
+
+      infoPanelVisible,
     };
   }
 )(

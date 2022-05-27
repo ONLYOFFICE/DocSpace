@@ -1,0 +1,9 @@
+{
+  "DocumentsFileType": "ドキュメント",
+  "FileLocation": "ファイルの場所を開く",
+  "FileName": "ファイル名",
+  "ImageFileType": "画像",
+  "MailMergeFileType": "XLSX形式のファイルを選択する",
+  "OpenSavedDocument": "保存されたファイルを新しいタブで開く",
+  "SelectFilesType": " {{fileType}}タイプのファイルの選択"
+}

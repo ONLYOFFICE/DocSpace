@@ -1,4 +1,5 @@
 import React from "react";
+import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
 import Backdrop from "@appserver/components/backdrop";
 import Heading from "@appserver/components/heading";
@@ -6,12 +7,9 @@ import Aside from "@appserver/components/aside";
 import IconButton from "@appserver/components/icon-button";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import i18n from "./i18n";
-import {
-  StyledEmbeddingPanel,
-  StyledContent,
-  StyledHeaderContent,
-  StyledBody,
-} from "../StyledPanels";
+import { StyledEmbeddingPanel, StyledContent } from "../StyledPanels";
+
+import { StyledHeaderContent } from "../SharingPanel/StyledSharingPanel";
 
 import EmbeddingBody from "./EmbeddingBody";
 
@@ -24,7 +22,7 @@ class EmbeddingPanelComponent extends React.Component {
   };
 
   render() {
-    const { visible, t } = this.props;
+    const { visible, t, theme, embeddingLink } = this.props;
     const zIndex = 310;
 
     //console.log("EmbeddingPanel render");
@@ -36,14 +34,18 @@ class EmbeddingPanelComponent extends React.Component {
           zIndex={zIndex}
           isAside={true}
         />
-        <Aside className="header_aside-panel">
+        <Aside
+          className="header_aside-panel"
+          visible={visible}
+          onClose={this.onClosePanels}
+        >
           <StyledContent>
-            <StyledHeaderContent>
+            <StyledHeaderContent isEmbedding={true}>
               <IconButton
                 size="16"
                 iconName="/static/images/arrow.path.react.svg"
                 onClick={this.onArrowClick}
-                color="#A3A9AE"
+                // color={theme.filesPanels.embedding.color}
               />
               <Heading
                 className="header_aside-panel-header"
@@ -53,9 +55,8 @@ class EmbeddingPanelComponent extends React.Component {
                 {t("EmbeddingDocument")}
               </Heading>
             </StyledHeaderContent>
-            <StyledBody>
-              <EmbeddingBody />
-            </StyledBody>
+
+            <EmbeddingBody embeddingLink={embeddingLink} theme={theme} />
           </StyledContent>
         </Aside>
       </StyledEmbeddingPanel>
@@ -69,9 +70,9 @@ EmbeddingPanelComponent.propTypes = {
   onClose: PropTypes.func,
 };
 
-const EmbeddingBodyWrapper = withTranslation("EmbeddingPanel")(
-  EmbeddingPanelComponent
-);
+const EmbeddingBodyWrapper = inject(({ auth }) => {
+  return { theme: auth.settingsStore.theme };
+})(observer(withTranslation("EmbeddingPanel")(EmbeddingPanelComponent)));
 
 export default (props) => (
   <I18nextProvider i18n={i18n}>

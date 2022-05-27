@@ -15,9 +15,9 @@
 
     <link rel="manifest" href="/manifest.json" />
     <!-- Tell the browser it's a PWA -->
-    <meta name="mobile-web-app-capable" content="yes" />
+    <!-- <meta name="mobile-web-app-capable" content="yes" /> -->
     <!-- Tell iOS it's a PWA -->
-    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <!-- <meta name="apple-mobile-web-app-capable" content="yes" /> -->
     <link rel="apple-touch-icon" href="/appIcon.png" />
 
     <!--
@@ -29,6 +29,9 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
+
+    <%= htmlWebpackPlugin.options.custom %>
+
     <style type="text/css">
       body {
         height: 100%;

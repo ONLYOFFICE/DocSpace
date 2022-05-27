@@ -26,7 +26,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 using ASC.Api.Collections;
 using ASC.Api.Core;
@@ -612,7 +614,7 @@ namespace ASC.CRM.Api
         ///   Contact list
         /// </returns>
         [Delete(@"contact/filter")]
-        public IEnumerable<ContactBaseDto> DeleteBatchContacts(
+        public async Task<IEnumerable<ContactBaseDto>> DeleteBatchContactsAsync(
             IEnumerable<String> tags,
             int? contactStage,
             int? contactType,
@@ -636,7 +638,7 @@ namespace ASC.CRM.Api
                 0,
                 null);
 
-            contacts = _daoFactory.GetContactDao().DeleteBatchContact(contacts);
+            contacts = await _daoFactory.GetContactDao().DeleteBatchContactAsync(contacts);
 
             _messageService.Send(MessageAction.ContactsDeleted, _messageTarget.Create(contacts.Select(c => c.ID)), contacts.Select(c => c.GetTitle()));
 
@@ -741,7 +743,20 @@ namespace ASC.CRM.Api
         /// <returns>Person</returns>
         /// <exception cref="ArgumentException"></exception>
         [Create(@"contact/person")]
-        public PersonDto CreatePerson([FromBody] CreateOrUpdatePersonRequestDto intDto)
+        public Task<PersonDto> CreatePersonAsync([FromBody] CreateOrUpdatePersonRequestDto intDto)
+        {
+            int companyId = intDto.CompanyId;
+
+            if (companyId > 0)
+            {
+                var company = _daoFactory.GetContactDao().GetByID(companyId);
+                if (company == null || !_crmSecurity.CanAccessTo(company)) throw new ItemNotFoundException();
+            }
+
+            return InternalCreatePersonAsync(intDto);
+        }
+
+        private async Task<PersonDto> InternalCreatePersonAsync([FromBody] CreateOrUpdatePersonRequestDto intDto)
         {
             string firstName = intDto.FirstName;
             string lastName = intDto.LastName;
@@ -752,12 +767,6 @@ namespace ASC.CRM.Api
             IEnumerable<Guid> managerList = intDto.ManagerList;
             IEnumerable<ItemKeyValuePair<int, string>> customFieldList = intDto.CustomFieldList;
             IEnumerable<IFormFile> photo = intDto.Photos;
-
-            if (companyId > 0)
-            {
-                var company = _daoFactory.GetContactDao().GetByID(companyId);
-                if (company == null || !_crmSecurity.CanAccessTo(company)) throw new ItemNotFoundException();
-            }
 
             var peopleInst = new Person
             {
@@ -774,7 +783,7 @@ namespace ASC.CRM.Api
             peopleInst.CreateOn = DateTime.UtcNow;
 
             var managerListLocal = managerList != null ? managerList.ToList() : new List<Guid>();
-            if (managerListLocal.Any())
+            if (managerListLocal.Count > 0)
             {
                 _crmSecurity.SetAccessTo(peopleInst, managerListLocal);
             }
@@ -792,9 +801,9 @@ namespace ASC.CRM.Api
 
             var photoList = photo != null ? photo.ToList() : new List<IFormFile>();
 
-            if (photoList.Any())
+            if (photoList.Count > 0)
             {
-                outDto.SmallFotoUrl = ChangeContactPhoto(peopleInst.ID, photoList);
+                outDto.SmallFotoUrl = await ChangeContactPhotoAsync(peopleInst.ID, photoList);
             }
 
             _messageService.Send(MessageAction.PersonCreated, _messageTarget.Create(peopleInst.ID), peopleInst.GetTitle());
@@ -814,7 +823,7 @@ namespace ASC.CRM.Api
         ///    Path to contact photo
         /// </returns>
         [Update(@"contact/{contactid:int}/changephoto")]
-        public string ChangeContactPhoto(int contactid, IEnumerable<IFormFile> photo)
+        public Task<string> ChangeContactPhotoAsync(int contactid, IEnumerable<IFormFile> photo)
         {
             if (contactid <= 0)
                 throw new ArgumentException();
@@ -840,7 +849,13 @@ namespace ASC.CRM.Api
                 _setupInfo.MaxImageUploadSize < firstPhoto.Length)
                 throw new Exception(_fileSizeComment.GetFileImageSizeNote(CRMCommonResource.ErrorMessage_UploadFileSize, false));
 
-            return _contactPhotoManager.UploadPhoto(fileStream, contactid, false).Url;
+            return InternalChangeContactPhotoAsync(contactid, photo, fileStream);
+        }
+
+        private async Task<string> InternalChangeContactPhotoAsync(int contactid, IEnumerable<IFormFile> photo, Stream fileStream)
+        {
+            var photoData = await _contactPhotoManager.UploadPhotoAsync(fileStream, contactid, false);
+            return photoData.Url;
         }
 
         /// <summary>
@@ -855,14 +870,20 @@ namespace ASC.CRM.Api
         ///    Path to contact photo
         /// </returns>
         [Update(@"contact/{contactid:int}/changephotobyurl")]
-        public string ChangeContactPhoto(int contactid, string photourl)
+        public Task<string> ChangeContactPhotoAsync(int contactid, string photourl)
         {
             if (contactid <= 0 || string.IsNullOrEmpty(photourl)) throw new ArgumentException();
 
             var contact = _daoFactory.GetContactDao().GetByID(contactid);
             if (contact == null || !_crmSecurity.CanAccessTo(contact)) throw new ItemNotFoundException();
 
-            return _contactPhotoManager.UploadPhoto(photourl, contactid, false).Url;
+            return InternalChangeContactPhotoAsync(contactid, photourl);
+        }
+
+        private async Task<string> InternalChangeContactPhotoAsync(int contactid, string photourl)
+        {
+            var photoData = await _contactPhotoManager.UploadPhotoAsync(photourl, contactid, false);
+            return photoData.Url;
         }
 
         /// <summary>
@@ -918,7 +939,17 @@ namespace ASC.CRM.Api
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="ItemNotFoundException"></exception>
         [Update(@"contact/person/{personid:int}")]
-        public PersonDto UpdatePerson([FromQuery] int personid, [FromBody] CreateOrUpdatePersonRequestDto inDto)
+        public Task<PersonDto> UpdatePersonAsync([FromQuery] int personid, [FromBody] CreateOrUpdatePersonRequestDto inDto)
+        {
+            string firstName = inDto.FirstName;
+            string lastName = inDto.LastName;
+
+            if (personid <= 0 || string.IsNullOrEmpty(firstName) || string.IsNullOrEmpty(lastName)) throw new ArgumentException();
+
+            return internalUpdatePersonAsync(personid, inDto);
+        }
+
+        private async Task<PersonDto> internalUpdatePersonAsync([FromQuery] int personid, [FromBody] CreateOrUpdatePersonRequestDto inDto)
         {
             string firstName = inDto.FirstName;
             string lastName = inDto.LastName;
@@ -929,8 +960,6 @@ namespace ASC.CRM.Api
             IEnumerable<Guid> managerList = inDto.ManagerList;
             IEnumerable<ItemKeyValuePair<int, string>> customFieldList = inDto.CustomFieldList;
             IEnumerable<IFormFile> photo = inDto.Photos;
-
-            if (personid <= 0 || string.IsNullOrEmpty(firstName) || string.IsNullOrEmpty(lastName)) throw new ArgumentException();
 
             var peopleInst = new Person
             {
@@ -948,7 +977,7 @@ namespace ASC.CRM.Api
             peopleInst = (Person)_daoFactory.GetContactDao().GetByID(peopleInst.ID);
 
             var managerListLocal = managerList != null ? managerList.ToList() : new List<Guid>();
-            if (managerListLocal.Any())
+            if (managerListLocal.Count > 0)
             {
                 _crmSecurity.SetAccessTo(peopleInst, managerListLocal);
             }
@@ -967,9 +996,9 @@ namespace ASC.CRM.Api
 
             var photoList = photo != null ? photo.ToList() : new List<IFormFile>();
 
-            if (photoList.Any())
+            if (photoList.Count > 0)
             {
-                outDto.SmallFotoUrl = ChangeContactPhoto(peopleInst.ID, photoList);
+                outDto.SmallFotoUrl = await ChangeContactPhotoAsync(peopleInst.ID, photoList);
             }
 
             _messageService.Send(MessageAction.PersonUpdated, _messageTarget.Create(peopleInst.ID), peopleInst.GetTitle());
@@ -992,7 +1021,7 @@ namespace ASC.CRM.Api
         /// <returns>Company</returns>
         /// <exception cref="ArgumentException"></exception>
         [Create(@"contact/company")]
-        public CompanyDto CreateCompany([FromBody] CreateOrUpdateCompanyRequestDto inDto)
+        public async Task<CompanyDto> CreateCompanyAsync([FromBody] CreateOrUpdateCompanyRequestDto inDto)
         {
             var personList = inDto.PersonList;
             string companyName = inDto.CompanyName;
@@ -1045,7 +1074,7 @@ namespace ASC.CRM.Api
             var photoList = photo != null ? photo.ToList() : new List<IFormFile>();
             if (photoList.Any())
             {
-                wrapper.SmallFotoUrl = ChangeContactPhoto(companyInst.ID, photoList);
+                wrapper.SmallFotoUrl = await ChangeContactPhotoAsync(companyInst.ID, photoList);
             }
 
             _messageService.Send(MessageAction.CompanyCreated, _messageTarget.Create(companyInst.ID), companyInst.GetTitle());
@@ -1561,11 +1590,16 @@ namespace ASC.CRM.Api
         ///   Contact
         /// </returns>
         [Delete(@"contact/{contactid:int}")]
-        public ContactDto DeleteContact(int contactid)
+        public Task<ContactDto> DeleteContactAsync(int contactid)
         {
             if (contactid <= 0) throw new ArgumentException();
 
-            var contact = _daoFactory.GetContactDao().DeleteContact(contactid);
+            return InternalDeleteContactAsync(contactid);
+        }
+
+        private async Task<ContactDto> InternalDeleteContactAsync(int contactid)
+        {
+            var contact = await _daoFactory.GetContactDao().DeleteContactAsync(contactid);
             if (contact == null) throw new ItemNotFoundException();
 
             var messageAction = contact is Person ? MessageAction.PersonDeleted : MessageAction.CompanyDeleted;
@@ -1586,11 +1620,16 @@ namespace ASC.CRM.Api
         ///   Contact list
         /// </returns>
         [Update(@"contact")]
-        public IEnumerable<ContactBaseDto> DeleteBatchContacts(IEnumerable<int> contactids)
+        public Task<IEnumerable<ContactBaseDto>> DeleteBatchContactsAsync(IEnumerable<int> contactids)
         {
             if (contactids == null) throw new ArgumentException();
 
-            var contacts = _daoFactory.GetContactDao().DeleteBatchContact(contactids.ToArray());
+            return InternalDeleteBatchContactsAsync(contactids);
+        }
+
+        private async Task<IEnumerable<ContactBaseDto>> InternalDeleteBatchContactsAsync(IEnumerable<int> contactids)
+        {
+            var contacts = await _daoFactory.GetContactDao().DeleteBatchContactAsync(contactids.ToArray());
             _messageService.Send(MessageAction.ContactsDeleted, _messageTarget.Create(contactids), contacts.Select(c => c.GetTitle()));
 
             return contacts.Select(x => _mapper.Map<ContactBaseDto>(x));
@@ -1793,7 +1832,7 @@ namespace ASC.CRM.Api
         /// <category>Contacts</category>
         /// <returns></returns>
         [Delete(@"contact/{contactid:int}/avatar")]
-        public string DeleteContactAvatar(int contactId, string contactType, bool uploadOnly)
+        public Task<string> DeleteContactAvatarAsync(int contactId, string contactType, bool uploadOnly)
         {
             bool isCompany;
 
@@ -1814,9 +1853,9 @@ namespace ASC.CRM.Api
             if (!uploadOnly)
             {
                 _contactPhotoManager.DeletePhoto(contactId);
-                return _contactPhotoManager.GetBigSizePhoto(0, isCompany);
+                return _contactPhotoManager.GetBigSizePhotoAsync(0, isCompany);
             }
-            return "";
+            return System.Threading.Tasks.Task.FromResult("");
         }
 
         ///// <summary>
@@ -1968,15 +2007,15 @@ namespace ASC.CRM.Api
         }
 
 
-        private ContactPhotoManager.PhotoData UploadAvatar(int contactID, string imageUrl, bool uploadOnly, string tmpDirName, bool checkFormat = true)
+        private Task<ContactPhotoManager.PhotoData> UploadAvatarAsync(int contactID, string imageUrl, bool uploadOnly, string tmpDirName, bool checkFormat = true)
         {
             if (contactID != 0)
             {
-                return _contactPhotoManager.UploadPhoto(imageUrl, contactID, uploadOnly, checkFormat);
+                return _contactPhotoManager.UploadPhotoAsync(imageUrl, contactID, uploadOnly, checkFormat);
             }
 
             if (string.IsNullOrEmpty(tmpDirName) || tmpDirName == "null") tmpDirName = null;
-            return _contactPhotoManager.UploadPhotoToTemp(imageUrl, tmpDirName, checkFormat);
+            return _contactPhotoManager.UploadPhotoToTempAsync(imageUrl, tmpDirName, checkFormat);
         }
 
         private IEnumerable<ContactWithTaskDto> ToSimpleListContactDto(IReadOnlyList<Contact> itemList)

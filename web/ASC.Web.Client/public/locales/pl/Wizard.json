@@ -1,0 +1,22 @@
+{
+  "ChangeEmailTitle": "Zmień adres e-mail",
+  "Desc": "Skonfiguruj dane rejestracyjne portalu.",
+  "Domain": "Domena:",
+  "ErrorEmail": "Nieprawidłowy adres e-mail",
+  "ErrorInitWizard": "Dana usługa jest w tej chwili niedostępna, spróbuj ponownie później.",
+  "ErrorInitWizardButton": "Spróbuj ponownie",
+  "ErrorLicenseBody": "Licencja jest nieważna. Upewnij się, że wybrano właściwy plik",
+  "ErrorLicenseRead": "Zaakceptuj umowę licencyjną",
+  "ErrorLicenseTitle": "Błąd ładowania",
+  "ErrorParamsBody": "Wprowadzono nieprawidłowe dane:",
+  "ErrorParamsTitle": "Błąd rejestracji",
+  "ErrorPassword": "Hasło nie spełnia wymogów",
+  "ErrorUploadLicenseFile": "Wybierz plik licencyjny",
+  "GeneratePassword": "Wygeneruj hasło",
+  "License": "Zaakceptuj warunki ",
+  "LicenseLink": "Umowy licencyjne",
+  "PlaceholderLicense": "Twój plik licencyjny",
+  "Timezone": "Strefa czasowa:",
+  "WelcomeTitle": "Witaj w Twoim portalu!",
+  "WizardTitle": "Skonfiguruj swój portal"
+}

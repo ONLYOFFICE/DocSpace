@@ -1,0 +1,9 @@
+{
+  "DocumentsFileType": "documentos",
+  "FileLocation": "Abrir ubicación del archivo",
+  "FileName": "Nombre de archivo",
+  "ImageFileType": "imágenes",
+  "MailMergeFileType": "Seleccionar archivo en formato XLSX",
+  "OpenSavedDocument": "Abrir el documento guardado en una nueva pestaña",
+  "SelectFilesType": "Seleccionar archivos de tipo: {{fileType}}"
+}

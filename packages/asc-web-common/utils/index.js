@@ -22,14 +22,12 @@ export function getObjectByLocation(location) {
   if (!location.search || !location.search.length) return null;
 
   const searchUrl = location.search.substring(1);
-  const object = JSON.parse(
-    '{"' +
-      decodeURIComponent(searchUrl)
-        .replace(/"/g, '\\"')
-        .replace(/&/g, '","')
-        .replace(/=/g, '":"') +
-      '"}'
-  );
+  const decodedString = decodeURIComponent(searchUrl)
+    .replace(/"/g, '\\"')
+    .replace(/&/g, '","')
+    .replace(/=/g, '":"')
+    .replace(/\\/g, "\\\\");
+  const object = JSON.parse(`{"${decodedString}"}`);
 
   return object;
 }
@@ -244,6 +242,8 @@ export function getProviderTranslation(provider, t) {
       return t("Common:SignInWithTwitter");
     case "linkedin":
       return t("Common:SignInWithLinkedIn");
+    case "sso":
+      return t("Common:SignInWithSso");
   }
 }
 
@@ -306,4 +306,58 @@ export function isRetina() {
 
   if (window.matchMedia && window.matchMedia(mediaQuery).matches) return true;
   return false;
+}
+
+export function convertLanguage(key) {
+  switch (key) {
+    case "en-US":
+      return "en";
+    case "ru-RU":
+      return "ru";
+    case "de-DE":
+      return "de";
+    case "it-IT":
+      return "it";
+    case "fr-FR":
+      return "fr";
+  }
+
+  return key;
+}
+
+import FilesFilter from "../api/files/filter";
+export function getFolderOptions(folderId, filter) {
+  if (folderId && typeof folderId === "string") {
+    folderId = encodeURIComponent(folderId.replace(/\\\\/g, "\\"));
+  }
+
+  const params =
+    filter && filter instanceof FilesFilter
+      ? `${folderId}?${filter.toApiUrlParams()}`
+      : folderId;
+
+  const options = {
+    method: "get",
+    url: `/files/${params}`,
+  };
+
+  return options;
+}
+
+export function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export function isElementInViewport(el) {
+  if (!el) return;
+
+  const rect = el.getBoundingClientRect();
+
+  return (
+    rect.top >= 0 &&
+    rect.left >= 0 &&
+    rect.bottom <=
+      (window.innerHeight || document.documentElement.clientHeight) &&
+    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+  );
 }

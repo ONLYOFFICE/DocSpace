@@ -1,77 +1,78 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
-import Loader from "@appserver/components/loader";
 import Text from "@appserver/components/text";
 import Scrollbar from "@appserver/components/scrollbar";
-import TreeFolders from "../Article/Body/TreeFolders";
-import { StyledSelectFolderPanel } from "../panels/StyledPanels";
+import { StyledTree } from "../panels/SelectionPanel/StyledSelectionPanel";
+import TreeFolders from "./TreeFolders";
 const FolderTreeBody = ({
-  isLoadingData,
   expandedKeys,
-  folderList,
+  folderTree,
   onSelect,
   withoutProvider,
   certainFolders,
   isAvailable,
   filter,
   selectedKeys,
-  heightContent,
-  displayType,
-  isHeaderChildren,
+  theme,
+  isDisableTree,
+  parentId,
+  isLoadingNodes,
+  setIsLoadingNodes,
 }) => {
   const { t } = useTranslation(["SelectFolder", "Common"]);
+
+  const scrollToSelectedNode = () => {
+    const selectedNode = document.getElementsByClassName(
+      "rc-tree-treenode-selected"
+    )[0];
+    if (selectedNode) {
+      document
+        .querySelector("#folder-tree-scroll-bar > .scroll-body")
+        .scrollTo(0, selectedNode.offsetTop);
+    }
+  };
+
+  useEffect(() => {
+    scrollToSelectedNode();
+  }, []);
+
+  const firstLoadScroll = () => {
+    setIsLoadingNodes(false);
+
+    scrollToSelectedNode();
+  };
+
   return (
     <>
-      {!isLoadingData ? (
-        isAvailable ? (
-          <StyledSelectFolderPanel
-            heightContent={heightContent}
-            displayType={displayType}
-            isHeaderChildren={isHeaderChildren}
-          >
-            <div className="select-folder-dialog_tree-folder">
-              <Scrollbar id="folder-tree-scroll-bar">
-                <TreeFolders
-                  expandedPanelKeys={expandedKeys}
-                  data={folderList}
-                  filter={filter}
-                  onSelect={onSelect}
-                  withoutProvider={withoutProvider}
-                  certainFolders={certainFolders}
-                  selectedKeys={selectedKeys}
-                  needUpdate={false}
-                />
-              </Scrollbar>
-            </div>
-          </StyledSelectFolderPanel>
-        ) : (
-          <StyledSelectFolderPanel
-            heightContent={heightContent}
-            isHeaderChildren={isHeaderChildren}
-          >
-            <div className="tree-folder-empty-list select-folder-dialog_tree-folder">
-              <Text as="span">{t("NotAvailableFolder")}</Text>
-            </div>
-          </StyledSelectFolderPanel>
-        )
-      ) : (
-        <StyledSelectFolderPanel heightContent={heightContent}>
-          <div className="tree-folder-Loader" key="loader">
-            <Loader
-              type="oval"
-              size="16px"
-              style={{
-                display: "inline",
-                marginRight: "10px",
-                marginTop: "16px",
-              }}
-            />
-            <Text as="span">{`${t("Common:LoadingProcessing")} ${t(
-              "Common:LoadingDescription"
-            )}`}</Text>
+      {isAvailable ? (
+        <StyledTree theme={theme} isLoadingNodes={isLoadingNodes}>
+          <div className="selection-panel_tree-folder">
+            <Scrollbar id="folder-tree-scroll-bar" stype="mediumBlack">
+              <TreeFolders
+                isPanel={true}
+                expandedPanelKeys={expandedKeys}
+                data={folderTree}
+                filter={filter}
+                onSelect={onSelect}
+                withoutProvider={withoutProvider}
+                certainFolders={certainFolders}
+                selectedKeys={selectedKeys}
+                disabled={isDisableTree}
+                needUpdate={false}
+                defaultExpandAll
+                parentId={parentId}
+                firstLoadScroll={firstLoadScroll}
+              />
+            </Scrollbar>
           </div>
-        </StyledSelectFolderPanel>
+        </StyledTree>
+      ) : (
+        <StyledTree>
+          <div className="selection-panel_empty-folder">
+            <Text as="span">{t("NotAvailableFolder")}</Text>
+          </div>
+        </StyledTree>
       )}
     </>
   );
@@ -85,13 +86,23 @@ FolderTreeBody.defaultProps = {
 export default inject(
   ({ filesStore, treeFoldersStore, selectedFolderStore }) => {
     const { filter, isLoading } = filesStore;
-    const { expandedPanelKeys } = treeFoldersStore;
+    const {
+      expandedPanelKeys,
+      isLoadingNodes,
+      setIsLoadingNodes,
+    } = treeFoldersStore;
+    const expandedKeysProp = expandedPanelKeys
+      ? expandedPanelKeys
+      : selectedFolderStore.pathParts;
+    const expandedKeys = expandedKeysProp?.map((item) => item.toString());
+    !expandedPanelKeys && expandedKeys?.pop();
     return {
-      expandedKeys: expandedPanelKeys
-        ? expandedPanelKeys
-        : selectedFolderStore.pathParts,
+      expandedKeys: expandedKeys,
+
       filter,
       isLoading,
+      isLoadingNodes,
+      setIsLoadingNodes,
     };
   }
 )(observer(FolderTreeBody));

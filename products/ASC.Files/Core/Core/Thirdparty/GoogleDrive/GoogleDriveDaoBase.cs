@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 using ASC.Common.Logging;
 using ASC.Common.Web;
@@ -52,7 +53,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
     {
         protected override string Id { get => "drive"; }
 
-        public GoogleDriveDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility, TempPath tempPath)
+        protected GoogleDriveDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility, TempPath tempPath)
             : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
         {
         }
@@ -85,7 +86,8 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
         protected override string MakeId(string path = null)
         {
-            return string.Format("{0}{1}", PathPrefix, string.IsNullOrEmpty(path) || path == "root" || path == ProviderInfo.DriveRootId ? "" : ("-|" + path.TrimStart('/')));
+            var p = string.IsNullOrEmpty(path) || path == "root" || path == ProviderInfo.DriveRootId ? "" : ("-|" + path.TrimStart('/'));
+            return $"{PathPrefix}{p}";
         }
 
         protected string MakeFolderTitle(DriveFile driveFolder)
@@ -209,9 +211,9 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             return file;
         }
 
-        public Folder<string> GetRootFolder(string folderId)
+        public async Task<Folder<string>> GetRootFolderAsync(string folderId)
         {
-            return ToFolder(GetDriveEntry(""));
+            return ToFolder(await GetDriveEntryAsync(""));
         }
 
         protected DriveFile GetDriveEntry(string entryId)
@@ -219,7 +221,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             var driveId = MakeDriveId(entryId);
             try
             {
-                var entry = ProviderInfo.GetDriveEntry(driveId);
+                var entry = ProviderInfo.GetDriveEntryAsync(driveId).Result;
                 return entry;
             }
             catch (Exception ex)
@@ -228,15 +230,37 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             }
         }
 
-        protected override IEnumerable<string> GetChildren(string folderId)
+        protected async Task<DriveFile> GetDriveEntryAsync(string entryId)
         {
-            return GetDriveEntries(folderId).Select(entry => MakeId(entry.Id));
+            var driveId = MakeDriveId(entryId);
+            try
+            {
+                var entry = await ProviderInfo.GetDriveEntryAsync(driveId);
+                return entry;
+            }
+            catch (Exception ex)
+            {
+                return new ErrorDriveEntry(ex, driveId);
+            }
+        }
+
+        protected override async Task<IEnumerable<string>> GetChildrenAsync(string folderId)
+        {
+            var entries = await GetDriveEntriesAsync(folderId);
+            return entries.Select(entry => MakeId(entry.Id));
         }
 
         protected List<DriveFile> GetDriveEntries(object parentId, bool? folder = null)
         {
             var parentDriveId = MakeDriveId(parentId);
-            var entries = ProviderInfo.GetDriveEntries(parentDriveId, folder);
+            var entries = ProviderInfo.GetDriveEntriesAsync(parentDriveId, folder).Result;
+            return entries;
+        }
+
+        protected async Task<List<DriveFile>> GetDriveEntriesAsync(object parentId, bool? folder = null)
+        {
+            var parentDriveId = MakeDriveId(parentId);
+            var entries = await ProviderInfo.GetDriveEntriesAsync(parentDriveId, folder);
             return entries;
         }
 

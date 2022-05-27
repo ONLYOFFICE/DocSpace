@@ -10,7 +10,7 @@ import ModalDialogContainer from "../ModalDialogContainer";
 import { sendInstructionsToChangeEmail } from "@appserver/common/api/people";
 import toastr from "studio/toastr";
 import { errorKeys } from "@appserver/components/utils/constants";
-
+import { inject, observer } from "mobx-react";
 class ChangeEmailDialogComponent extends React.Component {
   constructor(props) {
     super(props);
@@ -78,7 +78,7 @@ class ChangeEmailDialogComponent extends React.Component {
     if (isEmailValid) {
       const sameEmailError = email.toLowerCase() === user.email.toLowerCase();
       if (sameEmailError) {
-        this.setState({ errorMessage: t("SameEmail"), hasError: true });
+        this.setState({ errorMessage: t("Common:SameEmail"), hasError: true });
       } else {
         this.setState({ errorMessage: "", hasError: false });
         this.onSendEmailChangeInstructions();
@@ -87,27 +87,27 @@ class ChangeEmailDialogComponent extends React.Component {
       const translatedErrors = emailErrors.map((errorKey) => {
         switch (errorKey) {
           case errorKeys.LocalDomain:
-            return t("LocalDomain");
+            return t("Common:LocalDomain");
           case errorKeys.IncorrectDomain:
-            return t("IncorrectDomain");
+            return t("Common:IncorrectDomain");
           case errorKeys.DomainIpAddress:
-            return t("DomainIpAddress");
+            return t("Common:DomainIpAddress");
           case errorKeys.PunycodeDomain:
-            return t("PunycodeDomain");
+            return t("Common:PunycodeDomain");
           case errorKeys.PunycodeLocalPart:
-            return t("PunycodeLocalPart");
+            return t("Common:PunycodeLocalPart");
           case errorKeys.IncorrectLocalPart:
-            return t("IncorrectLocalPart");
+            return t("Common:IncorrectLocalPart");
           case errorKeys.SpacesInLocalPart:
-            return t("SpacesInLocalPart");
+            return t("Common:SpacesInLocalPart");
           case errorKeys.MaxLengthExceeded:
-            return t("MaxLengthExceeded");
+            return t("Common:MaxLengthExceeded");
           case errorKeys.IncorrectEmail:
-            return t("IncorrectEmail");
+            return t("Common:IncorrectEmail");
           case errorKeys.ManyEmails:
-            return t("ManyEmails");
+            return t("Common:ManyEmails");
           case errorKeys.EmptyEmail:
-            return t("EmptyEmail");
+            return t("Common:EmptyEmail");
           default:
             throw new Error("Unknown translation key");
         }
@@ -126,7 +126,7 @@ class ChangeEmailDialogComponent extends React.Component {
 
   render() {
     console.log("ChangeEmailDialog render");
-    const { t, tReady, visible, onClose } = this.props;
+    const { t, tReady, visible, onClose, isTabletView } = this.props;
     const { isRequestRunning, email, errorMessage, hasError } = this.state;
 
     return (
@@ -134,33 +134,37 @@ class ChangeEmailDialogComponent extends React.Component {
         isLoading={!tReady}
         visible={visible}
         onClose={onClose}
+        displayType="modal"
       >
         <ModalDialog.Header>{t("EmailChangeTitle")}</ModalDialog.Header>
         <ModalDialog.Body>
-          <FieldContainer
-            isVertical
-            labelText={t("EnterEmail")}
-            errorMessage={errorMessage}
-            hasError={hasError}
-          >
-            <EmailInput
-              id="new-email"
-              scale={true}
-              isAutoFocussed={true}
-              value={email}
-              onChange={this.onChangeEmailInput}
-              onValidateInput={this.onValidateEmailInput}
-              onKeyUp={this.onKeyPress}
+          <>
+            <Text className="text-body">{t("EmailActivationDescription")}</Text>
+            <FieldContainer
+              isVertical
+              //labelText={t("EnterEmail")}
+              errorMessage={errorMessage}
               hasError={hasError}
-            />
-          </FieldContainer>
-          <Text className="text-dialog">{t("EmailActivationDescription")}</Text>
+              labelVisible={false}
+            >
+              <EmailInput
+                id="new-email"
+                scale={true}
+                isAutoFocussed={true}
+                value={email}
+                onChange={this.onChangeEmailInput}
+                onValidateInput={this.onValidateEmailInput}
+                onKeyUp={this.onKeyPress}
+                hasError={hasError}
+              />
+            </FieldContainer>
+          </>
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <Button
             key="SendBtn"
             label={t("Common:SendButton")}
-            size="medium"
+            size="small"
             primary={true}
             onClick={this.onValidateEmail}
             isLoading={isRequestRunning}
@@ -181,4 +185,6 @@ ChangeEmailDialog.propTypes = {
   user: PropTypes.object.isRequired,
 };
 
-export default ChangeEmailDialog;
+export default inject(({ auth }) => ({
+  isTabletView: auth.settingsStore.isTabletView,
+}))(observer(ChangeEmailDialog));

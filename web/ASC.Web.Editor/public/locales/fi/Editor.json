@@ -1,0 +1,9 @@
+{
+  "DocumentsFileType": "asiakirjat",
+  "FileLocation": "Siirry asiakirjoihin",
+  "FileName": "Tiedostonimi",
+  "ImageFileType": "kuvat",
+  "MailMergeFileType": "Valitse tiedosto XLSX-muodossa",
+  "OpenSavedDocument": "Avaa tallennettu asiakirja uudessa välilehdessä",
+  "SelectFilesType": "Valitse tiedostot tyyppiä: {{fileType}}"
+}

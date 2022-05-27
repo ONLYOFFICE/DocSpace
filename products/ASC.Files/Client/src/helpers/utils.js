@@ -6,7 +6,6 @@ import { addFileToRecentlyViewed } from "@appserver/common/api/files";
 import i18n from "./i18n";
 
 import { request } from "@appserver/common/api/client";
-import docserviceStore from "../store/DocserviceStore";
 
 export const setDocumentTitle = (subTitle = null) => {
   const { isAuthenticated, settingsStore, product: currentModule } = authStore;
@@ -36,6 +35,8 @@ export const getDefaultFileName = (format) => {
       return i18n.t("NewSpreadsheet");
     case "pptx":
       return i18n.t("NewPresentation");
+    case "docxf":
+      return i18n.t("NewMasterForm");
     default:
       return i18n.t("NewFolder");
   }
@@ -53,22 +54,23 @@ export const openDocEditor = async (
   id,
   providerKey = null,
   tab = null,
-  url = null
+  url = null,
+  isPrivacy
 ) => {
-  if (!providerKey) {
+  if (!providerKey && id && !isPrivacy) {
     await addFileToRecent(id);
   }
 
-  if (!url) {
+  if (!url && id) {
     url = combineUrl(
       AppServerConfig.proxyURL,
       config.homepage,
-      `/doceditor?fileId=${id}`
+      `/doceditor?fileId=${encodeURIComponent(id)}`
     );
   }
 
   if (tab) {
-    tab.location = url;
+    url ? (tab.location = url) : tab.close();
   } else {
     window.open(url, "_blank");
   }
@@ -112,12 +114,6 @@ export const SaveAs = (title, url, folderId, openNewTab) => {
       "_blank"
     );
   }
-};
-
-export const canConvert = (fileExst) => {
-  const { canConvert } = docserviceStore;
-
-  return canConvert(fileExst);
 };
 
 export const connectedCloudsTitleTranslation = (key, t) => {

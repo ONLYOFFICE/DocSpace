@@ -1,49 +1,63 @@
 import React, { useEffect } from "react";
+import Article from "@appserver/common/components/Article";
 import { ArticleHeaderContent, ArticleBodyContent } from "./Article";
 import { SectionHeaderContent, SectionPagingContent } from "./Section";
 import { inject, observer } from "mobx-react";
-import PageLayout from "@appserver/common/components/PageLayout";
+import Section from "@appserver/common/components/Section";
+import withLoading from "../../../../HOCs/withLoading";
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+const ArticleSettings = React.memo(({ isLoadedPage }) => {
+  return (
+    <Article isLoadedPage={isLoadedPage}>
+      <Article.Header>
+        <ArticleHeaderContent isLoadedPage={isLoadedPage} />
+      </Article.Header>
+
+      <Article.Body>
+        <ArticleBodyContent />
+      </Article.Body>
+    </Article>
+  );
+});
+
 const Layout = ({
   currentProductId,
   setCurrentProductId,
   language,
   children,
   addUsers,
+  isLoadedPage,
 }) => {
   useEffect(() => {
     currentProductId !== "settings" && setCurrentProductId("settings");
   }, [language, currentProductId, setCurrentProductId]);
 
   return (
-    <PageLayout withBodyScroll={true}>
-      <PageLayout.ArticleHeader>
-        <ArticleHeaderContent />
-      </PageLayout.ArticleHeader>
+    <>
+      <ArticleSettings isLoadedPage={isLoadedPage} />
+      <Section withBodyScroll={true} settingsStudio={true}>
+        <Section.SectionHeader>
+          <SectionHeaderContent />
+        </Section.SectionHeader>
 
-      <PageLayout.ArticleBody>
-        <ArticleBodyContent />
-      </PageLayout.ArticleBody>
-
-      <PageLayout.SectionHeader>
-        <SectionHeaderContent />
-      </PageLayout.SectionHeader>
-
-      <PageLayout.SectionBody>{children}</PageLayout.SectionBody>
-      {addUsers && (
-        <PageLayout.SectionPaging>
-          <SectionPagingContent />
-        </PageLayout.SectionPaging>
-      )}
-    </PageLayout>
+        <Section.SectionBody>{children}</Section.SectionBody>
+        {addUsers && (
+          <Section.SectionPaging>
+            <SectionPagingContent />
+          </Section.SectionPaging>
+        )}
+      </Section>
+    </>
   );
 };
 
 export default inject(({ auth, setup }) => {
   const { language, settingsStore } = auth;
   const { addUsers } = setup.headerAction;
+
   return {
     language,
     setCurrentProductId: settingsStore.setCurrentProductId,
     addUsers,
   };
-})(observer(Layout));
+})(withLoading(observer(Layout)));

@@ -58,7 +58,7 @@ namespace ASC.Common.Utils
         }
     }
 
-    public class VelocityFormatter
+    public static class VelocityFormatter
     {
         private static bool initialized;
         private static readonly ConcurrentDictionary<string, Template> patterns = new ConcurrentDictionary<string, Template>();

@@ -38,7 +38,7 @@ namespace ASC.Data.Backup.Tasks.Modules
     [Scope]
     public class ModuleProvider
     {
-        public List<IModuleSpecifics> AllModules;
+        public List<IModuleSpecifics> AllModules { get; }
 
         public ModuleProvider(IOptionsMonitor<ILog> options, Helpers helpers, CoreSettings coreSettings)
         {

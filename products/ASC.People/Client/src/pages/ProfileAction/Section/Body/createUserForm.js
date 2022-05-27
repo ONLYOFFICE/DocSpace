@@ -118,6 +118,9 @@ class CreateUserForm extends React.Component {
 
     loadAvatar(0, data)
       .then((response) => {
+        if (!response.success && response.message) {
+          throw response.message;
+        }
         var img = new Image();
         img.onload = function () {
           if (fileData) {
@@ -442,6 +445,8 @@ class CreateUserForm extends React.Component {
   onValidateEmailField = (value) =>
     this.setState({ errors: { ...this.state.errors, email: !value.isValid } });
 
+  onSaveClick = () => this.setState({ isLoading: true });
+
   render() {
     const { isLoading, errors, profile, selector, isMobile } = this.state;
     const {
@@ -480,7 +485,7 @@ class CreateUserForm extends React.Component {
               image={createdAvatar.image}
               visible={this.state.visibleAvatarEditor}
               onClose={this.onCloseAvatarEditor}
-              onSave={this.onSaveAvatar}
+              onSave={this.onSaveClick}
               onLoadFile={this.onLoadFileAvatar}
               headerLabel={t("AddPhoto")}
               selectNewPhotoLabel={t("Translations:selectNewPhotoLabel")}
@@ -489,6 +494,8 @@ class CreateUserForm extends React.Component {
               maxSizeFileError={t("Translations:maxSizeFileError")}
               unknownError={t("Common:Error")}
               saveButtonLabel={t("Common:SaveButton")}
+              saveButtonLoading={this.state.isLoading}
+              maxSizeLabel={t("Translations:MaxSizeLabel")}
             />
           </AvatarContainer>
           <MainFieldsContainer
@@ -576,6 +583,7 @@ class CreateUserForm extends React.Component {
               calendarHeaderContent={`${t("CalendarSelectDate")}:`}
               labelText={`${t("Translations:Birthdate")}:`}
               inputName="birthday"
+              inputClassName="date-picker_input-birthday"
               inputValue={
                 profile.birthday ? new Date(profile.birthday) : undefined
               }
@@ -599,6 +607,7 @@ class CreateUserForm extends React.Component {
               calendarHeaderContent={`${t("CalendarSelectDate")}:`}
               labelText={`${regDateCaption}:`}
               inputName="workFrom"
+              inputClassName="date-picker_input-reg-date"
               inputValue={
                 profile.workFrom ? new Date(profile.workFrom) : undefined
               }
@@ -611,7 +620,7 @@ class CreateUserForm extends React.Component {
               locale={language}
             />
             <TextField
-              labelText={`${t("Translations:Location")}:`}
+              labelText={`${t("Common:Location")}:`}
               inputName="location"
               inputValue={profile.location}
               inputIsDisabled={isLoading}
@@ -643,7 +652,7 @@ class CreateUserForm extends React.Component {
           </MainFieldsContainer>
         </MainContainer>
         <InfoFieldContainer
-          headerText={t("Translations:Comments")}
+          headerText={t("Common:Comments")}
           marginBottom={"42px"}
         >
           <Textarea
@@ -691,16 +700,18 @@ class CreateUserForm extends React.Component {
             onClick={this.handleSubmit}
             primary
             isDisabled={isLoading}
-            size="big"
+            size="normal"
             tabIndex={10}
+            className="create-user_save-btn"
           />
           <Button
             label={t("Common:CancelButton")}
             onClick={this.onCancelHandler}
             isDisabled={isLoading}
-            size="big"
+            size="normal"
             style={{ marginLeft: "8px" }}
             tabIndex={11}
+            className="create-user_cancel-btn"
           />
         </div>
       </>

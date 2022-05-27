@@ -1,7 +1,0 @@
-﻿syntax = "proto3";
-
-package ASC.Core.Billing;
-
-message TariffCacheItem {
-    int32 TenantId = 1;
-}

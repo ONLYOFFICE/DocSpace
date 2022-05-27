@@ -3,9 +3,8 @@ import MyProfileI18n from "./i18n";
 import PeopleStore from "../../store/PeopleStore";
 
 import PropTypes from "prop-types";
-import PageLayout from "@appserver/common/components/PageLayout";
+import Section from "@appserver/common/components/Section";
 import toastr from "studio/toastr";
-import Loaders from "@appserver/common/components/Loaders";
 import { withRouter } from "react-router";
 
 import { Provider as PeopleProvider, inject, observer } from "mobx-react";
@@ -16,6 +15,8 @@ import {
 } from "../Profile/Section";
 import { SectionHeaderContent as EditHeaderContent } from "../ProfileAction/Section";
 import EditBodyContent from "../ProfileAction/Section/Body";
+import Link from "@appserver/components/link";
+import { Trans } from "react-i18next";
 
 class My extends React.Component {
   componentDidMount() {
@@ -43,6 +44,7 @@ class My extends React.Component {
     if (linkParams.email_change && linkParams.email_change === "success") {
       toastr.success(t("ChangeEmailSuccess"));
     }
+
     if (!profile) {
       setIsLoading(true);
       setLoadedProfile(false);
@@ -57,31 +59,67 @@ class My extends React.Component {
     this.props.resetProfile();
   }
 
+  componentDidUpdate() {
+    const { tipsSubscription, t, changeEmailSubscription } = this.props;
+    if (location?.search !== "?unsubscribe=tips" || tipsSubscription === null)
+      return;
+
+    if (!tipsSubscription) {
+      window.history.replaceState("", "", window.location.pathname);
+      return;
+    }
+
+    changeEmailSubscription(false)
+      .then(() => {
+        window.history.replaceState("", "", window.location.pathname);
+        toastr.success(
+          <Trans t={t} i18nKey="SubscriptionTurnOffToast" ns="Profile">
+            You have been successfully unsubscribed from the the mailing list.
+            <Link
+              color="#5387AD"
+              isHovered={true}
+              onClick={() => {
+                changeEmailSubscription(true);
+                toastr.clear();
+              }}
+            >
+              Subscribe again
+            </Link>
+          </Trans>,
+          null,
+          0,
+          true,
+          true
+        );
+      })
+      .catch((e) => console.error(e));
+  }
+
   render() {
-    const { profile, tReady, location } = this.props;
+    const { tReady, location } = this.props;
 
     const isEdit = (location && location.search === "?action=edit") || false;
 
     //console.log("My Profile render", this.props, isEdit);
 
     return (
-      <PageLayout withBodyAutoFocus>
-        <PageLayout.SectionHeader>
+      <Section withBodyAutoFocus>
+        <Section.SectionHeader>
           {isEdit ? (
             <EditHeaderContent isMy={true} tReady={tReady} />
           ) : (
             <ViewHeaderContent isMy={true} tReady={tReady} />
           )}
-        </PageLayout.SectionHeader>
+        </Section.SectionHeader>
 
-        <PageLayout.SectionBody>
+        <Section.SectionBody>
           {isEdit ? (
             <EditBodyContent isMy={true} tReady={tReady} />
           ) : (
             <ViewBodyContent isMy={true} tReady={tReady} />
           )}
-        </PageLayout.SectionBody>
-      </PageLayout>
+        </Section.SectionBody>
+      </Section>
     );
   }
 }
@@ -104,6 +142,9 @@ const MyProfile = withRouter(
     setLoadedProfile: peopleStore.loadingStore.setLoadedProfile,
     setIsLoading: peopleStore.loadingStore.setIsLoading,
     setFirstLoad: peopleStore.loadingStore.setFirstLoad,
+    tipsSubscription: peopleStore.targetUserStore.tipsSubscription,
+    changeEmailSubscription:
+      peopleStore.targetUserStore.changeEmailSubscription,
   }))(withTranslation(["Profile", "ProfileAction"])(observer(My)))
 );
 

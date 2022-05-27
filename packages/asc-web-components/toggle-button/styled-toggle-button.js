@@ -3,6 +3,10 @@ import styled, { css } from "styled-components";
 import Base from "../themes/base";
 import NoUserSelect from "../utils/commonStyles";
 
+const Container = styled.div`
+  display: inline-block;
+`;
+
 const ToggleButtonContainer = styled.label`
   position: absolute;
   -webkit-appearance: none;
@@ -30,10 +34,37 @@ const ToggleButtonContainer = styled.label`
       props.isDisabled
         ? css`
             rect {
-              fill: ${props.theme.toggleButton.disableFillColorOff};
+              fill: ${props.isChecked
+                ? props.theme.toggleButton.disableFillColor
+                : props.theme.toggleButton.disableFillColorOff};
+              stroke: ${props.isChecked
+                ? props.theme.toggleButton.disableBorderColor
+                : props.theme.toggleButton.disableBorderColorOff};
+              stroke-width: 1px;
+              stroke-linecap: round;
+            }
+            circle {
+              fill: ${props.isChecked
+                ? props.theme.toggleButton.disableFillCircleColor
+                : props.theme.toggleButton.disableFillCircleColorOff};
             }
           `
-        : ""}
+        : css`
+            rect {
+              fill: ${props.isChecked
+                ? props.theme.toggleButton.fillColor
+                : props.theme.toggleButton.fillColorOff};
+              stroke: ${props.isChecked
+                ? props.theme.toggleButton.borderColor
+                : props.theme.toggleButton.borderColorOff};
+              stroke-width: 1px;
+            }
+            circle {
+              fill: ${props.isChecked
+                ? props.theme.toggleButton.fillCircleColor
+                : props.theme.toggleButton.fillCircleColorOff};
+            }
+          `}
   }
 
   .toggle-button {
@@ -41,8 +72,6 @@ const ToggleButtonContainer = styled.label`
   }
 
   .toggle-button-text {
-    margin-top: 2px;
-
     color: ${(props) =>
       props.isDisabled
         ? props.theme.text.disableColor
@@ -59,4 +88,4 @@ const HiddenInput = styled.input`
   z-index: -1;
 `;
 
-export { ToggleButtonContainer, HiddenInput };
+export { ToggleButtonContainer, HiddenInput, Container };

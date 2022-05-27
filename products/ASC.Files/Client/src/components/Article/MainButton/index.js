@@ -1,177 +1,377 @@
 import React from "react";
-import PropTypes from "prop-types";
-import { withRouter } from "react-router";
+
+import { inject, observer } from "mobx-react";
+
 import MainButton from "@appserver/components/main-button";
-import DropDownItem from "@appserver/components/drop-down-item";
 import { withTranslation } from "react-i18next";
 import { isMobile } from "react-device-detect";
+import {
+  isMobile as isMobileUtils,
+  isTablet as isTabletUtils,
+} from "@appserver/components/utils/device";
 import Loaders from "@appserver/common/components/Loaders";
-import { FileAction, AppServerConfig } from "@appserver/common/constants";
+import { AppServerConfig, FileAction } from "@appserver/common/constants";
 import { encryptionUploadDialog } from "../../../helpers/desktop";
-import { inject, observer } from "mobx-react";
-import config from "../../../../package.json";
+import { withRouter } from "react-router";
+
+import MobileView from "./MobileView";
 import { combineUrl } from "@appserver/common/utils";
+import config from "../../../../package.json";
 import withLoader from "../../../HOCs/withLoader";
 
-class ArticleMainButtonContent extends React.Component {
-  onCreate = (e) => {
-    // this.goToHomePage();
-    const format = e.currentTarget.dataset.format || null;
-    this.props.setAction({
-      type: FileAction.Create,
-      extension: format,
-      id: -1,
-    });
-  };
+const ArticleMainButtonContent = (props) => {
+  const {
+    t,
+    isMobileArticle,
+    showText,
+    isDisabled,
+    canCreate,
+    isPrivacy,
+    encryptedFile,
+    encrypted,
+    startUpload,
+    setAction,
+    setSelectFileDialogVisible,
+    isArticleLoading,
+    isFavoritesFolder,
+    isShareFolder,
+    isRecentFolder,
+    isCommonFolder,
+    isRecycleBinFolder,
+    history,
+    hasGalleryFiles,
+    currentFolderId,
+  } = props;
+  const inputFilesElement = React.useRef(null);
+  const inputFolderElement = React.useRef(null);
 
-  onUploadFileClick = () => {
-    if (this.props.isPrivacy) {
+  const [actions, setActions] = React.useState([]);
+  const [uploadActions, setUploadActions] = React.useState([]);
+  const [model, setModel] = React.useState([]);
+
+  const onCreate = React.useCallback(
+    (e) => {
+      const format = e.action || null;
+      setAction({
+        type: FileAction.Create,
+        extension: format,
+        id: -1,
+      });
+    },
+    [setAction]
+  );
+
+  const onShowSelectFileDialog = React.useCallback(() => {
+    setSelectFileDialogVisible(true);
+  }, [setSelectFileDialogVisible]);
+
+  const onFileChange = React.useCallback(
+    (e) => {
+      startUpload(e.target.files, null, t);
+    },
+    [startUpload, t]
+  );
+
+  const onUploadFileClick = React.useCallback(() => {
+    if (isPrivacy) {
       encryptionUploadDialog((encryptedFile, encrypted) => {
-        const { startUpload, t } = this.props;
         encryptedFile.encrypted = encrypted;
-        this.goToHomePage();
         startUpload([encryptedFile], null, t);
       });
     } else {
-      this.inputFilesElement.click();
+      inputFilesElement.current.click();
     }
-  };
+  }, [
+    isPrivacy,
+    encrypted,
+    encryptedFile,
+    encryptionUploadDialog,
+    startUpload,
+  ]);
 
-  onUploadFolderClick = () => this.inputFolderElement.click();
+  const onUploadFolderClick = React.useCallback(() => {
+    inputFolderElement.current.click();
+  }, []);
 
-  goToHomePage = () => {
-    const { homepage, history, filter } = this.props;
-    const urlFilter = filter.toUrlParams();
+  const onInputClick = React.useCallback((e) => (e.target.value = null), []);
+
+  const onShowGallery = () => {
     history.push(
-      combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`)
+      combineUrl(
+        AppServerConfig.proxyURL,
+        config.homepage,
+        `/form-gallery/${currentFolderId}/`
+      )
     );
   };
 
-  onFileChange = (e) => {
-    const { startUpload, t } = this.props;
-    //this.goToHomePage();
-    startUpload(e.target.files, null, t);
-  };
+  React.useEffect(() => {
+    const folderUpload = !isMobile
+      ? [
+          {
+            id: "main-button_upload-folders",
+            className: "main-button_drop-down",
+            icon: "images/actions.upload.react.svg",
+            label: t("UploadFolder"),
+            disabled: isPrivacy,
+            onClick: onUploadFolderClick,
+            key: "upload-folder",
+          },
+        ]
+      : [];
 
-  onInputClick = (e) => (e.target.value = null);
+    const formActions =
+      !isMobile && !isTabletUtils()
+        ? [
+            {
+              className: "main-button_drop-down",
+              icon: "images/form.react.svg",
+              label: t("Translations:NewForm"),
+              key: "new-form",
+              items: [
+                {
+                  className: "main-button_drop-down_sub",
+                  label: t("Translations:SubNewForm"),
+                  onClick: onCreate,
+                  action: "docxf",
+                  key: "docxf",
+                },
+                {
+                  className: "main-button_drop-down_sub",
+                  label: t("Translations:SubNewFormFile"),
+                  onClick: onShowSelectFileDialog,
+                  disabled: isPrivacy,
+                  key: "form-file",
+                },
+                hasGalleryFiles && {
+                  className: "main-button_drop-down_sub",
+                  label: t("Common:OFORMsGallery"),
+                  onClick: onShowGallery,
+                  disabled: isPrivacy,
+                  key: "form-gallery",
+                },
+              ],
+            },
+          ]
+        : [
+            {
+              className: "main-button_drop-down_sub",
+              icon: "images/form.react.svg",
+              label: t("Translations:NewForm"),
+              onClick: onCreate,
+              action: "docxf",
+              key: "docxf",
+            },
+            {
+              className: "main-button_drop-down_sub",
+              icon: "images/form.file.react.svg",
+              label: t("Translations:NewFormFile"),
+              onClick: onShowSelectFileDialog,
+              disabled: isPrivacy,
+              key: "form-file",
+            },
+          ];
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   return (
-  //     nextProps.canCreate !== this.props.canCreate ||
-  //     nextProps.firstLoad !== this.props.firstLoad ||
-  //     nextProps.isPrivacy !== this.props.isPrivacy
-  //   );
-  // }
+    if ((isMobile || isTabletUtils()) && hasGalleryFiles) {
+      formActions.push({
+        className: "main-button_drop-down_sub",
+        icon: "images/form.react.svg",
+        label: t("Common:OFORMsGallery"),
+        onClick: onShowGallery,
+        disabled: isPrivacy,
+        key: "form-gallery",
+      });
+    }
 
-  render() {
-    //console.log("Files ArticleMainButtonContent render");
-    const {
-      t,
-      tReady,
-      canCreate,
-      isDisabled,
-      firstLoad,
-      isPrivacy,
-    } = this.props;
+    const actions = [
+      {
+        id: "main-button_new-document",
+        className: "main-button_drop-down",
+        icon: "images/actions.documents.react.svg",
+        label: t("NewDocument"),
+        onClick: onCreate,
+        action: "docx",
+        key: "docx",
+      },
+      {
+        id: "main-button_new-spreadsheet",
+        className: "main-button_drop-down",
+        icon: "images/spreadsheet.react.svg",
+        label: t("NewSpreadsheet"),
+        onClick: onCreate,
+        action: "xlsx",
+        key: "xlsx",
+      },
+      {
+        id: "main-button_new-presentation",
+        className: "main-button_drop-down",
+        icon: "images/actions.presentation.react.svg",
+        label: t("NewPresentation"),
+        onClick: onCreate,
+        action: "pptx",
+        key: "pptx",
+      },
+      ...formActions,
+      {
+        id: "main-button_new-folder",
+        className: "main-button_drop-down",
+        icon: "images/catalog.folder.react.svg",
+        label: t("NewFolder"),
+        onClick: onCreate,
+        key: "new-folder",
+      },
+    ];
 
-    return (
-      <MainButton
-        isDisabled={isDisabled ? isDisabled : !canCreate}
-        isDropdown={true}
-        text={t("Common:Actions")}
-      >
-        <DropDownItem
-          className="main-button_drop-down"
-          icon="images/actions.documents.react.svg"
-          label={t("NewDocument")}
-          onClick={this.onCreate}
-          data-format="docx"
-        />
-        <DropDownItem
-          className="main-button_drop-down"
-          icon="images/spreadsheet.react.svg"
-          label={t("NewSpreadsheet")}
-          onClick={this.onCreate}
-          data-format="xlsx"
-        />
-        <DropDownItem
-          className="main-button_drop-down"
-          icon="images/actions.presentation.react.svg"
-          label={t("NewPresentation")}
-          onClick={this.onCreate}
-          data-format="pptx"
-        />
-        <DropDownItem
-          className="main-button_drop-down"
-          icon="images/catalog.folder.react.svg"
-          label={t("NewFolder")}
-          onClick={this.onCreate}
-        />
-        <DropDownItem isSeparator />
-        <DropDownItem
-          className="main-button_drop-down"
-          icon="images/actions.upload.react.svg"
-          label={t("UploadFiles")}
-          onClick={this.onUploadFileClick}
-        />
-        {!isMobile && (
-          <DropDownItem
-            className="main-button_drop-down"
-            icon="images/actions.upload.react.svg"
-            label={t("UploadFolder")}
-            disabled={isPrivacy}
-            onClick={this.onUploadFolderClick}
-          />
-        )}
-        <input
-          id="customFileInput"
-          className="custom-file-input"
-          multiple
-          type="file"
-          onChange={this.onFileChange}
-          onClick={this.onInputClick}
-          ref={(input) => (this.inputFilesElement = input)}
-          style={{ display: "none" }}
-        />
-        <input
-          id="customFolderInput"
-          className="custom-file-input"
-          webkitdirectory=""
-          mozdirectory=""
-          type="file"
-          onChange={this.onFileChange}
-          onClick={this.onInputClick}
-          ref={(input) => (this.inputFolderElement = input)}
-          style={{ display: "none" }}
-        />
-      </MainButton>
-    );
-  }
-}
+    const uploadActions = [
+      {
+        id: "main-button_upload-files",
+        className: "main-button_drop-down",
+        icon: "images/actions.upload.react.svg",
+        label: t("UploadFiles"),
+        onClick: onUploadFileClick,
+        key: "upload-files",
+      },
+      ...folderUpload,
+    ];
 
-ArticleMainButtonContent.propTypes = {
-  history: PropTypes.object.isRequired,
+    const menuModel = [
+      ...actions,
+      {
+        isSeparator: true,
+        key: "separator",
+      },
+      ...uploadActions,
+    ];
+
+    setModel(menuModel);
+    setActions(actions);
+    setUploadActions(uploadActions);
+  }, [
+    t,
+    isPrivacy,
+    hasGalleryFiles,
+    currentFolderId,
+    onCreate,
+    onShowSelectFileDialog,
+    onUploadFileClick,
+    onUploadFolderClick,
+  ]);
+
+  return (
+    <>
+      {isMobileArticle ? (
+        <>
+          {!isFavoritesFolder &&
+            !isRecentFolder &&
+            !isCommonFolder &&
+            !isShareFolder &&
+            !isRecycleBinFolder &&
+            !isArticleLoading &&
+            canCreate && (
+              <MobileView
+                t={t}
+                titleProp={t("Upload")}
+                actionOptions={actions}
+                buttonOptions={uploadActions}
+              />
+            )}
+        </>
+      ) : (
+        <MainButton
+          id="files_main-button"
+          isDisabled={isDisabled ? isDisabled : !canCreate}
+          isDropdown={true}
+          text={t("Common:Actions")}
+          model={model}
+        />
+      )}
+
+      <input
+        id="customFileInput"
+        className="custom-file-input"
+        multiple
+        type="file"
+        onChange={onFileChange}
+        onClick={onInputClick}
+        ref={inputFilesElement}
+        style={{ display: "none" }}
+      />
+      <input
+        id="customFolderInput"
+        className="custom-file-input"
+        webkitdirectory=""
+        mozdirectory=""
+        type="file"
+        onChange={onFileChange}
+        onClick={onInputClick}
+        ref={inputFolderElement}
+        style={{ display: "none" }}
+      />
+    </>
+  );
 };
 
-export default inject(({ filesStore, uploadDataStore, treeFoldersStore }) => {
-  const { firstLoad, fileActionStore, filter, canCreate } = filesStore;
-  const { isPrivacyFolder } = treeFoldersStore;
-  const { startUpload } = uploadDataStore;
+export default inject(
+  ({
+    auth,
+    filesStore,
+    dialogsStore,
+    uploadDataStore,
+    treeFoldersStore,
+    selectedFolderStore,
+  }) => {
+    const {
+      isLoaded,
+      firstLoad,
+      isLoading,
+      fileActionStore,
+      canCreate,
+      hasGalleryFiles,
+    } = filesStore;
+    const {
+      isPrivacyFolder,
+      isFavoritesFolder,
+      isRecentFolder,
+      isCommonFolder,
+      isRecycleBinFolder,
+      isShareFolder,
+    } = treeFoldersStore;
+    const { startUpload } = uploadDataStore;
+    const { setSelectFileDialogVisible } = dialogsStore;
 
-  return {
-    homepage: config.homepage,
-    firstLoad,
-    isPrivacy: isPrivacyFolder,
-    filter,
-    canCreate,
+    const isArticleLoading = (!isLoaded || isLoading) && firstLoad;
 
-    setAction: fileActionStore.setAction,
-    startUpload,
-  };
-})(
-  withRouter(
-    withTranslation(["Article", "Common"])(
-      withLoader(observer(ArticleMainButtonContent))(<Loaders.MainButton />)
+    const currentFolderId = selectedFolderStore.id;
+
+    return {
+      showText: auth.settingsStore.showText,
+      isMobileArticle: auth.settingsStore.isMobileArticle,
+
+      isArticleLoading,
+      isPrivacy: isPrivacyFolder,
+      isFavoritesFolder,
+      isRecentFolder,
+      isCommonFolder,
+      isRecycleBinFolder,
+      isShareFolder,
+      canCreate,
+
+      setAction: fileActionStore.setAction,
+      startUpload,
+
+      setSelectFileDialogVisible,
+
+      isLoading,
+      isLoaded,
+      firstLoad,
+      hasGalleryFiles,
+      currentFolderId,
+    };
+  }
+)(
+  withTranslation(["Article", "UploadPanel", "Common"])(
+    withLoader(observer(withRouter(ArticleMainButtonContent)))(
+      <Loaders.ArticleButton />
     )
   )
 );

@@ -1,0 +1,9 @@
+{
+  "DocumentsFileType": "dokumenty",
+  "FileLocation": "Otevřít umístění souboru",
+  "FileName": "Název souboru",
+  "ImageFileType": "obrázky",
+  "MailMergeFileType": "Vybrat soubor ve formátu XLSX",
+  "OpenSavedDocument": "Otevřít uložený dokument na nové kartě",
+  "SelectFilesType": "Vybrat soubory typu: {{fileType}}"
+}

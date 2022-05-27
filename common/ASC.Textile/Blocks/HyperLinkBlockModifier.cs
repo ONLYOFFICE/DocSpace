@@ -33,7 +33,7 @@ namespace Textile.Blocks
                                     @"\s?" +
                                     @"(?:\((?<title>[^)]+)\)(?=""))?" +		// title
                                     "\":" +
-                                    string.Format(@"""(?<url>\S+[^""]+)""", Regex.Escape(@"a-zA-Z:/.-{}?&_%#+=@")) +						// url
+                                    @"""(?<url>\S+[^""]+)""" +						// url
                                     @"(?<slash>\/)?" +						// slash
                                     @"(?<post>[^\w\/;]*)" +					// post
                                     @"(?=\s|$)",

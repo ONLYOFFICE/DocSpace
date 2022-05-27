@@ -79,6 +79,8 @@ namespace ASC.FederatedLogin.LoginProviders
             get { return (new[] { 4194304 }).Sum().ToString(); }
         }
 
+        private readonly RequestHelper _requestHelper;
+
         private const string VKProfileUrl = "https://api.vk.com/method/users.get?v=5.103";
 
 
@@ -96,13 +98,15 @@ namespace ASC.FederatedLogin.LoginProviders
             ConsumerFactory consumerFactory,
             Signature signature,
             InstanceCrypto instanceCrypto,
+            RequestHelper requestHelper,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
             : base(oAuth20TokenHelper, tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, signature, instanceCrypto, name, order, props, additional)
         {
+            _requestHelper = requestHelper;
         }
 
 
-        public override LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params)
+        public override LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params, IDictionary<string, string> additionalStateArgs)
         {
             try
             {
@@ -111,7 +115,7 @@ namespace ASC.FederatedLogin.LoginProviders
                                           {
                                                               { "revoke", "1" }
                                           }
-                                      : null);
+                                      : null, additionalStateArgs);
 
                 if (redirect)
                 {
@@ -150,7 +154,7 @@ namespace ASC.FederatedLogin.LoginProviders
         private LoginProfile RequestProfile(string accessToken)
         {
             var fields = new[] { "sex" };
-            var vkProfile = RequestHelper.PerformRequest(VKProfileUrl + "&fields=" + HttpUtility.UrlEncode(string.Join(",", fields)) + "&access_token=" + accessToken);
+            var vkProfile = _requestHelper.PerformRequest(VKProfileUrl + "&fields=" + HttpUtility.UrlEncode(string.Join(",", fields)) + "&access_token=" + accessToken);
             var loginProfile = ProfileFromVK(vkProfile);
 
             return loginProfile;

@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 using ASC.Common;
 
@@ -34,22 +35,22 @@ namespace ASC.Files.Core.Security
     [Scope]
     public interface ISecurityDao<T>
     {
-        void SetShare(FileShareRecord r);
+        Task SetShareAsync(FileShareRecord r);
 
-        IEnumerable<FileShareRecord> GetShares(IEnumerable<Guid> subjects);
+        ValueTask<List<FileShareRecord>> GetSharesAsync(IEnumerable<Guid> subjects);
 
-        IEnumerable<FileShareRecord> GetShares(IEnumerable<FileEntry<T>> entry);
+        Task<IEnumerable<FileShareRecord>> GetSharesAsync(IEnumerable<FileEntry<T>> entry);
 
-        IEnumerable<FileShareRecord> GetShares(FileEntry<T> entry);
+        Task<IEnumerable<FileShareRecord>> GetSharesAsync(FileEntry<T> entry);
 
-        void RemoveSubject(Guid subject);
+        Task RemoveSubjectAsync(Guid subject);
 
-        IEnumerable<FileShareRecord> GetPureShareRecords(IEnumerable<FileEntry<T>> entries);
+        Task<IEnumerable<FileShareRecord>> GetPureShareRecordsAsync(IEnumerable<FileEntry<T>> entries);
 
-        IEnumerable<FileShareRecord> GetPureShareRecords(FileEntry<T> entry);
+        Task<IEnumerable<FileShareRecord>> GetPureShareRecordsAsync(FileEntry<T> entry);
 
-        void DeleteShareRecords(IEnumerable<FileShareRecord> records);
+        Task DeleteShareRecordsAsync(IEnumerable<FileShareRecord> records);
 
-        bool IsShared(object entryId, FileEntryType type);
+        ValueTask<bool> IsSharedAsync(object entryId, FileEntryType type);
     }
 }

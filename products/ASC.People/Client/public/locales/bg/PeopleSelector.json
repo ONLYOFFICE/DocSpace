@@ -1,0 +1,7 @@
+{
+  "AllUsers": "Всички потребители",
+  "CustomAllGroups": "Всички {{ groupsCaption, lowercase }}",
+  "EmptySearchUsersResult": "Няма потребител с подобно име",
+  "EmptyUsers": "Няма потребители",
+  "SearchUsersPlaceholder": "Търси потребители"
+}

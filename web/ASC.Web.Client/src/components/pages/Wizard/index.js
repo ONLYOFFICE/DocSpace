@@ -5,10 +5,14 @@ import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 import axios from "axios";
 
-import PageLayout from "@appserver/common/components/PageLayout";
+import Section from "@appserver/common/components/Section";
 import ErrorContainer from "@appserver/common/components/ErrorContainer";
 import history from "@appserver/common/history";
-import { combineUrl, createPasswordHash } from "@appserver/common/utils";
+import {
+  combineUrl,
+  createPasswordHash,
+  convertLanguage,
+} from "@appserver/common/utils";
 import Loader from "@appserver/components/loader";
 import { tablet } from "@appserver/components/utils/device";
 import { EmailSettings } from "@appserver/components/utils/email";
@@ -95,6 +99,8 @@ class Body extends Component {
       culture,
     } = this.props;
 
+    const convertedCulture = convertLanguage(culture);
+
     window.addEventListener("keyup", this.onKeyPressHandler);
 
     if (!wizardToken) {
@@ -119,9 +125,11 @@ class Body extends Component {
           }),
         ])
         .then(() => {
-          let select = cultureNames.filter((lang) => lang.key === culture);
+          let select = cultureNames.filter(
+            (lang) => lang.key === convertedCulture
+          );
           if (!select.length)
-            select = cultureNames.filter((lang) => lang.key === "en-US");
+            select = cultureNames.filter((lang) => lang.key === "en");
 
           this.setState({
             selectLanguage: {
@@ -372,6 +380,7 @@ class Body extends Component {
       isLicenseRequired,
       urlLicense,
       cultureNames,
+      theme,
     } = this.props;
 
     const {
@@ -396,6 +405,8 @@ class Body extends Component {
     } = this.state;
 
     console.log("wizard render");
+
+    const convertedCulture = convertLanguage(culture);
 
     if (errorInitWizard) {
       return (
@@ -426,6 +437,7 @@ class Body extends Component {
 
           <form className="wizard-form">
             <InputContainer
+              theme={theme}
               t={t}
               settingsPassword={passwordSettings}
               emailNeeded={emailNeeded}
@@ -454,7 +466,7 @@ class Body extends Component {
               emailOwner={emailOwner}
               email={email}
               machineName={machineName}
-              portalCulture={culture}
+              portalCulture={convertedCulture}
               onClickChangeEmail={this.onClickChangeEmail}
               onSelectLanguageHandler={this.onSelectLanguageHandler}
               onSelectTimezoneHandler={this.onSelectTimezoneHandler}
@@ -488,19 +500,19 @@ Body.propTypes = {
 
 const WizardWrapper = withTranslation(["Wizard", "Common"])(Body);
 
-const WizardPage = (props) => {
+const WizardPage = observer((props) => {
   const { isLoaded } = props;
 
   return (
     isLoaded && (
-      <PageLayout>
-        <PageLayout.SectionBody>
+      <Section>
+        <Section.SectionBody>
           <WizardWrapper {...props} />
-        </PageLayout.SectionBody>
-      </PageLayout>
+        </Section.SectionBody>
+      </Section>
     )
   );
-};
+});
 
 WizardPage.propTypes = {
   culture: PropTypes.string.isRequired,
@@ -519,6 +531,7 @@ export default inject(({ auth, wizard }) => {
     setWizardComplete,
     getPortalTimezones,
     getPortalPasswordSettings,
+    theme,
   } = auth.settingsStore;
 
   const { language } = auth;
@@ -536,6 +549,7 @@ export default inject(({ auth, wizard }) => {
   } = wizard;
 
   return {
+    theme,
     isLoaded: auth.isLoaded,
     culture: language,
     wizardToken,
@@ -559,4 +573,4 @@ export default inject(({ auth, wizard }) => {
     setLicense,
     resetLicenseUploaded,
   };
-})(withRouter(observer(withCultureNames(WizardPage))));
+})(withRouter(withCultureNames(WizardPage)));

@@ -143,6 +143,9 @@ class CreateAvatarEditorPage extends React.PureComponent {
 
     loadAvatar(0, data)
       .then((response) => {
+        if (!response.success && response.message) {
+          throw response.message;
+        }
         var img = new Image();
         img.onload = function () {
           if (fileData) {
@@ -267,6 +270,7 @@ class CreateAvatarEditorPage extends React.PureComponent {
           }
           cancelButtonLabel={t("Common:CancelButton")}
           saveButtonLoading={this.state.isLoading}
+          maxSizeLabel={t("Translations:MaxSizeLabel")}
         />
       </AvatarEditorBody>
     ) : (

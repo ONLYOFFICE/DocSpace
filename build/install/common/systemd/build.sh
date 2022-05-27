@@ -36,7 +36,7 @@ BASE_DIR="/var/www/${PRODUCT}"
 PATH_TO_CONF="/etc/onlyoffice/${PRODUCT}"
 STORAGE_ROOT="${PATH_TO_CONF}/data"
 LOG_DIR="/var/log/onlyoffice/${PRODUCT}"
-DOTNET_RUN="/usr/bin/dotnet"
+DOTNET_RUN="/usr/share/dotnet/dotnet"
 APP_URLS="http://0.0.0.0"
 ENVIRONMENT=" --ENVIRONMENT=production"
 

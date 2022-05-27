@@ -1,29 +1,40 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-import { Trans } from "react-i18next";
-import { isMobile } from "react-device-detect";
-
 import toastr from "studio/toastr";
 import {
   AppServerConfig,
   FileAction,
+  FileStatus,
   ShareAccessRights,
 } from "@appserver/common/constants";
 import { combineUrl } from "@appserver/common/utils";
-
+import getCorrectDate from "@appserver/components/utils/getCorrectDate";
+import { LANGUAGE } from "@appserver/common/constants";
 import config from "../../package.json";
 import EditingWrapperComponent from "../components/EditingWrapperComponent";
 import { getTitleWithoutExst } from "../helpers/files-helpers";
 import { getDefaultFileName } from "../helpers/utils";
 import ItemIcon from "../components/ItemIcon";
+
 export default function withContent(WrappedContent) {
   class WithContent extends React.Component {
     constructor(props) {
       super(props);
 
-      const { item, fileActionId, fileActionExt } = props;
-      let titleWithoutExt = getTitleWithoutExst(item);
-      if (fileActionId === -1 && item.id === fileActionId) {
+      const {
+        item,
+        fileActionId,
+        fileActionExt,
+        fileActionTemplateId,
+        fromTemplate,
+      } = props;
+      let titleWithoutExt = props.titleWithoutExt;
+      if (
+        fileActionId === -1 &&
+        item.id === fileActionId &&
+        fileActionTemplateId === null &&
+        !fromTemplate
+      ) {
         titleWithoutExt = getDefaultFileName(fileActionExt);
       }
 
@@ -31,10 +42,24 @@ export default function withContent(WrappedContent) {
     }
 
     componentDidUpdate(prevProps) {
-      const { fileActionId, fileActionExt } = this.props;
+      const {
+        fileActionId,
+        fileActionExt,
+        setIsUpdatingRowItem,
+        isUpdatingRowItem,
+        isEdit,
+        titleWithoutExt,
+      } = this.props;
       if (fileActionId === -1 && fileActionExt !== prevProps.fileActionExt) {
         const itemTitle = getDefaultFileName(fileActionExt);
         this.setState({ itemTitle });
+      }
+      if (fileActionId === null && prevProps.fileActionId !== fileActionId) {
+        isUpdatingRowItem && setIsUpdatingRowItem(false);
+      }
+
+      if (!isEdit && titleWithoutExt !== this.state.itemTitle) {
+        this.setState({ itemTitle: titleWithoutExt });
       }
     }
 
@@ -56,22 +81,33 @@ export default function withContent(WrappedContent) {
         setIsLoading,
         fileActionId,
         editCompleteAction,
+        addActiveItems,
+        clearActiveOperations,
       } = this.props;
 
       const { itemTitle } = this.state;
       const originalTitle = getTitleWithoutExst(item);
 
       setIsLoading(true);
+      let timerId;
+
       const isSameTitle =
         originalTitle.trim() === itemTitle.trim() || itemTitle.trim() === "";
+
+      const isFile = item.fileExst || item.contentLength;
+
       if (isSameTitle) {
         this.setState({
           itemTitle: originalTitle,
         });
         return editCompleteAction(fileActionId, item, isSameTitle);
+      } else {
+        timerId = setTimeout(() => {
+          isFile ? addActiveItems([item.id]) : addActiveItems(null, [item.id]);
+        }, 500);
       }
 
-      item.fileExst || item.contentLength
+      isFile
         ? updateFile(fileActionId, itemTitle)
             .then(() => this.completeAction(fileActionId))
             .then(() =>
@@ -83,7 +119,13 @@ export default function withContent(WrappedContent) {
               )
             )
             .catch((err) => toastr.error(err))
-            .finally(() => setIsLoading(false))
+            .finally(() => {
+              clearTimeout(timerId);
+              timerId = null;
+              clearActiveOperations([item.id]);
+
+              setIsLoading(false);
+            })
         : renameFolder(fileActionId, itemTitle)
             .then(() => this.completeAction(fileActionId))
             .then(() =>
@@ -95,7 +137,13 @@ export default function withContent(WrappedContent) {
               )
             )
             .catch((err) => toastr.error(err))
-            .finally(() => setIsLoading(false));
+            .finally(() => {
+              clearTimeout(timerId);
+              timerId = null;
+              clearActiveOperations(null, [item.id]);
+
+              setIsLoading(false);
+            });
     };
 
     cancelUpdateItem = (e) => {
@@ -110,37 +158,70 @@ export default function withContent(WrappedContent) {
     };
 
     onClickUpdateItem = (e, open = true) => {
-      const { fileActionType } = this.props;
-      fileActionType === FileAction.Create
-        ? this.createItem(e, open)
-        : this.updateItem(e);
+      const {
+        fileActionType,
+        setIsUpdatingRowItem,
+        addActiveItems,
+        item,
+      } = this.props;
+
+      setIsUpdatingRowItem(true);
+
+      if (fileActionType === FileAction.Create) {
+        !item.fileExst && !item.contentLength
+          ? addActiveItems(null, [item.id])
+          : addActiveItems([item.id]);
+        this.createItem(e, open);
+      } else {
+        this.updateItem(e);
+      }
     };
 
     createItem = (e, open) => {
       const {
         createFile,
-        item,
-        setIsLoading,
-        isLoading,
-        openDocEditor,
-        isPrivacy,
-        isDesktop,
-        replaceFileStream,
-        t,
-        setEncryptionAccess,
         createFolder,
+        fileActionTemplateId,
+        isDesktop,
+        isPrivacy,
+        item,
+        openDocEditor,
+        replaceFileStream,
+        setEncryptionAccess,
+        setIsLoading,
+        t,
+        setConvertPasswordDialogVisible,
+        setFormCreationInfo,
+        setIsUpdatingRowItem,
+        clearActiveOperations,
+        addActiveItems,
+        fileCopyAs,
+        fromTemplate,
+        gallerySelected,
+        setCreatedFolderId,
       } = this.props;
       const { itemTitle } = this.state;
+      const { parentId, fileExst } = item;
 
-      if (isLoading) return;
+      const isMakeFormFromFile = fileActionTemplateId ? true : false;
+
+      let title = itemTitle;
 
       setIsLoading(true);
 
       const itemId = e.currentTarget.dataset.itemid;
 
+      let createdFileId, createdFolderId;
+
       if (itemTitle.trim() === "") {
-        toastr.warning(t("CreateWithEmptyTitle"));
-        return this.completeAction(itemId);
+        title =
+          fileActionTemplateId === null
+            ? getDefaultFileName(item.fileExst)
+            : getTitleWithoutExst(item);
+
+        this.setState({
+          itemTitle: title,
+        });
       }
 
       let tab =
@@ -155,15 +236,102 @@ export default function withContent(WrappedContent) {
             )
           : null;
 
-      !item.fileExst && !item.contentLength
-        ? createFolder(item.parentId, itemTitle)
+      if (!item.fileExst && !item.contentLength) {
+        createFolder(item.parentId, title)
+          .then((folder) => {
+            createdFolderId = folder.id;
+            addActiveItems(null, [folder.id]);
+            setCreatedFolderId(createdFolderId);
+          })
+          .then(() => this.completeAction(itemId))
+          .catch((e) => toastr.error(e))
+          .finally(() => {
+            const folderIds = [+itemId];
+            createdFolderId && folderIds.push(createdFolderId);
+
+            clearActiveOperations(null, folderIds);
+
+            return setIsLoading(false);
+          });
+      } else {
+        if (isMakeFormFromFile) {
+          fileCopyAs(
+            fileActionTemplateId,
+            `${title}.${item.fileExst}`,
+            item.parentId
+          )
+            .then((file) => {
+              createdFileId = file.id;
+              addActiveItems([file.id]);
+
+              open && openDocEditor(file.id, file.providerKey, tab);
+            })
+            .then(() => this.completeAction(itemId))
+            .catch((err) => {
+              console.log("err", err);
+              const isPasswordError = new RegExp(/\(password\)*$/);
+
+              if (isPasswordError.test(err)) {
+                toastr.error(
+                  t("Translations:FileProtected"),
+                  t("Common:Warning")
+                );
+                setIsUpdatingRowItem(false);
+
+                setFormCreationInfo({
+                  newTitle: `${title}.${item.fileExst}`,
+                  fromExst: ".docx",
+                  toExst: item.fileExst,
+                  open,
+                  actionId: itemId,
+                  fileInfo: {
+                    id: fileActionTemplateId,
+                    folderId: item.parentId,
+                    fileExst: item.fileExst,
+                  },
+                });
+                setConvertPasswordDialogVisible(true);
+
+                open && openDocEditor(null, null, tab);
+              }
+            })
+            .finally(() => {
+              const fileIds = [+itemId];
+              createdFileId && fileIds.push(createdFileId);
+
+              clearActiveOperations(fileIds);
+
+              return setIsLoading(false);
+            });
+        } else if (fromTemplate) {
+          createFile(
+            parentId,
+            `${itemTitle}.${fileExst}`,
+            undefined,
+            gallerySelected.id
+          )
+            .then((file) => {
+              createdFileId = file.id;
+              addActiveItems([file.id]);
+
+              return open && openDocEditor(file.id, file.providerKey, tab);
+            })
             .then(() => this.completeAction(itemId))
             .catch((e) => toastr.error(e))
             .finally(() => {
+              const fileIds = [+itemId];
+              createdFileId && fileIds.push(createdFileId);
+
+              clearActiveOperations(fileIds);
+
               return setIsLoading(false);
-            })
-        : createFile(item.parentId, `${itemTitle}.${item.fileExst}`)
+            });
+        } else {
+          createFile(item.parentId, `${title}.${item.fileExst}`)
             .then((file) => {
+              createdFileId = file.id;
+              addActiveItems([file.id]);
+
               if (isPrivacy) {
                 return setEncryptionAccess(file).then((encryptedFile) => {
                   if (!encryptedFile) return Promise.resolve();
@@ -183,8 +351,15 @@ export default function withContent(WrappedContent) {
             .then(() => this.completeAction(itemId))
             .catch((e) => toastr.error(e))
             .finally(() => {
+              const fileIds = [+itemId];
+              createdFileId && fileIds.push(createdFileId);
+
+              clearActiveOperations(fileIds);
+
               return setIsLoading(false);
             });
+        }
+      }
     };
 
     renameTitle = (e) => {
@@ -196,70 +371,54 @@ export default function withContent(WrappedContent) {
       if (title.match(folderFormValidation)) {
         toastr.warning(t("ContainsSpecCharacter"));
       }
+
       title = title.replace(folderFormValidation, "_");
+
       return this.setState({ itemTitle: title });
     };
 
-    getStatusByDate = () => {
-      const { culture, t, item, sectionWidth, viewAs } = this.props;
-      const { created, updated, version, fileExst } = item;
+    getStatusByDate = (create) => {
+      const { culture, item, personal } = this.props;
+      const { created, updated } = item;
 
-      const title =
-        version > 1
-          ? t("TitleModified")
-          : fileExst
-          ? t("TitleUploaded")
-          : t("TitleCreated");
-
-      const date = fileExst ? updated : created;
-      const dateLabel = new Date(date).toLocaleString(culture);
-      const mobile =
-        (sectionWidth && sectionWidth <= 375) || isMobile || viewAs === "table";
-
-      return mobile ? dateLabel : `${title}: ${dateLabel}`;
-    };
-
-    getTableStatusByDate = (create) => {
-      const { created, updated } = this.props.item;
+      const locale = personal ? localStorage.getItem(LANGUAGE) : culture;
 
       const date = create ? created : updated;
-      const dateLabel = new Date(date).toLocaleString(this.props.culture);
+
+      const dateLabel = getCorrectDate(locale, date);
+
       return dateLabel;
     };
 
     render() {
       const { itemTitle } = this.state;
       const {
-        item,
-        fileActionId,
-        fileActionExt,
-        viewer,
-        t,
-        isTrashFolder,
-        onFilesClick,
-        viewAs,
         element,
         isDesktop,
+        isTrashFolder,
+        item,
+        onFilesClick,
+        t,
+        viewAs,
+        viewer,
+        isUpdatingRowItem,
+        passwordEntryProcess,
+        isEdit,
+        titleWithoutExt,
       } = this.props;
       const {
-        id,
-        fileExst,
-        updated,
-        createdBy,
         access,
+        createdBy,
+        fileExst,
         fileStatus,
         href,
+        icon,
+        id,
+        isFolder,
       } = item;
 
-      const titleWithoutExt = getTitleWithoutExst(item);
-
-      const isEdit = id === fileActionId && fileExst === fileActionExt;
-
-      const updatedDate =
-        viewAs === "table"
-          ? this.getTableStatusByDate(false)
-          : updated && this.getStatusByDate();
-      const createdDate = this.getTableStatusByDate(true);
+      const updatedDate = this.getStatusByDate(false);
+      const createdDate = this.getStatusByDate(true);
 
       const fileOwner =
         createdBy &&
@@ -275,15 +434,16 @@ export default function withContent(WrappedContent) {
         : { onClick: onFilesClick };
 
       if (!isDesktop && !isTrashFolder) {
-        linkStyles.href = item.href;
+        linkStyles.href = href;
       }
 
-      const newItems = item.new || fileStatus === 2;
+      const newItems =
+        item.new || (fileStatus & FileStatus.IsNew) === FileStatus.IsNew;
       const showNew = !!newItems;
       const elementIcon = element ? (
         element
       ) : (
-        <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />
+        <ItemIcon id={id} icon={icon} fileExst={fileExst} />
       );
 
       return isEdit ? (
@@ -296,6 +456,9 @@ export default function withContent(WrappedContent) {
           renameTitle={this.renameTitle}
           onClickUpdateItem={this.onClickUpdateItem}
           cancelUpdateItem={this.cancelUpdateItem}
+          isUpdatingRowItem={isUpdatingRowItem}
+          passwordEntryProcess={passwordEntryProcess}
+          isFolder={item.fileExst ? false : true}
         />
       ) : (
         <WrappedContent
@@ -316,54 +479,100 @@ export default function withContent(WrappedContent) {
   }
 
   return inject(
-    ({ filesActionsStore, filesStore, treeFoldersStore, auth }, {}) => {
+    (
+      {
+        filesActionsStore,
+        filesStore,
+        treeFoldersStore,
+        auth,
+        dialogsStore,
+        uploadDataStore,
+      },
+      { item }
+    ) => {
       const { editCompleteAction } = filesActionsStore;
       const {
-        setIsLoading,
-        isLoading,
-        openDocEditor,
-        updateFile,
-        renameFolder,
         createFile,
         createFolder,
+        openDocEditor,
+        renameFolder,
+        setIsLoading,
+        updateFile,
         viewAs,
+        setIsUpdatingRowItem,
+        isUpdatingRowItem,
+        passwordEntryProcess,
+        addActiveItems,
+        gallerySelected,
+        setCreatedFolderId,
       } = filesStore;
+      const { clearActiveOperations, fileCopyAs } = uploadDataStore;
       const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
 
       const {
-        type: fileActionType,
         extension: fileActionExt,
         id: fileActionId,
+        templateId: fileActionTemplateId,
+        type: fileActionType,
+        fromTemplate,
       } = filesStore.fileActionStore;
       const { replaceFileStream, setEncryptionAccess } = auth;
+
       const {
         culture,
-        isDesktopClient,
+        personal,
         folderFormValidation,
+        isDesktopClient,
       } = auth.settingsStore;
 
+      const {
+        setConvertPasswordDialogVisible,
+        setConvertItem,
+        setFormCreationInfo,
+      } = dialogsStore;
+
+      const isEdit =
+        item.id === fileActionId && item.fileExst === fileActionExt;
+
+      const titleWithoutExt = getTitleWithoutExst(item, fromTemplate);
+
       return {
-        setIsLoading,
-        isLoading,
+        createFile,
+        createFolder,
+        culture,
+        editCompleteAction,
+        fileActionExt,
+        fileActionId,
+        fileActionTemplateId,
+        fileActionType,
+        folderFormValidation,
+        homepage: config.homepage,
+        isDesktop: isDesktopClient,
+        isPrivacy: isPrivacyFolder,
         isTrashFolder: isRecycleBinFolder,
         openDocEditor,
-        updateFile,
         renameFolder,
-        fileActionId,
-        editCompleteAction,
-        fileActionType,
-        createFile,
-        isPrivacy: isPrivacyFolder,
-        isDesktop: isDesktopClient,
         replaceFileStream,
         setEncryptionAccess,
-        createFolder,
-        fileActionExt,
-        culture,
-        homepage: config.homepage,
-        viewer: auth.userStore.user,
+        setIsLoading,
+        updateFile,
         viewAs,
-        folderFormValidation,
+        viewer: auth.userStore.user,
+        setConvertPasswordDialogVisible,
+        setConvertItem,
+        setFormCreationInfo,
+        setIsUpdatingRowItem,
+        isUpdatingRowItem,
+        passwordEntryProcess,
+        addActiveItems,
+        clearActiveOperations,
+        fileCopyAs,
+        isEdit,
+        titleWithoutExt,
+        fromTemplate,
+        gallerySelected,
+        setCreatedFolderId,
+        personal,
       };
     }
   )(observer(WithContent));

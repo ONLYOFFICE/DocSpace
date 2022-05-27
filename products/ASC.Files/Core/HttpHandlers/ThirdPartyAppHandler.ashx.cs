@@ -40,7 +40,6 @@ using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Files.HttpHandlers
@@ -48,26 +47,25 @@ namespace ASC.Web.Files.HttpHandlers
     public class ThirdPartyAppHandler
     {
         private RequestDelegate Next { get; }
-        private IServiceProvider ServiceProvider { get; }
 
-        public ThirdPartyAppHandler(RequestDelegate next, IServiceProvider serviceProvider)
+        public static string HandlerPath = "~/ThirdPartyApp";
+
+        public ThirdPartyAppHandler(RequestDelegate next)
         {
-            Next = next;
-            ServiceProvider = serviceProvider;
         }
 
-        public async Task Invoke(HttpContext context)
+        public async Task Invoke(HttpContext context, ThirdPartyAppHandlerService thirdPartyAppHandlerService)
         {
-            using var scope = ServiceProvider.CreateScope();
-            var thirdPartyAppHandlerService = scope.ServiceProvider.GetService<ThirdPartyAppHandlerService>();
-            thirdPartyAppHandlerService.Invoke(context);
-            await Next.Invoke(context);
+            await thirdPartyAppHandlerService.InvokeAsync(context);
+            //await Next.Invoke(context);
         }
     }
 
     [Scope]
     public class ThirdPartyAppHandlerService
     {
+        private readonly ThirdPartySelector _thirdPartySelector;
+
         private AuthContext AuthContext { get; }
         private CommonLinkUtility CommonLinkUtility { get; }
         private ILog Log { get; set; }
@@ -78,15 +76,17 @@ namespace ASC.Web.Files.HttpHandlers
             IOptionsMonitor<ILog> optionsMonitor,
             AuthContext authContext,
             BaseCommonLinkUtility baseCommonLinkUtility,
-            CommonLinkUtility commonLinkUtility)
+            CommonLinkUtility commonLinkUtility,
+            ThirdPartySelector thirdPartySelector)
         {
             AuthContext = authContext;
             CommonLinkUtility = commonLinkUtility;
+            _thirdPartySelector = thirdPartySelector;
             Log = optionsMonitor.CurrentValue;
-            HandlerPath = baseCommonLinkUtility.ToAbsolute("~/thirdpartyapp");
+            HandlerPath = baseCommonLinkUtility.ToAbsolute(ThirdPartyAppHandler.HandlerPath);
         }
 
-        public void Invoke(HttpContext context)
+        public async Task InvokeAsync(HttpContext context)
         {
             Log.Debug("ThirdPartyApp: handler request - " + context.Request.Url());
 
@@ -94,10 +94,10 @@ namespace ASC.Web.Files.HttpHandlers
 
             try
             {
-                var app = ThirdPartySelector.GetApp(context.Request.Query[ThirdPartySelector.AppAttr]);
+                var app = _thirdPartySelector.GetApp(context.Request.Query[ThirdPartySelector.AppAttr]);
                 Log.Debug("ThirdPartyApp: app - " + app);
 
-                if (app.Request(context))
+                if (await app.RequestAsync(context))
                 {
                     return;
                 }
@@ -115,7 +115,7 @@ namespace ASC.Web.Files.HttpHandlers
 
             if (string.IsNullOrEmpty(message))
             {
-                if ((context.Request.Query["error"].FirstOrDefault() ?? "").ToLower() == "access_denied")
+                if ((context.Request.Query["error"].FirstOrDefault() ?? "").Equals("access_denied", StringComparison.InvariantCultureIgnoreCase))
                 {
                     message = context.Request.Query["error_description"].FirstOrDefault() ?? FilesCommonResource.AppAccessDenied;
                 }

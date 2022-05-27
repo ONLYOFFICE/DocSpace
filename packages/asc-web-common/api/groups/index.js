@@ -9,6 +9,8 @@ export function getGroupList(fake = false, searchValue) {
     : request({
         method: "get",
         url: `/group${params}`,
+      }).then((groups) => {
+        return groups.sort((a, b) => a.name.localeCompare(b.name));
       });
 }
 

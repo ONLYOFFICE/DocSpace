@@ -12,6 +12,7 @@ import {
   StyledContent,
   StyledRow,
 } from "./styled-row";
+import Loader from "../loader";
 
 class Row extends React.Component {
   constructor(props) {
@@ -27,13 +28,13 @@ class Row extends React.Component {
       children,
       contentElement,
       contextButtonSpacerWidth,
-      contextOptions,
       data,
       element,
       indeterminate,
       onSelect,
       rowContextClick,
       sectionWidth,
+      getContextModel,
     } = this.props;
 
     const renderCheckbox = Object.prototype.hasOwnProperty.call(
@@ -46,13 +47,18 @@ class Row extends React.Component {
       "element"
     );
 
-    const renderContentElement =
-      Object.prototype.hasOwnProperty.call(this.props, "contentElement") &&
-      sectionWidth > 500;
+    const renderContentElement = Object.prototype.hasOwnProperty.call(
+      this.props,
+      "contentElement"
+    );
+
+    const contextData = data.contextOptions ? data : this.props;
 
     const renderContext =
-      Object.prototype.hasOwnProperty.call(this.props, "contextOptions") &&
-      contextOptions.length > 0;
+      Object.prototype.hasOwnProperty.call(contextData, "contextOptions") &&
+      contextData &&
+      contextData.contextOptions &&
+      contextData.contextOptions.length > 0;
 
     const changeCheckbox = (e) => {
       onSelect && onSelect(e.target.checked, data);
@@ -60,7 +66,7 @@ class Row extends React.Component {
 
     const getOptions = () => {
       rowContextClick && rowContextClick();
-      return contextOptions;
+      return contextData.contextOptions;
     };
 
     const onContextMenu = (e) => {
@@ -71,19 +77,31 @@ class Row extends React.Component {
       this.cm.current.show(e);
     };
 
-    const { onRowClick, ...rest } = this.props;
+    let contextMenuHeader = {};
+    if (children.props.item) {
+      contextMenuHeader = {
+        icon: children.props.item.icon,
+        title: children.props.item.title,
+      };
+    }
+
+    const { onRowClick, inProgress, ...rest } = this.props;
 
     return (
       <StyledRow ref={this.row} {...rest} onContextMenu={onContextMenu}>
-        {renderCheckbox && (
-          <StyledCheckbox className="not-selectable">
-            <Checkbox
-              className="checkbox"
-              isChecked={checked}
-              isIndeterminate={indeterminate}
-              onChange={changeCheckbox}
-            />
-          </StyledCheckbox>
+        {inProgress ? (
+          <Loader className="row-loader" type="oval" size="16px" />
+        ) : (
+          renderCheckbox && (
+            <StyledCheckbox className="not-selectable">
+              <Checkbox
+                className="checkbox"
+                isChecked={checked}
+                isIndeterminate={indeterminate}
+                onChange={changeCheckbox}
+              />
+            </StyledCheckbox>
+          )
         )}
         {renderElement && (
           <StyledElement onClick={onRowClick} className="styled-element">
@@ -102,8 +120,6 @@ class Row extends React.Component {
           )}
           {renderContext ? (
             <ContextMenuButton
-              color="#A3A9AE"
-              hoverColor="#657077"
               className="expandButton"
               getData={getOptions}
               directionX="right"
@@ -113,7 +129,13 @@ class Row extends React.Component {
           ) : (
             <div className="expandButton"> </div>
           )}
-          <ContextMenu model={contextOptions} ref={this.cm}></ContextMenu>
+          <ContextMenu
+            getContextModel={getContextModel}
+            model={contextData.contextOptions}
+            ref={this.cm}
+            header={contextMenuHeader}
+            withBackdrop={true}
+          ></ContextMenu>
         </StyledOptionButton>
       </StyledRow>
     );
@@ -150,10 +172,13 @@ Row.propTypes = {
   /** Accepts css style  */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   sectionWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  inProgress: PropTypes.bool,
+  getContextModel: PropTypes.func,
 };
 
 Row.defaultProps = {
   contextButtonSpacerWidth: "26px",
+  data: {},
 };
 
 export default Row;

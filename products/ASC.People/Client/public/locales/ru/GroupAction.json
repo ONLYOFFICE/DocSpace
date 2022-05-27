@@ -1,4 +1,5 @@
 {
+  "AddHeadOfDepartment": "Добавить руководителя группы",
   "CustomNewDepartment": "{{groupCaption}} (создание)",
   "GroupAction": "Работа с группой",
   "Members": "Участники",

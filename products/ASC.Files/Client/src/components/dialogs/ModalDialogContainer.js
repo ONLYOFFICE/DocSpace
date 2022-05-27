@@ -1,8 +1,13 @@
 import styled from "styled-components";
 import { tablet } from "@appserver/components/utils/device";
 import ModalDialog from "@appserver/components/modal-dialog";
+import { Base } from "@appserver/components/themes";
 
 const ModalDialogContainer = styled(ModalDialog)`
+  .row-main-container-wrapper {
+    width: 100%;
+  }
+
   .flex {
     display: flex;
     justify-content: space-between;
@@ -14,6 +19,10 @@ const ModalDialogContainer = styled(ModalDialog)`
 
   .input-dialog {
     margin-top: 16px;
+  }
+
+  .link-other-formats {
+    pointer-events: none;
   }
 
   .button-dialog {
@@ -68,7 +77,7 @@ const ModalDialogContainer = styled(ModalDialog)`
 
   .modal-dialog-content {
     padding: 8px 16px;
-    border: 1px solid lightgray;
+    border: ${(props) => props.theme.filesModalDialog.border};
 
     @media ${tablet} {
       padding: 0;
@@ -103,8 +112,15 @@ const ModalDialogContainer = styled(ModalDialog)`
         white-space: normal;
       }
 
-      .convert_dialog_checkbox {
+      .convert_dialog_checkbox,
+      .convert_dialog_file-destination {
         padding-top: 16px;
+      }
+      .convert_dialog_file-destination {
+        opacity: 0;
+      }
+      .file-destination_visible {
+        opacity: 1;
       }
     }
   }
@@ -132,16 +148,8 @@ const ModalDialogContainer = styled(ModalDialog)`
       width: 90%;
     }
   }
-
-  .conflict-resolve-dialog-text {
-    padding-bottom: 8px;
-  }
-
-  .conflict-resolve-radio-button {
-    svg {
-      overflow: visible;
-    }
-  }
 `;
+
+ModalDialogContainer.defaultProps = { theme: Base };
 
 export default ModalDialogContainer;

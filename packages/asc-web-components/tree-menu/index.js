@@ -3,152 +3,63 @@ import React from "react";
 import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
 import Tree from "rc-tree";
-
+import "rc-tree/assets/index.css";
 import Badge from "../badge";
-import Text from "../text";
+import Base from "../themes/base";
 
-import { tablet } from "../utils/device";
+const StyledTree = styled(Tree)`
+  .rc-tree-list-holder-inner {
+    .rc-tree-treenode {
+      height: 36px;
+      display: flex;
+      align-items: center;
+      padding-left: 16px;
+      span.rc-tree-switcher {
+        ${(props) => props.switcherIcon != null && "background: none"};
 
-const StyledTreeMenu = styled(Tree)`
-  margin: 0;
-  padding: 0;
-  width: 93%;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-
-  @media ${tablet} {
-    width: 90%;
-  }
-
-  .rc-tree-switcher {
-    margin-left: 0 !important;
-    margin-top: 1px;
-  }
-
-  & li span.rc-tree-iconEle {
-    margin-left: 3px;
-    width: 18px;
-    height: 16px;
-    padding: 0;
-    margin-top: 4px;
-  }
-
-  ${(props) =>
-    props.isEmptyRootNode &&
-    css`
-      & > li > span.rc-tree-switcher-noop {
-        display: none;
+        margin-right: 10px;
+        vertical-align: 1px;
+        height: 24px;
+        min-width: 8px;
+        max-width: 9px;
+        margin-top: -5px;
       }
-    `}
-  span.rc-tree-switcher {
-    margin-right: 6px !important;
-  }
-  .rc-tree-node-content-wrapper {
-    position: static !important;
-    margin-bottom: ${(props) => +props.gapBetweenNodes - 16 + "px;"};
-  }
-
-  ${(props) =>
-    !props.isFullFillSelection &&
-    css`
-      span.rc-tree-node-selected {
-        width: min-content !important;
-        padding-right: 4px;
-        max-width: 98%;
+      span.rc-tree-node-content-wrapper {
+        width: 83%;
+        span.rc-tree-iconEle {
+          margin-right: 8px;
+          vertical-align: 5px;
+        }
+        span.rc-tree-title {
+          width: calc(100% - 32px);
+          font-weight: 600;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          color: #555f65;
+        }
       }
-    `}
-
-  & .rc-tree-node-selected .rc-tree-title {
-    ${(props) => !props.isFullFillSelection && "width: calc(100% - 26px);"}
-  }
-
-  &:not(.rc-tree-show-line) .rc-tree-switcher-noop {
-    background: none;
-  }
-  &.rc-tree-show-line li:not(:last-child) > ul {
-    background: url("data:image/gif;base64,R0lGODlhCQACAIAAAMzMzP///yH5BAEAAAEALAAAAAAJAAIAAAIEjI9pUAA7")
-      0 0 repeat-y;
-  }
-  &.rc-tree-show-line li:not(:last-child) > .rc-tree-switcher-noop {
-    background-position: -56px -18px;
-  }
-  &.rc-tree-show-line li:last-child > .rc-tree-switcher-noop {
-    background-position: -56px -36px;
-  }
-  .rc-tree-child-tree {
-    display: none;
-  }
-  .rc-tree-treenode-switcher-open {
-    ${(props) => props.disableSwitch && "margin-bottom:10px;"}
-  }
-  .rc-tree-child-tree-open {
-    display: block;
-    ${(props) => props.disableSwitch && "margin: 0 0 25px 0;"}
-    margin-left: ${(props) => (props.disableSwitch ? "27px" : "8px")};
-    li:first-child {
-      margin-top: ${(props) => (props.disableSwitch ? "10px" : "6px")};
-      margin-left: 0;
+      .rc-tree-node-selected {
+        background: none !important;
+        box-shadow: none !important;
+        opacity: 1 !important;
+      }
     }
-  }
-  .rc-tree-treenode-disabled > span:not(.rc-tree-switcher),
-  .rc-tree-treenode-disabled > a,
-  .rc-tree-treenode-disabled > a span {
-    color: #767676;
-    cursor: not-allowed;
-  }
-
-  .rc-tree-icon__open {
-    margin-right: 2px;
-    background-position: -110px -16px;
-    vertical-align: top;
-  }
-  .rc-tree-icon__close {
-    margin-right: 2px;
-    background-position: -110px 0;
-    vertical-align: top;
-  }
-  .rc-tree-icon__docu {
-    margin-right: 2px;
-    background-position: -110px -32px;
-    vertical-align: top;
-  }
-  .rc-tree-icon__customize {
-    margin-right: 2px;
-    vertical-align: top;
-  }
-  ${(props) =>
-    props.switcherIcon != null
-      ? css`
-          li span.rc-tree-switcher {
-            background: none;
-          }
-        `
-      : ""}
-  ${(props) =>
-    props.disableSwitch
-      ? css`
-          li span.rc-tree-switcher {
-            height: 0;
-            margin: 0;
-            width: 0;
-          }
-        `
-      : ``}
-  @media (max-width: 1024px) {
-    margin-top: 20px !important;
-    .rc-tree-node-content-wrapper {
-      margin-bottom: ${(props) =>
-        props.gapBetweenNodesTablet
-          ? +props.gapBetweenNodesTablet - 16 + "px;"
-          : +props.gapBetweenNodes - 16 + "px;"};
+    .rc-tree-treenode-selected {
+      background: ${(props) => props.theme.treeNode.background};
     }
-    & > li > .rc-tree-child-tree {
-      margin-left: 4px;
+    .rc-tree-treenode-disabled > span:not(.rc-tree-switcher) {
+      color: ${(props) => props.theme.treeMenu.disabledColor} !important;
+    }
+    .node-motion {
+      transition: all 0.3s;
+      overflow-y: hidden;
+      overflow-x: hidden;
     }
   }
 `;
-
+StyledTree.defaultProps = { theme: Base };
 const TreeMenu = React.forwardRef((props, ref) => {
-  //console.log("TreeMenu render");
   const {
     defaultExpandAll,
     defaultExpandParent,
@@ -189,7 +100,10 @@ const TreeMenu = React.forwardRef((props, ref) => {
     gapBetweenNodes,
     gapBetweenNodesTablet,
     isEmptyRootNode,
+    theme,
+    childrenCount,
   } = props;
+
   const expandedKeysProp = expandedKeys ? { expandedKeys: expandedKeys } : {};
 
   const onTreeNodeSelect = (data, e) => {
@@ -211,12 +125,11 @@ const TreeMenu = React.forwardRef((props, ref) => {
                 className="newItem"
                 key={child.props.id + "-badge"}
                 label={child.props.newItems}
-                backgroundColor="#ED7309"
-                color="#FFF"
                 fontSize="11px"
                 fontWeight={800}
                 borderRadius="11px"
                 padding="0 5px"
+                lineHeight="1.46"
                 onClick={child.props.onBadgeClick}
               />
             </>
@@ -232,13 +145,23 @@ const TreeMenu = React.forwardRef((props, ref) => {
 
   const modifiedChildren = renderChildren(children);
 
+  const motion = {
+    motionName: "node-motion",
+    motionAppear: false,
+    onAppearStart: () => ({ height: 0 }),
+    onAppearActive: (node) => ({ height: node.scrollHeight }),
+    onLeaveStart: (node) => ({ height: node.offsetHeight }),
+    onLeaveActive: () => ({ height: 0 }),
+  };
+
   return (
     <>
-      <StyledTreeMenu
-        id={id}
+      <StyledTree
+        motion={motion}
         style={style}
-        className={`${className} not-selectable`}
         ref={ref}
+        className={`${className} not-selectable`}
+        id={id}
         {...expandedKeysProp}
         loadData={loadData}
         checkable={!!checkable}
@@ -274,9 +197,13 @@ const TreeMenu = React.forwardRef((props, ref) => {
         gapBetweenNodes={gapBetweenNodes}
         gapBetweenNodesTablet={gapBetweenNodesTablet}
         isEmptyRootNode={isEmptyRootNode}
+        widthAdditional={`calc(100% + ${
+          (childrenCount ? childrenCount : 1) * 32
+        }px)`}
+        multiplicationFactor={32}
       >
         {modifiedChildren}
-      </StyledTreeMenu>
+      </StyledTree>
     </>
   );
 });

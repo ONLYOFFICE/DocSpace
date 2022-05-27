@@ -75,6 +75,8 @@ namespace ASC.ApiSystem.Models
 
         public string RecaptchaResponse { get; set; }
 
+        public RecaptchaType RecaptchaType { get; set; }
+
         [StringLength(20)]
         public string Region { get; set; }
 

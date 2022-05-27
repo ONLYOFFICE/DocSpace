@@ -1,8 +1,9 @@
 import styled from "styled-components";
+import Base from "../themes/base";
 
 const BannerWrapper = styled.div`
   max-width: 185px;
-  border: 1px solid #d1d1d1;
+  border: ${(props) => props.theme.campaignsBanner.border};
   border-radius: 5px;
   padding: 15px;
   margin: 20px 0px 50px 0px;
@@ -13,13 +14,18 @@ const BannerWrapper = styled.div`
 
   a {
     text-decoration: none;
-    color: #000;
+    color: ${(props) => props.theme.campaignsBanner.color};
+  }
+
+  .banner-img-wrapper {
+    height: 160px;
+    width: 100%;
   }
 
   img {
     max-width: 100%;
     height: auto;
-    margin-top: 10px;
+    margin-top: 5px;
   }
 
   .banner-sub-header {
@@ -28,17 +34,18 @@ const BannerWrapper = styled.div`
 
   .banner-btn {
     width: 100%;
-    color: #fff;
+    color: ${(props) => props.theme.campaignsBanner.btnColor};
     margin-top: 15px;
     border: none;
     border-radius: 5px;
   }
 
   .banner-btn:active {
-    color: #fff;
-    background: #2da7db;
+    color: ${(props) => props.theme.campaignsBanner.btnColor};
     border: none;
   }
 `;
+
+BannerWrapper.defaultProps = { theme: Base };
 
 export default BannerWrapper;

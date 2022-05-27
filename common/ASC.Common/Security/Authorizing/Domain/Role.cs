@@ -75,7 +75,7 @@ namespace ASC.Common.Security.Authorizing
 
         public override string ToString()
         {
-            return string.Format("Role: {0}", Name);
+            return $"Role: {Name}";
         }
     }
 }

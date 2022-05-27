@@ -1,0 +1,20 @@
+{
+  "Administrator": "管理者",
+  "ChangeToGuest": "{{guestCaption}}に変更します",
+  "ChangeToUser": "{{userCaption}}に変更します",
+  "EmptyGroupDescription": "新しいチームメンバーを手動で追加することも、リンクで招待することもできます。",
+  "EmptyGroupTitle": "ここにはまだチームメンバはいません。",
+  "LblInviteAgain": "もう一度招待する",
+  "LblInvited": "招待された",
+  "LblSendEmail": "メール送信",
+  "LblSendMessage": "メッセージの送信",
+  "LblSetActive": "アクティブの設定",
+  "LblSetDisabled": "設定無効",
+  "MakeInvitationLink": "招待用リンクの作成",
+  "MessageEmailActivationInstuctionsSentOnEmail": "電子メールによるアクティベーションの指示は、<1>{{email}}</1>のメールアドレスに送信されています。",
+  "NotFoundDescription": "別のフィルタを試すか、フィルタを解除すると、セクション内のすべての人が表示されます",
+  "NotFoundTitle": "チームメンバは見つかりませんでした",
+  "ReassignmentData": "データの再配置",
+  "SuccessfullyRemovedGroup": "グループの削除が完了しました。",
+  "UserStatus": "ステータス"
+}

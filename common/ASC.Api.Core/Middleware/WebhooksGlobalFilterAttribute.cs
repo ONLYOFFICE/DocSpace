@@ -47,12 +47,14 @@ namespace ASC.Api.Core.Middleware
                 return;
             }
 
-            var result = (ObjectResult)context.Result;
-            var resultContent = JsonSerializer.Serialize(result.Value, jsonSerializerOptions);
+            if (context.Result is ObjectResult objectResult)
+            {
+                var resultContent = JsonSerializer.Serialize(objectResult.Value, jsonSerializerOptions);
 
-            var eventName = $"method: {method}, route: {routePattern}";
+                var eventName = $"method: {method}, route: {routePattern}";
 
-            WebhookPublisher.Publish(eventName, resultContent);
+                WebhookPublisher.Publish(eventName, resultContent);
+            }
 
             base.OnResultExecuted(context);
         }

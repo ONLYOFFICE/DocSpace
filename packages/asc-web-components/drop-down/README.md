@@ -35,3 +35,4 @@ When using component, it should be noted that parent must have CSS property _pos
 | `style`              | `obj`, `array` |    -     |        -        |    -     | Accepts css style                                                                  |
 | `withBackdrop`       |     `bool`     |    -     |        -        |  `true`  | Used to display backdrop                                                           |
 | `showDisabledItems`  |     `bool`     |    -     |        -        | `false`  | Display disabled items or not                                                      |
+| `withBlur`           |     `bool`     |    -     |        -        | `false`  | Enable blur for backdrop                                                           |

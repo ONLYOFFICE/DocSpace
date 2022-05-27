@@ -341,9 +341,7 @@ namespace ASC.Web.CRM.Classes
             //data.TableFooterRows.Add(new Tuple<string, string>(CRMInvoiceResource.ResourceManager.GetString("Discount", cultureInfo), "-" + discount.ToString(CultureInfo.InvariantCulture)));
 
             data.TableTotalRow =
-                new Tuple<string, string>(
-                    string.Format("{0} ({1})", CRMInvoiceResource.ResourceManager.GetString("Total", cultureInfo),
-                        invoice.Currency), amount.ToString(CultureInfo.InvariantCulture));
+                new Tuple<string, string>($"{CRMInvoiceResource.ResourceManager.GetString("Total", cultureInfo)} ({invoice.Currency})", amount.ToString(CultureInfo.InvariantCulture));
 
 
             #endregion
@@ -671,9 +669,7 @@ namespace ASC.Web.CRM.Classes
             //data.TableFooterRows.Add(new Tuple<string, string>(CRMInvoiceResource.ResourceManager.GetString("Discount", cultureInfo), "-" + discount.ToString(CultureInfo.InvariantCulture)));
 
             data.TableTotalRow =
-                new Tuple<string, string>(
-                    string.Format("{0} ({1})", CRMInvoiceResource.ResourceManager.GetString("Total", cultureInfo),
-                        invoice.Currency), amount.ToString(CultureInfo.InvariantCulture));
+                new Tuple<string, string>($"{CRMInvoiceResource.ResourceManager.GetString("Total", cultureInfo)} ({invoice.Currency})", amount.ToString(CultureInfo.InvariantCulture));
 
 
             #endregion

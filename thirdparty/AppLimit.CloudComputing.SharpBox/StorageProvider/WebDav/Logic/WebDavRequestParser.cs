@@ -34,7 +34,7 @@ namespace AppLimit.CloudComputing.SharpBox.StorageProvider.WebDav.Logic
             var config = session.ServiceConfiguration as WebDavConfiguration;
             var results = new WebDavRequestResult();
 
-            var queryLessUri = HttpUtilityEx.GetPathAndQueryLessUri(config.ServiceLocator).ToString().TrimEnd('/');
+            var queryLessUri = HttpUtilityEx.GetPathAndQueryLessUri(config.ServiceLocator).AbsoluteUri.TrimEnd('/');
             var decodedTargetUrl = HttpUtility.UrlDecode(targetUrl);
             string s;
             using (var streamReader = new StreamReader(data))
@@ -93,10 +93,10 @@ namespace AppLimit.CloudComputing.SharpBox.StorageProvider.WebDav.Logic
 
                 string nameBaseForSelfCheck;
 
-                if (nameBase.StartsWith(config.ServiceLocator.ToString()))
+                if (nameBase.StartsWith(config.ServiceLocator.AbsoluteUri))
                 {
                     nameBaseForSelfCheck = HttpUtility.UrlDecode(nameBase);
-                    nameBase = nameBase.Remove(0, config.ServiceLocator.ToString().Length);
+                    nameBase = nameBase.Remove(0, config.ServiceLocator.AbsoluteUri.Length);
                 }
                 else
                 {

@@ -39,7 +39,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace ASC.TelegramService
 {
-    public class Program
+    public static class Program
     {
         public async static Task Main(string[] args)
         {
@@ -99,6 +99,8 @@ namespace ASC.TelegramService
                         .AddJsonFile($"notify.{env}.json", true)
                         .AddJsonFile("kafka.json")
                         .AddJsonFile($"kafka.{env}.json", true)
+                        .AddJsonFile("redis.json")
+                        .AddJsonFile($"redis.{env}.json", true)
                         .AddEnvironmentVariables();
                 })
             .ConfigureNLogLogging();

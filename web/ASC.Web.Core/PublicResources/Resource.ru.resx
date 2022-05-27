@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.9.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.9.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
     <value>Поле кода подтверждения не может быть пустым</value>
@@ -254,7 +254,7 @@
     <value>Контейнер</value>
   </data>
   <data name="ConsumersGoogleCloudbucketDescription" xml:space="preserve">
-    <value>Введите имя контейнера Google Cloud, в котором вы хотите хранить резервные копии.</value>
+    <value>Введите имя контейнера Google Cloud для хранения резервных копий.</value>
   </data>
   <data name="ConsumersGoogleCloudDescription" xml:space="preserve">
     <value>Подключите сервис Google Cloud Storage для резервного копирования и хранения данных портала.</value>
@@ -320,13 +320,13 @@
     <value>Приватный контейнер</value>
   </data>
   <data name="ConsumersRackspaceprivate_containerDescription" xml:space="preserve">
-    <value>Введите URL-адрес приватного контейнера Rackspace, в котором вы хотите хранить резервные копии.</value>
+    <value>Введите URL-адрес приватного контейнера Rackspace для хранения резервных копий.</value>
   </data>
   <data name="ConsumersRackspacepublic_container" xml:space="preserve">
     <value>Публичный контейнер</value>
   </data>
   <data name="ConsumersRackspacepublic_containerDescription" xml:space="preserve">
-    <value>Введите URL-адрес публичного контейнера Rackspace, в котором вы хотите хранить резервные копии.</value>
+    <value>Введите URL-адрес публичного контейнера Rackspace для хранения резервных копий.</value>
   </data>
   <data name="ConsumersRackspaceregion" xml:space="preserve">
     <value>Регион</value>
@@ -341,7 +341,7 @@
     <value>Контейнер</value>
   </data>
   <data name="ConsumersS3bucketDescription" xml:space="preserve">
-    <value>Введите уникальное имя контейнера Amazon, в котором вы хотите хранить резервные копии.</value>
+    <value>Введите уникальное имя контейнера Amazon для хранения резервных копий.</value>
   </data>
   <data name="ConsumersS3Description" xml:space="preserve">
     <value>Подключите Amazon AWS S3 для резервного копирования и хранения данных портала.</value>
@@ -377,13 +377,13 @@
     <value>Приватный контейнер</value>
   </data>
   <data name="ConsumersSelectelprivate_containerDescription" xml:space="preserve">
-    <value>Введите имя приватного контейнера Selectel, в котором вы хотите хранить резервные копии.</value>
+    <value>Введите имя приватного контейнера Selectel для хранения резервных копий.</value>
   </data>
   <data name="ConsumersSelectelpublic_container" xml:space="preserve">
     <value>Публичный контейнер</value>
   </data>
   <data name="ConsumersSelectelpublic_containerDescription" xml:space="preserve">
-    <value>Введите имя публичного контейнера Selectel, в котором вы хотите хранить резервные копии.</value>
+    <value>Введите имя публичного контейнера Selectel для хранения резервных копий.</value>
   </data>
   <data name="ConsumersSkyDrive" xml:space="preserve">
     <value>OneDrive</value>
@@ -541,6 +541,9 @@
   <data name="CustomNamingPeopleSchema" xml:space="preserve">
     <value>Пользовательский</value>
   </data>
+  <data name="DnsChangeMsg" xml:space="preserve">
+    <value>Ссылка для подтверждения операции была отправлена на {0} (адрес электронной почты владельца портала).</value>
+  </data>
   <data name="EmailAndPasswordIncorrectAmiId" xml:space="preserve">
     <value>Неправильный ID экземпляра.</value>
   </data>
@@ -622,6 +625,12 @@
   <data name="ErrorRequestLimitExceeded" xml:space="preserve">
     <value>Превышен лимит запросов</value>
   </data>
+  <data name="ErrorTenantTooShort" xml:space="preserve">
+    <value>Домен клиента не может быть пустым</value>
+  </data>
+  <data name="ErrorTenantTooShortFormat" xml:space="preserve">
+    <value>Доменное имя должно содержать от {0} до {1} символов.</value>
+  </data>
   <data name="ErrorUserNotFound" xml:space="preserve">
     <value>Пользователь не найден</value>
   </data>
@@ -629,7 +638,7 @@
     <value>Пользователь с e-mail "{0}" не найден</value>
   </data>
   <data name="EuServerRegion" xml:space="preserve">
-    <value>Европа (Ирландия)</value>
+    <value>Европа (Франкфурт)</value>
   </data>
   <data name="FileSizeMaxExceed" xml:space="preserve">
     <value>Превышен максимальный размер файла</value>

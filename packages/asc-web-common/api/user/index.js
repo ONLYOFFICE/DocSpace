@@ -1,14 +1,16 @@
 import { request, setWithCredentialsStatus } from "../client";
 
-export function login(userName, passwordHash) {
+export function login(userName, passwordHash, session) {
   const data = {
     userName,
     passwordHash,
+    session,
   };
 
   return request({
     method: "post",
     url: "/authentication.json",
+    skipLogout: true,
     data,
   });
 }
@@ -57,6 +59,7 @@ export function loginWithTfaCode(userName, passwordHash, code) {
   return request({
     method: "post",
     url: `/authentication/${code}`,
+    skipLogout: true,
     data,
   });
 }

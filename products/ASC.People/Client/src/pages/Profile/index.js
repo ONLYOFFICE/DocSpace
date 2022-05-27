@@ -1,15 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
-import PageLayout from "@appserver/common/components/PageLayout";
+import Section from "@appserver/common/components/Section";
 import toastr from "studio/toastr";
-import {
-  ArticleHeaderContent,
-  ArticleMainButtonContent,
-  ArticleBodyContent,
-} from "../../components/Article";
+
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { withRouter } from "react-router";
-
+import withCultureNames from "@appserver/common/hoc/withCultureNames";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 
@@ -89,30 +85,18 @@ class Profile extends React.Component {
   render() {
     //console.log("Profile render");
 
-    const { profile } = this.props;
+    const { profile, showCatalog, isAdmin } = this.props;
 
     return (
-      <PageLayout withBodyAutoFocus>
-        <PageLayout.ArticleHeader>
-          <ArticleHeaderContent />
-        </PageLayout.ArticleHeader>
-
-        <PageLayout.ArticleMainButton>
-          <ArticleMainButtonContent />
-        </PageLayout.ArticleMainButton>
-
-        <PageLayout.ArticleBody>
-          <ArticleBodyContent />
-        </PageLayout.ArticleBody>
-
-        <PageLayout.SectionHeader>
+      <Section withBodyAutoFocus>
+        <Section.SectionHeader>
           <SectionHeaderContent profile={profile} />
-        </PageLayout.SectionHeader>
+        </Section.SectionHeader>
 
-        <PageLayout.SectionBody>
+        <Section.SectionBody>
           <SectionBodyContent profile={profile} />
-        </PageLayout.SectionBody>
-      </PageLayout>
+        </Section.SectionBody>
+      </Section>
     );
   }
 }
@@ -150,6 +134,9 @@ export default withRouter(
       isEditTargetUser,
       setIsEditTargetUser,
       setLoadedProfile,
+      showCatalog: auth.settingsStore.showCatalog,
     };
-  })(observer(withTranslation(["Profile", "Common"])(Profile)))
+  })(
+    observer(withTranslation(["Profile", "Common"])(withCultureNames(Profile)))
+  )
 );

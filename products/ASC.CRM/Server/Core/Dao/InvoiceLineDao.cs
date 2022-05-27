@@ -51,14 +51,12 @@ namespace ASC.CRM.Core.Dao
     public class InvoiceLineDao : AbstractDao
     {
         public InvoiceLineDao(DbContextManager<CrmDbContext> dbContextManager,
-            DbContextManager<TenantDbContext> dbContextManager1,
             TenantManager tenantManager,
             SecurityContext securityContext,
             IOptionsMonitor<ILog> logger,
             ICache ascCache,
             IMapper mapper)
               : base(dbContextManager,
-                 dbContextManager1,
                  tenantManager,
                  securityContext,
                  logger,

@@ -13,6 +13,7 @@ namespace ASC.Core.Common.EF.Context
     public class MessagesContext : BaseDbContext
     {
         public DbSet<LoginEvents> LoginEvents { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
         {
@@ -31,6 +32,7 @@ namespace ASC.Core.Common.EF.Context
             ModelBuilderWrapper
                 .From(modelBuilder, Provider)
                 .AddLoginEvents()
+                .AddUser()
                 .AddDbFunction();
         }
     }

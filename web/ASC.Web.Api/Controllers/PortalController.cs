@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Security;
+using System.Threading.Tasks;
+using System.Web;
 
 using ASC.Api.Core;
 using ASC.Common;
@@ -12,15 +15,22 @@ using ASC.Core.Common.Notify.Push;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
+using ASC.MessagingSystem;
 using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core;
+using ASC.Web.Core.Files;
+using ASC.Web.Core.Helpers;
 using ASC.Web.Core.Mobile;
+using ASC.Web.Core.PublicResources;
+using ASC.Web.Core.Users;
 using ASC.Web.Core.Utility;
 using ASC.Web.Studio.Core;
+using ASC.Web.Studio.Core.Notify;
 using ASC.Web.Studio.UserControls.Management;
 using ASC.Web.Studio.Utility;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -34,6 +44,13 @@ namespace ASC.Web.Api.Controllers
     [ApiController]
     public class PortalController : ControllerBase
     {
+        private readonly ApiSystemHelper _apiSystemHelper;
+        private readonly CoreSettings _coreSettings;
+        private readonly StudioNotifyService _studioNotifyService;
+        private readonly MessageService _messageService;
+        private readonly MessageTarget _messageTarget;
+        private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
+        private readonly PermissionContext _permissionContext;
 
         private Tenant Tenant { get { return ApiContext.Tenant; } }
 
@@ -49,11 +66,17 @@ namespace ASC.Web.Api.Controllers
         private SettingsManager SettingsManager { get; }
         private IMobileAppInstallRegistrator MobileAppInstallRegistrator { get; }
         private IConfiguration Configuration { get; set; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public LicenseReader LicenseReader { get; }
-        public SetupInfo SetupInfo { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private LicenseReader LicenseReader { get; }
+        private SetupInfo SetupInfo { get; }
+        private DocumentServiceLicense DocumentServiceLicense { get; }
+        private CoreSettings CoreSettings { get; }
+        private PermissionContext PermissionContext { get; }
+        private ApiSystemHelper ApiSystemHelper { get; }
+        private StudioNotifyService StudioNotifyService { get; }
         private TenantExtra TenantExtra { get; set; }
         public ILog Log { get; }
+        public IHttpClientFactory ClientFactory { get; }
 
 
         public PortalController(
@@ -73,7 +96,16 @@ namespace ASC.Web.Api.Controllers
             IConfiguration configuration,
             CoreBaseSettings coreBaseSettings,
             LicenseReader licenseReader,
-            SetupInfo setupInfo
+            SetupInfo setupInfo,
+            DocumentServiceLicense documentServiceLicense,
+            IHttpClientFactory clientFactory,
+            ApiSystemHelper apiSystemHelper,
+            CoreSettings coreSettings,
+            PermissionContext permissionContext,
+            StudioNotifyService studioNotifyService,
+            MessageService messageService,
+            MessageTarget messageTarget,
+            DisplayUserSettingsHelper displayUserSettingsHelper
             )
         {
             Log = options.CurrentValue;
@@ -92,7 +124,20 @@ namespace ASC.Web.Api.Controllers
             CoreBaseSettings = coreBaseSettings;
             LicenseReader = licenseReader;
             SetupInfo = setupInfo;
+            DocumentServiceLicense = documentServiceLicense;
+            CoreSettings = coreSettings;
+            PermissionContext = permissionContext;
+            ApiSystemHelper = apiSystemHelper;
+            StudioNotifyService = studioNotifyService;
             TenantExtra = tenantExtra;
+            ClientFactory = clientFactory;
+            _apiSystemHelper = apiSystemHelper;
+            _coreSettings = coreSettings;
+            _studioNotifyService = studioNotifyService;
+            _messageService = messageService;
+            _messageTarget = messageTarget;
+            _displayUserSettingsHelper = displayUserSettingsHelper;
+            _permissionContext = permissionContext;
         }
 
         [Read("")]
@@ -115,16 +160,16 @@ namespace ASC.Web.Api.Controllers
                 throw new SecurityException("Method not available");
             }
 
-            return CommonLinkUtility.GetConfirmationUrl(string.Empty, ConfirmType.LinkInvite, (int)employeeType)
+            return CommonLinkUtility.GetConfirmationUrl(string.Empty, ConfirmType.LinkInvite, (int)employeeType, SecurityContext.CurrentAccount.ID)
                    + $"&emplType={employeeType:d}";
         }
 
         [Update("getshortenlink")]
-        public object GetShortenLink(ShortenLinkModel model)
+        public async Task<object> GetShortenLinkAsync(ShortenLinkModel model)
         {
             try
             {
-                return UrlShortener.Instance.GetShortenLink(model.Link);
+                return await UrlShortener.Instance.GetShortenLinkAsync(model.Link);
             }
             catch (Exception ex)
             {
@@ -134,7 +179,7 @@ namespace ASC.Web.Api.Controllers
         }
 
         [Read("tenantextra")]
-        public object GetTenantExtra()
+        public async Task<object> GetTenantExtraAsync()
         {
             return new
             {
@@ -148,7 +193,9 @@ namespace ASC.Web.Api.Controllers
                 enableTariffPage = //TenantExtra.EnableTarrifSettings - think about hide-settings for opensource
                     (!CoreBaseSettings.Standalone || !string.IsNullOrEmpty(LicenseReader.LicensePath))
                     && string.IsNullOrEmpty(SetupInfo.AmiMetaUrl)
-                    && !CoreBaseSettings.CustomMode
+                    && !CoreBaseSettings.CustomMode,
+                DocServerUserQuota = await DocumentServiceLicense.GetLicenseQuotaAsync(),
+                DocServerLicense = await DocumentServiceLicense.GetLicenseAsync()
             };
         }
 
@@ -166,7 +213,7 @@ namespace ASC.Web.Api.Controllers
         [Read("userscount")]
         public long GetUsersCount()
         {
-            return UserManager.GetUserNames(EmployeeStatus.Active).Count();
+            return CoreBaseSettings.Personal ? 1 : UserManager.GetUserNames(EmployeeStatus.Active).Length;
         }
 
         [Read("tariff")]
@@ -204,7 +251,7 @@ namespace ASC.Web.Api.Controllers
         [Read("thumb")]
         public FileResult GetThumb(string url)
         {
-            if (!SecurityContext.IsAuthenticated || !(Configuration["bookmarking:thumbnail-url"] != null))
+            if (!SecurityContext.IsAuthenticated || Configuration["bookmarking:thumbnail-url"] == null)
             {
                 return null;
             }
@@ -212,9 +259,24 @@ namespace ASC.Web.Api.Controllers
             url = url.Replace("&amp;", "&");
             url = WebUtility.UrlEncode(url);
 
-            using var wc = new WebClient();
-            var bytes = wc.DownloadData(string.Format(Configuration["bookmarking:thumbnail-url"], url));
-            var type = wc.ResponseHeaders["Content-Type"] ?? "image/png";
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri(string.Format(Configuration["bookmarking:thumbnail-url"], url));
+
+            var httpClient = ClientFactory.CreateClient();
+            using var response = httpClient.Send(request);
+            using var stream = response.Content.ReadAsStream();
+            var bytes = new byte[stream.Length];
+            stream.Read(bytes, 0, (int)stream.Length);
+
+            string type;
+            if (response.Headers.TryGetValues("Content-Type", out var values))
+            {
+                type = values.First();
+            }
+            else
+            {
+                type = "image/png";
+            }
             return File(bytes, type);
         }
 
@@ -234,7 +296,7 @@ namespace ASC.Web.Api.Controllers
         }
 
         [Create("mobile/registration")]
-        public void RegisterMobileAppInstallFromBody([FromBody]MobileAppModel model)
+        public void RegisterMobileAppInstallFromBody([FromBody] MobileAppModel model)
         {
             var currentUser = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
             MobileAppInstallRegistrator.RegisterInstall(currentUser.Email, model.Type);
@@ -242,7 +304,7 @@ namespace ASC.Web.Api.Controllers
 
         [Create("mobile/registration")]
         [Consumes("application/x-www-form-urlencoded")]
-        public void RegisterMobileAppInstallFromForm([FromForm]MobileAppModel model)
+        public void RegisterMobileAppInstallFromForm([FromForm] MobileAppModel model)
         {
             var currentUser = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
             MobileAppInstallRegistrator.RegisterInstall(currentUser.Email, model.Type);
@@ -253,6 +315,166 @@ namespace ASC.Web.Api.Controllers
         {
             var currentUser = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
             MobileAppInstallRegistrator.RegisterInstall(currentUser.Email, type);
+        }
+
+        /// <summary>
+        /// Updates a portal name with a new one specified in the request.
+        /// </summary>
+        /// <short>Update a portal name</short>
+        /// <param name="alias">New portal name</param>
+        /// <returns>Message about renaming a portal</returns>
+        ///<visible>false</visible>
+        [Update("portalrename")]
+        public async Task<object> UpdatePortalName(PortalRenameModel model)
+        {
+            if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.PortalSecurity)))
+            {
+                throw new BillingException(Resource.ErrorNotAllowedOption);
+            }
+
+            if (CoreBaseSettings.Personal)
+            {
+                throw new Exception(Resource.ErrorAccessDenied);
+            }
+
+            _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+            var alias = model.Alias;
+            if (string.IsNullOrEmpty(alias)) throw new ArgumentException(nameof(alias));
+
+            var tenant = TenantManager.GetCurrentTenant();
+            var user = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
+
+            var localhost = _coreSettings.BaseDomain == "localhost" || tenant.TenantAlias == "localhost";
+
+            var newAlias = alias.ToLowerInvariant();
+            var oldAlias = tenant.TenantAlias;
+            var oldVirtualRootPath = CommonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/');
+
+            if (!string.Equals(newAlias, oldAlias, StringComparison.InvariantCultureIgnoreCase))
+            {
+                if (!string.IsNullOrEmpty(_apiSystemHelper.ApiSystemUrl))
+                {
+                    await _apiSystemHelper.ValidatePortalNameAsync(newAlias, user.ID);
+                }
+                else
+                {
+                    TenantManager.CheckTenantAddress(newAlias.Trim());
+                }
+
+                if (!string.IsNullOrEmpty(_apiSystemHelper.ApiCacheUrl))
+                {
+                    await _apiSystemHelper.AddTenantToCacheAsync(newAlias, user.ID);
+                }
+
+                tenant.TenantAlias = alias;
+                tenant = TenantManager.SaveTenant(tenant);
+
+
+                if (!string.IsNullOrEmpty(_apiSystemHelper.ApiCacheUrl))
+                {
+                    await _apiSystemHelper.RemoveTenantFromCacheAsync(oldAlias, user.ID);
+                }
+
+                if (!localhost || string.IsNullOrEmpty(tenant.MappedDomain))
+                {
+                    _studioNotifyService.PortalRenameNotify(tenant, oldVirtualRootPath);
+                }
+            }
+            else
+            {
+                return string.Empty;
+            }
+
+            return CommonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.Auth);
+        }
+
+        [Create("suspend")]
+        public void SendSuspendInstructions()
+        {
+            _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+            var owner = UserManager.GetUsers(Tenant.OwnerId);
+            var suspendUrl = CommonLinkUtility.GetConfirmationUrl(owner.Email, ConfirmType.PortalSuspend);
+            var continueUrl = CommonLinkUtility.GetConfirmationUrl(owner.Email, ConfirmType.PortalContinue);
+
+            _studioNotifyService.SendMsgPortalDeactivation(Tenant, suspendUrl, continueUrl);
+
+            _messageService.Send(MessageAction.OwnerSentPortalDeactivationInstructions, _messageTarget.Create(owner.ID), owner.DisplayUserName(false, _displayUserSettingsHelper));
+        }
+
+        [Create("delete")]
+        public void SendDeleteInstructions()
+        {
+            _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+            var owner = UserManager.GetUsers(Tenant.OwnerId);
+
+            var showAutoRenewText = !CoreBaseSettings.Standalone &&
+                            PaymentManager.GetTariffPayments(Tenant.TenantId).Any() &&
+                            !TenantExtra.GetTenantQuota().Trial;
+
+            _studioNotifyService.SendMsgPortalDeletion(Tenant, CommonLinkUtility.GetConfirmationUrl(owner.Email, ConfirmType.PortalRemove), showAutoRenewText);
+
+            _messageService.Send(MessageAction.OwnerSentPortalDeleteInstructions, _messageTarget.Create(owner.ID), owner.DisplayUserName(false, _displayUserSettingsHelper));
+        }
+
+        [Update("continue")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "PortalContinue")]
+        public void ContinuePortal()
+        {
+            Tenant.SetStatus(TenantStatus.Active);
+            TenantManager.SaveTenant(Tenant);
+        }
+
+        [Update("suspend")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "PortalSuspend")]
+        public void SuspendPortal()
+        {
+            Tenant.SetStatus(TenantStatus.Suspended);
+            TenantManager.SaveTenant(Tenant);
+            _messageService.Send(MessageAction.PortalDeactivated);
+        }
+
+        [Delete("delete")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "ProfileRemove")]
+        public async Task<object> DeletePortal()
+        {
+            TenantManager.RemoveTenant(Tenant.TenantId);
+
+            if (!string.IsNullOrEmpty(_apiSystemHelper.ApiCacheUrl))
+            {
+                await _apiSystemHelper.RemoveTenantFromCacheAsync(Tenant.TenantAlias, SecurityContext.CurrentAccount.ID);
+            }
+
+            var owner = UserManager.GetUsers(Tenant.OwnerId);
+            var redirectLink = SetupInfo.TeamlabSiteRedirect + "/remove-portal-feedback-form.aspx#";
+            var parameters = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes("{\"firstname\":\"" + owner.FirstName +
+                                                                                    "\",\"lastname\":\"" + owner.LastName +
+                                                                                    "\",\"alias\":\"" + Tenant.TenantAlias +
+                                                                                    "\",\"email\":\"" + owner.Email + "\"}"));
+
+            redirectLink += HttpUtility.UrlEncode(parameters);
+
+            var authed = false;
+            try
+            {
+                if (!SecurityContext.IsAuthenticated)
+                {
+                    SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
+                    authed = true;
+                }
+
+                _messageService.Send(MessageAction.PortalDeleted);
+
+            }
+            finally
+            {
+                if (authed) SecurityContext.Logout();
+            }
+
+            _studioNotifyService.SendMsgPortalDeletionSuccess(owner, redirectLink);
+
+            return redirectLink;
         }
     }
 }

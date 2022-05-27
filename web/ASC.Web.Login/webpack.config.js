@@ -159,7 +159,10 @@ var config = {
         studio: `studio@${combineUrl(proxyURL, "/remoteEntry.js")}`,
       },
       exposes: {
-        "./app": "./src/Login.jsx",
+        "./login": "./src/Login.jsx",
+        "./roomsLogin": "./src/RoomsLogin.jsx",
+        "./codeLogin": "./src/CodeLogin.jsx",
+        "./moreLogin": "./src/sub-components/more-login.js",
       },
       shared: {
         ...deps,
@@ -196,7 +199,7 @@ module.exports = (env, argv) => {
     config.mode = "production";
     config.optimization = {
       splitChunks: { chunks: "all" },
-      minimize: true,
+      minimize: !env.minimize,
       minimizer: [new TerserPlugin()],
     };
   } else {

@@ -10,6 +10,7 @@ import Box from "../../box";
 import ContextMenuButton from "../../context-menu-button";
 import IconButton from "../../icon-button";
 
+import Slider from "../../slider";
 import {
   isDesktop,
   //isTablet,
@@ -27,7 +28,6 @@ import {
   StyledAvatarEditorBody,
   StyledAvatarContainer,
   DropZoneContainer,
-  Slider,
   StyledErrorContainer,
 } from "./styled-avatar-editor-body";
 
@@ -88,8 +88,8 @@ class AvatarEditorBody extends React.Component {
         var canvas = resizeImage.resize2Canvas(img, img.width, img.height);
         var data = resizeImage.resize(
           canvas,
-          img.width,
-          img.height,
+          img.width / 4,
+          img.height / 4,
           resizeImage.JPEG
         );
         _this.setState({
@@ -103,6 +103,7 @@ class AvatarEditorBody extends React.Component {
             const file = new File([blob], "File name", {
               type: "image/jpg",
             });
+            //console.log(`file size ${file.size / 1024 / 1024} mb`);
             _this.props.onLoadFile(file);
           });
       };
@@ -121,7 +122,7 @@ class AvatarEditorBody extends React.Component {
 
   setCroppedImage = () => {
     if (this.setEditorRef && this.setEditorRef.current) {
-      const image = this.setEditorRef.current.getImage().toDataURL();
+      const image = this.setEditorRef.current.getImage()?.toDataURL();
       this.setState({
         croppedImage: image,
       });
@@ -193,6 +194,7 @@ class AvatarEditorBody extends React.Component {
   };
 
   onWheel = (e) => {
+    if (this.props.isLoading) return;
     if (!this.setEditorRef.current) return;
     e = e || window.event;
     const delta = e.deltaY || e.detail || e.wheelDelta;
@@ -229,16 +231,19 @@ class AvatarEditorBody extends React.Component {
   onFlipHorizontalClick = () => {};
 
   onZoomMinusClick = () => {
+    if (this.props.isLoading) return;
     const newScale = this.state.scale - step;
     this.setState({ scale: newScale < min ? min : newScale });
   };
 
   onZoomPlusClick = () => {
+    if (this.props.isLoading) return;
     const newScale = this.state.scale + step;
     this.setState({ scale: newScale > max ? max : newScale });
   };
 
   handleScale = (e) => {
+    if (this.props.isLoading) return;
     const scale = parseFloat(e.target.value);
     this.setState({ scale });
     this.props.onSizeChange({
@@ -263,6 +268,7 @@ class AvatarEditorBody extends React.Component {
   onSaveImage() {
     var img = new Image();
     var _this = this;
+    img.crossOrigin = "Anonymous";
     img.src = this.state.image;
     if (!this.state.image) _this.props.onLoadFile(null);
     img.onload = () => {
@@ -307,26 +313,48 @@ class AvatarEditorBody extends React.Component {
   };
 
   renderLinkContainer = () => {
-    const { selectNewPhotoLabel, orDropFileHereLabel } = this.props;
+    const {
+      selectNewPhotoLabel,
+      orDropFileHereLabel,
+      maxSizeLabel,
+      isLoading,
+    } = this.props;
+    const { image } = this.state;
+
     const desktopMode = isDesktop();
+    const labelAlign = image === "" ? "center" : "left";
+
+    //console.log("maxSizeLabel", maxSizeLabel);
+    const onClickProp = !isLoading ? { onClick: this.openDialog } : {};
+
     return (
-      <Text as="span">
-        <Link
-          type="action"
-          fontWeight={600}
-          isHovered
-          color="#316DAA"
-          onClick={this.openDialog}
-        >
+      <Text as="span" textAlign={!desktopMode ? labelAlign : "left"}>
+        <Link type="action" fontWeight={600} isHovered {...onClickProp}>
           {selectNewPhotoLabel}
         </Link>{" "}
         {desktopMode && orDropFileHereLabel}
+        <Text
+          as="p"
+          // color="#A3A9AE"
+          fontSize="12px"
+          fontWeight="600"
+          textAlign={labelAlign}
+        >
+          {maxSizeLabel}
+        </Text>
       </Text>
     );
   };
 
   render() {
-    const { maxSize, accept, role, title, useModalDialog } = this.props;
+    const {
+      maxSize,
+      accept,
+      role,
+      title,
+      useModalDialog,
+      isLoading,
+    } = this.props;
 
     const desktopMode = isDesktop();
     //const tabletMode = isTablet();
@@ -347,6 +375,8 @@ class AvatarEditorBody extends React.Component {
       editorWidth = 287;
       editorHeight = 287;
     }*/
+
+    const onDeleteProp = !isLoading ? { onClick: this.deleteImage } : {};
 
     return (
       <StyledAvatarEditorBody
@@ -399,12 +429,11 @@ class AvatarEditorBody extends React.Component {
                         <Box></Box>
                         <IconButton
                           size="16"
-                          isDisabled={false}
-                          onClick={this.deleteImage}
+                          isDisabled={isLoading}
+                          {...onDeleteProp}
                           iconName={"/static/images/catalog.trash.react.svg"}
                           isFill={true}
                           isClickable={true}
-                          color="#FFFFFF"
                           className="editor-button"
                         />
                       </Box>
@@ -412,7 +441,7 @@ class AvatarEditorBody extends React.Component {
                         <IconButton
                           className="zoom-container-svg_zoom-minus"
                           size="16"
-                          isDisabled={false}
+                          isDisabled={isLoading}
                           onClick={this.onZoomMinusClick}
                           iconName={"/static/images/zoom-minus.react.svg"}
                           isFill={true}
@@ -422,16 +451,16 @@ class AvatarEditorBody extends React.Component {
                           id="scale"
                           type="range"
                           className="custom-range"
-                          onChange={this.handleScale}
                           min={this.state.allowZoomOut ? "0.1" : min}
                           max={max}
                           step={step}
                           value={this.state.scale}
+                          onChange={this.handleScale}
                         />
                         <IconButton
                           size="16"
                           className="zoom-container-svg_zoom-plus"
-                          isDisabled={false}
+                          isDisabled={isLoading}
                           onClick={this.onZoomPlusClick}
                           iconName={"/static/images/zoom-plus.react.svg"}
                           isFill={true}
@@ -463,14 +492,6 @@ class AvatarEditorBody extends React.Component {
                           >
                             {title}
                           </Text>
-                          <ContextMenuButton
-                            isFill
-                            color="#A3A9AE"
-                            hoverColor="#657077"
-                            directionX="right"
-                            getData={() => []}
-                            isDisabled={true}
-                          />
                         </Box>
                       </Box>
                     )}
@@ -483,6 +504,7 @@ class AvatarEditorBody extends React.Component {
             </DropZoneContainer>
           )}
         </Dropzone>
+
         <StyledErrorContainer key="errorMsg">
           {this.state.errorText !== null && (
             <Text as="p" color="#C96C27" isBold={true}>
@@ -514,6 +536,8 @@ AvatarEditorBody.propTypes = {
   role: PropTypes.string,
   title: PropTypes.string,
   useModalDialog: PropTypes.bool,
+  maxSizeLabel: PropTypes.string,
+  isLoading: PropTypes.bool,
 };
 
 AvatarEditorBody.defaultProps = {
@@ -528,5 +552,6 @@ AvatarEditorBody.defaultProps = {
   role: "user",
   title: "Sample title",
   useModalDialog: true,
+  isLoading: false,
 };
 export default AvatarEditorBody;

@@ -79,7 +79,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         protected DistributedTask TaskInfo { get; set; }
 
-        public FileOperation(IServiceProvider serviceProvider)
+        protected FileOperation(IServiceProvider serviceProvider)
         {
             principal = serviceProvider.GetService<Microsoft.AspNetCore.Http.IHttpContextAccessor>()?.HttpContext?.User ?? Thread.CurrentPrincipal;
             culture = Thread.CurrentThread.CurrentCulture.Name;
@@ -107,8 +107,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             TaskInfo.SetProperty(HOLD, HoldResult);
         }
 
-        public abstract void RunJob(DistributedTask _, CancellationToken cancellationToken);
-        protected abstract void Do(IServiceScope serviceScope);
+        public abstract Task RunJobAsync(DistributedTask _, CancellationToken cancellationToken);
+        protected abstract Task DoAsync(IServiceScope serviceScope);
 
     }
 
@@ -129,13 +129,13 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             DaoOperation = daoOperation;
         }
 
-        public override void RunJob(DistributedTask _, CancellationToken cancellationToken)
+        public override async Task RunJobAsync(DistributedTask _, CancellationToken cancellationToken)
         {
             ThirdPartyOperation.GetDistributedTask().Publication = PublishChanges;
-            ThirdPartyOperation.RunJob(_, cancellationToken);
+            await ThirdPartyOperation.RunJobAsync(_, cancellationToken);
 
             DaoOperation.GetDistributedTask().Publication = PublishChanges;
-            DaoOperation.RunJob(_, cancellationToken);
+            await DaoOperation.RunJobAsync(_, cancellationToken);
         }
 
         protected internal override void FillDistributedTask()
@@ -212,7 +212,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             TaskInfo.PublishChanges();
         }
 
-        protected override void Do(IServiceScope serviceScope)
+        protected override Task DoAsync(IServiceScope serviceScope)
         {
             throw new NotImplementedException();
         }
@@ -249,6 +249,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         protected ITagDao<TId> TagDao { get; private set; }
 
+        protected ILinkDao LinkDao { get; private set; }
+
         protected IProviderDao ProviderDao { get; private set; }
 
         protected ILog Logger { get; private set; }
@@ -280,7 +282,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             Source = string.Join(SPLIT_CHAR, Folders.Select(f => "folder_" + f).Concat(Files.Select(f => "file_" + f)).ToArray());
         }
 
-        public override void RunJob(DistributedTask _, CancellationToken cancellationToken)
+        public override async Task RunJobAsync(DistributedTask _, CancellationToken cancellationToken)
         {
             try
             {
@@ -300,12 +302,13 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 FolderDao = daoFactory.GetFolderDao<TId>();
                 FileDao = daoFactory.GetFileDao<TId>();
                 TagDao = daoFactory.GetTagDao<TId>();
+                LinkDao = daoFactory.GetLinkDao();
                 ProviderDao = daoFactory.ProviderDao;
                 FilesSecurity = fileSecurity;
 
                 Logger = options.CurrentValue;
 
-                Do(scope);
+                await DoAsync(scope);
             }
             catch (AuthorizingException authError)
             {
@@ -352,7 +355,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         protected virtual int InitTotalProgressSteps()
         {
             var count = Files.Count;
-            Folders.ForEach(f => count += 1 + (FolderDao.CanCalculateSubitems(f) ? FolderDao.GetItemsCount(f) : 0));
+            Folders.ForEach(f => count += 1 + (FolderDao.CanCalculateSubitems(f) ? FolderDao.GetItemsCountAsync(f).Result : 0));
             return count;
         }
 

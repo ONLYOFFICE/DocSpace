@@ -66,13 +66,13 @@ namespace ASC.Web.CRM.HttpHandlers
                     switch (photoSize)
                     {
                         case 1:
-                            photoUrl = contactPhotoManager.GetSmallSizePhoto(contactId, isCompany);
+                            photoUrl = await contactPhotoManager.GetSmallSizePhotoAsync(contactId, isCompany);
                             break;
                         case 2:
-                            photoUrl = contactPhotoManager.GetMediumSizePhoto(contactId, isCompany);
+                            photoUrl = await contactPhotoManager.GetMediumSizePhotoAsync(contactId, isCompany);
                             break;
                         case 3:
-                            photoUrl = contactPhotoManager.GetBigSizePhoto(contactId, isCompany);
+                            photoUrl = await contactPhotoManager.GetBigSizePhotoAsync(contactId, isCompany);
                             break;
                         default:
                             throw new Exception(CRMErrorsResource.ContactPhotoSizeUnknown);
@@ -89,9 +89,9 @@ namespace ASC.Web.CRM.HttpHandlers
 
                     var filePath = String.Format("folder_{0}/message_{1}.html", (messageId / 1000 + 1) * 1000, messageId);
 
-                    string messageContent = string.Empty;
+                    string messageContent;
 
-                    using (var streamReader = new StreamReader(global.GetStore().GetReadStream("mail_messages", filePath)))
+                    using (var streamReader = new StreamReader(await global.GetStore().GetReadStreamAsync("mail_messages", filePath)))
                     {
                         messageContent = streamReader.ReadToEnd();
                     }

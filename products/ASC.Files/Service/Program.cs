@@ -20,9 +20,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+using StackExchange.Redis.Extensions.Core.Configuration;
+using StackExchange.Redis.Extensions.Newtonsoft;
+
 namespace ASC.Files.Service
 {
-    public class Program
+    public static class Program
     {
         public async static Task Main(string[] args)
         {
@@ -56,6 +59,8 @@ namespace ASC.Files.Service
                         .AddJsonFile($"notify.{env}.json", true)
                         .AddJsonFile("kafka.json")
                         .AddJsonFile($"kafka.{env}.json", true)
+                        .AddJsonFile("redis.json")
+                        .AddJsonFile($"redis.{env}.json", true)
                         .AddJsonFile("elastic.json", true)
                         .AddEnvironmentVariables()
                         .AddCommandLine(args)
@@ -68,14 +73,44 @@ namespace ASC.Files.Service
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddMemoryCache();
+                    services.AddHttpClient();
 
                     var diHelper = new DIHelper(services);
 
-                    diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                    var redisConfiguration = hostContext.Configuration.GetSection("Redis").Get<RedisConfiguration>();
+                    var kafkaConfiguration = hostContext.Configuration.GetSection("kafka").Get<KafkaSettings>();
+
+                    if (kafkaConfiguration != null)
+                    {
+                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                    }
+                    else if (redisConfiguration != null)
+                    {
+                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
+
+                        services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
+                    }
+                    else
+                    {
+                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(MemoryCacheNotify<>));
+                    }
+
 
                     diHelper.RegisterProducts(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
-                    services.AddHostedService<ServiceLauncher>();
-                    diHelper.TryAdd<ServiceLauncher>();
+
+                    if (!bool.TryParse(hostContext.Configuration["disable_elastic"], out var disableElastic))
+                    {
+                        disableElastic = false;
+                    }
+
+                    if (!disableElastic)
+                    {
+                        services.AddHostedService<ServiceLauncher>();
+                        diHelper.TryAdd<ServiceLauncher>();
+                        //diHelper.TryAdd<FileConverter>();
+                        diHelper.TryAdd<FactoryIndexerFile>();
+                        diHelper.TryAdd<FactoryIndexerFolder>();
+                    }
 
                     services.AddHostedService<FeedAggregatorService>();
                     diHelper.TryAdd<FeedAggregatorService>();
@@ -83,9 +118,6 @@ namespace ASC.Files.Service
                     services.AddHostedService<Launcher>();
                     diHelper.TryAdd<Launcher>();
 
-                    //diHelper.TryAdd<FileConverter>();
-                    diHelper.TryAdd<FactoryIndexerFile>();
-                    diHelper.TryAdd<FactoryIndexerFolder>();
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {

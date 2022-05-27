@@ -1,0 +1,20 @@
+{
+  "Administrator": "Beheerder",
+  "ChangeToGuest": "Verander in {{guestCaption}}",
+  "ChangeToUser": "Verander in {{userCaption}}",
+  "EmptyGroupDescription": "U kunt nieuwe teamleden handmatig toevoegen of ze via een link uitnodigen.",
+  "EmptyGroupTitle": "Nog geen teamleden hier",
+  "LblInviteAgain": "Opnieuw uitnodigen",
+  "LblInvited": "Uitgenodigd",
+  "LblSendEmail": "Stuur e-mail",
+  "LblSendMessage": "Stuur bericht",
+  "LblSetActive": "Actief instellen",
+  "LblSetDisabled": "Uitgeschakeld instellen",
+  "MakeInvitationLink": "Uitnodigingslink maken",
+  "MessageEmailActivationInstuctionsSentOnEmail": "De e-mail activatie instructies zijn verzonden naar het <1>{{email}}</1> e-mailadres",
+  "NotFoundDescription": "Probeer een ander filter of verwijder het filter om alle mensen in de sectie te zien.",
+  "NotFoundTitle": "Geen teamleden gevonden",
+  "ReassignmentData": "Herschikking van gegevens",
+  "SuccessfullyRemovedGroup": "Groep is met succes verwijderd",
+  "UserStatus": "Status"
+}

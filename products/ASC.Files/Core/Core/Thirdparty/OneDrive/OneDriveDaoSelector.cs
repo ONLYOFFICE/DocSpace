@@ -64,7 +64,7 @@ namespace ASC.Files.Thirdparty.OneDrive
         }
     }
 
-    public class OneDriveDaoSelectorExtension
+    public static class OneDriveDaoSelectorExtension
     {
         public static void Register(DIHelper services)
         {

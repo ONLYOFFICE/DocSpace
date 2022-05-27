@@ -15,11 +15,13 @@ class DateField extends React.Component {
       labelText,
       calendarHeaderContent,
       inputName,
+      inputClassName,
       inputValue,
       inputIsDisabled,
       inputOnChange,
       inputTabIndex,
       calendarMinDate,
+      calendarMaxDate,
       locale,
       maxLabelWidth,
     } = this.props;
@@ -32,17 +34,19 @@ class DateField extends React.Component {
         maxLabelWidth={maxLabelWidth}
       >
         <DatePicker
+          inputClassName={inputClassName}
           name={inputName}
           selectedDate={inputValue}
           isDisabled={inputIsDisabled}
           onChange={inputOnChange}
           hasError={hasError}
           tabIndex={inputTabIndex}
-          displayType="auto"
+          displayType="dropdown"
           calendarHeaderContent={calendarHeaderContent}
           minDate={calendarMinDate ? calendarMinDate : new Date("1900/01/01")}
-          maxDate={new Date()}
+          maxDate={calendarMaxDate ? calendarMaxDate : new Date()}
           locale={locale}
+          fixedDirection={true}
         />
       </FieldContainer>
     );

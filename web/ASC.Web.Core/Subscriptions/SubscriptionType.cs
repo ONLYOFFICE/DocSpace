@@ -47,9 +47,9 @@ namespace ASC.Web.Core.Subscriptions
 
         public bool CanSubscribe { get; set; }
 
-        public IsEmptySubscriptionTypeDelegate IsEmptySubscriptionType;
+        public IsEmptySubscriptionTypeDelegate IsEmptySubscriptionType { get; set; }
 
-        public GetSubscriptionObjectsDelegate GetSubscriptionObjects;
+        public GetSubscriptionObjectsDelegate GetSubscriptionObjects { get; set; }
 
     }
 }

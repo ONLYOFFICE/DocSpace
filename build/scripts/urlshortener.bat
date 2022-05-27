@@ -1,1 +1,1 @@
-yarn install --cwd common/ASC.UrlShortener/ --frozen-lockfile
+yarn install --cwd %~dp0../../common/ASC.UrlShortener/ --frozen-lockfile

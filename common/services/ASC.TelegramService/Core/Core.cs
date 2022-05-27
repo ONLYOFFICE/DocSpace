@@ -107,7 +107,7 @@ namespace ASC.TelegramService.Core
             var reg = cmdReg.Match(msg.Text);
             var args = argsReg.Matches(reg.Groups[2].Value);
 
-            return new TelegramCommand(msg, reg.Groups[1].Value.ToLowerInvariant(), args.Count > 0 ? args.Cast<Match>().Select(a => a.Value).ToArray() : null);
+            return new TelegramCommand(msg, reg.Groups[1].Value.ToLowerInvariant(), args.Count > 0 ? args.Select(a => a.Value).ToArray() : null);
         }
 
         private object[] ParseParams(MethodInfo cmd, string[] args)
@@ -116,20 +116,20 @@ namespace ASC.TelegramService.Core
 
             var cmdArgs = cmd.GetParameters();
 
-            if (cmdArgs.Any() && args == null || cmdArgs.Count() != args.Count()) throw new Exception("Wrong parameters count");
-            for (var i = 0; i < cmdArgs.Count(); i++)
+            if (cmdArgs.Length > 0 && args == null || cmdArgs.Length != args.Length) throw new Exception("Wrong parameters count");
+            for (var i = 0; i < cmdArgs.Length; i++)
             {
                 var type = cmdArgs[i].ParameterType;
-
+                var arg = args[i];
                 if (type == typeof(string))
                 {
-                    parsedParams.Add(args[i]);
+                    parsedParams.Add(arg);
                     continue;
                 }
 
                 if (!parsers.ContainsKey(type)) throw new Exception(string.Format("No parser found for type '{0}'", type));
 
-                parsedParams.Add(parsers[cmdArgs[i].ParameterType].FromString(args[i]));
+                parsedParams.Add(parsers[type].FromString(arg));
             }
 
             return parsedParams.ToArray();
@@ -141,7 +141,7 @@ namespace ASC.TelegramService.Core
             {
                 var cmd = ParseCommand(msg);
 
-                if (!commands.ContainsKey(cmd.CommandName)) throw new Exception(string.Format("No handler found for command '{0}'", cmd.CommandName));
+                if (!commands.ContainsKey(cmd.CommandName)) throw new Exception($"No handler found for command '{cmd.CommandName}'");
 
                 var command = commands[cmd.CommandName];
                 var context = (CommandContext)ServiceProvider.CreateScope().ServiceProvider.GetService(contexts[cmd.CommandName]);
@@ -186,7 +186,7 @@ namespace ASC.TelegramService.Core
 
     public abstract class ParamParser<T> : ParamParser
     {
-        public ParamParser() : base(typeof(T)) { }
+        protected ParamParser() : base(typeof(T)) { }
 
         public override abstract object FromString(string arg);
         public override abstract string ToString(object arg);

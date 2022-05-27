@@ -1,0 +1,8 @@
+{
+  "ChangeUserStatusDialog": "带有‘{{ userStatus }}’状态的用户将‘{{ userStatus }}",
+  "ChangeUserStatusDialogHeader": "变更用户状态",
+  "ChangeUserStatusDialogMessage": "您无法变更门户所有者与您自己的状态",
+  "ChangeUsersActiveStatus": "已禁用",
+  "ChangeUsersDisableStatus": "已启用",
+  "ChangeUsersStatusButton": "变更用户状态"
+}

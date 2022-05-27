@@ -111,7 +111,7 @@ namespace ASC.Core.ChunkedUploader
             {
                 if (item.Value != null)
                 {
-                    if (item.Value.GetType() == typeof(JsonElement))
+                    if (item.Value is JsonElement)
                     {
                         var value = (JsonElement)item.Value;
                         if (value.ValueKind == JsonValueKind.String)

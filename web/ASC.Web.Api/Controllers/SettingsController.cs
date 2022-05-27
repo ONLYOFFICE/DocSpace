@@ -30,10 +30,13 @@ using System.Collections.Specialized;
 using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Net.Mail;
 using System.Security;
 using System.ServiceModel.Security;
+using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Web;
 
 using ASC.Api.Collections;
@@ -61,6 +64,7 @@ using ASC.FederatedLogin.LoginProviders;
 using ASC.IPSecurity;
 using ASC.MessagingSystem;
 using ASC.Security.Cryptography;
+using ASC.Web.Api.Core;
 using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core;
@@ -168,8 +172,12 @@ namespace ASC.Api.Settings
         private ILog Log { get; set; }
         private TelegramHelper TelegramHelper { get; }
         private PaymentManager PaymentManager { get; }
+        private Constants Constants { get; }
+        private InstanceCrypto InstanceCrypto { get; }
+        private Signature Signature { get; }
         private DbWorker WebhookDbWorker { get; }
-        public Constants Constants { get; }
+        private DnsSettings DnsSettings { get; }
+        public IHttpClientFactory ClientFactory { get; }
 
         public SettingsController(
             IOptionsMonitor<ILog> option,
@@ -231,8 +239,12 @@ namespace ASC.Api.Settings
             EncryptionWorker encryptionWorker,
             PasswordHasher passwordHasher,
             PaymentManager paymentManager,
+            Constants constants,
+            InstanceCrypto instanceCrypto,
+            Signature signature,
             DbWorker dbWorker,
-            Constants constants)
+            DnsSettings dnsSettings,
+            IHttpClientFactory clientFactory)
         {
             Log = option.Get("ASC.Api");
             WebHostEnvironment = webHostEnvironment;
@@ -294,20 +306,30 @@ namespace ASC.Api.Settings
             TelegramHelper = telegramHelper;
             PaymentManager = paymentManager;
             WebhookDbWorker = dbWorker;
+            DnsSettings = dnsSettings;
             Constants = constants;
+            InstanceCrypto = instanceCrypto;
+            Signature = signature;
+            ClientFactory = clientFactory;
         }
 
         [Read("", Check = false)]
         [AllowAnonymous]
         public SettingsWrapper GetSettings(bool? withpassword)
         {
+            var studioAdminMessageSettings = SettingsManager.Load<StudioAdminMessageSettings>();
+
             var settings = new SettingsWrapper
             {
                 Culture = Tenant.GetCulture().ToString(),
                 GreetingSettings = Tenant.Name,
                 Personal = CoreBaseSettings.Personal,
-                Version = Configuration["version:number"] ?? ""
+                Version = Configuration["version:number"] ?? "",
+                TenantStatus = Tenant.Status,
+                TenantAlias = Tenant.TenantAlias,
+                EnableAdmMess = studioAdminMessageSettings.Enable || TenantExtra.IsNotPaid()
             };
+
 
             if (AuthContext.IsAuthenticated)
             {
@@ -319,6 +341,8 @@ namespace ASC.Api.Settings
                 settings.UtcHoursOffset = settings.UtcOffset.TotalHours;
                 settings.OwnerId = Tenant.OwnerId;
                 settings.NameSchemaId = CustomNamingPeople.Current.Id;
+
+                settings.SocketUrl = Configuration["web:hub:url"] ?? "";
 
                 settings.Firebase = new FirebaseWrapper
                 {
@@ -355,9 +379,7 @@ namespace ASC.Api.Settings
                     settings.TrustedDomains = Tenant.TrustedDomains;
                 }
 
-                var studioAdminMessageSettings = SettingsManager.Load<StudioAdminMessageSettings>();
 
-                settings.EnableAdmMess = studioAdminMessageSettings.Enable || TenantExtra.IsNotPaid();
 
                 settings.ThirdpartyEnable = SetupInfo.ThirdPartyAuthEnabled && ProviderManager.IsNotEmpty;
 
@@ -392,6 +414,41 @@ namespace ASC.Api.Settings
             SettingsManager.Save(new StudioAdminMessageSettings { Enable = model.TurnOn });
 
             MessageService.Send(MessageAction.AdministratorMessageSettingsUpdated);
+
+            return Resource.SuccessfullySaveSettingsMessage;
+        }
+
+        [Read("cookiesettings")]
+        public int GetCookieSettings()
+        {
+            return CookiesManager.GetLifeTime(TenantManager.GetCurrentTenant().TenantId);
+        }
+
+        [Update("cookiesettings")]
+        public object UpdateCookieSettingsFromBody([FromBody] CookieSettingsModel model)
+        {
+            return UpdateCookieSettings(model);
+        }
+
+        [Update("messagesettings")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public object UpdateCookieSettingsFromForm([FromForm] CookieSettingsModel model)
+        {
+            return UpdateCookieSettings(model);
+        }
+
+        private object UpdateCookieSettings(CookieSettingsModel model)
+        {
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+            if (!SetupInfo.IsVisibleSettings("CookieSettings"))
+            {
+                throw new BillingException(Resource.ErrorNotAllowedOption, "CookieSettings");
+            }
+
+            CookiesManager.SetLifeTime(model.LifeTime);
+
+            MessageService.Send(MessageAction.CookieSettingsUpdated);
 
             return Resource.SuccessfullySaveSettingsMessage;
         }
@@ -719,6 +776,13 @@ namespace ASC.Api.Settings
             return Dns.GetHostName().ToLowerInvariant();
         }
 
+        [Update("dns")]
+        public object SaveDnsSettings(DnsSettingsModel model)
+        {
+            return DnsSettings.SaveDnsSettings(model.DnsName, model.Enable);
+        }
+
+
         [Read("greetingsettings")]
         public ContentResult GetGreetingSettings()
         {
@@ -799,9 +863,9 @@ namespace ASC.Api.Settings
 
         [AllowAnonymous]
         [Read("version/build", false)]
-        public BuildVersion GetBuildVersions()
+        public Task<BuildVersion> GetBuildVersionsAsync()
         {
-            return BuildVersion.GetCurrentBuildVersion();
+            return BuildVersion.GetCurrentBuildVersionAsync();
         }
 
         [Read("version")]
@@ -867,7 +931,6 @@ namespace ASC.Api.Settings
         {
             var EnabledModules = WebItemManagerSecurity.GetItems(WebZoneType.All, ItemAvailableState.Normal)
                                         .Where(item => !item.IsSubItem() && item.Visible)
-                                        .ToList()
                                         .Select(item => new
                                         {
                                             id = item.ProductClassName.HtmlEncode(),
@@ -879,11 +942,29 @@ namespace ASC.Api.Settings
 
         [Read("security/password", Check = false)]
         [Authorize(AuthenticationSchemes = "confirm", Roles = "Everyone")]
-        public object GetPasswordSettings()
+        public PasswordSettings GetPasswordSettings()
         {
-            var UserPasswordSettings = SettingsManager.Load<PasswordSettings>();
+            return SettingsManager.Load<PasswordSettings>();
+        }
 
-            return UserPasswordSettings;
+        [Update("security/password")]
+        public PasswordSettings UpdatePasswordSettings(PasswordSettingsModel model)
+        {
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+            var userPasswordSettings = SettingsManager.Load<PasswordSettings>();
+
+            userPasswordSettings.MinLength = model.MinLength;
+            userPasswordSettings.UpperCase = model.UpperCase;
+            userPasswordSettings.Digits = model.Digits;
+            userPasswordSettings.SpecSymbols = model.SpecSymbols;
+
+            SettingsManager.Save(userPasswordSettings);
+
+            MessageService.Send(MessageAction.PasswordStrengthSettingsUpdated);
+
+            return userPasswordSettings;
+
         }
 
         [Update("security")]
@@ -1102,7 +1183,11 @@ namespace ASC.Api.Settings
             if (model.Logo != null)
             {
                 var logoDict = new Dictionary<int, string>();
-                model.Logo.ToList().ForEach(n => logoDict.Add(Int32.Parse(n.Key), n.Value));
+
+                foreach (var l in model.Logo)
+                {
+                    logoDict.Add(Int32.Parse(l.Key), l.Value);
+                }
 
                 TenantWhiteLabelSettingsHelper.SetLogo(settings, logoDict, storage);
             }
@@ -1123,7 +1208,7 @@ namespace ASC.Api.Settings
                 throw new BillingException(Resource.ErrorNotAllowedOption, "WhiteLabel");
             }
 
-            if (HttpContext.Request.Form?.Files == null || !HttpContext.Request.Form.Files.Any())
+            if (HttpContext.Request.Form?.Files == null || HttpContext.Request.Form.Files.Count == 0)
             {
                 throw new InvalidOperationException("No input files");
             }
@@ -1160,7 +1245,7 @@ namespace ASC.Api.Settings
             foreach (var f in HttpContext.Request.Form.Files)
             {
                 var parts = f.FileName.Split('.');
-                var logoType = (WhiteLabelLogoTypeEnum)(Convert.ToInt32(parts[0]));
+                var logoType = (WhiteLabelLogoTypeEnum)Convert.ToInt32(parts[0]);
                 var fileExt = parts[1];
                 TenantWhiteLabelSettingsHelper.SetLogoFromStream(settings, logoType, fileExt, f.OpenReadStream(), storage);
             }
@@ -1183,10 +1268,12 @@ namespace ASC.Api.Settings
             return
             new[]
             {
-                new {type = (int)WhiteLabelLogoTypeEnum.LightSmall, name = WhiteLabelLogoTypeEnum.LightSmall.ToString(), height = TenantWhiteLabelSettings.logoLightSmallSize.Height, width = TenantWhiteLabelSettings.logoLightSmallSize.Width},
-                new {type = (int)WhiteLabelLogoTypeEnum.Dark, name = WhiteLabelLogoTypeEnum.Dark.ToString(), height = TenantWhiteLabelSettings.logoDarkSize.Height, width = TenantWhiteLabelSettings.logoDarkSize.Width},
-                new {type = (int)WhiteLabelLogoTypeEnum.Favicon, name = WhiteLabelLogoTypeEnum.Favicon.ToString(), height = TenantWhiteLabelSettings.logoFaviconSize.Height, width = TenantWhiteLabelSettings.logoFaviconSize.Width},
-                new {type = (int)WhiteLabelLogoTypeEnum.DocsEditor, name = WhiteLabelLogoTypeEnum.DocsEditor.ToString(), height = TenantWhiteLabelSettings.logoDocsEditorSize.Height, width = TenantWhiteLabelSettings.logoDocsEditorSize.Width}
+                new {type = (int)WhiteLabelLogoTypeEnum.LightSmall, name = nameof(WhiteLabelLogoTypeEnum.LightSmall), height = TenantWhiteLabelSettings.logoLightSmallSize.Height, width = TenantWhiteLabelSettings.logoLightSmallSize.Width},
+                new {type = (int)WhiteLabelLogoTypeEnum.Dark, name = nameof(WhiteLabelLogoTypeEnum.Dark), height = TenantWhiteLabelSettings.logoDarkSize.Height, width = TenantWhiteLabelSettings.logoDarkSize.Width},
+                new {type = (int)WhiteLabelLogoTypeEnum.Favicon, name = nameof(WhiteLabelLogoTypeEnum.Favicon), height = TenantWhiteLabelSettings.logoFaviconSize.Height, width = TenantWhiteLabelSettings.logoFaviconSize.Width},
+                new {type = (int)WhiteLabelLogoTypeEnum.DocsEditor, name = nameof(WhiteLabelLogoTypeEnum.DocsEditor), height = TenantWhiteLabelSettings.logoDocsEditorSize.Height, width = TenantWhiteLabelSettings.logoDocsEditorSize.Width},
+                new {type = (int)WhiteLabelLogoTypeEnum.DocsEditorEmbed, name =  nameof(WhiteLabelLogoTypeEnum.DocsEditorEmbed), height = TenantWhiteLabelSettings.logoDocsEditorEmbedSize.Height, width = TenantWhiteLabelSettings.logoDocsEditorEmbedSize.Width}
+
             };
         }
 
@@ -1212,7 +1299,8 @@ namespace ASC.Api.Settings
                     { ((int)WhiteLabelLogoTypeEnum.LightSmall).ToString(), CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.LightSmall, !query.IsRetina)) },
                     { ((int)WhiteLabelLogoTypeEnum.Dark).ToString(), CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.Dark, !query.IsRetina)) },
                     { ((int)WhiteLabelLogoTypeEnum.Favicon).ToString(), CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.Favicon, !query.IsRetina)) },
-                    { ((int)WhiteLabelLogoTypeEnum.DocsEditor).ToString(), CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.DocsEditor, !query.IsRetina)) }
+                    { ((int)WhiteLabelLogoTypeEnum.DocsEditor).ToString(), CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.DocsEditor, !query.IsRetina)) },
+                    { ((int)WhiteLabelLogoTypeEnum.DocsEditorEmbed).ToString(), CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.DocsEditorEmbed, !query.IsRetina)) }
                 };
             }
             else
@@ -1224,7 +1312,8 @@ namespace ASC.Api.Settings
                         { ((int)WhiteLabelLogoTypeEnum.LightSmall).ToString(), CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.LightSmall, !query.IsRetina)) },
                         { ((int)WhiteLabelLogoTypeEnum.Dark).ToString(), CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.Dark, !query.IsRetina)) },
                         { ((int)WhiteLabelLogoTypeEnum.Favicon).ToString(), CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.Favicon, !query.IsRetina)) },
-                        { ((int)WhiteLabelLogoTypeEnum.DocsEditor).ToString(), CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.DocsEditor, !query.IsRetina)) }
+                        { ((int)WhiteLabelLogoTypeEnum.DocsEditor).ToString(), CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.DocsEditor, !query.IsRetina)) },
+                        { ((int)WhiteLabelLogoTypeEnum.DocsEditorEmbed).ToString(), CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings,WhiteLabelLogoTypeEnum.DocsEditorEmbed, !query.IsRetina)) }
                     };
             }
 
@@ -1319,6 +1408,13 @@ namespace ASC.Api.Settings
             return IPRestrictionsService.Save(model.Ips, Tenant.TenantId);
         }
 
+        [Read("iprestrictions/settings")]
+        public IPRestrictionsSettings GetIpRestrictionsSettings()
+        {
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+            return SettingsManager.Load<IPRestrictionsSettings>();
+        }
+
         [Update("iprestrictions/settings")]
         public IPRestrictionsSettings UpdateIpRestrictionsSettingsFromBody([FromBody] IpRestrictionsModel model)
         {
@@ -1364,14 +1460,20 @@ namespace ASC.Api.Settings
             {
                 try
                 {
-                    using var client = new WebClient();
+                    var request = new HttpRequestMessage();
+                    request.RequestUri = new Uri($"{SetupInfo.TipsAddress}/tips/deletereaded");
+
                     var data = new NameValueCollection
                     {
                         ["userId"] = AuthContext.CurrentAccount.ID.ToString(),
                         ["tenantId"] = Tenant.TenantId.ToString(CultureInfo.InvariantCulture)
                     };
+                    var body = JsonSerializer.Serialize(data);//todo check
+                    request.Content = new StringContent(body);
 
-                    client.UploadValues(string.Format("{0}/tips/deletereaded", SetupInfo.TipsAddress), data);
+                    var httpClient = ClientFactory.CreateClient();
+                    using var response = httpClient.Send(request);
+
                 }
                 catch (Exception e)
                 {
@@ -1386,6 +1488,12 @@ namespace ASC.Api.Settings
         public bool UpdateTipsSubscription()
         {
             return StudioPeriodicNotify.ChangeSubscription(AuthContext.CurrentAccount.ID, StudioNotifyHelper);
+        }
+
+        [Read("tips/subscription")]
+        public bool GetTipsSubscription()
+        {
+            return StudioNotifyHelper.IsSubscribedToNotify(AuthContext.CurrentAccount.ID, Actions.PeriodicNotify);
         }
 
         [Update("wizard/complete", Check = false)]
@@ -1600,7 +1708,7 @@ namespace ASC.Api.Settings
             if (currentUser.IsVisitor(UserManager) || currentUser.IsOutsider(UserManager))
                 throw new NotSupportedException("Not available.");
 
-            return SettingsManager.LoadForCurrentUser<TfaAppUserSettings>().CodesSetting.Select(r => new { r.IsUsed, r.Code }).ToList();
+            return SettingsManager.LoadForCurrentUser<TfaAppUserSettings>().CodesSetting.Select(r => new { r.IsUsed, Code = r.GetEncryptedCode(InstanceCrypto, Signature) }).ToList();
         }
 
         [Update("tfaappnewcodes")]
@@ -1614,7 +1722,7 @@ namespace ASC.Api.Settings
             if (currentUser.IsVisitor(UserManager) || currentUser.IsOutsider(UserManager))
                 throw new NotSupportedException("Not available.");
 
-            var codes = TfaManager.GenerateBackupCodes().Select(r => new { r.IsUsed, r.Code }).ToList();
+            var codes = TfaManager.GenerateBackupCodes().Select(r => new { r.IsUsed, Code = r.GetEncryptedCode(InstanceCrypto, Signature) }).ToList();
             MessageService.Send(MessageAction.UserConnectedTfaApp, MessageTarget.Create(currentUser.ID), currentUser.DisplayUserName(false, DisplayUserSettingsHelper));
             return codes;
         }
@@ -1784,7 +1892,7 @@ namespace ASC.Api.Settings
 
             MessageService.Send(MessageAction.OwnerSentChangeOwnerInstructions, MessageTarget.Create(owner.ID), owner.DisplayUserName(false, DisplayUserSettingsHelper));
 
-            var emailLink = string.Format("<a href=\"mailto:{0}\">{0}</a>", owner.Email);
+            var emailLink = $"<a href=\"mailto:{owner.Email}\">{owner.Email}</a>";
             return new { Status = 1, Message = Resource.ChangePortalOwnerMsg.Replace(":email", emailLink) };
         }
 
@@ -1928,7 +2036,7 @@ namespace ASC.Api.Settings
 
             TenantManager.SaveTenantQuota(quota);
 
-            var DEFAULT_TRIAL_PERIOD = 30;
+            const int DEFAULT_TRIAL_PERIOD = 30;
 
             var tariff = new Tariff
             {
@@ -1969,9 +2077,9 @@ namespace ASC.Api.Settings
                 return dueDate >= DateTime.UtcNow.Date
                                      ? Resource.LicenseUploaded
                                      : string.Format(
-                                         (TenantExtra.GetTenantQuota().Update
+                                         TenantExtra.GetTenantQuota().Update
                                               ? Resource.LicenseUploadedOverdueSupport
-                                              : Resource.LicenseUploadedOverdue),
+                                              : Resource.LicenseUploadedOverdue,
                                                      "",
                                                      "",
                                                      dueDate.Date.ToLongDateString());
@@ -2124,7 +2232,7 @@ namespace ASC.Api.Settings
 
             result.Add(instance);
 
-            if (!instance.IsDefault(CoreSettings) && !instance.GetIsLicensor(TenantManager, CoreSettings))
+            if (!instance.IsDefault(CoreSettings) && !instance.IsLicensor)
             {
                 result.Add(instance.GetDefault(ServiceProvider) as CompanyWhiteLabelSettings);
             }
@@ -2133,28 +2241,34 @@ namespace ASC.Api.Settings
         }
 
         [Read("statistics/spaceusage/{id}")]
-        public List<UsageSpaceStatItemWrapper> GetSpaceUsageStatistics(Guid id)
+        public Task<List<UsageSpaceStatItemWrapper>> GetSpaceUsageStatistics(Guid id)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-            var webtem = WebItemManagerSecurity.GetItems(WebZoneType.All, ItemAvailableState.All)
+            var webitem = WebItemManagerSecurity.GetItems(WebZoneType.All, ItemAvailableState.All)
                                        .FirstOrDefault(item =>
                                                        item != null &&
                                                        item.ID == id &&
                                                        item.Context != null &&
                                                        item.Context.SpaceUsageStatManager != null);
 
-            if (webtem == null) return new List<UsageSpaceStatItemWrapper>();
+            if (webitem == null) return Task.FromResult(new List<UsageSpaceStatItemWrapper>());
 
-            return webtem.Context.SpaceUsageStatManager.GetStatData()
-                         .ConvertAll(it => new UsageSpaceStatItemWrapper
-                         {
-                             Name = it.Name.HtmlEncode(),
-                             Icon = it.ImgUrl,
-                             Disabled = it.Disabled,
-                             Size = FileSizeComment.FilesSizeToString(it.SpaceUsage),
-                             Url = it.Url
-                         });
+            return InternalGetSpaceUsageStatistics(webitem);
+        }
+
+        private async Task<List<UsageSpaceStatItemWrapper>> InternalGetSpaceUsageStatistics(IWebItem webitem)
+        {
+            var statData = await webitem.Context.SpaceUsageStatManager.GetStatDataAsync();
+
+            return statData.ConvertAll(it => new UsageSpaceStatItemWrapper
+            {
+                Name = it.Name.HtmlEncode(),
+                Icon = it.ImgUrl,
+                Disabled = it.Disabled,
+                Size = FileSizeComment.FilesSizeToString(it.SpaceUsage),
+                Url = it.Url
+            });
         }
 
         [Read("statistics/visit")]
@@ -2213,7 +2327,7 @@ namespace ASC.Api.Settings
             TenantExtra.DemandControlPanelPermission();
 
             var current = SettingsManager.Load<StorageSettings>();
-            var consumers = ConsumerFactory.GetAll<DataStoreConsumer>().ToList();
+            var consumers = ConsumerFactory.GetAll<DataStoreConsumer>();
             return consumers.Select(consumer => new StorageWrapper(consumer, current)).ToList();
         }
 
@@ -2253,7 +2367,7 @@ namespace ASC.Api.Settings
             {
                 var activeTenants = TenantManager.GetTenants();
 
-                if (activeTenants.Any())
+                if (activeTenants.Count > 0)
                 {
                     StartEncryption(storageEncryption.NotifyUsers);
                 }
@@ -2301,7 +2415,7 @@ namespace ASC.Api.Settings
             foreach (var tenant in tenants)
             {
                 var progress = BackupAjaxHandler.GetBackupProgress(tenant.TenantId);
-                if (progress != null && progress.IsCompleted == false)
+                if (progress != null && !progress.IsCompleted)
                 {
                     throw new Exception();
                 }
@@ -2511,7 +2625,7 @@ namespace ASC.Api.Settings
             TenantExtra.DemandControlPanelPermission();
 
             var current = SettingsManager.Load<CdnStorageSettings>();
-            var consumers = ConsumerFactory.GetAll<DataStoreConsumer>().Where(r => r.Cdn != null).ToList();
+            var consumers = ConsumerFactory.GetAll<DataStoreConsumer>().Where(r => r.Cdn != null);
             return consumers.Select(consumer => new StorageWrapper(consumer, current)).ToList();
         }
 
@@ -2589,7 +2703,7 @@ namespace ASC.Api.Settings
                 };
             }
 
-            var consumers = ConsumerFactory.GetAll<DataStoreConsumer>().ToList();
+            var consumers = ConsumerFactory.GetAll<DataStoreConsumer>();
             return consumers.Select(consumer => new StorageWrapper(consumer, current)).ToList();
         }
 
@@ -2605,9 +2719,9 @@ namespace ASC.Api.Settings
         public object GetSocketSettings()
         {
             var hubUrl = Configuration["web:hub"] ?? string.Empty;
-            if (hubUrl != string.Empty)
+            if (hubUrl.Length != 0)
             {
-                if (!hubUrl.EndsWith("/"))
+                if (!hubUrl.EndsWith('/'))
                 {
                     hubUrl += "/";
                 }
@@ -2643,7 +2757,7 @@ namespace ASC.Api.Settings
 
             DemandRebrandingPermission();
 
-            companyWhiteLabelSettingsWrapper.Settings.IsLicensorSetting = false; //TODO: CoreContext.TenantManager.GetTenantQuota(TenantProvider.CurrentTenantID).Branding && settings.IsLicensor
+            companyWhiteLabelSettingsWrapper.Settings.IsLicensor = false; //TODO: CoreContext.TenantManager.GetTenantQuota(TenantProvider.CurrentTenantID).Branding && settings.IsLicensor
 
             SettingsManager.SaveForDefaultTenant(companyWhiteLabelSettingsWrapper.Settings);
             return true;
@@ -2729,7 +2843,7 @@ namespace ASC.Api.Settings
 
         private bool SaveMailWhiteLabelSettings(MailWhiteLabelSettings settings)
         {
-            if (settings == null) throw new ArgumentNullException("settings");
+            if (settings == null) throw new ArgumentNullException(nameof(settings));
 
             DemandRebrandingPermission();
 
@@ -2827,7 +2941,7 @@ namespace ASC.Api.Settings
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
             var saveAvailable = CoreBaseSettings.Standalone || TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().TenantId).ThirdParty;
-            if (!SetupInfo.IsVisibleSettings(ManagementType.ThirdPartyAuthorization.ToString())
+            if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.ThirdPartyAuthorization))
                 || !saveAvailable)
                 throw new BillingException(Resource.ErrorNotAllowedOption, "ThirdPartyAuthorization");
 
@@ -2868,7 +2982,13 @@ namespace ASC.Api.Settings
                     changed = true;
                 }
             }
-            if (validateKeyProvider != null && !validateKeyProvider.ValidateKeys() && !consumer.All(r => string.IsNullOrEmpty(r.Value)))
+
+            //TODO: Consumer implementation required (Bug 50606)
+            var allPropsIsEmpty = consumer.GetType() == typeof(SmscProvider)
+                ? consumer.ManagedKeys.All(key => string.IsNullOrEmpty(consumer[key]))
+                : consumer.All(r => string.IsNullOrEmpty(r.Value));
+
+            if (validateKeyProvider != null && !validateKeyProvider.ValidateKeys() && !allPropsIsEmpty)
             {
                 consumer.Clear();
                 throw new ArgumentException(Resource.ErrorBadKeys);
@@ -2997,7 +3117,7 @@ namespace ASC.Api.Settings
                     throw new Exception(Resource.ErrorRequestLimitExceeded);
             }
 
-            MemoryCache.Set(key, ++count, TimeSpan.FromMinutes(expirationMinutes));
+            MemoryCache.Set(key, count + 1, TimeSpan.FromMinutes(expirationMinutes));
         }
     }
 }

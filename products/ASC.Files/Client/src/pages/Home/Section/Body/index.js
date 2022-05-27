@@ -1,16 +1,20 @@
 import React, { useEffect } from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
-import { isMobile } from "react-device-detect";
+import { isMobile, isMobileOnly } from "react-device-detect";
+
 import { observer, inject } from "mobx-react";
 import FilesRowContainer from "./RowsView/FilesRowContainer";
 import FilesTileContainer from "./TilesView/FilesTileContainer";
 import EmptyContainer from "../../../../components/EmptyContainer";
 import withLoader from "../../../../HOCs/withLoader";
 import TableView from "./TableView/TableContainer";
+import withHotkeys from "../../../../HOCs/withHotkeys";
 import { Consumer } from "@appserver/components/utils/context";
+import { isElementInViewport } from "@appserver/common/utils";
 
 let currentDroppable = null;
+let isDragActive = false;
 
 const SectionBodyContent = (props) => {
   const {
@@ -31,6 +35,11 @@ const SectionBodyContent = (props) => {
     setBufferSelection,
     tooltipPageX,
     tooltipPageY,
+    setHotkeyCaretStart,
+    setHotkeyCaret,
+    scrollToFolderId,
+    setScrollToFolderId,
+    filesList,
   } = props;
 
   useEffect(() => {
@@ -42,7 +51,7 @@ const SectionBodyContent = (props) => {
       customScrollElm && customScrollElm.scrollTo(0, 0);
     }
 
-    !isMobile && window.addEventListener("mousedown", onMouseDown);
+    window.addEventListener("mousedown", onMouseDown);
     startDrag && window.addEventListener("mouseup", onMouseUp);
     startDrag && document.addEventListener("mousemove", onMouseMove);
 
@@ -61,15 +70,46 @@ const SectionBodyContent = (props) => {
     };
   }, [onMouseUp, onMouseMove, startDrag, folderId, viewAs]);
 
+  useEffect(() => {
+    if (scrollToFolderId) {
+      const newFolder = document.querySelector(
+        `div[value='folder_${scrollToFolderId}_draggable']`
+      );
+
+      let isInViewport = isElementInViewport(newFolder);
+
+      if (!isInViewport || viewAs === "table") {
+        const bodyScroll = isMobileOnly
+          ? document.querySelector("#customScrollBar > div")
+          : document.querySelector(".section-scroll");
+
+        const rectNewFolder = newFolder.getBoundingClientRect();
+        const count =
+          viewAs === "table"
+            ? filesList.findIndex((elem) => elem.id === scrollToFolderId) * 40
+            : rectNewFolder.bottom - window.innerHeight + 300;
+
+        bodyScroll.scrollTo(0, count);
+      }
+      setScrollToFolderId(null);
+    }
+  }, [scrollToFolderId]);
+
   const onMouseDown = (e) => {
     if (
-      e.target.closest(".scroll-body") &&
-      !e.target.closest(".files-item") &&
-      !e.target.closest(".not-selectable") &&
-      !e.target.closest(".table-container_group-menu")
+      (e.target.closest(".scroll-body") &&
+        !e.target.closest(".files-item") &&
+        !e.target.closest(".not-selectable") &&
+        !e.target.closest(".info-panel") &&
+        !e.target.closest(".table-container_group-menu")) ||
+      e.target.closest(".files-main-button") ||
+      e.target.closest(".add-button") ||
+      e.target.closest(".search-input-block")
     ) {
       setSelection([]);
       setBufferSelection(null);
+      setHotkeyCaretStart(null);
+      setHotkeyCaret(null);
     }
   };
 
@@ -81,6 +121,7 @@ const SectionBodyContent = (props) => {
       return false;
     }
 
+    isDragActive = true;
     if (!dragging) {
       document.body.classList.add("drag-cursor");
       setDragging(true);
@@ -128,40 +169,36 @@ const SectionBodyContent = (props) => {
     document.body.classList.remove("drag-cursor");
 
     const treeElem = e.target.closest(".tree-drag");
-    const treeClassList = treeElem && treeElem.classList;
-    const isDragging = treeElem && treeClassList.contains("dragging");
-
-    let index = null;
-    for (let i in treeClassList) {
-      if (treeClassList[i] === "dragging") {
-        index = i - 1;
-        break;
-      }
-    }
-
-    const treeValue = isDragging ? treeClassList[index].split("_")[1] : null;
+    const treeDataValue = treeElem?.dataset?.value;
+    const splitValue = treeDataValue && treeDataValue.split(" ");
+    const isDragging = splitValue && splitValue.includes("dragging");
+    const treeValue = isDragging ? splitValue[0] : null;
+    const treeProvider = splitValue && splitValue[splitValue.length - 1];
 
     const elem = e.target.closest(".droppable");
     const title = elem && elem.dataset.title;
     const value = elem && elem.getAttribute("value");
-    if ((!value && !treeValue) || isRecycleBinFolder) {
+    if ((!value && !treeValue) || isRecycleBinFolder || !isDragActive) {
       setDragging(false);
       setStartDrag(false);
+      isDragActive = false;
       return;
     }
 
     const folderId = value ? value.split("_")[1] : treeValue;
+    const providerKey = value ? value.split("_")[2].trim() : treeProvider;
 
     setStartDrag(false);
     setDragging(false);
-    onMoveTo(folderId, title);
+    onMoveTo(folderId, title, providerKey);
+    isDragActive = false;
     return;
   };
 
-  const onMoveTo = (destFolderId, title) => {
+  const onMoveTo = (destFolderId, title, providerKey) => {
     const id = isNaN(+destFolderId) ? destFolderId : +destFolderId;
-    moveDragItems(id, title, {
-      copy: t("Translations:CopyOperation"),
+    moveDragItems(id, title, providerKey, {
+      copy: t("Common:CopyOperation"),
       move: t("Translations:MoveToOperation"),
     }); //TODO: then catch
   };
@@ -188,20 +225,29 @@ const SectionBodyContent = (props) => {
   };
 
   //console.log("Files Home SectionBodyContent render", props);
+
   return (
     <Consumer>
       {(context) =>
         (!fileActionId && isEmptyFilesList) || null ? (
-          <EmptyContainer />
+          <>
+            <EmptyContainer />
+          </>
         ) : viewAs === "tile" ? (
-          <FilesTileContainer sectionWidth={context.sectionWidth} t={t} />
+          <>
+            <FilesTileContainer sectionWidth={context.sectionWidth} t={t} />
+          </>
         ) : viewAs === "table" ? (
-          <TableView sectionWidth={context.sectionWidth} tReady={tReady} />
+          <>
+            <TableView sectionWidth={context.sectionWidth} tReady={tReady} />
+          </>
         ) : (
-          <FilesRowContainer
-            sectionWidth={context.sectionWidth}
-            tReady={tReady}
-          />
+          <>
+            <FilesRowContainer
+              sectionWidth={context.sectionWidth}
+              tReady={tReady}
+            />
+          </>
         )
       }
     </Consumer>
@@ -228,6 +274,11 @@ export default inject(
       tooltipPageX,
       tooltipPageY,
       setBufferSelection,
+      setHotkeyCaretStart,
+      setHotkeyCaret,
+      scrollToFolderId,
+      setScrollToFolderId,
+      filesList,
     } = filesStore;
 
     return {
@@ -237,8 +288,6 @@ export default inject(
       fileActionId: fileActionStore.id,
       isEmptyFilesList,
       setDragging,
-      startDrag,
-      setStartDrag,
       folderId: selectedFolderStore.id,
       setTooltipPosition,
       isRecycleBinFolder: treeFoldersStore.isRecycleBinFolder,
@@ -248,12 +297,17 @@ export default inject(
       setBufferSelection,
       tooltipPageX,
       tooltipPageY,
+      setHotkeyCaretStart,
+      setHotkeyCaret,
+      scrollToFolderId,
+      setScrollToFolderId,
+      filesList,
     };
   }
 )(
   withRouter(
-    withTranslation(["Home", "Translations"])(
-      withLoader(observer(SectionBodyContent))()
+    withTranslation(["Home", "Common", "Translations"])(
+      withLoader(withHotkeys(observer(SectionBodyContent)))()
     )
   )
 );

@@ -1,28 +1,14 @@
 import React from "react";
 import Backdrop from "@appserver/components/backdrop";
-import Heading from "@appserver/components/heading";
-import Aside from "@appserver/components/aside";
-import IconButton from "@appserver/components/icon-button";
-import Checkbox from "@appserver/components/checkbox";
 import Button from "@appserver/components/button";
-import DropDown from "@appserver/components/drop-down";
-import DropDownItem from "@appserver/components/drop-down-item";
-import Textarea from "@appserver/components/textarea";
-import Loader from "@appserver/components/loader";
-import Text from "@appserver/components/text";
+
+import Aside from "@appserver/components/aside";
+import SaveCancelButton from "@appserver/components/save-cancel-buttons";
 import { withTranslation, Trans } from "react-i18next";
 import toastr from "studio/toastr";
 import { ShareAccessRights } from "@appserver/common/constants";
-import {
-  StyledAsidePanel,
-  StyledContent,
-  StyledFooter,
-  StyledHeaderContent,
-  StyledSharingBody,
-  StyledModalRowContainer,
-} from "../StyledPanels";
+import { StyledAsidePanel } from "../StyledPanels";
 import { AddUsersPanel, AddGroupsPanel, EmbeddingPanel } from "../index";
-import SharingRow from "./SharingRow";
 import { inject, observer } from "mobx-react";
 import config from "../../../../package.json";
 import i18n from "./i18n";
@@ -30,17 +16,23 @@ import { I18nextProvider } from "react-i18next";
 import { isMobile, isMobileOnly } from "react-device-detect";
 import Loaders from "@appserver/common/components/Loaders";
 import withLoader from "../../../HOCs/withLoader";
-import ModalDialogContainer from "../../dialogs/ModalDialogContainer";
 import ModalDialog from "@appserver/components/modal-dialog";
 import EmbeddingBody from "../EmbeddingPanel/EmbeddingBody";
 
-const SharingBodyStyle = { height: `calc(100vh - 156px)` };
+import { StyledContent, StyledModalFooter } from "./StyledSharingPanel";
+
+import Header from "./Header";
+import Body from "./Body";
+import Footer from "./Footer";
+import SharingPanelLoader from "@appserver/common/components/Loaders/SharingPanelLoader";
+import SharingPanelLoaderModal from "@appserver/common/components/Loaders/SharingPanelLoader/modal";
+
+// const SharingBodyStyle = { height: `calc(100vh - 156px)` };
 
 class SharingPanelComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      showActionPanel: false,
       isNotifyUsers: false,
       shareDataItems: [],
       baseShareData: [],
@@ -54,29 +46,35 @@ class SharingPanelComponent extends React.Component {
       showPanel: false,
       accessOptions: [],
       filesOwnerId: null,
+      isUpdated: false,
+      isLoading: false,
       showEmbeddingContent: false,
+      baseExternalAccess: null,
     };
 
-    this.ref = React.createRef();
     this.scrollRef = React.createRef();
   }
 
-  onPlusClick = () =>
-    this.setState({ showActionPanel: !this.state.showActionPanel });
+  isUpdateAccessInfo = (selectedAccess) => {
+    const { baseExternalAccess, isUpdated } = this.state;
 
-  onCloseActionPanel = (e) => {
-    if (this.ref.current.contains(e.target)) return;
-    this.setState({ showActionPanel: !this.state.showActionPanel });
+    if (+baseExternalAccess !== +selectedAccess) {
+      !isUpdated && this.setState({ isUpdated: true });
+    } else {
+      isUpdated && this.setState({ isUpdated: false });
+    }
   };
-
   onToggleLink = (item) => {
     const { shareDataItems } = this.state;
+    const { isPersonal } = this.props;
     const { DenyAccess, ReadOnly } = ShareAccessRights;
 
     const rights = item.access !== DenyAccess ? DenyAccess : ReadOnly;
     const newDataItems = JSON.parse(JSON.stringify(shareDataItems));
-
     newDataItems[0].access = rights;
+
+    isPersonal && this.isUpdateAccessInfo(rights);
+
     this.setState({
       shareDataItems: newDataItems,
       showEmbeddingContent: false,
@@ -96,29 +94,8 @@ class SharingPanelComponent extends React.Component {
   };
 
   onSaveClick = () => {
-    const {
-      baseShareData,
-      isNotifyUsers,
-      message,
-      shareDataItems,
-      filesOwnerId,
-    } = this.state;
-    const {
-      selection,
-      setIsLoading,
-      isPrivacy,
-      replaceFileStream,
-      t,
-      uploadPanelVisible,
-      updateUploadedItem,
-      uploadSelection,
-      isDesktop,
-      setEncryptionAccess,
-      setShareFiles,
-      setIsFolderActions,
-      onSuccess,
-      isFolderActions,
-    } = this.props;
+    const { baseShareData, shareDataItems, filesOwnerId } = this.state;
+    const { selection, isFolderActions } = this.props;
 
     let folderIds = [];
     let fileIds = [];
@@ -176,8 +153,29 @@ class SharingPanelComponent extends React.Component {
     const ownerId =
       filesOwnerId !== owner.sharedTo.id ? owner.sharedTo.id : null;
 
-    setIsLoading(true);
+    this.setShareInfo(folderIds, fileIds, share, externalAccess, ownerId);
+  };
+
+  setShareInfo = (folderIds, fileIds, share, externalAccess, ownerId) => {
+    const { isNotifyUsers, message } = this.state;
+
+    const {
+      selection,
+      isPrivacy,
+      replaceFileStream,
+      t,
+      uploadPanelVisible,
+      updateUploadedItem,
+      uploadSelection,
+      isDesktop,
+      setEncryptionAccess,
+      setShareFiles,
+      onSuccess,
+      setIsFolderActions,
+    } = this.props;
+
     this.onClose();
+
     setShareFiles(
       folderIds,
       fileIds,
@@ -187,7 +185,7 @@ class SharingPanelComponent extends React.Component {
       externalAccess,
       ownerId
     )
-      .then((res) => {
+      .then(() => {
         if (!ownerId) {
           this.updateRowData(selection);
         }
@@ -226,25 +224,52 @@ class SharingPanelComponent extends React.Component {
       .catch((err) => toastr.error(err))
       .finally(() => {
         setIsFolderActions(false);
-        setIsLoading(false);
       });
   };
+
   onNotifyUsersChange = () =>
-    this.setState({ isNotifyUsers: !this.state.isNotifyUsers });
+    this.setState({
+      isNotifyUsers: !this.state.isNotifyUsers,
+    });
 
   onShowUsersPanel = () =>
     this.setState({
       showAddUsersPanel: !this.state.showAddUsersPanel,
-      showActionPanel: false,
+    });
+
+  onShowGroupsPanel = () =>
+    this.setState({
+      showAddGroupsPanel: !this.state.showAddGroupsPanel,
+    });
+
+  onShowChangeOwnerPanel = () => {
+    this.setState({
+      showChangeOwnerPanel: !this.state.showChangeOwnerPanel,
+    });
+  };
+
+  onShowEmbeddingPanel = (link) =>
+    this.setState({
+      showEmbeddingPanel: !this.state.showEmbeddingPanel,
+      shareLink: link,
+    });
+
+  onShowEmbeddingContainer = (link) =>
+    this.setState({
+      showEmbeddingContent: !this.state.showEmbeddingContent,
+      shareLink: link,
     });
 
   onChangeItemAccess = (e) => {
+    const { isPersonal } = this.props;
     const id = e.currentTarget.dataset.id;
     const access = e.currentTarget.dataset.access;
     const shareDataItems = this.state.shareDataItems;
     const elem = shareDataItems.find((x) => x.sharedTo.id === id && !x.isOwner);
 
     if (elem.access !== +access) {
+      isPersonal && this.isUpdateAccessInfo(access);
+
       elem.access = +access;
       this.setState({ shareDataItems });
     }
@@ -288,28 +313,45 @@ class SharingPanelComponent extends React.Component {
   };
 
   getShareData = () => {
+    const returnValue = this.getData();
+    const folderId = returnValue[0];
+    const fileId = returnValue[1];
+
+    if (folderId.length !== 0 || fileId.length !== 0) {
+      this.setState(
+        {
+          isLoading: true,
+        },
+        function () {
+          this.getShareUsers(folderId, fileId);
+        }
+      );
+    }
+  };
+
+  getShareUsers = (folderId, fileId) => {
     const {
       getAccessOption,
       getExternalAccessOption,
       selection,
-      setIsLoading,
       getShareUsers,
+      isPersonal,
     } = this.props;
 
-    const returnValue = this.getData();
-    const folderId = returnValue[0];
-    const fileId = returnValue[1];
-    if (folderId.length !== 0 || fileId.length !== 0) {
-      !isMobile && setIsLoading(true);
-      getShareUsers(folderId, fileId)
-        .then((shareDataItems) => {
-          const baseShareData = JSON.parse(JSON.stringify(shareDataItems));
-          const accessOptions = getAccessOption(selection);
+    getShareUsers(folderId, fileId)
+      .then((shareDataItems) => {
+        const baseShareData = JSON.parse(JSON.stringify(shareDataItems));
+        const accessOptions = getAccessOption(selection);
 
-          const externalAccessOptions = getExternalAccessOption(selection);
-          const filesOwner = shareDataItems.find((x) => x.isOwner);
-          const filesOwnerId = filesOwner ? filesOwner.sharedTo.id : null;
+        const externalAccessOptions = getExternalAccessOption(selection);
+        const filesOwner = shareDataItems.find((x) => x.isOwner);
+        const filesOwnerId = filesOwner ? filesOwner.sharedTo.id : null;
 
+        const baseExternalAccess = isPersonal
+          ? shareDataItems.find((x) => x.sharedTo.shareLink)?.access
+          : null;
+
+        this._isMounted &&
           this.setState({
             baseShareData,
             shareDataItems,
@@ -317,71 +359,58 @@ class SharingPanelComponent extends React.Component {
             externalAccessOptions,
             //showPanel: true,
             filesOwnerId,
+            baseExternalAccess,
           });
-        })
+      })
 
-        .catch((err) => {
-          toastr.error(err);
-          this.onClose();
-        })
-        .finally(() => !isMobile && setIsLoading(false));
-    }
+      .catch((err) => {
+        toastr.error(err);
+        this.onClose();
+      })
+      .finally(() => {
+        setTimeout(() => {
+          if (this._isMounted)
+            return this.setState({
+              isLoading: false,
+            });
+        }, 500);
+      });
   };
 
   getInternalLink = () => {
     const { homepage, selection } = this.props;
 
     const item = selection[0];
-    const isFile = !!item.fileExst;
+    const isFile = !!item?.fileExst;
 
     if (selection.length !== 1) return null;
 
     return isFile
       ? item.canOpenPlayer
-        ? `${window.location.href}&preview=${item.id}`
+        ? `${window.location.href}&preview=${item?.id}`
         : item.webUrl
-      : `${window.location.origin + homepage}/filter?folder=${item.id}`;
+      : `${window.location.origin + homepage}/filter?folder=${item?.id}`;
   };
 
-  onShowEmbeddingPanel = (link) =>
-    this.setState({
-      showEmbeddingPanel: !this.state.showEmbeddingPanel,
-      shareLink: link,
-    });
+  onChangeMessage = (e) => {
+    this.setState({ message: e.target.value });
+  };
 
-  onShowEmbeddingContainer = (link) =>
-    this.setState({
-      showEmbeddingContent: !this.state.showEmbeddingContent,
-      shareLink: link,
-    });
-
-  onShowGroupsPanel = () =>
-    this.setState({
-      showAddGroupsPanel: !this.state.showAddGroupsPanel,
-      showActionPanel: false,
-    });
-
-  onShowChangeOwnerPanel = () =>
-    this.setState({
-      showChangeOwnerPanel: !this.state.showChangeOwnerPanel,
-      showActionPanel: false,
-    });
-
-  onChangeMessage = (e) => this.setState({ message: e.target.value });
-
-  setShareDataItems = (shareDataItems) => this.setState({ shareDataItems });
+  setShareDataItems = (shareDataItems) => {
+    this.setState({ shareDataItems });
+  };
 
   onClose = () => {
     const {
       onCancel,
       setSharingPanelVisible,
       selectUploadedFile,
-      setIsFolderActions,
       setSelection,
       setBufferSelection,
     } = this.props;
 
     setSharingPanelVisible(false);
+
     setSelection([]);
 
     selectUploadedFile([]);
@@ -390,13 +419,20 @@ class SharingPanelComponent extends React.Component {
   };
 
   componentDidMount() {
+    const { settings, setFilesSettings } = this.props;
+    settings && setFilesSettings(settings); // Remove after initialization settings in Editor
+
     this.getShareData();
 
+    this._isMounted = true;
     document.addEventListener("keyup", this.onKeyPress);
+    window.addEventListener("popstate", () => this.onClose());
   }
 
   componentWillUnmount() {
+    this._isMounted = false;
     document.removeEventListener("keyup", this.onKeyPress);
+    window.removeEventListener("popstate", () => this.onClose());
   }
 
   onKeyPress = (event) => {
@@ -435,20 +471,19 @@ class SharingPanelComponent extends React.Component {
     //console.log("Sharing panel render");
     const {
       t,
-      tReady,
       isPersonal,
       isMyId,
       selection,
       groupsCaption,
       canShareOwnerChange,
-      isLoading,
       uploadPanelVisible,
       documentTitle,
       sharingPanelVisible,
       isPrivacy,
+      theme,
+      isShared,
     } = this.props;
     const {
-      showActionPanel,
       isNotifyUsers,
       shareDataItems,
       message,
@@ -461,257 +496,327 @@ class SharingPanelComponent extends React.Component {
       accessOptions,
       externalAccessOptions,
       showEmbeddingContent,
+      isLoading,
     } = this.state;
 
     const visible = sharingPanelVisible;
+
     const zIndex = 310;
-    const onPlusClickProp = !isLoading ? { onClick: this.onPlusClick } : {};
 
     const isEncrypted =
-      isPrivacy || (selection.length && selection[0].encrypted);
+      isPrivacy || (selection.length && selection[0]?.encrypted);
 
     const internalLink =
       selection.length === 1 && !isEncrypted && this.getInternalLink();
 
-    return isPersonal && !isMobileOnly ? (
-      <ModalDialog
-        isLoading={!tReady}
-        visible={visible}
-        displayType="modal"
-        onClose={this.onClose}
-      >
-        <ModalDialog.Header>{t("SharingSettingsTitle")}</ModalDialog.Header>
-        <ModalDialog.Body>
-          <StyledModalRowContainer>
-            {!isLoading ? (
-              shareDataItems.map((item, index) => (
-                <SharingRow
-                  t={t}
+    const filteredShareDataItems = [];
+    const externalItem = [];
+    const owner = [];
+    const shareGroups = [];
+    const shareUsers = [];
+
+    shareDataItems.forEach((item) => {
+      if (item?.sharedTo?.shareLink) {
+        return externalItem.push(item);
+      }
+
+      if (item?.isOwner) {
+        item.isUser = true;
+        return owner.push(item);
+      }
+
+      if (
+        item?.sharedTo?.userName ||
+        (item?.sharedTo?.label && item.sharedTo.avatarUrl)
+      ) {
+        item.isUser = true;
+        shareUsers.push(item);
+      } else {
+        item.isGroup = true;
+        shareGroups.push(item);
+      }
+    });
+
+    filteredShareDataItems.push(
+      ...externalItem,
+      ...owner,
+      ...shareGroups,
+      ...shareUsers
+    );
+
+    return (
+      <>
+        {isPersonal ? (
+          <>
+            {isLoading ? (
+              isMobileOnly ? (
+                <ModalDialog
+                  displayType="modal"
+                  visible={visible}
+                  withoutCloseButton={true}
+                  withoutBodyScroll={true}
+                  scale={true}
+                  onClose={this.onClose}
                   isPersonal={isPersonal}
-                  index={index}
-                  key={`${item.sharedTo.id}_${index}`}
-                  selection={selection}
-                  item={item}
-                  isMyId={isMyId}
-                  accessOptions={accessOptions}
-                  externalAccessOptions={externalAccessOptions}
-                  canShareOwnerChange={canShareOwnerChange}
-                  onChangeItemAccess={this.onChangeItemAccess}
-                  internalLink={internalLink}
-                  onRemoveUserClick={this.onRemoveUserItemClick}
-                  onShowEmbeddingPanel={this.onShowEmbeddingContainer}
-                  onToggleLink={this.onToggleLink}
-                  onShowChangeOwnerPanel={this.onShowChangeOwnerPanel}
-                  isLoading={isLoading}
-                  documentTitle={documentTitle}
-                />
-              ))
-            ) : (
-              <Loaders.Rectangle
-                height="47px"
-                animate={0}
-                foregroundColor="#f8f9f9"
-                backgroundColor="#f8f9f9"
-                backgroundOpacity={1}
-                foregroundOpacity={1}
-              />
-            )}
-            {showEmbeddingContent && (
-              <EmbeddingBody embeddingLink={shareLink} />
-            )}
-          </StyledModalRowContainer>
-        </ModalDialog.Body>
-        <ModalDialog.Footer>
-          <Button
-            className="sharing_panel-button"
-            label={t("Common:SaveButton")}
-            size="big"
-            primary
-            onClick={this.onSaveClick}
-            isDisabled={isLoading}
-          />
-        </ModalDialog.Footer>
-      </ModalDialog>
-    ) : (
-      <StyledAsidePanel visible={visible}>
-        <Backdrop
-          onClick={this.onClose}
-          visible={visible}
-          zIndex={zIndex}
-          isAside={true}
-        />
-        <Aside className="header_aside-panel" visible={visible}>
-          <StyledContent isDisabled={isLoading}>
-            <StyledHeaderContent>
-              {uploadPanelVisible && (
-                <IconButton
-                  size="16"
-                  iconName="/static/images/arrow.path.react.svg"
-                  onClick={this.onClose}
-                  color="A3A9AE"
-                />
-              )}
-              <Heading className="sharing_panel-header" size="medium" truncate>
-                {t("SharingSettingsTitle")}
-              </Heading>
-              {!isPersonal && (
-                <div className="sharing_panel-icons-container">
-                  <div
-                    ref={this.ref}
-                    className="sharing_panel-drop-down-wrapper"
+                  modalBodyPadding="12px 0 0"
+                >
+                  <ModalDialog.Body>
+                    <SharingPanelLoaderModal isShared={isShared} />
+                  </ModalDialog.Body>
+                </ModalDialog>
+              ) : (
+                <>
+                  <ModalDialog
+                    displayType="modal"
+                    visible={visible}
+                    withoutCloseButton={true}
+                    withoutBodyScroll={true}
+                    scale={true}
+                    onClose={this.onClose}
+                    width={"400px"}
+                    isPersonal={isPersonal}
+                    modalBodyPadding="12px 0 0"
                   >
-                    <IconButton
-                      size="17"
-                      iconName="/static/images/actions.header.touch.react.svg"
-                      className="sharing_panel-plus-icon"
-                      {...onPlusClickProp}
-                      color="A3A9AE"
-                      isDisabled={isLoading}
+                    <ModalDialog.Body>
+                      <SharingPanelLoaderModal isShared={isShared} />
+                    </ModalDialog.Body>
+                  </ModalDialog>
+                </>
+              )
+            ) : isMobileOnly ? (
+              <ModalDialog
+                displayType="modal"
+                visible={visible}
+                withoutCloseButton={false}
+                withoutBodyScroll={true}
+                scale={true}
+                onClose={this.onClose}
+                modalBodyPadding="12px 0 0"
+                isPersonal={isPersonal}
+              >
+                <ModalDialog.Header>
+                  <Header
+                    t={t}
+                    uploadPanelVisible={showEmbeddingContent}
+                    isPersonal={isPersonal}
+                    isEncrypted={isEncrypted}
+                    onClose={this.onShowEmbeddingContainer}
+                    onShowUsersPanel={this.onShowUsersPanel}
+                    onShowGroupsPanel={this.onShowGroupsPanel}
+                    label={t("EmbeddingPanel:EmbeddingDocument")}
+                  />
+                </ModalDialog.Header>
+
+                <ModalDialog.Body>
+                  {showEmbeddingContent ? (
+                    <EmbeddingBody
+                      isPersonal={isPersonal}
+                      theme={theme}
+                      embeddingLink={externalItem[0].sharedTo.shareLink}
                     />
+                  ) : (
+                    <Body
+                      isShared={isShared}
+                      t={t}
+                      isPersonal={isPersonal}
+                      selection={selection}
+                      externalItem={externalItem[0]}
+                      onToggleLink={this.onToggleLink}
+                      onShowEmbeddingPanel={this.onShowEmbeddingContainer}
+                      onChangeItemAccess={this.onChangeItemAccess}
+                      accessOptions={accessOptions}
+                      externalAccessOptions={externalAccessOptions}
+                    />
+                  )}
+                </ModalDialog.Body>
 
-                    <DropDown
-                      directionX="right"
-                      className="sharing_panel-drop-down"
-                      open={showActionPanel}
-                      manualY="30px"
-                      clickOutsideAction={this.onCloseActionPanel}
-                    >
-                      <DropDownItem
-                        label={t("LinkText")}
-                        onClick={this.onShowUsersPanel}
+                {!showEmbeddingContent && (
+                  <ModalDialog.Footer>
+                    <StyledModalFooter>
+                      <SaveCancelButton
+                        saveButtonLabel={t("Common:SaveButton")}
+                        onSaveClick={this.onSaveClick}
+                        cancelButtonLabel={t("Common:CancelButton")}
+                        onCancelClick={this.onClose}
+                        showReminder={true}
                       />
-                      {!isEncrypted && (
-                        <DropDownItem
-                          label={t("AddGroupsForSharingButton")}
-                          onClick={this.onShowGroupsPanel}
-                        />
-                      )}
-                    </DropDown>
-                  </div>
+                    </StyledModalFooter>
+                  </ModalDialog.Footer>
+                )}
+              </ModalDialog>
+            ) : (
+              <ModalDialog
+                displayType="modal"
+                visible={visible}
+                withoutCloseButton={false}
+                withoutBodyScroll={true}
+                scale={true}
+                onClose={this.onClose}
+                width={"400px"}
+                modalBodyPadding="12px 0 0"
+                isPersonal={isPersonal}
+              >
+                <ModalDialog.Header>
+                  <Header
+                    t={t}
+                    uploadPanelVisible={showEmbeddingContent}
+                    isPersonal={isPersonal}
+                    isEncrypted={isEncrypted}
+                    onClose={this.onShowEmbeddingContainer}
+                    onShowUsersPanel={this.onShowUsersPanel}
+                    onShowGroupsPanel={this.onShowGroupsPanel}
+                    label={t("EmbeddingPanel:EmbeddingDocument")}
+                  />
+                </ModalDialog.Header>
 
-                  {/*<IconButton
-                  size="16"
-                  iconName="images/key.react.svg"
-                  onClick={this.onKeyClick}
-                />*/}
-                </div>
-              )}
-            </StyledHeaderContent>
-            <StyledSharingBody
-              ref={this.scrollRef}
-              stype="mediumBlack"
-              style={SharingBodyStyle}
+                <ModalDialog.Body>
+                  {showEmbeddingContent ? (
+                    <EmbeddingBody
+                      isPersonal={isPersonal}
+                      theme={theme}
+                      embeddingLink={externalItem[0].sharedTo.shareLink}
+                    />
+                  ) : (
+                    <Body
+                      isShared={isShared}
+                      t={t}
+                      isPersonal={isPersonal}
+                      selection={selection}
+                      externalItem={externalItem[0]}
+                      onToggleLink={this.onToggleLink}
+                      onShowEmbeddingPanel={this.onShowEmbeddingContainer}
+                      onChangeItemAccess={this.onChangeItemAccess}
+                      accessOptions={accessOptions}
+                      externalAccessOptions={externalAccessOptions}
+                    />
+                  )}
+                </ModalDialog.Body>
+
+                {!showEmbeddingContent && (
+                  <ModalDialog.Footer>
+                    <StyledModalFooter>
+                      <SaveCancelButton
+                        saveButtonLabel={t("Common:SaveButton")}
+                        onSaveClick={this.onSaveClick}
+                        cancelButtonLabel={t("Common:CancelButton")}
+                        onCancelClick={this.onClose}
+                        showReminder={true}
+                      />
+                    </StyledModalFooter>
+                  </ModalDialog.Footer>
+                )}
+              </ModalDialog>
+            )}
+          </>
+        ) : (
+          <StyledAsidePanel visible={visible}>
+            <Backdrop
+              onClick={this.onClose}
+              visible={visible}
+              zIndex={zIndex}
+              isAside={true}
+            />
+            <Aside
+              className="header_aside-panel"
+              visible={visible}
+              withoutBodyScroll={true}
+              onClose={this.onClose}
             >
               {!isLoading ? (
-                shareDataItems.map((item, index) => (
-                  <SharingRow
+                <StyledContent isNotifyUsers={isNotifyUsers}>
+                  <Header
+                    t={t}
+                    uploadPanelVisible={uploadPanelVisible}
+                    isPersonal={isPersonal}
+                    isEncrypted={isEncrypted}
+                    onClose={this.onClose}
+                    onShowUsersPanel={this.onShowUsersPanel}
+                    onShowGroupsPanel={this.onShowGroupsPanel}
+                  />
+
+                  <Body
                     t={t}
                     isPersonal={isPersonal}
-                    index={index}
-                    key={`${item.sharedTo.id}_${index}`}
                     selection={selection}
-                    item={item}
+                    externalItem={externalItem[0]}
+                    owner={owner[0]}
+                    shareGroups={shareGroups}
+                    shareUsers={shareUsers}
                     isMyId={isMyId}
+                    onToggleLink={this.onToggleLink}
+                    onShowEmbeddingPanel={this.onShowEmbeddingPanel}
+                    onChangeItemAccess={this.onChangeItemAccess}
                     accessOptions={accessOptions}
                     externalAccessOptions={externalAccessOptions}
                     canShareOwnerChange={canShareOwnerChange}
-                    onChangeItemAccess={this.onChangeItemAccess}
                     internalLink={internalLink}
                     onRemoveUserClick={this.onRemoveUserItemClick}
-                    onShowEmbeddingPanel={this.onShowEmbeddingPanel}
-                    onToggleLink={this.onToggleLink}
                     onShowChangeOwnerPanel={this.onShowChangeOwnerPanel}
-                    isLoading={isLoading}
                     documentTitle={documentTitle}
                   />
-                ))
-              ) : (
-                <div key="loader" className="panel-loader-wrapper">
-                  <Loader type="oval" size="16px" className="panel-loader" />
-                  <Text as="span">{`${t("Common:LoadingProcessing")} ${t(
-                    "Common:LoadingDescription"
-                  )}`}</Text>
-                </div>
-              )}
-              {isNotifyUsers && (
-                <div className="sharing_panel-text-area">
-                  <Textarea
-                    placeholder={t("AddShareMessage")}
-                    onChange={this.onChangeMessage}
-                    value={message}
-                    isDisabled={isLoading}
+
+                  <Footer
+                    t={t}
+                    isPersonal={isPersonal}
+                    message={message}
+                    onChangeMessage={this.onChangeMessage}
+                    isNotifyUsers={isNotifyUsers}
+                    onNotifyUsersChange={this.onNotifyUsersChange}
+                    onSaveClick={this.onSaveClick}
                   />
-                </div>
+                </StyledContent>
+              ) : (
+                <SharingPanelLoader />
               )}
-            </StyledSharingBody>
-            <StyledFooter>
-              {!isPersonal && (
-                <Checkbox
-                  isChecked={isNotifyUsers}
-                  label={t("Notify users")}
-                  onChange={this.onNotifyUsersChange}
-                  className="sharing_panel-checkbox"
-                  isDisabled={isLoading}
-                />
-              )}
-              <Button
-                className="sharing_panel-button"
-                label={t("Common:SaveButton")}
-                size={isMobile ? "big" : "medium"}
-                minwidth="100px"
-                primary
-                onClick={this.onSaveClick}
-                isDisabled={isLoading}
+            </Aside>
+
+            {showAddUsersPanel && (
+              <AddUsersPanel
+                onSharingPanelClose={this.onClose}
+                onClose={this.onShowUsersPanel}
+                visible={showAddUsersPanel}
+                shareDataItems={filteredShareDataItems}
+                setShareDataItems={this.setShareDataItems}
+                groupsCaption={groupsCaption}
+                accessOptions={accessOptions}
+                isMultiSelect
+                isEncrypted={isEncrypted}
               />
-            </StyledFooter>
-          </StyledContent>
-        </Aside>
+            )}
 
-        {showAddUsersPanel && (
-          <AddUsersPanel
-            onSharingPanelClose={this.onClose}
-            onClose={this.onShowUsersPanel}
-            visible={showAddUsersPanel}
-            shareDataItems={shareDataItems}
-            setShareDataItems={this.setShareDataItems}
-            groupsCaption={groupsCaption}
-            accessOptions={accessOptions}
-            isMultiSelect
-            isEncrypted={isEncrypted}
-          />
-        )}
+            {showAddGroupsPanel && (
+              <AddGroupsPanel
+                onSharingPanelClose={this.onClose}
+                onClose={this.onShowGroupsPanel}
+                visible={showAddGroupsPanel}
+                shareDataItems={filteredShareDataItems}
+                setShareDataItems={this.setShareDataItems}
+                accessOptions={accessOptions}
+                isMultiSelect
+              />
+            )}
 
-        {showAddGroupsPanel && (
-          <AddGroupsPanel
-            onSharingPanelClose={this.onClose}
-            onClose={this.onShowGroupsPanel}
-            visible={showAddGroupsPanel}
-            shareDataItems={shareDataItems}
-            setShareDataItems={this.setShareDataItems}
-            accessOptions={accessOptions}
-            isMultiSelect
-          />
-        )}
+            {showChangeOwnerPanel && (
+              <AddUsersPanel
+                onSharingPanelClose={this.onClose}
+                onClose={this.onShowChangeOwnerPanel}
+                visible={showChangeOwnerPanel}
+                shareDataItems={filteredShareDataItems}
+                setShareDataItems={this.setShareDataItems}
+              />
+            )}
 
-        {showChangeOwnerPanel && (
-          <AddUsersPanel
-            onSharingPanelClose={this.onClose}
-            onClose={this.onShowChangeOwnerPanel}
-            visible={showChangeOwnerPanel}
-            shareDataItems={shareDataItems}
-            setShareDataItems={this.setShareDataItems}
-          />
+            {showEmbeddingPanel && (
+              <EmbeddingPanel
+                visible={showEmbeddingPanel}
+                onSharingPanelClose={this.onClose}
+                onClose={this.onShowEmbeddingPanel}
+                embeddingLink={externalItem[0].sharedTo.shareLink}
+              />
+            )}
+          </StyledAsidePanel>
         )}
-
-        {showEmbeddingPanel && (
-          <EmbeddingPanel
-            visible={showEmbeddingPanel}
-            onSharingPanelClose={this.onClose}
-            onClose={this.onShowEmbeddingPanel}
-            embeddingLink={shareLink}
-          />
-        )}
-      </StyledAsidePanel>
+      </>
     );
   }
 }
@@ -725,11 +830,13 @@ const SharingPanel = inject(
       dialogsStore,
       treeFoldersStore,
       selectedFolderStore,
+      settingsStore,
     },
     { uploadPanelVisible }
   ) => {
     const { replaceFileStream, setEncryptionAccess } = auth;
     const { personal, customNames, isDesktopClient } = auth.settingsStore;
+    const { setFilesSettings } = settingsStore;
 
     const { id, access } = selectedFolderStore;
 
@@ -743,11 +850,9 @@ const SharingPanel = inject(
       setFolder,
       getShareUsers,
       setShareFiles,
-      setIsLoading,
       setSelection,
       getFileInfo,
       getFolderInfo,
-      isLoading,
       setBufferSelection,
     } = filesStore;
     const { isPrivacyFolder } = treeFoldersStore;
@@ -763,7 +868,15 @@ const SharingPanel = inject(
       updateUploadedItem,
     } = uploadDataStore;
 
+    const isShared =
+      selection.length > 0 && selection[0].shared
+        ? selection[0].shared
+        : bufferSelection?.shared
+        ? bufferSelection.shared
+        : false;
+
     return {
+      theme: auth.settingsStore.theme,
       isPersonal: personal,
       isMyId: auth.userStore.user && auth.userStore.user.id,
       groupsCaption: customNames.groupsCaption,
@@ -774,13 +887,11 @@ const SharingPanel = inject(
         : selection.length
         ? selection
         : [bufferSelection],
-      isLoading,
       isPrivacy: isPrivacyFolder,
       isFolderActions,
       selectedUploadFile,
       canShareOwnerChange,
 
-      setIsLoading,
       setSharingPanelVisible,
       setIsFolderActions,
       setSelection,
@@ -800,19 +911,33 @@ const SharingPanel = inject(
       id,
       setBufferSelection,
       access,
+      isShared: isShared,
+      setFilesSettings,
     };
   }
 )(
   observer(
-    withTranslation(["SharingPanel", "Common", "Translations"])(
-      withLoader(SharingPanelComponent)(<Loaders.DialogAsideLoader isPanel />)
-    )
+    withTranslation([
+      "SharingPanel",
+      "Common",
+      "Translations",
+      "Home",
+      "ChangeOwnerPanel",
+      "EmbeddingPanel",
+    ])(withLoader(SharingPanelComponent)(<Loaders.DialogAsideLoader isPanel />))
   )
 );
 
 class Panel extends React.Component {
   static convertSharingUsers = (shareDataItems) => {
-    const t = i18n.getFixedT(null, ["SharingPanel", "Common"]);
+    const t = i18n.getFixedT(null, [
+      "SharingPanel",
+      "Common",
+      "Translations",
+      "Home",
+      "ChangeOwnerPanel",
+      "EmbeddingPanel",
+    ]);
     const {
       FullAccess,
       DenyAccess,

@@ -1,27 +1,21 @@
 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g id="32X32 / html">
-<path id="background" d="M4 1L19 1L28 9V31H4V1Z" fill="white"/>
-<path id="shadow" fill-rule="evenodd" clip-rule="evenodd" d="M4 31H28V9L19 1L4.08333 1.06667L4 31ZM19 0H3V32H29V9L19 0Z" fill="url(#paint0_linear_1355:8104)"/>
-<g id="Group 78">
-<path id="Rectangle 287" d="M19 10.5H25.5V16.5H6.5V4.5H18.5V10V10.5H19Z" fill="#F2F2F2" stroke="#BFBFBF"/>
-<path id="Union" fill-rule="evenodd" clip-rule="evenodd" d="M12 7V8L11 8V13H12V14H11H10H9V13H10V8L9 8V7H12Z" fill="#888888"/>
-<rect id="Rectangle 396" x="10" y="7" width="1" height="0.5" fill="#F2F2F2"/>
-<rect id="Rectangle 397" x="10" y="13.5" width="1" height="0.5" fill="#F2F2F2"/>
+<g id="32X32 / OFORM">
+<path id="background" d="M4 1H19L28 9L28.1676 31H4V1Z" fill="white"/>
+<path id="shadow" fill-rule="evenodd" clip-rule="evenodd" d="M4 31H28.148L28 9L19 1L4.08333 1.06667L4 31ZM19 0H3V32H29V9L19 0Z" fill="#BFBFBF"/>
+<path id="Rectangle 505" d="M6 4H18V10H26V18H6V4Z" fill="#F2F2F2"/>
+<path id="Rectangle 505 (Stroke)" fill-rule="evenodd" clip-rule="evenodd" d="M18 10V4H6V18H26V10H18ZM25 10H18V5H7V17H25V10Z" fill="#BFBFBF"/>
+<path id="Subtract" fill-rule="evenodd" clip-rule="evenodd" d="M12 7V8L11 8V7H12ZM11 14V8H10V7H9V8H10V14H9V15H10L10 14H11ZM11 15V14H12V15H11Z" fill="#888888"/>
+<path id="ear shadow" opacity="0.3" d="M17 11V1H18V10H28V11H17Z" fill="black"/>
+<path id="Union" d="M6 21C6 20.4477 6.44772 20 7 20H25C25.5523 20 26 20.4477 26 21V28C26 28.5523 25.5523 29 25 29H7C6.44772 29 6 28.5523 6 28V21Z" fill="#188079"/>
+<path id="Exclude" fill-rule="evenodd" clip-rule="evenodd" d="M7 26V23H8V22H9V23H10V26H9V27H8V26H7ZM9 23H8V26H9V23Z" fill="white"/>
+<path id="Exclude_2" fill-rule="evenodd" clip-rule="evenodd" d="M14 26V23H15V22H16V23H17V26H16V27H15V26H14ZM16 23H15V26H16V23Z" fill="white"/>
+<path id="Union_2" d="M11 27L11 22H12H13V23L12 23V24L13 24V25H12L12 27H11Z" fill="white"/>
+<g id="Group 40491">
+<rect id="Rectangle 596" x="23" y="24" width="1" height="1" fill="white"/>
+<rect id="Rectangle 597" x="23" y="23" width="1" height="1" fill="white" fill-opacity="0.6"/>
+<rect id="Rectangle 594" x="22" y="22" width="1" height="5" fill="white"/>
+<rect id="Rectangle 595" x="24" y="22" width="1" height="5" fill="white"/>
 </g>
-<path id="ear shadow" opacity="0.3" d="M18 11V1H18.9091V10H28V11H18Z" fill="black"/>
-<g id="Group 135">
-<rect id="Rectangle 380" x="6" y="20" width="20" height="9" rx="1" fill="#2CA498"/>
-<path id="Union_2" d="M22 22V27H23V24L23.5 25L24 24V27H25V22H24L23.5 23L23 22H22Z" fill="white"/>
-<path id="Union_3" fill-rule="evenodd" clip-rule="evenodd" d="M7 22.5V26.5H7.5V27H9.5V26.5H10V22.5H9.5V22H7.5V22.5L7 22.5ZM9 26V23L8 23V26H9Z" fill="white"/>
-<path id="Union_4" d="M11 27L11 22H12H13V23L12 23V24L13 24V25H12L12 27H11Z" fill="white"/>
-<path id="Exclude" fill-rule="evenodd" clip-rule="evenodd" d="M14 26.5V22.5L14.5 22.5V22H16.5V22.5H17V26.5H16.5V27H14.5V26.5H14ZM16 23H15V26H16V23Z" fill="white"/>
-<path id="Union_5" fill-rule="evenodd" clip-rule="evenodd" d="M18 22L18 27H19L19 25.5L20.5 27H21V26L20 25H21V22.5L20.5 22H18ZM20 23H19V24H20V23Z" fill="white"/>
+<path id="Union_3" fill-rule="evenodd" clip-rule="evenodd" d="M19 22H18V27H19V25H20V26V27H21V26V25H20V24H21V23H20V22H19ZM20 23H19V24H20V23Z" fill="white"/>
 </g>
-</g>
-<defs>
-<linearGradient id="paint0_linear_1355:8104" x1="16" y1="0" x2="16" y2="32" gradientUnits="userSpaceOnUse">
-<stop stop-color="#DADADA"/>
-<stop offset="1" stop-color="#828282"/>
-</linearGradient>
-</defs>
 </svg>

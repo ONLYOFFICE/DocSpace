@@ -48,25 +48,25 @@ namespace ASC.Notify.Messages
 
         public NoticeMessage(IDirectRecipient recipient, INotifyAction action, string objectID)
         {
-            Recipient = recipient ?? throw new ArgumentNullException("recipient");
+            Recipient = recipient ?? throw new ArgumentNullException(nameof(recipient));
             Action = action;
             ObjectID = objectID;
         }
 
         public NoticeMessage(IDirectRecipient recipient, INotifyAction action, string objectID, IPattern pattern)
         {
-            Recipient = recipient ?? throw new ArgumentNullException("recipient");
+            Recipient = recipient ?? throw new ArgumentNullException(nameof(recipient));
             Action = action;
-            Pattern = pattern ?? throw new ArgumentNullException("pattern");
+            Pattern = pattern ?? throw new ArgumentNullException(nameof(pattern));
             ObjectID = objectID;
             ContentType = pattern.ContentType;
         }
 
         public NoticeMessage(IDirectRecipient recipient, string subject, string body, string contentType)
         {
-            Recipient = recipient ?? throw new ArgumentNullException("recipient");
+            Recipient = recipient ?? throw new ArgumentNullException(nameof(recipient));
             Subject = subject;
-            Body = body ?? throw new ArgumentNullException("body");
+            Body = body ?? throw new ArgumentNullException(nameof(body));
             ContentType = contentType;
         }
 
@@ -89,7 +89,7 @@ namespace ASC.Notify.Messages
 
         public void AddArgument(params ITagValue[] tagValues)
         {
-            if (tagValues == null) throw new ArgumentNullException("tagValues");
+            if (tagValues == null) throw new ArgumentNullException(nameof(tagValues));
             Array.ForEach(tagValues,
                 tagValue =>
                 {

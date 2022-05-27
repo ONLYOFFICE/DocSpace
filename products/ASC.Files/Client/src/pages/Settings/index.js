@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from "react";
+
 import { withRouter } from "react-router";
-import PageLayout from "@appserver/common/components/PageLayout";
+import Section from "@appserver/common/components/Section";
 import Loaders from "@appserver/common/components/Loaders";
 import { showLoader, hideLoader } from "@appserver/common/utils";
-import {
-  ArticleHeaderContent,
-  ArticleBodyContent,
-  ArticleMainButtonContent,
-} from "../../components/Article";
+
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { withTranslation } from "react-i18next";
 import { setDocumentTitle } from "../../helpers/utils";
@@ -18,8 +15,11 @@ const PureSettings = ({
   t,
   isLoading,
   isLoadedSettingsTree,
+  history,
   setFirstLoad,
+  capabilities,
   tReady,
+  isPersonal,
 }) => {
   const [title, setTitle] = useState("");
   const { setting } = match.params;
@@ -29,21 +29,10 @@ const PureSettings = ({
   }, [setFirstLoad]);
 
   useEffect(() => {
-    switch (setting) {
-      case "common":
-        setTitle(t("CommonSettings"));
-        break;
-      case "admin":
-        setTitle(t("Common:AdminSettings"));
-        break;
-      case "thirdParty":
-        setTitle(t("ThirdPartySettings"));
-        break;
-      default:
-        setTitle(t("CommonSettings"));
-        break;
-    }
-  }, [setting, t, tReady]);
+    isPersonal
+      ? setTitle(t("ThirdPartySettings"))
+      : setTitle(t("Common:Settings"));
+  }, [t, tReady]);
 
   useEffect(() => {
     if (isLoading) {
@@ -60,57 +49,59 @@ const PureSettings = ({
   }, [title, t]);
 
   return (
-    <>
-      <PageLayout>
-        <PageLayout.ArticleHeader>
-          <ArticleHeaderContent />
-        </PageLayout.ArticleHeader>
+    <Section isInfoPanelAvailable={false}>
+      <Section.SectionHeader>
+        {(!isLoadedSettingsTree && isLoading) || isLoading || !tReady ? (
+          <Loaders.SectionHeader />
+        ) : (
+          <SectionHeaderContent title={title} />
+        )}
+      </Section.SectionHeader>
 
-        <PageLayout.ArticleMainButton>
-          <ArticleMainButtonContent isDisabled={true} />
-        </PageLayout.ArticleMainButton>
-
-        <PageLayout.ArticleBody>
-          <ArticleBodyContent />
-        </PageLayout.ArticleBody>
-
-        <PageLayout.SectionHeader>
-          {(!isLoadedSettingsTree && isLoading) || isLoading || !tReady ? (
-            <Loaders.SectionHeader />
+      <Section.SectionBody>
+        {(!isLoadedSettingsTree && isLoading) ||
+        isLoading ||
+        !tReady ||
+        !capabilities ? (
+          setting === "thirdParty" ? (
+            <Loaders.Rows />
           ) : (
-            <SectionHeaderContent title={title} />
-          )}
-        </PageLayout.SectionHeader>
-
-        <PageLayout.SectionBody>
-          {(!isLoadedSettingsTree && isLoading) || isLoading || !tReady ? (
-            setting === "thirdParty" ? (
-              <Loaders.Rows />
-            ) : (
-              <Loaders.SettingsFiles />
-            )
-          ) : (
-            <SectionBodyContent setting={setting} t={t} />
-          )}
-        </PageLayout.SectionBody>
-      </PageLayout>
-    </>
+            <Loaders.SettingsFiles />
+          )
+        ) : (
+          <SectionBodyContent
+            title={title}
+            setting={setting}
+            history={history}
+            t={t}
+          />
+        )}
+      </Section.SectionBody>
+    </Section>
   );
 };
 
 const Settings = withTranslation(["Settings", "Common"])(PureSettings);
 
-export default inject(({ filesStore, settingsStore, treeFoldersStore }) => {
-  const { setFirstLoad, isLoading } = filesStore;
-  const { setSelectedNode } = treeFoldersStore;
-  const { getFilesSettings, isLoadedSettingsTree } = settingsStore;
+export default inject(
+  ({ auth, filesStore, settingsStore, treeFoldersStore }) => {
+    const { setFirstLoad, isLoading } = filesStore;
+    const { setSelectedNode } = treeFoldersStore;
+    const {
+      getFilesSettings,
+      isLoadedSettingsTree,
+      thirdPartyStore,
+    } = settingsStore;
+    const { capabilities } = thirdPartyStore;
 
-  return {
-    isLoading,
-    isLoadedSettingsTree,
-
-    setFirstLoad,
-    setSelectedNode,
-    getFilesSettings,
-  };
-})(withRouter(observer(Settings)));
+    return {
+      isLoading,
+      isLoadedSettingsTree,
+      setFirstLoad,
+      setSelectedNode,
+      getFilesSettings,
+      capabilities,
+      isPersonal: auth.settingsStore.personal,
+    };
+  }
+)(withRouter(observer(Settings)));

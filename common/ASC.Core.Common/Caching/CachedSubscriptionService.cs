@@ -35,7 +35,7 @@ using ASC.Core.Data;
 namespace ASC.Core.Caching
 {
     [Singletone]
-    class SubscriptionServiceCache
+    public class SubscriptionServiceCache
     {
         internal ICache Cache { get; }
         internal ICacheNotify<SubscriptionRecord> NotifyRecord { get; }
@@ -103,7 +103,7 @@ namespace ASC.Core.Caching
     }
 
     [Scope]
-    class CachedSubscriptionService : ISubscriptionService
+    public class CachedSubscriptionService : ISubscriptionService
     {
         private readonly ISubscriptionService service;
         private readonly ICache cache;
@@ -114,7 +114,7 @@ namespace ASC.Core.Caching
 
         public CachedSubscriptionService(DbSubscriptionService service, SubscriptionServiceCache subscriptionServiceCache)
         {
-            this.service = service ?? throw new ArgumentNullException("service");
+            this.service = service ?? throw new ArgumentNullException(nameof(service));
             cache = subscriptionServiceCache.Cache;
             notifyRecord = subscriptionServiceCache.NotifyRecord;
             notifyMethod = subscriptionServiceCache.NotifyMethod;
@@ -201,7 +201,8 @@ namespace ASC.Core.Caching
             {
                 var records = service.GetSubscriptions(tenant, sourceId, actionId);
                 var methods = service.GetSubscriptionMethods(tenant, sourceId, actionId, null);
-                cache.Insert(key, store = new SubsciptionsStore(records, methods), DateTime.UtcNow.Add(CacheExpiration));
+                store = new SubsciptionsStore(records, methods);
+                cache.Insert(key, store, DateTime.UtcNow.Add(CacheExpiration));
             }
             return store;
         }
@@ -243,7 +244,7 @@ namespace ASC.Core.Caching
         public SubscriptionRecord GetSubscription(string recipientId, string objectId)
         {
             return recordsByRec.ContainsKey(recipientId) ?
-                recordsByRec[recipientId].Where(s => s.ObjectId == objectId).FirstOrDefault() :
+                recordsByRec[recipientId].Where(s => s.ObjectId == (objectId ?? "")).FirstOrDefault() :
                 null;
         }
 
@@ -269,7 +270,7 @@ namespace ASC.Core.Caching
 
         public void RemoveSubscriptions(string objectId)
         {
-            records.RemoveAll(s => s.ObjectId == objectId);
+            records.RemoveAll(s => s.ObjectId == (objectId ?? ""));
             BuildSubscriptionsIndex(records);
         }
 

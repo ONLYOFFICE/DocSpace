@@ -163,6 +163,8 @@ class ContextMenuButton extends React.Component {
       isFill, // eslint-disable-line react/prop-types
       asideHeader, // eslint-disable-line react/prop-types
       isNew,
+      title,
+      zIndex,
     } = this.props;
 
     const { isOpen, displayType, offsetX, offsetY } = this.state;
@@ -190,15 +192,18 @@ class ContextMenuButton extends React.Component {
           onMouseLeave={onMouseLeave}
           onMouseOver={onMouseOver}
           onMouseOut={onMouseOut}
+          title={title}
         />
         {displayType === "dropdown" ? (
           <DropDown
             directionX={directionX}
             directionY={directionY}
             open={isOpen}
+            forwardedRef={this.ref}
             clickOutsideAction={this.clickOutsideAction}
             columnCount={columnCount}
             withBackdrop={!!isMobile}
+            zIndex={zIndex}
           >
             {this.state.data.map(
               (item, index) =>
@@ -220,7 +225,12 @@ class ContextMenuButton extends React.Component {
               zIndex={310}
               isAside={true}
             />
-            <Aside visible={isOpen} scale={false} zIndex={310}>
+            <Aside
+              visible={isOpen}
+              scale={false}
+              zIndex={310}
+              onClose={this.onClose}
+            >
               <StyledContent>
                 <StyledHeaderContent>
                   <Heading className="header" size="medium" truncate={true}>

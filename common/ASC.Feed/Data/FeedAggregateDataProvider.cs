@@ -94,7 +94,7 @@ namespace ASC.Feed.Data
                 SaveFeedsPortion(feedsPortion, aggregatedDate);
                 feedsPortion.Clear();
             }
-            if (feedsPortion.Any())
+            if (feedsPortion.Count > 0)
             {
                 SaveFeedsPortion(feedsPortion, aggregatedDate);
             }
@@ -179,9 +179,9 @@ namespace ASC.Feed.Data
                 feedsIteration = GetFeedsInternal(filter);
                 foreach (var feed in feedsIteration)
                 {
-                    if (feeds.ContainsKey(feed.GroupId))
+                    if (feeds.TryGetValue(feed.GroupId, out var value))
                     {
-                        feeds[feed.GroupId].Add(feed);
+                        value.Add(feed);
                     }
                     else
                     {

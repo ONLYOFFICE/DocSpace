@@ -62,7 +62,7 @@ namespace ASC.Web.Core.WhiteLabel
             TenantManager tenantManager,
             AuthContext authContext,
             IConfiguration configuration,
-            ICacheNotify<TenantLogoCacheItem> cacheNotify, 
+            ICacheNotify<TenantLogoCacheItem> cacheNotify,
             ICache cache)
         {
             TenantWhiteLabelSettingsHelper = tenantWhiteLabelSettingsHelper;
@@ -132,6 +132,18 @@ namespace ASC.Web.Core.WhiteLabel
             }
             return TenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.DocsEditor, general);
         }
+
+        public string GetLogoDocsEditorEmbed(bool general)
+        {
+            var tenantWhiteLabelSettings = SettingsManager.Load<TenantWhiteLabelSettings>();
+
+            if (WhiteLabelEnabled)
+            {
+                return TenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.DocsEditorEmbed, general);
+            }
+            return TenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.DocsEditorEmbed, general);
+        }
+
 
         public string GetLogoText()
         {

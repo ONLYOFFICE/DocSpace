@@ -5,14 +5,75 @@ import DropDown from "@appserver/components/drop-down";
 
 import styled, { css } from "styled-components";
 import DropDownItem from "@appserver/components/drop-down-item";
+import { isMobileOnly } from "react-device-detect";
+import { Base } from "@appserver/components/themes";
+import { mobile, tablet } from "@appserver/components/utils/device";
+import CrossIcon from "@appserver/components/public/static/images/cross.react.svg";
+
+const StyledDropDown = styled(DropDown)`
+  z-index: 500 !important;
+
+  top: 54px !important;
+  right: 20px !important;
+
+  @media ${tablet} {
+    right: 16px !important;
+  }
+
+  @media (max-width: 428px) {
+    position: fixed;
+
+    top: unset !important;
+    right: 0 !important;
+    left: 0 !important;
+    bottom: 0 !important;
+    width: 100vw;
+
+    border: none !important;
+
+    border-radius: 6px 6px 0px 0px !important;
+  }
+`;
+
+const StyledControlContainer = styled.div`
+  background: ${(props) => props.theme.catalog.control.background};
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  top: -34px;
+  right: 10px;
+  border-radius: 100px;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 290;
+
+  @media (max-width: 428px) {
+    display: flex;
+  }
+`;
+
+StyledControlContainer.defaultProps = { theme: Base };
+
+const StyledCrossIcon = styled(CrossIcon)`
+  width: 12px;
+  height: 12px;
+  path {
+    fill: ${(props) => props.theme.catalog.control.fill};
+  }
+`;
+
+StyledCrossIcon.defaultProps = { theme: Base };
 
 const commonStyle = css`
   font-family: "Open Sans", sans-serif, Arial;
   font-style: normal;
-  color: #ffffff;
-  margin-left: 60px;
-  margin-top: -3px;
+  color: ${(props) => props.theme.menuContainer.color};
   max-width: 300px;
+  @media ${mobile} {
+    max-width: calc(100vw - 84px);
+  }
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -28,26 +89,46 @@ export const StyledProfileMenu = styled(DropDownItem)`
 `;
 
 export const MenuContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
   position: relative;
   height: 76px;
-  background: linear-gradient(200.71deg, #2274aa 0%, #0f4071 100%);
+  background: ${(props) => props.theme.menuContainer.background};
   border-radius: 6px 6px 0px 0px;
   padding: 16px;
   cursor: default;
   box-sizing: border-box;
+
+  @media ${mobile} {
+    max-width: 100vw;
+  }
+
+  .avatar {
+    height: 40px;
+    width: 40px;
+    min-height: 40px;
+    min-width: 40px;
+  }
 `;
 
-export const AvatarContainer = styled.div`
-  display: inline-block;
-  float: left;
-`;
+MenuContainer.defaultProps = { theme: Base };
 
 export const MainLabelContainer = styled.div`
   font-size: 16px;
   line-height: 28px;
 
+  width: auto;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
   ${commonStyle}
 `;
+
+MainLabelContainer.defaultProps = { theme: Base };
 
 export const LabelContainer = styled.div`
   font-weight: normal;
@@ -57,15 +138,7 @@ export const LabelContainer = styled.div`
   ${commonStyle}
 `;
 
-export const TopArrow = styled.div`
-  position: absolute;
-  cursor: default;
-  top: -6px;
-  right: 16px;
-  width: 24px;
-  height: 6px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M9.27954 1.12012C10.8122 -0.295972 13.1759 -0.295971 14.7086 1.12012L18.8406 4.93793C19.5796 5.62078 20.5489 6 21.5551 6H24H0H2.43299C3.4392 6 4.40845 5.62077 5.1475 4.93793L9.27954 1.12012Z' fill='%23206FA4'/%3E%3C/svg%3E");
-`;
+LabelContainer.defaultProps = { theme: Base };
 
 class ProfileMenu extends React.Component {
   constructor(props) {
@@ -82,32 +155,39 @@ class ProfileMenu extends React.Component {
       email,
       clickOutsideAction,
       open,
+      forwardedRef,
     } = this.props;
 
     return (
-      <DropDown
+      <StyledDropDown
         className={className}
         directionX="right"
         open={open}
         clickOutsideAction={clickOutsideAction}
+        forwardedRef={forwardedRef}
+        isDefaultMode={false}
+        withBlur={window.innerWidth <= 428}
       >
         <StyledProfileMenu>
           <MenuContainer>
-            <AvatarContainer>
-              <Avatar
-                size="medium"
-                role={avatarRole}
-                source={avatarSource}
-                userName={displayName}
-              />
-            </AvatarContainer>
-            <MainLabelContainer>{displayName}</MainLabelContainer>
-            <LabelContainer>{email}</LabelContainer>
+            <Avatar
+              className="avatar"
+              size="medium"
+              role={avatarRole}
+              source={avatarSource}
+              userName={displayName}
+            />
+            <div>
+              <MainLabelContainer>{displayName}</MainLabelContainer>
+              <LabelContainer>{email}</LabelContainer>
+              <StyledControlContainer onClick={clickOutsideAction}>
+                <StyledCrossIcon />
+              </StyledControlContainer>
+            </div>
           </MenuContainer>
-          <TopArrow />
         </StyledProfileMenu>
         {children}
-      </DropDown>
+      </StyledDropDown>
     );
   }
 }

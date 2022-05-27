@@ -1,8 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import Text from "../text";
-import { StyledBadge, StyledInner } from "./styled-badge";
+import { StyledBadge, StyledInner, StyledText } from "./styled-badge";
 
 const Badge = (props) => {
   //console.log("Badge render");
@@ -22,19 +21,28 @@ const Badge = (props) => {
     borderRadius,
     padding,
     maxWidth,
+    lineHeight,
+    isHovered,
+    label,
   } = props;
 
   return (
-    <StyledBadge {...props} onClick={onClick}>
+    <StyledBadge isHovered={isHovered} onClick={onClick} {...props}>
       <StyledInner
         backgroundColor={backgroundColor}
         borderRadius={borderRadius}
         padding={padding}
         maxWidth={maxWidth}
+        lineHeight={lineHeight}
       >
-        <Text fontWeight={fontWeight} color={color} fontSize={fontSize}>
-          {props.label}
-        </Text>
+        <StyledText
+          textAlign="center"
+          fontWeight={fontWeight}
+          color={color}
+          fontSize={fontSize}
+        >
+          {label}
+        </StyledText>
       </StyledInner>
     </StyledBadge>
   );
@@ -57,6 +65,8 @@ Badge.propTypes = {
   padding: PropTypes.string,
   /** CSS max-width */
   maxWidth: PropTypes.string,
+  /** CSS line-height */
+  lineHeight: PropTypes.string,
   /** onClick event */
   onClick: PropTypes.func,
   /** Accepts class */
@@ -65,17 +75,22 @@ Badge.propTypes = {
   id: PropTypes.string,
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  /** Set hovered state and effects of link */
+  isHovered: PropTypes.bool,
+  /** Disabled hover styles */
+  noHover: PropTypes.bool,
 };
 
 Badge.defaultProps = {
   label: 0,
-  backgroundColor: "#ED7309",
-  color: "#FFFFFF",
   fontSize: "11px",
   fontWeight: 800,
   borderRadius: "11px",
   padding: "0 5px",
   maxWidth: "50px",
+  lineHeight: "1.78",
+  isHovered: false,
+  noHover: false,
 };
 
 export default Badge;

@@ -26,7 +26,7 @@
 
 namespace ASC.FederatedLogin.Profile
 {
-    public class WellKnownFields
+    public static class WellKnownFields
     {
         //Constants
         public const string Id = "Id";

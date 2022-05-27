@@ -87,7 +87,7 @@ namespace ASC.CRM.Classes
         /// <returns></returns>
         private LookupTable GetLookupTable(CultureInfo culture)
         {
-            LookupTable result = null;
+            LookupTable result;
             if (culture == null)
                 culture = CultureInfo.CurrentCulture;
 
@@ -116,7 +116,7 @@ namespace ASC.CRM.Classes
         private string GetValueText(CultureInfo culture, object value)
         {
             Type type = value.GetType();
-            string resourceName = string.Format("{0}_{1}", type.Name, value.ToString());
+            string resourceName = $"{type.Name}_{value}";
             string result = _resourceManager.GetString(resourceName, culture);
             if (result == null)
                 result = resourceName;
@@ -174,7 +174,7 @@ namespace ASC.CRM.Classes
                         }
                         else
                         {
-                            result = string.Format("{0}, {1}", result, valueText);
+                            result = $"{result}, {valueText}";
                         }
                     }
                 }
@@ -191,7 +191,7 @@ namespace ASC.CRM.Classes
         private object GetValue(CultureInfo culture, string text)
         {
             LookupTable lookupTable = GetLookupTable(culture);
-            object result = null;
+            object result;
             lookupTable.TryGetValue(text, out result);
             return result;
         }
@@ -203,7 +203,7 @@ namespace ASC.CRM.Classes
             ulong result = 0;
             foreach (string textValue in textValues)
             {
-                object value = null;
+                object value;
                 string trimmedTextValue = textValue.Trim();
                 if (!lookupTable.TryGetValue(trimmedTextValue, out value))
                 {

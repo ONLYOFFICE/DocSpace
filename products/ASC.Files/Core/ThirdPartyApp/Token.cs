@@ -53,18 +53,18 @@ namespace ASC.Web.Files.ThirdPartyApp
             App = app;
         }
 
-        public string GetRefreshedToken(TokenHelper tokenHelper)
+        public string GetRefreshedToken(TokenHelper tokenHelper, OAuth20TokenHelper oAuth20TokenHelper, ThirdPartySelector thirdPartySelector)
         {
             if (IsExpired)
             {
-                var app = ThirdPartySelector.GetApp(App);
+                var app = thirdPartySelector.GetApp(App);
                 try
                 {
                     tokenHelper.Logger.Debug("Refresh token for app: " + App);
 
                     var refreshUrl = app.GetRefreshUrl();
 
-                    var refreshed = OAuth20TokenHelper.RefreshToken(refreshUrl, this);
+                    var refreshed = oAuth20TokenHelper.RefreshToken(refreshUrl, this);
 
                     if (refreshed != null)
                     {
@@ -131,6 +131,7 @@ namespace ASC.Web.Files.ThirdPartyApp
         public Token GetToken(string app, Guid userId)
         {
             var oAuth20Token = FilesDbContext.ThirdpartyApp
+                .AsQueryable()
                 .Where(r => r.TenantId == TenantManager.GetCurrentTenant().TenantId)
                 .Where(r => r.UserId == userId)
                 .Where(r => r.App == app)
@@ -145,6 +146,7 @@ namespace ASC.Web.Files.ThirdPartyApp
         public void DeleteToken(string app, Guid? userId = null)
         {
             var apps = FilesDbContext.ThirdpartyApp
+                .AsQueryable()
                 .Where(r => r.TenantId == TenantManager.GetCurrentTenant().TenantId)
                 .Where(r => r.UserId == (userId ?? AuthContext.CurrentAccount.ID))
                 .Where(r => r.App == app);

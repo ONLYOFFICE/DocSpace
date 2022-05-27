@@ -23,7 +23,7 @@ class FirebaseHelper {
     this.remoteConfig = firebase.remoteConfig();
 
     this.remoteConfig.settings = {
-      fetchTimeMillis: 60000,
+      fetchTimeoutMillis: 3600000,
       minimumFetchIntervalMillis: 3600000,
     };
 
@@ -70,6 +70,27 @@ class FirebaseHelper {
     return await Promise.resolve(JSON.parse(maintenance.asString()));
   }
 
+  async checkBar() {
+    if (!this.isEnabled) return Promise.reject("Not enabled");
+
+    const res = await this.remoteConfig.fetchAndActivate();
+    const barValue = this.remoteConfig.getValue("bar");
+    const barString = barValue && barValue.asString();
+
+    if (!barValue || !barString) {
+      return Promise.resolve([]);
+    }
+    const list = JSON.parse(barString);
+
+    if (!list || !(list instanceof Array)) return Promise.resolve([]);
+
+    const bar = list.filter((element) => {
+      return typeof element === "string" && element.length > 0;
+    });
+
+    return await Promise.resolve(bar);
+  }
+
   async checkCampaigns() {
     if (!this.isEnabled) return Promise.reject("Not enabled");
 
@@ -94,19 +115,13 @@ class FirebaseHelper {
   }
 
   async getCampaignsImages(banner) {
-    const storageRef = this.firebaseStorage.ref();
-    const tangRef = storageRef.child(
-      `campaigns/images/campaigns.${banner}.png`
-    );
-    return await tangRef.getDownloadURL();
+    const domain = this.config["authDomain"];
+    return `https://${domain}/images/campaigns.${banner}.png`;
   }
 
   async getCampaignsTranslations(banner, lng) {
-    const storageRef = this.firebaseStorage.ref();
-    const tangRef = storageRef.child(
-      `campaigns/locales/${lng}/CampaignPersonal${banner}.json`
-    );
-    return await tangRef.getDownloadURL();
+    const domain = this.config["authDomain"];
+    return `https://${domain}/locales/${lng}/CampaignPersonal${banner}.json`;
   }
 }
 

@@ -295,12 +295,12 @@ namespace ASC.Data.Encryption
         {
             var dir = string.IsNullOrEmpty(TempDir) ? Path.GetDirectoryName(filePath) : TempDir;
             var name = Path.GetFileNameWithoutExtension(filePath);
-            var result = CrossPlatform.PathCombine(dir, string.Format("{0}_{1}{2}", Storage, name, ext));
+            var result = CrossPlatform.PathCombine(dir, $"{Storage}_{name}{ext}");
             var index = 1;
 
             while (File.Exists(result))
             {
-                result = CrossPlatform.PathCombine(dir, string.Format("{0}_{1}({2}){3}", Storage, name, index++, ext));
+                result = CrossPlatform.PathCombine(dir, $"{Storage}_{name}({index++}){ext}");
             }
 
             return result;

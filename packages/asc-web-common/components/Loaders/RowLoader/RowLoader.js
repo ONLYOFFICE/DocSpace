@@ -67,7 +67,7 @@ const RowLoader = ({ id, className, style, isRectangle, ...rest }) => {
           />
         )}
       </StyledBox1>
-      <StyledBox2>
+      <StyledBox2 className="row-content">
         <RectangleLoader
           className="first-row-content__mobile"
           title={title}

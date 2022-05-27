@@ -65,6 +65,7 @@ namespace ASC.Web.Studio.Core.Notify
         public const string BlogLink = "TagBlogLink";
         public const string DueDate = "DueDate";
         public const string DelayDueDate = "DelayDueDate";
+        public const string LinkToRecovery = "LinkToRecovery";
 
         public const string FromUserName = "FromUserName";
         public const string FromUserLink = "FromUserLink";
@@ -82,7 +83,7 @@ namespace ASC.Web.Studio.Core.Notify
         public const string SmtpPort = "SmtpPort";
     }
 
-    public sealed class CommonTags
+    public static class CommonTags
     {
         public const string VirtualRootPath = "__VirtualRootPath";
 
@@ -112,9 +113,9 @@ namespace ASC.Web.Studio.Core.Notify
 
         public const string Culture = "Culture";
 
-        public static string Footer = "Footer";
+        public static readonly string Footer = "Footer";
 
-        public static string MasterTemplate = "MasterTemplate";
+        public static readonly string MasterTemplate = "MasterTemplate";
 
         public const string HelpLink = "__HelpLink";
 

@@ -15,9 +15,9 @@
 
     <link rel="manifest" href="/manifest.json" />
     <!-- Tell the browser it's a PWA -->
-    <meta name="mobile-web-app-capable" content="yes" />
+    <!-- <meta name="mobile-web-app-capable" content="yes" /> -->
     <!-- Tell iOS it's a PWA -->
-    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <!-- <meta name="apple-mobile-web-app-capable" content="yes" /> -->
     <link rel="apple-touch-icon" href="/appIcon.png" />
 
     <!--
@@ -351,6 +351,10 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
     <script>
+      const tempElm = document.getElementById("loader");
+      tempElm.style.backgroundColor =
+        localStorage.theme === "Dark" ? "#333333" : "#f4f4f4";
+
       console.log("It's Editor INIT");
     </script>
   </body>

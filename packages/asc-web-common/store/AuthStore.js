@@ -9,7 +9,7 @@ import TfaStore from "./TfaStore";
 import { logout as logoutDesktop, desktopConstants } from "../desktop";
 import { combineUrl, isAdmin } from "../utils";
 import isEmpty from "lodash/isEmpty";
-import { AppServerConfig, LANGUAGE } from "../constants";
+import { AppServerConfig, LANGUAGE, TenantStatus } from "../constants";
 const { proxyURL } = AppServerConfig;
 
 class AuthStore {
@@ -19,7 +19,6 @@ class AuthStore {
   tfaStore = null;
 
   isLoading = false;
-  isAuthenticated = false;
   version = null;
   skipModules = false;
   providers = [];
@@ -40,21 +39,23 @@ class AuthStore {
 
     this.skipModules = skipModules;
 
-    await this.userStore.init();
-
-    if (this.userStore.user) this.setIsAuthenticated(true);
+    try {
+      await this.userStore.init();
+    } catch (e) {
+      console.error(e);
+    }
 
     const requests = [];
     requests.push(this.settingsStore.init());
 
     if (this.isAuthenticated && !skipModules) {
-      requests.push(this.moduleStore.init());
+      this.userStore.user && requests.push(this.moduleStore.init());
     }
 
     return Promise.all(requests);
   };
   setLanguage() {
-    if (this.userStore.user.cultureName) {
+    if (this.userStore.user?.cultureName) {
       localStorage.getItem(LANGUAGE) !== this.userStore.user.cultureName &&
         localStorage.setItem(LANGUAGE, this.userStore.user.cultureName);
     } else {
@@ -64,9 +65,12 @@ class AuthStore {
   get isLoaded() {
     let success = false;
     if (this.isAuthenticated) {
-      success = this.userStore.isLoaded && this.settingsStore.isLoaded;
+      success =
+        (this.userStore.isLoaded && this.settingsStore.isLoaded) ||
+        this.settingsStore.tenantStatus === TenantStatus.PortalRestore;
 
-      if (!this.skipModules) success = success && this.moduleStore.isLoaded;
+      if (!this.skipModules && this.userStore.user)
+        success = success && this.moduleStore.isLoaded;
 
       success && this.setLanguage();
     } else {
@@ -80,7 +84,7 @@ class AuthStore {
     return (
       (this.userStore.user && this.userStore.user.cultureName) ||
       this.settingsStore.culture ||
-      "en-US"
+      "en"
     );
   }
 
@@ -151,9 +155,9 @@ class AuthStore {
     return [settingsModuleWrapper];
   };
 
-  login = async (user, hash) => {
+  login = async (user, hash, session = true) => {
     try {
-      const response = await api.user.login(user, hash);
+      const response = await api.user.login(user, hash, session);
 
       if (!response || (!response.token && !response.tfa))
         throw response.error.message;
@@ -179,6 +183,8 @@ class AuthStore {
     await this.tfaStore.loginWithCode(userName, passwordHash, code);
     setWithCredentialsStatus(true);
 
+    this.reset();
+
     this.init();
 
     return Promise.resolve(this.settingsStore.defaultPage);
@@ -192,23 +198,27 @@ class AuthStore {
 
       setWithCredentialsStatus(true);
 
+      this.reset();
+
       this.init();
 
-      return Promise.resolve(true);
+      return Promise.resolve(this.settingsStore.defaultPage);
     } catch (e) {
       return Promise.reject(e);
     }
   };
 
-  reset = () => {
+  reset = (skipUser = false) => {
     this.isInit = false;
     this.skipModules = false;
-    this.userStore = new UserStore();
+    if (!skipUser) {
+      this.userStore = new UserStore();
+    }
     this.moduleStore = new ModuleStore();
     this.settingsStore = new SettingsStore();
   };
 
-  logout = async (withoutRedirect) => {
+  logout = async (redirectToLogin = true, redirectPath = null) => {
     await api.user.logout();
 
     //console.log("Logout response ", response);
@@ -219,22 +229,30 @@ class AuthStore {
 
     isDesktop && logoutDesktop();
 
-    this.reset();
-
-    this.init();
-
-    if (!withoutRedirect) {
-      if (personal) {
-        window.location.replace("/");
-      } else {
-        history.push(combineUrl(proxyURL, "/login"));
+    if (redirectToLogin) {
+      if (redirectPath) {
+        return window.location.replace(redirectPath);
       }
+      if (personal) {
+        return window.location.replace("/");
+      } else {
+        this.reset(true);
+        this.userStore.setUser(null);
+        this.init();
+        return history.push(combineUrl(proxyURL, "/login"));
+      }
+    } else {
+      this.reset();
+      this.init();
     }
   };
 
-  setIsAuthenticated = (isAuthenticated) => {
-    this.isAuthenticated = isAuthenticated;
-  };
+  get isAuthenticated() {
+    return (
+      this.userStore.isAuthenticated ||
+      this.settingsStore.tenantStatus === TenantStatus.PortalRestore
+    );
+  }
 
   getEncryptionAccess = (fileId) => {
     return api.files
@@ -304,6 +322,12 @@ class AuthStore {
 
   setProviders = (providers) => {
     this.providers = providers;
+  };
+
+  getOforms = () => {
+    const culture =
+      this.userStore.user.cultureName || this.settingsStore.culture;
+    return api.settings.getOforms(`${this.settingsStore.urlOforms}${culture}`);
   };
 }
 

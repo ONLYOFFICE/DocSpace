@@ -17,10 +17,14 @@ class SelectedFolderStore {
   updatedBy = null;
   rootFolderType = null;
   pathParts = null;
+  navigationPath = null;
   providerItem = null;
 
-  constructor() {
+  settingsStore = null;
+
+  constructor(settingsStore) {
     makeAutoObservable(this);
+    this.settingsStore = settingsStore;
   }
 
   get isRootFolder() {
@@ -44,10 +48,28 @@ class SelectedFolderStore {
     this.updatedBy = null;
     this.rootFolderType = null;
     this.pathParts = null;
+    this.navigationPath = null;
     this.providerItem = null;
   };
 
+  setParentId = (parentId) => {
+    this.parentId = parentId;
+  };
+
   setSelectedFolder = (selectedFolder) => {
+    const { socketHelper } = this.settingsStore;
+
+    if (this.id !== null) {
+      socketHelper.emit({ command: "unsubscribe", data: `DIR-${this.id}` });
+    }
+
+    if (selectedFolder) {
+      socketHelper.emit({
+        command: "subscribe",
+        data: `DIR-${selectedFolder.id}`,
+      });
+    }
+
     if (!selectedFolder) {
       this.toDefault();
     } else {
@@ -62,4 +84,4 @@ class SelectedFolderStore {
   };
 }
 
-export default new SelectedFolderStore();
+export default SelectedFolderStore;

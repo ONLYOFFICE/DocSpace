@@ -1,24 +1,38 @@
 import { makeAutoObservable } from "mobx";
 import api from "../api";
-import { ARTICLE_PINNED_KEY, LANGUAGE } from "../constants";
+import { LANGUAGE, TenantStatus } from "../constants";
 import { combineUrl } from "../utils";
 import FirebaseHelper from "../utils/firebase";
-import { AppServerConfig } from "../constants";
+import { AppServerConfig, ThemeKeys } from "../constants";
 import { version } from "../package.json";
+import SocketIOHelper from "../utils/socket";
+
+import { Dark, Base } from "@appserver/components/themes";
+
 const { proxyURL } = AppServerConfig;
+
+const themes = {
+  Dark: Dark,
+  Base: Base,
+};
 
 class SettingsStore {
   isLoading = false;
   isLoaded = false;
+  isBurgerLoading = false;
 
+  checkedMaintenance = false;
+  maintenanceExist = false;
+  snackbarExist = false;
   currentProductId = "";
-  culture = "en-US";
+  culture = "en";
   cultures = [];
+  theme = Base;
   trustedDomains = [];
   trustedDomainsType = 0;
-  trustedDomains = [];
   timezone = "UTC";
   timezones = [];
+  tenantAlias = "";
   utcOffset = "00:00:00";
   utcHoursOffset = 0;
   defaultPage = "/";
@@ -37,6 +51,8 @@ class SettingsStore {
   enabledJoin = false;
   urlLicense = "https://gnu.org/licenses/gpl-3.0.html";
   urlSupport = "https://helpdesk.onlyoffice.com/";
+  urlOforms = "https://cmsoforms.onlyoffice.com/api/oforms?populate=*&locale=";
+
   logoUrl = combineUrl(proxyURL, "/static/images/nav.logo.opened.react.svg");
   customNames = {
     id: "Common",
@@ -57,14 +73,16 @@ class SettingsStore {
 
   personal = false;
 
+  roomsMode = false;
+
   isHeaderVisible = false;
   isTabletView = false;
-  isArticlePinned =
-    localStorage.getItem(ARTICLE_PINNED_KEY) === "true" || false;
-  isArticleVisible = false;
-  isBackdropVisible = false;
 
-  isArticleVisibleOnUnpin = false;
+  showText = false;
+  articleOpen = false;
+  isMobileArticle = false;
+
+  folderPath = [];
 
   hashSettings = null;
   title = "";
@@ -91,13 +109,20 @@ class SettingsStore {
     documentServer: "6.4.1",
   };
   debugInfo = false;
+  socketUrl = "";
 
   userFormValidation = /^[\p{L}\p{M}'\-]+$/gu;
   folderFormValidation = new RegExp('[*+:"<>?|\\\\/]', "gim");
 
+  tenantStatus = null;
+
   constructor() {
     makeAutoObservable(this);
   }
+
+  setTenantStatus = (tenantStatus) => {
+    this.tenantStatus = tenantStatus;
+  };
 
   get urlAuthKeys() {
     const splitted = this.culture.split("-");
@@ -116,21 +141,26 @@ class SettingsStore {
     return `https://helpcenter.onlyoffice.com/${lang}/administration/configuration.aspx#CustomizingPortal_block`;
   }
 
-  setIsArticleVisible = (visible) => {
-    this.isArticleVisible = this.isArticlePinned ? true : visible;
-  };
-
-  setIsBackdropVisible = (visible) => {
-    this.isBackdropVisible = visible;
-  };
-
-  hideArticle = () => {
-    this.setIsArticleVisible(false);
-    this.setIsBackdropVisible(false);
-  };
+  get helpUrlCreatingBackup() {
+    const splitted = this.culture.split("-");
+    const lang = splitted.length > 0 ? splitted[0] : "en";
+    return `https://helpcenter.onlyoffice.com/${lang}/administration/configuration.aspx#CreatingBackup_block`;
+  }
 
   setValue = (key, value) => {
     this[key] = value;
+  };
+
+  setCheckedMaintenance = (checkedMaintenance) => {
+    this.checkedMaintenance = checkedMaintenance;
+  };
+
+  setMaintenanceExist = (maintenanceExist) => {
+    this.maintenanceExist = maintenanceExist;
+  };
+
+  setSnackbarExist = (snackbar) => {
+    this.snackbarExist = snackbar;
   };
 
   setDefaultPage = (defaultPage) => {
@@ -173,6 +203,10 @@ class SettingsStore {
     return newSettings;
   };
 
+  getFolderPath = async (id) => {
+    this.folderPath = await api.files.getFolderPath(id);
+  };
+
   getCurrentCustomSchema = async (id) => {
     this.customNames = await api.settings.getCurrentCustomSchema(id);
   };
@@ -184,18 +218,35 @@ class SettingsStore {
   getPortalSettings = async () => {
     const origSettings = await this.getSettings();
 
-    if (origSettings.nameSchemaId) {
+    if (
+      origSettings.nameSchemaId &&
+      this.tenantStatus !== TenantStatus.PortalRestore
+    ) {
       this.getCurrentCustomSchema(origSettings.nameSchemaId);
+    }
+
+    if (origSettings.tenantAlias) {
+      this.setTenantAlias(origSettings.tenantAlias);
     }
   };
 
   init = async () => {
     this.setIsLoading(true);
+    const requests = [];
 
-    await Promise.all([this.getPortalSettings(), this.getBuildVersionInfo()]);
+    requests.push(this.getPortalSettings());
+
+    this.tenantStatus !== TenantStatus.PortalRestore &&
+      requests.push(this.getBuildVersionInfo());
+
+    await Promise.all(requests);
 
     this.setIsLoading(false);
     this.setIsLoaded(true);
+  };
+
+  setRoomsMode = (mode) => {
+    this.roomsMode = mode;
   };
 
   setIsLoading = (isLoading) => {
@@ -206,8 +257,13 @@ class SettingsStore {
     this.isLoaded = isLoaded;
   };
 
+  setCultures = (cultures) => {
+    this.cultures = cultures;
+  };
+
   getPortalCultures = async () => {
-    this.cultures = await api.settings.getPortalCultures();
+    const cultures = await api.settings.getPortalCultures();
+    this.setCultures(cultures);
   };
 
   setIsEncryptionSupport = (isEncryptionSupport) => {
@@ -249,8 +305,9 @@ class SettingsStore {
             clearInterval(interval);
             reject();
           }
-        } catch {
-          return;
+        } catch (e) {
+          clearInterval(interval);
+          reject(e);
         }
       }, 500);
     });
@@ -306,6 +363,21 @@ class SettingsStore {
     this.setPasswordSettings(settings);
   };
 
+  setPortalPasswordSettings = async (
+    minLength,
+    upperCase,
+    digits,
+    specSymbols
+  ) => {
+    const settings = await api.settings.setPortalPasswordSettings(
+      minLength,
+      upperCase,
+      digits,
+      specSymbols
+    );
+    this.setPasswordSettings(settings);
+  };
+
   setTimezones = (timezones) => {
     this.timezones = timezones;
   };
@@ -323,20 +395,33 @@ class SettingsStore {
     this.isTabletView = isTabletView;
   };
 
-  setArticlePinned = (isPinned) => {
-    isPinned
-      ? localStorage.setItem(ARTICLE_PINNED_KEY, isPinned)
-      : localStorage.removeItem(ARTICLE_PINNED_KEY);
-    this.isArticlePinned = isPinned;
+  setShowText = (showText) => {
+    this.showText = showText;
   };
 
-  setArticleVisibleOnUnpin = (visible) => {
-    this.isArticleVisibleOnUnpin = visible;
+  toggleShowText = () => {
+    this.showText = !this.showText;
+  };
+
+  setArticleOpen = (articleOpen) => {
+    this.articleOpen = articleOpen;
+  };
+
+  toggleArticleOpen = () => {
+    this.articleOpen = !this.articleOpen;
+  };
+
+  setIsMobileArticle = (isMobileArticle) => {
+    this.isMobileArticle = isMobileArticle;
   };
 
   get firebaseHelper() {
     window.firebaseHelper = new FirebaseHelper(this.firebase);
     return window.firebaseHelper;
+  }
+
+  get socketHelper() {
+    return new SocketIOHelper(this.socketUrl);
   }
 
   getBuildVersionInfo = async () => {
@@ -353,6 +438,45 @@ class SettingsStore {
 
     if (!this.buildVersionInfo.documentServer)
       this.buildVersionInfo.documentServer = "6.4.1";
+  };
+
+  setTheme = (key) => {
+    let theme = null;
+    switch (key) {
+      case ThemeKeys.Base:
+      case ThemeKeys.BaseStr:
+        theme = ThemeKeys.BaseStr;
+        break;
+      case ThemeKeys.Dark:
+      case ThemeKeys.DarkStr:
+        theme = ThemeKeys.DarkStr;
+        break;
+      case ThemeKeys.System:
+      case ThemeKeys.SystemStr:
+      default:
+        theme =
+          window.matchMedia &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? ThemeKeys.DarkStr
+            : ThemeKeys.BaseStr;
+    }
+
+    this.theme = themes[theme];
+  };
+
+  setMailDomainSettings = async (data) => {
+    const res = await api.settings.setMailDomainSettings(data);
+    this.trustedDomainsType = data.type;
+    this.trustedDomains = data.domains;
+    return res;
+  };
+
+  setTenantAlias = (tenantAlias) => {
+    this.tenantAlias = tenantAlias;
+  };
+
+  setIsBurgerLoading = (isBurgerLoading) => {
+    this.isBurgerLoading = isBurgerLoading;
   };
 }
 

@@ -30,11 +30,12 @@ import ModalDialog from "@appserver/components/modal-dialog";
 
 ### Properties
 
-| Props         |   Type   | Required |          Values          | Default  | Description                                      |
-| ------------- | :------: | :------: | :----------------------: | :------: | ------------------------------------------------ |
-| `visible`     |  `bool`  |    -     |            -             |    -     | Display dialog or not                            |
-| `displayType` | `oneOf`  |    -     | `auto`, `modal`, `aside` |  `auto`  | Display type                                     |
-| `scale`       |  `bool`  |    -     |            -             |    -     | Indicates the side panel has scale               |
-| `onClose`     |  `func`  |    -     |            -             |    -     | Will be triggered when a close button is clicked |
-| `zIndex`      | `number` |    -     |            -             |  `310`   | CSS z-index                                      |
-| `bodyPadding` | `string` |    -     |            -             | `16px 0` | CSS padding props for body section               |
+| Props              |   Type   | Required |          Values          | Default  | Description                                      |
+| ------------------ | :------: | :------: | :----------------------: | :------: | ------------------------------------------------ |
+| `visible`          |  `bool`  |    -     |            -             |    -     | Display dialog or not                            |
+| `displayType`      | `oneOf`  |    -     | `auto`, `modal`, `aside` |  `auto`  | Display type                                     |
+| `scale`            |  `bool`  |    -     |            -             |    -     | Indicates the side panel has scale               |
+| `onClose`          |  `func`  |    -     |            -             |    -     | Will be triggered when a close button is clicked |
+| `zIndex`           | `number` |    -     |            -             |  `310`   | CSS z-index                                      |
+| `modalBodyPadding` | `string` |    -     |            -             | `16px 0` | CSS padding props for modal body section         |
+| `asideBodyPadding` | `string` |    -     |            -             | `16px 0` | CSS padding props for aside body section         |

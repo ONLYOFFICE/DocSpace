@@ -41,7 +41,7 @@ namespace ASC.FederatedLogin.LoginProviders
     [Scope]
     public class ProviderManager
     {
-        public static List<string> AuthProviders = new List<string>
+        public static readonly List<string> AuthProviders = new List<string>
             {
                 ProviderConstants.Google,
                 ProviderConstants.Facebook,
@@ -71,15 +71,15 @@ namespace ASC.FederatedLogin.LoginProviders
                 : ConsumerFactory.GetByKey(providerType) as ILoginProvider;
         }
 
-        public LoginProfile Process(string providerType, HttpContext context, IDictionary<string, string> @params)
+        public LoginProfile Process(string providerType, HttpContext context, IDictionary<string, string> @params, IDictionary<string, string> additionalStateArgs = null)
         {
-            return GetLoginProvider(providerType).ProcessAuthoriztion(context, @params);
+            return GetLoginProvider(providerType).ProcessAuthoriztion(context, @params, additionalStateArgs);
         }
 
         public LoginProfile GetLoginProfile(string providerType, string accessToken)
         {
             var consumer = GetLoginProvider(providerType);
-            if (consumer == null) throw new ArgumentException("Unknown provider type", "providerType");
+            if (consumer == null) throw new ArgumentException("Unknown provider type", nameof(providerType));
 
             try
             {

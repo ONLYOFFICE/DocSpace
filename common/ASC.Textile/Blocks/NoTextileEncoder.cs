@@ -39,7 +39,7 @@ namespace Textile.Blocks
             string evaluator(Match m)
             {
                 var toEncode = m.Groups["notex"].Value;
-                if (toEncode == string.Empty)
+                if (toEncode.Length == 0)
                 {
                     return string.Empty;
                 }
@@ -52,7 +52,7 @@ namespace Textile.Blocks
                 }
                 return patternPrefix + toEncode + patternSuffix;
             }
-            tmp = Regex.Replace(tmp, string.Format("({0}(?<notex>.+?){1})*", patternPrefix, patternSuffix), new MatchEvaluator(evaluator));
+            tmp = Regex.Replace(tmp, "("+ patternPrefix + "(?<notex>.+?)" + patternSuffix + ")*", new MatchEvaluator(evaluator));
             return tmp;
         }
 
@@ -75,7 +75,7 @@ namespace Textile.Blocks
                 }
                 return toEncode;
             }
-            tmp = Regex.Replace(tmp, string.Format("({0}(?<notex>.+?){1})*", patternPrefix, patternSuffix), new MatchEvaluator(evaluator));
+            tmp = Regex.Replace(tmp, "(" + patternPrefix + "(?<notex>.+?)" + patternSuffix + ")*", new MatchEvaluator(evaluator));
             return tmp;
         }
     }

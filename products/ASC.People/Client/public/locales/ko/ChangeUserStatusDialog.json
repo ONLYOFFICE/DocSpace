@@ -1,0 +1,8 @@
+{
+  "ChangeUserStatusDialog": "'{{ userStatus }}' 상태 사용자는 {{ status }}.",
+  "ChangeUserStatusDialogHeader": "사용자 상태 변경",
+  "ChangeUserStatusDialogMessage": "포털 소유자와 자기 자신의 상태는 변경할 수 없습니다",
+  "ChangeUsersActiveStatus": "비활성화",
+  "ChangeUsersDisableStatus": "활성화",
+  "ChangeUsersStatusButton": "사용자 상태 변경"
+}

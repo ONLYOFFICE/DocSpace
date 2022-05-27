@@ -50,11 +50,12 @@ class TabContainer extends Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     const { activeTab, onScrollHide } = this.state;
-    const { isDisabled } = this.props;
+    const { isDisabled, elements } = this.props;
     if (
       activeTab === nextState.activeTab &&
       isDisabled === nextProps.isDisabled &&
-      onScrollHide === nextState.onScrollHide
+      onScrollHide === nextState.onScrollHide &&
+      elements.length === nextProps.elements.length
     ) {
       return false;
     }
@@ -167,7 +168,7 @@ class TabContainer extends Component {
                 selected={activeTab === index}
                 isDisabled={isDisabled}
               >
-                <Text className="title_style" fontSize="13px">
+                <Text fontWeight={600} className="title_style" fontSize="13px">
                   {item.title}
                 </Text>
               </Label>

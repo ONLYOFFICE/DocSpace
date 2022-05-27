@@ -11,7 +11,7 @@ i18n
   .init({
     lng: localStorage.getItem(LANGUAGE) || "en",
     fallbackLng: "en",
-    load: "all",
+    load: "currentOnly",
     //debug: true,
 
     interpolation: {
@@ -25,6 +25,9 @@ i18n
     backend: {
       loadPath: loadLanguagePath(config.homepage),
     },
+
+    ns: ["ChangePasswordDialog", "ChangeEmailDialog"],
+
     react: {
       useSuspense: false,
     },

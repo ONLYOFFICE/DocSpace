@@ -50,7 +50,7 @@ namespace TMResourceData
 {
     public class DBResourceManager : ResourceManager
     {
-        public static bool WhiteLableEnabled = false;
+        public static readonly bool WhiteLableEnabled = false;
         private readonly ConcurrentDictionary<string, ResourceSet> resourceSets = new ConcurrentDictionary<string, ResourceSet>();
 
         public DBResourceManager(string filename, Assembly assembly)
@@ -125,7 +125,7 @@ namespace TMResourceData
         private static bool Accept(Assembly a)
         {
             var n = a.GetName().Name;
-            return (n.StartsWith("ASC.") || n.StartsWith("App_GlobalResources")) && a.GetManifestResourceNames().Any();
+            return (n.StartsWith("ASC.") || n.StartsWith("App_GlobalResources")) && a.GetManifestResourceNames().Length > 0;
         }
 
 
@@ -174,11 +174,11 @@ namespace TMResourceData
             {
                 if (culture == null)
                 {
-                    throw new ArgumentNullException("culture");
+                    throw new ArgumentNullException(nameof(culture));
                 }
                 if (string.IsNullOrEmpty(filename))
                 {
-                    throw new ArgumentNullException("filename");
+                    throw new ArgumentNullException(nameof(filename));
                 }
 
                 DbContext = dbContext;
@@ -248,7 +248,7 @@ namespace TMResourceData
 
             private Dictionary<string, string> GetResources()
             {
-                var key = string.Format("{0}/{1}", filename, culture);
+                var key = $"{filename}/{culture}";
                 if (!(cache.Get(key) is Dictionary<string, string> dic))
                 {
                     lock (locker)
@@ -257,7 +257,8 @@ namespace TMResourceData
                         if (dic == null)
                         {
                             var policy = cacheTimeout == TimeSpan.Zero ? null : new CacheItemPolicy() { AbsoluteExpiration = DateTimeOffset.Now.Add(cacheTimeout) };
-                            cache.Set(key, dic = LoadResourceSet(filename, culture), policy);
+                            dic = LoadResourceSet(filename, culture);
+                            cache.Set(key, dic, policy);
                         }
                     }
                 }
@@ -283,7 +284,7 @@ namespace TMResourceData
     {
         private readonly ILog log;
         private readonly ConcurrentDictionary<int, string> whiteLabelDictionary;
-        public string DefaultLogoText;
+        public string DefaultLogoText { get; set; }
 
         private IConfiguration Configuration { get; }
 
@@ -341,7 +342,7 @@ namespace TMResourceData
                     {
                         var newTextReplacement = newText;
 
-                        if (resourceValue.Contains("<") && resourceValue.Contains(">") || resourceName.StartsWith("pattern_"))
+                        if (resourceValue.IndexOf('<') >= 0 && resourceValue.IndexOf('>') >= 0 || resourceName.StartsWith("pattern_"))
                         {
                             newTextReplacement = HttpUtility.HtmlEncode(newTextReplacement);
                         }

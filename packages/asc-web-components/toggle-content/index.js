@@ -22,7 +22,11 @@ class ToggleContent extends React.Component {
     };
   }
 
-  toggleContent = () => this.setState({ isOpen: !this.state.isOpen });
+  toggleContent = () => {
+    if (!this.props.enableToggle) return;
+
+    this.setState({ isOpen: !this.state.isOpen });
+  };
 
   componentDidUpdate(prevProps) {
     const { isOpen } = this.props;
@@ -34,7 +38,7 @@ class ToggleContent extends React.Component {
   render() {
     // console.log("ToggleContent render");
 
-    const { children, className, id, label, style } = this.props;
+    const { children, className, id, label, style, enableToggle } = this.props;
 
     const { isOpen } = this.state;
 
@@ -44,21 +48,24 @@ class ToggleContent extends React.Component {
         isOpen={isOpen}
         id={id}
         style={style}
+        enableToggle={enableToggle}
       >
-        <span className="span-toggle-content" onClick={this.toggleContent}>
-          <StyledArrowContentIcon
-            className="arrow-toggle-content"
-            size="medium"
-          />
-          <Heading
-            className="heading-toggle-content"
-            level={2}
-            size="small"
-            isInline={true}
-          >
-            {label}
-          </Heading>
-        </span>
+        <div className="toggle-container">
+          <span className="span-toggle-content" onClick={this.toggleContent}>
+            <StyledArrowContentIcon
+              className="arrow-toggle-content"
+              size="medium"
+            />
+            <Heading
+              className="heading-toggle-content"
+              level={2}
+              size="small"
+              isInline={true}
+            >
+              {label}
+            </Heading>
+          </span>
+        </div>
         <StyledContent isOpen={isOpen}>{children}</StyledContent>
       </StyledContainer>
     );
@@ -78,10 +85,13 @@ ToggleContent.propTypes = {
   onChange: PropTypes.func,
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  /** Enable/disable toggle */
+  enableToggle: PropTypes.bool,
 };
 
 ToggleContent.defaultProps = {
   isOpen: false,
+  enableToggle: true,
   label: "",
 };
 

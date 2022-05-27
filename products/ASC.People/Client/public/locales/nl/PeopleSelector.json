@@ -1,0 +1,7 @@
+{
+  "AllUsers": "Alle gebruikers",
+  "CustomAllGroups": "Alle {{ groupsCaption, lowercase }}",
+  "EmptySearchUsersResult": "Er zijn geen gebruikers met een dergelijke naam",
+  "EmptyUsers": "Er zijn geen gebruikers",
+  "SearchUsersPlaceholder": "Zoek gebruikers"
+}

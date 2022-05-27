@@ -125,26 +125,26 @@ namespace ASC.Web.Studio.Core.Notify
         public void SendRequestTariff(bool license, string fname, string lname, string title, string email, string phone, string ctitle, string csize, string site, string message)
         {
             fname = (fname ?? "").Trim();
-            if (string.IsNullOrEmpty(fname)) throw new ArgumentNullException("fname");
+            if (string.IsNullOrEmpty(fname)) throw new ArgumentNullException(nameof(fname));
             lname = (lname ?? "").Trim();
-            if (string.IsNullOrEmpty(lname)) throw new ArgumentNullException("lname");
+            if (string.IsNullOrEmpty(lname)) throw new ArgumentNullException(nameof(lname));
             title = (title ?? "").Trim();
             email = (email ?? "").Trim();
-            if (string.IsNullOrEmpty(email)) throw new ArgumentNullException("email");
+            if (string.IsNullOrEmpty(email)) throw new ArgumentNullException(nameof(email));
             phone = (phone ?? "").Trim();
-            if (string.IsNullOrEmpty(phone)) throw new ArgumentNullException("phone");
+            if (string.IsNullOrEmpty(phone)) throw new ArgumentNullException(nameof(phone));
             ctitle = (ctitle ?? "").Trim();
-            if (string.IsNullOrEmpty(ctitle)) throw new ArgumentNullException("ctitle");
+            if (string.IsNullOrEmpty(ctitle)) throw new ArgumentNullException(nameof(ctitle));
             csize = (csize ?? "").Trim();
-            if (string.IsNullOrEmpty(csize)) throw new ArgumentNullException("csize");
+            if (string.IsNullOrEmpty(csize)) throw new ArgumentNullException(nameof(csize));
             site = (site ?? "").Trim();
-            if (string.IsNullOrEmpty(site) && !CoreBaseSettings.CustomMode) throw new ArgumentNullException("site");
+            if (string.IsNullOrEmpty(site) && !CoreBaseSettings.CustomMode) throw new ArgumentNullException(nameof(site));
             message = (message ?? "").Trim();
-            if (string.IsNullOrEmpty(message) && !CoreBaseSettings.CustomMode) throw new ArgumentNullException("message");
+            if (string.IsNullOrEmpty(message) && !CoreBaseSettings.CustomMode) throw new ArgumentNullException(nameof(message));
 
             var salesEmail = SettingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>().SalesEmail ?? SetupInfo.SalesEmail;
 
-            var recipient = (IRecipient)(new DirectRecipient(AuthContext.CurrentAccount.ID.ToString(), string.Empty, new[] { salesEmail }, false));
+            var recipient = (IRecipient)new DirectRecipient(AuthContext.CurrentAccount.ID.ToString(), string.Empty, new[] { salesEmail }, false);
 
             client.SendNoticeToAsync(license ? Actions.RequestLicense : Actions.RequestTariff,
                                      new[] { recipient },
@@ -181,7 +181,7 @@ namespace ASC.Web.Studio.Core.Notify
             var hash = Authentication.GetUserPasswordStamp(userInfo.ID).ToString("s");
             var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(userInfo.Email, ConfirmType.PasswordChange, hash, userInfo.ID);
 
-            static string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangePassword;
+            string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangePassword;
 
             var action = CoreBaseSettings.Personal
                              ? (CoreBaseSettings.CustomMode ? Actions.PersonalCustomModePasswordChange : Actions.PersonalPasswordChange)
@@ -202,7 +202,7 @@ namespace ASC.Web.Studio.Core.Notify
         {
             var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(email, ConfirmType.EmailChange, AuthContext.CurrentAccount.ID);
 
-            static string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangeEmail;
+            string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangeEmail;
 
             var action = CoreBaseSettings.Personal
                              ? (CoreBaseSettings.CustomMode ? Actions.PersonalCustomModeEmailChangeV115 : Actions.PersonalEmailChangeV115)
@@ -220,7 +220,7 @@ namespace ASC.Web.Studio.Core.Notify
         {
             var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(email, ConfirmType.EmailActivation, null, user.ID);
 
-            static string greenButtonText() => WebstudioNotifyPatternResource.ButtonActivateEmail;
+            string greenButtonText() => WebstudioNotifyPatternResource.ButtonActivateEmail;
 
             client.SendNoticeToAsync(
                         Actions.ActivateEmail,
@@ -241,7 +241,7 @@ namespace ASC.Web.Studio.Core.Notify
         }
 
         public void SendMailboxCreated(List<string> toEmails, string username, string address, string server,
-            string encyption, int portImap, int portSmtp, string login)
+            string encyption, int portImap, int portSmtp, string login, bool skipSettings = false)
         {
             var tags = new List<ITagValue>
             {
@@ -249,12 +249,9 @@ namespace ASC.Web.Studio.Core.Notify
                 new TagValue(Tags.Address, address ?? string.Empty)
             };
 
-            var skipSettings = string.IsNullOrEmpty(server);
-
             if (!skipSettings)
             {
-                var link = string.Format("{0}/addons/mail/#accounts/changepwd={1}",
-                    CommonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/'), address);
+                var link = $"{CommonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')}/addons/mail/#accounts/changepwd={address}";
 
                 tags.Add(new TagValue(Tags.MyStaffLink, link));
                 tags.Add(new TagValue(Tags.Server, server));
@@ -290,7 +287,7 @@ namespace ASC.Web.Studio.Core.Notify
         {
             var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(userInfo.Email.ToLower(), ConfirmType.PhoneActivation);
 
-            static string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangePhone;
+            string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangePhone;
 
             client.SendNoticeToAsync(
                 Actions.PhoneChange,
@@ -303,7 +300,7 @@ namespace ASC.Web.Studio.Core.Notify
         {
             var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(userInfo.Email.ToLower(), ConfirmType.TfaActivation);
 
-            static string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangeTfa;
+            string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangeTfa;
 
             client.SendNoticeToAsync(
                 Actions.TfaChange,
@@ -326,7 +323,7 @@ namespace ASC.Web.Studio.Core.Notify
             var inviteUrl = CommonLinkUtility.GetConfirmationUrl(email, ConfirmType.EmpInvite, (int)emplType)
                             + string.Format("&emplType={0}", (int)emplType);
 
-            static string greenButtonText() => WebstudioNotifyPatternResource.ButtonJoin;
+            string greenButtonText() => WebstudioNotifyPatternResource.ButtonJoin;
 
             client.SendNoticeToAsync(
                         Actions.JoinUsers,
@@ -454,7 +451,7 @@ namespace ASC.Web.Studio.Core.Notify
 
             var confirmationUrl = GenerateActivationConfirmUrl(newUserInfo);
 
-            static string greenButtonText() => WebstudioNotifyPatternResource.ButtonAccept;
+            string greenButtonText() => WebstudioNotifyPatternResource.ButtonAccept;
 
             client.SendNoticeToAsync(
                 notifyAction,
@@ -492,7 +489,7 @@ namespace ASC.Web.Studio.Core.Notify
 
             var confirmationUrl = GenerateActivationConfirmUrl(newUserInfo);
 
-            static string greenButtonText() => WebstudioNotifyPatternResource.ButtonAccept;
+            string greenButtonText() => WebstudioNotifyPatternResource.ButtonAccept;
 
             client.SendNoticeToAsync(
                 notifyAction,
@@ -657,7 +654,7 @@ namespace ASC.Web.Studio.Core.Notify
         {
             var u = UserManager.GetUsers(t.OwnerId);
 
-            static string greenButtonText() => WebstudioNotifyPatternResource.ButtonDeactivatePortal;
+            string greenButtonText() => WebstudioNotifyPatternResource.ButtonDeactivatePortal;
 
             client.SendNoticeToAsync(
                         Actions.PortalDeactivate,
@@ -672,7 +669,7 @@ namespace ASC.Web.Studio.Core.Notify
         {
             var u = UserManager.GetUsers(t.OwnerId);
 
-            static string greenButtonText() => WebstudioNotifyPatternResource.ButtonDeletePortal;
+            string greenButtonText() => WebstudioNotifyPatternResource.ButtonDeletePortal;
 
             client.SendNoticeToAsync(
                         Actions.PortalDelete,
@@ -685,7 +682,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void SendMsgPortalDeletionSuccess(UserInfo owner, string url)
         {
-            static string greenButtonText() => WebstudioNotifyPatternResource.ButtonLeaveFeedback;
+            string greenButtonText() => WebstudioNotifyPatternResource.ButtonLeaveFeedback;
 
             client.SendNoticeToAsync(
                         Actions.PortalDeleteSuccessV115,
@@ -701,7 +698,7 @@ namespace ASC.Web.Studio.Core.Notify
         {
             var u = UserManager.GetUsers(t.OwnerId);
 
-            static string greenButtonText() => WebstudioNotifyPatternResource.ButtonConfirmPortalAddressChange;
+            string greenButtonText() => WebstudioNotifyPatternResource.ButtonConfirmPortalAddressChange;
 
             client.SendNoticeToAsync(
                         Actions.DnsChange,
@@ -716,7 +713,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void SendMsgConfirmChangeOwner(UserInfo owner, UserInfo newOwner, string confirmOwnerUpdateUrl)
         {
-            static string greenButtonText() => WebstudioNotifyPatternResource.ButtonConfirmPortalOwnerUpdate;
+            string greenButtonText() => WebstudioNotifyPatternResource.ButtonConfirmPortalOwnerUpdate;
 
             client.SendNoticeToAsync(
                 Actions.ConfirmOwnerChange,
@@ -754,7 +751,7 @@ namespace ASC.Web.Studio.Core.Notify
                 var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(u.Email, ConfirmType.EmailActivation);
                 confirmationUrl += "&first=true";
 
-                static string greenButtonText() => WebstudioNotifyPatternResource.ButtonConfirm;
+                string greenButtonText() => WebstudioNotifyPatternResource.ButtonConfirm;
 
                 client.SendNoticeToAsync(
                     notifyAction,
@@ -781,11 +778,13 @@ namespace ASC.Web.Studio.Core.Notify
 
             var lang = CoreBaseSettings.CustomMode
                            ? "ru-RU"
-                           : Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName;
+                           : Thread.CurrentThread.CurrentUICulture.Name;
+
+            var culture = SetupInfo.GetPersonalCulture(lang);
 
             var confirmUrl = CommonLinkUtility.GetConfirmationUrl(email, ConfirmType.EmpInvite, (int)EmployeeType.User)
                              + "&emplType=" + (int)EmployeeType.User
-                             + "&lang=" + lang
+                             + "&lang=" + culture.Key
                              + additionalMember;
 
             client.SendNoticeToAsync(
@@ -802,10 +801,18 @@ namespace ASC.Web.Studio.Core.Notify
             var userInfo = UserManager.GetUserByEmail(email);
             if (!UserManager.UserExists(userInfo)) return;
 
+            var portalUrl = CommonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/');
+
+            var hash = Authentication.GetUserPasswordStamp(userInfo.ID).ToString("s");
+
+            var linkToRecovery = CommonLinkUtility.GetConfirmationUrl(userInfo.Email, ConfirmType.PasswordChange, hash, userInfo.ID);
+
             client.SendNoticeToAsync(
                 CoreBaseSettings.CustomMode ? Actions.PersonalCustomModeAlreadyExist : Actions.PersonalAlreadyExist,
                 StudioNotifyHelper.RecipientFromEmail(email, false),
                 new[] { EMailSenderName },
+                new TagValue(Tags.PortalUrl, portalUrl),
+                new TagValue(Tags.LinkToRecovery, linkToRecovery),
                 new TagValue(CommonTags.Footer, CoreBaseSettings.CustomMode ? "personalCustomMode" : "personal"),
                 new TagValue(CommonTags.Culture, Thread.CurrentThread.CurrentUICulture.Name));
         }

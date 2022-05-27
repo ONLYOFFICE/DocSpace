@@ -1,7 +1,9 @@
 import { getNewFiles } from "@appserver/common/api/files";
+import { FileAction } from "@appserver/common/constants";
 import { makeAutoObservable } from "mobx";
 
 class DialogsStore {
+  authStore;
   treeFoldersStore;
   filesStore;
   selectedFolderStore;
@@ -20,7 +22,10 @@ class DialogsStore {
   newFilesPanelVisible = false;
   conflictResolveDialogVisible = false;
   convertDialogVisible = false;
+  selectFileDialogVisible = false;
+  convertPasswordDialogVisible = false;
   isFolderActions = false;
+  hotkeyPanelVisible = false;
 
   removeItem = null;
   connectItem = null;
@@ -32,13 +37,15 @@ class DialogsStore {
   removeMediaItem = null;
   unsubscribe = null;
   convertItem = null;
+  formCreationInfo = null;
 
-  constructor(treeFoldersStore, filesStore, selectedFolderStore) {
+  constructor(authStore, treeFoldersStore, filesStore, selectedFolderStore) {
     makeAutoObservable(this);
 
     this.treeFoldersStore = treeFoldersStore;
     this.filesStore = filesStore;
     this.selectedFolderStore = selectedFolderStore;
+    this.authStore = authStore;
   }
 
   setSharingPanelVisible = (sharingPanelVisible) => {
@@ -54,10 +61,12 @@ class DialogsStore {
   };
 
   setMoveToPanelVisible = (moveToPanelVisible) => {
+    !moveToPanelVisible && this.deselectActiveFiles();
     this.moveToPanelVisible = moveToPanelVisible;
   };
 
   setCopyPanelVisible = (copyPanelVisible) => {
+    !copyPanelVisible && this.deselectActiveFiles();
     this.copyPanelVisible = copyPanelVisible;
   };
 
@@ -80,10 +89,12 @@ class DialogsStore {
   };
 
   setDeleteDialogVisible = (deleteDialogVisible) => {
+    !deleteDialogVisible && this.deselectActiveFiles();
     this.deleteDialogVisible = deleteDialogVisible;
   };
 
   setDownloadDialogVisible = (downloadDialogVisible) => {
+    !downloadDialogVisible && this.deselectActiveFiles();
     this.downloadDialogVisible = downloadDialogVisible;
   };
 
@@ -103,8 +114,13 @@ class DialogsStore {
     this.destFolderId = destFolderId;
   };
 
-  setNewFilesPanelVisible = async (visible, newIds, item) => {
-    const id = newIds && newIds[newIds.length - 1];
+  setNewFilesPanelVisible = async (visible, newId, item) => {
+    const { pathParts } = this.selectedFolderStore;
+
+    const id = visible && !newId ? item.id : newId;
+    const newIds = newId ? [newId] : pathParts;
+    item && pathParts.push(item.id);
+
     let newFilesPanelVisible = visible;
 
     if (visible) {
@@ -172,8 +188,64 @@ class DialogsStore {
     this.convertDialogVisible = visible;
   };
 
+  setConvertPasswordDialogVisible = (visible) => {
+    this.convertPasswordDialogVisible = visible;
+  };
+
+  setFormCreationInfo = (item) => {
+    this.formCreationInfo = item;
+  };
+
   setConvertItem = (item) => {
     this.convertItem = item;
+  };
+
+  setSelectFileDialogVisible = (visible) => {
+    this.selectFileDialogVisible = visible;
+  };
+
+  createMasterForm = async (fileInfo) => {
+    const { setAction } = this.filesStore.fileActionStore;
+
+    let newTitle = fileInfo.title;
+    newTitle = newTitle.substring(0, newTitle.lastIndexOf("."));
+
+    setAction({
+      type: FileAction.Create,
+      extension: "docxf",
+      id: -1,
+      title: `${newTitle}.docxf`,
+      templateId: fileInfo.id,
+    });
+  };
+
+  setHotkeyPanelVisible = (hotkeyPanelVisible) => {
+    this.hotkeyPanelVisible = hotkeyPanelVisible;
+  };
+
+  get someDialogIsOpen() {
+    return (
+      this.sharingPanelVisible ||
+      this.ownerPanelVisible ||
+      this.moveToPanelVisible ||
+      this.copyPanelVisible ||
+      this.deleteThirdPartyDialogVisible ||
+      this.connectDialogVisible ||
+      this.thirdPartyMoveDialogVisible ||
+      this.deleteDialogVisible ||
+      this.downloadDialogVisible ||
+      this.emptyTrashDialogVisible ||
+      this.thirdPartyDialogVisible ||
+      this.newFilesPanelVisible ||
+      this.conflictResolveDialogVisible ||
+      this.convertDialogVisible ||
+      this.selectFileDialogVisible ||
+      this.hotkeyPanelVisible
+    );
+  }
+
+  deselectActiveFiles = () => {
+    this.filesStore.setSelected("none");
   };
 }
 

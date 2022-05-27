@@ -63,12 +63,16 @@ namespace ASC.Common.Utils
 
         public T GetSetting<T>(string section) where T : new()
         {
+            return GetSetting(section, new T());
+        }
+
+        public T GetSetting<T>(string section, T instance)
+        {
             var sectionSettings = Configuration.GetSection(section);
 
-            var cs = new T();
-            sectionSettings.Bind(cs);
+            sectionSettings.Bind(instance);
 
-            return cs;
+            return instance;
         }
 
         public ConnectionStringCollection GetConnectionStrings()

@@ -23,7 +23,7 @@
  *
 */
 
-
+/*
 #if DEBUG
 namespace ASC.Core.Common.Tests
 {
@@ -206,3 +206,4 @@ namespace ASC.Core.Common.Tests
     }
 }
 #endif
+*/

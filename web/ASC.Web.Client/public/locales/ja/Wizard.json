@@ -1,0 +1,22 @@
+{
+  "ChangeEmailTitle": "メールの変更",
+  "Desc": "ポータル登録データの設定をお願いします。",
+  "Domain": "ドメイン:",
+  "ErrorEmail": "無効なEメールアドレス",
+  "ErrorInitWizard": "サービスは現在利用できません、後でもう一度お試しください。",
+  "ErrorInitWizardButton": "もう一度お試しください。",
+  "ErrorLicenseBody": "ライセンスが有効ではありません。正しいファイルを選択してください。",
+  "ErrorLicenseRead": "使用許諾契約書の承諾",
+  "ErrorLicenseTitle": "読み込みエラー",
+  "ErrorParamsBody": "入力されたデータが間違っている:",
+  "ErrorParamsTitle": "登録エラー",
+  "ErrorPassword": "パスワードが要件を満たしていない",
+  "ErrorUploadLicenseFile": "ライセンスファイルの選択",
+  "GeneratePassword": "パスワードの生成",
+  "License": "の条件を受け入れます ",
+  "LicenseLink": "ライセンス契約",
+  "PlaceholderLicense": "ライセンスファイル",
+  "Timezone": "タイムゾーン:",
+  "WelcomeTitle": "あなたのポータルへようこそ!",
+  "WizardTitle": "ポータルサイトの開設"
+}

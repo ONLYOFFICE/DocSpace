@@ -50,12 +50,13 @@ const StyledToastContainer = styled(ToastContainer)`
     }
 
     50% {
+      visibility: hidden;
       transform: translate3d(0, 0, 0);
     }
   }
 
   .SlideIn {
-    animation-name: SlideIn;
+    animation: SlideIn 0.7s ease-out both;
   }
 
   @keyframes SlideOut {
@@ -69,7 +70,7 @@ const StyledToastContainer = styled(ToastContainer)`
   }
 
   .SlideOut {
-    animation-name: SlideOut;
+    animation: SlideOut 0.3s ease-out both;
   }
 
   @keyframes Toastify__trackProgress {
@@ -83,6 +84,7 @@ const StyledToastContainer = styled(ToastContainer)`
 
   .Toastify__toast--success {
     background-color: ${(props) => props.theme.toast.active.success};
+    border: ${(props) => props.theme.toast.border.success};
 
     &:hover {
       background-color: ${(props) => props.theme.toast.hover.success};
@@ -91,6 +93,7 @@ const StyledToastContainer = styled(ToastContainer)`
 
   .Toastify__toast--error {
     background-color: ${(props) => props.theme.toast.active.error};
+    border: ${(props) => props.theme.toast.border.error};
 
     &:hover {
       background-color: ${(props) => props.theme.toast.hover.error};
@@ -99,6 +102,7 @@ const StyledToastContainer = styled(ToastContainer)`
 
   .Toastify__toast--info {
     background-color: ${(props) => props.theme.toast.active.info};
+    border: ${(props) => props.theme.toast.border.info};
 
     &:hover {
       background-color: ${(props) => props.theme.toast.hover.info};
@@ -107,6 +111,7 @@ const StyledToastContainer = styled(ToastContainer)`
 
   .Toastify__toast--warning {
     background-color: ${(props) => props.theme.toast.active.warning};
+    border: ${(props) => props.theme.toast.border.warning};
 
     &:hover {
       background-color: ${(props) => props.theme.toast.hover.warning};

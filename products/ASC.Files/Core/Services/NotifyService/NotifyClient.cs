@@ -27,12 +27,14 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common;
 using ASC.Files.Core.Resources;
 using ASC.Files.Core.Security;
+using ASC.Notify;
 using ASC.Notify.Patterns;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
@@ -46,10 +48,12 @@ namespace ASC.Files.Core.Services.NotifyService
     public class NotifyClient
     {
         private IServiceProvider ServiceProvider { get; }
+        private Context NotifyContext { get; }
 
-        public NotifyClient(IServiceProvider serviceProvider)
+        public NotifyClient(IServiceProvider serviceProvider, Context notifyContext)
         {
             ServiceProvider = serviceProvider;
+            NotifyContext = notifyContext;
         }
 
         public void SendDocuSignComplete<T>(File<T> file, string sourceTitle)
@@ -57,7 +61,7 @@ namespace ASC.Files.Core.Services.NotifyService
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<NotifyClientScope>();
             var (notifySource, securityContext, filesLinkUtility, fileUtility, baseCommonLinkUtility, _, _, _, _) = scopeClass;
-            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
+            var client = NotifyContext.NotifyService.RegisterClient(notifySource, scope);
             var recipient = notifySource.GetRecipientsProvider().GetRecipient(securityContext.CurrentAccount.ID.ToString());
 
             client.SendNoticeAsync(
@@ -76,7 +80,7 @@ namespace ASC.Files.Core.Services.NotifyService
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<NotifyClientScope>();
             var (notifySource, securityContext, _, _, _, _, _, _, _) = scopeClass;
-            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
+            var client = NotifyContext.NotifyService.RegisterClient(notifySource, scope);
 
             var recipient = notifySource.GetRecipientsProvider().GetRecipient(securityContext.CurrentAccount.ID.ToString());
 
@@ -94,7 +98,7 @@ namespace ASC.Files.Core.Services.NotifyService
         {
             using var scope = ServiceProvider.CreateScope();
             var notifySource = scope.ServiceProvider.GetService<NotifySource>();
-            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
+            var client = NotifyContext.NotifyService.RegisterClient(notifySource, scope);
 
             var recipient = notifySource.GetRecipientsProvider().GetRecipient(userId.ToString());
 
@@ -108,22 +112,22 @@ namespace ASC.Files.Core.Services.NotifyService
                 );
         }
 
-        public void SendShareNotice<T>(FileEntry<T> fileEntry, Dictionary<Guid, FileShare> recipients, string message)
+        public async Task SendShareNoticeAsync<T>(FileEntry<T> fileEntry, Dictionary<Guid, FileShare> recipients, string message)
         {
             if (fileEntry == null || recipients.Count == 0) return;
 
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<NotifyClientScope>();
             var (notifySource, _, filesLinkUtility, fileUtility, baseCommonLinkUtility, daoFactory, pathProvider, userManager, tenantManager) = scopeClass;
-            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
+            var client = NotifyContext.NotifyService.RegisterClient(notifySource, scope);
             var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
 
             var folderDao = daoFactory.GetFolderDao<T>();
-            if (fileEntry.FileEntryType == FileEntryType.File && folderDao.GetFolder(((File<T>)fileEntry).FolderID) == null) return;
+            if (fileEntry.FileEntryType == FileEntryType.File && await folderDao.GetFolderAsync(((File<T>)fileEntry).FolderID) == null) return;
 
             var url = fileEntry.FileEntryType == FileEntryType.File
                           ? filesLinkUtility.GetFileWebPreviewUrl(fileUtility, fileEntry.Title, fileEntry.ID)
-                          : pathProvider.GetFolderUrl((Folder<T>)fileEntry);
+                          : await pathProvider.GetFolderUrlAsync((Folder<T>)fileEntry);
 
             var recipientsProvider = notifySource.GetRecipientsProvider();
 
@@ -153,7 +157,7 @@ namespace ASC.Files.Core.Services.NotifyService
                     new TagValue(NotifyConstants.Tag_DocumentUrl, baseCommonLinkUtility.GetFullAbsolutePath(url)),
                     new TagValue(NotifyConstants.Tag_AccessRights, aceString),
                     new TagValue(NotifyConstants.Tag_Message, message.HtmlEncode()),
-                    TagValues.Image(studioNotifyHelper,0, "privacy.png")
+                    TagValues.Image(studioNotifyHelper, 0, "privacy.png")
                     );
             }
         }
@@ -165,7 +169,7 @@ namespace ASC.Files.Core.Services.NotifyService
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<NotifyClientScope>();
             var (notifySource, _, _, _, baseCommonLinkUtility, _, _, userManager, _) = scopeClass;
-            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
+            var client = NotifyContext.NotifyService.RegisterClient(notifySource, scope);
 
             var recipientsProvider = notifySource.GetRecipientsProvider();
 
@@ -258,7 +262,7 @@ namespace ASC.Files.Core.Services.NotifyService
         }
     }
 
-    public class NotifyClientExtension
+    public static class NotifyClientExtension
     {
         public static void Register(DIHelper services)
         {

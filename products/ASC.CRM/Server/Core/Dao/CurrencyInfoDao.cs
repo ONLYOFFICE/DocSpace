@@ -46,14 +46,12 @@ namespace ASC.CRM.Core.Dao
     public class CurrencyInfoDao : AbstractDao
     {
         public CurrencyInfoDao(DbContextManager<CrmDbContext> dbContextManager,
-             DbContextManager<TenantDbContext> dbContextManager1,
             TenantManager tenantManager,
             SecurityContext securityContext,
             IOptionsMonitor<ILog> logger,
             ICache ascCache,
             IMapper mapper) :
                             base(dbContextManager,
-                                dbContextManager1,
                                 tenantManager,
                                 securityContext,
                                 logger,
@@ -84,6 +82,7 @@ namespace ASC.CRM.Core.Dao
         public List<CurrencyInfo> GetBasic()
         {
             var dbItems = CrmDbContext.CurrencyInfo
+                                        .AsQueryable()
                                         .Where(x => x.IsBasic)
                                         .ToList();
 
@@ -93,6 +92,7 @@ namespace ASC.CRM.Core.Dao
         public List<CurrencyInfo> GetOther()
         {
             var dbItems = CrmDbContext.CurrencyInfo
+                                       .AsQueryable()
                                        .Where(x => !x.IsBasic)
                                        .ToList();
 

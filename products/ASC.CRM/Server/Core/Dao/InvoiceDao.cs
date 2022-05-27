@@ -76,7 +76,6 @@ namespace ASC.CRM.Core.Dao
 
         public InvoiceDao(
             DbContextManager<CrmDbContext> dbContextManager,
-            DbContextManager<TenantDbContext> dbContextManager1,
             TenantManager tenantManager,
             SecurityContext securityContext,
             FactoryIndexerInvoice factoryIndexer,
@@ -89,7 +88,6 @@ namespace ASC.CRM.Core.Dao
             TenantUtil tenantUtil,
             IMapper mapper)
               : base(dbContextManager,
-                 dbContextManager1,
                  tenantManager,
                  securityContext,
                  logger,
