@@ -483,9 +483,10 @@ export function startUploadSession(
   fileName,
   fileSize,
   relativePath,
-  encrypted
+  encrypted,
+  lastModified
 ) {
-  const data = { fileName, fileSize, relativePath, encrypted };
+  const data = { fileName, fileSize, relativePath, lastModified, encrypted };
   return request({
     method: "post",
     url: `/files/${folderId}/upload/create_session.json`,
