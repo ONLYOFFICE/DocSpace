@@ -39,6 +39,7 @@ LOG_DIR="/var/log/onlyoffice/${PRODUCT}"
 DOTNET_RUN="/usr/share/dotnet/dotnet"
 APP_URLS="http://0.0.0.0"
 ENVIRONMENT=" --ENVIRONMENT=production"
+CORE=" --core:products:folder=${BASE_DIR}/products --core:products:subfolder=server"
 
 SERVICE_NAME=(
 	api
@@ -90,13 +91,11 @@ reassign_values (){
 		SERVICE_PORT="5006"
 		WORK_DIR="${BASE_DIR}/services/ASC.Studio.Notify/"
 		EXEC_FILE="ASC.Studio.Notify.dll"
-		CORE=" --core:products:folder=${BASE_DIR}/products --core:products:subfolder=server "
 	;;
 	notify )
 		SERVICE_PORT="5005"
 		WORK_DIR="${BASE_DIR}/services/ASC.Notify/"
 		EXEC_FILE="ASC.Notify.dll"
-		CORE=" --core:products:folder=${BASE_DIR}/products --core:products:subfolder=server "
 	;;
 	people-server )
 		SERVICE_PORT="5004"
@@ -112,7 +111,6 @@ reassign_values (){
 		SERVICE_PORT="5009"
 		WORK_DIR="${BASE_DIR}/products/ASC.Files/service/"
 		EXEC_FILE="ASC.Files.Service.dll"
-		CORE=" --core:products:folder=${BASE_DIR}/products --core:products:subfolder=server"
 	;;
 	studio )
 		SERVICE_PORT="5003"
@@ -123,7 +121,6 @@ reassign_values (){
 		SERVICE_PORT="5012"
 		WORK_DIR="${BASE_DIR}/services/ASC.Data.Backup/"
 		EXEC_FILE="ASC.Data.Backup.dll"
-		CORE=" --core:products:folder=${BASE_DIR}/products --core:products:subfolder=server"
 	;;
 	storage-migration )
 		SERVICE_PORT="5018"
@@ -149,7 +146,6 @@ reassign_values (){
   SERVICE_NAME="$1"
   EXEC_START="${DOTNET_RUN} ${WORK_DIR}${EXEC_FILE} --urls=${APP_URLS}:${SERVICE_PORT} --pathToConf=${PATH_TO_CONF} \
   --'\$STORAGE_ROOT'=${STORAGE_ROOT} --log:dir=${LOG_DIR} --log:name=${SERVICE_NAME}${CORE}${ENVIRONMENT}"
-  CORE=""
 }
 
 write_to_file () {
