@@ -29,101 +29,38 @@ namespace ASC.Files.Tests;
 [TestFixture]
 class Recent : BaseFilesTests
 {
-    private FolderDto<int> TestFolder { get; set; }
-    public FileDto<int> TestFile { get; private set; }
-    public IEnumerable<FileShareParams> TestFileShare { get; private set; }
-    public UserInfo NewUser { get; set; }
-
-    [OneTimeSetUp]
-    public override async Task SetUp()
-    {
-        await base.SetUp();
-        TestFolder = await FoldersControllerHelper.CreateFolderAsync(GlobalFolderHelper.FolderMy, "TestFolder");
-        TestFile = await FilesControllerHelper.CreateFileAsync(GlobalFolderHelper.FolderMy, "TestFile", default, default);
-        NewUser = UserManager.GetUsers(Guid.Parse("005bb3ff-7de3-47d2-9b3d-61b9ec8a76a5"));
-        TestFileShare = new List<FileShareParams> { new FileShareParams { Access = Core.Security.FileShare.Read, ShareTo = NewUser.Id } };
-    }
-
-    [OneTimeSetUp]
-    public void Authenticate()
-    {
-        SecurityContext.AuthenticateMe(CurrentTenant.OwnerId);
-    }
-
-    [OneTimeTearDown]
-    public async Task TearDown()
-    {
-        await DeleteFolderAsync(TestFolder.Id);
-        await DeleteFileAsync(TestFile.Id);
-    }
-
-    [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCreateFolderItems))]
-    [Category("Folder")]
-    [Order(1)]
-    public void CreateFolderReturnsFolderWrapper(string folderTitle)
-    {
-        var folderWrapper = Assert.ThrowsAsync<InvalidOperationException>(async () => await FoldersControllerHelper.CreateFolderAsync(await GlobalFolderHelper.FolderRecentAsync, folderTitle));
-        Assert.That(folderWrapper.Message == "You don't have enough permission to create");
-    }
-
-    [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetFolderInfoItems))]
+    [TestCase(DataTests.FileIdForRecent, DataTests.FileNameForRecent)]
     [Category("File")]
     [Order(1)]
-    public void CreateFileReturnsFolderWrapper(string folderTitle)
+    [Description("post - file/{fileId}/recent - add file to recent")]
+    public async Task RecentFileReturnsFolderWrapper(int fileId, string fileName)
     {
-        var folderWrapper = Assert.ThrowsAsync<InvalidOperationException>(async () => await FoldersControllerHelper.CreateFolderAsync(await GlobalFolderHelper.FolderRecentAsync, folderTitle));
-        Assert.That(folderWrapper.Message == "You don't have enough permission to create");
+        var file = await PostAsync<FileDto<int>>("file/" + fileId + "/recent", null, _options);
+        Assert.IsNotNull(file);
+        Assert.AreEqual(fileName, file.Title);
     }
 
-    [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetFileInfoItems))]
+    [TestCase(DataTests.FileIdForRecent, DataTests.FileNameForRecent)]
     [Category("File")]
     [Order(2)]
-    public async Task RecentFileReturnsFolderWrapper(string fileTitleExpected)
+    [Description("delete - file/{fileId}/recent - delete file which added to recent")]
+    public async Task DeleteRecentFileReturnsFolderWrapper(int fileId, string fileTitleExpected)
     {
-        var RecentFolder = await AddToRecentAsync(TestFile.Id);
-        Assert.IsNotNull(RecentFolder);
-        Assert.AreEqual(fileTitleExpected + ".docx", RecentFolder.Title);
-    }
-    [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetFileInfoItems))]
-    [Category("File")]
-    [Order(4)]
-    public async Task DeleteRecentFileReturnsFolderWrapper(string fileTitleExpected)
-    {
-        var RecentFolder = await AddToRecentAsync(TestFile.Id);
-        await FilesControllerHelper.DeleteFileAsync(
-            TestFile.Id,
-            false,
-            true);
-
-        while (true)
-        {
-            var statuses = FileStorageService.GetTasksStatuses();
-
-            if (statuses.TrueForAll(r => r.Finished))
-                break;
-            await Task.Delay(100);
-        }
-        Assert.IsNotNull(RecentFolder);
-        Assert.AreEqual(fileTitleExpected + ".docx", RecentFolder.Title);
+        await PostAsync<FileDto<int>>("file/" + fileId + "/recent", null, _options);
+        await DeleteAsync("file/" + fileId, JsonContent.Create(new { DeleteAfter = false, Immediately = true }));
+        _ = await WaitLongOperation();
+        var recents = await GetAsync<FolderContentDto<int>>("@recent", _options);
+        Assert.IsTrue(!recents.Files.Any(r => r.Title == fileTitleExpected + ".docx"));
     }
 
-    [TestCaseSource(typeof(DocumentData), nameof(DocumentData.ShareParamToRecentFile))]
+    [TestCase(DataTests.SharedForReadFileId, DataTests.FileName)]
     [Category("File")]
     [Order(3)]
-    public async Task ShareFileToAnotherUserAddToRecent(string fileTitleExpected, bool notify, string message)
+    public async Task ShareFileToAnotherUserAddToRecent(int fileId, string fileName)
     {
-        await SecurityControllerHelper.SetFileSecurityInfoAsync(TestFile.Id, TestFileShare, notify, message);
-        SecurityContext.AuthenticateMe(NewUser.Id);
-        var RecentFile = await AddToRecentAsync(TestFile.Id);
-        Assert.IsNotNull(RecentFile);
-        Assert.AreEqual(fileTitleExpected + ".docx", RecentFile.Title);
-    }
+        var file = await PostAsync<FileDto<int>>("file/" + fileId + "/recent", null, _options);
 
-    private async Task<FileDto<int>> AddToRecentAsync(int fileId)
-    {
-        var file = await FileStorageService.GetFileAsync(fileId, -1);
-        EntryManager.MarkAsRecent(file);
-
-        return await FileDtoHelper.GetAsync(file);
+        Assert.IsNotNull(file);
+        Assert.AreEqual(fileName, file.Title);
     }
 }

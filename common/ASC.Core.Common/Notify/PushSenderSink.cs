@@ -30,13 +30,13 @@ namespace ASC.Core.Common.Notify;
 
 class PushSenderSink : Sink
 {
-    private readonly ILog _logger;
+    private readonly ILogger<PushSenderSink> _logger;
     private bool _configured = true;
 
-    public PushSenderSink(IServiceProvider serviceProvider, IOptionsMonitor<ILog> options)
+    public PushSenderSink(IServiceProvider serviceProvider, ILogger<PushSenderSink> logger)
     {
         _serviceProvider = serviceProvider;
-        _logger = options.CurrentValue;
+        _logger = logger;
     }
 
     private readonly IServiceProvider _serviceProvider;
@@ -72,12 +72,12 @@ class PushSenderSink : Sink
                 catch (InvalidOperationException)
                 {
                     _configured = false;
-                    _logger.Debug("push sender endpoint is not configured!");
+                    _logger.DebugPushSender();
                 }
             }
             else
             {
-                _logger.Debug("push sender endpoint is not configured!");
+                _logger.DebugPushSender();
             }
 
             return new SendResponse(message, Constants.NotifyPushSenderSysName, SendResult.OK);

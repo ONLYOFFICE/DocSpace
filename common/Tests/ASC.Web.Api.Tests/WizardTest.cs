@@ -38,10 +38,6 @@ public class WizardData
 class WizardTest : BaseApiTests
 {
     private UserInfo _newUser;
-    private readonly WebstudioDbContext _webstudioDbContext;
-    private readonly DbSettingsManager _dbSettingsManager;
-    private readonly IServiceProvider _serviceProvider;
-    private readonly WizardSettings _wizardSettings;
 
     [OneTimeSetUp]
     public override void SetUp()

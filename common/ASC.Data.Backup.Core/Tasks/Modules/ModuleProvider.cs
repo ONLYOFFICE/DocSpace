@@ -31,7 +31,7 @@ public class ModuleProvider
 {
     public List<IModuleSpecifics> AllModules { get; }
 
-    public ModuleProvider(ILog logger, Helpers helpers, CoreSettings coreSettings)
+    public ModuleProvider(ILogger<ModuleProvider> logger, Helpers helpers, CoreSettings coreSettings)
     {
         AllModules = new List<IModuleSpecifics>
             {

@@ -362,7 +362,8 @@ class FileDownloadOperation<T> : FileOperation<FileDownloadOperationData<T>, T>
                         catch (Exception ex)
                         {
                             Error = ex.Message;
-                            Logger.Error(Error, ex);
+
+                            Logger.ErrorWithException(ex);
                         }
                     }
                     else

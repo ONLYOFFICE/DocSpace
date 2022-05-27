@@ -84,7 +84,7 @@ public class TfaappController : BaseSettingsController
         _signature = signature;
     }
 
-    [Read("tfaapp")]
+    [HttpGet("tfaapp")]
     public IEnumerable<TfaSettingsRequestsDto> GetTfaSettings()
     {
         var result = new List<TfaSettingsRequestsDto>();
@@ -118,7 +118,7 @@ public class TfaappController : BaseSettingsController
         return result;
     }
 
-    [Create("tfaapp/validate")]
+    [HttpPost("tfaapp/validate")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "TfaActivation,Everyone")]
     public bool TfaValidateAuthCode(TfaValidateRequestsDto inDto)
     {
@@ -127,7 +127,7 @@ public class TfaappController : BaseSettingsController
         return _tfaManager.ValidateAuthCode(user, inDto.Code);
     }
 
-    [Read("tfaapp/confirm")]
+    [HttpGet("tfaapp/confirm")]
     public object TfaConfirmUrl()
     {
         var user = _userManager.GetUsers(_authContext.CurrentAccount.ID);
@@ -153,20 +153,8 @@ public class TfaappController : BaseSettingsController
         return string.Empty;
     }
 
-    [Update("tfaapp")]
-    public bool TfaSettingsFromBody([FromBody] TfaRequestsDto inDto)
-    {
-        return TfaSettingsUpdate(inDto);
-    }
-
-    [Update("tfaapp")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public bool TfaSettingsFromForm([FromForm] TfaRequestsDto inDto)
-    {
-        return TfaSettingsUpdate(inDto);
-    }
-
-    private bool TfaSettingsUpdate(TfaRequestsDto inDto)
+    [HttpPut("tfaapp")]
+    public bool TfaSettings(TfaRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -247,7 +235,7 @@ public class TfaappController : BaseSettingsController
         return result;
     }
 
-    [Read("tfaapp/setup")]
+    [HttpGet("tfaapp/setup")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "TfaActivation")]
     public SetupCode TfaAppGenerateSetupCode()
     {
@@ -269,7 +257,7 @@ public class TfaappController : BaseSettingsController
         return _tfaManager.GenerateSetupCode(currentUser);
     }
 
-    [Read("tfaappcodes")]
+    [HttpGet("tfaappcodes")]
     public IEnumerable<object> TfaAppGetCodes()
     {
         var currentUser = _userManager.GetUsers(_authContext.CurrentAccount.ID);
@@ -287,7 +275,7 @@ public class TfaappController : BaseSettingsController
         return _settingsManager.LoadForCurrentUser<TfaAppUserSettings>().CodesSetting.Select(r => new { r.IsUsed, Code = r.GetEncryptedCode(_instanceCrypto, _signature) }).ToList();
     }
 
-    [Update("tfaappnewcodes")]
+    [HttpPut("tfaappnewcodes")]
     public IEnumerable<object> TfaAppRequestNewCodes()
     {
         var currentUser = _userManager.GetUsers(_authContext.CurrentAccount.ID);
@@ -307,20 +295,8 @@ public class TfaappController : BaseSettingsController
         return codes;
     }
 
-    [Update("tfaappnewapp")]
-    public object TfaAppNewAppFromBody([FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] TfaRequestsDto inDto)
-    {
-        return TfaAppNewApp(inDto);
-    }
-
-    [Update("tfaappnewapp")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public object TfaAppNewAppFromForm([FromForm] TfaRequestsDto inDto)
-    {
-        return TfaAppNewApp(inDto);
-    }
-
-    private object TfaAppNewApp(TfaRequestsDto inDto)
+    [HttpPut("tfaappnewapp")]
+    public object TfaAppNewApp(TfaRequestsDto inDto)
     {
         var id = inDto?.Id ?? Guid.Empty;
         var isMe = id.Equals(Guid.Empty);

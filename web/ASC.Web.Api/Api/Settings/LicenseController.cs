@@ -39,11 +39,11 @@ public class LicenseController : BaseSettingsController
     private readonly LicenseReader _licenseReader;
     private readonly SettingsManager _settingsManager;
     private readonly CoreBaseSettings _coreBaseSettings;
-    private readonly ILog _log;
+    private readonly ILogger _log;
     private readonly PaymentManager _paymentManager;
 
     public LicenseController(
-        IOptionsMonitor<ILog> option,
+        ILoggerProvider option,
         MessageService messageService,
         ApiContext apiContext,
         UserManager userManager,
@@ -59,7 +59,7 @@ public class LicenseController : BaseSettingsController
         PaymentManager paymentManager,
         IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
-        _log = option.Get("ASC.Api");
+        _log = option.CreateLogger("ASC.Api");
         _firstTimeTenantSettings = firstTimeTenantSettings;
         _messageService = messageService;
         _userManager = userManager;
@@ -72,7 +72,8 @@ public class LicenseController : BaseSettingsController
         _paymentManager = paymentManager;
     }
 
-    [Read("license/refresh", Check = false)]
+    [HttpGet("license/refresh")]
+    [AllowNotPayment]
     public bool RefreshLicense()
     {
         if (!_coreBaseSettings.Standalone)
@@ -84,7 +85,8 @@ public class LicenseController : BaseSettingsController
         return true;
     }
 
-    [Create("license/accept", Check = false)]
+    [AllowNotPayment]
+    [HttpPost("license/accept")]
     public object AcceptLicense()
     {
         if (!_coreBaseSettings.Standalone)
@@ -120,7 +122,7 @@ public class LicenseController : BaseSettingsController
     }
 
     ///<visible>false</visible>
-    [Create("license/trial")]
+    [HttpPost("license/trial")]
     public bool ActivateTrial()
     {
         if (!_coreBaseSettings.Standalone)
@@ -178,14 +180,16 @@ public class LicenseController : BaseSettingsController
     }
 
     [AllowAnonymous]
-    [Read("license/required", Check = false)]
+    [AllowNotPayment]
+    [HttpGet("license/required")]
     public bool RequestLicense()
     {
         return _firstTimeTenantSettings.RequestLicense;
     }
 
 
-    [Create("license", Check = false)]
+    [AllowNotPayment]
+    [HttpPost("license")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard, Administrators")]
     public object UploadLicense([FromForm] UploadLicenseRequestsDto inDto)
     {
@@ -217,22 +221,22 @@ public class LicenseController : BaseSettingsController
         }
         catch (LicenseExpiredException ex)
         {
-            _log.Error("License upload", ex);
+            _log.ErrorLicenseUpload(ex);
             throw new Exception(Resource.LicenseErrorExpired);
         }
         catch (LicenseQuotaException ex)
         {
-            _log.Error("License upload", ex);
+            _log.ErrorLicenseUpload(ex);
             throw new Exception(Resource.LicenseErrorQuota);
         }
         catch (LicensePortalException ex)
         {
-            _log.Error("License upload", ex);
+            _log.ErrorLicenseUpload(ex);
             throw new Exception(Resource.LicenseErrorPortal);
         }
         catch (Exception ex)
         {
-            _log.Error("License upload", ex);
+            _log.ErrorLicenseUpload(ex);
             throw new Exception(Resource.LicenseError);
         }
     }

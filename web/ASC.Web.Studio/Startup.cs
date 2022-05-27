@@ -56,6 +56,13 @@ public class Startup : BaseStartup
         });
 
         app.MapWhen(
+              context => context.Request.Path.ToString().EndsWith("ssologin.ashx"),
+              appBranch =>
+              {
+                  appBranch.UseSsoHandler();
+              });
+
+        app.MapWhen(
             context => context.Request.Path.ToString().EndsWith("login.ashx"),
             appBranch =>
             {
@@ -76,5 +83,6 @@ public class Startup : BaseStartup
         DIHelper.TryAdd<GoogleLoginProvider>();
         DIHelper.TryAdd<FacebookLoginProvider>();
         DIHelper.TryAdd<LinkedInLoginProvider>();
+        DIHelper.TryAdd<SsoHandlerService>();
     }
 }

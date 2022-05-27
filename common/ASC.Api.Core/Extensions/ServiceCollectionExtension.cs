@@ -83,7 +83,7 @@ public static class ServiceCollectionExtension
                 var cfg = sp.GetRequiredService<IConfiguration>();
                 var settings = cfg.GetSection("RabbitMQ").Get<RabbitMQSettings>();
 
-                var logger = sp.GetRequiredService<IOptionsMonitor<ILog>>();
+                var logger = sp.GetRequiredService<ILogger<DefaultRabbitMQPersistentConnection>>();
 
                 var factory = new ConnectionFactory()
                 {
@@ -117,7 +117,7 @@ public static class ServiceCollectionExtension
 
                 var rabbitMQPersistentConnection = sp.GetRequiredService<IRabbitMQPersistentConnection>();
                 var iLifetimeScope = sp.GetRequiredService<ILifetimeScope>();
-                var logger = sp.GetRequiredService<IOptionsMonitor<ILog>>();
+                var logger = sp.GetRequiredService<ILogger<EventBusRabbitMQ>>();
                 var eventBusSubcriptionsManager = sp.GetRequiredService<IEventBusSubscriptionsManager>();
 
                 var serializer = new EventBus.Serializers.ProtobufSerializer();

@@ -60,15 +60,8 @@ public abstract class FoldersController<T> : ApiControllerBase
     /// <param name="folderId">Parent folder ID</param>
     /// <param name="title">Title of new folder</param>
     /// <returns>New folder contents</returns>
-    [Create("folder/{folderId}", order: int.MaxValue, DisableFormat = true)]
-    public Task<FolderDto<T>> CreateFolderFromBodyAsync(T folderId, [FromBody] CreateFolderRequestDto inDto)
-    {
-        return _foldersControllerHelper.CreateFolderAsync(folderId, inDto.Title);
-    }
-
-    [Create("folder/{folderId}", order: int.MaxValue, DisableFormat = true)]
-    [Consumes("application/x-www-form-urlencoded")]
-    public Task<FolderDto<T>> CreateFolderFromFormAsync(T folderId, [FromForm] CreateFolderRequestDto inDto)
+    [HttpPost("folder/{folderId}")]
+    public Task<FolderDto<T>> CreateFolderAsync(T folderId, CreateFolderRequestDto inDto)
     {
         return _foldersControllerHelper.CreateFolderAsync(folderId, inDto.Title);
     }
@@ -82,10 +75,10 @@ public abstract class FoldersController<T> : ApiControllerBase
     /// <param name="deleteAfter">Delete after finished</param>
     /// <param name="immediately">Don't move to the Recycle Bin</param>
     /// <returns>Operation result</returns>
-    [Delete("folder/{folderId}", order: int.MaxValue - 1, DisableFormat = true)]
-    public Task<IEnumerable<FileOperationDto>> DeleteFolder(T folderId, bool deleteAfter, bool immediately)
+    [HttpDelete("folder/{folderId}")]
+    public Task<IEnumerable<FileOperationDto>> DeleteFolder(T folderId, DeleteFolderDto model)
     {
-        return _foldersControllerHelper.DeleteFolder(folderId, deleteAfter, immediately);
+        return _foldersControllerHelper.DeleteFolder(folderId, model.DeleteAfter, model.Immediately);
     }
 
     /// <summary>
@@ -99,7 +92,7 @@ public abstract class FoldersController<T> : ApiControllerBase
     /// <param name="userIdOrGroupId" optional="true">User or group ID</param>
     /// <param name="filterType" optional="true" remark="Allowed values: None (0), FilesOnly (1), FoldersOnly (2), DocumentsOnly (3), PresentationsOnly (4), SpreadsheetsOnly (5) or ImagesOnly (7)">Filter type</param>
     /// <returns>Folder contents</returns>
-    [Read("{folderId}", order: int.MaxValue, DisableFormat = true)]
+    [HttpGet("{folderId}")]
     public async Task<FolderContentDto<T>> GetFolderAsync(T folderId, Guid userIdOrGroupId, FilterType filterType, bool searchInContent, bool withsubfolders)
     {
         var folder = await _foldersControllerHelper.GetFolderAsync(folderId, userIdOrGroupId, filterType, searchInContent, withsubfolders);
@@ -113,7 +106,7 @@ public abstract class FoldersController<T> : ApiControllerBase
     /// <short>Folder information</short>
     /// <category>Folders</category>
     /// <returns>Folder info</returns>
-    [Read("folder/{folderId}", order: int.MaxValue, DisableFormat = true)]
+    [HttpGet("folder/{folderId}")]
     public Task<FolderDto<T>> GetFolderInfoAsync(T folderId)
     {
         return _foldersControllerHelper.GetFolderInfoAsync(folderId);
@@ -125,19 +118,19 @@ public abstract class FoldersController<T> : ApiControllerBase
     /// <param name="folderId"></param>
     /// <category>Folders</category>
     /// <returns>Parent folders</returns>
-    [Read("folder/{folderId}/path")]
+    [HttpGet("folder/{folderId}/path")]
     public IAsyncEnumerable<FileEntryDto> GetFolderPathAsync(T folderId)
     {
         return _foldersControllerHelper.GetFolderPathAsync(folderId);
     }
 
-    [Read("{folderId}/subfolders")]
+    [HttpGet("{folderId}/subfolders")]
     public IAsyncEnumerable<FileEntryDto> GetFoldersAsync(T folderId)
     {
         return _foldersControllerHelper.GetFoldersAsync(folderId);
     }
 
-    [Read("{folderId}/news")]
+    [HttpGet("{folderId}/news")]
     public Task<List<FileEntryDto>> GetNewItemsAsync(T folderId)
     {
         return _foldersControllerHelper.GetNewItemsAsync(folderId);
@@ -153,15 +146,8 @@ public abstract class FoldersController<T> : ApiControllerBase
     /// <param name="folderId">Folder ID</param>
     /// <param name="title">New title</param>
     /// <returns>Folder contents</returns>
-    [Update("folder/{folderId}", order: int.MaxValue, DisableFormat = true)]
-    public Task<FolderDto<T>> RenameFolderFromBodyAsync(T folderId, [FromBody] CreateFolderRequestDto inDto)
-    {
-        return _foldersControllerHelper.RenameFolderAsync(folderId, inDto.Title);
-    }
-
-    [Update("folder/{folderId}", order: int.MaxValue, DisableFormat = true)]
-    [Consumes("application/x-www-form-urlencoded")]
-    public Task<FolderDto<T>> RenameFolderFromFormAsync(T folderId, [FromForm] CreateFolderRequestDto inDto)
+    [HttpPut("folder/{folderId}")]
+    public Task<FolderDto<T>> RenameFolderAsync(T folderId, CreateFolderRequestDto inDto)
     {
         return _foldersControllerHelper.RenameFolderAsync(folderId, inDto.Title);
     }
@@ -194,7 +180,7 @@ public class FoldersControllerCommon : ApiControllerBase
     /// </short>
     /// <category>Folders</category>
     /// <returns>Common folder contents</returns>
-    [Read("@common")]
+    [HttpGet("@common")]
     public async Task<FolderContentDto<int>> GetCommonFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool searchInContent, bool withsubfolders)
     {
         return await _foldersControllerHelperInt.GetFolderAsync(await _globalFolderHelper.FolderCommonAsync, userIdOrGroupId, filterType, searchInContent, withsubfolders);
@@ -206,7 +192,7 @@ public class FoldersControllerCommon : ApiControllerBase
     /// <short>Section Favorite</short>
     /// <category>Folders</category>
     /// <returns>Favorites contents</returns>
-    [Read("@favorites")]
+    [HttpGet("@favorites")]
     public async Task<FolderContentDto<int>> GetFavoritesFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool searchInContent, bool withsubfolders)
     {
         return await _foldersControllerHelperInt.GetFolderAsync(await _globalFolderHelper.FolderFavoritesAsync, userIdOrGroupId, filterType, searchInContent, withsubfolders);
@@ -220,13 +206,13 @@ public class FoldersControllerCommon : ApiControllerBase
     /// </short>
     /// <category>Folders</category>
     /// <returns>My folder contents</returns>
-    [Read("@my")]
+    [HttpGet("@my")]
     public Task<FolderContentDto<int>> GetMyFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool searchInContent, bool withsubfolders)
     {
         return _foldersControllerHelperInt.GetFolderAsync(_globalFolderHelper.FolderMy, userIdOrGroupId, filterType, searchInContent, withsubfolders);
     }
 
-    [Read("@privacy")]
+    [HttpGet("@privacy")]
     public async Task<FolderContentDto<int>> GetPrivacyFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool searchInContent, bool withsubfolders)
     {
         if (PrivacyRoomSettings.IsAvailable(_tenantManager))
@@ -245,7 +231,7 @@ public class FoldersControllerCommon : ApiControllerBase
     /// </short>
     /// <category>Folders</category>
     /// <returns>Projects folder contents</returns>
-    [Read("@projects")]
+    [HttpGet("@projects")]
     public async Task<FolderContentDto<string>> GetProjectsFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool searchInContent, bool withsubfolders)
     {
         return await _foldersControllerHelperString.GetFolderAsync(await _globalFolderHelper.GetFolderProjectsAsync<string>(), userIdOrGroupId, filterType, searchInContent, withsubfolders);
@@ -257,13 +243,13 @@ public class FoldersControllerCommon : ApiControllerBase
     /// <short>Section Recent</short>
     /// <category>Folders</category>
     /// <returns>Recent contents</returns>
-    [Read("@recent")]
+    [HttpGet("@recent")]
     public async Task<FolderContentDto<int>> GetRecentFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool searchInContent, bool withsubfolders)
     {
         return await _foldersControllerHelperInt.GetFolderAsync(await _globalFolderHelper.FolderRecentAsync, userIdOrGroupId, filterType, searchInContent, withsubfolders);
     }
 
-    [Read("@root")]
+    [HttpGet("@root")]
     public async Task<IEnumerable<FolderContentDto<int>>> GetRootFoldersAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders, bool withoutTrash, bool searchInContent, bool withoutAdditionalFolder)
     {
         var foldersIds = await _foldersControllerHelperInt.GetRootFoldersIdsAsync(withoutTrash, withoutAdditionalFolder);
@@ -285,7 +271,7 @@ public class FoldersControllerCommon : ApiControllerBase
     /// </short>
     /// <category>Folders</category>
     /// <returns>Shared folder contents</returns>
-    [Read("@share")]
+    [HttpGet("@share")]
     public async Task<FolderContentDto<int>> GetShareFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool searchInContent, bool withsubfolders)
     {
         return await _foldersControllerHelperInt.GetFolderAsync(await _globalFolderHelper.FolderShareAsync, userIdOrGroupId, filterType, searchInContent, withsubfolders);
@@ -297,7 +283,7 @@ public class FoldersControllerCommon : ApiControllerBase
     /// <short>Section Template</short>
     /// <category>Folders</category>
     /// <returns>Templates contents</returns>
-    [Read("@templates")]
+    [HttpGet("@templates")]
     public async Task<FolderContentDto<int>> GetTemplatesFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool searchInContent, bool withsubfolders)
     {
         return await _foldersControllerHelperInt.GetFolderAsync(await _globalFolderHelper.FolderTemplatesAsync, userIdOrGroupId, filterType, searchInContent, withsubfolders);
@@ -311,7 +297,7 @@ public class FoldersControllerCommon : ApiControllerBase
     /// </short>
     /// <category>Folders</category>
     /// <returns>Trash folder contents</returns>
-    [Read("@trash")]
+    [HttpGet("@trash")]
     public Task<FolderContentDto<int>> GetTrashFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool searchInContent, bool withsubfolders)
     {
         return _foldersControllerHelperInt.GetFolderAsync(Convert.ToInt32(_globalFolderHelper.FolderTrash), userIdOrGroupId, filterType, searchInContent, withsubfolders);

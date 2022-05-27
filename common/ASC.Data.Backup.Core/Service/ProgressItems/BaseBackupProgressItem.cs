@@ -94,10 +94,10 @@ public abstract class BaseBackupProgressItem : DistributedTaskProgress
         }
     }
 
-    protected ILog Logger { get; set; }
+    protected ILogger Logger { get; set; }
     protected IServiceScopeFactory _serviceScopeProvider;
 
-    protected BaseBackupProgressItem(ILog logger, IServiceScopeFactory serviceScopeFactory)
+    protected BaseBackupProgressItem(ILogger logger, IServiceScopeFactory serviceScopeFactory)
     {
         Logger = logger;
         _serviceScopeProvider = serviceScopeFactory;

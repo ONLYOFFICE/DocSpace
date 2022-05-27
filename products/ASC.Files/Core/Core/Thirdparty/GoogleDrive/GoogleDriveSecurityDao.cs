@@ -36,7 +36,7 @@ internal class GoogleDriveSecurityDao : GoogleDriveDaoBase, ISecurityDao<string>
         TenantUtil tenantUtil,
         DbContextManager<FilesDbContext> dbContextManager,
         SetupInfo setupInfo,
-        IOptionsMonitor<ILog> monitor,
+        ILogger<GoogleDriveSecurityDao> monitor,
         FileUtility fileUtility,
         TempPath tempPath)
         : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)

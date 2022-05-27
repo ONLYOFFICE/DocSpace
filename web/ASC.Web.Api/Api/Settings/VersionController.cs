@@ -49,32 +49,21 @@ public class VersionController : BaseSettingsController
     }
 
     [AllowAnonymous]
-    [Read("version/build", false)]
+    [AllowNotPayment]
+    [HttpGet("version/build")]
     public Task<BuildVersion> GetBuildVersionsAsync()
     {
         return _buildVersion.GetCurrentBuildVersionAsync();
     }
 
-    [Read("version")]
+    [HttpGet("version")]
     public TenantVersionDto GetVersions()
     {
         return new TenantVersionDto(Tenant.Version, _tenantManager.GetTenantVersions());
     }
 
-    [Update("version")]
-    public TenantVersionDto SetVersionFromBody([FromBody] SettingsRequestsDto inDto)
-    {
-        return SetVersion(inDto);
-    }
-
-    [Update("version")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public TenantVersionDto SetVersionFromForm([FromForm] SettingsRequestsDto inDto)
-    {
-        return SetVersion(inDto);
-    }
-
-    private TenantVersionDto SetVersion(SettingsRequestsDto inDto)
+    [HttpPut("version")]
+    public TenantVersionDto SetVersion(SettingsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 

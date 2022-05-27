@@ -30,7 +30,7 @@ namespace ASC.Api.Core.Middleware;
 public class ProductSecurityFilter : IResourceFilter
 {
     private static readonly IDictionary<string, Guid> _products;
-    private readonly ILog _logger;
+    private readonly ILogger<ProductSecurityFilter> _logger;
     private readonly WebItemSecurity _webItemSecurity;
     private readonly AuthContext _authContext;
 
@@ -63,7 +63,7 @@ public class ProductSecurityFilter : IResourceFilter
 
 
     public ProductSecurityFilter(
-        ILog logger,
+        ILogger<ProductSecurityFilter> logger,
         WebItemSecurity webItemSecurity,
         AuthContext authContext)
     {
@@ -94,7 +94,7 @@ public class ProductSecurityFilter : IResourceFilter
                 if (!_webItemSecurity.IsAvailableForMe(pid))
                 {
                     context.Result = new StatusCodeResult((int)HttpStatusCode.Forbidden);
-                    _logger.WarnFormat("Product {0} denied for user {1}", controllerActionDescriptor.ControllerName, _authContext.CurrentAccount);
+                    _logger.WarningPaymentRequired(controllerActionDescriptor.ControllerName, _authContext.CurrentAccount.ID);
                 }
             }
         }

@@ -36,7 +36,7 @@ public class CapabilitiesController : ControllerBase
     private readonly ProviderManager _providerManager;
     private readonly IConfiguration _configuration;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly ILog _log;
+    private readonly ILogger _log;
 
 
     public CapabilitiesController(
@@ -45,14 +45,14 @@ public class CapabilitiesController : ControllerBase
         ProviderManager providerManager,
         IConfiguration configuration,
         IHttpContextAccessor httpContextAccessor,
-        IOptionsMonitor<ILog> options)
+        ILogger<CapabilitiesController> logger)
     {
         _coreBaseSettings = coreBaseSettings;
         _tenantManager = tenantManager;
         _providerManager = providerManager;
         _configuration = configuration;
         _httpContextAccessor = httpContextAccessor;
-        _log = options.CurrentValue;
+        _log = logger;
     }
 
     ///<summary>
@@ -62,7 +62,8 @@ public class CapabilitiesController : ControllerBase
     ///Get portal capabilities
     ///</short>
     ///<returns>CapabilitiesData</returns>
-    [Read(Check = false)] //NOTE: this method doesn't requires auth!!!  //NOTE: this method doesn't check payment!!!
+    [HttpGet] //NOTE: this method doesn't requires auth!!!  //NOTE: this method doesn't check payment!!!
+    [AllowNotPayment]
     public CapabilitiesDto GetPortalCapabilities()
     {
         var result = new CapabilitiesDto
@@ -87,7 +88,7 @@ public class CapabilitiesController : ControllerBase
         }
         catch (Exception ex)
         {
-            _log.Error(ex.Message);
+            _log.ErrorWithException(ex);
         }
 
         try
@@ -101,7 +102,7 @@ public class CapabilitiesController : ControllerBase
         }
         catch (Exception ex)
         {
-            _log.Error(ex.Message);
+            _log.ErrorWithException(ex);
         }
 
         try
@@ -125,7 +126,7 @@ public class CapabilitiesController : ControllerBase
         }
         catch (Exception ex)
         {
-            _log.Error(ex.Message);
+            _log.ErrorWithException(ex);
         }
 
         return result;
