@@ -47,10 +47,9 @@ export default function withFileActions(WrappedFileItem) {
       const emptyFolders = files.filter((f) => f.isEmptyDirectory);
 
       if (emptyFolders.length > 0) {
-        uploadEmptyFolders(emptyFolders, uploadToFolder).then(() => {
-          const onlyFiles = files.filter((f) => !f.isEmptyDirectory);
-          if (onlyFiles.length > 0) startUpload(onlyFiles, uploadToFolder, t);
-        });
+        uploadEmptyFolders(emptyFolders, uploadToFolder);
+        const onlyFiles = files.filter((f) => !f.isEmptyDirectory);
+        if (onlyFiles.length > 0) startUpload(onlyFiles, uploadToFolder, t);
       } else {
         startUpload(files, uploadToFolder, t);
       }
@@ -263,6 +262,7 @@ export default function withFileActions(WrappedFileItem) {
         onSelectItem,
         setNewBadgeCount,
         openFileAction,
+        uploadEmptyFolders,
       } = filesActionsStore;
       const { setSharingPanelVisible } = dialogsStore;
       const {
@@ -288,7 +288,7 @@ export default function withFileActions(WrappedFileItem) {
         setEnabledHotkeys,
       } = filesStore;
 
-      const { startUpload, uploadEmptyFolders } = uploadDataStore;
+      const { startUpload } = uploadDataStore;
       const { type, extension, id } = fileActionStore;
 
       const selectedItem = selection.find(
