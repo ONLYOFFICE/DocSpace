@@ -32,7 +32,7 @@ describe("<Backdrop />", () => {
   });
 
   it("accepts className array", () => {
-    const testArr = ["test", "backdrop-active"];
+    const testArr = ["test", "backdrop-active not-selectable"];
     const wrapper = mount(<Backdrop {...baseProps} className={["test"]} />);
 
     expect(wrapper.prop("className")).toEqual(expect.arrayContaining(testArr));
