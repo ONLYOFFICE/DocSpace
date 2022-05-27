@@ -96,6 +96,11 @@ const StyledTableContainer = styled(TableContainer)`
 
 StyledTableContainer.defaultProps = { theme: Base };
 
+const TABLE_VERSION = "2";
+const TABLE_COLUMNS = `filesTableColumns_ver-${TABLE_VERSION}`;
+const COLUMNS_SIZE = `filesColumnsSize_ver-${TABLE_VERSION}`;
+const COLUMNS_SIZE_INFO_PANEL = `filesColumnsSizeInfoPanel_ver-${TABLE_VERSION}`;
+
 const Table = ({
   filesList,
   sectionWidth,
@@ -105,6 +110,7 @@ const Table = ({
   setHeaderBorder,
   theme,
   infoPanelVisible,
+  userId,
 }) => {
   const ref = useRef(null);
 
@@ -123,9 +129,19 @@ const Table = ({
     }
   }, [sectionWidth]);
 
+  const tableColumns = `${TABLE_COLUMNS}=${userId}`;
+  const columnStorageName = `${COLUMNS_SIZE}=${userId}`;
+  const columnInfoPanelStorageName = `${COLUMNS_SIZE_INFO_PANEL}=${userId}`;
+
   return (
     <StyledTableContainer forwardedRef={ref}>
-      <TableHeader sectionWidth={sectionWidth} containerRef={ref} />
+      <TableHeader
+        sectionWidth={sectionWidth}
+        containerRef={ref}
+        tableStorageName={tableColumns}
+        columnStorageName={columnStorageName}
+        columnInfoPanelStorageName={columnInfoPanelStorageName}
+      />
       <TableBody>
         {filesList.map((item, index) => (
           <TableRow
@@ -135,6 +151,9 @@ const Table = ({
             setFirsElemChecked={setFirsElemChecked}
             setHeaderBorder={setHeaderBorder}
             theme={theme}
+            tableColumns={tableColumns}
+            columnStorageName={columnStorageName}
+            columnInfoPanelStorageName={columnInfoPanelStorageName}
           />
         ))}
       </TableBody>
@@ -160,6 +179,7 @@ export default inject(({ filesStore, infoPanelStore, auth }) => {
     setFirsElemChecked,
     setHeaderBorder,
     theme: auth.settingsStore.theme,
+    userId: auth.userStore.user.id,
     infoPanelVisible,
   };
 })(observer(Table));

@@ -361,7 +361,7 @@ class Tile extends React.PureComponent {
 
   changeCheckbox = (e) => {
     const { onSelect, item } = this.props;
-    onSelect && onSelect(e.target.checked, item);
+    onSelect && onSelect(!e.target.checked, item);
   };
 
   onFileIconClick = () => {
@@ -369,6 +369,18 @@ class Tile extends React.PureComponent {
 
     const { onSelect, item } = this.props;
     onSelect && onSelect(true, item);
+  };
+
+  onFileClick = (e) => {
+    const { onSelect, item, checked, setSelection } = this.props;
+    if (e.detail === 1) {
+      if (e.target.nodeName === "INPUT" || e.target.nodeName === "rect") {
+        onSelect && onSelect(!checked, item);
+      } else {
+        setSelection && setSelection([]);
+        onSelect && onSelect(!checked, item);
+      }
+    }
   };
 
   render() {
@@ -445,6 +457,7 @@ class Tile extends React.PureComponent {
         inProgress={inProgress}
         isDesktop={isDesktop}
         showHotkeyBorder={showHotkeyBorder}
+        onClick={this.onFileClick}
       >
         {isFolder || (!fileExst && id === -1) ? (
           <>

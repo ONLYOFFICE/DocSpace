@@ -188,7 +188,7 @@ namespace ASC.Files.Core.Data
             }
         }
 
-        public ValueTask<List<FileShareRecord>> GetSharesAsync(IEnumerable<Guid> subjects)
+        public Task<List<FileShareRecord>> GetSharesAsync(IEnumerable<Guid> subjects)
         {
             var q = GetQuery(r => subjects.Contains(r.Subject));
             return FromQueryAsync(q);
@@ -383,12 +383,15 @@ namespace ASC.Files.Core.Data
             return q;
         }
 
-        protected ValueTask<List<FileShareRecord>> FromQueryAsync(IQueryable<DbFilesSecurity> filesSecurities)
+        protected async Task<List<FileShareRecord>> FromQueryAsync(IQueryable<DbFilesSecurity> filesSecurities)
         {
-            return filesSecurities
-                .AsAsyncEnumerable()
-                .SelectAwait(async e => await ToFileShareRecordAsync(e))
-                .ToListAsync();
+            var data = await filesSecurities.ToListAsync();
+            var result = new List<FileShareRecord>();
+            foreach (var file in data)
+            {
+                result.Add(await ToFileShareRecordAsync(file));
+            }
+            return result;
         }
 
         private async Task<FileShareRecord> ToFileShareRecordAsync(DbFilesSecurity r)

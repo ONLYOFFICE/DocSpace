@@ -115,7 +115,7 @@
   "PasswordLimitDigits": "číslice",
   "PasswordLimitLength": "od {{fromNumber}} do {{toNumber}} znakov",
   "PasswordLimitMessage": "Heslo musí obsahovať",
-  "PasswordLimitSpecialSymbols": "special characters",
+  "PasswordLimitSpecialSymbols": "špeciálne znaky",
   "PasswordLimitUpperCase": "veľké písmená",
   "PasswordMinimumLength": "Minimálna dĺžka",
   "People": "Ľudia",
