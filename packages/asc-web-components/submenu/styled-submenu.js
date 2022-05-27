@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-
+import Base from "../themes/base";
 import { tablet } from "../utils/device";
 import { isMobileOnly } from "react-device-detect";
 
@@ -37,12 +37,16 @@ export const StyledSubmenu = styled.div`
   }
 `;
 
+StyledSubmenu.defaultProps = { theme: Base };
+
 export const StyledSubmenuBottomLine = styled.div`
   height: 1px;
   width: 100%;
   margin-top: -1px;
   background: ${(props) => props.theme.submenu.lineColor};
 `;
+
+StyledSubmenuBottomLine.defaultProps = { theme: Base };
 
 export const StyledSubmenuContentWrapper = styled.div`
   width: 100%;
@@ -85,6 +89,8 @@ export const StyledSubmenuItemText = styled.div`
   }
 `;
 
+StyledSubmenuItemText.defaultProps = { theme: Base };
+
 export const StyledSubmenuItemLabel = styled.div`
   z-index: 1;
   width: calc(100% + 28px);
@@ -95,3 +101,5 @@ export const StyledSubmenuItemLabel = styled.div`
   background-color: ${(props) =>
     props.isActive ? props.theme.submenu.bottomLineColor : "none"};
 `;
+
+StyledSubmenuItemLabel.defaultProps = { theme: Base };
