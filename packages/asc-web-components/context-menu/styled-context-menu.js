@@ -147,6 +147,8 @@ const StyledContextMenu = styled.div`
     color: ${(props) => props.theme.dropDownItem.color};
     text-transform: none;
 
+    -webkit-touch-callout: none;
+
     &:hover {
       background-color: ${(props) =>
         props.noHover
