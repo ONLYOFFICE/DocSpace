@@ -1,5 +1,6 @@
-﻿{
-  "CustomNewDepartment": "{{groupCaption}} (creation)",
+{
+  "AddHeadOfDepartment": "Pievienot nodaļas vadītāju",
+  "CustomNewDepartment": "{{groupCaption}} (izveidošana)",
   "GroupAction": "Grupas darbība",
   "Members": "Dalībnieki",
   "SearchAddedMembers": "Meklēt pievienotos dalībniekus",

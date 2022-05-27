@@ -81,7 +81,7 @@ const SectionBodyContent = ({
       case "admin":
         return 0;
       case "connected-clouds":
-        return isAdmin ? (isPersonal ? 0 : 2) : 1;
+        return isPersonal ? 0 : isAdmin ? 2 : 1;
       default:
         return isAdmin ? 1 : 0;
     }
@@ -94,7 +94,7 @@ const SectionBodyContent = ({
     <Error403 />
   ) : isErrorSettings ? (
     <Error520 />
-  ) : (
+  ) : !isPersonal ? (
     <div>
       <TabsContainer
         elements={elements}
@@ -102,6 +102,8 @@ const SectionBodyContent = ({
         selectedItem={selectedTab()}
       />
     </div>
+  ) : (
+    <div>{elements[0].content}</div>
   );
 };
 

@@ -106,6 +106,7 @@ class HelpButton extends React.Component {
             offsetLeft={offsetLeft}
             afterShow={this.afterShow}
             afterHide={this.afterHide}
+            maxWidth={tooltipMaxWidth}
           >
             {tooltipContent}
           </Tooltip>

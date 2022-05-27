@@ -7,16 +7,8 @@ class InfoPanelStore {
     makeAutoObservable(this);
   }
 
-  onHeaderCrossClick = () => {
-    this.isVisible = false;
-  };
-
   toggleIsVisible = () => {
     this.isVisible = !this.isVisible;
-  };
-
-  setInfoPanelIsVisible = (isVisible) => {
-    this.isVisible = isVisible;
   };
 
   setVisible = () => {

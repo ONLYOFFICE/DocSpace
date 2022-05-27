@@ -16,10 +16,11 @@ import { inject, observer } from "mobx-react";
 
 const StyledContainer = styled.div`
   width: 100%;
-  height: ${(props) =>
+  height: ${(props) => `${props.contentHeight}px`};
+  /* height: ${(props) =>
     (props.isTabletView || isMobileOnly) && !isFirefox
       ? `${props.contentHeight}px`
-      : "100vh"};
+      : "100vh"}; */
 
   #customScrollBar {
     z-index: 0;
@@ -115,6 +116,10 @@ const Layout = (props) => {
       //     height = window.screen.availHeight - correctorTabletSafari;
       //   }
       // }
+
+      let vh = (height - 48) * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
+
       setContentHeight(height);
     };
     intervalHandler = setInterval(() => {

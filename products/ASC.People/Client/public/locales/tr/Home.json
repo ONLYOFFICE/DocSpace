@@ -1,4 +1,4 @@
-﻿{
+{
   "Administrator": "Yönetici",
   "ChangeToGuest": "Şuna değiştir {{guestCaption}}",
   "ChangeToUser": "Şuna değiştir {{userCaption}}",
@@ -6,7 +6,6 @@
   "EmptyGroupTitle": "Burada henüz takım arkadaşı yok",
   "LblInviteAgain": "Yeniden davet et",
   "LblInvited": "Davet edildi",
-  "LblOther": "Diğer",
   "LblSendEmail": "E-posta gönder",
   "LblSendMessage": "Mesaj gönder",
   "LblSetActive": "Etkinleştir",
@@ -15,6 +14,7 @@
   "MessageEmailActivationInstuctionsSentOnEmail": "E-posta etkinleştirme talimatları <1>{{email}}</1> e-posta adresine gönderildi",
   "NotFoundDescription": "Farklı bir filtre deneyin veya bölümdeki tüm kişileri görüntülemek için filtreyi temizleyin.",
   "NotFoundTitle": "Takım arkadaşı bulunamadı",
+  "ReassignmentData": "Veri yeniden ataması",
   "SuccessfullyRemovedGroup": "Grup başarıyla kaldırıldı",
   "UserStatus": "Durum"
 }

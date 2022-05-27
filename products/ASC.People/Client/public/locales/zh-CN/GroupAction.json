@@ -1,4 +1,5 @@
-﻿{
+{
+  "AddHeadOfDepartment": "添加部门负责人",
   "CustomNewDepartment": "{{groupCaption}}（创建）",
   "GroupAction": "群组操作",
   "Members": "成员",

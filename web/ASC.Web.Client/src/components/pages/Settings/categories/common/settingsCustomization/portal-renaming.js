@@ -240,6 +240,7 @@ const PortalRenaming = (props) => {
           onChange={onChangePortalName}
           isDisabled={isLoadingPortalNameSave}
           hasError={hasError}
+          placeholder={`${t("EnterName")}`}
         />
         <div className="errorText">{errorValue}</div>
       </FieldContainer>
@@ -264,7 +265,7 @@ const PortalRenaming = (props) => {
         </div>
       )}
       {(isMobileOnly && isSmallTablet()) || isSmallTablet() ? (
-        <StyledScrollbar stype="smallBlack">{settingsBlock}</StyledScrollbar>
+        <StyledScrollbar stype="mediumBlack">{settingsBlock}</StyledScrollbar>
       ) : (
         <> {settingsBlock}</>
       )}

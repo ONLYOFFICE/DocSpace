@@ -13,7 +13,7 @@ const CreationBlock = ({ t, textStyles, keyTextStyles, CtrlKey }) => {
       </Row>
       <Row className="hotkeys_row">
         <>
-          <Text {...textStyles}>{t("HotkeysUploadFolder")}</Text>
+          <Text {...textStyles}>{t("Article:UploadFolder")}</Text>
           <Text {...keyTextStyles}>Shift + i</Text>
         </>
       </Row>

@@ -18,6 +18,7 @@ import withCultureNames from "@appserver/common/hoc/withCultureNames";
 import config from "../../../../../../package.json";
 import NoUserSelect from "@appserver/components/utils/commonStyles";
 import { Base } from "@appserver/components/themes";
+import { isMobileOnly } from "react-device-detect";
 
 const InfoContainer = styled.div`
   margin-bottom: 24px;
@@ -31,7 +32,7 @@ const InfoItem = styled.div`
   font-size: 13px;
   line-height: 24px;
   display: flex;
-  width: 358px;
+  width: 344px;
 `;
 
 const InfoItemLabel = styled.div`
@@ -91,6 +92,10 @@ const IconButtonWrapper = styled.div`
       fill: #3b72a7;
     }
   }
+`;
+
+const LangSelectorContainer = styled.div`
+  display: flex;
 `;
 
 class ProfileInfo extends React.PureComponent {
@@ -268,7 +273,7 @@ class ProfileInfo extends React.PureComponent {
         <Link
           color={theme.profileInfo.tooltipLinkColor}
           isHovered={true}
-          href="https://helpcenter.onlyoffice.com/ru/guides/become-translator.aspx"
+          href={`https://helpcenter.onlyoffice.com/${language}/guides/become-translator.aspx`}
           target="_blank"
         >
           {t("Common:LearnMore")}
@@ -319,11 +324,11 @@ class ProfileInfo extends React.PureComponent {
         )}
         {mobilePhone && (
           <InfoItem>
-            <InfoItemLabel>{t("PhoneLbl")}:</InfoItemLabel>
+            <InfoItemLabel>{t("Profile:PhoneLbl")}:</InfoItemLabel>
             <InfoItemValue>{mobilePhone}</InfoItemValue>
           </InfoItem>
         )}
-        {sex && (
+        {!personal && sex && (
           <InfoItem>
             <InfoItemLabel>{t("Translations:Sex")}:</InfoItemLabel>
             <InfoItemValue className="profile-info_sex">
@@ -331,7 +336,7 @@ class ProfileInfo extends React.PureComponent {
             </InfoItemValue>
           </InfoItem>
         )}
-        {birthday && (
+        {!personal && birthday && (
           <InfoItem>
             <InfoItemLabel>{t("Translations:Birthdate")}:</InfoItemLabel>
             <InfoItemValue className="profile-info_birthdate">
@@ -355,9 +360,9 @@ class ProfileInfo extends React.PureComponent {
             </InfoItemValue>
           </InfoItem>
         )}
-        {location && (
+        {!personal && location && (
           <InfoItem>
-            <InfoItemLabel>{t("Translations:Location")}:</InfoItemLabel>
+            <InfoItemLabel>{t("Common:Location")}:</InfoItemLabel>
             <InfoItemValue className="profile-info_location">
               {location}
             </InfoItemValue>
@@ -376,7 +381,7 @@ class ProfileInfo extends React.PureComponent {
             <InfoItemLabel>{t("Common:Language")}:</InfoItemLabel>
             <InfoItemValue>
               {cultureNames ? (
-                <>
+                <LangSelectorContainer>
                   <ComboBox
                     directionY="both"
                     options={cultureNames}
@@ -390,7 +395,9 @@ class ProfileInfo extends React.PureComponent {
                     className="language-combo"
                     showDisabledItems={true}
                     dropDownMaxHeight={364}
-                    manualWidth="240px"
+                    manualWidth="320px"
+                    isDefaultMode={!isMobileOnly}
+                    withBlur={isMobileOnly}
                   />
                   <HelpButton
                     place="bottom"
@@ -400,7 +407,7 @@ class ProfileInfo extends React.PureComponent {
                     helpButtonHeaderContent={t("Common:Language")}
                     className="help-icon"
                   />
-                </>
+                </LangSelectorContainer>
               ) : (
                 <Loaders.Text />
               )}

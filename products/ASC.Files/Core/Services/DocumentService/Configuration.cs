@@ -31,7 +31,6 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using System.Web;
 
 using ASC.Common;
@@ -70,9 +69,9 @@ namespace ASC.Web.Files.Services.DocumentService
     {
         internal static readonly Dictionary<FileType, string> DocType = new Dictionary<FileType, string>
             {
-                { FileType.Document, "text" },
-                { FileType.Spreadsheet, "spreadsheet" },
-                { FileType.Presentation, "presentation" }
+                { FileType.Document, "word" },
+                { FileType.Spreadsheet, "cell" },
+                { FileType.Presentation, "slide" }
             };
 
         private FileType _fileTypeCache = FileType.Unknown;
@@ -214,13 +213,21 @@ namespace ASC.Web.Files.Services.DocumentService
             UserManager = userManager;
         }
 
+        private bool? _favorite;
+        private bool _favoriteIsSet;
         public bool? Favorite
         {
             get
             {
+                if (_favoriteIsSet) return _favorite;
                 if (!SecurityContext.IsAuthenticated || UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsVisitor(UserManager)) return null;
                 if (File.Encrypted) return null;
                 return File.IsFavorite;
+            }
+            set
+            {
+                _favoriteIsSet = true;
+                _favorite = value;
             }
         }
 
@@ -657,7 +664,8 @@ namespace ASC.Web.Files.Services.DocumentService
             PathProvider pathProvider,
             CustomerConfig<T> customerConfig,
             LogoConfig<T> logoConfig,
-            FileSharing fileSharing)
+            FileSharing fileSharing,
+            ThirdPartySelector thirdPartySelector)
         {
             CoreBaseSettings = coreBaseSettings;
             SettingsManager = settingsManager;
@@ -671,9 +679,11 @@ namespace ASC.Web.Files.Services.DocumentService
             Customer = customerConfig;
             Logo = logoConfig;
             FileSharing = fileSharing;
+            _thirdPartySelector = thirdPartySelector;
         }
 
         private Configuration<T> _configuration;
+        private readonly ThirdPartySelector _thirdPartySelector;
 
         internal void SetConfiguration(Configuration<T> configuration)
         {
@@ -682,7 +692,8 @@ namespace ASC.Web.Files.Services.DocumentService
             Logo.SetConfiguration(_configuration);
         }
 
-        //private string _gobackUrl;
+        [JsonIgnore]
+        public string GobackUrl;
         public bool IsRetina { get; set; } = false;
 
 
@@ -716,7 +727,7 @@ namespace ASC.Web.Files.Services.DocumentService
             {
                 return FileUtility.CanForcesave
                        && !_configuration.Document.Info.GetFile().ProviderEntry
-                       && ThirdPartySelector.GetAppByFileId(_configuration.Document.Info.GetFile().ID.ToString()) == null
+                       && _thirdPartySelector.GetAppByFileId(_configuration.Document.Info.GetFile().ID.ToString()) == null
                        && FilesSettingsHelper.Forcesave;
             }
         }
@@ -727,13 +738,13 @@ namespace ASC.Web.Files.Services.DocumentService
             {
                 if (_configuration.EditorType == EditorType.Embedded || _configuration.EditorType == EditorType.External) return null;
                 if (!AuthContext.IsAuthenticated) return null;
-                //if (_gobackUrl != null)
-                //{
-                //    return new GobackConfig
-                //    {
-                //        Url = _gobackUrl,
-                //    };
-                //}
+                if (GobackUrl != null)
+                {
+                    return new GobackConfig
+                    {
+                        Url = GobackUrl,
+                    };
+                }
 
                 var folderDao = DaoFactory.GetFolderDao<T>();
                 try

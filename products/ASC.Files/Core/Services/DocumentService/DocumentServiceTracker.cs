@@ -165,6 +165,8 @@ namespace ASC.Web.Files.Services.DocumentService
     [Scope]
     public class DocumentServiceTrackerHelper
     {
+        private readonly ThirdPartySelector _thirdPartySelector;
+
         private SecurityContext SecurityContext { get; }
         private UserManager UserManager { get; }
         private TenantManager TenantManager { get; }
@@ -206,7 +208,8 @@ namespace ASC.Web.Files.Services.DocumentService
             NotifyClient notifyClient,
             MailMergeTaskRunner mailMergeTaskRunner,
             FileTrackerHelper fileTracker,
-            IHttpClientFactory clientFactory)
+            IHttpClientFactory clientFactory,
+            ThirdPartySelector thirdPartySelector)
         {
             SecurityContext = securityContext;
             UserManager = userManager;
@@ -228,6 +231,7 @@ namespace ASC.Web.Files.Services.DocumentService
             FileTracker = fileTracker;
             Logger = options.CurrentValue;
             ClientFactory = clientFactory;
+            _thirdPartySelector = thirdPartySelector;
         }
 
         public string GetCallbackUrl<T>(T fileId)
@@ -275,7 +279,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
         private async Task ProcessEditAsync<T>(T fileId, TrackerData fileData)
         {
-            if (ThirdPartySelector.GetAppByFileId(fileId.ToString()) != null)
+            if (_thirdPartySelector.GetAppByFileId(fileId.ToString()) != null)
             {
                 return;
             }
@@ -284,7 +288,7 @@ namespace ASC.Web.Files.Services.DocumentService
             var usersDrop = new List<string>();
 
             string docKey;
-            var app = ThirdPartySelector.GetAppByFileId(fileId.ToString());
+            var app = _thirdPartySelector.GetAppByFileId(fileId.ToString());
             if (app == null)
             {
                 File<T> fileStable;
@@ -356,7 +360,7 @@ namespace ASC.Web.Files.Services.DocumentService
                 userId = Guid.Empty;
             }
 
-            var app = ThirdPartySelector.GetAppByFileId(fileId.ToString());
+            var app = _thirdPartySelector.GetAppByFileId(fileId.ToString());
             if (app == null)
             {
                 File<T> fileStable;

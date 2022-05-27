@@ -85,14 +85,6 @@ const Badges = ({
   const isForm = fileExst === ".oform";
   const isTile = viewAs === "tile";
 
-  const iconEdit = isForm
-    ? "/static/images/access.edit.form.react.svg"
-    : "/static/images/file.actions.convert.edit.doc.react.svg";
-
-  const iconForm = "/static/images/access.edit.form.react.svg";
-
-  const iconRefresh = "/static/images/refresh.react.svg";
-
   const countVersions = versionGroup > 999 ? "999+" : versionGroup;
 
   const contentNewItems = newItems > 999 ? "999+" : newItems;
@@ -104,9 +96,20 @@ const Badges = ({
 
   const lineHeightBadge = isTile || tabletViewBadge ? "1.46" : "1.34";
 
-  const paddingBadge = isTile || tabletViewBadge ? "0 5px" : "0 3px";
+  const paddingBadge = isTile || tabletViewBadge ? "0 3px" : "0 5px";
 
   const fontSizeBadge = isTile || tabletViewBadge ? "11px" : "9px";
+
+  const iconForm =
+    sizeBadge === "medium"
+      ? "/static/images/access.edit.form.medium.react.svg"
+      : "/static/images/access.edit.form.react.svg";
+
+  const iconEdit = !isForm
+    ? "/static/images/file.actions.convert.edit.doc.react.svg"
+    : iconForm;
+
+  const iconRefresh = "/static/images/refresh.react.svg";
 
   const commonBadgeProps = {
     borderRadius: "11px",
@@ -119,25 +122,19 @@ const Badges = ({
     "data-id": id,
   };
 
+  const versionBadgeProps = {
+    borderRadius: "50px",
+    color: theme.filesBadges.color,
+    fontSize: "9px",
+    fontWeight: 800,
+    maxWidth: "50px",
+    padding: isTile || tabletViewBadge ? "2px 5px" : "0 4px",
+    lineHeight: "12px",
+    "data-id": id,
+  };
+
   return fileExst ? (
     <div className="badges additional-badges">
-      {canWebEdit &&
-        !isEditing &&
-        !isTrashFolder &&
-        !isPrivacy &&
-        accessToEdit &&
-        showEditBadge &&
-        !canConvert &&
-        isForm && (
-          <StyledIcon
-            iconName={iconForm}
-            className="badge tablet-badge icons-group tablet-edit edit"
-            size={sizeBadge}
-            onClick={onFilesClick}
-            hoverColor={theme.filesBadges.hoverIconColor}
-            title={t("Common:FillFormButton")}
-          />
-        )}
       {isEditing && (
         <StyledEditIcon
           iconName={iconEdit}
@@ -145,7 +142,7 @@ const Badges = ({
           size={sizeBadge}
           onClick={onFilesClick}
           hoverColor={theme.filesBadges.hoverIconColor}
-          title={t("Common:EditButton")}
+          title={isForm ? t("Common:FillFormButton") : t("Common:EditButton")}
         />
       )}
       {canConvert && !isTrashFolder && (
@@ -160,11 +157,12 @@ const Badges = ({
       {version > 1 && (
         <BadgeWrapper onClick={onShowVersionHistory} isTile={isTile}>
           <Badge
-            {...commonBadgeProps}
+            {...versionBadgeProps}
             className="badge-version badge-version-current tablet-badge icons-group"
             backgroundColor={theme.filesBadges.backgroundColor}
-            label={t("VersionBadge:Version", { version: countVersions })}
+            label={t("VersionBadge", { version: countVersions })}
             onClick={onShowVersionHistory}
+            noHover={true}
           />
         </BadgeWrapper>
       )}

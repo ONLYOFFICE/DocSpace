@@ -1,4 +1,5 @@
-﻿{
+{
+  "AddHeadOfDepartment": "Thêm trưởng bộ phận",
   "CustomNewDepartment": "{{groupCaption}} (tạo)",
   "GroupAction": "Hành động nhóm",
   "Members": "Thành viên",

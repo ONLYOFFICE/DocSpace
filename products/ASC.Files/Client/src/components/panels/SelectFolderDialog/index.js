@@ -131,9 +131,15 @@ class SelectFolderDialog extends React.Component {
   };
 
   onClose = () => {
-    const { setExpandedPanelKeys, onClose, treeFolders } = this.props;
+    const {
+      setExpandedPanelKeys,
+      onClose,
+      treeFolders,
+      withInput,
+      isNeedArrowIcon,
+    } = this.props;
 
-    if (!treeFolders.length) {
+    if (!treeFolders.length && !withInput && !isNeedArrowIcon) {
       setExpandedPanelKeys(null);
     }
     onClose && onClose();
@@ -155,7 +161,10 @@ class SelectFolderDialog extends React.Component {
       providerKey,
       folderTitle,
       folderId,
+      setSelectedItems,
     } = this.props;
+
+    setSelectedItems();
 
     onSubmit && onSubmit(folderId, folderTitle, providerKey);
     onSave && onSave(e, folderId);
@@ -279,16 +288,22 @@ SelectFolderDialog.defaultProps = {
 };
 
 export default inject(
-  ({
-    treeFoldersStore,
-    selectedFolderStore,
-    selectFolderDialogStore,
-    filesStore,
-    auth,
-  }) => {
+  (
+    {
+      treeFoldersStore,
+      selectedFolderStore,
+      selectFolderDialogStore,
+      filesStore,
+      auth,
+      filesActionsStore,
+    },
+    { selectedId }
+  ) => {
     const { treeFolders, setExpandedPanelKeys } = treeFoldersStore;
 
     const { filter } = filesStore;
+    const { setSelectedItems } = filesActionsStore;
+
     const { id } = selectedFolderStore;
     const {
       setFolderId,
@@ -301,10 +316,11 @@ export default inject(
 
     const { settingsStore } = auth;
     const { theme } = settingsStore;
+    const selectedFolderId = selectedId ? selectedId : id;
 
     return {
       theme: theme,
-      storeFolderId: id,
+      storeFolderId: selectedFolderId,
       providerKey,
       folderTitle,
       folderId,
@@ -314,6 +330,7 @@ export default inject(
       setProviderKey,
       treeFolders,
       filter,
+      setSelectedItems,
     };
   }
 )(

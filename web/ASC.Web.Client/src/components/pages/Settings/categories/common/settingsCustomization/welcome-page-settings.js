@@ -269,7 +269,7 @@ class WelcomePageSettings extends React.Component {
             value={greetingTitle}
             onChange={this.onChangeGreetingTitle}
             isDisabled={isLoadingGreetingSave || isLoadingGreetingRestore}
-            placeholder={`${t("Cloud Office Applications")}`}
+            placeholder={t("EnterTitle")}
           />
         </FieldContainer>
       </div>
@@ -295,7 +295,7 @@ class WelcomePageSettings extends React.Component {
           </div>
         )}
         {(isMobileOnly && isSmallTablet()) || isSmallTablet() ? (
-          <StyledScrollbar stype="smallBlack">{settingsBlock}</StyledScrollbar>
+          <StyledScrollbar stype="mediumBlack">{settingsBlock}</StyledScrollbar>
         ) : (
           <> {settingsBlock}</>
         )}

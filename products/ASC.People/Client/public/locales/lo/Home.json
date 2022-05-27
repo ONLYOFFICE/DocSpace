@@ -1,4 +1,4 @@
-﻿{
+{
   "Administrator": "ຜູ້ຄຸມຄອງລະບົບ",
   "ChangeToGuest": "ປ່ຽນເປັນ {{guestCaption}}",
   "ChangeToUser": "ປ່ຽນເປັນ {{userCaption}}",
@@ -6,7 +6,6 @@
   "EmptyGroupTitle": "ຍັງບໍ່ມີເພື່ອນຮ່ວມທີມຢູ່ນີ້",
   "LblInviteAgain": "ເຊີນອີກຄັ້ງ",
   "LblInvited": "ໄດ້ຮັບເຊີນແລ້ວ",
-  "LblOther": "ອື່ນໆ",
   "LblSendEmail": "ສົ່ງອິເມວ",
   "LblSendMessage": "ສົ່ງຂໍ້ຄວາມ",
   "LblSetActive": "ຕັ້ງຄ່າໃຊ້ງານ",
@@ -15,6 +14,7 @@
   "MessageEmailActivationInstuctionsSentOnEmail": "ຄຳແນະນຳກ່ຽວກັບການເປີດໃຊ້ອີເມວໄດ້ຖືກສົ່ງໄປທີ່ອີເມວ <1> {{email}} </1> ທີ່ຢູ່ເມວ",
   "NotFoundDescription": "ລອງໃຊ້ຕົວຄົ້ນຫາ ຫຼື ລ້າງເພື່ອເບິ່ງທຸກຄົນໃນສ່ວນນີ້",
   "NotFoundTitle": "ບໍ່ພົບເພື່ອນຮ່ວມທີມ",
+  "ReassignmentData": "ການຈັດສັນຂໍ້ມູນຄືນ",
   "SuccessfullyRemovedGroup": "ລົບກຸ່ມສຳເລັດແລ້ວ",
   "UserStatus": "ສະຖານະ"
 }

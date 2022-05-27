@@ -19,6 +19,7 @@ const PureSettings = ({
   setFirstLoad,
   capabilities,
   tReady,
+  isPersonal,
 }) => {
   const [title, setTitle] = useState("");
   const { setting } = match.params;
@@ -28,7 +29,9 @@ const PureSettings = ({
   }, [setFirstLoad]);
 
   useEffect(() => {
-    setTitle(t("Common:Settings"));
+    isPersonal
+      ? setTitle(t("ThirdPartySettings"))
+      : setTitle(t("Common:Settings"));
   }, [t, tReady]);
 
   useEffect(() => {
@@ -46,7 +49,7 @@ const PureSettings = ({
   }, [title, t]);
 
   return (
-    <Section>
+    <Section isInfoPanelAvailable={false}>
       <Section.SectionHeader>
         {(!isLoadedSettingsTree && isLoading) || isLoading || !tReady ? (
           <Loaders.SectionHeader />
@@ -80,22 +83,25 @@ const PureSettings = ({
 
 const Settings = withTranslation(["Settings", "Common"])(PureSettings);
 
-export default inject(({ filesStore, settingsStore, treeFoldersStore }) => {
-  const { setFirstLoad, isLoading } = filesStore;
-  const { setSelectedNode } = treeFoldersStore;
-  const {
-    getFilesSettings,
-    isLoadedSettingsTree,
-    thirdPartyStore,
-  } = settingsStore;
-  const { capabilities } = thirdPartyStore;
+export default inject(
+  ({ auth, filesStore, settingsStore, treeFoldersStore }) => {
+    const { setFirstLoad, isLoading } = filesStore;
+    const { setSelectedNode } = treeFoldersStore;
+    const {
+      getFilesSettings,
+      isLoadedSettingsTree,
+      thirdPartyStore,
+    } = settingsStore;
+    const { capabilities } = thirdPartyStore;
 
-  return {
-    isLoading,
-    isLoadedSettingsTree,
-    setFirstLoad,
-    setSelectedNode,
-    getFilesSettings,
-    capabilities,
-  };
-})(withRouter(observer(Settings)));
+    return {
+      isLoading,
+      isLoadedSettingsTree,
+      setFirstLoad,
+      setSelectedNode,
+      getFilesSettings,
+      capabilities,
+      isPersonal: auth.settingsStore.personal,
+    };
+  }
+)(withRouter(observer(Settings)));

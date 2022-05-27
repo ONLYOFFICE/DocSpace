@@ -17,6 +17,7 @@ const QuickButtons = ({
   accessToEdit,
   showShare,
   onClickLock,
+  isDisabled,
   onClickFavorite,
   onClickShare,
   viewAs,
@@ -53,18 +54,17 @@ const QuickButtons = ({
     : theme.filesQuickButtons.color;
 
   const tabletViewQuickButton =
-    !isTile && ((sectionWidth > 500 && sectionWidth <= 1024) || isTablet);
+    (sectionWidth > 500 && sectionWidth <= 1024) || isTablet;
+
   const sizeQuickButton = isTile || tabletViewQuickButton ? "medium" : "small";
 
-  const displayShare = viewAs === "row" && (isMobile || sectionWidth <= 500);
-  const displayLock = !locked && (isMobile || sectionWidth <= 500);
-  const displayFavorite = !isFavorite && (isMobile || sectionWidth <= 500);
+  const displayBadges = viewAs === "table" || isTile || tabletViewQuickButton;
 
   const setFavorite = () => onClickFavorite(isFavorite);
 
   return (
     <div className="badges additional-badges">
-      {item.canShare && showShare && (!displayShare || isTile) && (
+      {item.canShare && showShare && displayBadges && (
         <StyledIcon
           iconName={iconShare}
           className="badge share-button-icon"
@@ -74,22 +74,20 @@ const QuickButtons = ({
           hoverColor={theme.filesQuickButtons.sharedColor}
         />
       )}
-      {fileExst &&
-        accessToEdit &&
-        !isTrashFolder &&
-        (!displayLock || isTile) && (
-          <StyledIcon
-            iconName={iconLock}
-            className="badge lock-file icons-group"
-            size={sizeQuickButton}
-            data-id={id}
-            data-locked={locked ? true : false}
-            onClick={onClickLock}
-            color={colorLock}
-            hoverColor={theme.filesQuickButtons.sharedColor}
-          />
-        )}
-      {fileExst && !isTrashFolder && (!displayFavorite || isTile) && (
+      {fileExst && accessToEdit && !isTrashFolder && displayBadges && (
+        <StyledIcon
+          iconName={iconLock}
+          className="badge lock-file icons-group"
+          size={sizeQuickButton}
+          data-id={id}
+          data-locked={locked ? true : false}
+          onClick={onClickLock}
+          isDisabled={isDisabled}
+          color={colorLock}
+          hoverColor={theme.filesQuickButtons.sharedColor}
+        />
+      )}
+      {fileExst && !isTrashFolder && displayBadges && (
         <StyledIcon
           iconName={iconFavorite}
           className="favorite badge icons-group"

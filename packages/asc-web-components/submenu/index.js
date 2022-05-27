@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import React, { useEffect, useRef, useState } from "react";
-
+import { inject, observer } from "mobx-react";
 import Text from "../text";
 import { countAutoFocus, countAutoOffset } from "./autoOffset";
 import {
@@ -14,7 +14,14 @@ import {
 } from "./styled-submenu";
 import LoaderSubmenu from "./loader";
 
-const Submenu = ({ data, startSelect = 0, onSelect, isLoading, ...rest }) => {
+const Submenu = ({
+  data,
+  startSelect = 0,
+  onSelect,
+  isLoading,
+  theme,
+  ...rest
+}) => {
   if (!data) return null;
 
   const [currentItem, setCurrentItem] = useState(
@@ -79,34 +86,37 @@ const Submenu = ({ data, startSelect = 0, onSelect, isLoading, ...rest }) => {
         <LoaderSubmenu />
       ) : (
         <>
-          <StyledSubmenuItems ref={submenuItemsRef} role="list">
-            {data.map((d) => {
-              const isActive = d.id === currentItem.id;
+          <div className="sticky">
+            <StyledSubmenuItems ref={submenuItemsRef} role="list">
+              {data.map((d) => {
+                const isActive = d.id === currentItem.id;
 
-              return (
-                <StyledSubmenuItem
-                  key={d.id}
-                  id={d.id}
-                  onClick={selectSubmenuItem}
-                >
-                  <StyledSubmenuItemText>
-                    <Text
-                      color={isActive ? "#316DAA" : "#657077"}
-                      fontSize="13px"
-                      fontWeight="600"
-                      truncate={false}
-                    >
-                      {d.name}
-                    </Text>
-                  </StyledSubmenuItemText>
-                  <StyledSubmenuItemLabel
-                    color={isActive ? "#316DAA" : "none"}
-                  />
-                </StyledSubmenuItem>
-              );
-            })}
-          </StyledSubmenuItems>
-          <StyledSubmenuBottomLine />
+                return (
+                  <StyledSubmenuItem
+                    key={d.id}
+                    id={d.id}
+                    onClick={selectSubmenuItem}
+                  >
+                    <StyledSubmenuItemText>
+                      <Text
+                        color={isActive ? theme.submenu.textColor : "#657077"}
+                        fontSize="13px"
+                        fontWeight="600"
+                        truncate={false}
+                      >
+                        {d.name}
+                      </Text>
+                    </StyledSubmenuItemText>
+                    <StyledSubmenuItemLabel
+                      color={isActive ? theme.submenu.bottomLineColor : "none"}
+                    />
+                  </StyledSubmenuItem>
+                );
+              })}
+            </StyledSubmenuItems>
+            <StyledSubmenuBottomLine />
+          </div>
+          <div className="sticky-indent"></div>
         </>
       )}
       <StyledSubmenuContentWrapper>
@@ -123,4 +133,6 @@ Submenu.propTypes = {
   isLoading: PropTypes.bool,
 };
 
-export default Submenu;
+export default inject(({ auth }) => {
+  return { theme: auth.settingsStore.theme };
+})(observer(Submenu));

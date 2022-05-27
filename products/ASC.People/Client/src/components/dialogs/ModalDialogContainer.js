@@ -94,6 +94,9 @@ const ModalDialogContainer = styled(ModalDialog)`
     text-underline-offset: 2px;
     margin-left: 8px;
   }
+  .heading {
+    max-width: calc(100% - 32px);
+  }
 `;
 
 ModalDialogContainer.defaultProps = { theme: Base };

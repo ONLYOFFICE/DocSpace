@@ -1,6 +1,7 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import { tablet } from "../utils/device";
+import { isMobileOnly } from "react-device-detect";
 
 export const StyledSubmenu = styled.div`
   display: flex;
@@ -16,12 +17,30 @@ export const StyledSubmenu = styled.div`
     display: inline-block;
     position: absolute;
   }
+
+  .sticky {
+    position: sticky;
+    top: 0;
+    background: ${(props) => props.theme.submenu.backgroundColor};
+    z-index: 1;
+  }
+
+  ${isMobileOnly &&
+  css`
+    .sticky {
+      top: 52px;
+    }
+  `}
+
+  .sticky-indent {
+    height: 15px;
+  }
 `;
 
 export const StyledSubmenuBottomLine = styled.div`
   height: 1px;
   width: 100%;
-  margin: -1px 0 15px 0;
+  margin-top: -1px;
   background: ${(props) => props.theme.submenu.lineColor};
 `;
 

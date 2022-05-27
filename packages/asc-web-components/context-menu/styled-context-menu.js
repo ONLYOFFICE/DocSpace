@@ -21,6 +21,7 @@ const styledMobileView = css`
   max-height: ${(props) => props.theme.newContextMenu.devices.maxHeight};
   left: ${(props) => props.theme.newContextMenu.devices.left};
   bottom: ${(props) => props.theme.newContextMenu.devices.bottom};
+  border-radius: ${(props) => props.theme.newContextMenu.mobileBorderRadius};
 `;
 
 const StyledContextMenu = styled.div`
@@ -194,7 +195,9 @@ const StyledContextMenu = styled.div`
       height: 16px;
       width: 16px;
     }
-    path {
+    path,
+    circle,
+    rect {
       fill: ${(props) => props.theme.dropDownItem.icon.color};
     }
 

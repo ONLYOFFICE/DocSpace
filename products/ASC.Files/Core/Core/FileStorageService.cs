@@ -82,6 +82,8 @@ namespace ASC.Web.Files.Services.WCFService
     {
         private static readonly FileEntrySerializer serializer = new FileEntrySerializer();
         private readonly OFormRequestManager _oFormRequestManager;
+        private readonly ThirdPartySelector _thirdPartySelector;
+        private readonly ThumbnailSettings _thumbnailSettings;
 
         private Global Global { get; }
         private GlobalStore GlobalStore { get; }
@@ -171,7 +173,9 @@ namespace ASC.Web.Files.Services.WCFService
             ICacheNotify<ThumbnailRequest> thumbnailNotify,
             EntryStatusManager entryStatusManager,
             CompressToArchive compressToArchive,
-            OFormRequestManager oFormRequestManager)
+            OFormRequestManager oFormRequestManager,
+            ThirdPartySelector thirdPartySelector,
+            ThumbnailSettings thumbnailSettings)
         {
             Global = global;
             GlobalStore = globalStore;
@@ -217,6 +221,8 @@ namespace ASC.Web.Files.Services.WCFService
             EntryStatusManager = entryStatusManager;
             CompressToArchive = compressToArchive;
             _oFormRequestManager = oFormRequestManager;
+            _thirdPartySelector = thirdPartySelector;
+            _thumbnailSettings = thumbnailSettings;
         }
 
         public async Task<Folder<T>> GetFolderAsync(T folderId)
@@ -665,15 +671,19 @@ namespace ASC.Web.Files.Services.WCFService
                         file = await fileDao.SaveFileAsync(file, null);
                     }
 
-                    var pathThumb = path + fileExt.Trim('.') + "." + Global.ThumbnailExtension;
-                    if (await storeTemplate.IsFileAsync("", pathThumb))
+                    foreach (var size in _thumbnailSettings.Sizes)
                     {
-                        using (var streamThumb = await storeTemplate.GetReadStreamAsync("", pathThumb, 0))
+                        var pathThumb = $"{path}{fileExt.Trim('.')}.{size.Width}x{size.Height}.{Global.ThumbnailExtension}";
+                        if (await storeTemplate.IsFileAsync("", pathThumb))
                         {
-                            await fileDao.SaveThumbnailAsync(file, streamThumb);
+                            using (var streamThumb = await storeTemplate.GetReadStreamAsync("", pathThumb, 0))
+                            {
+                                await fileDao.SaveThumbnailAsync(file, streamThumb, size.Width, size.Height);
+                            }
                         }
-                        file.ThumbnailStatus = Thumbnail.Created;
                     }
+
+                    file.ThumbnailStatus = Thumbnail.Created;
                 }
                 catch (Exception e)
                 {
@@ -697,9 +707,12 @@ namespace ASC.Web.Files.Services.WCFService
 
                     if (template.ThumbnailStatus == Thumbnail.Created)
                     {
-                        using (var thumb = await fileTemlateDao.GetThumbnailAsync(template))
+                        foreach (var size in _thumbnailSettings.Sizes)
                         {
-                            await fileDao.SaveThumbnailAsync(file, thumb);
+                            using (var thumb = await fileTemlateDao.GetThumbnailAsync(template, size.Width, size.Height))
+                            {
+                                await fileDao.SaveThumbnailAsync(file, thumb, size.Width, size.Height);
+                            }
                         }
                         file.ThumbnailStatus = Thumbnail.Created;
                     }
@@ -838,7 +851,7 @@ namespace ASC.Web.Files.Services.WCFService
                 {
                     ErrorIf(FileTracker.IsEditing(fileId), FilesCommonResource.ErrorMassage_SecurityException_EditFileTwice);
 
-                    app = ThirdPartySelector.GetAppByFileId(fileId.ToString());
+                    app = _thirdPartySelector.GetAppByFileId(fileId.ToString());
                     if (app == null)
                     {
                         await EntryManager.TrackEditingAsync(fileId, Guid.Empty, AuthContext.CurrentAccount.ID, doc, true);
@@ -850,7 +863,7 @@ namespace ASC.Web.Files.Services.WCFService
 
                 (File<string> File, Configuration<string> Configuration) fileOptions;
 
-                app = ThirdPartySelector.GetAppByFileId(fileId.ToString());
+                app = _thirdPartySelector.GetAppByFileId(fileId.ToString());
                 if (app == null)
                 {
                     fileOptions = await DocumentServiceHelper.GetParamsAsync(fileId.ToString(), -1, doc, true, true, false);
@@ -2313,9 +2326,12 @@ namespace ASC.Web.Files.Services.WCFService
 
                     if (file.ThumbnailStatus == Thumbnail.Created)
                     {
-                        using (var thumbnail = await fileDao.GetThumbnailAsync(file))
+                        foreach (var size in _thumbnailSettings.Sizes)
                         {
-                            await fileDao.SaveThumbnailAsync(newFile, thumbnail);
+                            using (var thumbnail = await fileDao.GetThumbnailAsync(file, size.Width, size.Height))
+                            {
+                                await fileDao.SaveThumbnailAsync(newFile, thumbnail, size.Width, size.Height);
+                            }
                         }
                         newFile.ThumbnailStatus = Thumbnail.Created;
                     }

@@ -99,7 +99,11 @@ class ChangeOwnerComponent extends React.Component {
           zIndex={zIndex}
           isAside
         />
-        <Aside className="header_aside-panel">
+        <Aside
+          className="header_aside-panel"
+          visible={visible}
+          onClose={this.onClose}
+        >
           <StyledContent>
             <StyledHeaderContent>
               <Heading className="sharing_panel-header" size="medium" truncate>

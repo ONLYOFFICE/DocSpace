@@ -78,9 +78,9 @@ const FileList = ({ uploadDataFiles }) => {
 };
 
 export default inject(({ uploadDataStore }) => {
-  const { files } = uploadDataStore;
+  const { uploadedFilesHistory } = uploadDataStore;
 
   return {
-    uploadDataFiles: files,
+    uploadDataFiles: uploadedFilesHistory,
   };
 })(observer(FileList));

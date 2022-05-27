@@ -7,6 +7,8 @@ class SecondaryProgressDataStore {
   icon = "trash";
   alert = false;
   filesCount = 0;
+  itemsSelectionLength = 0;
+  itemsSelectionTitle = null;
 
   constructor() {
     makeObservable(this, {
@@ -16,11 +18,15 @@ class SecondaryProgressDataStore {
       icon: observable,
       alert: observable,
       filesCount: observable,
+      itemsSelectionLength: observable,
+      itemsSelectionTitle: observable,
 
       isSecondaryProgressFinished: computed,
 
       setSecondaryProgressBarData: action,
       clearSecondaryProgressData: action,
+      setItemsSelectionLength: action,
+      setItemsSelectionTitle: action,
     });
   }
 
@@ -31,6 +37,14 @@ class SecondaryProgressDataStore {
         this[key] = secondaryProgressData[key];
       }
     }
+  };
+
+  setItemsSelectionTitle = (itemsSelectionTitle) => {
+    this.itemsSelectionTitle = itemsSelectionTitle;
+  };
+
+  setItemsSelectionLength = (itemsSelectionLength) => {
+    this.itemsSelectionLength = itemsSelectionLength;
   };
 
   clearSecondaryProgressData = () => {

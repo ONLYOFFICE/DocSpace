@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Base } from "@appserver/components/themes";
 
 const StyledInfoRoomBody = styled.div`
-  padding: 0px 0px 0 16px;
+  padding-left: 20px;
   height: auto;
   background-color: ${(props) => props.theme.infoPanel.backgroundColor};
   color: ${(props) => props.theme.infoPanel.textColor};
@@ -112,7 +112,7 @@ const StyledProperties = styled.div`
   .property {
     width: 100%;
     display: grid;
-    grid-template-columns: 150px 1fr;
+    grid-template-columns: 120px 1fr;
     grid-column-gap: 24px;
 
     .property-title {
@@ -120,8 +120,7 @@ const StyledProperties = styled.div`
     }
 
     .property-content {
-      display: flex;
-      align-items: center;
+      margin: auto 0;
 
       font-weight: 600;
       font-size: 13px;

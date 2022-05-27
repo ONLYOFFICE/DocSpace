@@ -1,10 +1,10 @@
-﻿{
+{
+  "Clouds": "클라우드",
   "CommonSettings": "공통 설정",
-  "ConnectAccounts": "계정 연결",
-  "ConnectAccountsSubTitle": "연결된 계정이 없습니다",
   "ConnectAdminDescription": "성공적인 연결을 위해 <1>이 페이지</1>에 필요헌 데이터를 입력해주세요.",
   "ConnectDescription": "다음 계정을 ONLYOFFICE 문서에 연결할 수 있습니다. 이러한 계정의 문서를 '내 문서' 섹션에서 편집할 수 있습니다. ",
-  "ConnectedCloud": "연결된 클라우드",
+  "ConnectDescriptionText": "아직 타사 클라우드를 연결하지 않았습니다.",
+  "ConnectEmpty": "여기에 아무 것도 없습니다",
   "ConnectMakeShared": "공유하고 '공통' 폴더에 넣기",
   "ConnextOtherAccount": "기타 계정",
   "DisplayFavorites": "즐겨 찾기 표시",

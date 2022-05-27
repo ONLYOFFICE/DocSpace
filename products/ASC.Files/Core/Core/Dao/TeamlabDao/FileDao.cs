@@ -64,6 +64,8 @@ namespace ASC.Files.Core.Data
     internal class FileDao : AbstractDao, IFileDao<int>
     {
         private static readonly object syncRoot = new object();
+        private readonly ThumbnailSettings _thumbnailSettings;
+
         private FactoryIndexerFile FactoryIndexer { get; }
         private GlobalStore GlobalStore { get; }
         private GlobalSpace GlobalSpace { get; }
@@ -98,7 +100,8 @@ namespace ASC.Files.Core.Data
             ChunkedUploadSessionHolder chunkedUploadSessionHolder,
             ProviderFolderDao providerFolderDao,
             CrossDao crossDao,
-            Settings settings)
+            Settings settings,
+            ThumbnailSettings thumbnailSettings)
             : base(
                   dbContextManager,
                   userManager,
@@ -124,6 +127,7 @@ namespace ASC.Files.Core.Data
             ProviderFolderDao = providerFolderDao;
             CrossDao = crossDao;
             Settings = settings;
+            _thumbnailSettings = thumbnailSettings;
         }
 
         public Task InvalidateCacheAsync(int fileId)
@@ -881,7 +885,7 @@ namespace ASC.Files.Core.Data
                 copy.Comment = FilesCommonResource.CommentCopy;
                 copy.Encrypted = file.Encrypted;
 
-                using (var stream = await GetFileStreamAsync(file).ConfigureAwait(false))
+                using (var stream = await GetFileStreamAsync(file))
                 {
                     copy.ContentLength = stream.CanSeek ? stream.Length : file.ContentLength;
                     copy = await SaveFileAsync(copy, stream).ConfigureAwait(false);
@@ -889,11 +893,14 @@ namespace ASC.Files.Core.Data
 
                 if (file.ThumbnailStatus == Thumbnail.Created)
                 {
-                    using (var thumbnail = await GetThumbnailAsync(file).ConfigureAwait(false))
+                    foreach (var size in _thumbnailSettings.Sizes)
                     {
-                        await SaveThumbnailAsync(copy, thumbnail).ConfigureAwait(false);
+                        using (var thumbnail = await GetThumbnailAsync(file, size.Width, size.Height))
+                        {
+                            await SaveThumbnailAsync(copy, thumbnail, size.Width, size.Height);
+                        }
+                        copy.ThumbnailStatus = Thumbnail.Created;
                     }
-                    copy.ThumbnailStatus = Thumbnail.Created;
                 }
 
                 return copy;
@@ -1351,14 +1358,14 @@ namespace ASC.Files.Core.Data
 
         private const string ThumbnailTitle = "thumb";
 
-        public Task SaveThumbnailAsync(File<int> file, Stream thumbnail)
+        public Task SaveThumbnailAsync(File<int> file, Stream thumbnail, int width, int height)
         {
             if (file == null) throw new ArgumentNullException(nameof(file));
 
-            return InternalSaveThumbnailAsync(file, thumbnail);
+            return InternalSaveThumbnailAsync(file, thumbnail, width, height);
         }
 
-        private async Task InternalSaveThumbnailAsync(File<int> file, Stream thumbnail)
+        private async Task InternalSaveThumbnailAsync(File<int> file, Stream thumbnail, int width, int height)
         {
             var toUpdate = await FilesDbContext.Files
                 .AsQueryable()
@@ -1373,18 +1380,23 @@ namespace ASC.Files.Core.Data
 
             if (thumbnail == null) return;
 
-            var thumnailName = ThumbnailTitle + "." + Global.ThumbnailExtension;
+            var thumnailName = GetThumnailName(width, height);
             await GlobalStore.GetStore().SaveAsync(string.Empty, GetUniqFilePath(file, thumnailName), thumbnail, thumnailName);
         }
 
-        public async Task<Stream> GetThumbnailAsync(File<int> file)
+        public async Task<Stream> GetThumbnailAsync(File<int> file, int width, int height)
         {
-            var thumnailName = ThumbnailTitle + "." + Global.ThumbnailExtension;
+            var thumnailName = GetThumnailName(width, height);
             var path = GetUniqFilePath(file, thumnailName);
             var storage = GlobalStore.GetStore();
             var isFile = await storage.IsFileAsync(string.Empty, path).ConfigureAwait(false);
             if (!isFile) throw new FileNotFoundException();
             return await storage.GetReadStreamAsync(string.Empty, path, 0).ConfigureAwait(false);
+        }
+
+        private string GetThumnailName(int width, int height)
+        {
+            return $"{ThumbnailTitle}.{width}x{height}.{Global.ThumbnailExtension}";
         }
 
         #endregion
@@ -1555,7 +1567,7 @@ namespace ASC.Files.Core.Data
             return (file, record);
         }
 
-        internal protected Task<DbFile> InitDocumentAsync(DbFile dbFile)
+        protected internal Task<DbFile> InitDocumentAsync(DbFile dbFile)
         {
             if (!FactoryIndexer.CanIndexByContent(dbFile))
             {

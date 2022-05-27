@@ -42,8 +42,9 @@ class Tile extends React.PureComponent {
   getIconFile = () => {
     const { thumbnailClick, item } = this.props;
 
-    const src =
-      item.attributes.template_image.data.attributes.formats.small.url;
+    // const src =
+    //   item.attributes.template_image.data.attributes.formats.small.url;
+    const src = item.attributes.card_prewiew.data.attributes.url;
     const svgLoader = () => <div style={{ width: "96px" }} />;
 
     return src ? (
@@ -88,13 +89,13 @@ class Tile extends React.PureComponent {
 
   onCreateForm = () => {
     const { match, history } = this.props;
-    const { setInfoPanelIsVisible } = this.props;
+    const { setIsInfoPanelVisible } = this.props;
 
     const filter = FilesFilter.getDefault();
     filter.folder = match.params.folderId;
     const urlFilter = filter.toUrlParams();
 
-    setInfoPanelIsVisible(false);
+    setIsInfoPanelVisible(false);
 
     history.push(
       combineUrl(
@@ -107,7 +108,7 @@ class Tile extends React.PureComponent {
 
   onShowTemplateInfo = () => {
     if (!this.props.isInfoPanelVisible) {
-      this.props.setInfoPanelIsVisible(true);
+      this.props.setIsInfoPanelVisible(true);
     }
   };
 
@@ -211,7 +212,7 @@ export default inject(
   ({ filesStore, settingsStore, infoPanelStore }, { item }) => {
     const { gallerySelected, setGallerySelected } = filesStore;
     const { getIcon } = settingsStore;
-    const { setInfoPanelIsVisible, isVisible } = infoPanelStore;
+    const { isVisible, setIsVisible } = infoPanelStore;
 
     const isSelected = item.id === gallerySelected?.id;
 
@@ -219,7 +220,7 @@ export default inject(
       isSelected,
       setGallerySelected,
       getIcon,
-      setInfoPanelIsVisible,
+      setIsInfoPanelVisible: setIsVisible,
       isInfoPanelVisible: isVisible,
     };
   }

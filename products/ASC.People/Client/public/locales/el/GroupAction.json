@@ -1,4 +1,5 @@
-﻿{
+{
+  "AddHeadOfDepartment": "Προσθήκη προϊσταμένου τμήματος",
   "CustomNewDepartment": "{{groupCaption}} (δημιουργία)",
   "GroupAction": "Ενέργεια ομάδας",
   "Members": "Μέλη",

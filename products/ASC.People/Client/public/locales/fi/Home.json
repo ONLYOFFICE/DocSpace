@@ -1,4 +1,4 @@
-﻿{
+{
   "Administrator": "Järjestelmänvalvoja",
   "ChangeToGuest": "Vaihda {{guestCaption}}",
   "ChangeToUser": "Vaihda {{userCaption}}",
@@ -6,7 +6,6 @@
   "EmptyGroupTitle": "Täällä ei ole vielä ryhmänjäseniä",
   "LblInviteAgain": "Kutsu uudelleen",
   "LblInvited": "Kutsuttu",
-  "LblOther": "Muu",
   "LblSendEmail": "Lähetä sähköposti",
   "LblSendMessage": "Lähetä viesti",
   "LblSetActive": "Aseta käyttöön",
@@ -15,6 +14,7 @@
   "MessageEmailActivationInstuctionsSentOnEmail": "Sähköpostin aktivointiohjeet on lähetetty sähköpostiosoitteeseen <1>{{email}}</1>",
   "NotFoundDescription": "Kokeile toista suodatinta tai tyhjennä se nähdäksesi kaikki osion ihmiset.",
   "NotFoundTitle": "Ryhmänjäseniä ei löytynyt",
+  "ReassignmentData": "Tietojen uudelleenmääritys",
   "SuccessfullyRemovedGroup": "Ryhmä poistettiin onnistuneesti",
   "UserStatus": "Tila"
 }

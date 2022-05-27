@@ -16,6 +16,7 @@ const StyledContainer = styled.div`
   @media ${tablet} {
     width: ${(props) => (props.showText ? "240px" : "52px")};
     padding: 0 16px;
+    box-sizing: border-box;
   }
 
   ${isMobile &&
@@ -23,11 +24,13 @@ const StyledContainer = styled.div`
     max-width: ${(props) => (props.showText ? "240px" : "52px")};
     width: ${(props) => (props.showText ? "240px" : "52px")};
     padding: ${(props) => (props.showText ? "0 16px" : "10px 16px")};
+    box-sizing: border-box;
   `}
 
   @media ${mobile} {
     width: 100%;
     padding: 0 16px;
+    box-sizing: border-box;
   }
 `;
 

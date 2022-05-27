@@ -1,4 +1,4 @@
-﻿{
+{
   "ActivationLink": "Aktivizācijas saite",
   "AddContact": "Pievienot kontaktu",
   "AddPhoto": "Pievienot fotoattēlu",
@@ -8,7 +8,7 @@
   "ChangesSavedSuccessfully": "Izmaiņas ir veiksmīgi saglabātas",
   "ContactInformation": "Kontaktinformācija",
   "CopiedResourceText": "Kopēts",
-  "CustomCreation": "{{user}} (creation)",
+  "CustomCreation": "{{user}} (izveidošana)",
   "EditPhoto": "Rediģēt fotoattēlu",
   "EditUserDialogTitle": "Rediģēt foto",
   "EmailPopupHelper": "Galvenais e-pasts tiek izmantots paziņojumiem un piekļuves atjaunošanai. <1> Šajā domēnā varat izveidot jaunu e-pastu lietotājam un iestatīt vienreizēju paroli pirmajai pieteikšanās reizei.</1>",

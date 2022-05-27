@@ -61,9 +61,10 @@ const About = React.lazy(() => import("./components/pages/About"));
 const Wizard = React.lazy(() => import("./components/pages/Wizard"));
 const Settings = React.lazy(() => import("./components/pages/Settings"));
 const ComingSoon = React.lazy(() => import("./components/pages/ComingSoon"));
-const Confirm = React.lazy(() => import("./components/pages/Confirm"));
+const Confirm =
+  !IS_PERSONAL && React.lazy(() => import("./components/pages/Confirm"));
 const MyProfile = React.lazy(() => import("people/MyProfile"));
-const EnterCode = React.lazy(() => import("login/codeLogin"));
+const EnterCode = !IS_PERSONAL && React.lazy(() => import("login/codeLogin"));
 const InvalidError = React.lazy(() =>
   import("./components/pages/Errors/Invalid")
 );
@@ -109,13 +110,15 @@ const HomeRoute = (props) => (
   </React.Suspense>
 );
 
-const ConfirmRoute = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <Confirm {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
+const ConfirmRoute =
+  !IS_PERSONAL &&
+  ((props) => (
+    <React.Suspense fallback={<AppLoader />}>
+      <ErrorBoundary>
+        <Confirm {...props} />
+      </ErrorBoundary>
+    </React.Suspense>
+  ));
 
 const PreparationPortalRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
@@ -157,13 +160,15 @@ const MyProfileRoute = (props) => (
   </React.Suspense>
 );
 
-const EnterCodeRoute = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <EnterCode {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
+const EnterCodeRoute =
+  !IS_PERSONAL &&
+  ((props) => (
+    <React.Suspense fallback={<AppLoader />}>
+      <ErrorBoundary>
+        <EnterCode {...props} />
+      </ErrorBoundary>
+    </React.Suspense>
+  ));
 
 const InvalidRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
@@ -320,7 +325,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
     const barConfig = {
       parentElementId: "main-bar",
-      headerText: "Atention",
+      headerText: t("Attention"),
       text: `${t("BarMaintenanceDescription", {
         targetDate: targetDate,
         productName: "ONLYOFFICE Personal",
@@ -357,7 +362,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
             return;
           }
 
-          setTimeout(() => showSnackBar(campaign), 10000);
+          setTimeout(() => showSnackBar(campaign), 1000);
         })
         .catch((err) => {
           console.error(err);
@@ -469,7 +474,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
   const loginRoutes = [];
 
-  if (isLoaded && !personal) {
+  if (isLoaded && !IS_PERSONAL) {
     let module;
     if (roomsMode) {
       module = "./roomsLogin";
@@ -495,7 +500,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
   const roomsRoutes = [];
 
-  if (roomsMode) {
+  if (!IS_PERSONAL && roomsMode) {
     roomsRoutes.push(
       <Route path={ENTER_CODE_URL} component={EnterCodeRoute} />
     );
@@ -514,7 +519,9 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
               <PrivateRoute path={ABOUT_URL} component={AboutRoute} />
               {loginRoutes}
               {roomsRoutes}
-              <Route path={CONFIRM_URL} component={ConfirmRoute} />
+              {!IS_PERSONAL && (
+                <Route path={CONFIRM_URL} component={ConfirmRoute} />
+              )}
               <Route path={INVALID_URL} component={InvalidRoute} />
               <PrivateRoute
                 path={COMING_SOON_URLS}

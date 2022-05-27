@@ -10,12 +10,12 @@ import styled from "styled-components";
 const StyledInfoPanelHeader = styled.div`
   width: 100%;
   max-width: 100%;
-  height: 54px;
-  min-height: 54px;
-  box-sizing: border-box;
+  height: 52px;
+  min-height: 52px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  align-self: center;
   border-bottom: ${(props) => `1px solid ${props.theme.infoPanel.borderColor}`};
 
   .header-text {
@@ -23,7 +23,35 @@ const StyledInfoPanelHeader = styled.div`
   }
 `;
 
-const SubInfoPanelHeader = ({ children, onHeaderCrossClick }) => {
+const StyledInfoPanelToggleWrapper = styled.div`
+  display: flex;
+
+  @media ${tablet} {
+    display: none;
+  }
+
+  align-items: center;
+  justify-content: center;
+  padding-right: 20px;
+
+  .info-panel-toggle-bg {
+    height: 32px;
+    width: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: ${(props) =>
+      props.theme.infoPanel.sectionHeaderToggleBgActive};
+
+    path {
+      fill: ${(props) => props.theme.infoPanel.sectionHeaderToggleIconActive};
+    }
+  }
+`;
+StyledInfoPanelToggleWrapper.defaultProps = { theme: Base };
+
+const SubInfoPanelHeader = ({ children, closeInfoPanel }) => {
   const content = children?.props?.children;
 
   return (
@@ -31,6 +59,20 @@ const SubInfoPanelHeader = ({ children, onHeaderCrossClick }) => {
       <Text className="header-text" fontSize="21px" fontWeight="700">
         {content}
       </Text>
+      <StyledInfoPanelToggleWrapper
+        isRootFolder={true}
+        isInfoPanelVisible={true}
+      >
+        <div className="info-panel-toggle-bg">
+          <IconButton
+            className="info-panel-toggle"
+            iconName="images/panel.react.svg"
+            size="16"
+            isFill={true}
+            onClick={closeInfoPanel}
+          />
+        </div>
+      </StyledInfoPanelToggleWrapper>
     </StyledInfoPanelHeader>
   );
 };
@@ -50,9 +92,9 @@ SubInfoPanelHeader.defaultProps = { theme: Base };
 SubInfoPanelHeader.displayName = "SubInfoPanelHeader";
 
 export default inject(({ infoPanelStore }) => {
-  let onHeaderCrossClick = () => {};
+  let closeInfoPanel = () => {};
   if (infoPanelStore) {
-    onHeaderCrossClick = infoPanelStore.onHeaderCrossClick;
+    closeInfoPanel = () => infoPanelStore.setIsVisible(false);
   }
-  return { onHeaderCrossClick };
+  return { closeInfoPanel };
 })(observer(SubInfoPanelHeader));

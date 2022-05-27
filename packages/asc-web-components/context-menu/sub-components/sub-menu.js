@@ -176,6 +176,7 @@ const SubMenu = (props) => {
 
     return (
       <li
+        id={item.id}
         key={item.key}
         role="none"
         className={className}

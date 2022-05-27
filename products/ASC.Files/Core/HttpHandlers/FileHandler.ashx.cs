@@ -47,7 +47,6 @@ using ASC.Files.Core.Resources;
 using ASC.Files.Core.Security;
 using ASC.MessagingSystem;
 using ASC.Security.Cryptography;
-using ASC.Web.Core;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Core.Compress;
@@ -89,6 +88,8 @@ namespace ASC.Web.Files
     [Scope]
     public class FileHandlerService
     {
+        private readonly ThumbnailSettings _thumbnailSettings;
+
         public string FileHandlerPath
         {
             get { return FilesLinkUtility.FileHandlerPath; }
@@ -123,7 +124,6 @@ namespace ASC.Web.Files
         public FileHandlerService(
             FilesLinkUtility filesLinkUtility,
             TenantExtra tenantExtra,
-            CookiesManager cookiesManager,
             AuthContext authContext,
             SecurityContext securityContext,
             GlobalStore globalStore,
@@ -147,7 +147,8 @@ namespace ASC.Web.Files
             IServiceProvider serviceProvider,
             TempStream tempStream,
             SocketManager socketManager,
-            IHttpClientFactory clientFactory)
+            IHttpClientFactory clientFactory,
+            ThumbnailSettings thumbnailSettings)
         {
             FilesLinkUtility = filesLinkUtility;
             TenantExtra = tenantExtra;
@@ -175,6 +176,7 @@ namespace ASC.Web.Files
             UserManager = userManager;
             Logger = optionsMonitor.CurrentValue;
             ClientFactory = clientFactory;
+            this._thumbnailSettings = thumbnailSettings;
         }
 
         public Task Invoke(HttpContext context)
@@ -985,6 +987,25 @@ namespace ASC.Web.Files
         {
             try
             {
+                var defaultSize = _thumbnailSettings.Sizes.FirstOrDefault();
+
+                if (defaultSize == null)
+                {
+                    context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                    return;
+                }
+
+                var width = defaultSize.Width;
+                var height = defaultSize.Height;
+
+                var size = context.Request.Query["size"].ToString() ?? "";
+                var sizes = size.Split('x');
+                if (sizes.Length == 2)
+                {
+                    _ = int.TryParse(sizes[0], out width);
+                    _ = int.TryParse(sizes[1], out height);
+                }
+
                 var fileDao = DaoFactory.GetFileDao<T>();
                 var file = int.TryParse(context.Request.Query[FilesLinkUtility.Version], out var version) && version > 0
                    ? await fileDao.GetFileAsync(id, version)
@@ -1018,7 +1039,7 @@ namespace ASC.Web.Files
                 context.Response.Headers.Add("Content-Disposition", ContentDispositionUtil.GetHeaderValue("." + Global.ThumbnailExtension));
                 context.Response.ContentType = MimeMapping.GetMimeMapping("." + Global.ThumbnailExtension);
 
-                using (var stream = await fileDao.GetThumbnailAsync(file))
+                using (var stream = await fileDao.GetThumbnailAsync(file, width, height))
                 {
                     context.Response.Headers.Add("Content-Length", stream.Length.ToString(CultureInfo.InvariantCulture));
                     await stream.CopyToAsync(context.Response.Body);

@@ -25,13 +25,14 @@ const StyledModalDialog = styled(ModalDialog)`
 
   .conflict-resolve-radio-button {
     label {
-      align-items: start;
+      display: flex;
+      align-items: flex-start;
     }
 
     svg {
       overflow: visible;
       margin-right: 8px;
-      margin-top: 3px
+      margin-top: 3px;
     }
 
     .radio-option-title {
@@ -57,14 +58,23 @@ const StyledModalDialog = styled(ModalDialog)`
   .button-dialog-accept {
     margin-right: 8px;
   }
-  .modal-dialog-aside-footer, .modal-dialog-modal-footer {
+
+  .modal-dialog-aside-footer {
     border-top: ${(props) => props.theme.button.border.baseDisabled};
     margin-left: -16px;
     margin-right: -16px;
     padding-left: 16px;
     padding-right: 16px;
     padding-top: 16px;
-}
+  }
+
+  .modal-dialog-modal-footer {
+    border-top: ${(props) => props.theme.button.border.baseDisabled};
+    margin-left: -12px;
+    margin-right: -12px;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 12px;
   }
 `;
 

@@ -29,27 +29,36 @@ const DebugInfoDialog = (props) => {
   }, [md, visible]);
 
   return (
-    <ModalDialog
-      visible={visible}
-      onClose={onClose}
-      isLarge
-      displayType="modal"
-    >
-      <ModalDialog.Header>Debug Info</ModalDialog.Header>
-      <ModalDialog.Body>
-        {/* <Text>{`# Build version: ${BUILD_VERSION}`}</Text> */}
-        <Text>{`# Version: ${VERSION}`}</Text>
-        <Text>{`# Build date: ${BUILD_AT}`}</Text>
-        {user && (
-          <Text>{`# Current User: ${user?.displayName} (id:${user?.id})`}</Text>
-        )}
-        <Text>{`# User Agent: ${navigator.userAgent}`}</Text>
-        <hr />
-        <Box overflowProp="auto">
-          <Scrollbar>{md && <ReactMarkdown children={md} />}</Scrollbar>
-        </Box>
-      </ModalDialog.Body>
-    </ModalDialog>
+    <>
+      {visible && (
+        <ModalDialog
+          visible={visible}
+          onClose={onClose}
+          isLarge
+          displayType="modal"
+        >
+          <ModalDialog.Header>Debug Info</ModalDialog.Header>
+          <ModalDialog.Body>
+            {/* <Text>{`# Build version: ${BUILD_VERSION}`}</Text> */}
+            <Text>{`# Version: ${VERSION}`}</Text>
+            <Text>{`# Build date: ${BUILD_AT}`}</Text>
+            {user && (
+              <Text>{`# Current User: ${user?.displayName} (id:${user?.id})`}</Text>
+            )}
+            <Text>{`# User Agent: ${navigator.userAgent}`}</Text>
+            <hr />
+            <Box
+              overflowProp="auto"
+              heightProp={modalType === "modal" ? "300px" : "70vh"}
+            >
+              <Scrollbar stype="mediumBlack">
+                {md && <ReactMarkdown children={md} />}
+              </Scrollbar>
+            </Box>
+          </ModalDialog.Body>
+        </ModalDialog>
+      )}
+    </>
   );
 };
 

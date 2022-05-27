@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { desktop, tablet, mobile } from "@appserver/components/utils/device";
+import { desktop, tablet } from "@appserver/components/utils/device";
 
 const StyledBox1 = styled.div`
   display: grid;
@@ -7,7 +7,7 @@ const StyledBox1 = styled.div`
   grid-template-rows: 1fr;
   grid-column-gap: 32px;
 
-  @media ${mobile} {
+  @media (max-width: 428px) {
     grid-template-columns: 1fr;
     grid-template-rows: 1fr 1fr;
   }
@@ -22,7 +22,7 @@ const StyledBox2 = styled.div`
 
   padding-bottom: 40px;
 
-  @media ${mobile} {
+  @media (max-width: 428px) {
     padding-bottom: 32px;
   }
 `;
@@ -51,7 +51,7 @@ const StyledBox4 = styled.div`
       display: none;
     }
   }
-  @media ${mobile} {
+  @media (max-width: 428px) {
     grid-template-columns: 200px;
     .row-content__mobile {
       display: none;
