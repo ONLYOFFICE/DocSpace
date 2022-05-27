@@ -1,6 +1,5 @@
 import PropTypes from "prop-types";
 import React, { useEffect, useRef, useState } from "react";
-import { inject, observer } from "mobx-react";
 import Text from "../text";
 import { countAutoFocus, countAutoOffset } from "./autoOffset";
 import {
@@ -14,14 +13,7 @@ import {
 } from "./styled-submenu";
 import LoaderSubmenu from "./loader";
 
-const Submenu = ({
-  data,
-  startSelect = 0,
-  onSelect,
-  isLoading,
-  theme,
-  ...rest
-}) => {
+const Submenu = ({ data, startSelect = 0, onSelect, isLoading, ...rest }) => {
   if (!data) return null;
 
   const [currentItem, setCurrentItem] = useState(
@@ -97,9 +89,9 @@ const Submenu = ({
                     id={d.id}
                     onClick={selectSubmenuItem}
                   >
-                    <StyledSubmenuItemText>
+                    <StyledSubmenuItemText isActive={isActive}>
                       <Text
-                        color={isActive ? theme.submenu.textColor : "#657077"}
+                        className="item-text"
                         fontSize="13px"
                         fontWeight="600"
                         truncate={false}
@@ -107,9 +99,7 @@ const Submenu = ({
                         {d.name}
                       </Text>
                     </StyledSubmenuItemText>
-                    <StyledSubmenuItemLabel
-                      color={isActive ? theme.submenu.bottomLineColor : "none"}
-                    />
+                    <StyledSubmenuItemLabel isActive={isActive} />
                   </StyledSubmenuItem>
                 );
               })}
@@ -133,6 +123,4 @@ Submenu.propTypes = {
   isLoading: PropTypes.bool,
 };
 
-export default inject(({ auth }) => {
-  return { theme: auth.settingsStore.theme };
-})(observer(Submenu));
+export default Submenu;
