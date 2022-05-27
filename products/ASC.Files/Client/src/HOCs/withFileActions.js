@@ -34,10 +34,26 @@ export default function withFileActions(WrappedFileItem) {
     };
 
     onDropZoneUpload = (files, uploadToFolder) => {
-      const { t, dragging, setDragging, startUpload } = this.props;
+      const {
+        t,
+        dragging,
+        setDragging,
+        startUpload,
+        uploadEmptyFolders,
+      } = this.props;
 
       dragging && setDragging(false);
-      startUpload(files, uploadToFolder, t);
+
+      const emptyFolders = files.filter((f) => f.isEmptyDirectory);
+
+      if (emptyFolders.length > 0) {
+        uploadEmptyFolders(emptyFolders, uploadToFolder).then(() => {
+          const onlyFiles = files.filter((f) => !f.isEmptyDirectory);
+          if (onlyFiles.length > 0) startUpload(onlyFiles, uploadToFolder, t);
+        });
+      } else {
+        startUpload(files, uploadToFolder, t);
+      }
     };
 
     onDrop = (items) => {
@@ -272,7 +288,7 @@ export default function withFileActions(WrappedFileItem) {
         setEnabledHotkeys,
       } = filesStore;
 
-      const { startUpload } = uploadDataStore;
+      const { startUpload, uploadEmptyFolders } = uploadDataStore;
       const { type, extension, id } = fileActionStore;
 
       const selectedItem = selection.find(
@@ -315,6 +331,7 @@ export default function withFileActions(WrappedFileItem) {
         dragging,
         setDragging,
         startUpload,
+        uploadEmptyFolders,
         draggable,
         setTooltipPosition,
         setStartDrag,

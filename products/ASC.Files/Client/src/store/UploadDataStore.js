@@ -15,7 +15,7 @@ import {
   getFileConversationProgress,
   copyToFolder,
   moveToFolder,
-  createFolderPath,
+  createFolder,
   fileCopyAs,
 } from "@appserver/common/api/files";
 import toastr from "studio/toastr";
@@ -480,25 +480,63 @@ class UploadDataStore {
     this.tempConversionFiles = [];
   };
 
-  createEmptyFolders = (emptyFolders, toFolderId) => {
-    for (let i = 0; i < emptyFolders.length; i++) {
-      let folder = emptyFolders[i];
-      if (!folder.path || folder.path.length === 0) continue;
+  convertToTree = (folders) => {
+    let result = [];
+    let level = { result };
+    try {
+      folders.forEach((folder) => {
+        folder.path
+          .split("/")
+          .filter((name) => name !== "")
+          .reduce((r, name, i, a) => {
+            if (!r[name]) {
+              r[name] = { result: [] };
+              r.result.push({ name, children: r[name].result });
+            }
 
-      createFolderPath(toFolderId, folder.path);
+            return r[name];
+          }, level);
+      });
+    } catch (e) {
+      console.error("convertToTree", e);
     }
+    return result;
+  };
+
+  createFolderTree = async (treeList, parentFolderId) => {
+    if (!treeList || !treeList.length) return;
+
+    for (let i = 0; i < treeList.length; i++) {
+      const treeNode = treeList[i];
+
+      console.log(
+        `createFolderTree parent id = ${parentFolderId} name '${treeNode.name}': `,
+        treeNode.children
+      );
+
+      const folder = await createFolder(parentFolderId, treeNode.name);
+      const parentId = folder.id;
+
+      if (treeNode.children.length == 0) continue;
+
+      await this.createFolderTree(treeNode.children, parentId);
+    }
+  };
+
+  createEmptyFolders = async (emptyFolders, toFolderId) => {
+    const tree = this.convertToTree(emptyFolders);
+    await this.createFolderTree(tree, toFolderId);
+  };
+
+  uploadEmptyFolders = async (emptyFolders, folderId) => {
+    const toFolderId = folderId ? folderId : this.selectedFolderStore.id;
+    await this.createEmptyFolders(emptyFolders, toFolderId);
   };
 
   startUpload = (uploadFiles, folderId, t) => {
     const { canConvert } = this.settingsStore;
 
     const toFolderId = folderId ? folderId : this.selectedFolderStore.id;
-
-    const emptyFolders = uploadFiles.filter((f) => f.isEmptyDirectory);
-
-    if (emptyFolders.length > 0) {
-      this.createEmptyFolders(emptyFolders, toFolderId);
-    }
 
     if (this.uploaded) {
       this.files = this.files.filter((f) => f.action !== "upload");
