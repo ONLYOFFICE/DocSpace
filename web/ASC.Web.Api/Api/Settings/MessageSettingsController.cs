@@ -96,7 +96,7 @@ public class MessageSettingsController : BaseSettingsController
     }
 
     [HttpPut("cookiesettings")]
-    public object UpdateCookieSettings(CookieSettingsModel model)
+    public object UpdateCookieSettings(CookieSettingsRequestsDto model)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 

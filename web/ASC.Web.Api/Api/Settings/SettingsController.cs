@@ -291,7 +291,7 @@ public class SettingsController : BaseSettingsController
     }
 
     [HttpPut("dns")]
-    public object SaveDnsSettings(DnsSettingsModel model)
+    public object SaveDnsSettings(DnsSettingsRequestsDto model)
     {
         return _dnsSettings.SaveDnsSettings(model.DnsName, model.Enable);
     }
