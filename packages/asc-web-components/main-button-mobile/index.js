@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 import {
   StyledFloatingButton,
@@ -111,9 +111,7 @@ const MainButtonMobile = (props) => {
   const [height, setHeight] = useState(window.innerHeight - 48 + "px");
 
   const divRef = useRef();
-
   const ref = useRef();
-
   const dropDownRef = useRef();
 
   useEffect(() => {
@@ -121,6 +119,15 @@ const MainButtonMobile = (props) => {
       setIsOpen(opened);
     }
   }, [opened]);
+
+  const recalculateHeight = () => {
+    let height =
+      divRef?.current?.getBoundingClientRect()?.height || window.innerHeight;
+
+    height >= window.innerHeight
+      ? setHeight(window.innerHeight - 48 + "px")
+      : setHeight(height + "px");
+  };
 
   useEffect(() => {
     recalculateHeight();
@@ -132,15 +139,6 @@ const MainButtonMobile = (props) => {
       window.removeEventListener("resize", recalculateHeight);
     };
   }, [recalculateHeight]);
-
-  const recalculateHeight = () => {
-    let height =
-      divRef?.current?.getBoundingClientRect()?.height || window.innerHeight;
-
-    height >= window.innerHeight
-      ? setHeight(window.innerHeight - 48 + "px")
-      : setHeight(height + "px");
-  };
 
   const toggle = (isOpen) => {
     if (isOpenButton && onClose) {
