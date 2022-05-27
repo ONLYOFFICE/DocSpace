@@ -42,7 +42,7 @@ curl https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add -
 echo "deb https://artifacts.elastic.co/packages/${ELASTIC_DIST}.x/apt stable main" | tee /etc/apt/sources.list.d/elastic-${ELASTIC_DIST}.x.list
 
 # add nodejs repo
-curl -sL https://deb.nodesource.com/setup_12.x | bash - 
+curl -sL https://deb.nodesource.com/setup_14.x | bash - 
 
 #add yarn repo
 curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
