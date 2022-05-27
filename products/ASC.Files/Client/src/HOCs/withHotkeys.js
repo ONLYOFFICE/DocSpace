@@ -49,8 +49,8 @@ const withHotkeys = (Component) => {
       filterPreventDefault: false,
       enableOnTags: ["INPUT"],
       enabled: !someDialogIsOpen && enabledHotkeys && !mediaViewerIsVisible,
-      keyup: true,
-      keydown: false,
+      // keyup: true,
+      // keydown: false,
     };
 
     const onKeyDown = (e) => activateHotkeys(e);
@@ -130,21 +130,21 @@ const withHotkeys = (Component) => {
     useHotkeys(
       "Shift+s",
       () => setAction({ type: FileAction.Create, extension: "xlsx", id: -1 }),
-      hotkeysFilter
+      { ...hotkeysFilter, ...{ keyup: true } }
     );
 
     //Crete presentation
     useHotkeys(
       "Shift+p",
       () => setAction({ type: FileAction.Create, extension: "pptx", id: -1 }),
-      hotkeysFilter
+      { ...hotkeysFilter, ...{ keyup: true } }
     );
 
     //Crete form template
     useHotkeys(
       "Shift+o",
       () => setAction({ type: FileAction.Create, extension: "docxf", id: -1 }),
-      hotkeysFilter
+      { ...hotkeysFilter, ...{ keyup: true } }
     );
 
     //Crete form template from file
@@ -158,7 +158,7 @@ const withHotkeys = (Component) => {
     useHotkeys(
       "Shift+f",
       () => setAction({ type: FileAction.Create, id: -1 }),
-      hotkeysFilter
+      { ...hotkeysFilter, ...{ keyup: true } }
     );
 
     //Delete selection
