@@ -850,7 +850,8 @@ class UploadDataStore {
       fileName,
       fileSize,
       relativePath,
-      file.encrypted
+      file.encrypted,
+      file.lastModifiedDate
     )
       .then((res) => {
         const location = res.data.location;
