@@ -22,6 +22,7 @@ class ContextOptionsStore {
   versionHistoryStore;
   settingsStore;
   infoPanelStore;
+  filesSettingsStore;
 
   constructor(
     authStore,
@@ -348,8 +349,10 @@ class ContextOptionsStore {
 
     const isShareable = item.canShare;
 
-    const versionActions =
-      !isMobile && !isMobileUtils() && !isTabletUtils()
+    const isMedia = this.settingsStore.isMediaOrImage(item.fileExst);
+
+    const versionActions = !isMedia
+      ? !isMobile && !isMobileUtils() && !isTabletUtils()
         ? [
             {
               key: "version",
@@ -386,7 +389,8 @@ class ContextOptionsStore {
               onClick: () => this.showVersionHistory(item.id),
               disabled: false,
             },
-          ];
+          ]
+      : [];
 
     const moveActions =
       !isMobile && !isMobileUtils() && !isTabletUtils()
