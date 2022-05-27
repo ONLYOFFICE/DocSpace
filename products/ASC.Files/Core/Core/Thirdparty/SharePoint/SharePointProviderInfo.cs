@@ -38,10 +38,12 @@ public class SharePointProviderInfo : IProviderInfo
     public string ProviderKey { get; set; }
     public Guid Owner { get; set; }
     public FolderType RootFolderType { get; set; }
+    public FolderType? FolderType { get; set; }
     public DateTime CreateOn { get; set; }
     public string CustomerTitle { get; set; }
     public string RootFolderId => "spoint-" + ID;
     public string SpRootFolderId { get; set; } = "/Shared Documents";
+    public string FolderId { get; set; }
 
     public SharePointProviderInfo(
         ILog logger,
@@ -557,7 +559,7 @@ public class SharePointProviderInfo : IProviderInfo
             result.ParentId = null;
             result.CreateBy = Owner;
             result.CreateOn = DateTime.UtcNow;
-            result.FolderType = FolderType.DEFAULT;
+            result.FolderType = Core.FolderType.DEFAULT;
             result.ModifiedBy = Owner;
             result.ModifiedOn = DateTime.UtcNow;
             result.ProviderId = ID;
@@ -580,7 +582,7 @@ public class SharePointProviderInfo : IProviderInfo
         result.ParentId = isRoot ? null : MakeId(GetParentFolderId(folder.ServerRelativeUrl));
         result.CreateBy = Owner;
         result.CreateOn = CreateOn;
-        result.FolderType = FolderType.DEFAULT;
+        result.FolderType = Core.FolderType.DEFAULT;
         result.ModifiedBy = Owner;
         result.ModifiedOn = CreateOn;
         result.ProviderId = ID;

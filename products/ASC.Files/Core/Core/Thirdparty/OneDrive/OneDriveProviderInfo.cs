@@ -54,6 +54,8 @@ internal class OneDriveProviderInfo : IProviderInfo
     public string RootFolderId => "onedrive-" + ID;
     public string ProviderKey { get; set; }
     public FolderType RootFolderType { get; set; }
+    public FolderType? FolderType { get; set; }
+    public string FolderId { get; set; }
 
     private readonly OneDriveStorageDisposableWrapper _wrapper;
     private readonly OneDriveProviderInfoHelper _oneDriveProviderInfoHelper;
