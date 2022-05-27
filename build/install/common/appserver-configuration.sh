@@ -280,7 +280,7 @@ establish_mysql_conn(){
 
     #Save db settings in .json
 	$JSON_USERCONF "this.ConnectionStrings={'default': {'connectionString': \
-	\"Server=$DB_HOST;Port=$DB_PORT;Database=$DB_NAME;User ID=$DB_USER;Password=$DB_PWD;Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none\"}}" >/dev/null 2>&1
+	\"Server=$DB_HOST;Port=$DB_PORT;Database=$DB_NAME;User ID=$DB_USER;Password=$DB_PWD;Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;AllowPublicKeyRetrieval=true;Connection Timeout=30;Maximum Pool Size=300\"}}" >/dev/null 2>&1
 
 	change_mysql_config
 
