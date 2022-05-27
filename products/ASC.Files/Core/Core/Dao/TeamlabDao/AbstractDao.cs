@@ -45,6 +45,8 @@ public class AbstractDao
             return _tenantID;
         }
     }
+
+    protected readonly DbContextManager<FilesDbContext> _dbContextManager;
     protected readonly UserManager _userManager;
     protected readonly TenantManager _tenantManager;
     protected readonly TenantUtil _tenantUtil;
@@ -74,6 +76,7 @@ public class AbstractDao
     {
         _cache = cache;
         _lazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
+        _dbContextManager = dbContextManager;
         _userManager = userManager;
         _tenantManager = tenantManager;
         _tenantUtil = tenantUtil;
@@ -95,9 +98,10 @@ public class AbstractDao
         return set.AsQueryable().Where(r => r.TenantId == tenantId);
     }
 
-    protected internal IQueryable<DbFile> GetFileQuery(Expression<Func<DbFile, bool>> where)
+    protected internal IQueryable<DbFile> GetFileQuery(Expression<Func<DbFile, bool>> where, EF.FilesDbContext filesDbContext = null)
     {
-        return Query(FilesDbContext.Files)
+        filesDbContext ??= FilesDbContext;
+        return Query(filesDbContext.Files)
             .Where(where);
     }
 

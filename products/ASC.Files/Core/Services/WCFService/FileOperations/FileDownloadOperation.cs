@@ -166,7 +166,7 @@ class FileDownloadOperation<T> : FileOperation<FileDownloadOperationData<T>, T>
         _taskInfo.PublishChanges();
     }
 
-    private async Task<ItemNameValueCollection<T>> ExecPathFromFileAsync(IServiceScope scope, File<T> file, string path)
+    private async Task<ItemNameValueCollection<T>> ExecPathFromFileAsync(IServiceScope scope, FileEntry<T> file, string path)
     {
         var fileMarker = scope.ServiceProvider.GetService<FileMarker>();
         await fileMarker.RemoveMarkAsNewAsync(file);
@@ -193,8 +193,8 @@ class FileDownloadOperation<T> : FileOperation<FileDownloadOperationData<T>, T>
         var entriesPathId = new ItemNameValueCollection<T>();
         if (0 < Files.Count)
         {
-            var files = await FileDao.GetFilesAsync(Files).ToListAsync();
-            files = (await FilesSecurity.FilterReadAsync(files)).ToList();
+            IEnumerable<FileEntry<T>> files = await FileDao.GetFilesAsync(Files).ToListAsync();
+            files = await FilesSecurity.FilterReadAsync(files);
 
             foreach (var file in files)
             {
@@ -236,26 +236,25 @@ class FileDownloadOperation<T> : FileOperation<FileDownloadOperationData<T>, T>
 
             var folderPath = path + folder.Title + "/";
 
-            var files = await FileDao.GetFilesAsync(folder.Id, null, FilterType.None, false, Guid.Empty, string.Empty, true).ToListAsync();
-            var filteredFiles = await FilesSecurity.FilterReadAsync(files);
-            files = filteredFiles.ToList();
+            IEnumerable<FileEntry<T>> files = await FileDao.GetFilesAsync(folder.Id, null, FilterType.None, false, Guid.Empty, string.Empty, true).ToListAsync();
+            files = await FilesSecurity.FilterReadAsync(files);
 
-            foreach (var file in filteredFiles)
+            foreach (var file in files)
             {
                 entriesPathId.Add(await ExecPathFromFileAsync(scope, file, folderPath));
             }
 
             await fileMarker.RemoveMarkAsNewAsync(folder);
 
-            var nestedFolders = await FolderDao.GetFoldersAsync(folder.Id).ToListAsync();
-            var filteredNestedFolders = await FilesSecurity.FilterReadAsync(nestedFolders);
-            nestedFolders = filteredNestedFolders.ToList();
-            if (files.Count == 0 && nestedFolders.Count == 0)
+            IEnumerable<FileEntry<T>> nestedFolders = await FolderDao.GetFoldersAsync(folder.Id).ToListAsync();
+            nestedFolders = await FilesSecurity.FilterReadAsync(nestedFolders);
+
+            if (!files.Any() && !nestedFolders.Any())
             {
                 entriesPathId.Add(folderPath, default(T));
             }
 
-            var filesInFolder = await GetFilesInFoldersAsync(scope, nestedFolders.ConvertAll(f => f.Id), folderPath);
+            var filesInFolder = await GetFilesInFoldersAsync(scope, nestedFolders.Select(f => f.Id), folderPath);
             entriesPathId.Add(filesInFolder);
         }
 

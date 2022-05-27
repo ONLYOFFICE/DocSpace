@@ -172,11 +172,12 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             orderBy = new OrderBy(SortedByType.DateAndTime, false);
         }
 
-        var q = GetFolderQuery(r => r.ParentId == parentId).AsNoTracking();
+        var filesDbContext = _dbContextManager.GetNew();
+        var q = GetFolderQuery(r => r.ParentId == parentId, filesDbContext).AsNoTracking();
 
         if (withSubfolders)
         {
-            q = GetFolderQuery().AsNoTracking()
+            q = GetFolderQuery(filesDbContext: filesDbContext).AsNoTracking()
                 .Join(FilesDbContext.Tree, r => r.Id, a => a.FolderId, (folder, tree) => new { folder, tree })
                 .Where(r => r.tree.ParentId == parentId && r.tree.Level != 0)
                 .Select(r => r.folder);
@@ -215,7 +216,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             }
         }
 
-        var dbFolders = FromQueryWithShared(q).AsAsyncEnumerable();
+        var dbFolders = FromQueryWithShared(q, filesDbContext).AsAsyncEnumerable();
 
         return dbFolders.Select(_mapper.Map<DbFolderQuery, Folder<int>>);
     }
@@ -1127,9 +1128,9 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     #endregion
 
-    protected internal IQueryable<DbFolder> GetFolderQuery(Expression<Func<DbFolder, bool>> where = null)
+    protected internal IQueryable<DbFolder> GetFolderQuery(Expression<Func<DbFolder, bool>> where = null, EF.FilesDbContext filesDbContext = null)
     {
-        var q = Query(FilesDbContext.Folders);
+        var q = Query((filesDbContext ?? FilesDbContext).Folders);
         if (where != null)
         {
             q = q.Where(where);
@@ -1138,15 +1139,17 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         return q;
     }
 
-    protected IQueryable<DbFolderQuery> FromQueryWithShared(IQueryable<DbFolder> dbFiles)
+    protected IQueryable<DbFolderQuery> FromQueryWithShared(IQueryable<DbFolder> dbFiles, EF.FilesDbContext filesDbContext = null)
     {
+        filesDbContext ??= FilesDbContext;
+
         var e = from r in dbFiles
                 select new DbFolderQuery
                 {
                     Folder = r,
-                    Root = (from f in FilesDbContext.Folders.AsQueryable()
+                    Root = (from f in filesDbContext.Folders.AsQueryable()
                             where f.Id ==
-                             (from t in FilesDbContext.Tree.AsQueryable()
+                             (from t in filesDbContext.Tree.AsQueryable()
                               where t.FolderId == r.ParentId
                               orderby t.Level descending
                               select t.ParentId
@@ -1154,7 +1157,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                             where f.TenantId == r.TenantId
                             select f
                            ).FirstOrDefault(),
-                    Shared = (from f in FilesDbContext.Security.AsQueryable()
+                    Shared = (from f in filesDbContext.Security.AsQueryable()
                               where f.EntryType == FileEntryType.Folder && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId
                               select f
                               ).Any()
