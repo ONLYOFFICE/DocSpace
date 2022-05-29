@@ -384,7 +384,18 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                         {
                             await fileMarker.RemoveMarkAsNewForAllAsync(folder);
 
-                            var newFolderId = await FolderDao.MoveFolderAsync(folder.Id, toFolderId, CancellationToken);
+                            TTo newFolderId = default;
+
+                            if (isRoom && folder.ProviderEntry)
+                            {
+                                await ProviderDao.UpdateProviderInfoAsync(folder.ProviderId, toFolder.FolderType);
+                                newFolderId = (TTo)Convert.ChangeType(folder, typeof(TTo));
+                            }
+                            else
+                            {
+                                newFolderId = await FolderDao.MoveFolderAsync(folder.Id, toFolderId, CancellationToken);
+                            }
+
                             newFolder = await folderDao.GetFolderAsync(newFolderId);
 
                             if (isRoom)

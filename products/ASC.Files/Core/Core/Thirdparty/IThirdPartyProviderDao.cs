@@ -371,6 +371,18 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         fileEntry.Error = entry.Error;
     }
 
+    protected void SetFolderType(Folder<string> folder, bool isRoot)
+    {
+        if (isRoot && (ProviderInfo.RootFolderType == FolderType.VirtualRooms ||
+            ProviderInfo.RootFolderType == FolderType.Archive))
+        {
+            folder.FolderType = ProviderInfo.RootFolderType;
+        }
+        else if (ProviderInfo.FolderId == folder.Id)
+        {
+            folder.FolderType = ProviderInfo.FolderType;
+        }
+    }
 
     protected abstract string MakeId(string path = null);
 

@@ -514,7 +514,7 @@ public class EntryManager
 
             CalculateTotal();
         }
-        else if (parent.FolderType == FolderType.VirtualRooms)
+        else if (parent.FolderType == FolderType.VirtualRooms && !parent.ProviderEntry)
         {
             entries = await fileSecurity.GetVirtualRoomsAsync(filter, subjectId, searchText, searchInContent, withSubfolders, orderBy, searchArea, tagIds);
 

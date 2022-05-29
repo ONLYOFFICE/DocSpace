@@ -32,7 +32,7 @@ public interface IProviderInfo : IDisposable
     string ProviderKey { get; }
     Guid Owner { get; }
     FolderType RootFolderType { get; }
-    FolderType? FolderType { get; }
+    FolderType FolderType { get; }
     DateTime CreateOn { get; }
     string CustomerTitle { get; }
     string RootFolderId { get; }

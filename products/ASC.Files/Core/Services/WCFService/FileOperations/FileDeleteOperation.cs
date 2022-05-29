@@ -109,6 +109,8 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
             CancellationToken.ThrowIfCancellationRequested();
 
             var folder = await FolderDao.GetFolderAsync(folderId);
+            var isRoom = DocSpaceHelper.IsRoom(folder.FolderType);
+
             T canCalculate = default;
             if (folder == null)
             {
@@ -156,7 +158,16 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                         if (await FolderDao.IsEmptyAsync(folder.Id))
                         {
                             await FolderDao.DeleteFolderAsync(folder.Id);
-                            filesMessageService.Send(folder, _headers, MessageAction.FolderDeleted, folder.Title);
+
+                            if (isRoom && folder.ProviderEntry)
+                            {
+                                await ProviderDao.UpdateProviderInfoAsync(folder.ProviderId, null, FolderType.DEFAULT);
+                                filesMessageService.Send(folder, _headers, MessageAction.RoomDeleted, folder.Title);
+                            }
+                            else
+                            {
+                                filesMessageService.Send(folder, _headers, MessageAction.FolderDeleted, folder.Title);
+                            }
 
                             ProcessedFolder(folderId);
                         }
@@ -175,7 +186,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                             {
                                 await FolderDao.DeleteFolderAsync(folder.Id);
 
-                                if (DocSpaceHelper.IsRoom(folder.FolderType))
+                                if (isRoom)
                                 {
                                     filesMessageService.Send(folder, _headers, MessageAction.RoomDeleted, folder.Title);
                                 }

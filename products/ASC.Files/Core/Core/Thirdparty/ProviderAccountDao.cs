@@ -205,6 +205,45 @@ internal class ProviderAccountDao : IProviderDao
         return providerInfo != null && await providerInfo.CheckAccessAsync();
     }
 
+    public async Task<bool> UpdateProviderInfoAsync(int linkId, FolderType rootFolderType)
+    {
+        var forUpdate = await FilesDbContext.ThirdpartyAccount
+            .Where(r => r.Id == linkId)
+            .Where(r => r.TenantId == TenantID)
+            .FirstOrDefaultAsync().ConfigureAwait(false);
+
+        if (forUpdate == null)
+        {
+            return false;
+        }
+
+        forUpdate.RootFolderType = rootFolderType;
+
+        await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+
+        return true;
+    }
+
+    public async Task<bool> UpdateProviderInfoAsync(int linkId, string folderId, FolderType folderType)
+    {
+        var forUpdate = await FilesDbContext.ThirdpartyAccount
+            .Where(r => r.Id == linkId)
+            .Where(r => r.TenantId == TenantID)
+            .FirstOrDefaultAsync().ConfigureAwait(false);
+
+        if (forUpdate == null)
+        {
+            return false;
+        }
+
+        forUpdate.FolderType = folderType;
+        forUpdate.FolderId = folderId;
+
+        await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+
+        return true;
+    }
+
     public virtual async Task<int> UpdateProviderInfoAsync(int linkId, AuthData authData)
     {
         var forUpdate = await FilesDbContext.ThirdpartyAccount

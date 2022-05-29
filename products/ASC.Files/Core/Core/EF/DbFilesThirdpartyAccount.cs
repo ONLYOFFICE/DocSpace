@@ -36,7 +36,7 @@ public class DbFilesThirdpartyAccount : BaseEntity, IDbFile, IDbSearch
     public string Token { get; set; }
     public Guid UserId { get; set; }
     public FolderType RootFolderType { get; set; }
-    public FolderType? FolderType { get; set; }
+    public FolderType FolderType { get; set; }
     public DateTime CreateOn { get; set; }
     public string Url { get; set; }
     public int TenantId { get; set; }

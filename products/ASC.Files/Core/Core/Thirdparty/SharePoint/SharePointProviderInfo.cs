@@ -38,7 +38,7 @@ public class SharePointProviderInfo : IProviderInfo
     public string ProviderKey { get; set; }
     public Guid Owner { get; set; }
     public FolderType RootFolderType { get; set; }
-    public FolderType? FolderType { get; set; }
+    public FolderType FolderType { get; set; }
     public DateTime CreateOn { get; set; }
     public string CustomerTitle { get; set; }
     public string RootFolderId => "spoint-" + ID;
