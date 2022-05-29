@@ -27,36 +27,16 @@
 namespace ASC.Files.Api;
 
 [ConstraintRoute("int")]
-public class VirtualRoomsControllerInternal : VirtualRoomsController<int>
+public class VirtualRoomsInternalController : VirtualRoomsController<int>
 {
-    public VirtualRoomsControllerInternal(
-        FoldersControllerHelper<int> foldersControllerHelper,
-        GlobalFolderHelper globalFolderHelper,
-        FileStorageService<int> fileStorageService,
-        FolderDtoHelper folderDtoHelper,
-        FileOperationDtoHelper fileOperationDtoHelper,
-        SecurityControllerHelper<int> securityControllerHelper,
-        CoreBaseSettings coreBaseSettings,
-        FolderContentDtoHelper folderContentDtoHelper,
-        ApiContext apiContext,
-        WebItemSecurity webItemSecurity,
-        AuthContext authContext,
-        RoomLinksService roomLinksManager,
-        CustomTagsService<int> customTagsService) 
-        : base(
-            foldersControllerHelper,
-            globalFolderHelper,
-            fileStorageService,
-            folderDtoHelper,
-            fileOperationDtoHelper,
-            securityControllerHelper,
-            coreBaseSettings,
-            folderContentDtoHelper,
-            apiContext,
-            webItemSecurity,
-            authContext,
-            roomLinksManager,
-            customTagsService)
+    public VirtualRoomsInternalController(FoldersControllerHelper<int> foldersControllerHelper, FileStorageService<int> fileStorageService, FolderDtoHelper folderDtoHelper, GlobalFolderHelper globalFolderHelper, FileOperationDtoHelper fileOperationDtoHelper, SecurityControllerHelper<int> securityControllerHelper, CoreBaseSettings coreBaseSettings, AuthContext authContext, RoomLinksService roomLinksManager, CustomTagsService<int> customTagsService) : base(foldersControllerHelper, fileStorageService, folderDtoHelper, globalFolderHelper, fileOperationDtoHelper, securityControllerHelper, coreBaseSettings, authContext, roomLinksManager, customTagsService)
+    {
+    }
+}
+
+public class VirtualRoomsThirdpartyController : VirtualRoomsController<string>
+{
+    public VirtualRoomsThirdpartyController(FoldersControllerHelper<string> foldersControllerHelper, FileStorageService<string> fileStorageService, FolderDtoHelper folderDtoHelper, GlobalFolderHelper globalFolderHelper, FileOperationDtoHelper fileOperationDtoHelper, SecurityControllerHelper<string> securityControllerHelper, CoreBaseSettings coreBaseSettings, AuthContext authContext, RoomLinksService roomLinksManager, CustomTagsService<string> customTagsService) : base(foldersControllerHelper, fileStorageService, folderDtoHelper, globalFolderHelper, fileOperationDtoHelper, securityControllerHelper, coreBaseSettings, authContext, roomLinksManager, customTagsService)
     {
     }
 }
@@ -66,72 +46,26 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     private readonly FoldersControllerHelper<T> _foldersControllerHelper;
     private readonly FileStorageService<T> _fileStorageService;
     private readonly FolderDtoHelper _folderDtoHelper;
-    private readonly FolderContentDtoHelper _folderContentDtoHelper;
     private readonly GlobalFolderHelper _globalFolderHelper;
     private readonly FileOperationDtoHelper _fileOperationDtoHelper;
     private readonly SecurityControllerHelper<T> _securityControllerHelper;
     private readonly CoreBaseSettings _coreBaseSettings;
-    private readonly ApiContext _apiContext;
-    private readonly WebItemSecurity _webItemSecurity;
     private readonly AuthContext _authContext;
     private readonly RoomLinksService _roomLinksManager;
     private readonly CustomTagsService<T> _customTagsService;
 
-    public VirtualRoomsController(FoldersControllerHelper<T> foldersControllerHelper, GlobalFolderHelper globalFolderHelper,
-        FileStorageService<T> fileStorageService, FolderDtoHelper folderDtoHelper, FileOperationDtoHelper fileOperationDtoHelper,
-        SecurityControllerHelper<T> securityControllerHelper, CoreBaseSettings coreBaseSettings,
-        FolderContentDtoHelper folderContentDtoHelper, ApiContext apiContext, WebItemSecurity webItemSecurity, AuthContext authContext,
-        RoomLinksService roomLinksManager, CustomTagsService<T> customTagsService)
+    protected VirtualRoomsController(FoldersControllerHelper<T> foldersControllerHelper, FileStorageService<T> fileStorageService, FolderDtoHelper folderDtoHelper, GlobalFolderHelper globalFolderHelper, FileOperationDtoHelper fileOperationDtoHelper, SecurityControllerHelper<T> securityControllerHelper, CoreBaseSettings coreBaseSettings, AuthContext authContext, RoomLinksService roomLinksManager, CustomTagsService<T> customTagsService)
     {
         _foldersControllerHelper = foldersControllerHelper;
-        _globalFolderHelper = globalFolderHelper;
         _fileStorageService = fileStorageService;
         _folderDtoHelper = folderDtoHelper;
+        _globalFolderHelper = globalFolderHelper;
         _fileOperationDtoHelper = fileOperationDtoHelper;
         _securityControllerHelper = securityControllerHelper;
         _coreBaseSettings = coreBaseSettings;
-        _folderContentDtoHelper = folderContentDtoHelper;
-        _apiContext = apiContext;
-        _webItemSecurity = webItemSecurity;
         _authContext = authContext;
         _roomLinksManager = roomLinksManager;
         _customTagsService = customTagsService;
-    }
-
-    [Read("rooms")]
-    public async Task<FolderContentDto<T>> GetRoomsFolderAsync(RoomType type, string subjectId, bool searchInContent, bool withSubfolders, SearchArea searchArea, string tags)
-    {
-        ErrorIfNotDocSpace();
-
-        var parentId = await _globalFolderHelper.GetFolderVirtualRooms<T>();
-
-        var filter = type switch
-        {
-            RoomType.FillingFormsRoom => FilterType.FillingFormsRoomsOnly,
-            RoomType.ReadOnlyRoom => FilterType.ReadOnlyRoomsOnly,
-            RoomType.EditingRoom => FilterType.EditingRoomsOnly,
-            RoomType.ReviewRoom => FilterType.ReviewRoomsOnly,
-            RoomType.CustomRoom => FilterType.CustomRoomsOnly,
-            _ => FilterType.None
-        };
-
-        var tagIds = !string.IsNullOrEmpty(tags) ? JsonSerializer.Deserialize<IEnumerable<int>>(tags) : null;
-
-        OrderBy orderBy = null;
-        if (Enum.TryParse(_apiContext.SortBy, true, out SortedByType sortBy))
-        {
-            orderBy = new OrderBy(sortBy, !_apiContext.SortDescending);
-        }
-
-        var startIndex = Convert.ToInt32(_apiContext.StartIndex);
-        var count = Convert.ToInt32(_apiContext.Count);
-        var filterValue = _apiContext.FilterValue;
-
-        var content = await _fileStorageService.GetFolderItemsAsync(parentId, startIndex, count, filter, false, subjectId, filterValue, searchInContent, withSubfolders, orderBy, searchArea, tagIds);
-
-        var dto = await _folderContentDtoHelper.GetAsync(content, startIndex);
-
-        return dto.NotFoundIfNull();
     }
 
     [Create("rooms")]
@@ -235,6 +169,76 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         var room = await _customTagsService.DeleteRoomTagsAsync(id, inDto.TagIds);
 
         return await _folderDtoHelper.GetAsync(room);
+    }
+
+    private void ErrorIfNotDocSpace()
+    {
+        if (_coreBaseSettings.DisableDocSpace)
+        {
+            throw new NotSupportedException();
+        }
+    }
+}
+
+public class VirtualRoomsCommonController : ApiControllerBase
+{
+    private readonly FileStorageService<int> _fileStorageService;
+    private readonly FolderContentDtoHelper _folderContentDtoHelper;
+    private readonly GlobalFolderHelper _globalFolderHelper;
+    private readonly CoreBaseSettings _coreBaseSettings;
+    private readonly ApiContext _apiContext;
+    private readonly CustomTagsService<int> _customTagsService;
+
+    public VirtualRoomsCommonController(
+        FileStorageService<int> fileStorageService,
+        FolderContentDtoHelper folderContentDtoHelper,
+        GlobalFolderHelper globalFolderHelper,
+        CoreBaseSettings coreBaseSettings,
+        ApiContext apiContext,
+        CustomTagsService<int> customTagsService)
+    {
+        _fileStorageService = fileStorageService;
+        _folderContentDtoHelper = folderContentDtoHelper;
+        _globalFolderHelper = globalFolderHelper;
+        _coreBaseSettings = coreBaseSettings;
+        _apiContext = apiContext;
+        _customTagsService = customTagsService;
+    }
+
+    [Read("rooms")]
+    public async Task<FolderContentDto<int>> GetRoomsFolderAsync(RoomType type, string subjectId, bool searchInContent, bool withSubfolders, SearchArea searchArea, string tags)
+    {
+        ErrorIfNotDocSpace();
+
+        var parentId = await _globalFolderHelper.GetFolderVirtualRooms<int>();
+
+        var filter = type switch
+        {
+            RoomType.FillingFormsRoom => FilterType.FillingFormsRoomsOnly,
+            RoomType.ReadOnlyRoom => FilterType.ReadOnlyRoomsOnly,
+            RoomType.EditingRoom => FilterType.EditingRoomsOnly,
+            RoomType.ReviewRoom => FilterType.ReviewRoomsOnly,
+            RoomType.CustomRoom => FilterType.CustomRoomsOnly,
+            _ => FilterType.None
+        };
+
+        var tagIds = !string.IsNullOrEmpty(tags) ? JsonSerializer.Deserialize<IEnumerable<int>>(tags) : null;
+
+        OrderBy orderBy = null;
+        if (Enum.TryParse(_apiContext.SortBy, true, out SortedByType sortBy))
+        {
+            orderBy = new OrderBy(sortBy, !_apiContext.SortDescending);
+        }
+
+        var startIndex = Convert.ToInt32(_apiContext.StartIndex);
+        var count = Convert.ToInt32(_apiContext.Count);
+        var filterValue = _apiContext.FilterValue;
+
+        var content = await _fileStorageService.GetFolderItemsAsync(parentId, startIndex, count, filter, false, subjectId, filterValue, searchInContent, withSubfolders, orderBy, searchArea, tagIds);
+
+        var dto = await _folderContentDtoHelper.GetAsync(content, startIndex);
+
+        return dto.NotFoundIfNull();
     }
 
     [Create("tags")]
