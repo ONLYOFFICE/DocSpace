@@ -85,7 +85,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     {
         ErrorIfNotDocSpace();
 
-        var room = await _fileStorageService.CreateRoom(inDto.Title, inDto.RoomType);
+        var room = await _fileStorageService.CreateRoomAsync(inDto.Title, inDto.RoomType);
 
         return await _folderDtoHelper.GetAsync(room);
     }

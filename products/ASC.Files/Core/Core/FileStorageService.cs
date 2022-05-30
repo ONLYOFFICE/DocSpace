@@ -400,7 +400,7 @@ public class FileStorageService<T> //: IFileStorageService
         return InternalCreateNewFolderAsync(parentId, title, FolderType.DEFAULT);
     }
 
-    public async Task<Folder<T>> CreateRoom(string title, RoomType roomType)
+    public async Task<Folder<T>> CreateRoomAsync(string title, RoomType roomType)
     {
         ArgumentNullException.ThrowIfNull(title, nameof(title));
 
@@ -408,8 +408,8 @@ public class FileStorageService<T> //: IFileStorageService
 
         return roomType switch
         {
-            RoomType.CustomRoom => await CreateCustomRoom(title, parentId),
-            _ => await CreateCustomRoom(title, parentId),
+            RoomType.CustomRoom => await CreateCustomRoomAsync(title, parentId),
+            _ => await CreateCustomRoomAsync(title, parentId),
         };
     }
 
@@ -436,8 +436,8 @@ public class FileStorageService<T> //: IFileStorageService
 
         var room = roomType switch
         {
-            RoomType.CustomRoom => await CreateCustomRoom(title, parentId),
-            _ => await CreateCustomRoom(title, parentId),
+            RoomType.CustomRoom => await CreateCustomRoomAsync(title, parentId),
+            _ => await CreateCustomRoomAsync(title, parentId),
         };
 
         var folderType = roomType switch
@@ -455,7 +455,7 @@ public class FileStorageService<T> //: IFileStorageService
         return room;
     }
 
-    private async Task<Folder<T>> CreateCustomRoom(string title, T parentId)
+    private async Task<Folder<T>> CreateCustomRoomAsync(string title, T parentId)
     {
         return await InternalCreateNewFolderAsync(parentId, title, FolderType.CustomRoom);
     }
