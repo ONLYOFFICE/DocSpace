@@ -71,7 +71,6 @@ const StyledTableRow = styled(TableRow)`
     `}
 
   .table-container_cell {
-    /* ${isSafari && `border-image-slice: 0 !important`}; */
     background: ${(props) =>
       (props.checked || props.isActive) &&
       `${props.theme.filesSection.tableView.row.backgroundActive} !important`};
@@ -148,6 +147,11 @@ const StyledTableRow = styled(TableRow)`
       .table-container_cell {
         margin-top: -1px;
         border-top: 1px solid #2da7db;
+        border-right: 0;
+        border-left: 0;
+      }
+      .table-container_file-name-cell > .table-container_cell {
+        margin-top: 0;
       }
     `}
 `;
@@ -256,6 +260,7 @@ const FilesTableRow = (props) => {
     quickButtonsComponent,
     getContextModel,
     showHotkeyBorder,
+    tableColumns,
   } = props;
   const { acceptBackground, background } = theme.dragAndDrop;
 
@@ -305,6 +310,25 @@ const FilesTableRow = (props) => {
       }
     }
   }, [checkedProps, isActive, showHotkeyBorder]);
+
+  let availableColumns = [];
+  let authorAvailableDrag = true;
+  let createdAvailableDrag = true;
+  let modifiedAvailableDrag = true;
+  let sizeAvailableDrag = true;
+  let typeAvailableDrag = true;
+  let buttonsAvailableDrag = true;
+
+  if (dragging && isDragging) {
+    availableColumns = localStorage.getItem(tableColumns).split(",");
+
+    authorAvailableDrag = availableColumns.includes("Author");
+    createdAvailableDrag = availableColumns.includes("Created");
+    modifiedAvailableDrag = availableColumns.includes("Modified");
+    sizeAvailableDrag = availableColumns.includes("Size");
+    typeAvailableDrag = availableColumns.includes("Type");
+    buttonsAvailableDrag = availableColumns.includes("QuickButtons");
+  }
 
   return (
     <StyledDragAndDrop
@@ -364,34 +388,60 @@ const FilesTableRow = (props) => {
           <StyledBadgesContainer>{badgesComponent}</StyledBadgesContainer>
         </TableCell>
         {!personal && (
-          <TableCell {...dragStyles} {...selectionProp}>
+          <TableCell
+            style={
+              !authorAvailableDrag ? { background: "none" } : dragStyles.style
+            }
+          >
             <AuthorCell
               sideColor={theme.filesSection.tableView.row.sideColor}
               {...props}
             />
           </TableCell>
         )}
-        <TableCell {...dragStyles} {...selectionProp}>
+        <TableCell
+          style={
+            !createdAvailableDrag
+              ? { background: "none !important" }
+              : dragStyles.style
+          }
+          {...selectionProp}
+        >
           <DateCell
             create
             sideColor={theme.filesSection.tableView.row.sideColor}
             {...props}
           />
         </TableCell>
-        <TableCell {...dragStyles} {...selectionProp}>
+        <TableCell
+          style={
+            !modifiedAvailableDrag ? { background: "none" } : dragStyles.style
+          }
+          {...selectionProp}
+        >
           <DateCell
             sideColor={theme.filesSection.tableView.row.sideColor}
             {...props}
           />
         </TableCell>
-        <TableCell {...dragStyles} {...selectionProp}>
+        <TableCell
+          style={!sizeAvailableDrag ? { background: "none" } : dragStyles.style}
+          {...selectionProp}
+        >
           <SizeCell
             sideColor={theme.filesSection.tableView.row.sideColor}
             {...props}
           />
         </TableCell>
 
-        <TableCell {...dragStyles} {...selectionProp}>
+        <TableCell
+          style={
+            !typeAvailableDrag
+              ? { background: "none !important" }
+              : dragStyles.style
+          }
+          {...selectionProp}
+        >
           <TypeCell
             sideColor={theme.filesSection.tableView.row.sideColor}
             {...props}
@@ -399,7 +449,9 @@ const FilesTableRow = (props) => {
         </TableCell>
 
         <TableCell
-          {...dragStyles}
+          style={
+            !buttonsAvailableDrag ? { background: "none" } : dragStyles.style
+          }
           {...selectionProp}
           className={`${selectionProp?.className} table-container_quick-buttons-wrapper`}
         >

@@ -154,8 +154,12 @@ const SectionBodyContent = (props) => {
           const value = currentDroppable.getAttribute("value");
           const classElements = document.getElementsByClassName(value);
 
+          // add check for column with width = 0, because without it dark theme d`n`d have bug color
+          // 30 - it`s column padding
           for (let cl of classElements) {
-            cl.classList.add("droppable-hover");
+            if (cl.clientWidth - 30) {
+              cl.classList.add("droppable-hover");
+            }
           }
         } else {
           currentDroppable.classList.add("droppable-hover");

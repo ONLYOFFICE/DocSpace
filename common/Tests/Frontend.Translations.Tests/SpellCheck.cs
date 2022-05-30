@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 using WeCantSpell.Hunspell;
 
@@ -6,6 +7,12 @@ namespace Frontend.Translations.Tests
 {
     public static class SpellCheck
     {
+        public class DicPaths
+        {
+            public string DictionaryPath { get; set; }
+            public string AffixPath { get; set; }
+        }
+
         public static Models.SpellCheckResult HasSpellIssues(string text, string language, WordList dictionary)
         {
             var result = new Models.SpellCheckResult(text, language);
@@ -21,68 +28,112 @@ namespace Frontend.Translations.Tests
             return result;
         }
 
-        public static string GetDictionaryLanguage(string lng)
+        public static DicPaths GetDictionaryPaths(string lng)
         {
+            const string dictionariesPath = @"..\..\..\dictionaries";
+            const string additionalPath = @"..\..\..\additional";
+
+            var path = dictionariesPath;
+            string language;
+
             // az,bg,cs,de,el,en,en-US,es,fi,fr,it,ja,ko,lo,lv,nl,pl,pt,pt-BR,ro,ru,sk,sl,tr,uk,vi,zh-CN
             switch (lng)
             {
                 case "az":
-                    return "az_Latn_AZ";
+                    language = "az_Latn_AZ";
+                    break;
                 case "bg":
-                    return "bg_BG";
+                    language = "bg_BG";
+                    break;
                 case "cs":
-                    return "cs_CZ";
+                    language = "cs_CZ";
+                    break;
                 case "de":
-                    return "de_DE";
+                    language = "de_DE";
+                    break;
                 case "el":
-                    return "el_GR";
+                    language = "el_GR";
+                    break;
                 case "en":
-                    return "en_GB";
+                    language = "en_GB";
+                    break;
                 case "en-US":
-                    return "en_US";
+                    language = "en_US";
+                    break;
                 case "es":
-                    return "es_ES";
-                //case "fi":
-                //    return "";
+                    language = "es_ES";
+                    break;
+                case "fi":
+                    language = "fi_FI";
+                    path = additionalPath;
+                    break;
                 case "fr":
-                    return "fr_FR";
+                    language = "fr_FR";
+                    break;
                 case "it":
-                    return "it_IT";
+                    language = "it_IT";
+                    break;
                 //case "ja":
-                //    return "";
+                //    language = "";
+                //break;
                 case "ko":
-                    return "ko_KR";
-                //case "lo":
-                //    return "";
+                    language = "ko_KR";
+                    break;
+                case "lo":
+                    language = "lo_LA";
+                    path = additionalPath;
+                    break;
                 case "lv":
-                    return "lv_LV";
+                    language = "lv_LV";
+                    break;
                 case "nl":
-                    return "nl_NL";
+                    language = "nl_NL";
+                    break;
                 case "pl":
-                    return "pl_PL";
+                    language = "pl_PL";
+                    break;
                 case "pt":
-                    return "pt_PT";
+                    language = "pt_PT";
+                    break;
                 case "pt-BR":
-                    return "pt_BR";
+                    language = "pt_BR";
+                    break;
                 case "ro":
-                    return "ro_RO";
+                    language = "ro_RO";
+                    break;
                 case "ru":
-                    return "ru_RU";
+                    language = "ru_RU";
+                    break;
                 case "sk":
-                    return "sk_SK";
+                    language = "sk_SK";
+                    break;
                 case "sl":
-                    return "sl_SI";
+                    language = "sl_SI";
+                    break;
                 case "tr":
-                    return "tr_TR";
+                    language = "tr_TR";
+                    break;
                 case "uk":
-                    return "uk_UA";
+                    language = "uk_UA";
+                    break;
                 case "vi":
-                    return "vi_VN";
+                    language = "vi_VN";
+                    break;
                 //case "zh-CN":
-                //    return "";
+                //    language = "";
+                //break;
                 default:
                     throw new NotSupportedException();
             }
+
+            var dicPath = Path.Combine(path, language, $"{language}.dic");
+            var affPath = Path.Combine(path, language, $"{language}.aff");
+
+            return new DicPaths
+            {
+                DictionaryPath = dicPath,
+                AffixPath = affPath
+            };
         }
     }
 }
