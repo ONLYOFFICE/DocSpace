@@ -79,9 +79,10 @@ namespace Frontend.Translations.Tests
                 case "ko":
                     language = "ko_KR";
                     break;
-                //case "lo":
-                //    language = "";
-                //break;
+                case "lo":
+                    language = "lo_LA";
+                    path = additionalPath;
+                    break;
                 case "lv":
                     language = "lv_LV";
                     break;
