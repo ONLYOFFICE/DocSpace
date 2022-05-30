@@ -49,7 +49,7 @@ public class CustomSchemasController : BaseSettingsController
         _permissionContext = permissionContext;
     }
 
-    [Read("customschemas")]
+    [HttpGet("customschemas")]
     public List<SchemaRequestsDto> PeopleSchemas()
     {
         return _customNamingPeople
@@ -76,7 +76,7 @@ public class CustomSchemasController : BaseSettingsController
                 .ToList();
     }
 
-    [Create("customschemas")]
+    [HttpPost("customschemas")]
     public SchemaRequestsDto SaveNamingSettings(SchemaRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
@@ -90,7 +90,7 @@ public class CustomSchemasController : BaseSettingsController
         return PeopleSchema(inDto.Id);
     }
 
-    [Update("customschemas")]
+    [HttpPut("customschemas")]
     public SchemaRequestsDto SaveCustomNamingSettings(SchemaRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
@@ -141,7 +141,7 @@ public class CustomSchemasController : BaseSettingsController
         return PeopleSchema(PeopleNamesItem.CustomID);
     }
 
-    [Read("customschemas/{id}")]
+    [HttpGet("customschemas/{id}")]
     public SchemaRequestsDto PeopleSchema(string id)
     {
         var names = _customNamingPeople.GetPeopleNames(id);

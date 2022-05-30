@@ -39,7 +39,8 @@ using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
-using ASC.MessagingSystem;
+using ASC.MessagingSystem.Core;
+using ASC.MessagingSystem.Models;
 using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core.Users;
@@ -62,7 +63,7 @@ namespace ASC.CRM.Api
         private readonly SecurityContext _securityContext;
         private readonly CurrencyProvider _currencyProvider;
         private readonly UserManager _userManager;
-        private readonly EmployeeWraperHelper _employeeWraperHelper;
+        private readonly EmployeeDtoHelper _employeeDtoHelper;
 
         public DealsController(CrmSecurity crmSecurity,
                    DaoFactory daoFactory,
@@ -72,7 +73,7 @@ namespace ASC.CRM.Api
                    NotifyClient notifyClient,
                    CurrencyProvider currencyProvider,
                    UserManager userManager,
-                   EmployeeWraperHelper employeeWraperHelper,
+                   EmployeeDtoHelper employeeDtoHelper,
                    DisplayUserSettingsHelper displayUserSettingsHelper,
                    SecurityContext securityContext,
                    IMapper mapper)
@@ -84,7 +85,7 @@ namespace ASC.CRM.Api
             _notifyClient = notifyClient;
             _currencyProvider = currencyProvider;
             _userManager = userManager;
-            _employeeWraperHelper = employeeWraperHelper;
+            _employeeDtoHelper = employeeDtoHelper;
             _displayUserSettingsHelper = displayUserSettingsHelper;
             _securityContext = securityContext;
         }
@@ -191,7 +192,7 @@ namespace ASC.CRM.Api
 
                 if (isMessageServicSende)
                 {
-                    var users = _userManager.GetUsers().Where(x => accessListLocal.Contains(x.ID));
+                    var users = _userManager.GetUsers().Where(x => accessListLocal.Contains(x.Id));
                     _messageService.Send(MessageAction.OpportunityRestrictedAccess, _messageTarget.Create(deal.ID), deal.Title, users.Select(x => x.DisplayUserName(false, _displayUserSettingsHelper)));
                 }
             }
@@ -982,7 +983,7 @@ namespace ASC.CRM.Api
 
                 if (dealDto.IsPrivate)
                 {
-                    dealDto.AccessList = _crmSecurity.GetAccessSubjectTo(deal).Select(item => _employeeWraperHelper.Get(item.Key));
+                    dealDto.AccessList = _crmSecurity.GetAccessSubjectTo(deal).Select(item => _employeeDtoHelper.Get(item.Key));
                 }
 
                 if (!string.IsNullOrEmpty(deal.BidCurrency))

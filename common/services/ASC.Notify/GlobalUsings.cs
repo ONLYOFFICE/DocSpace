@@ -30,17 +30,23 @@ global using System.Reflection;
 global using ASC.Api.Core;
 global using ASC.Api.Core.Extensions;
 global using ASC.Common;
-global using ASC.Common.Caching;
 global using ASC.Common.DependencyInjection;
-global using ASC.Common.Logging;
+global using ASC.Common.Log;
 global using ASC.Common.Mapping;
 global using ASC.Core;
 global using ASC.Core.Common.EF;
 global using ASC.Core.Common.EF.Context;
 global using ASC.Core.Common.EF.Model;
+global using ASC.Core.Common.Hosting;
+global using ASC.Core.Common.Hosting.Interfaces;
+global using ASC.Core.Common.Notify.IntegrationEvents.Events;
 global using ASC.Core.Common.Settings;
 global using ASC.Core.Notify.Senders;
+global using ASC.EventBus.Abstractions;
+global using ASC.EventBus.Log;
 global using ASC.Notify.Config;
+global using ASC.Notify.IntegrationEvents.EventHandling;
+global using ASC.Notify.Log;
 global using ASC.Notify.Messages;
 global using ASC.Notify.Services;
 global using ASC.Web.Core.WhiteLabel;
@@ -50,11 +56,10 @@ global using Autofac;
 
 global using AutoMapper;
 
-global using Google.Protobuf.Collections;
-
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Hosting.WindowsServices;
+global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Options;
 
 global using Newtonsoft.Json;

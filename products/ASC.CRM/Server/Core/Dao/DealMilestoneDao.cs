@@ -35,7 +35,6 @@ using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Resources;
@@ -122,7 +121,12 @@ namespace ASC.CRM.Core.Dao
                 throw new ArgumentException();
 
             if (item.SortOrder == 0)
-                item.SortOrder = Query(CrmDbContext.DealMilestones).Select(x => x.SortOrder).Max() + 1;
+            {
+                if (Query(CrmDbContext.DealMilestones).Any())
+                {
+                    item.SortOrder = Query(CrmDbContext.DealMilestones).Select(x => x.SortOrder).Max() + 1;
+                }
+            }
 
             var dbEntity = new DbDealMilestone
             {

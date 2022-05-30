@@ -37,7 +37,7 @@ public enum ItemAvailableState
 [Singletone]
 public class WebItemManager
 {
-    private readonly ILog _log;
+    private readonly ILogger _log;
 
     private ConcurrentDictionary<Guid, IWebItem> _items;
     private ConcurrentDictionary<Guid, IWebItem> Items
@@ -118,11 +118,11 @@ public class WebItemManager
         }
     }
 
-    public WebItemManager(IServiceProvider serviceProvider, IConfiguration configuration, IOptionsMonitor<ILog> options)
+    public WebItemManager(IServiceProvider serviceProvider, IConfiguration configuration, ILoggerProvider options)
     {
         _serviceProvider = serviceProvider;
         _configuration = configuration;
-        _log = options.Get("ASC.Web");
+        _log = options.CreateLogger("ASC.Web");
         _disableItem = (_configuration["web:disabled-items"] ?? "").Split(",").ToList();
         _lazyItems = new Lazy<ConcurrentDictionary<Guid, IWebItem>>(LoadItems, LazyThreadSafetyMode.ExecutionAndPublication);
     }
@@ -145,7 +145,7 @@ public class WebItemManager
             }
             catch (Exception exc)
             {
-                _log.Error($"Couldn't load web item {file}", exc);
+                _log.ErrorCouldntLoadWebItem(file, exc);
             }
         }
 
@@ -175,7 +175,7 @@ public class WebItemManager
             }
 
             result.TryAdd(webitem.ID, webitem);
-            _log.DebugFormat("Web item {0} loaded", webitem.Name);
+            _log.DebugWebItemLoaded(webitem.Name);
         }
     }
 

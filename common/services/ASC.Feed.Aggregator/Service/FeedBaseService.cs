@@ -30,17 +30,17 @@ public abstract class FeedBaseService : BackgroundService
 {
     protected virtual string LoggerName { get; set; } = "ASC.Feed";
 
-    protected readonly ILog _logger;
+    protected readonly ILogger _logger;
     protected readonly FeedSettings _feedSettings;
     protected readonly IServiceScopeFactory _serviceScopeFactory;
 
     public FeedBaseService(
         FeedSettings feedSettings,
         IServiceScopeFactory serviceScopeFactory,
-        IOptionsMonitor<ILog> optionsMonitor)
+        ILoggerProvider optionsMonitor)
     {
         _feedSettings = feedSettings;
         _serviceScopeFactory = serviceScopeFactory;
-        _logger = optionsMonitor.Get(LoggerName);
+        _logger = optionsMonitor.CreateLogger(LoggerName);
     }
 }

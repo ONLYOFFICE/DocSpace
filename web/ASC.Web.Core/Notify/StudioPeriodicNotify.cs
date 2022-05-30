@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Common.Log;
+
 namespace ASC.Web.Studio.Core.Notify;
 
 [Scope]
@@ -48,10 +50,10 @@ public class StudioPeriodicNotify
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
     private readonly AuthManager _authManager;
     private readonly SecurityContext _securityContext;
-    private readonly ILog _log;
+    private readonly ILogger _log;
 
     public StudioPeriodicNotify(
-        IOptionsMonitor<ILog> log,
+        ILoggerProvider log,
         NotifyEngineQueue notifyEngineQueue,
         WorkContext workContext,
         TenantManager tenantManager,
@@ -91,18 +93,18 @@ public class StudioPeriodicNotify
         _displayUserSettingsHelper = displayUserSettingsHelper;
         _authManager = authManager;
         _securityContext = securityContext;
-        _log = log.Get("ASC.Notify");
+        _log = log.CreateLogger("ASC.Notify");
     }
 
     public Task SendSaasLettersAsync(string senderName, DateTime scheduleDate)
     {
-        _log.Info("Start SendSaasTariffLetters");
+        _log.InformationStartSendSaasTariffLetters();
 
         var activeTenants = _tenantManager.GetTenants().ToList();
 
         if (activeTenants.Count <= 0)
         {
-            _log.Info("End SendSaasTariffLetters");
+            _log.InformationEndSendSaasTariffLetters();
             return Task.CompletedTask;
         }
 
@@ -323,24 +325,24 @@ public class StudioPeriodicNotify
                         {
                             try
                             {
-                                _log.InfoFormat("start CreateCoupon to {0}", tenant.Alias);
+                                _log.InformationStartCreateCoupon(tenant.Alias);
 
                                 coupon = SetupInfo.IsSecretEmail(_userManager.GetUsers(tenant.OwnerId).Email)
                                         ? tenant.Alias
                                             : _couponManager.CreateCoupon(_tenantManager);
 
-                                _log.InfoFormat("end CreateCoupon to {0} coupon = {1}", tenant.Alias, coupon);
+                                _log.InformationEndCreateCoupon(tenant.Alias, coupon);
                             }
                             catch (AggregateException ae)
                             {
                                 foreach (var ex in ae.InnerExceptions)
                                 {
-                                    _log.Error(ex);
+                                    _log.ErrorWithException(ex);
                                 }
                             }
                             catch (Exception ex)
                             {
-                                _log.Error(ex);
+                                _log.ErrorSendSaasLettersAsync(ex);
                             }
                         }
 
@@ -486,11 +488,11 @@ public class StudioPeriodicNotify
             }
             catch (Exception err)
             {
-                _log.Error(err);
+                _log.ErrorSendSaasLettersAsync(err);
             }
         }
 
-        _log.Info("End SendSaasTariffLetters");
+        _log.InformationEndSendSaasTariffLetters();
     }
 
     public void SendEnterpriseLetters(string senderName, DateTime scheduleDate)
@@ -498,13 +500,13 @@ public class StudioPeriodicNotify
         var nowDate = scheduleDate.Date;
         const string dbid = "webstudio";
 
-        _log.Info("Start SendTariffEnterpriseLetters");
+        _log.InformationStartSendTariffEnterpriseLetters();
 
         var activeTenants = _tenantManager.GetTenants().ToList();
 
         if (activeTenants.Count <= 0)
         {
-            _log.Info("End SendTariffEnterpriseLetters");
+            _log.InformationEndSendTariffEnterpriseLetters();
             return;
         }
 
@@ -879,24 +881,24 @@ public class StudioPeriodicNotify
             }
             catch (Exception err)
             {
-                _log.Error(err);
+                _log.ErrorSendEnterpriseLetters(err);
             }
         }
 
-        _log.Info("End SendTariffEnterpriseLetters");
+        _log.InformationEndSendTariffEnterpriseLetters();
     }
 
     public void SendOpensourceLetters(string senderName, DateTime scheduleDate)
     {
         var nowDate = scheduleDate.Date;
 
-        _log.Info("Start SendOpensourceTariffLetters");
+        _log.InformationStartSendOpensourceTariffLetters();
 
         var activeTenants = _tenantManager.GetTenants().ToList();
 
         if (activeTenants.Count <= 0)
         {
-            _log.Info("End SendOpensourceTariffLetters");
+            _log.InformationEndSendOpensourceTariffLetters();
             return;
         }
 
@@ -939,16 +941,16 @@ public class StudioPeriodicNotify
             }
             catch (Exception err)
             {
-                _log.Error(err);
+                _log.ErrorSendOpensourceLetters(err);
             }
         }
 
-        _log.Info("End SendOpensourceTariffLetters");
+        _log.InformationEndSendOpensourceTariffLetters();
     }
 
     public void SendPersonalLetters(string senderName, DateTime scheduleDate)
     {
-        _log.Info("Start SendLettersPersonal...");
+        _log.InformationStartSendLettersPersonal();
 
         var activeTenants = _tenantManager.GetTenants().ToList();
 
@@ -964,7 +966,7 @@ public class StudioPeriodicNotify
                 _tenantManager.SetCurrentTenant(tenant.Id);
                 var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifyHelper.NotifySource);
 
-                _log.InfoFormat("Current tenant: {0}", tenant.Id);
+                _log.InformationCurrentTenant(tenant.Id);
 
                 var users = _userManager.GetUsers(EmployeeStatus.Active);
 
@@ -984,7 +986,7 @@ public class StudioPeriodicNotify
                         catch (CultureNotFoundException exception)
                         {
 
-                            _log.Error(exception);
+                            _log.ErrorSendPersonalLetters(exception);
                         }
                     }
 
@@ -1033,8 +1035,7 @@ public class StudioPeriodicNotify
                         continue;
                     }
 
-                    _log.InfoFormat(@"Send letter personal '{1}'  to {0} culture {2}. tenant id: {3} user culture {4} create on {5} now date {6}",
-                      user.Email, action.ID, culture, tenant.Id, user.GetCulture(), user.CreateDate, scheduleDate.Date);
+                    _log.InformationSendLetterPersonal(action.ID, user.Email, culture, tenant.Id, user.GetCulture(), user.CreateDate, scheduleDate.Date);
 
                     sendCount++;
 
@@ -1049,15 +1050,15 @@ public class StudioPeriodicNotify
                           new TagValue(CommonTags.Footer, _coreBaseSettings.CustomMode ? "personalCustomMode" : "personal"));
                 }
 
-                _log.InfoFormat("Total send count: {0}", sendCount);
+                _log.InformationTotalSendCount(sendCount);
             }
             catch (Exception err)
             {
-                _log.Error(err);
+                _log.ErrorSendPersonalLetters(err);
             }
         }
 
-        _log.Info("End SendLettersPersonal.");
+        _log.InformationEndSendLettersPersonal();
     }
 
     public static bool ChangeSubscription(Guid userId, StudioNotifyHelper studioNotifyHelper)

@@ -51,10 +51,10 @@ public class ChunkedUploaderHandlerService
     private readonly ChunkedUploadSessionHolder _chunkedUploadSessionHolder;
     private readonly ChunkedUploadSessionHelper _chunkedUploadSessionHelper;
     private readonly SocketManager _socketManager;
-    private readonly ILog _logger;
+    private readonly ILogger<ChunkedUploaderHandlerService> _logger;
 
     public ChunkedUploaderHandlerService(
-        ILog logger,
+        ILogger<ChunkedUploaderHandlerService> logger,
         TenantManager tenantManager,
         FileUploader fileUploader,
         FilesMessageService filesMessageService,
@@ -160,12 +160,12 @@ public class ChunkedUploaderHandlerService
         }
         catch (FileNotFoundException error)
         {
-            _logger.Error(error);
+            _logger.ErrorChunkedUploaderHandlerService(error);
             await WriteError(context, FilesCommonResource.ErrorMassage_FileNotFound);
         }
         catch (Exception error)
         {
-            _logger.Error(error);
+            _logger.ErrorChunkedUploaderHandlerService(error);
             await WriteError(context, error.Message);
         }
     }

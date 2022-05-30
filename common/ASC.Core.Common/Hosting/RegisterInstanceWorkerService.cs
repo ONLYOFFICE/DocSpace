@@ -29,17 +29,18 @@ namespace ASC.Core.Common.Hosting;
 [Singletone]
 public class RegisterInstanceWorkerService<T> : BackgroundService where T : IHostedService
 {
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly IHostApplicationLifetime _applicationLifetime;
     private readonly IServiceProvider _serviceProvider;
     public static readonly string InstanceId =
         $"{typeof(T).Name}_{DateTime.UtcNow.Ticks}";
 
-    public RegisterInstanceWorkerService(IOptionsMonitor<ILog> options,
-                                         IServiceProvider serviceProvider,
-                                         IHostApplicationLifetime applicationLifetime)
+    public RegisterInstanceWorkerService(
+        ILogger<RegisterInstanceWorkerService<T>> logger,
+        IServiceProvider serviceProvider,
+        IHostApplicationLifetime applicationLifetime)
     {
-        _logger = options.CurrentValue;
+        _logger = logger;
         _serviceProvider = serviceProvider;
         _applicationLifetime = applicationLifetime;
     }
@@ -57,13 +58,13 @@ public class RegisterInstanceWorkerService<T> : BackgroundService where T : IHos
                 await registerInstanceService.Register(InstanceId);
                 await registerInstanceService.DeleteOrphanInstances();
 
-                _logger.InfoFormat("Worker running at: {time}", DateTimeOffset.Now);
+                _logger.InformationWorkingRunnging(DateTimeOffset.Now);
 
                 await Task.Delay(1000, stoppingToken);
             }
             catch (Exception ex)
             {
-                _logger.Error("Critical error forced worker to shutdown", ex);
+                _logger.CriticalError(ex);
                 _applicationLifetime.StopApplication();
             }
         }
@@ -78,11 +79,11 @@ public class RegisterInstanceWorkerService<T> : BackgroundService where T : IHos
 
             await registerInstanceService.UnRegister(InstanceId);
 
-            _logger.InfoFormat("UnRegister Instance {instanceName} running at: {time}.", InstanceId, DateTimeOffset.Now);
+            _logger.InformationUnRegister(InstanceId, DateTimeOffset.Now);
         }
         catch
         {
-            _logger.ErrorFormat("Unable to UnRegister Instance {instanceName} running at: {time}.", InstanceId, DateTimeOffset.Now);
+            _logger.ErrorUnableToUnRegister(InstanceId, DateTimeOffset.Now);
         }
 
         await base.StopAsync(cancellationToken);

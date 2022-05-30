@@ -54,6 +54,7 @@ namespace ASC.Web.CRM.Classes
         private DocbuilderReportsUtilityHelper _docbuilderReportsUtilityHelper;
         private DaoFactory _daoFactory;
         private IServiceProvider _serviceProvider;
+        private IServiceScopeFactory _serviceScopeFactory;
         private Global _global;
         private SettingsManager _settingsManager;
         private TenantUtil _tenantUtil;
@@ -70,7 +71,8 @@ namespace ASC.Web.CRM.Classes
                             IServiceProvider serviceProvider,
                             IHttpContextAccessor httpContextAccessor,
                             CurrencyProvider currencyProvider,
-                            IHttpClientFactory clientFactory
+                            IHttpClientFactory clientFactory,
+                            IServiceScopeFactory serviceScopeFactory
                           )
         {
             _tenantManager = tenantManager;
@@ -84,6 +86,7 @@ namespace ASC.Web.CRM.Classes
             _httpContext = httpContextAccessor;
             _currencyProvider = currencyProvider;
             _clientFactory = clientFactory;
+            _serviceScopeFactory = serviceScopeFactory;
         }
 
         private string GetFileName(ReportType reportType)
@@ -232,14 +235,14 @@ namespace ASC.Web.CRM.Classes
                 var document = _serviceProvider.GetService<File<int>>();
 
                 document.Title = state.FileName;
-                document.FolderID = await _daoFactory.GetFileDao().GetRootAsync();
+                document.ParentId = await _daoFactory.GetFileDao().GetRootAsync();
                 document.ContentLength = stream.Length;
 
                 var file = await _daoFactory.GetFileDao().SaveFileAsync(document, stream);
 
-                _daoFactory.GetReportDao().SaveFile((int)file.ID, state.ReportType);
+                _daoFactory.GetReportDao().SaveFile((int)file.Id, state.ReportType);
 
-                state.FileId = (int)file.ID;
+                state.FileId = (int)file.Id;
             }
 
         }
@@ -266,10 +269,10 @@ namespace ASC.Web.CRM.Classes
                 ReportOrigin.CRM,
                 SaveReportFile,
                 null,
-                _tenantManager.GetCurrentTenant().TenantId,
+                _tenantManager.GetCurrentTenant().Id,
                 _securityContext.CurrentAccount.ID);
 
-            var state = new ReportState(_serviceProvider, reportStateData, _httpContext);
+            var state = new ReportState(_serviceScopeFactory, reportStateData, _httpContext);
 
             _docbuilderReportsUtilityHelper.Enqueue(state);
 

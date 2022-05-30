@@ -41,10 +41,10 @@ public class NotifyRequest
     internal List<string> _requaredTags;
     internal List<ISendInterceptor> _interceptors;
     internal bool _isNeedCheckSubscriptions;
-    private readonly ILog _log;
-    private readonly IOptionsMonitor<ILog> _options;
+    private readonly ILogger _log;
+    private readonly ILoggerProvider _options;
 
-    public NotifyRequest(IOptionsMonitor<ILog> options, INotifySource notifySource, INotifyAction action, string objectID, IRecipient recipient)
+    public NotifyRequest(ILoggerProvider options, INotifySource notifySource, INotifyAction action, string objectID, IRecipient recipient)
     {
         Properties = new Hashtable();
         Arguments = new List<ITagValue>();
@@ -57,7 +57,7 @@ public class NotifyRequest
         ObjectID = objectID;
 
         _isNeedCheckSubscriptions = true;
-        _log = options.Get("ASC.Notify");
+        _log = options.CreateLogger("ASC.Notify");
     }
 
     internal bool Intercept(InterceptorPlace place, IServiceScope serviceScope)
@@ -76,7 +76,7 @@ public class NotifyRequest
                 }
                 catch (Exception err)
                 {
-                    _log.ErrorFormat("{0} {1} {2}: {3}", interceptor.Name, NotifyAction, Recipient, err);
+                    _log.ErrorIntercept(interceptor.Name, NotifyAction, Recipient, err);
                 }
             }
         }

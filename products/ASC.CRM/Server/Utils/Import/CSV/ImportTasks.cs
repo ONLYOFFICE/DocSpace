@@ -100,9 +100,9 @@ namespace ASC.Web.CRM.Classes
                     var responsible = allUsers.Where(n => n.DisplayUserName(_displayUserSettingsHelper).Equals(csvResponsibleValue)).FirstOrDefault();
 
                     if (responsible != null)
-                        obj.ResponsibleID = responsible.ID;
+                        obj.ResponsibleID = responsible.Id;
                     else
-                        obj.ResponsibleID = Constants.LostUser.ID;
+                        obj.ResponsibleID = Constants.LostUser.Id;
 
                     var categoryTitle = GetPropertyValue("taskCategory");
 

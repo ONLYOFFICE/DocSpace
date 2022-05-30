@@ -38,6 +38,7 @@ global using System.Runtime.Serialization;
 global using System.Security;
 global using System.Security.Authentication;
 global using System.Security.Cryptography;
+global using System.Security.Principal;
 global using System.Text;
 global using System.Text.Encodings.Web;
 global using System.Text.Json.Serialization;
@@ -47,6 +48,7 @@ global using System.Xml;
 
 global using ASC.Common;
 global using ASC.Common.Caching;
+global using ASC.Common.Log;
 global using ASC.Common.Logging;
 global using ASC.Common.Notify.Engine;
 global using ASC.Common.Security;
@@ -89,6 +91,8 @@ global using ASC.Security.Cryptography;
 global using ASC.VoipService.Dao;
 global using ASC.Web.Core;
 global using ASC.Web.Core.Helpers;
+global using ASC.Web.Core.HttpHandlers;
+global using ASC.Web.Core.Log;
 global using ASC.Web.Core.ModuleManagement.Common;
 global using ASC.Web.Core.Notify;
 global using ASC.Web.Core.PublicResources;
@@ -102,6 +106,7 @@ global using ASC.Web.Core.WebZones;
 global using ASC.Web.Core.WhiteLabel;
 global using ASC.Web.Studio.Core;
 global using ASC.Web.Studio.Core.Notify;
+global using ASC.Web.Studio.UserControls.CustomNavigation;
 global using ASC.Web.Studio.UserControls.Management;
 global using ASC.Web.Studio.UserControls.Management.SingleSignOnSettings;
 global using ASC.Web.Studio.UserControls.Statistics;
@@ -110,7 +115,6 @@ global using ASC.Web.Studio.Utility;
 global using AutoMapper;
 
 global using Google.Authenticator;
-global using Google.Protobuf;
 
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.AspNetCore.Hosting;
@@ -121,7 +125,7 @@ global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Hosting;
-global using Microsoft.Extensions.Options;
+global using Microsoft.Extensions.Logging;
 
 global using MimeKit.Utils;
 

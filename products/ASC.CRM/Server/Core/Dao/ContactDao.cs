@@ -36,7 +36,6 @@ using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
 using ASC.Core.Tenants;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
@@ -44,7 +43,6 @@ using ASC.CRM.Core.Enums;
 using ASC.ElasticSearch;
 using ASC.Files.Core;
 using ASC.Web.CRM.Core.Search;
-using ASC.Web.Files.Api;
 
 using AutoMapper;
 
@@ -60,7 +58,7 @@ namespace ASC.CRM.Core.Dao
         private readonly BundleSearch _bundleSearch;
         private readonly FactoryIndexerContact _factoryIndexerContact;
         private readonly FactoryIndexerContactInfo _factoryIndexerContactInfo;
-        private readonly FilesIntegration _filesIntegration;
+        private readonly IDaoFactory _daoFactory;
         private readonly AuthorizationManager _authorizationManager;
         private readonly TenantUtil _tenantUtil;
         private readonly CrmSecurity _crmSecurity;
@@ -73,7 +71,7 @@ namespace ASC.CRM.Core.Dao
             CrmSecurity crmSecurity,
             TenantUtil tenantUtil,
             AuthorizationManager authorizationManager,
-            FilesIntegration filesIntegration,
+            IDaoFactory daoFactory,
             FactoryIndexerContact factoryIndexerContact,
             FactoryIndexerContactInfo factoryIndexerContactInfo,
             IOptionsMonitor<ILog> logger,
@@ -93,7 +91,7 @@ namespace ASC.CRM.Core.Dao
             _crmSecurity = crmSecurity;
             _tenantUtil = tenantUtil;
             _authorizationManager = authorizationManager;
-            _filesIntegration = filesIntegration;
+            _daoFactory = daoFactory;
             _factoryIndexerContact = factoryIndexerContact;
             _factoryIndexerContactInfo = factoryIndexerContactInfo;
             _bundleSearch = bundleSearch;
@@ -1583,7 +1581,7 @@ namespace ASC.CRM.Core.Dao
 
             var tx = await CrmDbContext.Database.BeginTransactionAsync();
 
-            var tagdao = _filesIntegration.DaoFactory.GetTagDao<int>();
+            var tagdao = _daoFactory.GetTagDao<int>();
 
             var tagNames = Query(CrmDbContext.RelationshipEvent).Where(x => contactID.Contains(x.ContactId) && x.HaveFiles)
                             .Select(x => String.Format("RelationshipEvent_{0}", x.Id)).ToArray();
@@ -1645,7 +1643,7 @@ namespace ASC.CRM.Core.Dao
 
             contacts.ForEach(contact => _authorizationManager.RemoveAllAces(contact));
 
-            var filedao = _filesIntegration.DaoFactory.GetFileDao<int>();
+            var filedao = _daoFactory.GetFileDao<int>();
 
             await foreach (var filesID in filesIDs)
             {

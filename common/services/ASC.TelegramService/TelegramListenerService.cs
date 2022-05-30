@@ -29,7 +29,7 @@ namespace ASC.TelegramService;
 [Singletone]
 public class TelegramListenerService : BackgroundService
 {
-    private readonly ICacheNotify<NotifyMessage> _cacheMessage;
+    private readonly ILogger<TelegramHandler> _logger;
     private readonly ICacheNotify<RegisterUserProto> _cacheRegisterUser;
     private readonly ICacheNotify<CreateClientProto> _cacheCreateClient;
     private readonly ICacheNotify<DisableClientProto> _cacheDisableClient;
@@ -38,36 +38,38 @@ public class TelegramListenerService : BackgroundService
     private readonly TelegramLoginProvider _telegramLoginProvider;
     private CancellationToken _stoppingToken;
 
-    public TelegramListenerService(ICacheNotify<NotifyMessage> cacheMessage,
+    public TelegramListenerService(
         ICacheNotify<RegisterUserProto> cacheRegisterUser,
         ICacheNotify<CreateClientProto> cacheCreateClient,
+        ILogger<TelegramHandler> logger,
         TelegramHandler telegramHandler,
         ICacheNotify<DisableClientProto> cacheDisableClient,
         TenantManager tenantManager,
         ConsumerFactory consumerFactory)
     {
-        _cacheMessage = cacheMessage;
         _cacheRegisterUser = cacheRegisterUser;
         _cacheCreateClient = cacheCreateClient;
         _cacheDisableClient = cacheDisableClient;
         _telegramLoginProvider = consumerFactory.Get<TelegramLoginProvider>();
         _tenantManager = tenantManager;
         _telegramHandler = telegramHandler;
+        _logger = logger;
     }
-
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _stoppingToken = stoppingToken;
+
         CreateClients();
-        _cacheMessage.Subscribe(async n => await SendMessage(n), CacheNotifyAction.Insert);
+
         _cacheRegisterUser.Subscribe(n => RegisterUser(n), CacheNotifyAction.Insert);
         _cacheCreateClient.Subscribe(n => CreateOrUpdateClient(n), CacheNotifyAction.Insert);
         _cacheDisableClient.Subscribe(n => DisableClient(n), CacheNotifyAction.Insert);
 
         stoppingToken.Register(() =>
         {
-            _cacheMessage.Unsubscribe(CacheNotifyAction.Insert);
+            _logger.DebugTelegramStopping();
+
             _cacheRegisterUser.Unsubscribe(CacheNotifyAction.Insert);
             _cacheCreateClient.Unsubscribe(CacheNotifyAction.Insert);
             _cacheDisableClient.Unsubscribe(CacheNotifyAction.Insert);
@@ -79,11 +81,6 @@ public class TelegramListenerService : BackgroundService
     private void DisableClient(DisableClientProto n)
     {
         _telegramHandler.DisableClient(n.TenantId);
-    }
-
-    private async Task SendMessage(NotifyMessage notifyMessage)
-    {
-        await _telegramHandler.SendMessage(notifyMessage);
     }
 
     private void RegisterUser(RegisterUserProto registerUserProto)
@@ -99,9 +96,11 @@ public class TelegramListenerService : BackgroundService
     private void CreateClients()
     {
         var tenants = _tenantManager.GetTenants();
+
         foreach (var tenant in tenants)
         {
             _tenantManager.SetCurrentTenant(tenant);
+
             if (_telegramLoginProvider.IsEnabled())
             {
                 _telegramHandler.CreateOrUpdateClientForTenant(tenant.Id, _telegramLoginProvider.TelegramBotToken, _telegramLoginProvider.TelegramAuthTokenLifespan, _telegramLoginProvider.TelegramProxy, true, _stoppingToken, true);

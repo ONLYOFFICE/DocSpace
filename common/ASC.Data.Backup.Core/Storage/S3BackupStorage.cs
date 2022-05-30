@@ -32,9 +32,9 @@ internal class S3BackupStorage : IBackupStorage
     private readonly string _secretAccessKey;
     private readonly string _bucket;
     private readonly string _region;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
 
-    public S3BackupStorage(ILog logger, string accessKeyId, string secretAccessKey, string bucket, string region)
+    public S3BackupStorage(ILogger<S3BackupStorage> logger, string accessKeyId, string secretAccessKey, string bucket, string region)
     {
         _logger = logger;
         _accessKeyId = accessKeyId;
@@ -108,7 +108,7 @@ internal class S3BackupStorage : IBackupStorage
         }
         catch (AmazonS3Exception ex)
         {
-            _logger.Warn(ex);
+            _logger.WarningWithException(ex);
 
             return false;
         }

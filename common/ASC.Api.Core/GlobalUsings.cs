@@ -45,6 +45,7 @@ global using ASC.Api.Core.Auth;
 global using ASC.Api.Core.Convention;
 global using ASC.Api.Core.Core;
 global using ASC.Api.Core.Extensions;
+global using ASC.Api.Core.Log;
 global using ASC.Api.Core.Middleware;
 global using ASC.Api.Core.Routing;
 global using ASC.Common;
@@ -119,3 +120,6 @@ global using RabbitMQ.Client;
 
 global using StackExchange.Redis.Extensions.Core.Configuration;
 global using StackExchange.Redis.Extensions.Newtonsoft;
+
+global using ILogger = Microsoft.Extensions.Logging.ILogger;
+global using LogLevel = Microsoft.Extensions.Logging.LogLevel;

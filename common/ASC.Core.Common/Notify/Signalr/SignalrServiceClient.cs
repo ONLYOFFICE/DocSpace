@@ -33,7 +33,7 @@ public class ConfigureSignalrServiceClient : IConfigureNamedOptions<SignalrServi
     internal readonly CoreSettings _coreSettings;
     internal readonly MachinePseudoKeys _machinePseudoKeys;
     internal readonly IConfiguration _configuration;
-    internal readonly IOptionsMonitor<ILog> _options;
+    internal readonly ILogger<SignalrServiceClient> logger;
     internal readonly IHttpClientFactory _clientFactory;
 
     public ConfigureSignalrServiceClient(
@@ -41,20 +41,20 @@ public class ConfigureSignalrServiceClient : IConfigureNamedOptions<SignalrServi
         CoreSettings coreSettings,
         MachinePseudoKeys machinePseudoKeys,
         IConfiguration configuration,
-        IOptionsMonitor<ILog> options,
+        ILogger<SignalrServiceClient> logger,
         IHttpClientFactory clientFactory)
     {
         _tenantManager = tenantManager;
         _coreSettings = coreSettings;
         _machinePseudoKeys = machinePseudoKeys;
         _configuration = configuration;
-        _options = options;
+        this.logger = logger;
         _clientFactory = clientFactory;
     }
 
     public void Configure(string name, SignalrServiceClient options)
     {
-        options._logger = _options.CurrentValue;
+        options._logger = logger;
         options._hub = name.Trim('/');
         options._tenantManager = _tenantManager;
         options._coreSettings = _coreSettings;
@@ -90,7 +90,7 @@ public class ConfigureSignalrServiceClient : IConfigureNamedOptions<SignalrServi
 public class SignalrServiceClient
 {
     private static readonly TimeSpan _timeout = TimeSpan.FromSeconds(1);
-    internal ILog _logger;
+    internal ILogger<SignalrServiceClient> _logger;
     private static DateTime _lastErrorTime;
     public bool EnableSignalr { get; set; }
     internal byte[] _sKey;
@@ -297,11 +297,11 @@ public class SignalrServiceClient
         }
     }
 
-        public void StopEdit<T>(T fileId, string room)
+    public void StopEdit<T>(T fileId, string room)
     {
         try
         {
-                MakeRequest("stop-edit", new { room, fileId });
+            MakeRequest("stop-edit", new { room, fileId });
         }
         catch (Exception error)
         {
@@ -363,8 +363,7 @@ public class SignalrServiceClient
 
     private void ProcessError(Exception e)
     {
-        _logger.ErrorFormat("Service Error: {0}, {1}, {2}", e.Message, e.StackTrace,
-            (e.InnerException != null) ? e.InnerException.Message : string.Empty);
+        _logger.ErrorService(e);
 
         if (e is HttpRequestException)
         {
@@ -385,7 +384,7 @@ public class SignalrServiceClient
         request.RequestUri = new Uri(GetMethod(method));
 
         var jsonData = JsonConvert.SerializeObject(data);
-        _logger.DebugFormat("Method:{0}, Data:{1}", method, jsonData);
+        _logger.DebugMakeRequest(method, jsonData);
 
         request.Content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 

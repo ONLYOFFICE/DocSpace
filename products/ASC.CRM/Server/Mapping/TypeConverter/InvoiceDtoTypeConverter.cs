@@ -47,12 +47,12 @@ namespace ASC.CRM.Mapping
         private readonly CurrencyProvider _currencyProvider;
         private readonly SettingsManager _settingsManager;
         private readonly ApiDateTimeHelper _apiDateTimeHelper;
-        private readonly EmployeeWraperHelper _employeeWraperHelper;
+        private readonly EmployeeDtoHelper _employeeDtoHelper;
         private readonly CrmSecurity _crmSecurity;
         private readonly EntityDtoHelper _entityDtoHelper;
 
         public InvoiceDtoTypeConverter(ApiDateTimeHelper apiDateTimeHelper,
-                                    EmployeeWraperHelper employeeWraperHelper,
+                                    EmployeeDtoHelper employeeDtoHelper,
                                     CrmSecurity crmSecurity,
                                     SettingsManager settingsManager,
                                     CurrencyProvider currencyProvider,
@@ -60,7 +60,7 @@ namespace ASC.CRM.Mapping
                                     EntityDtoHelper entityDtoHelper)
         {
             _apiDateTimeHelper = apiDateTimeHelper;
-            _employeeWraperHelper = employeeWraperHelper;
+            _employeeDtoHelper = employeeDtoHelper;
             _crmSecurity = crmSecurity;
             _settingsManager = settingsManager;
             _currencyProvider = currencyProvider;
@@ -92,7 +92,7 @@ namespace ASC.CRM.Mapping
                 Description = source.Description,
                 FileID = source.FileID,
                 CreateOn = _apiDateTimeHelper.Get(source.CreateOn),
-                CreateBy = _employeeWraperHelper.Get(source.CreateBy),
+                CreateBy = _employeeDtoHelper.Get(source.CreateBy),
                 CanEdit = _crmSecurity.CanEdit(source),
                 CanDelete = _crmSecurity.CanDelete(source),
             };

@@ -153,7 +153,7 @@ namespace ASC.CRM.Core.EF
                 tenantSettings.WebFormKey = Guid.NewGuid();
                 tenantSettings.IsConfiguredPortal = true;
 
-                if (!settingsManager.Save<CrmSettings>(tenantSettings))
+                if (!settingsManager.Save(tenantSettings))
                 {
                     throw new Exception("not save CRMSettings");
                 }
@@ -183,7 +183,7 @@ namespace ASC.CRM.Core.EF
 
                 tenantSettings.IsConfiguredSmtp = true;
 
-                if (!settingsManager.Save<CrmSettings>(tenantSettings))
+                if (!settingsManager.Save(tenantSettings))
                 {
                     throw new Exception("not save CRMSettings");
                 }

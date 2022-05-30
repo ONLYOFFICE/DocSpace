@@ -83,7 +83,7 @@ public abstract class EditorController<T> : ApiControllerBase
     /// <param name="forcesave"></param>
     /// <category>Files</category>
     /// <returns></returns>
-    [Update("file/{fileId}/saveediting")]
+    [HttpPut("file/{fileId}/saveediting")]
     public async Task<FileDto<T>> SaveEditingFromFormAsync(T fileId, [FromForm] SaveEditingRequestDto inDto)
     {
         var file = inDto.File;
@@ -106,15 +106,8 @@ public abstract class EditorController<T> : ApiControllerBase
     /// <param name="doc"></param>
     /// <category>Files</category>
     /// <returns></returns>
-    [Create("file/{fileId}/startedit")]
-    public async Task<object> StartEditFromBodyAsync(T fileId, [FromBody] StartEditRequestDto inDto)
-    {
-        return await _fileStorageService.StartEditAsync(fileId, inDto.EditingAlone, inDto.Doc);
-    }
-
-    [Create("file/{fileId}/startedit")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public async Task<object> StartEditFromFormAsync(T fileId, [FromForm] StartEditRequestDto inDto)
+    [HttpPost("file/{fileId}/startedit")]
+    public async Task<object> StartEditAsync(T fileId, StartEditRequestDto inDto)
     {
         return await _fileStorageService.StartEditAsync(fileId, inDto.EditingAlone, inDto.Doc);
     }
@@ -129,7 +122,7 @@ public abstract class EditorController<T> : ApiControllerBase
     /// <param name="isFinish"></param>
     /// <category>Files</category>
     /// <returns></returns>
-    [Read("file/{fileId}/trackeditfile")]
+    [HttpGet("file/{fileId}/trackeditfile")]
     public Task<KeyValuePair<bool, string>> TrackEditFileAsync(T fileId, Guid tabId, string docKeyForTrack, string doc, bool isFinish)
     {
         return _fileStorageService.TrackEditFileAsync(fileId, tabId, docKeyForTrack, doc, isFinish);
@@ -144,7 +137,8 @@ public abstract class EditorController<T> : ApiControllerBase
     /// <category>Files</category>
     /// <returns></returns>
     [AllowAnonymous]
-    [Read("file/{fileId}/openedit", Check = false)]
+    [AllowNotPayment]
+    [HttpGet("file/{fileId}/openedit")]
     public async Task<Configuration<T>> OpenEditAsync(T fileId, int version, string doc, bool view)
     {
         var docParams = await _documentServiceHelper.GetParamsAsync(fileId, version, doc, true, !view, true);
@@ -179,7 +173,7 @@ public abstract class EditorController<T> : ApiControllerBase
         return configuration;
     }
 
-    [Read("file/{fileId}/presigned")]
+    [HttpGet("file/{fileId}/presigned")]
     public Task<DocumentService.FileLink> GetPresignedUriAsync(T fileId)
     {
         return _fileStorageService.GetPresignedUriAsync(fileId);
@@ -213,22 +207,28 @@ public class EditorController : ApiControllerBase
     /// <param name="docServiceUrlInternal">Document command service Domain</param>
     /// <param name="docServiceUrlPortal">Community Server Address</param>
     /// <returns></returns>
-    [Update("docservice")]
-    public Task<IEnumerable<string>> CheckDocServiceUrlFromBodyAsync([FromBody] CheckDocServiceUrlRequestDto inDto)
+    [HttpPut("docservice")]
+    public Task<IEnumerable<string>> CheckDocServiceUrl(CheckDocServiceUrlRequestDto inDto)
     {
-        return CheckDocServiceUrlAsync(inDto);
-    }
+        _filesLinkUtility.DocServiceUrl = inDto.DocServiceUrl;
+        _filesLinkUtility.DocServiceUrlInternal = inDto.DocServiceUrlInternal;
+        _filesLinkUtility.DocServicePortalUrl = inDto.DocServiceUrlPortal;
 
-    [Update("docservice")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public Task<IEnumerable<string>> CheckDocServiceUrlFromFormAsync([FromForm] CheckDocServiceUrlRequestDto inDto)
-    {
-        return CheckDocServiceUrlAsync(inDto);
+        _messageService.Send(MessageAction.DocumentServiceLocationSetting);
+
+        var https = new Regex(@"^https://", RegexOptions.IgnoreCase);
+        var http = new Regex(@"^http://", RegexOptions.IgnoreCase);
+        if (https.IsMatch(_commonLinkUtility.GetFullAbsolutePath("")) && http.IsMatch(_filesLinkUtility.DocServiceUrl))
+        {
+            throw new Exception("Mixed Active Content is not allowed. HTTPS address for Document Server is required.");
+        }
+
+        return InternalCheckDocServiceUrlAsync();
     }
 
     /// <visible>false</visible>
     [AllowAnonymous]
-    [Read("docservice")]
+    [HttpGet("docservice")]
     public Task<object> GetDocServiceUrlAsync(bool version)
     {
         var url = _commonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.DocServiceApiUrl);
@@ -249,24 +249,6 @@ public class EditorController : ApiControllerBase
             version = dsVersion,
             docServiceUrlApi = url,
         };
-    }
-
-    private Task<IEnumerable<string>> CheckDocServiceUrlAsync(CheckDocServiceUrlRequestDto inDto)
-    {
-        _filesLinkUtility.DocServiceUrl = inDto.DocServiceUrl;
-        _filesLinkUtility.DocServiceUrlInternal = inDto.DocServiceUrlInternal;
-        _filesLinkUtility.DocServicePortalUrl = inDto.DocServiceUrlPortal;
-
-        _messageService.Send(MessageAction.DocumentServiceLocationSetting);
-
-        var https = new Regex(@"^https://", RegexOptions.IgnoreCase);
-        var http = new Regex(@"^http://", RegexOptions.IgnoreCase);
-        if (https.IsMatch(_commonLinkUtility.GetFullAbsolutePath("")) && http.IsMatch(_filesLinkUtility.DocServiceUrl))
-        {
-            throw new Exception("Mixed Active Content is not allowed. HTTPS address for Document Server is required.");
-        }
-
-        return InternalCheckDocServiceUrlAsync();
     }
 
     private async Task<IEnumerable<string>> InternalCheckDocServiceUrlAsync()

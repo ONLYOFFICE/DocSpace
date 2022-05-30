@@ -71,11 +71,12 @@ public class DiscDataStore : BaseStorage
         PathUtils pathUtils,
         EmailValidationKeyProvider emailValidationKeyProvider,
         IHttpContextAccessor httpContextAccessor,
-        IOptionsMonitor<ILog> options,
+        ILoggerProvider options,
+        ILogger<DiscDataStore> logger,
         EncryptionSettingsHelper encryptionSettingsHelper,
-            EncryptionFactory encryptionFactory,
-            IHttpClientFactory clientFactory)
-            : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options, clientFactory)
+        EncryptionFactory encryptionFactory,
+        IHttpClientFactory clientFactory)
+        : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options, logger, clientFactory)
     {
         _encryptionSettingsHelper = encryptionSettingsHelper;
         _encryptionFactory = encryptionFactory;
@@ -142,7 +143,7 @@ public class DiscDataStore : BaseStorage
 
     public override Task<Uri> SaveAsync(string domain, string path, Stream stream)
     {
-        Logger.Debug("Save " + path);
+        Logger.DebugSavePath(path);
 
         var buffered = _tempStream.GetBuffered(stream);
         if (QuotaController != null)

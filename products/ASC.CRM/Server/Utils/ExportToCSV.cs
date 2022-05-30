@@ -109,7 +109,7 @@ namespace ASC.Web.CRM.Classes
             _fileUtility = fileUtility;
             _fileUploader = fileUploader;
             _tenantManager = tenantManager;
-            _tenantId = tenantManager.GetCurrentTenant().TenantId;
+            _tenantId = tenantManager.GetCurrentTenant().Id;
             _tempStream = tempStream;
 
             _author = securityContext.CurrentAccount;
@@ -1214,14 +1214,14 @@ namespace ASC.Web.CRM.Classes
 
                 if (_fileUtility.CanWebView(title) || _fileUtility.CanWebEdit(title))
                 {
-                    fileUrl = _filesLinkUtility.GetFileWebEditorUrl(file.ID);
+                    fileUrl = _filesLinkUtility.GetFileWebEditorUrl(file.Id);
                     fileUrl += string.Format("&options={{\"delimiter\":{0},\"codePage\":{1}}}",
                                      (int)FileUtility.CsvDelimiter.Comma,
                                      Encoding.UTF8.CodePage);
                 }
                 else
                 {
-                    fileUrl = _filesLinkUtility.GetFileDownloadUrl(file.ID);
+                    fileUrl = _filesLinkUtility.GetFileDownloadUrl(file.Id);
                 }
             }
 
@@ -1239,12 +1239,12 @@ namespace ASC.Web.CRM.Classes
 
         public ExportToCsv(SecurityContext securityContext,
                            TenantManager tenantManager,
-                           DistributedTaskQueueOptionsManager queueOptions,
+                           IDistributedTaskQueueFactory factory,
                            ExportDataOperation exportDataOperation)
         {
             _securityContext = securityContext;
-            _tenantID = tenantManager.GetCurrentTenant().TenantId;
-            _queue = queueOptions.Get<ExportDataOperation>();
+            _tenantID = tenantManager.GetCurrentTenant().Id;
+            _queue = factory.CreateQueue<ExportDataOperation>();
             _exportDataOperation = exportDataOperation;
         }
 
@@ -1252,7 +1252,7 @@ namespace ASC.Web.CRM.Classes
         {
             var key = GetKey(partialDataExport);
 
-            var operation = _queue.GetTasks<ExportDataOperation>().FirstOrDefault(x => x.Id == key);
+            var operation = _queue.GetAllTasks<ExportDataOperation>().FirstOrDefault(x => x.Id == key);
 
             return operation;
         }
@@ -1263,11 +1263,11 @@ namespace ASC.Web.CRM.Classes
             {
                 var key = GetKey(filterObject != null);
 
-                var operation = _queue.GetTasks<ExportDataOperation>().FirstOrDefault(x => x.Id == key);
+                var operation = _queue.GetAllTasks<ExportDataOperation>().FirstOrDefault(x => x.Id == key);
 
                 if (operation != null && operation.IsCompleted)
                 {
-                    _queue.RemoveTask(operation.Id);
+                    _queue.DequeueTask(operation.Id);
                     operation = null;
                 }
 
@@ -1275,7 +1275,7 @@ namespace ASC.Web.CRM.Classes
                 {
                     _exportDataOperation.Configure(key, filterObject, fileName);
 
-                    _queue.QueueTask(_exportDataOperation);
+                    _queue.EnqueueTask(_exportDataOperation);
                 }
 
                 return operation;
@@ -1288,11 +1288,11 @@ namespace ASC.Web.CRM.Classes
             {
                 var key = GetKey(partialDataExport);
 
-                var findedItem = _queue.GetTasks<ExportDataOperation>().FirstOrDefault(x => x.Id == key);
+                var findedItem = _queue.GetAllTasks<ExportDataOperation>().FirstOrDefault(x => x.Id == key);
 
                 if (findedItem != null)
                 {
-                    _queue.RemoveTask(findedItem.Id);
+                    _queue.DequeueTask(findedItem.Id);
                 }
             }
         }

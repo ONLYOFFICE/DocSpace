@@ -41,7 +41,7 @@ internal class OneDriveFolderDao : OneDriveDaoBase, IFolderDao<string>
         TenantUtil tenantUtil,
         DbContextManager<FilesDbContext> dbContextManager,
         SetupInfo setupInfo,
-        IOptionsMonitor<ILog> monitor,
+        ILogger<OneDriveFolderDao> monitor,
         FileUtility fileUtility,
         CrossDao crossDao,
         OneDriveDaoSelector oneDriveDaoSelector,
