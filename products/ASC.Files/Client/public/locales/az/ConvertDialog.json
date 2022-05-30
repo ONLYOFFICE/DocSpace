@@ -1,6 +1,6 @@
 {
   "ConversionFileMessage": "Fayla daha sürətli baxmaq və redaktə etmək üçün OOXML (docx, xlsx və ya pptx) formatına çevriləcək. ",
-  "ConversionMessage": "Bütün yüklənilmiş sənədlər sürətli redaktə etmək üçün Office Open XML formatına (docx, xlsx or pptx) konvertasiya olunur.",
+  "ConversionMessage": "Bütün yüklənilmiş sənədlər sürətli redaktə etmək üçün Office Open XML formatına (docx, xlsx və ya pptx) konvertasiya olunur.",
   "ConversionTitle": "Sənədin yüklənməsi",
   "ConvertAndOpenTitle": "Açıq sənədi konvertasiya et",
   "ConvertedFileDestination": "Faylın nüsxəsi <strong>{{folderTitle}}</strong> qovluğunda yaradılacaq",

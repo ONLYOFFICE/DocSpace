@@ -40,6 +40,7 @@ const FileTile = (props) => {
     getContextModel,
     onHideContextMenu,
     thumbSize,
+    setSelection,
   } = props;
 
   const temporaryExtension =
@@ -103,6 +104,7 @@ const FileTile = (props) => {
               : t("Translations:TitleShowActions")
           }
           showHotkeyBorder={showHotkeyBorder}
+          setSelection={setSelection}
         >
           <FilesTileContent
             item={item}
@@ -116,9 +118,11 @@ const FileTile = (props) => {
   );
 };
 
-export default inject(({ settingsStore }) => {
+export default inject(({ settingsStore, filesStore }) => {
   const { getIcon } = settingsStore;
-  return { getIcon };
+  const { setSelection } = filesStore;
+
+  return { getIcon, setSelection };
 })(
   withTranslation(["Home", "InfoPanel"])(
     withRouter(

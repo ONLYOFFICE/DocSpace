@@ -40,6 +40,7 @@ const StyledTableContainer = styled.div`
     border-image-source: ${(props) =>
       props.theme.tableContainer.header.borderImageSource};
     border-top: 0;
+    border-left: 0;
   }
 
   .lengthen-header {

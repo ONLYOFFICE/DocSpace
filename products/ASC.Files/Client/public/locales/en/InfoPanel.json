@@ -1,4 +1,5 @@
 {
+  "EmptyScreenText": "See file and folder details here",
   "FileExtension": "File extension",
   "ItemsSelected": "Items selected",
   "LastModifiedBy": "Last modified by",
@@ -8,6 +9,5 @@
   "SystemProperties": "System properties",
   "Versions": "Versions",
   "ViewDetails": "View Details",
-  "WhoHasAccess": "Who has access",
-  "EmptyScreenText": "See file and folder details here"
+  "WhoHasAccess": "Who has access"
 }

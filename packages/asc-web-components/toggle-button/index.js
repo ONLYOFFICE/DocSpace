@@ -78,7 +78,7 @@ class ToggleButton extends Component {
     //console.log("ToggleButton render");
 
     return (
-      <Container>
+      <Container {...this.props}>
         <ToggleButtonContainer
           id={id}
           className={className}
