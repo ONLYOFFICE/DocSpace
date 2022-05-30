@@ -7,7 +7,7 @@ ARG REPO_RUN=mcr.microsoft.com/dotnet/aspnet
 ARG REPO_RUN_TAG=6.0
 
 FROM $REPO_SDK:$REPO_SDK_TAG AS base
-ARG RELEASE_DATE="2016-06-21"
+ARG RELEASE_DATE="2016-06-22"
 ARG DEBIAN_FRONTEND=noninteractive
 ARG PRODUCT_VERSION=0.0.0
 ARG BUILD_NUMBER=0
@@ -71,12 +71,12 @@ RUN rm -rf /var/lib/apt/lists/*
 ### STAGE 2: Build ###
 FROM $REPO_RUN:$REPO_RUN_TAG as builder
 ARG BUILD_PATH
+ARG SRC_PATH 
 ENV BUILD_PATH=${BUILD_PATH}
-
-COPY --from=base /app/onlyoffice/config/*.json /app/onlyoffice/config/
-COPY --from=base /app/onlyoffice/config/*.config /app/onlyoffice/config/
+ENV SRC_PATH=${SRC_PATH}
 
 # add defualt user and group for no-root run
+
 RUN mkdir -p /var/log/onlyoffice && \
     mkdir -p /app/onlyoffice/data && \
     addgroup --system --gid 107 onlyoffice && \
@@ -87,9 +87,13 @@ RUN mkdir -p /var/log/onlyoffice && \
 RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
     apt-get -y update && \
     apt-get -y upgrade && \
-    apt-get install -yq sudo nano curl vim && \
+    apt-get install -yq sudo nano curl vim python3-pip && \
     apt-get install -yq libgdiplus && \
     pip install --upgrade jsonpath-ng
+
+COPY --from=base --chown=onlyoffice:onlyoffice /app/onlyoffice/config/*.json /app/onlyoffice/config/
+COPY --from=base --chown=onlyoffice:onlyoffice /app/onlyoffice/config/*.config /app/onlyoffice/config/
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/common/modify-json-config.py /app
         
 #USER onlyoffice
 EXPOSE 5050
@@ -97,12 +101,11 @@ EXPOSE 5050
 ENTRYPOINT ["./docker-entrypoint.sh"]
 
 ### STAGE 2: Build ###
-FROM node:latest as builderNodejs
+FROM node:18-slim as nodeBuild
 ARG BUILD_PATH
+ARG SRC_PATH 
 ENV BUILD_PATH=${BUILD_PATH}
-
-COPY --from=base /app/onlyoffice/config/*.json /app/onlyoffice/config/
-COPY --from=base /app/onlyoffice/config/*.config /app/onlyoffice/config/
+ENV SRC_PATH=${SRC_PATH}
 
 RUN mkdir -p /var/log/onlyoffice && \
     mkdir -p /app/onlyoffice/data && \
@@ -113,8 +116,12 @@ RUN mkdir -p /var/log/onlyoffice && \
     chown onlyoffice:onlyoffice /var/www -R && \
     apt-get -y update && \
     apt-get -y upgrade && \
-    pip install --upgrade jsonpath-ng && \
-    apt-get install -yq sudo nano curl vim
+    apt-get install -yq sudo nano curl vim python3-pip && \
+    pip install --upgrade jsonpath-ng
+
+COPY --from=base --chown=onlyoffice:onlyoffice /app/onlyoffice/config/*.json /app/onlyoffice/config/
+COPY --from=base --chown=onlyoffice:onlyoffice /app/onlyoffice/config/*.config /app/onlyoffice/config/
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/common/modify-json-config.py /app
 
 EXPOSE 5050
 
@@ -171,164 +178,145 @@ FROM builder AS api_system
 WORKDIR ${BUILD_PATH}/services/apisystem/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/common/modify-json-config.py .
-COPY --from=base --chown=onlyoffice:onlyoffice /services/ASC.ApiSystem/service .
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.ApiSystem/service .
 
-CMD ["ASC.ApiSystem.dll", "ASC.ApiSystem"]
+CMD ["dotnet", "ASC.ApiSystem.dll", "ASC.ApiSystem"]
 
 ## ASC.Data.Backup ##
 FROM builder AS backup
 WORKDIR ${BUILD_PATH}/services/backup/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/common/modify-json-config.py .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Data.Backup/service .
 
-CMD ["ASC.Data.Backup.dll", "ASC.Data.Backup", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
+CMD ["dotnet", "ASC.Data.Backup.dll", "ASC.Data.Backup", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
 
 ## ASC.Data.Storage.Encryption ##
 FROM builder AS data_storage_encryption
 WORKDIR ${BUILD_PATH}/services/storage.encryption/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/common/modify-json-config.py .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Data.Storage.Encryption/service/ .
 
-CMD ["ASC.Data.Storage.Encryption.dll", "ASC.Data.Storage.Encryption"]
+CMD ["dotnet", "ASC.Data.Storage.Encryption.dll", "ASC.Data.Storage.Encryption"]
 
 ## ASC.Files ##
 FROM builder AS files
 WORKDIR ${BUILD_PATH}/products/ASC.Files/server/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/common/modify-json-config.py .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/products/ASC.Files/server/ .
 
-CMD ["ASC.Files.dll", "ASC.Files"]
+CMD ["dotnet", "ASC.Files.dll", "ASC.Files"]
 
 ## ASC.Files.Service ##
 FROM builder AS files_services
 WORKDIR ${BUILD_PATH}/products/ASC.Files/service/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/common/modify-json-config.py .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Files.Service/service/ .
 
-CMD ["ASC.Files.Service.dll", "ASC.Files.Service", "core:products:folder=/var/www/products/", "core:products:subfolder=server", "disable_elastic=true"]
+CMD ["dotnet", "ASC.Files.Service.dll", "ASC.Files.Service", "core:products:folder=/var/www/products/", "core:products:subfolder=server", "disable_elastic=true"]
 
 ## ASC.Data.Storage.Migration ##
 FROM builder AS data_storage_migration
 WORKDIR ${BUILD_PATH}/services/storage.migration/service/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/common/modify-json-config.py .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Data.Storage.Migration/service/ .
 
-CMD ["ASC.Data.Storage.Migration.dll", "ASC.Data.Storage.Migration"]
+CMD ["dotnet", "ASC.Data.Storage.Migration.dll", "ASC.Data.Storage.Migration"]
 
 ## ASC.Notify ##
 FROM builder AS notify
 WORKDIR ${BUILD_PATH}/services/notify/service
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/common/modify-json-config.py .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Notify/service/ .
 
-CMD ["ASC.Notify.dll", "ASC.Notify", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
+CMD ["dotnet", "ASC.Notify.dll", "ASC.Notify", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
 
 ## ASC.People ##
 FROM builder AS people_server
 WORKDIR ${BUILD_PATH}/products/ASC.People/server/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/common/modify-json-config.py .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/products/ASC.People/server/ .
 
-CMD ["ASC.People.dll", "ASC.People"]
+CMD ["dotnet", "ASC.People.dll", "ASC.People"]
 
 ## ASC.Socket.IO.Svc ##
-FROM builder AS socket
+FROM nodeBuild AS socket
 WORKDIR ${BUILD_PATH}/services/socket.io.svc/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/common/modify-json-config.py .
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Socket.IO.Svc/service/ .
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Socket.IO/service/  ${BUILD_PATH}/ASC.Socket.IO/
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Socket.IO/service/ .
 
-CMD ["ASC.Socket.IO.Svc.dll", "ASC.Socket.IO.Svc"]
+CMD  ["node", "server.js", "ASC.Socket.IO.Svc"]
 
 ## ASC.Studio.Notify ##
 FROM builder AS studio_notify
 WORKDIR ${BUILD_PATH}/services/studio.notify/service/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/common/modify-json-config.py .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Studio.Notify/service/ .
 
-CMD ["ASC.Studio.Notify.dll", "ASC.Studio.Notify", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
+CMD ["dotnet", "ASC.Studio.Notify.dll", "ASC.Studio.Notify", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
 
 ## ASC.TelegramService ##
 FROM builder AS telegram_service
 WORKDIR ${BUILD_PATH}/services/telegram/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/common/modify-json-config.py .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.TelegramService/service/ .
 
-CMD ["ASC.TelegramService.dll", "ASC.TelegramService"]
+CMD ["dotnet", "ASC.TelegramService.dll", "ASC.TelegramService"]
 
 ## ASC.Thumbnails.Svc ##
 FROM builder AS thumbnails
 WORKDIR ${BUILD_PATH}/services/thumb/service/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/common/modify-json-config.py .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Thumbnails.Svc/service/ .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Thumbnails/service/ ${BUILD_PATH}/services/thumb/client
 
-CMD ["ASC.Thumbnails.Svc.dll", "ASC.Thumbnails.Svc"]
+CMD ["dotnet", "ASC.Thumbnails.Svc.dll", "ASC.Thumbnails.Svc"]
 
 ## ASC.UrlShortener.Svc ##
-FROM builder AS urlshortener
+FROM nodeBuild AS urlshortener
 WORKDIR  ${BUILD_PATH}/services/urlshortener/service/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/common/modify-json-config.py .
-COPY --from=base --chown=onlyoffice:onlyoffice  ${BUILD_PATH}/services/ASC.UrlShortener.Svc/service/ .
-COPY --from=base --chown=onlyoffice:onlyoffice  ${BUILD_PATH}/services/ASC.UrlShortener/service/ ${BUILD_PATH}/services/urlshortener/client
+COPY --from=base --chown=onlyoffice:onlyoffice  ${BUILD_PATH}/services/ASC.UrlShortener/service/ .
 
-CMD ["ASC.UrlShortener.Svc.dll", "ASC.UrlShortener.Svc"]
+CMD ["node", "index.js", "ASC.UrlShortener.Svc"]
 
 ## ASC.Web.Api ##
 FROM builder AS api
 WORKDIR ${BUILD_PATH}/studio/api/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/common/modify-json-config.py .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Web.Api/service/ .
 
-CMD ["ASC.Web.Api.dll", "ASC.Web.Api"]
+CMD ["dotnet", "ASC.Web.Api.dll", "ASC.Web.Api"]
 
 ## ASC.Web.Studio ##
 FROM builder AS studio
 WORKDIR ${BUILD_PATH}/studio/server/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/common/modify-json-config.py .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Web.Studio/service/ .
 
-CMD ["ASC.Web.Studio.dll", "ASC.Web.Studio"]
+CMD ["dotnet", "ASC.Web.Studio.dll", "ASC.Web.Studio"]
 
 ## ASC.SsoAuth ##
 FROM builderNodejs AS ssoauth
 WORKDIR ${BUILD_PATH}/services/ASC.SsoAuth.Svc/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/common/modify-json-config.py .
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.SsoAuth.Svc/service/ .
-COPY --from=base --chown=onlyoffice:onlyoffice  ${BUILD_PATH}/services/ASC.SsoAuth/service/ ${BUILD_PATH}/ASC.SsoAuth/
+COPY --from=base --chown=onlyoffice:onlyoffice  ${BUILD_PATH}/services/ASC.SsoAuth/service/ .
 
-CMD ["ASC.SsoAuth.Svc.dll", "ASC.SsoAuth.Svc"]
+CMD ["node", "app.js", "ASC.SsoAuth.Svc"]
 
 ## image for k8s bin-share ##
 FROM busybox:latest AS bin_share

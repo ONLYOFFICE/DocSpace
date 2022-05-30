@@ -79,6 +79,7 @@ services_name_backend+=(ASC.TelegramService)
 services_name_backend+=(ASC.UrlShortener.Svc)
 services_name_backend+=(ASC.Web.Api)
 services_name_backend+=(ASC.Web.Studio)
+services_name_backend+=(ASC.Thumbnails.Svc)
 
 # Publish backend services
 for i in ${!services_name_backend[@]}; do
