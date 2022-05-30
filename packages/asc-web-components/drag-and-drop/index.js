@@ -9,17 +9,17 @@ const DragAndDrop = (props) => {
   const { isDropZone, children, dragging, className, ...rest } = props;
   const classNameProp = className ? className : "";
 
-  const onDrop = useCallback((acceptedFiles) => {
+  const onDrop = (acceptedFiles) => {
     acceptedFiles.length && props.onDrop && props.onDrop(acceptedFiles);
-  }, []);
+  };
 
-  const onDragOver = useCallback((e) => {
+  const onDragOver = (e) => {
     props.onDragOver && props.onDragOver(isDragActive, e);
-  }, []);
+  };
 
-  const onDragLeave = useCallback((e) => {
+  const onDragLeave = (e) => {
     props.onDragLeave && props.onDragLeave(e);
-  }, []);
+  };
 
   const { getRootProps, isDragActive } = useDropzone({
     noDragEventsBubbling: !isDropZone,
