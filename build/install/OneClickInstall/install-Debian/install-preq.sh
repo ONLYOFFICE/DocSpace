@@ -57,8 +57,8 @@ rm packages-microsoft-prod.deb
 PRODUCT_DIR="/var/www/${product}"
 if [ "$(ls "$PRODUCT_DIR/services/kafka" 2> /dev/null)" == "" ]; then
 	mkdir -p ${PRODUCT_DIR}/services/
-	if ! cat /etc/passwd | grep -q "kafka"; then
-		adduser --quiet --home ${PRODUCT_DIR}/services/kafka --system kafka
+	if ! cat /etc/passwd | grep -q "onlyoffice"; then
+		adduser --quiet --home ${PRODUCT_DIR} --system onlyoffice
 	fi
 	cd ${PRODUCT_DIR}/services/kafka
 	KAFKA_VERSION=$(curl https://downloads.apache.org/kafka/ | grep -Eo '3.1.[0-9]' | tail -1)
