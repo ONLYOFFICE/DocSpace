@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { useLocation } from "react-router";
 import Loaders from "@appserver/common/components/Loaders";
 import { isTablet as isTabletUtils } from "@appserver/components/utils/device";
-import { isTablet } from "react-device-detect";
+import { isTablet, isMobileOnly } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 import {
   StyledArticleHeader,
@@ -37,7 +37,7 @@ const ArticleHeader = ({
 
   const showLoader = commonSettings ? !isLoadedPage : false;
 
-  const isTabletView = isTabletUtils() || isTablet;
+  const isTabletView = (isTabletUtils() || isTablet) && !isMobileOnly;
 
   return (
     <StyledArticleHeader showText={showText} {...rest}>

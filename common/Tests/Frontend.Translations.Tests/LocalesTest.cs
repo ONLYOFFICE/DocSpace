@@ -267,11 +267,32 @@ namespace Frontend.Translations.Tests
             Assert.AreEqual(0, ParseJsonErrors.Count, string.Join("\r\n", ParseJsonErrors.Select(e => $"File path = '{e.Path}' failed to parse with error: '{e.Exception.Message}'")));
         }
 
+        public static Tuple<string, string> getPaths(string language)
+        {
+            const string dictionariesPath = @"..\..\..\dictionaries";
+            const string additionalPath = @"..\..\..\additional";
+
+            var path = dictionariesPath;
+
+            switch (language)
+            {
+                case "fi":
+                    path = additionalPath;
+                    break;
+                default:
+                    break;
+            }
+
+            var dicPath = Path.Combine(path, language, $"{language}.dic");
+            var affPath = Path.Combine(path, language, $"{language}.aff");
+
+            return new Tuple<string, string>(dicPath, affPath);
+        }
+
         [Test]
         [Category("LongRunning")]
         public void SpellCheckTest()
         {
-            const string dictionariesPath = @"..\..\..\dictionaries";
             var i = 0;
             var errorsCount = 0;
             var message = $"Next keys have spell check issues:\r\n\r\n";
@@ -291,12 +312,12 @@ namespace Frontend.Translations.Tests
             {
                 try
                 {
-                    var language = SpellCheck.GetDictionaryLanguage(group.Language);
+                    var dicPaths = SpellCheck.GetDictionaryPaths(group.Language);
 
                     //var spellCheckExclude = new SpellCheckExclude(group.Language);
 
-                    using (var dictionaryStream = File.OpenRead(Path.Combine(dictionariesPath, language, $"{language}.dic")))
-                    using (var affixStream = File.OpenRead(Path.Combine(dictionariesPath, language, $"{language}.aff")))
+                    using (var dictionaryStream = File.OpenRead(dicPaths.DictionaryPath))
+                    using (var affixStream = File.OpenRead(dicPaths.AffixPath))
                     {
                         var dictionary = WordList.CreateFromStreams(dictionaryStream, affixStream);
 
