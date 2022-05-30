@@ -191,7 +191,8 @@ ${package_manager} -y install epel-release \
 			postgresql \
 			postgresql-server \
 			rabbitmq-server$rabbitmq_version \
-			redis --enablerepo=remi
+			redis --enablerepo=remi \
+			java
 	
 if [[ $PSQLExitCode -eq $UPDATE_AVAILABLE_CODE ]]; then
 	yum -y install postgresql-upgrade
