@@ -14,6 +14,7 @@
   "MessageEmailActivationInstuctionsSentOnEmail": "The email activation instructions have been sent to the <1>{{email}}</1> email address",
   "NotFoundDescription": "Try a different filter or clear it to view all people in the section.",
   "NotFoundTitle": "No teammates found",
+  "ReassignmentData": "Data reassignment",
   "SuccessfullyRemovedGroup": "Group has been removed successfully",
   "UserStatus": "Status"
 }

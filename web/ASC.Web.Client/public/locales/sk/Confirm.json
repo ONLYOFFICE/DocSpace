@@ -20,7 +20,7 @@
   "PassworResetTitle": "Teraz si môžete vytvoriť nové heslo.",
   "PhoneSubtitle": "Dvojfaktorové overenie je povolené na zabezpečenie dodatočnej bezpečnosti portálu. Ak chcete pokračovať v práci na portáli, zadajte číslo svojho mobilného telefónu. Číslo mobilného telefónu musí byť zadané v medzinárodnom formáte s kódom krajiny.",
   "SetAppButton": "Pripojiť aplikáciu",
-  "SetAppDescription": "Dvojfaktorové overenie je povolené. Nakonfigurujte si overovaciu aplikáciu, aby ste mohli pokračovať v práci na portáli. Môžete použiť Google Authenticator pre <1>Android</1> a<4>iOS</4> alebo Authenticator pre <8>Windows Phone</8>.",
+  "SetAppDescription": "Dvojfaktorové overenie je povolené. Nakonfigurujte si overovaciu aplikáciu, aby ste mohli pokračovať v práci na portáli. Môžete použiť Google Authenticator pre <1>Android</1> a <4>iOS</4> alebo Authenticator pre <8>Windows Phone</8>.",
   "SetAppInstallDescription": "Ak chcete pripojiť aplikáciu, naskenujte QR kód alebo ručne zadajte svoj tajný kľúč <1>{{ secretKey }}</1> a potom do poľa nižšie zadajte 6-miestny kód z vašej aplikácie.",
   "SetAppTitle": "Nakonfigurujte si aplikáciu autentifikátora",
   "WelcomeUser": "Vitajte na našom portáli! Ak chcete začať, zaregistrujte sa alebo sa prihláste cez sociálne siete."

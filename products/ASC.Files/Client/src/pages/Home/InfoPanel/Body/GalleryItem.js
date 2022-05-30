@@ -10,15 +10,17 @@ import {
   StyledGalleryThumbnail,
   StyledTitle,
 } from "./styles/styles.js";
-import moment from "moment";
+import getCorrectDate from "@appserver/components/utils/getCorrectDate";
 
 const SingleItem = (props) => {
-  const { t, selectedItem, getIcon } = props;
+  const { t, selectedItem, getIcon, culture, personal } = props;
 
   const parseAndFormatDate = (date) => {
-    return moment(date)
-      .locale(localStorage.getItem(LANGUAGE))
-      .format("DD.MM.YY hh:mm A");
+    const locale = personal ? localStorage.getItem(LANGUAGE) : culture;
+
+    const correctDate = getCorrectDate(locale, date);
+
+    return correctDate;
   };
 
   const src = getIcon(32, ".docxf");
@@ -91,7 +93,7 @@ const SingleItem = (props) => {
 };
 
 export default inject(({ settingsStore }) => {
-  const { getIcon } = settingsStore;
+  const { getIcon, personal, culture } = settingsStore;
 
   return {
     getIcon,

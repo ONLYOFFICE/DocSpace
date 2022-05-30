@@ -106,6 +106,10 @@
                                 <language>sk-SK</language>
                                 <approved>false</approved>
                             </translation>
+                            <translation>
+                                <language>vi-VN</language>
+                                <approved>false</approved>
+                            </translation>
                         </translations>
                     </concept_node>
                     <concept_node>
@@ -193,6 +197,10 @@
                             </translation>
                             <translation>
                                 <language>sk-SK</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>vi-VN</language>
                                 <approved>false</approved>
                             </translation>
                         </translations>
@@ -284,6 +292,10 @@
                                 <language>sk-SK</language>
                                 <approved>false</approved>
                             </translation>
+                            <translation>
+                                <language>vi-VN</language>
+                                <approved>false</approved>
+                            </translation>
                         </translations>
                     </concept_node>
                     <concept_node>
@@ -371,6 +383,10 @@
                             </translation>
                             <translation>
                                 <language>sk-SK</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>vi-VN</language>
                                 <approved>false</approved>
                             </translation>
                         </translations>
@@ -462,6 +478,10 @@
                                 <language>sk-SK</language>
                                 <approved>false</approved>
                             </translation>
+                            <translation>
+                                <language>vi-VN</language>
+                                <approved>false</approved>
+                            </translation>
                         </translations>
                     </concept_node>
                     <concept_node>
@@ -551,6 +571,10 @@
                                 <language>sk-SK</language>
                                 <approved>false</approved>
                             </translation>
+                            <translation>
+                                <language>vi-VN</language>
+                                <approved>false</approved>
+                            </translation>
                         </translations>
                     </concept_node>
                     <concept_node>
@@ -638,6 +662,10 @@
                             </translation>
                             <translation>
                                 <language>sk-SK</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>vi-VN</language>
                                 <approved>false</approved>
                             </translation>
                         </translations>
@@ -749,6 +777,11 @@
             <source_id/>
             <source_file>../web/ASC.Web.Editor/public/locales/sk</source_file>
         </language>
+        <language>
+            <code>vi-VN</code>
+            <source_id/>
+            <source_file>../web/ASC.Web.Editor/public/locales/vi</source_file>
+        </language>
     </languages>
     <translation_files>
         <translation_file>
@@ -810,6 +843,9 @@
         </translation_file>
         <translation_file>
             <file>../web/ASC.Web.Editor/public/locales/sk</file>
+        </translation_file>
+        <translation_file>
+            <file>../web/ASC.Web.Editor/public/locales/vi</file>
         </translation_file>
     </translation_files>
     <editor_configuration>

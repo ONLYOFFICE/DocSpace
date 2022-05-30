@@ -112,13 +112,14 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         private readonly FileConflictResolveType _resolveType;
 
         private readonly IDictionary<string, StringValues> _headers;
+        private readonly ThumbnailSettings _thumbnailSettings;
 
         public override FileOperationType OperationType
         {
             get { return _copy ? FileOperationType.Copy : FileOperationType.Move; }
         }
 
-        public FileMoveCopyOperation(IServiceProvider serviceProvider, FileMoveCopyOperationData<T> data)
+        public FileMoveCopyOperation(IServiceProvider serviceProvider, FileMoveCopyOperationData<T> data, ThumbnailSettings thumbnailSettings)
             : base(serviceProvider, data)
         {
             DaoFolderId = data.DaoFolderId;
@@ -127,6 +128,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             _resolveType = data.ResolveType;
 
             _headers = data.Headers;
+            _thumbnailSettings = thumbnailSettings;
         }
 
         protected override async Task DoAsync(IServiceScope scope)
@@ -483,7 +485,10 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                     if (file.RootFolderType == FolderType.TRASH && newFile.ThumbnailStatus == Thumbnail.NotRequired)
                                     {
                                         newFile.ThumbnailStatus = Thumbnail.Waiting;
-                                        await fileDao.SaveThumbnailAsync(newFile, null);
+                                        foreach (var size in _thumbnailSettings.Sizes)
+                                        {
+                                            await fileDao.SaveThumbnailAsync(newFile, null, size.Width, size.Height);
+                                        }
                                     }
 
                                     if (newFile.ProviderEntry)
@@ -543,10 +548,14 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                                     if (file.ThumbnailStatus == Thumbnail.Created)
                                     {
-                                        using (var thumbnail = await FileDao.GetThumbnailAsync(file))
+                                        foreach (var size in _thumbnailSettings.Sizes)
                                         {
-                                            await fileDao.SaveThumbnailAsync(newFile, thumbnail);
+                                            using (var thumbnail = await FileDao.GetThumbnailAsync(file, size.Width, size.Height))
+                                            {
+                                                await fileDao.SaveThumbnailAsync(newFile, thumbnail, size.Width, size.Height);
+                                            }
                                         }
+
                                         newFile.ThumbnailStatus = Thumbnail.Created;
                                     }
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
@@ -35,9 +35,21 @@ const FloatingButton = ({ id, className, style, ...rest }) => {
     clearUploadedFilesHistory,
   } = rest;
 
+  const [animationCompleted, setAnimationCompleted] = useState(false);
+
   const onProgressClear = () => {
     clearUploadedFilesHistory && clearUploadedFilesHistory();
   };
+
+  useEffect(() => {
+    if (percent === 100) {
+      setTimeout(() => {
+        setAnimationCompleted(true);
+      }, 1000);
+    } else {
+      setAnimationCompleted(false);
+    }
+  }, [percent, setAnimationCompleted]);
 
   return (
     <StyledFloatingButtonWrapper>
@@ -50,7 +62,9 @@ const FloatingButton = ({ id, className, style, ...rest }) => {
         onClick={onClick}
       >
         <StyledCircle
-          displayProgress={icon != "minus" && percent !== 100}
+          displayProgress={
+            !(percent === 100 && animationCompleted) && icon != "minus"
+          }
           percent={percent}
         >
           <div className="circle__mask circle__full">

@@ -13,8 +13,7 @@ import {
   StyledThumbnail,
   StyledTitle,
 } from "./styles/styles.js";
-
-const moment = require("moment");
+import getCorrectDate from "@appserver/components/utils/getCorrectDate";
 
 const SingleItem = (props) => {
   const {
@@ -29,8 +28,10 @@ const SingleItem = (props) => {
     dontShowSize,
     dontShowLocation,
     dontShowAccess,
+    dontShowOwner,
     personal,
     createThumbnail,
+    culture,
   } = props;
 
   const [item, setItem] = useState({
@@ -75,9 +76,11 @@ const SingleItem = (props) => {
       );
 
       const parseAndFormatDate = (date) => {
-        return moment(date)
-          .locale(localStorage.getItem(LANGUAGE))
-          .format("DD.MM.YY hh:mm A");
+        const locale = personal ? localStorage.getItem(LANGUAGE) : culture;
+
+        const correctDate = getCorrectDate(locale, date);
+
+        return correctDate;
       };
 
       const getItemType = (fileType) => {
@@ -159,6 +162,7 @@ const SingleItem = (props) => {
         },
       ];
 
+      if (dontShowOwner) result.shift();
       if (item.isFolder) return result;
 
       result.splice(3, 0, {

@@ -929,43 +929,39 @@ const Editor = () => {
               />
             )}
 
-            {isFolderDialogVisible && (
-              <SelectFolderDialog
-                isPanelVisible={isFolderDialogVisible}
-                onClose={onCloseFolderDialog}
-                foldersType="exceptSortedByTags"
-                onSave={onClickSaveSelectFolder}
-                isDisableButton={!titleSelectorFolder.trim()}
-                header={
+            <SelectFolderDialog
+              folderId={fileInfo?.folderId}
+              isPanelVisible={isFolderDialogVisible}
+              onClose={onCloseFolderDialog}
+              foldersType="exceptSortedByTags"
+              onSave={onClickSaveSelectFolder}
+              isDisableButton={!titleSelectorFolder.trim()}
+              header={
+                <StyledSelectFolder>
+                  <Text className="editor-select-folder_text" fontWeight={600}>
+                    {i18n.t("FileName")}
+                  </Text>
+                  <TextInput
+                    className="editor-select-folder_text-input"
+                    scale
+                    onChange={onChangeInput}
+                    value={titleSelectorFolder}
+                  />
+                </StyledSelectFolder>
+              }
+              {...(extension !== "fb2" && {
+                footer: (
                   <StyledSelectFolder>
-                    <Text
-                      className="editor-select-folder_text"
-                      fontWeight={600}
-                    >
-                      {i18n.t("FileName")}
-                    </Text>
-                    <TextInput
-                      className="editor-select-folder_text-input"
-                      scale
-                      onChange={onChangeInput}
-                      value={titleSelectorFolder}
+                    <Checkbox
+                      className="editor-select-folder_checkbox"
+                      label={i18n.t("OpenSavedDocument")}
+                      onChange={onClickCheckbox}
+                      isChecked={openNewTab}
                     />
                   </StyledSelectFolder>
-                }
-                {...(extension !== "fb2" && {
-                  footer: (
-                    <StyledSelectFolder>
-                      <Checkbox
-                        className="editor-select-folder_checkbox"
-                        label={i18n.t("OpenSavedDocument")}
-                        onChange={onClickCheckbox}
-                        isChecked={openNewTab}
-                      />
-                    </StyledSelectFolder>
-                  ),
-                })}
-              />
-            )}
+                ),
+              })}
+            />
 
             {preparationPortalDialogVisible && (
               <PreparationPortalDialog

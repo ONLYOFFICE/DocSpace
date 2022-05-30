@@ -22,6 +22,8 @@ namespace ASC.Files.Core.Thirdparty
     [Scope(Additional = typeof(CrossDaoExtension))]
     internal class CrossDao //Additional SharpBox
     {
+        private readonly ThumbnailSettings _thumbnailSettings;
+
         private IServiceProvider ServiceProvider { get; }
         private SetupInfo SetupInfo { get; }
         private FileConverter FileConverter { get; }
@@ -29,11 +31,13 @@ namespace ASC.Files.Core.Thirdparty
         public CrossDao(
             IServiceProvider serviceProvider,
             SetupInfo setupInfo,
-            FileConverter fileConverter)
+            FileConverter fileConverter,
+            ThumbnailSettings thumbnailSettings)
         {
             ServiceProvider = serviceProvider;
             SetupInfo = setupInfo;
             FileConverter = fileConverter;
+            _thumbnailSettings = thumbnailSettings;
         }
 
         public async Task<File<TTo>> PerformCrossDaoFileCopyAsync<TFrom, TTo>(
@@ -78,10 +82,14 @@ namespace ASC.Files.Core.Thirdparty
 
             if (fromFile.ThumbnailStatus == Thumbnail.Created)
             {
-                using (var thumbnail = await fromFileDao.GetThumbnailAsync(fromFile))
+                foreach (var size in _thumbnailSettings.Sizes)
                 {
-                    await toFileDao.SaveThumbnailAsync(toFile, thumbnail);
+                    using (var thumbnail = await fromFileDao.GetThumbnailAsync(fromFile, size.Width, size.Height))
+                    {
+                        await toFileDao.SaveThumbnailAsync(toFile, thumbnail, size.Width, size.Height);
+                    }
                 }
+
                 toFile.ThumbnailStatus = Thumbnail.Created;
             }
 

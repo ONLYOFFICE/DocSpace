@@ -19,6 +19,7 @@ const SelectorAddButton = (props) => {
       className={className}
       id={id}
       style={style}
+      {...props}
     >
       <IconButton
         size={14}

@@ -85,6 +85,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         private readonly bool _ignoreException;
         private readonly bool _immediately;
         private readonly IDictionary<string, StringValues> _headers;
+        private readonly ThumbnailSettings _thumbnailSettings;
 
         public override FileOperationType OperationType
         {
@@ -92,12 +93,13 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         }
 
 
-        public FileDeleteOperation(IServiceProvider serviceProvider, FileDeleteOperationData<T> fileOperationData)
+        public FileDeleteOperation(IServiceProvider serviceProvider, FileDeleteOperationData<T> fileOperationData, ThumbnailSettings thumbnailSettings)
             : base(serviceProvider, fileOperationData)
         {
             _ignoreException = fileOperationData.IgnoreException;
             _immediately = fileOperationData.Immediately;
             _headers = fileOperationData.Headers;
+            _thumbnailSettings = thumbnailSettings;
         }
 
         protected override async Task DoAsync(IServiceScope scope)
@@ -242,7 +244,10 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                         if (file.ThumbnailStatus == Thumbnail.Waiting)
                         {
                             file.ThumbnailStatus = Thumbnail.NotRequired;
-                            await FileDao.SaveThumbnailAsync(file, null);
+                            foreach (var size in _thumbnailSettings.Sizes)
+                            {
+                                await FileDao.SaveThumbnailAsync(file, null, size.Width, size.Height);
+                            }
                         }
 
                         socketManager.DeleteFile(file);

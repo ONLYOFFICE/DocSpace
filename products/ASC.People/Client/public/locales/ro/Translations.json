@@ -7,7 +7,7 @@
   "EmailChangeButton": "Schimbare email",
   "EnableUserButton": "Activează",
   "ErrorUnknownFileImageType": "Tip de imagine necunoscut",
-  "FemaleSexStatus": "Femenin",
+  "FemaleSexStatus": "Feminin",
   "InviteLinkTitle": "Link-ul de invitație",
   "LDAPLbl": "LDAP",
   "MaleSexStatus": "Masculin",
@@ -23,7 +23,7 @@
   "SuccessChangeUserStatus": "Statutul utilizatorului a fost schimbat cu succes",
   "SuccessDeletePersonalData": "Datele cu caracter personal au fost șterse cu succes",
   "SuccessSentInvitation": "Invitația a fost trimisă cu succes",
-  "maxSizeFileError": "Fişierul depăşeşte limita maximă de dimensiune",
+  "maxSizeFileError": "Fișierul depășește limita maximă de dimensiune",
   "orDropFileHereLabel": "sau plasați fișierul aici",
   "selectNewPhotoLabel": "Selectați o fotografie nouă"
 }
