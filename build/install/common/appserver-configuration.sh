@@ -287,6 +287,9 @@ establish_mysql_conn(){
 	#Enable database migration
 	$JSON_USERCONF "this.migration={'enabled': \"true\"}" >/dev/null 2>&1
 
+	#Fixing appserver-backup startup error \ Adding backup_backup and backup_schedule tables
+	$MYSQL -D "$DB_NAME" -e 'CREATE TABLE IF NOT EXISTS `backup_backup` ( `id` char(38) NOT NULL, `tenant_id` int(11) NOT NULL, `is_scheduled` int(1) NOT NULL, `name` varchar(255) NOT NULL, `storage_type` int(11) NOT NULL, `storage_base_path` varchar(255) DEFAULT NULL, `storage_path` varchar(255) NOT NULL, `created_on` datetime NOT NULL, `expires_on` datetime NOT NULL DEFAULT "0001-01-01 00:00:00", `storage_params` TEXT NULL, `hash` char(64) NOT NULL, PRIMARY KEY (`id`), KEY `tenant_id` (`tenant_id`), KEY `expires_on` (`expires_on`), KEY `is_scheduled` (`is_scheduled`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;' >/dev/null 2>&1
+	$MYSQL -D "$DB_NAME" -e 'CREATE TABLE IF NOT EXISTS `backup_schedule` ( `tenant_id` int(11) NOT NULL, `backup_mail` int(11) NOT NULL DEFAULT "0", `cron` varchar(255) NOT NULL, `backups_stored` int(11) NOT NULL, `storage_type` int(11) NOT NULL, `storage_base_path` varchar(255) DEFAULT NULL, `last_backup_time` datetime NOT NULL, `storage_params` TEXT NULL, PRIMARY KEY (`tenant_id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;' >/dev/null 2>&1
 	echo "OK"
 }
 
