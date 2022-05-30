@@ -138,10 +138,10 @@ class FilesActionStore {
     for (let i = 0; i < treeList.length; i++) {
       const treeNode = treeList[i];
 
-      console.log(
-        `createFolderTree parent id = ${parentFolderId} name '${treeNode.name}': `,
-        treeNode.children
-      );
+      // console.log(
+      //   `createFolderTree parent id = ${parentFolderId} name '${treeNode.name}': `,
+      //   treeNode.children
+      // );
 
       const folder = await createFolder(parentFolderId, treeNode.name);
       const parentId = folder.id;
@@ -153,7 +153,7 @@ class FilesActionStore {
   };
 
   uploadEmptyFolders = async (emptyFolders, folderId) => {
-    console.log("uploadEmptyFolders", emptyFolders, folderId);
+    //console.log("uploadEmptyFolders", emptyFolders, folderId);
 
     const { secondaryProgressDataStore } = this.uploadDataStore;
     const {
