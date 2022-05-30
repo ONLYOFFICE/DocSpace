@@ -22,6 +22,7 @@ class ContextOptionsStore {
   versionHistoryStore;
   settingsStore;
   infoPanelStore;
+  filesSettingsStore;
 
   constructor(
     authStore,
@@ -104,7 +105,7 @@ class ContextOptionsStore {
     this.dialogsStore.setCopyPanelVisible(true);
   };
 
-  showVersionHistory = (id, history) => {
+  showVersionHistory = (id) => {
     const {
       fetchFileVersions,
       setIsVerHistoryPanel,
@@ -112,14 +113,8 @@ class ContextOptionsStore {
 
     if (this.treeFoldersStore.isRecycleBinFolder) return;
 
-    if (!this.authStore.settingsStore.isTabletView) {
-      fetchFileVersions(id + "");
-      setIsVerHistoryPanel(true);
-    } else {
-      history.push(
-        combineUrl(AppServerConfig.proxyURL, config.homepage, `/${id}/history`)
-      );
-    }
+    fetchFileVersions(id + "");
+    setIsVerHistoryPanel(true);
   };
 
   finalizeVersion = (id) => {
@@ -347,15 +342,17 @@ class ContextOptionsStore {
     setIsVisible(true);
   };
 
-  getFilesContextOptions = (item, t, history) => {
+  getFilesContextOptions = (item, t) => {
     const { contextOptions } = item;
     const isRootThirdPartyFolder =
       item.providerKey && item.id === item.rootFolderId;
 
     const isShareable = item.canShare;
 
-    const versionActions =
-      !isMobile && !isMobileUtils() && !isTabletUtils()
+    const isMedia = this.settingsStore.isMediaOrImage(item.fileExst);
+
+    const versionActions = !isMedia
+      ? !isMobile && !isMobileUtils() && !isTabletUtils()
         ? [
             {
               key: "version",
@@ -371,7 +368,7 @@ class ContextOptionsStore {
                 {
                   key: "show-version-history",
                   label: t("ShowVersionHistory"),
-                  onClick: () => this.showVersionHistory(item.id, history),
+                  onClick: () => this.showVersionHistory(item.id),
                   disabled: false,
                 },
               ],
@@ -389,10 +386,11 @@ class ContextOptionsStore {
               key: "show-version-history",
               label: t("ShowVersionHistory"),
               icon: "images/history.react.svg",
-              onClick: () => this.showVersionHistory(item.id, history),
+              onClick: () => this.showVersionHistory(item.id),
               disabled: false,
             },
-          ];
+          ]
+      : [];
 
     const moveActions =
       !isMobile && !isMobileUtils() && !isTabletUtils()
@@ -635,7 +633,7 @@ class ContextOptionsStore {
     return options;
   };
 
-  getModel = (item, t, history) => {
+  getModel = (item, t) => {
     const { type, id, extension } = this.filesStore.fileActionStore;
     const { fileExst, contextOptions } = item;
 
@@ -643,7 +641,7 @@ class ContextOptionsStore {
 
     const contextOptionsProps =
       !isEdit && contextOptions && contextOptions.length > 0
-        ? this.getFilesContextOptions(item, t, history)
+        ? this.getFilesContextOptions(item, t)
         : [];
 
     return contextOptionsProps;

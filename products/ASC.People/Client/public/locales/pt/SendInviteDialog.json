@@ -1,4 +1,4 @@
 {
-  "SendInviteAgainDialog": "O convite será enviado novamente para os utilizadores selecionados com o estado \"Pendente\".",
+  "SendInviteAgainDialog": "O convite será enviado novamente para os utilizadores selecionados com o estado 'Pendente'.",
   "SendInviteAgainDialogMessage": "Após os utilizadores aceitarem o convite, o seu estado será alterado para 'Ativo'."
 }

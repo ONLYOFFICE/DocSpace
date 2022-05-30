@@ -8,6 +8,7 @@ import GalleryItem from "./GalleryItem";
 import GalleryEmptyScreen from "./GalleryEmptyScreen";
 import { StyledInfoRoomBody } from "./styles/styles.js";
 import { Base } from "@appserver/components/themes";
+import EmptyScreen from "./EmptyScreen";
 
 const InfoPanelBodyContent = ({
   t,
@@ -19,9 +20,13 @@ const InfoPanelBodyContent = ({
   getShareUsers,
   onSelectItem,
   setSharingPanelVisible,
+  isRootFolder,
   isRecycleBinFolder,
   isRecentFolder,
   isFavoritesFolder,
+  isShareFolder,
+  isCommonFolder,
+  isPrivacyFolder,
   isGallery,
   gallerySelected,
   personal,
@@ -29,13 +34,14 @@ const InfoPanelBodyContent = ({
   culture,
 }) => {
   const singleItem = (item) => {
-    const dontShowLocation = item.isFolder && item.parentId === 0;
+    const dontShowLocation = isRootFolder;
     const dontShowSize = item.isFolder && (isFavoritesFolder || isRecentFolder);
     const dontShowAccess =
       isRecycleBinFolder ||
-      (item.isFolder && item.parentId === 0) ||
+      isRootFolder ||
       item.rootFolderId === 7 ||
       (item.isFolder && item.pathParts && item.pathParts[0] === 7);
+    const dontShowOwner = isRootFolder && (isFavoritesFolder || isRecentFolder);
 
     return (
       <SingleItem
@@ -50,6 +56,7 @@ const InfoPanelBodyContent = ({
         dontShowLocation={dontShowLocation}
         dontShowSize={dontShowSize}
         dontShowAccess={dontShowAccess}
+        dontShowOwner={dontShowOwner}
         personal={personal}
         culture={culture}
         createThumbnail={createThumbnail}
@@ -69,10 +76,21 @@ const InfoPanelBodyContent = ({
     <StyledInfoRoomBody>
       <>
         {selectedItems.length === 0 ? (
-          singleItem({
-            ...selectedFolder,
-            isFolder: true,
-          })
+          // Can get future changes, currently only "My documents" displays its info
+          isRootFolder &&
+          (isRecycleBinFolder ||
+            isRecentFolder ||
+            isFavoritesFolder ||
+            isShareFolder ||
+            isCommonFolder ||
+            isPrivacyFolder) ? (
+            <EmptyScreen />
+          ) : (
+            singleItem({
+              ...selectedFolder,
+              isFolder: true,
+            })
+          )
         ) : selectedItems.length === 1 ? (
           singleItem(selectedItems[0])
         ) : (
@@ -108,10 +126,14 @@ export default inject(
     const { getIcon, getFolderIcon } = settingsStore;
     const { onSelectItem } = filesActionsStore;
     const { setSharingPanelVisible } = dialogsStore;
+    const { isRootFolder } = selectedFolderStore;
     const {
       isRecycleBinFolder,
       isRecentFolder,
       isFavoritesFolder,
+      isShareFolder,
+      isCommonFolder,
+      isPrivacyFolder,
     } = treeFoldersStore;
 
     const selectedItems =
@@ -130,9 +152,15 @@ export default inject(
       getFolderIcon,
       onSelectItem,
       setSharingPanelVisible,
+
+      isRootFolder,
       isRecycleBinFolder,
       isRecentFolder,
       isFavoritesFolder,
+      isShareFolder,
+      isCommonFolder,
+      isPrivacyFolder,
+
       gallerySelected,
       personal,
       createThumbnail,

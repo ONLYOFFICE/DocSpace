@@ -9,7 +9,7 @@ import { setDocumentTitle } from "../../../helpers/utils";
 const ThirdPartyResponsePage = ({ match }) => {
   const { params } = match;
   const { provider } = params;
-  const { t } = useTranslation("ThirdParty");
+  const { t } = useTranslation("Errors");
   const [error, setError] = useState(null);
 
   useEffect(() => {

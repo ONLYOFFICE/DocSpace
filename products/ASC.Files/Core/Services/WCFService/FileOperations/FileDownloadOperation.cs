@@ -141,6 +141,14 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 Error = error2;
             }
 
+            var finished1 = thirdpartyTask.GetProperty<bool?>(FINISHED);
+            var finished2 = daoTask.GetProperty<bool?>(FINISHED);
+
+            if (finished1 != null && finished2 != null)
+            {
+                TaskInfo.SetProperty(FINISHED, finished1);
+            }
+
             successProcessed = thirdpartyTask.GetProperty<int>(PROCESSED) + daoTask.GetProperty<int>(PROCESSED);
 
             var progressSteps = ThirdPartyOperation.Total + DaoOperation.Total + 1;

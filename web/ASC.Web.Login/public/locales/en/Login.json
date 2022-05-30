@@ -15,7 +15,7 @@
   "PasswordRecoveryTitle": "Password recovery",
   "Register": "Register",
   "RegisterSendButton": "Send request",
-  "RegisterTextBodyAfterDomainsList": "To register, enter your email and click Send request. An activation link will be sent to you.  ",
+  "RegisterTextBodyAfterDomainsList": "To register, enter your email and click Send request. An activation link will be sent to you.",
   "RegisterTextBodyBeforeDomainsList": "Registration is available to users with an email account at",
   "RegisterTitle": "Registration request",
   "RegistrationEmail": "Your registration email",

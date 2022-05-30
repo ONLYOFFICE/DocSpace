@@ -108,9 +108,11 @@ const MainButtonMobile = (props) => {
 
   const [isOpen, setIsOpen] = useState(opened);
   const [isUploading, setIsUploading] = useState(false);
-  const [height, setHeight] = useState("calc(100% - 48px)");
+  const [height, setHeight] = useState(window.innerHeight - 48 + "px");
 
   const divRef = useRef();
+  const ref = useRef();
+  const dropDownRef = useRef();
 
   useEffect(() => {
     if (opened !== isOpen) {
@@ -118,18 +120,25 @@ const MainButtonMobile = (props) => {
     }
   }, [opened]);
 
-  useEffect(() => {
+  const recalculateHeight = () => {
     let height =
       divRef?.current?.getBoundingClientRect()?.height || window.innerHeight;
 
     height >= window.innerHeight
-      ? setHeight("calc(100% - 48px)")
+      ? setHeight(window.innerHeight - 48 + "px")
       : setHeight(height + "px");
+  };
+
+  useEffect(() => {
+    recalculateHeight();
   }, [isOpen, isOpenButton, window.innerHeight, isUploading]);
 
-  const ref = useRef();
-
-  const dropDownRef = useRef();
+  useEffect(() => {
+    window.addEventListener("resize", recalculateHeight);
+    return () => {
+      window.removeEventListener("resize", recalculateHeight);
+    };
+  }, [recalculateHeight]);
 
   const toggle = (isOpen) => {
     if (isOpenButton && onClose) {

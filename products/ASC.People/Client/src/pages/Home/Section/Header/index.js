@@ -20,7 +20,6 @@ import { combineUrl } from "@appserver/common/utils";
 import TableGroupMenu from "@appserver/components/table-container/TableGroupMenu";
 
 const StyledContainer = styled.div`
-  margin-bottom: 6px;
   .group-button-menu-container {
     margin: 0 -20px;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -83,6 +82,12 @@ const StyledContainer = styled.div`
           padding: 8px 16px 8px 16px;
           margin-right: -16px;
         }
+      }
+    }
+
+    .headline-header {
+      @media ${tablet} {
+        padding: 4px 0;
       }
     }
   }

@@ -27,7 +27,7 @@ import SortDesc from "../../../../../../../../../../public/images/sort.desc.reac
 const paddingCss = css`
   @media ${desktop} {
     margin-left: 1px;
-    padding-right: 3px;
+    padding-right: 0px;
   }
 
   @media ${tablet} {
