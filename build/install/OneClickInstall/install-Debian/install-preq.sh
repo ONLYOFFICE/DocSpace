@@ -56,7 +56,7 @@ rm packages-microsoft-prod.deb
 #install kafka
 PRODUCT_DIR="/var/www/${product}"
 if [ "$(ls "$PRODUCT_DIR/services/kafka" 2> /dev/null)" == "" ]; then
-	mkdir -p ${PRODUCT_DIR}/services/
+	mkdir -p ${PRODUCT_DIR}/services/kafka/
 	if ! cat /etc/passwd | grep -q "onlyoffice"; then
 		adduser --quiet --home ${PRODUCT_DIR} --system onlyoffice
 	fi
