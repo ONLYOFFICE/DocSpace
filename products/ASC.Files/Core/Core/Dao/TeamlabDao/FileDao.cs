@@ -1550,6 +1550,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     protected IQueryable<DbFileQuery> FromQueryWithShared(IQueryable<DbFile> dbFiles, FilesDbContext filesDbContext = null)
     {
+        filesDbContext ??= FilesDbContext;
         var cId = _authContext.CurrentAccount.ID;
 
         return from r in dbFiles

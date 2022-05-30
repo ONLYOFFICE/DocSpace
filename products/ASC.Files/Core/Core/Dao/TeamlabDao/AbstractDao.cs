@@ -101,10 +101,9 @@ public class AbstractDao
 
     protected internal IQueryable<DbFile>  GetFileQuery(Expression<Func<DbFile, bool>> where, FilesDbContext filesDbContext = null)
     {
-        var query = Query(filesDbContext.Files)
+        filesDbContext ??= FilesDbContext;
+        return Query(filesDbContext.Files)
             .Where(where);
-
-        return query;
     }
 
     protected async Task GetRecalculateFilesCountUpdateAsync(int folderId)
