@@ -404,17 +404,59 @@ public class FileStorageService<T> //: IFileStorageService
     {
         ArgumentNullException.ThrowIfNull(title, nameof(title));
 
+        var parentId = await _globalFolderHelper.GetFolderVirtualRooms<T>();
+
         return roomType switch
         {
-            RoomType.CustomRoom => await CreateCustomRoom(title),
-            _ => await CreateCustomRoom(title),
+            RoomType.CustomRoom => await CreateCustomRoom(title, parentId),
+            _ => await CreateCustomRoom(title, parentId),
         };
     }
 
-    private async Task<Folder<T>> CreateCustomRoom(string title)
+    public async Task<Folder<T>> CreateThirdpartyRoomAsync(string title, RoomType roomType, T parentId)
     {
-        var parentId = await _globalFolderHelper.GetFolderVirtualRooms<T>();
+        ArgumentNullException.ThrowIfNull(title, nameof(title));
+        ArgumentNullException.ThrowIfNull(parentId, nameof(parentId));
 
+        var folderDao = GetFolderDao();
+        var providerDao = GetProviderDao();
+
+        var parent = await folderDao.GetFolderAsync(parentId);
+        var providerInfo = await providerDao.GetProviderInfoAsync(parent.ProviderId);
+
+        if (providerInfo.RootFolderType != FolderType.VirtualRooms)
+        {
+            throw new InvalidOperationException("Invalid provider type");
+        }
+
+        if (providerInfo.FolderId != null)
+        {
+            throw new InvalidOperationException("This provider already corresponds to the virtual room");
+        }
+
+        var room = roomType switch
+        {
+            RoomType.CustomRoom => await CreateCustomRoom(title, parentId),
+            _ => await CreateCustomRoom(title, parentId),
+        };
+
+        var folderType = roomType switch
+        {
+            RoomType.CustomRoom => FolderType.CustomRoom,
+            RoomType.ReviewRoom => FolderType.ReviewRoom,
+            RoomType.EditingRoom => FolderType.EditingRoom,
+            RoomType.FillingFormsRoom => FolderType.FillingFormsRoom,
+            RoomType.ReadOnlyRoom => FolderType.ReadOnlyRoom,
+            _ => FolderType.CustomRoom
+        };
+
+        await providerDao.UpdateProviderInfoAsync(providerInfo.ID, room.Id.ToString(), folderType);
+
+        return room;
+    }
+
+    private async Task<Folder<T>> CreateCustomRoom(string title, T parentId)
+    {
         return await InternalCreateNewFolderAsync(parentId, title, FolderType.CustomRoom);
     }
 

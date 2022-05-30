@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Files.Core.ApiModels.ResponseDto;
+
 namespace ASC.Files.Api;
 
 [ConstraintRoute("int")]
@@ -39,13 +41,21 @@ public class VirtualRoomsThirdpartyController : VirtualRoomsController<string>
     public VirtualRoomsThirdpartyController(FoldersControllerHelper<string> foldersControllerHelper, FileStorageService<string> fileStorageService, FolderDtoHelper folderDtoHelper, GlobalFolderHelper globalFolderHelper, FileOperationDtoHelper fileOperationDtoHelper, SecurityControllerHelper<string> securityControllerHelper, CoreBaseSettings coreBaseSettings, AuthContext authContext, RoomLinksService roomLinksManager, CustomTagsService<string> customTagsService) : base(foldersControllerHelper, fileStorageService, folderDtoHelper, globalFolderHelper, fileOperationDtoHelper, securityControllerHelper, coreBaseSettings, authContext, roomLinksManager, customTagsService)
     {
     }
+
+    [Create("rooms/{id}")]
+    public async Task<FolderDto<string>> CreateThirdpartyRoomAsync(string id, CreateRoomRequestDto inDto)
+    {
+        ErrorIfNotDocSpace();
+
+        var room = await _fileStorageService.CreateThirdpartyRoomAsync(inDto.Title, inDto.RoomType, id);
+
+        return await _folderDtoHelper.GetAsync(room);
+    }
 }
 
 public abstract class VirtualRoomsController<T> : ApiControllerBase
 {
     private readonly FoldersControllerHelper<T> _foldersControllerHelper;
-    private readonly FileStorageService<T> _fileStorageService;
-    private readonly FolderDtoHelper _folderDtoHelper;
     private readonly GlobalFolderHelper _globalFolderHelper;
     private readonly FileOperationDtoHelper _fileOperationDtoHelper;
     private readonly SecurityControllerHelper<T> _securityControllerHelper;
@@ -53,6 +63,8 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     private readonly AuthContext _authContext;
     private readonly RoomLinksService _roomLinksManager;
     private readonly CustomTagsService<T> _customTagsService;
+    protected readonly FileStorageService<T> _fileStorageService;
+    protected readonly FolderDtoHelper _folderDtoHelper;
 
     protected VirtualRoomsController(FoldersControllerHelper<T> foldersControllerHelper, FileStorageService<T> fileStorageService, FolderDtoHelper folderDtoHelper, GlobalFolderHelper globalFolderHelper, FileOperationDtoHelper fileOperationDtoHelper, SecurityControllerHelper<T> securityControllerHelper, CoreBaseSettings coreBaseSettings, AuthContext authContext, RoomLinksService roomLinksManager, CustomTagsService<T> customTagsService)
     {
@@ -171,7 +183,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         return await _folderDtoHelper.GetAsync(room);
     }
 
-    private void ErrorIfNotDocSpace()
+    protected void ErrorIfNotDocSpace()
     {
         if (_coreBaseSettings.DisableDocSpace)
         {
