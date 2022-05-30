@@ -161,8 +161,8 @@ const Table = ({
   );
 };
 
-export default inject(({ filesStore, infoPanelStore, auth }) => {
-  const { isVisible: infoPanelVisible } = infoPanelStore;
+export default inject(({ filesStore, auth }) => {
+  const { isVisible: infoPanelVisible } = auth.infoPanelStore;
 
   const {
     filesList,
