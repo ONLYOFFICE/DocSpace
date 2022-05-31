@@ -147,6 +147,11 @@ const StyledArticleHeader = styled.div`
     padding: 16px 16px 17px;
     margin: 0;
     justify-content: ${(props) => (props.showText ? "flex-start" : "center")};
+
+    height: 61px;
+    min-height: 61px;
+    max-height: 61px;
+    box-sizing: border-box;
   }
 
   @media ${mobile} {
@@ -204,7 +209,7 @@ const StyledHeading = styled(Heading)`
 const StyledIconBox = styled.div`
   display: none;
   align-items: center;
-  height: 28px;
+  height: 20px;
 
   @media ${tablet} {
     display: flex;

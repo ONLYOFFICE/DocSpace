@@ -198,6 +198,8 @@ const EditingWrapperComponent = (props) => {
   const [CancelIconIsHovered, setIsHoveredCancel] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  const inputRef = React.useRef(null);
+
   const onKeyUpUpdateItem = (e) => {
     if (isLoading) return;
 
@@ -228,6 +230,8 @@ const EditingWrapperComponent = (props) => {
     )
       return false;
 
+    if (!document.hasFocus() && inputRef.current === e.target) return false;
+
     !passwordEntryProcess && onClickUpdateItem(e, false);
   };
 
@@ -256,6 +260,7 @@ const EditingWrapperComponent = (props) => {
           isDisabled={isLoading}
           data-itemid={itemId}
           withBorder={!isTable}
+          forwardedRef={inputRef}
         />
       )}
       {!isUpdatingRowItem && (
