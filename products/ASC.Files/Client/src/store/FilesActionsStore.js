@@ -10,6 +10,7 @@ import {
   markAsRead,
   removeFiles,
   removeShareFiles,
+  createFolder,
 } from "@appserver/common/api/files";
 import {
   ConflictResolveType,
@@ -106,6 +107,76 @@ class FilesActionStore {
       this.dialogsStore.setIsFolderActions(false);
       return setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
     });
+  };
+
+  convertToTree = (folders) => {
+    let result = [];
+    let level = { result };
+    try {
+      folders.forEach((folder) => {
+        folder.path
+          .split("/")
+          .filter((name) => name !== "")
+          .reduce((r, name, i, a) => {
+            if (!r[name]) {
+              r[name] = { result: [] };
+              r.result.push({ name, children: r[name].result });
+            }
+
+            return r[name];
+          }, level);
+      });
+    } catch (e) {
+      console.error("convertToTree", e);
+    }
+    return result;
+  };
+
+  createFolderTree = async (treeList, parentFolderId) => {
+    if (!treeList || !treeList.length) return;
+
+    for (let i = 0; i < treeList.length; i++) {
+      const treeNode = treeList[i];
+
+      // console.log(
+      //   `createFolderTree parent id = ${parentFolderId} name '${treeNode.name}': `,
+      //   treeNode.children
+      // );
+
+      const folder = await createFolder(parentFolderId, treeNode.name);
+      const parentId = folder.id;
+
+      if (treeNode.children.length == 0) continue;
+
+      await this.createFolderTree(treeNode.children, parentId);
+    }
+  };
+
+  uploadEmptyFolders = async (emptyFolders, folderId) => {
+    //console.log("uploadEmptyFolders", emptyFolders, folderId);
+
+    const { secondaryProgressDataStore } = this.uploadDataStore;
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = secondaryProgressDataStore;
+
+    const toFolderId = folderId ? folderId : this.selectedFolderStore.id;
+
+    setSecondaryProgressBarData({
+      icon: "file",
+      visible: true,
+      percent: 0,
+      label: "",
+      alert: false,
+    });
+
+    const tree = this.convertToTree(emptyFolders);
+    await this.createFolderTree(tree, toFolderId);
+
+    this.updateCurrentFolder(null, [folderId]);
+
+    setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
   };
 
   deleteAction = async (

@@ -27,6 +27,7 @@ const Item = ({
   onBadgeClick,
   showDragItems,
   startUpload,
+  uploadEmptyFolders,
   setDragging,
 }) => {
   const [isDragActive, setIsDragActive] = React.useState(false);
@@ -41,9 +42,18 @@ const Item = ({
   const onDropZoneUpload = React.useCallback(
     (files, uploadToFolder) => {
       dragging && setDragging(false);
-      startUpload(files, uploadToFolder, t);
+      const emptyFolders = files.filter((f) => f.isEmptyDirectory);
+
+      if (emptyFolders.length > 0) {
+        uploadEmptyFolders(emptyFolders, uploadToFolder).then(() => {
+          const onlyFiles = files.filter((f) => !f.isEmptyDirectory);
+          if (onlyFiles.length > 0) startUpload(onlyFiles, uploadToFolder, t);
+        });
+      } else {
+        startUpload(files, uploadToFolder, t);
+      }
     },
-    [t, dragging, setDragging, startUpload]
+    [t, dragging, setDragging, startUpload, uploadEmptyFolders]
   );
 
   const onDrop = React.useCallback(
@@ -118,6 +128,7 @@ const Items = ({
   dragging,
   setDragging,
   startUpload,
+  uploadEmptyFolders,
 
   isAdmin,
   myId,
@@ -273,6 +284,7 @@ const Items = ({
             t={t}
             setDragging={setDragging}
             startUpload={startUpload}
+            uploadEmptyFolders={uploadEmptyFolders}
             item={item}
             dragging={dragging}
             getFolderIcon={getFolderIcon}
@@ -301,6 +313,7 @@ const Items = ({
       showText,
       setDragging,
       startUpload,
+      uploadEmptyFolders,
     ]
   );
 
@@ -337,7 +350,7 @@ export default inject(
     } = treeFoldersStore;
 
     const { id } = selectedFolderStore;
-
+    const { moveDragItems, uploadEmptyFolders } = filesActionsStore;
     return {
       isAdmin: auth.isAdmin,
       myId: myFolderId,
@@ -352,8 +365,9 @@ export default inject(
       dragging,
       setDragging,
       setStartDrag,
-      moveDragItems: filesActionsStore.moveDragItems,
+      moveDragItems,
       startUpload,
+      uploadEmptyFolders,
     };
   }
 )(withTranslation(["Home", "Common", "Translations"])(observer(Items)));
