@@ -1,5 +1,7 @@
 {
-  "port": 9899,
-  "appsettings": "../../../config",
-  "environment": "Development"
+	"app":{
+	  "port": 9899,
+	  "appsettings": "../../../config",
+	  "environment": "Development"
+	}
 }
