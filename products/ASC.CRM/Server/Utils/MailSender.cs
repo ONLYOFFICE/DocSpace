@@ -39,7 +39,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 
 using ASC.Common;
-using ASC.Common.Logging;
 using ASC.Common.Threading;
 using ASC.Common.Threading.Progress;
 using ASC.Core;
@@ -57,7 +56,7 @@ using MailKit.Net.Smtp;
 using MailKit.Security;
 
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 using MimeKit;
 
@@ -72,7 +71,7 @@ namespace ASC.Web.CRM.Classes
     public class SendBatchEmailsOperation : DistributedTaskProgress, IProgressItem, IDisposable
     {
         private bool _storeInHistory;
-        private readonly ILog _log;
+        private readonly ILogger _log;
         private readonly SMTPServerSetting _smtpSetting;
         private readonly Guid _currUser;
         private readonly int _tenantID;
@@ -99,7 +98,7 @@ namespace ASC.Web.CRM.Classes
 
         public SendBatchEmailsOperation(
               TenantUtil tenantUtil,
-              IOptionsMonitor<ILog> logger,
+              ILogger logger,
               SecurityContext securityContext,
               TenantManager tenantManager,
               UserManager userManager,
@@ -115,7 +114,7 @@ namespace ASC.Web.CRM.Classes
 
             Percentage = 0;
 
-            _log = logger.Get("ASC.CRM.MailSender");
+            _log = logger;
 
             _tenantID = tenantManager.GetCurrentTenant().Id;
 
@@ -297,7 +296,7 @@ namespace ASC.Web.CRM.Classes
 
                         mimeMessage.Headers.Add("Auto-Submitted", "auto-generated");
 
-                        _log.Debug(GetLoggerRow(mimeMessage));
+                        _log.LogDebug(GetLoggerRow(mimeMessage));
 
                         var success = false;
 
@@ -309,7 +308,7 @@ namespace ASC.Web.CRM.Classes
                         }
                         catch (SmtpCommandException ex)
                         {
-                            _log.Error(Error, ex);
+                            _log.LogError(ex.ToString());
 
                             Error += string.Format(CRMCommonResource.MailSender_FailedDeliverException, recipientEmail) + "<br/>";
                         }
@@ -343,7 +342,7 @@ namespace ASC.Web.CRM.Classes
                 }
                 catch (OperationCanceledException)
                 {
-                    _log.Debug("cancel mail sender");
+                    _log.LogDebug("cancel mail sender");
                 }
                 finally
                 {
@@ -363,7 +362,7 @@ namespace ASC.Web.CRM.Classes
             catch (SocketException e)
             {
                 Error = e.Message;
-                _log.Error(Error);
+                _log.LogError(e.ToString());
             }
             finally
             {
@@ -447,7 +446,7 @@ namespace ASC.Web.CRM.Classes
         {
             IsCompleted = true;
             Percentage = 100;
-            _log.Debug("Completed");
+            _log.LogDebug("Completed");
         }
 
         public override bool Equals(object obj)
@@ -480,7 +479,7 @@ namespace ASC.Web.CRM.Classes
         private readonly SendBatchEmailsOperation _sendBatchEmailsOperation;
         private readonly int _tenantID;
         private readonly CoreConfiguration _coreConfiguration;
-        private readonly IOptionsMonitor<ILog> _logManager;
+        private readonly ILogger _logger;
 
 
         public MailSender(
@@ -490,14 +489,14 @@ namespace ASC.Web.CRM.Classes
                           IDistributedTaskQueueFactory factory,
                           SendBatchEmailsOperation sendBatchEmailsOperation,
                           CoreConfiguration coreConfiguration,
-                          IOptionsMonitor<ILog> logger
+                          ILogger logger
             )
         {
             _sendBatchEmailsOperation = sendBatchEmailsOperation;
             _tenantID = tenantManager.GetCurrentTenant().Id;
             _mailQueue = factory.CreateQueue<SendBatchEmailsOperation>();
             _coreConfiguration = coreConfiguration;
-            _logManager = logger;
+            _logger = logger;
 
             int parsed;
 
@@ -575,8 +574,6 @@ namespace ASC.Web.CRM.Classes
 
         public void StartSendTestMail(string recipientEmail, string mailSubj, string mailBody)
         {
-            var log = _logManager.Get("ASC.CRM.MailSender");
-
             if (!recipientEmail.TestEmailRegex())
             {
                 throw new Exception(string.Format(CRMCommonResource.MailSender_InvalidEmail, recipientEmail));
@@ -617,7 +614,7 @@ namespace ASC.Web.CRM.Classes
                 }
                 catch (Exception ex)
                 {
-                    log.Error(ex);
+                    _logger.LogError(ex.ToString());
                 }
             });
         }

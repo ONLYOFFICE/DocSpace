@@ -33,7 +33,6 @@ using System.Text.RegularExpressions;
 
 using ASC.Common;
 using ASC.Common.Caching;
-using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.Settings;
@@ -48,7 +47,7 @@ using ASC.Web.CRM.Core.Search;
 using AutoMapper;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 using SecurityContext = ASC.Core.SecurityContext;
 
@@ -78,7 +77,7 @@ namespace ASC.CRM.Core.Dao
             TenantManager tenantManager,
             SecurityContext securityContext,
             FactoryIndexerInvoice factoryIndexer,
-            IOptionsMonitor<ILog> logger,
+            ILogger logger,
             ICache ascCache,
             SettingsManager settingsManager,
             InvoiceSetting invoiceSetting,
@@ -385,7 +384,7 @@ namespace ASC.CRM.Core.Dao
 
                 if (privateCount > countWithoutPrivate)
                 {
-                    _logger.ErrorFormat(@"Private invoice count more than all cases. Tenant: {0}. CurrentAccount: {1}",
+                    _logger.LogError(@"Private invoice count more than all cases. Tenant: {0}. CurrentAccount: {1}",
                                                             TenantID,
                                                             _securityContext.CurrentAccount.ID);
 
@@ -581,7 +580,7 @@ namespace ASC.CRM.Core.Dao
             var invoice = GetByIDFromDb(invoiceid);
             if (invoice == null)
             {
-                _logger.Error("Invoice not found");
+                _logger.LogError("Invoice not found");
 
                 return null;
             }
@@ -589,7 +588,7 @@ namespace ASC.CRM.Core.Dao
 
             if (!invoiceStatusMap.Contains(new KeyValuePair<InvoiceStatus, InvoiceStatus>(invoice.Status, status)))
             {
-                _logger.ErrorFormat("Status for invoice with ID={0} can't be changed. Return without changes", invoiceid);
+                _logger.LogError("Status for invoice with ID={0} can't be changed. Return without changes", invoiceid);
 
                 return invoice;
             }
