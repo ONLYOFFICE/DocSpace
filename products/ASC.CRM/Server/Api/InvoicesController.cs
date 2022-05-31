@@ -103,7 +103,7 @@ namespace ASC.CRM.Api
         /// <short>Get invoice by ID</short> 
         /// <category>Invoices</category>
         /// <returns>Invoice</returns>
-        [Read(@"invoice/{invoiceid:int}")]
+        [HttpGet(@"invoice/{invoiceid:int}")]
         public InvoiceDto GetInvoiceByID(int invoiceid)
         {
             if (invoiceid <= 0) throw new ArgumentException();
@@ -125,7 +125,7 @@ namespace ASC.CRM.Api
         /// <short>Get invoice sample</short> 
         /// <category>Invoices</category>
         /// <returns>Invoice</returns>
-        [Read(@"invoice/sample")]
+        [HttpGet(@"invoice/sample")]
         public InvoiceDto GetInvoiceSample()
         {
             var crmSettings = _settingsManager.Load<CrmSettings>();
@@ -153,7 +153,7 @@ namespace ASC.CRM.Api
         /// <short>Get invoice json data</short> 
         /// <category>Invoices</category>
         /// <returns>Json Data</returns>
-        [Read(@"invoice/jsondata/{invoiceid:int}")]
+        [HttpGet(@"invoice/jsondata/{invoiceid:int}")]
         public string GetInvoiceJsonData(int invoiceid)
         {
             var invoice = _daoFactory.GetInvoiceDao().GetByID(invoiceid);
@@ -181,7 +181,7 @@ namespace ASC.CRM.Api
         /// <short>Get invoice list</short> 
         /// <category>Invoices</category>
         /// <returns>Invoice list</returns>
-        [Read(@"invoice/filter")]
+        [HttpGet(@"invoice/filter")]
         public IEnumerable<InvoiceBaseDto> GetInvoices(
             InvoiceStatus? status,
             ApiDateTime issueDateFrom,
@@ -285,7 +285,7 @@ namespace ASC.CRM.Api
         /// <short>Get entity invoices</short> 
         /// <category>Invoices</category>
         /// <returns>Invoice list</returns>
-        [Read(@"{entityType:regex(contact|person|company|opportunity)}/invoicelist/{entityid:int}")]
+        [HttpGet(@"{entityType:regex(contact|person|company|opportunity)}/invoicelist/{entityid:int}")]
         public IEnumerable<InvoiceBaseDto> GetEntityInvoices(String entityType, int entityid)
         {
             if (String.IsNullOrEmpty(entityType) || entityid <= 0) throw new ArgumentException();
@@ -301,7 +301,7 @@ namespace ASC.CRM.Api
         /// <short>Update invoice group status</short> 
         /// <category>Invoices</category>
         /// <returns>KeyValuePair of Invoices and InvoiceItems</returns>
-        [Update(@"invoice/status/{status:int}")]
+        [HttpPut(@"invoice/status/{status:int}")]
         public KeyValuePair<IEnumerable<InvoiceBaseDto>, IEnumerable<InvoiceItemDto>> UpdateInvoiceBatchStatus(
             int[] invoiceids,
             InvoiceStatus status
@@ -416,7 +416,7 @@ namespace ASC.CRM.Api
         /// <short>Delete invoice</short> 
         /// <category>Invoices</category>
         /// <returns>Invoice</returns>
-        [Delete(@"invoice/{invoiceid:int}")]
+        [HttpDelete(@"invoice/{invoiceid:int}")]
         public InvoiceBaseDto DeleteInvoice(int invoiceid)
         {
             if (invoiceid <= 0) throw new ArgumentException();
@@ -437,7 +437,7 @@ namespace ASC.CRM.Api
         /// <short>Delete invoice group</short> 
         /// <category>Invoices</category>
         /// <returns>Invoice list</returns>
-        [Delete(@"invoice")]
+        [HttpDelete(@"invoice")]
         public IEnumerable<InvoiceBaseDto> DeleteBatchInvoices(IEnumerable<int> invoiceids)
         {
             if (invoiceids == null || !invoiceids.Any()) throw new ArgumentException();
@@ -501,7 +501,7 @@ namespace ASC.CRM.Api
         /// 
         /// ]]>
         /// </example>
-        [Create(@"invoice")]
+        [HttpPost(@"invoice")]
         public InvoiceDto CreateInvoice(
             CreateOrUpdateInvoiceRequestDto inDto
             )
@@ -672,7 +672,7 @@ namespace ASC.CRM.Api
         /// 
         /// ]]>
         /// </example>
-        [Update(@"invoice/{id:int}")]
+        [HttpPut(@"invoice/{id:int}")]
         public InvoiceDto UpdateInvoice(
             int id,
             CreateOrUpdateInvoiceRequestDto inDto)
@@ -754,7 +754,7 @@ namespace ASC.CRM.Api
         /// <short>Get invoice pdf file</short> 
         /// <category>Invoices</category>
         /// <returns>File</returns>
-        [Read(@"invoice/{invoiceid:int}/pdf")]
+        [HttpGet(@"invoice/{invoiceid:int}/pdf")]
         public Task<FileDto<int>> GetInvoicePdfExistOrCreateAsync(int invoiceid)
         {
             if (invoiceid <= 0) throw new ArgumentException();
@@ -807,7 +807,7 @@ namespace ASC.CRM.Api
         /// <short>Check invoice pdf file</short> 
         /// <category>Invoices</category>
         /// <returns>ConverterData</returns>
-        [Create(@"invoice/converter/data")]
+        [HttpPost(@"invoice/converter/data")]
         public Task<ConverterData> CreateInvoiceConverterDataAsync(
     [FromBody] CreateInvoiceConverterDataRequestDto inDto)
         {
@@ -877,7 +877,7 @@ namespace ASC.CRM.Api
         /// <short>Check invoice existence by number</short> 
         /// <category>Invoices</category>
         /// <returns>IsExist</returns>
-        [Read(@"invoice/bynumber/exist")]
+        [HttpGet(@"invoice/bynumber/exist")]
         public Boolean GetInvoiceByNumberExistence(string number)
         {
             if (String.IsNullOrEmpty(number)) throw new ArgumentException();
@@ -893,7 +893,7 @@ namespace ASC.CRM.Api
         /// <short>Get invoice by number</short> 
         /// <category>Invoices</category>
         /// <returns>Invoice</returns>
-        [Read(@"invoice/bynumber")]
+        [HttpGet(@"invoice/bynumber")]
         public InvoiceDto GetInvoiceByNumber(string number)
         {
             if (String.IsNullOrEmpty(number)) throw new ArgumentException();
@@ -917,7 +917,7 @@ namespace ASC.CRM.Api
         /// <short>Get invoice item list</short> 
         /// <category>Invoices</category>
         /// <returns>InvoiceItem list</returns>
-        [Read(@"invoiceitem/filter")]
+        [HttpGet(@"invoiceitem/filter")]
         public IEnumerable<InvoiceItemDto> GetInvoiceItems(int status, bool? inventoryStock)
         {
             IEnumerable<InvoiceItemDto> result;
@@ -998,7 +998,7 @@ namespace ASC.CRM.Api
         /// <short>Get invoice item by ID</short> 
         /// <category>Invoices</category>
         /// <returns>Invoice Item</returns>
-        [Read(@"invoiceitem/{invoiceitemid:int}")]
+        [HttpGet(@"invoiceitem/{invoiceitemid:int}")]
         public InvoiceItemDto GetInvoiceItemByID(int invoiceitemid)
         {
             if (invoiceitemid <= 0) throw new ArgumentException();
@@ -1024,7 +1024,7 @@ namespace ASC.CRM.Api
         /// <short>Create invoice line</short> 
         /// <category>Invoices</category>
         /// <returns>InvoiceLine</returns>
-        [Create(@"invoiceline")]
+        [HttpPost(@"invoiceline")]
         public InvoiceLineDto CreateInvoiceLine(
             CreateOrUpdateInvoiceLineRequestDto inDto
             )
@@ -1087,7 +1087,7 @@ namespace ASC.CRM.Api
         /// <short>Update invoice line</short>
         /// <category>Invoices</category>
         /// <returns>InvoiceLine</returns>
-        [Update(@"invoiceline/{id:int}")]
+        [HttpPut(@"invoiceline/{id:int}")]
         public InvoiceLineDto UpdateInvoiceLine(int id, CreateOrUpdateInvoiceLineRequestDto inDto)
         {
             int invoiceId = inDto.InvoiceId;
@@ -1140,7 +1140,7 @@ namespace ASC.CRM.Api
         /// <short>Delete invoice line</short> 
         /// <category>Invoices</category>
         /// <returns>Line ID</returns>
-        [Delete(@"invoiceline/{id:int}")]
+        [HttpDelete(@"invoiceline/{id:int}")]
         public int DeleteInvoiceLine(int id)
         {
             var invoiceLine = _daoFactory.GetInvoiceLineDao().GetByID(id);
@@ -1178,7 +1178,7 @@ namespace ASC.CRM.Api
         /// <short>Create invoice item</short> 
         /// <category>Invoices</category>
         /// <returns>InvoiceItem</returns>
-        [Create(@"invoiceitem")]
+        [HttpPost(@"invoiceitem")]
         public InvoiceItemDto CreateInvoiceItem(
             CreateOrUpdateInvoiceItemRequestDto inDto
             )
@@ -1235,7 +1235,7 @@ namespace ASC.CRM.Api
         /// <short>Update invoice item</short>
         /// <category>Invoices</category>
         /// <returns>InvoiceItem</returns>
-        [Update(@"invoiceitem/{id:int}")]
+        [HttpPut(@"invoiceitem/{id:int}")]
         public InvoiceItemDto UpdateInvoiceItem(int id,
          CreateOrUpdateInvoiceItemRequestDto inDto
             )
@@ -1285,7 +1285,7 @@ namespace ASC.CRM.Api
         /// <short>Delete invoice item</short> 
         /// <category>Invoices</category>
         /// <returns>InvoiceItem</returns>
-        [Delete(@"invoiceitem/{id:int}")]
+        [HttpDelete(@"invoiceitem/{id:int}")]
         public InvoiceItemDto DeleteInvoiceItem(int id)
         {
             if (!_crmSecurity.IsAdmin)
@@ -1311,7 +1311,7 @@ namespace ASC.CRM.Api
         /// <short>Delete Invoice item group</short> 
         /// <category>Invoices</category>
         /// <returns>InvoiceItem list</returns>
-        [Delete(@"invoiceitem")]
+        [HttpDelete(@"invoiceitem")]
         public IEnumerable<InvoiceItemDto> DeleteBatchItems(IEnumerable<int> ids)
         {
             if (!_crmSecurity.IsAdmin)
@@ -1335,7 +1335,7 @@ namespace ASC.CRM.Api
         /// <short>Get invoice taxes list</short> 
         /// <category>Invoices</category>
         /// <returns>InvoiceTax list</returns>
-        [Read(@"invoice/tax")]
+        [HttpGet(@"invoice/tax")]
         public IEnumerable<InvoiceTaxDto> GetInvoiceTaxes()
         {
             var responceFromDao = _daoFactory.GetInvoiceTaxDao().GetAll();
@@ -1352,7 +1352,7 @@ namespace ASC.CRM.Api
         /// <short>Create invoice tax</short> 
         /// <category>Invoices</category>
         /// <returns>InvoiceTax</returns>
-        [Create(@"invoice/tax")]
+        [HttpPost(@"invoice/tax")]
         public InvoiceTaxDto CreateInvoiceTax(
          [FromBody] CreateOrUpdateInvoiceTaxRequestDto inDto)
         {
@@ -1391,7 +1391,7 @@ namespace ASC.CRM.Api
         /// <short>Update invoice tax</short>
         /// <category>Invoices</category>
         /// <returns>InvoiceTax</returns>
-        [Update(@"invoice/tax/{id:int}")]
+        [HttpPut(@"invoice/tax/{id:int}")]
         public InvoiceTaxDto UpdateInvoiceTax(
             int id,
             CreateOrUpdateInvoiceTaxRequestDto inDto)
@@ -1430,7 +1430,7 @@ namespace ASC.CRM.Api
         /// <short>Delete invoice tax</short> 
         /// <category>Invoices</category>
         /// <returns>InvoiceTax</returns>
-        [Delete(@"invoice/tax/{id:int}")]
+        [HttpDelete(@"invoice/tax/{id:int}")]
         public InvoiceTaxDto DeleteInvoiceTax(int id)
         {
             if (!_crmSecurity.IsAdmin)
@@ -1454,7 +1454,7 @@ namespace ASC.CRM.Api
         /// <short>Get default invoice settings</short>
         /// <category>Invoices</category>
         /// <returns>InvoiceSetting</returns>
-        [Read(@"invoice/settings")]
+        [HttpGet(@"invoice/settings")]
         public InvoiceSetting GetSettings()
         {
             return _daoFactory.GetInvoiceDao().GetSettings();
@@ -1469,7 +1469,7 @@ namespace ASC.CRM.Api
         /// <short>Save default invoice number</short>
         /// <category>Invoices</category>
         /// <returns>InvoiceSetting</returns>
-        [Update(@"invoice/settings/name")]
+        [HttpPut(@"invoice/settings/name")]
         public InvoiceSetting SaveNumberSettings(
            SaveNumberSettingsRequestDto inDto
             )
@@ -1505,7 +1505,7 @@ namespace ASC.CRM.Api
         /// <short>Save default invoice terms</short>
         /// <category>Invoices</category>
         /// <returns>InvoiceSetting</returns>
-        [Update(@"invoice/settings/terms")]
+        [HttpPut(@"invoice/settings/terms")]
         public InvoiceSetting SaveTermsSettings(string terms)
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
@@ -1521,7 +1521,7 @@ namespace ASC.CRM.Api
         }
 
         /// <visible>false</visible>
-        [Update(@"invoice/{invoiceid:int}/creationdate")]
+        [HttpPut(@"invoice/{invoiceid:int}/creationdate")]
         public void SetInvoiceCreationDate(int invoiceid, ApiDateTime creationDate)
         {
             var dao = _daoFactory.GetInvoiceDao();
@@ -1534,7 +1534,7 @@ namespace ASC.CRM.Api
         }
 
         /// <visible>false</visible>
-        [Update(@"invoice/{invoiceid:int}/lastmodifeddate")]
+        [HttpPut(@"invoice/{invoiceid:int}/lastmodifeddate")]
         public void SetInvoiceLastModifedDate(int invoiceid, ApiDateTime lastModifedDate)
         {
             var dao = _daoFactory.GetInvoiceDao();

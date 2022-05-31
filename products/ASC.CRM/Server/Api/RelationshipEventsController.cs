@@ -115,7 +115,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Event list
         /// </returns>
-        [Read(@"history/filter")]
+        [HttpGet(@"history/filter")]
         public Task<IEnumerable<RelationshipEventDto>> GetHistoryAsync(
             string entityType,
             int entityId,
@@ -230,7 +230,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Event
         /// </returns>
-        [Delete(@"history/{id:int}")]
+        [HttpDelete(@"history/{id:int}")]
         public Task<RelationshipEventDto> DeleteHistoryAsync(int id)
         {
             if (id <= 0) throw new ArgumentException();
@@ -266,7 +266,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///     File info
         /// </returns>
-        [Create(@"{entityType:regex(contact|opportunity|case)}/{entityid:int}/files/text")]
+        [HttpPost(@"{entityType:regex(contact|opportunity|case)}/{entityid:int}/files/text")]
         public Task<FileDto<int>> CreateTextFileAsync(
             [FromRoute] string entityType,
             [FromRoute] int entityid,
@@ -336,7 +336,7 @@ namespace ASC.CRM.Api
         /// <returns>
         /// File info
         /// </returns>
-        [Create(@"{entityType:regex(contact|opportunity|case)}/{entityid:int}/files/upload")]
+        [HttpPost(@"{entityType:regex(contact|opportunity|case)}/{entityid:int}/files/upload")]
         public async Task<FileDto<int>> UploadFileInCRMAsync([FromBody] UploadFileInCRMRequestDto inDto)
         {
             string entityType = inDto.EntityType;
@@ -403,7 +403,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Created event
         /// </returns>
-        [Create(@"history")]
+        [HttpPost(@"history")]
         public RelationshipEventDto AddHistoryTo([FromBody] AddHistoryToRequestDto inDto)
         {
             string entityType = inDto.EntityType;
@@ -534,7 +534,7 @@ namespace ASC.CRM.Api
         /// <param name="fileids">List of IDs of the files</param>
         /// <category>Files</category>
         /// <returns>Entity with the file attached</returns>
-        [Create(@"{entityType:regex(contact|opportunity|case)}/{entityid:int}/files")]
+        [HttpPost(@"{entityType:regex(contact|opportunity|case)}/{entityid:int}/files")]
         public Task<RelationshipEventDto> AttachFilesAsync(
             [FromRoute] string entityType,
             [FromRoute] int entityid,
@@ -591,7 +591,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Root folder ID
         /// </returns>
-        [Read(@"files/root")]
+        [HttpGet(@"files/root")]
         public Task<int> GetRootFolderIDAsync()
         {
             return _daoFactory.GetFileDao().GetRootAsync();
@@ -607,7 +607,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///    File list
         /// </returns>
-        [Read(@"{entityType:regex(contact|opportunity|case)}/{entityid:int}/files")]
+        [HttpGet(@"{entityType:regex(contact|opportunity|case)}/{entityid:int}/files")]
         public IAsyncEnumerable<FileDto<int>> GetFiles(string entityType, int entityid)
         {
             if (entityid <= 0) throw new ArgumentException();
@@ -637,7 +637,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///    File Info
         /// </returns>
-        [Delete(@"files/{fileid:int}")]
+        [HttpDelete(@"files/{fileid:int}")]
         public Task<FileDto<int>> DeleteCRMFileAsync(int fileid)
         {
             if (fileid < 0) throw new ArgumentException();

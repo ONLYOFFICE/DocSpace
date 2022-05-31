@@ -79,7 +79,7 @@ namespace ASC.CRM.Api
         ///   Tag
         /// </returns>
         ///<exception cref="ArgumentException"></exception>
-        [Read(@"{entityType:regex(contact|opportunity|case)}/tag/{entityid:int}")]
+        [HttpGet(@"{entityType:regex(contact|opportunity|case)}/tag/{entityid:int}")]
         public IEnumerable<string> GetEntityTags(string entityType, int entityid)
         {
             if (string.IsNullOrEmpty(entityType) || entityid <= 0) throw new ArgumentException();
@@ -120,7 +120,7 @@ namespace ASC.CRM.Api
         ///   List of contact tags
         /// </returns>
         ///<exception cref="ArgumentException"></exception>
-        [Read(@"contact/{contactid:int}/tag")]
+        [HttpGet(@"contact/{contactid:int}/tag")]
         public IEnumerable<string> GetContactTags(int contactid)
         {
             if (contactid <= 0) throw new ArgumentException();
@@ -141,7 +141,7 @@ namespace ASC.CRM.Api
         ///   Tag
         /// </returns>
         ///<exception cref="ArgumentException"></exception>
-        [Create(@"{entityType:regex(contact|opportunity|case)}/tag")]
+        [HttpPost(@"{entityType:regex(contact|opportunity|case)}/tag")]
         public string CreateTag([FromRoute] string entityType, [FromBody] string tagName)
         {
             if (string.IsNullOrEmpty(tagName)) throw new ArgumentException();
@@ -166,7 +166,7 @@ namespace ASC.CRM.Api
         ///   Tag
         /// </returns>
         ///<exception cref="ArgumentException"></exception>
-        [Read(@"{entityType:regex(contact|opportunity|case)}/tag")]
+        [HttpGet(@"{entityType:regex(contact|opportunity|case)}/tag")]
         public IEnumerable<TagDto> GetAllTags(string entityType)
         {
             if (string.IsNullOrEmpty(entityType)) throw new ArgumentException();
@@ -196,7 +196,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///    Tag
         /// </returns> 
-        [Create(@"{entityType:regex(contact|opportunity|case)}/taglist")]
+        [HttpPost(@"{entityType:regex(contact|opportunity|case)}/taglist")]
         public string AddTagToBatch([FromRoute] string entityType,
                                     [FromBody] AddTagToBatchRequestDto inDto)
         {
@@ -229,7 +229,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///    Tag
         /// </returns> 
-        [Create(@"contact/filter/taglist")]
+        [HttpPost(@"contact/filter/taglist")]
         public string AddTagToBatchContacts(
          [FromBody] AddTagToBatchContactsRequestDto inDto)
         {
@@ -280,7 +280,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///    Tag
         /// </returns> 
-        [Create(@"opportunity/filter/taglist")]
+        [HttpPost(@"opportunity/filter/taglist")]
         public string AddTagToBatchDeals(
          [FromBody]  AddTagToBatchDealsRequestDto inDto)
         {
@@ -326,7 +326,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///    Tag
         /// </returns> 
-        [Create(@"case/filter/taglist")]
+        [HttpPost(@"case/filter/taglist")]
         public string AddTagToBatchCases([FromBody] AddTagToBatchCasesRequestDto inDto)
         {
             var contactid = inDto.ContactId;
@@ -354,7 +354,7 @@ namespace ASC.CRM.Api
         /// <category>Tags</category>
         /// <param name="entityType" remark="Allowed values: contact,opportunity,case">Entity type</param>
         /// <returns>Tags</returns>
-        [Delete(@"{entityType:regex(contact|opportunity|case)}/tag/unused")]
+        [HttpDelete(@"{entityType:regex(contact|opportunity|case)}/tag/unused")]
         public IEnumerable<string> DeleteUnusedTag(string entityType)
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
@@ -380,7 +380,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Tag
         /// </returns> 
-        [Create(@"{entityType:regex(contact|opportunity|case)}/{entityid:int}/tag")]
+        [HttpPost(@"{entityType:regex(contact|opportunity|case)}/{entityid:int}/tag")]
         public string AddTagTo([FromRoute] string entityType, [FromRoute] int entityid, [FromBody] string tagName)
         {
             if (entityid <= 0 || string.IsNullOrEmpty(tagName)) throw new ArgumentException();
@@ -413,7 +413,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Tag
         /// </returns>
-        [Create(@"{entityType:regex(company|person)}/{entityid:int}/tag/group")]
+        [HttpPost(@"{entityType:regex(company|person)}/{entityid:int}/tag/group")]
         public string AddContactTagToGroup([FromRoute] string entityType, [FromRoute] int entityid, [FromBody] string tagName)
         {
             if (entityid <= 0 || string.IsNullOrEmpty(tagName)) throw new ArgumentException();
@@ -501,7 +501,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Tag
         /// </returns>
-        [Delete(@"{entityType:regex(contact|opportunity|case)}/tag")]
+        [HttpDelete(@"{entityType:regex(contact|opportunity|case)}/tag")]
         public string DeleteTag(string entityType, string tagName)
         {
             if (string.IsNullOrEmpty(entityType) || string.IsNullOrEmpty(tagName)) throw new ArgumentException();
@@ -531,7 +531,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Tag
         /// </returns> 
-        [Delete(@"{entityType:regex(contact|opportunity|case)}/{entityid:int}/tag")]
+        [HttpDelete(@"{entityType:regex(contact|opportunity|case)}/{entityid:int}/tag")]
         public string DeleteTagFrom(string entityType, int entityid, string tagName)
         {
             if (string.IsNullOrEmpty(entityType) || entityid <= 0 || string.IsNullOrEmpty(tagName)) throw new ArgumentException();
@@ -567,7 +567,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Tag
         /// </returns>
-        [Delete(@"{entityType:regex(company|person)}/{entityid:int}/tag/group")]
+        [HttpDelete(@"{entityType:regex(company|person)}/{entityid:int}/tag/group")]
         public string DeleteContactTagFromGroup(string entityType, int entityid, string tagName)
         {
             if (entityid <= 0 || string.IsNullOrEmpty(tagName)) throw new ArgumentException();

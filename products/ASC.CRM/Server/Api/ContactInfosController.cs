@@ -75,7 +75,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   List of all available contact categories
         /// </returns>
-        [Read(@"contact/data/{infoType}/category")]
+        [HttpGet(@"contact/data/{infoType}/category")]
         public IEnumerable<string> GetContactInfoCategory(ContactInfoType infoType)
         {
             return Enum.GetNames(ContactInfo.GetCategory(infoType));
@@ -87,7 +87,7 @@ namespace ASC.CRM.Api
         /// <short>Get all contact info types</short> 
         /// <category>Contacts</category>
         /// <returns></returns>
-        [Read(@"contact/data/infoType")]
+        [HttpGet(@"contact/data/infoType")]
         public IEnumerable<string> GetContactInfoType()
         {
             return Enum.GetNames(typeof(ContactInfoType));
@@ -102,7 +102,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Contact information
         /// </returns>
-        [Read(@"contact/{contactid:int}/data")]
+        [HttpGet(@"contact/{contactid:int}/data")]
         public IEnumerable<ContactInfoDto> GetContactInfo(int contactid)
         {
             if (contactid <= 0) throw new ArgumentException();
@@ -127,7 +127,7 @@ namespace ASC.CRM.Api
         /// <category>Contacts</category>
         /// <returns>Contact information</returns>
         ///<exception cref="ArgumentException"></exception>
-        [Read(@"contact/{contactid:int}/data/{id:int}")]
+        [HttpGet(@"contact/{contactid:int}/data/{id:int}")]
         public ContactInfoDto GetContactInfoByID(int contactid, int id)
         {
             if (contactid <= 0 || id <= 0) throw new ArgumentException();
@@ -158,7 +158,7 @@ namespace ASC.CRM.Api
         ///    Contact information
         /// </returns> 
         ///<exception cref="ArgumentException"></exception>
-        [Create(@"contact/{contactid:int}/data")]
+        [HttpPost(@"contact/{contactid:int}/data")]
         public ContactInfoDto CreateContactInfo(
             [FromRoute] int contactid,
             [FromBody] CreateContactInfoRequestDto inDto)
@@ -228,7 +228,7 @@ namespace ASC.CRM.Api
         /// </returns> 
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="ItemNotFoundException"></exception>
-        [Create(@"contact/{contactid:int}/addressdata")]
+        [HttpPost(@"contact/{contactid:int}/addressdata")]
         public ContactInfoDto CreateContactInfoAddress([FromRoute] int contactid, Address address)
         {
             if (contactid <= 0) throw new ArgumentException("Invalid value", "contactid");
@@ -284,7 +284,7 @@ namespace ASC.CRM.Api
         ///   Contact information
         /// </returns>
         /// <visible>false</visible>
-        [Create(@"contact/{contactid:int}/batch")]
+        [HttpPost(@"contact/{contactid:int}/batch")]
         public IEnumerable<ContactInfoDto> CreateBatchContactInfo([FromRoute] int contactid, [FromBody] IEnumerable<ContactInfoDto> items)
         {
             if (contactid <= 0) throw new ArgumentException();
@@ -331,7 +331,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Contact information
         /// </returns>
-        [Update(@"contact/{contactid:int}/data/{id:int}")]
+        [HttpPut(@"contact/{contactid:int}/data/{id:int}")]
         public ContactInfoDto UpdateContactInfo(int id, int contactid, ContactInfoType? infoType, string data, bool? isPrimary, string category)
         {
             if (id <= 0 || string.IsNullOrEmpty(data) || contactid <= 0) throw new ArgumentException();
@@ -393,7 +393,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Contact information
         /// </returns>
-        [Update(@"contact/{contactid:int}/addressdata/{id:int}")]
+        [HttpPut(@"contact/{contactid:int}/addressdata/{id:int}")]
         public ContactInfoDto UpdateContactInfoAddress(int id, int contactid, Address address)
         {
             if (id <= 0) throw new ArgumentException("Invalid value", "id");
@@ -449,7 +449,7 @@ namespace ASC.CRM.Api
         ///   Contact information
         /// </returns>
         /// <visible>false</visible>
-        [Update(@"contact/{contactid:int}/batch")]
+        [HttpPut(@"contact/{contactid:int}/batch")]
         public IEnumerable<ContactInfoDto> UpdateBatchContactInfo(int contactid, IEnumerable<ContactInfoDto> items)
         {
             if (contactid <= 0) throw new ArgumentException();
@@ -492,7 +492,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Contact information
         /// </returns>
-        [Read(@"contact/{contactid:int}/data/{infoType}")]
+        [HttpGet(@"contact/{contactid:int}/data/{infoType}")]
         public IEnumerable<string> GetContactInfo(int contactid, ContactInfoType infoType)
         {
             if (contactid <= 0) throw new ArgumentException();
@@ -516,7 +516,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Contact information
         /// </returns>
-        [Delete(@"contact/{contactid:int}/data/{id:int}")]
+        [HttpDelete(@"contact/{contactid:int}/data/{id:int}")]
         public ContactInfoDto DeleteContactInfo(int contactid, int id)
         {
             if (id <= 0 || contactid <= 0) throw new ArgumentException();
