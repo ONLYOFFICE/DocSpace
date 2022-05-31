@@ -208,20 +208,18 @@ Tile.defaultProps = {
   item: {},
 };
 
-export default inject(
-  ({ filesStore, settingsStore, infoPanelStore }, { item }) => {
-    const { gallerySelected, setGallerySelected } = filesStore;
-    const { getIcon } = settingsStore;
-    const { isVisible, setIsVisible } = infoPanelStore;
+export default inject(({ filesStore, settingsStore, auth }, { item }) => {
+  const { gallerySelected, setGallerySelected } = filesStore;
+  const { getIcon } = settingsStore;
+  const { isVisible, setIsVisible } = auth.infoPanelStore;
 
-    const isSelected = item.id === gallerySelected?.id;
+  const isSelected = item.id === gallerySelected?.id;
 
-    return {
-      isSelected,
-      setGallerySelected,
-      getIcon,
-      setIsInfoPanelVisible: setIsVisible,
-      isInfoPanelVisible: isVisible,
-    };
-  }
-)(withTranslation(["FormGallery", "Common"])(withRouter(observer(Tile))));
+  return {
+    isSelected,
+    setGallerySelected,
+    getIcon,
+    setIsInfoPanelVisible: setIsVisible,
+    isInfoPanelVisible: isVisible,
+  };
+})(withTranslation(["FormGallery", "Common"])(withRouter(observer(Tile))));

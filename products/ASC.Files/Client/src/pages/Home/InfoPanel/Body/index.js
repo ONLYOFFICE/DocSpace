@@ -69,7 +69,11 @@ const InfoPanelBodyContent = ({
       <GalleryEmptyScreen />
     ) : (
       <StyledInfoRoomBody>
-        <GalleryItem selectedItem={gallerySelected} />
+        <GalleryItem
+          selectedItem={gallerySelected}
+          personal={personal}
+          culture={culture}
+        />
       </StyledInfoRoomBody>
     )
   ) : (
