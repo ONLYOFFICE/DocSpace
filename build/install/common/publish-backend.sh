@@ -56,7 +56,7 @@ while [ "$1" != "" ]; do
 done
 
 # Array of names server in directory products
-servers_products_name_backend+=(ASC.Files)
+servers_products_name_backend=(ASC.Files)
 servers_products_name_backend+=(ASC.People)
 
 # Publish server backend products
