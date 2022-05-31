@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Files.Core.ApiModels.ResponseDto;
-
 namespace ASC.Files.Api;
 
 [ConstraintRoute("int")]
@@ -33,6 +31,17 @@ public class VirtualRoomsInternalController : VirtualRoomsController<int>
 {
     public VirtualRoomsInternalController(FoldersControllerHelper<int> foldersControllerHelper, FileStorageService<int> fileStorageService, FolderDtoHelper folderDtoHelper, GlobalFolderHelper globalFolderHelper, FileOperationDtoHelper fileOperationDtoHelper, SecurityControllerHelper<int> securityControllerHelper, CoreBaseSettings coreBaseSettings, AuthContext authContext, RoomLinksService roomLinksManager, CustomTagsService<int> customTagsService) : base(foldersControllerHelper, fileStorageService, folderDtoHelper, globalFolderHelper, fileOperationDtoHelper, securityControllerHelper, coreBaseSettings, authContext, roomLinksManager, customTagsService)
     {
+
+    }
+
+    [Create("rooms")]
+    public async Task<FolderDto<int>> CreateRoomAsync(CreateRoomRequestDto inDto)
+    {
+        ErrorIfNotDocSpace();
+
+        var room = await _fileStorageService.CreateRoomAsync(inDto.Title, inDto.RoomType);
+
+        return await _folderDtoHelper.GetAsync(room);
     }
 }
 
@@ -42,8 +51,8 @@ public class VirtualRoomsThirdpartyController : VirtualRoomsController<string>
     {
     }
 
-    [Create("rooms/{id}")]
-    public async Task<FolderDto<string>> CreateThirdpartyRoomAsync(string id, CreateRoomRequestDto inDto)
+    [Create("rooms/thirdparty/{id}")]
+    public async Task<FolderDto<string>> CreateRoomAsync(string id, CreateRoomRequestDto inDto)
     {
         ErrorIfNotDocSpace();
 
@@ -78,16 +87,6 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         _authContext = authContext;
         _roomLinksManager = roomLinksManager;
         _customTagsService = customTagsService;
-    }
-
-    [Create("rooms")]
-    public async Task<FolderDto<T>> CreateRoomAsync(CreateRoomRequestDto inDto)
-    {
-        ErrorIfNotDocSpace();
-
-        var room = await _fileStorageService.CreateRoomAsync(inDto.Title, inDto.RoomType);
-
-        return await _folderDtoHelper.GetAsync(room);
     }
 
     [Read("rooms/{id}")]
