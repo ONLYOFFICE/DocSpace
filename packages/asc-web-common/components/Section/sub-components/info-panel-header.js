@@ -51,8 +51,10 @@ const StyledInfoPanelToggleWrapper = styled.div`
 `;
 StyledInfoPanelToggleWrapper.defaultProps = { theme: Base };
 
-const SubInfoPanelHeader = ({ children, closeInfoPanel }) => {
+const SubInfoPanelHeader = ({ children, setIsVisible }) => {
   const content = children?.props?.children;
+
+  const closeInfoPanel = () => setIsVisible(false);
 
   return (
     <StyledInfoPanelHeader>
@@ -91,10 +93,7 @@ SubInfoPanelHeader.defaultProps = { theme: Base };
 
 SubInfoPanelHeader.displayName = "SubInfoPanelHeader";
 
-export default inject(({ infoPanelStore }) => {
-  let closeInfoPanel = () => {};
-  if (infoPanelStore) {
-    closeInfoPanel = () => infoPanelStore.setIsVisible(false);
-  }
-  return { closeInfoPanel };
+export default inject(({ auth }) => {
+  const { setIsVisible } = auth.infoPanelStore;
+  return { setIsVisible };
 })(observer(SubInfoPanelHeader));
