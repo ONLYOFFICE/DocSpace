@@ -101,7 +101,6 @@ const stores = {
   selectFolderDialogStore,
   contextOptionsStore,
   hotkeyStore,
-  //infoPanelStore,
   selectFileDialogStore,
 };
 
