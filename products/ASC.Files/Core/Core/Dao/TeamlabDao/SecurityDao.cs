@@ -388,12 +388,13 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
         return q;
     }
 
-    protected ValueTask<List<FileShareRecord>> FromQueryAsync(IQueryable<DbFilesSecurity> filesSecurities)
+    protected async ValueTask<List<FileShareRecord>> FromQueryAsync(IQueryable<DbFilesSecurity> filesSecurities)
     {
-        return filesSecurities
-            .AsAsyncEnumerable()
-            .SelectAwait(async e => await ToFileShareRecordAsync(e))
-            .ToListAsync();
+        var security = await filesSecurities.ToListAsync();
+
+        var records = await security.ToAsyncEnumerable().SelectAwait(async e => await ToFileShareRecordAsync(e)).ToListAsync();
+
+        return records;
     }
 
     private async Task<FileShareRecord> ToFileShareRecordAsync(DbFilesSecurity r)
