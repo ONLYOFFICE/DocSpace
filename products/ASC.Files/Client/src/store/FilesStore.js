@@ -906,7 +906,7 @@ class FilesStore {
           "separator2",
           "delete",
         ]);
-        if (isThirdPartyFolder) {
+        if (isThirdPartyItem) {
           fileOptions = this.removeOptions(fileOptions, ["rename"]);
         }
       }
