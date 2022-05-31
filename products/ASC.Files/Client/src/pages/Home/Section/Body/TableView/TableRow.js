@@ -62,10 +62,15 @@ const StyledTableRow = styled(TableRow)`
         .table-container_file-name-cell {
           margin-left: -24px;
           padding-left: 24px;
+          z-index: 1;
         }
         .table-container_row-context-menu-wrapper {
           margin-right: -20px;
           padding-right: 18px;
+
+          position: relative !important;
+
+          z-index: 1;
         }
       }
     `}
