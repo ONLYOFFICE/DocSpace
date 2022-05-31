@@ -15,7 +15,7 @@
   line-height: 80px;
   font-family: Helvetica Neue, sans-serif;
   background: #f4f4f4;
-  z-index: 9998;
+  z-index: 100;
   -webkit-font-smoothing: antialiased;
   overflow: hidden;
   -webkit-text-size-adjust: none;
