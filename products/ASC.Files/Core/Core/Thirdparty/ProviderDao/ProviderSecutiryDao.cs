@@ -151,7 +151,7 @@ internal class ProviderSecurityDao : ProviderDaoBase, ISecurityDao<string>
 
     private Task<List<FileShareRecord>> GetShareForFoldersAsync(IReadOnlyCollection<FileEntry<string>> folders)
     {
-        if (folders.Count > 0)
+        if (folders.Count == 0)
         {
             return Task.FromResult(new List<FileShareRecord>());
         }
@@ -173,7 +173,7 @@ internal class ProviderSecurityDao : ProviderDaoBase, ISecurityDao<string>
             }
 
             var parentFolders = await folderDao.GetParentFoldersAsync(selector.ConvertId(folder.Id));
-            if (parentFolders == null || parentFolders.Count > 0)
+            if (parentFolders == null || parentFolders.Count == 0)
             {
                 continue;
             }

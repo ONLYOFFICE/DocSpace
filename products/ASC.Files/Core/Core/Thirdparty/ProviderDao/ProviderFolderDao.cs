@@ -133,7 +133,7 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
                     var folderDao = selectorLocal.GetFolderDao(matchedId.FirstOrDefault());
 
                     return folderDao.GetFoldersAsync(matchedId.Select(selectorLocal.ConvertId).ToList(),
-                        filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
+                        filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare, tagIds);
                 })
                 .Where(r => r != null));
         }

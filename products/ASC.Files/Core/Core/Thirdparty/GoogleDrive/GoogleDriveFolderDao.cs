@@ -96,6 +96,8 @@ internal class GoogleDriveFolderDao : GoogleDriveDaoBase, IFolderDao<string>
 
         var folders = GetFoldersAsync(parentId); //TODO:!!!
 
+        folders = FilterByType(folders, filterType);
+
         if (subjectID != Guid.Empty)
         {
             folders = folders.Where(x => subjectGroup
@@ -107,6 +109,8 @@ internal class GoogleDriveFolderDao : GoogleDriveDaoBase, IFolderDao<string>
         {
             folders = folders.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
         }
+
+        folders = FilterByTags(folders, tagIds);
 
         if (orderBy == null)
         {
@@ -138,6 +142,8 @@ internal class GoogleDriveFolderDao : GoogleDriveDaoBase, IFolderDao<string>
 
         var folders = folderIds.ToAsyncEnumerable().SelectAwait(async e => await GetFolderAsync(e).ConfigureAwait(false));
 
+        folders = FilterByType(folders, filterType);
+
         if (subjectID.HasValue && subjectID != Guid.Empty)
         {
             folders = folders.Where(x => subjectGroup
@@ -149,6 +155,8 @@ internal class GoogleDriveFolderDao : GoogleDriveDaoBase, IFolderDao<string>
         {
             folders = folders.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
         }
+
+        folders = FilterByTags(folders, tagIds);
 
         return folders;
     }

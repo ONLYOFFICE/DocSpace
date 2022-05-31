@@ -384,6 +384,34 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         }
     }
 
+    protected IAsyncEnumerable<Folder<string>> FilterByTags(IAsyncEnumerable<Folder<string>> folders, IEnumerable<int> tagIds)
+    {
+        if (tagIds == null || !tagIds.Any())
+        {
+            return folders;
+        }
+
+        var filtered = folders.Join(FilesDbContext.ThirdpartyIdMapping.ToAsyncEnumerable(), f => f.Id, m => m.Id, (folder, map) => new { folder, map.HashId }).
+            Join(FilesDbContext.TagLink.ToAsyncEnumerable(), r => r.HashId, t => t.EntryId, (result, tag) => new { result.folder, tag.TagId })
+                .Where(r => tagIds.Contains(r.TagId))
+                .Select(r => r.folder);
+
+        return filtered;
+    }
+
+    protected IAsyncEnumerable<Folder<string>> FilterByType(IAsyncEnumerable<Folder<string>> folders, FilterType filterType)
+{
+        return filterType switch
+        {
+            FilterType.FillingFormsRoomsOnly => folders.Where(f => f.FolderType == FolderType.FillingFormsRoom),
+            FilterType.EditingRoomsOnly => folders.Where(f => f.FolderType == FolderType.EditingRoom),
+            FilterType.ReviewRoomsOnly => folders.Where(f => f.FolderType == FolderType.ReviewRoom),
+            FilterType.ReadOnlyRoomsOnly => folders.Where(f => f.FolderType == FolderType.ReadOnlyRoom),
+            FilterType.CustomRoomsOnly => folders.Where(f => f.FolderType == FolderType.CustomRoom),
+            _ => folders
+        };
+    }
+
     protected abstract string MakeId(string path = null);
 
 
