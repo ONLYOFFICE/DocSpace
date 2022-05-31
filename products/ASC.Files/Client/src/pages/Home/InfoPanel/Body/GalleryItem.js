@@ -56,7 +56,7 @@ const SingleItem = (props) => {
         <div className="property">
           <Text className="property-title">{t("Home:ByLastModifiedDate")}</Text>
           <Text className="property-content">
-            {parseAndFormatDate(selectedItem.updatedAt)}
+            {parseAndFormatDate(selectedItem.attributes.updatedAt)}
           </Text>
         </div>
         <div className="property">
