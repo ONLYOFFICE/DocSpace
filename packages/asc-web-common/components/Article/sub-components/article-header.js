@@ -42,7 +42,7 @@ const ArticleHeader = ({
   return (
     <StyledArticleHeader showText={showText} {...rest}>
       {isTabletView && (isBurgerLoading || showLoader) ? (
-        <Loaders.ArticleHeader height="20px" />
+        <Loaders.ArticleHeader height="20px" width="20px" />
       ) : (
         <StyledIconBox name="article-burger">
           <StyledMenuIcon onClick={onClick} />
