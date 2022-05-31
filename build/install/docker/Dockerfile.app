@@ -310,7 +310,7 @@ COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Web.St
 CMD ["dotnet", "ASC.Web.Studio.dll", "ASC.Web.Studio"]
 
 ## ASC.SsoAuth ##
-FROM builderNodejs AS ssoauth
+FROM nodeBuild AS ssoauth
 WORKDIR ${BUILD_PATH}/services/ASC.SsoAuth.Svc/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
