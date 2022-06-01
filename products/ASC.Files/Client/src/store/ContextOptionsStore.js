@@ -630,7 +630,156 @@ class ContextOptionsStore {
     return options;
   };
 
+  getGroupContextOptions = (t) => {
+    const { selection } = this.filesStore;
+    const { setDeleteDialogVisible } = this.dialogsStore;
+    const { isRecycleBinFolder } = this.treeFoldersStore;
+
+    const countItems = selection.length;
+    const downloadAs =
+      selection.findIndex((k) => k.contextOptions.includes("download-as")) !==
+      -1;
+
+    const sharingItems = selection.filter(
+      (k) => k.contextOptions.includes("sharing-settings") && k.canShare
+    ).length;
+
+    const favoriteItems = selection.filter((k) =>
+      k.contextOptions.includes("mark-as-favorite")
+    );
+
+    const moveItems = selection.filter((k) =>
+      k.contextOptions.includes("move-to")
+    ).length;
+
+    const copyItems = selection.filter((k) =>
+      k.contextOptions.includes("copy-to")
+    ).length;
+
+    const restoreItems = selection.filter((k) =>
+      k.contextOptions.includes("restore")
+    ).length;
+
+    const removeFromFavoriteItems = selection.filter((k) =>
+      k.contextOptions.includes("remove-from-favorites")
+    );
+
+    const deleteItems = selection.filter((k) =>
+      k.contextOptions.includes("delete")
+    ).length;
+
+    const isRootThirdPartyFolder = selection.some(
+      (x) => x.providerKey && x.id === x.rootFolderId
+    );
+
+    const favoriteItemsIds = favoriteItems.map((item) => item.id);
+    const removeFromFavoriteItemsIds = removeFromFavoriteItems.map(
+      (item) => item.id
+    );
+
+    const options = [
+      {
+        key: "sharing-settings",
+        label: `${t("SharingSettings")} (${sharingItems})`,
+        icon: "/static/images/share.react.svg",
+        onClick: this.onClickShare,
+        disabled: !sharingItems,
+      },
+      {
+        key: "mark-as-favorite",
+        label: `${t("MarkAsFavorite")} (${favoriteItems.length})`,
+        icon: "images/favorites.react.svg",
+        onClick: (e) => this.onClickFavorite(e, favoriteItemsIds, t),
+        disabled: !favoriteItems.length,
+        "data-action": "mark",
+        action: "mark",
+      },
+      {
+        key: "download",
+        label: `${t("Common:Download")} (${countItems})`,
+        icon: "images/download.react.svg",
+        onClick: () =>
+          this.filesActionsStore
+            .downloadAction(t("Translations:ArchivingData"))
+            .catch((err) => toastr.error(err)),
+        disabled: false,
+      },
+      {
+        key: "download-as",
+        label: `${t("Translations:DownloadAs")} (${countItems})`,
+        icon: "images/download-as.react.svg",
+        onClick: this.onClickDownloadAs,
+        disabled: !downloadAs,
+      },
+      {
+        key: "move-to",
+        label: `${t("MoveTo")} (${moveItems})`,
+        icon: "images/move.react.svg",
+        onClick: this.onMoveAction,
+        disabled: isRecycleBinFolder || !moveItems,
+      },
+      {
+        key: "copy-to",
+        label: `${t("Translations:Copy")} (${copyItems})`,
+        icon: "/static/images/copy.react.svg",
+        onClick: this.onCopyAction,
+        disabled: isRecycleBinFolder || !copyItems,
+      },
+      {
+        key: "restore",
+        label: `${t("Common:Restore")} (${restoreItems})`,
+        icon: "images/move.react.svg",
+        onClick: this.onMoveAction,
+        disabled: !isRecycleBinFolder || !restoreItems,
+      },
+      {
+        key: "remove-from-favorites",
+        label: `${t("RemoveFromFavorites")} (${
+          removeFromFavoriteItems.length
+        })`,
+        icon: "images/favorites.react.svg",
+        onClick: (e) => this.onClickFavorite(e, removeFromFavoriteItemsIds, t),
+        disabled: !removeFromFavoriteItems.length,
+        "data-action": "remove",
+        action: "remove",
+      },
+      {
+        key: "delete",
+        label: `${t("Common:Delete")} (${deleteItems})`,
+        icon: "images/trash.react.svg",
+        onClick: () => {
+          if (this.settingsStore.confirmDelete) {
+            setDeleteDialogVisible(true);
+          } else {
+            const translations = {
+              deleteOperation: t("Translations:DeleteOperation"),
+              deleteFromTrash: t("Translations:DeleteFromTrash"),
+              deleteSelectedElem: t("Translations:DeleteSelectedElem"),
+              FileRemoved: t("Home:FileRemoved"),
+              FolderRemoved: t("Home:FolderRemoved"),
+            };
+
+            this.filesActionsStore
+              .deleteAction(translations)
+              .catch((err) => toastr.error(err));
+          }
+        },
+        disabled: !deleteItems || isRootThirdPartyFolder,
+      },
+      {
+        key: "empty-recycle-bin",
+        label: t("EmptyRecycleBin"),
+        icon: "images/trash.react.svg",
+        onClick: () => this.dialogsStore.setEmptyTrashDialogVisible(true),
+        disabled: !isRecycleBinFolder,
+      },
+    ];
+
+    return options;
+  };
+
   getModel = (item, t) => {
+    const { selection } = this.filesStore;
     const { type, id, extension } = this.filesStore.fileActionStore;
     const { fileExst, contextOptions } = item;
 
@@ -638,7 +787,9 @@ class ContextOptionsStore {
 
     const contextOptionsProps =
       !isEdit && contextOptions && contextOptions.length > 0
-        ? this.getFilesContextOptions(item, t)
+        ? selection.length > 1
+          ? this.getGroupContextOptions(t)
+          : this.getFilesContextOptions(item, t)
         : [];
 
     return contextOptionsProps;

@@ -25,7 +25,7 @@ export default function withFileActions(WrappedFileItem) {
       const { onSelectItem } = this.props;
       const { id, isFolder } = this.props.item;
 
-      id !== -1 && onSelectItem({ id, isFolder }, true);
+      id !== -1 && onSelectItem({ id, isFolder } /* , true */);
     };
 
     onHideContextMenu = () => {
