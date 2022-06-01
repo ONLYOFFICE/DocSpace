@@ -471,7 +471,7 @@ class FilesActionStore {
     }
   };
 
-  onSelectItem = ({ id, isFolder }, isBuffer = false) => {
+  onSelectItem = ({ id, isFolder }, isBuffer = false, isSingleFile) => {
     const {
       setBufferSelection,
       selected,
@@ -500,7 +500,7 @@ class FilesActionStore {
           (f) => f.id === id && f.isFolder === isFolder
         );
 
-        if (isSelected === -1) {
+        if (isSelected === -1 || isSingleFile) {
           setSelected("none");
           setSelection([item]);
         }

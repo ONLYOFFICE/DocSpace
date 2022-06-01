@@ -427,7 +427,7 @@ class Tile extends React.PureComponent {
     };
 
     const onContextMenu = (e) => {
-      tileContextClick && tileContextClick();
+      tileContextClick && tileContextClick(e.button === 2);
       if (!this.cm.current.menuRef.current) {
         this.tile.current.click(e); //TODO: need fix context menu to global
       }
