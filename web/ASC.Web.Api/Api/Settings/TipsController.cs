@@ -34,11 +34,11 @@ public class TipsController : BaseSettingsController
     private readonly StudioNotifyHelper _studioNotifyHelper;
     private readonly SettingsManager _settingsManager;
     private readonly SetupInfo _setupInfo;
-    private readonly ILog _log;
+    private readonly ILogger _log;
     private readonly IHttpClientFactory _clientFactory;
 
     public TipsController(
-        IOptionsMonitor<ILog> option,
+        ILoggerProvider option,
         ApiContext apiContext,
         AuthContext authContext,
         StudioNotifyHelper studioNotifyHelper,
@@ -49,7 +49,7 @@ public class TipsController : BaseSettingsController
         IHttpClientFactory clientFactory,
         IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
-        _log = option.Get("ASC.Api");
+        _log = option.CreateLogger("ASC.Api");
         _authContext = authContext;
         _studioNotifyHelper = studioNotifyHelper;
         _settingsManager = settingsManager;
@@ -86,7 +86,7 @@ public class TipsController : BaseSettingsController
             }
             catch (Exception e)
             {
-                _log.Error(e.Message, e);
+                _log.ErrorWithException(e);
             }
         }
 

@@ -46,8 +46,10 @@ public class GoogleCloudStorage : BaseStorage
         PathUtils pathUtils,
         EmailValidationKeyProvider emailValidationKeyProvider,
         IHttpContextAccessor httpContextAccessor,
-            IOptionsMonitor<ILog> options,
-            IHttpClientFactory clientFactory) : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options, clientFactory)
+        ILoggerProvider factory,
+        ILogger<GoogleCloudStorage> options,
+        IHttpClientFactory clientFactory)
+        : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, factory, options, clientFactory)
     {
     }
 

@@ -29,14 +29,14 @@ namespace ASC.Notify.IntegrationEvents.EventHandling;
 [Scope]
 public class NotifyInvokeSendMethodRequestedIntegrationEventHandler : IIntegrationEventHandler<NotifyInvokeSendMethodRequestedIntegrationEvent>
 {
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly IServiceScopeFactory _serviceScopeFactory;
 
     public NotifyInvokeSendMethodRequestedIntegrationEventHandler(
-        IOptionsMonitor<ILog> logger,
+        ILoggerProvider options,
         IServiceScopeFactory serviceScopeFactory)
     {
-        _logger = logger.CurrentValue;
+        _logger = options.CreateLogger("ASC.NotifyService");
         _serviceScopeFactory = serviceScopeFactory;
     }
 
@@ -75,7 +75,7 @@ public class NotifyInvokeSendMethodRequestedIntegrationEventHandler : IIntegrati
 
     public async Task Handle(NotifyInvokeSendMethodRequestedIntegrationEvent @event)
     {
-        _logger.InfoFormat("----- Handling integration event: {IntegrationEventId} at {AppName} - ({@IntegrationEvent})", @event.Id, Program.AppName, @event);
+        _logger.InformationHandlingIntegrationEvent(@event.Id, Program.AppName, @event);
 
         InvokeSendMethod(@event.NotifyInvoke);
 

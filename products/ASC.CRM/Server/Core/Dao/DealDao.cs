@@ -33,7 +33,6 @@ using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Caching;
-using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
@@ -47,7 +46,7 @@ using ASC.Web.CRM.Core.Search;
 using AutoMapper;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 using OrderBy = ASC.CRM.Core.Entities.OrderBy;
 
@@ -71,7 +70,7 @@ namespace ASC.CRM.Core.Dao
                        IDaoFactory daoFactory,
                        TenantUtil tenantUtil,
                        AuthorizationManager authorizationManager,
-                       IOptionsMonitor<ILog> logger,
+                       ILogger logger,
                        ICache ascCache,
                        IMapper mapper,
                        BundleSearch bundleSearch) :
@@ -535,7 +534,7 @@ namespace ASC.CRM.Core.Dao
 
                 if (privateCount > countWithoutPrivate)
                 {
-                    _logger.Error("Private deals count more than all deals");
+                    _logger.LogError("Private deals count more than all deals");
 
                     privateCount = 0;
                 }

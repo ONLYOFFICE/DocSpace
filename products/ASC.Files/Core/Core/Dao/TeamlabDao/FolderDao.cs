@@ -578,10 +578,12 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                     .ToDictionaryAsync(r => r.FolderId, r => r.Level)
                     .ConfigureAwait(false);
 
+#pragma warning disable CA1841 // Prefer Dictionary.Contains methods
                 var toDelete = await FilesDbContext.Tree
                     .AsQueryable()
-                    .Where(r => subfolders.ContainsKey(r.FolderId) && !subfolders.ContainsKey(r.ParentId))
+                    .Where(r => subfolders.Keys.Contains(r.FolderId) && !subfolders.Keys.Contains(r.ParentId))
                     .ToListAsync();
+#pragma warning restore CA1841 // Prefer Dictionary.Contains methods
 
                 FilesDbContext.Tree.RemoveRange(toDelete);
                 await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);

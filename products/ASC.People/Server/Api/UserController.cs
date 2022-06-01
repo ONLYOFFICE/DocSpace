@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System.Security.Claims;
-
 using Module = ASC.Api.Core.Module;
 using SecurityContext = ASC.Core.SecurityContext;
 
@@ -41,7 +39,7 @@ public class UserController : PeopleControllerBase
     private readonly CustomNamingPeople _customNamingPeople;
     private readonly EmployeeDtoHelper _employeeDtoHelper;
     private readonly EmployeeFullDtoHelper _employeeFullDtoHelper;
-    private readonly ILog _logger;
+    private readonly ILogger<UserController> _logger;
     private readonly PasswordHasher _passwordHasher;
     private readonly QueueWorkerReassign _queueWorkerReassign;
     private readonly QueueWorkerRemove _queueWorkerRemove;
@@ -70,7 +68,7 @@ public class UserController : PeopleControllerBase
         CustomNamingPeople customNamingPeople,
         EmployeeDtoHelper employeeDtoHelper,
         EmployeeFullDtoHelper employeeFullDtoHelper,
-        ILog logger,
+        ILogger<UserController> logger,
         PasswordHasher passwordHasher,
         QueueWorkerReassign queueWorkerReassign,
         QueueWorkerRemove queueWorkerRemove,
@@ -400,7 +398,7 @@ public class UserController : PeopleControllerBase
         }
         catch (Exception error)
         {
-            _logger.Error(error);
+            _logger.ErrorGetAdvanced(error);
         }
 
         return null;
@@ -452,7 +450,7 @@ public class UserController : PeopleControllerBase
             }
             else
             {
-                _logger.Error(string.Format("Account {0} сould not get user by name {1}", _securityContext.CurrentAccount.ID, username));
+                _logger.ErrorCouldNotGetUserByName(_securityContext.CurrentAccount.ID, username);
             }
         }
 
@@ -532,7 +530,7 @@ public class UserController : PeopleControllerBase
         }
         catch (Exception error)
         {
-            _logger.Error(error);
+            _logger.ErrorGetSearch(error);
         }
 
         return null;
@@ -750,7 +748,7 @@ public class UserController : PeopleControllerBase
         var error = _userManagerWrapper.SendUserPassword(inDto.Email);
         if (!string.IsNullOrEmpty(error))
         {
-            _logger.ErrorFormat("Password recovery ({0}): {1}", inDto.Email, error);
+            _logger.ErrorPasswordRecovery(inDto.Email, error);
         }
 
         return string.Format(Resource.MessageYourPasswordSendedToEmail, inDto.Email);
@@ -1141,7 +1139,7 @@ public class UserController : PeopleControllerBase
                 }
                 catch (Exception ex)
                 {
-                    _logger.Debug($"ERROR write to template_unsubscribe {ex.Message}, email:{inDto.Email.ToLowerInvariant()}");
+                    _logger.DebugWriteToTemplateUnsubscribe(inDto.Email.ToLowerInvariant(), ex);
                 }
             }
 

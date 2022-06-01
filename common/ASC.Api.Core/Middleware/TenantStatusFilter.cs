@@ -30,11 +30,11 @@ namespace ASC.Api.Core.Middleware;
 public class TenantStatusFilter : IResourceFilter
 {
     private readonly TenantManager _tenantManager;
-    private readonly ILog _logger;
+    private readonly ILogger<TenantStatusFilter> _logger;
     private readonly string[] _passthroughtRequestEndings = new[] { "preparation-portal", "getrestoreprogress", "settings", "settings.json" }; //TODO add or update when "preparation-portal" will be done
 
 
-    public TenantStatusFilter(ILog logger, TenantManager tenantManager)
+    public TenantStatusFilter(ILogger<TenantStatusFilter> logger, TenantManager tenantManager)
     {
         _logger = logger;
         _tenantManager = tenantManager;
@@ -48,7 +48,7 @@ public class TenantStatusFilter : IResourceFilter
         if (tenant == null)
         {
             context.Result = new StatusCodeResult((int)HttpStatusCode.NotFound);
-            _logger.Warn("Current tenant not found");
+            _logger.WarningTenantNotFound();
 
             return;
         }
@@ -56,7 +56,7 @@ public class TenantStatusFilter : IResourceFilter
         if (tenant.Status == TenantStatus.RemovePending || tenant.Status == TenantStatus.Suspended)
         {
             context.Result = new StatusCodeResult((int)HttpStatusCode.NotFound);
-            _logger.WarnFormat("Tenant {0} is not removed or suspended", tenant.Id);
+            _logger.WarningTenantIsNotRemoved(tenant.Id);
 
             return;
         }
@@ -68,7 +68,7 @@ public class TenantStatusFilter : IResourceFilter
                 return;
             }
             context.Result = new StatusCodeResult((int)HttpStatusCode.Forbidden);
-            _logger.WarnFormat("Tenant {0} is {1}", tenant.Id, tenant.Status);
+            _logger.WarningTenantStatus(tenant.Id, tenant.Status);
             return;
         }
     }

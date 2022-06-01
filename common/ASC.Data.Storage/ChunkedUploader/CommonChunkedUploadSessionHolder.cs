@@ -32,7 +32,7 @@ public class CommonChunkedUploadSessionHolder
 
     public static readonly TimeSpan SlidingExpiration = TimeSpan.FromHours(12);
     private readonly TempPath _tempPath;
-    private readonly IOptionsMonitor<ILog> _option;
+    private readonly ILogger _logger;
     private readonly string _domain;
     private readonly long _maxChunkUploadSize;
 
@@ -40,13 +40,13 @@ public class CommonChunkedUploadSessionHolder
 
     public CommonChunkedUploadSessionHolder(
         TempPath tempPath,
-        IOptionsMonitor<ILog> option,
+        ILogger logger,
         IDataStore dataStore,
         string domain,
         long maxChunkUploadSize = 10 * 1024 * 1024)
     {
         _tempPath = tempPath;
-        _option = option;
+        _logger = logger;
         DataStore = dataStore;
         _domain = domain;
         _maxChunkUploadSize = maxChunkUploadSize;
@@ -61,7 +61,7 @@ public class CommonChunkedUploadSessionHolder
         }
         catch (Exception err)
         {
-            _option.CurrentValue.Error(err);
+            _logger.ErrorDeleteExpired(err);
         }
     }
 

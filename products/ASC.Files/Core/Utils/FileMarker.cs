@@ -31,16 +31,16 @@ public class FileMarkerHelper<T>
 {
     public const string CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME = "file_marker";
     private readonly IServiceProvider _serviceProvider;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     public DistributedTaskQueue Tasks { get; set; }
 
     public FileMarkerHelper(
         IServiceProvider serviceProvider,
-        IOptionsMonitor<ILog> optionsMonitor,
+        ILogger<FileMarkerHelper<T>> logger,
         IDistributedTaskQueueFactory queueFactory)
     {
         _serviceProvider = serviceProvider;
-        _logger = optionsMonitor.CurrentValue;
+        _logger = logger;
         Tasks = queueFactory.CreateQueue(CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME);
     }
 
@@ -59,7 +59,7 @@ public class FileMarkerHelper<T>
         }
         catch (Exception e)
         {
-            _logger.Error(e);
+            _logger.ErrorExecMarkFileAsNew(e);
         }
     }
 }

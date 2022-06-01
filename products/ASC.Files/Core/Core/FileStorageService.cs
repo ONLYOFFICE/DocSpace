@@ -78,7 +78,7 @@ public class FileStorageService<T> //: IFileStorageService
     private readonly IEventBus _eventBus;
     
     private readonly EntryStatusManager _entryStatusManager;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
 
     public FileStorageService(
         Global global,
@@ -94,7 +94,7 @@ public class FileStorageService<T> //: IFileStorageService
         CustomNamingPeople customNamingPeople,
         DisplayUserSettingsHelper displayUserSettingsHelper,
         IHttpContextAccessor httpContextAccessor,
-        IOptionsMonitor<ILog> optionMonitor,
+        ILoggerProvider optionMonitor,
         PathProvider pathProvider,
         FileSecurity fileSecurity,
         SocketManager socketManager,
@@ -162,7 +162,7 @@ public class FileStorageService<T> //: IFileStorageService
         _consumerFactory = consumerFactory;
         _encryptionKeyPairHelper = encryptionKeyPairHelper;
         _settingsManager = settingsManager;
-        _logger = optionMonitor.Get("ASC.Files");
+        _logger = optionMonitor.CreateLogger("ASC.Files");
         _fileOperationsManager = fileOperationsManager;
         _tenantManager = tenantManager;
         _fileTracker = fileTracker;
@@ -1716,7 +1716,7 @@ public class FileStorageService<T> //: IFileStorageService
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error("DocEditor", ex);
+                    _logger.ErrorDocEditor(ex);
                     throw;
                 }
 
@@ -1760,7 +1760,7 @@ public class FileStorageService<T> //: IFileStorageService
             //move common thirdparty storage userFrom
             foreach (var commonProviderInfo in commonProvidersInfo)
             {
-                _logger.InfoFormat("Reassign provider {0} from {1} to {2}", commonProviderInfo.ID, userFrom.Id, userTo.Id);
+                _logger.InformationReassignProvider(commonProviderInfo.ID, userFrom.Id, userTo.Id);
                 await providerDao.UpdateProviderInfoAsync(commonProviderInfo.ID, null, null, FolderType.DEFAULT, userTo.Id);
             }
         }
@@ -1808,7 +1808,7 @@ public class FileStorageService<T> //: IFileStorageService
             //delete thirdparty storage
             foreach (var myProviderInfo in providersInfo)
             {
-                _logger.InfoFormat("Delete provider {0} for {1}", myProviderInfo.ID, userId);
+                _logger.InformationDeleteProvider(myProviderInfo.ID, userId);
                 await providerDao.RemoveProviderInfoAsync(myProviderInfo.ID);
             }
         }
@@ -2501,9 +2501,9 @@ public class FileStorageService<T> //: IFileStorageService
     public IEnumerable<JsonElement> CreateThumbnails(List<JsonElement> fileIds)
     {
         try
-        {            
+        {
             var (fileIntIds, _) = FileOperationsManager.GetIds(fileIds);
-                        
+
             _eventBus.Publish(new ThumbnailRequestedIntegrationEvent(Guid.Empty, _tenantManager.GetCurrentTenant().Id)
             {
                  BaseUrl = _baseCommonLinkUtility.GetFullAbsolutePath(""),
@@ -2513,7 +2513,7 @@ public class FileStorageService<T> //: IFileStorageService
         }
         catch (Exception e)
         {
-            _logger.Error("CreateThumbnails", e);
+            _logger.ErrorCreateThumbnails(e);
         }
 
         return fileIds;
@@ -2580,11 +2580,11 @@ public class FileStorageService<T> //: IFileStorageService
     {
         if (warning)
         {
-            _logger.Info(error);
+            _logger.Information(error.ToString());
         }
         else
         {
-            _logger.Error(error);
+            _logger.ErrorFileStorageService(error);
         }
 
         return new InvalidOperationException(error.Message, error);

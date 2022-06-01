@@ -46,8 +46,8 @@ public class AscCacheNotify
     public void OnClearCache()
     {
         _cache.Reset();
+        }
     }
-}
 
 [Singletone]
 public class AscCache : ICache

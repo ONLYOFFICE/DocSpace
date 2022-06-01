@@ -30,7 +30,7 @@ namespace ASC.Notify.Services;
 public class NotifySenderService : BackgroundService
 {
     private readonly DbWorker _db;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly NotifyServiceCfg _notifyServiceCfg;
     private readonly NotifyConfiguration _notifyConfiguration;
     private readonly IServiceScopeFactory _scopeFactory;
@@ -40,9 +40,9 @@ public class NotifySenderService : BackgroundService
         NotifyConfiguration notifyConfiguration,
         DbWorker dbWorker,
         IServiceScopeFactory scopeFactory,
-        IOptionsMonitor<ILog> options)
+        ILoggerProvider options)
     {
-        _logger = options.Get("ASC.NotifySender");
+        _logger = options.CreateLogger("ASC.NotifySender");
         _notifyServiceCfg = notifyServiceCfg.Value;
         _notifyConfiguration = notifyConfiguration;
         _db = dbWorker;
@@ -51,7 +51,7 @@ public class NotifySenderService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.Info("Notify Sender Service running.");
+        _logger.InformationNotifySenderRunning();
 
         stoppingToken.Register(() => _logger.Debug("NotifySenderService background task is stopping."));
 
@@ -78,16 +78,16 @@ public class NotifySenderService : BackgroundService
             await ThreadManagerWork(stoppingToken);
         }
 
-        _logger.Info("Notify Sender Service is stopping.");
+        _logger.InformationNotifySenderStopping();
     }
 
     private void InitializeNotifySchedulers()
     {
         _notifyConfiguration.Configure();
-    
+
         foreach (var pair in _notifyServiceCfg.Schedulers.Where(r => r.MethodInfo != null))
         {
-            _logger.DebugFormat("Start scheduler {0} ({1})", pair.Name, pair.MethodInfo);
+            _logger.DebugStartScheduler(pair.Name, pair.MethodInfo);
             pair.MethodInfo.Invoke(null, null);
         }
     }
@@ -123,7 +123,7 @@ public class NotifySenderService : BackgroundService
         }
         catch (Exception e)
         {
-            _logger.Error(e);
+            _logger.ErrorThreadManagerWork(e);
         }
     }
 
@@ -151,12 +151,12 @@ public class NotifySenderService : BackgroundService
                         result = MailSendingState.FatalError;
                     }
 
-                    _logger.DebugFormat("Notify #{0} has been sent.", m.Key);
+                    _logger.DebugNotify(m.Key);
                 }
                 catch (Exception e)
                 {
                     result = MailSendingState.FatalError;
-                    _logger.Error(e);
+                    _logger.ErrorWithException(e);
                 }
 
                 _db.SetState(m.Key, result);
@@ -168,7 +168,7 @@ public class NotifySenderService : BackgroundService
         }
         catch (Exception e)
         {
-            _logger.Error(e);
+            _logger.ErrorSendMessages(e);
         }
     }
 }

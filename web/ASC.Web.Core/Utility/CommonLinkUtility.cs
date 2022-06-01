@@ -74,7 +74,7 @@ public class CommonLinkUtility : BaseCommonLinkUtility
         WebItemManagerSecurity webItemManagerSecurity,
         WebItemManager webItemManager,
         EmailValidationKeyProvider emailValidationKeyProvider,
-        IOptionsMonitor<ILog> options,
+        ILoggerProvider options,
         CommonLinkUtilitySettings settings) :
         this(null, coreBaseSettings, coreSettings, tenantManager, userManager, webItemManagerSecurity, webItemManager, emailValidationKeyProvider, options, settings)
     {
@@ -89,7 +89,7 @@ public class CommonLinkUtility : BaseCommonLinkUtility
         WebItemManagerSecurity webItemManagerSecurity,
         WebItemManager webItemManager,
         EmailValidationKeyProvider emailValidationKeyProvider,
-        IOptionsMonitor<ILog> options,
+        ILoggerProvider options,
         CommonLinkUtilitySettings settings) :
         base(httpContextAccessor, coreBaseSettings, coreSettings, tenantManager, options, settings) =>
         (_userManager, _webItemManagerSecurity, _webItemManager, _emailValidationKeyProvider) = (userManager, webItemManagerSecurity, webItemManager, emailValidationKeyProvider);

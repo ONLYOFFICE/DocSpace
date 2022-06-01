@@ -30,12 +30,12 @@ namespace ASC.MessagingSystem.Models;
 public class MessageTarget
 {
     private IEnumerable<string> _items;
-    private readonly ILog _logger;
-    private readonly IOptionsMonitor<ILog> _option;
+    private readonly ILogger _logger;
+    private readonly ILoggerProvider _option;
 
-    public MessageTarget(IOptionsMonitor<ILog> option)
+    public MessageTarget(ILoggerProvider option)
     {
-        _logger = option.Get("ASC.Messaging");
+        _logger = option.CreateLogger("ASC.Messaging");
         _option = option;
     }
 
@@ -61,7 +61,7 @@ public class MessageTarget
         }
         catch (Exception e)
         {
-            _logger.Error("EventMessageTarget exception", e);
+            _logger.ErrorEventMessageTarget(e);
 
             return null;
         }
@@ -79,7 +79,7 @@ public class MessageTarget
         }
         catch (Exception e)
         {
-            _logger.Error("EventMessageTarget exception", e);
+            _logger.ErrorEventMessageTarget(e);
 
             return null;
         }

@@ -29,20 +29,20 @@ namespace ASC.Data.Backup.IntegrationEvents.EventHandling;
 [Scope]
 public class BackupDeleteScheldureRequestedIntegrationEventHandler : IIntegrationEventHandler<IntegrationEvent>
 {
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly BackupService _backupService;
 
     public BackupDeleteScheldureRequestedIntegrationEventHandler(
-        IOptionsMonitor<ILog> logger,
+        ILogger<BackupDeleteScheldureRequestedIntegrationEventHandler> logger,
         BackupService backupService)
     {
-        _logger = logger.CurrentValue;
+        _logger = logger;
         _backupService = backupService;
     }
 
     public async Task Handle(IntegrationEvent @event)
     {
-        _logger.InfoFormat("----- Handling integration event: {IntegrationEventId} at {AppName} - ({@IntegrationEvent})", @event.Id, Program.AppName, @event);
+        _logger.InformationHandlingIntegrationEvent(@event.Id, Program.AppName, @event);
 
         _backupService.DeleteSchedule(@event.TenantId);
 

@@ -41,7 +41,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
         TenantUtil tenantUtil,
         DbContextManager<FilesDbContext> dbContextManager,
         SetupInfo setupInfo,
-        IOptionsMonitor<ILog> monitor,
+        ILogger<SharpBoxFolderDao> monitor,
         FileUtility fileUtility,
         CrossDao crossDao,
         SharpBoxDaoSelector sharpBoxDaoSelector,

@@ -119,7 +119,7 @@ public class SecurityController : BaseSettingsController
     }
 
     [HttpPut("security/password")]
-    public PasswordSettings UpdatePasswordSettings(PasswordSettingsModel model)
+    public PasswordSettings UpdatePasswordSettings(PasswordSettingsRequestsDto model)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 

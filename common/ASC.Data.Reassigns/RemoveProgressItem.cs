@@ -70,7 +70,7 @@ public class RemoveProgressItem : DistributedTaskProgress
         using var scope = _serviceScopeFactory.CreateScope();
         var scopeClass = scope.ServiceProvider.GetService<RemoveProgressItemScope>();
         var (tenantManager, coreBaseSettings, messageService, studioNotifyService, securityContext, userManager, messageTarget, webItemManagerSecurity, storageFactory, userFormatter, options) = scopeClass;
-        var logger = options.Get("ASC.Web");
+        var logger = options.CreateLogger("ASC.Web");
         tenantManager.SetCurrentTenant(_tenantId);
         var userName = userFormatter.GetUserName(User, DisplayUserNameFormat.Default);
 
@@ -84,9 +84,9 @@ public class RemoveProgressItem : DistributedTaskProgress
             long crmSpace;
             GetUsageSpace(webItemManagerSecurity, out var docsSpace, out var mailSpace, out var talkSpace);
 
-            logger.InfoFormat("deleting user data for {0} ", FromUser);
+            logger.LogInformation("deleting user data for {fromUser} ", FromUser);
 
-            logger.Info("deleting of data from documents");
+            logger.LogInformation("deleting of data from documents");
 
             //_docService.DeleteStorage(_userId);
             Percentage = 25;
@@ -94,7 +94,7 @@ public class RemoveProgressItem : DistributedTaskProgress
 
             if (!coreBaseSettings.CustomMode)
             {
-                logger.Info("deleting of data from crm");
+                logger.LogInformation("deleting of data from crm");
 
 
                 //using (var scope = DIHelper.Resolve(_tenantId))
@@ -112,13 +112,13 @@ public class RemoveProgressItem : DistributedTaskProgress
 
             PublishChanges();
 
-            logger.Info("deleting of data from mail");
+            logger.LogInformation("deleting of data from mail");
 
             //_mailEraser.ClearUserMail(_userId);
             Percentage = 75;
             PublishChanges();
 
-            logger.Info("deleting of data from talk");
+            logger.LogInformation("deleting of data from talk");
             DeleteTalkStorage(storageFactory);
             Percentage = 99;
             PublishChanges();
@@ -130,14 +130,14 @@ public class RemoveProgressItem : DistributedTaskProgress
         }
         catch (Exception ex)
         {
-            logger.Error(ex);
+            logger.ErrorRemoveProgressItem(ex);
             Status = DistributedTaskStatus.Failted;
             Exception = ex;
             SendErrorNotify(studioNotifyService, ex.Message, userName);
         }
         finally
         {
-            logger.Info("data deletion is complete");
+            logger.LogInformation("data deletion is complete");
             IsCompleted = true;
             PublishChanges();
         }
@@ -257,7 +257,7 @@ public class RemoveProgressItemScope
     private readonly WebItemManagerSecurity _webItemManagerSecurity;
     private readonly StorageFactory _storageFactory;
     private readonly UserFormatter _userFormatter;
-    private readonly IOptionsMonitor<ILog> _options;
+    private readonly ILoggerProvider _options;
 
     public RemoveProgressItemScope(TenantManager tenantManager,
         CoreBaseSettings coreBaseSettings,
@@ -269,7 +269,7 @@ public class RemoveProgressItemScope
         WebItemManagerSecurity webItemManagerSecurity,
         StorageFactory storageFactory,
         UserFormatter userFormatter,
-        IOptionsMonitor<ILog> options)
+        ILoggerProvider options)
     {
         _tenantManager = tenantManager;
         _coreBaseSettings = coreBaseSettings;
@@ -294,7 +294,7 @@ public class RemoveProgressItemScope
         out WebItemManagerSecurity webItemManagerSecurity,
         out StorageFactory storageFactory,
         out UserFormatter userFormatter,
-        out IOptionsMonitor<ILog> optionsMonitor)
+        out ILoggerProvider optionsMonitor)
     {
         tenantManager = _tenantManager;
         coreBaseSettings = _coreBaseSettings;

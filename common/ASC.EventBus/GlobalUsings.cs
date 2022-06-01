@@ -32,6 +32,8 @@ global using System.Threading.Tasks;
 global using ASC.EventBus.Abstractions;
 global using ASC.EventBus.Events;
 
+global using Microsoft.Extensions.Logging;
+
 global using ProtoBuf;
 global using ProtoBuf.Meta;
 

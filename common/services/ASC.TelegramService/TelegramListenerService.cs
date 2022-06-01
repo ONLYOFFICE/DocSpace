@@ -29,7 +29,7 @@ namespace ASC.TelegramService;
 [Singletone]
 public class TelegramListenerService : BackgroundService
 {
-    private readonly ILog _logger;
+    private readonly ILogger<TelegramHandler> _logger;
     private readonly ICacheNotify<RegisterUserProto> _cacheRegisterUser;
     private readonly ICacheNotify<CreateClientProto> _cacheCreateClient;
     private readonly ICacheNotify<DisableClientProto> _cacheDisableClient;
@@ -41,7 +41,7 @@ public class TelegramListenerService : BackgroundService
     public TelegramListenerService(
         ICacheNotify<RegisterUserProto> cacheRegisterUser,
         ICacheNotify<CreateClientProto> cacheCreateClient,
-        IOptionsMonitor<ILog> logger,
+        ILogger<TelegramHandler> logger,
         TelegramHandler telegramHandler,
         ICacheNotify<DisableClientProto> cacheDisableClient,
         TenantManager tenantManager,
@@ -53,13 +53,13 @@ public class TelegramListenerService : BackgroundService
         _telegramLoginProvider = consumerFactory.Get<TelegramLoginProvider>();
         _tenantManager = tenantManager;
         _telegramHandler = telegramHandler;
-        _logger = logger.CurrentValue;
+        _logger = logger;
     }
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _stoppingToken = stoppingToken;
-         
+
         CreateClients();
 
         _cacheRegisterUser.Subscribe(n => RegisterUser(n), CacheNotifyAction.Insert);
@@ -68,7 +68,7 @@ public class TelegramListenerService : BackgroundService
 
         stoppingToken.Register(() =>
         {
-            _logger.Debug("TelegramListenerService background task is stopping.");
+            _logger.DebugTelegramStopping();
 
             _cacheRegisterUser.Unsubscribe(CacheNotifyAction.Insert);
             _cacheCreateClient.Unsubscribe(CacheNotifyAction.Insert);
@@ -100,7 +100,7 @@ public class TelegramListenerService : BackgroundService
         foreach (var tenant in tenants)
         {
             _tenantManager.SetCurrentTenant(tenant);
-        
+
             if (_telegramLoginProvider.IsEnabled())
             {
                 _telegramHandler.CreateOrUpdateClientForTenant(tenant.Id, _telegramLoginProvider.TelegramBotToken, _telegramLoginProvider.TelegramAuthTokenLifespan, _telegramLoginProvider.TelegramProxy, true, _stoppingToken, true);

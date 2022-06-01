@@ -33,7 +33,7 @@ public class FactoryIndexerFolder : FactoryIndexer<DbFolder>
     private readonly Settings _settings;
 
     public FactoryIndexerFolder(
-        IOptionsMonitor<ILog> options,
+        ILoggerProvider options,
         TenantManager tenantManager,
         SearchSettingsHelper searchSettingsHelper,
         FactoryIndexer factoryIndexer,
@@ -144,7 +144,7 @@ public class FactoryIndexerFolder : FactoryIndexer<DbFolder>
         }
         catch (Exception e)
         {
-            Logger.Error(e);
+            Logger.ErrorFactoryIndexerFolder(e);
             throw;
         }
     }

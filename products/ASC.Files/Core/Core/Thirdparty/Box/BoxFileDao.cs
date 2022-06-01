@@ -42,7 +42,7 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
         TenantUtil tenantUtil,
         DbContextManager<FilesDbContext> dbContextManager,
         SetupInfo setupInfo,
-        IOptionsMonitor<ILog> monitor,
+        ILogger<BoxFileDao> monitor,
         FileUtility fileUtility,
         CrossDao crossDao,
         BoxDaoSelector boxDaoSelector,

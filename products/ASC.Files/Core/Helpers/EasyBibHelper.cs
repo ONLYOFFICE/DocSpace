@@ -29,7 +29,7 @@ namespace ASC.Web.Files.Helpers;
 [Scope]
 public class EasyBibHelper : Consumer
 {
-    public ILog Logger { get; set; }
+    public ILogger Logger { get; set; }
 
     static readonly string _searchBookUrl = "https://worldcat.citation-api.com/query?search=",
                     _searchJournalUrl = "https://crossref.citation-api.com/query?search=",
@@ -49,7 +49,7 @@ public class EasyBibHelper : Consumer
     public EasyBibHelper() { }
 
     public EasyBibHelper(
-        IOptionsMonitor<ILog> option,
+        ILogger<EasyBibHelper> logger,
         TenantManager tenantManager,
         CoreBaseSettings coreBaseSettings,
         CoreSettings coreSettings,
@@ -63,7 +63,7 @@ public class EasyBibHelper : Consumer
         Dictionary<string, string> additional = null)
         : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, factory, name, order, props, additional)
     {
-        Logger = option.CurrentValue;
+        Logger = logger;
         _requestHelper = requestHelper;
     }
 

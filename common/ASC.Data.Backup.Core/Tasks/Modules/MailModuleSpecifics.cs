@@ -32,7 +32,7 @@ internal class MailModuleSpecifics : ModuleSpecificsBase
     public override IEnumerable<TableInfo> Tables => _tables;
     public override IEnumerable<RelationInfo> TableRelations => _tableRelations;
 
-    private readonly ILog _logger;
+    private readonly ILogger<ModuleProvider> _logger;
     private readonly Helpers _helpers;
 
     private readonly TableInfo[] _tables = new[]
@@ -91,7 +91,7 @@ internal class MailModuleSpecifics : ModuleSpecificsBase
             new RelationInfo("mail_mailbox_server", "id", "mail_mailbox", "id_in_server")
         };
 
-    public MailModuleSpecifics(ILog logger, Helpers helpers) : base(helpers)
+    public MailModuleSpecifics(ILogger<ModuleProvider> logger, Helpers helpers) : base(helpers)
     {
         _logger = logger;
         _helpers = helpers;
@@ -123,7 +123,7 @@ internal class MailModuleSpecifics : ModuleSpecificsBase
                 }
                 catch (Exception ex)
                 {
-                    _logger.ErrorFormat("Can not prepare data {0}: {1}", row[address] as string, ex);
+                    _logger.ErrorCanNotPrepareData(row[address] as string, ex);
                     data.Rows.Remove(row);
                     i--;
                 }
@@ -292,7 +292,7 @@ internal class MailModuleSpecifics : ModuleSpecificsBase
             }
             catch (Exception err)
             {
-                _logger.ErrorFormat("Can not prepare value {0}: {1}", value, err);
+                _logger.ErrorCanNotPrepareValue(value, err);
                 value = null;
             }
 

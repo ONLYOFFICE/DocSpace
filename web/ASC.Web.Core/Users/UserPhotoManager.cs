@@ -201,7 +201,7 @@ public class UserPhotoManager
     private readonly StorageFactory _storageFactory;
     private readonly UserPhotoManagerCache _userPhotoManagerCache;
     private readonly SettingsManager _settingsManager;
-    private readonly ILog _log;
+    private readonly ILogger<UserPhotoManager> _log;
 
     private Tenant _tenant;
     public Tenant Tenant { get { return _tenant ??= _tenantManager.GetCurrentTenant(); } }
@@ -215,7 +215,7 @@ public class UserPhotoManager
         TenantManager tenantManager,
         StorageFactory storageFactory,
         UserPhotoManagerCache userPhotoManagerCache,
-        ILog<UserPhotoManager> logger,
+        ILogger<UserPhotoManager> logger,
         IDistributedTaskQueueFactory queueFactory,
         SettingsManager settingsManager)
     {
@@ -514,7 +514,7 @@ public class UserPhotoManager
                 }
                 catch (Exception err)
                 {
-                    _log.Error(err);
+                    _log.ErrorLoadDiskCache(err);
                 }
             }
         }
@@ -540,7 +540,7 @@ public class UserPhotoManager
         }
         catch (DirectoryNotFoundException e)
         {
-            _log.Error(e);
+            _log.ErrorRemovePhoto(e);
         }
 
         _userManager.SaveUserPhoto(idUser, null);
@@ -904,7 +904,7 @@ public class UserPhotoManager
         }
         catch (Exception err)
         {
-            _log.Error(err);
+            _log.ErrorGetUserPhotoData(err);
             return null;
         }
     }

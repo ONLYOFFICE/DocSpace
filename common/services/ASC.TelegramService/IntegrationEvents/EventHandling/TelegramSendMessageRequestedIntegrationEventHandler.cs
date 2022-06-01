@@ -29,7 +29,7 @@ namespace ASC.TelegramService.IntegrationEvents.EventHandling;
 [Scope]
 public class TelegramSendMessageRequestedIntegrationEventHandler : IIntegrationEventHandler<NotifySendTelegramMessageRequestedIntegrationEvent>
 {
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly TelegramHandler _telegramHandler;
 
     private TelegramSendMessageRequestedIntegrationEventHandler() : base()
@@ -38,17 +38,17 @@ public class TelegramSendMessageRequestedIntegrationEventHandler : IIntegrationE
     }
 
     public TelegramSendMessageRequestedIntegrationEventHandler(
-        IOptionsMonitor<ILog> logger,
+        ILogger<TelegramSendMessageRequestedIntegrationEventHandler> logger,
         TelegramHandler telegramHandler
       )
     {
-        _logger = logger.CurrentValue;
+        _logger = logger;
         _telegramHandler = telegramHandler;
     }
 
     public async Task Handle(NotifySendTelegramMessageRequestedIntegrationEvent @event)
     {
-        _logger.InfoFormat("----- Handling integration event: {IntegrationEventId} at {AppName} - ({@IntegrationEvent})", @event.Id, Program.AppName, @event);
+        _logger.InformationHandlingIntegrationEvent(@event.Id, Program.AppName, @event);
 
         await _telegramHandler.SendMessage(@event.NotifyMessage);
     }

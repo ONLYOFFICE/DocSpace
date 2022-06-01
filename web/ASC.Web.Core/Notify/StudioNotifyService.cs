@@ -47,7 +47,7 @@ public class StudioNotifyService
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
     private readonly SettingsManager _settingsManager;
     private readonly WebItemSecurity _webItemSecurity;
-    private readonly ILog _log;
+    private readonly ILogger _log;
 
     public StudioNotifyService(
         UserManager userManager,
@@ -63,9 +63,9 @@ public class StudioNotifyService
         DisplayUserSettingsHelper displayUserSettingsHelper,
         SettingsManager settingsManager,
         WebItemSecurity webItemSecurity,
-        IOptionsMonitor<ILog> option)
+        ILoggerProvider option)
     {
-        _log = option.Get("ASC.Notify");
+        _log = option.CreateLogger("ASC.Notify");
         _client = studioNotifyServiceHelper;
         _tenantExtra = tenantExtra;
         _authentication = authentication;
@@ -539,7 +539,7 @@ public class StudioNotifyService
             }
             catch (Exception ex)
             {
-                _log.Error(ex);
+                _log.ErrorSendMsgProfileHasDeletedItself(ex);
             }
         });
 
@@ -761,7 +761,7 @@ public class StudioNotifyService
         }
         catch (Exception error)
         {
-            _log.Error(error);
+            _log.ErrorSendCongratulations(error);
         }
     }
 
@@ -858,7 +858,7 @@ public class StudioNotifyService
         }
         catch (Exception ex)
         {
-            _log.Error(ex);
+            _log.ErrorPortalRenameNotify(ex);
         }
     }
 
@@ -924,7 +924,7 @@ public class StudioNotifyService
         }
         catch (Exception error)
         {
-            _log.Error(error);
+            _log.ErrorSendRegData(error);
         }
     }
 

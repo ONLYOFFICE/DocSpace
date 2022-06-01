@@ -72,17 +72,18 @@ public class BackupProgressItem : BaseBackupProgressItem
     private BackupStorageFactory _backupStorageFactory;
     private BackupRepository _backupRepository;
     private BackupPortalTask _backupPortalTask;
-
+    private readonly ILogger<BackupProgressItem> _logger;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly NotifyHelper _notifyHelper;
 
     public BackupProgressItem(
-        ILog logger,
+        ILogger<BackupProgressItem> logger,
         IServiceScopeFactory serviceProvider,
         CoreBaseSettings coreBaseSettings,
         NotifyHelper notifyHelper)
         : base(logger, serviceProvider)
     {
+        _logger = logger;
         _coreBaseSettings = coreBaseSettings;
         _notifyHelper = notifyHelper;
     }
@@ -193,7 +194,7 @@ public class BackupProgressItem : BaseBackupProgressItem
         }
         catch (Exception error)
         {
-            Logger.ErrorFormat("RunJob - Params: {0}, Error = {1}", new { Id, Tenant = TenantId, File = tempFile, BasePath = _storageBasePath, }, error);
+            _logger.ErrorRunJob(Id, TenantId, tempFile, _storageBasePath, error);
             Exception = error;
             IsCompleted = true;
         }
@@ -205,7 +206,7 @@ public class BackupProgressItem : BaseBackupProgressItem
             }
             catch (Exception error)
             {
-                Logger.Error("publish", error);
+                _logger.ErrorPublish(error);
             }
 
             try
@@ -217,7 +218,7 @@ public class BackupProgressItem : BaseBackupProgressItem
             }
             catch (Exception error)
             {
-                Logger.Error("can't delete file: {0}", error);
+                _logger.ErrorCantDeleteFile(error);
             }
         }
     }

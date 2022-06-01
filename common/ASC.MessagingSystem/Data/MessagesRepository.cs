@@ -37,11 +37,11 @@ public class MessagesRepository : IDisposable
     private readonly IDictionary<string, EventMessage> _cache;
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly IMapper _mapper;
-    private readonly ILog _logger;
+    private readonly ILogger<MessagesRepository> _logger;
     private readonly Timer _timer;
     private Parser _parser;
 
-    public MessagesRepository(IServiceScopeFactory serviceScopeFactory, ILog logger, IMapper mapper)
+    public MessagesRepository(IServiceScopeFactory serviceScopeFactory, ILogger<MessagesRepository> logger, IMapper mapper)
     {
         _cacheTime = TimeSpan.FromMinutes(1);
         _cache = new Dictionary<string, EventMessage>();
@@ -108,7 +108,6 @@ public class MessagesRepository : IDisposable
 
         using var scope = _serviceScopeFactory.CreateScope();
         using var ef = scope.ServiceProvider.GetService<DbContextManager<MessagesContext>>().Get("messages");
-
         var strategy = ef.Database.CreateExecutionStrategy();
 
         strategy.Execute(() =>
@@ -144,7 +143,7 @@ public class MessagesRepository : IDisposable
                     }
                     catch (Exception e)
                     {
-                        _logger.Error("FlushCache " + message.Id, e);
+                        _logger.ErrorFlushCache(message.Id, e);
                     }
                 }
 
