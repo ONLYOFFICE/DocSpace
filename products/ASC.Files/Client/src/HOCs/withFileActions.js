@@ -21,11 +21,12 @@ export default function withFileActions(WrappedFileItem) {
       id !== -1 && onSelectItem({ id, isFolder });
     };
 
-    onFileContextClick = () => {
+    onFileContextClick = (isSingleFile) => {
       const { onSelectItem } = this.props;
       const { id, isFolder } = this.props.item;
 
-      id !== -1 && onSelectItem({ id, isFolder }, true);
+      id !== -1 &&
+        onSelectItem({ id, isFolder }, false, !isSingleFile || isMobile);
     };
 
     onHideContextMenu = () => {
