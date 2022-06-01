@@ -35,7 +35,6 @@ using System.Text;
 using System.Text.Json;
 
 using ASC.Common;
-using ASC.Common.Logging;
 using ASC.Common.Security.Authentication;
 using ASC.Common.Threading;
 using ASC.Common.Threading.Progress;
@@ -58,7 +57,7 @@ using ASC.Web.Studio.Utility;
 
 using ICSharpCode.SharpZipLib.Zip;
 
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 namespace ASC.Web.CRM.Classes
 {
@@ -84,13 +83,13 @@ namespace ASC.Web.CRM.Classes
         private readonly NotifyClient _notifyClient;
         private readonly TempStream _tempStream;
         private FilterObject _filterObject;
-        private readonly ILog _log;
+        private readonly ILogger _log;
         private int _totalCount;
 
         public ExportDataOperation(UserManager userManager,
                                    FileUtility fileUtility,
                                    SecurityContext securityContext,
-                                   IOptionsMonitor<ILog> logger,
+                                   ILogger logger,
                                    TenantManager tenantManager,
                                    Global global,
                                    CommonLinkUtility commonLinkUtility,
@@ -116,7 +115,7 @@ namespace ASC.Web.CRM.Classes
             _dataStore = global.GetStore();
             _notifyClient = notifyClient;
 
-            _log = logger.Get("ASC.CRM");
+            _log = logger;
 
             Error = null;
             Percentage = 0;
@@ -216,7 +215,7 @@ namespace ASC.Web.CRM.Classes
                 System.Threading.Thread.CurrentThread.CurrentCulture = userCulture;
                 System.Threading.Thread.CurrentThread.CurrentUICulture = userCulture;
 
-                _log.Debug("Start Export Data");
+                _log.LogDebug("Start Export Data");
 
                 if (_filterObject == null)
                     ExportAllData(_daoFactory);
@@ -225,19 +224,19 @@ namespace ASC.Web.CRM.Classes
 
                 Complete(100, DistributedTaskStatus.Completed, null);
 
-                _log.Debug("Export is completed");
+                _log.LogDebug("Export is completed");
             }
             catch (OperationCanceledException)
             {
                 Complete(0, DistributedTaskStatus.Completed, null);
 
-                _log.Debug("Export is cancel");
+                _log.LogDebug("Export is cancel");
             }
             catch (Exception ex)
             {
                 Complete(0, DistributedTaskStatus.Failted, ex.Message);
 
-                _log.Error(ex);
+                _log.LogError(ex, "DoJob");
             }
         }
 
