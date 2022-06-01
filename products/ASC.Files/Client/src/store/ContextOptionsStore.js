@@ -686,6 +686,11 @@ class ContextOptionsStore {
         disabled: !sharingItems,
       },
       {
+        key: "separator0",
+        isSeparator: true,
+        disabled: !sharingItems,
+      },
+      {
         key: "mark-as-favorite",
         label: `${t("MarkAsFavorite")} (${favoriteItems.length})`,
         icon: "images/favorites.react.svg",
@@ -733,6 +738,13 @@ class ContextOptionsStore {
         disabled: !isRecycleBinFolder || !restoreItems,
       },
       {
+        key: "separator1",
+        isSeparator: true,
+        disabled:
+          !removeFromFavoriteItems.length &&
+          (!deleteItems || isRootThirdPartyFolder),
+      },
+      {
         key: "remove-from-favorites",
         label: `${t("RemoveFromFavorites")} (${
           removeFromFavoriteItems.length
@@ -765,13 +777,6 @@ class ContextOptionsStore {
           }
         },
         disabled: !deleteItems || isRootThirdPartyFolder,
-      },
-      {
-        key: "empty-recycle-bin",
-        label: t("EmptyRecycleBin"),
-        icon: "images/trash.react.svg",
-        onClick: () => this.dialogsStore.setEmptyTrashDialogVisible(true),
-        disabled: !isRecycleBinFolder,
       },
     ];
 
