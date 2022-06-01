@@ -665,9 +665,11 @@ class FilesActionStore {
 
     switch (action) {
       case "mark":
-        return markItemAsFavorite(items).then(() => {
-          return this.getFilesInfo(items);
-        });
+        return markItemAsFavorite(items)
+          .then(() => {
+            return this.getFilesInfo(items);
+          })
+          .then(() => setSelected("close"));
 
       case "remove":
         return removeItemFromFavorite(items)
