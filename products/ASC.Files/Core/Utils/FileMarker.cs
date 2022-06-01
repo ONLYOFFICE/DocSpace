@@ -325,8 +325,6 @@ namespace ASC.Web.Files.Utils
 
         public Task MarkAsNewAsync<T>(FileEntry<T> fileEntry, List<Guid> userIDs = null)
         {
-            if (CoreBaseSettings.Personal) return Task.CompletedTask;
-
             if (fileEntry == null) return Task.CompletedTask;
 
             return InternalMarkAsNewAsync(fileEntry, userIDs);
@@ -361,8 +359,6 @@ namespace ASC.Web.Files.Utils
 
         public Task RemoveMarkAsNewAsync<T>(FileEntry<T> fileEntry, Guid userID = default)
         {
-            if (CoreBaseSettings.Personal) return Task.CompletedTask;
-
             if (fileEntry == null) return Task.CompletedTask;
 
             return InternalRemoveMarkAsNewAsync(fileEntry, userID);
