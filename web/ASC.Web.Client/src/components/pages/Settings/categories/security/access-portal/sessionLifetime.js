@@ -11,6 +11,7 @@ import { LearnMoreWrapper } from "../StyledSecurity";
 import { size } from "@appserver/components/utils/device";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
+import isEqual from "lodash/isEqual";
 
 const MainContainer = styled.div`
   width: 100%;
@@ -44,17 +45,18 @@ const SessionLifetime = (props) => {
     const currentSettings = getFromSessionStorage(
       "currentSessionLifetimeSettings"
     );
-    const defaultSettings = getFromSessionStorage(
-      "defaultSessionLifetimeSettings"
-    );
+    const defaultData = {
+      lifetime: lifetime.toString(),
+      type: lifetime > 0 ? true : false,
+    };
+    saveToSessionStorage("defaultSessionLifetimeSettings", defaultData);
 
-    if (defaultSettings) {
-      saveToSessionStorage("defaultSessionLifetimeSettings", defaultSettings);
+    if (currentSettings) {
+      setSessionLifetime(currentSettings.lifetime);
+      setType(currentSettings.type);
     } else {
-      saveToSessionStorage("defaultSessionLifetimeSettings", {
-        lifetime: lifetime.toString(),
-        type: lifetime > 0 ? true : false,
-      });
+      setSessionLifetime(lifetime.toString());
+      setType(lifetime > 0 ? true : false);
     }
 
     if (currentSettings) {
@@ -95,7 +97,7 @@ const SessionLifetime = (props) => {
 
     saveToSessionStorage("currentSessionLifetimeSettings", newSettings);
 
-    if (defaultSettings.type === newSettings.type) {
+    if (isEqual(defaultSettings, newSettings)) {
       setShowReminder(false);
     } else {
       setShowReminder(true);
