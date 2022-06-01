@@ -62,16 +62,20 @@ const StyledTableRow = styled(TableRow)`
         .table-container_file-name-cell {
           margin-left: -24px;
           padding-left: 24px;
+          z-index: 1;
         }
         .table-container_row-context-menu-wrapper {
           margin-right: -20px;
           padding-right: 18px;
+
+          position: relative !important;
+
+          z-index: 1;
         }
       }
     `}
 
   .table-container_cell {
-    /* ${isSafari && `border-image-slice: 0 !important`}; */
     background: ${(props) =>
       (props.checked || props.isActive) &&
       `${props.theme.filesSection.tableView.row.backgroundActive} !important`};
@@ -148,6 +152,11 @@ const StyledTableRow = styled(TableRow)`
       .table-container_cell {
         margin-top: -1px;
         border-top: 1px solid #2da7db;
+        border-right: 0;
+        border-left: 0;
+      }
+      .table-container_file-name-cell > .table-container_cell {
+        margin-top: 0;
       }
     `}
 `;

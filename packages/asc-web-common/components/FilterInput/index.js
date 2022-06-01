@@ -59,7 +59,7 @@ const FilterInput = React.memo(
     };
 
     return (
-      <StyledFilterInput {...props} sectionWidth={sectionWidth}>
+      <StyledFilterInput {...props}>
         <StyledSearchInput
           placeholder={placeholder}
           value={inputValue}
@@ -76,12 +76,13 @@ const FilterInput = React.memo(
           headerLabel={headerLabel}
         />
 
-        {viewSettings &&
-        !isMobile &&
-        viewSelectorVisible &&
-        !isMobileUtils() &&
-        !isTabletUtils() &&
-        viewAs !== "row" ? (
+        {(viewSettings &&
+          !isMobile &&
+          viewSelectorVisible &&
+          !isMobileUtils() &&
+          !isTabletUtils() &&
+          viewAs !== "row") ||
+        isRecentFolder ? (
           <ViewSelector
             style={{ marginLeft: "8px" }}
             onChangeView={onChangeViewAs}
@@ -103,8 +104,6 @@ const FilterInput = React.memo(
                 viewSettings={viewSettings}
                 onSort={onSort}
                 viewSelectorVisible={viewSelectorVisible}
-                isRecentFolder={isRecentFolder}
-                isFavoritesFolder={isFavoritesFolder}
               />
             )}
           </>

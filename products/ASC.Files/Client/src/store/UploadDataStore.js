@@ -149,8 +149,13 @@ class UploadDataStore {
       converted: true,
     };
 
+    const newHistory = this.uploadedFilesHistory.filter(
+      (el) => el.action === "uploaded"
+    );
+
     if (newUploadData.files.length === 0) this.setUploadPanelVisible(false);
     this.setUploadData(newUploadData);
+    this.uploadedFilesHistory = newHistory;
   };
 
   cancelConversion = () => {

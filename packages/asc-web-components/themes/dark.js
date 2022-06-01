@@ -2666,6 +2666,11 @@ const Dark = {
         separatorBorder: "1px solid #474747",
         linkColor: "#E06A1B",
       },
+
+      backup: {
+        rectangleBackgroundColor: "#292929",
+        separatorBorder: "1px solid #474747",
+      },
     },
 
     wizard: {
