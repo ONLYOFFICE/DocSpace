@@ -230,7 +230,7 @@ class SelectFolderDialog extends React.Component {
         footer={footer}
         isLoadingData={isLoadingData}
         primaryButtonName={
-          isNeedArrowIcon ? t("Common:Select") : primaryButtonName
+          isNeedArrowIcon ? t("Common:SelectAction") : primaryButtonName
         }
         isAvailable={isAvailable}
         isDisableTree={isDisableTree}

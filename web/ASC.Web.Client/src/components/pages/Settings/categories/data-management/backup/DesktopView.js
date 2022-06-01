@@ -101,6 +101,7 @@ class BackupDesktopView extends React.Component {
       downloadingProgress,
       organizationName,
       buttonSize,
+      theme,
     } = this.props;
     const { isInitialLoading, enableRestore, enableAutoBackup } = this.state;
 
@@ -136,7 +137,7 @@ class BackupDesktopView extends React.Component {
     return isInitialLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
-      <StyledBackup isDesktop={true}>
+      <StyledBackup isDesktop={true} theme={theme}>
         <div className="backup_modules-separation">
           <div className="backup_modules-header_wrapper">
             <Text className="backup_modules-header">{t("ManualBackup")}</Text>
@@ -204,6 +205,7 @@ export default inject(({ auth, backup }) => {
     helpUrlCreatingBackup,
     organizationName,
     isTabletView,
+    theme,
   } = settingsStore;
   const {
     setThirdPartyStorage,
@@ -216,6 +218,7 @@ export default inject(({ auth, backup }) => {
 
   const buttonSize = isTabletView ? "normal" : "small";
   return {
+    theme,
     helpUrlCreatingBackup,
     language,
     setThirdPartyStorage,

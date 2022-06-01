@@ -36,7 +36,7 @@ const StyledTree = styled(Tree)`
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
-          color: #555f65;
+          color: ${(props) => props.theme.treeNode.title.color};
         }
       }
       .rc-tree-node-selected {

@@ -48,7 +48,7 @@ const StyledBody = styled.div`
     .selection-panel_tree-body {
       grid-area: tree;
       height: 100%;
-      border-right: 1px solid #eceef1;
+      border-right: 1px solid ${(props) => props.theme.row.borderBottom};
 
       display: grid;
       grid-template-rows: max-content auto;
