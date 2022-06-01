@@ -174,13 +174,14 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
             var needToMark = new List<FileEntry<TTo>>();
 
-            var moveOrCopyFoldersTask = MoveOrCopyFoldersAsync(scope, Folders, toFolder, _copy);
-            var moveOrCopyFilesTask = MoveOrCopyFilesAsync(scope, Files, toFolder, _copy);
+            var moveOrCopyFoldersTask = await MoveOrCopyFoldersAsync(scope, Folders, toFolder, _copy);
+            var moveOrCopyFilesTask = await MoveOrCopyFilesAsync(scope, Files, toFolder, _copy);
 
-            needToMark.AddRange(await moveOrCopyFoldersTask);
-            needToMark.AddRange(await moveOrCopyFilesTask);
+            needToMark.AddRange(moveOrCopyFoldersTask);
+            needToMark.AddRange(moveOrCopyFilesTask);
 
-            var ntm = needToMark.Distinct(); foreach (var n in ntm)
+            var ntm = needToMark.Distinct();
+            foreach (var n in ntm)
             {
                 await fileMarker.MarkAsNewAsync(n);
             }
