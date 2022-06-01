@@ -375,7 +375,6 @@ class SectionHeaderContent extends React.Component {
             isRootFolder={isRootFolder}
             canCreate={canCreate}
             isRecycleBinFolder={isRecycleBinFolder}
-            title={title}
             isTitle={title}
             isDesktop={isDesktop}
             isTabletView={isTabletView}
