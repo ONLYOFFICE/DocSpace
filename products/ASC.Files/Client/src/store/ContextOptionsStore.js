@@ -680,7 +680,7 @@ class ContextOptionsStore {
     const options = [
       {
         key: "sharing-settings",
-        label: `${t("SharingSettings")} (${sharingItems})`,
+        label: t("SharingSettings"),
         icon: "/static/images/share.react.svg",
         onClick: this.onClickShare,
         disabled: !sharingItems,
@@ -692,7 +692,7 @@ class ContextOptionsStore {
       },
       {
         key: "mark-as-favorite",
-        label: `${t("MarkAsFavorite")} (${favoriteItems.length})`,
+        label: t("MarkAsFavorite"),
         icon: "images/favorites.react.svg",
         onClick: (e) => this.onClickFavorite(e, favoriteItemsIds, t),
         disabled: !favoriteItems.length,
@@ -701,7 +701,7 @@ class ContextOptionsStore {
       },
       {
         key: "download",
-        label: `${t("Common:Download")} (${countItems})`,
+        label: t("Common:Download"),
         icon: "images/download.react.svg",
         onClick: () =>
           this.filesActionsStore
@@ -711,28 +711,28 @@ class ContextOptionsStore {
       },
       {
         key: "download-as",
-        label: `${t("Translations:DownloadAs")} (${countItems})`,
+        label: t("Translations:DownloadAs"),
         icon: "images/download-as.react.svg",
         onClick: this.onClickDownloadAs,
         disabled: !downloadAs,
       },
       {
         key: "move-to",
-        label: `${t("MoveTo")} (${moveItems})`,
+        label: t("MoveTo"),
         icon: "images/move.react.svg",
         onClick: this.onMoveAction,
         disabled: isRecycleBinFolder || !moveItems,
       },
       {
         key: "copy-to",
-        label: `${t("Translations:Copy")} (${copyItems})`,
+        label: t("Translations:Copy"),
         icon: "/static/images/copy.react.svg",
         onClick: this.onCopyAction,
         disabled: isRecycleBinFolder || !copyItems,
       },
       {
         key: "restore",
-        label: `${t("Common:Restore")} (${restoreItems})`,
+        label: t("Common:Restore"),
         icon: "images/move.react.svg",
         onClick: this.onMoveAction,
         disabled: !isRecycleBinFolder || !restoreItems,
@@ -746,9 +746,7 @@ class ContextOptionsStore {
       },
       {
         key: "remove-from-favorites",
-        label: `${t("RemoveFromFavorites")} (${
-          removeFromFavoriteItems.length
-        })`,
+        label: t("RemoveFromFavorites"),
         icon: "images/favorites.react.svg",
         onClick: (e) => this.onClickFavorite(e, removeFromFavoriteItemsIds, t),
         disabled: !removeFromFavoriteItems.length,
@@ -757,7 +755,7 @@ class ContextOptionsStore {
       },
       {
         key: "delete",
-        label: `${t("Common:Delete")} (${deleteItems})`,
+        label: t("Common:Delete"),
         icon: "images/trash.react.svg",
         onClick: () => {
           if (this.settingsStore.confirmDelete) {
