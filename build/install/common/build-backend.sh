@@ -42,7 +42,7 @@ done
 echo "== BACK-END-BUILD =="
 
 cd ${SRC_PATH}
-dotnet build ASC.Web.sln ${ARGS} 
+dotnet build ASC.Web.slnf ${ARGS} 
 
 
 # Array of names backend services in directory common (Nodejs)  

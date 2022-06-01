@@ -178,7 +178,7 @@ FROM builder AS api_system
 WORKDIR ${BUILD_PATH}/services/apisystem/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint-dotnet.sh ./docker-entrypoint.sh
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.ApiSystem/service .
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.ApiSystem/service/ .
 
 CMD ["ASC.ApiSystem.dll", "ASC.ApiSystem"]
 
@@ -187,7 +187,7 @@ FROM builder AS backup
 WORKDIR ${BUILD_PATH}/services/backup/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint-dotnet.sh ./docker-entrypoint.sh
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Data.Backup/service .
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Data.Backup/service/ .
 
 CMD ["ASC.Data.Backup.dll", "ASC.Data.Backup", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
 
