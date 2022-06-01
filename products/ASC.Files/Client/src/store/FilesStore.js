@@ -480,7 +480,7 @@ class FilesStore {
     }
 
     this.selected = selected;
-    const files = this.files.concat(this.folders);
+    const files = this.filesList;
     this.selection = this.getFilesBySelected(files, selected);
   };
 
