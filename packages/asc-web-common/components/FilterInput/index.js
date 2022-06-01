@@ -59,7 +59,7 @@ const FilterInput = React.memo(
     };
 
     return (
-      <StyledFilterInput {...props} sectionWidth={sectionWidth}>
+      <StyledFilterInput {...props}>
         <StyledSearchInput
           placeholder={placeholder}
           value={inputValue}

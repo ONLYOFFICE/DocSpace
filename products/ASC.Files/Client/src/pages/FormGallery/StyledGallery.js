@@ -56,6 +56,11 @@ const StyledContainer = styled.div`
 const StyledInfoPanelToggleWrapper = styled.div`
   margin-left: auto;
 
+  display: ${(props) => (props.isInfoPanelVisible ? "none" : "flex")};
+  @media ${tablet} {
+    display: none;
+  }
+
   .info-panel-toggle-bg {
     height: 32px;
     width: 32px;

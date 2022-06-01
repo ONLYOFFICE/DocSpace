@@ -21,7 +21,6 @@ class ContextOptionsStore {
   uploadDataStore;
   versionHistoryStore;
   settingsStore;
-  infoPanelStore;
   filesSettingsStore;
 
   constructor(
@@ -33,8 +32,7 @@ class ContextOptionsStore {
     treeFoldersStore,
     uploadDataStore,
     versionHistoryStore,
-    settingsStore,
-    infoPanelStore
+    settingsStore
   ) {
     makeAutoObservable(this);
     this.authStore = authStore;
@@ -46,7 +44,6 @@ class ContextOptionsStore {
     this.uploadDataStore = uploadDataStore;
     this.versionHistoryStore = versionHistoryStore;
     this.settingsStore = settingsStore;
-    this.infoPanelStore = infoPanelStore;
   }
 
   onOpenFolder = (item) => {
@@ -338,7 +335,7 @@ class ContextOptionsStore {
   };
 
   onShowInfoPanel = () => {
-    const { setIsVisible } = this.infoPanelStore;
+    const { setIsVisible } = this.authStore.infoPanelStore;
     setIsVisible(true);
   };
 
