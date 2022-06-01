@@ -108,49 +108,54 @@ public class MessagesRepository : IDisposable
 
         using var scope = _serviceScopeFactory.CreateScope();
         using var ef = scope.ServiceProvider.GetService<DbContextManager<MessagesContext>>().Get("messages");
-        using var tx = ef.Database.BeginTransaction(IsolationLevel.ReadUncommitted);
-        var dict = new Dictionary<string, ClientInfo>();
+        var strategy = ef.Database.CreateExecutionStrategy();
 
-        foreach (var message in events)
+        strategy.Execute(() =>
         {
-            if (!string.IsNullOrEmpty(message.UAHeader))
+            using var tx = ef.Database.BeginTransaction(IsolationLevel.ReadUncommitted);
+            var dict = new Dictionary<string, ClientInfo>();
+
+            foreach (var message in events)
             {
-                try
+                if (!string.IsNullOrEmpty(message.UAHeader))
                 {
-
-                    ClientInfo clientInfo;
-
-                    if (dict.TryGetValue(message.UAHeader, out clientInfo))
+                    try
                     {
 
+                        ClientInfo clientInfo;
+
+                        if (dict.TryGetValue(message.UAHeader, out clientInfo))
+                        {
+
+                        }
+                        else
+                        {
+                            _parser = _parser ?? Parser.GetDefault();
+                            clientInfo = _parser.Parse(message.UAHeader);
+                            dict.Add(message.UAHeader, clientInfo);
+                        }
+
+                        if (clientInfo != null)
+                        {
+                            message.Browser = GetBrowser(clientInfo);
+                            message.Platform = GetPlatform(clientInfo);
+                        }
                     }
-                    else
+                    catch (Exception e)
                     {
-                        _parser = _parser ?? Parser.GetDefault();
-                        clientInfo = _parser.Parse(message.UAHeader);
-                        dict.Add(message.UAHeader, clientInfo);
-                    }
-
-                    if (clientInfo != null)
-                    {
-                        message.Browser = GetBrowser(clientInfo);
-                        message.Platform = GetPlatform(clientInfo);
+                        _logger.ErrorFlushCache(message.Id, e);
                     }
                 }
-                catch (Exception e)
+
+                // messages with action code < 2000 are related to login-history
+                if ((int)message.Action >= 2000)
                 {
-                    _logger.ErrorFlushCache(message.Id, e);
+                    AddAuditEvent(message, ef);
                 }
             }
 
-            // messages with action code < 2000 are related to login-history
-            if ((int)message.Action >= 2000)
-            {
-                AddAuditEvent(message, ef);
-            }
-        }
-
-        tx.Commit();
+            tx.Commit();
+        });
     }
 
     private void AddLoginEvent(EventMessage message, MessagesContext dbContext)

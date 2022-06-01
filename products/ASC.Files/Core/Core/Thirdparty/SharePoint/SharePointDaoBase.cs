@@ -124,54 +124,59 @@ internal class SharePointDaoBase : ThirdPartyProviderDao<SharePointProviderInfo>
 
     private async Task InternalUpdatePathInDBAsync(string oldValue, string newValue)
     {
-        using var tx = FilesDbContext.Database.BeginTransaction();
-        var oldIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
-            .Where(r => r.Id.StartsWith(oldValue))
-            .Select(r => r.Id)
-            .ToListAsync();
+        var strategy = FilesDbContext.Database.CreateExecutionStrategy();
 
-        foreach (var oldID in oldIDs)
+        await strategy.ExecuteAsync(async () =>
         {
-            var oldHashID = await MappingIDAsync(oldID);
-            var newID = oldID.Replace(oldValue, newValue);
-            var newHashID = await MappingIDAsync(newID);
-
-            var mappingForUpdate = await Query(FilesDbContext.ThirdpartyIdMapping)
-                .Where(r => r.HashId == oldHashID)
+            using var tx = FilesDbContext.Database.BeginTransaction();
+            var oldIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
+                .Where(r => r.Id.StartsWith(oldValue))
+                .Select(r => r.Id)
                 .ToListAsync();
 
-            foreach (var m in mappingForUpdate)
+            foreach (var oldID in oldIDs)
             {
-                m.Id = newID;
-                m.HashId = newHashID;
+                var oldHashID = await MappingIDAsync(oldID);
+                var newID = oldID.Replace(oldValue, newValue);
+                var newHashID = await MappingIDAsync(newID);
+
+                var mappingForUpdate = await Query(FilesDbContext.ThirdpartyIdMapping)
+                    .Where(r => r.HashId == oldHashID)
+                    .ToListAsync();
+
+                foreach (var m in mappingForUpdate)
+                {
+                    m.Id = newID;
+                    m.HashId = newHashID;
+                }
+
+                await FilesDbContext.SaveChangesAsync();
+
+                var securityForUpdate = await Query(FilesDbContext.Security)
+                    .Where(r => r.EntryId == oldHashID)
+                    .ToListAsync();
+
+                foreach (var s in securityForUpdate)
+                {
+                    s.EntryId = newHashID;
+                }
+
+                await FilesDbContext.SaveChangesAsync();
+
+                var linkForUpdate = await Query(FilesDbContext.TagLink)
+                    .Where(r => r.EntryId == oldHashID)
+                    .ToListAsync();
+
+                foreach (var l in linkForUpdate)
+                {
+                    l.EntryId = newHashID;
+                }
+
+                await FilesDbContext.SaveChangesAsync();
             }
 
-            await FilesDbContext.SaveChangesAsync();
-
-            var securityForUpdate = await Query(FilesDbContext.Security)
-                .Where(r => r.EntryId == oldHashID)
-                .ToListAsync();
-
-            foreach (var s in securityForUpdate)
-            {
-                s.EntryId = newHashID;
-            }
-
-            await FilesDbContext.SaveChangesAsync();
-
-            var linkForUpdate = await Query(FilesDbContext.TagLink)
-                .Where(r => r.EntryId == oldHashID)
-                .ToListAsync();
-
-            foreach (var l in linkForUpdate)
-            {
-                l.EntryId = newHashID;
-            }
-
-            await FilesDbContext.SaveChangesAsync();
-        }
-
-        await tx.CommitAsync();
+            await tx.CommitAsync();
+        });
     }
 
     protected Task<string> MappingIDAsync(string id)
