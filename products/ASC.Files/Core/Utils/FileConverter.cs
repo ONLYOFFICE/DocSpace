@@ -24,6 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+
 using Timeout = System.Threading.Timeout;
 
 namespace ASC.Web.Files.Utils;
@@ -129,7 +130,7 @@ internal class FileConverterQueue<T> : IDisposable
             EntryStatusManager entryManager;
             FileConverter fileConverter;
 
-            var logger = scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
+            var logger = scope.ServiceProvider.GetService<ILogger<FileConverterQueue<T>>>();
 
             try
             {
@@ -149,7 +150,7 @@ internal class FileConverterQueue<T> : IDisposable
                         _cache.Remove(GetKey(q.Key));
                     }
 
-                    logger.DebugFormat("Run CheckConvertFilesStatus: count {0}", _conversionQueue.Count);
+                    logger.DebugRunCheckConvertFilesStatus(_conversionQueue.Count);
 
                     if (_conversionQueue.Count == 0)
                     {
@@ -244,7 +245,7 @@ internal class FileConverterQueue<T> : IDisposable
                         var password = exception.InnerException is DocumentServiceException documentServiceException
                                        && documentServiceException.Code == DocumentServiceException.ErrorCode.ConvertPassword;
 
-                        logger.Error(string.Format("Error convert {0} with url {1}", file.Id, fileUri), exception);
+                        logger.ErrorConvertFileWithUrl(file.Id.ToString(), fileUri, exception);
                         lock (_locker)
                         {
                             if (_conversionQueue.TryGetValue(file, out var operationResult))
@@ -283,7 +284,7 @@ internal class FileConverterQueue<T> : IDisposable
                                 {
                                     operationResult.StopDateTime = DateTime.UtcNow;
                                     operationResult.Error = FilesCommonResource.ErrorMassage_ConvertTimeout;
-                                    logger.ErrorFormat("CheckConvertFilesStatus timeout: {0} ({1})", file.Id, file.ContentLengthString);
+                                    logger.ErrorCheckConvertFilesStatus(file.Id.ToString(), file.ContentLength);
                                 }
                                 else
                                 {
@@ -294,7 +295,7 @@ internal class FileConverterQueue<T> : IDisposable
                             }
                         }
 
-                        logger.Debug("CheckConvertFilesStatus iteration continue");
+                        logger.DebugCheckConvertFilesStatusIterationContinue();
 
                         continue;
                     }
@@ -310,7 +311,7 @@ internal class FileConverterQueue<T> : IDisposable
                     {
                         operationResultError = e.Message;
 
-                        logger.ErrorFormat("{0} ConvertUrl: {1} fromUrl: {2}: {3}", operationResultError, convertedFileUrl, fileUri, e);
+                        logger.ErrorOperation(operationResultError, convertedFileUrl, fileUri, e);
 
                         continue;
                     }
@@ -349,7 +350,7 @@ internal class FileConverterQueue<T> : IDisposable
                         }
                     }
 
-                    logger.Debug("CheckConvertFilesStatus iteration end");
+                    logger.DebugCheckConvertFilesStatusIterationEnd();
                 }
 
                 lock (_locker)
@@ -359,7 +360,7 @@ internal class FileConverterQueue<T> : IDisposable
             }
             catch (Exception exception)
             {
-                logger.Error(exception.Message, exception);
+                logger.ErrorWithException(exception);
                 lock (_locker)
                 {
                     _timer.Change(Timeout.Infinite, Timeout.Infinite);
@@ -417,7 +418,7 @@ internal class FileConverterQueue<T> : IDisposable
 [Scope]
 public class FileConverterQueueScope
 {
-    private readonly IOptionsMonitor<ILog> _options;
+    private readonly ILogger _options;
     private readonly TenantManager _tenantManager;
     private readonly UserManager _userManager;
     private readonly SecurityContext _securityContext;
@@ -431,7 +432,8 @@ public class FileConverterQueueScope
     private readonly EntryStatusManager _entryManager;
     private readonly FileConverter _fileConverter;
 
-    public FileConverterQueueScope(IOptionsMonitor<ILog> options,
+    public FileConverterQueueScope(
+        ILogger<FileConverterQueueScope> options,
         TenantManager tenantManager,
         UserManager userManager,
         SecurityContext securityContext,
@@ -461,7 +463,7 @@ public class FileConverterQueueScope
     }
 
 
-    public void Deconstruct(out IOptionsMonitor<ILog> optionsMonitor,
+    public void Deconstruct(out ILogger optionsMonitor,
         out TenantManager tenantManager,
         out UserManager userManager,
         out SecurityContext securityContext,
@@ -867,7 +869,7 @@ public class FileConverter
             {
                 if (e.Message != null)
                 {
-                    errorString += $" Error message: {e.Message}";
+                    errorString += $" Error {e.Message}";
                 }
             }
 

@@ -52,7 +52,7 @@ internal class GoogleDriveStorage : IDisposable
         }
     }
 
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     public bool IsOpened { get; private set; }
 
     private DriveService _driveService;
@@ -67,14 +67,14 @@ internal class GoogleDriveStorage : IDisposable
     public GoogleDriveStorage(
         ConsumerFactory consumerFactory,
         FileUtility fileUtility,
-        IOptionsMonitor<ILog> monitor,
+        ILoggerProvider monitor,
         TempStream tempStream,
         OAuth20TokenHelper oAuth20TokenHelper,
         IHttpClientFactory clientFactory)
     {
         _consumerFactory = consumerFactory;
         _fileUtility = fileUtility;
-        _logger = monitor.Get("ASC.Files");
+        _logger = monitor.CreateLogger("ASC.Files");
         _tempStream = tempStream;
         _clientFactory = clientFactory;
         _oAuth20TokenHelper = oAuth20TokenHelper;
@@ -314,7 +314,7 @@ internal class GoogleDriveStorage : IDisposable
                 throw result.Exception;
             }
 
-            _logger.Error("Error while trying to insert entity. GoogleDrive insert returned an error.", result.Exception);
+            _logger.ErrorWhileTryingToInsertEntity(result.Exception);
         }
 
         return request.ResponseBody;
@@ -345,7 +345,7 @@ internal class GoogleDriveStorage : IDisposable
                 throw result.Exception;
             }
 
-            _logger.Error("Error while trying to insert entity. GoogleDrive insert returned an error.", result.Exception);
+            _logger.ErrorWhileTryingToInsertEntity(result.Exception);
         }
 
         return request.ResponseBody;
@@ -468,7 +468,7 @@ internal class GoogleDriveStorage : IDisposable
                 throw result.Exception;
             }
 
-            _logger.Error("Error while trying to insert entity. GoogleDrive save returned an error.", result.Exception);
+            _logger.ErrorWhileTryingToInsertEntity(result.Exception);
         }
 
         return request.ResponseBody;
@@ -489,7 +489,7 @@ internal class GoogleDriveStorage : IDisposable
                 throw result.Exception;
             }
 
-            _logger.Error("Error while trying to insert entity. GoogleDrive save returned an error.", result.Exception);
+            _logger.ErrorWhileTryingToInsertEntity(result.Exception);
         }
 
         return request.ResponseBody;

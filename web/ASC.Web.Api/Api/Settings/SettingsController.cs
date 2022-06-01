@@ -56,13 +56,13 @@ public class SettingsController : BaseSettingsController
     private readonly CoreConfiguration _coreConfiguration;
     private readonly UrlShortener _urlShortener;
     private readonly PasswordHasher _passwordHasher;
-    private readonly ILog _log;
+    private readonly ILogger _log;
     private readonly TelegramHelper _telegramHelper;
     private readonly Constants _constants;
     private readonly DnsSettings _dnsSettings;
 
     public SettingsController(
-        IOptionsMonitor<ILog> option,
+        ILoggerProvider option,
         MessageService messageService,
         ApiContext apiContext,
         UserManager userManager,
@@ -97,7 +97,7 @@ public class SettingsController : BaseSettingsController
         DnsSettings dnsSettings
         ) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
-        _log = option.Get("ASC.Api");
+        _log = option.CreateLogger("ASC.Api");
         _consumerFactory = consumerFactory;
         _timeZoneConverter = timeZoneConverter;
         _customNamingPeople = customNamingPeople;
@@ -128,7 +128,8 @@ public class SettingsController : BaseSettingsController
         _dnsSettings = dnsSettings;
     }
 
-    [Read("", Check = false)]
+    [HttpGet("")]
+    [AllowNotPayment]
     [AllowAnonymous]
     public SettingsDto GetSettings(bool? withpassword)
     {
@@ -205,20 +206,8 @@ public class SettingsController : BaseSettingsController
         return settings;
     }
 
-    [Create("maildomainsettings")]
-    public object SaveMailDomainSettingsFromBody([FromBody] MailDomainSettingsRequestsDto inDto)
-    {
-        return SaveMailDomainSettings(inDto);
-    }
-
-    [Create("maildomainsettings")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public object SaveMailDomainSettingsFromForm([FromForm] MailDomainSettingsRequestsDto inDto)
-    {
-        return SaveMailDomainSettings(inDto);
-    }
-
-    private object SaveMailDomainSettings(MailDomainSettingsRequestsDto inDto)
+    [HttpPost("maildomainsettings")]
+    public object SaveMailDomainSettings(MailDomainSettingsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -252,21 +241,23 @@ public class SettingsController : BaseSettingsController
         return Resource.SuccessfullySaveSettingsMessage;
     }
 
-    [Read("quota")]
+    [HttpGet("quota")]
     public QuotaDto GetQuotaUsed()
     {
         return new QuotaDto(Tenant, _coreBaseSettings, _coreConfiguration, _tenantExtra, _tenantStatisticsProvider, _authContext, _settingsManager, WebItemManager, _constants);
     }
 
     [AllowAnonymous]
-    [Read("cultures", Check = false)]
+    [AllowNotPayment]
+    [HttpGet("cultures")]
     public IEnumerable<object> GetSupportedCultures()
     {
         return _setupInfo.EnabledCultures.Select(r => r.Name).ToArray();
     }
 
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard,Administrators")]
-    [Read("timezones", Check = false)]
+    [HttpGet("timezones")]
+    [AllowNotPayment]
     public List<TimezonesRequestsDto> GetTimeZones()
     {
         ApiContext.AuthByClaim();
@@ -292,19 +283,20 @@ public class SettingsController : BaseSettingsController
     }
 
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
-    [Read("machine", Check = false)]
+    [HttpGet("machine")]
+    [AllowNotPayment]
     public object GetMachineName()
     {
         return Dns.GetHostName().ToLowerInvariant();
     }
 
-    [Update("dns")]
-    public object SaveDnsSettings(DnsSettingsModel model)
+    [HttpPut("dns")]
+    public object SaveDnsSettings(DnsSettingsRequestsDto model)
     {
         return _dnsSettings.SaveDnsSettings(model.DnsName, model.Enable);
     }
 
-    //[Read("recalculatequota")]
+    //[HttpGet("recalculatequota")]
     //public void RecalculateQuota()
     //{
     //    SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
@@ -322,7 +314,7 @@ public class SettingsController : BaseSettingsController
     //    quotaTasks.QueueTask(op.RunJob, op.GetDistributedTask());
     //}
 
-    //[Read("checkrecalculatequota")]
+    //[HttpGet("checkrecalculatequota")]
     //public bool CheckRecalculateQuota()
     //{
     //    PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
@@ -338,38 +330,26 @@ public class SettingsController : BaseSettingsController
     //    return task != null;
     //}
 
-    [Read("logo")]
+    [HttpGet("logo")]
     public object GetLogo()
     {
         return _tenantInfoSettingsHelper.GetAbsoluteCompanyLogoPath(_settingsManager.Load<TenantInfoSettings>());
     }
 
-    [Update("wizard/complete", Check = false)]
+    [AllowNotPayment]
+    [HttpPut("wizard/complete")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
-    public WizardSettings CompleteWizardFromBody([FromBody] WizardRequestsDto inDto)
-    {
-        return CompleteWizard(inDto);
-    }
-
-    [Update("wizard/complete", Check = false)]
-    [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public WizardSettings CompleteWizardFromForm([FromForm] WizardRequestsDto inDto)
-    {
-        return CompleteWizard(inDto);
-    }
-
-    private WizardSettings CompleteWizard(WizardRequestsDto wizardModel)
+    public WizardSettings CompleteWizard(WizardRequestsDto inDto)
     {
         ApiContext.AuthByClaim();
 
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        return _firstTimeTenantSettings.SaveData(wizardModel);
+        return _firstTimeTenantSettings.SaveData(inDto);
     }
 
     ///<visible>false</visible>
-    [Update("welcome/close")]
+    [HttpPut("welcome/close")]
     public void CloseWelcomePopup()
     {
         var currentUser = _userManager.GetUsers(_authContext.CurrentAccount.ID);
@@ -386,40 +366,17 @@ public class SettingsController : BaseSettingsController
     }
 
     ///<visible>false</visible>
-    [Update("colortheme")]
-    public void SaveColorThemeFromBody([FromBody] SettingsRequestsDto inDto)
-    {
-        SaveColorTheme(inDto);
-    }
-
-    [Update("colortheme")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public void SaveColorThemeFromForm([FromForm] SettingsRequestsDto inDto)
-    {
-        SaveColorTheme(inDto);
-    }
-
-    private void SaveColorTheme(SettingsRequestsDto inDto)
+    [HttpPut("colortheme")]
+    public void SaveColorTheme(SettingsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
         _colorThemesSettingsHelper.SaveColorTheme(inDto.Theme);
         _messageService.Send(MessageAction.ColorThemeChanged);
     }
+
     ///<visible>false</visible>
-    [Update("timeandlanguage")]
-    public object TimaAndLanguageFromBody([FromBody] SettingsRequestsDto inDto)
-    {
-        return TimaAndLanguage(inDto);
-    }
-
-    [Update("timeandlanguage")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public object TimaAndLanguageFromForm([FromForm] SettingsRequestsDto inDto)
-    {
-        return TimaAndLanguage(inDto);
-    }
-
-    private object TimaAndLanguage(SettingsRequestsDto inDto)
+    [HttpPut("timeandlanguage")]
+    public object TimaAndLanguage(SettingsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -461,20 +418,8 @@ public class SettingsController : BaseSettingsController
     }
 
     ///<visible>false</visible>
-    [Update("defaultpage")]
-    public object SaveDefaultPageSettingsFromBody([FromBody] SettingsRequestsDto inDto)
-    {
-        return SaveDefaultPageSettings(inDto);
-    }
-
-    [Update("defaultpage")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public object SaveDefaultPageSettingsFromForm([FromForm] SettingsRequestsDto inDto)
-    {
-        return SaveDefaultPageSettings(inDto);
-    }
-
-    private object SaveDefaultPageSettings(SettingsRequestsDto inDto)
+    [HttpPut("defaultpage")]
+    public object SaveDefaultPageSetting(SettingsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -485,22 +430,14 @@ public class SettingsController : BaseSettingsController
         return Resource.SuccessfullySaveSettingsMessage;
     }
 
-    [Update("emailactivation")]
-    public EmailActivationSettings UpdateEmailActivationSettingsFromBody([FromBody] EmailActivationSettings settings)
+    [HttpPut("emailactivation")]
+    public EmailActivationSettings UpdateEmailActivationSettings(EmailActivationSettings settings)
     {
         _settingsManager.SaveForCurrentUser(settings);
         return settings;
     }
 
-    [Update("emailactivation")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public EmailActivationSettings UpdateEmailActivationSettingsFromForm([FromForm] EmailActivationSettings settings)
-    {
-        _settingsManager.SaveForCurrentUser(settings);
-        return settings;
-    }
-
-    [Read("statistics/spaceusage/{id}")]
+    [HttpGet("statistics/spaceusage/{id}")]
     public Task<List<UsageSpaceStatItemDto>> GetSpaceUsageStatistics(Guid id)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
@@ -534,7 +471,7 @@ public class SettingsController : BaseSettingsController
         });
     }
 
-    [Read("statistics/visit")]
+    [HttpGet("statistics/visit")]
     public List<ChartPointDto> GetVisitStatistics(ApiDateTime fromDate, ApiDateTime toDate)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
@@ -588,7 +525,7 @@ public class SettingsController : BaseSettingsController
         return points;
     }
 
-    [Read("socket")]
+    [HttpGet("socket")]
     public object GetSocketSettings()
     {
         var hubUrl = _configuration["web:hub"] ?? string.Empty;
@@ -604,13 +541,13 @@ public class SettingsController : BaseSettingsController
     }
 
     ///<visible>false</visible>
-    [Read("controlpanel")]
+    [HttpGet("controlpanel")]
     public TenantControlPanelSettings GetTenantControlPanelSettings()
     {
         return _settingsManager.Load<TenantControlPanelSettings>();
     }
 
-    [Read("authservice")]
+    [HttpGet("authservice")]
     public IEnumerable<AuthServiceRequestsDto> GetAuthServices()
     {
         return _consumerFactory.GetAll<Consumer>()
@@ -620,20 +557,8 @@ public class SettingsController : BaseSettingsController
             .ToList();
     }
 
-    [Create("authservice")]
-    public bool SaveAuthKeysFromBody([FromBody] AuthServiceRequestsDto inDto)
-    {
-        return SaveAuthKeys(inDto);
-    }
-
-    [Create("authservice")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public bool SaveAuthKeysFromForm([FromForm] AuthServiceRequestsDto inDto)
-    {
-        return SaveAuthKeys(inDto);
-    }
-
-    private bool SaveAuthKeys(AuthServiceRequestsDto inDto)
+    [HttpPost("authservice")]
+    public bool SaveAuthKeys(AuthServiceRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -664,7 +589,7 @@ public class SettingsController : BaseSettingsController
             }
             catch (Exception e)
             {
-                _log.Error(e);
+                _log.ErrorSaveAuthKeys(e);
             }
         }
 
@@ -701,7 +626,8 @@ public class SettingsController : BaseSettingsController
         return changed;
     }
 
-    [Read("payment", Check = false)]
+    [AllowNotPayment]
+    [HttpGet("payment")]
     public object PaymentSettings()
     {
         var settings = _settingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>();
@@ -729,7 +655,7 @@ public class SettingsController : BaseSettingsController
     /// </summary>
     /// <returns>url</returns>
     /// 
-    [Read("telegramlink")]
+    [HttpGet("telegramlink")]
     public object TelegramLink()
     {
         var currentLink = _telegramHelper.CurrentRegistrationLink(_authContext.CurrentAccount.ID, Tenant.Id);
@@ -749,7 +675,7 @@ public class SettingsController : BaseSettingsController
     /// Checks if user has connected TelegramBot
     /// </summary>
     /// <returns>0 - not connected, 1 - connected, 2 - awaiting confirmation</returns>
-    [Read("telegramisconnected")]
+    [HttpGet("telegramisconnected")]
     public object TelegramIsConnected()
     {
         return (int)_telegramHelper.UserIsConnected(_authContext.CurrentAccount.ID, Tenant.Id);
@@ -758,7 +684,7 @@ public class SettingsController : BaseSettingsController
     /// <summary>
     /// Unlinks TelegramBot from your account
     /// </summary>
-    [Delete("telegramdisconnect")]
+    [HttpDelete("telegramdisconnect")]
     public void TelegramDisconnect()
     {
         _telegramHelper.Disconnect(_authContext.CurrentAccount.ID, Tenant.Id);

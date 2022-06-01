@@ -31,24 +31,23 @@ namespace ASC.Web.Files.Helpers;
 [Scope]
 public class DocuSignToken
 {
-    public ILog Logger { get; set; }
-
     public const string AppAttr = "docusign";
 
+    private readonly ILogger<DocuSignHelper> _logger;
     private readonly TokenHelper _tokenHelper;
     private readonly AuthContext _authContext;
     private readonly ConsumerFactory _consumerFactory;
 
     public DocuSignToken(
         TokenHelper tokenHelper,
-        ILog logger,
+        ILogger<DocuSignHelper> logger,
         AuthContext authContext,
         ConsumerFactory consumerFactory)
     {
         _tokenHelper = tokenHelper;
         _authContext = authContext;
         _consumerFactory = consumerFactory;
-        Logger = logger;
+        _logger = logger;
     }
 
     public OAuth20Token GetToken()
@@ -74,7 +73,7 @@ public class DocuSignToken
         {
             try
             {
-                Logger.Info("DocuSign refresh token for user " + _authContext.CurrentAccount.ID);
+                _logger.InformationDocuSignRefreshToken(_authContext.CurrentAccount.ID);
 
                 var refreshed = _consumerFactory.Get<DocuSignLoginProvider>().RefreshToken(token.RefreshToken);
 
@@ -90,7 +89,7 @@ public class DocuSignToken
             }
             catch (Exception ex)
             {
-                Logger.Error("DocuSign refresh token for user " + _authContext.CurrentAccount.ID, ex);
+                _logger.ErrorDocuSignRefreshToken(_authContext.CurrentAccount.ID, ex);
             }
         }
 
@@ -101,7 +100,7 @@ public class DocuSignToken
 [Scope]
 public class DocuSignHelper
 {
-    public ILog Logger { get; set; }
+    private readonly ILogger<DocuSignHelper> _logger;
 
     public const string UserField = "userId";
 
@@ -137,7 +136,7 @@ public class DocuSignHelper
         DocuSignToken docuSignToken,
         FileSecurity fileSecurity,
         IDaoFactory daoFactory,
-        IOptionsMonitor<ILog> options,
+        ILogger<DocuSignHelper> logger,
         BaseCommonLinkUtility baseCommonLinkUtility,
         UserManager userManager,
         AuthContext authContext,
@@ -147,8 +146,8 @@ public class DocuSignHelper
         FilesMessageService filesMessageService,
         FilesLinkUtility filesLinkUtility,
         IServiceProvider serviceProvider,
-            ConsumerFactory consumerFactory,
-            RequestHelper requestHelper)
+        ConsumerFactory consumerFactory,
+        RequestHelper requestHelper)
     {
         _docuSignToken = docuSignToken;
         _fileSecurity = fileSecurity;
@@ -163,7 +162,7 @@ public class DocuSignHelper
         _filesLinkUtility = filesLinkUtility;
         _serviceProvider = serviceProvider;
         _consumerFactory = consumerFactory;
-        Logger = options.CurrentValue;
+        _logger = logger;
         _requestHelper = requestHelper;
     }
 
@@ -198,7 +197,7 @@ public class DocuSignHelper
         var userInfoString = _requestHelper.PerformRequest(_consumerFactory.Get<DocuSignLoginProvider>().DocuSignHost + "/oauth/userinfo",
                                                           headers: new Dictionary<string, string> { { "Authorization", "Bearer " + _docuSignToken.GetRefreshedToken(token) } });
 
-        Logger.Debug("DocuSing userInfo: " + userInfoString);
+        _logger.DebugDocuSingUserInfo(userInfoString);
 
         var userInfo = (DocuSignUserInfo)JsonConvert.DeserializeObject(userInfoString, typeof(DocuSignUserInfo));
 
@@ -305,7 +304,7 @@ public class DocuSignHelper
             Url = _baseCommonLinkUtility.GetFullAbsolutePath(DocuSignHandlerService.Path(_filesLinkUtility) + "?" + FilesLinkUtility.Action + "=webhook"),
         };
 
-        Logger.Debug("DocuSign hook url: " + eventNotification.Url);
+        _logger.DebugDocuSingHookUrl(eventNotification.Url);
 
         var signers = new List<Signer>();
         docuSignData.Users.ForEach(uid =>
@@ -322,7 +321,7 @@ public class DocuSignHelper
             }
             catch (Exception ex)
             {
-                Logger.Error("Signer is undefined", ex);
+                _logger.ErrorSignerIsUndefined(ex);
             }
         });
 
@@ -349,14 +348,14 @@ public class DocuSignHelper
         var envelopesApi = new EnvelopesApi(apiClient);
         var envelopeSummary = envelopesApi.CreateEnvelope(accountId, envelopeDefinition);
 
-        Logger.Debug("DocuSign createdEnvelope: " + envelopeSummary.EnvelopeId);
+        _logger.DebugDocuSingCreatedEnvelope(envelopeSummary.EnvelopeId);
 
         var envelopeId = envelopeSummary.EnvelopeId;
         var url = envelopesApi.CreateSenderView(accountId, envelopeId, new ReturnUrlRequest
         {
             ReturnUrl = _baseCommonLinkUtility.GetFullAbsolutePath(DocuSignHandlerService.Path(_filesLinkUtility) + "?" + FilesLinkUtility.Action + "=redirect")
         });
-        Logger.Debug("DocuSign senderView: " + url.Url);
+        _logger.DebugDocuSingSenderView(url.Url);
 
         return url.Url;
     }
@@ -399,7 +398,7 @@ public class DocuSignHelper
         file.Title = FileUtility.ReplaceFileExtension(documentName, ".pdf");
 
         var envelopesApi = new EnvelopesApi(apiClient);
-        Logger.Info("DocuSign webhook get stream: " + documentId);
+        _logger.InformationDocuSignWebhookGetStream(documentId);
         using (var stream = await envelopesApi.GetDocumentAsync(account.AccountId, envelopeId, documentId))
         {
             file.ContentLength = stream.Length;

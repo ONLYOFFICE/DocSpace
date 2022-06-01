@@ -35,9 +35,9 @@ public class TimeZoneConverter
     private bool _isMono;
     private Dictionary<string, string> _translations;
     private readonly IConfiguration _configuration;
-    private readonly ILog _logger;
+    private readonly ILogger<TimeZoneConverter> _logger;
 
-    public TimeZoneConverter(IConfiguration configuration, ILog logger)
+    public TimeZoneConverter(IConfiguration configuration, ILogger<TimeZoneConverter> logger)
     {
         _logger = logger;
         _configuration = configuration;
@@ -82,7 +82,7 @@ public class TimeZoneConverter
             return mapZone.WindowsTimeZoneId;
         }
 
-        _logger.Error($"OlsonTimeZone {olsonTimeZoneId} not found");
+        _logger.ErrorOlsonTimeZoneNotFound(olsonTimeZoneId);
 
         return defaultIfNoMatch ? "UTC" : null;
     }
@@ -103,7 +103,7 @@ public class TimeZoneConverter
             return mapZone.OlsonTimeZoneId;
         }
 
-        _logger.Error($"WindowsTimeZone {windowsTimeZoneId} not found");
+        _logger.ErrorWindowsTimeZoneNotFound(windowsTimeZoneId);
 
         return defaultIfNoMatch ? "Etc/GMT" : null;
     }
@@ -137,20 +137,20 @@ public class TimeZoneConverter
                     return TimeZoneInfo.FindSystemTimeZoneById(mapZone.OlsonTimeZoneId);
                 }
 
-                _logger.InfoFormat("TimeZone {0} not found", timeZoneId);
+                _logger.InformationTimeZoneNotFound(timeZoneId);
 
                 return defaultIfNoMatch ? GetTimeZoneByOffset(timeZoneId) ?? defaultTimezone : null;
             }
             catch (Exception error)
             {
-                _logger.Error(error);
+                _logger.ErrorGetTimeZone(error);
 
                 return defaultIfNoMatch ? defaultTimezone : null;
             }
         }
         catch (Exception error)
         {
-            _logger.Error(error);
+            _logger.ErrorGetTimeZone(error);
 
             return defaultIfNoMatch ? defaultTimezone : null;
         }
@@ -225,7 +225,7 @@ public class TimeZoneConverter
         catch (Exception error)
         {
             _mapZones = new MapZone[0];
-            _logger.Error(error);
+            _logger.ErrorInitMapZones(error);
         }
     }
 
@@ -325,7 +325,7 @@ public class TimeZoneConverter
         catch (Exception error)
         {
             _translations = new Dictionary<string, string>();
-            _logger.Error(error);
+            _logger.ErrorInitTranslations(error);
         }
     }
 

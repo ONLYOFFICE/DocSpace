@@ -31,22 +31,23 @@ public class DbWorker
 {
     private readonly string _dbid;
     private readonly object _syncRoot = new object();
-    private readonly IMapper _mapper;
-
+  
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly NotifyServiceCfg _notifyServiceCfg;
 
-    public DbWorker(IServiceScopeFactory serviceScopeFactory, IOptions<NotifyServiceCfg> notifyServiceCfg, IMapper mapper)
+    public DbWorker(IServiceScopeFactory serviceScopeFactory, IOptions<NotifyServiceCfg> notifyServiceCfg)
     {
         _serviceScopeFactory = serviceScopeFactory;
         _notifyServiceCfg = notifyServiceCfg.Value;
         _dbid = _notifyServiceCfg.ConnectionStringName;
-        _mapper = mapper;
     }
 
     public int SaveMessage(NotifyMessage m)
     {
         using var scope = _serviceScopeFactory.CreateScope();
+
+        var _mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
+
         using var dbContext = scope.ServiceProvider.GetService<DbContextManager<NotifyDbContext>>().Get(_dbid);
         using var tx = dbContext.Database.BeginTransaction(IsolationLevel.ReadCommitted);
 
@@ -79,6 +80,9 @@ public class DbWorker
         lock (_syncRoot)
         {
             using var scope = _serviceScopeFactory.CreateScope();
+
+            var _mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
+
             using var dbContext = scope.ServiceProvider.GetService<DbContextManager<NotifyDbContext>>().Get(_dbid);
             using var tx = dbContext.Database.BeginTransaction();
 
@@ -99,7 +103,7 @@ public class DbWorker
 
                         try
                         {
-                            res.Attachments.AddRange(JsonConvert.DeserializeObject<RepeatedField<NotifyMessageAttachment>>(r.queue.Attachments));
+                            res.Attachments = JsonConvert.DeserializeObject<NotifyMessageAttachment[]>(r.queue.Attachments);
                         }
                         catch (Exception)
                         {

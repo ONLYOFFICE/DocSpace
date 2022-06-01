@@ -34,12 +34,12 @@ public class CookieStorage
     private readonly InstanceCrypto _instanceCrypto;
     private readonly TenantCookieSettingsHelper _tenantCookieSettingsHelper;
     private readonly HttpContext _httpContext;
-    private readonly ILog _logger;
+    private readonly ILogger<CookieStorage> _logger;
 
     public CookieStorage(
         InstanceCrypto instanceCrypto,
         TenantCookieSettingsHelper tenantCookieSettingsHelper,
-        ILog logger)
+        ILogger<CookieStorage> logger)
     {
         _instanceCrypto = instanceCrypto;
         _tenantCookieSettingsHelper = tenantCookieSettingsHelper;
@@ -50,7 +50,7 @@ public class CookieStorage
         IHttpContextAccessor httpContextAccessor,
         InstanceCrypto instanceCrypto,
         TenantCookieSettingsHelper tenantCookieSettingsHelper,
-        ILog logger)
+        ILogger<CookieStorage> logger)
         : this(instanceCrypto, tenantCookieSettingsHelper, logger)
     {
         _httpContext = httpContextAccessor.HttpContext;
@@ -99,8 +99,7 @@ public class CookieStorage
         }
         catch (Exception err)
         {
-            _logger.ErrorFormat("Authenticate error: cookie {0}, tenant {1}, userid {2}, indexTenant {3}, expire {4}: {5}",
-                        cookie, tenant, userid, indexTenant, expire.ToString(DateTimeFormat), err);
+            _logger.AuthenticateError(cookie, tenant, userid, indexTenant, expire.ToString(DateTimeFormat), err);
         }
 
         return false;

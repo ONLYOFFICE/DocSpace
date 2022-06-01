@@ -42,9 +42,9 @@ public class CouponManager : IDisposable
     private readonly Uri _baseAddress;
     private readonly string _apiVersion;
     private readonly SemaphoreSlim _semaphoreSlim;
-    private readonly ILog _logger;
+    private readonly ILogger<CouponManager> _logger;
 
-    public CouponManager(ILog logger, IHttpClientFactory clientFactory)
+    public CouponManager(ILogger<CouponManager> logger, IHttpClientFactory clientFactory)
     {
         _semaphoreSlim = new SemaphoreSlim(1, 1);
         _logger = logger;
@@ -70,7 +70,7 @@ public class CouponManager : IDisposable
             _baseAddress = new Uri(AvangateCfgSectionHandler.DefaultAdress);
             _apiVersion = AvangateCfgSectionHandler.DefaultApiVersion;
             _groups = new List<string>();
-            _logger.Fatal(e);
+            _logger.CriticalCouponManager(e);
         }
     }
 
@@ -98,7 +98,7 @@ public class CouponManager : IDisposable
         }
         catch (Exception ex)
         {
-            _logger.Error(ex.Message, ex);
+            _logger.ErrorWithException(ex);
             throw;
         }
     }
@@ -138,7 +138,7 @@ public class CouponManager : IDisposable
         }
         catch (Exception ex)
         {
-            _logger.Error(ex.Message, ex);
+            _logger.ErrorWithException(ex);
 
             throw;
         }
@@ -211,7 +211,7 @@ class Promotion
     public int PublishToAffiliatesNetwork { get; set; }
     public int AutoApply { get; set; }
 
-    public static async Task<string> GeneratePromotion(ILog log, CouponManager couponManager, TenantManager tenantManager, int percent, int schedule)
+    public static async Task<string> GeneratePromotion(ILogger log, CouponManager couponManager, TenantManager tenantManager, int percent, int schedule)
     {
         try
         {
@@ -244,7 +244,7 @@ class Promotion
         }
         catch (Exception ex)
         {
-            log.Error(ex.Message, ex);
+            log.ErrorWithException(ex);
 
             throw;
         }

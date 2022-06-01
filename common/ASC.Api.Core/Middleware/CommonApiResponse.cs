@@ -31,6 +31,11 @@ public abstract class CommonApiResponse
     public int Status { get; set; }
     public HttpStatusCode StatusCode { get; set; }
 
+    public CommonApiResponse()
+    {
+
+    }
+
     protected CommonApiResponse(HttpStatusCode statusCode)
     {
         StatusCode = statusCode;
@@ -54,6 +59,11 @@ public class SuccessApiResponse : CommonApiResponse
     public int? Count { get; set; }
     public long? Total { get; set; }
     public object Response { get; set; }
+
+    public SuccessApiResponse()
+    {
+
+    }
 
     protected internal SuccessApiResponse(HttpStatusCode statusCode, object response, long? total = null, int? count = null) : base(statusCode)
     {

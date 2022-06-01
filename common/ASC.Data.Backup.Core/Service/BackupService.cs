@@ -29,14 +29,14 @@ namespace ASC.Data.Backup.Services;
 [Scope]
 public class BackupService : IBackupService
 {
-    private readonly ILog _logger;
+    private readonly ILogger<BackupService> _logger;
     private readonly BackupStorageFactory _backupStorageFactory;
     private readonly BackupWorker _backupWorker;
     private readonly BackupRepository _backupRepository;
     private readonly ConfigurationExtension _configuration;
 
     public BackupService(
-        ILog logger,
+        ILogger<BackupService> logger,
         BackupStorageFactory backupStorageFactory,
         BackupWorker backupWorker,
         BackupRepository backupRepository,
@@ -89,7 +89,7 @@ public class BackupService : IBackupService
             }
             catch (Exception error)
             {
-                _logger.Warn("error while removing backup record: {0}", error);
+                _logger.WarningErrorWhileBackupRecord(error);
             }
         }
     }

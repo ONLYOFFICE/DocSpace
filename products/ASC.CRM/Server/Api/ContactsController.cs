@@ -43,7 +43,8 @@ using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
-using ASC.MessagingSystem;
+using ASC.MessagingSystem.Core;
+using ASC.MessagingSystem.Models;
 using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
 using ASC.Web.CRM.Classes;
@@ -66,7 +67,7 @@ namespace ASC.CRM.Api
         private readonly MailSender _mailSender;
         private readonly FileSizeComment _fileSizeComment;
         private readonly ContactPhotoManager _contactPhotoManager;
-        private readonly EmployeeWraperHelper _employeeWraperHelper;
+        private readonly EmployeeDtoHelper _employeeDtoHelper;
         private readonly UserFormatter _userFormatter;
         private readonly SetupInfo _setupInfo;
         private readonly SecurityContext _securityContext;
@@ -84,7 +85,7 @@ namespace ASC.CRM.Api
                      SecurityContext securityContext,
                      SetupInfo setupInfo,
                      UserFormatter userFormatter,
-                     EmployeeWraperHelper employeeWraperHelper,
+                     EmployeeDtoHelper employeeDtoHelper,
                      ContactPhotoManager contactPhotoManager,
                      FileSizeComment fileSizeComment,
                      MailSender mailSender,
@@ -98,7 +99,7 @@ namespace ASC.CRM.Api
             _securityContext = securityContext;
             _setupInfo = setupInfo;
             _userFormatter = userFormatter;
-            _employeeWraperHelper = employeeWraperHelper;
+            _employeeDtoHelper = employeeDtoHelper;
             _contactPhotoManager = contactPhotoManager;
             _fileSizeComment = fileSizeComment;
             _mailSender = mailSender;
@@ -1421,7 +1422,7 @@ namespace ASC.CRM.Api
 
             return _crmSecurity.IsPrivate(contact)
                        ? _crmSecurity.GetAccessSubjectTo(contact)
-                                    .Select(item => _employeeWraperHelper.Get(item.Key))
+                                    .Select(item => _employeeDtoHelper.Get(item.Key))
                        : new List<EmployeeDto>();
         }
 

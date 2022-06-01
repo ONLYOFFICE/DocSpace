@@ -40,7 +40,8 @@ using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.ElasticSearch;
-using ASC.MessagingSystem;
+using ASC.MessagingSystem.Core;
+using ASC.MessagingSystem.Models;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core.Users;
 using ASC.Web.CRM.Services.NotifyService;
@@ -790,7 +791,7 @@ namespace ASC.CRM.Api
 
         private IEnumerable<UserInfo> GetUsersByIdList(IEnumerable<Guid> ids)
         {
-            return _userManager.GetUsers().Where(x => ids.Contains(x.ID));
+            return _userManager.GetUsers().Where(x => ids.Contains(x.Id));
         }
     }
 }

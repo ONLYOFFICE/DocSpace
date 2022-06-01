@@ -29,30 +29,45 @@ namespace ASC.Notify.Services;
 [Singletone]
 public class NotifyCleanerService : BackgroundService
 {
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly NotifyServiceCfg _notifyServiceCfg;
-    private readonly IServiceScopeFactory _serviceScopeFactory;
+    private readonly IServiceScopeFactory _scopeFactory;
     private readonly TimeSpan _waitingPeriod = TimeSpan.FromHours(8);
 
-    public NotifyCleanerService(IOptions<NotifyServiceCfg> notifyServiceCfg, IServiceScopeFactory serviceScopeFactory, IOptionsMonitor<ILog> options)
+    public NotifyCleanerService(IOptions<NotifyServiceCfg> notifyServiceCfg, IServiceScopeFactory serviceScopeFactory, ILoggerProvider options)
     {
-        _logger = options.Get("ASC.NotifyCleaner");
+        _logger = options.CreateLogger("ASC.NotifyCleaner");
         _notifyServiceCfg = notifyServiceCfg.Value;
-        _serviceScopeFactory = serviceScopeFactory;
+        _scopeFactory = serviceScopeFactory;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.Info("Notify Cleaner Service running.");
+        _logger.InformationNotifyCleanerRunning();
+
+        stoppingToken.Register(() => _logger.Debug("NotifyCleanerService background task is stopping."));
 
         while (!stoppingToken.IsCancellationRequested)
         {
+            using var serviceScope = _scopeFactory.CreateScope();
+
+            var registerInstanceService = serviceScope.ServiceProvider.GetService<IRegisterInstanceManager<NotifyCleanerService>>();
+
+            if (!await registerInstanceService.IsActive(RegisterInstanceWorkerService<NotifyCleanerService>.InstanceId))
+            {
+                _logger.Debug($"Notify Clean Service background task with instance id {RegisterInstanceWorkerService<NotifyCleanerService>.InstanceId} is't active.");
+
+                await Task.Delay(1000, stoppingToken);
+
+                continue;
+            }
+
             Clear();
 
             await Task.Delay(_waitingPeriod, stoppingToken);
         }
 
-        _logger.Info("Notify Cleaner Service is stopping.");
+        _logger.InformationNotifyCleanerStopping();
     }
 
     private void Clear()
@@ -61,7 +76,7 @@ public class NotifyCleanerService : BackgroundService
         {
             var date = DateTime.UtcNow.AddDays(-_notifyServiceCfg.StoreMessagesDays);
 
-            using var scope = _serviceScopeFactory.CreateScope();
+            using var scope = _scopeFactory.CreateScope();
             using var dbContext = scope.ServiceProvider.GetService<DbContextManager<NotifyDbContext>>().Get(_notifyServiceCfg.ConnectionStringName);
             using var tx = dbContext.Database.BeginTransaction();
 
@@ -73,7 +88,7 @@ public class NotifyCleanerService : BackgroundService
             dbContext.SaveChanges();
             tx.Commit();
 
-            _logger.InfoFormat("Clear notify messages: notify_info({0}), notify_queue ({1})", info.Count, queue.Count);
+            _logger.InformationClearNotifyMessages(info.Count, queue.Count);
 
         }
         catch (ThreadAbortException)
@@ -82,7 +97,7 @@ public class NotifyCleanerService : BackgroundService
         }
         catch (Exception err)
         {
-            _logger.Error(err);
+            _logger.ErrorClear(err);
         }
     }
 }

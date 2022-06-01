@@ -56,7 +56,7 @@ public interface IFactoryIndexer
 [Scope]
 public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
 {
-    public ILog Logger { get; }
+    public ILogger Logger { get; }
     public string IndexName { get => _indexer.IndexName; }
     public virtual string SettingsTitle => string.Empty;
 
@@ -71,7 +71,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
         = new ConcurrentExclusiveSchedulerPair(TaskScheduler.Default, 10).ConcurrentScheduler;
 
     public FactoryIndexer(
-        IOptionsMonitor<ILog> options,
+        ILoggerProvider options,
         TenantManager tenantManager,
         SearchSettingsHelper searchSettingsHelper,
         FactoryIndexer factoryIndexer,
@@ -80,7 +80,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
         ICache cache)
     {
         _cache = cache;
-        Logger = options.Get("ASC.Indexer");
+        Logger = options.CreateLogger("ASC.Indexer");
         _tenantManager = tenantManager;
         _searchSettingsHelper = searchSettingsHelper;
         _factoryIndexerCommon = factoryIndexer;
@@ -104,7 +104,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
         }
         catch (Exception e)
         {
-            Logger.Error("Select", e);
+            Logger.ErrorSelect(e);
             result = new List<T>();
 
             return false;
@@ -129,7 +129,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
         }
         catch (Exception e)
         {
-            Logger.Error("Select", e);
+            Logger.ErrorSelect(e);
             result = new List<int>();
 
             return false;
@@ -155,7 +155,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
         }
         catch (Exception e)
         {
-            Logger.Error("Select", e);
+            Logger.ErrorSelect(e);
             total = 0;
             result = new List<int>();
 
@@ -186,7 +186,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
         }
         catch (Exception e)
         {
-            Logger.Error("Index", e);
+            Logger.ErrorIndex(e);
         }
 
         return false;
@@ -206,11 +206,11 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
         }
         catch (ElasticsearchClientException e)
         {
-            Logger.Error(e);
+            Logger.ErrorIndex(e);
 
             if (e.Response != null)
             {
-                Logger.Error(e.Response.HttpStatusCode);
+                Logger.Error(e.Response.HttpStatusCode.ToString());
 
                 if (e.Response.HttpStatusCode == 413 || e.Response.HttpStatusCode == 403 || e.Response.HttpStatusCode == 408)
                 {
@@ -241,11 +241,11 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
 
             if (inner != null)
             {
-                Logger.Error(inner);
+                Logger.ErrorInner(inner);
 
                 if (inner.Response.HttpStatusCode == 413 || inner.Response.HttpStatusCode == 403)
                 {
-                    Logger.Error(inner.Response.HttpStatusCode);
+                    Logger.Error(inner.Response.HttpStatusCode.ToString());
                     data.ForEach(r => Index(r, immediately));
                 }
                 else if (inner.Response.HttpStatusCode == 429)
@@ -286,11 +286,11 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
         }
         catch (ElasticsearchClientException e)
         {
-            Logger.Error(e);
+            Logger.ErrorIndexAsync(e);
 
             if (e.Response != null)
             {
-                Logger.Error(e.Response.HttpStatusCode);
+                Logger.Error(e.Response.HttpStatusCode.ToString());
 
                 if (e.Response.HttpStatusCode == 413 || e.Response.HttpStatusCode == 403 || e.Response.HttpStatusCode == 408)
                 {
@@ -321,11 +321,11 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
 
             if (inner != null)
             {
-                Logger.Error(inner);
+                Logger.ErrorIndexAsync(inner);
 
                 if (inner.Response.HttpStatusCode == 413 || inner.Response.HttpStatusCode == 403)
                 {
-                    Logger.Error(inner.Response.HttpStatusCode);
+                    Logger.Error(inner.Response.HttpStatusCode.ToString());
                     data.ForEach(r => Index(r, immediately));
                 }
                 else if (inner.Response.HttpStatusCode == 429)
@@ -361,7 +361,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
         }
         catch (Exception e)
         {
-            Logger.Error("Update", e);
+            Logger.ErrorUpdate(e);
         }
     }
 
@@ -379,7 +379,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
         }
         catch (Exception e)
         {
-            Logger.Error("Update", e);
+            Logger.ErrorUpdate(e);
         }
     }
 
@@ -398,7 +398,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
         }
         catch (Exception e)
         {
-            Logger.Error("Update", e);
+            Logger.ErrorUpdate(e);
         }
     }
 
@@ -417,7 +417,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
         }
         catch (Exception e)
         {
-            Logger.Error("Update", e);
+            Logger.ErrorUpdate(e);
         }
     }
 
@@ -435,7 +435,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
         }
         catch (Exception e)
         {
-            Logger.Error("Delete", e);
+            Logger.ErrorDelete(e);
         }
     }
 
@@ -455,7 +455,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
         }
         catch (Exception e)
         {
-            Logger.Error("Index", e);
+            Logger.ErrorIndex(e);
         }
     }
 
@@ -560,7 +560,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
         catch (Exception e)
         {
             _cache.Insert(key, "false", cacheTime);
-            Logger.Error("FactoryIndexer CheckState", e);
+            Logger.ErrorFactoryIndexerCheckState(e);
 
             return false;
         }
@@ -585,7 +585,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
             {
                 foreach (var e in agg.InnerExceptions)
                 {
-                    Logger.Error(e);
+                    Logger.ErrorQueue(e);
                 }
 
                 throw;
@@ -603,7 +603,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
 [Scope]
 public class FactoryIndexer
 {
-    public ILog Log { get; }
+    public ILogger Log { get; }
 
     private readonly ICache _cache;
     private readonly IServiceProvider _serviceProvider;
@@ -615,7 +615,7 @@ public class FactoryIndexer
         IServiceProvider serviceProvider,
         FactoryIndexerHelper factoryIndexerHelper,
         Client client,
-        IOptionsMonitor<ILog> options,
+        ILoggerProvider options,
         CoreBaseSettings coreBaseSettings,
         ICache cache)
     {
@@ -627,11 +627,11 @@ public class FactoryIndexer
 
         try
         {
-            Log = options.Get("ASC.Indexer");
+            Log = options.CreateLogger("ASC.Indexer");
         }
         catch (Exception e)
         {
-            Log.Fatal("FactoryIndexer", e);
+            Log.CriticalFactoryIndexer(e);
         }
     }
 
@@ -668,7 +668,7 @@ public class FactoryIndexer
                 _cache.Insert(key, "false", cacheTime);
             }
 
-            Log.Error("Ping false", e);
+            Log.ErrorPingFalse(e);
 
             return false;
         }
@@ -700,7 +700,7 @@ public class FactoryIndexer
 
             var isValid = result.IsValid;
 
-            Log.DebugFormat("CheckState ping {0}", result.DebugInformation);
+            Log.DebugCheckStatePing(result.DebugInformation);
 
             if (cacheState)
             {
@@ -716,7 +716,7 @@ public class FactoryIndexer
                 _cache.Insert(key, "false", cacheTime);
             }
 
-            Log.Error("Ping false", e);
+            Log.ErrorPingFalse(e);
 
             return false;
         }

@@ -43,32 +43,32 @@ public class ThirdPartyAppHandlerService
 {
     private readonly AuthContext _authContext;
     private readonly CommonLinkUtility _commonLinkUtility;
-    private readonly ILog _log;
+    private readonly ILogger<ThirdPartyAppHandlerService> _log;
 
     public string HandlerPath { get; set; }
 
     public ThirdPartyAppHandlerService(
-        IOptionsMonitor<ILog> optionsMonitor,
+        ILogger<ThirdPartyAppHandlerService> logger,
         AuthContext authContext,
         BaseCommonLinkUtility baseCommonLinkUtility,
         CommonLinkUtility commonLinkUtility)
     {
         _authContext = authContext;
         _commonLinkUtility = commonLinkUtility;
-        _log = optionsMonitor.CurrentValue;
+        _log = logger;
         HandlerPath = baseCommonLinkUtility.ToAbsolute("~/thirdpartyapp");
     }
 
     public async Task InvokeAsync(HttpContext context)
     {
-        _log.Debug("ThirdPartyApp: handler request - " + context.Request.Url());
+        _log.DebugThirdPartyAppHandlerRequest(context.Request.Url());
 
         var message = string.Empty;
 
         try
         {
             var app = ThirdPartySelector.GetApp(context.Request.Query[ThirdPartySelector.AppAttr]);
-            _log.Debug("ThirdPartyApp: app - " + app);
+            _log.DebugThirdPartyAppApp(app);
 
             if (await app.RequestAsync(context))
             {
@@ -82,7 +82,7 @@ public class ThirdPartyAppHandlerService
         }
         catch (Exception e)
         {
-            _log.Error("ThirdPartyApp", e);
+            _log.ErrorThirdPartyApp(e);
             message = e.Message;
         }
 
