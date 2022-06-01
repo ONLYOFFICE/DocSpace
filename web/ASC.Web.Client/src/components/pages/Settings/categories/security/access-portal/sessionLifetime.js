@@ -38,6 +38,7 @@ const SessionLifetime = (props) => {
   const [sessionLifetime, setSessionLifetime] = useState("0");
   const [showReminder, setShowReminder] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   const getSettings = () => {
     const currentSettings = getFromSessionStorage(
@@ -115,7 +116,16 @@ const SessionLifetime = (props) => {
     setSessionLifetime(e.target.value);
   };
 
+  const onBlurInput = () => {
+    !sessionLifetime ? setError(true) : setError(false);
+  };
+
+  const onFocusInput = () => {
+    setError(false);
+  };
+
   const onSaveClick = async () => {
+    if (error) return;
     try {
       setSessionLifetimeSettings(sessionLifetime);
       toastr.success(t("SuccessfullySaveSettingsMessage"));
@@ -174,6 +184,9 @@ const SessionLifetime = (props) => {
             isAutoFocussed={true}
             value={sessionLifetime}
             onChange={onChangeInput}
+            onBlur={onBlurInput}
+            onFocus={onFocusInput}
+            hasError={error}
           />
         </>
       )}
