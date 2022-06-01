@@ -82,6 +82,7 @@ const Item = ({ id, title, isRoot, onClick, ...rest }) => {
         fontWeight={isRoot ? "600" : "400"}
         fontSize={"15px"}
         truncate={true}
+        title={title}
       >
         {title}
       </StyledText>
