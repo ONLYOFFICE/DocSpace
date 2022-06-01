@@ -182,15 +182,8 @@ StyledInfoPanelWrapper.defaultProps = { theme: Base };
 StyledInfoPanel.defaultProps = { theme: Base };
 InfoPanel.defaultProps = { theme: Base };
 
-export default inject(({ infoPanelStore }) => {
-  let isVisible = false;
-  let setIsVisible = () => {};
-
-  if (infoPanelStore) {
-    isVisible = infoPanelStore.isVisible;
-    setIsVisible = infoPanelStore.setIsVisible;
-  }
-
+export default inject(({ auth }) => {
+  const { isVisible, setIsVisible } = auth.infoPanelStore;
   return {
     isVisible,
     setIsVisible,
