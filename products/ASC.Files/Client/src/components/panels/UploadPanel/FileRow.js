@@ -157,13 +157,17 @@ class FileRow extends Component {
       isMediaActive,
       setCurrentItem,
       item,
+      uploaded,
     } = this.props;
     if (!isMediaActive) setCurrentItem(item);
 
     const data = { visible: true, id: id };
     setMediaViewerData(data);
     setUploadPanelVisible(false);
-    clearUploadedFilesHistory();
+
+    if (uploaded) {
+      clearUploadedFilesHistory();
+    }
   };
 
   hasError = () => {
