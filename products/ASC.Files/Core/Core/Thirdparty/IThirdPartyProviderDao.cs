@@ -40,6 +40,11 @@ internal abstract class ThirdPartyProviderDao
         return Task.FromResult(new List<File<string>>());
     }
 
+    public IAsyncEnumerable<File<string>> GetFilesAsyncEnumerable(IEnumerable<string> parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
+    {
+        return AsyncEnumerable.Empty<File<string>>();
+    }
+
     public IAsyncEnumerable<File<string>> SearchAsync(string text, bool bunch)
     {
         return null;
@@ -380,6 +385,11 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         return new ValueTask<List<FileShareRecord>>(result);
     }
 
+    public IAsyncEnumerable<FileShareRecord> GetSharesAsyncEnumerable(IEnumerable<Guid> subjects)
+    {
+        return  AsyncEnumerable.Empty<FileShareRecord>();
+    }
+
     public Task<IEnumerable<FileShareRecord>> GetSharesAsync(IEnumerable<FileEntry<string>> entry)
     {
         return null;
@@ -396,6 +406,11 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
     }
 
     public Task<IEnumerable<FileShareRecord>> GetPureShareRecordsAsync(IEnumerable<FileEntry<string>> entries)
+    {
+        return null;
+    }
+
+    public IAsyncEnumerable<FileShareRecord> GetPureShareRecordsAsyncEnumerable(IEnumerable<FileEntry<string>> entries)
     {
         return null;
     }
@@ -420,6 +435,11 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
     #region TagDao
 
     public IAsyncEnumerable<Tag> GetTagsAsync(Guid subject, TagType tagType, IEnumerable<FileEntry<string>> fileEntries)
+    {
+        return AsyncEnumerable.Empty<Tag>();
+    }
+
+    public IAsyncEnumerable<Tag> GetTagsAsync(Guid subject, TagType tagType, IAsyncEnumerable<FileEntry<string>> fileEntries)
     {
         return AsyncEnumerable.Empty<Tag>();
     }
@@ -449,7 +469,17 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         return Task.FromResult((IDictionary<object, IEnumerable<Tag>>)new Dictionary<object, IEnumerable<Tag>>());
     }
 
+    public Task<IDictionary<object, IEnumerable<Tag>>> GetTagsAsync(Guid subject, IEnumerable<TagType> tagType, IAsyncEnumerable<FileEntry<string>> fileEntries)
+    {
+        return Task.FromResult((IDictionary<object, IEnumerable<Tag>>)new Dictionary<object, IEnumerable<Tag>>());
+    }
+
     public IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, IEnumerable<FileEntry<string>> fileEntries)
+    {
+        return AsyncEnumerable.Empty<Tag>();
+    }
+
+    public IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, IAsyncEnumerable<FileEntry<string>> fileEntries)
     {
         return AsyncEnumerable.Empty<Tag>();
     }

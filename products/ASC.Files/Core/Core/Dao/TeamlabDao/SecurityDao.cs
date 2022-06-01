@@ -179,6 +179,13 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
         return FromQueryAsync(q);
     }
 
+    public IAsyncEnumerable<FileShareRecord> GetSharesAsyncEnumerable(IEnumerable<Guid> subjects)
+    {
+        var q = GetQuery(r => subjects.Contains(r.Subject));
+
+        return FromQueryAsyncEnumerable(q);
+    }
+
     public Task<IEnumerable<FileShareRecord>> GetPureShareRecordsAsync(IEnumerable<FileEntry<T>> entries)
     {
         if (entries == null)
@@ -187,6 +194,16 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
         }
 
         return InternalGetPureShareRecordsAsync(entries);
+    }
+
+    public IAsyncEnumerable<FileShareRecord> GetPureShareRecordsAsyncEnumerable(IEnumerable<FileEntry<T>> entries)
+    {
+        if (entries == null)
+        {
+            return AsyncEnumerable.Empty<FileShareRecord>();
+        }
+
+        return InternalGetPureShareRecordsAsyncEnumerable(entries);
     }
 
     private async Task<IEnumerable<FileShareRecord>> InternalGetPureShareRecordsAsync(IEnumerable<FileEntry<T>> entries)
@@ -200,6 +217,22 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
         }
 
         return await GetPureShareRecordsDbAsync(files, folders);
+    }
+
+    private async IAsyncEnumerable<FileShareRecord> InternalGetPureShareRecordsAsyncEnumerable(IEnumerable<FileEntry<T>> entries)
+    {
+        var files = new List<string>();
+        var folders = new List<string>();
+
+        foreach (var entry in entries)
+        {
+            await SelectFilesAndFoldersForShareAsync(entry, files, folders, null);
+        }
+
+        await foreach(var e in GetPureShareRecordsDbAsyncEnumerable(files, folders))
+        {
+            yield return e; 
+        }
     }
 
     public Task<IEnumerable<FileShareRecord>> GetPureShareRecordsAsync(IAsyncEnumerable<FileEntry<T>> entries)
@@ -257,6 +290,22 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
         }
 
         result.AddRange(await FromQueryAsync(q));
+
+        return result;
+    }
+
+    private IAsyncEnumerable<FileShareRecord> GetPureShareRecordsDbAsyncEnumerable(List<string> files, List<string> folders)
+    {
+        var result = AsyncEnumerable.Empty<FileShareRecord>();
+
+        var q = GetQuery(r => folders.Contains(r.EntryId) && r.EntryType == FileEntryType.Folder);
+
+        if (files.Count > 0)
+        {
+            q = q.Union(GetQuery(r => files.Contains(r.EntryId) && r.EntryType == FileEntryType.File));
+        }
+
+        result.Concat(FromQueryAsyncEnumerable(q));
 
         return result;
     }
@@ -406,6 +455,13 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
             .AsAsyncEnumerable()
             .SelectAwait(async e => await ToFileShareRecordAsync(e))
             .ToListAsync();
+    }
+
+    protected IAsyncEnumerable<FileShareRecord> FromQueryAsyncEnumerable(IQueryable<DbFilesSecurity> filesSecurities)
+    {
+        return filesSecurities
+            .AsAsyncEnumerable()
+            .SelectAwait(async e => await ToFileShareRecordAsync(e));
     }
 
     private async Task<FileShareRecord> ToFileShareRecordAsync(DbFilesSecurity r)

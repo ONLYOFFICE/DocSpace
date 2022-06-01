@@ -44,6 +44,11 @@ internal class ProviderTagDao : ProviderDaoBase, ITagDao<string>
         return _tagDao.GetTagsAsync(subject, tagType, fileEntries);
     }
 
+    public IAsyncEnumerable<Tag> GetTagsAsync(Guid subject, TagType tagType, IAsyncEnumerable<FileEntry<string>> fileEntries)
+    {
+        return _tagDao.GetTagsAsync(subject, tagType, fileEntries);
+    }
+
     public IAsyncEnumerable<Tag> GetTagsAsync(TagType tagType, IEnumerable<FileEntry<string>> fileEntries)
     {
         return _tagDao.GetTagsAsync(tagType, fileEntries);
@@ -59,6 +64,11 @@ internal class ProviderTagDao : ProviderDaoBase, ITagDao<string>
     #region Only for Teamlab Documents
 
     public IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, IEnumerable<FileEntry<string>> fileEntries)
+    {
+        return _tagDao.GetNewTagsAsync(subject, fileEntries);
+    }
+
+    public IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, IAsyncEnumerable<FileEntry<string>> fileEntries)
     {
         return _tagDao.GetNewTagsAsync(subject, fileEntries);
     }
@@ -119,6 +129,11 @@ internal class ProviderTagDao : ProviderDaoBase, ITagDao<string>
     }
 
     public Task<IDictionary<object, IEnumerable<Tag>>> GetTagsAsync(Guid subject, IEnumerable<TagType> tagType, IEnumerable<FileEntry<string>> fileEntries)
+    {
+        return _tagDao.GetTagsAsync(subject, tagType, fileEntries);
+    }
+
+    public Task<IDictionary<object, IEnumerable<Tag>>> GetTagsAsync(Guid subject, IEnumerable<TagType> tagType, IAsyncEnumerable<FileEntry<string>> fileEntries)
     {
         return _tagDao.GetTagsAsync(subject, tagType, fileEntries);
     }

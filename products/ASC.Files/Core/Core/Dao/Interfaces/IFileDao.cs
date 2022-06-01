@@ -259,6 +259,7 @@ public interface IFileDao<T>
     /// <param name="searchInContent"></param>
     /// <returns></returns>
     Task<List<File<T>>> GetFilesAsync(IEnumerable<T> parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent);
+    IAsyncEnumerable<File<T>> GetFilesAsyncEnumerable(IEnumerable<T> parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent);
     /// <summary>
     /// Search the list of files containing text
     /// Only in TMFileDao

@@ -234,6 +234,71 @@ internal class FileDao : AbstractDao, IFileDao<int>
             .Select(e => _mapper.Map<DbFileQuery, File<int>>(e));
     }
 
+    public async IAsyncEnumerable<File<int>> GetFilesFilteredAsyncEnumerable(IAsyncEnumerable<int> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool checkShared = false)
+    {
+        var fileIdsList = await fileIds.ToListAsync();
+
+        if (fileIdsList == null || !fileIdsList.Any() || filterType == FilterType.FoldersOnly)
+        {
+            yield break;
+        }
+
+        var query = GetFileQuery(r => fileIdsList.Contains(r.Id) && r.CurrentVersion).AsNoTracking();
+
+        if (!string.IsNullOrEmpty(searchText))
+        {
+            var func = GetFuncForSearch(null, null, filterType, subjectGroup, subjectID, searchText, searchInContent, false);
+
+            if (_factoryIndexer.TrySelectIds(s => func(s).In(r => r.Id, fileIdsList.ToArray()), out var searchIds))
+            {
+                query = query.Where(r => searchIds.Contains(r.Id));
+            }
+            else
+            {
+                query = BuildSearch(query, searchText, SearhTypeEnum.Any);
+            }
+        }
+
+        if (subjectID != Guid.Empty)
+        {
+            if (subjectGroup)
+            {
+                var users = _userManager.GetUsersByGroup(subjectID).Select(u => u.Id).ToArray();
+                query = query.Where(r => users.Contains(r.CreateBy));
+            }
+            else
+            {
+                query = query.Where(r => r.CreateBy == subjectID);
+            }
+        }
+
+        switch (filterType)
+        {
+            case FilterType.DocumentsOnly:
+            case FilterType.ImagesOnly:
+            case FilterType.PresentationsOnly:
+            case FilterType.SpreadsheetsOnly:
+            case FilterType.ArchiveOnly:
+            case FilterType.MediaOnly:
+                query = query.Where(r => r.Category == (int)filterType);
+                break;
+            case FilterType.ByExtension:
+                if (!string.IsNullOrEmpty(searchText))
+                {
+                    query = BuildSearch(query, searchText, SearhTypeEnum.End);
+                }
+                break;
+        }
+
+        var result = (checkShared ? FromQueryWithShared(query) : FromQuery(query)).AsAsyncEnumerable()
+            .Select(e => _mapper.Map<DbFileQuery, File<int>>(e));
+
+        await foreach (var e in result)
+        {
+            yield return e;
+        }
+    }
+
     public Task<List<int>> GetFilesAsync(int parentId)
     {
         using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
@@ -1181,6 +1246,16 @@ internal class FileDao : AbstractDao, IFileDao<int>
         return InternalGetFilesAsync(parentIds, filterType, subjectGroup, subjectID, searchText, searchInContent);
     }
 
+    public IAsyncEnumerable<File<int>> GetFilesAsyncEnumerable(IEnumerable<int> parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
+    {
+        if (parentIds == null || !parentIds.Any() || filterType == FilterType.FoldersOnly)
+        {
+            return AsyncEnumerable.Empty<File<int>>();
+        }
+
+        return InternalGetFilesAsyncEnumerable(parentIds, filterType, subjectGroup, subjectID, searchText, searchInContent);
+    }
+
     private async Task<List<File<int>>> InternalGetFilesAsync(IEnumerable<int> parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
     {
         using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
@@ -1239,6 +1314,69 @@ internal class FileDao : AbstractDao, IFileDao<int>
         var query = await FromQueryWithShared(q).ToListAsync().ConfigureAwait(false);
 
         return query.ConvertAll(e => _mapper.Map<DbFileQuery, File<int>>(e));
+    }
+
+    private async IAsyncEnumerable<File<int>> InternalGetFilesAsyncEnumerable(IEnumerable<int> parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
+    {
+        using var FilesDbContext = DbContextManager.GetNew(FileConstant.DatabaseId);
+
+        var q = GetFileQuery(r => r.CurrentVersion)
+            .AsNoTracking()
+            .Join(FilesDbContext.Tree, a => a.ParentId, t => t.FolderId, (file, tree) => new { file, tree })
+            .Where(r => parentIds.Contains(r.tree.ParentId))
+            .Select(r => r.file);
+
+        if (!string.IsNullOrEmpty(searchText))
+        {
+            var func = GetFuncForSearch(null, null, filterType, subjectGroup, subjectID, searchText, searchInContent, false);
+
+            if (_factoryIndexer.TrySelectIds(s => func(s), out var searchIds))
+            {
+                q = q.Where(r => searchIds.Contains(r.Id));
+            }
+            else
+            {
+                q = BuildSearch(q, searchText, SearhTypeEnum.Any);
+            }
+        }
+
+        if (subjectID != Guid.Empty)
+        {
+            if (subjectGroup)
+            {
+                var users = _userManager.GetUsersByGroup(subjectID).Select(u => u.Id).ToArray();
+                q = q.Where(r => users.Contains(r.CreateBy));
+            }
+            else
+            {
+                q = q.Where(r => r.CreateBy == subjectID);
+            }
+        }
+
+        switch (filterType)
+        {
+            case FilterType.DocumentsOnly:
+            case FilterType.ImagesOnly:
+            case FilterType.PresentationsOnly:
+            case FilterType.SpreadsheetsOnly:
+            case FilterType.ArchiveOnly:
+            case FilterType.MediaOnly:
+                q = q.Where(r => r.Category == (int)filterType);
+                break;
+            case FilterType.ByExtension:
+                if (!string.IsNullOrEmpty(searchText))
+                {
+                    q = BuildSearch(q, searchText, SearhTypeEnum.End);
+                }
+                break;
+        }
+
+        var query = FromQueryWithShared(q).AsAsyncEnumerable();
+
+        await foreach (var e in query)
+        {
+            yield return _mapper.Map<DbFileQuery, File<int>>(e);
+        }
     }
 
     public IAsyncEnumerable<File<int>> SearchAsync(string searchText, bool bunch = false)

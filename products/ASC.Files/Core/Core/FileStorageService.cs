@@ -183,21 +183,25 @@ public class FileStorageService<T> //: IFileStorageService
         return folder;
     }
 
-    public async Task<List<FileEntry>> GetFoldersAsync(T parentId)
+    public async IAsyncEnumerable<FileEntry> GetFoldersAsync(T parentId)
     {
         var folderDao = GetFolderDao();
+        var entries = AsyncEnumerable.Empty<FileEntry>();
 
         try
         {
-            var entries = await _entryManager.GetEntriesAsync(
+            entries = _entryManager.GetEntriesAsync(
                 await folderDao.GetFolderAsync(parentId), 0, 0, FilterType.FoldersOnly,
                 false, Guid.Empty, string.Empty, false, false, new OrderBy(SortedByType.AZ, true));
-
-            return new List<FileEntry>(entries.Entries);
         }
         catch (Exception e)
         {
             throw GenerateException(e);
+        }
+
+        await foreach (var e in entries)
+        {
+            yield return e;
         }
     }
 
@@ -270,11 +274,12 @@ public class FileStorageService<T> //: IFileStorageService
             orderBy.SortedBy = SortedByType.New;
         }
 
-        int total;
         IEnumerable<FileEntry> entries;
+        int total;
         try
         {
-            (entries, total) = await _entryManager.GetEntriesAsync(parent, from, count, filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, orderBy);
+            entries = await _entryManager.GetEntriesAsync(parent, from, count, filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, orderBy).ToListAsync();
+            total = entries.Count();
         }
         catch (Exception e)
         {
@@ -499,7 +504,7 @@ public class FileStorageService<T> //: IFileStorageService
         return file;
     }
 
-    public async Task<List<FileEntry<T>>> GetSiblingsFileAsync(T fileId, T parentId, FilterType filter, bool subjectGroup, string subjectID, string search, bool searchInContent, bool withSubfolders, OrderBy orderBy)
+    public async IAsyncEnumerable<FileEntry<T>> GetSiblingsFileAsync(T fileId, T parentId, FilterType filter, bool subjectGroup, string subjectID, string search, bool searchInContent, bool withSubfolders, OrderBy orderBy)
     {
         var subjectId = string.IsNullOrEmpty(subjectID) ? Guid.Empty : new Guid(subjectID);
 
@@ -516,7 +521,7 @@ public class FileStorageService<T> //: IFileStorageService
 
         if (filter == FilterType.FoldersOnly)
         {
-            return new List<FileEntry<T>>();
+            yield break;
         }
         if (filter == FilterType.None)
         {
@@ -532,18 +537,18 @@ public class FileStorageService<T> //: IFileStorageService
             orderBy.SortedBy = SortedByType.New;
         }
 
-        var entries = Enumerable.Empty<FileEntry>();
+        var entries = AsyncEnumerable.Empty<FileEntry>();
 
         if (!await _fileSecurity.CanReadAsync(parent))
         {
             file.ParentId = await _globalFolderHelper.GetFolderShareAsync<T>();
-            entries = entries.Concat(new[] { file });
+            entries = entries.Append(file);
         }
         else
         {
             try
             {
-                (entries, var total) = await _entryManager.GetEntriesAsync(parent, 0, 0, filter, subjectGroup, subjectId, search, searchInContent, withSubfolders, orderBy);
+                entries = _entryManager.GetEntriesAsync(parent, 0, 0, filter, subjectGroup, subjectId, search, searchInContent, withSubfolders, orderBy);
             }
             catch (Exception e)
             {
@@ -558,10 +563,13 @@ public class FileStorageService<T> //: IFileStorageService
 
         var previewedType = new[] { FileType.Image, FileType.Audio, FileType.Video };
 
-        var result = await _fileSecurity.FilterReadAsync(entries.OfType<File<T>>());
+        var result = _fileSecurity.FilterReadAsync(entries.OfType<File<T>>());
         result = result.OfType<File<T>>().Where(f => previewedType.Contains(FileUtility.GetFileTypeByFileName(f.Title)));
-
-        return new List<FileEntry<T>>(result);
+        
+        await foreach(var e in result)
+        {
+            yield return e;
+        }
     }
 
     public Task<File<T>> CreateNewFileAsync<TTemplate>(FileModel<T, TTemplate> fileWrapper, bool enableExternalExt = false)

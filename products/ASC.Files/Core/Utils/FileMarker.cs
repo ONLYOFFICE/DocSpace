@@ -747,7 +747,7 @@ public class FileMarker
         return entryTags;
     }
 
-    public async Task<IEnumerable<FileEntry>> SetTagsNewAsync<T>(Folder<T> parent, IEnumerable<FileEntry> entries)
+    public async IAsyncEnumerable<FileEntry> SetTagsNewAsync<T>(Folder<T> parent, IAsyncEnumerable<FileEntry> entries)
     {
         var tagDao = _daoFactory.GetTagDao<T>();
         var folderDao = _daoFactory.GetFolderDao<T>();
@@ -843,14 +843,14 @@ public class FileMarker
 
             var tags = await totalTags.ToListAsync();
 
-            SetTagsNew(tags, entries.OfType<FileEntry<int>>().ToList());
-            SetTagsNew(tags, entries.OfType<FileEntry<string>>().ToList());
+            await SetTagsNewAsync(tags, entries.OfType<FileEntry<int>>());
+            await SetTagsNewAsync(tags, entries.OfType<FileEntry<string>>());
         }
 
-        void SetTagsNew<T1>(List<Tag> tags, List<FileEntry<T1>> fileEntries)
+        async Task SetTagsNewAsync<T1>(List<Tag> tags, IAsyncEnumerable<FileEntry<T1>> fileEntries)
         {
-            fileEntries
-                .ForEach(
+            await fileEntries
+                .ForEachAsync(
                 entry =>
                 {
                     var curTag = tags.FirstOrDefault(tag => tag.EntryType == entry.FileEntryType && tag.EntryId.Equals(entry.Id));
@@ -866,7 +866,10 @@ public class FileMarker
                 });
         }
 
-        return entries;
+        await foreach (var e in entries)
+        {
+            yield return e;
+        }
     }
 
     private void InsertToCahce(object folderId, int count)
