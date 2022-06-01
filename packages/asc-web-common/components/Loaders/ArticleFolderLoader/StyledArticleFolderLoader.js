@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
 import RectangleLoader from "../RectangleLoader";
 
-import { isMobile } from "react-device-detect";
+import { isMobile, isMobileOnly } from "react-device-detect";
 import { tablet, mobile } from "@appserver/components/utils/device";
 
 const StyledContainer = styled.div`
@@ -29,6 +29,13 @@ const StyledContainer = styled.div`
     padding: 0 16px;
     box-sizing: border-box;
   }
+
+  ${isMobileOnly &&
+  css`
+    width: 100%;
+    padding: 0 16px;
+    box-sizing: border-box;
+  `}
 `;
 
 const StyledBlock = styled.div`
@@ -60,6 +67,17 @@ const StyledRectangleLoader = styled(RectangleLoader)`
     height: 20px;
     width: 20px;
     padding: 0 0 24px;
+  `}
+
+  @media ${mobile} {
+    width: 100%;
+    padding: 0 0 24px;
+  }
+
+  ${isMobileOnly &&
+  css`
+    width: 100% !important;
+    padding: 0 0 24px !important;
   `}
 `;
 

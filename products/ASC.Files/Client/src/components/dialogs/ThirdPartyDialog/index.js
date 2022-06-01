@@ -7,7 +7,10 @@ import { withTranslation } from "react-i18next";
 import ModalDialog from "@appserver/components/modal-dialog";
 import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";
-import { connectedCloudsTitleTranslation } from "../../../helpers/utils";
+import {
+  connectedCloudsTypeTitleTranslation,
+  connectedCloudsTitleTranslation,
+} from "../../../helpers/utils";
 import { Base } from "@appserver/components/themes";
 import Button from "@appserver/components/button";
 import SelectorAddButton from "@appserver/components/selector-add-button";
@@ -81,16 +84,18 @@ const ServiceItem = (props) => {
     onClick,
   } = props;
 
-  const capabilityName = capability[0];
+  const capabilityKey = capability[0];
   const capabilityLink = capability.length > 1 ? capability[1] : "";
 
   const dataProps = {
     "data-link": capabilityLink,
-    "data-title": capabilityName,
-    "data-key": capabilityName,
+    "data-title": capabilityKey,
+    "data-key": capabilityKey,
   };
 
-  const src = getThirdPartyIcon(capabilityName);
+  const src = getThirdPartyIcon(capabilityKey);
+
+  const capabilityName = connectedCloudsTypeTitleTranslation(capabilityKey, t);
 
   return (
     <div className="service-item-container">

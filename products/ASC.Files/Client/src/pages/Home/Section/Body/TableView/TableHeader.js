@@ -3,16 +3,11 @@ import TableHeader from "@appserver/components/table-container/TableHeader";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 
-const TABLE_VERSION = "2";
-const TABLE_COLUMNS = `filesTableColumns_ver-${TABLE_VERSION}`;
-const COLUMNS_SIZE = `filesColumnsSize_ver-${TABLE_VERSION}`;
-const COLUMNS_SIZE_INFO_PANEL = `filesColumnsSizeInfoPanel_ver-${TABLE_VERSION}`;
-
 class FilesTableHeader extends React.Component {
   constructor(props) {
     super(props);
 
-    const { t, personal, userId } = props;
+    const { t, personal, tableStorageName } = props;
 
     const defaultColumns = [
       {
@@ -81,7 +76,7 @@ class FilesTableHeader extends React.Component {
 
     personal && defaultColumns.splice(1, 1);
 
-    const storageColumns = localStorage.getItem(`${TABLE_COLUMNS}=${userId}`);
+    const storageColumns = localStorage.getItem(tableStorageName);
     const splitColumns = storageColumns && storageColumns.split(",");
     const columns = this.getColumns(defaultColumns, splitColumns);
     const resetColumnsSize =
@@ -98,7 +93,7 @@ class FilesTableHeader extends React.Component {
   }
 
   setTableColumns = (tableColumns) => {
-    localStorage.setItem(`${TABLE_COLUMNS}=${this.props.userId}`, tableColumns);
+    localStorage.setItem(this.props.tableStorageName, tableColumns);
   };
 
   componentDidMount() {
@@ -203,17 +198,15 @@ class FilesTableHeader extends React.Component {
       isHeaderChecked,
       filter,
       sectionWidth,
-      userId,
       firstElemChecked,
       sortingVisible,
       infoPanelVisible,
+      columnStorageName,
+      columnInfoPanelStorageName,
     } = this.props;
 
     const { sortBy, sortOrder } = filter;
     const { columns, resetColumnsSize } = this.state;
-
-    const columnStorageName = `${COLUMNS_SIZE}=${userId}`;
-    const columnInfoPanelStorageName = `${COLUMNS_SIZE_INFO_PANEL}=${userId}`;
 
     return (
       <TableHeader
@@ -235,14 +228,8 @@ class FilesTableHeader extends React.Component {
 }
 
 export default inject(
-  ({
-    auth,
-    filesStore,
-    selectedFolderStore,
-    treeFoldersStore,
-    infoPanelStore,
-  }) => {
-    const { isVisible: infoPanelVisible } = infoPanelStore;
+  ({ auth, filesStore, selectedFolderStore, treeFoldersStore }) => {
+    const { isVisible: infoPanelVisible } = auth.infoPanelStore;
 
     const {
       isHeaderChecked,
@@ -269,7 +256,6 @@ export default inject(
 
       setIsLoading,
       fetchFiles,
-      userId: auth.userStore.user.id,
 
       firstElemChecked,
       headerBorder,

@@ -67,7 +67,7 @@ const EditingWrapper = styled.div`
         props.theme.filesEditingWrapper.tile.background};
 
       border: ${(props) => props.theme.filesEditingWrapper.border};
-      border-radius: 0 0 6px 6px;
+      border-radius: ${(props) => (props.isFolder ? "6px" : "0 0 6px 6px")};
 
       height: 43px;
       bottom: 0;
@@ -78,7 +78,7 @@ const EditingWrapper = styled.div`
 
 
   @media ${tablet} {
-    height: 56px;
+    height: ${(props) => (props.viewAs === "tile" ? "43px" : "56px")};
   }
 
   .edit-text {
@@ -114,6 +114,7 @@ const EditingWrapper = styled.div`
 
     ${(props) =>
       props.viewAs === "tile" &&
+      !props.isUpdatingRowItem &&
       css`
         background: #fff;
         border: ${(props) =>
@@ -188,6 +189,7 @@ const EditingWrapperComponent = (props) => {
     elementIcon,
     isUpdatingRowItem,
     passwordEntryProcess,
+    isFolder,
   } = props;
 
   const isTable = viewAs === "table";
@@ -195,6 +197,8 @@ const EditingWrapperComponent = (props) => {
   const [OkIconIsHovered, setIsHoveredOk] = useState(false);
   const [CancelIconIsHovered, setIsHoveredCancel] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const inputRef = React.useRef(null);
 
   const onKeyUpUpdateItem = (e) => {
     if (isLoading) return;
@@ -226,6 +230,8 @@ const EditingWrapperComponent = (props) => {
     )
       return false;
 
+    if (!document.hasFocus() && inputRef.current === e.target) return false;
+
     !passwordEntryProcess && onClickUpdateItem(e, false);
   };
 
@@ -233,6 +239,7 @@ const EditingWrapperComponent = (props) => {
     <EditingWrapper
       viewAs={viewAs}
       isUpdatingRowItem={isUpdatingRowItem && !isTable}
+      isFolder={isFolder}
     >
       {isTable && elementIcon}
       {isUpdatingRowItem && !isTable ? (
@@ -253,6 +260,7 @@ const EditingWrapperComponent = (props) => {
           isDisabled={isLoading}
           data-itemid={itemId}
           withBorder={!isTable}
+          forwardedRef={inputRef}
         />
       )}
       {!isUpdatingRowItem && (

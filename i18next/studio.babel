@@ -3645,7 +3645,7 @@
                 <filename/>
             </file_node>
             <file_node>
-                <name>Error401</name>
+                <name>Errors</name>
                 <children>
                     <concept_node>
                         <name>Error401Text</name>
@@ -3655,6 +3655,10 @@
                         <default_text/>
                         <translations>
                             <translation>
+                                <language>az-Cyrl-AZ</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
                                 <language>bg-BG</language>
                                 <approved>false</approved>
                             </translation>
@@ -3715,6 +3719,10 @@
                                 <approved>false</approved>
                             </translation>
                             <translation>
+                                <language>pt-BR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
                                 <language>pt-PT</language>
                                 <approved>false</approved>
                             </translation>
@@ -3731,19 +3739,7 @@
                                 <approved>false</approved>
                             </translation>
                             <translation>
-                                <language>az-Cyrl-AZ</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>zh-CN</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>vi-VN</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>uk-UA</language>
+                                <language>sl-SI</language>
                                 <approved>false</approved>
                             </translation>
                             <translation>
@@ -3751,21 +3747,19 @@
                                 <approved>false</approved>
                             </translation>
                             <translation>
-                                <language>sl-SI</language>
+                                <language>uk-UA</language>
                                 <approved>false</approved>
                             </translation>
                             <translation>
-                                <language>pt-BR</language>
+                                <language>vi-VN</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>zh-CN</language>
                                 <approved>false</approved>
                             </translation>
                         </translations>
                     </concept_node>
-                </children>
-                <filename/>
-            </file_node>
-            <file_node>
-                <name>Error403</name>
-                <children>
                     <concept_node>
                         <name>Error403Text</name>
                         <definition_loaded>false</definition_loaded>
@@ -3774,6 +3768,10 @@
                         <default_text/>
                         <translations>
                             <translation>
+                                <language>az-Cyrl-AZ</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
                                 <language>bg-BG</language>
                                 <approved>false</approved>
                             </translation>
@@ -3834,6 +3832,10 @@
                                 <approved>false</approved>
                             </translation>
                             <translation>
+                                <language>pt-BR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
                                 <language>pt-PT</language>
                                 <approved>false</approved>
                             </translation>
@@ -3850,19 +3852,7 @@
                                 <approved>false</approved>
                             </translation>
                             <translation>
-                                <language>az-Cyrl-AZ</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>zh-CN</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>vi-VN</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>uk-UA</language>
+                                <language>sl-SI</language>
                                 <approved>false</approved>
                             </translation>
                             <translation>
@@ -3870,21 +3860,19 @@
                                 <approved>false</approved>
                             </translation>
                             <translation>
-                                <language>sl-SI</language>
+                                <language>uk-UA</language>
                                 <approved>false</approved>
                             </translation>
                             <translation>
-                                <language>pt-BR</language>
+                                <language>vi-VN</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>zh-CN</language>
                                 <approved>false</approved>
                             </translation>
                         </translations>
                     </concept_node>
-                </children>
-                <filename/>
-            </file_node>
-            <file_node>
-                <name>Error404</name>
-                <children>
                     <concept_node>
                         <name>Error404Text</name>
                         <definition_loaded>false</definition_loaded>
@@ -3893,6 +3881,10 @@
                         <default_text/>
                         <translations>
                             <translation>
+                                <language>az-Cyrl-AZ</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
                                 <language>bg-BG</language>
                                 <approved>false</approved>
                             </translation>
@@ -3953,6 +3945,10 @@
                                 <approved>false</approved>
                             </translation>
                             <translation>
+                                <language>pt-BR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
                                 <language>pt-PT</language>
                                 <approved>false</approved>
                             </translation>
@@ -3969,19 +3965,7 @@
                                 <approved>false</approved>
                             </translation>
                             <translation>
-                                <language>az-Cyrl-AZ</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>zh-CN</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>vi-VN</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>uk-UA</language>
+                                <language>sl-SI</language>
                                 <approved>false</approved>
                             </translation>
                             <translation>
@@ -3989,21 +3973,132 @@
                                 <approved>false</approved>
                             </translation>
                             <translation>
-                                <language>sl-SI</language>
+                                <language>uk-UA</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>vi-VN</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>zh-CN</language>
+                                <approved>false</approved>
+                            </translation>
+                        </translations>
+                    </concept_node>
+                    <concept_node>
+                        <name>ErrorEmptyResponse</name>
+                        <definition_loaded>false</definition_loaded>
+                        <description/>
+                        <comment/>
+                        <default_text/>
+                        <translations>
+                            <translation>
+                                <language>az-Cyrl-AZ</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>bg-BG</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>cs-CZ</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>de-DE</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>el-GR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>en-US</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>es-ES</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>fi-FI</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>fr-FR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>it-IT</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>ja-JP</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>ko-KR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>lo-LA</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>lv-LV</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>nl-NL</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>pl-PL</language>
                                 <approved>false</approved>
                             </translation>
                             <translation>
                                 <language>pt-BR</language>
                                 <approved>false</approved>
                             </translation>
+                            <translation>
+                                <language>pt-PT</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>ro-RO</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>ru-RU</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>sk-SK</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>sl-SI</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>tr-TR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>uk-UA</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>vi-VN</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>zh-CN</language>
+                                <approved>false</approved>
+                            </translation>
                         </translations>
                     </concept_node>
-                </children>
-                <filename/>
-            </file_node>
-            <file_node>
-                <name>ErrorInvalid</name>
-                <children>
                     <concept_node>
                         <name>ErrorInvalidHeader</name>
                         <definition_loaded>false</definition_loaded>
@@ -4012,6 +4107,10 @@
                         <default_text/>
                         <translations>
                             <translation>
+                                <language>az-Cyrl-AZ</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
                                 <language>bg-BG</language>
                                 <approved>false</approved>
                             </translation>
@@ -4072,6 +4171,10 @@
                                 <approved>false</approved>
                             </translation>
                             <translation>
+                                <language>pt-BR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
                                 <language>pt-PT</language>
                                 <approved>false</approved>
                             </translation>
@@ -4088,19 +4191,7 @@
                                 <approved>false</approved>
                             </translation>
                             <translation>
-                                <language>az-Cyrl-AZ</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>zh-CN</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>vi-VN</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>uk-UA</language>
+                                <language>sl-SI</language>
                                 <approved>false</approved>
                             </translation>
                             <translation>
@@ -4108,11 +4199,15 @@
                                 <approved>false</approved>
                             </translation>
                             <translation>
-                                <language>sl-SI</language>
+                                <language>uk-UA</language>
                                 <approved>false</approved>
                             </translation>
                             <translation>
-                                <language>pt-BR</language>
+                                <language>vi-VN</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>zh-CN</language>
                                 <approved>false</approved>
                             </translation>
                         </translations>
@@ -4125,6 +4220,10 @@
                         <default_text/>
                         <translations>
                             <translation>
+                                <language>az-Cyrl-AZ</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
                                 <language>bg-BG</language>
                                 <approved>false</approved>
                             </translation>
@@ -4185,6 +4284,10 @@
                                 <approved>false</approved>
                             </translation>
                             <translation>
+                                <language>pt-BR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
                                 <language>pt-PT</language>
                                 <approved>false</approved>
                             </translation>
@@ -4201,19 +4304,7 @@
                                 <approved>false</approved>
                             </translation>
                             <translation>
-                                <language>az-Cyrl-AZ</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>zh-CN</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>vi-VN</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>uk-UA</language>
+                                <language>sl-SI</language>
                                 <approved>false</approved>
                             </translation>
                             <translation>
@@ -4221,11 +4312,128 @@
                                 <approved>false</approved>
                             </translation>
                             <translation>
-                                <language>sl-SI</language>
+                                <language>uk-UA</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>vi-VN</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>zh-CN</language>
+                                <approved>false</approved>
+                            </translation>
+                        </translations>
+                    </concept_node>
+                    <concept_node>
+                        <name>ErrorOfflineText</name>
+                        <definition_loaded>false</definition_loaded>
+                        <description/>
+                        <comment/>
+                        <default_text/>
+                        <translations>
+                            <translation>
+                                <language>az-Cyrl-AZ</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>bg-BG</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>cs-CZ</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>de-DE</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>el-GR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>en-US</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>es-ES</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>fi-FI</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>fr-FR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>it-IT</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>ja-JP</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>ko-KR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>lo-LA</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>lv-LV</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>nl-NL</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>pl-PL</language>
                                 <approved>false</approved>
                             </translation>
                             <translation>
                                 <language>pt-BR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>pt-PT</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>ro-RO</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>ru-RU</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>sk-SK</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>sl-SI</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>tr-TR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>uk-UA</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>vi-VN</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>zh-CN</language>
                                 <approved>false</approved>
                             </translation>
                         </translations>
@@ -4571,6 +4779,119 @@
                             </translation>
                             <translation>
                                 <language>pt-BR</language>
+                                <approved>false</approved>
+                            </translation>
+                        </translations>
+                    </concept_node>
+                    <concept_node>
+                        <name>NoOneModulesAvailable</name>
+                        <definition_loaded>false</definition_loaded>
+                        <description/>
+                        <comment/>
+                        <default_text/>
+                        <translations>
+                            <translation>
+                                <language>az-Cyrl-AZ</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>bg-BG</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>cs-CZ</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>de-DE</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>el-GR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>en-US</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>es-ES</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>fi-FI</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>fr-FR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>it-IT</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>ja-JP</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>ko-KR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>lo-LA</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>lv-LV</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>nl-NL</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>pl-PL</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>pt-BR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>pt-PT</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>ro-RO</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>ru-RU</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>sk-SK</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>sl-SI</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>tr-TR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>uk-UA</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>vi-VN</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>zh-CN</language>
                                 <approved>false</approved>
                             </translation>
                         </translations>
@@ -5374,125 +5695,6 @@
                     </concept_node>
                     <concept_node>
                         <name>TurnOnDesktopVersion</name>
-                        <definition_loaded>false</definition_loaded>
-                        <description/>
-                        <comment/>
-                        <default_text/>
-                        <translations>
-                            <translation>
-                                <language>bg-BG</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>cs-CZ</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>de-DE</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>el-GR</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>en-US</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>es-ES</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>fi-FI</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>fr-FR</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>it-IT</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>ja-JP</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>ko-KR</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>lo-LA</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>lv-LV</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>nl-NL</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>pl-PL</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>pt-PT</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>ro-RO</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>ru-RU</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>sk-SK</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>az-Cyrl-AZ</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>zh-CN</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>vi-VN</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>uk-UA</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>tr-TR</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>sl-SI</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>pt-BR</language>
-                                <approved>false</approved>
-                            </translation>
-                        </translations>
-                    </concept_node>
-                </children>
-                <filename/>
-            </file_node>
-            <file_node>
-                <name>Offline</name>
-                <children>
-                    <concept_node>
-                        <name>ErrorOfflineText</name>
                         <definition_loaded>false</definition_loaded>
                         <description/>
                         <comment/>
@@ -26418,15 +26620,19 @@
                 <filename/>
             </file_node>
             <file_node>
-                <name>ThirdParty</name>
+                <name>SmartBanner</name>
                 <children>
                     <concept_node>
-                        <name>ErrorEmptyResponse</name>
+                        <name>AppName</name>
                         <definition_loaded>false</definition_loaded>
                         <description/>
                         <comment/>
                         <default_text/>
                         <translations>
+                            <translation>
+                                <language>az-Cyrl-AZ</language>
+                                <approved>false</approved>
+                            </translation>
                             <translation>
                                 <language>bg-BG</language>
                                 <approved>false</approved>
@@ -26488,6 +26694,10 @@
                                 <approved>false</approved>
                             </translation>
                             <translation>
+                                <language>pt-BR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
                                 <language>pt-PT</language>
                                 <approved>false</approved>
                             </translation>
@@ -26504,19 +26714,7 @@
                                 <approved>false</approved>
                             </translation>
                             <translation>
-                                <language>az-Cyrl-AZ</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>zh-CN</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>vi-VN</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>uk-UA</language>
+                                <language>sl-SI</language>
                                 <approved>false</approved>
                             </translation>
                             <translation>
@@ -26524,11 +26722,354 @@
                                 <approved>false</approved>
                             </translation>
                             <translation>
-                                <language>sl-SI</language>
+                                <language>uk-UA</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>vi-VN</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>zh-CN</language>
+                                <approved>false</approved>
+                            </translation>
+                        </translations>
+                    </concept_node>
+                    <concept_node>
+                        <name>AppStore</name>
+                        <definition_loaded>false</definition_loaded>
+                        <description/>
+                        <comment/>
+                        <default_text/>
+                        <translations>
+                            <translation>
+                                <language>az-Cyrl-AZ</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>bg-BG</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>cs-CZ</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>de-DE</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>el-GR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>en-US</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>es-ES</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>fi-FI</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>fr-FR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>it-IT</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>ja-JP</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>ko-KR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>lo-LA</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>lv-LV</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>nl-NL</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>pl-PL</language>
                                 <approved>false</approved>
                             </translation>
                             <translation>
                                 <language>pt-BR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>pt-PT</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>ro-RO</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>ru-RU</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>sk-SK</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>sl-SI</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>tr-TR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>uk-UA</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>vi-VN</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>zh-CN</language>
+                                <approved>false</approved>
+                            </translation>
+                        </translations>
+                    </concept_node>
+                    <concept_node>
+                        <name>GooglePlay</name>
+                        <definition_loaded>false</definition_loaded>
+                        <description/>
+                        <comment/>
+                        <default_text/>
+                        <translations>
+                            <translation>
+                                <language>az-Cyrl-AZ</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>bg-BG</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>cs-CZ</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>de-DE</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>el-GR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>en-US</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>es-ES</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>fi-FI</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>fr-FR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>it-IT</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>ja-JP</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>ko-KR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>lo-LA</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>lv-LV</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>nl-NL</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>pl-PL</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>pt-BR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>pt-PT</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>ro-RO</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>ru-RU</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>sk-SK</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>sl-SI</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>tr-TR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>uk-UA</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>vi-VN</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>zh-CN</language>
+                                <approved>false</approved>
+                            </translation>
+                        </translations>
+                    </concept_node>
+                    <concept_node>
+                        <name>Price</name>
+                        <definition_loaded>false</definition_loaded>
+                        <description/>
+                        <comment/>
+                        <default_text/>
+                        <translations>
+                            <translation>
+                                <language>az-Cyrl-AZ</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>bg-BG</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>cs-CZ</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>de-DE</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>el-GR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>en-US</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>es-ES</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>fi-FI</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>fr-FR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>it-IT</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>ja-JP</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>ko-KR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>lo-LA</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>lv-LV</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>nl-NL</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>pl-PL</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>pt-BR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>pt-PT</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>ro-RO</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>ru-RU</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>sk-SK</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>sl-SI</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>tr-TR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>uk-UA</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>vi-VN</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>zh-CN</language>
                                 <approved>false</approved>
                             </translation>
                         </translations>
@@ -28920,125 +29461,6 @@
                     </concept_node>
                     <concept_node>
                         <name>WizardTitle</name>
-                        <definition_loaded>false</definition_loaded>
-                        <description/>
-                        <comment/>
-                        <default_text/>
-                        <translations>
-                            <translation>
-                                <language>bg-BG</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>cs-CZ</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>de-DE</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>el-GR</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>en-US</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>es-ES</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>fi-FI</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>fr-FR</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>it-IT</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>ja-JP</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>ko-KR</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>lo-LA</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>lv-LV</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>nl-NL</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>pl-PL</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>pt-PT</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>ro-RO</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>ru-RU</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>sk-SK</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>az-Cyrl-AZ</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>zh-CN</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>vi-VN</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>uk-UA</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>tr-TR</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>sl-SI</language>
-                                <approved>false</approved>
-                            </translation>
-                            <translation>
-                                <language>pt-BR</language>
-                                <approved>false</approved>
-                            </translation>
-                        </translations>
-                    </concept_node>
-                </children>
-                <filename/>
-            </file_node>
-            <file_node>
-                <name>translation</name>
-                <children>
-                    <concept_node>
-                        <name>NoOneModulesAvailable</name>
                         <definition_loaded>false</definition_loaded>
                         <description/>
                         <comment/>

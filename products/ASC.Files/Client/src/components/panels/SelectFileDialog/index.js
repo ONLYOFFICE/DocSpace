@@ -222,7 +222,6 @@ class SelectFileDialog extends React.Component {
       maxInputWidth,
       folderId,
       fileInfo,
-      storeParentId,
     } = this.props;
     const {
       isVisible,
@@ -286,7 +285,6 @@ class SelectFileDialog extends React.Component {
         filesListTitle={filesListTitle}
         fileId={fileInfo?.id}
         newFilter={this.newFilter}
-        parentId={storeParentId}
       />
     );
   }
@@ -334,7 +332,7 @@ export default inject(
 
     const { treeFolders, setExpandedPanelKeys } = treeFoldersStore;
     const { filter } = filesStore;
-    const { id: storeFolderId, parentId } = selectedFolderStore;
+    const { id: storeFolderId } = selectedFolderStore;
 
     const { settingsStore } = auth;
     const { theme } = settingsStore;
@@ -347,7 +345,7 @@ export default inject(
       filter,
       treeFolders,
       storeFolderId,
-      storeParentId: parentId,
+
       folderId,
       theme: theme,
       setExpandedPanelKeys,

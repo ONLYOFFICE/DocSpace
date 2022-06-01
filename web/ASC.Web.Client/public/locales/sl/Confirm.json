@@ -18,7 +18,7 @@
   "InviteTitle": "Vabljeni ste, da se pridružite temu portalu!",
   "LoginRegistryButton": "Pridruži se",
   "PassworResetTitle": "Zdaj lahko ustvarite novo geslo.",
-  "PhoneSubtitle": "Dvo-faktorska avtentikacija je omogočena za zagotavljanje dodatne varnosti portala. Vnesite svojo telefonsko številko za nadaljevanje dela na portalu. Vnesena mora biti mobilna številka z mednarodnim formatom s kodo države.",
+  "PhoneSubtitle": "Dvofaktorska avtentikacija je omogočena za zagotavljanje dodatne varnosti portala. Vnesite svojo telefonsko številko za nadaljevanje dela na portalu. Vnesena mora biti mobilna številka z mednarodnim formatom s kodo države.",
   "SetAppButton": "Aplikacija za prijavo",
   "SetAppDescription": "Omogočena je dvofaktorska avtentikacija. Za nadaljevanje dela na portalu konfigurirajte aplikacijo za avtentikacijo. Google Authenticator lahko uporabite za <1>Android</1> in <4>iOS</4> ali Avtentikator za <8>Windows Telefon</8>.",
   "SetAppInstallDescription": "Če želite povezati aplikacijo, skenirajte kodo QR ali ročno vnesite svoj skrivni ključ <1>{{ secretKey }}</1>, nato vnesite 6-mestno kodo iz aplikacije v polje spodaj.",

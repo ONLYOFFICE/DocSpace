@@ -26,27 +26,56 @@ const hotkeyBorderStyle = css`
 `;
 
 const rowCheckboxDraggingStyle = css`
-  border-image-source: ${(props) =>
-    props.theme.filesSection.tableView.row.checkboxDragging};
+  margin-left: -20px;
+  padding-left: 20px;
+
+  border-bottom: 1px solid;
+  border-image-slice: 1;
+  border-image-source: ${(props) => `linear-gradient(to right, 
+          ${props.theme.filesSection.tableView.row.borderColorTransition} 17px, ${props.theme.filesSection.tableView.row.borderColor} 31px)`};
 `;
 
 const contextMenuWrapperDraggingStyle = css`
-  border-image-source: ${(props) =>
-    props.theme.filesSection.tableView.row.contextMenuWrapperDragging};
-`;
+  margin-right: -20px;
+  padding-right: 20px;
 
-const rowCheckboxDraggingHoverStyle = css`
-  border-image-source: ${(props) =>
-    props.theme.filesSection.tableView.row.checkboxDraggingHover};
-`;
-const contextMenuWrapperDraggingHoverStyle = css`
-  border-image-source: ${(props) =>
-    props.theme.filesSection.tableView.row.contextMenuWrapperDraggingHover};
+  border-bottom: 1px solid;
+  border-image-slice: 1;
+  border-image-source: ${(props) => `linear-gradient(to left,
+          ${props.theme.filesSection.tableView.row.borderColorTransition} 17px, ${props.theme.filesSection.tableView.row.borderColor} 31px)`};
 `;
 
 const StyledTableRow = styled(TableRow)`
+  ${(props) =>
+    !props.isDragging &&
+    css`
+      :hover {
+        .table-container_cell {
+          cursor: pointer;
+          background: ${(props) =>
+            `${props.theme.filesSection.tableView.row.backgroundActive} !important`};
+
+          margin-top: -1px;
+          border-top: ${(props) =>
+            `1px solid ${props.theme.filesSection.tableView.row.borderColor}`};
+        }
+        .table-container_file-name-cell {
+          margin-left: -24px;
+          padding-left: 24px;
+          z-index: 1;
+        }
+        .table-container_row-context-menu-wrapper {
+          margin-right: -20px;
+          padding-right: 18px;
+
+          position: relative !important;
+
+          z-index: 1;
+        }
+      }
+    `}
+
   .table-container_cell {
-    /* ${isSafari && `border-image-slice: 0 !important`}; */
     background: ${(props) =>
       (props.checked || props.isActive) &&
       `${props.theme.filesSection.tableView.row.backgroundActive} !important`};
@@ -86,15 +115,6 @@ const StyledTableRow = styled(TableRow)`
     width: 16px;
   }
 
-  &:hover {
-    .table-container_file-name-cell {
-      ${(props) => props.dragging && rowCheckboxDraggingHoverStyle}
-    }
-    .table-container_row-context-menu-wrapper {
-      ${(props) => props.dragging && contextMenuWrapperDraggingHoverStyle}
-    }
-  }
-
   .table-container_file-name-cell {
     ${(props) =>
       props.showHotkeyBorder &&
@@ -132,6 +152,11 @@ const StyledTableRow = styled(TableRow)`
       .table-container_cell {
         margin-top: -1px;
         border-top: 1px solid #2da7db;
+        border-right: 0;
+        border-left: 0;
+      }
+      .table-container_file-name-cell > .table-container_cell {
+        margin-top: 0;
       }
     `}
 `;
@@ -240,6 +265,7 @@ const FilesTableRow = (props) => {
     quickButtonsComponent,
     getContextModel,
     showHotkeyBorder,
+    tableColumns,
   } = props;
   const { acceptBackground, background } = theme.dragAndDrop;
 
@@ -290,6 +316,25 @@ const FilesTableRow = (props) => {
     }
   }, [checkedProps, isActive, showHotkeyBorder]);
 
+  let availableColumns = [];
+  let authorAvailableDrag = true;
+  let createdAvailableDrag = true;
+  let modifiedAvailableDrag = true;
+  let sizeAvailableDrag = true;
+  let typeAvailableDrag = true;
+  let buttonsAvailableDrag = true;
+
+  if (dragging && isDragging) {
+    availableColumns = localStorage.getItem(tableColumns).split(",");
+
+    authorAvailableDrag = availableColumns.includes("Author");
+    createdAvailableDrag = availableColumns.includes("Created");
+    modifiedAvailableDrag = availableColumns.includes("Modified");
+    sizeAvailableDrag = availableColumns.includes("Size");
+    typeAvailableDrag = availableColumns.includes("Type");
+    buttonsAvailableDrag = availableColumns.includes("QuickButtons");
+  }
+
   return (
     <StyledDragAndDrop
       data-title={item.title}
@@ -310,6 +355,7 @@ const FilesTableRow = (props) => {
       <StyledTableRow
         className="table-row"
         {...dragStyles}
+        isDragging={dragging}
         dragging={dragging && isDragging}
         selectionProp={selectionProp}
         key={item.id}
@@ -347,34 +393,60 @@ const FilesTableRow = (props) => {
           <StyledBadgesContainer>{badgesComponent}</StyledBadgesContainer>
         </TableCell>
         {!personal && (
-          <TableCell {...dragStyles} {...selectionProp}>
+          <TableCell
+            style={
+              !authorAvailableDrag ? { background: "none" } : dragStyles.style
+            }
+          >
             <AuthorCell
               sideColor={theme.filesSection.tableView.row.sideColor}
               {...props}
             />
           </TableCell>
         )}
-        <TableCell {...dragStyles} {...selectionProp}>
+        <TableCell
+          style={
+            !createdAvailableDrag
+              ? { background: "none !important" }
+              : dragStyles.style
+          }
+          {...selectionProp}
+        >
           <DateCell
             create
             sideColor={theme.filesSection.tableView.row.sideColor}
             {...props}
           />
         </TableCell>
-        <TableCell {...dragStyles} {...selectionProp}>
+        <TableCell
+          style={
+            !modifiedAvailableDrag ? { background: "none" } : dragStyles.style
+          }
+          {...selectionProp}
+        >
           <DateCell
             sideColor={theme.filesSection.tableView.row.sideColor}
             {...props}
           />
         </TableCell>
-        <TableCell {...dragStyles} {...selectionProp}>
+        <TableCell
+          style={!sizeAvailableDrag ? { background: "none" } : dragStyles.style}
+          {...selectionProp}
+        >
           <SizeCell
             sideColor={theme.filesSection.tableView.row.sideColor}
             {...props}
           />
         </TableCell>
 
-        <TableCell {...dragStyles} {...selectionProp}>
+        <TableCell
+          style={
+            !typeAvailableDrag
+              ? { background: "none !important" }
+              : dragStyles.style
+          }
+          {...selectionProp}
+        >
           <TypeCell
             sideColor={theme.filesSection.tableView.row.sideColor}
             {...props}
@@ -382,7 +454,9 @@ const FilesTableRow = (props) => {
         </TableCell>
 
         <TableCell
-          {...dragStyles}
+          style={
+            !buttonsAvailableDrag ? { background: "none" } : dragStyles.style
+          }
           {...selectionProp}
           className={`${selectionProp?.className} table-container_quick-buttons-wrapper`}
         >
@@ -395,7 +469,7 @@ const FilesTableRow = (props) => {
   );
 };
 
-export default withTranslation(["Home", "Common", "VersionBadge", "InfoPanel"])(
+export default withTranslation(["Home", "Common", "InfoPanel"])(
   withRouter(
     withFileActions(withContent(withQuickButtons(withBadges(FilesTableRow))))
   )

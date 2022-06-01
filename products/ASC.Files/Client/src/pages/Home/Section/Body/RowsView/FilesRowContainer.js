@@ -97,10 +97,9 @@ const FilesRowContainer = ({
   );
 };
 
-export default inject(({ filesStore, infoPanelStore }) => {
+export default inject(({ filesStore, auth }) => {
   const { filesList, viewAs, setViewAs } = filesStore;
-
-  const { isVisible: infoPanelVisible } = infoPanelStore;
+  const { isVisible: infoPanelVisible } = auth.infoPanelStore;
   return {
     filesList,
     viewAs,
