@@ -79,7 +79,6 @@ const AdminMessage = (props) => {
     saveToSessionStorage("currentAdminMessageSettings", type);
 
     if (isEqual(defaultSettings, type)) {
-      console.log("===");
       setShowReminder(false);
     } else {
       setShowReminder(true);
