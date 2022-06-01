@@ -1,12 +1,10 @@
-﻿{
-  "Admin": "Admin",
-  "Common": "Common",
+{
+  "Clouds": "Clouds",
   "CommonSettings": "Common settings",
-  "ConnectAccounts": "Connect Accounts",
-  "ConnectAccountsSubTitle": "No connected accounts",
   "ConnectAdminDescription": "For successful connection, enter the necessary data on <1>this page</1>.",
   "ConnectDescription": "You can connect the following accounts to the ONLYOFFICE Documents. The documents from these accounts will be available for editing in 'My Documents' section. ",
-  "ConnectedCloud": "Connected cloud",
+  "ConnectDescriptionText": "You haven't connected any third-party clouds yet.",
+  "ConnectEmpty": "There's nothing here",
   "ConnectMakeShared": "Make shared and put into the 'Common' folder",
   "ConnextOtherAccount": "Other account",
   "DisplayFavorites": "Display Favorites",
@@ -19,6 +17,5 @@
   "StoringFileVersion": "Storing file versions",
   "ThirdPartyBtn": "Allow users to connect third-party storages",
   "ThirdPartySettings": "Connected clouds",
-  "UpdateOrCreate": "Update the file version for the existing file with the same name. Otherwise, a copy of the file will be created.",
-  "Clouds": "Clouds"
+  "UpdateOrCreate": "Update the file version for the existing file with the same name. Otherwise, a copy of the file will be created."
 }

@@ -1,6 +1,5 @@
 import PropTypes from "prop-types";
 import React, { useEffect, useRef, useState } from "react";
-
 import Text from "../text";
 import { countAutoFocus, countAutoOffset } from "./autoOffset";
 import {
@@ -90,9 +89,9 @@ const Submenu = ({ data, startSelect = 0, onSelect, isLoading, ...rest }) => {
                     id={d.id}
                     onClick={selectSubmenuItem}
                   >
-                    <StyledSubmenuItemText>
+                    <StyledSubmenuItemText isActive={isActive}>
                       <Text
-                        color={isActive ? "#316DAA" : "#657077"}
+                        className="item-text"
                         fontSize="13px"
                         fontWeight="600"
                         truncate={false}
@@ -100,9 +99,7 @@ const Submenu = ({ data, startSelect = 0, onSelect, isLoading, ...rest }) => {
                         {d.name}
                       </Text>
                     </StyledSubmenuItemText>
-                    <StyledSubmenuItemLabel
-                      color={isActive ? "#316DAA" : "none"}
-                    />
+                    <StyledSubmenuItemLabel isActive={isActive} />
                   </StyledSubmenuItem>
                 );
               })}

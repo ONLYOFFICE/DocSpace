@@ -109,6 +109,7 @@ const ArticleMainButtonContent = (props) => {
     const folderUpload = !isMobile
       ? [
           {
+            id: "main-button_upload-folders",
             className: "main-button_drop-down",
             icon: "images/actions.upload.react.svg",
             label: t("UploadFolder"),
@@ -184,6 +185,7 @@ const ArticleMainButtonContent = (props) => {
 
     const actions = [
       {
+        id: "main-button_new-document",
         className: "main-button_drop-down",
         icon: "images/actions.documents.react.svg",
         label: t("NewDocument"),
@@ -192,6 +194,7 @@ const ArticleMainButtonContent = (props) => {
         key: "docx",
       },
       {
+        id: "main-button_new-spreadsheet",
         className: "main-button_drop-down",
         icon: "images/spreadsheet.react.svg",
         label: t("NewSpreadsheet"),
@@ -200,6 +203,7 @@ const ArticleMainButtonContent = (props) => {
         key: "xlsx",
       },
       {
+        id: "main-button_new-presentation",
         className: "main-button_drop-down",
         icon: "images/actions.presentation.react.svg",
         label: t("NewPresentation"),
@@ -209,6 +213,7 @@ const ArticleMainButtonContent = (props) => {
       },
       ...formActions,
       {
+        id: "main-button_new-folder",
         className: "main-button_drop-down",
         icon: "images/catalog.folder.react.svg",
         label: t("NewFolder"),
@@ -219,6 +224,7 @@ const ArticleMainButtonContent = (props) => {
 
     const uploadActions = [
       {
+        id: "main-button_upload-files",
         className: "main-button_drop-down",
         icon: "images/actions.upload.react.svg",
         label: t("UploadFiles"),
@@ -272,6 +278,7 @@ const ArticleMainButtonContent = (props) => {
         </>
       ) : (
         <MainButton
+          id="files_main-button"
           isDisabled={isDisabled ? isDisabled : !canCreate}
           isDropdown={true}
           text={t("Common:Actions")}

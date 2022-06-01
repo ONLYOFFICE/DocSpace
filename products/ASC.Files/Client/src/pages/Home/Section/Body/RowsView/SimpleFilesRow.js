@@ -5,7 +5,7 @@ import DragAndDrop from "@appserver/components/drag-and-drop";
 import Row from "@appserver/components/row";
 import FilesRowContent from "./FilesRowContent";
 import { withRouter } from "react-router-dom";
-import { isTablet } from "react-device-detect";
+import { isTablet, isMobile } from "react-device-detect";
 
 import withFileActions from "../../../../../HOCs/withFileActions";
 import withQuickButtons from "../../../../../HOCs/withQuickButtons";
@@ -39,6 +39,21 @@ const StyledWrapper = styled.div`
 const StyledSimpleFilesRow = styled(Row)`
   ${(props) => (props.checked || props.isActive) && checkedStyle};
   ${(props) => props.dragging && draggingStyle}
+
+  ${(props) =>
+    !isMobile &&
+    !props.isDragging &&
+    css`
+      :hover {
+        cursor: pointer;
+        ${checkedStyle}
+
+        margin-top: -3px;
+        border-top: ${(props) =>
+          `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
+      }
+    `};
+
   position: unset;
   cursor: ${(props) =>
     !props.isThirdPartyFolder &&
@@ -84,7 +99,7 @@ const StyledSimpleFilesRow = styled(Row)`
   }
 
   ${(props) =>
-    !props.contextOptions &&
+    (!props.contextOptions || props.isEdit) &&
     `
     & > div:last-child {
         width: 0px;
@@ -227,7 +242,7 @@ const SimpleFilesRow = (props) => {
       <DragAndDrop
         data-title={item.title}
         value={value}
-        className={`files-item ${className} ${item.id}_${item.file}`}
+        className={`files-item ${className} ${item.id}_${item.fileExst}`}
         onDrop={onDrop}
         onMouseDown={onMouseDown}
         dragging={dragging && isDragging}
@@ -248,6 +263,7 @@ const SimpleFilesRow = (props) => {
           contextOptions={item.contextOptions}
           contextButtonSpacerWidth={displayShareButton}
           dragging={dragging && isDragging}
+          isDragging={dragging}
           isActive={isActive}
           inProgress={inProgress}
           isThirdPartyFolder={item.isThirdPartyFolder}
@@ -268,9 +284,6 @@ const SimpleFilesRow = (props) => {
   );
 };
 
-export default withTranslation([
-  "Home",
-  "Translations",
-  "InfoPanel",
-  "VersionBadge",
-])(withRouter(withFileActions(withQuickButtons(SimpleFilesRow))));
+export default withTranslation(["Home", "Translations", "InfoPanel"])(
+  withRouter(withFileActions(withQuickButtons(SimpleFilesRow)))
+);

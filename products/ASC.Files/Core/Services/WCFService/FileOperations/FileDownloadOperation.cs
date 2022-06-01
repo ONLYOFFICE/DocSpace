@@ -104,7 +104,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 stream.Position = 0;
                 string fileName = FileConstant.DownloadTitle + archiveExtension;
                 var store = globalStore.GetStore();
-                var path = string.Format(@"{0}\{1}", ((IAccount)Thread.CurrentPrincipal.Identity).ID, fileName);
+                var path = string.Format(@"{0}\{1}", ((IAccount)principal.Identity).ID, fileName);
 
                 if (await store.IsFileAsync(FileConstant.StorageDomainTmp, path))
                 {
@@ -139,6 +139,14 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             else if (!string.IsNullOrEmpty(error2))
             {
                 Error = error2;
+            }
+
+            var finished1 = thirdpartyTask.GetProperty<bool?>(FINISHED);
+            var finished2 = daoTask.GetProperty<bool?>(FINISHED);
+
+            if (finished1 != null && finished2 != null)
+            {
+                TaskInfo.SetProperty(FINISHED, finished1);
             }
 
             successProcessed = thirdpartyTask.GetProperty<int>(PROCESSED) + daoTask.GetProperty<int>(PROCESSED);

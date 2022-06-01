@@ -30,21 +30,20 @@ const StyledMain = styled.main`
 `;
 
 const Main = React.memo((props) => {
-  const orientationChanged = React.useCallback(() => {
-    if (isIOS && !isFirefox) {
-      let vh = (window.innerHeight - 48) * 0.01;
+  // const orientationChanged = React.useCallback(() => {
+  //   if (isIOS && !isFirefox) {
+  //     let vh = (window.innerHeight - 48) * 0.01;
+  //     document.documentElement.style.setProperty("--vh", `${vh}px`);
+  //   }
+  // }, []);
 
-      document.documentElement.style.setProperty("--vh", `${vh}px`);
-    }
-  }, []);
-
-  React.useEffect(() => {
-    orientationChanged();
-    if (isIOS && !isFirefox) {
-      window.addEventListener("resize", orientationChanged);
-    }
-    return () => window.removeEventListener("resize", orientationChanged);
-  }, []);
+  // React.useEffect(() => {
+  //   orientationChanged();
+  //   if (isIOS && !isFirefox) {
+  //     window.addEventListener("resize", orientationChanged);
+  //   }
+  //   return () => window.removeEventListener("resize", orientationChanged);
+  // }, []);
 
   //console.log("Main render");
   return <StyledMain className="main" {...props} />;

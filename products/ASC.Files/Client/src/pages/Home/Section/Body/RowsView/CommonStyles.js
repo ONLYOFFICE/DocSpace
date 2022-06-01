@@ -12,6 +12,13 @@ const marginStyles = css`
     padding-left: 16px;
     padding-right: 16px;
   }
+
+  @media (max-width: 375px) {
+    margin-left: -16px;
+    margin-right: -8px;
+    padding-left: 16px;
+    padding-right: 8px;
+  }
 `;
 
 export default marginStyles;

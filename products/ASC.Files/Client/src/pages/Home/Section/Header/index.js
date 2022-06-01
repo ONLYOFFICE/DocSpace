@@ -108,37 +108,44 @@ class SectionHeaderContent extends React.Component {
         key: "new-document",
         label: t("NewDocument"),
         onClick: this.createDocument,
+        icon: "images/actions.documents.react.svg",
       },
       {
         key: "new-spreadsheet",
         label: t("NewSpreadsheet"),
         onClick: this.createSpreadsheet,
+        icon: "images/spreadsheet.react.svg",
       },
       {
         key: "new-presentation",
         label: t("NewPresentation"),
         onClick: this.createPresentation,
+        icon: "images/actions.presentation.react.svg",
       },
       {
         label: t("Translations:NewForm"),
+        icon: "images/form.react.svg",
         onClick: this.createForm,
       },
       {
         label: t("Translations:NewFormFile"),
         onClick: this.createFormFromFile,
         disabled: isPrivacyFolder,
+        icon: "images/form.file.react.svg",
       },
       {
         key: "new-folder",
         label: t("NewFolder"),
         onClick: this.createFolder,
+        icon: "images/catalog.folder.react.svg",
       },
       { key: "separator", isSeparator: true },
       {
-        key: "make-invitation-link",
+        key: "upload-to-folder",
         label: t("UploadToFolder"),
         onClick: this.uploadToFolder,
         disabled: true,
+        icon: "images/actions.upload.react.svg",
       },
     ];
   };
@@ -213,10 +220,17 @@ class SectionHeaderContent extends React.Component {
     }
   };
 
-  onEmptyTrashAction = () => this.props.setEmptyTrashDialogVisible(true);
+  onEmptyTrashAction = () => {
+    const { activeFiles, activeFolders } = this.props;
+    const isExistActiveItems = [...activeFiles, ...activeFolders].length > 0;
+
+    if (isExistActiveItems) return;
+
+    this.props.setEmptyTrashDialogVisible(true);
+  };
 
   getContextOptionsFolder = () => {
-    const { t, personal } = this.props;
+    const { t, toggleInfoPanel, personal } = this.props;
 
     return [
       {
@@ -224,12 +238,21 @@ class SectionHeaderContent extends React.Component {
         label: t("SharingSettings"),
         onClick: this.onOpenSharingPanel,
         disabled: personal ? true : false,
+        icon: "/static/images/share.react.svg",
       },
       {
         key: "link-portal-users",
         label: t("LinkForPortalUsers"),
         onClick: this.createLinkForPortalUsers,
         disabled: personal ? true : false,
+        icon: "/static/images/invitation.link.react.svg",
+      },
+      {
+        key: "show-info",
+        label: t("InfoPanel:ViewDetails"),
+        onClick: toggleInfoPanel,
+        disabled: false,
+        icon: "/static/images/info.react.svg",
       },
       { key: "separator-2", isSeparator: true },
       {
@@ -237,30 +260,35 @@ class SectionHeaderContent extends React.Component {
         label: t("MoveTo"),
         onClick: this.onMoveAction,
         disabled: false,
+        icon: "images/move.react.svg",
       },
       {
         key: "copy",
         label: t("Translations:Copy"),
         onClick: this.onCopyAction,
         disabled: false,
+        icon: "/static/images/copy.react.svg",
       },
       {
         key: "download",
         label: t("Common:Download"),
         onClick: this.downloadAction,
         disabled: false,
+        icon: "images/download.react.svg",
       },
       {
         key: "rename",
         label: t("Rename"),
         onClick: this.renameAction,
         disabled: true,
+        icon: "images/rename.react.svg",
       },
       {
         key: "delete",
         label: t("Common:Delete"),
         onClick: this.onDeleteAction,
         disabled: false,
+        icon: "/static/images/catalog.trash.react.svg",
       },
     ];
   };
@@ -347,7 +375,6 @@ class SectionHeaderContent extends React.Component {
             isRootFolder={isRootFolder}
             canCreate={canCreate}
             isRecycleBinFolder={isRecycleBinFolder}
-            title={title}
             isTitle={title}
             isDesktop={isDesktop}
             isTabletView={isTabletView}
@@ -391,6 +418,9 @@ class SectionHeaderContent extends React.Component {
                     onBackToParentFolder={this.onBackToParentFolder}
                     toggleInfoPanel={toggleInfoPanel}
                     isInfoPanelVisible={isInfoPanelVisible}
+                    titles={{
+                      trash: t("EmptyRecycleBin"),
+                    }}
                   />
                 )}
               </div>
@@ -411,7 +441,6 @@ export default inject(
     treeFoldersStore,
     filesActionsStore,
     settingsStore,
-    infoPanelStore,
   }) => {
     const {
       setSelected,
@@ -430,6 +459,8 @@ export default inject(
       viewAs,
       setIsLoading,
       fetchFiles,
+      activeFiles,
+      activeFolders,
     } = filesStore;
     const { setAction } = fileActionStore;
     const {
@@ -450,7 +481,7 @@ export default inject(
       backToParentFolder,
     } = filesActionsStore;
 
-    const { toggleIsVisible, isVisible } = infoPanelStore;
+    const { toggleIsVisible, isVisible } = auth.infoPanelStore;
 
     return {
       showText: auth.settingsStore.showText,
@@ -498,10 +529,13 @@ export default inject(
 
       setIsLoading,
       fetchFiles,
+
+      activeFiles,
+      activeFolders,
     };
   }
 )(
-  withTranslation(["Home", "Common", "Translations"])(
+  withTranslation(["Home", "Common", "Translations", "InfoPanel"])(
     withRouter(observer(SectionHeaderContent))
   )
 );

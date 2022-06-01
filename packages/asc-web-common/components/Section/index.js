@@ -40,13 +40,8 @@ const StyledMainBar = styled.div`
   box-sizing: border-box;
 
   margin-left: -20px;
-  /* width: calc(100vw - 256px);
-  max-width: calc(100vw - 256px); */
 
-  width: ${(props) =>
-    props.infoPanelIsVisible ? "calc(100vw - 657px)" : "calc(100vw - 256px)"};
-  max-width: ${(props) =>
-    props.infoPanelIsVisible ? "calc(100vw - 657px)" : "calc(100vw - 256px)"};
+  width: calc(100% + 20px);
 
   #bar-banner {
     margin-bottom: -3px;
@@ -58,19 +53,13 @@ const StyledMainBar = styled.div`
   }
 
   @media ${tablet} {
-    width: ${(props) =>
-      props.showText ? "calc(100vw - 240px)" : "calc(100vw - 52px)"};
-    max-width: ${(props) =>
-      props.showText ? "calc(100vw - 240px)" : "calc(100vw - 52px)"};
+    width: calc(100% + 16px);
     margin-left: -16px;
   }
 
   ${isMobile &&
   css`
-    width: ${(props) =>
-      props.showText ? "calc(100vw - 240px)" : "calc(100vw - 52px)"} !important;
-    max-width: ${(props) =>
-      props.showText ? "calc(100vw - 240px)" : "calc(100vw - 52px)"} !important;
+    width: calc(100% + 32px) !important;
     margin-left: -16px;
   `}
 
@@ -231,6 +220,7 @@ class Section extends React.Component {
       infoPanelIsVisible,
       isInfoPanelAvailable,
       settingsStudio,
+      clearUploadedFilesHistory,
     } = this.props;
 
     let sectionHeaderContent = null;
@@ -310,6 +300,7 @@ class Section extends React.Component {
                     isSectionBarAvailable={isSectionBarAvailable}
                     isSectionHeaderAvailable={isSectionHeaderAvailable}
                     infoPanelIsVisible={infoPanelIsVisible}
+                    settingsStudio={settingsStudio}
                   >
                     {!isMobile && (
                       <StyledMainBar
@@ -439,6 +430,9 @@ class Section extends React.Component {
                             percent={primaryProgressBarValue}
                             alert={showPrimaryButtonAlert}
                             onClick={onOpenUploadPanel}
+                            clearUploadedFilesHistory={
+                              clearUploadedFilesHistory
+                            }
                           />
                           <FloatingButton
                             className="layout-progress-second-bar"
@@ -455,6 +449,7 @@ class Section extends React.Component {
                           percent={primaryProgressBarValue}
                           alert={showPrimaryButtonAlert}
                           onClick={onOpenUploadPanel}
+                          clearUploadedFilesHistory={clearUploadedFilesHistory}
                         />
                       ) : !showPrimaryProgressBar &&
                         showSecondaryProgressBar ? (
@@ -472,7 +467,7 @@ class Section extends React.Component {
                     )}
                   </SectionContainer>
                   {isInfoPanelAvailable && (
-                    <InfoPanel>
+                    <InfoPanel viewAs={viewAs}>
                       <SubInfoPanelHeader>
                         {infoPanelHeaderContent}
                       </SubInfoPanelHeader>
@@ -541,7 +536,6 @@ Section.propTypes = {
   uploadFiles: PropTypes.bool,
   hideAside: PropTypes.bool,
   viewAs: PropTypes.string,
-  uploadPanelVisible: PropTypes.bool,
   onOpenUploadPanel: PropTypes.func,
   isTabletView: PropTypes.bool,
   isHeaderVisible: PropTypes.bool,
@@ -565,22 +559,19 @@ Section.SectionFilter = SectionFilter;
 Section.SectionBody = SectionBody;
 Section.SectionPaging = SectionPaging;
 
-export default inject(({ auth, infoPanelStore }) => {
-  const { isLoaded, settingsStore } = auth;
+export default inject(({ auth }) => {
+  const { infoPanelStore, isLoaded, settingsStore } = auth;
   const {
     isHeaderVisible,
     isTabletView,
-
     isDesktopClient,
     maintenanceExist,
     snackbarExist,
     setMaintenanceExist,
-
     showText,
   } = settingsStore;
 
-  let infoPanelIsVisible = false;
-  if (infoPanelStore) infoPanelIsVisible = infoPanelStore.isVisible;
+  const { isVisible: infoPanelIsVisible } = infoPanelStore;
 
   return {
     isLoaded,
@@ -594,6 +585,6 @@ export default inject(({ auth, infoPanelStore }) => {
 
     showText,
 
-    infoPanelIsVisible: infoPanelIsVisible,
+    infoPanelIsVisible,
   };
 })(observer(Section));

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Router, Switch, Route, Redirect } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 import NavMenu from "./components/NavMenu";
@@ -23,6 +23,7 @@ import System from "./components/System";
 import { AppServerConfig } from "@appserver/common/constants";
 import Snackbar from "@appserver/components/snackbar";
 import moment from "moment";
+import ReactSmartBanner from "./components/SmartBanner";
 
 const { proxyURL } = AppServerConfig;
 const homepage = config.homepage;
@@ -197,7 +198,10 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     roomsMode,
     setSnackbarExist,
     userTheme,
+    currentProductId,
   } = rest;
+
+  const [isDocuments, setIsDocuments] = useState(false);
 
   useEffect(() => {
     try {
@@ -234,7 +238,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     });
   }, [socketHelper]);
 
-  const { t } = useTranslation("Common");
+  const { t, ready } = useTranslation(["Common", "SmartBanner"]);
 
   let snackTimer = null;
   let fbInterval = null;
@@ -325,7 +329,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
     const barConfig = {
       parentElementId: "main-bar",
-      headerText: "Atention",
+      headerText: t("Attention"),
       text: `${t("BarMaintenanceDescription", {
         targetDate: targetDate,
         productName: "ONLYOFFICE Personal",
@@ -362,7 +366,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
             return;
           }
 
-          setTimeout(() => showSnackBar(campaign), 10000);
+          setTimeout(() => showSnackBar(campaign), 1000);
         })
         .catch((err) => {
           console.error(err);
@@ -424,6 +428,14 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   useEffect(() => {
     if (userTheme) setTheme(userTheme);
   }, [userTheme]);
+
+  useEffect(() => {
+    if (window.location.pathname.toLowerCase().includes("files")) {
+      setIsDocuments(true);
+    } else {
+      setIsDocuments(false);
+    }
+  }, [currentProductId]);
 
   const pathname = window.location.pathname.toLowerCase();
   const isEditor = pathname.indexOf("doceditor") !== -1;
@@ -510,6 +522,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     <Layout>
       <Router history={history}>
         <>
+          {isDocuments ? <ReactSmartBanner t={t} ready={ready} /> : <></>}
           {isEditor ? <></> : <NavMenu />}
           <ScrollToTop />
           <Main isDesktop={isDesktop}>
@@ -572,6 +585,7 @@ const ShellWrapper = inject(({ auth, backup }) => {
     setSnackbarExist,
     socketHelper,
     setTheme,
+    currentProductId,
   } = settingsStore;
   const { setPreparationPortalDialogVisible } = backup;
 
@@ -600,6 +614,7 @@ const ShellWrapper = inject(({ auth, backup }) => {
     roomsMode,
     setSnackbarExist,
     userTheme: auth?.userStore?.user?.theme,
+    currentProductId,
   };
 })(observer(Shell));
 

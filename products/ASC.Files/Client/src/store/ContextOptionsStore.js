@@ -21,7 +21,7 @@ class ContextOptionsStore {
   uploadDataStore;
   versionHistoryStore;
   settingsStore;
-  infoPanelStore;
+  filesSettingsStore;
 
   constructor(
     authStore,
@@ -32,8 +32,7 @@ class ContextOptionsStore {
     treeFoldersStore,
     uploadDataStore,
     versionHistoryStore,
-    settingsStore,
-    infoPanelStore
+    settingsStore
   ) {
     makeAutoObservable(this);
     this.authStore = authStore;
@@ -45,13 +44,12 @@ class ContextOptionsStore {
     this.uploadDataStore = uploadDataStore;
     this.versionHistoryStore = versionHistoryStore;
     this.settingsStore = settingsStore;
-    this.infoPanelStore = infoPanelStore;
   }
 
   onOpenFolder = (item) => {
     const { id, folderId, fileExst } = item;
     const locationId = !fileExst ? id : folderId;
-    this.filesActionsStore.openLocationAction(locationId, !fileExst);
+    this.filesActionsStore.openLocationAction(locationId);
   };
 
   onClickLinkFillForm = (item) => {
@@ -89,7 +87,7 @@ class ContextOptionsStore {
   onOpenLocation = (item) => {
     const { parentId, folderId, fileExst } = item;
     const locationId = !fileExst ? parentId : folderId;
-    this.filesActionsStore.openLocationAction(locationId, !fileExst);
+    this.filesActionsStore.openLocationAction(locationId);
   };
 
   onOwnerChange = () => {
@@ -104,7 +102,7 @@ class ContextOptionsStore {
     this.dialogsStore.setCopyPanelVisible(true);
   };
 
-  showVersionHistory = (id, history) => {
+  showVersionHistory = (id) => {
     const {
       fetchFileVersions,
       setIsVerHistoryPanel,
@@ -112,14 +110,8 @@ class ContextOptionsStore {
 
     if (this.treeFoldersStore.isRecycleBinFolder) return;
 
-    if (!this.authStore.settingsStore.isTabletView) {
-      fetchFileVersions(id + "");
-      setIsVerHistoryPanel(true);
-    } else {
-      history.push(
-        combineUrl(AppServerConfig.proxyURL, config.homepage, `/${id}/history`)
-      );
-    }
+    fetchFileVersions(id + "");
+    setIsVerHistoryPanel(true);
   };
 
   finalizeVersion = (id) => {
@@ -142,11 +134,16 @@ class ContextOptionsStore {
       .catch((err) => toastr.error(err));
   };
 
-  lockFile = (item) => {
+  lockFile = (item, t) => {
     const { id, locked } = item;
 
     this.filesActionsStore
       .lockFileAction(id, !locked)
+      .then(() =>
+        locked
+          ? toastr.success(t("Translations:FileUnlocked"))
+          : toastr.success(t("Translations:FileLocked"))
+      )
       .catch((err) => toastr.error(err));
   };
 
@@ -338,19 +335,21 @@ class ContextOptionsStore {
   };
 
   onShowInfoPanel = () => {
-    const { setIsVisible } = this.infoPanelStore;
+    const { setIsVisible } = this.authStore.infoPanelStore;
     setIsVisible(true);
   };
 
-  getFilesContextOptions = (item, t, history) => {
+  getFilesContextOptions = (item, t) => {
     const { contextOptions } = item;
     const isRootThirdPartyFolder =
       item.providerKey && item.id === item.rootFolderId;
 
     const isShareable = item.canShare;
 
-    const versionActions =
-      !isMobile && !isMobileUtils() && !isTabletUtils()
+    const isMedia = this.settingsStore.isMediaOrImage(item.fileExst);
+
+    const versionActions = !isMedia
+      ? !isMobile && !isMobileUtils() && !isTabletUtils()
         ? [
             {
               key: "version",
@@ -366,7 +365,7 @@ class ContextOptionsStore {
                 {
                   key: "show-version-history",
                   label: t("ShowVersionHistory"),
-                  onClick: () => this.showVersionHistory(item.id, history),
+                  onClick: () => this.showVersionHistory(item.id),
                   disabled: false,
                 },
               ],
@@ -384,10 +383,11 @@ class ContextOptionsStore {
               key: "show-version-history",
               label: t("ShowVersionHistory"),
               icon: "images/history.react.svg",
-              onClick: () => this.showVersionHistory(item.id, history),
+              onClick: () => this.showVersionHistory(item.id),
               disabled: false,
             },
-          ];
+          ]
+      : [];
 
     const moveActions =
       !isMobile && !isMobileUtils() && !isTabletUtils()
@@ -446,7 +446,7 @@ class ContextOptionsStore {
       {
         key: "open",
         label: t("Open"),
-        icon: "images/catalog.folder.react.svg",
+        icon: "images/folder.react.svg",
         onClick: () => this.onOpenFolder(item),
         disabled: false,
       },
@@ -528,7 +528,7 @@ class ContextOptionsStore {
         key: "block-unblock-version",
         label: t("UnblockVersion"),
         icon: "/static/images/locked.react.svg",
-        onClick: () => this.lockFile(item),
+        onClick: () => this.lockFile(item, t),
         disabled: false,
       },
       {
@@ -619,7 +619,7 @@ class ContextOptionsStore {
         label: isRootThirdPartyFolder
           ? t("Translations:DeleteThirdParty")
           : t("Common:Delete"),
-        icon: "/static/images/catalog.trash.react.svg",
+        icon: "images/trash.react.svg",
         onClick: () => this.onClickDelete(item, t),
         disabled: false,
       },
@@ -630,7 +630,7 @@ class ContextOptionsStore {
     return options;
   };
 
-  getModel = (item, t, history) => {
+  getModel = (item, t) => {
     const { type, id, extension } = this.filesStore.fileActionStore;
     const { fileExst, contextOptions } = item;
 
@@ -638,7 +638,7 @@ class ContextOptionsStore {
 
     const contextOptionsProps =
       !isEdit && contextOptions && contextOptions.length > 0
-        ? this.getFilesContextOptions(item, t, history)
+        ? this.getFilesContextOptions(item, t)
         : [];
 
     return contextOptionsProps;

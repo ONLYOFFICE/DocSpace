@@ -292,9 +292,9 @@ namespace ASC.Files.Core
 
         Task<bool> ContainChangesAsync(T fileId, int fileVersion);
 
-        Task SaveThumbnailAsync(File<T> file, Stream thumbnail);
+        Task SaveThumbnailAsync(File<T> file, Stream thumbnail, int width, int height);
 
-        Task<Stream> GetThumbnailAsync(File<T> file);
+        Task<Stream> GetThumbnailAsync(File<T> file, int width, int height);
 
         Task<IEnumerable<(File<int>, SmallShareRecord)>> GetFeedsAsync(int tenant, DateTime from, DateTime to);
 

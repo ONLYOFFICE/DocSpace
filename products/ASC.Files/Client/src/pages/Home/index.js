@@ -205,9 +205,24 @@ class PureHome extends React.Component {
   };
 
   onDrop = (files, uploadToFolder) => {
-    const { t, startUpload, setDragging, dragging } = this.props;
+    const {
+      t,
+      startUpload,
+      setDragging,
+      dragging,
+      uploadEmptyFolders,
+    } = this.props;
     dragging && setDragging(false);
-    startUpload(files, uploadToFolder, t);
+    const emptyFolders = files.filter((f) => f.isEmptyDirectory);
+
+    if (emptyFolders.length > 0) {
+      uploadEmptyFolders(emptyFolders, uploadToFolder).then(() => {
+        const onlyFiles = files.filter((f) => !f.isEmptyDirectory);
+        if (onlyFiles.length > 0) startUpload(onlyFiles, uploadToFolder, t);
+      });
+    } else {
+      startUpload(files, uploadToFolder, t);
+    }
   };
 
   showOperationToast = (type, qty, title) => {
@@ -248,12 +263,11 @@ class PureHome extends React.Component {
     const {
       uploaded,
       converted,
-      uploadPanelVisible,
       setUploadPanelVisible,
       clearPrimaryProgressData,
       primaryProgressDataVisible,
     } = this.props;
-    setUploadPanelVisible(!uploadPanelVisible);
+    setUploadPanelVisible(true);
 
     if (primaryProgressDataVisible && uploaded && converted)
       clearPrimaryProgressData();
@@ -262,8 +276,8 @@ class PureHome extends React.Component {
     const {
       isProgressFinished,
       secondaryProgressDataStoreIcon,
-      selectionLength,
-      selectionTitle,
+      itemsSelectionLength,
+      itemsSelectionTitle,
     } = this.props;
 
     if (this.props.isHeaderVisible !== prevProps.isHeaderVisible) {
@@ -275,8 +289,8 @@ class PureHome extends React.Component {
     ) {
       this.showOperationToast(
         secondaryProgressDataStoreIcon,
-        selectionLength,
-        selectionTitle
+        itemsSelectionLength,
+        itemsSelectionTitle
       );
     }
   }
@@ -295,6 +309,7 @@ class PureHome extends React.Component {
       primaryProgressDataPercent,
       primaryProgressDataIcon,
       primaryProgressDataAlert,
+      clearUploadedFilesHistory,
 
       secondaryProgressDataStoreVisible,
       secondaryProgressDataStorePercent,
@@ -328,6 +343,7 @@ class PureHome extends React.Component {
           secondaryProgressBarValue={secondaryProgressDataStorePercent}
           secondaryProgressBarIcon={secondaryProgressDataStoreIcon}
           showSecondaryButtonAlert={secondaryProgressDataStoreAlert}
+          clearUploadedFilesHistory={clearUploadedFilesHistory}
           viewAs={viewAs}
           hideAside={
             !!fileActionId ||
@@ -394,10 +410,12 @@ export default inject(
     treeFoldersStore,
     mediaViewerDataStore,
     settingsStore,
+    filesActionsStore,
   }) => {
     const {
       secondaryProgressDataStore,
       primaryProgressDataStore,
+      clearUploadedFilesHistory,
     } = uploadDataStore;
     const {
       firstLoad,
@@ -440,6 +458,8 @@ export default inject(
       icon: secondaryProgressDataStoreIcon,
       alert: secondaryProgressDataStoreAlert,
       isSecondaryProgressFinished: isProgressFinished,
+      itemsSelectionLength,
+      itemsSelectionTitle,
     } = secondaryProgressDataStore;
 
     const {
@@ -448,6 +468,8 @@ export default inject(
       uploaded,
       converted,
     } = uploadDataStore;
+
+    const { uploadEmptyFolders } = filesActionsStore;
 
     const selectionLength = isProgressFinished ? selection.length : null;
     const selectionTitle = isProgressFinished
@@ -485,6 +507,8 @@ export default inject(
       primaryProgressDataAlert,
       clearPrimaryProgressData,
 
+      clearUploadedFilesHistory,
+
       secondaryProgressDataStoreVisible,
       secondaryProgressDataStorePercent,
       secondaryProgressDataStoreIcon,
@@ -494,6 +518,9 @@ export default inject(
       isProgressFinished,
       selectionTitle,
 
+      itemsSelectionLength,
+      itemsSelectionTitle,
+
       setExpandedKeys,
       setFirstLoad,
       setDragging,
@@ -502,6 +529,7 @@ export default inject(
       setUploadPanelVisible,
       setSelections,
       startUpload,
+      uploadEmptyFolders,
       isHeaderVisible: auth.settingsStore.isHeaderVisible,
       setHeaderVisible: auth.settingsStore.setHeaderVisible,
       personal: auth.settingsStore.personal,

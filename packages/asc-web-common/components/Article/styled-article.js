@@ -60,7 +60,7 @@ const StyledArticle = styled.article`
   `}
 
   z-index: ${(props) =>
-    props.showText && (isMobileOnly || isMobileUtils()) ? "230" : "100"};
+    props.showText && (isMobileOnly || isMobileUtils()) ? "230" : "205"};
 
   .resizable-block {
     overflow: hidden;
@@ -143,18 +143,15 @@ const StyledArticleHeader = styled.div`
   justify-content: flex-start;
   align-items: center;
 
-  .loader {
-    padding-top: 2px;
-  }
-
   @media ${tablet} {
     padding: 16px 16px 17px;
     margin: 0;
     justify-content: ${(props) => (props.showText ? "flex-start" : "center")};
-    .loader {
-      padding-top: 5px;
-      padding-bottom: 7px;
-    }
+
+    height: 61px;
+    min-height: 61px;
+    max-height: 61px;
+    box-sizing: border-box;
   }
 
   @media ${mobile} {
@@ -168,10 +165,6 @@ const StyledArticleHeader = styled.div`
     padding: 16px 16px 17px;
     justify-content: ${(props) => (props.showText ? "flex-start" : "center")};
     margin: 0;
-    .loader {
-      padding-top: 5px;
-      padding-bottom: 7px;
-    }
   `}
 
   ${isMobileOnly &&
@@ -181,6 +174,8 @@ const StyledArticleHeader = styled.div`
     padding: 12px 16px 12px !important;
     margin-bottom: 16px !important;
   `}
+
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 `;
 
 StyledArticleHeader.defaultProps = { theme: Base };
@@ -214,7 +209,7 @@ const StyledHeading = styled(Heading)`
 const StyledIconBox = styled.div`
   display: none;
   align-items: center;
-  height: 28px;
+  height: 20px;
 
   @media ${tablet} {
     display: flex;

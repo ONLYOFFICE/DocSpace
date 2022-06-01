@@ -61,18 +61,21 @@ namespace ASC.Web.Files.Utils
     [Scope]
     public class LockerManager
     {
+        private readonly ThirdPartySelector _thirdPartySelector;
+
         private AuthContext AuthContext { get; }
         private IDaoFactory DaoFactory { get; }
 
-        public LockerManager(AuthContext authContext, IDaoFactory daoFactory)
+        public LockerManager(AuthContext authContext, IDaoFactory daoFactory, ThirdPartySelector thirdPartySelector)
         {
             AuthContext = authContext;
             DaoFactory = daoFactory;
+            _thirdPartySelector = thirdPartySelector;
         }
 
         public bool FileLockedForMe<T>(T fileId, Guid userId = default)
         {
-            var app = ThirdPartySelector.GetAppByFileId(fileId.ToString());
+            var app = _thirdPartySelector.GetAppByFileId(fileId.ToString());
             if (app != null)
             {
                 return false;
@@ -86,7 +89,7 @@ namespace ASC.Web.Files.Utils
 
         public async Task<bool> FileLockedForMeAsync<T>(T fileId, Guid userId = default)
         {
-            var app = ThirdPartySelector.GetAppByFileId(fileId.ToString());
+            var app = _thirdPartySelector.GetAppByFileId(fileId.ToString());
             if (app != null)
             {
                 return false;
@@ -261,6 +264,8 @@ namespace ASC.Web.Files.Utils
     public class EntryManager
     {
         private const string UPDATE_LIST = "filesUpdateList";
+        private readonly ThirdPartySelector _thirdPartySelector;
+        private readonly ThumbnailSettings _thumbnailSettings;
 
         private ICache Cache { get; set; }
         private FileTrackerHelper FileTracker { get; }
@@ -315,7 +320,9 @@ namespace ASC.Web.Files.Utils
             ICache cache,
             FileTrackerHelper fileTracker,
             EntryStatusManager entryStatusManager,
-            IHttpClientFactory clientFactory)
+            IHttpClientFactory clientFactory,
+            ThirdPartySelector thirdPartySelector,
+            ThumbnailSettings thumbnailSettings)
         {
             DaoFactory = daoFactory;
             FileSecurity = fileSecurity;
@@ -343,6 +350,8 @@ namespace ASC.Web.Files.Utils
             FileTracker = fileTracker;
             EntryStatusManager = entryStatusManager;
             ClientFactory = clientFactory;
+            _thirdPartySelector = thirdPartySelector;
+            _thumbnailSettings = thumbnailSettings;
         }
 
         public async Task<(IEnumerable<FileEntry> Entries, int Total)> GetEntriesAsync<T>(Folder<T> parent, int from, int count, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy)
@@ -1008,7 +1017,7 @@ namespace ASC.Web.Files.Utils
                               ? FileUtility.GetFileExtension(downloadUri)
                               : fileExtension;
 
-            var app = ThirdPartySelector.GetAppByFileId(fileId.ToString());
+            var app = _thirdPartySelector.GetAppByFileId(fileId.ToString());
             if (app != null)
             {
                 await app.SaveFileAsync(fileId.ToString(), newExtension, downloadUri, stream);
@@ -1254,10 +1263,14 @@ namespace ASC.Web.Files.Utils
 
                 if (fromFile.ThumbnailStatus == Thumbnail.Created)
                 {
-                    using (var thumb = await fileDao.GetThumbnailAsync(fromFile))
+                    foreach (var size in _thumbnailSettings.Sizes)
                     {
-                        await fileDao.SaveThumbnailAsync(newFile, thumb);
+                        using (var thumb = await fileDao.GetThumbnailAsync(fromFile, size.Width, size.Height))
+                        {
+                            await fileDao.SaveThumbnailAsync(newFile, thumb, size.Width, size.Height);
+                        }
                     }
+
                     newFile.ThumbnailStatus = Thumbnail.Created;
                 }
 

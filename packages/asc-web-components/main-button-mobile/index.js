@@ -11,6 +11,7 @@ import {
   StyledBar,
   StyledButtonWrapper,
   StyledButtonOptions,
+  StyledAlertIcon,
 } from "./styled-main-button";
 import IconButton from "../icon-button";
 import Button from "../button";
@@ -18,6 +19,14 @@ import Text from "../text";
 import Scrollbar from "@appserver/components/scrollbar";
 import { isMobile } from "react-device-detect";
 import Backdrop from "../backdrop";
+
+import styled from "styled-components";
+import ButtonAlertIcon from "../../../public/images/main-button.alert.react.svg";
+import commonIconsStyles from "../utils/common-icons-style";
+
+const StyledButtonAlertIcon = styled(ButtonAlertIcon)`
+  ${commonIconsStyles}
+`;
 
 const ProgressBarMobile = ({
   label,
@@ -40,14 +49,14 @@ const ProgressBarMobile = ({
   return (
     <StyledProgressBarContainer isUploading={open}>
       <Text
-        onClick={onClickHeaderAction}
         className="progress-header"
         fontSize={`14`}
         // color="#657077"
+        onClick={onClickHeaderAction}
       >
         {label}
       </Text>
-      <Text className="progress_count" fontSize={`13`}>
+      <Text className="progress_count" fontSize={`13`} truncate>
         {status}
       </Text>
       <IconButton
@@ -94,13 +103,16 @@ const MainButtonMobile = (props) => {
     isOpenButton,
     onClose,
     sectionWidth,
+    alert,
   } = props;
 
   const [isOpen, setIsOpen] = useState(opened);
   const [isUploading, setIsUploading] = useState(false);
-  const [height, setHeight] = useState("calc(100% - 48px)");
+  const [height, setHeight] = useState(window.innerHeight - 48 + "px");
 
   const divRef = useRef();
+  const ref = useRef();
+  const dropDownRef = useRef();
 
   useEffect(() => {
     if (opened !== isOpen) {
@@ -108,18 +120,25 @@ const MainButtonMobile = (props) => {
     }
   }, [opened]);
 
-  useEffect(() => {
+  const recalculateHeight = () => {
     let height =
       divRef?.current?.getBoundingClientRect()?.height || window.innerHeight;
 
     height >= window.innerHeight
-      ? setHeight("calc(100% - 48px)")
+      ? setHeight(window.innerHeight - 48 + "px")
       : setHeight(height + "px");
+  };
+
+  useEffect(() => {
+    recalculateHeight();
   }, [isOpen, isOpenButton, window.innerHeight, isUploading]);
 
-  const ref = useRef();
-
-  const dropDownRef = useRef();
+  useEffect(() => {
+    window.addEventListener("resize", recalculateHeight);
+    return () => {
+      window.removeEventListener("resize", recalculateHeight);
+    };
+  }, [recalculateHeight]);
 
   const toggle = (isOpen) => {
     if (isOpenButton && onClose) {
@@ -223,8 +242,12 @@ const MainButtonMobile = (props) => {
 
   return (
     <>
-      <Backdrop zIndex={200} visible={isOpen} onClick={outsideClick} />
-      <div ref={ref} className={className} style={{ zIndex: "201", ...style }}>
+      <Backdrop zIndex={210} visible={isOpen} onClick={outsideClick} />
+      <div
+        ref={ref}
+        className={className}
+        style={{ zIndex: `${isOpen ? "211" : "201"}`, ...style }}
+      >
         <StyledFloatingButton
           icon={isOpen ? "minus" : "plus"}
           isOpen={isOpen}
@@ -256,6 +279,9 @@ const MainButtonMobile = (props) => {
             children
           )}
         </StyledDropDown>
+        <StyledAlertIcon>
+          {alert && !isOpen ? <StyledButtonAlertIcon size="small" /> : <></>}
+        </StyledAlertIcon>
       </div>
     </>
   );

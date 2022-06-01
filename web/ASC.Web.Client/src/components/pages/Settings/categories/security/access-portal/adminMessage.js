@@ -26,7 +26,14 @@ const MainContainer = styled.div`
 `;
 
 const AdminMessage = (props) => {
-  const { t, history, enableAdmMess, setMessageSettings } = props;
+  const {
+    t,
+    history,
+    enableAdmMess,
+    setMessageSettings,
+    initSettings,
+    isInit,
+  } = props;
   const [type, setType] = useState(false);
   const [showReminder, setShowReminder] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -55,9 +62,17 @@ const AdminMessage = (props) => {
 
   useEffect(() => {
     checkWidth();
-    getSettings();
+
+    if (!isInit) initSettings().then(() => setIsLoading(true));
+    else setIsLoading(true);
+
     window.addEventListener("resize", checkWidth);
     return () => window.removeEventListener("resize", checkWidth);
+  }, []);
+
+  useEffect(() => {
+    if (!isInit) return;
+    getSettings();
   }, [isLoading]);
 
   useEffect(() => {
@@ -152,11 +167,14 @@ const AdminMessage = (props) => {
   );
 };
 
-export default inject(({ auth }) => {
+export default inject(({ auth, setup }) => {
   const { enableAdmMess, setMessageSettings } = auth.settingsStore;
+  const { initSettings, isInit } = setup;
 
   return {
     enableAdmMess,
     setMessageSettings,
+    initSettings,
+    isInit,
   };
 })(withTranslation(["Settings", "Common"])(withRouter(observer(AdminMessage))));

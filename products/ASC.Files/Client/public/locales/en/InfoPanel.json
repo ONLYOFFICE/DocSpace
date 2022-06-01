@@ -1,15 +1,13 @@
 {
-  "Info": "Info",
-  "ViewDetails": "View Details",
-  "ItemsSelected": "Items selected",
-  "SystemProperties": "System properties",
-  "WhoHasAccess": "Who has access",
-  "Members": "members",
-  "OpenSharingSettings": "Open sharing settings",
-  "OFORMsDescription": "Fill out the form online and get a simple Design Project Proposal ready, or just download the fillable template in the desirable format: DOCXF, OFORM, or PDF. <1> Propose a project or a series of projects to an freelance designer team. Outline project and task structure, payments, and terms.</1>",
-  "Location": "Location",
+  "EmptyScreenText": "See file and folder details here",
   "FileExtension": "File extension",
+  "ItemsSelected": "Items selected",
   "LastModifiedBy": "Last modified by",
+  "Members": "members",
+  "OFORMsDescription": "Fill out the form online and get a simple Design Project Proposal ready, or just download the fillable template in the desirable format: DOCXF, OFORM, or PDF. <1>Propose a project or a series of projects to a freelance designer team. Outline project and task structure, payments, and terms.</1>",
+  "OpenSharingSettings": "Open sharing settings",
+  "SystemProperties": "System properties",
   "Versions": "Versions",
-  "Comments": "Comments"
+  "ViewDetails": "View Details",
+  "WhoHasAccess": "Who has access"
 }

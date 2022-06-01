@@ -32,18 +32,13 @@ const notSelectedViewIcon = css`
 `;
 
 const mobileView = css`
-  ${(props) =>
-    !props.isRecentFolder &&
-    !props.isFavoritesFolder &&
-    css`
-      position: fixed;
-      top: auto;
-      left: 0;
-      bottom: 0;
-      width: 100vw;
+  position: fixed;
+  top: auto;
+  left: 0;
+  bottom: 0;
+  width: 100vw;
 
-      z-index: 999;
-    `}
+  z-index: 999;
 `;
 
 const StyledSortButton = styled.div`
@@ -184,8 +179,6 @@ const SortButton = ({
   viewSettings,
   onSort,
   viewSelectorVisible,
-  isRecentFolder,
-  isFavoritesFolder,
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -226,8 +219,6 @@ const SortButton = ({
     [onSort, toggleCombobox, currentSelectedFilterData]
   );
 
-  const getSortOption = () => {};
-
   const getAdvancedOptions = React.useCallback(() => {
     const data = getSortData();
 
@@ -253,30 +244,28 @@ const SortButton = ({
                 viewSettings={viewSettings}
               />
             </DropDownItem>
-            {!isFavoritesFolder && !isRecentFolder && (
-              <DropDownItem isSeparator={true}></DropDownItem>
-            )}
+
+            <DropDownItem isSeparator={true}></DropDownItem>
           </>
         )}
-        {!isFavoritesFolder && !isRecentFolder && (
-          <>
-            {data.map((item, index) => (
-              <DropDownItem
-                onClick={onOptionClick}
-                className={item.className}
-                key={item.key}
-                data-value={item.key}
-              >
-                <Text fontWeight={600}>{item.label}</Text>
-                <SortDesc
-                  className={`option-item__icon  ${
-                    item.isSelected ? "selected-option-item__icon" : ""
-                  }`}
-                />
-              </DropDownItem>
-            ))}
-          </>
-        )}
+
+        <>
+          {data.map((item, index) => (
+            <DropDownItem
+              onClick={onOptionClick}
+              className={item.className}
+              key={item.key}
+              data-value={item.key}
+            >
+              <Text fontWeight={600}>{item.label}</Text>
+              <SortDesc
+                className={`option-item__icon  ${
+                  item.isSelected ? "selected-option-item__icon" : ""
+                }`}
+              />
+            </DropDownItem>
+          ))}
+        </>
       </>
     );
   }, [
@@ -286,23 +275,20 @@ const SortButton = ({
     viewAs,
     viewSettings,
     getSortData,
-    isFavoritesFolder,
-    isRecentFolder,
   ]);
 
   return (
     <>
       <Backdrop
         visible={isOpen}
-        withBackground={true}
+        withBackground={false}
         onClick={toggleCombobox}
+        withoutBlur={true}
       />
       <StyledSortButton
         viewAs={viewAs}
         isDesc={currentSelectedFilterData.sortDirection === "desc"}
         onClick={toggleCombobox}
-        isRecentFolder={isRecentFolder}
-        isFavoritesFolder={isFavoritesFolder}
       >
         <ComboBox
           opened={isOpen}

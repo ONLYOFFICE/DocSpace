@@ -38,6 +38,10 @@ class PrimaryProgressDataStore {
       alert: false,
     });
   };
+
+  setPrimaryProgressBarShowError = (error) => {
+    this.alert = error;
+  };
 }
 
 export default PrimaryProgressDataStore;

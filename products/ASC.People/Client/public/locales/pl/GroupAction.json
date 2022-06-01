@@ -1,4 +1,5 @@
-﻿{
+{
+  "AddHeadOfDepartment": "Dodaj kierownika działu",
   "CustomNewDepartment": "{{groupCaption}} (tworzenie)",
   "GroupAction": "Działanie grupowe",
   "Members": "Członkowie",

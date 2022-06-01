@@ -147,6 +147,8 @@ const StyledContextMenu = styled.div`
     color: ${(props) => props.theme.dropDownItem.color};
     text-transform: none;
 
+    -webkit-touch-callout: none;
+
     &:hover {
       background-color: ${(props) =>
         props.noHover
@@ -195,7 +197,9 @@ const StyledContextMenu = styled.div`
       height: 16px;
       width: 16px;
     }
-    path {
+    path,
+    circle,
+    rect {
       fill: ${(props) => props.theme.dropDownItem.icon.color};
     }
 

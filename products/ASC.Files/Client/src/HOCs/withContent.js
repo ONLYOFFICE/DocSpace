@@ -8,7 +8,8 @@ import {
   ShareAccessRights,
 } from "@appserver/common/constants";
 import { combineUrl } from "@appserver/common/utils";
-
+import getCorrectDate from "@appserver/components/utils/getCorrectDate";
+import { LANGUAGE } from "@appserver/common/constants";
 import config from "../../package.json";
 import EditingWrapperComponent from "../components/EditingWrapperComponent";
 import { getTitleWithoutExst } from "../helpers/files-helpers";
@@ -197,6 +198,7 @@ export default function withContent(WrappedContent) {
         fileCopyAs,
         fromTemplate,
         gallerySelected,
+        setCreatedFolderId,
       } = this.props;
       const { itemTitle } = this.state;
       const { parentId, fileExst } = item;
@@ -239,6 +241,7 @@ export default function withContent(WrappedContent) {
           .then((folder) => {
             createdFolderId = folder.id;
             addActiveItems(null, [folder.id]);
+            setCreatedFolderId(createdFolderId);
           })
           .then(() => this.completeAction(itemId))
           .catch((e) => toastr.error(e))
@@ -375,22 +378,14 @@ export default function withContent(WrappedContent) {
     };
 
     getStatusByDate = (create) => {
-      const { culture, item } = this.props;
+      const { culture, item, personal } = this.props;
       const { created, updated } = item;
 
-      const options = {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "numeric",
-      };
+      const locale = personal ? localStorage.getItem(LANGUAGE) : culture;
 
       const date = create ? created : updated;
 
-      const dateLabel = new Date(date)
-        .toLocaleString(culture, options)
-        .replace(",", "");
+      const dateLabel = getCorrectDate(locale, date);
 
       return dateLabel;
     };
@@ -411,7 +406,16 @@ export default function withContent(WrappedContent) {
         isEdit,
         titleWithoutExt,
       } = this.props;
-      const { access, createdBy, fileExst, fileStatus, href, icon, id } = item;
+      const {
+        access,
+        createdBy,
+        fileExst,
+        fileStatus,
+        href,
+        icon,
+        id,
+        isFolder,
+      } = item;
 
       const updatedDate = this.getStatusByDate(false);
       const createdDate = this.getStatusByDate(true);
@@ -454,6 +458,7 @@ export default function withContent(WrappedContent) {
           cancelUpdateItem={this.cancelUpdateItem}
           isUpdatingRowItem={isUpdatingRowItem}
           passwordEntryProcess={passwordEntryProcess}
+          isFolder={item.fileExst ? false : true}
         />
       ) : (
         <WrappedContent
@@ -499,6 +504,7 @@ export default function withContent(WrappedContent) {
         passwordEntryProcess,
         addActiveItems,
         gallerySelected,
+        setCreatedFolderId,
       } = filesStore;
       const { clearActiveOperations, fileCopyAs } = uploadDataStore;
       const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
@@ -511,8 +517,10 @@ export default function withContent(WrappedContent) {
         fromTemplate,
       } = filesStore.fileActionStore;
       const { replaceFileStream, setEncryptionAccess } = auth;
+
       const {
         culture,
+        personal,
         folderFormValidation,
         isDesktopClient,
       } = auth.settingsStore;
@@ -563,6 +571,8 @@ export default function withContent(WrappedContent) {
         titleWithoutExt,
         fromTemplate,
         gallerySelected,
+        setCreatedFolderId,
+        personal,
       };
     }
   )(observer(WithContent));

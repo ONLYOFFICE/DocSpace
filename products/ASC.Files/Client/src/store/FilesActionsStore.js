@@ -10,6 +10,7 @@ import {
   markAsRead,
   removeFiles,
   removeShareFiles,
+  createFolder,
 } from "@appserver/common/api/files";
 import {
   ConflictResolveType,
@@ -34,7 +35,6 @@ class FilesActionStore {
   settingsStore;
   dialogsStore;
   mediaViewerDataStore;
-  infoPanelStore;
 
   constructor(
     authStore,
@@ -44,8 +44,7 @@ class FilesActionStore {
     selectedFolderStore,
     settingsStore,
     dialogsStore,
-    mediaViewerDataStore,
-    infoPanelStore
+    mediaViewerDataStore
   ) {
     makeAutoObservable(this);
     this.authStore = authStore;
@@ -55,7 +54,6 @@ class FilesActionStore {
     this.selectedFolderStore = selectedFolderStore;
     this.settingsStore = settingsStore;
     this.dialogsStore = dialogsStore;
-    this.infoPanelStore = infoPanelStore;
     this.mediaViewerDataStore = mediaViewerDataStore;
   }
 
@@ -106,6 +104,76 @@ class FilesActionStore {
       this.dialogsStore.setIsFolderActions(false);
       return setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
     });
+  };
+
+  convertToTree = (folders) => {
+    let result = [];
+    let level = { result };
+    try {
+      folders.forEach((folder) => {
+        folder.path
+          .split("/")
+          .filter((name) => name !== "")
+          .reduce((r, name, i, a) => {
+            if (!r[name]) {
+              r[name] = { result: [] };
+              r.result.push({ name, children: r[name].result });
+            }
+
+            return r[name];
+          }, level);
+      });
+    } catch (e) {
+      console.error("convertToTree", e);
+    }
+    return result;
+  };
+
+  createFolderTree = async (treeList, parentFolderId) => {
+    if (!treeList || !treeList.length) return;
+
+    for (let i = 0; i < treeList.length; i++) {
+      const treeNode = treeList[i];
+
+      // console.log(
+      //   `createFolderTree parent id = ${parentFolderId} name '${treeNode.name}': `,
+      //   treeNode.children
+      // );
+
+      const folder = await createFolder(parentFolderId, treeNode.name);
+      const parentId = folder.id;
+
+      if (treeNode.children.length == 0) continue;
+
+      await this.createFolderTree(treeNode.children, parentId);
+    }
+  };
+
+  uploadEmptyFolders = async (emptyFolders, folderId) => {
+    //console.log("uploadEmptyFolders", emptyFolders, folderId);
+
+    const { secondaryProgressDataStore } = this.uploadDataStore;
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = secondaryProgressDataStore;
+
+    const toFolderId = folderId ? folderId : this.selectedFolderStore.id;
+
+    setSecondaryProgressBarData({
+      icon: "file",
+      visible: true,
+      percent: 0,
+      label: "",
+      alert: false,
+    });
+
+    const tree = this.convertToTree(emptyFolders);
+    await this.createFolderTree(tree, toFolderId);
+
+    this.updateCurrentFolder(null, [folderId]);
+
+    setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
   };
 
   deleteAction = async (
@@ -247,9 +315,10 @@ class FilesActionStore {
           icon: "trash",
           label: translations.deleteOperation,
         };
-        await this.uploadDataStore.loopFilesOperations(data, pbData);
+        await loopFilesOperations(data, pbData);
         toastr.success(translations.successOperation);
         this.updateCurrentFolder(fileIds, folderIds);
+        clearActiveOperations(fileIds, folderIds);
       });
     } catch (err) {
       clearActiveOperations(fileIds, folderIds);
@@ -538,6 +607,8 @@ class FilesActionStore {
       filesCount,
     } = this.uploadDataStore.secondaryProgressDataStore;
 
+    this.setSelectedItems();
+
     //TODO: duplicate for folders?
     const folderIds = [];
     const fileIds = [];
@@ -612,21 +683,15 @@ class FilesActionStore {
     }
   };
 
-  openLocationAction = (locationId, isFolder) => {
+  openLocationAction = (locationId) => {
     const { createNewExpandedKeys, setExpandedKeys } = this.treeFoldersStore;
 
-    const locationFilter = isFolder ? this.filesStore.filter : null;
     this.filesStore.setBufferSelection(null);
-    return this.filesStore
-      .fetchFiles(locationId, locationFilter)
-      .then((data) => {
-        const pathParts = data.selectedFolder.pathParts;
-        const newExpandedKeys = createNewExpandedKeys(pathParts);
-        setExpandedKeys(newExpandedKeys);
-      });
-    /*.then(() =>
-      //isFolder ? null : this.selectRowAction(!checked, item)
-    );*/
+    return this.filesStore.fetchFiles(locationId, null).then((data) => {
+      const pathParts = data.selectedFolder.pathParts;
+      const newExpandedKeys = createNewExpandedKeys(pathParts);
+      setExpandedKeys(newExpandedKeys);
+    });
   };
 
   setThirdpartyInfo = (providerKey) => {
@@ -746,9 +811,25 @@ class FilesActionStore {
     this.dialogsStore.setConflictResolveDialogVisible(true);
   };
 
+  setSelectedItems = () => {
+    const selectionLength = this.filesStore.selection.length;
+    const selectionTitle = this.filesStore.selectionTitle;
+
+    if (selectionLength !== undefined && selectionTitle) {
+      this.uploadDataStore.secondaryProgressDataStore.setItemsSelectionLength(
+        selectionLength
+      );
+      this.uploadDataStore.secondaryProgressDataStore.setItemsSelectionTitle(
+        selectionTitle
+      );
+    }
+  };
+
   checkOperationConflict = async (operationData) => {
     const { destFolderId, folderIds, fileIds } = operationData;
     const { setBufferSelection } = this.filesStore;
+
+    this.setSelectedItems();
 
     this.filesStore.setSelected("none");
     let conflicts;
@@ -840,8 +921,6 @@ class FilesActionStore {
       setCopyPanelVisible,
       setDeleteDialogVisible,
     } = this.dialogsStore;
-
-    const { toggleIsVisible } = this.infoPanelStore;
 
     switch (option) {
       case "share":

@@ -9,7 +9,7 @@ const StyledContent = styled.div`
 
   display: grid;
 
-  grid-template-columns: 1fr;
+  grid-template-columns: 100%;
   grid-template-rows: ${(props) =>
     props.isNotifyUsers
       ? "53px calc(100% - 254px) 201px"
@@ -17,7 +17,7 @@ const StyledContent = styled.div`
 `;
 
 const StyledHeaderContent = styled.div`
-  width: 100%;
+  width: auto;
   max-width: 100%;
   height: ${(props) => (props.isPersonal ? "40px" : "53px")};
 
@@ -36,6 +36,9 @@ const StyledHeaderContent = styled.div`
     display: flex;
     align-items: center;
     justify-content: start;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
     width: 100%;
 
