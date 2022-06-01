@@ -72,7 +72,7 @@ const StyledAsidePanel = styled.div`
     width: 100%;
     max-width: 468px;
     height: 1px;
-    background: #eceef1;
+    background: ${(props) => props.theme.filesPanels.sharing.borderBottom};
     content: "";
     top: 48px;
     width: calc(100% - 32px);
