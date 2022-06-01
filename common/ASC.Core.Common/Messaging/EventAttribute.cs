@@ -24,9 +24,17 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Core.Common.Log;
-internal static partial class CouponManagerLogger
+namespace ASC.AuditTrail;
+
+[AttributeUsage(AttributeTargets.Property)]
+public class EventAttribute : Attribute
 {
-    [LoggerMessage(Level = LogLevel.Critical, Message = "CouponManager")]
-    public static partial void CriticalCouponManager(this ILogger<CouponManager> logger, Exception exception);
+    public string Resource { get; private set; }
+    public int Order { get; private set; }
+
+    public EventAttribute(string resource, int order = 0)
+    {
+        Resource = resource;
+        Order = order;
+    }
 }

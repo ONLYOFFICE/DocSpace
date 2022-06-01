@@ -24,9 +24,9 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.MessagingSystem.Migrations.PostgreSql.MessagesContextPostgreSql;
+namespace ASC.MessagingSystem.Migrations.MySql.MessagesContextMySql;
 
-public partial class MessagesContextPostgreSql : Migration
+public partial class MessagesContextMySql : Migration
 {
     protected override void Up(MigrationBuilder migrationBuilder)
     {
@@ -81,6 +81,7 @@ public partial class MessagesContextPostgreSql : Migration
                     .Annotation("MySql:CharSet", "utf8"),
                 date = table.Column<DateTime>(type: "datetime", nullable: false),
                 tenant_id = table.Column<int>(type: "int", nullable: false),
+                active = table.Column<int>(type: "int", nullable: false),
                 user_id = table.Column<string>(type: "char(38)", nullable: false, collation: "utf8_general_ci")
                     .Annotation("MySql:CharSet", "utf8"),
                 page = table.Column<string>(type: "varchar(300)", nullable: true, collation: "utf8_general_ci")

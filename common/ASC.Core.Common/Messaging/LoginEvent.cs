@@ -24,11 +24,14 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+
+
 namespace ASC.MessagingSystem.Models;
 
 public class LoginEvent : MessageEvent, IMapFrom<EventMessage>
 {
     public string Login { get; set; }
+    public bool Active { get; set; }
 
     public void Mapping(Profile profile)
     {
@@ -104,7 +107,11 @@ public static class LoginEventsExtension
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
 
-            entity.Property(e => e.TenantId).HasColumnName("tenant_id");
+            entity.Property(e => e.TenantId)
+                .HasColumnName("tenant_id");
+
+            entity.Property(e => e.Active)
+                .HasColumnName("active");
 
             entity.Property(e => e.UserId)
                 .IsRequired()
@@ -163,6 +170,8 @@ public static class LoginEventsExtension
                 .HasDefaultValueSql("NULL");
 
             entity.Property(e => e.TenantId).HasColumnName("tenant_id");
+
+            entity.Property(e => e.Active).HasColumnName("active");
 
             entity.Property(e => e.UserId)
                 .IsRequired()

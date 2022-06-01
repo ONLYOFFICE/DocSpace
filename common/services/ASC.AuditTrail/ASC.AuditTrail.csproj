@@ -49,5 +49,9 @@
       <DependentUpon>AuditReportResource.resx</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Attributes\" />
+  </ItemGroup>
   
 </Project>

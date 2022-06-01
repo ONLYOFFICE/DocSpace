@@ -1433,12 +1433,6 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<string>("PwdHashSha512")
-                        .HasColumnType("varchar(512)")
-                        .HasColumnName("pwdhashsha512")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
-
                     b.Property<int>("Tenant")
                         .HasColumnType("int")
                         .HasColumnName("tenant");
@@ -1460,7 +1454,6 @@ namespace ASC.Core.Common.Migrations.PostgreSql.UserDbContextPostgreSql
                             UserId = "66faa6e4-f133-11ea-b126-00ffeec8b4ef",
                             LastModified = new DateTime(2021, 10, 12, 14, 53, 21, 367, DateTimeKind.Utc).AddTicks(6524),
                             PwdHash = "vLFfghR5tNV3K9DKhmwArV+SbjWAcgZZzIDTnJ0JgCo=",
-                            PwdHashSha512 = "USubvPlB+ogq0Q1trcSupg==",
                             Tenant = 1
                         });
                 });

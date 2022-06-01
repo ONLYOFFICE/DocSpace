@@ -24,17 +24,23 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.AuditTrail.Attributes;
+namespace ASC.MessagingSystem.Mapping;
 
-[AttributeUsage(AttributeTargets.Property)]
-public class EventAttribute : Attribute
+[Scope]
+public class BaseEventTypeConverter : ITypeConverter<LoginEvent, BaseEvent>
 {
-    public string Resource { get; private set; }
-    public int Order { get; private set; }
+    private readonly TenantUtil _tenantUtil;
 
-    public EventAttribute(string resource, int order = 0)
+    public BaseEventTypeConverter(TenantUtil tenantUtil)
     {
-        Resource = resource;
-        Order = order;
+        _tenantUtil = tenantUtil;
+    }
+
+    public BaseEvent Convert(LoginEvent source, BaseEvent destination, ResolutionContext context)
+    {
+        var baseEvent = context.Mapper.Map<LoginEvent, BaseEvent>(source);
+        baseEvent.IP = source.Ip.Split(':').Length > 1 ? source.Ip.Split(':')[0] : source.Ip;
+        baseEvent.Date = _tenantUtil.DateTimeFromUtc(source.Date);
+        return baseEvent;
     }
 }

@@ -315,6 +315,11 @@ public partial class FilesDbContextMySql : Migration
             name: "index_1",
             table: "files_thirdparty_id_mapping",
             columns: new[] { "tenant_id", "hash_id" });
+
+        migrationBuilder.CreateIndex(
+            name: "tenant_id",
+            table: "files_thirdparty_account",
+            column: "tenant_id");
     }
 
     protected override void Down(MigrationBuilder migrationBuilder)

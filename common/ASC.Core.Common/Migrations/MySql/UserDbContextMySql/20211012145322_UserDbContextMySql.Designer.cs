@@ -1433,12 +1433,6 @@ namespace ASC.Core.Common.Migrations.MySql.UserDbContextMySql
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<string>("PwdHashSha512")
-                        .HasColumnType("varchar(512)")
-                        .HasColumnName("pwdhashsha512")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
-
                     b.Property<int>("Tenant")
                         .HasColumnType("int")
                         .HasColumnName("tenant");

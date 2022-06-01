@@ -361,6 +361,11 @@ public partial class FilesDbContextPostgreSql : Migration
             columns: new[] { "tenant_id", "hash_id" });
 
         migrationBuilder.CreateIndex(
+            name: "tenant_id",
+            table: "files_thirdparty_account",
+            column: "tenant_id");
+
+        migrationBuilder.CreateIndex(
             name: "last_modified",
             table: "tenants_tenants",
             column: "last_modified");

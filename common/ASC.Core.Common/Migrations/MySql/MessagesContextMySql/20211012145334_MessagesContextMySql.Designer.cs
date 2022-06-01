@@ -327,6 +327,10 @@ namespace ASC.MessagingSystem.Migrations.MySql.MessagesContextMySql
                         .HasColumnType("int")
                         .HasColumnName("tenant_id");
 
+                    b.Property<int>("Active")
+                        .HasColumnType("int")
+                        .HasColumnName("active");
+
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("char(38)")

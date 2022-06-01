@@ -24,21 +24,41 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.MessagingSystem.Models;
+namespace ASC.AuditTrail.Models;
 
-public class EventMessage
+public class BaseEvent : IMapFrom<LoginEvent>
 {
     public int Id { get; set; }
-    public string Ip { get; set; }
-    public string Initiator { get; set; }
-    public string Browser { get; set; }
-    public string Platform { get; set; }
-    public DateTime Date { get; set; }
     public int TenantId { get; set; }
     public Guid UserId { get; set; }
-    public string Page { get; set; }
-    public MessageAction Action { get; set; }
+    public bool Mobile { get; set; }
     public IList<string> Description { get; set; }
-    public MessageTarget Target { get; set; }
-    public string UAHeader { get; set; }
+
+    [Event("IpCol")]
+    public string IP { get; set; }
+
+    [Event("BrowserCol")]
+    public string Browser { get; set; }
+
+    [Event("PlatformCol")]
+    public string Platform { get; set; }
+
+    [Event("DateCol")]
+    public DateTime Date { get; set; }
+
+    [Event("UserCol")]
+    public string UserName { get; set; }
+
+    [Event("PageCol")]
+    public string Page { get; set; }
+
+    [Event("ActionCol")]
+    public string ActionText { get; set; }
+
+    public void Mapping(Profile profile)
+    {
+        profile.CreateMap<LoginEvent, BaseEvent>()
+            .ConvertUsing<BaseEventTypeConverter>();
+    }
 }
+
