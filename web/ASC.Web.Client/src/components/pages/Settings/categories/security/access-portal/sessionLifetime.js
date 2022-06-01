@@ -26,7 +26,14 @@ const MainContainer = styled.div`
 `;
 
 const SessionLifetime = (props) => {
-  const { t, history, lifetime, setSessionLifetimeSettings } = props;
+  const {
+    t,
+    history,
+    lifetime,
+    setSessionLifetimeSettings,
+    initSettings,
+    isInit,
+  } = props;
   const [type, setType] = useState(false);
   const [sessionLifetime, setSessionLifetime] = useState("0");
   const [showReminder, setShowReminder] = useState(false);
@@ -61,9 +68,17 @@ const SessionLifetime = (props) => {
 
   useEffect(() => {
     checkWidth();
-    getSettings();
+
+    if (!isInit) initSettings().then(() => setIsLoading(true));
+    else setIsLoading(true);
+
     window.addEventListener("resize", checkWidth);
     return () => window.removeEventListener("resize", checkWidth);
+  }, []);
+
+  useEffect(() => {
+    if (!isInit) return;
+    getSettings();
   }, [isLoading]);
 
   useEffect(() => {
@@ -178,12 +193,15 @@ const SessionLifetime = (props) => {
   );
 };
 
-export default inject(({ auth }) => {
+export default inject(({ auth, setup }) => {
   const { sessionLifetime, setSessionLifetimeSettings } = auth.settingsStore;
+  const { initSettings, isInit } = setup;
 
   return {
     lifetime: sessionLifetime,
     setSessionLifetimeSettings,
+    initSettings,
+    isInit,
   };
 })(
   withTranslation(["Settings", "Common"])(withRouter(observer(SessionLifetime)))
