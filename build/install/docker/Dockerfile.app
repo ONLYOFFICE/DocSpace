@@ -177,146 +177,146 @@ RUN chown nginx:nginx /etc/nginx/* -R && \
 FROM builder AS api_system
 WORKDIR ${BUILD_PATH}/services/apisystem/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint-dotnet.sh ./docker-entrypoint.sh
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.ApiSystem/service .
 
-CMD ["dotnet", "ASC.ApiSystem.dll", "ASC.ApiSystem"]
+CMD ["ASC.ApiSystem.dll", "ASC.ApiSystem"]
 
 ## ASC.Data.Backup ##
 FROM builder AS backup
 WORKDIR ${BUILD_PATH}/services/backup/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint-dotnet.sh ./docker-entrypoint.sh
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Data.Backup/service .
 
-CMD ["dotnet", "ASC.Data.Backup.dll", "ASC.Data.Backup", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
+CMD ["ASC.Data.Backup.dll", "ASC.Data.Backup", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
 
 ## ASC.Data.Storage.Encryption ##
 FROM builder AS data_storage_encryption
 WORKDIR ${BUILD_PATH}/services/storage.encryption/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint-dotnet.sh ./docker-entrypoint.sh
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Data.Storage.Encryption/service/ .
 
-CMD ["dotnet", "ASC.Data.Storage.Encryption.dll", "ASC.Data.Storage.Encryption"]
+CMD ["ASC.Data.Storage.Encryption.dll", "ASC.Data.Storage.Encryption"]
 
 ## ASC.Files ##
 FROM builder AS files
 WORKDIR ${BUILD_PATH}/products/ASC.Files/server/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint-dotnet.sh ./docker-entrypoint.sh
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/products/ASC.Files/server/ .
 
-CMD ["dotnet", "ASC.Files.dll", "ASC.Files"]
+CMD ["ASC.Files.dll", "ASC.Files"]
 
 ## ASC.Files.Service ##
 FROM builder AS files_services
 WORKDIR ${BUILD_PATH}/products/ASC.Files/service/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint-dotnet.sh ./docker-entrypoint.sh
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Files.Service/service/ .
 
-CMD ["dotnet", "ASC.Files.Service.dll", "ASC.Files.Service", "core:products:folder=/var/www/products/", "core:products:subfolder=server", "disable_elastic=true"]
+CMD ["ASC.Files.Service.dll", "ASC.Files.Service", "core:products:folder=/var/www/products/", "core:products:subfolder=server", "disable_elastic=true"]
 
 ## ASC.Data.Storage.Migration ##
 FROM builder AS data_storage_migration
 WORKDIR ${BUILD_PATH}/services/storage.migration/service/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint-dotnet.sh ./docker-entrypoint.sh
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Data.Storage.Migration/service/ .
 
-CMD ["dotnet", "ASC.Data.Storage.Migration.dll", "ASC.Data.Storage.Migration"]
+CMD ["ASC.Data.Storage.Migration.dll", "ASC.Data.Storage.Migration"]
 
 ## ASC.Notify ##
 FROM builder AS notify
 WORKDIR ${BUILD_PATH}/services/notify/service
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint-dotnet.sh ./docker-entrypoint.sh
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Notify/service/ .
 
-CMD ["dotnet", "ASC.Notify.dll", "ASC.Notify", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
+CMD ["ASC.Notify.dll", "ASC.Notify", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
 
 ## ASC.People ##
 FROM builder AS people_server
 WORKDIR ${BUILD_PATH}/products/ASC.People/server/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint-dotnet.sh ./docker-entrypoint.sh
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/products/ASC.People/server/ .
 
-CMD ["dotnet", "ASC.People.dll", "ASC.People"]
+CMD ["ASC.People.dll", "ASC.People"]
 
-## ASC.Socket.IO.Svc ##
+## ASC.Socket.IO ##
 FROM nodeBuild AS socket
 WORKDIR ${BUILD_PATH}/services/socket.io.svc/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint-node.sh ./docker-entrypoint.sh
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Socket.IO/service/ .
 
-CMD  ["node", "server.js", "ASC.Socket.IO.Svc"]
+CMD  ["server.js", "ASC.Socket.IO"]
 
 ## ASC.Studio.Notify ##
 FROM builder AS studio_notify
 WORKDIR ${BUILD_PATH}/services/studio.notify/service/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint-dotnet.sh ./docker-entrypoint.sh
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Studio.Notify/service/ .
 
-CMD ["dotnet", "ASC.Studio.Notify.dll", "ASC.Studio.Notify", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
+CMD ["ASC.Studio.Notify.dll", "ASC.Studio.Notify", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
 
 ## ASC.TelegramService ##
 FROM builder AS telegram_service
 WORKDIR ${BUILD_PATH}/services/telegram/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint-dotnet.sh ./docker-entrypoint.sh
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.TelegramService/service/ .
 
-CMD ["dotnet", "ASC.TelegramService.dll", "ASC.TelegramService"]
+CMD ["ASC.TelegramService.dll", "ASC.TelegramService"]
 
 ## ASC.Thumbnails.Svc ##
 FROM builder AS thumbnails
 WORKDIR ${BUILD_PATH}/services/thumb/service/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint-dotnet.sh ./docker-entrypoint.sh
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Thumbnails.Svc/service/ .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Thumbnails/service/ ${BUILD_PATH}/services/thumb/client
 
-CMD ["dotnet", "ASC.Thumbnails.Svc.dll", "ASC.Thumbnails.Svc"]
+CMD ["ASC.Thumbnails.Svc.dll", "ASC.Thumbnails.Svc"]
 
-## ASC.UrlShortener.Svc ##
+## ASC.UrlShortener ##
 FROM nodeBuild AS urlshortener
 WORKDIR  ${BUILD_PATH}/services/urlshortener/service/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint-node.sh ./docker-entrypoint.sh
 COPY --from=base --chown=onlyoffice:onlyoffice  ${BUILD_PATH}/services/ASC.UrlShortener/service/ .
 
-CMD ["node", "index.js", "ASC.UrlShortener.Svc"]
+CMD ["index.js", "ASC.UrlShortener"]
 
 ## ASC.Web.Api ##
 FROM builder AS api
 WORKDIR ${BUILD_PATH}/studio/api/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint-dotnet.sh ./docker-entrypoint.sh
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Web.Api/service/ .
 
-CMD ["dotnet", "ASC.Web.Api.dll", "ASC.Web.Api"]
+CMD ["ASC.Web.Api.dll", "ASC.Web.Api"]
 
 ## ASC.Web.Studio ##
 FROM builder AS studio
 WORKDIR ${BUILD_PATH}/studio/server/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint-dotnet.sh ./docker-entrypoint.sh
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Web.Studio/service/ .
 
-CMD ["dotnet", "ASC.Web.Studio.dll", "ASC.Web.Studio"]
+CMD ["ASC.Web.Studio.dll", "ASC.Web.Studio"]
 
 ## ASC.SsoAuth ##
 FROM nodeBuild AS ssoauth
-WORKDIR ${BUILD_PATH}/services/ASC.SsoAuth.Svc/
+WORKDIR ${BUILD_PATH}/services/ASC.SsoAuth/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint-node.sh ./docker-entrypoint.sh
 COPY --from=base --chown=onlyoffice:onlyoffice  ${BUILD_PATH}/services/ASC.SsoAuth/service/ .
 
-CMD ["node", "app.js", "ASC.SsoAuth.Svc"]
+CMD ["app.js", "ASC.SsoAuth"]
 
 ## image for k8s bin-share ##
 FROM busybox:latest AS bin_share
