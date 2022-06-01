@@ -635,7 +635,6 @@ class ContextOptionsStore {
     const { setDeleteDialogVisible } = this.dialogsStore;
     const { isRecycleBinFolder } = this.treeFoldersStore;
 
-    const countItems = selection.length;
     const downloadAs =
       selection.findIndex((k) => k.contextOptions.includes("download-as")) !==
       -1;
@@ -673,6 +672,7 @@ class ContextOptionsStore {
     );
 
     const favoriteItemsIds = favoriteItems.map((item) => item.id);
+
     const removeFromFavoriteItemsIds = removeFromFavoriteItems.map(
       (item) => item.id
     );
@@ -698,6 +698,15 @@ class ContextOptionsStore {
         disabled: !favoriteItems.length,
         "data-action": "mark",
         action: "mark",
+      },
+      {
+        key: "remove-from-favorites",
+        label: t("RemoveFromFavorites"),
+        icon: "images/favorites.react.svg",
+        onClick: (e) => this.onClickFavorite(e, removeFromFavoriteItemsIds, t),
+        disabled: favoriteItems.length || !removeFromFavoriteItems.length,
+        "data-action": "remove",
+        action: "remove",
       },
       {
         key: "download",
@@ -740,18 +749,7 @@ class ContextOptionsStore {
       {
         key: "separator1",
         isSeparator: true,
-        disabled:
-          !removeFromFavoriteItems.length &&
-          (!deleteItems || isRootThirdPartyFolder),
-      },
-      {
-        key: "remove-from-favorites",
-        label: t("RemoveFromFavorites"),
-        icon: "images/favorites.react.svg",
-        onClick: (e) => this.onClickFavorite(e, removeFromFavoriteItemsIds, t),
-        disabled: !removeFromFavoriteItems.length,
-        "data-action": "remove",
-        action: "remove",
+        disabled: !deleteItems || isRootThirdPartyFolder,
       },
       {
         key: "delete",
