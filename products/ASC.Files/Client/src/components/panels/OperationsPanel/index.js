@@ -179,6 +179,8 @@ const OperationsPanelComponent = (props) => {
           ? t("Translations:CopyHere")
           : t("Translations:MoveHere")
       }
+      isRecycleBin={isRecycleBin}
+      currentFolderId={currentFolderId}
     ></SelectFolderDialog>
   );
 };
