@@ -2655,6 +2655,11 @@ const Base = {
         separatorBorder: `1px solid ${grayLightMid}`,
         linkColor: link,
       },
+
+      backup: {
+        rectangleBackgroundColor: "#f8f9f9",
+        separatorBorder: "1px solid #eceef1",
+      },
     },
 
     wizard: {

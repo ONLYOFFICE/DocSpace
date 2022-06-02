@@ -153,7 +153,6 @@ const Navigation = ({
             width={context.sectionWidth}
             isRootFolder={isRootFolder}
             canCreate={canCreate}
-            title={title}
             isTabletView={isTabletView}
             isRecycleBinFolder={isRecycleBinFolder}
             isDesktop={isDesktop}

@@ -35,7 +35,6 @@ class FilesActionStore {
   settingsStore;
   dialogsStore;
   mediaViewerDataStore;
-  infoPanelStore;
 
   constructor(
     authStore,
@@ -45,8 +44,7 @@ class FilesActionStore {
     selectedFolderStore,
     settingsStore,
     dialogsStore,
-    mediaViewerDataStore,
-    infoPanelStore
+    mediaViewerDataStore
   ) {
     makeAutoObservable(this);
     this.authStore = authStore;
@@ -56,7 +54,6 @@ class FilesActionStore {
     this.selectedFolderStore = selectedFolderStore;
     this.settingsStore = settingsStore;
     this.dialogsStore = dialogsStore;
-    this.infoPanelStore = infoPanelStore;
     this.mediaViewerDataStore = mediaViewerDataStore;
   }
 
@@ -188,7 +185,6 @@ class FilesActionStore {
     const { addActiveItems } = this.filesStore;
     const {
       secondaryProgressDataStore,
-      loopFilesOperations,
       clearActiveOperations,
     } = this.uploadDataStore;
     const {
@@ -197,6 +193,7 @@ class FilesActionStore {
     } = secondaryProgressDataStore;
 
     const selection = newSelection ? newSelection : this.filesStore.selection;
+    const isThirdPartyFile = selection.some((f) => f.providerKey);
 
     const currentFolderId = this.selectedFolderStore.id;
 
@@ -263,7 +260,7 @@ class FilesActionStore {
               return toastr.success(translations.deleteFromTrash);
             }
 
-            if (selection.length > 1) {
+            if (selection.length > 1 || isThirdPartyFile) {
               return toastr.success(translations.deleteSelectedElem);
             }
             if (selection[0].fileExst) {
@@ -475,18 +472,18 @@ class FilesActionStore {
     }
   };
 
-  onSelectItem = ({ id, isFolder }, isBuffer = false) => {
+  onSelectItem = ({ id, isFolder }, isBuffer = false, isSingleFile) => {
     const {
       setBufferSelection,
       selected,
       setSelected,
+      selection,
       setSelection,
       setHotkeyCaretStart,
       setHotkeyCaret,
       setEnabledHotkeys,
       filesList,
     } = this.filesStore;
-    /* selected === "close" &&  */ setSelected("none");
 
     if (!id) return;
 
@@ -498,8 +495,16 @@ class FilesActionStore {
       if (isBuffer) {
         setBufferSelection(item);
         setEnabledHotkeys(false);
+        setSelected("none");
       } else {
-        setSelection([item]);
+        const isSelected = selection.findIndex(
+          (f) => f.id === id && f.isFolder === isFolder
+        );
+
+        if (isSelected === -1 || isSingleFile) {
+          setSelected("none");
+          setSelection([item]);
+        }
         setHotkeyCaret(null);
         setHotkeyCaretStart(null);
       }
@@ -639,28 +644,40 @@ class FilesActionStore {
     );
   };
 
+  getFilesInfo = (items) => {
+    const requests = [];
+    let i = items.length;
+    while (i !== 0) {
+      requests.push(this.filesStore.getFileInfo(items[i - 1]));
+      i--;
+    }
+    return Promise.all(requests);
+  };
+
   setFavoriteAction = (action, id) => {
     const {
       markItemAsFavorite,
       removeItemFromFavorite,
       fetchFavoritesFolder,
-      getFileInfo,
       setSelected,
     } = this.filesStore;
 
     const items = Array.isArray(id) ? id : [id];
 
-    //let data = selection.map(item => item.id)
     switch (action) {
       case "mark":
-        return markItemAsFavorite([id]).then(() => getFileInfo(id));
+        return markItemAsFavorite(items)
+          .then(() => {
+            return this.getFilesInfo(items);
+          })
+          .then(() => setSelected("close"));
 
       case "remove":
         return removeItemFromFavorite(items)
           .then(() => {
             return this.treeFoldersStore.isFavoritesFolder
               ? fetchFavoritesFolder(this.selectedFolderStore.id)
-              : getFileInfo(id);
+              : this.getFilesInfo(items);
           })
           .then(() => setSelected("close"));
       default:
@@ -924,8 +941,6 @@ class FilesActionStore {
       setCopyPanelVisible,
       setDeleteDialogVisible,
     } = this.dialogsStore;
-
-    const { toggleIsVisible } = this.infoPanelStore;
 
     switch (option) {
       case "share":

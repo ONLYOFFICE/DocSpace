@@ -375,7 +375,6 @@ class SectionHeaderContent extends React.Component {
             isRootFolder={isRootFolder}
             canCreate={canCreate}
             isRecycleBinFolder={isRecycleBinFolder}
-            title={title}
             isTitle={title}
             isDesktop={isDesktop}
             isTabletView={isTabletView}
@@ -442,7 +441,6 @@ export default inject(
     treeFoldersStore,
     filesActionsStore,
     settingsStore,
-    infoPanelStore,
   }) => {
     const {
       setSelected,
@@ -483,7 +481,7 @@ export default inject(
       backToParentFolder,
     } = filesActionsStore;
 
-    const { toggleIsVisible, isVisible } = infoPanelStore;
+    const { toggleIsVisible, isVisible } = auth.infoPanelStore;
 
     return {
       showText: auth.settingsStore.showText,

@@ -4,6 +4,5 @@
   "GroupAction": "Group action",
   "Members": "Members",
   "SearchAddedMembers": "Search added members",
-  "SelectAction": "Select",
   "SuccessSaveGroup": "{{groupCaption}} '{{ groupName }}' has been saved successfully"
 }
