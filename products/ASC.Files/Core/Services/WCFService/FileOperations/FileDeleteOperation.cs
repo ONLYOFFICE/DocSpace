@@ -68,7 +68,6 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
 
     public override FileOperationType OperationType => FileOperationType.Delete;
 
-
     public FileDeleteOperation(IServiceProvider serviceProvider, FileDeleteOperationData<T> fileOperationData)
         : base(serviceProvider, fileOperationData)
     {
@@ -103,7 +102,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
     private async Task DeleteFoldersAsync(IEnumerable<T> folderIds, IServiceScope scope)
     {
         var scopeClass = scope.ServiceProvider.GetService<FileDeleteOperationScope>();
-        var (fileMarker, filesMessageService) = scopeClass;
+        var (fileMarker, filesMessageService, roomLogoManager) = scopeClass;
         foreach (var folderId in folderIds)
         {
             CancellationToken.ThrowIfCancellationRequested();
@@ -157,11 +156,20 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
 
                         if (await FolderDao.IsEmptyAsync(folder.Id))
                         {
+                            if (isRoom)
+                            {
+                                await roomLogoManager.DeleteAsync(folder.Id);
+                            }
+
                             await FolderDao.DeleteFolderAsync(folder.Id);
 
-                            if (isRoom && folder.ProviderEntry)
+                            if (isRoom)
                             {
-                                await ProviderDao.UpdateProviderInfoAsync(folder.ProviderId, null, FolderType.DEFAULT);
+                                if (folder.ProviderEntry)
+                                {
+                                    await ProviderDao.UpdateProviderInfoAsync(folder.ProviderId, null, FolderType.DEFAULT);
+                                }
+                                
                                 filesMessageService.Send(folder, _headers, MessageAction.RoomDeleted, folder.Title);
                             }
                             else
@@ -188,6 +196,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
 
                                 if (isRoom)
                                 {
+                                    await roomLogoManager.DeleteAsync(folder.Id);
                                     filesMessageService.Send(folder, _headers, MessageAction.RoomDeleted, folder.Title);
                                 }
                                 else
@@ -215,7 +224,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
         var scopeClass = scope.ServiceProvider.GetService<FileDeleteOperationScope>();
         var socketManager = scope.ServiceProvider.GetService<SocketManager>();
 
-        var (fileMarker, filesMessageService) = scopeClass;
+        var (fileMarker, filesMessageService, _) = scopeClass;
         foreach (var fileId in fileIds)
         {
             CancellationToken.ThrowIfCancellationRequested();
@@ -308,16 +317,20 @@ public class FileDeleteOperationScope
 {
     private readonly FileMarker _fileMarker;
     private readonly FilesMessageService _filesMessageService;
+    private readonly RoomLogoManager _roomLogoManager;
 
-    public FileDeleteOperationScope(FileMarker fileMarker, FilesMessageService filesMessageService)
+    public FileDeleteOperationScope(FileMarker fileMarker, FilesMessageService filesMessageService, RoomLogoManager roomLogoManager)
     {
         _fileMarker = fileMarker;
         _filesMessageService = filesMessageService;
+        _roomLogoManager = roomLogoManager;
+        _roomLogoManager.EnableAudit = false;
     }
 
-    public void Deconstruct(out FileMarker fileMarker, out FilesMessageService filesMessageService)
+    public void Deconstruct(out FileMarker fileMarker, out FilesMessageService filesMessageService, out RoomLogoManager roomLogoManager)
     {
         fileMarker = _fileMarker;
         filesMessageService = _filesMessageService;
+        roomLogoManager = _roomLogoManager;
     }
 }

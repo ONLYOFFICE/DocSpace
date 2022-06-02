@@ -449,6 +449,9 @@ public enum MessageAction
     AddedRoomTags = 5058,
     DeletedRoomTags = 5059,
 
+    RoomLogoCreated = 5060,
+    RoomLogoDeleted = 5061,
+
     #endregion
 
     #region Settings

@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Core.Common.EF;
-
 namespace ASC.Files.Api;
 
 [ConstraintRoute("int")]
@@ -305,7 +303,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
         await _customTagsService.DeleteTagsAsync(inDto.TagIds);
     }
 
-    [Create("logos/upload")]
+    [Create("logos")]
     public async Task<UploadResultDto> UploadRoomLogo(IFormCollection formCollection)
     {
         var result = new UploadResultDto();

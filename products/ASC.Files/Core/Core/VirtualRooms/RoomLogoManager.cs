@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using SixLabors.ImageSharp.Formats;
-
 using Image = SixLabors.ImageSharp.Image;
 
 namespace ASC.Files.Core.VirtualRooms;
@@ -45,11 +43,13 @@ public class RoomLogoManager
     private readonly TenantManager _tenantManager;
     private IDataStore _dataStore;
     private readonly ICache _cache;
+    private readonly FilesMessageService _filesMessageService;
     private static readonly Regex _pattern = new Regex(@"\d+-\d+", RegexOptions.Compiled);
     private static readonly Regex _cachePattern = new Regex(@"\d+\/\S+\/\d+\/\d+", RegexOptions.Compiled);
     private static readonly TimeSpan _cacheLifeTime = TimeSpan.FromMinutes(30);
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public RoomLogoManager(StorageFactory storageFactory, TenantManager tenantManager, IDaoFactory daoFactory, FileSecurity fileSecurity, ILog logger, AscCache cache)
+    public RoomLogoManager(StorageFactory storageFactory, TenantManager tenantManager, IDaoFactory daoFactory, FileSecurity fileSecurity, ILog logger, AscCache cache, FilesMessageService filesMessageService, IHttpContextAccessor httpContextAccessor)
     {
         _storageFactory = storageFactory;
         _tenantManager = tenantManager;
@@ -57,10 +57,14 @@ public class RoomLogoManager
         _fileSecurity = fileSecurity;
         _logger = logger;
         _cache = cache;
+        _filesMessageService = filesMessageService;
+        _httpContextAccessor = httpContextAccessor;
     }
 
+    public bool EnableAudit { get; set; } = true;
     private IDataStore DataStore => _dataStore ??= _storageFactory.GetStorage(TenantId.ToString(), ModuleName);
     private int TenantId => _tenantManager.GetCurrentTenant().Id;
+    private IDictionary<string, StringValues> Headers => _httpContextAccessor?.HttpContext?.Request?.Headers;
 
     public async Task<Folder<T>> CreateAsync<T>(T id, string tempFile, int x, int y, int width, int height)
     {
@@ -87,6 +91,11 @@ public class RoomLogoManager
 
         await SaveWithProcessAsync(id, data, -1, new Point(x, y), new Size(width, height));
 
+        if (EnableAudit)
+        {
+            _filesMessageService.Send(room, Headers, MessageAction.RoomLogoCreated);
+        }
+
         return room;
     }
 
@@ -102,7 +111,13 @@ public class RoomLogoManager
 
         try
         {
-            await DataStore.DeleteFilesAsync(string.Empty, $"{ProcessFolderId(id)}*", false);
+            await DataStore.DeleteFilesAsync(string.Empty, $"{ProcessFolderId(id)}*.*", false);
+
+            if (EnableAudit)
+            {
+                _filesMessageService.Send(room, Headers, MessageAction.RoomLogoDeleted);
+            }
+
             _cache.Remove(_cachePattern);
             _cache.Remove(GetKey(id));
         }
