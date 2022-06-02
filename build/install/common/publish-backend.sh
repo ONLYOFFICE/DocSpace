@@ -68,8 +68,7 @@ for i in ${!servers_products_name_backend[@]}; do
 done
 
 # Array of names backend services
-services_name_backend=(ASC.ApiSystem)
-services_name_backend+=(ASC.Data.Backup)
+services_name_backend=(ASC.Data.Backup)
 services_name_backend+=(ASC.Data.Storage.Encryption)
 services_name_backend+=(ASC.Files.Service)
 services_name_backend+=(ASC.Data.Storage.Migration)
@@ -80,6 +79,9 @@ services_name_backend+=(ASC.UrlShortener.Svc)
 services_name_backend+=(ASC.Web.Api)
 services_name_backend+=(ASC.Web.Studio)
 services_name_backend+=(ASC.Thumbnails.Svc)
+services_name_backend+=(ASC.Data.Backup.BackgroundTasks)
+services_name_backend+=(ASC.ClearEvents)
+services_name_backend+=(ASC.Webhooks.Service)
 
 # Publish backend services
 for i in ${!services_name_backend[@]}; do

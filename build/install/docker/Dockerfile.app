@@ -173,18 +173,36 @@ RUN chown nginx:nginx /etc/nginx/* -R && \
     sed -i 's/localhost:9999/$service_urlshortener/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/172.*/$document_server;/' /etc/nginx/conf.d/onlyoffice.conf
 
-## ASC.ApiSystem ##
-FROM builder AS api_system
-WORKDIR ${BUILD_PATH}/services/apisystem/
+## ASC.Webhooks.Service ##
+FROM builder AS webhooks-wervice
+WORKDIR ${BUILD_PATH}/services/ASC.Webhooks.Service/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint-dotnet.sh ./docker-entrypoint.sh
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.ApiSystem/service/ .
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Webhooks.Service/ .
 
-CMD ["ASC.ApiSystem.dll", "ASC.ApiSystem"]
+CMD ["ASC.Webhooks.Service.dll", "ASC.Webhooks.Service"]
+
+## ASC.ClearEvents ##
+FROM builder AS clear-events
+WORKDIR ${BUILD_PATH}/services/ASC.ClearEvents/
+
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint-dotnet.sh ./docker-entrypoint.sh
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.ClearEvents/ .
+
+CMD ["ASC.ClearEvents.dll", "ASC.ClearEvents"]
+
+## ASC.Data.Backup.BackgroundTasks ##
+FROM builder AS backup_background
+WORKDIR ${BUILD_PATH}/services/ASC.Data.Backup.BackgroundTasks/
+
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint-dotnet.sh ./docker-entrypoint.sh
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Data.Backup.BackgroundTasks/ .
+
+CMD ["ASC.Data.Backup.BackgroundTasks.dll", "ASC.Data.Backup.BackgroundTasks"]
 
 ## ASC.Data.Backup ##
 FROM builder AS backup
-WORKDIR ${BUILD_PATH}/services/backup/
+WORKDIR ${BUILD_PATH}/services/ASC.Data.Backup/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint-dotnet.sh ./docker-entrypoint.sh
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Data.Backup/service/ .
@@ -193,7 +211,7 @@ CMD ["ASC.Data.Backup.dll", "ASC.Data.Backup", "core:products:folder=/var/www/pr
 
 ## ASC.Data.Storage.Encryption ##
 FROM builder AS data_storage_encryption
-WORKDIR ${BUILD_PATH}/services/storage.encryption/
+WORKDIR ${BUILD_PATH}/services/ASC.Data.Storage.Encryption/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint-dotnet.sh ./docker-entrypoint.sh
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Data.Storage.Encryption/service/ .
@@ -220,7 +238,7 @@ CMD ["ASC.Files.Service.dll", "ASC.Files.Service", "core:products:folder=/var/ww
 
 ## ASC.Data.Storage.Migration ##
 FROM builder AS data_storage_migration
-WORKDIR ${BUILD_PATH}/services/storage.migration/service/
+WORKDIR ${BUILD_PATH}/services/ASC.Data.Storage.Migration/service/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint-dotnet.sh ./docker-entrypoint.sh
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Data.Storage.Migration/service/ .
@@ -229,7 +247,7 @@ CMD ["ASC.Data.Storage.Migration.dll", "ASC.Data.Storage.Migration"]
 
 ## ASC.Notify ##
 FROM builder AS notify
-WORKDIR ${BUILD_PATH}/services/notify/service
+WORKDIR ${BUILD_PATH}/services/ASC.Notify/service
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint-dotnet.sh ./docker-entrypoint.sh
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Notify/service/ .
@@ -247,7 +265,7 @@ CMD ["ASC.People.dll", "ASC.People"]
 
 ## ASC.Socket.IO ##
 FROM nodeBuild AS socket
-WORKDIR ${BUILD_PATH}/services/socket.io.svc/
+WORKDIR ${BUILD_PATH}/services/ASC.Socket.IO/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint-node.sh ./docker-entrypoint.sh
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Socket.IO/service/ .
@@ -256,7 +274,7 @@ CMD  ["server.js", "ASC.Socket.IO"]
 
 ## ASC.Studio.Notify ##
 FROM builder AS studio_notify
-WORKDIR ${BUILD_PATH}/services/studio.notify/service/
+WORKDIR ${BUILD_PATH}/services/ASC.Studio.Notify/service/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint-dotnet.sh ./docker-entrypoint.sh
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Studio.Notify/service/ .
@@ -265,7 +283,7 @@ CMD ["ASC.Studio.Notify.dll", "ASC.Studio.Notify", "core:products:folder=/var/ww
 
 ## ASC.TelegramService ##
 FROM builder AS telegram_service
-WORKDIR ${BUILD_PATH}/services/telegram/
+WORKDIR ${BUILD_PATH}/services/ASC.TelegramService/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint-dotnet.sh ./docker-entrypoint.sh
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.TelegramService/service/ .
@@ -274,7 +292,7 @@ CMD ["ASC.TelegramService.dll", "ASC.TelegramService"]
 
 ## ASC.Thumbnails.Svc ##
 FROM builder AS thumbnails
-WORKDIR ${BUILD_PATH}/services/thumb/service/
+WORKDIR ${BUILD_PATH}/services/ASC.Thumbnails.Svc/service/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint-dotnet.sh ./docker-entrypoint.sh
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Thumbnails.Svc/service/ .
@@ -284,7 +302,7 @@ CMD ["ASC.Thumbnails.Svc.dll", "ASC.Thumbnails.Svc"]
 
 ## ASC.UrlShortener ##
 FROM nodeBuild AS urlshortener
-WORKDIR  ${BUILD_PATH}/services/urlshortener/service/
+WORKDIR  ${BUILD_PATH}/services/ASC.UrlShortener/service/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint-node.sh ./docker-entrypoint.sh
 COPY --from=base --chown=onlyoffice:onlyoffice  ${BUILD_PATH}/services/ASC.UrlShortener/service/ .
@@ -293,7 +311,7 @@ CMD ["index.js", "ASC.UrlShortener"]
 
 ## ASC.Web.Api ##
 FROM builder AS api
-WORKDIR ${BUILD_PATH}/studio/api/
+WORKDIR ${BUILD_PATH}/studio/ASC.Web.Api/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint-dotnet.sh ./docker-entrypoint.sh
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Web.Api/service/ .
@@ -302,7 +320,7 @@ CMD ["ASC.Web.Api.dll", "ASC.Web.Api"]
 
 ## ASC.Web.Studio ##
 FROM builder AS studio
-WORKDIR ${BUILD_PATH}/studio/server/
+WORKDIR ${BUILD_PATH}/studio/ASC.Web.Studio/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint-dotnet.sh ./docker-entrypoint.sh
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Web.Studio/service/ .
