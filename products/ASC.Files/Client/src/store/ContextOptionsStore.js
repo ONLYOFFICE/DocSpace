@@ -631,6 +631,7 @@ class ContextOptionsStore {
   };
 
   getGroupContextOptions = (t) => {
+    const { personal } = this.authStore.settingsStore;
     const { selection } = this.filesStore;
     const { setDeleteDialogVisible } = this.dialogsStore;
     const { isRecycleBinFolder } = this.treeFoldersStore;
@@ -639,9 +640,10 @@ class ContextOptionsStore {
       selection.findIndex((k) => k.contextOptions.includes("download-as")) !==
       -1;
 
-    const sharingItems = selection.filter(
-      (k) => k.contextOptions.includes("sharing-settings") && k.canShare
-    ).length;
+    const sharingItems =
+      selection.filter(
+        (k) => k.contextOptions.includes("sharing-settings") && k.canShare
+      ).length && !personal;
 
     const favoriteItems = selection.filter((k) =>
       k.contextOptions.includes("mark-as-favorite")
