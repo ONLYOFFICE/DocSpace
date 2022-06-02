@@ -31,7 +31,7 @@ public class BackupWorker
 {
     public const string CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME = "backup";
 
-    internal string TempFolder { get; set; }
+    public string TempFolder { get; set; }
 
     private DistributedTaskQueue _progressQueue;
     private string _currentRegion;
@@ -57,8 +57,7 @@ public class BackupWorker
 
     public void Start(BackupSettings settings)
     {
-        TempFolder = _tempPath.GetTempPath();
-
+        TempFolder = Path.Combine(_tempPath.GetTempPath(), "backup");
         if (!Directory.Exists(TempFolder))
         {
             Directory.CreateDirectory(TempFolder);

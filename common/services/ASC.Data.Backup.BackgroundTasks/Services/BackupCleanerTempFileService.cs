@@ -24,40 +24,38 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-global using System.Text.RegularExpressions;
+namespace ASC.Data.Backup.Services;
 
-global using ASC.Api.Core;
-global using ASC.Api.Core.Extensions;
-global using ASC.Common;
-global using ASC.Common.Caching;
-global using ASC.Common.Threading;
-global using ASC.Common.Utils;
-global using ASC.Core;
-global using ASC.Core.Billing;
-global using ASC.Core.Common.Hosting;
-global using ASC.Core.Common.Hosting.Interfaces;
-global using ASC.Data.Backup.BackgroundTasks;
-global using ASC.Data.Backup.BackgroundTasks.Log;
-global using ASC.Data.Backup.Contracts;
-global using ASC.Data.Backup.Core.IntegrationEvents.Events;
-global using ASC.Data.Backup.IntegrationEvents.EventHandling;
-global using ASC.Data.Backup.Services;
-global using ASC.Data.Backup.Storage;
-global using ASC.Data.Backup.Tasks;
-global using ASC.EventBus.Abstractions;
-global using ASC.EventBus.Events;
-global using ASC.EventBus.Exceptions;
-global using ASC.EventBus.Log;
-global using ASC.Files.Core;
-global using ASC.Web.Studio.Core.Notify;
+[Singletone]
+public class BackupCleanerTempFileService : BackgroundService
+{
+    private readonly string _tempFolder;
+    private readonly ILogger<BackupCleanerTempFileService> _logger;
 
-global using Autofac;
+    public BackupCleanerTempFileService(ILogger<BackupCleanerTempFileService> logger, BackupWorker backupWorker)
+    {
+        _logger = logger;
+        _tempFolder = backupWorker.TempFolder;
+    }
 
-global using Microsoft.AspNetCore.Builder;
-global using Microsoft.Extensions.Configuration;
-global using Microsoft.Extensions.DependencyInjection;
-global using Microsoft.Extensions.Hosting;
-global using Microsoft.Extensions.Hosting.WindowsServices;
-global using Microsoft.Extensions.Logging;
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        _logger.InfoBeginBackupCleaner();
 
-global using Newtonsoft.Json;
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            var date = DateTime.UtcNow.AddDays(-7);
+            var regex = new Regex(@"^\w*_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}.tar.gz$");
+            var files = Directory.EnumerateFiles(_tempFolder).Where(f => regex.IsMatch(Path.GetFileName(f)) && new FileInfo(f).LastWriteTimeUtc < date);
+            foreach (var file in files)
+            {
+                File.Delete(file);
+                _logger.InfoBackupCleanerDeleteFile(Path.GetFileName(file));
+            }
+
+            await Task.Delay(TimeSpan.FromDays(1), stoppingToken);
+        }
+
+        _logger.InfoStopBackupCleaner();
+    }
+}
