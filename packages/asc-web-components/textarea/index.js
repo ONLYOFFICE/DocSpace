@@ -31,7 +31,7 @@ const Textarea = ({
     if (areaSelect && areaRef.current) {
       areaRef.current.select();
     }
-  }, [areaRef.current]);
+  }, [areaSelect]);
 
   return (
     <StyledScrollbar

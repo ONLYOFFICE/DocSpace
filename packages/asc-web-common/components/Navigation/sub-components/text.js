@@ -78,7 +78,7 @@ const Text = ({ title, isRootFolder, isOpen, onClick, ...rest }) => {
       onClick={onClick}
       {...rest}
     >
-      <StyledHeading type="content" truncate={true}>
+      <StyledHeading type="content" title={title} truncate={true}>
         {title}
       </StyledHeading>
       {!isRootFolder ? (
