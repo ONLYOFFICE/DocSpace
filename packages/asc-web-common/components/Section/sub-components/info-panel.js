@@ -3,6 +3,7 @@ import {
   isTablet,
   isMobile as isMobileUtils,
   tablet,
+  isDesktop,
 } from "@appserver/components/utils/device";
 import { inject } from "mobx-react";
 import PropTypes from "prop-types";
@@ -143,9 +144,13 @@ const InfoPanel = ({ children, isVisible, setIsVisible, viewAs }) => {
       if (e.target.id === "InfoPanelWrapper") closeInfoPanel();
     };
 
-    if (viewAs === "row" || isTablet() || isMobile || isMobileUtils()) {
+    if (viewAs === "row" || isTablet() || isMobile || isMobileUtils())
       document.addEventListener("mousedown", onMouseDown);
-    }
+
+    window.onpopstate = () => {
+      if (!isDesktop() && isVisible) closeInfoPanel();
+    };
+
     return () => document.removeEventListener("mousedown", onMouseDown);
   }, []);
 
