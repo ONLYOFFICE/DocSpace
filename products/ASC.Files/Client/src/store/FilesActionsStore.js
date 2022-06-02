@@ -193,6 +193,7 @@ class FilesActionStore {
     } = secondaryProgressDataStore;
 
     const selection = newSelection ? newSelection : this.filesStore.selection;
+    const isThirdPartyFile = selection.some((f) => f.providerKey);
 
     const currentFolderId = this.selectedFolderStore.id;
 
@@ -259,7 +260,7 @@ class FilesActionStore {
               return toastr.success(translations.deleteFromTrash);
             }
 
-            if (selection.length > 1) {
+            if (selection.length > 1 || isThirdPartyFile) {
               return toastr.success(translations.deleteSelectedElem);
             }
             if (selection[0].fileExst) {
