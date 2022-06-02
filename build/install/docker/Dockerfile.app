@@ -290,15 +290,15 @@ COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Telegr
 
 CMD ["ASC.TelegramService.dll", "ASC.TelegramService"]
 
-## ASC.Thumbnails.Svc ##
-FROM builder AS thumbnails
-WORKDIR ${BUILD_PATH}/services/ASC.Thumbnails.Svc/service/
+# ## ASC.Thumbnails.Svc ##
+# FROM builder AS thumbnails
+# WORKDIR ${BUILD_PATH}/services/ASC.Thumbnails.Svc/service/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint-dotnet.sh ./docker-entrypoint.sh
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Thumbnails.Svc/service/ .
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Thumbnails/service/ ${BUILD_PATH}/services/thumb/client
+# COPY --chown=onlyoffice:onlyoffice docker-entrypoint-dotnet.sh ./docker-entrypoint.sh
+# COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Thumbnails.Svc/service/ .
+# COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Thumbnails/service/ ${BUILD_PATH}/services/thumb/client
 
-CMD ["ASC.Thumbnails.Svc.dll", "ASC.Thumbnails.Svc"]
+# CMD ["ASC.Thumbnails.Svc.dll", "ASC.Thumbnails.Svc"]
 
 ## ASC.UrlShortener ##
 FROM nodeBuild AS urlshortener

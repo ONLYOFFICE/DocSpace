@@ -92,12 +92,12 @@ services:
       target: telegram_service
     image: "${REPO}/${STATUS}appserver-telegram-service:${DOCKER_TAG}"
 
-  onlyoffice-thumbnails:
-    build:
-      context: ./
-      dockerfile: "${DOCKERFILE}"
-      target: thumbnails
-    image: "${REPO}/${STATUS}appserver-thumbnails:${DOCKER_TAG}"
+  # onlyoffice-thumbnails:
+  #   build:
+  #     context: ./
+  #     dockerfile: "${DOCKERFILE}"
+  #     target: thumbnails
+  #   image: "${REPO}/${STATUS}appserver-thumbnails:${DOCKER_TAG}"
     
   onlyoffice-urlshortener:
     build:
