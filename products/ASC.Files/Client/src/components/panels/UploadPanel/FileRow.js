@@ -348,8 +348,10 @@ export default inject(
     let name;
     let splitted;
     if (item.file) {
+      const exst = item?.fileInfo?.fileExst;
       splitted = item.file.name.split(".");
-      ext = splitted.length > 1 ? "." + splitted.pop() : "";
+
+      ext = exst ? fileExst : splitted.length > 1 ? "." + splitted.pop() : "";
       name = splitted[0];
     } else {
       ext = item.fileInfo.fileExst;
