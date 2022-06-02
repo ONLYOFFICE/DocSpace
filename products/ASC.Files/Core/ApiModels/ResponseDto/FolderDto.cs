@@ -34,6 +34,7 @@ public class FolderDto<T> : FileEntryWrapper<T>
     public bool? IsShareable { get; set; }
     public int New { get; set; }
     public IEnumerable<TagInfo> Tags { get; set; }
+    public Logo Logo { get; set; }
 
     public FolderDto() { }
 
@@ -64,6 +65,7 @@ public class FolderDtoHelper : FileEntryDtoHelper
     private readonly AuthContext _authContext;
     private readonly IDaoFactory _daoFactory;
     private readonly GlobalFolderHelper _globalFolderHelper;
+    private readonly RoomLogoManager _roomLogoManager;
 
     public FolderDtoHelper(
         ApiDateTimeHelper apiDateTimeHelper,
@@ -72,12 +74,14 @@ public class FolderDtoHelper : FileEntryDtoHelper
         IDaoFactory daoFactory,
         FileSecurity fileSecurity,
         GlobalFolderHelper globalFolderHelper,
-        FileSharingHelper fileSharingHelper)
+        FileSharingHelper fileSharingHelper, 
+        RoomLogoManager roomLogoManager)
         : base(apiDateTimeHelper, employeeWrapperHelper, fileSharingHelper, fileSecurity)
     {
         _authContext = authContext;
         _daoFactory = daoFactory;
         _globalFolderHelper = globalFolderHelper;
+        _roomLogoManager = roomLogoManager;
     }
 
     public async Task<FolderDto<T>> GetAsync<T>(Folder<T> folder, List<Tuple<FileEntry<T>, bool>> folders = null)
@@ -106,6 +110,8 @@ public class FolderDtoHelper : FileEntryDtoHelper
             {
                 result.Tags = folder.Tags;
             }
+
+            result.Logo = await _roomLogoManager.GetLogo(folder.Id);
         }
 
         if (folder.RootFolderType == FolderType.USER

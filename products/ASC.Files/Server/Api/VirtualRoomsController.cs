@@ -24,14 +24,15 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Core.Common.EF;
+
 namespace ASC.Files.Api;
 
 [ConstraintRoute("int")]
 public class VirtualRoomsInternalController : VirtualRoomsController<int>
 {
-    public VirtualRoomsInternalController(FoldersControllerHelper<int> foldersControllerHelper, FileStorageService<int> fileStorageService, FolderDtoHelper folderDtoHelper, GlobalFolderHelper globalFolderHelper, FileOperationDtoHelper fileOperationDtoHelper, SecurityControllerHelper<int> securityControllerHelper, CoreBaseSettings coreBaseSettings, AuthContext authContext, RoomLinksService roomLinksManager, CustomTagsService<int> customTagsService) : base(foldersControllerHelper, fileStorageService, folderDtoHelper, globalFolderHelper, fileOperationDtoHelper, securityControllerHelper, coreBaseSettings, authContext, roomLinksManager, customTagsService)
+    public VirtualRoomsInternalController(FoldersControllerHelper<int> foldersControllerHelper, GlobalFolderHelper globalFolderHelper, FileOperationDtoHelper fileOperationDtoHelper, SecurityControllerHelper<int> securityControllerHelper, CoreBaseSettings coreBaseSettings, AuthContext authContext, RoomLinksService roomLinksManager, CustomTagsService<int> customTagsService, RoomLogoManager roomLogoManager, FileStorageService<int> fileStorageService, FolderDtoHelper folderDtoHelper) : base(foldersControllerHelper, globalFolderHelper, fileOperationDtoHelper, securityControllerHelper, coreBaseSettings, authContext, roomLinksManager, customTagsService, roomLogoManager, fileStorageService, folderDtoHelper)
     {
-
     }
 
     [Create("rooms")]
@@ -47,7 +48,7 @@ public class VirtualRoomsInternalController : VirtualRoomsController<int>
 
 public class VirtualRoomsThirdpartyController : VirtualRoomsController<string>
 {
-    public VirtualRoomsThirdpartyController(FoldersControllerHelper<string> foldersControllerHelper, FileStorageService<string> fileStorageService, FolderDtoHelper folderDtoHelper, GlobalFolderHelper globalFolderHelper, FileOperationDtoHelper fileOperationDtoHelper, SecurityControllerHelper<string> securityControllerHelper, CoreBaseSettings coreBaseSettings, AuthContext authContext, RoomLinksService roomLinksManager, CustomTagsService<string> customTagsService) : base(foldersControllerHelper, fileStorageService, folderDtoHelper, globalFolderHelper, fileOperationDtoHelper, securityControllerHelper, coreBaseSettings, authContext, roomLinksManager, customTagsService)
+    public VirtualRoomsThirdpartyController(FoldersControllerHelper<string> foldersControllerHelper, GlobalFolderHelper globalFolderHelper, FileOperationDtoHelper fileOperationDtoHelper, SecurityControllerHelper<string> securityControllerHelper, CoreBaseSettings coreBaseSettings, AuthContext authContext, RoomLinksService roomLinksManager, CustomTagsService<string> customTagsService, RoomLogoManager roomLogoManager, FileStorageService<string> fileStorageService, FolderDtoHelper folderDtoHelper) : base(foldersControllerHelper, globalFolderHelper, fileOperationDtoHelper, securityControllerHelper, coreBaseSettings, authContext, roomLinksManager, customTagsService, roomLogoManager, fileStorageService, folderDtoHelper)
     {
     }
 
@@ -72,14 +73,13 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     private readonly AuthContext _authContext;
     private readonly RoomLinksService _roomLinksManager;
     private readonly CustomTagsService<T> _customTagsService;
+    private readonly RoomLogoManager _roomLogoManager;
     protected readonly FileStorageService<T> _fileStorageService;
     protected readonly FolderDtoHelper _folderDtoHelper;
 
-    protected VirtualRoomsController(FoldersControllerHelper<T> foldersControllerHelper, FileStorageService<T> fileStorageService, FolderDtoHelper folderDtoHelper, GlobalFolderHelper globalFolderHelper, FileOperationDtoHelper fileOperationDtoHelper, SecurityControllerHelper<T> securityControllerHelper, CoreBaseSettings coreBaseSettings, AuthContext authContext, RoomLinksService roomLinksManager, CustomTagsService<T> customTagsService)
+    protected VirtualRoomsController(FoldersControllerHelper<T> foldersControllerHelper, GlobalFolderHelper globalFolderHelper, FileOperationDtoHelper fileOperationDtoHelper, SecurityControllerHelper<T> securityControllerHelper, CoreBaseSettings coreBaseSettings, AuthContext authContext, RoomLinksService roomLinksManager, CustomTagsService<T> customTagsService, RoomLogoManager roomLogoManager, FileStorageService<T> fileStorageService, FolderDtoHelper folderDtoHelper)
     {
         _foldersControllerHelper = foldersControllerHelper;
-        _fileStorageService = fileStorageService;
-        _folderDtoHelper = folderDtoHelper;
         _globalFolderHelper = globalFolderHelper;
         _fileOperationDtoHelper = fileOperationDtoHelper;
         _securityControllerHelper = securityControllerHelper;
@@ -87,6 +87,9 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         _authContext = authContext;
         _roomLinksManager = roomLinksManager;
         _customTagsService = customTagsService;
+        _roomLogoManager = roomLogoManager;
+        _fileStorageService = fileStorageService;
+        _folderDtoHelper = folderDtoHelper;
     }
 
     [Read("rooms/{id}")]
@@ -182,6 +185,26 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         return await _folderDtoHelper.GetAsync(room);
     }
 
+    [Create("rooms/{id}/logo")]
+    public async Task<FolderDto<T>> CreateRoomLogoAsync(T id, LogoRequestDto inDto)
+    {
+        ErrorIfNotDocSpace();
+
+        var room = await _roomLogoManager.CreateAsync(id, inDto.TmpFile, inDto.X, inDto.Y, inDto.Width, inDto.Height);
+
+        return await _folderDtoHelper.GetAsync(room);
+    }
+
+    [Delete("rooms/{id}/logo")]
+    public async Task<FolderDto<T>> DeleteRoomLogoAsync(T id)
+    {
+        ErrorIfNotDocSpace();
+
+        var room = await _roomLogoManager.DeleteAsync(id);
+
+        return await _folderDtoHelper.GetAsync(room);
+    }
+
     protected void ErrorIfNotDocSpace()
     {
         if (_coreBaseSettings.DisableDocSpace)
@@ -199,14 +222,11 @@ public class VirtualRoomsCommonController : ApiControllerBase
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly ApiContext _apiContext;
     private readonly CustomTagsService<int> _customTagsService;
+    private readonly RoomLogoManager _roomLogoManager;
+    private readonly SetupInfo _setupInfo;
+    private readonly FileSizeComment _fileSizeComment;
 
-    public VirtualRoomsCommonController(
-        FileStorageService<int> fileStorageService,
-        FolderContentDtoHelper folderContentDtoHelper,
-        GlobalFolderHelper globalFolderHelper,
-        CoreBaseSettings coreBaseSettings,
-        ApiContext apiContext,
-        CustomTagsService<int> customTagsService)
+    public VirtualRoomsCommonController(FileStorageService<int> fileStorageService, FolderContentDtoHelper folderContentDtoHelper, GlobalFolderHelper globalFolderHelper, CoreBaseSettings coreBaseSettings, ApiContext apiContext, CustomTagsService<int> customTagsService, RoomLogoManager roomLogoManager, SetupInfo setupInfo, FileSizeComment fileSizeComment)
     {
         _fileStorageService = fileStorageService;
         _folderContentDtoHelper = folderContentDtoHelper;
@@ -214,6 +234,9 @@ public class VirtualRoomsCommonController : ApiControllerBase
         _coreBaseSettings = coreBaseSettings;
         _apiContext = apiContext;
         _customTagsService = customTagsService;
+        _roomLogoManager = roomLogoManager;
+        _setupInfo = setupInfo;
+        _fileSizeComment = fileSizeComment;
     }
 
     [Read("rooms")]
@@ -280,6 +303,52 @@ public class VirtualRoomsCommonController : ApiControllerBase
         ErrorIfNotDocSpace();
 
         await _customTagsService.DeleteTagsAsync(inDto.TagIds);
+    }
+
+    [Create("logos/upload")]
+    public async Task<UploadResultDto> UploadRoomLogo(IFormCollection formCollection)
+    {
+        var result = new UploadResultDto();
+
+        try
+        {
+            if (formCollection.Files.Count != 0)
+{
+                var roomLogo = formCollection.Files[0];
+
+                if (roomLogo.Length > _setupInfo.MaxImageUploadSize)
+                {
+                    result.Success = false;
+                    result.Message = _fileSizeComment.FileImageSizeExceptionString;
+
+                    return result;
+                }
+
+                var data = new byte[roomLogo.Length];
+                using var inputStream = roomLogo.OpenReadStream();
+
+                var br = new BinaryReader(inputStream);
+
+                br.Read(data, 0, (int)roomLogo.Length);
+                br.Close();
+
+                UserPhotoThumbnailManager.CheckImgFormat(data);
+
+                result.Data = await _roomLogoManager.SaveTempAsync(data, _setupInfo.MaxImageUploadSize);
+                result.Success = true;
+            }
+            else
+            {
+                result.Success = false;
+            }
+        }
+        catch(Exception ex)
+        {
+            result.Success = false;
+            result.Message = ex.Message;
+        }
+
+        return result;
     }
 
     private void ErrorIfNotDocSpace()

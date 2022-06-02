@@ -189,6 +189,8 @@ global using Nest;
 global using Newtonsoft.Json;
 global using Newtonsoft.Json.Linq;
 
+global using SixLabors.ImageSharp;
+
 global using static ASC.Files.Core.Data.AbstractDao;
 global using static ASC.Web.Core.Files.DocumentService;
 global using static ASC.Web.Files.Services.DocumentService.DocumentServiceTracker;
