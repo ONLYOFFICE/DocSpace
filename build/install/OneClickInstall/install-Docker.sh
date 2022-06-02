@@ -547,6 +547,7 @@ install_docker_compose () {
 		rm get-pip.py
 	fi	
 
+	python3 -m pip install --upgrade pip
 	python3 -m pip install docker-compose
 	sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 
