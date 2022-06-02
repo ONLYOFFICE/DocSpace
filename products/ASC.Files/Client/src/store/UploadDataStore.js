@@ -107,6 +107,7 @@ class UploadDataStore {
     this.isUploadingAndConversion = false;
     this.isUploading = false;
   };
+
   removeFileFromList = (id) => {
     this.files = this.files.filter((obj) => {
       return obj.fileId !== id;
