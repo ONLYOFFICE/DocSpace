@@ -69,9 +69,9 @@ done
 
 # Array of names backend services
 services_name_backend=(ASC.Data.Backup)
-services_name_backend+=(ASC.Data.Storage.Encryption)
+#services_name_backend+=(ASC.Data.Storage.Encryption)
 services_name_backend+=(ASC.Files.Service)
-services_name_backend+=(ASC.Data.Storage.Migration)
+#services_name_backend+=(ASC.Data.Storage.Migration)
 services_name_backend+=(ASC.Notify)
 services_name_backend+=(ASC.Studio.Notify)
 services_name_backend+=(ASC.TelegramService)

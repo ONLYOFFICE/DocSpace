@@ -29,12 +29,12 @@ services:
       target: backup
     image: "${REPO}/${STATUS}appserver-backup:${DOCKER_TAG}"
   
-  onlyoffice-storage-encryption:
-    build:
-      context: ./
-      dockerfile: "${DOCKERFILE}"
-      target: data_storage_encryption
-    image: "${REPO}/${STATUS}appserver-storage-encryption:${DOCKER_TAG}" 
+  # onlyoffice-storage-encryption:
+  #   build:
+  #     context: ./
+  #     dockerfile: "${DOCKERFILE}"
+  #     target: data_storage_encryption
+  #   image: "${REPO}/${STATUS}appserver-storage-encryption:${DOCKER_TAG}" 
 
   onlyoffice-files:
     build:
@@ -50,12 +50,12 @@ services:
       target: files_services
     image: "${REPO}/${STATUS}appserver-files-services:${DOCKER_TAG}"
 
-  onlyoffice-storage-migration:
-    build:
-      context: ./
-      dockerfile: "${DOCKERFILE}"
-      target: data_storage_migration
-    image: "${REPO}/${STATUS}appserver-storage-migration:${DOCKER_TAG}"
+  # onlyoffice-storage-migration:
+  #   build:
+  #     context: ./
+  #     dockerfile: "${DOCKERFILE}"
+  #     target: data_storage_migration
+  #   image: "${REPO}/${STATUS}appserver-storage-migration:${DOCKER_TAG}"
 
   onlyoffice-notify:
     build:
