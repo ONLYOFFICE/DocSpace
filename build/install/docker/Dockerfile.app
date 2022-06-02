@@ -210,13 +210,13 @@ COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Data.B
 CMD ["ASC.Data.Backup.dll", "ASC.Data.Backup", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
 
 ## ASC.Data.Storage.Encryption ##
-FROM builder AS data_storage_encryption
-WORKDIR ${BUILD_PATH}/services/ASC.Data.Storage.Encryption/
+# FROM builder AS data_storage_encryption
+# WORKDIR ${BUILD_PATH}/services/ASC.Data.Storage.Encryption/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint-dotnet.sh ./docker-entrypoint.sh
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Data.Storage.Encryption/service/ .
+# COPY --chown=onlyoffice:onlyoffice docker-entrypoint-dotnet.sh ./docker-entrypoint.sh
+# COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Data.Storage.Encryption/service/ .
 
-CMD ["ASC.Data.Storage.Encryption.dll", "ASC.Data.Storage.Encryption"]
+# CMD ["ASC.Data.Storage.Encryption.dll", "ASC.Data.Storage.Encryption"]
 
 ## ASC.Files ##
 FROM builder AS files
@@ -237,13 +237,13 @@ COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Files.
 CMD ["ASC.Files.Service.dll", "ASC.Files.Service", "core:products:folder=/var/www/products/", "core:products:subfolder=server", "disable_elastic=true"]
 
 ## ASC.Data.Storage.Migration ##
-FROM builder AS data_storage_migration
-WORKDIR ${BUILD_PATH}/services/ASC.Data.Storage.Migration/service/
+# FROM builder AS data_storage_migration
+# WORKDIR ${BUILD_PATH}/services/ASC.Data.Storage.Migration/service/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint-dotnet.sh ./docker-entrypoint.sh
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Data.Storage.Migration/service/ .
+# COPY --chown=onlyoffice:onlyoffice docker-entrypoint-dotnet.sh ./docker-entrypoint.sh
+# COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Data.Storage.Migration/service/ .
 
-CMD ["ASC.Data.Storage.Migration.dll", "ASC.Data.Storage.Migration"]
+# CMD ["ASC.Data.Storage.Migration.dll", "ASC.Data.Storage.Migration"]
 
 ## ASC.Notify ##
 FROM builder AS notify
