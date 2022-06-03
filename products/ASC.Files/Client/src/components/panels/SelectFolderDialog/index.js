@@ -198,6 +198,7 @@ class SelectFolderDialog extends React.Component {
       isDisableButton,
       isRecycleBin,
       currentFolderId,
+      selectionFiles,
     } = this.props;
     const {
       displayType,
@@ -215,6 +216,7 @@ class SelectFolderDialog extends React.Component {
 
     return displayType === "aside" ? (
       <SelectFolderDialogAsideView
+        selectionFiles={selectionFiles}
         theme={theme}
         t={t}
         isPanelVisible={isPanelVisible}
@@ -242,6 +244,7 @@ class SelectFolderDialog extends React.Component {
       />
     ) : (
       <SelectionPanel
+        selectionFiles={selectionFiles}
         t={t}
         theme={theme}
         isPanelVisible={isPanelVisible}

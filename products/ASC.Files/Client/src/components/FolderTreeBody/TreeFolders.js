@@ -84,10 +84,20 @@ class TreeFolders extends React.Component {
     super(props);
 
     this.state = { isExpand: false };
+    this.selectionFoldersId = [];
   }
 
   componentDidMount() {
+    const { selectionFiles } = this.props;
     this.props.isLoadingNodes && this.props.setIsLoadingNodes(false);
+
+    if (selectionFiles) {
+      for (let item of selectionFiles) {
+        if (!item.fileExst) {
+          this.selectionFoldersId.push(item.id);
+        }
+      }
+    }
   }
 
   onBadgeClick = (e) => {
@@ -236,15 +246,19 @@ class TreeFolders extends React.Component {
 
       const serviceFolder = !!item.providerKey;
 
-      let value = "";
+      let value = "",
+        disableNodeValue = "";
       if (dragging) value = `${item.id} dragging ${provider}`;
+
+      if (this.selectionFoldersId && this.selectionFoldersId.includes(item.id))
+        disableNodeValue = "disable-node";
 
       if ((item.folders && item.folders.length > 0) || serviceFolder) {
         return (
           <TreeNode
             id={item.id}
             key={item.id}
-            className={`tree-drag ${item.folderClassName}`}
+            className={`tree-drag ${item.folderClassName} ${disableNodeValue}`}
             data-value={value}
             title={item.title}
             icon={this.getFolderIcon(item)}
@@ -275,7 +289,7 @@ class TreeFolders extends React.Component {
         <TreeNode
           id={item.id}
           key={item.id}
-          className={`tree-drag ${item.folderClassName}`}
+          className={`tree-drag ${item.folderClassName} ${disableNodeValue}`}
           data-value={value}
           title={item.title}
           needTopMargin={item.rootFolderType === FolderType.TRASH}

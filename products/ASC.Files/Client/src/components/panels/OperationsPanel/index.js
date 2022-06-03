@@ -158,6 +158,7 @@ const OperationsPanelComponent = (props) => {
   const isVisible = intermediateHidden ? false : visible;
   return (
     <SelectFolderDialog
+      selectionFiles={selection}
       isDisableTree={isLoading}
       foldersType="exceptSortedByTags"
       isPanelVisible={isVisible}
@@ -179,8 +180,6 @@ const OperationsPanelComponent = (props) => {
           ? t("Translations:CopyHere")
           : t("Translations:MoveHere")
       }
-      isRecycleBin={isRecycleBin}
-      currentFolderId={currentFolderId}
     ></SelectFolderDialog>
   );
 };
