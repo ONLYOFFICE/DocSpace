@@ -22,15 +22,7 @@ const StyledInfoPanelWrapper = styled.div.attrs(({ id }) => ({
   background: ${(props) => props.theme.infoPanel.blurColor};
   backdrop-filter: blur(3px);
 
-  @media ${tablet} {
-    z-index: 309;
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-  }
-
+  // @media ${tablet} {
   ${(props) =>
     (props.isRowView || isMobile) &&
     css`
@@ -55,14 +47,7 @@ const StyledInfoPanel = styled.div`
     padding-bottom: 20px;
   }
 
-  @media ${tablet} {
-    position: absolute;
-    border: none;
-    right: 0;
-    width: 480px;
-    max-width: calc(100vw - 69px);
-  }
-
+  // @media ${tablet} {
   ${(props) =>
     (props.isRowView || isMobile) &&
     css`
@@ -148,7 +133,11 @@ const InfoPanel = ({ children, isVisible, setIsVisible, viewAs }) => {
       document.addEventListener("mousedown", onMouseDown);
 
     window.onpopstate = () => {
-      if (!isDesktop() && isVisible) closeInfoPanel();
+      if (
+        (viewAs === "row" || isTablet() || isMobile || isMobileUtils()) &&
+        isVisible
+      )
+        closeInfoPanel();
     };
 
     return () => document.removeEventListener("mousedown", onMouseDown);
