@@ -161,6 +161,7 @@ const StyledRow = styled.div`
       .selection-panel_text p {
         color: ${(props) => props.theme.text.disableColor};
       }
+      cursor: default;
     `}
 `;
 
