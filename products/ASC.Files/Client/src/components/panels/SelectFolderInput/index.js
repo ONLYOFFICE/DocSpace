@@ -23,8 +23,11 @@ class SelectFolderInput extends React.PureComponent {
       resultingFolderTree: [],
       baseId: "",
     };
+    this._isMount = false;
   }
   async componentDidMount() {
+    this._isMount = true;
+
     const {
       setFirstLoad,
       treeFolders,
@@ -84,6 +87,10 @@ class SelectFolderInput extends React.PureComponent {
       });
     }
   }
+
+  componentWillUnmount() {
+    this._isMount = false;
+  }
   setFolderPath = async (folderId) => {
     const foldersArray = await getFolderPath(folderId);
 
@@ -117,11 +124,12 @@ class SelectFolderInput extends React.PureComponent {
       clearTimeout(timerId);
       timerId = null;
 
-      this.setState({
-        newFolderPath: convertFoldersArray,
-        isLoading: false,
-        newId: folderId,
-      });
+      this._isMount &&
+        this.setState({
+          newFolderPath: convertFoldersArray,
+          isLoading: false,
+          newId: folderId,
+        });
     } catch (e) {
       toastr.error(e);
       clearTimeout(timerId);
@@ -137,10 +145,11 @@ class SelectFolderInput extends React.PureComponent {
     try {
       const convertFoldersArray = await this.setFolderPath(folderId);
 
-      this.setState({
-        baseFolderPath: convertFoldersArray,
-        isLoading: false,
-      });
+      this._isMount &&
+        this.setState({
+          baseFolderPath: convertFoldersArray,
+          isLoading: false,
+        });
     } catch (e) {
       toastr.error(e);
       this.setState({
