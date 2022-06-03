@@ -1,7 +1,12 @@
 import IconButton from "@appserver/components/icon-button";
 import Text from "@appserver/components/text";
 import { Base } from "@appserver/components/themes";
-import { tablet } from "@appserver/components/utils/device";
+import {
+  isTablet,
+  isMobile as isMobileUtils,
+  tablet,
+  isDesktop,
+} from "@appserver/components/utils/device";
 import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
 import React from "react";
@@ -66,7 +71,7 @@ const SubInfoPanelHeader = ({ children, setIsVisible, viewAs }) => {
         isRootFolder={true}
         isInfoPanelVisible={true}
       >
-        {(viewAs === "row" || isMobile) && (
+        {!(isTablet() || isMobile || isMobileUtils() || !isDesktop()) && (
           <div className="info-panel-toggle-bg">
             <IconButton
               className="info-panel-toggle"

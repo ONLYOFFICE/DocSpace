@@ -22,8 +22,16 @@ const StyledInfoPanelWrapper = styled.div.attrs(({ id }) => ({
   background: ${(props) => props.theme.infoPanel.blurColor};
   backdrop-filter: blur(3px);
 
-  // @media ${tablet} {
-  ${(props) =>
+  @media ${tablet} {
+    z-index: 309;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+
+  /* ${(props) =>
     (props.isRowView || isMobile) &&
     css`
       z-index: 309;
@@ -32,7 +40,7 @@ const StyledInfoPanelWrapper = styled.div.attrs(({ id }) => ({
       bottom: 0;
       left: 0;
       right: 0;
-    `}
+    `} */
 `;
 
 const StyledInfoPanel = styled.div`
@@ -47,8 +55,15 @@ const StyledInfoPanel = styled.div`
     padding-bottom: 20px;
   }
 
-  // @media ${tablet} {
-  ${(props) =>
+  @media ${tablet} {
+    position: absolute;
+    border: none;
+    right: 0;
+    width: 480px;
+    max-width: calc(100vw - 69px);
+  }
+
+  /* ${(props) =>
     (props.isRowView || isMobile) &&
     css`
       position: absolute;
@@ -56,7 +71,7 @@ const StyledInfoPanel = styled.div`
       right: 0;
       width: 480px;
       max-width: calc(100vw - 69px);
-    `}
+    `} */
 
   @media (max-width: 428px) {
     bottom: 0;
@@ -88,14 +103,14 @@ const StyledControlContainer = styled.div`
     left: -34px;
   }
 
-  ${(props) =>
+  /* ${(props) =>
     (props.isRowView || isMobile) &&
     css`
       display: flex !important;
 
       top: 18px;
       left: -34px;
-    `}
+    `} */
 
   @media (max-width: 428px) {
     display: flex;
@@ -133,11 +148,7 @@ const InfoPanel = ({ children, isVisible, setIsVisible, viewAs }) => {
       document.addEventListener("mousedown", onMouseDown);
 
     window.onpopstate = () => {
-      if (
-        (viewAs === "row" || isTablet() || isMobile || isMobileUtils()) &&
-        isVisible
-      )
-        closeInfoPanel();
+      if (!isDesktop() && isVisible) closeInfoPanel();
     };
 
     return () => document.removeEventListener("mousedown", onMouseDown);
