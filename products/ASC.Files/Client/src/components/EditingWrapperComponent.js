@@ -196,6 +196,9 @@ const EditingWrapperComponent = (props) => {
 
   const [OkIconIsHovered, setIsHoveredOk] = useState(false);
   const [CancelIconIsHovered, setIsHoveredCancel] = useState(false);
+  const [isTouchOK, setIsTouchOK] = useState(false);
+  const [isTouchCancel, setIsTouchCancel] = useState(false);
+
   const [isLoading, setIsLoading] = useState(false);
 
   const inputRef = React.useRef(null);
@@ -226,7 +229,9 @@ const EditingWrapperComponent = (props) => {
     if (
       (e.relatedTarget && e.relatedTarget.classList.contains("edit-button")) ||
       OkIconIsHovered ||
-      CancelIconIsHovered
+      CancelIconIsHovered ||
+      isTouchOK ||
+      isTouchCancel
     )
       return false;
 
@@ -274,6 +279,7 @@ const EditingWrapperComponent = (props) => {
             data-itemid={itemId}
             onMouseEnter={setIsHoveredOkHandler}
             onMouseLeave={setIsHoveredOkHandler}
+            onTouchStart={() => setIsTouchOK(true)}
             isHovered={OkIconIsHovered}
             title=""
           />
@@ -287,6 +293,7 @@ const EditingWrapperComponent = (props) => {
             data-action="cancel"
             onMouseEnter={setIsHoveredCancelHandler}
             onMouseLeave={setIsHoveredCancelHandler}
+            onTouchStart={() => setIsTouchCancel(true)}
             isHovered={CancelIconIsHovered}
             title=""
           />

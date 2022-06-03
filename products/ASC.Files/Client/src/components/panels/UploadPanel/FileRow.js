@@ -351,7 +351,7 @@ export default inject(
       const exst = item?.fileInfo?.fileExst;
       splitted = item.file.name.split(".");
 
-      ext = exst ? fileExst : splitted.length > 1 ? "." + splitted.pop() : "";
+      ext = exst ? exst : splitted.length > 1 ? "." + splitted.pop() : "";
       name = splitted[0];
     } else {
       ext = item.fileInfo.fileExst;
