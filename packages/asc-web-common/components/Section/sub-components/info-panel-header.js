@@ -6,6 +6,7 @@ import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
 import React from "react";
 import styled from "styled-components";
+import { isMobile } from "react-device-detect";
 
 const StyledInfoPanelHeader = styled.div`
   width: 100%;
@@ -51,7 +52,7 @@ const StyledInfoPanelToggleWrapper = styled.div`
 `;
 StyledInfoPanelToggleWrapper.defaultProps = { theme: Base };
 
-const SubInfoPanelHeader = ({ children, setIsVisible }) => {
+const SubInfoPanelHeader = ({ children, setIsVisible, viewAs }) => {
   const content = children?.props?.children;
 
   const closeInfoPanel = () => setIsVisible(false);
@@ -65,15 +66,17 @@ const SubInfoPanelHeader = ({ children, setIsVisible }) => {
         isRootFolder={true}
         isInfoPanelVisible={true}
       >
-        <div className="info-panel-toggle-bg">
-          <IconButton
-            className="info-panel-toggle"
-            iconName="images/panel.react.svg"
-            size="16"
-            isFill={true}
-            onClick={closeInfoPanel}
-          />
-        </div>
+        {(viewAs === "row" || isMobile) && (
+          <div className="info-panel-toggle-bg">
+            <IconButton
+              className="info-panel-toggle"
+              iconName="images/panel.react.svg"
+              size="16"
+              isFill={true}
+              onClick={closeInfoPanel}
+            />
+          </div>
+        )}
       </StyledInfoPanelToggleWrapper>
     </StyledInfoPanelHeader>
   );
