@@ -572,6 +572,8 @@ const Dark = {
     margin: " 0 auto",
     minHeight: "100%",
 
+    colorDisabledFileIcons: "#5c5c5c",
+
     content: {
       backgroundColor: black,
       modalBorderRadius: "6px",
