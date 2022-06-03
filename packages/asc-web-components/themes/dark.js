@@ -1225,6 +1225,8 @@ const Dark = {
 
   treeNode: {
     background: "#3D3D3D",
+    disableColor: "#858585",
+
     dragging: {
       draggable: {
         background: "rgba(230, 211, 138, 0.12)",

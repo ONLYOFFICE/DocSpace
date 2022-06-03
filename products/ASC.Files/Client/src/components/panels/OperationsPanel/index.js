@@ -158,6 +158,7 @@ const OperationsPanelComponent = (props) => {
   const isVisible = intermediateHidden ? false : visible;
   return (
     <SelectFolderDialog
+      selectionFiles={selection}
       isDisableTree={isLoading}
       foldersType="exceptSortedByTags"
       isPanelVisible={isVisible}

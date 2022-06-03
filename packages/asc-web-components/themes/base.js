@@ -1228,6 +1228,8 @@ const Base = {
 
   treeNode: {
     background: "#f3f4f4",
+    disableColor: "#A3A9AE",
+
     dragging: {
       draggable: {
         background: lightCumulus,

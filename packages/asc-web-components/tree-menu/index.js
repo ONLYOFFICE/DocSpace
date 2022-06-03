@@ -9,6 +9,30 @@ import Base from "../themes/base";
 
 const StyledTree = styled(Tree)`
   .rc-tree-list-holder-inner {
+    .disable-node {
+      span.rc-tree-node-content-wrapper {
+        pointer-events: none;
+        span.rc-tree-iconEle {
+          svg {
+            path {
+              fill: ${(props) => props.theme.treeNode.disableColor};
+            }
+          }
+        }
+        span.rc-tree-title {
+          color: ${(props) => props.theme.treeNode.disableColor} !important;
+        }
+      }
+      span.rc-tree-switcher {
+        pointer-events: none;
+        svg {
+          path {
+            fill: ${(props) => props.theme.treeNode.disableColor};
+          }
+        }
+      }
+    }
+
     .rc-tree-treenode {
       height: 36px;
       display: flex;
