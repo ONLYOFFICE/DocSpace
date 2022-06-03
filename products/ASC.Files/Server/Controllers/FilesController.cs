@@ -754,27 +754,27 @@ namespace ASC.Api.Documents
         [Create("{folderId}/upload/create_session")]
         public Task<object> CreateUploadSessionFromBodyAsync(string folderId, [FromBody] SessionModel sessionModel)
         {
-            return FilesControllerHelperString.CreateUploadSessionAsync(folderId, sessionModel.FileName, sessionModel.FileSize, sessionModel.RelativePath, sessionModel.LastModified, sessionModel.Encrypted);
+            return FilesControllerHelperString.CreateUploadSessionAsync(folderId, sessionModel.FileName, sessionModel.FileSize, sessionModel.RelativePath, sessionModel.Encrypted, sessionModel.CreateOn);
         }
 
         [Create("{folderId}/upload/create_session")]
         [Consumes("application/x-www-form-urlencoded")]
         public Task<object> CreateUploadSessionFromFormAsync(string folderId, [FromForm] SessionModel sessionModel)
         {
-            return FilesControllerHelperString.CreateUploadSessionAsync(folderId, sessionModel.FileName, sessionModel.FileSize, sessionModel.RelativePath, sessionModel.LastModified, sessionModel.Encrypted);
+            return FilesControllerHelperString.CreateUploadSessionAsync(folderId, sessionModel.FileName, sessionModel.FileSize, sessionModel.RelativePath, sessionModel.Encrypted, sessionModel.CreateOn);
         }
 
         [Create("{folderId:int}/upload/create_session")]
         public Task<object> CreateUploadSessionFromBodyAsync(int folderId, [FromBody] SessionModel sessionModel)
         {
-            return FilesControllerHelperInt.CreateUploadSessionAsync(folderId, sessionModel.FileName, sessionModel.FileSize, sessionModel.RelativePath, sessionModel.LastModified, sessionModel.Encrypted);
+            return FilesControllerHelperInt.CreateUploadSessionAsync(folderId, sessionModel.FileName, sessionModel.FileSize, sessionModel.RelativePath, sessionModel.Encrypted, sessionModel.CreateOn);
         }
 
         [Create("{folderId:int}/upload/create_session")]
         [Consumes("application/x-www-form-urlencoded")]
         public Task<object> CreateUploadSessionFromFormAsync(int folderId, [FromForm] SessionModel sessionModel)
         {
-            return FilesControllerHelperInt.CreateUploadSessionAsync(folderId, sessionModel.FileName, sessionModel.FileSize, sessionModel.RelativePath, sessionModel.LastModified, sessionModel.Encrypted);
+            return FilesControllerHelperInt.CreateUploadSessionAsync(folderId, sessionModel.FileName, sessionModel.FileSize, sessionModel.RelativePath, sessionModel.Encrypted, sessionModel.CreateOn);
         }
 
         /// <summary>

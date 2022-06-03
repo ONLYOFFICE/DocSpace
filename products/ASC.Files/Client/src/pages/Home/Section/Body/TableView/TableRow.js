@@ -56,8 +56,12 @@ const StyledTableRow = styled(TableRow)`
             `${props.theme.filesSection.tableView.row.backgroundActive} !important`};
 
           margin-top: -1px;
-          border-top: ${(props) =>
-            `1px solid ${props.theme.filesSection.tableView.row.borderColor}`};
+          ${(props) =>
+            !props.showHotkeyBorder &&
+            css`
+              border-top: ${(props) =>
+                `1px solid ${props.theme.filesSection.tableView.row.borderColor}`};
+            `}
         }
         .table-container_file-name-cell {
           margin-left: -24px;

@@ -46,6 +46,7 @@ const SelectionPanelBody = ({
   newFilter,
   isDisableButton,
   parentId,
+  selectionFiles,
 }) => {
   return (
     <StyledModalDialog
@@ -72,6 +73,7 @@ const SelectionPanelBody = ({
 
               {folderId && resultingFolderTree ? (
                 <FolderTreeBody
+                  selectionFiles={selectionFiles}
                   theme={theme}
                   folderTree={resultingFolderTree}
                   onSelect={onSelectFolder}

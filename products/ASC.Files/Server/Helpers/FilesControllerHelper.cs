@@ -278,13 +278,13 @@ namespace ASC.Files.Helpers
             return configuration;
         }
 
-        public async Task<object> CreateUploadSessionAsync(T folderId, string fileName, long fileSize, string relativePath, ApiDateTime lastModified, bool encrypted)
+        public async Task<object> CreateUploadSessionAsync(T folderId, string fileName, long fileSize, string relativePath, bool encrypted, ApiDateTime createOn)
         {
-            var file = await FileUploader.VerifyChunkedUploadAsync(folderId, fileName, fileSize, FilesSettingsHelper.UpdateIfExist, lastModified, relativePath);
+            var file = await FileUploader.VerifyChunkedUploadAsync(folderId, fileName, fileSize, FilesSettingsHelper.UpdateIfExist, relativePath);
 
             if (FilesLinkUtility.IsLocalFileUploader)
             {
-                var session = await FileUploader.InitiateUploadAsync(file.FolderID, file.ID ?? default, file.Title, file.ContentLength, encrypted);
+                var session = await FileUploader.InitiateUploadAsync(file.FolderID, file.ID ?? default, file.Title, file.ContentLength, encrypted, createOn);
 
                 var responseObject = await ChunkedUploadSessionHelper.ToResponseObjectAsync(session, true);
                 return new
