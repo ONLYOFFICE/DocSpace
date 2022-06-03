@@ -629,5 +629,10 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
 
         return Task.CompletedTask;
     }
+
+    public Task<Stream> GetThumbnailAsync(File<string> file)
+    {
+        throw new NotImplementedException();
+    }
     #endregion
 }

@@ -701,5 +701,10 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
             System.IO.File.Delete(uploadSession.GetItemOrDefault<string>("TempPath"));
         }
     }
+
+    public Task<Stream> GetThumbnailAsync(File<string> file)
+    {
+        throw new NotImplementedException();
+    }
     #endregion
 }

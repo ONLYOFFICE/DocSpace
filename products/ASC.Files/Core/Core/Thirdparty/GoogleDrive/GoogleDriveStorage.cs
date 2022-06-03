@@ -155,7 +155,6 @@ internal class GoogleDriveStorage : IDisposable
         try
         {
             var request = _driveService.Files.Get(entryId);
-
             request.Fields = GoogleLoginProvider.FilesFields;
 
             return await request.ExecuteAsync();
@@ -168,6 +167,14 @@ internal class GoogleDriveStorage : IDisposable
             }
             throw;
         }
+    }
+
+    public async Task<Stream> GetThumbnail(string fileId)
+    {
+        var entry = await GetEntryAsync(fileId);
+        var httpClient = _driveService.HttpClient;
+        var response = await httpClient.GetAsync(entry.ThumbnailLink);
+        return await response.Content.ReadAsStreamAsync();
     }
 
     public List<DriveFile> GetEntries(string folderId, bool? folders = null)

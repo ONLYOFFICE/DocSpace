@@ -127,6 +127,11 @@ internal class DropboxProviderInfo : IProviderInfo
     {
         return _dropboxProviderInfoHelper.CacheResetAsync(ID, dropboxPath, isFile);
     }
+
+    internal Task<Stream> GetThumbnailsAsync(string filePath)
+    {
+        return _dropboxProviderInfoHelper.GetThumbnailsAsync(Storage, filePath);
+    }
 }
 
 [Scope]
@@ -270,5 +275,10 @@ public class DropboxProviderInfoHelper
 
             await _cacheNotify.PublishAsync(new DropboxCacheItem { IsFile = isFile ?? false, IsFileExists = isFile.HasValue, Key = key }, CacheNotifyAction.Remove).ConfigureAwait(false);
         }
+    }
+
+    internal Task<Stream> GetThumbnailsAsync(DropboxStorage storage, string filePath)
+    {
+        return storage.GetThumbnailsAsync(filePath);
     }
 }

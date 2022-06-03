@@ -135,8 +135,15 @@ internal class DropboxStorage : IDisposable
     public async Task<List<Metadata>> GetItemsAsync(string folderPath)
     {
         var data = await _dropboxClient.Files.ListFolderAsync(folderPath);
-
         return new List<Metadata>(data.Entries);
+    }
+
+    public async Task<Stream> GetThumbnailsAsync(string filePath)
+    {
+        var path = new PathOrLink.Path(filePath);
+        var arg = new ThumbnailV2Arg(path);
+        var responce = await _dropboxClient.Files.GetThumbnailV2Async(arg);
+        return await responce.GetContentAsStreamAsync();
     }
 
     public Task<Stream> DownloadStreamAsync(string filePath, int offset = 0)

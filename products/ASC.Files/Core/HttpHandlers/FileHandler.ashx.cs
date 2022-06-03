@@ -979,7 +979,7 @@ public class FileHandlerService
                 return;
             }
 
-            if (file.ThumbnailStatus != Thumbnail.Created)
+            if (file.ThumbnailStatus != Thumbnail.Created && id is int)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                 return;
@@ -990,7 +990,10 @@ public class FileHandlerService
 
             using (var stream = await fileDao.GetThumbnailAsync(file))
             {
-                context.Response.Headers.Add("Content-Length", stream.Length.ToString(CultureInfo.InvariantCulture));
+                if (id is int)
+                {
+                    context.Response.Headers.Add("Content-Length", stream.Length.ToString(CultureInfo.InvariantCulture));
+                }
                 await stream.CopyToAsync(context.Response.Body);
             }
         }

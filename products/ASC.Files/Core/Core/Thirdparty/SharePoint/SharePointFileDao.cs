@@ -475,4 +475,9 @@ internal class SharePointFileDao : SharePointDaoBase, IFileDao<string>
 
         return file;
     }
+
+    public Task<Stream> GetThumbnailAsync(File<string> file)
+    {
+        throw new NotImplementedException();
+    }
 }

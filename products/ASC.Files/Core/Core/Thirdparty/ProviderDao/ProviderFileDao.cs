@@ -520,5 +520,12 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
 
         return file;
     }
+
+    public Task<Stream> GetThumbnailAsync(File<string> file)
+    {
+        var fileDao = GetFileDao(file);
+        return fileDao.GetThumbnailAsync(file);
+    }
+
     #endregion
 }

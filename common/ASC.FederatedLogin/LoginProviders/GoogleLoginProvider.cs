@@ -47,7 +47,7 @@ public class GoogleLoginProvider : BaseLoginProvider<GoogleLoginProvider>
 
     public static readonly string[] GoogleDriveExt = new[] { ".gdoc", ".gsheet", ".gslides", ".gdraw" };
     public static readonly string GoogleDriveMimeTypeFolder = "application/vnd.google-apps.folder";
-    public static readonly string FilesFields = "id,name,mimeType,parents,createdTime,modifiedTime,owners/displayName,lastModifyingUser/displayName,capabilities/canEdit,size";
+    public static readonly string FilesFields = "id,name,mimeType,parents,createdTime,modifiedTime,owners/displayName,lastModifyingUser/displayName,capabilities/canEdit,size,thumbnailLink";
     public static readonly string ProfileFields = "emailAddresses,genders,names";
 
     private readonly RequestHelper _requestHelper;
