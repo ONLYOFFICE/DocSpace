@@ -242,7 +242,7 @@ namespace ASC.Web.Files.Utils
 
         #region chunked upload
 
-        public async Task<File<T>> VerifyChunkedUploadAsync<T>(T folderId, string fileName, long fileSize, bool updateIfExists, ApiDateTime lastModified, string relativePath = null)
+        public async Task<File<T>> VerifyChunkedUploadAsync<T>(T folderId, string fileName, long fileSize, bool updateIfExists, string relativePath = null)
         {
             var maxUploadSize = await GetMaxFileSizeAsync(folderId, true);
 
@@ -252,21 +252,17 @@ namespace ASC.Web.Files.Utils
             var file = await VerifyFileUploadAsync(folderId, fileName, updateIfExists, relativePath);
             file.ContentLength = fileSize;
 
-            if(lastModified != null)
-            {
-                file.ModifiedOn = lastModified;
-            }
-
             return file;
         }
 
-        public async Task<ChunkedUploadSession<T>> InitiateUploadAsync<T>(T folderId, T fileId, string fileName, long contentLength, bool encrypted)
+        public async Task<ChunkedUploadSession<T>> InitiateUploadAsync<T>(T folderId, T fileId, string fileName, long contentLength, bool encrypted, ApiDateTime createOn = null)
         {
             var file = ServiceProvider.GetService<File<T>>();
             file.ID = fileId;
             file.FolderID = folderId;
             file.Title = fileName;
             file.ContentLength = contentLength;
+            file.CreateOn = createOn;
 
             var dao = DaoFactory.GetFileDao<T>();
             var uploadSession = await dao.CreateUploadSessionAsync(file, contentLength);
