@@ -206,113 +206,118 @@ public class MailServiceHelper
     {
         DemandPermission();
 
-        using var transaction = MailDbContext.Database.BeginTransaction();
+        var strategy = MailDbContext.Database.CreateExecutionStrategy();
 
-        var mailboxProvider = new MailboxProvider
+        strategy.Execute(() =>
         {
-            Id = 0,
-            Name = hostname
-        };
+            using var transaction = MailDbContext.Database.BeginTransaction();
 
-        var pReq = MailDbContext.MailboxProvider.Add(mailboxProvider);
-        MailDbContext.SaveChanges();
-        mailboxProvider = pReq.Entity;
-
-        var providerId = mailboxProvider.Id;
-
-        var mailboxServer = new MailboxServer
-        {
-            Id = 0,
-            IdProvider = providerId,
-            Type = "smtp",
-            Hostname = hostname,
-            Port = 587,
-            SocketType = "STARTTLS",
-            UserName = "%EMAILADDRESS%",
-            Authentication = "",
-            IsUserData = false
-        };
-
-        var req = MailDbContext.MailboxServer.Add(mailboxServer);
-        MailDbContext.SaveChanges();
-
-        mailboxServer = req.Entity;
-
-        var smtpServerId = mailboxServer.Id;
-
-        mailboxServer = new MailboxServer
-        {
-            Id = 0,
-            IdProvider = providerId,
-            Type = "imap",
-            Hostname = hostname,
-            Port = 143,
-            SocketType = "STARTTLS",
-            UserName = "%EMAILADDRESS%",
-            Authentication = "",
-            IsUserData = false
-        };
-
-        req = MailDbContext.MailboxServer.Add(mailboxServer);
-        MailDbContext.SaveChanges();
-
-        mailboxServer = req.Entity;
-
-        var imapServerId = mailboxServer.Id;
-
-        var mailServerData = MailDbContext.ServerServer.FirstOrDefault();
-
-        var connectionString = JsonConvert.SerializeObject(mailServer);
-
-        var server = new ServerServer
-        {
-            Id = 0,
-            MxRecord = hostname,
-            ConnectionString = connectionString,
-            ServerType = 2,
-            SmtpSettingsId = smtpServerId,
-            ImapSettingsId = imapServerId
-        };
-
-        MailDbContext.ServerServer.Add(server);
-        MailDbContext.SaveChanges();
-
-        if (mailServerData != null)
-        {
-            server = MailDbContext.ServerServer.Where(r => r.Id == mailServerData.Id).FirstOrDefault();
-            MailDbContext.ServerServer.Remove(server);
-            MailDbContext.SaveChanges();
-
-            providerId = MailDbContext.MailboxServer
-                .Where(r => r.Id == mailServerData.SmtpSettingsId)
-                .Select(r => r.IdProvider)
-                .FirstOrDefault();
-
-            var providers = MailDbContext.MailboxProvider.Where(r => r.Id == providerId).ToList();
-            MailDbContext.MailboxProvider.RemoveRange(providers);
-            MailDbContext.SaveChanges();
-
-            var servers = MailDbContext.MailboxServer
-                .Where(r => new[] { mailServerData.SmtpSettingsId, mailServerData.ImapSettingsId }.Any(a => a == r.Id))
-                .ToList();
-
-            MailDbContext.MailboxServer.RemoveRange(servers);
-            MailDbContext.SaveChanges();
-
-            var mailboxId = MailDbContext.Mailbox
-                .Where(r => r.IdSmtpServer == mailServerData.SmtpSettingsId)
-                .Where(r => r.IdInServer == mailServerData.ImapSettingsId)
-                .ToArray();
-
-            foreach (var m in mailboxId)
+            var mailboxProvider = new MailboxProvider
             {
-                m.IdSmtpServer = smtpServerId;
-                m.IdInServer = imapServerId;
-            }
-            MailDbContext.SaveChanges();
-        }
+                Id = 0,
+                Name = hostname
+            };
 
-        transaction.Commit();
+            var pReq = MailDbContext.MailboxProvider.Add(mailboxProvider);
+            MailDbContext.SaveChanges();
+            mailboxProvider = pReq.Entity;
+
+            var providerId = mailboxProvider.Id;
+
+            var mailboxServer = new MailboxServer
+            {
+                Id = 0,
+                IdProvider = providerId,
+                Type = "smtp",
+                Hostname = hostname,
+                Port = 587,
+                SocketType = "STARTTLS",
+                UserName = "%EMAILADDRESS%",
+                Authentication = "",
+                IsUserData = false
+            };
+
+            var req = MailDbContext.MailboxServer.Add(mailboxServer);
+            MailDbContext.SaveChanges();
+
+            mailboxServer = req.Entity;
+
+            var smtpServerId = mailboxServer.Id;
+
+            mailboxServer = new MailboxServer
+            {
+                Id = 0,
+                IdProvider = providerId,
+                Type = "imap",
+                Hostname = hostname,
+                Port = 143,
+                SocketType = "STARTTLS",
+                UserName = "%EMAILADDRESS%",
+                Authentication = "",
+                IsUserData = false
+            };
+
+            req = MailDbContext.MailboxServer.Add(mailboxServer);
+            MailDbContext.SaveChanges();
+
+            mailboxServer = req.Entity;
+
+            var imapServerId = mailboxServer.Id;
+
+            var mailServerData = MailDbContext.ServerServer.FirstOrDefault();
+
+            var connectionString = JsonConvert.SerializeObject(mailServer);
+
+            var server = new ServerServer
+            {
+                Id = 0,
+                MxRecord = hostname,
+                ConnectionString = connectionString,
+                ServerType = 2,
+                SmtpSettingsId = smtpServerId,
+                ImapSettingsId = imapServerId
+            };
+
+            MailDbContext.ServerServer.Add(server);
+            MailDbContext.SaveChanges();
+
+            if (mailServerData != null)
+            {
+                server = MailDbContext.ServerServer.Where(r => r.Id == mailServerData.Id).FirstOrDefault();
+                MailDbContext.ServerServer.Remove(server);
+                MailDbContext.SaveChanges();
+
+                providerId = MailDbContext.MailboxServer
+                    .Where(r => r.Id == mailServerData.SmtpSettingsId)
+                    .Select(r => r.IdProvider)
+                    .FirstOrDefault();
+
+                var providers = MailDbContext.MailboxProvider.Where(r => r.Id == providerId).ToList();
+                MailDbContext.MailboxProvider.RemoveRange(providers);
+                MailDbContext.SaveChanges();
+
+                var servers = MailDbContext.MailboxServer
+                    .Where(r => new[] { mailServerData.SmtpSettingsId, mailServerData.ImapSettingsId }.Any(a => a == r.Id))
+                    .ToList();
+
+                MailDbContext.MailboxServer.RemoveRange(servers);
+                MailDbContext.SaveChanges();
+
+                var mailboxId = MailDbContext.Mailbox
+                    .Where(r => r.IdSmtpServer == mailServerData.SmtpSettingsId)
+                    .Where(r => r.IdInServer == mailServerData.ImapSettingsId)
+                    .ToArray();
+
+                foreach (var m in mailboxId)
+                {
+                    m.IdSmtpServer = smtpServerId;
+                    m.IdInServer = imapServerId;
+                }
+                MailDbContext.SaveChanges();
+            }
+
+            transaction.Commit();
+        });
 
         _mailServiceHelperStorage.Remove();
     }

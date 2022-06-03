@@ -310,48 +310,53 @@ internal class ProviderAccountDao : IProviderDao
 
     public virtual async Task RemoveProviderInfoAsync(int linkId)
     {
-        using var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false);
-        var folderId = (await GetProviderInfoAsync(linkId)).RootFolderId;
+        var strategy = FilesDbContext.Database.CreateExecutionStrategy();
 
-        var entryIDs = await FilesDbContext.ThirdpartyIdMapping
-            .AsQueryable()
-            .Where(r => r.TenantId == TenantID)
-            .Where(r => r.Id.StartsWith(folderId))
-            .Select(r => r.HashId)
-            .ToListAsync()
-            .ConfigureAwait(false);
+        await strategy.ExecuteAsync(async () =>
+        {
+            using var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false);
+            var folderId = (await GetProviderInfoAsync(linkId)).RootFolderId;
 
-        var forDelete = await FilesDbContext.Security
-            .AsQueryable()
-            .Where(r => r.TenantId == TenantID)
-            .Where(r => entryIDs.Any(a => a == r.EntryId))
-            .ToListAsync()
-            .ConfigureAwait(false);
+            var entryIDs = await FilesDbContext.ThirdpartyIdMapping
+                .AsQueryable()
+                .Where(r => r.TenantId == TenantID)
+                .Where(r => r.Id.StartsWith(folderId))
+                .Select(r => r.HashId)
+                .ToListAsync()
+                .ConfigureAwait(false);
 
-        FilesDbContext.Security.RemoveRange(forDelete);
-        await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+            var forDelete = await FilesDbContext.Security
+                .AsQueryable()
+                .Where(r => r.TenantId == TenantID)
+                .Where(r => entryIDs.Any(a => a == r.EntryId))
+                .ToListAsync()
+                .ConfigureAwait(false);
 
-        var linksForDelete = await FilesDbContext.TagLink
-            .AsQueryable()
-            .Where(r => r.TenantId == TenantID)
-            .Where(r => entryIDs.Any(e => e == r.EntryId))
-            .ToListAsync()
-            .ConfigureAwait(false);
+            FilesDbContext.Security.RemoveRange(forDelete);
+            await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-        FilesDbContext.TagLink.RemoveRange(linksForDelete);
-        await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+            var linksForDelete = await FilesDbContext.TagLink
+                .AsQueryable()
+                .Where(r => r.TenantId == TenantID)
+                .Where(r => entryIDs.Any(e => e == r.EntryId))
+                .ToListAsync()
+                .ConfigureAwait(false);
 
-        var accountsForDelete = await FilesDbContext.ThirdpartyAccount
-            .AsQueryable()
-            .Where(r => r.Id == linkId)
-            .Where(r => r.TenantId == TenantID)
-            .ToListAsync()
-            .ConfigureAwait(false);
+            FilesDbContext.TagLink.RemoveRange(linksForDelete);
+            await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-        FilesDbContext.ThirdpartyAccount.RemoveRange(accountsForDelete);
-        await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+            var accountsForDelete = await FilesDbContext.ThirdpartyAccount
+                .AsQueryable()
+                .Where(r => r.Id == linkId)
+                .Where(r => r.TenantId == TenantID)
+                .ToListAsync()
+                .ConfigureAwait(false);
 
-        await tx.CommitAsync().ConfigureAwait(false);
+            FilesDbContext.ThirdpartyAccount.RemoveRange(accountsForDelete);
+            await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+
+            await tx.CommitAsync().ConfigureAwait(false);
+        });
     }
 
     private IProviderInfo ToProviderInfo(int id, ProviderTypes providerKey, string customerTitle, AuthData authData, Guid owner, FolderType type, DateTime createOn)

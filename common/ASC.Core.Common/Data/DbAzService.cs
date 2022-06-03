@@ -76,17 +76,25 @@ class DbAzService : IAzService
     public AzRecord SaveAce(int tenant, AzRecord r)
     {
         r.Tenant = tenant;
-        using var tx = UserDbContext.Database.BeginTransaction();
-        if (!ExistEscapeRecord(r))
+
+        var strategy = UserDbContext.Database.CreateExecutionStrategy();
+
+        strategy.Execute(() =>
         {
-            InsertRecord(r);
-        }
-        else
-        {
-            // unescape
-            DeleteRecord(r);
-        }
-        tx.Commit();
+            using var tx = UserDbContext.Database.BeginTransaction();
+
+            if (!ExistEscapeRecord(r))
+            {
+                InsertRecord(r);
+            }
+            else
+            {
+                // unescape
+                DeleteRecord(r);
+            }
+
+            tx.Commit();
+        });
 
         return r;
     }
@@ -94,18 +102,26 @@ class DbAzService : IAzService
     public void RemoveAce(int tenant, AzRecord r)
     {
         r.Tenant = tenant;
-        using var tx = UserDbContext.Database.BeginTransaction();
-        if (ExistEscapeRecord(r))
-        {
-            // escape
-            InsertRecord(r);
-        }
-        else
-        {
-            DeleteRecord(r);
-        }
 
-        tx.Commit();
+        var strategy = UserDbContext.Database.CreateExecutionStrategy();
+
+        strategy.Execute(() =>
+        {
+            using var tx = UserDbContext.Database.BeginTransaction();
+            
+            if (ExistEscapeRecord(r))
+            {
+                // escape
+                InsertRecord(r);
+            }
+            else
+            {
+                DeleteRecord(r);
+            }
+
+            tx.Commit();
+        });
+
     }
 
 

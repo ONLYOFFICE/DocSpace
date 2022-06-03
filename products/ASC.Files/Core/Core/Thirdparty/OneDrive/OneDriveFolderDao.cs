@@ -222,42 +222,49 @@ internal class OneDriveFolderDao : OneDriveDaoBase, IFolderDao<string>
         var onedriveFolder = await GetOneDriveItemAsync(folderId).ConfigureAwait(false);
         var id = MakeId(onedriveFolder);
 
-        using (var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false))
+        var strategy = FilesDbContext.Database.CreateExecutionStrategy();
+
+        await strategy.ExecuteAsync(async () =>
         {
-            var hashIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
-               .Where(r => r.Id.StartsWith(id))
-               .Select(r => r.HashId)
-               .ToListAsync()
-               .ConfigureAwait(false);
+            using (var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false))
+            {
+                var hashIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
+                   .Where(r => r.Id.StartsWith(id))
+                   .Select(r => r.HashId)
+                   .ToListAsync()
+                   .ConfigureAwait(false);
 
-            var link = await Query(FilesDbContext.TagLink)
-                .Where(r => hashIDs.Any(h => h == r.EntryId))
-                .ToListAsync().ConfigureAwait(false);
+                var link = await Query(FilesDbContext.TagLink)
+                    .Where(r => hashIDs.Any(h => h == r.EntryId))
+                    .ToListAsync().ConfigureAwait(false);
 
-            FilesDbContext.TagLink.RemoveRange(link);
-            await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+                FilesDbContext.TagLink.RemoveRange(link);
+                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-            var tagsToRemove = from ft in FilesDbContext.Tag
-                               join ftl in FilesDbContext.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new { TenantId = ftl.TenantId, Id = ftl.TagId }
-                               where ftl == null
-                               select ft;
+                var tagsToRemove = from ft in FilesDbContext.Tag
+                                   join ftl in FilesDbContext.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new { TenantId = ftl.TenantId, Id = ftl.TagId }
+                                   where ftl == null
+                                   select ft;
 
-            FilesDbContext.Tag.RemoveRange(await tagsToRemove.ToListAsync());
+                FilesDbContext.Tag.RemoveRange(await tagsToRemove.ToListAsync());
 
-            var securityToDelete = Query(FilesDbContext.Security)
-                .Where(r => hashIDs.Any(h => h == r.EntryId));
+                var securityToDelete = Query(FilesDbContext.Security)
+                    .Where(r => hashIDs.Any(h => h == r.EntryId));
 
-            FilesDbContext.Security.RemoveRange(await securityToDelete.ToListAsync());
-            await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+                FilesDbContext.Security.RemoveRange(await securityToDelete.ToListAsync());
+                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-            var mappingToDelete = Query(FilesDbContext.ThirdpartyIdMapping)
-                .Where(r => hashIDs.Any(h => h == r.HashId));
+                var mappingToDelete = Query(FilesDbContext.ThirdpartyIdMapping)
+                    .Where(r => hashIDs.Any(h => h == r.HashId));
 
-            FilesDbContext.ThirdpartyIdMapping.RemoveRange(await mappingToDelete.ToListAsync());
-            await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+                FilesDbContext.ThirdpartyIdMapping.RemoveRange(await mappingToDelete.ToListAsync());
+                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-            await tx.CommitAsync().ConfigureAwait(false);
-        }
+                await tx.CommitAsync().ConfigureAwait(false);
+            }
+        });
+
+
 
         if (onedriveFolder is not ErrorItem)
         {

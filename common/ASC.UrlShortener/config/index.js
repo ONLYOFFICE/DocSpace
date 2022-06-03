@@ -39,12 +39,12 @@ getAndSaveSql();
 module.exports = nconf;
 
 function getAndSaveAppsettings(){
-    var appsettings = nconf.get("appsettings");
+    var appsettings = nconf.get("app").appsettings;
     if(!path.isAbsolute(appsettings)){
         appsettings =path.join(__dirname, appsettings);
     }
 
-    var env = nconf.get("environment");
+    var env = nconf.get("app").environment;
     var valueEnv = nconf.get(env);
     var fileWithEnv = path.join(appsettings, 'appsettings.' + valueEnv + '.json');
 
