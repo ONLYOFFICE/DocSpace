@@ -104,7 +104,7 @@ public class RoomLogoManager
         var folderDao = _daoFactory.GetFolderDao<T>();
         var room = await folderDao.GetFolderAsync(id);
 
-        if (room.RootFolderType == FolderType.Archive || !await _fileSecurity.CanEditRoomAsync(room))
+        if (!await _fileSecurity.CanEditRoomAsync(room))
         {
             throw new InvalidOperationException("You don't have permission to edit the room");
         }

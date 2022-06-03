@@ -137,6 +137,16 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                 {
                     if (ProviderDao != null)
                     {
+                        if (folder.RootFolderType == FolderType.VirtualRooms || folder.RootFolderType == FolderType.Archive)
+                        {
+                            var providerInfo = await ProviderDao.GetProviderInfoAsync(folder.ProviderId);
+
+                            if (providerInfo.FolderId != null)
+                            {
+                                await roomLogoManager.DeleteAsync(providerInfo.FolderId);
+                            }
+                        }
+
                         await ProviderDao.RemoveProviderInfoAsync(folder.ProviderId);
                         filesMessageService.Send(folder, _headers, MessageAction.ThirdPartyDeleted, folder.Id.ToString(), folder.ProviderKey);
                     }
