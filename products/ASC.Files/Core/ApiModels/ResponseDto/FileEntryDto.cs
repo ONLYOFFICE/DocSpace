@@ -46,6 +46,8 @@ public abstract class FileEntryDto
     public bool? ProviderItem { get; set; }
     public string ProviderKey { get; set; }
     public int? ProviderId { get; set; }
+    public bool DenyDownload { get; set; }
+    public bool DenySharing { get; set; }
 
     protected FileEntryDto(FileEntry entry, EmployeeDtoHelper employeeWraperHelper, ApiDateTimeHelper apiDateTimeHelper)
     {
@@ -60,26 +62,28 @@ public abstract class FileEntryDto
         ProviderItem = entry.ProviderEntry.NullIfDefault();
         ProviderKey = entry.ProviderKey;
         ProviderId = entry.ProviderId.NullIfDefault();
+        DenyDownload = entry.DenyDownload;
+        DenySharing = entry.DenySharing;
     }
 
     protected FileEntryDto() { }
 }
 
-public abstract class FileEntryWrapper<T> : FileEntryDto
+public abstract class FileEntryDto<T> : FileEntryDto
 {
     public T Id { get; set; }
     public T RootFolderId { get; set; }
     public bool CanShare { get; set; }
     public bool CanEdit { get; set; }
 
-    protected FileEntryWrapper(FileEntry<T> entry, EmployeeDtoHelper employeeWraperHelper, ApiDateTimeHelper apiDateTimeHelper)
+    protected FileEntryDto(FileEntry<T> entry, EmployeeDtoHelper employeeWraperHelper, ApiDateTimeHelper apiDateTimeHelper)
         : base(entry, employeeWraperHelper, apiDateTimeHelper)
     {
         Id = entry.Id;
         RootFolderId = entry.RootId;
     }
 
-    protected FileEntryWrapper() { }
+    protected FileEntryDto() { }
 }
 
 [Scope]
@@ -102,7 +106,7 @@ public class FileEntryDtoHelper
         _fileSecurity = fileSecurity;
     }
 
-    protected internal async Task<T> GetAsync<T, TId>(FileEntry<TId> entry) where T : FileEntryWrapper<TId>, new()
+    protected internal async Task<T> GetAsync<T, TId>(FileEntry<TId> entry) where T : FileEntryDto<TId>, new()
     {
         return new T
         {

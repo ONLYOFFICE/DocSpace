@@ -26,7 +26,7 @@
 
 namespace ASC.Files.Core.ApiModels.ResponseDto;
 
-public class FileDto<T> : FileEntryWrapper<T>
+public class FileDto<T> : FileEntryDto<T>
 {
     public T FolderId { get; set; }
     public int Version { get; set; }

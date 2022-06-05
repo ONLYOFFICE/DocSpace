@@ -201,4 +201,24 @@ public class SettingsController : ApiControllerBase
     {
         return _fileStorageServiceString.UpdateIfExist(inDto.Set);
     }
+
+    [HttpPut("settings/autocleanup")]
+    public AutoCleanUpData ChangeAutomaticallyCleanUp(bool set, DateToAutoCleanUp gap)
+    {
+        return _fileStorageServiceString.ChangeAutomaticallyCleanUp(set, gap);
+    }
+
+
+    [HttpGet("settings/autocleanup")]
+    public AutoCleanUpData GetSettingsAutomaticallyCleanUp()
+    {
+        return _fileStorageServiceString.GetSettingsAutomaticallyCleanUp();
+    }
+
+
+    [HttpPut("settings/dafaultaccessrights")]
+    public List<Core.Security.FileShare> ChangeDafaultAccessRights(List<Core.Security.FileShare> value)
+    {
+        return _fileStorageServiceString.ChangeDafaultAccessRights(value);
+    }
 }

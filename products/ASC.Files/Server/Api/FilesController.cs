@@ -82,6 +82,12 @@ public abstract class FilesController<T> : ApiControllerBase
         });
     }
 
+    [HttpGet("file/{fileId}/presigneduri")]
+    public async Task<string> GetPresignedUri(T fileId)
+    {
+        return await _filesControllerHelper.GetPresignedUri(fileId);
+    }
+
     [HttpPost("file/{fileId}/copyas", Order = int.MaxValue)]
     public async Task<FileEntryDto> CopyFileAs(T fileId, CopyAsRequestDto<JsonElement> inDto)
     {
@@ -354,5 +360,38 @@ public class FilesControllerCommon : ApiControllerBase
     public Task<IEnumerable<JsonElement>> CreateThumbnailsAsync(BaseBatchRequestDto inDto)
     {
         return _fileStorageServiceThirdparty.CreateThumbnailsAsync(inDto.FileIds.ToList());
+    }
+
+
+    [HttpGet("{fileId}/properties")]
+    public EntryProperties GetProperties(string fileId)
+    {
+        return _fileStorageService.GetFileProperties(fileId);
+    }
+
+
+    [HttpPut("{fileId}/properties")]
+    public EntryProperties SetProperties(string fileId, EntryProperties fileProperties)
+    {
+        return _fileStorageService.SetFileProperties(fileId, fileProperties);
+    }
+
+
+    [HttpPut("batch/properties")]
+    public List<EntryProperties> SetProperties(string[] filesId, bool createSubfolder, EntryProperties fileProperties)
+    {
+        var result = new List<EntryProperties>();
+
+        foreach (var fileId in filesId)
+        {
+            if (createSubfolder)
+            {
+                var file = _fileStorageService.GetFile(fileId, -1).NotFoundIfNull("File not found");
+                fileProperties.FormFilling.CreateFolderTitle = Path.GetFileNameWithoutExtension(file.Title);
+            }
+
+            result.Add(_fileStorageService.SetFileProperties(fileId, fileProperties));
+        }
+        return result;
     }
 }

@@ -26,12 +26,13 @@
 
 namespace ASC.Files.Core.ApiModels.ResponseDto;
 
-public class FolderDto<T> : FileEntryWrapper<T>
+public class FolderDto<T> : FileEntryDto<T>
 {
     public T ParentId { get; set; }
     public int FilesCount { get; set; }
     public int FoldersCount { get; set; }
     public bool? IsShareable { get; set; }
+    public bool? IsFavorite { get; set; }
     public int New { get; set; }
 
     public FolderDto() { }
@@ -52,7 +53,8 @@ public class FolderDto<T> : FileEntryWrapper<T>
             FilesCount = 5,
             FoldersCount = 7,
             ParentId = 10,
-            IsShareable = null
+            IsShareable = null,
+            IsFavorite = null
         };
     }
 }
@@ -121,6 +123,7 @@ public class FolderDtoHelper : FileEntryDtoHelper
         result.FilesCount = folder.FilesCount;
         result.FoldersCount = folder.FoldersCount;
         result.IsShareable = folder.Shareable.NullIfDefault();
+        result.IsFavorite = folder.Favorite.NullIfDefault();
         result.New = folder.NewForMe;
 
         return result;

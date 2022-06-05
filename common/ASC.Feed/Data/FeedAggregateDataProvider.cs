@@ -296,6 +296,7 @@ public class FeedResultItem : IMapFrom<FeedAggregate>
     public string GroupId { get; private set; }
     public bool IsToday { get; private set; }
     public bool IsYesterday { get; private set; }
+    public bool IsTomorrow { get; private set; }
     public DateTime CreatedDate { get; private set; }
     public DateTime ModifiedDate { get; private set; }
     public DateTime AggregatedDate { get; private set; }

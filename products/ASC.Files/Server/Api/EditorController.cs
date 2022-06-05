@@ -143,14 +143,10 @@ public abstract class EditorController<T> : ApiControllerBase
     {
         var docParams = await _documentServiceHelper.GetParamsAsync(fileId, version, doc, true, !view, true);
         var configuration = docParams.Configuration;
-
+        var file = docParams.File;
         configuration.EditorType = EditorType.External;
-        if (configuration.EditorConfig.ModeWrite)
-        {
-            configuration.EditorConfig.CallbackUrl = _documentServiceTrackerHelper.GetCallbackUrl(configuration.Document.Info.GetFile().Id.ToString());
-        }
 
-        if (configuration.Document.Info.GetFile().RootFolderType == FolderType.Privacy && PrivacyRoomSettings.GetEnabled(_settingsManager))
+        if (file.RootFolderType == FolderType.Privacy && PrivacyRoomSettings.GetEnabled(_settingsManager))
         {
             var keyPair = _encryptionKeyPairDtoHelper.GetKeyPair();
             if (keyPair != null)
@@ -163,9 +159,9 @@ public abstract class EditorController<T> : ApiControllerBase
             }
         }
 
-        if (!configuration.Document.Info.GetFile().Encrypted && !configuration.Document.Info.GetFile().ProviderEntry)
+        if (!file.Encrypted && !file.ProviderEntry)
         {
-            _entryManager.MarkAsRecent(configuration.Document.Info.GetFile());
+            _entryManager.MarkAsRecent(file);
         }
 
         configuration.Token = _documentServiceHelper.GetSignature(configuration);
