@@ -3,7 +3,7 @@ import React from "react";
 import { withTranslation } from "react-i18next";
 import { ReactSVG } from "react-svg";
 
-import { StyledTitle } from "./styles/styles.js";
+import { StyledTitle } from "../../styles/styles.js";
 
 const SeveralItems = (props) => {
   const { t, selectedItems, getIcon, getFolderInfo } = props;

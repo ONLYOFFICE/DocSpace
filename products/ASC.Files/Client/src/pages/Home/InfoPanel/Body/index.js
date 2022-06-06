@@ -2,13 +2,12 @@ import { inject, observer } from "mobx-react";
 import React from "react";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
-import SeveralItems from "./SeveralItems";
-import SingleItem from "./SingleItem";
-import GalleryItem from "./GalleryItem";
-import GalleryEmptyScreen from "./GalleryEmptyScreen";
+import GalleryItem from "./views/Gallery/GalleryItem";
+import GalleryEmptyScreen from "./views/Gallery/GalleryEmptyScreen";
 import { StyledInfoRoomBody } from "./styles/styles.js";
 import { Base } from "@appserver/components/themes";
-import EmptyScreen from "./EmptyScreen";
+import FilesInfoPanel from "./views/Files";
+import VirtualRoomInfoPanel from "./views/VirtualRoom";
 
 const InfoPanelBodyContent = ({
   t,
@@ -33,37 +32,6 @@ const InfoPanelBodyContent = ({
   createThumbnail,
   culture,
 }) => {
-  const singleItem = (item) => {
-    const dontShowLocation = isRootFolder;
-    const dontShowSize = item.isFolder && (isFavoritesFolder || isRecentFolder);
-    const dontShowAccess =
-      isRecycleBinFolder ||
-      isRootFolder ||
-      item.rootFolderId === 7 ||
-      (item.isFolder && item.pathParts && item.pathParts[0] === 7);
-    const dontShowOwner = isRootFolder && (isFavoritesFolder || isRecentFolder);
-
-    return (
-      <SingleItem
-        t={t}
-        selectedItem={item}
-        onSelectItem={onSelectItem}
-        setSharingPanelVisible={setSharingPanelVisible}
-        getFolderInfo={getFolderInfo}
-        getIcon={getIcon}
-        getFolderIcon={getFolderIcon}
-        getShareUsers={getShareUsers}
-        dontShowLocation={dontShowLocation}
-        dontShowSize={dontShowSize}
-        dontShowAccess={dontShowAccess}
-        dontShowOwner={dontShowOwner}
-        personal={personal}
-        culture={culture}
-        createThumbnail={createThumbnail}
-      />
-    );
-  };
-
   return isGallery ? (
     !gallerySelected ? (
       <GalleryEmptyScreen />
@@ -78,29 +46,31 @@ const InfoPanelBodyContent = ({
     )
   ) : (
     <StyledInfoRoomBody>
-      <>
-        {selectedItems.length === 0 ? (
-          // Can get future changes, currently only "My documents" displays its info
-          isRootFolder &&
-          (isRecycleBinFolder ||
-            isRecentFolder ||
-            isFavoritesFolder ||
-            isShareFolder ||
-            isCommonFolder ||
-            isPrivacyFolder) ? (
-            <EmptyScreen />
-          ) : (
-            singleItem({
-              ...selectedFolder,
-              isFolder: true,
-            })
-          )
-        ) : selectedItems.length === 1 ? (
-          singleItem(selectedItems[0])
-        ) : (
-          <SeveralItems selectedItems={selectedItems} getIcon={getIcon} />
-        )}
-      </>
+      {isPrivacyFolder ? (
+        <VirtualRoomInfoPanel />
+      ) : (
+        <FilesInfoPanel
+          t={t}
+          selectedFolder={selectedFolder}
+          selectedItems={selectedItems}
+          getFolderInfo={getFolderInfo}
+          getIcon={getIcon}
+          getFolderIcon={getFolderIcon}
+          getShareUsers={getShareUsers}
+          onSelectItem={onSelectItem}
+          setSharingPanelVisible={setSharingPanelVisible}
+          createThumbnail={createThumbnail}
+          personal={personal}
+          culture={culture}
+          isRootFolder={isRootFolder}
+          isRecycleBinFolder={isRecycleBinFolder}
+          isRecentFolder={isRecentFolder}
+          isFavoritesFolder={isFavoritesFolder}
+          isShareFolder={isShareFolder}
+          isCommonFolder={isCommonFolder}
+          isPrivacyFolder={isPrivacyFolder}
+        />
+      )}
     </StyledInfoRoomBody>
   );
 };

@@ -12,7 +12,7 @@ import {
   StyledSubtitle,
   StyledThumbnail,
   StyledTitle,
-} from "./styles/styles.js";
+} from "../../styles/styles.js";
 import getCorrectDate from "@appserver/components/utils/getCorrectDate";
 
 const SingleItem = (props) => {

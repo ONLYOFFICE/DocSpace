@@ -1,31 +1,49 @@
 import IconButton from "@appserver/components/icon-button";
 import Text from "@appserver/components/text";
 import { Base } from "@appserver/components/themes";
-import {
-  isTablet,
-  isMobile as isMobileUtils,
-  tablet,
-  isDesktop,
-} from "@appserver/components/utils/device";
+import { tablet } from "@appserver/components/utils/device";
 import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
 import React from "react";
 import styled from "styled-components";
-import { isMobile } from "react-device-detect";
+import Submenu from "@appserver/components/submenu";
 
 const StyledInfoPanelHeader = styled.div`
   width: 100%;
   max-width: 100%;
-  height: 52px;
-  min-height: 52px;
+  height: ${(props) => (props.isPrivacyFolder ? "85px" : "52px")};
+  min-height: ${(props) => (props.isPrivacyFolder ? "85px" : "52px")};
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  align-self: center;
-  border-bottom: ${(props) => `1px solid ${props.theme.infoPanel.borderColor}`};
+  flex-direction: column;
 
-  .header-text {
-    margin-left: 20px;
+  border-bottom: ${(props) =>
+    props.isPrivacyFolder
+      ? "none"
+      : `1px solid ${props.theme.infoPanel.borderColor}`};
+
+  .main {
+    height: ${(props) => (props.isPrivacyFolder ? "53px" : "52px")};
+    min-height: ${(props) => (props.isPrivacyFolder ? "53px" : "52px")};
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+    .header-text {
+      margin-left: 20px;
+    }
+  }
+
+  .submenu {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+
+    .sticky {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
   }
 `;
 
@@ -57,21 +75,21 @@ const StyledInfoPanelToggleWrapper = styled.div`
 `;
 StyledInfoPanelToggleWrapper.defaultProps = { theme: Base };
 
-const SubInfoPanelHeader = ({ children, setIsVisible, viewAs }) => {
+const SubInfoPanelHeader = ({ children, setIsVisible, isPrivacyFolder }) => {
   const content = children?.props?.children;
 
   const closeInfoPanel = () => setIsVisible(false);
 
   return (
-    <StyledInfoPanelHeader>
-      <Text className="header-text" fontSize="21px" fontWeight="700">
-        {content}
-      </Text>
-      <StyledInfoPanelToggleWrapper
-        isRootFolder={true}
-        isInfoPanelVisible={true}
-      >
-        {!(isTablet() || isMobile || isMobileUtils() || !isDesktop()) && (
+    <StyledInfoPanelHeader isPrivacyFolder={isPrivacyFolder}>
+      <div className="main">
+        <Text className="header-text" fontSize="21px" fontWeight="700">
+          {content}
+        </Text>
+        <StyledInfoPanelToggleWrapper
+          isRootFolder={true}
+          isInfoPanelVisible={true}
+        >
           <div className="info-panel-toggle-bg">
             <IconButton
               className="info-panel-toggle"
@@ -81,8 +99,33 @@ const SubInfoPanelHeader = ({ children, setIsVisible, viewAs }) => {
               onClick={closeInfoPanel}
             />
           </div>
-        )}
-      </StyledInfoPanelToggleWrapper>
+        </StyledInfoPanelToggleWrapper>
+      </div>
+
+      {isPrivacyFolder && (
+        <div className="submenu">
+          <Submenu
+            style={{ width: "100%" }}
+            data={[
+              {
+                content: null,
+                id: "Members",
+                name: "Members",
+              },
+              {
+                content: null,
+                id: "History",
+                name: "History",
+              },
+              {
+                content: null,
+                id: "Details",
+                name: "Details",
+              },
+            ]}
+          />
+        </div>
+      )}
     </StyledInfoPanelHeader>
   );
 };
@@ -101,7 +144,8 @@ SubInfoPanelHeader.defaultProps = { theme: Base };
 
 SubInfoPanelHeader.displayName = "SubInfoPanelHeader";
 
-export default inject(({ auth }) => {
+export default inject(({ auth, treeFoldersStore }) => {
   const { setIsVisible } = auth.infoPanelStore;
-  return { setIsVisible };
+  const { isPrivacyFolder } = treeFoldersStore;
+  return { setIsVisible, isPrivacyFolder };
 })(observer(SubInfoPanelHeader));
