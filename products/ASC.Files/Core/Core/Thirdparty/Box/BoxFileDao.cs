@@ -545,6 +545,11 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
         return false;
     }
 
+    public Task<Stream> GetThumbnailAsync(File<string> file)
+    {
+        return GetThumbnailAsync(_boxDaoSelector.ConvertId(file.Id));
+    }
+
     #region chunking
 
     private File<string> RestoreIds(File<string> file)
@@ -628,11 +633,6 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
         }
 
         return Task.CompletedTask;
-    }
-
-    public Task<Stream> GetThumbnailAsync(File<string> file)
-    {
-        throw new NotImplementedException();
     }
     #endregion
 }

@@ -273,6 +273,12 @@ internal abstract class BoxDaoBase : ThirdPartyProviderDao<BoxProviderInfo>
         return items;
     }
 
+    protected Task<Stream> GetThumbnailAsync(string fileId)
+    {
+        var boxFileId = MakeBoxId(fileId);
+        return ProviderInfo.GetThumbnailAsync(boxFileId);
+    }
+
     protected sealed class ErrorFolder : BoxFolder
     {
         public string Error { get; set; }

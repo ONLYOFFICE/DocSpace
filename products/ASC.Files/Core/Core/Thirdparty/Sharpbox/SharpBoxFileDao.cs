@@ -561,6 +561,11 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
         return false;
     }
 
+    public Task<Stream> GetThumbnailAsync(File<string> file)
+    {
+        throw new NotImplementedException();
+    }
+
     #region chunking
 
     public async Task<ChunkedUploadSession<string>> CreateUploadSessionAsync(File<string> file, long contentLength)
@@ -705,11 +710,6 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
         }
 
         return file;
-    }
-
-    public Task<Stream> GetThumbnailAsync(File<string> file)
-    {
-        throw new NotImplementedException();
     }
     #endregion
 }

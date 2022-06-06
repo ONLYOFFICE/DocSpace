@@ -145,6 +145,12 @@ internal class BoxProviderInfo : IProviderInfo
     {
         return _boxProviderInfoHelper.CacheResetAsync(BoxRootId, ID, boxPath, isFile);
     }
+
+    internal async Task<Stream> GetThumbnailAsync(string boxFileId)
+    {
+        var storage = await StorageAsync;
+        return await _boxProviderInfoHelper.GetThumbnailAsync(storage, boxFileId);
+    }
 }
 
 [Scope]
@@ -329,5 +335,10 @@ public class BoxProviderInfoHelper
 
             await _cacheNotify.PublishAsync(new BoxCacheItem { IsFile = isFile ?? false, IsFileExists = isFile.HasValue, Key = key }, CacheNotifyAction.Remove).ConfigureAwait(false);
         }
+    }
+
+    internal async Task<Stream> GetThumbnailAsync(BoxStorage storage, string boxFileId)
+    {
+        return await storage.GetThumbnailAsync(boxFileId).ConfigureAwait(false);
     }
 }

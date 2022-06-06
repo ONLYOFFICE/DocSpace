@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using System.Net.Sockets;
+
 using Folder = Microsoft.OneDrive.Sdk.Folder;
 
 namespace ASC.Files.Thirdparty.OneDrive;
@@ -353,6 +355,22 @@ internal class OneDriveStorage
 
         var httpClient = _clientFactory.CreateClient();
         using var response = await httpClient.SendAsync(request);
+    }
+
+    public async Task<Stream> GetThumbnailAsync(string fileId)
+    {
+        var thumbnails = await OnedriveClient.Drive.Items[fileId].Thumbnails.Request().GetAsync();
+
+        var request = new HttpRequestMessage
+        {
+            RequestUri = new Uri(thumbnails[0].Medium.Url),
+            Method = HttpMethod.Get
+        };
+        var httpClient = _clientFactory.CreateClient();
+        using var response = await httpClient.SendAsync(request);
+        var bytes = await response.Content.ReadAsByteArrayAsync();
+        var mem = new MemoryStream(bytes);
+        return new MemoryStream(bytes);
     }
 }
 

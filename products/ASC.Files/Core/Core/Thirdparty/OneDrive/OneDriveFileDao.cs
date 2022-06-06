@@ -556,6 +556,11 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
         return false;
     }
 
+    public Task<Stream> GetThumbnailAsync(File<string> file)
+    {
+        return GetThumbnailAsync(_oneDriveDaoSelector.ConvertId(file.Id));
+    }
+
     #region chunking
 
     private File<string> RestoreIds(File<string> file)
@@ -700,11 +705,6 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
         {
             System.IO.File.Delete(uploadSession.GetItemOrDefault<string>("TempPath"));
         }
-    }
-
-    public Task<Stream> GetThumbnailAsync(File<string> file)
-    {
-        throw new NotImplementedException();
     }
     #endregion
 }
