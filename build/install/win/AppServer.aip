@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<DOCUMENT Type="Advanced Installer" CreateVersion="18.4" version="18.7" Modules="enterprise" RootPath="." Language="en" Id="{54B168F8-13C3-42BC-B783-24F5F6D98365}">
+<DOCUMENT Type="Advanced Installer" CreateVersion="18.4" version="18.8.1" Modules="enterprise" RootPath="." Language="en" Id="{54B168F8-13C3-42BC-B783-24F5F6D98365}">
   <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
     <ROW Property="AI_BITMAP_DISPLAY_MODE" Value="0"/>
     <ROW Property="AI_CURRENT_YEAR" Value="2022" ValueLocId="-"/>
@@ -643,7 +643,6 @@
     <ROW Registry="AI_ExePath" Root="-1" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]\[ProductVersion]" Name="AI_ExePath" Value="[AI_SETUPEXEPATH]" Component_="AI_ExePath"/>
     <ROW Registry="Comments" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="Comments" Value="[ARPCOMMENTS]" Component_="AI_CustomARPName"/>
     <ROW Registry="Contact" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="Contact" Value="[ARPCONTACT]" Component_="AI_CustomARPName"/>
-    <ROW Registry="CurrentVersion" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion" Name="\"/>
     <ROW Registry="DisplayIcon" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="DisplayIcon" Value="[ARP_ICON_PATH]" Component_="AI_CustomARPName"/>
     <ROW Registry="DisplayName" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="DisplayName" Value="[AI_PRODUCTNAME_ARP]" Component_="AI_CustomARPName"/>
     <ROW Registry="DisplayVersion" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="DisplayVersion" Value="[ProductVersion]" Component_="AI_CustomARPName"/>
@@ -651,23 +650,19 @@
     <ROW Registry="HelpLink" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="HelpLink" Value="[ARPHELPLINK]" Component_="AI_CustomARPName"/>
     <ROW Registry="HelpTelephone" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="HelpTelephone" Value="[ARPHELPTELEPHONE]" Component_="AI_CustomARPName"/>
     <ROW Registry="InstallLocation" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="InstallLocation" Value="[APPDIR]" Component_="AI_CustomARPName"/>
-    <ROW Registry="Microsoft" Root="-1" Key="Software\Microsoft" Name="\"/>
     <ROW Registry="ModifyPath" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="ModifyPath" Value="[AI_UNINSTALLER] /i [ProductCode] AI_UNINSTALLER_CTP=1" Component_="AI_CustomARPName"/>
     <ROW Registry="NoModify" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="NoModify" Value="#1" Component_="AI_DisableModify" VirtualValue="#"/>
     <ROW Registry="NoRepair" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="NoRepair" Value="#1" Component_="AI_CustomARPName" VirtualValue="#"/>
     <ROW Registry="Path" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="Path" Value="[APPDIR]" Component_="ProductInformation"/>
-    <ROW Registry="ProductNameProductVersion" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="\"/>
     <ROW Registry="Publisher" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="Publisher" Value="[Manufacturer]" Component_="AI_CustomARPName"/>
     <ROW Registry="Readme" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="Readme" Value="[ARPREADME]" Component_="AI_CustomARPName"/>
     <ROW Registry="URLInfoAbout" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="URLInfoAbout" Value="[ARPURLINFOABOUT]" Component_="AI_CustomARPName"/>
     <ROW Registry="URLUpdateInfo" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="URLUpdateInfo" Value="[ARPURLUPDATEINFO]" Component_="AI_CustomARPName"/>
-    <ROW Registry="Uninstall" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall" Name="\"/>
     <ROW Registry="UninstallPath" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="UninstallPath" Value="[AI_UNINSTALLER] /x [ProductCode] AI_UNINSTALLER_CTP=1" Component_="AI_CustomARPName"/>
     <ROW Registry="UninstallString" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="UninstallString" Value="[AI_UNINSTALLER] /x [ProductCode] AI_UNINSTALLER_CTP=1" Component_="AI_CustomARPName"/>
     <ROW Registry="Version" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="Version" Value="[ProductVersion]" Component_="ProductInformation"/>
     <ROW Registry="VersionMajor" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="VersionMajor" Value="#1" Component_="AI_CustomARPName" VirtualValue="#"/>
     <ROW Registry="VersionMinor" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="VersionMinor" Value="#0" Component_="AI_CustomARPName" VirtualValue="#"/>
-    <ROW Registry="Windows" Root="-1" Key="Software\Microsoft\Windows" Name="\"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiServConfigComponent">
     <ROW MsiServiceConfig="ServiceName_ApiSystemService" Name="[ServiceName_ApiSystemService]" Event="1" ConfigType="3" Argument="1" Component_="ASC.ApiSystem.exe"/>
@@ -771,8 +766,11 @@
     <ROW PrereqKey="RequiredApplication" DisplayName="MySQL Connector/ODBC 8.0.21 x86" SetupFileUrl="https://dev.mysql.com/get/Downloads/Connector-ODBC/8.0/mysql-connector-odbc-8.0.21-win32.msi" Location="1" ExactSize="0" Operator="1" ComLine="/quiet" BasicUiComLine="/quiet" NoUiComLine="/quiet" Options="ym" TargetName="MySQL Connector ODBC 8.0.21 x86"/>
     <ROW PrereqKey="RequiredApplication_1" DisplayName="Node.js 14.17.4" VersionMin="14.17.4" SetupFileUrl="https://nodejs.org/dist/v14.17.4/node-v14.17.4-x64.msi" Location="1" ExactSize="0" Operator="0" ComLine="/quiet" BasicUiComLine="/quiet" NoUiComLine="/quiet" Options="my" TargetName="Node.js v14.17.4 x64"/>
     <ROW PrereqKey="RequiredApplication_2" DisplayName="MySQL Installer Community 8.0.21 x86" SetupFileUrl="https://dev.mysql.com/get/Downloads/MySQLInstaller/mysql-installer-community-8.0.21.0.msi" Location="1" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/quiet" BasicUiComLine="/quiet" NoUiComLine="/quiet" Options="ym" TargetName="MySQL Installer Community 8.0.21 x86"/>
+    <ROW PrereqKey="RequiredApplication_3" DisplayName="Erlang v25.0 x64" VersionMin="25.0" SetupFileUrl="https://github.com/erlang/otp/releases/download/OTP-25.0/otp_win64_25.0.exe" Location="1" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/S" BasicUiComLine="/S" NoUiComLine="/S" Options="ym" TargetName="Erlang v25.0 x64"/>
     <ROW PrereqKey="RequiredApplication_4" DisplayName="Elasticsearch v7.13.1 x64" VersionMin="7.13.1" VersionMax="7.13.1" SetupFileUrl="https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.13.1.msi" Location="1" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/quiet" BasicUiComLine="/quiet" NoUiComLine="/quiet" Options="y" TargetName="Elasticsearch v7.13.1 x64"/>
-    <ATTRIBUTE name="PrereqsOrder" value="B96F93FA27E74B02866727AAE83982D0 C6F7BF650B714DC58735D62C12F214E4 E92D3665B5E468A8661F6547C8C142C E25D6A62194038942640BDE651049C A9D0C6C76E024A7A84C9B69789BFB916 D564007E3BBE4F85950A09B470A7CA65 CA62D813A4E74FA2AAE86A7D7B7B1493 A918597FE054CCCB65ABDBA0AD8F63C C4FE6FD5B7C4D07B3A313E754A9A6A8 B365F790B0C4E08A90D54675D858A21 B450414DF7494F99141402B8725A7C RequiredApplication_2 MySQLInstallerRunn RequiredApplication RequiredApplication_1 F6D8148C0594E7491C36E27FD5E9E89 RequiredApplication_4 ApacheZooKepper ApacheKafka"/>
+    <ROW PrereqKey="RequiredApplication_5" DisplayName="RabbitMQ v3.10.5 x64" VersionMin="3.10.5" SetupFileUrl="https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.10.5/rabbitmq-server-3.10.5.exe" Location="1" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/S" BasicUiComLine="/S" NoUiComLine="/S" Options="yxm" TargetName="RabbitMQ v3.10.5 x64"/>
+    <ROW PrereqKey="RequiredApplication_6" DisplayName="Redis 5.0.10 x64" VersionMin="5.0" SetupFileUrl="http://download.onlyoffice.com/install/windows/redist/Redis-x64-5.0.10.msi" Location="1" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/quiet ADD_INSTALLFOLDER_TO_PATH=1" BasicUiComLine="/quiet ADD_INSTALLFOLDER_TO_PATH=1" NoUiComLine="/quiet ADD_INSTALLFOLDER_TO_PATH=1" Options="ym" TargetName="Redis 5.0.10 x64"/>
+    <ATTRIBUTE name="PrereqsOrder" value="B96F93FA27E74B02866727AAE83982D0 C6F7BF650B714DC58735D62C12F214E4 E92D3665B5E468A8661F6547C8C142C E25D6A62194038942640BDE651049C A9D0C6C76E024A7A84C9B69789BFB916 D564007E3BBE4F85950A09B470A7CA65 CA62D813A4E74FA2AAE86A7D7B7B1493 A918597FE054CCCB65ABDBA0AD8F63C C4FE6FD5B7C4D07B3A313E754A9A6A8 B365F790B0C4E08A90D54675D858A21 B450414DF7494F99141402B8725A7C RequiredApplication_2 MySQLInstallerRunn RequiredApplication RequiredApplication_1 F6D8148C0594E7491C36E27FD5E9E89 RequiredApplication_4 RequiredApplication_3 RequiredApplication_5 RequiredApplication_6 ApacheZooKepper ApacheKafka"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.PreReqSearchComponent">
     <ROW SearchKey="A918597FE054CCCB65ABDBA0AD8F63CSyst" Prereq="A918597FE054CCCB65ABDBA0AD8F63C" SearchType="0" SearchString="[SystemFolder]vcruntime140.dll" VerMin="14.26.28720" Order="2" Property="PreReqSearch_1_A918597FE054CCCB65AB"/>
@@ -791,15 +789,18 @@
     <ROW SearchKey="E92D3665B5E468A8661F6547C8C142CMicr" Prereq="E92D3665B5E468A8661F6547C8C142C" SearchType="12" SearchString="HKLM\SOFTWARE\dotnet\Setup\InstalledVersions\x86\sharedfx\Microsoft.NETCore.App" VerMin="6.0.0" Order="1" Property="PreReqSearch_E92D3665B5E468A8661F65"/>
     <ROW SearchKey="F6D8148C0594E7491C36E27FD5E9E89Curr" Prereq="F6D8148C0594E7491C36E27FD5E9E89" SearchType="2" SearchString="HKLM\SOFTWARE\JavaSoft\Java Runtime Environment\CurrentVersion" VerMin="1.8" Order="1" Property="PreReqSearch_F6D8148C0594E7491C36E2"/>
     <ROW SearchKey="F6D8148C0594E7491C36E27FD5E9E89Java" Prereq="F6D8148C0594E7491C36E27FD5E9E89" SearchType="1" SearchString="HKLM\SOFTWARE\JavaSoft\Java Runtime Environment" VerMin="1.8.0_281" Order="2" Property="PreReqSearch_1_F6D8148C0594E7491C36"/>
+    <ROW SearchKey="RabbitMQ" Prereq="RequiredApplication_5" SearchType="5" SearchString="HKLM\SOFTWARE\Ericsson\Erlang\ErlSrv\1.1\RabbitMQ" Order="2" Property="PreReqSearch_11"/>
     <ROW SearchKey="SystemFolderfile.dll" Prereq="RequiredApplication" SearchType="4" SearchString="{FF073FBB-32E2-4052-B6B2-830C5ED4A809}" VerMin="5.3.10" Order="1" Property="PreReqSearch"/>
     <ROW SearchKey="SystemFolderfile.dll_1" Prereq="RequiredApplication_1" SearchType="4" SearchString="{47C07A3A-42EF-4213-A85D-8F5A59077C28}" VerMin="12.18.0" Order="1" Property="PreReqSearch_1"/>
     <ROW SearchKey="SystemFolderfile.dll_2" Prereq="RequiredApplication_2" SearchType="4" SearchString="{18B94B70-06F1-4AC0-B308-37280DB868C2}" Order="1" Property="PreReqSearch_2"/>
     <ROW SearchKey="UpgradeCode" Prereq="ApacheZooKepper" SearchType="4" SearchString="{5CB34BEC-536C-45BA-8C86-77E055EF4325}" VerMin="1.0.0" Order="1" Property="PreReqSearch_3"/>
     <ROW SearchKey="UpgradeCode_1" Prereq="RequiredApplication_4" SearchType="4" SearchString="{DAAA2CBA-A1ED-4F29-AFBF-5478617B00F6}" Order="2" Property="PreReqSearch_7"/>
     <ROW SearchKey="UpgradeCode_2" Prereq="ApacheKafka" SearchType="4" SearchString="{9202447D-B999-4041-B479-B3789A872456}" VerMin="1.0.0" Order="1" Property="PreReqSearch_8"/>
+    <ROW SearchKey="UpgradeCode_3" Prereq="RequiredApplication_6" SearchType="4" SearchString="{05410198-7212-4FC4-B7C8-AFEFC3DA0FBC}" VerMin="5.0.10" Order="2" Property="PreReqSearch_12"/>
     <ROW SearchKey="Version" Prereq="MySQLInstallerRunn" SearchType="2" SearchString="HKLM\SOFTWARE\MySQL AB\MySQL Server 5.7\Version" Order="1" Property="PreReqSearch_4"/>
     <ROW SearchKey="Version_1" Prereq="MySQLInstallerRunn" SearchType="2" SearchString="HKLM\SOFTWARE\MySQL AB\MySQL Server 8.0\Version" Order="2" Property="PreReqSearch_5"/>
     <ROW SearchKey="Version_2" Prereq="MySQLInstallerRunn" SearchType="2" SearchString="HKLM\SOFTWARE\MySQL AB\MySQL Server 5.5\Version" VerMin="5.5" Order="0" Property="PreReqSearch_6"/>
+    <ROW SearchKey="_" Prereq="RequiredApplication_3" SearchType="5" SearchString="HKLM\SOFTWARE\Wow6432Node\Ericsson\Erlang\9.3" Order="2" Property="PreReqSearch_10"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.SqlScriptComponent">
     <ATTRIBUTE name="ImpersonateUser" value="true"/>
