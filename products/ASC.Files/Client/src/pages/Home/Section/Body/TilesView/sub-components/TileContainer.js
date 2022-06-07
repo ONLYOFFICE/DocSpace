@@ -50,8 +50,12 @@ const StyledGridWrapper = styled.div`
     grid-gap: 14px;
   }
 
-  .folders-loader {
+  .tiles-loader {
     padding-top: 14px;
+
+    &:nth-of-type(n + 3) {
+      display: block;
+    }
   }
 `;
 
@@ -339,7 +343,7 @@ class TileContainer extends React.PureComponent {
         loaders.push(
           <Loaders.Tile
             key={`tiles-loader_${count}`}
-            className="folders-loader"
+            className="tiles-loader"
             isFolder
           />
         );
@@ -351,7 +355,7 @@ class TileContainer extends React.PureComponent {
         loaders.push(
           <Loaders.Tile
             key={`tiles-loader_${count}`}
-            className="folders-loader"
+            className="tiles-loader"
             isFolder={false}
           />
         );
