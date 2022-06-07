@@ -504,6 +504,11 @@ class SettingsStore {
     this.ipRestrictionEnable = res.enable;
   };
 
+  setMessageSettings = async (turnOn) => {
+    await api.settings.setMessageSettings(turnOn);
+    this.enableAdmMess = turnOn;
+  };
+
   setIsBurgerLoading = (isBurgerLoading) => {
     this.isBurgerLoading = isBurgerLoading;
   };

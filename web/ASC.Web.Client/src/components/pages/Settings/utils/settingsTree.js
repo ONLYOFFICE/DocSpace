@@ -83,6 +83,12 @@ export const settingsTree = [
             link: "ip",
             tKey: "IPSecurity",
           },
+          {
+            key: "1-0-4",
+            icon: "",
+            link: "admin-message",
+            tKey: "AdminsMessage",
+          },
         ],
       },
       {

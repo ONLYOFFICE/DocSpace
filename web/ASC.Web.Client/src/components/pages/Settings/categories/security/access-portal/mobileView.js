@@ -43,6 +43,12 @@ const MobileView = (props) => {
         url="/settings/security/access-portal/ip"
         onClickLink={onClickLink}
       />
+      <MobileCategoryWrapper
+        title={t("AdminsMessage")}
+        subtitle={t("AdminsMessageDescription")}
+        url="/settings/security/access-portal/admin-message"
+        onClickLink={onClickLink}
+      />
     </MainContainer>
   );
 };

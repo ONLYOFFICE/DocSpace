@@ -1922,7 +1922,7 @@ const Dark = {
 
   header: {
     backgroundColor: "#1f1f1f ",
-
+    recoveryColor: "#4C4C4C",
     linkColor: "#606060",
     productColor: "#eeeeee",
   },
