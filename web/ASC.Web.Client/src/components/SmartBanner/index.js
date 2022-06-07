@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { isMobile, isIOS } from "react-device-detect";
+import { inject, observer } from "mobx-react";
 import SmartBanner from "react-smartbanner";
 import "./main.css";
 
@@ -9,8 +10,7 @@ const Wrapper = styled.div`
 `;
 
 const ReactSmartBanner = (props) => {
-  const { t, ready } = props;
-  const [isVisible, setIsVisible] = useState(true);
+  const { t, ready, isBannerVisible, setIsBannerVisible } = props;
   const force = isIOS ? "ios" : "android";
 
   const getCookie = (name) => {
@@ -25,7 +25,7 @@ const ReactSmartBanner = (props) => {
   };
 
   const hideBanner = () => {
-    setIsVisible(false);
+    setIsBannerVisible(false);
   };
 
   useEffect(() => {
@@ -55,7 +55,12 @@ const ReactSmartBanner = (props) => {
     kindle: "kindle-fire-app",
   };
 
-  return isMobile && isVisible && ready ? (
+  const isTouchDevice =
+    "ontouchstart" in window ||
+    navigator.maxTouchPoints > 0 ||
+    navigator.msMaxTouchPoints > 0;
+
+  return isMobile && isBannerVisible && ready && isTouchDevice ? (
     <Wrapper>
       <SmartBanner
         title={t("SmartBanner:AppName")}
@@ -74,4 +79,9 @@ const ReactSmartBanner = (props) => {
   );
 };
 
-export default ReactSmartBanner;
+export default inject(({ bannerStore }) => {
+  return {
+    isBannerVisible: bannerStore.isBannerVisible,
+    setIsBannerVisible: bannerStore.setIsBannerVisible,
+  };
+})(observer(ReactSmartBanner));

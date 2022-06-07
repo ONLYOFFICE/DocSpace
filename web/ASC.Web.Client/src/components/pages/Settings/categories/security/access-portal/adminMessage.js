@@ -12,6 +12,7 @@ import { LearnMoreWrapper } from "../StyledSecurity";
 import { size } from "@appserver/components/utils/device";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
+import isEqual from "lodash/isEqual";
 
 const MainContainer = styled.div`
   width: 100%;
@@ -34,7 +35,7 @@ const AdminMessage = (props) => {
     initSettings,
     isInit,
   } = props;
-  const [type, setType] = useState(false);
+  const [type, setType] = useState("");
   const [showReminder, setShowReminder] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -42,22 +43,16 @@ const AdminMessage = (props) => {
     const currentSettings = getFromSessionStorage(
       "currentAdminMessageSettings"
     );
-    const defaultSettings = getFromSessionStorage(
-      "defaultAdminMessageSettings"
-    );
 
-    if (defaultSettings) {
-      saveToSessionStorage("defaultAdminMessageSettings", defaultSettings);
-    } else {
-      saveToSessionStorage("defaultAdminMessageSettings", enableAdmMess);
-    }
+    const enable = enableAdmMess ? "enable" : "disabled";
+
+    saveToSessionStorage("defaultAdminMessageSettings", enable);
 
     if (currentSettings) {
       setType(currentSettings);
     } else {
-      setType(enableAdmMess);
+      setType(enable);
     }
-    setIsLoading(true);
   };
 
   useEffect(() => {
@@ -83,7 +78,7 @@ const AdminMessage = (props) => {
     );
     saveToSessionStorage("currentAdminMessageSettings", type);
 
-    if (defaultSettings === type) {
+    if (isEqual(defaultSettings, type)) {
       setShowReminder(false);
     } else {
       setShowReminder(true);
@@ -97,7 +92,9 @@ const AdminMessage = (props) => {
   };
 
   const onSelectType = (e) => {
-    setType(e.target.value === "enable" ? true : false);
+    if (type !== e.target.value) {
+      setType(e.target.value);
+    }
   };
 
   const onSaveClick = () => {
@@ -148,7 +145,7 @@ const AdminMessage = (props) => {
             value: "enable",
           },
         ]}
-        selected={type ? "enable" : "disabled"}
+        selected={type}
         onClick={onSelectType}
       />
 

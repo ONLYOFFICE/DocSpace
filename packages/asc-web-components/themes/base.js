@@ -574,6 +574,8 @@ const Base = {
     margin: " 0 auto",
     minHeight: "100%",
 
+    colorDisabledFileIcons: "#f3f4f4",
+
     content: {
       backgroundColor: white,
       modalPadding: "0 12px 12px",
@@ -1228,6 +1230,8 @@ const Base = {
 
   treeNode: {
     background: "#f3f4f4",
+    disableColor: "#A3A9AE",
+
     dragging: {
       draggable: {
         background: lightCumulus,
@@ -2654,6 +2658,11 @@ const Base = {
       integration: {
         separatorBorder: `1px solid ${grayLightMid}`,
         linkColor: link,
+      },
+
+      backup: {
+        rectangleBackgroundColor: "#f8f9f9",
+        separatorBorder: "1px solid #eceef1",
       },
     },
 

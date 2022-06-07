@@ -335,6 +335,7 @@ class RestoreBackup extends React.Component {
       downloadingProgress,
       commonThirdPartyList,
       buttonSize,
+      theme,
     } = this.props;
     const {
       isChecked,
@@ -366,7 +367,7 @@ class RestoreBackup extends React.Component {
     return isInitialLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
-      <StyledRestoreBackup>
+      <StyledRestoreBackup theme={theme}>
         <div className="restore-description">
           <Text className="restore-description">
             {t("RestoreBackupDescription")}
@@ -503,7 +504,7 @@ class RestoreBackup extends React.Component {
 
 export default inject(({ auth, backup }) => {
   const { settingsStore } = auth;
-  const { socketHelper } = settingsStore;
+  const { socketHelper, theme } = settingsStore;
   const {
     downloadingProgress,
     getProgress,
@@ -513,6 +514,7 @@ export default inject(({ auth, backup }) => {
   } = backup;
 
   return {
+    theme,
     clearProgressInterval,
     commonThirdPartyList,
     downloadingProgress,

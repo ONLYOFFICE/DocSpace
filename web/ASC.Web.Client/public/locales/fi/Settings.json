@@ -148,7 +148,7 @@
   "TimeZone": "Aikavyöhyke",
   "TrustedMail": "Luotetut sähköpostiverkkotunnukset",
   "TrustedMailDescription": "Luotetut sähköpostin verkkotunnukset asetuksilla voidaan määrittää sähköpostipalvelimet, joiden käyttäjät voivat omatoimisesti rekisteröityä sivuston käyttäjiksi.",
-  "TrustedMailHelper": "Voit ottaa ominaisuuden käyttöön ja lisätä yhden tai useamman luotetun sähköpostipalvelimen tiedot.Nyt kuka tahansa, jolla on tili luotetulla sähköpostipalvelimella, voi rekisteröidä itsensä valitsemalla kirjautumissivulla Klikkaa tästä liittyäksesi mukaan ja syöttämällä sähköpostiosoitteensa. Voit ottaa tämän toiminnon pois päältä Ei käytössä valinnalla.",
+  "TrustedMailHelper": "Voit ottaa ominaisuuden käyttöön ja lisätä yhden tai useamman luotetun sähköpostipalvelimen tiedot. Nyt kuka tahansa, jolla on tili luotetulla sähköpostipalvelimella, voi rekisteröidä itsensä valitsemalla kirjautumissivulla Klikkaa tästä liittyäksesi mukaan ja syöttämällä sähköpostiosoitteensa. Voit ottaa tämän toiminnon pois päältä Ei käytössä valinnalla.",
   "TwoFactorAuth": "Kaksivaiheinen todennus",
   "TwoFactorAuthDescription": "Kaksivaiheinen todennus tarjoaa turvallisemman tavan kirjautua sisään. Kirjautumistietojen syöttämisen jälkeen käyttäjän on annettava koodi tekstiviestistä tai todennussovelluksesta. ",
   "TwoFactorAuthHelper": "Huomautus: Tekstiviestejä voidaan lähettää, jos sinulla on vain positiivinen saldo. Voit aina tarkistaa nykyisen saldosi tekstiviestipalveluntarjoajatililtäsi. Älä unohda lisätä saldoasi ajoissa.",

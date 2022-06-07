@@ -1,11 +1,17 @@
 import IconButton from "@appserver/components/icon-button";
 import Text from "@appserver/components/text";
 import { Base } from "@appserver/components/themes";
-import { tablet } from "@appserver/components/utils/device";
+import {
+  isTablet,
+  isMobile as isMobileUtils,
+  tablet,
+  isDesktop,
+} from "@appserver/components/utils/device";
 import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
 import React from "react";
 import styled from "styled-components";
+import { isMobile } from "react-device-detect";
 
 const StyledInfoPanelHeader = styled.div`
   width: 100%;
@@ -51,7 +57,7 @@ const StyledInfoPanelToggleWrapper = styled.div`
 `;
 StyledInfoPanelToggleWrapper.defaultProps = { theme: Base };
 
-const SubInfoPanelHeader = ({ children, setIsVisible }) => {
+const SubInfoPanelHeader = ({ children, setIsVisible, viewAs }) => {
   const content = children?.props?.children;
 
   const closeInfoPanel = () => setIsVisible(false);
@@ -65,15 +71,17 @@ const SubInfoPanelHeader = ({ children, setIsVisible }) => {
         isRootFolder={true}
         isInfoPanelVisible={true}
       >
-        <div className="info-panel-toggle-bg">
-          <IconButton
-            className="info-panel-toggle"
-            iconName="images/panel.react.svg"
-            size="16"
-            isFill={true}
-            onClick={closeInfoPanel}
-          />
-        </div>
+        {!(isTablet() || isMobile || isMobileUtils() || !isDesktop()) && (
+          <div className="info-panel-toggle-bg">
+            <IconButton
+              className="info-panel-toggle"
+              iconName="images/panel.react.svg"
+              size="16"
+              isFill={true}
+              onClick={closeInfoPanel}
+            />
+          </div>
+        )}
       </StyledInfoPanelToggleWrapper>
     </StyledInfoPanelHeader>
   );

@@ -107,6 +107,7 @@ class UploadDataStore {
     this.isUploadingAndConversion = false;
     this.isUploading = false;
   };
+
   removeFileFromList = (id) => {
     this.files = this.files.filter((obj) => {
       return obj.fileId !== id;
@@ -855,7 +856,8 @@ class UploadDataStore {
       fileName,
       fileSize,
       relativePath,
-      file.encrypted
+      file.encrypted,
+      file.lastModifiedDate
     )
       .then((res) => {
         const location = res.data.location;

@@ -87,7 +87,10 @@ const Submenu = ({ data, startSelect = 0, onSelect, isLoading, ...rest }) => {
                   <StyledSubmenuItem
                     key={d.id}
                     id={d.id}
-                    onClick={selectSubmenuItem}
+                    onClick={(e) => {
+                      d.onClick && d.onClick();
+                      selectSubmenuItem(e);
+                    }}
                   >
                     <StyledSubmenuItemText isActive={isActive}>
                       <Text
