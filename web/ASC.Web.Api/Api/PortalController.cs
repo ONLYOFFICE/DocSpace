@@ -369,6 +369,38 @@ public class PortalController : ControllerBase
         return _commonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.Auth);
     }
 
+    [HttpDelete("deleteportalimmediately")]
+    public async Task DeletePortalImmediately()
+    {
+        var tenant = _tenantManager.GetCurrentTenant();
+
+        if (_securityContext.CurrentAccount.ID != tenant.OwnerId)
+        {
+            throw new Exception(Resource.ErrorAccessDenied);
+        }
+
+        _tenantManager.RemoveTenant(tenant.Id);
+
+        if (!string.IsNullOrEmpty(_apiSystemHelper.ApiCacheUrl))
+        {
+            await _apiSystemHelper.RemoveTenantFromCacheAsync(tenant.Alias, _securityContext.CurrentAccount.ID);
+        }
+
+        try
+        {
+            if (!_securityContext.IsAuthenticated)
+            {
+                _securityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
+            }
+
+            _messageService.Send(MessageAction.PortalDeleted);
+        }
+        finally
+        {
+            _securityContext.Logout();
+        }
+    }
+
     [HttpPost("suspend")]
     public void SendSuspendInstructions()
     {

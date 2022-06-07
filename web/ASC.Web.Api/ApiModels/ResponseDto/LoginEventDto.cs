@@ -26,18 +26,41 @@
 
 namespace ASC.Web.Api.ApiModel.ResponseDto;
 
-public class EventDto
+public class LoginEventDto
 {
-    public EventDto(BaseEvent auditEvent)
-    {
-        Id = auditEvent.Id;
-        Date = new ApiDateTime(auditEvent.Date, TimeSpan.Zero);
-        User = auditEvent.UserName;
-        Action = auditEvent.ActionText;
-    }
+    public int Id { get; set; }
 
-    public int Id { get; private set; }
-    public ApiDateTime Date { get; private set; }
-    public string User { get; private set; }
-    public string Action { get; private set; }
+    public ApiDateTime Date { get; set; }
+
+    public string User { get; set; }
+
+    public Guid UserId { get; set; }
+    public string Login { get; set; }
+
+    public string Action { get; set; }
+
+    public MessageAction ActionId { get; set; }
+
+    public string IP { get; set; }
+
+    public string Browser { get; set; }
+
+    public string Platform { get; set; }
+
+    public string Page { get; set; }
+
+    public LoginEventDto(ASC.AuditTrail.Models.LoginEventDto loginEvent)
+    {
+        Id = loginEvent.Id;
+        Date = new ApiDateTime(loginEvent.Date, TimeSpan.Zero);
+        User = loginEvent.UserName;
+        UserId = loginEvent.UserId;
+        Login = loginEvent.Login;
+        Action = loginEvent.ActionText;
+        ActionId = (MessageAction)loginEvent.Action;
+        IP = loginEvent.IP;
+        Browser = loginEvent.Browser;
+        Platform = loginEvent.Platform;
+        Page = loginEvent.Page;
+    }
 }

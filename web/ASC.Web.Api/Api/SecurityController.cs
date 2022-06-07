@@ -61,7 +61,7 @@ public class SecurityController : ControllerBase
     }
 
     [HttpGet("audit/login/last")]
-    public IEnumerable<EventDto> GetLastLoginEvents()
+    public IEnumerable<ApiModel.ResponseDto.LoginEventDto> GetLastLoginEvents()
     {
         if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.LoginHistory)))
         {
@@ -70,11 +70,11 @@ public class SecurityController : ControllerBase
 
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        return _loginEventsRepository.GetLast(_tenantManager.GetCurrentTenant().Id, 20).Select(x => new EventDto(x));
+        return _loginEventsRepository.GetLast(_tenantManager.GetCurrentTenant().Id, 20).Select(x => new ApiModel.ResponseDto.LoginEventDto(x));
     }
 
     [HttpGet("audit/events/last")]
-    public IEnumerable<EventDto> GetLastAuditEvents()
+    public IEnumerable<ApiModel.ResponseDto.AuditEventDto> GetLastAuditEvents()
     {
         if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.AuditTrail)))
         {
@@ -83,7 +83,7 @@ public class SecurityController : ControllerBase
 
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        return _auditEventsRepository.GetLast(_tenantManager.GetCurrentTenant().Id, 20).Select(x => new EventDto(x));
+        return _auditEventsRepository.GetLast(_tenantManager.GetCurrentTenant().Id, 20).Select(x => new ApiModel.ResponseDto.AuditEventDto(x));
     }
 
     [HttpPost("audit/login/report")]

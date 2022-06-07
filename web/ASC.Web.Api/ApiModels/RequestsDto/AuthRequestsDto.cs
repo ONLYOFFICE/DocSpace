@@ -35,6 +35,7 @@ public class AuthRequestsDto
     public string AccessToken { get; set; }
     public string SerializedProfile { get; set; }
     public string Code { get; set; }
+    public string CodeOAuth { get; set; }
     public bool Session { get; set; }
 }
 

@@ -39,4 +39,6 @@ public static class ProviderConstants
     public const string VK = "vk";
     public const string GosUslugi = "gosuslugi";
     public const string Encryption = "e2e";
+    public const string AppleId = "appleid";
+    public const string Microsoft = "microsoft";
 }

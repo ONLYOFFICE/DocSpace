@@ -166,7 +166,7 @@ public class TfaappController : BaseSettingsController
         switch (inDto.Type)
         {
             case "sms":
-                if (!_studioSmsNotificationSettingsHelper.IsVisibleSettings())
+                if (!_studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettings())
                 {
                     throw new Exception(Resource.SmsNotAvailable);
                 }
@@ -200,7 +200,7 @@ public class TfaappController : BaseSettingsController
 
                 action = MessageAction.TwoFactorAuthenticationEnabledByTfaApp;
 
-                if (_studioSmsNotificationSettingsHelper.IsVisibleSettings() && _studioSmsNotificationSettingsHelper.Enable)
+                if (_studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettings() && _studioSmsNotificationSettingsHelper.Enable)
                 {
                     _studioSmsNotificationSettingsHelper.Enable = false;
                 }
@@ -216,7 +216,7 @@ public class TfaappController : BaseSettingsController
                     _settingsManager.Save(settings);
                 }
 
-                if (_studioSmsNotificationSettingsHelper.IsVisibleSettings() && _studioSmsNotificationSettingsHelper.Enable)
+                if (_studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettings() && _studioSmsNotificationSettingsHelper.Enable)
                 {
                     _studioSmsNotificationSettingsHelper.Enable = false;
                 }

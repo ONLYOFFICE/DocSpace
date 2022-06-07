@@ -374,6 +374,19 @@ public class SettingsController : BaseSettingsController
         _messageService.Send(MessageAction.ColorThemeChanged);
     }
 
+    [HttpPut("closeadminhelper")]
+    public void CloseAdminHelper()
+    {
+        if (!_userManager.GetUsers(_authContext.CurrentAccount.ID).IsAdmin(_userManager) || _coreBaseSettings.CustomMode || !_coreBaseSettings.Standalone)
+        {
+            throw new NotSupportedException("Not available.");
+        }
+
+        var adminHelperSettings = AdminHelperSettings.LoadForCurrentUser();
+        adminHelperSettings.Viewed = true;
+        adminHelperSettings.SaveForCurrentUser();
+    }
+
     ///<visible>false</visible>
     [HttpPut("timeandlanguage")]
     public object TimaAndLanguage(SettingsRequestsDto inDto)

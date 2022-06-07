@@ -148,14 +148,14 @@ public class AuthenticationController : ControllerBase
         var sms = false;
         try
         {
-            if (_studioSmsNotificationSettingsHelper.IsVisibleSettings() && _studioSmsNotificationSettingsHelper.Enable)
+            if (_studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettings() && _studioSmsNotificationSettingsHelper.Enable)
             {
                 sms = true;
-                _smsManager.ValidateSmsCode(user, inDto.Code);
+                _smsManager.ValidateSmsCode(user, inDto.Code, true);
             }
             else if (TfaAppAuthSettings.IsVisibleSettings && _settingsManager.Load<TfaAppAuthSettings>().EnableSetting)
             {
-                if (_tfaManager.ValidateAuthCode(user, inDto.Code))
+                if (_tfaManager.ValidateAuthCode(user, inDto.Code, true, true))
                 {
                     _messageService.Send(MessageAction.UserConnectedTfaApp, _messageTarget.Create(user.Id));
                 }
@@ -165,10 +165,7 @@ public class AuthenticationController : ControllerBase
                 throw new SecurityException("Auth code is not available");
             }
 
-            var token = _securityContext.AuthenticateMe(user.Id);
-
-            _messageService.Send(sms ? MessageAction.LoginSuccessViaApiSms : MessageAction.LoginSuccessViaApiTfa);
-
+            var token = _cookiesManager.AuthenticateMeAndSetCookies(user.Tenant, user.Id, MessageAction.LoginSuccess);
             var expires = _tenantCookieSettingsHelper.GetExpiresTime(tenant);
 
             var result = new AuthenticationTokenDto
@@ -210,7 +207,7 @@ public class AuthenticationController : ControllerBase
         bool viaEmail;
         var user = GetUser(inDto, out viaEmail);
 
-        if (_studioSmsNotificationSettingsHelper.IsVisibleSettings() && _studioSmsNotificationSettingsHelper.Enable)
+        if (_studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettings() && _studioSmsNotificationSettingsHelper.Enable)
         {
             if (string.IsNullOrEmpty(user.MobilePhone) || user.MobilePhoneActivationStatus == MobilePhoneActivationStatus.NotActivated)
             {
@@ -253,10 +250,8 @@ public class AuthenticationController : ControllerBase
 
         try
         {
-            var token = _securityContext.AuthenticateMe(user.Id);
-            _cookiesManager.SetCookies(CookiesType.AuthKey, token, inDto.Session);
-
-            _messageService.Send(viaEmail ? MessageAction.LoginSuccessViaApi : MessageAction.LoginSuccessViaApiSocialAccount);
+            var action = viaEmail ? MessageAction.LoginSuccessViaApi : MessageAction.LoginSuccessViaApiSocialAccount;
+            var token = _cookiesManager.AuthenticateMeAndSetCookies(user.Tenant, user.Id, action);
 
             var tenant = _tenantManager.GetCurrentTenant().Id;
             var expires = _tenantCookieSettingsHelper.GetExpiresTime(tenant);
@@ -386,6 +381,10 @@ public class AuthenticationController : ControllerBase
             }
             else
             {
+                if (!(_coreBaseSettings.Standalone || _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Oauth))
+                {
+                    throw new Exception(Resource.ErrorNotAllowedOption);
+                }
                 viaEmail = false;
                 action = MessageAction.LoginFailViaApiSocialAccount;
                 LoginProfile thirdPartyProfile;
@@ -395,7 +394,7 @@ public class AuthenticationController : ControllerBase
                 }
                 else
                 {
-                    thirdPartyProfile = _providerManager.GetLoginProfile(inDto.Provider, inDto.AccessToken);
+                    thirdPartyProfile = _providerManager.GetLoginProfile(inDto.Provider, inDto.AccessToken, inDto.CodeOAuth);
                 }
 
                 inDto.UserName = thirdPartyProfile.EMail;

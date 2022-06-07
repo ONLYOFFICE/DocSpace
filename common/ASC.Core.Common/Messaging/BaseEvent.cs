@@ -55,7 +55,7 @@ public class BaseEvent : IMapFrom<LoginEvent>
     [Event("ActionCol")]
     public string ActionText { get; set; }
 
-    public void Mapping(Profile profile)
+    public virtual void Mapping(Profile profile)
     {
         profile.CreateMap<LoginEvent, BaseEvent>()
             .ConvertUsing<BaseEventTypeConverter>();
