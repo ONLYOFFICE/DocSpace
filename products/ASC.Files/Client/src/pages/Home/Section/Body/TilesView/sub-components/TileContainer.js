@@ -21,6 +21,7 @@ import Text from "@appserver/components/text";
 import IconButton from "@appserver/components/icon-button";
 import ComboBox from "@appserver/components/combobox";
 import { Base } from "@appserver/components/themes";
+import Loaders from "@appserver/common/components/Loaders";
 
 import SortDesc from "../../../../../../../../../../public/images/sort.desc.react.svg";
 
@@ -47,6 +48,10 @@ const StyledGridWrapper = styled.div`
 
   @media ${tablet} {
     grid-gap: 14px;
+  }
+
+  .folders-loader {
+    padding-top: 14px;
   }
 `;
 
@@ -322,6 +327,41 @@ class TileContainer extends React.PureComponent {
     );
   };
 
+  getTilesLoaders = (folders, files) => {
+    const { getCountTilesInRow } = this.props;
+
+    const countTilesInRow = getCountTilesInRow();
+    const loaders = [];
+
+    if (files.length === 0) {
+      let count = countTilesInRow - (folders.length % countTilesInRow);
+      while (count !== 0) {
+        loaders.push(
+          <Loaders.Tile
+            key={`tiles-loader_${count}`}
+            className="folders-loader"
+            isFolder
+          />
+        );
+        count--;
+      }
+    } else {
+      let count = countTilesInRow - (files.length % countTilesInRow);
+      while (count !== 0) {
+        loaders.push(
+          <Loaders.Tile
+            key={`tiles-loader_${count}`}
+            className="folders-loader"
+            isFolder={false}
+          />
+        );
+        count--;
+      }
+    }
+
+    return loaders;
+  };
+
   render() {
     const {
       t,
@@ -335,6 +375,7 @@ class TileContainer extends React.PureComponent {
       headingFiles,
       isRecentFolder,
       isFavoritesFolder,
+      filesIsLoading,
     } = this.props;
 
     const Folders = [];
@@ -425,6 +466,8 @@ class TileContainer extends React.PureComponent {
       );
     };
 
+    const loaders = filesIsLoading ? this.getTilesLoaders(Folders, Files) : [];
+
     return (
       <StyledTileContainer
         id={id}
@@ -447,7 +490,10 @@ class TileContainer extends React.PureComponent {
               {useReactWindow ? (
                 <AutoSizer>{renderList}</AutoSizer>
               ) : (
-                <StyledGridWrapper isFolders>{Folders}</StyledGridWrapper>
+                <StyledGridWrapper isFolders>
+                  {Folders}
+                  {Files.length === 0 && filesIsLoading && loaders}
+                </StyledGridWrapper>
               )}
             </>
           )}
@@ -462,7 +508,10 @@ class TileContainer extends React.PureComponent {
             {useReactWindow ? (
               <AutoSizer>{renderList}</AutoSizer>
             ) : (
-              <StyledGridWrapper>{Files}</StyledGridWrapper>
+              <StyledGridWrapper>
+                {Files}
+                {filesIsLoading && loaders}
+              </StyledGridWrapper>
             )}
           </>
         )}
@@ -500,6 +549,8 @@ export default inject(
       files,
       folders,
       createThumbnails,
+      filesIsLoading,
+      getCountTilesInRow,
     } = filesStore;
 
     const { user } = auth.userStore;
@@ -530,6 +581,8 @@ export default inject(
       fetchFiles,
       setViewAs,
       createThumbnails,
+      filesIsLoading,
+      getCountTilesInRow,
 
       personal,
     };

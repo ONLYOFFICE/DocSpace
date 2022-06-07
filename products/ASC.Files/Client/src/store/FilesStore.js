@@ -18,6 +18,7 @@ import config from "../../package.json";
 import { thumbnailStatuses } from "../helpers/constants";
 import { loopTreeFolders } from "../helpers/files-helpers";
 import { openDocEditor as openEditor } from "../helpers/utils";
+import { isDesktop } from "@appserver/components/utils/device";
 
 const { FilesFilter } = api;
 const storageViewAs = localStorage.getItem("viewAs");
@@ -73,6 +74,7 @@ class FilesStore {
   isLoadingFilesFind = false;
   pageItemsLength = null;
   isHidePagination = false;
+  filesIsLoading = false;
 
   constructor(
     authStore,
@@ -268,7 +270,12 @@ class FilesStore {
     this.isLoaded = isLoaded;
   };
 
-  setViewAs = (viewAs) => {
+  setViewAs = async (viewAs) => {
+    // this.setIsLoading(true);
+    // await this.fetchFiles(this.selectedFolderStore.id, null, true);
+
+    // this.setIsLoading(false);
+
     this.viewAs = viewAs;
     localStorage.setItem("viewAs", viewAs);
   };
@@ -2083,6 +2090,44 @@ class FilesStore {
 
   setScrollToFolderId = (folderId) => {
     this.scrollToFolderId = folderId;
+  };
+
+  get hasMoreFiles() {
+    return this.filesList.length < this.filter.total;
+  }
+
+  setFilesIsLoading = (filesIsLoading) => {
+    this.filesIsLoading = filesIsLoading;
+  };
+
+  fetchMoreFiles = async () => {
+    if (!this.hasMoreFiles || this.filesIsLoading || this.isLoading) return;
+
+    this.setFilesIsLoading(true);
+    console.log("fetchMoreFiles");
+
+    const newFilter = this.filter;
+    newFilter.page += 1;
+    const newFiles = await api.files.getFolder(newFilter.folder, newFilter);
+
+    runInAction(() => {
+      this.setFiles([...this.files, ...newFiles.files]);
+      this.setFolders([...this.folders, ...newFiles.folders]);
+      this.setFilesIsLoading(false);
+    });
+  };
+
+  //Duplicate of countTilesInRow, used to update the number of tiles in a row after the window is resized.
+  getCountTilesInRow = () => {
+    const isDesktopView = isDesktop();
+    const tileGap = isDesktopView ? 16 : 14;
+    const minTileWidth = 216 + tileGap;
+    const sectionPadding = isDesktopView ? 24 : 16;
+
+    const body = document.getElementById("section");
+    const sectionWidth = body ? body.offsetWidth - sectionPadding : 0;
+
+    return Math.floor(sectionWidth / minTileWidth);
   };
 }
 

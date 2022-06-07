@@ -40,6 +40,7 @@ const SectionBodyContent = (props) => {
     scrollToFolderId,
     setScrollToFolderId,
     filesList,
+    fetchMoreFiles,
   } = props;
 
   useEffect(() => {
@@ -59,6 +60,9 @@ const SectionBodyContent = (props) => {
     document.addEventListener("dragleave", onDragLeaveDoc);
     document.addEventListener("drop", onDropEvent);
 
+    const scroll = document.getElementsByClassName("section-scroll")[0];
+    scroll.addEventListener("scroll", onScroll);
+
     return () => {
       window.removeEventListener("mousedown", onMouseDown);
       window.removeEventListener("mouseup", onMouseUp);
@@ -67,6 +71,7 @@ const SectionBodyContent = (props) => {
       document.removeEventListener("dragover", onDragOver);
       document.removeEventListener("dragleave", onDragLeaveDoc);
       document.removeEventListener("drop", onDropEvent);
+      scroll.removeEventListener("scroll", onScroll);
     };
   }, [onMouseUp, onMouseMove, startDrag, folderId, viewAs]);
 
@@ -94,6 +99,12 @@ const SectionBodyContent = (props) => {
       setScrollToFolderId(null);
     }
   }, [scrollToFolderId]);
+
+  const onScroll = (e) => {
+    if (window.innerHeight + e.target.scrollTop + 1 > e.target.scrollHeight) {
+      fetchMoreFiles();
+    }
+  };
 
   const onMouseDown = (e) => {
     if (
@@ -283,6 +294,7 @@ export default inject(
       scrollToFolderId,
       setScrollToFolderId,
       filesList,
+      fetchMoreFiles,
     } = filesStore;
 
     return {
@@ -306,6 +318,7 @@ export default inject(
       scrollToFolderId,
       setScrollToFolderId,
       filesList,
+      fetchMoreFiles,
     };
   }
 )(

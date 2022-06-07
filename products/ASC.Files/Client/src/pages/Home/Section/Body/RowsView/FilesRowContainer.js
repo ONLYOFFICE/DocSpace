@@ -5,8 +5,12 @@ import SimpleFilesRow from "./SimpleFilesRow";
 import { isMobile } from "react-device-detect";
 import styled from "styled-components";
 import marginStyles from "./CommonStyles";
-import { isTablet } from "@appserver/components/utils/device";
 import { Base } from "@appserver/components/themes";
+import Loaders from "@appserver/common/components/Loaders";
+
+const StyledLoader = styled.div`
+  padding-top: 16px;
+`;
 
 const StyledRowContainer = styled(RowContainer)`
   .row-selected + .row-wrapper:not(.row-selected) {
@@ -64,6 +68,7 @@ const FilesRowContainer = ({
   viewAs,
   setViewAs,
   infoPanelVisible,
+  filesIsLoading,
 }) => {
   useEffect(() => {
     if ((viewAs !== "table" && viewAs !== "row") || !sectionWidth) return;
@@ -93,17 +98,23 @@ const FilesRowContainer = ({
           sectionWidth={sectionWidth}
         />
       ))}
+      {filesIsLoading && (
+        <StyledLoader>
+          <Loaders.Rows count={2} />
+        </StyledLoader>
+      )}
     </StyledRowContainer>
   );
 };
 
 export default inject(({ filesStore, auth }) => {
-  const { filesList, viewAs, setViewAs } = filesStore;
+  const { filesList, viewAs, setViewAs, filesIsLoading } = filesStore;
   const { isVisible: infoPanelVisible } = auth.infoPanelStore;
   return {
     filesList,
     viewAs,
     setViewAs,
     infoPanelVisible,
+    filesIsLoading,
   };
 })(observer(FilesRowContainer));

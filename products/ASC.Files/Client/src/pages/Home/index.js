@@ -317,7 +317,6 @@ class PureHome extends React.Component {
       secondaryProgressDataStoreAlert,
 
       dragging,
-      tReady,
       personal,
       checkedMaintenance,
       setMaintenanceExist,
@@ -390,10 +389,6 @@ class PureHome extends React.Component {
           <Section.InfoPanelBody>
             <InfoPanelBodyContent />
           </Section.InfoPanelBody>
-
-          <Section.SectionPaging>
-            <SectionPagingContent tReady={tReady} />
-          </Section.SectionPaging>
         </Section>
       </>
     );

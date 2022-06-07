@@ -6,8 +6,15 @@ import TableHeader from "./TableHeader";
 import TableBody from "@appserver/components/table-container/TableBody";
 import { isMobile } from "react-device-detect";
 import styled, { css } from "styled-components";
-import { isTablet } from "@appserver/components/utils/device";
 import { Base } from "@appserver/components/themes";
+import Loaders from "@appserver/common/components/Loaders";
+
+const StyledLoader = styled.div`
+  grid-column-start: 1;
+  grid-column-end: -1;
+  display: grid;
+  padding-top: 16px;
+`;
 
 const marginCss = css`
   margin-top: -1px;
@@ -113,6 +120,7 @@ const Table = ({
   theme,
   infoPanelVisible,
   userId,
+  filesIsLoading,
 }) => {
   const ref = useRef(null);
 
@@ -158,6 +166,11 @@ const Table = ({
             columnInfoPanelStorageName={columnInfoPanelStorageName}
           />
         ))}
+        {filesIsLoading && (
+          <StyledLoader>
+            <Loaders.TableLoader count={2} />
+          </StyledLoader>
+        )}
       </TableBody>
     </StyledTableContainer>
   );
@@ -172,6 +185,7 @@ export default inject(({ filesStore, auth }) => {
     setViewAs,
     setFirsElemChecked,
     setHeaderBorder,
+    filesIsLoading,
   } = filesStore;
 
   return {
@@ -183,5 +197,6 @@ export default inject(({ filesStore, auth }) => {
     theme: auth.settingsStore.theme,
     userId: auth.userStore.user.id,
     infoPanelVisible,
+    filesIsLoading,
   };
 })(observer(Table));
