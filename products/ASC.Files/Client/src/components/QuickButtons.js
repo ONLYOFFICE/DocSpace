@@ -21,6 +21,7 @@ const QuickButtons = ({
   onClickFavorite,
   onClickShare,
   viewAs,
+  isCanWebEdit,
 }) => {
   const { id, locked, fileStatus, title, fileExst, shared } = item;
 
@@ -74,19 +75,23 @@ const QuickButtons = ({
           hoverColor={theme.filesQuickButtons.sharedColor}
         />
       )}
-      {fileExst && accessToEdit && !isTrashFolder && displayBadges && (
-        <StyledIcon
-          iconName={iconLock}
-          className="badge lock-file icons-group"
-          size={sizeQuickButton}
-          data-id={id}
-          data-locked={locked ? true : false}
-          onClick={onClickLock}
-          isDisabled={isDisabled}
-          color={colorLock}
-          hoverColor={theme.filesQuickButtons.sharedColor}
-        />
-      )}
+      {fileExst &&
+        accessToEdit &&
+        !isTrashFolder &&
+        displayBadges &&
+        isCanWebEdit && (
+          <StyledIcon
+            iconName={iconLock}
+            className="badge lock-file icons-group"
+            size={sizeQuickButton}
+            data-id={id}
+            data-locked={locked ? true : false}
+            onClick={onClickLock}
+            isDisabled={isDisabled}
+            color={colorLock}
+            hoverColor={theme.filesQuickButtons.sharedColor}
+          />
+        )}
       {fileExst && !isTrashFolder && displayBadges && (
         <StyledIcon
           iconName={iconFavorite}

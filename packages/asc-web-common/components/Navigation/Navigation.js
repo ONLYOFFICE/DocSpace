@@ -55,16 +55,19 @@ const Navigation = ({
     (!isMobile && !isTabletUtils() && !isMobileUtils()) ||
     (isDesktopUtils() && !isMobile);
 
-  const onMissClick = (e) => {
-    e.preventDefault;
-    const path = e.path || (e.composedPath && e.composedPath());
+  const onMissClick = React.useCallback(
+    (e) => {
+      e.preventDefault;
+      const path = e.path || (e.composedPath && e.composedPath());
 
-    if (!firstClick) {
-      !path.includes(dropBoxRef.current) ? toggleDropBox() : null;
-    } else {
-      setFirstClick((prev) => !prev);
-    }
-  };
+      if (!firstClick) {
+        !path.includes(dropBoxRef.current) ? toggleDropBox() : null;
+      } else {
+        setFirstClick((prev) => !prev);
+      }
+    },
+    [firstClick, toggleDropBox, setFirstClick]
+  );
 
   const onClickAvailable = React.useCallback(
     (id) => {

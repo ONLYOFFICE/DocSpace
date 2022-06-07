@@ -35,7 +35,7 @@ const FilesTileContainer = ({ filesList, t, sectionWidth }) => {
   useEffect(() => {
     if (!firstRef?.current) return;
 
-    onResize();
+    onResize(); //Rerender tiles here
 
     const elementResizeDetector = elementResizeDetectorMaker({
       strategy: "scroll",
@@ -56,9 +56,9 @@ const FilesTileContainer = ({ filesList, t, sectionWidth }) => {
 
     const size = getThumbSize(width);
 
-    console.log(
-      `Body width: ${document.body.clientWidth} Tile width: ${width} ThumbSize: ${size}`
-    );
+    // console.log(
+    //   `Body width: ${document.body.clientWidth} Tile width: ${width} ThumbSize: ${size}`
+    // );
 
     if (size === thumbSize) return;
 

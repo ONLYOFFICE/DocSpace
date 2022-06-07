@@ -48,7 +48,7 @@ const StyledBody = styled.div`
     .selection-panel_tree-body {
       grid-area: tree;
       height: 100%;
-      border-right: 1px solid #eceef1;
+      border-right: 1px solid ${(props) => props.theme.row.borderBottom};
 
       display: grid;
       grid-template-rows: max-content auto;
@@ -146,8 +146,10 @@ const StyledRow = styled.div`
         ::after {
           position: absolute;
           display: block;
-          background-color: #f3f4f4;
-          border-top-right-radius: 50%;
+          background-color: ${(props) =>
+            props.theme.modalDialog.colorDisabledFileIcons};
+
+          border-top-right-radius: 45%;
           left: 18px;
           top: 6px;
           width: 27px;
@@ -159,6 +161,7 @@ const StyledRow = styled.div`
       .selection-panel_text p {
         color: ${(props) => props.theme.text.disableColor};
       }
+      cursor: default;
     `}
 `;
 

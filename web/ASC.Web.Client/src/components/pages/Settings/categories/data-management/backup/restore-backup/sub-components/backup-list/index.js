@@ -138,7 +138,13 @@ class BackupListModalDialog extends React.Component {
   };
 
   render() {
-    const { onModalClose, isVisibleDialog, t, isCopyingToLocal } = this.props;
+    const {
+      onModalClose,
+      isVisibleDialog,
+      t,
+      isCopyingToLocal,
+      theme,
+    } = this.props;
     const { filesList, isLoading, selectedFileIndex, isChecked } = this.state;
 
     const helpContent = () => (
@@ -166,6 +172,7 @@ class BackupListModalDialog extends React.Component {
           <StyledBackupList
             isCopyingToLocal={isCopyingToLocal}
             isEmpty={filesList?.length === 0}
+            theme={theme}
           >
             <div className="backup-list_content">
               {filesList.length > 0 && (
@@ -224,7 +231,6 @@ class BackupListModalDialog extends React.Component {
                         <HelpButton
                           className="backup-list_tooltip"
                           offsetLeft={100}
-                          offsetTop={120}
                           iconName={"/static/images/help.react.svg"}
                           getContent={helpContent}
                           tooltipMaxWidth={"286px"}
@@ -263,9 +269,10 @@ BackupListModalDialog.propTypes = {
 
 export default inject(({ auth }) => {
   const { settingsStore } = auth;
-  const { socketHelper } = settingsStore;
+  const { socketHelper, theme } = settingsStore;
 
   return {
+    theme,
     socketHelper,
   };
 })(

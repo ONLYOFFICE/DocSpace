@@ -1103,6 +1103,7 @@ namespace ASC.Files.Core.Data
             result.ContentLength = uploadSession.BytesTotal;
             result.Comment = FilesCommonResource.CommentUpload;
             result.Encrypted = uploadSession.Encrypted;
+            result.CreateOn = uploadSession.File.CreateOn;
 
             return result;
         }

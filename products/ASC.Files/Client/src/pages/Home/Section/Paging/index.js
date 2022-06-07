@@ -148,7 +148,7 @@ const SectionPagingContent = ({
   }, [files, folders, filter, pageItems]);
 
   return !tReady ||
-    (filter.total < filter.pageCount && filter.total < 26) ||
+    (filter.total <= filter.pageCount && filter.total < 26) ||
     isHidePagination ? (
     <></>
   ) : (

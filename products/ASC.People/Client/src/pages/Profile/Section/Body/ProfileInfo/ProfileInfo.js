@@ -37,9 +37,11 @@ const InfoItem = styled.div`
 
 const InfoItemLabel = styled.div`
   width: 200px;
+  min-width: 150px;
 
   @media (max-width: 620px) {
     width: 130px;
+    min-width: 120px;
   }
 
   white-space: nowrap;
