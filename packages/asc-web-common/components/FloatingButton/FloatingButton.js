@@ -25,6 +25,8 @@ import CloseIcon from "../../../../public/images/close-icon.react.svg";
 const StyledButtonAlertIcon = styled(ButtonAlertIcon)`
   ${commonIconsStyles}
 `;
+
+const Delay = 1000;
 const FloatingButton = ({ id, className, style, ...rest }) => {
   const {
     icon,
@@ -41,14 +43,17 @@ const FloatingButton = ({ id, className, style, ...rest }) => {
     clearUploadedFilesHistory && clearUploadedFilesHistory();
   };
 
+  let timerId = null;
+
   useEffect(() => {
-    if (percent === 100) {
-      setTimeout(() => {
-        setAnimationCompleted(true);
-      }, 1000);
-    } else {
-      setAnimationCompleted(false);
-    }
+    timerId = setTimeout(
+      () => setAnimationCompleted(percent === 100 ? true : false),
+      Delay
+    );
+
+    return () => {
+      clearTimeout(timerId);
+    };
   }, [percent, setAnimationCompleted]);
 
   return (

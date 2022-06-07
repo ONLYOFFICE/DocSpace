@@ -16,7 +16,6 @@ import { StyledFilterInput, StyledSearchInput } from "./StyledFilterInput";
 const FilterInput = React.memo(
   ({
     t,
-    sectionWidth,
     getFilterData,
     getSortData,
     getViewSettingsData,

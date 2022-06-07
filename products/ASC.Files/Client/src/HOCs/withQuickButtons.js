@@ -7,7 +7,14 @@ import QuickButtons from "../components/QuickButtons";
 
 export default function withQuickButtons(WrappedComponent) {
   class WithQuickButtons extends React.Component {
-    state = { isLoading: false };
+    constructor(props) {
+      super(props);
+
+      this.state = {
+        isLoading: false,
+        isCanWebEdit: props.canWebEdit(props.item.fileExst),
+      };
+    }
 
     onClickLock = () => {
       const { item, lockFileAction, isAdmin, t } = this.props;
@@ -51,6 +58,8 @@ export default function withQuickButtons(WrappedComponent) {
     };
 
     render() {
+      const { isLoading, isCanWebEdit } = this.state;
+
       const {
         t,
         theme,
@@ -63,6 +72,7 @@ export default function withQuickButtons(WrappedComponent) {
         sectionWidth,
         viewAs,
       } = this.props;
+
       const { access, id, fileExst } = item;
 
       const accessToEdit =
@@ -82,7 +92,8 @@ export default function withQuickButtons(WrappedComponent) {
           isTrashFolder={isTrashFolder}
           accessToEdit={accessToEdit}
           viewAs={viewAs}
-          isDisabled={this.state.isLoading}
+          isDisabled={isLoading}
+          isCanWebEdit={isCanWebEdit}
           onClickLock={this.onClickLock}
           onClickFavorite={this.onClickFavorite}
           onClickShare={this.onClickShare}
@@ -105,6 +116,7 @@ export default function withQuickButtons(WrappedComponent) {
       filesActionsStore,
       filesStore,
       dialogsStore,
+      settingsStore,
     }) => {
       const { isRecycleBinFolder } = treeFoldersStore;
       const {
@@ -118,6 +130,7 @@ export default function withQuickButtons(WrappedComponent) {
         id: fileActionId,
       } = filesStore.fileActionStore;
       const { setSharingPanelVisible } = dialogsStore;
+      const { canWebEdit } = settingsStore;
       return {
         theme: auth.settingsStore.theme,
         isAdmin: auth.isAdmin,
@@ -128,6 +141,7 @@ export default function withQuickButtons(WrappedComponent) {
         fileActionId,
         onSelectItem,
         setSharingPanelVisible,
+        canWebEdit,
       };
     }
   )(observer(WithQuickButtons));

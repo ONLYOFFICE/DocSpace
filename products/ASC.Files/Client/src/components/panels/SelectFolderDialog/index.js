@@ -196,6 +196,9 @@ class SelectFolderDialog extends React.Component {
       folderTitle,
       expandedKeys,
       isDisableButton,
+      isRecycleBin,
+      currentFolderId,
+      selectionFiles,
     } = this.props;
     const {
       displayType,
@@ -213,6 +216,7 @@ class SelectFolderDialog extends React.Component {
 
     return displayType === "aside" ? (
       <SelectFolderDialogAsideView
+        selectionFiles={selectionFiles}
         theme={theme}
         t={t}
         isPanelVisible={isPanelVisible}
@@ -234,10 +238,13 @@ class SelectFolderDialog extends React.Component {
         }
         isAvailable={isAvailable}
         isDisableTree={isDisableTree}
-        isDisableButton={isDisableButton}
+        isDisableButton={
+          isDisableButton || (isRecycleBin && currentFolderId === folderId)
+        }
       />
     ) : (
       <SelectionPanel
+        selectionFiles={selectionFiles}
         t={t}
         theme={theme}
         isPanelVisible={isPanelVisible}
@@ -258,7 +265,9 @@ class SelectFolderDialog extends React.Component {
         isDisableTree={isDisableTree}
         folderSelection
         newFilter={this.newFilter}
-        isDisableButton={isDisableButton}
+        isDisableButton={
+          isDisableButton || (isRecycleBin && currentFolderId === folderId)
+        }
       />
     );
   }

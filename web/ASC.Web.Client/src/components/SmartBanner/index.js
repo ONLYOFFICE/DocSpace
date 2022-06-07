@@ -55,7 +55,12 @@ const ReactSmartBanner = (props) => {
     kindle: "kindle-fire-app",
   };
 
-  return isMobile && isBannerVisible && ready ? (
+  const isTouchDevice =
+    "ontouchstart" in window ||
+    navigator.maxTouchPoints > 0 ||
+    navigator.msMaxTouchPoints > 0;
+
+  return isMobile && isBannerVisible && ready && isTouchDevice ? (
     <Wrapper>
       <SmartBanner
         title={t("SmartBanner:AppName")}
