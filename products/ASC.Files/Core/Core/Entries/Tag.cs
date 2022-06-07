@@ -38,6 +38,7 @@ public enum TagType
     Recent = 16,
     Template = 32,
     Custom = 64,
+    Pin = 128,
 }
 
 [Serializable]
@@ -106,6 +107,11 @@ public sealed class Tag : IMapFrom<DbFilesTag>
     public static Tag Custom<T>(Guid owner, FileEntry<T> entry, string name)
     {
         return new Tag(name, TagType.Custom, owner, 0).AddEntry(entry);
+    }
+
+    public static Tag Pin<T>(Guid owner, FileEntry<T> entry)
+    {
+        return new Tag("pin", TagType.Pin, owner, 0).AddEntry(entry);
     }
 
     public override bool Equals(object obj)

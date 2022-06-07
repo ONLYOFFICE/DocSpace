@@ -70,6 +70,7 @@ public class Folder<T> : FileEntry<T>, IFolder, IMapFrom<DbFolder>
     public bool Shareable { get; set; }
     public int NewForMe { get; set; }
     public string FolderUrl { get; set; }
+    public bool Pinned { get; set; }
     public override bool IsNew
     {
         get => Convert.ToBoolean(NewForMe);

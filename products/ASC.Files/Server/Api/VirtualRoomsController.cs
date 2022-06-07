@@ -203,6 +203,26 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         return await _folderDtoHelper.GetAsync(room);
     }
 
+    [Update("rooms/{id}/pin")]
+    public async Task<FolderDto<T>> PinRoomAsync(T id)
+    {
+        ErrorIfNotDocSpace();
+
+        var room = await _fileStorageService.SetPinnedStatusAsync(id, true);
+
+        return await _folderDtoHelper.GetAsync(room);
+    }
+
+    [Update("rooms/{id}/unpin")]
+    public async Task<FolderDto<T>> UnpinRoomAsync(T id)
+    {
+        ErrorIfNotDocSpace();
+
+        var room = await _fileStorageService.SetPinnedStatusAsync(id, false);
+
+        return await _folderDtoHelper.GetAsync(room);
+    }
+
     protected void ErrorIfNotDocSpace()
     {
         if (_coreBaseSettings.DisableDocSpace)

@@ -35,6 +35,7 @@ public class FolderDto<T> : FileEntryWrapper<T>
     public int New { get; set; }
     public IEnumerable<TagInfo> Tags { get; set; }
     public Logo Logo { get; set; }
+    public bool Pinned { get; set; }
 
     public FolderDto() { }
 
@@ -151,6 +152,7 @@ public class FolderDtoHelper : FileEntryDtoHelper
         result.FoldersCount = folder.FoldersCount;
         result.IsShareable = folder.Shareable.NullIfDefault();
         result.New = folder.NewForMe;
+        result.Pinned = folder.Pinned;
 
         return result;
     }

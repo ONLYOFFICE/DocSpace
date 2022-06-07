@@ -2274,6 +2274,32 @@ public class FileStorageService<T> //: IFileStorageService
         return new List<MentionWrapper>(users);
     }
 
+    public async Task<Folder<T>> SetPinnedStatusAsync(T folderId, bool pin)
+    {
+        var folderDao = GetFolderDao();
+
+        var room = await folderDao.GetFolderAsync(folderId);
+
+        ErrorIf(room == null, FilesCommonResource.ErrorMassage_FolderNotFound);
+        ErrorIf(!await _fileSecurity.CanReadAsync(room), FilesCommonResource.ErrorMassage_SecurityException_ReadFolder);
+
+        var tagDao = GetTagDao();
+        var tag = Tag.Pin(_authContext.CurrentAccount.ID, room);
+
+        if (pin)
+        {
+            tagDao.SaveTags(tag);
+        }
+        else
+        {
+            tagDao.RemoveTags(tag);
+        }
+
+        room.Pinned = pin;
+
+        return room;
+    }
+
     public async Task<List<AceShortWrapper>> SendEditorNotifyAsync(T fileId, MentionMessageWrapper mentionMessage)
     {
         ErrorIf(!_authContext.IsAuthenticated, FilesCommonResource.ErrorMassage_SecurityException);

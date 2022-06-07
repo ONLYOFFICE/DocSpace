@@ -883,13 +883,41 @@ public class EntryManager
         };
         if (orderBy.SortedBy != SortedByType.New)
         {
+            var pinnedRooms = new List<FileEntry>();
+
+            if (!_coreBaseSettings.DisableDocSpace)
+            {
+                Func<FileEntry, bool> filter = (e) =>
+                {
+                    if (e.FileEntryType != FileEntryType.Folder)
+                    {
+                        return false;
+                    }
+
+                    if (e.ProviderEntry && ((Folder<string>)e).Pinned)
+                    {
+                        return true;
+                    }
+
+                    if (!e.ProviderEntry && ((Folder<int>)e).Pinned)
+                    {
+                        return true;
+                    }
+
+                    return false;
+                };
+
+                pinnedRooms = entries.Where(filter).ToList();
+            }
+
             // folders on top
-            var folders = entries.Where(r => r.FileEntryType == FileEntryType.Folder).ToList();
+            var folders = entries.Where(r => r.FileEntryType == FileEntryType.Folder).Except(pinnedRooms).ToList();
             var files = entries.Where(r => r.FileEntryType == FileEntryType.File).ToList();
+            pinnedRooms.Sort(sorter);
             folders.Sort(sorter);
             files.Sort(sorter);
 
-            return folders.Concat(files);
+            return pinnedRooms.Concat(folders).Concat(files);
         }
 
         var result = entries.ToList();

@@ -31,6 +31,8 @@ using MailKit.Search;
 using Nest;
 
 using StackExchange.Redis;
+
+using static Dropbox.Api.Common.PathRoot;
 using static Nest.JoinField;
 
 namespace ASC.Files.Core.Security;
@@ -1000,6 +1002,9 @@ public class FileSecurity : IFileSecurity
         var providerDao = _daoFactory.ProviderDao;
         var entries = new List<FileEntry>();
 
+        var foldersInt = new List<FileEntry<int>>();
+        var foldersString = new List<FileEntry<string>>();
+
         if (searchArea == SearchArea.Any || searchArea == SearchArea.Active)
         {
             var roomsFolderId = await _globalFolder.GetFolderVirtualRooms<int>(_daoFactory);
@@ -1009,8 +1014,8 @@ public class FileSecurity : IFileSecurity
             var thirdpartyRooms = await folderThirdpartyDao.GetFoldersAsync(thirdpartyFoldersId, filterType, false, subjectId, search, withSubfolders, false, tagIds)
                 .ToListAsync();
 
-            entries.AddRange(rooms);
-            entries.AddRange(thirdpartyRooms);
+            foldersInt.AddRange(rooms);
+            foldersString.AddRange(thirdpartyRooms);
 
             if (withSubfolders)
             {
@@ -1030,8 +1035,8 @@ public class FileSecurity : IFileSecurity
             var thirdpartyRooms = await folderThirdpartyDao.GetFoldersAsync(thirdpartyFoldersId, filterType, false, subjectId, search, withSubfolders, false, tagIds)
                 .ToListAsync();
 
-            entries.AddRange(rooms);
-            entries.AddRange(thirdpartyRooms);
+            foldersInt.AddRange(rooms);
+            foldersString.AddRange(thirdpartyRooms);
 
             if (withSubfolders)
             {
@@ -1042,6 +1047,14 @@ public class FileSecurity : IFileSecurity
                 entries.AddRange(thidpartyFiles);
             }
         }
+
+        await SetTags(foldersInt);
+        await SetTags(foldersString);
+        await SetPin(foldersInt);
+        await SetPin(foldersString);
+
+        entries.AddRange(foldersInt);
+        entries.AddRange(foldersString);
 
         return entries;
     }
@@ -1090,11 +1103,12 @@ public class FileSecurity : IFileSecurity
         };
 
         var rooms = await folderDao.GetFoldersAsync(folderIds.Keys, filterType, false, subjectId, search, withSubfolders, false, tagIds)
-            .ToListAsync();
+            .Where(filter).ToListAsync();
 
-        var roomsWithTags = await SetTags(rooms.Where(filter));
+        await SetTags(rooms);
+        await SetPin(rooms);
 
-        entries.AddRange(roomsWithTags);
+        entries.AddRange(rooms);
 
         if (withSubfolders)
         {
@@ -1105,13 +1119,18 @@ public class FileSecurity : IFileSecurity
         return entries;
     }
 
-    private async Task<IEnumerable<FileEntry<T>>> SetTags<T>(IEnumerable<FileEntry<T>> rooms)
+    private async Task SetTags<T>(IEnumerable<FileEntry<T>> entries)
     {
+        if (!entries.Any())
+        {
+            return;
+        }
+
         var tagDao = _daoFactory.GetTagDao<T>();
 
-        var tags = await tagDao.GetTagsAsync(TagType.Custom, rooms).ToLookupAsync(f => (T)f.EntryId);
+        var tags = await tagDao.GetTagsAsync(TagType.Custom, entries).ToLookupAsync(f => (T)f.EntryId);
 
-        foreach (var room in rooms)
+        foreach (var room in entries)
         {
             room.Tags = tags[room.Id].Select(t => new TagInfo
             {
@@ -1121,8 +1140,26 @@ public class FileSecurity : IFileSecurity
                 Type = t.Type,
             });
         }
+    }
 
-        return rooms;
+    private async Task SetPin<T>(IEnumerable<FileEntry<T>> entries)
+    {
+        if (!entries.Any())
+        {
+            return;
+        }
+
+        var tagDao = _daoFactory.GetTagDao<T>();
+
+        var tags = await tagDao.GetTagsAsync(_authContext.CurrentAccount.ID, TagType.Pin, entries).ToDictionaryAsync(t => (T)t.EntryId);
+
+        foreach (Folder<T> room in entries.Where(e => e.FileEntryType == FileEntryType.Folder))
+        {
+            if (tags.ContainsKey(room.Id))
+            {
+                room.Pinned = true;
+            }
+        }
     }
 
     public async Task<List<FileEntry>> GetPrivacyForMeAsync(FilterType filterType, bool subjectGroup, Guid subjectID, string searchText = "", bool searchInContent = false, bool withSubfolders = false)
