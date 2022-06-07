@@ -49,6 +49,12 @@ const MobileView = (props) => {
         url="/settings/security/access-portal/admin-message"
         onClickLink={onClickLink}
       />
+      <MobileCategoryWrapper
+        title={t("SessionLifetime")}
+        subtitle={t("SessionLifetimeDescription")}
+        url="/settings/security/access-portal/lifetime"
+        onClickLink={onClickLink}
+      />
     </MainContainer>
   );
 };

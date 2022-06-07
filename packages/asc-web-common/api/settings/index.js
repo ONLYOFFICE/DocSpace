@@ -101,6 +101,13 @@ export function setCookieSettings(lifeTime) {
   });
 }
 
+export function getCookieSettings() {
+  return request({
+    method: "get",
+    url: "/settings/cookiesettings.json",
+  });
+}
+
 export function setLifetimeAuditSettings(data) {
   return request({
     method: "post",

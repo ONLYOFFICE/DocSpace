@@ -55,6 +55,7 @@ class SettingsSetupStore {
       await authStore.tfaStore.getTfaType();
       await authStore.settingsStore.getIpRestrictionsEnable();
       await authStore.settingsStore.getIpRestrictions();
+      await authStore.settingsStore.getSessionLifetime();
     }
   };
 
@@ -216,10 +217,6 @@ class SettingsSetupStore {
 
   setDNSSettings = async (dnsName, enable) => {
     const res = await api.settings.setMailDomainSettings(dnsName, enable);
-  };
-
-  setCookieSettings = async (lifeTime) => {
-    const res = await api.settings.setCookieSettings(lifeTime);
   };
 
   setLifetimeAuditSettings = async (data) => {

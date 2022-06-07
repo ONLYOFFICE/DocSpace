@@ -89,6 +89,12 @@ export const settingsTree = [
             link: "admin-message",
             tKey: "AdminsMessage",
           },
+          {
+            key: "1-0-5",
+            icon: "",
+            link: "lifetime",
+            tKey: "SessionLifetime",
+          },
         ],
       },
       {
