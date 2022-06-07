@@ -22,7 +22,6 @@ x-service:
       KAFKA_HOST: ${KAFKA_HOST}
       ELK_HOST: ${ELK_HOST}
       PROXY_HOST: ${PROXY_HOST}
-      app.files.ffmpeg.exts.[1] : "mp3"
     volumes:
     #- /app/onlyoffice/CommunityServer/data:/app/onlyoffice/data
     - app_data:/app/onlyoffice/data

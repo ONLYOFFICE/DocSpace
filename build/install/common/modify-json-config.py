@@ -1,10 +1,34 @@
+import json, sys, os
 from jsonpath_ng import jsonpath, parse
-import json
-import sys
+from os import environ
 
 filePath = None
 saveFilePath = None
 jsonValue = None
+
+ROUTER_HOST = os.environ["ROUTER_HOST"] if environ.get("ROUTER_HOST") else "localhost"
+
+MYSQL_HOST = os.environ["MYSQL_HOST"] if environ.get("MYSQL_HOST") else "localhost"
+MYSQL_DATABASE = os.environ["MYSQL_DATABASE"] if environ.get("MYSQL_DATABASE") else "onlyoffice"
+MYSQL_USER = os.environ["MYSQL_USER"] if environ.get("MYSQL_USER") else "onlyoffice_user"
+MYSQL_PASSWORD = os.environ["MYSQL_PASSWORD"] if environ.get("MYSQL_PASSWORD") else "onlyoffice_pass"
+DATABASE_MIGRATION = os.environ["DATABASE_MIGRATION"] if environ.get("DATABASE_MIGRATION") else "false"
+
+APP_CORE_BASE_DOMAIN = os.environ["APP_CORE_BASE_DOMAIN"] if environ.get("APP_CORE_BASE_DOMAIN") else "localhost"
+APP_CORE_MACHINEKEY = os.environ["APP_CORE_MACHINEKEY"] if environ.get("APP_CORE_MACHINEKEY") else "your_core_machinekey"
+APP_URL_PORTAL = os.environ["APP_URL_PORTAL"] if environ.get("APP_URL_PORTAL") else "http://" + ROUTER_HOST + ":8092"
+
+DOCUMENT_SERVER_JWT_SECRET = os.environ["DOCUMENT_SERVER_JWT_SECRET"] if environ.get("DOCUMENT_SERVER_JWT_SECRET") else "your_jwt_secret"
+DOCUMENT_SERVER_JWT_HEADER = os.environ["DOCUMENT_SERVER_JWT_HEADER"] if environ.get("DOCUMENT_SERVER_JWT_HEADER") else "AuthorizationJwt"
+DOCUMENT_SERVER_URL_PUBLIC = os.environ["DOCUMENT_SERVER_URL_PUBLIC"] if environ.get("DOCUMENT_SERVER_URL_PUBLIC") else "/ds-vpath/"
+DOCUMENT_SERVER_URL_INTERNAL = os.environ["DOCUMENT_SERVER_URL_INTERNAL"] if environ.get("DOCUMENT_SERVER_URL_INTERNAL") else "http://onlyoffice-document-server/"
+
+ELK_SHEME = os.environ["ELK_SHEME"] if environ.get("ELK_SHEME") else "http"
+ELK_HOST = os.environ["ELK_HOST"] if environ.get("ELK_HOST") else "onlyoffice-elasticsearch"
+ELK_PORT = os.environ["ELK_PORT"] if environ.get("ELK_PORT") else "9200"
+ELK_THREADS = os.environ["ELK_THREADS"] if environ.get("ELK_THREADS") else "1"
+
+KAFKA_HOST = os.environ["KAFKA_HOST"] if environ.get("KAFKA_HOST") else "kafka:9092"
 
 def openJsonFile(filePath):
     try:
@@ -22,10 +46,10 @@ def parseJsonValue(jsonValue):
     
     return data
 
-def updateJsonFile(jsonData, jsonUpdateValue):
-    jsonpath_expr = parse(jsonUpdateValue[0])
+def updateJsonFile(jsonData, jsonKey, jsonUpdateValue):
+    jsonpath_expr = parse(jsonKey)
     jsonpath_expr.find(jsonData)
-    jsonpath_expr.update(jsonData, jsonUpdateValue[1])
+    jsonpath_expr.update(jsonData, jsonUpdateValue)
     
     return jsonData
 
@@ -35,11 +59,34 @@ def writeJsonFile(jsonFile, jsonData, indent=4):
     
     return 1
 
-filePath = sys.argv[1]
+#filePath = sys.argv[1]
 saveFilePath = filePath
-jsonValue = sys.argv[2]
+#jsonValue = sys.argv[2]
 
+filePath = "/app/onlyoffice/config/appsettings.test.json"
 jsonData = openJsonFile(filePath)
-jsonUpdateValue = parseJsonValue(jsonValue)
-updateJsonFile(jsonData, jsonUpdateValue)
+#jsonUpdateValue = parseJsonValue(jsonValue)
+updateJsonFile(jsonData, "$.ConnectionStrings.default.connectionString", "Server="+ MYSQL_HOST +";Port=3306;Database="+ MYSQL_DATABASE +";User ID="+ MYSQL_USER +"r;Password="+ MYSQL_PASSWORD +";Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;ConnectionReset=false," )
+updateJsonFile(jsonData,"$.core.base-domain", APP_CORE_BASE_DOMAIN)
+updateJsonFile(jsonData,"$.core.machinekey", APP_CORE_MACHINEKEY)
+updateJsonFile(jsonData,"$.core.products.subfolder", "server")
+updateJsonFile(jsonData,"$.files.url.portal", APP_URL_PORTAL)
+updateJsonFile(jsonData,"$.files.url.public", DOCUMENT_SERVER_URL_PUBLIC)
+updateJsonFile(jsonData,"$.files.url.internal", DOCUMENT_SERVER_URL_INTERNAL)
+updateJsonFile(jsonData,"$.files.docservice.secret.value", DOCUMENT_SERVER_JWT_SECRET)
+updateJsonFile(jsonData,"$.files.docservice.secret.header", DOCUMENT_SERVER_JWT_HEADER)
+updateJsonFile(jsonData,"$.migration.enabled", DATABASE_MIGRATION)
+writeJsonFile(filePath, jsonData)
+
+filePath = "/app/onlyoffice/config/elastic.json"
+jsonData = openJsonFile(filePath)
+updateJsonFile(jsonData,"$.elastic.Scheme", ELK_SHEME)
+updateJsonFile(jsonData,"$.elastic.Host", ELK_HOST)
+updateJsonFile(jsonData,"$.elastic.Port", ELK_PORT)
+updateJsonFile(jsonData,"$.elastic.Threads", ELK_THREADS)
+writeJsonFile(filePath, jsonData)
+
+filePath = "/app/onlyoffice/config/kafka.test.json"
+jsonData = openJsonFile(filePath)
+updateJsonFile(jsonData,"$.kafka.BootstrapServers", KAFKA_HOST)
 writeJsonFile(filePath, jsonData)
