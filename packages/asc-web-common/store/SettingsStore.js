@@ -481,7 +481,6 @@ class SettingsStore {
   getIpRestrictions = async () => {
     const res = await api.settings.getIpRestrictions();
     this.ipRestrictions = res?.map((el) => el.ip);
-    console.log(this.ipRestrictions);
   };
 
   setIpRestrictions = async (ips) => {
