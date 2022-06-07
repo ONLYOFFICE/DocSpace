@@ -60,10 +60,8 @@ const SectionBodyContent = (props) => {
     document.addEventListener("dragleave", onDragLeaveDoc);
     document.addEventListener("drop", onDropEvent);
 
-    const scroll =
-      isMobile && customScrollElm
-        ? customScrollElm
-        : document.getElementsByClassName("section-scroll")[0];
+    const scroll = document.getElementById("sectionScroll").childNodes[0];
+
     scroll.addEventListener("scroll", onScroll);
 
     return () => {

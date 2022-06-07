@@ -221,7 +221,11 @@ class SectionBody extends React.Component {
       >
         {withScroll ? (
           !isMobileOnly ? (
-            <Scrollbar scrollclass="section-scroll" stype="mediumBlack">
+            <Scrollbar
+              id="sectionScroll"
+              scrollclass="section-scroll"
+              stype="mediumBlack"
+            >
               <div className="section-wrapper">
                 <div className="section-wrapper-content" {...focusProps}>
                   {children}
@@ -255,7 +259,7 @@ class SectionBody extends React.Component {
       >
         {withScroll ? (
           !isMobileOnly ? (
-            <Scrollbar stype="mediumBlack">
+            <Scrollbar id="sectionScroll" stype="mediumBlack">
               <div className="section-wrapper">
                 <div className="section-wrapper-content" {...focusProps}>
                   {children}
