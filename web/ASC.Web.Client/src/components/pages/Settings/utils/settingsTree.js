@@ -77,6 +77,12 @@ export const settingsTree = [
             link: "trusted-mail",
             tKey: "TrustedMail",
           },
+          {
+            key: "1-0-3",
+            icon: "",
+            link: "ip",
+            tKey: "IPSecurity",
+          },
         ],
       },
       {

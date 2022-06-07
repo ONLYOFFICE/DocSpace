@@ -30,6 +30,8 @@ class SettingsStore {
   theme = Base;
   trustedDomains = [];
   trustedDomainsType = 0;
+  ipRestrictionEnable = false;
+  ipRestrictions = [];
   timezone = "UTC";
   timezones = [];
   tenantAlias = "";
@@ -473,6 +475,33 @@ class SettingsStore {
 
   setTenantAlias = (tenantAlias) => {
     this.tenantAlias = tenantAlias;
+  };
+
+  getIpRestrictions = async () => {
+    const res = await api.settings.getIpRestrictions();
+    this.ipRestrictions = res?.map((el) => el.ip);
+    console.log(this.ipRestrictions);
+  };
+
+  setIpRestrictions = async (ips) => {
+    const data = {
+      ips: ips,
+    };
+    const res = await api.settings.setIpRestrictions(data);
+    this.ipRestrictions = res;
+  };
+
+  getIpRestrictionsEnable = async () => {
+    const res = await api.settings.getIpRestrictionsEnable();
+    this.ipRestrictionEnable = res.enable;
+  };
+
+  setIpRestrictionsEnable = async (enable) => {
+    const data = {
+      enable: enable,
+    };
+    const res = await api.settings.setIpRestrictionsEnable(data);
+    this.ipRestrictionEnable = res.enable;
   };
 
   setIsBurgerLoading = (isBurgerLoading) => {

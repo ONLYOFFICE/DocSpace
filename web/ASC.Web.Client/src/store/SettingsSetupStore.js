@@ -53,6 +53,8 @@ class SettingsSetupStore {
     if (authStore.isAuthenticated) {
       await authStore.settingsStore.getPortalPasswordSettings();
       await authStore.tfaStore.getTfaType();
+      await authStore.settingsStore.getIpRestrictionsEnable();
+      await authStore.settingsStore.getIpRestrictions();
     }
   };
 
@@ -214,14 +216,6 @@ class SettingsSetupStore {
 
   setDNSSettings = async (dnsName, enable) => {
     const res = await api.settings.setMailDomainSettings(dnsName, enable);
-  };
-
-  setIpRestrictions = async (data) => {
-    const res = await api.settings.setIpRestrictions(data);
-  };
-
-  setIpRestrictionsEnable = async (data) => {
-    const res = await api.settings.setIpRestrictionsEnable(data);
   };
 
   setMessageSettings = async (turnOn) => {
