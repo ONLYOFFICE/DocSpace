@@ -60,7 +60,9 @@ const SectionBodyContent = (props) => {
     document.addEventListener("dragleave", onDragLeaveDoc);
     document.addEventListener("drop", onDropEvent);
 
-    const scroll = document.getElementById("sectionScroll").childNodes[0];
+    const scrollElem = document.getElementById("sectionScroll");
+
+    const scroll = scrollElem ? scrollElem.childNodes[0] : customScrollElm;
 
     scroll.addEventListener("scroll", onScroll);
 
@@ -72,7 +74,7 @@ const SectionBodyContent = (props) => {
       document.removeEventListener("dragover", onDragOver);
       document.removeEventListener("dragleave", onDragLeaveDoc);
       document.removeEventListener("drop", onDropEvent);
-      scroll.removeEventListener("scroll", onScroll);
+      scroll && scroll.removeEventListener("scroll", onScroll);
     };
   }, [onMouseUp, onMouseMove, startDrag, folderId, viewAs]);
 
