@@ -29,6 +29,7 @@ import {
   ArticleMainButtonContent,
 } from "./components/Article";
 import FormGallery from "./pages/FormGallery";
+import VirtualRooms from "./pages/VirtualRooms";
 
 const { proxyURL } = AppServerConfig;
 const homepage = config.homepage;
@@ -45,6 +46,7 @@ const FORM_GALLERY_URL = combineUrl(
   PROXY_HOMEPAGE_URL,
   "/form-gallery/:folderId"
 );
+const VIRTUAL_ROOMS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/virtual-rooms");
 
 if (!window.AppServer) {
   window.AppServer = {};
@@ -93,6 +95,7 @@ const FilesSection = React.memo(() => {
       <PrivateRoute path={FILTER_URL} component={Home} />
       <PrivateRoute path={MEDIA_VIEW_URL} component={Home} />
       <PrivateRoute path={FORM_GALLERY_URL} component={FormGallery} />
+      <PrivateRoute path={VIRTUAL_ROOMS_URL} component={VirtualRooms} />
       <PrivateRoute component={Error404Route} />
     </Switch>
   );
