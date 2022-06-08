@@ -29,29 +29,28 @@ namespace ASC.AuditTrail.Mappers;
 [Singletone]
 public class AuditActionMapper
 {
-    private readonly Dictionary<MessageAction, MessageMaps> _actions;
+    public List<IProductActionMapper> Mappers { get; }
     private readonly ILogger<AuditActionMapper> _logger;
 
     public AuditActionMapper(ILogger<AuditActionMapper> logger)
     {
-        _actions = new Dictionary<MessageAction, MessageMaps>();
         _logger = logger;
 
-        _actions = _actions
-            .Union(LoginActionsMapper.GetMaps())
-            .Union(ProjectsActionsMapper.GetMaps())
-            .Union(CrmActionMapper.GetMaps())
-            .Union(PeopleActionMapper.GetMaps())
-            .Union(DocumentsActionMapper.GetMaps())
-            .Union(SettingsActionsMapper.GetMaps())
-            .Union(OthersActionsMapper.GetMaps())
-            .ToDictionary(x => x.Key, x => x.Value);
+        Mappers = new List<IProductActionMapper>()
+            {
+                new CrmActionMapper(),
+                new DocumentsActionMapper(),
+                new LoginActionsMapper(),
+                new OthersActionsMapper(),
+                new PeopleActionMapper(),
+                new ProjectsActionsMapper(),
+                new SettingsActionsMapper()
+            };
     }
 
-    public string GetActionText(AuditEventDto evt)
+    public string GetActionText(MessageMaps action, AuditEventDto evt)
     {
-        var action = (MessageAction)evt.Action;
-        if (!_actions.ContainsKey(action))
+        if (action == null)
         {
             _logger.ErrorThereIsNoActionText(action);
 
@@ -60,7 +59,7 @@ public class AuditActionMapper
 
         try
         {
-            var actionText = _actions[(MessageAction)evt.Action].GetActionText();
+            var actionText = action.GetActionText();
 
             if (evt.Description == null || evt.Description.Count == 0)
             {
@@ -81,10 +80,9 @@ public class AuditActionMapper
         }
     }
 
-    public string GetActionText(LoginEventDto evt)
+    public string GetActionText(MessageMaps action, LoginEventDto evt)
     {
-        var action = (MessageAction)evt.Action;
-        if (!_actions.ContainsKey(action))
+        if (action == null)
         {
             //log.Error(string.Format("There is no action text for \"{0}\" type of event", action));
             return string.Empty;
@@ -92,7 +90,7 @@ public class AuditActionMapper
 
         try
         {
-            var actionText = _actions[(MessageAction)evt.Action].GetActionText();
+            var actionText = action.GetActionText();
 
             if (evt.Description == null || evt.Description.Count == 0)
             {
@@ -112,31 +110,25 @@ public class AuditActionMapper
         }
     }
 
-    public string GetActionTypeText(AuditEventDto evt)
+    public string GetActionTypeText(MessageMaps action)
     {
-        var action = (MessageAction)evt.Action;
-
-        return !_actions.ContainsKey(action)
+        return action == null
                    ? string.Empty
-                   : _actions[(MessageAction)evt.Action].GetActionTypeText();
+                   : action.GetActionTypeText();
     }
 
-    public string GetProductText(AuditEventDto evt)
+    public string GetProductText(MessageMaps action)
     {
-        var action = (MessageAction)evt.Action;
-
-        return !_actions.ContainsKey(action)
+        return action == null
                    ? string.Empty
-                   : _actions[(MessageAction)evt.Action].GetProduct();
+                   : action.GetProductText();
     }
 
-    public string GetModuleText(AuditEventDto evt)
+    public string GetModuleText(MessageMaps action)
     {
-        var action = (MessageAction)evt.Action;
-
-        return !_actions.ContainsKey(action)
+        return action == null
                    ? string.Empty
-                   : _actions[(MessageAction)evt.Action].GetModule();
+                   : action.GetModuleText();
     }
 
     private string ToLimitedText(string text)
@@ -147,5 +139,16 @@ public class AuditActionMapper
         }
 
         return text.Length < 50 ? text : $"{text.Substring(0, 47)}...";
+    }
+
+    public MessageMaps GetMessageMaps(int actionInt)
+    {
+        var action = (MessageAction)actionInt;
+        var mapper = Mappers.SelectMany(m => m.Mappers).FirstOrDefault(m => m.Actions.ContainsKey(action));
+        if (mapper != null)
+        {
+            return mapper.Actions[action];
+        }
+        return null;
     }
 }

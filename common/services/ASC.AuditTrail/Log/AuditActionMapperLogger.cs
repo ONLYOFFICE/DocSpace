@@ -24,11 +24,9 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.MessagingSystem.Core;
-
 namespace ASC.AuditTrail.Log;
 internal static partial class AuditActionMapperLogger
 {
     [LoggerMessage(Level = LogLevel.Error, Message = "There is no action text for \"{action}\" type of event")]
-    public static partial void ErrorThereIsNoActionText(this ILogger<AuditActionMapper> logger, MessageAction action);
+    public static partial void ErrorThereIsNoActionText(this ILogger<AuditActionMapper> logger, MessageMaps action);
 }

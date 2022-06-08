@@ -35,7 +35,7 @@ var builder = WebApplication.CreateBuilder(options);
 builder.Host.ConfigureDefault(args);
 builder.WebHost.ConfigureDefaultKestrel();
 
-var startup = new ASC.Files.Startup(builder.Configuration, builder.Environment);
+var startup = new Startup(builder.Configuration, builder.Environment);
 
 startup.ConfigureServices(builder.Services);
 

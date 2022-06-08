@@ -45,7 +45,10 @@ global using ASC.Api.Settings;
 global using ASC.Api.Settings.Smtp;
 global using ASC.Api.Utils;
 global using ASC.AuditTrail;
+global using ASC.AuditTrail.Mappers;
+global using ASC.AuditTrail.Models;
 global using ASC.AuditTrail.Repositories;
+global using ASC.AuditTrail.Types;
 global using ASC.Common;
 global using ASC.Common.Caching;
 global using ASC.Common.Log;
@@ -63,7 +66,9 @@ global using ASC.Core.Common.Notify.Push;
 global using ASC.Core.Common.Security;
 global using ASC.Core.Common.Settings;
 global using ASC.Core.Configuration;
+global using ASC.Core.Data;
 global using ASC.Core.Encryption;
+global using ASC.Core.Security.Authentication;
 global using ASC.Core.Tenants;
 global using ASC.Core.Users;
 global using ASC.Data.Backup;
@@ -132,3 +137,5 @@ global using Microsoft.Extensions.Options;
 global using MimeKit;
 
 global using static ASC.Security.Cryptography.EmailValidationKeyProvider;
+
+global using SecurityContext = ASC.Core.SecurityContext;

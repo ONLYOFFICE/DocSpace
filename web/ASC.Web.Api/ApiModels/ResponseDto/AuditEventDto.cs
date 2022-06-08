@@ -58,7 +58,7 @@ public class AuditEventDto
 
     public IEnumerable<EntryType> Entries { get; set; }
 
-    public AuditEventDto(ASC.AuditTrail.Models.AuditEventDto auditEvent)
+    public AuditEventDto(ASC.AuditTrail.Models.AuditEventDto auditEvent, AuditActionMapper auditActionMapper)
     {
         Id = auditEvent.Id;
         Date = new ApiDateTime(auditEvent.Date, TimeSpan.Zero);
@@ -71,7 +71,7 @@ public class AuditEventDto
         Platform = auditEvent.Platform;
         Page = auditEvent.Page;
 
-        var maps = AuditActionMapper.GetMessageMaps(auditEvent.Action);
+        var maps = auditActionMapper.GetMessageMaps(auditEvent.Action);
 
         ActionType = maps.ActionType;
         Product = maps.ProductType;
