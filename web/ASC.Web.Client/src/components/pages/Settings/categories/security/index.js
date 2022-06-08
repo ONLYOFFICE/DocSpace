@@ -9,7 +9,7 @@ import config from "../../../../../../package.json";
 
 import AccessRights from "./access-rights/index.js";
 import AccessPortal from "./access-portal/index.js";
-import AppLoader from "@appserver/common/components/AppLoader";
+import SecurityLoader from "./sub-components/loaders/security-loader";
 
 const SecurityWrapper = (props) => {
   const { t, history, loadBaseInfo } = props;
@@ -51,7 +51,7 @@ const SecurityWrapper = (props) => {
     );
   };
 
-  if (!isLoading) return <AppLoader />;
+  if (!isLoading) return <SecurityLoader />;
   return (
     <Submenu
       data={data}
