@@ -22,8 +22,9 @@ const StyledInfoPanelHeader = styled.div`
       : `1px solid ${props.theme.infoPanel.borderColor}`};
 
   .main {
-    height: ${(props) => (props.isPrivacyFolder ? "53px" : "52px")};
-    min-height: ${(props) => (props.isPrivacyFolder ? "53px" : "52px")};
+    height: 52px;
+    min-height: 52px;
+    padding-bottom: 1px;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -75,7 +76,12 @@ const StyledInfoPanelToggleWrapper = styled.div`
 `;
 StyledInfoPanelToggleWrapper.defaultProps = { theme: Base };
 
-const SubInfoPanelHeader = ({ children, setIsVisible, isPrivacyFolder }) => {
+const SubInfoPanelHeader = ({
+  children,
+  setIsVisible,
+  setRoomState,
+  isPrivacyFolder,
+}) => {
   const content = children?.props?.children;
 
   const closeInfoPanel = () => setIsVisible(false);
@@ -109,16 +115,19 @@ const SubInfoPanelHeader = ({ children, setIsVisible, isPrivacyFolder }) => {
             data={[
               {
                 content: null,
-                id: "Members",
+                onClick: () => setRoomState("members"),
+                id: "members",
                 name: "Members",
               },
               {
                 content: null,
+                onClick: () => setRoomState("history"),
                 id: "History",
                 name: "History",
               },
               {
                 content: null,
+                onClick: () => setRoomState("details"),
                 id: "Details",
                 name: "Details",
               },
@@ -145,7 +154,7 @@ SubInfoPanelHeader.defaultProps = { theme: Base };
 SubInfoPanelHeader.displayName = "SubInfoPanelHeader";
 
 export default inject(({ auth, treeFoldersStore }) => {
-  const { setIsVisible } = auth.infoPanelStore;
+  const { setIsVisible, setRoomState } = auth.infoPanelStore;
   const { isPrivacyFolder } = treeFoldersStore;
-  return { setIsVisible, isPrivacyFolder };
+  return { setIsVisible, setRoomState, isPrivacyFolder };
 })(observer(SubInfoPanelHeader));

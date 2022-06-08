@@ -1,9 +1,9 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import { Base } from "@appserver/components/themes";
 
 const StyledInfoRoomBody = styled.div`
-  padding-left: 20px;
+  padding: 0 3px 0 20px;
   height: auto;
   background-color: ${(props) => props.theme.infoPanel.backgroundColor};
   color: ${(props) => props.theme.infoPanel.textColor};
@@ -41,6 +41,16 @@ const StyledTitle = styled.div`
   height: 44px;
   padding: 23px 0;
 
+  ${(props) =>
+    props.withBottomBorder &&
+    css`
+      width: calc(100% + 20px);
+      margin: 0 -20px 0 -20px;
+      padding: 23px 0 23px 20px;
+      border-bottom: ${(props) =>
+        `solid 1px ${props.theme.infoPanel.borderColor}`};
+    `}
+
   .icon {
     display: flex;
     align-items: center;
@@ -61,6 +71,10 @@ const StyledTitle = styled.div`
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
+  }
+
+  .context-menu-button {
+    margin: 0 20px 0 auto;
   }
 `;
 
@@ -88,7 +102,6 @@ const StyledThumbnail = styled.div`
   img {
     border: ${(props) => `solid 1px ${props.theme.infoPanel.borderColor}`};
     border-radius: 6px;
-    //width: 100%;
     width: auto;
     max-width: 100%;
     height: auto;
@@ -237,8 +250,8 @@ const StyledOpenSharingPanel = styled.div`
   text-decoration: underline;
   text-decoration-style: dashed;
 `;
-
 StyledInfoRoomBody.defaultProps = { theme: Base };
+StyledTitle.defaultProps = { theme: Base };
 StyledThumbnail.defaultProps = { theme: Base };
 StyledAccess.defaultProps = { theme: Base };
 StyledAccessItem.defaultProps = { theme: Base };

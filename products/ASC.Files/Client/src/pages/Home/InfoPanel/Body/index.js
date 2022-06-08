@@ -31,7 +31,37 @@ const InfoPanelBodyContent = ({
   personal,
   createThumbnail,
   culture,
+  roomState,
 }) => {
+  const defaultProps = {
+    t,
+    selectedItems,
+    personal,
+    culture,
+    isRootFolder,
+    isRecycleBinFolder,
+    isRecentFolder,
+    isFavoritesFolder,
+    isShareFolder,
+    isCommonFolder,
+    isPrivacyFolder,
+  };
+
+  const filesProps = {
+    selectedFolder,
+    getFolderInfo,
+    getIcon,
+    getFolderIcon,
+    getShareUsers,
+    onSelectItem,
+    setSharingPanelVisible,
+    createThumbnail,
+  };
+
+  const virtualRoomProps = {
+    roomState,
+  };
+
   return isGallery ? (
     !gallerySelected ? (
       <GalleryEmptyScreen />
@@ -47,29 +77,13 @@ const InfoPanelBodyContent = ({
   ) : (
     <StyledInfoRoomBody>
       {isPrivacyFolder ? (
-        <VirtualRoomInfoPanel />
-      ) : (
-        <FilesInfoPanel
-          t={t}
-          selectedFolder={selectedFolder}
-          selectedItems={selectedItems}
-          getFolderInfo={getFolderInfo}
-          getIcon={getIcon}
-          getFolderIcon={getFolderIcon}
-          getShareUsers={getShareUsers}
-          onSelectItem={onSelectItem}
-          setSharingPanelVisible={setSharingPanelVisible}
-          createThumbnail={createThumbnail}
-          personal={personal}
-          culture={culture}
-          isRootFolder={isRootFolder}
-          isRecycleBinFolder={isRecycleBinFolder}
-          isRecentFolder={isRecentFolder}
-          isFavoritesFolder={isFavoritesFolder}
-          isShareFolder={isShareFolder}
-          isCommonFolder={isCommonFolder}
-          isPrivacyFolder={isPrivacyFolder}
+        <VirtualRoomInfoPanel
+          {...defaultProps}
+          {...filesProps}
+          {...virtualRoomProps}
         />
+      ) : (
+        <FilesInfoPanel {...defaultProps} {...filesProps} />
       )}
     </StyledInfoRoomBody>
   );
@@ -88,6 +102,7 @@ export default inject(
     selectedFolderStore,
   }) => {
     const { personal, culture } = auth.settingsStore;
+    const { roomState } = auth.infoPanelStore;
 
     const {
       selection,
@@ -97,10 +112,12 @@ export default inject(
       gallerySelected,
       createThumbnail,
     } = filesStore;
+
     const { getIcon, getFolderIcon } = settingsStore;
     const { onSelectItem } = filesActionsStore;
     const { setSharingPanelVisible } = dialogsStore;
     const { isRootFolder } = selectedFolderStore;
+
     const {
       isRecycleBinFolder,
       isRecentFolder,
@@ -120,6 +137,7 @@ export default inject(
     return {
       selectedFolder: { ...selectedFolderStore },
       selectedItems: selectedItems,
+
       getFolderInfo,
       getShareUsers,
       getIcon,
@@ -139,6 +157,7 @@ export default inject(
       personal,
       createThumbnail,
       culture,
+      roomState,
     };
   }
 )(
