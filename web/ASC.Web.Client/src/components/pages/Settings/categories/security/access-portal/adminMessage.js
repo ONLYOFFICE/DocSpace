@@ -13,6 +13,8 @@ import { size } from "@appserver/components/utils/device";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 import isEqual from "lodash/isEqual";
+import { isMobile } from "react-device-detect";
+import AdmMsgLoader from "../sub-components/loaders/admmsg-loader";
 
 const MainContainer = styled.div`
   width: 100%;
@@ -113,6 +115,10 @@ const AdminMessage = (props) => {
   };
 
   const lng = getLanguage(localStorage.getItem("language") || "en");
+
+  if (isMobile && !isInit && !isLoading) {
+    return <AdmMsgLoader />;
+  }
 
   return (
     <MainContainer>
