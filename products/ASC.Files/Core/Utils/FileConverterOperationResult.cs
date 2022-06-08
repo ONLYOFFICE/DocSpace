@@ -24,22 +24,33 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Core.Common.Log;
-internal static partial class RegisterInstanceWorkerServiceLogger
+namespace ASC.Web.Files.Utils;
+
+[ProtoContract]
+public class FileConverterOperationResult : FileOperationResult
 {
+    [ProtoMember(1)]
+    public DateTime StartDateTime { get; set; }
 
-    [LoggerMessage(Level = LogLevel.Trace, Message = "DbUpdateConcurrencyException: then updating {instanceName} at {time} time.")]
-    public static partial void TraceDbUpdateConcurrencyException(this ILogger logger, string instanceName, DateTimeOffset time);
+    [ProtoMember(2)]
+    public DateTime StopDateTime { get; set; }
 
-    [LoggerMessage(Level = LogLevel.Trace, Message = "Worker running at: {time}")]
-    public static partial void TraceWorkingRunnging(this ILogger logger, DateTimeOffset time);
+    [ProtoMember(3)]
+    public int TenantId { get; set; }
 
-    [LoggerMessage(Level = LogLevel.Information, Message = "UnRegister Instance {instanceName} running at: {time}.")]
-    public static partial void InformationUnRegister(this ILogger logger, string instanceName, DateTimeOffset time);
+    [ProtoMember(4)]
+    public Guid Account { get; set; }
 
-    [LoggerMessage(Level = LogLevel.Error, Message = "Unable to UnRegister Instance {instanceName} running at: {time}.")]
-    public static partial void ErrorUnableToUnRegister(this ILogger logger, string instanceName, DateTimeOffset time);
+    [ProtoMember(5)]
+    public bool Delete { get; set; }
 
-    [LoggerMessage(Level = LogLevel.Error, Message = "Critical error forced worker to shutdown")]
-    public static partial void CriticalError(this ILogger logger, Exception exception);
+    [ProtoMember(6)]
+    public string Url { get; set; }
+
+    [ProtoMember(7)]
+    public string Password { get; set; }
+
+    [ProtoMember(8)]
+    //hack for download
+    public string ServerRootPath { get; set; }
 }

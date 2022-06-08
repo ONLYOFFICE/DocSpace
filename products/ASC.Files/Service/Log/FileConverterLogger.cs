@@ -25,7 +25,7 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Files.Core.Log;
-internal static partial class FileConverterLogger
+public static partial class FileConverterLogger
 {
     [LoggerMessage(Level = LogLevel.Debug, Message = "Run CheckConvertFilesStatus: count {count}")]
     public static partial void DebugRunCheckConvertFilesStatus(this ILogger logger, int count);

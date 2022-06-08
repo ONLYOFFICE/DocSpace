@@ -24,22 +24,19 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Core.Common.Log;
-internal static partial class RegisterInstanceWorkerServiceLogger
+namespace ASC.Common.Data;
+public static class TypeExtension
 {
-
-    [LoggerMessage(Level = LogLevel.Trace, Message = "DbUpdateConcurrencyException: then updating {instanceName} at {time} time.")]
-    public static partial void TraceDbUpdateConcurrencyException(this ILogger logger, string instanceName, DateTimeOffset time);
-
-    [LoggerMessage(Level = LogLevel.Trace, Message = "Worker running at: {time}")]
-    public static partial void TraceWorkingRunnging(this ILogger logger, DateTimeOffset time);
-
-    [LoggerMessage(Level = LogLevel.Information, Message = "UnRegister Instance {instanceName} running at: {time}.")]
-    public static partial void InformationUnRegister(this ILogger logger, string instanceName, DateTimeOffset time);
-
-    [LoggerMessage(Level = LogLevel.Error, Message = "Unable to UnRegister Instance {instanceName} running at: {time}.")]
-    public static partial void ErrorUnableToUnRegister(this ILogger logger, string instanceName, DateTimeOffset time);
-
-    [LoggerMessage(Level = LogLevel.Error, Message = "Critical error forced worker to shutdown")]
-    public static partial void CriticalError(this ILogger logger, Exception exception);
+    public static string GetFormattedName(this Type type)
+    {
+        if (type.IsGenericType)
+        {
+            var genericArguments = type.GetGenericArguments()
+                                .Select(x => x.Name)
+                                .Aggregate((x1, x2) => $"{x1}, {x2}");
+            return $"{type.Name.Substring(0, type.Name.IndexOf("`"))}"
+                 + $"<{genericArguments}>";
+        }
+        return type.Name;
+    }
 }
