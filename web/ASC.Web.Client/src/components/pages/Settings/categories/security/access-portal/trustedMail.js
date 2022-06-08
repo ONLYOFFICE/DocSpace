@@ -14,6 +14,8 @@ import { size } from "@appserver/components/utils/device";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 import isEqual from "lodash/isEqual";
 import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
+import { isMobile } from "react-device-detect";
+import TrustedMailLoader from "../sub-components/loaders/trusted-mail-loader";
 
 const MainContainer = styled.div`
   width: 100%;
@@ -151,6 +153,11 @@ const TrustedMail = (props) => {
   };
 
   const lng = getLanguage(localStorage.getItem("language") || "en");
+
+  if (isMobile && !isLoading) {
+    return <TrustedMailLoader />;
+  }
+
   return (
     <MainContainer>
       <LearnMoreWrapper>
