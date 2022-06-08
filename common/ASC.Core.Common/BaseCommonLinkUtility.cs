@@ -47,7 +47,7 @@ public class BaseCommonLinkUtility
         CoreBaseSettings coreBaseSettings,
         CoreSettings coreSettings,
         TenantManager tenantManager,
-        IOptionsMonitor<ILog> options,
+        ILoggerProvider options,
         CommonLinkUtilitySettings settings)
         : this(null, coreBaseSettings, coreSettings, tenantManager, options, settings)
     {
@@ -58,7 +58,7 @@ public class BaseCommonLinkUtility
         CoreBaseSettings coreBaseSettings,
         CoreSettings coreSettings,
         TenantManager tenantManager,
-        IOptionsMonitor<ILog> options,
+        ILoggerProvider options,
         CommonLinkUtilitySettings settings)
     {
         var serverUri = settings.ServerUri;
@@ -87,7 +87,7 @@ public class BaseCommonLinkUtility
             }
             catch (Exception error)
             {
-                options.Get("ASC.Web").Error(error);
+                options.CreateLogger("ASC.Web").ErrorWithException(error);
             }
         }
 

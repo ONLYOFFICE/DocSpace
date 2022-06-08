@@ -40,12 +40,12 @@ public class EmailValidationKeyProvider
     public TimeSpan ValidAuthKeyInterval { get; }
     public TimeSpan ValidVisitLinkInterval { get; }
 
-    private readonly ILog _logger;
+    private readonly ILogger<EmailValidationKeyProvider> _logger;
     private static readonly DateTime _from = new DateTime(2010, 01, 01, 0, 0, 0, DateTimeKind.Utc);
     private readonly MachinePseudoKeys _machinePseudoKeys;
     private readonly TenantManager _tenantManager;
 
-    public EmailValidationKeyProvider(MachinePseudoKeys machinePseudoKeys, TenantManager tenantManager, IConfiguration configuration, ILog logger)
+    public EmailValidationKeyProvider(MachinePseudoKeys machinePseudoKeys, TenantManager tenantManager, IConfiguration configuration, ILogger<EmailValidationKeyProvider> logger)
     {
         _machinePseudoKeys = machinePseudoKeys;
         _tenantManager = tenantManager;
@@ -94,7 +94,7 @@ public class EmailValidationKeyProvider
         }
         catch (Exception e)
         {
-            _logger.Fatal("Failed to format tenant specific email", e);
+            _logger.CriticalFormatEmail(e);
 
             return email.ToLowerInvariant();
         }
@@ -108,7 +108,7 @@ public class EmailValidationKeyProvider
     public ValidationResult ValidateEmailKey(string email, string key, TimeSpan validInterval)
     {
         var result = ValidateEmailKeyInternal(email, key, validInterval);
-        _logger.DebugFormat("validation result: {0}, source: {1} with key: {2} interval: {3} tenant: {4}", result, email, key, validInterval, _tenantManager.GetCurrentTenant().Id);
+        _logger.DebugValidationResult(result, email, key, validInterval, _tenantManager.GetCurrentTenant().Id);
 
         return result;
     }

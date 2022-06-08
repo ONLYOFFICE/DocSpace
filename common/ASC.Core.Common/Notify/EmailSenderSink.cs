@@ -74,13 +74,13 @@ public class EmailSenderSinkMessageCreator : SinkMessageCreator
 {
     private readonly TenantManager _tenantManager;
     private readonly CoreConfiguration _coreConfiguration;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
 
-    public EmailSenderSinkMessageCreator(TenantManager tenantManager, CoreConfiguration coreConfiguration, IOptionsMonitor<ILog> options)
+    public EmailSenderSinkMessageCreator(TenantManager tenantManager, CoreConfiguration coreConfiguration, ILoggerProvider options)
     {
         _tenantManager = tenantManager;
         _coreConfiguration = coreConfiguration;
-        _logger = options.Get("ASC.Notify");
+        _logger = options.CreateLogger("ASC.Notify");
     }
 
     public override NotifyMessage CreateNotifyMessage(INoticeMessage message, string senderName)
@@ -91,7 +91,7 @@ public class EmailSenderSinkMessageCreator : SinkMessageCreator
             ContentType = message.ContentType,
             Content = message.Body,
             SenderType = senderName,
-            CreationDate = DateTime.UtcNow.Ticks,
+            CreationDate = DateTime.UtcNow,
         };
 
         var tenant = _tenantManager.GetCurrentTenant(false);
@@ -127,7 +127,7 @@ public class EmailSenderSinkMessageCreator : SinkMessageCreator
             }
             catch (Exception e)
             {
-                _logger.Error("Error creating reply to tag for: " + replyTag.Value, e);
+                _logger.ErrorCreatingTag(replyTag.Value, e);
             }
         }
 
@@ -140,7 +140,7 @@ public class EmailSenderSinkMessageCreator : SinkMessageCreator
         var attachmentTag = message.Arguments.FirstOrDefault(x => x.Tag == "EmbeddedAttachments");
         if (attachmentTag != null && attachmentTag.Value != null)
         {
-            m.Attachments.AddRange(attachmentTag.Value as NotifyMessageAttachment[]);
+            m.Attachments = attachmentTag.Value as NotifyMessageAttachment[];
         }
 
         var autoSubmittedTag = message.Arguments.FirstOrDefault(x => x.Tag == "AutoSubmitted");
@@ -152,7 +152,7 @@ public class EmailSenderSinkMessageCreator : SinkMessageCreator
             }
             catch (Exception e)
             {
-                _logger.Error("Error creating AutoSubmitted tag for: " + autoSubmittedTag.Value, e);
+                _logger.ErrorCreatingAutoSubmitted(replyTag.Value, e);
             }
         }
 

@@ -60,7 +60,7 @@ public class SecurityController : ControllerBase
         _settingsManager = settingsManager;
     }
 
-    [Read("audit/login/last")]
+    [HttpGet("audit/login/last")]
     public IEnumerable<EventDto> GetLastLoginEvents()
     {
         if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.LoginHistory)))
@@ -73,7 +73,7 @@ public class SecurityController : ControllerBase
         return _loginEventsRepository.GetLast(_tenantManager.GetCurrentTenant().Id, 20).Select(x => new EventDto(x));
     }
 
-    [Read("audit/events/last")]
+    [HttpGet("audit/events/last")]
     public IEnumerable<EventDto> GetLastAuditEvents()
     {
         if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.AuditTrail)))
@@ -86,7 +86,7 @@ public class SecurityController : ControllerBase
         return _auditEventsRepository.GetLast(_tenantManager.GetCurrentTenant().Id, 20).Select(x => new EventDto(x));
     }
 
-    [Create("audit/login/report")]
+    [HttpPost("audit/login/report")]
     public object CreateLoginHistoryReport()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
@@ -111,7 +111,7 @@ public class SecurityController : ControllerBase
         return result;
     }
 
-    [Create("audit/events/report")]
+    [HttpPost("audit/events/report")]
     public object CreateAuditTrailReport()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
@@ -137,7 +137,7 @@ public class SecurityController : ControllerBase
         return result;
     }
 
-    [Read("audit/settings/lifetime")]
+    [HttpGet("audit/settings/lifetime")]
     public TenantAuditSettings GetAuditSettings()
     {
         if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.LoginHistory)))
@@ -150,20 +150,8 @@ public class SecurityController : ControllerBase
         return _settingsManager.LoadForTenant<TenantAuditSettings>(_tenantManager.GetCurrentTenant().Id);
     }
 
-    [Create("audit/settings/lifetime")]
-    public TenantAuditSettings SetAuditSettingsFromBody([FromBody] TenantAuditSettingsWrapper wrapper)
-    {
-        return SetAuditSettings(wrapper);
-    }
-
-    [Create("audit/settings/lifetime")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public TenantAuditSettings SetAuditSettingsFromForm([FromForm] TenantAuditSettingsWrapper wrapper)
-    {
-        return SetAuditSettings(wrapper);
-    }
-
-    private TenantAuditSettings SetAuditSettings(TenantAuditSettingsWrapper wrapper)
+    [HttpPost("audit/settings/lifetime")]
+    public TenantAuditSettings SetAuditSettings(TenantAuditSettingsWrapper wrapper)
     {
         if (!_tenantExtra.GetTenantQuota().Audit || !SetupInfo.IsVisibleSettings(nameof(ManagementType.LoginHistory)))
         {

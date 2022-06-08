@@ -438,7 +438,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                 {
                     Error = ex.Message;
 
-                    Logger.Error(Error, ex);
+                    Logger.ErrorWithException(ex);
                 }
             }
 
@@ -691,7 +691,8 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                 catch (Exception ex)
                 {
                     Error = ex.Message;
-                    Logger.Error(Error, ex);
+
+                    Logger.ErrorWithException(ex);
                 }
             }
 

@@ -61,7 +61,7 @@ public class RemoveUserDataController : ApiControllerBase
         _apiContext = apiContext;
     }
 
-    [Read(@"remove/progress")]
+    [HttpGet("remove/progress")]
     public RemoveProgressItem GetRemoveProgress(Guid userId)
     {
         _permissionContext.DemandPermissions(Constants.Action_EditUser);
@@ -69,7 +69,7 @@ public class RemoveUserDataController : ApiControllerBase
         return _queueWorkerRemove.GetProgressItemStatus(Tenant.Id, userId);
     }
 
-    [Update("self/delete")]
+    [HttpPut("self/delete")]
     public object SendInstructionsToDelete()
     {
         var user = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
@@ -85,40 +85,8 @@ public class RemoveUserDataController : ApiControllerBase
         return string.Format(Resource.SuccessfullySentNotificationDeleteUserInfoMessage, "<b>" + user.Email + "</b>");
     }
 
-    [Create(@"remove/start")]
-    public RemoveProgressItem StartRemoveFromBody([FromBody] TerminateRequestDto inDto)
-    {
-        return StartRemove(inDto);
-    }
-
-    [Create(@"remove/start")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public RemoveProgressItem StartRemoveFromForm([FromForm] TerminateRequestDto inDto)
-    {
-        return StartRemove(inDto);
-    }
-
-    [Update(@"remove/terminate")]
-    public void TerminateRemoveFromBody([FromBody] TerminateRequestDto inDto)
-    {
-        TerminateRemove(inDto);
-    }
-
-    [Update(@"remove/terminate")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public void TerminateRemoveFromForm([FromForm] TerminateRequestDto inDto)
-    {
-        TerminateRemove(inDto);
-    }
-
-    private void TerminateRemove(TerminateRequestDto inDto)
-    {
-        _permissionContext.DemandPermissions(Constants.Action_EditUser);
-
-        _queueWorkerRemove.Terminate(Tenant.Id, inDto.UserId);
-    }
-
-    private RemoveProgressItem StartRemove(TerminateRequestDto inDto)
+    [HttpPost("remove/start")]
+    public RemoveProgressItem StartRemove(TerminateRequestDto inDto)
     {
         _permissionContext.DemandPermissions(Constants.Action_EditUser);
 
@@ -135,5 +103,13 @@ public class RemoveUserDataController : ApiControllerBase
         }
 
         return _queueWorkerRemove.Start(Tenant.Id, user, _securityContext.CurrentAccount.ID, true);
+    }
+
+    [HttpPut("remove/terminate")]
+    public void TerminateRemove(TerminateRequestDto inDto)
+    {
+        _permissionContext.DemandPermissions(Constants.Action_EditUser);
+
+        _queueWorkerRemove.Terminate(Tenant.Id, inDto.UserId);
     }
 }

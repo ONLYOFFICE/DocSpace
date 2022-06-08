@@ -37,15 +37,15 @@ public class RabbitMQCache<T> : IDisposable, ICacheNotify<T> where T : IMessage<
     private readonly string _exchangeName;
     private readonly string _queueName;
 
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly ConcurrentDictionary<string, List<Action<T>>> _actions;
 
     private readonly object _lock = new object();
     private bool _disposed;
 
-    public RabbitMQCache(IConfiguration configuration, IOptionsMonitor<ILog> options)
+    public RabbitMQCache(IConfiguration configuration, ILogger<RabbitMQCache<T>> logger)
     {
-        _logger = options.CurrentValue;
+        _logger = logger;
         _instanceId = Guid.NewGuid();
         _exchangeName = $"asc:cache_notify:event_bus:{typeof(T).FullName}";
         _queueName = $"asc:cache_notify:queue:{typeof(T).FullName}:{_instanceId}";
@@ -70,7 +70,7 @@ public class RabbitMQCache<T> : IDisposable, ICacheNotify<T> where T : IMessage<
     {
         TryConnect();
 
-        _logger.Trace("Creating RabbitMQ consumer channel");
+        _logger.TraceCreatingRabbitMQ();
 
         var channel = _connection.CreateModel();
 
@@ -85,7 +85,7 @@ public class RabbitMQCache<T> : IDisposable, ICacheNotify<T> where T : IMessage<
 
         channel.CallbackException += (sender, ea) =>
         {
-            _logger.Warn("Recreating RabbitMQ consumer channel", ea.Exception);
+            _logger.WarningRecreatingRabbitMQ(ea.Exception);
 
             _consumerChannel.Dispose();
             _consumerChannel = CreateConsumerChannel();
@@ -99,7 +99,7 @@ public class RabbitMQCache<T> : IDisposable, ICacheNotify<T> where T : IMessage<
 
     private void StartBasicConsume()
     {
-        _logger.Trace("Starting RabbitMQ basic consume");
+        _logger.TraceStartingRabbitMQ();
 
         if (_consumerChannel != null)
         {
@@ -111,7 +111,7 @@ public class RabbitMQCache<T> : IDisposable, ICacheNotify<T> where T : IMessage<
         }
         else
         {
-            _logger.Error("StartBasicConsume can't call on _consumerChannel == null");
+            _logger.ErrorStartBasicConsumeCanNotCall();
         }
     }
 

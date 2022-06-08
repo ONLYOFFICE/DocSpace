@@ -131,27 +131,33 @@ public class StatisticManager
             _lastSave = DateTime.UtcNow;
         }
 
-        using var tx = WebstudioDbContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted);
-        foreach (var v in visits)
+        var strategy = WebstudioDbContext.Database.CreateExecutionStrategy();
+
+        strategy.Execute(() =>
         {
-            var w = new DbWebstudioUserVisit
-            {
-                TenantId = v.TenantID,
-                ProductId = v.ProductID,
-                UserId = v.UserID,
-                VisitDate = v.VisitDate.Date,
-                FirstVisitTime = v.VisitDate,
-                VisitCount = v.VisitCount
-            };
+            using var tx = WebstudioDbContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted);
 
-            if (v.LastVisitTime.HasValue)
+            foreach (var v in visits)
             {
-                w.LastVisitTime = v.LastVisitTime.Value;
+                var w = new DbWebstudioUserVisit
+                {
+                    TenantId = v.TenantID,
+                    ProductId = v.ProductID,
+                    UserId = v.UserID,
+                    VisitDate = v.VisitDate.Date,
+                    FirstVisitTime = v.VisitDate,
+                    VisitCount = v.VisitCount
+                };
+
+                if (v.LastVisitTime.HasValue)
+                {
+                    w.LastVisitTime = v.LastVisitTime.Value;
+                }
+
+                WebstudioDbContext.WebstudioUserVisit.Add(w);
+                WebstudioDbContext.SaveChanges();
             }
-
-            WebstudioDbContext.WebstudioUserVisit.Add(w);
-            WebstudioDbContext.SaveChanges();
-        }
-        tx.Commit();
+            tx.Commit();
+        });
     }
 }

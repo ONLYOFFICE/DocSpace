@@ -60,7 +60,7 @@ internal class ProviderAccountDao : IProviderDao
     }
     private readonly Lazy<FilesDbContext> _lazyFilesDbContext;
     private FilesDbContext FilesDbContext => _lazyFilesDbContext.Value;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly IServiceProvider _serviceProvider;
     private readonly TenantUtil _tenantUtil;
     private readonly TenantManager _tenantManager;
@@ -79,11 +79,11 @@ internal class ProviderAccountDao : IProviderDao
         ConsumerFactory consumerFactory,
         ThirdpartyConfiguration thirdpartyConfiguration,
         DbContextManager<FilesDbContext> dbContextManager,
-            OAuth20TokenHelper oAuth20TokenHelper,
-        IOptionsMonitor<ILog> options)
+        OAuth20TokenHelper oAuth20TokenHelper,
+        ILoggerProvider options)
     {
         _lazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
-        _logger = options.Get("ASC.Files");
+        _logger = options.CreateLogger("ASC.Files");
         _serviceProvider = serviceProvider;
         _tenantUtil = tenantUtil;
         _tenantManager = tenantManager;
@@ -124,7 +124,7 @@ internal class ProviderAccountDao : IProviderDao
         }
         catch (Exception e)
         {
-            _logger.Error(string.Format("GetProvidersInfoInternal: user = {0}", userId), e);
+            _logger.ErrorGetProvidersInfoInternalUser(userId, e);
 
             return new List<IProviderInfo>().ToAsyncEnumerable();
         }
@@ -149,8 +149,7 @@ internal class ProviderAccountDao : IProviderDao
         }
         catch (Exception e)
         {
-            _logger.Error(string.Format("GetProvidersInfoInternal: linkId = {0} , folderType = {1} , user = {2}",
-                                              linkId, folderType, _securityContext.CurrentAccount.ID), e);
+            _logger.ErrorGetProvidersInfoInternal(linkId, folderType, _securityContext.CurrentAccount.ID, e);
             return new List<IProviderInfo>().ToAsyncEnumerable();
         }
     }
@@ -284,7 +283,7 @@ internal class ProviderAccountDao : IProviderDao
             }
             catch (Exception e)
             {
-                _logger.Error(string.Format("UpdateProviderInfo: linkId = {0} , user = {1}", linkId, _securityContext.CurrentAccount.ID), e);
+                _logger.ErrorUpdateProviderInfo(linkId, _securityContext.CurrentAccount.ID, e);
                 throw;
             }
 
@@ -350,48 +349,53 @@ internal class ProviderAccountDao : IProviderDao
 
     public virtual async Task RemoveProviderInfoAsync(int linkId)
     {
-        using var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false);
-        var folderId = (await GetProviderInfoAsync(linkId)).RootFolderId;
+        var strategy = FilesDbContext.Database.CreateExecutionStrategy();
 
-        var entryIDs = await FilesDbContext.ThirdpartyIdMapping
-            .AsQueryable()
-            .Where(r => r.TenantId == TenantID)
-            .Where(r => r.Id.StartsWith(folderId))
-            .Select(r => r.HashId)
-            .ToListAsync()
-            .ConfigureAwait(false);
+        await strategy.ExecuteAsync(async () =>
+        {
+            using var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false);
+            var folderId = (await GetProviderInfoAsync(linkId)).RootFolderId;
 
-        var forDelete = await FilesDbContext.Security
-            .AsQueryable()
-            .Where(r => r.TenantId == TenantID)
-            .Where(r => entryIDs.Any(a => a == r.EntryId))
-            .ToListAsync()
-            .ConfigureAwait(false);
+            var entryIDs = await FilesDbContext.ThirdpartyIdMapping
+                .AsQueryable()
+                .Where(r => r.TenantId == TenantID)
+                .Where(r => r.Id.StartsWith(folderId))
+                .Select(r => r.HashId)
+                .ToListAsync()
+                .ConfigureAwait(false);
 
-        FilesDbContext.Security.RemoveRange(forDelete);
-        await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+            var forDelete = await FilesDbContext.Security
+                .AsQueryable()
+                .Where(r => r.TenantId == TenantID)
+                .Where(r => entryIDs.Any(a => a == r.EntryId))
+                .ToListAsync()
+                .ConfigureAwait(false);
 
-        var linksForDelete = await FilesDbContext.TagLink
-            .AsQueryable()
-            .Where(r => r.TenantId == TenantID)
-            .Where(r => entryIDs.Any(e => e == r.EntryId))
-            .ToListAsync()
-            .ConfigureAwait(false);
+            FilesDbContext.Security.RemoveRange(forDelete);
+            await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-        FilesDbContext.TagLink.RemoveRange(linksForDelete);
-        await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+            var linksForDelete = await FilesDbContext.TagLink
+                .AsQueryable()
+                .Where(r => r.TenantId == TenantID)
+                .Where(r => entryIDs.Any(e => e == r.EntryId))
+                .ToListAsync()
+                .ConfigureAwait(false);
 
-        var accountsForDelete = await FilesDbContext.ThirdpartyAccount
-            .AsQueryable()
-            .Where(r => r.Id == linkId)
-            .Where(r => r.TenantId == TenantID)
-            .ToListAsync()
-            .ConfigureAwait(false);
+            FilesDbContext.TagLink.RemoveRange(linksForDelete);
+            await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-        FilesDbContext.ThirdpartyAccount.RemoveRange(accountsForDelete);
-        await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+            var accountsForDelete = await FilesDbContext.ThirdpartyAccount
+                .AsQueryable()
+                .Where(r => r.Id == linkId)
+                .Where(r => r.TenantId == TenantID)
+                .ToListAsync()
+                .ConfigureAwait(false);
 
-        await tx.CommitAsync().ConfigureAwait(false);
+            FilesDbContext.ThirdpartyAccount.RemoveRange(accountsForDelete);
+            await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+
+            await tx.CommitAsync().ConfigureAwait(false);
+        });
     }
 
     private IProviderInfo ToProviderInfo(int id, ProviderTypes providerKey, string customerTitle, AuthData authData, Guid owner, FolderType type, DateTime createOn)

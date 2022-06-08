@@ -88,7 +88,7 @@ public class JabberSenderSinkMessageCreator : SinkMessageCreator
             ContentType = message.ContentType,
             Content = message.Body,
             SenderType = senderName,
-            CreationDate = DateTime.UtcNow.Ticks,
+            CreationDate = DateTime.UtcNow,
         };
 
         var tenant = _tenantManager.GetCurrentTenant(false);

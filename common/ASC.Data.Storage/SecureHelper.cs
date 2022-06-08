@@ -28,7 +28,7 @@ namespace ASC.Data.Storage;
 
 public static class SecureHelper
 {
-    public static bool IsSecure(HttpContext httpContext, IOptionsMonitor<ILog> options)
+    public static bool IsSecure(HttpContext httpContext, ILoggerProvider options)
     {
         try
         {
@@ -36,7 +36,7 @@ public static class SecureHelper
         }
         catch (Exception err)
         {
-            options.Get("ASC.Data.Storage.SecureHelper").Error(err);
+            options.CreateLogger("ASC.Data.Storage.SecureHelper").ErrorIsSecure(err);
 
             return false;
         }

@@ -204,7 +204,7 @@ public class TenantWhiteLabelSettingsHelper
     private readonly WhiteLabelHelper _whiteLabelHelper;
     private readonly TenantManager _tenantManager;
     private readonly SettingsManager _settingsManager;
-    private readonly ILog _log;
+    private readonly ILogger<TenantWhiteLabelSettingsHelper> _log;
 
     public TenantWhiteLabelSettingsHelper(
         WebImageSupplier webImageSupplier,
@@ -213,7 +213,7 @@ public class TenantWhiteLabelSettingsHelper
         WhiteLabelHelper whiteLabelHelper,
         TenantManager tenantManager,
         SettingsManager settingsManager,
-            ILog logger)
+        ILogger<TenantWhiteLabelSettingsHelper> logger)
     {
         _webImageSupplier = webImageSupplier;
         _userPhotoManager = userPhotoManager;
@@ -269,7 +269,7 @@ public class TenantWhiteLabelSettingsHelper
         }
         catch (Exception e)
         {
-            _log.Error(e);
+            _log.ErrorRestoreDefault(e);
         }
 
         Save(tenantWhiteLabelSettings, tenantId, tenantLogoManager, true);
@@ -287,7 +287,7 @@ public class TenantWhiteLabelSettingsHelper
             }
             catch (Exception e)
             {
-                _log.Error(e);
+                _log.ErrorRestoreDefault(e);
             }
         }
     }
@@ -312,7 +312,7 @@ public class TenantWhiteLabelSettingsHelper
             }
             catch (Exception e)
             {
-                _log.Error(e);
+                _log.ErrorSetLogo(e);
             }
         }
         #endregion
@@ -358,7 +358,7 @@ public class TenantWhiteLabelSettingsHelper
                     }
                     catch (Exception ex)
                     {
-                        _log.Error(ex);
+                        _log.ErrorSetLogo(ex);
                     }
                 }
                 else

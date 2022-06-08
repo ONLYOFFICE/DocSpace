@@ -73,10 +73,10 @@ public class ChunkedUploadSession<T> : CommonChunkedUploadSession
 [Scope]
 public class ChunkedUploadSessionHelper
 {
-    private readonly ILog _logger;
+    private readonly ILogger<ChunkedUploadSessionHelper> _logger;
     private readonly EntryManager _entryManager;
 
-    public ChunkedUploadSessionHelper(ILog logger, EntryManager entryManager)
+    public ChunkedUploadSessionHelper(ILogger<ChunkedUploadSessionHelper> logger, EntryManager entryManager)
     {
         _entryManager = entryManager;
         _logger = logger;
@@ -90,7 +90,7 @@ public class ChunkedUploadSessionHelper
             {
                 if (f == null)
                 {
-                    _logger.ErrorFormat("GetBreadCrumbs {0} with null", session.FolderId);
+                    _logger.ErrorInUserInfoRequest(session.FolderId.ToString());
 
                     return default;
                 }

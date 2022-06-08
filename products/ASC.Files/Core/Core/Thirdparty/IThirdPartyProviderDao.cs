@@ -221,7 +221,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
     private readonly Lazy<FilesDbContext> _lazyFilesDbContext;
     protected FilesDbContext FilesDbContext => _lazyFilesDbContext.Value;
     protected readonly SetupInfo _setupInfo;
-    protected readonly ILog _logger;
+    protected readonly ILogger _logger;
     protected readonly FileUtility _fileUtility;
     protected readonly TempPath _tempPath;
     protected RegexDaoSelectorBase<T> DaoSelector { get; set; }
@@ -237,7 +237,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         TenantUtil tenantUtil,
         DbContextManager<FilesDbContext> dbContextManager,
         SetupInfo setupInfo,
-        IOptionsMonitor<ILog> monitor,
+        ILogger logger,
         FileUtility fileUtility,
         TempPath tempPath)
     {
@@ -246,7 +246,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         _tenantUtil = tenantUtil;
         _lazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
         _setupInfo = setupInfo;
-        _logger = monitor.CurrentValue;
+        _logger = logger;
         _fileUtility = fileUtility;
         _tempPath = tempPath;
         TenantID = tenantManager.GetCurrentTenant().Id;

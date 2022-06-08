@@ -277,7 +277,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                     catch (Exception ex)
                     {
                         Error = ex.Message;
-                        Logger.Error(Error, ex);
+                        Logger.ErrorWithException(ex);
                     }
 
                     await LinkDao.DeleteAllLinkAsync(file.Id.ToString());

@@ -38,7 +38,7 @@ public class ThirdPartyController : ControllerBase
         _oAuth20TokenHelper = oAuth20TokenHelper;
     }
 
-    [Read("{provider}")]
+    [HttpGet("{provider}")]
     public object Get(LoginProviderEnum provider)
     {
         var desktop = HttpContext.Request.Query["desktop"] == "true";
@@ -88,7 +88,7 @@ public class ThirdPartyController : ControllerBase
         return null;
     }
 
-    [Read("{provider}/code")]
+    [HttpGet("{provider}/code")]
     public object GetCode(string redirect, string code, string error)
     {
         try

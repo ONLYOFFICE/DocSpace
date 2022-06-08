@@ -48,7 +48,7 @@ public class SharePointProviderInfo : IProviderInfo
     public string FolderId { get; set; }
 
     public SharePointProviderInfo(
-        ILog logger,
+        ILogger<SharePointProviderInfo> logger,
         IServiceProvider serviceProvider,
         TenantUtil tenantUtil,
         SharePointProviderInfoHelper sharePointProviderInfoHelper,
@@ -72,7 +72,7 @@ public class SharePointProviderInfo : IProviderInfo
         }
         catch (Exception e)
         {
-            _logger.Warn("CheckAccess", e);
+            _logger.WarningCheckAccess(e);
 
             return Task.FromResult(false);
         }
@@ -360,7 +360,7 @@ public class SharePointProviderInfo : IProviderInfo
         }
     }
 
-    private readonly ILog _logger;
+    private readonly ILogger<SharePointProviderInfo> _logger;
     private readonly IServiceProvider _serviceProvider;
     private readonly TenantUtil _tenantUtil;
     private readonly SharePointProviderInfoHelper _sharePointProviderInfoHelper;

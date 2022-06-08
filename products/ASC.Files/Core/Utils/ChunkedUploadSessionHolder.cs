@@ -31,14 +31,14 @@ public class ChunkedUploadSessionHolder
 {
     public static readonly TimeSpan SlidingExpiration = TimeSpan.FromHours(12);
 
-    private readonly IOptionsMonitor<ILog> _options;
+    private readonly ILogger _options;
     private readonly GlobalStore _globalStore;
     private readonly SetupInfo _setupInfo;
     private readonly TempPath _tempPath;
     private readonly FileHelper _fileHelper;
 
     public ChunkedUploadSessionHolder(
-        IOptionsMonitor<ILog> options,
+        ILogger<ChunkedUploadSessionHolder> options,
         GlobalStore globalStore,
         SetupInfo setupInfo,
         TempPath tempPath,

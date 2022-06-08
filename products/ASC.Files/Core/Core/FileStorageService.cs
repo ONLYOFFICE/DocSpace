@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.EventBus.Abstractions;
+
 using UrlShortener = ASC.Web.Core.Utility.UrlShortener;
 
 namespace ASC.Web.Files.Services.WCFService;
@@ -73,9 +75,10 @@ public class FileStorageService<T> //: IFileStorageService
     private readonly FileOperationsManager _fileOperationsManager;
     private readonly TenantManager _tenantManager;
     private readonly FileTrackerHelper _fileTracker;
-    private readonly ICacheNotify<ThumbnailRequest> _thumbnailNotify;
+    private readonly IEventBus _eventBus;
+    
     private readonly EntryStatusManager _entryStatusManager;
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
 
     public FileStorageService(
         Global global,
@@ -91,7 +94,7 @@ public class FileStorageService<T> //: IFileStorageService
         CustomNamingPeople customNamingPeople,
         DisplayUserSettingsHelper displayUserSettingsHelper,
         IHttpContextAccessor httpContextAccessor,
-        IOptionsMonitor<ILog> optionMonitor,
+        ILoggerProvider optionMonitor,
         PathProvider pathProvider,
         FileSecurity fileSecurity,
         SocketManager socketManager,
@@ -118,7 +121,7 @@ public class FileStorageService<T> //: IFileStorageService
         FileOperationsManager fileOperationsManager,
         TenantManager tenantManager,
         FileTrackerHelper fileTracker,
-        ICacheNotify<ThumbnailRequest> thumbnailNotify,
+        IEventBus eventBus,
         EntryStatusManager entryStatusManager,
         CompressToArchive compressToArchive,
         OFormRequestManager oFormRequestManager)
@@ -159,11 +162,11 @@ public class FileStorageService<T> //: IFileStorageService
         _consumerFactory = consumerFactory;
         _encryptionKeyPairHelper = encryptionKeyPairHelper;
         _settingsManager = settingsManager;
-        _logger = optionMonitor.Get("ASC.Files");
+        _logger = optionMonitor.CreateLogger("ASC.Files");
         _fileOperationsManager = fileOperationsManager;
         _tenantManager = tenantManager;
         _fileTracker = fileTracker;
-        _thumbnailNotify = thumbnailNotify;
+        _eventBus = eventBus;
         _entryStatusManager = entryStatusManager;
         _compressToArchive = compressToArchive;
         _oFormRequestManager = oFormRequestManager;
@@ -1808,7 +1811,7 @@ public class FileStorageService<T> //: IFileStorageService
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error("DocEditor", ex);
+                    _logger.ErrorDocEditor(ex);
                     throw;
                 }
 
@@ -1852,7 +1855,7 @@ public class FileStorageService<T> //: IFileStorageService
             //move common thirdparty storage userFrom
             foreach (var commonProviderInfo in commonProvidersInfo)
             {
-                _logger.InfoFormat("Reassign provider {0} from {1} to {2}", commonProviderInfo.ID, userFrom.Id, userTo.Id);
+                _logger.InformationReassignProvider(commonProviderInfo.ID, userFrom.Id, userTo.Id);
                 await providerDao.UpdateProviderInfoAsync(commonProviderInfo.ID, null, null, FolderType.DEFAULT, userTo.Id);
             }
         }
@@ -1900,7 +1903,7 @@ public class FileStorageService<T> //: IFileStorageService
             //delete thirdparty storage
             foreach (var myProviderInfo in providersInfo)
             {
-                _logger.InfoFormat("Delete provider {0} for {1}", myProviderInfo.ID, userId);
+                _logger.InformationDeleteProvider(myProviderInfo.ID, userId);
                 await providerDao.RemoveProviderInfoAsync(myProviderInfo.ID);
             }
         }
@@ -2627,24 +2630,18 @@ public class FileStorageService<T> //: IFileStorageService
     {
         try
         {
-            var req = new ThumbnailRequest()
-            {
-                Tenant = _tenantManager.GetCurrentTenant().Id,
-                BaseUrl = _baseCommonLinkUtility.GetFullAbsolutePath("")
-            };
-
             var (fileIntIds, _) = FileOperationsManager.GetIds(fileIds);
 
-            foreach (var f in fileIntIds)
+            _eventBus.Publish(new ThumbnailRequestedIntegrationEvent(Guid.Empty, _tenantManager.GetCurrentTenant().Id)
             {
-                req.Files.Add(f);
-            }
+                 BaseUrl = _baseCommonLinkUtility.GetFullAbsolutePath(""),
+                 FileIds = fileIntIds
+            });
 
-            _thumbnailNotify.Publish(req, CacheNotifyAction.Insert);
         }
         catch (Exception e)
         {
-            _logger.Error("CreateThumbnails", e);
+            _logger.ErrorCreateThumbnails(e);
         }
 
         return fileIds;
@@ -2652,27 +2649,9 @@ public class FileStorageService<T> //: IFileStorageService
 
     public async Task<IEnumerable<JsonElement>> CreateThumbnailsAsync(List<JsonElement> fileIds)
     {
-        try
-        {
-            var req = new ThumbnailRequest()
-            {
-                Tenant = _tenantManager.GetCurrentTenant().Id,
-                BaseUrl = _baseCommonLinkUtility.GetFullAbsolutePath("")
-            };
+        CreateThumbnails(fileIds);
 
-            var (fileIntIds, _) = FileOperationsManager.GetIds(fileIds);
-
-            foreach (var f in fileIntIds)
-            {
-                req.Files.Add(f);
-            }
-
-            await _thumbnailNotify.PublishAsync(req, CacheNotifyAction.Insert);
-        }
-        catch (Exception e)
-        {
-            _logger.Error("CreateThumbnails", e);
-        }
+        await Task.CompletedTask;
 
         return fileIds;
     }
@@ -2729,11 +2708,11 @@ public class FileStorageService<T> //: IFileStorageService
     {
         if (warning)
         {
-            _logger.Info(error);
+            _logger.Information(error.ToString());
         }
         else
         {
-            _logger.Error(error);
+            _logger.ErrorFileStorageService(error);
         }
 
         return new InvalidOperationException(error.Message, error);

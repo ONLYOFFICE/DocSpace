@@ -194,10 +194,10 @@ public class FileSharingAceHelper<T>
             }
         }
 
-            foreach (var userId in usersWithoutRight)
-            {
-                await _fileMarker.RemoveMarkAsNewAsync(entry, userId);
-            }
+        foreach (var userId in usersWithoutRight)
+        {
+            await _fileMarker.RemoveMarkAsNewAsync(entry, userId);
+        }
 
         return changed;
     }
@@ -336,7 +336,7 @@ public class FileSharingHelper
 [Scope]
 public class FileSharing
 {
-    private readonly ILog _logger;
+    private readonly ILogger<FileSharing> _logger;
     private readonly Global _global;
     private readonly FileSecurity _fileSecurity;
     private readonly AuthContext _authContext;
@@ -351,7 +351,7 @@ public class FileSharing
         FileSecurity fileSecurity,
         AuthContext authContext,
         UserManager userManager,
-        IOptionsMonitor<ILog> optionsMonitor,
+        ILogger<FileSharing> logger,
         DisplayUserSettingsHelper displayUserSettingsHelper,
         FileShareLink fileShareLink,
         IDaoFactory daoFactory,
@@ -365,7 +365,7 @@ public class FileSharing
         _fileShareLink = fileShareLink;
         _daoFactory = daoFactory;
         _fileSharingHelper = fileSharingHelper;
-        _logger = optionsMonitor.CurrentValue;
+        _logger = logger;
     }
 
     public Task<bool> CanSetAccessAsync<T>(FileEntry<T> entry)
@@ -382,7 +382,7 @@ public class FileSharing
 
         if (!await CanSetAccessAsync(entry))
         {
-            _logger.ErrorFormat("User {0} can't get shared info for {1} {2}", _authContext.CurrentAccount.ID, entry.FileEntryType == FileEntryType.File ? "file" : "folder", entry.Id);
+            _logger.ErrorUserCanTGetSharedInfo(_authContext.CurrentAccount.ID, entry.FileEntryType, entry.Id.ToString());
 
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
         }
@@ -553,7 +553,7 @@ public class FileSharing
             }
             catch (Exception e)
             {
-                _logger.Error(e);
+                _logger.ErrorGetSharedInfo(e);
 
                 throw new InvalidOperationException(e.Message, e);
             }

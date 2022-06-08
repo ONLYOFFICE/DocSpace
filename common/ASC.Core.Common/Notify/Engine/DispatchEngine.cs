@@ -29,18 +29,18 @@ namespace ASC.Notify.Engine;
 [Singletone]
 public class DispatchEngine
 {
-    private readonly ILog _logger;
-    private readonly ILog _messagesLogger;
+    private readonly ILogger _logger;
+    private readonly ILogger _messagesLogger;
     private readonly Context _context;
     private readonly bool _logOnly;
 
-    public DispatchEngine(Context context, IConfiguration configuration, IOptionsMonitor<ILog> options)
+    public DispatchEngine(Context context, IConfiguration configuration, ILoggerProvider options)
     {
-        _logger = options.Get("ASC.Notify");
-        _messagesLogger = options.Get("ASC.Notify.Messages");
+        _logger = options.CreateLogger("ASC.Notify");
+        _messagesLogger = options.CreateLogger("ASC.Notify.Messages");
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _logOnly = "log".Equals(configuration["core:notify:postman"], StringComparison.InvariantCultureIgnoreCase);
-        _logger.DebugFormat("LogOnly: {0}", _logOnly);
+        _logger.LogOnly(_logOnly);
     }
 
     public SendResponse Dispatch(INoticeMessage message, string senderName)
@@ -68,18 +68,17 @@ public class DispatchEngine
 
     private void LogResponce(INoticeMessage message, SendResponse response, string senderName)
     {
-        var logmsg = string.Format("[{0}] sended to [{1}] over {2}, status: {3} ", message.Subject, message.Recipient, senderName, response.Result);
         if (response.Result == SendResult.Inprogress)
         {
-            _logger.Debug(logmsg, response.Exception);
+            _logger.LogDebugResponceWithException(message.Subject, message.Recipient, senderName, response.Result, response.Exception);
         }
         else if (response.Result == SendResult.Impossible)
         {
-            _logger.Error(logmsg, response.Exception);
+            _logger.LogErrorResponceWithException( message.Subject, message.Recipient, senderName, response.Result, response.Exception);
         }
         else
         {
-            _logger.Debug(logmsg);
+            _logger.LogDebugResponce(message.Subject, message.Recipient, senderName, response.Result);
         }
     }
 
@@ -87,18 +86,15 @@ public class DispatchEngine
     {
         try
         {
-            if (_messagesLogger.IsDebugEnabled)
-            {
-                _messagesLogger.DebugFormat("[{5}]->[{1}] by [{6}] to [{2}] at {0}\r\n\r\n[{3}]\r\n{4}\r\n{7}",
-                    DateTime.Now,
-                    message.Recipient.Name,
-                    0 < message.Recipient.Addresses.Length ? message.Recipient.Addresses[0] : string.Empty,
-                    message.Subject,
-                    (message.Body ?? string.Empty).Replace(Environment.NewLine, Environment.NewLine + @"   "),
-                    message.Action,
-                    senderName,
-                    new string('-', 80));
-            }
+            _messagesLogger.LogMessage(
+                message.Action,
+                message.Recipient.Name,
+                senderName,
+                0 < message.Recipient.Addresses.Length ? message.Recipient.Addresses[0] : string.Empty,
+                DateTime.Now,
+                message.Subject,
+                (message.Body ?? string.Empty).Replace(Environment.NewLine, Environment.NewLine + @"   "),
+                new string('-', 80));
         }
         catch { }
     }

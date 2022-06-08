@@ -24,29 +24,33 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using CacheNotifyAction = ASC.Common.Caching.CacheNotifyAction;
-
 namespace ASC.Core.Notify;
 
 [Singletone]
 public class NotifyServiceClient : INotifyService
-{
-    private readonly ICacheNotify<NotifyMessage> _cacheNotify;
-    private readonly ICacheNotify<NotifyInvoke> _notifyInvoke;
+{ 
+    private readonly SecurityContext _securityContext;
+    private readonly IEventBus _eventBus;
 
-    public NotifyServiceClient(ICacheNotify<NotifyMessage> cacheNotify, ICacheNotify<NotifyInvoke> notifyInvoke)
+    public NotifyServiceClient(IEventBus eventBus, SecurityContext securityContext)
     {
-        _cacheNotify = cacheNotify;
-        _notifyInvoke = notifyInvoke;
+        _eventBus = eventBus;
+        _securityContext = securityContext;
     }
 
     public void SendNotifyMessage(NotifyMessage m)
-    {
-        _cacheNotify.Publish(m, CacheNotifyAction.InsertOrUpdate);
+    {       
+        _eventBus.Publish(new NotifySendMessageRequestedIntegrationEvent(_securityContext.CurrentAccount.ID, m.TenantId)
+        {
+            NotifyMessage = m
+        });
     }
 
     public void InvokeSendMethod(NotifyInvoke notifyInvoke)
     {
-        _notifyInvoke.Publish(notifyInvoke, CacheNotifyAction.InsertOrUpdate);
+        _eventBus.Publish(new NotifyInvokeSendMethodRequestedIntegrationEvent(_securityContext.CurrentAccount.ID, notifyInvoke.Tenant)
+        {
+            NotifyInvoke = notifyInvoke
+        });
     }
 }

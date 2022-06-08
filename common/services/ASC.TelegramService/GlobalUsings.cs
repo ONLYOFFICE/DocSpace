@@ -26,29 +26,35 @@
 
 global using System.Net;
 global using System.Reflection;
-global using System.Runtime.Caching;
 global using System.Text.RegularExpressions;
 
 global using ASC.Api.Core;
 global using ASC.Api.Core.Extensions;
 global using ASC.Common;
 global using ASC.Common.Caching;
-global using ASC.Common.Logging;
+global using ASC.Common.Log;
 global using ASC.Core;
 global using ASC.Core.Common.Configuration;
 global using ASC.Core.Common.Notify;
+global using ASC.Core.Common.Notify.IntegrationEvents.Events;
 global using ASC.Core.Common.Notify.Telegram;
+global using ASC.EventBus.Abstractions;
+global using ASC.EventBus.Log;
 global using ASC.FederatedLogin.LoginProviders;
 global using ASC.Notify.Messages;
 global using ASC.TelegramService;
 global using ASC.TelegramService.Core;
+global using ASC.TelegramService.IntegrationEvents.EventHandling;
+global using ASC.TelegramService.Log;
 
 global using Autofac;
 
 global using Microsoft.AspNetCore.Builder;
+global using Microsoft.Extensions.Caching.Distributed;
 global using Microsoft.Extensions.Hosting.WindowsServices;
-global using Microsoft.Extensions.Options;
+global using Microsoft.Extensions.Logging;
 
 global using Telegram.Bot;
-global using Telegram.Bot.Args;
+global using Telegram.Bot.Exceptions;
 global using Telegram.Bot.Types;
+global using Telegram.Bot.Types.Enums;

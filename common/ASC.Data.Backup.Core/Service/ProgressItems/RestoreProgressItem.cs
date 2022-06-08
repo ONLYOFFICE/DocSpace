@@ -54,6 +54,8 @@ namespace ASC.Data.Backup.Services;
 [Transient]
 public class RestoreProgressItem : BaseBackupProgressItem
 {
+    private readonly ILogger<RestoreProgressItem> _logger;
+    private readonly ICache _cache;
     private TenantManager _tenantManager;
     private BackupStorageFactory _backupStorageFactory;
     private readonly NotifyHelper _notifyHelper;
@@ -66,13 +68,15 @@ public class RestoreProgressItem : BaseBackupProgressItem
     private Dictionary<string, string> _configPaths;
 
     public RestoreProgressItem(
-        ILog logger,
+        ILogger<RestoreProgressItem> logger,
+        ICache cache,
         IServiceScopeFactory serviceScopeFactory,
         NotifyHelper notifyHelper,
         CoreBaseSettings coreBaseSettings)
         : base(logger, serviceScopeFactory)
     {
-
+        _logger = logger;
+        _cache = cache;
         _notifyHelper = notifyHelper;
         _coreBaseSettings = coreBaseSettings;
 
@@ -155,7 +159,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
 
             if (restoreTask.Dump)
             {
-                AscCacheNotify.OnClearCache();
+                _cache.Reset();
 
                 if (Notify)
                 {
@@ -199,7 +203,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
         }
         catch (Exception error)
         {
-            Logger.Error(error);
+            _logger.ErrorRestoreProgressItem(error);
             Exception = error;
 
             if (tenant != null)
@@ -216,7 +220,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
             }
             catch (Exception error)
             {
-                Logger.Error("publish", error);
+                _logger.ErrorPublish(error);
             }
 
             if (File.Exists(tempFile))

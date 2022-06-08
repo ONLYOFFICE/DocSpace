@@ -37,12 +37,12 @@ public class MessagesRepository : IDisposable
     private readonly IDictionary<string, EventMessage> _cache;
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly IMapper _mapper;
-    private readonly ILog _logger;
+    private readonly ILogger<MessagesRepository> _logger;
     private readonly Timer _timer;
     private Parser _parser;
     private readonly HashSet<MessageAction> _forceSaveAuditActions = new HashSet<MessageAction> { MessageAction.RoomInviteLinkUsed };
 
-    public MessagesRepository(IServiceScopeFactory serviceScopeFactory, ILog logger, IMapper mapper)
+    public MessagesRepository(IServiceScopeFactory serviceScopeFactory, ILogger<MessagesRepository> logger, IMapper mapper)
     {
         _cacheTime = TimeSpan.FromMinutes(1);
         _cache = new Dictionary<string, EventMessage>();
@@ -79,7 +79,7 @@ public class MessagesRepository : IDisposable
                 }
                 catch (Exception e)
                 {
-                    _logger.Error("ForceSave " + message.Id, e);
+                    _logger.ErrorFlushCache(message.Id, e);
                 }
             }
             else
@@ -130,35 +130,55 @@ public class MessagesRepository : IDisposable
 
         using var scope = _serviceScopeFactory.CreateScope();
         using var ef = scope.ServiceProvider.GetService<DbContextManager<MessagesContext>>().Get("messages");
-        using var tx = ef.Database.BeginTransaction(IsolationLevel.ReadUncommitted);
-        var dict = new Dictionary<string, ClientInfo>();
+        var strategy = ef.Database.CreateExecutionStrategy();
 
-        foreach (var message in events)
+        strategy.Execute(() =>
         {
-            if (!string.IsNullOrEmpty(message.UAHeader))
+            using var tx = ef.Database.BeginTransaction(IsolationLevel.ReadUncommitted);
+            var dict = new Dictionary<string, ClientInfo>();
+
+            foreach (var message in events)
             {
-                try
+                if (!string.IsNullOrEmpty(message.UAHeader))
                 {
-                    dict.TryGetValue(message.UAHeader, out var clientInfo);
+                    try
+                    {
+                        dict.TryGetValue(message.UAHeader, out var clientInfo);
 
-                    AddClientInfo(message, clientInfo);
+                        AddClientInfo(message, clientInfo);
 
-                    dict.Add(message.UAHeader, clientInfo);
+                        if (dict.TryGetValue(message.UAHeader, out clientInfo))
+                        {
+
+                        }
+                        else
+                        {
+                            _parser = _parser ?? Parser.GetDefault();
+                            clientInfo = _parser.Parse(message.UAHeader);
+                            dict.Add(message.UAHeader, clientInfo);
+                        }
+
+                        if (clientInfo != null)
+                        {
+                            message.Browser = GetBrowser(clientInfo);
+                            message.Platform = GetPlatform(clientInfo);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        _logger.ErrorFlushCache(message.Id, e);
+                    }
                 }
-                catch (Exception e)
+
+                // messages with action code < 2000 are related to login-history
+                if ((int)message.Action >= 2000)
                 {
-                    _logger.Error("FlushCache " + message.Id, e);
+                    AddAuditEvent(message, ef);
                 }
             }
 
-            // messages with action code < 2000 are related to login-history
-            if ((int)message.Action >= 2000)
-            {
-                AddAuditEvent(message, ef);
-            }
-        }
-
-        tx.Commit();
+            tx.Commit();
+        });
     }
 
     private void AddLoginEvent(EventMessage message, MessagesContext dbContext)

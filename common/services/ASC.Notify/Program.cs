@@ -44,7 +44,6 @@ builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
 
     services.Configure<NotifyServiceCfg>(hostContext.Configuration.GetSection("notify"));
 
-    diHelper.TryAdd<NotifyService>();
     diHelper.TryAdd<NotifySenderService>();
     diHelper.TryAdd<NotifyCleanerService>();
     diHelper.TryAdd<TenantManager>();
@@ -56,9 +55,11 @@ builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
 
     services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
 
-    services.AddHostedService<NotifyService>();
-    services.AddHostedService<NotifySenderService>();
-    services.AddHostedService<NotifyCleanerService>();
+    diHelper.TryAdd<NotifyInvokeSendMethodRequestedIntegrationEventHandler>();
+    diHelper.TryAdd<NotifySendMessageRequestedIntegrationEventHandler>();
+
+    services.AddActivePassiveHostedService<NotifySenderService>();
+    services.AddActivePassiveHostedService<NotifyCleanerService>();
 });
 
 var startup = new BaseWorkerStartup(builder.Configuration);
@@ -74,4 +75,14 @@ var app = builder.Build();
 
 startup.Configure(app);
 
-await app.RunAsync();
+var eventBus = ((IApplicationBuilder)app).ApplicationServices.GetRequiredService<IEventBus>();
+
+eventBus.Subscribe<NotifyInvokeSendMethodRequestedIntegrationEvent, NotifyInvokeSendMethodRequestedIntegrationEventHandler>();
+eventBus.Subscribe<NotifySendMessageRequestedIntegrationEvent, NotifySendMessageRequestedIntegrationEventHandler>();
+
+app.Run();
+
+public partial class Program
+{
+    public static string AppName = Assembly.GetExecutingAssembly().GetName().Name;
+}

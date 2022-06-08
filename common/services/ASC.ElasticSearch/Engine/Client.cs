@@ -31,13 +31,13 @@ public class Client
 {
     private static volatile ElasticClient _client;
     private static readonly object _locker = new object();
-    private readonly ILog _logger;
+    private readonly ILogger _logger;
     private readonly Settings _settings;
 
-    public Client(IOptionsMonitor<ILog> option, CoreConfiguration configuration, Settings settings)
+    public Client(ILoggerProvider option, Settings settings)
     {
-        _logger = option.Get("ASC.Indexer");
-        _settings = configuration.GetSection<Settings>(Tenant.DefaultTenant) ?? settings;
+        _logger = option.CreateLogger("ASC.Indexer");
+        _settings = settings;
     }
 
     public ElasticClient Instance
@@ -62,7 +62,7 @@ public class Client
                     .MaximumRetries(10)
                     .ThrowExceptions();
 
-                if (_logger.IsTraceEnabled)
+                if (_logger.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Trace))
                 {
                     settings.DisableDirectStreaming().PrettyJson().EnableDebugMode(r =>
                     {
@@ -75,7 +75,7 @@ public class Client
 
                         if (r.HttpStatusCode != null && (r.HttpStatusCode == 403 || r.HttpStatusCode == 500) && r.ResponseBodyInBytes != null)
                         {
-                            _logger.TraceFormat("Response: {0}", Encoding.UTF8.GetString(r.ResponseBodyInBytes));
+                            _logger.TraceResponse(Encoding.UTF8.GetString(r.ResponseBodyInBytes));
                         }
                     });
                 }
@@ -96,7 +96,7 @@ public class Client
                 }
                 catch (Exception e)
                 {
-                    _logger.Error(e);
+                    _logger.ErrorClient(e);
                 }
 
                 return _client;
@@ -118,7 +118,7 @@ public class Client
 
         var result = elasticClient.Ping(new PingRequest());
 
-        _logger.DebugFormat("Ping {0}", result.DebugInformation);
+        _logger.DebugPing(result.DebugInformation);
 
         return result.IsValid;
     }

@@ -342,6 +342,32 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     public async Task<int> InternalSaveFolderAsync(Folder<int> folder, IDbContextTransaction transaction)
     {
+        var folderId = folder.Id;
+
+        if (transaction == null)
+        {
+            var strategy = FilesDbContext.Database.CreateExecutionStrategy();
+
+            await strategy.ExecuteAsync(async () =>
+            {
+                using var tx = await FilesDbContext.Database.BeginTransactionAsync();
+
+                folderId = await InternalSaveFolderToDbAsync(folder);
+
+                await tx.CommitAsync().ConfigureAwait(false);            
+            });
+        }
+        else
+        {
+            folderId = await InternalSaveFolderToDbAsync(folder);
+        }
+   
+        //FactoryIndexer.IndexAsync(FoldersWrapper.GetFolderWrapper(ServiceProvider, folder));
+        return folderId;
+    }
+
+    public async Task<int> InternalSaveFolderToDbAsync(Folder<int> folder)
+    {
         folder.Title = Global.ReplaceInvalidCharsAndTruncate(folder.Title);
 
         folder.ModifiedOn = _tenantUtil.DateTimeNow();
@@ -357,8 +383,6 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         }
 
         var isnew = false;
-
-        var tx = transaction ?? FilesDbContext.Database.BeginTransaction();
 
         if (folder.Id != default && await IsExistAsync(folder.Id).ConfigureAwait(false))
         {
@@ -437,19 +461,13 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
         }
 
-        if (transaction == null)
-        {
-            await tx.CommitAsync().ConfigureAwait(false);
-            tx.Dispose();
-        }
-
         if (isnew)
         {
             await RecalculateFoldersCountAsync(folder.Id).ConfigureAwait(false);
         }
 
-        //FactoryIndexer.IndexAsync(FoldersWrapper.GetFolderWrapper(ServiceProvider, folder));
         return folder.Id;
+
     }
 
     private Task<bool> IsExistAsync(int folderId)
@@ -470,66 +488,70 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     private async Task InternalDeleteFolderAsync(int id)
     {
-        using var tx = FilesDbContext.Database.BeginTransaction();
-        var subfolders =
-            await FilesDbContext.Tree
-            .AsQueryable()
-            .Where(r => r.ParentId == id)
-            .Select(r => r.FolderId)
-            .ToListAsync().ConfigureAwait(false);
+        var strategy = FilesDbContext.Database.CreateExecutionStrategy();
 
-        if (!subfolders.Contains(id))
+        await strategy.ExecuteAsync(async () =>
         {
-            subfolders.Add(id); // chashed folder_tree
-        }
+            using var tx = await FilesDbContext.Database.BeginTransactionAsync();
+            var subfolders =
+                await FilesDbContext.Tree
+                .AsQueryable()
+                .Where(r => r.ParentId == id)
+                .Select(r => r.FolderId)
+                .ToListAsync().ConfigureAwait(false);
 
-        var parent = await Query(FilesDbContext.Folders)
-            .Where(r => r.Id == id)
-            .Select(r => r.ParentId)
-            .FirstOrDefaultAsync().ConfigureAwait(false);
+            if (!subfolders.Contains(id))
+            {
+                subfolders.Add(id); // chashed folder_tree
+            }
 
-        var folderToDelete = await Query(FilesDbContext.Folders).Where(r => subfolders.Contains(r.Id)).ToListAsync();
-        FilesDbContext.Folders.RemoveRange(folderToDelete);
+            var parent = await Query(FilesDbContext.Folders)
+                .Where(r => r.Id == id)
+                .Select(r => r.ParentId)
+                .FirstOrDefaultAsync().ConfigureAwait(false);
 
-        foreach (var f in folderToDelete)
-        {
-            await _factoryIndexer.DeleteAsync(f).ConfigureAwait(false);
-        }
+            var folderToDelete = await Query(FilesDbContext.Folders).Where(r => subfolders.Contains(r.Id)).ToListAsync();
+            FilesDbContext.Folders.RemoveRange(folderToDelete);
 
-        var treeToDelete = await FilesDbContext.Tree.AsQueryable().Where(r => subfolders.Contains(r.FolderId)).ToListAsync();
-        FilesDbContext.Tree.RemoveRange(treeToDelete);
+            foreach (var f in folderToDelete)
+            {
+                await _factoryIndexer.DeleteAsync(f).ConfigureAwait(false);
+            }
 
-        var subfoldersStrings = subfolders.Select(r => r.ToString()).ToList();
-        var linkToDelete = await Query(FilesDbContext.TagLink)
-            .Where(r => subfoldersStrings.Contains(r.EntryId))
-            .Where(r => r.EntryType == FileEntryType.Folder)
-            .ToListAsync();
-        FilesDbContext.TagLink.RemoveRange(linkToDelete);
+            var treeToDelete = await FilesDbContext.Tree.AsQueryable().Where(r => subfolders.Contains(r.FolderId)).ToListAsync();
+            FilesDbContext.Tree.RemoveRange(treeToDelete);
 
-        var tagsToRemove = await Query(FilesDbContext.Tag)
-            .Where(r => !Query(FilesDbContext.TagLink).Any(a => a.TagId == r.Id))
-            .ToListAsync();
-
-        FilesDbContext.Tag.RemoveRange(tagsToRemove);
-
-        var securityToDelete = await Query(FilesDbContext.Security)
+            var subfoldersStrings = subfolders.Select(r => r.ToString()).ToList();
+            var linkToDelete = await Query(FilesDbContext.TagLink)
                 .Where(r => subfoldersStrings.Contains(r.EntryId))
                 .Where(r => r.EntryType == FileEntryType.Folder)
                 .ToListAsync();
+            FilesDbContext.TagLink.RemoveRange(linkToDelete);
 
-        FilesDbContext.Security.RemoveRange(securityToDelete);
-        await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+            var tagsToRemove = await Query(FilesDbContext.Tag)
+                .Where(r => !Query(FilesDbContext.TagLink).Any(a => a.TagId == r.Id))
+                .ToListAsync();
 
-        var bunchToDelete = await Query(FilesDbContext.BunchObjects)
-            .Where(r => r.LeftNode == id.ToString())
-            .ToListAsync();
+            FilesDbContext.Tag.RemoveRange(tagsToRemove);
 
-        FilesDbContext.RemoveRange(bunchToDelete);
-        await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+            var securityToDelete = await Query(FilesDbContext.Security)
+                    .Where(r => subfoldersStrings.Contains(r.EntryId))
+                    .Where(r => r.EntryType == FileEntryType.Folder)
+                    .ToListAsync();
 
-        await tx.CommitAsync().ConfigureAwait(false);
+            FilesDbContext.Security.RemoveRange(securityToDelete);
+            await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-        await RecalculateFoldersCountAsync(parent).ConfigureAwait(false);
+            var bunchToDelete = await Query(FilesDbContext.BunchObjects)
+                .Where(r => r.LeftNode == id.ToString())
+                .ToListAsync();
+
+            FilesDbContext.RemoveRange(bunchToDelete);
+            await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+
+            await tx.CommitAsync().ConfigureAwait(false);
+            await RecalculateFoldersCountAsync(parent).ConfigureAwait(false);
+        });
 
         //FactoryIndexer.DeleteAsync(new FoldersWrapper { Id = id });
     }
@@ -551,88 +573,95 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     public async Task<int> MoveFolderAsync(int folderId, int toFolderId, CancellationToken? cancellationToken)
     {
-        using (var tx = FilesDbContext.Database.BeginTransaction())
+        var strategy = FilesDbContext.Database.CreateExecutionStrategy();
+
+        await strategy.ExecuteAsync(async () =>
         {
-            var folder = await GetFolderAsync(folderId).ConfigureAwait(false);
-
-            if (folder.FolderType != FolderType.DEFAULT && folder.FolderType != FolderType.CustomRoom
-                && folder.FolderType != FolderType.FillingFormsRoom && folder.FolderType != FolderType.EditingRoom
-                && folder.FolderType != FolderType.ReadOnlyRoom && folder.FolderType != FolderType.ReviewRoom)
+            using (var tx = await FilesDbContext.Database.BeginTransactionAsync())
             {
-                throw new ArgumentException("It is forbidden to move the System folder.", nameof(folderId));
-            }
+                var folder = await GetFolderAsync(folderId).ConfigureAwait(false);
 
-            var recalcFolders = new List<int> { toFolderId };
-            var parent = await FilesDbContext.Folders
-                .AsQueryable()
-                .Where(r => r.Id == folderId)
-                .Select(r => r.ParentId)
-                .FirstOrDefaultAsync()
-                .ConfigureAwait(false);
-
-            if (parent != 0 && !recalcFolders.Contains(parent))
-            {
-                recalcFolders.Add(parent);
-            }
-
-            var toUpdate = await Query(FilesDbContext.Folders)
-                .Where(r => r.Id == folderId)
-                .FirstOrDefaultAsync()
-                .ConfigureAwait(false);
-
-            toUpdate.ParentId = toFolderId;
-            toUpdate.ModifiedOn = DateTime.UtcNow;
-            toUpdate.ModifiedBy = _authContext.CurrentAccount.ID;
-
-            await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
-
-            var subfolders = await FilesDbContext.Tree
-                .AsQueryable()
-                .Where(r => r.ParentId == folderId)
-                .ToDictionaryAsync(r => r.FolderId, r => r.Level)
-                .ConfigureAwait(false);
-
-            var toDelete = await FilesDbContext.Tree
-                .AsQueryable()
-                .Where(r => subfolders.ContainsKey(r.FolderId) && !subfolders.ContainsKey(r.ParentId))
-                .ToListAsync();
-
-            FilesDbContext.Tree.RemoveRange(toDelete);
-            await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
-
-            var toInsert = await FilesDbContext.Tree
-                .AsQueryable()
-                .Where(r => r.FolderId == toFolderId)
-                .OrderBy(r => r.Level)
-                .ToListAsync()
-                .ConfigureAwait(false);
-
-            foreach (var subfolder in subfolders)
-            {
-                foreach (var f in toInsert)
+                if (folder.FolderType != FolderType.DEFAULT && folder.FolderType != FolderType.CustomRoom
+                    && folder.FolderType != FolderType.FillingFormsRoom && folder.FolderType != FolderType.EditingRoom
+                    && folder.FolderType != FolderType.ReadOnlyRoom && folder.FolderType != FolderType.ReviewRoom)
                 {
-                    var newTree = new DbFolderTree
+                    throw new ArgumentException("It is forbidden to move the System folder.", nameof(folderId));
+                }
+
+                var recalcFolders = new List<int> { toFolderId };
+                var parent = await FilesDbContext.Folders
+                    .AsQueryable()
+                    .Where(r => r.Id == folderId)
+                    .Select(r => r.ParentId)
+                    .FirstOrDefaultAsync()
+                    .ConfigureAwait(false);
+
+                if (parent != 0 && !recalcFolders.Contains(parent))
+                {
+                    recalcFolders.Add(parent);
+                }
+
+                var toUpdate = await Query(FilesDbContext.Folders)
+                    .Where(r => r.Id == folderId)
+                    .FirstOrDefaultAsync()
+                    .ConfigureAwait(false);
+
+                toUpdate.ParentId = toFolderId;
+                toUpdate.ModifiedOn = DateTime.UtcNow;
+                toUpdate.ModifiedBy = _authContext.CurrentAccount.ID;
+
+                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+
+                var subfolders = await FilesDbContext.Tree
+                    .AsQueryable()
+                    .Where(r => r.ParentId == folderId)
+                    .ToDictionaryAsync(r => r.FolderId, r => r.Level)
+                    .ConfigureAwait(false);
+
+#pragma warning disable CA1841 // Prefer Dictionary.Contains methods
+                var toDelete = await FilesDbContext.Tree
+                    .AsQueryable()
+                    .Where(r => subfolders.Keys.Contains(r.FolderId) && !subfolders.Keys.Contains(r.ParentId))
+                    .ToListAsync();
+#pragma warning restore CA1841 // Prefer Dictionary.Contains methods
+
+                FilesDbContext.Tree.RemoveRange(toDelete);
+                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+
+                var toInsert = await FilesDbContext.Tree
+                    .AsQueryable()
+                    .Where(r => r.FolderId == toFolderId)
+                    .OrderBy(r => r.Level)
+                    .ToListAsync()
+                    .ConfigureAwait(false);
+
+                foreach (var subfolder in subfolders)
+                {
+                    foreach (var f in toInsert)
                     {
-                        FolderId = subfolder.Key,
-                        ParentId = f.ParentId,
-                        Level = subfolder.Value + 1 + f.Level
-                    };
-                    await FilesDbContext.AddOrUpdateAsync(r => r.Tree, newTree).ConfigureAwait(false);
+                        var newTree = new DbFolderTree
+                        {
+                            FolderId = subfolder.Key,
+                            ParentId = f.ParentId,
+                            Level = subfolder.Value + 1 + f.Level
+                        };
+                        await FilesDbContext.AddOrUpdateAsync(r => r.Tree, newTree).ConfigureAwait(false);
+                    }
+                }
+
+                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+                await tx.CommitAsync().ConfigureAwait(false);
+
+                foreach (var e in recalcFolders)
+                {
+                    await RecalculateFoldersCountAsync(e);
+                }
+                foreach (var e in recalcFolders)
+                {
+                    await GetRecalculateFilesCountUpdateAsync(e);
                 }
             }
-
-            await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
-            await tx.CommitAsync().ConfigureAwait(false);
-
-            foreach (var e in recalcFolders)
-            {
-                await RecalculateFoldersCountAsync(e);
-            }
-            foreach (var e in recalcFolders)
-            {
-                await GetRecalculateFilesCountUpdateAsync(e);
-            }
-        }
+        });
 
         return folderId;
     }
@@ -1014,21 +1043,27 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                         folder.Title = key;
                         break;
                 }
-                using var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false);//NOTE: Maybe we shouldn't start transaction here at all
 
-                newFolderId = await SaveFolderAsync(folder, tx).ConfigureAwait(false); //Save using our db manager
+                var strategy = FilesDbContext.Database.CreateExecutionStrategy();
 
-                var newBunch = new DbFilesBunchObjects
+                await strategy.ExecuteAsync(async () =>
                 {
-                    LeftNode = newFolderId.ToString(),
-                    RightNode = key,
-                    TenantId = TenantID
-                };
+                    using var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false);//NOTE: Maybe we shouldn't start transaction here at all
 
-                await FilesDbContext.AddOrUpdateAsync(r => r.BunchObjects, newBunch).ConfigureAwait(false);
-                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+                    newFolderId = await SaveFolderAsync(folder, tx).ConfigureAwait(false); //Save using our db manager
 
-                await tx.CommitAsync().ConfigureAwait(false); //Commit changes
+                    var newBunch = new DbFilesBunchObjects
+                    {
+                        LeftNode = newFolderId.ToString(),
+                        RightNode = key,
+                        TenantId = TenantID
+                    };
+
+                    await FilesDbContext.AddOrUpdateAsync(r => r.BunchObjects, newBunch).ConfigureAwait(false);
+                    await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+
+                    await tx.CommitAsync().ConfigureAwait(false); //Commit changes
+                });
             }
 
             folderIds.Add(newFolderId);
@@ -1118,19 +1153,25 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                     folder.Title = key;
                     break;
             }
-            using var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false); //NOTE: Maybe we shouldn't start transaction here at all
-            newFolderId = await SaveFolderAsync(folder, tx).ConfigureAwait(false); //Save using our db manager
-            var toInsert = new DbFilesBunchObjects
+
+            var strategy = FilesDbContext.Database.CreateExecutionStrategy();
+
+            await strategy.ExecuteAsync(async () =>
             {
-                LeftNode = newFolderId.ToString(),
-                RightNode = key,
-                TenantId = TenantID
-            };
+                using var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false); //NOTE: Maybe we shouldn't start transaction here at all
+                newFolderId = await SaveFolderAsync(folder, tx).ConfigureAwait(false); //Save using our db manager
+                var toInsert = new DbFilesBunchObjects
+                {
+                    LeftNode = newFolderId.ToString(),
+                    RightNode = key,
+                    TenantId = TenantID
+                };
 
-            await FilesDbContext.AddOrUpdateAsync(r => r.BunchObjects, toInsert).ConfigureAwait(false);
-            await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+                await FilesDbContext.AddOrUpdateAsync(r => r.BunchObjects, toInsert).ConfigureAwait(false);
+                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-            await tx.CommitAsync().ConfigureAwait(false); //Commit changes
+                await tx.CommitAsync().ConfigureAwait(false); //Commit changes
+            });
         }
 
         return newFolderId;

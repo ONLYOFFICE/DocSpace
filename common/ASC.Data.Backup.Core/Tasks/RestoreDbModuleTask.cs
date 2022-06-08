@@ -26,22 +26,34 @@
 
 namespace ASC.Data.Backup.Tasks;
 
-internal class RestoreDbModuleTask : PortalTaskBase
+public class RestoreDbModuleTask : PortalTaskBase
 {
     private const int _transactionLength = 10000;
 
     private readonly IDataReadOperator _reader;
+    private readonly ILogger<RestoreDbModuleTask> _logger;
     private readonly IModuleSpecifics _module;
     private readonly ColumnMapper _columnMapper;
     private readonly bool _replaceDate;
     private readonly bool _dump;
 
-    public RestoreDbModuleTask(IOptionsMonitor<ILog> options, IModuleSpecifics module, IDataReadOperator reader, ColumnMapper columnMapper, DbFactory factory, bool replaceDate, bool dump, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider)
-        : base(factory, options, storageFactory, storageFactoryConfig, moduleProvider)
+    public RestoreDbModuleTask(
+        ILogger<RestoreDbModuleTask> logger,
+        IModuleSpecifics module,
+        IDataReadOperator reader,
+        ColumnMapper columnMapper,
+        DbFactory factory,
+        bool replaceDate,
+        bool dump,
+        StorageFactory storageFactory,
+        StorageFactoryConfig storageFactoryConfig,
+        ModuleProvider moduleProvider)
+        : base(factory, logger, storageFactory, storageFactoryConfig, moduleProvider)
     {
         _reader = reader ?? throw new ArgumentNullException(nameof(reader));
         _columnMapper = columnMapper ?? throw new ArgumentNullException(nameof(columnMapper));
         DbFactory = factory ?? throw new ArgumentNullException(nameof(factory));
+        _logger = logger;
         _module = module;
         _replaceDate = replaceDate;
         _dump = dump;
@@ -50,14 +62,14 @@ internal class RestoreDbModuleTask : PortalTaskBase
 
     public override void RunJob()
     {
-        Logger.DebugFormat("begin restore data for module {0}", _module.ModuleName);
+        _logger.DebugBeginRestoreDataForModule(_module.ModuleName);
         SetStepsCount(_module.Tables.Count(t => !_ignoredTables.Contains(t.Name)));
 
         using (var connection = DbFactory.OpenConnection())
         {
             foreach (var table in _module.GetTablesOrdered().Where(t => !_ignoredTables.Contains(t.Name) && t.InsertMethod != InsertMethod.None))
             {
-                Logger.DebugFormat("begin restore table {0}", table.Name);
+                _logger.DebugBeginRestoreTable(table.Name);
 
                 var transactionsCommited = 0;
                 var rowsInserted = 0;
@@ -69,11 +81,11 @@ internal class RestoreDbModuleTask : PortalTaskBase
                     onFailure: error => { throw ThrowHelper.CantRestoreTable(table.Name, error); });
 
                 SetStepCompleted();
-                Logger.DebugFormat("{0} rows inserted for table {1}", rowsInserted, table.Name);
+                _logger.DebugRowsInserted(rowsInserted, table.Name);
             }
         }
 
-        Logger.DebugFormat("end restore data for module {0}", _module.ModuleName);
+        _logger.DebugEndRestoreDataForModule(_module.ModuleName);
     }
 
     public string[] ExecuteArray(DbCommand command)
@@ -153,8 +165,7 @@ internal class RestoreDbModuleTask : PortalTaskBase
                     row);
                 if (insertCommand == null)
                 {
-                    Logger.WarnFormat("Can't create command to insert row to {0} with values [{1}]", tableInfo,
-                        row);
+                    _logger.WarningCantCreateCommand(tableInfo, row);
                     _columnMapper.Rollback();
 
                     continue;
@@ -176,9 +187,7 @@ internal class RestoreDbModuleTask : PortalTaskBase
                 {
                     if (!relation.Item2.HasTenantColumn())
                     {
-                        Logger.WarnFormat(
-                            "Table {0} does not contain tenant id column. Can't apply low importance relations on such tables.",
-                            relation.Item2.Name);
+                        _logger.WarningTableDoesNotContainTenantIdColumn(relation.Item2.Name);
 
                         continue;
                     }

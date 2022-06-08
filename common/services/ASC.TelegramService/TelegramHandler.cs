@@ -24,6 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+
 namespace ASC.TelegramService;
 
 [Singletone(Additional = typeof(TelegramHandlerExtension))]
@@ -31,56 +32,58 @@ public class TelegramHandler
 {
     private readonly Dictionary<int, TenantTgClient> _clients;
     private readonly CommandModule _command;
-    private readonly ILog _log;
+    private readonly ILogger<TelegramHandler> _log;
     private readonly IServiceScopeFactory _scopeFactory;
+    private readonly IDistributedCache _distributedCache;
 
-    public TelegramHandler(CommandModule command, IOptionsMonitor<ILog> option, IServiceScopeFactory scopeFactory)
+    public TelegramHandler(IDistributedCache distributedCache,
+                           CommandModule command,
+                           ILogger<TelegramHandler> logger,
+                           IServiceScopeFactory scopeFactory)
     {
         _command = command;
-        _log = option.CurrentValue;
+        _log = logger;
         _scopeFactory = scopeFactory;
         _clients = new Dictionary<int, TenantTgClient>();
+        _distributedCache = distributedCache;
+
         ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13;
     }
 
-    public Task SendMessage(NotifyMessage msg)
+    public async Task SendMessage(NotifyMessage msg)
     {
         if (string.IsNullOrEmpty(msg.Reciever))
         {
-            return Task.CompletedTask;
+            return;
         }
 
         if (!_clients.ContainsKey(msg.TenantId))
         {
-            return Task.CompletedTask;
+            return;
         }
 
-        return InternalSendMessage(msg);
-    }
-
-    private async Task InternalSendMessage(NotifyMessage msg)
-    {
         var scope = _scopeFactory.CreateScope();
-        var cachedTelegramDao = scope.ServiceProvider.GetService<IOptionsSnapshot<CachedTelegramDao>>().Value;
+        var telegramDao = scope.ServiceProvider.GetService<TelegramDao>();
 
         var client = _clients[msg.TenantId].Client;
 
         try
         {
-            var tgUser = cachedTelegramDao.GetUser(Guid.Parse(msg.Reciever), msg.TenantId);
+            var tgUser = telegramDao.GetUser(Guid.Parse(msg.Reciever), msg.TenantId);
 
             if (tgUser == null)
             {
-                _log.DebugFormat("Couldn't find telegramId for user '{0}'", msg.Reciever);
+                _log.DebugCouldntFind(msg.Reciever);
                 return;
             }
 
             var chat = await client.GetChatAsync(tgUser.TelegramUserId);
-            await client.SendTextMessageAsync(chat, msg.Content, Telegram.Bot.Types.Enums.ParseMode.Markdown);
+
+            await client.SendTextMessageAsync(chat, msg.Content, ParseMode.MarkdownV2);
         }
         catch (Exception e)
         {
-            _log.DebugFormat("Couldn't send message for user '{0}' got an '{1}'", msg.Reciever, e.Message);
+            _log.DebugCouldntSend(msg.Reciever, e);
         }
     }
 
@@ -92,7 +95,13 @@ public class TelegramHandler
         }
 
         var client = _clients[tenantId];
-        client.Client.StopReceiving();
+
+        if (client.CancellationTokenSource != null)
+        {
+            client.CancellationTokenSource.Cancel();
+            client.CancellationTokenSource.Dispose();
+            client.CancellationTokenSource = null;
+        }
 
         _clients.Remove(tenantId);
     }
@@ -117,7 +126,12 @@ public class TelegramHandler
                     }
                 }
 
-                client.Client.StopReceiving();
+                if (client.CancellationTokenSource != null)
+                {
+                    client.CancellationTokenSource.Cancel();
+                    client.CancellationTokenSource.Dispose();
+                    client.CancellationTokenSource = null;
+                }
 
                 BindClient(newClient, tenantId, stoppingToken);
 
@@ -158,29 +172,62 @@ public class TelegramHandler
 
         var userKey = UserKey(userId, tenantId);
         var dateExpires = DateTimeOffset.Now.AddMinutes(_clients[tenantId].TokenLifeSpan);
-        MemoryCache.Default.Set(token, userKey, dateExpires);
+
+        _distributedCache.SetString(token, userKey, new DistributedCacheEntryOptions
+        {
+            AbsoluteExpiration = dateExpires
+        });
     }
 
-    private Task OnMessage(object sender, MessageEventArgs e, TelegramBotClient client, int tenantId)
+    private void BindClient(TelegramBotClient client, int tenantId, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrEmpty(e.Message.Text) || e.Message.Text[0] != '/')
+        var cts = new CancellationTokenSource();
+
+        _clients[tenantId].CancellationTokenSource = cts;
+
+        var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cts.Token, cancellationToken);
+
+        client.StartReceiving(updateHandler: (botClient, exception, cancellationToken) => HandleUpdateAsync(botClient, exception, cancellationToken, tenantId),
+                              errorHandler: HandleErrorAsync,
+                              cancellationToken: linkedCts.Token);
+    }
+
+    async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken, int tenantId)
+    {
+        if (update.Type != UpdateType.Message)
         {
-            return Task.CompletedTask;
+            return;
         }
 
-        return InternalOnMessage(sender, e, client, tenantId);
+        if (update.Message.Type != MessageType.Text)
+        {
+            return;
+        }
+
+        if (String.IsNullOrEmpty(update.Message.Text) || update.Message.Text[0] != '/')
+        {
+            return;
+        }
+
+        await _command.HandleCommand(update.Message, botClient, tenantId);
     }
 
-    private async Task InternalOnMessage(object sender, MessageEventArgs e, TelegramBotClient client, int tenantId)
+    Task HandleErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
     {
-        await _command.HandleCommand(e.Message, client, tenantId);
-    }
+        String errorMessage;
 
+        if (exception is ApiRequestException)
+        {
+            errorMessage = String.Format("Telegram API Error:\n[{0}]\n{1}", ((ApiRequestException)exception).ErrorCode, ((ApiRequestException)exception).Message);
+        }
+        else
+        {
+            errorMessage = exception.ToString();
+        }
 
-    private void BindClient(TelegramBotClient client, int tenantId, CancellationToken stoppingToken)
-    {
-        client.OnMessage += async (sender, e) => { await OnMessage(sender, e, client, tenantId); };
-        client.StartReceiving(cancellationToken: stoppingToken);
+        _log.Error(errorMessage);
+
+        return Task.CompletedTask;
     }
 
     private string UserKey(string userId, int tenantId)
