@@ -134,7 +134,7 @@ public static class LdapUtils
         return Guid.NewGuid().ToString();
     }
 
-    public static void SkipErrors(Action method, ILog log = null)
+    public static void SkipErrors(Action method, ILogger log = null)
     {
         try
         {
@@ -143,7 +143,7 @@ public static class LdapUtils
         catch (Exception ex)
         {
             if (log != null)
-                log.ErrorFormat("SkipErrors() failed. Error: {0}", ex);
+                log.ErrorSkipErrors(ex);
         }
     }
 

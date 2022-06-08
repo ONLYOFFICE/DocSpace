@@ -31,7 +31,7 @@ namespace ASC.ActiveDirectory.Novell.Data;
 public class NovellLdapObject : LdapObject
 {
     private LdapEntry _ldapEntry;
-    private readonly ILog _log;
+    private readonly ILogger _logger;
     private string _sid;
     private string _sidAttribute;
     private readonly NovellLdapEntryExtension _novellLdapEntryExtension;
@@ -41,10 +41,10 @@ public class NovellLdapObject : LdapObject
     /// </summary>
     /// <param name="ldapEntry">init ldap entry</param>
     /// <param name="ldapUniqueIdAttribute"></param>
-    public NovellLdapObject(IOptionsMonitor<ILog> option, NovellLdapEntryExtension novellLdapEntryExtension)
+    public NovellLdapObject(ILogger logger, NovellLdapEntryExtension novellLdapEntryExtension)
     {
         _novellLdapEntryExtension = novellLdapEntryExtension;
-        _log = option.Get("ASC");
+        _logger = logger;
     }
 
     public void Init(LdapEntry ldapEntry, string ldapUniqueIdAttribute = null)
@@ -64,7 +64,7 @@ public class NovellLdapObject : LdapObject
         }
         catch (Exception e)
         {
-            _log.ErrorFormat("Can't get LDAPObject Sid property. {0}", e);
+            _logger.ErrorCanNotGetSidProperty(e);
         }
     }
 
@@ -97,7 +97,7 @@ public class NovellLdapObject : LdapObject
             }
             catch (Exception e)
             {
-                _log.ErrorFormat("Can't get LDAPUser UserAccauntControl property. {0}", e);
+                _logger.ErrorCanNotGetUserAccountControlProperty(e);
             }
 
             return (userAccauntControl & LdapConstants.UserAccountControl.ADS_UF_ACCOUNTDISABLE) > 0;

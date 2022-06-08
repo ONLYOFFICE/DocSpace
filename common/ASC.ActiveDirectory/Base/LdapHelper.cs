@@ -32,14 +32,14 @@ public abstract class LdapHelper : IDisposable
     public LdapSettings Settings { get; private set; }
     public abstract bool IsConnected { get; }
 
-    protected readonly ILog Log;
+    protected readonly ILogger<LdapHelper> Logger;
     protected readonly InstanceCrypto InstanceCrypto;
 
     protected LdapHelper(
-        IOptionsMonitor<ILog> option,
+        ILogger<LdapHelper> logger,
         InstanceCrypto instanceCrypto)
     {
-        Log = option.Get("ASC");
+        Logger = logger;
         InstanceCrypto = instanceCrypto;
     }
 
@@ -103,7 +103,7 @@ public abstract class LdapHelper : IDisposable
         }
         catch (Exception e)
         {
-            Log.ErrorFormat("UserExistsInGroup() failed. Error: {0}", e);
+            Logger.ErrorUserExistsInGroupFailed(e);
         }
 
         return false;

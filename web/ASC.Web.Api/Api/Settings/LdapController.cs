@@ -74,7 +74,7 @@ public class LdapController : BaseSettingsController
     /// </short>
     /// <category>LDAP</category>
     /// <returns>LDAP settings</returns>
-    [Read("ldap")]
+    [HttpGet("ldap")]
     public LdapSettingsDto GetLdapSettings()
     {
         CheckLdapPermissions();
@@ -111,7 +111,7 @@ public class LdapController : BaseSettingsController
     /// </short>
     /// <category>LDAP</category>
     /// <returns>Cron expression or null</returns>
-    [Read("ldap/cron")]
+    [HttpGet("ldap/cron")]
     public LdapCronSettingsDto GetLdapCronSettings()
     {
         CheckLdapPermissions();
@@ -136,13 +136,13 @@ public class LdapController : BaseSettingsController
     /// <category>LDAP</category>
     /// <param name="cron">Cron expression</param>
     /// 
-    [Create("ldap/cron")]
-    public void SetLdapCronSettingsFromBody(LdapCronRequest ldapCronRequest)
+    [HttpPost("ldap/cron")]
+    public void SetLdapCronSettingsFromBody(LdapCronRequestDto ldapCronRequest)
     {
         SetLdapCronSettings(ldapCronRequest);
     }
 
-    private void SetLdapCronSettings(LdapCronRequest ldapCronRequest)
+    private void SetLdapCronSettings(LdapCronRequestDto ldapCronRequest)
     {
         CheckLdapPermissions();
 
@@ -186,7 +186,7 @@ public class LdapController : BaseSettingsController
     /// </short>
     /// <category>LDAP</category>
     /// <returns>Operation status</returns>
-    [Read("ldap/sync")]
+    [HttpGet("ldap/sync")]
     public LdapStatusDto SyncLdap()
     {
         CheckLdapPermissions();
@@ -208,7 +208,7 @@ public class LdapController : BaseSettingsController
     /// </short>
     /// <category>LDAP</category>
     /// <returns>Operation status</returns>
-    [Read("ldap/sync/test")]
+    [HttpGet("ldap/sync/test")]
     public LdapStatusDto TestLdapSync()
     {
         CheckLdapPermissions();
@@ -230,7 +230,7 @@ public class LdapController : BaseSettingsController
     /// <param name="settings">LDAP settings in the serialized string format</param>
     /// <param name="acceptCertificate">Specifies if the errors of checking certificates are allowed (true) or not (false)</param>
     /// <returns>Operation status</returns>
-    [Create("ldap")]
+    [HttpPost("ldap")]
     public LdapStatusDto SaveLdapSettings(LdapRequestsDto ldapRequestsDto)
     {
         var ldapSettings = _mapper.Map<LdapRequestsDto, LdapSettings>(ldapRequestsDto);
@@ -259,7 +259,7 @@ public class LdapController : BaseSettingsController
     /// <param name="settings">LDAP settings in the serialized string format</param>
     /// <param name="acceptCertificate">Specifies if the errors of checking certificates are allowed (true) or not (false)</param>
     /// <returns>Operation status</returns>
-    [Create("ldap/save/test")]
+    [HttpPost("ldap/save/test")]
     public LdapStatusDto TestLdapSave(LdapSettings ldapSettings)
     {
         CheckLdapPermissions();
@@ -279,7 +279,7 @@ public class LdapController : BaseSettingsController
     /// </short>
     /// <category>LDAP</category>
     /// <returns>Operation status</returns>
-    [Read("ldap/status")]
+    [HttpGet("ldap/status")]
     public LdapStatusDto GetLdapOperationStatus()
     {
         CheckLdapPermissions();
@@ -297,7 +297,7 @@ public class LdapController : BaseSettingsController
     /// </short>
     /// <category>LDAP</category>
     /// <returns>LDAP default settings</returns>
-    [Read("ldap/default")]
+    [HttpGet("ldap/default")]
     public LdapSettingsDto GetDefaultLdapSettings()
     {
         CheckLdapPermissions();

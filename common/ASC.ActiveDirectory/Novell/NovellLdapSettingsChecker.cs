@@ -36,8 +36,8 @@ public class NovellLdapSettingsChecker : LdapSettingsChecker
         get { return LdapImporter.LdapHelper; }
     }
 
-    public NovellLdapSettingsChecker(IOptionsMonitor<ILog> option) :
-        base(option)
+    public NovellLdapSettingsChecker(ILogger<LdapSettingsChecker> logger) :
+        base(logger)
     {
     }
 
@@ -62,38 +62,38 @@ public class NovellLdapSettingsChecker : LdapSettingsChecker
             }
             catch (NovellLdapTlsCertificateRequestedException ex)
             {
-                log.ErrorFormat("CheckSettings(acceptCertificate={0}): NovellLdapTlsCertificateRequestedException: {1}", Settings.AcceptCertificate, ex);
+                logger.ErrorNovellLdapTlsCertificateRequestedException(Settings.AcceptCertificate, ex);
                 CertificateConfirmRequest = ex.CertificateConfirmRequest;
                 return LdapSettingsStatus.CertificateRequest;
             }
             catch (NotSupportedException ex)
             {
-                log.ErrorFormat("CheckSettings(): NotSupportedException: {0}", ex);
+                logger.ErrorNotSupportedException(ex);
                 return LdapSettingsStatus.TlsNotSupported;
             }
             catch (SocketException ex)
             {
-                log.ErrorFormat("CheckSettings(): SocketException: {0}", ex);
+                logger.ErrorSocketException(ex);
                 return LdapSettingsStatus.ConnectError;
             }
             catch (ArgumentException ex)
             {
-                log.ErrorFormat("CheckSettings(): ArgumentException: {0}", ex);
+                logger.ErrorArgumentException( ex);
                 return LdapSettingsStatus.WrongServerOrPort;
             }
             catch (SecurityException ex)
             {
-                log.ErrorFormat("CheckSettings(): SecurityException: {0}", ex);
+                logger.ErrorSecurityException(ex);
                 return LdapSettingsStatus.StrongAuthRequired;
             }
             catch (SystemException ex)
             {
-                log.ErrorFormat("CheckSettings(): SystemException: {0}", ex);
+                logger.ErrorSystemException(ex);
                 return LdapSettingsStatus.WrongServerOrPort;
             }
             catch (Exception ex)
             {
-                log.ErrorFormat("CheckSettings(): Exception: {0}", ex);
+                logger.ErrorCheckSettingsException(ex);
                 return LdapSettingsStatus.CredentialsNotValid;
             }
         }
@@ -178,7 +178,7 @@ public class NovellLdapSettingsChecker : LdapSettingsChecker
         }
         catch (Exception e)
         {
-            log.ErrorFormat("Wrong User DN parameter: {0}. {1}", userDn, e);
+            logger.ErrorWrongUserDn(userDn, e);
             return false;
         }
     }
@@ -191,7 +191,7 @@ public class NovellLdapSettingsChecker : LdapSettingsChecker
         }
         catch (Exception e)
         {
-            log.ErrorFormat("Wrong Group DN parameter: {0}. {1}", groupDn, e);
+            logger.ErrorWrongGroupDn(groupDn, e);
             return false;
         }
     }

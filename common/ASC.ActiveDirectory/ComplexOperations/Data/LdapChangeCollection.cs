@@ -71,7 +71,7 @@ public class LdapChangeCollection : List<LdapChange>
         Add(change);
     }
 
-    public void SetUpdateUserChange(UserInfo beforeUserInfo, UserInfo afterUserInfo, ILog log = null)
+    public void SetUpdateUserChange(UserInfo beforeUserInfo, UserInfo afterUserInfo, ILogger log = null)
     {
         var fieldChanges =
                         LdapUserMapping.Fields.Select(field => GetPropChange(field, beforeUserInfo, afterUserInfo, log))
@@ -85,7 +85,7 @@ public class LdapChangeCollection : List<LdapChange>
         Add(change);
     }
 
-    public void SetAddUserChange(UserInfo user, ILog log = null)
+    public void SetAddUserChange(UserInfo user, ILogger log = null)
     {
         var fieldChanges =
                     LdapUserMapping.Fields.Select(field => GetPropChange(field, after: user, log: log))
@@ -111,7 +111,7 @@ public class LdapChangeCollection : List<LdapChange>
 
     #region Group
 
-    public void SetAddGroupChange(GroupInfo group, ILog log = null)
+    public void SetAddGroupChange(GroupInfo group, ILogger log = null)
     {
         var fieldChanges = new List<LdapItemChange>
                                     {
@@ -161,7 +161,7 @@ public class LdapChangeCollection : List<LdapChange>
         Add(change);
     }
 
-    public void SetRemoveGroupChange(GroupInfo group, ILog log = null)
+    public void SetRemoveGroupChange(GroupInfo group, ILogger log = null)
     {
         var change = new LdapChange(group.Sid, group.Name,
                         LdapChangeType.Group, LdapChangeAction.Remove);
@@ -186,7 +186,7 @@ public class LdapChangeCollection : List<LdapChange>
 
     #endregion
 
-    private static LdapItemChange GetPropChange(string propName, UserInfo before = null, UserInfo after = null, ILog log = null)
+    private static LdapItemChange GetPropChange(string propName, UserInfo before = null, UserInfo after = null, ILogger log = null)
     {
         try
         {
@@ -208,7 +208,7 @@ public class LdapChangeCollection : List<LdapChange>
         catch (Exception ex)
         {
             if (log != null)
-                log.ErrorFormat("GetPropChange({0}) error: {1}", propName, ex);
+                log.ErrorCanNotGetSidProperty(propName, ex);
         }
 
         return null;

@@ -29,7 +29,7 @@ namespace ASC.ActiveDirectory.Novell;
 [Scope]
 public class NovellLdapSearcher : IDisposable
 {
-    private readonly ILog _log;
+    protected readonly ILogger<NovellLdapSearcher> _logger;
     private LdapCertificateConfirmRequest _certificateConfirmRequest;
     private static readonly object _rootSync = new object();
     private readonly IConfiguration _configuration;
@@ -56,10 +56,10 @@ public class NovellLdapSearcher : IDisposable
 
     public NovellLdapSearcher(
         IConfiguration configuration,
-        IOptionsMonitor<ILog> option,
+        ILogger<NovellLdapSearcher> logger,
         NovellLdapEntryExtension novellLdapEntryExtension)
     {
-        _log = option.Get("ASC");
+        _logger = logger;
         _configuration = configuration;
         _novellLdapEntryExtension = novellLdapEntryExtension;
         LdapUniqueIdAttribute = configuration["ldap:unique:id"];
@@ -109,13 +109,13 @@ public class NovellLdapSearcher : IDisposable
         {
             ldapConnection.ConnectionTimeout = 30000; // 30 seconds
 
-            _log.DebugFormat("ldapConnection.Connect(Server='{0}', PortNumber='{1}');", Server, PortNumber);
+            _logger.DebugldapConnection(Server, PortNumber);
 
             ldapConnection.Connect(Server, PortNumber);
 
             if (StartTls)
             {
-                _log.Debug("ldapConnection.StartTls();");
+                _logger.DebugStartTls();
                 ldapConnection.StartTls();
             }
         }
@@ -136,7 +136,7 @@ public class NovellLdapSearcher : IDisposable
                 throw;
             }
 
-            _log.Debug("LDAP certificate confirmation requested.");
+            _logger.DebugLdapCertificateConfirmationRequested();
 
             ldapConnection.Disconnect();
 
@@ -150,13 +150,13 @@ public class NovellLdapSearcher : IDisposable
 
         if (string.IsNullOrEmpty(Login) || string.IsNullOrEmpty(Password))
         {
-            _log.Debug("ldapConnection.Bind(Anonymous)");
+            _logger.DebugBindAnonymous();
 
             ldapConnection.Bind(null, null);
         }
         else
         {
-            _log.DebugFormat("ldapConnection.Bind(Login: '{0}')", Login);
+            _logger.DebugBind(Login);
 
             ldapConnection.Bind(Login, Password);
         }
@@ -190,9 +190,9 @@ public class NovellLdapSearcher : IDisposable
                 AcceptCertificateHash = null;
             }
 
-            _log.WarnFormat("ServerCertValidationHandler: sslPolicyErrors = {0}", sslPolicyErrors);
+            _logger.WarnSslPolicyErrors(sslPolicyErrors);
 
-            _certificateConfirmRequest = LdapCertificateConfirmRequest.FromCert(certificate, chain, sslPolicyErrors, false, true, _log);
+            _certificateConfirmRequest = LdapCertificateConfirmRequest.FromCert(certificate, chain, sslPolicyErrors, false, true, _logger);
         }
 
         return false;
@@ -283,7 +283,7 @@ public class NovellLdapSearcher : IDisposable
                 {
                     if (!string.IsNullOrEmpty(Login) && !string.IsNullOrEmpty(Password) && limit == -1)
                     {
-                        _log.Warn("The size of the search results is limited. Start TrySearchSimple()");
+                        _logger.WarnStartTrySearchSimple();
 
                         List<LdapObject> simpleResults;
 
@@ -300,7 +300,7 @@ public class NovellLdapSearcher : IDisposable
                     break;
                 }
 
-                _log.ErrorFormat("Search({0}) error: {1}", searchFilter, ex);
+                _logger.ErrorSearch( searchFilter, ex);
                 continue;
             }
 
@@ -329,7 +329,7 @@ public class NovellLdapSearcher : IDisposable
         }
         catch (Exception ex)
         {
-            _log.ErrorFormat("TrySearchSimple() failed. Error: {0}", ex);
+            _logger.ErrorTrySearchSimple(ex);
         }
 
         results = null;
@@ -422,11 +422,11 @@ public class NovellLdapSearcher : IDisposable
                     if (!string.IsNullOrEmpty(ex.Message) && ex.Message.Contains("Sizelimit Exceeded"))
                         break;
 
-                    _log.ErrorFormat("SearchSimple({0}) error: {1}", searchFilter, ex);
+                    _logger.ErrorSearchSimple(searchFilter, ex);
                     continue;
                 }
 
-                _log.DebugFormat("{0}. DN: {1}", ++i, nextEntry.Dn);
+                _logger.DebugDnEnumeration(++i, nextEntry.Dn);
 
                 entries.Add(nextEntry);
 
@@ -441,7 +441,7 @@ public class NovellLdapSearcher : IDisposable
             var controls = res.ResponseControls;
             if (controls == null)
             {
-                _log.Debug("No controls returned");
+                _logger.DebugNoControlsReturned();
                 cookie = null;
             }
             else
@@ -498,7 +498,7 @@ public class NovellLdapSearcher : IDisposable
                 }
                 catch (LdapException ex)
                 {
-                    _log.ErrorFormat("GetCapabilities()->LoopResults failed. Error: {0}", ex);
+                    _logger.ErrorGetCapabilitiesLoopResultsFailed(ex);
                     continue;
                 }
 
@@ -528,7 +528,7 @@ public class NovellLdapSearcher : IDisposable
         }
         catch (Exception ex)
         {
-            _log.ErrorFormat("GetCapabilities() failed. Error: {0}", ex);
+            _logger.ErrorGetCapabilitiesFailed(ex);
         }
 
         return _capabilities;
@@ -568,7 +568,7 @@ public class NovellLdapSearcher : IDisposable
         }
         catch (Exception ex)
         {
-            _log.Error("GetLdapUniqueId()", ex);
+            _logger.ErrorGetLdapUniqueId(ex);
         }
 
         return null;
@@ -588,21 +588,21 @@ public class NovellLdapSearcher : IDisposable
 
             if (_ldapConnection.Tls)
             {
-                _log.Debug("ldapConnection.StopTls();");
+                _logger.DebugLdapConnectionStopTls();
                 _ldapConnection.StopTls();
             }
 
-            _log.Debug("ldapConnection.Disconnect();");
+            _logger.DebugLdapConnectionDisconnect();
             _ldapConnection.Disconnect();
 
-            _log.Debug("ldapConnection.Dispose();");
+            _logger.DebugLdapConnectionDispose();
             _ldapConnection.Dispose();
 
             _ldapConnection = null;
         }
         catch (Exception ex)
         {
-            _log.ErrorFormat("LDAP->Dispose() failed. Error: {0}", ex);
+            _logger.ErrorLdapDisposeFailed(ex);
         }
     }
 }

@@ -26,7 +26,7 @@
 
 namespace ASC.Web.Api.ApiModels.RequestsDto;
 
-public class LdapCronRequest
+public class LdapCronRequestDto
 {
     public string Cron { get; set; }
 }

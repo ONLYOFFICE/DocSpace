@@ -38,7 +38,7 @@ public class LdapObjectExtension
     {
         _tenantUtil = tenantUtil;
     }
-    public static string GetAttribute(LdapObject ldapObject, string attribute, ILog log = null)
+    public static string GetAttribute(LdapObject ldapObject, string attribute, ILogger log = null)
     {
         if (string.IsNullOrEmpty(attribute))
             return string.Empty;
@@ -50,14 +50,13 @@ public class LdapObjectExtension
         catch (Exception e)
         {
             if (log != null)
-                log.ErrorFormat("Can't get attribute from ldap object (attr = {0}, dn = {1}) error: {2}",
-                    attribute, ldapObject.DistinguishedName, e);
+                log.ErrorCanNotGetAttribute(attribute, ldapObject.DistinguishedName, e);
 
             return string.Empty;
         }
     }
 
-    public static List<string> GetAttributes(LdapObject ldapObject, string attribute, ILog log = null)
+    public static List<string> GetAttributes(LdapObject ldapObject, string attribute, ILogger log = null)
     {
         var list = new List<string>();
 
@@ -71,8 +70,7 @@ public class LdapObjectExtension
         catch (Exception e)
         {
             if (log != null)
-                log.ErrorFormat("Can't get attributes from ldap object (attr = {0}, dn = {1}) error: {2}",
-                    attribute, ldapObject.DistinguishedName, e);
+                log.ErrorCanNotGetAttributes(attribute, ldapObject.DistinguishedName, e);
 
             return list;
         }
@@ -84,7 +82,7 @@ public class LdapObjectExtension
     private const string EXT_PHONE = "extphone";
     private const string EXT_SKYPE = "extskype";
 
-    private static List<string> GetContacts(LdapObject ldapUser, Mapping key, LdapSettings settings, ILog log = null)
+    private static List<string> GetContacts(LdapObject ldapUser, Mapping key, LdapSettings settings, ILogger log = null)
     {
         if (!settings.LdapMapping.ContainsKey(key))
             return null;
@@ -116,7 +114,7 @@ public class LdapObjectExtension
         }
     }
 
-    public UserInfo ToUserInfo(LdapObject ldapUser, LdapUserImporter ldapUserImporter, ILog log = null)
+    public UserInfo ToUserInfo(LdapObject ldapUser, LdapUserImporter ldapUserImporter, ILogger log = null)
     {
         var settings = ldapUserImporter.Settings;
         var resource = ldapUserImporter.Resource;
@@ -229,7 +227,7 @@ public class LdapObjectExtension
         return user;
     }
 
-    public static GroupInfo ToGroupInfo(LdapObject ldapGroup, LdapSettings settings, ILog log = null)
+    public static GroupInfo ToGroupInfo(LdapObject ldapGroup, LdapSettings settings, ILogger log = null)
     {
         var name = GetAttribute(ldapGroup, settings.GroupNameAttribute, log);
 

@@ -68,7 +68,7 @@ public class LdapCertificateConfirmRequest
     }
 
     public static int[] GetLdapCertProblems(X509Certificate certificate, X509Chain chain,
-        SslPolicyErrors sslPolicyErrors, ILog log = null)
+        SslPolicyErrors sslPolicyErrors, ILogger log = null)
     {
         var certificateErrors = new List<int>();
         try
@@ -94,8 +94,7 @@ public class LdapCertificateConfirmRequest
             {
                 if (log != null)
                 {
-                    log.WarnFormat("GetLdapCertProblems: {0}",
-                        Enum.GetName(typeof(SslPolicyErrors), LdapCertificateProblem.CertCnNoMatch));
+                    log.WarnGetLdapCertProblems(Enum.GetName(typeof(SslPolicyErrors), LdapCertificateProblem.CertCnNoMatch));
                 }
 
                 certificateErrors.Add((int)LdapCertificateProblem.CertCnNoMatch);
@@ -105,8 +104,7 @@ public class LdapCertificateConfirmRequest
             {
                 if (log != null)
                 {
-                    log.WarnFormat("GetLdapCertProblems: {0}",
-                        Enum.GetName(typeof(SslPolicyErrors), LdapCertificateProblem.CertCnNoMatch));
+                    log.WarnGetLdapCertProblems(Enum.GetName(typeof(SslPolicyErrors), LdapCertificateProblem.CertCnNoMatch));
                 }
 
                 certificateErrors.Add((int)LdapCertificateProblem.CertUntrustedCa);
@@ -115,7 +113,7 @@ public class LdapCertificateConfirmRequest
         catch (Exception ex)
         {
             if (log != null)
-                log.ErrorFormat("GetLdapCertProblems() failed. Error: {0}", ex);
+                log.ErrorGetLdapCertProblems(ex);
             certificateErrors.Add((int)LdapCertificateProblem.CertUnrecognizedError);
         }
 
@@ -123,7 +121,7 @@ public class LdapCertificateConfirmRequest
     }
 
     public static LdapCertificateConfirmRequest FromCert(X509Certificate certificate, X509Chain chain,
-        SslPolicyErrors sslPolicyErrors, bool approved = false, bool requested = false, ILog log = null)
+        SslPolicyErrors sslPolicyErrors, bool approved = false, bool requested = false, ILogger log = null)
     {
         var certificateErrors = GetLdapCertProblems(certificate, chain, sslPolicyErrors, log);
 
@@ -157,7 +155,7 @@ public class LdapCertificateConfirmRequest
         catch (Exception ex)
         {
             if (log != null)
-                log.ErrorFormat("LdapCertificateConfirmRequest.FromCert() failed. Error: {0}", ex);
+                log.ErrorLdapCertificateConfirmRequest(ex);
             return null;
         }
     }

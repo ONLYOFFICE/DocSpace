@@ -24,13 +24,16 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.ActiveDirectory.Novell;
 
-[Scope]
-public class NovellLdapUserImporter : LdapUserImporter
+namespace ASC.ActiveDirectory.Log;
+static internal partial class LdapCertificateConfirmRequestLogger
 {
-    public NovellLdapUserImporter(ILogger<LdapUserImporter> logger, UserManager userManager, IConfiguration configuration, NovellLdapHelper novellLdapHelper, LdapObjectExtension ldapObjectExtension)
-        : base(logger, userManager, configuration, novellLdapHelper, ldapObjectExtension)
-    {
-    }
+    [LoggerMessage(Level = LogLevel.Warning, Message = "GetLdapCertProblems: {SslPolicyErrors}")]
+    public static partial void WarnGetLdapCertProblems(this ILogger logger, string SslPolicyErrors);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "GetLdapCertProblems() failed")]
+    public static partial void ErrorGetLdapCertProblems(this ILogger logger, Exception exception);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "LdapCertificateConfirmRequest.FromCert() failed")]
+    public static partial void ErrorLdapCertificateConfirmRequest(this ILogger logger, Exception exception);
 }

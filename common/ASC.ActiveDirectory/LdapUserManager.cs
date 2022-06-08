@@ -24,6 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+
 using Constants = ASC.Core.Users.Constants;
 using Mapping = ASC.ActiveDirectory.Base.Settings.LdapSettings.MappingFields;
 using SecurityContext = ASC.Core.SecurityContext;
@@ -32,7 +33,7 @@ namespace ASC.ActiveDirectory;
 [Scope]
 public class LdapUserManager
 {
-    private readonly ILog _log;
+    private readonly ILogger<LdapUserManager> _logger;
     private readonly UserManager _userManager;
     private readonly TenantManager _tenantManager;
     private readonly TenantUtil _tenantUtil;
@@ -46,7 +47,7 @@ public class LdapUserManager
     private LdapLocalization _resource;
 
     public LdapUserManager(
-        IOptionsMonitor<ILog> option,
+        ILogger<LdapUserManager> logger,
         IServiceProvider serviceProvider,
         UserManager userManager,
         TenantManager tenantManager,
@@ -59,7 +60,7 @@ public class LdapUserManager
         NovellLdapUserImporter novellLdapUserImporter,
         WorkContext workContext)
     {
-        _log = option.Get("ASC");
+        _logger = logger;
         _userManager = userManager;
         _tenantManager = tenantManager;
         _tenantUtil = tenantUtil;
@@ -112,21 +113,18 @@ public class LdapUserManager
             if (ldapUserInfo == null)
                 throw new ArgumentNullException("ldapUserInfo");
 
-            _log.DebugFormat("TryAddLDAPUser(SID: {0}): Email '{1}' UserName: {2}", ldapUserInfo.Sid,
-                ldapUserInfo.Email, ldapUserInfo.UserName);
+            _logger.DebugTryAddLdapUser(ldapUserInfo.Sid, ldapUserInfo.Email, ldapUserInfo.UserName);
 
             if (!CheckUniqueEmail(ldapUserInfo.Id, ldapUserInfo.Email))
             {
-                _log.DebugFormat("TryAddLDAPUser(SID: {0}): Email '{1}' already exists.",
-                    ldapUserInfo.Sid, ldapUserInfo.Email);
+                _logger.DebugUserAlredyExistsForEmail(ldapUserInfo.Sid, ldapUserInfo.Email);
 
                 return false;
             }
 
             if (!TryChangeExistingUserName(ldapUserInfo.UserName, onlyGetChanges))
             {
-                _log.DebugFormat("TryAddLDAPUser(SID: {0}): Username '{1}' already exists.",
-                    ldapUserInfo.Sid, ldapUserInfo.UserName);
+                _logger.DebugUserAlredyExistsForUserName(ldapUserInfo.Sid, ldapUserInfo.UserName);
 
                 return false;
             }
@@ -134,8 +132,7 @@ public class LdapUserManager
             var q = _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id);
             if (q.ActiveUsers <= _userManager.GetUsersByGroup(Constants.GroupUser.ID).Length)
             {
-                _log.DebugFormat("TryAddLDAPUser(SID: {0}): Username '{1}' adding this user would exceed quota.",
-                    ldapUserInfo.Sid, ldapUserInfo.UserName);
+                _logger.DebugExceedQuota(ldapUserInfo.Sid, ldapUserInfo.UserName);
                 throw new TenantQuotaException(string.Format("Exceeds the maximum active users ({0})", q.ActiveUsers));
             }
 
@@ -150,13 +147,13 @@ public class LdapUserManager
                 return true;
             }
 
-            _log.DebugFormat("CoreContext.UserManager.SaveUserInfo({0})", ldapUserInfo.GetUserInfoString());
+            _logger.DebugSaveUserInfo(ldapUserInfo.GetUserInfoString());
 
             portalUserInfo = _userManager.SaveUserInfo(ldapUserInfo);
 
             var passwordHash = LdapUtils.GeneratePassword();
 
-            _log.DebugFormat("SecurityContext.SetUserPassword(ID:{0})", portalUserInfo.Id);
+            _logger.DebugSetUserPassword(portalUserInfo.Id);
 
             _securityContext.SetUserPasswordHash(portalUserInfo.Id, passwordHash);
 
@@ -170,8 +167,7 @@ public class LdapUserManager
         catch (Exception ex)
         {
             if (ldapUserInfo != null)
-                _log.ErrorFormat("TryAddLDAPUser(UserName='{0}' Sid='{1}') failed: Error: {2}", ldapUserInfo.UserName,
-                    ldapUserInfo.Sid, ex);
+                _logger.ErrorTryAddLdapUser(ldapUserInfo.UserName, ldapUserInfo.Sid, ex);
         }
 
         return false;
@@ -197,9 +193,9 @@ public class LdapUserManager
             if (onlyGetChanges)
                 return true;
 
-            _log.Debug("TryChangeExistingUserName()");
+            _logger.DebugTryChangeExistingUserName();
 
-            _log.DebugFormat("CoreContext.UserManager.SaveUserInfo({0})", otherUser.GetUserInfoString());
+            _logger.DebugSaveUserInfo(otherUser.GetUserInfoString());
 
             _userManager.SaveUserInfo(otherUser);
 
@@ -207,7 +203,7 @@ public class LdapUserManager
         }
         catch (Exception ex)
         {
-            _log.ErrorFormat("TryChangeOtherUserName({0}) failed. Error: {1}", ldapUserName, ex);
+            _logger.ErrorTryChangeOtherUserName(ldapUserName, ex);
         }
 
         return false;
@@ -245,8 +241,7 @@ public class LdapUserManager
                     if (onlyGetChanges)
                         changes.SetSkipUserChange(ldapUserInfo);
 
-                    _log.DebugFormat("SyncUserLDAP(SID: {0}, Username: '{1}') ADD failed: Status is {2}",
-                        ldapUserInfo.Sid, ldapUserInfo.UserName,
+                    _logger.DebugSyncUserLdapFailedWithStatus(ldapUserInfo.Sid, ldapUserInfo.UserName,
                         Enum.GetName(typeof(EmployeeStatus), ldapUserInfo.Status));
 
                     return Constants.LostUser;
@@ -261,7 +256,7 @@ public class LdapUserManager
                 }
 
                 if (onlyGetChanges)
-                    changes.SetAddUserChange(result, _log);
+                    changes.SetAddUserChange(result, _logger);
 
                 if (!onlyGetChanges && _settingsManager.Load<LdapSettings>().SendWelcomeEmail &&
                     (ldapUserInfo.ActivationStatus != EmployeeActivationStatus.AutoGenerated))
@@ -300,8 +295,7 @@ public class LdapUserManager
                     if (onlyGetChanges)
                         changes.SetSkipUserChange(ldapUserInfo);
 
-                    _log.DebugFormat(
-                        "SyncUserLDAP(SID: {0}, Username: '{1}') ADD failed: Another ldap user with email '{2}' already exists",
+                    _logger.DebugSyncUserLdapFailedWithEmail(
                         ldapUserInfo.Sid, ldapUserInfo.UserName, ldapUserInfo.Email);
 
                     return Constants.LostUser;
@@ -319,14 +313,14 @@ public class LdapUserManager
 
         if (!NeedUpdateUser(userToUpdate, ldapUserInfo))
         {
-            _log.DebugFormat("SyncUserLDAP(SID: {0}, Username: '{1}') No need to update, skipping", ldapUserInfo.Sid, ldapUserInfo.UserName);
+            _logger.DebugSyncUserLdapSkipping(ldapUserInfo.Sid, ldapUserInfo.UserName);
             if (onlyGetChanges)
                 changes.SetNoneUserChange(ldapUserInfo);
 
             return userBySid;
         }
 
-        _log.DebugFormat("SyncUserLDAP(SID: {0}, Username: '{1}') Userinfo is outdated, updating", ldapUserInfo.Sid, ldapUserInfo.UserName);
+        _logger.DebugSyncUserLdapUpdaiting(ldapUserInfo.Sid, ldapUserInfo.UserName);
         if (!TryUpdateUserWithLDAPInfo(userToUpdate, ldapUserInfo, onlyGetChanges, out result))
         {
             if (onlyGetChanges)
@@ -336,7 +330,7 @@ public class LdapUserManager
         }
 
         if (onlyGetChanges)
-            changes.SetUpdateUserChange(ldapUserInfo, result, _log);
+            changes.SetUpdateUserChange(ldapUserInfo, result, _logger);
 
         return result;
     }
@@ -385,24 +379,21 @@ public class LdapUserManager
 
             if (notEqual(portalUser.FirstName, ldapUser.FirstName))
             {
-                _log.DebugFormat("NeedUpdateUser by FirstName -> portal: '{0}', ldap: '{1}'",
-                    portalUser.FirstName ?? "NULL",
+                _logger.DebugNeedUpdateUserByFirstName(portalUser.FirstName ?? "NULL",
                     ldapUser.FirstName ?? "NULL");
                 needUpdate = true;
             }
 
             if (notEqual(portalUser.LastName, ldapUser.LastName))
             {
-                _log.DebugFormat("NeedUpdateUser by LastName -> portal: '{0}', ldap: '{1}'",
-                    portalUser.LastName ?? "NULL",
+                _logger.DebugNeedUpdateUserByLastName(portalUser.LastName ?? "NULL",
                     ldapUser.LastName ?? "NULL");
                 needUpdate = true;
             }
 
             if (notEqual(portalUser.UserName, ldapUser.UserName))
             {
-                _log.DebugFormat("NeedUpdateUser by UserName -> portal: '{0}', ldap: '{1}'",
-                    portalUser.UserName ?? "NULL",
+                _logger.DebugNeedUpdateUserByUserName(portalUser.UserName ?? "NULL",
                     ldapUser.UserName ?? "NULL");
                 needUpdate = true;
             }
@@ -411,32 +402,28 @@ public class LdapUserManager
                 (ldapUser.ActivationStatus != EmployeeActivationStatus.AutoGenerated
                     || ldapUser.ActivationStatus == EmployeeActivationStatus.AutoGenerated && portalUser.ActivationStatus == EmployeeActivationStatus.AutoGenerated))
             {
-                _log.DebugFormat("NeedUpdateUser by Email -> portal: '{0}', ldap: '{1}'",
-                    portalUser.Email ?? "NULL",
+                _logger.DebugNeedUpdateUserByEmail(portalUser.Email ?? "NULL",
                     ldapUser.Email ?? "NULL");
                 needUpdate = true;
             }
 
             if (notEqual(portalUser.Sid, ldapUser.Sid))
             {
-                _log.DebugFormat("NeedUpdateUser by Sid -> portal: '{0}', ldap: '{1}'",
-                    portalUser.Sid ?? "NULL",
+                _logger.DebugNeedUpdateUserBySid(portalUser.Sid ?? "NULL",
                     ldapUser.Sid ?? "NULL");
                 needUpdate = true;
             }
 
             if (settings.LdapMapping.ContainsKey(Mapping.TitleAttribute) && notEqual(portalUser.Title, ldapUser.Title))
             {
-                _log.DebugFormat("NeedUpdateUser by Title -> portal: '{0}', ldap: '{1}'",
-                    portalUser.Title ?? "NULL",
+                _logger.DebugNeedUpdateUserByTitle(portalUser.Title ?? "NULL",
                     ldapUser.Title ?? "NULL");
                 needUpdate = true;
             }
 
             if (settings.LdapMapping.ContainsKey(Mapping.LocationAttribute) && notEqual(portalUser.Location, ldapUser.Location))
             {
-                _log.DebugFormat("NeedUpdateUser by Location -> portal: '{0}', ldap: '{1}'",
-                    portalUser.Location ?? "NULL",
+                _logger.DebugNeedUpdateUserByLocation(portalUser.Location ?? "NULL",
                     ldapUser.Location ?? "NULL");
                 needUpdate = true;
             }
@@ -445,16 +432,14 @@ public class LdapUserManager
                 (!portalUser.ActivationStatus.HasFlag(EmployeeActivationStatus.Activated) || portalUser.Email != ldapUser.Email) &&
                 ldapUser.ActivationStatus != EmployeeActivationStatus.AutoGenerated)
             {
-                _log.DebugFormat("NeedUpdateUser by ActivationStatus -> portal: '{0}', ldap: '{1}'",
-                    portalUser.ActivationStatus,
+                _logger.DebugNeedUpdateUserByActivationStatus(portalUser.ActivationStatus,
                     ldapUser.ActivationStatus);
                 needUpdate = true;
             }
 
             if (portalUser.Status != ldapUser.Status)
             {
-                _log.DebugFormat("NeedUpdateUser by Status -> portal: '{0}', ldap: '{1}'",
-                    portalUser.Status,
+                _logger.DebugNeedUpdateUserByStatus(portalUser.Status,
                     ldapUser.Status);
                 needUpdate = true;
             }
@@ -462,39 +447,35 @@ public class LdapUserManager
             if (portalUser.ContactsList == null && ldapUser.ContactsList.Count != 0 || portalUser.ContactsList != null && (ldapUser.ContactsList.Count != portalUser.ContactsList.Count ||
                 !ldapUser.Contacts.All(portalUser.Contacts.Contains)))
             {
-                _log.DebugFormat("NeedUpdateUser by Contacts -> portal: '{0}', ldap: '{1}'",
-                    string.Join("|", portalUser.Contacts),
+                _logger.DebugNeedUpdateUserByContacts(string.Join("|", portalUser.Contacts),
                     string.Join("|", ldapUser.Contacts));
                 needUpdate = true;
             }
 
             if (settings.LdapMapping.ContainsKey(Mapping.MobilePhoneAttribute) && notEqual(portalUser.MobilePhone, ldapUser.MobilePhone))
             {
-                _log.DebugFormat("NeedUpdateUser by PrimaryPhone -> portal: '{0}', ldap: '{1}'",
-                    portalUser.MobilePhone ?? "NULL",
+                _logger.DebugNeedUpdateUserByPrimaryPhone(portalUser.MobilePhone ?? "NULL",
                     ldapUser.MobilePhone ?? "NULL");
                 needUpdate = true;
             }
 
             if (settings.LdapMapping.ContainsKey(Mapping.BirthDayAttribute) && portalUser.BirthDate == null && ldapUser.BirthDate != null || portalUser.BirthDate != null && !portalUser.BirthDate.Equals(ldapUser.BirthDate))
             {
-                _log.DebugFormat("NeedUpdateUser by BirthDate -> portal: '{0}', ldap: '{1}'",
-                    portalUser.BirthDate.ToString() ?? "NULL",
+                _logger.DebugNeedUpdateUserByBirthDate(portalUser.BirthDate.ToString() ?? "NULL",
                     ldapUser.BirthDate.ToString() ?? "NULL");
                 needUpdate = true;
             }
 
             if (settings.LdapMapping.ContainsKey(Mapping.GenderAttribute) && portalUser.Sex == null && ldapUser.Sex != null || portalUser.Sex != null && !portalUser.Sex.Equals(ldapUser.Sex))
             {
-                _log.DebugFormat("NeedUpdateUser by Sex -> portal: '{0}', ldap: '{1}'",
-                    portalUser.Sex.ToString() ?? "NULL",
+                _logger.DebugNeedUpdateUserBySex(portalUser.Sex.ToString() ?? "NULL",
                     ldapUser.Sex.ToString() ?? "NULL");
                 needUpdate = true;
             }
         }
         catch (Exception ex)
         {
-            _log.DebugFormat("NeedUpdateUser failed: error: {0}", ex);
+            _logger.DebugNeedUpdateUser(ex);
         }
 
         return needUpdate;
@@ -506,16 +487,14 @@ public class LdapUserManager
 
         try
         {
-            _log.Debug("TryUpdateUserWithLDAPInfo()");
+            _logger.DebugTryUpdateUserWithLdapInfo();
 
             var settings = _settingsManager.Load<LdapSettings>();
 
             if (!userToUpdate.UserName.Equals(updateInfo.UserName, StringComparison.InvariantCultureIgnoreCase)
                 && !TryChangeExistingUserName(updateInfo.UserName, onlyGetChanges))
             {
-                _log.DebugFormat(
-                    "UpdateUserWithLDAPInfo(ID: {0}): New username already exists. (Old: '{1})' New: '{2}'",
-                    userToUpdate.Id, userToUpdate.UserName, updateInfo.UserName);
+                _logger.DebugUpdateUserUserNameAlredyExists(userToUpdate.Id, userToUpdate.UserName, updateInfo.UserName);
 
                 return false;
             }
@@ -523,9 +502,7 @@ public class LdapUserManager
             if (!userToUpdate.Email.Equals(updateInfo.Email, StringComparison.InvariantCultureIgnoreCase)
                 && !CheckUniqueEmail(userToUpdate.Id, updateInfo.Email))
             {
-                _log.DebugFormat(
-                    "UpdateUserWithLDAPInfo(ID: {0}): New email already exists. (Old: '{1})' New: '{2}'",
-                    userToUpdate.Id, userToUpdate.Email, updateInfo.Email);
+                _logger.DebugUpdateUserEmailAlreadyExists(userToUpdate.Id, userToUpdate.Email, updateInfo.Email);
 
                 return false;
             }
@@ -556,7 +533,7 @@ public class LdapUserManager
 
             if (!onlyGetChanges)
             {
-                _log.DebugFormat("CoreContext.UserManager.SaveUserInfo({0})", userToUpdate.GetUserInfoString());
+                _logger.DebugSaveUserInfo(userToUpdate.GetUserInfoString());
 
                 portlaUserInfo = _userManager.SaveUserInfo(userToUpdate);
             }
@@ -565,8 +542,7 @@ public class LdapUserManager
         }
         catch (Exception ex)
         {
-            _log.ErrorFormat("UpdateUserWithLDAPInfo(Id='{0}' UserName='{1}' Sid='{2}') failed: Error: {3}",
-                userToUpdate.Id, userToUpdate.UserName,
+            _logger.ErrorUpdateUserWithLDAPInfo(userToUpdate.Id, userToUpdate.UserName,
                 userToUpdate.Sid, ex);
         }
 
@@ -585,7 +561,7 @@ public class LdapUserManager
             if (!settings.EnableLdapAuthentication)
                 return false;
 
-            _log.DebugFormat("TryGetAndSyncLdapUserInfo(login: \"{0}\")", login);
+            _logger.DebugTryGetAndSyncLdapUserInfo(login);
 
             _novellLdapUserImporter.Init(settings, _resource);
 
@@ -593,7 +569,7 @@ public class LdapUserManager
 
             if (ldapUserInfo == null || ldapUserInfo.Item1.Equals(Constants.LostUser))
             {
-                _log.DebugFormat("NovellLdapUserImporter.Login('{0}') failed.", login);
+                _logger.DebugNovellLdapUserImporterLoginFailed(login);
                 return false;
             }
 
@@ -603,12 +579,11 @@ public class LdapUserManager
             {
                 if (!ldapUserInfo.Item2.IsDisabled)
                 {
-                    _log.DebugFormat("TryCheckAndSyncToLdapUser(Username: '{0}', Email: {1}, DN: {2})",
-                        ldapUserInfo.Item1.UserName, ldapUserInfo.Item1.Email, ldapUserInfo.Item2.DistinguishedName);
+                    _logger.DebugTryCheckAndSyncToLdapUser(ldapUserInfo.Item1.UserName, ldapUserInfo.Item1.Email, ldapUserInfo.Item2.DistinguishedName);
 
                     if (!TryCheckAndSyncToLdapUser(ldapUserInfo, _novellLdapUserImporter, out userInfo))
                     {
-                        _log.Debug("TryCheckAndSyncToLdapUser() failed");
+                        _logger.DebugTryCheckAndSyncToLdapUserFailed();
                         return false;
                     }
                 }
@@ -619,8 +594,7 @@ public class LdapUserManager
             }
             else
             {
-                _log.DebugFormat("TryCheckAndSyncToLdapUser(Username: '{0}', Email: {1}, DN: {2})",
-                    ldapUserInfo.Item1.UserName, ldapUserInfo.Item1.Email, ldapUserInfo.Item2.DistinguishedName);
+                _logger.DebugTryCheckAndSyncToLdapUser(ldapUserInfo.Item1.UserName, ldapUserInfo.Item1.Email, ldapUserInfo.Item2.DistinguishedName);
 
                 var tenant = _tenantManager.GetCurrentTenant();
 
@@ -632,7 +606,7 @@ public class LdapUserManager
                     var novellLdapUserImporter = scope.ServiceProvider.GetRequiredService<NovellLdapUserImporter>();
                     var userManager = scope.ServiceProvider.GetRequiredService<UserManager>();
                     var cookiesManager = scope.ServiceProvider.GetRequiredService<CookiesManager>();
-                    var log = scope.ServiceProvider.GetRequiredService<IOptionsMonitor<ILog>>().Get("ASC");
+                    var log = scope.ServiceProvider.GetRequiredService<ILogger<LdapUserManager>>();
 
                     tenantManager.SetCurrentTenant(tenant);
                     securityContext.AuthenticateMe(Core.Configuration.Constants.CoreSystem);
@@ -645,7 +619,7 @@ public class LdapUserManager
                     {
                         if (!novellLdapUserImporter.TrySyncUserGroupMembership(newLdapUserInfo))
                         {
-                            log.DebugFormat("TryGetAndSyncLdapUserInfo(login: \"{0}\") disabling user {1} due to not being included in any ldap group", login, uInfo);
+                            log.DebugTryGetAndSyncLdapUserInfoDisablingUser(login, uInfo);
                             uInfo.Status = EmployeeStatus.Terminated;
                             uInfo.Sid = null;
                             userManager.SaveUserInfo(uInfo);
@@ -656,7 +630,7 @@ public class LdapUserManager
 
                 if (ldapUserInfo.Item2.IsDisabled)
                 {
-                    _log.DebugFormat("TryGetAndSyncLdapUserInfo(login: \"{0}\") failed, user is disabled in ldap", login);
+                    _logger.DebugTryGetAndSyncLdapUserInfo(login);
                     return false;
                 }
                 else
@@ -669,7 +643,7 @@ public class LdapUserManager
         }
         catch (Exception ex)
         {
-            _log.ErrorFormat("TryGetLdapUserInfo(login: '{0}') failed. Error: {1}", login, ex);
+            _logger.ErrorTryGetLdapUserInfoFailed(login, ex);
             userInfo = Constants.LostUser;
             return false;
         }
@@ -708,7 +682,7 @@ public class LdapUserManager
         }
         catch (Exception ex)
         {
-            _log.ErrorFormat("TrySyncLdapUser(SID: '{0}', Email: {1}) failed. Error: {2}", ldapUserInfo.Item1.Sid,
+            _logger.ErrorTrySyncLdapUser(ldapUserInfo.Item1.Sid,
                 ldapUserInfo.Item1.Email, ex);
         }
         finally

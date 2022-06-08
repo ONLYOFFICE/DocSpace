@@ -27,7 +27,7 @@
 namespace ASC.ActiveDirectory.Base.Settings;
 public abstract class LdapSettingsChecker
 {
-    protected ILog log;
+    protected readonly ILogger<LdapSettingsChecker> logger;
 
     public LdapUserImporter LdapImporter { get; private set; }
 
@@ -36,9 +36,9 @@ public abstract class LdapSettingsChecker
         get { return LdapImporter.Settings; }
     }
 
-    protected LdapSettingsChecker(IOptionsMonitor<ILog> option)
+    protected LdapSettingsChecker(ILogger<LdapSettingsChecker> logger)
     {
-        log = option.Get("ASC");
+        this.logger = logger;
     }
 
     public void Init(LdapUserImporter importer)

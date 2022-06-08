@@ -29,10 +29,10 @@ namespace ASC.ActiveDirectory.Novell.Extensions;
 [Singletone]
 public class NovellLdapEntryExtension
 {
-    private readonly IOptionsMonitor<ILog> _options;
-    public NovellLdapEntryExtension(IOptionsMonitor<ILog> option)
+    private readonly ILogger<NovellLdapEntryExtension> _logger;
+    public NovellLdapEntryExtension(ILogger<NovellLdapEntryExtension> logger)
     {
-        _options = option;
+        _logger = logger;
     }
     public object GetAttributeValue(LdapEntry ldapEntry, string attributeName, bool getBytes = false)
     {
@@ -130,7 +130,7 @@ public class NovellLdapEntryExtension
         if (ldapEntry == null)
             throw new ArgumentNullException("ldapEntry");
 
-        var novellLdapObject = new NovellLdapObject(_options, this);
+        var novellLdapObject = new NovellLdapObject(_logger, this);
         novellLdapObject.Init(ldapEntry, ldapUniqueIdAttribute);
 
         return novellLdapObject;

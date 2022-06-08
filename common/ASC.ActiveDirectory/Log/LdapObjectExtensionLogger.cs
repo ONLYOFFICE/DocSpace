@@ -24,13 +24,14 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.ActiveDirectory.Novell;
 
-[Scope]
-public class NovellLdapUserImporter : LdapUserImporter
+namespace ASC.ActiveDirectory.Log;
+static internal partial class LdapObjectExtensionLogger
 {
-    public NovellLdapUserImporter(ILogger<LdapUserImporter> logger, UserManager userManager, IConfiguration configuration, NovellLdapHelper novellLdapHelper, LdapObjectExtension ldapObjectExtension)
-        : base(logger, userManager, configuration, novellLdapHelper, ldapObjectExtension)
-    {
-    }
+    [LoggerMessage(Level = LogLevel.Error, Message = "Can't get attribute from ldap object (attr = {attribute}, dn = {dn})")]
+    public static partial void ErrorCanNotGetAttribute(this ILogger logger, string attribute, string dn,Exception exception);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Can't get attributes from ldap object (attr = {attribute}, dn = {dn})")]
+    public static partial void ErrorCanNotGetAttributes(this ILogger logger, string attribute, string dn, Exception exception);
+
 }

@@ -24,13 +24,10 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.ActiveDirectory.Novell;
 
-[Scope]
-public class NovellLdapUserImporter : LdapUserImporter
+namespace ASC.ActiveDirectory.Log;
+static internal partial class LdapUtilsLogger
 {
-    public NovellLdapUserImporter(ILogger<LdapUserImporter> logger, UserManager userManager, IConfiguration configuration, NovellLdapHelper novellLdapHelper, LdapObjectExtension ldapObjectExtension)
-        : base(logger, userManager, configuration, novellLdapHelper, ldapObjectExtension)
-    {
-    }
+    [LoggerMessage(Level = LogLevel.Error, Message = "SkipErrors() failed")]
+    public static partial void ErrorSkipErrors(this ILogger logger, Exception exception);
 }

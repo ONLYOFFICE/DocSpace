@@ -33,8 +33,8 @@ public class NovellLdapHelper : LdapHelper
     private readonly IConfiguration _configuration;
     private readonly IServiceProvider _serviceProvider;
 
-    public NovellLdapHelper(IServiceProvider serviceProvider, IOptionsMonitor<ILog> option, InstanceCrypto instanceCrypto, IConfiguration configuration, NovellLdapSearcher novellLdapSearcher) :
-        base(option, instanceCrypto)
+    public NovellLdapHelper(IServiceProvider serviceProvider, ILogger<LdapHelper> logger, InstanceCrypto instanceCrypto, IConfiguration configuration, NovellLdapSearcher novellLdapSearcher) :
+        base(logger, instanceCrypto)
     {
         _lDAPSearcher = novellLdapSearcher;
 
@@ -125,7 +125,7 @@ public class NovellLdapHelper : LdapHelper
         }
         catch (Exception e)
         {
-            Log.WarnFormat("NovellLdapHelper->SearchDomain() failed. Error: {0}", e);
+            Logger.WarnSearchDomainFailed(e);
         }
 
         try
@@ -138,7 +138,7 @@ public class NovellLdapHelper : LdapHelper
         }
         catch (Exception e)
         {
-            Log.WarnFormat("NovellLdapHelper->SearchDomain() failed. Error: {0}", e);
+            Logger.WarnSearchDomainFailed(e);
         }
 
         return null;
@@ -162,7 +162,7 @@ public class NovellLdapHelper : LdapHelper
         if (searchResult.Any())
             return true;
 
-        Log.ErrorFormat("NovellLdapHelper->CheckUserDn(userDn: {0}) Wrong User DN parameter", userDn);
+        Logger.ErrorWrongUserDnParameter(userDn);
         return false;
     }
 
@@ -176,7 +176,7 @@ public class NovellLdapHelper : LdapHelper
         if (searchResult.Any())
             return true;
 
-        Log.ErrorFormat("NovellLdapHelper->CheckGroupDn(groupDn: {0}): Wrong Group DN parameter", groupDn);
+        Logger.ErrorWrongGroupDnParameter(groupDn);
         return false;
     }
 
@@ -208,8 +208,7 @@ public class NovellLdapHelper : LdapHelper
         }
         catch (Exception e)
         {
-            Log.ErrorFormat("NovellLdapHelper->GetUsers(filter: '{0}' limit: {1}) failed. Error: {2}",
-                filter, limit, e);
+            Logger.ErrorGetUsersFailed(filter, limit, e);
         }
 
         return list;
@@ -245,7 +244,7 @@ public class NovellLdapHelper : LdapHelper
         }
         catch (Exception e)
         {
-            Log.ErrorFormat("NovellLdapHelper->GetUserBySid(sid: '{0}') failed. Error: {1}", sid, e);
+            Logger.ErrorGetUserBySidFailed(sid, e);
         }
 
         return null;
@@ -272,7 +271,7 @@ public class NovellLdapHelper : LdapHelper
         }
         catch (Exception e)
         {
-            Log.ErrorFormat("NovellLdapHelper->GetGroups(criteria: '{0}') failed. Error: {1}", criteria, e);
+            Logger.ErrorGetGroupsFailed(criteria, e);
         }
 
         return list;
