@@ -19,6 +19,7 @@ import Group from "./GroupLoader";
 import HistoryRows from "./HistoryRowsLoader";
 import Tile from "./TileLoader";
 import Tiles from "./TilesLoader";
+import TableLoader from "./TableLoader";
 import DialogLoader from "./DialogLoader";
 import DialogAsideLoader from "./DialogAsideLoader";
 import ListLoader from "./ListLoader";
@@ -43,6 +44,7 @@ export default {
   HistoryRows,
   Tile,
   Tiles,
+  TableLoader,
   DialogLoader,
   DialogAsideLoader,
   ArticleButton,
