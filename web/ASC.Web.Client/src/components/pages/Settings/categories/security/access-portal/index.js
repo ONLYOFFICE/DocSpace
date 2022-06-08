@@ -13,10 +13,10 @@ import SessionLifetimeSection from "./sessionLifetime";
 import MobileView from "./mobileView";
 import CategoryWrapper from "../sub-components/category-wrapper";
 import { size } from "@appserver/components/utils/device";
-import { getLanguage } from "@appserver/common/utils";
+import { inject, observer } from "mobx-react";
 
 const AccessPortal = (props) => {
-  const { t } = props;
+  const { t, helpLink } = props;
   const [isMobileView, setIsMobileView] = useState(false);
 
   useEffect(() => {
@@ -32,8 +32,6 @@ const AccessPortal = (props) => {
       : setIsMobileView(false);
   };
 
-  const lng = getLanguage(localStorage.getItem("language") || "en");
-
   if (isMobileView) return <MobileView />;
   return (
     <MainContainer className="desktop-view">
@@ -42,7 +40,7 @@ const AccessPortal = (props) => {
         t={t}
         title={t("SettingPasswordStrength")}
         tooltipTitle={t("SettingPasswordStrengthDescription")}
-        tooltipUrl={`https://helpcenter.onlyoffice.com/${lng}/administration/configuration.aspx#ChangingSecuritySettings_block`}
+        tooltipUrl={`${helpLink}/administration/configuration.aspx#ChangingSecuritySettings_block`}
       />
       <PasswordStrengthSection />
       <hr />
@@ -50,7 +48,7 @@ const AccessPortal = (props) => {
         t={t}
         title={t("TwoFactorAuth")}
         tooltipTitle={t("TwoFactorAuthDescription")}
-        tooltipUrl={`https://helpcenter.onlyoffice.com/${lng}/administration/two-factor-authentication.aspx`}
+        tooltipUrl={`${helpLink}/administration/two-factor-authentication.aspx`}
       />
       <TfaSection />
       <hr />
@@ -58,7 +56,7 @@ const AccessPortal = (props) => {
         t={t}
         title={t("TrustedMail")}
         tooltipTitle={t("TrustedMailDescription")}
-        tooltipUrl={`https://helpcenter.onlyoffice.com/${lng}/administration/configuration.aspx#ChangingSecuritySettings_block`}
+        tooltipUrl={`${helpLink}/administration/configuration.aspx#ChangingSecuritySettings_block`}
       />
       <TrustedMailSection />
       <hr />
@@ -89,4 +87,7 @@ const AccessPortal = (props) => {
   );
 };
 
-export default withTranslation("Settings")(withRouter(AccessPortal));
+export default inject(({ auth }) => {
+  const { helpLink } = auth.settingsStore;
+  return { helpLink };
+})(withTranslation("Settings")(withRouter(observer(AccessPortal))));

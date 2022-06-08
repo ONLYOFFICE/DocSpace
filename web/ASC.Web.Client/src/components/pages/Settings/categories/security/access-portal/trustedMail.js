@@ -7,7 +7,6 @@ import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";
 import RadioButtonGroup from "@appserver/components/radio-button-group";
 import { LearnMoreWrapper } from "../StyledSecurity";
-import { getLanguage } from "@appserver/common/utils";
 import toastr from "@appserver/components/toast/toastr";
 import UserFields from "../sub-components/user-fields";
 import { size } from "@appserver/components/utils/device";
@@ -36,6 +35,7 @@ const TrustedMail = (props) => {
     trustedDomainsType,
     trustedDomains,
     setMailDomainSettings,
+    helpLink,
   } = props;
 
   const regexp = /^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9](?:\.[a-zA-Z]{1,})+/; //check domain name valid
@@ -152,7 +152,6 @@ const TrustedMail = (props) => {
     setShowReminder(false);
   };
 
-  const lng = getLanguage(localStorage.getItem("language") || "en");
 
   if (isMobile && !isLoading) {
     return <TrustedMailLoader />;
@@ -166,7 +165,7 @@ const TrustedMail = (props) => {
           color="#316DAA"
           target="_blank"
           isHovered
-          href={`https://helpcenter.onlyoffice.com/${lng}/administration/configuration.aspx#ChangingSecuritySettings_block`}
+          href={`${helpLink}/administration/configuration.aspx#ChangingSecuritySettings_block`}
         >
           {t("Common:LearnMore")}
         </Link>
@@ -229,11 +228,13 @@ export default inject(({ auth }) => {
     trustedDomainsType,
     trustedDomains,
     setMailDomainSettings,
+    helpLink,
   } = auth.settingsStore;
 
   return {
     trustedDomainsType,
     trustedDomains,
     setMailDomainSettings,
+    helpLink,
   };
 })(withTranslation(["Settings", "Common"])(withRouter(observer(TrustedMail))));

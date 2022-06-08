@@ -42,6 +42,7 @@ const {
   hoverWarning,
   darkBlack,
   silver,
+  lightHover,
   strongBlue,
   lightGrayishStrongBlue,
   darkRed,
@@ -1072,6 +1073,11 @@ const Base = {
       width: "100%",
       height: "auto",
       borderRadius: "50%",
+    },
+
+    icon: {
+      background: lightHover,
+      color: grayMain,
     },
 
     width: {
