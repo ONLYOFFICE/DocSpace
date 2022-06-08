@@ -32,5 +32,5 @@ URLS=${URLS:-"${SHEME}://0.0.0.0:${SERVICE_PORT}"}
 PATH_TO_CONF=${PATH_TO_CONF:-"/app/${PRODUCT}/config"}
 LOG_DIR=${LOG_DIR:-"/var/log/${PRODUCT}"}
 
-python /app/modify-json-config.py
+python3 /app/modify-json-config.py
 dotnet ${RUN_FILE} --urls=${URLS} --ENVIRONMENT=${ENV_EXTENSION} --'$STORAGE_ROOT'=${APP_STORAGE_ROOT} --pathToConf=${PATH_TO_CONF} --log:dir=${LOG_DIR} --log:name=${NAME_SERVICE} ${PARAMETERS}
