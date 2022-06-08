@@ -38,7 +38,7 @@ public class RoomLogoManager
     private static Size _smallLogoSize = new Size(32, 32);
     private readonly IDaoFactory _daoFactory;
     private readonly FileSecurity _fileSecurity;
-    private readonly ILog _logger;
+    private readonly ILogger<RoomLogoManager> _logger;
     private readonly StorageFactory _storageFactory;
     private readonly TenantManager _tenantManager;
     private IDataStore _dataStore;
@@ -49,7 +49,7 @@ public class RoomLogoManager
     private static readonly TimeSpan _cacheLifeTime = TimeSpan.FromMinutes(30);
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public RoomLogoManager(StorageFactory storageFactory, TenantManager tenantManager, IDaoFactory daoFactory, FileSecurity fileSecurity, ILog logger, AscCache cache, FilesMessageService filesMessageService, IHttpContextAccessor httpContextAccessor)
+    public RoomLogoManager(StorageFactory storageFactory, TenantManager tenantManager, IDaoFactory daoFactory, FileSecurity fileSecurity, ILogger<RoomLogoManager> logger, AscCache cache, FilesMessageService filesMessageService, IHttpContextAccessor httpContextAccessor)
     {
         _storageFactory = storageFactory;
         _tenantManager = tenantManager;
@@ -123,7 +123,7 @@ public class RoomLogoManager
         }
         catch (DirectoryNotFoundException e)
         {
-            _logger.Error(e);
+            _logger.ErrorRemoveRoomLogo(e);
         }
 
         return room;
