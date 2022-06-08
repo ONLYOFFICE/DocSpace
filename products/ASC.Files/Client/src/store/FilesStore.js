@@ -100,7 +100,7 @@ class FilesStore {
     const { socketHelper } = authStore.settingsStore;
 
     socketHelper.on("s:modify-folder", async (opt) => {
-      //console.log("Call s:modify-folder", opt);
+      console.log("Call s:modify-folder", opt);
 
       if (this.isLoading) return;
 
@@ -162,6 +162,7 @@ class FilesStore {
                 return index !== foundIndex;
               })
             );
+            this.filter.total -= 1;
 
             // Hide pagination when deleting files
             runInAction(() => {
@@ -603,6 +604,8 @@ class FilesStore {
       filterData.pageCount = +splitFilter[1];
       filterData.sortOrder = splitFilter[2];
     }
+
+    filterData.page = 0;
 
     setSelectedNode([folderId + ""]);
 
@@ -2106,7 +2109,7 @@ class FilesStore {
     this.setFilesIsLoading(true);
     console.log("fetchMoreFiles");
 
-    const newFilter = this.filter;
+    const newFilter = this.filter.clone();
     newFilter.page += 1;
     const newFiles = await api.files.getFolder(newFilter.folder, newFilter);
 

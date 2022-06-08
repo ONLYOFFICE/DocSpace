@@ -176,6 +176,22 @@ class FilesActionStore {
     setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
   };
 
+  updateFilesAfterDelete = (folderIds) => {
+    const { folders, setFolders, filter } = this.filesStore;
+    const {
+      clearSecondaryProgressData,
+    } = this.uploadDataStore.secondaryProgressDataStore;
+
+    if (folderIds) {
+      const newFolders = folders.filter((f) => !folderIds.includes(f.id));
+      setFolders(newFolders);
+      filter.total -= 1;
+    }
+
+    this.dialogsStore.setIsFolderActions(false);
+    setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+  };
+
   deleteAction = async (
     translations,
     newSelection = null,
@@ -245,7 +261,9 @@ class FilesActionStore {
               label: translations.deleteOperation,
             };
             await this.uploadDataStore.loopFilesOperations(data, pbData);
-            this.updateCurrentFolder(fileIds, folderIds);
+
+            //this.updateCurrentFolder(fileIds, folderIds);
+            this.updateFilesAfterDelete(folderIds);
 
             if (currentFolderId) {
               const { socketHelper } = this.authStore.settingsStore;
@@ -557,8 +575,6 @@ class FilesActionStore {
       label: translations.deleteOperation,
     };
 
-    const selectionFilesLength = 1;
-
     if (isFile) {
       addActiveItems([itemId]);
       this.isMediaOpen();
@@ -567,7 +583,8 @@ class FilesActionStore {
           if (res[0]?.error) return Promise.reject(res[0].error);
           const data = res[0] ? res[0] : null;
           await this.uploadDataStore.loopFilesOperations(data, pbData);
-          this.updateCurrentFolder([itemId]);
+          //this.updateCurrentFolder([itemId]);
+          this.updateFilesAfterDelete();
         })
         .then(() => toastr.success(translations.successRemoveFile));
     } else {
@@ -577,7 +594,8 @@ class FilesActionStore {
           if (res[0]?.error) return Promise.reject(res[0].error);
           const data = res[0] ? res[0] : null;
           await this.uploadDataStore.loopFilesOperations(data, pbData);
-          this.updateCurrentFolder(null, [itemId]);
+          //this.updateCurrentFolder(null, [itemId]);
+          this.updateFilesAfterDelete([itemId]);
         })
         .then(() => toastr.success(translations.successRemoveFolder));
     }
