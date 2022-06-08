@@ -12,6 +12,8 @@ import { size } from "@appserver/components/utils/device";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 import isEqual from "lodash/isEqual";
+import { isMobile } from "react-device-detect";
+import SessionLifetimeLoader from "../sub-components/loaders/session-lifetime-loader";
 
 const MainContainer = styled.div`
   width: 100%;
@@ -149,6 +151,10 @@ const SessionLifetime = (props) => {
     setSessionLifetime(defaultSettings.lifetime);
     setShowReminder(false);
   };
+
+  if (isMobile && !isInit && !isLoading) {
+    return <SessionLifetimeLoader />;
+  }
 
   return (
     <MainContainer>
