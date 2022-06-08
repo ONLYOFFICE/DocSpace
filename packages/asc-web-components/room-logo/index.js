@@ -1,0 +1,76 @@
+import React from "react";
+import PropTypes from "prop-types";
+import { ReactSVG } from "react-svg";
+
+import StyledLogoContainer from "./styled-room-logo";
+
+const RoomLogo = ({ id, className, style, type, isPrivacy }) => {
+  const getIcon = () => {
+    switch (type) {
+      case "view":
+        return isPrivacy
+          ? "images/room.privacy.view.svg"
+          : "images/room.view.svg";
+      case "review":
+        return isPrivacy
+          ? "images/room.privacy.review.svg"
+          : "images/room.review.svg";
+      case "fill":
+        return isPrivacy
+          ? "images/room.privacy.fill.svg"
+          : "images/room.fill.svg";
+      case "editing":
+        return isPrivacy
+          ? "images/room.privacy.editing.svg"
+          : "images/room.editing.svg";
+      case "custom":
+        return isPrivacy
+          ? "images/room.privacy.custom.svg"
+          : "images/room.custom.svg";
+      case "archive":
+        return isPrivacy
+          ? "images/room.privacy.archive.svg"
+          : "images/room.archive.svg";
+    }
+  };
+
+  const icon = getIcon();
+
+  return (
+    <StyledLogoContainer
+      id={id}
+      className={className}
+      style={style}
+      type={type}
+      isPrivacy={isPrivacy}
+    >
+      <ReactSVG className="room-logo_icon" src={icon} />
+    </StyledLogoContainer>
+  );
+};
+
+RoomLogo.defaultProps = {
+  isPrivacy: false,
+};
+
+RoomLogo.propTypes = {
+  /** Accepts type of the room */
+  type: PropTypes.oneOf([
+    "view",
+    "review",
+    "fill",
+    "editing",
+    "custom",
+    "archive",
+  ]),
+  /** Add privacy icon  */
+  isPrivacy: PropTypes.bool,
+  /** Accepts id  */
+  id: PropTypes.string,
+  /** Accepts class name  */
+  className: PropTypes.string,
+  /** Accepts css style  */
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+};
+
+export default React.memo(RoomLogo);
