@@ -10,6 +10,10 @@ import config from "../../../../../../package.json";
 import AccessRights from "./access-rights/index.js";
 import AccessPortal from "./access-portal/index.js";
 import SecurityLoader from "./sub-components/loaders/security-loader";
+import MobileSecurityLoader from "./sub-components/loaders/mobile-security-loader";
+import AccessLoader from "./sub-components/loaders/access-loader";
+
+import { isMobile } from "react-device-detect";
 
 const SecurityWrapper = (props) => {
   const { t, history, loadBaseInfo } = props;
@@ -31,13 +35,14 @@ const SecurityWrapper = (props) => {
 
   const load = async () => {
     await loadBaseInfo();
-    const path = location.pathname;
-    const currentTab = data.findIndex((item) => path.includes(item.id));
-    if (currentTab !== -1) setCurrentTab(currentTab);
     setIsLoading(true);
   };
 
   useEffect(() => {
+    const path = location.pathname;
+    const currentTab = data.findIndex((item) => path.includes(item.id));
+    if (currentTab !== -1) setCurrentTab(currentTab);
+
     load();
   }, []);
 
@@ -51,7 +56,16 @@ const SecurityWrapper = (props) => {
     );
   };
 
-  if (!isLoading) return <SecurityLoader />;
+  if (!isLoading)
+    return currentTab === 0 ? (
+      isMobile ? (
+        <MobileSecurityLoader />
+      ) : (
+        <SecurityLoader />
+      )
+    ) : (
+      <AccessLoader />
+    );
   return (
     <Submenu
       data={data}
