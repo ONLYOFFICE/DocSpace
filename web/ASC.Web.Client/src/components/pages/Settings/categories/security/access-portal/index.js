@@ -72,7 +72,7 @@ const AccessPortal = (props) => {
         t={t}
         title={t("AdminsMessage")}
         tooltipTitle={t("AdminsMessageDescription")}
-        tooltipUrl={`https://helpcenter.onlyoffice.com/${lng}/administration/configuration.aspx#ChangingSecuritySettings_block`}
+        tooltipUrl={`${helpLink}/administration/configuration.aspx#ChangingSecuritySettings_block`}
       />
       <AdminMessageSection />
 

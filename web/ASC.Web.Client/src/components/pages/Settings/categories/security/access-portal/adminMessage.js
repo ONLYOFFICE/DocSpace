@@ -7,7 +7,6 @@ import RadioButtonGroup from "@appserver/components/radio-button-group";
 import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";
 import toastr from "@appserver/components/toast/toastr";
-import { getLanguage } from "@appserver/common/utils";
 import { LearnMoreWrapper } from "../StyledSecurity";
 import { size } from "@appserver/components/utils/device";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
@@ -36,6 +35,7 @@ const AdminMessage = (props) => {
     setMessageSettings,
     initSettings,
     isInit,
+    helpLink,
   } = props;
   const [type, setType] = useState("");
   const [showReminder, setShowReminder] = useState(false);
@@ -114,8 +114,6 @@ const AdminMessage = (props) => {
     setShowReminder(false);
   };
 
-  const lng = getLanguage(localStorage.getItem("language") || "en");
-
   if (isMobile && !isInit && !isLoading) {
     return <AdmMsgLoader />;
   }
@@ -128,7 +126,7 @@ const AdminMessage = (props) => {
           color="#316DAA"
           target="_blank"
           isHovered
-          href={`https://helpcenter.onlyoffice.com/${lng}/administration/configuration.aspx#ChangingSecuritySettings_block`}
+          href={`${helpLink}/administration/configuration.aspx#ChangingSecuritySettings_block`}
         >
           {t("Common:LearnMore")}
         </Link>
@@ -171,7 +169,7 @@ const AdminMessage = (props) => {
 };
 
 export default inject(({ auth, setup }) => {
-  const { enableAdmMess, setMessageSettings } = auth.settingsStore;
+  const { enableAdmMess, setMessageSettings, helpLink } = auth.settingsStore;
   const { initSettings, isInit } = setup;
 
   return {
@@ -179,5 +177,6 @@ export default inject(({ auth, setup }) => {
     setMessageSettings,
     initSettings,
     isInit,
+    helpLink,
   };
 })(withTranslation(["Settings", "Common"])(withRouter(observer(AdminMessage))));
