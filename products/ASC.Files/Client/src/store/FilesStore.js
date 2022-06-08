@@ -100,7 +100,7 @@ class FilesStore {
     const { socketHelper } = authStore.settingsStore;
 
     socketHelper.on("s:modify-folder", async (opt) => {
-      console.log("Call s:modify-folder", opt);
+      //console.log("Call s:modify-folder", opt);
 
       if (this.isLoading) return;
 
@@ -114,9 +114,9 @@ class FilesStore {
 
             const newFiles = [file, ...this.files];
 
-            if (newFiles.length > this.filter.pageCount) {
-              newFiles.pop(); // Remove last
-            }
+            // if (newFiles.length > this.filter.pageCount) {
+            //   newFiles.pop(); // Remove last
+            // }
 
             this.setFiles(newFiles);
           }

@@ -585,9 +585,9 @@ class UploadDataStore {
       const newFiles = files;
       const newFolders = folders;
       const path = currentFile.path ? currentFile.path.slice() : [];
-      const fileIndex = newFiles.findIndex(
-        (x) => x.id === currentFile.fileInfo.id
-      );
+      // const fileIndex = newFiles.findIndex(
+      //   (x) => x.id === currentFile.fileInfo.id
+      // );
 
       let folderInfo = null;
       const index = path.findIndex((x) => x === this.selectedFolderStore.id);
@@ -617,22 +617,23 @@ class UploadDataStore {
             newFolders.unshift(folderInfo);
             setFolders(newFolders);
             const newFilter = filter;
-            newFilter.total = newFilter.total += 1;
+            newFilter.total += 1;
             setFilter(newFilter);
           }
         } else {
-          if (currentFile && currentFile.fileInfo) {
-            if (fileIndex === -1) {
-              newFiles.unshift(currentFile.fileInfo);
-              setFiles(newFiles);
-              const newFilter = filter;
-              newFilter.total = newFilter.total += 1;
-              setFilter(newFilter);
-            } else if (!this.settingsStore.storeOriginalFiles) {
-              newFiles[fileIndex] = currentFile.fileInfo;
-              setFiles(newFiles);
-            }
-          }
+          // if (currentFile && currentFile.fileInfo) {
+          //   console.log("addNewFile", fileIndex);
+          //   if (fileIndex === -1) {
+          //     newFiles.unshift(currentFile.fileInfo);
+          //     setFiles(newFiles);
+          //     const newFilter = filter;
+          //     newFilter.total += 1;
+          //     setFilter(newFilter);
+          //   } else if (!this.settingsStore.storeOriginalFiles) {
+          //     newFiles[fileIndex] = currentFile.fileInfo;
+          //     setFiles(newFiles);
+          //   }
+          // }
         }
       };
 
@@ -653,17 +654,17 @@ class UploadDataStore {
         }
       }
 
-      if (filter.total >= filter.pageCount) {
-        if (files.length) {
-          fileIndex === -1 && newFiles.pop();
-          addNewFile();
-        } else {
-          newFolders.pop();
-          addNewFile();
-        }
-      } else {
-        addNewFile();
-      }
+      // if (filter.total >= filter.pageCount) {
+      //   if (files.length) {
+      //     fileIndex === -1 && newFiles.pop();
+      //     addNewFile();
+      //   } else {
+      //     newFolders.pop();
+      //     addNewFile();
+      //   }
+      // } else {
+      addNewFile();
+      // }
 
       if (!!folderInfo) {
         const {
@@ -926,7 +927,7 @@ class UploadDataStore {
   };
 
   finishUploadFiles = () => {
-    const { fetchFiles, filter } = this.filesStore;
+    //const { fetchFiles, filter } = this.filesStore;
 
     const totalErrorsCount = sumBy(this.files, (f) => (f.error ? 1 : 0));
 
@@ -947,7 +948,7 @@ class UploadDataStore {
 
     if (this.files.length > 0) {
       const toFolderId = this.files[0]?.toFolderId;
-      fetchFiles(toFolderId, filter);
+      //fetchFiles(toFolderId, filter);
 
       if (toFolderId) {
         const { socketHelper } = this.filesStore.settingsStore;
