@@ -569,7 +569,8 @@ class FilesStore {
     folderId,
     filter,
     clearFilter = true,
-    withSubfolders = false
+    withSubfolders = false,
+    clearSelection = true
   ) => {
     const {
       treeFolders,
@@ -646,7 +647,9 @@ class FilesStore {
 
           if (clearFilter) {
             this.fileActionStore.setAction({ type: null });
-            this.setSelected("close");
+            if (clearSelection) {
+              this.setSelected("close");
+            }
           }
 
           const navigationPath = await Promise.all(
