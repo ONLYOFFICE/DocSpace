@@ -58,6 +58,7 @@ public interface IFolder
     public bool Shareable { get; set; }
     public int NewForMe { get; set; }
     public string FolderUrl { get; set; }
+    public bool Pinned { get; set; }
 }
 
 [DebuggerDisplay("{Title} ({Id})")]

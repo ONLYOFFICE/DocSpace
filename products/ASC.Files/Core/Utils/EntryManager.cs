@@ -894,12 +894,7 @@ public class EntryManager
                         return false;
                     }
 
-                    if (e.ProviderEntry && ((Folder<string>)e).Pinned)
-                    {
-                        return true;
-                    }
-
-                    if (!e.ProviderEntry && ((Folder<int>)e).Pinned)
+                    if (((IFolder)e).Pinned)
                     {
                         return true;
                     }
