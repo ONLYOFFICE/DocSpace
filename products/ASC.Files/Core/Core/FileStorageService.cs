@@ -463,6 +463,26 @@ public class FileStorageService<T> //: IFileStorageService
         return await InternalCreateNewFolderAsync(parentId, title, FolderType.CustomRoom);
     }
 
+    private async Task<Folder<T>> CreateFillingFormsRoom(string title, T parentId)
+    {
+        return await InternalCreateNewFolderAsync(parentId, title, FolderType.FillingFormsRoom);
+    }
+
+    private async Task<Folder<T>> CreateReviewRoom(string title, T parentId)
+    {
+        return await InternalCreateNewFolderAsync(parentId, title, FolderType.ReviewRoom);
+    }
+
+    private async Task<Folder<T>> CreateReadOnlyRoom(string title, T parentId)
+    {
+        return await InternalCreateNewFolderAsync(parentId, title, FolderType.ReadOnlyRoom);
+    }
+
+    private async Task<Folder<T>> CreateEditingRoom(string title, T parentId)
+    {
+        return await InternalCreateNewFolderAsync(parentId, title, FolderType.EditingRoom);
+    }
+
     public async Task<Folder<T>> InternalCreateNewFolderAsync(T parentId, string title, FolderType folderType = FolderType.DEFAULT)
     {
         var folderDao = GetFolderDao();
