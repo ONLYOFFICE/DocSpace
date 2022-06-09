@@ -104,7 +104,7 @@ internal class FileConverterService<T> : BackgroundService
 
             fileConverterQueue = scope.ServiceProvider.GetService<FileConverterQueue<T>>();
 
-            var _conversionQueue = fileConverterQueue.GetAllTaskStatus().ToList();
+            var _conversionQueue = fileConverterQueue.GetAllTask().ToList();
 
             logger.DebugRunCheckConvertFilesStatus(_conversionQueue.Count);
 
@@ -264,7 +264,7 @@ internal class FileConverterService<T> : BackgroundService
                 logger.DebugCheckConvertFilesStatusIterationEnd();
             }
 
-            fileConverterQueue.SaveToCache(_conversionQueue);
+            fileConverterQueue.SetAllTask(_conversionQueue);
 
         }
         catch (Exception exception)

@@ -33,7 +33,7 @@ public class FileConverterQueue<T>
 {
     private readonly object _locker = new object();
     private readonly IDistributedCache _distributedCache;
-    private readonly string _name = "asc_file_converter_queue_";
+    private readonly string _cache_key_prefix = "asc_file_converter_queue_";
 
     public FileConverterQueue(IDistributedCache distributedCache)
     {
@@ -50,7 +50,9 @@ public class FileConverterQueue<T>
     {
         lock (_locker)
         {
-            if (Contains(file))
+            var task = PeekTask(file);
+
+            if (Contains(task))
             {
                 return;
             }
@@ -87,32 +89,13 @@ public class FileConverterQueue<T>
         SaveToCache(fromCache);
     }
 
-    public void Dequeue(File<T> file)
+    public void Dequeue(FileConverterOperationResult val)
     {
         var fromCache = LoadFromCache().ToList();
-        var task = PeekTask(file);
 
-        fromCache.Remove(task);
+        fromCache.Remove(val);
 
         SaveToCache(fromCache);
-    }
-
-    public async Task<FileConverterOperationResult> GetStatusAsync(KeyValuePair<File<T>, bool> pair, FileSecurity fileSecurity)
-    {
-        var file = pair.Key;
-        var operation = PeekTask(pair.Key);
-
-        if (operation != null && (pair.Value || await fileSecurity.CanReadAsync(file)))
-        {
-            if (operation.Progress == 100)
-            {
-                Dequeue(pair.Key);
-            }
-
-            return operation;
-        }
-
-        return null;
     }
 
     public FileConverterOperationResult PeekTask(File<T> file)
@@ -135,10 +118,42 @@ public class FileConverterQueue<T>
         return result != null && result.Progress != 100 && string.IsNullOrEmpty(result.Error);
     }
 
-    private string GetKey(File<T> f)
+
+    public IEnumerable<FileConverterOperationResult> GetAllTask()
     {
-        return string.Format("fileConvertation-{0}", f.Id);
+        var queueTasks = LoadFromCache();
+
+        queueTasks = DeleteOrphanCacheItem(queueTasks);
+
+        return queueTasks;
     }
+
+    public void SetAllTask(IEnumerable<FileConverterOperationResult> queueTasks)
+    {
+        SaveToCache(queueTasks);
+    }
+
+
+    public async Task<FileConverterOperationResult> GetStatusAsync(KeyValuePair<File<T>, bool> pair, FileSecurity fileSecurity)
+    {
+        var file = pair.Key;
+        var operation = PeekTask(pair.Key);
+
+        if (operation != null && (pair.Value || await fileSecurity.CanReadAsync(file)))
+        {
+            if (operation.Progress == 100)
+            {
+                var task = PeekTask(file);
+
+                Dequeue(task);
+            }
+
+            return operation;
+        }
+
+        return null;
+    }
+
 
     public async Task<string> FileJsonSerializerAsync(EntryStatusManager EntryManager, File<T> file, string folderTitle)
     {
@@ -168,16 +183,13 @@ public class FileConverterQueue<T>
             }, options);
     }
 
-    private bool Contains(File<T> file)
+    private bool Contains(FileConverterOperationResult val)
     {
         var queueTasks = LoadFromCache();
 
         return queueTasks.Any(x =>
         {
-            var fileId = JsonDocument.Parse(x.Source).RootElement.GetProperty("id").Deserialize<T>();
-            var fileVersion = JsonDocument.Parse(x.Source).RootElement.GetProperty("version").Deserialize<int>();
-
-            return file.Id.ToString() == fileId.ToString() && file.Version == fileVersion;
+            return String.Compare(x.Source, val.Source) == 0;
         });
     }
 
@@ -199,20 +211,11 @@ public class FileConverterQueue<T>
         return queueTasks;
     }
 
-    public IEnumerable<FileConverterOperationResult> GetAllTaskStatus()
-    {
-        var queueTasks = LoadFromCache();
-
-        queueTasks = DeleteOrphanCacheItem(queueTasks);
-
-        return queueTasks;
-    }
-
-    public void SaveToCache(IEnumerable<FileConverterOperationResult> queueTasks)
+    private void SaveToCache(IEnumerable<FileConverterOperationResult> queueTasks)
     {   
         if (!queueTasks.Any())
         {            
-            _distributedCache.Remove(GetKey());
+            _distributedCache.Remove(GetCacheKey());
 
             return;
         }
@@ -221,20 +224,20 @@ public class FileConverterQueue<T>
 
         ProtoBuf.Serializer.Serialize(ms, queueTasks);
 
-        _distributedCache.Set(GetKey(), ms.ToArray(), new DistributedCacheEntryOptions
+        _distributedCache.Set(GetCacheKey(), ms.ToArray(), new DistributedCacheEntryOptions
         {
             SlidingExpiration = TimeSpan.FromMinutes(15)
         });
     }
 
-    private string GetKey()
+    private string GetCacheKey()
     {
-        return $"{_name}_{typeof(T).Name}".ToLowerInvariant();
+        return $"{_cache_key_prefix}_{typeof(T).Name}".ToLowerInvariant();
     }
 
     private IEnumerable<FileConverterOperationResult> LoadFromCache()
     {
-        var serializedObject = _distributedCache.Get(GetKey());
+        var serializedObject = _distributedCache.Get(GetCacheKey());
 
         if (serializedObject == null)
         {
