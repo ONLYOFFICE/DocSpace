@@ -44,4 +44,11 @@ public static partial class FileConverterLogger
     
     [LoggerMessage(Level = LogLevel.Error, Message = "CheckConvertFilesStatus timeout: {fileId} ({contentLengthString})")]
     public static partial void ErrorCheckConvertFilesStatus(this ILogger logger, string fileId, long contentLengthString);
+
+    [LoggerMessage(Level = LogLevel.Debug, Message = "FileConverterService is starting.")]
+    public static partial void DebugFileConverterServiceRuning(this ILogger logger);
+
+    [LoggerMessage(Level = LogLevel.Debug, Message = "FileConverterService is stopping")]
+    public static partial void DebugFileConverterServiceStopping(this ILogger logger);
+
 }

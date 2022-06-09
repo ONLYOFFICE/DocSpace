@@ -44,15 +44,22 @@ internal class FileConverterService<T> : BackgroundService
 {
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly int _timerDelay = 1000;
+    private readonly ILogger<FileConverterService<T>> _logger;
 
     public FileConverterService(
-        IServiceScopeFactory serviceScopeFactory)
+        IServiceScopeFactory serviceScopeFactory,
+        ILogger<FileConverterService<T>> logger)
     {
+        _logger = logger;
         _serviceScopeFactory = serviceScopeFactory;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        _logger.DebugFileConverterServiceRuning();
+       
+        stoppingToken.Register(() => _logger.DebugFileConverterServiceStopping());
+
         while (!stoppingToken.IsCancellationRequested)
         {
             using var serviceScope = _serviceScopeFactory.CreateScope();
@@ -72,7 +79,6 @@ internal class FileConverterService<T> : BackgroundService
         }
     }
 
-
     private async Task ExecuteCheckFileConverterStatus(IServiceScope scope)
     {
         TenantManager tenantManager;
@@ -90,7 +96,7 @@ internal class FileConverterService<T> : BackgroundService
         FileConverterQueue<T> fileConverterQueue;
 
         var logger = scope.ServiceProvider.GetService<ILogger<FileConverterQueue<T>>>();
-
+        
         try
         {
             var scopeClass = scope.ServiceProvider.GetService<FileConverterQueueScope>();
@@ -100,6 +106,7 @@ internal class FileConverterService<T> : BackgroundService
 
             var _conversionQueue = fileConverterQueue.GetAllTaskStatus().ToList();
 
+            logger.DebugRunCheckConvertFilesStatus(_conversionQueue.Count);
 
             var filesIsConverting = _conversionQueue
                                     .Where(x => string.IsNullOrEmpty(x.Processed))
