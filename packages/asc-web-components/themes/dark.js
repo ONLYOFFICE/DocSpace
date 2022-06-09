@@ -1072,6 +1072,11 @@ const Dark = {
       borderRadius: "50%",
     },
 
+    icon: {
+      background: grayMain,
+      color: globalColors.lightHover,
+    },
+
     width: {
       min: "32px",
       small: "36px",
