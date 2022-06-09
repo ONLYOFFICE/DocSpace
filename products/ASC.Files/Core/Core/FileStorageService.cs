@@ -412,6 +412,10 @@ public class FileStorageService<T> //: IFileStorageService
         return roomType switch
         {
             RoomType.CustomRoom => await CreateCustomRoomAsync(title, parentId),
+            RoomType.FillingFormsRoom => await CreateFillingFormsRoom(title, parentId),
+            RoomType.EditingRoom => await CreateEditingRoom(title, parentId),
+            RoomType.ReviewRoom => await CreateReviewRoom(title, parentId),
+            RoomType.ReadOnlyRoom => await CreateReadOnlyRoom(title, parentId),
             _ => await CreateCustomRoomAsync(title, parentId),
         };
     }
@@ -440,6 +444,10 @@ public class FileStorageService<T> //: IFileStorageService
         var room = roomType switch
         {
             RoomType.CustomRoom => await CreateCustomRoomAsync(title, parentId),
+            RoomType.FillingFormsRoom => await CreateFillingFormsRoom(title, parentId),
+            RoomType.EditingRoom => await CreateEditingRoom(title, parentId),
+            RoomType.ReviewRoom => await CreateReviewRoom(title, parentId),
+            RoomType.ReadOnlyRoom => await CreateReadOnlyRoom(title, parentId),
             _ => await CreateCustomRoomAsync(title, parentId),
         };
 
