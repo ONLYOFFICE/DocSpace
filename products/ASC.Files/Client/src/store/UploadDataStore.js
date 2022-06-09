@@ -1188,7 +1188,8 @@ class UploadDataStore {
           updatedFolder,
           newFilter ? newFilter : filter,
           true,
-          true
+          true,
+          false
         ).finally(() => {
           this.clearActiveOperations(fileIds, folderIds);
           setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
