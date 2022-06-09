@@ -177,10 +177,12 @@ class FilesActionStore {
   };
 
   updateFilesAfterDelete = (folderIds) => {
-    const { folders, setFolders, filter } = this.filesStore;
+    const { folders, setFolders, filter, setSelected } = this.filesStore;
     const {
       clearSecondaryProgressData,
     } = this.uploadDataStore.secondaryProgressDataStore;
+
+    setSelected("close");
 
     if (folderIds) {
       const newFolders = folders.filter((f) => !folderIds.includes(f.id));
