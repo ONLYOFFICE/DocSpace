@@ -228,6 +228,20 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
 
         return stream;
     }
+    public EntryProperties GetProperties(string fileId)
+    {
+        var selector = GetSelector(fileId);
+        var fileDao = selector.GetFileDao(fileId);
+        return fileDao.GetProperties(selector.ConvertId(fileId));
+
+    }
+
+    public void SaveProperties(string fileId, EntryProperties entryProperties)
+    {
+        var selector = GetSelector(fileId);
+        var fileDao = selector.GetFileDao(fileId);
+        fileDao.SaveProperties(selector.ConvertId(fileId), entryProperties);
+    }
 
     public Task<bool> IsSupportedPreSignedUriAsync(File<string> file)
     {

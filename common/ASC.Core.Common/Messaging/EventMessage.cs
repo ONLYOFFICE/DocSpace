@@ -42,4 +42,5 @@ public class EventMessage
     public IList<string> Description { get; set; }
     public MessageTarget Target { get; set; }
     public string UAHeader { get; set; }
+    public bool Active { get; set; }
 }

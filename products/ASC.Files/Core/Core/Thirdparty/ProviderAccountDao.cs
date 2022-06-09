@@ -256,7 +256,7 @@ internal class ProviderAccountDao : IProviderDao
             authData = new AuthData(
                 !string.IsNullOrEmpty(newAuthData.Url) ? newAuthData.Url : input.Url,
                 input.UserName,
-                !string.IsNullOrEmpty(newAuthData.Password) ? newAuthData.Password : DecryptPassword(input.Password),
+                !string.IsNullOrEmpty(newAuthData.Password) ? newAuthData.Password : DecryptPassword(input.Password, linkId),
                 newAuthData.Token);
 
             if (!string.IsNullOrEmpty(newAuthData.Token))
@@ -382,11 +382,11 @@ internal class ProviderAccountDao : IProviderDao
 
         var id = input.Id;
         var providerTitle = input.Title ?? string.Empty;
-        var token = DecryptToken(input.Token);
+        var token = DecryptToken(input.Token, id);
         var owner = input.UserId;
         var folderType = input.FolderType;
         var createOn = _tenantUtil.DateTimeFromUtc(input.CreateOn);
-        var authData = new AuthData(input.Url, input.UserName, DecryptPassword(input.Password), token);
+        var authData = new AuthData(input.Url, input.UserName, DecryptPassword(input.Password, id), token);
 
         if (key == ProviderTypes.Box)
         {
@@ -616,16 +616,24 @@ internal class ProviderAccountDao : IProviderDao
         return string.IsNullOrEmpty(password) ? string.Empty : _instanceCrypto.Encrypt(password);
     }
 
-    private string DecryptPassword(string password)
-    {
-        return string.IsNullOrEmpty(password) ? string.Empty : _instanceCrypto.Decrypt(password);
-    }
-
-    private string DecryptToken(string token)
+    private string DecryptPassword(string password, int id)
     {
         try
         {
-            return DecryptPassword(token);
+            return string.IsNullOrEmpty(password) ? string.Empty : _instanceCrypto.Decrypt(password);
+        }
+        catch (Exception e)
+        {
+            _logger.ErrorDecryptPassword(id, _securityContext.CurrentAccount.ID, e);
+            return null;
+        }
+    }
+
+    private string DecryptToken(string token, int id)
+    {
+        try
+        {
+            return DecryptPassword(token, id);
         }
         catch
         {

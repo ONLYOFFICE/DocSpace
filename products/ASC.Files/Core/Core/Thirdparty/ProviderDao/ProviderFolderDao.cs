@@ -29,7 +29,10 @@ namespace ASC.Files.Thirdparty.ProviderDao;
 [Scope]
 internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
 {
+    private readonly SetupInfo _setupInfo;
+
     public ProviderFolderDao(
+        SetupInfo setupInfo,
         IServiceProvider serviceProvider,
         TenantManager tenantManager,
         SecurityDao<string> securityDao,
@@ -37,6 +40,7 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
         CrossDao crossDao)
         : base(serviceProvider, tenantManager, securityDao, tagDao, crossDao)
     {
+        _setupInfo = setupInfo;
     }
 
     public Task<Folder<string>> GetFolderAsync(string folderId)
@@ -383,7 +387,7 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
 
         if (storageMaxUploadSize == -1 || storageMaxUploadSize == long.MaxValue)
         {
-            storageMaxUploadSize = 1024L * 1024L * 1024L;
+            storageMaxUploadSize = _setupInfo.ProviderMaxUploadSize;
         }
 
         return storageMaxUploadSize;

@@ -27,17 +27,20 @@
 global using System.Collections.Concurrent;
 global using System.Linq.Expressions;
 global using System.Reflection;
+global using System.Text.Json;
 
 global using ASC.Api.Core;
 global using ASC.Api.Core.Extensions;
 global using ASC.Common;
 global using ASC.Common.Caching;
 global using ASC.Common.DependencyInjection;
+global using ASC.Common.Log;
 global using ASC.Common.Mapping;
 global using ASC.Common.Utils;
 global using ASC.Core;
 global using ASC.Core.Common;
 global using ASC.Core.Common.EF;
+global using ASC.Core.Configuration;
 global using ASC.Core.Tenants;
 global using ASC.ElasticSearch;
 global using ASC.ElasticSearch.Service;
@@ -47,6 +50,7 @@ global using ASC.Feed;
 global using ASC.Feed.Aggregator.Service;
 global using ASC.Feed.Core;
 global using ASC.Feed.Data;
+global using ASC.Files.AutoCleanUp;
 global using ASC.Files.Core;
 global using ASC.Files.Core.Core.Entries;
 global using ASC.Files.Core.EF;

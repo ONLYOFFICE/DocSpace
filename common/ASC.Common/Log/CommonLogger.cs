@@ -31,6 +31,9 @@ public static partial class CommonLogger
     public static partial void ErrorWithException(this ILogger logger, Exception exception);
 
     [LoggerMessage(Level = LogLevel.Error)]
+    public static partial void ErrorWithException(this ILogger logger, string message, Exception exception);
+
+    [LoggerMessage(Level = LogLevel.Error)]
     public static partial void Error(this ILogger logger, string message);
 
     [LoggerMessage(Level = LogLevel.Debug)]

@@ -24,45 +24,27 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Core.Common.EF.Context;
+/*
+ *
+ * (c) Copyright Ascensio System Limited 2010-2021
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+*/
 
-public class MySqlWebstudioDbContext : WebstudioDbContext { }
-public class PostgreSqlWebstudioDbContext : WebstudioDbContext { }
-public class WebstudioDbContext : BaseDbContext
+namespace ASC.Files.AutoCleanUp;
+
+public class TenantUserSettings
 {
-    public DbSet<DbTenant> Tenants { get; set; }
-    public DbSet<DbWebstudioSettings> WebstudioSettings { get; set; }
-    public DbSet<DbWebstudioUserVisit> WebstudioUserVisit { get; set; }
-    public DbSet<DbWebstudioIndex> WebstudioIndex { get; set; }
-
-    protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
-    {
-        get
-        {
-            return new Dictionary<Provider, Func<BaseDbContext>>()
-            {
-                { Provider.MySql, () => new MySqlWebstudioDbContext() } ,
-                { Provider.PostgreSql, () => new PostgreSqlWebstudioDbContext() } ,
-            };
-        }
-    }
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        ModelBuilderWrapper
-            .From(modelBuilder, _provider)
-            .AddWebstudioSettings()
-            .AddWebstudioUserVisit()
-            .AddDbWebstudioIndex()
-            .AddDbTenant()
-            .AddDbFunction();
-    }
-}
-
-public static class WebstudioDbExtension
-{
-    public static DIHelper AddWebstudioDbContextService(this DIHelper services)
-    {
-        return services.AddDbContextManagerService<WebstudioDbContext>();
-    }
+    public int TenantId { get; set; }
+    public Guid UserId { get; set; }
+    public DateToAutoCleanUp Setting { get; set; }
 }

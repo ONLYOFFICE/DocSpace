@@ -81,6 +81,14 @@ internal abstract class ThirdPartyProviderDao
     {
         return Task.FromResult<Stream>(null);
     }
+    public EntryProperties GetProperties(string fileId)
+    {
+        return null;
+    }
+
+    public void SaveProperties(string fileId, EntryProperties entryProperties)
+    {
+    }
 
     public virtual Task<Stream> GetFileStreamAsync(File<string> file)
     {

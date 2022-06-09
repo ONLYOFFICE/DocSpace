@@ -41,48 +41,31 @@ public class MessageTarget
 
     public MessageTarget Create<T>(T value)
     {
-        try
+        var res = new List<string>(1);
+        if (value != null)
         {
-            var res = new List<string>();
-
-            if (value is System.Collections.IEnumerable ids)
-            {
-                res.AddRange(from object id in ids select id.ToString());
-            }
-            else
-            {
-                res.Add(value.ToString());
-            }
-
-            return new MessageTarget(_option)
-            {
-                _items = res.Distinct()
-            };
-        }
-        catch (Exception e)
-        {
-            _logger.ErrorEventMessageTarget(e);
-
-            return null;
+            res.Add(value.ToString());
         }
 
+        return new MessageTarget(_option)
+        {
+            _items = res
+        };
     }
 
     public MessageTarget Create(IEnumerable<string> value)
     {
-        try
+        var res = new MessageTarget(_option)
         {
-            return new MessageTarget(_option)
-            {
-                _items = value.Distinct()
-            };
-        }
-        catch (Exception e)
-        {
-            _logger.ErrorEventMessageTarget(e);
+            _items = new List<string>()
+        };
 
-            return null;
+        if (value != null)
+        {
+            res._items = value.Select(r => r.ToString()).ToList();
         }
+
+        return res;
     }
 
     public MessageTarget Parse(string value)
@@ -104,7 +87,7 @@ public class MessageTarget
             _items = items
         };
     }
-
+    public IEnumerable<string> GetItems() { return _items.ToList(); }
     public override string ToString()
     {
         return string.Join(",", _items);
