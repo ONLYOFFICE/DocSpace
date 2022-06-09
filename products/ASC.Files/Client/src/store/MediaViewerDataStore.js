@@ -41,6 +41,10 @@ class MediaViewerDataStore {
     this.currentItem = item;
   };
 
+  setCurrentId = (id) => {
+    this.id = id;
+  };
+
   get playlist() {
     const { isMediaOrImage } = this.settingsStore;
     const { files } = this.filesStore;
