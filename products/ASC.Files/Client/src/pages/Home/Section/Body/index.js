@@ -82,7 +82,7 @@ const SectionBodyContent = (props) => {
 
       if (!isInViewport || viewAs === "table") {
         const bodyScroll = isMobileOnly
-          ? document.querySelector("#customScrollBar > div")
+          ? document.querySelector("#customScrollBar > .scroll-body")
           : document.querySelector(".section-scroll");
 
         const count =
