@@ -694,7 +694,7 @@ class FilesStore {
             );
 
             if (newItem) {
-              this.setSelection([newItem]);
+              this.setBufferSelection(newItem);
               this.setScrollToItem({
                 id: newItem.id,
                 type: this.createdItem.type,

@@ -82,9 +82,7 @@ const SectionBodyContent = (props) => {
     if (scrollToItem) {
       const { type, id } = scrollToItem;
 
-      const targetElement = document.querySelector(
-        `div[value='${type}_${id}_draggable']`
-      );
+      const targetElement = document.getElementById(`${type}_${id}`);
 
       if (!targetElement) return;
 
@@ -92,12 +90,12 @@ const SectionBodyContent = (props) => {
 
       if (!isInViewport || viewAs === "table") {
         const bodyScroll = isMobileOnly
-          ? document.querySelector("#customScrollBar > div")
+          ? document.querySelector("#customScrollBar > .scroll-body")
           : document.querySelector(".section-scroll");
 
         const count =
           filesList.findIndex((elem) => elem.id === scrollToItem.id) *
-          (isMobileOnly ? 57 : 48);
+          (isMobileOnly ? 57 : viewAs === "table" ? 40 : 48);
 
         bodyScroll.scrollTo(0, count);
       }
