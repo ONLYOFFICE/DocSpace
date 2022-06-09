@@ -240,9 +240,7 @@ public class FileSharingAceHelper<T>
 
         var folderType = ((IFolder)entry).FolderType;
 
-        if (folderType != FolderType.FillingFormsRoom && folderType != FolderType.EditingRoom 
-            && folderType != FolderType.ReadOnlyRoom && folderType != FolderType.ReviewRoom
-            && folderType != FolderType.CustomRoom)
+        if (!DocSpaceHelper.IsRoom(folderType))
         {
             return aceWrappers;
         }
@@ -259,7 +257,7 @@ public class FileSharingAceHelper<T>
                 continue;
             }
 
-            if (!RoomTemplateValidator.Validate(ace.Share, folderType))
+            if (!DocSpaceHelper.ValidateShare(folderType, ace.Share))
             {
                 continue;
             }

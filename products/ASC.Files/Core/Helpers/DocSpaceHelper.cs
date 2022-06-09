@@ -28,10 +28,32 @@ namespace ASC.Files.Core.Helpers;
 
 public static class DocSpaceHelper
 {
+    private static readonly HashSet<FileShare> _fillingFormRoomConstraints
+        = new HashSet<FileShare> { FileShare.RoomManager, FileShare.ReadWrite, FileShare.FillForms, FileShare.Read };
+    private static readonly HashSet<FileShare> _editingRoomConstraints
+        = new HashSet<FileShare> { FileShare.RoomManager, FileShare.ReadWrite, FileShare.Editing, FileShare.Read };
+    private static readonly HashSet<FileShare> _reviewRoomConstraints
+        = new HashSet<FileShare> { FileShare.RoomManager, FileShare.ReadWrite, FileShare.Review, FileShare.Comment, FileShare.Read };
+    private static readonly HashSet<FileShare> _readOnlyRoomConstraints
+        = new HashSet<FileShare> { FileShare.RoomManager, FileShare.ReadWrite, FileShare.Read };
+
     public static bool IsRoom(FolderType folderType)
     {
         return folderType == FolderType.CustomRoom || folderType == FolderType.EditingRoom 
             || folderType == FolderType.ReviewRoom || folderType == FolderType.ReadOnlyRoom 
             || folderType == FolderType.FillingFormsRoom;
+    }
+
+    public static bool ValidateShare(FolderType folderType, FileShare fileShare)
+    {
+        return folderType switch
+        {
+            FolderType.CustomRoom => true,
+            FolderType.FillingFormsRoom => _fillingFormRoomConstraints.Contains(fileShare),
+            FolderType.EditingRoom => _editingRoomConstraints.Contains(fileShare),
+            FolderType.ReviewRoom => _reviewRoomConstraints.Contains(fileShare),
+            FolderType.ReadOnlyRoom => _readOnlyRoomConstraints.Contains(fileShare),
+            _ => false
+        };
     }
 }

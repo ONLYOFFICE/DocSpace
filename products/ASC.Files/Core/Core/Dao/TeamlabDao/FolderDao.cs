@@ -581,9 +581,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             {
                 var folder = await GetFolderAsync(folderId).ConfigureAwait(false);
 
-                if (folder.FolderType != FolderType.DEFAULT && folder.FolderType != FolderType.CustomRoom
-                    && folder.FolderType != FolderType.FillingFormsRoom && folder.FolderType != FolderType.EditingRoom
-                    && folder.FolderType != FolderType.ReadOnlyRoom && folder.FolderType != FolderType.ReviewRoom)
+                if (folder.FolderType != FolderType.DEFAULT && !DocSpaceHelper.IsRoom(folder.FolderType))
                 {
                     throw new ArgumentException("It is forbidden to move the System folder.", nameof(folderId));
                 }
