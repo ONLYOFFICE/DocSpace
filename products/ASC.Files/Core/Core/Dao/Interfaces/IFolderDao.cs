@@ -62,6 +62,7 @@ public interface IFolderDao<T>
     /// </summary>
     /// <param name="parentId"></param>
     IAsyncEnumerable<Folder<T>> GetFoldersAsync(T parentId);
+
     /// <summary>
     /// Get a list of folders.
     /// </summary>
@@ -72,8 +73,38 @@ public interface IFolderDao<T>
     /// <param name="subjectID"></param>
     /// <param name="searchText"></param>
     /// <param name="withSubfolders"></param>
+    /// <param name="tagIds"></param>
     /// <returns></returns>
-    IAsyncEnumerable<Folder<T>> GetFoldersAsync(T parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false, 
+    IAsyncEnumerable<Folder<T>> GetFoldersAsync(T parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false,
+        IEnumerable<int> tagIds = null);
+
+    /// <summary>
+    /// Get a list of folders.
+    /// </summary>
+    /// <param name="parentId"></param>
+    /// <param name="orderBy"></param>
+    /// <param name="filterTypes"></param>
+    /// <param name="subjectGroup"></param>
+    /// <param name="subjectID"></param>
+    /// <param name="searchText"></param>
+    /// <param name="withSubfolders"></param>
+    /// <returns></returns>
+    IAsyncEnumerable<Folder<T>> GetFoldersAsync(T parentId, OrderBy orderBy, IEnumerable<FilterType> filterTypes, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false, 
+        IEnumerable<int> tagIds = null);
+
+    /// <summary>
+    /// Gets the folder (s) by ID (s)
+    /// </summary>
+    /// <param name="folderIds"></param>
+    /// <param name="filterTypes"></param>
+    /// <param name="subjectGroup"></param>
+    /// <param name="subjectID"></param>
+    /// <param name="searchText"></param>
+    /// <param name="searchSubfolders"></param>
+    /// <param name="checkShare"></param>
+    /// <param name="tagIds"></param>
+    /// <returns></returns>
+    IAsyncEnumerable<Folder<T>> GetFoldersAsync(IEnumerable<T> folderIds, FilterType filterTypes = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true,
         IEnumerable<int> tagIds = null);
 
     /// <summary>
@@ -87,7 +118,7 @@ public interface IFolderDao<T>
     /// <param name="searchSubfolders"></param>
     /// <param name="checkShare"></param>
     /// <returns></returns>
-    IAsyncEnumerable<Folder<T>> GetFoldersAsync(IEnumerable<T> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true,
+    IAsyncEnumerable<Folder<T>> GetFoldersAsync(IEnumerable<T> folderIds, IEnumerable<FilterType> filterTypes, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true,
         IEnumerable<int> tagIds = null);
 
     /// <summary>

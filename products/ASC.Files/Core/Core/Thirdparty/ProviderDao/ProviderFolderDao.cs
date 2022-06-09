@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Files.Core;
+
 namespace ASC.Files.Thirdparty.ProviderDao;
 
 [Scope]
@@ -95,7 +97,7 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
         return folders.Where(r => r != null);
     }
 
-    public async IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false, 
+    public async IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false,
         IEnumerable<int> tagIds = null)
     {
         var selector = GetSelector(parentId);
@@ -111,7 +113,23 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
         }
     }
 
-    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true, 
+    public async IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, IEnumerable<FilterType> filterTypes, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false, 
+        IEnumerable<int> tagIds = null)
+    {
+        var selector = GetSelector(parentId);
+        var folderDao = selector.GetFolderDao(parentId);
+        var folders = folderDao.GetFoldersAsync(selector.ConvertId(parentId), orderBy, filterTypes, subjectGroup, subjectID, searchText, withSubfolders);
+        var result = folders.Where(r => r != null);
+
+        await SetSharedPropertyAsync(result).ConfigureAwait(false);
+
+        await foreach (var r in result.ConfigureAwait(false))
+        {
+            yield return r;
+        }
+    }
+
+    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true,
         IEnumerable<int> tagIds = null)
     {
         var result = AsyncEnumerable.Empty<Folder<string>>();
@@ -134,6 +152,36 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
 
                     return folderDao.GetFoldersAsync(matchedId.Select(selectorLocal.ConvertId).ToList(),
                         filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare, tagIds);
+                })
+                .Where(r => r != null));
+        }
+
+        return result.Distinct();
+    }
+
+    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, IEnumerable<FilterType> filterTypes, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true, 
+        IEnumerable<int> tagIds = null)
+    {
+        var result = AsyncEnumerable.Empty<Folder<string>>();
+
+        foreach (var selector in GetSelectors())
+        {
+            var selectorLocal = selector;
+            var matchedIds = folderIds.Where(selectorLocal.IsMatch).ToList();
+
+            if (matchedIds.Count == 0)
+            {
+                continue;
+            }
+
+            result = result.Concat(matchedIds.GroupBy(selectorLocal.GetIdCode)
+                .ToAsyncEnumerable()
+                .SelectMany(matchedId =>
+                {
+                    var folderDao = selectorLocal.GetFolderDao(matchedId.FirstOrDefault());
+
+                    return folderDao.GetFoldersAsync(matchedId.Select(selectorLocal.ConvertId).ToList(),
+                        filterTypes, subjectGroup, subjectID, searchText, searchSubfolders, checkShare, tagIds);
                 })
                 .Where(r => r != null));
         }

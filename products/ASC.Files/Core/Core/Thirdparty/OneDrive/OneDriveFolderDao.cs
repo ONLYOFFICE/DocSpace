@@ -86,17 +86,23 @@ internal class OneDriveFolderDao : OneDriveDaoBase, IFolderDao<string>
     public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false,
         IEnumerable<int> tagIds = null)
     {
-        if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
-            || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
-            || filterType == FilterType.PresentationsOnly || filterType == FilterType.SpreadsheetsOnly
-            || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
-        {
-            return AsyncEnumerable.Empty<Folder<string>>();
-        }
+        return GetFoldersAsync(parentId, orderBy, new[] { filterType }, subjectGroup, subjectID, searchText, withSubfolders, tagIds);
+    }
+
+    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, IEnumerable<FilterType> filterTypes, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false,
+        IEnumerable<int> tagIds = null)
+    {
+        //if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
+        //    || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
+        //    || filterType == FilterType.PresentationsOnly || filterType == FilterType.SpreadsheetsOnly
+        //    || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
+        //{
+        //    return AsyncEnumerable.Empty<Folder<string>>();
+        //}
 
         var folders = GetFoldersAsync(parentId); //TODO:!!!
                                                  
-        folders = FilterByType(folders, filterType);
+        folders = FilterByType(folders, filterTypes);
 
         //Filter
         if (subjectID != Guid.Empty)
@@ -133,17 +139,23 @@ internal class OneDriveFolderDao : OneDriveDaoBase, IFolderDao<string>
     public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true,
         IEnumerable<int> tagIds = null)
     {
-        if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
-            || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
-            || filterType == FilterType.PresentationsOnly || filterType == FilterType.SpreadsheetsOnly
-            || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
-        {
-            return AsyncEnumerable.Empty<Folder<string>>();
-        }
+        return GetFoldersAsync(folderIds, new[] { filterType }, subjectGroup, subjectID, searchText, searchSubfolders, checkShare, tagIds);
+    }
+
+    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, IEnumerable<FilterType> filterTypes, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true,
+        IEnumerable<int> tagIds = null)
+    {
+        //if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
+        //    || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
+        //    || filterType == FilterType.PresentationsOnly || filterType == FilterType.SpreadsheetsOnly
+        //    || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
+        //{
+        //    return AsyncEnumerable.Empty<Folder<string>>();
+        //}
 
         var folders = folderIds.ToAsyncEnumerable().SelectAwait(async e => await GetFolderAsync(e).ConfigureAwait(false));
 
-        folders = FilterByType(folders, filterType);
+        folders = FilterByType(folders, filterTypes);
 
         if (subjectID.HasValue && subjectID != Guid.Empty)
         {

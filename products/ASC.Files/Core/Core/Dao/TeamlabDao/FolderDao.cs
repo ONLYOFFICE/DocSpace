@@ -48,6 +48,10 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     private readonly CrossDao _crossDao;
     private readonly IMapper _mapper;
 
+    private static readonly HashSet<FilterType> _constraints =
+        new HashSet<FilterType> { FilterType.FilesOnly, FilterType.ByExtension, FilterType.DocumentsOnly, FilterType.ImagesOnly, 
+            FilterType.PresentationsOnly, FilterType.SpreadsheetsOnly, FilterType.ArchiveOnly, FilterType.MediaOnly };
+
     public FolderDao(
         FactoryIndexerFolder factoryIndexer,
         UserManager userManager,
@@ -156,16 +160,27 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     public IAsyncEnumerable<Folder<int>> GetFoldersAsync(int parentId)
     {
-        return GetFoldersAsync(parentId, default, default, false, default, string.Empty);
+        return GetFoldersAsync(parentId, default, FilterType.None, false, default, string.Empty);
     }
 
-    public IAsyncEnumerable<Folder<int>> GetFoldersAsync(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false, 
+    public IAsyncEnumerable<Folder<int>> GetFoldersAsync(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false,
         IEnumerable<int> tagIds = null)
     {
-        if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
-            || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
-            || filterType == FilterType.PresentationsOnly || filterType == FilterType.SpreadsheetsOnly
-            || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
+        return GetFoldersAsync(parentId, orderBy, new[] { filterType }, subjectGroup, subjectID, searchText, withSubfolders, tagIds);
+    }
+
+    public IAsyncEnumerable<Folder<int>> GetFoldersAsync(int parentId, OrderBy orderBy, IEnumerable<FilterType> filterTypes, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false,
+        IEnumerable<int> tagIds = null)
+    {
+        //if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
+        //    || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
+        //    || filterType == FilterType.PresentationsOnly || filterType == FilterType.SpreadsheetsOnly
+        //    || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
+        //{
+        //    return AsyncEnumerable.Empty<Folder<int>>();
+        //}
+
+        if (filterTypes.Count() == 1 && _constraints.Contains(filterTypes.FirstOrDefault()))
         {
             return AsyncEnumerable.Empty<Folder<int>>();
         }
@@ -177,15 +192,20 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
         var q = GetFolderQuery(r => r.ParentId == parentId).AsNoTracking();
 
-        q = filterType switch
+        if (filterTypes.Any())
         {
-            FilterType.FillingFormsRoomsOnly => q.Where(f => f.FolderType == FolderType.FillingFormsRoom),
-            FilterType.EditingRoomsOnly => q.Where(f => f.FolderType == FolderType.EditingRoom),
-            FilterType.ReviewRoomsOnly => q.Where(f => f.FolderType == FolderType.ReviewRoom),
-            FilterType.ReadOnlyRoomsOnly => q.Where(f => f.FolderType == FolderType.ReadOnlyRoom),
-            FilterType.CustomRoomsOnly => q.Where(f => f.FolderType == FolderType.CustomRoom),
-            _ => q
-        };
+            var filter = filterTypes.Select(f => f switch
+            {
+                FilterType.FillingFormsRooms => FolderType.FillingFormsRoom,
+                FilterType.EditingRooms => FolderType.EditingRoom,
+                FilterType.ReviewRooms => FolderType.ReviewRoom,
+                FilterType.ReadOnlyRooms => FolderType.ReadOnlyRoom,
+                FilterType.CustomRooms => FolderType.CustomRoom,
+                _ => FolderType.CustomRoom
+            }).ToHashSet();
+
+            q = q.Where(r => filter.Contains(r.FolderType));
+        }
 
         if (withSubfolders)
         {
@@ -243,25 +263,36 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     public IAsyncEnumerable<Folder<int>> GetFoldersAsync(IEnumerable<int> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true,
         IEnumerable<int> tagIds = null)
     {
-        if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
-            || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
-            || filterType == FilterType.PresentationsOnly || filterType == FilterType.SpreadsheetsOnly
-            || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
-        {
-            return AsyncEnumerable.Empty<Folder<int>>();
-        }
+        return GetFoldersAsync(folderIds, new[] { filterType }, subjectGroup, subjectID, searchText, searchSubfolders, checkShare, tagIds);
+    }
+
+    public IAsyncEnumerable<Folder<int>> GetFoldersAsync(IEnumerable<int> folderIds, IEnumerable<FilterType> filterTypes, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true,
+        IEnumerable<int> tagIds = null)
+    {
+        //if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
+        //    || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
+        //    || filterType == FilterType.PresentationsOnly || filterType == FilterType.SpreadsheetsOnly
+        //    || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
+        //{
+        //    return AsyncEnumerable.Empty<Folder<int>>();
+        //}
 
         var q = GetFolderQuery(r => folderIds.Contains(r.Id)).AsNoTracking();
 
-        q = filterType switch
+        if (filterTypes.Any())
         {
-            FilterType.FillingFormsRoomsOnly => q.Where(f => f.FolderType == FolderType.FillingFormsRoom),
-            FilterType.EditingRoomsOnly => q.Where(f => f.FolderType == FolderType.EditingRoom),
-            FilterType.ReviewRoomsOnly => q.Where(f => f.FolderType == FolderType.ReviewRoom),
-            FilterType.ReadOnlyRoomsOnly => q.Where(f => f.FolderType == FolderType.ReadOnlyRoom),
-            FilterType.CustomRoomsOnly => q.Where(f => f.FolderType == FolderType.CustomRoom),
-            _ => q
-        };
+            var filter = filterTypes.Select(f => f switch
+            {
+                FilterType.FillingFormsRooms => FolderType.FillingFormsRoom,
+                FilterType.EditingRooms => FolderType.EditingRoom,
+                FilterType.ReviewRooms => FolderType.ReviewRoom,
+                FilterType.ReadOnlyRooms => FolderType.ReadOnlyRoom,
+                FilterType.CustomRooms => FolderType.CustomRoom,
+                _ => FolderType.CustomRoom
+            }).ToHashSet();
+
+            q = q.Where(r => filter.Contains(r.FolderType));
+        }
 
         if (searchSubfolders)
         {

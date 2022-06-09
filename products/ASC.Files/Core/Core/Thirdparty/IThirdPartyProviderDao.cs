@@ -399,17 +399,24 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         return filtered;
     }
 
-    protected IAsyncEnumerable<Folder<string>> FilterByType(IAsyncEnumerable<Folder<string>> folders, FilterType filterType)
-{
-        return filterType switch
+    protected IAsyncEnumerable<Folder<string>> FilterByType(IAsyncEnumerable<Folder<string>> folders, IEnumerable<FilterType> filterTypes)
+    {
+        if (!filterTypes.Any())
         {
-            FilterType.FillingFormsRoomsOnly => folders.Where(f => f.FolderType == FolderType.FillingFormsRoom),
-            FilterType.EditingRoomsOnly => folders.Where(f => f.FolderType == FolderType.EditingRoom),
-            FilterType.ReviewRoomsOnly => folders.Where(f => f.FolderType == FolderType.ReviewRoom),
-            FilterType.ReadOnlyRoomsOnly => folders.Where(f => f.FolderType == FolderType.ReadOnlyRoom),
-            FilterType.CustomRoomsOnly => folders.Where(f => f.FolderType == FolderType.CustomRoom),
-            _ => folders
-        };
+            return folders;
+        }
+
+        var filter = filterTypes.Select(f => f switch
+        {
+            FilterType.FillingFormsRooms => FolderType.FillingFormsRoom,
+            FilterType.EditingRooms => FolderType.EditingRoom,
+            FilterType.ReviewRooms => FolderType.ReviewRoom,
+            FilterType.ReadOnlyRooms => FolderType.ReadOnlyRoom,
+            FilterType.CustomRooms => FolderType.CustomRoom,
+            _ => FolderType.CustomRoom
+        }).ToHashSet();
+
+        return folders.Where(f => filter.Contains(f.FolderType));
     }
 
     protected abstract string MakeId(string path = null);
