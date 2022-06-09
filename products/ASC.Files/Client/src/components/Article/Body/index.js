@@ -37,56 +37,62 @@ const ArticleBodyContent = (props) => {
     isVisitor,
     FirebaseHelper,
     theme,
+    filesIsLoading,
   } = props;
 
   const campaigns = (localStorage.getItem("campaigns") || "")
     .split(",")
     .filter((campaign) => campaign.length > 0);
 
-  const onClick = React.useCallback((data) => {
-    const {
-      toggleArticleOpen,
-      setIsLoading,
-      fetchFiles,
-      homepage,
-      history,
-    } = props;
+  const onClick = React.useCallback(
+    (data) => {
+      const {
+        toggleArticleOpen,
+        setIsLoading,
+        fetchFiles,
+        homepage,
+        history,
+      } = props;
 
-    const filesSection = window.location.pathname.indexOf("/filter") > 0;
+      if (filesIsLoading) return;
 
-    if (filesSection) {
-      setIsLoading(true);
-    } else {
-      showLoader();
-    }
+      const filesSection = window.location.pathname.indexOf("/filter") > 0;
 
-    fetchFiles(data, null, true, false)
-      .then(() => {
-        if (!filesSection) {
-          const filter = FilesFilter.getDefault();
+      if (filesSection) {
+        setIsLoading(true);
+      } else {
+        showLoader();
+      }
 
-          filter.folder = data;
+      fetchFiles(data, null, true, false)
+        .then(() => {
+          if (!filesSection) {
+            const filter = FilesFilter.getDefault();
 
-          const urlFilter = filter.toUrlParams();
+            filter.folder = data;
 
-          history.push(
-            combineUrl(
-              AppServerConfig.proxyURL,
-              homepage,
-              `/filter?${urlFilter}`
-            )
-          );
-        }
-      })
-      .catch((err) => toastr.error(err))
-      .finally(() => {
-        if (isMobileOnly || isMobile()) {
-          toggleArticleOpen();
-        }
-        if (filesSection) setIsLoading(false);
-        else hideLoader();
-      });
-  }, []);
+            const urlFilter = filter.toUrlParams();
+
+            history.push(
+              combineUrl(
+                AppServerConfig.proxyURL,
+                homepage,
+                `/filter?${urlFilter}`
+              )
+            );
+          }
+        })
+        .catch((err) => toastr.error(err))
+        .finally(() => {
+          if (isMobileOnly || isMobile()) {
+            toggleArticleOpen();
+          }
+          if (filesSection) setIsLoading(false);
+          else hideLoader();
+        });
+    },
+    [filesIsLoading]
+  );
 
   const onShowNewFilesPanel = React.useCallback((folderId) => {
     props.setNewFilesPanelVisible(true, [`${folderId}`]);
@@ -130,6 +136,7 @@ export default inject(
       firstLoad,
       isLoading,
       isLoaded,
+      filesIsLoading,
     } = filesStore;
     const { treeFolders, setTreeFolders } = treeFoldersStore;
 
@@ -173,6 +180,7 @@ export default inject(
       isDesktopClient,
       FirebaseHelper,
       theme,
+      filesIsLoading,
     };
   }
 )(
