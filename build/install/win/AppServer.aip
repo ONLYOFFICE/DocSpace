@@ -800,7 +800,7 @@
     <ROW SearchKey="Version" Prereq="MySQLInstallerRunn" SearchType="2" SearchString="HKLM\SOFTWARE\MySQL AB\MySQL Server 5.7\Version" Order="1" Property="PreReqSearch_4"/>
     <ROW SearchKey="Version_1" Prereq="MySQLInstallerRunn" SearchType="2" SearchString="HKLM\SOFTWARE\MySQL AB\MySQL Server 8.0\Version" Order="2" Property="PreReqSearch_5"/>
     <ROW SearchKey="Version_2" Prereq="MySQLInstallerRunn" SearchType="2" SearchString="HKLM\SOFTWARE\MySQL AB\MySQL Server 5.5\Version" VerMin="5.5" Order="0" Property="PreReqSearch_6"/>
-    <ROW SearchKey="_" Prereq="RequiredApplication_3" SearchType="5" SearchString="HKLM\SOFTWARE\Wow6432Node\Ericsson\Erlang\9.3" Order="2" Property="PreReqSearch_10"/>
+    <ROW SearchKey="_" Prereq="RequiredApplication_3" SearchType="5" SearchString="HKLM\SOFTWARE\Wow6432Node\Ericsson\Erlang\13" Order="2" Property="PreReqSearch_10"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.SqlScriptComponent">
     <ATTRIBUTE name="ImpersonateUser" value="true"/>
