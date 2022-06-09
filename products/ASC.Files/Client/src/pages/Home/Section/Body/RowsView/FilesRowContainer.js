@@ -88,6 +88,7 @@ const FilesRowContainer = ({
     >
       {filesList.map((item, index) => (
         <SimpleFilesRow
+          id={`${item?.isFolder ? "folder" : "file"}_${item.id}`}
           key={`${item.id}_${index}`}
           item={item}
           sectionWidth={sectionWidth}

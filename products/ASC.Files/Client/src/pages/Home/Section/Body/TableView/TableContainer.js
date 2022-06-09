@@ -147,6 +147,7 @@ const Table = ({
       <TableBody>
         {filesList.map((item, index) => (
           <TableRow
+            id={`${item?.isFolder ? "folder" : "file"}_${item.id}`}
             key={`${item.id}_${index}`}
             item={item}
             index={index}
