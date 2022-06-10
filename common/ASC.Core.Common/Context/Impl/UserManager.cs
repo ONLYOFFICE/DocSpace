@@ -566,6 +566,11 @@ public class UserManager
             group = ToGroup(Constants.BuildinGroups.FirstOrDefault(r => r.ID == groupID));
         }
 
+        if (group == null)
+        {
+            return Constants.LostGroupInfo;
+        }
+
         return new GroupInfo
         {
             ID = group.Id,
