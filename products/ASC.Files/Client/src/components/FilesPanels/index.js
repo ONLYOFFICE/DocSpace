@@ -110,7 +110,7 @@ const Panels = (props) => {
 };
 
 export default inject(
-  ({ dialogsStore, uploadDataStore, versionHistoryStore }) => {
+  ({ auth, dialogsStore, uploadDataStore, versionHistoryStore }) => {
     const {
       sharingPanelVisible,
       ownerPanelVisible,
@@ -132,11 +132,11 @@ export default inject(
       createMasterForm,
       selectFileDialogVisible,
       setSelectFileDialogVisible,
-      hotkeyPanelVisible,
     } = dialogsStore;
 
     const { uploadPanelVisible } = uploadDataStore;
     const { isVisible: versionHistoryPanelVisible } = versionHistoryStore;
+    const { hotkeyPanelVisible } = auth.settingsStore;
 
     return {
       sharingPanelVisible,

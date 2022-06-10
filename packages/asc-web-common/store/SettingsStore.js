@@ -116,6 +116,7 @@ class SettingsStore {
 
   tenantStatus = null;
   helpLink = null;
+  hotkeyPanelVisible = false;
 
   constructor() {
     makeAutoObservable(this);
@@ -469,6 +470,10 @@ class SettingsStore {
 
   setIsBurgerLoading = (isBurgerLoading) => {
     this.isBurgerLoading = isBurgerLoading;
+  };
+
+  setHotkeyPanelVisible = (hotkeyPanelVisible) => {
+    this.hotkeyPanelVisible = hotkeyPanelVisible;
   };
 }
 
