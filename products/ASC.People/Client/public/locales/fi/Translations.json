@@ -1,6 +1,7 @@
 {
   "AddMembers": "Lisää jäseniä",
   "Birthdate": "Syntymäaika",
+  "DeleteUserDataConfirmation": "Toisten kanssa jaetut käyttäjäasiakirjat poistetaan. Voit välttää tämän määrittämällä tiedot uudelleen.",
   "DeleteSelfProfile": "Poista profiili",
   "DisableUserButton": "Poisteta käytöstä",
   "DisabledEmployeeStatus": "Poistettu käytöstä",

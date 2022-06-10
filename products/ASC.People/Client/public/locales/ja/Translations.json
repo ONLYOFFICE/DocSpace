@@ -1,6 +1,7 @@
 {
   "AddMembers": "メンバーの追加",
   "Birthdate": "誕生日",
+  "DeleteUserDataConfirmation": "他の人と共有しているユーザードキュメントは削除されます。これを避けるためには、データの再割り当てを行ってください。",
   "DeleteSelfProfile": "プロファイルの削除",
   "DisableUserButton": "無効にする",
   "DisabledEmployeeStatus": "無効化",
