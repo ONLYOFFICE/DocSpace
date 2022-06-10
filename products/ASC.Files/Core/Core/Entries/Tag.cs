@@ -121,7 +121,7 @@ public sealed class Tag : IMapFrom<DbFilesTag>
 
     public bool Equals(Tag f)
     {
-        return f.Id == Id && f.EntryType == EntryType && Equals(f.EntryId, EntryId);
+        return f != null && f.Id == Id && f.EntryType == EntryType && Equals(f.EntryId, EntryId);
     }
 
     public override int GetHashCode()
