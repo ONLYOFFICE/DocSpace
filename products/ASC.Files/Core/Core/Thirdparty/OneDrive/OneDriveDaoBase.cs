@@ -191,6 +191,7 @@ internal abstract class OneDriveDaoBase : ThirdPartyProviderDao<OneDriveProvider
         file.ModifiedOn = onedriveFile.LastModifiedDateTime.HasValue ? _tenantUtil.DateTimeFromUtc(onedriveFile.LastModifiedDateTime.Value.DateTime) : default;
         file.NativeAccessor = onedriveFile;
         file.Title = MakeItemTitle(onedriveFile);
+        file.ThumbnailStatus = Thumbnail.Created;
 
         return file;
     }
