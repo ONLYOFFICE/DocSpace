@@ -306,6 +306,32 @@ public class FileSecurity : IFileSecurity
                 defaultShareRecord = null;
                 break;
 
+            case FolderType.VirtualRooms:
+                defaultShareRecord = new FileShareRecord
+                {
+                    Level = int.MaxValue,
+                    EntryId = entry.Id,
+                    EntryType = entry.FileEntryType,
+                    Share = FileShare.Read,
+                    Subject = Constants.GroupAdmin.ID,
+                    TenantId = _tenantManager.GetCurrentTenant().Id,
+                    Owner = entry.RootCreateBy
+                };
+
+                if (!shares.Any())
+                {
+                    if ((defaultShareRecord.Share == FileShare.Read && action == FilesSecurityActions.Read) ||
+                        (defaultShareRecord.Share == FileShare.ReadWrite))
+                    {
+                        return _userManager.GetUsersByGroup(defaultShareRecord.Subject)
+                                          .Where(x => x.Status == EmployeeStatus.Active).Select(y => y.Id).Distinct();
+                    }
+
+                    return Enumerable.Empty<Guid>();
+                }
+
+                break;
+
             default:
                 defaultShareRecord = null;
                 break;
