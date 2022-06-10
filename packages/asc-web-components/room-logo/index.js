@@ -9,28 +9,28 @@ const RoomLogo = ({ id, className, style, type, isPrivacy }) => {
     switch (type) {
       case "view":
         return isPrivacy
-          ? "images/room.privacy.view.svg"
-          : "images/room.view.svg";
+          ? "/static/images/room.privacy.view.svg"
+          : "/static/images/room.view.svg";
       case "review":
         return isPrivacy
-          ? "images/room.privacy.review.svg"
-          : "images/room.review.svg";
+          ? "/static/images/room.privacy.review.svg"
+          : "/static/images/room.review.svg";
       case "fill":
         return isPrivacy
-          ? "images/room.privacy.fill.svg"
-          : "images/room.fill.svg";
+          ? "/static/images/room.privacy.fill.svg"
+          : "/static/images/room.fill.svg";
       case "editing":
         return isPrivacy
-          ? "images/room.privacy.editing.svg"
-          : "images/room.editing.svg";
+          ? "/static/images/room.privacy.editing.svg"
+          : "/static/images/room.editing.svg";
       case "custom":
         return isPrivacy
-          ? "images/room.privacy.custom.svg"
-          : "images/room.custom.svg";
+          ? "/static/images/room.privacy.custom.svg"
+          : "/static/images/room.custom.svg";
       case "archive":
         return isPrivacy
-          ? "images/room.privacy.archive.svg"
-          : "images/room.archive.svg";
+          ? "/static/images/room.privacy.archive.svg"
+          : "/static/images/room.archive.svg";
     }
   };
 
