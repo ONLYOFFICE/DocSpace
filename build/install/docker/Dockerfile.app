@@ -88,7 +88,7 @@ RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
     apt-get -y upgrade && \
     apt-get install -yq sudo nano curl vim python3-pip && \
     apt-get install -yq libgdiplus && \
-    pip install --upgrade jsonpath-ng
+    pip3 install --upgrade jsonpath-ng
 
 COPY --from=base --chown=onlyoffice:onlyoffice /app/onlyoffice/config/*.json /app/onlyoffice/config/
 COPY --from=base --chown=onlyoffice:onlyoffice /app/onlyoffice/config/*.config /app/onlyoffice/config/
@@ -116,7 +116,7 @@ RUN mkdir -p /var/log/onlyoffice && \
     apt-get -y update && \
     apt-get -y upgrade && \
     apt-get install -yq sudo nano curl vim python3-pip && \
-    pip install --upgrade jsonpath-ng
+    pip3 install --upgrade jsonpath-ng
 
 COPY --from=base --chown=onlyoffice:onlyoffice /app/onlyoffice/config/*.json /app/onlyoffice/config/
 COPY --from=base --chown=onlyoffice:onlyoffice /app/onlyoffice/config/*.config /app/onlyoffice/config/
