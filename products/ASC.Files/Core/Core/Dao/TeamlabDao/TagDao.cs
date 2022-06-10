@@ -780,6 +780,26 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
                     .Distinct()
             );
 
+    static readonly Func<FilesDbContext, int, Guid, IAsyncEnumerable<TagLinkData>> _newTagsThirdpartyRoomsQuery =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery((FilesDbContext ctx, int tenantId, Guid subject) =>
+            ctx.Tag
+            .AsNoTracking()
+            .Where(r => r.TenantId == tenantId)
+            .Where(r => subject == Guid.Empty || r.Owner == subject)
+            .Where(r => r.Type == TagType.New)
+            .Join(ctx.TagLink, r => r.Id, l => l.TagId, (tag, link) => new TagLinkData
+            {
+                Tag = tag,
+                Link = link
+            })
+            .Where(r => r.Link.TenantId == r.Tag.TenantId)
+            .Join(ctx.ThirdpartyIdMapping, r => r.Link.EntryId, r => r.HashId, (tagLink, mapping) => new { tagLink, mapping })
+            .Where(r => r.mapping.TenantId == tenantId && r.tagLink.Tag.Owner == subject && r.tagLink.Link.EntryType == FileEntryType.Folder)
+            .Join(ctx.ThirdpartyAccount, r => r.mapping.Id, r => r.FolderId, (tagLinkData, account) => new { tagLinkData, account })
+            .Where(r => r.tagLinkData.mapping.Id == r.account.FolderId && r.account.RootFolderType == FolderType.VirtualRooms)
+            .Select(r => r.tagLinkData.tagLink).Distinct()
+            );
+
     static readonly Func<FilesDbContext, List<int>, bool, IAsyncEnumerable<int>> _getFolderQuery = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery((FilesDbContext ctx, List<int> monitorFolderIdsInt, bool deepSearch) =>
           ctx.Tree
               .AsNoTracking()
@@ -929,6 +949,10 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
             {
                 result = result.Concat(FromQueryAsync(_newTagsForSBoxQuery(FilesDbContext, tenantId, subject, thirdpartyFolderIds)));
             }
+        }
+        if (parentFolder.FolderType == FolderType.VirtualRooms)
+        {
+            result = result.Concat(FromQueryAsync(_newTagsThirdpartyRoomsQuery(FilesDbContext, tenantId, subject)));
         }
 
         await foreach (var e in result)
