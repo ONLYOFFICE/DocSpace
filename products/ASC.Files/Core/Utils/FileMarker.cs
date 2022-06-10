@@ -257,6 +257,11 @@ public class FileMarker
                     });
                 }
             }
+            else if (obj.FileEntry.RootFolderType == FolderType.VirtualRooms)
+            {
+                var virtualRoomsFolderId = await _globalFolder.GetFolderVirtualRooms(_daoFactory);
+                userIDs.ForEach(userID => RemoveFromCahce(virtualRoomsFolderId, userID));
+            }
             else if (obj.FileEntry.RootFolderType == FolderType.Privacy)
             {
                 foreach (var userID in userIDs)
@@ -759,7 +764,7 @@ public class FileMarker
                                         ? await tagDao.GetNewTagsAsync(_authContext.CurrentAccount.ID, await folderDao.GetFolderAsync(await _globalFolder.GetFolderShareAsync<T>(_daoFactory))).FirstOrDefaultAsync()
                                         : await totalTags.FirstOrDefaultAsync(tag => tag.EntryType == FileEntryType.Folder && Equals(tag.EntryId, parent.Id));
 
-            totalTags = totalTags.Where(e => e != parentFolderTag);
+            totalTags = totalTags.Where(e => !e.Equals(parentFolderTag));
             var countSubNew = 0;
             await totalTags.ForEachAsync(tag => countSubNew += tag.Count);
 
