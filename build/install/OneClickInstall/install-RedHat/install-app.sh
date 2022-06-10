@@ -142,7 +142,11 @@ fi
 { ${package_manager} check-update ${package_sysname}-${product}; APPSERVER_CHECK_UPDATE=$?; } || true
 if [ "$APPSERVER_INSTALLED" = "false" ]; then
 	${package_manager} install -y ${package_sysname}-${product}
-	${product}-configuration.sh -mysqlh ${MYSQL_SERVER_HOST} -mysqld ${MYSQL_SERVER_DB_NAME} -mysqlu ${MYSQL_SERVER_USER} -mysqlp ${MYSQL_ROOT_PASS}
+	${product}-configuration.sh \
+		-mysqlh ${MYSQL_SERVER_HOST} \
+		-mysqld ${MYSQL_SERVER_DB_NAME} \
+		-mysqlu ${MYSQL_SERVER_USER} \
+		-mysqlp ${MYSQL_ROOT_PASS}
 elif [[ $APPSERVER_CHECK_UPDATE -eq $UPDATE_AVAILABLE_CODE ]]; then
 	ENVIRONMENT="$(cat /lib/systemd/system/${product}-api.service | grep -oP 'ENVIRONMENT=\K.*')"
 	USER_CONNECTIONSTRING=$(json -f /etc/onlyoffice/${product}/appsettings.$ENVIRONMENT.json ConnectionStrings.default.connectionString)
@@ -153,7 +157,12 @@ elif [[ $APPSERVER_CHECK_UPDATE -eq $UPDATE_AVAILABLE_CODE ]]; then
 	MYSQL_ROOT_PASS=$(echo $USER_CONNECTIONSTRING | grep -oP 'Password=\K.*' | grep -o '^[^;]*')
 
 	${package_manager} -y update ${package_sysname}-${product}
-	${product}-configuration.sh -e ${ENVIRONMENT} -mysqlh ${MYSQL_SERVER_HOST} -mysqld ${MYSQL_SERVER_DB_NAME} -mysqlu ${MYSQL_SERVER_USER} -mysqlp ${MYSQL_ROOT_PASS}
+	${product}-configuration.sh \
+		-e ${ENVIRONMENT} \
+		-mysqlh ${MYSQL_SERVER_HOST} \
+		-mysqld ${MYSQL_SERVER_DB_NAME} \
+		-mysqlu ${MYSQL_SERVER_USER} \
+		-mysqlp ${MYSQL_ROOT_PASS}
 fi
 
 echo ""
