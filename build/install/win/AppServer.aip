@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<DOCUMENT Type="Advanced Installer" CreateVersion="18.4" version="18.8.1" Modules="enterprise" RootPath="." Language="en" Id="{54B168F8-13C3-42BC-B783-24F5F6D98365}">
+<DOCUMENT Type="Advanced Installer" CreateVersion="18.4" version="18.9.1" Modules="enterprise" RootPath="." Language="en" Id="{54B168F8-13C3-42BC-B783-24F5F6D98365}">
   <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
     <ROW Property="AI_BITMAP_DISPLAY_MODE" Value="0"/>
     <ROW Property="AI_CURRENT_YEAR" Value="2022" ValueLocId="-"/>
@@ -44,6 +44,14 @@
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="ONLYOFFICE AppServer [|ProductVersion]"/>
     <ROW Property="ProductVersion" Value="1.0.0" Type="32"/>
+    <ROW Property="RABBITMQ_HOSTNAME_PROP" Value="localhost" ValueLocId="-"/>
+    <ROW Property="RABBITMQ_PASSWORD_PROP" Value="guest" ValueLocId="-"/>
+    <ROW Property="RABBITMQ_PORT_PROP" Value="5672" ValueLocId="-"/>
+    <ROW Property="RABBITMQ_USERNAME_PROP" Value="guest" ValueLocId="-"/>
+    <ROW Property="RABBITMQ_VIRTUALHOST_PROP" Value="/" ValueLocId="-"/>
+    <ROW Property="REDIS_HOST_PROP" Value="localhost" ValueLocId="-"/>
+    <ROW Property="REDIS_PASSWORD_PROP" Value=" " Options="1" ValueLocId="-"/>
+    <ROW Property="REDIS_PORT_PROP" Value="6379" ValueLocId="-"/>
     <ROW Property="SERVER_PROP" Value="localhost"/>
     <ROW Property="SUBFOLDER_SERVER" Value="--core:products:subfolder=server"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND;AI_SETUPEXEPATH;SETUPEXEDIR"/>
@@ -257,6 +265,7 @@
     <ROW Name="SoftwareDetector.dll" SourcePath="&lt;AI_CUSTACTS&gt;SoftwareDetector.dll"/>
     <ROW Name="TxtUpdater.dll" SourcePath="&lt;AI_CUSTACTS&gt;TxtUpdater.dll"/>
     <ROW Name="Utils.CA.dll" SourcePath="Utils.CA.dll"/>
+    <ROW Name="Utils.CA.dll_1" SourcePath="..\..\..\..\portals\build\install\win\Utils.CA.dll"/>
     <ROW Name="aicustact.dll" SourcePath="&lt;AI_CUSTACTS&gt;aicustact.dll"/>
     <ROW Name="jsonCfg.dll" SourcePath="&lt;AI_CUSTACTS&gt;jsonCfg.dll"/>
     <ROW Name="lzmaextractor.dll" SourcePath="&lt;AI_CUSTACTS&gt;lzmaextractor.dll"/>
@@ -274,18 +283,23 @@
     <ROW Dialog_="ELKConnectionDlg" Control="BannerLine" Type="Line" X="0" Y="44" Width="372" Height="0" Attributes="1" Order="500"/>
     <ROW Dialog_="ELKConnectionDlg" Control="BottomLine" Type="Line" X="5" Y="234" Width="368" Height="0" Attributes="1" Order="600"/>
     <ROW Dialog_="ELKConnectionDlg" Control="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Attributes="196611" Text="Настройка подключения Elasticsearch..." Order="700"/>
-    <ROW Dialog_="ELKConnectionDlg" Control="Logo" Type="Text" X="4" Y="228" Width="70" Height="12" Attributes="1" Text="Advanced Installer" Order="800"/>
-    <ROW Dialog_="ELKConnectionDlg" Control="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Attributes="196611" Text="Elasticsearch настройки подключения" TextStyle="[DlgTitleFont]" Order="900"/>
-    <ROW Dialog_="ELKConnectionDlg" Control="ProtocolLabel" Type="Text" X="25" Y="65" Width="67" Height="11" Attributes="65539" Text="Protocol" Order="1000"/>
-    <ROW Dialog_="ELKConnectionDlg" Control="ServerLabel" Type="Text" X="25" Y="92" Width="67" Height="11" Attributes="65539" Text="Server:" Order="1100"/>
-    <ROW Dialog_="ELKConnectionDlg" Control="PortLabel" Type="Text" X="25" Y="119" Width="67" Height="11" Attributes="65539" Text="Port:" Order="1200"/>
-    <ROW Dialog_="ELKConnectionDlg" Control="ProtocolEdit" Type="Edit" X="98" Y="61" Width="253" Height="18" Attributes="3" Property="ELASTICSEARCH_SCHEME" Text="{5}" Order="1300"/>
-    <ROW Dialog_="ELKConnectionDlg" Control="ServerEdit" Type="Edit" X="98" Y="89" Width="253" Height="18" Attributes="3" Property="ELASTICSEARCH_HOST" Text="[ComputerName]" Order="1400"/>
-    <ROW Dialog_="ELKConnectionDlg" Control="PortEdit" Type="Edit" X="98" Y="116" Width="253" Height="18" Attributes="19" Property="ELASTICSEARCH_PORT" Text="{7}" Order="1500"/>
+    <ROW Dialog_="ELKConnectionDlg" Control="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Attributes="196611" Text="Elasticsearch настройки подключения" TextStyle="[DlgTitleFont]" Order="800"/>
+    <ROW Dialog_="ELKConnectionDlg" Control="ProtocolLabel" Type="Text" X="25" Y="65" Width="67" Height="11" Attributes="65539" Text="Protocol" Order="900"/>
+    <ROW Dialog_="ELKConnectionDlg" Control="ServerLabel" Type="Text" X="25" Y="92" Width="67" Height="11" Attributes="65539" Text="Server:" Order="1000"/>
+    <ROW Dialog_="ELKConnectionDlg" Control="PortLabel" Type="Text" X="25" Y="119" Width="67" Height="11" Attributes="65539" Text="Port:" Order="1100"/>
+    <ROW Dialog_="ELKConnectionDlg" Control="ProtocolEdit" Type="Edit" X="98" Y="61" Width="253" Height="18" Attributes="3" Property="ELASTICSEARCH_SCHEME" Text="{5}" Order="1200"/>
+    <ROW Dialog_="ELKConnectionDlg" Control="ServerEdit" Type="Edit" X="98" Y="89" Width="253" Height="18" Attributes="3" Property="ELASTICSEARCH_HOST" Text="[ComputerName]" Order="1300"/>
+    <ROW Dialog_="ELKConnectionDlg" Control="PortEdit" Type="Edit" X="98" Y="116" Width="253" Height="18" Attributes="19" Property="ELASTICSEARCH_PORT" Text="{7}" Order="1400"/>
     <ROW Dialog_="ExitDialog" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="1" Text="[ButtonText_Back]" Order="400" TextLocId="-" MsiKey="ExitDialog#Back" Options="1"/>
     <ROW Dialog_="FatalError" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="1" Text="[ButtonText_Back]" Order="400" TextLocId="-" MsiKey="FatalError#Back" Options="1"/>
     <ROW Dialog_="FolderDlg" Control="FolderEdit" Type="PathEdit" X="18" Y="126" Width="252" Height="18" Attributes="7" Property="APPDIR" Help="|" Order="300" HelpLocId="Control.Help.FolderDlg#FolderEdit" MsiKey="FolderDlg#FolderEdit"/>
-    <ROW Dialog_="FolderDlg" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Back]" Order="800" TextLocId="-" MsiKey="FolderDlg#Back" Options="1"/>
+    <ROW Dialog_="FolderDlg" Control="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Cancel]" Order="600" TextLocId="-" MsiKey="FolderDlg#Cancel" Options="1"/>
+    <ROW Dialog_="FolderDlg" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Back]" Order="700" TextLocId="-" MsiKey="FolderDlg#Back" Options="1"/>
+    <ROW Dialog_="FolderDlg" Control="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" Attributes="1048577" Text="[BannerBitmap]" Help="|" Order="800" HelpLocId="Control.Help.FolderDlg#BannerBitmap" MsiKey="FolderDlg#BannerBitmap"/>
+    <ROW Dialog_="FolderDlg" Control="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Attributes="196611" Text="Select Installation Folder" TextStyle="[DlgTitleFont]" Order="900" TextLocId="Control.Text.FolderDlg#Title" MsiKey="FolderDlg#Title"/>
+    <ROW Dialog_="FolderDlg" Control="Text" Type="Text" X="25" Y="70" Width="320" Height="40" Attributes="3" Text="To install in this folder, click &quot;[Text_Next]&quot;. To install to a different folder, enter it below or click &quot;Browse&quot;." Order="1000" TextLocId="Control.Text.FolderDlg#Text" MsiKey="FolderDlg#Text"/>
+    <ROW Dialog_="FolderDlg" Control="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Attributes="196611" Text="This is the folder where [ProductName] will be installed." Order="1100" TextLocId="Control.Text.FolderDlg#Description" MsiKey="FolderDlg#Description"/>
+    <ROW Dialog_="FolderDlg" Control="BannerLine" Type="Line" X="0" Y="44" Width="372" Height="0" Attributes="1" Order="1200" MsiKey="FolderDlg#BannerLine"/>
     <ROW Dialog_="KAFKAConnectionDlg" Control="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Next]" Order="100" Options="1"/>
     <ROW Dialog_="KAFKAConnectionDlg" Control="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Cancel]" Order="200" Options="1"/>
     <ROW Dialog_="KAFKAConnectionDlg" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Back]" Order="300" Options="1"/>
@@ -293,22 +307,60 @@
     <ROW Dialog_="KAFKAConnectionDlg" Control="BannerLine" Type="Line" X="0" Y="44" Width="372" Height="0" Attributes="1" Order="500"/>
     <ROW Dialog_="KAFKAConnectionDlg" Control="BottomLine" Type="Line" X="5" Y="234" Width="368" Height="0" Attributes="1" Order="600"/>
     <ROW Dialog_="KAFKAConnectionDlg" Control="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Attributes="196611" Text="Настройка подключения Kafka..." Order="700"/>
-    <ROW Dialog_="KAFKAConnectionDlg" Control="Logo" Type="Text" X="4" Y="228" Width="70" Height="12" Attributes="1" Text="Advanced Installer" Order="800"/>
-    <ROW Dialog_="KAFKAConnectionDlg" Control="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Attributes="196611" Text="Kafka настройки подключения" TextStyle="[DlgTitleFont]" Order="900"/>
-    <ROW Dialog_="KAFKAConnectionDlg" Control="ProtocolLabel" Type="Text" X="25" Y="65" Width="67" Height="11" Attributes="65539" Text="Protocol" Order="1000"/>
-    <ROW Dialog_="KAFKAConnectionDlg" Control="ServerLabel" Type="Text" X="25" Y="92" Width="67" Height="11" Attributes="65539" Text="Server:" Order="1100"/>
-    <ROW Dialog_="KAFKAConnectionDlg" Control="PortLabel" Type="Text" X="25" Y="119" Width="67" Height="11" Attributes="65539" Text="Port:" Order="1200"/>
-    <ROW Dialog_="KAFKAConnectionDlg" Control="ProtocolEdit" Type="Edit" X="98" Y="61" Width="253" Height="18" Attributes="3" Property="KAFKA_SCHEME" Text="{5}" Order="1300"/>
-    <ROW Dialog_="KAFKAConnectionDlg" Control="ServerEdit" Type="Edit" X="98" Y="89" Width="253" Height="18" Attributes="3" Property="KAFKA_HOST" Text="[ComputerName]" Order="1400"/>
-    <ROW Dialog_="KAFKAConnectionDlg" Control="PortEdit" Type="Edit" X="98" Y="116" Width="253" Height="18" Attributes="19" Property="KAFKA_PORT" Text="{7}" Order="1500"/>
+    <ROW Dialog_="KAFKAConnectionDlg" Control="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Attributes="196611" Text="Kafka настройки подключения" TextStyle="[DlgTitleFont]" Order="800"/>
+    <ROW Dialog_="KAFKAConnectionDlg" Control="ProtocolLabel" Type="Text" X="25" Y="65" Width="67" Height="11" Attributes="65539" Text="Protocol" Order="900"/>
+    <ROW Dialog_="KAFKAConnectionDlg" Control="ServerLabel" Type="Text" X="25" Y="92" Width="67" Height="11" Attributes="65539" Text="Server:" Order="1000"/>
+    <ROW Dialog_="KAFKAConnectionDlg" Control="PortLabel" Type="Text" X="25" Y="119" Width="67" Height="11" Attributes="65539" Text="Port:" Order="1100"/>
+    <ROW Dialog_="KAFKAConnectionDlg" Control="ProtocolEdit" Type="Edit" X="98" Y="61" Width="253" Height="18" Attributes="3" Property="KAFKA_SCHEME" Text="{5}" Order="1200"/>
+    <ROW Dialog_="KAFKAConnectionDlg" Control="ServerEdit" Type="Edit" X="98" Y="89" Width="253" Height="18" Attributes="3" Property="KAFKA_HOST" Text="[ComputerName]" Order="1300"/>
+    <ROW Dialog_="KAFKAConnectionDlg" Control="PortEdit" Type="Edit" X="98" Y="116" Width="253" Height="18" Attributes="19" Property="KAFKA_PORT" Text="{7}" Order="1400"/>
     <ROW Dialog_="MaintenanceTypeDlg" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Back]" Order="700" TextLocId="-" MsiKey="MaintenanceTypeDlg#Back" Options="1"/>
     <ROW Dialog_="MaintenanceWelcomeDlg" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="1" Text="[ButtonText_Back]" Order="400" TextLocId="-" MsiKey="MaintenanceWelcomeDlg#Back" Options="1"/>
     <ROW Dialog_="PatchWelcomeDlg" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="1" Text="[ButtonText_Back]" Order="400" TextLocId="-" MsiKey="PatchWelcomeDlg#Back" Options="1"/>
     <ROW Dialog_="PrepareDlg" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="1048577" Text="[ButtonText_Back]" Order="700" TextLocId="-" MsiKey="PrepareDlg#Back" Options="1"/>
     <ROW Dialog_="PreparePrereqDlg" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="1" Text="[ButtonText_Back]" Order="300" TextLocId="-" MsiKey="PreparePrereqDlg#Back" Options="1"/>
     <ROW Dialog_="PrerequisitesDlg" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Back]" Order="300" TextLocId="-" MsiKey="PrerequisitesDlg#Back" Options="1"/>
-    <ROW Dialog_="ProgressDlg" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="1" Text="[ButtonText_Back]" Order="500" TextLocId="-" MsiKey="ProgressDlg#Back" Options="1"/>
+    <ROW Dialog_="ProgressDlg" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="1" Text="[ButtonText_Back]" Order="400" TextLocId="-" MsiKey="ProgressDlg#Back" Options="1"/>
+    <ROW Dialog_="ProgressDlg" Control="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Attributes="1" Text="[ButtonText_Next]" Order="500" TextLocId="-" MsiKey="ProgressDlg#Next" Options="1"/>
+    <ROW Dialog_="ProgressDlg" Control="BannerLine" Type="Line" X="0" Y="44" Width="372" Height="0" Attributes="1" Order="600" MsiKey="ProgressDlg#BannerLine"/>
+    <ROW Dialog_="ProgressDlg" Control="ActionText" Type="Text" X="80" Y="100" Width="255" Height="10" Attributes="3" Order="700" MsiKey="ProgressDlg#ActionText"/>
+    <ROW Dialog_="ProgressDlg" Control="Title" Type="Text" X="20" Y="15" Width="250" Height="15" Attributes="196611" Text="[Progress1] [ProductName]" TextStyle="[DlgTitleFont]" Order="800" TextLocId="Control.Text.ProgressDlg#Title" MsiKey="ProgressDlg#Title"/>
+    <ROW Dialog_="ProgressDlg" Control="Text" Type="Text" X="35" Y="65" Width="300" Height="30" Attributes="196611" Text="Please wait while the [Wizard] [Progress2] [ProductName].  This may take several minutes." Order="900" TextLocId="Control.Text.ProgressDlg#Text" MsiKey="ProgressDlg#Text"/>
+    <ROW Dialog_="ProgressDlg" Control="StatusLabel" Type="Text" X="35" Y="100" Width="45" Height="10" Attributes="3" Text="Status:" Order="1000" TextLocId="Control.Text.ProgressDlg#StatusLabel" MsiKey="ProgressDlg#StatusLabel"/>
+    <ROW Dialog_="ProgressDlg" Control="ProgressBar" Type="ProgressBar" X="35" Y="115" Width="300" Height="10" Attributes="65537" Text="Progress done" Order="1100" TextLocId="Control.Text.ProgressDlg#ProgressBar" MsiKey="ProgressDlg#ProgressBar"/>
     <ROW Dialog_="ProgressPrereqDlg" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="1" Text="[ButtonText_Back]" Order="300" TextLocId="-" MsiKey="ProgressPrereqDlg#Back" Options="1"/>
+    <ROW Dialog_="RabbitMQConnectionDlg" Control="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Next]" Order="100" Options="1"/>
+    <ROW Dialog_="RabbitMQConnectionDlg" Control="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Cancel]" Order="200" Options="1"/>
+    <ROW Dialog_="RabbitMQConnectionDlg" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Back]" Order="300" Options="1"/>
+    <ROW Dialog_="RabbitMQConnectionDlg" Control="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" Attributes="1048577" Text="[BannerBitmap]" Order="400"/>
+    <ROW Dialog_="RabbitMQConnectionDlg" Control="BannerLine" Type="Line" X="0" Y="44" Width="372" Height="0" Attributes="1" Order="500"/>
+    <ROW Dialog_="RabbitMQConnectionDlg" Control="BottomLine" Type="Line" X="5" Y="234" Width="368" Height="0" Attributes="1" Order="600"/>
+    <ROW Dialog_="RabbitMQConnectionDlg" Control="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Attributes="196611" Text="Configure RabbitMQ Connection..." Order="700"/>
+    <ROW Dialog_="RabbitMQConnectionDlg" Control="Text_1" Type="Text" X="15" Y="6" Width="289" Height="15" Attributes="196611" Text="RabbitMQ connection settings" TextStyle="[DlgTitleFont]" Order="800"/>
+    <ROW Dialog_="RabbitMQConnectionDlg" Control="ServerLabel" Type="Text" X="25" Y="65" Width="65" Height="11" Attributes="65539" Text="Server:" Order="900" TextLocId="Control.Text.SQLConnectionDlg#ServerLabel"/>
+    <ROW Dialog_="RabbitMQConnectionDlg" Control="PortLabel" Type="Text" X="25" Y="92" Width="65" Height="11" Attributes="65539" Text="Port:" Order="1000" TextLocId="Control.Text.SQLConnectionDlg#PortLabel"/>
+    <ROW Dialog_="RabbitMQConnectionDlg" Control="DatabaseLabel" Type="Text" X="25" Y="119" Width="65" Height="11" Attributes="65539" Text="Virtual Host:" Order="1100"/>
+    <ROW Dialog_="RabbitMQConnectionDlg" Control="UsernameLabel" Type="Text" X="25" Y="148" Width="65" Height="11" Attributes="65539" Text="Username:" Order="1200" TextLocId="Control.Text.SQLConnectionDlg#UsernameLabel"/>
+    <ROW Dialog_="RabbitMQConnectionDlg" Control="PasswordLabel" Type="Text" X="25" Y="176" Width="73" Height="11" Attributes="65539" Text="Password:" Order="1300" TextLocId="Control.Text.SQLConnectionDlg#PasswordLabel"/>
+    <ROW Dialog_="RabbitMQConnectionDlg" Control="Edit_1" Type="Edit" X="98" Y="63" Width="253" Height="18" Attributes="3" Property="RABBITMQ_HOSTNAME_PROP" Text="{260}" Order="1400"/>
+    <ROW Dialog_="RabbitMQConnectionDlg" Control="PortEdit" Type="Edit" X="98" Y="89" Width="253" Height="18" Attributes="19" Property="RABBITMQ_PORT_PROP" Text="{5}" Order="1500"/>
+    <ROW Dialog_="RabbitMQConnectionDlg" Control="DatabaseEdit" Type="Edit" X="98" Y="116" Width="253" Height="18" Attributes="3" Property="RABBITMQ_VIRTUALHOST_PROP" Text="{255}" Order="1600"/>
+    <ROW Dialog_="RabbitMQConnectionDlg" Control="UsernameEdit" Type="Edit" X="98" Y="143" Width="253" Height="18" Attributes="3" Property="RABBITMQ_USERNAME_PROP" Text="[LogonUser]" Order="1700"/>
+    <ROW Dialog_="RabbitMQConnectionDlg" Control="PasswordEdit" Type="Edit" X="98" Y="171" Width="253" Height="18" Attributes="2097155" Property="RABBITMQ_PASSWORD_PROP" Text="{255}" Order="1800"/>
+    <ROW Dialog_="RedisServerConnectionDlg" Control="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Next]" Order="100" Options="1"/>
+    <ROW Dialog_="RedisServerConnectionDlg" Control="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Cancel]" Order="200" Options="1"/>
+    <ROW Dialog_="RedisServerConnectionDlg" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Back]" Order="300" Options="1"/>
+    <ROW Dialog_="RedisServerConnectionDlg" Control="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" Attributes="1048577" Text="[BannerBitmap]" Order="400"/>
+    <ROW Dialog_="RedisServerConnectionDlg" Control="BannerLine" Type="Line" X="0" Y="44" Width="372" Height="0" Attributes="1" Order="500"/>
+    <ROW Dialog_="RedisServerConnectionDlg" Control="BottomLine" Type="Line" X="5" Y="234" Width="368" Height="0" Attributes="1" Order="600"/>
+    <ROW Dialog_="RedisServerConnectionDlg" Control="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Attributes="196611" Text="Redis Server connection settings" Order="700"/>
+    <ROW Dialog_="RedisServerConnectionDlg" Control="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Attributes="196611" Text="Redis Server connection settings" TextStyle="[DlgTitleFont]" Order="800"/>
+    <ROW Dialog_="RedisServerConnectionDlg" Control="ServerLabel" Type="Text" X="25" Y="65" Width="65" Height="11" Attributes="65539" Text="Host:" Order="900"/>
+    <ROW Dialog_="RedisServerConnectionDlg" Control="PortLabel" Type="Text" X="25" Y="92" Width="65" Height="11" Attributes="65539" Text="Port:" Order="1000" TextLocId="Control.Text.SQLConnectionDlg#PortLabel"/>
+    <ROW Dialog_="RedisServerConnectionDlg" Control="Text_1" Type="Text" X="25" Y="120" Width="66" Height="11" Attributes="65539" Text="Auth (Optional):" Order="1100"/>
+    <ROW Dialog_="RedisServerConnectionDlg" Control="ServerEdit" Type="Edit" X="98" Y="61" Width="253" Height="18" Attributes="3" Property="REDIS_HOST_PROP" Text="[ComputerName]" Help="|" Order="1200" ExtDataLocId="-"/>
+    <ROW Dialog_="RedisServerConnectionDlg" Control="PortEdit" Type="Edit" X="98" Y="89" Width="253" Height="18" Attributes="19" Property="REDIS_PORT_PROP" Text="{5}" Help="|" Order="1300"/>
+    <ROW Dialog_="RedisServerConnectionDlg" Control="Edit_1" Type="Edit" X="98" Y="117" Width="253" Height="18" Attributes="2097155" Property="REDIS_PASSWORD_PROP" Text="{5}" Help="|" Order="1400"/>
     <ROW Dialog_="ResumeDlg" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="1" Text="[ButtonText_Back]" Order="400" TextLocId="-" MsiKey="ResumeDlg#Back" Options="1"/>
     <ROW Dialog_="SQLConnectionDlg" Control="SQLConnectionDlgDialogInitializer" Type="DialogInitializer" X="0" Y="0" Width="0" Height="0" Attributes="0" Order="-1" TextLocId="-" HelpLocId="-" ExtDataLocId="-"/>
     <ROW Dialog_="SQLConnectionDlg" Control="ServerEdit" Type="Edit" X="98" Y="61" Width="253" Height="18" Attributes="3" Property="SERVER_PROP" Text="{255}" Order="500" TextLocId="Control.Text.SQLConnectionDlg#ServerEdit" MsiKey="SQLConnectionDlg#ServerEdit"/>
@@ -325,9 +377,12 @@
     <ROW Dialog_="SQLConnectionDlg" Control="UsernameLabel" Type="Text" X="25" Y="148" Width="67" Height="11" Attributes="196611" Text="Username:" Order="1600" MsiKey="SQLConnectionDlg#UsernameLabel"/>
     <ROW Dialog_="SQLConnectionDlg" Control="PasswordLabel" Type="Text" X="25" Y="176" Width="67" Height="11" Attributes="196611" Text="Password:" Order="1700" MsiKey="SQLConnectionDlg#PasswordLabel"/>
     <ROW Dialog_="SQLConnectionDlg" Control="BottomLine" Type="Line" X="5" Y="234" Width="368" Height="0" Attributes="1" Order="1800" MsiKey="SQLConnectionDlg#BottomLine"/>
-    <ROW Dialog_="SQLConnectionDlg" Control="Logo" Type="Text" X="4" Y="228" Width="70" Height="12" Attributes="1" Text="Advanced Installer" Order="1900" TextLocId="Control.Text.SQLConnectionDlg#Logo" MsiKey="SQLConnectionDlg#Logo"/>
     <ROW Dialog_="UserExit" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="1" Text="[ButtonText_Back]" Order="400" TextLocId="-" MsiKey="UserExit#Back" Options="1"/>
-    <ROW Dialog_="VerifyReadyDlg" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Back]" Order="600" TextLocId="-" MsiKey="VerifyReadyDlg#Back" Options="1"/>
+    <ROW Dialog_="VerifyReadyDlg" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Back]" Order="500" TextLocId="-" MsiKey="VerifyReadyDlg#Back" Options="1"/>
+    <ROW Dialog_="VerifyReadyDlg" Control="Text" Type="Text" X="25" Y="70" Width="320" Height="40" Attributes="196611" Text="Click &quot;Install&quot; to begin the installation.  If you want to review or change any of your installation settings, click &quot;Back&quot;.  Click &quot;Cancel&quot; to exit the wizard." Order="600" TextLocId="Control.Text.VerifyReadyDlg#Text" MsiKey="VerifyReadyDlg#Text"/>
+    <ROW Dialog_="VerifyReadyDlg" Control="Description" Type="Text" X="25" Y="23" Width="304" Height="20" Attributes="196611" Text="The [Wizard] is ready to begin the [ProductName] installation" Order="700" TextLocId="Control.Text.VerifyReadyDlg#Description" MsiKey="VerifyReadyDlg#Description"/>
+    <ROW Dialog_="VerifyReadyDlg" Control="BannerLine" Type="Line" X="0" Y="44" Width="372" Height="0" Attributes="1" Order="800" MsiKey="VerifyReadyDlg#BannerLine"/>
+    <ROW Dialog_="VerifyReadyDlg" Control="Title" Type="Text" X="15" Y="6" Width="304" Height="15" Attributes="196611" Text="Ready to Install" TextStyle="[DlgTitleFont]" Order="900" TextLocId="Control.Text.VerifyReadyDlg#Title" MsiKey="VerifyReadyDlg#Title"/>
     <ROW Dialog_="VerifyRemoveDlg" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Back]" Order="100" TextLocId="-" MsiKey="VerifyRemoveDlg#Back" Options="1"/>
     <ROW Dialog_="VerifyRepairDlg" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Back]" Order="600" TextLocId="-" MsiKey="VerifyRepairDlg#Back" Options="1"/>
     <ROW Dialog_="WelcomeDlg" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="1" Text="[ButtonText_Back]" Order="400" TextLocId="-" MsiKey="WelcomeDlg#Back" Options="1"/>
@@ -339,22 +394,21 @@
     <ROW Dialog_="ZKConnectionDlg" Control="BannerLine" Type="Line" X="0" Y="44" Width="372" Height="0" Attributes="1" Order="500"/>
     <ROW Dialog_="ZKConnectionDlg" Control="BottomLine" Type="Line" X="5" Y="234" Width="368" Height="0" Attributes="1" Order="600"/>
     <ROW Dialog_="ZKConnectionDlg" Control="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Attributes="196611" Text="Настройка подключения ZooKeeper..." Order="700"/>
-    <ROW Dialog_="ZKConnectionDlg" Control="Logo" Type="Text" X="4" Y="228" Width="70" Height="12" Attributes="1" Text="Advanced Installer" Order="800"/>
-    <ROW Dialog_="ZKConnectionDlg" Control="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Attributes="196611" Text="ZooKeeper настройки подключения" TextStyle="[DlgTitleFont]" Order="900"/>
-    <ROW Dialog_="ZKConnectionDlg" Control="ProtocolLabel" Type="Text" X="25" Y="65" Width="67" Height="11" Attributes="65539" Text="Protocol" Order="1000"/>
-    <ROW Dialog_="ZKConnectionDlg" Control="ServerLabel" Type="Text" X="25" Y="92" Width="67" Height="11" Attributes="65539" Text="Server:" Order="1100"/>
-    <ROW Dialog_="ZKConnectionDlg" Control="PortLabel" Type="Text" X="25" Y="119" Width="67" Height="11" Attributes="65539" Text="Port:" Order="1200"/>
-    <ROW Dialog_="ZKConnectionDlg" Control="ProtocolEdit" Type="Edit" X="98" Y="61" Width="253" Height="18" Attributes="3" Property="ZOOKEEPER_SCHEME" Text="{5}" Order="1300"/>
-    <ROW Dialog_="ZKConnectionDlg" Control="ServerEdit" Type="Edit" X="98" Y="89" Width="253" Height="18" Attributes="3" Property="ZOOKEEPER_HOST" Text="[ComputerName]" Order="1400"/>
-    <ROW Dialog_="ZKConnectionDlg" Control="PortEdit" Type="Edit" X="98" Y="116" Width="253" Height="18" Attributes="19" Property="ZOOKEEPER_PORT" Text="{7}" Order="1500"/>
-    <ATTRIBUTE name="DeletedRows" value="SQLConnectionDlg#OdbcResourceEdit@SQLConnectionDlg#OdbcResourceLabel@SQLConnectionDlg.aip"/>
+    <ROW Dialog_="ZKConnectionDlg" Control="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Attributes="196611" Text="ZooKeeper настройки подключения" TextStyle="[DlgTitleFont]" Order="800"/>
+    <ROW Dialog_="ZKConnectionDlg" Control="ProtocolLabel" Type="Text" X="25" Y="65" Width="67" Height="11" Attributes="65539" Text="Protocol" Order="900"/>
+    <ROW Dialog_="ZKConnectionDlg" Control="ServerLabel" Type="Text" X="25" Y="92" Width="67" Height="11" Attributes="65539" Text="Server:" Order="1000"/>
+    <ROW Dialog_="ZKConnectionDlg" Control="PortLabel" Type="Text" X="25" Y="119" Width="67" Height="11" Attributes="65539" Text="Port:" Order="1100"/>
+    <ROW Dialog_="ZKConnectionDlg" Control="ProtocolEdit" Type="Edit" X="98" Y="61" Width="253" Height="18" Attributes="3" Property="ZOOKEEPER_SCHEME" Text="{5}" Order="1200"/>
+    <ROW Dialog_="ZKConnectionDlg" Control="ServerEdit" Type="Edit" X="98" Y="89" Width="253" Height="18" Attributes="3" Property="ZOOKEEPER_HOST" Text="[ComputerName]" Order="1300"/>
+    <ROW Dialog_="ZKConnectionDlg" Control="PortEdit" Type="Edit" X="98" Y="116" Width="253" Height="18" Attributes="19" Property="ZOOKEEPER_PORT" Text="{7}" Order="1400"/>
+    <ATTRIBUTE name="DeletedRows" value="FolderDlg#Logo@ProgressDlg#Logo@SQLConnectionDlg#Logo@SQLConnectionDlg#OdbcResourceEdit@SQLConnectionDlg#OdbcResourceLabel@SQLConnectionDlg.aip@VerifyReadyDlg#Logo"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiControlEventComponent">
-    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL AND ( OLDPRODUCTS = &quot;&quot; )" Ordering="9"/>
-    <ROW Dialog_="FolderDlg" Control_="Next" Event="NewDialog" Argument="SQLConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError &lt;&gt; &quot;&quot; )" Ordering="210"/>
+    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL AND ( OLDPRODUCTS = &quot;&quot; )" Ordering="16"/>
+    <ROW Dialog_="FolderDlg" Control_="Next" Event="NewDialog" Argument="SQLConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError &lt;&gt; &quot;&quot; )" Ordering="212"/>
     <ROW Dialog_="FolderDlg" Control_="Back" Event="NewDialog" Argument="WelcomeDlg" Condition="AI_INSTALL" Ordering="1"/>
     <ROW Dialog_="VerifyReadyDlg" Control_="Install" Event="EndDialog" Argument="Return" Condition="AI_INSTALL" Ordering="197"/>
-    <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="KAFKAConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;False&quot; )" Ordering="203"/>
+    <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="KAFKAConnectionDlg" Condition="AI_INSTALL AND ( KAFKA_CONNECTION = &quot;False&quot; )" Ordering="203"/>
     <ROW Dialog_="MaintenanceWelcomeDlg" Control_="Next" Event="NewDialog" Argument="MaintenanceTypeDlg" Condition="AI_MAINT" Ordering="99"/>
     <ROW Dialog_="CustomizeDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_MAINT" Ordering="101"/>
     <ROW Dialog_="CustomizeDlg" Control_="Back" Event="NewDialog" Argument="MaintenanceTypeDlg" Condition="AI_MAINT" Ordering="1"/>
@@ -375,75 +429,109 @@
     <ROW Dialog_="VerifyReadyDlg" Control_="Install" Event="EndDialog" Argument="Return" Condition="AI_PATCH" Ordering="199"/>
     <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="PatchWelcomeDlg" Condition="AI_PATCH" Ordering="205"/>
     <ROW Dialog_="PrerequisitesDlg" Control_="Back" Event="NewDialog" Argument="WelcomePrereqDlg" Condition="AI_BOOTSTRAPPER" Ordering="1"/>
-    <ROW Dialog_="SQLConnectionDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_5" Condition="AI_INSTALL AND ( SqlConnectionError &lt;&gt; &quot;&quot; )" Ordering="3"/>
-    <ROW Dialog_="SQLConnectionDlg" Control_="Next" Event="DoAction" Argument="TestSQLConnectionMsgBox" Condition="AI_INSTALL AND ( SqlConnectionError &lt;&gt; &quot;&quot; )" Ordering="4"/>
+    <ROW Dialog_="SQLConnectionDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_5" Condition="AI_INSTALL AND ( SqlConnectionError &lt;&gt; &quot;&quot; )" Ordering="2"/>
+    <ROW Dialog_="SQLConnectionDlg" Control_="Next" Event="DoAction" Argument="TestSQLConnectionMsgBox" Condition="AI_INSTALL AND ( SqlConnectionError &lt;&gt; &quot;&quot; )" Ordering="3"/>
     <ROW Dialog_="SQLConnectionDlg" Control_="SQLConnectionDlgDialogInitializer" Event="[PASSWORD_PROP]" Argument="{}" Condition="AI_INSTALL AND ( OLDPRODUCTS=&quot;&quot; AND SQLConnectionDlg_Cond )" Ordering="4"/>
     <ROW Dialog_="SQLConnectionDlg" Control_="SQLConnectionDlgDialogInitializer" Event="[AI_ButtonText_Next_Orig]" Argument="[ButtonText_Next]" Condition="AI_INSTALL AND ( OLDPRODUCTS=&quot;&quot; AND SQLConnectionDlg_Cond )" Ordering="3"/>
     <ROW Dialog_="SQLConnectionDlg" Control_="SQLConnectionDlgDialogInitializer" Event="[ButtonText_Next]" Argument="[[AI_CommitButton]]" Condition="AI_INSTALL AND ( OLDPRODUCTS=&quot;&quot; AND SQLConnectionDlg_Cond )" Ordering="2"/>
     <ROW Dialog_="SQLConnectionDlg" Control_="SQLConnectionDlgDialogInitializer" Event="[AI_Text_Next_Orig]" Argument="[Text_Next]" Condition="AI_INSTALL AND ( OLDPRODUCTS=&quot;&quot; AND SQLConnectionDlg_Cond )" Ordering="1"/>
     <ROW Dialog_="SQLConnectionDlg" Control_="SQLConnectionDlgDialogInitializer" Event="[Text_Next]" Argument="[Text_Install]" Condition="AI_INSTALL AND ( OLDPRODUCTS=&quot;&quot; AND SQLConnectionDlg_Cond )" Ordering="0"/>
-    <ROW Dialog_="SQLConnectionDlg" Control_="Next" Event="NewDialog" Argument="ELKConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;False&quot; )" Ordering="5"/>
+    <ROW Dialog_="SQLConnectionDlg" Control_="Next" Event="NewDialog" Argument="ELKConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;False&quot; )" Ordering="4"/>
     <ROW Dialog_="SQLConnectionDlg" Control_="Back" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL AND ( OLDPRODUCTS = &quot;&quot; )" Ordering="2"/>
     <ROW Dialog_="WelcomeDlg" Control_="Next" Event="DoAction" Argument="TestSqlConnection" Condition="AI_INSTALL" Ordering="1"/>
-    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="SQLConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError &lt;&gt; &quot;&quot; AND OLDPRODUCTS &lt;&gt; &quot;&quot; )" Ordering="10"/>
-    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;True&quot; AND OLDPRODUCTS &lt;&gt; &quot;&quot; )" Ordering="16"/>
+    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="SQLConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError &lt;&gt; &quot;&quot; AND OLDPRODUCTS &lt;&gt; &quot;&quot; )" Ordering="17"/>
+    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;True&quot; AND OLDPRODUCTS &lt;&gt; &quot;&quot; )" Ordering="23"/>
     <ROW Dialog_="FolderDlg" Control_="Next" Event="DoAction" Argument="TestSqlConnection" Condition="AI_INSTALL" Ordering="201"/>
-    <ROW Dialog_="FolderDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;True&quot; )" Ordering="214"/>
-    <ROW Dialog_="SQLConnectionDlg" Control_="Next" Event="DoAction" Argument="TestSqlConnection" Condition="AI_INSTALL" Ordering="2"/>
+    <ROW Dialog_="FolderDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;True&quot; )" Ordering="218"/>
+    <ROW Dialog_="SQLConnectionDlg" Control_="Next" Event="DoAction" Argument="TestSqlConnection" Condition="AI_INSTALL" Ordering="1"/>
     <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL AND (OLDPRODUCTS = &quot;&quot; )" Ordering="201"/>
     <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="WelcomeDlg" Condition="AI_INSTALL" Ordering="202"/>
     <ROW Dialog_="ELKConnectionDlg" Control_="Cancel" Event="SpawnDialog" Argument="CancelDlg" Condition="1" Ordering="100"/>
-    <ROW Dialog_="ELKConnectionDlg" Control_="Next" Event="NewDialog" Argument="ZKConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND ZK_CONNECTION = &quot;False&quot; )" Ordering="6"/>
+    <ROW Dialog_="ELKConnectionDlg" Control_="Next" Event="NewDialog" Argument="RabbitMQConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError &lt;&gt; &quot;&quot; )" Ordering="5"/>
     <ROW Dialog_="ELKConnectionDlg" Control_="Back" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL AND ( OLDPRODUCTS = &quot;&quot; )" Ordering="3"/>
     <ROW Dialog_="ELKConnectionDlg" Control_="Back" Event="NewDialog" Argument="SQLConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError &lt;&gt; &quot;&quot; )" Ordering="5"/>
-    <ROW Dialog_="ELKConnectionDlg" Control_="Next" Event="DoAction" Argument="TestElasticsearchConnection" Condition="AI_INSTALL" Ordering="3"/>
-    <ROW Dialog_="ELKConnectionDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_1" Condition="AI_INSTALL" Ordering="2"/>
-    <ROW Dialog_="ELKConnectionDlg" Control_="Next" Event="DoAction" Argument="TestElasticsearchConnectionMsgBox" Condition="AI_INSTALL AND ( ELK_CONNECTION = &quot;False&quot; )" Ordering="5"/>
-    <ROW Dialog_="ELKConnectionDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER" Condition="AI_INSTALL AND ( ELK_CONNECTION = &quot;False&quot; )" Ordering="4"/>
+    <ROW Dialog_="ELKConnectionDlg" Control_="Next" Event="DoAction" Argument="TestElasticsearchConnection" Condition="AI_INSTALL" Ordering="2"/>
+    <ROW Dialog_="ELKConnectionDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_1" Condition="AI_INSTALL" Ordering="1"/>
+    <ROW Dialog_="ELKConnectionDlg" Control_="Next" Event="DoAction" Argument="TestElasticsearchConnectionMsgBox" Condition="AI_INSTALL AND ( ELK_CONNECTION = &quot;False&quot; )" Ordering="4"/>
+    <ROW Dialog_="ELKConnectionDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER" Condition="AI_INSTALL AND ( ELK_CONNECTION = &quot;False&quot; )" Ordering="3"/>
     <ROW Dialog_="SQLConnectionDlg" Control_="Back" Event="NewDialog" Argument="WelcomeDlg" Condition="AI_INSTALL AND ( OLDPRODUCTS &lt;&gt; &quot;&quot; )" Ordering="3"/>
     <ROW Dialog_="ELKConnectionDlg" Control_="Back" Event="NewDialog" Argument="WelcomeDlg" Condition="AI_INSTALL AND ( OLDPRODUCTS &lt;&gt; &quot;&quot; )" Ordering="4"/>
-    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="DoAction" Argument="TestElasticsearchConnection" Condition="AI_INSTALL" Ordering="3"/>
-    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_1" Condition="AI_INSTALL" Ordering="2"/>
-    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="ELKConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;False&quot; AND OLDPRODUCTS &lt;&gt; &quot;&quot; )" Ordering="11"/>
-    <ROW Dialog_="SQLConnectionDlg" Control_="Next" Event="SpawnDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;True&quot; )" Ordering="8"/>
+    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="DoAction" Argument="TestElasticsearchConnection" Condition="AI_INSTALL" Ordering="9"/>
+    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_1" Condition="AI_INSTALL" Ordering="8"/>
+    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="ELKConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;False&quot; AND OLDPRODUCTS &lt;&gt; &quot;&quot; )" Ordering="18"/>
     <ROW Dialog_="FolderDlg" Control_="Next" Event="DoAction" Argument="TestElasticsearchConnection" Condition="AI_INSTALL AND SqlConnectionError = &quot;&quot;" Ordering="203"/>
     <ROW Dialog_="FolderDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_1" Condition="AI_INSTALL AND SqlConnectionError = &quot;&quot;" Ordering="202"/>
-    <ROW Dialog_="FolderDlg" Control_="Next" Event="NewDialog" Argument="ELKConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;False&quot; )" Ordering="211"/>
+    <ROW Dialog_="FolderDlg" Control_="Next" Event="NewDialog" Argument="ELKConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;False&quot; )" Ordering="213"/>
     <ROW Dialog_="ZKConnectionDlg" Control_="Cancel" Event="SpawnDialog" Argument="CancelDlg" Condition="1" Ordering="100"/>
-    <ROW Dialog_="ZKConnectionDlg" Control_="Next" Event="NewDialog" Argument="KAFKAConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;False&quot; )" Ordering="7"/>
-    <ROW Dialog_="ZKConnectionDlg" Control_="Back" Event="NewDialog" Argument="ELKConnectionDlg" Condition="AI_INSTALL AND ( ELK_CONNECTION = &quot;False&quot; )" Ordering="3"/>
+    <ROW Dialog_="ZKConnectionDlg" Control_="Next" Event="NewDialog" Argument="KAFKAConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;False&quot; )" Ordering="7"/>
+    <ROW Dialog_="ZKConnectionDlg" Control_="Back" Event="NewDialog" Argument="RedisServerConnectionDlg" Condition="AI_INSTALL AND ( RedisServerConnectionError = &quot;&quot; )" Ordering="3"/>
     <ROW Dialog_="KAFKAConnectionDlg" Control_="Cancel" Event="SpawnDialog" Argument="CancelDlg" Condition="1" Ordering="100"/>
-    <ROW Dialog_="KAFKAConnectionDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;True&quot; )" Ordering="8"/>
+    <ROW Dialog_="KAFKAConnectionDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;True&quot; )" Ordering="8"/>
     <ROW Dialog_="KAFKAConnectionDlg" Control_="Back" Event="NewDialog" Argument="ZKConnectionDlg" Condition="AI_INSTALL AND ( ZK_CONNECTION = &quot;False&quot; )" Ordering="3"/>
     <ROW Dialog_="ZKConnectionDlg" Control_="Back" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL AND ( OLDPRODUCTS = &quot;&quot; )" Ordering="1"/>
     <ROW Dialog_="KAFKAConnectionDlg" Control_="Back" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL AND ( OLDPRODUCTS = &quot;&quot; )" Ordering="1"/>
     <ROW Dialog_="ZKConnectionDlg" Control_="Back" Event="NewDialog" Argument="WelcomeDlg" Condition="AI_INSTALL AND ( OLDPRODUCTS &lt;&gt; &quot;&quot; )" Ordering="2"/>
     <ROW Dialog_="KAFKAConnectionDlg" Control_="Back" Event="NewDialog" Argument="WelcomeDlg" Condition="AI_INSTALL AND ( OLDPRODUCTS &lt;&gt; &quot;&quot; )" Ordering="2"/>
-    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="DoAction" Argument="TestZookeeperConnection" Condition="AI_INSTALL" Ordering="5"/>
-    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_4" Condition="AI_INSTALL" Ordering="4"/>
-    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="DoAction" Argument="TestKafkaConnection" Condition="AI_INSTALL" Ordering="7"/>
-    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_15" Condition="AI_INSTALL" Ordering="6"/>
-    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="ZKConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND ZK_CONNECTION = &quot;False&quot; AND OLDPRODUCTS &lt;&gt; &quot;&quot; )" Ordering="12"/>
-    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="KAFKAConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;False&quot; AND OLDPRODUCTS &lt;&gt; &quot;&quot; )" Ordering="15"/>
-    <ROW Dialog_="FolderDlg" Control_="Next" Event="NewDialog" Argument="ZKConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND ZK_CONNECTION = &quot;False&quot; )" Ordering="212"/>
-    <ROW Dialog_="FolderDlg" Control_="Next" Event="NewDialog" Argument="KAFKAConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;False&quot; )" Ordering="213"/>
-    <ROW Dialog_="FolderDlg" Control_="Next" Event="DoAction" Argument="TestZookeeperConnection" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; )" Ordering="206"/>
-    <ROW Dialog_="FolderDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_4" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; )" Ordering="205"/>
-    <ROW Dialog_="FolderDlg" Control_="Next" Event="DoAction" Argument="TestKafkaConnection" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND ZK_CONNECTION = &quot;True&quot; )" Ordering="209"/>
-    <ROW Dialog_="FolderDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_15" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND ZK_CONNECTION = &quot;True&quot; )" Ordering="208"/>
+    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="DoAction" Argument="TestZookeeperConnection" Condition="AI_INSTALL" Ordering="13"/>
+    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_4" Condition="AI_INSTALL" Ordering="12"/>
+    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="DoAction" Argument="TestKafkaConnection" Condition="AI_INSTALL" Ordering="15"/>
+    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_15" Condition="AI_INSTALL" Ordering="14"/>
+    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="ZKConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;False&quot; AND OLDPRODUCTS &lt;&gt; &quot;&quot; )" Ordering="21"/>
+    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="KAFKAConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;False&quot; AND OLDPRODUCTS &lt;&gt; &quot;&quot; )" Ordering="22"/>
+    <ROW Dialog_="FolderDlg" Control_="Next" Event="NewDialog" Argument="ZKConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;False&quot; )" Ordering="216"/>
+    <ROW Dialog_="FolderDlg" Control_="Next" Event="NewDialog" Argument="KAFKAConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;False&quot; )" Ordering="217"/>
+    <ROW Dialog_="FolderDlg" Control_="Next" Event="DoAction" Argument="TestZookeeperConnection" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;False&quot; )" Ordering="209"/>
+    <ROW Dialog_="FolderDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_4" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;False&quot; )" Ordering="208"/>
+    <ROW Dialog_="FolderDlg" Control_="Next" Event="DoAction" Argument="TestKafkaConnection" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError &lt;&gt; &quot;&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;False&quot; )" Ordering="211"/>
+    <ROW Dialog_="FolderDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_15" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError &lt;&gt; &quot;&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;False&quot; )" Ordering="210"/>
     <ROW Dialog_="ZKConnectionDlg" Control_="Next" Event="DoAction" Argument="TestZookeeperConnection" Condition="AI_INSTALL" Ordering="3"/>
     <ROW Dialog_="ZKConnectionDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_4" Condition="AI_INSTALL" Ordering="2"/>
     <ROW Dialog_="ZKConnectionDlg" Control_="Next" Event="DoAction" Argument="TestZookeeperConnectionMsgBox" Condition="AI_INSTALL AND ( ZK_CONNECTION = &quot;False&quot; )" Ordering="5"/>
     <ROW Dialog_="ZKConnectionDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_14" Condition="AI_INSTALL AND ( ZK_CONNECTION = &quot;False&quot; )" Ordering="4"/>
-    <ROW Dialog_="ZKConnectionDlg" Control_="Next" Event="SpawnDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;True&quot; )" Ordering="8"/>
-    <ROW Dialog_="SQLConnectionDlg" Control_="Next" Event="NewDialog" Argument="ZKConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND ZK_CONNECTION = &quot;False&quot; )" Ordering="6"/>
-    <ROW Dialog_="SQLConnectionDlg" Control_="Next" Event="NewDialog" Argument="KAFKAConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;False&quot; )" Ordering="7"/>
-    <ROW Dialog_="ELKConnectionDlg" Control_="Next" Event="SpawnDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;True&quot; )" Ordering="8"/>
-    <ROW Dialog_="ELKConnectionDlg" Control_="Next" Event="NewDialog" Argument="KAFKAConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;False&quot; )" Ordering="7"/>
     <ROW Dialog_="KAFKAConnectionDlg" Control_="Next" Event="DoAction" Argument="TestKafkaConnection" Condition="AI_INSTALL" Ordering="4"/>
     <ROW Dialog_="KAFKAConnectionDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_15" Condition="AI_INSTALL" Ordering="3"/>
-    <ROW Dialog_="KAFKAConnectionDlg" Control_="Next" Event="DoAction" Argument="TestKafkaConnectionMsgBox" Condition="AI_INSTALL AND ( KAFKA_CONNECTION = &quot;False&quot; )" Ordering="7"/>
-    <ROW Dialog_="KAFKAConnectionDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_16" Condition="AI_INSTALL AND ( KAFKA_CONNECTION = &quot;False&quot; )" Ordering="6"/>
+    <ROW Dialog_="KAFKAConnectionDlg" Control_="Next" Event="DoAction" Argument="TestKafkaConnectionMsgBox" Condition="AI_INSTALL AND ( KAFKA_CONNECTION = &quot;False&quot; )" Ordering="6"/>
+    <ROW Dialog_="KAFKAConnectionDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_16" Condition="AI_INSTALL AND ( KAFKA_CONNECTION = &quot;False&quot; )" Ordering="5"/>
+    <ROW Dialog_="RabbitMQConnectionDlg" Control_="Cancel" Event="SpawnDialog" Argument="CancelDlg" Condition="1" Ordering="100"/>
+    <ROW Dialog_="RabbitMQConnectionDlg" Control_="Next" Event="NewDialog" Argument="RedisServerConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError &lt;&gt; &quot;&quot; )" Ordering="6"/>
+    <ROW Dialog_="RabbitMQConnectionDlg" Control_="Back" Event="NewDialog" Argument="ELKConnectionDlg" Condition="AI_INSTALL AND ( ELK_CONNECTION = &quot;False&quot; )" Ordering="3"/>
+    <ROW Dialog_="RedisServerConnectionDlg" Control_="Cancel" Event="SpawnDialog" Argument="CancelDlg" Condition="1" Ordering="100"/>
+    <ROW Dialog_="RedisServerConnectionDlg" Control_="Next" Event="NewDialog" Argument="ZKConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;False&quot; )" Ordering="5"/>
+    <ROW Dialog_="RedisServerConnectionDlg" Control_="Back" Event="NewDialog" Argument="RabbitMQConnectionDlg" Condition="AI_INSTALL AND ( RabbitMQServerConnectionError = &quot;&quot; )" Ordering="3"/>
+    <ROW Dialog_="RabbitMQConnectionDlg" Control_="Back" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL AND ( OLDPRODUCTS = &quot;&quot; )" Ordering="2"/>
+    <ROW Dialog_="RedisServerConnectionDlg" Control_="Back" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL AND ( OLDPRODUCTS = &quot;&quot; )" Ordering="2"/>
+    <ROW Dialog_="RabbitMQConnectionDlg" Control_="Back" Event="NewDialog" Argument="WelcomeDlg" Condition="AI_INSTALL AND ( OLDPRODUCTS &lt;&gt; &quot;&quot; )" Ordering="1"/>
+    <ROW Dialog_="RedisServerConnectionDlg" Control_="Back" Event="NewDialog" Argument="WelcomeDlg" Condition="AI_INSTALL AND ( OLDPRODUCTS &lt;&gt; &quot;&quot; )" Ordering="1"/>
+    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="DoAction" Argument="TestRabbitMQServerConnection" Condition="AI_INSTALL" Ordering="10"/>
+    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="DoAction" Argument="TestRedisServerConnection" Condition="AI_INSTALL" Ordering="11"/>
+    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="RabbitMQConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;False&quot; AND RabbitMQServerConnectionError &lt;&gt; &quot;&quot; AND OLDPRODUCTS &lt;&gt; &quot;&quot; )" Ordering="19"/>
+    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="RedisServerConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;False&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError &lt;&gt; &quot;&quot; AND OLDPRODUCTS &lt;&gt; &quot;&quot; )" Ordering="20"/>
+    <ROW Dialog_="FolderDlg" Control_="Next" Event="NewDialog" Argument="RabbitMQConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError &lt;&gt; &quot;&quot; )" Ordering="214"/>
+    <ROW Dialog_="FolderDlg" Control_="Next" Event="NewDialog" Argument="RedisServerConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError &lt;&gt; &quot;&quot; )" Ordering="215"/>
+    <ROW Dialog_="FolderDlg" Control_="Next" Event="DoAction" Argument="TestRabbitMQServerConnection" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError &lt;&gt; &quot;&quot; )" Ordering="205"/>
+    <ROW Dialog_="FolderDlg" Control_="Next" Event="DoAction" Argument="TestRedisServerConnection" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError &lt;&gt; &quot;&quot; )" Ordering="207"/>
+    <ROW Dialog_="SQLConnectionDlg" Control_="Next" Event="NewDialog" Argument="RabbitMQConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError &lt;&gt; &quot;&quot; )" Ordering="5"/>
+    <ROW Dialog_="SQLConnectionDlg" Control_="Next" Event="NewDialog" Argument="RedisServerConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError &lt;&gt; &quot;&quot; )" Ordering="6"/>
+    <ROW Dialog_="SQLConnectionDlg" Control_="Next" Event="NewDialog" Argument="ZKConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;False&quot; )" Ordering="7"/>
+    <ROW Dialog_="SQLConnectionDlg" Control_="Next" Event="NewDialog" Argument="KAFKAConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;False&quot; )" Ordering="9"/>
+    <ROW Dialog_="SQLConnectionDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;True&quot; )" Ordering="10"/>
+    <ROW Dialog_="ELKConnectionDlg" Control_="Next" Event="NewDialog" Argument="RedisServerConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError &lt;&gt; &quot;&quot; )" Ordering="6"/>
+    <ROW Dialog_="ELKConnectionDlg" Control_="Next" Event="NewDialog" Argument="ZKConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;False&quot; )" Ordering="7"/>
+    <ROW Dialog_="ELKConnectionDlg" Control_="Next" Event="NewDialog" Argument="KAFKAConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;False&quot; )" Ordering="9"/>
+    <ROW Dialog_="ELKConnectionDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;True&quot; )" Ordering="10"/>
+    <ROW Dialog_="RabbitMQConnectionDlg" Control_="Next" Event="DoAction" Argument="TestKafkaConnectionMsgBox" Condition="AI_INSTALL" Ordering="2"/>
+    <ROW Dialog_="RabbitMQConnectionDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_16" Condition="AI_INSTALL" Ordering="1"/>
+    <ROW Dialog_="RabbitMQConnectionDlg" Control_="Next" Event="DoAction" Argument="TestRabbitMQConnectionMsgBox" Condition="AI_INSTALL AND ( RabbitMQServerConnectionError &lt;&gt; &quot;&quot; )" Ordering="4"/>
+    <ROW Dialog_="RabbitMQConnectionDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_18" Condition="AI_INSTALL AND ( RabbitMQServerConnectionError &lt;&gt; &quot;&quot; )" Ordering="3"/>
+    <ROW Dialog_="RabbitMQConnectionDlg" Control_="Next" Event="NewDialog" Argument="ZKConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;False&quot; )" Ordering="7"/>
+    <ROW Dialog_="RabbitMQConnectionDlg" Control_="Next" Event="NewDialog" Argument="KAFKAConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;False&quot; )" Ordering="9"/>
+    <ROW Dialog_="RabbitMQConnectionDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;True&quot; )" Ordering="10"/>
+    <ROW Dialog_="RedisServerConnectionDlg" Control_="Next" Event="DoAction" Argument="TestRedisServerConnection" Condition="AI_INSTALL" Ordering="2"/>
+    <ROW Dialog_="RedisServerConnectionDlg" Control_="Next" Event="DoAction" Argument="TestRedisServerConnectionMsgBox" Condition="AI_INSTALL AND ( RedisServerConnectionError &lt;&gt; &quot;&quot; )" Ordering="4"/>
+    <ROW Dialog_="RedisServerConnectionDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_17" Condition="AI_INSTALL AND ( RedisServerConnectionError &lt;&gt; &quot;&quot; )" Ordering="3"/>
+    <ROW Dialog_="RedisServerConnectionDlg" Control_="Next" Event="NewDialog" Argument="KAFKAConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;False&quot; )" Ordering="7"/>
+    <ROW Dialog_="RedisServerConnectionDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;True&quot; )" Ordering="8"/>
+    <ROW Dialog_="ZKConnectionDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL AND ( SqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; AND ZK_CONNECTION = &quot;True&quot; AND KAFKA_CONNECTION = &quot;True&quot; )" Ordering="8"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCreateFolderComponent">
     <ROW Directory_="APPDIR" Component_="APPDIR" ManualDelete="true"/>
@@ -464,11 +552,13 @@
     <ROW Action="AI_DATA_SETTER_13" Type="51" Source="StartElasticSearchService" Target="Elasticsearch"/>
     <ROW Action="AI_DATA_SETTER_14" Type="51" Source="CustomActionData" Target="[ZOOKEEPER_MSG]&#13;\n[ZOOKEEPER_SCHEME]://[ZOOKEEPER_HOST]:[ZOOKEEPER_PORT] |[ProductName] Setup |MB_OK,MB_ICONWARNING,MB_DEFBUTTON1||[CLIENTPROCESSID]"/>
     <ROW Action="AI_DATA_SETTER_15" Type="51" Source="CustomActionData" Target="HOST=[KAFKA_HOST];PORT=[KAFKA_PORT];OUTPUT=KAFKA_CONNECTION"/>
-    <ROW Action="AI_DATA_SETTER_16" Type="51" Source="CustomActionData" Target="[KAFKA_MSG]&#13;\n[KAFKA_SCHEME]://[KAFKA_HOST]:[KAFKA_PORT] |[ProductName] Setup |MB_OK,MB_ICONWARNING,MB_DEFBUTTON1||[CLIENTPROCESSID]"/>
+    <ROW Action="AI_DATA_SETTER_16" Type="51" Source="CustomActionData" Target="[RabbitMQServerConnectionError] |[ProductName] Setup |MB_OK,MB_ICONWARNING,MB_DEFBUTTON1||[CLIENTPROCESSID]"/>
+    <ROW Action="AI_DATA_SETTER_17" Type="51" Source="CustomActionData" Target="[RedisServerConnectionError] |[ProductName] Setup |MB_OK,MB_ICONWARNING,MB_DEFBUTTON1||[CLIENTPROCESSID]"/>
+    <ROW Action="AI_DATA_SETTER_18" Type="51" Source="CustomActionData" Target="[RabbitMQServerConnectionError] |[ProductName] Setup |MB_OK,MB_ICONWARNING,MB_DEFBUTTON1||[CLIENTPROCESSID]"/>
     <ROW Action="AI_DATA_SETTER_2" Type="51" Source="CustomActionData" Target="[AI_SETUPEXEPATH]"/>
     <ROW Action="AI_DATA_SETTER_3" Type="51" Source="CustomActionData" Target="[~]"/>
     <ROW Action="AI_DATA_SETTER_4" Type="51" Source="CustomActionData" Target="HOST=[ZOOKEEPER_HOST];PORT=[ZOOKEEPER_PORT];OUTPUT=ZK_CONNECTION"/>
-    <ROW Action="AI_DATA_SETTER_5" Type="51" Source="CustomActionData" Target="[SqlConnectionError] |[ProductName] Setup |MB_OK,MB_ICONWARNING,MB_DEFBUTTON1||[CLIENTPROCESSID]"/>
+    <ROW Action="AI_DATA_SETTER_5" Type="51" Source="CustomActionData" Target="[RedisServerConnectionError] |[ProductName] Setup |MB_OK,MB_ICONWARNING,MB_DEFBUTTON1||[CLIENTPROCESSID]"/>
     <ROW Action="AI_DATA_SETTER_6" Type="51" Source="CustomActionData" Target="[APPDIR_FORWARD_SLASH]"/>
     <ROW Action="AI_DATA_SETTER_7" Type="51" Source="CustomActionData" Target="[~]"/>
     <ROW Action="AI_DATA_SETTER_8" Type="51" Source="CustomActionData" Target="[~]"/>
@@ -523,6 +613,10 @@
     <ROW Action="TestElasticsearchConnectionMsgBox" Type="1" Source="aicustact.dll" Target="MsgBox" WithoutSeq="true" Options="1" AdditionalSeq="AI_DATA_SETTER"/>
     <ROW Action="TestKafkaConnection" Type="1" Source="Utils.CA.dll" Target="CheckTCPAvailability" WithoutSeq="true" AdditionalSeq="AI_DATA_SETTER_15"/>
     <ROW Action="TestKafkaConnectionMsgBox" Type="1" Source="aicustact.dll" Target="MsgBox" WithoutSeq="true" Options="1" AdditionalSeq="AI_DATA_SETTER_16"/>
+    <ROW Action="TestRabbitMQConnectionMsgBox" Type="1" Source="aicustact.dll" Target="MsgBox" WithoutSeq="true" AdditionalSeq="AI_DATA_SETTER_18"/>
+    <ROW Action="TestRabbitMQServerConnection" Type="1" Source="Utils.CA.dll_1" Target="TestRabbitMQConnection" WithoutSeq="true"/>
+    <ROW Action="TestRedisServerConnection" Type="1" Source="Utils.CA.dll_1" Target="TestRedisServerConnection" WithoutSeq="true"/>
+    <ROW Action="TestRedisServerConnectionMsgBox" Type="1" Source="aicustact.dll" Target="MsgBox" WithoutSeq="true" AdditionalSeq="AI_DATA_SETTER_17"/>
     <ROW Action="TestSQLConnectionMsgBox" Type="1" Source="aicustact.dll" Target="MsgBox" WithoutSeq="true" Options="1" AdditionalSeq="AI_DATA_SETTER_5"/>
     <ROW Action="TestSqlConnection" Type="6" Source="utils.vbs" Target="TestSqlConnection" WithoutSeq="true"/>
     <ROW Action="TestZookeeperConnection" Type="1" Source="Utils.CA.dll" Target="CheckTCPAvailability" WithoutSeq="true" AdditionalSeq="AI_DATA_SETTER_4"/>
@@ -531,11 +625,16 @@
   <COMPONENT cid="caphyon.advinst.msicomp.MsiDialogComponent">
     <ROW Dialog="ELKConnectionDlg" HCentering="50" VCentering="50" Width="370" Height="270" Attributes="3" Title="[ProductName] [Setup]" Control_Default="Next" Control_Cancel="Cancel"/>
     <ROW Dialog="KAFKAConnectionDlg" HCentering="50" VCentering="50" Width="370" Height="270" Attributes="3" Title="[ProductName] [Setup]" Control_Default="Next" Control_Cancel="Cancel"/>
+    <ROW Dialog="RabbitMQConnectionDlg" HCentering="50" VCentering="50" Width="370" Height="270" Attributes="3" Title="[ProductName] [Setup]" Control_Default="Next" Control_Cancel="Cancel"/>
+    <ROW Dialog="RedisServerConnectionDlg" HCentering="50" VCentering="50" Width="370" Height="270" Attributes="3" Title="[ProductName] [Setup]" Control_Default="Next" Control_Cancel="Cancel"/>
     <ROW Dialog="ZKConnectionDlg" HCentering="50" VCentering="50" Width="370" Height="270" Attributes="3" Title="[ProductName] [Setup]" Control_Default="Next" Control_Cancel="Cancel"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiEnvComponent">
     <ROW Environment="JAVA_HOME" Name="=-*JAVA_HOME" Value="[WindowsVolume]Progra~1\Elastic\Elasticsearch\7.13.1\jdk" Component_="AI_ExePath"/>
     <ROW Environment="Path" Name="=*Path" Value="[~];%JAVA_HOME%\bin" Component_="AI_ExePath"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiEventMappingComponent">
+    <ROW Dialog_="RabbitMQConnectionDlg" Control_="PasswordLabel" Event="ActionData" Attribute="Visible"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatCompsComponent">
     <ROW Feature_="MainFeature" Component_="APPDIR"/>
@@ -761,16 +860,16 @@
     <ROW PrereqKey="D564007E3BBE4F85950A09B470A7CA65" DisplayName="Visual C++ Redistributable for Visual Studio 2013 Update 5 x86" VersionMin="12.0" SetupFileUrl="http://download.microsoft.com/download/C/C/2/CC2DF5F8-4454-44B4-802D-5EA68D086676/vcredist_x86.exe" Location="1" ExactSize="6510272" Operator="0" ComLine="/quiet" BasicUiComLine="/quiet" NoUiComLine="/quiet" Options="ym" MD5="6a3a1760342ea699d5e6df1f2a1c7707" TargetName="Visual C++ Redistributable for Visual Studio 2013?vcredist_2013u5_x86.exe"/>
     <ROW PrereqKey="E25D6A62194038942640BDE651049C" DisplayName="ASP.NET Core Runtime 6.0.0 x64" VersionMin="6.0" SetupFileUrl="https://download.visualstudio.microsoft.com/download/pr/3223fa10-441d-406b-af2e-94874ce38199/09347f9b4aea0ab34d6944b6b78fa29d/aspnetcore-runtime-6.0.0-win-x64.exe" Location="1" ExactSize="8897224" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" WinNT64Versions="Windows Vista x64, Windows Server 2008 x64, Windows 7 RTM x64, Windows Server 2008 R2 x64, Windows 8 x64, Windows Server 2012 x64, Windows 10 version 1507 x64, Windows 10 version 1511 x64" Operator="1" ComLine="/q /norestart" BasicUiComLine="/q /norestart" NoUiComLine="/q /norestart" Options="xym" MD5="27ec1b4780b035ac230399c120280a5e" TargetName="ASP.NET Core 6.0"/>
     <ROW PrereqKey="E92D3665B5E468A8661F6547C8C142C" DisplayName=".NET Runtime 6.0.0 x86" VersionMin="6.0" SetupFileUrl="https://download.visualstudio.microsoft.com/download/pr/34df41d5-c813-4e30-8aa3-3603ce6600c0/976e801af82c7108abbcb736a8bc5c14/dotnet-runtime-6.0.0-win-x86.exe" Location="1" ExactSize="25750728" WinNTVersions="Windows Vista x86, Windows Server 2008 x86, Windows 7 RTM x86, Windows 8 x86, Windows 10 version 1507 x86, Windows 10 version 1511 x86" WinNT64Versions="Windows Vista x64, Windows Server 2008 x64, Windows 7 RTM x64, Windows Server 2008 R2 x64, Windows 8 x64, Windows Server 2012 x64, Windows 10 version 1507 x64, Windows 10 version 1511 x64" Operator="1" ComLine="/q /norestart" BasicUiComLine="/q /norestart" NoUiComLine="/q /norestart" Options="ym" MD5="d8033ef93d3a003691f3046ea013447c" TargetName=".NET 6.0"/>
+    <ROW PrereqKey="Erlangv20.3x64" DisplayName="Erlang v20.3 x64" VersionMin="20.3" SetupFileUrl="http://download.onlyoffice.com/install/windows/enterprise/otp_win64_20.3.exe" Location="1" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/S" BasicUiComLine="/S" NoUiComLine="/S" Options="ym" TargetName="Erlang v20.3 x64"/>
     <ROW PrereqKey="F6D8148C0594E7491C36E27FD5E9E89" DisplayName="Oracle Java SE Runtime Environment 8u281 x64" VersionMin="1.8" SetupFileUrl="https://javadl.oracle.com/webapps/download/AutoDL?BundleId=244068_89d678f2be164786b292527658ca1605" Location="1" ExactSize="83548808" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" WinNT64Versions="Windows Vista RTM x64, Windows Vista SP1 x64" Operator="0" ComLine="/s" BasicUiComLine="/s" NoUiComLine="/s" Options="xym" MD5="c6136758f1fec04a2f7f01249280c315" TargetName="Oracle Java SE Runtime Environment?jre-8u281-windows-x64.exe"/>
     <ROW PrereqKey="MySQLInstallerRunn" DisplayName="MySQL Installer Runner 8.0.21 x86" SetupFileUrl="MySQL Installer Runner.exe" Location="0" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/VERYSILENT /PASSWORD_PROP=&quot;root&quot; /MYSQL_VERSION=&quot;8.0.21&quot;" BasicUiComLine="/VERYSILENT /PASSWORD_PROP=&quot;root&quot; /MYSQL_VERSION=&quot;8.0.21&quot;" NoUiComLine="/VERYSILENT /PASSWORD_PROP=&quot;root&quot; /MYSQL_VERSION=&quot;8.0.21&quot;" Options="y" TargetName="MySQL Installer Runner                                      \MySQL Installer Runner.exe" ParentPrereq="RequiredApplication_2"/>
     <ROW PrereqKey="RequiredApplication" DisplayName="MySQL Connector/ODBC 8.0.21 x86" SetupFileUrl="https://dev.mysql.com/get/Downloads/Connector-ODBC/8.0/mysql-connector-odbc-8.0.21-win32.msi" Location="1" ExactSize="0" Operator="1" ComLine="/quiet" BasicUiComLine="/quiet" NoUiComLine="/quiet" Options="ym" TargetName="MySQL Connector ODBC 8.0.21 x86"/>
     <ROW PrereqKey="RequiredApplication_1" DisplayName="Node.js 14.17.4" VersionMin="14.17.4" SetupFileUrl="https://nodejs.org/dist/v14.17.4/node-v14.17.4-x64.msi" Location="1" ExactSize="0" Operator="0" ComLine="/quiet" BasicUiComLine="/quiet" NoUiComLine="/quiet" Options="my" TargetName="Node.js v14.17.4 x64"/>
     <ROW PrereqKey="RequiredApplication_2" DisplayName="MySQL Installer Community 8.0.21 x86" SetupFileUrl="https://dev.mysql.com/get/Downloads/MySQLInstaller/mysql-installer-community-8.0.21.0.msi" Location="1" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/quiet" BasicUiComLine="/quiet" NoUiComLine="/quiet" Options="ym" TargetName="MySQL Installer Community 8.0.21 x86"/>
-    <ROW PrereqKey="RequiredApplication_3" DisplayName="Erlang v25.0 x64" VersionMin="25.0" SetupFileUrl="https://github.com/erlang/otp/releases/download/OTP-25.0/otp_win64_25.0.exe" Location="1" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/S" BasicUiComLine="/S" NoUiComLine="/S" Options="ym" TargetName="Erlang v25.0 x64"/>
     <ROW PrereqKey="RequiredApplication_4" DisplayName="Elasticsearch v7.13.1 x64" VersionMin="7.13.1" VersionMax="7.13.1" SetupFileUrl="https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.13.1.msi" Location="1" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/quiet" BasicUiComLine="/quiet" NoUiComLine="/quiet" Options="y" TargetName="Elasticsearch v7.13.1 x64"/>
-    <ROW PrereqKey="RequiredApplication_5" DisplayName="RabbitMQ v3.10.5 x64" VersionMin="3.10.5" SetupFileUrl="https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.10.5/rabbitmq-server-3.10.5.exe" Location="1" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/S" BasicUiComLine="/S" NoUiComLine="/S" Options="yxm" TargetName="RabbitMQ v3.10.5 x64"/>
+    <ROW PrereqKey="RequiredApplication_5" DisplayName="RabbitMQ v3.7.4 x64" VersionMin="3.7.4" SetupFileUrl="https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.7.4/rabbitmq-server-3.7.4.exe" Location="1" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/S" BasicUiComLine="/S" NoUiComLine="/S" Options="yxm" TargetName="RabbitMQ v3.7.4 x64"/>
     <ROW PrereqKey="RequiredApplication_6" DisplayName="Redis 5.0.10 x64" VersionMin="5.0" SetupFileUrl="http://download.onlyoffice.com/install/windows/redist/Redis-x64-5.0.10.msi" Location="1" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/quiet ADD_INSTALLFOLDER_TO_PATH=1" BasicUiComLine="/quiet ADD_INSTALLFOLDER_TO_PATH=1" NoUiComLine="/quiet ADD_INSTALLFOLDER_TO_PATH=1" Options="ym" TargetName="Redis 5.0.10 x64"/>
-    <ATTRIBUTE name="PrereqsOrder" value="B96F93FA27E74B02866727AAE83982D0 C6F7BF650B714DC58735D62C12F214E4 E92D3665B5E468A8661F6547C8C142C E25D6A62194038942640BDE651049C A9D0C6C76E024A7A84C9B69789BFB916 D564007E3BBE4F85950A09B470A7CA65 CA62D813A4E74FA2AAE86A7D7B7B1493 A918597FE054CCCB65ABDBA0AD8F63C C4FE6FD5B7C4D07B3A313E754A9A6A8 B365F790B0C4E08A90D54675D858A21 B450414DF7494F99141402B8725A7C RequiredApplication_2 MySQLInstallerRunn RequiredApplication RequiredApplication_1 F6D8148C0594E7491C36E27FD5E9E89 RequiredApplication_4 RequiredApplication_3 RequiredApplication_5 RequiredApplication_6 ApacheZooKepper ApacheKafka"/>
+    <ATTRIBUTE name="PrereqsOrder" value="B96F93FA27E74B02866727AAE83982D0 C6F7BF650B714DC58735D62C12F214E4 E92D3665B5E468A8661F6547C8C142C E25D6A62194038942640BDE651049C A9D0C6C76E024A7A84C9B69789BFB916 D564007E3BBE4F85950A09B470A7CA65 CA62D813A4E74FA2AAE86A7D7B7B1493 A918597FE054CCCB65ABDBA0AD8F63C C4FE6FD5B7C4D07B3A313E754A9A6A8 B365F790B0C4E08A90D54675D858A21 B450414DF7494F99141402B8725A7C RequiredApplication_2 MySQLInstallerRunn RequiredApplication RequiredApplication_1 F6D8148C0594E7491C36E27FD5E9E89 RequiredApplication_4 Erlangv20.3x64 RequiredApplication_5 RequiredApplication_6 ApacheZooKepper ApacheKafka"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.PreReqSearchComponent">
     <ROW SearchKey="A918597FE054CCCB65ABDBA0AD8F63CSyst" Prereq="A918597FE054CCCB65ABDBA0AD8F63C" SearchType="0" SearchString="[SystemFolder]vcruntime140.dll" VerMin="14.26.28720" Order="2" Property="PreReqSearch_1_A918597FE054CCCB65AB"/>
@@ -789,7 +888,7 @@
     <ROW SearchKey="E92D3665B5E468A8661F6547C8C142CMicr" Prereq="E92D3665B5E468A8661F6547C8C142C" SearchType="12" SearchString="HKLM\SOFTWARE\dotnet\Setup\InstalledVersions\x86\sharedfx\Microsoft.NETCore.App" VerMin="6.0.0" Order="1" Property="PreReqSearch_E92D3665B5E468A8661F65"/>
     <ROW SearchKey="F6D8148C0594E7491C36E27FD5E9E89Curr" Prereq="F6D8148C0594E7491C36E27FD5E9E89" SearchType="2" SearchString="HKLM\SOFTWARE\JavaSoft\Java Runtime Environment\CurrentVersion" VerMin="1.8" Order="1" Property="PreReqSearch_F6D8148C0594E7491C36E2"/>
     <ROW SearchKey="F6D8148C0594E7491C36E27FD5E9E89Java" Prereq="F6D8148C0594E7491C36E27FD5E9E89" SearchType="1" SearchString="HKLM\SOFTWARE\JavaSoft\Java Runtime Environment" VerMin="1.8.0_281" Order="2" Property="PreReqSearch_1_F6D8148C0594E7491C36"/>
-    <ROW SearchKey="RabbitMQ" Prereq="RequiredApplication_5" SearchType="5" SearchString="HKLM\SOFTWARE\Ericsson\Erlang\ErlSrv\1.1\RabbitMQ" Order="2" Property="PreReqSearch_11"/>
+    <ROW SearchKey="RabbitMQ_1" Prereq="RequiredApplication_5" SearchType="5" SearchString="HKLM\SOFTWARE\Ericsson\Erlang\ErlSrv\1.1\RabbitMQ" Order="2" Property="PreReqSearch_9"/>
     <ROW SearchKey="SystemFolderfile.dll" Prereq="RequiredApplication" SearchType="4" SearchString="{FF073FBB-32E2-4052-B6B2-830C5ED4A809}" VerMin="5.3.10" Order="1" Property="PreReqSearch"/>
     <ROW SearchKey="SystemFolderfile.dll_1" Prereq="RequiredApplication_1" SearchType="4" SearchString="{47C07A3A-42EF-4213-A85D-8F5A59077C28}" VerMin="12.18.0" Order="1" Property="PreReqSearch_1"/>
     <ROW SearchKey="SystemFolderfile.dll_2" Prereq="RequiredApplication_2" SearchType="4" SearchString="{18B94B70-06F1-4AC0-B308-37280DB868C2}" Order="1" Property="PreReqSearch_2"/>
@@ -800,7 +899,7 @@
     <ROW SearchKey="Version" Prereq="MySQLInstallerRunn" SearchType="2" SearchString="HKLM\SOFTWARE\MySQL AB\MySQL Server 5.7\Version" Order="1" Property="PreReqSearch_4"/>
     <ROW SearchKey="Version_1" Prereq="MySQLInstallerRunn" SearchType="2" SearchString="HKLM\SOFTWARE\MySQL AB\MySQL Server 8.0\Version" Order="2" Property="PreReqSearch_5"/>
     <ROW SearchKey="Version_2" Prereq="MySQLInstallerRunn" SearchType="2" SearchString="HKLM\SOFTWARE\MySQL AB\MySQL Server 5.5\Version" VerMin="5.5" Order="0" Property="PreReqSearch_6"/>
-    <ROW SearchKey="_" Prereq="RequiredApplication_3" SearchType="5" SearchString="HKLM\SOFTWARE\Wow6432Node\Ericsson\Erlang\13" Order="2" Property="PreReqSearch_10"/>
+    <ROW SearchKey="__1" Prereq="Erlangv20.3x64" SearchType="5" SearchString="HKLM\SOFTWARE\Wow6432Node\Ericsson\Erlang\9.3" Order="2" Property="PreReqSearch_11"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.SqlScriptComponent">
     <ATTRIBUTE name="ImpersonateUser" value="true"/>
