@@ -328,8 +328,10 @@ class AuthStore {
   };
 
   getOforms = () => {
-    const culture =
-      this.userStore.user.cultureName || this.settingsStore.culture;
+    const culture = "en-US"
+      ? "en"
+      : this.userStore.user.cultureName || this.settingsStore.culture;
+
     return api.settings.getOforms(`${this.settingsStore.urlOforms}${culture}`);
   };
 }
