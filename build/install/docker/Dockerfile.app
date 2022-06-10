@@ -1,4 +1,3 @@
-### STAGE 1: Base image ######
 ARG SRC_PATH=/app/onlyoffice/src
 ARG BUILD_PATH=/var/www
 ARG REPO_SDK=mcr.microsoft.com/dotnet/sdk
@@ -101,7 +100,7 @@ EXPOSE 5050
 ENTRYPOINT ["./docker-entrypoint.sh"]
 
 ### STAGE 2: Build ###
-FROM node:18-slim as nodeBuild
+FROM node:14-slim as nodeBuild
 ARG BUILD_PATH
 ARG SRC_PATH 
 ENV BUILD_PATH=${BUILD_PATH}
@@ -125,7 +124,7 @@ COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/common/
 
 EXPOSE 5050
 
-ENTRYPOINT ["./docker-entrypoint.sh"]
+ENTRYPOINT ["python3", "docker-entrypoint-node.py"]
 
 ### STAGE 3: Run ###
 
