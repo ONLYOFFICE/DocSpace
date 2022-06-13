@@ -1074,10 +1074,10 @@ public class FileSecurity : IFileSecurity
             }
         }
 
-        await SetTags(foldersInt);
-        await SetTags(foldersString);
-        await SetPin(foldersInt);
-        await SetPin(foldersString);
+        await SetTagsAsync(foldersInt);
+        await SetTagsAsync(foldersString);
+        await SetPinAsync(foldersInt);
+        await SetPinAsync(foldersString);
 
         entries.AddRange(foldersInt);
         entries.AddRange(foldersString);
@@ -1131,8 +1131,8 @@ public class FileSecurity : IFileSecurity
         var rooms = await folderDao.GetFoldersAsync(folderIds.Keys, filterTypes, false, subjectId, search, withSubfolders, false, tagIds)
             .Where(filter).ToListAsync();
 
-        await SetTags(rooms);
-        await SetPin(rooms);
+        await SetTagsAsync(rooms);
+        await SetPinAsync(rooms);
 
         entries.AddRange(rooms);
 
@@ -1145,7 +1145,7 @@ public class FileSecurity : IFileSecurity
         return entries;
     }
 
-    private async Task SetTags<T>(IEnumerable<FileEntry<T>> entries)
+    private async Task SetTagsAsync<T>(IEnumerable<FileEntry<T>> entries)
     {
         if (!entries.Any())
         {
@@ -1162,7 +1162,7 @@ public class FileSecurity : IFileSecurity
         }
     }
 
-    private async Task SetPin<T>(IEnumerable<FileEntry<T>> entries)
+    private async Task SetPinAsync<T>(IEnumerable<FileEntry<T>> entries)
     {
         if (!entries.Any())
         {
