@@ -1033,7 +1033,7 @@ public class FileSecurity : IFileSecurity
 
         if (searchArea == SearchArea.Any || searchArea == SearchArea.Active)
         {
-            var roomsFolderId = await _globalFolder.GetFolderVirtualRooms<int>(_daoFactory);
+            var roomsFolderId = await _globalFolder.GetFolderVirtualRoomsAsync<int>(_daoFactory);
             var thirdpartyFoldersId = await providerDao.GetProvidersInfoAsync(FolderType.VirtualRooms).Select(p => p.FolderId).ToListAsync();
 
             var rooms = await folderDao.GetFoldersAsync(roomsFolderId, orderBy, filterTypes, false, subjectId, search, withSubfolders, tagIds).ToListAsync();

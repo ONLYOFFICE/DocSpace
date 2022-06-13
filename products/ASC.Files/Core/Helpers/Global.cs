@@ -335,7 +335,7 @@ public class GlobalFolder
         return result;
     }
 
-    public async ValueTask<T> GetFolderVirtualRooms<T>(IDaoFactory daoFactory)
+    public async ValueTask<T> GetFolderVirtualRoomsAsync<T>(IDaoFactory daoFactory)
     {
         return (T)Convert.ChangeType(await GetFolderVirtualRoomsAsync(daoFactory), typeof(T));
     }
