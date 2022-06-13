@@ -71,11 +71,11 @@ class FileMarkAsReadOperation<T> : FileOperation<FileMarkAsReadOperationData<T>,
         var entries = AsyncEnumerable.Empty<FileEntry<T>>();
         if (Folders.Count > 0)
         {
-            entries.Concat(FolderDao.GetFoldersAsync(Folders));
+            entries = entries.Concat(FolderDao.GetFoldersAsync(Folders));
         }
         if (Files.Count > 0)
         {
-            entries.Concat(FileDao.GetFilesAsync(Files));
+            entries = entries.Concat(FileDao.GetFilesAsync(Files));
         }
 
         await entries.ForEachAwaitAsync(async x =>
@@ -102,6 +102,7 @@ class FileMarkAsReadOperation<T> : FileOperation<FileMarkAsReadOperationData<T>,
                 await globalFolder.GetFolderCommonAsync(fileMarker, daoFactory),
                 await globalFolder.GetFolderShareAsync(daoFactory),
                 await globalFolder.GetFolderProjectsAsync(daoFactory),
+                await globalFolder.GetFolderVirtualRoomsAsync(daoFactory),
             };
 
         if (PrivacyRoomSettings.GetEnabled(settingsManager))
