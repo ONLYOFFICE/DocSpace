@@ -24,11 +24,10 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Files.Core.VirtualRooms;
+namespace ASC.Files.Core.ApiModels.ResponseDto;
 
-public class Logo
+public class TagDto : IMapFrom<Tag>
 {
-    public string Original { get; set; }
-    public string Big { get; set; }
-    public string Small { get; set; }
+    public int Id { get; set; }
+    public string Name { get; set; }
 }

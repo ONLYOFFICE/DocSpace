@@ -33,7 +33,7 @@ public class FolderDto<T> : FileEntryWrapper<T>
     public int FoldersCount { get; set; }
     public bool? IsShareable { get; set; }
     public int New { get; set; }
-    public IEnumerable<TagInfo> Tags { get; set; }
+    public IEnumerable<TagDto> Tags { get; set; }
     public Logo Logo { get; set; }
     public bool Pinned { get; set; }
 
@@ -67,6 +67,7 @@ public class FolderDtoHelper : FileEntryDtoHelper
     private readonly IDaoFactory _daoFactory;
     private readonly GlobalFolderHelper _globalFolderHelper;
     private readonly RoomLogoManager _roomLogoManager;
+    private readonly IMapper _mapper;
 
     public FolderDtoHelper(
         ApiDateTimeHelper apiDateTimeHelper,
@@ -76,13 +77,15 @@ public class FolderDtoHelper : FileEntryDtoHelper
         FileSecurity fileSecurity,
         GlobalFolderHelper globalFolderHelper,
         FileSharingHelper fileSharingHelper, 
-        RoomLogoManager roomLogoManager)
+        RoomLogoManager roomLogoManager,
+        IMapper mapper)
         : base(apiDateTimeHelper, employeeWrapperHelper, fileSharingHelper, fileSecurity)
     {
         _authContext = authContext;
         _daoFactory = daoFactory;
         _globalFolderHelper = globalFolderHelper;
         _roomLogoManager = roomLogoManager;
+        _mapper = mapper;
     }
 
     public async Task<FolderDto<T>> GetAsync<T>(Folder<T> folder, List<Tuple<FileEntry<T>, bool>> folders = null)
@@ -97,19 +100,13 @@ public class FolderDtoHelper : FileEntryDtoHelper
             {
                 var tagDao = _daoFactory.GetTagDao<T>();
 
-                var tags = await tagDao.GetTagsAsync(TagType.Custom, new[] { folder }).Select(t => new TagInfo
-                {
-                    Id = t.Id,
-                    Name = t.Name,
-                    Owner = t.Owner,
-                    Type = t.Type,
-                }).ToListAsync();
+                var tags = await tagDao.GetTagsAsync(TagType.Custom, new[] { folder }).ToListAsync(); 
 
-                result.Tags = tags;
+                result.Tags = _mapper.Map<IEnumerable<Tag>, IEnumerable<TagDto>>(tags);
             }
             else
             {
-                result.Tags = folder.Tags;
+                result.Tags = _mapper.Map<IEnumerable<Tag>, IEnumerable<TagDto>>(folder.Tags);
             }
 
             result.Logo = await _roomLogoManager.GetLogo(folder.Id);

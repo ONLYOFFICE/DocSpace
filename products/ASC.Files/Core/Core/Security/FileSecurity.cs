@@ -1158,13 +1158,7 @@ public class FileSecurity : IFileSecurity
 
         foreach (var room in entries)
         {
-            room.Tags = tags[room.Id].Select(t => new TagInfo
-            {
-                Id = t.Id,
-                Name = t.Name,
-                Owner = t.Owner,
-                Type = t.Type,
-            });
+            room.Tags = tags[room.Id];
         }
     }
 
