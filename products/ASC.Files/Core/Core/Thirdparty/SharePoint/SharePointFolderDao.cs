@@ -98,7 +98,7 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
     public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, IEnumerable<FilterType> filterTypes, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false, 
         IEnumerable<int> tagIds = null)
     {
-        if (CheckForInvalidFilters(filterTypes))
+        if (!CheckForInvalidFilters(filterTypes))
         {
             return AsyncEnumerable.Empty<Folder<string>>();
         }
@@ -148,7 +148,7 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
     public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, IEnumerable<FilterType> filterTypes, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true,
         IEnumerable<int> tagIds = null)
     {
-        if (CheckForInvalidFilters(filterTypes))
+        if (!CheckForInvalidFilters(filterTypes))
         {
             return AsyncEnumerable.Empty<Folder<string>>();
         }

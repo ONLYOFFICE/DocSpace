@@ -172,7 +172,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     public IAsyncEnumerable<Folder<int>> GetFoldersAsync(int parentId, OrderBy orderBy, IEnumerable<FilterType> filterTypes, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false,
         IEnumerable<int> tagIds = null)
     {
-        if (CheckForInvalidFilters(filterTypes))
+        if (!CheckForInvalidFilters(filterTypes))
         {
             return AsyncEnumerable.Empty<Folder<int>>();
         }
@@ -248,7 +248,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     public IAsyncEnumerable<Folder<int>> GetFoldersAsync(IEnumerable<int> folderIds, IEnumerable<FilterType> filterTypes, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true,
         IEnumerable<int> tagIds = null)
     {
-        if (CheckForInvalidFilters(filterTypes))
+        if (!CheckForInvalidFilters(filterTypes))
         {
             return AsyncEnumerable.Empty<Folder<int>>();
         }

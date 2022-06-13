@@ -404,7 +404,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
 
     protected IAsyncEnumerable<Folder<string>> SetFilterByTypes(IAsyncEnumerable<Folder<string>> folders, IEnumerable<FilterType> filterTypes)
     {
-        if (filterTypes.Any() && filterTypes.FirstOrDefault() == FilterType.None)
+        if (filterTypes.Any() && !filterTypes.Contains(FilterType.None))
         {
             var filter = filterTypes.Select(f => f switch
             {
