@@ -313,7 +313,7 @@ public class FileSecurity : IFileSecurity
                     EntryId = entry.Id,
                     EntryType = entry.FileEntryType,
                     Share = FileShare.Read,
-                    Subject = Constants.GroupAdmin.ID,
+                    Subject = WebItemManager.DocumentsProductID,
                     TenantId = _tenantManager.GetCurrentTenant().Id,
                     Owner = entry.RootCreateBy
                 };
