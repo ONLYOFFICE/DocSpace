@@ -316,7 +316,7 @@ public class GlobalFolder
     internal static readonly ConcurrentDictionary<string, int> DocSpaceFolderCache = 
         new ConcurrentDictionary<string, int>();
 
-    public async ValueTask<int> GetFolderVirtualRooms(IDaoFactory daoFactory)
+    public async ValueTask<int> GetFolderVirtualRoomsAsync(IDaoFactory daoFactory)
     {
         if (_coreBaseSettings.DisableDocSpace)
         {
@@ -337,10 +337,10 @@ public class GlobalFolder
 
     public async ValueTask<T> GetFolderVirtualRooms<T>(IDaoFactory daoFactory)
     {
-        return (T)Convert.ChangeType(await GetFolderVirtualRooms(daoFactory), typeof(T));
+        return (T)Convert.ChangeType(await GetFolderVirtualRoomsAsync(daoFactory), typeof(T));
     }
 
-    public async ValueTask<int> GetFolderArchive(IDaoFactory daoFactory)
+    public async ValueTask<int> GetFolderArchiveAsync(IDaoFactory daoFactory)
     {
         if (_coreBaseSettings.DisableDocSpace)
         {
@@ -361,7 +361,7 @@ public class GlobalFolder
 
     public async ValueTask<T> GetFolderArchive<T>(IDaoFactory daoFactory)
     {
-        return (T)Convert.ChangeType(await GetFolderArchive(daoFactory), typeof(T));
+        return (T)Convert.ChangeType(await GetFolderArchiveAsync(daoFactory), typeof(T));
     }
 
     internal static readonly ConcurrentDictionary<string, Lazy<int>> UserRootFolderCache =
@@ -755,8 +755,8 @@ public class GlobalFolderHelper
     public ValueTask<int> FolderRecentAsync => _globalFolder.GetFolderRecentAsync(_daoFactory);
     public ValueTask<int> FolderFavoritesAsync => _globalFolder.GetFolderFavoritesAsync(_daoFactory);
     public ValueTask<int> FolderTemplatesAsync => _globalFolder.GetFolderTemplatesAsync(_daoFactory);
-    public ValueTask<int> FolderVirtualRoomsAsync => _globalFolder.GetFolderVirtualRooms(_daoFactory);
-    public ValueTask<int> FolderArchiveAsync => _globalFolder.GetFolderArchive(_daoFactory);
+    public ValueTask<int> FolderVirtualRoomsAsync => _globalFolder.GetFolderVirtualRoomsAsync(_daoFactory);
+    public ValueTask<int> FolderArchiveAsync => _globalFolder.GetFolderArchiveAsync(_daoFactory);
 
     public T GetFolderMy<T>()
     {

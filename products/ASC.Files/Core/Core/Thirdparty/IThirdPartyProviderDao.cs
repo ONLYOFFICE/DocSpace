@@ -227,6 +227,9 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
     protected RegexDaoSelectorBase<T> DaoSelector { get; set; }
     protected T ProviderInfo { get; set; }
     protected string PathPrefix { get; private set; }
+    protected List<FilterType> _constraintFolderFilters =
+        new List<FilterType> { FilterType.FilesOnly, FilterType.ByExtension, FilterType.DocumentsOnly, FilterType.ImagesOnly,
+            FilterType.PresentationsOnly, FilterType.SpreadsheetsOnly, FilterType.ArchiveOnly, FilterType.MediaOnly };
 
     protected abstract string Id { get; }
 
@@ -399,24 +402,31 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         return filtered;
     }
 
-    protected IAsyncEnumerable<Folder<string>> FilterByType(IAsyncEnumerable<Folder<string>> folders, IEnumerable<FilterType> filterTypes)
+    protected IAsyncEnumerable<Folder<string>> SetFilterByTypes(IAsyncEnumerable<Folder<string>> folders, IEnumerable<FilterType> filterTypes)
     {
-        if (!filterTypes.Any())
+        if (filterTypes.Any() && filterTypes.FirstOrDefault() == FilterType.None)
         {
-            return folders;
+            var filter = filterTypes.Select(f => f switch
+            {
+                FilterType.FillingFormsRooms => FolderType.FillingFormsRoom,
+                FilterType.EditingRooms => FolderType.EditingRoom,
+                FilterType.ReviewRooms => FolderType.ReviewRoom,
+                FilterType.ReadOnlyRooms => FolderType.ReadOnlyRoom,
+                FilterType.CustomRooms => FolderType.CustomRoom,
+                _ => FolderType.CustomRoom
+            }).ToHashSet();
+
+            return folders.Where(f => filter.Contains(f.FolderType));
         }
 
-        var filter = filterTypes.Select(f => f switch
-        {
-            FilterType.FillingFormsRooms => FolderType.FillingFormsRoom,
-            FilterType.EditingRooms => FolderType.EditingRoom,
-            FilterType.ReviewRooms => FolderType.ReviewRoom,
-            FilterType.ReadOnlyRooms => FolderType.ReadOnlyRoom,
-            FilterType.CustomRooms => FolderType.CustomRoom,
-            _ => FolderType.CustomRoom
-        }).ToHashSet();
+        return folders;
+    }
 
-        return folders.Where(f => filter.Contains(f.FolderType));
+    protected bool CheckForInvalidFilters(IEnumerable<FilterType> filterTypes)
+    {
+        var intersection = filterTypes.Intersect(_constraintFolderFilters);
+
+        return !intersection.Any();
     }
 
     protected abstract string MakeId(string path = null);

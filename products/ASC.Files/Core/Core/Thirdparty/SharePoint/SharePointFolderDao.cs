@@ -98,17 +98,14 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
     public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, IEnumerable<FilterType> filterTypes, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false, 
         IEnumerable<int> tagIds = null)
     {
-        //if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
-        //    || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
-        //    || filterType == FilterType.PresentationsOnly || filterType == FilterType.SpreadsheetsOnly
-        //    || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
-        //{
-        //    return AsyncEnumerable.Empty<Folder<string>>();
-        //}
+        if (CheckForInvalidFilters(filterTypes))
+        {
+            return AsyncEnumerable.Empty<Folder<string>>();
+        }
 
         var folders = GetFoldersAsync(parentId);
 
-        folders = FilterByType(folders, filterTypes);
+        folders = SetFilterByTypes(folders, filterTypes);
 
         //Filter
         if (subjectID != Guid.Empty)
@@ -151,17 +148,14 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
     public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, IEnumerable<FilterType> filterTypes, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true,
         IEnumerable<int> tagIds = null)
     {
-        //if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
-        //    || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
-        //    || filterType == FilterType.PresentationsOnly || filterType == FilterType.SpreadsheetsOnly
-        //    || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
-        //{
-        //    return AsyncEnumerable.Empty<Folder<string>>();
-        //}
+        if (CheckForInvalidFilters(filterTypes))
+        {
+            return AsyncEnumerable.Empty<Folder<string>>();
+        }
 
         var folders = folderIds.ToAsyncEnumerable().SelectAwait(async e => await GetFolderAsync(e).ConfigureAwait(false));
 
-        folders = FilterByType(folders, filterTypes);
+        folders = SetFilterByTypes(folders, filterTypes);
 
         if (subjectID.HasValue && subjectID != Guid.Empty)
         {
