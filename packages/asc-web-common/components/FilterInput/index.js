@@ -87,6 +87,7 @@ const FilterInput = React.memo(
             onChangeView={onChangeViewAs}
             viewAs={viewAs === "table" ? "row" : viewAs}
             viewSettings={viewSettings}
+            isFilter={true}
           />
         ) : (
           <>
