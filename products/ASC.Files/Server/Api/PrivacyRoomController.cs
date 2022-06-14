@@ -81,7 +81,7 @@ internal abstract class PrivacyRoomController<T> : ControllerBase
 [DefaultRoute]
 [ApiController]
 [ControllerName("privacyroom")]
-public abstract class PrivacyRoomControllerCommon : ControllerBase
+public class PrivacyRoomControllerCommon : ControllerBase
 {
     private readonly AuthContext _authContext;
     private readonly EncryptionKeyPairDtoHelper _encryptionKeyPairHelper;
