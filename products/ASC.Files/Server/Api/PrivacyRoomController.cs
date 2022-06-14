@@ -27,14 +27,14 @@
 namespace ASC.Api.Documents;
 
 [ConstraintRoute("int")]
-internal class PrivacyRoomControllerInternal : PrivacyRoomController<int>
+public class PrivacyRoomControllerInternal : PrivacyRoomController<int>
 {
     public PrivacyRoomControllerInternal(SettingsManager settingsManager, EncryptionKeyPairDtoHelper encryptionKeyPairHelper, FileStorageService<int> fileStorageService) : base(settingsManager, encryptionKeyPairHelper, fileStorageService)
     {
     }
 }
 
-internal class PrivacyRoomControllerThirdparty : PrivacyRoomController<string>
+public class PrivacyRoomControllerThirdparty : PrivacyRoomController<string>
 {
     public PrivacyRoomControllerThirdparty(SettingsManager settingsManager, EncryptionKeyPairDtoHelper encryptionKeyPairHelper, FileStorageService<string> fileStorageService) : base(settingsManager, encryptionKeyPairHelper, fileStorageService)
     {
@@ -45,7 +45,7 @@ internal class PrivacyRoomControllerThirdparty : PrivacyRoomController<string>
 [DefaultRoute]
 [ApiController]
 [ControllerName("privacyroom")]
-internal abstract class PrivacyRoomController<T> : ControllerBase
+public abstract class PrivacyRoomController<T> : ControllerBase
 {
     private readonly EncryptionKeyPairDtoHelper _encryptionKeyPairHelper;
     private readonly FileStorageService<T> _fileStorageService;
