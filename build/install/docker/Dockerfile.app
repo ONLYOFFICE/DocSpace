@@ -94,7 +94,6 @@ RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
     pip3 install --upgrade jsonpath-ng
 
 COPY --from=base --chown=onlyoffice:onlyoffice /app/onlyoffice/config/*.json /app/onlyoffice/config/
-COPY --from=base --chown=onlyoffice:onlyoffice /app/onlyoffice/config/*.config /app/onlyoffice/config/
 COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/common/modify-json-config.py /app
         
 #USER onlyoffice
@@ -122,7 +121,6 @@ RUN mkdir -p /var/log/onlyoffice && \
     pip3 install --upgrade jsonpath-ng
 
 COPY --from=base --chown=onlyoffice:onlyoffice /app/onlyoffice/config/*.json /app/onlyoffice/config/
-COPY --from=base --chown=onlyoffice:onlyoffice /app/onlyoffice/config/*.config /app/onlyoffice/config/
 COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/common/modify-json-config.py /app
 
 EXPOSE 5050
