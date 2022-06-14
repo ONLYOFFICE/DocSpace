@@ -25,6 +25,7 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 using ASC.Geolocation;
+using ASC.MessagingSystem;
 
 namespace ASC.Web.Api;
 
@@ -128,14 +129,14 @@ public class ConnectionsController : ControllerBase
     }
 
     [HttpPut("activeconnections/logoutallchangepassword")]
-    public string LogOutAllActiveConnectionsChangePassword()
+    public async Task<string> LogOutAllActiveConnectionsChangePassword()
     {
         try
         {
             var user = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
             var userName = user.DisplayUserName(false, _displayUserSettingsHelper);
 
-            LogOutAllActiveConnections(user.Id);
+            await LogOutAllActiveConnections(user.Id);
 
             _securityContext.Logout();
 
@@ -154,7 +155,7 @@ public class ConnectionsController : ControllerBase
     }
 
     [HttpPut("activeconnections/logoutall/{userId}")]
-    public void LogOutAllActiveConnectionsForUser(Guid userId)
+    public async Task LogOutAllActiveConnectionsForUser(Guid userId)
     {
         if (!_userManager.GetUsers(_securityContext.CurrentAccount.ID).IsAdmin(_userManager)
             && !_webItemSecurity.IsProductAdministrator(WebItemManager.PeopleProductID, _securityContext.CurrentAccount.ID))
@@ -162,7 +163,7 @@ public class ConnectionsController : ControllerBase
             throw new SecurityException("Method not available");
         }
 
-        LogOutAllActiveConnections(userId);
+        await LogOutAllActiveConnections(userId);
     }
 
     [HttpPut("activeconnections/logoutallexceptthis")]
@@ -206,7 +207,7 @@ public class ConnectionsController : ControllerBase
         }
     }
 
-    public void LogOutAllActiveConnections(Guid? userId = null)
+    public async Task LogOutAllActiveConnections(Guid? userId = null)
     {
         var currentUserId = _securityContext.CurrentAccount.ID;
         var user = _userManager.GetUsers(userId ?? currentUserId);
@@ -214,7 +215,7 @@ public class ConnectionsController : ControllerBase
         var auditEventDate = DateTime.UtcNow;
 
         _messageService.Send(auditEventDate, currentUserId.Equals(user.Id) ? MessageAction.UserLogoutActiveConnections : MessageAction.UserLogoutActiveConnectionsForUser, _messageTarget.Create(user.Id), userName);
-        _cookiesManager.ResetUserCookie(user.Id);
+        await _cookiesManager.ResetUserCookie(user.Id);
     }
 
     public int GetLoginEventIdFromCookie()

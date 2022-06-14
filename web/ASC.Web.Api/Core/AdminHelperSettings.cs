@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -26,43 +26,20 @@
 
 namespace ASC.Web.Studio.Core;
 
-public class PrivacyRoomSettings : ISettings<PrivacyRoomSettings>
+public class AdminHelperSettings : ISettings<AdminHelperSettings>
 {
-    [JsonPropertyName("enbaled")]
-    public bool EnabledSetting { get; set; }
+    public bool Viewed { get; set; }
 
     public Guid ID
     {
-        get { return new Guid("{FCF002BC-EC4B-4DAB-A6CE-BDE0ABDA44D3}"); }
+        get { return new Guid("{342CBBF7-FE08-4261-AB38-9C6BA8FA22B9}"); }
     }
 
-    public PrivacyRoomSettings GetDefault()
+    public AdminHelperSettings GetDefault()
     {
-        return new PrivacyRoomSettings
+        return new AdminHelperSettings()
         {
-            EnabledSetting = true
+            Viewed = false
         };
-    }
-
-    public static bool GetEnabled(SettingsManager settingsManager)
-    {
-        return settingsManager.Load<PrivacyRoomSettings>().EnabledSetting;
-    }
-
-    public static void SetEnabled(SettingsManager settingsManager, bool value)
-    {
-        if (!IsAvailable())
-        {
-            return;
-        }
-
-        var settings = settingsManager.Load<PrivacyRoomSettings>();
-        settings.EnabledSetting = value;
-        settingsManager.Save(settings);
-    }
-
-    public static bool IsAvailable()
-    {
-        return SetupInfo.IsVisibleSettings(nameof(ManagementType.PrivacyRoom));
     }
 }

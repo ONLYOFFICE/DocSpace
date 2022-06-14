@@ -37,5 +37,5 @@ public interface ISecurityDao<T>
     Task<IEnumerable<FileShareRecord>> GetPureShareRecordsAsync(IEnumerable<FileEntry<T>> entries);
     Task<IEnumerable<FileShareRecord>> GetPureShareRecordsAsync(FileEntry<T> entry);
     Task DeleteShareRecordsAsync(IEnumerable<FileShareRecord> records);
-    ValueTask<bool> IsSharedAsync(object entryId, FileEntryType type);
+    ValueTask<bool> IsSharedAsync(T entryId, FileEntryType type);
 }

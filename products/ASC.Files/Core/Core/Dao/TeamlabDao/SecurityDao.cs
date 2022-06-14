@@ -83,12 +83,12 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
         await tx.CommitAsync();
     }
 
-    public ValueTask<bool> IsSharedAsync(object entryId, FileEntryType type)
+    public async ValueTask<bool> IsSharedAsync(T entryId, FileEntryType type)
     {
-        return Query(FilesDbContext.Security)
-            .AsAsyncEnumerable()
-            .AnyAwaitAsync(async r => r.EntryId == (await MappingIDAsync(entryId)).ToString() &&
-                      r.EntryType == type);
+        var mappedId = (await MappingIDAsync(entryId)).ToString();
+
+        return await Query(FilesDbContext.Security)
+            .AnyAsync(r => r.EntryId == mappedId && r.EntryType == type && !(new[] { FileConstant.DenyDownloadId, FileConstant.DenySharingId }).Contains(r.Subject));
     }
 
     public async Task SetShareAsync(FileShareRecord r)

@@ -26,7 +26,6 @@
 
 using AuthenticationException = System.Security.Authentication.AuthenticationException;
 using Constants = ASC.Core.Users.Constants;
-using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Web.Api.Controllers;
 
@@ -65,6 +64,8 @@ public class AuthenticationController : ControllerBase
     private readonly CommonLinkUtility _commonLinkUtility;
     private readonly ApiContext _apiContext;
     private readonly AuthContext _authContext;
+    private readonly CookieStorage _cookieStorage;
+    private readonly DbLoginEventsManager _dbLoginEventsManager;
     private readonly UserManagerWrapper _userManagerWrapper;
 
     public AuthenticationController(
@@ -97,7 +98,9 @@ public class AuthenticationController : ControllerBase
         SmsKeyStorage smsKeyStorage,
         CommonLinkUtility commonLinkUtility,
         ApiContext apiContext,
-        AuthContext authContext)
+        AuthContext authContext,
+        CookieStorage cookieStorage,
+        DbLoginEventsManager dbLoginEventsManager)
     {
         _userManager = userManager;
         _tenantManager = tenantManager;
@@ -128,6 +131,8 @@ public class AuthenticationController : ControllerBase
         _commonLinkUtility = commonLinkUtility;
         _apiContext = apiContext;
         _authContext = authContext;
+        _cookieStorage = cookieStorage;
+        _dbLoginEventsManager = dbLoginEventsManager;
         _userManagerWrapper = userManagerWrapper;
     }
 
@@ -275,12 +280,15 @@ public class AuthenticationController : ControllerBase
 
     [HttpPost("logout")]
     [HttpGet("logout")]// temp fix
-    public void Logout()
+    public async Task Logout()
     {
-        if (_securityContext.IsAuthenticated)
-        {
-            _cookiesManager.ResetUserCookie(_securityContext.CurrentAccount.ID);
-        }
+        var cookie = _cookiesManager.GetCookies(CookiesType.AuthKey);
+        var loginEventId = _cookieStorage.GetLoginEventIdFromCookie(cookie);
+        await _dbLoginEventsManager.LogOutEvent(loginEventId);
+
+        var user = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
+        var loginName = user.DisplayUserName(false, _displayUserSettingsHelper);
+        _messageService.Send(loginName, MessageAction.Logout);
 
         _cookiesManager.ClearCookies(CookiesType.AuthKey);
         _cookiesManager.ClearCookies(CookiesType.SocketIO);

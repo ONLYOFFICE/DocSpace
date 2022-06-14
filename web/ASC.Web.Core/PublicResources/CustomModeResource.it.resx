@@ -138,22 +138,6 @@ Ti interessa? Ulteriori informazioni su "ONLYOFFICE for business":"http://www.on
 Cordiali saluti,
 La squadra di ONLYOFFICE</value>
   </data>
-  <data name="pattern_personal_custom_mode_change_password" xml:space="preserve">
-    <value>Salve,
-
-È stata richiesta la modifica della password utilizzata per accedere al portale "${__VirtualRootPath}":"${__VirtualRootPath}"
-
-Fare click sul link qui di seguito per modificare la password:
-
-$GreenButton
-
-*Nota*: Questo link è valido solamente per 7 giorni. Si prega di completare la procedura di cambio password entro il periodo indicato.
-
-Se non si desidera modificare la password o questo messaggio è stato ricevuto per errore, si prega di ignorarlo.
-
-Cordialmente,
-Il team ONLYOFFICE</value>
-  </data>
   <data name="pattern_personal_custom_mode_confirmation" xml:space="preserve">
     <value>Salve,
 
@@ -207,12 +191,6 @@ La procedura di rimozione dei dati dall'utente "$FromUserName":"$FromUserLink" �
   </data>
   <data name="subject_personal_custom_mode_after_registration1" xml:space="preserve">
     <value>Benvenuto su ONLYOFFICE Personal</value>
-  </data>
-  <data name="subject_personal_custom_mode_after_registration7" xml:space="preserve">
-    <value>Collega il tuo cloud storage preferito a ONLYOFFICE</value>
-  </data>
-  <data name="subject_personal_custom_mode_change_password" xml:space="preserve">
-    <value>ONLYOFFICE Personal assistenza per password</value>
   </data>
   <data name="subject_personal_custom_mode_confirmation" xml:space="preserve">
     <value>ONLYOFFICE Personal. Si prega di attivare il tuo indirizzo email</value>

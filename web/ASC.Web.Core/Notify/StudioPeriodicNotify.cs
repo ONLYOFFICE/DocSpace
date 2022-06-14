@@ -961,39 +961,24 @@ public class StudioPeriodicNotify
 
                     var dayAfterRegister = (int)scheduleDate.Date.Subtract(user.CreateDate.Date).TotalDays;
 
-                    if (_coreBaseSettings.CustomMode)
+                    switch (dayAfterRegister)
                     {
-                        switch (dayAfterRegister)
-                        {
-                            case 7:
-                                action = Actions.PersonalCustomModeAfterRegistration7;
-                                break;
-                            default:
-                                continue;
-                        }
-                    }
-                    else
-                    {
-
-                        switch (dayAfterRegister)
-                        {
-                            case 7:
-                                action = Actions.PersonalAfterRegistration7;
-                                break;
-                            case 14:
-                                action = Actions.PersonalAfterRegistration14;
-                                break;
-                            case 21:
-                                action = Actions.PersonalAfterRegistration21;
-                                break;
-                            case 28:
-                                action = Actions.PersonalAfterRegistration28;
-                                greenButtonText = () => WebstudioNotifyPatternResource.ButtonStartFreeTrial;
-                                greenButtonUrl = "https://www.onlyoffice.com/download-workspace.aspx";
-                                break;
-                            default:
-                                continue;
-                        }
+                        case 7:
+                            action = Actions.PersonalAfterRegistration7;
+                            break;
+                        case 14:
+                            action = Actions.PersonalAfterRegistration14;
+                            break;
+                        case 21:
+                            action = Actions.PersonalAfterRegistration21;
+                            break;
+                        case 28:
+                            action = Actions.PersonalAfterRegistration28;
+                            greenButtonText = () => WebstudioNotifyPatternResource.ButtonStartFreeTrial;
+                            greenButtonUrl = "https://www.onlyoffice.com/download-workspace.aspx";
+                            break;
+                        default:
+                            continue;
                     }
 
                     if (action == null)

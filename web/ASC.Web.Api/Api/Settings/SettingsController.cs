@@ -382,9 +382,9 @@ public class SettingsController : BaseSettingsController
             throw new NotSupportedException("Not available.");
         }
 
-        var adminHelperSettings = AdminHelperSettings.LoadForCurrentUser();
+        var adminHelperSettings = _settingsManager.LoadForCurrentUser<AdminHelperSettings>();
         adminHelperSettings.Viewed = true;
-        adminHelperSettings.SaveForCurrentUser();
+        _settingsManager.SaveForCurrentUser(adminHelperSettings);
     }
 
     ///<visible>false</visible>

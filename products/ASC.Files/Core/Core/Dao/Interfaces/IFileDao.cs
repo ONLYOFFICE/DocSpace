@@ -291,5 +291,9 @@ public interface IFileDao<T>
 
     Task<IEnumerable<int>> GetTenantsWithFeedsAsync(DateTime fromTime);
 
+    Task<EntryProperties> GetProperties(T fileId);
+
+    Task SaveProperties(T fileId, EntryProperties entryProperties);
+
     #endregion
 }

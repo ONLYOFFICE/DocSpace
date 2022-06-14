@@ -166,14 +166,14 @@ public class DbLoginEventsManager
         ResetCache(tenantId, userId);
     }
 
-    private void ResetCache()
+    public void ResetCache()
     {
         var tenantId = _tenantManager.GetCurrentTenant().Id;
         var userId = _securityContext.CurrentAccount.ID;
         ResetCache(tenantId, userId);
     }
 
-    private void ResetCache(int tenantId, Guid userId)
+    public void ResetCache(int tenantId, Guid userId)
     {
         var key = GetCacheKey(tenantId, userId);
         _cache.Remove(key);

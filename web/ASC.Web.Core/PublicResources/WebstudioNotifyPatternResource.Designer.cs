@@ -22,7 +22,7 @@ namespace ASC.Web.Core.PublicResources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class WebstudioNotifyPatternResource {
+    internal class WebstudioNotifyPatternResource {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace ASC.Web.Core.PublicResources {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource", typeof(WebstudioNotifyPatternResource).Assembly);
@@ -51,7 +51,7 @@ namespace ASC.Web.Core.PublicResources {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Globalization.CultureInfo Culture {
+        internal static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Blog was created at.
         /// </summary>
-        public static string ActionCreateBlog {
+        internal static string ActionCreateBlog {
             get {
                 return ResourceManager.GetString("ActionCreateBlog", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Bookmark was created at.
         /// </summary>
-        public static string ActionCreateBookmark {
+        internal static string ActionCreateBookmark {
             get {
                 return ResourceManager.GetString("ActionCreateBookmark", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to CRM case was created at.
         /// </summary>
-        public static string ActionCreateCase {
+        internal static string ActionCreateCase {
             get {
                 return ResourceManager.GetString("ActionCreateCase", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Comment was added at.
         /// </summary>
-        public static string ActionCreateComment {
+        internal static string ActionCreateComment {
             get {
                 return ResourceManager.GetString("ActionCreateComment", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to CRM contact was created at.
         /// </summary>
-        public static string ActionCreateContact {
+        internal static string ActionCreateContact {
             get {
                 return ResourceManager.GetString("ActionCreateContact", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to CRM opportunity was created at.
         /// </summary>
-        public static string ActionCreateDeal {
+        internal static string ActionCreateDeal {
             get {
                 return ResourceManager.GetString("ActionCreateDeal", resourceCulture);
             }
@@ -117,7 +117,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Discussion was created at.
         /// </summary>
-        public static string ActionCreateDiscussion {
+        internal static string ActionCreateDiscussion {
             get {
                 return ResourceManager.GetString("ActionCreateDiscussion", resourceCulture);
             }
@@ -126,7 +126,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Event was created at.
         /// </summary>
-        public static string ActionCreateEvent {
+        internal static string ActionCreateEvent {
             get {
                 return ResourceManager.GetString("ActionCreateEvent", resourceCulture);
             }
@@ -135,7 +135,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Document was created/uploaded at.
         /// </summary>
-        public static string ActionCreateFile {
+        internal static string ActionCreateFile {
             get {
                 return ResourceManager.GetString("ActionCreateFile", resourceCulture);
             }
@@ -144,7 +144,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Folder was created at.
         /// </summary>
-        public static string ActionCreateFolder {
+        internal static string ActionCreateFolder {
             get {
                 return ResourceManager.GetString("ActionCreateFolder", resourceCulture);
             }
@@ -153,7 +153,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Forum was created at.
         /// </summary>
-        public static string ActionCreateForum {
+        internal static string ActionCreateForum {
             get {
                 return ResourceManager.GetString("ActionCreateForum", resourceCulture);
             }
@@ -162,7 +162,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Poll was created at.
         /// </summary>
-        public static string ActionCreateForumPoll {
+        internal static string ActionCreateForumPoll {
             get {
                 return ResourceManager.GetString("ActionCreateForumPoll", resourceCulture);
             }
@@ -171,7 +171,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Post was created at.
         /// </summary>
-        public static string ActionCreateForumPost {
+        internal static string ActionCreateForumPost {
             get {
                 return ResourceManager.GetString("ActionCreateForumPost", resourceCulture);
             }
@@ -180,7 +180,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Milestone was created at.
         /// </summary>
-        public static string ActionCreateMilestone {
+        internal static string ActionCreateMilestone {
             get {
                 return ResourceManager.GetString("ActionCreateMilestone", resourceCulture);
             }
@@ -189,7 +189,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Project was created at.
         /// </summary>
-        public static string ActionCreateProject {
+        internal static string ActionCreateProject {
             get {
                 return ResourceManager.GetString("ActionCreateProject", resourceCulture);
             }
@@ -198,7 +198,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Task was created at.
         /// </summary>
-        public static string ActionCreateTask {
+        internal static string ActionCreateTask {
             get {
                 return ResourceManager.GetString("ActionCreateTask", resourceCulture);
             }
@@ -207,7 +207,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Accept.
         /// </summary>
-        public static string ButtonAccept {
+        internal static string ButtonAccept {
             get {
                 return ResourceManager.GetString("ButtonAccept", resourceCulture);
             }
@@ -216,7 +216,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Access Control Panel.
         /// </summary>
-        public static string ButtonAccessControlPanel {
+        internal static string ButtonAccessControlPanel {
             get {
                 return ResourceManager.GetString("ButtonAccessControlPanel", resourceCulture);
             }
@@ -225,7 +225,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Access Your Portal.
         /// </summary>
-        public static string ButtonAccessYourPortal {
+        internal static string ButtonAccessYourPortal {
             get {
                 return ResourceManager.GetString("ButtonAccessYourPortal", resourceCulture);
             }
@@ -234,7 +234,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Access Your Web-Office.
         /// </summary>
-        public static string ButtonAccessYouWebOffice {
+        internal static string ButtonAccessYouWebOffice {
             get {
                 return ResourceManager.GetString("ButtonAccessYouWebOffice", resourceCulture);
             }
@@ -243,7 +243,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Click here to activate your email address.
         /// </summary>
-        public static string ButtonActivateEmail {
+        internal static string ButtonActivateEmail {
             get {
                 return ResourceManager.GetString("ButtonActivateEmail", resourceCulture);
             }
@@ -252,7 +252,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Change email address.
         /// </summary>
-        public static string ButtonChangeEmail {
+        internal static string ButtonChangeEmail {
             get {
                 return ResourceManager.GetString("ButtonChangeEmail", resourceCulture);
             }
@@ -261,7 +261,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Change password.
         /// </summary>
-        public static string ButtonChangePassword {
+        internal static string ButtonChangePassword {
             get {
                 return ResourceManager.GetString("ButtonChangePassword", resourceCulture);
             }
@@ -270,7 +270,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Change mobile phone number.
         /// </summary>
-        public static string ButtonChangePhone {
+        internal static string ButtonChangePhone {
             get {
                 return ResourceManager.GetString("ButtonChangePhone", resourceCulture);
             }
@@ -279,7 +279,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Configure the authenticator app.
         /// </summary>
-        public static string ButtonChangeTfa {
+        internal static string ButtonChangeTfa {
             get {
                 return ResourceManager.GetString("ButtonChangeTfa", resourceCulture);
             }
@@ -288,7 +288,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Configure Right Now.
         /// </summary>
-        public static string ButtonConfigureRightNow {
+        internal static string ButtonConfigureRightNow {
             get {
                 return ResourceManager.GetString("ButtonConfigureRightNow", resourceCulture);
             }
@@ -297,7 +297,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Confirm.
         /// </summary>
-        public static string ButtonConfirm {
+        internal static string ButtonConfirm {
             get {
                 return ResourceManager.GetString("ButtonConfirm", resourceCulture);
             }
@@ -306,7 +306,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Confirm Portal Address Change.
         /// </summary>
-        public static string ButtonConfirmPortalAddressChange {
+        internal static string ButtonConfirmPortalAddressChange {
             get {
                 return ResourceManager.GetString("ButtonConfirmPortalAddressChange", resourceCulture);
             }
@@ -315,7 +315,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Confirm Portal Owner Update.
         /// </summary>
-        public static string ButtonConfirmPortalOwnerUpdate {
+        internal static string ButtonConfirmPortalOwnerUpdate {
             get {
                 return ResourceManager.GetString("ButtonConfirmPortalOwnerUpdate", resourceCulture);
             }
@@ -324,7 +324,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Confirm account termination.
         /// </summary>
-        public static string ButtonConfirmTermination {
+        internal static string ButtonConfirmTermination {
             get {
                 return ResourceManager.GetString("ButtonConfirmTermination", resourceCulture);
             }
@@ -333,7 +333,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Deactivate Portal.
         /// </summary>
-        public static string ButtonDeactivatePortal {
+        internal static string ButtonDeactivatePortal {
             get {
                 return ResourceManager.GetString("ButtonDeactivatePortal", resourceCulture);
             }
@@ -342,7 +342,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Delete Portal.
         /// </summary>
-        public static string ButtonDeletePortal {
+        internal static string ButtonDeletePortal {
             get {
                 return ResourceManager.GetString("ButtonDeletePortal", resourceCulture);
             }
@@ -351,7 +351,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Invite Right Now.
         /// </summary>
-        public static string ButtonInviteRightNow {
+        internal static string ButtonInviteRightNow {
             get {
                 return ResourceManager.GetString("ButtonInviteRightNow", resourceCulture);
             }
@@ -360,7 +360,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Click here to join the portal.
         /// </summary>
-        public static string ButtonJoin {
+        internal static string ButtonJoin {
             get {
                 return ResourceManager.GetString("ButtonJoin", resourceCulture);
             }
@@ -369,7 +369,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Leave Feedback.
         /// </summary>
-        public static string ButtonLeaveFeedback {
+        internal static string ButtonLeaveFeedback {
             get {
                 return ResourceManager.GetString("ButtonLeaveFeedback", resourceCulture);
             }
@@ -378,7 +378,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Remove profile.
         /// </summary>
-        public static string ButtonRemoveProfile {
+        internal static string ButtonRemoveProfile {
             get {
                 return ResourceManager.GetString("ButtonRemoveProfile", resourceCulture);
             }
@@ -387,7 +387,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Renew now.
         /// </summary>
-        public static string ButtonRenewNow {
+        internal static string ButtonRenewNow {
             get {
                 return ResourceManager.GetString("ButtonRenewNow", resourceCulture);
             }
@@ -396,7 +396,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Request a Call.
         /// </summary>
-        public static string ButtonRequestCallButton {
+        internal static string ButtonRequestCallButton {
             get {
                 return ResourceManager.GetString("ButtonRequestCallButton", resourceCulture);
             }
@@ -405,7 +405,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Select the Pricing Plans Right Now.
         /// </summary>
-        public static string ButtonSelectPricingPlans {
+        internal static string ButtonSelectPricingPlans {
             get {
                 return ResourceManager.GetString("ButtonSelectPricingPlans", resourceCulture);
             }
@@ -414,7 +414,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Start free trial.
         /// </summary>
-        public static string ButtonStartFreeTrial {
+        internal static string ButtonStartFreeTrial {
             get {
                 return ResourceManager.GetString("ButtonStartFreeTrial", resourceCulture);
             }
@@ -423,7 +423,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Use discount.
         /// </summary>
-        public static string ButtonUseDiscount {
+        internal static string ButtonUseDiscount {
             get {
                 return ResourceManager.GetString("ButtonUseDiscount", resourceCulture);
             }
@@ -432,7 +432,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Learn More &gt;&gt;.
         /// </summary>
-        public static string LinkLearnMore {
+        internal static string LinkLearnMore {
             get {
                 return ResourceManager.GetString("LinkLearnMore", resourceCulture);
             }
@@ -449,7 +449,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///This link is valid for 7 days only. Please complete your email activation within that period..
         /// </summary>
-        public static string pattern_activate_email {
+        internal static string pattern_activate_email {
             get {
                 return ResourceManager.GetString("pattern_activate_email", resourceCulture);
             }
@@ -469,7 +469,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Best  [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_backup_created {
+        internal static string pattern_backup_created {
             get {
                 return ResourceManager.GetString("pattern_backup_created", resourceCulture);
             }
@@ -489,7 +489,7 @@ namespace ASC.Web.Core.PublicResources {
         ///Best regards,
         ///ONLYOFFICE™ Suppor [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_backup_created_tg {
+        internal static string pattern_backup_created_tg {
             get {
                 return ResourceManager.GetString("pattern_backup_created_tg", resourceCulture);
             }
@@ -508,45 +508,33 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Don’t want to change your email? Just ignore this message..
         /// </summary>
-        public static string pattern_change_email_v115 {
+        internal static string pattern_change_email_v115 {
             get {
                 return ResourceManager.GetString("pattern_change_email_v115", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to h1.Password change request for the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal
-        ///
-        ///There has been a request to change your password used to enter the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal.
-        ///
-        ///Please follow the link below to change your password:
+        ///   Looks up a localized string similar to Want to change the password on your ONLYOFFICE account? Click the button below to confirm.
         ///
         ///$GreenButton
         ///
-        ///*Note*: this link is valid for 7 days only. Please complete the password change process within that period.
+        ///The link is valid for 7 days.
         ///
-        ///If you do not want to change your password or received this email by mistake, please ignore it or contact your &quot;${__Virtual [rest of string was truncated]&quot;;.
+        ///Don’t want to change your password? Just ignore this message&lt;/value&gt;
+        ///  &lt;/data&gt;
+        ///  &lt;data name=&quot;pattern_personal_change_password_v115&quot; xml:space=&quot;preserve&quot;&gt;
+        ///    &lt;value&gt;Want to change the password on your ONLYOFFICE Personal account? Click the button below to confirm.
+        ///
+        ///$GreenButton 
+        ///
+        ///The link is valid for 7 days.
+        ///
+        ///Don’t want to change your password? Just ignore  [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_change_password {
+        internal static string pattern_change_password_v115 {
             get {
-                return ResourceManager.GetString("pattern_change_password", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to h1.Mobile phone change request
-        ///
-        ///You have requested to change your mobile phone used to enter the ${LetterLogoText} portal.
-        ///
-        ///Please follow the link below to change your mobile phone:
-        ///
-        ///$GreenButton
-        ///
-        ///If you do not want to change your mobile phone or received this email by mistake, please ignore it or contact your portal administrator to find out the details..
-        /// </summary>
-        public static string pattern_change_phone {
-            get {
-                return ResourceManager.GetString("pattern_change_phone", resourceCulture);
+                return ResourceManager.GetString("pattern_change_password_v115", resourceCulture);
             }
         }
         
@@ -559,7 +547,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///$GreenButton.
         /// </summary>
-        public static string pattern_change_tfa {
+        internal static string pattern_change_tfa {
             get {
                 return ResourceManager.GetString("pattern_change_tfa", resourceCulture);
             }
@@ -578,7 +566,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///*Note*: this link is valid for 7 days only. Please complete the portal owner change process within that period..
         /// </summary>
-        public static string pattern_confirm_owner_change {
+        internal static string pattern_confirm_owner_change {
             get {
                 return ResourceManager.GetString("pattern_confirm_owner_change", resourceCulture);
             }
@@ -597,7 +585,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///*Note*: this link is valid for 7 days only. Please complete the portal address change process within that period..
         /// </summary>
-        public static string pattern_dns_change {
+        internal static string pattern_dns_change {
             get {
                 return ResourceManager.GetString("pattern_dns_change", resourceCulture);
             }
@@ -606,7 +594,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///You have just created the ONLYOFFICE portal, your team&apos;s cloud office that would enhance public cooperation. Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
+        ///You have just created the ONLYOFFICE portal, your team&apos;s cloud office that would enhance internal cooperation. Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
         ///
         ///Please, confirm your email:
         ///
@@ -616,7 +604,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///To send notifications, we use the SMTP settings of ONLYOFFICE mail server. To change them, please follow the instructions &quot;here&quot;:&quot;${__HelpLink}/server/windows/community/smtp-setti [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_enterprise_admin_activation_v10 {
+        internal static string pattern_enterprise_admin_activation_v10 {
             get {
                 return ResourceManager.GetString("pattern_enterprise_admin_activation_v10", resourceCulture);
             }
@@ -635,7 +623,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///More information in our &quot;Help Center&quot;:&quot;${__HelpLink}&quot;..
         /// </summary>
-        public static string pattern_enterprise_admin_customize_portal_v10 {
+        internal static string pattern_enterprise_admin_customize_portal_v10 {
             get {
                 return ResourceManager.GetString("pattern_enterprise_admin_customize_portal_v10", resourceCulture);
             }
@@ -644,7 +632,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Let your team members use Facebook, Twitter, Google or LinkedIn to sign in. Link up your portal with Box, Dropbox, OneDrive and Google to transfer your documents. Connect DocuSign to use e-signature, Twilio - for VoIP, Bitly - to shorten links and Firebase to get notifications when you&apos;re offline..
         /// </summary>
-        public static string pattern_enterprise_admin_customize_portal_v10_item_3rdparty {
+        internal static string pattern_enterprise_admin_customize_portal_v10_item_3rdparty {
             get {
                 return ResourceManager.GetString("pattern_enterprise_admin_customize_portal_v10_item_3rdparty", resourceCulture);
             }
@@ -653,7 +641,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Tip #5: Connect 3rd-party services.
         /// </summary>
-        public static string pattern_enterprise_admin_customize_portal_v10_item_3rdparty_hdr {
+        internal static string pattern_enterprise_admin_customize_portal_v10_item_3rdparty_hdr {
             get {
                 return ResourceManager.GetString("pattern_enterprise_admin_customize_portal_v10_item_3rdparty_hdr", resourceCulture);
             }
@@ -662,7 +650,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Uploading your company&apos;s logos in the Control Panel. To change the default portal title displayed on the Welcome page, go to Settings &gt;&gt; Common &gt;&gt; Customization &gt;&gt; Welcome Page Settings..
         /// </summary>
-        public static string pattern_enterprise_admin_customize_portal_v10_item_brand {
+        internal static string pattern_enterprise_admin_customize_portal_v10_item_brand {
             get {
                 return ResourceManager.GetString("pattern_enterprise_admin_customize_portal_v10_item_brand", resourceCulture);
             }
@@ -671,7 +659,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Tip #1: Brand it.
         /// </summary>
-        public static string pattern_enterprise_admin_customize_portal_v10_item_brand_hdr {
+        internal static string pattern_enterprise_admin_customize_portal_v10_item_brand_hdr {
             get {
                 return ResourceManager.GetString("pattern_enterprise_admin_customize_portal_v10_item_brand_hdr", resourceCulture);
             }
@@ -680,7 +668,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Name the portal groups, its members and their activities following Settings &gt;&gt; Common &gt;&gt; Customization &gt;&gt; Team Template. Select the color theme that best suits your company brand..
         /// </summary>
-        public static string pattern_enterprise_admin_customize_portal_v10_item_customize {
+        internal static string pattern_enterprise_admin_customize_portal_v10_item_customize {
             get {
                 return ResourceManager.GetString("pattern_enterprise_admin_customize_portal_v10_item_customize", resourceCulture);
             }
@@ -689,7 +677,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Tip #3: Customize interface.
         /// </summary>
-        public static string pattern_enterprise_admin_customize_portal_v10_item_customize_hdr {
+        internal static string pattern_enterprise_admin_customize_portal_v10_item_customize_hdr {
             get {
                 return ResourceManager.GetString("pattern_enterprise_admin_customize_portal_v10_item_customize_hdr", resourceCulture);
             }
@@ -698,7 +686,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enable instruments you need for work following Settings &gt;&gt; Common &gt;&gt; Modules &amp; Tools. The disabled ones will be hidden..
         /// </summary>
-        public static string pattern_enterprise_admin_customize_portal_v10_item_modules {
+        internal static string pattern_enterprise_admin_customize_portal_v10_item_modules {
             get {
                 return ResourceManager.GetString("pattern_enterprise_admin_customize_portal_v10_item_modules", resourceCulture);
             }
@@ -707,7 +695,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Tip #4: Select your tools.
         /// </summary>
-        public static string pattern_enterprise_admin_customize_portal_v10_item_modules_hdr {
+        internal static string pattern_enterprise_admin_customize_portal_v10_item_modules_hdr {
             get {
                 return ResourceManager.GetString("pattern_enterprise_admin_customize_portal_v10_item_modules_hdr", resourceCulture);
             }
@@ -716,7 +704,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Choose the language and set the correct time zone. It&apos;s particularly important for the notifications and the correct calendar work. Go to Settings &gt;&gt; Common &gt;&gt; Customization..
         /// </summary>
-        public static string pattern_enterprise_admin_customize_portal_v10_item_regional {
+        internal static string pattern_enterprise_admin_customize_portal_v10_item_regional {
             get {
                 return ResourceManager.GetString("pattern_enterprise_admin_customize_portal_v10_item_regional", resourceCulture);
             }
@@ -725,7 +713,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Tip #2: Adjust the regional settings.
         /// </summary>
-        public static string pattern_enterprise_admin_customize_portal_v10_item_regional_hdr {
+        internal static string pattern_enterprise_admin_customize_portal_v10_item_regional_hdr {
             get {
                 return ResourceManager.GetString("pattern_enterprise_admin_customize_portal_v10_item_regional_hdr", resourceCulture);
             }
@@ -740,7 +728,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///You can also distribute the invitation link using the Inv [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_enterprise_admin_invite_teammates_v10 {
+        internal static string pattern_enterprise_admin_invite_teammates_v10 {
             get {
                 return ResourceManager.GetString("pattern_enterprise_admin_invite_teammates_v10", resourceCulture);
             }
@@ -756,7 +744,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///For any further ONLYOFFICE installation, activation and technical support issues, please contact our support team  at &quot;https://support.onlyoffice.com/&quot;:&quot;https://support.onlyoffice.com/&quot;.
         /// </summary>
-        public static string pattern_enterprise_admin_payment_warning_before7_v10 {
+        internal static string pattern_enterprise_admin_payment_warning_before7_v10 {
             get {
                 return ResourceManager.GetString("pattern_enterprise_admin_payment_warning_before7_v10", resourceCulture);
             }
@@ -772,7 +760,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///For any further product installation, activation and technical support issues, please contact our support team at &quot;https://support.onlyoffice.com/&quot;:&quot;https://support.onlyoffice.com/&quot;.
         /// </summary>
-        public static string pattern_enterprise_admin_payment_warning_v10 {
+        internal static string pattern_enterprise_admin_payment_warning_v10 {
             get {
                 return ResourceManager.GetString("pattern_enterprise_admin_payment_warning_v10", resourceCulture);
             }
@@ -791,7 +779,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///For any purchase questions, contact us at &quot;sales@onlyoffice.com&quot;:&quot;mailto:sales@onlyoffice.com&quot;. For solving any technical problems, write to &quot;support@onlyoffice.com&quot;:&quot;mailto:support@onlyoffice.com [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_enterprise_admin_trial_warning_before7_v10 {
+        internal static string pattern_enterprise_admin_trial_warning_before7_v10 {
             get {
                 return ResourceManager.GetString("pattern_enterprise_admin_trial_warning_before7_v10", resourceCulture);
             }
@@ -806,7 +794,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///For any purchase questions, contact us at &quot;sales@onlyoffice.com&quot;:&quot;mailto:sales@onlyoffice.com&quot;. For solving any technical problems, write to &quot;support@onlyoffice.com&quot;:&quot;mailto:support@onlyoffice.com&quot;.
         /// </summary>
-        public static string pattern_enterprise_admin_trial_warning_v10 {
+        internal static string pattern_enterprise_admin_trial_warning_v10 {
             get {
                 return ResourceManager.GetString("pattern_enterprise_admin_trial_warning_v10", resourceCulture);
             }
@@ -821,7 +809,7 @@ namespace ASC.Web.Core.PublicResources {
         ///# To edit documents on mobile devices, ONLYOFFICE Documents app for &quot;iOS&quot;:&quot;https://itunes.apple.com/us/app/onlyoffice-documents/id944896972&quot; or &quot;Android&quot;:&quot;https://play.google.com/store/apps/details?id=com.onlyoffice.documents&quot;.
         ///# To manage your team performance on  [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_enterprise_admin_user_apps_tips_v10 {
+        internal static string pattern_enterprise_admin_user_apps_tips_v10 {
             get {
                 return ResourceManager.GetString("pattern_enterprise_admin_user_apps_tips_v10", resourceCulture);
             }
@@ -834,7 +822,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///$TableItemsTop $TableItem1 $TableItem2 $TableItem3 $TableItem4 $TableItem5 $TableItem6 $TableItem7 $TableItemsBtm.
         /// </summary>
-        public static string pattern_enterprise_admin_user_docs_tips_v10 {
+        internal static string pattern_enterprise_admin_user_docs_tips_v10 {
             get {
                 return ResourceManager.GetString("pattern_enterprise_admin_user_docs_tips_v10", resourceCulture);
             }
@@ -849,7 +837,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///*Enable automatic backups* in the Control Panel. We also recommend that you use third-party services and make a backup copy of the server with ONLYOFFICE installed from time to time. Instructions in our &quot;Help [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_enterprise_admin_welcome_v10 {
+        internal static string pattern_enterprise_admin_welcome_v10 {
             get {
                 return ResourceManager.GetString("pattern_enterprise_admin_welcome_v10", resourceCulture);
             }
@@ -862,7 +850,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Please, don’t hesitate to contact us at &quot;support.onlyoffice.com&quot;:&quot;https://support.onlyoffice.com&quot; whenever you have questions or ideas..
         /// </summary>
-        public static string pattern_enterprise_admin_without_activity_v10 {
+        internal static string pattern_enterprise_admin_without_activity_v10 {
             get {
                 return ResourceManager.GetString("pattern_enterprise_admin_without_activity_v10", resourceCulture);
             }
@@ -879,7 +867,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///You will get more tips on how to use your web-office. You can cancel the subscriptions on your Profile page at any moment as well as re-enable them..
         /// </summary>
-        public static string pattern_enterprise_guest_activation_v10 {
+        internal static string pattern_enterprise_guest_activation_v10 {
             get {
                 return ResourceManager.GetString("pattern_enterprise_guest_activation_v10", resourceCulture);
             }
@@ -895,7 +883,7 @@ namespace ASC.Web.Core.PublicResources {
         ///# Add and download files available for you in the &quot;Documents&quot;:&quot;${__VirtualRootPath}/Products/Files/&quot;.
         ///# Organize your schedule with the built-in &quot;Calendar&quot;:&quot;${__VirtualRootPath [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_enterprise_guest_welcome_v10 {
+        internal static string pattern_enterprise_guest_welcome_v10 {
             get {
                 return ResourceManager.GetString("pattern_enterprise_guest_welcome_v10", resourceCulture);
             }
@@ -914,7 +902,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///You will get more tips on how to use your we-office. You can cancel the subscriptions on your Profile page at any moment as well as re-enable them..
         /// </summary>
-        public static string pattern_enterprise_user_activation_v10 {
+        internal static string pattern_enterprise_user_activation_v10 {
             get {
                 return ResourceManager.GetString("pattern_enterprise_user_activation_v10", resourceCulture);
             }
@@ -929,7 +917,7 @@ namespace ASC.Web.Core.PublicResources {
         ///# Add your email accounts and manage all correspondence in one place with &quot;Mail&quot;:&quot;${__VirtualRootPath}/addons/mail/&quot;.
         ///# Manage your workflow with &quot;Projects&quot;:&quot;${__VirtualRootPath}/Products/Projects/&quot; and your customer relationships using [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_enterprise_user_welcome_v10 {
+        internal static string pattern_enterprise_user_welcome_v10 {
             get {
                 return ResourceManager.GetString("pattern_enterprise_user_welcome_v10", resourceCulture);
             }
@@ -938,7 +926,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///You have just created your corporate web-office, your team&apos;s cloud office that would enhance public cooperation.  Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
+        ///You have just created your corporate web-office, your team&apos;s cloud office that would enhance internal cooperation.  Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
         ///
         ///Please, confirm your email:
         ///
@@ -946,7 +934,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///You may change your email or password in your &quot;personal profile page&quot;:&quot;$MyStaffLink&quot;..
         /// </summary>
-        public static string pattern_enterprise_whitelabel_admin_activation_v10 {
+        internal static string pattern_enterprise_whitelabel_admin_activation_v10 {
             get {
                 return ResourceManager.GetString("pattern_enterprise_whitelabel_admin_activation_v10", resourceCulture);
             }
@@ -963,7 +951,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Done. It&apos;s time to invite teammates to your web-office!.
         /// </summary>
-        public static string pattern_enterprise_whitelabel_admin_customize_portal_v10 {
+        internal static string pattern_enterprise_whitelabel_admin_customize_portal_v10 {
             get {
                 return ResourceManager.GetString("pattern_enterprise_whitelabel_admin_customize_portal_v10", resourceCulture);
             }
@@ -977,7 +965,7 @@ namespace ASC.Web.Core.PublicResources {
         ///Click on the link below to start the renewal process:
         ///&quot;Pricing page&quot;:&quot;$PricingPage&quot;.
         /// </summary>
-        public static string pattern_enterprise_whitelabel_admin_payment_warning_before7_v10 {
+        internal static string pattern_enterprise_whitelabel_admin_payment_warning_before7_v10 {
             get {
                 return ResourceManager.GetString("pattern_enterprise_whitelabel_admin_payment_warning_before7_v10", resourceCulture);
             }
@@ -991,7 +979,7 @@ namespace ASC.Web.Core.PublicResources {
         ///Click on the link below to start the renewal process:
         ///&quot;Pricing page&quot;:&quot;$PricingPage&quot;.
         /// </summary>
-        public static string pattern_enterprise_whitelabel_admin_payment_warning_v10 {
+        internal static string pattern_enterprise_whitelabel_admin_payment_warning_v10 {
             get {
                 return ResourceManager.GetString("pattern_enterprise_whitelabel_admin_payment_warning_v10", resourceCulture);
             }
@@ -1008,7 +996,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///*Adjust portal security settings*: restrict  [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_enterprise_whitelabel_admin_welcome_v10 {
+        internal static string pattern_enterprise_whitelabel_admin_welcome_v10 {
             get {
                 return ResourceManager.GetString("pattern_enterprise_whitelabel_admin_welcome_v10", resourceCulture);
             }
@@ -1025,7 +1013,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///You will get more tips on how to use your web-office. You can cancel the subscriptions on your Profile page at any moment as well as re-enable them..
         /// </summary>
-        public static string pattern_enterprise_whitelabel_guest_activation_v10 {
+        internal static string pattern_enterprise_whitelabel_guest_activation_v10 {
             get {
                 return ResourceManager.GetString("pattern_enterprise_whitelabel_guest_activation_v10", resourceCulture);
             }
@@ -1041,7 +1029,7 @@ namespace ASC.Web.Core.PublicResources {
         ///# Add and download files available for you in the &quot;Documents&quot;:&quot;${__VirtualRootPath}/Products/Files/&quot;.
         ///# Organize your schedule with the built-in &quot;Calendar&quot;:&quot;${__VirtualRootPath [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_enterprise_whitelabel_guest_welcome_v10 {
+        internal static string pattern_enterprise_whitelabel_guest_welcome_v10 {
             get {
                 return ResourceManager.GetString("pattern_enterprise_whitelabel_guest_welcome_v10", resourceCulture);
             }
@@ -1060,7 +1048,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///You will get more tips on how to use your we-office. You can cancel the subscriptions on your Profile page at any moment as well as re-enable them..
         /// </summary>
-        public static string pattern_enterprise_whitelabel_user_activation_v10 {
+        internal static string pattern_enterprise_whitelabel_user_activation_v10 {
             get {
                 return ResourceManager.GetString("pattern_enterprise_whitelabel_user_activation_v10", resourceCulture);
             }
@@ -1075,7 +1063,7 @@ namespace ASC.Web.Core.PublicResources {
         ///# Add your email accounts and manage all correspondence in one place with &quot;Mail&quot;:&quot;${__VirtualRootPath}/addons/mail/&quot;.
         ///# Manage your workflow with &quot;Projects&quot;:&quot;${__VirtualRootPath}/Products/Projects/&quot; and your customer relationships using [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_enterprise_whitelabel_user_welcome_v10 {
+        internal static string pattern_enterprise_whitelabel_user_welcome_v10 {
             get {
                 return ResourceManager.GetString("pattern_enterprise_whitelabel_user_welcome_v10", resourceCulture);
             }
@@ -1088,7 +1076,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///$Body.
         /// </summary>
-        public static string pattern_for_admin_notify {
+        internal static string pattern_for_admin_notify {
             get {
                 return ResourceManager.GetString("pattern_for_admin_notify", resourceCulture);
             }
@@ -1101,7 +1089,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///$Body.
         /// </summary>
-        public static string pattern_for_admin_notify_tg {
+        internal static string pattern_for_admin_notify_tg {
             get {
                 return ResourceManager.GetString("pattern_for_admin_notify_tg", resourceCulture);
             }
@@ -1120,7 +1108,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///*Note*: this link is valid for 48 hours only. Please complete the operation within that period..
         /// </summary>
-        public static string pattern_join {
+        internal static string pattern_join {
             get {
                 return ResourceManager.GetString("pattern_join", resourceCulture);
             }
@@ -1146,7 +1134,7 @@ namespace ASC.Web.Core.PublicResources {
         ///      Server: &lt;b&gt;$Server&lt;/b&gt;
         ///      Port: &lt;b&gt;$Smt [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_mailbox_created {
+        internal static string pattern_mailbox_created {
             get {
                 return ResourceManager.GetString("pattern_mailbox_created", resourceCulture);
             }
@@ -1161,7 +1149,7 @@ namespace ASC.Web.Core.PublicResources {
         ///      If you received this email by mistake, please ignore it or contact your portal administrator to find out the details.
         ///    .
         /// </summary>
-        public static string pattern_mailbox_password_changed {
+        internal static string pattern_mailbox_password_changed {
             get {
                 return ResourceManager.GetString("pattern_mailbox_password_changed", resourceCulture);
             }
@@ -1176,7 +1164,7 @@ namespace ASC.Web.Core.PublicResources {
         ///      If you received this email by mistake, please ignore it or contact your portal administrator to find out the details.
         ///    .
         /// </summary>
-        public static string pattern_mailbox_without_settings_created {
+        internal static string pattern_mailbox_without_settings_created {
             get {
                 return ResourceManager.GetString("pattern_mailbox_without_settings_created", resourceCulture);
             }
@@ -1196,7 +1184,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///^You receive this email because you are a registered user of the &quot; [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_migration_error {
+        internal static string pattern_migration_error {
             get {
                 return ResourceManager.GetString("pattern_migration_error", resourceCulture);
             }
@@ -1216,7 +1204,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///^You receive this email because you are a registered user of the &quot;${__Virt [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_migration_server_failure {
+        internal static string pattern_migration_server_failure {
             get {
                 return ResourceManager.GetString("pattern_migration_server_failure", resourceCulture);
             }
@@ -1234,7 +1222,7 @@ namespace ASC.Web.Core.PublicResources {
         ///Best regards,
         ///O [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_migration_start {
+        internal static string pattern_migration_start {
             get {
                 return ResourceManager.GetString("pattern_migration_start", resourceCulture);
             }
@@ -1253,7 +1241,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///If you received this email by mistake, please ignore it or contact your &quot;$PortalUrl&quot;:&quot;$PortalUrl&quot; portal adminis [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_migration_success_v115 {
+        internal static string pattern_migration_success_v115 {
             get {
                 return ResourceManager.GetString("pattern_migration_success_v115", resourceCulture);
             }
@@ -1262,7 +1250,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///You have just created the ONLYOFFICE portal, your team&apos;s cloud office that would enhance public cooperation.  Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
+        ///You have just created the ONLYOFFICE portal, your team&apos;s cloud office that would enhance internal cooperation.  Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
         ///
         ///Please, confirm your email following the &quot;link&quot;:&quot;$ActivateUrl&quot;.
         ///
@@ -1270,7 +1258,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///To send notifications, we use the SMTP settings of ONLYOFFICE mail server. To change them, follow the instructions &quot;here&quot;:&quot;${__HelpLink}/server/windows/commun [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_opensource_admin_activation_v11 {
+        internal static string pattern_opensource_admin_activation_v11 {
             get {
                 return ResourceManager.GetString("pattern_opensource_admin_activation_v11", resourceCulture);
             }
@@ -1285,7 +1273,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///*#2. Learn how document saving wor [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_opensource_admin_docs_tips_v11 {
+        internal static string pattern_opensource_admin_docs_tips_v11 {
             get {
                 return ResourceManager.GetString("pattern_opensource_admin_docs_tips_v11", resourceCulture);
             }
@@ -1300,7 +1288,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///*Enable automatic backups* in the Control Panel. We also recommend that you use 3rd services and make a backup copy of the server with ONLYOFFICE installed from time to time. Instructions in our &quot;Help Cen [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_opensource_admin_welcome_v11 {
+        internal static string pattern_opensource_admin_welcome_v11 {
             get {
                 return ResourceManager.GetString("pattern_opensource_admin_welcome_v11", resourceCulture);
             }
@@ -1317,7 +1305,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///You will get more tips on how to use your web-office. You can cancel the subscriptions on your Profile page at any moment as well as re-enable them..
         /// </summary>
-        public static string pattern_opensource_guest_activation_v11 {
+        internal static string pattern_opensource_guest_activation_v11 {
             get {
                 return ResourceManager.GetString("pattern_opensource_guest_activation_v11", resourceCulture);
             }
@@ -1338,7 +1326,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///*Use personal and shared calendars* to arrange meetings, set reminders, and create to-do lists [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_opensource_guest_welcome_v11 {
+        internal static string pattern_opensource_guest_welcome_v11 {
             get {
                 return ResourceManager.GetString("pattern_opensource_guest_welcome_v11", resourceCulture);
             }
@@ -1355,7 +1343,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///You will get more tips on how to use your web-office. You can cancel the subscriptions on your Profile page at any moment as well as re-enable them..
         /// </summary>
-        public static string pattern_opensource_user_activation_v11 {
+        internal static string pattern_opensource_user_activation_v11 {
             get {
                 return ResourceManager.GetString("pattern_opensource_user_activation_v11", resourceCulture);
             }
@@ -1372,7 +1360,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///*#3. Choose co-editing mode*. While co-editing a doc with your team in real time, switch to Fast mode to see chan [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_opensource_user_docs_tips_v11 {
+        internal static string pattern_opensource_user_docs_tips_v11 {
             get {
                 return ResourceManager.GetString("pattern_opensource_user_docs_tips_v11", resourceCulture);
             }
@@ -1389,7 +1377,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///*Manage your tas [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_opensource_user_welcome_v11 {
+        internal static string pattern_opensource_user_welcome_v11 {
             get {
                 return ResourceManager.GetString("pattern_opensource_user_welcome_v11", resourceCulture);
             }
@@ -1408,7 +1396,7 @@ namespace ASC.Web.Core.PublicResources {
         ///Sincerely,
         ///ONLYOFFICE team.
         /// </summary>
-        public static string pattern_personal_activate {
+        internal static string pattern_personal_activate {
             get {
                 return ResourceManager.GetString("pattern_personal_activate", resourceCulture);
             }
@@ -1425,7 +1413,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///h3.For a quick start, [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_personal_after_registration1 {
+        internal static string pattern_personal_after_registration1 {
             get {
                 return ResourceManager.GetString("pattern_personal_after_registration1", resourceCulture);
             }
@@ -1450,7 +1438,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///No need to download files and send them v [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_personal_after_registration14 {
+        internal static string pattern_personal_after_registration14 {
             get {
                 return ResourceManager.GetString("pattern_personal_after_registration14", resourceCulture);
             }
@@ -1469,7 +1457,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///- Set u [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_personal_after_registration21 {
+        internal static string pattern_personal_after_registration21 {
             get {
                 return ResourceManager.GetString("pattern_personal_after_registration21", resourceCulture);
             }
@@ -1490,7 +1478,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///- Monitor *user activity* in your w [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_personal_after_registration28 {
+        internal static string pattern_personal_after_registration28 {
             get {
                 return ResourceManager.GetString("pattern_personal_after_registration28", resourceCulture);
             }
@@ -1503,7 +1491,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Connect *Dropbox*, *Google Drive*, *Box*, *OneDrive*, *Nextcloud*, *ownCloud* or *Yandex.Disk* to ONLYOFFICE and create a single document management space for all your documents. You&apos;ll be able to edit external files in ONLYOFFICE and save them to the storage you keep documents in. [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_personal_after_registration7 {
+        internal static string pattern_personal_after_registration7 {
             get {
                 return ResourceManager.GetString("pattern_personal_after_registration7", resourceCulture);
             }
@@ -1518,7 +1506,7 @@ namespace ASC.Web.Core.PublicResources {
         ///Have a nice day!
         ///ONLYOFFICE team.
         /// </summary>
-        public static string pattern_personal_already_exist {
+        internal static string pattern_personal_already_exist {
             get {
                 return ResourceManager.GetString("pattern_personal_already_exist", resourceCulture);
             }
@@ -1537,29 +1525,9 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Don’t want to change your email? Just ignore this message..
         /// </summary>
-        public static string pattern_personal_change_email_v115 {
+        internal static string pattern_personal_change_email_v115 {
             get {
                 return ResourceManager.GetString("pattern_personal_change_email_v115", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to There has been a request to change your password used to enter the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal.
-        ///
-        ///Please follow the link below to change your password:
-        ///
-        ///$GreenButton
-        ///
-        ///*Note*: this link is valid for 7 days only. Please complete the password change process within that period.
-        ///
-        ///If you do not want to change your password or received this email by mistake, please ignore it.
-        ///
-        ///Sincerely,
-        ///ONLYOFFICE team.
-        /// </summary>
-        public static string pattern_personal_change_password {
-            get {
-                return ResourceManager.GetString("pattern_personal_change_password", resourceCulture);
             }
         }
         
@@ -1573,7 +1541,7 @@ namespace ASC.Web.Core.PublicResources {
         ///Sincerely,
         ///ONLYOFFICE team.
         /// </summary>
-        public static string pattern_personal_confirmation {
+        internal static string pattern_personal_confirmation {
             get {
                 return ResourceManager.GetString("pattern_personal_confirmation", resourceCulture);
             }
@@ -1588,7 +1556,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Ignore this email if you do not want to  [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_personal_profile_delete {
+        internal static string pattern_personal_profile_delete {
             get {
                 return ResourceManager.GetString("pattern_personal_profile_delete", resourceCulture);
             }
@@ -1608,7 +1576,7 @@ namespace ASC.Web.Core.PublicResources {
         ///You can reactivate your portal any time by clicking the following link:
         ///p=. &quot;Reactivate Portal&quot;:&quot;$ActivateUrl&quot; (this link has no [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_portal_deactivate {
+        internal static string pattern_portal_deactivate {
             get {
                 return ResourceManager.GetString("pattern_portal_deactivate", resourceCulture);
             }
@@ -1628,7 +1596,7 @@ namespace ASC.Web.Core.PublicResources {
         ///You can reactivate your portal any time by clicking the following link:
         ///[Reactivate Portal]($ActivateUrl) (this link has n [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_portal_deactivate_tg {
+        internal static string pattern_portal_deactivate_tg {
             get {
                 return ResourceManager.GetString("pattern_portal_deactivate_tg", resourceCulture);
             }
@@ -1646,7 +1614,7 @@ namespace ASC.Web.Core.PublicResources {
         ///#if($AutoRenew == &quot;True&quot;)
         ///Before you delete the portal, please make sure that automatic billing is turned off. You may check the status of automatic billing in your &quot;Avangate account&quot;:&quot;https://se [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_portal_delete {
+        internal static string pattern_portal_delete {
             get {
                 return ResourceManager.GetString("pattern_portal_delete", resourceCulture);
             }
@@ -1665,7 +1633,7 @@ namespace ASC.Web.Core.PublicResources {
         ///ONLYOFFICE Team
         ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;.
         /// </summary>
-        public static string pattern_portal_delete_success_v115 {
+        internal static string pattern_portal_delete_success_v115 {
             get {
                 return ResourceManager.GetString("pattern_portal_delete_success_v115", resourceCulture);
             }
@@ -1683,7 +1651,7 @@ namespace ASC.Web.Core.PublicResources {
         ///#if($AutoRenew == &quot;True&quot;)
         ///Before you delete the portal, please make sure that automatic billing is turned off. You may check the status of automatic billing in your [Avangate account](https:/ [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_portal_delete_tg {
+        internal static string pattern_portal_delete_tg {
             get {
                 return ResourceManager.GetString("pattern_portal_delete_tg", resourceCulture);
             }
@@ -1698,7 +1666,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///*Note*: All the shared documents links are inaccessible now, as well as DNS settings and single sign-on options stop working until you change them. The third-party iCal links added to your calendar will also stop updating until you reload them..
         /// </summary>
-        public static string pattern_portal_rename {
+        internal static string pattern_portal_rename {
             get {
                 return ResourceManager.GetString("pattern_portal_rename", resourceCulture);
             }
@@ -1715,7 +1683,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///*Note*: this link is valid for 7 days only. Please complete the profile deletion process within that period..
         /// </summary>
-        public static string pattern_profile_delete {
+        internal static string pattern_profile_delete {
             get {
                 return ResourceManager.GetString("pattern_profile_delete", resourceCulture);
             }
@@ -1728,7 +1696,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Please go to the user profile using &quot;this link&quot;:&quot;$FromUserLink&quot; to reassign documents to another user or remove the data..
         /// </summary>
-        public static string pattern_profile_has_deleted_itself {
+        internal static string pattern_profile_has_deleted_itself {
             get {
                 return ResourceManager.GetString("pattern_profile_has_deleted_itself", resourceCulture);
             }
@@ -1747,7 +1715,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///^You receive this email because you are a registered user of the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal.^.
         /// </summary>
-        public static string pattern_profile_updated {
+        internal static string pattern_profile_updated {
             get {
                 return ResourceManager.GetString("pattern_profile_updated", resourceCulture);
             }
@@ -1765,7 +1733,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///You receive this email because you are a registered user of the [${__VirtualRootPath}](${__VirtualRootPath}) portal..
         /// </summary>
-        public static string pattern_profile_updated_tg {
+        internal static string pattern_profile_updated_tg {
             get {
                 return ResourceManager.GetString("pattern_profile_updated_tg", resourceCulture);
             }
@@ -1778,7 +1746,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///^You receive this email because you are a registered user of the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal.^.
         /// </summary>
-        public static string pattern_reassigns_completed {
+        internal static string pattern_reassigns_completed {
             get {
                 return ResourceManager.GetString("pattern_reassigns_completed", resourceCulture);
             }
@@ -1793,7 +1761,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///^You receive this email because you are a registered user of the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal.^.
         /// </summary>
-        public static string pattern_reassigns_failed {
+        internal static string pattern_reassigns_failed {
             get {
                 return ResourceManager.GetString("pattern_reassigns_failed", resourceCulture);
             }
@@ -1813,7 +1781,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///^You receive this email because you are a registered user of the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal.^.
         /// </summary>
-        public static string pattern_remove_user_data_completed {
+        internal static string pattern_remove_user_data_completed {
             get {
                 return ResourceManager.GetString("pattern_remove_user_data_completed", resourceCulture);
             }
@@ -1828,7 +1796,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///^You receive this email because you are a registered user of the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal.^.
         /// </summary>
-        public static string pattern_remove_user_data_failed {
+        internal static string pattern_remove_user_data_failed {
             get {
                 return ResourceManager.GetString("pattern_remove_user_data_failed", resourceCulture);
             }
@@ -1867,7 +1835,7 @@ namespace ASC.Web.Core.PublicResources {
         ///h3.Portal address
         ///&quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
         /// </summary>
-        public static string pattern_request_license {
+        internal static string pattern_request_license {
             get {
                 return ResourceManager.GetString("pattern_request_license", resourceCulture);
             }
@@ -1903,7 +1871,7 @@ namespace ASC.Web.Core.PublicResources {
         ///h3.Request content
         ///$Body.
         /// </summary>
-        public static string pattern_request_tariff1 {
+        internal static string pattern_request_tariff1 {
             get {
                 return ResourceManager.GetString("pattern_request_tariff1", resourceCulture);
             }
@@ -1921,7 +1889,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///If you received this email by mistake, please ignore it or contact your &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal administrator to find out the details..
         /// </summary>
-        public static string pattern_restore_completed_v115 {
+        internal static string pattern_restore_completed_v115 {
             get {
                 return ResourceManager.GetString("pattern_restore_completed_v115", resourceCulture);
             }
@@ -1942,7 +1910,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///^You receive this email because you are a registered user of the &quot;${__VirtualRoot [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_restore_started {
+        internal static string pattern_restore_started {
             get {
                 return ResourceManager.GetString("pattern_restore_started", resourceCulture);
             }
@@ -1951,7 +1919,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///You have just created the ONLYOFFICE portal, your team&apos;s cloud office that would enhance public cooperation. Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. 
+        ///You have just created the ONLYOFFICE portal, your team&apos;s cloud office that would enhance internal cooperation. Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. 
         ///
         ///Please, confirm your email: 
         ///
@@ -1963,7 +1931,7 @@ namespace ASC.Web.Core.PublicResources {
         ///ONLYOFFICE Team
         ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;.
         /// </summary>
-        public static string pattern_saas_admin_activation_v115 {
+        internal static string pattern_saas_admin_activation_v115 {
             get {
                 return ResourceManager.GetString("pattern_saas_admin_activation_v115", resourceCulture);
             }
@@ -1982,7 +1950,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///ONLYOFFICE functionality can be enhanced with 3rd party extensions. For example, you can make VoIP calls with Twilio or e-sign your documents wit [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_saas_admin_comfort_tips_v115 {
+        internal static string pattern_saas_admin_comfort_tips_v115 {
             get {
                 return ResourceManager.GetString("pattern_saas_admin_comfort_tips_v115", resourceCulture);
             }
@@ -1999,7 +1967,7 @@ namespace ASC.Web.Core.PublicResources {
         ///# *Calendar.* Arrange meetings with shareable calendars and set reminders. 
         ///# *Mail.* Gather mail from different accounts in one place.  Add your own [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_saas_admin_modules_v115 {
+        internal static string pattern_saas_admin_modules_v115 {
             get {
                 return ResourceManager.GetString("pattern_saas_admin_modules_v115", resourceCulture);
             }
@@ -2015,7 +1983,7 @@ namespace ASC.Web.Core.PublicResources {
         ///# *Ensure security:* enable 2FA, configure automatic backups, track user actions.
         ///# *Integrate with your infrastructur [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_saas_admin_payment_warning_every_2months_v115 {
+        internal static string pattern_saas_admin_payment_warning_every_2months_v115 {
             get {
                 return ResourceManager.GetString("pattern_saas_admin_payment_warning_every_2months_v115", resourceCulture);
             }
@@ -2030,7 +1998,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///If you thi [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_saas_admin_trial_warning_after_half_year_v115 {
+        internal static string pattern_saas_admin_trial_warning_after_half_year_v115 {
             get {
                 return ResourceManager.GetString("pattern_saas_admin_trial_warning_after_half_year_v115", resourceCulture);
             }
@@ -2049,7 +2017,7 @@ namespace ASC.Web.Core.PublicResources {
         ///ONLYOFFICE Team
         ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;.
         /// </summary>
-        public static string pattern_saas_admin_trial_warning_after1_v115 {
+        internal static string pattern_saas_admin_trial_warning_after1_v115 {
             get {
                 return ResourceManager.GetString("pattern_saas_admin_trial_warning_after1_v115", resourceCulture);
             }
@@ -2070,7 +2038,7 @@ namespace ASC.Web.Core.PublicResources {
         ///ONLYOFFICE Team
         ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;.
         /// </summary>
-        public static string pattern_saas_admin_trial_warning_before5_v115 {
+        internal static string pattern_saas_admin_trial_warning_before5_v115 {
             get {
                 return ResourceManager.GetString("pattern_saas_admin_trial_warning_before5_v115", resourceCulture);
             }
@@ -2085,7 +2053,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///You can switch to free Startup plan on &quot;Payments page&quot;:&quot;$PricingPage&quot;. Free plan has up to 5 users and 2Gb of storage per portal. Some features will become unavailable, including LDAP, SSO, branding, automatic backups. &quot;Compare plan [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_saas_admin_trial_warning_v115 {
+        internal static string pattern_saas_admin_trial_warning_v115 {
             get {
                 return ResourceManager.GetString("pattern_saas_admin_trial_warning_v115", resourceCulture);
             }
@@ -2099,7 +2067,7 @@ namespace ASC.Web.Core.PublicResources {
         ///# To work on documents offline on Windows, Linux and macOS, download &quot;ONLYOFFICE Desktop Editors&quot;:&quot;https://www.onlyoffice.com/apps.aspx&quot;. You can connect the app to your cloud and &quot;get access to pro features&quot;:&quot;https://helpcenter.onlyoffice.com/installation/desktop-pro-features.aspx&quot; (content controls, sheet views, document comparison).
         ///# To edit documents on mobile devices, ONLYOFFICE Documents app  [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_saas_admin_user_apps_tips_v115 {
+        internal static string pattern_saas_admin_user_apps_tips_v115 {
             get {
                 return ResourceManager.GetString("pattern_saas_admin_user_apps_tips_v115", resourceCulture);
             }
@@ -2118,7 +2086,7 @@ namespace ASC.Web.Core.PublicResources {
         ///ONLYOFFICE Team
         ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;.
         /// </summary>
-        public static string pattern_saas_admin_user_docs_tips_v115 {
+        internal static string pattern_saas_admin_user_docs_tips_v115 {
             get {
                 return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v115", resourceCulture);
             }
@@ -2127,7 +2095,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Connect Dropbox, Google Drive or other services to manage your files in one place..
         /// </summary>
-        public static string pattern_saas_admin_user_docs_tips_v115_item_3rdparty {
+        internal static string pattern_saas_admin_user_docs_tips_v115_item_3rdparty {
             get {
                 return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v115_item_3rdparty", resourceCulture);
             }
@@ -2136,7 +2104,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to *Connect 3rd party clouds*.
         /// </summary>
-        public static string pattern_saas_admin_user_docs_tips_v115_item_3rdparty_hdr {
+        internal static string pattern_saas_admin_user_docs_tips_v115_item_3rdparty_hdr {
             get {
                 return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v115_item_3rdparty_hdr", resourceCulture);
             }
@@ -2145,7 +2113,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Download the apps to work on docs &lt;a target=&quot;_blank&quot; style=&quot;color: #0078bd; font-family: Arial; font-size: 14px;&quot; href=&quot;https://www.onlyoffice.com/apps.aspx&quot;&gt;offline&lt;/a&gt; as well as on &lt;a target=&quot;_blank&quot; style=&quot;color: #0078bd; font-family: Arial; font-size: 14px;&quot; href=&quot;https://itunes.apple.com/us/app/onlyoffice-documents/id944896972&quot;&gt;iOS&lt;/a&gt; and &lt;a target=&quot;_blank&quot; style=&quot;color: #0078bd; font-family: Arial; font-size: 14px;&quot; href=&quot;https://play.google.com/store/apps/details?id=com.onlyoffice.documents&quot;&gt;Androi [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_saas_admin_user_docs_tips_v115_item_apps {
+        internal static string pattern_saas_admin_user_docs_tips_v115_item_apps {
             get {
                 return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v115_item_apps", resourceCulture);
             }
@@ -2154,7 +2122,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to *Get the apps*.
         /// </summary>
-        public static string pattern_saas_admin_user_docs_tips_v115_item_apps_hdr {
+        internal static string pattern_saas_admin_user_docs_tips_v115_item_apps_hdr {
             get {
                 return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v115_item_apps_hdr", resourceCulture);
             }
@@ -2163,7 +2131,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Documents are integrated with all the other ONLYOFFICE modules, so you’ll forget about downloading docs and uploading them somewhere else forever..
         /// </summary>
-        public static string pattern_saas_admin_user_docs_tips_v115_item_attach {
+        internal static string pattern_saas_admin_user_docs_tips_v115_item_attach {
             get {
                 return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v115_item_attach", resourceCulture);
             }
@@ -2172,7 +2140,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to *Attach docs to projects and emails*.
         /// </summary>
-        public static string pattern_saas_admin_user_docs_tips_v115_item_attach_hdr {
+        internal static string pattern_saas_admin_user_docs_tips_v115_item_attach_hdr {
             get {
                 return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v115_item_attach_hdr", resourceCulture);
             }
@@ -2181,7 +2149,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to While co-editing a doc with your team in real time, switch to Fast mode to see changes as your co-author is typing or to Strict mode to get more privacy..
         /// </summary>
-        public static string pattern_saas_admin_user_docs_tips_v115_item_coediting {
+        internal static string pattern_saas_admin_user_docs_tips_v115_item_coediting {
             get {
                 return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v115_item_coediting", resourceCulture);
             }
@@ -2190,7 +2158,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to *Choose co-editing mode*.
         /// </summary>
-        public static string pattern_saas_admin_user_docs_tips_v115_item_coediting_hdr {
+        internal static string pattern_saas_admin_user_docs_tips_v115_item_coediting_hdr {
             get {
                 return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v115_item_coediting_hdr", resourceCulture);
             }
@@ -2199,7 +2167,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Use Content Controls to create customizable forms..
         /// </summary>
-        public static string pattern_saas_admin_user_docs_tips_v115_item_contentcontrols {
+        internal static string pattern_saas_admin_user_docs_tips_v115_item_contentcontrols {
             get {
                 return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v115_item_contentcontrols", resourceCulture);
             }
@@ -2208,7 +2176,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to *Use Content Controls*.
         /// </summary>
-        public static string pattern_saas_admin_user_docs_tips_v115_item_contentcontrols_hdr {
+        internal static string pattern_saas_admin_user_docs_tips_v115_item_contentcontrols_hdr {
             get {
                 return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v115_item_contentcontrols_hdr", resourceCulture);
             }
@@ -2217,7 +2185,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Quickly find differences in two versions of the same document with the Compare documents feature..
         /// </summary>
-        public static string pattern_saas_admin_user_docs_tips_v115_item_differences {
+        internal static string pattern_saas_admin_user_docs_tips_v115_item_differences {
             get {
                 return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v115_item_differences", resourceCulture);
             }
@@ -2226,7 +2194,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to *Quickly find differences*.
         /// </summary>
-        public static string pattern_saas_admin_user_docs_tips_v115_item_differences_hdr {
+        internal static string pattern_saas_admin_user_docs_tips_v115_item_differences_hdr {
             get {
                 return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v115_item_differences_hdr", resourceCulture);
             }
@@ -2235,7 +2203,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ONLYOFFICE provides you with the most complete set of styling and formatting tools..
         /// </summary>
-        public static string pattern_saas_admin_user_docs_tips_v115_item_formatting {
+        internal static string pattern_saas_admin_user_docs_tips_v115_item_formatting {
             get {
                 return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v115_item_formatting", resourceCulture);
             }
@@ -2244,7 +2212,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to *Explore advanced formatting*.
         /// </summary>
-        public static string pattern_saas_admin_user_docs_tips_v115_item_formatting_hdr {
+        internal static string pattern_saas_admin_user_docs_tips_v115_item_formatting_hdr {
             get {
                 return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v115_item_formatting_hdr", resourceCulture);
             }
@@ -2253,7 +2221,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Use Review to suggest changes without modifying the original doc, add Comments to share your thoughts on a specific extract, or chat inside your doc via instant messages..
         /// </summary>
-        public static string pattern_saas_admin_user_docs_tips_v115_item_review {
+        internal static string pattern_saas_admin_user_docs_tips_v115_item_review {
             get {
                 return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v115_item_review", resourceCulture);
             }
@@ -2262,7 +2230,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to *Review, comment, and chat*.
         /// </summary>
-        public static string pattern_saas_admin_user_docs_tips_v115_item_review_hdr {
+        internal static string pattern_saas_admin_user_docs_tips_v115_item_review_hdr {
             get {
                 return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v115_item_review_hdr", resourceCulture);
             }
@@ -2271,7 +2239,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Share docs to individuals or user groups. Choose their access level - Read Only, Comment, Form Filling, Review or Full Access..
         /// </summary>
-        public static string pattern_saas_admin_user_docs_tips_v115_item_share {
+        internal static string pattern_saas_admin_user_docs_tips_v115_item_share {
             get {
                 return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v115_item_share", resourceCulture);
             }
@@ -2280,7 +2248,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to *Share documents*.
         /// </summary>
-        public static string pattern_saas_admin_user_docs_tips_v115_item_share_hdr {
+        internal static string pattern_saas_admin_user_docs_tips_v115_item_share_hdr {
             get {
                 return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v115_item_share_hdr", resourceCulture);
             }
@@ -2289,7 +2257,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Comfortably collaborate on spreadsheets with the Sheet Views feature that allows to create filter that only changes your view of the data, without affecting your team..
         /// </summary>
-        public static string pattern_saas_admin_user_docs_tips_v115_item_spreadsheets {
+        internal static string pattern_saas_admin_user_docs_tips_v115_item_spreadsheets {
             get {
                 return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v115_item_spreadsheets", resourceCulture);
             }
@@ -2298,7 +2266,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to *Comfortably collaborate on spreadsheets*.
         /// </summary>
-        public static string pattern_saas_admin_user_docs_tips_v115_item_spreadsheets_hdr {
+        internal static string pattern_saas_admin_user_docs_tips_v115_item_spreadsheets_hdr {
             get {
                 return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v115_item_spreadsheets_hdr", resourceCulture);
             }
@@ -2315,7 +2283,7 @@ namespace ASC.Web.Core.PublicResources {
         ///# *Ensure security:* enable 2FA, configure automatic backups, track user actions.
         ///# *Integrate with your infrastructure:* use LDAP, SSO, and your domain name for portal add [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_saas_admin_welcome_v115 {
+        internal static string pattern_saas_admin_welcome_v115 {
             get {
                 return ResourceManager.GetString("pattern_saas_admin_welcome_v115", resourceCulture);
             }
@@ -2334,7 +2302,7 @@ namespace ASC.Web.Core.PublicResources {
         ///ONLYOFFICE Team
         ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;.
         /// </summary>
-        public static string pattern_saas_guest_activation_v115 {
+        internal static string pattern_saas_guest_activation_v115 {
             get {
                 return ResourceManager.GetString("pattern_saas_guest_activation_v115", resourceCulture);
             }
@@ -2350,7 +2318,7 @@ namespace ASC.Web.Core.PublicResources {
         ///# Add and download files available for you in the &quot;Documents&quot;:&quot;${__VirtualRootPath}/Products/Files/&quot;.
         ///# Organize your schedule with the built-in &quot;Calendar&quot;:&quot;${__VirtualRootPat [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_saas_guest_welcome_v115 {
+        internal static string pattern_saas_guest_welcome_v115 {
             get {
                 return ResourceManager.GetString("pattern_saas_guest_welcome_v115", resourceCulture);
             }
@@ -2369,7 +2337,7 @@ namespace ASC.Web.Core.PublicResources {
         ///ONLYOFFICE Team
         ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;.
         /// </summary>
-        public static string pattern_saas_user_activation_v115 {
+        internal static string pattern_saas_user_activation_v115 {
             get {
                 return ResourceManager.GetString("pattern_saas_user_activation_v115", resourceCulture);
             }
@@ -2384,7 +2352,7 @@ namespace ASC.Web.Core.PublicResources {
         ///# Add your email accounts and manage all correspondence in one place with &quot;Mail&quot;:&quot;${__VirtualRootPath}/addons/mail/&quot;.
         ///# Manage your workflow with &quot;Projects&quot;:&quot;${__VirtualRootPath}/Products/Projects/&quot; and your custo [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_saas_user_welcome_v115 {
+        internal static string pattern_saas_user_welcome_v115 {
             get {
                 return ResourceManager.GetString("pattern_saas_user_welcome_v115", resourceCulture);
             }
@@ -2398,7 +2366,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///^You receive this email because you are an administrator of the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal. If you do not want to receive the notifications about profile updates, please manage your &quot;subscription settings&quot;:&quot;$RecipientSubscriptionConfigURL&quot;.^.
         /// </summary>
-        public static string pattern_self_profile_updated {
+        internal static string pattern_self_profile_updated {
             get {
                 return ResourceManager.GetString("pattern_self_profile_updated", resourceCulture);
             }
@@ -2409,7 +2377,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///[$__AuthorName]($__AuthorUrl) has changed his/her profile details at the [${__VirtualRootPath}](${__VirtualRootPath}) portal..
         /// </summary>
-        public static string pattern_self_profile_updated_tg {
+        internal static string pattern_self_profile_updated_tg {
             get {
                 return ResourceManager.GetString("pattern_self_profile_updated_tg", resourceCulture);
             }
@@ -2435,7 +2403,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///^You receive this email because you are a regi [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_send_whats_new {
+        internal static string pattern_send_whats_new {
             get {
                 return ResourceManager.GetString("pattern_send_whats_new", resourceCulture);
             }
@@ -2450,7 +2418,7 @@ namespace ASC.Web.Core.PublicResources {
         ///Best regards,
         ///ONLYOFFICE Team.
         /// </summary>
-        public static string pattern_smtp_test {
+        internal static string pattern_smtp_test {
             get {
                 return ResourceManager.GetString("pattern_smtp_test", resourceCulture);
             }
@@ -2463,7 +2431,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Some files could not be decrypted. Find more details in the &quot;Control Panel&quot;:&quot;${ControlPanelUrl}/storage&quot;..
         /// </summary>
-        public static string pattern_storage_decryption_error {
+        internal static string pattern_storage_decryption_error {
             get {
                 return ResourceManager.GetString("pattern_storage_decryption_error", resourceCulture);
             }
@@ -2476,7 +2444,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///The decryption might take some time, so the portal will be temporarily unavailable. As soon as the decryption is over, you will be able to work with your data again..
         /// </summary>
-        public static string pattern_storage_decryption_start {
+        internal static string pattern_storage_decryption_start {
             get {
                 return ResourceManager.GetString("pattern_storage_decryption_start", resourceCulture);
             }
@@ -2489,7 +2457,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Your portal is available again..
         /// </summary>
-        public static string pattern_storage_decryption_success {
+        internal static string pattern_storage_decryption_success {
             get {
                 return ResourceManager.GetString("pattern_storage_decryption_success", resourceCulture);
             }
@@ -2502,7 +2470,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Some files could not be encrypted. Find more details in the &quot;Control Panel&quot;:&quot;${ControlPanelUrl}/storage&quot;..
         /// </summary>
-        public static string pattern_storage_encryption_error {
+        internal static string pattern_storage_encryption_error {
             get {
                 return ResourceManager.GetString("pattern_storage_encryption_error", resourceCulture);
             }
@@ -2515,7 +2483,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///The encryption might take some time, so the portal will be temporarily unavailable. As soon as the encryption is over, you will be able to work with your data again..
         /// </summary>
-        public static string pattern_storage_encryption_start {
+        internal static string pattern_storage_encryption_start {
             get {
                 return ResourceManager.GetString("pattern_storage_encryption_start", resourceCulture);
             }
@@ -2528,7 +2496,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Your portal is available again..
         /// </summary>
-        public static string pattern_storage_encryption_success {
+        internal static string pattern_storage_encryption_success {
             get {
                 return ResourceManager.GetString("pattern_storage_encryption_success", resourceCulture);
             }
@@ -2542,7 +2510,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///^You receive this email because you are an administrator user of the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal. If you do not want to receive the notifications about new users, please manage your &quot;subscription settings&quot;:&quot;$RecipientSubscriptionConfigURL&quot;.^.
         /// </summary>
-        public static string pattern_user_has_join {
+        internal static string pattern_user_has_join {
             get {
                 return ResourceManager.GetString("pattern_user_has_join", resourceCulture);
             }
@@ -2552,7 +2520,7 @@ namespace ASC.Web.Core.PublicResources {
         ///   Looks up a localized string similar to New user added to [${__VirtualRootPath}](${__VirtualRootPath}) portal
         ///[$__AuthorName]($__AuthorUrl) has joined your portal at [${__VirtualRootPath}](${__VirtualRootPath})..
         /// </summary>
-        public static string pattern_user_has_join_tg {
+        internal static string pattern_user_has_join_tg {
             get {
                 return ResourceManager.GetString("pattern_user_has_join_tg", resourceCulture);
             }
@@ -2569,7 +2537,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///The link is only valid for 7 days..
         /// </summary>
-        public static string pattern_user_ldap_activation {
+        internal static string pattern_user_ldap_activation {
             get {
                 return ResourceManager.GetString("pattern_user_ldap_activation", resourceCulture);
             }
@@ -2578,7 +2546,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ${LetterLogoText}. Please activate your email address.
         /// </summary>
-        public static string subject_activate_email {
+        internal static string subject_activate_email {
             get {
                 return ResourceManager.GetString("subject_activate_email", resourceCulture);
             }
@@ -2587,7 +2555,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ${LetterLogoText}. ${__VirtualRootPath} portal backup created.
         /// </summary>
-        public static string subject_backup_created {
+        internal static string subject_backup_created {
             get {
                 return ResourceManager.GetString("subject_backup_created", resourceCulture);
             }
@@ -2596,25 +2564,25 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Confirm changing your email.
         /// </summary>
-        public static string subject_change_email_v115 {
+        internal static string subject_change_email_v115 {
             get {
                 return ResourceManager.GetString("subject_change_email_v115", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ${LetterLogoText} password assistance.
+        ///   Looks up a localized string similar to Confirm changing your password.
         /// </summary>
-        public static string subject_change_password {
+        internal static string subject_change_password_v115 {
             get {
-                return ResourceManager.GetString("subject_change_password", resourceCulture);
+                return ResourceManager.GetString("subject_change_password_v115", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to ${LetterLogoText}. Mobile phone change request.
         /// </summary>
-        public static string subject_change_phone {
+        internal static string subject_change_phone {
             get {
                 return ResourceManager.GetString("subject_change_phone", resourceCulture);
             }
@@ -2623,7 +2591,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ${LetterLogoText}. Security notification.
         /// </summary>
-        public static string subject_change_tfa {
+        internal static string subject_change_tfa {
             get {
                 return ResourceManager.GetString("subject_change_tfa", resourceCulture);
             }
@@ -2632,7 +2600,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ${LetterLogoText}. Change of portal owner.
         /// </summary>
-        public static string subject_confirm_owner_change {
+        internal static string subject_confirm_owner_change {
             get {
                 return ResourceManager.GetString("subject_confirm_owner_change", resourceCulture);
             }
@@ -2641,7 +2609,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ${LetterLogoText}. Change of portal address.
         /// </summary>
-        public static string subject_dns_change {
+        internal static string subject_dns_change {
             get {
                 return ResourceManager.GetString("subject_dns_change", resourceCulture);
             }
@@ -2650,7 +2618,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Confirm your email.
         /// </summary>
-        public static string subject_enterprise_admin_activation_v10 {
+        internal static string subject_enterprise_admin_activation_v10 {
             get {
                 return ResourceManager.GetString("subject_enterprise_admin_activation_v10", resourceCulture);
             }
@@ -2659,7 +2627,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Customize ONLYOFFICE.
         /// </summary>
-        public static string subject_enterprise_admin_customize_portal_v10 {
+        internal static string subject_enterprise_admin_customize_portal_v10 {
             get {
                 return ResourceManager.GetString("subject_enterprise_admin_customize_portal_v10", resourceCulture);
             }
@@ -2668,7 +2636,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Invite your teammates.
         /// </summary>
-        public static string subject_enterprise_admin_invite_teammates_v10 {
+        internal static string subject_enterprise_admin_invite_teammates_v10 {
             get {
                 return ResourceManager.GetString("subject_enterprise_admin_invite_teammates_v10", resourceCulture);
             }
@@ -2677,7 +2645,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ONLYOFFICE Renewal Notification.
         /// </summary>
-        public static string subject_enterprise_admin_payment_warning_before7_v10 {
+        internal static string subject_enterprise_admin_payment_warning_before7_v10 {
             get {
                 return ResourceManager.GetString("subject_enterprise_admin_payment_warning_before7_v10", resourceCulture);
             }
@@ -2686,7 +2654,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ONLYOFFICE Renewal Notification.
         /// </summary>
-        public static string subject_enterprise_admin_payment_warning_v10 {
+        internal static string subject_enterprise_admin_payment_warning_v10 {
             get {
                 return ResourceManager.GetString("subject_enterprise_admin_payment_warning_v10", resourceCulture);
             }
@@ -2695,7 +2663,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to How is your trial going so far?.
         /// </summary>
-        public static string subject_enterprise_admin_trial_warning_before7_v10 {
+        internal static string subject_enterprise_admin_trial_warning_before7_v10 {
             get {
                 return ResourceManager.GetString("subject_enterprise_admin_trial_warning_before7_v10", resourceCulture);
             }
@@ -2704,7 +2672,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Your Enterprise Edition trial expires today.
         /// </summary>
-        public static string subject_enterprise_admin_trial_warning_v10 {
+        internal static string subject_enterprise_admin_trial_warning_v10 {
             get {
                 return ResourceManager.GetString("subject_enterprise_admin_trial_warning_v10", resourceCulture);
             }
@@ -2713,7 +2681,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Get free ONLYOFFICE apps.
         /// </summary>
-        public static string subject_enterprise_admin_user_apps_tips_v10 {
+        internal static string subject_enterprise_admin_user_apps_tips_v10 {
             get {
                 return ResourceManager.GetString("subject_enterprise_admin_user_apps_tips_v10", resourceCulture);
             }
@@ -2722,7 +2690,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to 7 tips for effective work on your docs.
         /// </summary>
-        public static string subject_enterprise_admin_user_docs_tips_v10 {
+        internal static string subject_enterprise_admin_user_docs_tips_v10 {
             get {
                 return ResourceManager.GetString("subject_enterprise_admin_user_docs_tips_v10", resourceCulture);
             }
@@ -2731,7 +2699,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Make your ONLYOFFICE more secure.
         /// </summary>
-        public static string subject_enterprise_admin_welcome_v10 {
+        internal static string subject_enterprise_admin_welcome_v10 {
             get {
                 return ResourceManager.GetString("subject_enterprise_admin_welcome_v10", resourceCulture);
             }
@@ -2740,7 +2708,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Follow up from ONLYOFFICE team.
         /// </summary>
-        public static string subject_enterprise_admin_without_activity_v10 {
+        internal static string subject_enterprise_admin_without_activity_v10 {
             get {
                 return ResourceManager.GetString("subject_enterprise_admin_without_activity_v10", resourceCulture);
             }
@@ -2749,7 +2717,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Join ${__VirtualRootPath}.
         /// </summary>
-        public static string subject_enterprise_guest_activation_v10 {
+        internal static string subject_enterprise_guest_activation_v10 {
             get {
                 return ResourceManager.GetString("subject_enterprise_guest_activation_v10", resourceCulture);
             }
@@ -2758,7 +2726,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Welcome to your web-office.
         /// </summary>
-        public static string subject_enterprise_guest_welcome_v10 {
+        internal static string subject_enterprise_guest_welcome_v10 {
             get {
                 return ResourceManager.GetString("subject_enterprise_guest_welcome_v10", resourceCulture);
             }
@@ -2767,7 +2735,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Join ${__VirtualRootPath}.
         /// </summary>
-        public static string subject_enterprise_user_activation_v10 {
+        internal static string subject_enterprise_user_activation_v10 {
             get {
                 return ResourceManager.GetString("subject_enterprise_user_activation_v10", resourceCulture);
             }
@@ -2776,7 +2744,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Welcome to your web-office.
         /// </summary>
-        public static string subject_enterprise_user_welcome_v10 {
+        internal static string subject_enterprise_user_welcome_v10 {
             get {
                 return ResourceManager.GetString("subject_enterprise_user_welcome_v10", resourceCulture);
             }
@@ -2785,7 +2753,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Confirm your email.
         /// </summary>
-        public static string subject_enterprise_whitelabel_admin_activation_v10 {
+        internal static string subject_enterprise_whitelabel_admin_activation_v10 {
             get {
                 return ResourceManager.GetString("subject_enterprise_whitelabel_admin_activation_v10", resourceCulture);
             }
@@ -2794,7 +2762,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Customize your web-office.
         /// </summary>
-        public static string subject_enterprise_whitelabel_admin_customize_portal_v10 {
+        internal static string subject_enterprise_whitelabel_admin_customize_portal_v10 {
             get {
                 return ResourceManager.GetString("subject_enterprise_whitelabel_admin_customize_portal_v10", resourceCulture);
             }
@@ -2803,7 +2771,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Your web-office renewal notification.
         /// </summary>
-        public static string subject_enterprise_whitelabel_admin_payment_warning_before7_v10 {
+        internal static string subject_enterprise_whitelabel_admin_payment_warning_before7_v10 {
             get {
                 return ResourceManager.GetString("subject_enterprise_whitelabel_admin_payment_warning_before7_v10", resourceCulture);
             }
@@ -2812,7 +2780,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Your web-office renewal notification.
         /// </summary>
-        public static string subject_enterprise_whitelabel_admin_payment_warning_v10 {
+        internal static string subject_enterprise_whitelabel_admin_payment_warning_v10 {
             get {
                 return ResourceManager.GetString("subject_enterprise_whitelabel_admin_payment_warning_v10", resourceCulture);
             }
@@ -2821,7 +2789,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Make your online office more secure.
         /// </summary>
-        public static string subject_enterprise_whitelabel_admin_welcome_v10 {
+        internal static string subject_enterprise_whitelabel_admin_welcome_v10 {
             get {
                 return ResourceManager.GetString("subject_enterprise_whitelabel_admin_welcome_v10", resourceCulture);
             }
@@ -2830,7 +2798,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Join ${__VirtualRootPath}.
         /// </summary>
-        public static string subject_enterprise_whitelabel_guest_activation_v10 {
+        internal static string subject_enterprise_whitelabel_guest_activation_v10 {
             get {
                 return ResourceManager.GetString("subject_enterprise_whitelabel_guest_activation_v10", resourceCulture);
             }
@@ -2839,7 +2807,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Welcome to your web-office.
         /// </summary>
-        public static string subject_enterprise_whitelabel_guest_welcome_v10 {
+        internal static string subject_enterprise_whitelabel_guest_welcome_v10 {
             get {
                 return ResourceManager.GetString("subject_enterprise_whitelabel_guest_welcome_v10", resourceCulture);
             }
@@ -2848,7 +2816,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Join ${__VirtualRootPath}.
         /// </summary>
-        public static string subject_enterprise_whitelabel_user_activation_v10 {
+        internal static string subject_enterprise_whitelabel_user_activation_v10 {
             get {
                 return ResourceManager.GetString("subject_enterprise_whitelabel_user_activation_v10", resourceCulture);
             }
@@ -2857,7 +2825,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Welcome to your web-office.
         /// </summary>
-        public static string subject_enterprise_whitelabel_user_welcome_v10 {
+        internal static string subject_enterprise_whitelabel_user_welcome_v10 {
             get {
                 return ResourceManager.GetString("subject_enterprise_whitelabel_user_welcome_v10", resourceCulture);
             }
@@ -2866,7 +2834,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to User message to administrators.
         /// </summary>
-        public static string subject_for_admin_notify {
+        internal static string subject_for_admin_notify {
             get {
                 return ResourceManager.GetString("subject_for_admin_notify", resourceCulture);
             }
@@ -2875,7 +2843,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Invitation to join ${__VirtualRootPath} portal.
         /// </summary>
-        public static string subject_join {
+        internal static string subject_join {
             get {
                 return ResourceManager.GetString("subject_join", resourceCulture);
             }
@@ -2884,7 +2852,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ${LetterLogoText}. Mailbox creation.
         /// </summary>
-        public static string subject_mailbox_created {
+        internal static string subject_mailbox_created {
             get {
                 return ResourceManager.GetString("subject_mailbox_created", resourceCulture);
             }
@@ -2893,7 +2861,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ${LetterLogoText}. Change of mailbox password.
         /// </summary>
-        public static string subject_mailbox_password_changed {
+        internal static string subject_mailbox_password_changed {
             get {
                 return ResourceManager.GetString("subject_mailbox_password_changed", resourceCulture);
             }
@@ -2902,7 +2870,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ${LetterLogoText}. Another region portal migration error.
         /// </summary>
-        public static string subject_migration_error {
+        internal static string subject_migration_error {
             get {
                 return ResourceManager.GetString("subject_migration_error", resourceCulture);
             }
@@ -2911,7 +2879,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ${LetterLogoText}. Another region portal migration started.
         /// </summary>
-        public static string subject_migration_start {
+        internal static string subject_migration_start {
             get {
                 return ResourceManager.GetString("subject_migration_start", resourceCulture);
             }
@@ -2920,7 +2888,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ${LetterLogoText}. Another region portal migration successfully completed.
         /// </summary>
-        public static string subject_migration_success {
+        internal static string subject_migration_success {
             get {
                 return ResourceManager.GetString("subject_migration_success", resourceCulture);
             }
@@ -2929,7 +2897,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Confirm your email.
         /// </summary>
-        public static string subject_opensource_admin_activation_v11 {
+        internal static string subject_opensource_admin_activation_v11 {
             get {
                 return ResourceManager.GetString("subject_opensource_admin_activation_v11", resourceCulture);
             }
@@ -2938,7 +2906,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to 5 tips for effective work on your docs.
         /// </summary>
-        public static string subject_opensource_admin_docs_tips_v11 {
+        internal static string subject_opensource_admin_docs_tips_v11 {
             get {
                 return ResourceManager.GetString("subject_opensource_admin_docs_tips_v11", resourceCulture);
             }
@@ -2947,7 +2915,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Make your ONLYOFFICE more secure.
         /// </summary>
-        public static string subject_opensource_admin_welcome_v11 {
+        internal static string subject_opensource_admin_welcome_v11 {
             get {
                 return ResourceManager.GetString("subject_opensource_admin_welcome_v11", resourceCulture);
             }
@@ -2956,7 +2924,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Join ${__VirtualRootPath}.
         /// </summary>
-        public static string subject_opensource_guest_activation_v11 {
+        internal static string subject_opensource_guest_activation_v11 {
             get {
                 return ResourceManager.GetString("subject_opensource_guest_activation_v11", resourceCulture);
             }
@@ -2965,7 +2933,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Welcome to your web-office.
         /// </summary>
-        public static string subject_opensource_guest_welcome_v11 {
+        internal static string subject_opensource_guest_welcome_v11 {
             get {
                 return ResourceManager.GetString("subject_opensource_guest_welcome_v11", resourceCulture);
             }
@@ -2974,7 +2942,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Join ${__VirtualRootPath}.
         /// </summary>
-        public static string subject_opensource_user_activation_v11 {
+        internal static string subject_opensource_user_activation_v11 {
             get {
                 return ResourceManager.GetString("subject_opensource_user_activation_v11", resourceCulture);
             }
@@ -2983,7 +2951,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to 6 tips for effective work on your docs.
         /// </summary>
-        public static string subject_opensource_user_docs_tips_v11 {
+        internal static string subject_opensource_user_docs_tips_v11 {
             get {
                 return ResourceManager.GetString("subject_opensource_user_docs_tips_v11", resourceCulture);
             }
@@ -2992,7 +2960,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Welcome to your web-office.
         /// </summary>
-        public static string subject_opensource_user_welcome_v11 {
+        internal static string subject_opensource_user_welcome_v11 {
             get {
                 return ResourceManager.GetString("subject_opensource_user_welcome_v11", resourceCulture);
             }
@@ -3001,7 +2969,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Welcome to ONLYOFFICE for personal use!.
         /// </summary>
-        public static string subject_personal_activate {
+        internal static string subject_personal_activate {
             get {
                 return ResourceManager.GetString("subject_personal_activate", resourceCulture);
             }
@@ -3010,7 +2978,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Welcome to ONLYOFFICE Personal.
         /// </summary>
-        public static string subject_personal_after_registration1 {
+        internal static string subject_personal_after_registration1 {
             get {
                 return ResourceManager.GetString("subject_personal_after_registration1", resourceCulture);
             }
@@ -3019,7 +2987,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to A few tips for freelance work.
         /// </summary>
-        public static string subject_personal_after_registration14 {
+        internal static string subject_personal_after_registration14 {
             get {
                 return ResourceManager.GetString("subject_personal_after_registration14", resourceCulture);
             }
@@ -3028,7 +2996,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Need more features? Give a try to ONLYOFFICE for teams.
         /// </summary>
-        public static string subject_personal_after_registration21 {
+        internal static string subject_personal_after_registration21 {
             get {
                 return ResourceManager.GetString("subject_personal_after_registration21", resourceCulture);
             }
@@ -3037,7 +3005,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to How to enhance security of your web office.
         /// </summary>
-        public static string subject_personal_after_registration28 {
+        internal static string subject_personal_after_registration28 {
             get {
                 return ResourceManager.GetString("subject_personal_after_registration28", resourceCulture);
             }
@@ -3046,7 +3014,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Connect your favorite cloud storage to ONLYOFFICE.
         /// </summary>
-        public static string subject_personal_after_registration7 {
+        internal static string subject_personal_after_registration7 {
             get {
                 return ResourceManager.GetString("subject_personal_after_registration7", resourceCulture);
             }
@@ -3055,25 +3023,16 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Log in to your ONLYOFFICE Personal account.
         /// </summary>
-        public static string subject_personal_already_exist {
+        internal static string subject_personal_already_exist {
             get {
                 return ResourceManager.GetString("subject_personal_already_exist", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ONLYOFFICE Personal password assistance.
-        /// </summary>
-        public static string subject_personal_change_password {
-            get {
-                return ResourceManager.GetString("subject_personal_change_password", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to ONLYOFFICE Personal. Please activate your email address.
         /// </summary>
-        public static string subject_personal_confirmation {
+        internal static string subject_personal_confirmation {
             get {
                 return ResourceManager.GetString("subject_personal_confirmation", resourceCulture);
             }
@@ -3082,7 +3041,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ONLYOFFICE Personal account termination.
         /// </summary>
-        public static string subject_personal_profile_delete {
+        internal static string subject_personal_profile_delete {
             get {
                 return ResourceManager.GetString("subject_personal_profile_delete", resourceCulture);
             }
@@ -3091,7 +3050,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Deactivation of the ${__VirtualRootPath} portal.
         /// </summary>
-        public static string subject_portal_deactivate {
+        internal static string subject_portal_deactivate {
             get {
                 return ResourceManager.GetString("subject_portal_deactivate", resourceCulture);
             }
@@ -3100,7 +3059,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Deletion of the ${__VirtualRootPath} portal.
         /// </summary>
-        public static string subject_portal_delete {
+        internal static string subject_portal_delete {
             get {
                 return ResourceManager.GetString("subject_portal_delete", resourceCulture);
             }
@@ -3109,7 +3068,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ONLYOFFICE has been deactivated.
         /// </summary>
-        public static string subject_portal_delete_success_v115 {
+        internal static string subject_portal_delete_success_v115 {
             get {
                 return ResourceManager.GetString("subject_portal_delete_success_v115", resourceCulture);
             }
@@ -3118,7 +3077,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ${LetterLogoText}. Change of portal address.
         /// </summary>
-        public static string subject_portal_rename {
+        internal static string subject_portal_rename {
             get {
                 return ResourceManager.GetString("subject_portal_rename", resourceCulture);
             }
@@ -3127,7 +3086,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Deletion of your profile from ${__VirtualRootPath} portal.
         /// </summary>
-        public static string subject_profile_delete {
+        internal static string subject_profile_delete {
             get {
                 return ResourceManager.GetString("subject_profile_delete", resourceCulture);
             }
@@ -3136,7 +3095,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to User has deleted his/her profile.
         /// </summary>
-        public static string subject_profile_has_deleted_itself {
+        internal static string subject_profile_has_deleted_itself {
             get {
                 return ResourceManager.GetString("subject_profile_has_deleted_itself", resourceCulture);
             }
@@ -3145,7 +3104,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Your profile at ${__VirtualRootPath} has been changed.
         /// </summary>
-        public static string subject_profile_updated {
+        internal static string subject_profile_updated {
             get {
                 return ResourceManager.GetString("subject_profile_updated", resourceCulture);
             }
@@ -3154,7 +3113,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ${LetterLogoText}. User data reassignment is completed.
         /// </summary>
-        public static string subject_reassigns_completed {
+        internal static string subject_reassigns_completed {
             get {
                 return ResourceManager.GetString("subject_reassigns_completed", resourceCulture);
             }
@@ -3163,7 +3122,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ${LetterLogoText}. User data reassignment failed.
         /// </summary>
-        public static string subject_reassigns_failed {
+        internal static string subject_reassigns_failed {
             get {
                 return ResourceManager.GetString("subject_reassigns_failed", resourceCulture);
             }
@@ -3172,7 +3131,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ${LetterLogoText}. User data removal completed.
         /// </summary>
-        public static string subject_remove_user_data_completed {
+        internal static string subject_remove_user_data_completed {
             get {
                 return ResourceManager.GetString("subject_remove_user_data_completed", resourceCulture);
             }
@@ -3181,7 +3140,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ${LetterLogoText}. User data removal failed.
         /// </summary>
-        public static string subject_remove_user_data_failed {
+        internal static string subject_remove_user_data_failed {
             get {
                 return ResourceManager.GetString("subject_remove_user_data_failed", resourceCulture);
             }
@@ -3190,7 +3149,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enterprise license request.
         /// </summary>
-        public static string subject_request_license {
+        internal static string subject_request_license {
             get {
                 return ResourceManager.GetString("subject_request_license", resourceCulture);
             }
@@ -3199,7 +3158,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to SaaS pricing plan request.
         /// </summary>
-        public static string subject_request_tariff {
+        internal static string subject_request_tariff {
             get {
                 return ResourceManager.GetString("subject_request_tariff", resourceCulture);
             }
@@ -3208,7 +3167,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ${LetterLogoText}. Restore completed.
         /// </summary>
-        public static string subject_restore_completed {
+        internal static string subject_restore_completed {
             get {
                 return ResourceManager.GetString("subject_restore_completed", resourceCulture);
             }
@@ -3217,7 +3176,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ${LetterLogoText}. Restore started.
         /// </summary>
-        public static string subject_restore_started {
+        internal static string subject_restore_started {
             get {
                 return ResourceManager.GetString("subject_restore_started", resourceCulture);
             }
@@ -3226,7 +3185,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Confirm your email.
         /// </summary>
-        public static string subject_saas_admin_activation_v115 {
+        internal static string subject_saas_admin_activation_v115 {
             get {
                 return ResourceManager.GetString("subject_saas_admin_activation_v115", resourceCulture);
             }
@@ -3235,7 +3194,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Tips for comfortable work.
         /// </summary>
-        public static string subject_saas_admin_comfort_tips_v115 {
+        internal static string subject_saas_admin_comfort_tips_v115 {
             get {
                 return ResourceManager.GetString("subject_saas_admin_comfort_tips_v115", resourceCulture);
             }
@@ -3244,7 +3203,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ONLYOFFICE modules overview.
         /// </summary>
-        public static string subject_saas_admin_modules_v115 {
+        internal static string subject_saas_admin_modules_v115 {
             get {
                 return ResourceManager.GetString("subject_saas_admin_modules_v115", resourceCulture);
             }
@@ -3253,7 +3212,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Re-activate Business and save 20% of the price.
         /// </summary>
-        public static string subject_saas_admin_payment_warning_every_2months_v115 {
+        internal static string subject_saas_admin_payment_warning_every_2months_v115 {
             get {
                 return ResourceManager.GetString("subject_saas_admin_payment_warning_every_2months_v115", resourceCulture);
             }
@@ -3262,7 +3221,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Your ONLYOFFICE will be deleted.
         /// </summary>
-        public static string subject_saas_admin_trial_warning_after_half_year_v115 {
+        internal static string subject_saas_admin_trial_warning_after_half_year_v115 {
             get {
                 return ResourceManager.GetString("subject_saas_admin_trial_warning_after_half_year_v115", resourceCulture);
             }
@@ -3271,7 +3230,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Renewal notification.
         /// </summary>
-        public static string subject_saas_admin_trial_warning_after1_v115 {
+        internal static string subject_saas_admin_trial_warning_after1_v115 {
             get {
                 return ResourceManager.GetString("subject_saas_admin_trial_warning_after1_v115", resourceCulture);
             }
@@ -3280,7 +3239,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Use this discount before your trial ends.
         /// </summary>
-        public static string subject_saas_admin_trial_warning_before5_v115 {
+        internal static string subject_saas_admin_trial_warning_before5_v115 {
             get {
                 return ResourceManager.GetString("subject_saas_admin_trial_warning_before5_v115", resourceCulture);
             }
@@ -3289,7 +3248,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Your ONLYOFFICE trial expires today.
         /// </summary>
-        public static string subject_saas_admin_trial_warning_v115 {
+        internal static string subject_saas_admin_trial_warning_v115 {
             get {
                 return ResourceManager.GetString("subject_saas_admin_trial_warning_v115", resourceCulture);
             }
@@ -3298,7 +3257,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Get free ONLYOFFICE apps.
         /// </summary>
-        public static string subject_saas_admin_user_apps_tips_v115 {
+        internal static string subject_saas_admin_user_apps_tips_v115 {
             get {
                 return ResourceManager.GetString("subject_saas_admin_user_apps_tips_v115", resourceCulture);
             }
@@ -3307,7 +3266,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to 7 tips for effective work on your docs.
         /// </summary>
-        public static string subject_saas_admin_user_docs_tips_v115 {
+        internal static string subject_saas_admin_user_docs_tips_v115 {
             get {
                 return ResourceManager.GetString("subject_saas_admin_user_docs_tips_v115", resourceCulture);
             }
@@ -3316,7 +3275,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Welcome to ONLYOFFICE!.
         /// </summary>
-        public static string subject_saas_admin_welcome_v115 {
+        internal static string subject_saas_admin_welcome_v115 {
             get {
                 return ResourceManager.GetString("subject_saas_admin_welcome_v115", resourceCulture);
             }
@@ -3325,7 +3284,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Join ${__VirtualRootPath}.
         /// </summary>
-        public static string subject_saas_guest_activation_v115 {
+        internal static string subject_saas_guest_activation_v115 {
             get {
                 return ResourceManager.GetString("subject_saas_guest_activation_v115", resourceCulture);
             }
@@ -3334,7 +3293,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Welcome to your ONLYOFFICE.
         /// </summary>
-        public static string subject_saas_guest_welcome_v115 {
+        internal static string subject_saas_guest_welcome_v115 {
             get {
                 return ResourceManager.GetString("subject_saas_guest_welcome_v115", resourceCulture);
             }
@@ -3343,7 +3302,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Join ${__VirtualRootPath}.
         /// </summary>
-        public static string subject_saas_user_activation_v115 {
+        internal static string subject_saas_user_activation_v115 {
             get {
                 return ResourceManager.GetString("subject_saas_user_activation_v115", resourceCulture);
             }
@@ -3352,7 +3311,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Welcome to your ONLYOFFICE.
         /// </summary>
-        public static string subject_saas_user_welcome_v115 {
+        internal static string subject_saas_user_welcome_v115 {
             get {
                 return ResourceManager.GetString("subject_saas_user_welcome_v115", resourceCulture);
             }
@@ -3361,7 +3320,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ${__VirtualRootPath} portal profile change notification.
         /// </summary>
-        public static string subject_self_profile_updated {
+        internal static string subject_self_profile_updated {
             get {
                 return ResourceManager.GetString("subject_self_profile_updated", resourceCulture);
             }
@@ -3370,7 +3329,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to What&apos;s new on your portal for $Date.
         /// </summary>
-        public static string subject_send_whats_new {
+        internal static string subject_send_whats_new {
             get {
                 return ResourceManager.GetString("subject_send_whats_new", resourceCulture);
             }
@@ -3379,7 +3338,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to SMTP test message.
         /// </summary>
-        public static string subject_smtp_test {
+        internal static string subject_smtp_test {
             get {
                 return ResourceManager.GetString("subject_smtp_test", resourceCulture);
             }
@@ -3388,7 +3347,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ${LetterLogoText}. Decryption process failed.
         /// </summary>
-        public static string subject_storage_decryption_error {
+        internal static string subject_storage_decryption_error {
             get {
                 return ResourceManager.GetString("subject_storage_decryption_error", resourceCulture);
             }
@@ -3397,7 +3356,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ${LetterLogoText}. Decryption process started.
         /// </summary>
-        public static string subject_storage_decryption_start {
+        internal static string subject_storage_decryption_start {
             get {
                 return ResourceManager.GetString("subject_storage_decryption_start", resourceCulture);
             }
@@ -3406,7 +3365,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ${LetterLogoText}. Decryption process completed.
         /// </summary>
-        public static string subject_storage_decryption_success {
+        internal static string subject_storage_decryption_success {
             get {
                 return ResourceManager.GetString("subject_storage_decryption_success", resourceCulture);
             }
@@ -3415,7 +3374,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ${LetterLogoText}. Encryption process failed.
         /// </summary>
-        public static string subject_storage_encryption_error {
+        internal static string subject_storage_encryption_error {
             get {
                 return ResourceManager.GetString("subject_storage_encryption_error", resourceCulture);
             }
@@ -3424,7 +3383,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ${LetterLogoText}. Encryption process started.
         /// </summary>
-        public static string subject_storage_encryption_start {
+        internal static string subject_storage_encryption_start {
             get {
                 return ResourceManager.GetString("subject_storage_encryption_start", resourceCulture);
             }
@@ -3433,7 +3392,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ${LetterLogoText}. Encryption process completed.
         /// </summary>
-        public static string subject_storage_encryption_success {
+        internal static string subject_storage_encryption_success {
             get {
                 return ResourceManager.GetString("subject_storage_encryption_success", resourceCulture);
             }
@@ -3442,7 +3401,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to New user added to ${LetterLogoText} portal.
         /// </summary>
-        public static string subject_user_has_join {
+        internal static string subject_user_has_join {
             get {
                 return ResourceManager.GetString("subject_user_has_join", resourceCulture);
             }
@@ -3451,7 +3410,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to You’re invited to join ${__VirtualRootPath}.
         /// </summary>
-        public static string subject_user_ldap_activation {
+        internal static string subject_user_ldap_activation {
             get {
                 return ResourceManager.GetString("subject_user_ldap_activation", resourceCulture);
             }

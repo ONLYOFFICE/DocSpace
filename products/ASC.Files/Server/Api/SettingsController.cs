@@ -166,7 +166,7 @@ public class SettingsController : ApiControllerBase
     [HttpGet("@privacy/available")]
     public bool IsAvailablePrivacyRoomSettings()
     {
-        return PrivacyRoomSettings.IsAvailable(_tenantManager);
+        return PrivacyRoomSettings.IsAvailable();
     }
 
     /// <summary>

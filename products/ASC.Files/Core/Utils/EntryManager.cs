@@ -260,7 +260,6 @@ public class EntryManager
     private readonly GlobalFolderHelper _globalFolderHelper;
     private readonly PathProvider _pathProvider;
     private readonly AuthContext _authContext;
-    private readonly FilesIntegration _filesIntegration;
     private readonly FileMarker _fileMarker;
     private readonly FileUtility _fileUtility;
     private readonly GlobalStore _globalStore;
@@ -273,7 +272,6 @@ public class EntryManager
     private readonly DocumentServiceConnector _documentServiceConnector;
     private readonly LockerManager _lockerManager;
     private readonly BreadCrumbsManager _breadCrumbsManager;
-    private readonly TenantManager _tenantManager;
     private readonly SettingsManager _settingsManager;
     private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<EntryManager> _logger;
@@ -285,7 +283,6 @@ public class EntryManager
         GlobalFolderHelper globalFolderHelper,
         PathProvider pathProvider,
         AuthContext authContext,
-        FilesIntegration filesIntegration,
         FileMarker fileMarker,
         FileUtility fileUtility,
         GlobalStore globalStore,
@@ -299,7 +296,6 @@ public class EntryManager
         DocumentServiceConnector documentServiceConnector,
         LockerManager lockerManager,
         BreadCrumbsManager breadCrumbsManager,
-        TenantManager tenantManager,
         SettingsManager settingsManager,
         IServiceProvider serviceProvider,
         ICache cache,
@@ -312,7 +308,6 @@ public class EntryManager
         _globalFolderHelper = globalFolderHelper;
         _pathProvider = pathProvider;
         _authContext = authContext;
-        _filesIntegration = filesIntegration;
         _fileMarker = fileMarker;
         _fileUtility = fileUtility;
         _globalStore = globalStore;
@@ -325,7 +320,6 @@ public class EntryManager
         _documentServiceConnector = documentServiceConnector;
         _lockerManager = lockerManager;
         _breadCrumbsManager = breadCrumbsManager;
-        _tenantManager = tenantManager;
         _settingsManager = settingsManager;
         _serviceProvider = serviceProvider;
         _logger = logger;
@@ -349,7 +343,7 @@ public class EntryManager
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ReadFolder);
         }
 
-        if (parent.RootFolderType == FolderType.Privacy && (!PrivacyRoomSettings.IsAvailable(_tenantManager) || !PrivacyRoomSettings.GetEnabled(_settingsManager)))
+        if (parent.RootFolderType == FolderType.Privacy && (!PrivacyRoomSettings.IsAvailable() || !PrivacyRoomSettings.GetEnabled(_settingsManager)))
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ReadFolder);
         }
