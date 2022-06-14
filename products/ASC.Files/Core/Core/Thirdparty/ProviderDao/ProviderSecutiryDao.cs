@@ -224,7 +224,7 @@ internal class ProviderSecurityDao : ProviderDaoBase, ISecurityDao<string>
         return _securityDao.GetPureShareRecordsAsync(entries);
     }
 
-    public IAsyncEnumerable<FileShareRecord> GetPureShareRecordsAsyncEnumerable(IEnumerable<FileEntry<string>> entries)
+    public IAsyncEnumerable<FileShareRecord> GetPureShareRecordsAsyncEnumerable(IAsyncEnumerable<FileEntry<string>> entries)
     {
         return _securityDao.GetPureShareRecordsAsyncEnumerable(entries);
     }

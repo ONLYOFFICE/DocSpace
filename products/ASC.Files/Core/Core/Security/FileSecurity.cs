@@ -1135,15 +1135,19 @@ public class FileSecurity : IFileSecurity
     //    return result;
     //}
 
-    public IAsyncEnumerable<FileEntry> GetSharesForMeAsync(FilterType filterType, bool subjectGroup, Guid subjectID, string searchText = "", bool searchInContent = false, bool withSubfolders = false)
+    public async Task<IEnumerable<FileEntry>> GetSharesForMeAsync(FilterType filterType, bool subjectGroup, Guid subjectID, string searchText = "", bool searchInContent = false, bool withSubfolders = false)
     {
         var securityDao = _daoFactory.GetSecurityDao<int>();
         var subjects = GetUserSubjects(_authContext.CurrentAccount.ID);
-        var records = securityDao.GetSharesAsyncEnumerable(subjects);
+        var records = await securityDao.GetSharesAsyncEnumerable(subjects).ToListAsync();
 
-        var result = AsyncEnumerable.Empty<FileEntry>();
-        result.Concat(GetSharesForMeAsyncEnumerable<int>(records.Where(r => r.EntryId is int), subjects, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders));
-        result.Concat(GetSharesForMeAsyncEnumerable<string>(records.Where(r => r.EntryId is string), subjects, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders));
+        var result = Enumerable.Empty<FileEntry>();
+
+        var firstTask = GetSharesForMeAsyncEnumerable<int>(records.Where(r => r.EntryId is int), subjects, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders).ToListAsync();
+        var secondTask = GetSharesForMeAsyncEnumerable<string>(records.Where(r => r.EntryId is string), subjects, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders).ToListAsync();
+
+        result.Concat(await firstTask);
+        result.Concat(await secondTask);
 
         return result;
     }
@@ -1266,7 +1270,7 @@ public class FileSecurity : IFileSecurity
         return entries.Where(x => string.IsNullOrEmpty(x.Error)).Cast<FileEntry>().ToList();
     }
 
-    private async IAsyncEnumerable<FileEntry> GetSharesForMeAsyncEnumerable<T>(IAsyncEnumerable<FileShareRecord> records, List<Guid> subjects, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText = "", bool searchInContent = false, bool withSubfolders = false)
+    private async IAsyncEnumerable<FileEntry> GetSharesForMeAsyncEnumerable<T>(IEnumerable<FileShareRecord> records, List<Guid> subjects, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText = "", bool searchInContent = false, bool withSubfolders = false)
     {
         var folderDao = _daoFactory.GetFolderDao<T>();
         var fileDao = _daoFactory.GetFileDao<T>();
@@ -1275,9 +1279,7 @@ public class FileSecurity : IFileSecurity
         var fileIds = new Dictionary<T, FileShare>();
         var folderIds = new Dictionary<T, FileShare>();
 
-        var rec = await records.ToListAsync();
-
-        var recordGroup = rec.GroupBy(r => new { r.EntryId, r.EntryType }, (key, group) => new
+        var recordGroup = records.GroupBy(r => new { r.EntryId, r.EntryType }, (key, group) => new
         {
             firstRecord = group.OrderBy(r => r, new SubjectComparer(subjects))
                .ThenByDescending(r => r.Share, new FileShareRecord.ShareComparer())
@@ -1343,7 +1345,7 @@ public class FileSecurity : IFileSecurity
             }
 
 
-            entries.Concat(folders.Cast<FileEntry<T>>());
+            entries.Concat(folders);
         }
 
         if (filterType != FilterType.FoldersOnly && withSubfolders)
@@ -1371,7 +1373,7 @@ public class FileSecurity : IFileSecurity
         {
             var entryType = failedEntry.FileEntryType;
 
-            var failedRecord = rec.First(x => x.EntryId.Equals(failedEntry.Id) && x.EntryType == entryType);
+            var failedRecord = records.First(x => x.EntryId.Equals(failedEntry.Id) && x.EntryType == entryType);
 
             failedRecord.Share = FileShare.None;
 

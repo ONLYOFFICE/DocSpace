@@ -121,8 +121,8 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
 
     public async IAsyncEnumerable<FileEntryDto> GetFoldersAsync(T folderId)
     {
-        var folders = _fileStorageService.GetFoldersAsync(folderId);
-        await foreach (var folder in folders)
+        var folders = await _fileStorageService.GetFoldersAsync(folderId);
+        foreach (var folder in folders)
         {
             yield return await GetFileEntryWrapperAsync(folder);
         }

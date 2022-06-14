@@ -183,14 +183,14 @@ public class FileStorageService<T> //: IFileStorageService
         return folder;
     }
 
-    public async IAsyncEnumerable<FileEntry> GetFoldersAsync(T parentId)
+    public async Task<IEnumerable<FileEntry>> GetFoldersAsync(T parentId)
     {
         var folderDao = GetFolderDao();
-        var entries = AsyncEnumerable.Empty<FileEntry>();
+        var entries = Enumerable.Empty<FileEntry>();
 
         try
         {
-            entries = _entryManager.GetEntriesAsync(
+            entries = await _entryManager.GetEntriesAsync(
                 await folderDao.GetFolderAsync(parentId), 0, 0, FilterType.FoldersOnly,
                 false, Guid.Empty, string.Empty, false, false, new OrderBy(SortedByType.AZ, true));
         }
@@ -199,10 +199,7 @@ public class FileStorageService<T> //: IFileStorageService
             throw GenerateException(e);
         }
 
-        await foreach (var e in entries)
-        {
-            yield return e;
-        }
+        return entries;
     }
 
     public async Task<List<object>> GetPathAsync(T folderId)
@@ -278,7 +275,7 @@ public class FileStorageService<T> //: IFileStorageService
         int total;
         try
         {
-            entries = await _entryManager.GetEntriesAsync(parent, from, count, filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, orderBy).ToListAsync();
+            entries = await _entryManager.GetEntriesAsync(parent, from, count, filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, orderBy);
             total = entries.Count();
         }
         catch (Exception e)
@@ -504,7 +501,7 @@ public class FileStorageService<T> //: IFileStorageService
         return file;
     }
 
-    public async IAsyncEnumerable<FileEntry<T>> GetSiblingsFileAsync(T fileId, T parentId, FilterType filter, bool subjectGroup, string subjectID, string search, bool searchInContent, bool withSubfolders, OrderBy orderBy)
+    public async Task<IEnumerable<FileEntry<T>>> GetSiblingsFileAsync(T fileId, T parentId, FilterType filter, bool subjectGroup, string subjectID, string search, bool searchInContent, bool withSubfolders, OrderBy orderBy)
     {
         var subjectId = string.IsNullOrEmpty(subjectID) ? Guid.Empty : new Guid(subjectID);
 
@@ -521,7 +518,7 @@ public class FileStorageService<T> //: IFileStorageService
 
         if (filter == FilterType.FoldersOnly)
         {
-            yield break;
+            return Enumerable.Empty <FileEntry<T>> ();
         }
         if (filter == FilterType.None)
         {
@@ -537,7 +534,7 @@ public class FileStorageService<T> //: IFileStorageService
             orderBy.SortedBy = SortedByType.New;
         }
 
-        var entries = AsyncEnumerable.Empty<FileEntry>();
+        var entries = Enumerable.Empty<FileEntry>();
 
         if (!await _fileSecurity.CanReadAsync(parent))
         {
@@ -548,7 +545,7 @@ public class FileStorageService<T> //: IFileStorageService
         {
             try
             {
-                entries = _entryManager.GetEntriesAsync(parent, 0, 0, filter, subjectGroup, subjectId, search, searchInContent, withSubfolders, orderBy);
+                entries = await _entryManager.GetEntriesAsync(parent, 0, 0, filter, subjectGroup, subjectId, search, searchInContent, withSubfolders, orderBy);
             }
             catch (Exception e)
             {
@@ -563,13 +560,10 @@ public class FileStorageService<T> //: IFileStorageService
 
         var previewedType = new[] { FileType.Image, FileType.Audio, FileType.Video };
 
-        var result = _fileSecurity.FilterReadAsync(entries.OfType<File<T>>());
+        var result = await _fileSecurity.FilterReadAsync(entries.OfType<File<T>>());
         result = result.OfType<File<T>>().Where(f => previewedType.Contains(FileUtility.GetFileTypeByFileName(f.Title)));
-        
-        await foreach(var e in result)
-        {
-            yield return e;
-        }
+
+        return result;
     }
 
     public Task<File<T>> CreateNewFileAsync<TTemplate>(FileModel<T, TTemplate> fileWrapper, bool enableExternalExt = false)

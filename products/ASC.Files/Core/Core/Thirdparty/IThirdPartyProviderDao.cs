@@ -410,7 +410,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         return null;
     }
 
-    public IAsyncEnumerable<FileShareRecord> GetPureShareRecordsAsyncEnumerable(IEnumerable<FileEntry<string>> entries)
+    public IAsyncEnumerable<FileShareRecord> GetPureShareRecordsAsyncEnumerable(IAsyncEnumerable<FileEntry<string>> entries)
     {
         return null;
     }

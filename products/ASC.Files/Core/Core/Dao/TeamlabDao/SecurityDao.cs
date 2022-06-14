@@ -196,7 +196,7 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
         return InternalGetPureShareRecordsAsync(entries);
     }
 
-    public IAsyncEnumerable<FileShareRecord> GetPureShareRecordsAsyncEnumerable(IEnumerable<FileEntry<T>> entries)
+    public IAsyncEnumerable<FileShareRecord> GetPureShareRecordsAsyncEnumerable(IAsyncEnumerable<FileEntry<T>> entries)
     {
         if (entries == null)
         {
@@ -219,12 +219,12 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
         return await GetPureShareRecordsDbAsync(files, folders);
     }
 
-    private async IAsyncEnumerable<FileShareRecord> InternalGetPureShareRecordsAsyncEnumerable(IEnumerable<FileEntry<T>> entries)
+    private async IAsyncEnumerable<FileShareRecord> InternalGetPureShareRecordsAsyncEnumerable(IAsyncEnumerable<FileEntry<T>> entries)
     {
         var files = new List<string>();
         var folders = new List<string>();
 
-        foreach (var entry in entries)
+        await foreach (var entry in entries)
         {
             await SelectFilesAndFoldersForShareAsync(entry, files, folders, null);
         }
