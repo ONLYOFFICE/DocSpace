@@ -561,6 +561,11 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
         return false;
     }
 
+    public Task<Stream> GetThumbnailAsync(string fileid)
+    {
+        throw new NotImplementedException();
+    }
+
     public Task<Stream> GetThumbnailAsync(File<string> file)
     {
         throw new NotImplementedException();

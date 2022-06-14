@@ -547,9 +547,14 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
         return false;
     }
 
-    public async Task<Stream> GetThumbnailAsync(File<string> file)
+    public Task<Stream> GetThumbnailAsync(File<string> file)
     {
-        return await ProviderInfo.GetThumbnail(MakeDriveId(_googleDriveDaoSelector.ConvertId(file.Id)));
+        return GetThumbnailAsync(file.Id);
+    }
+
+    public Task<Stream> GetThumbnailAsync(string fileId)
+    {
+        return ProviderInfo.GetThumbnail(MakeDriveId(_googleDriveDaoSelector.ConvertId(fileId)));
     }
 
     #region chunking

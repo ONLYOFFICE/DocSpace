@@ -345,12 +345,6 @@ internal abstract class OneDriveDaoBase : ThirdPartyProviderDao<OneDriveProvider
         return requestTitle;
     }
 
-    protected Task<Stream> GetThumbnailAsync(string fileId)
-    {
-        var oneDriveId = MakeOneDriveId(fileId);
-        return ProviderInfo.GetThumbnailAsync(oneDriveId);
-    }
-
     private string MatchEvaluator(Match match)
     {
         var index = Convert.ToInt32(match.Groups[2].Value);

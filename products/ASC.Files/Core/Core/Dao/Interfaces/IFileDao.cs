@@ -285,6 +285,8 @@ public interface IFileDao<T>
 
     Task SaveThumbnailAsync(File<T> file, Stream thumbnail);
 
+    Task<Stream> GetThumbnailAsync(T fileId);
+
     Task<Stream> GetThumbnailAsync(File<T> file);
 
     Task<IEnumerable<FileWithShare>> GetFeedsAsync(int tenant, DateTime from, DateTime to);

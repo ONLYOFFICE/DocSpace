@@ -547,7 +547,13 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
 
     public Task<Stream> GetThumbnailAsync(File<string> file)
     {
-        return GetThumbnailAsync(_boxDaoSelector.ConvertId(file.Id));
+        return GetThumbnailAsync(file.Id);
+    }
+
+    public Task<Stream> GetThumbnailAsync(string fileId)
+    {
+        var boxFileId = MakeBoxId(_boxDaoSelector.ConvertId(fileId));
+        return ProviderInfo.GetThumbnailAsync(boxFileId);
     }
 
     #region chunking

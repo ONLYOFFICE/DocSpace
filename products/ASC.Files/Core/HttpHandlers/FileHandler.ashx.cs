@@ -947,15 +947,15 @@ public class FileHandlerService
         }
         else
         {
-            await ThumbnailFile(context, q.FirstOrDefault() ?? "");
+            await ThumbnailFileFromThirdparty(context, q.FirstOrDefault() ?? "");
         }
     }
 
-    private async Task ThumbnailFile<T>(HttpContext context, T id)
+    private async Task ThumbnailFile(HttpContext context, int id)
     {
         try
         {
-            var fileDao = _daoFactory.GetFileDao<T>();
+            var fileDao = _daoFactory.GetFileDao<int>();
             var file = int.TryParse(context.Request.Query[FilesLinkUtility.Version], out var version) && version > 0
                ? await fileDao.GetFileAsync(id, version)
                : await fileDao.GetFileAsync(id);
@@ -979,7 +979,7 @@ public class FileHandlerService
                 return;
             }
 
-            if (file.ThumbnailStatus != Thumbnail.Created && id is int)
+            if (file.ThumbnailStatus != Thumbnail.Created)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                 return;
@@ -988,12 +988,49 @@ public class FileHandlerService
             context.Response.Headers.Add("Content-Disposition", ContentDispositionUtil.GetHeaderValue("." + _global.ThumbnailExtension));
             context.Response.ContentType = MimeMapping.GetMimeMapping("." + _global.ThumbnailExtension);
 
-            using (var stream = await fileDao.GetThumbnailAsync(file))
+            using (var stream = await fileDao.GetThumbnailAsync(id))
             {
-                if (id is int)
-                {
-                    context.Response.Headers.Add("Content-Length", stream.Length.ToString(CultureInfo.InvariantCulture));
-                }
+                context.Response.Headers.Add("Content-Length", stream.Length.ToString(CultureInfo.InvariantCulture));
+                await stream.CopyToAsync(context.Response.Body);
+            }
+        }
+        catch (FileNotFoundException ex)
+        {
+            _logger.ErrorForUrl(context.Request.Url(), ex);
+            context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+            await context.Response.WriteAsync(ex.Message);
+            return;
+        }
+        catch (Exception ex)
+        {
+            _logger.ErrorForUrl(context.Request.Url(), ex);
+            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            await context.Response.WriteAsync(ex.Message);
+            return;
+        }
+
+        try
+        {
+            await context.Response.Body.FlushAsync();
+            await context.Response.CompleteAsync();
+        }
+        catch (HttpException he)
+        {
+            _logger.ErrorThumbnail(he);
+        }
+    }
+
+    private async Task ThumbnailFileFromThirdparty(HttpContext context, string id)
+    {
+        try
+        {
+            var fileDao = _daoFactory.GetFileDao<string>();
+
+            context.Response.Headers.Add("Content-Disposition", ContentDispositionUtil.GetHeaderValue("." + _global.ThumbnailExtension));
+            context.Response.ContentType = MimeMapping.GetMimeMapping("." + _global.ThumbnailExtension);
+
+            using (var stream = await fileDao.GetThumbnailAsync(id))
+            {
                 await stream.CopyToAsync(context.Response.Body);
             }
         }
