@@ -339,6 +339,58 @@ class ContextOptionsStore {
     setIsVisible(true);
   };
 
+  onClickEditRoom = (room) => {
+    console.log("edit room");
+  };
+
+  onClickPinRoom = (room) => {
+    console.log("pin room");
+  };
+
+  onClickMoveRoomToArchive = (room) => {
+    console.log("move room to archive");
+  };
+
+  onClickDeleteRoom = (room) => {
+    console.log("delete room");
+  };
+
+  getRoomsContextOptions = (room, t) => {
+    const contextOptions = [
+      {
+        key: "edit",
+        label: "Edit room",
+        icon: "images/settings.react.svg",
+        onClick: () => this.onClickEditRoom(room),
+        disabled: false,
+      },
+      {
+        key: "pin",
+        label: "Pin to top",
+        icon: "images/pin.react.svg",
+        onClick: () => this.onClickPinRoom(room),
+        disabled: false,
+      },
+      { key: "separator", isSeparator: true },
+      {
+        key: "archive",
+        label: "Move to archive",
+        icon: "images/room.archive.svg",
+        onClick: () => this.onClickMoveRoomToArchive(room),
+        disabled: false,
+      },
+      {
+        key: "delete",
+        label: "Delete",
+        icon: "images/trash.react.svg",
+        onClick: () => this.onClickDeleteRoom(room),
+        disabled: false,
+      },
+    ];
+
+    return contextOptions;
+  };
+
   getFilesContextOptions = (item, t) => {
     const { contextOptions } = item;
     const isRootThirdPartyFolder =
