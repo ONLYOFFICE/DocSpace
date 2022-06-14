@@ -140,12 +140,19 @@ internal class DropboxStorage : IDisposable
 
     public async Task<Stream> GetThumbnailsAsync(string filePath)
     {
-        var path = new PathOrLink.Path(filePath);
-        var size = ThumbnailSize.W256h256.Instance;
-        var arg = new ThumbnailV2Arg(path, size: size);
+        try
+        {
+            var path = new PathOrLink.Path(filePath);
+            var size = ThumbnailSize.W256h256.Instance;
+            var arg = new ThumbnailV2Arg(path, size: size);
 
-        var responce = await _dropboxClient.Files.GetThumbnailV2Async(arg);
-        return await responce.GetContentAsStreamAsync();
+            var responce = await _dropboxClient.Files.GetThumbnailV2Async(arg);
+            return await responce.GetContentAsStreamAsync();
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     public Task<Stream> DownloadStreamAsync(string filePath, int offset = 0)
