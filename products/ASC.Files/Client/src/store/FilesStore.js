@@ -67,8 +67,8 @@ class FilesStore {
   oformFiles = null;
   gallerySelected = null;
 
-  createdFolderId = null;
-  scrollToFolderId = null;
+  createdItem = null;
+  scrollToItem = null;
 
   isLoadingFilesFind = false;
   pageItemsLength = null;
@@ -569,7 +569,8 @@ class FilesStore {
     folderId,
     filter,
     clearFilter = true,
-    withSubfolders = false
+    withSubfolders = false,
+    clearSelection = true
   ) => {
     const {
       treeFolders,
@@ -646,7 +647,9 @@ class FilesStore {
 
           if (clearFilter) {
             this.fileActionStore.setAction({ type: null });
-            this.setSelected("close");
+            if (clearSelection) {
+              this.setSelected("close");
+            }
           }
 
           const navigationPath = await Promise.all(
@@ -675,17 +678,20 @@ class FilesStore {
 
           this.viewAs === "tile" && this.createThumbnails();
 
-          if (this.createdFolderId) {
-            const newFolder = this.filesList.find(
-              (item) => item.id === this.createdFolderId
+          if (this.createdItem) {
+            const newItem = this.filesList.find(
+              (item) => item.id === this.createdItem.id
             );
 
-            if (newFolder) {
-              this.setSelection([newFolder]);
-              this.setScrollToFolderId(newFolder.id);
+            if (newItem) {
+              this.setBufferSelection(newItem);
+              this.setScrollToItem({
+                id: newItem.id,
+                type: this.createdItem.type,
+              });
             }
 
-            this.setCreatedFolderId(null);
+            this.setCreatedItem(null);
           }
           return Promise.resolve(selectedFolder);
         })
@@ -2077,12 +2083,12 @@ class FilesStore {
     this.enabledHotkeys = enabledHotkeys;
   };
 
-  setCreatedFolderId = (createdFolderId) => {
-    this.createdFolderId = createdFolderId;
+  setCreatedItem = (createdItem) => {
+    this.createdItem = createdItem;
   };
 
-  setScrollToFolderId = (folderId) => {
-    this.scrollToFolderId = folderId;
+  setScrollToItem = (item) => {
+    this.scrollToItem = item;
   };
 }
 

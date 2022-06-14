@@ -37,9 +37,11 @@ const InfoItem = styled.div`
 
 const InfoItemLabel = styled.div`
   width: 200px;
+  min-width: 150px;
 
   @media (max-width: 620px) {
     width: 130px;
+    min-width: 120px;
   }
 
   white-space: nowrap;
@@ -214,6 +216,7 @@ class ProfileInfo extends React.PureComponent {
       culture,
       personal,
       theme,
+      helpLink,
     } = this.props;
 
     const {
@@ -273,7 +276,7 @@ class ProfileInfo extends React.PureComponent {
         <Link
           color={theme.profileInfo.tooltipLinkColor}
           isHovered={true}
-          href={`https://helpcenter.onlyoffice.com/${language}/guides/become-translator.aspx`}
+          href={`${helpLink}/guides/become-translator.aspx`}
           target="_blank"
         >
           {t("Common:LearnMore")}
@@ -422,7 +425,7 @@ class ProfileInfo extends React.PureComponent {
 export default withRouter(
   inject(({ auth, peopleStore }) => {
     const { settingsStore } = auth;
-    const { culture, customNames, theme } = settingsStore;
+    const { culture, customNames, theme, helpLink } = settingsStore;
     const {
       groupCaption,
       regDateCaption,
@@ -454,6 +457,7 @@ export default withRouter(
       isLoading,
       updateProfileCulture,
       personal: auth.settingsStore.personal,
+      helpLink,
     };
   })(
     observer(

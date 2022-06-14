@@ -599,6 +599,7 @@ class UpdateUserForm extends React.Component {
       personal,
       isTabletView,
       theme,
+      helpLink,
     } = this.props;
     const {
       guestCaption,
@@ -690,7 +691,7 @@ class UpdateUserForm extends React.Component {
         <Link
           color="#316DAA"
           isHovered={true}
-          href={`https://helpcenter.onlyoffice.com/${language}/gettingstarted/people.aspx#ManagingAccessRights_block`}
+          href={`${helpLink}/gettingstarted/people.aspx#ManagingAccessRights_block`}
           target="_blank"
           style={{ marginTop: 23 }}
         >
@@ -1065,6 +1066,7 @@ export default withRouter(
     setUserIsUpdate: auth.userStore.setUserIsUpdate,
     userFormValidation: auth.settingsStore.userFormValidation,
     isTabletView: auth.settingsStore.isTabletView,
+    helpLink: auth.settingsStore.helpLink,
   }))(
     observer(
       withTranslation(["ProfileAction", "Common", "Translations"])(
