@@ -2117,6 +2117,7 @@ class FilesStore {
 
     const newFilter = this.filter.clone();
     newFilter.page += 1;
+    this.setFilter(newFilter);
     const newFiles = await api.files.getFolder(newFilter.folder, newFilter);
 
     runInAction(() => {
