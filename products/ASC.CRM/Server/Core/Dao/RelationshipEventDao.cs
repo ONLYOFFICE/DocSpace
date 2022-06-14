@@ -32,10 +32,8 @@ using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Caching;
-using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
 using ASC.Core.Tenants;
 using ASC.CRM.Classes;
 using ASC.CRM.Core.EF;
@@ -43,12 +41,11 @@ using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.Files.Core;
 using ASC.Web.CRM.Core.Search;
-using ASC.Web.Files.Api;
 
 using AutoMapper;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 using OrderBy = ASC.CRM.Core.Entities.OrderBy;
 
@@ -59,17 +56,17 @@ namespace ASC.CRM.Core.Dao
     {
         private readonly CrmSecurity _crmSecurity;
         private readonly TenantUtil _tenantUtil;
-        private readonly FilesIntegration _filesIntegration;
+        private readonly IDaoFactory _daoFactory;
         private readonly FactoryIndexerEvents _factoryIndexer;
 
         public RelationshipEventDao(DbContextManager<CrmDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
-            FilesIntegration filesIntegration,
-            FactoryIndexerEvents factoryIndexerEvents,
+            IDaoFactory daoFactory,
+            FactoryIndexerEvents factoryIndexer,
             CrmSecurity crmSecurity,
             TenantUtil tenantUtil,
-            IOptionsMonitor<ILog> logger,
+            ILogger logger,
             ICache ascCache,
             IMapper mapper
             ) :
@@ -80,10 +77,10 @@ namespace ASC.CRM.Core.Dao
                         ascCache,
                         mapper)
         {
-            _filesIntegration = filesIntegration;
             _tenantUtil = tenantUtil;
             _crmSecurity = crmSecurity;
-            _factoryIndexer = factoryIndexerEvents;
+            _daoFactory = daoFactory;
+            _factoryIndexer = factoryIndexer;
         }
 
         public RelationshipEvent AttachFiles(int contactID, EntityType entityType, int entityID, int[] fileIDs)
@@ -111,7 +108,7 @@ namespace ASC.CRM.Core.Dao
         {
             if (fileIDs.Length == 0) return;
 
-            var dao = _filesIntegration.DaoFactory.GetTagDao<int>();
+            var dao = _daoFactory.GetTagDao<int>();
 
             var tags = fileIDs.ToList().ConvertAll(fileID => new Tag("RelationshipEvent_" + eventID, TagType.System, Guid.Empty) { EntryType = FileEntryType.File, EntryId = fileID });
 
@@ -154,7 +151,7 @@ namespace ASC.CRM.Core.Dao
             sqlQuery = sqlQuery.Where(x => x.HaveFiles);
 
             var tagNames = await sqlQuery.Select(x => String.Format("RelationshipEvent_{0}", x.Id)).ToArrayAsync();
-            var tagdao = _filesIntegration.DaoFactory.GetTagDao<int>();
+            var tagdao = _daoFactory.GetTagDao<int>();
 
             var ids = tagdao.GetTagsAsync(tagNames.ToArray(), TagType.System)
                .Where(t => t.EntryType == FileEntryType.File)
@@ -167,7 +164,7 @@ namespace ASC.CRM.Core.Dao
 
         public async IAsyncEnumerable<File<int>> GetAllFilesAsync(int[] contactID, EntityType entityType, int entityID)
         {
-            var filedao = _filesIntegration.DaoFactory.GetFileDao<int>();
+            var filedao = _daoFactory.GetFileDao<int>();
 
             var ids = await GetFilesIDsAsync(contactID, entityType, entityID).ToArrayAsync();
             var files = 0 < ids.Length ? filedao.GetFilesAsync(ids) : AsyncEnumerable.Empty<File<int>>();
@@ -189,8 +186,8 @@ namespace ASC.CRM.Core.Dao
 
         public async Task<Dictionary<int, List<File<int>>>> InternalGetFilesAsync(int[] eventID)
         {
-            var tagdao = _filesIntegration.DaoFactory.GetTagDao<int>();
-            var filedao = _filesIntegration.DaoFactory.GetFileDao<int>();
+            var tagdao = _daoFactory.GetTagDao<int>();
+            var filedao = _daoFactory.GetFileDao<int>();
 
             var findedTags = await tagdao.GetTagsAsync(eventID.Select(item => String.Concat("RelationshipEvent_", item)).ToArray(),
                 TagType.System).Where(t => t.EntryType == FileEntryType.File).ToArrayAsync();
@@ -203,11 +200,11 @@ namespace ASC.CRM.Core.Dao
 
             await files.ForEachAsync(item =>
             {
-                if (!filesTemp.ContainsKey(item.ID))
-                    filesTemp.Add(item.ID, item);
+                if (!filesTemp.ContainsKey(item.Id))
+                    filesTemp.Add(item.Id, item);
             });
 
-            return findedTags.Where(x => filesTemp.ContainsKey(x.EntryId)).GroupBy(x => x.TagName).ToDictionary(x => Convert.ToInt32(x.Key.Split(new[] { '_' })[1]),
+            return findedTags.Where(x => filesTemp.ContainsKey(x.EntryId)).GroupBy(x => x.Name).ToDictionary(x => Convert.ToInt32(x.Key.Split(new[] { '_' })[1]),
                                                               x => x.Select(item => filesTemp[item.EntryId]).ToList());
         }
 
@@ -221,8 +218,8 @@ namespace ASC.CRM.Core.Dao
 
         private async IAsyncEnumerable<File<int>> InternalGetFilesAsync(int eventID)
         {
-            var tagdao = _filesIntegration.DaoFactory.GetTagDao<int>();
-            var filedao = _filesIntegration.DaoFactory.GetFileDao<int>();
+            var tagdao = _daoFactory.GetTagDao<int>();
+            var filedao = _daoFactory.GetFileDao<int>();
 
             var ids = await tagdao.GetTagsAsync(String.Concat("RelationshipEvent_", eventID), TagType.System).Where(t => t.EntryType == FileEntryType.File).Select(t => Convert.ToInt32(t.EntryId)).ToArrayAsync();
             var files = 0 < ids.Length ? filedao.GetFilesAsync(ids) : AsyncEnumerable.Empty<File<int>>();
@@ -248,11 +245,11 @@ namespace ASC.CRM.Core.Dao
         {
             var files = GetAllFilesAsync(contactID, entityType, entityID);
 
-            var dao = _filesIntegration.DaoFactory.GetFileDao<int>();
+            var dao = _daoFactory.GetFileDao<int>();
 
             await foreach (var file in files)
             {
-                await dao.DeleteFileAsync(file.ID);
+                await dao.DeleteFileAsync(file.Id);
             }
         }
 
@@ -261,15 +258,15 @@ namespace ASC.CRM.Core.Dao
             _crmSecurity.DemandDelete(file);
 
 
-            var tagdao = _filesIntegration.DaoFactory.GetTagDao<int>();
+            var tagdao = _daoFactory.GetTagDao<int>();
 
-            var tags = tagdao.GetTagsAsync(file.ID, FileEntryType.File, TagType.System).Where(tag => tag.TagName.StartsWith("RelationshipEvent_"));
+            var tags = tagdao.GetTagsAsync(file.Id, FileEntryType.File, TagType.System).Where(tag => tag.Name.StartsWith("RelationshipEvent_"));
 
-            var eventIDs = tags.Select(item => Convert.ToInt32(item.TagName.Split(new[] { '_' })[1]));
+            var eventIDs = tags.Select(item => Convert.ToInt32(item.Name.Split(new[] { '_' })[1]));
 
-            var dao = _filesIntegration.DaoFactory.GetFileDao<int>();
+            var dao = _daoFactory.GetFileDao<int>();
 
-            await dao.DeleteFileAsync(file.ID);
+            await dao.DeleteFileAsync(file.Id);
 
             await foreach (var eventID in eventIDs)
             {
@@ -287,7 +284,7 @@ namespace ASC.CRM.Core.Dao
                 yield return eventID;
             }
 
-            var itemToUpdate = await Query(CrmDbContext.Invoices).FirstOrDefaultAsync(x => x.FileId == file.ID);
+            var itemToUpdate = await Query(CrmDbContext.Invoices).FirstOrDefaultAsync(x => x.FileId == file.Id);
 
             itemToUpdate.FileId = 0;
 

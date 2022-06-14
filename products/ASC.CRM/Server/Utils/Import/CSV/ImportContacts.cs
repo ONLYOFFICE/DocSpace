@@ -35,6 +35,7 @@ using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
+using Microsoft.Extensions.Logging;
 
 using LumenWorks.Framework.IO.Csv;
 
@@ -120,7 +121,7 @@ namespace ASC.Web.CRM.Classes
                     currentIndex++;
                 }
             }
-            _log.InfoFormat("ImportContactsData. Reading {0} findedContacts complete", findedContacts.Count);
+            _log.LogInformation("ImportContactsData. Reading {0} findedContacts complete", findedContacts.Count);
 
             #endregion
 
@@ -131,7 +132,7 @@ namespace ASC.Web.CRM.Classes
 
             _DuplicateRecordRuleProcess(_daoFactory, ref findedContacts, ref personFakeIdCompanyNameHash, ref findedContactInfos, ref findedCustomField, ref findedTags);
 
-            _log.Info("ImportContactsData. _DuplicateRecordRuleProcess. End");
+            _log.LogInformation("ImportContactsData. _DuplicateRecordRuleProcess. End");
 
             if (IsCompleted)
             {
@@ -260,7 +261,7 @@ namespace ASC.Web.CRM.Classes
                     }
                 }
             }
-            _log.Info("ImportContactsData. Contacts common data saved");
+            _log.LogInformation("ImportContactsData. Contacts common data saved");
             #endregion
 
             Percentage += 12.5;
@@ -286,7 +287,7 @@ namespace ASC.Web.CRM.Classes
                     }
                 }
             }
-            _log.Info("ImportContactsData. Contacts infos saved");
+            _log.LogInformation("ImportContactsData. Contacts infos saved");
             #endregion
 
             Percentage += 12.5;
@@ -312,7 +313,7 @@ namespace ASC.Web.CRM.Classes
                     }
                 }
             }
-            _log.Info("ImportContactsData. Custom fields saved");
+            _log.LogInformation("ImportContactsData. Custom fields saved");
             #endregion
 
             Percentage += 12.5;
@@ -334,7 +335,7 @@ namespace ASC.Web.CRM.Classes
 
                 tagDao.AddTagToEntity(EntityType.Contact, fakeRealContactIdHash[findedTagKey], curTagIds);
             }
-            _log.Info("ImportContactsData. Tags saved");
+            _log.LogInformation("ImportContactsData. Tags saved");
             #endregion
 
             Percentage += 12.5;
@@ -556,7 +557,7 @@ namespace ASC.Web.CRM.Classes
         {
             var contactDao = _daoFactory.GetContactDao();
 
-            _log.Info("_DuplicateRecordRuleProcess. Start");
+            _log.LogInformation("_DuplicateRecordRuleProcess. Start");
 
             switch (_importSettings.DuplicateRecordRule)
             {
@@ -609,22 +610,22 @@ namespace ASC.Web.CRM.Classes
                     var emailContactInfos = findedContactInfos.Where(item => item.InfoType == ContactInfoType.Email).ToList();
                     if (emailContactInfos.Count == 0) break;
 
-                    _log.InfoFormat("_DuplicateRecordRuleProcess. Overwrite. Start. All emeails count = {0}", emailContactInfos.Count);
+                    _log.LogInformation("_DuplicateRecordRuleProcess. Overwrite. Start. All emeails count = {0}", emailContactInfos.Count);
 
                     var index = 0;
                     while (index < emailContactInfos.Count)
                     {
                         var emailsIteration = emailContactInfos.Skip(index).Take(DaoIterationStep).ToList();// Get next step
 
-                        _log.InfoFormat("_DuplicateRecordRuleProcess. Overwrite. Portion from index = {0}. count = {1}", index, emailsIteration.Count);
+                        _log.LogInformation("_DuplicateRecordRuleProcess. Overwrite. Portion from index = {0}. count = {1}", index, emailsIteration.Count);
                         var duplicateContactsID = contactDao.FindDuplicateByEmail(emailsIteration, true)
                                                     .Distinct()
                                                     .ToArray();
 
-                        _log.InfoFormat("_DuplicateRecordRuleProcess. Overwrite. FindDuplicateByEmail result count = {0}", duplicateContactsID.Length);
+                        _log.LogInformation("_DuplicateRecordRuleProcess. Overwrite. FindDuplicateByEmail result count = {0}", duplicateContactsID.Length);
                         var deleted = contactDao.DeleteBatchContactAsync(duplicateContactsID).Result;
 
-                        _log.InfoFormat("_DuplicateRecordRuleProcess. Overwrite. DeleteBatchContact. Was deleted {0} contacts", deleted != null ? deleted.Count : 0);
+                        _log.LogInformation("_DuplicateRecordRuleProcess. Overwrite. DeleteBatchContact. Was deleted {0} contacts", deleted != null ? deleted.Count : 0);
 
                         index += DaoIterationStep;
                         if (index > emailContactInfos.Count)
