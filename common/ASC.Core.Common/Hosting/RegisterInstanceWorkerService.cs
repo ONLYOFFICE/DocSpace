@@ -33,7 +33,7 @@ public class RegisterInstanceWorkerService<T> : BackgroundService where T : IHos
     private readonly IHostApplicationLifetime _applicationLifetime;
     private readonly IServiceProvider _serviceProvider;
     public static readonly string InstanceId =
-        $"{typeof(T).Name}_{DateTime.UtcNow.Ticks}";
+        $"{typeof(T).GetFormattedName()}_{DateTime.UtcNow.Ticks}";
 
     public RegisterInstanceWorkerService(
         ILogger<RegisterInstanceWorkerService<T>> logger,
@@ -58,7 +58,7 @@ public class RegisterInstanceWorkerService<T> : BackgroundService where T : IHos
                 await registerInstanceService.Register(InstanceId);
                 await registerInstanceService.DeleteOrphanInstances();
 
-                _logger.InformationWorkingRunnging(DateTimeOffset.Now);
+                _logger.TraceWorkingRunnging(DateTimeOffset.Now);
 
                 await Task.Delay(1000, stoppingToken);
             }
@@ -88,4 +88,5 @@ public class RegisterInstanceWorkerService<T> : BackgroundService where T : IHos
 
         await base.StopAsync(cancellationToken);
     }
+
 }
