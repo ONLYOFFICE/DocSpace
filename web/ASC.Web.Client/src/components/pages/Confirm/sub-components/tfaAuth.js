@@ -6,7 +6,7 @@ import Button from "@appserver/components/button";
 import TextInput from "@appserver/components/text-input";
 import FieldContainer from "@appserver/components/field-container";
 import Text from "@appserver/components/text";
-import PageLayout from "@appserver/common/components/PageLayout";
+import Section from "@appserver/common/components/Section";
 import { inject, observer } from "mobx-react";
 import Box from "@appserver/components/box";
 import toastr from "studio/toastr";
@@ -14,10 +14,11 @@ import withLoader from "../withLoader";
 import { mobile, tablet } from "@appserver/components/utils/device";
 
 const StyledForm = styled(Box)`
-  margin: 63px auto auto 216px;
-  width: 570px;
+  margin: 63px auto;
+  width: 320px;
   display: flex;
   flex-direction: column;
+  flex: 1fr;
 
   @media ${tablet} {
     margin: 120px auto;
@@ -31,12 +32,6 @@ const StyledForm = styled(Box)`
   .app-code-wrapper {
     @media ${tablet} {
       flex-direction: column;
-    }
-  }
-
-  .app-code-continue-btn {
-    @media ${tablet} {
-      margin: 32px 0 0 0;
     }
   }
 
@@ -86,7 +81,11 @@ const TfaAuthForm = withLoader((props) => {
         </Text>
         <Text>{t("EnterAppCodeDescription")}</Text>
       </Box>
-      <Box displayProp="flex" className="app-code-wrapper">
+      <Box
+        displayProp="flex"
+        flexDirection="column"
+        className="app-code-wrapper"
+      >
         <Box className="app-code-input">
           <FieldContainer
             labelVisible={false}
@@ -97,7 +96,7 @@ const TfaAuthForm = withLoader((props) => {
               id="code"
               name="code"
               type="text"
-              size={width <= 1024 ? "large" : "base"}
+              size="huge"
               scale
               isAutoFocussed
               tabIndex={1}
@@ -114,11 +113,11 @@ const TfaAuthForm = withLoader((props) => {
             />
           </FieldContainer>
         </Box>
-        <Box className="app-code-continue-btn" marginProp="0 0 0 8px">
+        <Box className="app-code-continue-btn">
           <Button
             scale
             primary
-            size={width <= 1024 ? "large" : "medium"}
+            size="medium"
             tabIndex={3}
             label={
               isLoading
@@ -144,11 +143,11 @@ const TfaAuthFormWrapper = (props) => {
   }, []);
 
   return (
-    <PageLayout>
-      <PageLayout.SectionBody>
+    <Section>
+      <Section.SectionBody>
         <TfaAuthForm {...props} />
-      </PageLayout.SectionBody>
-    </PageLayout>
+      </Section.SectionBody>
+    </Section>
   );
 };
 

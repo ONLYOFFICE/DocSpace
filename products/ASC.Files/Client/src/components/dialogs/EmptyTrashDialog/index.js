@@ -42,7 +42,7 @@ const EmptyTrashDialogComponent = (props) => {
         <Button
           key="OkButton"
           label={t("DeleteForeverButton")}
-          size="medium"
+          size="small"
           primary
           onClick={onEmptyTrash}
           isLoading={isLoading}
@@ -51,7 +51,7 @@ const EmptyTrashDialogComponent = (props) => {
           className="button-dialog"
           key="CancelButton"
           label={t("Common:CancelButton")}
-          size="medium"
+          size="small"
           onClick={onClose}
           isLoading={isLoading}
         />

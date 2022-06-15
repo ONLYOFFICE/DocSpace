@@ -1,14 +1,16 @@
 import React from "react";
 import { withRouter } from "react-router";
-import styled from "styled-components";
+import { inject, observer } from "mobx-react";
+
 import { withTranslation } from "react-i18next";
-import TreeMenu from "@appserver/components/tree-menu";
-import TreeNode from "@appserver/components/tree-menu/sub-components/tree-node";
-import ExpanderDownIcon from "../../../../../../../../../public/images/expander-down.react.svg";
-import Link from "@appserver/components/link";
-import Text from "@appserver/components/text";
+
 import { isArrayEqual } from "@appserver/components/utils/array";
-import ExpanderRightIcon from "../../../../../../../../../public/images/expander-right.react.svg";
+
+import { isMobileOnly } from "react-device-detect";
+
+import { isMobile } from "@appserver/components/utils/device";
+import withLoading from "../../../../../../HOCs/withLoading";
+
 import {
   //getKeyByLink,
   settingsTree,
@@ -16,16 +18,9 @@ import {
   //selectKeyOfTreeElement,
   getCurrentSettingsCategory,
 } from "../../../utils";
-import { ReactSVG } from "react-svg";
-import commonIconsStyles from "@appserver/components/utils/common-icons-style";
-import { clickBackdrop } from "@appserver/common/utils";
-import { tablet } from "@appserver/components/utils/device";
 
-const StyledTreeMenu = styled(TreeMenu)`
-  .inherit-title-link {
-    font-size: inherit;
-    font-weight: inherit;
-    color: #657077;
+import CatalogItem from "@appserver/components/catalog-item";
+import LoaderArticleBody from "./loaderArticleBody";
 
     &.header {
       font-weight: bold;
@@ -179,8 +174,15 @@ class ArticleBodyContent extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    const { isLoaded, tReady, setIsLoadedArticleBody } = this.props;
+
+    const isLoadedSetting = isLoaded && tReady;
+
+    if (isLoadedSetting) setIsLoadedArticleBody(isLoadedSetting);
+
     if (!isArrayEqual(prevState.selectedKeys, this.state.selectedKeys)) {
       const { selectedKeys } = this.state;
+
       const { match, history } = this.props;
       const settingsPath = getSelectedLinkByKey(selectedKeys[0], settingsTree);
       const newPath = match.path + settingsPath;
@@ -191,46 +193,104 @@ class ArticleBodyContent extends React.Component {
   onSelect = (value) => {
     const { selectedKeys } = this.state;
 
-    if (isArrayEqual(value, selectedKeys)) {
+    const { toggleArticleOpen } = this.props;
+
+    if (isArrayEqual([value], selectedKeys)) {
       return;
     }
 
-    this.setState({ selectedKeys: value });
+    this.setState({ selectedKeys: [value + "-0"] });
+
+    if (isMobileOnly || isMobile()) {
+      toggleArticleOpen();
+    }
   };
 
-  switcherIcon = (obj) => {
-    if (obj.isLeaf) {
-      return null;
+  mapKeys = (tKey) => {
+    const { t } = this.props;
+    switch (tKey) {
+      case "AccessRights":
+        return t("AccessRights");
+      case "ManagementCategoryCommon":
+        return t("ManagementCategoryCommon");
+      case "Customization":
+        return t("Customization");
+      case "StudioTimeLanguageSettings":
+        return t("StudioTimeLanguageSettings");
+      case "CustomTitlesWelcome":
+        return t("CustomTitlesWelcome");
+      case "TeamTemplate":
+        return t("TeamTemplate");
+      case "ManagementCategorySecurity":
+        return t("ManagementCategorySecurity");
+      case "PortalAccess":
+        return t("PortalAccess");
+      case "TwoFactorAuth":
+        return t("TwoFactorAuth");
+      case "ManagementCategoryIntegration":
+        return t("ManagementCategoryIntegration");
+      case "ThirdPartyAuthorization":
+        return t("ThirdPartyAuthorization");
+      case "Migration":
+        return t("Migration");
+      case "Backup":
+        return t("Backup");
+      case "ManagementCategoryDataManagement":
+        return t("ManagementCategoryDataManagement");
+      default:
+        throw new Error("Unexpected translation key");
     }
-    if (obj.expanded) {
-      return <StyledExpanderDownIcon size="scale" color="dimgray" />;
-    } else {
-      return <StyledExpanderRightIcon size="scale" color="dimgray" />;
-    }
+  };
+
+  catalogItems = () => {
+    const { selectedKeys } = this.state;
+    const { showText } = this.props;
+
+    const items = [];
+
+    settingsTree.map((item) => {
+      items.push(
+        <CatalogItem
+          key={item.key}
+          id={item.key}
+          icon={item.icon}
+          showText={showText}
+          text={this.mapKeys(item.tKey)}
+          value={item.link}
+          isActive={item.key + "-0" === selectedKeys[0]}
+          onClick={() => this.onSelect(item.key)}
+        />
+      );
+    });
+
+    return items;
   };
 
   render() {
-    const { selectedKeys } = this.state;
-    const { match, t } = this.props;
+    const items = this.catalogItems();
+    const { isLoadedPage, location } = this.props;
 
-    return (
-      <StyledTreeMenu
-        className="people-tree-menu"
-        checkable={false}
-        draggable={false}
-        disabled={false}
-        multiple={false}
-        showIcon={true}
-        defaultExpandAll={true}
-        switcherIcon={this.switcherIcon}
-        onSelect={this.onSelect}
-        selectedKeys={selectedKeys}
-        disableSwitch={true}
-      >
-        {getTreeItems(settingsTree, match.path, t)}
-      </StyledTreeMenu>
-    );
+    const commonSettings =
+      location.pathname.includes("common/customization") ||
+      location.pathname === "/settings";
+
+    const showLoader = commonSettings ? !isLoadedPage : false;
+
+    return showLoader ? <LoaderArticleBody /> : <>{items}</>;
   }
 }
 
-export default withRouter(withTranslation("Settings")(ArticleBodyContent));
+export default inject(({ auth, common }) => {
+  const { isLoaded, setIsLoadedArticleBody } = common;
+
+  return {
+    showText: auth.settingsStore.showText,
+    toggleArticleOpen: auth.settingsStore.toggleArticleOpen,
+    isLoaded,
+    setIsLoadedArticleBody,
+  };
+})(
+  withLoading(
+    withRouter(withTranslation("Settings")(observer(ArticleBodyContent)))
+  )
+);

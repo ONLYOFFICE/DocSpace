@@ -56,7 +56,7 @@ class Backdrop extends React.Component {
 
   modifyClassName = () => {
     const { className } = this.props;
-    let modifiedClass = "backdrop-active";
+    let modifiedClass = "backdrop-active not-selectable";
 
     if (className) {
       if (typeof className !== "string") {

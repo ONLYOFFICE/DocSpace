@@ -1,14 +1,14 @@
 {
   "count": 1,
   "response": {
-    "confirmDelete": false,
+    "confirmDelete": true,
     "enableThirdParty": true,
-    "storeOriginalFiles": false,
+    "storeOriginalFiles": true,
     "updateIfExist": false,
     "convertNotify": true,
     "hideConfirmConvertSave": false,
     "hideConfirmConvertOpen": false,
-    "defaultOrder": { "is_asc": false, "property": 0 },
+    "defaultOrder": { "is_asc": false, "property": 4 },
     "forcesave": false,
     "storeForcesave": false,
     "recentSection": true,

@@ -36,8 +36,8 @@ using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
-using ASC.MessagingSystem;
-using ASC.Web.Api.Routing;
+using ASC.MessagingSystem.Core;
+using ASC.MessagingSystem.Models;
 
 using AutoMapper;
 
@@ -76,7 +76,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///    Opportunity stage
         /// </returns>
-        [Create(@"opportunity/stage")]
+        [HttpPost(@"opportunity/stage")]
         public DealMilestoneDto CreateDealMilestone([FromBody] CreateOrUpdateDealMilestoneRequestDto inDto)
         {
             var title = inDto.Title;
@@ -122,7 +122,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///    Opportunity stage
         /// </returns>
-        [Update(@"opportunity/stage/{id:int}")]
+        [HttpPut(@"opportunity/stage/{id:int}")]
         public DealMilestoneDto UpdateDealMilestone([FromRoute] int id, [FromBody] CreateOrUpdateDealMilestoneRequestDto inDto)
         {
             var title = inDto.Title;
@@ -168,7 +168,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///    Opportunity stage
         /// </returns>
-        [Update(@"opportunity/stage/{id:int}/color")]
+        [HttpPut(@"opportunity/stage/{id:int}/color")]
         public DealMilestoneDto UpdateDealMilestoneColor([FromRoute] int id, [FromBody] string color)
         {
             if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
@@ -200,7 +200,7 @@ namespace ASC.CRM.Api
         /// <exception cref="SecurityException"></exception>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="ItemNotFoundException"></exception>
-        [Update(@"opportunity/stage/reorder")]
+        [HttpPut(@"opportunity/stage/reorder")]
         public IEnumerable<DealMilestoneDto> UpdateDealMilestonesOrder(IEnumerable<int> ids)
         {
             if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
@@ -228,7 +228,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Opportunity stage
         /// </returns>
-        [Delete(@"opportunity/stage/{id:int}")]
+        [HttpDelete(@"opportunity/stage/{id:int}")]
         public DealMilestoneDto DeleteDealMilestone(int id)
         {
             if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
@@ -257,7 +257,7 @@ namespace ASC.CRM.Api
         /// <category>History</category>
         ///<returns>History category</returns>
         ///<exception cref="ArgumentException"></exception>
-        [Create(@"history/category")]
+        [HttpPost(@"history/category")]
         public HistoryCategoryDto CreateHistoryCategory([FromBody] CreateListItemCategoryRequestDto inDto)
         {
 
@@ -297,7 +297,7 @@ namespace ASC.CRM.Api
         ///<returns>History category</returns>
         ///<exception cref="ArgumentException"></exception>
         ///<exception cref="ItemNotFoundException"></exception>
-        [Update(@"history/category/{id:int}")]
+        [HttpPut(@"history/category/{id:int}")]
         public HistoryCategoryDto UpdateHistoryCategory(int id, string title, string description, string imageName, int sortOrder)
         {
             if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
@@ -334,7 +334,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///    History category
         /// </returns>
-        [Update(@"history/category/{id:int}/icon")]
+        [HttpPut(@"history/category/{id:int}/icon")]
         public HistoryCategoryDto UpdateHistoryCategoryIcon(int id, string imageName)
         {
             if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
@@ -366,7 +366,7 @@ namespace ASC.CRM.Api
         /// <exception cref="SecurityException"></exception>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="ItemNotFoundException"></exception>
-        [Update(@"history/category/reorder")]
+        [HttpPut(@"history/category/reorder")]
         public IEnumerable<HistoryCategoryDto> UpdateHistoryCategoriesOrder(IEnumerable<string> titles)
         {
             if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
@@ -391,7 +391,7 @@ namespace ASC.CRM.Api
         /// <exception cref="ItemNotFoundException"></exception>
         /// <exception cref="SecurityException"></exception>
         /// <returns>History category</returns>
-        [Delete(@"history/category/{id:int}")]
+        [HttpDelete(@"history/category/{id:int}")]
         public HistoryCategoryDto DeleteHistoryCategory(int id)
         {
             if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
@@ -430,7 +430,7 @@ namespace ASC.CRM.Api
         ///<returns>
         ///    Task category
         ///</returns>
-        [Create(@"task/category")]
+        [HttpPost(@"task/category")]
         public TaskCategoryDto CreateTaskCategory(
             [FromBody] CreateListItemCategoryRequestDto inDto)
         {
@@ -467,7 +467,7 @@ namespace ASC.CRM.Api
         ///<returns>
         ///    Task category
         ///</returns>
-        [Update(@"task/category/{id:int}")]
+        [HttpPut(@"task/category/{id:int}")]
         public TaskCategoryDto UpdateTaskCategory(int id, string title, string description, string imageName, int sortOrder)
         {
             if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
@@ -504,7 +504,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///    Task category
         /// </returns>
-        [Update(@"task/category/{id:int}/icon")]
+        [HttpPut(@"task/category/{id:int}/icon")]
         public TaskCategoryDto UpdateTaskCategoryIcon(int id, string imageName)
         {
             if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
@@ -536,7 +536,7 @@ namespace ASC.CRM.Api
         /// <exception cref="SecurityException"></exception>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="ItemNotFoundException"></exception>
-        [Update(@"task/category/reorder")]
+        [HttpPut(@"task/category/reorder")]
         public IEnumerable<TaskCategoryDto> UpdateTaskCategoriesOrder([FromBody] IEnumerable<string> titles)
         {
             if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
@@ -562,7 +562,7 @@ namespace ASC.CRM.Api
         ///<exception cref="ArgumentException"></exception>
         ///<exception cref="ItemNotFoundException"></exception>
         ///<exception cref="SecurityException"></exception>
-        [Delete(@"task/category/{categoryid:int}")]
+        [HttpDelete(@"task/category/{categoryid:int}")]
         public TaskCategoryDto DeleteTaskCategory([FromRoute] int categoryid, [FromBody] int newcategoryid)
         {
             if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
@@ -598,7 +598,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///    Contact status
         /// </returns>
-        [Create(@"contact/status")]
+        [HttpPost(@"contact/status")]
         public ContactStatusDto CreateContactStatus(
             [FromBody] CreateOrUpdateContactStatusRequestDto inDto)
         {
@@ -641,7 +641,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///    Contact status
         /// </returns>
-        [Update(@"contact/status/{id:int}")]
+        [HttpPut(@"contact/status/{id:int}")]
         public ContactStatusDto UpdateContactStatus(
             [FromRoute] int id,
             [FromBody] CreateOrUpdateContactStatusRequestDto inDto)
@@ -686,7 +686,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///    Contact status
         /// </returns>
-        [Update(@"contact/status/{id:int}/color")]
+        [HttpPut(@"contact/status/{id:int}/color")]
         public ContactStatusDto UpdateContactStatusColor([FromRoute] int id, [FromBody] string color)
         {
             if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
@@ -718,7 +718,7 @@ namespace ASC.CRM.Api
         /// <exception cref="SecurityException"></exception>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="ItemNotFoundException"></exception>
-        [Update(@"contact/status/reorder")]
+        [HttpPut(@"contact/status/reorder")]
         public IEnumerable<ContactStatusDto> UpdateContactStatusesOrder([FromBody] IEnumerable<string> titles)
         {
             if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
@@ -745,7 +745,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///  Contact status
         /// </returns>
-        [Delete(@"contact/status/{contactStatusid:int}")]
+        [HttpDelete(@"contact/status/{contactStatusid:int}")]
         public ContactStatusDto DeleteContactStatus(int contactStatusid)
         {
             if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
@@ -778,7 +778,7 @@ namespace ASC.CRM.Api
         /// <category>Contacts</category>
         ///<exception cref="ArgumentException"></exception>
         ///<exception cref="ItemNotFoundException"></exception>
-        [Read(@"contact/status/{contactStatusid:int}")]
+        [HttpGet(@"contact/status/{contactStatusid:int}")]
         public ContactStatusDto GetContactStatusByID(int contactStatusid)
         {
             if (contactStatusid <= 0) throw new ArgumentException();
@@ -801,7 +801,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///    Contact type
         /// </returns>
-        [Create(@"contact/type")]
+        [HttpPost(@"contact/type")]
         public ContactTypeDto CreateContactType([FromBody] CreateOrUpdateContactTypeRequestDto inDto)
         {
             var title = inDto.Title;
@@ -837,7 +837,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///    Contact type
         /// </returns>
-        [Update(@"contact/type/{id:int}")]
+        [HttpPut(@"contact/type/{id:int}")]
         public ContactTypeDto UpdateContactType(int id, [FromBody] CreateOrUpdateContactTypeRequestDto inDto)
         {
             var title = inDto.Title;
@@ -877,7 +877,7 @@ namespace ASC.CRM.Api
         /// <exception cref="SecurityException"></exception>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="ItemNotFoundException"></exception>
-        [Update(@"contact/type/reorder")]
+        [HttpPut(@"contact/type/reorder")]
         public IEnumerable<ContactTypeDto> UpdateContactTypesOrder([FromBody] IEnumerable<string> titles)
         {
             if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
@@ -904,7 +904,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///  Contact type
         /// </returns>
-        [Delete(@"contact/type/{contactTypeid:int}")]
+        [HttpDelete(@"contact/type/{contactTypeid:int}")]
         public ContactTypeDto DeleteContactType(int contactTypeid)
         {
             if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
@@ -937,7 +937,7 @@ namespace ASC.CRM.Api
         /// <category>Contacts</category>
         ///<exception cref="ArgumentException"></exception>
         ///<exception cref="ItemNotFoundException"></exception>
-        [Read(@"contact/type/{contactTypeid:int}")]
+        [HttpGet(@"contact/type/{contactTypeid:int}")]
         public ContactTypeDto GetContactTypeByID(int contactTypeid)
         {
             if (contactTypeid <= 0) throw new ArgumentException();
@@ -957,7 +957,7 @@ namespace ASC.CRM.Api
         /// <category>Opportunities</category>
         ///<exception cref="ItemNotFoundException"></exception>
         ///<exception cref="ArgumentException"></exception>
-        [Read(@"opportunity/stage/{stageid:int}")]
+        [HttpGet(@"opportunity/stage/{stageid:int}")]
         public DealMilestoneDto GetDealMilestoneByID(int stageid)
         {
             if (stageid <= 0) throw new ArgumentException();
@@ -977,7 +977,7 @@ namespace ASC.CRM.Api
         /// <category>Tasks</category>
         ///<exception cref="ItemNotFoundException"></exception>
         ///<exception cref="ArgumentException"></exception>
-        [Read(@"task/category/{categoryid:int}")]
+        [HttpGet(@"task/category/{categoryid:int}")]
         public TaskCategoryDto GetTaskCategoryByID(int categoryid)
         {
             if (categoryid <= 0) throw new ArgumentException();
@@ -996,7 +996,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///    List of all history categories
         /// </returns>
-        [Read(@"history/category")]
+        [HttpGet(@"history/category")]
         public IEnumerable<HistoryCategoryDto> GetHistoryCategoryDto()
         {
             var result = _daoFactory.GetListItemDao().GetItems(ListType.HistoryCategory).ConvertAll(item => new HistoryCategoryDto(item));
@@ -1019,7 +1019,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///    List of all task categories
         /// </returns>
-        [Read(@"task/category")]
+        [HttpGet(@"task/category")]
         public IEnumerable<TaskCategoryDto> GetTaskCategories()
         {
             var result = _daoFactory.GetListItemDao().GetItems(ListType.TaskCategory).ConvertAll(item => (TaskCategoryDto)_mapper.Map<TaskCategoryDto>(item));
@@ -1042,7 +1042,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///    List of all contact statuses
         /// </returns>
-        [Read(@"contact/status")]
+        [HttpGet(@"contact/status")]
         public IEnumerable<ContactStatusDto> GetContactStatuses()
         {
             var result = _daoFactory.GetListItemDao().GetItems(ListType.ContactStatus).ConvertAll(item => new ContactStatusDto(item));
@@ -1065,7 +1065,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///    List of all contact types
         /// </returns>
-        [Read(@"contact/type")]
+        [HttpGet(@"contact/type")]
         public IEnumerable<ContactTypeDto> GetContactTypes()
         {
             var result = _daoFactory.GetListItemDao().GetItems(ListType.ContactType).ConvertAll(item => new ContactTypeDto(item));
@@ -1089,7 +1089,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   List of all opportunity stages
         /// </returns>
-        [Read(@"opportunity/stage")]
+        [HttpGet(@"opportunity/stage")]
         public IEnumerable<DealMilestoneDto> GetDealMilestones()
         {
             var result = _daoFactory.GetDealMilestoneDao().GetAll().ConvertAll(item => new DealMilestoneDto(item));

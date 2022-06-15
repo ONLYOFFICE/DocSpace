@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { isMobileOnly, isMobile } from "react-device-detect";
+import { isMobileOnly, isMobile, isTablet } from "react-device-detect";
 
 const HomeContainer = styled.div`
   margin: ${isMobileOnly ? "50px" : "42px"} auto 0;
@@ -9,16 +9,17 @@ const HomeContainer = styled.div`
   display: flex;
   justify-content: ${isMobile ? "center" : "space-between"};
   align-items: center;
-
+  margin-top: ${(props) =>
+    props.snackbarExist && isMobile ? "150px" : "50px"};
   @media (max-width: 1024px) {
     flex-direction: column;
   }
 
   .greeting {
     font-weight: bold;
-    margin-bottom: 27px;
+    margin-bottom: 28px;
     text-align: center;
-    height: 30px;
+    word-break: break-word;
   }
 
   .home-modules-container {
@@ -27,27 +28,12 @@ const HomeContainer = styled.div`
     align-items: center;
 
     .home-modules {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      grid-gap: 26px ${isMobileOnly ? "31px" : "45px"};
-
-      ${isMobileOnly &&
-      css`
-        @media (min-width: 500px) {
-          display: flex;
-          justify-content: center;
-          flex-wrap: wrap;
-        }
-      `}
+      display: flex;
+      justify-content: center;
+      gap: ${isMobileOnly ? "31px" : "45px"};
 
       .home-module {
         z-index: 42;
-      }
-
-      @media (max-width: 400px) {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
       }
     }
 

@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import RadioButton from "../radio-button";
 import StyledDiv from "./styled-radio-button-group";
+import Text from "../text";
 
 class RadioButtonGroup extends React.Component {
   constructor(props) {
@@ -26,6 +27,7 @@ class RadioButtonGroup extends React.Component {
 
   render() {
     const options = this.props.options;
+    const theme = this.props.theme;
     return (
       <StyledDiv
         id={this.props.id}
@@ -35,6 +37,12 @@ class RadioButtonGroup extends React.Component {
         width={this.props.width}
       >
         {options.map((option) => {
+          if (option.type === "text")
+            return (
+              <Text key="radio-text" className="subtext">
+                {option.label}
+              </Text>
+            );
           return (
             <RadioButton
               key={option.value}
@@ -100,7 +108,6 @@ RadioButtonGroup.defaultProps = {
   selected: undefined,
   spacing: "15px",
   orientation: "horizontal",
-  width: "100%",
 };
 
 export default RadioButtonGroup;

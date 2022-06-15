@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import Loader from "@appserver/components/loader";
-import PageLayout from "../PageLayout";
+import Section from "../Section";
 
 export class ExternalRedirect extends Component {
   constructor(props) {
@@ -15,11 +15,11 @@ export class ExternalRedirect extends Component {
 
   render() {
     return (
-      <PageLayout>
-        <PageLayout.SectionBody>
+      <Section>
+        <Section.SectionBody>
           <Loader className="pageLoader" type="rombs" size="40px" />
-        </PageLayout.SectionBody>
-      </PageLayout>
+        </Section.SectionBody>
+      </Section>
     );
   }
 }

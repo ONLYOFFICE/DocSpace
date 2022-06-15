@@ -1,94 +1,108 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
+﻿// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using Microsoft.Extensions.Configuration;
+namespace ASC.Common.Utils;
 
-namespace ASC.Common.Utils
+public class ConnectionStringCollection : IEnumerable<ConnectionStringSettings>
 {
-    public class ConnectionStringCollection : IEnumerable<ConnectionStringSettings>
+    private readonly List<ConnectionStringSettings> _data;
+
+    public ConnectionStringSettings this[string name] => _data.FirstOrDefault(r => r.Name == name);
+
+    public ConnectionStringCollection(IEnumerable<ConnectionStringSettings> data)
     {
-        private List<ConnectionStringSettings> Data { get; set; }
-
-        public ConnectionStringCollection(IEnumerable<ConnectionStringSettings> data) => Data = data.ToList();
-
-        public IEnumerator<ConnectionStringSettings> GetEnumerator()
-        {
-            return Data.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        public ConnectionStringSettings this[string name]
-        {
-            get
-            {
-                return Data.FirstOrDefault(r => r.Name == name);
-            }
-        }
+        _data = data.ToList();
     }
 
-    [Singletone]
-    public class ConfigurationExtension
+    public IEnumerator<ConnectionStringSettings> GetEnumerator()
     {
-        private IConfiguration Configuration { get; }
-        private Lazy<ConnectionStringCollection> ConnectionStringSettings { get; }
+        return _data.GetEnumerator();
+    }
 
-        public ConfigurationExtension(IConfiguration configuration)
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
+}
+
+[Singletone]
+public class ConfigurationExtension
+{
+    public string this[string key]
+    {
+        get => _configuration[key];
+        set => _configuration[key] = value;
+    }
+
+    private readonly IConfiguration _configuration;
+    private readonly Lazy<ConnectionStringCollection> _connectionStringSettings;
+
+    public ConfigurationExtension(IConfiguration configuration)
+    {
+        _configuration = configuration;
+        _connectionStringSettings = new Lazy<ConnectionStringCollection>(new ConnectionStringCollection(GetSettings<ConnectionStringSettings>("ConnectionStrings")));
+    }
+
+    public IEnumerable<T> GetSettings<T>(string section) where T : new()
+    {
+        var result = new List<T>();
+
+        var sectionSettings = _configuration.GetSection(section);
+
+        foreach (var ch in sectionSettings.GetChildren())
         {
-            Configuration = configuration;
-            ConnectionStringSettings = new Lazy<ConnectionStringCollection>(new ConnectionStringCollection(GetSettings<ConnectionStringSettings>("ConnectionStrings")));
+            var cs = new T();
+            ch.Bind(cs);
+            result.Add(cs);
         }
 
-        public IEnumerable<T> GetSettings<T>(string section) where T : new()
-        {
-            var result = new List<T>();
+        return result;
+    }
 
-            var sectionSettings = Configuration.GetSection(section);
+    public T GetSetting<T>(string section) where T : new()
+    {
+        return GetSetting(section, new T());
+    }
 
-            foreach (var ch in sectionSettings.GetChildren())
-            {
-                var cs = new T();
-                ch.Bind(cs);
-                result.Add(cs);
-            }
+    public T GetSetting<T>(string section, T instance)
+    {
+        var sectionSettings = _configuration.GetSection(section);
 
-            return result;
-        }
+        sectionSettings.Bind(instance);
 
-        public T GetSetting<T>(string section) where T : new()
-        {
-            return GetSetting(section, new T());
-        }
+        return instance;
+    }
 
-        public T GetSetting<T>(string section, T instance)
-        {
-            var sectionSettings = Configuration.GetSection(section);
+    public ConnectionStringCollection GetConnectionStrings()
+    {
+        return _connectionStringSettings.Value;
+    }
 
-            sectionSettings.Bind(instance);
-
-            return instance;
-        }
-
-        public ConnectionStringCollection GetConnectionStrings()
-        {
-            return ConnectionStringSettings.Value;
-        }
-
-        public ConnectionStringSettings GetConnectionStrings(string key)
-        {
-            return GetConnectionStrings()[key];
-        }
-
-        public string this[string key]
-        {
-            get => Configuration[key];
-            set => Configuration[key] = value;
-        }
+    public ConnectionStringSettings GetConnectionStrings(string key)
+    {
+        return GetConnectionStrings()[key];
     }
 }

@@ -22,7 +22,7 @@ namespace ASC.CRM.Api
             ProductEntryPoint = productEntryPoint;
         }
 
-        [Read("info")]
+        [HttpGet("info")]
         public Module GetModule()
         {
             ProductEntryPoint.Init();

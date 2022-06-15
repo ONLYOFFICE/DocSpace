@@ -14,13 +14,21 @@ import StyledDropdown from "./styled-drop-down";
 /* eslint-disable react/prop-types, react/display-name */
 
 const Row = memo(({ data, index, style }) => {
-  const option = data[index];
+  const option = data.children[index];
+
   const separator = option.props.isSeparator
     ? { width: `calc(100% - 32px)`, height: `1px` }
     : {};
   const newStyle = { ...style, ...separator };
 
-  return <DropDownItem {...option.props} style={newStyle} />;
+  return (
+    <DropDownItem
+      theme={data.theme}
+      // eslint-disable-next-line react/prop-types
+      {...option.props}
+      style={newStyle}
+    />
+  );
 });
 
 class DropDown extends React.PureComponent {
@@ -30,6 +38,7 @@ class DropDown extends React.PureComponent {
     this.state = {
       directionX: props.directionX,
       directionY: props.directionY,
+      manualY: props.manualY,
     };
 
     this.dropDownRef = React.createRef();
@@ -99,18 +108,38 @@ class DropDown extends React.PureComponent {
   }
 
   checkPosition = () => {
-    if (!this.dropDownRef.current) return;
-    const { smallSectionWidth } = this.props;
+    if (!this.dropDownRef.current || this.props.fixedDirection) return;
+    const { smallSectionWidth, forwardedRef } = this.props;
+    const { manualY } = this.state;
+
     const rects = this.dropDownRef.current.getBoundingClientRect();
-    const container = { width: window.innerWidth, height: window.innerHeight };
+    const parentRects = forwardedRef?.current?.getBoundingClientRect();
+
+    const container = DomHelpers.getViewport();
+
+    const dimensions = parentRects
+      ? {
+          toTopCorner: parentRects.top,
+          parentHeight: parentRects.height,
+          containerHeight: !parentRects.top,
+        }
+      : {
+          toTopCorner: rects.top,
+          parentHeight: 42,
+          containerHeight: container.height,
+        };
+
     const left = rects.left < 0 && rects.width < container.width;
     const right =
       rects.width &&
       rects.left < (rects.width || 250) &&
       rects.left > rects.width &&
       rects.width < container.width;
-    const top = rects.bottom > container.height && rects.top > rects.height;
+    const top =
+      rects.bottom > dimensions.containerHeight &&
+      dimensions.toTopCorner > rects.height;
     const bottom = rects.top < 0;
+
     const x = left
       ? "left"
       : right || smallSectionWidth
@@ -118,16 +147,20 @@ class DropDown extends React.PureComponent {
       : this.state.directionX;
     const y = bottom ? "bottom" : top ? "top" : this.state.directionY;
 
+    const mY = top ? `${dimensions.parentHeight}px` : manualY;
+
     this.setState({
       directionX: x,
       directionY: y,
+      manualY: mY,
       width: this.dropDownRef ? this.dropDownRef.current.offsetWidth : 240,
     });
   };
 
   checkPositionPortal = () => {
     const parent = this.props.forwardedRef;
-    if (!parent.current) return;
+    if (!parent.current || this.props.fixedDirection) return;
+
     const rects = parent.current.getBoundingClientRect();
 
     let dropDownHeight = this.dropDownRef.current.offsetParent
@@ -198,8 +231,8 @@ class DropDown extends React.PureComponent {
   };
 
   renderDropDown() {
-    const { maxHeight, children, showDisabledItems } = this.props;
-    const { directionX, directionY, width } = this.state;
+    const { maxHeight, children, showDisabledItems, theme } = this.props;
+    const { directionX, directionY, width, manualY } = this.state;
     let cleanChildren;
 
     const rowHeights = React.Children.map(children, (child) =>
@@ -221,6 +254,7 @@ class DropDown extends React.PureComponent {
         {...this.props}
         directionX={directionX}
         directionY={directionY}
+        manualY={manualY}
         {...dropDownMaxHeightProp}
       >
         {maxHeight ? (
@@ -229,7 +263,7 @@ class DropDown extends React.PureComponent {
             width={width}
             itemSize={getItemSize}
             itemCount={children.length}
-            itemData={children}
+            itemData={{ children: children, theme: theme }}
             outerElementType={CustomScrollbarsVirtualList}
           >
             {Row}
@@ -260,7 +294,7 @@ class DropDownContainer extends React.Component {
     this.props.clickOutsideAction({}, !this.props.open);
   };
   render() {
-    const { withBackdrop = true, open } = this.props;
+    const { withBackdrop = true, open, theme } = this.props;
     const eventTypesProp = isMobile ? { eventTypes: ["touchend"] } : {};
 
     return (
@@ -319,6 +353,8 @@ DropDownContainer.propTypes = {
   isDefaultMode: PropTypes.bool,
   /** Needed to open correctly people and group selector when the section width is small */
   smallSectionWidth: PropTypes.bool,
+  /** It is necessary when we explicitly set the direction, disables check position */
+  fixedDirection: PropTypes.bool,
 };
 
 DropDownContainer.defaultProps = {
@@ -327,6 +363,7 @@ DropDownContainer.defaultProps = {
   withBackdrop: true,
   showDisabledItems: false,
   isDefaultMode: true,
+  fixedDirection: false,
 };
 
 export default DropDownContainer;

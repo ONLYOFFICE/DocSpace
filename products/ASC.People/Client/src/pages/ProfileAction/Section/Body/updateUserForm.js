@@ -50,12 +50,7 @@ import {
 import config from "../../../../../package.json";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
-
-const dialogsDataset = {
-  changeEmail: "changeEmail",
-  changePassword: "changePassword",
-  changePhone: "changePhone",
-};
+import { Base } from "@appserver/components/themes";
 
 const Table = styled.table`
   width: 100%;
@@ -64,8 +59,10 @@ const Table = styled.table`
 
 const Th = styled.th`
   padding: 11px 0 10px 0px;
-  border-top: 1px solid #eceef1;
+  border-top: ${(props) => props.theme.updateUserForm.borderTop};
 `;
+
+Th.defaultProps = { theme: Base };
 
 const Td = styled.td``;
 
@@ -74,32 +71,6 @@ class UpdateUserForm extends React.Component {
     super(props);
 
     this.state = this.mapPropsToState(props);
-
-    this.validate = this.validate.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.onInputChange = this.onInputChange.bind(this);
-    this.onUserTypeChange = this.onUserTypeChange.bind(this);
-    this.onBirthdayDateChange = this.onBirthdayDateChange.bind(this);
-    this.onWorkFromDateChange = this.onWorkFromDateChange.bind(this);
-    this.onCancel = this.onCancel.bind(this);
-    this.onCancelHandler = this.onCancelHandler.bind(this);
-
-    this.onContactsItemAdd = this.onContactsItemAdd.bind(this);
-    this.onContactsItemTypeChange = this.onContactsItemTypeChange.bind(this);
-    this.onContactsItemTextChange = this.onContactsItemTextChange.bind(this);
-    this.onContactsItemRemove = this.onContactsItemRemove.bind(this);
-
-    this.openAvatarEditor = this.openAvatarEditor.bind(this);
-    this.openAvatarEditorPage = this.openAvatarEditorPage.bind(this);
-    this.onLoadFileAvatar = this.onLoadFileAvatar.bind(this);
-
-    this.onShowGroupSelector = this.onShowGroupSelector.bind(this);
-    this.onCloseGroupSelector = this.onCloseGroupSelector.bind(this);
-    this.onSearchGroups = this.onSearchGroups.bind(this);
-    this.onSelectGroups = this.onSelectGroups.bind(this);
-    this.onRemoveGroup = this.onRemoveGroup.bind(this);
-
-    this.handleWindowBeforeUnload = this.handleWindowBeforeUnload.bind(this);
 
     this.mainFieldsContainerRef = React.createRef();
   }
@@ -211,13 +182,10 @@ class UpdateUserForm extends React.Component {
         defaultWidth: 0,
         defaultHeight: 0,
       },
-      dialogsVisible: {
-        [dialogsDataset.changePassword]: false,
-        [dialogsDataset.changePhone]: false,
-        [dialogsDataset.changeEmail]: false,
-        currentDialog: "",
-      },
       isMobile: isMobile || isTablet,
+      changeEmailDialogVisible: false,
+      changePhoneDialogVisible: false,
+      changePasswordDialogVisible: false,
     };
 
     //Set unique contacts id
@@ -230,12 +198,24 @@ class UpdateUserForm extends React.Component {
     return newState;
   };
 
-  setIsEdit() {
+  onChangeEmailDialog = (visible) => {
+    this.setState({ changeEmailDialogVisible: visible });
+  };
+
+  onChangePhoneDialog = (visible) => {
+    this.setState({ changePhoneDialogVisible: visible });
+  };
+
+  onChangePasswordDialog = (visible) => {
+    this.setState({ changePasswordDialogVisible: visible });
+  };
+
+  setIsEdit = () => {
     const { isEdit, setIsEditingForm } = this.props;
     if (!isEdit) setIsEditingForm(true);
-  }
+  };
 
-  onInputChange(event) {
+  onInputChange = (event) => {
     const { userFormValidation } = this.props;
     var stateCopy = Object.assign({}, this.state);
     const value = event.target.value;
@@ -251,48 +231,41 @@ class UpdateUserForm extends React.Component {
 
     this.setState(stateCopy);
     this.setIsEdit();
-  }
-
-  toggleDialogsVisible = (e) => {
-    const stateCopy = Object.assign({}, {}, this.state.dialogsVisible);
-    const selectedDialog = e ? e.target.dataset.dialog : e;
-    if (selectedDialog) {
-      stateCopy[selectedDialog] = true;
-      stateCopy.currentDialog = selectedDialog;
-    } else {
-      stateCopy[stateCopy.currentDialog] = false;
-      stateCopy.currentDialog = "";
-    }
-    this.setState({ dialogsVisible: stateCopy });
   };
 
-  onUserTypeChange(event) {
+  onUserTypeChange = (event) => {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.profile.isVisitor = event.target.value === "true";
     this.setState(stateCopy);
     this.setIsEdit();
-  }
+  };
 
-  onBirthdayDateChange(value) {
+  onBirthdayDateChange = (value) => {
     var stateCopy = Object.assign({}, this.state);
-    stateCopy.profile.birthday = value ? value.toJSON() : null;
+    const birthday = value ? value.toJSON() : stateCopy.profile.workFrom;
+    stateCopy.profile.birthday = birthday;
+
+    if (new Date(birthday) > new Date(stateCopy.profile.workFrom)) {
+      stateCopy.profile.workFrom = birthday;
+    }
+
     this.setState(stateCopy);
     this.setIsEdit();
-  }
+  };
 
-  onWorkFromDateChange(value) {
+  onWorkFromDateChange = (value) => {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.profile.workFrom = value ? value.toJSON() : null;
     this.setState(stateCopy);
     this.setIsEdit();
-  }
+  };
 
   scrollToErrorForm = () => {
     const element = this.mainFieldsContainerRef.current;
     const parent = element.closest(".scroll-body");
     (parent || window).scrollTo(0, element.offsetTop);
   };
-  validate() {
+  validate = () => {
     const { profile, errors } = this.state;
 
     if (errors.firstName || errors.lastName) {
@@ -312,9 +285,9 @@ class UpdateUserForm extends React.Component {
 
     this.setState({ errors: errorsObj });
     return !hasError;
-  }
+  };
 
-  handleSubmit() {
+  handleSubmit = () => {
     if (!this.validate()) return false;
 
     const {
@@ -340,8 +313,8 @@ class UpdateUserForm extends React.Component {
         toastr.error(error);
         this.setState({ isLoading: false });
       });
-  }
-  onCancelHandler() {
+  };
+  onCancelHandler = () => {
     const { isEdit, setIsVisibleDataLossDialog } = this.props;
 
     if (isEdit) {
@@ -349,9 +322,9 @@ class UpdateUserForm extends React.Component {
     } else {
       this.onCancel();
     }
-  }
+  };
 
-  onCancel() {
+  onCancel = () => {
     const {
       filter,
       setFilter,
@@ -377,9 +350,9 @@ class UpdateUserForm extends React.Component {
       history.push(combineUrl(AppServerConfig.proxyURL, config.homepage));
       setFilter(filter);
     }
-  }
+  };
 
-  onContactsItemAdd(item) {
+  onContactsItemAdd = (item) => {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.profile.contacts.push({
       id: new Date().getTime().toString(),
@@ -388,9 +361,9 @@ class UpdateUserForm extends React.Component {
     });
     this.setState(stateCopy);
     this.setIsEdit();
-  }
+  };
 
-  onContactsItemTypeChange(item) {
+  onContactsItemTypeChange = (item) => {
     const id = item.key.split("_")[0];
     var stateCopy = Object.assign({}, this.state);
     stateCopy.profile.contacts.forEach((element) => {
@@ -398,9 +371,9 @@ class UpdateUserForm extends React.Component {
     });
     this.setState(stateCopy);
     this.setIsEdit();
-  }
+  };
 
-  onContactsItemTextChange(event) {
+  onContactsItemTextChange = (event) => {
     const id = event.target.name.split("_")[0];
     var stateCopy = Object.assign({}, this.state);
     stateCopy.profile.contacts.forEach((element) => {
@@ -408,9 +381,9 @@ class UpdateUserForm extends React.Component {
     });
     this.setState(stateCopy);
     this.setIsEdit();
-  }
+  };
 
-  onContactsItemRemove(event) {
+  onContactsItemRemove = (event) => {
     const id = event.target.closest(".remove_icon").dataset.for.split("_")[0];
     var stateCopy = Object.assign({}, this.state);
     const filteredArray = stateCopy.profile.contacts.filter((element) => {
@@ -419,9 +392,9 @@ class UpdateUserForm extends React.Component {
     stateCopy.profile.contacts = filteredArray;
     this.setState(stateCopy);
     this.setIsEdit();
-  }
+  };
 
-  openAvatarEditor() {
+  openAvatarEditor = () => {
     let avatarDefault = this.state.avatar.image;
     let avatarDefaultSizes = /_orig_(\d*)-(\d*)./g.exec(
       this.state.avatar.image
@@ -443,13 +416,13 @@ class UpdateUserForm extends React.Component {
     this.setState({
       visibleAvatarEditor: true,
     });
-  }
+  };
 
-  openAvatarEditorPage() {
+  openAvatarEditorPage = () => {
     const { toggleAvatarEditor } = this.props;
 
     toggleAvatarEditor(true);
-  }
+  };
 
   onLoadFileAvatar = (file, fileData) => {
     let data = new FormData();
@@ -556,37 +529,37 @@ class UpdateUserForm extends React.Component {
 
   onCloseAvatarEditor = () => this.setState({ visibleAvatarEditor: false });
 
-  onShowGroupSelector() {
+  onShowGroupSelector = () => {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.selector.visible = true;
     this.setState(stateCopy);
-  }
+  };
 
-  onCloseGroupSelector() {
+  onCloseGroupSelector = () => {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.selector.visible = false;
     this.setState(stateCopy);
-  }
+  };
 
-  onSearchGroups(template) {
+  onSearchGroups = (template) => {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.selector.options = filterGroupSelectorOptions(
       stateCopy.selector.allOptions,
       template
     );
     this.setState(stateCopy);
-  }
+  };
 
-  onSelectGroups(selected) {
+  onSelectGroups = (selected) => {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.profile.groups = mapGroupSelectorOptionsToGroups(selected);
     stateCopy.selector.selected = selected;
     stateCopy.selector.visible = false;
     this.setState(stateCopy);
     this.setIsEdit();
-  }
+  };
 
-  onRemoveGroup(id) {
+  onRemoveGroup = (id) => {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.profile.groups = stateCopy.profile.groups.filter(
       (group) => group.id !== id
@@ -596,7 +569,7 @@ class UpdateUserForm extends React.Component {
     );
     this.setState(stateCopy);
     this.setIsEdit();
-  }
+  };
 
   onSaveClick = () => this.setState({ isLoading: true });
 
@@ -620,6 +593,7 @@ class UpdateUserForm extends React.Component {
       language,
       personal,
       isTabletView,
+      theme,
     } = this.props;
     const {
       guestCaption,
@@ -638,11 +612,19 @@ class UpdateUserForm extends React.Component {
     //TODO: inject guestsCaption in 'ProfileTypePopupHelper' key instead of hardcoded 'Guests'
     const tooltipTypeContent = (
       <>
-        <Text style={{ paddingBottom: 17 }} fontSize="13px">
+        <Text
+          style={{ paddingBottom: 17 }}
+          color={theme.updateUserForm.tooltipTextColor}
+          fontSize="13px"
+        >
           {t("ProfileTypePopupHelper")}
         </Text>
 
-        <Text fontSize="12px" as="div">
+        <Text
+          color={theme.updateUserForm.tooltipTextColor}
+          fontSize="12px"
+          as="div"
+        >
           <Table>
             <tbody>
               <tr>
@@ -714,6 +696,18 @@ class UpdateUserForm extends React.Component {
     const radioIsDisabled =
       isSelf || (profile.listAdminModules && !!profile.listAdminModules.length);
 
+    const calendarWorkFrom = profile.workFrom
+      ? new Date(profile.workFrom)
+      : undefined;
+
+    const calendarMinDate = profile.birthday
+      ? new Date(profile.birthday)
+      : calendarWorkFrom;
+
+    const birthdayDateValue = profile.birthday
+      ? new Date(profile.birthday)
+      : new Date(this.props.profile.workFrom);
+
     return (
       <>
         <MainContainer>
@@ -759,11 +753,15 @@ class UpdateUserForm extends React.Component {
               inputValue={profile.email}
               buttonText={t("ChangeButton")}
               buttonIsDisabled={isLoading}
-              buttonOnClick={this.toggleDialogsVisible}
+              buttonOnClick={() => this.onChangeEmailDialog(true)}
               buttonTabIndex={1}
               helpButtonHeaderContent={t("Common:Mail")}
               tooltipContent={
-                <Text fontSize="13px" as="div">
+                <Text
+                  color={theme.updateUserForm.tooltipTextColor}
+                  fontSize="13px"
+                  as="div"
+                >
                   <Trans t={t} i18nKey="EmailPopupHelper" ns="ProfileAction">
                     The main e-mail is needed to restore access to the portal in
                     case of loss of the password and send notifications.
@@ -782,7 +780,6 @@ class UpdateUserForm extends React.Component {
                   </Trans>
                 </Text>
               }
-              dataDialog={dialogsDataset.changeEmail}
               maxLabelWidth={maxLabelWidth}
             />
             <TextChangeField
@@ -791,9 +788,8 @@ class UpdateUserForm extends React.Component {
               inputValue={"********"}
               buttonText={t("ChangeButton")}
               buttonIsDisabled={isLoading}
-              buttonOnClick={this.toggleDialogsVisible}
+              buttonOnClick={() => this.onChangePasswordDialog(true)}
               buttonTabIndex={2}
-              dataDialog={dialogsDataset.changePassword}
               maxLabelWidth={maxLabelWidth}
             />
             {/*TODO: uncomment this after added phone form */}
@@ -803,9 +799,8 @@ class UpdateUserForm extends React.Component {
               inputValue={profile.mobilePhone}
               buttonText={t("ChangeButton")}
               buttonIsDisabled={isLoading}
-              buttonOnClick={this.toggleDialogsVisible}
+              buttonOnClick={() => this.onChangePhoneDialog(true)}
               buttonTabIndex={3}
-              dataDialog={dialogsDataset.changePhone}
               maxLabelWidth={maxLabelWidth}
             /> */}
             <TextField
@@ -844,9 +839,7 @@ class UpdateUserForm extends React.Component {
               labelText={`${t("Translations:Birthdate")}:`}
               inputName="birthday"
               inputClassName="date-picker_input-birthday"
-              inputValue={
-                profile.birthday ? new Date(profile.birthday) : undefined
-              }
+              inputValue={birthdayDateValue}
               inputIsDisabled={isLoading}
               inputOnChange={this.onBirthdayDateChange}
               inputTabIndex={6}
@@ -889,17 +882,18 @@ class UpdateUserForm extends React.Component {
                 labelText={`${regDateCaption}:`}
                 inputName="workFrom"
                 inputClassName="date-picker_input-reg-date"
-                inputValue={
-                  profile.workFrom ? new Date(profile.workFrom) : undefined
+                inputValue={calendarWorkFrom}
+                inputIsDisabled={
+                  isLoading ||
+                  !isAdmin ||
+                  calendarMinDate >= new Date().setHours(0, 0, 0, 0)
                 }
-                inputIsDisabled={isLoading || !isAdmin}
                 inputOnChange={this.onWorkFromDateChange}
                 inputTabIndex={7}
-                calendarMinDate={
-                  profile.birthday ? new Date(profile.birthday) : new Date()
-                }
+                calendarMinDate={calendarMinDate}
                 locale={language}
                 maxLabelWidth={maxLabelWidth}
+                //calendarMaxDate={calendarMinDate}
               />
             )}
             <TextField
@@ -992,39 +986,39 @@ class UpdateUserForm extends React.Component {
             onClick={this.handleSubmit}
             primary
             isDisabled={isLoading}
-            size="big"
+            size="normal"
             tabIndex={11}
           />
           <Button
             label={t("Common:CancelButton")}
             onClick={this.onCancelHandler}
             isDisabled={isLoading}
-            size="big"
+            size="normal"
             style={{ marginLeft: "8px" }}
             tabIndex={12}
           />
         </div>
 
-        {dialogsVisible.changeEmail && (
+        {this.state.changeEmailDialogVisible && (
           <ChangeEmailDialog
-            visible={dialogsVisible.changeEmail}
-            onClose={this.toggleDialogsVisible}
+            visible={this.state.changeEmailDialogVisible}
+            onClose={() => this.onChangeEmailDialog(false)}
             user={profile}
           />
         )}
 
-        {dialogsVisible.changePassword && (
+        {this.state.changePasswordDialogVisible && (
           <ChangePasswordDialog
-            visible={dialogsVisible.changePassword}
-            onClose={this.toggleDialogsVisible}
+            visible={this.state.changePasswordDialogVisible}
+            onClose={() => this.onChangePasswordDialog(false)}
             email={profile.email}
           />
         )}
 
-        {dialogsVisible.changePhone && (
+        {this.state.changePhoneDialogVisible && (
           <ChangePhoneDialog
-            visible={dialogsVisible.changePhone}
-            onClose={this.toggleDialogsVisible}
+            visible={this.state.changePhoneDialogVisible}
+            onClose={() => this.onChangePhoneDialog(false)}
             user={profile}
           />
         )}
@@ -1035,6 +1029,7 @@ class UpdateUserForm extends React.Component {
 
 export default withRouter(
   inject(({ auth, peopleStore }) => ({
+    theme: auth.settingsStore.theme,
     customNames: auth.settingsStore.customNames,
     isAdmin: auth.isAdmin,
     language: auth.language,

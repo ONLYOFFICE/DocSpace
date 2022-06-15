@@ -1,5 +1,17 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Box from "../box";
+import { isMobile } from "react-device-detect";
+
+const StyledIframe = styled.iframe`
+  border: none;
+  height: 60px;
+  width: 100%;
+
+  ${isMobile &&
+  css`
+    min-width: ${(props) => props.sectionWidth + 40 + "px"};
+  `};
+`;
 
 const StyledSnackBar = styled(Box)`
   transition: all 500ms ease;
@@ -13,12 +25,11 @@ const StyledSnackBar = styled(Box)`
   color: white;
   line-height: 16px;
   padding: 12px;
-  margin: 0 0 8px 0;
+  margin: 0;
   opacity: ${(props) => props.opacity || 0};
   width: 100%;
   background-color: ${(props) => props.backgroundColor};
   background-image: url(${(props) => props.backgroundImg || ""});
-  border-radius: 6px;
 
   .logo {
     padding-right: 10px;
@@ -29,7 +40,7 @@ const StyledSnackBar = styled(Box)`
     display: flex;
     flex-direction: column;
     gap: 5px;
-    text-align: ${(props) => props.textAlign};
+    text-align: ${(props) => props.textalign};
 
     .text-header {
       margin: 0;
@@ -40,7 +51,7 @@ const StyledSnackBar = styled(Box)`
       display: flex;
       flex-direction: row;
       gap: 10px;
-      justify-content: ${(props) => props.textAlign};
+      justify-content: ${(props) => props.textalign};
     }
   }
 
@@ -49,7 +60,7 @@ const StyledSnackBar = styled(Box)`
     display: inline-block;
     border: none;
     font-size: inherit;
-    color: "#000";
+    color: "#333";
     margin: 0 0 0 24px;
     padding: 0;
     min-width: min-content;
@@ -70,4 +81,21 @@ const StyledSnackBar = styled(Box)`
   }
 `;
 
-export default StyledSnackBar;
+const StyledAction = styled.div`
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  background: inherit;
+  display: inline-block;
+  border: none;
+  font-size: inherit;
+  color: "#333";
+  cursor: pointer;
+  text-decoration: underline;
+  ${isMobile &&
+  css`
+    right: 14px;
+  `};
+`;
+
+export { StyledAction, StyledSnackBar, StyledIframe };

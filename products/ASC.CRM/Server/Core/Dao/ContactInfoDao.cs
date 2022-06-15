@@ -29,10 +29,8 @@ using System.Linq;
 
 using ASC.Common;
 using ASC.Common.Caching;
-using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
 using ASC.Core.Tenants;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
@@ -42,7 +40,7 @@ using ASC.Web.CRM.Core.Search;
 using AutoMapper;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 namespace ASC.CRM.Core.Dao
 {
@@ -57,7 +55,7 @@ namespace ASC.CRM.Core.Dao
              TenantManager tenantManager,
              SecurityContext securityContext,
              TenantUtil tenantUtil,
-             IOptionsMonitor<ILog> logger,
+             ILogger logger,
              ICache ascCache,
              FactoryIndexerContactInfo factoryIndexerContactInfo,
              IMapper mapper)

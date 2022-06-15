@@ -8,20 +8,21 @@ import { withRouter } from "react-router-dom";
 import { isTablet } from "react-device-detect";
 
 import withFileActions from "../../../../../HOCs/withFileActions";
-import withContextOptions from "../../../../../HOCs/withContextOptions";
 import withQuickButtons from "../../../../../HOCs/withQuickButtons";
 import ItemIcon from "../../../../../components/ItemIcon";
 import marginStyles from "./CommonStyles";
+import { Base } from "@appserver/components/themes";
 
 const checkedStyle = css`
-  background: #f3f4f4;
+  background: ${(props) => props.theme.filesSection.rowView.checkedBackground};
   ${marginStyles}
 `;
 
 const draggingStyle = css`
-  background: #f8f7bf;
+  background: ${(props) => props.theme.filesSection.rowView.draggingBackground};
   &:hover {
-    background: #efefb2;
+    background: ${(props) =>
+      props.theme.filesSection.rowView.draggingHoverBackground};
   }
   ${marginStyles}
 `;
@@ -52,6 +53,29 @@ const StyledSimpleFilesRow = styled(Row)`
   margin-top: -2px;
 
   ${(props) =>
+    props.showHotkeyBorder &&
+    css`
+      border-top: 1px solid #2da7db !important;
+      margin-top: -3px;
+      margin-left: -24px;
+      margin-right: -24px;
+      padding-left: 24px;
+      padding-right: 24px;
+    `}
+
+  ::after {
+    ${(props) =>
+      props.showHotkeyBorder &&
+      css`
+        background: #2da7db;
+        padding-left: 24px;
+        padding-right: 24px;
+        margin-left: -24px;
+        margin-right: -24px;
+      `}
+  }
+
+  ${(props) =>
     !props.contextOptions &&
     `
     & > div:last-child {
@@ -73,8 +97,9 @@ const StyledSimpleFilesRow = styled(Row)`
   }
 
   .row_content {
-    max-width: fit-content;
-    min-width: auto;
+    ${(props) =>
+      props.sectionWidth > 500 &&
+      `max-width: fit-content;`}//min-width: auto;;;;;;;
   }
 
   .badges {
@@ -147,6 +172,8 @@ const StyledSimpleFilesRow = styled(Row)`
   `}
 `;
 
+StyledSimpleFilesRow.defaultProps = { theme: Base };
+
 const SimpleFilesRow = (props) => {
   const {
     item,
@@ -162,7 +189,6 @@ const SimpleFilesRow = (props) => {
     quickButtonsComponent,
     displayShareButton,
     isPrivacy,
-    contextOptionsProps,
     checkedProps,
     onFilesClick,
     onMouseClick,
@@ -170,6 +196,8 @@ const SimpleFilesRow = (props) => {
     isActive,
     inProgress,
     isAdmin,
+    getContextModel,
+    showHotkeyBorder,
   } = props;
 
   const withAccess = isAdmin || item.access === 0;
@@ -182,13 +210,17 @@ const SimpleFilesRow = (props) => {
   return (
     <StyledWrapper
       className={`row-wrapper ${
-        checkedProps || isActive ? "row-selected" : ""
+        showHotkeyBorder
+          ? "row-hotkey-border"
+          : checkedProps || isActive
+          ? "row-selected"
+          : ""
       }`}
     >
       <DragAndDrop
         data-title={item.title}
         value={value}
-        className={`files-item ${className}`}
+        className={`files-item ${className} ${item.id}_${item.file}`}
         onDrop={onDrop}
         onMouseDown={onMouseDown}
         dragging={dragging && isDragging}
@@ -206,7 +238,7 @@ const SimpleFilesRow = (props) => {
           onClick={onMouseClick}
           onDoubleClick={onFilesClick}
           checked={checkedProps}
-          {...contextOptionsProps}
+          contextOptions={item.contextOptions}
           contextButtonSpacerWidth={displayShareButton}
           dragging={dragging && isDragging}
           isActive={isActive}
@@ -214,6 +246,8 @@ const SimpleFilesRow = (props) => {
           isThirdPartyFolder={item.isThirdPartyFolder}
           className="files-row"
           withAccess={withAccess}
+          getContextModel={getContextModel}
+          showHotkeyBorder={showHotkeyBorder}
         >
           <FilesRowContent
             item={item}
@@ -227,8 +261,9 @@ const SimpleFilesRow = (props) => {
   );
 };
 
-export default withTranslation(["Home", "Translations"])(
-  withFileActions(
-    withRouter(withContextOptions(withQuickButtons(SimpleFilesRow)))
-  )
-);
+export default withTranslation([
+  "Home",
+  "Translations",
+  "InfoPanel",
+  "VersionBadge",
+])(withFileActions(withRouter(withQuickButtons(SimpleFilesRow))));

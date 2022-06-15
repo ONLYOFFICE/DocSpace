@@ -50,6 +50,8 @@ ELK_HOST=${ELK_HOST:-"${PRODUCT}-elasticsearch"}
 ELK_PORT=${ELK_PORT:-"9200"}
 ELK_THREADS=${ELK_THREADS:-"1"}
 
+DATABASE_MIGRATION=${DATABASE_MIGRATION:-"false"}
+
 KAFKA_HOST=${KAFKA_HOST:-"kafka"}":9092"
 
 APP_STORAGE_ROOT=${APP_STORAGE_ROOT:-"${BASE_DIR}/data/"}
@@ -62,6 +64,7 @@ sed -i "s!\"internal\".*,!\"internal\": \"${DOCUMENT_SERVER_URL_INTERNAL}\",!g" 
 sed -i "s!\"portal\".*!\"portal\": \"${APP_URL_PORTAL}\",!g" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
 sed -i "0,/\"value\"/s!\"value\".*,!\"value\": \"${DOCUMENT_SERVER_JWT_SECRET}\",!" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
 sed -i "s!\"header\".*!\"header\": \"${DOCUMENT_SERVER_JWT_HEADER}\"!" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
+sed -i "s!\"core\".*{!\"migration\": {\n\"enabled\": \"${DATABASE_MIGRATION}\"\n},\n\"core\": {!g" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
 
 sed -i "s!\"Scheme\".*!\"Scheme\": \"${ELK_SHEME}\",!g" ${PATH_TO_CONF}/elastic.json
 sed -i "s!\"Host\".*!\"Host\": \"${ELK_HOST}\",!g" ${PATH_TO_CONF}/elastic.json

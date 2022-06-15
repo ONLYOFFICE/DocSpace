@@ -5,7 +5,6 @@ import {
   AppServerConfig,
   FileStatus,
 } from "@appserver/common/constants";
-import toastr from "@appserver/components/toast/toastr";
 import { combineUrl } from "@appserver/common/utils";
 
 import Badges from "../components/Badges";
@@ -36,18 +35,11 @@ export default function withBadges(WrappedComponent) {
     };
 
     onBadgeClick = () => {
-      const {
-        item,
-        selectedFolderPathParts,
-        markAsRead,
-        setNewFilesPanelVisible,
-      } = this.props;
+      const { item, markAsRead, setNewFilesPanelVisible } = this.props;
       if (item.fileExst) {
         markAsRead([], [item.id], item);
       } else {
-        const newFolderIds = selectedFolderPathParts;
-        newFolderIds.push(item.id);
-        setNewFilesPanelVisible(true, newFolderIds, item);
+        setNewFilesPanelVisible(true, null, item);
       }
     };
 
@@ -59,6 +51,7 @@ export default function withBadges(WrappedComponent) {
     render() {
       const {
         t,
+        theme,
         item,
         canWebEdit,
         isTrashFolder,
@@ -83,6 +76,7 @@ export default function withBadges(WrappedComponent) {
       const badgesComponent = (
         <Badges
           t={t}
+          theme={theme}
           item={item}
           isAdmin={isAdmin}
           showNew={showNew}
@@ -115,7 +109,6 @@ export default function withBadges(WrappedComponent) {
         treeFoldersStore,
         filesActionsStore,
         versionHistoryStore,
-        selectedFolderStore,
         dialogsStore,
         filesStore,
         settingsStore,
@@ -124,7 +117,7 @@ export default function withBadges(WrappedComponent) {
     ) => {
       const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
       const { markAsRead } = filesActionsStore;
-      const { isTabletView, isDesktopClient } = auth.settingsStore;
+      const { isTabletView, isDesktopClient, theme } = auth.settingsStore;
       const { setIsVerHistoryPanel, fetchFileVersions } = versionHistoryStore;
       const {
         setNewFilesPanelVisible,
@@ -137,6 +130,7 @@ export default function withBadges(WrappedComponent) {
       const canConvert = settingsStore.canConvert(item.fileExst);
 
       return {
+        theme,
         isAdmin: auth.isAdmin,
         canWebEdit,
         canConvert,
@@ -146,7 +140,6 @@ export default function withBadges(WrappedComponent) {
         isTabletView,
         setIsVerHistoryPanel,
         fetchFileVersions,
-        selectedFolderPathParts: selectedFolderStore.pathParts,
         markAsRead,
         setNewFilesPanelVisible,
         setIsLoading,

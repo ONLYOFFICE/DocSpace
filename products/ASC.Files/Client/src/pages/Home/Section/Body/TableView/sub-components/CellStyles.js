@@ -6,11 +6,14 @@ const StyledText = styled(Text)`
   margin-right: 12px;
 `;
 
-const StyledAuthorAvatar = styled.img`
-  width: 16px;
-  height: 16px;
-  margin-right: 8px;
-  border-radius: 20px;
+const StyledAuthorCell = styled.div`
+  display: flex;
+
+  .author-avatar-cell {
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+  }
 `;
 
-export { StyledText, StyledAuthorAvatar };
+export { StyledText, StyledAuthorCell };

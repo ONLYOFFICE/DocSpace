@@ -137,6 +137,9 @@ class IconButton extends React.PureComponent {
       style,
       dataTip,
       title,
+      theme,
+      color,
+      hoverColor,
       ...rest
     } = this.props;
 

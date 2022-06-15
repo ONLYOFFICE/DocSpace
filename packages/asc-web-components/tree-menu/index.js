@@ -8,6 +8,7 @@ import Badge from "../badge";
 import Text from "../text";
 
 import { tablet } from "../utils/device";
+import Base from "../themes/base";
 
 const StyledTreeMenu = styled(Tree)`
   margin: 0;
@@ -21,6 +22,7 @@ const StyledTreeMenu = styled(Tree)`
 
   .rc-tree-switcher {
     margin-left: 0 !important;
+    padding-left: 16px;
     margin-top: 1px;
   }
 
@@ -29,7 +31,7 @@ const StyledTreeMenu = styled(Tree)`
     width: 18px;
     height: 16px;
     padding: 0;
-    margin-top: 4px;
+    margin-top: -4px;
   }
 
   ${(props) =>
@@ -43,22 +45,22 @@ const StyledTreeMenu = styled(Tree)`
     margin-right: 6px !important;
   }
   .rc-tree-node-content-wrapper {
-    position: static !important;
-    margin-bottom: ${(props) => +props.gapBetweenNodes - 16 + "px;"};
+    padding-top: 4px;
   }
 
   ${(props) =>
     !props.isFullFillSelection &&
     css`
       span.rc-tree-node-selected {
-        width: min-content !important;
-        padding-right: 4px;
+        // width: min-content !important;
+        // padding-right: 4px;
         max-width: 98%;
       }
     `}
 
   & .rc-tree-node-selected .rc-tree-title {
-    ${(props) => !props.isFullFillSelection && "width: calc(100% - 26px);"}
+    ${(props) => !props.isFullFillSelection && "width: calc(100% - 16px);"}
+    margin-top: 2px;
   }
 
   &:not(.rc-tree-show-line) .rc-tree-switcher-noop {
@@ -83,16 +85,38 @@ const StyledTreeMenu = styled(Tree)`
   .rc-tree-child-tree-open {
     display: block;
     ${(props) => props.disableSwitch && "margin: 0 0 25px 0;"}
-    margin-left: ${(props) => (props.disableSwitch ? "27px" : "8px")};
     li:first-child {
-      margin-top: ${(props) => (props.disableSwitch ? "10px" : "6px")};
+      margin-top: ${(props) => (props.disableSwitch ? "10px" : "8px")};
+      margin-bottom: 8px;
       margin-left: 0;
     }
+    li {
+      padding-left: 16px;
+    }
   }
+
+  .rc-tree-treenode-selected {
+    ::after {
+      position: absolute;
+      display: block;
+      top: 0px;
+
+      width: 100%;
+      width: ${(props) => props.widthAdditional};
+      height: 36px;
+      background-color: #f3f4f4;
+      content: "";
+      z-index: 1;
+      right: -${(props) => props.multiplicationFactor - 4}px;
+    }
+    .span.rc-tree-node-selected {
+    }
+  }
+
   .rc-tree-treenode-disabled > span:not(.rc-tree-switcher),
   .rc-tree-treenode-disabled > a,
   .rc-tree-treenode-disabled > a span {
-    color: #767676;
+    color: ${(props) => props.theme.treeMenu.disabledColor};
     cursor: not-allowed;
   }
 
@@ -135,20 +159,21 @@ const StyledTreeMenu = styled(Tree)`
       : ``}
   @media (max-width: 1024px) {
     margin-top: 20px !important;
-    .rc-tree-node-content-wrapper {
+    /* .rc-tree-node-content-wrapper {
       margin-bottom: ${(props) =>
-        props.gapBetweenNodesTablet
-          ? +props.gapBetweenNodesTablet - 16 + "px;"
-          : +props.gapBetweenNodes - 16 + "px;"};
-    }
+      props.gapBetweenNodesTablet
+        ? +props.gapBetweenNodesTablet - 16 + "px;"
+        : +props.gapBetweenNodes - 16 + "px;"};
+    } */
     & > li > .rc-tree-child-tree {
       margin-left: 4px;
     }
   }
 `;
 
+StyledTreeMenu.defaultProps = { theme: Base };
+
 const TreeMenu = React.forwardRef((props, ref) => {
-  //console.log("TreeMenu render");
   const {
     defaultExpandAll,
     defaultExpandParent,
@@ -189,6 +214,8 @@ const TreeMenu = React.forwardRef((props, ref) => {
     gapBetweenNodes,
     gapBetweenNodesTablet,
     isEmptyRootNode,
+    theme,
+    childrenCount,
   } = props;
   const expandedKeysProp = expandedKeys ? { expandedKeys: expandedKeys } : {};
 
@@ -211,8 +238,6 @@ const TreeMenu = React.forwardRef((props, ref) => {
                 className="newItem"
                 key={child.props.id + "-badge"}
                 label={child.props.newItems}
-                backgroundColor="#ED7309"
-                color="#FFF"
                 fontSize="11px"
                 fontWeight={800}
                 borderRadius="11px"
@@ -275,6 +300,10 @@ const TreeMenu = React.forwardRef((props, ref) => {
         gapBetweenNodes={gapBetweenNodes}
         gapBetweenNodesTablet={gapBetweenNodesTablet}
         isEmptyRootNode={isEmptyRootNode}
+        widthAdditional={`calc(100% + ${
+          (childrenCount ? childrenCount : 1) * 32
+        }px)`}
+        multiplicationFactor={32}
       >
         {modifiedChildren}
       </StyledTreeMenu>

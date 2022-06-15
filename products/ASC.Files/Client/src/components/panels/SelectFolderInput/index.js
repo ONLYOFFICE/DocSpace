@@ -1,188 +1,229 @@
 import React from "react";
-import { Provider as MobxProvider } from "mobx-react";
-
+import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
-
-import stores from "../../../store/index";
-import SelectFolderDialog from "../SelectFolderDialog/index";
 import StyledComponent from "./StyledSelectFolderInput";
+import { getFolderPath } from "@appserver/common/api/files";
+import toastr from "@appserver/components/toast/toastr";
+import SelectFolderDialog from "../SelectFolderDialog";
 import SimpleFileInput from "../../SimpleFileInput";
-
-let path = "";
-
-class SelectFolderInputBody extends React.PureComponent {
+import { withTranslation } from "react-i18next";
+import SelectionPanel from "../SelectionPanel/SelectionPanelBody";
+class SelectFolderInput extends React.PureComponent {
   constructor(props) {
     super(props);
+    const { id, foldersType } = this.props;
+
+    const isNeedLoader =
+      !!id || foldersType !== "third-party" || foldersType === "common";
 
     this.state = {
-      isLoading: false,
+      isLoading: isNeedLoader,
       baseFolderPath: "",
-      fullFolderPath: "",
-      fullFolderPathDefault: "",
+      newFolderPath: "",
+      resultingFolderTree: [],
+      baseId: "",
     };
   }
-  componentDidMount() {
-    const { folderPath } = this.props;
+  async componentDidMount() {
+    const {
+      setFirstLoad,
+      treeFolders,
+      foldersType,
+      id,
+      onSelectFolder,
+      foldersList,
+    } = this.props;
 
-    if (folderPath.length !== 0) {
-      this.setState({
-        fullFolderPath: folderPath,
-        fullFolderPathDefault: folderPath,
-      });
+    setFirstLoad(false);
+
+    let resultingFolderTree, resultingId;
+
+    try {
+      [
+        resultingFolderTree,
+        resultingId,
+      ] = await SelectionPanel.getBasicFolderInfo(
+        treeFolders,
+        foldersType,
+        id,
+        this.onSetBaseFolderPath,
+        onSelectFolder,
+        foldersList
+      );
+    } catch (e) {
+      toastr.error(e);
+      return;
     }
+
+    this.setState({
+      resultingFolderTree,
+      baseId: resultingId,
+    });
   }
 
   componentDidUpdate(prevProps) {
-    const { isSetDefaultFolderPath, folderPath } = this.props;
+    const { isSuccessSave, isReset, setFolderId, id } = this.props;
+    const { newFolderPath, baseFolderPath, baseId } = this.state;
 
-    if (
-      isSetDefaultFolderPath &&
-      isSetDefaultFolderPath !== prevProps.isSetDefaultFolderPath
-    ) {
-      this.setState({
-        fullFolderPath: this.state.fullFolderPathDefault,
-      });
+    if (isSuccessSave && isSuccessSave !== prevProps.isSuccessSave) {
+      newFolderPath &&
+        this.setState({
+          baseFolderPath: newFolderPath,
+        });
     }
-    if (folderPath !== prevProps.folderPath) {
+
+    if (isReset && isReset !== prevProps.isReset) {
+      setFolderId(baseId !== id && id ? id : baseId);
+
       this.setState({
-        fullFolderPath: folderPath,
-        fullFolderPathDefault: folderPath,
+        newFolderPath: baseFolderPath,
       });
     }
   }
+  setFolderPath = async (folderId) => {
+    const foldersArray = await getFolderPath(folderId);
 
-  onSetFullPath = (pathName) => {
+    const convertFolderPath = (foldersArray) => {
+      let path = "";
+      if (foldersArray.length > 1) {
+        for (let item of foldersArray) {
+          if (!path) {
+            path = path + `${item.title}`;
+          } else path = path + " " + "/" + " " + `${item.title}`;
+        }
+      } else {
+        for (let item of foldersArray) {
+          path = `${item.title}`;
+        }
+      }
+      return path;
+    };
+
+    const convertFoldersArray = convertFolderPath(foldersArray);
+
+    return convertFoldersArray;
+  };
+  onSetNewFolderPath = async (folderId) => {
+    let timerId = setTimeout(() => {
+      this.setState({ isLoading: true });
+    }, 500);
+
+    try {
+      const convertFoldersArray = await this.setFolderPath(folderId);
+      clearTimeout(timerId);
+      timerId = null;
+
+      this.setState({
+        newFolderPath: convertFoldersArray,
+        isLoading: false,
+      });
+    } catch (e) {
+      toastr.error(e);
+      clearTimeout(timerId);
+      timerId = null;
+
+      this.setState({
+        isLoading: false,
+      });
+    }
+  };
+
+  onSetBaseFolderPath = async (folderId) => {
+    try {
+      const convertFoldersArray = await this.setFolderPath(folderId);
+
+      this.setState({
+        baseFolderPath: convertFoldersArray,
+        isLoading: false,
+      });
+    } catch (e) {
+      toastr.error(e);
+      this.setState({
+        isLoading: false,
+      });
+    }
+  };
+
+  onSetLoadingInput = (isLoading) => {
     this.setState({
-      fullFolderPath: pathName,
+      isLoading,
     });
   };
 
-  onSetBaseFolderPath = (pathName) => {
-    this.setState({
-      baseFolderPath: pathName,
-    });
-  };
-
-  onSetLoadingInput = (loading) => {
-    this.setState({
-      isLoading: loading,
-    });
-  };
   render() {
     const {
-      name,
+      isLoading,
+      baseFolderPath,
+      newFolderPath,
+      baseId,
+      resultingFolderTree,
+    } = this.state;
+    const {
       onClickInput,
-      isPanelVisible,
-      withoutProvider,
-      onClose,
       isError,
-      isSavingProcess,
+      t,
+      placeholder,
+      maxInputWidth,
       isDisabled,
-      onSelectFolder,
-      onSetLoadingData,
-      foldersType,
-      folderPath,
-      isNeedArrowIcon,
-      isSetFolderImmediately,
+      isPanelVisible,
       id,
-      selectedFolderId,
-      displayType,
-      dialogWithFiles,
-      modalHeightContent,
-      asideHeightContent,
-      zIndex,
-      showButtons,
-      header,
-      headerName,
-      footer,
-      selectionButtonPrimary,
+      theme,
+      isFolderTreeLoading = false,
+      ...rest
     } = this.props;
-    const { isLoading, baseFolderPath, fullFolderPath } = this.state;
+
+    const passedId = baseId !== id && id ? id : baseId;
 
     return (
-      <StyledComponent>
+      <StyledComponent maxWidth={maxInputWidth}>
         <SimpleFileInput
-          name={name}
-          className="input-with-folder-path"
-          textField={fullFolderPath || baseFolderPath}
-          isDisabled={isLoading || isSavingProcess || isDisabled}
+          theme={theme}
+          className="select-folder_file-input"
+          textField={newFolderPath || baseFolderPath}
           isError={isError}
           onClickInput={onClickInput}
+          placeholder={placeholder}
+          isDisabled={isFolderTreeLoading || isDisabled || isLoading}
         />
 
-        <SelectFolderDialog
-          zIndex={zIndex}
-          isPanelVisible={isPanelVisible}
-          onClose={onClose}
-          folderPath={folderPath}
-          onSelectFolder={onSelectFolder}
-          onSetLoadingData={onSetLoadingData}
-          foldersType={foldersType}
-          withoutProvider={withoutProvider}
-          onSetFullPath={this.onSetFullPath}
-          onSetBaseFolderPath={this.onSetBaseFolderPath}
-          onSetLoadingInput={this.onSetLoadingInput}
-          isNeedArrowIcon={isNeedArrowIcon}
-          isSetFolderImmediately={isSetFolderImmediately}
-          id={id}
-          selectedFolderId={selectedFolderId}
-          displayType={displayType}
-          dialogWithFiles={dialogWithFiles}
-          modalHeightContent={modalHeightContent}
-          asideHeightContent={asideHeightContent}
-          showButtons={showButtons}
-          header={header}
-          headerName={headerName}
-          footer={footer}
-          selectionButtonPrimary={selectionButtonPrimary}
-        />
+        {!isFolderTreeLoading && isPanelVisible && (
+          <SelectFolderDialog
+            {...rest}
+            withInput={true}
+            folderTree={resultingFolderTree}
+            id={passedId}
+            isPanelVisible={isPanelVisible}
+            onSetBaseFolderPath={this.onSetBaseFolderPath}
+            onSetNewFolderPath={this.onSetNewFolderPath}
+          />
+        )}
       </StyledComponent>
     );
   }
 }
 
-SelectFolderInputBody.propTypes = {
+SelectFolderInput.propTypes = {
   onClickInput: PropTypes.func.isRequired,
-  onClose: PropTypes.func.isRequired,
-  onSelectFolder: PropTypes.func.isRequired,
-  onSetLoadingData: PropTypes.func,
-  isPanelVisible: PropTypes.bool.isRequired,
-  name: PropTypes.string,
-  withoutProvider: PropTypes.bool,
-  isError: PropTypes.bool,
-  isSavingProcess: PropTypes.bool,
+  hasError: PropTypes.bool,
+  isDisabled: PropTypes.bool,
+  placeholder: PropTypes.string,
 };
 
-SelectFolderInputBody.defaultProps = {
-  withoutProvider: false,
+SelectFolderInput.defaultProps = {
+  hasError: false,
   isDisabled: false,
-  isError: false,
-  folderPath: "",
+  placeholder: "",
 };
 
-class SelectFolderInput extends React.Component {
-  static setFullFolderPath = (foldersArray) => {
-    path = "";
-    if (foldersArray.length > 1) {
-      for (let item of foldersArray) {
-        if (!path) {
-          path = path + `${item.title}`;
-        } else path = path + " " + "/" + " " + `${item.title}`;
-      }
-    } else {
-      for (let item of foldersArray) {
-        path = `${item.title}`;
-      }
-    }
-    return path;
-  };
-  render() {
-    return (
-      <MobxProvider {...stores}>
-        <SelectFolderInputBody {...this.props} />
-      </MobxProvider>
-    );
+export default inject(
+  ({ filesStore, treeFoldersStore, selectFolderDialogStore }) => {
+    const { setFirstLoad } = filesStore;
+    const { treeFolders } = treeFoldersStore;
+    const { setFolderId } = selectFolderDialogStore;
+    return {
+      setFirstLoad,
+      treeFolders,
+      setFolderId,
+    };
   }
-}
-
-export default SelectFolderInput;
+)(observer(withTranslation("Translations")(SelectFolderInput)));

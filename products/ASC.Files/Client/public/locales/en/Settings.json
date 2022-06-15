@@ -1,4 +1,6 @@
 ﻿{
+  "Admin": "Admin",
+  "Common": "Common",
   "CommonSettings": "Common settings",
   "ConnectAccounts": "Connect Accounts",
   "ConnectAccountsSubTitle": "No connected accounts",
@@ -17,5 +19,6 @@
   "StoringFileVersion": "Storing file versions",
   "ThirdPartyBtn": "Allow users to connect third-party storages",
   "ThirdPartySettings": "Connected clouds",
-  "UpdateOrCreate": "Update the file version for the existing file with the same name. Otherwise, a copy of the file will be created."
+  "UpdateOrCreate": "Update the file version for the existing file with the same name. Otherwise, a copy of the file will be created.",
+  "Clouds": "Clouds"
 }

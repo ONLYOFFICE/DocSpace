@@ -29,7 +29,6 @@ using System.Collections.Generic;
 using System.Linq;
 
 using ASC.Common;
-using ASC.Common.Logging;
 using ASC.Common.Threading;
 using ASC.Core;
 using ASC.Core.Tenants;
@@ -41,7 +40,7 @@ using ASC.CRM.Resources;
 using ASC.VoipService;
 using ASC.VoipService.Dao;
 
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 namespace ASC.Web.CRM.Classes
 {
@@ -53,7 +52,7 @@ namespace ASC.Web.CRM.Classes
         public readonly DaoFactory _daoFactory;
         public readonly VoipDao _voipDao;
         public readonly TenantManager _tenantManager;
-        public readonly ILog _logger;
+        public readonly ILogger _logger;
         public readonly int _tenantId;
         public readonly SecurityContext _securityContext;
         public readonly TenantUtil _tenantUtil;
@@ -64,17 +63,17 @@ namespace ASC.Web.CRM.Classes
         public VoipEngine(DaoFactory daoFactory,
                          CrmSecurity crmSecurity,
                          TenantUtil tenantUtil,
-                         DistributedTaskQueueOptionsManager optionsManager,
+                         IDistributedTaskQueueFactory factory,
                          SecurityContext securityContext,
-                         IOptionsMonitor<ILog> logger,
+                         ILogger logger,
                          TenantManager tenantManager,
                          VoipDao voipDao)
         {
             _crmSecurity = crmSecurity;
             _tenantUtil = tenantUtil;
             _securityContext = securityContext;
-            _queue = optionsManager.Get<QueueItem>();
-            _logger = logger.Get("ASC.CRM");
+            _queue = factory.CreateQueue<QueueItem>();
+            _logger = logger;
             _tenantManager = tenantManager;
             _voipDao = voipDao;
             _daoFactory = daoFactory;
@@ -86,7 +85,7 @@ namespace ASC.Web.CRM.Classes
             var dao = _daoFactory.GetVoipDao();
             var call = dao.GetCall(callHistory.Id) ?? callHistory;
 
-            if (string.IsNullOrEmpty(call.ParentID))
+            if (string.IsNullOrEmpty(call.ParentCallId))
             {
                 GetContact(call);
             }
@@ -121,9 +120,9 @@ namespace ASC.Web.CRM.Classes
                 call.VoipRecord = new VoipRecord();
             }
 
-            if (string.IsNullOrEmpty(call.VoipRecord.Id))
+            if (string.IsNullOrEmpty(call.VoipRecord.Sid))
             {
-                call.VoipRecord.Id = callHistory.VoipRecord.Id;
+                call.VoipRecord.Sid = callHistory.VoipRecord.Sid;
             }
 
             if (call.VoipRecord.Price == default(decimal))
@@ -193,7 +192,7 @@ namespace ASC.Web.CRM.Classes
                 return null;
             }
 
-            var contactPhone = call.Status == VoipCallStatus.Incoming || call.Status == VoipCallStatus.Answered ? call.From : call.To;
+            var contactPhone = call.Status == VoipCallStatus.Incoming || call.Status == VoipCallStatus.Answered ? call.NumberFrom : call.NumberTo;
 
             var newContactIds = _daoFactory.GetContactDao().GetContactIDsByContactInfo(ContactInfoType.Phone, contactPhone.TrimStart('+'), null, true);
 
@@ -226,7 +225,7 @@ namespace ASC.Web.CRM.Classes
             {
                 var _queueItem = new QueueItem { CallID = callId, TenantID = _tenantId };
 
-                _queue.QueueTask((a, b) => SaveAdditionalInfoAction(_queueItem), _queueItem); ;
+                _queue.EnqueueTask((a, b) => SaveAdditionalInfoAction(_queueItem), _queueItem); ;
             }
         }
 
@@ -262,9 +261,9 @@ namespace ASC.Web.CRM.Classes
 
                 call = voipEngine.SaveOrUpdateCall(call);
 
-                if (!string.IsNullOrEmpty(call.VoipRecord.Id))
+                if (!string.IsNullOrEmpty(call.VoipRecord.Sid))
                 {
-                    call.VoipRecord = _voipDao.GetProvider().GetRecord((string)call.Id, (string)call.VoipRecord.Id);
+                    call.VoipRecord = _voipDao.GetProvider().GetRecord((string)call.Id, (string)call.VoipRecord.Sid);
                     voipEngine.SaveOrUpdateCall(call);
                 }
 
@@ -274,7 +273,7 @@ namespace ASC.Web.CRM.Classes
             }
             catch (Exception ex)
             {
-                _logger.ErrorFormat("SaveAdditionalInfo {0}, {1}", ex, ex.StackTrace);
+                _logger.LogError("SaveAdditionalInfo {0}, {1}", ex, ex.StackTrace);
             }
         }
 

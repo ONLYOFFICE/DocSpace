@@ -318,6 +318,7 @@ class DatePicker extends Component {
       style,
       className,
       inputClassName,
+      fixedDirection,
     } = this.props;
     const { value, isOpen, mask, hasError, displayType } = this.state;
 
@@ -335,8 +336,8 @@ class DatePicker extends Component {
           isReadOnly={isReadOnly}
           hasError={hasError}
           iconName="/static/images/calendar.react.svg"
-          iconColor="#A3A9AE"
-          hoverColor="#A3A9AE"
+          // iconColor="#A3A9AE"
+          // hoverColor="#A3A9AE"
           onIconClick={this.onClick}
           value={value}
           onChange={this.handleChange}
@@ -354,6 +355,7 @@ class DatePicker extends Component {
                 open={isOpen}
                 clickOutsideAction={this.onClose}
                 isDefaultMode={false}
+                fixedDirection={fixedDirection}
               >
                 {this.renderBody()}
               </DropDown>
@@ -424,6 +426,7 @@ DatePicker.propTypes = {
   id: PropTypes.string,
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  fixedDirection: PropTypes.bool,
 };
 
 DatePicker.defaultProps = {

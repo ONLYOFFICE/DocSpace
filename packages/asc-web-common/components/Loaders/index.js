@@ -3,7 +3,11 @@ import Circle from "./CircleLoader";
 import Header from "./HeaderLoader";
 import SectionHeader from "./SectionHeaderLoader";
 import ArticleHeader from "./ArticleHeaderLoader";
+import ArticleButton from "./ArticleButtonLoader";
+import ArticleFolder from "./ArticleFolderLoader";
+import ArticleGroup from "./ArticleGroupsLoader";
 import TreeFolders from "./TreeFolderLoader";
+import NewTreeFolders from "./NewTreeFolderLoader";
 import TreeSettingsLoader from "./TreeSettingsLoader";
 import Row from "./RowLoader";
 import Rows from "./RowsLoader";
@@ -17,7 +21,9 @@ import Tile from "./TileLoader";
 import Tiles from "./TilesLoader";
 import DialogLoader from "./DialogLoader";
 import DialogAsideLoader from "./DialogAsideLoader";
-import MainButton from "./MainButtonLoader";
+import ListLoader from "./ListLoader";
+import SharingPanelLoader from "./SharingPanelLoader";
+import SharingPanelLoaderModal from "./SharingPanelLoader/modal";
 
 export default {
   Rectangle,
@@ -39,5 +45,11 @@ export default {
   Tiles,
   DialogLoader,
   DialogAsideLoader,
-  MainButton,
+  ArticleButton,
+  ArticleFolder,
+  ArticleGroup,
+  ListLoader,
+  NewTreeFolders,
+  SharingPanelLoader,
+  SharingPanelLoaderModal,
 };

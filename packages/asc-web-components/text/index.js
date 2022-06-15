@@ -68,4 +68,4 @@ Text.defaultProps = {
   noSelect: false,
 };
 
-export default Text;
+export default React.memo(Text);

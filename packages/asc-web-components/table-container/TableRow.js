@@ -15,6 +15,7 @@ const TableRow = (props) => {
     style,
     selectionProp,
     title,
+    getContextModel,
     ...rest
   } = props;
 
@@ -56,11 +57,11 @@ const TableRow = (props) => {
             onHide={onHideContextMenu}
             ref={cm}
             model={contextOptions}
+            getContextModel={getContextModel}
+            withBackdrop={true}
           ></ContextMenu>
           {renderContext ? (
             <ContextMenuButton
-              color="#A3A9AE"
-              hoverColor="#657077"
               className="expandButton"
               getData={getOptions}
               directionX="right"
@@ -86,6 +87,7 @@ TableRow.propTypes = {
   className: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   style: PropTypes.object,
   title: PropTypes.string,
+  getContextModel: PropTypes.func,
 };
 
 export default TableRow;
