@@ -114,18 +114,9 @@ class AutomaticBackup extends React.PureComponent {
   };
 
   componentDidMount() {
-    const { setDefaultOptions, t, backupSchedule } = this.props;
-
     this.getWeekdays();
 
-    if (!isMobileOnly) {
-      setDefaultOptions(t, this.periodsObject, this.weekdaysLabelArray);
-      this.setState({
-        isEnable: !!backupSchedule,
-      });
-    } else {
-      this.setBasicSettings();
-    }
+    this.setBasicSettings();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -476,7 +467,9 @@ class AutomaticBackup extends React.PureComponent {
       isCheckedDocuments,
       commonThirdPartyList,
       buttonSize,
+      organizationName,
       theme,
+      renderTooltip,
     } = this.props;
 
     const {
@@ -515,6 +508,19 @@ class AutomaticBackup extends React.PureComponent {
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
       <StyledAutoBackup theme={theme}>
+        <div className="backup_modules-header_wrapper">
+          <Text isBold fontSize="16px">
+            {t("AutoBackup")}
+          </Text>
+          {renderTooltip(
+            t("AutoBackupHelp") +
+              " " +
+              t("AutoBackupHelpNote", { organizationName })
+          )}
+        </div>
+        <Text className="backup_modules-description">
+          {t("AutoBackupDescription")}
+        </Text>
         <div className="backup_toggle-wrapper">
           <ToggleButton
             className="backup_toggle-btn"
@@ -618,7 +624,7 @@ class AutomaticBackup extends React.PureComponent {
 }
 export default inject(({ auth, backup }) => {
   const { language, settingsStore } = auth;
-  const { theme } = settingsStore;
+const { organizationName, theme } = settingsStore;
   const {
     backupSchedule,
     commonThirdPartyList,
@@ -653,6 +659,7 @@ export default inject(({ auth, backup }) => {
     theme,
     language,
 
+    organizationName,
     backupSchedule,
     commonThirdPartyList,
     clearProgressInterval,

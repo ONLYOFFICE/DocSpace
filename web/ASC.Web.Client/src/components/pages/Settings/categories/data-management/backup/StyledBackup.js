@@ -2,6 +2,7 @@ import styled, { css } from "styled-components";
 import commonSettingsStyles from "../../../utils/commonSettingsStyles";
 import globalColors from "@appserver/components/utils/globalColors";
 import { isMobileOnly } from "react-device-detect";
+import { mobile } from "@appserver/components/utils/device";
 
 const linkColor = globalColors.black;
 const borderColor = globalColors.grayLightMid;
@@ -12,6 +13,22 @@ const TEXT_LENGTH = "700px";
 const commonStyles = css`
   margin-right: 16px;
 
+  .backup_modules-description {
+    margin-bottom: 24px;
+    margin-top: 8px;
+    max-width: ${TEXT_LENGTH};
+
+    @media ${mobile} {
+      margin-bottom: 8px;
+    }
+  }
+
+  .backup_modules-header_wrapper {
+    display: flex;
+    svg {
+      margin: 5px 0 0 4px;
+    }
+  }
   .radio-button_text {
     margin-right: 7px;
     margin-left: 4px;
@@ -323,12 +340,6 @@ const StyledBackup = styled.div`
   .backup_modules-description {
     margin-bottom: 24px;
     max-width: ${TEXT_LENGTH};
-  }
-  .backup_modules-header_wrapper {
-    display: flex;
-    svg {
-      margin: 5px 0 0 4px;
-    }
   }
 
   .backup-section_wrapper {

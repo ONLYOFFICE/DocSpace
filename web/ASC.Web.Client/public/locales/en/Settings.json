@@ -1,4 +1,4 @@
-{
+﻿{
   "AccessRightsAccessToProduct": "Access to {{product}} module is given to",
   "AccessRightsAllUsers": "All {{users}}",
   "AccessRightsChangeOwnerConfirmText": "Changes will be applied after the confirmation via email.",
@@ -48,6 +48,7 @@
   "CustomTitlesSettingsTooltipDescription": "Enter the name you like in the <1>{{ header }}</1> field.",
   "CustomTitlesText": "Welcome Page",
   "CustomTitlesWelcome": "Welcome Page Settings",
+  "DataBackup": "Data backup",
   "Customization": "Customization",
   "CustomizationDescription": "This subsection allows you to change the look and feel of your portal. You can use your own company logo, name and text to match your organization brand.",
   "DeactivateOrDeletePortal": "Deactivate or delete portal.",

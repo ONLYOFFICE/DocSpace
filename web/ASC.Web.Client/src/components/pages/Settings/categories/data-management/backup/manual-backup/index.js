@@ -181,6 +181,8 @@ class ManualBackup extends React.Component {
       downloadingProgress,
       commonThirdPartyList,
       buttonSize,
+      organizationName,
+      renderTooltip,
     } = this.props;
     const {
       isInitialLoading,
@@ -212,6 +214,19 @@ class ManualBackup extends React.Component {
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
       <StyledManualBackup>
+        <div className="backup_modules-header_wrapper">
+          <Text isBold fontSize="16px">
+            {t("DataBackup")}
+          </Text>
+          {renderTooltip(
+            t("ManualBackupHelp") +
+              " " +
+              t("ManualBackupHelpNote", { organizationName })
+          )}
+        </div>
+        <Text className="backup_modules-description">
+          {t("ManualBackupDescription")}
+        </Text>
         <StyledModules>
           <RadioButton
             label={t("TemporaryStorage")}
@@ -312,7 +327,7 @@ class ManualBackup extends React.Component {
   }
 }
 
-export default inject(({ backup }) => {
+export default inject(({ auth, backup }) => {
   const {
     clearProgressInterval,
     clearSessionStorage,
@@ -325,8 +340,10 @@ export default inject(({ backup }) => {
     setCommonThirdPartyList,
     temporaryLink,
   } = backup;
-
+  const { organizationName } = auth.settingsStore;
   return {
+    organizationName,
+
     clearProgressInterval,
     clearSessionStorage,
     commonThirdPartyList,
