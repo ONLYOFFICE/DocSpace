@@ -33,7 +33,7 @@ const StyledTableContainer = styled.div`
 
   .table-container_group-menu,
   .table-container_header {
-    z-index: 300;
+    z-index: 200;
     padding: 0 20px;
 
     border-bottom: 1px solid;
