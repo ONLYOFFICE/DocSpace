@@ -11,7 +11,7 @@ import {
 } from "../../../styles/VirtualRoom/members";
 import { fillingFormsVR } from "../mock_data";
 
-const Members = ({ t }) => {
+const Members = ({ t, selfId }) => {
   const data = fillingFormsVR;
 
   return (
@@ -19,7 +19,7 @@ const Members = ({ t }) => {
       <StyledTitle withBottomBorder>
         <img className="icon" src={data.icon} alt="thumbnail-icon" />
         <Text className="text">{data.title}</Text>
-        <ContextMenuButton className="context-menu-button" />
+        <ContextMenuButton getData={() => {}} className="context-menu-button" />
       </StyledTitle>
 
       <StyledUserTypeHeader>
@@ -27,6 +27,7 @@ const Members = ({ t }) => {
           {t("Users in room")} : {data.members.inRoom.length}
         </Text>
         <IconButton
+          title={t("Common:AddUsers")}
           iconName="/static/images/person+.react.svg"
           isFill={true}
           onClick={() => {}}
@@ -37,17 +38,27 @@ const Members = ({ t }) => {
 
       <StyledUserList>
         {data.members.inRoom.map((user) => (
-          <StyledUser canEdit>
+          <StyledUser key={user.id} canEdit>
             <Avatar
               role="user"
               className="avatar"
               size="min"
-              source=""
-              userName={user.name}
+              source={
+                user.avatar ||
+                (user.displayName
+                  ? ""
+                  : user.email && "/static/images/@.react.svg")
+              }
+              userName={user.displayName}
             />
-            <Text truncate className="name">
-              {user.name}
-            </Text>
+            <div className="name">
+              {user.displayName || user.email}
+              {selfId === user.id && (
+                <span className="secondary-info">
+                  {" (" + t("Common:MeLabel") + ")"}
+                </span>
+              )}
+            </div>
           </StyledUser>
         ))}
       </StyledUserList>
@@ -57,6 +68,7 @@ const Members = ({ t }) => {
           {t("Expect people")} : {data.members.expect.length}
         </Text>
         <IconButton
+          title={t("Repeat invitation")}
           iconName="/static/images/e-mail+.react.svg"
           isFill={true}
           onClick={() => {}}
@@ -67,16 +79,21 @@ const Members = ({ t }) => {
 
       <StyledUserList>
         {data.members.expect.map((user) => (
-          <StyledUser canEdit>
+          <StyledUser key={user.id} canEdit>
             <Avatar
               role="user"
               className="avatar"
               size="min"
-              source=""
-              userName={user.name}
+              source={
+                user.avatar ||
+                (user.displayName
+                  ? ""
+                  : user.email && "/static/images/@.react.svg")
+              }
+              userName={user.displayName}
             />
             <Text truncate className="name">
-              {user.name}
+              {user.displayName || user.email}
             </Text>
           </StyledUser>
         ))}

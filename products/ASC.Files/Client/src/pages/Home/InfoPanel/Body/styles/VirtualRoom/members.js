@@ -41,7 +41,10 @@ const StyledUser = styled.div`
     font-style: normal;
     font-weight: 600;
     font-size: 14px;
-    line-height: 16px;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
     .secondary-info {
       color: #a3a9ae;

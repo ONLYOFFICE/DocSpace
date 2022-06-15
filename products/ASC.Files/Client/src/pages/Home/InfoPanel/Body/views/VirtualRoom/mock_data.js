@@ -1,32 +1,117 @@
+const files = [
+  {
+    fileExst: ".png",
+    icon: "/static/images/icons/24/image.svg",
+    isFolder: false,
+    id: 34,
+    title: "Windows 12 Wallpaper Purple.png",
+  },
+  {
+    fileExst: ".pptx",
+    icon: "/static/images/icons/24/pptx.svg",
+    isFolder: false,
+    id: 3,
+    title: "ONLYOFFICE Sample Presentation.pptx",
+  },
+  {
+    fileExst: ".docx",
+    icon: "/static/images/icons/24/docx.svg",
+    isFolder: false,
+    id: 5,
+    title: "курсач.docx",
+  },
+];
+
+const people = [
+  {
+    email: "nikita.mushka@onlyoffice.com",
+    avatar:
+      "/storage/userPhotos/root/2af62a34-b6c8-11ec-b1d9-b42e99bd46a3_size_82-82.jpeg?_=1354477264",
+    isOwner: true,
+    id: "2af62a34-b6c8-11ec-b1d9-b42e99bd46a3",
+    displayName: "Мушка Никита",
+    profileUrl: "http://localhost:8092/products/people/view/administrator",
+  },
+  {
+    email: "yoshiko05@rohan.biz",
+    avatar: "",
+    isOwner: false,
+    id: "1231234",
+    displayName: "Rebecca Holt",
+    profileUrl: "",
+  },
+  {
+    email: "kk@mail.ru",
+    avatar: "/images/default_user_photo_size_82-82.png",
+    isOwner: false,
+    id: "5db1213e-7f73-434e-9d6a-af699821d3c9",
+    displayName:
+      "Some random guy with a really long name, like i mean some dumb long one",
+    profileUrl: "http://localhost:8092/products/people/view/kk",
+  },
+  {
+    email: "yoshiko05@rohan.biz",
+    avatar:
+      "https://images.unsplash.com/photo-1519699047748-de8e457a634e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80",
+    isOwner: false,
+    id: "345970",
+    displayName: "Pamela Garcia",
+    profileUrl: "",
+  },
+  {
+    email: "ycummerata@yahoo.com",
+    avatar: "",
+    isOwner: false,
+    id: "389457",
+    displayName: "",
+    profileUrl: "",
+  },
+];
+
 const fillingFormsVR = {
   title: "Filling forms room",
   icon: "images/icons/32/folder.svg",
   members: {
-    inRoom: [
-      {
-        name: "Nikita Mushka",
-        role: "Owner",
-        avatar: "",
-        isMe: true,
-      },
-      {
-        name: "Konstantinov Konstantin Konstantinopolsky",
-        role: "Room manager",
-        avatar: "",
-      },
-      {
-        name: "Rebecca Holt",
-        role: "Room manager",
-        avatar: "",
-      },
-    ],
-    expect: [
-      { name: "Johnnie Cunnigham", role: "Viewer", avatar: "" },
-      { email: "ycummerata@yahoo.com", role: "Viewer" },
-      { email: "yoshiko05@rohan.biz", role: "Viewer" },
-      { name: "Angela Garcia", email: "ycummerata@yahoo.com", role: "Viewer" },
-    ],
+    inRoom: [...people.slice(0, 3)],
+    expect: [...people.slice(3)],
   },
+
+  history: [
+    {
+      id: 0,
+      user: people[0],
+      date: "2022-04-23T18:25:43.511Z",
+      action: "message",
+      details: { message: 'Created room "Filling forms room"' },
+    },
+    {
+      id: 1,
+      user: people[0],
+      date: "2022-04-23T18:35:43.511Z",
+      action: "users",
+      details: {
+        type: "add",
+        users: [...people.slice(1)],
+      },
+    },
+    {
+      id: 2,
+      user: people[0],
+      date: "2022-04-23T18:39:43.511Z",
+      action: "appointing",
+      details: {
+        appointedUser: people[1],
+        appointedRole: "room administrator",
+      },
+    },
+    {
+      id: 3,
+      user: people[0],
+      date: "2022-04-23T19:04:43.511Z",
+      action: "files",
+      details: { type: "delete", files: files },
+    },
+  ],
 };
 
 export { fillingFormsVR };

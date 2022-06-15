@@ -62,6 +62,8 @@ const InfoPanelBodyContent = ({
     roomState,
   };
 
+  //console.log(selectedItems);
+
   return isGallery ? (
     !gallerySelected ? (
       <GalleryEmptyScreen />

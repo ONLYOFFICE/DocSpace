@@ -79,6 +79,7 @@ StyledInfoPanelToggleWrapper.defaultProps = { theme: Base };
 const SubInfoPanelHeader = ({
   children,
   setIsVisible,
+  roomState,
   setRoomState,
   isPrivacyFolder,
 }) => {
@@ -132,6 +133,7 @@ const SubInfoPanelHeader = ({
                 name: "Details",
               },
             ]}
+            startSelect={["members", "history", "details"].indexOf(roomState)}
           />
         </div>
       )}
@@ -154,7 +156,7 @@ SubInfoPanelHeader.defaultProps = { theme: Base };
 SubInfoPanelHeader.displayName = "SubInfoPanelHeader";
 
 export default inject(({ auth, treeFoldersStore }) => {
-  const { setIsVisible, setRoomState } = auth.infoPanelStore;
+  const { setIsVisible, roomState, setRoomState } = auth.infoPanelStore;
   const { isPrivacyFolder } = treeFoldersStore;
-  return { setIsVisible, setRoomState, isPrivacyFolder };
+  return { setIsVisible, roomState, setRoomState, isPrivacyFolder };
 })(observer(SubInfoPanelHeader));
