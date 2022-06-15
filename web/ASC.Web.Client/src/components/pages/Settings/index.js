@@ -30,9 +30,9 @@ const PortalRenaming = lazy(() =>
   import("./categories/common/settingsCustomization/portal-renaming")
 );
 const TeamTemplate = lazy(() => import("./categories/common/team-template"));
-const ThirdPartyServices = lazy(() =>
-  import("./categories/integration/thirdPartyServicesSettings")
-);
+
+const Integration = lazy(() => import("./categories/integration"));
+
 const DataManagementSettings = lazy(() =>
   import("./categories/data-management/backup")
 );
@@ -94,10 +94,12 @@ const TRUSTED_MAIL_PAGE_URL = combineUrl(
 );
 
 const ADMINS_URL = combineUrl(PROXY_BASE_URL, "/security/access-rights/admins");
-const THIRD_PARTY_URL = combineUrl(
-  PROXY_BASE_URL,
-  "/integration/third-party-services"
-);
+
+const INTEGRATION_URLS = [
+  combineUrl(PROXY_BASE_URL, "/integration/third-party-services"),
+  combineUrl(PROXY_BASE_URL, "/integration/portal-integration"),
+];
+
 const DATA_MANAGEMENT_URL = combineUrl(
   PROXY_BASE_URL,
   "/datamanagement/backup"
@@ -147,7 +149,7 @@ const Settings = (props) => {
             component={TrustedMailPage}
           />
 
-          <Route exact path={THIRD_PARTY_URL} component={ThirdPartyServices} />
+          <Route exact path={INTEGRATION_URLS} component={Integration} />
           <Route
             exact
             path={DATA_MANAGEMENT_URL}
