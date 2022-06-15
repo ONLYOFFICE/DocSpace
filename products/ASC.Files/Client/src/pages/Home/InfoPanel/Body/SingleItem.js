@@ -75,13 +75,6 @@ const SingleItem = (props) => {
         </Text>
       );
 
-      const replaceUnicode = (str) => {
-        const regex = /&#([0-9]{1,4});/gi;
-        return str.replace(regex, (match, numStr) =>
-          String.fromCharCode(+numStr)
-        );
-      };
-
       const parseAndFormatDate = (date) => {
         const locale = personal ? localStorage.getItem(LANGUAGE) : culture;
         const correctDate = getCorrectDate(locale, date);
@@ -124,9 +117,9 @@ const SingleItem = (props) => {
           id: "Owner",
           title: t("Common:Owner"),
           content: personal
-            ? styledText(replaceUnicode(item.createdBy?.displayName))
+            ? styledText(item.createdBy?.displayName)
             : styledLink(
-                replaceUnicode(item.createdBy?.displayName),
+                item.createdBy?.displayName,
                 item.createdBy?.profileUrl
               ),
         },
@@ -154,9 +147,9 @@ const SingleItem = (props) => {
           id: "LastModifiedBy",
           title: t("LastModifiedBy"),
           content: personal
-            ? styledText(replaceUnicode(item.updatedBy?.displayName))
+            ? styledText(item.updatedBy?.displayName)
             : styledLink(
-                replaceUnicode(item.updatedBy?.displayName),
+                item.updatedBy?.displayName,
                 item.updatedBy?.profileUrl
               ),
         },
