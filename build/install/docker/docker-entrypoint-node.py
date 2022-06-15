@@ -36,6 +36,7 @@ ELK_PORT = os.environ["ELK_PORT"] if environ.get("ELK_PORT") else "9200"
 ELK_THREADS = os.environ["ELK_THREADS"] if environ.get("ELK_THREADS") else "1"
 
 KAFKA_HOST = os.environ["KAFKA_HOST"] if environ.get("KAFKA_HOST") else "kafka:9092"
+RUN_FILE = sys.argv[1]
 
 def openJsonFile(filePath):
     try:
@@ -98,4 +99,4 @@ jsonData = openJsonFile(filePath)
 jsonData.update({"kafka": {"BootstrapServers": KAFKA_HOST}})
 writeJsonFile(filePath, jsonData)
 
-os.system(RUN_FILE + " --app.port=" + SERVICE_PORT + " --app.appsettings=" + PATH_TO_CONF + " --app.environment=" + ENV_EXTENSION)
+os.system("node " + RUN_FILE + " --app.port=" + SERVICE_PORT + " --app.appsettings=" + PATH_TO_CONF + " --app.environment=" + ENV_EXTENSION)
