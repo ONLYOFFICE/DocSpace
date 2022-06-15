@@ -69,7 +69,7 @@ public abstract class RadicaleEntity
 
     public string GetSystemAuthorization()
     {
-        return _configuration["radicale:admin:data"] + ":" + _instanceCrypto.Encrypt(_configuration["radicale:admin:data"]);
+        return _configuration["radicale:admin"] + ":" + _instanceCrypto.Encrypt(_configuration["radicale:admin"]);
     }
 
     protected string GetData(string sample, string name, string description, string backgroundColor)

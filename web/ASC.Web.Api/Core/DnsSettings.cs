@@ -61,16 +61,14 @@ public class DnsSettings
         _tenantExtra = tenantExtra;
     }
 
-    protected bool EnableDomain
-    {
-        get { return _coreBaseSettings.Standalone || _tenantExtra.GetTenantQuota().HasDomain; }
-    }
-
     public string SaveDnsSettings(string dnsName, bool enableDns)
     {
         try
         {
-            if (!EnableDomain || !SetupInfo.IsVisibleSettings<DnsSettings>()) throw new Exception(Resource.ErrorNotAllowedOption);
+            if (!SetupInfo.IsVisibleSettings<DnsSettings>())
+            {
+                throw new Exception(Resource.ErrorNotAllowedOption);
+            }
 
             _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -92,7 +90,7 @@ public class DnsSettings
 
                 if (tenant.MappedDomain != dnsName)
                 {
-                    var portalAddress = $"http://{tenant.Alias ?? string.Empty}.{ _coreSettings.BaseDomain}";
+                    var portalAddress = $"http://{tenant.Alias ?? string.Empty}.{_coreSettings.BaseDomain}";
 
                     var u = _userManager.GetUsers(tenant.OwnerId);
                     _studioNotifyService.SendMsgDnsChange(tenant, GenerateDnsChangeConfirmUrl(u.Email, dnsName, tenant.Alias, ConfirmType.DnsChange), portalAddress, dnsName);
@@ -118,8 +116,11 @@ public class DnsSettings
         {
             return false;
         }
-        if (!string.IsNullOrEmpty(TenantBaseDomain) &&
-            (domain.EndsWith(TenantBaseDomain, StringComparison.InvariantCultureIgnoreCase) || domain.Equals(TenantBaseDomain.TrimStart('.'), StringComparison.InvariantCultureIgnoreCase)))
+
+        var tenantBaseDomain = TenantBaseDomain;
+
+        if (!string.IsNullOrEmpty(tenantBaseDomain) &&
+            (domain.EndsWith(tenantBaseDomain, StringComparison.InvariantCultureIgnoreCase) || domain.Equals(tenantBaseDomain.TrimStart('.'), StringComparison.InvariantCultureIgnoreCase)))
         {
             return false;
         }

@@ -64,7 +64,8 @@ public class ThirdPartyController : ControllerBase
                 return _oAuth20TokenHelper.RequestCode<DropboxLoginProvider>(
                                                     additionalArgs: new Dictionary<string, string>
                                                         {
-                                                                        { "force_reauthentication", "true" }
+                                                                        { "force_reauthentication", "true" },
+                                                                        { "token_access_type","offline" }
                                                         }, additionalStateArgs: additionals);
 
             case LoginProviderEnum.Docusign:

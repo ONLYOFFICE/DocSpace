@@ -24,6 +24,9 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using JWT.Algorithms;
+using JWT.Builder;
+
 using JsonException = System.Text.Json.JsonException;
 using MimeMapping = ASC.Common.Web.MimeMapping;
 
@@ -349,7 +352,7 @@ public class FileHandlerService
             {
                 if (forView)
                 {
-                    _filesMessageService.Send(file,MessageAction.FileReaded, file.Title);
+                    _filesMessageService.Send(file, MessageAction.FileReaded, file.Title);
                 }
                 else
                 {
@@ -648,7 +651,12 @@ public class FileHandlerService
 
                         header = header.Substring("Bearer ".Length);
 
-                        var stringPayload = JsonWebToken.Decode(header, _fileUtility.SignatureSecret);
+                        var stringPayload = JwtBuilder.Create()
+                                                .WithAlgorithm(new HMACSHA256Algorithm())
+                                                .WithSerializer(new JwtSerializer())
+                                                .WithSecret(_fileUtility.SignatureSecret)
+                                                .MustVerifySignature()
+                                                .Decode(header);
 
                         _logger.DebugDocServiceStreamFilePayload(stringPayload);
                         //var data = JObject.Parse(stringPayload);
@@ -694,7 +702,7 @@ public class FileHandlerService
                 return;
             }
 
-            if (linkRight == FileShare.Restrict && _securityContext.IsAuthenticated && !await _fileSecurity.CanReadAsync(file))
+            if (linkRight == FileShare.Restrict && _securityContext.IsAuthenticated && !await _fileSecurity.CanDownloadAsync(file))
             {
                 context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                 return;
@@ -755,7 +763,12 @@ public class FileHandlerService
 
                     header = header.Substring("Bearer ".Length);
 
-                    var stringPayload = JsonWebToken.Decode(header, _fileUtility.SignatureSecret);
+                    var stringPayload = JwtBuilder.Create()
+                                                    .WithAlgorithm(new HMACSHA256Algorithm())
+                                                    .WithSerializer(new JwtSerializer())
+                                                    .WithSecret(_fileUtility.SignatureSecret)
+                                                    .MustVerifySignature()
+                                                    .Decode(header);
 
                     _logger.DebugDocServiceStreamFilePayload(stringPayload);
                     //var data = JObject.Parse(stringPayload);
@@ -1392,7 +1405,13 @@ public class FileHandlerService
             {
                 try
                 {
-                    var dataString = JsonWebToken.Decode(fileData.Token, _fileUtility.SignatureSecret);
+                    var dataString = JwtBuilder.Create()
+                            .WithAlgorithm(new HMACSHA256Algorithm())
+                            .WithSerializer(new JwtSerializer())
+                            .WithSecret(_fileUtility.SignatureSecret)
+                            .MustVerifySignature()
+                            .Decode(fileData.Token);
+
                     var data = JObject.Parse(dataString);
                     if (data == null)
                     {
@@ -1419,7 +1438,12 @@ public class FileHandlerService
 
                 try
                 {
-                    var stringPayload = JsonWebToken.Decode(header, _fileUtility.SignatureSecret);
+                    var stringPayload = JwtBuilder.Create()
+                            .WithAlgorithm(new HMACSHA256Algorithm())
+                            .WithSerializer(new JwtSerializer())
+                            .WithSecret(_fileUtility.SignatureSecret)
+                            .MustVerifySignature()
+                            .Decode(header);
 
                     _logger.DebugDocServiceTrackPayload(stringPayload);
                     var jsonPayload = JObject.Parse(stringPayload);

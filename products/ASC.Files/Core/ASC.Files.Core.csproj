@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AppLimit.CloudComputing.SharpBox" Version="1.2.0.1" />
     <PackageReference Include="Box.V2.Core" Version="4.3.1" />
     <PackageReference Include="DocuSign.eSign.dll" Version="5.10.0" />
     <PackageReference Include="Dropbox.Api" Version="6.27.0" />

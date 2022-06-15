@@ -238,7 +238,7 @@ internal class FileConverterQueue<T> : IDisposable
                         var docKey = documentServiceHelper.GetDocKey(file);
 
                         fileUri = documentServiceConnector.ReplaceCommunityAdress(fileUri);
-                        (operationResultProgress, convertedFileUrl) = documentServiceConnector.GetConvertedUriAsync(fileUri, fileExtension, toExtension, docKey, password, null, null, true).Result;
+                        (operationResultProgress, convertedFileUrl) = documentServiceConnector.GetConvertedUriAsync(fileUri, fileExtension, toExtension, docKey, password, CultureInfo.CurrentUICulture.Name, null, null, true).Result;
                     }
                     catch (Exception exception)
                     {
@@ -670,7 +670,7 @@ public class FileConverter
         var docKey = _documentServiceHelper.GetDocKey(file);
         fileUri = _documentServiceConnector.ReplaceCommunityAdress(fileUri);
 
-        var uriTuple = await _documentServiceConnector.GetConvertedUriAsync(fileUri, file.ConvertedExtension, toExtension, docKey, password, null, null, false);
+        var uriTuple = await _documentServiceConnector.GetConvertedUriAsync(fileUri, file.ConvertedExtension, toExtension, docKey, password, CultureInfo.CurrentUICulture.Name, null, null, false);
         var convertUri = uriTuple.ConvertedDocumentUri;
         var request = new HttpRequestMessage
         {
@@ -689,7 +689,7 @@ public class FileConverter
         var fileSecurity = _fileSecurity;
         if (!await fileSecurity.CanReadAsync(file))
         {
-            (var readLink, file) = await _fileShareLink.CheckAsync(doc, true, fileDao);
+            (var readLink, file, _) = await _fileShareLink.CheckAsync(doc, true, fileDao);
             if (file == null)
             {
                 throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
@@ -707,7 +707,7 @@ public class FileConverter
 
         fileUri = _documentServiceConnector.ReplaceCommunityAdress(fileUri);
 
-        var uriTuple = await _documentServiceConnector.GetConvertedUriAsync(fileUri, fileExtension, toExtension, docKey, null, null, null, false);
+        var uriTuple = await _documentServiceConnector.GetConvertedUriAsync(fileUri, fileExtension, toExtension, docKey, null, CultureInfo.CurrentUICulture.Name, null, null, false);
         var convertUri = uriTuple.ConvertedDocumentUri;
 
         var operationResult = new ConvertFileOperationResult

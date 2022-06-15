@@ -380,6 +380,11 @@ public class FileSecurity : IFileSecurity
         return (await FilterReadAsync(entries)).Where(CheckDenyDownload).ToList();
     }
 
+    public async Task<IEnumerable<Folder<T>>> FilterDownloadAsync<T>(IEnumerable<Folder<T>> entries)
+    {
+        return (await FilterReadAsync(entries)).Where(CheckDenyDownload).ToList();
+    }
+
     private bool CheckDenyDownload<T>(FileEntry<T> entry)
     {
         return entry.DenyDownload

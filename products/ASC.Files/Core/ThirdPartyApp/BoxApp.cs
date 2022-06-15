@@ -265,7 +265,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
 
                 var key = DocumentServiceConnector.GenerateRevisionId(downloadUrl);
 
-                var resultTuple = await _documentServiceConnector.GetConvertedUriAsync(downloadUrl, fileType, currentType, key, null, null, null, false);
+                var resultTuple = await _documentServiceConnector.GetConvertedUriAsync(downloadUrl, fileType, currentType, key, null, CultureInfo.CurrentUICulture.Name, null, null, false);
                 downloadUrl = resultTuple.ConvertedDocumentUri;
 
                 stream = null;
@@ -379,9 +379,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
                 throw new Exception("Profile is null");
             }
 
-            var cookiesKey = _securityContext.AuthenticateMe(userInfo.Id);
-            _cookiesManager.SetCookies(CookiesType.AuthKey, cookiesKey);
-            _messageService.Send(MessageAction.LoginSuccessViaSocialApp);
+            _cookiesManager.AuthenticateMeAndSetCookies(userInfo.Tenant, userInfo.Id, MessageAction.LoginSuccessViaSocialApp);
 
             if (isNew)
             {

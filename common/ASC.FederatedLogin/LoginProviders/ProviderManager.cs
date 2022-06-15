@@ -48,8 +48,16 @@ public class ProviderManager
             ProviderConstants.MailRu,
             ProviderConstants.VK,
             ProviderConstants.Yandex,
-            ProviderConstants.GosUslugi
+            ProviderConstants.GosUslugi,
+            ProviderConstants.AppleId,
+            ProviderConstants.Microsoft
         };
+
+    public static List<string> InviteExceptProviders = new List<string>
+            {
+                ProviderConstants.Twitter,
+                ProviderConstants.AppleId,
+            };
 
     private readonly Signature _signature;
     private readonly InstanceCrypto _instanceCrypto;

@@ -49,6 +49,7 @@ public class DocumentServiceTracker
     {
         public List<Action> Actions { get; set; }
         public string ChangesUrl { get; set; }
+        public string Filetype { get; set; }
         public ForceSaveInitiator ForceSaveType { get; set; }
         public object History { get; set; }
         public string Key { get; set; }
@@ -71,7 +72,8 @@ public class DocumentServiceTracker
         {
             Command = 0,
             User = 1,
-            Timer = 2
+            Timer = 2,
+            UserSubmit = 3
         }
     }
 
@@ -335,7 +337,7 @@ public class DocumentServiceTrackerHelper
             {
                 _logger.ErrorDocServiceSavingFile(fileId.ToString(), docKey, fileData.Key);
 
-                await StoringFileAfterErrorAsync(fileId, userId.ToString(), _documentServiceConnector.ReplaceDocumentAdress(fileData.Url));
+                await StoringFileAfterErrorAsync(fileId, userId.ToString(), _documentServiceConnector.ReplaceDocumentAdress(fileData.Url), fileData.Filetype);
 
                 return new TrackResponse { Message = "Expected key " + docKey };
             }
@@ -395,22 +397,26 @@ public class DocumentServiceTrackerHelper
                 {
                     case TrackerData.ForceSaveInitiator.Command:
                         forcesaveType = ForcesaveType.Command;
+                        comments.Add(FilesCommonResource.CommentAutosave);
                         break;
                     case TrackerData.ForceSaveInitiator.Timer:
                         forcesaveType = ForcesaveType.Timer;
+                        comments.Add(FilesCommonResource.CommentAutosave);
                         break;
                     case TrackerData.ForceSaveInitiator.User:
                         forcesaveType = ForcesaveType.User;
+                        comments.Add(FilesCommonResource.CommentForcesave);
+                        break;
+                    case TrackerData.ForceSaveInitiator.UserSubmit:
+                        forcesaveType = ForcesaveType.UserSubmit;
+                        comments.Add(FilesCommonResource.CommentSubmitFillForm);
                         break;
                 }
-                comments.Add(fileData.ForceSaveType == TrackerData.ForceSaveInitiator.User
-                                 ? FilesCommonResource.CommentForcesave
-                                 : FilesCommonResource.CommentAutosave);
             }
 
             try
             {
-                file = await _entryManager.SaveEditingAsync(fileId, null, _documentServiceConnector.ReplaceDocumentAdress(fileData.Url), null, string.Empty, string.Join("; ", comments), false, fileData.Encrypted, forcesaveType, true);
+                file = await _entryManager.SaveEditingAsync(fileId, fileData.Filetype, _documentServiceConnector.ReplaceDocumentAdress(fileData.Url), null, string.Empty, string.Join("; ", comments), false, fileData.Encrypted, forcesaveType, true);
                 saveMessage = fileData.Status == TrackerStatus.MustSave || fileData.Status == TrackerStatus.ForceSave ? null : "Status " + fileData.Status;
             }
             catch (Exception ex)
@@ -418,7 +424,7 @@ public class DocumentServiceTrackerHelper
                 _logger.ErrorDocServiceSave(fileId.ToString(), userId, fileData.Key, fileData.Url, ex);
                 saveMessage = ex.Message;
 
-                await StoringFileAfterErrorAsync(fileId, userId.ToString(), _documentServiceConnector.ReplaceDocumentAdress(fileData.Url));
+                await StoringFileAfterErrorAsync(fileId, userId.ToString(), _documentServiceConnector.ReplaceDocumentAdress(fileData.Url), fileData.Filetype);
             }
         }
 
@@ -438,6 +444,11 @@ public class DocumentServiceTrackerHelper
             if (!forcesave)
             {
                 await SaveHistoryAsync(file, (fileData.History ?? "").ToString(), _documentServiceConnector.ReplaceDocumentAdress(fileData.ChangesUrl));
+            }
+
+            if (fileData.Status == TrackerStatus.ForceSave && fileData.ForceSaveType == TrackerData.ForceSaveInitiator.UserSubmit)
+            {
+                _entryManager.SubmitFillForm(file);
             }
         }
 
@@ -575,7 +586,7 @@ public class DocumentServiceTrackerHelper
         return new TrackResponse { Message = saveMessage };
     }
 
-    private async Task StoringFileAfterErrorAsync<T>(T fileId, string userId, string downloadUri)
+    private async Task StoringFileAfterErrorAsync<T>(T fileId, string userId, string downloadUri, string downloadType)
     {
         if (string.IsNullOrEmpty(downloadUri))
         {
@@ -584,7 +595,13 @@ public class DocumentServiceTrackerHelper
 
         try
         {
-            var fileName = Global.ReplaceInvalidCharsAndTruncate(fileId + FileUtility.GetFileExtension(downloadUri));
+            if (string.IsNullOrEmpty(downloadType))
+            {
+                downloadType = FileUtility.GetFileExtension(downloadUri).Trim('.');
+            }
+
+            var fileName = Global.ReplaceInvalidCharsAndTruncate(fileId + "." + downloadType);
+
             var path = $@"save_crash\{DateTime.UtcNow:yyyy_MM_dd}\{userId}_{fileName}";
 
             var store = _globalStore.GetStore();

@@ -32,6 +32,7 @@ public class AceCollection<T>
     public IEnumerable<T> Folders { get; set; }
     public List<AceWrapper> Aces { get; set; }
     public string Message { get; set; }
+    public AceAdvancedSettingsWrapper AdvancedSettings { get; set; }
 }
 
 public class AceWrapper
@@ -102,4 +103,11 @@ public class AceShortWrapper
 
         Permissions = permission;
     }
+}
+
+public class AceAdvancedSettingsWrapper
+{
+    public bool DenyDownload { get; set; }
+
+    public bool DenySharing { get; set; }
 }
