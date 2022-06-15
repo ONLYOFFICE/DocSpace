@@ -6,6 +6,12 @@
     name: "frameDocSpace",
     type: "desktop",
     frameId: "ds-frame",
+    filter: {
+      folderId: "@my",
+      withSubfolders: true,
+      sortBy: "DateAndTime",
+      sortOrder: "descending",
+    },
   };
 
   const getConfigFromParams = () => {
@@ -59,10 +65,13 @@
       iframe.style.overflow = "hidden";
       document.body.style.overscrollBehaviorY = "contain";
     }
+
+    console.log("Created frame: ", config);
+
     return iframe;
   };
 
-  const config = getConfigFromParams();
+  const config = getConfigFromParams(); // TODO: Add level recognition for params
 
   initDocSpace(config);
 })(window, document);
