@@ -267,7 +267,7 @@ CMD ["ASC.People.dll", "ASC.People"]
 FROM nodeBuild AS socket
 WORKDIR ${BUILD_PATH}/services/ASC.Socket.IO/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint-node.sh ./docker-entrypoint.sh
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint-node.py ./docker-entrypoint-node.py
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Socket.IO/service/ .
 
 CMD  ["server.js", "ASC.Socket.IO"]
@@ -304,7 +304,7 @@ CMD ["ASC.TelegramService.dll", "ASC.TelegramService"]
 FROM nodeBuild AS urlshortener
 WORKDIR  ${BUILD_PATH}/services/ASC.UrlShortener/service/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint-node.sh ./docker-entrypoint.sh
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint-node.py ./docker-entrypoint-node.py
 COPY --from=base --chown=onlyoffice:onlyoffice  ${BUILD_PATH}/services/ASC.UrlShortener/service/ .
 
 CMD ["index.js", "ASC.UrlShortener"]
@@ -331,7 +331,7 @@ CMD ["ASC.Web.Studio.dll", "ASC.Web.Studio"]
 FROM nodeBuild AS ssoauth
 WORKDIR ${BUILD_PATH}/services/ASC.SsoAuth/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint-node.sh ./docker-entrypoint.sh
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint-node.py ./docker-entrypoint-node.py
 COPY --from=base --chown=onlyoffice:onlyoffice  ${BUILD_PATH}/services/ASC.SsoAuth/service/ .
 
 CMD ["app.js", "ASC.SsoAuth"]
