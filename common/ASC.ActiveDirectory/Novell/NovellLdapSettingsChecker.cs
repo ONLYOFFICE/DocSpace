@@ -49,10 +49,14 @@ public class NovellLdapSettingsChecker : LdapSettingsChecker
     public override LdapSettingsStatus CheckSettings()
     {
         if (!Settings.EnableLdapAuthentication)
+        {
             return LdapSettingsStatus.Ok;
+        }
 
         if (Settings.Server.Equals("LDAP://", StringComparison.InvariantCultureIgnoreCase))
+        {
             return LdapSettingsStatus.WrongServerOrPort;
+        }
 
         if (!LdapHelper.IsConnected)
         {
@@ -62,38 +66,38 @@ public class NovellLdapSettingsChecker : LdapSettingsChecker
             }
             catch (NovellLdapTlsCertificateRequestedException ex)
             {
-                logger.ErrorNovellLdapTlsCertificateRequestedException(Settings.AcceptCertificate, ex);
+                _logger.ErrorNovellLdapTlsCertificateRequestedException(Settings.AcceptCertificate, ex);
                 CertificateConfirmRequest = ex.CertificateConfirmRequest;
                 return LdapSettingsStatus.CertificateRequest;
             }
             catch (NotSupportedException ex)
             {
-                logger.ErrorNotSupportedException(ex);
+                _logger.ErrorNotSupportedException(ex);
                 return LdapSettingsStatus.TlsNotSupported;
             }
             catch (SocketException ex)
             {
-                logger.ErrorSocketException(ex);
+                _logger.ErrorSocketException(ex);
                 return LdapSettingsStatus.ConnectError;
             }
             catch (ArgumentException ex)
             {
-                logger.ErrorArgumentException( ex);
+                _logger.ErrorArgumentException( ex);
                 return LdapSettingsStatus.WrongServerOrPort;
             }
             catch (SecurityException ex)
             {
-                logger.ErrorSecurityException(ex);
+                _logger.ErrorSecurityException(ex);
                 return LdapSettingsStatus.StrongAuthRequired;
             }
             catch (SystemException ex)
             {
-                logger.ErrorSystemException(ex);
+                _logger.ErrorSystemException(ex);
                 return LdapSettingsStatus.WrongServerOrPort;
             }
             catch (Exception ex)
             {
-                logger.ErrorCheckSettingsException(ex);
+                _logger.ErrorCheckSettingsException(ex);
                 return LdapSettingsStatus.CredentialsNotValid;
             }
         }
@@ -122,20 +126,30 @@ public class NovellLdapSettingsChecker : LdapSettingsChecker
             if (!LdapImporter.TryLoadLDAPGroups())
             {
                 if (!LdapImporter.AllSkipedDomainGroups.Any())
+                {
                     return LdapSettingsStatus.IncorrectGroupLDAPFilter;
+                }
 
                 if (LdapImporter.AllSkipedDomainGroups.All(kv => kv.Value == LdapSettingsStatus.WrongSidAttribute))
+                {
                     return LdapSettingsStatus.WrongSidAttribute;
+                }
 
                 if (LdapImporter.AllSkipedDomainGroups.All(kv => kv.Value == LdapSettingsStatus.WrongGroupAttribute))
+                {
                     return LdapSettingsStatus.WrongGroupAttribute;
+                }
 
                 if (LdapImporter.AllSkipedDomainGroups.All(kv => kv.Value == LdapSettingsStatus.WrongGroupNameAttribute))
+                {
                     return LdapSettingsStatus.WrongGroupNameAttribute;
+                }
             }
 
             if (!LdapImporter.AllDomainGroups.Any())
+            {
                 return LdapSettingsStatus.GroupsNotFound;
+            }
         }
 
         try
@@ -150,20 +164,30 @@ public class NovellLdapSettingsChecker : LdapSettingsChecker
         if (!LdapImporter.TryLoadLDAPUsers())
         {
             if (!LdapImporter.AllSkipedDomainUsers.Any())
+            {
                 return LdapSettingsStatus.IncorrectLDAPFilter;
+            }
 
             if (LdapImporter.AllSkipedDomainUsers.All(kv => kv.Value == LdapSettingsStatus.WrongSidAttribute))
+            {
                 return LdapSettingsStatus.WrongSidAttribute;
+            }
 
             if (LdapImporter.AllSkipedDomainUsers.All(kv => kv.Value == LdapSettingsStatus.WrongLoginAttribute))
+            {
                 return LdapSettingsStatus.WrongLoginAttribute;
+            }
 
             if (LdapImporter.AllSkipedDomainUsers.All(kv => kv.Value == LdapSettingsStatus.WrongUserAttribute))
+            {
                 return LdapSettingsStatus.WrongUserAttribute;
+            }
         }
 
         if (!LdapImporter.AllDomainUsers.Any())
+        {
             return LdapSettingsStatus.UsersNotFound;
+        }
 
         return string.IsNullOrEmpty(LdapImporter.LDAPDomain)
             ? LdapSettingsStatus.DomainNotFound
@@ -178,7 +202,7 @@ public class NovellLdapSettingsChecker : LdapSettingsChecker
         }
         catch (Exception e)
         {
-            logger.ErrorWrongUserDn(userDn, e);
+            _logger.ErrorWrongUserDn(userDn, e);
             return false;
         }
     }
@@ -191,7 +215,7 @@ public class NovellLdapSettingsChecker : LdapSettingsChecker
         }
         catch (Exception e)
         {
-            logger.ErrorWrongGroupDn(groupDn, e);
+            _logger.ErrorWrongGroupDn(groupDn, e);
             return false;
         }
     }

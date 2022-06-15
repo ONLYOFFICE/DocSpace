@@ -87,7 +87,9 @@ public class NovellLdapSearcher : IDisposable
     public void Connect()
     {
         if (Server.StartsWith("LDAP://"))
+        {
             Server = Server.Substring("LDAP://".Length);
+        }
 
         LdapConnection ldapConnection;
 
@@ -103,7 +105,9 @@ public class NovellLdapSearcher : IDisposable
         }
 
         if (Ssl)
+        {
             ldapConnection.SecureSocketLayer = true;
+        }
 
         try
         {
@@ -173,7 +177,9 @@ public class NovellLdapSearcher : IDisposable
         X509Chain chain, SslPolicyErrors sslPolicyErrors)
     {
         if (sslPolicyErrors == SslPolicyErrors.None)
+        {
             return true;
+        }
 
         lock (_rootSync)
         {
@@ -215,15 +221,21 @@ public class NovellLdapSearcher : IDisposable
         string[] attributes = null, int limit = -1, LdapSearchConstraints searchConstraints = null)
     {
         if (!IsConnected)
+        {
             Connect();
+        }
 
         if (searchBase == null)
+        {
             searchBase = "";
+        }
 
         var entries = new List<LdapEntry>();
 
         if (string.IsNullOrEmpty(searchFilter))
+        {
             return new List<LdapObject>();
+        }
 
         if (attributes == null)
         {
@@ -275,7 +287,9 @@ public class NovellLdapSearcher : IDisposable
                 nextEntry = queue.Next();
 
                 if (nextEntry == null)
+                {
                     continue;
+                }
             }
             catch (LdapException ex)
             {
@@ -291,7 +305,9 @@ public class NovellLdapSearcher : IDisposable
                             searchConstraints))
                         {
                             if (entries.Count >= simpleResults.Count)
+                            {
                                 break;
+                            }
 
                             return simpleResults;
                         }
@@ -340,15 +356,21 @@ public class NovellLdapSearcher : IDisposable
         string[] attributes = null, int limit = -1, LdapSearchConstraints searchConstraints = null)
     {
         if (!IsConnected)
+        {
             Connect();
+        }
 
         if (searchBase == null)
+        {
             searchBase = "";
+        }
 
         var entries = new List<LdapEntry>();
 
         if (string.IsNullOrEmpty(searchFilter))
+        {
             return new List<LdapObject>();
+        }
 
         if (attributes == null)
         {
@@ -391,7 +413,7 @@ public class NovellLdapSearcher : IDisposable
 
         // initially, cookie must be set to an empty string
         var pageSize = 2;
-        byte[] cookie = Array.ConvertAll(Encoding.ASCII.GetBytes(""), b => unchecked(b));
+        var cookie = Array.ConvertAll(Encoding.ASCII.GetBytes(""), b => unchecked(b));
         var i = 0;
 
         do
@@ -412,15 +434,21 @@ public class NovellLdapSearcher : IDisposable
                     nextEntry = res.Next();
 
                     if (nextEntry == null)
+                    {
                         continue;
+                    }
                 }
                 catch (LdapException ex)
                 {
                     if (ex is LdapReferralException)
+                    {
                         continue;
+                    }
 
                     if (!string.IsNullOrEmpty(ex.Message) && ex.Message.Contains("Sizelimit Exceeded"))
+                    {
                         break;
+                    }
 
                     _logger.ErrorSearchSimple(searchFilter, ex);
                     continue;
@@ -451,7 +479,9 @@ public class NovellLdapSearcher : IDisposable
                 {
                     /* Is this the LdapPagedResultsResponse control? */
                     if (!(control is SimplePagedResultsControl))
+                    {
                         continue;
+                    }
 
                     var response = new SimplePagedResultsControl(control.Id,
                         control.Critical, control.GetValue());
@@ -470,7 +500,9 @@ public class NovellLdapSearcher : IDisposable
     public Dictionary<string, string[]> GetCapabilities()
     {
         if (_capabilities != null)
+        {
             return _capabilities;
+        }
 
         _capabilities = new Dictionary<string, string[]>();
 
@@ -494,7 +526,9 @@ public class NovellLdapSearcher : IDisposable
                     nextEntry = ldapSearchResults.Next();
 
                     if (nextEntry == null)
+                    {
                         continue;
+                    }
                 }
                 catch (LdapException ex)
                 {
@@ -510,14 +544,20 @@ public class NovellLdapSearcher : IDisposable
                 {
                     var attribute = (LdapAttribute)ienum.Current;
                     if (attribute == null)
+                    {
                         continue;
+                    }
 
                     var attributeName = attribute.Name;
                     var attributeVals = attribute.StringValueArray
                         .ToList()
                         .Select(s =>
                         {
-                            if (Base64.IsLdifSafe(s)) return s;
+                            if (Base64.IsLdifSafe(s))
+                            {
+                                return s;
+                            }
+
                             s = Base64.Encode(s);
                             return s;
                         }).ToArray();
@@ -541,7 +581,9 @@ public class NovellLdapSearcher : IDisposable
             var ldapUniqueIdAttribute = _configuration["ldap:unique:id"];
 
             if (ldapUniqueIdAttribute != null)
+            {
                 return ldapUniqueIdAttribute;
+            }
 
             if (!string.IsNullOrEmpty(
                 _novellLdapEntryExtension.GetAttributeValue(ldapEntry, LdapConstants.ADSchemaAttributes.OBJECT_SID) as string))
@@ -577,7 +619,9 @@ public class NovellLdapSearcher : IDisposable
     public void Dispose()
     {
         if (!IsConnected)
+        {
             return;
+        }
 
         try
         {

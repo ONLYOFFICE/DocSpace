@@ -44,7 +44,9 @@ public class LdapLogin
     public static LdapLogin ParseLogin(string login)
     {
         if (string.IsNullOrEmpty(login))
+        {
             return null;
+        }
 
         string username;
         string domain = null;
@@ -54,7 +56,9 @@ public class LdapLogin
             var splited = login.Split('\\');
 
             if (!splited.Any() || splited.Length != 2)
+            {
                 return null;
+            }
 
             domain = splited[0];
             username = splited[1];
@@ -65,7 +69,9 @@ public class LdapLogin
             var splited = login.Split('@');
 
             if (!splited.Any() || splited.Length != 2)
+            {
                 return null;
+            }
 
             username = splited[0];
             domain = splited[1];

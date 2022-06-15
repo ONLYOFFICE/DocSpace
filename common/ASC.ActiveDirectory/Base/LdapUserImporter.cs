@@ -43,7 +43,9 @@ public class LdapUserImporter : IDisposable
         get
         {
             if (!string.IsNullOrEmpty(_ldapDomain))
+            {
                 return _ldapDomain;
+            }
 
             _ldapDomain = LoadLDAPDomain();
 
@@ -104,9 +106,11 @@ public class LdapUserImporter : IDisposable
         var users = new List<UserInfo>();
 
         if (!AllDomainUsers.Any() && !TryLoadLDAPUsers())
+        {
             return users;
+        }
 
-        var usersToAdd = AllDomainUsers.Select(ldapObject => _ldapObjectExtension.ToUserInfo(ldapObject, this, _logger));
+        var usersToAdd = AllDomainUsers.Select(ldapObject => _ldapObjectExtension.ToUserInfo(ldapObject, this));
 
         users.AddRange(usersToAdd);
 
@@ -116,14 +120,18 @@ public class LdapUserImporter : IDisposable
     public List<GroupInfo> GetDiscoveredGroupsByAttributes()
     {
         if (!Settings.GroupMembership)
+        {
             return new List<GroupInfo>();
+        }
 
         if (!AllDomainGroups.Any() && !TryLoadLDAPGroups())
+        {
             return new List<GroupInfo>();
+        }
 
         var groups = new List<GroupInfo>();
 
-        var groupsToAdd = AllDomainGroups.ConvertAll(g => LdapObjectExtension.ToGroupInfo(g, Settings));
+        var groupsToAdd = AllDomainGroups.ConvertAll(g => _ldapObjectExtension.ToGroupInfo(g, Settings));
 
         groups.AddRange(groupsToAdd);
 
@@ -138,21 +146,27 @@ public class LdapUserImporter : IDisposable
     private List<UserInfo> GetGroupUsers(GroupInfo groupInfo, bool clearCache)
     {
         if (!LdapHelper.IsConnected)
+        {
             LdapHelper.Connect();
+        }
 
         _logger.DebugGetGroupUsers(groupInfo.Name);
 
         var users = new List<UserInfo>();
 
         if (!AllDomainGroups.Any() && !TryLoadLDAPGroups())
+        {
             return users;
+        }
 
         var domainGroup = AllDomainGroups.FirstOrDefault(lg => lg.Sid.Equals(groupInfo.Sid));
 
         if (domainGroup == null)
+        {
             return users;
+        }
 
-        var members = LdapObjectExtension.GetAttributes(domainGroup, Settings.GroupAttribute, _logger);
+        var members = _ldapObjectExtension.GetAttributes(domainGroup, Settings.GroupAttribute);
 
         foreach (var member in members)
         {
@@ -167,7 +181,9 @@ public class LdapUserImporter : IDisposable
                     _logger.DebugFoundNestedLdapGroup(nestedLdapGroup.DistinguishedName);
 
                     if (clearCache)
+                    {
                         _watchedNestedGroups = new List<string>();
+                    }
 
                     if (_watchedNestedGroups.Contains(nestedLdapGroup.DistinguishedName))
                     {
@@ -177,24 +193,28 @@ public class LdapUserImporter : IDisposable
 
                     _watchedNestedGroups.Add(nestedLdapGroup.DistinguishedName);
 
-                    var nestedGroupInfo = LdapObjectExtension.ToGroupInfo(nestedLdapGroup, Settings, _logger);
+                    var nestedGroupInfo = _ldapObjectExtension.ToGroupInfo(nestedLdapGroup, Settings);
 
                     var nestedGroupUsers = GetGroupUsers(nestedGroupInfo, false);
 
                     foreach (var groupUser in nestedGroupUsers)
                     {
                         if (!users.Exists(u => u.Sid == groupUser.Sid))
+                        {
                             users.Add(groupUser);
+                        }
                     }
                 }
 
                 continue;
             }
 
-            var userInfo = _ldapObjectExtension.ToUserInfo(ldapUser, this, _logger);
+            var userInfo = _ldapObjectExtension.ToUserInfo(ldapUser, this);
 
             if (!users.Exists(u => u.Sid == userInfo.Sid))
+            {
                 users.Add(userInfo);
+            }
         }
 
         if (PrimaryGroupIds != null && PrimaryGroupIds.Any(id => domainGroup.Sid.EndsWith("-" + id)))
@@ -204,10 +224,12 @@ public class LdapUserImporter : IDisposable
 
             foreach (var ldapUser in ldapUsers)
             {
-                var userInfo = _ldapObjectExtension.ToUserInfo(ldapUser, this, _logger);
+                var userInfo = _ldapObjectExtension.ToUserInfo(ldapUser, this);
 
                 if (!users.Exists(u => u.Sid == userInfo.Sid))
+                {
                     users.Add(userInfo);
+                }
             }
         }
 
@@ -233,15 +255,17 @@ public class LdapUserImporter : IDisposable
             }
 
             if (!LdapHelper.IsConnected)
+            {
                 LdapHelper.Connect();
+            }
 
-            var userGroups = LdapObjectExtension.GetAttributes(ldapUser, LdapConstants.ADSchemaAttributes.MEMBER_OF, _logger)
+            var userGroups = _ldapObjectExtension.GetAttributes(ldapUser, LdapConstants.ADSchemaAttributes.MEMBER_OF)
                 .Select(s => LdapUtils.UnescapeLdapString(s))
                 .ToList();
 
             if (!userGroups.Any())
             {
-                userGroups = LdapObjectExtension.GetAttributes(ldapUser, GROUP_MEMBERSHIP, _logger);
+                userGroups = _ldapObjectExtension.GetAttributes(ldapUser, GROUP_MEMBERSHIP);
             }
 
             var searchExpressions = new List<Expression>();
@@ -291,7 +315,9 @@ public class LdapUserImporter : IDisposable
         catch (Exception ex)
         {
             if (ldapUser != null)
+            {
                 _logger.ErrorIsUserExistInGroups(ldapUser.DistinguishedName, ldapUser.Sid, ex);
+            }
         }
 
         return ldapUserGroups;
@@ -331,7 +357,9 @@ public class LdapUserImporter : IDisposable
         catch (Exception ex)
         {
             if (ldapUser != null)
+            {
                 _logger.ErrorGetAndCheckCurrentGroups(ldapUser.DistinguishedName, ldapUser.Sid, ex);
+            }
         }
         return result;
     }
@@ -352,12 +380,14 @@ public class LdapUserImporter : IDisposable
                 .Where(g => !string.IsNullOrEmpty(g.Sid))
                 .ToList();
 
-        List<LdapObject> ldapUserGroupList = new List<LdapObject>();
+        var ldapUserGroupList = new List<LdapObject>();
 
         ldapUserGroupList.AddRange(GetLdapUserGroups(ldapUser));
 
         if (!LdapHelper.IsConnected)
+        {
             LdapHelper.Connect();
+        }
 
         var actualPortalLdapGroups = GetAndCheckCurrentGroups(ldapUser, portalUserLdapGroups).ToList();
 
@@ -368,7 +398,7 @@ public class LdapUserImporter : IDisposable
             if (Equals(groupInfo, Constants.LostGroupInfo))
             {
                 _logger.DebugTrySyncUserGroupMembershipCreatingPortalGroup(ldapUserGroup.DistinguishedName, ldapUserGroup.Sid);
-                groupInfo = UserManager.SaveGroupInfo(LdapObjectExtension.ToGroupInfo(ldapUserGroup, Settings, _logger));
+                groupInfo = UserManager.SaveGroupInfo(_ldapObjectExtension.ToGroupInfo(ldapUserGroup, Settings));
 
                 _logger.DebugTrySyncUserGroupMembershipAddingUserToGroup(userInfo.UserName, ldapUser.Sid, groupInfo.Name, groupInfo.Sid);
                 UserManager.AddUserIntoGroup(userInfo.Id, groupInfo.ID);
@@ -399,10 +429,14 @@ public class LdapUserImporter : IDisposable
         try
         {
             if (!Settings.EnableLdapAuthentication)
+            {
                 return false;
+            }
 
             if (!LdapHelper.IsConnected)
+            {
                 LdapHelper.Connect();
+            }
 
             var users = LdapHelper.GetUsers();
 
@@ -462,7 +496,9 @@ public class LdapUserImporter : IDisposable
             }
 
             if (!LdapHelper.IsConnected)
+            {
                 LdapHelper.Connect();
+            }
 
             var groups = LdapHelper.GetGroups();
 
@@ -504,35 +540,47 @@ public class LdapUserImporter : IDisposable
         try
         {
             if (!Settings.EnableLdapAuthentication)
+            {
                 return null;
+            }
 
             if (!LdapHelper.IsConnected)
+            {
                 LdapHelper.Connect();
+            }
 
             string ldapDomain;
 
             if (AllDomainUsers.Any())
             {
-                ldapDomain = LdapObjectExtension.GetDomainFromDn(AllDomainUsers.First());
+                ldapDomain = _ldapObjectExtension.GetDomainFromDn(AllDomainUsers.First());
 
                 if (!string.IsNullOrEmpty(ldapDomain))
+                {
                     return ldapDomain;
+                }
             }
 
             ldapDomain = LdapHelper.SearchDomain();
 
             if (!string.IsNullOrEmpty(ldapDomain))
+            {
                 return ldapDomain;
+            }
 
             ldapDomain = LdapUtils.DistinguishedNameToDomain(Settings.UserDN);
 
             if (!string.IsNullOrEmpty(ldapDomain))
+            {
                 return ldapDomain;
+            }
 
             ldapDomain = LdapUtils.DistinguishedNameToDomain(Settings.GroupDN);
 
             if (!string.IsNullOrEmpty(ldapDomain))
+            {
                 return ldapDomain;
+            }
         }
         catch (Exception ex)
         {
@@ -621,7 +669,9 @@ public class LdapUserImporter : IDisposable
         _logger.DebugFindUsersByPrimaryGroup();
 
         if (!AllDomainUsers.Any() && !TryLoadLDAPUsers())
+        {
             return null;
+        }
 
         return
             AllDomainUsers.Where(
@@ -639,7 +689,9 @@ public class LdapUserImporter : IDisposable
     private LdapObject FindUserByMember(string userAttributeValue)
     {
         if (!AllDomainUsers.Any() && !TryLoadLDAPUsers())
+        {
             return null;
+        }
 
         _logger.DebugFindUserByMember(userAttributeValue);
 
@@ -652,7 +704,9 @@ public class LdapUserImporter : IDisposable
     private LdapObject FindGroupByMember(string member)
     {
         if (!AllDomainGroups.Any() && !TryLoadLDAPGroups())
+        {
             return null;
+        }
 
         _logger.DebugFindGroupByMember(member);
 
@@ -667,10 +721,14 @@ public class LdapUserImporter : IDisposable
         var ldapLogin = LdapLogin.ParseLogin(login);
 
         if (ldapLogin == null)
+        {
             return listResults;
+        }
 
         if (!LdapHelper.IsConnected)
+        {
             LdapHelper.Connect();
+        }
 
         var exps = new List<Expression> { Expression.Equal(Settings.LoginAttribute, ldapLogin.Username) };
 
@@ -702,7 +760,7 @@ public class LdapUserImporter : IDisposable
                         _ldapDomain = LdapUtils.DistinguishedNameToDomain(lu.DistinguishedName);
                     }
 
-                    ui = _ldapObjectExtension.ToUserInfo(lu, this, _logger);
+                    ui = _ldapObjectExtension.ToUserInfo(lu, this);
                 }
                 catch (Exception ex)
                 {
@@ -714,14 +772,18 @@ public class LdapUserImporter : IDisposable
             });
 
         if (!users.Any())
+        {
             return listResults;
+        }
 
         foreach (var user in users)
         {
             var ui = user.Key.Item1;
 
             if (ui.Equals(Constants.LostUser))
+            {
                 continue;
+            }
 
             var ul = user.Key.Item2;
 
@@ -762,7 +824,9 @@ public class LdapUserImporter : IDisposable
         var users = new List<LdapObject>();
 
         if (!AllDomainUsers.Any() && !TryLoadLDAPUsers())
+        {
             return users;
+        }
 
         return users.Where(us => !us.IsDisabled && string.Equals((string)us.GetValue(key), value, comparison)).ToList();
     }
@@ -772,7 +836,9 @@ public class LdapUserImporter : IDisposable
         var users = new List<LdapObject>();
 
         if (!AllDomainUsers.Any() && !TryLoadLDAPUsers())
+        {
             return users;
+        }
 
         return AllDomainUsers.Where(us => !us.IsDisabled && value.Any(val => string.Equals(val, (string)us.GetValue(key), comparison))).ToList();
     }
@@ -782,7 +848,9 @@ public class LdapUserImporter : IDisposable
         var gr = new List<LdapObject>();
 
         if (!AllDomainGroups.Any() && !TryLoadLDAPGroups())
+        {
             return gr;
+        }
 
         return gr.Where(g => !g.IsDisabled && string.Equals((string)g.GetValue(key), value, comparison)).ToList();
     }
@@ -792,7 +860,9 @@ public class LdapUserImporter : IDisposable
         var gr = new List<LdapObject>();
 
         if (!AllDomainGroups.Any() && !TryLoadLDAPGroups())
+        {
             return gr;
+        }
 
         return AllDomainGroups.Where(g => !g.IsDisabled && value.Any(val => string.Equals(val, (string)g.GetValue(key), comparison))).ToList();
     }
@@ -802,7 +872,9 @@ public class LdapUserImporter : IDisposable
         try
         {
             if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password))
+            {
                 return null;
+            }
 
             var ldapUsers = FindLdapUsers(login);
 
@@ -855,6 +927,8 @@ public class LdapUserImporter : IDisposable
     public void Dispose()
     {
         if (LdapHelper != null)
+        {
             LdapHelper.Dispose();
+        }
     }
 }

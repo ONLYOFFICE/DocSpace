@@ -117,7 +117,6 @@ public class LdapOperationJob : DistributedTaskProgress
 
         TenantId = tenant.Id;
         _tenantManager.SetCurrentTenant(tenant);
-        _ldapChanges.Tenant = tenant;
 
         OperationType = operationType;
 
@@ -140,7 +139,7 @@ public class LdapOperationJob : DistributedTaskProgress
     protected override void DoJob()
     {
         try
-        {           
+        {
             _securityContext.AuthenticateMe(Core.Configuration.Constants.CoreSystem);
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(_culture);
@@ -292,7 +291,9 @@ public class LdapOperationJob : DistributedTaskProgress
                 SyncLDAP();
 
                 if (!string.IsNullOrEmpty(Error))
+                {
                     return;
+                }
             }
             else
             {
@@ -740,7 +741,9 @@ public class LdapOperationJob : DistributedTaskProgress
         var percentage = GetProgress();
 
         if (!ldapGroupsWithUsers.Any())
+        {
             return;
+        }
 
         var gIndex = 0;
         var gCount = ldapGroupsWithUsers.Count;
@@ -924,13 +927,19 @@ public class LdapOperationJob : DistributedTaskProgress
             case LdapOperationType.SaveTest:
             case LdapOperationType.SyncTest:
                 if (NeedUpdateGroup(dbLdapGroup, ldapGroup))
+                {
                     _ldapChanges.SetUpdateGroupChange(ldapGroup);
+                }
 
                 if (groupMembersToRemove.Any())
+                {
                     _ldapChanges.SetRemoveGroupMembersChange(dbLdapGroup, groupMembersToRemove);
+                }
 
                 if (groupMembersToAdd.Any())
+                {
                     _ldapChanges.SetAddGroupMembersChange(dbLdapGroup, groupMembersToAdd);
+                }
 
                 if (dbGroupMembers.All(dbUser => groupMembersToRemove.Exists(u => u.Id.Equals(dbUser.Id)))
                     && !groupMembersToAdd.Any())
@@ -947,7 +956,9 @@ public class LdapOperationJob : DistributedTaskProgress
     private UserInfo SearchDbUserBySid(string sid)
     {
         if (string.IsNullOrEmpty(sid))
+        {
             return Constants.LostUser;
+        }
 
         var foundUser = _userManager.GetUserBySid(sid);
 
@@ -963,7 +974,9 @@ public class LdapOperationJob : DistributedTaskProgress
         var percentage = GetProgress();
 
         if (!ldapUsers.Any())
+        {
             return;
+        }
 
         var index = 0;
         var count = ldapUsers.Count;
@@ -1005,13 +1018,17 @@ public class LdapOperationJob : DistributedTaskProgress
         var dbLdapUsers = _userManager.GetUsers(EmployeeStatus.All).Where(u => u.Sid != null).ToList();
 
         if (!dbLdapUsers.Any())
+        {
             return ldapUsers;
+        }
 
         var removedUsers =
             dbLdapUsers.Where(u => ldapUsers.FirstOrDefault(lu => u.Sid.Equals(lu.Sid)) == null).ToList();
 
         if (!removedUsers.Any())
+        {
             return ldapUsers;
+        }
 
         const double percents = 8;
 
@@ -1078,7 +1095,9 @@ public class LdapOperationJob : DistributedTaskProgress
                 .ToList();
 
         if (!removedDbLdapGroups.Any())
+        {
             return;
+        }
 
         const double percents = 10;
 
@@ -1140,7 +1159,9 @@ public class LdapOperationJob : DistributedTaskProgress
                 case LdapOperationType.Sync:
                     user = _lDAPUserManager.SyncLDAPUser(ldapGroupUser, uniqueLdapGroupUsers);
                     if (!Equals(user, Constants.LostUser))
+                    {
                         newUniqueLdapGroupUsers.Add(user);
+                    }
                     break;
                 case LdapOperationType.SaveTest:
                 case LdapOperationType.SyncTest:
@@ -1195,16 +1216,24 @@ public class LdapOperationJob : DistributedTaskProgress
     private void SetProgress(int? currentPercent = null, string currentStatus = null, string currentSource = null)
     {
         if (!currentPercent.HasValue && currentStatus == null && currentSource == null)
+        {
             return;
+        }
 
         if (currentPercent.HasValue)
+        {
             Percentage = currentPercent.Value;
+        }
 
         if (currentStatus != null)
+        {
             Status = currentStatus;
+        }
 
         if (currentSource != null)
+        {
             Source = currentSource;
+        }
 
         _logger.InfoProgress(Percentage, Status, Source);
 
@@ -1251,7 +1280,9 @@ public class LdapOperationJob : DistributedTaskProgress
         }
 
         if (!string.IsNullOrWhiteSpace(settings.Server))
+        {
             settings.Server = settings.Server.Trim();
+        }
         else
         {
             _logger.ErrorServerIsNullOrEmpty();
@@ -1260,10 +1291,14 @@ public class LdapOperationJob : DistributedTaskProgress
         }
 
         if (!settings.Server.StartsWith("LDAP://"))
+        {
             settings.Server = "LDAP://" + settings.Server.Trim();
+        }
 
         if (!string.IsNullOrWhiteSpace(settings.UserDN))
+        {
             settings.UserDN = settings.UserDN.Trim();
+        }
         else
         {
             _logger.ErrorUserDnIsNullOrEmpty();
@@ -1272,7 +1307,9 @@ public class LdapOperationJob : DistributedTaskProgress
         }
 
         if (!string.IsNullOrWhiteSpace(settings.LoginAttribute))
+        {
             settings.LoginAttribute = settings.LoginAttribute.Trim();
+        }
         else
         {
             _logger.ErrorLoginAttributeIsNullOrEmpty();
@@ -1281,27 +1318,41 @@ public class LdapOperationJob : DistributedTaskProgress
         }
 
         if (!string.IsNullOrWhiteSpace(settings.UserFilter))
+        {
             settings.UserFilter = settings.UserFilter.Trim();
+        }
 
         if (!string.IsNullOrWhiteSpace(settings.FirstNameAttribute))
+        {
             settings.FirstNameAttribute = settings.FirstNameAttribute.Trim();
+        }
 
         if (!string.IsNullOrWhiteSpace(settings.SecondNameAttribute))
+        {
             settings.SecondNameAttribute = settings.SecondNameAttribute.Trim();
+        }
 
         if (!string.IsNullOrWhiteSpace(settings.MailAttribute))
+        {
             settings.MailAttribute = settings.MailAttribute.Trim();
+        }
 
         if (!string.IsNullOrWhiteSpace(settings.TitleAttribute))
+        {
             settings.TitleAttribute = settings.TitleAttribute.Trim();
+        }
 
         if (!string.IsNullOrWhiteSpace(settings.MobilePhoneAttribute))
+        {
             settings.MobilePhoneAttribute = settings.MobilePhoneAttribute.Trim();
+        }
 
         if (settings.GroupMembership)
         {
             if (!string.IsNullOrWhiteSpace(settings.GroupDN))
+            {
                 settings.GroupDN = settings.GroupDN.Trim();
+            }
             else
             {
                 _logger.ErrorGroupDnIsNullOrEmpty();
@@ -1310,10 +1361,14 @@ public class LdapOperationJob : DistributedTaskProgress
             }
 
             if (!string.IsNullOrWhiteSpace(settings.GroupFilter))
+            {
                 settings.GroupFilter = settings.GroupFilter.Trim();
+            }
 
             if (!string.IsNullOrWhiteSpace(settings.GroupAttribute))
+            {
                 settings.GroupAttribute = settings.GroupAttribute.Trim();
+            }
             else
             {
                 _logger.ErrorGroupAttributeIsNullOrEmpty();
@@ -1322,7 +1377,9 @@ public class LdapOperationJob : DistributedTaskProgress
             }
 
             if (!string.IsNullOrWhiteSpace(settings.UserAttribute))
+            {
                 settings.UserAttribute = settings.UserAttribute.Trim();
+            }
             else
             {
                 _logger.ErrorUserAttributeIsNullOrEmpty();
@@ -1338,7 +1395,9 @@ public class LdapOperationJob : DistributedTaskProgress
         }
 
         if (!string.IsNullOrWhiteSpace(settings.Login))
+        {
             settings.Login = settings.Login.Trim();
+        }
         else
         {
             _logger.ErrorloginIsNullOrEmpty();

@@ -34,14 +34,18 @@ namespace ASC.ActiveDirectory.Base.Data;
 public class LdapObjectExtension
 {
     private readonly TenantUtil _tenantUtil;
-    public LdapObjectExtension(TenantUtil tenantUtil)
+    private readonly ILogger<LdapObjectExtension> _logger;
+    public LdapObjectExtension(TenantUtil tenantUtil, ILogger<LdapObjectExtension> logger)
     {
         _tenantUtil = tenantUtil;
+        _logger = logger;
     }
-    public static string GetAttribute(LdapObject ldapObject, string attribute, ILogger log = null)
+    public string GetAttribute(LdapObject ldapObject, string attribute)
     {
         if (string.IsNullOrEmpty(attribute))
+        {
             return string.Empty;
+        }
 
         try
         {
@@ -49,19 +53,20 @@ public class LdapObjectExtension
         }
         catch (Exception e)
         {
-            if (log != null)
-                log.ErrorCanNotGetAttribute(attribute, ldapObject.DistinguishedName, e);
+            _logger.ErrorCanNotGetAttribute(attribute, ldapObject.DistinguishedName, e);
 
             return string.Empty;
         }
     }
 
-    public static List<string> GetAttributes(LdapObject ldapObject, string attribute, ILogger log = null)
+    public List<string> GetAttributes(LdapObject ldapObject, string attribute)
     {
         var list = new List<string>();
 
         if (string.IsNullOrEmpty(attribute))
+        {
             return list;
+        }
 
         try
         {
@@ -69,8 +74,8 @@ public class LdapObjectExtension
         }
         catch (Exception e)
         {
-            if (log != null)
-                log.ErrorCanNotGetAttributes(attribute, ldapObject.DistinguishedName, e);
+
+            _logger.ErrorCanNotGetAttributes(attribute, ldapObject.DistinguishedName, e);
 
             return list;
         }
@@ -82,10 +87,12 @@ public class LdapObjectExtension
     private const string EXT_PHONE = "extphone";
     private const string EXT_SKYPE = "extskype";
 
-    private static List<string> GetContacts(LdapObject ldapUser, Mapping key, LdapSettings settings, ILogger log = null)
+    private List<string> GetContacts(LdapObject ldapUser, Mapping key, LdapSettings settings)
     {
         if (!settings.LdapMapping.ContainsKey(key))
+        {
             return null;
+        }
 
         var bindings = settings.LdapMapping[key].Split(',').Select(x => x.Trim()).ToArray();
         if (bindings.Length > 1)
@@ -93,20 +100,23 @@ public class LdapObjectExtension
             var list = new List<string>();
             foreach (var bind in bindings)
             {
-                list.AddRange(GetAttributes(ldapUser, bind, log));
+                list.AddRange(GetAttributes(ldapUser, bind));
             }
             return list;
         }
         else
         {
-            return GetAttributes(ldapUser, bindings[0], log);
+            return GetAttributes(ldapUser, bindings[0]);
         }
     }
 
-    private static void PopulateContacts(List<string> Contacts, string type, List<string> values)
+    private void PopulateContacts(List<string> Contacts, string type, List<string> values)
     {
         if (values == null || !values.Any())
+        {
             return;
+        }
+
         foreach (var val in values)
         {
             Contacts.Add(type);
@@ -114,30 +124,32 @@ public class LdapObjectExtension
         }
     }
 
-    public UserInfo ToUserInfo(LdapObject ldapUser, LdapUserImporter ldapUserImporter, ILogger log = null)
+    public UserInfo ToUserInfo(LdapObject ldapUser, LdapUserImporter ldapUserImporter)
     {
         var settings = ldapUserImporter.Settings;
         var resource = ldapUserImporter.Resource;
 
-        var userName = GetAttribute(ldapUser, settings.LoginAttribute, log);
+        var userName = GetAttribute(ldapUser, settings.LoginAttribute);
 
-        var firstName = settings.LdapMapping.ContainsKey(Mapping.FirstNameAttribute) ? GetAttribute(ldapUser, settings.LdapMapping[Mapping.FirstNameAttribute], log) : string.Empty;
-        var secondName = settings.LdapMapping.ContainsKey(Mapping.SecondNameAttribute) ? GetAttribute(ldapUser, settings.LdapMapping[Mapping.SecondNameAttribute], log) : string.Empty;
-        var birthDay = settings.LdapMapping.ContainsKey(Mapping.BirthDayAttribute) ? GetAttribute(ldapUser, settings.LdapMapping[Mapping.BirthDayAttribute], log) : string.Empty;
-        var gender = settings.LdapMapping.ContainsKey(Mapping.GenderAttribute) ? GetAttribute(ldapUser, settings.LdapMapping[Mapping.GenderAttribute], log) : string.Empty;
-        var primaryPhone = settings.LdapMapping.ContainsKey(Mapping.MobilePhoneAttribute) ? GetAttribute(ldapUser, settings.LdapMapping[Mapping.MobilePhoneAttribute], log) : string.Empty;
-        var mail = settings.LdapMapping.ContainsKey(Mapping.MailAttribute) ? GetAttribute(ldapUser, settings.LdapMapping[Mapping.MailAttribute], log) : string.Empty;
-        var title = settings.LdapMapping.ContainsKey(Mapping.TitleAttribute) ? GetAttribute(ldapUser, settings.LdapMapping[Mapping.TitleAttribute], log) : string.Empty;
-        var location = settings.LdapMapping.ContainsKey(Mapping.LocationAttribute) ? GetAttribute(ldapUser, settings.LdapMapping[Mapping.LocationAttribute], log) : string.Empty;
+        var firstName = settings.LdapMapping.ContainsKey(Mapping.FirstNameAttribute) ? GetAttribute(ldapUser, settings.LdapMapping[Mapping.FirstNameAttribute]) : string.Empty;
+        var secondName = settings.LdapMapping.ContainsKey(Mapping.SecondNameAttribute) ? GetAttribute(ldapUser, settings.LdapMapping[Mapping.SecondNameAttribute]) : string.Empty;
+        var birthDay = settings.LdapMapping.ContainsKey(Mapping.BirthDayAttribute) ? GetAttribute(ldapUser, settings.LdapMapping[Mapping.BirthDayAttribute]) : string.Empty;
+        var gender = settings.LdapMapping.ContainsKey(Mapping.GenderAttribute) ? GetAttribute(ldapUser, settings.LdapMapping[Mapping.GenderAttribute]) : string.Empty;
+        var primaryPhone = settings.LdapMapping.ContainsKey(Mapping.MobilePhoneAttribute) ? GetAttribute(ldapUser, settings.LdapMapping[Mapping.MobilePhoneAttribute]) : string.Empty;
+        var mail = settings.LdapMapping.ContainsKey(Mapping.MailAttribute) ? GetAttribute(ldapUser, settings.LdapMapping[Mapping.MailAttribute]) : string.Empty;
+        var title = settings.LdapMapping.ContainsKey(Mapping.TitleAttribute) ? GetAttribute(ldapUser, settings.LdapMapping[Mapping.TitleAttribute]) : string.Empty;
+        var location = settings.LdapMapping.ContainsKey(Mapping.LocationAttribute) ? GetAttribute(ldapUser, settings.LdapMapping[Mapping.LocationAttribute]) : string.Empty;
 
-        var phones = GetContacts(ldapUser, Mapping.AdditionalPhone, settings, log);
-        var mobilePhones = GetContacts(ldapUser, Mapping.AdditionalMobilePhone, settings, log);
-        var emails = GetContacts(ldapUser, Mapping.AdditionalMail, settings, log);
-        var skype = GetContacts(ldapUser, Mapping.Skype, settings, log);
+        var phones = GetContacts(ldapUser, Mapping.AdditionalPhone, settings);
+        var mobilePhones = GetContacts(ldapUser, Mapping.AdditionalMobilePhone, settings);
+        var emails = GetContacts(ldapUser, Mapping.AdditionalMail, settings);
+        var skype = GetContacts(ldapUser, Mapping.Skype, settings);
 
 
         if (string.IsNullOrEmpty(userName))
+        {
             throw new Exception("LDAP LoginAttribute is empty");
+        }
 
         var contacts = new List<string>();
 
@@ -185,7 +197,9 @@ public class LdapObjectExtension
         {
             DateTime date;
             if (DateTime.TryParse(birthDay, out date))
+            {
                 user.BirthDate = date;
+            }
         }
 
         if (!string.IsNullOrEmpty(gender))
@@ -227,12 +241,14 @@ public class LdapObjectExtension
         return user;
     }
 
-    public static GroupInfo ToGroupInfo(LdapObject ldapGroup, LdapSettings settings, ILogger log = null)
+    public GroupInfo ToGroupInfo(LdapObject ldapGroup, LdapSettings settings)
     {
-        var name = GetAttribute(ldapGroup, settings.GroupNameAttribute, log);
+        var name = GetAttribute(ldapGroup, settings.GroupNameAttribute);
 
         if (string.IsNullOrEmpty(name))
+        {
             throw new Exception("LDAP GroupNameAttribute is empty");
+        }
 
         var group = new GroupInfo
         {
@@ -243,10 +259,12 @@ public class LdapObjectExtension
         return group;
     }
 
-    public static string GetDomainFromDn(LdapObject ldapObject)
+    public string GetDomainFromDn(LdapObject ldapObject)
     {
         if (ldapObject == null || string.IsNullOrEmpty(ldapObject.DistinguishedName))
+        {
             return null;
+        }
 
         return LdapUtils.DistinguishedNameToDomain(ldapObject.DistinguishedName);
     }

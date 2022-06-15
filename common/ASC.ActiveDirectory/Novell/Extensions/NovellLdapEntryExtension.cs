@@ -41,7 +41,9 @@ public class NovellLdapEntryExtension
             var attribute = ldapEntry.GetAttribute(attributeName);
 
             if (attribute == null)
+            {
                 return null;
+            }
 
             if (!(string.Equals(attributeName, LdapConstants.ADSchemaAttributes.OBJECT_SID,
                 StringComparison.OrdinalIgnoreCase) || getBytes))
@@ -50,7 +52,9 @@ public class NovellLdapEntryExtension
             }
 
             if (attribute.ByteValue == null)
+            {
                 return null;
+            }
 
             var value = new byte[attribute.ByteValue.Length];
 
@@ -128,7 +132,9 @@ public class NovellLdapEntryExtension
     public LdapObject ToLdapObject(LdapEntry ldapEntry, string ldapUniqueIdAttribute = null)
     {
         if (ldapEntry == null)
+        {
             throw new ArgumentNullException("ldapEntry");
+        }
 
         var novellLdapObject = new NovellLdapObject(_logger, this);
         novellLdapObject.Init(ldapEntry, ldapUniqueIdAttribute);

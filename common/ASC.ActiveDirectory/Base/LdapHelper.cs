@@ -32,15 +32,15 @@ public abstract class LdapHelper : IDisposable
     public LdapSettings Settings { get; private set; }
     public abstract bool IsConnected { get; }
 
-    protected readonly ILogger<LdapHelper> Logger;
-    protected readonly InstanceCrypto InstanceCrypto;
+    protected readonly ILogger<LdapHelper> _logger;
+    protected readonly InstanceCrypto _instanceCrypto;
 
     protected LdapHelper(
         ILogger<LdapHelper> logger,
         InstanceCrypto instanceCrypto)
     {
-        Logger = logger;
-        InstanceCrypto = instanceCrypto;
+        _logger = logger;
+        _instanceCrypto = instanceCrypto;
     }
 
     public void Init(LdapSettings settings)
@@ -72,15 +72,21 @@ public abstract class LdapHelper : IDisposable
         try
         {
             if (domainGroup == null || domainUser == null)
+            {
                 return false;
+            }
 
             var memberString = domainUser.GetValue(Settings.UserAttribute) as string;
             if (string.IsNullOrEmpty(memberString))
+            {
                 return false;
+            }
 
             var groupAttribute = settings.GroupAttribute;
             if (string.IsNullOrEmpty(groupAttribute))
+            {
                 return false;
+            }
 
             var userPrimaryGroupId = domainUser.GetValue(LdapConstants.ADSchemaAttributes.PRIMARY_GROUP_ID) as string;
 
@@ -94,16 +100,20 @@ public abstract class LdapHelper : IDisposable
                 var members = domainGroup.GetValues(groupAttribute);
 
                 if (members.Count == 0)
+                {
                     return false;
+                }
 
                 if (members.Any(member => memberString.Equals(member, StringComparison.InvariantCultureIgnoreCase)
                     || member.Equals(domainUser.DistinguishedName, StringComparison.InvariantCultureIgnoreCase)))
+                {
                     return true;
+                }
             }
         }
         catch (Exception e)
         {
-            Logger.ErrorUserExistsInGroupFailed(e);
+            _logger.ErrorUserExistsInGroupFailed(e);
         }
 
         return false;
@@ -112,12 +122,14 @@ public abstract class LdapHelper : IDisposable
     public string GetPassword(byte[] passwordBytes)
     {
         if (passwordBytes == null || passwordBytes.Length == 0)
+        {
             return string.Empty;
+        }
 
         string password;
         try
         {
-            password = InstanceCrypto.Decrypt(passwordBytes, new UnicodeEncoding());
+            password = _instanceCrypto.Decrypt(passwordBytes, new UnicodeEncoding());
         }
         catch (Exception)
         {
@@ -132,7 +144,7 @@ public abstract class LdapHelper : IDisposable
 
         try
         {
-            passwordBytes = InstanceCrypto.Encrypt(new UnicodeEncoding().GetBytes(password));
+            passwordBytes = _instanceCrypto.Encrypt(new UnicodeEncoding().GetBytes(password));
         }
         catch (Exception)
         {

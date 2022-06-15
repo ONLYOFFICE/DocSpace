@@ -185,10 +185,14 @@ public class LdapSettings : ISettings<LdapSettings>, ICloneable
         hash = (hash * 2) + Login.GetHashCode();
 
         foreach (var pair in LdapMapping)
+        {
             hash = (hash * 2) + pair.Value.GetHashCode();
+        }
 
         foreach (var pair in AccessRights)
+        {
             hash = (hash * 2) + pair.Value.GetHashCode();
+        }
 
         return hash;
     }
@@ -331,17 +335,25 @@ public class LdapSettings : ISettings<LdapSettings>, ICloneable
     private string GetOldSetting(MappingFields field)
     {
         if (LdapMapping == null)
+        {
             LdapMapping = new Dictionary<MappingFields, string>();
+        }
 
         if (LdapMapping.ContainsKey(field))
+        {
             return LdapMapping[field];
+        }
         else
+        {
             return "";
+        }
     }
     private void SetOldSetting(MappingFields field, string value)
     {
         if (LdapMapping == null)
+        {
             LdapMapping = new Dictionary<MappingFields, string>();
+        }
 
         if (string.IsNullOrEmpty(value))
         {

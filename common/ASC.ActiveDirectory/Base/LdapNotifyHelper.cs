@@ -54,10 +54,16 @@ public class LdapNotifyHelper
                 var tId = t.Id;
 
                 var ldapSettings = settingsManager.LoadForTenant<LdapSettings>(tId);
-                if (!ldapSettings.EnableLdapAuthentication) continue;
+                if (!ldapSettings.EnableLdapAuthentication)
+                {
+                    continue;
+                }
 
                 var cronSettings = settingsManager.LoadForTenant<LdapCronSettings>(tId);
-                if (string.IsNullOrEmpty(cronSettings.Cron)) continue;
+                if (string.IsNullOrEmpty(cronSettings.Cron))
+                {
+                    continue;
+                }
 
                 RegisterAutoSync(t, cronSettings.Cron);
             }

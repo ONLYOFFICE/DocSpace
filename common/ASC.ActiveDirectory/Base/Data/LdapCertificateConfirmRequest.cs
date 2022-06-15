@@ -113,7 +113,10 @@ public class LdapCertificateConfirmRequest
         catch (Exception ex)
         {
             if (log != null)
+            {
                 log.ErrorGetLdapCertProblems(ex);
+            }
+
             certificateErrors.Add((int)LdapCertificateProblem.CertUnrecognizedError);
         }
 
@@ -155,7 +158,10 @@ public class LdapCertificateConfirmRequest
         catch (Exception ex)
         {
             if (log != null)
+            {
                 log.ErrorLdapCertificateConfirmRequest(ex);
+            }
+
             return null;
         }
     }

@@ -36,7 +36,9 @@ public static class LdapUtils
     public static string DistinguishedNameToDomain(string distinguishedName)
     {
         if (string.IsNullOrEmpty(distinguishedName))
+        {
             return null;
+        }
 
         var matchList = _dcRegex.Matches(distinguishedName);
 
@@ -68,10 +70,14 @@ public static class LdapUtils
         var fullLogin = ldapLogin.ToString();
 
         if (fullLogin.Equals(ldapUser.Email, StringComparison.InvariantCultureIgnoreCase))
+        {
             return true;
+        }
 
         if (!ldapDomain.StartsWith(ldapLogin.Domain))
+        {
             return false;
+        }
 
         var alterEmail = ldapUser.UserName.Contains("@")
             ? ldapUser.UserName
@@ -85,12 +91,16 @@ public static class LdapUtils
         try
         {
             if (string.IsNullOrEmpty(email))
+            {
                 return null;
+            }
 
             var login = LdapLogin.ParseLogin(email);
 
             if (string.IsNullOrEmpty(login.Domain))
+            {
                 return email;
+            }
 
             var dotIndex = login.Domain.LastIndexOf(".", StringComparison.Ordinal);
 
@@ -109,17 +119,23 @@ public static class LdapUtils
         try
         {
             if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(email))
+            {
                 return false;
+            }
 
             var accessableLogin = GetLdapAccessableEmail(login);
 
             if (string.IsNullOrEmpty(accessableLogin))
+            {
                 return false;
+            }
 
             var accessableEmail = GetLdapAccessableEmail(email);
 
             if (string.IsNullOrEmpty(accessableEmail))
+            {
                 return false;
+            }
 
             return accessableLogin.Equals(accessableEmail, StringComparison.InvariantCultureIgnoreCase);
         }
@@ -143,13 +159,19 @@ public static class LdapUtils
         catch (Exception ex)
         {
             if (log != null)
+            {
                 log.ErrorSkipErrors(ex);
+            }
         }
     }
 
     public static string GetContactsString(this UserInfo userInfo)
     {
-        if (userInfo.ContactsList == null || userInfo.ContactsList.Count == 0) return null;
+        if (userInfo.ContactsList == null || userInfo.ContactsList.Count == 0)
+        {
+            return null;
+        }
+
         var sBuilder = new StringBuilder();
         foreach (var contact in userInfo.Contacts)
         {

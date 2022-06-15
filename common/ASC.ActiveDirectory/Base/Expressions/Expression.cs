@@ -66,10 +66,14 @@ public class Expression : ICloneable
     public Expression(string attrbuteName, Op op)
     {
         if (op != Op.Exists && op != Op.NotExists)
+        {
             throw new ArgumentException("op");
+        }
 
         if (string.IsNullOrEmpty(attrbuteName))
+        {
             throw new ArgumentException("attrbuteName");
+        }
 
         _op = op;
         _attributeName = attrbuteName;
@@ -85,10 +89,14 @@ public class Expression : ICloneable
     public Expression(string attrbuteName, Op op, string attrbuteValue)
     {
         if (op == Op.Exists || op == Op.NotExists)
+        {
             throw new ArgumentException("op");
+        }
 
         if (string.IsNullOrEmpty(attrbuteName))
+        {
             throw new ArgumentException("attrbuteName");
+        }
 
         _op = op;
         _attributeName = attrbuteName;
@@ -267,13 +275,17 @@ public class Expression : ICloneable
         }
 
         if (string.IsNullOrEmpty(spliter))
+        {
             return null;
+        }
 
         var attributeName = origin.Substring(0, index);
         var attributeValue = origin.Substring(index + 1);
 
         if (string.IsNullOrEmpty(attributeName) || string.IsNullOrEmpty(attributeValue))
+        {
             return null;
+        }
 
         return new Expression(attributeName, op, attributeValue);
     }

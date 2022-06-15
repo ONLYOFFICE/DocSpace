@@ -155,7 +155,9 @@ public class LdapSaveSyncOperation
         foreach (var o in operations)
         {
             if (Process.GetProcesses().Any(p => p.Id == o.InstanceId))
+            {
                 continue;
+            }
 
             o[LdapTaskProperty.PROGRESS] = 100;
             _progressQueue.DequeueTask(o.Id);

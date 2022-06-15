@@ -29,8 +29,7 @@ namespace ASC.ActiveDirectory.ComplexOperations.Data;
 [Scope]
 public class LdapChangeCollection : List<LdapChange>
 {
-    public Tenant Tenant { get; set; }
-    private UserFormatter _userFormatter;
+    private readonly UserFormatter _userFormatter;
     public LdapChangeCollection(UserFormatter userFormatter)
     {
         _userFormatter = userFormatter;
@@ -199,7 +198,9 @@ public class LdapChangeCollection : List<LdapChange>
 
             LdapItemChangeKey key;
             if (!Enum.TryParse(propName, out key))
+            {
                 throw new InvalidEnumArgumentException(propName);
+            }
 
             var change = new LdapItemChange(key, valueSrc, valueDst);
 
@@ -208,7 +209,9 @@ public class LdapChangeCollection : List<LdapChange>
         catch (Exception ex)
         {
             if (log != null)
+            {
                 log.ErrorCanNotGetSidProperty(propName, ex);
+            }
         }
 
         return null;

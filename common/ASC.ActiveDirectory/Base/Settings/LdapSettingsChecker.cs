@@ -27,7 +27,7 @@
 namespace ASC.ActiveDirectory.Base.Settings;
 public abstract class LdapSettingsChecker
 {
-    protected readonly ILogger<LdapSettingsChecker> logger;
+    protected readonly ILogger<LdapSettingsChecker> _logger;
 
     public LdapUserImporter LdapImporter { get; private set; }
 
@@ -38,7 +38,7 @@ public abstract class LdapSettingsChecker
 
     protected LdapSettingsChecker(ILogger<LdapSettingsChecker> logger)
     {
-        this.logger = logger;
+        _logger = logger;
     }
 
     public void Init(LdapUserImporter importer)

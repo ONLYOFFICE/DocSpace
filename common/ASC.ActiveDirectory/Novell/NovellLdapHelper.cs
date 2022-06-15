@@ -32,14 +32,15 @@ public class NovellLdapHelper : LdapHelper
     private readonly NovellLdapSearcher _lDAPSearcher;
     private readonly IConfiguration _configuration;
     private readonly IServiceProvider _serviceProvider;
+    private readonly LdapObjectExtension _ldapObjectExtension;
 
-    public NovellLdapHelper(IServiceProvider serviceProvider, ILogger<LdapHelper> logger, InstanceCrypto instanceCrypto, IConfiguration configuration, NovellLdapSearcher novellLdapSearcher) :
+    public NovellLdapHelper(IServiceProvider serviceProvider, ILogger<LdapHelper> logger, InstanceCrypto instanceCrypto, IConfiguration configuration, NovellLdapSearcher novellLdapSearcher, LdapObjectExtension ldapObjectExtension) :
         base(logger, instanceCrypto)
     {
         _lDAPSearcher = novellLdapSearcher;
-
         _configuration = configuration;
         _serviceProvider = serviceProvider;
+        _ldapObjectExtension = ldapObjectExtension;
     }
 
     public new void Init(LdapSettings settings)
@@ -91,7 +92,9 @@ public class NovellLdapHelper : LdapHelper
                     var domain = LdapUtils.DistinguishedNameToDomain(dn);
 
                     if (!string.IsNullOrEmpty(domain))
+                    {
                         return domain;
+                    }
                 }
 
                 if (capabilities.ContainsKey("rootDomainNamingContext"))
@@ -105,7 +108,9 @@ public class NovellLdapHelper : LdapHelper
                     var domain = LdapUtils.DistinguishedNameToDomain(dn);
 
                     if (!string.IsNullOrEmpty(domain))
+                    {
                         return domain;
+                    }
                 }
 
                 if (capabilities.ContainsKey("namingContexts"))
@@ -119,13 +124,15 @@ public class NovellLdapHelper : LdapHelper
                     var domain = LdapUtils.DistinguishedNameToDomain(dn);
 
                     if (!string.IsNullOrEmpty(domain))
+                    {
                         return domain;
+                    }
                 }
             }
         }
         catch (Exception e)
         {
-            Logger.WarnSearchDomainFailed(e);
+            _logger.WarnSearchDomainFailed(e);
         }
 
         try
@@ -134,11 +141,11 @@ public class NovellLdapHelper : LdapHelper
                 _lDAPSearcher.Search(Settings.UserDN, NovellLdapSearcher.LdapScope.Sub, Settings.UserFilter, limit: 1)
                     .FirstOrDefault();
 
-            return searchResult != null ? LdapObjectExtension.GetDomainFromDn(searchResult) : null;
+            return searchResult != null ? _ldapObjectExtension.GetDomainFromDn(searchResult) : null;
         }
         catch (Exception e)
         {
-            Logger.WarnSearchDomainFailed(e);
+            _logger.WarnSearchDomainFailed(e);
         }
 
         return null;
@@ -160,9 +167,11 @@ public class NovellLdapHelper : LdapHelper
             LdapConstants.OBJECT_FILTER, attributes, 1);
 
         if (searchResult.Any())
+        {
             return true;
+        }
 
-        Logger.ErrorWrongUserDnParameter(userDn);
+        _logger.ErrorWrongUserDnParameter(userDn);
         return false;
     }
 
@@ -174,9 +183,11 @@ public class NovellLdapHelper : LdapHelper
             LdapConstants.OBJECT_FILTER, attributes, 1);
 
         if (searchResult.Any())
+        {
             return true;
+        }
 
-        Logger.ErrorWrongGroupDnParameter(groupDn);
+        _logger.ErrorWrongGroupDnParameter(groupDn);
         return false;
     }
 
@@ -208,7 +219,7 @@ public class NovellLdapHelper : LdapHelper
         }
         catch (Exception e)
         {
-            Logger.ErrorGetUsersFailed(filter, limit, e);
+            _logger.ErrorGetUsersFailed(filter, limit, e);
         }
 
         return list;
@@ -244,7 +255,7 @@ public class NovellLdapHelper : LdapHelper
         }
         catch (Exception e)
         {
-            Logger.ErrorGetUserBySidFailed(sid, e);
+            _logger.ErrorGetUserBySidFailed(sid, e);
         }
 
         return null;
@@ -271,7 +282,7 @@ public class NovellLdapHelper : LdapHelper
         }
         catch (Exception e)
         {
-            Logger.ErrorGetGroupsFailed(criteria, e);
+            _logger.ErrorGetGroupsFailed(criteria, e);
         }
 
         return list;
