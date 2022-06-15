@@ -22,40 +22,6 @@ import {
 import CatalogItem from "@appserver/components/catalog-item";
 import LoaderArticleBody from "./loaderArticleBody";
 
-    &.header {
-      font-weight: bold;
-      text-transform: uppercase;
-      pointer-events: none;
-    }
-  }
-
-  .rc-tree-node-content-wrapper-open {
-    pointer-events: none;
-  }
-
-  span.rc-tree-node-content-wrapper:not(.rc-tree-node-content-wrapper-open) {
-    width: unset;
-    padding: 0 4px 0 4px !important;
-    max-width: 98%;
-    @media ${tablet} {
-      margin-left: 24px;
-    }
-  }
-
-  .tree_icon {
-    display: inline;
-    path {
-      fill: dimgray;
-    }
-  }
-  svg {
-    &:not(:root) {
-      width: 100%;
-      height: 100%;
-    }
-  }
-`;
-
 const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
   ${commonIconsStyles}
   path {
@@ -69,6 +35,7 @@ const StyledExpanderRightIcon = styled(ExpanderRightIcon)`
     fill: ${(props) => props.color};
   }
 `;
+
 const getTreeItems = (data, path, t) => {
   const maptKeys = (tKey) => {
     switch (tKey) {
