@@ -118,7 +118,10 @@ export default function withContent(WrappedContent) {
                 })
               )
             )
-            .catch((err) => toastr.error(err))
+            .catch((err) => {
+              toastr.error(err);
+              this.completeAction(fileActionId);
+            })
             .finally(() => {
               clearTimeout(timerId);
               timerId = null;
@@ -136,7 +139,10 @@ export default function withContent(WrappedContent) {
                 })
               )
             )
-            .catch((err) => toastr.error(err))
+            .catch((err) => {
+              toastr.error(err);
+              this.completeAction(fileActionId);
+            })
             .finally(() => {
               clearTimeout(timerId);
               timerId = null;
@@ -244,7 +250,10 @@ export default function withContent(WrappedContent) {
             setCreatedItem({ id: createdFolderId, type: "folder" });
           })
           .then(() => this.completeAction(itemId))
-          .catch((e) => toastr.error(e))
+          .catch((e) => {
+            toastr.error(e);
+            this.completeAction(itemId);
+          })
           .finally(() => {
             const folderIds = [+itemId];
             createdFolderId && folderIds.push(createdFolderId);
@@ -318,7 +327,11 @@ export default function withContent(WrappedContent) {
               return open && openDocEditor(file.id, file.providerKey, tab);
             })
             .then(() => this.completeAction(itemId))
-            .catch((e) => toastr.error(e))
+            .catch((e) => {
+              toastr.error(e);
+              tab && tab.close();
+              this.completeAction(itemId);
+            })
             .finally(() => {
               const fileIds = [+itemId];
               createdFileId && fileIds.push(createdFileId);
@@ -351,7 +364,11 @@ export default function withContent(WrappedContent) {
               return open && openDocEditor(file.id, file.providerKey, tab);
             })
             .then(() => this.completeAction(itemId))
-            .catch((e) => toastr.error(e))
+            .catch((e) => {
+              toastr.error(e);
+              tab && tab.close();
+              this.completeAction(itemId);
+            })
             .finally(() => {
               const fileIds = [+itemId];
               createdFileId && fileIds.push(createdFileId);

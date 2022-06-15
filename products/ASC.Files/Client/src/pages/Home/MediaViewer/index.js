@@ -31,7 +31,7 @@ const FilesMediaViewer = (props) => {
     expandedKeys,
     setScrollToItem,
     setCurrentId,
-    setSelection,
+    setBufferSelection,
   } = props;
 
   useEffect(() => {
@@ -126,7 +126,7 @@ const FilesMediaViewer = (props) => {
           setIsLoading(false);
           setFirstLoad(false);
           setScrollToItem({ id: previewFile.id, type: "file" });
-          setSelection([previewFile]);
+          setBufferSelection(previewFile);
           setToPreviewFile(null);
         });
     }
@@ -142,7 +142,7 @@ const FilesMediaViewer = (props) => {
 
       setScrollToItem({ id: currentMediaFileId, type: "file" });
       const targetFile = files.find((item) => item.id === currentMediaFileId);
-      if (targetFile) setSelection([targetFile]);
+      if (targetFile) setBufferSelection(targetFile);
 
       window.history.replaceState(null, null, url);
     }
@@ -189,7 +189,7 @@ export default inject(
       setIsLoading,
       setFirstLoad,
       setScrollToItem,
-      setSelection,
+      setBufferSelection,
     } = filesStore;
     const {
       visible,
@@ -225,7 +225,7 @@ export default inject(
       expandedKeys,
       setScrollToItem,
       setCurrentId,
-      setSelection,
+      setBufferSelection,
     };
   }
 )(
