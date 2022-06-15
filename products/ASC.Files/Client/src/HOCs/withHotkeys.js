@@ -250,6 +250,7 @@ const withHotkeys = (Component) => {
 
   return inject(
     ({
+      auth,
       filesStore,
       dialogsStore,
       settingsStore,
@@ -287,7 +288,6 @@ const withHotkeys = (Component) => {
       } = hotkeyStore;
 
       const {
-        setHotkeyPanelVisible,
         setDeleteDialogVisible,
         setSelectFileDialogVisible,
         someDialogIsOpen,
@@ -299,6 +299,7 @@ const withHotkeys = (Component) => {
       } = filesActionsStore;
 
       const { visible: mediaViewerIsVisible } = mediaViewerDataStore;
+      const { setHotkeyPanelVisible } = auth.settingsStore;
 
       return {
         setSelected,

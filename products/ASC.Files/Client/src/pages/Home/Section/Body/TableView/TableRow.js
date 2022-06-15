@@ -270,6 +270,7 @@ const FilesTableRow = (props) => {
     getContextModel,
     showHotkeyBorder,
     tableColumns,
+    id,
   } = props;
   const { acceptBackground, background } = theme.dragAndDrop;
 
@@ -341,6 +342,7 @@ const FilesTableRow = (props) => {
 
   return (
     <StyledDragAndDrop
+      id={id}
       data-title={item.title}
       value={value}
       className={`files-item ${className} ${item.id}_${item.fileExst} ${

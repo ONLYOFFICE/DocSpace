@@ -18,4 +18,4 @@ if ! cat /etc/passwd | grep -q "nginx:"; then
 fi
 
 usermod -aG onlyoffice,nginx onlyoffice
-chown onlyoffice:onlyoffice /var/log/onlyoffice/appserver /var/www/appserver /etc/onlyoffice/appserver
+chown -R onlyoffice:onlyoffice /var/log/onlyoffice/appserver /var/www/appserver /etc/onlyoffice/appserver
