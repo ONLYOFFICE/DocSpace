@@ -32,4 +32,7 @@ public static class PushConstants
     public const string PushParentItemTagName = "PushParentItem";
     public const string PushModuleTagName = "PushModule";
     public const string PushActionTagName = "PushAction";
+
+    public const string PushDocAppName = "doc";
+    public const string PushProjAppName = "proj";
 }

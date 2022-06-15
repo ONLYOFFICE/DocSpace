@@ -30,7 +30,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using ASC.Core.Common.Notify.Push.Dao;
+
 using FirebaseAdmin;
+using FirebaseAdmin.Messaging;
 
 using Google.Apis.Auth.OAuth2;
 
@@ -41,12 +44,15 @@ public class FirebaseHelper
 {
     protected readonly UserManager _userManager;
     private readonly ILogger<TelegramHelper> _logger;
+    private readonly IConfiguration _configuration;
 
     public FirebaseHelper(
         UserManager userManager,
+        IConfiguration configuration,
         ILogger<TelegramHelper> logger)
     {
         _userManager = userManager;
+        _configuration = configuration;
         _logger = logger;
     }
 
@@ -54,8 +60,7 @@ public class FirebaseHelper
     {
         FirebaseApp.Create(new AppOptions()
         {
-            //Credential = GoogleCredential.FromJson(JsonConvert.SerializeObject(new FirebaseApiKey()).Replace("\\\\", "\\"))
-            Credential = GoogleCredential.FromJson(JsonConvert.SerializeObject(""))
+            Credential = GoogleCredential.FromJson(JsonConvert.SerializeObject(new FirebaseApiKey(_configuration)).Replace("\\\\", "\\"))
         });
     }
     public void SendMessage(NotifyMessage msg)
@@ -84,7 +89,7 @@ public class FirebaseHelper
         {
             if ((bool)fb.IsSubscribed)
             {
-                var m = new Message()
+                var m = new FirebaseAdmin.Messaging.Message()
                 {
                     Data = new Dictionary<string, string>{
                             { "data", msg.Data }
