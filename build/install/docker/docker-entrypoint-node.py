@@ -53,7 +53,7 @@ def parseJsonValue(jsonValue):
     
     return data
 
-def updateJsonFile(jsonData, jsonKey, jsonUpdateValue):
+def updateJsonData(jsonData, jsonKey, jsonUpdateValue):
     jsonpath_expr = parse(jsonKey)
     jsonpath_expr.find(jsonData)
     jsonpath_expr.update(jsonData, jsonUpdateValue)
@@ -70,32 +70,32 @@ def writeJsonFile(jsonFile, jsonData, indent=4):
 saveFilePath = filePath
 #jsonValue = sys.argv[2]
 
-filePath = "/app/onlyoffice/config/appsettings.test.json"
+filePath = "/app/onlyoffice/config/appsettings.json"
 jsonData = openJsonFile(filePath)
 #jsonUpdateValue = parseJsonValue(jsonValue)
-updateJsonFile(jsonData, "$.ConnectionStrings.default.connectionString", "Server="+ MYSQL_HOST +";Port=3306;Database="+ MYSQL_DATABASE +";User ID="+ MYSQL_USER +"r;Password="+ MYSQL_PASSWORD +";Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;ConnectionReset=false," )
-updateJsonFile(jsonData,"$.core.base-domain", APP_CORE_BASE_DOMAIN)
-updateJsonFile(jsonData,"$.core.machinekey", APP_CORE_MACHINEKEY)
-updateJsonFile(jsonData,"$.core.products.subfolder", "server")
-updateJsonFile(jsonData,"$.files.docservice.url.portal", APP_URL_PORTAL)
-updateJsonFile(jsonData,"$.files.docservice.url.public", DOCUMENT_SERVER_URL_PUBLIC)
-updateJsonFile(jsonData,"$.files.docservice.url.internal", DOCUMENT_SERVER_URL_INTERNAL)
-updateJsonFile(jsonData,"$.files.docservice.secret.value", DOCUMENT_SERVER_JWT_SECRET)
-updateJsonFile(jsonData,"$.files.docservice.secret.header", DOCUMENT_SERVER_JWT_HEADER)
-updateJsonFile(jsonData,"$.migration.enabled", DATABASE_MIGRATION)
+updateJsonData(jsonData, "$.ConnectionStrings.default.connectionString", "Server="+ MYSQL_HOST +";Port=3306;Database="+ MYSQL_DATABASE +";User ID="+ MYSQL_USER +"r;Password="+ MYSQL_PASSWORD +";Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;ConnectionReset=false," )
+updateJsonData(jsonData,"$.core.base-domain", APP_CORE_BASE_DOMAIN)
+updateJsonData(jsonData,"$.core.machinekey", APP_CORE_MACHINEKEY)
+updateJsonData(jsonData,"$.core.products.subfolder", "server")
+updateJsonData(jsonData,"$.files.docservice.url.portal", APP_URL_PORTAL)
+updateJsonData(jsonData,"$.files.docservice.url.public", DOCUMENT_SERVER_URL_PUBLIC)
+updateJsonData(jsonData,"$.files.docservice.url.internal", DOCUMENT_SERVER_URL_INTERNAL)
+updateJsonData(jsonData,"$.files.docservice.secret.value", DOCUMENT_SERVER_JWT_SECRET)
+updateJsonData(jsonData,"$.files.docservice.secret.header", DOCUMENT_SERVER_JWT_HEADER)
+updateJsonData(jsonData,"$.migration.enabled", DATABASE_MIGRATION)
 writeJsonFile(filePath, jsonData)
 
 filePath = "/app/onlyoffice/config/elastic.json"
 jsonData = openJsonFile(filePath)
-updateJsonFile(jsonData,"$.elastic.Scheme", ELK_SHEME)
-updateJsonFile(jsonData,"$.elastic.Host", ELK_HOST)
-updateJsonFile(jsonData,"$.elastic.Port", ELK_PORT)
-updateJsonFile(jsonData,"$.elastic.Threads", ELK_THREADS)
+updateJsonData(jsonData,"$.elastic.Scheme", ELK_SHEME)
+updateJsonData(jsonData,"$.elastic.Host", ELK_HOST)
+updateJsonData(jsonData,"$.elastic.Port", ELK_PORT)
+updateJsonData(jsonData,"$.elastic.Threads", ELK_THREADS)
 writeJsonFile(filePath, jsonData)
 
-filePath = "/app/onlyoffice/config/kafka.test.json"
+filePath = "/app/onlyoffice/config/kafka.json"
 jsonData = openJsonFile(filePath)
-updateJsonFile(jsonData,"$.kafka.BootstrapServers", KAFKA_HOST)
+jsonData.update({"kafka": {"BootstrapServers": KAFKA_HOST}})
 writeJsonFile(filePath, jsonData)
 
 os.system(RUN_FILE + " --app.port=" + SERVICE_PORT + " --app.appsettings=" + PATH_TO_CONF + " --app.environment=" + ENV_EXTENSION)
