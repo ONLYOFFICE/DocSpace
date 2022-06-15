@@ -104,7 +104,8 @@ const Layout = (props) => {
       intervalHandler = null;
       timeoutHandler = null;
 
-      let height = window.innerHeight;
+      let height = "100%";
+      const windowHeight = window.innerHeight;
 
       if (isMobileOnly && isIOS && isChrome) {
         if (window.innerHeight < window.innerWidth && isPortrait) {
@@ -122,7 +123,7 @@ const Layout = (props) => {
       // }
 
       const bannerHeight = isBannerVisible ? 80 : 0;
-      let vh = (height - 48 - bannerHeight) * 0.01;
+      let vh = (windowHeight - 48 - bannerHeight) * 0.01;
       document.documentElement.style.setProperty("--vh", `${vh}px`);
 
       setContentHeight(height);
