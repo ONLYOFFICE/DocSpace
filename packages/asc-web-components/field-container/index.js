@@ -48,7 +48,7 @@ class FieldContainer extends React.Component {
             <div className="field-label-icon">
               <Label
                 isRequired={isRequired}
-                error={hasError}
+                //error={hasError}
                 text={labelText}
                 truncate={true}
                 className="field-label"
@@ -65,7 +65,7 @@ class FieldContainer extends React.Component {
             <div className="field-label-icon">
               <Label
                 isRequired={isRequired}
-                error={hasError}
+                //error={hasError}
                 text={labelText}
                 truncate={true}
                 className="field-label"
