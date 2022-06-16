@@ -2131,4 +2131,7 @@ The link is only valid for 7 days.</value>
   <data name="subject_user_ldap_activation" xml:space="preserve">
     <value>You’re invited to join ${__VirtualRootPath}</value>
   </data>
+  <data name="ButtonConfirmRoomInvite" xml:space="preserve">
+    <value>Confirm Room Invite</value>
+  </data>
 </root>

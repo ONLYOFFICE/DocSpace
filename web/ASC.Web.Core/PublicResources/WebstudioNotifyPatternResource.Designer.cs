@@ -322,6 +322,15 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Confirm Room Invite.
+        /// </summary>
+        public static string ButtonConfirmRoomInvite {
+            get {
+                return ResourceManager.GetString("ButtonConfirmRoomInvite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirm account termination.
         /// </summary>
         public static string ButtonConfirmTermination {
@@ -606,7 +615,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///You have just created the ONLYOFFICE portal, your team&apos;s cloud office that would enhance public cooperation. Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
+        ///You have just created the ONLYOFFICE portal, your team&apos;s cloud office that would enhance internal cooperation. Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
         ///
         ///Please, confirm your email:
         ///
@@ -938,7 +947,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///You have just created your corporate web-office, your team&apos;s cloud office that would enhance public cooperation.  Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
+        ///You have just created your corporate web-office, your team&apos;s cloud office that would enhance internal cooperation.  Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
         ///
         ///Please, confirm your email:
         ///
@@ -1262,7 +1271,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///You have just created the ONLYOFFICE portal, your team&apos;s cloud office that would enhance public cooperation.  Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
+        ///You have just created the ONLYOFFICE portal, your team&apos;s cloud office that would enhance internal cooperation.  Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
         ///
         ///Please, confirm your email following the &quot;link&quot;:&quot;$ActivateUrl&quot;.
         ///
@@ -1951,7 +1960,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///You have just created the ONLYOFFICE portal, your team&apos;s cloud office that would enhance public cooperation. Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. 
+        ///You have just created the ONLYOFFICE portal, your team&apos;s cloud office that would enhance internal cooperation. Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. 
         ///
         ///Please, confirm your email: 
         ///

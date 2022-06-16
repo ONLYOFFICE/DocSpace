@@ -153,7 +153,7 @@
 
   <ItemGroup>
     <EmbeddedResource Update="PublicResources\WebstudioNotifyPatternResource.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>WebstudioNotifyPatternResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="PublicResources\WebstudioNotifyPatternResource.ru.resx">
