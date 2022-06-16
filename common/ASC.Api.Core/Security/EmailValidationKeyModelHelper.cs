@@ -36,7 +36,7 @@ public class EmailValidationKeyModelHelper
     private readonly AuthContext _authContext;
     private readonly UserManager _userManager;
     private readonly AuthManager _authentication;
-    private readonly RoomLinksService _roomLinksService;
+    private readonly RoomInvitationLinksService _roomLinksService;
 
     public EmailValidationKeyModelHelper(
         IHttpContextAccessor httpContextAccessor,
@@ -44,7 +44,7 @@ public class EmailValidationKeyModelHelper
         AuthContext authContext,
         UserManager userManager,
         AuthManager authentication,
-        RoomLinksService roomLinksService)
+        RoomInvitationLinksService roomLinksService)
     {
         _httpContextAccessor = httpContextAccessor;
         _provider = provider;
