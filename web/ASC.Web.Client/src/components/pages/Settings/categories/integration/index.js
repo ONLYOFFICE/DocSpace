@@ -1,45 +1,73 @@
-import React, { lazy, Suspense } from "react";
-import { Route, Switch } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import Submenu from "@appserver/components/submenu";
 import { withRouter } from "react-router";
-import Loader from "@appserver/components/loader";
+import { withTranslation } from "react-i18next";
+import { inject, observer } from "mobx-react";
+import { AppServerConfig } from "@appserver/common/constants";
 import { combineUrl } from "@appserver/common/utils";
-import AppServerConfig from "@appserver/common/constants/AppServerConfig";
+import config from "../../../../../../package.json";
 
-const ThirdPartyServices = lazy(() => import("./ThirdPartyServicesSettings"));
-const SingleSignOn = lazy(() => import("./SingleSignOn"));
+import SSO from "./SingleSignOn";
+import ThirdParty from "./ThirdPartyServicesSettings";
 
-const PROXY_BASE_URL = combineUrl(
-  AppServerConfig.proxyURL,
-  "/settings/integration"
-);
+import AppLoader from "@appserver/common/components/AppLoader";
 
-const Integration = ({ match }) => {
+const IntegrationWrapper = (props) => {
+  const { t, history, loadBaseInfo } = props;
+  const [currentTab, setCurrentTab] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const data = [
+    {
+      id: "single-sign-on",
+      name: t("SingleSignOn"),
+      content: <SSO />,
+    },
+    {
+      id: "third-party-services",
+      name: t("ThirdPartyTitle"),
+      content: <ThirdParty />,
+    },
+  ];
+
+  const load = async () => {
+    await loadBaseInfo();
+    const path = location.pathname;
+    const currentTab = data.findIndex((item) => path.includes(item.id));
+    if (currentTab !== -1) setCurrentTab(currentTab);
+    setIsLoading(true);
+  };
+
+  useEffect(() => {
+    load();
+  }, []);
+
+  const onSelect = (e) => {
+    history.push(
+      combineUrl(
+        AppServerConfig.proxyURL,
+        config.homepage,
+        `/settings/integration/${e.id}`
+      )
+    );
+  };
+
+  if (!isLoading) return <AppLoader />;
   return (
-    <Suspense
-      fallback={<Loader className="pageLoader" type="rombs" size="40px" />}
-    >
-      <Switch>
-        <Route
-          exact
-          path={[
-            combineUrl(PROXY_BASE_URL, "/third-party-services"),
-            combineUrl(AppServerConfig.proxyURL, "/integration"),
-            match.path,
-          ]}
-          component={ThirdPartyServices}
-        />
-        <Route
-          exact
-          path={[
-            combineUrl(PROXY_BASE_URL, "/single-sign-on"),
-            combineUrl(AppServerConfig.proxyURL, "/integration"),
-            match.path,
-          ]}
-          component={SingleSignOn}
-        />
-      </Switch>
-    </Suspense>
+    <Submenu
+      data={data}
+      startSelect={currentTab}
+      onSelect={(e) => onSelect(e)}
+    />
   );
 };
 
-export default withRouter(Integration);
+export default inject(({ setup }) => {
+  const { initSettings } = setup;
+
+  return {
+    loadBaseInfo: async () => {
+      await initSettings();
+    },
+  };
+})(withTranslation("Settings")(withRouter(observer(IntegrationWrapper))));
