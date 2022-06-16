@@ -77,6 +77,8 @@ public class Builder<T>
     private readonly Global _global;
     private readonly PathProvider _pathProvider;
     private readonly IHttpClientFactory _clientFactory;
+    private readonly FFmpegService _fFmpegService;
+    private readonly TempPath _tempPath;
 
     public Builder(
         ThumbnailSettings settings,
@@ -87,7 +89,9 @@ public class Builder<T>
         Global global,
         PathProvider pathProvider,
         ILoggerProvider log,
-        IHttpClientFactory clientFactory)
+        IHttpClientFactory clientFactory,
+        FFmpegService fFmpegService,
+        TempPath tempPath)
     {
         _config = settings;
         _tenantManager = tenantManager;
@@ -98,6 +102,8 @@ public class Builder<T>
         _pathProvider = pathProvider;
         _logger = log.CreateLogger("ASC.Files.ThumbnailBuilder");
         _clientFactory = clientFactory;
+        _fFmpegService = fFmpegService;
+        _tempPath = tempPath;
     }
 
     internal async Task BuildThumbnail(FileData<T> fileData)
@@ -152,9 +158,15 @@ public class Builder<T>
 
             if (!_config.FormatsArray.Contains(ext) || file.Encrypted || file.RootFolderType == FolderType.TRASH || file.ContentLength > _config.AvailableFileSize)
             {
-                file.ThumbnailStatus = ASC.Files.Core.Thumbnail.NotRequired;
+                file.ThumbnailStatus = Core.Thumbnail.NotRequired;
                 await fileDao.SaveThumbnailAsync(file, null);
 
+                return;
+            }
+
+            if (IsVideo(file))
+            {
+                await MakeThumbnailFromVideo(fileDao, file);
                 return;
             }
 
@@ -176,6 +188,26 @@ public class Builder<T>
                 await fileDao.SaveThumbnailAsync(file, null);
             }
         }
+    }
+
+    private async Task MakeThumbnailFromVideo(IFileDao<T> fileDao, File<T> file)
+    {
+        var streamFile = await fileDao.GetFileStreamAsync(file);
+
+        var tempPath = GetTempPath();
+        var streamThumb = await _fFmpegService.CreateThumbnail(streamFile, tempPath);
+
+        await Crop(fileDao, file, streamThumb);
+
+        streamThumb.Dispose();
+        streamThumb.Close();
+
+        File.Delete(tempPath);
+    }
+
+    private string GetTempPath()
+    {
+        return Path.Combine(_tempPath.GetTempPath(), Path.ChangeExtension(Path.GetRandomFileName(), "jpg"));
     }
 
     private async Task MakeThumbnail(IFileDao<T> fileDao, File<T> file)
@@ -297,6 +329,13 @@ public class Builder<T>
         var extension = FileUtility.GetFileExtension(file.Title);
 
         return FileUtility.ExtsImage.Contains(extension);
+    }
+
+    private bool IsVideo(File<T> file)
+    {
+        var extension = FileUtility.GetFileExtension(file.Title);
+
+        return FileUtility.ExtsVideo.Contains(extension);
     }
 
     private async Task CropImage(IFileDao<T> fileDao, File<T> file)

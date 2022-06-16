@@ -44,6 +44,14 @@ public class FFmpegService
         }
     }
 
+    private readonly List<string> _convertableMedia;
+    private readonly List<string> _fFmpegExecutables = new List<string>() { "ffmpeg", "avconv" };
+    private readonly string _fFmpegPath;
+    private readonly string _fFmpegArgs;
+    private readonly string _fFmpegThumbnailsArgs;
+
+    private readonly ILogger<FFmpegService> _logger;
+
     public bool IsConvertable(string extension)
     {
         return MustConvertable.Contains(extension.TrimStart('.'));
@@ -86,6 +94,7 @@ public class FFmpegService
         _logger = logger;
         _fFmpegPath = configuration["files:ffmpeg:value"];
         _fFmpegArgs = configuration["files:ffmpeg:args"] ?? "-i - -preset ultrafast -movflags frag_keyframe+empty_moov -f {0} -";
+        _fFmpegThumbnailsArgs = configuration["files:ffmpeg:thumbnails:args"] ?? "-i - -vf  \"thumbnail\" {0}";
 
         _convertableMedia = (configuration.GetSection("files:ffmpeg:exts").Get<string[]>() ?? Array.Empty<string>()).ToList();
 
@@ -120,13 +129,6 @@ public class FFmpegService
         }
     }
 
-    private readonly List<string> _convertableMedia;
-    private readonly List<string> _fFmpegExecutables = new List<string>() { "ffmpeg", "avconv" };
-    private readonly string _fFmpegPath;
-    private readonly string _fFmpegArgs;
-
-    private readonly ILogger<FFmpegService> _logger;
-
     private ProcessStartInfo PrepareFFmpeg(string inputFormat)
     {
         if (!_convertableMedia.Contains(inputFormat.TrimStart('.')))
@@ -134,6 +136,15 @@ public class FFmpegService
             throw new ArgumentException("input format");
         }
 
+        var startInfo = PrepareCommonFFmpeg();
+
+        startInfo.Arguments = string.Format(_fFmpegArgs, "mp4");
+
+        return startInfo;
+    }
+
+    private ProcessStartInfo PrepareCommonFFmpeg()
+    {
         var startInfo = new ProcessStartInfo();
 
         if (string.IsNullOrEmpty(_fFmpegPath))
@@ -143,19 +154,16 @@ public class FFmpegService
         }
 
         startInfo.FileName = _fFmpegPath;
-        startInfo.WorkingDirectory = Path.GetDirectoryName(_fFmpegPath);
-        startInfo.Arguments = string.Format(_fFmpegArgs, "mp4");
         startInfo.UseShellExecute = false;
         startInfo.RedirectStandardOutput = true;
         startInfo.RedirectStandardInput = true;
         startInfo.RedirectStandardError = true;
         startInfo.CreateNoWindow = true;
         startInfo.WindowStyle = ProcessWindowStyle.Normal;
-
         return startInfo;
     }
 
-    private static Task<int> StreamCopyToAsync(Stream srcStream, Stream dstStream, bool closeSrc = false, bool closeDst = false)
+    private Task<int> StreamCopyToAsync(Stream srcStream, Stream dstStream, bool closeSrc = false, bool closeDst = false)
     {
         ArgumentNullException.ThrowIfNull(srcStream);
         ArgumentNullException.ThrowIfNull(dstStream);
@@ -163,7 +171,7 @@ public class FFmpegService
         return StreamCopyToAsyncInternal(srcStream, dstStream, closeSrc, closeDst);
     }
 
-    private static async Task<int> StreamCopyToAsyncInternal(Stream srcStream, Stream dstStream, bool closeSrc, bool closeDst)
+    private async Task<int> StreamCopyToAsyncInternal(Stream srcStream, Stream dstStream, bool closeSrc, bool closeDst)
     {
         const int bufs = 2048 * 4;
 
@@ -200,6 +208,84 @@ public class FFmpegService
         while ((line = await reader.ReadLineAsync()) != null)
         {
             _logger.Information(line);
+        }
+    }
+
+    public async Task<Stream> CreateThumbnail(Stream stream, string tempPath)
+    {
+        var startInfo = PrepareFFmpegForCreateThumbnail(tempPath);
+
+        Process process;
+        using (process = new Process { StartInfo = startInfo })
+        {
+            process.Start();
+
+            await StreamCopyForThumbnailAsync(stream, process.StandardInput.BaseStream, closeDst: true);
+
+            await ProcessLog(process.StandardError.BaseStream);
+
+            return GetFileStream(tempPath);
+        }
+    }
+
+    private ProcessStartInfo PrepareFFmpegForCreateThumbnail(string tempFile)
+    {
+        var startInfo = PrepareCommonFFmpeg();
+
+        startInfo.Arguments = string.Format(_fFmpegThumbnailsArgs, tempFile);
+
+        return startInfo;
+    }
+
+    private Task<int> StreamCopyForThumbnailAsync(Stream srcStream, Stream dstStream, bool closeSrc = false, bool closeDst = false)
+    {
+        ArgumentNullException.ThrowIfNull(srcStream);
+        ArgumentNullException.ThrowIfNull(dstStream);
+
+        return StreamCopyForThumbnailAsyncInternal(srcStream, dstStream, closeSrc, closeDst);
+    }
+
+    private async Task<int> StreamCopyForThumbnailAsyncInternal(Stream srcStream, Stream dstStream, bool closeSrc, bool closeDst)
+    {
+        const int bufs = 2048 * 4;
+
+        var buffer = new byte[bufs];
+        int readed;
+        var total = 0;
+
+        while ((readed = await srcStream.ReadAsync(buffer, 0, bufs)) > 0 && total < 9000000) // HACK: ffmpeg lock stream when total < 9000000
+        {
+            await dstStream.WriteAsync(buffer, 0, readed);
+            await dstStream.FlushAsync();
+            total += readed;
+        }
+
+        if (closeSrc)
+        {
+            srcStream.Dispose();
+            srcStream.Close();
+        }
+
+        if (closeDst)
+        {
+            await dstStream.FlushAsync();
+            dstStream.Dispose();
+            dstStream.Close();
+        }
+
+        return total;
+    }
+
+    private Stream GetFileStream(string tempFile)
+    {
+        if (File.Exists(tempFile))
+        {
+            return File.Open(tempFile, FileMode.Open);
+        }
+        else
+        {
+            _logger.ErrorFileNotFound(tempFile);
+            throw new IOException("file not found");
         }
     }
 }

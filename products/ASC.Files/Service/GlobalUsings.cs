@@ -62,6 +62,7 @@ global using ASC.Web.Files.Classes;
 global using ASC.Web.Files.Core;
 global using ASC.Web.Files.Core.Search;
 global using ASC.Web.Files.Services.DocumentService;
+global using ASC.Web.Files.Services.FFmpegService;
 
 global using Autofac;
 
