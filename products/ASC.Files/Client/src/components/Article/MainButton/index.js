@@ -39,7 +39,6 @@ const ArticleMainButtonContent = (props) => {
     isCommonFolder,
     isRecycleBinFolder,
     history,
-    hasGalleryFiles,
     currentFolderId,
   } = props;
   const inputFilesElement = React.useRef(null);
@@ -143,7 +142,7 @@ const ArticleMainButtonContent = (props) => {
                   disabled: isPrivacy,
                   key: "form-file",
                 },
-                hasGalleryFiles && {
+                {
                   className: "main-button_drop-down_sub",
                   label: t("Common:OFORMsGallery"),
                   onClick: onShowGallery,
@@ -172,7 +171,7 @@ const ArticleMainButtonContent = (props) => {
             },
           ];
 
-    if ((isMobile || isTabletUtils()) && hasGalleryFiles) {
+    if (isMobile || isTabletUtils()) {
       formActions.push({
         className: "main-button_drop-down_sub",
         icon: "images/form.react.svg",
@@ -249,7 +248,6 @@ const ArticleMainButtonContent = (props) => {
   }, [
     t,
     isPrivacy,
-    hasGalleryFiles,
     currentFolderId,
     onCreate,
     onShowSelectFileDialog,
@@ -326,7 +324,6 @@ export default inject(
       isLoading,
       fileActionStore,
       canCreate,
-      hasGalleryFiles,
     } = filesStore;
     const {
       isPrivacyFolder,
@@ -364,7 +361,6 @@ export default inject(
       isLoading,
       isLoaded,
       firstLoad,
-      hasGalleryFiles,
       currentFolderId,
     };
   }
