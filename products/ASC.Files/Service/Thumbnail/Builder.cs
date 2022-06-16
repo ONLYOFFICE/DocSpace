@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using System.Globalization;
+
 namespace ASC.Files.ThumbnailBuilder;
 
 [Singletone]
@@ -269,7 +271,7 @@ public class Builder<T>
             }
         };
 
-        var (operationResultProgress, url) = await _documentServiceConnector.GetConvertedUriAsync(fileUri, fileExtension, toExtension, docKey, null, thumbnail, spreadsheetLayout, false);
+        var (operationResultProgress, url) = await _documentServiceConnector.GetConvertedUriAsync(fileUri, fileExtension, toExtension, docKey, null, CultureInfo.CurrentCulture.Name, thumbnail, spreadsheetLayout, false);
 
         operationResultProgress = Math.Min(operationResultProgress, 100);
         return (operationResultProgress == 100, url);

@@ -37,7 +37,7 @@ public class MigrationLogger : IDisposable
     public MigrationLogger(TempPath tempPath, ILogger<MigrationLogger> logger)
     {
         _migrationLogPath = tempPath.GetTempFileName();
-        _migration = new FileStream(_migrationLogPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read, 4096, FileOptions.DeleteOnClose);
+        _migration = new FileStream(_migrationLogPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, System.IO.FileShare.Read, 4096, FileOptions.DeleteOnClose);
         _migrationLog = new StreamWriter(_migration);
         _logger = logger;
     }

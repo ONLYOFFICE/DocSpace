@@ -229,7 +229,7 @@ internal class ProviderSecurityDao : ProviderDaoBase, ISecurityDao<string>
         return _securityDao.DeleteShareRecordsAsync(records);
     }
 
-    public ValueTask<bool> IsSharedAsync(object entryId, FileEntryType type)
+    public Task<bool> IsSharedAsync(string entryId, FileEntryType type)
     {
         return _securityDao.IsSharedAsync(entryId, type);
     }

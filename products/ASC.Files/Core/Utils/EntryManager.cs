@@ -1095,91 +1095,118 @@ public class EntryManager
         try
         {
             var linkDao = _daoFactory.GetLinkDao();
-            var fileDao = _daoFactory.GetFileDao<T>();
-            var folderDao = _daoFactory.GetFolderDao<T>();
+            var sourceId = await linkDao.GetSourceAsync(draft.Id.ToString());
+            if (sourceId == null)
             {
-                var sourceId = await linkDao.GetSourceAsync(draft.Id.ToString());
-                if (sourceId == null)
-                {
-                    throw new Exception("Link source is not found");
-                }
-
-                var sourceFile = await fileDao.GetFileAsync(sourceId);
-                if (sourceFile == null)
-                {
-                    throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound, draft.ID.ToString());
-                }
-
-                if (!FileUtility.CanWebRestrictedEditing(sourceFile.Title))
-                {
-                    throw new Exception(FilesCommonResource.ErrorMassage_NotSupportedFormat);
-                }
-
-                var properties = await fileDao.GetProperties(sourceFile.ID);
-                if (properties == null
-                    || properties.FormFilling == null
-                    || !properties.FormFilling.CollectFillForm)
-                {
-                    throw new Exception(FilesCommonResource.ErrorMassage_BadRequest);
-                }
-
-                var folderId = properties.FormFilling.ToFolderId;
-                if (!string.IsNullOrEmpty(folderId))
-                {
-                    var folder = await folderDao.GetFolderAsync(folderId);
-                    if (folder == null)
-                    {
-                        folderId = sourceFile.FolderID.ToString();
-                    }
-                }
-                else
-                {
-                    folderId = sourceFile.FolderID.ToString();
-                }
-                //todo: think about right to create in folder
-
-                if (!string.IsNullOrEmpty(properties.FormFilling.CreateFolderTitle))
-                {
-                    var newFolderTitle = Global.ReplaceInvalidCharsAndTruncate(properties.FormFilling.CreateFolderTitle);
-
-                    var folder = await folderDao.GetFolderAsync(newFolderTitle, folderId);
-                    if (folder == null)
-                    {
-                        folder = new Folder<T> { Title = newFolderTitle, ParentId = folderId };
-                        folderId = await folderDao.SaveFolderAsync(folder).ToString();
-
-                        folder = await folderDao.GetFolderAsync(folderId);
-                        FilesMessageService.Send(folder, MessageInitiator.DocsService, MessageAction.FolderCreated, folder.Title);
-                    }
-
-                    folderId = folder.ID.ToString();
-                }
-                //todo: think about right to create in folder
-
-                var title = properties.FormFilling.GetTitleByMask(sourceFile.Title);
-
-                var submitFile = new File<T>
-                {
-                    Title = title,
-                    ParentId = folderId,
-                    FileStatus = draft.FileStatus,
-                    ConvertedType = draft.ConvertedType,
-                    Comment = FilesCommonResource.CommentSubmitFillForm,
-                    Encrypted = draft.Encrypted,
-                };
-
-                using (var stream = await fileDao.GetFileStreamAsync(draft))
-                {
-                    submitFile.ContentLength = stream.CanSeek ? stream.Length : draft.ContentLength;
-                    submitFile = await fileDao.SaveFileAsync(submitFile, stream);
-                }
-
-                _filesMessageService.Send(submitFile, MessageInitiator.DocsService, MessageAction.FileCreated, submitFile.Title);
-
-                await _fileMarker.MarkAsNewAsync(submitFile);
-
-                return true;
+                throw new Exception("Link source is not found");
             }
+
+            if (int.TryParse(sourceId, out var sId))
+            {
+                return await SubmitFillFormFromSource(draft, sId);
+            }
+
+            return await SubmitFillFormFromSource(draft, sourceId);
+        }
+        catch (Exception e)
+        {
+            _logger.WarningWithException(string.Format("Error on submit form {0}", draft.Id), e);
+            return false;
+        }
+    }
+
+    private async Task<bool> SubmitFillFormFromSource<TDraft, TSource>(File<TDraft> draft, TSource sourceId)
+    {
+        try
+        {
+            var linkDao = _daoFactory.GetLinkDao();
+            var fileSourceDao = _daoFactory.GetFileDao<TSource>();
+            var fileDraftDao = _daoFactory.GetFileDao<TDraft>();
+            var folderSourceDao = _daoFactory.GetFolderDao<TSource>();
+            var folderDraftDao = _daoFactory.GetFolderDao<TDraft>();
+
+            if (sourceId == null)
+            {
+                throw new Exception("Link source is not found");
+            }
+
+            var sourceFile = await fileSourceDao.GetFileAsync(sourceId);
+            if (sourceFile == null)
+            {
+                throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound, draft.Id.ToString());
+            }
+
+            if (!_fileUtility.CanWebRestrictedEditing(sourceFile.Title))
+            {
+                throw new Exception(FilesCommonResource.ErrorMassage_NotSupportedFormat);
+            }
+
+            var properties = await fileSourceDao.GetProperties(sourceFile.Id);
+            if (properties == null
+                || properties.FormFilling == null
+                || !properties.FormFilling.CollectFillForm)
+            {
+                throw new Exception(FilesCommonResource.ErrorMassage_BadRequest);
+            }
+
+            var folderId = (TSource)Convert.ChangeType(properties.FormFilling.ToFolderId, typeof(TSource));
+            if (!Equals(folderId, default(TSource)))
+            {
+                var folder = await folderSourceDao.GetFolderAsync(folderId);
+                if (folder == null)
+                {
+                    folderId = sourceFile.ParentId;
+                }
+            }
+            else
+            {
+                folderId = sourceFile.ParentId;
+            }
+
+            //todo: think about right to create in folder
+
+            if (!string.IsNullOrEmpty(properties.FormFilling.CreateFolderTitle))
+            {
+                var newFolderTitle = Global.ReplaceInvalidCharsAndTruncate(properties.FormFilling.CreateFolderTitle);
+
+                var folder = await folderSourceDao.GetFolderAsync(newFolderTitle, folderId);
+                if (folder == null)
+                {
+                    folder = new Folder<TSource> { Title = newFolderTitle, ParentId = folderId };
+                    folderId = await folderSourceDao.SaveFolderAsync(folder);
+
+                    folder = await folderSourceDao.GetFolderAsync(folderId);
+                    _filesMessageService.Send(folder, MessageInitiator.DocsService, MessageAction.FolderCreated, folder.Title);
+                }
+
+                folderId = folder.Id;
+            }
+            //todo: think about right to create in folder
+
+            var title = properties.FormFilling.GetTitleByMask(sourceFile.Title);
+
+            var submitFile = new File<TSource>
+            {
+                Title = title,
+                ParentId = folderId,
+                FileStatus = draft.FileStatus,
+                ConvertedType = draft.ConvertedType,
+                Comment = FilesCommonResource.CommentSubmitFillForm,
+                Encrypted = draft.Encrypted,
+            };
+
+            using (var stream = await fileDraftDao.GetFileStreamAsync(draft))
+            {
+                submitFile.ContentLength = stream.CanSeek ? stream.Length : draft.ContentLength;
+                submitFile = await fileSourceDao.SaveFileAsync(submitFile, stream);
+            }
+
+            _filesMessageService.Send(submitFile, MessageInitiator.DocsService, MessageAction.FileCreated, submitFile.Title);
+
+            await _fileMarker.MarkAsNewAsync(submitFile);
+
+            return true;
+
         }
         catch (Exception e)
         {

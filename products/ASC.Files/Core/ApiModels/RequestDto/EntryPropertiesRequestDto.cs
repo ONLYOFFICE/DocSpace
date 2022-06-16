@@ -24,31 +24,36 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Resource.Manager;
-
-public class Options
+namespace ASC.Files.Core.ApiModels.RequestDto;
+public class EntryPropertiesRequestDto : IMapFrom<EntryProperties>
 {
-    [Option('p', "project", Required = false, HelpText = "Project")]
-    public string Project { get; set; }
+    public FormFillingPropertiesRequestDto FormFilling { get; set; }
 
-    [Option('m', "module", Required = false, HelpText = "Module")]
-    public string Module { get; set; }
+    public void Mapping(AutoMapper.Profile profile)
+    {
+        profile.CreateMap(typeof(EntryProperties), GetType());
+        profile.CreateMap(GetType(), typeof(EntryProperties));
+    }
+}
 
-    [Option("fp", Required = false, HelpText = "File Path")]
-    public string FilePath { get; set; }
+public class FormFillingPropertiesRequestDto : IMapFrom<FormFillingProperties>
+{
+    public bool CollectFillForm { get; set; }
+    public string ToFolderId { get; set; }
+    public string ToFolderPath { get; set; }
+    public string CreateFolderTitle { get; set; }
+    public string CreateFileMask { get; set; }
 
-    [Option('e', "exportpath", Required = false, HelpText = "Export Path", Default = "..\\..\\..\\..\\ASC.Common\\")]
-    public string ExportPath { get; set; }
+    public void Mapping(AutoMapper.Profile profile)
+    {
+        profile.CreateMap(typeof(FormFillingProperties), GetType());
+        profile.CreateMap(GetType(), typeof(FormFillingProperties));
+    }
+}
 
-    [Option('c', "culture", Required = false, HelpText = "Culture")]
-    public string Culture { get; set; }
-
-    [Option('f', "format", Required = false, HelpText = "Format", Default = "xml")]
-    public string Format { get; set; }
-
-    [Option('k', "key", Required = false, HelpText = "Key", Default = "")]
-    public string Key { get; set; }
-
-    public void Deconstruct(out string project, out string module, out string filePath, out string exportPath, out string culture, out string format, out string key)
-        => (project, module, filePath, exportPath, culture, format, key) = (Project, Module, FilePath, ExportPath, Culture, Format, Key);
+public class BatchEntryPropertiesRequestDto
+{
+    public JsonElement[] FilesId { get; set; }
+    public bool CreateSubfolder { get; set; }
+    public EntryPropertiesRequestDto FileProperties { get; set; }
 }

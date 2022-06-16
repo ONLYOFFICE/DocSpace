@@ -185,7 +185,7 @@ public class FileStorageService<T> //: IFileStorageService
 
         ErrorIf(folder == null, FilesCommonResource.ErrorMassage_FolderNotFound);
         ErrorIf(!await _fileSecurity.CanReadAsync(folder), FilesCommonResource.ErrorMassage_SecurityException_ReadFolder);
-        await _entryManager.SetIsFavoriteFolderAsync(folder);
+        await _entryStatusManager.SetIsFavoriteFolderAsync(folder);
 
         return folder;
     }
@@ -395,7 +395,7 @@ public class FileStorageService<T> //: IFileStorageService
         }
 
         await _entryStatusManager.SetFileStatusAsync(entries);
-        await _entryStatusManager.SetIsFavoriteFoldersAsync(entries.OfType<Folder<T>>().Where(r => r.ID != null).ToList());
+        await _entryStatusManager.SetIsFavoriteFoldersAsync(entries);
 
         return new List<FileEntry>(entries);
     }
@@ -480,7 +480,7 @@ public class FileStorageService<T> //: IFileStorageService
             folder.FolderIdDisplay = await _globalFolderHelper.GetFolderShareAsync<T>();
         }
 
-        await _entryManager.SetIsFavoriteFolderAsync(folder);
+        await _entryStatusManager.SetIsFavoriteFolderAsync(folder);
 
         return folder;
     }
@@ -1239,27 +1239,36 @@ public class FileStorageService<T> //: IFileStorageService
             }
             else
             {
-                if (!string.IsNullOrEmpty(properties.FormFilling.ToFolderId))
+                var folderId = properties.FormFilling.ToFolderId;
+                if (int.TryParse(folderId, out var fId))
                 {
-                    var folderDao = GetFolderDao();
-                    var folder = await folderDao.GetFolderAsync(properties.FormFilling.ToFolderId);
-
-                    if (folder == null)
-                    {
-                        properties.FormFilling.ToFolderId = null;
-                    }
-                    else if (await _fileSecurity.CanCreateAsync(folder))
-                    {
-                        properties.FormFilling.ToFolderPath = null;
-                        var breadCrumbs = await _entryManager.GetBreadCrumbsAsync(folder.ID, folderDao);
-                        properties.FormFilling.ToFolderPath = string.Join("/", breadCrumbs.Select(f => f.Title));
-                    }
-
+                    await SetFormFillingFolderProps(fId);
+                }
+                else
+                {
+                    await SetFormFillingFolderProps(folderId);
                 }
             }
         }
 
         return properties;
+
+        async Task SetFormFillingFolderProps<TProp>(TProp toFolderId)
+        {
+            var folderDao = _daoFactory.GetFolderDao<TProp>();
+            var folder = await folderDao.GetFolderAsync(toFolderId);
+
+            if (folder == null)
+            {
+                properties.FormFilling.ToFolderId = null;
+            }
+            else if (await _fileSecurity.CanCreateAsync(folder))
+            {
+                properties.FormFilling.ToFolderPath = null;
+                var breadCrumbs = await _entryManager.GetBreadCrumbsAsync(folder.Id, folderDao);
+                properties.FormFilling.ToFolderPath = string.Join("/", breadCrumbs.Select(f => f.Title));
+            }
+        }
     }
 
     public async Task<EntryProperties> SetFileProperties(T fileId, EntryProperties fileProperties)
@@ -1317,15 +1326,14 @@ public class FileStorageService<T> //: IFileStorageService
 
                 if (!string.IsNullOrEmpty(fileProperties.FormFilling.ToFolderId))
                 {
-                    var folderDao = GetFolderDao();
-
-                    var folder = await folderDao.GetFolderAsync(fileProperties.FormFilling.ToFolderId);
-
-                    ErrorIf(folder == null, FilesCommonResource.ErrorMassage_FolderNotFound);
-                    ErrorIf(!await _fileSecurity.CanCreateAsync(folder), FilesCommonResource.ErrorMassage_SecurityException_Create);
-
-                    currentProperies.FormFilling.ToFolderId = folder.ID.ToString();
-
+                    if (int.TryParse(fileProperties.FormFilling.ToFolderId, out var fId))
+                    {
+                        currentProperies.FormFilling.ToFolderId = await GetFormFillingFolder(fId);
+                    }
+                    else
+                    {
+                        currentProperies.FormFilling.ToFolderId = await GetFormFillingFolder(fId);
+                    }
                 }
 
                 currentProperies.FormFilling.CreateFolderTitle = Global.ReplaceInvalidCharsAndTruncate(fileProperties.FormFilling.CreateFolderTitle);
@@ -1338,6 +1346,18 @@ public class FileStorageService<T> //: IFileStorageService
         }
 
         return currentProperies;
+
+        async Task<string> GetFormFillingFolder<TProp>(TProp toFolderId)
+        {
+            var folderDao = _daoFactory.GetFolderDao<TProp>();
+
+            var folder = await folderDao.GetFolderAsync(toFolderId);
+
+            ErrorIf(folder == null, FilesCommonResource.ErrorMassage_FolderNotFound);
+            ErrorIf(!await _fileSecurity.CanCreateAsync(folder), FilesCommonResource.ErrorMassage_SecurityException_Create);
+
+            return folder.Id.ToString();
+        }
     }
 
     public async Task<List<FileEntry>> GetNewItemsAsync(T folderId)
@@ -2181,7 +2201,7 @@ public class FileStorageService<T> //: IFileStorageService
         {
             try
             {
-                var changed = await _fileSharingAceHelper.SetAceObjectAsync(aceCollection.Aces, entry, notify, aceCollection.Message);
+                var changed = await _fileSharingAceHelper.SetAceObjectAsync(aceCollection.Aces, entry, notify, aceCollection.Message, aceCollection.AdvancedSettings);
                 if (changed)
                 {
                     foreach (var ace in aceCollection.Aces)
@@ -2521,7 +2541,7 @@ public class FileStorageService<T> //: IFileStorageService
                 newFolder = await folderDao.GetFolderAsync(newFolderID);
                 newFolder.Access = folderAccess;
 
-                await _entryManager.SetIsFavoriteFolderAsync(folder);
+                await _entryStatusManager.SetIsFavoriteFolderAsync(folder);
 
                 _filesMessageService.Send(newFolder, GetHttpHeaders(), MessageAction.FileChangeOwner, new[] { newFolder.Title, userInfo.DisplayUserName(false, _displayUserSettingsHelper) });
             }

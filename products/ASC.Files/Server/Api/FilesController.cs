@@ -24,19 +24,29 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using AutoMapper;
+
 namespace ASC.Files.Api;
 
 [ConstraintRoute("int")]
 public class FilesControllerInternal : FilesController<int>
 {
-    public FilesControllerInternal(FilesControllerHelper<int> filesControllerHelper) : base(filesControllerHelper)
+    public FilesControllerInternal(
+        FilesControllerHelper<int> filesControllerHelper,
+        FileStorageService<int> fileStorageService,
+        IMapper mapper)
+        : base(filesControllerHelper, fileStorageService, mapper)
     {
     }
 }
 
 public class FilesControllerThirdparty : FilesController<string>
 {
-    public FilesControllerThirdparty(FilesControllerHelper<string> filesControllerHelper) : base(filesControllerHelper)
+    public FilesControllerThirdparty(
+        FilesControllerHelper<string> filesControllerHelper,
+        FileStorageService<string> fileStorageService,
+        IMapper mapper)
+        : base(filesControllerHelper, fileStorageService, mapper)
     {
     }
 }
@@ -44,10 +54,14 @@ public class FilesControllerThirdparty : FilesController<string>
 public abstract class FilesController<T> : ApiControllerBase
 {
     private readonly FilesControllerHelper<T> _filesControllerHelper;
+    private readonly FileStorageService<T> _fileStorageService;
+    private readonly IMapper _mapper;
 
-    public FilesController(FilesControllerHelper<T> filesControllerHelper)
+    public FilesController(FilesControllerHelper<T> filesControllerHelper, FileStorageService<T> fileStorageService, IMapper mapper)
     {
         _filesControllerHelper = filesControllerHelper;
+        _fileStorageService = fileStorageService;
+        _mapper = mapper;
     }
 
     /// <summary>
@@ -268,19 +282,38 @@ public abstract class FilesController<T> : ApiControllerBase
     {
         return _filesControllerHelper.UpdateFileStreamAsync(_filesControllerHelper.GetFileFromRequest(inDto).OpenReadStream(), fileId, inDto.FileExtension, inDto.Encrypted, inDto.Forcesave);
     }
+
+    [HttpGet("{fileId}/properties")]
+    public async Task<EntryPropertiesRequestDto> GetProperties(T fileId)
+    {
+        return _mapper.Map<EntryProperties, EntryPropertiesRequestDto>(await _fileStorageService.GetFileProperties(fileId));
+    }
+
+
+    [HttpPut("{fileId}/properties")]
+    public Task<EntryProperties> SetProperties(T fileId, EntryPropertiesRequestDto fileProperties)
+    {
+        return _fileStorageService.SetFileProperties(fileId, _mapper.Map<EntryPropertiesRequestDto, EntryProperties>(fileProperties));
+    }
 }
 
 public class FilesControllerCommon : ApiControllerBase
 {
+    private readonly IMapper _mapper;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly GlobalFolderHelper _globalFolderHelper;
     private readonly FileStorageService<string> _fileStorageServiceThirdparty;
     private readonly FilesControllerHelper<int> _filesControllerHelperInternal;
 
     public FilesControllerCommon(
+        IMapper mapper,
+        IServiceScopeFactory serviceScopeFactory,
         GlobalFolderHelper globalFolderHelper,
         FileStorageService<string> fileStorageServiceThirdparty,
         FilesControllerHelper<int> filesControllerHelperInternal)
     {
+        _mapper = mapper;
+        _serviceScopeFactory = serviceScopeFactory;
         _globalFolderHelper = globalFolderHelper;
         _fileStorageServiceThirdparty = fileStorageServiceThirdparty;
         _filesControllerHelperInternal = filesControllerHelperInternal;
@@ -363,35 +396,38 @@ public class FilesControllerCommon : ApiControllerBase
     }
 
 
-    [HttpGet("{fileId}/properties")]
-    public EntryProperties GetProperties(string fileId)
-    {
-        return _fileStorageService.GetFileProperties(fileId);
-    }
-
-
-    [HttpPut("{fileId}/properties")]
-    public EntryProperties SetProperties(string fileId, EntryProperties fileProperties)
-    {
-        return _fileStorageService.SetFileProperties(fileId, fileProperties);
-    }
-
-
     [HttpPut("batch/properties")]
-    public List<EntryProperties> SetProperties(string[] filesId, bool createSubfolder, EntryProperties fileProperties)
+    public async Task<List<EntryProperties>> SetProperties(BatchEntryPropertiesRequestDto batchEntryPropertiesRequestDto)
     {
         var result = new List<EntryProperties>();
 
-        foreach (var fileId in filesId)
+        foreach (var fileId in batchEntryPropertiesRequestDto.FilesId)
         {
-            if (createSubfolder)
+
+            if (fileId.ValueKind == JsonValueKind.String)
             {
-                var file = _fileStorageService.GetFile(fileId, -1).NotFoundIfNull("File not found");
-                fileProperties.FormFilling.CreateFolderTitle = Path.GetFileNameWithoutExtension(file.Title);
+                await AddProps(fileId.GetString());
+            }
+            else if (fileId.ValueKind == JsonValueKind.String)
+            {
+                await AddProps(fileId.GetInt32());
+            }
+        }
+
+        return result;
+
+        async Task AddProps<T>(T fileId)
+        {
+            using var scope = _serviceScopeFactory.CreateScope();
+            var fileStorageService = scope.ServiceProvider.GetRequiredService<FileStorageService<T>>();
+            var props = _mapper.Map<EntryPropertiesRequestDto, EntryProperties>(batchEntryPropertiesRequestDto.FileProperties);
+            if (batchEntryPropertiesRequestDto.CreateSubfolder)
+            {
+                var file = await fileStorageService.GetFileAsync(fileId, -1).NotFoundIfNull("File not found");
+                props.FormFilling.CreateFolderTitle = Path.GetFileNameWithoutExtension(file.Title);
             }
 
-            result.Add(_fileStorageService.SetFileProperties(fileId, fileProperties));
+            result.Add(await fileStorageService.SetFileProperties(fileId, props));
         }
-        return result;
     }
 }

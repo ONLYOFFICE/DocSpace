@@ -46,6 +46,8 @@ public class FileDto<T> : FileEntryDto<T>
     public string LockedBy { get; set; }
     public bool CanWebRestrictedEditing { get; set; }
     public bool CanFillForms { get; set; }
+    public bool DenyDownload { get; set; }
+    public bool DenySharing { get; set; }
 
     public FileDto() { }
 
@@ -155,6 +157,8 @@ public class FileDtoHelper : FileEntryDtoHelper
         result.LockedBy = file.LockedBy;
         result.CanWebRestrictedEditing = _fileUtility.CanWebRestrictedEditing(file.Title);
         result.CanFillForms = await _fileSecurity.CanFillFormsAsync(file);
+        result.DenyDownload = file.DenyDownload;
+        result.DenySharing = file.DenySharing;
 
         try
         {

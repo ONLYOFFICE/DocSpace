@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using System.Linq.Expressions;
+
 using ASC.Core;
 
 namespace ASC.AuditTrail.Repositories;
@@ -169,12 +171,12 @@ public class AuditEventsRepository
 
             if (isNeedFindEntry)
             {
-                FindByEntry(q, entry.Value, target, actions);
+                FindByEntry(query, entry.Value, target, actions);
             }
             else
             {
                 var keys = actions.Select(x => (int)x.Key).ToList();
-                q.Where(Exp.In("a.action", keys));
+                query = query.Where(r => keys.Contains(r.Event.Action));
             }
         }
 
@@ -205,22 +207,17 @@ public class AuditEventsRepository
 
     private static void FindByEntry(IQueryable<AuditEventQuery> q, EntryType entry, string target, IEnumerable<KeyValuePair<MessageAction, MessageMaps>> actions)
     {
-        var sb = new StringBuilder();
+        Expression<Func<AuditEventQuery, bool>> a = r => false;
 
         foreach (var action in actions)
         {
-            if (action.Value.EntryType1 == entry)
+            if (action.Value.EntryType1 == entry || action.Value.EntryType2 == entry)
             {
-                sb.Append(string.Format("(a.action = {0} AND SUBSTRING_INDEX(SUBSTRING_INDEX(a.target,',',{1}),',',1) = {2}) OR ", (int)action.Key, -2, target));
-            }
-            if (action.Value.EntryType2 == entry)
-            {
-                sb.Append(string.Format("(a.action = {0} AND SUBSTRING_INDEX(SUBSTRING_INDEX(a.target,',',{1}),',',1) = {2}) OR ", (int)action.Key, -1, target));
+                a = a.Or(r => r.Event.Action == (int)action.Key && r.Event.Target.Split(',', StringSplitOptions.TrimEntries).Contains(target));
             }
         }
 
-        sb.Remove(sb.Length - 3, 3);
-        q.Where(sb.ToString());
+        q = q.Where(a);
     }
 
     public int GetCount(int tenant, DateTime? from = null, DateTime? to = null)
@@ -234,6 +231,34 @@ public class AuditEventsRepository
         }
 
         return query.Count();
+    }
+}
+
+internal static class PredicateBuilder
+{
+    internal static Expression<Func<T, bool>> Or<T>(this Expression<Func<T, bool>> a, Expression<Func<T, bool>> b)
+    {
+        var p = a.Parameters[0];
+
+        var visitor = new SubstExpressionVisitor();
+        visitor.Subst[b.Parameters[0]] = p;
+
+        Expression body = Expression.OrElse(a.Body, visitor.Visit(b.Body));
+        return Expression.Lambda<Func<T, bool>>(body, p);
+    }
+}
+
+internal class SubstExpressionVisitor : System.Linq.Expressions.ExpressionVisitor
+{
+    internal Dictionary<Expression, Expression> Subst = new Dictionary<Expression, Expression>();
+
+    protected override Expression VisitParameter(ParameterExpression node)
+    {
+        if (Subst.TryGetValue(node, out var newValue))
+        {
+            return newValue;
+        }
+        return node;
     }
 }
 

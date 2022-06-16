@@ -34,12 +34,28 @@ public class OwnCloudMigration : AbstractMigration<OCMigrationInfo, OCMigratingU
     private string _takeouts;
     public string[] TempParse;
     private string _tmpFolder;
+    private readonly GlobalFolderHelper _globalFolderHelper;
+    private readonly IDaoFactory _daoFactory;
+    private readonly FileSecurity _fileSecurity;
+    private readonly FileStorageService<int> _fileStorageService;
     private readonly SecurityContext _securityContext;
     private readonly TenantManager _tenantManager;
     private readonly UserManager _userManager;
 
-    public OwnCloudMigration(SecurityContext securityContext, TenantManager tenantManager, UserManager userManager, MigrationLogger migrationLogger) : base(migrationLogger)
+    public OwnCloudMigration(
+        GlobalFolderHelper globalFolderHelper,
+        IDaoFactory daoFactory,
+        FileSecurity fileSecurity,
+        FileStorageService<int> fileStorageService,
+        SecurityContext securityContext,
+        TenantManager tenantManager,
+        UserManager userManager,
+        MigrationLogger migrationLogger) : base(migrationLogger)
     {
+        _globalFolderHelper = globalFolderHelper;
+        _daoFactory = daoFactory;
+        _fileSecurity = fileSecurity;
+        _fileStorageService = fileStorageService;
         _securityContext = securityContext;
         _tenantManager = tenantManager;
         _userManager = userManager;
@@ -110,7 +126,7 @@ public class OwnCloudMigration : AbstractMigration<OCMigrationInfo, OCMigratingU
                     {
                         var userName = item.Data.DisplayName.Split(' ');
                         item.Data.DisplayName = userName.Length > 1 ? string.Format("{0} {1}", userName[0], userName[1]).Trim() : userName[0].Trim();
-                        var user = new OCMigratingUser(_tenantManager, _userManager, item.Uid, item, Directory.GetDirectories(_tmpFolder)[0], Log);
+                        var user = new OCMigratingUser(_globalFolderHelper, _daoFactory, _fileSecurity, _fileStorageService, _tenantManager, _userManager, item.Uid, item, Directory.GetDirectories(_tmpFolder)[0], Log);
                         user.Parse();
                         foreach (var element in user.ModulesList)
                         {

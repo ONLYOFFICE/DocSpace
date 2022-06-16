@@ -241,12 +241,22 @@ public class OCMigratingFiles : MigratingFiles
                 continue;
             }
 
-            var aceCollection = new AceCollection
+            var aceCollection = new AceCollection<int>
             {
-                Entries = new List<string> { (entryIsFile ? "file_" : "folder_") + (int)item.Key },
+                Files = new List<int>(),
+                Folders = new List<int>(),
                 Aces = list,
                 Message = null
             };
+
+            if (entryIsFile)
+            {
+                aceCollection.Files = new List<int>() { (int)item.Key };
+            }
+            else
+            {
+                aceCollection.Folders = new List<int>() { (int)item.Key };
+            }
 
             try
             {
@@ -254,7 +264,7 @@ public class OCMigratingFiles : MigratingFiles
             }
             catch (Exception ex)
             {
-                Log($"Couldn't change file permissions for {aceCollection.Entries.First()}", ex);
+                Log($"Couldn't change file permissions for {item.Key}", ex);
             }
         }
     }

@@ -35,12 +35,28 @@ public class NextcloudWorkspaceMigration : AbstractMigration<NCMigrationInfo, NC
     private string _takeouts;
     public string[] TempParse;
     private string _tmpFolder;
+    private readonly GlobalFolderHelper _globalFolderHelper;
+    private readonly IDaoFactory _daoFactory;
+    private readonly FileSecurity _fileSecurity;
+    private readonly FileStorageService<int> _fileStorageService;
     private readonly SecurityContext _securityContext;
     private readonly UserManager _userManager;
     private readonly TenantManager _tenantManager;
 
-    public NextcloudWorkspaceMigration(SecurityContext securityContext, UserManager userManager, TenantManager tenantManager, MigrationLogger migrationLogger) : base(migrationLogger)
+    public NextcloudWorkspaceMigration(
+        GlobalFolderHelper globalFolderHelper,
+        IDaoFactory daoFactory,
+        FileSecurity fileSecurity,
+        FileStorageService<int> fileStorageService,
+        SecurityContext securityContext,
+        UserManager userManager,
+        TenantManager tenantManager,
+        MigrationLogger migrationLogger) : base(migrationLogger)
     {
+        _globalFolderHelper = globalFolderHelper;
+        _daoFactory = daoFactory;
+        _fileSecurity = fileSecurity;
+        _fileStorageService = fileStorageService;
         _securityContext = securityContext;
         _userManager = userManager;
         _tenantManager = tenantManager;
@@ -110,7 +126,7 @@ public class NextcloudWorkspaceMigration : AbstractMigration<NCMigrationInfo, NC
                     {
                         var userName = item.Data.DisplayName.Split(' ');
                         item.Data.DisplayName = userName.Length > 1 ? string.Format("{0} {1}", userName[0], userName[1]).Trim() : userName[0].Trim();
-                        var user = new NCMigratingUser(_tenantManager, _userManager, item.Uid, item, Directory.GetDirectories(_tmpFolder)[0], Log);
+                        var user = new NCMigratingUser(_globalFolderHelper, _daoFactory, _fileSecurity, _fileStorageService, _tenantManager, _userManager, item.Uid, item, Directory.GetDirectories(_tmpFolder)[0], Log);
                         user.Parse();
                         foreach (var element in user.ModulesList)
                         {

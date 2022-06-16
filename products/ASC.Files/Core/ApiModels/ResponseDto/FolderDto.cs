@@ -123,7 +123,7 @@ public class FolderDtoHelper : FileEntryDtoHelper
         result.FilesCount = folder.FilesCount;
         result.FoldersCount = folder.FoldersCount;
         result.IsShareable = folder.Shareable.NullIfDefault();
-        result.IsFavorite = folder.Favorite.NullIfDefault();
+        result.IsFavorite = folder.IsFavorite.NullIfDefault();
         result.New = folder.NewForMe;
 
         return result;

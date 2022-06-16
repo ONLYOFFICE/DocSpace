@@ -1022,12 +1022,6 @@ public class UserController : PeopleControllerBase
         return users.Select(u => _employeeFullDtoHelper.GetFull(u));
     }
 
-    [HttpPost("birthdays/reminder")]
-    public bool RemindAboutBirthday(Guid userid, bool onRemind)
-    {
-        BirthdaysNotifyClient.Instance.SetSubscription(_authContext.CurrentAccount.ID, userid, onRemind);
-        return onRemind;
-    }
     private void UpdateDepartments(IEnumerable<Guid> department, UserInfo user)
     {
         if (!_permissionContext.CheckPermissions(Constants.Action_EditGroups))

@@ -40,7 +40,9 @@ global using ASC.Common.Log;
 global using ASC.Common.Web;
 global using ASC.Core;
 global using ASC.Core.Users;
+global using ASC.Files.Core;
 global using ASC.Files.Core.Resources;
+global using ASC.Files.Core.Security;
 global using ASC.Migration.ApiModels.ResponseDto;
 global using ASC.Migration.Core;
 global using ASC.Migration.Core.Models;
@@ -49,6 +51,8 @@ global using ASC.Migration.GoogleWorkspace.Models;
 global using ASC.Migration.GoogleWorkspace.Models.Parse;
 global using ASC.Migration.Resources;
 global using ASC.Web.Api.Routing;
+global using ASC.Web.Files.Classes;
+global using ASC.Web.Files.Services.WCFService;
 global using ASC.Web.Studio.Core.Notify;
 
 global using Autofac;

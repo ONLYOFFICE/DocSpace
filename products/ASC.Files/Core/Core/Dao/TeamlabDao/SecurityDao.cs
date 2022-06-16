@@ -83,7 +83,7 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
         await tx.CommitAsync();
     }
 
-    public async ValueTask<bool> IsSharedAsync(T entryId, FileEntryType type)
+    public async Task<bool> IsSharedAsync(T entryId, FileEntryType type)
     {
         var mappedId = (await MappingIDAsync(entryId)).ToString();
 

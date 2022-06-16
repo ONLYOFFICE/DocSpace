@@ -43,15 +43,33 @@ public class NCMigratingUser : MigratingUser<NCMigratingContacts, NCMigratingCal
     private bool _hasPhoto;
     private string _pathToPhoto;
     private UserInfo _userInfo;
+    private readonly GlobalFolderHelper _globalFolderHelper;
+    private readonly IDaoFactory _daoFactory;
+    private readonly FileSecurity _fileSecurity;
+    private readonly FileStorageService<int> _fileStorageService;
     private readonly TenantManager _tenantManager;
     private readonly UserManager _userManager;
     private readonly NCUser _user;
     private readonly Regex _emailRegex = new Regex(@"(\S*@\S*\.\S*)");
     private readonly Regex _phoneRegex = new Regex(@"(\+?\d+)");
 
-    public NCMigratingUser(TenantManager tenantManager, UserManager userManager, string key, NCUser userData, string rootFolder, Action<string, Exception> log) : base(log)
+    public NCMigratingUser(
+        GlobalFolderHelper globalFolderHelper,
+        IDaoFactory daoFactory,
+        FileSecurity fileSecurity,
+        FileStorageService<int> fileStorageService,
+        TenantManager tenantManager,
+        UserManager userManager,
+        string key,
+        NCUser userData,
+        string rootFolder,
+        Action<string, Exception> log) : base(log)
     {
         Key = key;
+        _globalFolderHelper = globalFolderHelper;
+        _daoFactory = daoFactory;
+        _fileSecurity = fileSecurity;
+        _fileStorageService = fileStorageService;
         _tenantManager = tenantManager;
         _userManager = userManager;
         _user = userData;
@@ -133,7 +151,7 @@ public class NCMigratingUser : MigratingUser<NCMigratingContacts, NCMigratingCal
             ModulesList.Add(new MigrationModules(MigratingCalendar.ModuleName, MigrationResource.OnlyofficeModuleNameCalendar));
         }
 
-        MigratingFiles = new NCMigratingFiles(this, _user.Storages, _rootFolder, log);
+        MigratingFiles = new NCMigratingFiles(_globalFolderHelper, _daoFactory, _fileSecurity, _fileStorageService, this, _user.Storages, _rootFolder, log);
         MigratingFiles.Parse();
         if (MigratingFiles.FoldersCount != 0 || MigratingFiles.FilesCount != 0)
         {

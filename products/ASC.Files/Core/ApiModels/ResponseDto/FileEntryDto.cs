@@ -46,8 +46,6 @@ public abstract class FileEntryDto
     public bool? ProviderItem { get; set; }
     public string ProviderKey { get; set; }
     public int? ProviderId { get; set; }
-    public bool DenyDownload { get; set; }
-    public bool DenySharing { get; set; }
 
     protected FileEntryDto(FileEntry entry, EmployeeDtoHelper employeeWraperHelper, ApiDateTimeHelper apiDateTimeHelper)
     {
@@ -62,8 +60,6 @@ public abstract class FileEntryDto
         ProviderItem = entry.ProviderEntry.NullIfDefault();
         ProviderKey = entry.ProviderKey;
         ProviderId = entry.ProviderId.NullIfDefault();
-        DenyDownload = entry.DenyDownload;
-        DenySharing = entry.DenySharing;
     }
 
     protected FileEntryDto() { }

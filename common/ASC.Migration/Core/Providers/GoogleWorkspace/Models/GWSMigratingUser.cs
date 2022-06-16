@@ -35,8 +35,23 @@ public class GwsMigratingUser : MigratingUser<GwsMigratingContacts, GwsMigrating
 
     public override string DisplayName => $"{_userInfo.FirstName} {_userInfo.LastName}".Trim();
 
-    public GwsMigratingUser(UserManager userManager)
+    private readonly GlobalFolderHelper _globalFolderHelper;
+    private readonly IDaoFactory _daoFactory;
+    private readonly FileSecurity _fileSecurity;
+    private readonly FileStorageService<int> _fileStorageService;
+    private readonly UserManager _userManager;
+
+    public GwsMigratingUser(
+        GlobalFolderHelper globalFolderHelper,
+        IDaoFactory daoFactory,
+        FileSecurity fileSecurity,
+        FileStorageService<int> fileStorageService,
+        UserManager userManager)
     {
+        _globalFolderHelper = globalFolderHelper;
+        _daoFactory = daoFactory;
+        _fileSecurity = fileSecurity;
+        _fileStorageService = fileStorageService;
         _userManager = userManager;
     }
 
@@ -68,7 +83,7 @@ public class GwsMigratingUser : MigratingUser<GwsMigratingContacts, GwsMigrating
             ModulesList.Add(new MigrationModules(MigratingCalendar.ModuleName, MigrationResource.OnlyofficeModuleNameCalendar));
         }
 
-        MigratingFiles = new GwsMigratingFiles(_rootFolder, this, log);
+        MigratingFiles = new GwsMigratingFiles(_globalFolderHelper, _daoFactory, _fileSecurity, _fileStorageService, _rootFolder, this, log);
         MigratingFiles.Parse();
         if (MigratingFiles.FoldersCount != 0 || MigratingFiles.FilesCount != 0)
         {
@@ -144,7 +159,6 @@ public class GwsMigratingUser : MigratingUser<GwsMigratingContacts, GwsMigrating
     private readonly Regex _phoneRegex = new Regex(@"(\+?\d+)");
 
     private readonly string _rootFolder;
-    private readonly UserManager _userManager;
     private UserInfo _userInfo;
     private bool _hasPhoto;
 

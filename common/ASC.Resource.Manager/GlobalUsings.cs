@@ -24,31 +24,39 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Resource.Manager;
+global using System;
+global using System.Collections;
+global using System.Collections.Concurrent;
+global using System.Collections.Generic;
+global using System.ComponentModel.Design;
+global using System.Diagnostics;
+global using System.IO;
+global using System.Linq;
+global using System.Reflection;
+global using System.Resources;
+global using System.Text;
+global using System.Text.Encodings.Web;
+global using System.Text.Json;
+global using System.Text.RegularExpressions;
+global using System.Text.Unicode;
+global using System.Threading.Tasks;
+global using System.Xml;
+global using System.Xml.Linq;
 
-public class Options
-{
-    [Option('p', "project", Required = false, HelpText = "Project")]
-    public string Project { get; set; }
+global using ASC.Common;
+global using ASC.Common.Utils;
+global using ASC.Core.Common.EF;
+global using ASC.Core.Common.EF.Context;
+global using ASC.Core.Common.EF.Model.Resource;
 
-    [Option('m', "module", Required = false, HelpText = "Module")]
-    public string Module { get; set; }
+global using Autofac;
 
-    [Option("fp", Required = false, HelpText = "File Path")]
-    public string FilePath { get; set; }
+global using CommandLine;
 
-    [Option('e', "exportpath", Required = false, HelpText = "Export Path", Default = "..\\..\\..\\..\\ASC.Common\\")]
-    public string ExportPath { get; set; }
-
-    [Option('c', "culture", Required = false, HelpText = "Culture")]
-    public string Culture { get; set; }
-
-    [Option('f', "format", Required = false, HelpText = "Format", Default = "xml")]
-    public string Format { get; set; }
-
-    [Option('k', "key", Required = false, HelpText = "Key", Default = "")]
-    public string Key { get; set; }
-
-    public void Deconstruct(out string project, out string module, out string filePath, out string exportPath, out string culture, out string format, out string key)
-        => (project, module, filePath, exportPath, culture, format, key) = (Project, Module, FilePath, ExportPath, Culture, Format, Key);
-}
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore.Infrastructure;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Hosting;
+global using Microsoft.Extensions.Hosting.Internal;
+global using Microsoft.Extensions.Logging;

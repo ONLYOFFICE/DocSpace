@@ -300,11 +300,19 @@ public sealed class UserManagerWrapper
         text.AppendFormat(", {0}", Resource.ErrorPasswordNoSpaces);
 
         if (passwordSettings.UpperCase)
+        {
             text.AppendFormat(", {0}", Resource.ErrorPasswordNoUpperCase);
+        }
+
         if (passwordSettings.Digits)
+        {
             text.AppendFormat(", {0}", Resource.ErrorPasswordNoDigits);
+        }
+
         if (passwordSettings.SpecSymbols)
+        {
             text.AppendFormat(", {0}", Resource.ErrorPasswordNoSpecialSymbols);
+        }
 
         return text.ToString();
     }
