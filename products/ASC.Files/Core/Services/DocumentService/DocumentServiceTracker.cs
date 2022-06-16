@@ -448,13 +448,11 @@ public class DocumentServiceTrackerHelper
 
             if (fileData.Status == TrackerStatus.ForceSave && fileData.ForceSaveType == TrackerData.ForceSaveInitiator.UserSubmit)
             {
-                _entryManager.SubmitFillForm(file);
+                await _entryManager.SubmitFillForm(file);
             }
         }
 
-        var result = new TrackResponse { Message = saveMessage };
-
-        return result;
+        return new TrackResponse { Message = saveMessage };
     }
 
     private async Task<TrackResponse> ProcessMailMergeAsync<T>(T fileId, TrackerData fileData)

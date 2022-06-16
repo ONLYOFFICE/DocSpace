@@ -70,8 +70,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         ProviderFolderDao providerFolderDao,
         CrossDao crossDao,
         Settings settings,
-        IMapper mapper,
-        EntryProperties entryProperties)
+        IMapper mapper)
         : base(
               dbContextManager,
               userManager,
@@ -1579,12 +1578,15 @@ internal class FileDao : AbstractDao, IFileDao<int>
                              .Any(),
                    Deny = (from f in FilesDbContext.Security.AsQueryable()
                            where f.EntryType == FileEntryType.File && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId && (new[] { FileConstant.DenyDownloadId, FileConstant.DenySharingId }).Contains(f.Subject)
-                           select new DbFileDeny
-                           {
-                               DenyDownload = f.Subject == FileConstant.DenyDownloadId,
-                               DenySharing = f.Subject == FileConstant.DenySharingId
-                           }
-                             ).Aggregate((a, b) => new DbFileDeny { DenyDownload = a.DenyDownload || b.DenyDownload, DenySharing = a.DenySharing || b.DenySharing }),
+                           select f
+                            ).GroupBy(a => a.EntryId,
+                            (a, b) =>
+                            new DbFileDeny
+                            {
+                                DenyDownload = b.Any(c => c.Subject == FileConstant.DenyDownloadId),
+                                DenySharing = b.Any(c => c.Subject == FileConstant.DenySharingId)
+                            })
+                            .FirstOrDefault(),
                };
     }
 
@@ -1613,12 +1615,15 @@ internal class FileDao : AbstractDao, IFileDao<int>
                              .Any(),
                 Deny = (from f in FilesDbContext.Security.AsQueryable()
                         where f.EntryType == FileEntryType.File && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId && (new[] { FileConstant.DenyDownloadId, FileConstant.DenySharingId }).Contains(f.Subject)
-                        select new DbFileDeny
-                        {
-                            DenyDownload = f.Subject == FileConstant.DenyDownloadId,
-                            DenySharing = f.Subject == FileConstant.DenySharingId
-                        }
-                             ).Aggregate((a, b) => new DbFileDeny { DenyDownload = a.DenyDownload || b.DenyDownload, DenySharing = a.DenySharing || b.DenySharing }),
+                        select f
+                            ).GroupBy(a => a.EntryId,
+                            (a, b) =>
+                            new DbFileDeny
+                            {
+                                DenyDownload = b.Any(c => c.Subject == FileConstant.DenyDownloadId),
+                                DenySharing = b.Any(c => c.Subject == FileConstant.DenySharingId)
+                            })
+                            .FirstOrDefault(),
             });
     }
 

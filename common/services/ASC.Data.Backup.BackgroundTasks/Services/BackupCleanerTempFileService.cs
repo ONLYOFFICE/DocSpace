@@ -46,13 +46,15 @@ public class BackupCleanerTempFileService : BackgroundService
         {
             var date = DateTime.UtcNow.AddDays(-7);
             var regex = new Regex(@"^\w*_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}.tar.gz$");
-            var files = Directory.EnumerateFiles(_tempFolder).Where(f => regex.IsMatch(Path.GetFileName(f)) && new FileInfo(f).LastWriteTimeUtc < date);
-            foreach (var file in files)
+            if (Directory.Exists(_tempFolder))
             {
-                File.Delete(file);
-                _logger.InfoBackupCleanerDeleteFile(Path.GetFileName(file));
+                var files = Directory.EnumerateFiles(_tempFolder).Where(f => regex.IsMatch(Path.GetFileName(f)) && new FileInfo(f).LastWriteTimeUtc < date);
+                foreach (var file in files)
+                {
+                    File.Delete(file);
+                    _logger.InfoBackupCleanerDeleteFile(Path.GetFileName(file));
+                }
             }
-
             await Task.Delay(TimeSpan.FromDays(1), stoppingToken);
         }
 

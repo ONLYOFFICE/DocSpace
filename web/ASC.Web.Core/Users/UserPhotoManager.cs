@@ -1081,6 +1081,7 @@ public static class ResizeWorkerItemExtension
 {
     public static void Register(DIHelper services)
     {
+        services.TryAdd<ResizeWorkerItem>();
         services.Configure<DistributedTaskQueueFactoryOptions>(UserPhotoManager.CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME, options =>
         {
             options.MaxThreadsCount = 2;

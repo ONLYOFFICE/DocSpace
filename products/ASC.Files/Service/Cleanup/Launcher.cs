@@ -42,6 +42,7 @@
 
 namespace ASC.Files.AutoCleanUp;
 
+[Singletone]
 public class Launcher : BackgroundService
 {
     private readonly ILogger<Launcher> _logger;

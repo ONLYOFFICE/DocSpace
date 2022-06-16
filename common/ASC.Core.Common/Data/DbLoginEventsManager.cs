@@ -47,8 +47,7 @@ public class DbLoginEventsManager
 
     private readonly ICache _cache;
     private readonly TenantManager _tenantManager;
-    private readonly SecurityContext _securityContext;
-    private readonly TenantUtil _tenantUtil;
+    private readonly AuthContext _authContext;
     private readonly IMapper _mapper;
 
     private MessagesContext LoginEventContext => _lazyLoginEventContext.Value;
@@ -57,15 +56,14 @@ public class DbLoginEventsManager
     public DbLoginEventsManager(
         ICache cache,
         TenantManager tenantManager,
-        SecurityContext securityContext,
+        AuthContext authContext,
         DbContextManager<MessagesContext> dbContextManager,
         TenantUtil tenantUtil,
         IMapper mapper)
     {
         _cache = cache;
         _tenantManager = tenantManager;
-        _securityContext = securityContext;
-        _tenantUtil = tenantUtil;
+        _authContext = authContext;
         _mapper = mapper;
         _lazyLoginEventContext = new Lazy<MessagesContext>(() => dbContextManager.Value);
     }
@@ -169,7 +167,7 @@ public class DbLoginEventsManager
     public void ResetCache()
     {
         var tenantId = _tenantManager.GetCurrentTenant().Id;
-        var userId = _securityContext.CurrentAccount.ID;
+        var userId = _authContext.CurrentAccount.ID;
         ResetCache(tenantId, userId);
     }
 

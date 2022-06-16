@@ -53,7 +53,7 @@ public class Worker
 
     public Worker(IConfiguration configuration, ILogger<Worker> logger, IServiceScopeFactory serviceScopeFactory)
     {
-        _period = TimeSpan.Parse(configuration.GetValue<string>("files:autoCleanUp:period"));
+        _period = TimeSpan.Parse(configuration.GetValue<string>("files:autoCleanUp:period") ?? "0:5:0");
         _logger = logger;
         _serviceScopeFactory = serviceScopeFactory;
     }

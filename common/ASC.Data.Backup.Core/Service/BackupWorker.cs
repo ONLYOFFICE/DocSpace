@@ -53,11 +53,11 @@ public class BackupWorker
         _logger = logger;
         _progressQueue = queueFactory.CreateQueue(CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME);
         _tempPath = tempPath;
+        TempFolder = Path.Combine(_tempPath.GetTempPath(), "backup");
     }
 
     public void Start(BackupSettings settings)
     {
-        TempFolder = Path.Combine(_tempPath.GetTempPath(), "backup");
         if (!Directory.Exists(TempFolder))
         {
             Directory.CreateDirectory(TempFolder);

@@ -491,37 +491,6 @@
 	  }
     },
 	{
-      "type": "ASC.FederatedLogin.LoginProviders.YahooLoginProvider, ASC.FederatedLogin",
-      "services": [
-        {
-          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
-        }, 
-		{
-		  "type": "ASC.FederatedLogin.LoginProviders.YahooLoginProvider, ASC.FederatedLogin"
-		}, 
-		{
-		  "key": "yahoo",
-		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
-		}, 
-		{
-		  "key": "yahoo",
-		  "type": "ASC.FederatedLogin.LoginProviders.YahooLoginProvider, ASC.FederatedLogin"
-		}
-      ],
-	  "instanceScope": "perlifetimescope",
-	  "parameters": {
-		  "name": "yahoo",
-		  "order": "14",
-		  "props": {
-			"yahooClientId": "",
-			"yahooClientSecret": ""
-		  },
-		  "additional": {
-			"yahooRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
-		  }
-	  }
-    },
-	{
       "type": "ASC.FederatedLogin.LoginProviders.VKLoginProvider, ASC.FederatedLogin",
       "services": [
         {
