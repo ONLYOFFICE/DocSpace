@@ -598,13 +598,15 @@ class FilesActionStore {
   };
 
   finalizeVersionAction = (id) => {
-    const { fetchFiles, setIsLoading } = this.filesStore;
+    const { setFile, setIsLoading } = this.filesStore;
 
     setIsLoading(true);
 
     return finalizeVersion(id, 0, false)
-      .then(() => {
-        fetchFiles(this.selectedFolderStore.id, this.filesStore.filter);
+      .then((res) => {
+        if (res && res[0]) {
+          setFile(res[0]);
+        }
       })
       .finally(() => setIsLoading(false));
   };
