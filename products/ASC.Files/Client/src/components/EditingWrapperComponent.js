@@ -116,7 +116,8 @@ const EditingWrapper = styled.div`
       props.viewAs === "tile" &&
       !props.isUpdatingRowItem &&
       css`
-        background: #fff;
+        background: ${(props) =>
+          props.theme.filesEditingWrapper.tile.itemBackground};
         border: ${(props) =>
           `1px solid ${props.theme.filesEditingWrapper.tile.itemBorder}`};
 
@@ -136,7 +137,8 @@ const EditingWrapper = styled.div`
       props.viewAs === "tile" &&
       css`
         margin-left: 0px;
-        background: #fff;
+        background: ${(props) =>
+          props.theme.filesEditingWrapper.tile.itemBackground};
         border: ${(props) =>
           `1px solid ${props.theme.filesEditingWrapper.tile.itemBorder}`};
 
