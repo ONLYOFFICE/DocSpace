@@ -35,7 +35,9 @@ const UploadXML = () => {
         <Button
           className="upload-button"
           icon={uploadIcon}
-          isDisabled={!FormStore.enableSso}
+          isDisabled={
+            !FormStore.enableSso || FormStore.uploadXmlUrl.trim().length === 0
+          }
           onClick={FormStore.onLoadXmlMetadata}
           size="small"
           tabIndex={2}
