@@ -2,11 +2,11 @@ import Avatar from "@appserver/components/avatar";
 import ContextMenuButton from "@appserver/components/context-menu-button";
 import Text from "@appserver/components/text";
 import React from "react";
-import { StyledTitle } from "../../../styles/styles";
+import { StyledTitle } from "../../styles/styles";
 import {
   StyledHistoryBlock,
   StyledHistoryList,
-} from "../../../styles/VirtualRoom/history";
+} from "../../styles/VirtualRoom/history";
 import { fillingFormsVR } from "../mock_data";
 import getCorrectDate from "@appserver/components/utils/getCorrectDate";
 import HistoryBlockContent from "./historyBlockContent";

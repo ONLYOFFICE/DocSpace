@@ -6,11 +6,13 @@ import GalleryItem from "./views/Gallery/GalleryItem";
 import GalleryEmptyScreen from "./views/Gallery/GalleryEmptyScreen";
 import { StyledInfoRoomBody } from "./styles/styles.js";
 import { Base } from "@appserver/components/themes";
-import FilesInfoPanel from "./views/Files";
-import VirtualRoomInfoPanel from "./views/VirtualRoom";
+import Details from "./views/Details";
+import Members from "./views/Members";
+import History from "./views/History";
 
 const InfoPanelBodyContent = ({
   t,
+  selfId,
   selectedFolder,
   selectedItems,
   getFolderInfo,
@@ -61,9 +63,6 @@ const InfoPanelBodyContent = ({
   const virtualRoomProps = {
     roomState,
   };
-
-  //console.log(selectedItems);
-
   return isGallery ? (
     !gallerySelected ? (
       <GalleryEmptyScreen />
@@ -79,13 +78,17 @@ const InfoPanelBodyContent = ({
   ) : (
     <StyledInfoRoomBody>
       {isPrivacyFolder ? (
-        <VirtualRoomInfoPanel
-          {...defaultProps}
-          {...filesProps}
-          {...virtualRoomProps}
-        />
+        <>
+          {roomState === "members" ? (
+            <Members t={t} selfId={selfId} />
+          ) : roomState === "history" ? (
+            <History t={t} personal={personal} culture={culture} />
+          ) : (
+            <Details {...defaultProps} {...filesProps} />
+          )}
+        </>
       ) : (
-        <FilesInfoPanel {...defaultProps} {...filesProps} />
+        <Details {...defaultProps} {...filesProps} />
       )}
     </StyledInfoRoomBody>
   );
@@ -105,6 +108,7 @@ export default inject(
   }) => {
     const { personal, culture } = auth.settingsStore;
     const { roomState } = auth.infoPanelStore;
+    const selfId = auth.userStore.user.id;
 
     const {
       selection,
@@ -137,6 +141,7 @@ export default inject(
         : [];
 
     return {
+      selfId,
       selectedFolder: { ...selectedFolderStore },
       selectedItems: selectedItems,
 

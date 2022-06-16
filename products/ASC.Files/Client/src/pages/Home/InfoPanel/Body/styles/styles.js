@@ -1,9 +1,13 @@
 import styled, { css } from "styled-components";
 
 import { Base } from "@appserver/components/themes";
+import { mobile } from "@appserver/components/utils/device";
 
 const StyledInfoRoomBody = styled.div`
   padding: 0 3px 0 20px;
+  @media ${mobile} {
+    padding: 0 8px 0 16px;
+  }
   height: auto;
   background-color: ${(props) => props.theme.infoPanel.backgroundColor};
   color: ${(props) => props.theme.infoPanel.textColor};
@@ -49,6 +53,12 @@ const StyledTitle = styled.div`
       padding: 23px 0 23px 20px;
       border-bottom: ${(props) =>
         `solid 1px ${props.theme.infoPanel.borderColor}`};
+
+      @media ${mobile} {
+        width: calc(100% + 16px);
+        padding: 23px 0 23px 16px;
+        margin: 0 -16px 0 -16px;
+      }
     `}
 
   .icon {

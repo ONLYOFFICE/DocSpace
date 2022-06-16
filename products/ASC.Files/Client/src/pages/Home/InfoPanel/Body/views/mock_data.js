@@ -11,7 +11,7 @@ const files = [
     icon: "/static/images/icons/24/pptx.svg",
     isFolder: false,
     id: 3,
-    title: "ONLYOFFICE Sample Presentation.pptx",
+    title: "ONLYOFFICE Sample Presentation With Long Name.pptx",
   },
   {
     fileExst: ".docx",
@@ -38,6 +38,15 @@ const people = [
     isOwner: false,
     id: "1231234",
     displayName: "Rebecca Holt",
+    profileUrl: "asdasd",
+  },
+  {
+    email: "yoshiko05@rohan.biz",
+    avatar:
+      "https://images.unsplash.com/photo-1519699047748-de8e457a634e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80",
+    isOwner: false,
+    id: "345970",
+    displayName: "Angela Garcia",
     profileUrl: "",
   },
   {
@@ -48,15 +57,6 @@ const people = [
     displayName:
       "Some random guy with a really long name, like i mean some dumb long one",
     profileUrl: "http://localhost:8092/products/people/view/kk",
-  },
-  {
-    email: "yoshiko05@rohan.biz",
-    avatar:
-      "https://images.unsplash.com/photo-1519699047748-de8e457a634e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80",
-    isOwner: false,
-    id: "345970",
-    displayName: "Pamela Garcia",
-    profileUrl: "",
   },
   {
     email: "ycummerata@yahoo.com",
@@ -78,21 +78,11 @@ const fillingFormsVR = {
 
   history: [
     {
-      id: 0,
+      id: 3,
       user: people[0],
-      date: "2022-04-23T18:25:43.511Z",
-      action: "message",
-      details: { message: 'Created room "Filling forms room"' },
-    },
-    {
-      id: 1,
-      user: people[0],
-      date: "2022-04-23T18:35:43.511Z",
-      action: "users",
-      details: {
-        type: "add",
-        users: [...people.slice(1)],
-      },
+      date: "2022-04-23T19:04:43.511Z",
+      action: "files",
+      details: { type: "delete", files: [...files] },
     },
     {
       id: 2,
@@ -104,12 +94,23 @@ const fillingFormsVR = {
         appointedRole: "room administrator",
       },
     },
+
     {
-      id: 3,
+      id: 1,
       user: people[0],
-      date: "2022-04-23T19:04:43.511Z",
-      action: "files",
-      details: { type: "delete", files: files },
+      date: "2022-04-23T18:35:43.511Z",
+      action: "users",
+      details: {
+        type: "add",
+        users: [...people.slice(1)],
+      },
+    },
+    {
+      id: 0,
+      user: people[0],
+      date: "2022-04-23T18:25:43.511Z",
+      action: "message",
+      details: { message: 'Created room "Filling forms room"' },
     },
   ],
 };

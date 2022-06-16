@@ -3,7 +3,7 @@ import EmptyScreen from "./EmptyScreen";
 import SeveralItems from "./SeveralItems";
 import SingleItem from "./SingleItem";
 
-const FilesInfoPanel = ({
+const Details = ({
   t,
 
   selectedItems,
@@ -68,8 +68,7 @@ const FilesInfoPanel = ({
           isRecentFolder ||
           isFavoritesFolder ||
           isShareFolder ||
-          isCommonFolder ||
-          isPrivacyFolder) ? (
+          isCommonFolder) ? (
           <EmptyScreen />
         ) : (
           singleItem({
@@ -86,4 +85,4 @@ const FilesInfoPanel = ({
   );
 };
 
-export default FilesInfoPanel;
+export default Details;
