@@ -27,7 +27,7 @@
 namespace ASC.Api.Core.Security;
 
 [Scope]
-public class RoomLinksService
+public class RoomInvitationLinksService
 {
     private readonly CommonLinkUtility _commonLinkUtility;
     private readonly IHttpContextAccessor _httpContextAccessor;
@@ -36,7 +36,7 @@ public class RoomLinksService
     private readonly Lazy<MessagesContext> _messagesContext;
     private readonly MessageService _messageService;
 
-    public RoomLinksService(
+    public RoomInvitationLinksService(
         CommonLinkUtility commonLinkUtility,
         IHttpContextAccessor httpContextAccessor,
         MessageTarget messageTarget,
@@ -52,13 +52,18 @@ public class RoomLinksService
         _messageService = messageService;
     }
 
+    public string GenerateLink<T>(T id, int fileShare, EmployeeType employeeType, Guid guid)
+    {
+        return GenerateLink(id, string.Empty, fileShare, employeeType, guid);
+    }
+
     public string GenerateLink<T>(T id, string email, int fileShare, EmployeeType employeeType, Guid guid)
     {
         var user = _userManager.GetUserByEmail(email);
 
         if (user != ASC.Core.Users.Constants.LostUser)
         {
-            throw new Exception();
+            throw new Exception("The user with this email already exists");
         }
 
         var postifx = (int)employeeType + fileShare + id.ToString();
@@ -71,11 +76,14 @@ public class RoomLinksService
 
     public bool VisitProcess(string id, string email, string key, TimeSpan interval)
     {
-        var user = _userManager.GetUserByEmail(email);
-
-        if (user != ASC.Core.Users.Constants.LostUser)
+        if (!string.IsNullOrEmpty(email))
         {
-            return false;
+            var user = _userManager.GetUserByEmail(email);
+
+            if (user != ASC.Core.Users.Constants.LostUser)
+            {
+                return false;
+            }
         }
 
         var message = GetLinkInfo(id, email, key);
@@ -87,13 +95,13 @@ public class RoomLinksService
             return true;
         }
 
-        return message.Date + interval > DateTime.UtcNow ? true : false;
+        return message.Date + interval > DateTime.UtcNow;
     }
 
     private void SaveVisitLinkInfo(string id, string email, string key)
     {
         var headers = _httpContextAccessor?.HttpContext?.Request?.Headers;
-        var target = _messageTarget.Create(new[] {id, email});
+        var target = _messageTarget.Create(email != null ? new[] { id, email } : new[] { id });
 
         _messageService.Send(headers, MessageAction.RoomInviteLinkUsed, target, key);
     }
@@ -101,7 +109,7 @@ public class RoomLinksService
     private AuditEvent GetLinkInfo(string id, string email, string key)
     {
         var context = _messagesContext.Value;
-        var target = _messageTarget.Create(new[] { id, email });
+        var target = _messageTarget.Create(email != null ? new[] { id, email } : new[] { id });
         var description = JsonConvert.SerializeObject(new[] { key },
             new JsonSerializerSettings
             {
