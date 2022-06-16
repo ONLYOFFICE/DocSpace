@@ -10,23 +10,6 @@ import {
   validateCerts,
 } from "@appserver/common/api/settings";
 
-const regExps = {
-  // source: https://regexr.com/3ok5o
-  url: new RegExp(
-    "([a-z]{1,2}tps?):\\/\\/((?:(?![/#?&]).)+)(\\/(?:(?:(?![#?&]).)+\\/)?)?((?:(?!\\.|$|\\?|#).)+)?(\\.(?:(?!\\?|$|#).)+)?(\\?(?:(?!$|#).)+)?(#.+)?"
-  ),
-
-  // source: https://regexr.com/2rhq7
-  email: new RegExp(
-    "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?"
-  ),
-
-  // source: https://regexr.com/38pvb
-  phone: new RegExp(
-    "^\\s*(?:\\+?(\\d{1,3}))?([-. (]*(\\d{3})[-. )]*)?((\\d{3})[-. ]*(\\d{2,4})(?:[-.x ]*(\\d+))?)\\s*$"
-  ),
-};
-
 class SsoFormStore {
   isSsoEnabled = false;
 
