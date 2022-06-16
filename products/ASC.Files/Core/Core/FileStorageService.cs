@@ -2133,9 +2133,9 @@ public class FileStorageService<T> //: IFileStorageService
 
     #endregion
 
-    public Task<List<AceWrapper>> GetSharedInfoAsync(IEnumerable<T> fileIds, IEnumerable<T> folderIds)
+    public Task<List<AceWrapper>> GetSharedInfoAsync(IEnumerable<T> fileIds, IEnumerable<T> folderIds, bool invite = false)
     {
-        return _fileSharing.GetSharedInfoAsync(fileIds, folderIds);
+        return _fileSharing.GetSharedInfoAsync(fileIds, folderIds, invite);
     }
 
     public Task<List<AceShortWrapper>> GetSharedInfoShortFileAsync(T fileId)
@@ -2148,7 +2148,7 @@ public class FileStorageService<T> //: IFileStorageService
         return _fileSharing.GetSharedInfoShortFolderAsync(folderId);
     }
 
-    public async Task<List<T>> SetAceObjectAsync(AceCollection<T> aceCollection, bool notify)
+    public async Task<List<T>> SetAceObjectAsync(AceCollection<T> aceCollection, bool notify, bool invite = false)
     {
         var fileDao = GetFileDao();
         var folderDao = GetFolderDao();
@@ -2170,7 +2170,7 @@ public class FileStorageService<T> //: IFileStorageService
         {
             try
             {
-                var changed = await _fileSharingAceHelper.SetAceObjectAsync(aceCollection.Aces, entry, notify, aceCollection.Message, !_coreBaseSettings.DisableDocSpace);
+                var changed = await _fileSharingAceHelper.SetAceObjectAsync(aceCollection.Aces, entry, notify, aceCollection.Message, !_coreBaseSettings.DisableDocSpace, invite);
                 if (changed)
                 {
                     if (entry.FileEntryType == FileEntryType.Folder && DocSpaceHelper.IsRoom(((Folder<T>)entry).FolderType))

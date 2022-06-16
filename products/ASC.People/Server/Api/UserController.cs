@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Core.Users;
-
 using Module = ASC.Api.Core.Module;
 using SecurityContext = ASC.Core.SecurityContext;
 
@@ -206,10 +204,12 @@ public class UserController : PeopleControllerBase
         if (inDto.FromInviteLink && !string.IsNullOrEmpty(inDto.RoomId))
         {
             var employeeType = inDto.IsVisitor ? EmployeeType.Visitor : EmployeeType.User;
-            var result = _validationKeyProvider.ValidateEmailKey(inDto.Email + ConfirmType.RoomInvite + ((int)employeeType + inDto.RoomAccess + inDto.RoomId), inDto.Key,
+            var resultWithEmail = _validationKeyProvider.ValidateEmailKey(inDto.Email + ConfirmType.RoomInvite + ((int)employeeType + inDto.RoomAccess + inDto.RoomId), inDto.Key,
+                _validationKeyProvider.ValidEmailKeyInterval);
+            var resultWithoutEmail = _validationKeyProvider.ValidateEmailKey(string.Empty + ConfirmType.RoomInvite + ((int)employeeType + inDto.RoomAccess + inDto.RoomId), inDto.Key,
                 _validationKeyProvider.ValidEmailKeyInterval);
 
-            if (result != EmailValidationKeyProvider.ValidationResult.Ok)
+            if (resultWithEmail != EmailValidationKeyProvider.ValidationResult.Ok && resultWithoutEmail != EmailValidationKeyProvider.ValidationResult.Ok)
             {
                 throw new SecurityException("Invalid data");
             }
