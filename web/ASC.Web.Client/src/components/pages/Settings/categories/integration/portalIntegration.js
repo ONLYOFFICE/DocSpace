@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import Box from "@appserver/components/box";
@@ -90,6 +90,20 @@ const PortalIntegration = (props) => {
 
     loadScript(`${scriptUrl}${params}`, "integration");
   };
+
+  const showMessage = (e) => {
+    const data = e.data;
+
+    if (data.source === "ds-frame") {
+      toastr.success(data.message, "Frame callback");
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("message", showMessage);
+
+    return () => window.removeEventListener("message", showMessage);
+  }, [showMessage]);
 
   const onChangeWidth = (e) => {
     setConfig((config) => {

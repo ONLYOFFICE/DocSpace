@@ -92,6 +92,11 @@
 
       target.parentNode && target.parentNode.replaceChild(iframe, target);
       msgDispatcher = new MessageDispatcher(onMessage, this);
+
+      postMessage(window.parent, {
+        source: config.frameId,
+        message: "Frame inserted!",
+      });
     }
 
     const destroyFrame = () => {
@@ -149,7 +154,7 @@
 
   const postMessage = (wnd, message) => {
     if (wnd && wnd.postMessage && window.JSON) {
-      wnd.postMessage(window.JSON.stringify(message), "*");
+      wnd.postMessage(message, "*"); //window.JSON.stringify(message)
     }
   };
 
