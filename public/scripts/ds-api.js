@@ -6,6 +6,9 @@
     name: "frameDocSpace",
     type: "desktop",
     frameId: "ds-frame",
+    showHeader: false,
+    showArticle: false,
+    showFilter: false,
     filter: {
       folderId: "@my",
       withSubfolders: true,

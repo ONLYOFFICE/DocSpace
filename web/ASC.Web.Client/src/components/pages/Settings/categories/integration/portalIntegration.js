@@ -1,26 +1,24 @@
-import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
+import React, { useState } from "react";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import Box from "@appserver/components/box";
 import TextInput from "@appserver/components/text-input";
-import Label from "@appserver/components/label";
-import Text from "@appserver/components/text";
+import Textarea from "@appserver/components/textarea";
 import Checkbox from "@appserver/components/checkbox";
 import Button from "@appserver/components/button";
+import ComboBox from "@appserver/components/combobox";
+import Heading from "@appserver/components/heading";
 import toastr from "@appserver/components/toast/toastr";
-import { tablet, mobile } from "@appserver/components/utils/device";
-import {
-  showLoader,
-  hideLoader,
-  objectToGetParams,
-  loadScript,
-} from "@appserver/common/utils";
+import { tablet } from "@appserver/components/utils/device";
+import { objectToGetParams, loadScript } from "@appserver/common/utils";
 import { inject, observer } from "mobx-react";
-import { Base } from "@appserver/components/themes";
 
 const Controls = styled(Box)`
-  width: 300px;
+  width: 500px;
+
+  @media ${tablet} {
+    width: 100%;
+  }
 `;
 
 const ControlsGroup = styled(Box)`
@@ -29,32 +27,56 @@ const ControlsGroup = styled(Box)`
 `;
 
 const Parameter = styled(TextInput)`
-  margin: 8px;
+  margin-bottom: 16px;
+  margin-right: 8px;
+`;
+
+const ParameterCheckbox = styled(Checkbox)`
+  margin-bottom: 16px;
+`;
+
+const ParameterComboBox = styled(ComboBox)`
+  margin-bottom: 16px;
 `;
 
 const Frame = styled(Box)`
   margin-top: 16px;
 `;
 
-const CodeBox = styled(Box)`
-  margin: 16px 0px;
-  padding: 16px;
-  border: 1px solid black;
-  border-radius: 10px;
-`;
-
-const Code = styled(Text)`
-  font-family: monospace;
+const Buttons = styled(Box)`
+  margin-top: 16px;
 `;
 
 const PortalIntegration = (props) => {
   const { t, setDocumentTitle } = props;
 
-  const [config, setConfig] = useState({ withSubfolders: true });
+  setDocumentTitle(`Portal integration`);
 
   const scriptUrl = "http://192.168.1.60:8092/static/scripts/ds-api.js";
 
-  setDocumentTitle(`Portal integration`);
+  const dataSortBy = [
+    { key: "AZ", label: "Title", default: true },
+    { key: "Type", label: "Type" },
+    { key: "Size", label: "Size" },
+    { key: "DateAndTimeCreation", label: "Creation date" },
+    { key: "DateAndTime", label: "Last modified date" },
+    { key: "Author", label: "Author" },
+  ];
+
+  const dataSortOrder = [
+    { key: "ascending", label: "Ascending", default: true },
+    { key: "descending", label: "Descending" },
+  ];
+
+  const [config, setConfig] = useState({
+    withSubfolders: true,
+    showHeader: false,
+    showArticle: false,
+    showFilter: false,
+  });
+
+  const [sortBy, setSortBy] = useState(dataSortBy[0]);
+  const [sortOrder, setSortOrder] = useState(dataSortOrder[0]);
 
   const loadFrame = () => {
     const script = document.getElementById("integration");
@@ -78,7 +100,7 @@ const PortalIntegration = (props) => {
     });
   };
 
-  const onChangeSrc = (e) => {
+  const onChangeFolderId = (e) => {
     setConfig((config) => {
       return { ...config, folderId: e.target.value };
     });
@@ -96,17 +118,56 @@ const PortalIntegration = (props) => {
     });
   };
 
+  const onChangeSortBy = (item) => {
+    setConfig((config) => {
+      return { ...config, sortBy: item.key };
+    });
+
+    setSortBy(item);
+  };
+
+  const onChangeSortOrder = (item) => {
+    setConfig((config) => {
+      return { ...config, sortOrder: item.key };
+    });
+
+    setSortOrder(item);
+  };
+
+  const onChangeShowHeader = (e) => {
+    setConfig((config) => {
+      return { ...config, showHeader: !config.showHeader };
+    });
+  };
+
+  const onChangeShowArticle = (e) => {
+    setConfig((config) => {
+      return { ...config, showArticle: !config.showArticle };
+    });
+  };
+
+  const onChangeShowFilter = (e) => {
+    setConfig((config) => {
+      return { ...config, showFilter: !config.showFilter };
+    });
+  };
+
   const params = objectToGetParams(config);
 
   const frameId = config.frameId || "ds-frame";
 
+  const codeBlock = `<div id="${frameId}">Fallback text</div>\n<script src="${scriptUrl}${params}"></script>`;
+
   return (
     <Box>
       <Controls>
+        <Heading level={1} size="small">
+          Frame options
+        </Heading>
         <ControlsGroup>
           <Parameter
             onChange={onChangeFrameId}
-            placeholder="Enter frame id"
+            placeholder="Frame id"
             value={config.frameId}
           />
         </ControlsGroup>
@@ -114,7 +175,7 @@ const PortalIntegration = (props) => {
         <ControlsGroup>
           <Parameter
             onChange={onChangeWidth}
-            placeholder="Enter frame width"
+            placeholder="Frame width"
             value={config.width}
           />
         </ControlsGroup>
@@ -122,39 +183,72 @@ const PortalIntegration = (props) => {
         <ControlsGroup>
           <Parameter
             onChange={onChangeHeight}
-            placeholder="Enter frame height"
+            placeholder="Frame height"
             value={config.height}
           />
         </ControlsGroup>
 
+        <ParameterCheckbox
+          label="Show header"
+          onChange={onChangeShowHeader}
+          isChecked={config.showHeader}
+        />
+
+        <ParameterCheckbox
+          label="Show article"
+          onChange={onChangeShowArticle}
+          isChecked={config.showArticle}
+        />
+
+        <ParameterCheckbox
+          label="Show filter"
+          onChange={onChangeShowFilter}
+          isChecked={config.showFilter}
+        />
+
+        <Heading level={1} size="small">
+          Filter options
+        </Heading>
+
         <ControlsGroup>
           <Parameter
-            onChange={onChangeSrc}
-            placeholder="Enter folder id"
+            onChange={onChangeFolderId}
+            placeholder="Folder id"
             value={config.folderId}
           />
-          <Checkbox
+          <ParameterCheckbox
             label="With subfolders"
             onChange={onChangeWithSubfolders}
             isChecked={config.withSubfolders}
           />
         </ControlsGroup>
+
+        <ParameterComboBox
+          onSelect={onChangeSortBy}
+          options={dataSortBy}
+          scaled={true}
+          selectedOption={sortBy}
+          displaySelectedOption
+        />
+
+        <ParameterComboBox
+          onSelect={onChangeSortOrder}
+          options={dataSortOrder}
+          scaled={true}
+          selectedOption={sortOrder}
+          displaySelectedOption
+        />
       </Controls>
-      <Text>Paste this code block on page:</Text>
-      <CodeBox>
-        <Code>
-          {'<div id="'}
-          {frameId}
-          {'">Fallback text</div>'}
-        </Code>
-        <Code>
-          {'<script src="'}
-          {scriptUrl}
-          {params}
-          {'"></script>'}
-        </Code>
-      </CodeBox>
-      <Button primary size="normal" label="Preview" onClick={loadFrame} />
+      <Heading level={1} size="xsmall">
+        Paste this code block on page:
+      </Heading>
+
+      <Textarea value={codeBlock} />
+
+      <Buttons>
+        <Button primary size="normal" label="Preview" onClick={loadFrame} />
+      </Buttons>
+
       <Frame>
         <Box id={frameId}>Frame content</Box>
       </Frame>
