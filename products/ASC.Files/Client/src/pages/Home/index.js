@@ -98,7 +98,8 @@ class PureHome extends React.Component {
       }
     }
 
-    if (isPrevSettingsModule) {
+    //TODO:
+    if (isPrevSettingsModule && !gallerySelected) {
       setIsPrevSettingsModule(false);
       return;
     }
