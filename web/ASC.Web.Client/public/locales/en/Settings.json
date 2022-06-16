@@ -143,6 +143,7 @@
   "ThirdPartyHowItWorks": "How It Works?",
   "ThirdPartyPropsActivated": "Updated successfully",
   "ThirdPartyPropsDeactivated": "Deactivated successfully",
+  "ThirdPartyTitle": "Third-party services",
   "ThirdPartyTitleDescription": "With Authorization keys, you can connect third-party services to your portal. Sign in easily with Facebook, Twitter, or LinkedIn; add Dropbox, OneDrive, etc. to work with files stored there from the Documents module.",
   "ThirdPartyResource": "Third-party resource",
   "ThirdPartyResourceDescription": "Backup can be saved to your third-party account (Dropbox, Box.com, OneDrive or Google Drive).You need to connect your third-party account (Dropbox, Box.com, OneDrive or Google Drive) to the Common documents folder before you will be able to save your backup there.",
