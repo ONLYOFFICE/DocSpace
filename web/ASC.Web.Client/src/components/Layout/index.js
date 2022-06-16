@@ -16,7 +16,7 @@ import { inject, observer } from "mobx-react";
 
 const StyledContainer = styled.div`
   width: 100%;
-  height: ${(props) => `${props.contentHeight}px`};
+  height: ${(props) => props.contentHeight};
   /* height: ${(props) =>
     (props.isTabletView || isMobileOnly) && !isFirefox
       ? `${props.contentHeight}px`
@@ -104,7 +104,7 @@ const Layout = (props) => {
       intervalHandler = null;
       timeoutHandler = null;
 
-      let height = "100%";
+      let height = "100vh";
       const windowHeight = window.innerHeight;
 
       if (isMobileOnly && isIOS && isChrome) {
