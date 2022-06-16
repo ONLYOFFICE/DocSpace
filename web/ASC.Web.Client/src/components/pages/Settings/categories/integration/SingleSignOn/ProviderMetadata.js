@@ -38,7 +38,7 @@ const ProviderMetadata = () => {
           className="download-button"
           label={t("DownloadMetadataXML")}
           primary
-          size="medium"
+          size="small"
           tabIndex={25}
         />
       </Box>

@@ -10,7 +10,7 @@ import FormStore from "@appserver/studio/src/store/SsoFormStore";
 import Text from "@appserver/components/text";
 
 import SimpleTextInput from "./SimpleTextInput";
-import { FileInput } from "@appserver/components";
+import FileInput from "@appserver/components/file-input";
 
 const uploadIcon = <ReactSVG src="images/actions.upload.react.svg" />;
 
@@ -37,7 +37,7 @@ const UploadXML = () => {
           icon={uploadIcon}
           isDisabled={!FormStore.enableSso}
           onClick={FormStore.onLoadXmlMetadata}
-          size="medium"
+          size="small"
           tabIndex={2}
         />
 

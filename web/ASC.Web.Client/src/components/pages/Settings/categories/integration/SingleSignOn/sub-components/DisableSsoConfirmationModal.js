@@ -39,12 +39,12 @@ const DisableSsoConfirmationModal = () => {
             label={t("Common:OKButton")}
             onClick={FormStore.onConfirmDisable}
             primary
-            size="big"
+            size="small"
           />
           <Button
             label={t("Common:CancelButton")}
             onClick={onClose}
-            size="big"
+            size="small"
           />
         </Box>
       </ModalDialog.Footer>

@@ -39,12 +39,12 @@ const ResetConfirmationModal = () => {
             label={t("Common:OKButton")}
             onClick={FormStore.onConfirmReset}
             primary
-            size="big"
+            size="small"
           />
           <Button
             label={t("Common:CancelButton")}
             onClick={onClose}
-            size="big"
+            size="small"
           />
         </Box>
       </ModalDialog.Footer>

@@ -63,7 +63,7 @@ const Certificates = ({ provider }) => {
               isDisabled={!FormStore.enableSso}
               label={t("AddCertificate")}
               onClick={FormStore.onOpenIdpModal}
-              size="medium"
+              size="small"
               tabIndex={9}
             />
             <AddIdpCertificateModal />
@@ -76,7 +76,7 @@ const Certificates = ({ provider }) => {
               isDisabled={!FormStore.enableSso}
               label={t("AddCertificate")}
               onClick={FormStore.onOpenSpModal}
-              size="medium"
+              size="small"
               tabIndex={9}
             />
             <AddSpCertificateModal />

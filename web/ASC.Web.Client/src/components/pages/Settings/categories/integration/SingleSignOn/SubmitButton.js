@@ -18,7 +18,7 @@ const SubmitResetButtons = () => {
         label={t("Common:SaveButton")}
         onClick={FormStore.onSubmit}
         primary
-        size="medium"
+        size="small"
         tabIndex={23}
       />
       <Button
@@ -28,7 +28,7 @@ const SubmitResetButtons = () => {
             ? FormStore.openResetModal
             : FormStore.resetForm
         }
-        size="medium"
+        size="small"
         tabIndex={24}
       />
       {FormStore.confirmationResetModal && <ResetConfirmationModal />}
