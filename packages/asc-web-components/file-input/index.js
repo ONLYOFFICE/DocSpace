@@ -81,23 +81,23 @@ class FileInput extends Component {
     switch (size) {
       case "base":
         iconSize = 15;
-        buttonSize = "base";
+        buttonSize = "extrasmall";
         break;
       case "middle":
         iconSize = 15;
-        buttonSize = "medium";
+        buttonSize = "small";
         break;
       case "big":
         iconSize = 16;
-        buttonSize = "big";
+        buttonSize = "normal";
         break;
       case "huge":
         iconSize = 16;
-        buttonSize = "large";
+        buttonSize = "medium";
         break;
       case "large":
         iconSize = 16;
-        buttonSize = "large";
+        buttonSize = "medium";
         break;
     }
 
