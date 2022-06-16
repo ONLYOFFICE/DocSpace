@@ -405,7 +405,7 @@ class SsoFormStore {
     const fieldErrorMessage = `${field}ErrorMessage`;
 
     try {
-      this.validate(value, this.getFieldType(field));
+      this.validate(value);
       this[fieldError] = false;
       this[fieldErrorMessage] = null;
     } catch (err) {
@@ -414,23 +414,9 @@ class SsoFormStore {
     }
   };
 
-  getFieldType = (field) => {
-    if (field.toLowerCase().includes("url")) return "url";
-    if (field.includes("entityId")) return "url";
-    if (field.includes("email")) return "email";
-    if (field.includes("phone")) return "phone";
-    return "string";
-  };
-
-  validate = (string, type) => {
-    string = string.trim();
-
-    if (string.length === 0) throw new Error("EmptyFieldErrorMessage");
-
-    if (type === "string") return true;
-
-    if (regExps[type].test(string)) return true;
-    else throw new Error(`${type}ErrorMessage`);
+  validate = (string) => {
+    if (string.trim().length === 0) throw new Error("EmptyFieldErrorMessage");
+    else return true;
   };
 }
 
