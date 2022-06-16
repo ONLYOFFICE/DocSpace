@@ -98,7 +98,8 @@ class PureHome extends React.Component {
       }
     }
 
-    if (isPrevSettingsModule) {
+    //TODO:
+    if (isPrevSettingsModule && !gallerySelected) {
       setIsPrevSettingsModule(false);
       return;
     }
@@ -162,30 +163,26 @@ class PureHome extends React.Component {
           const folderId = filter.folder;
           //console.log("filter", filter);
 
-          return fetchFiles(folderId, filter)
-            .then((data) => {
-              const pathParts = data.selectedFolder.pathParts;
-              const newExpandedKeys = createTreeFolders(
-                pathParts,
-                expandedKeys
-              );
-              setExpandedKeys(newExpandedKeys);
-            })
-            .then(() => {
-              if (gallerySelected) {
-                setIsUpdatingRowItem(false);
-                setAction({
-                  type: FileAction.Create,
-                  extension: "docxf",
-                  fromTemplate: true,
-                  title: gallerySelected.attributes.name_form,
-                  id: -1,
-                });
-              }
-            });
+          return fetchFiles(folderId, filter).then((data) => {
+            const pathParts = data.selectedFolder.pathParts;
+            const newExpandedKeys = createTreeFolders(pathParts, expandedKeys);
+            setExpandedKeys(newExpandedKeys);
+          });
         }
 
         return Promise.resolve();
+      })
+      .then(() => {
+        if (gallerySelected) {
+          setIsUpdatingRowItem(false);
+          setAction({
+            type: FileAction.Create,
+            extension: "docxf",
+            fromTemplate: true,
+            title: gallerySelected.attributes.name_form,
+            id: -1,
+          });
+        }
       })
       .finally(() => {
         setIsLoading(false);
