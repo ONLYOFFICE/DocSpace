@@ -45,6 +45,9 @@ const Frame = styled(Box)`
 
 const Buttons = styled(Box)`
   margin-top: 16px;
+  button {
+    margin-right: 16px;
+  }
 `;
 
 const PortalIntegration = (props) => {
@@ -247,6 +250,12 @@ const PortalIntegration = (props) => {
 
       <Buttons>
         <Button primary size="normal" label="Preview" onClick={loadFrame} />
+        <Button
+          primary
+          size="normal"
+          label="Destroy"
+          onClick={() => DocSpace.destroyFrame()}
+        />
       </Buttons>
 
       <Frame>
