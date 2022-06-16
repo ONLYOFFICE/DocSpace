@@ -1,6 +1,7 @@
 {
   "AddMembers": "Добави членове",
   "Birthdate": "Дата на раждане",
+  "DeleteUserDataConfirmation": "Потребителските документи, споделени с другите, ще бъдат изтрити. За да избегнете това, пренасочете данните.",
   "DeleteSelfProfile": "Изтрий профил",
   "DisableUserButton": "Деактивирай",
   "DisabledEmployeeStatus": "Деактивиран",

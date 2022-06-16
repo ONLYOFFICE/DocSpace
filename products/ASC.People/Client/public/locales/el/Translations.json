@@ -1,6 +1,7 @@
 {
   "AddMembers": "Προσθήκη μελών",
   "Birthdate": "Ημερομηνία γέννησης",
+  "DeleteUserDataConfirmation": "Τα έγγραφα του χρήστη που έχουν κοινοποιηθεί σε άλλους θα διαγραφούν. Για να μην γίνει αυτό, αναθέστε εκ νέου τα δεδομένα.",
   "DeleteSelfProfile": "Διαγραφή προφίλ",
   "DisableUserButton": "Απενεργοποίηση",
   "DisabledEmployeeStatus": "Απενεργοποιημένο",

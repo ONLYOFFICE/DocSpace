@@ -6,8 +6,7 @@ import FieldContainer from "@appserver/components/field-container";
 import Text from "@appserver/components/text";
 import Loader from "@appserver/components/loader";
 import Button from "@appserver/components/button";
-import toastr from "@appserver/components/toast/toastr";
-import Link from "@appserver/components/link";
+
 import TextInput from "@appserver/components/text-input";
 
 import { inject, observer } from "mobx-react";
@@ -20,10 +19,6 @@ const StyledComponent = styled.div`
 
   .margin-left {
     margin-left: 20px;
-  }
-
-  .settings-block {
-    margin-bottom: 70px;
   }
 
   .field-container {
@@ -250,7 +245,7 @@ const WhiteLabel = (props) => {
       fd.append("logoText", logoTextWhiteLabel);
 
       fd.append(`logo[${0}][key]`, 1);
-      fd.append(`logo[${0}][value]`, logoUrlsChange.src);
+      fd.append(`logo[${0}][value]`, logoUrlsChange[0].src);
 
       const data = new URLSearchParams(fd);
 
@@ -416,15 +411,27 @@ const WhiteLabel = (props) => {
                 {t("BrowserNoCanvasSupport")}
               </canvas>
             ) : (
-              <img
-                className="border-img logo-dark"
-                src={
-                  logoUrlsChange && logoUrlsChange.some((obj) => obj.id === "2")
-                    ? logoUrlsChange.find((obj) => obj.id === "2").src
-                    : logoUrlsWhiteLabel[1]
-                }
-                alt={t("LogoDark")}
-              />
+              // <img
+              //   className="border-img logo-dark"
+              //   src={
+              //     logoUrlsChange && logoUrlsChange.some((obj) => obj.id === "2")
+              //       ? logoUrlsChange.find((obj) => obj.id === "2").src
+              //       : logoUrlsWhiteLabel[1]
+              //   }
+              //   alt={t("LogoDark")}
+              // />
+
+              <div className="border-img logo-dark">
+                <object
+                  type="image/svg+xml"
+                  data={
+                    logoUrlsChange &&
+                    logoUrlsChange.some((obj) => obj.id === "2")
+                      ? logoUrlsChange.find((obj) => obj.id === "2").src
+                      : logoUrlsWhiteLabel[1]
+                  }
+                ></object>
+              </div>
             )}
           </div>
           {isPortalPaid && (

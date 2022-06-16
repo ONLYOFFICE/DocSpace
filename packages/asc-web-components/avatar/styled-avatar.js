@@ -37,11 +37,13 @@ EditContainer.defaultProps = { theme: Base };
 const AvatarWrapper = styled.div`
   border-radius: ${(props) => props.theme.avatar.imageContainer.borderRadius};
   height: ${(props) => props.theme.avatar.imageContainer.height};
+
   background-color: ${(props) =>
-    (props.source === "" &&
-      props.userName !== "" &&
-      props.theme.avatar.imageContainer.backgroundImage) ||
-    props.theme.avatar.imageContainer.background};
+    props.source
+      ? props.theme.avatar.icon.background
+      : props.userName
+      ? props.theme.avatar.imageContainer.backgroundImage
+      : props.theme.avatar.imageContainer.background};
 
   & > svg {
     display: ${(props) => props.theme.avatar.imageContainer.svg.display};
@@ -106,6 +108,24 @@ const StyledImage = styled.img`
 `;
 StyledImage.defaultProps = { theme: Base };
 
+const StyledIconWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .icon,
+  .icon:hover {
+    width: 50%;
+    height: 50%;
+    path {
+      fill: ${(props) => props.theme.avatar.icon.color};
+    }
+  }
+`;
+StyledIconWrapper.defaultProps = { theme: Base };
+
 const widthStyle = (props) => props.theme.avatar.width[props.size];
 const heightStyle = (props) => props.theme.avatar.height[props.size];
 
@@ -161,5 +181,6 @@ export {
   RoleWrapper,
   NamedAvatar,
   StyledImage,
+  StyledIconWrapper,
   StyledAvatar,
 };

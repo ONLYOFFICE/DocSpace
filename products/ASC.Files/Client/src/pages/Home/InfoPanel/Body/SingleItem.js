@@ -77,9 +77,7 @@ const SingleItem = (props) => {
 
       const parseAndFormatDate = (date) => {
         const locale = personal ? localStorage.getItem(LANGUAGE) : culture;
-
         const correctDate = getCorrectDate(locale, date);
-
         return correctDate;
       };
 

@@ -178,6 +178,7 @@ namespace ASC.Api.Settings
         private DbWorker WebhookDbWorker { get; }
         private DnsSettings DnsSettings { get; }
         public IHttpClientFactory ClientFactory { get; }
+        public AdditionalWhiteLabelSettingsHelper AdditionalWhiteLabelSettingsHelper { get; }
 
         public SettingsController(
             IOptionsMonitor<ILog> option,
@@ -244,7 +245,8 @@ namespace ASC.Api.Settings
             Signature signature,
             DbWorker dbWorker,
             DnsSettings dnsSettings,
-            IHttpClientFactory clientFactory)
+            IHttpClientFactory clientFactory,
+            AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper)
         {
             Log = option.Get("ASC.Api");
             WebHostEnvironment = webHostEnvironment;
@@ -311,6 +313,7 @@ namespace ASC.Api.Settings
             InstanceCrypto = instanceCrypto;
             Signature = signature;
             ClientFactory = clientFactory;
+            AdditionalWhiteLabelSettingsHelper = additionalWhiteLabelSettingsHelper;
         }
 
         [Read("", Check = false)]
@@ -354,6 +357,8 @@ namespace ASC.Api.Settings
                     AppId = Configuration["firebase:appId"] ?? "",
                     MeasurementId = Configuration["firebase:measurementId"] ?? ""
                 };
+
+                settings.HelpLink = CommonLinkUtility.GetHelpLink(SettingsManager, AdditionalWhiteLabelSettingsHelper, true);
 
                 bool debugInfo;
                 if (bool.TryParse(Configuration["debug-info:enabled"], out debugInfo))

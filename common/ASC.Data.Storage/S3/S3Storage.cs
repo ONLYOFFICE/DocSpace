@@ -681,7 +681,7 @@ namespace ASC.Data.Storage.S3
                     Key = s3Object.Key
                 };
 
-                var metadata = await  client.GetObjectMetadataAsync(request);
+                var metadata = await client.GetObjectMetadataAsync(request);
                 var privateExpireKey = metadata.Metadata["private-expire"];
                 if (string.IsNullOrEmpty(privateExpireKey)) continue;
 
@@ -805,7 +805,7 @@ namespace ASC.Data.Storage.S3
             }
 
             return policyBase64;
-        }     
+        }
 
         public override async Task<string> GetUploadedUrlAsync(string domain, string directoryPath)
         {
@@ -1029,7 +1029,7 @@ namespace ASC.Data.Storage.S3
             path = MakePath(domain, path) + '/';
             var s30Objects = await GetS3ObjectsByPathAsync(domain, path);
             if (string.IsNullOrEmpty(_recycleDir) || !recycle) return s30Objects;
-            s30Objects.Concat(await GetS3ObjectsByPathAsync(domain, GetRecyclePath(path)));
+            s30Objects = s30Objects.Concat(await GetS3ObjectsByPathAsync(domain, GetRecyclePath(path)));
             return s30Objects;
         }
 
