@@ -22,20 +22,6 @@ import {
 import CatalogItem from "@appserver/components/catalog-item";
 import LoaderArticleBody from "./loaderArticleBody";
 
-const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
-  ${commonIconsStyles}
-  path {
-    fill: ${(props) => props.color};
-  }
-`;
-
-const StyledExpanderRightIcon = styled(ExpanderRightIcon)`
-  ${commonIconsStyles}
-  path {
-    fill: ${(props) => props.color};
-  }
-`;
-
 const getTreeItems = (data, path, t) => {
   const maptKeys = (tKey) => {
     switch (tKey) {
