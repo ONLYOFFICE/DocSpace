@@ -32,18 +32,15 @@ public class SettingsController : ApiControllerBase
 {
     private readonly FileStorageService<string> _fileStorageServiceString;
     private readonly FilesSettingsHelper _filesSettingsHelper;
-    private readonly TenantManager _tenantManager;
     private readonly ProductEntryPoint _productEntryPoint;
 
     public SettingsController(
         FileStorageService<string> fileStorageServiceString,
         FilesSettingsHelper filesSettingsHelper,
-        TenantManager tenantManager,
         ProductEntryPoint productEntryPoint)
     {
         _fileStorageServiceString = fileStorageServiceString;
         _filesSettingsHelper = filesSettingsHelper;
-        _tenantManager = tenantManager;
         _productEntryPoint = productEntryPoint;
     }
 
@@ -121,6 +118,18 @@ public class SettingsController : ApiControllerBase
     public bool DisplayTemplates(DisplayRequestDto inDto)
     {
         return _fileStorageServiceString.DisplayTemplates(inDto.Set);
+    }
+
+    [HttpPut("settings/external")]
+    public bool ExternalShare(DisplayRequestDto inDto)
+    {
+        return _fileStorageServiceString.ChangeExternalShareSettings(inDto.Set);
+    }
+
+    [HttpPut("settings/externalsocialmedia")]
+    public bool ExternalShareSocialMedia(DisplayRequestDto inDto)
+    {
+        return _fileStorageServiceString.ChangeExternalShareSocialMediaSettings(inDto.Set);
     }
 
     /// <summary>
@@ -207,14 +216,6 @@ public class SettingsController : ApiControllerBase
     {
         return _fileStorageServiceString.ChangeAutomaticallyCleanUp(set, gap);
     }
-
-
-    [HttpGet("settings/autocleanup")]
-    public AutoCleanUpData GetSettingsAutomaticallyCleanUp()
-    {
-        return _fileStorageServiceString.GetSettingsAutomaticallyCleanUp();
-    }
-
 
     [HttpPut("settings/dafaultaccessrights")]
     public List<Core.Security.FileShare> ChangeDafaultAccessRights(List<Core.Security.FileShare> value)
