@@ -9,6 +9,9 @@ import { Base } from "@appserver/components/themes";
 import Details from "./views/Details";
 import Members from "./views/Members";
 import History from "./views/History";
+import EmptyScreen from "./EmptyScreen";
+import withLoader from "../../../../HOCs/withLoader";
+import Loaders from "@appserver/common/components/Loaders";
 
 const InfoPanelBodyContent = ({
   t,
@@ -170,7 +173,9 @@ export default inject(
 )(
   withRouter(
     withTranslation(["InfoPanel", "Home", "Common", "Translations"])(
-      observer(InfoPanelBodyContent)
+      withLoader(observer(InfoPanelBodyContent))(
+        <Loaders.InfoPanelBodyLoader isFolder />
+      )
     )
   )
 );

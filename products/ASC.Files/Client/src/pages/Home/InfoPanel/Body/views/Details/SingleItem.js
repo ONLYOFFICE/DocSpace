@@ -77,9 +77,9 @@ const SingleItem = (props) => {
 
       const replaceUnicode = (str) => {
         const regex = /&#([0-9]{1,4});/gi;
-        return str.replace(regex, (match, numStr) =>
-          String.fromCharCode(+numStr)
-        );
+        return str
+          ? str.replace(regex, (match, numStr) => String.fromCharCode(+numStr))
+          : "...";
       };
 
       const parseAndFormatDate = (date) => {

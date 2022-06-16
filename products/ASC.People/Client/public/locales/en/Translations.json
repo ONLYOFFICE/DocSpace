@@ -1,6 +1,7 @@
 {
   "AddMembers": "Add members",
   "Birthdate": "Date of birth",
+  "DeleteUserDataConfirmation": "User documents shared with others will be deleted. To avoid this, reassign data.",
   "DeleteSelfProfile": "Delete profile",
   "DisableUserButton": "Disable",
   "DisabledEmployeeStatus": "Disabled",
