@@ -336,7 +336,7 @@ class AuthStore {
         `${this.settingsStore.urlOforms}${culture}`
       );
 
-      if (!oforms.length) {
+      if (!oforms?.data?.data.length) {
         oforms = await api.settings.getOforms(
           `${this.settingsStore.urlOforms}en`
         );
