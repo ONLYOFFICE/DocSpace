@@ -81,6 +81,10 @@ const PortalIntegration = (props) => {
   const [sortBy, setSortBy] = useState(dataSortBy[0]);
   const [sortOrder, setSortOrder] = useState(dataSortOrder[0]);
 
+  const params = objectToGetParams(config);
+
+  const frameId = config.frameId || "ds-frame";
+
   const loadFrame = () => {
     const script = document.getElementById("integration");
 
@@ -91,10 +95,14 @@ const PortalIntegration = (props) => {
     loadScript(`${scriptUrl}${params}`, "integration");
   };
 
+  const destroyFrame = () => {
+    DocSpace.destroyFrame();
+  };
+
   const showMessage = (e) => {
     const data = e.data;
 
-    if (data.source === "ds-frame") {
+    if (data.source === frameId) {
       toastr.success(data.message, "Frame callback");
     }
   };
@@ -168,10 +176,6 @@ const PortalIntegration = (props) => {
       return { ...config, showFilter: !config.showFilter };
     });
   };
-
-  const params = objectToGetParams(config);
-
-  const frameId = config.frameId || "ds-frame";
 
   const codeBlock = `<div id="${frameId}">Fallback text</div>\n<script src="${scriptUrl}${params}"></script>`;
 
@@ -264,12 +268,7 @@ const PortalIntegration = (props) => {
 
       <Buttons>
         <Button primary size="normal" label="Preview" onClick={loadFrame} />
-        <Button
-          primary
-          size="normal"
-          label="Destroy"
-          onClick={() => DocSpace.destroyFrame()}
-        />
+        <Button primary size="normal" label="Destroy" onClick={destroyFrame} />
       </Buttons>
 
       <Frame>
