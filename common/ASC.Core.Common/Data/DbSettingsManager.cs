@@ -185,21 +185,30 @@ public class DbSettingsManager
 
             if (data.SequenceEqual(defaultData))
             {
-                using var tr = WebstudioDbContext.Database.BeginTransaction();
-                // remove default settings
-                var s = WebstudioDbContext.WebstudioSettings
-                    .Where(r => r.Id == settings.ID)
-                    .Where(r => r.TenantId == tenantId)
-                    .Where(r => r.UserId == userId)
-                    .FirstOrDefault();
+                var strategy = WebstudioDbContext.Database.CreateExecutionStrategy();
 
-                if (s != null)
+                strategy.Execute(() =>
                 {
-                    WebstudioDbContext.WebstudioSettings.Remove(s);
-                }
+                    using var tr = WebstudioDbContext.Database.BeginTransaction();
+                    // remove default settings
+                    var s = WebstudioDbContext.WebstudioSettings
+                        .Where(r => r.Id == settings.ID)
+                        .Where(r => r.TenantId == tenantId)
+                        .Where(r => r.UserId == userId)
+                        .FirstOrDefault();
 
-                WebstudioDbContext.SaveChanges();
-                tr.Commit();
+                    if (s != null)
+                    {
+                        WebstudioDbContext.WebstudioSettings.Remove(s);
+                    }
+
+                    WebstudioDbContext.SaveChanges();
+
+                    tr.Commit();
+                });
+
+
+
             }
             else
             {

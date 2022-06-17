@@ -35,6 +35,7 @@ global using System.Globalization;
 global using System.Linq;
 global using System.Linq.Expressions;
 global using System.Net;
+global using System.Net.Http.Headers;
 global using System.Reflection;
 global using System.Resources;
 global using System.Runtime.Serialization;
@@ -60,6 +61,7 @@ global using ASC.AuditTrail.Models;
 global using ASC.Collections;
 global using ASC.Common;
 global using ASC.Common.Caching;
+global using ASC.Common.Data;
 global using ASC.Common.Log;
 global using ASC.Common.Logging;
 global using ASC.Common.Mapping;
@@ -108,7 +110,6 @@ global using ASC.EventBus.Events;
 global using ASC.Geolocation;
 global using ASC.MessagingSystem.Core;
 global using ASC.MessagingSystem.Data;
-global using ASC.MessagingSystem.Log;
 global using ASC.MessagingSystem.Mapping;
 global using ASC.MessagingSystem.Models;
 global using ASC.Notify;
@@ -126,6 +127,7 @@ global using ASC.Web.Studio.Utility;
 global using Autofac;
 
 global using AutoMapper;
+global using AutoMapper.QueryableExtensions;
 
 global using MailKit.Security;
 

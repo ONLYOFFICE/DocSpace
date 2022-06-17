@@ -24,12 +24,14 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Common.Log;
-internal static partial class DistributedTaskQueueLogger
-{
-    [LoggerMessage(Level = LogLevel.Trace, Message = "EnqueueTask '{DistributedTaskId}' by instanse id '{instanceId}'")]
-    public static partial void TraceEnqueueTask(this ILogger<DistributedTaskQueue> logger, string DistributedTaskId, int instanceId);
+global using System;
+global using System.IO;
+global using System.Linq;
+global using System.Security.Cryptography;
+global using System.Text;
 
-    [LoggerMessage(Level = LogLevel.Trace, Message = "Publication DistributedTask '{DistributedTaskId}' by instanse id '{instanceId}' ")]
-    public static partial void TracePublicationDistributedTask(this ILogger<DistributedTaskQueue> logger, string DistributedTaskId, int instanceId);
-}
+global using ASC.Common;
+global using ASC.Common.Utils;
+global using ASC.Core.Encryption;
+
+global using Microsoft.Extensions.Configuration;

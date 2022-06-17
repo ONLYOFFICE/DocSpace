@@ -151,6 +151,10 @@ public class MessagesRepository : IDisposable
 
         using var scope = _serviceScopeFactory.CreateScope();
         using var ef = scope.ServiceProvider.GetService<DbContextManager<MessagesContext>>().Get("messages");
+        var strategy = ef.Database.CreateExecutionStrategy();
+
+        strategy.Execute(() =>
+        {
         using var tx = ef.Database.BeginTransaction(IsolationLevel.ReadUncommitted);
         var dict = new Dictionary<string, ClientInfo>();
 
@@ -183,6 +187,7 @@ public class MessagesRepository : IDisposable
         }
 
         tx.Commit();
+        });
     }
 
     private int AddLoginEvent(EventMessage message, MessagesContext dbContext)

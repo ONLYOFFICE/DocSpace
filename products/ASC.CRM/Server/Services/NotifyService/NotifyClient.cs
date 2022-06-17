@@ -33,7 +33,6 @@ using System.Threading;
 using System.Web;
 
 using ASC.Common;
-using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Billing;
 using ASC.Core.Tenants;
@@ -47,6 +46,8 @@ using ASC.Notify.Engine;
 using ASC.Notify.Model;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
+
+using Microsoft.Extensions.Logging;
 
 namespace ASC.Web.CRM.Services.NotifyService
 {
@@ -63,7 +64,7 @@ namespace ASC.Web.CRM.Services.NotifyService
         private readonly TenantManager _tenantManager;
         private readonly PaymentManager _paymentManager;
         private readonly UserManager _userManager;
-        private readonly ILog _logger;
+        private readonly ILogger _logger;
         private readonly CoreSettings _coreSettings;
         private readonly TenantUtil _tenantUtil;
 
@@ -78,7 +79,7 @@ namespace ASC.Web.CRM.Services.NotifyService
             PaymentManager paymentManager,
             UserManager userManager,
             CoreSettings coreSettings,
-            ILog logger,
+            ILogger logger,
             TenantUtil tenantUtil)
         {
             _notifyContext = notifyContext;
@@ -376,7 +377,7 @@ namespace ASC.Web.CRM.Services.NotifyService
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error("SendAutoReminderAboutTask, tenant: " + tenant.GetTenantDomain(_coreSettings), ex);
+                    _logger.LogError("SendAutoReminderAboutTask, tenant: " + tenant.GetTenantDomain(_coreSettings), ex);
                 }
             }
 

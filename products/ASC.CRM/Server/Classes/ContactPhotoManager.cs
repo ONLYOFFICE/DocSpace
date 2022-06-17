@@ -33,7 +33,6 @@ using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Caching;
-using ASC.Common.Logging;
 using ASC.Common.Threading;
 using ASC.CRM.Resources;
 using ASC.Data.Storage;
@@ -41,7 +40,7 @@ using ASC.Web.Core;
 using ASC.Web.Core.Utility.Skins;
 using ASC.Web.CRM.Configuration;
 
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats;
@@ -80,7 +79,7 @@ namespace ASC.Web.CRM.Classes
     [Scope]
     public class ContactPhotoManager
     {
-        public readonly ILog _logger;
+        public readonly ILogger _logger;
         public readonly Global _global;
         public readonly WebImageSupplier _webImageSupplier;
         private readonly DistributedTaskQueue _resizeQueue;
@@ -102,7 +101,7 @@ namespace ASC.Web.CRM.Classes
 
         public ContactPhotoManager(Global global,
                                    WebImageSupplier webImageSupplier,
-                                   IOptionsMonitor<ILog> logger,
+                                   ILogger logger,
                                    ICache cache,
                                    ICacheNotify<ContactPhotoManagerCacheItem> cacheNotify,
                                    IDistributedTaskQueueFactory factory,
@@ -113,7 +112,7 @@ namespace ASC.Web.CRM.Classes
             _cacheNotify = cacheNotify;
             _cache = cache;
             _resizeQueue = factory.CreateQueue<ResizeWorkerItem>();
-            _logger = logger.Get("ASC.CRM");
+            _logger = logger;
             _clientFactory = clientFactory;
 
             _cacheNotify.Subscribe((x) =>
@@ -442,7 +441,7 @@ namespace ASC.Web.CRM.Classes
             }
             catch (Exception ex)
             {
-                _logger.ErrorFormat("TryUploadPhotoFromTmp for contactID={0} failed witth error: {1}", contactID, ex);
+                _logger.LogError("TryUploadPhotoFromTmp for contactID={0} failed witth error: {1}", contactID, ex);
 
                 return;
             }

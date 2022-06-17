@@ -40,10 +40,6 @@
  *
 */
 
-using System.IdentityModel.Tokens.Jwt;
-
-using Microsoft.IdentityModel.Tokens;
-
 namespace ASC.FederatedLogin.LoginProviders;
 
 [Scope]

@@ -549,31 +549,36 @@ public class TariffService : ITariffService
         var currentTariff = GetBillingInfo(tenant);
         if (!tariffInfo.EqualsByParams(currentTariff))
         {
-            using var tx = CoreDbContext.Database.BeginTransaction();
+            var strategy = CoreDbContext.Database.CreateExecutionStrategy();
 
-            // last record is not the same
-            var any = CoreDbContext.Tariffs
-                .Any(r => r.Tenant == tenant && r.Tariff == tariffInfo.QuotaId && r.Stamp == tariffInfo.DueDate && r.Quantity == tariffInfo.Quantity);
-
-            if (tariffInfo.DueDate == DateTime.MaxValue || renewal || any)
-            {
-                var efTariff = new DbTariff
+            strategy.Execute(() =>
                 {
-                    Tenant = tenant,
-                    Tariff = tariffInfo.QuotaId,
-                    Stamp = tariffInfo.DueDate,
-                    Quantity = tariffInfo.Quantity,
-                    CreateOn = DateTime.UtcNow
-                };
+                    using var tx = CoreDbContext.Database.BeginTransaction();
 
-                CoreDbContext.Tariffs.Add(efTariff);
-                CoreDbContext.SaveChanges();
+                    // last record is not the same
+                    var any = CoreDbContext.Tariffs
+                        .Any(r => r.Tenant == tenant && r.Tariff == tariffInfo.QuotaId && r.Stamp == tariffInfo.DueDate && r.Quantity == tariffInfo.Quantity);
 
-                Cache.Remove(GetTariffCacheKey(tenant));
-                inserted = true;
-            }
+                    if (tariffInfo.DueDate == DateTime.MaxValue || renewal || any)
+                    {
+                        var efTariff = new DbTariff
+                        {
+                            Tenant = tenant,
+                            Tariff = tariffInfo.QuotaId,
+                            Stamp = tariffInfo.DueDate,
+                            Quantity = tariffInfo.Quantity,
+                            CreateOn = DateTime.UtcNow
+                        };
 
-            tx.Commit();
+                        CoreDbContext.Tariffs.Add(efTariff);
+                        CoreDbContext.SaveChanges();
+
+                        Cache.Remove(GetTariffCacheKey(tenant));
+                        inserted = true;
+                    }
+
+                    tx.Commit();
+                });
         }
 
         if (inserted)

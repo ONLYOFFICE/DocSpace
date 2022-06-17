@@ -393,67 +393,73 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
         lock (_syncRoot)
         {
-            using var tx = FilesDbContext.Database.BeginTransaction();
 
-            if (file.Id == default)
+            var strategy = FilesDbContext.Database.CreateExecutionStrategy();
+
+            strategy.Execute(() =>
             {
-                file.Id = FilesDbContext.Files.Any() ? FilesDbContext.Files.Max(r => r.Id) + 1 : 1;
-                file.Version = 1;
-                file.VersionGroup = 1;
-                isNew = true;
-            }
+                using var tx = FilesDbContext.Database.BeginTransaction();
 
-            file.Title = Global.ReplaceInvalidCharsAndTruncate(file.Title);
-            //make lowerCase
-            file.Title = FileUtility.ReplaceFileExtension(file.Title, FileUtility.GetFileExtension(file.Title));
+                if (file.Id == default)
+                {
+                    file.Id = FilesDbContext.Files.Any() ? FilesDbContext.Files.Max(r => r.Id) + 1 : 1;
+                    file.Version = 1;
+                    file.VersionGroup = 1;
+                    isNew = true;
+                }
 
-            file.ModifiedBy = _authContext.CurrentAccount.ID;
-            file.ModifiedOn = _tenantUtil.DateTimeNow();
-            if (file.CreateBy == default)
-            {
-                file.CreateBy = _authContext.CurrentAccount.ID;
-            }
+                file.Title = Global.ReplaceInvalidCharsAndTruncate(file.Title);
+                //make lowerCase
+                file.Title = FileUtility.ReplaceFileExtension(file.Title, FileUtility.GetFileExtension(file.Title));
 
-            if (file.CreateOn == default)
-            {
-                file.CreateOn = _tenantUtil.DateTimeNow();
-            }
+                file.ModifiedBy = _authContext.CurrentAccount.ID;
+                file.ModifiedOn = _tenantUtil.DateTimeNow();
+                if (file.CreateBy == default)
+                {
+                    file.CreateBy = _authContext.CurrentAccount.ID;
+                }
 
-            var toUpdate = FilesDbContext.Files
-                .FirstOrDefault(r => r.Id == file.Id && r.CurrentVersion && r.TenantId == TenantID);
+                if (file.CreateOn == default)
+                {
+                    file.CreateOn = _tenantUtil.DateTimeNow();
+                }
 
-            if (toUpdate != null)
-            {
-                toUpdate.CurrentVersion = false;
+                var toUpdate = FilesDbContext.Files
+                    .FirstOrDefault(r => r.Id == file.Id && r.CurrentVersion && r.TenantId == TenantID);
+
+                if (toUpdate != null)
+                {
+                    toUpdate.CurrentVersion = false;
+                    FilesDbContext.SaveChanges();
+                }
+
+                toInsert = new DbFile
+                {
+                    Id = file.Id,
+                    Version = file.Version,
+                    VersionGroup = file.VersionGroup,
+                    CurrentVersion = true,
+                    ParentId = file.ParentId,
+                    Title = file.Title,
+                    ContentLength = file.ContentLength,
+                    Category = (int)file.FilterType,
+                    CreateBy = file.CreateBy,
+                    CreateOn = _tenantUtil.DateTimeToUtc(file.CreateOn),
+                    ModifiedBy = file.ModifiedBy,
+                    ModifiedOn = _tenantUtil.DateTimeToUtc(file.ModifiedOn),
+                    ConvertedType = file.ConvertedType,
+                    Comment = file.Comment,
+                    Encrypted = file.Encrypted,
+                    Forcesave = file.Forcesave,
+                    ThumbnailStatus = file.ThumbnailStatus,
+                    TenantId = TenantID
+                };
+
+                FilesDbContext.AddOrUpdate(r => r.Files, toInsert);
                 FilesDbContext.SaveChanges();
-            }
 
-            toInsert = new DbFile
-            {
-                Id = file.Id,
-                Version = file.Version,
-                VersionGroup = file.VersionGroup,
-                CurrentVersion = true,
-                ParentId = file.ParentId,
-                Title = file.Title,
-                ContentLength = file.ContentLength,
-                Category = (int)file.FilterType,
-                CreateBy = file.CreateBy,
-                CreateOn = _tenantUtil.DateTimeToUtc(file.CreateOn),
-                ModifiedBy = file.ModifiedBy,
-                ModifiedOn = _tenantUtil.DateTimeToUtc(file.ModifiedOn),
-                ConvertedType = file.ConvertedType,
-                Comment = file.Comment,
-                Encrypted = file.Encrypted,
-                Forcesave = file.Forcesave,
-                ThumbnailStatus = file.ThumbnailStatus,
-                TenantId = TenantID
-            };
-
-            FilesDbContext.AddOrUpdate(r => r.Files, toInsert);
-            FilesDbContext.SaveChanges();
-
-            tx.Commit();
+                tx.Commit();
+            });
 
             file.PureTitle = file.Title;
 
@@ -557,46 +563,51 @@ internal class FileDao : AbstractDao, IFileDao<int>
         List<int> parentFoldersIds;
         lock (_syncRoot)
         {
-            using var tx = FilesDbContext.Database.BeginTransaction();
+            var strategy = FilesDbContext.Database.CreateExecutionStrategy();
 
-            file.Title = Global.ReplaceInvalidCharsAndTruncate(file.Title);
-            //make lowerCase
-            file.Title = FileUtility.ReplaceFileExtension(file.Title, FileUtility.GetFileExtension(file.Title));
-
-            file.ModifiedBy = _authContext.CurrentAccount.ID;
-            file.ModifiedOn = _tenantUtil.DateTimeNow();
-            if (file.CreateBy == default)
+            strategy.Execute(() =>
             {
-                file.CreateBy = _authContext.CurrentAccount.ID;
-            }
+                using var tx = FilesDbContext.Database.BeginTransaction();
 
-            if (file.CreateOn == default)
-            {
-                file.CreateOn = _tenantUtil.DateTimeNow();
-            }
+                file.Title = Global.ReplaceInvalidCharsAndTruncate(file.Title);
+                //make lowerCase
+                file.Title = FileUtility.ReplaceFileExtension(file.Title, FileUtility.GetFileExtension(file.Title));
 
-            toUpdate = FilesDbContext.Files
-                .FirstOrDefault(r => r.Id == file.Id && r.Version == file.Version && r.TenantId == TenantID);
+                file.ModifiedBy = _authContext.CurrentAccount.ID;
+                file.ModifiedOn = _tenantUtil.DateTimeNow();
+                if (file.CreateBy == default)
+                {
+                    file.CreateBy = _authContext.CurrentAccount.ID;
+                }
 
-            toUpdate.Version = file.Version;
-            toUpdate.VersionGroup = file.VersionGroup;
-            toUpdate.ParentId = file.ParentId;
-            toUpdate.Title = file.Title;
-            toUpdate.ContentLength = file.ContentLength;
-            toUpdate.Category = (int)file.FilterType;
-            toUpdate.CreateBy = file.CreateBy;
-            toUpdate.CreateOn = _tenantUtil.DateTimeToUtc(file.CreateOn);
-            toUpdate.ModifiedBy = file.ModifiedBy;
-            toUpdate.ModifiedOn = _tenantUtil.DateTimeToUtc(file.ModifiedOn);
-            toUpdate.ConvertedType = file.ConvertedType;
-            toUpdate.Comment = file.Comment;
-            toUpdate.Encrypted = file.Encrypted;
-            toUpdate.Forcesave = file.Forcesave;
-            toUpdate.ThumbnailStatus = file.ThumbnailStatus;
+                if (file.CreateOn == default)
+                {
+                    file.CreateOn = _tenantUtil.DateTimeNow();
+                }
 
-            FilesDbContext.SaveChanges();
+                toUpdate = FilesDbContext.Files
+                    .FirstOrDefault(r => r.Id == file.Id && r.Version == file.Version && r.TenantId == TenantID);
 
-            tx.Commit();
+                toUpdate.Version = file.Version;
+                toUpdate.VersionGroup = file.VersionGroup;
+                toUpdate.ParentId = file.ParentId;
+                toUpdate.Title = file.Title;
+                toUpdate.ContentLength = file.ContentLength;
+                toUpdate.Category = (int)file.FilterType;
+                toUpdate.CreateBy = file.CreateBy;
+                toUpdate.CreateOn = _tenantUtil.DateTimeToUtc(file.CreateOn);
+                toUpdate.ModifiedBy = file.ModifiedBy;
+                toUpdate.ModifiedOn = _tenantUtil.DateTimeToUtc(file.ModifiedOn);
+                toUpdate.ConvertedType = file.ConvertedType;
+                toUpdate.Comment = file.Comment;
+                toUpdate.Encrypted = file.Encrypted;
+                toUpdate.Forcesave = file.Forcesave;
+                toUpdate.ThumbnailStatus = file.ThumbnailStatus;
+
+                FilesDbContext.SaveChanges();
+
+                tx.Commit();
+            });
 
             file.PureTitle = file.Title;
 
@@ -709,54 +720,59 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     private async Task internalDeleteFileAsync(int fileId, bool deleteFolder)
     {
-        using var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false);
+        var strategy = FilesDbContext.Database.CreateExecutionStrategy();
 
-        var fromFolders = Query(FilesDbContext.Files)
-            .Where(r => r.Id == fileId)
-            .Select(a => a.ParentId)
-            .Distinct()
-            .AsAsyncEnumerable();
-
-        var toDeleteLinks = Query(FilesDbContext.TagLink).Where(r => r.EntryId == fileId.ToString() && r.EntryType == FileEntryType.File);
-        FilesDbContext.RemoveRange(await toDeleteLinks.ToListAsync());
-
-        var toDeleteFiles = Query(FilesDbContext.Files).Where(r => r.Id == fileId);
-        var toDeleteFile = await toDeleteFiles.FirstOrDefaultAsync(r => r.CurrentVersion).ConfigureAwait(false);
-
-        foreach (var d in toDeleteFiles)
+        await strategy.ExecuteAsync(async () =>
         {
-            await _factoryIndexer.DeleteAsync(d).ConfigureAwait(false);
-        }
+            using var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false);
 
-        FilesDbContext.RemoveRange(await toDeleteFiles.ToListAsync());
+            var fromFolders = Query(FilesDbContext.Files)
+                .Where(r => r.Id == fileId)
+                .Select(a => a.ParentId)
+                .Distinct()
+                .AsAsyncEnumerable();
 
-        var tagsToRemove = Query(FilesDbContext.Tag)
-            .Where(r => !Query(FilesDbContext.TagLink).Any(a => a.TagId == r.Id));
+            var toDeleteLinks = Query(FilesDbContext.TagLink).Where(r => r.EntryId == fileId.ToString() && r.EntryType == FileEntryType.File);
+            FilesDbContext.RemoveRange(await toDeleteLinks.ToListAsync());
 
-        FilesDbContext.Tag.RemoveRange(await tagsToRemove.ToListAsync());
+            var toDeleteFiles = Query(FilesDbContext.Files).Where(r => r.Id == fileId);
+            var toDeleteFile = await toDeleteFiles.FirstOrDefaultAsync(r => r.CurrentVersion).ConfigureAwait(false);
 
-        var securityToDelete = Query(FilesDbContext.Security)
-            .Where(r => r.EntryId == fileId.ToString())
-            .Where(r => r.EntryType == FileEntryType.File);
+            foreach (var d in toDeleteFiles)
+            {
+                await _factoryIndexer.DeleteAsync(d).ConfigureAwait(false);
+            }
 
-        FilesDbContext.Security.RemoveRange(await securityToDelete.ToListAsync());
-        await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+            FilesDbContext.RemoveRange(await toDeleteFiles.ToListAsync());
 
-        await tx.CommitAsync().ConfigureAwait(false);
+            var tagsToRemove = Query(FilesDbContext.Tag)
+                .Where(r => !Query(FilesDbContext.TagLink).Any(a => a.TagId == r.Id));
 
-        var forEachTask = fromFolders.ForEachAwaitAsync(async folderId => await RecalculateFilesCountAsync(folderId).ConfigureAwait(false)).ConfigureAwait(false);
+            FilesDbContext.Tag.RemoveRange(await tagsToRemove.ToListAsync());
 
-        if (deleteFolder)
-        {
-            await DeleteFolderAsync(fileId);
-        }
+            var securityToDelete = Query(FilesDbContext.Security)
+                .Where(r => r.EntryId == fileId.ToString())
+                .Where(r => r.EntryType == FileEntryType.File);
 
-        if (toDeleteFile != null)
-        {
-            await _factoryIndexer.DeleteAsync(toDeleteFile).ConfigureAwait(false);
-        }
+            FilesDbContext.Security.RemoveRange(await securityToDelete.ToListAsync());
+            await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-        await forEachTask;
+            await tx.CommitAsync().ConfigureAwait(false);
+
+            var forEachTask = fromFolders.ForEachAwaitAsync(async folderId => await RecalculateFilesCountAsync(folderId).ConfigureAwait(false)).ConfigureAwait(false);
+
+            if (deleteFolder)
+            {
+                await DeleteFolderAsync(fileId);
+            }
+
+            if (toDeleteFile != null)
+            {
+                await _factoryIndexer.DeleteAsync(toDeleteFile).ConfigureAwait(false);
+            }
+
+            await forEachTask;
+        });
     }
 
     public Task<bool> IsExistAsync(string title, object folderId)
@@ -810,9 +826,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
         var trashIdTask = _globalFolder.GetFolderTrashAsync<int>(_daoFactory);
 
-        using (var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false))
-        {
-            var fromFolders = await Query(FilesDbContext.Files)
+        var fromFolders = await Query(FilesDbContext.Files)
                 .Where(r => r.Id == fileId)
                 .Select(a => a.ParentId)
                 .Distinct()
@@ -820,33 +834,42 @@ internal class FileDao : AbstractDao, IFileDao<int>
                 .ToListAsync()
                 .ConfigureAwait(false);
 
-            toUpdate = await Query(FilesDbContext.Files)
-                .Where(r => r.Id == fileId)
-                .ToListAsync()
-                .ConfigureAwait(false);
+        toUpdate = await Query(FilesDbContext.Files)
+            .Where(r => r.Id == fileId)
+            .ToListAsync()
+            .ConfigureAwait(false);
 
-            foreach (var f in toUpdate)
+
+        var strategy = FilesDbContext.Database.CreateExecutionStrategy();
+
+        await strategy.ExecuteAsync(async () =>
+        {
+            using (var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false))
             {
-                f.ParentId = toFolderId;
 
-                var trashId = await trashIdTask;
-                if (trashId.Equals(toFolderId))
+                foreach (var f in toUpdate)
                 {
-                    f.ModifiedBy = _authContext.CurrentAccount.ID;
-                    f.ModifiedOn = DateTime.UtcNow;
+                    f.ParentId = toFolderId;
+
+                    var trashId = await trashIdTask;
+                    if (trashId.Equals(toFolderId))
+                    {
+                        f.ModifiedBy = _authContext.CurrentAccount.ID;
+                        f.ModifiedOn = DateTime.UtcNow;
+                    }
                 }
+
+                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+                await tx.CommitAsync().ConfigureAwait(false);
+
+                foreach (var f in fromFolders)
+                {
+                    await RecalculateFilesCountAsync(f).ConfigureAwait(false);
+                }
+
+                await RecalculateFilesCountAsync(toFolderId).ConfigureAwait(false);
             }
-
-            await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
-            await tx.CommitAsync().ConfigureAwait(false);
-
-            foreach (var f in fromFolders)
-            {
-                await RecalculateFilesCountAsync(f).ConfigureAwait(false);
-            }
-
-            await RecalculateFilesCountAsync(toFolderId).ConfigureAwait(false);
-        }
+        });
 
         var parentFoldersTask =
             FilesDbContext.Tree
@@ -995,29 +1018,34 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     public async Task ContinueVersionAsync(int fileId, int fileVersion)
     {
-        using var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false);
+        var strategy = FilesDbContext.Database.CreateExecutionStrategy();
 
-        var versionGroup = await Query(FilesDbContext.Files)
-            .AsNoTracking()
-            .Where(r => r.Id == fileId)
-            .Where(r => r.Version == fileVersion)
-            .Select(r => r.VersionGroup)
-            .FirstOrDefaultAsync()
-            .ConfigureAwait(false);
-
-        var toUpdate = Query(FilesDbContext.Files)
-            .Where(r => r.Id == fileId)
-            .Where(r => r.Version > fileVersion)
-            .Where(r => r.VersionGroup > versionGroup);
-
-        foreach (var f in toUpdate)
+        await strategy.ExecuteAsync(async () =>
         {
-            f.VersionGroup -= 1;
-        }
+            using var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false);
 
-        await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+            var versionGroup = await Query(FilesDbContext.Files)
+                .AsNoTracking()
+                .Where(r => r.Id == fileId)
+                .Where(r => r.Version == fileVersion)
+                .Select(r => r.VersionGroup)
+                .FirstOrDefaultAsync()
+                .ConfigureAwait(false);
 
-        await tx.CommitAsync().ConfigureAwait(false);
+            var toUpdate = Query(FilesDbContext.Files)
+                .Where(r => r.Id == fileId)
+                .Where(r => r.Version > fileVersion)
+                .Where(r => r.VersionGroup > versionGroup);
+
+            foreach (var f in toUpdate)
+            {
+                f.VersionGroup -= 1;
+            }
+
+            await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+
+            await tx.CommitAsync().ConfigureAwait(false);
+        });
     }
 
     public bool UseTrashForRemove(File<int> file)

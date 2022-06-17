@@ -17,7 +17,7 @@ winston.stream = {
   write: (message) => winston.info(message),
 };
 
-const port = config.get("port") || 9899;
+const port = config.get("app").port || 9899;
 const app = express();
 
 const secret = config.get("core").machinekey + new Date().getTime();

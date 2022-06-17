@@ -233,15 +233,20 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
         lock (_syncRoot)
         {
-            using var tx = FilesDbContext.Database.BeginTransaction();
-            DeleteTagsBeforeSave();
+            var strategy = FilesDbContext.Database.CreateExecutionStrategy();
 
-            var createOn = _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow());
-            var cacheTagId = new Dictionary<string, int>();
+            strategy.Execute(() =>
+            {
+                using var tx = FilesDbContext.Database.BeginTransaction();
+                DeleteTagsBeforeSave();
 
-            result.AddRange(tags.Select(t => SaveTagAsync(t, cacheTagId, createOn).Result));
+                var createOn = _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow());
+                var cacheTagId = new Dictionary<string, int>();
 
-            tx.Commit();
+                result.AddRange(tags.Select(t => SaveTagAsync(t, cacheTagId, createOn).Result));
+
+                tx.Commit();
+            });
         }
 
         return result;
@@ -263,15 +268,20 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
         lock (_syncRoot)
         {
-            using var tx = FilesDbContext.Database.BeginTransaction();
-            DeleteTagsBeforeSave();
+            var strategy = FilesDbContext.Database.CreateExecutionStrategy();
 
-            var createOn = _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow());
-            var cacheTagId = new Dictionary<string, int>();
+            strategy.Execute(() =>
+            {
+                using var tx = FilesDbContext.Database.BeginTransaction();
+                DeleteTagsBeforeSave();
 
-            result.Add(SaveTagAsync(tag, cacheTagId, createOn).Result);
+                var createOn = _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow());
+                var cacheTagId = new Dictionary<string, int>();
 
-            tx.Commit();
+                result.Add(SaveTagAsync(tag, cacheTagId, createOn).Result);
+
+                tx.Commit();
+            });
         }
 
         return result;
@@ -368,15 +378,20 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
         lock (_syncRoot)
         {
-            using var tx = FilesDbContext.Database.BeginTransaction();
-            var createOn = _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow());
+            var strategy = FilesDbContext.Database.CreateExecutionStrategy();
 
-            foreach (var tag in tags)
+            strategy.Execute(() =>
             {
-                UpdateNewTagsInDbAsync(tag, createOn).Wait();
-            }
+                using var tx = FilesDbContext.Database.BeginTransaction();
+                var createOn = _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow());
 
-            tx.Commit();
+                foreach (var tag in tags)
+                {
+                    UpdateNewTagsInDbAsync(tag, createOn).Wait();
+                }
+
+                tx.Commit();
+            });
         }
     }
 
@@ -432,13 +447,19 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
         lock (_syncRoot)
         {
-            using var tx = FilesDbContext.Database.BeginTransaction();
-            foreach (var t in tags)
-            {
-                RemoveTagInDbAsync(t).Wait();
-            }
+            var strategy = FilesDbContext.Database.CreateExecutionStrategy();
 
-            tx.Commit();
+            strategy.Execute(() =>
+            {
+                using var tx = FilesDbContext.Database.BeginTransaction();
+
+                foreach (var t in tags)
+                {
+                    RemoveTagInDbAsync(t).Wait();
+                }
+
+                tx.Commit();
+            });
         }
     }
 
@@ -451,10 +472,16 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
         lock (_syncRoot)
         {
-            using var tx = FilesDbContext.Database.BeginTransaction();
-            RemoveTagInDbAsync(tag).Wait();
+            var strategy = FilesDbContext.Database.CreateExecutionStrategy();
 
-            tx.Commit();
+            strategy.Execute(() =>
+            {
+                using var tx = FilesDbContext.Database.BeginTransaction();
+                RemoveTagInDbAsync(tag).Wait();
+
+                tx.Commit();
+
+            });
         }
     }
 

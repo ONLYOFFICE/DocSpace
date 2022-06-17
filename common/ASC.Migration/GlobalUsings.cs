@@ -51,6 +51,7 @@ global using ASC.Migration.GoogleWorkspace.Models;
 global using ASC.Migration.GoogleWorkspace.Models.Parse;
 global using ASC.Migration.Resources;
 global using ASC.Web.Api.Routing;
+global using ASC.Web.Core.Files;
 global using ASC.Web.Files.Classes;
 global using ASC.Web.Files.Services.WCFService;
 global using ASC.Web.Studio.Core.Notify;

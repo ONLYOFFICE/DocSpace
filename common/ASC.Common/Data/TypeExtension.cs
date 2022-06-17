@@ -24,12 +24,19 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Common.Log;
-internal static partial class DistributedTaskQueueLogger
+namespace ASC.Common.Data;
+public static class TypeExtension
 {
-    [LoggerMessage(Level = LogLevel.Trace, Message = "EnqueueTask '{DistributedTaskId}' by instanse id '{instanceId}'")]
-    public static partial void TraceEnqueueTask(this ILogger<DistributedTaskQueue> logger, string DistributedTaskId, int instanceId);
-
-    [LoggerMessage(Level = LogLevel.Trace, Message = "Publication DistributedTask '{DistributedTaskId}' by instanse id '{instanceId}' ")]
-    public static partial void TracePublicationDistributedTask(this ILogger<DistributedTaskQueue> logger, string DistributedTaskId, int instanceId);
+    public static string GetFormattedName(this Type type)
+    {
+        if (type.IsGenericType)
+        {
+            var genericArguments = type.GetGenericArguments()
+                                .Select(x => x.Name)
+                                .Aggregate((x1, x2) => $"{x1}, {x2}");
+            return $"{type.Name.Substring(0, type.Name.IndexOf("`"))}"
+                 + $"<{genericArguments}>";
+        }
+        return type.Name;
+    }
 }
