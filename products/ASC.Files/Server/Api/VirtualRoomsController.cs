@@ -171,7 +171,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     {
         ErrorIfNotDocSpace();
 
-        return _roomLinksService.GenerateLink(id, (int)inDto.Access, inDto.EmployeeType, _authContext.CurrentAccount.ID);
+        return _roomLinksService.GenerateLink(id, (int)inDto.Access, EmployeeType.User, _authContext.CurrentAccount.ID);
     }
 
     [HttpPut("rooms/{id}/links/send")]

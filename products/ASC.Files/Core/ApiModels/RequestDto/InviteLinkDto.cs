@@ -29,5 +29,4 @@ namespace ASC.Files.Core.ApiModels.RequestDto;
 public class InviteLinkDto
 {
     public FileShare Access { get; set; }
-    public EmployeeType EmployeeType { get; set; }
 }
