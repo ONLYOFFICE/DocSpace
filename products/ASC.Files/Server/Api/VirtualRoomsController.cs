@@ -167,9 +167,11 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     }
 
     [HttpGet("rooms/{id}/links")]
-    public object GetInvitationLink(T id, InviteLinkDto inDto)
+    public async Task<object> GetInvitationLinkAsync(T id, InviteLinkDto inDto)
     {
         ErrorIfNotDocSpace();
+
+        await ErrorIfNotEditable(id);
 
         return _roomLinksService.GenerateLink(id, (int)inDto.Access, EmployeeType.User, _authContext.CurrentAccount.ID);
     }
@@ -179,12 +181,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     {
         ErrorIfNotDocSpace();
 
-        var room = await _fileStorageService.GetFolderAsync(id);
-
-        if (!await _fileSecurity.CanEditRoomAsync(room))
-        {
-            throw new InvalidOperationException("You don't have the rights to invite users to the room");
-        }
+        await ErrorIfNotEditable(id);
 
         var results = new List<InviteResultDto>();
 
@@ -299,6 +296,16 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         };
 
         return await _securityControllerHelper.SetFolderSecurityInfoAsync(id, new[] { share }, false, null, true);
+    }
+
+    private async Task ErrorIfNotEditable(T id)
+    {
+        var room = await _fileStorageService.GetFolderAsync(id);
+
+        if (!await _fileSecurity.CanEditRoomAsync(room))
+        {
+            throw new InvalidOperationException("You don't have the rights to invite users to the room");
+        }
     }
 }
 
