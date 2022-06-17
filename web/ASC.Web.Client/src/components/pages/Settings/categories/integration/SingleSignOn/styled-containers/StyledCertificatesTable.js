@@ -25,29 +25,24 @@ const StyledCertificatesTable = styled.div`
   }
 
   .row {
-    display: grid;
+    width: 350px;
+    display: flex;
+    gap: 16px;
     align-items: center;
-    grid-template-columns: repeat(3, 1fr);
-    grid-auto-rows: 50px;
-
+    padding: 12px 0;
     border-bottom: 1px solid #eceef1;
 
-    .column:nth-of-type(n + 2) {
-      margin-left: 8px;
-    }
-
-    .name {
+    .column {
       display: flex;
-      align-items: center;
+      flex-direction: column;
 
-      p {
-        margin-left: 12px;
+      .column-row {
+        display: flex;
       }
     }
 
-    .status {
-      display: flex;
-      justify-content: space-between;
+    .context-btn {
+      justify-self: flex-end;
     }
   }
 `;

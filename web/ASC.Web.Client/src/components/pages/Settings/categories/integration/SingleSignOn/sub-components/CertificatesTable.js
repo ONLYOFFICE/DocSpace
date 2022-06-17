@@ -48,41 +48,30 @@ const CertificatesTable = ({ prefix }) => {
 
     return (
       <div key={`certificate-${index}`} className="row">
-        {/*TODO*/}
-        {/*what name?*/}
-        <div className="column name">
-          <IconButton iconName="static/images/icons/24/file.svg" />
-          <Text fontWeight={600}>Self-Signed</Text>
+        <IconButton iconName="/static/images/icons/24/file.svg" />
+        <div className="column">
+          <div className="column-row">
+            <Text fontWeight={600} fontSize="14px">
+              Self-Signed,{" "}
+            </Text>
+            <Text color="#a3a9ae">
+              {getFullDate(certificate.startDate)} -{" "}
+              {getFullDate(certificate.expiredDate)}
+            </Text>
+          </div>
+          <div className="column-row">
+            <Text color="#a3a9ae" fontSize="12px" fontWeight={600}>
+              {certificate.action}
+            </Text>
+          </div>
         </div>
-        <div className="column validity">
-          <Text color="#a3a9ae">
-            {getFullDate(certificate.startDate)} -{" "}
-            {getFullDate(certificate.expiredDate)}
-          </Text>
-        </div>
-        {/*action maybe?*/}
-        <div className="column status">
-          <Text color="#a3a9ae">{certificate.action}</Text>
-          <ContextMenuButton getData={getOptions} />
-        </div>
+        <ContextMenuButton className="context-btn" getData={getOptions} />
       </div>
     );
   };
 
   return (
     <StyledCertificatesTable>
-      <div className="header">
-        <div className="header-cell">
-          <Text color="#a3a9ae">{t("CertificateName")}</Text>
-        </div>
-        <div className="header-cell">
-          <Text color="#a3a9ae">{t("Validity")}</Text>
-        </div>
-        <div className="header-cell">
-          <Text color="#a3a9ae">{t("CertificateStatus")}</Text>
-        </div>
-      </div>
-
       <div className="body">
         {FormStore[`${prefix}_certificates`].map(renderRow)}
       </div>
