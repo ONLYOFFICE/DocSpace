@@ -328,11 +328,24 @@ class AuthStore {
   };
 
   getOforms = () => {
-    const culture = "en-US"
-      ? "en"
-      : this.userStore.user.cultureName || this.settingsStore.culture;
+    const culture =
+      this.userStore.user.cultureName || this.settingsStore.culture;
 
-    return api.settings.getOforms(`${this.settingsStore.urlOforms}${culture}`);
+    const promise = new Promise(async (resolve, reject) => {
+      let oforms = await api.settings.getOforms(
+        `${this.settingsStore.urlOforms}${culture}`
+      );
+
+      if (!oforms?.data?.data.length) {
+        oforms = await api.settings.getOforms(
+          `${this.settingsStore.urlOforms}en`
+        );
+      }
+
+      resolve(oforms);
+    });
+
+    return promise;
   };
 }
 

@@ -5,8 +5,18 @@ import RowContent from "@appserver/components/row-content";
 import RowContainer from "@appserver/components/row-container";
 import Text from "@appserver/components/text";
 import LinkWithDropdown from "@appserver/components/link-with-dropdown";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { tablet } from "@appserver/components/utils/device";
+
+const MobileStyles = css`
+  .row-content_tablet-side-info {
+    display: flex;
+    gap: 5px;
+  }
+  .download-dialog-link {
+    text-decoration: underline dashed;
+  }
+`;
 
 const StyledDownloadContent = styled.div`
   .row_content,
@@ -14,11 +24,14 @@ const StyledDownloadContent = styled.div`
     overflow: unset;
   }
 
-  @media (${tablet}) {
-    .row-content_tablet-side-info {
-      display: flex;
-      gap: 5px;
-    }
+  .download-dialog_row-container {
+    display: flex;
+  }
+
+  ${isMobile && MobileStyles}
+
+  @media ${tablet} {
+    ${MobileStyles}
   }
 `;
 
@@ -157,6 +170,7 @@ const DownloadContent = (props) => {
             </Text>
             {checkedTitle || indeterminateTitle ? (
               <LinkWithDropdown
+                className="download-dialog-link"
                 containerMinWidth="fit-content"
                 data={titleData}
                 directionX="left"
@@ -215,6 +229,7 @@ const DownloadContent = (props) => {
 
                 {file.checked ? (
                   <LinkWithDropdown
+                    className="download-dialog-link"
                     isOpen={isOpen}
                     dropdownType={
                       isMobile ? "alwaysDashed" : "appearDashedAfterHover"
