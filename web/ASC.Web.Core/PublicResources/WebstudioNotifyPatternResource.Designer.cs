@@ -515,38 +515,26 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to h1.Password change request for the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal
-        ///
-        ///There has been a request to change your password used to enter the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal.
-        ///
-        ///Please follow the link below to change your password:
+        ///   Looks up a localized string similar to Want to change the password on your ONLYOFFICE account? Click the button below to confirm.
         ///
         ///$GreenButton
         ///
-        ///*Note*: this link is valid for 7 days only. Please complete the password change process within that period.
+        ///The link is valid for 7 days.
         ///
-        ///If you do not want to change your password or received this email by mistake, please ignore it or contact your &quot;${__Virtual [rest of string was truncated]&quot;;.
+        ///Don’t want to change your password? Just ignore this message&lt;/value&gt;
+        ///  &lt;/data&gt;
+        ///  &lt;data name=&quot;pattern_personal_change_password_v115&quot; xml:space=&quot;preserve&quot;&gt;
+        ///    &lt;value&gt;Want to change the password on your ONLYOFFICE Personal account? Click the button below to confirm.
+        ///
+        ///$GreenButton 
+        ///
+        ///The link is valid for 7 days.
+        ///
+        ///Don’t want to change your password? Just ignore  [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_change_password {
+        public static string pattern_change_password_v115 {
             get {
-                return ResourceManager.GetString("pattern_change_password", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to h1.Mobile phone change request
-        ///
-        ///You have requested to change your mobile phone used to enter the ${LetterLogoText} portal.
-        ///
-        ///Please follow the link below to change your mobile phone:
-        ///
-        ///$GreenButton
-        ///
-        ///If you do not want to change your mobile phone or received this email by mistake, please ignore it or contact your portal administrator to find out the details..
-        /// </summary>
-        public static string pattern_change_phone {
-            get {
-                return ResourceManager.GetString("pattern_change_phone", resourceCulture);
+                return ResourceManager.GetString("pattern_change_password_v115", resourceCulture);
             }
         }
         
@@ -606,7 +594,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///You have just created the ONLYOFFICE portal, your team&apos;s cloud office that would enhance public cooperation. Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
+        ///You have just created the ONLYOFFICE portal, your team&apos;s cloud office that would enhance internal cooperation. Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
         ///
         ///Please, confirm your email:
         ///
@@ -938,7 +926,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///You have just created your corporate web-office, your team&apos;s cloud office that would enhance public cooperation.  Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
+        ///You have just created your corporate web-office, your team&apos;s cloud office that would enhance internal cooperation.  Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
         ///
         ///Please, confirm your email:
         ///
@@ -1262,7 +1250,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///You have just created the ONLYOFFICE portal, your team&apos;s cloud office that would enhance public cooperation.  Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
+        ///You have just created the ONLYOFFICE portal, your team&apos;s cloud office that would enhance internal cooperation.  Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
         ///
         ///Please, confirm your email following the &quot;link&quot;:&quot;$ActivateUrl&quot;.
         ///
@@ -1540,26 +1528,6 @@ namespace ASC.Web.Core.PublicResources {
         public static string pattern_personal_change_email_v115 {
             get {
                 return ResourceManager.GetString("pattern_personal_change_email_v115", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to There has been a request to change your password used to enter the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal.
-        ///
-        ///Please follow the link below to change your password:
-        ///
-        ///$GreenButton
-        ///
-        ///*Note*: this link is valid for 7 days only. Please complete the password change process within that period.
-        ///
-        ///If you do not want to change your password or received this email by mistake, please ignore it.
-        ///
-        ///Sincerely,
-        ///ONLYOFFICE team.
-        /// </summary>
-        public static string pattern_personal_change_password {
-            get {
-                return ResourceManager.GetString("pattern_personal_change_password", resourceCulture);
             }
         }
         
@@ -1951,7 +1919,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///You have just created the ONLYOFFICE portal, your team&apos;s cloud office that would enhance public cooperation. Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. 
+        ///You have just created the ONLYOFFICE portal, your team&apos;s cloud office that would enhance internal cooperation. Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. 
         ///
         ///Please, confirm your email: 
         ///
@@ -2603,11 +2571,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ${LetterLogoText} password assistance.
+        ///   Looks up a localized string similar to Confirm changing your password.
         /// </summary>
-        public static string subject_change_password {
+        public static string subject_change_password_v115 {
             get {
-                return ResourceManager.GetString("subject_change_password", resourceCulture);
+                return ResourceManager.GetString("subject_change_password_v115", resourceCulture);
             }
         }
         
@@ -3058,15 +3026,6 @@ namespace ASC.Web.Core.PublicResources {
         public static string subject_personal_already_exist {
             get {
                 return ResourceManager.GetString("subject_personal_already_exist", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to ONLYOFFICE Personal password assistance.
-        /// </summary>
-        public static string subject_personal_change_password {
-            get {
-                return ResourceManager.GetString("subject_personal_change_password", resourceCulture);
             }
         }
         

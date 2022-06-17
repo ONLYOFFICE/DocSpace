@@ -76,6 +76,7 @@ global using ASC.Data.Storage;
 global using ASC.ElasticSearch;
 global using ASC.ElasticSearch.Core;
 global using ASC.ElasticSearch.Service;
+global using ASC.EventBus.Abstractions;
 global using ASC.EventBus.Events;
 global using ASC.FederatedLogin;
 global using ASC.FederatedLogin.Helpers;
@@ -164,6 +165,8 @@ global using ICSharpCode.SharpZipLib.GZip;
 global using ICSharpCode.SharpZipLib.Tar;
 global using ICSharpCode.SharpZipLib.Zip;
 
+global using JWT.Algorithms;
+global using JWT.Builder;
 global using JWT.Exceptions;
 
 global using Microsoft.AspNetCore.Builder;

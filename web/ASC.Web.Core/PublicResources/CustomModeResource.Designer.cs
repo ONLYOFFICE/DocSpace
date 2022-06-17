@@ -145,26 +145,6 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There has been a request to change your password used to enter the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal.
-        ///
-        ///Please follow the link below to change your password:
-        ///
-        ///$GreenButton
-        ///
-        ///*Note*: this link is valid for 7 days only. Please complete the password change process within that period.
-        ///
-        ///If you do not want to change your password or received this email by mistake, please ignore it.
-        ///
-        ///Sincerely,
-        ///ONLYOFFICE team.
-        /// </summary>
-        public static string pattern_personal_custom_mode_change_password {
-            get {
-                return ResourceManager.GetString("pattern_personal_custom_mode_change_password", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Hello,
         ///
         ///you&apos;ve just registered an account at the ONLYOFFICE solution for personal use. Click &quot;here&quot;:&quot;$InviteLink&quot; to confirm the registration and create a password.
@@ -258,29 +238,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connect your favorite cloud storage to ONLYOFFICE.
-        /// </summary>
-        public static string subject_personal_custom_mode_after_registration7 {
-            get {
-                return ResourceManager.GetString("subject_personal_custom_mode_after_registration7", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Log in to your ONLYOFFICE Personal account.
         /// </summary>
         public static string subject_personal_custom_mode_already_exist {
             get {
                 return ResourceManager.GetString("subject_personal_custom_mode_already_exist", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to ONLYOFFICE Personal password assistance.
-        /// </summary>
-        public static string subject_personal_custom_mode_change_password {
-            get {
-                return ResourceManager.GetString("subject_personal_custom_mode_change_password", resourceCulture);
             }
         }
         

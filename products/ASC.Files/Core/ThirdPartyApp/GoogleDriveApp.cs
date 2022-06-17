@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+
+
 using MimeMapping = ASC.Common.Web.MimeMapping;
 
 namespace ASC.Web.Files.ThirdPartyApp;
@@ -268,7 +270,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
 
                 var key = DocumentServiceConnector.GenerateRevisionId(downloadUrl);
 
-                var resultTuple = await _documentServiceConnector.GetConvertedUriAsync(downloadUrl, fileType, currentType, key, null, null, null, false);
+                var resultTuple = await _documentServiceConnector.GetConvertedUriAsync(downloadUrl, fileType, currentType, key, null, CultureInfo.CurrentUICulture.Name, null, null, false);
                 downloadUrl = resultTuple.ConvertedDocumentUri;
 
                 stream = null;
@@ -370,9 +372,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
                 throw new Exception("Profile is null");
             }
 
-            var cookiesKey = _securityContext.AuthenticateMe(userInfo.Id);
-            _cookiesManager.SetCookies(CookiesType.AuthKey, cookiesKey);
-            _messageService.Send(MessageAction.LoginSuccessViaSocialApp);
+            _cookiesManager.AuthenticateMeAndSetCookies(userInfo.Tenant, userInfo.Id, MessageAction.LoginSuccessViaSocialApp);
 
             if (isNew)
             {
@@ -607,7 +607,6 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
     {
         var linker = _snapshot.Get("webstudio");
         var linkedProfiles = linker.GetLinkedObjectsByHashId(HashHelper.MD5($"{ProviderConstants.Google}/{googleId}"));
-        linkedProfiles = linkedProfiles.Concat(linker.GetLinkedObjectsByHashId(HashHelper.MD5($"{ProviderConstants.OpenId}/{googleId}")));
 
         return linkedProfiles.Any(profileId => Guid.TryParse(profileId, out var tmp) && tmp == _authContext.CurrentAccount.ID);
     }
@@ -813,7 +812,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
 
             var key = DocumentServiceConnector.GenerateRevisionId(downloadUrl);
 
-            var resultTuple = await _documentServiceConnector.GetConvertedUriAsync(downloadUrl, fromExt, toExt, key, null, null, null, false);
+            var resultTuple = await _documentServiceConnector.GetConvertedUriAsync(downloadUrl, fromExt, toExt, key, null, CultureInfo.CurrentUICulture.Name, null, null, false);
             downloadUrl = resultTuple.ConvertedDocumentUri;
 
         }

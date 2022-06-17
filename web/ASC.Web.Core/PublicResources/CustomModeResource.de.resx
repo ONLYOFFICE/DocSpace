@@ -149,20 +149,6 @@ Der Link ist 7 Tage gültig.
 
 Möchten Sie Ihre E-Mail-Adresse nicht ändern? Ignorieren Sie einfach diese Nachricht.</value>
   </data>
-  <data name="pattern_personal_custom_mode_change_password" xml:space="preserve">
-    <value>Sie haben Änderung Ihres Kennworts angefordert, das zum Einloggen auf das Portal "${__VirtualRootPath}":"${__VirtualRootPath}" verwendet wird.
-
-Bitte folgen Sie dem Link unten, um Ihr Kennwort zu ändern:
-
-$GreenButton
-
-*Bitte beachten*: Dieser Link ist nur 7 Tage gültig. Bitte schließen Sie den Prozess der Passwortänderung innerhalb dieses Zeitraums ab.
-
-Ignorieren Sie diese Nachricht, falls Sie Ihr Kennwort nicht ändern möchten oder diese E-Mail versehentlich erhalten haben.
-
-Mit freundlichen Grüßen,
-ONLYOFFICE Team</value>
-  </data>
   <data name="pattern_personal_custom_mode_confirmation" xml:space="preserve">
     <value>Hallo,
 
@@ -218,12 +204,6 @@ Beim Entfernen persönlicher Daten es wurde freigegeben:
   </data>
   <data name="subject_personal_custom_mode_after_registration1" xml:space="preserve">
     <value>Willkommen bei ONLYOFFICE Personal</value>
-  </data>
-  <data name="subject_personal_custom_mode_after_registration7" xml:space="preserve">
-    <value>Verbinden Sie Ihren bevorzugten Cloud-Speicher mit ONLYOFFICE</value>
-  </data>
-  <data name="subject_personal_custom_mode_change_password" xml:space="preserve">
-    <value>ONLYOFFICE Personal-Passworthilfe</value>
   </data>
   <data name="subject_personal_custom_mode_confirmation" xml:space="preserve">
     <value>ONLYOFFICE Personal. Bitte aktivieren Sie Ihre E-Mail-Adresse</value>

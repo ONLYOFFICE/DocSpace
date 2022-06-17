@@ -61,6 +61,7 @@ public class FileSecurity : IFileSecurity
     private readonly AuthManager _authManager;
     private readonly GlobalFolder _globalFolder;
     private readonly FileSecurityCommon _fileSecurityCommon;
+    private readonly FilesSettingsHelper _filesSettingsHelper;
 
     public FileSecurity(
         IDaoFactory daoFactory,
@@ -69,7 +70,8 @@ public class FileSecurity : IFileSecurity
         AuthContext authContext,
         AuthManager authManager,
         GlobalFolder globalFolder,
-        FileSecurityCommon fileSecurityCommon)
+        FileSecurityCommon fileSecurityCommon,
+        FilesSettingsHelper filesSettingsHelper)
     {
         _daoFactory = daoFactory;
         _userManager = userManager;
@@ -78,6 +80,7 @@ public class FileSecurity : IFileSecurity
         _authManager = authManager;
         _globalFolder = globalFolder;
         _fileSecurityCommon = fileSecurityCommon;
+        _filesSettingsHelper = filesSettingsHelper;
     }
 
     public Task<List<Tuple<FileEntry<T>, bool>>> CanReadAsync<T>(IEnumerable<FileEntry<T>> entry, Guid userId)
@@ -130,6 +133,31 @@ public class FileSecurity : IFileSecurity
         return CanAsync(entry, userId, FilesSecurityActions.Delete);
     }
 
+    public Task<bool> CanDownloadAsync<T>(FileEntry<T> entry)
+    {
+        return CanDownloadAsync(entry, _authContext.CurrentAccount.ID);
+    }
+
+    public async Task<bool> CanDownloadAsync<T>(FileEntry<T> entry, Guid userId)
+    {
+        if (!await CanReadAsync(entry, userId))
+        {
+            return false;
+        }
+
+        return CheckDenyDownload(entry);
+    }
+
+    public async Task<bool> CanShareAsync<T>(FileEntry<T> entry, Guid userId)
+    {
+        if (!await CanEditAsync(entry, userId))
+        {
+            return false;
+        }
+
+        return CheckDenySharing(entry);
+    }
+
     public Task<bool> CanReadAsync<T>(FileEntry<T> entry)
     {
         return CanReadAsync(entry, _authContext.CurrentAccount.ID);
@@ -168,6 +196,15 @@ public class FileSecurity : IFileSecurity
     public Task<bool> CanDeleteAsync<T>(FileEntry<T> entry)
     {
         return CanDeleteAsync(entry, _authContext.CurrentAccount.ID);
+    }
+    public Task<bool> CanDownload<T>(FileEntry<T> entry)
+    {
+        return CanDownloadAsync(entry, _authContext.CurrentAccount.ID);
+    }
+
+    public Task<bool> CanShare<T>(FileEntry<T> entry)
+    {
+        return CanShareAsync(entry, _authContext.CurrentAccount.ID);
     }
 
     public Task<IEnumerable<Guid>> WhoCanReadAsync<T>(FileEntry<T> entry)
@@ -336,6 +373,35 @@ public class FileSecurity : IFileSecurity
     private async Task<bool> CanAsync<T>(FileEntry<T> entry, Guid userId, FilesSecurityActions action, IEnumerable<FileShareRecord> shares = null)
     {
         return (await FilterAsync(new[] { entry }, action, userId, shares)).Any();
+    }
+
+    public async Task<IEnumerable<File<T>>> FilterDownloadAsync<T>(IEnumerable<File<T>> entries)
+    {
+        return (await FilterReadAsync(entries)).Where(CheckDenyDownload).ToList();
+    }
+
+    public async Task<IEnumerable<Folder<T>>> FilterDownloadAsync<T>(IEnumerable<Folder<T>> entries)
+    {
+        return (await FilterReadAsync(entries)).Where(CheckDenyDownload).ToList();
+    }
+
+    private bool CheckDenyDownload<T>(FileEntry<T> entry)
+    {
+        return entry.DenyDownload
+            ? entry.Access != FileShare.Read && entry.Access != FileShare.Comment
+            : true;
+    }
+
+    public async Task<IEnumerable<File<T>>> FilterSharingAsync<T>(IEnumerable<File<T>> entries)
+    {
+        return (await FilterEditAsync(entries)).Where(CheckDenySharing).ToList();
+    }
+
+    private bool CheckDenySharing<T>(FileEntry<T> entry)
+    {
+        return entry.DenySharing
+            ? entry.Access != FileShare.ReadWrite
+            : true;
     }
 
     private async Task<List<Tuple<FileEntry<T>, bool>>> CanAsync<T>(IEnumerable<FileEntry<T>> entry, Guid userId, FilesSecurityActions action)
@@ -869,6 +935,7 @@ public class FileSecurity : IFileSecurity
         entries = entries.Where(f =>
                                 f.RootFolderType == FolderType.USER // show users files
                                 && f.RootCreateBy != _authContext.CurrentAccount.ID // don't show my files
+                                && (!f.ProviderEntry || _filesSettingsHelper.EnableThirdParty) // show thirdparty provider only if enabled
             ).ToList();
 
         if (_userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager))

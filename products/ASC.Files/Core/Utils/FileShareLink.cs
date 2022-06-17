@@ -34,19 +34,22 @@ public class FileShareLink
     private readonly BaseCommonLinkUtility _baseCommonLinkUtility;
     private readonly Global _global;
     private readonly FileSecurity _fileSecurity;
+    private readonly FilesSettingsHelper _filesSettingsHelper;
 
     public FileShareLink(
         FileUtility fileUtility,
         FilesLinkUtility filesLinkUtility,
         BaseCommonLinkUtility baseCommonLinkUtility,
         Global global,
-        FileSecurity fileSecurity)
+        FileSecurity fileSecurity,
+        FilesSettingsHelper filesSettingsHelper)
     {
         _fileUtility = fileUtility;
         _filesLinkUtility = filesLinkUtility;
         _baseCommonLinkUtility = baseCommonLinkUtility;
         _global = global;
         _fileSecurity = fileSecurity;
+        _filesSettingsHelper = filesSettingsHelper;
     }
 
     public string GetLink<T>(File<T> file, bool withHash = true)
@@ -81,7 +84,7 @@ public class FileShareLink
         return Signature.Read<T>(doc ?? string.Empty, _global.GetDocDbKey());
     }
 
-    public async Task<(bool EditLink, File<T> File)> CheckAsync<T>(string doc, bool checkRead, IFileDao<T> fileDao)
+    public async Task<(bool EditLink, File<T> File, FileShare fileShare)> CheckAsync<T>(string doc, bool checkRead, IFileDao<T> fileDao)
     {
         var check = await CheckAsync(doc, fileDao);
         var fileShare = check.FileShare;
@@ -92,11 +95,16 @@ public class FileShareLink
                     || fileShare == FileShare.Review
                     || fileShare == FileShare.FillForms
                     || fileShare == FileShare.Comment))
-            || (checkRead && fileShare != FileShare.Restrict), check.File);
+            || (checkRead && fileShare != FileShare.Restrict), check.File, fileShare);
     }
 
     public async Task<(FileShare FileShare, File<T> File)> CheckAsync<T>(string doc, IFileDao<T> fileDao)
     {
+        if (!_filesSettingsHelper.ExternalShare)
+        {
+            return (FileShare.Restrict, null);
+        }
+
         if (string.IsNullOrEmpty(doc))
         {
             return (FileShare.Restrict, null);
@@ -109,33 +117,32 @@ public class FileShareLink
             return (FileShare.Restrict, file);
         }
 
-        var filesSecurity = _fileSecurity;
-        if (await filesSecurity.CanEditAsync(file, FileConstant.ShareLinkId))
+        if (await _fileSecurity.CanEditAsync(file, FileConstant.ShareLinkId))
         {
             return (FileShare.ReadWrite, file);
         }
 
-        if (await filesSecurity.CanCustomFilterEditAsync(file, FileConstant.ShareLinkId))
+        if (await _fileSecurity.CanCustomFilterEditAsync(file, FileConstant.ShareLinkId))
         {
             return (FileShare.CustomFilter, file);
         }
 
-        if (await filesSecurity.CanReviewAsync(file, FileConstant.ShareLinkId))
+        if (await _fileSecurity.CanReviewAsync(file, FileConstant.ShareLinkId))
         {
             return (FileShare.Review, file);
         }
 
-        if (await filesSecurity.CanFillFormsAsync(file, FileConstant.ShareLinkId))
+        if (await _fileSecurity.CanFillFormsAsync(file, FileConstant.ShareLinkId))
         {
             return (FileShare.FillForms, file);
         }
 
-        if (await filesSecurity.CanCommentAsync(file, FileConstant.ShareLinkId))
+        if (await _fileSecurity.CanCommentAsync(file, FileConstant.ShareLinkId))
         {
             return (FileShare.Comment, file);
         }
 
-        if (await filesSecurity.CanReadAsync(file, FileConstant.ShareLinkId))
+        if (await _fileSecurity.CanReadAsync(file, FileConstant.ShareLinkId))
         {
             return (FileShare.Read, file);
         }

@@ -209,6 +209,7 @@ public class OneDriveProviderInfoHelper
         _cacheNotify = cacheNotify;
         _cacheNotify.Subscribe((i) =>
         {
+            ResetMemoryCache(i);
             if (i.ResetAll)
             {
                 _cacheChildItems.Remove(new Regex("^onedrivei-" + i.Key + ".*"));
@@ -253,15 +254,32 @@ public class OneDriveProviderInfoHelper
     internal async Task CacheResetAsync(int id, string onedriveId = null)
     {
         var key = id + "-";
+        var item = new OneDriveCacheItem { Key = key };
+
         if (string.IsNullOrEmpty(onedriveId))
         {
-            await _cacheNotify.PublishAsync(new OneDriveCacheItem { ResetAll = true, Key = key }, CacheNotifyAction.Remove).ConfigureAwait(false);
+            item.ResetAll = true;
         }
         else
         {
-            key += onedriveId;
+            item.Key += onedriveId;
+        }
 
-            await _cacheNotify.PublishAsync(new OneDriveCacheItem { Key = key }, CacheNotifyAction.Remove).ConfigureAwait(false);
+        ResetMemoryCache(item);
+        await _cacheNotify.PublishAsync(item, CacheNotifyAction.Remove);
+    }
+
+    private void ResetMemoryCache(OneDriveCacheItem i)
+    {
+        if (i.ResetAll)
+        {
+            _cacheChildItems.Remove(new Regex("^onedrivei-" + i.Key + ".*"));
+            _cacheItem.Remove(new Regex("^onedrive-" + i.Key + ".*"));
+        }
+        else
+        {
+            _cacheChildItems.Remove(new Regex("onedrivei-" + i.Key));
+            _cacheItem.Remove("onedrive-" + i.Key);
         }
     }
 }

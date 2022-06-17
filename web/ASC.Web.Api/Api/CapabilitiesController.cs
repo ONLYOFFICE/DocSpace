@@ -69,16 +69,17 @@ public class CapabilitiesController : ControllerBase
         var result = new CapabilitiesDto
         {
             LdapEnabled = false,
-            Providers = null,
+            OauthEnabled = _coreBaseSettings.Standalone || _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Oauth,
+            Providers = new List<string>(0),
             SsoLabel = string.Empty,
             SsoUrl = string.Empty
         };
 
         try
         {
-            if (SetupInfo.IsVisibleSettings(nameof(ManagementType.LdapSettings))
-                && (!_coreBaseSettings.Standalone
-                    || _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Ldap))
+            if (_coreBaseSettings.Standalone
+                    || SetupInfo.IsVisibleSettings(ManagementType.LdapSettings.ToString())
+                        && _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Ldap)
             {
                 //var settings = SettingsManager.Load<LdapSettings>();
 
@@ -93,12 +94,20 @@ public class CapabilitiesController : ControllerBase
 
         try
         {
-            result.Providers = ProviderManager.AuthProviders.Where(loginProvider =>
+            if (result.OauthEnabled)
             {
-                var provider = _providerManager.GetLoginProvider(loginProvider);
-                return provider != null && provider.IsEnabled;
-            })
-            .ToList();
+                result.Providers = ProviderManager.AuthProviders.Where(loginProvider =>
+                {
+                    if ((loginProvider == ProviderConstants.Facebook || loginProvider == ProviderConstants.AppleId)
+                                                                    && _coreBaseSettings.Standalone && HttpContext.Request.MobileApp())
+                    {
+                        return false;
+                    }
+                    var provider = _providerManager.GetLoginProvider(loginProvider);
+                    return provider != null && provider.IsEnabled;
+                })
+                .ToList();
+            }
         }
         catch (Exception ex)
         {
@@ -107,8 +116,9 @@ public class CapabilitiesController : ControllerBase
 
         try
         {
-            if (SetupInfo.IsVisibleSettings(nameof(ManagementType.SingleSignOnSettings))
-                && _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Sso)
+            if (_coreBaseSettings.Standalone
+                    || SetupInfo.IsVisibleSettings(ManagementType.SingleSignOnSettings.ToString())
+                        && _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Sso)
             {
                 //var settings = SettingsManager.Load<SsoSettingsV2>();
 

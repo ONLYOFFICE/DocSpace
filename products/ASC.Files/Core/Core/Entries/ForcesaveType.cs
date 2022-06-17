@@ -31,5 +31,6 @@ public enum ForcesaveType
     None = 0,
     Command = 1,
     User = 2,
-    Timer = 3
+    Timer = 3,
+    UserSubmit = 4
 }

@@ -253,7 +253,40 @@ public class FileUploader
         return file;
     }
 
-    public async Task<ChunkedUploadSession<T>> InitiateUploadAsync<T>(T folderId, T fileId, string fileName, long contentLength, bool encrypted)
+    public async Task<File<T>> VerifyChunkedUploadForEditing<T>(T fileId, long fileSize)
+    {
+        var fileDao = _daoFactory.GetFileDao<T>();
+
+        var file = await fileDao.GetFileAsync(fileId);
+
+        if (file == null)
+        {
+            throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
+        }
+
+        var maxUploadSize = await GetMaxFileSizeAsync(file.ParentId, true);
+
+        if (fileSize > maxUploadSize)
+        {
+            throw FileSizeComment.GetFileSizeException(maxUploadSize);
+        }
+
+        if (!await CanEditAsync(file))
+        {
+            throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
+        }
+
+        file.ConvertedType = null;
+        file.Comment = FilesCommonResource.CommentUpload;
+        file.Encrypted = false;
+        file.ThumbnailStatus = Thumbnail.Waiting;
+
+        file.ContentLength = fileSize;
+
+        return file;
+    }
+
+    public async Task<ChunkedUploadSession<T>> InitiateUploadAsync<T>(T folderId, T fileId, string fileName, long contentLength, bool encrypted, bool keepVersion = false)
     {
         var file = _serviceProvider.GetService<File<T>>();
         file.Id = fileId;
@@ -271,6 +304,7 @@ public class FileUploader
         uploadSession.FolderId = folderId;
         uploadSession.CultureName = Thread.CurrentThread.CurrentUICulture.Name;
         uploadSession.Encrypted = encrypted;
+        uploadSession.KeepVersion = keepVersion;
 
         await _chunkedUploadSessionHolder.StoreSessionAsync(uploadSession);
 

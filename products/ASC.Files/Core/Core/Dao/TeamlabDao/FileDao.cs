@@ -32,6 +32,7 @@ namespace ASC.Files.Core.Data;
 internal class FileDao : AbstractDao, IFileDao<int>
 {
     private static readonly object _syncRoot = new object();
+    private readonly ILogger<FileDao> _logger;
     private readonly FactoryIndexerFile _factoryIndexer;
     private readonly GlobalStore _globalStore;
     private readonly GlobalSpace _globalSpace;
@@ -45,6 +46,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
     private readonly IMapper _mapper;
 
     public FileDao(
+        ILogger<FileDao> logger,
         FactoryIndexerFile factoryIndexer,
         UserManager userManager,
         DbContextManager<FilesDbContext> dbContextManager,
@@ -84,6 +86,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
               serviceProvider,
               cache)
     {
+        _logger = logger;
         _factoryIndexer = factoryIndexer;
         _globalStore = globalStore;
         _globalSpace = globalSpace;
@@ -1137,7 +1140,10 @@ internal class FileDao : AbstractDao, IFileDao<int>
         if (uploadSession.File.Id != default)
         {
             var file = await GetFileAsync(uploadSession.File.Id).ConfigureAwait(false);
-            file.Version++;
+            if (!uploadSession.KeepVersion)
+            {
+                file.Version++;
+            }
             file.ContentLength = uploadSession.BytesTotal;
             file.ConvertedType = null;
             file.Comment = FilesCommonResource.CommentUpload;
@@ -1465,6 +1471,40 @@ internal class FileDao : AbstractDao, IFileDao<int>
         return await storage.GetReadStreamAsync(string.Empty, path, 0).ConfigureAwait(false);
     }
 
+    public async Task<EntryProperties> GetProperties(int fileId)
+    {
+        var entryId = fileId.ToString();
+        var tenantId = TenantID;
+
+        return EntryProperties.Deserialize(await
+                FilesDbContext.FilesProperties
+               .Where(r => r.TenantId == tenantId)
+               .Where(r => r.EntryId == entryId)
+               .Select(r => r.Data)
+               .FirstOrDefaultAsync(), _logger);
+    }
+
+    public async Task SaveProperties(int fileId, EntryProperties entryProperties)
+    {
+        var entryId = fileId.ToString();
+        var tenantId = TenantID;
+        string data;
+
+        if (entryProperties == null || string.IsNullOrEmpty(data = EntryProperties.Serialize(entryProperties, _logger)))
+        {
+            var props = FilesDbContext.FilesProperties
+               .Where(r => r.TenantId == tenantId)
+               .Where(r => r.EntryId == entryId);
+
+            FilesDbContext.FilesProperties.RemoveRange(await props.ToListAsync());
+            await FilesDbContext.SaveChangesAsync();
+            return;
+        }
+
+        await FilesDbContext.AddOrUpdateAsync(r => r.FilesProperties, new DbFilesProperties { TenantId = tenantId, EntryId = entryId, Data = data });
+        await FilesDbContext.SaveChangesAsync();
+    }
+
     #endregion
 
     private Func<Selector<DbFile>, Selector<DbFile>> GetFuncForSearch(int? parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
@@ -1557,13 +1597,24 @@ internal class FileDao : AbstractDao, IFileDao<int>
                            select f
                           ).FirstOrDefault(),
                    Shared = (from f in FilesDbContext.Security.AsQueryable()
-                             where f.EntryType == FileEntryType.File && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId
+                             where f.EntryType == FileEntryType.File && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId && !(new[] { FileConstant.DenyDownloadId, FileConstant.DenySharingId }).Contains(f.Subject)
                              select f
                              ).Any(),
                    IsFillFormDraft = (from f in FilesDbContext.FilesLink
                                       where f.TenantId == r.TenantId && f.LinkedId == r.Id.ToString() && f.LinkedFor == cId
                                       select f)
-                             .Any()
+                             .Any(),
+                   Deny = (from f in FilesDbContext.Security.AsQueryable()
+                           where f.EntryType == FileEntryType.File && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId && (new[] { FileConstant.DenyDownloadId, FileConstant.DenySharingId }).Contains(f.Subject)
+                           select f
+                            ).GroupBy(a => a.EntryId,
+                            (a, b) =>
+                            new DbFileDeny
+                            {
+                                DenyDownload = b.Any(c => c.Subject == FileConstant.DenyDownloadId),
+                                DenySharing = b.Any(c => c.Subject == FileConstant.DenySharingId)
+                            })
+                            .FirstOrDefault(),
                };
     }
 
@@ -1589,7 +1640,18 @@ internal class FileDao : AbstractDao, IFileDao<int>
                 IsFillFormDraft = (from f in FilesDbContext.FilesLink
                                    where f.TenantId == r.TenantId && f.LinkedId == r.Id.ToString() && f.LinkedFor == cId
                                    select f)
-                             .Any()
+                             .Any(),
+                Deny = (from f in FilesDbContext.Security.AsQueryable()
+                        where f.EntryType == FileEntryType.File && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId && (new[] { FileConstant.DenyDownloadId, FileConstant.DenySharingId }).Contains(f.Subject)
+                        select f
+                            ).GroupBy(a => a.EntryId,
+                            (a, b) =>
+                            new DbFileDeny
+                            {
+                                DenyDownload = b.Any(c => c.Subject == FileConstant.DenyDownloadId),
+                                DenySharing = b.Any(c => c.Subject == FileConstant.DenySharingId)
+                            })
+                            .FirstOrDefault(),
             });
     }
 
@@ -1647,6 +1709,13 @@ public class DbFileQuery
     public DbFolder Root { get; set; }
     public bool Shared { get; set; }
     public bool IsFillFormDraft { get; set; }
+    public DbFileDeny Deny { get; set; }
+}
+
+public class DbFileDeny
+{
+    public bool DenyDownload { get; set; }
+    public bool DenySharing { get; set; }
 }
 
 public class DbFileQueryWithSecurity

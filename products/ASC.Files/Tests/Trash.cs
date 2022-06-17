@@ -27,7 +27,7 @@
 namespace ASC.Files.Tests;
 
 [TestFixture]
-class Trash : BaseFilesTests
+public partial class BaseFilesTests
 {
     [Test]
     [Category("Folder")]

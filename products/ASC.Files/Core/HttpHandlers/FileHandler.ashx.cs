@@ -24,6 +24,9 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using JWT.Algorithms;
+using JWT.Builder;
+
 using JsonException = System.Text.Json.JsonException;
 using MimeMapping = ASC.Common.Web.MimeMapping;
 
@@ -50,6 +53,7 @@ public class FileHandlerService
     }
 
     private readonly CompressToArchive _compressToArchive;
+    private readonly InstanceCrypto _instanceCrypto;
     private readonly FilesLinkUtility _filesLinkUtility;
     private readonly TenantExtra _tenantExtra;
     private readonly AuthContext _authContext;
@@ -103,7 +107,8 @@ public class FileHandlerService
         IServiceProvider serviceProvider,
         TempStream tempStream,
         SocketManager socketManager,
-            CompressToArchive compressToArchive,
+        CompressToArchive compressToArchive,
+        InstanceCrypto instanceCrypto,
         IHttpClientFactory clientFactory)
     {
         _filesLinkUtility = filesLinkUtility;
@@ -129,6 +134,7 @@ public class FileHandlerService
         _serviceProvider = serviceProvider;
         _socketManager = socketManager;
         _compressToArchive = compressToArchive;
+        _instanceCrypto = instanceCrypto;
         _tempStream = tempStream;
         _userManager = userManager;
         _logger = logger;
@@ -154,6 +160,8 @@ public class FileHandlerService
             switch ((context.Request.Query[FilesLinkUtility.Action].FirstOrDefault() ?? "").ToLower())
             {
                 case "view":
+                    await DownloadFile(context, true).ConfigureAwait(false);
+                    break;
                 case "download":
                     await DownloadFile(context).ConfigureAwait(false);
                     break;
@@ -203,9 +211,18 @@ public class FileHandlerService
             return;
         }
 
-        var ext = _compressToArchive.GetExt(context.Request.Query["ext"]);
+        var filename = context.Request.Query["filename"]; if (String.IsNullOrEmpty(filename))
+        {
+            var ext = _compressToArchive.GetExt(context.Request.Query["ext"]);
+            filename = FileConstant.DownloadTitle + ext;
+        }
+        else
+        {
+            filename = _instanceCrypto.Decrypt(Uri.UnescapeDataString(filename));
+        }
+
+        var path = string.Format(@"{0}\{1}", _securityContext.CurrentAccount.ID, filename);
         var store = _globalStore.GetStore();
-        var path = string.Format(@"{0}\{1}{2}", _securityContext.CurrentAccount.ID, FileConstant.DownloadTitle, ext);
 
         if (!await store.IsFileAsync(FileConstant.StorageDomainTmp, path))
         {
@@ -223,10 +240,10 @@ public class FileHandlerService
         }
 
         context.Response.Clear();
-        await InternalBulkDownloadFile(context, store, path, ext);
+        await InternalBulkDownloadFile(context, store, path, filename);
     }
 
-    private async Task InternalBulkDownloadFile(HttpContext context, IDataStore store, string path, string ext)
+    private async Task InternalBulkDownloadFile(HttpContext context, IDataStore store, string path, string filename)
     {
         try
         {
@@ -241,7 +258,7 @@ public class FileHandlerService
                     readStream.Seek(offset, SeekOrigin.Begin);
                 }
 
-                await SendStreamByChunksAsync(context, length, FileConstant.DownloadTitle + ext, readStream, flushed);
+                await SendStreamByChunksAsync(context, length, filename, readStream, flushed);
             }
 
             await context.Response.Body.FlushAsync();
@@ -256,21 +273,21 @@ public class FileHandlerService
         }
     }
 
-    private async Task DownloadFile(HttpContext context)
+    private async Task DownloadFile(HttpContext context, bool forView = false)
     {
         var q = context.Request.Query[FilesLinkUtility.FileId];
 
         if (int.TryParse(q, out var id))
         {
-            await DownloadFile(context, id);
+            await DownloadFile(context, id, forView);
         }
         else
         {
-            await DownloadFile(context, q.FirstOrDefault() ?? "");
+            await DownloadFile(context, q.FirstOrDefault() ?? "", forView);
         }
     }
 
-    private async Task DownloadFile<T>(HttpContext context, T id)
+    private async Task DownloadFile<T>(HttpContext context, T id, bool forView)
     {
         var flushed = false;
         try
@@ -278,12 +295,13 @@ public class FileHandlerService
             var doc = context.Request.Query[FilesLinkUtility.DocShareKey].FirstOrDefault() ?? "";
 
             var fileDao = _daoFactory.GetFileDao<T>();
-            var (readLink, file) = await _fileShareLink.CheckAsync(doc, true, fileDao);
+            int version = 0;
+            var (readLink, file, linkShare) = await _fileShareLink.CheckAsync(doc, true, fileDao);
             if (!readLink && file == null)
             {
                 await fileDao.InvalidateCacheAsync(id);
 
-                file = int.TryParse(context.Request.Query[FilesLinkUtility.Version], out var version) && version > 0
+                file = int.TryParse(context.Request.Query[FilesLinkUtility.Version], out version) && version > 0
                            ? await fileDao.GetFileAsync(id, version)
                            : await fileDao.GetFileAsync(id);
             }
@@ -295,7 +313,13 @@ public class FileHandlerService
                 return;
             }
 
-            if (!readLink && !await _fileSecurity.CanReadAsync(file))
+            if (!readLink && !await _fileSecurity.CanDownloadAsync(file))
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                return;
+            }
+
+            if (readLink && (linkShare == FileShare.Comment || linkShare == FileShare.Read) && file.DenyDownload)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                 return;
@@ -321,7 +345,27 @@ public class FileHandlerService
             //TODO
             //context.Response.Headers.Charset = "utf-8";
 
-            _filesMessageService.Send(file, MessageAction.FileDownloaded, file.Title);
+            var range = (context.Request.Headers["Range"].FirstOrDefault() ?? "").Split(new[] { '=', '-' });
+            var isNeedSendAction = range.Count() < 2 || Convert.ToInt64(range[1]) == 0;
+
+            if (isNeedSendAction)
+            {
+                if (forView)
+                {
+                    _filesMessageService.Send(file, MessageAction.FileReaded, file.Title);
+                }
+                else
+                {
+                    if (version == 0)
+                    {
+                        _filesMessageService.Send(file, MessageAction.FileDownloaded, file.Title);
+                    }
+                    else
+                    {
+                        _filesMessageService.Send(file, MessageAction.FileRevisionDownloaded, file.Title, file.Version.ToString());
+                    }
+                }
+            }
 
             if (string.Equals(context.Request.Headers["If-None-Match"], GetEtag(file)))
             {
@@ -607,7 +651,12 @@ public class FileHandlerService
 
                         header = header.Substring("Bearer ".Length);
 
-                        var stringPayload = JsonWebToken.Decode(header, _fileUtility.SignatureSecret);
+                        var stringPayload = JwtBuilder.Create()
+                                                .WithAlgorithm(new HMACSHA256Algorithm())
+                                                .WithSerializer(new JwtSerializer())
+                                                .WithSecret(_fileUtility.SignatureSecret)
+                                                .MustVerifySignature()
+                                                .Decode(header);
 
                         _logger.DebugDocServiceStreamFilePayload(stringPayload);
                         //var data = JObject.Parse(stringPayload);
@@ -653,7 +702,7 @@ public class FileHandlerService
                 return;
             }
 
-            if (linkRight == FileShare.Restrict && _securityContext.IsAuthenticated && !await _fileSecurity.CanReadAsync(file))
+            if (linkRight == FileShare.Restrict && _securityContext.IsAuthenticated && !await _fileSecurity.CanDownloadAsync(file))
             {
                 context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                 return;
@@ -714,7 +763,12 @@ public class FileHandlerService
 
                     header = header.Substring("Bearer ".Length);
 
-                    var stringPayload = JsonWebToken.Decode(header, _fileUtility.SignatureSecret);
+                    var stringPayload = JwtBuilder.Create()
+                                                    .WithAlgorithm(new HMACSHA256Algorithm())
+                                                    .WithSerializer(new JwtSerializer())
+                                                    .WithSecret(_fileUtility.SignatureSecret)
+                                                    .MustVerifySignature()
+                                                    .Decode(header);
 
                     _logger.DebugDocServiceStreamFilePayload(stringPayload);
                     //var data = JObject.Parse(stringPayload);
@@ -1351,7 +1405,13 @@ public class FileHandlerService
             {
                 try
                 {
-                    var dataString = JsonWebToken.Decode(fileData.Token, _fileUtility.SignatureSecret);
+                    var dataString = JwtBuilder.Create()
+                            .WithAlgorithm(new HMACSHA256Algorithm())
+                            .WithSerializer(new JwtSerializer())
+                            .WithSecret(_fileUtility.SignatureSecret)
+                            .MustVerifySignature()
+                            .Decode(fileData.Token);
+
                     var data = JObject.Parse(dataString);
                     if (data == null)
                     {
@@ -1378,7 +1438,12 @@ public class FileHandlerService
 
                 try
                 {
-                    var stringPayload = JsonWebToken.Decode(header, _fileUtility.SignatureSecret);
+                    var stringPayload = JwtBuilder.Create()
+                            .WithAlgorithm(new HMACSHA256Algorithm())
+                            .WithSerializer(new JwtSerializer())
+                            .WithSecret(_fileUtility.SignatureSecret)
+                            .MustVerifySignature()
+                            .Decode(header);
 
                     _logger.DebugDocServiceTrackPayload(stringPayload);
                     var jsonPayload = JObject.Parse(stringPayload);

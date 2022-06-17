@@ -80,6 +80,9 @@ builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
 
     diHelper.TryAdd<ThumbnailRequestedIntegrationEventHandler>();
 
+    services.AddHostedService<Launcher>();
+    diHelper.TryAdd<Launcher>();
+
     diHelper.TryAdd<AuthManager>();
     diHelper.TryAdd<BaseCommonLinkUtility>();
     diHelper.TryAdd<FeedAggregateDataProvider>();

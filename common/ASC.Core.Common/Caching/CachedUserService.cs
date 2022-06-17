@@ -430,4 +430,9 @@ public class CachedUserService : IUserService, ICachedService
 
         return Service.GetUser(tenant, id, exp);
     }
+
+    public IEnumerable<string> GetDavUserEmails(int tenant)
+    {
+        return Service.GetDavUserEmails(tenant);
+    }
 }

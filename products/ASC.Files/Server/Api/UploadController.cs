@@ -88,6 +88,12 @@ public abstract class UploadController<T> : ApiControllerBase
         return _filesControllerHelper.CreateUploadSessionAsync(folderId, inDto.FileName, inDto.FileSize, inDto.RelativePath, inDto.LastModified, inDto.Encrypted);
     }
 
+    [HttpPost("file/{fileId}/edit_session")]
+    public Task<object> CreateEditSession(T fileId, long fileSize)
+    {
+        return _filesControllerHelper.CreateEditSession(fileId, fileSize);
+    }
+
     /// <summary>
     /// Uploads the file specified with single file upload
     /// </summary>

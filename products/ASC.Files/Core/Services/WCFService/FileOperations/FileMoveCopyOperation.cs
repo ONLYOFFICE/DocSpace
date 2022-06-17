@@ -48,11 +48,6 @@ internal class FileMoveCopyOperationData<T> : FileOperationData<T>
     public FileConflictResolveType ResolveType { get; }
     public IDictionary<string, StringValues> Headers { get; }
 
-    public FileMoveCopyOperationData(IEnumerable<object> folders, IEnumerable<object> files, Tenant tenant, JsonElement toFolderId, bool copy, FileConflictResolveType resolveType, bool holdResult = true, IDictionary<string, StringValues> headers = null)
-        : this(folders.OfType<T>(), files.OfType<T>(), tenant, toFolderId, copy, resolveType, holdResult, headers)
-    {
-    }
-
     public FileMoveCopyOperationData(IEnumerable<T> folders, IEnumerable<T> files, Tenant tenant, JsonElement toFolderId, bool copy, FileConflictResolveType resolveType, bool holdResult = true, IDictionary<string, StringValues> headers = null)
         : base(folders, files, tenant, holdResult)
     {
@@ -211,6 +206,10 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             {
                 Error = FilesCommonResource.ErrorMassage_SecurityException_ReadFolder;
             }
+            else if (!await FilesSecurity.CanDownloadAsync(folder))
+            {
+                Error = FilesCommonResource.ErrorMassage_SecurityException;
+            }
             else if (folder.RootFolderType == FolderType.Privacy
                 && (copy || toFolder.RootFolderType != FolderType.Privacy))
             {
@@ -301,9 +300,9 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                 {
                                     Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
                                 }
-                                    else if (isError)
+                                else if (isError)
                                 {
-                                        Error = message;
+                                    Error = message;
                                 }
                                 else
                                 {
@@ -311,15 +310,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
 
                                     newFolderId = await FolderDao.MoveFolderAsync(folder.Id, toFolderId, CancellationToken);
                                     newFolder = await folderDao.GetFolderAsync(newFolderId);
-
-                                    if (folder.RootFolderType != FolderType.USER)
-                                    {
-                                        filesMessageService.Send(folder, toFolder, _headers, MessageAction.FolderMovedWithOverwriting, folder.Title, toFolder.Title);
-                                    }
-                                    else
-                                    {
-                                        filesMessageService.Send(newFolder, toFolder, _headers, MessageAction.FolderMovedWithOverwriting, folder.Title, toFolder.Title);
-                                    }
+                                    filesMessageService.Send(folder, toFolder, _headers, MessageAction.FolderMovedWithOverwriting, folder.Title, toFolder.Title);
 
                                     if (isToFolder)
                                     {
@@ -340,25 +331,19 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                         {
                             Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
                         }
-                            else if (isError)
+                        else if (isError)
                         {
-                                Error = message;
+                            Error = message;
                         }
                         else
                         {
                             await fileMarker.RemoveMarkAsNewForAllAsync(folder);
+                            var parentFolder = await FolderDao.GetFolderAsync(folder.RootId);
 
                             var newFolderId = await FolderDao.MoveFolderAsync(folder.Id, toFolderId, CancellationToken);
                             newFolder = await folderDao.GetFolderAsync(newFolderId);
 
-                            if (folder.RootFolderType != FolderType.USER)
-                            {
-                                filesMessageService.Send(folder, toFolder, _headers, MessageAction.FolderMoved, folder.Title, toFolder.Title);
-                            }
-                            else
-                            {
-                                filesMessageService.Send(newFolder, toFolder, _headers, MessageAction.FolderMoved, folder.Title, toFolder.Title);
-                            }
+                            filesMessageService.Send(folder, toFolder, _headers, MessageAction.FolderMovedFrom, folder.Title, parentFolder.Title, toFolder.Title);
 
                             if (isToFolder)
                             {
@@ -409,7 +394,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             CancellationToken.ThrowIfCancellationRequested();
 
             var file = await FileDao.GetFileAsync(fileId);
-                var (isError, message) = await WithErrorAsync(scope, new[] { file });
+            var (isError, message) = await WithErrorAsync(scope, new[] { file });
 
             if (file == null)
             {
@@ -418,6 +403,10 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             else if (!await FilesSecurity.CanReadAsync(file))
             {
                 Error = FilesCommonResource.ErrorMassage_SecurityException_ReadFile;
+            }
+            else if (!await FilesSecurity.CanDownloadAsync(file))
+            {
+                Error = FilesCommonResource.ErrorMassage_SecurityException;
             }
             else if (file.RootFolderType == FolderType.Privacy
                 && (copy || toFolder.RootFolderType != FolderType.Privacy))
@@ -472,9 +461,9 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                         }
                         else
                         {
-                                if (isError)
+                            if (isError)
                             {
-                                    Error = message;
+                                Error = message;
                             }
                             else
                             {
@@ -483,14 +472,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                 var newFileId = await FileDao.MoveFileAsync(file.Id, toFolderId);
                                 newFile = await fileDao.GetFileAsync(newFileId);
 
-                                if (file.RootFolderType != FolderType.USER)
-                                {
-                                    filesMessageService.Send(file, toFolder, _headers, MessageAction.FileMoved, file.Title, parentFolder.Title, toFolder.Title);
-                                }
-                                else
-                                {
-                                    filesMessageService.Send(newFile, toFolder, _headers, MessageAction.FileMoved, file.Title, parentFolder.Title, toFolder.Title);
-                                }
+                                filesMessageService.Send(file, toFolder, _headers, MessageAction.FileMoved, file.Title, parentFolder.Title, toFolder.Title);
 
                                 if (file.RootFolderType == FolderType.TRASH && newFile.ThumbnailStatus == Thumbnail.NotRequired)
                                 {
@@ -587,9 +569,9 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                     }
                                     else
                                     {
-                                            if (isError)
+                                        if (isError)
                                         {
-                                                Error = message;
+                                            Error = message;
                                         }
                                         else
                                         {
@@ -597,14 +579,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
 
                                             await LinkDao.DeleteAllLinkAsync(file.Id.ToString());
 
-                                            if (file.RootFolderType != FolderType.USER)
-                                            {
-                                                filesMessageService.Send(file, toFolder, _headers, MessageAction.FileMovedWithOverwriting, file.Title, parentFolder.Title, toFolder.Title);
-                                            }
-                                            else
-                                            {
-                                                filesMessageService.Send(newFile, toFolder, _headers, MessageAction.FileMovedWithOverwriting, file.Title, parentFolder.Title, toFolder.Title);
-                                            }
+                                            filesMessageService.Send(file, toFolder, _headers, MessageAction.FileMovedWithOverwriting, file.Title, parentFolder.Title, toFolder.Title);
 
                                             socketManager.DeleteFile(file);
 

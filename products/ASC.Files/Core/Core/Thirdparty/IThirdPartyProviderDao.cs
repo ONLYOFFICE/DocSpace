@@ -82,6 +82,16 @@ internal abstract class ThirdPartyProviderDao
         return Task.FromResult<Stream>(null);
     }
 
+    public Task<EntryProperties> GetProperties(string fileId)
+    {
+        return Task.FromResult<EntryProperties>(null);
+    }
+
+    public Task SaveProperties(string fileId, EntryProperties entryProperties)
+    {
+        return null;
+    }
+
     public virtual Task<Stream> GetFileStreamAsync(File<string> file)
     {
         return null;
@@ -408,9 +418,9 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         return Task.CompletedTask;
     }
 
-    public ValueTask<bool> IsSharedAsync(object entryId, FileEntryType type)
+    public Task<bool> IsSharedAsync(string entryId, FileEntryType type)
     {
-        throw new NotImplementedException();
+        return null;
     }
 
     #endregion

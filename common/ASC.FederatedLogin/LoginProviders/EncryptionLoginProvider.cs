@@ -24,24 +24,25 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using SecurityContext = ASC.Core.SecurityContext;
-
 namespace ASC.Web.Studio.Core;
 
 [Scope]
 public class EncryptionLoginProvider
 {
+    private readonly ILogger<EncryptionLoginProvider> _logger;
     private readonly SecurityContext _securityContext;
     private readonly Signature _signature;
     private readonly InstanceCrypto _instanceCrypto;
     private readonly IOptionsSnapshot<AccountLinker> _snapshot;
 
     public EncryptionLoginProvider(
+        ILogger<EncryptionLoginProvider> logger,
         SecurityContext securityContext,
         Signature signature,
         InstanceCrypto instanceCrypto,
         IOptionsSnapshot<AccountLinker> snapshot)
     {
+        _logger = logger;
         _securityContext = securityContext;
         _signature = signature;
         _instanceCrypto = instanceCrypto;
@@ -80,8 +81,15 @@ public class EncryptionLoginProvider
             return null;
         }
 
-        var keys = _instanceCrypto.Decrypt(profile.Name);
-
-        return keys;
+        try
+        {
+            return _instanceCrypto.Decrypt(profile.Name);
+        }
+        catch (Exception ex)
+        {
+            var message = string.Format("Can not decrypt {0} keys for {1}", ProviderConstants.Encryption, userId);
+            _logger.ErrorWithException(message, ex);
+            return null;
+        }
     }
 }

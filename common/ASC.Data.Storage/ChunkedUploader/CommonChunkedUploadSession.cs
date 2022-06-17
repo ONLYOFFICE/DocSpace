@@ -77,7 +77,22 @@ public class CommonChunkedUploadSession : ICloneable
 
     public T GetItemOrDefault<T>(string key)
     {
-        return Items.ContainsKey(key) && Items[key] is T t ? t : default;
+        if (Items.ContainsKey(key) && Items[key] != null)
+        {
+            if (Items[key] is T)
+            {
+                return (T)Items[key];
+            }
+
+            var jToken = Items[key] as Newtonsoft.Json.Linq.JToken;
+            if (jToken != null)
+            {
+                var item = jToken.ToObject<T>();
+                Items[key] = item;
+                return item;
+            }
+        }
+        return default(T);
     }
 
     public virtual Stream Serialize()

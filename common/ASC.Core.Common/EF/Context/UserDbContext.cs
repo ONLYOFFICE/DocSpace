@@ -39,6 +39,7 @@ public class UserDbContext : BaseDbContext
     public DbSet<UserGroup> UserGroups { get; set; }
     public DbSet<Subscription> Subscriptions { get; set; }
     public DbSet<DbSubscriptionMethod> SubscriptionMethods { get; set; }
+    public DbSet<UserDav> UsersDav { get; set; }
 
     protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
     {
@@ -63,7 +64,8 @@ public class UserDbContext : BaseDbContext
         .AddUserPhoto()
         .AddDbGroup()
         .AddUserGroup()
-        .AddSubscription();
+        .AddSubscription()
+        .AddUserDav();
     }
 }
 
