@@ -149,3 +149,4 @@ global using ProtoBuf;
 global using Telegram.Bot;
 
 global using static ASC.Security.Cryptography.EmailValidationKeyProvider;
+global using ASC.Common.Data;

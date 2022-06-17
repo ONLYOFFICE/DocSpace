@@ -24,12 +24,33 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Common.Log;
-internal static partial class DistributedTaskQueueLogger
-{
-    [LoggerMessage(Level = LogLevel.Trace, Message = "EnqueueTask '{DistributedTaskId}' by instanse id '{instanceId}'")]
-    public static partial void TraceEnqueueTask(this ILogger<DistributedTaskQueue> logger, string DistributedTaskId, int instanceId);
+namespace ASC.Web.Files.Utils;
 
-    [LoggerMessage(Level = LogLevel.Trace, Message = "Publication DistributedTask '{DistributedTaskId}' by instanse id '{instanceId}' ")]
-    public static partial void TracePublicationDistributedTask(this ILogger<DistributedTaskQueue> logger, string DistributedTaskId, int instanceId);
+[ProtoContract]
+public class FileConverterOperationResult : FileOperationResult
+{
+    [ProtoMember(1)]
+    public DateTime StartDateTime { get; set; }
+
+    [ProtoMember(2)]
+    public DateTime StopDateTime { get; set; }
+
+    [ProtoMember(3)]
+    public int TenantId { get; set; }
+
+    [ProtoMember(4)]
+    public Guid Account { get; set; }
+
+    [ProtoMember(5)]
+    public bool Delete { get; set; }
+
+    [ProtoMember(6)]
+    public string Url { get; set; }
+
+    [ProtoMember(7)]
+    public string Password { get; set; }
+
+    [ProtoMember(8)]
+    //hack for download
+    public string ServerRootPath { get; set; }
 }
