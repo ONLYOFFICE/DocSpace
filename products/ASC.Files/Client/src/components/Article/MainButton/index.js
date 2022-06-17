@@ -18,6 +18,7 @@ import MobileView from "./MobileView";
 import { combineUrl } from "@appserver/common/utils";
 import config from "../../../../package.json";
 import withLoader from "../../../HOCs/withLoader";
+import { Events } from "../../../helpers/constants";
 
 const ArticleMainButtonContent = (props) => {
   const {
@@ -51,11 +52,19 @@ const ArticleMainButtonContent = (props) => {
   const onCreate = React.useCallback(
     (e) => {
       const format = e.action || null;
-      setAction({
-        type: FileAction.Create,
-        extension: format,
-        id: -1,
-      });
+
+      // TODO: remove after delete action store
+      // setAction({
+      //   type: FileAction.Create,
+      //   extension: format,
+      //   id: -1,
+      // });
+
+      const event = new Event(Events.CREATE);
+      event.extension = format;
+      event.id = -1;
+
+      window.dispatchEvent(event);
     },
     [setAction]
   );
