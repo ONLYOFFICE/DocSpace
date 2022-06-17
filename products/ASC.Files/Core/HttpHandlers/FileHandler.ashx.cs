@@ -988,7 +988,7 @@ public class FileHandlerService
             context.Response.Headers.Add("Content-Disposition", ContentDispositionUtil.GetHeaderValue("." + _global.ThumbnailExtension));
             context.Response.ContentType = MimeMapping.GetMimeMapping("." + _global.ThumbnailExtension);
 
-            using (var stream = await fileDao.GetThumbnailAsync(id))
+            using (var stream = await fileDao.GetThumbnailAsync(file))
             {
                 context.Response.Headers.Add("Content-Length", stream.Length.ToString(CultureInfo.InvariantCulture));
                 await stream.CopyToAsync(context.Response.Body);

@@ -478,11 +478,11 @@ internal class SharePointFileDao : SharePointDaoBase, IFileDao<string>
 
     public Task<Stream> GetThumbnailAsync(string fileid)
     {
-        throw new NotImplementedException();
+        return null;
     }
 
     public Task<Stream> GetThumbnailAsync(File<string> file)
     {
-        throw new NotImplementedException();
+        return null;
     }
 }
