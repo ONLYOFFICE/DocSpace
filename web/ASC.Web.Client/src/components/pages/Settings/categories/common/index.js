@@ -8,6 +8,7 @@ import config from "../../../../../../package.json";
 import { inject, observer } from "mobx-react";
 import Customization from "./customization";
 import Branding from "./branding";
+import Appearance from "./appearance";
 import withLoading from "../../../../../HOCs/withLoading";
 
 const SubmenuCommon = (props) => {
@@ -45,6 +46,11 @@ const SubmenuCommon = (props) => {
       id: "branding",
       name: t("Branding"),
       content: <Branding />,
+    },
+    {
+      id: "appearance",
+      name: t("Appearance"),
+      content: <Appearance />,
     },
   ];
 
