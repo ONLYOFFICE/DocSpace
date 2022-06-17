@@ -13,6 +13,7 @@ import { Consumer } from "@appserver/components/utils/context";
 import { inject, observer } from "mobx-react";
 import TableGroupMenu from "@appserver/components/table-container/TableGroupMenu";
 import Navigation from "@appserver/common/components/Navigation";
+import { Events } from "../../../../helpers/constants";
 
 const StyledContainer = styled.div`
   .table-container_group-menu {
@@ -47,11 +48,18 @@ class SectionHeaderContent extends React.Component {
   }
 
   onCreate = (format) => {
-    this.props.setAction({
-      type: FileAction.Create,
-      extension: format,
-      id: -1,
-    });
+    const event = new Event(Events.CREATE);
+    event.extension = format;
+    event.id = -1;
+
+    window.dispatchEvent(event);
+
+    // TODO: remove it after removing action store
+    // this.props.setAction({
+    //   type: FileAction.Create,
+    //   extension: format,
+    //   id: -1,
+    // });
   };
 
   createDocument = () => this.onCreate("docx");
