@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { observer, inject } from "mobx-react";
 import { FileAction } from "@appserver/common/constants";
+import { Events } from "../helpers/constants";
 
 const withHotkeys = (Component) => {
   const WithHotkeys = (props) => {
@@ -54,6 +55,14 @@ const withHotkeys = (Component) => {
     };
 
     const onKeyDown = (e) => activateHotkeys(e);
+
+    const onCreate = (extension) => {
+      const event = new Event(Events.CREATE);
+      event.extension = extension;
+      event.id = -1;
+
+      window.dispatchEvent(event);
+    };
 
     useEffect(() => {
       window.addEventListener("keydown", onKeyDown);
@@ -153,32 +162,25 @@ const withHotkeys = (Component) => {
     );
 
     //Crete document
-    useHotkeys(
-      "Shift+d",
-      () => setAction({ type: FileAction.Create, extension: "docx", id: -1 }),
-      hotkeysFilter
-    );
+    useHotkeys("Shift+d", () => onCreate("docx"), hotkeysFilter);
 
     //Crete spreadsheet
-    useHotkeys(
-      "Shift+s",
-      () => setAction({ type: FileAction.Create, extension: "xlsx", id: -1 }),
-      { ...hotkeysFilter, ...{ keyup: true } }
-    );
+    useHotkeys("Shift+s", () => onCreate("xlsx"), {
+      ...hotkeysFilter,
+      ...{ keyup: true },
+    });
 
     //Crete presentation
-    useHotkeys(
-      "Shift+p",
-      () => setAction({ type: FileAction.Create, extension: "pptx", id: -1 }),
-      { ...hotkeysFilter, ...{ keyup: true } }
-    );
+    useHotkeys("Shift+p", () => onCreate("pptx"), {
+      ...hotkeysFilter,
+      ...{ keyup: true },
+    });
 
     //Crete form template
-    useHotkeys(
-      "Shift+o",
-      () => setAction({ type: FileAction.Create, extension: "docxf", id: -1 }),
-      { ...hotkeysFilter, ...{ keyup: true } }
-    );
+    useHotkeys("Shift+o", () => onCreate("docxf"), {
+      ...hotkeysFilter,
+      ...{ keyup: true },
+    });
 
     //Crete form template from file
     useHotkeys(
@@ -188,11 +190,10 @@ const withHotkeys = (Component) => {
     );
 
     //Crete folder
-    useHotkeys(
-      "Shift+f",
-      () => setAction({ type: FileAction.Create, id: -1 }),
-      { ...hotkeysFilter, ...{ keyup: true } }
-    );
+    useHotkeys("Shift+f", () => onCreate(null), {
+      ...hotkeysFilter,
+      ...{ keyup: true },
+    });
 
     //Delete selection
     useHotkeys(
