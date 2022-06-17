@@ -63,7 +63,7 @@ def writeJsonFile(jsonFile, jsonData, indent=4):
 saveFilePath = filePath
 #jsonValue = sys.argv[2]
 
-filePath = "/app/onlyoffice/config/appsettings.test.json"
+filePath = "/app/onlyoffice/config/appsettings.json"
 jsonData = openJsonFile(filePath)
 #jsonUpdateValue = parseJsonValue(jsonValue)
 updateJsonFile(jsonData, "$.ConnectionStrings.default.connectionString", "Server="+ MYSQL_HOST +";Port=3306;Database="+ MYSQL_DATABASE +";User ID="+ MYSQL_USER +"r;Password="+ MYSQL_PASSWORD +";Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;ConnectionReset=false," )
@@ -86,7 +86,7 @@ updateJsonFile(jsonData,"$.elastic.Port", ELK_PORT)
 updateJsonFile(jsonData,"$.elastic.Threads", ELK_THREADS)
 writeJsonFile(filePath, jsonData)
 
-filePath = "/app/onlyoffice/config/kafka.test.json"
+filePath = "/app/onlyoffice/config/kafka.json"
 jsonData = openJsonFile(filePath)
 updateJsonFile(jsonData,"$.kafka.BootstrapServers", KAFKA_HOST)
 writeJsonFile(filePath, jsonData)
