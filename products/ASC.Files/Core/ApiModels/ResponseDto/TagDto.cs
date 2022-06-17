@@ -30,4 +30,10 @@ public class TagDto : IMapFrom<Tag>
 {
     public int Id { get; set; }
     public string Name { get; set; }
+
+    public void Mapping(AutoMapper.Profile profile)
+    {
+        profile.CreateMap<Tag, TagDto>();
+        profile.CreateMap<TagInfo, TagDto>();
+    }
 }

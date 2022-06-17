@@ -35,9 +35,10 @@ public class CustomTagsService<T>
     private readonly FileSecurityCommon _fileSecurityCommon;
     private readonly FilesMessageService _filesMessageService;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IMapper _mapper;
 
     public CustomTagsService(IDaoFactory daoFactory, FileSecurity fileSecurity, AuthContext authContext, FileSecurityCommon fileSecurityCommon,
-        FilesMessageService filesMessageService, IHttpContextAccessor httpContextAccessor)
+        FilesMessageService filesMessageService, IHttpContextAccessor httpContextAccessor, IMapper mapper)
     {
         _daoFactory = daoFactory;
         _fileSecurity = fileSecurity;
@@ -45,13 +46,14 @@ public class CustomTagsService<T>
         _fileSecurityCommon = fileSecurityCommon;
         _filesMessageService = filesMessageService;
         _httpContextAccessor = httpContextAccessor;
+        _mapper = mapper;
     }
 
     private ITagDao<T> TagDao => _daoFactory.GetTagDao<T>();
     private IFolderDao<T> FolderDao => _daoFactory.GetFolderDao<T>();
     private IDictionary<string, StringValues> Headers => _httpContextAccessor?.HttpContext?.Request?.Headers;
 
-    public async Task<TagInfo> CreateTagAsync(string name)
+    public async Task<TagDto> CreateTagAsync(string name)
     {
         if (!_fileSecurityCommon.IsAdministrator(_authContext.CurrentAccount.ID))
         {
@@ -78,7 +80,7 @@ public class CustomTagsService<T>
 
         _filesMessageService.Send(Headers, MessageAction.TagCreated, savedTag.Name);
 
-        return savedTag;
+        return _mapper.Map<TagInfo, TagDto>(savedTag);
     }
 
     public async Task DeleteTagsAsync(IEnumerable<int> tagIds)
@@ -154,11 +156,11 @@ public class CustomTagsService<T>
         return folder;
     }
 
-    public async IAsyncEnumerable<TagInfo> GetTagsInfoAsync(string searchText, TagType tagType, int from, int count)
+    public async IAsyncEnumerable<TagDto> GetTagsInfoAsync(string searchText, TagType tagType, int from, int count)
     {
         await foreach (var tagInfo in TagDao.GetTagsInfoAsync(searchText, tagType, false, from, count))
         {
-            yield return tagInfo;
+            yield return _mapper.Map<TagInfo, TagDto>(tagInfo);
         }
     }
 }

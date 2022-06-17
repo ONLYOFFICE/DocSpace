@@ -373,7 +373,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
     }
 
     [HttpPost("tags")]
-    public async Task<TagInfo> CreateTagAsync(CreateTagRequestDto inDto)
+    public async Task<TagDto> CreateTagAsync(CreateTagRequestDto inDto)
     {
         ErrorIfNotDocSpace();
 
@@ -381,7 +381,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
     }
 
     [HttpGet("tags")]
-    public async IAsyncEnumerable<TagInfo> GetTagsInfoAsync()
+    public async IAsyncEnumerable<TagDto> GetTagsInfoAsync()
     {
         ErrorIfNotDocSpace();
 
