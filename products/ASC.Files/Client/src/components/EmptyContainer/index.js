@@ -5,6 +5,7 @@ import EmptyFilterContainer from "./EmptyFilterContainer";
 import EmptyFolderContainer from "./EmptyFolderContainer";
 import { FileAction } from "@appserver/common/constants";
 import { isMobile } from "react-device-detect";
+import { Events } from "../../helpers/constants";
 
 const linkStyles = {
   isHovered: true,
@@ -26,11 +27,17 @@ const EmptyContainer = ({
 
   const onCreate = (e) => {
     const format = e.currentTarget.dataset.format || null;
-    setAction({
-      type: FileAction.Create,
-      extension: format,
-      id: -1,
-    });
+    // setAction({
+    //   type: FileAction.Create,
+    //   extension: format,
+    //   id: -1,
+    // });
+
+    const event = new Event(Events.CREATE);
+    event.extension = format;
+    event.id = -1;
+
+    window.dispatchEvent(event);
   };
 
   return isFiltered ? (
