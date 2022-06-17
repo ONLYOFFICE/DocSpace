@@ -47,8 +47,6 @@ class PureHome extends React.Component {
       playlist,
       isMediaOrImage,
       getFileInfo,
-      setIsPrevSettingsModule,
-      isPrevSettingsModule,
       gallerySelected,
       setAction,
       setIsUpdatingRowItem,
@@ -96,12 +94,6 @@ class PureHome extends React.Component {
 
         return;
       }
-    }
-
-    //TODO:
-    if (isPrevSettingsModule && !gallerySelected) {
-      setIsPrevSettingsModule(false);
-      return;
     }
 
     if (!filterObj) return;
@@ -427,8 +419,6 @@ export default inject(
       isLoading,
       viewAs,
       getFileInfo,
-      setIsPrevSettingsModule,
-      isPrevSettingsModule,
       gallerySelected,
       setIsUpdatingRowItem,
     } = filesStore;
@@ -534,9 +524,6 @@ export default inject(
       playlist,
       isMediaOrImage: settingsStore.isMediaOrImage,
       getFileInfo,
-
-      setIsPrevSettingsModule,
-      isPrevSettingsModule,
       gallerySelected,
       setAction,
       setIsUpdatingRowItem,
