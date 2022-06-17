@@ -140,7 +140,12 @@ const HeaderNav = ({
     let hotkeys = null;
     if (modules) {
       const moduleIndex = modules.findIndex((m) => m.appName === "files");
-      if (moduleIndex !== -1 && modules[moduleIndex].id === currentProductId) {
+
+      if (
+        moduleIndex !== -1 &&
+        modules[moduleIndex].id === currentProductId &&
+        !isMobile
+      ) {
         hotkeys = {
           key: "HotkeysBtn",
           label: t("Common:Hotkeys"),
