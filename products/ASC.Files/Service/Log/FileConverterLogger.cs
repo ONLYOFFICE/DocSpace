@@ -25,7 +25,7 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Files.Core.Log;
-internal static partial class FileConverterLogger
+public static partial class FileConverterLogger
 {
     [LoggerMessage(Level = LogLevel.Debug, Message = "Run CheckConvertFilesStatus: count {count}")]
     public static partial void DebugRunCheckConvertFilesStatus(this ILogger logger, int count);
@@ -44,4 +44,11 @@ internal static partial class FileConverterLogger
     
     [LoggerMessage(Level = LogLevel.Error, Message = "CheckConvertFilesStatus timeout: {fileId} ({contentLengthString})")]
     public static partial void ErrorCheckConvertFilesStatus(this ILogger logger, string fileId, long contentLengthString);
+
+    [LoggerMessage(Level = LogLevel.Debug, Message = "FileConverterService is starting.")]
+    public static partial void DebugFileConverterServiceRuning(this ILogger logger);
+
+    [LoggerMessage(Level = LogLevel.Debug, Message = "FileConverterService is stopping")]
+    public static partial void DebugFileConverterServiceStopping(this ILogger logger);
+
 }

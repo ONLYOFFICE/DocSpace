@@ -162,25 +162,30 @@ public class DbSubscriptionService : ISubscriptionService
         ArgumentNullException.ThrowIfNull(sourceId);
         ArgumentNullException.ThrowIfNull(actionId);
 
-        using var tr = UserDbContext.Database.BeginTransaction();
-        var q = UserDbContext.Subscriptions
-            .Where(r => r.Tenant == tenant)
-            .Where(r => r.Source == sourceId)
-            .Where(r => r.Action == actionId);
+        var strategy = UserDbContext.Database.CreateExecutionStrategy();
 
-        if (objectId.Length != 0)
+        strategy.Execute(() =>
         {
-            q = q.Where(r => r.Object == (objectId ?? string.Empty));
-        }
+            using var tr = UserDbContext.Database.BeginTransaction();
+            var q = UserDbContext.Subscriptions
+                .Where(r => r.Tenant == tenant)
+                .Where(r => r.Source == sourceId)
+                .Where(r => r.Action == actionId);
 
-        var sub = q.FirstOrDefault();
+            if (objectId.Length != 0)
+            {
+                q = q.Where(r => r.Object == (objectId ?? string.Empty));
+            }
 
-        if (sub != null)
-        {
-            UserDbContext.Subscriptions.Remove(sub);
-        }
+            var sub = q.FirstOrDefault();
 
-        tr.Commit();
+            if (sub != null)
+            {
+                UserDbContext.Subscriptions.Remove(sub);
+            }
+
+            tr.Commit();
+        });
     }
 
 
@@ -232,38 +237,47 @@ public class DbSubscriptionService : ISubscriptionService
     {
         ArgumentNullException.ThrowIfNull(m);
 
-        using var tr = UserDbContext.Database.BeginTransaction();
+        var strategy = UserDbContext.Database.CreateExecutionStrategy();
 
-        if (m.Methods == null || m.Methods.Length == 0)
+        strategy.Execute(() =>
         {
-            var q = UserDbContext.SubscriptionMethods
-                .Where(r => r.Tenant == m.Tenant)
-                .Where(r => r.Source == m.Source)
-                .Where(r => r.Recipient == m.Recipient)
-                .Where(r => r.Action == m.Action);
+            using var tr = UserDbContext.Database.BeginTransaction();
 
-            var sm = q.FirstOrDefault();
-
-            if (sm != null)
+            if (m.Methods == null || m.Methods.Length == 0)
             {
-                UserDbContext.SubscriptionMethods.Remove(sm);
+                var q = UserDbContext.SubscriptionMethods
+                    .Where(r => r.Tenant == m.Tenant)
+                    .Where(r => r.Source == m.Source)
+                    .Where(r => r.Recipient == m.Recipient)
+                    .Where(r => r.Action == m.Action);
+
+                var sm = q.FirstOrDefault();
+
+                if (sm != null)
+                {
+                    UserDbContext.SubscriptionMethods.Remove(sm);
+                }
             }
-        }
-        else
-        {
-            var sm = new DbSubscriptionMethod
+            else
             {
-                Action = m.Action,
-                Recipient = m.Recipient,
-                Source = m.Source,
-                Tenant = m.Tenant,
-                Sender = string.Join("|", m.Methods)
-            };
-            UserDbContext.AddOrUpdate(r => r.SubscriptionMethods, sm);
-        }
+                var sm = new DbSubscriptionMethod
+                {
+                    Action = m.Action,
+                    Recipient = m.Recipient,
+                    Source = m.Source,
+                    Tenant = m.Tenant,
+                    Sender = string.Join("|", m.Methods)
+                };
+                UserDbContext.AddOrUpdate(r => r.SubscriptionMethods, sm);
+            }
 
-        UserDbContext.SaveChanges();
-        tr.Commit();
+            UserDbContext.SaveChanges();
+            tr.Commit();
+        });
+
+
+
+
     }
 
 

@@ -49,29 +49,35 @@ public class DbWorker
         var _mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
 
         using var dbContext = scope.ServiceProvider.GetService<DbContextManager<NotifyDbContext>>().Get(_dbid);
-        using var tx = dbContext.Database.BeginTransaction(IsolationLevel.ReadCommitted);
 
-        var notifyQueue = _mapper.Map<NotifyMessage, NotifyQueue>(m);
+        var strategy = dbContext.Database.CreateExecutionStrategy();
 
-        notifyQueue = dbContext.NotifyQueue.Add(notifyQueue).Entity;
-        dbContext.SaveChanges();
-
-        var id = notifyQueue.NotifyId;
-
-        var info = new NotifyInfo
+        strategy.Execute(() =>
         {
-            NotifyId = id,
-            State = 0,
-            Attempts = 0,
-            ModifyDate = DateTime.UtcNow,
-            Priority = m.Priority
-        };
+            using var tx = dbContext.Database.BeginTransaction(IsolationLevel.ReadCommitted);
 
-        dbContext.NotifyInfo.Add(info);
-        dbContext.SaveChanges();
+            var notifyQueue = _mapper.Map<NotifyMessage, NotifyQueue>(m);
 
-        tx.Commit();
+            notifyQueue = dbContext.NotifyQueue.Add(notifyQueue).Entity;
+            dbContext.SaveChanges();
 
+            var id = notifyQueue.NotifyId;
+
+            var info = new NotifyInfo
+            {
+                NotifyId = id,
+                State = 0,
+                Attempts = 0,
+                ModifyDate = DateTime.UtcNow,
+                Priority = m.Priority
+            };
+
+            dbContext.NotifyInfo.Add(info);
+            dbContext.SaveChanges();
+
+            tx.Commit();
+        });
+    
         return 1;
     }
 
@@ -84,8 +90,7 @@ public class DbWorker
             var _mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
 
             using var dbContext = scope.ServiceProvider.GetService<DbContextManager<NotifyDbContext>>().Get(_dbid);
-            using var tx = dbContext.Database.BeginTransaction();
-
+     
             var q = dbContext.NotifyQueue
                 .Join(dbContext.NotifyInfo, r => r.NotifyId, r => r.NotifyId, (queue, info) => new { queue, info })
                 .Where(r => r.info.State == (int)MailSendingState.NotSended || r.info.State == (int)MailSendingState.Error && r.info.ModifyDate < DateTime.UtcNow - TimeSpan.Parse(_notifyServiceCfg.Process.AttemptsInterval))
@@ -113,15 +118,22 @@ public class DbWorker
                         return res;
                     });
 
-            var info = dbContext.NotifyInfo.Where(r => messages.Keys.Any(a => a == r.NotifyId)).ToList();
+            var strategy = dbContext.Database.CreateExecutionStrategy();
 
-            foreach (var i in info)
+            strategy.Execute(() =>
             {
-                i.State = (int)MailSendingState.Sending;
-            }
+                using var tx = dbContext.Database.BeginTransaction();
 
-            dbContext.SaveChanges();
-            tx.Commit();
+                var info = dbContext.NotifyInfo.Where(r => messages.Keys.Any(a => a == r.NotifyId)).ToList();
+
+                foreach (var i in info)
+                {
+                    i.State = (int)MailSendingState.Sending;
+                }
+
+                dbContext.SaveChanges();
+                tx.Commit();
+            });
 
             return messages;
         }
@@ -132,16 +144,21 @@ public class DbWorker
         using var scope = _serviceScopeFactory.CreateScope();
         using var dbContext = scope.ServiceProvider.GetService<DbContextManager<NotifyDbContext>>().Get(_dbid);
 
-        var tr = dbContext.Database.BeginTransaction();
-        var info = dbContext.NotifyInfo.Where(r => r.State == 1).ToList();
+        var strategy = dbContext.Database.CreateExecutionStrategy();
 
-        foreach (var i in info)
+        strategy.Execute(() =>
         {
-            i.State = 0;
-        }
+            var tr = dbContext.Database.BeginTransaction();
+            var info = dbContext.NotifyInfo.Where(r => r.State == 1).ToList();
 
-        dbContext.SaveChanges();
-        tr.Commit();
+            foreach (var i in info)
+            {
+                i.State = 0;
+            }
+
+            dbContext.SaveChanges();
+            tr.Commit();
+        });
     }
 
     public void SetState(int id, MailSendingState result)
@@ -150,38 +167,43 @@ public class DbWorker
         using var dbContext = scope.ServiceProvider.GetService<DbContextManager<NotifyDbContext>>().Get(_dbid);
         using var tx = dbContext.Database.BeginTransaction();
 
-        if (result == MailSendingState.Sended)
+        var strategy = dbContext.Database.CreateExecutionStrategy();
+
+        strategy.Execute(() =>
         {
-            var d = dbContext.NotifyInfo.Where(r => r.NotifyId == id).FirstOrDefault();
-            dbContext.NotifyInfo.Remove(d);
-            dbContext.SaveChanges();
-        }
-        else
-        {
-            if (result == MailSendingState.Error)
+            if (result == MailSendingState.Sended)
             {
-                var attempts = dbContext.NotifyInfo.Where(r => r.NotifyId == id).Select(r => r.Attempts).FirstOrDefault();
-                if (_notifyServiceCfg.Process.MaxAttempts <= attempts + 1)
+                var d = dbContext.NotifyInfo.Where(r => r.NotifyId == id).FirstOrDefault();
+                dbContext.NotifyInfo.Remove(d);
+                dbContext.SaveChanges();
+            }
+            else
+            {
+                if (result == MailSendingState.Error)
                 {
-                    result = MailSendingState.FatalError;
+                    var attempts = dbContext.NotifyInfo.Where(r => r.NotifyId == id).Select(r => r.Attempts).FirstOrDefault();
+                    if (_notifyServiceCfg.Process.MaxAttempts <= attempts + 1)
+                    {
+                        result = MailSendingState.FatalError;
+                    }
                 }
+
+                var info = dbContext.NotifyInfo
+                    .Where(r => r.NotifyId == id)
+                    .ToList();
+
+                foreach (var i in info)
+                {
+                    i.State = (int)result;
+                    i.Attempts += 1;
+                    i.ModifyDate = DateTime.UtcNow;
+                }
+
+                dbContext.SaveChanges();
             }
 
-            var info = dbContext.NotifyInfo
-                .Where(r => r.NotifyId == id)
-                .ToList();
-
-            foreach (var i in info)
-            {
-                i.State = (int)result;
-                i.Attempts += 1;
-                i.ModifyDate = DateTime.UtcNow;
-            }
-
-            dbContext.SaveChanges();
-        }
-
-        tx.Commit();
+            tx.Commit();
+        });
     }
 }
 

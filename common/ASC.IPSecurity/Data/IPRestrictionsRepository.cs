@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using Microsoft.EntityFrameworkCore;
+
 namespace ASC.IPSecurity;
 
 [Scope]
@@ -52,20 +54,25 @@ public class IPRestrictionsRepository
 
     public List<string> Save(IEnumerable<string> ips, int tenant)
     {
-        using var tx = TenantDbContext.Database.BeginTransaction();
+        var strategy = TenantDbContext.Database.CreateExecutionStrategy();
 
-        var restrictions = TenantDbContext.TenantIpRestrictions.Where(r => r.Tenant == tenant).ToList();
-        TenantDbContext.TenantIpRestrictions.RemoveRange(restrictions);
-
-        var ipsList = ips.Select(r => new TenantIpRestrictions
+        strategy.Execute(() =>
         {
-            Tenant = tenant,
-            Ip = r
+            using var tx = TenantDbContext.Database.BeginTransaction();
+
+            var restrictions = TenantDbContext.TenantIpRestrictions.Where(r => r.Tenant == tenant).ToList();
+            TenantDbContext.TenantIpRestrictions.RemoveRange(restrictions);
+
+            var ipsList = ips.Select(r => new TenantIpRestrictions
+            {
+                Tenant = tenant,
+                Ip = r
+            });
+
+            TenantDbContext.TenantIpRestrictions.AddRange(ipsList);
+
+            tx.Commit();
         });
-
-        TenantDbContext.TenantIpRestrictions.AddRange(ipsList);
-
-        tx.Commit();
 
         return ips.ToList();
     }

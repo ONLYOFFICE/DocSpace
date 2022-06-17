@@ -79,7 +79,7 @@ public class RegisterInstanceDao<T> : IRegisterInstanceDao<T> where T : IHostedS
     public async Task<IEnumerable<InstanceRegistration>> GetAll()
     {
         return await _instanceRegistrationContext.InstanceRegistrations
-                                                .Where(x => x.WorkerTypeName == typeof(T).Name)
+                                                .Where(x => x.WorkerTypeName == typeof(T).GetFormattedName())
                                                 .ToListAsync();
     }
 

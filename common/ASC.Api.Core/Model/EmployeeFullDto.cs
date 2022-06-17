@@ -128,9 +128,19 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
         var parameter = Expression.Parameter(typeof(User), "i");
         var bindExprs = new List<MemberAssignment>();
 
+        //foreach (var field in apiContext.Fields)
+        //{
+        //    var userInfoProp = typeof(UserInfo).GetProperty(field);
+        //    var userProp = typeof(User).GetProperty(field);
+        //    if (userInfoProp != null && userProp != null)
+        //    {
+        //        bindExprs.Add(Expression.Bind(userInfoProp, Expression.Property(parameter, userProp)));
+        //    }
+        //}
+
         if (apiContext.Check("Id"))
         {
-            bindExprs.Add(Expression.Bind(typeof(UserInfo).GetProperty("ID"),
+            bindExprs.Add(Expression.Bind(typeof(UserInfo).GetProperty("Id"),
                 Expression.Property(parameter, typeof(User).GetProperty("Id"))));
         }
 
