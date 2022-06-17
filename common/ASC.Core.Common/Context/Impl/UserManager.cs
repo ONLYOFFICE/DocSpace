@@ -373,7 +373,7 @@ public class UserManager
                 var collection = _cardDavAddressbook.GetCollection(requestUrlBook, userAuthorization, myUri.ToString()).Result;
                 if (collection.Completed && collection.StatusCode != 404)
                 {
-                    _cardDavAddressbook.Delete(myUri, newUser.Id, newUser.Email, tenant.Id);
+                    _cardDavAddressbook.Delete(myUri, newUser.Id, newUser.Email, tenant.Id).Wait();//TODO
                 }
                 foreach (var email in allUserEmails)
                 {
@@ -403,7 +403,7 @@ public class UserManager
 
                     try
                     {
-                        _cardDavAddressbook.UpdateItemForAllAddBooks(allUserEmails, myUri, cardDavUser, _tenantManager.GetCurrentTenant().Id, oldUserData != null && oldUserData.Email != newUser.Email ? oldUserData.Email : null);
+                        _cardDavAddressbook.UpdateItemForAllAddBooks(allUserEmails, myUri, cardDavUser, _tenantManager.GetCurrentTenant().Id, oldUserData != null && oldUserData.Email != newUser.Email ? oldUserData.Email : null).Wait(); // todo
                     }
                     catch (Exception ex)
                     {
@@ -617,7 +617,7 @@ public class UserManager
             var myUri = (_accessor?.HttpContext != null) ? _accessor.HttpContext.Request.GetUrlRewriter().ToString() :
                        (_cache.Get<string>("REWRITE_URL" + tenant.Id) != null) ?
                        new Uri(_cache.Get<string>("REWRITE_URL" + tenant.Id)).ToString() : tenant.GetTenantDomain(_coreSettings);
-            _cardDavAddressbook.Delete(myUri, user.Id, user.Email, tenant.Id);
+            _cardDavAddressbook.Delete(myUri, user.Id, user.Email, tenant.Id).Wait(); //todo
         }
     }
 

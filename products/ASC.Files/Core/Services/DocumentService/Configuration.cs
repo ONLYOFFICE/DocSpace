@@ -704,6 +704,10 @@ public class CustomizationConfig<T>
         {
             Customer.SetConfiguration(_configuration);
         }
+        else
+        {
+            Customer = null;
+        }
 
         Logo.SetConfiguration(_configuration);
     }
