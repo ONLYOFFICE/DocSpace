@@ -46,6 +46,7 @@ RUN cd ${SRC_PATH} && \
     mkdir -p /app/onlyoffice/ && \
     find config/ -maxdepth 1 -name "*.json" | grep -v test | xargs tar -cvf config.tar && \
     tar -C "/app/onlyoffice/" -xvf config.tar && \
+    cp config/*.config /app/onlyoffice/config/ && \
     mkdir -p /etc/nginx/conf.d && cp -f config/nginx/onlyoffice*.conf /etc/nginx/conf.d/ && \
     mkdir -p /etc/nginx/includes/ && cp -f config/nginx/includes/onlyoffice*.conf /etc/nginx/includes/ && \
     sed -i "s/\"number\".*,/\"number\": \"${PRODUCT_VERSION}.${BUILD_NUMBER}\",/g" /app/onlyoffice/config/appsettings.json && \
@@ -93,7 +94,7 @@ RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
     apt-get install -yq libgdiplus && \
     pip3 install --upgrade jsonpath-ng
 
-COPY --from=base --chown=onlyoffice:onlyoffice /app/onlyoffice/config/*.json /app/onlyoffice/config/
+COPY --from=base --chown=onlyoffice:onlyoffice /app/onlyoffice/config/* /app/onlyoffice/config/
 COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/common/modify-json-config.py /app
         
 #USER onlyoffice
@@ -118,9 +119,9 @@ RUN mkdir -p /var/log/onlyoffice && \
     apt-get -y update && \
     apt-get -y upgrade && \
     apt-get install -yq sudo nano curl vim python3-pip && \
-    pip3 install --upgrade jsonpath-ng
+    pip3 install --upgrade jsonpath-ng multipledispatch
 
-COPY --from=base --chown=onlyoffice:onlyoffice /app/onlyoffice/config/*.json /app/onlyoffice/config/
+COPY --from=base --chown=onlyoffice:onlyoffice /app/onlyoffice/config/* /app/onlyoffice/config/
 COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/common/modify-json-config.py /app
 
 EXPOSE 5050
