@@ -126,6 +126,8 @@ const EditingWrapper = styled.div`
             `1px solid ${props.theme.filesEditingWrapper.tile.itemActiveBorder}`};
         }
       `};
+
+    ${({ isDisabled }) => isDisabled && "background-color: #fff"}
   }
 
   .edit-button {
@@ -247,6 +249,7 @@ const EditingWrapperComponent = (props) => {
       viewAs={viewAs}
       isUpdatingRowItem={isUpdatingRowItem && !isTable}
       isFolder={isFolder}
+      isDisabled={isLoading}
     >
       {isTable && elementIcon}
       {isUpdatingRowItem && !isTable ? (
