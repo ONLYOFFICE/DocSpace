@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useEffect } from "react";
 import { isMobile } from "react-device-detect";
 import Paging from "@appserver/components/paging";
 import { useTranslation } from "react-i18next";
@@ -14,6 +14,8 @@ const SectionPagingContent = ({
   selectedFolderId,
   tReady,
   totalPages,
+  setPageItemsLength,
+  isHidePagination,
 }) => {
   const { t } = useTranslation("Home");
   const onNextClick = useCallback(
@@ -117,6 +119,10 @@ const SectionPagingContent = ({
     });
   }, [filter.total, filter.pageCount, t, totalPages]);
 
+  useEffect(() => {
+    setPageItemsLength(pageItems.length);
+  }, [pageItems]);
+
   const emptyPageSelection = {
     key: 0,
     label: t("Common:PageOfTotalPage", { page: 1, totalPage: 1 }),
@@ -141,7 +147,9 @@ const SectionPagingContent = ({
       );
   }, [files, folders, filter, pageItems]);
 
-  return !tReady || (filter.total < filter.pageCount && filter.total < 26) ? (
+  return !tReady ||
+    (filter.total <= filter.pageCount && filter.total < 26) ||
+    isHidePagination ? (
     <></>
   ) : (
     <Paging
@@ -166,7 +174,15 @@ const SectionPagingContent = ({
 };
 
 export default inject(({ filesStore, selectedFolderStore }) => {
-  const { files, folders, fetchFiles, filter, setIsLoading } = filesStore;
+  const {
+    files,
+    folders,
+    fetchFiles,
+    filter,
+    setIsLoading,
+    setPageItemsLength,
+    isHidePagination,
+  } = filesStore;
 
   const totalPages = Math.ceil(filter.total / filter.pageCount);
 
@@ -179,5 +195,8 @@ export default inject(({ filesStore, selectedFolderStore }) => {
 
     setIsLoading,
     fetchFiles,
+
+    setPageItemsLength,
+    isHidePagination,
   };
 })(observer(SectionPagingContent));

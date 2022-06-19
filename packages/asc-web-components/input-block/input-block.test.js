@@ -14,7 +14,7 @@ describe("<IconButton />", () => {
         onChange={(event) => alert(event.target.value)}
       >
         <Button
-          size="base"
+          size="normal"
           isDisabled={false}
           onClick={() => alert("Button clicked")}
           label="OK"

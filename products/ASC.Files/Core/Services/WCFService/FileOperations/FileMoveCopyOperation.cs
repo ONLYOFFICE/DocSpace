@@ -80,10 +80,11 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
     private readonly bool _copy;
     private readonly FileConflictResolveType _resolveType;
     private readonly IDictionary<string, StringValues> _headers;
+        private readonly ThumbnailSettings _thumbnailSettings;
 
     public override FileOperationType OperationType => _copy ? FileOperationType.Copy : FileOperationType.Move;
 
-    public FileMoveCopyOperation(IServiceProvider serviceProvider, FileMoveCopyOperationData<T> data)
+        public FileMoveCopyOperation(IServiceProvider serviceProvider, FileMoveCopyOperationData<T> data, ThumbnailSettings thumbnailSettings)
         : base(serviceProvider, data)
     {
         _daoFolderId = data.DaoFolderId;
@@ -92,6 +93,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
         _resolveType = data.ResolveType;
 
         _headers = data.Headers;
+            _thumbnailSettings = thumbnailSettings;
     }
 
     protected override async Task DoAsync(IServiceScope scope)
@@ -160,11 +162,11 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
 
         var needToMark = new List<FileEntry<TTo>>();
 
-        var moveOrCopyFoldersTask = MoveOrCopyFoldersAsync(scope, Folders, toFolder, _copy);
-        var moveOrCopyFilesTask = MoveOrCopyFilesAsync(scope, Files, toFolder, _copy);
+            var moveOrCopyFoldersTask = await MoveOrCopyFoldersAsync(scope, Folders, toFolder, _copy);
+            var moveOrCopyFilesTask = await MoveOrCopyFilesAsync(scope, Files, toFolder, _copy);
 
-        needToMark.AddRange(await moveOrCopyFoldersTask);
-        needToMark.AddRange(await moveOrCopyFilesTask);
+            needToMark.AddRange(moveOrCopyFoldersTask);
+            needToMark.AddRange(moveOrCopyFilesTask);
 
         var ntm = needToMark.Distinct();
         foreach (var n in ntm)
@@ -477,8 +479,11 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                 if (file.RootFolderType == FolderType.TRASH && newFile.ThumbnailStatus == Thumbnail.NotRequired)
                                 {
                                     newFile.ThumbnailStatus = Thumbnail.Waiting;
-                                    await fileDao.SaveThumbnailAsync(newFile, null);
-                                }
+                                        foreach (var size in _thumbnailSettings.Sizes)
+                                        {
+                                            await fileDao.SaveThumbnailAsync(newFile, null, size.Width, size.Height);
+                                        }
+                                    }
 
                                 if (newFile.ProviderEntry)
                                 {
@@ -537,10 +542,14 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
 
                                 if (file.ThumbnailStatus == Thumbnail.Created)
                                 {
-                                    using (var thumbnail = await FileDao.GetThumbnailAsync(file))
+                                        foreach (var size in _thumbnailSettings.Sizes)
                                     {
-                                        await fileDao.SaveThumbnailAsync(newFile, thumbnail);
-                                    }
+                                            using (var thumbnail = await FileDao.GetThumbnailAsync(file, size.Width, size.Height))
+                                            {
+                                                await fileDao.SaveThumbnailAsync(newFile, thumbnail, size.Width, size.Height);
+                                            }
+                                        }
+
                                     newFile.ThumbnailStatus = Thumbnail.Created;
                                 }
 

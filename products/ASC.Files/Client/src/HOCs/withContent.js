@@ -8,7 +8,8 @@ import {
   ShareAccessRights,
 } from "@appserver/common/constants";
 import { combineUrl } from "@appserver/common/utils";
-
+import getCorrectDate from "@appserver/components/utils/getCorrectDate";
+import { LANGUAGE } from "@appserver/common/constants";
 import config from "../../package.json";
 import EditingWrapperComponent from "../components/EditingWrapperComponent";
 import { getTitleWithoutExst } from "../helpers/files-helpers";
@@ -117,7 +118,10 @@ export default function withContent(WrappedContent) {
                 })
               )
             )
-            .catch((err) => toastr.error(err))
+            .catch((err) => {
+              toastr.error(err);
+              this.completeAction(fileActionId);
+            })
             .finally(() => {
               clearTimeout(timerId);
               timerId = null;
@@ -135,7 +139,10 @@ export default function withContent(WrappedContent) {
                 })
               )
             )
-            .catch((err) => toastr.error(err))
+            .catch((err) => {
+              toastr.error(err);
+              this.completeAction(fileActionId);
+            })
             .finally(() => {
               clearTimeout(timerId);
               timerId = null;
@@ -197,6 +204,7 @@ export default function withContent(WrappedContent) {
         fileCopyAs,
         fromTemplate,
         gallerySelected,
+        setCreatedItem,
       } = this.props;
       const { itemTitle } = this.state;
       const { parentId, fileExst } = item;
@@ -239,9 +247,13 @@ export default function withContent(WrappedContent) {
           .then((folder) => {
             createdFolderId = folder.id;
             addActiveItems(null, [folder.id]);
+            setCreatedItem({ id: createdFolderId, type: "folder" });
           })
           .then(() => this.completeAction(itemId))
-          .catch((e) => toastr.error(e))
+          .catch((e) => {
+            toastr.error(e);
+            this.completeAction(itemId);
+          })
           .finally(() => {
             const folderIds = [+itemId];
             createdFolderId && folderIds.push(createdFolderId);
@@ -309,12 +321,17 @@ export default function withContent(WrappedContent) {
           )
             .then((file) => {
               createdFileId = file.id;
+              setCreatedItem({ id: createdFileId, type: "file" });
               addActiveItems([file.id]);
 
               return open && openDocEditor(file.id, file.providerKey, tab);
             })
             .then(() => this.completeAction(itemId))
-            .catch((e) => toastr.error(e))
+            .catch((e) => {
+              toastr.error(e);
+              tab && tab.close();
+              this.completeAction(itemId);
+            })
             .finally(() => {
               const fileIds = [+itemId];
               createdFileId && fileIds.push(createdFileId);
@@ -327,6 +344,7 @@ export default function withContent(WrappedContent) {
           createFile(item.parentId, `${title}.${item.fileExst}`)
             .then((file) => {
               createdFileId = file.id;
+              setCreatedItem({ id: createdFileId, type: "file" });
               addActiveItems([file.id]);
 
               if (isPrivacy) {
@@ -346,7 +364,11 @@ export default function withContent(WrappedContent) {
               return open && openDocEditor(file.id, file.providerKey, tab);
             })
             .then(() => this.completeAction(itemId))
-            .catch((e) => toastr.error(e))
+            .catch((e) => {
+              toastr.error(e);
+              tab && tab.close();
+              this.completeAction(itemId);
+            })
             .finally(() => {
               const fileIds = [+itemId];
               createdFileId && fileIds.push(createdFileId);
@@ -375,22 +397,14 @@ export default function withContent(WrappedContent) {
     };
 
     getStatusByDate = (create) => {
-      const { culture, item } = this.props;
+      const { culture, item, personal } = this.props;
       const { created, updated } = item;
 
-      const options = {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "numeric",
-      };
+      const locale = personal ? localStorage.getItem(LANGUAGE) : culture;
 
       const date = create ? created : updated;
 
-      const dateLabel = new Date(date)
-        .toLocaleString(culture, options)
-        .replace(",", "");
+      const dateLabel = getCorrectDate(locale, date);
 
       return dateLabel;
     };
@@ -411,7 +425,16 @@ export default function withContent(WrappedContent) {
         isEdit,
         titleWithoutExt,
       } = this.props;
-      const { access, createdBy, fileExst, fileStatus, href, icon, id } = item;
+      const {
+        access,
+        createdBy,
+        fileExst,
+        fileStatus,
+        href,
+        icon,
+        id,
+        isFolder,
+      } = item;
 
       const updatedDate = this.getStatusByDate(false);
       const createdDate = this.getStatusByDate(true);
@@ -454,6 +477,7 @@ export default function withContent(WrappedContent) {
           cancelUpdateItem={this.cancelUpdateItem}
           isUpdatingRowItem={isUpdatingRowItem}
           passwordEntryProcess={passwordEntryProcess}
+          isFolder={item.fileExst ? false : true}
         />
       ) : (
         <WrappedContent
@@ -499,6 +523,7 @@ export default function withContent(WrappedContent) {
         passwordEntryProcess,
         addActiveItems,
         gallerySelected,
+        setCreatedItem,
       } = filesStore;
       const { clearActiveOperations, fileCopyAs } = uploadDataStore;
       const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
@@ -511,8 +536,10 @@ export default function withContent(WrappedContent) {
         fromTemplate,
       } = filesStore.fileActionStore;
       const { replaceFileStream, setEncryptionAccess } = auth;
+
       const {
         culture,
+        personal,
         folderFormValidation,
         isDesktopClient,
       } = auth.settingsStore;
@@ -563,6 +590,8 @@ export default function withContent(WrappedContent) {
         titleWithoutExt,
         fromTemplate,
         gallerySelected,
+        setCreatedItem,
+        personal,
       };
     }
   )(observer(WithContent));

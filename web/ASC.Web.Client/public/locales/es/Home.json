@@ -1,5 +1,6 @@
-﻿{
-    "GoodMorning": "¡Buenos días, {{displayName}}!",
-    "GoodAfternoon": "¡Buenas tardes, {{displayName}}!",
-    "GoodEvening": "¡Buenas noches, {{displayName}}!"
+{
+  "GoodAfternoon": "¡Buenas tardes, {{displayName}}!",
+  "GoodEvening": "¡Buenas noches, {{displayName}}!",
+  "GoodMorning": "¡Buenos días, {{displayName}}!",
+  "NoOneModulesAvailable": "No hay módulos disponibles"
 }

@@ -31,16 +31,17 @@ public class LockerManager
 {
     private readonly AuthContext _authContext;
     private readonly IDaoFactory _daoFactory;
-
-    public LockerManager(AuthContext authContext, IDaoFactory daoFactory)
+    private readonly ThirdPartySelector _thirdPartySelector;
+    public LockerManager(AuthContext authContext, IDaoFactory daoFactory, ThirdPartySelector thirdPartySelector)
     {
         _authContext = authContext;
         _daoFactory = daoFactory;
+        _thirdPartySelector = thirdPartySelector;
     }
 
     public bool FileLockedForMe<T>(T fileId, Guid userId = default)
     {
-        var app = ThirdPartySelector.GetAppByFileId(fileId.ToString());
+        var app = _thirdPartySelector.GetAppByFileId(fileId.ToString());
         if (app != null)
         {
             return false;
@@ -55,7 +56,7 @@ public class LockerManager
 
     public async Task<bool> FileLockedForMeAsync<T>(T fileId, Guid userId = default)
     {
-        var app = ThirdPartySelector.GetAppByFileId(fileId.ToString());
+        var app = _thirdPartySelector.GetAppByFileId(fileId.ToString());
         if (app != null)
         {
             return false;
@@ -282,6 +283,8 @@ public class EntryStatusManager
 public class EntryManager
 {
     private const string _updateList = "filesUpdateList";
+    private readonly ThirdPartySelector _thirdPartySelector;
+    private readonly ThumbnailSettings _thumbnailSettings;
 
     private readonly ICache _cache;
     private readonly FileTrackerHelper _fileTracker;
@@ -333,8 +336,10 @@ public class EntryManager
         ICache cache,
         FileTrackerHelper fileTracker,
         EntryStatusManager entryStatusManager,
+        ThirdPartySelector thirdPartySelector,
         IHttpClientFactory clientFactory,
-        FilesMessageService filesMessageService)
+        FilesMessageService filesMessageService,
+        ThumbnailSettings thumbnailSettings)
     {
         _daoFactory = daoFactory;
         _fileSecurity = fileSecurity;
@@ -361,6 +366,8 @@ public class EntryManager
         _entryStatusManager = entryStatusManager;
         _clientFactory = clientFactory;
         _filesMessageService = filesMessageService;
+        _thirdPartySelector = thirdPartySelector;
+        _thumbnailSettings = thumbnailSettings;
     }
 
     public async Task<(IEnumerable<FileEntry> Entries, int Total)> GetEntriesAsync<T>(Folder<T> parent, int from, int count, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy)
@@ -692,7 +699,7 @@ public class EntryManager
         var fileIds = tags.Where(tag => tag.EntryType == FileEntryType.File).Select(r => r.EntryId).ToList();
 
         var files = await GetRecentByIdsAsync(fileIds.OfType<int>(), filter, subjectGroup, subjectId, searchText, searchInContent);
-        files.Concat(await GetRecentByIdsAsync(fileIds.OfType<string>(), filter, subjectGroup, subjectId, searchText, searchInContent));
+        files = files.Concat(await GetRecentByIdsAsync(fileIds.OfType<string>(), filter, subjectGroup, subjectId, searchText, searchInContent));
 
         var listFileIds = fileIds.Select(tag => tag.ToString()).ToList();
 
@@ -1226,7 +1233,7 @@ public class EntryManager
             newExtension = "." + newExtension.Trim('.');
         }
 
-        var app = ThirdPartySelector.GetAppByFileId(fileId.ToString());
+        var app = _thirdPartySelector.GetAppByFileId(fileId.ToString());
         if (app != null)
         {
             await app.SaveFileAsync(fileId.ToString(), newExtension, downloadUri, stream);
@@ -1551,10 +1558,14 @@ public class EntryManager
 
             if (fromFile.ThumbnailStatus == Thumbnail.Created)
             {
-                using (var thumb = await fileDao.GetThumbnailAsync(fromFile))
+                foreach (var size in _thumbnailSettings.Sizes)
                 {
-                    await fileDao.SaveThumbnailAsync(newFile, thumb);
+                    using (var thumb = await fileDao.GetThumbnailAsync(fromFile, size.Width, size.Height))
+                    {
+                        await fileDao.SaveThumbnailAsync(newFile, thumb, size.Width, size.Height);
+                    }
                 }
+
                 newFile.ThumbnailStatus = Thumbnail.Created;
             }
 

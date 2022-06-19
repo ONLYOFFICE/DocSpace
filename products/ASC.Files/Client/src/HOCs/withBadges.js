@@ -23,15 +23,8 @@ export default function withBadges(WrappedComponent) {
         isTrashFolder,
       } = this.props;
       if (isTrashFolder) return;
-
-      if (!isTabletView) {
-        fetchFileVersions(item.id + "");
-        setIsVerHistoryPanel(true);
-      } else {
-        history.push(
-          combineUrl(AppServerConfig.proxyURL, homepage, `/${item.id}/history`)
-        );
-      }
+      fetchFileVersions(item.id + "");
+      setIsVerHistoryPanel(true);
     };
 
     onBadgeClick = () => {

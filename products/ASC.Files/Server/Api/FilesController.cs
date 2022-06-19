@@ -24,7 +24,11 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Web.Files.ThirdPartyApp;
+
 using AutoMapper;
+
+using FileShare = ASC.Files.Core.Security.FileShare;
 
 namespace ASC.Files.Api;
 
@@ -42,18 +46,35 @@ public class FilesControllerInternal : FilesController<int>
 
 public class FilesControllerThirdparty : FilesController<string>
 {
+    private readonly ThirdPartySelector _thirdPartySelector;
+    private readonly DocumentServiceHelper _documentServiceHelper;
+
     public FilesControllerThirdparty(
         FilesControllerHelper<string> filesControllerHelper,
         FileStorageService<string> fileStorageService,
+        ThirdPartySelector thirdPartySelector,
+        DocumentServiceHelper documentServiceHelper,
         IMapper mapper)
         : base(filesControllerHelper, fileStorageService, mapper)
     {
+        _thirdPartySelector = thirdPartySelector;
+        _documentServiceHelper = documentServiceHelper;
+    }
+
+    [HttpGet("file/app-{fileId}", Order = int.MaxValue)]
+    public async Task<FileEntryDto> GetFileInfoThirdPartyAsync(string fileId)
+    {
+        fileId = "app-" + fileId;
+        var app = _thirdPartySelector.GetAppByFileId(fileId?.ToString());
+        var file = app.GetFile(fileId?.ToString(), out var editable);
+        var docParams = await _documentServiceHelper.GetParamsAsync(file, true, editable ? FileShare.ReadWrite : FileShare.Read, false, editable, editable, editable, false);
+        return await _filesControllerHelper.GetFileEntryWrapperAsync(docParams.File);
     }
 }
 
 public abstract class FilesController<T> : ApiControllerBase
 {
-    private readonly FilesControllerHelper<T> _filesControllerHelper;
+    protected readonly FilesControllerHelper<T> _filesControllerHelper;
     private readonly FileStorageService<T> _fileStorageService;
     private readonly IMapper _mapper;
 
@@ -202,6 +223,7 @@ public abstract class FilesController<T> : ApiControllerBase
     {
         return _filesControllerHelper.GetFileInfoAsync(fileId, version);
     }
+
 
     /// <summary>
     /// Returns the detailed information about all the available file versions with the ID specified in the request

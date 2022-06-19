@@ -62,17 +62,19 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
     private readonly bool _immediately;
     private readonly bool _isEmptyTrash;
     private readonly IDictionary<string, StringValues> _headers;
+    private readonly ThumbnailSettings _thumbnailSettings;
 
     public override FileOperationType OperationType => FileOperationType.Delete;
 
 
-    public FileDeleteOperation(IServiceProvider serviceProvider, FileDeleteOperationData<T> fileOperationData)
-        : base(serviceProvider, fileOperationData)
+    public FileDeleteOperation(IServiceProvider serviceProvider, FileDeleteOperationData<T> fileOperationData, ThumbnailSettings thumbnailSettings)
+    : base(serviceProvider, fileOperationData)
     {
         _ignoreException = fileOperationData.IgnoreException;
         _immediately = fileOperationData.Immediately;
         _headers = fileOperationData.Headers;
         _isEmptyTrash = fileOperationData.IsEmptyTrash;
+        _thumbnailSettings = thumbnailSettings;
     }
 
     protected override async Task DoAsync(IServiceScope scope)
@@ -239,7 +241,10 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                     if (file.ThumbnailStatus == Thumbnail.Waiting)
                     {
                         file.ThumbnailStatus = Thumbnail.NotRequired;
-                        await FileDao.SaveThumbnailAsync(file, null);
+                        foreach (var size in _thumbnailSettings.Sizes)
+                        {
+                            await FileDao.SaveThumbnailAsync(file, null, size.Width, size.Height);
+                        }
                     }
 
                     socketManager.DeleteFile(file);

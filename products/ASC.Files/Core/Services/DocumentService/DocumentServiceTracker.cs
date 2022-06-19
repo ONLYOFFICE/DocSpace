@@ -150,7 +150,7 @@ public class DocumentServiceTrackerHelper
     private readonly FileTrackerHelper _fileTracker;
     private readonly ILogger<DocumentServiceTrackerHelper> _logger;
     private readonly IHttpClientFactory _clientFactory;
-
+    private readonly ThirdPartySelector _thirdPartySelector;
     public DocumentServiceTrackerHelper(
         SecurityContext securityContext,
         UserManager userManager,
@@ -171,7 +171,8 @@ public class DocumentServiceTrackerHelper
         NotifyClient notifyClient,
         MailMergeTaskRunner mailMergeTaskRunner,
         FileTrackerHelper fileTracker,
-        IHttpClientFactory clientFactory)
+            IHttpClientFactory clientFactory,
+            ThirdPartySelector thirdPartySelector)
     {
         _securityContext = securityContext;
         _userManager = userManager;
@@ -193,6 +194,7 @@ public class DocumentServiceTrackerHelper
         _fileTracker = fileTracker;
         _logger = logger;
         _clientFactory = clientFactory;
+            _thirdPartySelector = thirdPartySelector;
     }
 
     public string GetCallbackUrl<T>(T fileId)
@@ -242,7 +244,7 @@ public class DocumentServiceTrackerHelper
 
     private async Task ProcessEditAsync<T>(T fileId, TrackerData fileData)
     {
-        if (ThirdPartySelector.GetAppByFileId(fileId.ToString()) != null)
+            if (_thirdPartySelector.GetAppByFileId(fileId.ToString()) != null)
         {
             return;
         }
@@ -251,7 +253,7 @@ public class DocumentServiceTrackerHelper
         var usersDrop = new List<string>();
 
         string docKey;
-        var app = ThirdPartySelector.GetAppByFileId(fileId.ToString());
+            var app = _thirdPartySelector.GetAppByFileId(fileId.ToString());
         if (app == null)
         {
             File<T> fileStable;
@@ -326,7 +328,7 @@ public class DocumentServiceTrackerHelper
             userId = Guid.Empty;
         }
 
-        var app = ThirdPartySelector.GetAppByFileId(fileId.ToString());
+            var app = _thirdPartySelector.GetAppByFileId(fileId.ToString());
         if (app == null)
         {
             File<T> fileStable;

@@ -71,20 +71,20 @@ public class UploadControllerHelper<T> : FilesHelperBase<T>
     {
         var file = await _fileUploader.VerifyChunkedUploadForEditing(fileId, fileSize);
 
-        return await CreateUploadSessionAsync(file, false, true);
+        return await CreateUploadSessionAsync(file, false, default(ApiDateTime), true);
     }
 
-    public async Task<object> CreateUploadSessionAsync(T folderId, string fileName, long fileSize, string relativePath, ApiDateTime lastModified, bool encrypted, bool keepVersion = false)
+    public async Task<object> CreateUploadSessionAsync(T folderId, string fileName, long fileSize, string relativePath, bool encrypted, ApiDateTime createOn, bool keepVersion = false)
     {
-        var file = await _fileUploader.VerifyChunkedUploadAsync(folderId, fileName, fileSize, _filesSettingsHelper.UpdateIfExist, lastModified, relativePath);
-        return await CreateUploadSessionAsync(file, encrypted, keepVersion);
+        var file = await _fileUploader.VerifyChunkedUploadAsync(folderId, fileName, fileSize, _filesSettingsHelper.UpdateIfExist, relativePath);
+        return await CreateUploadSessionAsync(file, encrypted, createOn, keepVersion);
     }
 
-    public async Task<object> CreateUploadSessionAsync(File<T> file, bool encrypted, bool keepVersion = false)
+    public async Task<object> CreateUploadSessionAsync(File<T> file, bool encrypted, ApiDateTime createOn, bool keepVersion = false)
     {
         if (_filesLinkUtility.IsLocalFileUploader)
         {
-            var session = await _fileUploader.InitiateUploadAsync(file.ParentId, file.Id ?? default, file.Title, file.ContentLength, encrypted, keepVersion);
+            var session = await _fileUploader.InitiateUploadAsync(file.ParentId, file.Id ?? default, file.Title, file.ContentLength, encrypted, keepVersion, createOn);
 
             var responseObject = await _chunkedUploadSessionHelper.ToResponseObjectAsync(session, true);
 

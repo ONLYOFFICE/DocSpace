@@ -426,11 +426,11 @@ public class TenantWhiteLabelSettingsHelper
 
         return type switch
         {
-            WhiteLabelLogoTypeEnum.LightSmall => general ? _webImageSupplier.GetAbsoluteWebPath("logo/light_small_general.svg") : _webImageSupplier.GetAbsoluteWebPath("logo/light_small.svg"),
-            WhiteLabelLogoTypeEnum.Dark => general ? _webImageSupplier.GetAbsoluteWebPath("logo/dark_general.png") : _webImageSupplier.GetAbsoluteWebPath("logo/dark.png"),
-            WhiteLabelLogoTypeEnum.DocsEditor => general ? _webImageSupplier.GetAbsoluteWebPath("logo/editor_logo_general.png") : _webImageSupplier.GetAbsoluteWebPath("logo/editor_logo.png"),
-            WhiteLabelLogoTypeEnum.DocsEditorEmbed => general ? _webImageSupplier.GetAbsoluteWebPath("logo/editor_logo_embed_general.png") : _webImageSupplier.GetAbsoluteWebPath("logo/editor_logo_embed.png"),
-            WhiteLabelLogoTypeEnum.Favicon => general ? _webImageSupplier.GetAbsoluteWebPath("logo/favicon_general.ico") : _webImageSupplier.GetAbsoluteWebPath("logo/favicon.ico"),
+                WhiteLabelLogoTypeEnum.LightSmall =>  _webImageSupplier.GetAbsoluteWebPath("logo/light_small_doc_space.svg"),
+                WhiteLabelLogoTypeEnum.Dark => _webImageSupplier.GetAbsoluteWebPath("logo/dark_doc_space.svg"),
+                WhiteLabelLogoTypeEnum.DocsEditor => general ? _webImageSupplier.GetAbsoluteWebPath("logo/editor_logo_general.png") : _webImageSupplier.GetAbsoluteWebPath("logo/editor_logo.png"),
+                WhiteLabelLogoTypeEnum.DocsEditorEmbed => general ? _webImageSupplier.GetAbsoluteWebPath("logo/editor_logo_embed_general.png") : _webImageSupplier.GetAbsoluteWebPath("logo/editor_logo_embed.png"),
+                WhiteLabelLogoTypeEnum.Favicon => general ? _webImageSupplier.GetAbsoluteWebPath("logo/favicon_general.ico") : _webImageSupplier.GetAbsoluteWebPath("logo/favicon.ico"),
             _ => "",
         };
     }

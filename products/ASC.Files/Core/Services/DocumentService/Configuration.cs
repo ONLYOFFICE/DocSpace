@@ -677,7 +677,8 @@ public class CustomizationConfig<T>
         CustomerConfig<T> customerConfig,
         LogoConfig<T> logoConfig,
         FileSharing fileSharing,
-        CommonLinkUtility commonLinkUtility)
+        CommonLinkUtility commonLinkUtility,
+        ThirdPartySelector thirdPartySelector)
     {
         _coreBaseSettings = coreBaseSettings;
         _settingsManager = settingsManager;
@@ -691,10 +692,12 @@ public class CustomizationConfig<T>
         Customer = customerConfig;
         Logo = logoConfig;
         FileSharing = fileSharing;
+        _thirdPartySelector = thirdPartySelector;
         _commonLinkUtility = commonLinkUtility;
     }
 
     private Configuration<T> _configuration;
+    private readonly ThirdPartySelector _thirdPartySelector;
 
     internal void SetConfiguration(Configuration<T> configuration)
     {
@@ -712,7 +715,8 @@ public class CustomizationConfig<T>
         Logo.SetConfiguration(_configuration);
     }
 
-    //private string _gobackUrl;
+    [JsonIgnore]
+    public string GobackUrl;
     public bool IsRetina { get; set; }
 
     public bool About => !_coreBaseSettings.Standalone && !_coreBaseSettings.CustomMode;
@@ -748,7 +752,7 @@ public class CustomizationConfig<T>
         {
             return _fileUtility.CanForcesave
                    && !_configuration.Document.Info.GetFile().ProviderEntry
-                   && ThirdPartySelector.GetAppByFileId(_configuration.Document.Info.GetFile().Id.ToString()) == null
+                   && _thirdPartySelector.GetAppByFileId(_configuration.Document.Info.GetFile().Id.ToString()) == null
                    && _filesSettingsHelper.Forcesave;
         }
     }
@@ -766,13 +770,13 @@ public class CustomizationConfig<T>
             {
                 return null;
             }
-            //if (_gobackUrl != null)
-            //{
-            //    return new GobackConfig
-            //    {
-            //        Url = _gobackUrl,
-            //    };
-            //}
+            if (GobackUrl != null)
+            {
+                return new GobackConfig
+                {
+                    Url = GobackUrl,
+                };
+            }
 
             var folderDao = _daoFactory.GetFolderDao<T>();
             try

@@ -715,7 +715,7 @@ public class UserManager
 
         if (group == null)
         {
-            group = ToGroup(Constants.BuildinGroups.FirstOrDefault(r => r.ID == groupID));
+                group = ToGroup(Constants.BuildinGroups.FirstOrDefault(r => r.ID == groupID) ?? Constants.LostGroupInfo);
         }
 
         return new GroupInfo

@@ -60,6 +60,7 @@ public class SettingsController : BaseSettingsController
     private readonly TelegramHelper _telegramHelper;
     private readonly Constants _constants;
     private readonly DnsSettings _dnsSettings;
+    private readonly AdditionalWhiteLabelSettingsHelper _additionalWhiteLabelSettingsHelper;
 
     public SettingsController(
         ILoggerProvider option,
@@ -94,7 +95,8 @@ public class SettingsController : BaseSettingsController
         PasswordHasher passwordHasher,
         Constants constants,
         IHttpContextAccessor httpContextAccessor,
-        DnsSettings dnsSettings
+        DnsSettings dnsSettings,
+        AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper
         ) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _log = option.CreateLogger("ASC.Api");
@@ -126,6 +128,7 @@ public class SettingsController : BaseSettingsController
         _telegramHelper = telegramHelper;
         _constants = constants;
         _dnsSettings = dnsSettings;
+        _additionalWhiteLabelSettingsHelper = additionalWhiteLabelSettingsHelper;
     }
 
     [HttpGet("")]
@@ -168,6 +171,8 @@ public class SettingsController : BaseSettingsController
                 AppId = _configuration["firebase:appId"] ?? "",
                 MeasurementId = _configuration["firebase:measurementId"] ?? ""
             };
+
+            settings.HelpLink = _commonLinkUtility.GetHelpLink(_settingsManager, _additionalWhiteLabelSettingsHelper, true);
 
             bool debugInfo;
             if (bool.TryParse(_configuration["debug-info:enabled"], out debugInfo))

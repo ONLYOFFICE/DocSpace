@@ -10,7 +10,12 @@ import Heading from "@appserver/components/heading";
 import ContextMenu from "@appserver/components/context-menu";
 import CustomScrollbarsVirtualList from "@appserver/components/scrollbar";
 import { isMobile } from "react-device-detect";
-import { tablet, desktop, isTablet } from "@appserver/components/utils/device";
+import {
+  tablet,
+  desktop,
+  isTablet,
+  isMobile as isMobileUtils,
+} from "@appserver/components/utils/device";
 import DropDownItem from "@appserver/components/drop-down-item";
 import Text from "@appserver/components/text";
 import IconButton from "@appserver/components/icon-button";
@@ -22,7 +27,7 @@ import SortDesc from "../../../../../../../../../../public/images/sort.desc.reac
 const paddingCss = css`
   @media ${desktop} {
     margin-left: 1px;
-    padding-right: 3px;
+    padding-right: 0px;
   }
 
   @media ${tablet} {
@@ -382,6 +387,44 @@ class TileContainer extends React.PureComponent {
 
     const advancedOptions = this.getAdvancedOptions();
 
+    const renderSorting = () => {
+      return (
+        <>
+          {!isRecentFolder &&
+            !isFavoritesFolder &&
+            !isMobile &&
+            !isTablet() &&
+            !isMobileUtils() && (
+              <div onClick={this.toggleDropdown}>
+                <ComboBox
+                  opened={this.state.isOpen}
+                  className={"sort-combo-box"}
+                  options={[]}
+                  selectedOption={{}}
+                  directionX={"right"}
+                  directionY={"both"}
+                  scaled={false}
+                  size={"content"}
+                  advancedOptions={advancedOptions}
+                  disableIconClick={false}
+                  // disableItemClick={true}
+                  isDefaultMode={false}
+                  noBorder={true}
+                  manualY={"102%"}
+                >
+                  <IconButton
+                    className={"sort-icon"}
+                    iconName="/static/images/sort.react.svg"
+                    size={16}
+                  />
+                  {t("Common:Sorting")}
+                </ComboBox>
+              </div>
+            )}
+        </>
+      );
+    };
+
     return (
       <StyledTileContainer
         id={id}
@@ -390,60 +433,32 @@ class TileContainer extends React.PureComponent {
         useReactWindow={useReactWindow}
         isDesc={this.state.selectedFilterData.sortDirection === "desc"}
       >
-        {Folders.length > 0 && (
-          <>
-            <Heading
-              size="xsmall"
-              id={"folder-tile-heading"}
-              className="tile-items-heading"
-            >
-              {headingFolders}
-              {!isRecentFolder &&
-                !isFavoritesFolder &&
-                !isMobile &&
-                !isTablet() && (
-                  <div onClick={this.toggleDropdown}>
-                    <ComboBox
-                      opened={this.state.isOpen}
-                      className={"sort-combo-box"}
-                      options={[]}
-                      selectedOption={{}}
-                      directionX={"right"}
-                      directionY={"both"}
-                      scaled={false}
-                      size={"content"}
-                      advancedOptions={advancedOptions}
-                      disableIconClick={false}
-                      // disableItemClick={true}
-                      isDefaultMode={false}
-                      noBorder={true}
-                      manualY={"102%"}
-                    >
-                      <IconButton
-                        className={"sort-icon"}
-                        iconName="/static/images/sort.react.svg"
-                        size={16}
-                      />
-                      {t("Common:Sorting")}
-                    </ComboBox>
-                  </div>
-                )}
-            </Heading>
-            {useReactWindow ? (
-              <AutoSizer>{renderList}</AutoSizer>
-            ) : (
-              <StyledGridWrapper isFolders>{Folders}</StyledGridWrapper>
-            )}
-          </>
-        )}
+        <>
+          <Heading
+            size="xsmall"
+            id={"folder-tile-heading"}
+            className="tile-items-heading"
+          >
+            {Folders.length > 0 && headingFolders}
+            {Folders.length > 0 && renderSorting()}
+          </Heading>
+          {Folders.length > 0 && (
+            <>
+              {useReactWindow ? (
+                <AutoSizer>{renderList}</AutoSizer>
+              ) : (
+                <StyledGridWrapper isFolders>{Folders}</StyledGridWrapper>
+              )}
+            </>
+          )}
+        </>
 
         {Files.length > 0 && (
           <>
-            {Folders.length > 0 && (
-              <Heading size="xsmall" className="tile-items-heading">
-                {headingFiles}
-              </Heading>
-            )}
+            <Heading size="xsmall" className="tile-items-heading">
+              {headingFiles}
+              {Folders.length === 0 && renderSorting()}
+            </Heading>
             {useReactWindow ? (
               <AutoSizer>{renderList}</AutoSizer>
             ) : (

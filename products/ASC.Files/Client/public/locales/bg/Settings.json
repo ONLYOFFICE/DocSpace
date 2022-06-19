@@ -1,10 +1,10 @@
-﻿{
+{
+  "Clouds": "Облаци",
   "CommonSettings": "Общи настройки",
-  "ConnectAccounts": "Свържи Профили",
-  "ConnectAccountsSubTitle": "Няма свързани профили",
   "ConnectAdminDescription": "За успешно свързване въведете необходимите данни в <1>тази страница</1>.",
   "ConnectDescription": "Не можете да свържете следните профили към Документите ONLYOFFICE. Документите от тези профили ще бъдат налични за редактиране в разделя: Моите документи'.",
-  "ConnectedCloud": "Свързан облак",
+  "ConnectDescriptionText": "Все още не сте свързали никакви облаци на трети страни.",
+  "ConnectEmpty": "Тук няма нищо",
   "ConnectMakeShared": "Направи го споделен и го сложи в папката 'Често срещани'",
   "ConnextOtherAccount": "Друг профил",
   "DisplayFavorites": "Покажи Любими",

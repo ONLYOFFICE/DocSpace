@@ -69,17 +69,17 @@ class FileMarkAsReadOperation<T> : FileOperation<FileMarkAsReadOperationData<T>,
         var scopeClass = scope.ServiceProvider.GetService<FileMarkAsReadOperationScope>();
         var filesMessageService = scope.ServiceProvider.GetRequiredService<FilesMessageService>();
         var (fileMarker, globalFolder, daoFactory, settingsManager) = scopeClass;
-        var entries = AsyncEnumerable.Empty<FileEntry<T>>();
+        var entries = Enumerable.Empty<FileEntry<T>>();
         if (Folders.Count > 0)
         {
-            entries.Concat(FolderDao.GetFoldersAsync(Folders));
+            entries = entries.Concat(await FolderDao.GetFoldersAsync(Folders).ToListAsync());
         }
         if (Files.Count > 0)
         {
-            entries.Concat(FileDao.GetFilesAsync(Files));
+            entries = entries.Concat(await FileDao.GetFilesAsync(Files).ToListAsync());
         }
 
-        await foreach (var entry in entries)
+        foreach (var entry in entries)
         {
             CancellationToken.ThrowIfCancellationRequested();
 

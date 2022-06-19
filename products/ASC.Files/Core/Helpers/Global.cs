@@ -73,6 +73,25 @@ public class GlobalNotify
     }
 }
 
+public enum ThumbnailExtension
+{
+    bmp,
+    gif,
+    jpg,
+    png,
+    pbm,
+    tiff,
+    tga,
+    webp
+}
+public enum DocThumbnailExtension
+{
+    bmp,
+    gif,
+    jpg,
+    png
+}
+
 [Scope]
 public class Global
 {
@@ -101,12 +120,20 @@ public class Global
         _customNamingPeople = customNamingPeople;
         _fileSecurityCommon = fileSecurityCommon;
 
-        ThumbnailExtension = configuration["files:thumbnail:exts"] ?? "jpg";
+        if (!Enum.TryParse(configuration["files:thumbnail:docs-exts"] ?? "jpg", true, out DocThumbnailExtension))
+        {
+            DocThumbnailExtension = DocThumbnailExtension.jpg;
+        }
+        if (!Enum.TryParse(configuration["files:thumbnail:exts"] ?? "webp", true, out ThumbnailExtension))
+        {
+            ThumbnailExtension = ThumbnailExtension.jpg;
+        }
     }
 
     #region Property
 
-    public string ThumbnailExtension { get; set; }
+    public DocThumbnailExtension DocThumbnailExtension;
+    public ThumbnailExtension ThumbnailExtension;
 
     public const int MaxTitle = 170;
 
@@ -266,7 +293,8 @@ public class GlobalFolder
         GlobalStore globalStore,
         ILoggerProvider options,
         IServiceProvider serviceProvider,
-        Global global
+            Global global,
+            ThumbnailSettings thumbnailSettings
     )
     {
         _coreBaseSettings = coreBaseSettings;
@@ -280,6 +308,7 @@ public class GlobalFolder
         _serviceProvider = serviceProvider;
         _global = global;
         _logger = options.CreateLogger("ASC.Files");
+        _thumbnailSettings = thumbnailSettings;
     }
 
     internal static readonly IDictionary<int, int> ProjectsRootFolderCache =
@@ -550,6 +579,7 @@ public class GlobalFolder
 
     internal static readonly IDictionary<string, object> TrashFolderCache =
         new ConcurrentDictionary<string, object>(); /*Use SYNCHRONIZED for cross thread blocks*/
+    private readonly ThumbnailSettings _thumbnailSettings;
 
     public async Task<T> GetFolderTrashAsync<T>(IDaoFactory daoFactory)
     {
@@ -662,15 +692,20 @@ public class GlobalFolder
                 file = await fileDao.SaveFileAsync(file, stream, false);
             }
 
-            var pathThumb = filePath + "." + _global.ThumbnailExtension;
-            if (await storeTemp.IsFileAsync("", pathThumb))
+
+            foreach (var size in _thumbnailSettings.Sizes)
             {
-                using (var streamThumb = await storeTemp.GetReadStreamAsync("", pathThumb))
+                var pathThumb = $"{filePath}.{size.Width}x{size.Height}.{_global.ThumbnailExtension}";
+                if (await storeTemp.IsFileAsync("", pathThumb))
                 {
-                    await fileDao.SaveThumbnailAsync(file, streamThumb);
+                    using (var streamThumb = await storeTemp.GetReadStreamAsync("", pathThumb))
+                    {
+                        await fileDao.SaveThumbnailAsync(file, streamThumb, size.Width, size.Height);
+                    }
                 }
-                file.ThumbnailStatus = Thumbnail.Created;
             }
+
+            file.ThumbnailStatus = Thumbnail.Created;
 
             await fileMarker.MarkAsNewAsync(file);
         }

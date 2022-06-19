@@ -8,7 +8,6 @@ import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";
 import Slider from "@appserver/components/slider";
 import Checkbox from "@appserver/components/checkbox";
-import { getLanguage } from "@appserver/common/utils";
 import { LearnMoreWrapper } from "../StyledSecurity";
 import toastr from "@appserver/components/toast/toastr";
 import { size } from "@appserver/components/utils/device";
@@ -44,6 +43,7 @@ const PasswordStrength = (props) => {
     passwordSettings,
     initSettings,
     isInit,
+    helpLink,
   } = props;
 
   const [passwordLen, setPasswordLen] = useState(8);
@@ -175,8 +175,6 @@ const PasswordStrength = (props) => {
     setShowReminder(false);
   };
 
-  const lng = getLanguage(localStorage.getItem("language") || "en");
-
   return (
     <MainContainer>
       <LearnMoreWrapper>
@@ -187,7 +185,7 @@ const PasswordStrength = (props) => {
           color="#316DAA"
           target="_blank"
           isHovered
-          href={`https://helpcenter.onlyoffice.com/${lng}/administration/configuration.aspx#ChangingSecuritySettings_block`}
+          href={`${helpLink}/administration/configuration.aspx#ChangingSecuritySettings_block`}
         >
           {t("Common:LearnMore")}
         </Link>
@@ -253,7 +251,11 @@ const PasswordStrength = (props) => {
 };
 
 export default inject(({ auth, setup }) => {
-  const { setPortalPasswordSettings, passwordSettings } = auth.settingsStore;
+  const {
+    setPortalPasswordSettings,
+    passwordSettings,
+    helpLink,
+  } = auth.settingsStore;
   const { initSettings, isInit } = setup;
 
   return {
@@ -261,6 +263,7 @@ export default inject(({ auth, setup }) => {
     passwordSettings,
     initSettings,
     isInit,
+    helpLink,
   };
 })(
   withTranslation(["Settings", "Common"])(

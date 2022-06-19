@@ -233,7 +233,7 @@ public class FileUploader
 
     #region chunked upload
 
-    public async Task<File<T>> VerifyChunkedUploadAsync<T>(T folderId, string fileName, long fileSize, bool updateIfExists, ApiDateTime lastModified, string relativePath = null)
+        public async Task<File<T>> VerifyChunkedUploadAsync<T>(T folderId, string fileName, long fileSize, bool updateIfExists, string relativePath = null)
     {
         var maxUploadSize = await GetMaxFileSizeAsync(folderId, true);
 
@@ -244,11 +244,6 @@ public class FileUploader
 
         var file = await VerifyFileUploadAsync(folderId, fileName, updateIfExists, relativePath);
         file.ContentLength = fileSize;
-
-        if (lastModified != null)
-        {
-            file.ModifiedOn = lastModified;
-        }
 
         return file;
     }
@@ -286,13 +281,14 @@ public class FileUploader
         return file;
     }
 
-    public async Task<ChunkedUploadSession<T>> InitiateUploadAsync<T>(T folderId, T fileId, string fileName, long contentLength, bool encrypted, bool keepVersion = false)
+    public async Task<ChunkedUploadSession<T>> InitiateUploadAsync<T>(T folderId, T fileId, string fileName, long contentLength, bool encrypted, bool keepVersion = false, ApiDateTime createOn = null)
     {
         var file = _serviceProvider.GetService<File<T>>();
         file.Id = fileId;
         file.ParentId = folderId;
         file.Title = fileName;
         file.ContentLength = contentLength;
+            file.CreateOn = createOn;
 
         var dao = _daoFactory.GetFileDao<T>();
         var uploadSession = await dao.CreateUploadSessionAsync(file, contentLength);

@@ -60,6 +60,7 @@ const SectionFilterContent = ({
   setIsLoading,
   selectedFolderId,
   fetchFiles,
+  infoPanelVisible,
 }) => {
   const filterColumnCount =
     window.innerWidth < 500
@@ -112,7 +113,15 @@ const SectionFilterContent = ({
 
   const onChangeViewAs = (view) => {
     if (view === "row") {
-      setViewAs("table");
+      if (
+        (sectionWidth < 1025 && !infoPanelVisible) ||
+        (sectionWidth < 625 && infoPanelVisible) ||
+        isMobile
+      ) {
+        setViewAs("row");
+      } else {
+        setViewAs("table");
+      }
     } else {
       setViewAs(view);
     }
@@ -216,7 +225,7 @@ const SectionFilterContent = ({
         {
           key: "user",
           group: "filter-author",
-          label: t("SharingPanel:LinkText"),
+          label: t("Translations:AddAuthor"),
           isSelector: true,
         }
       );
@@ -332,8 +341,8 @@ const SectionFilterContent = ({
       viewAs={viewAs}
       placeholder={t("Common:Search")}
       {...filterColumnCount}
-      contextMenuHeader={t("Common:AddFilter")}
-      headerLabel={t("SharingPanel:LinkText")}
+      contextMenuHeader={t("Filter")}
+      headerLabel={t("Translations:AddAuthor")}
       viewSelectorVisible={true}
       isFavoritesFolder={isFavoritesFolder}
       isRecentFolder={isRecentFolder}
@@ -367,6 +376,8 @@ export default inject(
         authorType) &&
       !(treeFoldersStore.isPrivacyFolder && isMobile);
 
+    const { isVisible: infoPanelVisible } = auth.infoPanelStore;
+
     return {
       customNames,
       user,
@@ -384,12 +395,13 @@ export default inject(
       createThumbnails,
 
       personal,
+      infoPanelVisible,
     };
   }
 )(
   withRouter(
     withLayoutSize(
-      withTranslation(["Home", "Common", "SharingPanel", "Translations"])(
+      withTranslation(["Home", "Common", "Translations"])(
         withLoader(observer(SectionFilterContent))(<Loaders.Filter />)
       )
     )

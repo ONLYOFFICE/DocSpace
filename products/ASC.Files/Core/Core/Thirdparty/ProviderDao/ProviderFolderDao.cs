@@ -284,7 +284,7 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
 
     public Task<IDictionary<string, string>> CanMoveOrCopyAsync(string[] folderIds, string to)
     {
-        if (folderIds.Length > 0)
+        if (folderIds.Length == 0)
         {
             return Task.FromResult<IDictionary<string, string>>(new Dictionary<string, string>());
         }
@@ -292,7 +292,7 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
         var selector = GetSelector(to);
         var matchedIds = folderIds.Where(selector.IsMatch).ToArray();
 
-        if (matchedIds.Length > 0)
+        if (matchedIds.Length == 0)
         {
             return Task.FromResult<IDictionary<string, string>>(new Dictionary<string, string>());
         }

@@ -101,7 +101,7 @@ class FileDownloadOperation : ComposeFileOperation<FileDownloadOperationData<str
             }
 
             var store = globalStore.GetStore();
-            var path = string.Format(@"{0}\{1}", ((IAccount)Thread.CurrentPrincipal.Identity).ID, fileName);
+            var path = string.Format(@"{0}\{1}", ((IAccount)_principal.Identity).ID, fileName);
 
             if (await store.IsFileAsync(FileConstant.StorageDomainTmp, path))
             {
@@ -137,6 +137,14 @@ class FileDownloadOperation : ComposeFileOperation<FileDownloadOperationData<str
         else if (!string.IsNullOrEmpty(error2))
         {
             Error = error2;
+        }
+
+        var finished1 = thirdpartyTask[Finish];
+        var finished2 = daoTask[Finish];
+
+        if (finished1 != null && finished2 != null)
+        {
+            _taskInfo.SetProperty(Finish, finished1);
         }
 
         _successProcessed = thirdpartyTask[Process] + daoTask[Process];

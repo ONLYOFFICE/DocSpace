@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Files.ThumbnailBuilder;
+
 using Document = ASC.ElasticSearch.Document;
 
 namespace ASC.Files.Core.Data;
@@ -44,6 +46,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
     private readonly CrossDao _crossDao;
     private readonly Settings _settings;
     private readonly IMapper _mapper;
+    private readonly ThumbnailSettings _thumbnailSettings;
 
     public FileDao(
         ILogger<FileDao> logger,
@@ -70,7 +73,8 @@ internal class FileDao : AbstractDao, IFileDao<int>
         ProviderFolderDao providerFolderDao,
         CrossDao crossDao,
         Settings settings,
-        IMapper mapper)
+        IMapper mapper,
+        ThumbnailSettings thumbnailSettings)
         : base(
               dbContextManager,
               userManager,
@@ -98,6 +102,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         _crossDao = crossDao;
         _settings = settings;
         _mapper = mapper;
+        _thumbnailSettings = thumbnailSettings;
     }
 
     public Task InvalidateCacheAsync(int fileId)
@@ -931,7 +936,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
             copy.Comment = FilesCommonResource.CommentCopy;
             copy.Encrypted = file.Encrypted;
 
-            using (var stream = await GetFileStreamAsync(file).ConfigureAwait(false))
+            using (var stream = await GetFileStreamAsync(file))
             {
                 copy.ContentLength = stream.CanSeek ? stream.Length : file.ContentLength;
                 copy = await SaveFileAsync(copy, stream).ConfigureAwait(false);
@@ -939,11 +944,14 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
             if (file.ThumbnailStatus == Thumbnail.Created)
             {
-                using (var thumbnail = await GetThumbnailAsync(file).ConfigureAwait(false))
+                foreach (var size in _thumbnailSettings.Sizes)
                 {
-                    await SaveThumbnailAsync(copy, thumbnail).ConfigureAwait(false);
+                    using (var thumbnail = await GetThumbnailAsync(file, size.Width, size.Height))
+                    {
+                        await SaveThumbnailAsync(copy, thumbnail, size.Width, size.Height);
+                    }
+                    copy.ThumbnailStatus = Thumbnail.Created;
                 }
-                copy.ThumbnailStatus = Thumbnail.Created;
             }
 
             return copy;
@@ -1159,6 +1167,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         result.ContentLength = uploadSession.BytesTotal;
         result.Comment = FilesCommonResource.CommentUpload;
         result.Encrypted = uploadSession.Encrypted;
+        result.CreateOn = uploadSession.File.CreateOn;
 
         return result;
     }
@@ -1424,17 +1433,17 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     private const string ThumbnailTitle = "thumb";
 
-    public Task SaveThumbnailAsync(File<int> file, Stream thumbnail)
+    public Task SaveThumbnailAsync(File<int> file, Stream thumbnail, int width, int height)
     {
         if (file == null)
         {
             throw new ArgumentNullException(nameof(file));
         }
 
-        return InternalSaveThumbnailAsync(file, thumbnail);
+        return InternalSaveThumbnailAsync(file, thumbnail, width, height);
     }
 
-    private async Task InternalSaveThumbnailAsync(File<int> file, Stream thumbnail)
+    private async Task InternalSaveThumbnailAsync(File<int> file, Stream thumbnail, int width, int height)
     {
         var toUpdate = await FilesDbContext.Files
             .AsQueryable()
@@ -1452,13 +1461,13 @@ internal class FileDao : AbstractDao, IFileDao<int>
             return;
         }
 
-        var thumnailName = ThumbnailTitle + "." + _global.ThumbnailExtension;
+        var thumnailName = GetThumnailName(width, height);
         await _globalStore.GetStore().SaveAsync(string.Empty, GetUniqFilePath(file, thumnailName), thumbnail, thumnailName);
     }
 
-    public async Task<Stream> GetThumbnailAsync(File<int> file)
+    public async Task<Stream> GetThumbnailAsync(File<int> file, int width, int height)
     {
-        var thumnailName = ThumbnailTitle + "." + _global.ThumbnailExtension;
+        var thumnailName = GetThumnailName(width, height);
         var path = GetUniqFilePath(file, thumnailName);
         var storage = _globalStore.GetStore();
         var isFile = await storage.IsFileAsync(string.Empty, path).ConfigureAwait(false);
@@ -1469,6 +1478,11 @@ internal class FileDao : AbstractDao, IFileDao<int>
         }
 
         return await storage.GetReadStreamAsync(string.Empty, path, 0).ConfigureAwait(false);
+    }
+
+    private string GetThumnailName(int width, int height)
+    {
+        return $"{ThumbnailTitle}.{width}x{height}.{_global.ThumbnailExtension}";
     }
 
     public async Task<EntryProperties> GetProperties(int fileId)
@@ -1504,7 +1518,6 @@ internal class FileDao : AbstractDao, IFileDao<int>
         await FilesDbContext.AddOrUpdateAsync(r => r.FilesProperties, new DbFilesProperties { TenantId = tenantId, EntryId = entryId, Data = data });
         await FilesDbContext.SaveChangesAsync();
     }
-
     #endregion
 
     private Func<Selector<DbFile>, Selector<DbFile>> GetFuncForSearch(int? parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)

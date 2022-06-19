@@ -47,6 +47,8 @@ public class FileHandler
 [Scope]
 public class FileHandlerService
 {
+        private readonly ThumbnailSettings _thumbnailSettings;
+
     public string FileHandlerPath
     {
         get { return _filesLinkUtility.FileHandlerPath; }
@@ -109,7 +111,8 @@ public class FileHandlerService
         SocketManager socketManager,
         CompressToArchive compressToArchive,
         InstanceCrypto instanceCrypto,
-        IHttpClientFactory clientFactory)
+        IHttpClientFactory clientFactory,
+        ThumbnailSettings thumbnailSettings)
     {
         _filesLinkUtility = filesLinkUtility;
         _tenantExtra = tenantExtra;
@@ -139,6 +142,7 @@ public class FileHandlerService
         _userManager = userManager;
         _logger = logger;
         _clientFactory = clientFactory;
+            this._thumbnailSettings = thumbnailSettings;
     }
 
     public Task Invoke(HttpContext context)
@@ -1009,7 +1013,26 @@ public class FileHandlerService
     {
         try
         {
-            var fileDao = _daoFactory.GetFileDao<T>();
+                var defaultSize = _thumbnailSettings.Sizes.FirstOrDefault();
+
+                if (defaultSize == null)
+                {
+                    context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                    return;
+                }
+
+                var width = defaultSize.Width;
+                var height = defaultSize.Height;
+
+                var size = context.Request.Query["size"].ToString() ?? "";
+                var sizes = size.Split('x');
+                if (sizes.Length == 2)
+                {
+                    _ = int.TryParse(sizes[0], out width);
+                    _ = int.TryParse(sizes[1], out height);
+                }
+
+                var fileDao = _daoFactory.GetFileDao<T>();
             var file = int.TryParse(context.Request.Query[FilesLinkUtility.Version], out var version) && version > 0
                ? await fileDao.GetFileAsync(id, version)
                : await fileDao.GetFileAsync(id);
@@ -1042,7 +1065,7 @@ public class FileHandlerService
             context.Response.Headers.Add("Content-Disposition", ContentDispositionUtil.GetHeaderValue("." + _global.ThumbnailExtension));
             context.Response.ContentType = MimeMapping.GetMimeMapping("." + _global.ThumbnailExtension);
 
-            using (var stream = await fileDao.GetThumbnailAsync(file))
+                using (var stream = await fileDao.GetThumbnailAsync(file, width, height))
             {
                 context.Response.Headers.Add("Content-Length", stream.Length.ToString(CultureInfo.InvariantCulture));
                 await stream.CopyToAsync(context.Response.Body);
