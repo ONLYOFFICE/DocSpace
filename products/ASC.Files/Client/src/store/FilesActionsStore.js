@@ -456,15 +456,23 @@ class FilesActionStore {
         }
       }
 
-      const event = new Event(Events.CREATE);
+      const createEvent = new Event(Events.CREATE);
+      const renameEvent = new Events(Events.RENAME);
 
-      event.id = null;
-      event.extension = null;
-      event.title = "";
-      event.templateId = null;
-      event.fromTemplate = null;
+      createEvent.id = null;
+      createEvent.extension = null;
+      createEvent.title = "";
+      createEvent.templateId = null;
+      createEvent.fromTemplate = null;
 
-      window.dispatchEvent(event);
+      renameEvent.id = null;
+      renameEvent.extension = null;
+      renameEvent.title = "";
+      renameEvent.templateId = null;
+      renameEvent.fromTemplate = null;
+
+      window.dispatchEvent(createEvent);
+      window.dispatchEvent(renameEvent);
 
       // setAction({
       // type: null,
