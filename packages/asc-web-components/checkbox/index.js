@@ -81,7 +81,6 @@ class Checkbox extends React.Component {
       name,
       helpButton,
       onChange,
-      isLogin,
       isChecked,
       ...rest
     } = this.props;
