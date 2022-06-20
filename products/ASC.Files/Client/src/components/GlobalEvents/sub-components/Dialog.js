@@ -6,6 +6,14 @@ import ModalDialog from "@appserver/components/modal-dialog";
 import TextInput from "@appserver/components/text-input";
 import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 
+const StyledModalDialog = styled(ModalDialog)`
+  width: 400px;
+
+  @media (max-width: 400px) {
+    width: 100%;
+  }
+`;
+
 const StyledSaveCancelButtons = styled(SaveCancelButtons)`
   position: relative !important;
 
@@ -56,10 +64,9 @@ const Dialog = ({ title, startValue, visible, onSave, onCancel, onClose }) => {
   }, []);
 
   return (
-    <ModalDialog
+    <StyledModalDialog
       visible={visible}
       displayType={"modal"}
-      width={"400px"}
       scale={true}
       onClose={onClose}
     >
@@ -86,7 +93,7 @@ const Dialog = ({ title, startValue, visible, onSave, onCancel, onClose }) => {
           showReminder={!isDisabled}
         />
       </ModalDialog.Footer>
-    </ModalDialog>
+    </StyledModalDialog>
   );
 };
 
