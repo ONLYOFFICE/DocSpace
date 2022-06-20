@@ -164,7 +164,7 @@ class FileDownloadOperation<T> : FileOperation<FileDownloadOperationData<T>, T>
 {
     private readonly Dictionary<T, string> _files;
     private readonly IDictionary<string, StringValues> _headers;
-    private readonly ItemNameValueCollection<T> _entriesPathId;
+    private ItemNameValueCollection<T> _entriesPathId;
     public override FileOperationType OperationType => FileOperationType.Download;
 
     public FileDownloadOperation(IServiceProvider serviceProvider, FileDownloadOperationData<T> fileDownloadOperationData)
@@ -181,7 +181,7 @@ class FileDownloadOperation<T> : FileOperation<FileDownloadOperationData<T>, T>
             return;
         }
 
-        var (entriesPathId, filesForSend, folderForSend) = await GetEntriesPathIdAsync(scope);
+        (_entriesPathId, var filesForSend, var folderForSend) = await GetEntriesPathIdAsync(scope);
 
         if (_entriesPathId == null || _entriesPathId.Count == 0)
         {
@@ -193,7 +193,7 @@ class FileDownloadOperation<T> : FileOperation<FileDownloadOperationData<T>, T>
             throw new DirectoryNotFoundException(FilesCommonResource.ErrorMassage_FolderNotFound);
         }
 
-        Total = entriesPathId.Count + 1;
+        Total = _entriesPathId.Count + 1;
 
         ReplaceLongPath(_entriesPathId);
 
