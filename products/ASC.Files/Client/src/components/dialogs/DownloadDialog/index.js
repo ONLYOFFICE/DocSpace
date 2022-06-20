@@ -127,6 +127,14 @@ class DownloadDialogComponent extends React.Component {
       newState[type].files = this.getNewArrayFiles(fileId, files, format);
       newState[type].format = !fileId ? format : this.props.t("CustomFormat");
 
+      const index = newState[type].files.findIndex(
+        (f) => f.format && f.format !== this.props.t("OriginalFormat")
+      );
+
+      if (index === -1) {
+        newState[type].format = this.props.t("OriginalFormat");
+      }
+
       return { ...prevState, ...newState };
     });
   };
