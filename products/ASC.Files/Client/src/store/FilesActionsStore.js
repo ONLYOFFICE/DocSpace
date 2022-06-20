@@ -457,7 +457,7 @@ class FilesActionStore {
       }
 
       const createEvent = new Event(Events.CREATE);
-      const renameEvent = new Events(Events.RENAME);
+      const renameEvent = new Event(Events.RENAME);
 
       createEvent.id = null;
       createEvent.extension = null;
