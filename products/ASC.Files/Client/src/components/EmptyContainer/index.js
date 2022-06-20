@@ -17,7 +17,6 @@ const linkStyles = {
 
 const EmptyContainer = ({
   isFiltered,
-  setAction,
   isPrivacyFolder,
   parentId,
   isEncryptionSupport,
@@ -27,11 +26,6 @@ const EmptyContainer = ({
 
   const onCreate = (e) => {
     const format = e.currentTarget.dataset.format || null;
-    // setAction({
-    //   type: FileAction.Create,
-    //   extension: format,
-    //   id: -1,
-    // });
 
     const event = new Event(Events.CREATE);
     event.extension = format;
@@ -66,7 +60,6 @@ export default inject(
       isEncryptionSupport: auth.settingsStore.isEncryptionSupport,
       theme: auth.settingsStore.theme,
       isFiltered,
-      setAction: filesStore.fileActionStore.setAction,
       isPrivacyFolder,
       parentId: selectedFolderStore.parentId,
     };

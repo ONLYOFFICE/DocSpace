@@ -433,11 +433,11 @@ class FilesActionStore {
       filter,
       folders,
       files,
-      fileActionStore,
+
       fetchFiles,
       setIsLoading,
     } = this.filesStore;
-    const { setAction } = fileActionStore;
+
     const { treeFolders, setTreeFolders } = this.treeFoldersStore;
 
     const items = [...folders, ...files];
@@ -473,15 +473,6 @@ class FilesActionStore {
 
       window.dispatchEvent(createEvent);
       window.dispatchEvent(renameEvent);
-
-      // setAction({
-      // type: null,
-      // id: null,
-      // extension: null,
-      // title: "",
-      // templateId: null,
-      // fromTemplate: null,
-      // });
 
       setIsLoading(false);
       type === FileAction.Rename &&

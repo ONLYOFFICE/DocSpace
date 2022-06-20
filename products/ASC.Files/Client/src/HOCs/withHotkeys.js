@@ -12,7 +12,6 @@ const withHotkeys = (Component) => {
       setSelected,
       viewAs,
       setViewAs,
-      setAction,
       setHotkeyPanelVisible,
       confirmDelete,
       setDeleteDialogVisible,
@@ -259,14 +258,7 @@ const withHotkeys = (Component) => {
       hotkeyStore,
       mediaViewerDataStore,
     }) => {
-      const {
-        setSelected,
-        viewAs,
-        setViewAs,
-        fileActionStore,
-        enabledHotkeys,
-      } = filesStore;
-      const { setAction } = fileActionStore;
+      const { setSelected, viewAs, setViewAs, enabledHotkeys } = filesStore;
 
       const {
         selectFile,
@@ -306,7 +298,6 @@ const withHotkeys = (Component) => {
         setSelected,
         viewAs,
         setViewAs,
-        setAction,
 
         setHotkeyPanelVisible,
         setDeleteDialogVisible,

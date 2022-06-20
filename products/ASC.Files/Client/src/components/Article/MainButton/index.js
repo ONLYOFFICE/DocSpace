@@ -53,13 +53,6 @@ const ArticleMainButtonContent = (props) => {
     (e) => {
       const format = e.action || null;
 
-      // TODO: remove after delete action store
-      // setAction({
-      //   type: FileAction.Create,
-      //   extension: format,
-      //   id: -1,
-      // });
-
       const event = new Event(Events.CREATE);
       event.extension = format;
       event.id = -1;
@@ -327,13 +320,7 @@ export default inject(
     treeFoldersStore,
     selectedFolderStore,
   }) => {
-    const {
-      isLoaded,
-      firstLoad,
-      isLoading,
-      fileActionStore,
-      canCreate,
-    } = filesStore;
+    const { isLoaded, firstLoad, isLoading, canCreate } = filesStore;
     const {
       isPrivacyFolder,
       isFavoritesFolder,
@@ -362,7 +349,6 @@ export default inject(
       isShareFolder,
       canCreate,
 
-      setAction: fileActionStore.setAction,
       startUpload,
 
       setSelectFileDialogVisible,

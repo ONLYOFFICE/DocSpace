@@ -53,13 +53,6 @@ class SectionHeaderContent extends React.Component {
     event.id = -1;
 
     window.dispatchEvent(event);
-
-    // TODO: remove it after removing action store
-    // this.props.setAction({
-    //   type: FileAction.Create,
-    //   extension: format,
-    //   id: -1,
-    // });
   };
 
   createDocument = () => this.onCreate("docx");
@@ -424,7 +417,7 @@ export default inject(
     const {
       setSelected,
       setSelection,
-      fileActionStore,
+
       canCreate,
       isHeaderVisible,
       isHeaderIndeterminate,
@@ -441,7 +434,7 @@ export default inject(
       activeFiles,
       activeFolders,
     } = filesStore;
-    const { setAction } = fileActionStore;
+
     const {
       setSharingPanelVisible,
       setMoveToPanelVisible,
@@ -486,7 +479,7 @@ export default inject(
 
       setSelected,
       setSelection,
-      setAction,
+
       setSharingPanelVisible,
       setMoveToPanelVisible,
       setCopyPanelVisible,
