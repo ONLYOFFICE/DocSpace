@@ -28,5 +28,5 @@ namespace ASC.Files.Core.ApiModels.RequestDto;
 
 public class BatchTagsRequestDto
 {
-    public IEnumerable<int> TagIds { get; set; }
+    public IEnumerable<string> Names { get; set; }
 }

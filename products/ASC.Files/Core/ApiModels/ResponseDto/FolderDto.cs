@@ -34,7 +34,7 @@ public class FolderDto<T> : FileEntryDto<T>
     public bool? IsShareable { get; set; }
     public bool? IsFavorite { get; set; }
     public int New { get; set; }
-    public IEnumerable<TagDto> Tags { get; set; }
+    public IEnumerable<string> Tags { get; set; }
     public Logo Logo { get; set; }
     public bool Pinned { get; set; }
 
@@ -102,13 +102,13 @@ public class FolderDtoHelper : FileEntryDtoHelper
             {
                 var tagDao = _daoFactory.GetTagDao<T>();
 
-                var tags = await tagDao.GetTagsAsync(TagType.Custom, new[] { folder }).ToListAsync(); 
+                var tags = await tagDao.GetTagsAsync(TagType.Custom, new[] { folder }).ToListAsync();
 
-                result.Tags = _mapper.Map<IEnumerable<Tag>, IEnumerable<TagDto>>(tags);
+                result.Tags = tags.Select(t => t.Name);
             }
             else
             {
-                result.Tags = _mapper.Map<IEnumerable<Tag>, IEnumerable<TagDto>>(folder.Tags);
+                result.Tags = folder.Tags.Select(t => t.Name);
             }
 
             result.Logo = await _roomLogoManager.GetLogo(folder.Id);

@@ -40,7 +40,7 @@ public interface ITagDao<T>
     IAsyncEnumerable<Tag> GetTagsAsync(string name, TagType tagType);
     IAsyncEnumerable<Tag> GetTagsAsync(string[] names, TagType tagType);
     IAsyncEnumerable<TagInfo> GetTagsInfoAsync(string searchText, TagType tagType, bool byName, int from = 0, int count = 0);
-    IAsyncEnumerable<TagInfo> GetTagsInfoAsync(IEnumerable<int> ids);
+    IAsyncEnumerable<TagInfo> GetTagsInfoAsync(IEnumerable<string> names);
     IEnumerable<Tag> SaveTags(IEnumerable<Tag> tag);
     IEnumerable<Tag> SaveTags(Tag tag);
     Task<TagInfo> SaveTagInfoAsync(TagInfo tagInfo);

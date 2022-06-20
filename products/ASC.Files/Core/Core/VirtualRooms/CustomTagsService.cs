@@ -53,7 +53,7 @@ public class CustomTagsService<T>
     private IFolderDao<T> FolderDao => _daoFactory.GetFolderDao<T>();
     private IDictionary<string, StringValues> Headers => _httpContextAccessor?.HttpContext?.Request?.Headers;
 
-    public async Task<TagDto> CreateTagAsync(string name)
+    public async Task<object> CreateTagAsync(string name)
     {
         if (!_fileSecurityCommon.IsAdministrator(_authContext.CurrentAccount.ID))
         {
@@ -80,31 +80,31 @@ public class CustomTagsService<T>
 
         _filesMessageService.Send(Headers, MessageAction.TagCreated, savedTag.Name);
 
-        return _mapper.Map<TagInfo, TagDto>(savedTag);
+        return savedTag.Name;
     }
 
-    public async Task DeleteTagsAsync(IEnumerable<int> tagIds)
+    public async Task DeleteTagsAsync(IEnumerable<string> names)
     {
         if (!_fileSecurityCommon.IsAdministrator(_authContext.CurrentAccount.ID))
         {
             throw new SecurityException("You do not have permission to remove tags");
         }
 
-        if (!tagIds.Any())
+        if (!names.Any())
         {
             return;
         }
 
         var tagDao = TagDao;
 
-        var tags = await tagDao.GetTagsInfoAsync(tagIds).Select(t => t.Name).ToArrayAsync();
+        var tags = await tagDao.GetTagsInfoAsync(names).ToListAsync();
 
-        await tagDao.RemoveTagsAsync(tagIds);
+        await tagDao.RemoveTagsAsync(tags.Select(t => t.Id));
 
-        _filesMessageService.Send(Headers, MessageAction.TagsDeleted, tags);
+        _filesMessageService.Send(Headers, MessageAction.TagsDeleted, tags.Select(t => t.Name).ToArray());
     }
 
-    public async Task<Folder<T>> AddRoomTagsAsync(T folderId, IEnumerable<int> tagsIds)
+    public async Task<Folder<T>> AddRoomTagsAsync(T folderId, IEnumerable<string> names)
     {
         var folder = await FolderDao.GetFolderAsync(folderId);
 
@@ -113,14 +113,14 @@ public class CustomTagsService<T>
             throw new SecurityException("You do not have permission to edit the room");
         }
 
-        if (!tagsIds.Any())
+        if (!names.Any())
         {
             return folder;
         }
 
         var tagDao = TagDao;
 
-        var tagsInfos = await tagDao.GetTagsInfoAsync(tagsIds).ToListAsync();
+        var tagsInfos = await tagDao.GetTagsInfoAsync(names).ToListAsync();
 
         var tags = tagsInfos.Select(tagInfo => Tag.Custom(_authContext.CurrentAccount.ID, folder, tagInfo.Name));
 
@@ -131,7 +131,7 @@ public class CustomTagsService<T>
         return folder;
     }
 
-    public async Task<Folder<T>> DeleteRoomTagsAsync(T folderId, IEnumerable<int> tagsIds)
+    public async Task<Folder<T>> DeleteRoomTagsAsync(T folderId, IEnumerable<string> names)
     {
         var folder = await FolderDao.GetFolderAsync(folderId);
 
@@ -140,18 +140,18 @@ public class CustomTagsService<T>
             throw new SecurityException("You do not have permission to edit the room");
         }
 
-        if (!tagsIds.Any())
+        if (!names.Any())
         {
             return folder;
         }
 
         var tagDao = TagDao;
 
-        await tagDao.RemoveTagsAsync(folder, tagsIds);
+        var tagsInfos = await tagDao.GetTagsInfoAsync(names).ToListAsync();
 
-        var tagsInfos = await tagDao.GetTagsInfoAsync(tagsIds).Select(t => t.Name).ToArrayAsync();
+        await tagDao.RemoveTagsAsync(folder, tagsInfos.Select(t => t.Id));
 
-        _filesMessageService.Send(folder, Headers, MessageAction.DeletedRoomTags, tagsInfos);
+        _filesMessageService.Send(folder, Headers, MessageAction.DeletedRoomTags, tagsInfos.Select(t => t.Name).ToArray());
 
         return folder;
     }

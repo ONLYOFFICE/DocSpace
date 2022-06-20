@@ -242,9 +242,9 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
         }
     }
 
-    public async IAsyncEnumerable<TagInfo> GetTagsInfoAsync(IEnumerable<int> ids)
+    public async IAsyncEnumerable<TagInfo> GetTagsInfoAsync(IEnumerable<string> names)
     {
-        var q = Query(FilesDbContext.Tag).AsNoTracking().Where(r => ids.Contains(r.Id));
+        var q = Query(FilesDbContext.Tag).AsNoTracking().Where(r => names.Contains(r.Name));
 
         await foreach (var tag in FromQueryAsync(q).ConfigureAwait(false))
         {
@@ -552,14 +552,19 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
         var toDeleteLinks = await Query(FilesDbContext.TagLink)
             .Where(r => toDeleteTags.Select(t => t.Id).Contains(r.TagId)).ToListAsync().ConfigureAwait(false);
 
-        using var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false);
+        var strategy = FilesDbContext.Database.CreateExecutionStrategy();
 
-        FilesDbContext.RemoveRange(toDeleteTags);
-        FilesDbContext.RemoveRange(toDeleteLinks);
+        await strategy.ExecuteAsync(async () =>
+        {
+            using var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false);
 
-        await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+            FilesDbContext.RemoveRange(toDeleteTags);
+            FilesDbContext.RemoveRange(toDeleteLinks);
 
-        await tx.CommitAsync().ConfigureAwait(false);
+            await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+
+            await tx.CommitAsync().ConfigureAwait(false);
+        });
     }
 
     private Task RemoveTagInDbAsync(Tag tag)

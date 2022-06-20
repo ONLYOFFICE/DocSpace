@@ -84,13 +84,13 @@ internal class BoxFolderDao : BoxDaoBase, IFolderDao<string>
     }
 
     public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false,
-        IEnumerable<int> tagIds = null)
+        IEnumerable<string> tagName = null)
     {
-        return GetFoldersAsync(parentId, orderBy, new[] { filterType }, subjectGroup, subjectID, searchText, withSubfolders, tagIds);
+        return GetFoldersAsync(parentId, orderBy, new[] { filterType }, subjectGroup, subjectID, searchText, withSubfolders, tagName);
     }
 
     public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, IEnumerable<FilterType> filterTypes, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false, 
-        IEnumerable<int> tagIds = null)
+        IEnumerable<string> tagNames = null)
     {
         if (!CheckForInvalidFilters(filterTypes))
         {
@@ -113,7 +113,7 @@ internal class BoxFolderDao : BoxDaoBase, IFolderDao<string>
             folders = folders.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
         }
 
-        folders = FilterByTags(folders, tagIds);
+        folders = FilterByTags(folders, tagNames);
 
         if (orderBy == null)
         {
@@ -133,13 +133,13 @@ internal class BoxFolderDao : BoxDaoBase, IFolderDao<string>
     }
 
     public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true,
-        IEnumerable<int> tagIds = null)
+        IEnumerable<string> tagNames = null)
     {
-        return GetFoldersAsync(folderIds, new[] { filterType }, subjectGroup, subjectID, searchText, searchSubfolders, checkShare, tagIds);
+        return GetFoldersAsync(folderIds, new[] { filterType }, subjectGroup, subjectID, searchText, searchSubfolders, checkShare, tagNames);
     }
 
     public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, IEnumerable<FilterType> filterTypes, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true, 
-        IEnumerable<int> tagIds = null)
+        IEnumerable<string> tagNames = null)
     {
         if (!CheckForInvalidFilters(filterTypes))
         {
@@ -162,7 +162,7 @@ internal class BoxFolderDao : BoxDaoBase, IFolderDao<string>
             folders = folders.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
         }
 
-        folders = FilterByTags(folders, tagIds);
+        folders = FilterByTags(folders, tagNames);
 
         return folders;
     }

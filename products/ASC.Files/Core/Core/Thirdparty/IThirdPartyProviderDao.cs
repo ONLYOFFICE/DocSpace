@@ -397,16 +397,17 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         }
     }
 
-    protected IAsyncEnumerable<Folder<string>> FilterByTags(IAsyncEnumerable<Folder<string>> folders, IEnumerable<int> tagIds)
+    protected IAsyncEnumerable<Folder<string>> FilterByTags(IAsyncEnumerable<Folder<string>> folders, IEnumerable<string> tagNames)
     {
-        if (tagIds == null || !tagIds.Any())
+        if (tagNames == null || !tagNames.Any())
         {
             return folders;
         }
 
-        var filtered = folders.Join(FilesDbContext.ThirdpartyIdMapping.ToAsyncEnumerable(), f => f.Id, m => m.Id, (folder, map) => new { folder, map.HashId }).
-            Join(FilesDbContext.TagLink.ToAsyncEnumerable(), r => r.HashId, t => t.EntryId, (result, tag) => new { result.folder, tag.TagId })
-                .Where(r => tagIds.Contains(r.TagId))
+        var filtered = folders.Join(FilesDbContext.ThirdpartyIdMapping.ToAsyncEnumerable(), f => f.Id, m => m.Id, (folder, map) => new { folder, map.HashId })
+            .Join(FilesDbContext.TagLink.ToAsyncEnumerable(), r => r.HashId, t => t.EntryId, (result, tag) => new { result.folder, tag.TagId })
+            .Join(FilesDbContext.Tag.ToAsyncEnumerable(), r => r.TagId, t => t.Id, (result, tagInfo) => new {result.folder, tagInfo.Name })
+                .Where(r => tagNames.Contains(r.Name))
                 .Select(r => r.folder);
 
         return filtered;
@@ -538,7 +539,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         return AsyncEnumerable.Empty<TagInfo>();
     }
 
-    public IAsyncEnumerable<TagInfo> GetTagsInfoAsync(IEnumerable<int> ids)
+    public IAsyncEnumerable<TagInfo> GetTagsInfoAsync(IEnumerable<string> names)
     {
         return AsyncEnumerable.Empty<TagInfo>();
     }

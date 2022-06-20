@@ -220,7 +220,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     {
         ErrorIfNotDocSpace();
 
-        var room = await _customTagsService.AddRoomTagsAsync(id, inDto.TagIds);
+        var room = await _customTagsService.AddRoomTagsAsync(id, inDto.Names);
 
         return await _folderDtoHelper.GetAsync(room);
     }
@@ -230,7 +230,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     {
         ErrorIfNotDocSpace();
 
-        var room = await _customTagsService.DeleteRoomTagsAsync(id, inDto.TagIds);
+        var room = await _customTagsService.DeleteRoomTagsAsync(id, inDto.Names);
 
         return await _folderDtoHelper.GetAsync(room);
     }
@@ -358,7 +358,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
             _ => FilterType.None
         }) : new[] { FilterType.None };
 
-        var tagIds = !string.IsNullOrEmpty(tags) ? JsonSerializer.Deserialize<IEnumerable<int>>(tags) : null;
+        var tagNames = !string.IsNullOrEmpty(tags) ? JsonSerializer.Deserialize<IEnumerable<string>>(tags) : null;
 
         OrderBy orderBy = null;
         if (Enum.TryParse(_apiContext.SortBy, true, out SortedByType sortBy))
@@ -370,7 +370,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
         var count = Convert.ToInt32(_apiContext.Count);
         var filterValue = _apiContext.FilterValue;
 
-        var content = await _fileStorageService.GetFolderItemsAsync(parentId, startIndex, count, filterTypes, false, subjectId, filterValue, searchInContent, withSubfolders, orderBy, searchArea, tagIds);
+        var content = await _fileStorageService.GetFolderItemsAsync(parentId, startIndex, count, filterTypes, false, subjectId, filterValue, searchInContent, withSubfolders, orderBy, searchArea, tagNames);
 
         var dto = await _folderContentDtoHelper.GetAsync(content, startIndex);
 
@@ -378,7 +378,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
     }
 
     [HttpPost("tags")]
-    public async Task<TagDto> CreateTagAsync(CreateTagRequestDto inDto)
+    public async Task<object> CreateTagAsync(CreateTagRequestDto inDto)
     {
         ErrorIfNotDocSpace();
 
@@ -404,7 +404,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
     {
         ErrorIfNotDocSpace();
 
-        await _customTagsService.DeleteTagsAsync(inDto.TagIds);
+        await _customTagsService.DeleteTagsAsync(inDto.Names);
     }
 
     [HttpPost("logos")]

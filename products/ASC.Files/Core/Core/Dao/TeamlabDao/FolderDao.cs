@@ -164,13 +164,13 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     }
 
     public IAsyncEnumerable<Folder<int>> GetFoldersAsync(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false,
-        IEnumerable<int> tagIds = null)
+        IEnumerable<string> tagNames = null)
     {
-        return GetFoldersAsync(parentId, orderBy, new[] { filterType }, subjectGroup, subjectID, searchText, withSubfolders, tagIds);
+        return GetFoldersAsync(parentId, orderBy, new[] { filterType }, subjectGroup, subjectID, searchText, withSubfolders, tagNames);
     }
 
     public IAsyncEnumerable<Folder<int>> GetFoldersAsync(int parentId, OrderBy orderBy, IEnumerable<FilterType> filterTypes, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false,
-        IEnumerable<int> tagIds = null)
+        IEnumerable<string> tagNames = null)
     {
         if (!CheckForInvalidFilters(filterTypes))
         {
@@ -227,10 +227,11 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             }
         }
 
-        if (tagIds != null && tagIds.Any())
+        if (tagNames != null && tagNames.Any())
         {
             q = q.Join(FilesDbContext.TagLink, f => f.Id.ToString(), t => t.EntryId, (folder, tag) => new { folder, tag.TagId })
-                .Where(r => tagIds.Contains(r.TagId))
+                .Join(FilesDbContext.Tag, r => r.TagId, t => t.Id, (result, tagInfo) => new { result.folder, result.TagId, tagInfo.Name })
+                .Where(r => tagNames.Contains(r.Name))
                 .Select(r => r.folder).Distinct();
         }
 
@@ -240,13 +241,13 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     }
 
     public IAsyncEnumerable<Folder<int>> GetFoldersAsync(IEnumerable<int> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true,
-        IEnumerable<int> tagIds = null)
+        IEnumerable<string> tagNames = null)
     {
-        return GetFoldersAsync(folderIds, new[] { filterType }, subjectGroup, subjectID, searchText, searchSubfolders, checkShare, tagIds);
+        return GetFoldersAsync(folderIds, new[] { filterType }, subjectGroup, subjectID, searchText, searchSubfolders, checkShare, tagNames);
     }
 
     public IAsyncEnumerable<Folder<int>> GetFoldersAsync(IEnumerable<int> folderIds, IEnumerable<FilterType> filterTypes, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true,
-        IEnumerable<int> tagIds = null)
+        IEnumerable<string> tagNames = null)
     {
         if (!CheckForInvalidFilters(filterTypes))
         {
@@ -296,11 +297,12 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             }
         }
 
-        if (tagIds != null && tagIds.Any())
+        if (tagNames != null && tagNames.Any())
         {
             q = q.Join(FilesDbContext.TagLink, f => f.Id.ToString(), t => t.EntryId, (folder, tag) => new { folder, tag.TagId })
-                .Where(r => tagIds.Contains(r.TagId))
-                .Select(r => r.folder);
+                .Join(FilesDbContext.Tag, r => r.TagId, t => t.Id, (result, tagInfo) => new { result.folder, result.TagId, tagInfo.Name })
+                .Where(r => tagNames.Contains(r.Name))
+                .Select(r => r.folder).Distinct();
         }
 
         var dbFolders = (checkShare ? FromQueryWithShared(q) : FromQuery(q)).AsAsyncEnumerable();
