@@ -88,12 +88,12 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
         });
     }
 
-    public ValueTask<bool> IsSharedAsync(object entryId, FileEntryType type)
+    public async Task<bool> IsSharedAsync(T entryId, FileEntryType type)
     {
-        return Query(FilesDbContext.Security)
-            .AsAsyncEnumerable()
-            .AnyAwaitAsync(async r => r.EntryId == (await MappingIDAsync(entryId)).ToString() &&
-                      r.EntryType == type);
+        var mappedId = (await MappingIDAsync(entryId)).ToString();
+
+        return await Query(FilesDbContext.Security)
+            .AnyAsync(r => r.EntryId == mappedId && r.EntryType == type && !(new[] { FileConstant.DenyDownloadId, FileConstant.DenySharingId }).Contains(r.Subject));
     }
 
     public async Task SetShareAsync(FileShareRecord r)
@@ -177,7 +177,7 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
         }
     }
 
-    public ValueTask<List<FileShareRecord>> GetSharesAsync(IEnumerable<Guid> subjects)
+        public Task<List<FileShareRecord>> GetSharesAsync(IEnumerable<Guid> subjects)
     {
         var q = GetQuery(r => subjects.Contains(r.Subject));
 
@@ -404,14 +404,16 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
         return q;
     }
 
-    protected async ValueTask<List<FileShareRecord>> FromQueryAsync(IQueryable<DbFilesSecurity> filesSecurities)
+        protected async Task<List<FileShareRecord>> FromQueryAsync(IQueryable<DbFilesSecurity> filesSecurities)
     {
-        var security = await filesSecurities.ToListAsync();
-
-        var records = await security.ToAsyncEnumerable().SelectAwait(async e => await ToFileShareRecordAsync(e)).ToListAsync();
-
-        return records;
-    }
+            var data = await filesSecurities.ToListAsync();
+            var result = new List<FileShareRecord>();
+            foreach (var file in data)
+            {
+                result.Add(await ToFileShareRecordAsync(file));
+            }
+            return result;
+        }
 
     private async Task<FileShareRecord> ToFileShareRecordAsync(DbFilesSecurity r)
     {

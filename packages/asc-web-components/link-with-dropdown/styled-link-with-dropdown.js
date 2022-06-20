@@ -84,7 +84,8 @@ const StyledLinkWithDropdown = styled(SimpleLinkWithDropdown)`
   text-decoration: none;
   user-select: none;
   position: relative;
-  display: inline-grid;
+  display: flex;
+  align-items: center;
 
   padding-right: ${(props) => props.theme.linkWithDropdown.paddingRight};
 

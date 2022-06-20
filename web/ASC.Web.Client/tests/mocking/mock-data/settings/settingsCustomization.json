@@ -1,21 +1,17 @@
 {
   "count": 1,
   "response": {
-    "timezone": "Russian Standard Time",
+    "timezone": "UTC-11",
     "trustedDomains": ["onlyoffice.com"],
     "trustedDomainsType": 0,
     "culture": "en",
-    "utcOffset": "03:00:00",
-    "utcHoursOffset": 3,
+    "utcOffset": "-11:00:00",
+    "utcHoursOffset": -11,
     "greetingSettings": "Cloud Office Applications",
     "ownerId": "6dde41a5-4c75-11ec-98de-089798855014",
     "nameSchemaId": "Common",
+    "enableAdmMess": true,
     "personal": false,
-    "passwordHash": {
-      "size": 256,
-      "iterations": 100000,
-      "salt": "0a783fef249b0cfa2b1ddc3825bf9a5c9c869bf65a4a45cbd5a0c93b16b5a47e"
-    },
     "firebase": {
       "apiKey": "",
       "authDomain": "",
@@ -28,7 +24,8 @@
     "version": "11.5.0",
     "debugInfo": true,
     "socketUrl": "/socket.io",
-    "tenantStatus": 0
+    "tenantStatus": 0,
+    "tenantAlias": "localhost"
   },
   "status": 0,
   "statusCode": 200

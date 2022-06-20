@@ -17,6 +17,7 @@ const SharingDialog = ({
   setSelection,
   theme,
   sharingPanelVisible,
+  settings,
 }) => {
   useEffect(() => {
     setSharingPanelVisible(isVisible);
@@ -35,6 +36,7 @@ const SharingDialog = ({
           onSuccess={onSuccess}
           onCancel={onCancel}
           theme={theme}
+          settings={settings}
         />
       )}
     </>

@@ -31,7 +31,11 @@ class HotkeyStore {
   }
 
   activateHotkeys = (e) => {
-    if (this.dialogsStore.someDialogIsOpen || e.target?.tagName === "INPUT")
+    if (
+      this.dialogsStore.someDialogIsOpen ||
+      e.target?.tagName === "INPUT" ||
+      e.target?.tagName === "TEXTAREA"
+    )
       return e;
 
     const isDefaultKeys =
@@ -79,7 +83,9 @@ class HotkeyStore {
       ) {
         //console.log("element is visible");
       } else {
+        if (scroll) scroll.style.overflowX = "hidden"; //hack to fix react-custom-scrollbar bug with horizontal scroll
         el.scrollIntoView({ block: "center" });
+        if (scroll) scroll.style.overflowX = null;
         //console.log("element is not visible");
       }
     }

@@ -1,4 +1,4 @@
-﻿{
+{
   "Administrator": "Administrador",
   "ChangeToGuest": "Alterar para {{guestCaption}}",
   "ChangeToUser": "Alterar para {{userCaption}}",
@@ -6,7 +6,6 @@
   "EmptyGroupTitle": "Ainda não há colegas de equipa aqui",
   "LblInviteAgain": "Convidar novamente",
   "LblInvited": "Convidado",
-  "LblOther": "Outros",
   "LblSendEmail": "Enviar e-mail",
   "LblSendMessage": "Enviar mensagem",
   "LblSetActive": "Ativar",
@@ -15,6 +14,7 @@
   "MessageEmailActivationInstuctionsSentOnEmail": "As instruções de ativação de e-mail foram enviadas para o endereço de e-mail <1>{{{{email}}</1>",
   "NotFoundDescription": "Tente um filtro diferente ou limpe-o para ver todas as pessoas da secção..",
   "NotFoundTitle": "Não foram encontrados colegas de equipa",
+  "ReassignmentData": "Retribuição de dados",
   "SuccessfullyRemovedGroup": "O grupo foi removido com êxito",
   "UserStatus": "Estado"
 }

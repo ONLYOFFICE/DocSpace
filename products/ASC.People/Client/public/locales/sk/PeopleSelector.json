@@ -1,4 +1,5 @@
-﻿{
+{
+  "AllUsers": "Všetci používatelia",
   "CustomAllGroups": "Všetky {{ groupsCaption, lowercase }}",
   "EmptySearchUsersResult": "Neexistujú žiadni používatelia s takýmto menom",
   "EmptyUsers": "Neexistujú žiadni používatelia",

@@ -116,7 +116,7 @@ public partial class CoreDbContextMySql : Migration
         migrationBuilder.InsertData(
             table: "tenants_quota",
             columns: new[] { "tenant", "active_users", "avangate_id", "description", "features", "max_file_size", "max_total_size", "name", "price", "visible" },
-            values: new object[] { -1, 10000, "0", null, "domain,audit,controlpanel,healthcheck,ldap,sso,whitelabel,branding,ssbranding,update,support,portals:10000,discencryption,privacyroom,restore", 102400L, 10995116277760L, "default", 0.00m, false });
+            values: new object[] { -1, 10000, "0", null, "update", 102400L, 10995116277760L, "default", 0.00m, false });
 
         migrationBuilder.CreateIndex(
             name: "last_modified",

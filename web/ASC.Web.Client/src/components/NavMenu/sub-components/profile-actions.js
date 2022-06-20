@@ -77,11 +77,23 @@ class ProfileActions extends React.PureComponent {
     const dropDownItem = path ? path.find((x) => x === this.ref.current) : null;
     if (dropDownItem) return;
 
+    const navElement = document.getElementsByClassName("profileMenuIcon");
+
+    if (navElement?.length > 0) {
+      navElement[0].style.setProperty("z-index", 180, "important");
+    }
+
     this.setOpened(!this.state.opened);
   };
 
   onClick = (action, e) => {
     action.onClick && action.onClick(e);
+
+    const navElement = document.getElementsByClassName("profileMenuIcon");
+
+    if (navElement?.length > 0) {
+      navElement[0].style.setProperty("z-index", 210, "important");
+    }
 
     this.setOpened(!this.state.opened);
   };

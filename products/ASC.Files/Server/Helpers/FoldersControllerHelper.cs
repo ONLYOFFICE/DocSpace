@@ -35,7 +35,6 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
     private readonly GlobalFolderHelper _globalFolderHelper;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly FileUtility _fileUtility;
-    private readonly TenantManager _tenantManager;
 
     public FoldersControllerHelper(
         FilesSettingsHelper filesSettingsHelper,
@@ -53,8 +52,7 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
         SecurityContext securityContext,
         GlobalFolderHelper globalFolderHelper,
         CoreBaseSettings coreBaseSettings,
-        FileUtility fileUtility,
-        TenantManager tenantManager)
+        FileUtility fileUtility)
         : base(
             filesSettingsHelper,
             fileUploader,
@@ -70,7 +68,6 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
         _globalFolderHelper = globalFolderHelper;
         _coreBaseSettings = coreBaseSettings;
         _fileUtility = fileUtility;
-        _tenantManager = tenantManager;
         _securityContext = securityContext;
         _entryManager = entryManager;
         _userManager = userManager;
@@ -176,7 +173,7 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
             }
 
             if (!_coreBaseSettings.Personal && _coreBaseSettings.DisableDocSpace
-                && PrivacyRoomSettings.IsAvailable(_tenantManager))
+                && PrivacyRoomSettings.IsAvailable())
             {
                 folders.Add(await _globalFolderHelper.FolderPrivacyAsync);
             }

@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Common.Caching;
+
 using Module = ASC.Api.Core.Module;
 using SecurityContext = ASC.Core.SecurityContext;
 
@@ -33,6 +35,8 @@ public class UserController : PeopleControllerBase
 {
     private Tenant Tenant => _apiContext.Tenant;
 
+    private readonly ICache _cache;
+    private readonly TenantManager _tenantManager;
     private readonly Constants _constants;
     private readonly CookiesManager _cookiesManager;
     private readonly CoreBaseSettings _coreBaseSettings;
@@ -65,6 +69,8 @@ public class UserController : PeopleControllerBase
     private readonly EmailValidationKeyProvider _validationKeyProvider;
 
     public UserController(
+        ICache cache,
+        TenantManager tenantManager,
         Constants constants,
         CookiesManager cookiesManager,
         CoreBaseSettings coreBaseSettings,
@@ -103,6 +109,8 @@ public class UserController : PeopleControllerBase
         EmailValidationKeyProvider validationKeyProvider)
         : base(userManager, permissionContext, apiContext, userPhotoManager, httpClientFactory, httpContextAccessor)
     {
+        _cache = cache;
+        _tenantManager = tenantManager;
         _constants = constants;
         _cookiesManager = cookiesManager;
         _coreBaseSettings = coreBaseSettings;
@@ -177,7 +185,8 @@ public class UserController : PeopleControllerBase
 
         UpdateContacts(inDto.Contacts, user);
 
-        user = _userManagerWrapper.AddUser(user, inDto.PasswordHash, false, false, inDto.IsVisitor);
+        _cache.Insert("REWRITE_URL" + _tenantManager.GetCurrentTenant().Id, HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
+        user = _userManagerWrapper.AddUser(user, inDto.PasswordHash, false, false, inDto.IsVisitor, false, true, true);
 
         user.ActivationStatus = EmployeeActivationStatus.Activated;
 
@@ -271,8 +280,8 @@ public class UserController : PeopleControllerBase
         user.WorkFromDate = inDto.Worksfrom != null && inDto.Worksfrom != DateTime.MinValue ? _tenantUtil.DateTimeFromUtc(inDto.Worksfrom) : DateTime.UtcNow.Date;
 
         UpdateContacts(inDto.Contacts, user);
-
-        user = _userManagerWrapper.AddUser(user, inDto.PasswordHash, inDto.FromInviteLink, true, inDto.IsVisitor, inDto.FromInviteLink);
+        _cache.Insert("REWRITE_URL" + _tenantManager.GetCurrentTenant().Id, HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
+        user = _userManagerWrapper.AddUser(user, inDto.PasswordHash, inDto.FromInviteLink, true, inDto.IsVisitor, inDto.FromInviteLink, true, true);
 
         UpdateDepartments(inDto.Department, user);
 
@@ -308,7 +317,7 @@ public class UserController : PeopleControllerBase
 
     [HttpPut("{userid}/password")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PasswordChange,EmailChange,Activation,EmailActivation,Everyone")]
-    public EmployeeDto ChangeUserPassword(Guid userid, MemberRequestDto inDto)
+    public async Task<EmployeeDto> ChangeUserPassword(Guid userid, MemberRequestDto inDto)
     {
         _apiContext.AuthByClaim();
         _permissionContext.DemandPermissions(new UserSecurityProvider(userid), Constants.Action_EditUser);
@@ -332,7 +341,7 @@ public class UserController : PeopleControllerBase
             {
                 user.Email = address.Address.ToLowerInvariant();
                 user.ActivationStatus = EmployeeActivationStatus.Activated;
-                _userManager.SaveUserInfo(user);
+                _userManager.SaveUserInfo(user, syncCardDav: true);
             }
         }
 
@@ -353,7 +362,7 @@ public class UserController : PeopleControllerBase
             _securityContext.SetUserPasswordHash(userid, inDto.PasswordHash);
             _messageService.Send(MessageAction.UserUpdatedPassword);
 
-            _cookiesManager.ResetUserCookie(userid);
+            await _cookiesManager.ResetUserCookie(userid);
             _messageService.Send(MessageAction.CookieSettingsUpdated);
         }
 
@@ -391,7 +400,7 @@ public class UserController : PeopleControllerBase
 
     [HttpDelete("@self")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "ProfileRemove")]
-    public EmployeeDto DeleteProfile()
+    public async Task<EmployeeDto> DeleteProfile()
     {
         _apiContext.AuthByClaim();
 
@@ -419,7 +428,7 @@ public class UserController : PeopleControllerBase
         var userName = user.DisplayUserName(false, _displayUserSettingsHelper);
         _messageService.Send(MessageAction.UsersUpdatedStatus, _messageTarget.Create(user.Id), userName);
 
-        _cookiesManager.ResetUserCookie(user.Id);
+        await _cookiesManager.ResetUserCookie(user.Id);
         _messageService.Send(MessageAction.CookieSettingsUpdated);
 
         if (_coreBaseSettings.Personal)
@@ -684,7 +693,7 @@ public class UserController : PeopleControllerBase
                     user.ActivationStatus = EmployeeActivationStatus.AutoGenerated;
                 }
 
-                _userManager.SaveUserInfo(user);
+                _userManager.SaveUserInfo(user, syncCardDav: true);
             }
 
             if (user.ActivationStatus == EmployeeActivationStatus.Pending)
@@ -796,7 +805,7 @@ public class UserController : PeopleControllerBase
 
             user.Email = email;
             user.ActivationStatus = EmployeeActivationStatus.NotActivated;
-            _userManager.SaveUserInfo(user);
+            _userManager.SaveUserInfo(user, syncCardDav: true);
             _studioNotifyService.SendEmailActivationInstructions(user, email);
         }
 
@@ -882,7 +891,7 @@ public class UserController : PeopleControllerBase
     }
 
     [HttpPut("{userid}")]
-    public EmployeeDto UpdateMember(string userid, UpdateMemberRequestDto inDto)
+    public async Task<EmployeeDto> UpdateMember(string userid, UpdateMemberRequestDto inDto)
     {
         var user = GetUserInfo(userid);
 
@@ -980,12 +989,12 @@ public class UserController : PeopleControllerBase
             }
         }
 
-        _userManager.SaveUserInfo(user);
+        _userManager.SaveUserInfo(user, inDto.IsVisitor, true);
         _messageService.Send(MessageAction.UserUpdated, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
 
         if (inDto.Disable.HasValue && inDto.Disable.Value)
         {
-            _cookiesManager.ResetUserCookie(user.Id);
+            await _cookiesManager.ResetUserCookie(user.Id);
             _messageService.Send(MessageAction.CookieSettingsUpdated);
         }
 
@@ -993,7 +1002,7 @@ public class UserController : PeopleControllerBase
     }
 
     [HttpPut("status/{status}")]
-    public IEnumerable<EmployeeDto> UpdateUserStatus(EmployeeStatus status, UpdateMembersRequestDto inDto)
+    public async Task<IEnumerable<EmployeeDto>> UpdateUserStatus(EmployeeStatus status, UpdateMembersRequestDto inDto)
     {
         _permissionContext.DemandPermissions(Constants.Action_EditUser);
 
@@ -1016,15 +1025,15 @@ public class UserController : PeopleControllerBase
                         if (_tenantStatisticsProvider.GetUsersCount() < _tenantExtra.GetTenantQuota().ActiveUsers || user.IsVisitor(_userManager))
                         {
                             user.Status = EmployeeStatus.Active;
-                            _userManager.SaveUserInfo(user);
+                            _userManager.SaveUserInfo(user, syncCardDav: true);
                         }
                     }
                     break;
                 case EmployeeStatus.Terminated:
                     user.Status = EmployeeStatus.Terminated;
-                    _userManager.SaveUserInfo(user);
+                    _userManager.SaveUserInfo(user, syncCardDav: true);
 
-                    _cookiesManager.ResetUserCookie(user.Id);
+                    await _cookiesManager.ResetUserCookie(user.Id);
                     _messageService.Send(MessageAction.CookieSettingsUpdated);
                     break;
             }
@@ -1283,6 +1292,8 @@ public class UserController : PeopleControllerBase
     //    lock (progressQueue.SynchRoot)
     //    {
     //        var task = progressQueue.GetItems().OfType<ImportUsersTask>().FirstOrDefault(t => (int)t.Id == TenantProvider.CurrentTenantID);
+    //var tenant = CoreContext.TenantManager.GetCurrentTenant();
+    //Cache.Insert("REWRITE_URL" + tenant.TenantId, HttpContext.Current.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
     //        if (task != null && task.IsCompleted)
     //        {
     //            progressQueue.Remove(task);

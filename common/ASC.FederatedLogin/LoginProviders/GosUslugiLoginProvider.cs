@@ -88,7 +88,9 @@ public class GosUslugiLoginProvider : BaseLoginProvider<GosUslugiLoginProvider>
 
     public override LoginProfile GetLoginProfile(string accessToken)
     {
-        var tokenPayloadString = JsonWebToken.Decode(accessToken, string.Empty, false, true);
+        var tokenPayloadString = JwtBuilder.Create()
+                                .WithAlgorithm(new HMACSHA256Algorithm())
+                                .Decode(accessToken);
         var tokenPayload = JObject.Parse(tokenPayloadString);
         if (tokenPayload == null)
         {

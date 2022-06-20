@@ -16,7 +16,6 @@ import selectFolderDialogStore from "./SelectFolderDialogStore";
 import ContextOptionsStore from "./ContextOptionsStore";
 import HotkeyStore from "./HotkeyStore";
 import store from "studio/store";
-import InfoPanelStore from "./InfoPanelStore";
 import selectFileDialogStore from "./SelectFileDialogStore";
 
 const selectedFolderStore = new SelectedFolderStore(store.auth.settingsStore);
@@ -56,8 +55,6 @@ const uploadDataStore = new UploadDataStore(
   settingsStore
 );
 
-const infoPanelStore = new InfoPanelStore();
-
 const filesActionsStore = new FilesActionsStore(
   store.auth,
   uploadDataStore,
@@ -66,8 +63,7 @@ const filesActionsStore = new FilesActionsStore(
   selectedFolderStore,
   settingsStore,
   dialogsStore,
-  mediaViewerDataStore,
-  infoPanelStore
+  mediaViewerDataStore
 );
 
 const versionHistoryStore = new VersionHistoryStore(filesStore);
@@ -80,8 +76,7 @@ const contextOptionsStore = new ContextOptionsStore(
   treeFoldersStore,
   uploadDataStore,
   versionHistoryStore,
-  settingsStore,
-  infoPanelStore
+  settingsStore
 );
 
 const hotkeyStore = new HotkeyStore(
@@ -106,7 +101,6 @@ const stores = {
   selectFolderDialogStore,
   contextOptionsStore,
   hotkeyStore,
-  infoPanelStore,
   selectFileDialogStore,
 };
 

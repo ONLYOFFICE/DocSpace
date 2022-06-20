@@ -125,6 +125,7 @@ const EmbeddingBody = ({ embeddingLink, t, theme, isPersonal }) => {
             onClick={onCopyLink}
           />
           <Textarea
+            className="embedding-panel_copy-textarea"
             color={theme.filesPanels.embedding.textAreaColor}
             isReadOnly
             value={link}

@@ -23,7 +23,7 @@ const TableRow = (props) => {
   const row = useRef();
 
   const onContextMenu = (e) => {
-    fileContextClick && fileContextClick();
+    fileContextClick && fileContextClick(e.button === 2);
     if (cm.current && !cm.current.menuRef.current) {
       row.current.click(e);
     }

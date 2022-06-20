@@ -216,8 +216,6 @@ public partial class UserDbContextPostgreSql : Migration
                 tenant = table.Column<int>(type: "int", nullable: false),
                 pwdhash = table.Column<string>(type: "varchar(512)", nullable: true, collation: "utf8_general_ci")
                     .Annotation("MySql:CharSet", "utf8"),
-                pwdhashsha512 = table.Column<string>(type: "varchar(512)", nullable: true, collation: "utf8_general_ci")
-                    .Annotation("MySql:CharSet", "utf8"),
                 LastModified = table.Column<DateTime>(type: "timestamp", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP")
             },
             constraints: table =>
@@ -383,8 +381,8 @@ public partial class UserDbContextPostgreSql : Migration
 
         migrationBuilder.InsertData(
             table: "core_usersecurity",
-            columns: new[] { "userid", "pwdhash", "pwdhashsha512", "tenant" },
-            values: new object[] { "66faa6e4-f133-11ea-b126-00ffeec8b4ef", "vLFfghR5tNV3K9DKhmwArV+SbjWAcgZZzIDTnJ0JgCo=", "USubvPlB+ogq0Q1trcSupg==", 1 });
+            columns: new[] { "userid", "pwdhash", "tenant" },
+            values: new object[] { "66faa6e4-f133-11ea-b126-00ffeec8b4ef", "vLFfghR5tNV3K9DKhmwArV+SbjWAcgZZzIDTnJ0JgCo=", 1 });
 
         migrationBuilder.CreateIndex(
             name: "last_modified",

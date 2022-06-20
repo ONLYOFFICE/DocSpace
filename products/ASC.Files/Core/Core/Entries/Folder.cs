@@ -78,16 +78,24 @@ public class Folder<T> : FileEntry<T>, IFolder, IMapFrom<DbFolder>
         set => NewForMe = Convert.ToInt32(value);
     }
 
+    public bool IsFavorite { get; set; }
+
     public Folder()
     {
         Title = string.Empty;
         FileEntryType = FileEntryType.Folder;
     }
 
-    public Folder(FileHelper fileHelper, Global global) : this()
+    public Folder(
+        FileHelper fileHelper,
+        Global global,
+        GlobalFolderHelper globalFolderHelper,
+        SettingsManager settingsManager,
+        FilesSettingsHelper filesSettingsHelper,
+        FileDateTime fileDateTime) : base(fileHelper, global, globalFolderHelper, settingsManager, filesSettingsHelper, fileDateTime)
     {
-        FileHelper = fileHelper;
-        Global = global;
+        Title = string.Empty;
+        FileEntryType = FileEntryType.Folder;
     }
 
     public override string UniqID => $"folder_{Id}";

@@ -28,11 +28,14 @@ namespace ASC.Files.Core.Log;
 internal static partial class ProviderAccountDaoLogger
 {
     [LoggerMessage(Level = LogLevel.Error, Message = "GetProvidersInfoInternal: user = {userId}")]
-    public static partial void ErrorGetProvidersInfoInternalUser(this ILogger logger, Guid userId, Exception exception);  
-    
+    public static partial void ErrorGetProvidersInfoInternalUser(this ILogger logger, Guid userId, Exception exception);
+
     [LoggerMessage(Level = LogLevel.Error, Message = "GetProvidersInfoInternal: linkId = {linkId} , folderType = {folderType} , user = {userId}")]
     public static partial void ErrorGetProvidersInfoInternal(this ILogger logger, int linkId, FolderType folderType, Guid userId, Exception exception);
-    
+
     [LoggerMessage(Level = LogLevel.Error, Message = "UpdateProviderInfo: linkId = {linkId} , user = {userId}")]
     public static partial void ErrorUpdateProviderInfo(this ILogger logger, int linkId, Guid userId, Exception exception);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "DecryptPassword error: linkId = {linkId} , user = {userId}")]
+    public static partial void ErrorDecryptPassword(this ILogger logger, int linkId, Guid userId, Exception exception);
 }

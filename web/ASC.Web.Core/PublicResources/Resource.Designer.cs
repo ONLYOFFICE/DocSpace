@@ -19,7 +19,7 @@ namespace ASC.Web.Core.PublicResources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resource {
@@ -646,7 +646,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter the name of the Google Cloud bucket where you want to store your backups..
+        ///   Looks up a localized string similar to Enter the name of the Google Cloud bucket for storing backups..
         /// </summary>
         public static string ConsumersGoogleCloudbucketDescription {
             get {
@@ -844,7 +844,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter the URL address of the Rackspace private container where you want to store your backups..
+        ///   Looks up a localized string similar to Enter the URL address of the Rackspace private container for storing backups..
         /// </summary>
         public static string ConsumersRackspaceprivate_containerDescription {
             get {
@@ -862,7 +862,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter the URL address of the Rackspace public container where you want to store your backups..
+        ///   Looks up a localized string similar to Enter the URL address of the Rackspace public container for storing backups..
         /// </summary>
         public static string ConsumersRackspacepublic_containerDescription {
             get {
@@ -907,7 +907,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter the unique name of the Amazon bucket where you want to store your backups..
+        ///   Looks up a localized string similar to Enter the unique name of the Amazon bucket for storing backups..
         /// </summary>
         public static string ConsumersS3bucketDescription {
             get {
@@ -1015,7 +1015,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter the name of the Selectel private container where you want to store your backups..
+        ///   Looks up a localized string similar to Enter the name of the Selectel private container for storing backups..
         /// </summary>
         public static string ConsumersSelectelprivate_containerDescription {
             get {
@@ -1033,7 +1033,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter the name of the Selectel public container where you want to store your backups..
+        ///   Looks up a localized string similar to Enter the name of the Selectel public container for storing backups..
         /// </summary>
         public static string ConsumersSelectelpublic_containerDescription {
             get {
@@ -1717,20 +1717,20 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The password must contain.
-        /// </summary>
-        public static string ErrorPasswordMessageStart {
-            get {
-                return ResourceManager.GetString("ErrorPasswordMessageStart", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to digits.
         /// </summary>
         public static string ErrorPasswordNoDigits {
             get {
                 return ResourceManager.GetString("ErrorPasswordNoDigits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to no spaces.
+        /// </summary>
+        public static string ErrorPasswordNoSpaces {
+            get {
+                return ResourceManager.GetString("ErrorPasswordNoSpaces", resourceCulture);
             }
         }
         
@@ -1749,6 +1749,15 @@ namespace ASC.Web.Core.PublicResources {
         public static string ErrorPasswordNoUpperCase {
             get {
                 return ResourceManager.GetString("ErrorPasswordNoUpperCase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to only latin letters.
+        /// </summary>
+        public static string ErrorPasswordOnlyLatinLetters {
+            get {
+                return ResourceManager.GetString("ErrorPasswordOnlyLatinLetters", resourceCulture);
             }
         }
         
@@ -1798,7 +1807,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to EU (Ireland) Region.
+        ///   Looks up a localized string similar to EU (Frankfurt) Region.
         /// </summary>
         public static string EuServerRegion {
             get {
@@ -1987,15 +1996,6 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This feature enabled on free tariff only.
-        /// </summary>
-        public static string PortalAccessSettingsTariffException {
-            get {
-                return ResourceManager.GetString("PortalAccessSettingsTariffException", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Portal Access.
         /// </summary>
         public static string PortalSecurity {
@@ -2118,15 +2118,6 @@ namespace ASC.Web.Core.PublicResources {
         public static string SsoSettingsInvalidMapping {
             get {
                 return ResourceManager.GetString("SsoSettingsInvalidMapping", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Portal has been renamed successfully.
-        /// </summary>
-        public static string SuccessfullyPortalRenameMessage {
-            get {
-                return ResourceManager.GetString("SuccessfullyPortalRenameMessage", resourceCulture);
             }
         }
         

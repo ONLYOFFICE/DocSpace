@@ -39,10 +39,11 @@ public class MessagesRepository : IDisposable
     private readonly IMapper _mapper;
     private readonly ILogger<MessagesRepository> _logger;
     private readonly Timer _timer;
-    private Parser _parser;
-    private readonly HashSet<MessageAction> _forceSaveAuditActions = new HashSet<MessageAction> { MessageAction.RoomInviteLinkUsed };
+    private readonly int _cacheLimit;
+    private readonly HashSet<MessageAction> _forceSaveAuditActions = new HashSet<MessageAction> 
+        { MessageAction.RoomInviteLinkUsed, MessageAction.UserSentPasswordChangeInstructions };
 
-    public MessagesRepository(IServiceScopeFactory serviceScopeFactory, ILogger<MessagesRepository> logger, IMapper mapper)
+    public MessagesRepository(IServiceScopeFactory serviceScopeFactory, ILogger<MessagesRepository> logger, IMapper mapper, IConfiguration configuration)
     {
         _cacheTime = TimeSpan.FromMinutes(1);
         _cache = new Dictionary<string, EventMessage>();
@@ -54,40 +55,59 @@ public class MessagesRepository : IDisposable
         _timer = new Timer(FlushCache);
 
         _mapper = mapper;
+
+        var minutes = configuration["messaging:CacheTimeFromMinutes"];
+        var limit = configuration["messaging:CacheLimit"];
+
+        _cacheTime = int.TryParse(minutes, out var cacheTime) ? TimeSpan.FromMinutes(cacheTime) : TimeSpan.FromMinutes(1);
+        _cacheLimit = int.TryParse(limit, out var cacheLimit) ? cacheLimit : 100;
     }
 
-    public void Add(EventMessage message)
+    ~MessagesRepository()
     {
-        var contains = _forceSaveAuditActions.Contains(message.Action);
+        FlushCache(true);
+    }
 
+    private bool ForseSave(EventMessage message)
+    {
         // messages with action code < 2000 are related to login-history
-        if ((int)message.Action < 2000 || contains)
+        if ((int)message.Action < 2000)
         {
-            using var scope = _serviceScopeFactory.CreateScope();
-            using var ef = scope.ServiceProvider.GetService<DbContextManager<MessagesContext>>().Get("messages");
+            return true;
+        }
 
-            if (contains)
+        return _forceSaveAuditActions.Contains(message.Action);
+    }
+
+    public int Add(EventMessage message)
+    {
+        if (ForseSave(message))
+        {
+            var id = 0;
+            if (!string.IsNullOrEmpty(message.UAHeader))
             {
                 try
                 {
-                    if (!string.IsNullOrEmpty(message.UAHeader))
-                    {
-                        AddClientInfo(message, null);
-                    }
-
-                    AddAuditEvent(message, ef);
+                    MessageSettings.AddInfoMessage(message);
                 }
                 catch (Exception e)
                 {
-                    _logger.ErrorFlushCache(message.Id, e);
+                    _logger.ErrorWithException("Add " + message.Id, e);
                 }
+            }
+
+            using var scope = _serviceScopeFactory.CreateScope();
+            using var ef = scope.ServiceProvider.GetService<DbContextManager<MessagesContext>>().Get("messages");
+
+            if ((int)message.Action < 2000)
+            {
+                id = AddLoginEvent(message, ef);
             }
             else
             {
-                AddLoginEvent(message, ef);
+                id = AddAuditEvent(message, ef);
             }
-
-            return;
+            return id;
         }
 
         var now = DateTime.UtcNow;
@@ -103,14 +123,18 @@ public class MessagesRepository : IDisposable
                 _timerStarted = true;
             }
         }
-
+        return 0;
+    }
+    private void FlushCache(object state)
+    {
+        FlushCache(false);
     }
 
-    private void FlushCache(object state)
+    private void FlushCache(bool isDisposed = false)
     {
         List<EventMessage> events = null;
 
-        if (_cacheTime < DateTime.UtcNow - _lastSave || _cache.Count > 100)
+        if (DateTime.UtcNow > _lastSave.Add(_cacheTime) || _cache.Count > _cacheLimit || isDisposed)
         {
             lock (_cache)
             {
@@ -134,96 +158,59 @@ public class MessagesRepository : IDisposable
 
         strategy.Execute(() =>
         {
-            using var tx = ef.Database.BeginTransaction(IsolationLevel.ReadUncommitted);
-            var dict = new Dictionary<string, ClientInfo>();
+        using var tx = ef.Database.BeginTransaction(IsolationLevel.ReadUncommitted);
+        var dict = new Dictionary<string, ClientInfo>();
 
-            foreach (var message in events)
+        foreach (var message in events)
+        {
+            if (!string.IsNullOrEmpty(message.UAHeader))
             {
-                if (!string.IsNullOrEmpty(message.UAHeader))
+                try
                 {
-                    try
-                    {
-                        dict.TryGetValue(message.UAHeader, out var clientInfo);
-
-                        AddClientInfo(message, clientInfo);
-
-                        if (dict.TryGetValue(message.UAHeader, out clientInfo))
-                        {
-
-                        }
-                        else
-                        {
-                            _parser = _parser ?? Parser.GetDefault();
-                            clientInfo = _parser.Parse(message.UAHeader);
-                            dict.Add(message.UAHeader, clientInfo);
-                        }
-
-                        if (clientInfo != null)
-                        {
-                            message.Browser = GetBrowser(clientInfo);
-                            message.Platform = GetPlatform(clientInfo);
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        _logger.ErrorFlushCache(message.Id, e);
-                    }
+                    MessageSettings.AddInfoMessage(message, dict);
                 }
+                catch (Exception e)
+                {
+                    _logger.ErrorFlushCache(message.Id, e);
+                }
+            }
 
+            if (!ForseSave(message))
+            {
                 // messages with action code < 2000 are related to login-history
-                if ((int)message.Action >= 2000)
+                if ((int)message.Action < 2000)
+                {
+                    AddLoginEvent(message, ef);
+                }
+                else
                 {
                     AddAuditEvent(message, ef);
                 }
             }
+        }
 
-            tx.Commit();
+        tx.Commit();
         });
     }
 
-    private void AddLoginEvent(EventMessage message, MessagesContext dbContext)
+    private int AddLoginEvent(EventMessage message, MessagesContext dbContext)
     {
         var loginEvent = _mapper.Map<EventMessage, LoginEvent>(message);
 
         dbContext.LoginEvents.Add(loginEvent);
         dbContext.SaveChanges();
+
+        return loginEvent.Id;
     }
 
-    private void AddClientInfo(EventMessage message, ClientInfo clientInfo)
-    {
-        if (clientInfo == null)
-        {
-            _parser ??= Parser.GetDefault();
-            clientInfo = _parser.Parse(message.UAHeader);
-        }
-
-        if (clientInfo != null)
-        {
-            message.Browser = GetBrowser(clientInfo);
-            message.Platform = GetPlatform(clientInfo);
-        }
-    }
-
-    private void AddAuditEvent(EventMessage message, MessagesContext dbContext)
+    private int AddAuditEvent(EventMessage message, MessagesContext dbContext)
     {
         var auditEvent = _mapper.Map<EventMessage, AuditEvent>(message);
 
         dbContext.AuditEvents.Add(auditEvent);
         dbContext.SaveChanges();
-    }
 
-    private static string GetBrowser(ClientInfo clientInfo)
-    {
-        return clientInfo == null
-                   ? null
-                   : $"{clientInfo.UA.Family} {clientInfo.UA.Major}";
-    }
-
-    private static string GetPlatform(ClientInfo clientInfo)
-    {
-        return clientInfo == null
-                   ? null
-                   : $"{clientInfo.OS.Family} {clientInfo.OS.Major}";
+        return auditEvent.Id;
     }
 
     public void Dispose()

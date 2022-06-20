@@ -48,7 +48,7 @@ const StyledBody = styled.div`
     .selection-panel_tree-body {
       grid-area: tree;
       height: 100%;
-      border-right: 1px solid #eceef1;
+      border-right: 1px solid ${(props) => props.theme.row.borderBottom};
 
       display: grid;
       grid-template-rows: max-content auto;
@@ -103,6 +103,8 @@ const StyledRow = styled.div`
 
   padding-left: 16px;
 
+  cursor: pointer;
+
   ${(props) =>
     props.isChecked && `background: ${props.theme.row.backgroundColor}`};
 
@@ -144,8 +146,10 @@ const StyledRow = styled.div`
         ::after {
           position: absolute;
           display: block;
-          background-color: #f3f4f4;
-          border-top-right-radius: 50%;
+          background-color: ${(props) =>
+            props.theme.modalDialog.colorDisabledFileIcons};
+
+          border-top-right-radius: 45%;
           left: 18px;
           top: 6px;
           width: 27px;
@@ -157,6 +161,7 @@ const StyledRow = styled.div`
       .selection-panel_text p {
         color: ${(props) => props.theme.text.disableColor};
       }
+      cursor: default;
     `}
 `;
 
@@ -178,6 +183,7 @@ const StyledAsideBody = styled.div`
   }
 
   .selection-panel_aside-header {
+    margin-bottom: 12px;
     div:first-child {
       ${(props) => props.header && " margin-bottom: 12px;"}
     }
@@ -189,9 +195,14 @@ const StyledAsideBody = styled.div`
     margin-bottom: 4px;
   }
   .selection-panel_aside-tree {
-    margin-top: 12px;
     margin-left: -16px;
     margin-right: -16px;
+    max-width: 477px;
+    overflow: hidden;
+    .selection-panel_aside-loader {
+      overflow: auto;
+      padding-left: 16px;
+    }
   }
 
   .selection-panel_aside-title {
@@ -234,8 +245,8 @@ const StyledTree = styled.div`
   height: 100%;
 
   .files-tree-menu {
-    margin-top: 0 !important;
     margin-bottom: 22px;
+    margin-top: 0px !important;
   }
   .selection-panel_tree-folder {
     height: 100%;
@@ -255,7 +266,9 @@ const StyledTree = styled.div`
       `}
 
     .scroll-body {
+      ${(props) => props.isLoadingNodes && "overflow-y: hidden !important"};
       overflow-x: hidden !important;
+      padding-right: 0px !important;
     }
   }
 

@@ -53,11 +53,11 @@ public class SocketManager
         _signalrServiceClient.StartEdit(fileId, room);
     }
 
-        public void StopEdit<T>(T fileId)
+    public void StopEdit<T>(T fileId)
     {
         var room = GetFileRoom(fileId);
 
-            _signalrServiceClient.StopEdit(fileId, room);
+        _signalrServiceClient.StopEdit(fileId, room);
     }
 
     public async Task CreateFileAsync<T>(File<T> file)
@@ -74,6 +74,22 @@ public class SocketManager
         var data = JsonSerializer.Serialize(await _filesWrapperHelper.GetAsync(file), serializerSettings);
 
         _signalrServiceClient.CreateFile(file.Id, room, data);
+    }
+
+    public async Task UpdateFileAsync<T>(File<T> file)
+    {
+        var room = GetFolderRoom(file.ParentId);
+        var serializerSettings = new JsonSerializerOptions()
+        {
+            WriteIndented = false,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
+        serializerSettings.Converters.Add(new ApiDateTimeConverter());
+        serializerSettings.Converters.Add(new FileEntryWrapperConverter());
+        var data = JsonSerializer.Serialize(await _filesWrapperHelper.GetAsync(file), serializerSettings);
+
+        _signalrServiceClient.UpdateFile(file.Id, room, data);
     }
 
     public void DeleteFile<T>(File<T> file)

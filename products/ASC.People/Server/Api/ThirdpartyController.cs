@@ -111,7 +111,7 @@ public class ThirdpartyController : ApiControllerBase
 
         foreach (var provider in ProviderManager.AuthProviders.Where(provider => string.IsNullOrEmpty(fromOnly) || fromOnly == provider || (provider == "google" && fromOnly == "openid")))
         {
-            if (inviteView && provider.Equals("twitter", StringComparison.OrdinalIgnoreCase))
+            if (inviteView && ProviderManager.InviteExceptProviders.Contains(provider))
             {
                 continue;
             }
@@ -212,9 +212,9 @@ public class ThirdpartyController : ApiControllerBase
         }
 
         var user = _userManager.GetUsers(userID);
-        var cookiesKey = _securityContext.AuthenticateMe(user.Email, passwordHash);
-        _cookiesManager.SetCookies(CookiesType.AuthKey, cookiesKey);
-        _messageService.Send(MessageAction.LoginSuccess);
+
+        _cookiesManager.AuthenticateMeAndSetCookies(user.Tenant, user.Id, MessageAction.LoginSuccess);
+
         _studioNotifyService.UserHasJoin();
 
         if (mustChangePassword)

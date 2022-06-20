@@ -27,7 +27,7 @@
 namespace ASC.Files.Tests;
 
 [TestFixture]
-class SharedWithMeTest : BaseFilesTests
+public partial class BaseFilesTests
 {
     private IEnumerable<FileShareParams> _testFolderParamRead;
     private IEnumerable<FileShareParams> _testFolderParamReadAndWrite;

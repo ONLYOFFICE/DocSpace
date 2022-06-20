@@ -254,7 +254,7 @@
     <value>Контейнер</value>
   </data>
   <data name="ConsumersGoogleCloudbucketDescription" xml:space="preserve">
-    <value>Введите имя контейнера Google Cloud, в котором вы хотите хранить резервные копии.</value>
+    <value>Введите имя контейнера Google Cloud для хранения резервных копий.</value>
   </data>
   <data name="ConsumersGoogleCloudDescription" xml:space="preserve">
     <value>Подключите сервис Google Cloud Storage для резервного копирования и хранения данных портала.</value>
@@ -320,13 +320,13 @@
     <value>Приватный контейнер</value>
   </data>
   <data name="ConsumersRackspaceprivate_containerDescription" xml:space="preserve">
-    <value>Введите URL-адрес приватного контейнера Rackspace, в котором вы хотите хранить резервные копии.</value>
+    <value>Введите URL-адрес приватного контейнера Rackspace для хранения резервных копий.</value>
   </data>
   <data name="ConsumersRackspacepublic_container" xml:space="preserve">
     <value>Публичный контейнер</value>
   </data>
   <data name="ConsumersRackspacepublic_containerDescription" xml:space="preserve">
-    <value>Введите URL-адрес публичного контейнера Rackspace, в котором вы хотите хранить резервные копии.</value>
+    <value>Введите URL-адрес публичного контейнера Rackspace для хранения резервных копий.</value>
   </data>
   <data name="ConsumersRackspaceregion" xml:space="preserve">
     <value>Регион</value>
@@ -341,7 +341,7 @@
     <value>Контейнер</value>
   </data>
   <data name="ConsumersS3bucketDescription" xml:space="preserve">
-    <value>Введите уникальное имя контейнера Amazon, в котором вы хотите хранить резервные копии.</value>
+    <value>Введите уникальное имя контейнера Amazon для хранения резервных копий.</value>
   </data>
   <data name="ConsumersS3Description" xml:space="preserve">
     <value>Подключите Amazon AWS S3 для резервного копирования и хранения данных портала.</value>
@@ -377,13 +377,13 @@
     <value>Приватный контейнер</value>
   </data>
   <data name="ConsumersSelectelprivate_containerDescription" xml:space="preserve">
-    <value>Введите имя приватного контейнера Selectel, в котором вы хотите хранить резервные копии.</value>
+    <value>Введите имя приватного контейнера Selectel для хранения резервных копий.</value>
   </data>
   <data name="ConsumersSelectelpublic_container" xml:space="preserve">
     <value>Публичный контейнер</value>
   </data>
   <data name="ConsumersSelectelpublic_containerDescription" xml:space="preserve">
-    <value>Введите имя публичного контейнера Selectel, в котором вы хотите хранить резервные копии.</value>
+    <value>Введите имя публичного контейнера Selectel для хранения резервных копий.</value>
   </data>
   <data name="ConsumersSkyDrive" xml:space="preserve">
     <value>OneDrive</value>
@@ -610,17 +610,20 @@
   <data name="ErrorPasswordMessage" xml:space="preserve">
     <value>Пароль должен содержать</value>
   </data>
-  <data name="ErrorPasswordMessageStart" xml:space="preserve">
-    <value>Пароль должен содержать</value>
-  </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>цифры</value>
+  </data>
+  <data name="ErrorPasswordNoSpaces" xml:space="preserve">
+    <value>без пробелов</value>
   </data>
   <data name="ErrorPasswordNoSpecialSymbols" xml:space="preserve">
     <value>специальные символы</value>
   </data>
   <data name="ErrorPasswordNoUpperCase" xml:space="preserve">
     <value>заглавные буквы</value>
+  </data>
+  <data name="ErrorPasswordOnlyLatinLetters" xml:space="preserve">
+    <value>только латинские буквы</value>
   </data>
   <data name="ErrorRequestLimitExceeded" xml:space="preserve">
     <value>Превышен лимит запросов</value>
@@ -638,7 +641,7 @@
     <value>Пользователь с e-mail "{0}" не найден</value>
   </data>
   <data name="EuServerRegion" xml:space="preserve">
-    <value>Европа (Ирландия)</value>
+    <value>Европа (Франкфурт)</value>
   </data>
   <data name="FileSizeMaxExceed" xml:space="preserve">
     <value>Превышен максимальный размер файла</value>
@@ -697,9 +700,6 @@
   <data name="PersonalFreeSpaceException" xml:space="preserve">
     <value>Превышена квота на размер дискового пространства</value>
   </data>
-  <data name="PortalAccessSettingsTariffException" xml:space="preserve">
-    <value>Эта функция доступна только для бесплатного тарифа</value>
-  </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Доступ к порталу</value>
   </data>
@@ -741,9 +741,6 @@
   </data>
   <data name="SsoSettingsInvalidMapping" xml:space="preserve">
     <value>Недопустимое сопоставление полей</value>
-  </data>
-  <data name="SuccessfullyPortalRenameMessage" xml:space="preserve">
-    <value>Портал успешно переименован</value>
   </data>
   <data name="SuccessfullySaveGreetingSettingsMessage" xml:space="preserve">
     <value>Настройки страницы приветствия успешно сохранены</value>

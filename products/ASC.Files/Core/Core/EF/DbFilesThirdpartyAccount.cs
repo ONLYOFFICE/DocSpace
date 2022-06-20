@@ -65,6 +65,8 @@ public static class DbFilesThirdpartyAccountExtension
         {
             entity.ToTable("files_thirdparty_account");
 
+            entity.HasIndex(e => e.TenantId).HasDatabaseName("tenant_id");
+
             entity.Property(e => e.Id).HasColumnName("id");
 
             entity.Property(e => e.CreateOn)
@@ -136,6 +138,8 @@ public static class DbFilesThirdpartyAccountExtension
         modelBuilder.Entity<DbFilesThirdpartyAccount>(entity =>
         {
             entity.ToTable("files_thirdparty_account", "onlyoffice");
+
+            entity.HasIndex(e => e.TenantId).HasDatabaseName("tenant_id");
 
             entity.Property(e => e.Id).HasColumnName("id");
 

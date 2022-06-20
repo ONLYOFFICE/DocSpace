@@ -3,7 +3,7 @@ import ErrorContainer from "@appserver/common/components/ErrorContainer";
 import { I18nextProvider, useTranslation } from "react-i18next";
 import i18n from "./i18n";
 const ErrorOfflineContainer = () => {
-  const { t } = useTranslation("Offline");
+  const { t } = useTranslation();
 
   return <ErrorContainer headerText={t("ErrorOfflineText")} />;
 };

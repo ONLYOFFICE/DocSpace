@@ -128,5 +128,4 @@ global using AutoMapper;
 global using StackExchange.Redis.Extensions.Core.Configuration;
 global using StackExchange.Redis.Extensions.Newtonsoft;
 
-global using ILogger = Microsoft.Extensions.Logging.ILogger;
 global using LogLevel = Microsoft.Extensions.Logging.LogLevel;

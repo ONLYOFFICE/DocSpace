@@ -14,7 +14,9 @@ const InternalLink = ({ t, internalLink, style }) => {
 
   return (
     <StyledInternalLink style={style}>
-      <Text className={"internal-link__link-text"}>{t("InternalLink")}</Text>
+      <Text trucate className={"internal-link__link-text"}>
+        {t("InternalLink")}
+      </Text>
       <Text
         className={"internal-link__copy-text"}
         onClick={onCopyInternalLinkAction}

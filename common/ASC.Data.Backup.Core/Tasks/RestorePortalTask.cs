@@ -157,6 +157,7 @@ public class RestorePortalTask : PortalTaskBase
     {
         var keyBase = KeyHelper.GetDatabaseSchema();
         var keys = dataReader.GetEntries(keyBase).Select(r => Path.GetFileName(r)).ToList();
+        var dbs = dataReader.GetDirectories("").Where(r => Path.GetFileName(r).StartsWith("mailservice")).Select(r => Path.GetFileName(r)).ToList();
         var upgrades = new List<string>();
 
         if (!string.IsNullOrEmpty(UpgradesPath) && Directory.Exists(UpgradesPath))
@@ -165,6 +166,15 @@ public class RestorePortalTask : PortalTaskBase
         }
 
         var stepscount = keys.Count * 2 + upgrades.Count;
+
+        var databasesFromDirs = new Dictionary<string, List<string>>();
+        var databases = new Dictionary<Tuple<string, string>, List<string>>();
+        foreach (var db in dbs)
+        {
+            var keys1 = dataReader.GetEntries(db + "/" + keyBase).Select(k => Path.GetFileName(k)).ToList();
+            stepscount += keys1.Count() * 2;
+            databasesFromDirs.Add(db, keys1);
+        }
 
         SetStepsCount(ProcessStorage ? stepscount + 1 : stepscount);
 
@@ -191,10 +201,39 @@ public class RestorePortalTask : PortalTaskBase
             for (var j = 0; j < TasksLimit && i + j < keys.Count; j++)
             {
                 var key1 = Path.Combine(KeyHelper.GetDatabaseSchema(), keys[i + j]);
-                tasks.Add(RestoreFromDumpFile(dataReader, key1).ContinueWith(r => RestoreFromDumpFile(dataReader, KeyHelper.GetDatabaseData(key1.Substring(keyBase.Length + 1)))));
+                var key2 = Path.Combine(KeyHelper.GetDatabaseData(), keys[i + j]);
+                tasks.Add(RestoreFromDumpFile(dataReader, key1, key2));
             }
 
             Task.WaitAll(tasks.ToArray());
+        }
+
+        using (var connection = DbFactory.OpenConnection())
+        {
+            var command = connection.CreateCommand();
+            command.CommandText = "select id, connection_string from mail_server_server";
+            ExecuteList(command).ForEach(r =>
+            {
+                var connectionString = GetConnectionString((int)r[0], JsonConvert.DeserializeObject<Dictionary<string, object>>(Convert.ToString(r[1]))["DbConnection"].ToString());
+                databases.Add(new Tuple<string, string>(connectionString.Name, connectionString.ConnectionString), databasesFromDirs[connectionString.Name]);
+            });
+        }
+
+        foreach (var database in databases)
+        {
+            for (var i = 0; i < database.Value.Count; i += TasksLimit)
+            {
+                var tasks = new List<Task>(TasksLimit * 2);
+
+                for (var j = 0; j < TasksLimit && i + j < database.Value.Count; j++)
+                {
+                    var key1 = Path.Combine(database.Key.Item1, KeyHelper.GetDatabaseSchema(), database.Value[i + j]);
+                    var key2 = Path.Combine(database.Key.Item1, KeyHelper.GetDatabaseData(), database.Value[i + j]);
+                    tasks.Add(RestoreFromDumpFile(dataReader, key1, key2, database.Key.Item2));
+                }
+
+                Task.WaitAll(tasks.ToArray());
+            }
         }
 
         var comparer = new SqlComparer();
@@ -205,14 +244,47 @@ public class RestorePortalTask : PortalTaskBase
         }
     }
 
-    private async Task RestoreFromDumpFile(IDataReadOperator dataReader, string fileName)
+    private async Task RestoreFromDumpFile(IDataReadOperator dataReader, string fileName1, string fileName2 = null, string db = null)
     {
-        _options.DebugRestoreFrom(fileName);
-        using (var stream = dataReader.GetEntry(fileName))
+        _options.DebugRestoreFrom(fileName1);
+        using (var stream = dataReader.GetEntry(fileName1))
         {
-            await RunMysqlFile(stream);
+            await RunMysqlFile(stream, db);
         }
         SetStepCompleted();
+
+        _options.DebugRestoreFrom(fileName2);
+        if (fileName2 != null)
+        {
+            using (var stream = dataReader.GetEntry(fileName2))
+            {
+                await RunMysqlFile(stream, db);
+            }
+
+            SetStepCompleted();
+        }
+    }
+
+    public List<object[]> ExecuteList(DbCommand command)
+    {
+        var list = new List<object[]>();
+        using (var result = command.ExecuteReader())
+        {
+            while (result.Read())
+            {
+                var objects = new object[result.FieldCount];
+                result.GetValues(objects);
+                list.Add(objects);
+            }
+        }
+
+        return list;
+    }
+
+    private ConnectionStringSettings GetConnectionString(int id, string connectionString)
+    {
+        connectionString = connectionString + ";convert zero datetime=True";
+        return new ConnectionStringSettings("mailservice-" + id, connectionString, "MySql.Data.MySqlClient");
     }
 
     private class SqlComparer : IComparer<string>

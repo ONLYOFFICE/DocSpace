@@ -36,12 +36,16 @@ const StyledAboutBody = styled.div`
   }
 
   .logo-theme {
-    #svg_4-4 {
-      fill: ${(props) => props.theme.studio.about.logoColor};
-    }
+    svg {
+      g:nth-child(2) {
+        path:nth-child(5) {
+          fill: ${(props) => props.theme.studio.about.logoColor};
+        }
 
-    #svg_5-5 {
-      fill: ${(props) => props.theme.studio.about.logoColor};
+        path:nth-child(6) {
+          fill: ${(props) => props.theme.studio.about.logoColor};
+        }
+      }
     }
   }
 `;

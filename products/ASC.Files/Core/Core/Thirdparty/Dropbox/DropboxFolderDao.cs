@@ -213,7 +213,7 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
 
             folder.Title = await GetAvailableTitleAsync(folder.Title, dropboxFolderPath, IsExistAsync).ConfigureAwait(false);
 
-            var dropboxFolder = await ProviderInfo.Storage.CreateFolderAsync(folder.Title, dropboxFolderPath).ConfigureAwait(false);
+            var dropboxFolder = await (await ProviderInfo.StorageAsync).CreateFolderAsync(folder.Title, dropboxFolderPath).ConfigureAwait(false);
 
             await ProviderInfo.CacheResetAsync(dropboxFolder).ConfigureAwait(false);
             var parentFolderPath = GetParentFolderPath(dropboxFolder);
@@ -285,7 +285,7 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
 
         if (dropboxFolder is not ErrorFolder)
         {
-            await ProviderInfo.Storage.DeleteItemAsync(dropboxFolder).ConfigureAwait(false);
+            await (await ProviderInfo.StorageAsync).DeleteItemAsync(dropboxFolder).ConfigureAwait(false);
         }
 
         await ProviderInfo.CacheResetAsync(MakeDropboxPath(dropboxFolder), true).ConfigureAwait(false);
@@ -338,7 +338,7 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
 
         var fromFolderPath = GetParentFolderPath(dropboxFolder);
 
-        dropboxFolder = await ProviderInfo.Storage.MoveFolderAsync(MakeDropboxPath(dropboxFolder), MakeDropboxPath(toDropboxFolder), dropboxFolder.Name).ConfigureAwait(false);
+        dropboxFolder = await (await ProviderInfo.StorageAsync).MoveFolderAsync(MakeDropboxPath(dropboxFolder), MakeDropboxPath(toDropboxFolder), dropboxFolder.Name).ConfigureAwait(false);
 
         await ProviderInfo.CacheResetAsync(MakeDropboxPath(dropboxFolder), false).ConfigureAwait(false);
         await ProviderInfo.CacheResetAsync(fromFolderPath).ConfigureAwait(false);
@@ -387,7 +387,7 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
             throw new Exception(errorFolder.Error);
         }
 
-        var newDropboxFolder = await ProviderInfo.Storage.CopyFolderAsync(MakeDropboxPath(dropboxFolder), MakeDropboxPath(toDropboxFolder), dropboxFolder.Name).ConfigureAwait(false);
+        var newDropboxFolder = await (await ProviderInfo.StorageAsync).CopyFolderAsync(MakeDropboxPath(dropboxFolder), MakeDropboxPath(toDropboxFolder), dropboxFolder.Name).ConfigureAwait(false);
 
         await ProviderInfo.CacheResetAsync(newDropboxFolder).ConfigureAwait(false);
         await ProviderInfo.CacheResetAsync(MakeDropboxPath(newDropboxFolder), false).ConfigureAwait(false);
@@ -437,7 +437,7 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
             newTitle = await GetAvailableTitleAsync(newTitle, parentFolderPath, IsExistAsync).ConfigureAwait(false);
 
             //rename folder
-            dropboxFolder = await ProviderInfo.Storage.MoveFolderAsync(MakeDropboxPath(dropboxFolder), parentFolderPath, newTitle).ConfigureAwait(false);
+            dropboxFolder = await (await ProviderInfo.StorageAsync).MoveFolderAsync(MakeDropboxPath(dropboxFolder), parentFolderPath, newTitle).ConfigureAwait(false);
         }
 
         await ProviderInfo.CacheResetAsync(dropboxFolder).ConfigureAwait(false);
@@ -458,7 +458,7 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
     {
         var dropboxFolderPath = MakeDropboxPath(folderId);
         //note: without cache
-        var items = await ProviderInfo.Storage.GetItemsAsync(dropboxFolderPath).ConfigureAwait(false);
+        var items = await (await ProviderInfo.StorageAsync).GetItemsAsync(dropboxFolderPath).ConfigureAwait(false);
 
         return items.Count == 0;
     }
@@ -488,10 +488,10 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
         return false;
     }
 
-    public Task<long> GetMaxUploadSizeAsync(string folderId, bool chunkedUpload = false)
+    public async Task<long> GetMaxUploadSizeAsync(string folderId, bool chunkedUpload = false)
     {
-        var storageMaxUploadSize = ProviderInfo.Storage.MaxChunkedUploadFileSize;
+        var storageMaxUploadSize = (await ProviderInfo.StorageAsync).MaxChunkedUploadFileSize;
 
-        return Task.FromResult(chunkedUpload ? storageMaxUploadSize : Math.Min(storageMaxUploadSize, _setupInfo.AvailableFileSize));
+        return chunkedUpload ? storageMaxUploadSize : Math.Min(storageMaxUploadSize, _setupInfo.AvailableFileSize);
     }
 }
