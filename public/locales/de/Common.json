@@ -166,5 +166,6 @@
   "View": "Anzeigen",
   "ViewWeb": "Web-Version öffnen",
   "Warning": "Warnung",
-  "Hotkeys": "Tastenkombinationen"
+  "Hotkeys": "Tastenkombinationen",
+  "Error404Text": "Die Ressource kann nicht gefunden werden."
 }
