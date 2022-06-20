@@ -107,6 +107,7 @@ class UploadDataStore {
     this.isUploadingAndConversion = false;
     this.isUploading = false;
   };
+
   removeFileFromList = (id) => {
     this.files = this.files.filter((obj) => {
       return obj.fileId !== id;
@@ -149,8 +150,13 @@ class UploadDataStore {
       converted: true,
     };
 
+    const newHistory = this.uploadedFilesHistory.filter(
+      (el) => el.action === "uploaded"
+    );
+
     if (newUploadData.files.length === 0) this.setUploadPanelVisible(false);
     this.setUploadData(newUploadData);
+    this.uploadedFilesHistory = newHistory;
   };
 
   cancelConversion = () => {
@@ -850,7 +856,8 @@ class UploadDataStore {
       fileName,
       fileSize,
       relativePath,
-      file.encrypted
+      file.encrypted,
+      file.lastModifiedDate
     )
       .then((res) => {
         const location = res.data.location;
@@ -1181,7 +1188,8 @@ class UploadDataStore {
           updatedFolder,
           newFilter ? newFilter : filter,
           true,
-          true
+          true,
+          false
         ).finally(() => {
           this.clearActiveOperations(fileIds, folderIds);
           setTimeout(() => clearSecondaryProgressData(), TIMEOUT);

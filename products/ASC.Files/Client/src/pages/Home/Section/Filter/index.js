@@ -351,13 +351,7 @@ const SectionFilterContent = ({
 };
 
 export default inject(
-  ({
-    auth,
-    filesStore,
-    treeFoldersStore,
-    selectedFolderStore,
-    infoPanelStore,
-  }) => {
+  ({ auth, filesStore, treeFoldersStore, selectedFolderStore }) => {
     const {
       fetchFiles,
       filter,
@@ -382,7 +376,7 @@ export default inject(
         authorType) &&
       !(treeFoldersStore.isPrivacyFolder && isMobile);
 
-    const { isVisible: infoPanelVisible } = infoPanelStore;
+    const { isVisible: infoPanelVisible } = auth.infoPanelStore;
 
     return {
       customNames,

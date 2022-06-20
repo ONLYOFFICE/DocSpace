@@ -471,7 +471,7 @@ const Editor = () => {
         onRequestSharingSettings = onSDKRequestSharingSettings;
       }
 
-      if (fileInfo && fileInfo.canEdit) {
+      if (fileInfo && fileInfo.canEdit && !fileInfo.providerKey) {
         onRequestRename = onSDKRequestRename;
       }
 

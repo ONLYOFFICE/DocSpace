@@ -559,22 +559,19 @@ Section.SectionFilter = SectionFilter;
 Section.SectionBody = SectionBody;
 Section.SectionPaging = SectionPaging;
 
-export default inject(({ auth, infoPanelStore }) => {
-  const { isLoaded, settingsStore } = auth;
+export default inject(({ auth }) => {
+  const { infoPanelStore, isLoaded, settingsStore } = auth;
   const {
     isHeaderVisible,
     isTabletView,
-
     isDesktopClient,
     maintenanceExist,
     snackbarExist,
     setMaintenanceExist,
-
     showText,
   } = settingsStore;
 
-  let infoPanelIsVisible = false;
-  if (infoPanelStore) infoPanelIsVisible = infoPanelStore.isVisible;
+  const { isVisible: infoPanelIsVisible } = infoPanelStore;
 
   return {
     isLoaded,
@@ -588,6 +585,6 @@ export default inject(({ auth, infoPanelStore }) => {
 
     showText,
 
-    infoPanelIsVisible: infoPanelIsVisible,
+    infoPanelIsVisible,
   };
 })(observer(Section));

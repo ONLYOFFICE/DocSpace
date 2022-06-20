@@ -43,6 +43,7 @@ const {
   hoverWarning,
   darkBlack,
   silver,
+  lightHover,
   strongBlue,
   lightGrayishStrongBlue,
   darkRed,
@@ -574,6 +575,33 @@ const Base = {
     textColor: black,
     headerBorderColor: globalColors.grayLightMid,
     footerBorderColor: globalColors.grayLightMid,
+    width: "auto",
+    maxwidth: "560px",
+    margin: " 0 auto",
+    minHeight: "100%",
+
+    colorDisabledFileIcons: "#f3f4f4",
+
+    content: {
+      backgroundColor: white,
+      modalPadding: "0 12px 12px",
+      modalBorderRadius: "6px",
+      asidePadding: "0 16px 16px",
+      heading: {
+        maxWidth: "calc(100% - 18px)",
+        margin: "0",
+        modalLineHeight: "40px",
+        asideLineHeight: "56px",
+        fontWeight: "700",
+        asideFontSize: "21px",
+        modalFontSize: "18px",
+      },
+    },
+
+    header: {
+      borderBottom: `1px solid ${globalColors.lightGrayishBlue}`,
+    },
+
     closeButton: {
       backgroundColor: "#9a9ea3",
       fillColor: white,
@@ -1046,6 +1074,11 @@ const Base = {
       borderRadius: "50%",
     },
 
+    icon: {
+      background: lightHover,
+      color: grayMain,
+    },
+
     width: {
       min: "32px",
       small: "36px",
@@ -1202,6 +1235,8 @@ const Base = {
 
   treeNode: {
     background: "#f3f4f4",
+    disableColor: "#A3A9AE",
+
     dragging: {
       draggable: {
         background: lightCumulus,
@@ -2628,6 +2663,11 @@ const Base = {
       integration: {
         separatorBorder: `1px solid ${grayLightMid}`,
         linkColor: link,
+      },
+
+      backup: {
+        rectangleBackgroundColor: "#f8f9f9",
+        separatorBorder: "1px solid #eceef1",
       },
     },
 

@@ -56,8 +56,12 @@ const StyledTableRow = styled(TableRow)`
             `${props.theme.filesSection.tableView.row.backgroundActive} !important`};
 
           margin-top: -1px;
-          border-top: ${(props) =>
-            `1px solid ${props.theme.filesSection.tableView.row.borderColor}`};
+          ${(props) =>
+            !props.showHotkeyBorder &&
+            css`
+              border-top: ${(props) =>
+                `1px solid ${props.theme.filesSection.tableView.row.borderColor}`};
+            `}
         }
         .table-container_file-name-cell {
           margin-left: -24px;
@@ -71,7 +75,6 @@ const StyledTableRow = styled(TableRow)`
     `}
 
   .table-container_cell {
-    /* ${isSafari && `border-image-slice: 0 !important`}; */
     background: ${(props) =>
       (props.checked || props.isActive) &&
       `${props.theme.filesSection.tableView.row.backgroundActive} !important`};
@@ -148,6 +151,11 @@ const StyledTableRow = styled(TableRow)`
       .table-container_cell {
         margin-top: -1px;
         border-top: 1px solid #2da7db;
+        border-right: 0;
+        border-left: 0;
+      }
+      .table-container_file-name-cell > .table-container_cell {
+        margin-top: 0;
       }
     `}
 `;
@@ -257,6 +265,7 @@ const FilesTableRow = (props) => {
     getContextModel,
     showHotkeyBorder,
     tableColumns,
+    id,
   } = props;
   const { acceptBackground, background } = theme.dragAndDrop;
 
@@ -328,6 +337,7 @@ const FilesTableRow = (props) => {
 
   return (
     <StyledDragAndDrop
+      id={id}
       data-title={item.title}
       value={value}
       className={`files-item ${className} ${item.id}_${item.fileExst} ${

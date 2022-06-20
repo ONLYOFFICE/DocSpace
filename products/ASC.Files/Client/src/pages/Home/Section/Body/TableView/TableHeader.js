@@ -228,14 +228,8 @@ class FilesTableHeader extends React.Component {
 }
 
 export default inject(
-  ({
-    auth,
-    filesStore,
-    selectedFolderStore,
-    treeFoldersStore,
-    infoPanelStore,
-  }) => {
-    const { isVisible: infoPanelVisible } = infoPanelStore;
+  ({ auth, filesStore, selectedFolderStore, treeFoldersStore }) => {
+    const { isVisible: infoPanelVisible } = auth.infoPanelStore;
 
     const {
       isHeaderChecked,

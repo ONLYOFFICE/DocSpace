@@ -61,6 +61,8 @@ const withLoader = (WrappedComponent) => (Loader) => {
         Loader
       ) : viewAs === "tile" ? (
         <Loaders.Tiles />
+      ) : viewAs === "table" ? (
+        <Loaders.TableLoader />
       ) : (
         <Loaders.Rows />
       )

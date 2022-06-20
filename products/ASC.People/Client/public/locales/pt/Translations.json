@@ -1,6 +1,7 @@
 {
   "AddMembers": "Adicionar membros",
   "Birthdate": "Data de nascimento",
+  "DeleteUserDataConfirmation": "Os documentos dos utilizadores partilhados com outros serão eliminados. Para evitar isto, reatribuir dados.",
   "DeleteSelfProfile": "Eliminar perfil",
   "DisableUserButton": "Desativar",
   "DisabledEmployeeStatus": "Desativado",

@@ -19,6 +19,7 @@ const FolderTreeBody = ({
   parentId,
   isLoadingNodes,
   setIsLoadingNodes,
+  selectionFiles,
 }) => {
   const { t } = useTranslation(["SelectFolder", "Common"]);
 
@@ -63,6 +64,7 @@ const FolderTreeBody = ({
                 defaultExpandAll
                 parentId={parentId}
                 firstLoadScroll={firstLoadScroll}
+                selectionFiles={selectionFiles}
               />
             </Scrollbar>
           </div>

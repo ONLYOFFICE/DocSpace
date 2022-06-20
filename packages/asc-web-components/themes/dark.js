@@ -571,6 +571,34 @@ const Dark = {
     textColor: white,
     headerBorderColor: "#474747",
     footerBorderColor: "#474747",
+    width: "auto",
+    maxwidth: "560px",
+    margin: " 0 auto",
+    minHeight: "100%",
+
+    colorDisabledFileIcons: "#5c5c5c",
+
+    content: {
+      backgroundColor: black,
+      modalBorderRadius: "6px",
+      modalPadding: "0 12px 12px",
+      asidePadding: "0 16px 16px",
+
+      heading: {
+        maxWidth: "calc(100% - 18px)",
+        margin: "0",
+        fontWeight: "700",
+        modalLineHeight: "40px",
+        asideLineHeight: "56px",
+        asideFontSize: "21px",
+        modalFontSize: "18px",
+      },
+    },
+
+    header: {
+      borderBottom: `1px solid #474747`,
+    },
+
     closeButton: {
       backgroundColor: "#9A9EA3",
       fillColor: black,
@@ -1042,6 +1070,11 @@ const Dark = {
       borderRadius: "50%",
     },
 
+    icon: {
+      background: grayMain,
+      color: globalColors.lightHover,
+    },
+
     width: {
       min: "32px",
       small: "36px",
@@ -1197,6 +1230,8 @@ const Dark = {
 
   treeNode: {
     background: "#3D3D3D",
+    disableColor: "#858585",
+
     dragging: {
       draggable: {
         background: "rgba(230, 211, 138, 0.12)",
@@ -2637,6 +2672,11 @@ const Dark = {
       integration: {
         separatorBorder: "1px solid #474747",
         linkColor: "#E06A1B",
+      },
+
+      backup: {
+        rectangleBackgroundColor: "#292929",
+        separatorBorder: "1px solid #474747",
       },
     },
 

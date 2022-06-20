@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
@@ -25,6 +25,8 @@ import CloseIcon from "../../../../public/images/close-icon.react.svg";
 const StyledButtonAlertIcon = styled(ButtonAlertIcon)`
   ${commonIconsStyles}
 `;
+
+const Delay = 1000;
 const FloatingButton = ({ id, className, style, ...rest }) => {
   const {
     icon,
@@ -35,9 +37,24 @@ const FloatingButton = ({ id, className, style, ...rest }) => {
     clearUploadedFilesHistory,
   } = rest;
 
+  const [animationCompleted, setAnimationCompleted] = useState(false);
+
   const onProgressClear = () => {
     clearUploadedFilesHistory && clearUploadedFilesHistory();
   };
+
+  let timerId = null;
+
+  useEffect(() => {
+    timerId = setTimeout(
+      () => setAnimationCompleted(percent === 100 ? true : false),
+      Delay
+    );
+
+    return () => {
+      clearTimeout(timerId);
+    };
+  }, [percent, setAnimationCompleted]);
 
   return (
     <StyledFloatingButtonWrapper>
@@ -50,7 +67,9 @@ const FloatingButton = ({ id, className, style, ...rest }) => {
         onClick={onClick}
       >
         <StyledCircle
-          displayProgress={icon != "minus" && percent !== 100}
+          displayProgress={
+            !(percent === 100 && animationCompleted) && icon != "minus"
+          }
           percent={percent}
         >
           <div className="circle__mask circle__full">

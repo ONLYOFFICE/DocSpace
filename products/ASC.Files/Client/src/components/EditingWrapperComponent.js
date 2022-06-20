@@ -116,7 +116,8 @@ const EditingWrapper = styled.div`
       props.viewAs === "tile" &&
       !props.isUpdatingRowItem &&
       css`
-        background: #fff;
+        background: ${(props) =>
+          props.theme.filesEditingWrapper.tile.itemBackground};
         border: ${(props) =>
           `1px solid ${props.theme.filesEditingWrapper.tile.itemBorder}`};
 
@@ -136,7 +137,8 @@ const EditingWrapper = styled.div`
       props.viewAs === "tile" &&
       css`
         margin-left: 0px;
-        background: #fff;
+        background: ${(props) =>
+          props.theme.filesEditingWrapper.tile.itemBackground};
         border: ${(props) =>
           `1px solid ${props.theme.filesEditingWrapper.tile.itemBorder}`};
 
@@ -196,7 +198,12 @@ const EditingWrapperComponent = (props) => {
 
   const [OkIconIsHovered, setIsHoveredOk] = useState(false);
   const [CancelIconIsHovered, setIsHoveredCancel] = useState(false);
+  const [isTouchOK, setIsTouchOK] = useState(false);
+  const [isTouchCancel, setIsTouchCancel] = useState(false);
+
   const [isLoading, setIsLoading] = useState(false);
+
+  const inputRef = React.useRef(null);
 
   const onKeyUpUpdateItem = (e) => {
     if (isLoading) return;
@@ -224,9 +231,13 @@ const EditingWrapperComponent = (props) => {
     if (
       (e.relatedTarget && e.relatedTarget.classList.contains("edit-button")) ||
       OkIconIsHovered ||
-      CancelIconIsHovered
+      CancelIconIsHovered ||
+      isTouchOK ||
+      isTouchCancel
     )
       return false;
+
+    if (!document.hasFocus() && inputRef.current === e.target) return false;
 
     !passwordEntryProcess && onClickUpdateItem(e, false);
   };
@@ -256,6 +267,7 @@ const EditingWrapperComponent = (props) => {
           isDisabled={isLoading}
           data-itemid={itemId}
           withBorder={!isTable}
+          forwardedRef={inputRef}
         />
       )}
       {!isUpdatingRowItem && (
@@ -269,6 +281,7 @@ const EditingWrapperComponent = (props) => {
             data-itemid={itemId}
             onMouseEnter={setIsHoveredOkHandler}
             onMouseLeave={setIsHoveredOkHandler}
+            onTouchStart={() => setIsTouchOK(true)}
             isHovered={OkIconIsHovered}
             title=""
           />
@@ -282,6 +295,7 @@ const EditingWrapperComponent = (props) => {
             data-action="cancel"
             onMouseEnter={setIsHoveredCancelHandler}
             onMouseLeave={setIsHoveredCancelHandler}
+            onTouchStart={() => setIsTouchCancel(true)}
             isHovered={CancelIconIsHovered}
             title=""
           />

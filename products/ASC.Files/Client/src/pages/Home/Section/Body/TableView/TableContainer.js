@@ -48,6 +48,8 @@ const StyledTableContainer = styled(TableContainer)`
       }
       .table-container_file-name-cell {
         ${fileNameCss}
+        border-left: 0; //for Safari macOS
+        border-right: 0; //for Safari macOS
 
         border-image-source: ${(props) => `linear-gradient(to right, 
           ${props.theme.filesSection.tableView.row.borderColorTransition} 17px, ${props.theme.filesSection.tableView.row.borderColor} 31px)`};
@@ -145,6 +147,7 @@ const Table = ({
       <TableBody>
         {filesList.map((item, index) => (
           <TableRow
+            id={`${item?.isFolder ? "folder" : "file"}_${item.id}`}
             key={`${item.id}_${index}`}
             item={item}
             index={index}
@@ -161,8 +164,8 @@ const Table = ({
   );
 };
 
-export default inject(({ filesStore, infoPanelStore, auth }) => {
-  const { isVisible: infoPanelVisible } = infoPanelStore;
+export default inject(({ filesStore, auth }) => {
+  const { isVisible: infoPanelVisible } = auth.infoPanelStore;
 
   const {
     filesList,

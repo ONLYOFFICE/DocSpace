@@ -64,17 +64,50 @@ const withHotkeys = (Component) => {
     //Select/deselect item
     useHotkeys("x", selectFile);
 
-    //Select bottom element
-    useHotkeys("j, DOWN", selectBottom, hotkeysFilter);
+    useHotkeys(
+      "*",
+      (e) => {
+        if (e.shiftKey || e.ctrlKey) return;
 
-    //Select upper item
-    useHotkeys("k, UP", selectUpper, hotkeysFilter);
+        switch (e.key) {
+          case "ArrowDown":
+          case "j": {
+            return selectBottom();
+          }
 
-    //Select item on the left
-    useHotkeys("h, LEFT", selectLeft, hotkeysFilter);
+          case "ArrowUp":
+          case "k": {
+            return selectUpper();
+          }
 
-    //Select item on the right
-    useHotkeys("l, RIGHT", selectRight, hotkeysFilter);
+          case "ArrowRight":
+          case "l": {
+            return selectRight();
+          }
+
+          case "ArrowLeft":
+          case "h": {
+            return selectLeft();
+          }
+
+          default:
+            break;
+        }
+      },
+      hotkeysFilter
+    );
+
+    // //Select bottom element
+    // useHotkeys("j, DOWN", selectBottom, hotkeysFilter);
+
+    // //Select upper item
+    // useHotkeys("k, UP", selectUpper, hotkeysFilter);
+
+    // //Select item on the left
+    // useHotkeys("h, LEFT", selectLeft, hotkeysFilter);
+
+    // //Select item on the right
+    // useHotkeys("l, RIGHT", selectRight, hotkeysFilter);
 
     //Expand Selection DOWN
     useHotkeys("shift+DOWN", multiSelectBottom, hotkeysFilter);
@@ -217,6 +250,7 @@ const withHotkeys = (Component) => {
 
   return inject(
     ({
+      auth,
       filesStore,
       dialogsStore,
       settingsStore,
@@ -254,7 +288,6 @@ const withHotkeys = (Component) => {
       } = hotkeyStore;
 
       const {
-        setHotkeyPanelVisible,
         setDeleteDialogVisible,
         setSelectFileDialogVisible,
         someDialogIsOpen,
@@ -266,6 +299,7 @@ const withHotkeys = (Component) => {
       } = filesActionsStore;
 
       const { visible: mediaViewerIsVisible } = mediaViewerDataStore;
+      const { setHotkeyPanelVisible } = auth.settingsStore;
 
       return {
         setSelected,

@@ -98,7 +98,8 @@ class PureHome extends React.Component {
       }
     }
 
-    if (isPrevSettingsModule) {
+    //TODO:
+    if (isPrevSettingsModule && !gallerySelected) {
       setIsPrevSettingsModule(false);
       return;
     }
@@ -162,30 +163,26 @@ class PureHome extends React.Component {
           const folderId = filter.folder;
           //console.log("filter", filter);
 
-          return fetchFiles(folderId, filter)
-            .then((data) => {
-              const pathParts = data.selectedFolder.pathParts;
-              const newExpandedKeys = createTreeFolders(
-                pathParts,
-                expandedKeys
-              );
-              setExpandedKeys(newExpandedKeys);
-            })
-            .then(() => {
-              if (gallerySelected) {
-                setIsUpdatingRowItem(false);
-                setAction({
-                  type: FileAction.Create,
-                  extension: "docxf",
-                  fromTemplate: true,
-                  title: gallerySelected.attributes.name_form,
-                  id: -1,
-                });
-              }
-            });
+          return fetchFiles(folderId, filter).then((data) => {
+            const pathParts = data.selectedFolder.pathParts;
+            const newExpandedKeys = createTreeFolders(pathParts, expandedKeys);
+            setExpandedKeys(newExpandedKeys);
+          });
         }
 
         return Promise.resolve();
+      })
+      .then(() => {
+        if (gallerySelected) {
+          setIsUpdatingRowItem(false);
+          setAction({
+            type: FileAction.Create,
+            extension: "docxf",
+            fromTemplate: true,
+            title: gallerySelected.attributes.name_form,
+            id: -1,
+          });
+        }
       })
       .finally(() => {
         setIsLoading(false);
@@ -205,9 +202,24 @@ class PureHome extends React.Component {
   };
 
   onDrop = (files, uploadToFolder) => {
-    const { t, startUpload, setDragging, dragging } = this.props;
+    const {
+      t,
+      startUpload,
+      setDragging,
+      dragging,
+      uploadEmptyFolders,
+    } = this.props;
     dragging && setDragging(false);
-    startUpload(files, uploadToFolder, t);
+    const emptyFolders = files.filter((f) => f.isEmptyDirectory);
+
+    if (emptyFolders.length > 0) {
+      uploadEmptyFolders(emptyFolders, uploadToFolder).then(() => {
+        const onlyFiles = files.filter((f) => !f.isEmptyDirectory);
+        if (onlyFiles.length > 0) startUpload(onlyFiles, uploadToFolder, t);
+      });
+    } else {
+      startUpload(files, uploadToFolder, t);
+    }
   };
 
   showOperationToast = (type, qty, title) => {
@@ -395,6 +407,7 @@ export default inject(
     treeFoldersStore,
     mediaViewerDataStore,
     settingsStore,
+    filesActionsStore,
   }) => {
     const {
       secondaryProgressDataStore,
@@ -452,6 +465,8 @@ export default inject(
       uploaded,
       converted,
     } = uploadDataStore;
+
+    const { uploadEmptyFolders } = filesActionsStore;
 
     const selectionLength = isProgressFinished ? selection.length : null;
     const selectionTitle = isProgressFinished
@@ -511,6 +526,7 @@ export default inject(
       setUploadPanelVisible,
       setSelections,
       startUpload,
+      uploadEmptyFolders,
       isHeaderVisible: auth.settingsStore.isHeaderVisible,
       setHeaderVisible: auth.settingsStore.setHeaderVisible,
       personal: auth.settingsStore.personal,

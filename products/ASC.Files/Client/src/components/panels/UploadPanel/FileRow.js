@@ -153,15 +153,21 @@ class FileRow extends Component {
     const {
       setMediaViewerData,
       setUploadPanelVisible,
+      clearUploadedFilesHistory,
       isMediaActive,
       setCurrentItem,
       item,
+      uploaded,
     } = this.props;
     if (!isMediaActive) setCurrentItem(item);
 
     const data = { visible: true, id: id };
     setMediaViewerData(data);
     setUploadPanelVisible(false);
+
+    if (uploaded) {
+      clearUploadedFilesHistory();
+    }
   };
 
   hasError = () => {
@@ -342,8 +348,10 @@ export default inject(
     let name;
     let splitted;
     if (item.file) {
+      const exst = item?.fileInfo?.fileExst;
       splitted = item.file.name.split(".");
-      ext = splitted.length > 1 ? "." + splitted.pop() : "";
+
+      ext = exst ? exst : splitted.length > 1 ? "." + splitted.pop() : "";
       name = splitted[0];
     } else {
       ext = item.fileInfo.fileExst;
@@ -366,6 +374,7 @@ export default inject(
       removeFileFromList,
       convertFile,
       files: uploadedFiles,
+      clearUploadedFilesHistory,
     } = uploadDataStore;
     const {
       playlist,
@@ -410,6 +419,7 @@ export default inject(
       setUploadPanelVisible,
 
       setCurrentItem,
+      clearUploadedFilesHistory,
     };
   }
 )(withTranslation("UploadPanel")(observer(FileRow)));

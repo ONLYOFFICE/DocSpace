@@ -79,6 +79,8 @@ namespace ASC.Api.Settings
 
         public string TenantAlias { get; set; }
 
+        public string HelpLink { get; set; }
+
         public static SettingsWrapper GetSample()
         {
             return new SettingsWrapper
