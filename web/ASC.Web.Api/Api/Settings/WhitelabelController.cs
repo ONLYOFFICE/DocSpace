@@ -319,73 +319,112 @@ public class WhitelabelController : BaseSettingsController
 
     ///<visible>false</visible>
     [HttpPost("rebranding/company")]
-    public bool SaveCompanyWhiteLabelSettings(CompanyWhiteLabelSettingsWrapper companyWhiteLabelSettingsWrapper)
+    public bool SaveCompanyWhiteLabelSettings(CompanyWhiteLabelSettingsWrapper companyWhiteLabelSettingsWrapper, [FromQuery] WhiteLabelQueryRequestsDto inQueryDto)
     {
         if (companyWhiteLabelSettingsWrapper.Settings == null)
         {
             throw new ArgumentNullException("settings");
         }
 
-        DemandRebrandingPermission();
+        companyWhiteLabelSettingsWrapper.Settings.IsLicensor = _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Branding && companyWhiteLabelSettingsWrapper.Settings.IsLicensor;
 
-        companyWhiteLabelSettingsWrapper.Settings.IsLicensor = false; //TODO: CoreContext.TenantManager.GetTenantQuota(TenantProvider.CurrentTenantID).Branding && settings.IsLicensor
+        if (inQueryDto.IsDefault)
+        {
+            DemandRebrandingPermission();
 
-        _settingsManager.SaveForDefaultTenant(companyWhiteLabelSettingsWrapper.Settings);
+            _settingsManager.SaveForDefaultTenant(companyWhiteLabelSettingsWrapper.Settings);
+        }
+        else
+        {
+            _settingsManager.SaveForCurrentUser(companyWhiteLabelSettingsWrapper.Settings);
+        }
         return true;
     }
 
     ///<visible>false</visible>
     [HttpGet("rebranding/company")]
-    public CompanyWhiteLabelSettings GetCompanyWhiteLabelSettings()
+    public CompanyWhiteLabelSettings GetCompanyWhiteLabelSettings([FromQuery] WhiteLabelQueryRequestsDto inDto)
     {
-        return _settingsManager.LoadForDefaultTenant<CompanyWhiteLabelSettings>();
+        if (inDto.IsDefault)
+        {
+            return _settingsManager.LoadForDefaultTenant<CompanyWhiteLabelSettings>();
+        }
+        else
+        {
+            return _settingsManager.LoadForCurrentUser<CompanyWhiteLabelSettings>();
+        }
     }
 
     ///<visible>false</visible>
     [HttpDelete("rebranding/company")]
-    public CompanyWhiteLabelSettings DeleteCompanyWhiteLabelSettings()
+    public CompanyWhiteLabelSettings DeleteCompanyWhiteLabelSettings([FromQuery] WhiteLabelQueryRequestsDto inDto)
     {
-        DemandRebrandingPermission();
-
         var defaultSettings = _settingsManager.GetDefault<CompanyWhiteLabelSettings>();
 
-        _settingsManager.SaveForDefaultTenant(defaultSettings);
+        if (inDto.IsDefault)
+        {
+            DemandRebrandingPermission();
+            _settingsManager.SaveForDefaultTenant(defaultSettings);
+        }
+        else
+        {
+            _settingsManager.SaveForCurrentUser(defaultSettings);
+        }
 
         return defaultSettings;
     }
 
     ///<visible>false</visible>
     [HttpPost("rebranding/additional")]
-    public bool SaveAdditionalWhiteLabelSettings(AdditionalWhiteLabelSettingsWrapper wrapper)
+    public bool SaveAdditionalWhiteLabelSettings(AdditionalWhiteLabelSettingsWrapper wrapper, [FromQuery] WhiteLabelQueryRequestsDto inQueryDto)
     {
         if (wrapper.Settings == null)
         {
             throw new ArgumentNullException("settings");
         }
 
-        DemandRebrandingPermission();
+        if (inQueryDto.IsDefault)
+        {
+            DemandRebrandingPermission();
+            _settingsManager.SaveForDefaultTenant(wrapper.Settings);
+        }
+        else
+        {
+            _settingsManager.SaveForCurrentUser(wrapper.Settings);
+        }
 
-        _settingsManager.SaveForDefaultTenant(wrapper.Settings);
         return true;
     }
 
     ///<visible>false</visible>
     [HttpGet("rebranding/additional")]
-    public AdditionalWhiteLabelSettings GetAdditionalWhiteLabelSettings()
+    public AdditionalWhiteLabelSettings GetAdditionalWhiteLabelSettings([FromQuery] WhiteLabelQueryRequestsDto inDto)
     {
-        return _settingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>();
+        if (inDto.IsDefault)
+        {
+            return _settingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>();
+        }
+        else
+        {
+            return _settingsManager.LoadForCurrentUser<AdditionalWhiteLabelSettings>();
+        }
     }
 
     ///<visible>false</visible>
     [HttpDelete("rebranding/additional")]
-    public AdditionalWhiteLabelSettings DeleteAdditionalWhiteLabelSettings()
+    public AdditionalWhiteLabelSettings DeleteAdditionalWhiteLabelSettings([FromQuery] WhiteLabelQueryRequestsDto inDto)
     {
-        DemandRebrandingPermission();
-
         var defaultSettings = _settingsManager.GetDefault<AdditionalWhiteLabelSettings>();
 
-        _settingsManager.SaveForDefaultTenant(defaultSettings);
-
+        if (inDto.IsDefault)
+        {
+            DemandRebrandingPermission();
+            _settingsManager.SaveForDefaultTenant(defaultSettings);
+        }
+        else
+        {
+            _settingsManager.SaveForCurrentUser(defaultSettings);
+        }
         return defaultSettings;
     }
 

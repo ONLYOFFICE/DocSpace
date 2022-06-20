@@ -213,6 +213,12 @@ public class TenantQuota : ICloneable, IMapFrom<DbQuota>
         set => SetFeature("thirdparty", value);
     }
 
+    public bool Branding
+    {
+        get => GetFeature("branding");
+        set => SetFeature("branding", value);
+    }
+
     public TenantQuota() { }
 
     public TenantQuota(int tenant)
