@@ -1,5 +1,8 @@
 import React from "react";
 import TextInput from "@appserver/components/text-input";
+import Checkbox from "@appserver/components/checkbox";
+import ComboBox from "@appserver/components/combobox";
+import RadioButton from "@appserver/components/radio-button";
 
 const bucketInput = "bucket";
 const regionInput = "region";
@@ -9,18 +12,27 @@ const httpInput = "usehttp";
 const sseInput = "sse";
 class AmazonSettings extends React.Component {
   static formNames = () => {
-    return [
-      bucketInput,
-      regionInput,
-      urlInput,
-      forcePathStyleInput,
-      httpInput,
-      sseInput,
-    ];
+    return {
+      bucket: "",
+      region: "",
+      serviceurl: "",
+      forcepathstyle: false,
+      usehttp: false,
+      sse: "none",
+    };
+
+    // [
+    //   bucketInput,
+    //   regionInput,
+    //   urlInput,
+    //   forcePathStyleInput,
+    //   httpInput,
+    //   sseInput,
+    // ];
   };
 
   static requiredFormsName = () => {
-    return [bucketInput, regionInput];
+    return [bucketInput, regionInput, httpInput, sseInput];
   };
 
   constructor(props) {
@@ -40,8 +52,41 @@ class AmazonSettings extends React.Component {
     this.serviceUrlPlaceholder = t("ServiceUrl");
     this.SSEPlaceholder = t("ServerSideEncryptionMethod");
     this.useHttpPlaceholder = t("UseHttp");
+
+    this.availableEncryptions = [
+      {
+        key: "0",
+        label: "None",
+      },
+      {
+        key: "1",
+        label: "Server-Side Encryption",
+      },
+      {
+        key: "2",
+        label: "Client-Side Encryption",
+      },
+    ];
+
+    this.state = {
+      selectedEncryption: this.availableEncryptions[0],
+    };
   }
 
+  setMaxCopies = (options) => {
+    const key = options.key;
+    this.selectedMaxCopiesNumber = key;
+  };
+
+  onSelect = (options) => {
+    const key = options.key;
+    const label = options.label;
+
+    console.log("options", options);
+    this.setState = {
+      selectedEncryption: { key, label },
+    };
+  };
   render() {
     const {
       isError,
@@ -50,6 +95,12 @@ class AmazonSettings extends React.Component {
       onChange,
       formSettings,
     } = this.props;
+    const { selectedEncryption } = this.state;
+    console.log(
+      "selectedEncryption",
+      selectedEncryption,
+      selectedEncryption.label
+    );
 
     return (
       <>
@@ -86,27 +137,29 @@ class AmazonSettings extends React.Component {
           placeholder={this.serviceUrlPlaceholder || ""}
           tabIndex={3}
         />
-        <TextInput
+
+        <Checkbox
           name={forcePathStyleInput}
-          className="backup_text-input"
-          scale
-          value={formSettings.forcepathstyle}
+          label={this.forcePathStylePlaceholder}
+          isChecked={formSettings.forcepathstyle}
+          isIndeterminate={false}
+          isDisabled={false}
           onChange={onChange}
-          isDisabled={isLoadingData || isLoading || this.isDisabled}
-          placeholder={this.forcePathStylePlaceholder || ""}
           tabIndex={4}
         />
-        <TextInput
+
+        <Checkbox
           name={httpInput}
-          className="backup_text-input"
-          scale
-          value={formSettings.usehttp}
+          label={this.useHttpPlaceholder}
+          isChecked={formSettings.usehttp}
+          isIndeterminate={false}
+          isDisabled={false}
           onChange={onChange}
-          isDisabled={isLoadingData || isLoading || this.isDisabled}
-          placeholder={this.useHttpPlaceholder || ""}
           tabIndex={5}
         />
+
         <TextInput
+          hasError={isError?.sse}
           name={sseInput}
           className="backup_text-input"
           scale
@@ -116,6 +169,30 @@ class AmazonSettings extends React.Component {
           placeholder={this.SSEPlaceholder || ""}
           tabIndex={6}
         />
+
+        <ComboBox
+          options={this.availableEncryptions}
+          selectedOption={{
+            key: 0,
+            label: selectedEncryption.label,
+          }}
+          onSelect={this.onSelect}
+          noBorder={false}
+          scaled={true}
+          scaledOptions={true}
+          dropDownMaxHeight={300}
+          tabIndex={7}
+        />
+        {/* 
+{selectedEncryption.key === 1 &&    <RadioButton
+                // fontSize="13px"
+                // fontWeight="400"
+                value=""
+                label=""
+                isChecked={isChecked}
+                onClick={onSelectFile}
+                name=``
+              />} */}
       </>
     );
   }

@@ -9,10 +9,15 @@ class AmazonStorage extends React.Component {
 
     const formSettings = {};
 
-    this.namesArray = AmazonSettings.formNames();
-    this.namesArray.forEach((elem) => (formSettings[elem] = ""));
+    // this.namesArray = AmazonSettings.formNames();
+    // this.namesArray.forEach((elem) => (formSettings[elem] = "")); 
+
+    for (const [key, value] of Object.entries(AmazonSettings.formNames())) {
+      formSettings[key] = value;
+    }
 
     this.requiredFields = AmazonSettings.requiredFormsName();
+    console.log("formSettings", formSettings);
 
     this.state = {
       formSettings,
@@ -25,9 +30,9 @@ class AmazonStorage extends React.Component {
   onChange = (event) => {
     const { formSettings } = this.state;
     const { target } = event;
-    const value = target.value;
+    const value = target.value || target.checked;
     const name = target.name;
-
+    console.log("target.value", target.value, target.checked);
     this.setState({ formSettings: { ...formSettings, [name]: value } });
   };
 
