@@ -18,6 +18,7 @@ import {
   StyledCrossIcon,
 } from "./StyledFilterBlock";
 import { withTranslation } from "react-i18next";
+import Scrollbar from "@appserver/components/scrollbar";
 
 //TODO: fix translate
 const FilterBlock = ({
@@ -200,6 +201,10 @@ const FilterBlock = ({
                 headerLabel={headerLabel}
               />
             )}
+
+            <StyledControlContainer onClick={hideFilterBlock}>
+              <StyledCrossIcon />
+            </StyledControlContainer>
           </StyledFilterBlock>
         </>
       ) : (
@@ -213,21 +218,25 @@ const FilterBlock = ({
               size={17}
             />
           </StyledFilterBlockHeader>
-          {filterData.map((item) => {
-            return (
-              <FilterBlockItem
-                key={item.key}
-                label={item.label}
-                keyProp={item.key}
-                group={item.group}
-                groupItem={item.groupItem}
-                isLast={item.isLast}
-                withoutHeader={item.withoutHeader}
-                changeFilterValue={changeFilterValue}
-                showSelector={changeShowSelector}
-              />
-            );
-          })}
+          <div className="filter-body">
+            <Scrollbar className="filter-body__scrollbar" stype="mediumBlack">
+              {filterData.map((item) => {
+                return (
+                  <FilterBlockItem
+                    key={item.key}
+                    label={item.label}
+                    keyProp={item.key}
+                    group={item.group}
+                    groupItem={item.groupItem}
+                    isLast={item.isLast}
+                    withoutHeader={item.withoutHeader}
+                    changeFilterValue={changeFilterValue}
+                    showSelector={changeShowSelector}
+                  />
+                );
+              })}
+            </Scrollbar>
+          </div>
           <StyledFilterBlockFooter>
             <Button
               size="normal"
@@ -237,6 +246,10 @@ const FilterBlock = ({
               onClick={onFilterAction}
             />
           </StyledFilterBlockFooter>
+
+          <StyledControlContainer onClick={hideFilterBlock}>
+            <StyledCrossIcon />
+          </StyledControlContainer>
         </StyledFilterBlock>
       )}
 
@@ -244,11 +257,8 @@ const FilterBlock = ({
         visible={true}
         withBackground={true}
         onClick={hideFilterBlock}
+        zIndex={215}
       />
-
-      <StyledControlContainer onClick={hideFilterBlock}>
-        <StyledCrossIcon />
-      </StyledControlContainer>
     </>
   );
 };

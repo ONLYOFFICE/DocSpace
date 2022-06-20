@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-
+import { isMobile } from "@appserver/components/utils/device";
 import StyledScrollbar from "./styled-scrollbar";
 const Scrollbar = React.forwardRef((props, ref) => {
   const scrollbarType = {
@@ -40,7 +40,7 @@ const Scrollbar = React.forwardRef((props, ref) => {
         borderRadius: "inherit",
       },
       view: {
-        paddingRight: "16px",
+        paddingRight: isMobile() ? "8px" : "17px",
         outline: "none",
         WebkitOverflowScrolling: "auto",
       },
@@ -114,7 +114,7 @@ Scrollbar.propTypes = {
 };
 
 Scrollbar.defaultProps = {
-  stype: "smallBlack",
+  stype: "mediumBlack",
 };
 
 export default Scrollbar;

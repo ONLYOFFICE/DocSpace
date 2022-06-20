@@ -52,7 +52,11 @@ const RestoreBackup = lazy(() =>
   import("./categories/data-management/backup/restore-backup")
 );
 
-const WhiteLabel = lazy(() => import("./categories/common/whitelabel"));
+const WhiteLabel = lazy(() =>
+  import("./categories/common/settingsBranding/whitelabel")
+);
+
+const Branding = lazy(() => import("./categories/common/branding"));
 
 const PROXY_BASE_URL = combineUrl(AppServerConfig.proxyURL, "/settings");
 
@@ -60,7 +64,8 @@ const COMMON_URLS = [
   PROXY_BASE_URL,
   combineUrl(PROXY_BASE_URL, "/common"),
   combineUrl(PROXY_BASE_URL, "/common/customization"),
-  combineUrl(PROXY_BASE_URL, "/common/whitelabel"),
+  combineUrl(PROXY_BASE_URL, "/common/branding"),
+  combineUrl(PROXY_BASE_URL, "/common/appearance"),
 ];
 
 const CUSTOMIZATION_URLS = [

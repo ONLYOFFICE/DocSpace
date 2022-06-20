@@ -14,7 +14,6 @@ import StyledContainer from "../StyledNavigation";
 import { isMobile, isMobileOnly } from "react-device-detect";
 import {
   tablet,
-  mobile,
   isMobile as isMobileUtils,
   isTablet as isTabletUtils,
 } from "@appserver/components/utils/device";
@@ -28,7 +27,7 @@ const StyledBox = styled.div`
 
   padding: ${isMobile ? "0 16px " : "0 20px"};
 
-  width: ${(props) => props.dropBoxWidth}px;
+  ${(props) => `width: ${props.dropBoxWidth}px;`};
 
   height: ${(props) => (props.height ? `${props.height}px` : "fit-content")};
   max-height: calc(100vh - 48px);
@@ -90,6 +89,8 @@ const DropBox = React.forwardRef(
       onClickAvailable,
       isInfoPanelVisible,
       maxHeight,
+      isOpen,
+      isDesktop,
     },
     ref
   ) => {
@@ -133,14 +134,20 @@ const DropBox = React.forwardRef(
           height={sectionHeight < dropBoxHeight ? sectionHeight : null}
           showText={showText}
           dropBoxWidth={dropBoxWidth}
+          isDesktop={isDesktop}
         >
-          <StyledContainer canCreate={canCreate} isDropBox={true}>
+          <StyledContainer
+            canCreate={canCreate}
+            isDropBox={true}
+            isInfoPanelVisible={isInfoPanelVisible}
+          >
             <ArrowButton
               isRootFolder={isRootFolder}
               onBackToParentFolder={onBackToParentFolder}
             />
             <Text title={title} isOpen={true} onClick={toggleDropBox} />
             <ControlButtons
+              isDesktop={isDesktop}
               personal={personal}
               isRootFolder={isRootFolder}
               isDropBox={true}

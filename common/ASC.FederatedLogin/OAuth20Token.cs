@@ -91,8 +91,15 @@ public class OAuth20Token
 
         try
         {
-            return JsonSerializer.Deserialize<OAuth20Token>(json);
-        }
+                var result = JsonSerializer.Deserialize<OAuth20Token>(json);
+
+                if (result.Timestamp == default)
+                {
+                    result.Timestamp = DateTime.UtcNow;
+                }
+
+                return result;
+            }
         catch (Exception)
         {
             return null;

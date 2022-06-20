@@ -1,0 +1,172 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AceStatusEnum_Read" xml:space="preserve">
+    <value>Somente leitura</value>
+  </data>
+  <data name="AceStatusEnum_ReadWrite" xml:space="preserve">
+    <value>Acesso total</value>
+  </data>
+  <data name="Admin" xml:space="preserve">
+    <value>Admin</value>
+  </data>
+  <data name="Author_Me" xml:space="preserve">
+    <value>Eu</value>
+  </data>
+  <data name="ErrorMassage_BadRequest" xml:space="preserve">
+    <value>Pedido incorreto.</value>
+  </data>
+  <data name="ErrorMassage_EmptyFile" xml:space="preserve">
+    <value>Ficheiro vazio</value>
+  </data>
+  <data name="ErrorMassage_FileNotFound" xml:space="preserve">
+    <value>O ficheiro necessário não foi encontrado</value>
+  </data>
+  <data name="ErrorMassage_FolderCopyError" xml:space="preserve">
+    <value>Você não pode copiar a pasta para a sua subpasta</value>
+  </data>
+  <data name="ErrorMassage_FolderNotFound" xml:space="preserve">
+    <value>A pasta necessária não foi encontrada</value>
+  </data>
+  <data name="ErrorMassage_ManyDownloads" xml:space="preserve">
+    <value>Demasiado carregamentos.</value>
+  </data>
+  <data name="ErrorMassage_NotSupportedFormat" xml:space="preserve">
+    <value>Desculpe, este formato de ficheiro não é suportado</value>
+  </data>
+  <data name="ErrorMassage_SecurityException" xml:space="preserve">
+    <value>Você não tem permissão suficiente para executar a operação</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_Create" xml:space="preserve">
+    <value>Você não tem permissão suficiente para criar</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_DeleteEditingFile" xml:space="preserve">
+    <value>Não é possível eliminar o ficheiro</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_DeleteEditingFolder" xml:space="preserve">
+    <value>Não é possível eliminar a pasta</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_DeleteFile" xml:space="preserve">
+    <value>Você não tem permissão suficiente para eliminar o arquivo</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_DeleteFolder" xml:space="preserve">
+    <value>Você não tem permissões suficientes para eliminar a pasta</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_EditFile" xml:space="preserve">
+    <value>Você não tem permissões suficientes para editar o ficheiro</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_EditFileTwice" xml:space="preserve">
+    <value>Este documento já está a ser editado por você num outro separador</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_ReadFile" xml:space="preserve">
+    <value>Você não tem permissão suficiente para ver o ficheiro</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_ReadFolder" xml:space="preserve">
+    <value>Você não tem permissão suficiente para exibir o conteúdo da pasta</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_RenameFile" xml:space="preserve">
+    <value>Você não tem permissão suficiente para renomear o ficheiro</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_RenameFolder" xml:space="preserve">
+    <value>Você não tem permissão suficiente para renomear a pasta</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_UpdateEditingFile" xml:space="preserve">
+    <value>Não é possível atualizar o ficheiro porque ele está aberto para edição</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_ViewFolder" xml:space="preserve">
+    <value>Você não tem permissão suficiente para exibir o conteúdo da pasta</value>
+  </data>
+  <data name="ErrorMassage_UpdateEditingFile" xml:space="preserve">
+    <value>Você não pode atualizar um ficheiro que está aberto para edição</value>
+  </data>
+  <data name="ErrorMassage_ViewTrashItem" xml:space="preserve">
+    <value>Você não tem permissão para visualizar os elementos no Lixo</value>
+  </data>
+  <data name="Everyone" xml:space="preserve">
+    <value>Todos</value>
+  </data>
+  <data name="Guest" xml:space="preserve">
+    <value>Convidado</value>
+  </data>
+  <data name="ProductAdminOpportunities" xml:space="preserve">
+    <value>Fazer o mesmo como um Utilizador |Link Dropbox, Box e outras contas na secção 'Documentos comuns'|Configurar direitos de acesso aos documentos e pastas na secção 'Documentos Comuns'</value>
+  </data>
+  <data name="ProductDescription" xml:space="preserve">
+    <value>Criar, editar, salvar e partilhar documentos directamente no seu portal. Associe também as suas contas Google Drive, Dropbox e Box e tenha todos os documentos no mesmo lugar.</value>
+  </data>
+  <data name="ProductDescriptionEx" xml:space="preserve">
+    <value>Crie, edite, guarde e partilhe documentos. Associe as suas contas Google Drive, Dropbox e Box e tenha todos os documentos num só lugar.</value>
+  </data>
+  <data name="ProductName" xml:space="preserve">
+    <value>Documentos</value>
+  </data>
+  <data name="ProductUserOpportunities" xml:space="preserve">
+    <value>Criar e editar documentos, bem como os documentos partilhados com direitos de acesso adequados|Dar acesso de leitura/edição a outros utilizadores para os documentos e pastas|Link Dropbox, Box e outras contas na secção 'Os Meus Documentos'</value>
+  </data>
+  <data name="ProfileRemoved" xml:space="preserve">
+    <value>{!User} removido</value>
+  </data>
+  <data name="ShareFolder" xml:space="preserve">
+    <value>Notificar quando uma pasta for partilhada</value>
+  </data>
+  <data name="SubscriptForAccess" xml:space="preserve">
+    <value>Notificar quando partilhado</value>
+  </data>
+</root>

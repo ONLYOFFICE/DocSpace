@@ -50,6 +50,8 @@ const StyledButton = styled.div`
         width: 200px;
       }
     `}
+
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 `;
 
 StyledButton.defaultProps = { theme: Base };

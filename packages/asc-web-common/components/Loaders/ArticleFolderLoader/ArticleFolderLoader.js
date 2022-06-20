@@ -7,7 +7,14 @@ import {
 } from "./StyledArticleFolderLoader";
 import { inject, observer } from "mobx-react";
 
-const ArticleFolderLoader = ({ id, className, style, showText, ...rest }) => {
+const ArticleFolderLoader = ({
+  id,
+  className,
+  style,
+  showText,
+  personal,
+  ...rest
+}) => {
   return (
     <StyledContainer
       id={id}
@@ -21,16 +28,20 @@ const ArticleFolderLoader = ({ id, className, style, showText, ...rest }) => {
         <StyledRectangleLoader {...rest} />
         <StyledRectangleLoader {...rest} />
       </StyledBlock>
-      <StyledBlock>
-        <StyledRectangleLoader {...rest} />
-        <StyledRectangleLoader {...rest} />
-      </StyledBlock>
-      <StyledBlock>
-        <StyledRectangleLoader {...rest} />
-      </StyledBlock>
-      <StyledBlock>
-        <StyledRectangleLoader {...rest} />
-      </StyledBlock>
+      {!personal && (
+        <>
+          <StyledBlock>
+            <StyledRectangleLoader {...rest} />
+            <StyledRectangleLoader {...rest} />
+          </StyledBlock>
+          <StyledBlock>
+            <StyledRectangleLoader {...rest} />
+          </StyledBlock>
+          <StyledBlock>
+            <StyledRectangleLoader {...rest} />
+          </StyledBlock>
+        </>
+      )}
     </StyledContainer>
   );
 };
@@ -48,6 +59,9 @@ ArticleFolderLoader.defaultProps = {
   style: undefined,
 };
 
-export default inject(({ auth }) => ({
-  showText: auth.settingsStore.showText,
-}))(observer(ArticleFolderLoader));
+export default inject(({ auth }) => {
+  return {
+    showText: auth.settingsStore.showText,
+    personal: auth.settingsStore.personal,
+  };
+})(observer(ArticleFolderLoader));

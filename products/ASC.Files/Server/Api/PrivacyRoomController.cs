@@ -89,13 +89,11 @@ public class PrivacyRoomControllerCommon : ControllerBase
     private readonly MessageService _messageService;
     private readonly PermissionContext _permissionContext;
     private readonly SettingsManager _settingsManager;
-    private readonly TenantManager _tenantManager;
 
     public PrivacyRoomControllerCommon(
         AuthContext authContext,
         PermissionContext permissionContext,
         SettingsManager settingsManager,
-        TenantManager tenantManager,
         EncryptionKeyPairDtoHelper encryptionKeyPairHelper,
         MessageService messageService,
         ILoggerProvider option)
@@ -103,7 +101,6 @@ public class PrivacyRoomControllerCommon : ControllerBase
         _authContext = authContext;
         _permissionContext = permissionContext;
         _settingsManager = settingsManager;
-        _tenantManager = tenantManager;
         _encryptionKeyPairHelper = encryptionKeyPairHelper;
         _messageService = messageService;
         _logger = option.CreateLogger("ASC.Api.Documents");
@@ -186,13 +183,13 @@ public class PrivacyRoomControllerCommon : ControllerBase
 
         if (inDto.Enable)
         {
-            if (!PrivacyRoomSettings.IsAvailable(_tenantManager))
+            if (!PrivacyRoomSettings.IsAvailable())
             {
                 throw new BillingException(Resource.ErrorNotAllowedOption, "PrivacyRoom");
             }
         }
 
-        PrivacyRoomSettings.SetEnabled(_tenantManager, _settingsManager, inDto.Enable);
+        PrivacyRoomSettings.SetEnabled(_settingsManager, inDto.Enable);
 
         _messageService.Send(inDto.Enable ? MessageAction.PrivacyRoomEnable : MessageAction.PrivacyRoomDisable);
 

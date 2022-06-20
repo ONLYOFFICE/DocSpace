@@ -1,4 +1,4 @@
-﻿{
+{
   "ChangeUserTypeButton": "变更类型",
   "ChangeUserTypeHeader": "变更用户类型",
   "ChangeUserTypeMessage": "‘{{ firstType }}’类型的用户将被移动至‘{{ secondType }}’类型。",

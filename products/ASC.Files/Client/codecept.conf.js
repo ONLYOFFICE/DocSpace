@@ -26,14 +26,14 @@ const isModel = !!process.env.MODEL;
 
 const screenshotOutput = isTranslation
   ? isModel
-    ? `./tests/screenshots/translation/${browser}/${deviceType}`
-    : `./tests/output/translation/${browser}/${deviceType}`
+    ? `./tests/screenshots/translation/`
+    : `./tests/output/translation/`
   : isModel
   ? `./tests/screenshots/${browser}/${deviceType}`
   : `./tests/output/${browser}/${deviceType}`;
 
 const baseFolder = isTranslation
-  ? `./tests/screenshots/translation/${browser}/${deviceType}`
+  ? `./tests/screenshots/translation`
   : `./tests/screenshots/${browser}/${deviceType}`;
 
 const tests = isTranslation
@@ -63,6 +63,12 @@ if (isTranslation) {
   fs.mkdir(diffFolder, { recursive: true }, (err) => {
     if (err) throw err;
   });
+
+  if (isModel) {
+    fs.rmdir(screenshotOutput, { recursive: true }, (err) => {
+      if (err) throw err;
+    });
+  }
 }
 
 exports.config = {

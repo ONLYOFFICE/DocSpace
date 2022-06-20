@@ -33,10 +33,20 @@ const StyledButton = styled(Button)`
   :active {
     border: none;
     background-color: unset;
+  }
 
+  :hover {
     svg {
       path {
         fill: ${(props) => props.theme.button.color.baseHover};
+      }
+    }
+  }
+
+  :active {
+    svg {
+      path {
+        fill: ${(props) => props.theme.button.color.baseActive};
       }
     }
   }

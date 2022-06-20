@@ -32,18 +32,15 @@ public class SettingsController : ApiControllerBase
 {
     private readonly FileStorageService<string> _fileStorageServiceString;
     private readonly FilesSettingsHelper _filesSettingsHelper;
-    private readonly TenantManager _tenantManager;
     private readonly ProductEntryPoint _productEntryPoint;
 
     public SettingsController(
         FileStorageService<string> fileStorageServiceString,
         FilesSettingsHelper filesSettingsHelper,
-        TenantManager tenantManager,
         ProductEntryPoint productEntryPoint)
     {
         _fileStorageServiceString = fileStorageServiceString;
         _filesSettingsHelper = filesSettingsHelper;
-        _tenantManager = tenantManager;
         _productEntryPoint = productEntryPoint;
     }
 
@@ -123,6 +120,18 @@ public class SettingsController : ApiControllerBase
         return _fileStorageServiceString.DisplayTemplates(inDto.Set);
     }
 
+    [HttpPut("settings/external")]
+    public bool ExternalShare(DisplayRequestDto inDto)
+    {
+        return _fileStorageServiceString.ChangeExternalShareSettings(inDto.Set);
+    }
+
+    [HttpPut("settings/externalsocialmedia")]
+    public bool ExternalShareSocialMedia(DisplayRequestDto inDto)
+    {
+        return _fileStorageServiceString.ChangeExternalShareSocialMediaSettings(inDto.Set);
+    }
+
     /// <summary>
     /// 
     /// </summary>
@@ -166,7 +175,7 @@ public class SettingsController : ApiControllerBase
     [HttpGet("@privacy/available")]
     public bool IsAvailablePrivacyRoomSettings()
     {
-        return PrivacyRoomSettings.IsAvailable(_tenantManager);
+        return PrivacyRoomSettings.IsAvailable();
     }
 
     /// <summary>
@@ -200,5 +209,17 @@ public class SettingsController : ApiControllerBase
     public bool UpdateIfExist(SettingsRequestDto inDto)
     {
         return _fileStorageServiceString.UpdateIfExist(inDto.Set);
+    }
+
+    [HttpPut("settings/autocleanup")]
+    public AutoCleanUpData ChangeAutomaticallyCleanUp(bool set, DateToAutoCleanUp gap)
+    {
+        return _fileStorageServiceString.ChangeAutomaticallyCleanUp(set, gap);
+    }
+
+    [HttpPut("settings/dafaultaccessrights")]
+    public List<Core.Security.FileShare> ChangeDafaultAccessRights(List<Core.Security.FileShare> value)
+    {
+        return _fileStorageServiceString.ChangeDafaultAccessRights(value);
     }
 }

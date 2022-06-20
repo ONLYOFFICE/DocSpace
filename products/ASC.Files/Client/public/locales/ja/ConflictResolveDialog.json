@@ -1,4 +1,4 @@
-﻿{
+{
   "ConflictResolveDescription": "フォルダ<1>{{folder}}</1>内に<1>{{file}}</1>という名前のファイルがすでに存在しています。",
   "ConflictResolveDescriptionFiles": "{{filesCount}}フォルダ<1>{{folder}}</1>に同名のドキュメントがすでに存在しています。",
   "ConflictResolveSelectAction": "アクションをお選びください：",

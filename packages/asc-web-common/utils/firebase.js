@@ -23,7 +23,7 @@ class FirebaseHelper {
     this.remoteConfig = firebase.remoteConfig();
 
     this.remoteConfig.settings = {
-      fetchTimeMillis: 3600000,
+      fetchTimeoutMillis: 3600000,
       minimumFetchIntervalMillis: 3600000,
     };
 

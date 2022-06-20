@@ -7,14 +7,6 @@ import CustomScrollbarsVirtualList from "@appserver/components/scrollbar";
 import { StyledGridWrapper, StyledTileContainer } from "../StyledTileView";
 
 class TileContainer extends React.PureComponent {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      contextOptions: [],
-    };
-  }
-
   renderTile = memo(({ data, index, style }) => {
     return <div style={style}>{data[index]}</div>;
   }, areEqual);

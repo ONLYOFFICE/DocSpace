@@ -1,0 +1,6 @@
+{
+  "GoodAfternoon": "Hyvää iltapäivää, {{displayName}}!",
+  "GoodEvening": "Hyvää iltaa, {{displayName}}!",
+  "GoodMorning": "Hyvää huomenta, {{displayName}}!",
+  "NoOneModulesAvailable": "Moduuleja ei ole saatavilla"
+}

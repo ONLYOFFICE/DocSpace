@@ -12,8 +12,6 @@ using Newtonsoft.Json.Linq;
 
 using NUnit.Framework;
 
-using UtfUnknown;
-
 using WeCantSpell.Hunspell;
 
 namespace Frontend.Translations.Tests
@@ -35,19 +33,25 @@ namespace Frontend.Translations.Tests
         public List<KeyValuePair<string, string>> NotTranslatedToasts { get; set; }
         public List<LanguageItem> CommonTranslations { get; set; }
         public List<ParseJsonError> ParseJsonErrors { get; set; }
-        public List<JsonEncodingError> WrongEncodingJsonErrors { get; set; }
+        //public List<JsonEncodingError> WrongEncodingJsonErrors { get; set; }
 
         private static string _md5ExcludesPath = "../../../md5-excludes.json";
+
+        //private static string _encodingExcludesPath = "../../../encoding-excludes.json";
 
         private static List<string> md5Excludes = File.Exists(_md5ExcludesPath)
             ? JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(_md5ExcludesPath))
             : new List<string>();
 
+        //private static List<string> encodingExcludes = File.Exists(_encodingExcludesPath)
+        //    ? JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(_encodingExcludesPath))
+        //    : new List<string>();
+
         [OneTimeSetUp]
         public void Setup()
         {
             ParseJsonErrors = new List<ParseJsonError>();
-            WrongEncodingJsonErrors = new List<JsonEncodingError>();
+            //WrongEncodingJsonErrors = new List<JsonEncodingError>();
 
             var packageJsonPath = Path.Combine(BasePath, @"package.json");
 
@@ -76,14 +80,13 @@ namespace Frontend.Translations.Tests
             {
                 try
                 {
-                    var result = CharsetDetector.DetectFromFile(path);
+                    //var result = CharsetDetector.DetectFromFile(path);
 
-                    if (result.Detected.EncodingName != "utf-8"
-                    && result.Detected.EncodingName != "ascii")
-                    {
-                        WrongEncodingJsonErrors.Add(
-                            new JsonEncodingError(path, result.Detected));
-                    }
+                    //if (!encodingExcludes.Contains(result.Detected.EncodingName))
+                    //{
+                    //    WrongEncodingJsonErrors.Add(
+                    //        new JsonEncodingError(path, result.Detected));
+                    //}
 
 #if SORT
 
@@ -264,11 +267,32 @@ namespace Frontend.Translations.Tests
             Assert.AreEqual(0, ParseJsonErrors.Count, string.Join("\r\n", ParseJsonErrors.Select(e => $"File path = '{e.Path}' failed to parse with error: '{e.Exception.Message}'")));
         }
 
+        public static Tuple<string, string> getPaths(string language)
+        {
+            const string dictionariesPath = @"..\..\..\dictionaries";
+            const string additionalPath = @"..\..\..\additional";
+
+            var path = dictionariesPath;
+
+            switch (language)
+            {
+                case "fi":
+                    path = additionalPath;
+                    break;
+                default:
+                    break;
+            }
+
+            var dicPath = Path.Combine(path, language, $"{language}.dic");
+            var affPath = Path.Combine(path, language, $"{language}.aff");
+
+            return new Tuple<string, string>(dicPath, affPath);
+        }
+
         [Test]
         [Category("LongRunning")]
         public void SpellCheckTest()
         {
-            const string dictionariesPath = @"..\..\..\dictionaries";
             var i = 0;
             var errorsCount = 0;
             var message = $"Next keys have spell check issues:\r\n\r\n";
@@ -288,12 +312,12 @@ namespace Frontend.Translations.Tests
             {
                 try
                 {
-                    var language = SpellCheck.GetDictionaryLanguage(group.Language);
+                    var dicPaths = SpellCheck.GetDictionaryPaths(group.Language);
 
                     //var spellCheckExclude = new SpellCheckExclude(group.Language);
 
-                    using (var dictionaryStream = File.OpenRead(Path.Combine(dictionariesPath, language, $"{language}.dic")))
-                    using (var affixStream = File.OpenRead(Path.Combine(dictionariesPath, language, $"{language}.aff")))
+                    using (var dictionaryStream = File.OpenRead(dicPaths.DictionaryPath))
+                    using (var affixStream = File.OpenRead(dicPaths.AffixPath))
                     {
                         var dictionary = WordList.CreateFromStreams(dictionaryStream, affixStream);
 
@@ -338,6 +362,17 @@ namespace Frontend.Translations.Tests
             //File.WriteAllText("../../../spellcheck-excludes.json", json, Encoding.UTF8);
 
             Assert.AreEqual(0, errorsCount, message);
+        }
+
+        [Test]
+        [Category("FastRunning")]
+        public void SingleKeyFilesTest()
+        {
+            var singleKeyTranslationFiles = TranslationFiles
+                .Where(t => t.Language == "en" && t.Translations.Count == 1)
+                .ToList();
+
+            Assert.AreEqual(0, singleKeyTranslationFiles.Count, "Translations files with single key:\r\n" + string.Join("\r\n", singleKeyTranslationFiles.Select(d => $"\r\nKey='{d.Translations.First().Key}':\r\n{d.FilePath}'")));
         }
 
         [Test]
@@ -1059,25 +1094,25 @@ namespace Frontend.Translations.Tests
             Assert.AreEqual(0, errorsCount, message);
         }
 
-        [Test]
-        [Category("FastRunning")]
-        public void TranslationsEncodingTest()
-        {
-            /*//Convert to UTF-8
-            foreach (var issue in WrongEncodingJsonErrors)
-            {
-                if (issue.DetectionDetail.Encoding == null)
-                    continue;
+        //[Test]
+        //[Category("FastRunning")]
+        //public void TranslationsEncodingTest()
+        //{
+        //    /*//Convert to UTF-8
+        //    foreach (var issue in WrongEncodingJsonErrors)
+        //    {
+        //        if (issue.DetectionDetail.Encoding == null)
+        //            continue;
 
-                ConvertFileEncoding(issue.Path, issue.Path, issue.DetectionDetail.Encoding, Encoding.UTF8);
-            }*/
+        //        ConvertFileEncoding(issue.Path, issue.Path, issue.DetectionDetail.Encoding, Encoding.UTF8);
+        //    }*/
 
-            var message = $"Next files have encoding issues:\r\n\r\n";
+        //    var message = $"Next files have encoding issues:\r\n\r\n";
 
-            Assert.AreEqual(0, WrongEncodingJsonErrors.Count,
-               message + string.Join("\r\n", WrongEncodingJsonErrors
-                    .Select(e => $"File path = '{e.Path}' potentially wrong file encoding: {e.DetectionDetail.EncodingName}")));
-        }
+        //    Assert.AreEqual(0, WrongEncodingJsonErrors.Count,
+        //       message + string.Join("\r\n", WrongEncodingJsonErrors
+        //            .Select(e => $"File path = '{e.Path}' potentially wrong file encoding: {e.DetectionDetail.EncodingName}")));
+        //}
 
         /// <summary>
         /// Converts a file from one encoding to another.
@@ -1086,46 +1121,46 @@ namespace Frontend.Translations.Tests
         /// <param name=”destPath”>the destination for the converted file</param>
         /// <param name=”sourceEncoding”>the original file encoding</param>
         /// <param name=”destEncoding”>the encoding to which the contents should be converted</param>
-        public static void ConvertFileEncoding(string sourcePath, string destPath,
-                                               Encoding sourceEncoding, Encoding destEncoding)
-        {
-            // If the destination’s parent doesn’t exist, create it.
-            var parent = Path.GetDirectoryName(Path.GetFullPath(destPath));
-            if (!Directory.Exists(parent))
-            {
-                Directory.CreateDirectory(parent);
-            }
-            // If the source and destination encodings are the same, just copy the file.
-            if (sourceEncoding == destEncoding)
-            {
-                File.Copy(sourcePath, destPath, true);
-                return;
-            }
-            // Convert the file.
-            string tempName = null;
-            try
-            {
-                tempName = Path.GetTempFileName();
-                using (StreamReader sr = new StreamReader(sourcePath, sourceEncoding, false))
-                {
-                    using (StreamWriter sw = new StreamWriter(tempName, false, destEncoding))
-                    {
-                        int charsRead;
-                        char[] buffer = new char[128 * 1024];
-                        while ((charsRead = sr.ReadBlock(buffer, 0, buffer.Length)) > 0)
-                        {
-                            sw.Write(buffer, 0, charsRead);
-                        }
-                    }
-                }
-                File.Delete(destPath);
-                File.Move(tempName, destPath);
-            }
-            finally
-            {
-                File.Delete(tempName);
-            }
-        }
+        //public static void ConvertFileEncoding(string sourcePath, string destPath,
+        //                                       Encoding sourceEncoding, Encoding destEncoding)
+        //{
+        //    // If the destination’s parent doesn’t exist, create it.
+        //    var parent = Path.GetDirectoryName(Path.GetFullPath(destPath));
+        //    if (!Directory.Exists(parent))
+        //    {
+        //        Directory.CreateDirectory(parent);
+        //    }
+        //    // If the source and destination encodings are the same, just copy the file.
+        //    if (sourceEncoding == destEncoding)
+        //    {
+        //        File.Copy(sourcePath, destPath, true);
+        //        return;
+        //    }
+        //    // Convert the file.
+        //    string tempName = null;
+        //    try
+        //    {
+        //        tempName = Path.GetTempFileName();
+        //        using (StreamReader sr = new StreamReader(sourcePath, sourceEncoding, false))
+        //        {
+        //            using (StreamWriter sw = new StreamWriter(tempName, false, destEncoding))
+        //            {
+        //                int charsRead;
+        //                char[] buffer = new char[128 * 1024];
+        //                while ((charsRead = sr.ReadBlock(buffer, 0, buffer.Length)) > 0)
+        //                {
+        //                    sw.Write(buffer, 0, charsRead);
+        //                }
+        //            }
+        //        }
+        //        File.Delete(destPath);
+        //        File.Move(tempName, destPath);
+        //    }
+        //    finally
+        //    {
+        //        File.Delete(tempName);
+        //    }
+        //}
 
         /*[Test]
         public void TempTest()

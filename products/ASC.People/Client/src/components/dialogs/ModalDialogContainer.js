@@ -67,6 +67,10 @@ const ModalDialogContainer = styled(ModalDialog)`
       }
     }
   }
+
+  .heading {
+    max-width: calc(100% - 32px);
+  }
 `;
 
 ModalDialogContainer.defaultProps = { theme: Base };

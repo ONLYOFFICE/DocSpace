@@ -234,7 +234,7 @@ class SelectFileDialog extends React.Component {
     const buttonName = creationButtonPrimary
       ? t("Common:Create")
       : t("Common:SaveButton");
-    const name = dialogName ? dialogName : t("Common:SelectFile");
+    const name = dialogName ? dialogName : t("SelectFile");
 
     // console.log("Render file-component");
     return displayType === "aside" ? (
@@ -345,6 +345,7 @@ export default inject(
       filter,
       treeFolders,
       storeFolderId,
+
       folderId,
       theme: theme,
       setExpandedPanelKeys,

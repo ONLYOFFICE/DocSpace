@@ -1,4 +1,4 @@
-﻿{
+{
   "ActivationLink": "Liên kết kích hoạt",
   "AddContact": "Thêm liên hệ",
   "AddPhoto": "Thêm ảnh",
@@ -9,7 +9,7 @@
   "ContactInformation": "Thông tin liên hệ",
   "CopiedResourceText": "Đã sao chép",
   "CustomCreation": "{{user}} (tạo)",
-  "EditPhoto": "Edit Photo",
+  "EditPhoto": "Chỉnh sửa ảnh",
   "EditUserDialogTitle": "Chỉnh sửa hồ sơ",
   "EmailPopupHelper": " Email chính được sử dụng để thông báo và khôi phục quyền truy cập. <1> Bạn có thể tạo email mới trên tên miền này cho người dùng và đặt mật khẩu một lần cho lần đăng nhập đầu tiên.</1>",
   "ErrorInvalidUserFirstName": "Tên không có",

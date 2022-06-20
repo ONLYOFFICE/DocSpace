@@ -92,7 +92,7 @@ public class PhotoController : PeopleControllerBase
             UserPhotoThumbnailManager.SaveThumbnails(_userPhotoManager, _settingsManager, inDto.X, inDto.Y, inDto.Width, inDto.Height, user.Id);
         }
 
-        _userManager.SaveUserInfo(user);
+        _userManager.SaveUserInfo(user, syncCardDav: true);
         _messageService.Send(MessageAction.UserUpdatedAvatarThumbnails, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
 
         return new ThumbnailsDataDto(user.Id, _userPhotoManager);
@@ -111,7 +111,7 @@ public class PhotoController : PeopleControllerBase
         _permissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
 
         _userPhotoManager.RemovePhoto(user.Id);
-        _userManager.SaveUserInfo(user);
+        _userManager.SaveUserInfo(user, syncCardDav: true);
         _messageService.Send(MessageAction.UserDeletedAvatar, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
 
         return new ThumbnailsDataDto(user.Id, _userPhotoManager);
@@ -145,7 +145,7 @@ public class PhotoController : PeopleControllerBase
             UpdatePhotoUrl(inDto.Files, user);
         }
 
-        _userManager.SaveUserInfo(user);
+        _userManager.SaveUserInfo(user, syncCardDav: true);
         _messageService.Send(MessageAction.UserAddedAvatar, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
 
         return new ThumbnailsDataDto(user.Id, _userPhotoManager);
