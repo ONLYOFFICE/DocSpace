@@ -18,7 +18,6 @@ const DownloadContent = (props) => {
     title,
     isChecked,
     isIndeterminate,
-    showHeader,
   } = props;
 
   const getTitleExtensions = () => {
@@ -107,6 +106,8 @@ const DownloadContent = (props) => {
   const onOpen = () => {
     setIsOpen(!isOpen);
   };
+
+  const showHeader = items.length > 1;
 
   return (
     <StyledDownloadContent isOpen={showHeader ? isOpen : true}>

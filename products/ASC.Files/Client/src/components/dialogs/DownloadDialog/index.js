@@ -230,20 +230,12 @@ class DownloadDialogComponent extends React.Component {
         other.filter((f) => f.checked).length <=
       1;
 
-    const showHeader =
-      documents.length +
-        spreadsheets.length +
-        presentations.length +
-        other.length >
-      1;
-
     const downloadContentProps = {
       t,
       extsConvertible,
       onSelectFormat: this.onSelectFormat,
       onRowSelect: this.onRowSelect,
       getItemIcon: this.getItemIcon,
-      showHeader,
     };
 
     return (
