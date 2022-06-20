@@ -33,6 +33,7 @@ import { observer, inject } from "mobx-react";
 import config from "../../../package.json";
 import { Consumer } from "@appserver/components/utils/context";
 import { FileAction } from "@appserver/common/constants";
+import { Events } from "../../helpers/constants";
 
 class PureHome extends React.Component {
   componentDidMount() {
@@ -167,13 +168,21 @@ class PureHome extends React.Component {
       .then(() => {
         if (gallerySelected) {
           setIsUpdatingRowItem(false);
-          setAction({
-            type: FileAction.Create,
-            extension: "docxf",
-            fromTemplate: true,
-            title: gallerySelected.attributes.name_form,
-            id: -1,
-          });
+          // setAction({
+          //   type: FileAction.Create,
+          //   extension: "docxf",
+          //   fromTemplate: true,
+          //   title: gallerySelected.attributes.name_form,
+          //   id: -1,
+          // });
+
+          const event = new Event(Events.CREATE);
+          event.extension = "docxf";
+          event.id = -1;
+          event.fromTemplate = true;
+          event.title = gallerySelected.attributes.name_form;
+
+          window.dispatchEvent(event);
         }
       })
       .finally(() => {
