@@ -10,8 +10,16 @@ const Wrapper = styled.div`
 `;
 
 const ReactSmartBanner = (props) => {
-  const { t, ready, isBannerVisible, setIsBannerVisible } = props;
+  const {
+    t,
+    ready,
+    isBannerVisible,
+    setIsBannerVisible,
+    currentProductId,
+  } = props;
   const force = isIOS ? "ios" : "android";
+
+  const [isDocuments, setIsDocuments] = useState(false);
 
   const getCookie = (name) => {
     let matches = document.cookie.match(
@@ -33,6 +41,14 @@ const ReactSmartBanner = (props) => {
     const cookieInstalled = getCookie("smartbanner-installed");
     if (cookieClosed || cookieInstalled) hideBanner();
   }, []);
+
+  useEffect(() => {
+    if (window.location.pathname.toLowerCase().includes("files")) {
+      setIsDocuments(true);
+    } else {
+      setIsDocuments(false);
+    }
+  }, [currentProductId]);
 
   const storeText = {
     ios: t("SmartBanner:AppStore"),
@@ -60,7 +76,11 @@ const ReactSmartBanner = (props) => {
     navigator.maxTouchPoints > 0 ||
     navigator.msMaxTouchPoints > 0;
 
-  return isMobile && isBannerVisible && ready && isTouchDevice ? (
+  return isMobile &&
+    isBannerVisible &&
+    ready &&
+    isTouchDevice &&
+    isDocuments ? (
     <Wrapper>
       <SmartBanner
         title={t("SmartBanner:AppName")}
@@ -79,9 +99,10 @@ const ReactSmartBanner = (props) => {
   );
 };
 
-export default inject(({ bannerStore }) => {
+export default inject(({ auth, bannerStore }) => {
   return {
     isBannerVisible: bannerStore.isBannerVisible,
     setIsBannerVisible: bannerStore.setIsBannerVisible,
+    currentProductId: auth.settingsStore.currentProductId,
   };
 })(observer(ReactSmartBanner));
