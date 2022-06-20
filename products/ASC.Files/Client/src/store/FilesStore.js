@@ -505,6 +505,7 @@ class FilesStore {
     const value = `${filter.sortBy},${filter.pageCount},${filter.sortOrder}`;
     localStorage.setItem(key, value);
 
+    this.setFilterUrl(filter);
     this.filter = filter;
 
     runInAction(() => {
