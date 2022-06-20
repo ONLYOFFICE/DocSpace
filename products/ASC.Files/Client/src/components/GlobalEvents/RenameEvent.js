@@ -111,6 +111,7 @@ const RenameEvent = ({
 
   return (
     <Dialog
+      t={t}
       visible={visible}
       title={t("Home: Rename")}
       startValue={startValue}

@@ -234,6 +234,7 @@ const CreateEvent = ({
 
   return (
     <Dialog
+      t={t}
       visible={visible}
       title={headerTitle}
       startValue={startValue}

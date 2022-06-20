@@ -1,7 +1,8 @@
 import React from "react";
-
+import { inject, observer } from "mobx-react";
 import styled from "styled-components";
 
+import toastr from "@appserver/components/toast/toastr";
 import ModalDialog from "@appserver/components/modal-dialog";
 import TextInput from "@appserver/components/text-input";
 import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
@@ -33,7 +34,16 @@ const StyledSaveCancelButtons = styled(SaveCancelButtons)`
   }
 `;
 
-const Dialog = ({ title, startValue, visible, onSave, onCancel, onClose }) => {
+const Dialog = ({
+  t,
+  title,
+  startValue,
+  visible,
+  folderFormValidation,
+  onSave,
+  onCancel,
+  onClose,
+}) => {
   const [value, setValue] = React.useState("");
   const [isDisabled, setIsDisabled] = React.useState(false);
 
@@ -42,7 +52,15 @@ const Dialog = ({ title, startValue, visible, onSave, onCancel, onClose }) => {
   }, [startValue]);
 
   const onChange = React.useCallback((e) => {
-    const newValue = e.target.value;
+    let newValue = e.target.value;
+
+    if (newValue.match(folderFormValidation)) {
+      toastr.warning(t("ContainsSpecCharacter"));
+    }
+
+    newValue = newValue.replace(folderFormValidation, "_");
+
+    console.log(newValue);
 
     setValue(newValue);
   }, []);
@@ -97,4 +115,8 @@ const Dialog = ({ title, startValue, visible, onSave, onCancel, onClose }) => {
   );
 };
 
-export default React.memo(Dialog);
+export default inject(({ auth }) => {
+  const { folderFormValidation } = auth.settingsStore;
+
+  return { folderFormValidation };
+})(observer(Dialog));
