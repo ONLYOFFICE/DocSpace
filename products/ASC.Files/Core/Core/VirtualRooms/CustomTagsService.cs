@@ -156,11 +156,11 @@ public class CustomTagsService<T>
         return folder;
     }
 
-    public async IAsyncEnumerable<TagDto> GetTagsInfoAsync(string searchText, TagType tagType, int from, int count)
+    public async IAsyncEnumerable<object> GetTagsInfoAsync(string searchText, TagType tagType, int from, int count)
     {
         await foreach (var tagInfo in TagDao.GetTagsInfoAsync(searchText, tagType, false, from, count))
         {
-            yield return _mapper.Map<TagInfo, TagDto>(tagInfo);
+            yield return tagInfo.Name;
         }
     }
 }

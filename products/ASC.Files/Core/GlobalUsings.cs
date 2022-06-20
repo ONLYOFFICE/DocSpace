@@ -202,6 +202,8 @@ global using ProtoBuf;
 
 global using SixLabors.ImageSharp;
 
+global using StackExchange.Redis;
+
 global using static ASC.Files.Core.Data.AbstractDao;
 global using static ASC.Web.Core.Files.DocumentService;
 global using static ASC.Web.Files.Services.DocumentService.DocumentServiceTracker;
@@ -228,3 +230,4 @@ global using JsonTokenType = System.Text.Json.JsonTokenType;
 global using JsonConverter = System.Text.Json.Serialization.JsonConverter;
 global using JsonConverterAttribute = System.Text.Json.Serialization.JsonConverterAttribute;
 global using JsonIgnoreAttribute = System.Text.Json.Serialization.JsonIgnoreAttribute;
+global using SocketManager = ASC.Web.Files.Utils.SocketManager;

@@ -69,7 +69,6 @@ public class FolderDtoHelper : FileEntryDtoHelper
     private readonly IDaoFactory _daoFactory;
     private readonly GlobalFolderHelper _globalFolderHelper;
     private readonly RoomLogoManager _roomLogoManager;
-    private readonly IMapper _mapper;
 
     public FolderDtoHelper(
         ApiDateTimeHelper apiDateTimeHelper,
@@ -79,15 +78,13 @@ public class FolderDtoHelper : FileEntryDtoHelper
         FileSecurity fileSecurity,
         GlobalFolderHelper globalFolderHelper,
         FileSharingHelper fileSharingHelper, 
-        RoomLogoManager roomLogoManager,
-        IMapper mapper)
+        RoomLogoManager roomLogoManager)
         : base(apiDateTimeHelper, employeeWrapperHelper, fileSharingHelper, fileSecurity)
     {
         _authContext = authContext;
         _daoFactory = daoFactory;
         _globalFolderHelper = globalFolderHelper;
         _roomLogoManager = roomLogoManager;
-        _mapper = mapper;
     }
 
     public async Task<FolderDto<T>> GetAsync<T>(Folder<T> folder, List<Tuple<FileEntry<T>, bool>> folders = null)

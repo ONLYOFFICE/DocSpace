@@ -24,17 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Files.Core.Data;
-
-using MailKit.Search;
-
-using Nest;
-
-using StackExchange.Redis;
-
-using static Dropbox.Api.Common.PathRoot;
-using static Nest.JoinField;
-
 namespace ASC.Files.Core.Security;
 
 [Scope]

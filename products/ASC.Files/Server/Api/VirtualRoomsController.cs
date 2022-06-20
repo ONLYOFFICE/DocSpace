@@ -386,7 +386,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
     }
 
     [HttpGet("tags")]
-    public async IAsyncEnumerable<TagDto> GetTagsInfoAsync()
+    public async IAsyncEnumerable<object> GetTagsInfoAsync()
     {
         ErrorIfNotDocSpace();
 
