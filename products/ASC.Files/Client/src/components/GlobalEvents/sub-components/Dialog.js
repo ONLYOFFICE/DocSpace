@@ -60,8 +60,6 @@ const Dialog = ({
 
     newValue = newValue.replace(folderFormValidation, "_");
 
-    console.log(newValue);
-
     setValue(newValue);
   }, []);
 
