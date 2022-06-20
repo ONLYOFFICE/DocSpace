@@ -93,7 +93,10 @@ class DownloadDialogComponent extends React.Component {
       this.onClose();
     } else if (fileConvertIds.length || folderIds.length) {
       this.onClose();
-      downloadFiles(fileConvertIds, folderIds, t("Translations:ArchivingData"));
+      downloadFiles(fileConvertIds, folderIds, {
+        label: t("Translations:ArchivingData"),
+        error: t("Common:Error404Text"),
+      });
     }
   };
 
