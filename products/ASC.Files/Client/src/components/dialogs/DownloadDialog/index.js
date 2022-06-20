@@ -21,26 +21,26 @@ class DownloadDialogComponent extends React.Component {
 
     this.state = {
       documents: {
-        isChecked: true, //checkedDocTitle
-        isIndeterminate: false, //indeterminateDocTitle
-        format: null, //documentsTitleFormat
+        isChecked: true,
+        isIndeterminate: false,
+        format: null,
         files: documents,
       },
       spreadsheets: {
-        isChecked: true, //checkedSpreadsheetTitle
-        isIndeterminate: false, //isIndeterminateSpreadsheetTitle
-        format: null, //spreadsheetsTitleFormat
+        isChecked: true,
+        isIndeterminate: false,
+        format: null,
         files: spreadsheets,
       },
       presentations: {
-        isChecked: true, //checkedPresentationTitle
-        isIndeterminate: false, //indeterminatePresentationTitle
-        format: null, //presentationsTitleFormat
+        isChecked: true,
+        isIndeterminate: false,
+        format: null,
         files: presentations,
       },
       other: {
-        isChecked: true, //checkedOtherTitle
-        isIndeterminate: false, //indeterminateOtherTitle
+        isChecked: true,
+        isIndeterminate: false,
         files: other,
       },
     };
