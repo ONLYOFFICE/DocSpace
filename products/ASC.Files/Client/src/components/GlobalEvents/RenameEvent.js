@@ -4,13 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import toastr from "studio/toastr";
 
-import { AppServerConfig } from "@appserver/common/constants";
-import { combineUrl } from "@appserver/common/utils";
-
-import config from "../../../package.json";
-
 import { getTitleWithoutExst } from "../../helpers/files-helpers";
-import { getDefaultFileName } from "../../helpers/utils";
 
 import Dialog from "./sub-components/Dialog";
 
@@ -20,51 +14,25 @@ const RenameEvent = ({
   onClose,
 
   setIsLoading,
-  createFile,
-  createFolder,
   addActiveItems,
-  openDocEditor,
-  setIsUpdatingRowItem,
-  gallerySelected,
 
   updateFile,
   renameFolder,
 
-  parentId,
-
-  isPrivacy,
-  isDesktop,
   editCompleteAction,
-
   clearActiveOperations,
-  fileCopyAs,
-
-  setConvertPasswordDialogVisible,
-  setConvertItem,
-  setFormCreationInfo,
-
-  replaceFileStream,
-  setEncryptionAccess,
 }) => {
   const [visible, setVisible] = React.useState(false);
 
   const [startValue, setStartValue] = React.useState("");
 
-  const { t } = useTranslation(["Home", "Translations", "Common"]);
+  const { t } = useTranslation(["Home"]);
 
   React.useEffect(() => {
     setStartValue(getTitleWithoutExst(item, false));
 
     setVisible(true);
   }, [item]);
-
-  const completeAction = (id) => {
-    const isCancel =
-      (id.currentTarget && id.currentTarget.dataset.action === "cancel") ||
-      id.keyCode === 27;
-
-    editCompleteAction(id, item, isCancel, type);
-  };
 
   const onUpdate = React.useCallback((e, value) => {
     const originalTitle = getTitleWithoutExst(item);
@@ -89,7 +57,7 @@ const RenameEvent = ({
 
     isFile
       ? updateFile(item.id, value)
-          .then(() => completeAction(item.id))
+          .then(() => editCompleteAction(item.id, item, false, type))
           .then(() =>
             toastr.success(
               t("FileRenamed", {
@@ -100,7 +68,7 @@ const RenameEvent = ({
           )
           .catch((err) => {
             toastr.error(err);
-            completeAction(item.id);
+            editCompleteAction(item.id, item, false, type);
           })
           .finally(() => {
             clearTimeout(timerId);
@@ -111,7 +79,7 @@ const RenameEvent = ({
             onClose();
           })
       : renameFolder(item.id, value)
-          .then(() => completeAction(item.id))
+          .then(() => editCompleteAction(item.id, item, false, type))
           .then(() =>
             toastr.success(
               t("FolderRenamed", {
@@ -122,7 +90,7 @@ const RenameEvent = ({
           )
           .catch((err) => {
             toastr.error(err);
-            completeAction(item.id);
+            editCompleteAction(item.id, item, false, type);
           })
           .finally(() => {
             clearTimeout(timerId);
@@ -153,75 +121,21 @@ const RenameEvent = ({
   );
 };
 
-export default inject(
-  ({
-    auth,
-    filesStore,
-    filesActionsStore,
-    selectedFolderStore,
-    treeFoldersStore,
-    uploadDataStore,
-    dialogsStore,
-  }) => {
-    const {
-      setIsLoading,
-      createFile,
-      createFolder,
-      addActiveItems,
-      openDocEditor,
-      setIsUpdatingRowItem,
-      gallerySelected,
+export default inject(({ filesStore, filesActionsStore, uploadDataStore }) => {
+  const { setIsLoading, addActiveItems, updateFile, renameFolder } = filesStore;
 
-      updateFile,
-      renameFolder,
-    } = filesStore;
+  const { editCompleteAction } = filesActionsStore;
 
-    const { editCompleteAction } = filesActionsStore;
+  const { clearActiveOperations } = uploadDataStore;
 
-    const { clearActiveOperations, fileCopyAs } = uploadDataStore;
+  return {
+    setIsLoading,
+    addActiveItems,
+    updateFile,
+    renameFolder,
 
-    const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
+    editCompleteAction,
 
-    const { id: parentId } = selectedFolderStore;
-
-    const { replaceFileStream, setEncryptionAccess } = auth;
-
-    const { isDesktopClient } = auth.settingsStore;
-
-    const {
-      setConvertPasswordDialogVisible,
-      setConvertItem,
-      setFormCreationInfo,
-    } = dialogsStore;
-
-    return {
-      setIsLoading,
-      createFile,
-      createFolder,
-      addActiveItems,
-      openDocEditor,
-      setIsUpdatingRowItem,
-      gallerySelected,
-
-      updateFile,
-      renameFolder,
-
-      parentId,
-
-      isDesktop: isDesktopClient,
-      isPrivacy: isPrivacyFolder,
-      isTrashFolder: isRecycleBinFolder,
-      editCompleteAction,
-
-      clearActiveOperations,
-      fileCopyAs,
-
-      setConvertPasswordDialogVisible,
-      setConvertItem,
-      setFormCreationInfo,
-
-      replaceFileStream,
-      setEncryptionAccess,
-    };
-  }
-)(observer(RenameEvent));
+    clearActiveOperations,
+  };
+})(observer(RenameEvent));

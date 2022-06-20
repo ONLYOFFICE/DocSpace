@@ -43,8 +43,6 @@ const Dialog = ({ title, startValue, visible, onSave, onCancel, onClose }) => {
     e.target.select();
   }, []);
 
-  const onBlur = React.useCallback((e) => {}, []);
-
   const onSaveAction = React.useCallback(
     (e) => {
       setIsDisabled(true);
@@ -76,7 +74,6 @@ const Dialog = ({ title, startValue, visible, onSave, onCancel, onClose }) => {
           tabIndex={1}
           onChange={onChange}
           onFocus={onFocus}
-          onBlur={onBlur}
           isDisabled={isDisabled}
         />
       </ModalDialog.Body>

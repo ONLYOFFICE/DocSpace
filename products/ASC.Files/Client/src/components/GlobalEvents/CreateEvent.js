@@ -41,7 +41,6 @@ const CreateEvent = ({
   fileCopyAs,
 
   setConvertPasswordDialogVisible,
-  setConvertItem,
   setFormCreationInfo,
 
   replaceFileStream,
@@ -68,14 +67,6 @@ const CreateEvent = ({
     setVisible(true);
   }, [extension, title, fromTemplate]);
 
-  const completeAction = (id, item) => {
-    const isCancel =
-      (id.currentTarget && id.currentTarget.dataset.action === "cancel") ||
-      id.keyCode === 27;
-
-    editCompleteAction(id, item, isCancel, type);
-  };
-
   const onSave = (e, value, open = true) => {
     let item;
     let createdFileId, createdFolderId;
@@ -85,9 +76,6 @@ const CreateEvent = ({
     setIsLoading(true);
 
     const newValue = value;
-
-    // delete it later
-    // const itemId = e.currentTarget.dataset.itemid;
 
     if (value.trim() === "") {
       newValue =
@@ -113,7 +101,7 @@ const CreateEvent = ({
           createdFolderId = folder.id;
           addActiveItems(null, [folder.id]);
         })
-        .then(() => completeAction(id, item))
+        .then(() => editCompleteAction(id, item, false, type))
         .catch((e) => toastr.error(e))
         .finally(() => {
           const folderIds = [+id];
@@ -133,7 +121,7 @@ const CreateEvent = ({
 
             open && openDocEditor(file.id, file.providerKey, tab);
           })
-          .then(() => completeAction(id, item))
+          .then(() => editCompleteAction(id, item, false, type))
           .catch((err) => {
             console.log("err", err);
             const isPasswordError = new RegExp("password");
@@ -188,7 +176,7 @@ const CreateEvent = ({
 
             return open && openDocEditor(file.id, file.providerKey, tab);
           })
-          .then(() => completeAction(id, item))
+          .then(() => editCompleteAction(id, item, false, type))
           .catch((e) => toastr.error(e))
           .finally(() => {
             const fileIds = [+id];
@@ -223,7 +211,7 @@ const CreateEvent = ({
 
             return open && openDocEditor(file.id, file.providerKey, tab);
           })
-          .then(() => completeAction(id, item))
+          .then(() => editCompleteAction(id, item, false, type))
           .catch((e) => toastr.error(e))
           .finally(() => {
             const fileIds = [+id];
@@ -290,7 +278,7 @@ export default inject(
 
     const {
       setConvertPasswordDialogVisible,
-      setConvertItem,
+
       setFormCreationInfo,
     } = dialogsStore;
 
@@ -314,7 +302,6 @@ export default inject(
       fileCopyAs,
 
       setConvertPasswordDialogVisible,
-      setConvertItem,
       setFormCreationInfo,
 
       replaceFileStream,
