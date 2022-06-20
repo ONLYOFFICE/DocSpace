@@ -51,14 +51,6 @@ const DownloadContent = (props) => {
       });
     }
 
-    formats.push({
-      key: "custom",
-      label: t("CustomFormat"),
-      onClick: onSelectFormat,
-      "data-format": t("CustomFormat"),
-      "data-type": type,
-    });
-
     return formats;
   };
 
