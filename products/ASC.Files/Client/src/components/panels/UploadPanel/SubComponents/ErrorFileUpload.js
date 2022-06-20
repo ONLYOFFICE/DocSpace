@@ -26,7 +26,7 @@ const ErrorFileUpload = ({ t, item, onTextClick, showPasswordInput }) => (
         )}
         effect="float"
         place="left"
-        maxWidth={320}
+        maxWidth="320"
         color="#f8f7bf"
       />
       {item.needPassword && (

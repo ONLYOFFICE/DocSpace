@@ -605,10 +605,6 @@ public class RackspaceCloudStorage : BaseStorage
     {
         throw new NotImplementedException();
     }
-    public override Task<string> GetUploadedUrlAsync(string domain, string directoryPath)
-    {
-        throw new NotImplementedException();
-    }
 
     public override string GetUploadUrl()
     {

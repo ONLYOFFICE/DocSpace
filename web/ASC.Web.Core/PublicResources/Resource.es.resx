@@ -577,17 +577,20 @@
   <data name="ErrorPasswordMessage" xml:space="preserve">
     <value>Contraseña debe contener</value>
   </data>
-  <data name="ErrorPasswordMessageStart" xml:space="preserve">
-    <value>La contraseña debe contener</value>
-  </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>dígitos</value>
+  </data>
+  <data name="ErrorPasswordNoSpaces" xml:space="preserve">
+    <value>no hay espacios</value>
   </data>
   <data name="ErrorPasswordNoSpecialSymbols" xml:space="preserve">
     <value>caracteres especiales</value>
   </data>
   <data name="ErrorPasswordNoUpperCase" xml:space="preserve">
     <value>letras mayúsculas</value>
+  </data>
+  <data name="ErrorPasswordOnlyLatinLetters" xml:space="preserve">
+    <value>solo letras latinas</value>
   </data>
   <data name="ErrorRequestLimitExceeded" xml:space="preserve">
     <value>Límite de solicitudes es excedido</value>
@@ -605,7 +608,7 @@
     <value>Imposible encontrar usuario con el correo electrónico "{0}"</value>
   </data>
   <data name="EuServerRegion" xml:space="preserve">
-    <value>Región UE(Irlanda) </value>
+    <value>Región UE (Frankfurt) </value>
   </data>
   <data name="FileSizeMaxExceed" xml:space="preserve">
     <value>El tamaño de archivo máximo está superado</value>
@@ -664,9 +667,6 @@
   <data name="PersonalFreeSpaceException" xml:space="preserve">
     <value>Cuota de espacio en disco excedida </value>
   </data>
-  <data name="PortalAccessSettingsTariffException" xml:space="preserve">
-    <value>Esta característica se proporciona sólo en portales gratuitos</value>
-  </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Acceso a portal</value>
   </data>
@@ -708,9 +708,6 @@
   </data>
   <data name="SsoSettingsInvalidMapping" xml:space="preserve">
     <value>Cartografía de campos no válida</value>
-  </data>
-  <data name="SuccessfullyPortalRenameMessage" xml:space="preserve">
-    <value>El portal ha sido renombrado con éxito </value>
   </data>
   <data name="SuccessfullySaveGreetingSettingsMessage" xml:space="preserve">
     <value>Los ajustes de bienvenida han sido guardados con éxito</value>

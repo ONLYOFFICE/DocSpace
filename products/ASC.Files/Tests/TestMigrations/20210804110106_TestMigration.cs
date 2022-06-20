@@ -45,8 +45,8 @@ public partial class TestMigration : Migration
 
         migrationBuilder.InsertData(
             table: "core_usersecurity",
-            columns: new[] { "userid", "pwdhash", "pwdhashsha512", "tenant" },
-            values: new object[] { "005bb3ff-7de3-47d2-9b3d-61b9ec8a76a5", "vLFfghR5tNV3K9DKhmwArV+SbjWAcgZZzIDTnJ0JgCo=", "USubvPlB+ogq0Q1trcSupg==", 1 });
+            columns: new[] { "userid", "pwdhash", "tenant" },
+            values: new object[] { "005bb3ff-7de3-47d2-9b3d-61b9ec8a76a5", "vLFfghR5tNV3K9DKhmwArV+SbjWAcgZZzIDTnJ0JgCo=", 1 });
 
         //migrationBuilder.InsertData(
         //    table: "files_folder",

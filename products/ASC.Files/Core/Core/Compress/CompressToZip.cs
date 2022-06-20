@@ -53,9 +53,14 @@ public class CompressToZip : ICompress
     /// The record name is created (the name of a separate file in the archive)
     /// </summary>
     /// <param name="title">File name with extension, this name will have the file in the archive</param>
-    public void CreateEntry(string title)
+    public void CreateEntry(string title, DateTime? lastModification)
     {
         _zipEntry = new ZipEntry(title) { IsUnicodeText = true };
+
+        if (lastModification.HasValue)
+        {
+            _zipEntry.DateTime = lastModification.Value;
+        }
     }
 
     /// <summary>

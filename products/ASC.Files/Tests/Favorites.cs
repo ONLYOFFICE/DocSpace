@@ -27,7 +27,7 @@
 namespace ASC.Files.Tests;
 
 [TestFixture]
-class Favorites : BaseFilesTests
+public partial class BaseFilesTests
 {
     [TestCase(DataTests.SubFolderId, DataTests.FileId)]
     [Category("Favorite")]

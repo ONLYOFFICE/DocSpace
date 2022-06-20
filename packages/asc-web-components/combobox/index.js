@@ -102,6 +102,7 @@ class ComboBox extends React.Component {
       manualWidth,
       displaySelectedOption,
       fixedDirection,
+      withBlur,
     } = this.props;
     const { isOpen, selectedOption } = this.state;
 
@@ -122,9 +123,7 @@ class ComboBox extends React.Component {
       ? 0
       : 1;
 
-    const advancedOptionsLength = advancedOptions
-      ? advancedOptions.props.children.length
-      : 0;
+    const withAdvancedOptions = !!advancedOptions?.props.children;
 
     return (
       <StyledComboBox
@@ -143,7 +142,7 @@ class ComboBox extends React.Component {
           selectedOption={selectedOption}
           withOptions={optionsLength > 0}
           optionsLength={optionsLength}
-          withAdvancedOptions={advancedOptionsLength > 0}
+          withAdvancedOptions={withAdvancedOptions}
           innerContainer={children}
           innerContainerClassName="optionalBlock"
           isOpen={isOpen}
@@ -167,6 +166,7 @@ class ComboBox extends React.Component {
             showDisabledItems={showDisabledItems}
             isDefaultMode={isDefaultMode}
             fixedDirection={fixedDirection}
+            withBlur={withBlur}
           >
             {advancedOptions
               ? advancedOptions

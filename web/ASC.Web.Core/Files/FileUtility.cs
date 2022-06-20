@@ -177,8 +177,8 @@ public class FileUtilityConfiguration
 [Scope]
 public class FileUtility
 {
-    private readonly Lazy<FilesDbContext> LazyFilesDbContext;
-    private FilesDbContext FilesDbContext { get => LazyFilesDbContext.Value; }
+    private readonly Lazy<FilesDbContext> _lazyFilesDbContext;
+    private FilesDbContext FilesDbContext { get => _lazyFilesDbContext.Value; }
 
     public FileUtility(
         FileUtilityConfiguration fileUtilityConfiguration,
@@ -187,7 +187,7 @@ public class FileUtility
     {
         _fileUtilityConfiguration = fileUtilityConfiguration;
         _filesLinkUtility = filesLinkUtility;
-        LazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get("files"));
+        _lazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get("files"));
         CanForcesave = GetCanForcesave();
     }
 
@@ -581,8 +581,8 @@ public class FileUtility
                 ".doc", ".docx", ".docm",
                 ".dot", ".dotx", ".dotm",
                 ".odt", ".fodt", ".ott", ".rtf", ".txt",
-                ".html", ".htm", ".mht",
-                ".pdf", ".djvu", ".fb2", ".epub", ".xps",
+                ".html", ".htm", ".mht", ".xml",
+                ".pdf", ".djvu", ".fb2", ".epub", ".xps",".oxps",
                 ".doct", ".docy",
                 ".gdoc",
                 ".docxf", ".oform"

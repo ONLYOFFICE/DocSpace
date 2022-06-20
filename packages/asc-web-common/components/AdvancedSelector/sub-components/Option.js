@@ -4,7 +4,7 @@ import Avatar from "@appserver/components/avatar";
 import Text from "@appserver/components/text";
 import Checkbox from "@appserver/components/checkbox";
 import Loader from "@appserver/components/loader";
-
+import Loaders from "@appserver/common/components/Loaders";
 const Option = ({
   style,
   isMultiSelect,
@@ -16,7 +16,7 @@ const Option = ({
   onOptionChange,
   onLinkClick,
   isLoader,
-  loadingLabel,
+  countLoaderRows,
 }) => {
   const onOptionChangeAction = React.useCallback(() => {
     onOptionChange && onOptionChange(index, isChecked);
@@ -27,19 +27,9 @@ const Option = ({
   }, [onLinkClick, index]);
 
   return isLoader ? (
-    <div style={style} className="row-option">
-      <div key="loader">
-        <Loader
-          type="oval"
-          size="16px"
-          style={{
-            display: "inline",
-            marginRight: "10px",
-          }}
-        />
-        <Text as="span" noSelect={true}>
-          {loadingLabel}
-        </Text>
+    <div style={style}>
+      <div key="loader" className="option-loader">
+        <Loaders.ListLoader withoutFirstRectangle count={countLoaderRows} />
       </div>
     </div>
   ) : isMultiSelect ? (

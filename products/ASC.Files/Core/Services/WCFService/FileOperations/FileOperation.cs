@@ -231,10 +231,10 @@ abstract class FileOperation<T, TId> : FileOperation where T : FileOperationData
     protected IProviderDao ProviderDao { get; private set; }
     protected ILogger Logger { get; private set; }
     protected CancellationToken CancellationToken { get; private set; }
-    protected List<TId> Folders { get; private set; }
-    protected List<TId> Files { get; private set; }
+    protected internal List<TId> Folders { get; private set; }
+    protected internal List<TId> Files { get; private set; }
 
-    private readonly IServiceProvider _serviceProvider;
+    protected IServiceProvider _serviceProvider;
 
     protected FileOperation(IServiceProvider serviceProvider, T fileOperationData) : base(serviceProvider)
     {

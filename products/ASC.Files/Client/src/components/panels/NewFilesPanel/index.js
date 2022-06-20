@@ -168,7 +168,11 @@ class NewFilesPanel extends React.Component {
           zIndex={zIndex}
           isAside={true}
         />
-        <Aside className="header_aside-panel" visible={visible}>
+        <Aside
+          className="header_aside-panel"
+          visible={visible}
+          onClose={this.onClose}
+        >
           <StyledContent>
             <StyledHeaderContent>
               <Heading

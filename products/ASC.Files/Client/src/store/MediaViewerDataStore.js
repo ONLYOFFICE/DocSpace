@@ -7,6 +7,7 @@ class MediaViewerDataStore {
   id = null;
   visible = false;
   previewFile = null;
+  currentItem = null;
 
   constructor(filesStore, settingsStore) {
     makeAutoObservable(this);
@@ -17,6 +18,8 @@ class MediaViewerDataStore {
   setMediaViewerData = (mediaData) => {
     this.id = mediaData.id;
     this.visible = mediaData.visible;
+
+    if (!mediaData.visible) this.setCurrentItem(null);
   };
 
   setToPreviewFile = (file, visible) => {
@@ -34,6 +37,14 @@ class MediaViewerDataStore {
     this.visible = visible;
   };
 
+  setCurrentItem = (item) => {
+    this.currentItem = item;
+  };
+
+  setCurrentId = (id) => {
+    this.id = id;
+  };
+
   get playlist() {
     const { isMediaOrImage } = this.settingsStore;
     const { files } = this.filesStore;
@@ -41,6 +52,17 @@ class MediaViewerDataStore {
     const filesList = [...files];
     const playlist = [];
     let id = 0;
+
+    if (this.currentItem) {
+      playlist.push({
+        id: id,
+        fileId: this.currentItem.fileId,
+        src: this.currentItem.fileInfo.viewUrl,
+        title: this.currentItem.fileInfo.title,
+      });
+
+      return playlist;
+    }
 
     if (filesList.length > 0) {
       filesList.forEach((file) => {

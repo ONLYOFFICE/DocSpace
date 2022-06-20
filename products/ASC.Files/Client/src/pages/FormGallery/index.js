@@ -4,7 +4,7 @@ import Section from "@appserver/common/components/Section";
 import SectionHeaderContent from "./Header";
 import SectionBodyContent from "./Body";
 import { InfoPanelBodyContent } from "../Home/InfoPanel";
-import InfoPanelHeaderContent from "../Home/InfoPanel/GalleryHeader";
+import InfoPanelHeaderContent from "../Home/InfoPanel/Header";
 
 const FormGallery = () => {
   return (
@@ -19,7 +19,7 @@ const FormGallery = () => {
         <SectionBodyContent />
       </Section.SectionBody>
       <Section.InfoPanelHeader>
-        <InfoPanelHeaderContent />
+        <InfoPanelHeaderContent isGallery />
       </Section.InfoPanelHeader>
       <Section.InfoPanelBody>
         <InfoPanelBodyContent isGallery />

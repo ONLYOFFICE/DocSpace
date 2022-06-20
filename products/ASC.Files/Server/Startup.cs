@@ -70,28 +70,28 @@ public class Startup : BaseStartup
         base.Configure(app, env);
 
         app.MapWhen(
-            context => context.Request.Path.ToString().EndsWith("httphandlers/filehandler.ashx"),
+                context => context.Request.Path.ToString().EndsWith("httphandlers/filehandler.ashx", StringComparison.OrdinalIgnoreCase),
             appBranch =>
             {
                 appBranch.UseFileHandler();
             });
 
         app.MapWhen(
-            context => context.Request.Path.ToString().EndsWith("ChunkedUploader.ashx"),
+                context => context.Request.Path.ToString().EndsWith("ChunkedUploader.ashx", StringComparison.OrdinalIgnoreCase),
             appBranch =>
             {
                 appBranch.UseChunkedUploaderHandler();
             });
 
         app.MapWhen(
-            context => context.Request.Path.ToString().EndsWith("ThirdPartyAppHandler.ashx"),
+                context => context.Request.Path.ToString().EndsWith("ThirdPartyApp", StringComparison.OrdinalIgnoreCase),
             appBranch =>
             {
                 appBranch.UseThirdPartyAppHandler();
             });
 
         app.MapWhen(
-            context => context.Request.Path.ToString().EndsWith("DocuSignHandler.ashx"),
+                context => context.Request.Path.ToString().EndsWith("httphandlers/DocuSignHandler.ashx", StringComparison.OrdinalIgnoreCase),
             appBranch =>
             {
                 appBranch.UseDocuSignHandler();

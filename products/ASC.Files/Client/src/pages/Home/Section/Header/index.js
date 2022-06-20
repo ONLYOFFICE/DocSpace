@@ -4,40 +4,17 @@ import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
 import toastr from "studio/toastr";
 import Loaders from "@appserver/common/components/Loaders";
-import Headline from "@appserver/common/components/Headline";
-import { FilterType, FileAction } from "@appserver/common/constants";
+import { FileAction } from "@appserver/common/constants";
 import { withTranslation } from "react-i18next";
-import { isMobile, isMobileOnly } from "react-device-detect";
-import ContextMenuButton from "@appserver/components/context-menu-button";
+import { isMobile } from "react-device-detect";
 import DropDownItem from "@appserver/components/drop-down-item";
-import IconButton from "@appserver/components/icon-button";
-import { tablet, desktop, mobile } from "@appserver/components/utils/device";
+import { tablet } from "@appserver/components/utils/device";
 import { Consumer } from "@appserver/components/utils/context";
 import { inject, observer } from "mobx-react";
 import TableGroupMenu from "@appserver/components/table-container/TableGroupMenu";
 import Navigation from "@appserver/common/components/Navigation";
 
 const StyledContainer = styled.div`
-  /* padding: 0 0 15px;
-
-  @media ${tablet} {
-    padding: 0 0 17px;
-  }
-
-  ${isMobile &&
-  css`
-    padding: 0 0 17px;
-  `}
-
-  @media ${mobile} {
-    padding: 0 0 13px;
-  }
-
-  ${isMobileOnly &&
-  css`
-    padding: 0 0 13px;
-  `} */
-
   .table-container_group-menu {
     ${(props) =>
       props.viewAs === "table"
@@ -56,12 +33,6 @@ const StyledContainer = styled.div`
     }
 
     ${isMobile &&
-    css`
-      margin: 0 -16px;
-      width: calc(100% + 32px);
-    `}
-
-    ${isMobileOnly &&
     css`
       margin: 0 -16px;
       width: calc(100% + 32px);
@@ -108,37 +79,44 @@ class SectionHeaderContent extends React.Component {
         key: "new-document",
         label: t("NewDocument"),
         onClick: this.createDocument,
+        icon: "images/actions.documents.react.svg",
       },
       {
         key: "new-spreadsheet",
         label: t("NewSpreadsheet"),
         onClick: this.createSpreadsheet,
+        icon: "images/spreadsheet.react.svg",
       },
       {
         key: "new-presentation",
         label: t("NewPresentation"),
         onClick: this.createPresentation,
+        icon: "images/actions.presentation.react.svg",
       },
       {
         label: t("Translations:NewForm"),
+        icon: "images/form.react.svg",
         onClick: this.createForm,
       },
       {
         label: t("Translations:NewFormFile"),
         onClick: this.createFormFromFile,
         disabled: isPrivacyFolder,
+        icon: "images/form.file.react.svg",
       },
       {
         key: "new-folder",
         label: t("NewFolder"),
         onClick: this.createFolder,
+        icon: "images/catalog.folder.react.svg",
       },
       { key: "separator", isSeparator: true },
       {
-        key: "make-invitation-link",
+        key: "upload-to-folder",
         label: t("UploadToFolder"),
         onClick: this.uploadToFolder,
         disabled: true,
+        icon: "images/actions.upload.react.svg",
       },
     ];
   };
@@ -213,10 +191,17 @@ class SectionHeaderContent extends React.Component {
     }
   };
 
-  onEmptyTrashAction = () => this.props.setEmptyTrashDialogVisible(true);
+  onEmptyTrashAction = () => {
+    const { activeFiles, activeFolders } = this.props;
+    const isExistActiveItems = [...activeFiles, ...activeFolders].length > 0;
+
+    if (isExistActiveItems) return;
+
+    this.props.setEmptyTrashDialogVisible(true);
+  };
 
   getContextOptionsFolder = () => {
-    const { t, personal } = this.props;
+    const { t, toggleInfoPanel, personal } = this.props;
 
     return [
       {
@@ -224,12 +209,21 @@ class SectionHeaderContent extends React.Component {
         label: t("SharingSettings"),
         onClick: this.onOpenSharingPanel,
         disabled: personal ? true : false,
+        icon: "/static/images/share.react.svg",
       },
       {
         key: "link-portal-users",
         label: t("LinkForPortalUsers"),
         onClick: this.createLinkForPortalUsers,
         disabled: personal ? true : false,
+        icon: "/static/images/invitation.link.react.svg",
+      },
+      {
+        key: "show-info",
+        label: t("InfoPanel:ViewDetails"),
+        onClick: toggleInfoPanel,
+        disabled: false,
+        icon: "/static/images/info.react.svg",
       },
       { key: "separator-2", isSeparator: true },
       {
@@ -237,30 +231,35 @@ class SectionHeaderContent extends React.Component {
         label: t("MoveTo"),
         onClick: this.onMoveAction,
         disabled: false,
+        icon: "images/move.react.svg",
       },
       {
         key: "copy",
         label: t("Translations:Copy"),
         onClick: this.onCopyAction,
         disabled: false,
+        icon: "/static/images/copy.react.svg",
       },
       {
         key: "download",
         label: t("Common:Download"),
         onClick: this.downloadAction,
         disabled: false,
+        icon: "images/download.react.svg",
       },
       {
         key: "rename",
         label: t("Rename"),
         onClick: this.renameAction,
         disabled: true,
+        icon: "images/rename.react.svg",
       },
       {
         key: "delete",
         label: t("Common:Delete"),
         onClick: this.onDeleteAction,
         disabled: false,
+        icon: "/static/images/catalog.trash.react.svg",
       },
     ];
   };
@@ -333,6 +332,7 @@ class SectionHeaderContent extends React.Component {
       isHeaderChecked,
       isHeaderIndeterminate,
       showText,
+      toggleInfoPanel,
     } = this.props;
     const menuItems = this.getMenuItems();
     const isLoading = !title || !tReady;
@@ -346,7 +346,6 @@ class SectionHeaderContent extends React.Component {
             isRootFolder={isRootFolder}
             canCreate={canCreate}
             isRecycleBinFolder={isRecycleBinFolder}
-            title={title}
             isTitle={title}
             isDesktop={isDesktop}
             isTabletView={isTabletView}
@@ -360,8 +359,8 @@ class SectionHeaderContent extends React.Component {
                 isChecked={isHeaderChecked}
                 isIndeterminate={isHeaderIndeterminate}
                 headerMenu={headerMenu}
-                isInfoPanelVisible={this.props.isInfoPanelVisible}
-                toggleInfoPanel={this.props.toggleInfoPanel}
+                isInfoPanelVisible={isInfoPanelVisible}
+                toggleInfoPanel={toggleInfoPanel}
               />
             ) : (
               <div className="header-container">
@@ -388,8 +387,11 @@ class SectionHeaderContent extends React.Component {
                     isEmptyFilesList={isEmptyFilesList}
                     clearTrash={this.onEmptyTrashAction}
                     onBackToParentFolder={this.onBackToParentFolder}
-                    toggleInfoPanel={this.props.toggleInfoPanel}
-                    isInfoPanelVisible={this.props.isInfoPanelVisible}
+                    toggleInfoPanel={toggleInfoPanel}
+                    isInfoPanelVisible={isInfoPanelVisible}
+                    titles={{
+                      trash: t("EmptyRecycleBin"),
+                    }}
                   />
                 )}
               </div>
@@ -410,7 +412,6 @@ export default inject(
     treeFoldersStore,
     filesActionsStore,
     settingsStore,
-    infoPanelStore,
   }) => {
     const {
       setSelected,
@@ -429,6 +430,8 @@ export default inject(
       viewAs,
       setIsLoading,
       fetchFiles,
+      activeFiles,
+      activeFolders,
     } = filesStore;
     const { setAction } = fileActionStore;
     const {
@@ -449,7 +452,7 @@ export default inject(
       backToParentFolder,
     } = filesActionsStore;
 
-    const { toggleIsVisible, isVisible } = infoPanelStore;
+    const { toggleIsVisible, isVisible } = auth.infoPanelStore;
 
     return {
       showText: auth.settingsStore.showText,
@@ -497,10 +500,13 @@ export default inject(
 
       setIsLoading,
       fetchFiles,
+
+      activeFiles,
+      activeFolders,
     };
   }
 )(
-  withTranslation(["Home", "Common", "Translations"])(
+  withTranslation(["Home", "Common", "Translations", "InfoPanel"])(
     withRouter(observer(SectionHeaderContent))
   )
 );

@@ -41,12 +41,11 @@ const bannerHOC = (props) => {
   };
 
   useEffect(() => {
-    setTimeout(() => updateBanner(), 10000);
+    const updateTimeout = setTimeout(() => updateBanner(), 1000);
     const updateInterval = setInterval(updateBanner, ADS_TIMEOUT);
     return () => {
-      if (updateInterval) {
-        clearInterval(updateInterval);
-      }
+      clearTimeout(updateTimeout);
+      clearInterval(updateInterval);
     };
   }, []);
 

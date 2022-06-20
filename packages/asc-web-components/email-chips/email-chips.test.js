@@ -7,6 +7,7 @@ const baseProps = {
   clearButtonLabel: "Clear list ",
   existEmailText: "This email address has already been entered",
   invalidEmailText: "Invalid email",
+  onChange: () => {},
 };
 
 describe("<InputWithChips />", () => {

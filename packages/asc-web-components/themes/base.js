@@ -42,6 +42,7 @@ const {
   hoverWarning,
   darkBlack,
   silver,
+  lightHover,
   strongBlue,
   lightGrayishStrongBlue,
   darkRed,
@@ -383,14 +384,14 @@ const Base = {
     background: grayLight,
     activeBackground: grayLightMid,
 
-    border: `1px solid ${globalColors.grayLightMid}`,
+    border: `none`,
     boxSizing: "border-box",
     borderRadius: "3px",
-    height: " 34px",
-    width: "34px",
+    height: " 32px",
+    width: "32px",
     padding: "9px",
-    color: "#979797",
-    hoverColor: black,
+    color: black,
+    hoverColor: darkBlack,
   },
 
   saveCancelButtons: {
@@ -574,13 +575,15 @@ const Base = {
     margin: " 0 auto",
     minHeight: "100%",
 
+    colorDisabledFileIcons: "#f3f4f4",
+
     content: {
       backgroundColor: white,
       modalPadding: "0 12px 12px",
       modalBorderRadius: "6px",
       asidePadding: "0 16px 16px",
       heading: {
-        maxWidth: "500px",
+        maxWidth: "calc(100% - 18px)",
         margin: "0",
         modalLineHeight: "40px",
         asideLineHeight: "56px",
@@ -1072,6 +1075,11 @@ const Base = {
       borderRadius: "50%",
     },
 
+    icon: {
+      background: lightHover,
+      color: grayMain,
+    },
+
     width: {
       min: "32px",
       small: "36px",
@@ -1218,7 +1226,7 @@ const Base = {
   },
 
   backdrop: {
-    backgroundColor: "rgba(6, 22, 38, 0.1)",
+    backgroundColor: "rgba(6, 22, 38, 0.2)",
     unsetBackgroundColor: "unset",
   },
 
@@ -1227,6 +1235,9 @@ const Base = {
   },
 
   treeNode: {
+    background: "#f3f4f4",
+    disableColor: "#A3A9AE",
+
     dragging: {
       draggable: {
         background: lightCumulus,
@@ -1599,8 +1610,8 @@ const Base = {
     disableFillColor: grayLightMid,
     disableFillColorOff: grayLightMid,
 
-    borderColor: blueMain,
-    borderColorOff: gray,
+    borderColor: "unset",
+    borderColorOff: "unset",
 
     disableBorderColor: grayLightMid,
     disableBorderColorOff: grayLightMid,
@@ -1877,7 +1888,7 @@ const Base = {
       marginLeft: "8px",
       marginRight: "-2px",
       tablet: {
-        width: "48px",
+        width: "44px",
         height: "44px",
         marginRight: "-16px",
       },
@@ -1951,6 +1962,7 @@ const Base = {
     sectionHeaderToggleBgActive: grayLight,
 
     backgroundColor: white,
+    blurColor: "rgba(6, 22, 38, 0.2)",
     borderColor: grayLightMid,
     thumbnailBorderColor: grayLightMid,
     textColor: black,
@@ -2060,7 +2072,7 @@ const Base = {
 
     groupMenu: {
       background: white,
-      borderBottom: "none",
+      borderBottom: "1px solid transparent",
       borderRight: `1px solid ${grayMid}`,
       boxShadow: "0px 5px 20px rgba(4, 15, 27, 7%)",
     },
@@ -2070,13 +2082,15 @@ const Base = {
       borderBottom: `1px solid ${grayLightMid}`,
       textColor: gray,
       activeTextColor: grayMain,
-      hoverTextColor: grayMaxLight,
+      hoverTextColor: grayMain,
 
       iconColor: gray,
       activeIconColor: grayMain,
       hoverIconColor: grayMain,
 
       borderImageSource: `linear-gradient(to right,${white} 21px,${grayLightMid} 21px,${grayLightMid} calc(100% - 20px),${white} calc(100% - 20px))`,
+      lengthenBorderImageSource: `linear-gradient(to right, ${grayLightMid}, ${grayLightMid})`,
+      hotkeyBorderBottom: `1px solid ${globalColors.blueMain}`,
     },
 
     tableCell: {
@@ -2222,6 +2236,12 @@ const Base = {
 
   filesThirdPartyDialog: {
     border: "1px solid #d1d1d1",
+  },
+
+  connectedClouds: {
+    color: "#657077",
+    borderBottom: `1px solid #eceef1`,
+    borderRight: `1px solid #d0d5da`,
   },
 
   filesModalDialog: {
@@ -2410,6 +2430,7 @@ const Base = {
   newContextMenu: {
     background: white,
     borderRadius: "6px",
+    mobileBorderRadius: "6px 6px 0 0",
     boxShadow: "0px 12px 40px rgba(4, 15, 27, 0.12)",
     padding: "6px 0px",
     border: "none",
@@ -2644,6 +2665,11 @@ const Base = {
         separatorBorder: `1px solid ${grayLightMid}`,
         linkColor: link,
       },
+
+      backup: {
+        rectangleBackgroundColor: "#f8f9f9",
+        separatorBorder: "1px solid #eceef1",
+      },
     },
 
     wizard: {
@@ -2676,6 +2702,9 @@ const Base = {
 
   submenu: {
     lineColor: "#eceef1",
+    backgroundColor: white,
+    textColor: "#316DAA",
+    bottomLineColor: "#316DAA",
   },
 };
 

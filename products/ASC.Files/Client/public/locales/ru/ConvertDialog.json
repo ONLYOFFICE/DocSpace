@@ -3,8 +3,8 @@
   "ConversionMessage": "Все документы, которые Вы загружаете, будут сконвертированы в соответствующий формат Office Open XML (docx, xlsx или pptx) для быстрого редактирования.",
   "ConversionTitle": "Загрузка документа",
   "ConvertAndOpenTitle": "Конвертация и открытие документа",
-  "HideMessage": "Больше не показывать это сообщение",
-  "SaveOriginalFormatMessage": "Сохранить также копию файла в исходном формате",
   "ConvertedFileDestination": "Копия файла будет создана в папке <strong>{{folderTitle}}</strong>",
-  "InfoCreateFileIn": "Новый файл '{{fileTitle}}' создан в '{{folderTitle}}'"
+  "HideMessage": "Больше не показывать это сообщение",
+  "InfoCreateFileIn": "Новый файл '{{fileTitle}}' создан в '{{folderTitle}}'",
+  "SaveOriginalFormatMessage": "Сохранить также копию файла в исходном формате"
 }

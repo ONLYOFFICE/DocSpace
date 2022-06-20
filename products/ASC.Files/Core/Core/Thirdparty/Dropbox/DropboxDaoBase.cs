@@ -218,17 +218,16 @@ internal abstract class DropboxDaoBase : ThirdPartyProviderDao<DropboxProviderIn
         }
     }
 
-    protected ValueTask<FileMetadata> GetDropboxFileAsync(object fileId)
+    protected Task<FileMetadata> GetDropboxFileAsync(object fileId)
     {
         var dropboxFilePath = MakeDropboxPath(fileId);
         try
         {
-            var file = ProviderInfo.GetDropboxFileAsync(dropboxFilePath);
-            return file;
+            return ProviderInfo.GetDropboxFileAsync(dropboxFilePath);
         }
         catch (Exception ex)
         {
-            return ValueTask.FromResult<FileMetadata>(new ErrorFile(ex, dropboxFilePath));
+            return Task.FromResult<FileMetadata>(new ErrorFile(ex, dropboxFilePath));
         }
     }
 

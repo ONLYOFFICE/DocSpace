@@ -29,6 +29,9 @@ const FilesMediaViewer = (props) => {
     setExpandedKeys,
     setToPreviewFile,
     expandedKeys,
+    setScrollToItem,
+    setCurrentId,
+    setBufferSelection,
   } = props;
 
   useEffect(() => {
@@ -42,6 +45,8 @@ const FilesMediaViewer = (props) => {
 
   useEffect(() => {
     window.addEventListener("popstate", onButtonBackHandler);
+
+    return () => window.removeEventListener("popstate", onButtonBackHandler);
   }, [onButtonBackHandler]);
 
   const onButtonBackHandler = () => {
@@ -56,6 +61,7 @@ const FilesMediaViewer = (props) => {
 
   const onChangeUrl = (id) => {
     const url = "/products/files/#preview/" + id;
+    setCurrentId(id);
     window.history.pushState(null, null, url);
   };
 
@@ -119,9 +125,12 @@ const FilesMediaViewer = (props) => {
         .finally(() => {
           setIsLoading(false);
           setFirstLoad(false);
+          setScrollToItem({ id: previewFile.id, type: "file" });
+          setBufferSelection(previewFile);
           setToPreviewFile(null);
         });
     }
+
     setMediaViewerData({ visible: false, id: null });
 
     if (e) {
@@ -130,6 +139,11 @@ const FilesMediaViewer = (props) => {
       if (!url) {
         return;
       }
+
+      setScrollToItem({ id: currentMediaFileId, type: "file" });
+      const targetFile = files.find((item) => item.id === currentMediaFileId);
+      if (targetFile) setBufferSelection(targetFile);
+
       window.history.replaceState(null, null, url);
     }
   };
@@ -174,6 +188,8 @@ export default inject(
       fetchFiles,
       setIsLoading,
       setFirstLoad,
+      setScrollToItem,
+      setBufferSelection,
     } = filesStore;
     const {
       visible,
@@ -182,6 +198,7 @@ export default inject(
       playlist,
       previewFile,
       setToPreviewFile,
+      setCurrentId,
     } = mediaViewerDataStore;
     const { deleteItemAction } = filesActionsStore;
     const { extsVideo, extsImage } = settingsStore;
@@ -206,6 +223,9 @@ export default inject(
       setExpandedKeys,
       setToPreviewFile,
       expandedKeys,
+      setScrollToItem,
+      setCurrentId,
+      setBufferSelection,
     };
   }
 )(

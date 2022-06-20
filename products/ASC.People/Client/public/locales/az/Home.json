@@ -1,4 +1,4 @@
-﻿{
+{
   "Administrator": "İnzibatçı",
   "ChangeToGuest": "{{guestCaption}} adına dəyişdirmək",
   "ChangeToUser": "{{userCaption}} adına dəyişdirmək",
@@ -6,7 +6,6 @@
   "EmptyGroupTitle": "Burada qrup üzvləri hələ ki mövcud deyil",
   "LblInviteAgain": "Bir daha dəvət et",
   "LblInvited": "Dəvət olundu",
-  "LblOther": "Digər",
   "LblSendEmail": "Email göndərmək",
   "LblSendMessage": "Mesaj göndər",
   "LblSetActive": "Aktiv kimi təyin et",
@@ -15,6 +14,7 @@
   "MessageEmailActivationInstuctionsSentOnEmail": "<1>{{email}}</1> elektron poçtuna aktivləşdirmə haqqında məlumat göndərilmişdir",
   "NotFoundDescription": "Başqa süzgəci yoxlayın və ya bütün üzvlərin görünməsi üçün süzgəci təmizləyin.",
   "NotFoundTitle": "Qrup üzvləri tapılmadı",
+  "ReassignmentData": "Məlumatların yenidən təyini",
   "SuccessfullyRemovedGroup": "Qrup müvəffəqiyyətlə silindi",
   "UserStatus": "Status"
 }

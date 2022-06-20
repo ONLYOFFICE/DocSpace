@@ -1,16 +1,19 @@
 {
   "name": "@appserver/editor",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "private": true,
   "homepage": "/products/files/doceditor",
   "scripts": {
     "build": "webpack --mode production",
+    "build:personal": "webpack --mode production --env personal=true",
     "build:test": "webpack --env minimize=false --mode production",
     "build:test.translation": "webpack --env minimize=false hideText=true --mode production",
+    "build:test.translation:personal": "webpack --env minimize=false hideText=true personal=true --mode production",
     "clean": "shx rm -rf dist",
     "deploy": "shx --silent mkdir -p ../../build/deploy/products/ASC.Files/editor && shx cp -r dist/* ../../build/deploy/products/ASC.Files/editor",
     "serve": "serve dist -p 5013",
     "start": "webpack-cli serve",
+    "start:personal": "webpack-cli serve --env personal=true",
     "start-prod": "webpack --mode production && serve dist -p 5013"
   },
   "devDependencies": {

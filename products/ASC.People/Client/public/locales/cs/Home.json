@@ -1,4 +1,4 @@
-﻿{
+{
   "Administrator": "Administrátor",
   "ChangeToGuest": "Změnit na {{guestCaption}}",
   "ChangeToUser": "Změnit {{userCaption}}",
@@ -6,7 +6,6 @@
   "EmptyGroupTitle": "Zatím zde nejsou žádní členové týmu",
   "LblInviteAgain": "Pozvat znovu",
   "LblInvited": "Pozváni",
-  "LblOther": "Ostatní",
   "LblSendEmail": "Odeslat email",
   "LblSendMessage": "Odeslat zprávu",
   "LblSetActive": "Nastavit jako aktivní",
@@ -15,6 +14,7 @@
   "MessageEmailActivationInstuctionsSentOnEmail": "Pokyny k aktivaci e-mailu byly zaslány na e-mailovou adresu <1>{{email}}</1>",
   "NotFoundDescription": "Zkuste použít jiný filtr nebo jej vymažte, aby se zobrazily všechny osoby v sekci.",
   "NotFoundTitle": "Nenalezeni žádní členové týmu",
+  "ReassignmentData": "Změna přiřazení dat",
   "SuccessfullyRemovedGroup": "Skupina byla úspěšně odstraněna",
   "UserStatus": "Stav"
 }
