@@ -310,17 +310,21 @@ class ProfileInfo extends React.PureComponent {
                     />
                   </IconButtonWrapper>
                 )}
-                <Link
-                  className="email-link"
-                  type="page"
-                  fontSize="13px"
-                  isHovered={true}
-                  title={email}
-                  data-email={email}
-                  onClick={this.onEmailClick}
-                >
-                  {email}
-                </Link>
+                {isSelf ? (
+                  <InfoItemValue>{email}</InfoItemValue>
+                ) : (
+                  <Link
+                    className="email-link"
+                    type="page"
+                    fontSize="13px"
+                    isHovered={true}
+                    title={email}
+                    data-email={email}
+                    onClick={this.onEmailClick}
+                  >
+                    {email}
+                  </Link>
+                )}
               </>
             </InfoItemValue>
           </InfoItem>
