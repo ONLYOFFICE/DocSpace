@@ -45,6 +45,7 @@ const ThirdPartyServices = lazy(() =>
 const DataManagementSettings = lazy(() =>
   import("./categories/data-management/backup")
 );
+
 const AutomaticBackup = lazy(() =>
   import("./categories/data-management/backup/auto-backup")
 );
@@ -129,6 +130,11 @@ const DATA_MANAGEMENT_URL = combineUrl(
   "/datamanagement/backup"
 );
 
+const RESTORE_DATA_MANAGEMENT_URL = combineUrl(
+  PROXY_BASE_URL,
+  "/datamanagement/restore-backup"
+);
+
 const ERROR_404_URL = combineUrl(AppServerConfig.proxyURL, "/error/404");
 
 const Settings = (props) => {
@@ -186,16 +192,15 @@ const Settings = (props) => {
 
           <Route exact path={THIRD_PARTY_URL} component={ThirdPartyServices} />
           <Route
-            exact
             path={DATA_MANAGEMENT_URL}
             component={DataManagementSettings}
           />
-
-          <Redirect
+          <Route path={RESTORE_DATA_MANAGEMENT_URL} component={RestoreBackup} />
+          {/* <Redirect
             to={{
               pathname: ERROR_404_URL,
             }}
-          />
+          /> */}
         </Switch>
       </Suspense>
     </Layout>
