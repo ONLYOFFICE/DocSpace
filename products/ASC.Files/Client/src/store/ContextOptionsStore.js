@@ -248,6 +248,7 @@ class ContextOptionsStore {
 
   onClickRename = (item) => {
     const event = new Event(Events.RENAME);
+
     event.item = item;
 
     window.dispatchEvent(event);

@@ -26,16 +26,18 @@ const GlobalEvents = () => {
   });
 
   const onCreate = React.useCallback((e) => {
-    const visible = e.id ? true : false;
+    const { payload } = e;
+
+    const visible = payload.id ? true : false;
 
     setCreateDialogProps({
       visible: visible,
-      id: e.id,
+      id: payload.id,
       type: FileAction.Create,
-      extension: e.extension,
-      title: e.title || null,
-      templateId: e.templateId || null,
-      fromTemplate: e.fromTemplate || null,
+      extension: payload.extension,
+      title: payload.title || null,
+      templateId: payload.templateId || null,
+      fromTemplate: payload.fromTemplate || null,
       onClose: () => {
         setCreateDialogProps({
           visible: false,

@@ -28,8 +28,12 @@ const EmptyContainer = ({
     const format = e.currentTarget.dataset.format || null;
 
     const event = new Event(Events.CREATE);
-    event.extension = format;
-    event.id = -1;
+
+    const payload = {
+      extension: format,
+      id: -1,
+    };
+    event.payload = payload;
 
     window.dispatchEvent(event);
   };

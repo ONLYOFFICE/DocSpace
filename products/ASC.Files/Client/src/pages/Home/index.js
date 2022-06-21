@@ -168,10 +168,15 @@ class PureHome extends React.Component {
           setIsUpdatingRowItem(false);
 
           const event = new Event(Events.CREATE);
-          event.extension = "docxf";
-          event.id = -1;
-          event.fromTemplate = true;
-          event.title = gallerySelected.attributes.name_form;
+
+          const payload = {
+            extension: "docxf",
+            id: -1,
+            fromTemplate: true,
+            title: gallerySelected.attributes.name_form,
+          };
+
+          event.payload = payload;
 
           window.dispatchEvent(event);
         }

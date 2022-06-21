@@ -209,10 +209,15 @@ class DialogsStore {
     newTitle = newTitle.substring(0, newTitle.lastIndexOf("."));
 
     const event = new Event(Events.CREATE);
-    event.extension = "docxf";
-    event.id = -1;
-    event.title = `${newTitle}.docxf`;
-    event.templateId = fileInfo.id;
+
+    const payload = {
+      extension: "docxf",
+      id: -1,
+      title: `${newTitle}.docxf`,
+      templateId: fileInfo.id,
+    };
+
+    event.payload = payload;
 
     window.dispatchEvent(event);
   };

@@ -57,8 +57,13 @@ const withHotkeys = (Component) => {
 
     const onCreate = (extension) => {
       const event = new Event(Events.CREATE);
-      event.extension = extension;
-      event.id = -1;
+
+      const payload = {
+        extension: format,
+        id: -1,
+      };
+
+      event.payload = payload;
 
       window.dispatchEvent(event);
     };

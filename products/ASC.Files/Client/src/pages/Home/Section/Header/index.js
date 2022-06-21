@@ -49,8 +49,13 @@ class SectionHeaderContent extends React.Component {
 
   onCreate = (format) => {
     const event = new Event(Events.CREATE);
-    event.extension = format;
-    event.id = -1;
+
+    const payload = {
+      extension: format,
+      id: -1,
+    };
+
+    event.payload = payload;
 
     window.dispatchEvent(event);
   };

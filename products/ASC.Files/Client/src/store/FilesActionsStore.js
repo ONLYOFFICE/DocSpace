@@ -456,24 +456,6 @@ class FilesActionStore {
         }
       }
 
-      const createEvent = new Event(Events.CREATE);
-      const renameEvent = new Event(Events.RENAME);
-
-      createEvent.id = null;
-      createEvent.extension = null;
-      createEvent.title = "";
-      createEvent.templateId = null;
-      createEvent.fromTemplate = null;
-
-      renameEvent.id = null;
-      renameEvent.extension = null;
-      renameEvent.title = "";
-      renameEvent.templateId = null;
-      renameEvent.fromTemplate = null;
-
-      window.dispatchEvent(createEvent);
-      window.dispatchEvent(renameEvent);
-
       setIsLoading(false);
       type === FileAction.Rename &&
         this.onSelectItem({
