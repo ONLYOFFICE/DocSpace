@@ -373,7 +373,12 @@ class Tile extends React.PureComponent {
 
   onFileClick = (e) => {
     const { onSelect, item, checked, setSelection } = this.props;
-    if (e.detail === 1) {
+
+    if (
+      e.detail === 1 &&
+      !e.target.closest(".badge") &&
+      !e.target.closest(".item-file-name")
+    ) {
       if (e.target.nodeName === "INPUT" || e.target.nodeName === "rect") {
         onSelect && onSelect(!checked, item);
       } else {
