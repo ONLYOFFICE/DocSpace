@@ -2674,6 +2674,10 @@ const Dark = {
       integration: {
         separatorBorder: "1px solid #474747",
         linkColor: "#E06A1B",
+
+        sso: {
+          toggleContentBackground: "#474747",
+        },
       },
 
       backup: {

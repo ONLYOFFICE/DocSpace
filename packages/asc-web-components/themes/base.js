@@ -2664,6 +2664,10 @@ const Base = {
       integration: {
         separatorBorder: `1px solid ${grayLightMid}`,
         linkColor: link,
+
+        sso: {
+          toggleContentBackground: grayLight,
+        },
       },
 
       backup: {
