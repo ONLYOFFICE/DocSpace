@@ -24,37 +24,48 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Data.Backup.EF.Model;
+namespace ASC.Data.Backup.EF.Context;
 
-[Table("backup_schedule")]
-public class BackupSchedule : BaseEntity
+public class MySqlBackupsContext : BackupsContext { }
+public class PostgreSqlBackupsContext : BackupsContext { }
+
+public class BackupsContext : BaseDbContext
 {
-    [Key]
-    [Column("tenant_id")]
-    public int TenantId { get; set; }
+    public DbSet<BackupRecord> Backups { get; set; }
+    public DbSet<BackupSchedule> Schedules { get; set; }
+    public DbSet<DbTenant> Tenants { get; set; }
 
-    [Column("backup_mail")]
-    public bool BackupMail { get; set; }
+    public BackupsContext() { }
 
-    public string Cron { get; set; }
+    public BackupsContext(DbContextOptions<BackupsContext> options)
+        : base(options) { }
 
-    [Column("backups_stored")]
-    public int BackupsStored { get; set; }
-
-    [Column("storage_type")]
-    public BackupStorageType StorageType { get; set; }
-
-    [Column("storage_base_path")]
-    public string StorageBasePath { get; set; }
-
-    [Column("last_backup_time")]
-    public DateTime LastBackupTime { get; set; }
-
-    [Column("storage_params")]
-    public string StorageParams { get; set; }
-
-    public override object[] GetKeys()
+    protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
     {
-        return new object[] { TenantId };
+        get
+        {
+            return new Dictionary<Provider, Func<BaseDbContext>>()
+            {
+                { Provider.MySql, () => new MySqlBackupsContext() } ,
+                { Provider.PostgreSql, () => new PostgreSqlBackupsContext() } ,
+            };
+        }
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        ModelBuilderWrapper
+            .From(modelBuilder, _provider)
+            .AddDbTenant()
+            .AddBackupSchedule()
+            .AddBackupRecord();
+    }
+}
+
+public static class BackupsContextExtension
+{
+    public static DIHelper AddBackupsContext(this DIHelper services)
+    {
+        return services.AddDbContextManagerService<BackupsContext>();
     }
 }
