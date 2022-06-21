@@ -381,7 +381,7 @@ class PureHome extends React.Component {
           </Section.SectionBody>
 
           <Section.InfoPanelHeader>
-            <InfoPanelHeaderContent />
+            <InfoPanelHeaderContent isRoom />
           </Section.InfoPanelHeader>
 
           <Section.InfoPanelBody>

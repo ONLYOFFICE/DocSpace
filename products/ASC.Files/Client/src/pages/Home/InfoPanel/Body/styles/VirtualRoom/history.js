@@ -47,7 +47,6 @@ const StyledHistoryBlock = styled.div`
       .name {
         font-weight: 600;
         font-size: 14px;
-        color: #333333;
         text-overflow: ellipsis;
         white-space: nowrap;
         overflow: hidden;
@@ -93,7 +92,7 @@ const StyledHistoryBlock = styled.div`
         display: flex;
         flex-direction: column;
         padding: 8px 0;
-        background: #f8f9f9;
+        background: ${(props) => props.theme.infoPanel.history.fileBlockBg};
         border-radius: 3px;
         .file {
           padding: 4px 16px;
@@ -135,8 +134,6 @@ const StyledHistoryBlock = styled.div`
     }
   }
 `;
-
-const StyledFileAction = styled.div``;
 
 StyledHistoryBlock.defaultProps = { theme: Base };
 

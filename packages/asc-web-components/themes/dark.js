@@ -1977,6 +1977,14 @@ const Dark = {
 
     showAccessUsersTextColor: gray,
     showAccessPanelTextColor: "#E06A1B",
+
+    members: {
+      iconColor: "#E06A1B",
+    },
+
+    history: {
+      fileBlockBg: "#292929",
+    },
   },
 
   filesArticleBody: {

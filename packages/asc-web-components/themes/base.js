@@ -1977,6 +1977,14 @@ const Base = {
 
     showAccessUsersTextColor: gray,
     showAccessPanelTextColor: "#3b72a7",
+
+    members: {
+      iconColor: "#3b72a7",
+    },
+
+    history: {
+      fileBlockBg: "#f8f9f9",
+    },
   },
 
   filesArticleBody: {

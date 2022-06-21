@@ -5,16 +5,32 @@ import { tablet } from "@appserver/components/utils/device";
 const StyledInfoPanelHeader = styled.div`
   width: 100%;
   max-width: 100%;
-  height: 52px;
-  min-height: 52px;
+  height: ${(props) => (props.isRoom ? "85px" : "52px")};
+  min-height: ${(props) => (props.isRoom ? "85px" : "52px")};
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  align-self: center;
-  border-bottom: ${(props) => `1px solid ${props.theme.infoPanel.borderColor}`};
-
-  .header-text {
-    margin-left: 20px;
+  flex-direction: column;
+  border-bottom: ${(props) =>
+    props.isRoom ? "none" : `1px solid ${props.theme.infoPanel.borderColor}`};
+  .main {
+    height: ${(props) => (props.isRoom ? "53px" : "52px")};
+    min-height: ${(props) => (props.isRoom ? "53px" : "52px")};
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    .header-text {
+      margin-left: 20px;
+    }
+  }
+  .submenu {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    .sticky {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
   }
 `;
 

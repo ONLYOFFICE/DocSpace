@@ -9,7 +9,6 @@ import { Base } from "@appserver/components/themes";
 import Details from "./views/Details";
 import Members from "./views/Members";
 import History from "./views/History";
-import EmptyScreen from "./EmptyScreen";
 import withLoader from "../../../../HOCs/withLoader";
 import Loaders from "@appserver/common/components/Loaders";
 
@@ -30,7 +29,6 @@ const InfoPanelBodyContent = ({
   isFavoritesFolder,
   isShareFolder,
   isCommonFolder,
-  isPrivacyFolder,
   isGallery,
   gallerySelected,
   personal,
@@ -49,7 +47,6 @@ const InfoPanelBodyContent = ({
     isFavoritesFolder,
     isShareFolder,
     isCommonFolder,
-    isPrivacyFolder,
   };
 
   const filesProps = {
@@ -80,7 +77,14 @@ const InfoPanelBodyContent = ({
     )
   ) : (
     <StyledInfoRoomBody>
-      {isPrivacyFolder ? (
+      {roomState === "members" ? (
+        <Members t={t} selfId={selfId} />
+      ) : roomState === "history" ? (
+        <History t={t} personal={personal} culture={culture} />
+      ) : (
+        <Details {...defaultProps} {...filesProps} />
+      )}
+      {/* {isPrivacyFolder ? (
         <>
           {roomState === "members" ? (
             <Members t={t} selfId={selfId} />
@@ -92,7 +96,7 @@ const InfoPanelBodyContent = ({
         </>
       ) : (
         <Details {...defaultProps} {...filesProps} />
-      )}
+      )} */}
     </StyledInfoRoomBody>
   );
 };
@@ -133,7 +137,6 @@ export default inject(
       isFavoritesFolder,
       isShareFolder,
       isCommonFolder,
-      isPrivacyFolder,
     } = treeFoldersStore;
 
     const selectedItems =
@@ -161,7 +164,6 @@ export default inject(
       isFavoritesFolder,
       isShareFolder,
       isCommonFolder,
-      isPrivacyFolder,
 
       gallerySelected,
       personal,

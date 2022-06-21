@@ -17,6 +17,10 @@ const StyledUserTypeHeader = styled.div`
   }
 
   .icon {
+    path,
+    rect {
+      fill: ${(props) => props.theme.infoPanel.members.iconColor};
+    }
   }
 `;
 
@@ -64,5 +68,7 @@ const StyledUser = styled.div`
     color: #555f65;
   }
 `;
+
+StyledUserTypeHeader.defaultProps = { theme: Base };
 
 export { StyledUserTypeHeader, StyledUserList, StyledUser };

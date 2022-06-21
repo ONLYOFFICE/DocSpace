@@ -27,6 +27,7 @@ const Members = ({ t, selfId }) => {
           {t("Users in room")} : {data.members.inRoom.length}
         </Text>
         <IconButton
+          className={"icon"}
           title={t("Common:AddUsers")}
           iconName="/static/images/person+.react.svg"
           isFill={true}
@@ -68,6 +69,7 @@ const Members = ({ t, selfId }) => {
           {t("Expect people")} : {data.members.expect.length}
         </Text>
         <IconButton
+          className={"icon"}
           title={t("Repeat invitation")}
           iconName="/static/images/e-mail+.react.svg"
           isFill={true}
