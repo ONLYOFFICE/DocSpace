@@ -156,7 +156,7 @@ const withHotkeys = (Component) => {
     useHotkeys(
       "Shift+d",
       () => setAction({ type: FileAction.Create, extension: "docx", id: -1 }),
-      hotkeysFilter
+      { ...hotkeysFilter, ...{ keyup: true } }
     );
 
     //Crete spreadsheet
