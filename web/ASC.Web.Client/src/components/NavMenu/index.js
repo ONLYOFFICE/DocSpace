@@ -156,9 +156,16 @@ class NavMenu extends React.Component {
       preparationPortalDialogVisible,
     } = this.props;
 
+    const frameConfig = JSON.parse(localStorage.getItem("dsFrameConfig"));
+
+    const isFrame = window.name === frameConfig.name;
+    const showFrameHeader = !JSON.parse(frameConfig.showHeader);
+
     const isAsideAvailable = !!asideContent;
     const hideHeader =
-      isDesktop || history.location.pathname === "/products/files/private";
+      isDesktop ||
+      history.location.pathname === "/products/files/private" ||
+      (showFrameHeader && isFrame);
     //console.log("NavMenu render", this.state, this.props);
     const isPreparationPortal =
       history.location.pathname === "/preparation-portal";
