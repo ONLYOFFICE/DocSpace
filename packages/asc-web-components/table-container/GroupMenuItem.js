@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { ReactSVG } from "react-svg";
 import styled from "styled-components";
 import Button from "../button";
-import { mobile, tablet } from "../utils/device";
+import { mobile, tablet, hugeMobile } from "../utils/device";
 import { Base } from "../themes";
 
 const StyledButton = styled(Button)`
@@ -72,6 +72,13 @@ const StyledButton = styled(Button)`
       padding: 0;
       margin: 0 auto;
     }
+  }
+
+  @media ${hugeMobile} {
+    padding: 0 16px;
+    height: 60px;
+    font-size: 0;
+    line-height: 0;
   }
 
   @media ${mobile} {
