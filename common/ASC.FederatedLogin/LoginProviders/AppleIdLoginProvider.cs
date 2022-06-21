@@ -131,22 +131,24 @@ public class AppleIdLoginProvider : BaseLoginProvider<AppleIdLoginProvider>
 
     private string GenerateSecret()
     {
-        using (var cngKey = CngKey.Import(Convert.FromBase64String(PrivateKey), CngKeyBlobFormat.Pkcs8PrivateBlob))
-        {
-            var handler = new JwtSecurityTokenHandler();
-            var token = handler.CreateJwtSecurityToken(
-                issuer: TeamId,
-                audience: "https://appleid.apple.com",
-                subject: new ClaimsIdentity(new List<Claim> { new Claim("sub", ClientID) }),
-                issuedAt: DateTime.UtcNow,
-                notBefore: DateTime.UtcNow,
-                expires: DateTime.UtcNow.AddMinutes(5),
-                signingCredentials: new SigningCredentials(new ECDsaSecurityKey(new ECDsaCng(cngKey)), SecurityAlgorithms.EcdsaSha256)
-            );
-            token.Header.Add("kid", KeyId);
+        using var ecdsa = ECDsa.Create();
 
-            return handler.WriteToken(token);
-        }
+        ecdsa.ImportPkcs8PrivateKey(Convert.FromBase64String(PrivateKey), out _);
+
+        var handler = new JwtSecurityTokenHandler();
+        var token = handler.CreateJwtSecurityToken(
+            issuer: TeamId,
+            audience: "https://appleid.apple.com",
+            subject: new ClaimsIdentity(new List<Claim> { new Claim("sub", ClientID) }),
+            issuedAt: DateTime.UtcNow,
+            notBefore: DateTime.UtcNow,
+            expires: DateTime.UtcNow.AddMinutes(5),
+            signingCredentials: new SigningCredentials(new ECDsaSecurityKey(ecdsa), SecurityAlgorithms.EcdsaSha256)
+        );
+
+        token.Header.Add("kid", KeyId);
+
+        return handler.WriteToken(token);
     }
 
     private ClaimsPrincipal ValidateIdToken(string idToken)

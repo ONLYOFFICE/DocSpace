@@ -655,12 +655,14 @@ public class FileHandlerService
 
                         header = header.Substring("Bearer ".Length);
 
+#pragma warning disable CS0618 // Type or member is obsolete
                         var stringPayload = JwtBuilder.Create()
                                                 .WithAlgorithm(new HMACSHA256Algorithm())
                                                 .WithSerializer(new JwtSerializer())
                                                 .WithSecret(_fileUtility.SignatureSecret)
                                                 .MustVerifySignature()
                                                 .Decode(header);
+#pragma warning restore CS0618 // Type or member is obsolete
 
                         _logger.DebugDocServiceStreamFilePayload(stringPayload);
                         //var data = JObject.Parse(stringPayload);
@@ -767,12 +769,14 @@ public class FileHandlerService
 
                     header = header.Substring("Bearer ".Length);
 
+#pragma warning disable CS0618 // Type or member is obsolete
                     var stringPayload = JwtBuilder.Create()
                                                     .WithAlgorithm(new HMACSHA256Algorithm())
                                                     .WithSerializer(new JwtSerializer())
                                                     .WithSecret(_fileUtility.SignatureSecret)
                                                     .MustVerifySignature()
                                                     .Decode(header);
+#pragma warning restore CS0618 // Type or member is obsolete
 
                     _logger.DebugDocServiceStreamFilePayload(stringPayload);
                     //var data = JObject.Parse(stringPayload);
@@ -1428,12 +1432,14 @@ public class FileHandlerService
             {
                 try
                 {
+#pragma warning disable CS0618 // Type or member is obsolete
                     var dataString = JwtBuilder.Create()
                             .WithAlgorithm(new HMACSHA256Algorithm())
                             .WithSerializer(new JwtSerializer())
                             .WithSecret(_fileUtility.SignatureSecret)
                             .MustVerifySignature()
                             .Decode(fileData.Token);
+#pragma warning restore CS0618 // Type or member is obsolete
 
                     var data = JObject.Parse(dataString);
                     if (data == null)
@@ -1461,12 +1467,14 @@ public class FileHandlerService
 
                 try
                 {
+#pragma warning disable CS0618 // Type or member is obsolete
                     var stringPayload = JwtBuilder.Create()
                             .WithAlgorithm(new HMACSHA256Algorithm())
                             .WithSerializer(new JwtSerializer())
                             .WithSecret(_fileUtility.SignatureSecret)
                             .MustVerifySignature()
                             .Decode(header);
+#pragma warning restore CS0618 // Type or member is obsolete
 
                     _logger.DebugDocServiceTrackPayload(stringPayload);
                     var jsonPayload = JObject.Parse(stringPayload);

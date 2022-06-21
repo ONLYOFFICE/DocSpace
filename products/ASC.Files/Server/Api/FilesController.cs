@@ -123,7 +123,7 @@ public abstract class FilesController<T> : ApiControllerBase
         return await _filesControllerHelper.GetPresignedUri(fileId);
     }
 
-    [HttpPost("file/{fileId}/copyas", Order = int.MaxValue)]
+    [HttpPost("file/{fileId}/copyas")]
     public async Task<FileEntryDto> CopyFileAs(T fileId, CopyAsRequestDto<JsonElement> inDto)
     {
         if (inDto.DestFolderId.ValueKind == JsonValueKind.Number)

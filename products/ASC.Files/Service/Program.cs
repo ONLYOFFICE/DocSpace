@@ -68,12 +68,11 @@ builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
 
     diHelper.TryAdd<FileDataQueue>();
 
-    services.AddActivePassiveHostedService<FileConverterService<string>>();
-    diHelper.TryAdd<FileConverterService<string>>();
-
     services.AddActivePassiveHostedService<FileConverterService<int>>();
     diHelper.TryAdd<FileConverterService<int>>();
 
+    services.AddActivePassiveHostedService<FileConverterService<string>>();
+    diHelper.TryAdd<FileConverterService<string>>();
 
     services.AddHostedService<ThumbnailBuilderService>();
     diHelper.TryAdd<ThumbnailBuilderService>();
