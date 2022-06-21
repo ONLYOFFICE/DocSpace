@@ -108,7 +108,7 @@ const CreateEvent = ({
           createdFolderId && folderIds.push(createdFolderId);
 
           clearActiveOperations(null, folderIds);
-
+          onClose();
           return setIsLoading(false);
         });
     } else {
@@ -152,6 +152,8 @@ const CreateEvent = ({
               setConvertPasswordDialogVisible(true);
 
               open && openDocEditor(null, null, tab);
+            } else {
+              toastr.error(e);
             }
           })
           .finally(() => {
@@ -159,7 +161,7 @@ const CreateEvent = ({
             createdFileId && fileIds.push(createdFileId);
 
             clearActiveOperations(fileIds);
-
+            onClose();
             return setIsLoading(false);
           });
       } else if (fromTemplate) {
@@ -183,7 +185,7 @@ const CreateEvent = ({
             createdFileId && fileIds.push(createdFileId);
 
             clearActiveOperations(fileIds);
-
+            onClose();
             return setIsLoading(false);
           });
       } else {
@@ -218,7 +220,7 @@ const CreateEvent = ({
             createdFileId && fileIds.push(createdFileId);
 
             clearActiveOperations(fileIds);
-
+            onClose();
             return setIsLoading(false);
           });
       }
