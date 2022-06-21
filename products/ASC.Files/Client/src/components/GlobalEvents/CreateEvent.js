@@ -123,38 +123,32 @@ const CreateEvent = ({
           })
           .then(() => editCompleteAction(id, item, false, type))
           .catch((err) => {
-            console.log("err", err);
-            const isPasswordError = new RegExp("password");
-
-            if (isPasswordError.test(err)) {
-              toastr.error(
-                t("Translations:FileProtected"),
-                t("Common:Warning")
-              );
-
-              setIsUpdatingRowItem(false);
-
-              setVisible(false);
-
-              setFormCreationInfo({
-                newTitle: `${newValue}.${extension}`,
-                fromExst: ".docx",
-                toExst: extension,
-                open,
-                actionId: id,
-                fileInfo: {
-                  id: templateId,
-                  folderId: parentId,
-                  fileExst: extension,
-                },
-              });
-
-              setConvertPasswordDialogVisible(true);
-
-              open && openDocEditor(null, null, tab);
-            } else {
-              toastr.error(e);
+            if (err.indexOf("password") == -1) {
+              toastr.error(err, t("Common:Warning"));
+              return;
             }
+
+            toastr.error(t("Translations:FileProtected"), t("Common:Warning"));
+
+            setIsUpdatingRowItem(false);
+
+            setVisible(false);
+
+            setFormCreationInfo({
+              newTitle: `${newValue}.${extension}`,
+              fromExst: ".docx",
+              toExst: extension,
+              open,
+              actionId: id,
+              fileInfo: {
+                id: templateId,
+                folderId: parentId,
+                fileExst: extension,
+              },
+            });
+            setConvertPasswordDialogVisible(true);
+
+            open && openDocEditor(null, null, tab);
           })
           .finally(() => {
             const fileIds = [+id];

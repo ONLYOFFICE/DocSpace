@@ -69,19 +69,18 @@ class ContextOptionsStore {
       this.settingsStore.extsWebRestrictedEditing[0];
 
     this.uploadDataStore.copyAsAction(id, newTitle, folderId).catch((err) => {
-      console.log("err", err);
-      const isPasswordError = new RegExp(/\(password\)*$/);
-
-      if (isPasswordError.test(err)) {
-        toastr.error(t("Translations:FileProtected"), t("Common:Warning"));
-        setFormCreationInfo({
-          newTitle,
-          fromExst: fileExst,
-          toExst: this.settingsStore.extsWebRestrictedEditing[0],
-          fileInfo: item,
-        });
-        setConvertPasswordDialogVisible(true);
+      if (err.indexOf("password") == -1) {
+        toastr.error(err, t("Common:Warning"));
+        return;
       }
+      toastr.error(t("Translations:FileProtected"), t("Common:Warning"));
+      setFormCreationInfo({
+        newTitle,
+        fromExst: fileExst,
+        toExst: this.settingsStore.extsWebRestrictedEditing[0],
+        fileInfo: item,
+      });
+      setConvertPasswordDialogVisible(true);
     });
   };
 
