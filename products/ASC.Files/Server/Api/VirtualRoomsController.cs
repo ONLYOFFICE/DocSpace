@@ -35,6 +35,21 @@ public class VirtualRoomsInternalController : VirtualRoomsController<int>
     {
     }
 
+    /// <summary>
+    /// Create a room in the virtual rooms section
+    /// </summary>
+    /// <short>
+    /// Create room
+    /// </short>
+    /// <param name="title">
+    /// Room name
+    /// </param>
+    /// <param name="roomType">
+    /// Room preset type
+    /// </param>
+    /// <returns>
+    /// Room info
+    /// </returns>
     [HttpPost("rooms")]
     public async Task<FolderDto<int>> CreateRoomAsync(CreateRoomRequestDto inDto)
     {
@@ -52,6 +67,24 @@ public class VirtualRoomsThirdpartyController : VirtualRoomsController<string>
     {
     }
 
+    /// <summary>
+    /// Creates a room in the virtual rooms section stored in a third-party storage
+    /// </summary>
+    /// <short>
+    /// Create third-party room
+    /// </short>
+    /// <param name="id">
+    /// ID of the folder in the third-party storage in which the contents of the room will be stored
+    /// </param>
+    /// <param name="title">
+    /// Room name
+    /// </param>
+    /// <param name="roomType">
+    /// Room preset type
+    /// </param>
+    /// <returns>
+    /// Room info
+    /// </returns>
     [HttpPost("rooms/thirdparty/{id}")]
     public async Task<FolderDto<string>> CreateRoomAsync(string id, CreateRoomRequestDto inDto)
     {
@@ -100,6 +133,36 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         _emailValidationKeyProvider = emailValidationKeyProvider;
     }
 
+    /// <summary>
+    /// Getting the contents of a virtual room
+    /// </summary>
+    /// <param name="id">
+    /// Room ID
+    /// </param>
+    /// <param name="startIndex">
+    /// The value of the beginning of the enumeration
+    /// </param>
+    /// <param name="count">
+    /// Quantity
+    /// </param>
+    /// <param name="filterValue">
+    /// Filter by name
+    /// </param>
+    /// <param name="userOrGroupId">
+    /// User or Group ID
+    /// </param>
+    /// <param name="filterType">
+    /// Content filtering type
+    /// </param>
+    /// <param name="searchInContent">
+    /// Full-text content search
+    /// </param>
+    /// <param name="withSubFolders">
+    /// Search by subfolders
+    /// </param>
+    /// <returns>
+    /// Room content
+    /// </returns>
     [HttpGet("rooms/{id}")]
     public async Task<FolderContentDto<T>> GetRoomAsync(T id, Guid userOrGroupId, FilterType filterType, bool searchInContent, bool withSubFolders)
     {
@@ -108,6 +171,18 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         return await _foldersControllerHelper.GetFolderAsync(id, userOrGroupId, filterType, searchInContent, withSubFolders);
     }
 
+    /// <summary>
+    /// Renaming a virtual room
+    /// </summary>
+    /// <param name="id">
+    /// Room ID
+    /// </param>
+    /// <param name="title">
+    /// New room name
+    /// </param>
+    /// <returns>
+    /// Updated room info
+    /// </returns>
     [HttpPut("rooms/{id}")]
     public async Task<FolderDto<T>> UpdateRoomAsync(T id, UpdateRoomRequestDto inDto)
     {
@@ -118,6 +193,18 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         return await _folderDtoHelper.GetAsync(room);
     }
 
+    /// <summary>
+    /// Permanent deletion of a virtual room
+    /// </summary>
+    /// <short>
+    /// Deleting room
+    /// </short>
+    /// <param name="id">
+    /// Room ID
+    /// </param>
+    /// <returns>
+    /// Result of the operation
+    /// </returns>
     [HttpDelete("rooms/{id}")]
     public async Task<FileOperationDto> DeleteRoomAsync(T id)
     {
@@ -129,6 +216,18 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         return await _fileOperationDtoHelper.GetAsync(operationResult);
     }
 
+    /// <summary>
+    /// Moving a room to the archive section
+    /// </summary>
+    /// <short>
+    /// Archiving room
+    /// </short>
+    /// <param name="id">
+    /// Room ID
+    /// </param>
+    /// <returns>
+    /// Result of the operation
+    /// </returns>
     [HttpPut("rooms/{id}/archive")]
     public async Task<FileOperationDto> ArchiveRoomAsync(T id)
     {
@@ -143,6 +242,18 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         return await _fileOperationDtoHelper.GetAsync(operationResult);
     }
 
+    /// <summary>
+    /// Moving a room to the virtual room section
+    /// </summary>
+    /// <short>
+    /// Unarchiving room
+    /// </short>
+    /// <param name="id">
+    /// Room ID
+    /// </param>
+    /// <returns>
+    /// Result of the operation
+    /// </returns>
     [HttpPut("rooms/{id}/unarchive")]
     public async Task<FileOperationDto> UnarchiveRoomAsync(T id)
     {
@@ -157,6 +268,30 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         return await _fileOperationDtoHelper.GetAsync(operationResult);
     }
 
+    /// <summary>
+    /// Setting access rights for a virtual room
+    /// </summary>
+    /// <short>
+    /// Set access
+    /// </short>
+    /// <param name="id">
+    /// Room ID
+    /// </param>
+    /// <param name="shareTo">
+    /// ID of the user to whom access will be assigned
+    /// </param>
+    /// <param name="access">
+    /// Access level
+    /// </param>
+    /// <param name="notify">
+    /// Notifying users about access
+    /// </param>
+    /// <param name="sharingMessage">
+    /// Notification message
+    /// </param>
+    /// <returns>
+    /// Room security info
+    /// </returns>
     [HttpPut("rooms/{id}/share")]
     public Task<IEnumerable<FileShareDto>> SetRoomSecurityAsync(T id, SecurityInfoRequestDto inDto)
     {
@@ -170,6 +305,21 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         return _securityControllerHelper.SetFolderSecurityInfoAsync(id, inDto.Share, inDto.Notify, inDto.SharingMessage);
     }
 
+    /// <summary>
+    /// Getting an invitation link to a virtual room
+    /// </summary>
+    /// <short>
+    /// Get invitation link
+    /// </short>
+    /// <param name="id">
+    /// Room ID
+    /// </param>
+    /// <param name="access">
+    /// Access level
+    /// </param>
+    /// <returns>
+    /// Invitation link
+    /// </returns>
     [HttpGet("rooms/{id}/links")]
     public async Task<object> GetInvitationLinkAsync(T id, InviteLinkDto inDto)
     {
@@ -180,6 +330,21 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         return _roomLinksService.GenerateLink(id, (int)inDto.Access, EmployeeType.User, _authContext.CurrentAccount.ID);
     }
 
+    /// <summary>
+    /// Inviting users to the virtual room by email
+    /// </summary>
+    /// <short>
+    /// Send invitation link
+    /// </short>
+    /// <param name="id">
+    /// Room ID
+    /// </param>
+    /// <param name="emails">
+    /// Mailbox addresses
+    /// </param>
+    /// <returns>
+    /// Invitations result
+    /// </returns>
     [HttpPut("rooms/{id}/links/send")]
     public async Task<IEnumerable<InviteResultDto>> SendInvitesToRoomByEmail(T id, InviteUsersByEmailRequestDto inDto)
     {
@@ -215,6 +380,21 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         return results;
     }
 
+    /// <summary>
+    /// Add tags for a virtual room
+    /// </summary>
+    /// <short>
+    /// Add tags
+    /// </short>
+    /// <param name="id">
+    /// Room ID
+    /// </param>
+    /// <param name="names">
+    /// Tag names
+    /// </param>
+    /// <returns>
+    /// Room info
+    /// </returns>
     [HttpPut("rooms/{id}/tags")]
     public async Task<FolderDto<T>> AddTagsAsync(T id, BatchTagsRequestDto inDto)
     {
@@ -225,6 +405,21 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         return await _folderDtoHelper.GetAsync(room);
     }
 
+    /// <summary>
+    /// Attaching a tag to a virtual room
+    /// </summary>
+    /// <short>
+    /// Add tags
+    /// </short>
+    /// <param name="id">
+    /// Room ID
+    /// </param>
+    /// <param name="names">
+    /// Tag names
+    /// </param>
+    /// <returns>
+    /// Room info
+    /// </returns>
     [HttpDelete("rooms/{id}/tags")]
     public async Task<FolderDto<T>> DeleteTagsAsync(T id, BatchTagsRequestDto inDto)
     {
@@ -235,6 +430,33 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         return await _folderDtoHelper.GetAsync(room);
     }
 
+    /// <summary>
+    /// Creating a logo for a virtual room
+    /// </summary>
+    /// <short>
+    /// Create room logo
+    /// </short>
+    /// <param name="id">
+    /// Room ID
+    /// </param>
+    /// <param name="tmpFile">
+    /// The path to the temporary image file
+    /// </param>
+    /// <param name="x">
+    /// The coordinate X of the rectangle's starting point
+    /// </param>
+    /// <param name="y">
+    /// The coordinate Y of the rectangle's starting point
+    /// </param>
+    /// <param name="width">
+    /// Rectangle width
+    /// </param>
+    /// <param name="height">
+    /// Rectangle height
+    /// </param>
+    /// <returns>
+    /// Room info
+    /// </returns>
     [HttpPost("rooms/{id}/logo")]
     public async Task<FolderDto<T>> CreateRoomLogoAsync(T id, LogoRequestDto inDto)
     {
@@ -245,6 +467,18 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         return await _folderDtoHelper.GetAsync(room);
     }
 
+    /// <summary>
+    /// Removing the virtual room logo
+    /// </summary>
+    /// <short>
+    /// Remove room logo
+    /// </short>
+    /// <param name="id">
+    /// Room ID
+    /// </param>
+    /// <returns>
+    /// Room info
+    /// </returns>
     [HttpDelete("rooms/{id}/logo")]
     public async Task<FolderDto<T>> DeleteRoomLogoAsync(T id)
     {
@@ -255,6 +489,18 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         return await _folderDtoHelper.GetAsync(room);
     }
 
+    /// <summary>
+    /// Pins a virtual room to the list
+    /// </summary>
+    /// <short>
+    /// Pin room
+    /// </short>
+    /// <param name="id">
+    /// Room ID
+    /// </param>
+    /// <returns>
+    /// Room info
+    /// </returns>
     [HttpPut("rooms/{id}/pin")]
     public async Task<FolderDto<T>> PinRoomAsync(T id)
     {
@@ -265,6 +511,18 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         return await _folderDtoHelper.GetAsync(room);
     }
 
+    /// <summary>
+    /// Unpins a virtual room to the list
+    /// </summary>
+    /// <short>
+    /// Unpin room
+    /// </short>
+    /// <param name="id">
+    /// Room ID
+    /// </param>
+    /// <returns>
+    /// Room info
+    /// </returns>
     [HttpPut("rooms/{id}/unpin")]
     public async Task<FolderDto<T>> UnpinRoomAsync(T id)
     {
@@ -283,7 +541,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         }
     }
 
-    private async Task<IEnumerable<FileShareDto>> SetRoomSecurityByLinkAsync(T id, Guid userId, Core.Security.FileShare access, string key)
+    private async Task<IEnumerable<FileShareDto>> SetRoomSecurityByLinkAsync(T id, Guid userId, FileShare access, string key)
     {
         var result = _emailValidationKeyProvider.ValidateEmailKey(string.Empty + ConfirmType.RoomInvite + ((int)EmployeeType.User + (int)access + id.ToString()), key,
                 _emailValidationKeyProvider.ValidEmailKeyInterval);
@@ -339,6 +597,42 @@ public class VirtualRoomsCommonController : ApiControllerBase
         _fileSizeComment = fileSizeComment;
     }
 
+    /// <summary>
+    /// Getting the contents of the virtual rooms section
+    /// </summary>
+    /// <short>
+    /// Get rooms
+    /// </short>
+    /// <param name="startIndex">
+    /// The value of the beginning of the enumeration
+    /// </param>
+    /// <param name="count">
+    /// Quantity
+    /// </param>
+    /// <param name="filterValue">
+    /// Filter by name
+    /// </param>
+    /// <param name="types">
+    /// Filter by room type
+    /// </param>
+    /// <param name="subjectId">
+    /// Filter by user ID
+    /// </param>
+    /// <param name="searchInContent">
+    /// Full-text content search
+    /// </param>
+    /// <param name="withSubfolders">
+    /// Search by subfolders
+    /// </param>
+    /// <param name="searchArea">
+    /// Room search area
+    /// </param>
+    /// <param name="tags">
+    /// Filter by tags
+    /// </param>
+    /// <returns>
+    /// Virtual Rooms content
+    /// </returns>
     [HttpGet("rooms")]
     public async Task<FolderContentDto<int>> GetRoomsFolderAsync(string types, string subjectId, bool searchInContent, bool withSubfolders, SearchArea searchArea, string tags)
     {
@@ -377,6 +671,18 @@ public class VirtualRoomsCommonController : ApiControllerBase
         return dto.NotFoundIfNull();
     }
 
+    /// <summary>
+    /// Create a custom tag
+    /// </summary>
+    /// <short>
+    /// Create tag
+    /// </short>
+    /// <param name="name">
+    /// Tag name
+    /// </param>
+    /// <returns>
+    /// Tag name
+    /// </returns>
     [HttpPost("tags")]
     public async Task<object> CreateTagAsync(CreateTagRequestDto inDto)
     {
@@ -385,6 +691,24 @@ public class VirtualRoomsCommonController : ApiControllerBase
         return await _customTagsService.CreateTagAsync(inDto.Name);
     }
 
+    /// <summary>
+    /// Getting a list of custom tags
+    /// </summary>
+    /// <short>
+    /// Get tags
+    /// </short>
+    /// <param name="startIndex">
+    /// The value of the beginning of the enumeration
+    /// </param>
+    /// <param name="count">
+    /// Quantity
+    /// </param>
+    /// <param name="filterValue">
+    /// Filter by name
+    /// </param>
+    /// <returns>
+    /// Tag names
+    /// </returns>
     [HttpGet("tags")]
     public async IAsyncEnumerable<object> GetTagsInfoAsync()
     {
@@ -399,6 +723,15 @@ public class VirtualRoomsCommonController : ApiControllerBase
         }
     }
 
+    /// <summary>
+    /// Delete a bunch of custom tags
+    /// </summary>
+    /// <short>
+    /// Delete tags
+    /// </short>
+    /// <returns>
+    /// Void
+    /// </returns>
     [HttpDelete("tags")]
     public async Task DeleteTagsAsync(BatchTagsRequestDto inDto)
     {
@@ -407,6 +740,18 @@ public class VirtualRoomsCommonController : ApiControllerBase
         await _customTagsService.DeleteTagsAsync(inDto.Names);
     }
 
+    /// <summary>
+    /// Upload a temporary image to create a virtual room logo
+    /// </summary>
+    /// <short>
+    /// Upload image for room logo
+    /// </short>
+    /// <param name="formCollection">
+    /// Image data
+    /// </param>
+    /// <returns>
+    /// Upload result
+    /// </returns>
     [HttpPost("logos")]
     public async Task<UploadResultDto> UploadRoomLogo(IFormCollection formCollection)
     {
