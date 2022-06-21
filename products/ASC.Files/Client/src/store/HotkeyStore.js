@@ -158,7 +158,10 @@ class HotkeyStore {
       filesList,
       setHotkeyCaretStart,
       selection,
+      viewAs,
     } = this.filesStore;
+    if (viewAs !== "tile") return;
+
     if (!hotkeyCaret && !selection.length) {
       this.selectFirstFile();
 
@@ -174,7 +177,9 @@ class HotkeyStore {
       filesList,
       setHotkeyCaretStart,
       selection,
+      viewAs,
     } = this.filesStore;
+    if (viewAs !== "tile") return;
 
     if (!hotkeyCaret && !selection.length) {
       this.selectFirstFile();
@@ -266,6 +271,7 @@ class HotkeyStore {
       hotkeyCaretStart,
       filesList,
     } = this.filesStore;
+    if (viewAs !== "tile") return;
 
     if (!hotkeyCaret && !selection.length) return this.selectFirstFile();
 
@@ -324,6 +330,7 @@ class HotkeyStore {
       filesList,
       hotkeyCaretStart,
     } = this.filesStore;
+    if (viewAs !== "tile") return;
 
     if (!hotkeyCaret && !selection.length) return this.selectFirstFile();
 
