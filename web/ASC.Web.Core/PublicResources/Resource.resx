@@ -610,17 +610,20 @@
   <data name="ErrorPasswordMessage" xml:space="preserve">
     <value>Password must contain</value>
   </data>
-  <data name="ErrorPasswordMessageStart" xml:space="preserve">
-    <value>The password must contain</value>
-  </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>digits</value>
+  </data>
+  <data name="ErrorPasswordNoSpaces" xml:space="preserve">
+    <value>no spaces</value>
   </data>
   <data name="ErrorPasswordNoSpecialSymbols" xml:space="preserve">
     <value>special characters</value>
   </data>
   <data name="ErrorPasswordNoUpperCase" xml:space="preserve">
     <value>capital letters</value>
+  </data>
+  <data name="ErrorPasswordOnlyLatinLetters" xml:space="preserve">
+    <value>only latin letters</value>
   </data>
   <data name="ErrorRequestLimitExceeded" xml:space="preserve">
     <value>Request limit is exceeded</value>

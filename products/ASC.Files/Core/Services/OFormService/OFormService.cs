@@ -24,15 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Utils;
-
-using Microsoft.Extensions.Hosting;
-
 namespace ASC.Files.Core.Services.OFormService;
 
 [Singletone]

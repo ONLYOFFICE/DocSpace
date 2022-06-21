@@ -23,31 +23,24 @@
  *
 */
 
+namespace ASC.ApiSystem.Models;
 
-using System;
-using System.ComponentModel.DataAnnotations;
-
-using ASC.ApiSystem.Interfaces;
-
-namespace ASC.ApiSystem.Models
+public class TariffModel : IModel
 {
-    public class TariffModel : IModel
-    {
-        [StringLength(255)]
-        public string PortalName { get; set; }
+    [StringLength(255)]
+    public string PortalName { get; set; }
 
-        public int? TenantId { get; set; }
+    public int? TenantId { get; set; }
 
 
-        public int ActiveUsers { get; set; }
+    public int ActiveUsers { get; set; }
 
-        public DateTime DueDate { get; set; }
+    public DateTime DueDate { get; set; }
 
-        [StringLength(255)]
-        public string Features { get; set; }
+    [StringLength(255)]
+    public string Features { get; set; }
 
-        public long MaxFileSize { get; set; }
+    public long MaxFileSize { get; set; }
 
-        public long MaxTotalSize { get; set; }
-    }
+    public long MaxTotalSize { get; set; }
 }

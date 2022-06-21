@@ -11,8 +11,8 @@ using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
-using ASC.MessagingSystem;
-using ASC.Web.Api.Routing;
+using ASC.MessagingSystem.Core;
+using ASC.MessagingSystem.Models;
 using ASC.Web.CRM.Core.Search;
 using ASC.Web.CRM.Services.NotifyService;
 
@@ -56,7 +56,7 @@ namespace ASC.CRM.Api
         /// <category>Tasks</category>
         ///<exception cref="ArgumentException"></exception>
         ///<exception cref="ItemNotFoundException"></exception>
-        [Read(@"task/{taskid:int}")]
+        [HttpGet(@"task/{taskid:int}")]
         public TaskDto GetTaskByID(int taskid)
         {
             if (taskid <= 0) throw new ArgumentException();
@@ -89,7 +89,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Task list
         /// </returns>
-        [Read(@"task/filter")]
+        [HttpGet(@"task/filter")]
         public IEnumerable<TaskDto> GetAllTasks(
             Guid responsibleid,
             int categoryid,
@@ -205,7 +205,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Task
         /// </returns>
-        [Update(@"task/{taskid:int}/reopen")]
+        [HttpPut(@"task/{taskid:int}/reopen")]
         public TaskDto ReOpenTask(int taskid)
         {
             if (taskid <= 0) throw new ArgumentException();
@@ -229,7 +229,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Task
         /// </returns>
-        [Update(@"task/{taskid:int}/close")]
+        [HttpPut(@"task/{taskid:int}/close")]
         public TaskDto CloseTask(int taskid)
         {
             if (taskid <= 0) throw new ArgumentException();
@@ -254,7 +254,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///  Deleted task
         /// </returns>
-        [Delete(@"task/{taskid:int}")]
+        [HttpDelete(@"task/{taskid:int}")]
         public TaskDto DeleteTask(int taskid)
         {
             if (taskid <= 0) throw new ArgumentException();
@@ -286,7 +286,7 @@ namespace ASC.CRM.Api
         /// <short>Create task</short> 
         /// <category>Tasks</category>
         /// <returns>Task</returns>
-        [Create(@"task")]
+        [HttpPost(@"task")]
         public TaskDto CreateTask(
 [FromBody] CreateOrUpdateTaskRequestDto inDto)
         {
@@ -378,7 +378,7 @@ namespace ASC.CRM.Api
         /// <category>Tasks</category>
         /// <returns>Tasks</returns>
         /// <visible>false</visible>
-        [Create(@"contact/task/group")]
+        [HttpPost(@"contact/task/group")]
         public IEnumerable<TaskDto> CreateTaskGroup([FromBody] CreateTaskGroupRequestDto inDto)
         {
             var entityType = inDto.EntityType;
@@ -491,7 +491,7 @@ namespace ASC.CRM.Api
         /// <short> Update task</short> 
         /// <category>Tasks</category>
         /// <returns>Task</returns>
-        [Update(@"task/{taskid:int}")]
+        [HttpPut(@"task/{taskid:int}")]
         public TaskDto UpdateTask(
             [FromRoute] int taskid,
 [FromBody] CreateOrUpdateTaskRequestDto inDto)
@@ -566,7 +566,7 @@ namespace ASC.CRM.Api
         }
 
         /// <visible>false</visible>
-        [Update(@"task/{taskid:int}/creationdate")]
+        [HttpPut(@"task/{taskid:int}/creationdate")]
         public void SetTaskCreationDate(int taskId, ApiDateTime creationDate)
         {
             var dao = _daoFactory.GetTaskDao();
@@ -579,7 +579,7 @@ namespace ASC.CRM.Api
         }
 
         /// <visible>false</visible>
-        [Update(@"task/{taskid:int}/lastmodifeddate")]
+        [HttpPut(@"task/{taskid:int}/lastmodifeddate")]
         public void SetTaskLastModifedDate(int taskId, ApiDateTime lastModifedDate)
         {
             var dao = _daoFactory.GetTaskDao();

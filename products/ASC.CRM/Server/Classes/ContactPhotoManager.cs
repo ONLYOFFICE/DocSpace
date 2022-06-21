@@ -33,7 +33,6 @@ using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Caching;
-using ASC.Common.Logging;
 using ASC.Common.Threading;
 using ASC.CRM.Resources;
 using ASC.Data.Storage;
@@ -41,7 +40,7 @@ using ASC.Web.Core;
 using ASC.Web.Core.Utility.Skins;
 using ASC.Web.CRM.Configuration;
 
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats;
@@ -80,7 +79,7 @@ namespace ASC.Web.CRM.Classes
     [Scope]
     public class ContactPhotoManager
     {
-        public readonly ILog _logger;
+        public readonly ILogger _logger;
         public readonly Global _global;
         public readonly WebImageSupplier _webImageSupplier;
         private readonly DistributedTaskQueue _resizeQueue;
@@ -102,18 +101,18 @@ namespace ASC.Web.CRM.Classes
 
         public ContactPhotoManager(Global global,
                                    WebImageSupplier webImageSupplier,
-                                   IOptionsMonitor<ILog> logger,
+                                   ILogger logger,
                                    ICache cache,
                                    ICacheNotify<ContactPhotoManagerCacheItem> cacheNotify,
-                                   DistributedTaskQueueOptionsManager optionsQueue,
+                                   IDistributedTaskQueueFactory factory,
                                    IHttpClientFactory clientFactory)
         {
             _global = global;
             _webImageSupplier = webImageSupplier;
             _cacheNotify = cacheNotify;
             _cache = cache;
-            _resizeQueue = optionsQueue.Get<ResizeWorkerItem>();
-            _logger = logger.Get("ASC.CRM");
+            _resizeQueue = factory.CreateQueue<ResizeWorkerItem>();
+            _logger = logger;
             _clientFactory = clientFactory;
 
             _cacheNotify.Subscribe((x) =>
@@ -361,9 +360,9 @@ namespace ASC.Web.CRM.Classes
 
             lock (locker)
             {
-                foreach(var item in _resizeQueue.GetTasks<ResizeWorkerItem>().Where(item => item.ContactID == contactID))
+                foreach(var item in _resizeQueue.GetAllTasks<ResizeWorkerItem>().Where(item => item.ContactID == contactID))
                 {
-                    _resizeQueue.RemoveTask(item.Id);
+                    _resizeQueue.DequeueTask(item.Id);
                 }
                            
                 var photoDirectory = !isTmpDir
@@ -442,7 +441,7 @@ namespace ASC.Web.CRM.Classes
             }
             catch (Exception ex)
             {
-                _logger.ErrorFormat("TryUploadPhotoFromTmp for contactID={0} failed witth error: {1}", contactID, ex);
+                _logger.LogError("TryUploadPhotoFromTmp for contactID={0} failed witth error: {1}", contactID, ex);
 
                 return;
             }
@@ -532,10 +531,10 @@ namespace ASC.Web.CRM.Classes
                 TmpDirName = tmpDirName
             };
 
-            if (!_resizeQueue.GetTasks<ResizeWorkerItem>().Contains(resizeWorkerItem))
+            if (!_resizeQueue.GetAllTasks<ResizeWorkerItem>().Contains(resizeWorkerItem))
             {
                 //Add
-                _resizeQueue.QueueTask((a, b) => ExecResizeImageAsync(resizeWorkerItem).Wait(), resizeWorkerItem);
+                _resizeQueue.EnqueueTask((a, b) => ExecResizeImageAsync(resizeWorkerItem).Wait(), resizeWorkerItem);
             }
         }
 

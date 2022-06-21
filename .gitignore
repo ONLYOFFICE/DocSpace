@@ -10,7 +10,7 @@
 /build/deploy
 *.log
 /products/ASC.People/Data/
-Data/
+/Data
 Logs/
 **/.DS_Store
 .eslintcache

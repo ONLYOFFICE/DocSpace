@@ -1717,20 +1717,20 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The password must contain.
-        /// </summary>
-        public static string ErrorPasswordMessageStart {
-            get {
-                return ResourceManager.GetString("ErrorPasswordMessageStart", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to digits.
         /// </summary>
         public static string ErrorPasswordNoDigits {
             get {
                 return ResourceManager.GetString("ErrorPasswordNoDigits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to no spaces.
+        /// </summary>
+        public static string ErrorPasswordNoSpaces {
+            get {
+                return ResourceManager.GetString("ErrorPasswordNoSpaces", resourceCulture);
             }
         }
         
@@ -1749,6 +1749,15 @@ namespace ASC.Web.Core.PublicResources {
         public static string ErrorPasswordNoUpperCase {
             get {
                 return ResourceManager.GetString("ErrorPasswordNoUpperCase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to only latin letters.
+        /// </summary>
+        public static string ErrorPasswordOnlyLatinLetters {
+            get {
+                return ResourceManager.GetString("ErrorPasswordOnlyLatinLetters", resourceCulture);
             }
         }
         
